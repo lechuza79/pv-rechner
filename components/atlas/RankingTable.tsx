@@ -29,6 +29,7 @@ import {
   stromwertBestandteile,
   type PrivatBestand,
 } from "../../lib/atlas-impact";
+import { FREIFLAECHE_ZUSCHLAG_AB } from "../../lib/freiflaeche-config";
 import InfoTooltip from "../InfoTooltip";
 
 type Owner = "alle" | "privat" | "gewerbe";
@@ -784,12 +785,13 @@ function StromwertHilfe({ spanne }: { spanne: { min: number; max: number; mittel
       bei beiden gleich viel wert ist. Nach 20 Jahren endet die Vergütung, dann zählt nur noch der
       Börsenwert. Eine Lücke kennen wir: Die zusätzliche Eigenverbrauchsvergütung der Baujahre
       2009 bis 2012 fehlt, das setzt die Zahl eher zu niedrig an. Freiflächen-Parks ab Baujahr
-      2015 erlösen nicht mehr einen Satz aus dem Gesetz, sondern den Zuschlagswert ihrer
-      Ausschreibung. Die Baujahre 2015 bis 2024 zählen deshalb mit dem Mittel der beiden
-      Ausschreibungsjahre davor, weil zwischen Zuschlag und Inbetriebnahme bis zu zwei Jahre
-      liegen dürfen und die meisten Projekte diese Frist ausreizen. Wie sich die Inbetriebnahmen
-      im Einzelnen darauf verteilen, veröffentlicht die Behörde nicht — das ist eine begründete
-      Näherung, keine gemessene Zuordnung. Strommenge: installierte Leistung mal typischer Ertrag im
+      {FREIFLAECHE_ZUSCHLAG_AB} erlösen nicht mehr einen Satz aus dem Gesetz, sondern den
+      Zuschlagswert ihrer Ausschreibung. Jedes dieser Baujahre zählt deshalb mit dem Mittel der
+      beiden Ausschreibungsjahre davor, weil zwischen Zuschlag und Inbetriebnahme bis zu zwei
+      Jahre liegen dürfen und die meisten Projekte diese Frist ausreizen. Wie sich die
+      Inbetriebnahmen im Einzelnen darauf verteilen, veröffentlicht die Behörde nicht — das ist
+      eine begründete Näherung, keine gemessene Zuordnung. Solange ein Ausschreibungsjahr noch
+      läuft, zählt das jüngste vollständige. Strommenge: installierte Leistung mal typischer Ertrag im
       Bundesland, kalibriert an der Erzeugung 2025 (Fraunhofer ISE).
     </>
   );

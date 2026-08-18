@@ -84,6 +84,12 @@ export const FREIFLAECHE_AUSSCHREIBUNGEN: ReadonlyArray<AusschreibungsRunde> = [
  * deutlich überzeichnet (März 2026: 201 % Deckungsrate) und damit praktisch
  * vollständig bezuschlagt — bezuschlagte und ausgeschriebene Menge liegen unter
  * einem halben Prozent auseinander (2.299 gegen 2.295 MW).
+ *
+ * WOFÜR DIESER WERT NICHT GILT: Er beschreibt die Zuschläge, die HEUTE erteilt
+ * werden — also den Erlös eines Parks, der in bis zu zwei Jahren ans Netz geht
+ * (§ 37e EEG). Ein HEUTE in Betrieb genommener Park hängt dagegen an den
+ * Zuschlägen der Vorjahre; dafür ist FREIFLAECHE_AUSSCHREIBUNG_JAHRE zuständig.
+ * Beides zu verwechseln war genau der Bruch, den die Reihe bis 08/2026 hatte.
  */
 export const FREIFLAECHE_AW_CT =
   FREIFLAECHE_AUSSCHREIBUNGEN.reduce((s, r) => s + r.zuschlagCt * r.mengeKw, 0) /
@@ -161,12 +167,12 @@ export function freiflaecheHistorieCt(jahrgang: number): number | null {
   return FREIFLAECHE_HISTORIE.find((r) => r.jahr === jahrgang)?.ct ?? null;
 }
 
-// ─── Zuschlagswerte der Ausschreibungen (Jahrgänge 2015–2024) ────────────────
+// ─── Zuschlagswerte der Ausschreibungen (Jahresmittel ab 2015) ───────────────
 //
-// WOFÜR: Der Atlas bewertete bis 08/2026 JEDEN Freiflächen-Park der Baujahre
-// 2015 bis 2024 mit dem HEUTIGEN Zuschlagsniveau (~4,55 ct netto). Für einen
-// Park von 2015, hinter dem Zuschläge um 8,50 ct stehen, war das knapp die
-// Hälfte. Diese Werte schließen die Lücke.
+// WOFÜR: Der Atlas bewertete bis 08/2026 JEDEN Freiflächen-Park ab Baujahr 2015
+// mit dem HEUTIGEN Zuschlagsniveau (~4,55 ct netto). Für einen Park von 2015,
+// hinter dem Zuschläge um 8,50 ct stehen, war das knapp die Hälfte. Diese Werte
+// schließen die Lücke.
 //
 // DATENHERKUNFT: Bundesnetzagentur, "Solaranlagen des ersten Segments —
 // Beendete Ausschreibungen / Statistiken", Spalte "durchschnittlicher,
@@ -218,7 +224,18 @@ export const FREIFLAECHE_AUSSCHREIBUNG_JAHRE: ReadonlyArray<AusschreibungsJahr> 
   { jahr: 2021, ct: 5.01 },
   { jahr: 2022, ct: 5.44 },
   { jahr: 2023, ct: 6.28 },
+  // 2024: 2.233,87 MW × 5,11 + 2.152,29 MW × 5,05 + 2.149,71 MW × 4,76
+  //       ÷ 6.535,87 MW = 4,975 ct.
   { jahr: 2024, ct: 4.98 },
+  // 2025 (am 18.08.2026 aus derselben BNetzA-Tabelle ergänzt): alle drei
+  // Gebotstermine des Jahres sind beendet und veröffentlicht —
+  //       2.638,39 MW × 4,66 + 2.271,48 MW × 4,84 + 2.340,77 MW × 5,00
+  //       ÷ 7.250,64 MW = 4,826 ct.
+  // Gewichtet ist mit der BEZUSCHLAGTEN Menge; mit der ausgeschriebenen kommt
+  // derselbe Wert heraus (4,826), weil alle drei Runden überzeichnet waren.
+  // Realitäts-Anker für Quelle UND Rechenweg: Dieselbe Rechnung reproduziert
+  // die schon vorher belegte Zeile 2024 zellgleich (4,975 → 4,98).
+  { jahr: 2025, ct: 4.83 },
 ];
 
 /**
@@ -234,6 +251,21 @@ export const FREIFLAECHE_AUSSCHREIBUNG_JAHRE: ReadonlyArray<AusschreibungsJahr> 
  * Ausschreibungsjahre X−2 und X−1: die beiden Jahrgänge an Zuschlägen, aus
  * denen ein in X ans Netz gegangener Park stammen kann.
  *
+ * DIE REGEL GILT FÜR JEDEN JAHRGANG AB 2015 — auch für den laufenden und die
+ * künftigen. Bis 08/2026 galt sie nur bis 2024, danach rechnete das heutige
+ * Ausschreibungsniveau (die Runden der letzten zwölf Monate). Das waren zwei
+ * Regeln nebeneinander, und die Reihe brach an der Nahtstelle um 18 % nach
+ * unten, ohne dass sich in der Sache etwas geändert hätte: Ein Park, der 2025
+ * ans Netz ging, hängt an Zuschlägen von 2023/2024 — genau wie einer von 2024
+ * an 2022/2023 hängt. Was heute zugeschlagen wird, steht hinter einem Park, der
+ * 2028 ans Netz geht, nicht hinter einem von 2025.
+ *
+ * Der Wortlaut ist am 18.08.2026 auf gesetze-im-internet.de/eeg_2014/__37e.html
+ * nachgelesen: Die 24-Monats-Frist gilt unverändert, auch für die jüngsten
+ * Jahrgänge (dazu 26 Monate für den Antrag auf Zahlungsberechtigung — eine
+ * materielle Ausschlussfrist, die die Realisierung noch weiter nach hinten
+ * schieben kann, nicht nach vorn).
+ *
  * DAS IST EINE BELEGT BEGRÜNDETE NÄHERUNG, KEINE GEMESSENE ZUORDNUNG. Wie sich
  * die Inbetriebnahmezeitpunkte innerhalb der 24 Monate verteilen, veröffentlicht
  * die Bundesnetzagentur nicht — sie weist Zuschläge je Gebotstermin aus, nicht
@@ -246,29 +278,79 @@ export const FREIFLAECHE_VERSATZ_JAHRE = 2;
 /** Erster Inbetriebnahme-Jahrgang, der aus einer Ausschreibung stammen kann. */
 export const FREIFLAECHE_ZUSCHLAG_AB = 2015;
 
-/** Letzter Jahrgang dieser Reihe — ab 2025 rechnet das heutige Niveau (FREIFLAECHE_AW_CT). */
-export const FREIFLAECHE_ZUSCHLAG_BIS = 2024;
+/** Jüngstes Ausschreibungsjahr, das vollständig belegt ist (alle Gebotstermine). */
+export const FREIFLAECHE_AUSSCHREIBUNG_LETZTES_JAHR =
+  FREIFLAECHE_AUSSCHREIBUNG_JAHRE[FREIFLAECHE_AUSSCHREIBUNG_JAHRE.length - 1].jahr;
 
 /**
- * Anzulegender Wert eines Freiflächen-Jahrgangs 2015–2024 in ct/kWh (brutto,
- * ohne Abzug der Vermarktungsgebühr) — sonst null.
+ * Letzter Jahrgang, für den BEIDE Vorjahre der Regel belegt sind (X−1 und X−2).
  *
- * Die Randjahrgänge 2015 und 2016 greifen auf das erste Ausschreibungsjahr
- * zurück: Vor 2015 gab es keine Ausschreibung, und ein Park, der 2015 ans Netz
- * ging, lief noch überwiegend unter dem gesetzlichen Satz. Ein belegter
- * gesetzlicher Freiflächensatz für 2015 liegt im Projekt nicht vor; das
- * Zuschlagsmittel 2015 (8,50 ct) liegt unter dem letzten belegten gesetzlichen
- * Satz (8,92 ct zum 01.07.2014, FREIFLAECHE_HISTORIE), den die Degression
- * weiter fallend fortschreibt — der Rückgriff schließt also an die Historie an
- * und irrt nach unten, nicht nach oben.
+ * KEINE Abbruchkante mehr: Jüngere Jahrgänge bekommen weiterhin einen
+ * Zuschlagswert, nur eben aus dem Randjahr (siehe freiflaecheZuschlagCt). Die
+ * Zahl sagt bloß, ab wann die Reihe auf dem Rand steht statt auf zwei belegten
+ * Jahren — abgeleitet, nicht getippt, damit sie beim Ergänzen eines
+ * Ausschreibungsjahres von selbst nachrückt.
  */
-export function freiflaecheZuschlagCt(jahrgang: number): number | null {
-  if (jahrgang < FREIFLAECHE_ZUSCHLAG_AB || jahrgang > FREIFLAECHE_ZUSCHLAG_BIS) return null;
+export const FREIFLAECHE_ZUSCHLAG_BIS = FREIFLAECHE_AUSSCHREIBUNG_LETZTES_JAHR + 1;
+
+/** Woraus der Zuschlagswert eines Jahrgangs gemittelt wurde. */
+export interface ZuschlagHerkunft {
+  /** Mittel der Ausschreibungsjahre in ct/kWh, brutto. */
+  ct: number;
+  /** Die Ausschreibungsjahre, aus denen gemittelt wurde (aufsteigend). */
+  jahre: number[];
+  /** true, wenn beide gesuchten Jahre (X−2, X−1) belegt sind — sonst Randjahr. */
+  vollstaendig: boolean;
+}
+
+/**
+ * Anzulegender Wert eines Freiflächen-Jahrgangs ab 2015 in ct/kWh (brutto, ohne
+ * Abzug der Vermarktungsgebühr) samt Herkunft — vor 2015 null (dort galt das
+ * Gesetz, siehe FREIFLAECHE_HISTORIE).
+ *
+ * EINE Regel, an beiden Rändern dieselbe: Gesucht sind die Ausschreibungsjahre
+ * X−2 und X−1; liegt eines davon außerhalb der belegten Reihe, wird auf deren
+ * Randjahr zurückgegriffen. Nichts wird fortgeschrieben, geschätzt oder aus
+ * einem anderen Niveau geliehen.
+ *
+ * · UNTERER RAND (Jahrgänge 2015/2016): Vor 2015 gab es keine Ausschreibung, und
+ *   ein Park, der 2015 ans Netz ging, lief noch überwiegend unter dem
+ *   gesetzlichen Satz. Ein belegter gesetzlicher Freiflächensatz für 2015 liegt
+ *   im Projekt nicht vor; das Zuschlagsmittel 2015 (8,50 ct) liegt unter dem
+ *   letzten belegten gesetzlichen Satz (8,92 ct zum 01.07.2014), den die
+ *   Degression weiter fallend fortschreibt — der Rückgriff schließt also an die
+ *   Historie an und irrt nach unten, nicht nach oben.
+ * · OBERER RAND (Jahrgänge ab FREIFLAECHE_ZUSCHLAG_BIS + 1): Ein Ausschreibungs-
+ *   jahr kommt erst in die Reihe, wenn ALLE seine Gebotstermine beendet und
+ *   veröffentlicht sind. Bis dahin bekommt ein noch jüngerer Jahrgang das
+ *   jüngste vollständige Jahr — das ist die letzte belegte Tatsache, während
+ *   ein Mittel aus einem halben Jahr eine erfundene Zahl wäre. Für die Spalte
+ *   ist das folgenlos, solange keine Anlage mit diesem Baujahr im Register
+ *   steht; sobald das Jahr komplett ist, rückt die Reihe von selbst nach.
+ */
+export function freiflaecheZuschlagHerkunft(jahrgang: number): ZuschlagHerkunft | null {
+  if (jahrgang < FREIFLAECHE_ZUSCHLAG_AB) return null;
   const erstesJahr = FREIFLAECHE_AUSSCHREIBUNG_JAHRE[0].jahr;
-  const werte = [jahrgang - FREIFLAECHE_VERSATZ_JAHRE, jahrgang - 1]
-    .map((j) => Math.max(j, erstesJahr))
+  const letztesJahr = FREIFLAECHE_AUSSCHREIBUNG_LETZTES_JAHR;
+
+  const gesucht = [jahrgang - FREIFLAECHE_VERSATZ_JAHRE, jahrgang - 1];
+  const jahre = Array.from(
+    new Set(gesucht.map((j) => Math.min(Math.max(j, erstesJahr), letztesJahr))),
+  ).sort((a, b) => a - b);
+
+  const werte = jahre
     .map((j) => FREIFLAECHE_AUSSCHREIBUNG_JAHRE.find((r) => r.jahr === j)?.ct)
     .filter((ct): ct is number => ct != null);
   if (werte.length === 0) return null;
-  return werte.reduce((s, c) => s + c, 0) / werte.length;
+
+  return {
+    ct: werte.reduce((s, c) => s + c, 0) / werte.length,
+    jahre,
+    vollstaendig: gesucht.every((j) => j >= erstesJahr && j <= letztesJahr),
+  };
+}
+
+/** Nur der Wert — für Aufrufer, die die Herkunft nicht brauchen. */
+export function freiflaecheZuschlagCt(jahrgang: number): number | null {
+  return freiflaecheZuschlagHerkunft(jahrgang)?.ct ?? null;
 }

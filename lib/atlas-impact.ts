@@ -24,7 +24,7 @@ import type { FeedInRates } from "./feedin-config";
 import { effectiveFeedInCtPerKwh, feedInEndIso, feedInRatesForCommissioning } from "./feedin-config";
 import type { AltFeedInRow } from "./feedin-archiv-alt";
 import { FEED_IN_ALT_START, FEED_IN_ARCHIV_ALT, altFeedInRatesFor, blendRoofRate } from "./feedin-archiv-alt";
-import { FREIFLAECHE_AW_CT, freiflaecheHistorieCt, freiflaecheZuschlagCt } from "./freiflaeche-config";
+import { FREIFLAECHE_AW_CT, freiflaecheHistorieCt, freiflaecheZuschlagHerkunft } from "./freiflaeche-config";
 import { ertragForRegionId } from "./bundesland-ertrag";
 import { fmtCtProKwh } from "./atlas-format";
 import { simulateSolarYear } from "./balkon-sim";
@@ -348,7 +348,7 @@ function jahrgangBasis(jahrgang: number): JahrgangBasis {
  *  · Dachanlagen über 100 kW in der alten Ära: Die Alt-Tabelle führt darüber
  *    keine Klasse, obwohl das Gesetz eine hatte (§ 33 Abs. 1 Nr. 3 EEG 2009).
  *    Solche Zellen bekommen den 100-kW-Satz — die einzige Abweichung nach oben.
- *  · Freiflächen der Jahrgänge 2015–2024 tragen den mittleren Zuschlagswert der
+ *  · Freiflächen ab Jahrgang 2015 tragen den mittleren Zuschlagswert der
  *    Ausschreibungen zwei Jahre vor ihrer Inbetriebnahme (§ 37e EEG, Begründung
  *    in lib/freiflaeche-config.ts). Wie sich die Inbetriebnahmen innerhalb der
  *    24-Monats-Frist verteilen, veröffentlicht die Behörde nicht — es ist eine
@@ -417,10 +417,12 @@ export function einspeiseCt(segment: string, jahrgang: number, kwpMittel?: numbe
  * Ausschreibung.
  *
  * Der Zuschlag fällt dabei VOR der Inbetriebnahme — bis zu 24 Monate (§ 37e
- * EEG). Die Jahrgänge 2015–2024 bekommen deshalb das Mittel der
- * Ausschreibungsjahre davor; die Regel und ihre Grenzen stehen in
- * lib/freiflaeche-config.ts. Ab 2025 rechnet das heutige Niveau, weil die dafür
- * maßgeblichen Runden noch gar nicht alle abgeschlossen sind.
+ * EEG, am 18.08.2026 im Wortlaut geprüft). JEDER Jahrgang ab 2015 bekommt
+ * deshalb das Mittel der Ausschreibungsjahre davor, der laufende und die
+ * künftigen eingeschlossen; die Regel und ihre Ränder stehen in
+ * lib/freiflaeche-config.ts. Bis 08/2026 galt sie nur bis 2024 und ab 2025
+ * rechnete das heutige Ausschreibungsniveau — zwei Regeln nebeneinander, und
+ * die Reihe brach an der Nahtstelle um 18 % nach unten.
  *
  * Die Vermarktungsgebühr geht in beiden Fällen ab (dieselbe Behandlung wie beim
  * heutigen Jahrgang): Wer einen Zuschlag hat, ist in der Direktvermarktung —
@@ -438,14 +440,25 @@ function freiflaecheSatz(jahrgang: number, alt: AltFeedInRow | null): { ct: numb
 
   // Bewusst NETTO beschriftet: Ausgegeben wird der Zuschlagswert MINUS
   // Vermarktungsgebühr, nicht der Zuschlagswert selbst.
-  const zuschlag = freiflaecheZuschlagCt(jahrgang);
+  //
+  // Der Hinweis sagt auch, WELCHE Ausschreibungsjahre den Wert tragen: Steht ein
+  // Jahrgang am Rand der belegten Reihe (2015/2016 unten, die jüngsten oben),
+  // sind es nicht die beiden Jahre davor, und ein Text, der das trotzdem
+  // behauptet, wäre falsch — dieselbe Fehlerklasse wie eine falsche Zahl.
+  const zuschlag = freiflaecheZuschlagHerkunft(jahrgang);
   if (zuschlag !== null) {
     return {
-      ct: Math.max(0, zuschlag - DIREKTVERMARKTUNG.gebuehrCtKwh),
-      hinweis: "mittlerer Zuschlagswert der Ausschreibungen zwei Jahre vor Inbetriebnahme, abzüglich Vermarktungsgebühr",
+      ct: Math.max(0, zuschlag.ct - DIREKTVERMARKTUNG.gebuehrCtKwh),
+      hinweis: zuschlag.vollstaendig
+        ? "mittlerer Zuschlagswert der Ausschreibungen zwei Jahre vor Inbetriebnahme, abzüglich Vermarktungsgebühr"
+        : `mittlerer Zuschlagswert der Ausschreibungen ${zuschlag.jahre.join(" und ")}, abzüglich Vermarktungsgebühr`,
     };
   }
 
+  // Rückfall ohne Jahrgangsbezug — erreichbar nur, wenn die Jahrgangs-Reihe
+  // leer wäre. Er steht als Netz da, nicht als zweite Regel: Solange
+  // FREIFLAECHE_AUSSCHREIBUNG_JAHRE Zeilen hat, trägt jeder Jahrgang ab 2015
+  // seinen eigenen Wert, und alles davor kommt aus Gesetz oder Alt-Tabelle.
   return {
     ct: Math.max(0, FREIFLAECHE_AW_CT - DIREKTVERMARKTUNG.gebuehrCtKwh),
     hinweis: "Zuschlagswert der Ausschreibung abzüglich Vermarktungsgebühr",

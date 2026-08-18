@@ -23,6 +23,7 @@ import { DEFAULT_PRICES } from "../prices-config";
 import { feedInRatesForCommissioning } from "../feedin-config";
 import { altFeedInRatesFor } from "../feedin-archiv-alt";
 import {
+  FREIFLAECHE_AUSSCHREIBUNG_JAHRE,
   FREIFLAECHE_AW_CT,
   FREIFLAECHE_ZUSCHLAG_AB,
   FREIFLAECHE_ZUSCHLAG_BIS,
@@ -430,11 +431,14 @@ describe("Stromwert nach Baujahr (Realitäts-Anker)", () => {
     expect(einspeiseCt("freiflaeche", 2016)).toBeGreaterThan(einspeiseCt("freiflaeche", 2020) * 1.4);
 
     // (4) Kein Jahrgang der Ausschreibungs-Ära liegt über dem letzten
-    //     GESETZLICHEN Satz (8,92 ct 2014) oder unter dem heutigen Niveau — die
-    //     Zuschläge lagen durchweg dazwischen.
+    //     GESETZLICHEN Satz (8,92 ct 2014) oder unter dem niedrigsten je
+    //     zugeschlagenen Einzelwert — die Zuschläge lagen durchweg dazwischen.
+    //     Untere Schranke unabhängig aus den BNetzA-Einzelrunden: Der
+    //     niedrigste mengengewichtete Rundenwert seit 2015 war 4,33 ct
+    //     (Gebotstermin 01.02.2018), netto also gut 4 ct.
     for (const ct of saetze) {
       expect(ct).toBeLessThan(einspeiseCt("freiflaeche", 2014));
-      expect(ct).toBeGreaterThan(einspeiseCt("freiflaeche", HEUTE));
+      expect(ct).toBeGreaterThan(4);
     }
 
     // (5) Die Vermarktungsgebühr geht ab — dieselbe Behandlung wie beim heutigen
@@ -497,10 +501,102 @@ describe("Stromwert nach Baujahr (Realitäts-Anker)", () => {
     // (BNetzA, 4,66–5,00 ct in den letzten vier Runden), nicht am Marktwert.
     expect(FREIFLAECHE_AW_CT).toBeGreaterThan(4.5);
     expect(FREIFLAECHE_AW_CT).toBeLessThan(5.1);
-    expect(einspeiseCt("freiflaeche", HEUTE)).toBeCloseTo(FREIFLAECHE_AW_CT - 0.3, 6);
+
+    // Ein Park, der 2026 ans Netz geht, hängt aber NICHT an den Zuschlägen von
+    // 2026, sondern an denen von 2024 und 2025 (§ 37e EEG: bis zu 24 Monate
+    // zwischen Zuschlagsbekanntgabe und Inbetriebnahme). Bis 08/2026 stand hier
+    // das heutige Niveau — die Reihe brach dadurch beim Jahrgang 2025 um 18 %
+    // nach unten.
+    //
+    // Nachgerechnet aus den veröffentlichten BNetzA-EINZELRUNDEN (bezuschlagte
+    // Menge in MW, mengengewichteter Zuschlagswert in ct/kWh), nicht aus der
+    // Jahrestabelle der Konfiguration — sonst prüft der Test seine eigene Zeile.
+    const runden: Record<number, ReadonlyArray<readonly [number, number]>> = {
+      2024: [
+        [2233.87, 5.11],
+        [2152.29, 5.05],
+        [2149.71, 4.76],
+      ],
+      2025: [
+        [2638.39, 4.66],
+        [2271.48, 4.84],
+        [2340.77, 5.0],
+      ],
+    };
+    const jahresmittel = (jahr: number) => {
+      const rs = runden[jahr];
+      return rs.reduce((s, [mw, ct]) => s + mw * ct, 0) / rs.reduce((s, [mw]) => s + mw, 0);
+    };
+    const erwartet2026 =
+      (jahresmittel(2024) + jahresmittel(2025)) / 2 - DIREKTVERMARKTUNG.gebuehrCtKwh;
+    // Toleranz, weil die Jahrestabelle die Jahresmittel auf zwei Stellen rundet.
+    expect(Math.abs(einspeiseCt("freiflaeche", 2026) - erwartet2026)).toBeLessThan(0.02);
 
     // Alte Parks lagen um ein Vielfaches darüber (2010: 25,02 ct Freifläche).
     expect(einspeiseCt("freiflaeche", 2010)).toBeGreaterThan(einspeiseCt("freiflaeche", HEUTE) * 4);
+  });
+
+  it("lässt die Jahrgangs-Reihe der Freiflächen nirgends springen", () => {
+    // DER Anker gegen die Fehlerklasse, die diese Reihe schon zweimal hatte:
+    // ein zweites Regelwerk am jungen Ende. Bis 08/2026 rechneten die Jahrgänge
+    // ab 2025 mit dem HEUTIGEN Ausschreibungsniveau statt mit dem Versatz —
+    // 4,92 · 5,56 · 4,55 ct für 2023 · 2024 · 2025, also ein Absturz um 18 % an
+    // einer Stelle, an der sich in der Sache nichts geändert hat.
+    //
+    // Geprüft wird gegen die AUSSCHREIBUNGSTABELLE, nicht gegen die
+    // Ausgabewerte: Jeder Jahrgang ist ein Mittel zweier benachbarter
+    // Ausschreibungsjahre, also kann der Abstand zweier benachbarter Jahrgänge
+    // den größten Abstand zweier benachbarter Ausschreibungsjahre nicht
+    // überschreiten. Tut er es doch, rechnet irgendwo eine zweite Regel mit.
+    const jahre = [...FREIFLAECHE_AUSSCHREIBUNG_JAHRE].sort((a, b) => a.jahr - b.jahr);
+
+    // Die Reihe muss aufsteigend stehen: Der obere Rand der Regel liest das
+    // letzte Element als jüngstes Jahr. Eine falsch einsortierte Zeile würde
+    // sonst still das Randjahr verstellen.
+    expect(FREIFLAECHE_AUSSCHREIBUNG_JAHRE.map((r) => r.jahr)).toEqual(jahre.map((r) => r.jahr));
+
+    const maxAusschreibungsSprung = Math.max(
+      ...jahre.slice(1).map((r, i) => Math.abs(r.ct - jahre[i].ct)),
+    );
+    expect(maxAusschreibungsSprung).toBeGreaterThan(0);
+
+    // Bis drei Jahre über das letzte belegte Ausschreibungsjahr hinaus: Die
+    // Regel darf für künftige Baujahre nicht ins Leere laufen (kein null, kein
+    // NaN, kein Sprung auf ein anderes Niveau).
+    const erstes = jahre[0].jahr;
+    const letztes = jahre[jahre.length - 1].jahr;
+    const ctVonJahr = (j: number) => jahre.find((r) => r.jahr === j)!.ct;
+
+    for (let j = FREIFLAECHE_ZUSCHLAG_AB; j <= letztes + 3; j++) {
+      const ct = einspeiseCt("freiflaeche", j);
+      expect(Number.isFinite(ct)).toBe(true);
+      expect(ct).toBeGreaterThan(0);
+
+      // (a) Die schärfere Schranke: Jeder Jahrgang muss INNERHALB der beiden
+      //     Ausschreibungsjahre liegen, aus denen seine Anlagen stammen können —
+      //     ein Mittelwert kann seine eigenen Summanden nicht verlassen. Genau
+      //     das verletzte die alte Fassung: Jahrgang 2025 stand bei 4,55 ct,
+      //     während seine Zuschlagsjahre 2023/2024 zwischen 4,68 und 5,98 ct
+      //     (netto) liegen. Der reine Sprungtest hätte das durchgelassen.
+      const fenster = [j - 2, j - 1].map((y) => Math.min(Math.max(y, erstes), letztes)).map(ctVonJahr);
+      expect(ct).toBeGreaterThanOrEqual(
+        Math.min(...fenster) - DIREKTVERMARKTUNG.gebuehrCtKwh - 1e-9,
+      );
+      expect(ct).toBeLessThanOrEqual(Math.max(...fenster) - DIREKTVERMARKTUNG.gebuehrCtKwh + 1e-9);
+
+      // (b) Und kein Abstand zwischen zwei benachbarten Baujahren ist größer
+      //     als der größte Abstand zweier benachbarter Ausschreibungsjahre.
+      if (j === FREIFLAECHE_ZUSCHLAG_AB) continue;
+      const sprung = Math.abs(ct - einspeiseCt("freiflaeche", j - 1));
+      expect(sprung).toBeLessThanOrEqual(maxAusschreibungsSprung + 1e-9);
+    }
+
+    // Und die Naht zum gesetzlichen Regime davor (2014 → 2015) hält dieselbe
+    // Schranke ein — dort wechselt nicht nur die Tabelle, sondern das
+    // Vergütungssystem.
+    expect(
+      Math.abs(einspeiseCt("freiflaeche", 2015) - einspeiseCt("freiflaeche", 2014)),
+    ).toBeLessThanOrEqual(maxAusschreibungsSprung);
   });
 
   it("lässt ein Steckersolargerät in jedem Jahrgang unvergütet", () => {
