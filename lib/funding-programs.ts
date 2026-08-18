@@ -1996,6 +1996,90 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     balkonPauschale: 150,
   },
 
+  "weinheim-effizienz": {
+    id: "weinheim-effizienz", name: "Zuschuss Gebäudehülle und Anlagentechnik",
+    traeger: "Stadt Weinheim", level: "kommune", region: "Weinheim",
+    bundesland: "Baden-Württemberg", agsCode: "08226096",
+    url: "https://www.weinheim.de/startseite/stadtthemen/foerderung.html",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Aufstockung der Bundesförderung für Gebäudehülle und Anlagentechnik — keine eigene PV-Förderung",
+    maxFoerderung: "max. 5.000 € je Gebäude",
+    rates: [
+      { label: "Gebäudehülle und Anlagentechnik (mit Wärmepumpe)", value: "max. 5.000 € je Gebäude" },
+      { label: "Hausanschluss ans Wärmenetz", value: "bis zu 1.000 €" },
+      { label: "Photovoltaik", value: "keine Förderung, nur kostenlose Beratung" },
+    ],
+    conditions: [
+      "Der Zuschuss stockt die Bundesförderung für effiziente Gebäude auf und steht nicht für sich",
+      "Für Photovoltaik und Balkonkraftwerke bietet die Stadt keine eigene Förderung, sondern nur eine kostenlose Beratung",
+    ],
+    combinableWith: BUND,
+    foerdert: ["waermepumpe"],
+    // Der Höchstbetrag gilt Gebäudehülle UND Anlagentechnik zusammen, also
+    // Dämmung und Wärmeerzeuger in einem Topf. Wieviel davon auf die Wärmepumpe
+    // entfällt, hängt am übrigen Vorhaben — das kann der Rechner nicht wissen.
+    // Bemerkenswert ist der Eintrag trotzdem: Es ist die erste kommunale
+    // Wärmepumpen-Förderung im Katalog, die überhaupt noch Anträge annimmt.
+  },
+
+  "ottobrunn-foerderprogramme": {
+    id: "ottobrunn-foerderprogramme", name: "Kommunale Förderprogramme Energie",
+    traeger: "Gemeinde Ottobrunn", level: "kommune", region: "Ottobrunn",
+    bundesland: "Bayern", agsCode: "09184136",
+    url: "https://www.ottobrunn.de/online-rathaus/buergerservice/foerderprogramme",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Investition bei Ost-/Westdächern, Balkonkraftwerk nach eingesparter Strommenge",
+    maxFoerderung: "max. 200 € fürs Balkonkraftwerk",
+    rates: [
+      { label: "Photovoltaik auf Ost- oder Westdach", value: "10 % der Investitionskosten" },
+      { label: "Balkonkraftwerk", value: "0,20 € je eingesparter kWh, max. 200 €" },
+    ],
+    conditions: [
+      "Der PV-Zuschuss gilt ausdrücklich Ost- und Westdächern, nicht der Südausrichtung",
+      "Ein Batteriespeicher wird nicht bezuschusst",
+      "Beim Balkonkraftwerk sind mindestens 10 % oder 75 kWh Jahreseinsparung nachzuweisen",
+      "Der Antrag ist vor Auftragserteilung zu stellen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    // Kein Rechenwert, und zwar zweimal aus verschiedenen Gründen: Der
+    // PV-Zuschuss gilt NUR Ost- und Westdächern — die Förderung an eine
+    // Dachausrichtung zu knüpfen kann das Modell nicht, und für ein Süddach
+    // wären 10 % schlicht falsch. Das Balkon-Geld bemisst sich an der
+    // eingesparten Strommenge, also am Verbrauchsverhalten und nicht an der
+    // Anlage. Beides sind sinnvolle Regeln der Gemeinde und für einen
+    // allgemeinen Rechner nicht abbildbar.
+  },
+
+  "feucht-klimaschutz": {
+    id: "feucht-klimaschutz", name: "Klimaschutz-Förderprogramme",
+    traeger: "Markt Feucht", level: "kommune", region: "Feucht",
+    bundesland: "Bayern", agsCode: "09574123",
+    url: "https://feucht.de/bauen-wirtschaft-umwelt/klimaschutz-foerderprogramme/foerderprogramme",
+    stand: "August 2026", status: "ausgeschoepft", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp und gestaffelt nach Speichergröße — Jahresmittel aufgebraucht",
+    maxFoerderung: "max. 1.000 € für die PV-Anlage",
+    rates: [
+      { label: "Photovoltaik", value: "150 € je kWp, max. 1.000 €" },
+      { label: "Speicher unter 4 kWh", value: "300 €" },
+      { label: "Speicher 4 bis 6 kWh", value: "400 €" },
+      { label: "Speicher 6 bis 8 kWh", value: "500 €" },
+      { label: "Speicher ab 8 kWh", value: "600 €" },
+    ],
+    conditions: [
+      "Die Mittel für das laufende Jahr sind ausgeschöpft; Anträge sind derzeit nicht möglich",
+      "Balkonkraftwerke sind nicht Teil des Programms",
+    ],
+    combinableWith: BUND,
+    // Sätze und Staffel sind vollständig belegt und ließen sich sofort rechnen —
+    // sie bleiben ohne Rechenwert, solange der Topf leer ist. Sobald der
+    // Haushalt wieder öffnet, sind es 150 €/kWp (max. 1.000 €) und die
+    // Speicherstaffel 300/400/500/600 €.
+  },
+
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {
