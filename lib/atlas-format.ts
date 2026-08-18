@@ -67,8 +67,29 @@ export const fmtMixLeistung = (kw: number): string => zusammen(mixLeistungTeile(
  * Auch das ist Peak-Leistung, nur geteilt durch die Einwohnerzahl — also Wp,
  * nicht W. Stand vorher an sechs Stellen als "W" da und wäre dieselbe stille
  * Falschaussage wie kW/kWp.
+ *
+ * Die Staffelung setzt erst bei 10.000 Wp ein, nicht wie sonst bei 1.000 — und
+ * das ist gemessen, nicht geschätzt (alle 10.742 Gemeinden mit Solarbestand,
+ * Stand 08/2026):
+ *
+ *   - 78 % liegen über 1.000 Wp, der Median bei 1.714 Wp. Eine Umschaltung dort
+ *     machte aus dem Normalfall „1,7 kWp" — und die Tabelle, in der diese Zahl
+ *     steht, ist eine Rangliste: 1.714 und 1.789 Wp wären dieselbe Anzeige bei
+ *     verschiedenen Plätzen. Dasselbe Argument wie bei batterieMittelTeile.
+ *   - Über 10.000 Wp liegen 6 %. Dort misst die Zahl keinen Hausbestand mehr,
+ *     sondern einen Solarpark geteilt durch ein Dorf; die Nachkommastelle in
+ *     kWp lässt 100 Wp Auflösung übrig, also höchstens 1 % des Werts.
+ *
+ * Ohne Staffelung lief die Spitze aus ihrer Spalte: Herbstmühle (25 Einwohner,
+ * 34,9 MWp) ergibt 1.395.922 Wp, und in der Ranglisten-Tabelle stieß diese Zahl
+ * ungetrennt an die der Nachbarspalte — „1.395.92211". Vollständig lesbar und
+ * trotzdem falsch, die teuerste Fehlerklasse dieses Projekts. Sieben Gemeinden
+ * sind sechs- oder siebenstellig, sie allein brauchen die Staffelung.
  */
-export const wattProKopfTeile = (w: number): Messwert => ({ value: nf(w), unit: "Wp" });
+export function wattProKopfTeile(w: number): Messwert {
+  if (w >= 10_000) return { value: dez(w / 1000, 1), unit: "kWp" };
+  return { value: nf(w), unit: "Wp" };
+}
 export const fmtWattProKopf = (w: number): string => zusammen(wattProKopfTeile(w));
 
 /** Speicherkapazität — kWh, ab vier Stellen MWh/GWh. */
