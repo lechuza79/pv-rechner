@@ -140,8 +140,13 @@ export function FundingRates({
               {einheit && !kurzeEinheit && (
                 <span style={{ display: "block", fontSize: "var(--font-size-caption)", color: v("--color-text-muted"), fontWeight: 400, marginTop: 2 }}>
                   {einheit}
+                  {/* Fester Platz für das „?": Der Knopf kommt erst mit der
+                      Hydration dazu — ohne reservierte Breite schob er die
+                      Einheit beim Erscheinen zur Seite. */}
                   {EINHEIT_ERKLAERT[einheit] && (
-                    <InfoTooltip title="Prozentpunkte" size={12} ariaLabel={`Was bedeutet ${einheit}?`}>{EINHEIT_ERKLAERT[einheit]}</InfoTooltip>
+                    <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 16, height: 16, verticalAlign: "middle", marginLeft: 3 }}>
+                      <InfoTooltip title="Prozentpunkte" size={12} ariaLabel={`Was bedeutet ${einheit}?`}>{EINHEIT_ERKLAERT[einheit]}</InfoTooltip>
+                    </span>
                   )}
                 </span>
               )}
