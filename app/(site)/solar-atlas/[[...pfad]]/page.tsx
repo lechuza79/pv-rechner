@@ -300,7 +300,14 @@ async function AtlasBody({
           {hatVergleichsgruppe ? `, verteilt auf ${nf(children.length)} ${kindWortGezaehlt}.` : "."}
           {wPerCapita !== null && (
             <> Das sind {nf(wPerCapita)} Watt Peak-Leistung je Einwohner.</>
-          )}
+          )}{" "}
+          {/* „Photovoltaik" stand bis 18.08.2026 in keinem sichtbaren Satz dieser Seite —
+              nur „Solaranlagen". Beide Wörter werden gesucht („photovoltaik bayern" 110
+              Suchen/Monat, „solaranlagen bayern" 50), und das Wort gehört hier ohnehin
+              hin: Der Satz sagt, woher die Zahlen kommen. Kein zweiter Satz nur für ein
+              Wort — er trägt die Herkunftsangabe, die vorher gar nicht dastand. */}
+          Alle Zahlen stammen aus dem Marktstammdatenregister, in dem jede
+          Photovoltaik-Anlage in Deutschland gemeldet sein muss.
         </p>
 
         <div style={S.section}>
