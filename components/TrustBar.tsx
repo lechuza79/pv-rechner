@@ -51,21 +51,34 @@ function MitBetonung({ text, betont }: { text: string; betont?: string }) {
 
 function TrustItem({ signal, onOeffnen }: { signal: TrustSignal; onOeffnen: () => void }) {
   const Icon = ICONS[signal.icon];
-  return (
-    <li>
-      <button type="button" className="trust-item" onClick={onOeffnen}>
-        <span className="trust-item-icon" aria-hidden="true">
-          <Icon size={17} color={v("--color-accent")} />
+  const inhalt = (
+    <>
+      <span className="trust-item-icon" aria-hidden="true">
+        <Icon size={17} color={v("--color-accent")} />
+      </span>
+      <span>
+        <span className="trust-item-title">{signal.titel}</span>
+        <span className="trust-item-text">
+          <MitBetonung text={signal.text} betont={signal.betont} />
         </span>
-        <span>
-          <span className="trust-item-title">{signal.titel}</span>
-          <span className="trust-item-text">
-            <MitBetonung text={signal.text} betont={signal.betont} />
+        {signal.mehr && (
+          <span className="trust-item-mehr">
+            Mehr erfahren
+            <IconArrowRight size={13} />
           </span>
-        </span>
-      </button>
-    </li>
+        )}
+      </span>
+    </>
   );
+
+  // Ohne Vertiefung ist der Punkt kein Knopf: Ein Klickziel, das ein Fenster
+  // öffnet und dort denselben Satz wiederholt, ist eine Enttäuschung — und vier
+  // gleich laute Einladungen entwerten einander.
+  return <li>{signal.mehr ? (
+    <button type="button" className="trust-item" onClick={onOeffnen}>{inhalt}</button>
+  ) : (
+    <div className="trust-item trust-item-still">{inhalt}</div>
+  )}</li>;
 }
 
 /**
@@ -101,11 +114,6 @@ export default function TrustBar() {
           <TrustItem key={s.titel} signal={s} onOeffnen={() => setOffen(true)} />
         ))}
       </ul>
-      <button type="button" className="trust-mehr" onClick={() => setOffen(true)}>
-        Mehr erfahren
-        <IconArrowRight size={14} />
-      </button>
-
       <Modal
         open={offen}
         onClose={() => setOffen(false)}

@@ -33,6 +33,13 @@ export interface TrustSignal {
   betont?: string;
   /** Ausführung im Modal: ein bis zwei Sätze, die den Punkt belegen. */
   detail: string;
+  /**
+   * Zeigt "Mehr erfahren" und macht den Punkt anklickbar. Bewusst NICHT bei
+   * jedem: Ein Punkt, dessen Satz schon alles sagt, führt sonst in ein Fenster,
+   * das ihn nur wiederholt — vier gleich laute Einladungen entwerten sich
+   * gegenseitig (Betreiber-Vorgabe 18.08.2026).
+   */
+  mehr?: boolean;
   /** Externer Beleg, im Modal verlinkt. Nur wo es einen gibt. */
   belegUrl?: string;
   /** Beschriftung des externen Belegs. */
@@ -53,74 +60,78 @@ export interface TrustSignal {
  */
 export const TRUST_SIGNALS: readonly TrustSignal[] = [
   {
-    titel: "An Forschungsdaten geprüft",
-    text: "Unsere Autarkie-Rechnung wird gegen das Referenzkennfeld der HTW Berlin nachgerechnet.",
+    titel: "Auf Basis von Forschungsdaten",
+    text: "Unsere Autarkie-Rechnung ist an den Simulationsdaten der HTW Berlin geeicht.",
     betont: "HTW Berlin",
+    mehr: true,
     detail:
-      "Die HTW Berlin hat 25.000 Anlagen-Konfigurationen minutengenau durchsimuliert. Unsere Stundensimulation muss dieses Kennfeld bei gleichem Tagverbrauch auf drei Prozentpunkte genau treffen — ein Test prüft das bei jeder Änderung am Rechenkern.",
+      "Die HTW Berlin hat 25.000 Anlagen-Konfigurationen minutengenau durchsimuliert. Unsere eigene Stundensimulation muss dieses Kennfeld bei gleichem Tagverbrauch auf drei Prozentpunkte genau treffen — ein Test prüft das bei jeder Änderung am Rechenkern.",
     belegUrl: "https://solar.htw-berlin.de/studien/",
     belegLabel: "Studien der HTW Berlin",
     href: "/methodik",
     icon: "check",
-    // NUR die Autarkie — der Satz nannte bis zum Audit am 17.08.2026 auch den
-    // Eigenverbrauch, und das war zu breit: AUTARKY_GRID (lib/constants.ts) ist
-    // ein Autarkie-Kennfeld, und der einzige externe Abgleich ist
-    // lib/__tests__/pv-sim.test.ts → "trifft das HTW-Referenzkennfeld bei
-    // gleichem Tagverbrauch (±3 pp)". Der Eigenverbrauch fürs Geld kommt aus
-    // calcEigenverbrauch (Power-Law) und hat KEINEN externen Anker; seine Tests
-    // prüfen Monotonie und Plausibilität, also die Rechnung gegen sich selbst.
-    // "Kalibriert an" ist eben nicht "rechnen wir nach".
+    // "geeicht an", NICHT "nach der Methodik berechnet": Wir rechnen mit einer
+    // EIGENEN Stundensimulation und prüfen deren Ergebnis gegen HTWs Kennfeld
+    // (AUTARKY_GRID in lib/constants.ts, Test in lib/__tests__/pv-sim.test.ts).
+    // Die Methodik der HTW zu übernehmen wäre etwas anderes und stimmt nicht.
+    //
+    // NUR die Autarkie — der Eigenverbrauch fürs Geld kommt aus
+    // calcEigenverbrauch (Power-Law) und hat keinen externen Anker.
     beleg: "lib/__tests__/pv-sim.test.ts + /methodik",
   },
   {
     titel: "Offizielle Datenquellen",
-    text: "Bundesnetzagentur, Fraunhofer ISE, EU-Kommission und weitere — jede einzeln ausgewiesen.",
-    betont: "jede einzeln ausgewiesen",
+    text: "Bundesnetzagentur, Fraunhofer ISE, EU-Kommission und weitere.",
+    betont: "und weitere",
+    mehr: true,
     detail:
       "Welche Quelle hinter einer Zahl steht, hängt vom Rechner ab: Der Wärmepumpen-Rechner stützt sich auf Verbraucherzentrale und KfW, der Klimarechner auf Wetterdienste und Gerätetests. Deshalb steht die Herkunft an jeder Größe einzeln statt als Liste vorneweg.",
     href: "/datenstand",
     icon: "quote",
-    // Die drei Namen sind zurück (Betreiber-Vorgabe 18.08.2026) — sie sind das,
-    // was den Punkt überprüfbar macht. Aber NICHT als abschließende Aufzählung
-    // und NICHT als "amtlich": Fraunhofer ISE ist ein privates
-    // Forschungsinstitut, und die Leiste steht auch unter dem Wärmepumpen- und
-    // Klimarechner, wo keine der drei eine Zahl trägt. "und weitere" plus der
-    // Zusatz "jede einzeln ausgewiesen" tragen genau diese Einschränkung.
+    // Die Namen sind das, was den Punkt überprüfbar macht — aber "und weitere"
+    // muss stehen bleiben: Die Leiste sitzt auch unter dem Wärmepumpen- und
+    // Klimarechner, wo keine der drei genannten Stellen eine Zahl trägt. Ohne
+    // den Zusatz wäre der Satz dort schlicht falsch. Deshalb ist er betont.
     beleg: "lib/data-sources.ts + Quellenzeile je Block auf /datenstand",
   },
   {
-    titel: "Regelmäßig nachgeprüft",
-    text: "Preise, Fördersätze und Rechtsstände prüfen wir regelmäßig gegen die Originalquellen nach.",
+    titel: "Immer aktuell",
+    text: "Preise, Fördersätze und Rechtsstände prüfen wir regelmäßig gegen die Originalquellen.",
     betont: "regelmäßig",
+    mehr: true,
     detail:
       "Jede Größe hat einen eigenen Prüfrhythmus — Rechtsstände täglich, Marktpreise monatlich, der CO₂-Preis jährlich. Ein gemeinsames Datum nennen wir bewusst nicht: Es würde den schnellsten Takt für den langsamsten Wert behaupten. Die Termine je Größe stehen unten.",
     href: "/datenstand",
     icon: "refresh",
-    // "regelmäßig" ist belegt, nicht behauptet: PRUEFSTAND (lib/pruefstand.ts)
-    // führt je Größe den zuständigen Wächter, seinen Rhythmus und die Frist —
-    // und `npm run stand:faellig` meldet, wenn einer davon stillsteht.
+    // "Immer aktuell" ist die Überschrift, der Satz darunter sagt, was wir
+    // dafür TUN (Betreiber-Vorgabe 18.08.2026). Diese Paarung trägt: Der Titel
+    // benennt das Ziel, der Satz die Handlung und ihre Grenze — "regelmäßig",
+    // nicht "täglich". Belegt ist beides durch PRUEFSTAND (lib/pruefstand.ts):
+    // Rhythmus und Frist je Größe, dazu `npm run stand:faellig`, das meldet,
+    // wenn ein Wächter stillsteht. Das Modal zeigt dieselbe Liste.
     //
-    // BEWUSST NICHT "immer aktuell" (Betreiber-Vorschlag 18.08.2026): Das wäre
-    // eine Zustandsbehauptung über jeden einzelnen Wert zu jedem Zeitpunkt. Die
-    // Wächter laufen nur, wenn der Rechner des Betreibers an ist — vom 09. bis
-    // 13.08.2026 lief fünf Tage keiner. "Regelmäßig nachprüfen" beschreibt, was
-    // wir tun; "immer aktuell" behauptet ein Ergebnis, für das wir nicht
-    // einstehen können.
+    // Der Titel darf NIE allein stehen: Ohne den Satz wäre er eine
+    // Zustandsbehauptung über jeden Wert zu jedem Zeitpunkt, und die Wächter
+    // laufen nur, wenn der Rechner des Betreibers an ist (09.–13.08.2026 lief
+    // fünf Tage keiner). Ein Test nagelt die Paarung fest.
     beleg: "lib/pruefstand.ts (Rhythmus + Frist je Größe), npm run stand:faellig",
   },
   {
     titel: "Ohne Anmeldung",
-    text: "Das Ergebnis erscheint sofort, die Berechnung läuft in deinem Browser — kein Konto, kein Verkaufskontakt.",
+    text: "Das Ergebnis der Rechner erscheint sofort, die Berechnung läuft in deinem Browser.",
     betont: "in deinem Browser",
     detail:
       "Die Rechenkerne laufen als JavaScript auf deinem Gerät. An unseren Server geht nur, was von außen kommen muss: die Postleitzahl für Standort-Ertrag und Wetter. Anlagengröße, Verbrauch und Ergebnis bleiben bei dir.",
     href: "/datenschutz",
     icon: "lock",
+    // KEIN "Mehr erfahren": Der Satz sagt bereits alles, was der Punkt zusagt.
+    // Wer es genauer wissen will, findet den Datenschutz im Fußzeilen-Menü
+    // direkt darunter.
+    //
     // Deckungsgleich mit der Datenschutzerklärung, Abschnitt "Nutzung ohne
-    // Registrierung": "Die eigentliche Berechnung läuft in deinem Browser."
-    // Bewusst NICHT "keine Daten verlassen dein Gerät" — die Postleitzahl geht
-    // für Wetter- und Ertragsdaten an unsere eigene Schnittstelle, das wäre eine
-    // absolute Aussage, die der eigenen Erklärung widerspricht.
+    // Registrierung". Bewusst NICHT "keine Daten verlassen dein Gerät" — die
+    // Postleitzahl geht für Wetter- und Ertragsdaten an unsere eigene
+    // Schnittstelle.
     beleg: "/datenschutz, Abschnitt Nutzung ohne Registrierung",
   },
 ] as const;

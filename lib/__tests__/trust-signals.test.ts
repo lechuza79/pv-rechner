@@ -156,12 +156,36 @@ describe("Vertrauens-Leiste", () => {
     // dieselbe Liste. Verboten bleiben die Wörter, die einen KONKRETEN Takt oder
     // einen Zustand behaupten — die Wächter laufen nur, wenn der Rechner des
     // Betreibers an ist (09.–13.08.2026 lief fünf Tage keiner).
-    it("behauptet keinen konkreten Takt und keinen Zustand", () => {
-      for (const wort of ["täglich", "stündlich", "immer aktuell", "stets aktuell", "lückenlos"]) {
+    it("behauptet keinen konkreten Takt", () => {
+      for (const wort of ["täglich", "stündlich", "wöchentlich", "lückenlos", "in echtzeit"]) {
         expect(
           alleTexte.toLowerCase(),
           `"${wort}" behauptet mehr, als die Wächter-Läufe hergeben`,
         ).not.toContain(wort);
+      }
+    });
+
+    // "Immer aktuell" ist als ÜBERSCHRIFT gewollt (Betreiber-Vorgabe
+    // 18.08.2026) — aber nur zusammen mit dem Satz darunter, der sagt, was wir
+    // dafür tun. Allein wäre die Überschrift eine Zustandsbehauptung über jeden
+    // Wert zu jedem Zeitpunkt; die Wächter laufen jedoch nur, wenn der Rechner
+    // des Betreibers an ist (09.–13.08.2026 lief fünf Tage keiner).
+    //
+    // Der Test hält deshalb die PAARUNG fest, nicht das Wort. Wer die
+    // Überschrift behält und den Satz umschreibt, bekommt Rot.
+    it("ein Aktualitäts-Versprechen im Titel wird vom Satz eingelöst", () => {
+      const versprechen = TRUST_SIGNALS.filter((s) =>
+        /aktuell|immer|stets/i.test(s.titel),
+      );
+      for (const s of versprechen) {
+        expect(
+          s.text.toLowerCase(),
+          `"${s.titel}" verspricht Aktualität, ohne zu sagen, was wir dafür tun`,
+        ).toMatch(/prüfen|geprüft|nachgeprüft/);
+        expect(
+          s.text.toLowerCase(),
+          `"${s.titel}" nennt keine Einschränkung — ohne "regelmäßig" o. Ä. ist es eine Zustandsbehauptung`,
+        ).toMatch(/regelmäßig|laufend/);
       }
     });
 
@@ -204,7 +228,9 @@ describe("Vertrauens-Leiste", () => {
       "sämtliche",
       "vollständig offen",
       "niemals",
-      "immer",
+      // "immer" steht NICHT mehr hier: "Immer aktuell" ist als Titel gewollt
+      // und wird vom Paarungs-Test oben abgesichert, der schärfer prüft als ein
+      // Wortverbot — er verlangt die Einlösung im Satz darunter.
       "100 %",
       "garantiert",
       "zu keiner Zeit",

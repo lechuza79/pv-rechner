@@ -572,9 +572,12 @@ export const globalStyles = `
   .trust-item-betont{font-weight:700;color:var(--color-text-secondary)}
   .trust-item:hover .trust-item-title{color:var(--color-accent)}
   .trust-item:focus-visible{outline:2px solid var(--color-accent);outline-offset:4px;border-radius:8px}
-  .trust-mehr{display:flex;align-items:center;gap:${space.sm}px;margin:${space.xxl}px auto 0;background:none;border:0;padding:${pad("sm", "md")};font:inherit;font-size:var(--font-size-small);font-weight:600;color:var(--color-accent);cursor:pointer}
-  .trust-mehr:hover{color:var(--color-accent-dark)}
-  .trust-mehr:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px;border-radius:8px}
+  /* "Mehr erfahren" sitzt AM PUNKT, nicht unter der Leiste: Es steht nur dort,
+     wo es hinter der Zusage auch etwas zu lesen gibt. Ein Punkt ohne den Hinweis
+     ist bewusst kein Knopf (.trust-item-still). */
+  .trust-item-mehr{display:inline-flex;align-items:center;gap:${space.xs}px;margin-top:${space.sm}px;font-size:var(--font-size-small);font-weight:600;color:var(--color-accent)}
+  .trust-item:hover .trust-item-mehr{color:var(--color-accent-dark)}
+  .trust-item-still{cursor:default}
   /* Modal-Inhalt: je Punkt ein Abschnitt, darunter die Prüftermine. */
   .trust-modal-punkt{padding-top:${space.xl}px;border-top:1px solid var(--color-border)}
   .trust-modal-punkt:first-child{padding-top:0;border-top:0}
