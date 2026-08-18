@@ -817,6 +817,61 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+  // ── Ausgelaufene Programme: aufgenommen, weil das eine Auskunft ist ────────
+  //
+  // Entscheidung des Betreibers (17.08.2026): Auch beendete oder ausgesetzte
+  // Programme gehören in den Katalog. Wer in Waiblingen nach Förderung sucht,
+  // erfährt so „gab es, ist geschlossen" statt gar nichts — und der Seiten-
+  // Wächter bemerkt es, wenn die Stadt neu auflegt. Sie tragen bewusst KEINEN
+  // strukturierten Satz: Es gibt nichts abzuziehen.
+  "ludwigshafen-kipki": {
+    id: "ludwigshafen-kipki", name: "Förderprogramme für Bürger (KIPKI)",
+    traeger: "Stadt Ludwigshafen am Rhein", level: "kommune", region: "Ludwigshafen am Rhein",
+    bundesland: "Rheinland-Pfalz", agsCode: "07314",
+    url: "https://ludwigshafen.de/standort-mit-zukunft/klima/foerderprogramme",
+    stand: "August 2026", status: "eingestellt", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Beendet — gefördert wurden Balkonkraftwerke sowie Dach- und Fassadenbegrünung",
+    rates: [{ label: "Balkonkraftwerke", value: "Programm beendet" }],
+    conditions: [
+      "Die Stadt hat die Förderprogramme für Bürgerinnen und Bürger beendet",
+      "Gefördert wurden aus Landesmitteln (KIPKI) unter anderem private Balkonkraftwerke",
+      "Eine Dach-Photovoltaikanlage wurde auch davor nicht bezuschusst",
+    ],
+    combinableWith: BUND,
+  },
+  "waiblingen-klimaschutz": {
+    id: "waiblingen-klimaschutz", name: "Städtisches Förderprogramm Klimaschutz",
+    traeger: "Stadt Waiblingen", level: "kommune", region: "Waiblingen",
+    bundesland: "Baden-Württemberg", agsCode: "08119079",
+    url: "https://www.waiblingen.de/de/Die-Stadt/Unsere-Stadt/Nachhaltigkeit-Umwelt/Energie-Klimaschutz/Foerderprogramm-Klimaschutz",
+    stand: "August 2026", status: "pausiert", capped: true, verified: true,
+    eligibility: ["gewerblich"],
+    coveredCosts: "Geschlossen — der Photovoltaik-Teil war eine Beratung für Unternehmen, kein Zuschuss zur Anlage",
+    rates: [{ label: "Photovoltaik-Beratung für Unternehmen", value: "Anträge seit 24.06.2026 nicht mehr möglich" }],
+    conditions: [
+      "Der Gemeinderat hat das Förderprogramm Klimaschutz zum 24. Juni 2026 geschlossen",
+      "Über eine Fortführung wird im Haushaltsplanverfahren beraten",
+      "Der Photovoltaik-Baustein förderte eine Beratung für Unternehmen (Firmensitz in Waiblingen, Dachfläche ab 200 m²), nicht die Anlage selbst",
+    ],
+    combinableWith: BUND,
+  },
+  "herne-klimafoerderung": {
+    id: "herne-klimafoerderung", name: "Förderprogramme Klimaschutz",
+    traeger: "Stadt Herne", level: "kommune", region: "Herne",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05916",
+    url: "https://www.herne.de/Stadt-und-Leben/Klima/Foerderprogramme/",
+    stand: "August 2026", status: "pausiert", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Wechselt jährlich — für 2026 sind Balkonkraftwerke und Speicher angekündigt, aber noch nicht beschlossen",
+    rates: [{ label: "Balkonkraftwerk und Speicher", value: "für 2026 geplant, Konditionen offen" }],
+    conditions: [
+      "Die Stadt wechselt die Förderungen jedes Jahr je nach verfügbaren Mitteln und Nachfrage",
+      "Photovoltaik und Speicher wurden in früheren Jahren gefördert, diese Programme sind ausgelaufen",
+      "Für 2026 sind Stecker-PV-Geräte und Speicher angekündigt — Beträge und Antragsfenster standen bei der Prüfung noch nicht fest",
+    ],
+    combinableWith: BUND,
+  },
   "wolfsburg-pv": {
     id: "wolfsburg-pv", name: "Förderung der Solarstromerzeugung",
     traeger: "Stadt Wolfsburg", level: "kommune", region: "Wolfsburg", bundesland: "Niedersachsen", agsCode: "03103",

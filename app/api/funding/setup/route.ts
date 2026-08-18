@@ -97,7 +97,13 @@ export async function GET(req: NextRequest) {
       data: p,
       source_url: p.url,
       confidence: p.verified ? "high" : "low",
-      archived: p.status === "eingestellt",
+      // NICHT mehr aus dem Status ableiten (17.08.2026, Entscheidung des
+      // Betreibers): Ausgelaufene Programme sollen aufgenommen und WEITER
+      // GEPRÜFT werden — "gab es, ist beendet" ist für jemanden vor Ort eine
+      // echte Auskunft, und wir merken es, wenn die Stadt es neu auflegt.
+      // `archived` hieß bisher faktisch "Programm beendet" und schloss die Zeile
+      // vom Seiten-Wächter aus; es bedeutet jetzt nur noch "Eintrag entfernt".
+      archived: false,
     }));
     const { error: se } = await supabase.from("funding_programs").upsert(rows);
     if (se) results.push({ step: resync ? "resync" : "seed", status: "error", error: se.message });
