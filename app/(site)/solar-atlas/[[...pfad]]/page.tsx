@@ -26,7 +26,7 @@ import {
   currentYear,
   type AtlasRegion,
 } from "../../../../lib/atlas";
-import { fmtPvLeistung as fmtLeistung, pvLeistungTeile, wattProKopfTeile } from "../../../../lib/atlas-format";
+import { pvLeistungTeile, wattProKopfTeile } from "../../../../lib/atlas-format";
 import { ortPhrase, childNoun } from "../../../../lib/atlas-orte";
 import { rankingKategorienGruppiert } from "../../../../lib/atlas-ranking";
 import { getRegionAtlasData } from "../../../../lib/mastr-data";
@@ -232,6 +232,9 @@ async function AtlasBody({
   const kpiRefs = refData
     .filter((r) => r.pop)
     .map((r) => ({ key: r.key, name: r.name, perCap: perCapOf(r.atlas, r.pop) }));
+  // Zahl und Einheit getrennt, damit im Einstiegssatz nur die EINHEIT den
+  // Glossarbegriff tragen kann (siehe dort). Dieselbe Quelle wie die Kachel.
+  const leistungTeile = pvLeistungTeile(atlas.solar.total_kwp);
   const kpiTiles = [
     { label: "Solaranlagen", value: nf(atlas.solar.total_count), metric: "count" },
     { label: "Installiert", ...pvLeistungTeile(atlas.solar.total_kwp), metric: "kwp" },
@@ -296,18 +299,27 @@ async function AtlasBody({
         <h1 style={S.h1}>{headline(region)}</h1>
         <p style={S.intro}>
           <strong style={S.strong}>{nf(atlas.solar.total_count)} Solaranlagen</strong> mit zusammen{" "}
-          <strong style={S.strong}>{fmtLeistung(atlas.solar.total_kwp)}</strong> installierter Leistung
+          {/* Die EINHEIT trägt den Glossarbegriff, nicht die Zahl: „34" ist kein Begriff,
+              und ein Link um den Zahlenwert sieht aus wie ein Klickziel für die Zahl.
+              Möglich wird die Trennung durch pvLeistungTeile() — dieselbe Quelle wie
+              fmtPvLeistung, nur getrennt abrufbar (CLAUDE.md: „Zahl und Einheit: eine
+              Quelle, aber getrennt abrufbar"). Hier ist die erste Nennung einer
+              Peak-Einheit auf der Seite, deshalb hängt der Begriff hier und nicht
+              weiter unten am Watt Peak je Einwohner. */}
+          <strong style={S.strong}>
+            {leistungTeile.value}{" "}
+            <GlossaryTerm id="kwp">{leistungTeile.unit}</GlossaryTerm>
+          </strong>{" "}
+          installierter Leistung
           sind {ortPhrase(region)} in Betrieb
           {hatVergleichsgruppe ? `, verteilt auf ${nf(children.length)} ${kindWortGezaehlt}.` : "."}
           {wPerCapita !== null && (
             <>
               {" "}
-              Das sind {nf(wPerCapita)}{" "}
-              {/* Wp und kWp sind dieselbe Größe in verschiedenen Vorsilben, und sie ist
-                  die am häufigsten missverstandene auf dieser Seite: Peak-Leistung ist
-                  nicht die Strommenge. Der Glossar-Baustein zeigt die Erklärung beim
-                  Überfahren und nur bei der ERSTEN Nennung je Seite. */}
-              <GlossaryTerm id="kwp">Watt Peak-Leistung</GlossaryTerm> je Einwohner.
+              {/* Zweite Nennung derselben Größe — der Baustein stellt sie von selbst
+                  als reinen Text dar (Erstnennung oben an der Einheit). Deshalb steht
+                  hier bewusst KEIN zweiter Begriff. */}
+              Das sind {nf(wPerCapita)} Watt Peak-Leistung je Einwohner.
             </>
           )}{" "}
           {/* „Photovoltaik" stand bis 18.08.2026 in keinem sichtbaren Satz dieser Seite —
