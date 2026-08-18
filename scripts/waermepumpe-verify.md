@@ -99,6 +99,48 @@ zusätzlich in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
   über 20 Jahre 2.200 € gegen die Wärmepumpe, und die fossile Seite hinge weiter
   an der alten Quelle. Beim nächsten Lauf beide Seiten aus derselben Quelle neu
   belegen oder den Befund als Entscheidung vorlegen.
+- **OFFEN (bis 01/2027): Nutzungsgrad einer NEU eingebauten Ölheizung.** Für Gas
+  trennt `WP_FUEL_OPTIONS` drei Fälle (neu 0,95 · vorhanden 0,90 · alt 0,80), für
+  Öl gibt es nur eine Zahl — **0,85** —, und die beschreibt laut `lib/calc.ts`
+  ausdrücklich die *vorhandene* Anlage. Sie steht damit an der neu eingebauten:
+  Der Rechner verbrennt in der fossilen Referenz mehr Öl, als ein heute
+  eingebauter Brennwertkessel bräuchte, und das geht **zugunsten der Wärmepumpe**
+  (Council 18.08.2026: rund 3.500 € über 20 Jahre, 140 m² teilsaniert). Deshalb
+  fehlt auch der Bestands-Eintrag für Öl — ein zweiter Eintrag mit derselben Zahl
+  wäre eine Dublette, kein zweiter Fall; Folge: Wer die Anschaffung auf 0 setzt,
+  rutscht von Öl auf Gas.
+  **Eine Sackgasse ist geprüft und dokumentiert — nicht noch einmal gehen.** Der
+  Council-Lauf vom 18.08.2026 wollte den Wert aus IWU Darmstadt, „Energetische
+  Kenngrößen für Heizungsanlagen im Bestand", Tab. 3 ableiten (Volltext liegt im
+  Repo: `docs/quellen/IWU_Energetische-Kenngroessen-Heizungsanlagen-Bestand.pdf`).
+  Ein adversarialer Prüfer hat die Herleitung zerlegt, jeder Punkt am Dokument
+  nachgesehen und bestätigt:
+  - **Die Spalten sind Baujahre** (70er / 80er / 90er Jahre), keine Gerätevarianten.
+    Die vermeintliche „Öl-Brennwert 0,94" ist der Kessel der **80er Jahre**; für
+    einen 2026 eingebauten gibt es dort überhaupt keine Spalte. Das Dokument ist
+    vom **1. November 2002** und handelt ausdrücklich vom Bestand 1970–1999.
+  - **Die Größe ist eine andere:** Tab. 3 nennt den 30 %-**Teillast**wirkungsgrad
+    bei der jeweiligen mittleren Kesseltemperatur (Brennwert: 30 °C, also
+    Fußbodenheizung). Unser Modell braucht den Jahresnutzungsgrad, und die
+    Referenzheizung im Bestand hängt meist an alten Heizkörpern (~50 °C) —
+    nach dem Modell im Anhang des Dokuments rund 3 Punkte Unterschied.
+  - **Die Bezugsgröße passt nicht zusammen:** Tab. 3 rechnet auf Heizwert (Hi;
+    nur so ist Gas-Brennwert 1,01 möglich), unser Gaspreis ist ein
+    Abrechnungspreis auf Brennwert (Hs), Heizöl läuft dagegen üblicherweise auf Hi.
+  - **Und die angebliche Regel „Quelle minus 0,02" gibt es nicht:** `0.95` steht
+    seit dem ersten Wärmepumpen-Commit (74b34c9, 14.04.2026) im Code, vier Monate
+    bevor diese Quelle im Repo lag; auf den Altkessel-Wert 0,80 wäre der Abschlag
+    ohnehin nie angewandt worden. Das war ein Handfaktor mit nachgereichter
+    Begründung — genau das, was Regel 5 des Gates verbietet.
+  **Was der nächste Lauf wirklich braucht:** einen **Jahresnutzungsgrad bzw. eine
+  Erzeugeraufwandszahl** für einen heute neu eingebauten Öl-Brennwertkessel, auf
+  derselben Bezugsgröße wie unser Ölpreis, möglichst nach Auslegungstemperatur
+  getrennt. Erste Adresse ist **DIN V 18599-5** (die Norm, auf die das GEG verweist;
+  DIN V 4701-10 ist abgelöst), hilfsweise Normnutzungsgrade nach DIN 4702-8 /
+  EN 15502 aus Herstellerunterlagen oder BDH. Kommst du an keine heran: melden,
+  nicht schätzen. Und **bei der Gelegenheit die Bezugsgröße je Brennstoff dort
+  dokumentieren, wo `FUEL_PRICE` steht** — solange Gas auf Hs und Öl auf Hi
+  gerechnet wird, ist jeder gemeinsame Auf- oder Abschlag über beide hinweg falsch.
 - **OFFEN (bis 01/2027): Wartungskosten Heizöl.** `gasMaintenance` gilt aktuell
   für Gas UND Öl. Der Lauf vom 17.08.2026 hat auch in der neuen VZ-Auswertung
   keine getrennten Öl-Wartungskosten gefunden — die Gleichsetzung bleibt, der

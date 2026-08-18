@@ -118,7 +118,7 @@ tagQuote 0.30 ≈ HTW Standard-Profil, andere Werte skaliert nach Nutzungsprofil
 
 **Kostenschätzung (automatisch, manuell überschreibbar):** Preise werden monatlich via Cron von taptaphome.com (vormals solaranlagen-portal.com, DAA GmbH) gescrapt und in Supabase (`market_prices`) gespeichert. Admin-UI `/admin/prices`. Fallback-Defaults in `lib/prices-config.ts`; gerundet auf 500 €.
 
-**Amortisation:** 25 Jahre, Degradation 0,5 %/Jahr, Szenarien Strompreis +1 / +3 / +5 % p. a. mit EV-Delta −5 / 0 / +5 %.
+**Amortisation:** 25 Jahre, Degradation 0,5 %/Jahr, Szenarien Strompreis +1 / +2 / +5 % p. a. mit EV-Delta −5 / 0 / +5 %.
 
 **Einspeisevergütung (Regeln — die Sätze selbst stehen in `lib/feedin-config.ts`, sichtbar auf `/datenstand`):**
 - Vier Sätze (Teil/Voll × ≤10/>10 kWp), gewichteter Mischsatz bei Anlagen >10 kWp. 3-State im Ergebnis: Aus / Teil / Voll (auto-berechnet, manuell überschreibbar).
@@ -183,11 +183,11 @@ tagQuote 0.30 ≈ HTW Standard-Profil, andere Werte skaliert nach Nutzungsprofil
 | **Gebäude der Wärmepumpe** (Haustyp, Fläche, Dämmung, Heizsystem) | UI immer `components/GebaeudeField.tsx`, Feldliste `GEBAEUDE_FIELDS` | Den **Haustyp** weglassen. Der Empfehlungs-Flow tat das bis 07.08.2026 und rechnete jedes Haus als freistehend — beim Reihenmittelhaus 22 % zu viel Heizwärme. Der Haustyp der Dach-Frage (`HAUSTYPEN`, Ein-/Mehrfamilienhaus für die Dachfläche) ist eine ANDERE Größe als `HAUSTYP_WP` (geteilte Wände) und taugt nicht als Ersatz |
 | **Dämmzustand / Heizwärmebedarf** | `INSULATION_BESTAND` / `INSULATION_NEUBAU` (`lib/constants.ts`) — einzige Quelle für den Jahres-**Norm-Bedarf** (`specKwh`, mit `art`) **und** die spezifische Heizlast (`heatLoadW`); WP- und Klima-Config leiten daraus ab (Klima zusätzlich × `heatTransitionShare`) | Zahlen doppelt pflegen (stand bis 28.07.2026 so im Code) — deshalb werden diese Werte im **Klima-Runbook bewusst nicht gepflegt** |
 | **Heizenergie fürs GELD** | `verbrauchAusBedarf` (`lib/heat-consumption.ts`) — der Norm-Bedarf wird in den **erwarteten realen Verbrauch** umgerechnet, bevor irgendetwas Geld kostet | Den Norm-Bedarf direkt in eine Kostenrechnung stecken. Genau das tat der WP-Rechner bis 31.07.2026: ~250 statt 160 kWh/m²·a Gas für einen unsanierten Altbau |
-| **Strompreis + Anstieg** | `usePrices()` / `DEFAULT_PRICES` → `electricityPrice`, `electricityIncrease` (3 %/a) | Eigenen Preispfad annehmen oder „konstant" rechnen |
+| **Strompreis + Anstieg** | `usePrices()` / `DEFAULT_PRICES` → `electricityPrice`, `electricityIncrease` (2 %/a) | Eigenen Preispfad annehmen oder „konstant" rechnen |
 | **Erlös je eingespeister kWh über die Laufzeit** | `einspeiseVerlauf` (`lib/einspeise-regime.ts`) → als `einspeiseModell` in `calc()`. Heute = fester Satz × 20 J.; Entwurf ab 2027 = Übergangszahlung → Markt (+ Bonus) | Den Satz als eine Zahl behandeln. Ab 2027 ist er je Jahr ein anderer |
 | **Börsenerlös für Solarstrom** | `lib/marktwert-config.ts`: Niveau (amtlicher Marktwert Solar, bei null gekappt) × Preisform über Monat × Stunde | Mit dem mittleren Börsenpreis rechnen — der liegt weit über dem, was Solarstrom erzielt |
 | **Wert des EIGENEN Einspeiseprofils** | `profilFaktorAus(sim)` — gewichtete Einspeisung ÷ gewichtete Erzeugung aus derselben Stundensimulation | Gegen das nationale Solarprofil normieren (unser Referenzjahr ≠ deutsches Wetterjahr → ~8 % geschenkt) |
-| **Szenarien** | `SCENARIOS` (`lib/constants.ts`, ±1/3/5 %) | Eigene Spannen |
+| **Szenarien** | `SCENARIOS` (`lib/constants.ts`, +1/+2/+5 %) | Eigene Spannen |
 | **CO₂-Preispfad** | `lib/co2-config.ts` | Eigene Pfad-Tabelle |
 | **CO₂ Netzstrom** | `gridCo2PerKwh` (WP-/Klima-/Balkon-Config identisch) | Abweichender Faktor je Rechner |
 | **Degradation / Laufzeit** | `DEGRAD`, `YEARS` (`lib/constants.ts`) | Eigene Werte |

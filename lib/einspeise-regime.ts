@@ -183,6 +183,21 @@ export function einspeiseVerlauf(input: RegimeInput): RegimeJahr[] {
   return out;
 }
 
+/**
+ * Trägt sich die Direktvermarktung in diesem Jahr überhaupt?
+ *
+ * Der Erlösverlauf kennt nur den Satz je Kilowattstunde, nicht die Menge — ob
+ * die feste Grundgebühr durch den Erlös gedeckt ist, weiß erst die Geldrechnung
+ * (`calc`). Die REGEL steht trotzdem hier, bei den übrigen Regeln zur
+ * Vermarktung: Niemand schließt einen Vertrag, der ihn mehr kostet, als er
+ * einbringt — dieselbe Überlegung, die oben schon den Satz bei null kappt.
+ *
+ * Beide Beträge in Euro für dasselbe Betriebsjahr.
+ */
+export function vermarktungLohnt(erloesEuro: number, fixkostenEuro: number): boolean {
+  return erloesEuro > fixkostenEuro;
+}
+
 /** Mittlerer Erlös über die Laufzeit in ct/kWh — die eine Zahl für die Kachel. */
 export function mittlererSatzCt(verlauf: RegimeJahr[]): number {
   if (!verlauf.length) return 0;
