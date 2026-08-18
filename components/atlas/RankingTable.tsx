@@ -61,30 +61,44 @@ type Row = {
   evAnteil: number | null;
 };
 
-const COLUMNS: { key: Metric; label: string; hint: string }[] = [
+/**
+ * Die Wertspalten. `breite` ist die im Browser gemessene Breite der
+ * ÜBERSCHRIFT samt „?"-Knopf, aufgerundet — nicht die des Werts: Seit Zahl und
+ * Einheit übereinander stehen, ist der Kopf das Breiteste in der Spalte. Er
+ * muss einzeilig bleiben, sonst zieht er die ganze Kopfzeile auf.
+ * Einzige Ausnahme ist „Anlagen" (74 statt gemessener 57): Dort ist die Zahl
+ * breiter als der Kopf, weil sie als einzige der Tabelle ungestaffelt bis zu
+ * siebenstellig wird („1.399.105").
+ */
+const COLUMNS: { key: Metric; label: string; hint: string; breite: number }[] = [
   {
     key: "count",
     label: "Anlagen",
+    breite: 74,
     hint: "Solaranlagen in Betrieb. Ein Balkonkraftwerk zählt wie eine Dachanlage — die Zahl sagt, wie viele mitmachen, nicht wie viel Leistung steht.",
   },
   {
     key: "kwp",
     label: "Leistung",
+    breite: 61,
     hint: "Installierte Spitzenleistung zusammen. Ein Einfamilienhaus liegt typisch bei 10 kWp, ein Freiflächen-Park bei mehreren Tausend.",
   },
   {
     key: "perCapita",
     label: "Pro Kopf",
+    breite: 61,
     hint: "Installierte Leistung je Einwohner. Macht große und kleine Gemeinden vergleichbar — Gemeinden mit viel Freifläche liegen hier zwangsläufig vorn.",
   },
   {
     key: "co2",
     label: "CO₂ gespart",
+    breite: 80,
     hint: `Vermiedenes CO₂ pro Jahr, rechnerisch: erzeugter Solarstrom mal ${fmtCo2FaktorKg(ATLAS_GRID_CO2)}. Bewusst konservativ — der amtliche UBA-Vermeidungsfaktor für Photovoltaik liegt höher.`,
   },
   {
     key: "wert",
     label: "Stromwert",
+    breite: 72,
     // Der Text steht als eigene Komponente weiter unten — er zählt die Sätze
     // je Anlagenart auf und ist deshalb kein einzelner Satz.
     hint: "",
@@ -92,6 +106,7 @@ const COLUMNS: { key: Metric; label: string; hint: string }[] = [
   {
     key: "eigenverbrauch",
     label: "Eigenverbrauch",
+    breite: 98,
     // Der Text steht als eigene Komponente weiter unten — er muss sagen, dass
     // die Zahl gerechnet und nicht gemessen ist, und woraus sie entsteht.
     hint: "",
@@ -103,6 +118,7 @@ const COLUMNS: { key: Metric; label: string; hint: string }[] = [
     // begründen es mit „wie auf der Atlas-Seite" — die Kürzung aus Platzgründen
     // hatte diese Begründung stillschweigend falsch gemacht.
     label: "Batterien",
+    breite: 65,
     hint: "Nutzbare Kapazität der Batteriespeicher, nicht ihre Leistung. Eine Hausbatterie hält typisch 5 bis 15 kWh. Pumpspeicher sind nicht enthalten.",
   },
 ];
@@ -171,7 +187,16 @@ function valueOf(row: Row, m: Sort): number | null {
   return row[m] as number;
 }
 
-/** Rank movement, sized to sit inline with the rank number beside it. */
+/**
+ * Rangbewegung — steht UNTER der Platzziffer, nicht daneben.
+ *
+ * Nebeneinander brauchte die Spalte „199." plus Pfeil plus zwei Ziffern, also
+ * rund 57 px; sie ist 30 breit, und alles darüber verschwand unter der
+ * mitlaufenden Namensspalte — die Veränderung war je nach Liste halb
+ * abgeschnitten. Untereinander bestimmt die breitere der beiden Angaben die
+ * Spalte (29 px), und die Zelle ist genauso gebaut wie jede andere der Tabelle:
+ * Hauptangabe oben, kleine Zusatzangabe darunter.
+ */
 function RankDelta({ value, sinceYear, onAccent = false }: { value: number | null; sinceYear: number; onAccent?: boolean }) {
   if (value === null || value === 0) return null;
   const up = value > 0;
@@ -183,7 +208,7 @@ function RankDelta({ value, sinceYear, onAccent = false }: { value: number | nul
       // Richtung, grün auf Blau würde untergehen.
       style={{ ...S.delta, color: onAccent ? v("--color-text-on-accent") : up ? v("--color-positive") : v("--color-negative") }}
     >
-      <Icon size={9} />
+      <Icon size={8} />
       {Math.abs(value)}
     </span>
   );
@@ -227,21 +252,46 @@ export default function RankingTable({
   // The floating row lives outside the horizontal scroller (see below) and has to
   // be shifted by hand to stay under the columns it belongs to.
   const [scrollLeft, setScrollLeft] = useState(0);
+  // Wie weit sich überhaupt noch scrollen lässt — Grundlage für den Verlauf an
+  // der rechten Kante („hier geht es weiter"). Er darf NUR erscheinen, solange
+  // rechts wirklich noch etwas liegt; sonst behauptet er etwas.
+  const [scrollRest, setScrollRest] = useState(0);
+  // Welcher Ortsname gerade ausgeklappt ist (nur einer — siehe rowCells).
+  const [nameOffen, setNameOffen] = useState<string | null>(null);
   // Läuft die Tabelle in diesem Fenster überhaupt über? Davon hängt beides ab:
   // der Tab-Stopp am Scrollkasten (ein Stopp, der nichts scrollt, ist Lärm) und
   // der Kantenschatten. Gemessen statt geraten — die Breite hängt an der
   // Fensterbreite, nicht an einem Umbruchpunkt, den wir setzen.
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const [ueberlauf, setUeberlauf] = useState(false);
+  const [endraum, setEndraum] = useState(0);
   useEffect(() => {
     const el = scrollerRef.current;
     if (!el || typeof ResizeObserver === "undefined") return;
-    const mess = () => setUeberlauf(el.scrollWidth - el.clientWidth > 1);
+    // Gemessen wird gegen die EIGENBREITE der Tabelle, nicht gegen scrollWidth:
+    // Sobald der Überlauf feststeht, hängt der Scrollbereich zusätzlich am
+    // Auslauf, den wir selbst nur bei Überlauf anhängen. Ein Vergleich mit
+    // scrollWidth würde sich damit selbst bestätigen und beim Vergrößern des
+    // Fensters nie wieder zurückfallen.
+    const mess = () => {
+      const laeuftUeber = el.clientWidth < TABELLE_BREITE;
+      setUeberlauf(laeuftUeber);
+      setEndraum(laeuftUeber ? endraumFuer(el.clientWidth) : 0);
+      setScrollLeft(el.scrollLeft);
+      setScrollRest(el.scrollWidth - el.clientWidth - el.scrollLeft);
+    };
     mess();
     const ro = new ResizeObserver(mess);
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
+  // Der Auslauf hängt am Zustand und ist erst NACH dem Rendern im Scrollbereich;
+  // die Restweite muss deshalb danach noch einmal gelesen werden.
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    setScrollRest(el.scrollWidth - el.clientWidth - el.scrollLeft);
+  }, [ueberlauf, endraum, sort, owner, rankMode]);
 
   // Resolve ?plz= to the child region it belongs to. A postcode can span several
   // Gemeinden; the one that appears in this very list is the right match, so the
@@ -573,7 +623,50 @@ export default function RankingTable({
         <RankDelta value={deltas.get(r.region_id) ?? null} sinceYear={lastFullYear} onAccent={onAccent} />
       </span>
       <span className="atlas-fix-spalte atlas-fix-spalte--kante" style={{ ...S.nameCell, ...fixStil(FIX_LINKS_NAME, floating) }}>
-        <span style={{ ...S.name, fontWeight: onAccent ? 700 : 500, ...(onAccent ? { color: ON_ACCENT } : null) }}>{r.name}</span>
+        {/*
+          Der Ortsname wird gekürzt, wenn er nicht in die Spalte passt, und
+          klappt bei Klick oder Tipp auf ihn vollständig auf (zweite Zeile).
+          ENTSCHIEDENES VERHALTEN: Ein Tipp auf einen GEKÜRZTEN Namen zeigt den
+          Namen und führt NICHT zur Gemeinde; ein Tipp auf einen vollständigen
+          Namen führt wie der Rest der Zeile zur Gemeinde. Beides zugleich geht
+          nicht, und der Rest der Zeile — Platz, alle sieben Werte, der Pfeil —
+          bleibt der Weg dorthin. Das „…" ist das sichtbare Zeichen, dass dieser
+          eine Fleck etwas anderes tut.
+
+          Ein `title` allein reicht nicht: Auf dem Telefon gibt es kein Hover.
+          `InfoTooltip` passt hier ebenfalls nicht — sein Auslöser ist ein
+          „?"-Knopf, und ein <button> in einem <a> ist ungültiges HTML. Deshalb
+          klappt der Name an Ort und Stelle auf: kein Portal, keine
+          Positionsrechnung, nichts, was der Scrollkasten abschneiden könnte.
+          Für die Maus setzt onMouseEnter zusätzlich ein `title` — aber nur,
+          wenn wirklich gekürzt wurde, sonst poppte über jedem Ort ein Kästchen
+          mit dem Namen auf, den man ohnehin liest.
+
+          Vorlesende Hilfsmittel sind nicht betroffen: Die Kürzung ist reines
+          CSS, der Textinhalt bleibt der volle Name.
+        */}
+        <span
+          style={{
+            ...S.name,
+            fontWeight: onAccent ? 700 : 500,
+            ...(onAccent ? { color: ON_ACCENT } : null),
+            ...(nameOffen === r.region_id ? S.nameOffen : null),
+          }}
+          onMouseEnter={(e) => {
+            const el = e.currentTarget;
+            el.title = el.scrollWidth > el.clientWidth + 1 ? r.name : "";
+          }}
+          onClick={(e) => {
+            const el = e.currentTarget;
+            const offen = nameOffen === r.region_id;
+            if (!offen && el.scrollWidth <= el.clientWidth + 1) return; // nichts verborgen → Zeile führt zur Gemeinde
+            e.preventDefault();
+            e.stopPropagation();
+            setNameOffen(offen ? null : r.region_id);
+          }}
+        >
+          {r.name}
+        </span>
         <span style={{ ...S.hint, ...(onAccent ? { color: ON_ACCENT_DIM } : null) }}>
           {r.population === null ? "unbewohnt" : fmtPop(r.population, popInMillions)}
         </span>
@@ -685,87 +778,118 @@ export default function RankingTable({
       {/* Der Scrollkasten trägt die Tastatur-Attribute NUR, solange er wirklich
           überläuft — sonst wäre es ein Tab-Stopp, der nichts tut. Ohne sie gäbe
           es für Tastaturnutzer gar keinen Weg zu den rechten Spalten
-          (WCAG 2.1.1); die Regeln dazu stehen in lib/theme.ts. */}
-      <div
-        ref={scrollerRef}
-        className="atlas-tabelle-scroller"
-        {...(ueberlauf ? { tabIndex: 0, role: "region", "aria-label": "Rangliste, waagerecht scrollbar" } : null)}
-        style={{ ...S.scroller, ...kanteStil }}
-        onScroll={(e) => setScrollLeft(e.currentTarget.scrollLeft)}
-      >
-        <div style={S.table}>
-          {/* Header: every column sorts, the first also picks what it shows. */}
-          <div style={{ ...S.row, ...S.header }}>
-            <RankHeader
-              mode={rankMode}
-              onChange={setRankMode}
-              sinceYear={lastFullYear}
-              fixStil={fixStil(FIX_LINKS_PLATZ, false)}
-            />
-            <NameHeader sort={sort} onChange={setSort} fixStil={fixStil(FIX_LINKS_NAME, false)} />
-            {COLUMNS.map((c) => (
-              <span key={c.key} style={S.headCell}>
-                <button
-                  type="button"
-                  onClick={() => setSort(c.key)}
-                  style={{
-                    ...S.headBtn,
-                    color: sort === c.key ? v("--color-accent") : v("--color-text-muted"),
-                    fontWeight: sort === c.key ? 700 : 600,
-                  }}
-                >
-                  {c.label}
-                </button>
-                {/* Die Erklärung sitzt am Spaltenkopf, wo die Frage entsteht —
-                    nicht als Fließtext unter der Tabelle, den man erst nach dem
-                    Lesen aller Zahlen findet. */}
-                <InfoTooltip title={c.label} size={11} ariaLabel={`${c.label}: Erklärung`}>
-                  {c.key === "wert" ? (
-                    <StromwertHilfe spanne={evSpanne} />
-                  ) : c.key === "eigenverbrauch" ? (
-                    <EigenverbrauchHilfe />
-                  ) : (
-                    c.hint
-                  )}
-                </InfoTooltip>
-              </span>
-            ))}
-          </div>
+          (WCAG 2.1.1); die Regeln dazu stehen in lib/theme.ts.
 
-          {/* Re-keyed on metric+filter so the rows fade in on a switch instead of
-              snapping — the reorder and the value change land at once otherwise. */}
-          <div key={`${sort}-${owner}-${rankMode}`} style={S.rowsFade}>
-            {display.map((r, i) => {
-              const isMarked = markedId === r.region_id;
-              // Highlight-Zeile ohne Tabellenlinie oben und unten: diese Zeile UND
-              // die darüber verlieren ihre Trennlinie, damit nichts durch den
-              // Rahmen läuft.
-              const nextMarked = markedId !== null && display[i + 1]?.region_id === markedId;
-              const style = {
-                ...S.row,
-                ...(isMarked || nextMarked ? { borderBottom: "none" as const } : null),
-                ...(isMarked ? { ...S.rowHome, ...AKZENT_ZEILE } : null),
-              };
-              const marker = isMarked ? { "data-marked": "true" } : {};
-              // The whole row leads to the Gemeinde, not just its name — a 60px
-              // link inside a 620px row is a target nobody hits on a phone.
-              // Uninhabited areas have no page, so they stay a plain row.
-              return r.href ? (
-                <Link key={r.region_id} href={r.href} {...marker} className="atlas-rank-row" style={{ ...style, ...S.rowLink }}>
-                  {rowCells(r, isMarked)}
-                  <span className="atlas-go" style={{ ...S.go, ...(isMarked ? { color: ON_ACCENT } : null) }} aria-hidden>
-                    <IconArrowRight size={13} />
-                  </span>
-                </Link>
-              ) : (
-                <div key={r.region_id} {...marker} style={style}>
-                  {rowCells(r, isMarked)}
-                </div>
-              );
-            })}
-          </div>
+          Einrasten (scroll-snap) und Auslauf hängen ebenfalls am gemessenen
+          Überlauf: Ohne Überlauf gibt es nichts einzurasten, und der Auslauf
+          würde eine Tabelle, die von selbst passt, künstlich scrollbar machen.
 
+          Der Rahmen darum trägt den Verlauf an der rechten Kante. Er hat exakt
+          die Maße des Scrollkastens (dessen negativer Außenabstand ist hierher
+          gewandert), damit der Verlauf auf der Kante sitzt und nicht acht Pixel
+          daneben. */}
+      <div style={S.scrollerRahmen}>
+        <div
+          ref={scrollerRef}
+          className="atlas-tabelle-scroller"
+          {...(ueberlauf ? { tabIndex: 0, role: "region", "aria-label": "Rangliste, waagerecht scrollbar" } : null)}
+          style={{
+            ...S.scroller,
+            ...kanteStil,
+            ...(ueberlauf ? { ...S.scrollerRastet, paddingRight: SCROLLER_PAD + endraum } : null),
+          }}
+          onScroll={(e) => {
+            const el = e.currentTarget;
+            setScrollLeft(el.scrollLeft);
+            setScrollRest(el.scrollWidth - el.clientWidth - el.scrollLeft);
+          }}
+        >
+          <div style={S.table}>
+            {/* Header: every column sorts, the first also picks what it shows. */}
+            <div style={{ ...S.row, ...S.header }}>
+              <RankHeader
+                mode={rankMode}
+                onChange={setRankMode}
+                sinceYear={lastFullYear}
+                fixStil={fixStil(FIX_LINKS_PLATZ, false)}
+              />
+              <NameHeader sort={sort} onChange={setSort} fixStil={fixStil(FIX_LINKS_NAME, false)} />
+              {COLUMNS.map((c) => (
+                // Die RASTPUNKTE sitzen an den Kopfzellen, einer je Wertspalte —
+                // nicht an jeder Zelle jeder Zeile: gleiche Positionen, aber sieben
+                // statt mehreren hundert.
+                <span key={c.key} style={{ ...S.headCell, scrollSnapAlign: "start" }}>
+                  <button
+                    type="button"
+                    onClick={() => setSort(c.key)}
+                    style={{
+                      ...S.headBtn,
+                      color: sort === c.key ? v("--color-accent") : v("--color-text-muted"),
+                      fontWeight: sort === c.key ? 700 : 600,
+                    }}
+                  >
+                    {c.label}
+                  </button>
+                  {/* Die Erklärung sitzt am Spaltenkopf, wo die Frage entsteht —
+                      nicht als Fließtext unter der Tabelle, den man erst nach dem
+                      Lesen aller Zahlen findet. */}
+                  <InfoTooltip title={c.label} size={11} ariaLabel={`${c.label}: Erklärung`}>
+                    {c.key === "wert" ? (
+                      <StromwertHilfe spanne={evSpanne} />
+                    ) : c.key === "eigenverbrauch" ? (
+                      <EigenverbrauchHilfe />
+                    ) : (
+                      c.hint
+                    )}
+                  </InfoTooltip>
+                </span>
+              ))}
+            </div>
+
+            {/* Re-keyed on metric+filter so the rows fade in on a switch instead of
+                snapping — the reorder and the value change land at once otherwise. */}
+            <div key={`${sort}-${owner}-${rankMode}`} style={S.rowsFade}>
+              {display.map((r, i) => {
+                const isMarked = markedId === r.region_id;
+                // Highlight-Zeile ohne Tabellenlinie oben und unten: diese Zeile UND
+                // die darüber verlieren ihre Trennlinie, damit nichts durch den
+                // Rahmen läuft.
+                const nextMarked = markedId !== null && display[i + 1]?.region_id === markedId;
+                const style = {
+                  ...S.row,
+                  ...(isMarked || nextMarked ? { borderBottom: "none" as const } : null),
+                  ...(isMarked ? { ...S.rowHome, ...AKZENT_ZEILE } : null),
+                };
+                const marker = isMarked ? { "data-marked": "true" } : {};
+                // The whole row leads to the Gemeinde, not just its name — a 60px
+                // link inside a 620px row is a target nobody hits on a phone.
+                // Uninhabited areas have no page, so they stay a plain row.
+                return r.href ? (
+                  <Link key={r.region_id} href={r.href} {...marker} className="atlas-rank-row" style={{ ...style, ...S.rowLink }}>
+                    {rowCells(r, isMarked)}
+                    <span className="atlas-go" style={{ ...S.go, ...(isMarked ? { color: ON_ACCENT } : null) }} aria-hidden>
+                      <IconArrowRight size={13} />
+                    </span>
+                  </Link>
+                ) : (
+                  <div key={r.region_id} {...marker} style={style}>
+                    {rowCells(r, isMarked)}
+                  </div>
+                );
+              })}
+            </div>
+
+          </div>
         </div>
+        {/* Der Verlauf an der rechten Kante — das Gegenstück zum Schatten links.
+            Links heißt der Schatten „hier ist etwas verdeckt", hier heißt der
+            Verlauf „hier geht es weiter"; beide erscheinen nur, wenn in ihrer
+            Richtung wirklich noch Inhalt liegt. Ein Verlauf, der immer da ist,
+            behauptet Inhalt, den es nicht gibt. Angeschnittener Inhalt ist der
+            verlässlichste Hinweis auf Scrollbarkeit — deshalb ein Verlauf und
+            keine zusätzlichen Pfeilknöpfe: Die Spalten lassen sich mit der
+            Tastatur ohnehin einzeln ansteuern, seit die Tabelle einrastet. */}
+        <span aria-hidden style={{ ...S.fadeRechts, opacity: scrollRest > 1 ? 1 : 0 }} />
       </div>
 
       {/*
@@ -1102,8 +1226,8 @@ function HomePicker({ onPick }: { onPick: (hit: GemeindeHit, plz: string) => voi
  * on the same pixels.
  */
 /**
- * Acht Spalten in 736 px. Der Platz reicht — er muss nur richtig verteilt sein,
- * und beide Fehlerrichtungen sind schon passiert:
+ * Zehn Spalten. Der Platz reicht — er muss nur richtig verteilt sein, und beide
+ * Fehlerrichtungen sind schon passiert:
  *
  * - Wertspalten als `minmax(…, max-content)`: sie fallen auf ihre Inhaltsbreite
  *   zusammen, die fr-Namensspalte frisst den Rest (282 statt nötiger 200 px),
@@ -1111,29 +1235,47 @@ function HomePicker({ onPick }: { onPick: (hit: GemeindeHit, plz: string) => voi
  * - Wertspalten mit fester Obergrenze plus fr-Name: umgekehrt bläht das Grid
  *   erst alle Wertspalten auf ihr Maximum auf, und lange Namen brechen ab.
  *
- * Deshalb: Wertspalten FEST und gleich breit (sie sind eine Messreihe, sie
- * müssen als Spalten lesbar sein und untereinander fluchten), der Rest gehört
- * dem Namen.
+ * Deshalb: Wertspalten FEST und je nach Kopfbreite (sie sind eine Messreihe,
+ * sie müssen als Spalten lesbar sein und untereinander fluchten), der Rest
+ * gehört dem Namen. Die Breiten stehen an den Spalten selbst (COLUMNS).
  *
- * Seit Zahl und Einheit übereinander stehen, braucht eine Wertspalte nur noch
- * die Breite ihrer ZAHL — die Einheit ist kurz und steht darunter. Die
- * Spaltenbreite bestimmt deshalb nicht mehr der Wert, sondern die ÜBERSCHRIFT
- * samt „?"-Knopf daneben; sie muss einzeilig bleiben, sonst zieht sie die
- * ganze Kopfzeile auf und stößt an die Nachbarspalte. Die Werte hier sind
- * gemessene Kopfbreiten, nicht geschätzt. Einzige Ausnahme ist „Anlagen"
- * (74): Dort ist die Zahl breiter als der Kopf, weil sie als einzige der
- * Tabelle ungestaffelt bis zu siebenstellig wird ("1.399.105").
- *
- * „Eigenverbrauch" ist mit 83 px der längste Kopf der Reihe (im Browser
- * gemessen, 11 px halbfett) — mit dem „?" daneben also 96. Die Spalte ist
- * dadurch breiter als ihre zweistellige Prozentzahl braucht; das ist der Preis
- * dafür, dass der Titel einzeilig bleibt.
+ * PLATZ und NAME sind schmaler als früher (40/175). Die Platzziffer braucht bei
+ * dreistelligen Rängen 29 px (Monospace 12 px, „199."), die Rangbewegung
+ * darunter 24 — mehr steht dort nicht, und ein Innenabstand ist es auch nicht
+ * (im Browser nachgemessen: padding 0). Der Kopf „Platz" misst 36 und läuft um
+ * sechs Pixel in die Rasterlücke daneben, die niemandem gehört und in der auch
+ * nichts anderes steht.
+ * Beim Namen ist es eine bewusste Umkehr: Früher stand hier „Enger scrollt die
+ * Tabelle lieber waagerecht, als Ortsnamen abzuschneiden". Seit die Namensspalte
+ * mitläuft, kostet jedes Pixel dort doppelt — es fehlt dem Wertbereich in JEDER
+ * Scrollstellung. Lange Namen werden deshalb gekürzt und lassen sich per Tippen
+ * aufklappen (siehe rowCells).
  */
-const GRID = "40px minmax(175px,1fr) 74px 60px 60px 78px 70px 96px 62px 12px";
-
+const SPALTE_PLATZ = 30;
+/** Untergrenze der Namensspalte; darüber nimmt sie sich den Rest (1fr).
+ *  130 px, weil der Spaltenkopf „Name (Einwohner)" 108 px misst. */
+const SPALTE_NAME_MIN = 130;
+/** Spur für den „→" am Zeilenende (erscheint bei Hover). */
+const SPALTE_PFEIL = 12;
 /** Rasterlücke zwischen zwei Spalten (S.row.gap) — sie gehört keiner Spalte,
  *  deshalb müssen die mitlaufenden Spalten sie mitdecken (siehe theme.ts). */
 const SPALTEN_LUECKE = 11;
+
+const GRID = [
+  `${SPALTE_PLATZ}px`,
+  `minmax(${SPALTE_NAME_MIN}px,1fr)`,
+  ...COLUMNS.map((c) => `${c.breite}px`),
+  `${SPALTE_PFEIL}px`,
+].join(" ");
+
+/** Summe des Rasters bei minimaler Namensspalte, inklusive aller Lücken. */
+const TABELLE_BREITE =
+  SPALTE_PLATZ +
+  SPALTE_NAME_MIN +
+  COLUMNS.reduce((s, c) => s + c.breite, 0) +
+  SPALTE_PFEIL +
+  (COLUMNS.length + 2) * SPALTEN_LUECKE;
+
 /**
  * Linke Kanten der beiden mitlaufenden Spalten — gemessen von der INHALTSKANTE
  * der Zeile, nicht von der Kante des Scrollkastens.
@@ -1147,7 +1289,47 @@ const SPALTEN_LUECKE = 11;
  * („20.799" wurde zu „0.799"). Im Browser gemessen, nicht gerechnet.
  */
 const FIX_LINKS_PLATZ = 0;
-const FIX_LINKS_NAME = 40 + SPALTEN_LUECKE;
+const FIX_LINKS_NAME = SPALTE_PLATZ + SPALTEN_LUECKE;
+/**
+ * Wie breit der mitlaufende Block insgesamt deckt: Platz + Lücke + Name + die
+ * Lücke dahinter, die sein Überstand mitdeckt. Rechts davon beginnt der Bereich,
+ * in dem eine Zahl sichtbar sein DARF — links davon ist alles verdeckt.
+ */
+const FIX_BREITE = FIX_LINKS_NAME + SPALTE_NAME_MIN + SPALTEN_LUECKE;
+/** Innenabstand des Scrollkastens (S.scroller) — Bezugsgröße für scroll-padding. */
+const SCROLLER_PAD = 8;
+
+/**
+ * Die Rastpunkte: die Scrollstellungen, in denen die linke Kante einer
+ * Wertspalte genau auf der Haltekante der mitlaufenden Spalten sitzt.
+ * Abgeleitet aus den Spaltenbreiten, damit sie nicht getrennt gepflegt werden.
+ */
+const RASTPUNKTE = COLUMNS.reduce<number[]>((punkte, _c, i) => {
+  punkte.push(i === 0 ? 0 : punkte[i - 1] + COLUMNS[i - 1].breite + SPALTEN_LUECKE);
+  return punkte;
+}, []);
+
+/**
+ * Auslauf am rechten Ende des Scrollbereichs — hängt an der Fensterbreite und
+ * wird deshalb gemessen, nicht gesetzt.
+ *
+ * Ohne ihn hat das Einrasten ein Loch am Ende: Liegt der letzte erreichbare
+ * Rastpunkt jenseits des Scroll-Endes, klemmt der Browser ihn auf das Ende —
+ * und genau dort steht die Haltekante wieder mitten in einer Spalte. Gemessen
+ * am Desktop (1280 px): Rastpunkt 157, Scroll-Ende 152, fünf Pixel daneben.
+ *
+ * Der Auslauf hebt das Scroll-Ende deshalb auf den nächsten Rastpunkt an. Er
+ * ist nie größer als der größte Abstand zweier Rastpunkte, und das Ende der
+ * Tabelle bleibt in dieser Stellung immer vollständig im Blick.
+ */
+function endraumFuer(clientWidth: number): number {
+  const natuerlichesEnde = TABELLE_BREITE + 2 * SCROLLER_PAD - clientWidth;
+  if (natuerlichesEnde <= 0) return 0;
+  const naechster = RASTPUNKTE.find((p) => p >= natuerlichesEnde);
+  // Kein Rastpunkt mehr dahinter: Das Fenster ist schmaler als der mitlaufende
+  // Block plus zwei Spalten — dort ist nichts mehr zu retten.
+  return naechster === undefined ? 0 : naechster - natuerlichesEnde;
+}
 /**
  * Wie weit die erste mitlaufende Spalte nach LINKS decken muss.
  *
@@ -1186,11 +1368,78 @@ const S: Record<string, React.CSSProperties> = {
   // `overflow-x` und der Fokusrahmen stehen in der Klasse `atlas-tabelle-scroller`
   // (lib/theme.ts): `:focus-visible` geht mit Inline-Styles nicht, und die Regel
   // gilt für jede Atlas-Tabelle, nicht nur für diese.
-  scroller: { margin: "0 -8px", padding: "0 8px" },
-  // Summe des Rasters: 40 + 175 (Name-Minimum) + 500 (Wertspalten) + 12 + 99
-  // (neun Lücken à 11). Enger scrollt die Tabelle lieber waagerecht, als
-  // Ortsnamen abzuschneiden — ein halber Ortsname ist in einer Rangliste wertlos.
-  table: { minWidth: 826 },
+  //
+  // `position: relative` + `zIndex: 0` machen den Kasten zu EINEM Stapelkontext.
+  // Das ist kein Schönheitsgriff, sondern die Lösung für die Scrollleiste: Ein
+  // Scrollkasten ohne Stapelkontext malt seine Bedienelemente außerhalb der
+  // z-Ordnung, die die schwebenden Blöcke darunter annehmen — die waagerechte
+  // Scrollleiste lag deshalb ÜBER der schwebenden Postleitzahl-Karte und schnitt
+  // durch deren Überschrift. Ein Stapelkontext wird als Ganzes gemalt; alles, was
+  // dieser Kasten zeichnet (Inhalt UND Scrollleiste), liegt damit sicher unter
+  // den Blöcken mit z-Index 2 und 3 dahinter. Preis: Das Aufklapp-Menü der
+  // Kopfzeile ist jetzt ebenfalls im Kasten gefangen und kann von der
+  // schwebenden Karte überdeckt werden, wenn die Kopfzeile ganz unten im Fenster
+  // steht — deutlich seltener und harmloser als eine Leiste quer durch die Karte.
+  // Der negative Außenabstand sitzt am Rahmen, nicht am Kasten selbst: Sonst
+  // liegt der Verlauf an der rechten Kante acht Pixel zu weit innen.
+  scrollerRahmen: { position: "relative", margin: "0 -8px" },
+  scroller: { padding: "0 8px", position: "relative", zIndex: 0 },
+  /**
+   * Weicher Auslauf an der rechten Kante. Nicht als Maske auf dem Scrollkasten
+   * (die würde auch die Scrollleiste ausblenden), sondern als eigene Fläche im
+   * Rahmen darüber — durchlässig für Klicks, damit der Zeilen-Link darunter
+   * erreichbar bleibt.
+   *
+   * Der Verlauf endet in der Seitenfarbe aus dem Token, nicht in einem
+   * getippten Weiß: Die Seite hat sieben Tageszeit-Stufen, ein festes Weiß wäre
+   * in fünf davon ein heller Balken. Der Anfang ist `transparent` — CSS
+   * überblendet Verläufe vormultipliziert, es entsteht also kein Graustich.
+   */
+  fadeRechts: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    width: 28,
+    zIndex: 1,
+    pointerEvents: "none",
+    background: `linear-gradient(to right, transparent, ${v("--color-bg")})`,
+    transition: "opacity 0.15s ease-out",
+  },
+  /**
+   * EINRASTEN AN DEN SPALTENKANTEN — der eigentliche Grund, warum es diese
+   * Tabelle in dieser Form geben darf.
+   *
+   * Eine mitlaufende Spalte deckt alles links von ihrer Kante zu. Bleibt die
+   * Tabelle ZWISCHEN zwei Spaltenkanten stehen, schneidet diese Kante mitten
+   * durch eine Wertzelle — und beide Hälften des Ergebnisses sind gelogen:
+   *  · Die Zahl steht links, die Einheit ist breiter. Aus „882 / Mio. €/Jahr"
+   *    wird dann eine nackte Einheit ohne Zahl. Genau das stand im Screenshot
+   *    des Betreibers, über mehrere Zeilen.
+   *  · Oder die Kante trifft die Zahl selbst: „1.399.105" wird zu „399.105" —
+   *    eine vollständig lesbare, falsche Zahl. Dieselbe Fehlerklasse, die schon
+   *    einmal aus „20.799" ein „0.799" gemacht hat.
+   * Gemessen über den Scrollbereich trat mindestens eines von beidem an sieben
+   * von dreizehn Stellungen auf.
+   *
+   * Ein „halb verdeckte Zelle ausblenden" scheidet aus: Die erste Wertspalte
+   * beginnt genau an der Kante, sie wäre schon nach einem Pixel verschwunden.
+   * `mandatory` ist der einzige Mechanismus, der Zwischenstellungen gar nicht
+   * erst zulässt — die Tabelle ruht immer auf einer Spaltenkante. Während der
+   * Wischbewegung bewegt sich der Inhalt (da liest niemand), beim Loslassen
+   * sitzt er.
+   *
+   * `scrollPaddingLeft` verschiebt den Rastpunkt vom Fensterrand hinter den
+   * mitlaufenden Block: Die Spalte rastet dort ein, wo sie sichtbar wird, nicht
+   * dort, wo sie verdeckt wäre. Der Innenabstand des Kastens gehört dazu, weil
+   * scroll-padding vom Rand des Scrollbereichs misst, `position: sticky`
+   * dagegen von dessen Inhaltskante.
+   */
+  scrollerRastet: {
+    scrollSnapType: "x mandatory",
+    scrollPaddingLeft: SCROLLER_PAD + FIX_BREITE,
+  },
+  table: { minWidth: TABELLE_BREITE },
   row: {
     display: "grid",
     gridTemplateColumns: GRID,
@@ -1244,6 +1493,11 @@ const S: Record<string, React.CSSProperties> = {
     display: "inline-flex",
     alignItems: "center",
     gap: 3,
+    // Darf NICHT umbrechen: „Δ 2025" ist 38 px breit, die Spalte 30 — ohne
+    // diese Zeile bricht das Δ auf eine eigene Zeile und verschwindet über dem
+    // sichtbaren Kopf. Die acht überstehenden Pixel laufen in die Rasterlücke,
+    // die Namensspalte beginnt erst bei 41.
+    whiteSpace: "nowrap",
   },
   // Aktive Kommune voll in unserem Blau (weiße Schrift via rowCells onAccent).
   rowHome: { background: v("--color-accent"), borderRadius: v("--radius-md") },
@@ -1254,16 +1508,18 @@ const S: Record<string, React.CSSProperties> = {
     fontSize: 12,
     lineHeight: 1.25,
     color: v("--color-text-muted"),
+    // Ziffer oben, Veränderung darunter — dieselbe Bauart wie Name/Einwohner
+    // und Zahl/Einheit. Nebeneinander sprengte das Paar die Spaltenbreite.
     display: "flex",
-    alignItems: "baseline",
+    flexDirection: "column",
+    alignItems: "flex-start",
     // Über die volle Zeilenhöhe, obwohl der Text oben steht: Als mitlaufende
     // Spalte muss ihr Hintergrund die ganze Zeile decken — sonst scheint unter
-    // der Platzziffer der scrollende Inhalt durch. Die Ziffer bleibt oben, weil
-    // `alignItems: baseline` sie an die erste Grundlinie setzt.
+    // der Platzziffer der scrollende Inhalt durch.
     alignSelf: "stretch",
-    gap: 4,
+    gap: 1,
   },
-  delta: { fontFamily: v("--font-mono"), fontSize: 12, fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 1 },
+  delta: { fontFamily: v("--font-mono"), fontSize: 10, fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 1, lineHeight: 1.2 },
   // Name und Einwohnerzahl gestapelt — dieselbe Bauart wie die Wertzellen
   // (Hauptangabe oben, kleine Zusatzangabe darunter). Dadurch fluchten alle
   // acht Spalten in zwei Textebenen statt in einer gemischten Zeile.
@@ -1280,6 +1536,9 @@ const S: Record<string, React.CSSProperties> = {
     whiteSpace: "nowrap",
     maxWidth: "100%",
   },
+  // Aufgeklappter Name: bricht um statt zu kürzen. Die Zeile wird dadurch
+  // höher — das ist der sichtbare Beleg, dass hier gerade etwas mehr steht.
+  nameOffen: { whiteSpace: "normal", overflow: "visible", textOverflow: "clip" },
   hint: { fontSize: 10, lineHeight: 1.2, color: v("--color-text-muted"), whiteSpace: "nowrap" },
   // The bar sits under the number in the sorted column, not in a column of its
   // own: a header names a measure, and "the bar" is not one — it is that measure,
@@ -1323,6 +1582,9 @@ const S: Record<string, React.CSSProperties> = {
   stickyWrap: {
     position: "sticky",
     bottom: 4,
+    // Wie stickyPicker über dem Scrollkasten (z-Index 0) — sonst läge die
+    // schwebende Kopie unter dessen Scrollleiste, genau wie die PLZ-Karte.
+    zIndex: 2,
     margin: "10px -8px 0",
     // Vertical padding gives the row's shadow room; overflow: hidden would crop it
     // flat against the wrapper otherwise.
