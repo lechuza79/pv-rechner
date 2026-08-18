@@ -321,6 +321,17 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung, Karte, Sim
 
 **`/datenstand` zeigt seit 17.08.2026 nicht mehr jeden Einzelwert** (Betreiber-Entscheidung): Fünf Blöcke nennen nur noch, was sie enthalten. Die Grenze verläuft nicht entlang „wichtig/unwichtig", sondern hier: Werte, die der Rechner ohnehin ausgibt und editieren lässt, bleiben stehen — sie zu verbergen kostet Vertrauen und schützt nichts. Rechtsaussagen bleiben ebenfalls sichtbar (Grüngas-Block; die Balkon-Vorbehalte wanderten ins Intro). **Und: Was die Seite verspricht, muss sie halten** — die Einleitung sagte „hier steht jeder Wert", das wäre nach dem Umbau eine Falschaussage auf genau der Seite gewesen, die für die Ehrlichkeit der Zahlen bürgt.
 
+## Kopfzeile: Layout gehört ins Stylesheet — BLOCKER
+
+`components/Header.tsx` entschied bis zum 18.08.2026 per Komponenten-Zustand (`isDesktop`, Startwert `true`), ob Desktop-Navigation oder Burger gerendert wird. **Der Server lieferte damit auf jedem Gerät die Desktop-Fassung**; auf schmalen Schirmen riss sie das Dokument über die Fensterbreite, bis die Hydratation korrigierte. Jetzt stehen beide Varianten im HTML und eine Medienabfrage blendet die falsche aus (`.hdr-nav`, `.hdr-burger`, `.hdr-auth`, `.hdr-aktionen`, `.hdr-menu` in `lib/theme.ts`).
+
+- **Der Umschaltpunkt (1080 px) steht zwangsläufig zweimal** — als Medienabfrage und als `matchMedia` im Header. CSS kann keinen Zustand setzen, JavaScript darf kein Layout bestimmen. Laufen die Zahlen auseinander, zeigt ein Breitenbereich beides oder nichts; `lib/__tests__/header-umschaltpunkt.test.ts` hält sie zusammen.
+- **Der Umschaltpunkt muss über der Breite liegen, die die Kopfzeile braucht.** Bei 1000 px passte sie nicht (sie braucht ~1009 px) — zwischen 1000 und 1024 px scrollte jede Seite seitlich, also auf jedem iPad im Querformat. Wer die Kopfzeile um ein Element erweitert, misst diese Breite nach.
+- **Ein Test mit abgeschaltetem JavaScript beweist das Server-HTML, nicht das Layout.** Ohne JavaScript fehlen Sonnenanzeige und Einloggen — genau die Elemente, die die Zeile breit machen. Deshalb prüft `e2e/header-ohne-js.spec.ts` beides: ohne JavaScript, dass der Server die richtige Variante schickt, und **mit** JavaScript über sechs Breiten, dass nichts überläuft. Die erste Fassung hatte nur den ersten Teil und war gegen den echten Fehler konstruktionsbedingt blind.
+- **Overlay-Vorrang gehört an die Aktionsleiste, nicht an den `<header>`:** Abdunkelung und Schließen-Knopf liegen im selben Stapelkontext; den Header anzuheben verschiebt beide gemeinsam. Und nur bei offenem Menü — dauerhaft gesetzt, blieb die Sonnenanzeige hinter dem offenen Menü anklickbar.
+
+**Allgemein: Ein Test, der Formatierung vergleicht, ist in beide Richtungen wertlos.** Die erste Fassung des Umschaltpunkt-Tests verglich CSS-Zeilen als Zeichenketten. Gemessen: fünf harmlose Umformatierungen (ein Prettier-Lauf genügt) machten ihn rot, fünf echte Defekte ließ er durch — darunter ein gelöschtes `.hdr-burger{display:flex}`, nach dem es auf Mobil gar keine Navigation mehr gegeben hätte. Ein Unit-Test vergleicht **Zahlen und Vorhandensein**, das Verhalten prüft der Browser.
+
 ## Modals — BLOCKER
 
 **`components/Modal.tsx` ist DER Modal-Baustein. Modals werden nicht pro Stelle neu gebaut.** Die aufrufende Stelle liefert nur `open`, `onClose`, `title` (optional `intro`, `ariaLabel`, `maxWidth`) und den Inhalt als Children — das gesamte Verhalten kommt aus dem Baustein:
