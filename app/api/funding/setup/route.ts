@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../../lib/supabase-server";
-import { FUNDING_PROGRAMS, landProgramBundeslaender } from "../../../../lib/funding-programs";
+import { FUNDING_PROGRAMS, landProgramBundeslaender, type FundingProgram } from "../../../../lib/funding-programs";
 import { publishedCities, cityPath, publishedBundeslaender } from "../../../../lib/atlas-cities";
 import { pingIndexNow } from "../../../../lib/indexnow";
+import { vergleiche, zuEintraegen } from "../../../../lib/funding-history";
 
 // One-time setup: create the funding tables + RLS, then seed from the code
 // dataset if empty. Trigger with Authorization: Bearer $CRON_SECRET.
@@ -85,12 +86,47 @@ export async function GET(req: NextRequest) {
   });
   results.push({ step: "funding_coverage", status: e2b ? "error" : "ok", error: e2b?.message });
 
+  // funding_history: Verlauf der Förderprogramme — jeder Zustandswechsel, den
+  // wir feststellen, bevor er überschrieben wird.
+  //
+  // WARUM (18.08.2026): Der Wächter sah jeden Wechsel und überschrieb ihn. Wer
+  // stattdessen mitschreibt, kann nach zwölf Monaten sagen „seit Juli
+  // ausgeschöpft, davor 150 €/kWh" — das kann sonst niemand, weil die
+  // Wettbewerber nur den Ist-Stand scrapen.
+  //
+  // `observed_at` heißt bewusst nicht `changed_at`: Wir kennen den Tag UNSERER
+  // Feststellung, nicht den des Ratsbeschlusses. Und `belegt_am` ist getrennt
+  // davon, weil eine Bestätigung an der Amtsquelle etwas anderes ist als eine
+  // Beobachtung — dieselbe Trennung wie bei `last_verified` vs. `updated_at`.
+  //
+  // Es gibt bewusst KEIN Löschen: Die Protokolle sind das einzige Beweismittel
+  // für die „wesentliche Investition" hinter dem Datenbankherstellerrecht
+  // (Rechts-Audit 17.08.2026). Auch Einträge zu eingestellten Programmen bleiben.
+  const { error: e2c } = await supabase.rpc("exec_sql", {
+    sql: `
+      CREATE TABLE IF NOT EXISTS funding_history (
+        id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        program_id text NOT NULL,
+        observed_at timestamptz NOT NULL DEFAULT now(),
+        feld text NOT NULL,
+        bedeutung text NOT NULL DEFAULT 'inhalt',
+        alt text,
+        neu text,
+        quelle text,
+        belegt_am date
+      );
+      CREATE INDEX IF NOT EXISTS idx_fh_program ON funding_history (program_id, observed_at DESC);
+    `,
+  });
+  results.push({ step: "funding_history", status: e2c ? "error" : "ok", error: e2c?.message });
+
   // RLS: anon may read programs (public pages); only the service role writes.
   const { error: e3 } = await supabase.rpc("exec_sql", {
     sql: `
       ALTER TABLE funding_programs ENABLE ROW LEVEL SECURITY;
       ALTER TABLE funding_checks ENABLE ROW LEVEL SECURITY;
       ALTER TABLE funding_coverage ENABLE ROW LEVEL SECURITY;
+      ALTER TABLE funding_history ENABLE ROW LEVEL SECURITY;
       DO $$ BEGIN
         IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'fp_anon_read') THEN
           CREATE POLICY fp_anon_read ON funding_programs FOR SELECT TO anon USING (true);
@@ -100,6 +136,11 @@ export async function GET(req: NextRequest) {
         END IF;
         IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'fc_service_all') THEN
           CREATE POLICY fc_service_all ON funding_checks FOR ALL TO service_role USING (true);
+        END IF;
+        -- Kein anon-Lesen: Die Seiten lesen den Verlauf serverseitig ueber den
+        -- Service-Key. Was der Browser nicht braucht, bekommt er nicht.
+        IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'fh_service_all') THEN
+          CREATE POLICY fh_service_all ON funding_history FOR ALL TO service_role USING (true);
         END IF;
       END $$;
     `,
@@ -127,6 +168,67 @@ export async function GET(req: NextRequest) {
       // vom Seiten-Wächter aus; es bedeutet jetzt nur noch "Eintrag entfernt".
       archived: false,
     }));
+    // ── Verlauf mitschreiben, BEVOR der Upsert den alten Stand überschreibt ──
+    //
+    // Hier und nur hier ändert sich der Zustand eines Programms: Ein
+    // Wächter-Lauf korrigiert `lib/funding-programs.ts`, und mit dem Resync
+    // landet die Korrektur in der Datenbank. Der tägliche Seiten-Wächter
+    // (scripts/funding-watch.ts) schreibt dagegen nur Fingerabdruck-Spalten —
+    // er sieht, DASS sich die Amtsseite bewegt hat, nicht WAS sich geändert hat,
+    // und kann deshalb keinen Alt/Neu-Eintrag erzeugen. Ihn hier anzusetzen
+    // hieße, ein „von X auf Y" zu behaupten, das niemand gelesen hat.
+    //
+    // Schlägt das Protokollieren fehl, läuft der Upsert TROTZDEM — bewusst so
+    // herum. Die Alternative wäre, das Überschreiben zu blockieren, bis das
+    // Protokoll steht; dann könnte aber eine Korrektur wie „Topf ausgeschöpft"
+    // nicht mehr live gehen, und auf 110 Stadtseiten stünde weiter eine
+    // Förderung, die es nicht mehr gibt. Eine falsche Zahl auf der Seite ist die
+    // schwerste Fehlerklasse dieses Projekts, ein fehlender Verlaufseintrag
+    // nicht. Der Preis: Dieser eine Eintrag ist dann verloren — eine
+    // Wiederholung findet keinen Unterschied mehr, weil der Upsert schon
+    // durchlief. Deshalb geht der Fehler in die Antwort (HTTP 500), statt still
+    // verbucht zu werden.
+    const { data: bestand } = await supabase.from("funding_programs").select("id, data, last_verified");
+    const vorher = new Map(
+      ((bestand ?? []) as { id: string; data: FundingProgram; last_verified: string | null }[])
+        .map((r) => [r.id, r]),
+    );
+    // Ein Zeitstempel für den ganzen Lauf: Alle Änderungen dieses Resyncs wurden
+    // im selben Moment festgestellt. Das ist eine echte Beobachtung, kein aus
+    // `updated_at` oder der Build-Zeit abgeleitetes Datum — genau diese
+    // Unterscheidung hat 2026 schon einmal 25 Programmen ein erfundenes
+    // Prüfdatum eingetragen.
+    const festgestelltAm = new Date().toISOString();
+    const eintraege = Object.values(FUNDING_PROGRAMS).flatMap((p) => {
+      const stand = vorher.get(p.id);
+      return zuEintraegen(vergleiche(stand?.data ?? null, p), festgestelltAm, {
+        quelle: p.url ?? null,
+        belegtAm: stand?.last_verified ?? null,
+      });
+    });
+    if (eintraege.length) {
+      const { error: he } = await supabase.from("funding_history").insert(
+        eintraege.map((e) => ({
+          program_id: e.programId,
+          observed_at: e.festgestelltAm,
+          feld: e.feld,
+          bedeutung: e.bedeutung,
+          alt: e.alt,
+          neu: e.neu,
+          quelle: e.quelle,
+          belegt_am: e.belegtAm,
+        })),
+      );
+      results.push({
+        step: "history",
+        status: he ? "error" : "ok",
+        error: he?.message,
+        note: he ? undefined : `${eintraege.length} Einträge`,
+      });
+    } else {
+      results.push({ step: "history", status: "skipped", note: "keine Änderung gegenüber dem Bestand" });
+    }
+
     const { error: se } = await supabase.from("funding_programs").upsert(rows);
     if (se) results.push({ step: resync ? "resync" : "seed", status: "error", error: se.message });
     else { seeded = rows.length; results.push({ step: resync ? "resync" : "seed", status: "ok", note: `${seeded} programs` }); }
