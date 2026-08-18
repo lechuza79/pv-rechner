@@ -99,6 +99,61 @@ for (const [name, viewport] of [
       expect(funde.slice(0, 8), `${funde.length} Befunde`).toEqual([]);
     });
 
+    /**
+     * Dieselbe Fehlerklasse von der anderen Seite: nicht die Haltekante schneidet
+     * die Zahl ab, sondern die Zahl läuft aus ihrer eigenen Spalte heraus.
+     *
+     * DER ANLASS. Die Pro-Kopf-Spalte ist 61 px breit und stand ungestaffelt in
+     * Wp. Herbstmühle im Eifelkreis (25 Einwohner neben 34,9 MWp) ergibt
+     * 1.395.922 Wp — 55 px zu viel. Der Zahlenstil bricht nicht um, also lief
+     * der Wert nach rechts und stieß ohne Trennung an die Zahl der Nachbarspalte:
+     * „1.395.92211". Wieder vollständig lesbar und wieder falsch, diesmal ohne
+     * dass eine Kante daran beteiligt war.
+     *
+     * Geprüft wird deshalb der ganze Bestand einer Seite mit Extremwerten, nicht
+     * die eine bekannte Zeile: Die nächste Ausreißer-Gemeinde kommt aus den
+     * Daten, nicht aus dem Code, und niemand wird an sie denken.
+     */
+    test("keine Zahl läuft aus ihrer eigenen Spalte heraus", async ({ page }) => {
+      // Der Eifelkreis führt die beiden extremsten Pro-Kopf-Werte des Landes
+      // (Herbstmühle 1.395.922 Wp, Scheitenkorb 876.886 Wp) in EINER Liste.
+      await page.goto("/solar-atlas/rheinland-pfalz/landkreis-eifelkreis-bitburg-pruem");
+      await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+
+      const funde = await page.evaluate(() => {
+        const TOL = 0.5;
+        const sc = document.querySelector(".atlas-tabelle-scroller") as HTMLElement;
+        const raus: { zeile: string; inhalt: string; ueber: number }[] = [];
+        for (const r of sc.querySelectorAll<HTMLElement>(".atlas-rank-row")) {
+          const name = r.querySelector<HTMLElement>(".atlas-fix-spalte--kante")?.innerText ?? "?";
+          // Nur die Wertspalten. Platz und Name sind ausgenommen: Der Name wird
+          // absichtlich mit „…" gekürzt, statt seine Spalte zu sprengen — das
+          // ist genau die Bauweise, die hier für die Zahlen NICHT gelten soll.
+          for (const z of [...r.children] as HTMLElement[]) {
+            if (z.classList.contains("atlas-go") || z.classList.contains("atlas-fix-spalte")) continue;
+            // Zahl und Einheit sitzen als eigene Kinder in der Zelle; beide
+            // stehen auf `nowrap` und können deshalb überlaufen.
+            for (const teil of [...z.children] as HTMLElement[]) {
+              const tr = teil.getBoundingClientRect();
+              const zr = z.getBoundingClientRect();
+              if (tr.width === 0) continue;
+              const ueber = tr.right - zr.right;
+              if (ueber > TOL) {
+                raus.push({
+                  zeile: name.split("\n")[0],
+                  inhalt: teil.textContent ?? "",
+                  ueber: Math.round(ueber),
+                });
+              }
+            }
+          }
+        }
+        return raus;
+      });
+
+      expect(funde.slice(0, 6), `${funde.length} Zellen laufen über`).toEqual([]);
+    });
+
     test("die schwebende Kopie fluchtet in jeder Stellung mit der Liste", async ({ page }) => {
       await page.goto("/solar-atlas?plz=97204");
       await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });

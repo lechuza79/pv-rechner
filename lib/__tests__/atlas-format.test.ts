@@ -60,6 +60,28 @@ describe("Einheit der installierten PV-Leistung", () => {
     expect(fmtWattProKopf(1234)).toBe("1.234 Wp");
   });
 
+  it("staffelt die Pro-Kopf-Leistung erst bei 10.000 Wp — der Normalfall bleibt in Wp", () => {
+    // Gemessen an allen 10.742 Gemeinden mit Solarbestand: Der Median liegt bei
+    // 1.714 Wp, 78 % liegen über 1.000. Eine Umschaltung bei 1.000 (wie bei der
+    // Gesamtleistung) machte aus dem Normalfall „1,7 kWp" — in einer RANGLISTE,
+    // in der 1.714 und 1.789 Wp dann dieselbe Zahl wären.
+    expect(fmtWattProKopf(1714)).toBe("1.714 Wp");
+    expect(fmtWattProKopf(9_999)).toBe("9.999 Wp");
+    expect(fmtWattProKopf(10_000)).toBe("10 kWp");
+    // Die 6 % darüber messen keinen Hausbestand mehr, sondern einen Solarpark
+    // geteilt durch ein Dorf. Eine Nachkommastelle lässt 100 Wp Auflösung.
+    expect(fmtWattProKopf(48_115)).toBe("48,1 kWp");
+  });
+
+  it("hält auch die Spitzenwerte in ihrer Spalte", () => {
+    // Herbstmühle: 25 Einwohner, 34,9 MWp. Ungestaffelt stand in der
+    // Ranglisten-Tabelle „1.395.922" und stieß ungetrennt an die Zahl der
+    // Nachbarspalte — vollständig lesbar und trotzdem falsch.
+    expect(fmtWattProKopf(1_395_922)).toBe("1.395,9 kWp");
+    // Büttel, der bundesweite Höchstwert.
+    expect(fmtWattProKopf(4_205_483)).toBe("4.205,5 kWp");
+  });
+
   it("zeigt die mittlere Batteriegröße mit einer Nachkommastelle", () => {
     // 8,7 und 9,4 kWh sind verschiedene Speicher — gerundet wären beide "9".
     expect(fmtBatterieMittel(8.72)).toBe("8,7 kWh");
