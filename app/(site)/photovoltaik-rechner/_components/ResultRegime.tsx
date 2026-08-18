@@ -202,12 +202,24 @@ export default function ResultRegime({
               {/* Die Wirkung an den Schalter schreiben. Sie steht sonst nur in
                   Zahlen weit oberhalb, und die Amortisation in ganzen Jahren
                   springt dadurch meist nicht — der Haken wirkte wirkungslos. */}
-              {marktWirkungEuro !== undefined && marktWirkungEuro > 0 && (
+              {marktWirkungEuro !== undefined && Math.round(marktWirkungEuro) > 0 && (
                 <span style={{ display: "block", fontSize: 12, color: v("--color-text-secondary"), marginTop: 4 }}>
                   Der Unterschied zwischen an und aus beträgt über 25 Jahre{" "}
                   <strong style={{ fontFamily: v("--font-mono"), color: v("--color-text-primary") }}>
                     {Math.round(marktWirkungEuro).toLocaleString("de-DE")} €
                   </strong>.
+                </span>
+              )}
+              {/* Bleibt die Wirkung bei null, ist das kein fehlender Wert, sondern
+                  das Ergebnis: Bei kleinen Anlagen bringt der Börsenverkauf über
+                  die Laufzeit weniger ein, als der Dienstleister an Grundgebühr
+                  verlangt — dann vermarktet niemand. Ohne diesen Satz sieht der
+                  Haken aus, als sei er kaputt. */}
+              {marktWirkungEuro !== undefined && Math.round(marktWirkungEuro) <= 0 && (
+                <span style={{ display: "block", fontSize: 12, color: v("--color-text-secondary"), marginTop: 4 }}>
+                  Bei dieser Anlagengröße bringt der Börsenverkauf über die Laufzeit nicht mehr
+                  ein, als die Grundgebühr des Dienstleisters kostet — deshalb ändert der Haken
+                  hier nichts.
                 </span>
               )}
             </span>

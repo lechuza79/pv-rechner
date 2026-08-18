@@ -612,7 +612,11 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         ? 0
         : Math.min(effEv + s.evDelta, 95, (gesamtVerbrauch / jahresertrag) * 100),
       einspeisung: effEinsp,
-      stromSteigerung: s.strom, ertragKwp: oErtrag, monthly: monthlyProfile,
+      // Der Ertrag DIESER Anlage, nicht das Standort-Optimum: Hier stand `oErtrag`
+      // und damit ein Bestfall-Dach, während jede andere Zahl der Seite mit dem
+      // echten Dach rechnet. Die Wirkung des Börsenerlöses war dadurch bei einem
+      // Ost/West-Dach 25 % zu groß, beim Nord-Pultdach 32 % (Council 18.08.2026).
+      stromSteigerung: s.strom, ertragKwp: effErtrag, monthly: monthlyProfile,
       batteryReplace: batteryReplaceCost(spKwh, prices),
     };
     const total = (mk: boolean) => {
@@ -631,8 +635,12 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         },
       }).total;
     };
-    return Math.max(0, total(true) - total(false));
-  }, [regime, effEinspeisungModus, scenario, kwp, kosten, oStrom, effEv, effEinsp, oErtrag,
+    // Kein `Math.max(0, …)`: Seit die Grundgebühr nur noch anfällt, wo sich die
+    // Vermarktung trägt, kann die Differenz nicht mehr negativ werden — und wenn
+    // doch, wäre genau das die Auskunft, die an den Schalter gehört. Eine auf
+    // null gekappte Zahl neben einer sinkenden Hauptzahl erklärt gar nichts.
+    return total(true) - total(false);
+  }, [regime, effEinspeisungModus, scenario, kwp, kosten, oStrom, effEv, effEinsp, effErtrag,
       monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag, marktSim, oMarktwert]);
 
   // Das aktuell gewählte Szenario treibt alle Ergebniszahlen. Fallback auf
@@ -789,7 +797,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         },
         {
           title: "Szenarien",
-          text: "Die drei Kurven unterscheiden sich im angenommenen Strompreisanstieg (1 %, 3 % und 5 % pro Jahr) und im Eigenverbrauch (±5 Prozentpunkte).",
+          // Die Prozentsätze aus SCENARIOS, nicht getippt: Im Bild stand „1 %, 3 %
+          // und 5 %", gerechnet wurden 1, 2 und 5 — und das Bild ist die Fassung,
+          // die ohne Rückfragemöglichkeit weitergereicht wird (Council 18.08.2026).
+          text: `Die drei Kurven unterscheiden sich im angenommenen Strompreisanstieg (${SCENARIOS.map(s => `${(s.strom * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} %`).join(", ")} pro Jahr) und im Eigenverbrauch (±5 Prozentpunkte).`,
         },
       ] : undefined,
       source: `${sourceLabel(DATA_SOURCES.pvgis)} (Standort-Ertrag) · Marktpreise taptaphome.com`,
@@ -1505,7 +1516,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               total={sel.data.total} kosten={kosten}
               wp={wp} wpKwh={wpKwh ?? 0} jaz={wpJaz} effEv={effEv} autarkie={autarkie} wpAutarky={pvSim.wpAutarky}
               jahresertrag={jahresertrag} gesamtVerbrauch={gesamtVerbrauch} speicherKwh={spKwh} monthly={pvSim.monthly} exampleDays={exampleDays}
-              oStrom={oStrom} stromSteigerung={sel.strom} fuelType={fuelType} setFuelType={setFuelType}
+              stromSteigerung={sel.strom} fuelType={fuelType} setFuelType={setFuelType}
             />
 
             {spKwh > 0 && effEinspeisungModus !== "voll" && (
