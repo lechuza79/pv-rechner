@@ -753,11 +753,37 @@ export const globalStyles = `
      Chrome dann Kacheln auf: In der Liste blieben einzelne Platz- und
      Namenszellen einfach unbemalt, waehrend im Baum alles korrekt stand. Nur die
      Kopfzeile braucht einen (--kopf), damit ihr Aufklapp-Menue ueber den Zeilen
-     liegt — das sind zehn Zellen, nicht zweihundert. */
+     liegt — das sind zehn Zellen, nicht zweihundert.
+
+     DIESE REGEL STAND HIER SCHON, DER CODE HIELT SIE NICHT EIN (bis 18.08.2026).
+     Die Zeile z-index:1 kam mit demselben Commit wie dieser Absatz herein und
+     hat nie eine Begruendung getragen. Sie blieb folgenlos, solange der
+     Scrollkasten selbst KEIN Stapelkontext war; seit er einen bekam (damit seine
+     Scrollleiste nicht ueber der schwebenden Postleitzahl-Karte liegt), lagen 34
+     Stapelkontexte in einem frischen Stapelkontext, und darueber laeuft auf der
+     Zeilen-Liste eine Ein-/Ausblendung mit opacity + transform (Keyframes fu),
+     die die ganze Gruppe zwischenspeichert. Auf dem Telefon (Safari, 390 px)
+     blieben ab Zeile 3 Platz- und Namensspalte unbemalt, waehrend die Wertspalten
+     daneben korrekt standen — dasselbe Bild, das dieser Absatz schon beschrieb:
+     im Baum ist alles da, gemalt wird es nicht.
+
+     WAS GEMESSEN IST UND WAS NICHT — damit es niemand staerker liest, als es ist:
+     Gemessen ist, dass es KEIN Layoutfehler ist (Rechtecke, Textinhalt, Farben,
+     Deckkraft und Deckung sind in Chromium wie in WebKit, direkt geladen wie nach
+     einer Groessenaenderung, fehlerfrei) und dass jede der 34 Zellen einen eigenen
+     Stapelkontext fuehrte. Gemessen ist auch, dass der Entzug nichts kostet: Die
+     Zellen decken den scrollenden Inhalt weiterhin vollstaendig, der Streifen vor
+     der ersten Spalte bleibt in jeder Raststellung sauber (Pixel gezaehlt).
+     NICHT gemessen ist die Heilung selbst — das fehlerhafte Bild liess sich in
+     keinem steuerbaren Browser nachstellen (headless wie sichtbar, beide
+     Engines), und an das echte Safari kam der Lauf nicht heran. Die Behebung ist
+     also aus dem Mechanismus begruendet, nicht am Fehlerbild bestaetigt; bleibt
+     das Telefon fehlerhaft, sind die naechsten Verdaechtigen der Stapelkontext auf
+     dem Scrollkasten selbst und scroll-snap-type, beide aus demselben Commit.
+     Erzwungen von e2e/ranking-fixspalten.spec.ts. */
   .atlas-fix-spalte{
     position:sticky;
     left:var(--atlas-fix-links,0px);
-    z-index:1;
     background:var(--atlas-zeilen-bg,var(--color-bg));
     --atlas-fix-deckung:
       calc(-1 * var(--atlas-fix-vorne,0px)) 0 0 0 var(--atlas-zeilen-bg,var(--color-bg)),
