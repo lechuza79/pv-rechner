@@ -85,20 +85,26 @@ async function resolve(pfad: string[] | undefined): Promise<AtlasRegion | null> 
   return resolveSlugPath(pfad);
 }
 
+function headline(region: AtlasRegion): string {
+  return `Solaranlagen ${ortPhrase(region)}`;
+}
+
 /**
- * Der Name, unter dem diese Seite gesucht wird.
+ * Der Eigenname der Seite — nur für den Titel, NICHT für die Überschrift.
  *
- * GEMESSEN, nicht geraten (18.08.2026, docs/seo/befund-2026-08-18-atlas-wellen.md):
- * Unser eigenes Wort schlägt das der Behörden. Auf „solaratlas nrw" (110 Suchen/Monat)
- * stehen wir auf Position 10,6, auf „solaratlas bayern" (90) auf 16,9 — und das,
- * obwohl das Wort „Solaratlas" bis dahin weder im Titel noch in einer Überschrift
- * stand. Auf „solarkataster nrw" (1.900) dagegen auf 71: Dort liegen die amtlichen
- * Dachflächen-Werkzeuge (Energieatlas NRW, Geoportal), die eine ANDERE Frage
- * beantworten („taugt mein Dach?" statt „was steht hier schon?"). Volumen ist keine
- * Chance, solange die Suchabsicht nicht passt.
+ * Das Wort „Solaratlas" stand bis 18.08.2026 nirgends auf der Seite, obwohl wir
+ * dafür platziert sind: „solaratlas bayern" (90 Suchen/Monat) Position 16,9,
+ * „solaratlas rlp" (720) Position 10,6, „solaratlas nrw" (110) Position 15,5
+ * (Search Console, Anfragen-Ebene, 18.07.–15.08.2026). Es kostet nichts, es in
+ * den Titel zu nehmen.
  *
- * Deshalb trägt der Titel beide Hälften: unser Wort für die Wiedererkennung und
- * „Solaranlagen"/„Photovoltaik" für die beschreibende Suche.
+ * ABER — die Überschrift bleibt bewusst die beschreibende („Solaranlagen in
+ * Bayern"), und der Grund ist eine Zahl, die beim ersten Anlauf fehlte: Die
+ * beschreibenden Begriffe sind zusammen das VIERFACHE unseres Eigennamens
+ * („solar bayern" 210, „photovoltaik bayern" 110, „solaranlagen bayern" 50 gegen
+ * „solaratlas bayern" 90). Den größeren Begriff gegen den kleineren zu tauschen
+ * wäre ein Verlustgeschäft gewesen. Der Titel trägt deshalb beide Hälften, die
+ * Überschrift die größere.
  */
 function seitenName(region: AtlasRegion): string {
   return region.level === "de" ? "Solaratlas Deutschland" : `Solaratlas ${region.name}`;
@@ -286,11 +292,7 @@ async function AtlasBody({
           · monatlich aktualisiert
         </div>
 
-        {/* Die Überschrift trägt den Namen der Sache („Solaratlas Bayern"), der
-            Satz darunter beschreibt sie („… Solaranlagen sind in Bayern in
-            Betrieb"). Beide Formulierungen werden gesucht, und getrennt gesetzt
-            steht keine der beiden im Weg — siehe seitenName(). */}
-        <h1 style={S.h1}>{seitenName(region)}</h1>
+        <h1 style={S.h1}>{headline(region)}</h1>
         <p style={S.intro}>
           <strong style={S.strong}>{nf(atlas.solar.total_count)} Solaranlagen</strong> mit zusammen{" "}
           <strong style={S.strong}>{fmtLeistung(atlas.solar.total_kwp)}</strong> installierter Leistung

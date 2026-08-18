@@ -62,10 +62,11 @@ Ergebnisseite. Die Auswahl gehört gemessen, nicht geschätzt: eine Handvoll SER
 
 ## 4. Reihenfolge
 
-1. **Jetzt (erledigt 18.08.):** Titel und Überschriften auf das gemessene Muster. Landes-
-   seiten tragen „Solaratlas <Land>" (dort stehen wir auf Position 10,6 bzw. 16,9 bei
-   90–110 Suchen/Monat, ohne dass das Wort bisher irgendwo auf der Seite stand), Gemeinde-
-   seiten „Photovoltaik in <Ort>". Kostet nichts und wirkt auf die 17 sofort.
+1. **Jetzt (erledigt 18.08.):** Der Eigenname kommt in die **Titel** der Landesseiten
+   („Solaratlas Bayern: Solaranlagen, Bestand & Zubau"); die Überschrift bleibt die
+   beschreibende („Solaranlagen in Bayern"), weil die beschreibenden Begriffe zusammen
+   das Vierfache des Eigennamens wiegen (210 + 110 + 50 gegen 90 Suchen/Monat).
+   Gemeindeseiten tragen „Photovoltaik in <Ort>". Kostet nichts und wirkt sofort.
 2. **Vor Welle 1:** Award-Rangliste (liefert Rang und Nachbarvergleich als *eine* Quelle)
    und die zwei echten Fakten je Ort — größte Einzelanlage, benannter Nachbarvergleich.
    Ohne sie ist jede Ortsseite eine Schablone mit anderen Zahlen.

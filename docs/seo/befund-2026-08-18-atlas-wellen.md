@@ -121,11 +121,24 @@ Domain insgesamt: 45 (03.08.: 34, 13.08.: 43), davon 0 in den Top 10.
    und den zwei echten Fakten je Seite (größte Anlage, benannter Nachbar). Die
    Wettbewerbsmessung sagt jetzt, wofür sich der Aufwand lohnt: **Ortsname + „pv" /
    „solar" / „photovoltaik"** gehört in Titel, Überschrift und Einstieg.
-3. **Sofort und billig: die 17 Landesseiten auf unser eigenes Vokabular schärfen.**
-   „solaratlas nrw" (110/Monat, wir auf 10,6) und „solaratlas bayern" (90/Monat, wir auf
-   16,9) sind die einzigen Begriffe, bei denen wir nahe an Seite 1 stehen und die
-   Intention wirklich passt. Das ist der Anreicherungs-Pilot aus dem Wellenplan — er
-   braucht keine neue Welle.
+3. **Sofort und billig: den Eigennamen „Solaratlas" in die Titel der 17 Landesseiten.**
+   Er stand dort nirgends, obwohl wir dafür platziert sind: „solaratlas rlp" (720/Monat)
+   Position 10,6, „solaratlas bayern" (90) 16,9, „solaratlas nrw" (110) 15,5. Das sind
+   die einzigen Begriffe, bei denen wir nahe an Seite 1 stehen **und** die Suchabsicht
+   passt.
+
+   **Aber nur zusätzlich, nicht anstelle der beschreibenden Wörter** — das war der
+   Fehler im ersten Anlauf dieses Papiers, und der Betreiber hat ihn bemerkt, bevor er
+   live ging: Die Überschrift „Solaranlagen in Bayern" sollte zu „Solaratlas Bayern"
+   werden. Die dafür nötige Gegenzahl fehlte schlicht. Nachgemessen sind die
+   beschreibenden Begriffe zusammen das **Vierfache** des Eigennamens: „solar bayern"
+   210, „photovoltaik bayern" 110, „solaranlagen bayern" 50 gegen „solaratlas bayern"
+   90. Der Titel trägt jetzt beide Hälften, die Überschrift bleibt die beschreibende.
+
+   **Regel daraus:** Wer einen Begriff durch einen anderen ersetzt, misst BEIDE. Ein
+   guter Wert für den neuen Begriff sagt nichts darüber, was der alte eingebracht hat —
+   dieselbe Systematik wie bei „Volumen ist keine Chance, solange die Suchabsicht nicht
+   passt", nur eine Ebene davor.
 4. **Kreisseiten bleiben trotzdem gebaut und erreichbar** (intern verlinkt, on-demand,
    im Gesundheitscheck). Sie sind der Umschlagplatz zur Ortsebene — nur eben kein
    eigenes Suchziel. Wenn die Ortswelle steht, kann die Kreisebene beiläufig mitlaufen.
