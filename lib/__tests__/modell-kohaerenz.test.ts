@@ -5,7 +5,8 @@ import { calcHeatPump, calcHeatPumpScenarios, type HeatPumpInputs } from "../hea
 import { recommend } from "../recommend";
 import { DEFAULT_HEATPUMP_CONFIG as CFG } from "../heatpump-config";
 import { greenGasApplies } from "../fossil-reference";
-import { INSULATION_BESTAND, WP_FUEL_OPTIONS, SCENARIOS, DEGRAD } from "../constants";
+import { INSULATION_BESTAND, WP_FUEL_OPTIONS, SCENARIOS, DEGRAD, DACHARTEN, NATIONAL_AVG_YIELD } from "../constants";
+import { dachErtragKwp } from "../dach-ertrag";
 import { calc } from "../calc";
 import { einspeiseVerlauf } from "../einspeise-regime";
 
@@ -445,6 +446,67 @@ describe("Modell-Kohärenz: eine Aussage gilt über die ganze Laufzeit", () => {
         `${datei} nennt einen Strompreis-Pfad, den es in SCENARIOS nicht gibt ` +
         `(gerechnet wird realistisch mit ${REALISTISCH} %/Jahr): ${treffer.join(", ")} %`,
       ).toEqual([]);
+    }
+  });
+
+  it("der Dachabschlag greift genau einmal", () => {
+    // Der Startwert ohne Postleitzahl war bis 18.08.2026 der Bundesschnitt MINUS
+    // 100 kWh — ein Dachabschlag in einer Größe, die „Standort-Optimum" heißt und
+    // anschließend noch durch die Dach-Matrix läuft. Wer sein Ost/West-Dach angab,
+    // bekam ihn zweimal. Der Beweis, dass die Basis sauber ist: Ein Süd-Satteldach
+    // steht in der Matrix bei 100 % — der gerechnete Ertrag muss dort also exakt
+    // dem Optimum entsprechen. Bleibt er darunter, steckt wieder ein zweiter
+    // Abschlag in der Basis.
+    const suedIdx = DACHARTEN.findIndex(d => !d.aufgestaendert);
+    expect(suedIdx, "keine Dachform ohne Aufständerung gefunden").toBeGreaterThanOrEqual(0);
+    const bestfall = dachErtragKwp(NATIONAL_AVG_YIELD, suedIdx, "sued", 35);
+    expect(
+      bestfall,
+      `Süd-Satteldach bei 35° ist der Bestfall der Matrix und muss dem Standort-` +
+      `Optimum (${NATIONAL_AVG_YIELD}) entsprechen — gerechnet wurden ${bestfall}.`,
+    ).toBe(NATIONAL_AVG_YIELD);
+    // Und ohne Angabe gilt das Optimum unverändert: Die Rechner schreiben genau
+    // das hin („bei optimaler Neigung nach Süden") — eine stille Kürzung würde
+    // diesen Satz zur Falschaussage machen.
+    expect(dachErtragKwp(NATIONAL_AVG_YIELD, null, null)).toBe(NATIONAL_AVG_YIELD);
+  });
+
+  it("keine zweite, gekürzte Ertragskonstante", () => {
+    const quelle = readFileSync(join(ROOT, "lib/constants.ts"), "utf8");
+    expect(
+      /NATIONAL_AVG_YIELD\s*[-+]\s*\d/.test(quelle),
+      `In den Konstanten steht wieder ein Ertrag als „Bundesschnitt ± x“ — genau so ` +
+      `entstand der doppelte Dachabschlag. Ein Abschlag gehört in die Dach-Matrix, ` +
+      `wo er zur Angabe des Nutzers passt und sichtbar begründet ist.`,
+    ).toBe(false);
+  });
+
+  it("„Rendite“ steht nie als Beschriftung über einem Euro-Betrag", () => {
+    // Eine Rendite ist ein Prozentsatz. Über der 25-Jahres-Summe stand projektweit
+    // „Rendite 25 Jahre" — und in zwei Kacheln daneben schon „Gewinn 25 J.", also
+    // zwei Wörter für dieselbe Größe (Betreiber-Entscheidung 18.08.2026: „Gewinn").
+    // „Ertrag" wäre hier falsch: So heißt im Rechner der Stromertrag in kWh je kWp,
+    // und der steht in derselben Karte.
+    const KACHELN = [
+      "app/(site)/photovoltaik-rechner/_components/ResultStats.tsx",
+      "app/(site)/pv-bedarf-berechnen/empfehlung.tsx",
+      "app/(site)/dashboard/client.tsx",
+      "app/(site)/ratgeber/lohnt-sich-pv-mit-speicher/page.tsx",
+      "components/FundingProgramParts.tsx",
+    ];
+    for (const datei of KACHELN) {
+      const quelle = readFileSync(join(ROOT, datei), "utf8");
+      const funde = [...quelle.matchAll(/>\s*Rendite\s*\d|Rendite\s*2?5?\s*J(?:ahre|\.)?\s*</g)]
+        .map(m => m[0].trim());
+      expect(
+        funde,
+        `${datei} beschriftet einen Geldbetrag als „Rendite": ${funde.join(", ")}`,
+      ).toEqual([]);
+      expect(
+        /Ertrag\s*(?:nach\s*)?25/.test(quelle),
+        `${datei} nennt einen Geldbetrag „Ertrag" — das ist im Rechner der Stromertrag ` +
+        `in kWh je kWp und steht in derselben Karte.`,
+      ).toBe(false);
     }
   });
 

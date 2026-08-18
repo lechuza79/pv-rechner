@@ -183,7 +183,7 @@ export function ExampleCards({ examples }: { examples: FundingExample[] }) {
               <span style={{ fontFamily: v("--font-mono"), fontWeight: 700 }}>{ex.amort !== null ? `${ex.amort} Jahre` : "> 25 J."}</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: v("--color-text-secondary") }}>Rendite 25 J.</span>
+              <span style={{ color: v("--color-text-secondary") }}>Gewinn 25 J.</span>
               <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: ex.total > 0 ? v("--color-positive") : v("--color-negative") }}>{ex.total > 0 ? "+" : ""}{nf(ex.total)} €</span>
             </div>
           </div>

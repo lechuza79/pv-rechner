@@ -185,7 +185,7 @@ export default function GreenThemingEditor({ initial }: { initial: ThemeOverride
         {/* Positiv-Grün in context */}
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "stretch" }}>
           <div style={{ flex: "1 1 130px", background: "var(--color-bg-muted)", borderRadius: 12, padding: "12px 14px", border: `1px solid var(--color-border)` }}>
-            <div style={{ fontSize: 10, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>Rendite 25 J</div>
+            <div style={{ fontSize: 10, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>Gewinn 25 J.</div>
             <div style={{ fontSize: 24, fontWeight: 800, fontFamily: "var(--font-mono)", color: "var(--color-positive)", marginTop: 4 }}>+18.450<span style={{ fontSize: 13 }}> €</span></div>
           </div>
           <div style={{ flex: "1 1 130px", background: "var(--color-bg-muted)", borderRadius: 12, padding: "12px 14px", border: `1px solid var(--color-border)` }}>
