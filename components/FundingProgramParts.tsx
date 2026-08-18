@@ -1,4 +1,5 @@
 import { v } from "../lib/theme";
+import InfoTooltip from "./InfoTooltip";
 import type { FundingProgram, FundingStatus } from "../lib/funding-programs";
 import type { FundingExample } from "../lib/funding-examples";
 
@@ -23,6 +24,20 @@ export const FUNDING_STATUS_NOTE: Record<FundingStatus, string> = {
   pausiert: "aktuell pausiert (keine neuen Anträge)",
   eingestellt: "eingestellt (wird nicht mehr angeboten)",
   unsicher: "Status unklar",
+};
+
+/**
+ * Einheiten, die eine Erklärung brauchen — als „?" hinter der Einheit.
+ *
+ * „Prozentpunkte" ist der Fall, für den es das gibt: +5 Prozentpunkte auf 20 %
+ * ergibt 25 %, nicht 21 %. Der Unterschied sind bei 17.000 € Investition rund
+ * 680 € — die Einheit deshalb NICHT zu „%" zu vereinfachen, sondern zu
+ * erklären, ist die einzige Fassung, die stimmt UND verstanden wird.
+ */
+const EINHEIT_ERKLAERT: Record<string, string> = {
+  Prozentpunkte:
+    "Prozentpunkte werden auf den Fördersatz aufgeschlagen, nicht vom Betrag abgezogen: " +
+    "5 Prozentpunkte auf 20 % ergeben 25 % — nicht 21 %.",
 };
 
 export function fundingStatusColor(status: FundingStatus): string {
@@ -100,25 +115,36 @@ export function FundingRates({
         const m = ohneZusatz.match(/^([+\u2212-]?[\d.,]+(?:\s*[\u2013-]\s*[\d.,]+)?)\s*(.*)$/);
         const zahl = m ? m[1] : ohneZusatz;
         const einheit = m && m[2] ? m[2] : null;
+        // Kurzzeichen bleiben in der Zeile, ausgeschriebene Einheiten rutschen
+        // darunter — sonst wird die Zeile vom Wort statt von der Zahl geführt.
+        const kurzeEinheit = !!einheit && einheit.length <= 3;
         return (
           <div
             key={r.label}
             style={{
-              display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 16,
+              display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 16, paddingTop: 4,
               fontSize: "var(--font-size-body)",
-              ...(bordered ? { borderBottom: `1px solid ${v("--color-border")}`, paddingBottom: 8 } : {}),
+              ...(bordered ? { borderBottom: `1px solid ${v("--color-border")}`, paddingBottom: 12 } : {}),
             }}
           >
             <span style={{ color: v("--color-text-secondary") }}>{r.label}</span>
             <span style={{ textAlign: "right", flexShrink: 0 }}>
               <span style={{ whiteSpace: "nowrap" }}>
                 <span style={{ fontFamily: v("--font-mono"), fontWeight: 700 }}>{zahl}</span>
-                {einheit && (
+                {einheit && kurzeEinheit && (
                   <span style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), fontWeight: 400, marginLeft: 4 }}>
                     {einheit}
                   </span>
                 )}
               </span>
+              {einheit && !kurzeEinheit && (
+                <span style={{ display: "block", fontSize: "var(--font-size-caption)", color: v("--color-text-muted"), fontWeight: 400, marginTop: 2 }}>
+                  {einheit}
+                  {EINHEIT_ERKLAERT[einheit] && (
+                    <InfoTooltip title="Prozentpunkte" size={12} ariaLabel={`Was bedeutet ${einheit}?`}>{EINHEIT_ERKLAERT[einheit]}</InfoTooltip>
+                  )}
+                </span>
+              )}
               {zusatz && (
                 <span style={{ display: "block", fontSize: "var(--font-size-caption)", color: v("--color-text-muted"), fontWeight: 400, marginTop: 2 }}>
                   {zusatz}

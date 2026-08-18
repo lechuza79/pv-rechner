@@ -276,7 +276,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { label: "PV-Anlage", value: "20 % (30 % als Solar-Gründach)" },
       { label: "Batteriespeicher + Ladesäule", value: "20 %" },
       { label: "Gemeinschaftsprojekte", value: "+5 Prozentpunkte" },
-      { label: "Balkonkraftwerk", value: "derzeit keine Mittel" },
+      { label: "Balkonkraftwerk", value: "keine Mittel" },
     ],
     conditions: [
       "Erst nach Zuwendungsbescheid mit der Maßnahme beginnen",
