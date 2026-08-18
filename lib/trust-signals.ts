@@ -77,24 +77,34 @@ const HTW_STUDIEN = "https://solar.htw-berlin.de/studien/";
 export const TRUST_SIGNALS: readonly TrustSignal[] = [
   {
     titel: "Auf Basis von Forschungsdaten",
-    text: "Unsere Autarkie-Rechnung ist an den Simulationsdaten der HTW Berlin geeicht.",
+    text: "Eigenverbrauch und Autarkie rechnen wir auf Grundlage der Simulationsdaten der HTW Berlin.",
     betont: "HTW Berlin",
     links: [{ begriff: "HTW Berlin", url: HTW_STUDIEN }],
     mehr: true,
     detail:
-      "Die HTW Berlin hat 25.000 Anlagen-Konfigurationen minutengenau durchsimuliert. Unsere eigene Stundensimulation muss dieses Kennfeld bei gleichem Tagverbrauch auf drei Prozentpunkte genau treffen — ein Test prüft das bei jeder Änderung am Rechenkern.",
+      "Die Forschungsgruppe um Volker Quaschning hat 25.000 Anlagen-Konfigurationen minutengenau durchsimuliert. Aus dieser Auswertung stammt die Formel, mit der wir den Eigenverbrauch bestimmen. Für die Autarkie kommt eine Prüfung dazu: Unsere eigene Stundensimulation muss das Kennfeld der HTW bei gleichem Tagverbrauch auf drei Prozentpunkte genau treffen, und ein Test kontrolliert das bei jeder Änderung am Rechenkern.",
     belegUrl: HTW_STUDIEN,
     belegLabel: "Studien der HTW Berlin",
     href: "/methodik",
     icon: "check",
-    // "geeicht an", NICHT "nach der Methodik berechnet": Wir rechnen mit einer
-    // EIGENEN Stundensimulation und prüfen deren Ergebnis gegen HTWs Kennfeld
-    // (AUTARKY_GRID in lib/constants.ts, Test in lib/__tests__/pv-sim.test.ts).
-    // Die Methodik der HTW zu übernehmen wäre etwas anderes und stimmt nicht.
+    // BEIDE Größen, aber auf verschiedenen Wegen — der Satz sagt deshalb
+    // "auf Grundlage von", nicht "geprüft gegen":
+    //   • Eigenverbrauch: calcEigenverbrauch (lib/calc.ts) IST das
+    //     Power-Law von Quaschning/Weniger, kalibriert an 25.000
+    //     Konfigurationen. Die Formel stammt von dort — eine laufende Prüfung
+    //     gegen ein externes Kennfeld gibt es dafür nicht.
+    //   • Autarkie: eigene Stundensimulation, zusätzlich gegen AUTARKY_GRID
+    //     geprüft (lib/constants.ts, Test in lib/__tests__/pv-sim.test.ts,
+    //     ±3 pp).
     //
-    // NUR die Autarkie — der Eigenverbrauch fürs Geld kommt aus
-    // calcEigenverbrauch (Power-Law) und hat keinen externen Anker.
-    beleg: "lib/__tests__/pv-sim.test.ts + /methodik",
+    // Am 17.08.2026 stand hier zwischenzeitlich nur die Autarkie: Ein Audit
+    // hatte "rechnen wir nach" für den Eigenverbrauch zu Recht beanstandet, und
+    // die Korrektur ging zu weit — sie strich die Größe statt das Verb. Wer
+    // beides gleich benennt, muss das schwächere Verb für beide nehmen.
+    //
+    // NICHT "nach der Methodik der HTW berechnet": Die Autarkie-Simulation ist
+    // unsere eigene, HTW liefert dort den Prüfmaßstab.
+    beleg: "lib/calc.ts (Power-Law) + lib/__tests__/pv-sim.test.ts + /methodik",
   },
   {
     titel: "Offizielle Datenquellen",
