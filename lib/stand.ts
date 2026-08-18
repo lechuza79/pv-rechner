@@ -25,6 +25,13 @@
 // Neue Rechner-Seite: Eintrag hier ergänzen und <StandNote> unter den Inhalt
 // setzen. Eine Seite ohne ehrliches Datum bekommt KEINEN Eintrag mit erfundenem
 // Stichtag, sondern nur ihre Live-Werte (Muster: /pv-simulation).
+//
+// DIESES MODUL IST SERVERSEITIG. Die sieben Config-Importe unten sind der Preis
+// dafür, dass kein Datum handgetippt ist — sie gehören aber in kein Browser-
+// Bundle. Wer die Stand-Zeile in einer CLIENT-Komponente braucht, liest den
+// Datensatz in der Server-Seite mit `standSeite(pfad)` und reicht ihn durch;
+// gerendert wird er dann von <StandNoteView>, das nur `lib/stand-format`
+// importiert. Direkt <StandNote pfad="…"> nur in Server-Komponenten.
 import { DEFAULT_BALKON_CONFIG, BALKON_RECHT } from "./balkon-config";
 import { DEFAULT_AIRCON_CONFIG } from "./aircon-config";
 import { DEFAULT_HEATPUMP_CONFIG } from "./heatpump-config";
@@ -40,36 +47,17 @@ import { EEG_REFORM_STAND } from "./eeg-reform-config";
  *  eigenes Prüfdatum. */
 const FEED_IN_WERTSTAND = feedInRatesFor(new Date(`${FEED_IN_GEPRUEFT_ISO}T00:00:00`)).validFrom;
 
-/** `tag` = YYYY-MM-DD (eine Prüfung an einem Tag), `monat` = YYYY-MM (ein
- *  Datenstand, den taggenau anzugeben Genauigkeit vortäuschen würde). */
-export type StandPraezision = "tag" | "monat";
-
-export interface StandEintrag {
-  /** Was geprüft wurde — in der Sprache der Seite, nicht der des Codes. */
-  was: string;
-  /** ISO-Datum aus der Config, die den Wert trägt. Nie hier getippt. */
-  iso: string;
-  praezision: StandPraezision;
-  /**
-   * Stand der Werte selbst (`validFrom`). <StandNote> zeigt ihn IMMER neben dem
-   * Prüfdatum — beide Zahlen beantworten verschiedene Fragen, und wer die zweite
-   * nur bei Abweichung sieht, lernt nie, dass es sie gibt.
-   *
-   * Fehlt hier, wo es keinen Wertstand GIBT: Eine Rechtsaussage ist geltendes
-   * Recht oder nicht; ein Datum dafür müsste man erfinden.
-   *
-   * Dies — nicht das Prüfdatum — ist die Grundlage des `lastmod` der Sitemap
-   * (siehe `standLastModIso`).
-   */
-  wertIso?: string;
-}
-
-export interface StandSeite {
-  /** Geprüfte Stände. Leer, wenn die Seite ausschließlich live rechnet. */
-  eintraege: StandEintrag[];
-  /** Werte, die bei jedem Aufruf frisch geholt werden — ohne Stichtag. */
-  live: string[];
-}
+// Typen und Datums-Wortlaut liegen in `stand-format.ts` (config-frei, damit die
+// Client-Seite sie mitnehmen kann) und werden hier weitergereicht — für alle
+// Aufrufer bleibt `lib/stand` die eine Adresse.
+export {
+  monatJahr,
+  tagMonatJahr,
+  type StandPraezision,
+  type StandEintrag,
+  type StandSeite,
+} from "./stand-format";
+import type { StandSeite } from "./stand-format";
 
 export const STAND: Record<string, StandSeite> = {
   // Marktpreise kommen hier live aus der Preis-Pipeline (monatlicher Scrape in
@@ -153,13 +141,20 @@ export const STAND: Record<string, StandSeite> = {
   },
 };
 
-/** „Juli 2026" aus „2026-07". */
-export const monatJahr = (ym: string) =>
-  new Date(`${ym}-01T00:00:00`).toLocaleDateString("de-DE", { month: "long", year: "numeric" });
-
-/** „16. August 2026" aus „2026-08-16". */
-export const tagMonatJahr = (iso: string) =>
-  new Date(`${iso}T00:00:00`).toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" });
+/**
+ * Der Datensatz einer Seite — für Server-Komponenten, die ihn an eine
+ * Client-Komponente durchreichen (Muster: die Rechner, deren Stand-Zeile
+ * innerhalb des Rechner-Rahmens sitzt). Das Ergebnis ist reine Daten und damit
+ * über die Server/Client-Grenze übergebbar; gerendert wird es von
+ * <StandNoteView>.
+ *
+ * Der Pfad steht dabei bewusst als Literal am Aufruf: `lib/__tests__/stand.test.ts`
+ * liest ihn von dort und prüft, dass jede Seite mit Stand-Zeile einen Eintrag
+ * hat — und jeder Eintrag eine Seite.
+ */
+export function standSeite(pfad: string): StandSeite | undefined {
+  return STAND[pfad];
+}
 
 /**
  * Das jüngste taggenaue Prüfdatum einer Seite — „wann hat zuletzt jemand

@@ -15,7 +15,8 @@ import Toast from "../../../components/Toast";
 import DachField, { DACH_FIELDS } from "../../../components/DachField";
 import { dachErtragHinweis, dachErtragKwp } from "../../../lib/dach-ertrag";
 import { type TiltOrientation } from "../../../lib/tilt-config";
-import StandNote from "../../../components/StandNote";
+import StandNoteView from "../../../components/StandNoteView";
+import { type StandSeite } from "../../../lib/stand-format";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
 import PresetNumberInput from "../../../components/PresetNumberInput";
@@ -74,7 +75,9 @@ const WP_FIELDS = GEBAEUDE_FIELDS;
 const EA_FIELDS = ["ea-km"] as const;
 const GV_FIELDS = [...WP_FIELDS, ...EA_FIELDS];
 
-export default function Empfehlung() {
+// `stand` kommt fertig aufgelöst von der Server-Seite (page.tsx) — siehe dort,
+// warum der Flow ihn nicht selbst aus `lib/stand.ts` liest.
+export default function Empfehlung({ stand }: { stand?: StandSeite }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const prices = usePrices();
@@ -851,7 +854,7 @@ export default function Empfehlung() {
 
         {/* Innerhalb der Spalte, nicht dahinter — der Rahmen ist mindestens
             bildschirmhoch, und was dahinter steht, sieht niemand. */}
-        <StandNote pfad="/pv-bedarf-berechnen" />
+        <StandNoteView seite={stand} />
       </div>
     </div>
   );

@@ -62,6 +62,12 @@ export interface FundingProgram {
    *  fallback = updated_at). Surfaced as "Zuletzt geprüft" and as sitemap lastmod.
    *  Set by lib/funding-data.ts from the funding_programs row, not by the seed. */
   lastVerified?: string;
+  /** Letzter geglückter Abruf der Amtsseite durch den Seiten-Wächter (ISO).
+   *  Bestätigt: Die Seite ist noch da und unverändert. DB-only. */
+  pageSeenAt?: string;
+  /** Zeitpunkt der letzten erkannten Änderung der Amtsseite (ISO). Liegt er nach
+   *  `lastVerified`, ist der geprüfte Inhalt in Frage gestellt. DB-only. */
+  changedSinceIso?: string;
 }
 
 /**
@@ -70,15 +76,28 @@ export interface FundingProgram {
  * ("Stand: Juni 2026") for code-seed entries. Appends "· unbestätigt" when the
  * program is not confirmed against the official source.
  */
-export function fundingStandLabel(p: FundingProgram): string {
+export function fundingStandLabel(p: FundingProgram, heute?: string): string {
   const unbestaetigt = p.verified ? "" : " · unbestätigt";
+  // Zählt das Programm gerade nicht mit, MUSS das am Prüfdatum stehen — BLOCKER.
+  // Sonst liest jemand "Zuletzt geprüft: 05.08.2026" neben einer Beispielrechnung,
+  // die diese Förderung stillschweigend weglässt: Text und Zahl widersprechen
+  // sich, und das ist die schwerste Fehlerklasse dieses Projekts.
+  // NUR bei Programmen, die überhaupt einen Betrag abziehen können. Ein
+  // Bundesprogramm wie die 0 % Mehrwertsteuer trägt keinen strukturierten Satz
+  // und wird nie eingerechnet — dort wäre "daher nicht eingerechnet" eine
+  // beunruhigende Falschaussage über eine dauerhafte Rechtslage.
+  const rechenbar = !!(p.percentOfCost || p.pvPerKwp || p.pvTiers || p.speicherPerKwh || p.speicherTiers);
+  const nichtGerechnet =
+    rechenbar && p.status === "aktiv" && !fundingBelegAktuell(p, heute ?? heuteIso())
+      ? " · aktuell nicht bestätigt, daher nicht eingerechnet"
+      : "";
   if (p.lastVerified) {
     const d = new Date(p.lastVerified);
     if (!isNaN(d.getTime())) {
-      return `Zuletzt geprüft: ${d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })}${unbestaetigt}`;
+      return `Zuletzt geprüft: ${d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })}${unbestaetigt}${nichtGerechnet}`;
     }
   }
-  return `Stand: ${p.stand}${unbestaetigt}`;
+  return `Stand: ${p.stand}${unbestaetigt}${nichtGerechnet}`;
 }
 
 // Bund applies everywhere and combines with every regional program.
@@ -801,19 +820,29 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "wolfsburg-pv": {
     id: "wolfsburg-pv", name: "Förderung der Solarstromerzeugung",
     traeger: "Stadt Wolfsburg", level: "kommune", region: "Wolfsburg", bundesland: "Niedersachsen", agsCode: "03103",
-    url: "https://www.wolfsburg.de/newsroom/2026/04/photovoltaik-foerderprogramm",
-    stand: "Juni 2026", status: "pausiert", capped: true, verified: true,
+    // Adresse ersetzt am 17.08.2026: Die frühere Newsroom-Meldung
+    // (/newsroom/2026/04/photovoltaik-foerderprogramm) antwortet mit 404 — der
+    // Seiten-Wächter hat sie als tot gemeldet. Eine Pressemeldung ist ohnehin die
+    // falsche Quelle für laufende Konditionen; sie verfällt mit dem Nachrichtenwert.
+    // Jetzt die Themenseite der Stadt, dazu die amtlichen Förderbedingungen als PDF
+    // (Stand 16.03.2026), an denen die Sätze am 17.08.2026 Zeile für Zeile geprüft
+    // wurden: Punkt 5.1 (Beträge), 5.2 (50 %), 5.3 (je Wohneinheit), 7.1 (Fenster).
+    url: "https://www.wolfsburg.de/umweltnaturschutz/klimaschutz/erneuerbare_energien",
+    stand: "August 2026", status: "pausiert", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Pauschale nach Anlagengröße + Speicher (max. 50 % der Kosten)",
     maxFoerderung: "max. 2.000 € je Wohneinheit",
     rates: [
       { label: "PV-Anlage", value: "700 € (<6 kWp) / 1.000 € (6–12 kWp) / 1.500 € (ab 12 kWp)" },
       { label: "Batteriespeicher (ab 3 kWh)", value: "+500 €" },
+      { label: "Steckerfertige PV (Balkonkraftwerk)", value: "200 €" },
     ],
     conditions: [
       "Antrag nur im jährlichen Fenster — 2026 vom 14.05. bis 14.06., aktuell geschlossen",
-      "nur Bestandsgebäude; Losverfahren bei Überzeichnung",
-      "max. 50 % der Kosten",
+      "Losverfahren bei Überzeichnung, kein Windhundverfahren",
+      "max. 50 % der entstandenen Kosten",
+      "Je Wohneinheit höchstens eine PV-Anlage oder ein Balkonkraftwerk plus ein Speicher",
+      "Nicht förderfähig: gesetzlich vorgeschriebene Anlagen, Anlagen als Teil eines Bauvorhabens, Insel-, Miet-, Leasing- und Eigenbauanlagen sowie gewerblich genutzte Immobilien",
     ],
     combinableWith: BUND,
     pvTiers: [{ upTo: 6, amount: 700 }, { upTo: 12, amount: 1000 }, { upTo: 999, amount: 1500 }],
@@ -977,63 +1006,98 @@ function tierAmount(tiers: { upTo: number; amount: number }[], value: number): n
 
 // ─── Vertrauen verfällt — BLOCKER ────────────────────────────────────────────
 //
-// WARUM (16.08.2026): Ein Förderbetrag wurde abgezogen, solange `status: "aktiv"`
-// im Datensatz stand — unbefristet. Ob das noch stimmte, hing allein daran, dass
-// irgendein Wächter lief und es widerrief. Diese Wächter laufen aber nur, wenn
-// der Rechner des Betreibers an ist; in der Urlaubswoche (09.–13.08.2026) lief
-// fünf Tage keiner, und niemand hat es bemerkt. Eine Zusage, die nur durch
-// AUSBLEIBEN eines Widerrufs weitergilt, ist genau die Konstruktion, die still
-// falsch wird.
+// WARUM (16./17.08.2026): Ein Förderbetrag wurde abgezogen, solange
+// `status: "aktiv"` dastand — unbefristet, gedeckt allein dadurch, dass kein
+// Wächter widersprach. Die erste Fassung dieser Regel setzte deshalb ein festes
+// Höchstalter von 180 Tagen auf die letzte inhaltliche Prüfung.
 //
-// Deshalb dreht diese Regel die Beweislast um: Abgezogen wird nur, was innerhalb
-// der Frist an der AMTSQUELLE bestätigt wurde. Läuft kein Wächter, verfällt der
-// Abzug von selbst — deterministisch, ohne dass irgendetwas laufen muss.
-// Schweigen bedeutet damit nicht mehr „gilt weiter", sondern „nicht mehr belegt".
+// Das war die falsche Größe, und der Betreiber hat es zu Recht zurückgewiesen:
+// Ein halbes Jahr alter Stand ist keine Absicherung, sondern ein halbes Jahr
+// alter Stand. Die Frist war als Notbremse gedacht und wurde zum Ersatz für die
+// Prüfung.
 //
-// Die Richtung ist bewusst zu unseren Ungunsten: Wer eine Förderung bekommt, die
-// wir nicht mehr einrechnen, erlebt eine angenehme Überraschung. Umgekehrt hat
-// jemand mit einer Zahl geplant, die es nicht mehr gibt.
+// DIE RICHTIGE GRÖSSE IST NICHT DAS ALTER, SONDERN DIE BESTÄTIGUNG. Der
+// Seiten-Wächter ruft jede Amtsseite täglich ab und vergleicht sie mit dem
+// Stand, den wir inhaltlich geprüft haben (scripts/funding-watch.ts). Ist die
+// Seite unverändert, gilt der geprüfte Inhalt weiter — dafür braucht es keine
+// Frist, das ist einfach wahr. Die Uhr läuft nur, wenn wir NICHT bestätigen
+// können, und dann kurz:
 //
-// 180 Tage, weil der Quartals-Voll-Lauf alle 90 Tage fährt: Ein komplett
-// ausgefallener Zyklus ist damit noch abgedeckt, zwei nicht mehr.
+//   1. Die Seite hat sich geändert  → wir kennen den neuen Inhalt nicht.
+//      Ab da bleiben NACHPRUEF_FRIST_TAGE, um sie inhaltlich neu zu prüfen.
+//   2. Die Seite ist nicht erreichbar → wir wissen nicht, ob sie sich geändert
+//      hat. Ab dem letzten geglückten Abruf bleiben BESTAETIGUNG_MAX_TAGE.
 //
-// Gemessen bei Einführung: Von 38 Programmen ziehen genau 5 überhaupt Geld ab
-// (Regensburg, Darmstadt, Köln, Potsdam, Frankfurt) — alle fünf im August 2026
-// an der Amtsquelle bestätigt. Die Regel ändert heute also nichts; sie sichert
-// den Tag ab, an dem die Prüfung ausfällt.
-export const FOERDER_MAX_ALTER_TAGE = 180;
+// Danach fliegt der Abzug raus. Beides sind zwei Wochen, nicht sechs Monate:
+// Der Wächter läuft täglich, ein Programm hat also rund vierzehn Anläufe. Wer
+// in vierzehn Anläufen nicht durchkommt, kommt nicht wegen einer Laune nicht
+// durch.
+//
+// Die Richtung bleibt zu unseren Ungunsten: Wer eine Förderung bekommt, die wir
+// nicht einrechnen, erlebt eine angenehme Überraschung. Umgekehrt hat jemand mit
+// einer Zahl geplant, die es nicht mehr gibt.
+
+/** So lange gilt ein geprüfter Inhalt ohne neuen geglückten Abruf weiter. */
+export const FOERDER_BESTAETIGUNG_MAX_TAGE = 14;
+
+/** So lange darf ein Programm nach einer Seitenänderung ungeprüft mitrechnen. */
+export const FOERDER_NACHPRUEF_FRIST_TAGE = 14;
 
 function heuteIso(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
+function tageSeit(iso: string | undefined | null, heute: string): number {
+  if (!iso) return Number.POSITIVE_INFINITY;
+  const a = Date.parse(iso.slice(0, 10));
+  const b = Date.parse(heute.slice(0, 10));
+  if (Number.isNaN(a) || Number.isNaN(b)) return Number.POSITIVE_INFINITY;
+  return Math.round((b - a) / 86_400_000);
+}
+
 /**
- * Ist der Beleg dieses Programms jung genug, um damit zu RECHNEN?
+ * Ist der Beleg dieses Programms belastbar genug, um damit zu RECHNEN?
  *
- * Ohne Prüfdatum: nein. Ein Programm, das nie an seiner Amtsquelle bestätigt
- * wurde, darf keinen Euro von einer Investitionsrechnung abziehen — auch wenn
- * es plausibel klingt und in Portalen steht.
+ * Drei Bedingungen, alle nötig:
+ *  - die Werte wurden überhaupt einmal an der Amtsquelle gelesen,
+ *  - seither ist keine unbeantwortete Seitenänderung offen (oder sie liegt
+ *    innerhalb der Nachprüf-Frist),
+ *  - der Seiten-Wächter hat die Seite kürzlich noch erreicht.
  */
 export function fundingBelegAktuell(
-  f: Pick<FundingProgram, "lastVerified">,
+  f: Pick<FundingProgram, "lastVerified" | "pageSeenAt" | "changedSinceIso">,
   heute: string = heuteIso(),
 ): boolean {
   if (!f.lastVerified) return false;
-  const belegt = Date.parse(f.lastVerified.slice(0, 10));
-  const jetzt = Date.parse(heute.slice(0, 10));
-  if (Number.isNaN(belegt) || Number.isNaN(jetzt)) return false;
-  return (jetzt - belegt) / 86_400_000 <= FOERDER_MAX_ALTER_TAGE;
+
+  // Eine erkannte Änderung, die nach unserer letzten inhaltlichen Prüfung liegt,
+  // stellt den geprüften Stand in Frage. Kurze Frist zum Nachprüfen, dann Schluss.
+  if (f.changedSinceIso && f.changedSinceIso.slice(0, 10) > f.lastVerified.slice(0, 10)) {
+    if (tageSeit(f.changedSinceIso, heute) > FOERDER_NACHPRUEF_FRIST_TAGE) return false;
+  }
+
+  // Ohne geglückten Abruf wissen wir nicht, ob sich etwas geändert hat.
+  //
+  // Fehlt `pageSeenAt` ganz, zählt ersatzweise die inhaltliche Prüfung. Das
+  // greift, solange die Bestätigungs-Spalten in der Datenbank noch fehlen
+  // (lib/funding-data.ts liest dann schmal weiter). Es greift NICHT beim reinen
+  // Code-Seed: Der trägt gar kein `lastVerified`, also scheitert schon die erste
+  // Bedingung oben. Fällt die Datenbank komplett aus, wird deshalb KEINE
+  // Förderung mehr abgezogen — bewusst die sichere Richtung, aber es ist kein
+  // sanfter Rückfall, sondern ein Aus. Wer das ändern will, müsste Prüfdaten in
+  // den Seed schreiben; das wäre eine zweite Wahrheit und ist bewusst nicht getan.
+  const bestaetigt = f.pageSeenAt ?? f.lastVerified;
+  return tageSeit(bestaetigt, heute) <= FOERDER_BESTAETIGUNG_MAX_TAGE;
 }
 
 /**
  * Darf dieses Programm in einer Rechnung Geld abziehen?
  *
- * Zwei Bedingungen, beide nötig: Es nimmt Anträge an UND der Beleg ist frisch.
- * Diese Funktion ist die EINZIGE Stelle, an der das entschieden wird — Seiten,
- * Rechner und CTA fragen sie, statt `status === "aktiv"` selbst zu prüfen.
+ * Die EINZIGE Stelle, an der das entschieden wird — Seiten, Rechner und CTA
+ * fragen sie, statt `status === "aktiv"` selbst zu prüfen.
  */
 export function fundingZaehlt(
-  f: Pick<FundingProgram, "status" | "lastVerified"> | undefined,
+  f: Pick<FundingProgram, "status" | "lastVerified" | "pageSeenAt" | "changedSinceIso"> | undefined,
   heute: string = heuteIso(),
 ): boolean {
   return !!f && f.status === "aktiv" && fundingBelegAktuell(f, heute);
