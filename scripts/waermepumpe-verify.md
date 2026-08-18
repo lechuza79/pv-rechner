@@ -99,6 +99,29 @@ zusätzlich in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
   über 20 Jahre 2.200 € gegen die Wärmepumpe, und die fossile Seite hinge weiter
   an der alten Quelle. Beim nächsten Lauf beide Seiten aus derselben Quelle neu
   belegen oder den Befund als Entscheidung vorlegen.
+- **OFFEN (bis 01/2027): Nutzungsgrad einer NEU eingebauten Ölheizung.** Für Gas
+  trennt `WP_FUEL_OPTIONS` drei Fälle (neu 0,95 · vorhanden 0,90 · alt 0,80), für
+  Öl gibt es nur eine Zahl — **0,85** —, und die beschreibt laut `lib/calc.ts`
+  ausdrücklich die *vorhandene* Anlage. Sie steht damit an der neu eingebauten:
+  Der Rechner verbrennt in der fossilen Referenz mehr Öl, als ein heute
+  eingebauter Brennwertkessel bräuchte, und das geht **zugunsten der Wärmepumpe**
+  (Council 18.08.2026: rund 3.500 € über 20 Jahre, 140 m² teilsaniert). Deshalb
+  fehlt auch der Bestands-Eintrag für Öl — ein zweiter Eintrag mit derselben Zahl
+  wäre eine Dublette, kein zweiter Fall; Folge: Wer die Anschaffung auf 0 setzt,
+  rutscht von Öl auf Gas.
+  **Quelle liegt vor:** IWU Darmstadt, „Energetische Kenngrößen für Heizungsanlagen
+  im Bestand", **Tab. 3** („Tabellierte Werte in Anlehnung an DIN V 4701-10",
+  30 %-Teillastwirkungsgrad bei 20 kW): Öl-Brennwert **0,94**, Öl-Niedertemperatur
+  **0,88**, Gas-Brennwert 0,97, Gas-Spezialkessel 0,80 (= unser Altkessel-Wert).
+  Volltext: `docs/quellen/IWU_Energetische-Kenngroessen-Heizungsanlagen-Bestand.pdf`.
+  **Vor der Übernahme zu klären** (daran ist der Council-Lauf vom 18.08.2026 bewusst
+  stehengeblieben, statt die Zahl zu setzen): Ist der 30 %-Teillastwirkungsgrad
+  dieselbe Größe wie unser Nutzungsgrad in „Brennstoff = Wärme ÷ Nutzungsgrad"
+  (das Dokument führt Jahresnutzungsgrade separat in den Bildern 3–8), auf welcher
+  Bezugsgröße stehen die Werte (Gas-Brennwert 1,01 deutet auf Heizwert), und ist
+  das Dokument für einen HEUTE eingebauten Kessel noch aussagekräftig? Erst wenn
+  das beantwortet ist, beide Öl-Werte in einem Zug setzen — sonst bleibt die
+  bekannte Schieflage, aber es entsteht keine neue.
 - **OFFEN (bis 01/2027): Wartungskosten Heizöl.** `gasMaintenance` gilt aktuell
   für Gas UND Öl. Der Lauf vom 17.08.2026 hat auch in der neuen VZ-Auswertung
   keine getrennten Öl-Wartungskosten gefunden — die Gleichsetzung bleibt, der
