@@ -70,7 +70,8 @@ export interface FundingProgram {
   speicherPerKwh?: number;
   /** Share of total cost, e.g. 0.2 for 20 %. */
   percentOfCost?: number;
-  /** Total € cap on the PV-per-kWp part (matches the "max. … €" in rates). */
+  /** Total € cap on the PV part — gilt für den €/kWp-Satz UND für
+   *  `percentOfCost` (dort der Höchstbetrag des prozentualen Zuschusses). */
   pvCap?: number;
   /** Total € cap on the storage part. */
   speicherCap?: number;
@@ -916,9 +917,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Montage durch eine Fachfirma ist nicht erforderlich",
     ],
     combinableWith: BUND,
-    // "20 % der Kosten, gedeckelt auf 300 €" kann das Modell nicht ausdrücken:
-    // percentOfCost rechnet ohne Deckel, ein fester Sockel ignoriert die 20 %.
-    // Also kein strukturierter Satz — lieber keine Zahl als eine falsche.
+    // Seit dem Deckel für percentOfCost (18.08.2026) abbildbar. Der Deckel gilt
+    // dem PV-Teil; die 500 € für den Speicher bleiben außen vor, weil das Modell
+    // nur EINEN Prozentsatz je Programm kennt — die Rechnung ist damit
+    // vorsichtig, nicht großzügig.
+    percentOfCost: 0.2, pvCap: 300,
   },
   "dietmannsried-pv": {
     id: "dietmannsried-pv", name: "Förderprogramm PV-Anlagen",
@@ -1313,7 +1316,15 @@ export function fundingAmount(
   if (!f || !computable) return { total: 0, computable: false, active };
 
   if (f.percentOfCost) {
-    return { total: Math.round(bruttoCost * f.percentOfCost), computable: true, active };
+    // Prozentsatz MIT Deckel — ergänzt 18.08.2026. Vorher rechnete dieser Zweig
+    // ungedeckelt und kehrte sofort zurück; „20 % der Kosten, höchstens 300 €"
+    // war damit nicht ausdrückbar, und solche Programme mussten ohne
+    // strukturierten Satz aufgenommen werden. Das ist die häufigste Bauform
+    // kommunaler Zuschüsse — gemessen an einem Drittel der Fundstellen aus dem
+    // Abdeckungs-Screening (Gaimersheim, Hohenahr, Holzgerlingen …). Der
+    // Hinweis kam aus der Balkon-Session.
+    const roh = bruttoCost * f.percentOfCost;
+    return { total: Math.round(f.pvCap ? Math.min(roh, f.pvCap) : roh), computable: true, active };
   }
   let pv = 0;
   if (f.pvPerKwp) {
