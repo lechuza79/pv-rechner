@@ -6,7 +6,7 @@
 // funding dataset (lib/funding-programs.ts) and is referenced by id, so the
 // program data can also power an overview page and cross-program links.
 
-import { getFundingProgram, type FundingStatus } from "./funding-programs";
+import { allFundingPrograms, type FundingStatus, type FundingProgram } from "./funding-programs";
 
 export interface AtlasCity {
   slug: string;
@@ -16,8 +16,47 @@ export interface AtlasCity {
   bundesland: string;
   /** Regional PV yield kWh per kWp (PVGIS ballpark, manual). */
   yieldKwhKwp: number;
-  /** Id into FUNDING_PROGRAMS, if the city has its own program. */
+  /** Id into FUNDING_PROGRAMS. Nur nötig, wenn die Zuordnung über den
+   *  Gemeindeschlüssel nicht eindeutig ist — sonst leitet fundingFor() sie ab. */
   fundingId?: string;
+}
+
+/**
+ * Das Förderprogramm dieser Stadt — abgeleitet, nicht von Hand gepflegt.
+ *
+ * WARUM (18.08.2026): Katalog und Städte-Verzeichnis waren zwei Listen, die
+ * auseinanderliefen. Herne und Ludwigshafen standen längst im Verzeichnis, ihre
+ * neu aufgenommenen Programme aber blieben unsichtbar, weil niemand das Feld
+ * `fundingId` nachgetragen hatte — die Seite existierte, sagte aber nichts vom
+ * Programm. Ein zweites Verzeichnis, das man synchron halten MUSS, wird
+ * irgendwann nicht synchron gehalten.
+ *
+ * Deshalb: Steht kein `fundingId` da, wird das Programm über den
+ * Gemeindeschlüssel gesucht — dieselbe Zuordnung, die auch der Rechner benutzt.
+ * Ein gesetztes `fundingId` gewinnt weiterhin, für die Fälle, in denen mehrere
+ * Programme auf denselben Schlüssel passen.
+ */
+export function fundingFor(c: AtlasCity): FundingProgram | undefined {
+  return fundingForFrom(allFundingPrograms(), c);
+}
+
+/**
+ * Dieselbe Zuordnung über einer FREMDEN Programmliste — für die Seiten, die
+ * ihre Daten aus der Datenbank lesen statt aus dem Code-Seed.
+ *
+ * Ohne diese Variante lösten Stadtseiten, Bundesland-Übersicht und Sitemap
+ * weiterhin über das handgepflegte `fundingId` auf: Die drei neu verknüpften
+ * Städte hätten eine Seite bekommen, auf der kein Programm steht. Die Ableitung
+ * muss überall dieselbe sein, sonst verschiebt sich die Drift nur eine Ebene
+ * tiefer.
+ */
+export function fundingForFrom(programs: FundingProgram[], c: AtlasCity): FundingProgram | undefined {
+  if (c.fundingId) return programs.find((p) => p.id === c.fundingId);
+  const passend = programs.filter(
+    (p) => p.level !== "bund" && p.agsCode && c.ags.startsWith(p.agsCode.slice(0, 5)),
+  );
+  // Bei mehreren Treffern führt Raten in die Irre — dann gehört das Feld gesetzt.
+  return passend.length === 1 ? passend[0] : undefined;
 }
 
 export const ATLAS_CITIES: AtlasCity[] = [
@@ -240,7 +279,7 @@ export function bundeslaenderWithCities(): { name: string; slug: string }[] {
 
 /** True if the city has its own program and that program is currently active. */
 export function isCityLive(c: AtlasCity): boolean {
-  return !!c.fundingId && getFundingProgram(c.fundingId)?.status === "aktiv";
+  return fundingFor(c)?.status === "aktiv";
 }
 
 /** Cities with a live (active) program — drives page generation, sitemap, listings. */
@@ -271,7 +310,7 @@ const ARCHIVE_STATUSES: FundingStatus[] = ["ausgeschoepft", "pausiert", "eingest
 
 /** True if the city's own program is inactive but published as an archive page. */
 export function isCityArchived(c: AtlasCity): boolean {
-  const s = c.fundingId ? getFundingProgram(c.fundingId)?.status : undefined;
+  const s = fundingFor(c)?.status;
   return !!s && ARCHIVE_STATUSES.includes(s);
 }
 

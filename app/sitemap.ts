@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next";
-import { liveCities, archivedCities, slugify, publishedBundeslaender } from "../lib/atlas-cities";
+import { liveCities, archivedCities, slugify, publishedBundeslaender, fundingForFrom } from "../lib/atlas-cities";
 import { landProgramBundeslaender } from "../lib/funding-programs";
 import { getFundingPrograms } from "../lib/funding-data";
 import { atlasLevelReleased } from "../lib/atlas-index";
@@ -17,7 +17,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
   const programs = await getFundingPrograms();
-  const byId = new Map(programs.map((p) => [p.id, p]));
   const toDate = (iso?: string): Date | undefined => {
     if (!iso) return undefined;
     const d = new Date(iso);
@@ -29,7 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     : now;
 
   const cityPages: MetadataRoute.Sitemap = liveCities().map((c) => {
-    const f = c.fundingId ? byId.get(c.fundingId) : undefined;
+    const f = fundingForFrom(programs, c);
     return {
       url: `${BASE_URL}/photovoltaik-foerderung/${slugify(c.bundesland)}/${c.slug}`,
       lastModified: toDate(f?.lastVerified) ?? maxFundingDate,
@@ -40,7 +39,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Archive pages (program exhausted/paused/discontinued): still indexable for
   // SEO, but lower priority and less churn than the live ones.
   const archivedCityPages: MetadataRoute.Sitemap = archivedCities().map((c) => {
-    const f = c.fundingId ? byId.get(c.fundingId) : undefined;
+    const f = fundingForFrom(programs, c);
     return {
       url: `${BASE_URL}/photovoltaik-foerderung/${slugify(c.bundesland)}/${c.slug}`,
       lastModified: toDate(f?.lastVerified) ?? maxFundingDate,
