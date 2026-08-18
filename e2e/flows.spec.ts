@@ -1,9 +1,10 @@
 import { test, expect, type Page } from "@playwright/test";
-import { FLOWS, NOCH_OHNE_FLOWNAV, NOCH_NICHT_BEDIENBAR, MAX_WEGE_JE_FLOW, uebrigeFragenBeantworten, waehle } from "./flows";
+import { FLOWS, NOCH_OHNE_FLOWNAV, NOCH_NICHT_BEDIENBAR, MAX_WEGE_JE_FLOW, ALLE_KOMBINATIONEN, uebrigeFragenBeantworten, waehle, weiterKlicken } from "./flows";
 
 /**
- * Der Flow-Läufer: klickt JEDEN Weg durch jeden Flow und stellt sicher, dass
- * alle funktionieren.
+ * Der Flow-Läufer: klickt jede OPTION jedes Schritts und jeden ZWEIG durch
+ * jeden Flow und stellt sicher, dass alle funktionieren. (Nicht mehr jede
+ * Kombination — Begründung am Strategiewechsel in `gehe()`.)
  *
  * Er kennt keinen einzelnen Flow. Er erkennt an den geteilten Bausteinen, was
  * ein Schritt ist (`data-flow-option`), wo es weitergeht (`data-flow-next`) und
@@ -16,15 +17,18 @@ import { FLOWS, NOCH_OHNE_FLOWNAV, NOCH_NICHT_BEDIENBAR, MAX_WEGE_JE_FLOW, uebri
  *   2. Der Weg erreicht ein Ergebnis — kein Schritt führt ins Leere.
  *   3. Kein Konsolenfehler, keine nicht abgefangene Ausnahme unterwegs.
  *
- * ZWEI ARBEITER, nicht acht (--workers=2 in package.json). Jeder Flow fährt
- * einen eigenen Browser und baut je Weg die Seite neu auf; sieben davon
- * gleichzeitig lasten die Maschine so aus, dass React auf den frisch geladenen
- * Seiten nicht mehr rechtzeitig übernimmt. Der Klick geht dann ins Leere, und
- * der Läufer meldet „Option ließ sich nicht wählen" für eine Option, die von
- * Hand einwandfrei funktioniert — gemessen: bei voller Parallelität fielen
- * sporadisch bis zu fünf Flows so aus, bei zweien keiner. Das ist eine Grenze
- * der Maschine, kein Fehler der Oberfläche, und sie gehört hierher statt in
- * eine Wiederholungsschleife, die Rot in Grün verwandelt.
+ * EIN ARBEITER in CI (--workers=1 in package.json). Jeder Flow fährt einen
+ * eigenen Browser und baut je Weg die Seite neu auf; auf dem CI-Runner
+ * (2 Kerne, auf denen auch der Produktions-Server läuft) lasten schon ZWEI
+ * Browser die Maschine so aus, dass React auf den frisch geladenen Seiten
+ * nicht mehr rechtzeitig übernimmt. Der Klick geht dann ins Leere, und der
+ * Läufer meldet „Option ließ sich nicht wählen" für eine Option, die von Hand
+ * einwandfrei funktioniert — am 18.08.2026 fünf Läufe in Folge, jedes Mal
+ * eine andere Option, einmal auf einem Commit, der nur CLAUDE.md änderte.
+ * (Die frühere Messung „zwei Arbeiter sind sicher" stammte vom
+ * Entwicklerrechner — der hat ein Vielfaches der Kerne des Runners.) Das ist
+ * eine Grenze der Maschine, kein Fehler der Oberfläche, und sie gehört
+ * hierher statt in eine Wiederholungsschleife, die Rot in Grün verwandelt.
  *
  * (Nicht versucht werden sollte „auf Netzruhe warten": Diese Seiten laden
  * Preise und Förderdaten nach, das Warten lief je Seitenaufruf in die
@@ -47,6 +51,9 @@ interface LaufErgebnis {
   fehler: string[];
   /** Bereits fotografierte Zustände — je Zustand genau ein Bild, nicht je Weg. */
   bilder: Set<string>;
+  /** Schritte (Signatur aus Tiefe + Optionsliste), deren Optionen schon alle
+   *  durchgespielt wurden — bei erneutem Erreichen genügt die erste Option. */
+  erschoepfteSchritte: Set<string>;
 }
 
 /**
@@ -161,16 +168,21 @@ async function gehe(
     // Vorbelegung übernimmt. Bleibt er gesperrt, kommt hier niemand weiter —
     // das ist dann ein echter Befund und keine Lücke des Automatismus.
     await fuelleFelder(page);
+    // Die Freigabe darf einen React-Commit nach der Eingabe kommen — ein
+    // Befund ist erst, wenn Weiter DAUERHAFT gesperrt bleibt.
     const weiterHier = page.locator("[data-flow-next]:visible").first();
-    if ((await weiterHier.getAttribute("aria-disabled")) === "true") {
+    const bleibtGesperrtOhneWahl = await expect(weiterHier)
+      .not.toHaveAttribute("aria-disabled", "true", { timeout: 3_000 })
+      .then(() => false)
+      .catch(() => true);
+    if (bleibtGesperrtOhneWahl) {
       erg.fehler.push(
         `[${pfad.join(" → ")}] Schritt ohne Auswahl UND mit gesperrtem Weiter — hier kommt niemand durch`,
       );
       erg.wege++;
       return;
     }
-    await weiterHier.click();
-    await page.waitForTimeout(120);
+    await weiterKlicken(page);
     await gehe(page, flowName, flowPfad, startKnopf, ergebnisEnthaelt, [...pfad, VORBELEGT], erg);
     return;
   }
@@ -188,7 +200,33 @@ async function gehe(
     }
   }
 
-  for (const wahl of wahlen) {
+  // Jede OPTION einmal, nicht jede KOMBINATION (Strategiewechsel 18.08.2026).
+  //
+  // Vorher ging der Läufer jede Kombination — beim PV-Rechner 192 Wege, bei der
+  // Wärmepumpe ~1600. Das hatte zwei gemessene Folgen: Auf dem CI-Runner
+  // (2 Kerne, dazu der Produktions-Server) liefen ~600 Seitenaufbauten in
+  // 28 Minuten, die Maschine war gesättigt, React übernahm frisch geladene
+  // Seiten teils >20 s nicht mehr — „Option ließ sich nicht wählen" für
+  // Optionen, die von Hand einwandfrei funktionieren, in jedem Lauf eine
+  // andere. Und der Deckel (MAX_WEGE_JE_FLOW) schnitt per Tiefensuche ganze
+  // Äste ab: Bei der Wärmepumpe wurde die zweite Option des ERSTEN Schritts
+  // nie erreicht, weil der erste Teilbaum den Deckel allein verbrauchte.
+  //
+  // Jetzt: Ein Schritt, dessen Optionen schon einmal alle durchgespielt
+  // wurden, wird bei jedem weiteren Erreichen nur noch mit seiner ersten
+  // Option durchlaufen. Ein Schritt mit ANDEREN Optionen (etwa der
+  // Gebäude-Schritt, der nur hinter „Wärmepumpe an" auftaucht) ist eine neue
+  // Signatur und wird voll erkundet. Damit ist garantiert: jede Option jedes
+  // erreichbaren Schritts mindestens einmal, jeder Zweig einmal — was die
+  // Kombinationen inhaltlich ergeben, prüfen die Rechen-Tests.
+  // Im nächtlichen Alle-Kombinationen-Lauf (FLOW_ALLE_KOMBINATIONEN=1) ist die
+  // Abkürzung abgeschaltet — dort wird wirklich jede Kombination gegangen.
+  const signatur = `${pfad.length}:${wahlen.join("¦")}`;
+  const schonErschoepft = !ALLE_KOMBINATIONEN && erg.erschoepfteSchritte.has(signatur);
+  erg.erschoepfteSchritte.add(signatur);
+  const zuGehen = schonErschoepft ? wahlen.slice(0, 1) : wahlen;
+
+  for (const wahl of zuGehen) {
     if (erg.wege >= MAX_WEGE_JE_FLOW) {
       erg.gedeckelt = true;
       return;
@@ -204,15 +242,21 @@ async function gehe(
         await waehle(page, vorher);
         await uebrigeFragenBeantworten(page);
       }
-      await page.locator("[data-flow-next]:visible").first().click();
-      await page.waitForTimeout(60);
+      await weiterKlicken(page);
     }
 
     await waehle(page, wahl);
     await uebrigeFragenBeantworten(page);
 
+    // Dieselbe Toleranz wie oben: Die Freigabe darf einen React-Commit nach
+    // dem aria-pressed der Option kommen — unter Last wurde hier sonst ein
+    // „Weiter bleibt gesperrt" gemeldet, das keines war.
     const weiterJetzt = page.locator("[data-flow-next]:visible").first();
-    if ((await weiterJetzt.getAttribute("aria-disabled")) === "true") {
+    const bleibtGesperrt = await expect(weiterJetzt)
+      .not.toHaveAttribute("aria-disabled", "true", { timeout: 3_000 })
+      .then(() => false)
+      .catch(() => true);
+    if (bleibtGesperrt) {
       erg.fehler.push(
         `[${[...pfad, wahl].join(" → ")}] Weiter bleibt gesperrt, obwohl "${wahl}" gewählt und jede ` +
           `weitere Frage des Schritts beantwortet ist`,
@@ -221,29 +265,25 @@ async function gehe(
       continue;
     }
 
-    await weiterJetzt.click();
-    await page.waitForTimeout(120);
+    await weiterKlicken(page);
     await bildAblegen(page, flowName, [...pfad, wahl].join("__"), erg);
     await gehe(page, flowName, flowPfad, startKnopf, ergebnisEnthaelt, [...pfad, wahl], erg);
   }
 }
 
 for (const flow of FLOWS) {
-  test(`Flow „${flow.name}": jeder Weg führt zu einem Ergebnis`, async ({ page }) => {
-    // Erschöpfendes Durchklicken braucht Zeit: Jeder Weg wird von vorn
-    // aufgebaut, und im Dev-Server kommt die erste Übersetzung jeder Route
-    // dazu. Der Standard von 30 s reicht dafür nicht — er hat den Läufer
-    // beim ersten Lauf mitten im Baum abgebrochen.
+  test(`Flow „${flow.name}": jede Option führt zu einem Ergebnis`, async ({ page }) => {
+    // Durchklicken braucht Zeit: Jeder Weg wird von vorn aufgebaut, und im
+    // Dev-Server kommt die erste Übersetzung jeder Route dazu. Der Standard
+    // von 30 s reicht dafür nicht — er hat den Läufer beim ersten Lauf mitten
+    // im Baum abgebrochen. Die 10 Minuten sind seit dem Strategiewechsel
+    // (jede Option statt jeder Kombination) bewusst großzügig: Ein Limit ohne
+    // Luft fällt an dem Tag, an dem der Runner langsam ist, nicht an dem Tag,
+    // an dem etwas kaputtgeht.
     //
-    // 10 statt 5 Minuten seit dem 17.08.2026: Mit den fünf migrierten Rechnern
-    // sind aus einem Flow sieben geworden, die parallel um dieselbe Maschine
-    // konkurrieren — und die Bäume sind tiefer. Der PV-Rechner allein hat rund
-    // 190 Wege (4 Anlagengrößen × 6 Speicher × 8 Haushaltsangaben), jeder mit
-    // eigenem Seitenaufbau. Bei 5 Minuten lief er mitten im Baum ab, und zwar
-    // OHNE einen inhaltlichen Befund — ein abgelaufener Lauf sieht aber aus wie
-    // ein kaputter Flow. Wer die Zahl wieder senken will, muss zuerst die Zahl
-    // der Wege senken (MAX_WEGE_JE_FLOW in flows.ts), nicht das Zeitlimit.
-    test.setTimeout(600_000);
+    // Der nächtliche Alle-Kombinationen-Lauf braucht ein Vielfaches: Die
+    // Wärmepumpe allein hat ~1600 Kombinationen à ~3 s Seitenaufbau.
+    test.setTimeout(ALLE_KOMBINATIONEN ? 10_800_000 : 600_000);
     const konsolenFehler: string[] = [];
     page.on("console", (m) => {
       if (m.type() !== "error") return;
@@ -273,7 +313,13 @@ for (const flow of FLOWS) {
     // überhaupt einen gibt, sonst schlägt der Test aus dem falschen Grund fehl.
     await expect(page.locator("[data-flow-nav]").first()).toBeVisible({ timeout: 15000 });
 
-    const erg: LaufErgebnis = { wege: 0, gedeckelt: false, fehler: [], bilder: new Set() };
+    const erg: LaufErgebnis = {
+      wege: 0,
+      gedeckelt: false,
+      fehler: [],
+      bilder: new Set(),
+      erschoepfteSchritte: new Set(),
+    };
     await bildAblegen(page, flow.name, "01-start", erg);
     await gehe(page, flow.name, flow.pfad, flow.startKnopf, flow.ergebnisEnthaelt, [], erg);
 
