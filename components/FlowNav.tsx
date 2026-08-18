@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { v } from "../lib/theme";
 import { ModalSticky } from "./Modal";
 
@@ -87,6 +87,24 @@ export default function FlowNav({
   // verzögert, nach Klicks oft gar nicht und auf Touch nie. Sichtbar bei
   // Hover auf dem inaktiven Button und nach einem Klickversuch (kurz).
   const [hintSichtbar, setHintSichtbar] = useState(false);
+
+  // Meldung an den Flow-Läufer: Dieser Schritt reagiert jetzt auf Klicks.
+  //
+  // WARUM (18.08.2026): Der Läufer klickte in Seiten, deren HTML zwar dastand,
+  // deren React-Handler aber noch fehlten — Knopf sichtbar, anklickbar, ohne
+  // Wirkung. Sein Fehlerbild („20 s lang kein aria-pressed=true") WANDERTE
+  // dabei zwischen den Rechnern, weil es kein Fehler einer Seite ist, sondern
+  // ein Wettrennen: mal verliert es der eine Flow, mal der andere.
+  //
+  // Auf ein Ladeereignis zu warten löst das nicht — `domcontentloaded` steht vor
+  // dem JavaScript, und selbst nach `load` lädt Next.js Teile noch nach. Es gibt
+  // kein Browser-Ereignis für „React hat übernommen". Also sagt es die Seite
+  // selbst: Dieser Effekt läuft frühestens nach dem Mounten, das Attribut ist
+  // damit ein Beweis statt einer Schätzung. Ein Effekt für ein Testmerkmal ist
+  // ein kleiner Preis gegenüber einem Browser-Test, dem man nicht glauben kann.
+  const [bereit, setBereit] = useState(false);
+  useEffect(() => setBereit(true), []);
+
   return (
     // Steht der Flow in einem Dialog, klebt seine Navigation am unteren Rand,
     // statt bei langen Schritten unter die Falz zu rutschen. Der Flow tut dafür
@@ -99,7 +117,7 @@ export default function FlowNav({
         diesen Baustein nutzt — ohne dass der Flow selbst etwas dafür tun muss.
         Ein Flow ohne diesen Baustein wird vom Läufer NICHT geprüft und muss
         deshalb in e2e/flows.ts als ungeprüft ausgewiesen sein. */}
-    <div data-flow-nav style={{ display: "flex", gap: 8, marginTop: 4, width: "100%", justifyContent: "space-between" }}>
+    <div data-flow-nav data-flow-bereit={bereit ? "1" : undefined} style={{ display: "flex", gap: 8, marginTop: 4, width: "100%", justifyContent: "space-between" }}>
       {zurueckSichtbar && onZurueck && (
         <button
           type="button"

@@ -118,6 +118,10 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "maintal-klima", "roth-klimaschutz", "wenden-heizungstausch",
   // Von der Prüfmechanik-Session übergeben und hier im Volltext gegengelesen.
   "hohenahr-pv", "leimen-klimaschutz",
+  "sandhausen-foerderprogramme", "helmstedt-umwelt-klima", "nottuln-klimaschutz",
+  "heddesheim-umwelt", "nittenau-steckersolar", "beratzhausen-effizient",
+  "rietheim-weilheim-pv", "forstinning-energiewende", "oftersheim-co2",
+  "bad-rothenfelde-klima", "vilshofen-steckersolar",
 ];
 
 /**

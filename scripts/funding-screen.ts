@@ -43,6 +43,7 @@ import {
   einordnen, sichtbarerText, SCREEN_VERSION,
   type ScreenVerdikt, type ScreenTechnik,
 } from "../lib/funding-screen-erkennung";
+import { inSchueben } from "../lib/lauf-parallel";
 
 function loadEnvFile(): void {
   const envPath = resolve(process.cwd(), ".env.local");
@@ -258,7 +259,9 @@ async function main(): Promise<void> {
 
   const zaehler = new Map<ScreenVerdikt, number>();
   const jeTechnik = new Map<ScreenTechnik, number>();
-  for (const k of naechste) {
+  let fertig = 0;
+
+  await inSchueben(naechste, zahl("gleichzeitig", 6), async (k) => {
     let html = "";
     let http = 0;
     for (const versuch of [0, 1]) {
@@ -297,7 +300,9 @@ async function main(): Promise<void> {
       http,
       checked_at: new Date().toISOString(),
     });
-  }
+
+    if (++fertig % 100 === 0) console.log(`   … ${fertig} von ${naechste.length}`);
+  });
 
   console.log("Ergebnis dieses Laufs:");
   for (const [v, n] of [...zaehler].sort((a, b) => b[1] - a[1])) console.log(`   ${v}: ${n}`);
