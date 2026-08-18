@@ -64,7 +64,15 @@ export interface Co2PriceConfig {
   anchors: Record<number, number>;
   /** Jährlicher Anstieg in €/t ab dem Jahr nach der letzten Stützstelle (ETS2 freier Markt). */
   annualIncrease: number;
-  validFrom: string;  // ISO date — wann die Stützstellen zuletzt verifiziert wurden
+  validFrom: string;  // ISO date — Stand der Stützstellen selbst (nur hochsetzen, wenn sich eine ändert)
+  /**
+   * ISO date — Tag des letzten Wächter-Laufs, der die amtlichen Quellen wirklich
+   * erreicht hat. Wandert auch dann mit, wenn keine Stützstelle sich geändert
+   * hat; bleibt stehen, wenn der Lauf die Quelle nicht lesen konnte
+   * (scripts/waechter-gate.md → „Das Prüfdatum wandert mit jedem erreichten
+   * Lauf"). Sichtbar auf /waermepumpe-rechner über lib/stand.ts.
+   */
+  geprueftIso: string;
   reviewBy: string;   // ISO date — bis wann gegen offizielle Prognosen neu zu prüfen
   source: string;
 }
@@ -76,6 +84,9 @@ export const CO2_PRICE: Co2PriceConfig = {
   },
   annualIncrease: 8,
   validFrom: "2026-08-14",
+  // Startwert = `validFrom`: Am 14.08.2026 hat der Wächter-Lauf den
+  // Kabinettsentwurf zum Korridor gelesen und die Stützstellen daraus gesetzt.
+  geprueftIso: "2026-08-14",
   // Bewusst VOR dem erwarteten Bundestagsbeschluss (Herbst 2026): Ein Satz, der
   // "Bundestag steht aus" sagt, wird am Tag des Beschlusses von selbst falsch.
   reviewBy: "2026-11-30",

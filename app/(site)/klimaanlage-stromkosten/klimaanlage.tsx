@@ -2,7 +2,10 @@
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import OptionCard from "../../../components/OptionCard";
+import StandNoteView from "../../../components/StandNoteView";
+import { type StandSeite } from "../../../lib/stand-format";
 import InlineEdit from "../../../components/InlineEdit";
+import ResultSection from "../../../components/ResultSection";
 import InfoTooltip from "../../../components/InfoTooltip";
 import { IconArrowRight, IconRefresh, IconSun, IconCheck } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
@@ -59,7 +62,11 @@ const PROJ_YEAR = (() => {
 })();
 
 
-export default function Klimaanlage() {
+// `stand` kommt fertig aufgelöst von der Server-Seite (page.tsx). Der Rechner
+// liest ihn NICHT selbst aus `lib/stand.ts`: Das Modul zieht sieben Configs
+// nach sich, von denen hier nur die Klima-Config gebraucht wird — im Browser
+// lägen sonst sechs fremde Datentabellen.
+export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
   const [step, setStep] = useState(0);
   const [deviceId, setDeviceId] = useState<AcInputs["deviceId"]>("portasplit");
   const [rooms, setRooms] = useState(CFG.defaultRooms);
@@ -87,6 +94,11 @@ export default function Klimaanlage() {
     projection: Math.round(CFG.cdhNational * CFG.projectionFactor),
   }));
   const [cdhMode, setCdhMode] = useState<CdhMode>("avg5");
+  // Kurzform des Wetterzeitraums für die Kopfzeile des Kühlbedarf-Abschnitts.
+  const cdhModusLabel = () =>
+    cdhMode === "avg5" ? `Ø ${CFG.avgYears} Sommer`
+    : cdhMode === "lastSummer" ? "letzter Sommer"
+    : `Projektion ~${PROJ_YEAR}`;
   const [cdhSource, setCdhSource] = useState<"fallback" | "open-meteo" | "cache">("fallback");
   const [heatwave, setHeatwave] = useState<HeatwaveInfo>(null);
   const cdh = cdhSet[cdhMode];
@@ -389,40 +401,55 @@ export default function Klimaanlage() {
                 {result.electricityKwh.toLocaleString("de-DE")} kWh Strom/Jahr · {result.co2Kg.toLocaleString("de-DE")} kg CO₂/Jahr
               </div>
 
-              {/* Editierbare Annahmen */}
-              <div style={{ marginTop: 18, borderTop: `1px solid ${v('--color-border-accent')}`, paddingTop: 14, fontSize: 13, lineHeight: 2 }}>
-                <div>
-                  Gekühlt: <InlineEdit value={rooms} onCommit={val => setRooms(Math.max(1, Math.min(10, Math.round(val))))} unit="" min={1} max={10} step={1} width={32} /> {rooms === 1 ? "Raum" : "Räume"}
-                  {" × "}<InlineEdit value={roomM2} onCommit={val => setRoomM2(Math.round(val))} unit=" m²" min={8} max={80} step={5} width={52} />
-                  {" = "}<strong style={{ fontFamily: v('--font-mono') }}>{result.cooledArea} m²</strong>
-                </div>
-                <div>Strompreis: <InlineEdit value={Math.round(strompreis * 100 * 100) / 100} onCommit={val => setOStrom(val / 100)} unit=" ct/kWh" min={10} max={70} step={1} width={70} /></div>
-                <div>Kühlgradstunden pro Jahr: <strong style={{ fontFamily: v('--font-mono') }}>{cdh.toLocaleString("de-DE")}</strong>{" "}
-                  <span style={{ fontSize: 11, color: v('--color-text-faint') }}>
-                    ({cdhSource === "fallback" ? (bl ? `Ø ${bl}` : "Ø Deutschland") : plz ? `PLZ ${plz}` : "Ø Deutschland"})
-                  </span>
-                </div>
-              </div>
 
-              {/* Standort-Modus: Ø letzte Jahre / letzter Sommer / Projektion */}
-              <div style={{ display: "flex", gap: 4, marginTop: 12, background: v('--color-bg-muted'), borderRadius: v('--radius-md'), padding: 3, border: `1px solid ${v('--color-border')}` }}>
-                {([
-                  { id: "avg5", label: `Ø ${CFG.avgYears} Jahre` },
-                  { id: "lastSummer", label: "Letzter Sommer" },
-                  { id: "projection", label: `Projektion ~${PROJ_YEAR}` },
-                ] as { id: CdhMode; label: string }[]).map(opt => (
-                  <button key={opt.id} onClick={() => setCdhMode(opt.id)} style={{
-                    flex: 1, padding: "7px 4px", borderRadius: v('--radius-sm'), fontSize: 11, fontWeight: 700, cursor: "pointer", border: "none", lineHeight: 1.2,
-                    background: cdhMode === opt.id ? v('--color-accent') : "transparent",
-                    color: cdhMode === opt.id ? v('--color-text-on-accent') : v('--color-text-muted'),
-                  }}>{opt.label}</button>
-                ))}
-              </div>
-              <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 6, lineHeight: 1.5, textAlign: "center" }}>
-                {cdhMode === "avg5" && `Durchschnitt der letzten ${CFG.avgYears} Sommer — der ausgewogene Wert.`}
-                {cdhMode === "lastSummer" && "Der letzte Sommer — oft heißer als der Schnitt."}
-                {cdhMode === "projection" && `So heiß wird ein Sommer um ${PROJ_YEAR} laut Klimamodell (CMIP6) — Projektion, kein exakter Wert.`}
-              </div>
+            {/* Kühlbedarf — aus der Ergebnis-Karte herausgezogen. Die Karte
+                trägt die Kosten, dieser Abschnitt die Angaben, aus denen sie
+                entstehen (Räume, Fläche, Strompreis, Wetterzeitraum). Zugeklappt
+                steht der gewählte Zustand in der Kopfzeile — sonst sieht man dem
+                Ergebnis nicht an, für wie viele Räume und welchen Sommer es gilt. */}
+            <ResultSection
+              title="Kühlbedarf"
+              /* Die Flaeche kommt aus dem Rechenkern (result.cooledArea), nicht aus
+                 einer eigenen Multiplikation: Sonst zeigt die Kopfzeile eine
+                 andere Quadratmeterzahl als die, mit der die Kosten darunter
+                 gerechnet werden, sobald der Kern die Flaeche anders bildet. */
+              summary={`${rooms} ${rooms === 1 ? "Raum" : "Räume"} · ${cooledArea} m² · ${cdhModusLabel()}`}
+            >
+                {/* Editierbare Annahmen */}
+                <div style={{ marginTop: 18, borderTop: `1px solid ${v('--color-border-accent')}`, paddingTop: 14, fontSize: 13, lineHeight: 2 }}>
+                  <div>
+                    Gekühlt: <InlineEdit value={rooms} onCommit={val => setRooms(Math.max(1, Math.min(10, Math.round(val))))} unit="" min={1} max={10} step={1} width={32} /> {rooms === 1 ? "Raum" : "Räume"}
+                    {" × "}<InlineEdit value={roomM2} onCommit={val => setRoomM2(Math.round(val))} unit=" m²" min={8} max={80} step={5} width={52} />
+                    {" = "}<strong style={{ fontFamily: v('--font-mono') }}>{result.cooledArea} m²</strong>
+                  </div>
+                  <div>Strompreis: <InlineEdit value={Math.round(strompreis * 100 * 100) / 100} onCommit={val => setOStrom(val / 100)} unit=" ct/kWh" min={10} max={70} step={1} width={70} /></div>
+                  <div>Kühlgradstunden pro Jahr: <strong style={{ fontFamily: v('--font-mono') }}>{cdh.toLocaleString("de-DE")}</strong>{" "}
+                    <span style={{ fontSize: 11, color: v('--color-text-faint') }}>
+                      ({cdhSource === "fallback" ? (bl ? `Ø ${bl}` : "Ø Deutschland") : plz ? `PLZ ${plz}` : "Ø Deutschland"})
+                    </span>
+                  </div>
+                </div>
+
+                {/* Standort-Modus: Ø letzte Jahre / letzter Sommer / Projektion */}
+                <div style={{ display: "flex", gap: 4, marginTop: 12, background: v('--color-bg-muted'), borderRadius: v('--radius-md'), padding: 3, border: `1px solid ${v('--color-border')}` }}>
+                  {([
+                    { id: "avg5", label: `Ø ${CFG.avgYears} Jahre` },
+                    { id: "lastSummer", label: "Letzter Sommer" },
+                    { id: "projection", label: `Projektion ~${PROJ_YEAR}` },
+                  ] as { id: CdhMode; label: string }[]).map(opt => (
+                    <button key={opt.id} onClick={() => setCdhMode(opt.id)} style={{
+                      flex: 1, padding: "7px 4px", borderRadius: v('--radius-sm'), fontSize: 11, fontWeight: 700, cursor: "pointer", border: "none", lineHeight: 1.2,
+                      background: cdhMode === opt.id ? v('--color-accent') : "transparent",
+                      color: cdhMode === opt.id ? v('--color-text-on-accent') : v('--color-text-muted'),
+                    }}>{opt.label}</button>
+                  ))}
+                </div>
+                <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 6, lineHeight: 1.5, textAlign: "center" }}>
+                  {cdhMode === "avg5" && `Durchschnitt der letzten ${CFG.avgYears} Sommer — der ausgewogene Wert.`}
+                  {cdhMode === "lastSummer" && "Der letzte Sommer — oft heißer als der Schnitt."}
+                  {cdhMode === "projection" && `So heiß wird ein Sommer um ${PROJ_YEAR} laut Klimamodell (CMIP6) — Projektion, kein exakter Wert.`}
+                </div>
+            </ResultSection>
             </div>
 
             {/* Gerätevergleich — getroffene Auswahl als Referenz, andere mit Differenz */}
@@ -676,6 +703,11 @@ export default function Klimaanlage() {
             </div>
           </div>
         )}
+
+        {/* Innerhalb der Rechner-Spalte, nicht dahinter: Der Rahmen ist
+            mindestens bildschirmhoch — ein Absatz darunter stünde hinter einer
+            leeren Fläche und würde nie gelesen. */}
+        <StandNoteView seite={stand} />
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { recommend, economicsForScenario, effectiveFeedInCtPerKwh, type RecommendInput } from "../recommend";
-import { SPEICHER, PERSONEN, SCENARIOS } from "../constants";
+import { SPEICHER, PERSONEN, SCENARIOS, HAUSTYP_WP } from "../constants";
 import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING } from "../heatpump-core";
 import { calcWeightedFeedIn } from "../calc";
 import { DEFAULT_FEED_IN } from "../feedin-config";
@@ -284,5 +284,43 @@ describe("recommend (PV system recommendation)", () => {
     expect(Number.isFinite(r.reasoning.npv25)).toBe(true);
     // 8-kWp roof + healthy consumption should still recommend a real system
     expect(r.kwp).toBeGreaterThanOrEqual(5);
+  });
+});
+
+// ─── Der WP-Haustyp ist eine eigene Größe ───────────────────────────────────
+// Die Empfehlung leitete den Faktor der geteilten Wände aus HAUSTYPEN ab — der
+// Haus-GRÖSSENKLASSE für die Dachfläche. Sobald der Flow den echten Haustyp
+// erfragt, stünden damit zwei verschiedene Heizstrom-Zahlen für dasselbe
+// Gebäude auf einer Seite: die Empfehlung rechnete mit dem einen Faktor, der
+// angezeigte Heizstrom mit dem anderen.
+describe("WP-Haustyp in der Empfehlung", () => {
+  const mitWp: RecommendInput = { ...baseInput, wp: "ja" };
+
+  it("der erfragte Haustyp schlägt die Ableitung aus der Größenklasse", () => {
+    // haustyp 2 (EFH) leitet 1,0 ab; wpHaustyp 3 ist das Reihenmittelhaus (0,78).
+    const abgeleitet = recommend(mitWp);
+    const erfragt = recommend({ ...mitWp, wpHaustyp: 3 });
+    expect(erfragt.reasoning.wpConsumption).toBeLessThan(abgeleitet.reasoning.wpConsumption);
+  });
+
+  it("stimmt zellgenau mit der Rechnung des Flows überein", () => {
+    // Der Flow zeigt calcWpAnnualElectricity direkt an. Weicht die Empfehlung
+    // davon ab, widersprechen sich zwei Zahlen auf derselben Seite.
+    const wpHaustyp = 3;
+    const rec = recommend({ ...mitWp, wpHaustyp });
+    const imFlowAngezeigt = calcWpAnnualElectricity({
+      ...DEFAULT_WP_BUILDING,
+      personen: PERSONEN[baseInput.personen].count,
+      haustypFaktor: HAUSTYP_WP[wpHaustyp].faktor,
+    });
+    expect(rec.reasoning.wpConsumption).toBe(imFlowAngezeigt);
+  });
+
+  it("ohne Angabe bleibt die alte Ableitung erhalten", () => {
+    // Aufrufer, die den Haustyp nicht kennen (Ratgeber-Beispiele), dürfen nicht
+    // stillschweigend auf freistehend springen.
+    const reihenhaus = recommend({ ...mitWp, haustyp: 0 });
+    const efh = recommend({ ...mitWp, haustyp: 2 });
+    expect(reihenhaus.reasoning.wpConsumption).toBeLessThan(efh.reasoning.wpConsumption);
   });
 });

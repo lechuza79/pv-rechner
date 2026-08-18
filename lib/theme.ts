@@ -240,6 +240,16 @@ export const sectionGap = 44;
 
 export const headerContentGap = space.huge; // 48
 
+/**
+ * Abstand zwischen dem Seiteninhalt und einem FAQ-Block (Betreiber-Vorgabe
+ * ~100 px). Der FAQ ist ein Themenwechsel — er beantwortet Fragen zum Vorigen,
+ * setzt es aber nicht fort; ohne Luft davor liest er sich wie ein weiterer
+ * Absatz. Als Token, weil es ZWEI FAQ-Bausteine gibt: den geteilten `Faq` und
+ * das eigene Akkordeon der Atomstrom-Seite. Ohne gemeinsame Quelle bekommt nur
+ * einer von beiden den Abstand — genau so stand es hier.
+ */
+export const faqContentGap = space.huge * 2; // 96
+
 /** CSS variable reference for inline styles: v('--color-accent') → 'var(--color-accent)' */
 export const v = (name: TokenName): string => `var(${name})`;
 
@@ -556,6 +566,48 @@ export const globalStyles = `
   .footer-cols>div{padding:0 22px}
   .footer-cols>div+div{border-left:1px solid var(--color-border)}
   @media (max-width:640px){.footer-cols{grid-template-columns:1fr;max-width:none;gap:20px}.footer-cols>div{padding:0}.footer-cols>div+div{border-left:none}}
+  /* Vertrauens-Leiste über dem Footer (components/TrustBar.tsx). Zwei Spalten
+     auf Desktop statt vier: Die Punkte sind ganze Sätze, und bei der 600px des
+     Footer-Rasters bliebe für vier Spalten je ~140px — zu schmal zum Lesen. */
+  .trust-bar{max-width:var(--content-max-width);margin:0 auto ${space.huge}px;background:var(--color-bg-muted);border:1px solid var(--color-border);border-radius:14px;padding:${pad("xxl")}}
+  .trust-bar-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:${space.xxl}px}
+  /* Der Punkt ist ein Knopf, kein Link: Alle vier öffnen dasselbe Modal. Der
+     Knopf muss deshalb aussehen und sich anfühlen wie Fließtext, nicht wie ein
+     Formularelement — daher das Zurücksetzen der Browser-Vorgaben. */
+  .trust-item{display:flex;gap:${space.lg}px;align-items:flex-start}
+  .trust-item-icon{flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:var(--color-bg);border:1px solid var(--color-border)}
+  .trust-item-title{display:block;font-size:var(--font-size-body);font-weight:700;color:var(--color-text-primary);line-height:1.35;margin-bottom:2px}
+  .trust-item-text{display:block;font-size:var(--font-size-body);line-height:1.5;color:var(--color-text-muted)}
+  .trust-item-betont{font-weight:700;color:var(--color-text-secondary)}
+  /* Quellenname im Satz: als Link erkennbar, aber leise — er soll den Satz
+     nicht in eine Linkliste verwandeln. Deshalb Unterstreichung statt Farbe;
+     die Akzentfarbe bleibt dem "Mehr erfahren" vorbehalten. */
+  .trust-item-quelle{color:inherit;text-decoration:underline;text-decoration-color:var(--color-border-accent);text-underline-offset:3px}
+  .trust-item-quelle:hover{color:var(--color-accent);text-decoration-color:currentColor}
+  .trust-item-quelle:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px;border-radius:3px}
+  /* "Mehr erfahren" sitzt AM PUNKT, nicht unter der Leiste: Es steht nur dort,
+     wo es hinter der Zusage auch etwas zu lesen gibt. Ein Punkt ohne den Hinweis
+     ist bewusst kein Knopf (.trust-item-still). */
+  .trust-item-mehr{display:inline-flex;align-items:center;gap:${space.xs}px;margin-top:${space.sm}px;background:none;border:0;padding:0;font:inherit;font-size:var(--font-size-small);font-weight:600;color:var(--color-accent);cursor:pointer}
+  .trust-item-mehr:hover{color:var(--color-accent-dark)}
+  .trust-item-mehr:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px;border-radius:6px}
+  /* Modal-Inhalt: je Punkt ein Abschnitt, darunter die Prüftermine. */
+  .trust-modal-punkt{padding-top:${space.xl}px;border-top:1px solid var(--color-border)}
+  .trust-modal-punkt:first-child{padding-top:0;border-top:0}
+  .trust-modal-punkt+.trust-modal-punkt{margin-top:${space.xl}px}
+  .trust-modal-h3{display:flex;align-items:center;gap:${space.md}px;font-size:var(--font-size-body);font-weight:700;color:var(--color-text-primary);margin:0 0 ${space.md}px}
+  .trust-modal-text{font-size:var(--font-size-body);line-height:1.6;color:var(--color-text-muted);margin:0 0 ${space.md}px}
+  .trust-modal-wege{font-size:var(--font-size-small);margin:0}
+  .trust-modal-wege a{color:var(--color-accent);text-decoration:none;font-weight:600}
+  .trust-modal-wege a:hover{text-decoration:underline}
+  .trust-modal-liste{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:${space.sm}px}
+  .trust-modal-liste li{display:flex;justify-content:space-between;gap:${space.lg}px;font-size:var(--font-size-small);color:var(--color-text-muted);line-height:1.5}
+  .trust-modal-rhythmus{flex:0 0 auto;text-align:right;color:var(--color-text-faint)}
+  @media (max-width:640px){
+    .trust-bar-grid{grid-template-columns:1fr;gap:${space.xl}px}
+    .trust-modal-liste li{flex-direction:column;gap:0}
+    .trust-modal-rhythmus{text-align:left}
+  }
   /* KPI-Reihe des Solar-Atlas: sechs Kacheln nebeneinander, auf schmalen
      Schirmen ein Wisch-Slider (Embla). Der Umschaltpunkt steht hier UND als
      Embla-Breakpoint in AtlasKpiRow — beide bei 760px, sonst wischt der Desktop

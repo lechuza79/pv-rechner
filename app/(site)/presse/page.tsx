@@ -182,7 +182,7 @@ export default function PressePage() {
 
         <h2 style={S.h2}>Lizenz</h2>
         <p style={S.p}>
-          Unsere Darstellungen, Berechnungen und Texte stehen unter{" "}
+          Unsere Darstellungen und Texte stehen unter{" "}
           <a href={OWN_WORK_LICENSE.url} target="_blank" rel="noopener noreferrer" style={S.a}>
             {OWN_WORK_LICENSE.code}
           </a>

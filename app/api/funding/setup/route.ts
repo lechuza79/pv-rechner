@@ -36,6 +36,12 @@ export async function GET(req: NextRequest) {
         updated_by text
       );
       CREATE INDEX IF NOT EXISTS idx_fp_archived ON funding_programs (archived);
+      -- Seiten-Wächter (scripts/funding-watch.ts): Fingerabdruck des sichtbaren
+      -- Texts der Amtsseite plus Zeitpunkt des letzten Abrufs. Damit erkennt ein
+      -- reiner Abruf ohne Modell, dass sich eine Seite bewegt hat.
+      ALTER TABLE funding_programs ADD COLUMN IF NOT EXISTS page_fingerprint text;
+      ALTER TABLE funding_programs ADD COLUMN IF NOT EXISTS page_seen_at timestamptz;
+      ALTER TABLE funding_programs ADD COLUMN IF NOT EXISTS page_changed_at timestamptz;
     `,
   });
   results.push({ step: "funding_programs", status: e1 ? "error" : "ok", error: e1?.message });
@@ -91,7 +97,13 @@ export async function GET(req: NextRequest) {
       data: p,
       source_url: p.url,
       confidence: p.verified ? "high" : "low",
-      archived: p.status === "eingestellt",
+      // NICHT mehr aus dem Status ableiten (17.08.2026, Entscheidung des
+      // Betreibers): Ausgelaufene Programme sollen aufgenommen und WEITER
+      // GEPRÜFT werden — "gab es, ist beendet" ist für jemanden vor Ort eine
+      // echte Auskunft, und wir merken es, wenn die Stadt es neu auflegt.
+      // `archived` hieß bisher faktisch "Programm beendet" und schloss die Zeile
+      // vom Seiten-Wächter aus; es bedeutet jetzt nur noch "Eintrag entfernt".
+      archived: false,
     }));
     const { error: se } = await supabase.from("funding_programs").upsert(rows);
     if (se) results.push({ step: resync ? "resync" : "seed", status: "error", error: se.message });

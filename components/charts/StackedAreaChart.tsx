@@ -24,6 +24,7 @@ import {
   formatTime,
   CHART_MARGIN,
   CHART_HEIGHT,
+  anteilZahl,
 } from "../../lib/chart-utils";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -213,7 +214,7 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, nuclearGw, compact }
         const nucCombined = nuclearTotal + nuclearMw;
         const allTotal = totalGen + nuclearMw;
         const nucPctRaw = allTotal > 0 ? nucCombined / allTotal * 100 : 0;
-        const nucPct = nucPctRaw >= 10 ? Math.round(nucPctRaw) : nucPctRaw.toLocaleString("de-DE", { maximumFractionDigits: nucPctRaw < 0.1 ? 2 : 1 });
+        const nucPct = anteilZahl(nucPctRaw);
         return (
           <>
             <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6, marginBottom: 4 }}>

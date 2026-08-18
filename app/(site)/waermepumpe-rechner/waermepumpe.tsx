@@ -2,7 +2,7 @@
 import { useState, useMemo, type ReactNode } from "react";
 import Link from "next/link";
 import {
-  SITUATION, WOHNFLAECHEN, INSULATION_BESTAND, INSULATION_NEUBAU,
+  SITUATION, WOHNFLAECHEN, WP_M2_MIN, WP_M2_MAX, INSULATION_BESTAND, INSULATION_NEUBAU,
   PERSONEN, HEIZSYSTEM, WP_TYPE, WP_FUEL_OPTIONS, HAUSTYP_WP, YEAR, FUEL,
 } from "../../../lib/constants";
 import { waermeAusEndenergie, OEL_KWH_PRO_LITER } from "../../../lib/heat-consumption";
@@ -13,6 +13,10 @@ import { greenGasApplies } from "../../../lib/fossil-reference";
 import { gasMixSeries, heatCostComparisonSeries } from "../../../lib/greengas";
 import { bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "../../../lib/greengas-config";
 import OptionCard from "../../../components/OptionCard";
+import ResultSection from "../../../components/ResultSection";
+import GebaeudeField, { GEBAEUDE_FIELDS } from "../../../components/GebaeudeField";
+import StandNoteView from "../../../components/StandNoteView";
+import { type StandSeite } from "../../../lib/stand-format";
 import InlineEdit from "../../../components/InlineEdit";
 import HeatPumpChart from "./_components/HeatPumpChart";
 import GasPriceStackChart from "../../../components/charts/GasPriceStackChart";
@@ -32,7 +36,12 @@ const STEPS = ["Situation", "Größe & Typ", "Dämmstandard", "Haushalt", "Heizs
 // `embedded` = gerendert in einem Modal (z. B. aus dem Förder-Ratgeber), nicht
 // als eigene Seite: dann ohne 100vh-Höhe, ohne Seitentitel und volle Breite —
 // den Titel liefert der Modal-Header. Kein iframe, keine URL-/Storage-Kopplung.
-export default function Waermepumpe({ embedded = false }: { embedded?: boolean } = {}) {
+// Eingebettet gibt es auch keine Stand-Zeile, deshalb reicht der Ratgeber kein
+// `stand` durch; auf der eigenen Seite kommt es fertig aufgelöst von page.tsx.
+export default function Waermepumpe({
+  embedded = false,
+  stand,
+}: { embedded?: boolean; stand?: StandSeite } = {}) {
   // ── Step state ───────────────────────────────────────────────
   const [step, setStep] = useState(0);
   const [situation, setSituation] = useState<"bestand" | "neubau">("bestand");
@@ -43,6 +52,8 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   const [insulationIdx, setInsulationIdx] = useState(1);   // teilsaniert / KfW 55
   const [personen, setPersonen] = useState(2);             // 3–4
   const [heizsystem, setHeizsystem] = useState<"fbh" | "hk_neu" | "hk_alt">("fbh");
+  // Welche Gebäudefrage im Ergebnis gerade aufgeklappt ist.
+  const [gebaeudeEditing, setGebaeudeEditing] = useState<string | null>(null);
   const [wpType, setWpType] = useState<"lwwp" | "swwp">("lwwp");
 
   // PV-Integration (Ergebnis-Overlay)
@@ -320,6 +331,9 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   };
 
   const insulationOptions = situation === "bestand" ? INSULATION_BESTAND : INSULATION_NEUBAU;
+  // Der Gebäudezustand als Kopfzeile des Ergebnis-Abschnitts.
+  const gebaeudeZusammenfassung = () =>
+    `${HAUSTYP_WP[haustypIdx].label} · ${wohnflaeche} m² · ${insulationOptions[insulationIdx]?.label}`;
 
   // ── Render ───────────────────────────────────────────────────
   return (
@@ -390,7 +404,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                           setCustomFlaeche(null);
                         } else {
                           const n = parseInt(raw);
-                          if (!isNaN(n) && n >= 30 && n <= 500) setCustomFlaeche(n);
+                          if (!isNaN(n) && n >= WP_M2_MIN && n <= WP_M2_MAX) setCustomFlaeche(n);
                         }
                       }}
                       onBlur={() => {
@@ -815,6 +829,46 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                 </InfoTooltip>
               </div>
 
+              {/* Das Gebäude — dieselbe Abfrage wie im Flow, hier zum
+                  Nachjustieren. Bis 08.08.2026 waren im Ergebnis nur die
+                  ABGELEITETEN Größen editierbar (Heizwärme, Heizlast): Wer
+                  merkte, dass er die Wohnfläche falsch angegeben hat, musste
+                  den ganzen Flow neu durchlaufen.
+
+                  Die abgeleiteten Werte bleiben darunter trotzdem stehen — das
+                  ist die eine Stelle im Projekt, wo zwei Wege zur selben Zahl
+                  richtig sind: Das Gebäude ist der Weg für alle, die schätzen;
+                  die Heizwärme der für die, die ihre Gasrechnung danebenlegen.
+                  Ein gemessener Wert schlägt jede Schätzung. */}
+              <div style={{ marginTop: 18 }}>
+                <ResultSection title="Dein Gebäude" summary={gebaeudeZusammenfassung()}>
+                  <GebaeudeField
+                    werte={{ haustypIdx, wohnflaeche, insulationIdx, heizsystem }}
+                    setWerte={patch => {
+                      if (patch.haustypIdx !== undefined) setHaustypIdx(patch.haustypIdx);
+                      if (patch.wohnflaeche !== undefined) setCustomFlaeche(patch.wohnflaeche);
+                      if (patch.insulationIdx !== undefined) setInsulationIdx(patch.insulationIdx);
+                      if (patch.heizsystem !== undefined) setHeizsystem(patch.heizsystem);
+                      // Von Hand gesetzte Ableitungen zurücknehmen: Sie beschreiben
+                      // das ALTE Gebäude und würden die neue Angabe stumm schalten.
+                      setOQges(null);
+                      setOHeizlast(null);
+                    }}
+                    beantwortet={new Set(GEBAEUDE_FIELDS)}
+                    /* Alle vier Fragen gelten hier als beantwortet (der Flow hat
+                       sie gestellt), zu markieren gibt es also nichts — aber die
+                       angeklickte Frage muss nach der Wahl wieder zuklappen.
+                       Genau das erledigt dieser Callback in den anderen
+                       Rechnern mit; eine leere Funktion ließ die Frage offen
+                       stehen und der Baustein verhielt sich hier anders. */
+                    markiereBeantwortet={() => setGebaeudeEditing(null)}
+                    bearbeitet={gebaeudeEditing}
+                    setBearbeitet={setGebaeudeEditing}
+                    daemmstufen={insulationOptions}
+                  />
+                </ResultSection>
+              </div>
+
               {/* Editierbare Kernannahmen */}
               <div style={{ marginTop: 18, borderTop: `1px solid ${v('--color-border-accent')}`, paddingTop: 14, fontSize: 13, lineHeight: 2 }}>
                 <div>
@@ -1027,6 +1081,13 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
             </div>
           </div>
         )}
+
+        {/* Der Aktualisierungsstand steht INNERHALB der Rechner-Spalte, nicht
+            unter ihr: Der Rahmen ist mindestens bildschirmhoch, ein Absatz
+            dahinter läge hinter einer leeren Fläche und wäre praktisch
+            unsichtbar. Im eingebetteten Widget entfällt er — dort trägt die
+            einbettende Seite die Quellenangabe. */}
+        {!embedded && <StandNoteView seite={stand} />}
       </div>
     </div>
   );

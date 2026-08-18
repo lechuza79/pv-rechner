@@ -10,7 +10,7 @@ import { v, iconSizes } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { PERSONEN, SCENARIOS } from "../../../lib/constants";
 import ScenarioTabs from "../../../components/ScenarioTabs";
-import { DEFAULT_BALKON_CONFIG as CFG, type BalkonSetId, type BalkonStorageId } from "../../../lib/balkon-config";
+import { DEFAULT_BALKON_CONFIG as CFG, BALKON_RECHT, BALKON_DACH_HINWEIS_KWH, type BalkonSetId, type BalkonStorageId } from "../../../lib/balkon-config";
 import { calcBalkon, recommendBalkon, type BalkonInputs, type BalkonOption } from "../../../lib/balkon";
 import { referenceYearKwh } from "../../../lib/solar-year";
 import { trackEvent } from "../../../lib/analytics";
@@ -224,7 +224,7 @@ export default function Balkon() {
 
   // Cross-Flow-Teaser: Bei hohem Verbrauch holt eine Dachanlage deutlich mehr
   // (Balkon deckt nur die Grundlast). Schwelle bewusst konservativ.
-  const roofWorthIt = haushaltKwh >= 3500;
+  const roofWorthIt = haushaltKwh >= BALKON_DACH_HINWEIS_KWH;
 
   return (
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
@@ -554,7 +554,7 @@ export default function Balkon() {
             {/* Einspeise-/Anmeldehinweis */}
             <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.6 }}>
               {r.feedInKwh > 0 ? (
-                <>Rund <strong style={{ color: v('--color-text-primary'), fontFamily: v('--font-mono') }}>{r.feedInKwh.toLocaleString("de-DE")} kWh</strong> Überschuss fließen unvergütet ins Netz — für Balkonkraftwerke gibt es keine Einspeisevergütung. Deshalb zählt nur der selbst genutzte Strom.</>
+                <>Rund <strong style={{ color: v('--color-text-primary'), fontFamily: v('--font-mono') }}>{r.feedInKwh.toLocaleString("de-DE")} kWh</strong> deines Ertrags brauchst du nicht selbst. {BALKON_RECHT.keineVerguetung}</>
               ) : (
                 <>Du nutzt praktisch den gesamten Ertrag selbst — kein Überschuss geht verloren.</>
               )}
@@ -564,7 +564,7 @@ export default function Balkon() {
                 </div>
               )}
               <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 6 }}>
-                Anmeldung seit 2024 vereinfacht: eine Registrierung im Marktstammdatenregister genügt, keine Netzbetreiber-Genehmigung.
+                {BALKON_RECHT.anmeldung}
                 {r.storageKwh > 0 && " Mit Speicher ist das Gerät allerdings von der VDE-Produktnorm nicht abgedeckt — dafür entsteht gerade eine eigene Norm; je nach Ausführung kann eine Rückfrage beim Netzbetreiber sinnvoll sein."}
               </div>
             </div>
@@ -584,9 +584,7 @@ export default function Balkon() {
 
             {/* Miete/Eigentum-Hinweis */}
             <div style={{ background: v('--color-bg-muted'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.6 }}>
-              <strong style={{ color: v('--color-text-secondary') }}>Miete oder Eigentum:</strong> Beides ist möglich. Seit 2024 gelten Steckersolargeräte
-              als privilegierte Maßnahme — Vermieter und Eigentümergemeinschaft dürfen die Montage nur noch aus wichtigem Grund ablehnen.
-              Ein kurzes Einverständnis vorab bleibt trotzdem sinnvoll.
+              <strong style={{ color: v('--color-text-secondary') }}>Miete oder Eigentum:</strong> Beides ist möglich. {BALKON_RECHT.mieteEigentum}
             </div>
 
             {/* Cross-Flow: großes Dach lohnt mehr */}

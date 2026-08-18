@@ -87,6 +87,14 @@ const FALLBACK_GEMEINDEN = [
   "/solar-atlas/sachsen/landkreis-bautzen/wilthen",
 ];
 
+/** Dasselbe für die Kreisebene (siehe measureColdAtlas — sie wird mitgemessen,
+ *  weil sie die nächste indexierbare Ebene ist). */
+const FALLBACK_KREISE = [
+  "/solar-atlas/bayern/landkreis-wuerzburg",
+  "/solar-atlas/hessen/landkreis-fulda",
+  "/solar-atlas/sachsen/landkreis-bautzen",
+];
+
 type Probe = { label: string; url: string; status: number; seconds: number; cache: string; region: string };
 
 /** Ein Aufruf, gemessen wie ein Browser ihn erlebt (inkl. Verbindungsaufbau). */
@@ -119,13 +127,18 @@ async function probe(label: string, path: string): Promise<Probe> {
   return { label, url, status, seconds: (Date.now() - started) / 1000, cache, region };
 }
 
-/** Zufällige Gemeinde-Pfade aus der DB — ein leichter Read, kein Aggregat.
+/** Zufällige Atlas-Pfade aus der DB — ein leichter Read, kein Aggregat.
  *  Zufällig, weil eine feste Seite nach dem ersten Lauf im Cache läge und der
- *  Check dann 0,1 s misst statt des Kaltrenders, den ein echter Erstbesucher zahlt. */
-async function randomGemeindePaths(count: number): Promise<string[]> {
+ *  Check dann 0,1 s misst statt des Kaltrenders, den ein echter Erstbesucher zahlt.
+ *
+ *  Liefert beide Ebenen aus DERSELBEN Abfrage: zu jeder gezogenen Gemeinde ist
+ *  der Kreis ohnehin schon aufgelöst (der Pfad ist dreistufig), die Kreisseiten
+ *  kosten also keinen zusätzlichen Datenbank-Read. */
+async function randomAtlasPaths(count: number): Promise<{ gemeinde: string[]; kreis: string[] }> {
+  const leer = { gemeinde: [], kreis: [] };
   const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
-  if (!url || !key) return [];
+  if (!url || !key) return leer;
 
   const headers = { apikey: key, Authorization: `Bearer ${key}` };
   const q = async (path: string) => {
@@ -150,7 +163,7 @@ async function randomGemeindePaths(count: number): Promise<string[]> {
     );
     if (row) gem.push(row);
   }
-  if (!gem.length) return [];
+  if (!gem.length) return leer;
 
   // Zu jeder Gemeinde Kreis + Bundesland auflösen (der Pfad ist dreistufig).
   const kreisIds = Array.from(new Set(gem.map((g) => g.parent_region_id).filter(Boolean)));
@@ -161,13 +174,16 @@ async function randomGemeindePaths(count: number): Promise<string[]> {
   const kreisById = new Map(kreise.map((k) => [k.region_id!, k]));
   const landById = new Map(laender.map((l) => [l.region_id!, l]));
 
-  const paths: string[] = [];
+  const gemeindePfade: string[] = [];
+  const kreisPfade = new Set<string>();
   for (const g of gem) {
     const k = kreisById.get(g.parent_region_id ?? "");
     const l = k ? landById.get(k.parent_region_id ?? "") : undefined;
-    if (k?.slug && l?.slug && g.slug) paths.push(`/solar-atlas/${l.slug}/${k.slug}/${g.slug}`);
+    if (!k?.slug || !l?.slug) continue;
+    if (g.slug) gemeindePfade.push(`/solar-atlas/${l.slug}/${k.slug}/${g.slug}`);
+    kreisPfade.add(`/solar-atlas/${l.slug}/${k.slug}`);
   }
-  return paths;
+  return { gemeinde: gemeindePfade, kreis: Array.from(kreisPfade) };
 }
 
 /** Wie viele Gemeinden pro Lauf frisch aufgebaut werden.
@@ -180,6 +196,14 @@ async function randomGemeindePaths(count: number): Promise<string[]> {
  *  gekommen. Gewertet wird der LANGSAMSTE Treffer, nicht der Durchschnitt: die
  *  Notbremse trifft ja auch die langsamste Seite zuerst. */
 const COLD_SAMPLES = 3;
+
+/** Wie viele Kreisseiten pro Lauf frisch aufgebaut werden.
+ *
+ *  Weniger als bei den Gemeinden, weil es nur ~400 Kreise gibt (statt ~11.000
+ *  Gemeinden) und ihre Zeiten enger beieinander liegen — zwei Stichproben
+ *  reichen, um einen strukturellen Rückfall zu sehen, ohne den Lauf zu
+ *  verlängern. */
+const COLD_KREIS_SAMPLES = 2;
 
 /**
  * Die teuersten Datenbank-Aufrufe des Atlas, direkt gemessen — unabhängig davon,
@@ -351,20 +375,41 @@ async function measureAtlasQueries(): Promise<DbProbe[]> {
   return out;
 }
 
-/** Misst echte Kaltrender. Ein Treffer im Cache misst nichts Interessantes (dann
- *  liefert das CDN eine fertige Seite aus), solche Versuche zählen nicht mit. */
+/**
+ * Misst echte Kaltrender. Ein Treffer im Cache misst nichts Interessantes (dann
+ * liefert das CDN eine fertige Seite aus), solche Versuche zählen nicht mit.
+ *
+ * BEIDE ATLAS-EBENEN, nicht nur die Gemeinden (17.08.2026): Die Kreisebene ist
+ * die nächste, die indexiert werden soll (Welle 0b, siehe lib/atlas-index.ts).
+ * Beim ersten Anlauf am 27.07.2026 wurde sie freigeschaltet, ohne dass irgendein
+ * Wächter sie je gemessen hätte — beobachtet wurden nur Gemeinden. Eine Ebene
+ * freizuschalten, die niemand misst, heißt: Der Rückfall fällt erst auf, wenn
+ * Nutzer ihn sehen. Die Kreisseiten sind teurer als sie aussehen (sie tragen die
+ * Rangliste aller ~52 Gemeinden des Kreises), also werden sie gemessen, BEVOR
+ * die Welle kommt — nicht danach.
+ */
 async function measureColdAtlas(): Promise<{ worst: Probe; all: Probe[] } | null> {
-  const candidates = [...(await randomGemeindePaths(COLD_SAMPLES + 2)), ...FALLBACK_GEMEINDEN];
+  const zufall = await randomAtlasPaths(COLD_SAMPLES + 2);
   const hits: Probe[] = [];
-  for (const path of candidates) {
-    if (hits.length >= COLD_SAMPLES) break;
-    const p = await probe("Atlas-Gemeinde (kalt)", path);
-    // NUR `MISS` ist ein echter Kaltaufbau. `HIT` und `STALE` liefern beide eine
-    // fertige Seite aus dem CDN aus (bei STALE wird nur im Hintergrund erneuert)
-    // — beides misst 0,05 s und sagt über den Aufbau nichts. Vorher zählte STALE
-    // mit und konnte einen Lauf grün melden, in dem gar nichts aufgebaut wurde.
-    if (p.cache === "MISS") hits.push(p);
-  }
+
+  const sammle = async (label: string, pfade: string[], ziel: number) => {
+    let gefunden = 0;
+    for (const path of pfade) {
+      if (gefunden >= ziel) break;
+      const p = await probe(label, path);
+      // NUR `MISS` ist ein echter Kaltaufbau. `HIT` und `STALE` liefern beide eine
+      // fertige Seite aus dem CDN aus (bei STALE wird nur im Hintergrund erneuert)
+      // — beides misst 0,05 s und sagt über den Aufbau nichts. Vorher zählte STALE
+      // mit und konnte einen Lauf grün melden, in dem gar nichts aufgebaut wurde.
+      if (p.cache === "MISS") {
+        hits.push(p);
+        gefunden++;
+      }
+    }
+  };
+
+  await sammle("Atlas-Gemeinde (kalt)", [...zufall.gemeinde, ...FALLBACK_GEMEINDEN], COLD_SAMPLES);
+  await sammle("Atlas-Landkreis (kalt)", [...zufall.kreis, ...FALLBACK_KREISE], COLD_KREIS_SAMPLES);
   if (!hits.length) return null;
   return { worst: hits.reduce((a, b) => (b.seconds > a.seconds ? b : a)), all: hits };
 }
@@ -676,10 +721,27 @@ async function main() {
 
   if (cold && coldResult) {
     const luft = NOTBREMSE_S - cold.seconds;
+    // Je Ebene eine eigene Zeile: die Kreisseiten sind die nächste indexierbare
+    // Ebene, ihr Wert soll im Bericht ablesbar sein und nicht in einer
+    // gemeinsamen Zahlenreihe verschwinden.
+    const gemeindeHits = coldResult.all.filter((p) => p.label.includes("Gemeinde"));
+    const kreisHits = coldResult.all.filter((p) => p.label.includes("Landkreis"));
+    for (const [name, hits] of [
+      ["Atlas-Gemeinden", gemeindeHits],
+      ["Atlas-Landkreise", kreisHits],
+    ] as const) {
+      if (!hits.length) continue;
+      lines.push(
+        `${name} frisch aufgebaut (${hits.length} Stichproben): ` +
+          `${hits.map((p) => p.seconds.toFixed(1)).join(" / ")} s`,
+      );
+    }
+    if (!kreisHits.length) {
+      lines.push("Atlas-Landkreise: kein echter Kaltaufbau erwischt (alle Stichproben lagen im Cache).");
+    }
     lines.push(
-      `Atlas-Gemeinden frisch aufgebaut (${coldResult.all.length} Stichproben): ` +
-        `${coldResult.all.map((p) => p.seconds.toFixed(1)).join(" / ")} s — ` +
-        `langsamste ${cold.seconds.toFixed(2)} s, ${luft.toFixed(1)} s Luft bis zur Notbremse bei ${NOTBREMSE_S} s`,
+      `Langsamster Kaltaufbau ${cold.seconds.toFixed(2)} s (${cold.label}), ` +
+        `${luft.toFixed(1)} s Luft bis zur Notbremse bei ${NOTBREMSE_S} s`,
     );
     lines.push(`Langsamste Seite: ${cold.url}`);
     const coldVerdict = verdict(cold.seconds, SLOW.atlasCold);

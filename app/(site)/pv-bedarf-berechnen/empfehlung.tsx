@@ -2,14 +2,21 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useRouter, useSearchParams, type ReadonlyURLSearchParams } from "next/navigation";
 import Link from "next/link";
-import { PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, HAUSTYPEN, DACHARTEN, SPEICHER, INSULATION_BESTAND, HEIZSYSTEM, SCENARIOS, HEIZSYSTEM_SHORT, WP_M2_PRESETS, type Heizsystem } from "../../../lib/constants";
+import { PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, SPEICHER, INSULATION_BESTAND, SCENARIOS, type Heizsystem } from "../../../lib/constants";
 import { recommend, economicsForScenario } from "../../../lib/recommend";
 import ScenarioTabs from "../../../components/ScenarioTabs";
-import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING } from "../../../lib/heatpump";
-import { AccordionField, ChoiceButtons } from "../../../components/AccordionField";
+import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING, wpGebaeudeUebersprungenFolge } from "../../../lib/heatpump";
+import { AccordionField } from "../../../components/AccordionField";
 import { trackEvent } from "../../../lib/analytics";
 import { stackFunding, type FundingProgram } from "../../../lib/funding-programs";
 import OptionCard from "../../../components/OptionCard";
+import GebaeudeField, { GEBAEUDE_FIELDS, type GebaeudeWerte } from "../../../components/GebaeudeField";
+import Toast from "../../../components/Toast";
+import DachField, { DACH_FIELDS } from "../../../components/DachField";
+import { dachErtragHinweis, dachErtragKwp } from "../../../lib/dach-ertrag";
+import { type TiltOrientation } from "../../../lib/tilt-config";
+import StandNoteView from "../../../components/StandNoteView";
+import { type StandSeite } from "../../../lib/stand-format";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
 import PresetNumberInput from "../../../components/PresetNumberInput";
@@ -59,14 +66,18 @@ function parsePlzParam(sp: SP): string {
   return raw && /^\d{5}$/.test(raw) ? raw : "";
 }
 
-// Großverbraucher-Detailfragen in Akkordeon-Reihenfolge. Kein Haustyp — der
-// kommt hier schon aus der Dach-Frage; keine Klimaanlage — die hat in diesem
-// Flow keine Detailabfrage.
-const WP_FIELDS = ["wp-flaeche", "wp-daemmung", "wp-heizsystem"] as const;
+// Alle vier Gebäudefragen aus dem geteilten Baustein — inklusive Haustyp. Der
+// fehlte hier mit der Begründung, er komme aus der Dach-Frage; das war eine
+// Verwechslung zweier Größen (dort Haus-Größenklasse für die Dachfläche, hier
+// geteilte Wände für die Heizlast), und der Heizstrom wurde deshalb immer
+// freistehend gerechnet. Keine Klima-Detailfrage — die hat dieser Flow nicht.
+const WP_FIELDS = GEBAEUDE_FIELDS;
 const EA_FIELDS = ["ea-km"] as const;
 const GV_FIELDS = [...WP_FIELDS, ...EA_FIELDS];
 
-export default function Empfehlung() {
+// `stand` kommt fertig aufgelöst von der Server-Seite (page.tsx) — siehe dort,
+// warum der Flow ihn nicht selbst aus `lib/stand.ts` liest.
+export default function Empfehlung({ stand }: { stand?: StandSeite }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const prices = usePrices();
@@ -90,8 +101,15 @@ export default function Empfehlung() {
   const wpWohnflaeche = parseRangedInt(searchParams, "wf", DEFAULT_WP_BUILDING.wohnflaeche, 20, 1000);
   const wpInsulation  = parseRangedInt(searchParams, "wi", DEFAULT_WP_BUILDING.insulationIdx, 0, INSULATION_BESTAND.length - 1);
   const wpHeizsystem  = parseStrParam(searchParams, "wh", DEFAULT_WP_BUILDING.heizsystem, ["fbh", "hk_neu", "hk_alt"]) as Heizsystem;
+  const wpHaustyp     = parseRangedInt(searchParams, "wht", 0, 0, HAUSTYP_WP.length - 1);
   const plz        = parsePlzParam(searchParams);
   const ertragKwp  = parseOptionalIntParam(searchParams, "ertrag", 700, 1400);
+  // Ausrichtung der Module — ohne sie rechnet jedes Dach als optimales Süddach
+  // (der PVGIS-Ertrag ist auf genau diesen Bestfall bezogen, siehe
+  // lib/dach-ertrag.ts). Kein Default: „nicht angegeben" ist eine eigene Lage.
+  const ausrichtung = (parseStrParam(searchParams, "az", "", ["sued", "suedostwest", "ostwest", "nord"]) || null) as TiltOrientation | null;
+  // Neigung: null = nicht angegeben, dann gilt die typische Neigung der Dachform.
+  const neigungGrad = parseOptionalIntParam(searchParams, "ng", 0, 90);
   const isRecommendation = searchParams.get("view") === "ergebnis";
 
   // Wizard-Step bleibt lokal — niemand teilt eine Halb-Eingabe-URL.
@@ -111,6 +129,25 @@ export default function Empfehlung() {
     searchParams.get("view") === "ergebnis" ? new Set(GV_FIELDS) : new Set()
   );
   const [gvEditing, setGvEditing] = useState<string | null>(null);
+  // Dach-Fragen: eigener Answered-Zustand, aus derselben Not wie bei den
+  // Großverbrauchern — die Dachform hat in der URL einen Default, aus dem sich
+  // eine echte Wahl nicht ablesen lässt.
+  const [dachAnswered, setDachAnswered] = useState<Set<string>>(() =>
+    searchParams.get("view") === "ergebnis" ? new Set(DACH_FIELDS) : new Set()
+  );
+  const markDachAnswered = (key: string) => {
+    setDachAnswered(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
+    setGvEditing(null);
+  };
+  // Zurücknehmen, wenn eine Antwort durch eine neue Vorgabe ungültig wird: Der
+  // Wechsel auf ein Flachdach verwirft eine Nord-Ausrichtung. Ohne das galt die
+  // Frage weiter als beantwortet, kam nicht wieder — und der Ertrag fiel still
+  // auf den Bestfall zurück.
+  const nimmDachZurueck = (key: string) => {
+    setDachAnswered(prev => { if (!prev.has(key)) return prev; const n = new Set(prev); n.delete(key); return n; });
+  };
+  // Folge einer übersprungenen Frage — sichtbar statt still (siehe components/Toast).
+  const [folgeToast, setFolgeToast] = useState<string | null>(null);
   const markGvAnswered = (key: string) => {
     setGvAnswered(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
     setGvEditing(null);
@@ -184,6 +221,7 @@ export default function Empfehlung() {
 
   const setHaustyp     = (v: number) => updateUrl({ haus: slugOrNull(v, HAUS_SLUGS, HAUS_DEFAULT), flaeche: null });
   const setDachart     = (v: number) => updateUrl({ dach: slugOrNull(v, DACH_SLUGS, DACH_DEFAULT), flaeche: null });
+  const setAusrichtung = (v: TiltOrientation | null) => updateUrl({ az: v });
   const setCustomRoofM2 = (v: number | null) => updateUrl({ flaeche: v });
   const setPersonen    = (v: number) => updateUrl({ personen: slugOrNull(v, PERSONEN_SLUGS, PERS_DEFAULT) });
   const setNutzung     = (v: number) => updateUrl({ nutzung: slugOrNull(v, NUTZUNG_SLUGS, NUTZ_DEFAULT) });
@@ -195,7 +233,24 @@ export default function Empfehlung() {
   const setWpWohnflaeche = (val: number) => updateUrl({ wf: val === DEFAULT_WP_BUILDING.wohnflaeche ? null : val });
   const setWpInsulation  = (val: number) => updateUrl({ wi: val === DEFAULT_WP_BUILDING.insulationIdx ? null : val });
   const setWpHeizsystem  = (val: Heizsystem) => updateUrl({ wh: val === DEFAULT_WP_BUILDING.heizsystem ? null : val });
+  const setWpHaustyp     = (val: number) => updateUrl({ wht: val === 0 ? null : val });
+  const setNeigungGrad   = (val: number | null) => updateUrl({ ng: val });
   const setPlz         = (v: string) => updateUrl({ plz: v || null, ertrag: v ? ertragKwp : null });
+
+  // Brücke zum geteilten Gebäude-Baustein: vier URL-Werte nach außen als ein
+  // Objekt, damit die Abfrage hier genauso aussieht wie im PV-Rechner.
+  const gebaeudeWerte: GebaeudeWerte = {
+    haustypIdx: wpHaustyp,
+    wohnflaeche: wpWohnflaeche,
+    insulationIdx: wpInsulation,
+    heizsystem: wpHeizsystem,
+  };
+  const setGebaeudeWerte = (patch: Partial<GebaeudeWerte>) => {
+    if (patch.haustypIdx !== undefined) setWpHaustyp(patch.haustypIdx);
+    if (patch.wohnflaeche !== undefined) setWpWohnflaeche(patch.wohnflaeche);
+    if (patch.insulationIdx !== undefined) setWpInsulation(patch.insulationIdx);
+    if (patch.heizsystem !== undefined) setWpHeizsystem(patch.heizsystem);
+  };
 
   // Step-Navigation: Wizard ↔ Ergebnis
   const showRecommendation = () => updateUrl({ view: "ergebnis" });
@@ -249,20 +304,31 @@ export default function Empfehlung() {
   const effectiveRoofM2 = customRoofM2 ?? computedRoofM2;
   const previewMaxKwp = Math.round(effectiveRoofM2 * 0.2 * 2) / 2;
 
-  // WP-Jahresstrom aus den Gebäudedaten (für Live-Hinweis im Step + Empfehlung)
+  // WP-Jahresstrom aus den Gebäudedaten (für Live-Hinweis im Step + Empfehlung).
+  // Der Haustyp (geteilte Wände) muss mit: bis 07.08.2026 fehlte er hier, und
+  // die Heizlast wurde deshalb immer für ein freistehendes Haus gerechnet — für
+  // ein Reihenmittelhaus rund 22 % zu viel. Der Haustyp der Dach-Frage ist eine
+  // ANDERE Größe (Ein-/Mehrfamilienhaus für die Dachfläche) und taugt nicht als
+  // Ersatz, deshalb wird er hier eigens erfragt.
   const wpKwh = calcWpAnnualElectricity({
     situation: "bestand", wohnflaeche: wpWohnflaeche, insulationIdx: wpInsulation,
     personen: PERSONEN[personen].count, heizsystem: wpHeizsystem, wpType: "lwwp",
+    haustypFaktor: HAUSTYP_WP[wpHaustyp].faktor,
   });
+
+  // Der Ertrag, mit dem gerechnet wird: Standort-Optimum × Dach. Ohne diesen
+  // Schritt bekäme ein Ost/West-Dach die Empfehlung eines Süddachs — und damit
+  // eine zu große Anlage bei zu kurzer Amortisation.
+  const effErtragKwp = ertragKwp !== null ? dachErtragKwp(ertragKwp, dachart, ausrichtung, neigungGrad) : null;
 
   // Empfehlung berechnen (mit PLZ-spezifischem Ertrag und ggf. eigener Dachfläche)
   const recInput = {
     personen, nutzung, wp, ea, eaKm, klima,
     haustyp, dachart, budgetLimit: null,
-    ertragKwp: ertragKwp ?? undefined,
+    ertragKwp: effErtragKwp ?? undefined,
     monthlyYieldPerKwp: monthlyProfile,
     customRoofM2: customRoofM2 ?? undefined,
-    wpWohnflaeche, wpInsulation, wpHeizsystem,
+    wpWohnflaeche, wpInsulation, wpHeizsystem, wpHaustyp,
   };
   // Die Empfehlung selbst bleibt am realistischen Szenario verankert — sonst
   // würde die empfohlene Anlagengröße beim Szenario-Umschalten springen.
@@ -272,7 +338,7 @@ export default function Empfehlung() {
     ? SCENARIOS.map(s => ({ ...s, eco: economicsForScenario(recInput, rec.kwp, rec.speicherKwh, { strom: s.strom, evDelta: s.evDelta }, prices, feedIn) }))
     : []),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [rec?.kwp, rec?.speicherKwh, personen, nutzung, wp, ea, eaKm, klima, haustyp, dachart, ertragKwp, customRoofM2, wpWohnflaeche, wpInsulation, wpHeizsystem, prices, feedIn]);
+    [rec?.kwp, rec?.speicherKwh, personen, nutzung, wp, ea, eaKm, klima, haustyp, dachart, effErtragKwp, customRoofM2, wpWohnflaeche, wpInsulation, wpHeizsystem, wpHaustyp, prices, feedIn]);
   const selRec = recScenarios.find(s => s.id === scenario) ?? recScenarios.find(s => s.id === "realistic");
   // Alternativen ebenfalls im gewählten Szenario, sonst widerspräche der
   // Vergleich der oben gewählten Annahme (gleiche Falle wie im WP-Rechner).
@@ -281,7 +347,7 @@ export default function Empfehlung() {
     ? rec.alternatives.map(alt => economicsForScenario(recInput, alt.kwp, alt.speicherKwh, { strom: selScenarioDef.strom, evDelta: selScenarioDef.evDelta }, prices, feedIn))
     : []),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [rec?.kwp, rec?.speicherKwh, scenario, personen, nutzung, wp, ea, eaKm, klima, haustyp, dachart, ertragKwp, customRoofM2, wpWohnflaeche, wpInsulation, wpHeizsystem, prices, feedIn]);
+    [rec?.kwp, rec?.speicherKwh, scenario, personen, nutzung, wp, ea, eaKm, klima, haustyp, dachart, effErtragKwp, customRoofM2, wpWohnflaeche, wpInsulation, wpHeizsystem, wpHaustyp, prices, feedIn]);
 
   // Förderung für die empfohlene Anlage (gleiche Mathe wie Stadt-Seite + Rechner).
   // Nur aktive, pauschal berechenbare Programme tragen bei. Das zuletzt (am
@@ -302,13 +368,25 @@ export default function Empfehlung() {
     p.set("p", String(personen));
     p.set("n", String(nutzung));
     p.set("wp", wp);
-    if (wp !== "nein") { p.set("wf", String(wpWohnflaeche)); p.set("wi", String(wpInsulation)); p.set("wh", wpHeizsystem); }
+    // Alle VIER Gebäudewerte mitgeben. Der Haustyp fehlte hier, und die
+    // Ergebnisseite rechnete deshalb wieder freistehend — der Fehler, den die
+    // Abfrage oben gerade behebt, wäre eine Zeile später zurückgewesen.
+    if (wp !== "nein") {
+      p.set("wf", String(wpWohnflaeche));
+      p.set("wi", String(wpInsulation));
+      p.set("wh", wpHeizsystem);
+      p.set("wht", String(wpHaustyp));
+    }
     p.set("ea", ea);
     if (ea !== "nein") p.set("km", String(eaKm));
     if (klima !== "nein") p.set("kl", klima);
     p.set("flow", "emp");
     p.set("ht", String(haustyp));
     p.set("da", String(dachart));
+    // Ausrichtung muss mit: ohne sie rechnet die Ergebnisseite das Dach wieder
+    // als optimales Süddach — und zeigt eine andere Zahl als die Empfehlung.
+    if (ausrichtung) p.set("az", ausrichtung);
+    if (neigungGrad !== null) p.set("ng", String(neigungGrad));
     if (plz) p.set("plz", plz);
     if (ertragKwp) p.set("er", String(ertragKwp));
     // Lokale Förderung scharf ans Ergebnis durchreichen, damit die Amortisation
@@ -339,6 +417,11 @@ export default function Empfehlung() {
   return (
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
 
+      {/* Folge einer übersprungenen Frage — gleicher Baustein, gleicher Ton wie
+          im PV-Rechner. */}
+      <Toast open={folgeToast !== null} onClose={() => setFolgeToast(null)} tone="neutral" autoHideMs={9000}>
+        {folgeToast}
+      </Toast>
 
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
@@ -370,11 +453,21 @@ export default function Empfehlung() {
                     <OptionCard key={i} selected={haustyp === i} onClick={() => setHaustyp(i)} label={h.label} sub={h.sub} />
                   ))}
                 </div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Dachart</div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
-                  {DACHARTEN.map((d, i) => (
-                    <OptionCard key={i} selected={dachart === i} onClick={() => setDachart(i)} label={d.label} sub={d.sub} />
-                  ))}
+                <div style={{ marginBottom: 16 }}>
+                  <DachField
+                    dachartIdx={dachart}
+                    setDachartIdx={setDachart}
+                    ausrichtung={ausrichtung}
+                    setAusrichtung={setAusrichtung}
+                    neigungGrad={neigungGrad}
+                    setNeigungGrad={setNeigungGrad}
+                    beantwortet={dachAnswered}
+                    markiereBeantwortet={markDachAnswered}
+                    nimmZurueck={nimmDachZurueck}
+                    bearbeitet={gvEditing}
+                    setBearbeitet={setGvEditing}
+                    hinweis={effErtragKwp !== null ? dachErtragHinweis(effErtragKwp, dachart, ausrichtung, true, neigungGrad) : undefined}
+                  />
                 </div>
 
                 {/* Berechnete Dachfläche + Override */}
@@ -438,48 +531,28 @@ export default function Empfehlung() {
             {step === 2 && (
               <div>
                 <TriToggle label="⚡ Wärmepumpe" options={TRI} value={wp} onChange={setWp} />
-                {wp !== "nein" ? (() => {
-                  const openKey = openGvField(WP_FIELDS);
-                  return (
-                    <div style={{ marginBottom: 28, marginTop: -4 }}>
-                      <div style={{ fontSize: 11, color: v('--color-text-muted'), marginBottom: 12, lineHeight: 1.5 }}>
-                        Wie viel Heizstrom deine Wärmepumpe braucht, berechnen wir aus den Angaben zu deinem Gebäude.
-                      </div>
-                      <AccordionField label="Wohnfläche" open={openKey === "wp-flaeche"} answered={gvAnswered.has("wp-flaeche")} summary={`${wpWohnflaeche} m²`} onEdit={() => setGvEditing("wp-flaeche")}>
-                        <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
-                          {WP_M2_PRESETS.map(m2 => {
-                            const active = gvAnswered.has("wp-flaeche") && wpWohnflaeche === m2;
-                            return (
-                              <button key={m2} onClick={() => { setWpWohnflaeche(m2); markGvAnswered("wp-flaeche"); }} style={{
-                                padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer",
-                                background: active ? v('--color-accent-dim') : v('--color-bg-muted'),
-                                border: active ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
-                                color: active ? v('--color-accent') : v('--color-text-muted'),
-                              }}>{m2} m²</button>
-                            );
-                          })}
-                          <PresetNumberInput value={wpWohnflaeche} presets={WP_M2_PRESETS} min={20} max={1000} unit="m²"
-                            onCommit={n => { setWpWohnflaeche(n); markGvAnswered("wp-flaeche"); }}
-                            onFocus={() => setGvEditing("wp-flaeche")} onBlur={() => setGvEditing(null)} />
-                        </div>
-                      </AccordionField>
-                      <AccordionField label="Dämmzustand" open={openKey === "wp-daemmung"} answered={gvAnswered.has("wp-daemmung")} summary={INSULATION_BESTAND[wpInsulation].label} onEdit={() => setGvEditing("wp-daemmung")}>
-                        <ChoiceButtons options={INSULATION_BESTAND} columns={2} selected={gvAnswered.has("wp-daemmung") ? wpInsulation : null}
-                          onSelect={i => { setWpInsulation(i); markGvAnswered("wp-daemmung"); }} render={ins => ins.label} />
-                      </AccordionField>
-                      <AccordionField label="Heizsystem" open={openKey === "wp-heizsystem"} answered={gvAnswered.has("wp-heizsystem")} summary={HEIZSYSTEM.find(h => h.id === wpHeizsystem)?.label} onEdit={() => setGvEditing("wp-heizsystem")}>
-                        <ChoiceButtons options={HEIZSYSTEM} columns={3} selected={gvAnswered.has("wp-heizsystem") ? HEIZSYSTEM.findIndex(h => h.id === wpHeizsystem) : null}
-                          onSelect={i => { setWpHeizsystem(HEIZSYSTEM[i].id as Heizsystem); markGvAnswered("wp-heizsystem"); }}
-                          render={h => HEIZSYSTEM_SHORT[h.id]} />
-                      </AccordionField>
-                      {openKey === null && (
-                        <div className="sc-acc" style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 4, lineHeight: 1.5 }}>
-                          Daraus ergeben sich rund <strong style={{ color: v('--color-text-primary') }}>{wpKwh.toLocaleString("de-DE")} kWh</strong> Heizstrom pro Jahr.
-                        </div>
-                      )}
+                {wp !== "nein" ? (
+                  <div style={{ marginBottom: 28, marginTop: -4 }}>
+                    <div style={{ fontSize: 11, color: v('--color-text-muted'), marginBottom: 12, lineHeight: 1.5 }}>
+                      Wie viel Heizstrom deine Wärmepumpe braucht, berechnen wir aus den Angaben zu deinem Gebäude.
                     </div>
-                  );
-                })() : (
+                    <GebaeudeField
+                      werte={gebaeudeWerte}
+                      setWerte={setGebaeudeWerte}
+                      beantwortet={gvAnswered}
+                      markiereBeantwortet={markGvAnswered}
+                      bearbeitet={gvEditing}
+                      setBearbeitet={setGvEditing}
+                      hinweis={WP_FIELDS.every(k => gvAnswered.has(k))
+                        ? `Daraus ergeben sich rund ${wpKwh.toLocaleString("de-DE")} kWh Heizstrom pro Jahr.`
+                        : undefined}
+                      onWeissNicht={() => {
+                        WP_FIELDS.forEach(markGvAnswered);
+                        setFolgeToast(wpGebaeudeUebersprungenFolge(wpKwh));
+                      }}
+                    />
+                  </div>
+                ) : (
                   <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: -10, marginBottom: 16, lineHeight: 1.5, paddingLeft: 2 }}>
                     Eine Wärmepumpe erhöht deinen Stromverbrauch deutlich — eine größere PV-Anlage lohnt sich dann besonders.
                   </div>
@@ -778,6 +851,10 @@ export default function Empfehlung() {
             </div>
           </div>
         )}
+
+        {/* Innerhalb der Spalte, nicht dahinter — der Rahmen ist mindestens
+            bildschirmhoch, und was dahinter steht, sieht niemand. */}
+        <StandNoteView seite={stand} />
       </div>
     </div>
   );
