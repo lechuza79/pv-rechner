@@ -20,12 +20,17 @@ export const FEED_IN_YEARS = 20;
 // NATIONAL_AVG_YIELD ist der PVGIS-Bundesschnitt (optimale Ausrichtung) und dient
 // serverseitig als Fallback, wenn PVGIS nicht erreichbar ist. Hier zentral, damit
 // Client (Rechner/Empfehlung/Balkon) und Server denselben Wert teilen.
+// Er ist zugleich der Startwert der Rechner ohne PLZ. Hier stand bis zum
+// 18.08.2026 ein zweiter, um 100 kWh gekürzter Wert („Puffer für nicht-optimale
+// Dachausrichtung") — und damit ein Dachabschlag an einer Stelle, an der die
+// Größe „Standort-OPTIMUM" heißt. Seit es die Dach-Frage gibt, zieht
+// dachErtragKwp() den Abschlag selbst ab: Wer sein Ost/West-Dach angab, bekam
+// ihn zweimal (rund 20 % zu wenig statt 20 %), und der Hinweis daneben behauptete
+// trotzdem „bei optimaler Neigung nach Süden". Der Abschlag gehört genau an eine
+// Stelle — in die Dach-Matrix, wo er zur Angabe des Nutzers passt und sichtbar
+// begründet ist. Solange niemand sein Dach angegeben hat, gilt das Optimum, und
+// die Rechner schreiben das ausdrücklich hin (dachErtragHinweis).
 export const NATIONAL_AVG_YIELD = 1050;
-// Ohne PLZ zeigen die Rechner einen bewusst KONSERVATIVEN Ertrag: der Bundesschnitt
-// minus 100 kWh Puffer für nicht-optimale Dachausrichtung/-neigung (echte Dächer
-// liegen selten im PVGIS-Optimum). Abgeleitet aus dem geprüften Modell, nicht
-// frei gegriffen — sobald der Nutzer eine PLZ eingibt, ersetzt der PVGIS-Wert ihn.
-export const NO_PLZ_DEFAULT_YIELD = NATIONAL_AVG_YIELD - 100; // = 950
 
 // Saisonaler Verbrauchsfaktor (BDEW Standardlastprofil H0)
 // Winter ~17% über Durchschnitt, Sommer ~15% unter
@@ -305,5 +310,30 @@ export const WP_FUEL_OPTIONS: {
 }[] = [
   { id: "gas_neu", label: "Gas-Brennwert", refLabel: "Gasheizung", kind: "gas", price: FUEL_PRICE.gas.price, efficiency: 0.95, co2PerKwh: FUEL_PRICE.gas.co2PerKwh },
   { id: "oil", label: "Heizöl", refLabel: "Ölheizung", kind: "oil", price: FUEL_PRICE.oil.price, efficiency: 0.85, co2PerKwh: FUEL_PRICE.oil.co2PerKwh },
+  // Die beiden Bestands-Einträge sind der Fall „Anschaffung 0" — und der heißt
+  // laut Beschreibung des Feldes ausdrücklich „meine Heizung ist noch jung".
+  // Bis 18.08.2026 gab es dafür nur den 30 Jahre alten Kessel mit 80 %: Wer
+  // seine junge Brennwerttherme meinte, bekam den Verbrauch einer Altanlage
+  // gerechnet — 8.084 € zu viel zugunsten der Wärmepumpe (140 m², teilsaniert).
+  // Und für Heizöl gab es gar keinen Bestands-Eintrag, weshalb ein Öl-Haushalt
+  // beim Umstellen still auf Gas rutschte (andere Grundgebühr, anderer
+  // CO₂-Faktor). Die Nutzungsgrade sind KEINE neuen Zahlen: 90 % Gas / 85 % Öl
+  // sind die vorhandene Heizung aus FUEL oben, dieselben, mit denen der
+  // PV-Rechner seit jeher gegen die bestehende Heizung rechnet.
+  //
+  // OFFEN (bis 01/2027): Für Heizöl fehlt der Bestands-Eintrag noch. Er braucht
+  // zwei verschiedene Nutzungsgrade (vorhanden / neu eingebaut), und die eine Zahl,
+  // die das Projekt heute für Öl kennt (0,85), beschreibt die VORHANDENE Anlage —
+  // sie steht derzeit an der neu eingebauten. Ein zweiter Eintrag mit derselben
+  // Zahl wäre kein Fall, sondern eine Dublette. Das geht zugunsten der Wärmepumpe
+  // (die Ölheizung verbrennt zu viel) — die Richtung ist bekannt und benannt.
+  // Eine naheliegende Quelle wurde am 18.08.2026 geprüft und trägt den Wert NICHT
+  // (Baujahr-Spalten von 2002, Teillast statt Jahresnutzungsgrad, andere
+  // Bezugsgröße) — die Begründung steht ausgeschrieben in
+  // scripts/waermepumpe-verify.md, damit sie niemand ein zweites Mal geht.
+  // Gebraucht wird ein Jahresnutzungsgrad nach DIN V 18599-5. Bis dahin rutscht
+  // ein Öl-Haushalt bei „Anschaffung 0" auf Gas — sichtbar, aber besser als eine
+  // erfundene Zahl.
+  { id: "gas_vorhanden", label: "Vorhandene Gastherme", refLabel: "Gasheizung", kind: "gas", price: FUEL_PRICE.gas.price, efficiency: FUEL.gas.efficiency, co2PerKwh: FUEL_PRICE.gas.co2PerKwh, bestandsanlage: true },
   { id: "gas_alt", label: "Alter Gaskessel", refLabel: "Gasheizung", kind: "gas", price: FUEL_PRICE.gas.price, efficiency: 0.80, co2PerKwh: FUEL_PRICE.gas.co2PerKwh, bestandsanlage: true },
 ];

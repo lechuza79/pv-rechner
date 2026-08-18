@@ -11,6 +11,8 @@ import { jsonLdHtml } from "../../../../../lib/json-ld";
 import { cityBySlug, slugify, isCityPublished, publishedCities, fundingForFrom } from "../../../../../lib/atlas-cities";
 import { fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../../../lib/funding-programs";
 import { getFundingPrograms } from "../../../../../lib/funding-data";
+import { getFundingHistoryFor } from "../../../../../lib/funding-history";
+import FundingHistory from "../../../../../components/FundingHistory";
 import { FundingRates, FundingConditions, FundingStatusBadge, ExampleCards, FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE } from "../../../../../components/FundingProgramParts";
 import FoerderCheckStarter from "../../../../../components/FoerderCheckStarter";
 import { buildFundingExamples } from "../../../../../lib/funding-examples";
@@ -171,6 +173,11 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
     laufendesJahr && lastFullYear && lastFullYear.count > 0 && laufendesJahr.count > 0
       ? { jetzt: laufendesJahr.count, vorjahr: lastFullYear.count, vorjahrZahl: lastFullYear.year }
       : null;
+  // Verlauf des Programms: was wir seit Aufzeichnungsbeginn an Wechseln
+  // festgestellt haben. Ohne Programm gibt es nichts zu verfolgen; ohne
+  // Datenbank oder vor dem ersten Setup kommt eine leere Liste zurück und der
+  // Abschnitt blendet sich aus.
+  const historie = f ? await getFundingHistoryFor(f.id) : [];
   // FAQ aus den Förderdaten generiert (kein separater Datensatz).
   const faq = buildFundingFaq(city.name, f, { amortYears: examples[1]?.amort ?? examples[0]?.amort ?? null });
   const faqJsonLd = {
@@ -368,6 +375,16 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
         {/* Der Förder-Check hat hier keinen eigenen Abschnitt mehr: Er ist kein
             Inhalt zum Lesen, sondern ein Werkzeug, das aus der Förderkarte
             heraus im Fenster startet (components/FoerderCheckStarter.tsx). */}
+
+        {/* ── Verlauf: was sich seit Aufzeichnungsbeginn geändert hat ──
+            Steht VOR den Beispielrechnungen: Wer gerade gelesen hat, dass der
+            Topf ausgeschöpft ist, soll das wissen, bevor er eine Beispielzahl
+            sieht. Blendet sich ohne festgestellten Wechsel komplett aus. */}
+        {f && historie.length > 0 && (
+          <div style={S.section}>
+            <FundingHistory eintraege={historie} programmName={f.name} programmUrl={f.url} />
+          </div>
+        )}
 
         {/* ── Beispielrechnungen ── */}
         <div style={S.section}>

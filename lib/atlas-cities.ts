@@ -52,11 +52,31 @@ export function fundingFor(c: AtlasCity): FundingProgram | undefined {
  */
 export function fundingForFrom(programs: FundingProgram[], c: AtlasCity): FundingProgram | undefined {
   if (c.fundingId) return programs.find((p) => p.id === c.fundingId);
-  const passend = programs.filter(
-    (p) => p.level !== "bund" && p.agsCode && c.ags.startsWith(p.agsCode.slice(0, 5)),
-  );
-  // Bei mehreren Treffern führt Raten in die Irre — dann gehört das Feld gesetzt.
-  return passend.length === 1 ? passend[0] : undefined;
+
+  // Ein Programm gilt für diese Stadt, wenn ihr Gemeindeschlüssel INNERHALB des
+  // Fördergebiets liegt: Land (2 Stellen) ⊃ Kreis/kreisfreie Stadt (5) ⊃
+  // Gemeinde (8). Die Stadt trägt hier fünf Stellen.
+  //
+  // Zwei Fehler der ersten Fassung, gefunden in der Prüfrunde am 18.08.2026:
+  //
+  //  1. Sie kürzte den Programm-Schlüssel auf fünf Stellen. Damit hätte
+  //     Höhr-Grenzhausens Zuschuss (07143032) dem GANZEN Westerwaldkreis
+  //     gegolten, sobald jemand dafür einen Eintrag anlegt — ein Dorfprogramm,
+  //     das für jede Postleitzahl des Kreises Geld abzieht. Ein achtstelliger
+  //     Schlüssel ist ENGER als die Stadtzeile und darf sie deshalb nie treffen.
+  //  2. Bei mehreren Treffern gab sie `undefined` zurück. Landesprogramme
+  //     (Berlin 11, Bremen 04) passen aber auf jede Stadt ihres Landes: Bekäme
+  //     Bremerhaven ein eigenes Programm, hätten sich Land und Kommune
+  //     gegenseitig aufgehoben und die Seite wäre still auf 404 gefallen.
+  //     Richtig ist der SPEZIFISCHERE Schlüssel — die Kommune schlägt das Land.
+  const passend = programs
+    .filter((p) => p.level !== "bund" && p.agsCode && p.agsCode.length <= c.ags.length && c.ags.startsWith(p.agsCode))
+    .sort((a, b) => b.agsCode!.length - a.agsCode!.length);
+
+  // Gleich spezifisch und trotzdem mehrere: echte Mehrdeutigkeit, dann gehört
+  // `fundingId` gesetzt. Raten wäre hier schlimmer als nichts zu zeigen.
+  if (passend.length > 1 && passend[0].agsCode!.length === passend[1].agsCode!.length) return undefined;
+  return passend[0];
 }
 
 export const ATLAS_CITIES: AtlasCity[] = [

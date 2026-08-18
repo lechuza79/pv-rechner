@@ -104,6 +104,20 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Nach dem Merge von main dazugekommen — der Test hat sie gefunden, statt sie
   // still ungeprüft durchzulassen. Genau dafür ist die Liste da.
   "ludwigshafen-kipki", "waiblingen-klimaschutz", "herne-klimafoerderung",
+  // Aus dem Abdeckungs-Screening vom 18.08.2026 — Sätze und Bedingungen sind an
+  // der Amtsseite belegt, die Zuordnung zu den Prüfformen steht noch aus.
+  "hoehr-grenzhausen-energie", "wietzen-pv", "gaimersheim-energie", "dietmannsried-pv",
+  // Zweiter Schwung aus dem Screening (18.08.2026), diesmal überwiegend
+  // Balkonkraftwerke. Sätze, Status und Bedingungen sind an der Amtsseite
+  // gelesen und belegt; was noch fehlt, ist die Zuordnung zu den Prüfformen —
+  // die ist eine eigene Arbeit, und halb erfasst gibt es hier nicht.
+  "ennepetal-steckersolar", "wittlich-balkonkraftwerke", "hochheim-klimaschutz",
+  "linsengericht-oekologie", "holzgerlingen-erneuerbare", "wernau-balkonkraftwerke",
+  "muehlhausen-sulz-pv", "senden-klima",
+  // Erste Wärmepumpen-Funde derselben Runde.
+  "maintal-klima", "roth-klimaschutz", "wenden-heizungstausch",
+  // Von der Prüfmechanik-Session übergeben und hier im Volltext gegengelesen.
+  "hohenahr-pv", "leimen-klimaschutz",
 ];
 
 /**

@@ -224,7 +224,11 @@ export function pvSpeicherFaq(prices?: PriceConfig): FaqEntry[] {
     },
     {
       q: "Wie lange hält ein Batteriespeicher?",
-      a: `Moderne Heimspeicher (LFP-Zellen) halten nach Garantie und Zyklenlebensdauer etwa ${BATTERY_LIFETIME_YEARS}–15 Jahre. In unserer Wirtschaftlichkeitsrechnung kalkulieren wir deshalb konservativ einen Akku-Tausch nach ${BATTERY_LIFETIME_YEARS} Jahren mit ein — zu dann voraussichtlich niedrigeren Preisen, weil Speicherpreise seit Jahren fallen. Ohne diesen Posten würde jede Speichergröße scheinbar rentabel.`,
+      // „${BATTERY_LIFETIME_YEARS}–15 Jahre" ergab wörtlich „15–15 Jahre", seit die
+      // Lebensdauer auf 15 Jahre steht — auch im FAQ-Auszeichnungscode für Google.
+      // Eine Spanne, deren eine Hälfte aus einer Konstante kommt und deren andere
+      // getippt ist, wird beim nächsten Wert still unsinnig.
+      a: `Moderne Heimspeicher (LFP-Zellen) halten nach Garantie und Zyklenlebensdauer etwa ${BATTERY_LIFETIME_YEARS} Jahre. In unserer Wirtschaftlichkeitsrechnung kalkulieren wir deshalb konservativ einen Akku-Tausch nach ${BATTERY_LIFETIME_YEARS} Jahren mit ein — zu dann voraussichtlich niedrigeren Preisen, weil Speicherpreise seit Jahren fallen. Ohne diesen Posten würde jede Speichergröße scheinbar rentabel.`,
       cta: { label: "Methodik im Detail", href: "/methodik" },
     },
     {

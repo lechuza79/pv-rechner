@@ -7,7 +7,45 @@
 
 export type Eligibility = "privat" | "gewerblich";
 export type FundingLevel = "bund" | "land" | "landkreis" | "kommune";
+
+/**
+ * Welche Technik ein Programm fördert.
+ *
+ * WARUM DAS EIN EIGENES FELD IST (18.08.2026): Der Katalog war bis hierhin ein
+ * reiner PV-Katalog — Dach-Anlage plus Speicher, und beides fest verdrahtet in
+ * `fundingAmount`. Balkonkraftwerke kamen in einem guten Dutzend Programmen vor,
+ * aber ausschließlich als Fließtext in `rates` und `conditions`: München fördert
+ * seit Dezember 2024 NUR NOCH Steckersolar und stand trotzdem im PV-Rechner,
+ * während der Balkon-Rechner gar keine Förderung kannte. Wärmepumpen fehlten
+ * ganz; dort führen wir bis heute nur die Bundesförderung.
+ *
+ * Die Technik lässt sich NICHT aus den Rechenfeldern ableiten, und genau das ist
+ * der Grund für ein eigenes Feld: Ein Programm ohne strukturierten Satz (weil
+ * seine Bauform sich nicht ausdrücken lässt) hätte sonst keine Zuordnung — und
+ * das sind ausgerechnet die, die nur informieren sollen.
+ */
+export type FundingTechnik = "pv" | "balkon" | "waermepumpe";
+
+/** Beschriftung der Technik — eine Quelle, damit Rechner und Seiten gleich sprechen. */
+export const FUNDING_TECHNIK_LABEL: Record<FundingTechnik, string> = {
+  pv: "Photovoltaik", balkon: "Balkonkraftwerk", waermepumpe: "Wärmepumpe",
+};
 export type FundingStatus = "aktiv" | "ausgeschoepft" | "pausiert" | "eingestellt" | "unsicher";
+
+export const FUNDING_STATUS_LABEL: Record<FundingStatus, string> = {
+  aktiv: "aktiv", ausgeschoepft: "ausgeschöpft", pausiert: "pausiert", eingestellt: "eingestellt", unsicher: "Status unklar",
+};
+
+/** Short status phrase for inline prose on city/archive pages — reads naturally
+ *  after "… ist {phrase}" / "… — {phrase}". Keeps the wording in one place so
+ *  the city page, the example note and any future caller stay consistent. */
+export const FUNDING_STATUS_NOTE: Record<FundingStatus, string> = {
+  aktiv: "nimmt aktuell Anträge an",
+  ausgeschoepft: "aktuell ausgeschöpft (Fördertopf leer)",
+  pausiert: "aktuell pausiert (keine neuen Anträge)",
+  eingestellt: "eingestellt (wird nicht mehr angeboten)",
+  unsicher: "Status unklar",
+};
 
 export interface FundingProgram {
   id: string;
@@ -70,7 +108,8 @@ export interface FundingProgram {
   speicherPerKwh?: number;
   /** Share of total cost, e.g. 0.2 for 20 %. */
   percentOfCost?: number;
-  /** Total € cap on the PV-per-kWp part (matches the "max. … €" in rates). */
+  /** Total € cap on the PV part — gilt für den €/kWp-Satz UND für
+   *  `percentOfCost` (dort der Höchstbetrag des prozentualen Zuschusses). */
   pvCap?: number;
   /** Total € cap on the storage part. */
   speicherCap?: number;
@@ -81,6 +120,44 @@ export interface FundingProgram {
   speicherTiers?: { upTo: number; amount: number }[];
   /** Minimum storage kWh below which no storage funding is paid. */
   speicherMin?: number;
+
+  // ── Technik ──────────────────────────────────────────────────────────────────
+  /**
+   * Welche Techniken dieses Programm fördert. Fehlt die Angabe, gilt `["pv"]`
+   * — der Katalog war bis 18.08.2026 ausschließlich ein PV-Katalog, das ist die
+   *  ehrliche Voreinstellung für die Altbestände. Siehe {@link technikenVon}.
+   */
+  foerdert?: FundingTechnik[];
+
+  // ── Balkonkraftwerk (Steckersolar) ───────────────────────────────────────────
+  // Eigene Sätze statt der PV-Felder, weil der Bezugswert ein anderer ist: Dach-PV
+  // rechnet je kWp, Steckersolar fast immer als Pauschale je Gerät oder als
+  // Anteil des Kaufpreises. Ein Balkon-Set mit 0,8 kWp durch die kWp-Formel eines
+  // Dach-Programms zu schicken ergäbe eine Zahl, die kein Programm je zahlt.
+  /** Fester Betrag je Gerät, z. B. Linsengericht 75 €. */
+  balkonPauschale?: number;
+  /** Satz je Wp Modulleistung, z. B. München 0,40 €/Wp. */
+  balkonProWp?: number;
+  /** Anteil der Anschaffungskosten, z. B. Holzgerlingen 30 %. */
+  balkonPercentOfCost?: number;
+  /** Deckel auf den Balkon-Teil — gilt für `balkonProWp` UND `balkonPercentOfCost`. */
+  balkonCap?: number;
+  /** Feste Beträge nach Modulleistung, z. B. Mühlhausen 100 / 150 / 200 € nach Wp.
+   *  Erste Stufe gewinnt, deren `upTo` die Leistung nicht überschreitet. */
+  balkonTiers?: { upTo: number; amount: number }[];
+
+  // ── Wärmepumpe ───────────────────────────────────────────────────────────────
+  // Kommunale WP-Zuschüsse sitzen NEBEN der BEG des Bundes und sind fast immer
+  // klein und pauschal. Ein Satz je kW Heizlast kommt praktisch nicht vor und ist
+  // deshalb bewusst nicht modelliert — er käme sonst nie zum Einsatz und wäre
+  // eine ungetestete Rechenstrecke.
+  /** Fester Betrag je Anlage. */
+  wpPauschale?: number;
+  /** Anteil der Investition. */
+  wpPercentOfCost?: number;
+  /** Deckel auf den Wärmepumpen-Teil. */
+  wpCap?: number;
+
   // ── Provenance (DB-only; undefined in the code seed) ─────────────────────────
   /** ISO date the program was last verified (Wächter) or last written (resync
    *  fallback = updated_at). Surfaced as "Zuletzt geprüft" and as sitemap lastmod.
@@ -328,6 +405,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Die Anlage muss im eigenen Eigentum stehen; Rechnungsdatum der Module nach dem 28.06.2022",
     ],
     combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
     pvPerKwp: 200, pvCap: 6000,
   },
   "badhomburg-energiespar": {
@@ -496,6 +574,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Mit BEG kumulierbar, max. 60 % der Kosten",
     ],
     combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
   },
   // Der Status stand bis zum 14.08.2026 auf „unsicher", weil zwei städtische
   // Seiten sich zu widersprechen schienen. Sie tun es nicht: Die Übersichtsseite
@@ -654,6 +733,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "nur noch Stecker-Solargeräte (Balkonkraftwerke) werden gefördert",
     ],
     combinableWith: BUND,
+    foerdert: ["balkon"],
   },
   "bremen-rundumshaus": {
     id: "bremen-rundumshaus", name: "Rund ums Haus – PV nach Plan",
@@ -700,6 +780,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Je Haushalt und Jahr wird dieselbe Maßnahme nur einmal gefördert",
     ],
     combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
     pvPerKwp: 200, pvCap: 1200,
     speicherTiers: [{ upTo: 999, amount: 1000 }], speicherMin: 5,
   },
@@ -806,6 +887,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Installation durch Fachbetrieb; Antrag online (Windhundverfahren)",
     ],
     combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
   },
   "baden-baden-pvplus": {
     id: "baden-baden-pvplus", name: "PV plus",
@@ -841,6 +923,120 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+  // ── Aus dem Abdeckungs-Screening, 18.08.2026 ──────────────────────────────
+  //
+  // Gefunden über das systematische Screening aller Gemeinden mit erfasster
+  // Förderseite (scripts/funding-screen.ts), jedes an der Amtsseite selbst
+  // gelesen. Es sind kleine Gemeinden — genau die Schicht, die der frühere
+  // Blick auf die größten Städte nie erreicht hat, und in der es die Programme
+  // im Gegensatz zu den Großstädten noch gibt.
+  "hoehr-grenzhausen-energie": {
+    id: "hoehr-grenzhausen-energie", name: "Förderung privater Energiegewinnung",
+    traeger: "Stadt Höhr-Grenzhausen", level: "kommune", region: "Höhr-Grenzhausen",
+    bundesland: "Rheinland-Pfalz", agsCode: "07143032",
+    url: "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderrichtlinie-der-stadt-hoehr-grenzhausen/",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp und je kWh Speicher, gedeckelt",
+    maxFoerderung: "max. 1.500 € PV + 1.000 € Speicher je Grundstück",
+    rates: [
+      { label: "PV-Anlage", value: "150 € pro kWp, max. 1.500 €" },
+      { label: "Batteriespeicher", value: "100 € pro kWh, max. 1.000 €" },
+    ],
+    conditions: [
+      "Nur auf Wohngebäuden und deren Nebengebäuden; bestehende Anlagen werden nicht gefördert",
+      "Antrag vor Auftragserteilung an eine Fachfirma; Ausführung durch qualifizierte Fachbetriebe",
+      "Je Grundstück einmalig bis zum Erreichen des Höchstbetrags",
+      "Freiwillige Leistung ohne Rechtsanspruch, im Rahmen der Haushaltsmittel",
+    ],
+    combinableWith: BUND,
+    pvPerKwp: 150, pvCap: 1500, speicherPerKwh: 100, speicherCap: 1000,
+  },
+  "wietzen-pv": {
+    id: "wietzen-pv", name: "Förderung von Photovoltaik und Batteriespeichern",
+    traeger: "Gemeinde Wietzen", level: "kommune", region: "Wietzen",
+    bundesland: "Niedersachsen", agsCode: "03256036",
+    // Die Seite gehört der Samtgemeinde Weser-Aue und wird von mehreren
+    // Mitgliedsgemeinden geteilt — das Programm ist aber ausdrücklich das der
+    // Gemeinde Wietzen. Das Screening hatte die Seite deshalb zunächst allen
+    // Nachbarorten zugeordnet; gefördert wird nur in Wietzen.
+    url: "https://www.weser-aue.de/rathaus-politik/foerderprogramme/",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Anteiliger Zuschuss je kWp und je kWh Speicher",
+    maxFoerderung: "max. 1.000 € je Förderfall",
+    rates: [
+      { label: "PV-Anlage", value: "100 € je angefangenem kWp, max. 1.000 €" },
+      { label: "Batteriespeicher", value: "200 € je angefangener kWh, max. 1.000 €" },
+    ],
+    conditions: [
+      "Nur für Privathaushalte in der Gemeinde Wietzen",
+      "Vergabe nach Eingang der Anträge (Windhundprinzip)",
+      "Haushaltsmittel auf 20.000 € pro Jahr begrenzt",
+      "Vorerst befristet bis zum 31.12.2026, vorbehaltlich der Haushaltslage",
+    ],
+    combinableWith: BUND,
+    pvPerKwp: 100, pvCap: 1000, speicherPerKwh: 200, speicherCap: 1000,
+  },
+  "gaimersheim-energie": {
+    id: "gaimersheim-energie", name: "Förderprogramm Energie",
+    traeger: "Markt Gaimersheim", level: "kommune", region: "Gaimersheim",
+    bundesland: "Bayern", agsCode: "09176126",
+    url: "https://gaimersheim.de/forderprogramme/",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "20 % der Anschaffungskosten, je Position gedeckelt",
+    maxFoerderung: "max. 300 € PV + 500 € Speicher",
+    rates: [
+      { label: "PV-Anlage (bis 30 kWp)", value: "20 % der Anschaffungskosten, max. 300 €" },
+      { label: "Batteriespeicher", value: "20 % der Anschaffungskosten, max. 500 €" },
+    ],
+    conditions: [
+      "Gilt für Anlagen ab dem 01.01.2026",
+      "Je Grundstück (Flurnummer) nur einmal",
+      "Nachweis der Rechnung sowie der Anmeldung im Marktstammdatenregister und beim Netzbetreiber",
+      "Montage durch eine Fachfirma ist nicht erforderlich",
+    ],
+    combinableWith: BUND,
+    // Seit dem Deckel für percentOfCost (18.08.2026) abbildbar. Der Deckel gilt
+    // dem PV-Teil; die 500 € für den Speicher bleiben außen vor, weil das Modell
+    // nur EINEN Prozentsatz je Programm kennt — die Rechnung ist damit
+    // vorsichtig, nicht großzügig.
+    percentOfCost: 0.2, pvCap: 300,
+  },
+  "dietmannsried-pv": {
+    id: "dietmannsried-pv", name: "Förderprogramm PV-Anlagen",
+    traeger: "Markt Dietmannsried", level: "kommune", region: "Dietmannsried",
+    bundesland: "Bayern", agsCode: "09780119",
+    url: "https://www.dietmannsried.de/rathaus/aktuelles-bekanntmachungen/foerderprogramm-pv-anlagen.html",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Sockelbetrag für die ersten 7 kWp, danach je kWp",
+    maxFoerderung: "max. 1.700 € je Gebäude",
+    rates: [
+      { label: "PV-Dachanlage", value: "500 € für die ersten 7 kWp, danach 150 € je weiterem kWp" },
+      { label: "Balkonmodul", value: "200 € pauschal, auch für Mieter" },
+    ],
+    conditions: [
+      "Nur für selbstgenutztes Eigentum; Balkonmodule auch für Mieter",
+      "Die Anlage darf bei Antragstellung weder beauftragt noch erworben oder installiert sein",
+      "Fördertopf von 50.000 €",
+      "Mit anderen Förderungen kombinierbar",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    // 500 € Sockel deckt die ersten 7 kWp ab, darüber 150 €/kWp — im Modell als
+    // Sockel plus Satz, der erst oberhalb greift, ist das nicht abbildbar. Der
+    // strukturierte Satz für die DACHANLAGE bleibt deshalb weg: lieber keine
+    // Zahl als eine falsche.
+    //
+    // Der Balkon-Teil dagegen ist eine glatte Pauschale und seit 18.08.2026
+    // strukturiert hinterlegt. An der Amtsseite gelesen: „einen pauschalen
+    // Zuschuss von 200,00 € pro Anlage", Mieter ausdrücklich eingeschlossen,
+    // Antrag zwingend vor Beauftragung. Vorher stand die Zahl nur als
+    // Anzeigetext da — der Balkon-Rechner konnte damit nichts anfangen.
+    balkonPauschale: 200,
+  },
   // ── Ausgelaufene Programme: aufgenommen, weil das eine Auskunft ist ────────
   //
   // Entscheidung des Betreibers (17.08.2026): Auch beendete oder ausgesetzte
@@ -863,6 +1059,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Eine Dach-Photovoltaikanlage wurde auch davor nicht bezuschusst",
     ],
     combinableWith: BUND,
+    foerdert: ["balkon"],
   },
   "waiblingen-klimaschutz": {
     id: "waiblingen-klimaschutz", name: "Städtisches Förderprogramm Klimaschutz",
@@ -895,6 +1092,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Für 2026 sind Stecker-PV-Geräte und Speicher angekündigt — Beträge und Antragsfenster standen bei der Prüfung noch nicht fest",
     ],
     combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
   },
   "wolfsburg-pv": {
     id: "wolfsburg-pv", name: "Förderung der Solarstromerzeugung",
@@ -924,6 +1122,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Nicht förderfähig: gesetzlich vorgeschriebene Anlagen, Anlagen als Teil eines Bauvorhabens, Insel-, Miet-, Leasing- und Eigenbauanlagen sowie gewerblich genutzte Immobilien",
     ],
     combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
     pvTiers: [{ upTo: 6, amount: 700 }, { upTo: 12, amount: 1000 }, { upTo: 999, amount: 1500 }],
     speicherTiers: [{ upTo: 999, amount: 500 }], speicherMin: 3,
   },
@@ -958,6 +1157,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "offen nur für Balkonkraftwerke + einkommensschwache Haushalte",
     ],
     combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
     pvPerKwp: 100, pvCap: 1000, speicherPerKwh: 200, speicherCap: 2000,
   },
 
@@ -1029,6 +1229,353 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+  // ── Kommune – aus dem Abdeckungs-Screening, 18.08.2026 ──────────────────────
+  //
+  // Alle folgenden Einträge stammen aus dem Abdeckungs-Lauf und wurden am
+  // 18.08.2026 an der jeweiligen Amtsseite GELESEN — das Screening-Zitat war nur
+  // der Anlass hinzusehen, nie die Quelle. Zwei Funde aus dem Lesen, die zeigen,
+  // warum das nötig ist: In Hochheim gelten die 100 € dem SPEICHER, das
+  // Balkonkraftwerk bekommt 50 €; und Senden führt seine Programme zwar
+  // ausführlich auf, hat aber keines mehr im Angebot.
+
+  "ennepetal-steckersolar": {
+    id: "ennepetal-steckersolar", name: "Klimaförderprogramm Steckersolar",
+    traeger: "Stadt Ennepetal", level: "kommune", region: "Ennepetal",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05954008",
+    url: "https://www.ennepetal.de/umwelt-klima/klimaschutz-klimaanpassung/klimafoerderprogramme/",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Haushalt für ein fabrikneues Steckersolargerät",
+    rates: [{ label: "Steckersolargerät", value: "100 € je Haushalt" }],
+    conditions: [
+      "Das Gerät muss fabrikneu sein",
+      "Je Haushalt wird ein Gerät gefördert",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPauschale: 100,
+  },
+
+  "wittlich-balkonkraftwerke": {
+    id: "wittlich-balkonkraftwerke", name: "Förderprogramm Balkonkraftwerke",
+    traeger: "Stadt Wittlich", level: "kommune", region: "Wittlich",
+    bundesland: "Rheinland-Pfalz", agsCode: "07231134",
+    url: "https://www.wittlich.de/de/planung-umwelt-und-mobilitaet/klima-landwirtschaft-und-forsten/klimaschutz/foerderprogramm-balkonkraftwerke/",
+    stand: "August 2026", status: "ausgeschoepft", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Balkonkraftwerk — Fördertopf aufgebraucht",
+    rates: [{ label: "Balkonkraftwerk", value: "150 € pauschal" }],
+    conditions: [
+      "Der Fördertopf ist aufgebraucht; gefördert wurden 200 Anlagen aus 30.000 €",
+      "Antragsberechtigt sind Privatpersonen mit Erstwohnsitz in Wittlich",
+      "Mieter können ebenfalls einen Antrag stellen",
+      "Der Antrag wird nach Installation und Registrierung gestellt",
+      "Gefördert wird höchstens ein Balkonkraftwerk je Person",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPauschale: 150,
+  },
+
+  "hochheim-klimaschutz": {
+    id: "hochheim-klimaschutz", name: "Städtisches Förderprogramm Klimaschutz und Klimaanpassung",
+    traeger: "Stadt Hochheim am Main", level: "kommune", region: "Hochheim am Main",
+    bundesland: "Hessen", agsCode: "06436006",
+    url: "https://www.hochheim.de/unsere-stadt/klimaschutz/staedtisches-foerderprogramm",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschalen für Balkonkraftwerk und dessen Speicher — keine Dach-PV",
+    rates: [
+      { label: "Balkonkraftwerk", value: "50 € inkl. Montage" },
+      { label: "Speicher am Balkonkraftwerk", value: "100 €" },
+    ],
+    conditions: [
+      "Der Zuschuss wird rückwirkend gewährt",
+      "Dach-Photovoltaik ist nicht Teil des Programms",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // 50 €, nicht 100 € — die 100 € gelten dem Speicher. Der Unterschied fiel
+    // erst beim Lesen der Amtsseite auf; im Nachbarabsatz schreibt dieselbe
+    // Seite „50% des Kaufpreises, maximal 200,00 Euro pro Baum", trennt Prozent
+    // und Euro also sauber. Der Speicher-Betrag bleibt ohne strukturierten
+    // Satz: Ein Balkonspeicher ist im Rechner keine eigene Größe.
+    balkonPauschale: 50,
+  },
+
+  "linsengericht-oekologie": {
+    id: "linsengericht-oekologie", name: "Förderprogramm Ökologie",
+    traeger: "Gemeinde Linsengericht", level: "kommune", region: "Linsengericht",
+    bundesland: "Hessen", agsCode: "06435018",
+    url: "https://www.linsengericht.de/bauen-verkehr/klima-energie/foerderprogramme-oekologie/",
+    stand: "August 2026", status: "aktiv", capped: false, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp für Dach-PV, Pauschale fürs Balkonkraftwerk, dazu Stromspeicher",
+    maxFoerderung: "max. 900 € für die Dachanlage",
+    rates: [
+      { label: "Photovoltaik", value: "90 € je kWp, max. 900 €" },
+      { label: "Balkonkraftwerk", value: "75 € pauschal" },
+      { label: "Stromspeicher", value: "50 € je kW, max. 500 €" },
+    ],
+    conditions: [
+      "Der Antrag wird nach Einholung eines Angebots gestellt",
+      "Mit der Maßnahme darf erst nach dem Bewilligungsbescheid begonnen werden",
+      "Zur Auszahlung sind der Eintrag im Marktstammdatenregister und die Schlussrechnung vorzulegen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    pvPerKwp: 90, pvCap: 900,
+    balkonPauschale: 75,
+    // Der Speicher-Satz lautet „50,00 € pro KW" — also je LEISTUNG, während der
+    // Rechner die Kapazität in kWh führt. Beides ist nicht ineinander
+    // umzurechnen, ohne eine C-Rate zu erfinden. Der Satz steht deshalb als
+    // Text da und rechnet nicht mit.
+  },
+
+  "holzgerlingen-erneuerbare": {
+    id: "holzgerlingen-erneuerbare", name: "Förderprogramm erneuerbare Energien",
+    traeger: "Stadt Holzgerlingen", level: "kommune", region: "Holzgerlingen",
+    bundesland: "Baden-Württemberg", agsCode: "08115024",
+    url: "https://www.holzgerlingen.de/de/verwaltung-politik/wohnen-bauen/foerderprogramme.php",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Kosten steckerfertiger PV-Anlagen",
+    maxFoerderung: "max. 200 € (mit Familien- und Sozialpass max. 500 €)",
+    rates: [
+      { label: "Steckerfertige PV-Anlage", value: "30 % der Kosten, max. 200 €" },
+      { label: "mit Familien- und Sozialpass", value: "75 % der Kosten, max. 500 €" },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Einwohnerinnen und Einwohner von Holzgerlingen",
+      "Nach dem Kauf ist der Antrag nur im Jahr der Rechnungsstellung möglich",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // Gerechnet wird der Regelsatz. Der erhöhte Satz mit Familien- und
+    // Sozialpass hängt an einem Nachweis, den der Rechner nicht kennt — ihn
+    // anzusetzen verspräche 500 € an alle. Dieselbe Zurückhaltung wie beim
+    // München-Pass und der Stuttgarter FamilienCard.
+    balkonPercentOfCost: 0.3, balkonCap: 200,
+  },
+
+  "wernau-balkonkraftwerke": {
+    id: "wernau-balkonkraftwerke", name: "Förderprogramm für Balkonkraftwerke",
+    traeger: "Stadt Wernau (Neckar)", level: "kommune", region: "Wernau (Neckar)",
+    bundesland: "Baden-Württemberg", agsCode: "08116072",
+    url: "https://www.wernau.de/wirtschaft-bauen/klimaschutz-und-nachhaltige-stadt/foerderprogramm-fuer-balkonkraftwerke",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale für Anschaffung, Installation und Inbetriebnahme",
+    rates: [{ label: "Balkonkraftwerk", value: "100 € pauschal" }],
+    conditions: [
+      "Antragsberechtigt sind Mietende und Wohnungseigentümer in Mehrfamilienhäusern ohne Möglichkeit einer Dachanlage",
+      "Der Wechselrichter darf höchstens 800 W leisten",
+      "Die Mittel werden nach Eingang der vollständigen Anträge vergeben",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPauschale: 100,
+  },
+
+  "muehlhausen-sulz-pv": {
+    id: "muehlhausen-sulz-pv", name: "Förderprogramm PV-Anlage mit Speicher und Balkonkraftwerke",
+    traeger: "Gemeinde Mühlhausen an der Sulz", level: "kommune", region: "Mühlhausen",
+    bundesland: "Bayern", agsCode: "09373146",
+    url: "https://www.muehlhausen-sulz.de/leben-and-soziales/bauen-and-wohnen/foerderprogramm-pv-anlage-mit-speicher-und-balkonkraftwerke",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Feste Beträge nach Anlagengröße — Dach-PV nur zusammen mit Speicher",
+    maxFoerderung: "max. 1.500 € für die Dachanlage",
+    rates: [
+      { label: "PV mit Speicher, 5–10 kWp", value: "1.000 €" },
+      { label: "PV mit Speicher, 10–20 kWp", value: "1.250 €" },
+      { label: "PV mit Speicher, 20–30 kWp", value: "1.500 €" },
+      { label: "Balkonkraftwerk 340–680 Wp", value: "100 €" },
+      { label: "Balkonkraftwerk 680–1.020 Wp", value: "150 €" },
+      { label: "Balkonkraftwerk ab 1.020 Wp", value: "200 €" },
+    ],
+    conditions: [
+      "Antragsberechtigt sind natürliche Personen",
+      "Die Dachanlage wird nur zusammen mit einem Stromspeicher gefördert",
+      "Anlagen, die vor dem 1. Mai 2022 in Betrieb gingen, sind ausgeschlossen",
+      "Der Fördertopf umfasst insgesamt 50.000 €",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    // Die Dach-Staffel gilt NUR mit Speicher — das ist im Modell nicht als
+    // Bedingung ausdrückbar. `speicherMin: 1` erzwingt sie über die einzige
+    // Größe, die der Rechner kennt: Ohne Speicher greift keine Stufe.
+    pvTiers: [{ upTo: 10, amount: 1000 }, { upTo: 20, amount: 1250 }, { upTo: 30, amount: 1500 }],
+    speicherMin: 1,
+    balkonTiers: [{ upTo: 680, amount: 100 }, { upTo: 1020, amount: 150 }, { upTo: 999999, amount: 200 }],
+  },
+
+  "senden-klima": {
+    id: "senden-klima", name: "Kommunale Förderprogramme (derzeit keine)",
+    traeger: "Gemeinde Senden (Westfalen)", level: "kommune", region: "Senden",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05558044",
+    url: "https://www.senden-westfalen.de/klima-programme",
+    stand: "August 2026", status: "eingestellt", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Zurzeit keine kommunale Förderung — die früheren Programme sind ausgelaufen",
+    rates: [{ label: "Alle Bausteine", value: "derzeit nicht aufgelegt" }],
+    conditions: [
+      "Die Gemeinde hat für das laufende Jahr keine Förderprogramme vorgesehen",
+      "Gefördert wurden bis 2023 Stecker-Solar-Anlagen mit 50 % des Kaufpreises, höchstens 200 €",
+      "Ebenfalls bis 2023 gefördert: Erdwärmesonden mit 15 € je Bohrmeter, höchstens 1.500 €",
+      "Alle genannten Töpfe wurden vollständig ausgeschöpft",
+    ],
+    combinableWith: BUND,
+    // Der Eintrag bleibt sichtbar, statt zu fehlen: Wer in Senden nach
+    // Förderung sucht, findet eine ausführliche Programmseite und soll lesen,
+    // dass davon derzeit nichts mehr zu holen ist. Dieselbe Überlegung wie bei
+    // Münster. Ohne strukturierten Satz wird nichts abgezogen.
+    foerdert: ["pv", "balkon", "waermepumpe"],
+  },
+
+  // ── Kommune – erste Wärmepumpen-Funde, 18.08.2026 ───────────────────────────
+  //
+  // Der Screener suchte bis heute gar nicht nach Wärmepumpen. Die erste Runde
+  // brachte vier Fundstellen — und einen ernüchternden Befund, der hier
+  // festgehalten gehört: KEINE davon ist ein laufendes, rechenbares Programm.
+  // Drei sind ausgeschöpft oder eingestellt, die vierte (Roth) fördert die
+  // Erdsonde, nicht die Wärmepumpe. Kommunale WP-Zuschüsse sind offenbar klein,
+  // schnell leer und selten — anders als bei Balkonkraftwerken, wo dieselbe
+  // Runde acht laufende Programme fand.
+
+  "maintal-klima": {
+    id: "maintal-klima", name: "Klima-Förderrichtlinie",
+    traeger: "Stadt Maintal", level: "kommune", region: "Maintal",
+    bundesland: "Hessen", agsCode: "06435019",
+    url: "https://www.maintal.de/klima-f%C3%B6rderrichtlinie",
+    stand: "August 2026", status: "ausgeschoepft", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschalen für Wärmepumpe und Mini-PV, dazu Dämmung und Fenster — Mittel derzeit aufgebraucht",
+    rates: [
+      { label: "Wärmepumpe", value: "2.000 € je Anlage" },
+      { label: "Biomasseheizung", value: "1.000 € je Anlage" },
+      { label: "Mini-Photovoltaik", value: "50 % des Kaufpreises, max. 150 € je Modul" },
+    ],
+    conditions: [
+      "Die Antragstellung ist derzeit nicht möglich, weil die bewilligten Maßnahmen die Mittel ausschöpfen",
+      "Bei der Mini-Photovoltaik werden höchstens zwei Module gefördert",
+      "Die Stadt stellt eine erneute Öffnung zu einem späteren Zeitpunkt in Aussicht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    // Kein strukturierter Satz, solange der Topf leer ist: Die Beträge stehen
+    // als Auskunft da („gab es, kommt vielleicht wieder"), rechnen aber nicht
+    // mit. Sobald die Stadt wieder öffnet, sind es 2.000 € Pauschale für die
+    // Wärmepumpe und ein Prozentsatz je Modul für die Mini-PV.
+  },
+
+  "roth-klimaschutz": {
+    id: "roth-klimaschutz", name: "Klimaschutzförderprogramm",
+    traeger: "Stadt Roth", level: "kommune", region: "Roth",
+    bundesland: "Bayern", agsCode: "09576143",
+    url: "https://www.stadt-roth.de/umwelt-mobilitaet/klimaschutz/klimaschutzfoerderprogramm",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Kosten für Photovoltaik und für Erdwärmesonden",
+    maxFoerderung: "max. 1.000 € für die PV-Anlage",
+    rates: [
+      { label: "Photovoltaik", value: "10 % der Kosten, max. 1.000 €" },
+      { label: "Erdwärmesonden, -kollektoren und -körbe", value: "20 % der Kosten, max. 2.500 €" },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Rother Bürgerinnen und Bürger, Eigentümergemeinschaften und gemeinnützige Rother Organisationen",
+      "Der Antrag ist spätestens sechs Monate nach Fertigstellung der Maßnahme schriftlich zu stellen",
+      "Gefördert wird die Erdwärmequelle, nicht der Heizungstausch als solcher",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "waermepumpe"],
+    percentOfCost: 0.1, pvCap: 1000,
+    // Der Wärmepumpen-Teil bekommt bewusst KEINEN Rechenwert. Gefördert wird die
+    // Erdwärmequelle — das trifft nur Sole/Wasser-Anlagen, während der Rechner
+    // auch Luft/Wasser kennt. Ein `wpPercentOfCost` versprächen 20 % auch dem,
+    // der eine Luftwärmepumpe plant, und das wäre schlicht falsch. Die
+    // Unterscheidung nach Wärmequelle kann das Modell nicht ausdrücken.
+  },
+
+  "wenden-heizungstausch": {
+    id: "wenden-heizungstausch", name: "Förderrichtlinie Heizungstausch",
+    traeger: "Gemeinde Wenden", level: "kommune", region: "Wenden",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05966028",
+    url: "https://www.wenden.de/wirtschaft-umwelt-verkehr/klima-umwelt/foerderprogramme",
+    stand: "August 2026", status: "ausgeschoepft", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale beim Wechsel auf Wärmepumpe oder Pelletheizung — Förderplätze vergeben",
+    rates: [{ label: "Heizungstausch", value: "1.000 € je Wohngebäude" }],
+    conditions: [
+      "Die Förderplätze des laufenden Programms sind bereits vergeben",
+      "Antragsberechtigt sind Eigentümerinnen und Eigentümer von Wohngebäuden in der Gemeinde Wenden",
+      "Der Antrag wird online gestellt",
+    ],
+    combinableWith: BUND,
+    foerdert: ["waermepumpe"],
+    // 1.000 € Pauschale — ohne Rechenwert, solange die Plätze vergeben sind.
+  },
+
+  // ── Kommune – übergeben von der Prüfmechanik-Session, gelesen 18.08.2026 ────
+  //
+  // Beide Fälle musste die Vorgänger-Session ohne Betrag liegen lassen, weil das
+  // Modell „X % der Kosten, höchstens Y €" nicht ausdrücken konnte. Mit
+  // `balkonPercentOfCost` + `balkonCap` geht es jetzt. Ihre Zahlen stammten aus
+  // dem Screening und waren ausdrücklich NICHT gegengelesen — beide Seiten sind
+  // hier zuerst im Volltext geöffnet worden, und bei Leimen kam dabei ein
+  // Höchstbetrag zum Vorschein, den der Auszug nicht enthielt.
+
+  "hohenahr-pv": {
+    id: "hohenahr-pv", name: "Förderrichtlinie Photovoltaikanlagen",
+    traeger: "Gemeinde Hohenahr", level: "kommune", region: "Hohenahr",
+    bundesland: "Hessen", agsCode: "06532013",
+    url: "https://www.hohenahr.de/bauen-umwelt/energie-umwelt/foerderprogramm-pv-anlagen/",
+    stand: "August 2026", status: "aktiv", capped: false, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Anteil an Anschaffung, Montage und Inbetriebnahme — Balkonkraftwerk und Dachanlage getrennt",
+    maxFoerderung: "max. 1.000 € für die Dachanlage, max. 200 € fürs Balkonkraftwerk",
+    rates: [
+      { label: "Steckerfertiges Balkonkraftwerk", value: "20 % der Anschaffungskosten, max. 200 € brutto" },
+      { label: "Genehmigungspflichtige Anlage bis 30 kWp", value: "10 % der Anschaffungskosten, max. 1.000 € brutto" },
+    ],
+    conditions: [
+      "Der Antrag ist vor Inbetriebnahme zu stellen und der Bewilligungsbescheid abzuwarten",
+      "Antragsberechtigt sind Mieterinnen und Mieter, Vermieter, Eigentümer und Wohnungseigentümergemeinschaften in Hohenahr",
+      "Das Balkonkraftwerk darf höchstens 600 W Wechselrichterleistung abgeben",
+      "Die Dachanlage darf höchstens 30 kWp installierte Leistung haben",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    percentOfCost: 0.1, pvCap: 1000,
+    balkonPercentOfCost: 0.2, balkonCap: 200,
+    // Die 600-W-Grenze steht so in der Richtlinie von 2023 und ist damit enger
+    // als die heute übliche 800-W-Schwelle. Sie bleibt als Bedingung stehen,
+    // statt stillschweigend auf 800 aufgerundet zu werden: Wer ein 800-W-Gerät
+    // kauft, bekommt hier nach dem Wortlaut nichts.
+  },
+
+  "leimen-klimaschutz": {
+    id: "leimen-klimaschutz", name: "Klimaschutzförderung Stecker-Solaranlagen",
+    traeger: "Stadt Leimen", level: "kommune", region: "Leimen",
+    bundesland: "Baden-Württemberg", agsCode: "08226041",
+    url: "https://www.leimen.de/leben-wohnen/klimaschutz-und-umwelt/klimaschutzfoerderungen",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Gesamtkosten einer Stecker-Solaranlage",
+    maxFoerderung: "max. 120 € je Antrag",
+    rates: [{ label: "Stecker-Solaranlage", value: "15 % der Gesamtkosten, max. 120 €" }],
+    conditions: [
+      "Gefördert wird nur ein Kauf innerhalb des Förderzeitraums 2026",
+      "Nach Angabe der Stadt sind ausreichend Fördermittel vorhanden",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // 120 € Deckel — der stand NICHT im Screening-Auszug, aus dem die
+    // Vorgänger-Session ihre 15 % hatte. Ohne ihn hätte ein 800-€-Set 120 statt
+    // 45 € Förderung gezeigt: derselbe Prozentsatz, dreifacher Betrag.
+    balkonPercentOfCost: 0.15, balkonCap: 120,
+  },
+
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {
@@ -1192,34 +1739,122 @@ export type FundingAmount = {
 };
 
 /**
- * Computes the € grant a single program yields for a given PV system — the one
- * place this math lives, shared by the city pages and the interactive rechner.
- * `total` is purely the rule's output; callers decide whether to subtract it
- * (typically only when `computable && active`). `bruttoCost` is only used for
- * percent-of-cost programs.
+ * Die Anlage, für die gerechnet wird — eine je Technik.
+ *
+ * WARUM EIN OBJEKT UND KEINE PARAMETERLISTE (18.08.2026): Vorher hieß es
+ * `fundingAmount(f, kwp, speicherKwh, bruttoCost)`. Drei Techniken durch dieselbe
+ * Liste zu schicken hätte bedeutet, dass der Balkon-Rechner eine Dach-Anlagengröße
+ * und ein Wärmepumpen-Rechner eine Speicherkapazität übergibt — beides
+ * Platzhalter, die niemand liest, bis sie einmal doch jemand liest. Die
+ * unterschiedenen Varianten machen stattdessen unmöglich, eine Größe an eine
+ * Technik zu hängen, zu der sie nicht gehört.
+ *
+ * `kosten` ist durchgängig der BRUTTO-Preis der Maßnahme: Bezugswert für
+ * prozentuale Zuschüsse und zugleich der Deckel, den keine Förderung übersteigen
+ * darf.
+ */
+export type FundingAnlage =
+  | { technik: "pv"; kwp: number; speicherKwh: number; kosten: number }
+  | { technik: "balkon"; wattPeak: number; kosten: number }
+  | { technik: "waermepumpe"; kosten: number };
+
+/**
+ * Welche Techniken fördert dieses Programm?
+ *
+ * Ohne ausdrückliche Angabe gilt Photovoltaik. Das ist keine Bequemlichkeit,
+ * sondern der tatsächliche Stand der Altbestände: Der Katalog wurde als
+ * PV-Katalog aufgebaut, und ein Programm ohne `foerdert` ist eines, das noch
+ * niemand auf Balkon oder Wärmepumpe hin gelesen hat. Es hier stillschweigend
+ * allen drei Rechnern zuzuordnen wäre eine Behauptung über Seiten, die wir nicht
+ * geprüft haben.
+ */
+export function technikenVon(f: Pick<FundingProgram, "foerdert">): FundingTechnik[] {
+  return f.foerdert?.length ? f.foerdert : ["pv"];
+}
+
+/** Fördert das Programm diese Technik? */
+export function foerdertTechnik(f: Pick<FundingProgram, "foerdert">, technik: FundingTechnik): boolean {
+  return technikenVon(f).includes(technik);
+}
+
+/**
+ * Die Programme, die für diese Technik überhaupt in Frage kommen.
+ *
+ * Rechner fragen IMMER hierüber und filtern nie selbst: Ein Programm, das seit
+ * Dezember 2024 nur noch Steckersolar fördert (München), gehört in den
+ * Balkon-Rechner und nicht in den PV-Rechner — und das ist eine Eigenschaft des
+ * Programms, keine Entscheidung der aufrufenden Seite.
+ */
+export function programmeFuerTechnik(list: FundingProgram[], technik: FundingTechnik): FundingProgram[] {
+  return list.filter((p) => foerdertTechnik(p, technik));
+}
+
+/** Prozentsatz mit optionalem Deckel — die häufigste Bauform kommunaler Zuschüsse. */
+function anteil(kosten: number, satz: number, deckel?: number): number {
+  const roh = kosten * satz;
+  return Math.round(deckel ? Math.min(roh, deckel) : roh);
+}
+
+/**
+ * Computes the € grant a single program yields for a given system — the one
+ * place this math lives, shared by the city pages and every rechner. `total` is
+ * purely the rule's output; callers decide whether to subtract it (typically
+ * only when `computable && active`).
+ *
+ * Fördert das Programm die gefragte Technik nicht, ist das Ergebnis nicht
+ * `computable` — auch dann nicht, wenn es für eine ANDERE Technik einen
+ * strukturierten Satz trägt. Sonst zöge ein reines Dach-PV-Programm im
+ * Balkon-Rechner Geld ab, das dort niemand bekommt.
  */
 export function fundingAmount(
   f: FundingProgram | undefined,
-  kwp: number,
-  speicherKwh: number,
-  bruttoCost: number,
+  anlage: FundingAnlage,
   heute?: string,
 ): FundingAmount {
-  const computable = !!(f && (f.percentOfCost || f.pvPerKwp || f.pvTiers || f.speicherPerKwh || f.speicherTiers));
   const active = fundingZaehlt(f, heute);
-  if (!f || !computable) return { total: 0, computable: false, active };
+  if (!f || !foerdertTechnik(f, anlage.technik)) return { total: 0, computable: false, active };
+
+  if (anlage.technik === "balkon") {
+    const computable = !!(f.balkonPauschale || f.balkonProWp || f.balkonPercentOfCost || f.balkonTiers);
+    if (!computable) return { total: 0, computable: false, active };
+    if (f.balkonPauschale) return { total: Math.round(f.balkonPauschale), computable: true, active };
+    if (f.balkonTiers) return { total: tierAmount(f.balkonTiers, anlage.wattPeak), computable: true, active };
+    if (f.balkonProWp) {
+      const roh = anlage.wattPeak * f.balkonProWp;
+      return { total: Math.round(f.balkonCap ? Math.min(roh, f.balkonCap) : roh), computable: true, active };
+    }
+    return { total: anteil(anlage.kosten, f.balkonPercentOfCost!, f.balkonCap), computable: true, active };
+  }
+
+  if (anlage.technik === "waermepumpe") {
+    const computable = !!(f.wpPauschale || f.wpPercentOfCost);
+    if (!computable) return { total: 0, computable: false, active };
+    if (f.wpPauschale) return { total: Math.round(f.wpPauschale), computable: true, active };
+    return { total: anteil(anlage.kosten, f.wpPercentOfCost!, f.wpCap), computable: true, active };
+  }
+
+  const computable = !!(f.percentOfCost || f.pvPerKwp || f.pvTiers || f.speicherPerKwh || f.speicherTiers);
+  if (!computable) return { total: 0, computable: false, active };
 
   if (f.percentOfCost) {
-    return { total: Math.round(bruttoCost * f.percentOfCost), computable: true, active };
+    // Prozentsatz MIT Deckel — ergänzt 18.08.2026. Vorher rechnete dieser Zweig
+    // ungedeckelt und kehrte sofort zurück; „20 % der Kosten, höchstens 300 €"
+    // war damit nicht ausdrückbar, und solche Programme mussten ohne
+    // strukturierten Satz aufgenommen werden. Das ist die häufigste Bauform
+    // kommunaler Zuschüsse — gemessen an einem Drittel der Fundstellen aus dem
+    // Abdeckungs-Screening (Gaimersheim, Hohenahr, Holzgerlingen …). Der
+    // Hinweis kam aus der Balkon-Session.
+    return { total: anteil(anlage.kosten, f.percentOfCost, f.pvCap), computable: true, active };
   }
   let pv = 0;
   if (f.pvPerKwp) {
-    pv = (f.pvSockel ?? 0) + kwp * f.pvPerKwp;
+    pv = (f.pvSockel ?? 0) + anlage.kwp * f.pvPerKwp;
     if (f.pvCap) pv = Math.min(pv, f.pvCap);
   } else if (f.pvTiers) {
-    pv = tierAmount(f.pvTiers, kwp);
+    pv = tierAmount(f.pvTiers, anlage.kwp);
   }
   let sp = 0;
+  const speicherKwh = anlage.speicherKwh;
   if (f.speicherPerKwh && speicherKwh >= (f.speicherMin ?? 0) && speicherKwh > 0) {
     sp = speicherKwh * f.speicherPerKwh;
     if (f.speicherCap) sp = Math.min(sp, f.speicherCap);
@@ -1237,19 +1872,17 @@ export function fundingAmount(
  */
 export function stackFunding(
   programs: FundingProgram[],
-  kwp: number,
-  speicherKwh: number,
-  bruttoCost: number,
+  anlage: FundingAnlage,
   heute?: string,
 ): { total: number; applied: { program: FundingProgram; amount: number }[] } {
   const applied: { program: FundingProgram; amount: number }[] = [];
   let total = 0;
   for (const p of programs) {
-    const a = fundingAmount(p, kwp, speicherKwh, bruttoCost, heute);
+    const a = fundingAmount(p, anlage, heute);
     if (a.computable && a.active && a.total > 0) {
       applied.push({ program: p, amount: a.total });
       total += a.total;
     }
   }
-  return { total: Math.min(total, bruttoCost), applied };
+  return { total: Math.min(total, anlage.kosten), applied };
 }

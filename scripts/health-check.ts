@@ -30,6 +30,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { DB_READ_TIMEOUT_MS } from "../lib/db-timeout";
+import { PRUEFSTAND, faelligkeiten } from "../lib/pruefstand";
 
 // In der GitHub-Action kommen die Zugangsdaten aus den Repo-Secrets. Lokal
 // standen sie nicht zur Verfügung — der Check fiel dann still auf die feste
@@ -807,6 +808,52 @@ async function main() {
         `bei einer API-Route ein fehlender oder überschriebener Cache-Control-Header. ` +
         `Ist die Ausnahme gewollt, gehört der Eintrag aus CACHE_PFLICHT heraus — mit Begründung.`,
     );
+  }
+
+  // ── Stillstehende Wächter ─────────────────────────────────────────────────
+  //
+  // WARUM DAS HIER STEHT UND NICHT NUR IM WÄCHTER-LAUF: `npm run stand:faellig`
+  // lief bis zum 18.08.2026 ausschließlich INNERHALB von zwei Wächter-Aufträgen
+  // (foerder-news-waechter täglich, Wochenbericht sonntags). Damit meldete der
+  // Melder für stillstehende Wächter selbst nur, solange ein Wächter lief —
+  // fällt der tägliche Lauf aus, fällt die Meldung über seinen Ausfall mit ihm
+  // aus. Man merkt nicht einmal, dass man nichts merkt.
+  //
+  // Genau so ist es passiert: Der Grüngas-Rechtsstand stand 21 Tage unbewegt
+  // (erlaubt: 14), ohne dass irgendjemand etwas gemeldet hat. Die Wächter laufen
+  // nur, wenn der Rechner des Betreibers an ist; diese Action läuft alle drei
+  // Stunden in GitHubs Rechenzentrum und ist damit die einzige Stelle, die den
+  // Ausfall überhaupt bemerken kann.
+  //
+  // Der Aufruf braucht weder Netz noch Datenbank — er liest nur Konstanten aus
+  // dem Code. Er kann diesen Lauf also nicht zum Kippen bringen.
+  const heuteIso = new Date().toISOString().slice(0, 10);
+  const offen = faelligkeiten(heuteIso);
+  lines.push(
+    `Prüfstand: ${PRUEFSTAND.length} Werte, ${offen.length} überfällig` +
+      (offen.length ? ` — ${offen.map((f) => f.was).join(", ")}` : ""),
+  );
+  for (const f of offen) {
+    // Zwei Befunde, zwei Adressaten — die Trennung stammt aus lib/pruefstand.ts
+    // und ist hier genauso wichtig: "Termin überzogen" heißt, der WERT gehört
+    // geprüft (das kann nur ein Wächter-Lauf mit Modell). "Stillstand" heißt,
+    // der LAUF selbst schweigt — und das ist der gefährlichere Fall, weil ein
+    // Wächter, der nicht läuft, auch keinen Fehler meldet.
+    if (f.grund === "stillstand" || f.grund === "beides") {
+      forClaude.push(
+        `Der Prüfwert „${f.was}" steht seit ${f.alterTage} Tagen unbewegt (erlaubt: ${f.maxAlterTage}). ` +
+          `Zuständig ist der Wächter „${f.waechter}" (${f.rhythmus}), Runbook ${f.runbook}, Feld ${f.feld}. ` +
+          `Das heißt NICHT, dass der Wert falsch ist — es heißt, dass niemand mehr nachsieht. ` +
+          `Prüfen: Läuft der Auftrag noch? Kommt er an seine Quelle? Kennt sein Auftrag das Feld? ` +
+          `Das Datum NICHT von Hand hochsetzen — das wäre eine behauptete Prüfung, die nie stattfand.`,
+      );
+    } else {
+      forClaude.push(
+        `Der Prüfwert „${f.was}" ist seit ${f.terminUeberzogen} Tagen über seinem Termin. ` +
+          `Zuständig: „${f.waechter}" (${f.rhythmus}), Runbook ${f.runbook}. ` +
+          `Der Wächter läuft, hat den Wert aber nicht nachgezogen.`,
+      );
+    }
   }
 
   // ── Bericht ───────────────────────────────────────────────────────────────

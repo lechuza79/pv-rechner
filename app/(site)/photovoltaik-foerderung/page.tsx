@@ -38,7 +38,7 @@ const S = {
 };
 
 function ProgramCard({ p, city }: { p: FundingProgram; city?: AtlasCity }) {
-  const a = fundingAmount(p, 10, 5, 20000);
+  const a = fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 });
   const inRechner = a.computable && a.active;
   // Primary CTA = the program's own page: the regional city page where one
   // exists, otherwise the official funding source.

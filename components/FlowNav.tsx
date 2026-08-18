@@ -146,6 +146,12 @@ export default function FlowNav({
       {/* Bewusst aria-disabled statt disabled: ein echtes disabled schluckt in
           manchen Browsern den Hover — der Tooltip ("was fehlt noch?") soll aber
           gerade im inaktiven Zustand erscheinen. Der Klick ist trotzdem wirkungslos.
+
+          WER DAS VERHALTEN PRÜFT, LIEST `aria-disabled` — `disabled` bleibt
+          absichtlich false. Das hat schon zweimal zu einem Fehlalarm geführt
+          („der Weiter-Knopf ist klickbar, tut aber nichts"): Gesperrt ist er
+          sichtbar (Deckkraft 0,55, Zeiger not-allowed) und er nennt beim Klick
+          den Grund. Nur das DOM-Attribut sagt das eben nicht.
           Der inaktive Zustand dimmt per OPACITY statt mit einer festen Farbe,
           damit er in allen Theme-Stufen (s0–s6) gleichermassen leichter wirkt. */}
       <button
