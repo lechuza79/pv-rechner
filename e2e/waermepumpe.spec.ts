@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { durchDenFlow } from "./flow-helper";
 
 // End-to-end smoke for the heat pump calculator flow.
 // Five steps: Situation, Wohnfläche, Dämmstandard, Haushalt, Heizsystem (+ WP-Typ).
@@ -11,8 +12,14 @@ test("Wärmepumpe flow lands on a result with TCO and amortization", async ({ pa
   await page.getByText("Bestandsgebäude", { exact: false }).click();
   await page.getByRole("button", { name: /weiter/i }).click();
 
-  // Step 1: Wohnfläche — 140 m² (typical EFH)
+  // Step 1: Wohnfläche UND Haustyp — der Schritt trägt zwei Fragen, und seit
+  // der Umstellung auf den geteilten Navigations-Baustein ist keine davon mehr
+  // vorausgewählt. Der Haustyp galt vorher still als „freistehend"; genau diese
+  // Sorte stiller Vorgabe hat im Empfehlungs-Flow ein Reihenmittelhaus um 22 %
+  // zu warm gerechnet. Wer nur eine der beiden beantwortet, kommt zu Recht
+  // nicht weiter (Weiter ist ausgegraut und sagt, was fehlt).
   await page.getByText("140 m²", { exact: false }).first().click();
+  await page.getByText("Freistehend", { exact: false }).first().click();
   await page.getByRole("button", { name: /weiter/i }).click();
 
   // Step 2: Dämmstandard — Teilsaniert
@@ -47,13 +54,12 @@ test("Wärmepumpe flow lands on a result with TCO and amortization", async ({ pa
 test("Grüngas-Modal nennt den Geltungsbereich vollständig und sichtbar", async ({ page }) => {
   await page.goto("/waermepumpe-rechner");
 
+  // Erste Frage bewusst von Hand (Neubau statt Bestand — darum geht es hier),
+  // den Rest übernimmt der Helfer: je Schritt eine Option pro Frage. Vorher
+  // stand hier blindes Weiterklicken, das nur funktionierte, solange jeder
+  // Schritt vorausgewählt war.
   await page.getByText("Neubau", { exact: false }).first().click();
-  for (let i = 0; i < 8; i++) {
-    const weiter = page.getByRole("button", { name: /^weiter$/i });
-    if (!(await weiter.count())) break;
-    await weiter.click();
-  }
-  await page.getByRole("button", { name: /berechnen|ergebnis|fertig/i }).click();
+  await durchDenFlow(page);
 
   await page.getByRole("button", { name: "Mehr erfahren →", exact: true }).click();
   const modal = page.getByRole("dialog");
