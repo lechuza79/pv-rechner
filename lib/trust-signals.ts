@@ -24,6 +24,19 @@ export interface TrustSignal {
   titel: string;
   /** Ganzer Satz — der eigentliche Inhalt. */
   text: string;
+  /**
+   * Wortfolge aus `text`, die fett gesetzt wird. Genau EINE je Punkt: Zwei
+   * Betonungen in vier Zeilen heben sich gegenseitig auf, und die Leiste steht
+   * unter jeder Seite — sie soll ruhig bleiben. Muss wörtlich in `text`
+   * vorkommen, sonst schlägt der Test an.
+   */
+  betont?: string;
+  /** Ausführung im Modal: ein bis zwei Sätze, die den Punkt belegen. */
+  detail: string;
+  /** Externer Beleg, im Modal verlinkt. Nur wo es einen gibt. */
+  belegUrl?: string;
+  /** Beschriftung des externen Belegs. */
+  belegLabel?: string;
   /** Wohin der Punkt führt: die Seite, die ihn ausführt und belegt. */
   href: string;
   icon: TrustIcon;
@@ -42,6 +55,11 @@ export const TRUST_SIGNALS: readonly TrustSignal[] = [
   {
     titel: "An Forschungsdaten geprüft",
     text: "Unsere Autarkie-Rechnung wird gegen das Referenzkennfeld der HTW Berlin nachgerechnet.",
+    betont: "HTW Berlin",
+    detail:
+      "Die HTW Berlin hat 25.000 Anlagen-Konfigurationen minutengenau durchsimuliert. Unsere Stundensimulation muss dieses Kennfeld bei gleichem Tagverbrauch auf drei Prozentpunkte genau treffen — ein Test prüft das bei jeder Änderung am Rechenkern.",
+    belegUrl: "https://solar.htw-berlin.de/studien/",
+    belegLabel: "Studien der HTW Berlin",
     href: "/methodik",
     icon: "check",
     // NUR die Autarkie — der Satz nannte bis zum Audit am 17.08.2026 auch den
@@ -55,38 +73,47 @@ export const TRUST_SIGNALS: readonly TrustSignal[] = [
     beleg: "lib/__tests__/pv-sim.test.ts + /methodik",
   },
   {
-    titel: "Offengelegte Datenquellen",
-    text: "Woher jede Zahl stammt, steht dabei — von der Bundesnetzagentur bis zur Forschung.",
+    titel: "Offizielle Datenquellen",
+    text: "Bundesnetzagentur, Fraunhofer ISE, EU-Kommission und weitere — jede einzeln ausgewiesen.",
+    betont: "jede einzeln ausgewiesen",
+    detail:
+      "Welche Quelle hinter einer Zahl steht, hängt vom Rechner ab: Der Wärmepumpen-Rechner stützt sich auf Verbraucherzentrale und KfW, der Klimarechner auf Wetterdienste und Gerätetests. Deshalb steht die Herkunft an jeder Größe einzeln statt als Liste vorneweg.",
     href: "/datenstand",
     icon: "quote",
-    // NICHT "amtlich" und NICHT als abschließende Aufzählung — beides fiel im
-    // Audit: Fraunhofer ISE ist ein privates Forschungsinstitut, keine Behörde,
-    // und die Leiste steht auch unter dem Wärmepumpen- und Klimarechner, deren
-    // Zahlen von Verbraucherzentrale, KfW, dena, test.de und ADAC kommen. Eine
-    // Aufzählung, die dort falsch ist, wäre eine Werbeaussage auf der falschen
-    // Seite. Die Zusage ist deshalb die überprüfbare: dass die Herkunft dabeisteht.
+    // Die drei Namen sind zurück (Betreiber-Vorgabe 18.08.2026) — sie sind das,
+    // was den Punkt überprüfbar macht. Aber NICHT als abschließende Aufzählung
+    // und NICHT als "amtlich": Fraunhofer ISE ist ein privates
+    // Forschungsinstitut, und die Leiste steht auch unter dem Wärmepumpen- und
+    // Klimarechner, wo keine der drei eine Zahl trägt. "und weitere" plus der
+    // Zusatz "jede einzeln ausgewiesen" tragen genau diese Einschränkung.
     beleg: "lib/data-sources.ts + Quellenzeile je Block auf /datenstand",
   },
   {
-    titel: "Jede Größe mit Quelle",
-    text: "Für jede Größe steht dabei, worauf wir rechnen, woher sie stammt und wie alt sie ist.",
+    titel: "Regelmäßig nachgeprüft",
+    text: "Preise, Fördersätze und Rechtsstände prüfen wir regelmäßig gegen die Originalquellen nach.",
+    betont: "regelmäßig",
+    detail:
+      "Jede Größe hat einen eigenen Prüfrhythmus — Rechtsstände täglich, Marktpreise monatlich, der CO₂-Preis jährlich. Ein gemeinsames Datum nennen wir bewusst nicht: Es würde den schnellsten Takt für den langsamsten Wert behaupten. Die Termine je Größe stehen unten.",
     href: "/datenstand",
     icon: "refresh",
-    // KEIN "alle Werte stehen offen" mehr: Seit dem Umbau vom 17.08.2026 hält
-    // /datenstand die durchkalibrierten Modell-Datensätze zurück. Der alte Satz
-    // war damit ausgerechnet auf der Seite falsch, auf die er verlinkt — und
-    // stand trotzdem auf jeder Seite der Site. Was jetzt zugesagt wird, ist das,
-    // was die Seite hält: Herkunft und Stand je Größe.
+    // "regelmäßig" ist belegt, nicht behauptet: PRUEFSTAND (lib/pruefstand.ts)
+    // führt je Größe den zuständigen Wächter, seinen Rhythmus und die Frist —
+    // und `npm run stand:faellig` meldet, wenn einer davon stillsteht.
     //
-    // KEIN gemeinsames Prüfdatum: Die Werte werden in verschiedenen Takten
-    // geprüft — Rechtsstände täglich, Marktpreise monatlich, der CO₂-Preis
-    // jährlich. Ein Datum über allen behauptete den schnellsten Takt für den
-    // langsamsten Wert.
-    beleg: "/datenstand nennt je Block Stand und Quelle; Werte teils auf Anfrage",
+    // BEWUSST NICHT "immer aktuell" (Betreiber-Vorschlag 18.08.2026): Das wäre
+    // eine Zustandsbehauptung über jeden einzelnen Wert zu jedem Zeitpunkt. Die
+    // Wächter laufen nur, wenn der Rechner des Betreibers an ist — vom 09. bis
+    // 13.08.2026 lief fünf Tage keiner. "Regelmäßig nachprüfen" beschreibt, was
+    // wir tun; "immer aktuell" behauptet ein Ergebnis, für das wir nicht
+    // einstehen können.
+    beleg: "lib/pruefstand.ts (Rhythmus + Frist je Größe), npm run stand:faellig",
   },
   {
     titel: "Ohne Anmeldung",
     text: "Das Ergebnis erscheint sofort, die Berechnung läuft in deinem Browser — kein Konto, kein Verkaufskontakt.",
+    betont: "in deinem Browser",
+    detail:
+      "Die Rechenkerne laufen als JavaScript auf deinem Gerät. An unseren Server geht nur, was von außen kommen muss: die Postleitzahl für Standort-Ertrag und Wetter. Anlagengröße, Verbrauch und Ergebnis bleiben bei dir.",
     href: "/datenschutz",
     icon: "lock",
     // Deckungsgleich mit der Datenschutzerklärung, Abschnitt "Nutzung ohne

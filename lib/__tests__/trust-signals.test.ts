@@ -3,6 +3,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { TRUST_SIGNALS } from "../trust-signals";
 import { DATA_SOURCES } from "../data-sources";
+import { PRUEFSTAND } from "../pruefstand";
 
 // Die Vertrauens-Leiste steht unter JEDER Seite. Jede Aussage darin ist damit
 // eine Werbeaussage auf der gesamten Site gleichzeitig (§ 5 UWG) — und keine
@@ -29,6 +30,59 @@ describe("Vertrauens-Leiste", () => {
     it("die Texte sind ganze Sätze", () => {
       for (const s of TRUST_SIGNALS) {
         expect(s.text.endsWith("."), `"${s.titel}" endet nicht als Satz`).toBe(true);
+      }
+    });
+
+    // Der Detailtext ist das, was im Modal hinter der Zusage steht. Ohne ihn
+    // öffnet der Punkt ein Fenster, das nichts erklärt — dann ist der Klick eine
+    // Enttäuschung und die Zusage bleibt eine Behauptung.
+    it("jeder Punkt wird im Modal ausgeführt", () => {
+      for (const s of TRUST_SIGNALS) {
+        expect(s.detail.trim().length, `"${s.titel}" ohne Ausführung`).toBeGreaterThan(80);
+        expect(s.detail.endsWith("."), `"${s.titel}": Ausführung endet nicht als Satz`).toBe(true);
+      }
+    });
+  });
+
+  // Die Hervorhebung wird per Textsuche gesetzt (components/TrustBar → MitBetonung).
+  // Trifft sie nicht, verschwindet sie stumm: Der Satz steht dann unbetont da,
+  // niemandem fällt es auf, und die Absicht ist weg.
+  describe("Hervorhebung", () => {
+    it("kommt wörtlich im Satz vor", () => {
+      for (const s of TRUST_SIGNALS) {
+        if (!s.betont) continue;
+        expect(s.text, `"${s.betont}" steht nicht in "${s.titel}"`).toContain(s.betont);
+      }
+    });
+
+    it("hebt höchstens eine Stelle je Punkt hervor", () => {
+      for (const s of TRUST_SIGNALS) {
+        if (!s.betont) continue;
+        const treffer = s.text.split(s.betont).length - 1;
+        expect(treffer, `"${s.betont}" kommt in "${s.titel}" mehrfach vor`).toBe(1);
+      }
+    });
+  });
+
+  // Externe Belege sind der Teil, den ein Leser selbst nachprüfen kann. Ein
+  // toter oder unsicherer Link wäre schlimmer als keiner: Er sieht aus wie ein
+  // Nachweis und ist keiner.
+  describe("Externe Belege", () => {
+    it("sind über HTTPS erreichbar und tragen eine Beschriftung", () => {
+      for (const s of TRUST_SIGNALS) {
+        if (!s.belegUrl) continue;
+        expect(s.belegUrl, `"${s.titel}": Beleg nicht über HTTPS`).toMatch(/^https:\/\//);
+        expect(s.belegLabel?.trim().length ?? 0, `"${s.titel}": Beleg ohne Beschriftung`)
+          .toBeGreaterThan(3);
+      }
+    });
+
+    it("verlinken nicht auf uns selbst", () => {
+      for (const s of TRUST_SIGNALS) {
+        if (!s.belegUrl) continue;
+        expect(s.belegUrl, `"${s.titel}": eigener Link als externer Beleg ausgegeben`).not.toContain(
+          "solar-check.io",
+        );
       }
     });
   });
@@ -96,12 +150,30 @@ describe("Vertrauens-Leiste", () => {
     // Dieselbe Begründung von der anderen Seite: Ohne Datum darf erst recht kein
     // Takt behauptet werden. Die Wächter laufen nur, wenn der Rechner des
     // Betreibers an ist — vom 09. bis 13.08.2026 lief fünf Tage keiner.
-    it("behauptet keine Regelmäßigkeit", () => {
-      for (const wort of ["laufend", "täglich", "regelmäßig", "fortlaufend", "ständig"]) {
+    // "regelmäßig" ist seit dem 18.08.2026 ERLAUBT und belegt: PRUEFSTAND führt
+    // je Größe den zuständigen Wächter, seinen Rhythmus und die Frist, und
+    // `npm run stand:faellig` meldet, wenn einer stillsteht. Das Modal zeigt
+    // dieselbe Liste. Verboten bleiben die Wörter, die einen KONKRETEN Takt oder
+    // einen Zustand behaupten — die Wächter laufen nur, wenn der Rechner des
+    // Betreibers an ist (09.–13.08.2026 lief fünf Tage keiner).
+    it("behauptet keinen konkreten Takt und keinen Zustand", () => {
+      for (const wort of ["täglich", "stündlich", "immer aktuell", "stets aktuell", "lückenlos"]) {
         expect(
           alleTexte.toLowerCase(),
-          `"${wort}" behauptet einen Takt, den niemand garantieren kann`,
+          `"${wort}" behauptet mehr, als die Wächter-Läufe hergeben`,
         ).not.toContain(wort);
+      }
+    });
+
+    // Und wo "regelmäßig" steht, muss es die Liste geben, die es belegt.
+    it("der Prüf-Punkt ist durch den Prüfstand gedeckt", () => {
+      const pruefPunkt = TRUST_SIGNALS.find((s) => s.text.toLowerCase().includes("regelmäßig"));
+      if (!pruefPunkt) return; // kein Anspruch erhoben, nichts zu belegen
+      expect(PRUEFSTAND.length, "kein Prüfstand — dann ist 'regelmäßig' unbelegt").toBeGreaterThan(
+        3,
+      );
+      for (const e of PRUEFSTAND) {
+        expect(e.rhythmus.trim().length, `"${e.was}" ohne Rhythmus`).toBeGreaterThan(3);
       }
     });
 
