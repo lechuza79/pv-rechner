@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import AtlasSkeleton from "../../../../components/atlas/AtlasSkeleton";
 import Breadcrumb, { type Crumb } from "../../../../components/Breadcrumb";
+import GlossaryTerm from "../../../../components/GlossaryTerm";
 import RegionSearch from "../../../../components/atlas/RegionSearch";
 import { IconArrowRight } from "../../../../components/Icons";
 import { v, space, pad } from "../../../../lib/theme";
@@ -299,7 +300,15 @@ async function AtlasBody({
           sind {ortPhrase(region)} in Betrieb
           {hatVergleichsgruppe ? `, verteilt auf ${nf(children.length)} ${kindWortGezaehlt}.` : "."}
           {wPerCapita !== null && (
-            <> Das sind {nf(wPerCapita)} Watt Peak-Leistung je Einwohner.</>
+            <>
+              {" "}
+              Das sind {nf(wPerCapita)}{" "}
+              {/* Wp und kWp sind dieselbe Größe in verschiedenen Vorsilben, und sie ist
+                  die am häufigsten missverstandene auf dieser Seite: Peak-Leistung ist
+                  nicht die Strommenge. Der Glossar-Baustein zeigt die Erklärung beim
+                  Überfahren und nur bei der ERSTEN Nennung je Seite. */}
+              <GlossaryTerm id="kwp">Watt Peak-Leistung</GlossaryTerm> je Einwohner.
+            </>
           )}{" "}
           {/* „Photovoltaik" stand bis 18.08.2026 in keinem sichtbaren Satz dieser Seite —
               nur „Solaranlagen". Beide Wörter werden gesucht („photovoltaik bayern" 110
