@@ -82,12 +82,18 @@ jobs:
           retention-days: 7
 
   # Eigener Job, weil diese Stufe eine andere Größenordnung hat: Der Flow-Läufer
-  # klickt jeden Weg durch jeden Flow und baut dafür je Weg die Seite neu auf —
-  # 636 Wege durch sieben Flows, gegen einen fertigen Build gut eine
-  # Viertelstunde. Im selben Job wie Typprüfung und Unit-Tests riss er deren
-  # Zeitgrenze, und ein abgebrochener Lauf fällt überhaupt kein Urteil: weder
-  # rot noch grün. Getrennt melden die schnellen Prüfungen weiter nach wenigen
-  # Minuten, und diese hier hat die Zeit, die sie braucht.
+  # klickt jede Option jedes Schritts durch jeden Flow und baut dafür je Weg
+  # die Seite neu auf. Im selben Job wie Typprüfung und Unit-Tests riss er
+  # deren Zeitgrenze, und ein abgebrochener Lauf fällt überhaupt kein Urteil:
+  # weder rot noch grün. Getrennt melden die schnellen Prüfungen weiter nach
+  # wenigen Minuten, und diese hier hat die Zeit, die sie braucht.
+  #
+  # EIN Playwright-Arbeiter (steckt in `npm run test:flows`): Der Runner hat
+  # zwei Kerne, auf denen auch der Produktions-Server läuft. Mit zwei Browsern
+  # war die Maschine so gesättigt, dass React frisch geladene Seiten teils
+  # über 20 s nicht übernahm — „Option ließ sich nicht wählen" für Optionen,
+  # die von Hand funktionieren, in jedem Lauf eine andere (fünf rote Läufe am
+  # 18.08.2026, einer davon auf einem Commit, der nur CLAUDE.md änderte).
   #
   # E2E_BUILD=1 (steckt in `npm run test:flows`) ist hier PFLICHT, nicht Kür:
   # Gegen den Dev-Server übersetzt Next jede Route beim ersten Aufruf neu, und

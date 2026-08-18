@@ -386,7 +386,7 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
   // Nur aktive, pauschal berechenbare Programme tragen bei. Das zuletzt (am
   // spezifischsten) angewandte Programm wird im Ergebnis vorab scharf geschaltet.
   const fundingStack = rec
-    ? stackFunding(fundingPrograms, rec.kwp, rec.speicherKwh, rec.reasoning.investition)
+    ? stackFunding(fundingPrograms, { technik: "pv", kwp: rec.kwp, speicherKwh: rec.speicherKwh, kosten: rec.reasoning.investition })
     : { total: 0, applied: [] };
   const armedFoeId = fundingStack.applied.length > 0
     ? fundingStack.applied[fundingStack.applied.length - 1].program.id
@@ -877,7 +877,7 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                         </span>
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 6, paddingTop: 6, borderTop: `1px dashed ${v('--color-border')}` }}>
-                        <span style={{ fontSize: 11, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Rendite 25 Jahre</span>
+                        <span style={{ fontSize: 11, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Gewinn nach 25 Jahren</span>
                         <span style={{ fontSize: 12, fontFamily: v('--font-mono'), fontWeight: 700, color: (altEco[i]?.npv25 ?? alt.npv25) >= 0 ? v('--color-positive') : v('--color-negative') }}>
                           {(altEco[i]?.npv25 ?? alt.npv25) >= 0 ? "+" : ""}{Math.round(altEco[i]?.npv25 ?? alt.npv25).toLocaleString("de-DE")} €
                         </span>

@@ -121,7 +121,15 @@ export default function Waermepumpe({
   // Flüssiggas ausdrücklich als zulässige Option.
   const ersatzInvest = oFossilInvest ?? DEFAULT_HEATPUMP_CONFIG.fossilErsatzInvest;
   const fuelOptions = WP_FUEL_OPTIONS.filter(f => ersatzInvest > 0 ? !f.bestandsanlage : !!f.bestandsanlage);
-  const fuel = fuelOptions.find(f => f.id === oFuel) ?? fuelOptions[0];
+  // Der Energieträger überlebt den Wechsel zwischen Neueinbau und Bestand. Vorher
+  // fiel die Auswahl auf den ersten Eintrag der Liste zurück — also auf Gas —,
+  // sobald jemand mit Heizöl die Anschaffung auf 0 setzte. Damit wechselten still
+  // Grundgebühr und CO₂-Faktor mit, ohne dass die Frage „Gas oder Öl?" je anders
+  // beantwortet worden wäre (Council 18.08.2026).
+  const gewaehlt = WP_FUEL_OPTIONS.find(f => f.id === oFuel);
+  const fuel = fuelOptions.find(f => f.id === oFuel)
+    ?? fuelOptions.find(f => f.kind === gewaehlt?.kind)
+    ?? fuelOptions[0];
   // Die Grüngas-Pflicht ist ein GAS-Szenario: Der Preispfad hängt an der
   // Biomethan-Beimischung und an Gas-Netzentgelten (lib/greengas.ts). Bei Heizöl
   // gibt es beides nicht — das Szenario verschwindet dann aus der Auswahl, und ein

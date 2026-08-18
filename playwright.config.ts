@@ -44,8 +44,9 @@ export default defineConfig({
   //   smoke — alles ausser dem Flow-Läufer. Läuft gegen den Dev-Server und ist
   //           in wenigen Minuten durch.
   //   flows — der Flow-Läufer allein (e2e/flows.spec.ts). Er baut je Weg die
-  //           Seite neu auf und braucht gegen einen fertigen Build gut eine
-  //           Viertelstunde; gegen den Dev-Server ein Vielfaches davon.
+  //           Seite neu auf: im Standard-Modus (jede Option, jeder Zweig)
+  //           gegen einen fertigen Build ~7 Minuten; im nächtlichen
+  //           Alle-Kombinationen-Modus (FLOW_ALLE_KOMBINATIONEN=1) Stunden.
   //
   // Vorher lagen beide im selben Lauf. Als der Läufer von einem auf sieben
   // Flows wuchs, riss das die Zeitgrenze des CI-Jobs — und ein abgebrochener
@@ -75,6 +76,12 @@ export default defineConfig({
     // Hauptverzeichnis, und der erste Start übersetzt alles neu — die zwei
     // Minuten liefen dort zuverlässig ab, bevor der Server bereit war, und der
     // ganze Lauf brach mit einer Meldung ab, die nach einem Testfehler aussieht.
-    timeout: 240_000,
+    //
+    // Im Build-Modus (E2E_BUILD) 10 Minuten: Vor dem Start läuft ein voller
+    // `next build`, und der brauchte auf einer ausgelasteten Maschine (mehrere
+    // parallele Sessions) zweimal am 18.08.2026 länger als 4 Minuten — der
+    // Lauf starb dann VOR dem ersten Test mit „Timed out waiting from
+    // config.webServer", was nach einem Testfehler aussieht, aber keiner ist.
+    timeout: process.env.E2E_BUILD ? 600_000 : 240_000,
   },
 });

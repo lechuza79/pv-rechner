@@ -11,7 +11,7 @@ import DachField from "../../../components/DachField";
 import ResultSection from "../../../components/ResultSection";
 import { calcEigenverbrauch, calcWeightedFeedIn } from "../../../lib/calc";
 import { dachErtragHinweis, dachErtragKwp, dachNeigungsFaktor } from "../../../lib/dach-ertrag";
-import { DACHARTEN, DEGRAD, FEED_IN_YEARS, NO_PLZ_DEFAULT_YIELD, PERSONEN } from "../../../lib/constants";
+import { DACHARTEN, DEGRAD, FEED_IN_YEARS, NATIONAL_AVG_YIELD, PERSONEN } from "../../../lib/constants";
 import { eegReformStandLabel, eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
 import {
   FEED_IN_BASIS,
@@ -118,7 +118,7 @@ export default function EinspeiseRechner() {
   // Ertrag = Standort-Optimum × Dach. Die Regel steht in lib/dach-ertrag.ts und
   // gilt für alle Rechner gleich — hier wird sie nur aufgerufen.
   const neigungsFaktor = dachNeigungsFaktor(dachartIdx, ausrichtung, neigungGrad);
-  const ertragKwp = dachErtragKwp(standortYield ?? NO_PLZ_DEFAULT_YIELD, dachartIdx, ausrichtung, neigungGrad);
+  const ertragKwp = dachErtragKwp(standortYield ?? NATIONAL_AVG_YIELD, dachartIdx, ausrichtung, neigungGrad);
 
   const jahre = useMemo(() => {
     const list: number[] = [];

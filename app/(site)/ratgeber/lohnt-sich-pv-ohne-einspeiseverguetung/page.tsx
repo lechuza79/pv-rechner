@@ -24,7 +24,7 @@ import {
   batteryReplaceCost,
 } from "../../../../lib/calc";
 import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../../lib/pv-sim";
-import { PERSONEN, NUTZUNG, SCENARIOS, SPEICHER, YEARS, FEED_IN_YEARS, NO_PLZ_DEFAULT_YIELD } from "../../../../lib/constants";
+import { PERSONEN, NUTZUNG, SCENARIOS, SPEICHER, YEARS, FEED_IN_YEARS, NATIONAL_AVG_YIELD } from "../../../../lib/constants";
 import { pageMetadata } from "../../../../lib/seo";
 import SpeicherVergleich, { type VergleichColumn, type ColScenario, type ScenarioTabMeta } from "./_components/SpeicherVergleich";
 import DayProfileChart, { DAY_C_SUN, DAY_C_DIRECT, DAY_C_BATTERY, DAY_C_GRID, DAY_C_SOC, DayLegendDot } from "../../../../components/DayProfileChart";
@@ -195,7 +195,10 @@ const S = {
 // the deep links reproduce via the share param eia=0.
 const EX = {
   kwp: 10,
-  ertragKwp: NO_PLZ_DEFAULT_YIELD, // conservative German average, same default as the calculator without PLZ
+  ertragKwp: NATIONAL_AVG_YIELD, // Bundesschnitt bei optimaler Ausrichtung — derselbe Startwert wie im Rechner
+  // ohne PLZ. Ein Dachabschlag steckt NICHT darin (er kommt aus der Dach-Frage,
+  // die dieses Beispiel nicht stellt); der Vergleich bleibt damit deckungsgleich
+  // mit dem verlinkten Rechner.
   personenIdx: 2, // 3–4 Personen → 3.800 kWh/a
   nutzungIdx: 1, // "Teils zuhause" → tagQuote 0.30 (HTW-Standardprofil)
 };

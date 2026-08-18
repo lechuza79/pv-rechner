@@ -13,7 +13,7 @@ import ResultSection from "../../../components/ResultSection";
 // HEIZSYSTEM/HEIZSYSTEM_SHORT/WP_M2_PRESETS brauchte der entfallene
 // Verbrauchs-Abschnitt; die Gebäudefragen holen sie sich jetzt selbst aus
 // components/GebaeudeField.
-import { YEAR, YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, NO_PLZ_DEFAULT_YIELD, type Heizsystem } from "../../../lib/constants";
+import { YEAR, YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, NATIONAL_AVG_YIELD, type Heizsystem } from "../../../lib/constants";
 import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
 import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../lib/pv-sim";
 import { calcWpAnnualElectricity, calcJAZ, flowTempForSystem, DEFAULT_WP_BUILDING, wpGebaeudeUebersprungenFolge } from "../../../lib/heatpump";
@@ -50,8 +50,9 @@ import ResultHeroCard from "./_components/ResultHeroCard";
 // Verbraucher haben je einen eigenen Abschnitt).
 import ResultStats from "./_components/ResultStats";
 import ResultActions from "./_components/ResultActions";
-import ResultFunding from "./_components/ResultFunding";
-import { stackFunding, type FundingProgram } from "../../../lib/funding-programs";
+import ResultFunding from "../../../components/ResultFunding";
+import { stackFunding } from "../../../lib/funding-programs";
+import { useFoerderung } from "../../../lib/use-foerderung";
 
 // Großverbraucher-Detailfragen in ihrer Akkordeon-Reihenfolge. Pro aktivem
 // Verbraucher wird immer nur die erste noch offene Frage aufgeklappt.
@@ -194,7 +195,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [einspeisungModus, setEinspeisungModus] = useState<"aus" | "teil" | "voll">(
     hasShare ? (initialParams?.eia === "2" ? "voll" : initialParams?.eia === "0" ? "aus" : "teil") : "teil"
   );
-  const [oErtrag, setOErtrag] = useState(initialParams?.er ? paramInt(initialParams, "er", NO_PLZ_DEFAULT_YIELD, ERTRAG_OPTIMUM_MIN, ERTRAG_OPTIMUM_MAX) : NO_PLZ_DEFAULT_YIELD);
+  const [oErtrag, setOErtrag] = useState(initialParams?.er ? paramInt(initialParams, "er", NATIONAL_AVG_YIELD, ERTRAG_OPTIMUM_MIN, ERTRAG_OPTIMUM_MAX) : NATIONAL_AVG_YIELD);
   // Vergütungsregime: heutige Konditionen (Default — sie gelten für jede Anlage,
   // die bis Ende 2026 ans Netz geht) oder der Entwurf für Neuanlagen ab 2027.
   // Der Börsenerlös nach der Förderphase ist bewusst separat schaltbar und
@@ -224,12 +225,12 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // (/api/funding liefert die Programme mit). `foe` (Programm-ID) kann ein
   // Programm vorab scharf schalten (Link von einer Stadt-/Förderseite).
   const seedFoeId = typeof initialParams?.foe === "string" ? initialParams.foe : null;
-  type FundingCandidate = { ort: string; ags: string; programs: FundingProgram[] };
-  const [fundingCandidates, setFundingCandidates] = useState<FundingCandidate[] | null>(null);
-  const [fundingAgs, setFundingAgs] = useState<string | null>(null);
-  const [fundingPrograms, setFundingPrograms] = useState<FundingProgram[]>([]);
+  // Abruf, Mehrdeutigkeit einer PLZ und Vorbelegung stecken im geteilten Hook —
+  // Balkon- und Wärmepumpen-Rechner benutzen denselben.
+  const foerderQuelle = useFoerderung("pv", seedFoeId);
+  const fundingPrograms = foerderQuelle.programme;
+  // Ob die Förderung eingerechnet wird, bleibt hier: eine Anzeige-Entscheidung.
   const [fundingEnabled, setFundingEnabled] = useState<boolean>(!!seedFoeId);
-  const [fundingLoading, setFundingLoading] = useState(false);
 
   // Einmaliger PLZ-Toast beim ersten Anzeigen des Ergebnisses.
   const [plzToast, setPlzToast] = useState(false);
@@ -273,59 +274,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // Dach und Gebäude reicht.
   const [folgeToast, setFolgeToast] = useState<string | null>(null);
 
-  // PLZ → zutreffende Förderprogramme (Kandidaten serverseitig auflösen)
-  const fetchFunding = async (inputPlz: string) => {
-    if (!/^\d{5}$/.test(inputPlz)) return;
-    setFundingLoading(true);
-    try {
-      const res = await fetch(`/api/funding?plz=${inputPlz}`);
-      const data = await res.json();
-      const candidates: FundingCandidate[] = Array.isArray(data.candidates) ? data.candidates : [];
-      setFundingCandidates(candidates);
-      if (candidates.length === 1) {
-        // Eindeutig → Programme direkt übernehmen.
-        setFundingAgs(candidates[0].ags);
-        setFundingPrograms(candidates[0].programs);
-      } else {
-        // Mehrdeutig → Nutzer fragen (X oder Y?), bis dahin keine Programme aktiv.
-        setFundingAgs(null);
-        setFundingPrograms([]);
-      }
-    } catch {
-      setFundingCandidates([]);
-      setFundingAgs(null);
-      setFundingPrograms([]);
-    }
-    setFundingLoading(false);
-  };
-
-  // Bei mehrdeutiger PLZ: gewählten Ort übernehmen (Programme liegen schon vor).
-  const chooseFundingAgs = (ags: string) => {
-    setFundingAgs(ags);
-    setFundingPrograms(fundingCandidates?.find((c) => c.ags === ags)?.programs ?? []);
-  };
-
-  // `foe`-Seed: Programm beim Laden serverseitig auflösen + scharf schalten.
-  useEffect(() => {
-    if (!seedFoeId) return;
-    (async () => {
-      setFundingLoading(true);
-      try {
-        const res = await fetch(`/api/funding?foe=${seedFoeId}`);
-        const data = await res.json();
-        if (Array.isArray(data.programs) && data.programs.length) {
-          setFundingPrograms(data.programs);
-          setFundingAgs(typeof data.ags === "string" ? data.ags : null);
-        }
-      } catch { /* ignore */ }
-      setFundingLoading(false);
-    })();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   // PLZ → PVGIS Ertrag laden
   const fetchPvgis = async (inputPlz: string) => {
     if (!/^\d{5}$/.test(inputPlz)) return;
-    fetchFunding(inputPlz);
+    foerderQuelle.ausPlz(inputPlz);
     setPlzLoading(true);
     try {
       // PLZ → Koordinaten (lazy load)
@@ -418,7 +370,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // aktiviert) reduziert sie zur effektiven Investition, mit der gerechnet wird.
   const bruttoKosten = oKosten !== null ? oKosten : estimateCost(kwp, spKwh, prices);
   const fundingStack = useMemo(
-    () => stackFunding(fundingPrograms, kwp, spKwh, bruttoKosten),
+    () => stackFunding(fundingPrograms, { technik: "pv", kwp, speicherKwh: spKwh, kosten: bruttoKosten }),
     [fundingPrograms, kwp, spKwh, bruttoKosten],
   );
   const foerderung = fundingEnabled ? fundingStack.total : 0;
@@ -612,7 +564,11 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         ? 0
         : Math.min(effEv + s.evDelta, 95, (gesamtVerbrauch / jahresertrag) * 100),
       einspeisung: effEinsp,
-      stromSteigerung: s.strom, ertragKwp: oErtrag, monthly: monthlyProfile,
+      // Der Ertrag DIESER Anlage, nicht das Standort-Optimum: Hier stand `oErtrag`
+      // und damit ein Bestfall-Dach, während jede andere Zahl der Seite mit dem
+      // echten Dach rechnet. Die Wirkung des Börsenerlöses war dadurch bei einem
+      // Ost/West-Dach 25 % zu groß, beim Nord-Pultdach 32 % (Council 18.08.2026).
+      stromSteigerung: s.strom, ertragKwp: effErtrag, monthly: monthlyProfile,
       batteryReplace: batteryReplaceCost(spKwh, prices),
     };
     const total = (mk: boolean) => {
@@ -631,8 +587,12 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         },
       }).total;
     };
-    return Math.max(0, total(true) - total(false));
-  }, [regime, effEinspeisungModus, scenario, kwp, kosten, oStrom, effEv, effEinsp, oErtrag,
+    // Kein `Math.max(0, …)`: Seit die Grundgebühr nur noch anfällt, wo sich die
+    // Vermarktung trägt, kann die Differenz nicht mehr negativ werden — und wenn
+    // doch, wäre genau das die Auskunft, die an den Schalter gehört. Eine auf
+    // null gekappte Zahl neben einer sinkenden Hauptzahl erklärt gar nichts.
+    return total(true) - total(false);
+  }, [regime, effEinspeisungModus, scenario, kwp, kosten, oStrom, effEv, effEinsp, effErtrag,
       monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag, marktSim, oMarktwert]);
 
   // Das aktuell gewählte Szenario treibt alle Ergebniszahlen. Fallback auf
@@ -789,7 +749,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         },
         {
           title: "Szenarien",
-          text: "Die drei Kurven unterscheiden sich im angenommenen Strompreisanstieg (1 %, 3 % und 5 % pro Jahr) und im Eigenverbrauch (±5 Prozentpunkte).",
+          // Die Prozentsätze aus SCENARIOS, nicht getippt: Im Bild stand „1 %, 3 %
+          // und 5 %", gerechnet wurden 1, 2 und 5 — und das Bild ist die Fassung,
+          // die ohne Rückfragemöglichkeit weitergereicht wird (Council 18.08.2026).
+          text: `Die drei Kurven unterscheiden sich im angenommenen Strompreisanstieg (${SCENARIOS.map(s => `${(s.strom * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} %`).join(", ")} pro Jahr) und im Eigenverbrauch (±5 Prozentpunkte).`,
         },
       ] : undefined,
       source: `${sourceLabel(DATA_SOURCES.pvgis)} (Standort-Ertrag) · Marktpreise taptaphome.com`,
@@ -1436,10 +1399,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             )}
 
             <ResultFunding
-              loading={fundingLoading}
-              candidates={fundingCandidates}
-              chosenAgs={fundingAgs}
-              onChooseAgs={chooseFundingAgs}
+              loading={foerderQuelle.laedt}
+              candidates={foerderQuelle.kandidaten}
+              chosenAgs={foerderQuelle.ags}
+              onChooseAgs={foerderQuelle.waehleOrt}
               programs={fundingPrograms}
               applied={fundingStack.applied}
               total={fundingStack.total}
@@ -1505,7 +1468,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               total={sel.data.total} kosten={kosten}
               wp={wp} wpKwh={wpKwh ?? 0} jaz={wpJaz} effEv={effEv} autarkie={autarkie} wpAutarky={pvSim.wpAutarky}
               jahresertrag={jahresertrag} gesamtVerbrauch={gesamtVerbrauch} speicherKwh={spKwh} monthly={pvSim.monthly} exampleDays={exampleDays}
-              oStrom={oStrom} stromSteigerung={sel.strom} fuelType={fuelType} setFuelType={setFuelType}
+              stromSteigerung={sel.strom} fuelType={fuelType} setFuelType={setFuelType}
             />
 
             {spKwh > 0 && effEinspeisungModus !== "voll" && (
