@@ -16,13 +16,24 @@
  *   der Animation gemountet. `prefers-reduced-motion` schaltet sie ab
  * - Höhe begrenzt, Inhalt scrollt INNEN — der Absenden-Knopf bleibt erreichbar,
  *   auch auf flachen Laptop-Displays und bei eingeblendeter Tastatur (dvh)
+ * - Der primäre Knopf KLEBT am unteren Rand, während der Inhalt darüber scrollt
+ *   (siehe ModalSticky) — im Baustein, nicht pro Aufrufstelle
  * - Schließen per Escape, Klick daneben und ×
  * - Fokus wandert beim Öffnen in den Dialog, bleibt per Tab-Falle darin und
  *   springt beim Schließen auf das auslösende Element zurück
  * - Seite dahinter scrollt nicht mit
  */
 
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type ReactNode,
+} from "react";
 import { createPortal } from "react-dom";
 import { v, space } from "../lib/theme";
 
@@ -33,6 +44,73 @@ const DURATION_MS = 220;
 // wie ein Fehler („das Fenster ist einfach da").
 const DURATION_REDUCED_MS = 140;
 const MOBILE_MAX_PX = 640;
+
+/**
+ * Der Dialog meldet über diesen Kontext, dass er da ist — und ob sein Inhalt
+ * gerade überhaupt scrollt. Beides braucht der klebende Fuß (ModalSticky):
+ * das erste, um sich außerhalb eines Dialogs unsichtbar zu machen, das zweite
+ * für den Trennstrich, der nur dann etwas aussagt, wenn wirklich Inhalt
+ * darunter durchläuft.
+ *
+ * Selbstmelde-Systematik wie bei den Export-Notizen: Der Baustein erkennt
+ * seinen Kontext selbst, statt dass jede Aufrufstelle daran denken muss.
+ */
+const ModalKontext = createContext<{ scrollt: boolean } | null>(null);
+
+/** Seitliches Innenmaß des Dialogs — der klebende Fuß hebt es auf, um mit
+ *  seinem Hintergrund bis an beide Kanten zu reichen. */
+const DIALOG_PAD_X = space.xl;
+const DIALOG_PAD_BOTTOM = space.xl;
+
+/**
+ * Legt den primären Knopf an den unteren Rand des Dialogs — er bleibt stehen,
+ * während der Inhalt darüber wegscrollt.
+ *
+ * Anlass (Betreiber, 16.08.2026): Auf schmalen Bildschirmen ist der Dialog ein
+ * Bottom-Sheet, und bei langen Schritten rutschte „Weiter" unter die Falz —
+ * beobachtet am Förder-Check auf 375 px. Ein Knopf, den man erst durch Scrollen
+ * findet, sieht aus wie ein Schritt ohne Fortsetzung.
+ *
+ * Gilt bewusst auf JEDER Breite, nicht nur im Bottom-Sheet: Auch der zentrierte
+ * Dialog ist in der Höhe gedeckelt (dvh), auf einem flachen Laptop-Display oder
+ * bei eingeblendeter Tastatur entsteht dasselbe Problem.
+ *
+ * Außerhalb eines Dialogs reicht der Baustein seinen Inhalt unverändert durch —
+ * dieselbe Komponente kann damit auf der Seite und im Fenster stehen (das
+ * Kontaktformular tut genau das).
+ */
+export function ModalSticky({ children }: { children: ReactNode }) {
+  const kontext = useContext(ModalKontext);
+  if (!kontext) return <>{children}</>;
+  return (
+    <div
+      style={{
+        position: "sticky",
+        // Nicht 0: Der Dialog trägt unten ein Innenmaß, und ein klebendes
+        // Element bleibt an dessen Oberkante stehen — gemessen blieben so 16 px
+        // Dialogfläche unter dem Knopf stehen, durch die der Inhalt sichtbar
+        // durchlief. Das negative Maß schiebt den Fuß über dieses Innenmaß
+        // hinweg bis an den echten unteren Rand.
+        bottom: -DIALOG_PAD_BOTTOM,
+        // Bis an die Kanten des Dialogs: das seitliche Innenmaß wird aufgehoben
+        // und im Fuß selbst wieder gesetzt, damit der Hintergrund durchdeckt.
+        // Unten dasselbe Spiel — ohne das negative Maß säße der natürliche Platz
+        // des Fußes eine Innenmaß-Höhe über dem Rand, und er würde am Ende des
+        // Scrollens sichtbar nach oben springen.
+        marginLeft: -DIALOG_PAD_X,
+        marginRight: -DIALOG_PAD_X,
+        marginBottom: -DIALOG_PAD_BOTTOM,
+        padding: `${space.md}px ${DIALOG_PAD_X}px ${DIALOG_PAD_BOTTOM}px`,
+        background: v("--color-bg"),
+        // Der Strich sagt „hier geht es weiter, da ist noch mehr" — steht kein
+        // Inhalt darunter, wäre er eine Behauptung ohne Inhalt.
+        borderTop: kontext.scrollt ? `1px solid ${v("--color-border")}` : "1px solid transparent",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
 
 interface ModalProps {
   open: boolean;
@@ -186,6 +264,45 @@ export default function Modal({
   const [canPortal, setCanPortal] = useState(false);
   useEffect(() => setCanPortal(true), []);
 
+  // Scrollt der Inhalt gerade? Nur dann trägt der klebende Fuß seinen Strich.
+  //
+  // Zwei Auslöser, bewusst in zwei Effekten — sie haben verschiedene Lebensdauer:
+  //
+  // 1. Bei JEDEM Durchlauf messen (kein Abhängigkeits-Array). Ein Schrittwechsel
+  //    im Flow tauscht den Inhalt aus, ohne dass sich die Größe des Dialogs
+  //    ändern muss: Er steht dann längst an seiner Höhengrenze, und eine
+  //    Größenmessung allein bekäme davon nichts mit. `setScrollt` bricht die
+  //    Schleife, weil es bei gleichem Wert nichts auslöst.
+  //
+  // 2. Für das, was OHNE Durchlauf passiert — Gerät drehen, Tastatur einblenden —
+  //    zwei Melder statt einem: das Fenster-Ereignis UND ein Größen-Beobachter.
+  //    Das Ereignis deckt jede Änderung der Fenstergröße ab, der Beobachter
+  //    zusätzlich eine Höhenänderung des Dialogs, die ohne Fensterwechsel
+  //    entsteht (nachgeladener Inhalt). Beide hängen an `rendered`, nicht am
+  //    Durchlauf: hinge der Beobachter am Durchlauf, meldete ihn jeder Render ab
+  //    und neu an, und eine Größenänderung in genau diesem Moment fiele heraus.
+  //    Anmerkung zum Prüfen: Im eingebetteten Testbrowser feuern Größen-Beobachter
+  //    nicht (auch die Anmeldemeldung nicht) und ein Ändern der Fenstergröße löst
+  //    dort kein Fenster-Ereignis aus — der Strich ist dort nur über ein von Hand
+  //    ausgelöstes Ereignis zu prüfen, nicht über das Verstellen des Fensters.
+  const [scrollt, setScrollt] = useState(false);
+  const messen = useCallback(() => {
+    const el = dialogRef.current;
+    if (el) setScrollt(el.scrollHeight > el.clientHeight + 1);
+  }, []);
+  useEffect(messen);
+  useEffect(() => {
+    const el = dialogRef.current;
+    if (!rendered || !el) return;
+    const beobachter = new ResizeObserver(messen);
+    beobachter.observe(el);
+    window.addEventListener("resize", messen);
+    return () => {
+      beobachter.disconnect();
+      window.removeEventListener("resize", messen);
+    };
+  }, [rendered, messen]);
+
   if (!rendered || !canPortal) return null;
 
   const radius = v("--radius-lg");
@@ -235,7 +352,10 @@ export default function Modal({
           overflowY: "auto",
           borderRadius: isMobile ? `${radius} ${radius} 0 0` : radius,
           // Oben etwas großzügiger als unten/seitlich — der Titel bekommt Luft.
-          padding: `${space.xxl}px ${space.xl}px ${space.xl}px`,
+          // Seiten- und Untermaß kommen aus denselben Konstanten, die der
+          // klebende Fuß wieder aufhebt — driften sie auseinander, steht sein
+          // Hintergrund nicht mehr bündig an der Kante.
+          padding: `${space.xxl}px ${DIALOG_PAD_X}px ${DIALOG_PAD_BOTTOM}px`,
           boxShadow: "0 -8px 40px rgba(0,0,0,0.3)",
           outline: "none",
           opacity: shown ? 1 : 0,
@@ -250,7 +370,7 @@ export default function Modal({
           </button>
         </div>
         {intro && <p style={S.intro}>{intro}</p>}
-        {children}
+        <ModalKontext.Provider value={{ scrollt }}>{children}</ModalKontext.Provider>
       </div>
     </div>,
     document.body,

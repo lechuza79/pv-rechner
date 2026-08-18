@@ -10,7 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "test:flows": "E2E_BUILD=1 playwright test e2e/flows.spec.ts",
+    "test:flows": "E2E_BUILD=1 playwright test e2e/flows.spec.ts --workers=2",
     "test:e2e:ui": "playwright test --ui",
     "typecheck": "tsc --noEmit",
     "mastr:refresh": "tsx scripts/mastr-refresh.ts",

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { v, iconSizes, space, pad } from "../lib/theme";
 import { IconCheck, IconClose } from "./Icons";
+import { ModalSticky } from "./Modal";
 import { CONTACT_TOPICS, DEFAULT_CONTACT_TOPIC, type ContactTopic } from "../lib/contact-topics";
 
 const S = {
@@ -228,27 +229,40 @@ export default function ContactForm({
         </div>
       )}
 
-      {/* Vor dem Knopf, nicht dahinter: Wer sich mit der Tastatur durchs
-          Formular bewegt, muss den Hinweis erreichen, BEVOR er das Bedienelement
-          erreicht, das seine Daten absendet (Art. 13 DSGVO an der
-          Erhebungsstelle). */}
-      <p style={S.privacy}>
-        Deine Angaben gehen per E-Mail an uns — über unseren Versanddienstleister
-        Resend (USA). In unserer Datenbank wird nichts davon gespeichert. Näheres
-        steht in der{" "}
-        <a href="/datenschutz" style={S.privacyLink}>
-          Datenschutzerklärung
-        </a>
-        .
-      </p>
+      {/* Datenschutz-Hinweis UND Knopf gemeinsam im klebenden Bereich.
 
-      <button
-        type="submit"
-        style={{ ...S.button, ...(status === "sending" ? S.buttonDisabled : {}) }}
-        disabled={status === "sending"}
-      >
-        {status === "sending" ? "Wird gesendet …" : "Nachricht senden"}
-      </button>
+          Zwei Anliegen treffen hier aufeinander, und keines darf das andere
+          kosten: Der Hinweis muss erreicht werden, BEVOR das Bedienelement
+          erreicht wird, das die Daten absendet (Art. 13 DSGVO an der
+          Erhebungsstelle) — und im Fenster soll der Knopf nicht bei langer
+          Nachricht oder eingeblendeter Tastatur unter die Falz rutschen.
+
+          Nur den Knopf kleben zu lassen würde die Tastatur-Reihenfolge zwar
+          wahren (ModalSticky ändert die Stelle im Dokument nicht), aber der
+          Hinweis könnte darüber wegscrollen — dann wäre der Knopf bedienbar,
+          ohne dass der Hinweis je im Bild war. Zusammen geklebt gilt: Wer den
+          Knopf sieht, sieht den Hinweis.
+
+          Auf der Kontaktseite (kein Fenster) reicht ModalSticky beides
+          unverändert durch — dieselbe Komponente, beide Orte. */}
+      <ModalSticky>
+        <p style={S.privacy}>
+          Deine Angaben gehen per E-Mail an uns — über unseren Versanddienstleister
+          Resend (USA). In unserer Datenbank wird nichts davon gespeichert. Näheres
+          steht in der{" "}
+          <a href="/datenschutz" style={S.privacyLink}>
+            Datenschutzerklärung
+          </a>
+          .
+        </p>
+        <button
+          type="submit"
+          style={{ ...S.button, ...(status === "sending" ? S.buttonDisabled : {}) }}
+          disabled={status === "sending"}
+        >
+          {status === "sending" ? "Wird gesendet …" : "Nachricht senden"}
+        </button>
+      </ModalSticky>
     </form>
   );
 }
