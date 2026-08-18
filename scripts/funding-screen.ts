@@ -79,22 +79,45 @@ function sichtbarerText(html: string): string {
     .toLowerCase();
 }
 
-const PV = /(photovoltaik|solaranlage|solarstrom|solarthermie|balkonkraftwerk|stecker-?pv|batteriespeicher|stromspeicher)/;
-const GELD = /(zuschuss|förderung|gefördert|fördersatz|förderhöhe|€|euro)/;
-const BEENDET = /(beendet|eingestellt|ausgelaufen|ausgeschöpft|keine anträge|nicht mehr möglich|geschlossen|außer kraft)/;
+const PV = /(photovoltaik|solaranlage|solarstrom|balkonkraftwerk|stecker-?pv|batteriespeicher|stromspeicher)/g;
+/** Ein konkreter Geldbetrag — nicht bloß das Wort „Förderung". */
+const BETRAG = /(\d[\d.]*\s*(?:€|euro)|€\s*\d|\d+\s*(?:prozent|%)\s*(?:der|zuschuss))/;
+const ZUSCHUSS = /(zuschuss|gefördert|fördersatz|förderhöhe|förderbetrag|wird gefördert)/;
+const BEENDET = /(beendet|eingestellt|ausgelaufen|ausgeschöpft|keine anträge|nicht mehr möglich|geschlossen|außer kraft|stehen keine förderprogramme|derzeit keine förder|zurzeit keine förder)/;
 
+/**
+ * Einordnung — bewusst streng auf NÄHE gebaut.
+ *
+ * Erste Fassung fragte nur „kommt Photovoltaik vor UND irgendwo Geld?". Damit
+ * meldete sie eine Oldenburger Seite über Zuschüsse zu Verhütungsmitteln als
+ * Treffer: Das Wort Photovoltaik stand im Navigationsmenü, das auf jeder
+ * Unterseite mitläuft. Ein Vorfilter, der Navigationsleisten meldet, kostet mehr
+ * Lesezeit als er spart.
+ *
+ * Deshalb: Ein Treffer verlangt einen konkreten BETRAG oder ein Zuschuss-Wort
+ * im selben Textfenster wie der PV-Begriff — und zwar an IRGENDEINEM der
+ * Vorkommen, nicht nur am ersten (das ist fast immer die Navigation).
+ */
 function einordnen(text: string): { verdikt: Verdikt; beleg: string } {
-  if (!PV.test(text)) return { verdikt: "kein-pv", beleg: "" };
+  const stellen = [...text.matchAll(PV)].map((m) => m.index ?? 0);
+  if (!stellen.length) return { verdikt: "kein-pv", beleg: "" };
 
-  const treffer = text.match(PV);
-  const stelle = treffer?.index ?? 0;
-  const umfeld = text.slice(Math.max(0, stelle - 220), stelle + 320).trim();
-
-  // "Beendet" nur werten, wenn es NAH am PV-Treffer steht — sonst schlägt jeder
-  // Hinweis auf ein anderes ausgelaufenes Programm auf der Seite durch.
-  if (BEENDET.test(umfeld)) return { verdikt: "ausgelaufen", beleg: umfeld.slice(0, 400) };
-  if (GELD.test(umfeld)) return { verdikt: "treffer", beleg: umfeld.slice(0, 400) };
-  return { verdikt: "kein-pv", beleg: umfeld.slice(0, 200) };
+  let bester: { verdikt: Verdikt; beleg: string } | null = null;
+  for (const stelle of stellen.slice(0, 40)) {
+    const umfeld = text.slice(Math.max(0, stelle - 260), stelle + 360).trim();
+    if (BEENDET.test(umfeld)) {
+      // „Beendet" schlägt einen Treffer, sobald es im selben Fenster steht:
+      // Lieber als ausgelaufen erfassen und einmal zu viel hinsehen, als eine
+      // gestrichene Förderung als lebendig zu melden.
+      return { verdikt: "ausgelaufen", beleg: umfeld.slice(0, 400) };
+    }
+    if (BETRAG.test(umfeld) && ZUSCHUSS.test(umfeld)) {
+      bester = { verdikt: "treffer", beleg: umfeld.slice(0, 400) };
+      break;
+    }
+    if (!bester && BETRAG.test(umfeld)) bester = { verdikt: "treffer", beleg: umfeld.slice(0, 400) };
+  }
+  return bester ?? { verdikt: "kein-pv", beleg: text.slice(Math.max(0, stellen[0] - 120), stellen[0] + 180) };
 }
 
 async function offeneKandidaten(limit: number) {
@@ -151,17 +174,37 @@ async function treffer(): Promise<void> {
   const { data } = await sb
     .from("funding_coverage")
     .select("region_id, url, evidence")
-    .eq("verdict", "treffer")
-    .order("checked_at", { ascending: false });
+    .eq("verdict", "treffer");
   const rows = (data ?? []) as { region_id: string; url: string; evidence: string | null }[];
   if (!rows.length) return console.log("Noch keine Treffer.");
-  const { data: reg } = await sb.from("mastr_regions").select("region_id, name, population").in("region_id", rows.map((r) => r.region_id));
-  const namen = new Map(((reg ?? []) as any[]).map((r) => [r.region_id, `${r.name} (${r.population ?? "?"} Einw.)`]));
-  console.log(`Treffer, die noch niemand gelesen hat: ${rows.length}\n`);
+
+  const { data: reg } = await sb
+    .from("mastr_regions")
+    .select("region_id, name, population")
+    .in("region_id", rows.map((r) => r.region_id));
+  const info = new Map(((reg ?? []) as any[]).map((r) => [r.region_id, { name: r.name as string, pop: (r.population ?? 0) as number }]));
+
+  // Nach SEITE gruppieren, nicht nach Gemeinde — BLOCKER für die Brauchbarkeit.
+  // Verbandsgemeinden teilen sich eine Förderseite: Die Liste zeigte 98 Treffer,
+  // von denen ein Dutzend dieselbe Seite von Kirchberg (Hunsrück) war, jeweils
+  // für einen 90-Seelen-Ort. Zu lesen ist die Seite einmal; die Gemeinden
+  // dahinter sind nur ihr Geltungsbereich.
+  const seiten = new Map<string, { orte: string[]; pop: number; beleg: string | null }>();
   for (const r of rows) {
-    console.log(`  ${namen.get(r.region_id) ?? r.region_id}`);
-    console.log(`     ${r.url}`);
-    if (r.evidence) console.log(`     „…${r.evidence.slice(0, 200)}…"`);
+    const e = seiten.get(r.url) ?? { orte: [], pop: 0, beleg: r.evidence };
+    const i = info.get(r.region_id);
+    e.orte.push(i?.name ?? r.region_id);
+    e.pop += i?.pop ?? 0;
+    seiten.set(r.url, e);
+  }
+
+  const sortiert = [...seiten.entries()].sort((a, b) => b[1].pop - a[1].pop);
+  console.log(`Treffer: ${sortiert.length} Seiten (für ${rows.length} Gemeinden), größte zuerst:\n`);
+  for (const [url, e] of sortiert) {
+    const orte = e.orte.length > 3 ? `${e.orte.slice(0, 3).join(", ")} und ${e.orte.length - 3} weitere` : e.orte.join(", ");
+    console.log(`  ${orte} — zusammen ${e.pop.toLocaleString("de-DE")} Einw.`);
+    console.log(`     ${url}`);
+    if (e.beleg) console.log(`     „…${e.beleg.slice(0, 180)}…"`);
   }
 }
 
