@@ -161,6 +161,23 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: npm run foerder:technik -- --limit 800
 
+      # Zum Schluss ein Bericht — sonst stehen die Zahlen der vier Läufe nur im
+      # Protokoll dieses Workflows, und das liest niemand. Ein Automatismus,
+      # dessen Ergebnis nirgends ankommt, ist von einem stillstehenden nicht zu
+      # unterscheiden; genau daran ist die Urlaubswoche im August aufgefallen.
+      #
+      # Die Schleuse bleibt, wie sie ist: Der Bericht landet in der Ablage
+      # (/admin/waechter) und wird NUR zugestellt, wenn er eine Entscheidung
+      # enthält, die dem Betreiber gehört. Fortschrittszahlen sind keine.
+      - name: Tagesbericht der Erfassung
+        if: always()
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: npm run foerder:bericht
+
       # Der Katalog soll vollständig werden, nicht stichprobenhaft. Der Bestand
       # wächst jetzt aus zwei Quellen: den Adressen des Kommunen-Outreach und dem
       # Schritt darüber. Unerreichbare Seiten kommen von selbst wieder dran, und

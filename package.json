@@ -31,6 +31,7 @@
     "foerder:seiten": "tsx scripts/funding-coverage-watch.ts",
     "foerder:seiten-alle": "tsx scripts/funding-seiten-watch.ts",
     "foerder:technik": "tsx scripts/funding-seiten-technik.ts",
+    "foerder:bericht": "tsx scripts/funding-report.ts",
     "foerder:ags": "tsx scripts/funding-ags-verify.ts",
     "release:plan": "tsx scripts/release-plan.ts",
     "release:messen": "tsx scripts/release-messen.ts"
