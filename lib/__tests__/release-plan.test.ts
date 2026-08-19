@@ -8,6 +8,7 @@ import {
   MIN_ABSTAND_GATTUNG_TAGE,
   MIN_ABSTAND_SCHUB_TAGE,
   planBefunde,
+  planMeldungen,
   releaseFreigegeben,
   ortSchluessel,
   schubFuer,
@@ -142,6 +143,48 @@ describe("Releaseplan", () => {
   it("gibt den Altbestand unverändert frei", () => {
     expect(releaseFreigegeben("foerder-stadt", "09663")).toBe(true); // Würzburg
     expect(releaseFreigegeben("foerder-stadt", "11000")).toBe(true); // Berlin
+  });
+
+  it("meldet einen Schub, dessen Datum verstrichen ist", () => {
+    // Ein verstrichenes Datum ist kein Codefehler (deshalb kein roter Test auf
+    // dem echten Plan), sondern Arbeitsvorrat — und muss deshalb GEMELDET
+    // werden, sonst passiert schlicht nichts. Der Gesundheitscheck ruft das alle
+    // drei Stunden auf, unabhängig davon, ob eine Sitzung offen ist.
+    const alt: Schub[] = [
+      { id: "test-alt", gattung: "foerder-stadt", datum: "2026-01-01", status: "geplant", orte: ["09999001"], begruendung: "x", nachweis: null },
+    ];
+    const m = planMeldungen(new Date("2026-08-19"), alt);
+    expect(m).toHaveLength(1);
+    expect(m[0].text).toContain("steht seit");
+  });
+
+  it("mahnt die Messung an, bevor der Schub dran ist — nicht erst danach", () => {
+    // Die Messung kann „keine Nachfrage" ergeben. Fällt dieses Ergebnis erst am
+    // Stichtag, ist die Arbeit schon getan.
+    const bald: Schub[] = [
+      { id: "test-bald", gattung: "foerder-stadt", datum: "2026-08-25", status: "geplant", orte: ["09999001"], begruendung: "x", nachweis: null },
+    ];
+    const m = planMeldungen(new Date("2026-08-19"), bald);
+    expect(m).toHaveLength(1);
+    expect(m[0].text).toContain("release:messen");
+  });
+
+  it("schweigt, solange ein Schub weit weg ist oder seine Messung hat", () => {
+    // Eine Meldung, die bei jedem Lauf angeht, wird weggefiltert — und dann
+    // verpasst man die echte. Dieselbe Regel wie bei der gelben Schwelle des
+    // Gesundheitschecks.
+    const weit: Schub[] = [
+      { id: "test-weit", gattung: "foerder-stadt", datum: "2026-12-01", status: "geplant", orte: ["09999001"], begruendung: "x", nachweis: null },
+    ];
+    expect(planMeldungen(new Date("2026-08-19"), weit)).toEqual([]);
+
+    const gemessen: Schub[] = [
+      {
+        id: "test-gemessen", gattung: "foerder-stadt", datum: "2026-08-25", status: "geplant", orte: ["09999001"], begruendung: "x",
+        nachweis: { gemessenAm: "2026-08-19", nachfrage: "genug Text für die Prüfung dahinter", kannibalisierung: "genug Text für die Prüfung dahinter", beleg: "CLAUDE.md" },
+      },
+    ];
+    expect(planMeldungen(new Date("2026-08-19"), gemessen)).toEqual([]);
   });
 
   it("weist jeden Ort eines Schubes seinem Schub zu", () => {
