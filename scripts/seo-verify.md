@@ -208,6 +208,28 @@ Beides aus derselben Quelle, sonst entstehen zwei Zahlenstände über dieselbe F
 zeigt, dessen `nachweis` noch `null` ist. Sonst entfällt der Schritt ersatzlos —
 er hängt am Plan, nicht am Kalender.
 
+**Du musst nicht daran denken.** Der Gesundheitscheck wertet den Plan alle drei
+Stunden aus (`planMeldungen`, in `scripts/health-check.ts`) und meldet an Claude,
+sobald ein Schub in die Vorlauffrist läuft oder sein Datum verstreicht — auch
+dann, wenn dieser Wächter gerade gar nicht läuft. Das ist Absicht und dieselbe
+Lehre wie bei `stand:faellig`: Eine Prüfung, die nur innerhalb eines Wächters
+läuft, meldet dessen Ausfall nicht mit.
+
+**Ausgeführt wird sie mit einem Befehl, nicht von Hand:**
+
+```
+source .env.local && npm run release:messen        # nächster ungemessener Schub
+source .env.local && npm run release:messen w1-foerder-dach
+npm run release:messen -- --trocken                # zeigt nur, was gefragt würde
+```
+
+Er holt das Suchvolumen je Ort bei DataForSEO, liest die eigenen Anfragen der
+letzten 90 Tage aus der Search Console, prüft je Ort, ob dort **beide**
+Seitenfamilien auf denselben Anfragen stehen, legt den Beleg unter `docs/seo/`
+ab und druckt den fertigen `nachweis`-Block zum Eintragen. **Er entscheidet
+nichts** — ob der Schub kommt, kleiner wird oder wegfällt, ist danach ein Urteil,
+kein Rechenergebnis.
+
 **Warum überhaupt vorher:** Zwei Fehlschläge an einem Tag (18.08.2026) hatten
 dieselbe Ursache — alle vorhandenen Prüfungen waren grün, und die Frage, ob auf
 dieser Ebene überhaupt gesucht wird, hatte niemand gestellt. Nach dem Livegang
