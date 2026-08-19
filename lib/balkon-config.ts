@@ -244,6 +244,33 @@ export const DEFAULT_BALKON_CONFIG: BalkonConfig = {
   reviewBy: "2026-10", // Quartals-Rhythmus (scripts/balkon-verify.md), nicht jährlich
 };
 
+/** Die Wirkungsgrad-Kette hinter `storageRoundtrip` — einzeln, weil der
+ *  Speicher-Ratgeber (/balkonkraftwerk/ratgeber/mit-speicher) sie aufschlüsselt und die drei
+ *  Zahlen sonst ein zweites Mal getippt dastünden. Genau das ist die
+ *  Fehlerklasse aus CLAUDE.md (Faktenprüfung 11): Eine Korrektur erreichte dann
+ *  stumm nur eine der beiden Stellen.
+ *
+ *  Wörtlich aus der Leitquelle (Kap. 4.2): „Für die Systemkonfigurationen wurde
+ *  ein mittlerer Umwandlungswirkungsgrad im Lade- bzw. Entladebetrieb von 91,7 %
+ *  bzw. 92 % angenommen, der Batteriewirkungsgrad beträgt 97,8 %. Der
+ *  resultierende AC-Systemnutzungsgrad des AC-gekoppelten Batteriesystems
+ *  beträgt somit 82,5 %."
+ *
+ *  Volltext im Repo: docs/quellen/HTW-Stecker-Solar-Simulator-Dokumentation-V3.pdf
+ *  (HTW Berlin, Forschungsgruppe Solarspeichersysteme, Version 3.0, Mai 2024) —
+ *  am 19.08.2026 im Original nachgelesen, nicht aus zweiter Hand übernommen.
+ *
+ *  `storageRoundtrip` bleibt die Rechengröße und wird NICHT aus diesen drei
+ *  Faktoren berechnet: Das Produkt ergibt 0,825216, die Quelle nennt 82,5 %.
+ *  Die dritte Nachkommastelle als Rundungsartefakt in jedes Nutzer-Ergebnis
+ *  durchzureichen wäre eine erfundene Genauigkeit. `lib/__tests__/balkon.test.ts`
+ *  hält beide Fassungen aneinander. */
+export const STORAGE_ROUNDTRIP_KETTE = {
+  laden: 0.917,
+  entladen: 0.92,
+  batterie: 0.978,
+} as const;
+
 /** Ab diesem Jahresverbrauch weisen wir darauf hin, dass eine Dachanlage deutlich
  *  mehr holt — ein Balkonkraftwerk deckt dann nur noch die Grundlast. Bewusst
  *  konservativ. Steht hier, weil die Schwelle im Rechner-Ergebnis UND im

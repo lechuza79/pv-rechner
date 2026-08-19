@@ -75,7 +75,8 @@ const RECHNER_ITEMS: NavItem[] = [
 const BALKON_ITEMS: NavItem[] = [
   { href: "/balkonkraftwerk", label: "Balkonkraftwerk — Überblick", desc: "Was es bringt, was es kostet, was zu tun ist", page: "balkon" },
   { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk-Rechner", desc: "Ertrag und Amortisation für deinen Haushalt", page: "balkon-rechner" },
-  { href: "/balkonkraftwerk/anmelden", label: "Balkonkraftwerk anmelden", desc: "Frist, Angaben und die drei Fallen im Register", page: "balkon-anmelden" },
+  { href: "/balkonkraftwerk/ratgeber/anmelden", label: "Balkonkraftwerk anmelden", desc: "Frist, Angaben und die drei Fallen im Register", page: "balkon-anmelden" },
+  { href: "/balkonkraftwerk/ratgeber/mit-speicher", label: "Balkonkraftwerk mit Speicher", desc: "Wann sich ein Speicher trägt — und wann nicht", page: "balkon-speicher" },
 ];
 
 // PV-Förderung group: the regional funding directory plus the national data
@@ -124,10 +125,11 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     // Balkon-Cluster: je Seite ein eigener Schlüssel, sonst leuchten im
     // Ausklappmenü alle drei Einträge gleichzeitig. Die spezifischen Pfade
     // müssen VOR dem Hub stehen — sonst fängt dessen Präfix sie ab.
-    // Und der ganze Block VOR der Ratgeber-Regel: /balkonkraftwerk/anmelden ist
+    // Und der ganze Block VOR der Ratgeber-Regel: /balkonkraftwerk/ratgeber/anmelden ist
     // auch ein Registry-Eintrag, soll aber im Balkon-Menü markieren.
     pathname.startsWith("/balkonkraftwerk/rechner") ? "balkon-rechner" :
-    pathname.startsWith("/balkonkraftwerk/anmelden") ? "balkon-anmelden" :
+    pathname.startsWith("/balkonkraftwerk/ratgeber/anmelden") ? "balkon-anmelden" :
+    pathname.startsWith("/balkonkraftwerk/ratgeber/mit-speicher") ? "balkon-speicher" :
     pathname.startsWith("/balkonkraftwerk") ? "balkon" :
     pathname.startsWith("/photovoltaik-zubau-deutschland") ? "zubau" :
     pathname.startsWith("/photovoltaik-foerderung") ? "foerderung" :

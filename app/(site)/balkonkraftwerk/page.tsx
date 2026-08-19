@@ -149,7 +149,7 @@ const SCHRITTE: { titel: string; text: string; link?: string; href?: string }[] 
     titel: "Anmelden",
     text: "Eine Registrierung im Marktstammdatenregister, ein Monat Zeit ab dem ersten erzeugten Strom.",
     link: "Balkonkraftwerk anmelden",
-    href: "/balkonkraftwerk/anmelden",
+    href: "/balkonkraftwerk/ratgeber/anmelden",
   },
 ];
 
@@ -246,6 +246,15 @@ export default async function BalkonkraftwerkHub() {
           drin. Entscheidend sind zwei Dinge: wie die Module hängen und wie viel Strom tagsüber
           im Haushalt gebraucht wird. {BALKON_RECHT.keineVerguetung}
         </p>
+        <p style={S.p}>
+          Die zweite Frage stellt sich meist gleich mit: Soll ein Speicher dazu? Er kostet
+          noch einmal so viel wie die Module und hält kürzer — für den Beispielhaushalt und
+          jede andere Größe ist das im Ratgeber{" "}
+          <Link href="/balkonkraftwerk/ratgeber/mit-speicher" style={S.link}>
+            Lohnt sich ein Balkonkraftwerk mit Speicher?
+          </Link>{" "}
+          durchgerechnet.
+        </p>
 
         <h2 style={S.h2}>Was kostet es?</h2>
         <p style={S.p}>
@@ -311,7 +320,8 @@ export default async function BalkonkraftwerkHub() {
           currentPath="/balkonkraftwerk"
           links={[
             { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk berechnen", desc: "Ertrag am eigenen Standort, Ersparnis, Amortisation und die Frage, ob sich ein Speicher trägt — mit einer Empfehlung, welche Set-Größe zu dir passt." },
-            { href: "/balkonkraftwerk/anmelden", label: "Balkonkraftwerk anmelden", desc: `Was du bereithalten musst, warum das Register das Wort „Balkonkraftwerk“ nicht kennt — und ein Check, der dir deine ${ANMELDE_FRIST_MONATE === 1 ? "Monatsfrist" : "Frist"} ausrechnet.` },
+            { href: "/balkonkraftwerk/ratgeber/mit-speicher", label: "Lohnt sich ein Speicher?", desc: "Der Speicher ist eine eigene Rechnung: Er trägt sich nur, wo mittags viel Strom übrig bleibt — durchgerechnet für jede Haushaltsgröße." },
+            { href: "/balkonkraftwerk/ratgeber/anmelden", label: "Balkonkraftwerk anmelden", desc: `Was du bereithalten musst, warum das Register das Wort „Balkonkraftwerk“ nicht kennt — und ein Check, der dir deine ${ANMELDE_FRIST_MONATE === 1 ? "Monatsfrist" : "Frist"} ausrechnet.` },
             { href: "/photovoltaik-rechner", label: "Photovoltaik-Rechner für das eigene Dach", desc: "Ein Balkonkraftwerk deckt die Grundlast. Wer eine Dachfläche hat und mehr verbraucht, holt mit einer richtigen Anlage ein Vielfaches heraus." },
             { href: "/photovoltaik-neigungswinkel", label: "Neigungswinkel & Ausrichtung", desc: "Wie viel Ertrag jede Kombination aus Neigung und Himmelsrichtung übrig lässt — der größte Hebel bei Balkon-PV." },
           ]}
