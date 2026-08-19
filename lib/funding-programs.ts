@@ -2864,6 +2864,147 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // deshalb nicht in den Bedingungen.
   },
 
+  "asbach-balkonkraftwerke": {
+    id: "asbach-balkonkraftwerke", name: "PV-Förderprogramm der Ortsgemeinde Asbach",
+    traeger: "Ortsgemeinde Asbach", level: "kommune", region: "Asbach",
+    bundesland: "Rheinland-Pfalz", agsCode: "07138003",
+    url: "https://www.vg-asbach.de/klima-umweltschutz/foerderungen/pv-foerderprogramm-der-ortsgemeinde-asbach/",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Balkonkraftwerk",
+    maxFoerderung: "150 € je Wohneinheit",
+    rates: [{ label: "Balkonkraftwerk", value: "150 € pauschal" }],
+    conditions: [
+      "Der Antrag wird nach Kauf, Installation und Anmeldung der Anlage gestellt, spätestens bis zum 31. Dezember 2026",
+      "Die Module leisten zusammen höchstens 2.000 Wp, der Wechselrichter höchstens 800 W",
+      "Je Wohneinheit und Antragsteller wird ein Gerät gefördert",
+      "Antragsberechtigt sind Personen mit Hauptwohnsitz in der Ortsgemeinde Asbach",
+      "Die Anlage wird im Marktstammdatenregister angemeldet",
+      "Vorgarten-Anlagen und Solarzäune werden nicht gefördert",
+      "Bewilligt wird in der Reihenfolge des Eingangs, solange Haushaltsmittel da sind",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPauschale: 150,
+    // TRÄGER IST DIE ORTSGEMEINDE, nicht die Verbandsgemeinde — der eigene
+    // Ratsbeschluss vom 20.11.2025 und die eigene Kasse machen den Unterschied.
+    // Die Verbandsgemeinde Asbach führt nur die Verwaltung und stellt die Seite;
+    // deshalb steht dieses Programm im Katalog, während die VG-Programme aus
+    // derselben Runde (Hachenburg, Langenlonsheim-Stromberg) zurückgestellt sind.
+    //
+    // Gefunden über eine FALSCHE Zuordnung: Der Vorsortierer hatte diese Seite
+    // der Nachbargemeinde Buchholz zugeschrieben. Buchholz hatte ein eigenes
+    // Programm, dessen Mittel Ende 2024 ausgeschöpft waren und das 2025 nicht
+    // fortgeführt wurde — mit Asbachs Förderung hat es nichts zu tun.
+  },
+
+  "parkstein-nachhaltigkeitszuschuss": {
+    id: "parkstein-nachhaltigkeitszuschuss", name: "Parksteiner Nachhaltigkeitszuschuss",
+    traeger: "Markt Parkstein", level: "kommune", region: "Parkstein",
+    bundesland: "Bayern", agsCode: "09374144",
+    url: "https://www.parkstein.de/zuschuesse",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Balkonkraftwerk; für Dachanlagen und Hausspeicher nennt die Gemeinde den Satz nicht öffentlich",
+    maxFoerderung: "100 € je Balkonkraftwerk",
+    rates: [{ label: "Balkonkraftwerk", value: "100 € einmalig" }],
+    conditions: [
+      "Zuerst wird die geplante Anlage angemeldet, nach der Fertigstellung folgt der Antrag mit Rechnung und Registrierungsbestätigung",
+      "Auch Mieterinnen und Mieter können den Zuschuss beantragen",
+      "Für Dachanlagen und Hausspeicher gibt es eigene Zuschüsse; die Sätze dazu erfragt man im Rathaus",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon", "pv"],
+    balkonPauschale: 100,
+    // Der Balkon-Satz ist am Träger belegt, die Sätze für Dachanlage und
+    // Speicher sind es NICHT: Die Richtlinie steht auf parkstein.de nirgends,
+    // die beiden verlinkten PDFs sind reine Formulare ohne Beträge. Eine
+    // Sekundärfundstelle nennt 100 €/kWp und 50 €/kWh — sie liegt auf einem
+    // fremden Portal und war nicht lesbar, also wird sie nicht übernommen.
+    // Deshalb `foerdert` mit "pv" (das Programm fördert Dachanlagen wirklich),
+    // aber ohne `pvPerKwp`: Die Seite informiert darüber, der Rechner zieht
+    // dafür nichts ab. Sobald die Richtlinie vorliegt, gehört der Satz nach.
+  },
+
+  "marburg-balkonkraftwerke": {
+    id: "marburg-balkonkraftwerke", name: "Sonderförderprogramm Balkonkraftwerke",
+    traeger: "Universitätsstadt Marburg", level: "kommune", region: "Marburg",
+    bundesland: "Hessen", agsCode: "06534014",
+    url: "https://www.marburg.de/leben-in-marburg/umwelt-und-klima/klimaschutz-und-klimaanpassung/foerderprogramme/balkonkraftwerke/",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Handwerkerkosten der Montage; für Inhaber des MarburgPasses auch das Gerät selbst",
+    maxFoerderung: "max. 400 € Handwerkerkosten",
+    rates: [
+      { label: "Montage durch einen Handwerksbetrieb", value: "50 % der Handwerkerkosten, max. 400 €" },
+      { label: "Mit MarburgPass", value: "85 ct je Watt Wechselrichterleistung, max. 85 % der Anlagekosten" },
+    ],
+    conditions: [
+      "Der Antrag wird spätestens sechs Monate nach dem Erwerb gestellt; ein Antrag vorab ist nicht nötig",
+      "Gefördert werden Anlagen von 200 bis 800 W Ausgangsleistung des Wechselrichters",
+      "Je Wohneinheit oder Gewerberaum wird eine Maßnahme gefördert, je Antragsteller eine in zwölf Monaten",
+      "Stromspeicher werden zusammen mit einem Balkonkraftwerk nicht gefördert",
+      "Die Anlage läuft mindestens zwei Jahre in Marburg",
+      "Anträge nehmen die Stadtwerke Marburg im Auftrag der Stadt entgegen",
+      "Bewilligungen ergehen derzeit nur vorläufig, bis das Regierungspräsidium Gießen den Haushalt freigibt",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // KEIN Rechenwert, und zwar aus zwei getrennten Gründen — jeder allein
+    // würde schon reichen.
+    //
+    // Erstens ist die Bemessungsgrundlage im Regelfall NICHT das Gerät, sondern
+    // die Handwerkerrechnung für die Montage. Wer selbst montiert, bekommt
+    // nichts. `balkonPercentOfCost: 0.5` würde die 50 % auf den Kaufpreis des
+    // Sets anwenden — also auf eine Zahl, die in dieser Förderung gar nicht
+    // vorkommt, und das bei der mit Abstand größten Stadt dieser Leserunde.
+    //
+    // Zweitens ist der einzige Satz, der das Gerät selbst erfasst, an den
+    // MarburgPass gebunden und damit einkommensabhängig — dieselbe Klasse wie
+    // Bad Krozingen und Tübingen, die aus demselben Grund keinen Wert tragen.
+    //
+    // Das zweite PV-Programm der Stadt („Klimafreundlich Wohnen", Dachanlagen)
+    // steht hier NICHT: Es ist ausgesetzt, seine Unterseite ist verschwunden,
+    // und die kursierenden 150 €/kWp stammen aus einer Stadtwerke-Richtlinie
+    // von 2022, die am Träger nicht zu bestätigen war.
+  },
+
+  "schoenbrunn-balkon-pv": {
+    id: "schoenbrunn-balkon-pv", name: "Förderung von Balkon-PV-Anlagen",
+    traeger: "Gemeinde Schönbrunn", level: "kommune", region: "Schönbrunn",
+    bundesland: "Baden-Württemberg", agsCode: "08226081",
+    url: "https://www.gemeinde-schoenbrunn.de/seite/593686/terminbuchungen.html",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Zählertausch, Energiesteckdose samt Einbau und Stromkreisprüfung — nicht das Gerät",
+    maxFoerderung: "max. 50 € je Anlage",
+    rates: [{ label: "Zählertausch, Energiesteckdose, Stromkreisprüfung", value: "max. 50 € je Anlage, gegen Rechnung" }],
+    conditions: [
+      "Vor Beginn der Maßnahme wird die Anlage per E-Mail bei der Verwaltung angemeldet",
+      "Die Module leisten zusammen höchstens 600 W",
+      "Je Wohn- oder Nutzungseinheit wird eine Anlage gefördert",
+      "Die Anlage darf nicht mit einer Photovoltaikanlage kombiniert werden, die nach dem EEG vergütet wird",
+      "Der Verwendungsnachweis liegt bis zum 31. Dezember des Installationsjahres vor",
+      "Jährlich stehen 3.000 € bereit, bewilligt wird in der Reihenfolge des Eingangs",
+      "Die Richtlinie gilt seit dem 1. Juli 2023 und tritt am 31. Dezember 2026 außer Kraft",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // KEIN Rechenwert, obwohl „50 €" nach einer Pauschale aussieht — die
+    // Übersichtsseite schreibt sogar „fördert eine Anlage … mit 50 EUR". Die
+    // Richtlinie sagt etwas anderes, und sie gilt: Die 50 € sind ein Höchstsatz
+    // für Zählertausch, Energiesteckdose, deren Installation und die
+    // Stromkreisprüfung, und „die Kosten sind über Rechnung nachzuweisen".
+    // Wer keine dieser Positionen hat, bekommt nichts. Eine `balkonPauschale`
+    // würde also jedem 50 € gutschreiben, den die Gemeinde nur denen zahlt, die
+    // umbauen mussten.
+    //
+    // Damit ist Schönbrunn nach Marburg und Bad Marienberg der dritte Fund
+    // dieser Runde, bei dem nicht die Anlage gefördert wird, sondern etwas
+    // daneben. Der Satz auf der Übersichtsseite hätte in allen drei Fällen zu
+    // einem falschen Abzug geführt.
+  },
+
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {

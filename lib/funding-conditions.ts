@@ -140,6 +140,8 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // der Amtsseite bzw. im Richtlinien-PDF selbst gegengelesen.
   "schiltach-pv", "altdorf-bb-balkonkraftwerke", "steffenberg-balkonkraftwerke",
   "tegernheim-stecker-pv", "lohfelden-100-daecher", "schwebheim-batteriespeicher",
+  "asbach-balkonkraftwerke", "parkstein-nachhaltigkeitszuschuss",
+  "marburg-balkonkraftwerke", "schoenbrunn-balkon-pv",
   "hillscheid-energie", "schlierbach-energiespeicher",
 ];
 
