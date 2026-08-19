@@ -1953,7 +1953,14 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "zweibruecken-balkonkraftwerke": {
     id: "zweibruecken-balkonkraftwerke", name: "Förderung Balkonkraftwerke",
     traeger: "Stadt Zweibrücken", level: "kommune", region: "Zweibrücken",
-    bundesland: "Rheinland-Pfalz", agsCode: "07320000",
+    // Fünfstellig, nicht "07320000": Zweibrücken ist eine kreisfreie Stadt, und
+    // dafür sieht das Schlüsselschema fünf Stellen vor (Land 2, Kreis/kreisfreie
+    // Stadt 5, Gemeinde 8). Achtstellig gefasst war der Schlüssel ENGER als der
+    // Verzeichniseintrag der Stadt — die Zuordnung fand ihn deshalb nicht, und
+    // Zweibrücken stand als einzige kreisfreie Stadt ohne Seite da, obwohl sie
+    // seit Juni im Verzeichnis steht. Für den Rechner ändert sich nichts: Beide
+    // Fassungen sind Präfix derselben einen Gemeinde.
+    bundesland: "Rheinland-Pfalz", agsCode: "07320",
     url: "https://www.zweibruecken.de/de/verwaltung/aemter/stadtbauamt/klimaschutz-und-klimaanpassung/klimaschutz/balkonkraftwerke-foerderung/",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
