@@ -32,10 +32,11 @@
 
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { existsSync, readFileSync, mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import {
   leseSmtpKonfig,
   fehlendePflichtangaben,
+  postfachBefund,
   mailKopfzeilen,
   adresseAus,
   PAUSE_MS,
@@ -43,7 +44,7 @@ import {
 } from "../lib/outreach-mail";
 import { versandfenster } from "../lib/schulferien";
 import { SCHUEBE, AKTUELLER_SCHUB } from "../lib/kommunen-testballon";
-import { heuteInBerlin, wochentagInBerlin } from "../lib/zeit";
+import { berlinOffset, heuteInBerlin, wochentagInBerlin } from "../lib/zeit";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PROTOKOLL_DIR = resolve(SCRIPT_DIR, ".cache", "versand");
@@ -86,6 +87,8 @@ type Brief = {
   /** Dieselbe Nachricht als HTML, mechanisch aus dem Text erzeugt. */
   body_html: string;
   variante: string;
+  /** Belegte Domain der gemeinsamen Verwaltung, für die Empfängerprüfung. */
+  verwaltung_domain: string | null;
   seite_url: string | null;
   rangliste_url: string | null;
   stand: string;
@@ -135,7 +138,11 @@ function bremsen(b: Brief, heute: string): string[] {
   if (!fenster.frei) gruende.push(fenster.grund);
   const fehlt = fehlendePflichtangaben(b.body);
   if (fehlt.length) gruende.push(`Pflichtangaben fehlen: ${fehlt.join(", ")}`);
-  if (!b.empfaenger.includes("@")) gruende.push(`keine gültige Adresse: ${b.empfaenger}`);
+  // Auch hier, obwohl das Paket es schon geprüft hat: Es ist die einzige
+  // Bremse, die entscheidet, ob eine natürliche Person angeschrieben wird, und
+  // die einzige, die bis eben nur an einer Stelle stand.
+  const postfach = postfachBefund(b.empfaenger, b.name, b.verwaltung_domain);
+  if (!postfach.ok) gruende.push(postfach.grund);
   return gruende;
 }
 
@@ -259,7 +266,46 @@ async function dkimAktiv(domain: string): Promise<{ ok: boolean; hinweis: string
   };
 }
 
+/**
+ * Sperre gegen einen zweiten gleichzeitigen Lauf.
+ *
+ * Der Lauf steht bei 18 Mails eine halbe Stunde lang stumm da. „Läuft der
+ * noch?" und ein zweites Fenster sind der naheliegende Bedienfehler — und beide
+ * Läufe holen dasselbe Paket, lesen beide „noch nicht kontaktiert" und senden
+ * beide. Bis zu achtzehn Gemeinden bekämen den Brief zweimal innerhalb von
+ * Minuten, bei einer Aussendung, deren Vertretbarkeit auf „kein Nachfassen"
+ * beruht.
+ */
+function sperreNehmen(): () => void {
+  mkdirSync(PROTOKOLL_DIR, { recursive: true });
+  const pfad = resolve(PROTOKOLL_DIR, ".laeuft");
+  try {
+    writeFileSync(pfad, `${process.pid} ${new Date().toISOString()}\n`, { flag: "wx" });
+  } catch {
+    const wer = existsSync(pfad) ? readFileSync(pfad, "utf8").trim() : "unbekannt";
+    throw new Error(
+      `Es läuft bereits ein Versand (${wer}). Wenn das ein Überbleibsel ist: ${pfad} löschen.`,
+    );
+  }
+  return () => {
+    try {
+      rmSync(pfad);
+    } catch {
+      /* schon weg */
+    }
+  };
+}
+
 async function senden(p: Paket, limit: number, pauseMs: number): Promise<void> {
+  const sperreFrei = sperreNehmen();
+  try {
+    await sendenIntern(p, limit, pauseMs);
+  } finally {
+    sperreFrei();
+  }
+}
+
+async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<void> {
   const { transport, konfig } = await baueTransport();
   const absenderDomain = adresseAus(konfig.from).split("@")[1];
   const dkim = await dkimAktiv(absenderDomain);
@@ -277,11 +323,20 @@ async function senden(p: Paket, limit: number, pauseMs: number): Promise<void> {
   // einzelnen Lauf — zwei Chargen nacheinander ergaben 40 Mails an einem Tag,
   // ohne dass etwas angeschlagen hätte. Für ein Postfach ohne Sendehistorie ist
   // die Drosselung die halbe Zustellbarkeit.
-  const tagesbeginn = `${heuteInBerlin()}T00:00:00`;
-  const { count: heuteSchon } = await db
+  // Mit Zeitzonen-Angabe: Ohne sie liest Postgres den Zeitstempel als UTC, und
+  // Mails zwischen Mitternacht und zwei Uhr zählten nicht mit.
+  const tagesbeginn = `${heuteInBerlin()}T00:00:00${berlinOffset()}`;
+  const { count: heuteSchon, error: zaehlFehler } = await db
     .from("kommunen_kontakt")
     .select("region_id", { count: "exact", head: true })
     .gte("contacted_at", tagesbeginn);
+  // Auch hier: Ein Fehler machte die Bremse nicht vorsichtiger, sondern
+  // schaltete sie ab (`count` null → `?? 0` → volles Pensum frei).
+  if (zaehlFehler) {
+    log(`Tagespensum nicht ermittelbar: ${zaehlFehler.message}`, "err");
+    transport.close();
+    return;
+  }
   const rest = Math.max(0, MAX_JE_LAUF - (heuteSchon ?? 0));
   if (rest === 0) {
     log(`Heute sind bereits ${heuteSchon} Mails hinausgegangen — Tagespensum (${MAX_JE_LAUF}) erreicht.`, "warn");
@@ -308,12 +363,23 @@ async function senden(p: Paket, limit: number, pauseMs: number): Promise<void> {
     // Widerspruch, der in dieser Zeit eingetragen wird, muss die Mail noch
     // aufhalten — die Sperre ist der eine Mechanismus, der nie danebengreifen
     // darf.
-    const { data: jetzt } = await db
+    const { data: jetzt, error: statusFehler } = await db
       .from("kommunen_kontakt")
       .select("outreach_status, contacted_at")
       .eq("region_id", b.region_id)
       .maybeSingle();
-    if (jetzt?.outreach_status === "gesperrt" || jetzt?.contacted_at) {
+    // EIN LESEFEHLER IST KEIN GRÜNES LICHT. Vorher wurde der Fehler verworfen;
+    // bei einem Netz-Aussetzer war `jetzt` undefined, beide Prüfungen fielen
+    // durch, und die Mail ging hinaus — im schlimmsten Fall an eine Gemeinde,
+    // die inzwischen widersprochen hatte, und der Status danach von „gesperrt"
+    // auf „kontaktiert" überschrieben. Der Lauf dauert eine halbe Stunde, ein
+    // Aussetzer darin ist nicht unwahrscheinlich.
+    if (statusFehler || !jetzt) {
+      log(`${b.name}: übersprungen — Status nicht lesbar (${statusFehler?.message ?? "keine Zeile"})`, "err");
+      protokoll.push({ region_id: b.region_id, name: b.name, gesendet: false, grund: ["Status nicht lesbar"] });
+      continue;
+    }
+    if (jetzt.outreach_status === "gesperrt" || jetzt.contacted_at) {
       log(`${b.name}: übersprungen — Status inzwischen „${jetzt.outreach_status}"`, "warn");
       protokoll.push({ region_id: b.region_id, name: b.name, gesendet: false, grund: ["Status geändert"] });
       continue;
@@ -403,13 +469,21 @@ async function probemail(an: string, p: Paket): Promise<void> {
   // prüft unser Mailserver sich selbst und die Kopfzeile
   // `Authentication-Results` sagt nichts über die Ausrichtung aus.
   const ziel = an.trim().toLowerCase();
+  if (!/^[\w.+-]+@[\w.-]+\.[a-z]{2,}$/i.test(ziel)) throw new Error(`${an} ist keine Adresse.`);
   const db = await makeClient();
-  const { data: kollision } = await db
-    .from("kommunen_kontakt")
-    .select("region_id")
-    .or(`rollen_email.eq.${ziel},email.eq.${ziel}`)
-    .limit(1);
-  if (kollision?.length) {
+  // `ilike` statt `eq`: Die Spalte ist nicht garantiert kleingeschrieben, und
+  // ein buchstabengenauer Vergleich hätte „Info@Musterdorf.de" durchgelassen.
+  const [rollen, allgemein] = await Promise.all([
+    db.from("kommunen_kontakt").select("region_id").ilike("rollen_email", ziel).limit(1),
+    db.from("kommunen_kontakt").select("region_id").ilike("email", ziel).limit(1),
+  ]);
+  // Und ein Abfragefehler heißt „ich weiß es nicht", nicht „keine Kollision".
+  if (rollen.error || allgemein.error) {
+    throw new Error(
+      `Konnte nicht prüfen, ob ${an} einer Gemeinde gehört (${rollen.error?.message ?? allgemein.error?.message}).`,
+    );
+  }
+  if (rollen.data?.length || allgemein.data?.length) {
     throw new Error(`${an} ist die Kontaktadresse einer Gemeinde — dorthin geht keine Probemail.`);
   }
   const { transport, konfig } = await baueTransport();
@@ -467,7 +541,7 @@ async function main(): Promise<void> {
   if (hat("liste")) return zeigeListe(paket);
   if (hat("vorschau")) {
     zeigeListe(paket);
-    return zeigeVorschau(paket, parseInt(arg("n") ?? "5", 10));
+    return zeigeVorschau(paket, zahl("n", 5));
   }
 
   const test = arg("test");

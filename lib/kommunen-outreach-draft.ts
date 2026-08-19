@@ -23,7 +23,7 @@ import { tokens } from "./theme";
 // Farben NIE getippt — auch nicht in einer Mail (CLAUDE.md, Farb-Single-Source).
 const GRAU = tokens["--color-text-muted"];
 const RAHMEN = tokens["--color-border"];
-import type { AskVariante } from "./kommunen-ask";
+import { WIDGET_AB_EINWOHNER, type AskVariante } from "./kommunen-ask";
 
 export type DraftContext = {
   name: string;
@@ -67,6 +67,14 @@ export type DraftContext = {
    * namentliche Anrede, sondern ein Text, der eine Weiterleitung übersteht.
    */
   funktion?: string | null;
+  /**
+   * Einwohnerzahl — allein für die Frage, wen die Weiterleitungs-Bitte nennt.
+   *
+   * Eine Ortsgemeinde mit 300 Einwohnern hat keine Pressestelle, und ein Brief,
+   * der eine verlangt, verrät im ersten Satz, dass er an tausend Adressen
+   * gleichzeitig ging.
+   */
+  einwohner?: number | null;
   /** Zahlen für die Meldung — aus derselben Quelle wie die Atlas-Seite. */
   zahlen: {
     anlagen: number;
@@ -236,8 +244,17 @@ const LEISE_STIL = "font-size:12px";
 const TEXT_STIL = "font-size:14px;line-height:1.6";
 
 export function briefAlsHtml(body: string): string {
+  // Auch Anführungszeichen: Der verlinkte Text landet in einem HTML-Attribut,
+  // und ein `"` darin bricht es auf. Ein Eingabepfad dafür existiert heute
+  // nicht (Ortsnamen kommen aus dem amtlichen Verzeichnis), aber eine
+  // unvollständige Schranke ist keine.
   const esc = (t: string) =>
-    t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    t
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   // Adressen anklickbar machen. Der Punkt am Satzende gehört nicht zur Adresse.
   const verlinke = (t: string) =>
     t.replace(/https?:\/\/[^\s<]+[^\s<.,;:)]/g, (u) => `<a href="${u}">${u}</a>`);
@@ -496,9 +513,24 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   // Also: Steht die Weiterleitungs-Bitte da, ist SIE der Satz, der die Anrede
   // fortsetzt (klein), und der Einstieg beginnt danach groß. Steht sie nicht
   // da, setzt der Einstieg die Anrede fort (klein).
+  //
+  // WEN DIE BITTE NENNT, HÄNGT AN DER GRÖSSE.
+  //
+  // „Pressestelle" ist in einer 300-Einwohner-Ortsgemeinde niemand. Die Grenze
+  // ist NICHT hier gesetzt, sondern die bereits hergeleitete aus
+  // lib/kommunen-ask.ts: Sie ist genau damit begründet, dass eine Verwaltung ab
+  // dieser Größe erfahrungsgemäß eine Pressestelle oder ein
+  // Klimaschutzmanagement hat.
+  //
+  // Und Social Media gehört dazu: Für viele kleine Gemeinden ist die
+  // Facebook-Seite der schnellere Weg als die Website, und das Mitteilungsblatt
+  // ist dort verbreiteter als jede Pressestelle.
+  const grosseVerwaltung = (c.einwohner ?? 0) > WIDGET_AB_EINWOHNER;
   const weiterleitung = c.funktion
     ? ""
-    : `\n\nfalls Sie nicht zuständig sind: bitte an die Website- oder Pressestelle weiterleiten.`;
+    : grosseVerwaltung
+      ? `\n\nfalls Sie nicht zuständig sind: bitte an die Pressestelle oder an die Redaktion von Website und Social Media weiterleiten.`
+      : `\n\nfalls Sie nicht zuständig sind: bitte an die Stelle weiterleiten, die Website, Mitteilungsblatt oder Social Media betreut.`;
   const einstiegGross = !c.funktion;
 
   // Der Widget-Absatz ist der EINZIGE Unterschied zwischen den Varianten —

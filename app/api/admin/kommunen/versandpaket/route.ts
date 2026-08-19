@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
   const { data, error } = await serviceDb
     .from("kommunen_kontakt")
     .select(
-      "region_id, rollen_email, kontakt_url, outreach_status, contacted_at, charge, ask_variante, mastr_regions!inner(name)",
+      "region_id, rollen_email, kontakt_url, outreach_status, contacted_at, charge, ask_variante, verwaltung_domain, mastr_regions!inner(name)",
     )
     .eq("kampagne", schub.kampagne)
     .eq("charge", charge)
@@ -59,6 +59,7 @@ export async function GET(req: NextRequest) {
   type Zeile = {
     region_id: string;
     rollen_email: string | null;
+    verwaltung_domain: string | null;
     outreach_status: string;
     contacted_at: string | null;
     mastr_regions: { name: string } | { name: string }[];
@@ -75,6 +76,7 @@ export async function GET(req: NextRequest) {
     body: string;
     body_html: string;
     variante: string;
+    verwaltung_domain: string | null;
     seite_url: string | null;
     rangliste_url: string | null;
     stand: string;
@@ -112,7 +114,7 @@ export async function GET(req: NextRequest) {
     // Kommune, und mehrere an Adressen mit dem Nachnamen eines ehrenamtlichen
     // Ortsbürgermeisters. Beides ist beim Einsammeln entstanden; hier wird es
     // abgefangen, statt den Datenbestand rückwirkend umzuschreiben.
-    const postfach = postfachBefund(z.rollen_email, name ?? "");
+    const postfach = postfachBefund(z.rollen_email, name ?? "", z.verwaltung_domain);
     if (!postfach.ok) {
       skip(postfach.grund);
       continue;
@@ -131,6 +133,7 @@ export async function GET(req: NextRequest) {
       body: gebaut.draft.body,
       body_html: gebaut.draft.bodyHtml,
       variante: gebaut.variante,
+      verwaltung_domain: z.verwaltung_domain,
       seite_url: gebaut.seiteUrl,
       rangliste_url: gebaut.ranglisteUrl,
       stand: gebaut.stand,

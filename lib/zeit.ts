@@ -18,6 +18,21 @@ export function heuteInBerlin(jetzt: Date = new Date()): string {
   return new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Berlin" }).format(jetzt);
 }
 
+/**
+ * Der Zeitzonen-Versatz Deutschlands als „+02:00" bzw. „+01:00".
+ *
+ * Für Zeitstempel, die eine Datenbank lesen soll: Ein Datum ohne Versatz gilt
+ * dort als UTC, und ein „Tagesbeginn" wäre damit zwei Stunden zu spät.
+ */
+export function berlinOffset(jetzt: Date = new Date()): string {
+  const teile = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Europe/Berlin",
+    timeZoneName: "longOffset",
+  }).formatToParts(jetzt);
+  const name = teile.find((t) => t.type === "timeZoneName")?.value ?? "GMT+01:00";
+  return name.replace("GMT", "") || "+01:00";
+}
+
 /** Wochentag in Deutschland, 0 = Sonntag. */
 export function wochentagInBerlin(jetzt: Date = new Date()): number {
   const kurz = new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Berlin", weekday: "short" }).format(jetzt);

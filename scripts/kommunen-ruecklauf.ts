@@ -208,8 +208,28 @@ async function main(): Promise<void> {
     if (status === "geantwortet") patch.responded_at = new Date().toISOString();
     // Die Notiz sagt, WORAUS der Status entstanden ist. Ein „gesperrt" ohne
     // Beleg ist später nicht mehr von einem Versehen zu unterscheiden.
-    patch.notes = `[${new Date().toISOString().slice(0, 10)}] ${b.art} aus Postfach: „${b.betreff}" (${b.von})`;
-    const { error } = await db.from("kommunen_kontakt").update(patch).eq("region_id", b.region_id);
+    //
+    // ANGEHÄNGT, NICHT ERSETZT: Vorher überschrieb jede neue Rückmeldung den
+    // Beleg der vorigen — ausgerechnet den, den dieser Kommentar sichern will.
+    const { data: vorher } = await db
+      .from("kommunen_kontakt")
+      .select("notes")
+      .eq("region_id", b.region_id)
+      .maybeSingle();
+    const neueNotiz = `[${new Date().toISOString().slice(0, 10)}] ${b.art} aus Postfach: „${b.betreff}" (${b.von})`;
+    patch.notes = vorher?.notes ? `${vorher.notes}\n${neueNotiz}` : neueNotiz;
+    // „GESPERRT" IST EINE EINBAHNSTRASSE.
+    //
+    // Ohne diese Bedingung hob die nächste Mail derselben Stelle den Widerspruch
+    // wieder auf: erst „bitte keine weiteren Nachrichten" → gesperrt, zwei Tage
+    // später eine Rückfrage → geantwortet, und die Gemeinde stünde beim nächsten
+    // Schub wieder auf der Liste. Innerhalb eines Laufs hätte sogar die
+    // Reihenfolge der Befunde entschieden.
+    const { error } = await db
+      .from("kommunen_kontakt")
+      .update(patch)
+      .eq("region_id", b.region_id)
+      .neq("outreach_status", "gesperrt");
     if (error) log(`${b.name}: ${error.message}`, "err");
     else geschrieben++;
   }

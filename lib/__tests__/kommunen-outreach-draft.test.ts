@@ -554,9 +554,14 @@ describe("Der Brief bleibt lesbar kurz", () => {
   const rahmen = (c: DraftContext) =>
     renderOutreachDraft(c).body.replace(/-{40}[\s\S]*?-{40}/, "");
 
-  it("hält die Verpackung im aufwendigsten Fall unter 1.200 Zeichen", () => {
+  it("hält die Verpackung im aufwendigsten Fall unter 1.400 Zeichen", () => {
+    // Die Grenze ist am 19.08.2026 von 1.350 auf 1.400 gegangen: Die
+    // Weiterleitungs-Bitte nennt jetzt Website, Mitteilungsblatt und Social
+    // Media statt nur „Website- oder Pressestelle". Das sind 40 Zeichen für
+    // einen Kanal, über den kleine Gemeinden häufiger erreichbar sind als über
+    // eine Pressestelle, die es dort nicht gibt.
     const r = rahmen(MIT_ALLEM);
-    expect(r.length, `${r.length} Zeichen Verpackung`).toBeLessThanOrEqual(1350);
+    expect(r.length, `${r.length} Zeichen Verpackung`).toBeLessThanOrEqual(1400);
   });
 
   it("kommt drumherum mit höchstens acht Absätzen aus", () => {

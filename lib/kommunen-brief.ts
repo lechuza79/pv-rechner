@@ -110,6 +110,7 @@ export async function briefFuerGemeinde(
       `Wir haben den Solarausbau in ${reg.name} aus den amtlichen Anlagendaten aufbereitet — hier der Überblick für Ihre Gemeinde.`,
     variante,
     funktion: leadRow?.verantwortlich_operativ ? leadRow.verantwortlich_funktion : null,
+    einwohner: reg.population ?? null,
     wo: hook?.wo ?? "in der Region",
     bestleistung: hook?.bestleistung ?? "einen bemerkenswerten Solar-Ausbau",
     themaDativ: hook?.themaDativ ?? "Solar-Ausbau",

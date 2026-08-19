@@ -124,9 +124,26 @@ describe("Wer Empfänger sein darf", () => {
     expect(postfachBefund("gemeinde@muendersbach.de", "Mündersbach").ok).toBe(true);
   });
 
-  it("nimmt eine gemeinsame Verwaltung, wenn die Domain sich als solche zu erkennen gibt", () => {
-    expect(postfachBefund("rathaus@vgv-kelberg.de", "Gelenberg").ok).toBe(true);
-    expect(postfachBefund("info@bitburgerland.de", "Hamm").ok).toBe(true);
+  // EIN KENNZEICHEN IST KEIN BELEG. Vorher genügte irgendein „vg", „amt" oder
+  // „land" in der Domain — damit galt `info@saarland.de` für Wadgassen und
+  // `rathaus@amt-nordsee.de` für Kirchheim als richtig zugeordnet. Erlaubt ist
+  // eine fremde Domain jetzt nur, wenn sie für DIESE Gemeinde im Impressum
+  // belegt ist.
+  it("nimmt eine fremde Domain nur, wenn sie für diesen Ort belegt ist", () => {
+    expect(postfachBefund("rathaus@vgv-kelberg.de", "Gelenberg", "vgv-kelberg.de").ok).toBe(true);
+    expect(postfachBefund("info@bitburgerland.de", "Hamm", "bitburgerland.de").ok).toBe(true);
+  });
+
+  it("weist eine Verwaltungs-Domain ohne Beleg ab", () => {
+    const b = postfachBefund("info@saarland.de", "Wadgassen");
+    expect(b.ok).toBe(false);
+    if (!b.ok) expect(b.grund).toContain("nicht belegt");
+    expect(postfachBefund("rathaus@vgv-kelberg.de", "Gelenberg").ok).toBe(false);
+  });
+
+  it("lässt sich vom Beleg einer anderen Gemeinde nicht überreden", () => {
+    // Belegt ist vg-nahe-glan.de — die Adresse gehört aber bad-sobernheim.de.
+    expect(postfachBefund("stadtbuergermeister@bad-sobernheim.de", "Daubach", "vg-nahe-glan.de").ok).toBe(false);
   });
 
   // Daubach liegt in der VG Nahe-Glan; bad-sobernheim.de ist die Stadt

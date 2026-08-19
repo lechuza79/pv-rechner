@@ -219,7 +219,21 @@ export type PostfachBefund = { ok: true } | { ok: false; grund: string };
  *    sich als gemeinsame Verwaltung zu erkennen gibt („vg-", „-land", „amt-");
  *    trägt sie schlicht einen anderen Ortsnamen, ist die Zuordnung geraten.
  */
-export function postfachBefund(email: string, ortsname: string): PostfachBefund {
+export function postfachBefund(
+  email: string,
+  ortsname: string,
+  /**
+   * Die im Impressum BELEGTE Domain der gemeinsamen Verwaltung, falls bekannt.
+   *
+   * Ohne sie ist ein Verwaltungs-Kennzeichen in der Domain nur ein Indiz und
+   * kein Beleg: Gemessen am 19.08.2026 akzeptierte die Prüfung
+   * `info@saarland.de` für Wadgassen und `rathaus@amt-nordsee.de` für
+   * Kirchheim — jede Domain, die irgendwo „vg", „amt" oder „land" trägt, galt
+   * für jeden beliebigen Ort. Das ist genau der Fall, gegen den diese Funktion
+   * geschrieben wurde.
+   */
+  verwaltungDomain?: string | null,
+): PostfachBefund {
   const adresse = email.trim().toLowerCase();
   const [lokal, domain] = adresse.split("@");
   if (!lokal || !domain) return { ok: false, grund: `keine gültige Adresse: ${email}` };
@@ -253,10 +267,18 @@ export function postfachBefund(email: string, ortsname: string): PostfachBefund 
   const domainOhne = ohneUmlaute(domainStamm).replace(/[^a-z0-9.-]/g, "");
   const passt =
     kern.length >= 4 && (domainOhne.includes(kern.slice(0, Math.min(kern.length, 6))) || kern.includes(domainOhne.replace(/[.-]/g, "")));
-  if (!passt && !VERWALTUNGS_MARKER.test(domainOhne)) {
+  // Eine fremde Domain ist erlaubt, wenn sie für DIESE Gemeinde als gemeinsame
+  // Verwaltung belegt ist. Das Kennzeichen allein reicht nicht mehr — es sagt
+  // nur, dass die Domain nach Verwaltung aussieht, nicht, dass sie zu diesem
+  // Ort gehört.
+  const belegt =
+    !!verwaltungDomain && domain.toLowerCase().endsWith(verwaltungDomain.trim().toLowerCase().replace(/^www\./, ""));
+  if (!passt && !belegt) {
     return {
       ok: false,
-      grund: `Domain ${domain} trägt weder den Ortsnamen noch ein Verwaltungs-Kennzeichen — Zuordnung ungeprüft`,
+      grund: VERWALTUNGS_MARKER.test(domainOhne)
+        ? `Domain ${domain} sieht nach einer gemeinsamen Verwaltung aus, ist für diesen Ort aber nicht belegt — Zuordnung ungeprüft`
+        : `Domain ${domain} trägt weder den Ortsnamen noch eine belegte Verwaltungs-Domain — Zuordnung ungeprüft`,
     };
   }
   return { ok: true };
