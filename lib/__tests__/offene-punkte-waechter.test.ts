@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 /**
@@ -34,10 +34,39 @@ const CONFIGS = [
   "lib/balkon-config.ts",
   "lib/co2-config.ts",
   "lib/feedin-config.ts",
+  "lib/freiflaeche-config.ts",
   "lib/greengas-config.ts",
+  "lib/marktwert-config.ts",
   "lib/heatpump-config.ts",
   "lib/prices-config.ts",
 ];
+
+/**
+ * Die Runbooks gehören genauso dazu — und zwar aus demselben Grund.
+ *
+ * Nachgesehen am 19.08.2026: Die Hälfte aller vertagten Punkte des Projekts steht
+ * gar nicht in einer Config, sondern im Runbook des zuständigen Wächters (allein
+ * `scripts/waermepumpe-verify.md` führt drei). Ein Marker dort war bis dahin von
+ * nichts überwacht — er stand im selben Dokument, das der Lauf ohnehin liest, und
+ * genau deshalb fiel er niemandem auf: Wer ihn liest, liest ihn jedes Quartal
+ * wieder und hakt ihn jedes Quartal wieder nicht ab. Dieselbe Fehlerklasse wie
+ * beim eingefrorenen Prüfdatum.
+ *
+ * Gelesen wird das Verzeichnis, nicht eine Liste: Ein neues Runbook soll unter
+ * Beobachtung stehen, ohne dass jemand daran denken muss.
+ */
+const RUNBOOKS = "scripts/*-verify.md";
+
+/** Alle überwachten Dateien, relativ zur Wurzel. */
+function dateien(): string[] {
+  const runbooks = readdirSync(join(ROOT, "scripts"))
+    .filter(n => n.endsWith("-verify.md"))
+    .sort()
+    .map(n => `scripts/${n}`);
+  // Ein Scan über ein leeres Verzeichnis meldet fälschlich „alles sauber".
+  if (runbooks.length === 0) throw new Error(`keine Runbooks gefunden (${RUNBOOKS})`);
+  return [...CONFIGS, ...runbooks];
+}
 
 /** Ein Marker, der einen unerledigten Punkt anzeigt. */
 const MARKER = /\b(OFFEN|OFFENER PUNKT|TODO|FIXME)\b/;
@@ -63,10 +92,10 @@ function fristEnde(monat: number, jahr: number): Date {
 }
 
 describe("Wächter: offene Punkte haben eine Frist", () => {
-  it("jeder offene Punkt in einer Wächter-Config nennt eine Frist (bis MM/JJJJ)", () => {
+  it("jeder offene Punkt in Config oder Runbook nennt eine Frist (bis MM/JJJJ)", () => {
     const ohneFrist: string[] = [];
 
-    for (const rel of CONFIGS) {
+    for (const rel of dateien()) {
       readFileSync(join(ROOT, rel), "utf8").split("\n").forEach((zeile, i) => {
         if (!MARKER.test(zeile)) return;
         if (RUECKVERWEIS.test(zeile)) return;
@@ -85,7 +114,7 @@ describe("Wächter: offene Punkte haben eine Frist", () => {
     const heute = new Date();
     const abgelaufen: string[] = [];
 
-    for (const rel of CONFIGS) {
+    for (const rel of dateien()) {
       readFileSync(join(ROOT, rel), "utf8").split("\n").forEach((zeile, i) => {
         const treffer = FRIST.exec(zeile);
         if (!treffer) return;
@@ -100,10 +129,10 @@ describe("Wächter: offene Punkte haben eine Frist", () => {
     expect(abgelaufen, "Frist eines offenen Punkts verstrichen").toEqual([]);
   });
 
-  it("prüft die Configs wirklich (Schutz gegen einen leerlaufenden Wächter)", () => {
+  it("prüft Configs und Runbooks wirklich (Schutz gegen einen leerlaufenden Wächter)", () => {
     // Ein Scan-Test, der nichts findet, weil er nichts liest, meldet fälschlich
     // "alles sauber". Deshalb: die Dateien müssen existieren und Inhalt haben.
-    for (const rel of CONFIGS) {
+    for (const rel of dateien()) {
       expect(readFileSync(join(ROOT, rel), "utf8").length, `${rel} nicht lesbar`).toBeGreaterThan(200);
     }
   });

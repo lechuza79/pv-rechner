@@ -197,7 +197,18 @@ export const RELEASE_PLAN: Schub[] = [
     id: "w1-foerder-dach",
     gattung: "foerder-stadt",
     datum: "2026-09-02",
-    status: "geplant",
+    // ZURÜCKGENOMMEN am 19.08.2026, bevor eine Zeile Seite gebaut wurde — genau
+    // dafür gibt es die Vorlauf-Messung. Nach diesen Orten sucht praktisch
+    // niemand: 1 von 14 hat überhaupt ein messbares Suchvolumen (Roth, 10/Monat),
+    // zusammen 10/Monat für vierzehn Seiten. Das Messinstrument ist an bekannten
+    // Fällen gegengeprüft und liefert dort plausible Werte (Köln 70, München 40,
+    // Frankfurt 20, Würzburg 10) — die Null ist also echt und kein Fehlgriff.
+    //
+    // Der Wert dieser Programme liegt im RECHNER, wo die Postleitzahl zählt,
+    // nicht in eigenen Seiten. Sie wirken dort unverändert weiter; hier entsteht
+    // nur keine Seite. Wer den Schub wieder aufmachen will, braucht eine neue
+    // Messung, die diese widerlegt — nicht ein gutes Gefühl.
+    status: "zurueckgenommen",
     orte: [
       "03256036", // Wietzen (Niedersachsen)
       "06433004", // Gernsheim (Hessen)
@@ -221,13 +232,26 @@ export const RELEASE_PLAN: Schub[] = [
       "ausschließlich Balkonkraftwerke, 2 nur Wärmepumpen; die gehören in eine andere " +
       "Seitenfamilie, nicht in diesen Schub. Reihenfolge und Zuschnitt sind ein Vorschlag; " +
       "die Priorisierung gehört dem Betreiber.",
-    nachweis: null,
+    nachweis: {
+      gemessenAm: "2026-08-19",
+      nachfrage:
+        "Nein. 1 von 14 Orten mit messbarem Suchvolumen (Roth, 10/Monat), zusammen 10/Monat. " +
+        "Gegenprobe an bekannten Fällen im selben Abruf: Köln 70, München 40, Frankfurt 20, " +
+        "Würzburg 10 — das Messmuster trifft also, die Null ist echt.",
+      kannibalisierung:
+        "Keine Anfrage, auf der beide Seitenfamilien gleichzeitig erscheinen — bei dieser " +
+        "Nachfrage aber auch ohne Aussagekraft.",
+      beleg: "docs/seo/schub-w1-foerder-dach-2026-08-19.md",
+    },
   },
   {
     id: "w2-foerder-dach-archiv",
     gattung: "foerder-stadt",
     datum: "2026-09-16",
-    status: "geplant",
+    // Ebenfalls zurückgenommen: 0 von 1 Ort mit messbarem Suchvolumen. Eine
+    // Archivseite ohne Geldversprechen für einen Ort, nach dem niemand sucht,
+    // hat keinen Adressaten.
+    status: "zurueckgenommen",
     orte: [
       "07143032", // Höhr-Grenzhausen (Rheinland-Pfalz), Topf ausgeschöpft
     ],
@@ -235,7 +259,12 @@ export const RELEASE_PLAN: Schub[] = [
       "Nachzügler mit Dach-PV-Satz, dessen Topf ausgeschöpft ist — als Archivseite ohne Geldversprechen. " +
       "Bad Homburg (06434001) fehlt hier bewusst: Status unsicher, und Daten, denen wir nicht trauen, " +
       "werden nicht veröffentlicht.",
-    nachweis: null,
+    nachweis: {
+      gemessenAm: "2026-08-19",
+      nachfrage: "Nein. 0 von 1 Ort mit messbarem Suchvolumen.",
+      kannibalisierung: "Keine Anfrage, auf der beide Seitenfamilien gleichzeitig erscheinen.",
+      beleg: "docs/seo/schub-w2-foerder-dach-archiv-2026-08-19.md",
+    },
   },
   {
     id: "w3-atlas-orte-pilot",
@@ -407,6 +436,76 @@ export function planBefunde(plan: Schub[] = RELEASE_PLAN): PlanBefund[] {
  *  Codefehler, sondern eine Meldung. */
 export function ueberfaellig(heute: Date = new Date(), plan: Schub[] = RELEASE_PLAN): Schub[] {
   return plan.filter((s) => s.status === "geplant" && new Date(s.datum).getTime() <= heute.getTime());
+}
+
+/**
+ * Vorlauf: So viele Tage vor dem Datum eines Schubes muss die Messung stehen.
+ *
+ * Warum 14: Die Messung kann „keine Nachfrage" ergeben — dann wird der Schub
+ * verkleinert oder gestrichen. Fällt dieses Ergebnis erst am Stichtag, ist die
+ * Arbeit schon getan. Vierzehn Tage sind zugleich der Mindestabstand zweier
+ * Schübe: Ein Schub, dessen Messung fehlt, ist damit spätestens dann auffällig,
+ * wenn der vorige gerade ausgewertet werden könnte.
+ */
+export const MESSUNG_VORLAUF_TAGE = 14;
+
+/**
+ * Eine Meldung geht IMMER an Claude, nie an den Betreiber — deshalb hat sie kein
+ * Adressatenfeld. Ein anstehender Schub, eine fehlende Messung, ein verstrichenes
+ * Datum: Das sind Arbeitsschritte, keine Entscheidungen. Ihn damit anzuschreiben
+ * wäre dieselbe Sackgasse wie ein Alarm an jemanden, der ihn nicht beheben kann.
+ * Steht wirklich eine Entscheidung an (soll dieser Schub überhaupt kommen?),
+ * läuft sie über die Alarm-Route mit `decisions`, nicht über den Gesundheitscheck.
+ */
+export type PlanMeldung = { schub: string; text: string };
+
+/**
+ * Was am Plan gerade Aufmerksamkeit braucht — für die laufende Überwachung.
+ *
+ * WARUM DAS NICHT IM WÄCHTER STEHT (19.08.2026): Ein Plan, der sich nur meldet,
+ * wenn jemand ihn abfragt, meldet sich nicht. Genau diese Lehre steht schon
+ * einmal im Projekt — `npm run stand:faellig` lief nur INNERHALB von Wächtern,
+ * und als der Wärmepumpen-Wächter fünf Wochen ausfiel, fiel die Meldung über
+ * seinen Ausfall mit aus. Deshalb läuft diese Auswertung im Gesundheitscheck,
+ * der alle drei Stunden in GitHubs Rechenzentrum läuft und keinen offenen
+ * Rechner braucht. Sie liest nur Konstanten: kein Netz, keine Datenbank, sie
+ * kann den Lauf nicht zum Kippen bringen.
+ */
+export function planMeldungen(heute: Date = new Date(), plan: Schub[] = RELEASE_PLAN): PlanMeldung[] {
+  const m: PlanMeldung[] = [];
+
+  // Strukturfehler fängt normalerweise der Test — hier als Netz darunter, falls
+  // jemand am Test vorbei committet.
+  for (const b of planBefunde(plan)) {
+    m.push({ schub: b.schub, text: `Der Releaseplan widerspricht sich (${b.regel}): ${b.text}` });
+  }
+
+  for (const s of plan) {
+    if (s.status !== "geplant" || s.orte.length === 0) continue;
+    const tageBis = Math.round((new Date(s.datum).getTime() - heute.getTime()) / TAG_MS);
+
+    if (tageBis < 0) {
+      m.push({
+        schub: s.id,
+        text:
+          `Der Schub „${s.id}" war für den ${s.datum} geplant und steht seit ${-tageBis} Tagen. ` +
+          (s.nachweis
+            ? "Die Messung liegt vor — er wartet nur noch darauf, auf live gesetzt zu werden."
+            : "Die Messung fehlt noch (npm run release:messen). Ohne sie geht er nicht live, und das ist so gewollt.") +
+          " Ein verstrichenes Datum ist kein Codefehler, sondern Arbeitsvorrat — entweder ausführen oder neu terminieren.",
+      });
+    } else if (tageBis <= MESSUNG_VORLAUF_TAGE && !s.nachweis) {
+      m.push({
+        schub: s.id,
+        text:
+          `Der Schub „${s.id}" ist in ${tageBis} Tagen dran (${s.datum}) und hat noch keine Messung. ` +
+          `Jetzt „npm run release:messen" fahren: Wird nach diesen ${s.orte.length} Orten gesucht, und steht ` +
+          "auf denselben Anfragen schon eine andere eigene Seitenfamilie? Ergibt die Messung keine Nachfrage, " +
+          "wird der Schub verkleinert oder gestrichen — das ist ein gutes Ergebnis, kein Fehlschlag.",
+      });
+    }
+  }
+  return m;
 }
 
 /** Der nächste anstehende Schub. */
