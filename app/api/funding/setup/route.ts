@@ -159,6 +159,70 @@ export async function GET(req: NextRequest) {
   });
   results.push({ step: "funding_url_suche", status: e2u ? "error" : "ok", error: e2u?.message });
 
+  // funding_seiten: MEHRERE Förderseiten je Gemeinde — der Kern der Erfassung.
+  //
+  // WARUM (19.08.2026): Die Erfassung hielt an drei Stellen genau eine Adresse je
+  // Gemeinde fest — `kommunen_kontakt.thema_foerderung_url` als einzelnes Feld,
+  // `funding_url_suche` und `funding_coverage` mit dem Gemeindeschlüssel als
+  // Primärschlüssel. Eine Stadt, die Photovoltaik auf der einen und
+  // Balkonkraftwerke auf einer anderen Seite fördert, verlor eine der beiden:
+  // kein Fehler, keine Meldung, die zweite Seite existierte für uns nicht. Damit
+  // konnte der Katalog je Technik gar nicht vollständig werden, egal wie viel
+  // jemand liest.
+  //
+  // Der Schlüssel ist deshalb (Gemeinde × Adresse). Die Adresse kommt
+  // normalisiert herein (`seitenSchluessel` in lib/funding-seiten.ts) — ohne das
+  // stünden `…/foerderung` und `…/foerderung/` als zwei Seiten im Bestand, jede
+  // mit eigenem Fingerabdruck, und der Wächter meldete ewig Bewegung.
+  //
+  // EIGENE TABELLE STATT UMSCHLÜSSELUNG: `funding_url_suche` beantwortet „haben
+  // wir die Website dieser Gemeinde schon durchsucht" — dafür ist eine Zeile je
+  // Gemeinde richtig, das ist der Suchversuch, nicht sein Ergebnis. Und
+  // `funding_coverage` wird gerade aktiv beschrieben; einen Primärschlüssel unter
+  // laufender Arbeit zu wechseln ist die Sorte Umbau, die man nicht braucht.
+  //
+  // Scannen und Lesen sind ZWEI Spaltengruppen, weil es zwei Fragen sind:
+  // „kommt die Seite noch und hat sie sich bewegt?" beantwortet ein Abruf,
+  // „steht da eine Förderung?" nur ein Mensch. Ohne das Lese-Gedächtnis stünde
+  // eine geprüfte und verworfene Seite beim nächsten Lauf wieder oben.
+  const { error: e2s } = await supabase.rpc("exec_sql", {
+    sql: `
+      CREATE TABLE IF NOT EXISTS funding_seiten (
+        region_id text NOT NULL,
+        url text NOT NULL,
+        techniken text,
+        quelle text NOT NULL DEFAULT 'suche',
+        zustand text NOT NULL DEFAULT 'unbekannt',
+        entdeckt_am timestamptz NOT NULL DEFAULT now(),
+
+        -- Scannen: derselbe Fingerabdruck wie bei den geführten Programmen
+        -- (lib/funding-fingerprint.ts), inklusive Herkunftsmarke live:/archiv:.
+        -- Nur ein LIVE gelesener Abruf bestätigt eine Seite; ein Archiv-Treffer
+        -- belegt den Inhalt, nicht die Aktualität.
+        fingerprint text,
+        seite_gesehen_am timestamptz,
+        seite_geaendert_am timestamptz,
+
+        -- Lesen: was ein Mensch an der Amtsseite herausgefunden hat.
+        gelesen_am date,
+        gelesen_ergebnis text,
+        gelesen_notiz text,
+
+        PRIMARY KEY (region_id, url)
+      );
+      CREATE INDEX IF NOT EXISTS idx_fseiten_region ON funding_seiten (region_id);
+      CREATE INDEX IF NOT EXISTS idx_fseiten_gelesen ON funding_seiten (gelesen_am);
+      CREATE INDEX IF NOT EXISTS idx_fseiten_gesehen ON funding_seiten (seite_gesehen_am);
+      CREATE INDEX IF NOT EXISTS idx_fseiten_zustand ON funding_seiten (zustand);
+
+      -- Interne Erfassungstabelle: RLS an, keine Policy — nur über den
+      -- Service-Key lesbar, wie waechter_reports und theme_overrides.
+      ALTER TABLE funding_seiten ENABLE ROW LEVEL SECURITY;
+      REVOKE ALL ON funding_seiten FROM PUBLIC, anon, authenticated;
+    `,
+  });
+  results.push({ step: "funding_seiten", status: e2s ? "error" : "ok", error: e2s?.message });
+
   // funding_history: Verlauf der Förderprogramme — jeder Zustandswechsel, den
   // wir feststellen, bevor er überschrieben wird.
   //

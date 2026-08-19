@@ -15,8 +15,15 @@
  * enger als die vorige — eine Adresse aus diesem Modul ist eine Vermutung.
  */
 
-/** Version der Bewertung. Wie beim Screening: Wer die Listen ändert, zählt hoch. */
-export const SUCH_VERSION = 1;
+/**
+ * Version der Bewertung. Wie beim Screening: Wer die Listen ändert, zählt hoch.
+ *
+ * 2 (19.08.2026): Die Suche gibt nicht mehr nur den besten Fund zurück, sondern
+ * ALLE Adressen, die für sich eine Förderseite sind. Damit müssen auch die
+ * Gemeinden noch einmal durchsucht werden, bei denen wir längst eine Seite haben
+ * — genau dort liegen die Geschwister, die vorher auf den Boden fielen.
+ */
+export const SUCH_VERSION = 2;
 
 /**
  * Wortstämme, die auf eine Förderseite deuten, mit ihrem Gewicht.

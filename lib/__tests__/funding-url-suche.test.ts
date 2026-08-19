@@ -169,7 +169,19 @@ describe("Sitemap", () => {
 });
 
 describe("Versionsstempel", () => {
-  it("steht bei 1 — wer die Wortlisten ändert, zählt hoch", () => {
-    expect(SUCH_VERSION).toBe(1);
+  /**
+   * Absichtliche Stolperschwelle: Der Stempel entscheidet, welche Gemeinden als
+   * „schon durchsucht" gelten. Wer die Bewertung ändert, ohne hochzuzählen,
+   * lässt zehntausend Gemeinden mit dem alten Ergebnis stehen — und niemand
+   * merkt es, weil der Fortschrittsbalken weiter 93 % zeigt.
+   *
+   * 2 (19.08.2026): Die Suche gibt nicht mehr nur den besten Fund zurück,
+   * sondern ALLE Adressen, die für sich eine Förderseite sind. Damit müssen auch
+   * die Gemeinden noch einmal dran, bei denen wir längst eine Seite haben —
+   * genau dort liegen die zweiten und dritten Seiten, die vorher auf den Boden
+   * fielen.
+   */
+  it("steht bei 2 — wer die Bewertung oder den Rückgabevertrag ändert, zählt hoch", () => {
+    expect(SUCH_VERSION).toBe(2);
   });
 });
