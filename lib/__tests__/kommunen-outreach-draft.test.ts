@@ -79,23 +79,23 @@ describe("Zwei Ask-Varianten", () => {
     expect(d.body).not.toMatch(/Widget|einbett|iframe/i);
   });
 
-  it("meldung_plus_widget hängt genau einen Absatz mit Vorschau an", () => {
+  it("meldung_plus_widget hängt genau einen Absatz an", () => {
+    const d = renderOutreachDraft({ ...BASIS, variante: "meldung_plus_widget" });
+    expect(d.body).toContain("Grafik für Ihre Website");
+  });
+
+  // WEDER ANHANG NOCH VORSCHAU-LINK (19.08.2026). Der Anhang fiel wegen der
+  // Zustellbarkeit, die Vorschau nach dem ersten Blick darauf: Die Grafik ist in
+  // dieser Breite nicht vorzeigbar, die Quellenangabe läuft in die letzte
+  // Kachel. Ein Angebot, das man nicht ansehen kann, ist besser als eines, das
+  // man ansieht und dann nicht will.
+  it("zeigt die Grafik nicht, auch wenn eine Adresse bekannt ist", () => {
     const d = renderOutreachDraft({
       ...BASIS,
       variante: "meldung_plus_widget",
       widgetUrl: "https://solar-check.io/embed/gemeinde-solar?ags=09679138",
     });
-    expect(d.body).toContain("Grafik für Ihre Website");
-    // KEIN Anhang, sondern eine Vorschau für genau diesen Ort: Ein Bild in der
-    // ersten unverlangten Mail einer unbekannten Absenderdomain ist ein
-    // Spam-Muster.
-    expect(d.body).toContain("https://solar-check.io/embed/gemeinde-solar?ags=09679138");
-    expect(d.body).toContain("So sieht sie für Höchberg aus");
-  });
-
-  it("nennt die Grafik auch ohne Vorschau-Adresse, aber ohne leeren Link", () => {
-    const d = renderOutreachDraft({ ...BASIS, variante: "meldung_plus_widget", widgetUrl: null });
-    expect(d.body).toContain("Grafik für Ihre Website");
+    expect(d.body).not.toContain("/embed/");
     expect(d.body).not.toContain("So sieht sie");
   });
 
@@ -610,5 +610,33 @@ describe("Vergleich zum Landesschnitt", () => {
 
   it("kommt ohne Vergleich aus", () => {
     expect(renderMeldung({ ...BASIS, vergleich: null })).toBe(renderMeldung(BASIS));
+  });
+});
+
+// Die HTML-Fassung entsteht MECHANISCH aus dem Text — zwei getrennt gepflegte
+// Fassungen desselben Briefes laufen auseinander, und die, die auseinanderläuft,
+// ist die, die niemand liest.
+describe("HTML-Fassung", () => {
+  it("enthält dieselben Adressen wie der Text", () => {
+    const d = renderOutreachDraft(BASIS);
+    for (const u of d.body.match(/https?:\/\/[^\s]+/g) ?? []) {
+      expect(d.bodyHtml, u).toContain(u.replace(/[.,;:)]$/, ""));
+    }
+  });
+
+  it("setzt den Fuß ab und färbt ihn", () => {
+    const h = renderOutreachDraft(BASIS).bodyHtml;
+    expect(h).toContain("<hr");
+    expect(h).toMatch(/Impressum[\s\S]*color:/);
+  });
+
+  it("stellt die Quellenzeile kursiv", () => {
+    expect(renderOutreachDraft(BASIS).bodyHtml).toMatch(/font-style:italic[^>]*>Quelle:/);
+  });
+
+  it("lässt keine spitzen Klammern aus dem Text durch", () => {
+    const d = renderOutreachDraft({ ...BASIS, name: "Musterdorf <script>" });
+    expect(d.bodyHtml).not.toContain("<script>");
+    expect(d.bodyHtml).toContain("&lt;script&gt;");
   });
 });

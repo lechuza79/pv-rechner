@@ -197,7 +197,13 @@ export function briefAlsHtml(body: string): string {
   const absatz = (t: string, stil = "") =>
     `<p${stil ? ` style="${stil}"` : ""}>${verlinke(esc(t)).replace(/\n/g, "<br>")}</p>`;
 
-  const kopf = oben.split("\n\n").map((a) => absatz(a)).join("\n");
+  // Die Quellenzeile kursiv: Sie gehört zur Meldung, ist aber nicht ihre
+  // Aussage. Kursiv ist die leiseste Auszeichnung, die es gibt, und sie
+  // überlebt das Kopieren in ein Redaktionssystem.
+  const kopf = oben
+    .split("\n\n")
+    .map((a) => (a.startsWith("Quelle:") ? absatz(a, "font-style:italic") : absatz(a)))
+    .join("\n");
   const fussText = unten.join(`\n${FUSS_TRENNER}\n`);
   const fuss = fussText
     ? `\n<hr style="border:0;border-top:1px solid ${RAHMEN};margin:24px 0 12px">\n` +
@@ -441,18 +447,21 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   // Der Widget-Absatz ist der EINZIGE Unterschied zwischen den Varianten —
   // sonst waere nicht zu erkennen, ob eine Reaktion am Widget oder am Text lag.
   //
-  // DIE VORSCHAU STATT EINES ANHANGS.
+  // KEINE VORSCHAU, KEIN ANHANG (Stand 19.08.2026).
   //
-  // „Sollen wir ein Bild des Widgets mitschicken?" — nein. Ein Anhang oder ein
-  // eingebettetes Bild bei der ersten unverlangten Mail einer noch unbekannten
-  // Absenderdomain ist ein Spam-Muster, und der Brief ist reiner Text, was für
-  // die Zustellung spricht. Ein Link kostet nichts und zeigt dasselbe: die
-  // fertige Grafik für DIESEN Ort, in einem Klick.
+  // Erst stand hier ein Anhang zur Debatte: abgelehnt, weil ein Bild in der
+  // ersten unverlangten Mail einer Absenderdomain ohne Sendehistorie ein
+  // Spam-Muster ist. Dann ein Link auf die Live-Vorschau — bis der Blick darauf
+  // zeigte, dass die Grafik in dieser Breite nicht vorzeigbar ist: Die
+  // Quellenangabe an der Kante läuft in die letzte Kachel.
+  //
+  // Ein Angebot, das man nicht ansehen kann, ist besser als eines, das man
+  // ansieht und dann nicht will. Der Absatz bietet die Grafik weiter an; wer
+  // sie will, bekommt sie samt Code von Hand. Sobald das Widget überarbeitet
+  // ist, kommt die Vorschau zurück — `widgetUrl` bleibt deshalb im Kontext.
   const widgetAbsatz =
     c.variante === "meldung_plus_widget"
-      ? `\n\nDie Zahlen gibt es auch als Grafik für Ihre Website. Sie aktualisiert sich monatlich von selbst und setzt keine Cookies; Farben und Schrift lassen sich anpassen. Wenn Sie sie einbauen möchten, schicke ich Ihnen den Code.${
-          c.widgetUrl ? `\n\nSo sieht sie für ${kurzOrtsname(c.name)} aus:\n${c.widgetUrl}` : ""
-        }`
+      ? `\n\nDie Zahlen gibt es auch als Grafik für Ihre Website. Sie aktualisiert sich monatlich von selbst und setzt keine Cookies; Farben und Schrift lassen sich anpassen. Wenn Sie sie einbauen möchten, schicke ich Ihnen den Code und ein Beispiel.`
       : "";
 
   // Weitere Spitzenplaetze — nur im Brief, nie in der Meldung. Sie belegen, dass
