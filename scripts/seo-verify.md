@@ -76,6 +76,90 @@ unsere Bestandsstatistik —, wir standen auf Position 73,6 und hatten in 28 Tag
 Einblendungen. Bei unserem eigenen Wort („solaratlas rlp") standen wir auf 10,6.
 Vollständig in `docs/seo/befund-2026-08-13.md`.
 
+### Schritt 2b-1 — OFFEN (bis 10/2026): Schreibt Google unsere Atlas-Titel um?
+
+Am 18.08.2026 haben die Atlas-Regionsseiten neue Titel bekommen („Photovoltaik in Bayern:
+…"), während die sichtbare Überschrift die alte blieb („Solaranlagen in Bayern"). Ob diese
+Abweichung etwas kostet, ist **nicht entschieden** — die Daten geben es nicht her, weil
+Titel und Überschrift vorher wortgleich waren. Es gibt nur einen Nullbefund: Im
+gleichlautenden Zustand stand keine der sieben Atlas-Platzierungen in den Top 10.
+
+**Die Messung, die es entscheidet** (frühestens zwei Wochen nach dem Livegang der neuen
+Titel, also ab etwa 09/2026): In `ranked_keywords` je Atlas-URL das von Google **angezeigte**
+`title`-Feld gegen unser title-Tag halten.
+- Steht dort „Photovoltaik in …" → Google übernimmt unseren Titel, die Überschrift ist für
+  den Treffer irrelevant, die heutige Aufteilung bleibt.
+- Steht dort „Solaranlagen in …" → Google zieht die Überschrift heran. Dann ist die
+  Angleichung Pflicht, und die belegte Form wäre eine, die **beide** Wörter trägt: 71 % der
+  echten Ortsanfragen unserer einzigen Atlas-Seite mit Ortsverkehr enthalten „solaranlage",
+  keine einzige „photovoltaik".
+
+Nebenbefund, der dabei mitgeprüft gehört: Bei 6 von 7 Atlas-Platzierungen kürzt Google
+bereits den Marken-Suffix weg. Das ist normal, aber es zeigt, dass die Titel an der
+Längengrenze liegen.
+
+Ergebnis in den Monats-Schnappschuss, dann diesen Abschnitt entweder streichen oder die
+Angleichung als Befund melden.
+
+### Schritt 2b-2 — Zwei eigene Seiten auf einer Anfrage — BLOCKER
+
+Seit dem 18.08.2026 mitzuführen, weil es die teuerste Fehlerklasse dieses Bereichs ist
+und man sie in Summen nicht sieht: Wir haben **zwei Seitenfamilien mit Ortsnamen** —
+`/photovoltaik-foerderung/{land}/{stadt}` und (künftig) `/solar-atlas/{land}/{kreis}/{gemeinde}`.
+Die Rollentrennung lautet: Förderseite = Geld-Wörter, Atlasseite = Bestands-Wörter.
+
+**Sie ist bereits gebrochen.** Nachgezählt an den Anfragendaten: 33 der 108 sichtbaren
+Förder-Anfragen tragen kein Geld-Wort, bei sieben Anfragen erscheinen beide Familien, bei
+dreien steht die Förderseite auf einem reinen Bestands-Wort besser („photovoltaik pfalz":
+Förderseite 32,1 gegen Atlas 43,9).
+
+Je Monatslauf deshalb erheben und in den Schnappschuss schreiben:
+1. Wie viele Förder-Anfragen tragen kein Geld-Wort (absolut und als Anteil)?
+2. Bei welchen Anfragen erscheinen beide Familien gleichzeitig, und welche steht besser?
+
+Steigt die Zahl, ist das ein Befund für den Betreiber — nicht weil er etwas tun muss,
+sondern weil daran hängt, ob die nächste Atlas-Welle überhaupt starten darf. Die statische
+Hälfte (unsere eigenen Titel) hält `lib/__tests__/atlas-foerder-wortklassen.test.ts`; die
+Zuordnung durch Google kann nur diese Messung sehen.
+
+### Schritt 2b-3 — Der Anteil sichtbarer Anfragen entscheidet, ob eine Position echt ist — BLOCKER
+
+Die Regel „Durchschnittsposition nie ohne Query-Ebene" (unten) sagt, dass man nachsehen
+muss. **Diese hier sagt, was man dabei ausrechnet:** je Seite die Summe der Einblendungen
+aus den sichtbaren Anfragen geteilt durch die Einblendungen der Seitenebene.
+
+- **Anteil hoch (grob über 30 %)** → die Position beschreibt echte Anfragen. Snippet- und
+  Titelarbeit lohnt.
+- **Anteil nahe null** → die Seite lebt von Anfragen, die Google anonymisiert, weil sie zu
+  selten sind. Die schöne Durchschnittsposition ist dann ein Artefakt aus lauter
+  Einzelabfragen, und jede Optimierung schreibt für Verkehr, den es nicht gibt.
+
+**Gemessen am 18.08.2026 an den zwölf stärksten Förder-Stadtseiten** — und das Ergebnis
+hat eine bereits ausgesprochene Empfehlung gekippt, die genau auf die guten Positionen
+gebaut hatte:
+
+| Seite | Einbl. | Pos. | Anteil sichtbar |
+|---|---|---|---|
+| Frankfurt | 214 | 19,0 | **40 %** |
+| Köln | 54 | 9,4 | 11 % |
+| Essen | 89 | 8,5 | 9 % |
+| Viersen | 72 | 6,7 | 4 % |
+| Regensburg | 50 | 7,1 | 4 % |
+| Osnabrück | 71 | 7,2 | 3 % |
+| Hannover | 120 | 7,8 | 2 % |
+| Wiesbaden | 53 | 7,6 | 2 % |
+| Würzburg | 69 | 7,1 | 1 % |
+| Bonn / Rhein-Erft / Mainz | 86 / 83 / 36 | 7,7 / 8,1 / 12,5 | **0 %** |
+
+Die sechs Seiten „auf Seite 1" haben zusammen praktisch keine benennbare Anfrage. Die
+einzige Seite mit Substanz steht auf **Position 19**, nicht auf 7 — und ihre echten
+Anfragen („photovoltaik förderung frankfurt" 11,9, „klimabonus frankfurt 2026" 9,1) sind
+ein Ranking-Thema, kein Snippet-Thema.
+
+**Konsequenz für jeden Lauf:** Diese Spalte gehört in den Monats-Schnappschuss. Eine
+Seite ohne sichtbare Anfragen wird nicht als Chance gemeldet, egal wie gut ihre Position
+aussieht.
+
 ### Schritt 2c — Durchschnittsposition nie ohne Query-Ebene — BLOCKER
 
 Eine gute Durchschnittsposition bei ~1 % Klickrate ist ein **Warnsignal, kein Erfolg**.

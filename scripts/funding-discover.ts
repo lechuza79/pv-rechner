@@ -33,7 +33,9 @@ import { resolve } from "node:path";
 import { readFileSync, existsSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
 import {
-  linkKandidaten, sitemapKandidaten, sitemapIndex, istEndergebnis, SUCH_VERSION, type LinkKandidat,
+  linkKandidaten, sitemapKandidaten, sitemapIndex, istEndergebnis, SUCH_VERSION,
+  suchFormular, suchAdresse, suchseitenLink, SUCH_BEGRIFFE, SUCHSEITEN_PFADE,
+  type LinkKandidat,
 } from "../lib/funding-url-suche";
 import { inSchueben } from "../lib/lauf-parallel";
 
@@ -107,18 +109,28 @@ async function abrufen(ziel: string, timeoutMs = 15_000): Promise<string | null>
 /**
  * Die Förderseite einer Gemeinde suchen.
  *
- * Zwei Wege, absichtlich in dieser Reihenfolge:
+ * Drei Wege, absichtlich in dieser Reihenfolge:
  *  1. Die Startseite und die besten Links daraus — der Weg, der immer geht.
  *  2. Die sitemap.xml, falls vorhanden — findet tiefer liegende Seiten, die im
  *     Menü der Startseite nicht auftauchen.
+ *  3. **Die Volltextsuche der Website selbst** — aber nur, wenn 1 und 2 nichts
+ *     ergeben haben.
+ *
+ * Warum die Suche zuletzt und nur im Notfall (19.08.2026): Gemessen an 9.722
+ * durchsuchten Gemeinden fanden Weg 1 und 2 zusammen nur bei 13 % eine
+ * Förderseite; 7.863 blieben ohne Fund. Für die 13 %, bei denen es klappt,
+ * ändert sich nichts — sie kosten keinen zusätzlichen Abruf. Die Mehrkosten
+ * fallen genau dort an, wo bisher gar nichts herauskam, und das ist der ganze
+ * Zweck.
  *
  * Höchstens `TIEFE` Ebenen und `MAX_ABRUFE` Anfragen je Gemeinde. Die Grenze ist
  * kein Sparzwang, sondern Rücksicht: Das hier läuft über tausende fremde
  * Verwaltungs-Server, und ein Crawler, der sich festbeißt, ist ein Ärgernis, das
- * uns irgendwann aussperrt.
+ * uns irgendwann aussperrt. Deshalb steigt die Grenze mit der Suche nur um die
+ * zwei Anfragen, die sie wirklich braucht — nicht auf Vorrat.
  */
 const TIEFE = 2;
-const MAX_ABRUFE = 6;
+const MAX_ABRUFE = 9;
 
 async function sucheFoerderseite(startseite: string): Promise<{ beste: LinkKandidat | null; abrufe: number; erreichbar: boolean }> {
   let abrufe = 0;
@@ -149,28 +161,83 @@ async function sucheFoerderseite(startseite: string): Promise<{ beste: LinkKandi
   }
 
   kandidaten.sort((a, b) => b.punkte - a.punkte);
-  if (!kandidaten.length) return { beste: null, abrufe, erreichbar: true };
 
   // Ab hier zählt der Unterschied zwischen VERFOLGEN und ANNEHMEN. Verfolgt wird
   // der beste Link überhaupt — auch eine reine Themenseite („Klimaschutz und
   // Energie"), denn die ist oft der Weg zur Förderseite. Angenommen wird nur,
   // was von Geld UND vom Thema spricht.
-  let spur = kandidaten[0];
   let ergebnis: LinkKandidat | null = kandidaten.find((k) => istEndergebnis(k)) ?? null;
 
-  for (let ebene = 1; ebene < TIEFE && abrufe < MAX_ABRUFE; ebene++) {
-    if (gesehen.has(spur.url)) break;
-    gesehen.add(spur.url);
-    const unterHtml = await abrufen(spur.url);
-    abrufe++;
-    if (!unterHtml) break;
-    const tiefer = linkKandidaten(unterHtml, spur.url).filter((k) => !gesehen.has(k.url));
-    if (!tiefer.length) break;
+  if (kandidaten.length) {
+    let spur = kandidaten[0];
+    for (let ebene = 1; ebene < TIEFE && abrufe < MAX_ABRUFE; ebene++) {
+      if (gesehen.has(spur.url)) break;
+      gesehen.add(spur.url);
+      const unterHtml = await abrufen(spur.url);
+      abrufe++;
+      if (!unterHtml) break;
+      const tiefer = linkKandidaten(unterHtml, spur.url).filter((k) => !gesehen.has(k.url));
+      if (!tiefer.length) break;
 
-    const besseresErgebnis = tiefer.find((k) => istEndergebnis(k) && k.punkte > (ergebnis?.punkte ?? 0));
-    if (besseresErgebnis) ergebnis = besseresErgebnis;
-    if (tiefer[0].punkte <= spur.punkte) break;
-    spur = tiefer[0];
+      const besseresErgebnis = tiefer.find((k) => istEndergebnis(k) && k.punkte > (ergebnis?.punkte ?? 0));
+      if (besseresErgebnis) ergebnis = besseresErgebnis;
+      if (tiefer[0].punkte <= spur.punkte) break;
+      spur = tiefer[0];
+    }
+  }
+
+  // Letzter Weg: die Volltextsuche der Website. NUR wenn bis hierhin nichts
+  // herauskam — für die Gemeinden, bei denen der Crawl schon trägt, kostet sie
+  // keinen Abruf.
+  //
+  // Das ist der eigentliche Hebel: Der Crawl sieht zwei Klicks weit und nur, was
+  // verlinkt ist; die Suche der Website kennt deren ganzen Bestand. Eine
+  // Förderseite unter „Bauen und Wohnen → Umwelt → Energie → Förderungen" ist
+  // für den Crawl unsichtbar und für die Suche ein Treffer.
+  if (!ergebnis && abrufe < MAX_ABRUFE) {
+    let formular = suchFormular(html, startseite);
+
+    // Kein Formular auf der Startseite? Dann liegt die Suche hinter einem
+    // Lupen-Symbol, das sie per JavaScript einblendet — im ausgelieferten HTML
+    // steht dann nichts. Die Suchseite selbst hat das Formular fast immer.
+    // Gemessen am 19.08.2026 trugen nur 14 von 39 erreichbaren Startseiten ein
+    // auswertbares Formular; das ist der Engpass dieses Wegs.
+    if (!formular) {
+      const wege: string[] = [];
+      const verlinkt = suchseitenLink(html, startseite);
+      if (verlinkt) wege.push(verlinkt);
+      for (const p of SUCHSEITEN_PFADE) {
+        const u = new URL(p, startseite).toString();
+        if (!wege.includes(u)) wege.push(u);
+      }
+      // Höchstens zwei Versuche: der verlinkte Weg und ein geratener. Danach
+      // fällt der Ertrag steil ab, die Abrufe gegen fremde Server nicht.
+      for (const w of wege.slice(0, 2)) {
+        if (abrufe >= MAX_ABRUFE) break;
+        const seite = await abrufen(w);
+        abrufe++;
+        if (!seite) continue;
+        formular = suchFormular(seite, w);
+        if (formular) break;
+      }
+    }
+
+    if (formular) {
+      for (const begriff of SUCH_BEGRIFFE) {
+        if (abrufe >= MAX_ABRUFE) break;
+        const trefferSeite = await abrufen(suchAdresse(formular, begriff));
+        abrufe++;
+        if (!trefferSeite) continue;
+        // Die Trefferliste läuft durch dieselbe Bewertung wie jede andere Seite.
+        // Wichtig ist der Ausschluss der Suchseite selbst: Sie verlinkt sich
+        // gern mit Blätter- und Sortierlinks, die alle dieselbe Adresse tragen.
+        const treffer = linkKandidaten(trefferSeite, startseite).filter(
+          (k) => !gesehen.has(k.url) && k.url !== formular.action,
+        );
+        const gut = treffer.find((k) => istEndergebnis(k));
+        if (gut) { ergebnis = gut; break; }
+      }
+    }
   }
 
   return { beste: ergebnis, abrufe, erreichbar: true };

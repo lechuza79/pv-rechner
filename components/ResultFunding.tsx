@@ -65,11 +65,19 @@ interface ResultFundingProps {
    * hält die Bestandsaufrufe unverändert.
    */
   technik?: FundingTechnik;
+  /**
+   * Ein Satz über den Stand der Anrechnung — warum gerade weniger (oder nichts)
+   * abgezogen wird, als die Programme hergeben. Kommt vom Rechner, nicht von
+   * hier: Die Gründe sind rechnerspezifisch (Kumulierungsgrenze der BEG, von
+   * Hand gesetzte Investition), und dieser Baustein soll sie nicht kennen
+   * müssen. Ohne Hinweis bleibt die Karte unverändert.
+   */
+  hinweis?: string;
 }
 
 export default function ResultFunding({
   loading, candidates, chosenAgs, onChooseAgs,
-  programs, applied, total, enabled, onToggle, brutto, technik = "pv",
+  programs, applied, total, enabled, onToggle, brutto, technik = "pv", hinweis,
 }: ResultFundingProps) {
   const [modalProgram, setModalProgram] = useState<FundingProgram | null>(null);
 
@@ -187,17 +195,39 @@ export default function ResultFunding({
         </>
       ) : (
         <div style={{ fontSize: 12, color: v("--color-text-secondary"), lineHeight: 1.6 }}>
-          {mostSpecific ? (
+          {mostSpecific && hinweis ? (
+            // Ein Hinweis nennt den Grund bereits — dann darf hier NICHT zusätzlich
+            // „lässt sich nicht berechnen" stehen. Bei der Kumulierungsgrenze der BEG
+            // ist der Betrag sehr wohl bekannt (Poing: 600 €), er hat nur keinen Platz
+            // mehr. Beide Sätze nebeneinander widersprachen sich offen.
+            <>
+              Für {ortLabel ?? "deinen Ort"} gibt es <ProgramLink p={mostSpecific} />.
+            </>
+          ) : mostSpecific ? (
             <>
               Für {ortLabel ?? "deinen Ort"} liegt uns mit dem{" "}
               <ProgramLink p={mostSpecific} /> ein Programm vor, das sich nicht pauschal
               pro Anlage berechnen lässt. Die Details kannst du dir direkt ansehen.
             </>
           ) : (
-            <>Für deinen Ort kennen wir kein aktives kommunales Förderprogramm für {FUNDING_TECHNIK_LABEL[technik]}. Bundesweit gilt die 0 % Mehrwertsteuer auf Photovoltaik und Speicher — die steckt bereits in den Marktpreisen.</>
+            <>
+              Für deinen Ort kennen wir kein aktives kommunales Förderprogramm für {FUNDING_TECHNIK_LABEL[technik]}.
+              {/* Der bundesweite Zusatz gilt NICHT für jede Technik: Die Nullsteuer
+                  ist ein Umsatzsteuersatz auf Photovoltaik und Speicher, und die
+                  BEG rechnet der Wärmepumpen-Rechner längst selbst ab. Der Satz
+                  stand hier fest verdrahtet und wäre unter der Wärmepumpe eine
+                  Falschaussage gewesen. */}
+              {technik === "waermepumpe"
+                ? " Die Bundesförderung (BEG) ist oben bereits eingerechnet."
+                : " Bundesweit gilt die 0 % Mehrwertsteuer auf Photovoltaik und Speicher — die steckt bereits in den Marktpreisen."}
+            </>
           )}
         </div>
       )}
+
+      {hinweis ? (
+        <p style={{ fontSize: 11.5, lineHeight: 1.5, color: v("--color-text-muted"), margin: "10px 0 0" }}>{hinweis}</p>
+      ) : null}
 
       <Link href="/photovoltaik-foerderung" style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 12, fontSize: 12, color: v("--color-accent"), textDecoration: "none" }}>
         Alle Förderprogramme <IconArrowRight size={iconSizes.xs} />
