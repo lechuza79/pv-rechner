@@ -216,11 +216,14 @@ export default function GlossaryTerm({ id, children }: Props) {
           padding: 0,
           margin: 0,
           cursor: "help",
-          // Dotted, light-blue underline sitting close to the word (small offset)
-          // instead of a far dashed baseline rule.
+          // Dotted blue underline sitting close to the word (small offset)
+          // instead of a far dashed baseline rule. Full accent rather than the
+          // light shade: on 15px body text the light one was barely visible, so
+          // the affordance — "there is something behind this word" — did not
+          // read (Betreiber, 18.08.2026).
           textDecoration: "underline",
           textDecorationStyle: "dotted",
-          textDecorationColor: v("--color-accent-light"),
+          textDecorationColor: v("--color-accent"),
           textDecorationThickness: "1px",
           textUnderlineOffset: "2px",
           lineHeight: "inherit",

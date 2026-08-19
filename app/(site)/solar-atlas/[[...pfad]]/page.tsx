@@ -623,11 +623,14 @@ const S: Record<string, React.CSSProperties> = {
   // ihre Position schon als Link erkennbar sind — inline fehlt ihm die
   // Erkennbarkeit, und mit festen 14 px wäre das Wort außerdem kleiner als der
   // Satz, in dem es steht.
+  // Der Text behält die Farbe des Satzes, blau ist NUR die Unterstreichung. Ein
+  // durchgehend blaues Wort mitten im Fließtext zieht den Blick auf sich und
+  // zerreißt den Absatz; die farbige Linie reicht als Hinweis.
   linkInline: {
-    color: v("--color-accent"),
+    color: "inherit",
     textDecoration: "underline",
+    textDecorationColor: v("--color-accent"),
     textUnderlineOffset: 2,
-    fontWeight: 600,
   },
   disclaimer: {
     fontSize: 11,
