@@ -485,6 +485,23 @@ Unter jedem Rechner steht — abgesetzt durch eine Trennlinie — der Aktualisie
 - **Werte, deren Stand in der Datenbank liegt, tragen `standAusDb`** (Marktpreise, Förderprogramme). Sie stehen im Prüfstand, damit die Übersicht „was wird wann geprüft" vollständig ist — auf dem PV-Rechner fehlten sonst ausgerechnet die Preise, mit denen die Seite rechnet. Von der Fälligkeitsprüfung sind sie ausgenommen: Das Datum im Eintrag ist der Stand des Rückfall-Schnappschusses im Code, nicht der des geprüften Werts. Daraus eine Fälligkeit abzuleiten wäre dieselbe Fehlerklasse wie `updated_at` als Förder-Prüfdatum.
 - **Die Wächter ziehen das Datum nach** — bei jedem Lauf, der die Quellen erreicht hat, auch wenn sich kein Wert geändert hat („geprüft und unverändert" ist das Normalergebnis und genau die Auskunft, die das Datum gibt). Ein Lauf, der an Paywall, 404 oder Bot-Prüfung gescheitert ist, lässt es stehen. Deshalb tragen die wächter-gepflegten Configs zwei Felder: `validFrom` (Stand der Werte, bewegt sich nur mit einem Wert) und `geprueftIso` (Tag des letzten erreichten Laufs). Wo eine Config mehrere Sachen mit eigenem Takt bündelt, gibt es mehr als ein Prüfdatum: Wärmepumpe trennt Marktwerte und BEG-Förderung, Grüngas den täglich geprüften Rechtsstand vom jährlich geprüften Preispfad. Regel im Gate (`scripts/waechter-gate.md`, Regel 9), Ausprägung je Runbook.
 
+### Releaseplan: Seiten gehen in Schüben live, nicht als Nebenwirkung — BLOCKER
+
+**Zwei Seitenfamilien tragen denselben Ortsnamen** — `/photovoltaik-foerderung/{land}/{stadt}` (Geld-Wörter) und `/solar-atlas/{land}/{kreis}/{gemeinde}` (Bestands-Wörter). Für die Atlas-Seite gab es eine Bremse je Ebene (`RELEASED` in `lib/atlas-index.ts`). Für die Förderseite gab es **keine**: `isCityPublished()` hing allein am Status des Förderprogramms — ein neuer Eintrag in `ATLAS_CITIES` mit aktivem Programm war beim nächsten Deploy eine öffentliche, indexierte Seite. Die Veröffentlichung war keine Entscheidung, sondern eine Nebenwirkung.
+
+Aufgefallen ist das am 19.08.2026, als der Katalog auf 97 regionale Programme wuchs und 61 davon (48 aktiv) noch keine Seite hatten. Wer die Einträge anlegt, hätte 61 Ortsseiten auf einen Schlag veröffentlicht, ohne dass irgendwo die Frage gestellt worden wäre, ob sie gerade jetzt erscheinen sollen.
+
+**`lib/release-plan.ts` ist die eine Quelle: welcher Ort, welche Seitengattung, welche Welle, welches Datum.** `isCityPublished()` fragt ihn zusätzlich zum Programmstatus. Er steuert ausschließlich die **Seite** — ob ein Programm im Rechner Geld abzieht, entscheidet unverändert allein `fundingZaehlt()`; ein Ort ohne Seite bleibt im Rechner voll wirksam.
+
+- **Kein Ort in zwei Gattungen ohne Abstand** (`MIN_ABSTAND_GATTUNG_TAGE` = 28). Die Zahl ist hergeleitet, nicht gegriffen: 28 Tage ist das Fenster, mit dem hier überhaupt gemessen wird (`?days=28` in allen SEO-Routen). Wer die zweite Gattung früher live nimmt, nimmt sie blind live. Die Schreibweise des Schlüssels darf dabei nicht täuschen — die Förderseite trägt fünf Stellen, die Atlasseite acht; `ortSchluessel()` normalisiert, sonst liefe die Regel leer.
+- **Kein Schub dichter als 14 Tage am vorigen** (`MIN_ABSTAND_SCHUB_TAGE`). Darunter lässt sich eine Bewegung keinem der beiden Schübe mehr zuordnen — Search-Console-Daten hinken zwei bis drei Tage nach und brauchen danach Verlauf.
+- **`geplant` gibt nichts frei.** Nur `live` veröffentlicht, und auf `live` kommt ein Schub nur mit `nachweis`: den beiden Fragen aus dem Abschnitt darüber, mit Zahl, Datum und einer Belegdatei, die es wirklich gibt. Sonst ginge eine Seite am Stichtag von selbst live — genau die Automatik, die ersetzt werden sollte.
+- **Der Altbestand ist eingefroren** (37 Förderseiten, live seit Juni 2026). Rückwirkend als geprüft auszuweisen, was vor der Regel live ging, wäre ein erfundenes Prüfdatum — dieselbe Fehlerklasse wie `updated_at` als Förder-Prüfdatum. Die Liste darf nicht wachsen; der Test hält ihre Länge fest.
+- **Strukturfehler fängt der Test, das Altern meldet der Befehl** — `lib/__tests__/release-plan.test.ts` gegen `npm run release:plan`, dieselbe Trennung wie `lib/pruefstand.ts` gegen `npm run stand:faellig`. Ein Plan, dessen Datum verstreicht, ist kein Codefehler, sondern Arbeitsvorrat.
+- **Die Messung läuft VOR dem Schub**, nicht nur monatlich hinterher: `scripts/seo-verify.md`, Schritt 4b. Sie hängt am Plan, nicht am Kalender, und kostet unter 0,10 $ je Schub — Aufwand ist kein Argument gegen sie.
+
+**Was der Plan nicht ist: eine Priorisierung.** Welche Orte in welcher Reihenfolge erscheinen, entscheidet der Betreiber; der Plan hält die Entscheidung fest und macht sie prüfbar.
+
 ## Befehle
 
 ```bash
