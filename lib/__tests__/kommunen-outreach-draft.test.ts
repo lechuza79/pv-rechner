@@ -636,16 +636,18 @@ describe("HTML-Fassung", () => {
     expect(h).toMatch(/font-size:13px/);
   });
 
-  // „Betreiber solar-check.io" steht direkt unter dem Namen, nicht als eigener
-  // Absatz — die leise Auszeichnung muss also mitten im Absatz greifen.
-  it("macht die Rollenzeile unter der Unterschrift leise", () => {
+  // Die Signatur steht mitten in einem Absatz („Mit freundlichen Grüßen", Name,
+  // Rolle) — die leise Auszeichnung muss also zeilenweise greifen. Und sie gilt
+  // der GANZEN Signatur: Zuerst war nur die Rollenzeile klein, der Name darüber
+  // blieb groß und wurde dadurch zur größten Zeile des Briefes.
+  it("macht die ganze Signatur leise, nicht nur die Rollenzeile", () => {
     const h = renderOutreachDraft(BASIS).bodyHtml;
-    expect(h).toMatch(/<span style="[^"]*font-size:13px[^"]*">Betreiber solar-check\.io<\/span>/);
-    // LEISER HEISST KLEINER, NICHT GRAUER: Farbe und Größe zusammen sind eine
-    // Auszeichnung zu viel. Grau bleibt allein im Fuß.
-    expect(h).toMatch(/<span style="font-size:13px">Betreiber/);
-    // Der Name daneben bleibt normal.
-    expect(h).toMatch(/Sebastian Schäder<br>/);
+    expect(h).toMatch(/<span style="font-size:13px">Sebastian Schäder<\/span>/);
+    expect(h).toMatch(/<span style="font-size:13px">Betreiber solar-check\.io<\/span>/);
+    // LEISER HEISST KLEINER, NICHT GRAUER: Grau bleibt allein im Fuß.
+    expect(h).not.toMatch(/<span style="[^"]*color:[^"]*">Sebastian/);
+    // Die Grußformel darüber gehört zum Brief und bleibt normal.
+    expect(h).toMatch(/>Mit freundlichen Grüßen<br>/);
   });
 
   it("lässt keine spitzen Klammern aus dem Text durch", () => {

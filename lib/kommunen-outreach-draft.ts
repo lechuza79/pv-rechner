@@ -198,7 +198,19 @@ export type OutreachDraft = { subject: string; body: string; bodyHtml: string; m
  * kennt der Empfänger. Wer sie überschreibt, macht den Brief auf fremden
  * Geräten kleiner statt größer.
  */
-const LEISE_ZEILEN = [/^Quelle:/, /^Betreiber solar-check\.io$/, /^Impressum:/, /^Datenschutz:/];
+const SIGNATURE = `Sebastian Schäder
+Betreiber solar-check.io`;
+
+const LEISE_ZEILEN = [
+  /^Quelle:/,
+  /^Impressum:/,
+  /^Datenschutz:/,
+  // JEDE Zeile der Signatur, aus der Signatur selbst abgeleitet. Zuerst stand
+  // hier nur „Betreiber solar-check.io" von Hand — der Name darüber blieb groß
+  // und wirkte dadurch als größte Zeile des ganzen Briefes. Wer die Signatur
+  // ändert, ändert damit auch, was leise gesetzt wird.
+  ...SIGNATURE.split("\n").map((z) => new RegExp(`^${z.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`)),
+];
 
 /**
  * Leiser heißt KLEINER, nicht grauer (Vorgabe des Betreibers, 19.08.2026).
@@ -258,8 +270,7 @@ export function briefAlsHtml(body: string): string {
   return `<div style="max-width:640px;${TEXT_STIL}">\n${kopf}${fuss}\n</div>`;
 }
 
-const SIGNATURE = `Sebastian Schäder
-Betreiber solar-check.io`;
+
 
 /**
  * Alles, was nach der Unterschrift kommt: Pflichtangaben, keine Botschaft.
