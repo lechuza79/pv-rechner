@@ -12,13 +12,27 @@ import type { v } from "./theme";
 
 type Token = Parameters<typeof v>[0];
 
-export type OutreachStatus = "offen" | "entwurf" | "kontaktiert" | "geantwortet" | "zu" | "gesperrt";
+// „bounce" ist kein Misserfolg, sondern eine Tatsache über die ADRESSE: Sie
+// existiert nicht mehr oder nimmt nichts an. Ein eigener Status, weil
+// „kontaktiert" hier die Unwahrheit sagt (niemand hat die Mail bekommen) und
+// „offen" ebenso (ein zweiter Versuch an dieselbe Adresse ist sinnlos und
+// schadet der Zustellbarkeit). Gemeinden mit diesem Status fallen aus jedem
+// weiteren Lauf heraus, bis jemand eine neue Adresse einträgt.
+export type OutreachStatus =
+  | "offen"
+  | "entwurf"
+  | "kontaktiert"
+  | "geantwortet"
+  | "bounce"
+  | "zu"
+  | "gesperrt";
 
 export const OUTREACH_STATUS: { key: OutreachStatus; label: string; color: Token; bg: Token }[] = [
   { key: "offen", label: "Offen", color: "--color-text-secondary", bg: "--color-bg-muted" },
   { key: "entwurf", label: "Entwurf", color: "--color-accent", bg: "--color-accent-dim" },
   { key: "kontaktiert", label: "Kontaktiert", color: "--color-accent-dark", bg: "--color-accent-dim" },
   { key: "geantwortet", label: "Geantwortet", color: "--color-positive", bg: "--color-bg-muted" },
+  { key: "bounce", label: "Unzustellbar", color: "--color-negative", bg: "--color-bg-muted" },
   { key: "zu", label: "Zu", color: "--color-text-muted", bg: "--color-bg-muted" },
   { key: "gesperrt", label: "Gesperrt", color: "--color-negative", bg: "--color-bg-muted" },
 ];

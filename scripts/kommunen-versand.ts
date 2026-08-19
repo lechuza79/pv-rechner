@@ -1,0 +1,340 @@
+/**
+ * Kommunen-Anschreiben verschicken — gedrosselt, protokolliert, mit Bremsen.
+ *
+ * Der Brief selbst wird NICHT hier gebaut. Er kommt fertig aus
+ * /api/admin/kommunen/versandpaket, also aus derselben Funktion, die das
+ * Cockpit zeigt (lib/kommunen-brief.ts). Dieses Skript ist der Briefträger: Es
+ * prüft, ob heute überhaupt gesendet werden darf, schickt langsam, und schreibt
+ * sofort mit, was hinausgegangen ist.
+ *
+ * Nutzung:
+ *   npm run kommunen:versand -- --liste                      Schub-Liste ansehen
+ *   npm run kommunen:versand -- --vorschau --n=5             fünf echte Briefe lesen
+ *   npm run kommunen:versand -- --test=adresse@example.org   EINE Probemail an sich selbst
+ *   npm run kommunen:versand -- --senden --limit=20          Schub senden
+ *
+ * Voraussetzungen: SUPABASE_URL, SUPABASE_SERVICE_KEY, CRON_SECRET sowie für
+ * das Senden OUTREACH_SMTP_HOST/PORT/USER/PASS und OUTREACH_MAIL_FROM — alle
+ * aus .env.local. Das Postfach-Passwort trägt der Betreiber selbst dort ein.
+ *
+ * DIE BREMSEN, jede aus einem Grund:
+ *   · Schulferien des Ziel-Bundeslands  → lib/schulferien.ts
+ *   · Wochentag Di–Do                   → montags liegt das Wochenende im Postfach,
+ *                                         freitags liest es niemand mehr
+ *   · Höchstmenge je Lauf               → lib/outreach-mail.ts (MAX_JE_LAUF)
+ *   · Pause zwischen zwei Mails         → Zustellbarkeit, nicht Höflichkeit
+ *   · Pflichtangaben im Text            → Klarname, Impressum, Art. 14 DSGVO
+ *   · verbotener Anbieter / fremder Absender → lib/outreach-mail.ts
+ *
+ * KEIN NACHFASSEN. Wer nicht antwortet, wird nicht erinnert — das ist die
+ * Zusage, mit der die ganze Aussendung rechtlich vertretbar ist.
+ */
+
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { existsSync, readFileSync, mkdirSync, writeFileSync } from "node:fs";
+import {
+  leseSmtpKonfig,
+  fehlendePflichtangaben,
+  mailKopfzeilen,
+  adresseAus,
+  PAUSE_MS,
+  MAX_JE_LAUF,
+} from "../lib/outreach-mail";
+import { versandfenster } from "../lib/schulferien";
+import { SCHUEBE, AKTUELLER_SCHUB } from "../lib/kommunen-testballon";
+
+const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
+const PROTOKOLL_DIR = resolve(SCRIPT_DIR, ".cache", "versand");
+
+// ─── Log ──────────────────────────────────────────────────────────────────────
+
+function log(msg = "", level: "info" | "ok" | "err" | "warn" = "info"): void {
+  const prefix = level === "ok" ? "✓ " : level === "err" ? "✗ " : level === "warn" ? "! " : "  ";
+  // eslint-disable-next-line no-console
+  console.log(msg ? prefix + msg : "");
+}
+
+// ─── Env ──────────────────────────────────────────────────────────────────────
+
+function loadEnvFile(): void {
+  const envPath = resolve(SCRIPT_DIR, "..", ".env.local");
+  if (!existsSync(envPath)) return;
+  for (const line of readFileSync(envPath, "utf8").split("\n")) {
+    const m = line.match(/^([A-Z0-9_]+)=(.*)$/);
+    if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
+  }
+}
+
+async function makeClient() {
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!url || !key) throw new Error("SUPABASE_URL oder SUPABASE_SERVICE_KEY fehlt");
+  const { createClient } = await import("@supabase/supabase-js");
+  return createClient(url, key, { auth: { persistSession: false } });
+}
+
+// ─── Versandpaket holen ───────────────────────────────────────────────────────
+
+type Brief = {
+  region_id: string;
+  name: string;
+  empfaenger: string;
+  subject: string;
+  body: string;
+  variante: string;
+  seite_url: string | null;
+  rangliste_url: string | null;
+  stand: string;
+};
+
+type Paket = {
+  schub: string;
+  kampagne: string;
+  charge: number;
+  heute: string;
+  inCharge: number;
+  paket: Brief[];
+  uebersprungen: { region_id: string; name: string | null; grund: string }[];
+};
+
+async function holePaket(basis: string, schub: string, charge: number, limit: number): Promise<Paket> {
+  const secret = process.env.CRON_SECRET;
+  if (!secret) throw new Error("CRON_SECRET fehlt — ohne ihn gibt der Endpunkt nichts heraus.");
+  const url = `${basis}/api/admin/kommunen/versandpaket?schub=${encodeURIComponent(schub)}&charge=${charge}&limit=${limit}`;
+  const res = await fetch(url, { headers: { Authorization: `Bearer ${secret}` } });
+  if (!res.ok) throw new Error(`Versandpaket ${res.status}: ${(await res.text()).slice(0, 300)}`);
+  return (await res.json()) as Paket;
+}
+
+// ─── Bremsen ──────────────────────────────────────────────────────────────────
+
+const WOCHENTAG = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
+
+/**
+ * Ist heute ein Versandtag?
+ *
+ * Dienstag bis Donnerstag. Montags konkurriert die Mail mit allem, was übers
+ * Wochenende aufgelaufen ist; freitags wird sie gelesen und bis Montag
+ * vergessen. Das ist keine Feinheit — bei einer Aussendung ohne Nachfassen ist
+ * der erste Blick der einzige.
+ */
+function versandtag(datum: Date): { ok: boolean; grund?: string } {
+  const tag = datum.getDay();
+  if (tag >= 2 && tag <= 4) return { ok: true };
+  return { ok: false, grund: `${WOCHENTAG[tag]} — versendet wird Dienstag bis Donnerstag.` };
+}
+
+/** Alle Bremsen für einen einzelnen Brief. Leeres Ergebnis = darf hinaus. */
+function bremsen(b: Brief, heute: string): string[] {
+  const gruende: string[] = [];
+  const fenster = versandfenster(b.region_id.slice(0, 2), heute);
+  if (!fenster.frei) gruende.push(fenster.grund);
+  const fehlt = fehlendePflichtangaben(b.body);
+  if (fehlt.length) gruende.push(`Pflichtangaben fehlen: ${fehlt.join(", ")}`);
+  if (!b.empfaenger.includes("@")) gruende.push(`keine gültige Adresse: ${b.empfaenger}`);
+  return gruende;
+}
+
+// ─── Ausgabe ──────────────────────────────────────────────────────────────────
+
+function zeigeListe(p: Paket): void {
+  log(`Schub „${p.schub}" · Kampagne ${p.kampagne} · Charge ${p.charge} · Stichtag ${p.heute}`);
+  log(`${p.inCharge} Gemeinden in dieser Charge, ${p.paket.length} versandfertig`);
+  log();
+  for (const [i, b] of p.paket.entries()) {
+    log(`${String(i + 1).padStart(2)}. ${b.name} (${b.region_id})  →  ${b.empfaenger}`);
+    log(`    Betreff: ${b.subject}  [${b.subject.length} Zeichen]`);
+    log(`    Variante: ${b.variante} · Seite: ${b.seite_url ?? "—"}`);
+  }
+  if (p.uebersprungen.length) {
+    log();
+    log(`Übersprungen (${p.uebersprungen.length}):`, "warn");
+    for (const u of p.uebersprungen) log(`    ${u.name ?? u.region_id}: ${u.grund}`);
+  }
+}
+
+function zeigeVorschau(p: Paket, n: number): void {
+  for (const b of p.paket.slice(0, n)) {
+    log();
+    log("═".repeat(78));
+    log(`An:      ${b.empfaenger}   (${b.name}, ${b.region_id})`);
+    log(`Betreff: ${b.subject}`);
+    log("─".repeat(78));
+    // eslint-disable-next-line no-console
+    console.log(b.body);
+    log("─".repeat(78));
+    log(`Seite: ${b.seite_url ?? "—"}`);
+    log(`Rangliste: ${b.rangliste_url ?? "—"}`);
+  }
+}
+
+// ─── Senden ───────────────────────────────────────────────────────────────────
+
+async function baueTransport() {
+  const befund = leseSmtpKonfig(process.env);
+  if (!befund.ok) {
+    log("Versandweg nicht einsatzbereit:", "err");
+    for (const f of befund.fehler) log(`    ${f}`, "err");
+    throw new Error("SMTP-Konfiguration unvollständig oder unzulässig");
+  }
+  const nodemailer = await import("nodemailer");
+  const transport = nodemailer.createTransport({
+    host: befund.konfig.host,
+    port: befund.konfig.port,
+    secure: befund.konfig.port === 465,
+    auth: { user: befund.konfig.user, pass: befund.konfig.pass },
+  });
+  // Verbindung und Anmeldung PRÜFEN, bevor die erste Mail gebaut wird. Ohne das
+  // scheitert der Lauf an Mail 1 von 20 und hinterlässt eine halbe Charge.
+  await transport.verify();
+  return { transport, konfig: befund.konfig };
+}
+
+function protokolliere(name: string, inhalt: unknown): string {
+  mkdirSync(PROTOKOLL_DIR, { recursive: true });
+  const pfad = resolve(PROTOKOLL_DIR, name);
+  writeFileSync(pfad, JSON.stringify(inhalt, null, 2), "utf8");
+  return pfad;
+}
+
+async function senden(p: Paket, limit: number, pauseMs: number): Promise<void> {
+  const { transport, konfig } = await baueTransport();
+  const widerspruchAn = konfig.replyTo ?? adresseAus(konfig.from);
+  const db = await makeClient();
+
+  const zuSenden = p.paket.slice(0, Math.min(limit, MAX_JE_LAUF));
+  log(`${zuSenden.length} Mails, Pause ${Math.round(pauseMs / 1000)} s — geschätzte Dauer ${Math.round((zuSenden.length * pauseMs) / 60000)} min`);
+  log();
+
+  const protokoll: Record<string, unknown>[] = [];
+  let raus = 0;
+
+  for (const [i, b] of zuSenden.entries()) {
+    const halt = bremsen(b, p.heute);
+    if (halt.length) {
+      log(`${b.name}: NICHT gesendet — ${halt.join(" · ")}`, "err");
+      protokoll.push({ region_id: b.region_id, name: b.name, gesendet: false, grund: halt });
+      continue;
+    }
+    try {
+      const info = await transport.sendMail({
+        from: konfig.from,
+        to: b.empfaenger,
+        replyTo: konfig.replyTo,
+        subject: b.subject,
+        text: b.body,
+        headers: mailKopfzeilen({ widerspruchAn, betreff: b.subject }),
+      });
+      // ERST schreiben, dann weiter: Bricht der Lauf danach ab, ist die Mail
+      // trotzdem draußen — eine Gemeinde, die als „offen" stehenbleibt, bekäme
+      // sonst im nächsten Lauf dieselbe Mail ein zweites Mal.
+      const { error } = await db
+        .from("kommunen_kontakt")
+        .update({
+          outreach_status: "kontaktiert",
+          contacted_at: new Date().toISOString(),
+          channel: "mail",
+          versendet_variante: b.variante,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("region_id", b.region_id);
+      raus++;
+      log(`${String(i + 1).padStart(2)}/${zuSenden.length}  ${b.name} → ${b.empfaenger}${error ? "  (Status NICHT geschrieben: " + error.message + ")" : ""}`, error ? "warn" : "ok");
+      protokoll.push({
+        region_id: b.region_id,
+        name: b.name,
+        empfaenger: b.empfaenger,
+        betreff: b.subject,
+        variante: b.variante,
+        messageId: info.messageId,
+        gesendet: true,
+        statusGeschrieben: !error,
+        statusFehler: error?.message ?? null,
+        at: new Date().toISOString(),
+      });
+    } catch (e) {
+      log(`${b.name}: Versand fehlgeschlagen — ${(e as Error).message}`, "err");
+      protokoll.push({ region_id: b.region_id, name: b.name, gesendet: false, grund: [(e as Error).message] });
+    }
+    if (i < zuSenden.length - 1) await new Promise((r) => setTimeout(r, pauseMs));
+  }
+
+  transport.close();
+  const pfad = protokolliere(`${p.kampagne}-charge${p.charge}-${new Date().toISOString().slice(0, 10)}.json`, {
+    kampagne: p.kampagne,
+    charge: p.charge,
+    at: new Date().toISOString(),
+    eintraege: protokoll,
+  });
+  log();
+  log(`${raus} von ${zuSenden.length} versendet · Protokoll: ${pfad}`, "ok");
+}
+
+async function probemail(an: string, p: Paket): Promise<void> {
+  const b = p.paket[0];
+  if (!b) throw new Error("Kein Brief im Paket — erst die Charge festschreiben.");
+  const { transport, konfig } = await baueTransport();
+  const info = await transport.sendMail({
+    from: konfig.from,
+    to: an,
+    replyTo: konfig.replyTo,
+    subject: `[PROBE] ${b.subject}`,
+    text: b.body,
+    headers: mailKopfzeilen({ widerspruchAn: konfig.replyTo ?? adresseAus(konfig.from), betreff: b.subject }),
+  });
+  transport.close();
+  log(`Probemail an ${an} — ${info.messageId}`, "ok");
+  log("Jetzt im Empfangspostfach den Quelltext ansehen: Authentication-Results muss");
+  log("spf=pass, dkim=pass und dmarc=pass mit derselben Domain zeigen.");
+}
+
+// ─── Hauptlauf ────────────────────────────────────────────────────────────────
+
+function arg(name: string): string | undefined {
+  const t = process.argv.find((a) => a.startsWith(`--${name}=`));
+  return t ? t.slice(name.length + 3) : undefined;
+}
+const hat = (name: string) => process.argv.includes(`--${name}`);
+
+async function main(): Promise<void> {
+  loadEnvFile();
+
+  const schub = arg("schub") ?? AKTUELLER_SCHUB;
+  if (!SCHUEBE[schub]) throw new Error(`Unbekannter Schub „${schub}" — bekannt: ${Object.keys(SCHUEBE).join(", ")}`);
+  const charge = parseInt(arg("charge") ?? "1", 10);
+  const limit = Math.min(MAX_JE_LAUF, parseInt(arg("limit") ?? String(MAX_JE_LAUF), 10));
+  const basis = arg("basis") ?? "https://solar-check.io";
+  const pauseMs = arg("pause") ? parseInt(arg("pause")!, 10) * 1000 : PAUSE_MS;
+
+  const paket = await holePaket(basis, schub, charge, limit);
+
+  if (hat("liste")) return zeigeListe(paket);
+  if (hat("vorschau")) {
+    zeigeListe(paket);
+    return zeigeVorschau(paket, parseInt(arg("n") ?? "5", 10));
+  }
+
+  const test = arg("test");
+  if (test) return probemail(test, paket);
+
+  if (!hat("senden")) {
+    zeigeListe(paket);
+    log();
+    log("Nichts versendet. Zum Senden: --senden (vorher --vorschau lesen).", "warn");
+    return;
+  }
+
+  const tag = versandtag(new Date());
+  if (!tag.ok && !hat("trotzdem")) {
+    log(`Heute wird nicht versendet: ${tag.grund}`, "err");
+    log("Wenn es trotzdem sein muss: --trotzdem", "warn");
+    return;
+  }
+  await senden(paket, limit, pauseMs);
+}
+
+main().catch((e) => {
+  log((e as Error).message, "err");
+  process.exit(1);
+});

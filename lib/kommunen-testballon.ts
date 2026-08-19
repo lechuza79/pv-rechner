@@ -42,8 +42,18 @@ export type Auswahl = {
 export type AuswahlRegeln = {
   /** Zielmenge insgesamt. */
   ziel: number;
-  /** Umfang der ersten, kleinen Charge. */
-  charge1: number;
+  /**
+   * Umfang EINER Charge — der Schub eines Tages.
+   *
+   * Vorher hieß das Feld `charge1` und teilte die Auswahl in „die ersten 50"
+   * und „der Rest". Das passte zum Testballon, aber nicht zum Versand: Der
+   * läuft gedrosselt mit 15–25 Mails am Tag, und eine Charge, die größer ist
+   * als ein Tagespensum, sagt nichts mehr darüber aus, was an einem Tag
+   * hinausging. Jetzt ist die Charge das Tagespensum, und die Nummer steht an
+   * der Gemeinde: Nach dem Versand ist ohne Zeitstempel-Arithmetik ablesbar,
+   * mit welchem Schub sie angeschrieben wurde.
+   */
+  chargeGroesse: number;
   /** Anteil Gemeinden unter der Einwohnergrenze (z. B. 2/3). */
   kleinAnteil: number;
   /** Einwohnergrenze zwischen „klein" und „groß". */
@@ -52,11 +62,83 @@ export type AuswahlRegeln = {
 
 export const TESTBALLON_REGELN: AuswahlRegeln = {
   ziel: 100,
-  // Erste Aussendung 50 (Vorgabe des Betreibers 27.07.2026: „test sollten
-  // 50-100 sein"). Vorher 15 — zu wenig, um aus den Antworten etwas abzulesen.
-  charge1: 50,
+  chargeGroesse: 20,
   kleinAnteil: 2 / 3,
   grenze: 10_000,
+};
+
+/**
+ * Ein Versand-Schub: welches Gebiet, welcher Kanal, welche Kampagnen-Kennung.
+ *
+ * WARUM ALS DATENSATZ UND NICHT ALS AUFRUF-PARAMETER: Die Auswahl wird in der
+ * Datenbank festgeschrieben. Wer sie mit anderen Parametern ein zweites Mal
+ * zieht, bekommt eine andere Liste unter demselben Namen — und die Auswertung
+ * vergleicht danach zwei Dinge, die nur gleich heißen. Der Schub steht deshalb
+ * hier, mit Begründung, und die Route nimmt nur noch seinen Schlüssel.
+ */
+export type Schub = {
+  /** Kennung in `kommunen_kontakt.kampagne`. */
+  kampagne: string;
+  /** Zweistellige Länderschlüssel. */
+  bl: string[];
+  /**
+   * Welcher Kontaktweg zählt als erreichbar.
+   *
+   * „rollen-postfach": nur Gemeinden mit einem Funktions-Postfach
+   * (info@/rathaus@). Das ist der Kanal, der später vollautomatisch skaliert —
+   * ein Test über Kontaktformulare würde etwas prüfen, das wir nicht ausbauen
+   * wollen, und die Formulare sind zudem der datenschutzfreundlichere, aber
+   * nicht automatisierbare Weg.
+   */
+  kanal: "rollen-postfach" | "beliebig";
+  regeln: AuswahlRegeln;
+  /** Warum GERADE dieses Gebiet, gerade jetzt. */
+  grund: string;
+};
+
+/** Der Schub, der gerade dran ist. */
+export const AKTUELLER_SCHUB = "mail-he-rp-sl";
+
+/**
+ * Die alte Testballon-Auswahl aus Baden-Württemberg und Bayern.
+ *
+ * Sie wird NICHT gelöscht: Beide Länder haben bis zum 12.09. bzw. 14.09.2026
+ * Sommerferien, die Liste ist also nicht falsch, sondern zu früh. Sie wird ab
+ * Mitte September die zweite Welle — deshalb nur umbenannt, damit „welcher
+ * Schub war das?" beantwortbar bleibt.
+ */
+export const GEPARKTE_KAMPAGNE_BWBY = "testballon-bwby-geparkt";
+
+export const SCHUEBE: Record<string, Schub> = {
+  [AKTUELLER_SCHUB]: {
+    kampagne: AKTUELLER_SCHUB,
+    bl: ["06", "07", "10"], // Hessen, Rheinland-Pfalz, Saarland
+    kanal: "rollen-postfach",
+    regeln: TESTBALLON_REGELN,
+    grund:
+      "Sommerferien dort am 07.08.2026 zu Ende (KMK-Kalender), nächste Ferien erst ab 05.10.2026 — " +
+      "das breiteste Versandfenster aller Länder im August/September.",
+  },
+  [GEPARKTE_KAMPAGNE_BWBY]: {
+    kampagne: GEPARKTE_KAMPAGNE_BWBY,
+    bl: ["08", "09"], // Baden-Württemberg, Bayern
+    // Diese Auswahl ist im Juli 2026 über BEIDE Kanäle gezogen worden. Sie
+    // wird nicht neu gezogen — die Gemeinden tragen die Kampagne bereits, und
+    // ein zweiter Zug würde sie gerade deshalb überspringen. Wer sie versendet,
+    // sieht im Paket, welche kein Rollen-Postfach haben; die bleiben liegen.
+    kanal: "beliebig",
+    regeln: TESTBALLON_REGELN,
+    grund:
+      "Geparkt: In beiden Ländern laufen die Sommerferien bis 12.09. bzw. 14.09.2026. " +
+      "Ab Mitte September die zweite Welle.",
+  },
+  "mail-ni-hb": {
+    kampagne: "mail-ni-hb",
+    bl: ["03", "04"], // Niedersachsen, Bremen
+    kanal: "rollen-postfach",
+    regeln: TESTBALLON_REGELN,
+    grund: "Reserve für den zweiten Schub: Ferien seit 12.08.2026 vorbei, nächste ab 12.10.2026.",
+  },
 };
 
 /**
@@ -114,14 +196,26 @@ export function waehleTestballon(kandidaten: Kandidat[], regeln = TESTBALLON_REG
     if (rest > 0) nimmGross.push(...gross.slice(nimmGross.length, nimmGross.length + rest));
   }
 
-  // Charge 1 = die STÄRKSTEN zuerst, anteilig aus beiden Töpfen. Vorgabe des
-  // Betreibers: die Sieger zuerst anschreiben. Beide Listen sind bereits nach
-  // Aufhänger-Stärke sortiert, also sind die ersten N auch die stärksten.
-  const c1Klein = Math.round(regeln.charge1 * regeln.kleinAnteil);
-  const c1Gross = regeln.charge1 - c1Klein;
-  const gewaehlt: { regionId: string; charge: number }[] = [];
-  nimmKlein.forEach((k, i) => gewaehlt.push({ regionId: k.regionId, charge: i < c1Klein ? 1 : 2 }));
-  nimmGross.forEach((k, i) => gewaehlt.push({ regionId: k.regionId, charge: i < c1Gross ? 1 : 2 }));
+  // REIHENFOLGE: die stärksten zuerst, und in JEDER Charge dieselbe Mischung
+  // aus kleinen und großen Gemeinden. Würde erst der kleine Topf abgearbeitet
+  // und dann der große, bestünde der erste Versandtag nur aus Dörfern — und die
+  // erste Rückmeldung, an der sich alles Weitere ausrichtet, käme aus einer
+  // Gruppe statt aus dem Querschnitt.
+  const reihenfolge: Kandidat[] = [];
+  let ik = 0;
+  let ig = 0;
+  while (ik < nimmKlein.length || ig < nimmGross.length) {
+    // Der kleine Topf ist doppelt so groß wie der große (2/3 zu 1/3), also
+    // kommt nach je zwei kleinen eine große Gemeinde. Der Bruch wird nicht
+    // gerechnet, sondern gemessen: Wer im Verhältnis zurückliegt, ist dran.
+    const kleinDran =
+      ik < nimmKlein.length &&
+      (ig >= nimmGross.length || ik / Math.max(nimmKlein.length, 1) <= ig / Math.max(nimmGross.length, 1));
+    if (kleinDran) reihenfolge.push(nimmKlein[ik++]);
+    else reihenfolge.push(nimmGross[ig++]);
+  }
+  const groesse = Math.max(1, regeln.chargeGroesse);
+  const gewaehlt = reihenfolge.map((k, i) => ({ regionId: k.regionId, charge: Math.floor(i / groesse) + 1 }));
 
   return {
     gewaehlt,

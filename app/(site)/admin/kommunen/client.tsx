@@ -494,6 +494,9 @@ function DraftModal({
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
   const [genError, setGenError] = useState<string | null>(null);
+  // Vorbelegt mit dem Weg, den diese Gemeinde überhaupt hat — ein Rollen-
+  // Postfach ist der Regelfall, sonst bleibt das Kontaktformular.
+  const [kanal, setKanal] = useState(lead.rollen_email ? "mail" : lead.kontakt_url ? "formular" : "mail");
 
   const generate = useCallback(async () => {
     setBusy(true);
@@ -518,14 +521,20 @@ function DraftModal({
   }, [lead.region_id, onPatched]);
 
   // Status setzen (z. B. „als kontaktiert markieren" für den schnellen Durchlauf).
+  //
+  // MIT KANAL: „Kontaktiert" ohne die Angabe, WORÜBER, ist in der Auswertung
+  // wertlos — genau die Frage, die der Versand beantworten soll (trägt der
+  // Mail-Weg?), lässt sich aus einem leeren Kanal-Feld nicht beantworten. Das
+  // Versand-Skript setzt ihn seit jeher selbst; von Hand markierte Gemeinden
+  // fielen aus jeder Statistik heraus.
   const setStatus = useCallback(
-    async (outreach_status: string) => {
+    async (outreach_status: string, channel?: string) => {
       setBusy(true);
       try {
         const res = await fetch("/api/admin/kommunen", {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ region_id: lead.region_id, outreach_status }),
+          body: JSON.stringify({ region_id: lead.region_id, outreach_status, ...(channel ? { channel } : {}) }),
         });
         if (res.ok) {
           onPatched((await res.json()).row);
@@ -646,13 +655,29 @@ function DraftModal({
               <button style={pagerBtn} disabled={busy} onClick={generate}>
                 {busy ? "…" : "Neu generieren"}
               </button>
-              <button
-                style={{ ...pagerBtn, marginLeft: "auto", color: v("--color-positive"), fontWeight: 700 }}
-                disabled={busy}
-                onClick={() => setStatus("kontaktiert")}
-              >
-                Als kontaktiert markieren →
-              </button>
+              <div style={{ display: "flex", gap: space.xs, alignItems: "center", marginLeft: "auto" }}>
+                <label style={{ fontSize: 11, color: v("--color-text-muted") }} htmlFor="kanal-wahl">
+                  über
+                </label>
+                <select
+                  id="kanal-wahl"
+                  value={kanal}
+                  onChange={(e) => setKanal(e.target.value)}
+                  style={{ ...inputStyle, fontSize: 12, padding: pad("xs", "sm") }}
+                >
+                  <option value="mail">Mail</option>
+                  <option value="formular">Kontaktformular</option>
+                  <option value="post">Post</option>
+                  <option value="telefon">Telefon</option>
+                </select>
+                <button
+                  style={{ ...pagerBtn, color: v("--color-positive"), fontWeight: 700 }}
+                  disabled={busy}
+                  onClick={() => setStatus("kontaktiert", kanal)}
+                >
+                  Als kontaktiert markieren →
+                </button>
+              </div>
             </div>
           </>
         )}
