@@ -29,7 +29,13 @@ describe("Menü-Markierung: Zuordnung Pfad → Menüpunkt", () => {
     // Ein Präfix auf /balkonkraftwerk deckt Hub, Rechner und Anmelde-Ratgeber ab.
     // Stünde hier wieder ein tieferer Pfad, wären zwei von drei Seiten unmarkiert.
     expect(header).toMatch(/startsWith\("\/balkonkraftwerk"\)\s*\?\s*"balkon"/);
-    expect(header).not.toMatch(/startsWith\("\/balkonkraftwerk\/rechner"\)\s*\?/);
+    // Je Seite ein eigener Schlüssel — mit einem gemeinsamen leuchteten im
+    // Ausklappmenü alle drei Einträge gleichzeitig (gemeldet 19.08.2026).
+    expect(header).toMatch(/startsWith\("\/balkonkraftwerk\/rechner"\)\s*\?\s*"balkon-rechner"/);
+    expect(header).toMatch(/startsWith\("\/balkonkraftwerk\/anmelden"\)\s*\?\s*"balkon-anmelden"/);
+    // Die spezifischen Pfade müssen vor dem Hub stehen, sonst fängt dessen
+    // Präfix sie ab und alles ist wieder "balkon".
+    expect(header.indexOf('"/balkonkraftwerk/rechner"')).toBeLessThan(header.indexOf('startsWith("/balkonkraftwerk")'));
   });
 
   it("Ratgeber werden über die Registry erkannt, nicht über das Pfad-Präfix", () => {

@@ -229,14 +229,18 @@ export default function BalkonkraftwerkHub() {
           rechnet sich seltener, als die Werbung nahelegt.
         </p>
 
-        {/* Förderung. BEWUSST OHNE KONKRETE PROGRAMME: Der Förderkatalog kennt
-            Balkonkraftwerke noch nicht als eigene Technik — eine Parallel-Session
-            trägt sie gerade ein. Bis dahin würde eine Formulierung wie „die
-            Übersicht zeigt dir die Programme für dein Balkonkraftwerk" jemanden
-            auf eine Seite schicken, die nur Dachanlagen listet.
-            NACHZIEHEN, sobald die Balkon-Technik im Katalog steht: Dann kann
-            hier stehen, wie viele Kommunen es sind, und der Rechner zieht den
-            Betrag direkt ab. */}
+        {/* Förderung. BEWUSST OHNE ZAHL UND OHNE PROGRAMMLISTE, obwohl der
+            Katalog seit dem 19.08.2026 Balkonkraftwerke als eigene Technik führt
+            (aktuell 38 Programme):
+              1. Eine Zahl hier wäre eine zweite Quelle. Die Programme kommen zur
+                 Laufzeit aus der Datenbank, der Seed ist nur Rückfallebene —
+                 „38 Kommunen" auf einer statischen Seite driftet ab dem Tag,
+                 an dem ein Programm ausläuft.
+              2. Ohne Postleitzahl kann diese Seite ohnehin nicht sagen, was für
+                 DICH gilt. Das kann der Rechner, sobald die Förderung dort
+                 angeschlossen ist (Parallel-Session, eigene Abnahme).
+            Was hier steht, sind die Größenordnungen — die ändern sich nicht mit
+            einem einzelnen Programm. */}
         <h2 style={S.h2}>Gibt es Förderung?</h2>
         <p style={S.p}>
           Vom Bund nicht — dafür von immer mehr Städten und Gemeinden. Die Beträge sind

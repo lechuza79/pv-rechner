@@ -57,10 +57,13 @@ const RECHNER_ITEMS: NavItem[] = [
 // (/balkonkraftwerk verlinkt Rechner und Anmelde-Ratgeber im Fließtext), aus
 // der Fußzeile und aus den Verweisblöcken der Ratgeber. Wer die interne
 // Verlinkung stärken will, setzt dort an, nicht hier.
+// Jeder Eintrag hat einen EIGENEN Schlüssel. Mit einem gemeinsamen leuchteten
+// alle drei gleichzeitig, sobald man irgendwo im Cluster war — der Auslöser
+// oben bleibt trotzdem markiert, weil er prüft, ob IRGENDEIN Kind aktiv ist.
 const BALKON_ITEMS: NavItem[] = [
   { href: "/balkonkraftwerk", label: "Balkonkraftwerk — Überblick", desc: "Was es bringt, was es kostet, was zu tun ist", page: "balkon" },
-  { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk-Rechner", desc: "Ertrag und Amortisation für deinen Haushalt", page: "balkon" },
-  { href: "/balkonkraftwerk/anmelden", label: "Balkonkraftwerk anmelden", desc: "Frist, Angaben und die drei Fallen im Register", page: "balkon" },
+  { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk-Rechner", desc: "Ertrag und Amortisation für deinen Haushalt", page: "balkon-rechner" },
+  { href: "/balkonkraftwerk/anmelden", label: "Balkonkraftwerk anmelden", desc: "Frist, Angaben und die drei Fallen im Register", page: "balkon-anmelden" },
 ];
 
 // PV-Förderung group: the regional funding directory plus the national data
@@ -106,10 +109,13 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     pathname.startsWith("/photovoltaik-rechner") ? "rechner" :
     pathname.startsWith("/waermepumpe-rechner") ? "waermepumpe" :
     pathname.startsWith("/klimaanlage-stromkosten") ? "klima" :
-    // Der ganze Balkon-Cluster, nicht nur der Rechner: Hub, Rechner und
-    // Anmelde-Ratgeber teilen sich einen Menüpunkt. Muss VOR der Ratgeber-Regel
-    // stehen — /balkonkraftwerk/anmelden ist auch ein Registry-Eintrag, soll
-    // aber „Balkonkraftwerk" hervorheben, nicht „Ratgeber".
+    // Balkon-Cluster: je Seite ein eigener Schlüssel, sonst leuchten im
+    // Ausklappmenü alle drei Einträge gleichzeitig. Die spezifischen Pfade
+    // müssen VOR dem Hub stehen — sonst fängt dessen Präfix sie ab.
+    // Und der ganze Block VOR der Ratgeber-Regel: /balkonkraftwerk/anmelden ist
+    // auch ein Registry-Eintrag, soll aber im Balkon-Menü markieren.
+    pathname.startsWith("/balkonkraftwerk/rechner") ? "balkon-rechner" :
+    pathname.startsWith("/balkonkraftwerk/anmelden") ? "balkon-anmelden" :
     pathname.startsWith("/balkonkraftwerk") ? "balkon" :
     pathname.startsWith("/photovoltaik-zubau-deutschland") ? "zubau" :
     pathname.startsWith("/photovoltaik-foerderung") ? "foerderung" :
