@@ -337,7 +337,11 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     // beide Zaehler zum selben Stichtag gaebe es keine ehrliche Rangveraenderung.
     plausibel: (g) => (g.privatDachCount ?? 0) >= MIN_DACH_FUER_QUOTE,
     plausibelGrund: `Dort stehen unter ${MIN_DACH_FUER_QUOTE} private Dachanlagen — darunter ist die Quote ein Zufallswert.`,
-    basis: (g) => stueck(g.privatDachCount, "private Dachanlage", "private Dachanlagen"),
+    // DIE GEZAEHLTEN SPEICHER, nicht die Daecher im Nenner: Der Nenner steht
+    // schon in der Messgroesse selbst ("je 100 private Dachanlagen"), und im
+    // Anschreiben stand er dadurch zweimal im gleichen Satz — "die meisten
+    // Batteriespeicher je 100 private Dachanlagen (828 private Dachanlagen)".
+    basis: (g) => stueck(g.batteriePrivatCount, "Hausspeicher", "Hausspeicher"),
     menge: (g) => g.privatDachCount ?? null,
   },
   {

@@ -286,7 +286,7 @@ export function renderMeldung(c: DraftContext): string {
   // das prueft, findet einen Fehlschluss und traut danach dem Rest nicht.
   const belegSatz =
     platz === 1
-      ? ` Zugleich hat ${kurz} ${c.bestleistung} ${unterDen} — Platz 1 von ${c.rang?.von.toLocaleString("de-DE")}${klammerTeil}.`
+      ? ` Zugleich hat ${kurz} ${c.bestleistung} ${unterDen}: Platz 1 von ${c.rang?.von.toLocaleString("de-DE")}${klammerTeil}.`
       : platz != null
         ? ` Bei ${c.themaDativ} liegt ${kurz} auf Platz ${platz} von ${c.rang?.von.toLocaleString("de-DE")} ${unterDen}${klammerTeil}.`
         : "";
