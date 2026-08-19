@@ -163,6 +163,33 @@ zusätzlich sinnvoll Anfang Januar (neue Jahres-Budgets). Prompt-Kern:
 > Programm), melde die Abweichungs-Liste. Bei klaren Befunden Korrekturen
 > vorschlagen, nicht automatisch in die Live-Daten schreiben.
 
+## Die Namensfalle: „ausgelaufen" steht auf derselben Seite wie „läuft"
+
+**Köln, 19.08.2026.** Eine zusammenfassende Abfrage der Programmseite meldete
+„Seit 27. August 2024 nehmen wir in diesem Programm keine neuen Anträge an" — das
+klang nach dem Freiburger Fall und wäre beinahe ein Abschalten geworden. Im
+Rohtext gelesen steht der Satz aber unter der Zwischenüberschrift **„Ausgelaufene
+Förderprogramme"** und gilt dem Vorgänger. Die Namen unterscheiden sich um zwei
+Wörter:
+
+| läuft | ausgelaufen (seit 27.08.2024) |
+|---|---|
+| Photovoltaik – klimafreundliches Wohnen **in Köln** | Photovoltaik – klimafreundliches Wohnen |
+| Photovoltaik – klimafreundliches Arbeiten **in Köln** | Photovoltaik – klimafreundliches Arbeiten |
+
+Daraus zwei Regeln:
+
+1. **Ein Stopp-Satz wird im Rohtext mit seiner Überschrift gelesen**, nie aus einer
+   Zusammenfassung übernommen. Eine Zusammenfassung kennt die Gliederung der Seite
+   nicht und greift den prominentesten Satz — hier den falschen. Das gilt in beide
+   Richtungen: In Freiburg trugen die Unterseiten den Stopp *nicht*, in Köln trug
+   die Seite einen Stopp, der ein anderes Programm meinte.
+2. **Der Beleg kommt von der Programm-Unterseite, nicht von der Übersicht.** Sie
+   ist die Seite, die „Zum Förderprogramm" verlinkt, und dort standen die Sätze
+   vollständig (PV 1.500/2.000/2.300/2.500 € nach Leistungsspanne, Speicher
+   500/1.000/1.300 € — deckungsgleich mit unserem Eintrag) plus ein eigener,
+   deutlich höherer Satz für gemeinnützige Vereine, den wir bewusst nicht führen.
+
 ## Status-Verlässlichkeit (aktiv/inaktiv) — BLOCKER
 
 Leitprinzip (User, Juni 2026): **„Am besten immer alles zeigen — aber aktiv/inaktiv
