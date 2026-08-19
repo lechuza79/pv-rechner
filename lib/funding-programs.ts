@@ -1645,13 +1645,13 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
-    // KEIN Rechenwert, obwohl „max. 100 €" nach einer Pauschale aussieht: Die
-    // Nachbarposition derselben Seite lautet „bis zu 50 % der förderfähigen
-    // Kosten, max. 2.000 €" — die Stadt schreibt Prozentsätze also aus, wenn es
-    // welche gibt, nennt hier aber nur den Deckel. Ob 100 € jede Anlage bekommt
-    // oder nur die Obergrenze eines ungenannten Anteils ist, steht in der
-    // Richtlinie und nicht auf der Seite. Bei einem 300-€-Set ist das der
-    // Unterschied zwischen 100 € und 0 €.
+    // Rechenwert ergänzt am 19.08.2026, nachdem die Richtlinie gelesen war:
+    // Ein Prozentsatz existiert für Balkonsolar NIRGENDS im Dokument — Nr. 2.3.8
+    // nennt nur Sacheigenschaften (mindestens 500 W, höchstens 1.000 W). Die
+    // Tabelle der Stadt schreibt Prozentsätze acht Mal ausdrücklich aus („bis zu
+    // 50 % der förderfähigen Kosten, max. 2.000 €" bei der Dachbegrünung) und
+    // lässt sie hier weg. Damit ist „max. 100 € / Anlage" eine Pauschale.
+    balkonPauschale: 100,
   },
 
   "nottuln-klimaschutz": {
@@ -2178,28 +2178,36 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     rates: [
       { label: "Mini-PV-Anlage (Balkonkraftwerk)", value: "25 % der förderfähigen Kosten, max. 250 €" },
       { label: "PV-Anlage auf Dach oder Fassade", value: "10 % der förderfähigen Kosten, max. 2.000 €" },
-      { label: "Wärmepumpe", value: "Pauschale je Anlage, gestaffelt nach Wärmequelle" },
+      { label: "Wärmepumpe (Grundwasser oder Erdwärme)", value: "800 € je Anlage" },
+      { label: "Wärmepumpe (Luft-Wasser)", value: "600 € je Anlage" },
     ],
     conditions: [
       "Der Förderantrag muss vor dem Kauf gestellt und bewilligt sein",
       "Dach- und Fassadenanlagen werden seit April 2026 bezuschusst, Balkonkraftwerke seit Februar 2023",
       "Die Wärmepumpen-Förderung steht in einer eigenen Richtlinie und setzt eine vorherige Energieberatung voraus",
       "Sie gilt nur im Bestand, wenn die Vorgängerheizung mindestens zwei Jahre alt war",
+      "Die Anlage muss der BAFA-Förderrichtlinie entsprechen und der hydraulische Abgleich durchgeführt sein",
+      "Gerechnet wird der Satz der Luft-Wasser-Pumpe; für Erdwärme oder Grundwasser sind es 200 € mehr",
       "Gefördert werden nur Gebäude im Gemeindegebiet Poing",
     ],
     combinableWith: BUND,
     foerdert: ["pv", "balkon", "waermepumpe"],
     percentOfCost: 0.1, pvCap: 2000,
     balkonPercentOfCost: 0.25, balkonCap: 250,
-    // Die WÄRMEPUMPE bekommt keinen Rechenwert, obwohl eine Prüfrunde Pauschalen
-    // von 800 € (Grundwasser/Erdwärme) und 600 € (Luft-Wasser) gemeldet hat: Die
-    // Sätze stehen nicht auf der Seite, sondern in einer zweiten Richtlinie von
-    // 2021, und im Volltext des PDF waren sie nicht gegenzulesen. Was nicht
-    // selbst gelesen ist, wird hier nicht zur Zahl — dieselbe Regel, die heute
-    // schon zwei falsche Beträge verhindert hat. Sobald die Richtlinie lesbar
-    // vorliegt, ist es die erste rechenbare kommunale Wärmepumpen-Förderung im
-    // Katalog. Zusätzlich unterscheidet sie nach Wärmequelle, was das Modell
-    // heute nicht ausdrücken kann.
+    // DIE ERSTE RECHENBARE KOMMUNALE WÄRMEPUMPEN-FÖRDERUNG im Katalog. Am
+    // 19.08.2026 im Volltext der Richtlinie gelesen (Abschnitt 5.2.2):
+    //   „Grundwasser-Wasserwärmepumpe: 800 € je Anlage
+    //    Erdwärme-Wasserwärmepumpe:    800 € je Anlage
+    //    Luft-Wasserwärmepumpe:        600 € je Anlage"
+    //
+    // Gerechnet wird der NIEDRIGSTE Satz. Die Sätze unterscheiden nach
+    // Wärmequelle, und obwohl der Rechner Luft/Wasser und Sole/Wasser kennt,
+    // trägt das Modell dafür kein Feld. 600 € ist zugleich der Satz der
+    // Luft-Wasser-Pumpe, also des mit Abstand häufigsten Falls — wer eine
+    // Erdwärmepumpe baut, bekommt 200 € mehr als hier steht. Die Richtung ist
+    // die gewohnte: lieber eine angenehme Überraschung als eine eingeplante
+    // Zahl, die nicht kommt.
+    wpPauschale: 600,
   },
 
   "goch-balkonkraftwerke": {
@@ -2342,6 +2350,283 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // große Mehrheit schlicht falsch. Dieselbe Zurückhaltung wie beim
     // München-Pass, der Tübinger KreisBonusCard und dem Holzgerlinger
     // Familien- und Sozialpass — nur wiegt sie hier am schwersten.
+  },
+
+  "reichelsheim-steckersolar": {
+    id: "reichelsheim-steckersolar", name: "Förderung von Stecker-Solaranlagen",
+    traeger: "Gemeinde Reichelsheim (Odenwald)", level: "kommune", region: "Reichelsheim (Odenwald)",
+    bundesland: "Hessen", agsCode: "06437013",
+    url: "https://www.reichelsheim.de/leben-in-reichelsheim/bauen-wohnen/foerderung-von-stecker-solaranlagen/",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Anlage, gestaffelt nach Leistung",
+    maxFoerderung: "max. 100 € je Wohnung",
+    rates: [
+      { label: "Stecker-Solaranlage 300 bis 450 W", value: "50 € einmalig" },
+      { label: "Stecker-Solaranlage über 450 bis 800 W", value: "100 € einmalig" },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Eigentümer, Vermieter und ausdrücklich auch Mieter im Gemeindegebiet",
+      "Bei vermieteten Wohneinheiten ist die Erlaubnis der Vermieterseite nötig",
+      "Der Antrag wird nach der Installation gestellt; Rechnung, Kontoauszug, Foto und Marktstammdatenregister-Anmeldung sind beizulegen",
+      "Die Anlage ist fünf Jahre zu betreiben",
+      "Unternehmen sind ausgeschlossen; gefördert wird einmal je Wohnung",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonTiers: [{ upTo: 450, amount: 50 }, { upTo: 999999, amount: 100 }],
+  },
+
+  "putzbrunn-klimaschutz": {
+    id: "putzbrunn-klimaschutz", name: "Förderprogramm Energiewende und Klimaschutz",
+    traeger: "Gemeinde Putzbrunn", level: "kommune", region: "Putzbrunn",
+    bundesland: "Bayern", agsCode: "09184140",
+    url: "https://www.putzbrunn.de/klimaschutz/zuschuesse",
+    stand: "August 2026", status: "pausiert", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale fürs Steckersolar, Anteile für Speicher, Brauchwasser-Wärmepumpe und Split-Gerät",
+    maxFoerderung: "max. 4.000 € je Jahr und 10.000 € in drei Jahren",
+    rates: [
+      { label: "Stecker-PV-Anlage", value: "100 €, mit Batteriespeicher zusätzlich 100 €" },
+      { label: "Batteriespeicher (Erstinstallation)", value: "15 % der Investitionskosten, max. 1.000 €" },
+      { label: "Brauchwasserwärmepumpe", value: "20 % der Kosten, max. 500 €" },
+      { label: "Split-Klimagerät", value: "10 % der Kosten, max. 400 €" },
+    ],
+    conditions: [
+      "Die Antragstellung ist erst nach Freigabe des Haushalts durch das Landratsamt möglich",
+      "Beim Steckersolar sind ausdrücklich Mietende die Zielgruppe; Eigentümer mit eigenem Hausdach sind ausgeschlossen",
+      "Bei allen übrigen Maßnahmen ist der Antrag vor Beginn zu stellen, beim Steckersolar binnen eines Monats nach Inbetriebnahme",
+      "Die Förderquote darf auch bei mehreren Zuschüssen 50 % nicht überschreiten",
+      "Die Richtlinie gilt bis zum 31. Dezember 2026; Anträge werden nicht ins Folgejahr übertragen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    // Zwei Dinge, die hier bewusst NICHT passieren:
+    //
+    // Kein Rechenwert, obwohl die Sätze klar sind — die Seite sagt „Eine
+    // Antragstellung wird mit Freigabe des Haushaltes durch das Landratsamt
+    // möglich sein". Wer heute plant, kann nichts beantragen. Sobald die
+    // Freigabe da ist, sind es 100 € fürs Steckersolar und 15 % (max. 1.000 €)
+    // für den Speicher.
+    //
+    // Und die Wärmepumpe zählt NICHT als Wärmepumpen-Förderung: Gefördert wird
+    // eine BRAUCHWASSER-Wärmepumpe für die Warmwasserbereitung, während unser
+    // Wärmepumpen-Rechner die Heizung rechnet. Beides „Wärmepumpe" zu nennen
+    // wäre dieselbe Wortgleichheit, die schon einmal einen Kessel-Nutzungsgrad
+    // verwechselt hat.
+  },
+
+  "dettelbach-gestaltungssatzung-pv": {
+    id: "dettelbach-gestaltungssatzung-pv", name: "Photovoltaik im Gestaltungssatzungsgebiet",
+    traeger: "Stadt Dettelbach", level: "kommune", region: "Dettelbach",
+    bundesland: "Bayern", agsCode: "09675117",
+    url: "http://www.dettelbach.de/kommunale-foerderprogramme/",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Zuschuss je kWp für denkmalgerechte Anlagen — nur im Gebiet der Gestaltungssatzung",
+    maxFoerderung: "max. 1.500 €",
+    rates: [{ label: "Photovoltaik mit Speicher", value: "150 € je kWp (3 bis 10 kWp), höchstens 10 % der Maßnahme und 1.500 €" }],
+    conditions: [
+      "Gefördert wird nur im räumlichen Geltungsbereich der Gestaltungssatzung, also im Wesentlichen der Altstadt",
+      "Verlangt sind Anlagen mit höchsten Gestaltungsanforderungen an Gebäudeintegration, Farbigkeit und Zuschnitt der Module",
+      "Ein Batteriespeicher ist Pflichtbestandteil, wird aber nicht gesondert gefördert",
+      "Ab 2026 ist der Antrag vor Ausführung zu stellen; begonnen werden darf erst nach der Bewilligung",
+      "Mieter brauchen die Zustimmung der Eigentümerseite in Textform",
+    ],
+    combinableWith: BUND,
+    // Der Satz wäre ausdrückbar — die BEDINGUNG nicht: Er gilt nur für
+    // denkmalgerechte Sondermodule im Altstadtgebiet. Wer in Dettelbach eine
+    // normale Dachanlage plant, bekommt nichts, und genau das trifft die große
+    // Mehrheit. Ein Abzug für alle wäre hier falscher als gar keine Zahl.
+  },
+
+  // ── Kommune – zweiter Durchgang der Leseliste, 19.08.2026 ───────────────────
+
+  "gailingen-balkonsolar": {
+    id: "gailingen-balkonsolar", name: "Förderung Balkon-Solaranlagen",
+    traeger: "Gemeinde Gailingen am Hochrhein", level: "kommune", region: "Gailingen am Hochrhein",
+    bundesland: "Baden-Württemberg", agsCode: "08335026",
+    url: "http://www.gailingen.de/infrastruktur-bauen/energie-klimaschutz/ziele-massnahmen-und-foerderungen",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Wohneinheit, unabhängig von der Modulzahl",
+    maxFoerderung: "100 € je Anlage",
+    rates: [{ label: "Balkon-Solaranlage", value: "100 € pauschal je Wohneinheit" }],
+    conditions: [
+      "Antragsberechtigt sind Vermieter, Mieter und Eigentümer einer Wohneinheit in Gailingen",
+      "Der Antrag wird nach dem Kauf gestellt; Rechnung und Foto der montierten Anlage sind beizulegen",
+      "Gefördert werden nur Geräte, die im laufenden Jahr gekauft wurden",
+      "Für das Jahr stehen Mittel für 20 Anträge bereit",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPauschale: 100,
+  },
+
+  "hattenhofen-balkonsolar": {
+    id: "hattenhofen-balkonsolar", name: "Förderprogramm Balkonsolarkraftwerk",
+    traeger: "Gemeinde Hattenhofen", level: "kommune", region: "Hattenhofen",
+    bundesland: "Baden-Württemberg", agsCode: "08117029",
+    url: "http://www.hattenhofen.de/de/umwelt/energie-klima/foerderprogramm-balkonsolarkraftwerk",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Betrag je Modul, gedeckelt je Anlage",
+    maxFoerderung: "max. 100 € je Anlage",
+    rates: [{ label: "Balkonsolarkraftwerk", value: "50 € je Modul, höchstens 100 € je Anlage" }],
+    conditions: [
+      "Antragsberechtigt sind Mieter und Eigentümer von Wohnungen in Hattenhofen",
+      "Der Antrag wird nach Kauf und Installation gestellt, mit Rechnung und Foto",
+      "Gefördert wird rückwirkend ab Rechnungsdatum 1. Januar 2025 bis 31. Dezember 2026",
+      "Bewilligt wird nach Eingang im Rahmen der Haushaltsmittel",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonTiers: [{ upTo: 600, amount: 50 }, { upTo: 999999, amount: 100 }],
+  },
+
+  "gaiberg-steckersolar": {
+    id: "gaiberg-steckersolar", name: "Förderprogramm Stecker-Solaranlagen",
+    traeger: "Gemeinde Gaiberg", level: "kommune", region: "Gaiberg",
+    bundesland: "Baden-Württemberg", agsCode: "08226022",
+    url: "http://www.gaiberg.de/gemeinde-info/klimaschutz/foerderprogramm-stecker-solaranlagen",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Anlage — Kontingent von zehn Zuschüssen",
+    maxFoerderung: "150 € je Anlage",
+    rates: [{ label: "Stecker-Solaranlage", value: "150 € je Anlage" }],
+    conditions: [
+      "Antragsberechtigt sind Vermieter, Mieter und Eigentümer im Gemeindegebiet; Mieter brauchen die Einbauerlaubnis",
+      "Das Kaufdatum muss im laufenden Jahr liegen; der Antrag folgt nach der Installation",
+      "Das Programm endet mit der zehnten Bewilligung beziehungsweise 1.500 € Gesamtbudget",
+      "Eine Förderung durch KfW, BAFA oder das Land schließt diesen Zuschuss aus",
+    ],
+    combinableWith: [],
+    foerdert: ["balkon"],
+    balkonPauschale: 150,
+    // `combinableWith: []` statt BUND — die Richtlinie schließt eine Förderung
+    // durch KfW, BAFA oder das Land ausdrücklich aus. Der einzige Bundeseintrag,
+    // der hier praktisch stören könnte, wäre der KfW-Kredit; die Nullsteuer ist
+    // ein Steuersatz und kein Förderprogramm, aber die Unterscheidung gehört
+    // nicht in eine Liste, die der Nutzer als „kombinierbar mit" liest.
+  },
+
+  "karlshuld-balkonkraftwerke": {
+    id: "karlshuld-balkonkraftwerke", name: "Förderprogramm Balkonkraftwerke",
+    traeger: "Gemeinde Karlshuld", level: "kommune", region: "Karlshuld",
+    bundesland: "Bayern", agsCode: "09185139",
+    url: "http://www.karlshuld.de/neues-foerderprogramm-fuer-balkonkraftwerke-mini-pv-anlagen",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Anlage, gestaffelt nach Leistung",
+    maxFoerderung: "max. 100 € je Anlage",
+    rates: [
+      { label: "Mini-PV-Anlage unter 600 W", value: "50 € einmalig" },
+      { label: "Mini-PV-Anlage ab 600 W", value: "100 € einmalig" },
+    ],
+    conditions: [
+      "Der Antrag muss vor dem Kauf gestellt werden; begonnene Maßnahmen sind ausgeschlossen",
+      "Nachzuweisen ist der Hauptwohnsitz in Karlshuld",
+      "Jährlich stehen 5.000 € bereit; ist der Topf leer, ruht die Förderung bis zum Folgejahr",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonTiers: [{ upTo: 599, amount: 50 }, { upTo: 999999, amount: 100 }],
+  },
+
+  "walddorfhaeslach-steckersolar": {
+    id: "walddorfhaeslach-steckersolar", name: "Förderung Stecker-Solargeräte",
+    traeger: "Gemeinde Walddorfhäslach", level: "kommune", region: "Walddorfhäslach",
+    bundesland: "Baden-Württemberg", agsCode: "08415087",
+    url: "https://www.walddorfhaeslach.com/unsere-gemeinde/aktuelles/foerderprogramme.html",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Einmaliger Förderbetrag je Privathaushalt",
+    maxFoerderung: "150 € je Haushalt",
+    rates: [{ label: "Stecker-Solargerät bis 800 W", value: "150 € einmalig" }],
+    conditions: [
+      "Antragsberechtigt sind Menschen, die in Walddorfhäslach zur Miete oder im Eigentum wohnen",
+      "Das Gerät muss auf Walddorfhäslacher Gemarkung betrieben werden",
+      "Entschieden wird im Rahmen der verfügbaren Haushaltsmittel",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPauschale: 150,
+  },
+
+  "klempau-balkonkraftwerke": {
+    id: "klempau-balkonkraftwerke", name: "Förderung von Balkonkraftwerken",
+    traeger: "Gemeinde Klempau", level: "kommune", region: "Klempau",
+    bundesland: "Schleswig-Holstein", agsCode: "01053067",
+    url: "https://gemeinde-klempau.de/foerderung-von-balkonkraftwerken/",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je Haushalt — Budget reicht für zehn Anlagen",
+    maxFoerderung: "200 € je Haushalt",
+    rates: [{ label: "Balkonkraftwerk", value: "200 € je Haushalt" }],
+    conditions: [
+      "Der Antrag wird vor der Anschaffung beim Bürgermeister gestellt; nach der Bewilligung folgt eine Fördernummer",
+      "Nach der Installation ist ein Verwendungsnachweis einzureichen",
+      "Insgesamt stehen 2.000 € bereit, also zehn Förderungen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPauschale: 200,
+    // Bei zehn Plätzen ist stille Ausschöpfung wahrscheinlicher als bei jedem
+    // anderen Programm im Katalog. Die Seite sagt dazu nichts — der
+    // Seiten-Abgleich wird es melden, sobald die Gemeinde es hinschreibt.
+  },
+
+  "hillscheid-energie": {
+    id: "hillscheid-energie", name: "Förderung privater Energiegewinnung",
+    traeger: "Ortsgemeinde Hillscheid", level: "kommune", region: "Hillscheid",
+    bundesland: "Rheinland-Pfalz", agsCode: "07143031",
+    url: "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderrichtlinie-der-stadt-hoehr-grenzhausen/",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp und je kWh Speicher, dazu Solarthermie",
+    maxFoerderung: "max. 1.500 € PV + 1.000 € Speicher je Grundstück",
+    rates: [
+      { label: "Photovoltaik", value: "150 € je kWp, max. 1.500 €" },
+      { label: "Batteriespeicher", value: "100 € je kWh, max. 1.000 €" },
+      { label: "Solarthermie", value: "100 € je m² Flachkollektor, 150 € je m² Röhrenkollektor, max. 900 €" },
+    ],
+    conditions: [
+      "Der Speicher wird auch zu einer BESTEHENDEN Photovoltaikanlage gefördert, nicht nur zu einer neuen",
+      "Mit der Maßnahme darf erst nach der Bewilligung begonnen werden; als Beginn gilt die Auftragserteilung",
+      "Antragsberechtigt sind Eigentümer und Eigentümergemeinschaften des Grundstücks",
+      "Je Grundstück wird einmalig bis zum Höchstbetrag gefördert",
+    ],
+    combinableWith: BUND,
+    pvPerKwp: 150, pvCap: 1500, speicherPerKwh: 100, speicherCap: 1000,
+    // Eigenes Programm der ORTSGEMEINDE Hillscheid, nicht der Stadt
+    // Höhr-Grenzhausen — beide stehen auf derselben Seite der Verbandsgemeinde,
+    // haben dieselben Sätze und einen UNTERSCHIEDLICHEN Stand: Die Stadt hat
+    // ihre Mittel für 2026 ausgeschöpft, Hillscheid nicht. Wer die Seite
+    // überfliegt, hält das für ein Programm und trägt den falschen Status ein.
+  },
+
+  "schlierbach-energiespeicher": {
+    id: "schlierbach-energiespeicher", name: "Förderung von Energiespeichern",
+    traeger: "Gemeinde Schlierbach", level: "kommune", region: "Schlierbach",
+    bundesland: "Baden-Württemberg", agsCode: "08117044",
+    url: "http://www.schlierbach.de/freizeit-kultur/energie-klimaschutz/foerderung-von-energiespeichern",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Anschaffungskosten eines Speichers — nur zusammen mit einer PV-Anlage",
+    maxFoerderung: "max. 200 € je Anlage",
+    rates: [{ label: "Energiespeicher", value: "50 % der Anschaffungskosten, max. 200 €" }],
+    conditions: [
+      "Gefördert wird nur zusammen mit einer vorhandenen oder zeitgleich errichteten Photovoltaikanlage; ein Balkonkraftwerk genügt",
+      "Eine Antragstellung vor der Installation ist ausdrücklich nicht möglich",
+      "Die Anlage ist mindestens fünf Jahre im Eigentum zu betreiben",
+      "Für das laufende Jahr sind 30 Anlagen und 6.000 € vorgesehen",
+    ],
+    combinableWith: BUND,
+    // Ein reines SPEICHER-Programm: Der Zuschuss hängt an den Kosten des
+    // Speichers, nicht an der Anlagengröße. `percentOfCost` würde ihn auf die
+    // gesamte PV-Investition anwenden und damit weit überschätzen — deshalb
+    // kein Rechenwert, obwohl der Satz eindeutig ist. Dass ein Balkonkraftwerk
+    // als Grundlage genügt, ist ungewöhnlich und steht deshalb ausdrücklich da.
   },
 
 };

@@ -132,6 +132,10 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "poing-energie", "goch-balkonkraftwerke", "herzberg-balkonkraftwerke",
   "herbrechtingen-balkonkraftwerke", "weyhe-klimaschutz", "moormerland-balkonkraftwerke",
   "bad-krozingen-balkon-pv",
+  "reichelsheim-steckersolar", "putzbrunn-klimaschutz", "dettelbach-gestaltungssatzung-pv",
+  "gailingen-balkonsolar", "hattenhofen-balkonsolar", "gaiberg-steckersolar",
+  "karlshuld-balkonkraftwerke", "walddorfhaeslach-steckersolar", "klempau-balkonkraftwerke",
+  "hillscheid-energie", "schlierbach-energiespeicher",
 ];
 
 /**
