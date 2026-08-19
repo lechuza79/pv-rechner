@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   bewerteLink, istEndergebnis, linkKandidaten, sitemapKandidaten, sitemapIndex, SCHWELLE, SUCH_VERSION,
+  suchFormular, suchAdresse, suchseitenLink, SUCH_BEGRIFFE, SUCHSEITEN_PFADE,
 } from "../funding-url-suche";
 
 /** Kurzform für die Gesamtpunktzahl — die Gruppen prüfen eigene Tests. */
@@ -169,7 +170,169 @@ describe("Sitemap", () => {
 });
 
 describe("Versionsstempel", () => {
-  it("steht bei 1 — wer die Wortlisten ändert, zählt hoch", () => {
-    expect(SUCH_VERSION).toBe(1);
+  it("steht bei 2 — wer die Wortlisten oder die Reichweite ändert, zählt hoch", () => {
+    // Auf 2 gezogen, als die Volltextsuche der Website dazukam: Die 7.863
+    // Gemeinden mit Verdikt „keine-seite" wurden mit der alten, flacheren
+    // Reichweite geprüft und müssen deshalb von selbst wieder anstehen.
+    expect(SUCH_VERSION).toBe(2);
+  });
+});
+
+// ─── Die Suchfunktion der Website ───────────────────────────────────────────
+//
+// Der Crawl findet nur 13 % der Förderseiten, weil er zwei Klicks tief geht und
+// nur sieht, was verlinkt ist. Die Volltextsuche der Website kennt dagegen ihren
+// ganzen Bestand. Diese Tests halten fest, dass wir sie in den Fassungen finden,
+// die auf deutschen Kommunalseiten wirklich vorkommen — und dass wir NICHT das
+// Newsletter-Formular daneben erwischen.
+describe("Suchformular der Website finden", () => {
+  const B = "https://gemeinde.de/";
+
+  it("findet die TYPO3-Solr-Suche samt eckiger Klammern im Feldnamen", () => {
+    // Der Feldname MUSS wörtlich übernommen werden. Ihn zu normalisieren wäre
+    // der eine Fehler, der die halbe TYPO3-Welt kostet.
+    const html = `<form action="/suche" method="get">
+      <input type="hidden" name="id" value="42">
+      <input type="text" name="tx_solr[q]" placeholder="Suchbegriff">
+      <button>Suchen</button></form>`;
+    const f = suchFormular(html, B)!;
+    expect(f.feld).toBe("tx_solr[q]");
+    expect(f.action).toBe("https://gemeinde.de/suche");
+    expect(f.versteckt).toEqual([{ name: "id", wert: "42" }]);
+  });
+
+  it("findet die TYPO3-ke_search-Fassung", () => {
+    const html = `<form action="/suchergebnis" method="get">
+      <input type="text" name="tx_kesearch_pi1[sword]"></form>`;
+    expect(suchFormular(html, B)?.feld).toBe("tx_kesearch_pi1[sword]");
+  });
+
+  it("findet die WordPress-Suche ohne action — sie schickt an die Seite selbst", () => {
+    const html = `<form role="search" method="get" class="search-form">
+      <input type="search" name="s" value=""></form>`;
+    const f = suchFormular(html, B)!;
+    expect(f.feld).toBe("s");
+    expect(f.action).toBe("https://gemeinde.de/");
+  });
+
+  it("nimmt type=search auch ohne sprechenden Feldnamen", () => {
+    const html = `<form action="/finden"><input type="search" name="abc123"></form>`;
+    expect(suchFormular(html, B)?.feld).toBe("abc123");
+  });
+
+  it("kapert NICHT das Newsletter- oder Kontaktformular", () => {
+    // Beide stehen auf jeder zweiten Startseite. Ein Textfeld allein reicht
+    // deshalb nicht — das Formular muss sich als Suche zu erkennen geben.
+    const html = `<form action="/newsletter" method="get">
+      <input type="text" name="email" placeholder="Ihre E-Mail"></form>`;
+    expect(suchFormular(html, B)).toBeNull();
+  });
+
+  it("nimmt auch POST-Formulare — wir schicken trotzdem ein GET", () => {
+    // Erst andersherum gebaut, mit dem Argument, ein POST sei gegenüber einem
+    // fremden Verwaltungsserver eine Schreibgeste. Das stimmt, trifft aber
+    // nicht: Aus dem Formular werden nur Adresse und Feldname übernommen, die
+    // Anfrage selbst ist ein gewöhnliches GET. Gemessen am 19.08.2026 trugen
+    // nur 14 von 39 erreichbaren Startseiten ein GET-Formular — der Ausschluss
+    // kostete mehr, als der vermiedene Irrtum wert war.
+    const html = `<form action="/suche" method="post"><input type="search" name="q"></form>`;
+    expect(suchFormular(html, B)?.feld).toBe("q");
+  });
+
+  it("findet den Link zur Suchseite, wenn die Startseite kein Formular hat", () => {
+    // Viele Kommunalseiten zeigen oben nur ein Lupen-Symbol und laden die Suche
+    // per JavaScript nach — im HTML steht dann kein Formular.
+    const html = `<a href="/suche" title="Suche">Suche</a>`;
+    expect(suchseitenLink(html, B)).toBe("https://gemeinde.de/suche");
+  });
+
+  it("führt NICHT in die Rats- oder Personensuche", () => {
+    // Beide heißen „Suche" und finden garantiert keine Förderseite.
+    expect(suchseitenLink(`<a href="/ratsinfo/suche">Suche</a>`, B)).toBeNull();
+    expect(suchseitenLink(`<a href="/personensuche">Suche</a>`, B)).toBeNull();
+    expect(suchseitenLink(`<a href="/mitarbeiter/suche">Ansprechpartner suchen</a>`, B)).toBeNull();
+  });
+
+  it("hält nur wenige geratene Pfade bereit — jeder ist ein fremder Abruf", () => {
+    expect(SUCHSEITEN_PFADE.length).toBeLessThanOrEqual(3);
+  });
+
+  it("überspringt Suchen auf fremden Hosts", () => {
+    // Manche Gemeinden binden eine fremde Suche ein. Deren Trefferliste führt
+    // überall hin, nur nicht kontrolliert auf die eigene Domain.
+    const html = `<form action="https://www.google.com/search"><input type="search" name="q"></form>`;
+    expect(suchFormular(html, B)).toBeNull();
+  });
+
+  it("nimmt das erste auswertbare Formular, nicht irgendeines", () => {
+    const html = `<form action="/newsletter"><input type="text" name="email"></form>
+      <form action="/suche"><input type="search" name="q"></form>`;
+    expect(suchFormular(html, B)?.action).toBe("https://gemeinde.de/suche");
+  });
+
+  it("baut die Adresse mit versteckten Feldern und kodiertem Begriff", () => {
+    const f = { action: "https://gemeinde.de/suche", feld: "tx_solr[q]", versteckt: [{ name: "id", wert: "42" }] };
+    const u = new URL(suchAdresse(f, "förderprogramm"));
+    expect(u.searchParams.get("tx_solr[q]")).toBe("förderprogramm");
+    expect(u.searchParams.get("id")).toBe("42");
+  });
+
+  it("sucht je Anfrage EIN Wort — UND-Verknüpfung verlöre die kleinen Gemeinden", () => {
+    // Kleine Gemeinden nennen ihre Seite schlicht „Förderprogramme" und führen
+    // Photovoltaik neben Zisternen. Eine Anfrage „förderprogramm photovoltaik"
+    // fände genau die nicht.
+    for (const b of SUCH_BEGRIFFE) expect(b).not.toMatch(/\s/);
+    expect(SUCH_BEGRIFFE.length).toBeGreaterThan(0);
+  });
+});
+
+describe("Umlaute in der Adresse", () => {
+  // BLOCKER: `new URL()` liefert Pfade prozentkodiert zurück. Ohne Dekodierung
+  // passt kein einziges Wortmuster auf `/f%c3%b6rderprogramme`, und die Seite
+  // fällt lautlos durch — sichtbar nur dort, wo kein Linktext aushilft, also
+  // ausgerechnet in Sitemaps.
+  it("liest prozentkodierte Umlaute wie geschriebene", () => {
+    const kodiert = pkt("https://x.de/klima/f%C3%B6rderprogramme");
+    const klar = pkt("https://x.de/klima/förderprogramme");
+    expect(kodiert).toBe(klar);
+    expect(kodiert).toBeGreaterThan(0);
+  });
+
+  it("findet auch die Themenwörter mit Umlaut", () => {
+    expect(pkt("https://x.de/zuschuss/w%C3%A4rmepumpe")).toBeGreaterThanOrEqual(SCHWELLE);
+  });
+
+  it("wirft einen Link mit kaputter Kodierung nicht weg", () => {
+    // `%zz` lässt decodeURIComponent werfen — dann zählt die Rohfassung.
+    expect(() => pkt("https://x.de/foerderprogramm%zz/solar")).not.toThrow();
+    expect(pkt("https://x.de/foerderprogramm%zz/solar")).toBeGreaterThan(0);
+  });
+
+  it("erkennt fremde Ressorts auch kodiert", () => {
+    // Die Gegenrichtung: Der Ausschluss muss genauso mitlesen, sonst schleust
+    // die Dekodierung ausgerechnet die Fehlgriffe wieder ein.
+    expect(pkt("https://x.de/f%C3%B6rderverein-feuerwehr")).toBe(0);
+  });
+});
+
+describe("Ein Download ist keine Seite", () => {
+  // Real gespeicherte Adressen (Holzminden, Glienicke/Nordbahn, Rheinstetten):
+  // eine Richtlinien-PDF hinter einer undurchsichtigen Kennung, über den
+  // Linktext auf volle Punktzahl gekommen. Als gespeicherte Förderseite ist das
+  // doppelt schädlich — der Screener verwirft alles, was nicht HTML ist, und die
+  // Gemeinde gilt trotzdem als versorgt und kommt nie wieder in die Suche.
+  it("verwirft Download-Adressen ohne Endung", () => {
+    expect(pkt("https://holzminden.de/downloads/datei/YmQxOTYxMzlhMTU4NGIx", "Förderprogramm Photovoltaik")).toBe(0);
+    expect(pkt("https://x.de/download/file/abc123", "Förderrichtlinie Solar")).toBe(0);
+  });
+
+  it("verwirft PDFs, deren Endung im Abfrageteil steckt", () => {
+    expect(pkt("https://rheinstetten.de/de/klimaschutz?file=foerderprogramm-photovoltaik.pdf&cid=19001")).toBe(0);
+  });
+
+  it("lässt gewöhnliche Themenseiten unangetastet", () => {
+    // Die Gegenrichtung: Der neue Ausschluss darf keine echte Seite kosten.
+    expect(pkt("https://x.de/klimaschutz/foerderprogramm-photovoltaik")).toBeGreaterThan(0);
+    expect(pkt("https://x.de/rathaus/downloadbereich/foerderung-solar")).toBeGreaterThan(0);
   });
 });

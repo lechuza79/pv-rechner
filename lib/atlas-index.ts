@@ -49,14 +49,14 @@ export type AtlasLevel = "de" | "bundesland" | "landkreis" | "gemeinde";
 // die Welle wird TROTZDEM nicht freigeschaltet. Nicht wegen des Risikos, sondern
 // weil auf dieser Ebene niemand sucht. Gemessen (docs/seo/befund-2026-08-18-atlas-wellen.md):
 //   - Ein Wettbewerber mit demselben Produkt (wieistmeinsolar.de) hat 139
-//     Platzierungen, davon 8 in den Top 10 — und NULL davon auf einem Suchbegriff
-//     mit dem Wort „Landkreis". 125 der 139 liegen auf Ortsseiten.
+//     Platzierungen, davon 6 echte Ortstreffer in den Top 10 — und nur EINE der
+//     139 auf einem Suchbegriff mit dem Wort „Kreis". 123 liegen auf Ortsseiten.
 //   - Suchvolumen „photovoltaik landkreis würzburg": 10/Monat. Für Hameln-Pyrmont,
 //     Fulda und Bautzen nicht einmal messbar. „photovoltaik münchen": 320.
 //   - Unsere eigene Kreisseite Hameln-Pyrmont, die durch die zwei Stunden am
-//     27.07. im Index hing, brachte 42 Einblendungen — alle fünf Anfragen dahinter
-//     waren ORTSanfragen („solaranlage hameln"), keine einzige Kreisanfrage. Und
-//     0 Klicks.
+//     27.07. im Index hing, brachte 58 Einblendungen — die fünf benannten Anfragen
+//     dahinter sind ausnahmslos ORTSanfragen („solaranlage hameln"), keine einzige
+//     Kreisanfrage. Und 0 Klicks.
 // Die Kreisebene ist damit kein eigenes Suchziel, sondern der Umschlagplatz zur
 // Ortsebene. Der nächste sinnvolle Schritt ist Welle 1 (Gemeinden, oberhalb der
 // Thin-Schwelle) mit Ortsname im Titel — nicht 0b. Wer 0b trotzdem flippen will,
@@ -67,6 +67,80 @@ const RELEASED: Record<AtlasLevel, boolean> = {
   landkreis: false,
   gemeinde: false,
 };
+
+/**
+ * Der Nachweis, ohne den keine Ebene live geht — erzwungen von
+ * lib/__tests__/atlas-freigabe-nachweis.test.ts.
+ *
+ * WARUM ES DAS GIBT (18.08.2026): Zweimal an einem Tag stand eine Freigabe kurz
+ * vor dem Livegang, für die alle Prüfungen grün waren — und beide Male fehlte
+ * dieselbe Prüfung. Am Morgen empfahl der Wellen-Monitor die Kreisebene, weil
+ * Technik und Indexierung grün waren; niemand hatte gefragt, ob dort überhaupt
+ * gesucht wird (Antwort: nein). Am Abend zeigte ein adversarialer Prüfer, dass
+ * unsere Förder-Stadtseiten längst auf den Ortsanfragen stehen, auf die die
+ * Gemeindeseiten zielen — die Ortswelle hätte die eigene Kollision freigeschaltet.
+ *
+ * Ein Merksatz in einem Runbook hätte beides nicht verhindert: Der Wellen-Monitor
+ * HATTE ein Runbook, und die Freigabekriterien darin waren erfüllt. Deshalb hängt
+ * der Nachweis jetzt an derselben Datei wie der Schalter — wer `RELEASED` umlegt,
+ * ohne hier zu belegen, dass beide Fragen beantwortet sind, bekommt einen roten
+ * Test, keinen guten Rat.
+ *
+ * `null` heißt: nicht erbracht. Für `de` und `bundesland` steht der ehrliche
+ * Vermerk, dass sie vor Einführung dieser Regel live gingen — sie rückwirkend als
+ * geprüft auszuweisen wäre genau die Sorte erfundenes Prüfdatum, gegen die dieses
+ * Projekt an anderer Stelle schon einmal antreten musste.
+ */
+export type FreigabeNachweis = {
+  /** Tag, an dem BEIDE Fragen unten beantwortet wurden (ISO). */
+  gemessenAm: string;
+  /** Wird auf dieser Ebene überhaupt gesucht? Zahl + Quelle, kein Adjektiv. */
+  nachfrage: string;
+  /** Steht auf denselben Anfragen schon eine andere eigene Seitenfamilie? */
+  kannibalisierung: string;
+  /** Wo die Messung nachlesbar ist. */
+  beleg: string;
+};
+
+export const FREIGABE_NACHWEIS: Record<AtlasLevel, FreigabeNachweis | null> = {
+  // Vor Einführung der Regel freigeschaltet (Welle 0a, Juli 2026). Bewusst kein
+  // nachträglich erfundener Nachweis — siehe Kommentar oben.
+  de: null,
+  bundesland: null,
+  landkreis: {
+    gemessenAm: "2026-08-18",
+    nachfrage:
+      "Nein. Suchvolumen 'photovoltaik landkreis würzburg' 10/Monat, für Hameln-Pyrmont, " +
+      "Fulda und Bautzen nicht messbar. Beim Wettbewerber wieistmeinsolar.de trägt 1 von " +
+      "139 Platzierungen das Wort 'Kreis'.",
+    kannibalisierung:
+      "Nicht relevant, solange die Ebene gesperrt bleibt — die Kreisseiten sind der Weg " +
+      "zur Ortsebene, kein eigenes Suchziel.",
+    beleg: "docs/seo/befund-2026-08-18-atlas-wellen.md",
+  },
+  // OFFEN (bis 12/2026): Vor Welle 1 zu erbringen. Die Nachfrage ist belegt
+  // (Ortsanfragen tragen das Volumen), die Kannibalisierung NICHT: 33 von 108
+  // sichtbaren Förder-Anfragen tragen kein Geld-Wort, bei drei Anfragen steht die
+  // Förderseite auf einem reinen Bestands-Wort besser als die Atlasseite. Das ist
+  // je Ort der geplanten Charge zu messen, nicht pauschal.
+  gemeinde: null,
+};
+
+/** Darf diese Ebene live gehen? Antwortet mit dem Grund, nicht nur mit ja/nein. */
+export function freigabeMoeglich(level: AtlasLevel): { ok: boolean; grund: string } {
+  const n = FREIGABE_NACHWEIS[level];
+  if (!n) {
+    return {
+      ok: false,
+      grund:
+        `Für die Ebene „${level}" liegt kein Freigabe-Nachweis vor. Vor dem Livegang zu ` +
+        "beantworten: Wird auf dieser Ebene gesucht (Suchvolumen + Wettbewerbs-Gegenprobe)? " +
+        "Und steht auf denselben Anfragen schon eine andere eigene Seitenfamilie " +
+        "(Förderseiten)? Beides in FREIGABE_NACHWEIS eintragen.",
+    };
+  }
+  return { ok: true, grund: `Nachweis vom ${n.gemessenAm}: ${n.nachfrage}` };
+}
 
 // Thin-Schwelle: Gemeinden unter dieser Anlagenzahl bleiben noindex — ohne
 // nennenswerten Bestand hat die Seite keinen Eigenwert (Doorway-/Thin-Risiko).

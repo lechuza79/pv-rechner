@@ -77,14 +77,27 @@ jobs:
       # Für rund 9.700 Gemeinden kennen wir die Verwaltungs-Website, aber keine
       # Themenseite — das ist die größte Lücke im Katalog, und keine Menge
       # Screening kann sie schließen. Gemessen am ersten Lauf (18.08.2026):
-      # 250 Gemeinden durchsucht, 113 Förderseiten gefunden. In Schüben von 300
-      # ist der Bestand in gut vier Wochen einmal durch.
+      # 250 Gemeinden durchsucht, 113 Förderseiten gefunden.
+      #
+      # UMFANG AUF 1.000 GEZOGEN (19.08.2026), weil der Lauf einmal komplett von
+      # vorn muss: Die Suche kann seit heute auch die Volltextsuche der Website
+      # selbst benutzen (SUCH_VERSION 2), und die 7.863 Gemeinden mit Verdikt
+      # „keine-seite" wurden mit der alten, flacheren Reichweite geprüft. Bei 300
+      # je Nacht dauerte der Neudurchlauf über einen Monat, bei 1.000 rund zehn
+      # Nächte.
+      #
+      # Die Rücksicht bleibt gewahrt, und zwar an der Stelle, auf die es
+      # ankommt: Der Umfang sagt nichts über die Last je Server. Sechs Arbeiter
+      # laufen auf sechs VERSCHIEDENEN Gemeinden, und jede einzelne Website
+      # bekommt gemessene 2,9 Anfragen — unabhängig davon, ob der Lauf 300 oder
+      # 1.000 Gemeinden abarbeitet. Was steigt, ist allein unsere eigene
+      # Laufzeit (grob eine Viertelstunde).
       - name: Förderseiten auf den Amtsdomains suchen
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: npm run foerder:suche -- --limit 300
+        run: npm run foerder:suche -- --limit 1000
 
       # Zeigt jedes Programm auf die richtige Gemeinde? Ein vertippter
       # Gemeindeschlüssel bleibt gültig und zeigt auf einen anderen Ort — nichts

@@ -106,6 +106,23 @@ export interface FundingProgram {
   /** Flat base amount added before the per-kWp part (e.g. Düsseldorf 1.000 €). */
   pvSockel?: number;
   speicherPerKwh?: number;
+  /**
+   * Fester Grundbetrag für den Speicher, bevor der Satz je kWh greift — das
+   * Gegenstück zu {@link pvSockel} auf der Speicherseite.
+   *
+   * WARUM ES DAS GIBT (19.08.2026): Die Bauform „Grundbetrag für die ersten
+   * n kWh, danach je weiterer kWh" ist verbreitet und war bis dahin nicht
+   * ausdrückbar. Schwebheim zahlt 400 € bei 3 kWh und 75 € je weiterer voller
+   * kWh; mit `speicherTiers` nachgebaut zahlte das Modell bei 7,5 kWh — einer
+   * der sechs Standardgrößen des Rechners — 775 € statt 700 €, weil
+   * `tierAmount` aufrundet, wo die Richtlinie abrundet. Das Programm stand
+   * deshalb ohne Rechenwert im Katalog.
+   *
+   * Gerechnet wird `speicherSockel + (volle kWh über speicherMin) × speicherPerKwh`,
+   * gedeckelt an `speicherCap`. Der Sockel setzt `speicherMin` voraus — ohne
+   * Untergrenze wäre nicht bestimmt, ab welcher Kapazität er überhaupt anfällt.
+   */
+  speicherSockel?: number;
   /** Share of total cost, e.g. 0.2 for 20 %. */
   percentOfCost?: number;
   /** Total € cap on the PV part — gilt für den €/kWp-Satz UND für
@@ -187,7 +204,16 @@ export function fundingStandLabel(p: FundingProgram, heute?: string): string {
   // Bundesprogramm wie die 0 % Mehrwertsteuer trägt keinen strukturierten Satz
   // und wird nie eingerechnet — dort wäre "daher nicht eingerechnet" eine
   // beunruhigende Falschaussage über eine dauerhafte Rechtslage.
-  const rechenbar = !!(p.percentOfCost || p.pvPerKwp || p.pvTiers || p.speicherPerKwh || p.speicherTiers);
+  // Alle drei Techniken, nicht nur Dach-PV: Seit der Katalog auch Balkon- und
+  // Wärmepumpen-Sätze trägt, hätte die reine PV-Liste genau bei diesen
+  // Programmen geschwiegen — „Zuletzt geprüft: 18.08.2026" neben einer Rechnung,
+  // die den Zuschuss stillschweigend weglässt. Das ist der Widerspruch zwischen
+  // Text und Zahl, den der Hinweis verhindern soll.
+  const rechenbar = !!(
+    p.percentOfCost || p.pvPerKwp || p.pvTiers || p.speicherPerKwh || p.speicherTiers ||
+    p.balkonPauschale || p.balkonProWp || p.balkonPercentOfCost || p.balkonTiers ||
+    p.wpPauschale || p.wpPercentOfCost
+  );
   const nichtGerechnet =
     rechenbar && p.status === "aktiv" && !fundingBelegAktuell(p, heute ?? heuteIso())
       ? " · aktuell nicht bestätigt, daher nicht eingerechnet"
@@ -2205,7 +2231,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Der Förderantrag muss vor dem Kauf gestellt und bewilligt sein",
       "Dach- und Fassadenanlagen werden seit April 2026 bezuschusst, Balkonkraftwerke seit Februar 2023",
-      "Die Wärmepumpen-Förderung steht in einer eigenen Richtlinie und setzt eine vorherige Energieberatung voraus",
+      "Die Wärmepumpen-Förderung steht in einer eigenen Richtlinie, nicht in der für Photovoltaik",
+      "Ohne Bundesförderung zahlt die Gemeinde nicht — nachzuweisen sind der Antrag beim BAFA und später der Auszahlungsbescheid",
       "Sie gilt nur im Bestand, wenn die Vorgängerheizung mindestens zwei Jahre alt war",
       "Die Anlage muss der BAFA-Förderrichtlinie entsprechen und der hydraulische Abgleich durchgeführt sein",
       "Gerechnet wird der Satz der Luft-Wasser-Pumpe; für Erdwärme oder Grundwasser sind es 200 € mehr",
@@ -2229,6 +2256,16 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // die gewohnte: lieber eine angenehme Überraschung als eine eingeplante
     // Zahl, die nicht kommt.
     wpPauschale: 600,
+    // KORREKTUR 19.08.2026 (Volltext in docs/quellen/): Hier stand als Bedingung
+    // „setzt eine vorherige Energieberatung voraus". Das ist falsch — die
+    // Energieberatung verlangt Poing für DÄMMUNG und FENSTER (Abschnitt 5.1.6),
+    // die Unterlagenliste der Wärmepumpe (5.2.4) nennt sie nicht. Verlangt wird
+    // dort stattdessen der Nachweis der BAFA-Antragstellung und beim Abruf der
+    // Auszahlungsbescheid; zusammen mit Abschnitt 5.2 („gefördert werden
+    // Heizsysteme, die nach den Richtlinien des BAFA im Rahmen der BEG gefördert
+    // werden") setzt der Zuschuss die Bundesförderung also VORAUS, statt mit ihr
+    // zu konkurrieren. Das ist zugleich der Beleg dafür, dass er neben der BEG
+    // stehen darf — Abschnitt 3.4 erlaubt die Kombination ausdrücklich.
   },
 
   "goch-balkonkraftwerke": {
@@ -2847,28 +2884,20 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
     foerdert: ["pv"],
-    // KEIN Rechenwert, obwohl der Satz eindeutig ist — und das ist die
-    // interessante Entscheidung an diesem Eintrag.
+    speicherMin: 3, speicherSockel: 400, speicherPerKwh: 75, speicherCap: 1000,
+    // Das erste Programm mit `speicherSockel` — die Bauform „400 € für die
+    // ersten 3 kWh, danach 75 € je weiterer voller kWh, höchstens 1.000 €".
     //
-    // Die Bauform ist „Sockel für die ersten 3 kWh, danach je kWh": 400 € bei
-    // 3 kWh, dazu 75 € je weiterer voller kWh, gedeckelt bei 1.000 €. Das
-    // Modell kennt für den Speicher entweder einen Satz je kWh oder Stufen —
-    // einen Sockel PLUS Satz gibt es nur für die Dachanlage (`pvSockel`).
+    // Es stand bis zum 19.08.2026 bewusst OHNE Rechenwert hier: Mit
+    // `speicherTiers` nachgebaut zahlte das Modell bei 7,5 kWh 775 € statt 700 €,
+    // weil `tierAmount` die erste nicht überschrittene Stufe nimmt, während die
+    // Richtlinie „auf volle kWh abgerundet" rechnet. 7,5 kWh ist eine der sechs
+    // Standardgrößen des Rechners, der Fehler also nicht theoretisch. Statt die
+    // Zahl zu schönen bekam das Modell das fehlende Feld.
     //
-    // Mit `speicherTiers` nachzubauen scheitert an der Abrundung: `tierAmount`
-    // nimmt die erste Stufe, die der Wert nicht überschreitet, die Richtlinie
-    // rundet dagegen ab. Bei 7,5 kWh — einer der sechs Standardgrößen des
-    // Rechners — käme 775 € heraus, gezahlt werden 700 €. Ein zu hoher Betrag
-    // ist genau der Fehler, den dieses Programm bei niemandem machen soll.
-    //
-    // Also lieber keine Zahl als eine falsche. Wer das ändern will, ergänzt
-    // `speicherSockel` und eine Abrundung in `fundingAmount` — dann trägt der
-    // Eintrag `speicherMin: 3`, `speicherSockel: 400`, `speicherPerKwh: 75`,
-    // `speicherCap: 1000` und rechnet exakt.
-    //
-    // Zweitens fällt auf: Die Richtlinie verlangt nirgends eine PV-Anlage. Ob
-    // ein Speicher ohne Erzeugung förderfähig wäre, bleibt offen und steht
-    // deshalb nicht in den Bedingungen.
+    // Die Richtlinie verlangt nirgends eine PV-Anlage. Ob ein Speicher ohne
+    // Erzeugung förderfähig wäre, bleibt offen und steht deshalb nicht in den
+    // Bedingungen.
   },
 
   "asbach-balkonkraftwerke": {
@@ -3225,6 +3254,67 @@ export function programmeFuerTechnik(list: FundingProgram[], technik: FundingTec
   return list.filter((p) => foerdertTechnik(p, technik));
 }
 
+/**
+ * Schließt das Programm eine gleichzeitige Bundesförderung aus?
+ *
+ * WOZU: Der Wärmepumpen-Rechner zieht die BEG des Bundes bereits ab, bevor der
+ * Katalog überhaupt gefragt wird — sie ist kein Katalog-Eintrag, sondern kommt
+ * aus lib/heatpump.ts. `combinableWith` kann sie deshalb nicht benennen, und ein
+ * Programm, das Bundesmittel ausschließt, würde sonst stumm OBEN DRAUF gerechnet.
+ *
+ * Gelesen wird die vorhandene Angabe, kein neues Feld: Eine leere
+ * `combinableWith`-Liste ist im Katalog bereits die Art, „geht nur allein" zu
+ * sagen — Gaiberg trägt sie, weil die Richtlinie eine Förderung durch KfW, BAFA
+ * oder das Land ausdrücklich ausschließt. Jedes andere Programm nennt dort
+ * mindestens die Bundeseinträge.
+ *
+ * Die Richtung ist bewusst vorsichtig: Wer nichts angibt, gilt als
+ * ausschließend. Eine zu Unrecht weggelassene Förderung ist eine angenehme
+ * Überraschung, eine zu Unrecht gewährte ein Zuschuss, den jemand einplant und
+ * nicht bekommt.
+ */
+export function schliesstBundesfoerderungAus(f: Pick<FundingProgram, "combinableWith">): boolean {
+  return (f.combinableWith?.length ?? 0) === 0;
+}
+
+/**
+ * Die Programme, die NEBEN der Bundesförderung stehen dürfen. Nur diese darf ein
+ * Rechner abziehen, der die BEG schon eingerechnet hat.
+ */
+export function programmeNebenBundesfoerderung(list: FundingProgram[]): FundingProgram[] {
+  return list.filter((p) => !schliesstBundesfoerderungAus(p));
+}
+
+/**
+ * Die Förderzeilen, die zu einem gedeckelten Gesamtbetrag GEHÖREN.
+ *
+ * WOZU: Ein Deckel wirkt auf den Stapel, nicht auf ein einzelnes Programm.
+ * Zeigte man die vollen Ansprüche an und zöge nur den gedeckelten Betrag ab,
+ * stünde eine Förderzeile auf dem Bildschirm, die in der Investition nicht
+ * steckt — der Widerspruch zwischen Text und Zahl, den dieses Projekt als
+ * schwersten Fehler führt.
+ *
+ * Aufgefüllt wird der REIHE NACH, bis der Deckel erreicht ist: eine
+ * deterministische, erklärbare Regel. Eine anteilige Verteilung wäre erfunden —
+ * kein Programm kürzt sich anteilig, weil ein anderes auch zahlt.
+ *
+ * Zusicherung, auf die sich die Oberfläche verlassen darf: Die Summe der
+ * zurückgegebenen Beträge ist exakt `min(deckel, Σ applied)`.
+ */
+export function zeilenBisDeckel(
+  applied: { program: FundingProgram; amount: number }[],
+  deckel: number,
+): { program: FundingProgram; amount: number }[] {
+  let rest = Math.max(0, deckel);
+  const zeilen: { program: FundingProgram; amount: number }[] = [];
+  for (const eintrag of applied) {
+    const betrag = Math.min(eintrag.amount, rest);
+    rest -= betrag;
+    if (betrag > 0) zeilen.push({ program: eintrag.program, amount: betrag });
+  }
+  return zeilen;
+}
+
 /** Prozentsatz mit optionalem Deckel — die häufigste Bauform kommunaler Zuschüsse. */
 function anteil(kosten: number, satz: number, deckel?: number): number {
   const roh = kosten * satz;
@@ -3292,7 +3382,17 @@ export function fundingAmount(
   let sp = 0;
   const speicherKwh = anlage.speicherKwh;
   if (f.speicherPerKwh && speicherKwh >= (f.speicherMin ?? 0) && speicherKwh > 0) {
-    sp = speicherKwh * f.speicherPerKwh;
+    if (f.speicherSockel !== undefined) {
+      // Sockel plus Satz: Der Satz greift erst OBERHALB der Mindestkapazität,
+      // und gezählt werden volle kWh. Beides steht so in den Richtlinien dieser
+      // Bauform („für jede weitere kWh", „auf volle kWh abgerundet") — wer
+      // stattdessen die volle Kapazität mal dem Satz nimmt, zahlt den Sockel
+      // ein zweites Mal.
+      const weitere = Math.floor(speicherKwh) - (f.speicherMin ?? 0);
+      sp = f.speicherSockel + Math.max(0, weitere) * f.speicherPerKwh;
+    } else {
+      sp = speicherKwh * f.speicherPerKwh;
+    }
     if (f.speicherCap) sp = Math.min(sp, f.speicherCap);
   } else if (f.speicherTiers && speicherKwh >= (f.speicherMin ?? 0)) {
     sp = tierAmount(f.speicherTiers, speicherKwh);
