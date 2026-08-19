@@ -267,8 +267,21 @@ describe("Leere Liste, fehlendes Feld — zwei verschiedene Fragen", () => {
     expect(ohneFeld.map(p => p.id)).toEqual([]);
   });
 
-  it("kennt genau ein Programm, das Bundesmittel ausschließt", () => {
+  it("führt jeden Ausschluss ausdrücklich", () => {
+    // Kein Schnappschuss, sondern eine Quittung: Wer ein Programm aufnimmt, das
+    // Bundesmittel ausschließt, trägt es hier ein und bestätigt damit, dass die
+    // leere Liste gewollt ist und in der Richtlinie steht. Ein vergessenes
+    // `combinableWith` fällt dadurch auf, statt still einen Zuschuss zu
+    // unterdrücken — die Verwechslung, die sonst niemandem auffiele.
+    //
+    // gaiberg-steckersolar: schließt KfW, BAFA und Land ausdrücklich aus.
+    // tegernheim-stecker-pv: „nur, sofern keine zusätzlichen Drittförderungen
+    //   in Anspruch genommen werden" (Nr. 3 der Richtlinie).
+    const BELEGTE_AUSSCHLUESSE = ["gaiberg-steckersolar", "tegernheim-stecker-pv"];
     const ausschluss = Object.values(FUNDING_PROGRAMS).filter(schliesstBundesfoerderungAus);
-    expect(ausschluss.map(p => p.id)).toEqual(["gaiberg-steckersolar"]);
+    expect(
+      ausschluss.map(p => p.id).sort(),
+      "Neuer Ausschluss im Katalog — Fundstelle prüfen und hier eintragen, oder das fehlende combinableWith nachtragen",
+    ).toEqual([...BELEGTE_AUSSCHLUESSE].sort());
   });
 });
