@@ -28,6 +28,7 @@ import {
 } from "../../../../lib/atlas";
 import { pvLeistungTeile, wattProKopfTeile } from "../../../../lib/atlas-format";
 import { ortPhrase, childNoun } from "../../../../lib/atlas-orte";
+import { buildRegionHighlight } from "../../../../lib/region-highlight";
 import { rankingKategorienGruppiert } from "../../../../lib/atlas-ranking";
 import { getRegionAtlasData } from "../../../../lib/mastr-data";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
@@ -255,6 +256,18 @@ async function AtlasBody({
   // Zahl und Einheit getrennt, damit im Einstiegssatz nur die EINHEIT den
   // Glossarbegriff tragen kann (siehe dort). Dieselbe Quelle wie die Kachel.
   const leistungTeile = pvLeistungTeile(atlas.solar.total_kwp);
+
+  /**
+   * Der eigene Platz unter den Geschwistern — nur für Bundesländer.
+   *
+   * Die Rangliste der 16 liegt in den Kindern der Deutschland-Region und trägt
+   * dort bereits `rankDach`; wir lesen sie, statt eine zweite zu rechnen (zwei
+   * Ranglisten laufen auseinander, das ist im Projekt schon passiert). Beide
+   * Reads sind `unstable_cache`-gedeckt und laufen nur auf 16 Seiten.
+   */
+  const geschwister =
+    region.level === "bundesland" ? await getChildren({ region_id: "de", level: "de" } as AtlasRegion) : [];
+  const eigenerRang = geschwister.find((g) => g.region_id === region.region_id)?.rankDach ?? null;
   const kpiTiles = [
     { label: "Solaranlagen", value: nf(atlas.solar.total_count), metric: "count" },
     { label: "Installiert", ...pvLeistungTeile(atlas.solar.total_kwp), metric: "kwp" },
@@ -270,6 +283,18 @@ async function AtlasBody({
 
   const kindWort = childNoun(childLevel);
   const kindWortGezaehlt = childNoun(childLevel, children.length);
+  const einordnung = buildRegionHighlight({
+    level: region.level as "de" | "bundesland" | "landkreis",
+    name: region.name,
+    kindWort,
+    kinder: children.map((c) => ({ name: c.name, wPerCapitaDach: c.wPerCapitaDach, count: c.count })),
+    rang: eigenerRang,
+    rangVon: geschwister.length || null,
+    rangGattung: "Bundesländer",
+    byYear: atlas.solar.by_year,
+    lastYear,
+    count: atlas.solar.total_count,
+  });
 
   // Berlin und Hamburg zerfallen nicht in Kreise — die „Rangliste der Kreise in
   // Berlin" hatte genau eine Zeile: Berlin. Eine Rangliste, in der die Region
@@ -350,6 +375,11 @@ async function AtlasBody({
           Alle Bestandszahlen stammen aus dem Marktstammdatenregister, in dem jede
           Photovoltaik-Anlage in Deutschland gemeldet sein muss.
         </p>
+
+        {/* Der Einordnungs-Absatz: Platz unter den Geschwistern, stärkstes
+            Untergebiet mit Namen, Zubau als Anteil am Bestand. Je Region andere
+            Fakten statt einer Schablone — der Grund steht in lib/region-highlight.ts. */}
+        {einordnung && <p style={S.intro}>{einordnung}</p>}
 
         <div style={S.section}>
           <AtlasKpiRow
