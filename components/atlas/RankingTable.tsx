@@ -1072,67 +1072,6 @@ export default function RankingTable({
         </div>
       )}
 
-      {/*
-        DASS ES SEITLICH WEITERGEHT, MUSS MAN SEHEN — und zwar dauerhaft.
-
-        Vorlauf, damit niemand das noch einmal umbaut: Erst trug diese Aussage
-        allein der Verlauf an der rechten Kante. Der ist gemessen wirkungslos,
-        solange die Tabelle stillsteht — sie rastet an Spaltenkanten ein, der
-        rechte Rand fällt in eine Spaltenlücke, und ein Verlauf von Seitenfarbe
-        nach Seitenfarbe hat nichts zu färben (bei 390 px über alle sieben
-        Ruhestellungen 0/12/0/22/0/20/0 von 28 px Inhalt auf dem Streifen).
-        Dann stand hier ein Satz („Die Tabelle geht rechts weiter …"), der nach
-        dem ersten Wischen verschwand. Beides ist weg: Der Satz erklärte eine
-        Bedienung, statt sie anzubieten, und war nach einer Sekunde nie wieder
-        zu sehen.
-
-        Jetzt stehen zwei Knöpfe da. Sie sagen dasselbe — dauerhaft, sichtbar,
-        und man kann sie drücken. Ein Druck springt genau EINEN Rastpunkt
-        weiter, also eine Spalte; die Rastpunkte sind dieselben, an denen die
-        Tabelle beim Wischen einrastet (RASTPUNKTE), keine zweite Schrittweite.
-
-        WO SIE SITZEN und warum nicht woanders: in einer eigenen Zeile ÜBER der
-        Tabelle, rechtsbündig. Über den Zeilen dürfen sie nicht schweben (sie
-        würden den Zeilen-Link verdecken, der die ganze Zeile ist), in der
-        Kopfzeile nicht sitzen (dort steht in jeder Stellung ein Spaltentitel
-        mit seinem „?"), und breiter machen dürfen sie die Tabelle nicht.
-
-        Sie erscheinen nur, wenn die Tabelle überhaupt überläuft. Der jeweils
-        wirkungslose Knopf wird unsichtbar statt entfernt: So bleibt der andere
-        an seinem Platz stehen, statt beim ersten Klick um eine Knopfbreite zu
-        springen. `visibility: hidden` nimmt ihn zugleich aus Tab-Reihenfolge
-        und Vorlese-Baum — ein Knopf, der nichts mehr tun kann, ist dann auch
-        für die Tastatur weg.
-      */}
-      {ueberlauf && (
-        <div
-          style={{
-            ...S.blaettern,
-            opacity: blaetternSichtbar ? 1 : 0,
-            ...(ohneBewegung ? null : { transition: "opacity 0.35s ease-out" }),
-          }}
-        >
-          <button
-            type="button"
-            onClick={() => springeSpalte(-1)}
-            aria-label="Eine Spalte zurück"
-            title="Eine Spalte zurück"
-            style={{ ...S.blaetternBtn, ...(kannZurueck ? null : S.blaetternWeg) }}
-          >
-            <IconArrowLeft size={13} />
-          </button>
-          <button
-            type="button"
-            onClick={() => springeSpalte(1)}
-            aria-label="Eine Spalte weiter"
-            title="Eine Spalte weiter"
-            style={{ ...S.blaetternBtn, ...(kannWeiter ? null : S.blaetternWeg) }}
-          >
-            <IconArrowRight size={13} />
-          </button>
-        </div>
-      )}
-
       {/* Der Scrollkasten trägt die Tastatur-Attribute NUR, solange er wirklich
           überläuft — sonst wäre es ein Tab-Stopp, der nichts tut. Ohne sie gäbe
           es für Tastaturnutzer gar keinen Weg zu den rechten Spalten
@@ -1147,6 +1086,75 @@ export default function RankingTable({
           gewandert), damit der Verlauf auf der Kante sitzt und nicht acht Pixel
           daneben. */}
       <div ref={rahmenRef} style={S.scrollerRahmen}>
+        {/*
+          DIE BEIDEN BLÄTTER-PFEILE SCHWEBEN AUF DER TABELLE (Vorgabe des
+          Betreibers, 19.08.2026: „die pfeile sollen über der table floaten und
+          dort eingeblendet werden").
+
+          Vorlauf, damit niemand das noch einmal umbaut: Erst trug die Aussage
+          „hier geht es weiter" allein der Verlauf an der rechten Kante. Der ist
+          gemessen wirkungslos, solange die Tabelle stillsteht — sie rastet an
+          Spaltenkanten ein, und ein Verlauf von Seitenfarbe nach Seitenfarbe
+          hat nichts zu färben (bei 390 px über alle sieben Ruhestellungen
+          0/12/0/22/0/20/0 von 28 px Inhalt auf dem Streifen). Dann stand hier
+          ein Satz, der nach dem ersten Wischen verschwand. Dann eine eigene
+          schmale Zeile mit zwei Knöpfen ÜBER der Tabelle — die stand zwar da,
+          gehörte aber optisch zu den Filtern darüber statt zur Tabelle.
+
+          WO SIE JETZT SITZEN. Senkrecht in der Fenstermitte, waagerecht an
+          beiden Kanten der Tabelle, als eigene Lage über dem Scrollkasten. Die
+          Lage klebt (`position: sticky`, Höhe 0): Sonst läge die „Mitte der
+          Tabelle" bei einer Gemeindeliste hunderte Pixel unter dem Fenster und
+          die Knöpfe wären genau dann weg, wenn man sie braucht. Sie hört am
+          Ende der Tabelle von selbst auf — weiter als bis zum unteren Rand
+          ihres Kastens kann eine klebende Lage nicht wandern.
+
+          WAS SIE KOSTEN — offen, weil es eine Abwägung ist und keine saubere
+          Lösung: Ein Knopf liegt auf einer Zeile, und die Zeile ist ein Link.
+          Deshalb sind sie schmal (28 px) und sitzen an den ÄUSSEREN Kanten:
+          links über der Platzziffer, nicht über dem Ortsnamen — der Name ist
+          die Angabe, die die mitlaufende Spalte überhaupt erst festhält. Die
+          betroffene Zeile bleibt bedienbar; rechts und links des Knopfes führt
+          sie weiter zur Gemeinde (Browser-Test).
+
+          Die Lage selbst ist für Klicks durchlässig (`pointerEvents: none`),
+          nur die Knöpfe fangen — sonst läge ein unsichtbares Brett über der
+          halben Liste. Sie ändern weder Tabellenbreite noch Rastpunkte: Sie
+          hängen absolut im Rahmen, nicht im Scrollkasten.
+
+          Der jeweils wirkungslose Knopf wird unsichtbar statt entfernt: So
+          bleibt der andere stehen, statt zu springen. `visibility: hidden`
+          nimmt ihn zugleich aus Tab-Reihenfolge und Vorlese-Baum — ein Knopf,
+          der nichts mehr tun kann, ist dann auch für die Tastatur weg.
+        */}
+        {ueberlauf && (
+          <div
+            style={{
+              ...S.blaetternLage,
+              opacity: blaetternSichtbar ? 1 : 0,
+              ...(ohneBewegung ? null : { transition: "opacity 0.35s ease-out" }),
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => springeSpalte(-1)}
+              aria-label="Eine Spalte zurück"
+              title="Eine Spalte zurück"
+              style={{ ...S.blaetternBtn, left: 0, ...(kannZurueck ? null : S.blaetternWeg) }}
+            >
+              <IconArrowLeft size={14} />
+            </button>
+            <button
+              type="button"
+              onClick={() => springeSpalte(1)}
+              aria-label="Eine Spalte weiter"
+              title="Eine Spalte weiter"
+              style={{ ...S.blaetternBtn, right: 0, ...(kannWeiter ? null : S.blaetternWeg) }}
+            >
+              <IconArrowRight size={14} />
+            </button>
+          </div>
+        )}
         <div
           ref={scrollerRef}
           className="atlas-tabelle-scroller"
@@ -1843,6 +1851,17 @@ const ZEILEN_PAD = 16;
  *    Karte statt wie eine Tabellenzeile mit einer Kante.
  */
 const KANTE_SCHATTEN = `${SPALTEN_LUECKE + 9}px 0 9px -6px rgba(0,0,0,0.3)`;
+/**
+ * Luft über und unter dem Titel JEDER Kopfzelle — die Höhe, die die blaue
+ * Platzierungs-Box zum Atmen braucht.
+ *
+ * Sie sitzt an der ZELLE und nicht an der Box, und das ist der ganze Punkt: Eine
+ * Marke, die über ihre Zelle hinausragt, ragt auch aus dem Streifen heraus, den
+ * die mitlaufenden Spalten decken — und scheint beim seitlichen Scrollen hinter
+ * ihnen durch. Alle Kopfzellen tragen dieselbe Luft, damit die Titel weiterhin
+ * auf einer Linie stehen; sie kostet keine Breite und rührt an keinem Rastpunkt.
+ */
+const KOPF_LUFT = 2;
 
 const S: Record<string, React.CSSProperties> = {
   controls: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 12 },
@@ -1877,27 +1896,54 @@ const S: Record<string, React.CSSProperties> = {
   // Der Satz, der erscheint, wenn Rangfolge und Reihenfolge auseinanderfallen.
   hinweis: { fontSize: 12, lineHeight: 1.4, color: v("--color-text-secondary"), margin: "0 0 10px" },
   /**
-   * Die Zeile mit den beiden Blätter-Pfeilen. Rechtsbündig, weil dort die
-   * Tabelle weitergeht — der Knopf steht in der Richtung, in die er zeigt.
+   * DIE LAGE, IN DER DIE BEIDEN BLÄTTER-PFEILE SCHWEBEN.
    *
-   * Eigene Zeile, kein Überlagern: Die Tabellenzeilen sind selbst Links auf die
-   * Gemeinde, ein schwebender Knopf darüber wäre ein Loch in dieser Fläche. Die
-   * Höhe kostet 22 px einmalig, nicht je Zeile.
+   * Höhe null und klebend: Sie nimmt im Fluss keinen Platz (die Tabelle rückt
+   * also nicht nach unten) und folgt beim Lesen dem Fenster, statt in der Mitte
+   * einer hundert Zeilen langen Liste liegenzubleiben. `top: 50vh` misst am
+   * Fenster — ein Prozentwert würde bei `sticky` an der Höhe des Rahmens
+   * hängen, und die ist die der ganzen Tabelle.
+   *
+   * Sie wandert nur innerhalb ihres Kastens: Am unteren Ende der Tabelle bleibt
+   * sie stehen, die Knöpfe verlassen die Tabelle also nie nach unten.
+   *
+   * Durchlässig für Klicks — nur die Knöpfe selbst fangen (siehe blaetternBtn).
    */
-  blaettern: { display: "flex", justifyContent: "flex-end", gap: 4, marginBottom: 6 },
+  blaetternLage: {
+    position: "sticky",
+    top: "50vh",
+    height: 0,
+    zIndex: 2,
+    pointerEvents: "none",
+  },
+  /**
+   * Der Knopf selbst: eine deckende Pille an der Kante der Tabelle.
+   *
+   * DECKEND ist hier keine Geschmacksfrage — er liegt auf Zahlen. Ein
+   * durchscheinender Grund macht Pfeil UND Zahl darunter unlesbar. Grund,
+   * Rahmen und Farbe kommen aus den Tokens (`--color-bg` folgt der Tageszeit,
+   * ein getipptes Weiß wäre in fünf der sieben Stufen ein heller Fleck).
+   *
+   * `top: -14` ist die halbe Höhe: Die Lage darüber ist null Pixel hoch, der
+   * Knopf hängt also mittig auf ihrer Linie.
+   */
   blaetternBtn: {
+    position: "absolute",
+    top: -14,
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
-    width: 30,
-    height: 24,
+    width: 28,
+    height: 28,
     padding: 0,
     border: `1px solid ${v("--color-border-accent")}`,
-    borderRadius: v("--radius-md"),
-    background: v("--color-bg-accent"),
+    borderRadius: 999,
+    background: v("--color-bg"),
     color: v("--color-accent"),
+    boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
     cursor: "pointer",
     fontFamily: "inherit",
+    pointerEvents: "auto",
   },
   // Unsichtbar statt entfernt — der verbleibende Knopf soll nicht springen.
   // `visibility: hidden` nimmt ihn zugleich aus Tab-Reihenfolge und Vorlese-Baum.
@@ -2026,7 +2072,19 @@ const S: Record<string, React.CSSProperties> = {
   },
   // Titel + „?" nebeneinander. Der Titel darf nicht umbrechen — sonst zieht er
   // die ganze Kopfzeile auf; die Spaltenbreiten sind darauf ausgelegt.
-  headCell: { display: "flex", alignItems: "center", gap: 3, minWidth: 0 },
+  //
+  // `alignSelf: stretch` ist die zweite Hälfte der Deckung (siehe KOPF_LUFT):
+  // Die beiden MITLAUFENDEN Kopfzellen müssen die volle Höhe der Kopfzeile
+  // decken, sonst scheint darunter oder darüber hindurch, was gerade
+  // vorbeiscrollt. Genau daran ist die blaue Platzierungs-Box durchgeschienen.
+  headCell: {
+    display: "flex",
+    alignItems: "center",
+    gap: 3,
+    minWidth: 0,
+    padding: `${KOPF_LUFT}px 0`,
+    alignSelf: "stretch",
+  },
   /**
    * Wie `headCell`, plus Bezugsrahmen für die beiden absolut gesetzten Marken
    * der Wertspalten (Sortier-Pfeil in der Lücke, blaue Box dahinter).
@@ -2037,7 +2095,16 @@ const S: Record<string, React.CSSProperties> = {
    * seine Haltekante (75 px) nach rechts und deckte den Kopf „Anlagen"
    * vollständig zu — im Browser gesehen, von keinem Test bemerkt.
    */
-  headCellWert: { display: "flex", alignItems: "center", gap: 3, minWidth: 0, position: "relative" },
+  headCellWert: {
+    display: "flex",
+    alignItems: "center",
+    gap: 3,
+    minWidth: 0,
+    position: "relative",
+    // Dieselbe Luft wie an den mitlaufenden Köpfen — sie ist es, die die blaue
+    // Box trägt, statt dass die Box selbst über ihre Zelle hinausragt.
+    padding: `${KOPF_LUFT}px 0`,
+  },
   /**
    * DIE BLAUE BOX AM KOPF DER PLATZIERUNGS-SPALTE — die sichtbare Klammer zum
    * Feld „Platzierung nach …" über der Tabelle. Beide sehen gleich aus (Grund,
@@ -2078,11 +2145,28 @@ const S: Record<string, React.CSSProperties> = {
    * hört an der Spaltenkante auf, UND der „?" steht vollständig in der
    * Rasterlücke dahinter (S.headFrage). Sonst schnitte die Box weiterhin ihren
    * eigenen „?" an, der 1,8 px zu früh anfing.
+   *
+   * SENKRECHT ENDET SIE AN DERSELBEN KANTE WIE IHRE ZELLE (19.08.2026, dritte
+   * Korrektur — der Betreiber sah sie weiterhin hinter der mitlaufenden
+   * Kopfspalte durchscheinen). Vorher stand hier `top: -2, bottom: -2`: Die Box
+   * war 18 px hoch, die mitlaufenden Kopfzellen daneben nur 14 — gemessen bei
+   * 390 px in Stellung 320 lagen 42 blaue Pixel in dem Streifen, den die
+   * mitlaufenden Spalten decken sollen, in Stellung 403 noch 29. Waagerecht
+   * deckten die Zellen die Box vollständig ab; sie ragte oben und unten je zwei
+   * Pixel über deren Hintergrund hinaus, und genau dieser Saum blitzte hervor.
+   *
+   * Ein höherer z-Wert wäre die falsche Antwort gewesen — die Box lag längst
+   * hinter den Kopfzellen (z −1 gegen z 4). Es war keine Malfrage, sondern eine
+   * Geometriefrage: Was gedeckt werden soll, muss innerhalb des Deckenden
+   * liegen. Die Luft, die die Box braucht, trägt jetzt ihre ZELLE (KOPF_LUFT),
+   * und die mitlaufenden Kopfzellen decken über `alignSelf: stretch` die volle
+   * Höhe der Kopfzeile. Damit gilt strukturell: Box ≤ eigene Kopfzelle ≤ Höhe
+   * der Kopfzeile = Deckung der mitlaufenden Spalten.
    */
   headBox: {
     position: "absolute",
-    top: -2,
-    bottom: -2,
+    top: 0,
+    bottom: 0,
     left: 0,
     // Ein Pixel vor der Spaltenkante: genau dort beginnt der „?" der Spalte
     // (S.headFrage). So stoßen die beiden aneinander, statt sich zu schneiden.

@@ -580,6 +580,289 @@ test.describe("Rangliste: die Platzierungs-Box bleibt in ihrer Spalte", () => {
 });
 
 /**
+ * HINTER DEN MITLAUFENDEN KOPFSPALTEN LIEGT NICHTS VON DER PLATZIERUNGS-BOX.
+ *
+ * DER ANLASS (19.08.2026, dritter Anlauf). Zwei Korrekturen hatten die blaue Box
+ * in ihrer Spalte gehalten und ihre Überschneidung mit den „?"-Knöpfen beseitigt
+ * — der Betreiber sah sie trotzdem weiter hinter der mitlaufenden Kopfspalte
+ * durchscheinen. Nachgemessen war es keine Malfrage: Die Box lag längst hinter
+ * den Kopfzellen (z-Wert −1 gegen 4) und war waagerecht vollständig gedeckt. Sie
+ * war nur ZWEI PIXEL HÖHER als das, was deckt — `top: -2, bottom: -2` gegen
+ * Kopfzellen von 14 px Höhe. Bei 390 px lagen in Stellung 320 zweiundvierzig
+ * blaue Pixel im Streifen der mitlaufenden Spalten, in Stellung 403 noch 29.
+ *
+ * WARUM DIESER TEST UND NICHT DER VORHANDENE. Der Test darüber vergleicht die
+ * Box mit ihrer eigenen Spalte und den „?"-Knöpfen — beides war korrekt. Ein
+ * Rechteckvergleich kann diese Klasse gar nicht finden: Die Box DARF sich mit
+ * den mitlaufenden Spalten überschneiden (sie scrollt ja darunter durch), sie
+ * darf dort nur nicht zu SEHEN sein. Das ist eine Frage ans Bild, also wird das
+ * Bild gefragt: Streifen fotografieren, Pixel in der Farbe der Box zählen.
+ *
+ * GEMESSEN WIRD MIT ZWEI PLATZIERUNGEN, und die zweite ist die tragende. Mit
+ * der Voreinstellung „Pro Kopf" (dritte Wertspalte) kommt die Box am Desktop
+ * NIE unter die mitlaufenden Spalten: Dort scrollt die Tabelle nur 157 px, und
+ * genau bei 157 sitzt die linke Kante dieser Spalte auf der Haltekante — die
+ * Überlappung ist null. Der Lauf war deshalb am Desktop beweislos; die
+ * Absicherung unten („in keiner Stellung lag die Box unter …") hat das gemeldet,
+ * statt still grün zu werden. Mit „Anlagen", der ersten Wertspalte, wandert die
+ * Box in jeder Stellung > 0 unter den Streifen — auf beiden Bildschirmbreiten.
+ *
+ * GEGENPROBE GEFAHREN: mit `top: -2, bottom: -2` an S.headBox meldet er die
+ * Stellungen 320 (42 Pixel) und 403 (29 Pixel).
+ */
+test.describe("Rangliste: die Platzierungs-Box scheint nicht hinter den mitlaufenden Spalten durch", () => {
+  for (const [name, viewport] of [
+    ["Telefon", { width: 390, height: 820 }],
+    ["Desktop", { width: 1280, height: 820 }],
+  ] as const) {
+    test(`${name}: kein Pixel der Box im Streifen der mitlaufenden Spalten`, async ({ page }) => {
+      // Bildschirmfotos und Pixelzählung dauern; die 30 Sekunden aus der
+      // Voreinstellung reichen dafür nicht. Ohne diese Zeile bricht der Lauf
+      // nicht mit einem Befund ab, sondern mit einer Zeitüberschreitung — und
+      // die liest sich wie ein Fehler an der Tabelle, obwohl sie keiner ist.
+      test.setTimeout(180_000);
+      await page.setViewportSize(viewport);
+      await page.goto("/solar-atlas");
+      await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+      await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
+
+      // Die Kopfzeile mit Luft nach oben in den Blick holen: Fotografiert wird
+      // ein Ausschnitt, der vollständig im Fenster liegen muss. Muss nach JEDEM
+      // Umschalten der Platzierung neu geschehen — das Auswahlfeld steht über
+      // der Tabelle, und Playwright scrollt es zum Klicken selbst heran.
+      const kopfInDenBlick = async () => {
+        await page.evaluate(() => {
+          const kopfzeile = document.querySelector("[data-spaltenkopf]")!.parentElement!;
+          window.scrollBy(0, kopfzeile.getBoundingClientRect().top - 140);
+        });
+        await page.waitForTimeout(400);
+      };
+      await kopfInDenBlick();
+
+      const max = await page.evaluate(() => {
+        const sc = document.querySelector(".atlas-tabelle-scroller") as HTMLElement;
+        return sc.scrollWidth - sc.clientWidth;
+      });
+      expect(max, "die Tabelle läuft in diesem Fenster gar nicht über").toBeGreaterThan(40);
+
+      const funde: { platzierung: string; pos: number; pixel: number }[] = [];
+      let mitUeberlappung = 0;
+
+      // Voreinstellung (Pro Kopf) und die erste Wertspalte — siehe Kopfkommentar.
+      for (const [wahl, key] of [
+        ["Pro Kopf", "perCapita"],
+        ["Anlagen", "count"],
+      ] as const) {
+        if (key !== "perCapita") {
+          await page.getByRole("button", { name: /Platzierung nach/ }).click();
+          await page.getByRole("button", { name: wahl, exact: true }).first().click();
+          // Auf den Zustand warten, nicht auf die Uhr.
+          await expect(page.locator(`[data-spaltenkopf="${key}"][data-platziert]`)).toHaveCount(1, { timeout: 10_000 });
+          await kopfInDenBlick();
+        }
+
+        // Fünf Stellungen über den ganzen Bereich. Mehr wäre hier nicht
+        // gründlicher, sondern nur langsamer: Die Tabelle rastet ein, ein
+        // feineres Raster landet auf denselben Ruhestellungen — und jede
+        // Stellung kostet ein Bildschirmfoto samt Pixelzählung.
+        for (let i = 0; i <= 4; i++) {
+          await page.evaluate((x: number) => {
+            (document.querySelector(".atlas-tabelle-scroller") as HTMLElement).scrollLeft = x;
+          }, Math.round((max * i) / 4));
+          await page.waitForTimeout(450);
+
+          const geo = await page.evaluate(() => {
+            const sc = document.querySelector(".atlas-tabelle-scroller") as HTMLElement;
+            const kopf = document.querySelector<HTMLElement>("[data-platziert]");
+            const box = kopf
+              ? ([...kopf.children].find((c) => getComputedStyle(c as HTMLElement).position === "absolute") as
+                  | HTMLElement
+                  | undefined)
+              : undefined;
+            if (!box) return null;
+            // Die Haltekante: rechte Kante der Namensspalte plus ihre 11 px Deckung.
+            const kante =
+              sc.querySelector<HTMLElement>(".atlas-fix-spalte--kante")!.getBoundingClientRect().right + 11;
+            const zeile = kopf!.parentElement!.getBoundingClientRect();
+            const br = box.getBoundingClientRect();
+            // Die schwebenden Blätter-Pfeile dürfen im Streifen nichts verdecken —
+            // sonst wäre ein grüner Lauf nur ein zugehaltenes Auge.
+            const pfeile = [...document.querySelectorAll<HTMLElement>("button[aria-label^='Eine Spalte']")]
+              .filter((b) => getComputedStyle(b).visibility !== "hidden")
+              .map((b) => b.getBoundingClientRect());
+            return {
+              pos: Math.round(sc.scrollLeft),
+              kante,
+              zeile: { top: zeile.top, hoehe: zeile.height, bottom: zeile.bottom },
+              box: { left: br.left, right: br.right },
+              farbe: getComputedStyle(box).backgroundColor,
+              pfeilImStreifen: pfeile.some(
+                (p) => p.left < kante && p.right > 0 && p.top < zeile.bottom + 8 && p.bottom > zeile.top - 8,
+              ),
+            };
+          });
+          expect(geo, "keine Spalte trägt die Platzierungs-Box").not.toBeNull();
+          expect(
+            geo!.pfeilImStreifen,
+            "ein Blätter-Pfeil liegt im gemessenen Streifen und würde die Box verdecken",
+          ).toBe(false);
+
+          if (Math.min(geo!.box.right, geo!.kante) - Math.max(geo!.box.left, 0) > 0) mitUeberlappung++;
+
+          const clip = {
+            x: 0,
+            y: Math.max(0, Math.floor(geo!.zeile.top - 8)),
+            width: Math.max(1, Math.floor(geo!.kante)),
+            height: Math.ceil(geo!.zeile.hoehe + 16),
+          };
+          const bild = (await page.screenshot({ clip })).toString("base64");
+
+          const pixel = await page.evaluate(
+            async ({ bild, farbe }: { bild: string; farbe: string }) => {
+              const karte = await createImageBitmap(await (await fetch("data:image/png;base64," + bild)).blob());
+              const cv = new OffscreenCanvas(karte.width, karte.height);
+              const ctx = cv.getContext("2d")!;
+              ctx.drawImage(karte, 0, 0);
+              const d = ctx.getImageData(0, 0, karte.width, karte.height).data;
+              const [r, g, b] = farbe.match(/\d+/g)!.map(Number);
+              let n = 0;
+              for (let i = 0; i < d.length; i += 4) {
+                if (Math.abs(d[i] - r) <= 2 && Math.abs(d[i + 1] - g) <= 2 && Math.abs(d[i + 2] - b) <= 2) n++;
+              }
+              return n;
+            },
+            { bild, farbe: geo!.farbe },
+          );
+
+          if (pixel > 0) funde.push({ platzierung: wahl, pos: geo!.pos, pixel });
+        }
+      }
+
+      // Ohne Stellungen, in denen die Box überhaupt unter den mitlaufenden
+      // Spalten liegt, wäre der Test still grün — der Fehler, gegen den es ihn gibt.
+      expect(mitUeberlappung, "in keiner Stellung lag die Box unter den mitlaufenden Spalten").toBeGreaterThan(0);
+      expect(funde, `${funde.length} Stellungen zeigen die Box im Streifen`).toEqual([]);
+    });
+  }
+});
+
+/**
+ * DIE BLÄTTER-PFEILE SCHWEBEN AUF DER TABELLE — und nehmen keiner Zeile den Klick.
+ *
+ * DER ANLASS (19.08.2026). Die Knöpfe standen in einer eigenen schmalen Zeile
+ * ÜBER der Tabelle. Der Betreiber wollte sie auf der Tabelle: „die pfeile sollen
+ * über der table floaten und dort eingeblendet werden."
+ *
+ * Damit rührt ein Knopf an die teuerste Eigenschaft dieser Tabelle: Jede Zeile
+ * IST ein Link auf die Gemeinde. Ein Knopf darüber fängt dort den Klick.
+ * Geprüft wird deshalb genau das Gleichgewicht:
+ *  1. Sie liegen wirklich AUF der Tabelle (innerhalb des Tabellenrahmens) und an
+ *     deren beiden Kanten — nicht darüber, nicht daneben.
+ *  2. Sie decken die MITLAUFENDE NAMENSSPALTE nicht. Der Ortsname ist die eine
+ *     Angabe, für die es die mitlaufenden Spalten überhaupt gibt.
+ *  3. Ihr Grund ist deckend. Sie liegen auf Zahlen; ein durchscheinender Knopf
+ *     macht Pfeil und Zahl zugleich unlesbar.
+ *  4. Die Zeile unter dem Pfeil führt weiter zur Gemeinde. Neben dem Knopf
+ *     bleibt sie ein Link — sonst hätte der Pfeil eine Zeile stillgelegt.
+ *  5. Die Tabelle wird davon nicht breiter (die Rastpunkte hängen daran, und ein
+ *     verschobener Rastpunkt schneidet Zahlen an — das ist zweimal passiert).
+ */
+test.describe("Rangliste: die Blätter-Pfeile schweben auf der Tabelle", () => {
+  for (const [name, viewport] of [
+    ["Telefon", { width: 390, height: 820 }],
+    ["Desktop", { width: 1280, height: 820 }],
+  ] as const) {
+    test(`${name}: an den Kanten, ohne den Ortsnamen zu decken und ohne den Zeilen-Klick zu fangen`, async ({
+      page,
+    }) => {
+      // Zwei Seitenaufrufe (Liste und die Gemeinde dahinter) plus Sprünge —
+      // die 30 Sekunden aus der Voreinstellung sind dafür zu knapp.
+      test.setTimeout(120_000);
+      await page.setViewportSize(viewport);
+      await page.goto("/solar-atlas");
+      await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+      await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
+
+      const breiteVorher = await page.evaluate(() =>
+        Math.round((document.querySelector(".atlas-tabelle-scroller") as HTMLElement).scrollWidth),
+      );
+
+      // Mitten in die Liste: Erst dort steht unter den Pfeilen wirklich eine
+      // Zeile — genau der Fall, um den es geht.
+      await page.evaluate(() => {
+        const rahmen = (document.querySelector(".atlas-tabelle-scroller") as HTMLElement).parentElement!;
+        const r = rahmen.getBoundingClientRect();
+        window.scrollBy(0, r.top + r.height / 2 - window.innerHeight / 2);
+      });
+      await page.waitForTimeout(400);
+      // Einen Rastpunkt nach rechts, damit BEIDE Pfeile stehen.
+      await page.getByRole("button", { name: "Eine Spalte weiter" }).focus();
+      await page.keyboard.press("Enter");
+      await page.waitForTimeout(700);
+
+      const m = await page.evaluate(() => {
+        const sc = document.querySelector(".atlas-tabelle-scroller") as HTMLElement;
+        const rahmen = sc.parentElement!.getBoundingClientRect();
+        const nameSpalte = sc.querySelector<HTMLElement>(".atlas-fix-spalte--kante")!.getBoundingClientRect();
+        const knoepfe = [...document.querySelectorAll<HTMLElement>("button[aria-label^='Eine Spalte']")]
+          .filter((b) => getComputedStyle(b).visibility !== "hidden")
+          .map((b) => {
+            const q = b.getBoundingClientRect();
+            const zeile = [...document.querySelectorAll<HTMLAnchorElement>("a.atlas-rank-row")].find((z) => {
+              const r = z.getBoundingClientRect();
+              return r.top < q.bottom && r.bottom > q.top;
+            });
+            const zr = zeile?.getBoundingClientRect();
+            return {
+              label: b.getAttribute("aria-label") ?? "",
+              q: { left: q.left, right: q.right, top: q.top, bottom: q.bottom },
+              grund: getComputedStyle(b).backgroundColor,
+              ueberName: Math.max(0, Math.min(q.right, nameSpalte.right) - Math.max(q.left, nameSpalte.left)),
+              ziel: zeile?.getAttribute("href") ?? null,
+              zeilenMitte: zr ? { x: zr.left + zr.width / 2, y: zr.top + zr.height / 2 } : null,
+            };
+          });
+        return {
+          breite: Math.round(sc.scrollWidth),
+          rahmen: { left: rahmen.left, right: rahmen.right, top: rahmen.top, bottom: rahmen.bottom },
+          knoepfe,
+        };
+      });
+
+      expect(m.knoepfe.map((k) => k.label).sort()).toEqual(["Eine Spalte weiter", "Eine Spalte zurück"]);
+      expect(m.breite, "die Tabelle ist durch die Pfeile breiter geworden").toBe(breiteVorher);
+
+      for (const k of m.knoepfe) {
+        // 1. auf der Tabelle
+        expect(k.q.left, `${k.label}: liegt links neben der Tabelle`).toBeGreaterThanOrEqual(m.rahmen.left - 0.5);
+        expect(k.q.right, `${k.label}: liegt rechts neben der Tabelle`).toBeLessThanOrEqual(m.rahmen.right + 0.5);
+        expect(k.q.top, `${k.label}: liegt über der Tabelle statt auf ihr`).toBeGreaterThanOrEqual(m.rahmen.top - 0.5);
+        expect(k.q.bottom, `${k.label}: liegt unter der Tabelle statt auf ihr`).toBeLessThanOrEqual(
+          m.rahmen.bottom + 0.5,
+        );
+        // …an der jeweiligen Kante
+        const anKante =
+          k.label === "Eine Spalte zurück"
+            ? Math.abs(k.q.left - m.rahmen.left)
+            : Math.abs(k.q.right - m.rahmen.right);
+        expect(anKante, `${k.label}: sitzt nicht an der Kante der Tabelle`).toBeLessThanOrEqual(1);
+        // 2. der Ortsname bleibt frei
+        expect(k.ueberName, `${k.label}: deckt die mitlaufende Namensspalte`).toBeLessThanOrEqual(0.5);
+        // 3. deckender Grund
+        expect(k.grund, `${k.label}: durchscheinender Grund`).toMatch(/^rgb\(/);
+      }
+
+      // 4. Die Zeile unter dem Pfeil führt weiter zur Gemeinde.
+      const unterPfeil = m.knoepfe.find((k) => k.label === "Eine Spalte weiter")!;
+      expect(unterPfeil.ziel, "unter dem Pfeil liegt gar keine Zeile — dann prüft dieser Punkt nichts").not.toBeNull();
+      await page.mouse.click(unterPfeil.zeilenMitte!.x, unterPfeil.zeilenMitte!.y);
+      await page.waitForURL(`**${unterPfeil.ziel}`, { timeout: 15_000 });
+      expect(new URL(page.url()).pathname).toBe(unterPfeil.ziel);
+    });
+  }
+});
+
+/**
  * Die mitlaufenden Spalten müssen in JEDER Zeile auch WIRKLICH DA SEIN.
  *
  * DER ANLASS (18.08.2026). Auf dem Telefon — Safari, 390 × 576 — trugen Zeile 1
@@ -646,7 +929,12 @@ async function pruefeFixSpalten(page: import("@playwright/test").Page) {
         if (sc.contains(el)) return false;
         if (el.tagName.toLowerCase() === "nextjs-portal") return true;
         const cs = getComputedStyle(el);
-        return (cs.position === "sticky" || cs.position === "fixed") && cs.visibility !== "hidden";
+        if (cs.visibility === "hidden") return false;
+        // Die beiden Blätter-Pfeile schweben seit 19.08.2026 auf der Tabelle.
+        // Sie hängen absolut in einer klebenden Lage, sind also selbst weder
+        // sticky noch fixed — und decken trotzdem.
+        if (el.matches("button[aria-label^='Eine Spalte']")) return true;
+        return cs.position === "sticky" || cs.position === "fixed";
       })
       .map((el) => el.getBoundingClientRect())
       .filter((b) => b.width > 0 && b.height > 0);
