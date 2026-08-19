@@ -229,6 +229,11 @@ function sortName(s: Sort, sinceYear: number): string {
   return COLUMNS.find((c) => c.key === s)?.label ?? s;
 }
 
+// Textfarben auf der blau gefüllten Zeile (aktive Kommune). Modulweit, weil
+// RankDelta außerhalb der Komponente steht und dieselben Töne braucht.
+const ON_ACCENT = v("--color-text-on-accent");
+const ON_ACCENT_DIM = "rgba(255,255,255,0.72)";
+
 /**
  * Rangbewegung — steht wieder NEBEN der Platzziffer, auf derselben Zeile.
  *
@@ -244,9 +249,33 @@ function sortName(s: Sort, sinceYear: number): string {
  * Seit dem Umbau trägt die Platz-Spalte eine feste Bedeutung (sie folgt nicht
  * mehr der Sortierung) und darf den Platz kosten: Ziffer und Bewegung stehen
  * nebeneinander und lesen sich als ein Satz — „Platz 3, einen gutgemacht".
+ *
+ * KEINE BEWEGUNG STEHT DA, STATT ZU FEHLEN. Auf der Deutschland-Seite bewegt
+ * sich zwischen sechzehn Bundesländern gar nichts — in keiner der sieben
+ * Platzierungs-Größen. Die Rechnung stimmt (auf Kreis- und Gemeindeebene stehen
+ * die Pfeile), aber wo nichts stand, las sich die Spalte als kaputt; der
+ * Betreiber hat zweimal danach gefragt. „±0" sagt dagegen, was wirklich der
+ * Fall ist: gemessen, keine Bewegung. Neutral gefärbt — Stillstand ist keine
+ * Wertung, und sechzehn grüne oder rote Zeichen untereinander wären eine.
+ * Dieselbe Entscheidung wie in TendTag, wo ebenfalls die ANGEZEIGTE Stufe über
+ * Vorzeichen und Ton bestimmt (dort prozentGerundet, hier die ganze Zahl).
+ *
+ * `null` bleibt leer: Das heißt nicht „unverändert", sondern „für diesen Ort
+ * gibt es keine Vergleichszahl" — und dann steht links schon „—" statt einer
+ * Platzziffer.
  */
 function RankDelta({ value, sinceYear, onAccent = false }: { value: number | null; sinceYear: number; onAccent?: boolean }) {
-  if (value === null || value === 0) return null;
+  if (value === null) return null;
+  if (value === 0) {
+    return (
+      <span
+        title={`Unverändert gegenüber Ende ${sinceYear}`}
+        style={{ ...S.delta, color: onAccent ? ON_ACCENT_DIM : v("--color-text-muted") }}
+      >
+        ±0
+      </span>
+    );
+  }
   const up = value > 0;
   const Icon = up ? IconArrowUp : IconArrowDown;
   return (
@@ -320,6 +349,13 @@ export default function RankingTable({
   // der rechten Kante („hier geht es weiter"). Er darf NUR erscheinen, solange
   // rechts wirklich noch etwas liegt; sonst behauptet er etwas.
   const [scrollRest, setScrollRest] = useState(0);
+  /**
+   * Wurde die Tabelle in dieser Sitzung schon einmal seitlich bewegt? Daran
+   * hängt allein der Hinweis über der Tabelle (siehe dort). Bewusst ein
+   * Einweg-Schalter: Wer zurück an den linken Rand scrollt, hat den Mechanismus
+   * verstanden — der Hinweis käme dann als Belehrung zurück.
+   */
+  const [geschoben, setGeschoben] = useState(false);
   // Welcher Ortsname gerade ausgeklappt ist (nur einer — siehe rowCells).
   const [nameOffen, setNameOffen] = useState<string | null>(null);
   // Läuft die Tabelle in diesem Fenster überhaupt über? Davon hängt beides ab:
@@ -672,9 +708,8 @@ export default function RankingTable({
 
   // Zellen einer Zeile. `onAccent` = die Zeile ist blau gefüllt (aktive Kommune):
   // Text wird weiß, der Balken weiß auf hellem Schienen-Weiß. Ein Renderer für
-  // Liste UND schwebende Kopie, damit beide identisch aussehen.
-  const ON_ACCENT = v("--color-text-on-accent");
-  const ON_ACCENT_DIM = "rgba(255,255,255,0.72)";
+  // Liste UND schwebende Kopie, damit beide identisch aussehen. Die beiden Töne
+  // stehen modulweit oben — RankDelta braucht sie ebenfalls.
 
   /**
    * Stil einer MITLAUFENDEN Spalte (Platz, Name).
@@ -892,6 +927,35 @@ export default function RankingTable({
         </div>
       )}
 
+      {/*
+        DASS DIE TABELLE SEITLICH WEITERGEHT, MUSS EINMAL DASTEHEN.
+
+        Der Verlauf an der rechten Kante allein trägt es nicht, und das ist
+        gemessen, nicht vermutet: Bei 390 px liegt in der Ausgangsstellung —
+        also genau der, die jeder zuerst sieht — auf den 28 px des Verlaufs
+        KEIN EINZIGES ZEICHEN. Die Tabelle rastet an Spaltenkanten ein, der
+        rechte Rand fällt deshalb in die Lücke hinter einer Spalte, und der
+        Verlauf blendet Seitenfarbe in Seitenfarbe. Über alle sieben
+        erreichbaren Ruhestellungen waren es 0/12/0/22/0/20/0 von 28 px. Wo
+        nichts angeschnitten ist, kann ein Auslauf nichts anschneiden.
+
+        Angeschnittener Inhalt bleibt der beste Hinweis auf Scrollbarkeit
+        (NN/g, „Mobile Tables") — nur entsteht er hier nicht, weil das
+        Einrasten ihn absichtlich verhindert (es schützt die Zahlen vor der
+        Haltekante links). Deshalb ein Satz, der es sagt, und zwar der
+        mildeste: EINE Zeile, in der Farbe der Nebentexte, und weg, sobald die
+        Tabelle das erste Mal bewegt wurde. Kein Karussell, keine Punkte, keine
+        Wischanimation — die Kante bleibt zusätzlich als dauerhaftes Zeichen.
+      */}
+      {ueberlauf && !geschoben && (
+        <p style={S.wischHinweis}>
+          Die Tabelle geht rechts weiter — seitlich scrollen zeigt die übrigen Spalten.
+          <span aria-hidden style={S.wischPfeil}>
+            <IconArrowRight size={11} />
+          </span>
+        </p>
+      )}
+
       {/* Der Scrollkasten trägt die Tastatur-Attribute NUR, solange er wirklich
           überläuft — sonst wäre es ein Tab-Stopp, der nichts tut. Ohne sie gäbe
           es für Tastaturnutzer gar keinen Weg zu den rechten Spalten
@@ -919,6 +983,7 @@ export default function RankingTable({
             const el = e.currentTarget;
             setScrollLeft(el.scrollLeft);
             setScrollRest(el.scrollWidth - el.clientWidth - el.scrollLeft);
+            if (el.scrollLeft > 0) setGeschoben(true);
           }}
         >
           <div style={S.table}>
@@ -1249,7 +1314,7 @@ function RankHeader({
   return (
     // Kein `position: relative` mehr: `sticky` aus der Klasse ist selbst
     // Bezugsrahmen für das Aufklapp-Menü darunter.
-    <div ref={ref} className="atlas-fix-spalte atlas-fix-spalte--kopf" style={fixStil}>
+    <div ref={ref} className="atlas-fix-spalte atlas-fix-spalte--kopf" style={{ ...S.headCell, ...fixStil }}>
       <button
         type="button"
         onClick={() => setOpen(!open)}
@@ -1263,6 +1328,20 @@ function RankHeader({
         Platz
         <IconChevronDown size={7} />
       </button>
+      {/*
+        Was neben der Ziffer steht, erklärt sich nicht von selbst — „1. ±0"
+        liest ohne ein Wort dazu niemand. Die Erklärung sitzt deshalb da, wo
+        auch die der sieben Wertspalten sitzt: als „?" am Spaltenkopf. Auf dem
+        Telefon ist das der einzige Weg — der `title` des Knopfes daneben
+        braucht eine Maus, und die Bewegung steht gerade dort in jeder Zeile.
+      */}
+      <InfoTooltip title="Platz und Bewegung" size={11} ariaLabel="Platz: Erklärung">
+        Die Ziffer ist der Platz in der Größe, die über der Tabelle unter
+        „Platzierung nach" steht. Daneben steht die Bewegung gegenüber Ende{" "}
+        {sinceYear}: ein Pfeil mit der Zahl der gutgemachten oder verlorenen
+        Plätze, „±0" für unverändert. Das laufende Jahr ist noch unvollständig
+        und deshalb nicht als Vorjahr gerechnet.
+      </InfoTooltip>
       {open && (
         <div style={S.dropdown}>
           {(
@@ -1577,6 +1656,19 @@ const S: Record<string, React.CSSProperties> = {
   pickWert: { color: v("--color-accent"), fontWeight: 700, whiteSpace: "nowrap" },
   // Der Satz, der erscheint, wenn Rangfolge und Reihenfolge auseinanderfallen.
   hinweis: { fontSize: 12, lineHeight: 1.4, color: v("--color-text-secondary"), margin: "0 0 10px" },
+  // Der Satz über der Tabelle, solange sie noch nie bewegt wurde. Gedämpfter
+  // als `hinweis` — er erklärt eine Bedienung, keinen Befund, und darf die
+  // Zahlen darunter nicht überstimmen.
+  wischHinweis: {
+    fontSize: 12,
+    lineHeight: 1.4,
+    color: v("--color-text-muted"),
+    margin: "0 0 6px",
+  },
+  // Der Pfeil zeigt die Richtung, in die es weitergeht. Er läuft IM Text mit
+  // (inline), nicht als Flex-Kind am Zeilenende: Bricht der Satz auf zwei
+  // Zeilen um, stünde er sonst mittig weit rechts und sähe aus wie ein Knopf.
+  wischPfeil: { display: "inline-block", verticalAlign: -1, marginLeft: 4 },
   chip: {
     border: `1px solid ${v("--color-border")}`,
     borderRadius: 999,
@@ -1616,16 +1708,35 @@ const S: Record<string, React.CSSProperties> = {
    * getippten Weiß: Die Seite hat sieben Tageszeit-Stufen, ein festes Weiß wäre
    * in fünf davon ein heller Balken. Der Anfang ist `transparent` — CSS
    * überblendet Verläufe vormultipliziert, es entsteht also kein Graustich.
+   *
+   * ZWEI LAGEN, WEIL EINE NICHTS ZU TUN HATTE. Bis zum 19.08.2026 stand hier
+   * nur die untere Lage: Seitenfarbe von durchsichtig nach deckend. Sie blendet
+   * aus, was unter die Kante läuft — und im Regelfall läuft dort nichts hin.
+   * Bei 390 px lag in der Ausgangsstellung kein einziges Zeichen auf dem
+   * Streifen (über alle sieben Ruhestellungen: 0/12/0/22/0/20/0 von 28 px),
+   * weil die Tabelle an Spaltenkanten einrastet und der rechte Rand deshalb in
+   * einer Spaltenlücke steht. Ein Verlauf von Seitenfarbe nach Seitenfarbe ist
+   * unsichtbar; „zu schwach" war er nie, er hatte schlicht nichts zu färben.
+   *
+   * Die obere Lage ist deshalb keine Aufhellung, sondern eine KANTE: ein Hauch
+   * Textfarbe am äußersten Rand. Aus dem Textton gemischt und nicht aus einem
+   * getippten Schwarz — auf den drei dunklen Tageszeit-Stufen ist der Textton
+   * hell, die Kante setzt sich also auf jeder Stufe vom Grund ab, statt in drei
+   * von sieben zu verschwinden. Sie steht ZUERST in der Liste, weil CSS die
+   * erste Lage oben malt; unter der deckenden Seitenfarbe wäre sie weg.
    */
   fadeRechts: {
     position: "absolute",
     top: 0,
     right: 0,
     bottom: 0,
-    width: 28,
+    width: 36,
     zIndex: 1,
     pointerEvents: "none",
-    background: `linear-gradient(to right, transparent, ${v("--color-bg")})`,
+    background: [
+      `linear-gradient(to right, transparent 35%, color-mix(in srgb, ${v("--color-text-primary")} 18%, transparent) 100%)`,
+      `linear-gradient(to right, transparent 0%, ${v("--color-bg")} 70%)`,
+    ].join(", "),
     transition: "opacity 0.15s ease-out",
   },
   /**

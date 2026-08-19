@@ -200,6 +200,77 @@ for (const [name, viewport] of [
       expect(gemessen, "die schwebende Kopie war in keiner Stellung da").toBeGreaterThan(3);
       expect(abweichungen.slice(0, 6)).toEqual([]);
     });
+
+    /**
+     * DASS ES SEITLICH WEITERGEHT, MUSS ZU SEHEN SEIN — bevor jemand wischt.
+     *
+     * DER ANLASS (19.08.2026). Der Betreiber sah auf dem Telefon nicht, dass die
+     * Tabelle scrollt. Der Verlauf an der rechten Kante war da und stand auf
+     * voller Deckkraft — er hatte nur nichts zu tun: Die Tabelle rastet an
+     * Spaltenkanten ein, der rechte Rand fällt deshalb in eine Spaltenlücke, und
+     * ein Verlauf von Seitenfarbe nach Seitenfarbe ist unsichtbar. Nachgemessen
+     * bei 390 px lag in der AUSGANGSSTELLUNG — der, die jeder zuerst sieht — kein
+     * einziges Zeichen auf dem Streifen.
+     *
+     * Deshalb prüft dieser Test beides, und zwar in der Reihenfolge, in der ein
+     * Nutzer es erlebt: Der Satz steht da, solange die Tabelle noch nie bewegt
+     * wurde, und er ist weg, sobald sie einmal bewegt wurde. Ein Hinweis, der
+     * nach dem ersten Wischen zurückkäme, wäre eine Belehrung.
+     *
+     * Der Kanten-Verlauf selbst wird hier NICHT auf sein Aussehen geprüft — die
+     * Farbe entsteht aus Tageszeit-Stufe, Token und zwei überlagerten Verläufen
+     * und wäre nur als Pixelvergleich zu fassen. Geprüft wird, dass er da ist,
+     * die volle Höhe deckt und auf der Kante des Scrollkastens sitzt.
+     */
+    test("sagt vor dem ersten Wischen, dass es rechts weitergeht", async ({ page }) => {
+      await page.goto("/solar-atlas");
+      await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+      // Erst wenn der Überlauf gemessen ist, steht auch der Hinweis — beides
+      // hängt an derselben Messung.
+      await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
+
+      const hinweis = page.getByText("Die Tabelle geht rechts weiter", { exact: false });
+      await expect(hinweis).toBeVisible();
+
+      // Der Verlauf deckt die Kante über die ganze Höhe der Tabelle. Er blendet
+      // über 0,15 s ein — ohne diese Pause misst man einen Zwischenwert der
+      // Animation und der Test flattert (gemessen: 0,61 und 0,9997).
+      await page.waitForTimeout(400);
+      const kante = await page.evaluate(() => {
+        const sc = document.querySelector(".atlas-tabelle-scroller") as HTMLElement;
+        const streifen = sc.parentElement!.querySelector<HTMLElement>(":scope > span[aria-hidden]");
+        if (!streifen) return null;
+        const s = streifen.getBoundingClientRect();
+        const k = sc.getBoundingClientRect();
+        return {
+          deckung: Number(getComputedStyle(streifen).opacity),
+          breite: Math.round(s.width),
+          // Beides in Pixeln: sitzt der Streifen wirklich auf der rechten Kante,
+          // und reicht er über die volle Höhe?
+          abstandZurKante: Math.round(Math.abs(s.right - k.right)),
+          hoehenFehlbetrag: Math.round(k.height - s.height),
+        };
+      });
+      expect(kante).not.toBeNull();
+      expect(kante!.deckung).toBeGreaterThan(0.95);
+      expect(kante!.breite).toBeGreaterThan(20);
+      expect(kante!.abstandZurKante).toBeLessThanOrEqual(1);
+      expect(kante!.hoehenFehlbetrag).toBeLessThanOrEqual(1);
+
+      // Einmal seitlich bewegen — danach ist der Satz weg und bleibt weg, auch
+      // wenn man an den linken Rand zurückkehrt.
+      await page.evaluate(() => {
+        const sc = document.querySelector(".atlas-tabelle-scroller") as HTMLElement;
+        sc.scrollLeft = 120;
+      });
+      await expect(hinweis).toHaveCount(0, { timeout: 5_000 });
+
+      await page.evaluate(() => {
+        (document.querySelector(".atlas-tabelle-scroller") as HTMLElement).scrollLeft = 0;
+      });
+      await page.waitForTimeout(200);
+      await expect(hinweis).toHaveCount(0);
+    });
   });
 }
 
@@ -357,4 +428,71 @@ test.describe("Rangliste, mitlaufende Spalten tragen in jeder Zeile ihren Inhalt
     expect(geprueft, "keine vollständig sichtbare Zeile geprüft").toBeGreaterThan(3);
     expect(funde.slice(0, 10), `${funde.length} Befunde`).toEqual([]);
   });
+});
+
+/**
+ * DIE RANGBEWEGUNG STEHT AUF JEDER EBENE DA — auch wo sie null ist.
+ *
+ * DER ANLASS (19.08.2026). Neben der Platzziffer stand nichts, und der Betreiber
+ * fragte zweimal, ob die Spalte kaputt sei. Sie war es nicht: Zwischen sechzehn
+ * Bundesländern bewegt sich in keiner der sieben Platzierungs-Größen etwas, also
+ * gab es nichts zu zeigen. Nur ist „nichts da" von „nicht gerechnet" nicht zu
+ * unterscheiden — deshalb steht jetzt „±0" da, wo gemessen und nichts gefunden
+ * wurde.
+ *
+ * Der Test prüft beide Hälften, und die zweite ist die wichtigere:
+ *  1. KEINE ZEILE LÄSST DIE BEWEGUNG WEG. Hinter jeder Platzziffer steht
+ *     entweder eine Bewegung oder „±0".
+ *  2. AUF KREIS- UND GEMEINDEEBENE BEWEGT SICH WIRKLICH ETWAS. Stünde dort
+ *     ebenfalls überall „±0", wäre die Rechnung kaputt und die neue Anzeige
+ *     würde den Fehler zudecken statt ihn zu zeigen — genau die Fehlerklasse,
+ *     gegen die es diesen Punkt gibt. Gemessen am 19.08.2026: Bayern 76 von 96
+ *     Kreisen bewegt, Landkreis Haßberge 12 von 26 Gemeinden.
+ */
+test.describe("Rangliste: die Rangbewegung steht auf jeder Ebene da", () => {
+  const EBENEN = [
+    { name: "Bundesländer", url: "/solar-atlas", bewegungErwartet: false },
+    { name: "Kreise", url: "/solar-atlas/bayern", bewegungErwartet: true },
+    { name: "Gemeinden", url: "/solar-atlas/bayern/landkreis-hassberge", bewegungErwartet: true },
+  ] as const;
+
+  for (const ebene of EBENEN) {
+    test(`${ebene.name}: hinter jeder Platzziffer steht eine Bewegung`, async ({ page }) => {
+      await page.goto(ebene.url);
+      await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+
+      const befund = await page.evaluate(() => {
+        const sc = document.querySelector(".atlas-tabelle-scroller") as HTMLElement;
+        // Der Textinhalt der Platz-Zelle: „4." plus das, was daneben steht. Die
+        // Pfeile sind SVG und tragen keinen Text — „4.3" heißt also „Platz 4,
+        // drei Plätze bewegt", „4.±0" heißt „Platz 4, unverändert".
+        const roh = [...sc.querySelectorAll<HTMLElement>(".atlas-rank-row")].map((r) =>
+          (r.querySelector(".atlas-fix-spalte:not(.atlas-fix-spalte--kante)")?.textContent ?? "").trim(),
+        );
+        return {
+          zeilen: roh.length,
+          // Eine Platzziffer ohne alles — der Zustand, der wie ein Fehler aussah.
+          nackt: roh.filter((t) => /^\d+\.$/.test(t)),
+          // Etwas, das in keine der bekannten Formen passt.
+          unbekannt: roh.filter((t) => !/^(\d+\.|—)(±0|\d+)?$/.test(t)),
+          unveraendert: roh.filter((t) => t.endsWith("±0")).length,
+          bewegt: roh.filter((t) => /^\d+\.\d+$/.test(t)).length,
+        };
+      });
+
+      expect(befund.zeilen, "keine Zeile geprüft").toBeGreaterThan(10);
+      expect(befund.unbekannt.slice(0, 5)).toEqual([]);
+      expect(befund.nackt.slice(0, 5), `${befund.nackt.length} Zeilen ohne Bewegungsangabe`).toEqual([]);
+      if (ebene.bewegungErwartet) {
+        expect(
+          befund.bewegt,
+          `auf dieser Ebene bewegt sich sonst nichts mehr — dann rechnet die Bewegung nicht, statt null zu sein (${befund.unveraendert} × ±0 von ${befund.zeilen})`,
+        ).toBeGreaterThan(0);
+      } else {
+        // Umgekehrte Zusicherung: Hier IST heute alles unverändert, und genau
+        // dieser Fall muss sichtbar sein statt leer zu bleiben.
+        expect(befund.unveraendert).toBeGreaterThan(0);
+      }
+    });
+  }
 });
