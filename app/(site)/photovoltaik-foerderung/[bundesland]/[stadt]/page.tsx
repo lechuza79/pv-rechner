@@ -8,7 +8,8 @@ import RelatedLinks from "../../../../../components/RelatedLinks";
 import { v, iconSizes, space, pad, sectionGap } from "../../../../../lib/theme";
 import { pageMetadata } from "../../../../../lib/seo";
 import { jsonLdHtml } from "../../../../../lib/json-ld";
-import { cityBySlug, slugify, isCityPublished, publishedCities, fundingForFrom } from "../../../../../lib/atlas-cities";
+import { atlasRobots } from "../../../../../lib/atlas-index";
+import { cityBySlug, slugify, isCityPublished, publishedCities, fundingForFrom, cityIndexFreigegeben } from "../../../../../lib/atlas-cities";
 import { fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../../../lib/funding-programs";
 import { getFundingPrograms } from "../../../../../lib/funding-data";
 import { getFundingHistoryFor } from "../../../../../lib/funding-history";
@@ -41,19 +42,25 @@ export async function generateMetadata(props: { params: Promise<{ bundesland: st
   const f = fundingForFrom(await getFundingPrograms(), city);
   const active = f?.status === "aktiv";
   const year = new Date().getFullYear();
-  return pageMetadata({
-    path: `/photovoltaik-foerderung/${slugify(city.bundesland)}/${city.slug}`,
-    title: active || !f
-      ? `Photovoltaik-Förderung ${city.name} ${year} – Zuschüsse & Bestand`
-      : `Photovoltaik-Förderung ${city.name} ${year} – aktueller Status & Bestand`,
-    description: active
-      ? `Wie viele Solaranlagen gibt es in ${city.name}? Aktueller Anlagenbestand aus dem Marktstammdatenregister, das ${f!.name} und Beispielrechnungen für deine PV-Anlage.`
-      : f
-      ? `Lohnt sich Photovoltaik in ${city.name}? Anlagenbestand aus dem Marktstammdatenregister, der Status des ${f.name} (derzeit ${FUNDING_STATUS_LABEL[f.status]}) und ehrliche Beispielrechnungen für deine PV-Anlage.`
-      : `Wie viele Solaranlagen gibt es in ${city.name}? Aktueller Anlagenbestand aus dem Marktstammdatenregister und Beispielrechnungen für deine PV-Anlage.`,
-    ogImageTitle: `Photovoltaik in ${city.name}`,
-    ogImageSubtitle: f ? `Bestand & ${f.name}` : "Anlagenbestand & Beispielrechnungen",
-  });
+  return {
+    ...pageMetadata({
+      path: `/photovoltaik-foerderung/${slugify(city.bundesland)}/${city.slug}`,
+      title: active || !f
+        ? `Photovoltaik-Förderung ${city.name} ${year} – Zuschüsse & Bestand`
+        : `Photovoltaik-Förderung ${city.name} ${year} – aktueller Status & Bestand`,
+      description: active
+        ? `Wie viele Solaranlagen gibt es in ${city.name}? Aktueller Anlagenbestand aus dem Marktstammdatenregister, das ${f!.name} und Beispielrechnungen für deine PV-Anlage.`
+        : f
+        ? `Lohnt sich Photovoltaik in ${city.name}? Anlagenbestand aus dem Marktstammdatenregister, der Status des ${f.name} (derzeit ${FUNDING_STATUS_LABEL[f.status]}) und ehrliche Beispielrechnungen für deine PV-Anlage.`
+        : `Wie viele Solaranlagen gibt es in ${city.name}? Aktueller Anlagenbestand aus dem Marktstammdatenregister und Beispielrechnungen für deine PV-Anlage.`,
+      ogImageTitle: `Photovoltaik in ${city.name}`,
+      ogImageSubtitle: f ? `Bestand & ${f.name}` : "Anlagenbestand & Beispielrechnungen",
+    }),
+    // Gebaut, aber noch nicht freigegeben → noindex. Dieselbe eine Frage wie in
+    // der Sitemap (cityIndexFreigegeben), damit robots-Angabe und Sitemap nicht
+    // Gegenteiliges behaupten können.
+    robots: atlasRobots(cityIndexFreigegeben(city)),
+  };
 }
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
@@ -74,6 +81,7 @@ const S = {
   breadcrumb: { fontSize: "var(--font-size-caption)", color: v("--color-text-secondary"), marginBottom: 6 } as React.CSSProperties,
   h1: { fontSize: "var(--font-size-h1)", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" } as React.CSSProperties,
   intro: { fontSize: "var(--font-size-body)", lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 22px" } as React.CSSProperties,
+  ortszeile: { fontSize: "var(--font-size-small)", color: v("--color-text-muted"), margin: "0 0 14px" } as React.CSSProperties,
   strong: { color: v("--color-text-primary"), fontWeight: 600 } as React.CSSProperties,
   metricsGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 10, marginBottom: 28 } as React.CSSProperties,
   metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: 14 } as React.CSSProperties,
@@ -207,11 +215,24 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
         <h1 style={S.h1}>
           {f ? <>Photovoltaik-Förderung in {city.name}</> : <>Photovoltaik in {city.name}</>}
         </h1>
+        {/* Ein Ortsname allein ist mehrdeutig — Mühlhausen und Senden gibt es
+            mehrfach in Deutschland. Der Kreis darunter sagt, welcher Ort hier
+            gemeint ist, bevor die erste Zahl kommt.
+
+            Bewusst ohne Präposition: „im {kreis}" liest sich bei fast allen
+            Namen richtig und bei „StädteRegion Aachen" oder „Region Hannover"
+            falsch. Eine Zeile, die für 47 von 50 Namen stimmt, ist keine
+            Lösung — als Angabe für sich genommen stimmt sie für alle. */}
+        {city.kreis && <p style={S.ortszeile}>{city.kreis}</p>}
         <p style={S.intro}>
           {!f
             ? <>Anlagenbestand und Beispielrechnungen für Photovoltaik in {city.name}.</>
             : f.status === "aktiv"
-            ? <>In {city.name} fördert die Stadt neue Solaranlagen über das <span style={S.strong}>{f.name}</span> — zusätzlich zur bundesweiten 0 % Mehrwertsteuer. Was sich damit rechnet:</>
+            /* Kein „die Stadt": Von den geförderten Orten sind die meisten
+               Gemeinden, vier sind Landkreise und einer ist ein Bundesland —
+               für die stimmte der Satz schon vor den Gemeindeseiten nicht. Wer
+               fördert, steht ohnehin als Träger in der Karte darunter. */
+            ? <>In {city.name} gibt es für neue Solaranlagen einen Zuschuss über das <span style={S.strong}>{f.name}</span> — zusätzlich zur bundesweiten 0 % Mehrwertsteuer. Was sich damit rechnet:</>
             : <>In {city.name} gibt es mit dem <span style={S.strong}>{f.name}</span> ein kommunales Förderprogramm — {FUNDING_STATUS_NOTE[f.status]}. Bundesweit gilt weiterhin die 0 % Mehrwertsteuer auf Kauf und Installation.</>}
         </p>
 
@@ -426,7 +447,14 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
         {atlas && atlas.solar.total_count > 0 && (
           <div style={S.section}>
             <h2 style={S.h2}>Photovoltaik in {city.name} in Zahlen</h2>
-            <p style={S.sub}>Aktueller Anlagenbestand aus dem Marktstammdatenregister</p>
+            <p style={S.sub}>
+              Aktueller Anlagenbestand aus dem Marktstammdatenregister
+              {/* Der Nenner gehört sichtbar an die Zahl: Diese Seiten stehen
+                  neben Kreis- und Landesseiten mit denselben Beschriftungen,
+                  und eine Kreiszahl unter einem Ortsnamen wäre der schwerste
+                  Fehler, den diese Seite machen kann. */}
+              {city.kreis ? <> — nur {city.name}, nicht {city.kreis}</> : null}
+            </p>
             <div style={S.metricsGrid}>
               <div style={S.metric}>
                 <div style={S.metricLabel}>Solaranlagen</div>

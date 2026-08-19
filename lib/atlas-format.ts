@@ -67,8 +67,29 @@ export const fmtMixLeistung = (kw: number): string => zusammen(mixLeistungTeile(
  * Auch das ist Peak-Leistung, nur geteilt durch die Einwohnerzahl — also Wp,
  * nicht W. Stand vorher an sechs Stellen als "W" da und wäre dieselbe stille
  * Falschaussage wie kW/kWp.
+ *
+ * Die Staffelung setzt erst bei 10.000 Wp ein, nicht wie sonst bei 1.000 — und
+ * das ist gemessen, nicht geschätzt (alle 10.742 Gemeinden mit Solarbestand,
+ * Stand 08/2026):
+ *
+ *   - 78 % liegen über 1.000 Wp, der Median bei 1.714 Wp. Eine Umschaltung dort
+ *     machte aus dem Normalfall „1,7 kWp" — und die Tabelle, in der diese Zahl
+ *     steht, ist eine Rangliste: 1.714 und 1.789 Wp wären dieselbe Anzeige bei
+ *     verschiedenen Plätzen. Dasselbe Argument wie bei batterieMittelTeile.
+ *   - Über 10.000 Wp liegen 6 %. Dort misst die Zahl keinen Hausbestand mehr,
+ *     sondern einen Solarpark geteilt durch ein Dorf; die Nachkommastelle in
+ *     kWp lässt 100 Wp Auflösung übrig, also höchstens 1 % des Werts.
+ *
+ * Ohne Staffelung lief die Spitze aus ihrer Spalte: Herbstmühle (25 Einwohner,
+ * 34,9 MWp) ergibt 1.395.922 Wp, und in der Ranglisten-Tabelle stieß diese Zahl
+ * ungetrennt an die der Nachbarspalte — „1.395.92211". Vollständig lesbar und
+ * trotzdem falsch, die teuerste Fehlerklasse dieses Projekts. Sieben Gemeinden
+ * sind sechs- oder siebenstellig, sie allein brauchen die Staffelung.
  */
-export const wattProKopfTeile = (w: number): Messwert => ({ value: nf(w), unit: "Wp" });
+export function wattProKopfTeile(w: number): Messwert {
+  if (w >= 10_000) return { value: dez(w / 1000, 1), unit: "kWp" };
+  return { value: nf(w), unit: "Wp" };
+}
 export const fmtWattProKopf = (w: number): string => zusammen(wattProKopfTeile(w));
 
 /** Speicherkapazität — kWh, ab vier Stellen MWh/GWh. */
@@ -106,6 +127,45 @@ export function fmtErtragProKwp(kwhProKwp: number): string {
   return `${Math.round(kwhProKwp).toLocaleString("de-DE")} kWh/kWp`;
 }
 
+/**
+ * Gestaffelte Werte kompakt: unter 10 eine Nachkommastelle (9,8), darüber
+ * ganze Zahlen (404 statt 404,2). Die Wirkungs-Spalten sind Modellwerte —
+ * mehr als zwei, drei signifikante Stellen wären Scheingenauigkeit, und die
+ * Tabelle braucht jeden Pixel für die Namensspalte.
+ */
+const kompakt = (n: number) => dez(n, n < 10 ? 1 : 0);
+
+/**
+ * Rechnerisch vermiedenes CO₂ in Tonnen pro Jahr.
+ *
+ * Staffelung t → Tsd. t → Mio. t: eine Gemeinde liegt bei Hunderten Tonnen,
+ * ein Bundesland bei Millionen — ohne Staffelung wäre eine der beiden Zahlen
+ * unlesbar. „CO₂" steht bewusst NICHT in der Einheit: die Spalte bzw. der
+ * Satz daneben benennt die Größe, die Einheit bleibt die Masse.
+ */
+export function co2TonnenTeile(tonnen: number): Messwert {
+  if (tonnen >= 1_000_000) return { value: kompakt(tonnen / 1_000_000), unit: "Mio. t" };
+  if (tonnen >= 1000) return { value: kompakt(tonnen / 1000), unit: "Tsd. t" };
+  return { value: nf(tonnen), unit: "t" };
+}
+export const fmtCo2Tonnen = (tonnen: number): string => zusammen(co2TonnenTeile(tonnen));
+
+/**
+ * CO₂-Faktor als Fließtext („0,38 kg CO₂ je Kilowattstunde"). Eigene Funktion,
+ * damit der Faktor in Fußnoten nicht als handgeklebte Einheit landet.
+ */
+export const fmtCo2FaktorKg = (kgProKwh: number): string =>
+  `${dez(kgProKwh, 2)} kg CO₂ je Kilowattstunde`;
+
+/**
+ * Erlös- bzw. Preissatz je Kilowattstunde („14,8 ct"). Eigene Funktion aus
+ * demselben Grund wie oben: Der Satz steht in Hilfetexten neben anderen
+ * Zahlen, und eine handgeklebte Einheit ist genau die Bauweise, die der
+ * Einheiten-Wächter verbietet.
+ */
+export const ctProKwhTeile = (ct: number): Messwert => ({ value: dez(ct, 1), unit: "ct" });
+export const fmtCtProKwh = (ct: number): string => zusammen(ctProKwhTeile(ct));
+
 // ─── Anteile ──────────────────────────────────────────────────────────────────
 
 /**
@@ -125,6 +185,36 @@ export const anteilProzentTeile = (anteil: number): Messwert => ({
   unit: "%",
 });
 export const fmtAnteilProzent = (anteil: number): string => zusammen(anteilProzentTeile(anteil));
+
+/**
+ * Hängt den Zeitbezug an eine Einheit: aus „Tsd. t" wird „Tsd. t/Jahr".
+ *
+ * Nur für FLUSSGRÖSSEN. In der Ranking-Tabelle stehen Jahreswerte neben
+ * Bestandsgrößen (Anlagen, Leistung, Speicher) — ohne den Zusatz liest sich
+ * „404 Tsd. t" als „so viel hat die Gemeinde bisher gespart". Der Zeitbezug
+ * gehört deshalb an die Zahl, nicht in den Hilfetext hinter dem „?".
+ *
+ * Bewusst „/Jahr" und nicht „p. a.": Die Abkürzung ist korrekt, setzt aber
+ * Vorwissen voraus, und die Seite schreibt Klartext.
+ */
+export const proJahr = (m: Messwert): Messwert => ({ value: m.value, unit: `${m.unit}/Jahr` });
+
+/** Geldbeträge (rechnerischer Stromwert): € → Tsd. € → Mio. € → Mrd. €. */
+export function euroTeile(euro: number): Messwert {
+  if (euro >= 1_000_000_000) return { value: kompakt(euro / 1_000_000_000), unit: "Mrd. €" };
+  if (euro >= 1_000_000) return { value: kompakt(euro / 1_000_000), unit: "Mio. €" };
+  if (euro >= 1000) return { value: kompakt(euro / 1000), unit: "Tsd. €" };
+  return { value: nf(euro), unit: "€" };
+}
+export const fmtEuro = (euro: number): string => zusammen(euroTeile(euro));
+
+/**
+ * Voller Euro-Betrag ohne Größenstaffelung — für Haushalts-Beispiele in
+ * Rechner-Größenordnung, wo „12.400 €" lesbarer ist als „12,4 Tsd. €".
+ * NICHT für Regions-Summen (dort euroTeile/fmtEuro, sonst wird ein
+ * Bundesland zu einer zehnstelligen Zahl).
+ */
+export const fmtEuroVoll = (euro: number): string => `${nf(euro)} €`;
 
 /**
  * Der gerundete Prozentwert als ZAHL — für Entscheidungen, die an der
