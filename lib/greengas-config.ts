@@ -240,7 +240,16 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // innerhalb der Wächter. Seit dem 18.08.2026 prüft der Gesundheitscheck das
   // alle drei Stunden mit (scripts/health-check.ts), unabhängig davon, ob der
   // Rechner des Betreibers an ist.
-  geprueftRechtIso: "2026-08-18",
+  //
+  // 19.08.2026 erneut geprüft, wieder unverändert: dieselbe amtliche Chronologie
+  // schließt weiterhin mit Verkündung 28.07.2026 (BGBl. Nr. 226) und dem
+  // gestaffelten Inkrafttreten ab 29.07.2026. Zum angekündigten Quotengesetz nach
+  // § 42a steht dort nach wie vor nur die Ankündigung selbst — Inverkehrbringer
+  // von Gas, Öl und Flüssiggas sollen bis zum 01.12.2026 per eigenem Gesetz
+  // verpflichtet werden, ab 2045 vollständig auf klimaneutrale Brennstoffe
+  // umzustellen. Kein Entwurf, kein Referentenentwurf, keine Fundstelle. Damit
+  // bleibt auch die Bioheizöl-Lücke im Wärmepumpen-Ergebnis offen und richtig.
+  geprueftRechtIso: "2026-08-19",
   reviewBy: "2027-07-25",
 };
 
