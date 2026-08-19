@@ -98,13 +98,46 @@ describe("Kein Textbaustein-Unfall", () => {
     expect(m).toContain("Damit hat Höchberg die meiste private Speicherkapazität unter den Kleinen Gemeinden");
   });
 
-  it("beginnt den Fliesstext immer klein — die Anrede endet mit Komma", () => {
-    // Frueher stand nach dem Weiterleitungs-Absatz ein Grossbuchstabe. Der
-    // Absatz ist jetzt eine Zeile und der Satz danach beginnt immer klein.
+  // GENAU EIN SATZ setzt die Anrede fort — und der beginnt klein.
+  //
+  // Die vorige Fassung dieses Tests verlangte den kleinen Anfangsbuchstaben in
+  // BEIDEN Fällen und war grün, während 88 von 100 echten Briefen so aussahen:
+  // Anrede, dann ein vollständiger Satz mit Punkt, dann eine Zeile darunter ein
+  // kleingeschriebener Satzanfang. Der Test hat den Fehler mit sich selbst
+  // verglichen. Jetzt wird die Regel geprüft, nicht die Zeichenfolge.
+  it("setzt die Anrede mit genau einem kleingeschriebenen Satz fort", () => {
+    // Ohne benannte Stelle trägt die Weiterleitungs-Bitte die Fortsetzung,
+    // der Einstieg beginnt danach als neuer Satz gross.
+    const ohne = renderOutreachDraft({ ...BASIS, funktion: null }).body;
+    expect(ohne).toContain("Damen und Herren,\n\nfalls Sie nicht zuständig sind");
+    expect(ohne).toContain("Aus dem amtlichen");
+    expect(ohne).not.toContain("aus dem amtlichen");
+
+    // Mit benannter Stelle entfällt die Bitte — dann setzt der Einstieg selbst
+    // die Anrede fort und beginnt klein.
+    const mit = renderOutreachDraft({ ...BASIS, funktion: "Pressestelle" }).body;
+    expect(mit).toContain("Damen und Herren,\n\naus dem amtlichen");
+    expect(mit).not.toContain("zuständig sind");
+  });
+
+  // Verallgemeinert: Nach dem ersten Satzende darf kein kleingeschriebener
+  // Satzanfang mehr kommen. Das ist die Regel, an der die alte Fassung
+  // vorbeigeprüft hat.
+  it("kein kleingeschriebener Satzanfang nach einem beendeten Satz", () => {
     for (const funktion of [null, "Pressestelle"]) {
-      expect(renderOutreachDraft({ ...BASIS, funktion }).body, `funktion=${funktion}`).toContain(
-        "aus dem amtlichen",
-      );
+      const body = renderOutreachDraft({ ...BASIS, funktion }).body;
+      const absaetze = body.split("\n\n");
+      for (const [i, absatz] of absaetze.entries()) {
+        const erstesZeichen = absatz.trimStart()[0] ?? "";
+        // Der erste Absatz ist die Anrede, der zweite setzt sie fort (klein).
+        if (i <= 1) continue;
+        // Aufzählungen, Trennlinien und die Meldung selbst sind keine Sätze.
+        if (/^[·─—\d]/.test(erstesZeichen)) continue;
+        expect(
+          erstesZeichen === erstesZeichen.toUpperCase(),
+          `funktion=${funktion}, Absatz ${i}: „${absatz.slice(0, 40)}…"`,
+        ).toBe(true);
+      }
     }
   });
 

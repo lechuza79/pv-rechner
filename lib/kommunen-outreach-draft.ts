@@ -241,9 +241,24 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   // Wer die Website betreut, ist bei kleinen Gemeinden nicht ermittelbar (siehe
   // `funktion`). Die Bitte um Weiterleitung steht deshalb GANZ OBEN und nennt
   // die gesuchte Rolle — jetzt aber in einer Zeile statt in einem Absatz.
+  //
+  // DIE ANREDE TRÄGT DEN NÄCHSTEN SATZ — oder eben nicht.
+  //
+  // Der Fehler (gemessen 19.08.2026 an 88 von 100 echten Briefen): Nach „Sehr
+  // geehrte Damen und Herren," stand ein vollständiger Satz mit großem
+  // Anfangsbuchstaben, und der eigentliche Einstieg begann eine Zeile darunter
+  // klein („aus dem amtlichen Marktstammdatenregister…"). Der kleine
+  // Buchstabe gehört an die Anrede, nicht hinter einen abgeschlossenen Satz.
+  // In einem Rathaus liest man so etwas als „nicht selbst geschrieben" — und
+  // damit ist der Brief erledigt, bevor die erste Zahl gelesen wurde.
+  //
+  // Also: Steht die Weiterleitungs-Bitte da, ist SIE der Satz, der die Anrede
+  // fortsetzt (klein), und der Einstieg beginnt danach groß. Steht sie nicht
+  // da, setzt der Einstieg die Anrede fort (klein).
   const weiterleitung = c.funktion
     ? ""
-    : `\n\nFalls Sie nicht zuständig sind: bitte an die Website- oder Pressestelle weiterleiten.`;
+    : `\n\nfalls Sie nicht zuständig sind: bitte an die Website- oder Pressestelle weiterleiten.`;
+  const einstiegGross = !c.funktion;
 
   // Der Widget-Absatz ist der EINZIGE Unterschied zwischen den Varianten —
   // sonst waere nicht zu erkennen, ob eine Reaktion am Widget oder am Text lag.
@@ -268,7 +283,7 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
 
   const body = `Sehr geehrte Damen und Herren,${weiterleitung}
 
-aus dem amtlichen Marktstammdatenregister ergibt sich für ${c.name} gerade eine Meldung — fertig formuliert zum Übernehmen:
+${einstiegGross ? "Aus" : "aus"} dem amtlichen Marktstammdatenregister ergibt sich für ${c.name} gerade eine Meldung — fertig formuliert zum Übernehmen:
 
 ────────────────────────────
 ${meldung}

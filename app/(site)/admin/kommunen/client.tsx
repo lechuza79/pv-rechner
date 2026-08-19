@@ -6,6 +6,7 @@ import { BUNDESLAENDER } from "../../../../lib/mastr-regions";
 import { OUTREACH_STATUS, OUTREACH_STATUS_LABEL } from "../../../../lib/outreach-status";
 import Modal from "../../../../components/Modal";
 import { ASK_LABEL, ASK_VARIANTEN, type AskVariante, type VariantenBilanz } from "../../../../lib/kommunen-ask";
+import { SCHUEBE } from "../../../../lib/kommunen-testballon";
 
 // ─── Typen ──────────────────────────────────────────────────────────────────
 
@@ -66,6 +67,7 @@ export default function KommunenCockpit() {
   const [q, setQ] = useState("");
   const [sort, setSort] = useState("");
   const [charge, setCharge] = useState("");
+  const [kampagne, setKampagne] = useState("");
   const [page, setPage] = useState(0);
 
   const [rows, setRows] = useState<Lead[]>([]);
@@ -90,7 +92,8 @@ export default function KommunenCockpit() {
     if (hasLink) params.set("hasLink", "1");
     if (qDebounced) params.set("q", qDebounced);
     if (sort) params.set("sort", sort);
-    if (charge) { params.set("kampagne", "testballon"); params.set("charge", charge); }
+    if (kampagne) params.set("kampagne", kampagne);
+    if (kampagne && charge) params.set("charge", charge);
     params.set("page", String(page));
     try {
       const res = await fetch(`/api/admin/kommunen?${params.toString()}`);
@@ -104,7 +107,7 @@ export default function KommunenCockpit() {
     } finally {
       setLoading(false);
     }
-  }, [bl, status, hasLink, qDebounced, sort, charge, page]);
+  }, [bl, status, hasLink, qDebounced, sort, kampagne, charge, page]);
 
   useEffect(() => {
     load();
@@ -113,7 +116,7 @@ export default function KommunenCockpit() {
   // Filterwechsel → zurück auf Seite 1.
   useEffect(() => {
     setPage(0);
-  }, [bl, status, hasLink, qDebounced, sort, charge]);
+  }, [bl, status, hasLink, qDebounced, sort, kampagne, charge]);
 
   const patchLead = useCallback((updated: Lead) => {
     setRows((prev) => prev.map((r) => (r.region_id === updated.region_id ? updated : r)));
@@ -204,10 +207,31 @@ export default function KommunenCockpit() {
           <input type="checkbox" checked={hasLink} onChange={(e) => setHasLink(e.target.checked)} />
           nur mit Kontaktlink
         </label>
-        <select value={charge} onChange={(e) => setCharge(e.target.value)} style={selectStyle} aria-label="Versandliste">
+        {/* Die Schübe kommen aus lib/kommunen-testballon.ts. Vorher standen hier
+            zwei feste Zeilen mit dem Namen der ersten Kampagne und ihrer
+            Größe — nach der zweiten Kampagne zeigte der Filter auf eine
+            Auswahl, die es unter diesem Namen nicht mehr gab. */}
+        <select value={kampagne} onChange={(e) => setKampagne(e.target.value)} style={selectStyle} aria-label="Schub">
           <option value="">Alle Gemeinden</option>
-          <option value="1">Testballon · Charge 1 (50)</option>
-          <option value="2">Testballon · Charge 2 (50)</option>
+          {Object.keys(SCHUEBE).map((k) => (
+            <option key={k} value={k}>
+              Schub: {k}
+            </option>
+          ))}
+        </select>
+        <select
+          value={charge}
+          onChange={(e) => setCharge(e.target.value)}
+          style={selectStyle}
+          aria-label="Charge"
+          disabled={!kampagne}
+        >
+          <option value="">Alle Chargen</option>
+          {[1, 2, 3, 4, 5].map((c) => (
+            <option key={c} value={String(c)}>
+              Charge {c}
+            </option>
+          ))}
         </select>
         <select value={sort} onChange={(e) => setSort(e.target.value)} style={selectStyle} aria-label="Sortierung">
           <option value="">Sortierung: Standard</option>
