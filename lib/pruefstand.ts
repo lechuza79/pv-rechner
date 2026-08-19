@@ -26,8 +26,10 @@ import { EEG_REFORM_STAND } from "./eeg-reform-config";
 import { FEED_IN_GEPRUEFT_ISO } from "./feedin-config";
 import { FREIFLAECHE_GEPRUEFT_ISO, FREIFLAECHE_REVIEW_BY } from "./freiflaeche-config";
 import { GREEN_GAS_CONFIG } from "./greengas-config";
+import { MARKTWERT_GEPRUEFT_ISO, MARKTWERT_REVIEW_BY } from "./marktwert-config";
 import { DEFAULT_HEATPUMP_CONFIG } from "./heatpump-config";
 import { DEFAULT_PRICES } from "./prices-config";
+import { RECHTSTEXTE_GEPRUEFT_ISO } from "./rechtstexte-stand";
 
 export interface PruefEintrag {
   /** In der Sprache der Seite, damit die Meldung ohne Code-Kenntnis lesbar ist. */
@@ -191,6 +193,19 @@ export const PRUEFSTAND: PruefEintrag[] = [
     runbook: "scripts/eeg-verify.md",
   },
   {
+    was: "Börsenerlös ab 2027 und Kosten der Direktvermarktung",
+    feld: "MARKTWERT_GEPRUEFT_ISO",
+    geprueftIso: MARKTWERT_GEPRUEFT_ISO,
+    reviewBy: MARKTWERT_REVIEW_BY,
+    waechter: "eeg-verguetung-verify-halbjaehrlich",
+    rhythmus: "halbjährlich, 28. Januar und 28. Juli",
+    // Derselbe Lauf und dieselbe Grenze wie bei den Vergütungssätzen: Der
+    // Januar-Termin fällt mit der Veröffentlichung des Jahresmarktwerts
+    // zusammen, ein halbes Jahr plus Luft für einen ausgefallenen Lauf.
+    maxAlterTage: 210,
+    runbook: "scripts/marktwert-verify.md",
+  },
+  {
     was: "Solar-Atlas: Zuschlagswerte der Freiflächen-Ausschreibungen",
     feld: "FREIFLAECHE_GEPRUEFT_ISO",
     geprueftIso: FREIFLAECHE_GEPRUEFT_ISO,
@@ -204,6 +219,19 @@ export const PRUEFSTAND: PruefEintrag[] = [
     // schlägt trotzdem an, bevor der übernächste Termin heranrückt.
     maxAlterTage: 180,
     runbook: "scripts/freiflaeche-verify.md",
+  },
+  {
+    was: "Datenschutzerklärung und Impressum gegen den Code",
+    feld: "RECHTSTEXTE_GEPRUEFT_ISO",
+    geprueftIso: RECHTSTEXTE_GEPRUEFT_ISO,
+    // Kein fachlicher Termin: Diese Texte altern nicht am Kalender, sondern an
+    // unseren eigenen Deploys. Ein Datum „bis wann neu geprüft" würde einen
+    // Rhythmus behaupten, den die Sache nicht hat — was zählt, ist allein, dass
+    // der Lauf stattfindet.
+    waechter: "solar-check-legal-waechter",
+    rhythmus: "quartalsweise, 15. Februar/Mai/August/November",
+    maxAlterTage: 120,
+    runbook: "scripts/rechtstexte-verify.md",
   },
   {
     was: "Anschaffungspreise und Strompreis",
