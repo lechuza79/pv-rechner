@@ -78,7 +78,18 @@ describe("fundingForAgs geo-matching", () => {
   });
 
   it("matches a kommune by its 8-digit prefix", () => {
-    const badHomburg = fundingForAgs("06434003");
+    // 06434001, nicht 06434003 — KORRIGIERT AM 19.08.2026, und der Test war
+    // hier das eigentliche Problem: Er hatte den falschen Schlüssel
+    // festgeschrieben und damit zementiert. 06434003 gehört Glashütten; Bad
+    // Homburgs Programm wurde also 3.000 Einwohnern im Taunus angeboten und den
+    // 57.000 in Bad Homburg vorenthalten. Der Test war grün, weil er dieselbe
+    // Zahl prüfte, die im Katalog stand — er verglich den Fehler mit sich selbst.
+    //
+    // Ein Gemeindeschlüssel lässt sich gegen keinen Testwert absichern, sondern
+    // nur gegen das Melderegister: `npm run foerder:ags` hält jeden Schlüssel
+    // gegen den Ortsnamen, den die Regionentabelle darunter führt, und läuft
+    // täglich mit.
+    const badHomburg = fundingForAgs("06434001");
     expect(badHomburg.map((p) => p.id)).toContain("badhomburg-energiespar");
   });
 

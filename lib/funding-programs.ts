@@ -424,7 +424,12 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "badhomburg-energiespar": {
     id: "badhomburg-energiespar", name: "Energiesparförderung",
-    traeger: "Stadt Bad Homburg", level: "kommune", region: "Bad Homburg", bundesland: "Hessen", agsCode: "06434003",
+    traeger: "Stadt Bad Homburg", level: "kommune", region: "Bad Homburg", bundesland: "Hessen", agsCode: "06434001",
+    // Schlüssel korrigiert am 19.08.2026: 06434003 gehört Glashütten, nicht Bad
+    // Homburg. Ein Altbestand — gefunden von der neuen Schlüsselprüfung, die
+    // eigentlich meine eigenen Fehler derselben Runde suchen sollte. Wirkung
+    // vorher: Die Bad Homburger Förderung wurde 3.000 Einwohnern im Taunus
+    // angeboten und den 57.000 in Bad Homburg vorenthalten.
     url: "https://www.bad-homburg.de", stand: "Juni 2026",
     status: "unsicher", capped: true, verified: false,
     eligibility: ["privat", "gewerblich"],
@@ -2110,7 +2115,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "limburgerhof-balkonkraftwerke": {
     id: "limburgerhof-balkonkraftwerke", name: "Förderung von Balkonkraftwerken",
     traeger: "Gemeinde Limburgerhof", level: "kommune", region: "Limburgerhof",
-    bundesland: "Rheinland-Pfalz", agsCode: "07338020",
+    bundesland: "Rheinland-Pfalz", agsCode: "07338017",
     url: "https://www.limburgerhof.de/service/aktionen-und-kampagnen/foerderung-von-balkonkraftwerken/",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
@@ -2178,7 +2183,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "poing-energie": {
     id: "poing-energie", name: "Förderrichtlinien Energie",
     traeger: "Gemeinde Poing", level: "kommune", region: "Poing",
-    bundesland: "Bayern", agsCode: "09175128",
+    bundesland: "Bayern", agsCode: "09175135",
     url: "https://www.poing.de/bauen-umwelt/energie-klima/foerderrichtlinien",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
@@ -2236,7 +2241,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "herzberg-balkonkraftwerke": {
     id: "herzberg-balkonkraftwerke", name: "Förderprogramm Balkonkraftwerke",
     traeger: "Stadt Herzberg am Harz", level: "kommune", region: "Herzberg am Harz",
-    bundesland: "Niedersachsen", agsCode: "03159016",
+    bundesland: "Niedersachsen", agsCode: "03159019",
     url: "https://www.herzberg.de/service/themen/klima-und-umwelt/klimaschutz/foerderung-balkonkraftwerke/",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
@@ -2282,7 +2287,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "weyhe-klimaschutz": {
     id: "weyhe-klimaschutz", name: "Klimaschutz-Förderung",
     traeger: "Gemeinde Weyhe", level: "kommune", region: "Weyhe",
-    bundesland: "Niedersachsen", agsCode: "03251016",
+    bundesland: "Niedersachsen", agsCode: "03251047",
     url: "https://www.weyhe.de/wohnen-bauen/klima-und-umweltschutz/klimaschutz-foerderung/",
     stand: "August 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
@@ -2308,7 +2313,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "moormerland-balkonkraftwerke": {
     id: "moormerland-balkonkraftwerke", name: "Förderung Balkonkraftwerke",
     traeger: "Gemeinde Moormerland", level: "kommune", region: "Moormerland",
-    bundesland: "Niedersachsen", agsCode: "03457013",
+    bundesland: "Niedersachsen", agsCode: "03457014",
     url: "https://www.moormerland.de/bauen-wohnen/foerderungen/balkonkraftwerke",
     stand: "August 2026", status: "unsicher", capped: true, verified: true,
     eligibility: ["privat"],
@@ -2330,7 +2335,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "bad-krozingen-balkon-pv": {
     id: "bad-krozingen-balkon-pv", name: "Balkon Photovoltaik (einkommensabhängig)",
     traeger: "Große Kreisstadt Bad Krozingen", level: "kommune", region: "Bad Krozingen",
-    bundesland: "Baden-Württemberg", agsCode: "08315005",
+    bundesland: "Baden-Württemberg", agsCode: "08315006",
     url: "https://www.bad-krozingen.de/Solar",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],

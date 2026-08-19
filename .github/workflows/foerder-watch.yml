@@ -86,6 +86,19 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: npm run foerder:suche -- --limit 300
 
+      # Zeigt jedes Programm auf die richtige Gemeinde? Ein vertippter
+      # Gemeindeschlüssel bleibt gültig und zeigt auf einen anderen Ort — nichts
+      # fällt um, nur bekommt die falsche Gemeinde die Förderung angeboten.
+      # Gemessen am 19.08.2026: sechs von 43 neuen Programmen und ein
+      # Altbestand (Bad Homburg hing an Glashütten). Dieser Schritt DARF rot
+      # werden; er braucht kein Urteil, sondern vergleicht nur Namen.
+      - name: Gemeindeschlüssel der Programme prüfen
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: npm run foerder:ags
+
       # Der zweite Seiten-Abgleich: dieselbe Frage wie oben, nur für die Seiten,
       # die wir KENNEN, aber (noch) nicht führen. Er ist der Auslöser dafür, dass
       # eine Gemeinde erneut eingeordnet wird.
