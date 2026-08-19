@@ -17,7 +17,6 @@
 // die kanonischen Formatierer (lib/atlas-format.ts), damit in der Meldung nie
 // eine andere Zahl steht als auf der verlinkten Seite.
 
-import { fmtPvLeistung, fmtWattProKopf } from "./atlas-format";
 import { kurzOrtsname } from "./atlas-orte";
 import type { AskVariante } from "./kommunen-ask";
 
@@ -136,9 +135,18 @@ export type DraftContext = {
    * das stärkste Argument dafür, dass die Zahlen kein Zufallstreffer sind.
    */
   weitere?: { phrase: string; gruppe: string; platz: number; von: number }[];
-  /** Die vollständige Rangliste zum Nachprüfen — der Rang im Brief ist eine
-   *  Behauptung, bis man sie ansehen kann. */
+  /** Die vollständige Rangliste zum Nachprüfen. Steht seit dem 19.08.2026 NICHT
+   *  mehr im Brief (ein dritter Link war einer zu viel) — das Cockpit zeigt sie
+   *  weiterhin, damit ein Mensch vor dem Versand nachsehen kann. */
   ranglisteUrl?: string | null;
+  /**
+   * Live-Vorschau der Grafik für DIESEN Ort, für den Widget-Absatz.
+   *
+   * Ein Link statt eines Anhangs: Ein Bild in der ersten unverlangten Mail
+   * einer noch unbekannten Absenderdomain ist ein Spam-Muster, und der Brief
+   * bleibt reiner Text.
+   */
+  widgetUrl?: string | null;
 };
 
 export type OutreachDraft = { subject: string; body: string; meldung: string };
@@ -187,6 +195,27 @@ export function herkunftsangabe(ortsname: string, empfaenger?: string | null): s
  * Satz baut — und genau das war die Falle ("Website Ihrer Markt").
  */
 
+/**
+ * Die Größenklasse klein, wo sie im Satz steht: „unter den mittelgroßen Städten
+ * in Hessen" statt „unter den Mittelgroßen Städten in Hessen".
+ *
+ * Der Klassenname ist ein Eigenname der Rangliste und wird dort groß geführt.
+ * Im Fließtext einer Pressemeldung liest ein Redakteur ihn aber als Tippfehler,
+ * und der Brief verspricht einen Text, den man ohne Redigieren übernehmen kann.
+ *
+ * NUR das erste Wort und NUR, wenn es ein Adjektiv ist. „Gemeinden und
+ * Kleinstädten" beginnt mit einem Substantiv — eine Regel „erstes Wort klein"
+ * hätte daraus „gemeinden und Kleinstädten" gemacht. Deshalb eine ausdrückliche
+ * Liste statt einer Heuristik.
+ */
+const KLASSEN_ADJEKTIVE = ["Kleinen", "Mittelgroßen", "Großen", "Kleine", "Mittelgroße", "Große"];
+
+export function kleinKlasse(gruppe: string): string {
+  const [erstes, ...rest] = gruppe.split(" ");
+  if (!rest.length || !KLASSEN_ADJEKTIVE.includes(erstes)) return gruppe;
+  return [erstes.toLowerCase(), ...rest].join(" ");
+}
+
 /** "2026-07-15" → "15. Juli 2026". */
 function standLabel(iso: string): string {
   const d = new Date(`${iso}T00:00:00Z`);
@@ -203,70 +232,58 @@ function standLabel(iso: string): string {
  * Quelle, damit die Meldung ohne uns nachprüfbar bleibt.
  */
 export function renderMeldung(c: DraftContext): string {
-  const { anlagen, leistungKwp, wpProKopf, stand } = c.zahlen;
+  const { anlagen, stand } = c.zahlen;
   // In der MELDUNG der Kurzname: Kein Ort schreibt seinen Unterscheidungszusatz
   // in die eigene Pressemitteilung („In Langen (Hessen) sind …"). Der volle Name
   // steht weiter im Anschreiben drumherum.
   const kurz = kurzOrtsname(c.name);
-  // "pro Person" statt "je Einwohnerin und Einwohner": Die Doppelform macht den
-  // Satz schwerfaellig, ohne ihn genauer zu machen. Entscheidung des Betreibers
-  // (31.07.2026). Die Einheit selbst kommt weiter aus dem kanonischen
-  // Formatierer — nur die Bezugsgroesse ist umformuliert.
-  // Der Anteil privater Daecher gehoert in denselben Satz. Ohne ihn eroeffnet
-  // die Meldung mit einer Zahl, die einem Solarpark gehoert, und behauptet
-  // danach etwas ueber die Buerger.
-  const { privatDachKwp } = c.zahlen;
-  const privatAnteil = leistungKwp > 0 && privatDachKwp != null ? privatDachKwp / leistungKwp : null;
-  const privatSatz =
-    privatDachKwp != null && privatAnteil != null && privatAnteil >= 0.35
-      ? `, davon ${fmtPvLeistung(privatDachKwp)} auf privaten Dächern`
-      : "";
-  // Die Pro-Kopf-Zahl NUR, wenn sie die Buerger meint. Wo Freiflaeche und
-  // Gewerbe dominieren, sagt sie ueber den Ort nichts aus.
-  const proKopfSatz =
-    wpProKopf != null && (privatAnteil == null || privatAnteil >= 0.5)
-      ? `, das entspricht ${fmtWattProKopf(wpProKopf)} pro Person`
-      : "";
   const platz = c.rang?.platz ?? null;
 
-  // DIE UEBERSCHRIFT BEHAUPTET NUR, WAS STIMMT.
-  // Vorher stand dort bedingungslos der Superlativ — auch auf Platz 3 und auch
-  // dann, wenn es gar keine Platzierung gab.
-  const unterDen = `unter den ${c.gruppe}`;
+  // DIE MELDUNG ZÄHLT DINGE, SIE MISST SIE NICHT.
+  //
+  // Vorher eröffnete sie mit „13,2 MWp auf privaten Dächern; zusammen mit
+  // Gewerbe- und Freiflächenanlagen sind es 41,8 MWp aus 2.106 Anlagen" und
+  // belegte den Rang mit „404 Wh je Einwohner". Vier Größen, drei davon in
+  // Einheiten, die außerhalb der Branche niemand im Kopf umrechnet — und der
+  // Empfänger ist eine Pressestelle, keine Netzabteilung (Entscheidung des
+  // Betreibers, 19.08.2026).
+  //
+  // Stückzahlen können alle: „2.106 Solaranlagen", „1.061 Hausspeicher". Sie
+  // sind nebenbei die robustere Angabe — eine Leistungssumme wird in kleinen
+  // Orten von einem einzigen Solarpark beherrscht, eine Anlagenzahl nicht. Die
+  // ganze Fallunterscheidung, die das früher abfangen musste, ist damit weg.
+  //
+  // Die genauen Leistungswerte stehen weiterhin auf der verlinkten
+  // Gemeindeseite. Wer sie braucht, ist einen Klick entfernt.
+  //
+  // SINGULAR IST TEIL DER RICHTIGKEIT. „In Hamm sind 1 Solaranlagen" stand so
+  // in einem echten Brief.
+  const anlagenSatz =
+    anlagen === 1
+      ? `In ${kurz} ist eine Solaranlage in Betrieb.`
+      : `In ${kurz} sind ${anlagen.toLocaleString("de-DE")} Solaranlagen in Betrieb.`;
+
+  const unterDen = `unter den ${kleinKlasse(c.gruppe)}`;
 
   // DIE UEBERSCHRIFT IST KURZ UND BEHAUPTET KEINEN GELTUNGSBEREICH.
-  //
-  // Vorher stand dort die volle Aussage mit Messgroesse, Superlativ und
-  // Vergleichsgruppe — 95 Zeichen, und als Schlagzeile unbrauchbar. Eine
-  // Pressestelle kuerzt so etwas selbst, und dabei faellt zuverlaessig genau der
-  // Teil weg, der die Aussage wahr macht (die Groessenklasse).
-  //
-  // Deshalb: Die Ueberschrift nennt Ort, Platz und Thema — mehr nicht. Sie
-  // behauptet keinen Geltungsbereich und kann damit nicht falsch werden. Der
-  // vollstaendige, praezise Satz steht im Fliesstext darunter, wo Platz dafuer
-  // ist. Dieselbe Aufteilung wie bei Betreff und Einstieg des Anschreibens.
+  // Eine Pressestelle kuerzt eine lange Schlagzeile selbst, und dabei faellt
+  // zuverlaessig der Teil weg, der die Aussage wahr macht (die Groessenklasse).
+  // Deshalb: Ort, Platz, Thema — mehr nicht. Der vollstaendige Satz steht
+  // darunter, wo Platz dafuer ist.
   const ueberschrift =
     platz != null
       ? `${kurz}: Platz ${platz} ${c.phrase}`
       : `Solarausbau in ${kurz}: der aktuelle Stand`;
 
-  // DER BELEGSATZ NENNT DIE GERANKTE GROESSE, nicht die Gesamtzahlen.
-  // Die Gesamtzahlen bleiben als Einordnung stehen — sie belegen den Rang aber
-  // nicht, weil sie etwas anderes messen (Solarparks und Gewerbe zaehlen mit).
-  //
-  // „DAMIT" BEHAUPTETE EINE ABLEITUNG, DIE ES NICHT GIBT.
-  // Der Satz davor nennt Anlagenzahl und Gesamtleistung; der Rang misst etwas
-  // anderes (Hausspeicher, Balkongeräte, Zubau in einem Zeitfenster). Der
-  // Kommentar oben weiß das ausdrücklich — „Damit" sagte trotzdem das
-  // Gegenteil, und ein Redakteur, der den Satz prüft, findet einen Fehlschluss
-  // und traut danach auch dem Rest nicht. „Zugleich" behauptet nur, dass beides
-  // gilt, und genau das stimmt.
-  //
-  // Die Klammer trägt jetzt auch die STÜCKZAHL hinter der Rate. Eine Rate ohne
-  // ihre Grundmenge kann jede Größe vortäuschen — dieselbe Begründung wie beim
-  // Feld `basis` in lib/awards.ts, nur war sie im Brief nie angekommen.
-  const klammer = [c.rangWert, c.rangBasis].filter(Boolean).join(", ");
-  const klammerTeil = klammer ? ` (${klammer})` : "";
+  // Die Klammer traegt die STUECKZAHL hinter der Rate, nicht die Rate selbst.
+  // Eine Rate ohne ihre Grundmenge kann jede Groesse vortaeuschen; die Rate
+  // ohne Grundmenge ist ausserdem genau die Zahl, die niemand einordnen kann.
+  const klammerTeil = c.rangBasis ? ` (${c.rangBasis})` : "";
+
+  // „ZUGLEICH" STATT „DAMIT": Der Satz davor zaehlt Solaranlagen, der Rang misst
+  // etwas anderes (Hausspeicher, Balkongeraete, Zubau in einem Zeitfenster).
+  // „Damit" behauptete eine Ableitung, die es nicht gibt — ein Redakteur, der
+  // das prueft, findet einen Fehlschluss und traut danach dem Rest nicht.
   const belegSatz =
     platz === 1
       ? ` Zugleich hat ${kurz} ${c.bestleistung} ${unterDen} — Platz 1 von ${c.rang?.von.toLocaleString("de-DE")}${klammerTeil}.`
@@ -274,29 +291,9 @@ export function renderMeldung(c: DraftContext): string {
         ? ` Bei ${c.themaDativ} liegt ${kurz} auf Platz ${platz} von ${c.rang?.von.toLocaleString("de-DE")} ${unterDen}${klammerTeil}.`
         : "";
 
-  // SINGULAR IST TEIL DER RICHTIGKEIT. „In Hamm sind 1 Solaranlagen mit
-  // zusammen 1 kWp in Betrieb" stand so in einem echten Brief (16 Einwohner,
-  // ein Balkonkraftwerk). Dieselbe Regel wie in CLAUDE.md, „Zahlen und
-  // Einheiten", Punkt 4: „1 neue Anlagen" ist derselbe Fehler in Worten.
-  //
-  // WESSEN ZAHL STEHT ZUERST?
-  //
-  // In Ferschweiler gehören 96 % der installierten Leistung einem
-  // Freiflächenpark. Die Meldung eröffnete mit „18,7 MWp" und sagte im nächsten
-  // Satz etwas über Hausbatterien — ein Ortsbürgermeister erkennt seinen Ort in
-  // dieser Zahl nicht wieder und misstraut ihr. Unterhalb eines Drittels
-  // privaten Anteils führen deshalb die privaten Dächer, und die Gesamtzahl
-  // steht dahinter, wo sie hingehört. Weggelassen wird nichts.
-  const investorenGepraegt = privatAnteil != null && privatAnteil < 0.35 && privatDachKwp != null;
-  const anlagenSatz = investorenGepraegt
-    ? `In ${kurz} stehen ${fmtPvLeistung(privatDachKwp!)} Solarleistung auf privaten Dächern; zusammen mit Gewerbe- und Freiflächenanlagen sind es ${fmtPvLeistung(leistungKwp)} aus ${anlagen.toLocaleString("de-DE")} Anlagen`
-    : anlagen === 1
-      ? `In ${kurz} ist 1 Solaranlage mit ${fmtPvLeistung(leistungKwp)} in Betrieb`
-      : `In ${kurz} sind ${anlagen.toLocaleString("de-DE")} Solaranlagen mit zusammen ${fmtPvLeistung(leistungKwp)} in Betrieb`;
-
   return `${ueberschrift}
 
-${anlagenSatz}${privatSatz}${proKopfSatz}.${belegSatz}
+${anlagenSatz}${belegSatz}
 
 Grundlage sind die Anlagendaten des Marktstammdatenregisters der Bundesnetzagentur (Stand: ${standLabel(stand)}), Datenlizenz dl-de/by-2-0; Einwohnerzahlen vom Statistischen Bundesamt. Eine laufend aktualisierte Übersicht für ${kurz} gibt es unter ${c.pageUrl ?? "solar-check.io"}.`;
 }
@@ -333,24 +330,56 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
 
   // Der Widget-Absatz ist der EINZIGE Unterschied zwischen den Varianten —
   // sonst waere nicht zu erkennen, ob eine Reaktion am Widget oder am Text lag.
+  //
+  // DIE VORSCHAU STATT EINES ANHANGS.
+  //
+  // „Sollen wir ein Bild des Widgets mitschicken?" — nein. Ein Anhang oder ein
+  // eingebettetes Bild bei der ersten unverlangten Mail einer noch unbekannten
+  // Absenderdomain ist ein Spam-Muster, und der Brief ist reiner Text, was für
+  // die Zustellung spricht. Ein Link kostet nichts und zeigt dasselbe: die
+  // fertige Grafik für DIESEN Ort, in einem Klick.
   const widgetAbsatz =
     c.variante === "meldung_plus_widget"
-      ? `\n\nDieselbe Übersicht gibt es auch als Widget für Ihre Website — cookielos, monatlich aktuell, im Design anpassbar. Sagen Sie Bescheid, dann schicke ich den Code.`
+      ? `\n\nDie Zahlen gibt es auch als Grafik für Ihre Website. Sie aktualisiert sich monatlich von selbst und setzt keine Cookies; Farben und Schrift lassen sich anpassen. Wenn Sie sie einbauen möchten, schicke ich Ihnen den Code.${
+          c.widgetUrl ? `\n\nSo sieht sie für ${kurzOrtsname(c.name)} aus:\n${c.widgetUrl}` : ""
+        }`
       : "";
 
   // Weitere Spitzenplaetze — nur im Brief, nie in der Meldung. Sie belegen, dass
   // die Zahl kein Zufallstreffer ist.
+  //
+  // DIE VERGLEICHSGRUPPE STEHT EINMAL, NICHT IN JEDER ZEILE.
+  //
+  // Vorher endete jede Zeile mit „unter den Mittelgroßen Städten in Hessen" —
+  // bei drei Zeilen dreimal dieselben sechs Wörter untereinander. Das ist die
+  // Stelle, an der ein Brief aussieht, als hätte ihn eine Vorlage ausgespuckt.
+  // Ist die Gruppe bei allen Einträgen dieselbe, wird sie ausgeklammert; sonst
+  // bleibt sie an der Zeile, weil sie sonst etwas Falsches behaupten würde.
   const weitereListe = (c.weitere ?? []).filter((w) => w.platz && w.von);
+  const gruppenGleich =
+    weitereListe.length > 0 && weitereListe.every((w) => w.gruppe === weitereListe[0].gruppe);
   const weitereAbsatz = weitereListe.length
-    ? `\n\n${c.name} liegt auch hier vorn:\n${weitereListe
-        .map((w) => `· Platz ${w.platz} von ${w.von.toLocaleString("de-DE")} ${w.phrase} unter den ${w.gruppe}`)
-        .join("\n")}`
+    ? gruppenGleich
+      ? `\n\nAuch sonst steht ${kurzOrtsname(c.name)} weit vorn, jeweils unter den ${kleinKlasse(weitereListe[0].gruppe)}: ${weitereListe
+          .map((w) => `Platz ${w.platz} von ${w.von.toLocaleString("de-DE")} ${w.phrase}`)
+          .join(", ")}.`
+      : `\n\nAuch sonst steht ${kurzOrtsname(c.name)} weit vorn:\n${weitereListe
+          .map(
+            (w) =>
+              `· Platz ${w.platz} von ${w.von.toLocaleString("de-DE")} ${w.phrase} unter den ${kleinKlasse(w.gruppe)}`,
+          )
+          .join("\n")}`
     : "";
 
-  // Der Rang ist eine Behauptung, bis man ihn nachsehen kann — aber das braucht
-  // keinen eigenen Absatz. Und keinen zweiten Link daneben: der Zähl-Link ist
-  // raus (siehe DraftContext), die Rangliste ist der einzige Beleg-Link.
-  const linkZeile = c.ranglisteUrl ? `\n\nVollständige Rangliste: ${c.ranglisteUrl}` : "";
+  //
+  // DIE RANGLISTEN-ZEILE IST RAUS (Entscheidung des Betreibers, 19.08.2026).
+  //
+  // Sie stand als eigener Absatz zwischen Meldung und Widget-Hinweis und war
+  // der dritte Link im Brief. Nachprüfbar bleibt der Rang trotzdem: Die
+  // Gemeindeseite, die in der Meldung steht, führt selbst zu den Ranglisten.
+  // Das Feld `ranglisteUrl` bleibt im Kontext — das Cockpit zeigt es weiterhin
+  // an, damit ein Mensch vor dem Versand nachsehen kann.
+  const linkZeile = "";
 
   // DER ASK STAND NIRGENDS.
   // „Fertig formuliert zum Übernehmen" beschreibt den Text; „frei verwendbar,
@@ -359,18 +388,17 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   // Ort hat — nicht, was er damit tun soll. Jetzt steht es als Bitte da.
   const body = `Sehr geehrte Damen und Herren,${weiterleitung}
 
-${einstiegGross ? "Aus" : "aus"} dem amtlichen Marktstammdatenregister ergibt sich für ${c.name} gerade eine Meldung — fertig formuliert zum Übernehmen:
+${einstiegGross ? "Im" : "im"} Marktstammdatenregister der Bundesnetzagentur steckt gerade eine kleine Meldung für ${c.name}. Ich habe sie fertig formuliert, Sie können sie so übernehmen:
 
-────────────────────────────
+----------------------------------------
 ${meldung}
-────────────────────────────
+----------------------------------------
 
-Wenn Sie mögen, stellen Sie den Text als Kurzmeldung auf Ihre Website — frei verwendbar, gern gekürzt; ich bitte nur darum, den Link stehen zu lassen. Kein Vertrieb, keine Kosten, keine Anmeldung; die Zahlen aktualisiere ich monatlich.${weitereAbsatz}${linkZeile}${widgetAbsatz}
+Der Text ist frei verwendbar, gern auch gekürzt. Ich bitte nur darum, den Link stehen zu lassen. Kein Vertrieb und keine Kosten; anmelden muss sich auch niemand. Die Zahlen aktualisiere ich monatlich.${weitereAbsatz}${linkZeile}${widgetAbsatz}
 
 Mit freundlichen Grüßen
 ${SIGNATURE}
 
-—
 ${dsgvoHinweis(herkunftsangabe(c.name, c.empfaenger))}`;
 
   return { subject: c.betreff, body, meldung };

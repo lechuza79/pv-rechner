@@ -103,6 +103,8 @@ export async function briefFuerGemeinde(
     rang: hook?.rank && hook?.total && hook?.gruppe ? { platz: hook.rank, von: hook.total } : null,
     weitere: hook?.weitere ?? [],
     ranglisteUrl: liste,
+    // Die fertige Grafik für genau diesen Ort — live geprüft, kein Anhang.
+    widgetUrl: `${SITE_URL}/embed/gemeinde-solar?ags=${regionId}`,
     zahlen: {
       anlagen: atlas.solar.total_count,
       leistungKwp: atlas.solar.total_kwp,
