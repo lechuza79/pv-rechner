@@ -132,6 +132,41 @@ zusätzlich in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
     bevor diese Quelle im Repo lag; auf den Altkessel-Wert 0,80 wäre der Abschlag
     ohnehin nie angewandt worden. Das war ein Handfaktor mit nachgereichter
     Begründung — genau das, was Regel 5 des Gates verbietet.
+  **Zweite geprüfte Sackgasse (19.08.2026) — die amtliche Bekanntmachung zur
+  Datenaufnahme im Wohngebäudebestand** (BAnz AT 04.12.2020 B1). Sie sieht auf den
+  ersten Blick wie die Lösung aus, trägt den Wert aber nicht:
+  - **Tabelle 7** nennt für Brennwertkessel „Norm-Nutzungsgrade ηK zwischen 102 %
+    und 108 % (bezogen auf Heizwert Hi)" und ausdrücklich „Öl **oder** Gas" — das
+    ist aber **Spalte 6**, und Nummer 4.4 der Bekanntmachung sagt wörtlich, wozu
+    Spalte 6 dient: „zusätzliche[n] Information … um … anhand einfacher Merkmale
+    eine … abweichende Technik festzustellen". Die Zahl steht dort neben
+    „Erkennungsmerkmal: Kondensatablauf" — sie ist eine Wiedererkennungshilfe für
+    den Aufnehmer vor Ort, kein Rechenwert. Der Rechenwert liegt laut Spalte 5 in
+    **DIN V 18599-5, Abschnitt 6.5.4.3** — und die haben wir nicht.
+  - **Tabelle 5** hat die richtige Größenart (Erzeuger-Aufwandszahlen, nach
+    Systemtemperatur getrennt, Bezugsgröße in Nummer 4.1 ausdrücklich „Endenergie
+    (unterer Heizwert)"): Brennwertkessel ab 1995 bei 70/55 °C → 1,07, also rund
+    **0,94**; „Brennwert verbessert" bei 55/45 °C → 0,99, also rund **1,01**.
+    Auch hier **keine Trennung nach Brennstoff**. Verwendbar wäre sie trotzdem
+    nicht ohne Weiteres: Baualtersklassen des BESTANDS, Verfahren nach der
+    abgelösten DIN V 4701-10, Anwendungsbereich sind Energieausweise für
+    bestehende Wohngebäude.
+  - **Der Umkehrschluss ist die eigentliche Warnung:** Wendet man Tabelle 5
+    konsequent an, käme für unseren Gas-Wert auf Brennwert-Basis 0,84 heraus, nicht
+    0,95. Wer also die Öl-Zahl aus dieser Quelle holt, muss die Gas-Zahl mitnehmen —
+    sonst entsteht die nächste Inkohärenz.
+  **Nächste Adresse, noch ungeprüft:** die Ökodesign-Verordnung (EU) 813/2013 mit
+  der jahreszeitbedingten Raumheizungs-Energieeffizienz ηs. Sie hat die drei
+  Eigenschaften, die den bisherigen Quellen fehlen: Sie gilt **neu in Verkehr
+  gebrachten** Geräten, sie ist eine **Jahres**größe (Teillast und
+  Bereitschaftsverluste eingerechnet), und Öl und Gas stehen getrennt in den
+  Herstellerdatenblättern. **Zuerst zu klären: ihre Bezugsgröße** (vermutlich
+  Brennwert) — für Öl müsste sie dann auf den Heizwert zurückgerechnet werden, für
+  Gas käme sie direkt auf die Skala unseres Gaspreises. EUR-Lex liefert an
+  automatisierte Abrufe nichts aus (leere Antwort über alle Wege, 19.08.2026); der
+  Text ist im Browser frei zugänglich, also beim Betreiber anfragen oder in einer
+  Sitzung mit Browser holen.
+
   **Was der nächste Lauf wirklich braucht:** einen **Jahresnutzungsgrad bzw. eine
   Erzeugeraufwandszahl** für einen heute neu eingebauten Öl-Brennwertkessel, auf
   derselben Bezugsgröße wie unser Ölpreis, möglichst nach Auslegungstemperatur
