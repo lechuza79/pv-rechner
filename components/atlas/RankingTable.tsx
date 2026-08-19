@@ -275,7 +275,23 @@ function RankDelta({ value, sinceYear, onAccent = false }: { value: number | nul
     return (
       <span
         title={`Unverändert gegenüber Ende ${sinceYear}`}
-        style={{ ...S.delta, color: onAccent ? ON_ACCENT_DIM : v("--color-text-muted") }}
+        style={{
+          ...S.delta,
+          /**
+           * ES GIBT KEINEN HELLEREN TON, DER HIER ERLAUBT WÄRE (19.08.2026).
+           * Gewünscht war ein leiserer Grauton für „±0" — die schwächste
+           * Aussage der Zelle. `--color-text-muted` IST aber schon die hellste
+           * Stufe, die als tragender Text zulässig bleibt (4,8:1 gegen den
+           * Zeilenhintergrund, WCAG AA verlangt 4,5:1); die nächste Stufe
+           * `--color-text-faint` ist laut Kontrast-Audit
+           * (docs/audit-backlog-2026-07-19.md §4) für Platzhalter reserviert und
+           * liegt mit 3,5:1 darunter. Zurückgenommen wird deshalb das GEWICHT
+           * statt der Farbe: Die 700 aus S.delta trägt der Pfeil, weil er eine
+           * Richtung behauptet — der Stillstand behauptet nichts.
+           */
+          fontWeight: 500,
+          color: onAccent ? ON_ACCENT_DIM : v("--color-text-muted"),
+        }}
       >
         ±0
       </span>
@@ -464,6 +480,53 @@ export default function RankingTable({
   // damit nicht der eine „hier geht es weiter" sagt und der andere schweigt.
   const kannWeiter = scrollRest > 1;
   const kannZurueck = scrollLeft > 1;
+
+  /**
+   * DIE PFEILE BLENDEN EIN, WENN DIE TABELLE IN DEN BLICK KOMMT.
+   *
+   * Ein Knopf, der beim Heranscrollen erscheint, wird gesehen; einer, der immer
+   * schon dastand, gehört zum Hintergrund. Gemessen wird mit einem
+   * `IntersectionObserver` auf dem Tabellenrahmen — kein Dauer-Listener am
+   * Scroll-Ereignis: Der feuert bei jedem Pixel der Seite, für eine Frage, die
+   * sich genau einmal ändert.
+   *
+   * Einmalig und ohne Rückweg: Wer die Tabelle einmal gesehen hat, soll die
+   * Knöpfe nicht wieder verlieren, wenn er kurz weiterscrollt. Der Beobachter
+   * meldet beim Anhängen sofort den aktuellen Stand — steht die Tabelle beim
+   * Laden schon im Blick, sind die Knöpfe also sofort da (nur eingeblendet
+   * statt hart gesetzt).
+   *
+   * `prefers-reduced-motion` nimmt die Blende, nicht die Knöpfe: Wer Bewegung
+   * abbestellt hat, bekommt sie ohne Übergang — aber er bekommt sie.
+   */
+  const [blaetternSichtbar, setBlaetternSichtbar] = useState(false);
+  const rahmenRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!ueberlauf) return;
+    const el = rahmenRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") {
+      setBlaetternSichtbar(true);
+      return;
+    }
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setBlaetternSichtbar(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0 },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [ueberlauf]);
+  // Im Zustand, nicht im Render abgefragt: Auf dem Server gibt es kein
+  // `matchMedia`, und ein Stil, der sich beim ersten Client-Render ändert,
+  // erzeugt eine Hydrierungs-Abweichung.
+  const [ohneBewegung, setOhneBewegung] = useState(false);
+  useEffect(() => {
+    setOhneBewegung(!!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches);
+  }, []);
 
   // Resolve ?plz= to the child region it belongs to. A postcode can span several
   // Gemeinden; the one that appears in this very list is the right match, so the
@@ -953,12 +1016,15 @@ export default function RankingTable({
 
   return (
     <div ref={rootRef}>
+      {/*
+        REIHENFOLGE: erst der Besitzer-Filter, dann das Platzierungs-Feld
+        (Vorgabe des Betreibers, 19.08.2026). Beide sagen Verschiedenes — der
+        Filter, WER gezählt wird, das Feld, WORAUF sich die Platzierung bezieht.
+        Auf schmalen Bildschirmen bricht das Feld in eine eigene Zeile um; es
+        behält dabei seine volle Beschriftung („Platzierung nach · Pro Kopf"),
+        weil ein abgeschnittenes Auswahlfeld nicht mehr sagt, was es einstellt.
+      */}
       <div style={S.controls}>
-        {/* Das Feld steht links, über der Spalte, die es steuert: Platzziffer
-            und Balken sitzen im selben Lot. Rechts daneben der vorhandene
-            Besitzer-Filter — er sagt, WER gezählt wird, das Feld sagt, WORAUF
-            sich die Platzierung bezieht. */}
-        <PlatzPicker platz={platz} onChange={platzWaehlen} />
         <div style={S.chips}>
           {OWNERS.map((o) => (
             <button
@@ -975,6 +1041,7 @@ export default function RankingTable({
             </button>
           ))}
         </div>
+        <PlatzPicker platz={platz} onChange={platzWaehlen} />
       </div>
 
       {/*
@@ -1038,7 +1105,13 @@ export default function RankingTable({
         für die Tastatur weg.
       */}
       {ueberlauf && (
-        <div style={S.blaettern}>
+        <div
+          style={{
+            ...S.blaettern,
+            opacity: blaetternSichtbar ? 1 : 0,
+            ...(ohneBewegung ? null : { transition: "opacity 0.35s ease-out" }),
+          }}
+        >
           <button
             type="button"
             onClick={() => springeSpalte(-1)}
@@ -1073,7 +1146,7 @@ export default function RankingTable({
           die Maße des Scrollkastens (dessen negativer Außenabstand ist hierher
           gewandert), damit der Verlauf auf der Kante sitzt und nicht acht Pixel
           daneben. */}
-      <div style={S.scrollerRahmen}>
+      <div ref={rahmenRef} style={S.scrollerRahmen}>
         <div
           ref={scrollerRef}
           className="atlas-tabelle-scroller"
@@ -1135,16 +1208,20 @@ export default function RankingTable({
                   </button>
                   {/* Die Erklärung sitzt am Spaltenkopf, wo die Frage entsteht —
                       nicht als Fließtext unter der Tabelle, den man erst nach dem
-                      Lesen aller Zahlen findet. */}
-                  <InfoTooltip title={c.label} size={11} ariaLabel={`${c.label}: Erklärung`}>
-                    {c.key === "wert" ? (
-                      <StromwertHilfe spanne={evSpanne} />
-                    ) : c.key === "eigenverbrauch" ? (
-                      <EigenverbrauchHilfe />
-                    ) : (
-                      c.hint
-                    )}
-                  </InfoTooltip>
+                      Lesen aller Zahlen findet. Sie steht dabei in der
+                      RASTERLÜCKE hinter der Spalte, nicht in ihr — siehe
+                      S.headFrage. */}
+                  <span style={S.headFrage}>
+                    <InfoTooltip title={c.label} size={11} ariaLabel={`${c.label}: Erklärung`}>
+                      {c.key === "wert" ? (
+                        <StromwertHilfe spanne={evSpanne} />
+                      ) : c.key === "eigenverbrauch" ? (
+                        <EigenverbrauchHilfe />
+                      ) : (
+                        c.hint
+                      )}
+                    </InfoTooltip>
+                  </span>
                 </span>
               ))}
             </div>
@@ -1586,7 +1663,17 @@ function HomePicker({ onPick }: { onPick: (hit: GemeindeHit, plz: string) => voi
 
   return (
     <div style={S.picker}>
-      <p style={S.pickerTitle}>Eigene Gemeinde eingeben</p>
+      {/*
+        Auf schmalen Bildschirmen fällt die Überschrift weg (Vorgabe des
+        Betreibers, 19.08.2026): Die Karte schwebt dort über der Liste und
+        kostet jede Zeile Höhe, die sie verdeckt. Verständlich bleibt sie ohne
+        Überschrift, weil der Satz darunter beides leistet — er sagt, was zu tun
+        ist („Postleitzahl eingeben") UND was daraufhin passiert. Die Regel
+        steht als Klasse in lib/theme.ts; Inline-Stile können keine Media Query.
+      */}
+      <p className="atlas-plz-titel" style={S.pickerTitle}>
+        Eigene Gemeinde eingeben
+      </p>
       <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 7 }}>
         <label htmlFor="home-plz" style={S.pickerLabel}>
           Postleitzahl eingeben — deine Gemeinde wird in dieser und jeder weiteren Liste markiert.
@@ -1971,20 +2058,70 @@ const S: Record<string, React.CSSProperties> = {
    * dieser Stellung schneidet die mitlaufende Namensspalte fünf Pixel in die
    * erste Wertzelle — die Fehlerklasse, gegen die es das Einrasten überhaupt
    * gibt. Eine absolut gesetzte Lage berührt weder Breite noch Rastpunkt.
-   * `zIndex: -1` hält sie hinter Titel und „?" (positionierte Kinder malen
-   * sonst über in-Fluss-Inhalt).
+   * `zIndex: -1` hält sie hinter dem Titel (positionierte Kinder malen sonst
+   * über in-Fluss-Inhalt).
+   *
+   * SIE ENDET GENAU AN DER SPALTENKANTE (19.08.2026, zweite Korrektur). Vorher
+   * stand sie links und rechts fünf Pixel über die Spalte hinaus — in die
+   * Rasterlücke, die keiner Spalte gehört, und damit in fremdes Gebiet. Zwei
+   * Folgen, beide im Browser nachgemessen (1280 px, Platzierung „Pro Kopf"):
+   *  · Der „?"-Knopf der NACHBARSPALTE endet 9,1 px in der Lücke (Leistung:
+   *    376,1–387,1 bei Spaltenkante 378) — die Box begann bei 384 und schnitt
+   *    ihn um 3,1 px an.
+   *  · Der EIGENE „?" beginnt 1,8 px vor der Spaltenkante (448,2 bei Kante
+   *    450) — die Box endete bei 455 und schnitt ihn um 4,2 px an.
+   * Dazu ragten die fünf Pixel beim seitlichen Scrollen in den Streifen, den
+   * die mitlaufende Namensspalte deckt, und blitzten dort hervor, bevor die
+   * Spalte selbst erschien.
+   *
+   * Die Gegenmaßnahme hat zwei Hälften und funktioniert nur zusammen: Die Box
+   * hört an der Spaltenkante auf, UND der „?" steht vollständig in der
+   * Rasterlücke dahinter (S.headFrage). Sonst schnitte die Box weiterhin ihren
+   * eigenen „?" an, der 1,8 px zu früh anfing.
    */
   headBox: {
     position: "absolute",
     top: -2,
     bottom: -2,
-    left: -5,
-    right: -5,
+    left: 0,
+    // Ein Pixel vor der Spaltenkante: genau dort beginnt der „?" der Spalte
+    // (S.headFrage). So stoßen die beiden aneinander, statt sich zu schneiden.
+    right: 1,
     zIndex: -1,
     pointerEvents: "none",
     borderRadius: v("--radius-md"),
     background: v("--color-bg-accent"),
     boxShadow: `inset 0 0 0 1px ${v("--color-border-accent")}`,
+  },
+  /**
+   * DER „?"-KNOPF EINER WERTSPALTE STEHT IN DER RASTERLÜCKE DAHINTER.
+   *
+   * Er stand dort schon immer, nur unabsichtlich: Titel plus Sortier-Pfeil plus
+   * „?" sind zusammen breiter als jede Wertspalte (gemessen „Pro Kopf": 70,2 px
+   * Inhalt in 61 px Spalte), also lief der „?" als letztes Flex-Kind über die
+   * Kante hinaus — 9,2 px in eine 11 px breite Lücke, angefangen 1,8 px VOR der
+   * Kante. Diese 1,8 px waren das Problem: Jede Marke, die an der Spaltenkante
+   * endet (die blaue Platzierungs-Box), schnitt ihn dort an.
+   *
+   * Jetzt sitzt er fest in der Lücke: einen Pixel vor der Spaltenkante beginnt
+   * er, elf Pixel breit ist er, ein Pixel vor der nächsten Spalte hört er auf.
+   * Damit steht er in JEDER Spalte an derselben Stelle statt je nach Titellänge
+   * woanders, und die blaue Box endet genau dort, wo er anfängt (S.headBox:
+   * `right: 1`) — sie berühren sich, überschneiden sich aber nie.
+   *
+   * Der eine Pixel zur nächsten Spalte ist kein Rundungsrest: Ohne ihn klebt
+   * der Knopf am nächsten Spaltentitel und liest sich als dessen Zeichen.
+   *
+   * Er kostet keine Breite (absolut gesetzt) — die Spaltenbreiten in COLUMNS
+   * und damit die Rastpunkte bleiben unangetastet. Der Titel samt Pfeil passt
+   * in jede Spalte (breitester Fall „Eigenverbrauch": 94 von 98 px).
+   */
+  headFrage: {
+    position: "absolute",
+    left: "calc(100% - 1px)",
+    top: "50%",
+    transform: "translateY(-50%)",
+    lineHeight: 0,
   },
   // Sitzt in der Rasterlücke rechts vom Kopf, nicht in ihm — siehe SortPfeil.
   // Läuft im Fluss mit, direkt hinter der Überschrift — siehe SortPfeil.
@@ -2193,7 +2330,27 @@ const S: Record<string, React.CSSProperties> = {
   pickerTitle: { fontSize: 14, fontWeight: 700, color: v("--color-text-primary"), margin: "0 0 8px" },
   pickerLabel: { fontSize: 12, color: v("--color-text-secondary"), margin: 0 },
   input: {
-    flex: "0 0 110px",
+    /**
+     * MITWACHSEND, NICHT FEST (19.08.2026).
+     *
+     * Vorher stand hier `flex: 0 0 110px` — und die 110 px galten nie: Ein
+     * `<input>` bringt eine inhaltsbasierte Mindestbreite mit (`min-width:
+     * auto`, rund 20 Zeichen), gegen die eine kleinere Flex-Basis nicht
+     * ankommt. Gemessen bei 390 px: 228 px statt 110. Das Feld nahm sich also
+     * eine feste, aus dem Stil gar nicht ablesbare Breite und schob den
+     * „Merken"-Knopf vor sich her aus der Karte.
+     *
+     * `minWidth: 0` nimmt die Mindestbreite zurück, `flex: 1 1 110px` lässt das
+     * Feld den Rest der Zeile nehmen und bei Bedarf schrumpfen. Der Knopf
+     * daneben schrumpft nicht (S.submit) — er ist das Ziel, nicht der Puffer.
+     */
+    flex: "1 1 110px",
+    minWidth: 0,
+    // Nach oben gedeckelt: Eine Postleitzahl hat fünf Stellen — ein Feld, das
+    // sich auf dem Desktop über 600 px zieht, sieht aus, als erwarte es einen
+    // Satz. Der Deckel liegt auf der Breite, die das Feld auf dem Telefon
+    // ohnehin einnimmt, damit es auf beiden Geräten gleich aussieht.
+    maxWidth: 240,
     padding: "8px 10px",
     fontSize: 16,
     fontFamily: v("--font-mono"),
@@ -2203,6 +2360,9 @@ const S: Record<string, React.CSSProperties> = {
     color: v("--color-text-primary"),
   },
   submit: {
+    // Schrumpft nicht mit: Das Eingabefeld ist der dehnbare Teil der Zeile,
+    // der Knopf der feste. Ohne das drückt ein zu breites Feld ihn aus der Karte.
+    flexShrink: 0,
     padding: "8px 14px",
     fontSize: 13,
     fontWeight: 600,

@@ -796,6 +796,15 @@ export const globalStyles = `
   /* Die Kopfzeile steht ueber den Zeilen: Ihre Aufklapp-Menues oeffnen nach
      unten und muessen die fixierten Zellen der Zeilen ueberdecken. */
   .atlas-fix-spalte--kopf{z-index:4}
+  /* Die Postleitzahl-Karte der Rangliste schwebt auf schmalen Bildschirmen ueber
+     der Liste und verdeckt dort Zeilen. Ihre Ueberschrift faellt deshalb unter
+     640 px weg (Vorgabe des Betreibers, 19.08.2026): Der Satz darunter sagt
+     ohnehin beides — was zu tun ist und was daraufhin passiert. Als Klasse und
+     nicht als Inline-Stil, weil eine Media Query dort nicht geht. */
+  @media (max-width:640px){
+    .atlas-plz-titel{display:none}
+  }
+
   /* Zeilenfarbe je Zustand — die fixierten Zellen lesen sie. Hover und
      Nachbar-Hover spiegeln exakt die background-Regeln daroeber; die
      hervorgehobene Zeile setzt ihre Farbe inline (und gewinnt damit). */

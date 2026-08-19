@@ -357,6 +357,229 @@ for (const [name, viewport] of [
 }
 
 /**
+ * JEDER RASTPUNKT LIEGT AUF DER LINKEN KANTE EINER WERTSPALTE — für JEDE Spalte.
+ *
+ * DER ANLASS (19.08.2026). Der Betreiber meldete, die Spalten-Anker seien
+ * versetzt: Ein Druck auf den Blätter-Pfeil wechsle nicht sauber zur nächsten
+ * Spalte. Nachgemessen (Rechteck gegen Rechteck, Chromium und WebKit, 390 und
+ * 1280 px, Bundesland- und Kreisliste) war der Versatz an JEDER erreichbaren
+ * Ruhestellung exakt 0,00 px — die Rechnung dahinter stimmt also:
+ *   scroll-padding-left = Innenabstand des Kastens + Breite des mitlaufenden
+ *   Blocks (Platz + Lücke + Name + Lücke) = 8 + 216 = 224 px.
+ * Nur: Diese Rechnung steht an drei Stellen im Code (SCROLLER_PAD, FIX_BREITE,
+ * die Rastpunkte aus den Spaltenbreiten), und jede Änderung an einer
+ * Spaltenbreite, an der Rasterlücke oder am Innenabstand verschiebt sie
+ * lautlos. Ein Versatz von wenigen Pixeln ist genau die Fehlerklasse, gegen die
+ * es das Einrasten überhaupt gibt: Die mitlaufende Namensspalte schneidet dann
+ * in die erste Wertzelle und macht aus „1.399.105" ein „399.105".
+ *
+ * Deshalb steht die Messung jetzt als Test da, nicht als Notiz. Er prüft beide
+ * Richtungen:
+ *  1. JEDE Ruhestellung ist bündig — genau eine Wertspalte beginnt dort auf der
+ *     Haltekante (rechte Kante der Namensspalte plus ihre 11 px Deckung).
+ *  2. JEDE Wertspalte ist auch wirklich einmal die bündige — sonst wäre der
+ *     Test grün, wenn die Tabelle gar nicht mehr scrollt oder das Einrasten
+ *     Spalten überspringt.
+ *
+ * GEGENPROBE GEFAHREN: mit `scrollPaddingLeft: FIX_BREITE` (also ohne den
+ * Innenabstand des Kastens) meldet er 8 px Versatz an jeder Ruhestellung.
+ */
+test.describe("Rangliste: die Rastpunkte sitzen auf den Spaltenkanten", () => {
+  for (const [name, viewport] of [
+    ["Telefon", { width: 390, height: 820 }],
+    ["Desktop", { width: 1280, height: 820 }],
+  ] as const) {
+    for (const url of ["/solar-atlas", "/solar-atlas/bayern"]) {
+      test(`${name} ${url}: jede Ruhestellung ist bündig mit einer Wertspalte`, async ({ page }) => {
+        await page.setViewportSize(viewport);
+        await page.goto(url);
+        await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+        await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
+
+        const befund = await page.evaluate(async () => {
+          const schlaf = (ms: number) => new Promise((r) => setTimeout(r, ms));
+          const sc = document.querySelector(".atlas-tabelle-scroller") as HTMLElement;
+          const nameSpalte = sc.querySelector<HTMLElement>(".atlas-fix-spalte--kante")!;
+          const koepfe = [...sc.querySelectorAll<HTMLElement>("[data-spaltenkopf]")];
+          const max = sc.scrollWidth - sc.clientWidth;
+
+          /**
+           * Eine Stellung anfahren und warten, BIS SIE RUHT — nicht eine feste
+           * Zahl Millisekunden. Das Einrasten läuft asynchron; unter Last
+           * (mehrere Playwright-Arbeiter auf einem Dev-Server) kam eine feste
+           * Pause gelegentlich zu früh und maß eine Zwischenstellung, die keine
+           * Ruhestellung ist. Gewertet wird erst, wenn sich `scrollLeft` über
+           * mehrere Bilder nicht mehr bewegt.
+           */
+          const anfahrenUndRuhen = async (x: number) => {
+            sc.scrollLeft = x;
+            let vorher = NaN;
+            for (let i = 0; i < 40; i++) {
+              await schlaf(25);
+              const jetzt = Math.round(sc.scrollLeft * 100) / 100;
+              if (jetzt === vorher) return jetzt;
+              vorher = jetzt;
+            }
+            return vorher;
+          };
+
+          // Erst die Ruhestellungen einsammeln: durchfahren und notieren, wo die
+          // Tabelle nach dem Einrasten wirklich stehen bleibt. Gesetzt wird eine
+          // beliebige Stellung — gewertet die, die dabei herauskommt. Schrittweite
+          // 8 px: Die Rastpunkte liegen mindestens 72 px auseinander (schmalste
+          // Wertspalte plus Rasterlücke), keiner kann übersprungen werden.
+          const rast: number[] = [];
+          for (let x = 0; x <= max + 6; x += 8) {
+            const p = await anfahrenUndRuhen(x);
+            if (!rast.includes(p)) rast.push(p);
+          }
+          rast.sort((a, b) => a - b);
+
+          const funde: { pos: number; versatz: number; spalte: string }[] = [];
+          const buendige: string[] = [];
+          for (const p of rast) {
+            await anfahrenUndRuhen(p);
+            // Die Haltekante: rechte Kante der Namensspalte plus ihr deckender
+            // Überstand über die Rasterlücke (--atlas-fix-luecke, 11 px).
+            const kante = nameSpalte.getBoundingClientRect().right + 11;
+            let naechste = { d: Infinity, key: "" };
+            for (const k of koepfe) {
+              const d = k.getBoundingClientRect().left - kante;
+              if (Math.abs(d) < Math.abs(naechste.d)) naechste = { d, key: k.dataset.spaltenkopf ?? "?" };
+            }
+            const versatz = Math.round(naechste.d * 100) / 100;
+            if (Math.abs(versatz) > 0.5) funde.push({ pos: p, versatz, spalte: naechste.key });
+            else if (!buendige.includes(naechste.key)) buendige.push(naechste.key);
+          }
+          sc.scrollLeft = 0;
+          return { max, rast, funde, buendige, spalten: koepfe.map((k) => k.dataset.spaltenkopf ?? "?") };
+        });
+
+        expect(befund.max, "die Tabelle läuft in diesem Fenster gar nicht über").toBeGreaterThan(40);
+        expect(befund.rast.length, `nur ${befund.rast.length} Ruhestellungen: ${befund.rast}`).toBeGreaterThan(1);
+        expect(
+          befund.funde.slice(0, 6),
+          `${befund.funde.length} Ruhestellungen sind nicht bündig (Stellungen: ${befund.rast})`,
+        ).toEqual([]);
+
+        // Jede Ruhestellung gehört einer ANDEREN Spalte — zwei Stellungen für
+        // dieselbe Spalte hieße, dass eine davon nur zufällig bündig ist.
+        expect(befund.buendige.length, `Ruhestellungen ${befund.rast}, bündige Spalten ${befund.buendige}`).toBe(
+          befund.rast.length,
+        );
+        // …und die bündigen Spalten sind die ersten der Reihe nach: Das
+        // Einrasten überspringt keine.
+        expect(befund.buendige).toEqual(befund.spalten.slice(0, befund.buendige.length));
+      });
+    }
+  }
+});
+
+/**
+ * DIE BLAUE PLATZIERUNGS-BOX BLEIBT IN IHRER SPALTE UND ÜBERDECKT NICHTS.
+ *
+ * DER ANLASS (19.08.2026). Sie stand links und rechts fünf Pixel über ihre
+ * Spalte hinaus — in die Rasterlücke, die keiner Spalte gehört. Gemessen bei
+ * 1280 px mit Platzierung „Pro Kopf": Der „?" der Nachbarspalte (Leistung)
+ * endete bei 387,1, die Box begann bei 384 — 3,1 px Überschneidung. Der eigene
+ * „?" begann bei 448,2, die Box endete bei 455 — 4,2 px. Dazu ragten die fünf
+ * Pixel beim seitlichen Scrollen in den Streifen, den die mitlaufende
+ * Namensspalte deckt, und blitzten dort hervor, bevor die Spalte selbst kam.
+ *
+ * GEPRÜFT WIRD AN RECHTECKEN, nicht am Augenmaß, und für mehrere Platzierungen:
+ * eine mittlere Spalte (Nachbar auf beiden Seiten), die erste (kein linker
+ * Nachbar) und die letzte (rechts folgt nur noch die Pfeilspur).
+ *
+ * GEGENPROBE GEFAHREN: mit `left: -5, right: -5` an S.headBox meldet er die
+ * Überschneidung mit beiden „?" (3,1 px links, 4,2 px rechts) und den Austritt
+ * aus der Spalte.
+ */
+test.describe("Rangliste: die Platzierungs-Box bleibt in ihrer Spalte", () => {
+  for (const [name, viewport] of [
+    ["Telefon", { width: 390, height: 820 }],
+    ["Desktop", { width: 1280, height: 820 }],
+  ] as const) {
+    test(`${name}: Box überdeckt weder den eigenen noch den benachbarten „?"`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await page.goto("/solar-atlas");
+      await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+      await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
+
+      const messen = () =>
+        page.evaluate(() => {
+          const leer = {
+            spalte: "",
+            rausLinks: 0,
+            rausRechts: 0,
+            rausOben: 0,
+            rausUnten: 0,
+            ueberEigenerFrage: 0,
+            ueberNachbarFrage: 0,
+            ueberNaechsteFrage: 0,
+          };
+          const kopf = document.querySelector<HTMLElement>("[data-platziert]");
+          if (!kopf) return { ...leer, fehler: "keine Spalte trägt die Platzierungs-Box" };
+          const box = [...kopf.children].find(
+            (c) => getComputedStyle(c as HTMLElement).position === "absolute",
+          ) as HTMLElement | undefined;
+          if (!box) return { ...leer, fehler: `Spalte ${kopf.dataset.spaltenkopf} hat keine Box` };
+
+          const koepfe = [...document.querySelectorAll<HTMLElement>("[data-spaltenkopf]")];
+          const i = koepfe.indexOf(kopf);
+          const frage = (el: HTMLElement | undefined) =>
+            el?.querySelector<HTMLElement>('button[aria-label$="Erklärung"]')?.getBoundingClientRect() ?? null;
+
+          const kr = kopf.getBoundingClientRect();
+          const br = box.getBoundingClientRect();
+          const zeile = kopf.parentElement!.getBoundingClientRect();
+          const ueber = (a: DOMRect | null) =>
+            a === null ? 0 : Math.round(Math.max(0, Math.min(br.right, a.right) - Math.max(br.left, a.left)) * 100) / 100;
+
+          return {
+            fehler: undefined as string | undefined,
+            spalte: kopf.dataset.spaltenkopf ?? "?",
+            // Wie weit die Box links/rechts über ihre Spalte hinausragt.
+            rausLinks: Math.round((kr.left - br.left) * 100) / 100,
+            rausRechts: Math.round((br.right - kr.right) * 100) / 100,
+            // …und oben/unten über die Kopfzeile.
+            rausOben: Math.round((zeile.top - br.top) * 100) / 100,
+            rausUnten: Math.round((br.bottom - zeile.bottom) * 100) / 100,
+            ueberEigenerFrage: ueber(frage(kopf)),
+            ueberNachbarFrage: ueber(frage(koepfe[i - 1])),
+            ueberNaechsteFrage: ueber(frage(koepfe[i + 1])),
+          };
+        });
+
+      // Erste Spalte, mittlere Spalte, vorletzte — links kein Nachbar, beidseitig
+      // Nachbarn, und rechts eine Spalte, deren „?" in der letzten Lücke sitzt.
+      const platzierungen: [string, string][] = [
+        ["Pro Kopf", "perCapita"],
+        ["Anlagen", "count"],
+        ["Eigenverbrauch", "eigenverbrauch"],
+      ];
+      for (const [wahl, key] of platzierungen) {
+        if (key !== "perCapita") {
+          await page.getByRole("button", { name: /Platzierung nach/ }).click();
+          await page.getByRole("button", { name: wahl, exact: true }).first().click();
+        }
+        // Auf den Zustand warten, nicht auf die Uhr: Unter Last hat ein fester
+        // Wartewert schon die alte Spalte gemessen.
+        await expect(page.locator(`[data-spaltenkopf="${key}"][data-platziert]`)).toHaveCount(1, { timeout: 10_000 });
+        const m = await messen();
+        expect(m.fehler, `${wahl}: ${m.fehler}`).toBeUndefined();
+        expect(m.rausLinks, `${wahl}: Box ragt links aus ihrer Spalte`).toBeLessThanOrEqual(0.5);
+        expect(m.rausRechts, `${wahl}: Box ragt rechts aus ihrer Spalte`).toBeLessThanOrEqual(0.5);
+        expect(m.rausOben, `${wahl}: Box ragt über die Kopfzeile hinaus`).toBeLessThanOrEqual(0.5);
+        expect(m.rausUnten, `${wahl}: Box ragt unter der Kopfzeile hervor`).toBeLessThanOrEqual(0.5);
+        expect(m.ueberEigenerFrage, `${wahl}: Box überdeckt ihren eigenen „?"`).toBeLessThanOrEqual(0.5);
+        expect(m.ueberNachbarFrage, `${wahl}: Box überdeckt den „?" der Spalte links`).toBeLessThanOrEqual(0.5);
+        expect(m.ueberNaechsteFrage, `${wahl}: Box überdeckt den „?" der Spalte rechts`).toBeLessThanOrEqual(0.5);
+      }
+    });
+  }
+});
+
+/**
  * Die mitlaufenden Spalten müssen in JEDER Zeile auch WIRKLICH DA SEIN.
  *
  * DER ANLASS (18.08.2026). Auf dem Telefon — Safari, 390 × 576 — trugen Zeile 1
