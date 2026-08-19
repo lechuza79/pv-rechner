@@ -457,7 +457,25 @@ export const MESSUNG_VORLAUF_TAGE = 14;
  * Steht wirklich eine Entscheidung an (soll dieser Schub überhaupt kommen?),
  * läuft sie über die Alarm-Route mit `decisions`, nicht über den Gesundheitscheck.
  */
-export type PlanMeldung = { schub: string; text: string };
+export type PlanMeldung = {
+  /**
+   * Wie schwer wiegt es?
+   *
+   * `auffaellig` = Arbeitsvorrat: Ein Schub braucht seine Messung, ein Datum ist
+   * verstrichen. Das ist ein legitimer Zustand, der Tage bis Wochen anhält —
+   * er gehört ins Protokoll, nicht auf Rot. Ein Wächter, der deswegen alle drei
+   * Stunden rot steht, startet jedes Mal die Selbstheilung, eskaliert nach drei
+   * Läufen als Frage an den Betreiber und gewöhnt uns ab, Rot ernst zu nehmen
+   * (CLAUDE.md, Meldelogik: „eine Warnung, die bei jedem Lauf angeht, filtert
+   * man weg und verpasst dann die rote").
+   *
+   * `fehler` = der Plan widerspricht sich. Das sollte der Test verhindern; kommt
+   * es trotzdem vor, ist es ein Defekt und gehört auf Rot.
+   */
+  schwere: "auffaellig" | "fehler";
+  schub: string;
+  text: string;
+};
 
 /**
  * Was am Plan gerade Aufmerksamkeit braucht — für die laufende Überwachung.
@@ -477,7 +495,7 @@ export function planMeldungen(heute: Date = new Date(), plan: Schub[] = RELEASE_
   // Strukturfehler fängt normalerweise der Test — hier als Netz darunter, falls
   // jemand am Test vorbei committet.
   for (const b of planBefunde(plan)) {
-    m.push({ schub: b.schub, text: `Der Releaseplan widerspricht sich (${b.regel}): ${b.text}` });
+    m.push({ schwere: "fehler", schub: b.schub, text: `Der Releaseplan widerspricht sich (${b.regel}): ${b.text}` });
   }
 
   for (const s of plan) {
@@ -486,6 +504,7 @@ export function planMeldungen(heute: Date = new Date(), plan: Schub[] = RELEASE_
 
     if (tageBis < 0) {
       m.push({
+        schwere: "auffaellig",
         schub: s.id,
         text:
           `Der Schub „${s.id}" war für den ${s.datum} geplant und steht seit ${-tageBis} Tagen. ` +
@@ -496,6 +515,7 @@ export function planMeldungen(heute: Date = new Date(), plan: Schub[] = RELEASE_
       });
     } else if (tageBis <= MESSUNG_VORLAUF_TAGE && !s.nachweis) {
       m.push({
+        schwere: "auffaellig",
         schub: s.id,
         text:
           `Der Schub „${s.id}" ist in ${tageBis} Tagen dran (${s.datum}) und hat noch keine Messung. ` +
