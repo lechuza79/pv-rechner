@@ -90,6 +90,26 @@ const SPIKE_FACTOR = 12;
 export const MIN_MENGE_FUER_AUFHAENGER = 5;
 
 /**
+ * Untergrenzen, unterhalb derer ein Superlativ nichts mehr aussagt.
+ *
+ * DER FALL: „Eschborn hat den größten Zubau auf privaten Dächern je Einwohner
+ * seit Ende 2025 — Platz 1 von 6 (29 Wp)." 29 Watt pro Kopf sind ein halbes
+ * Modul auf zehn Einwohner. Der Satz ist wahr und trotzdem leer; wer ihn
+ * veröffentlicht, blamiert sich beim ersten Leser, der nachrechnet. Vier
+ * weitere Briefe des Schubs lagen zwischen 29 und 70 Wp.
+ *
+ * Die Grenze ist keine gerechnete Schwelle, sondern die Antwort auf „ab wann
+ * ist das eine Nachricht": 150 Wp je Einwohner sind rund eine Dachanlage auf
+ * zwanzig Einwohner in einem Jahr. Sie gilt NUR für den Anschreiben-Aufhänger;
+ * die Ranglisten zeigen weiterhin jeden Wert.
+ */
+export const MIN_WERT_FUER_AUFHAENGER: Record<string, number> = {
+  "tempo-1j": 150,
+  "tempo-3j": 300,
+  "tempo-5j": 450,
+};
+
+/**
  * Gemeinden, die auf ihrer EIGENEN Atlas-Seite als Schlusslicht dastehen.
  *
  * DER FALL (19.08.2026, unabhängig von zwei Prüfern gefunden): Der Brief an
@@ -297,7 +317,10 @@ export function computePlacements(gemeinden: GemeindeStats[]): Map<string, Place
           // weit ueber dem Gruppen-Median eher ein Datenfehler als ein Vorreiter.
           const spike = median > 0 && r.value > SPIKE_FACTOR * median;
           const menge = cat.menge?.(byId.get(r.regionId) ?? ({} as GemeindeStats));
-          const duenn = menge != null && menge < MIN_MENGE_FUER_AUFHAENGER;
+          const mindestWert = MIN_WERT_FUER_AUFHAENGER[cat.key];
+          const duenn =
+            (menge != null && menge < MIN_MENGE_FUER_AUFHAENGER) ||
+            (mindestWert != null && r.value < mindestWert);
           push(r.regionId, {
             categoryKey: cat.key,
             level,

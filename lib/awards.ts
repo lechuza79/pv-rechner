@@ -644,9 +644,19 @@ export function formatAwardValue(value: number, format: MetricFormat): string {
     case "countPer1000":
       // Feste Nachkommastelle: In einer Spalte untereinander las sich sonst
       // "125,9" ueber "125" wie ein Sprung, wo nur die Null fehlte.
-      return `${value.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} je 1.000 Ew.`;
+      // AUSGESCHRIEBEN, nicht „Ew.": Der Wert steht im Anschreiben in einem
+      // Absatz, der die Bezugsgröße schon zweimal anders nennt („pro Person",
+      // „je Einwohner"). Drei Schreibweisen derselben Sache in vier Zeilen
+      // lesen sich wie zusammenkopiert — und „Ew." ist Verwaltungsjargon, den
+      // eine Meldung nicht braucht.
+      return `${value.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} je 1.000 Einwohner`;
     case "whProKopf":
-      return `${Math.round(value).toLocaleString("de-DE")} Wh/Kopf`;
+      // In Wattstunden JE EINWOHNER, gleiche Begründung. Ab einer Kilowattstunde
+      // die größere Einheit: „1.458 Wh" liest niemand als anderthalb
+      // Kilowattstunden.
+      return value >= 1000
+        ? `${(value / 1000).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} kWh je Einwohner`
+        : `${Math.round(value).toLocaleString("de-DE")} Wh je Einwohner`;
     case "je100Dach":
       // NIE als Prozentzahl: Orte kommen auf ueber 100 (Osterwald: 113 Batterien
       // auf 71 Dachanlagen), weil Speicher nachgeruestet und auch an
