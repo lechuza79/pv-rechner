@@ -73,6 +73,19 @@ export const AUTARKY_GRID = [
 // lib/heatpump-config.ts leiten ihre Gas-/Öl-Werte hieraus ab — bitte nur hier
 // pflegen (jährlicher WP-Wächter, scripts/waermepumpe-verify.md). Der
 // Kessel-Wirkungsgrad bleibt pro Kontext separat (Brennwert/alt/Öl).
+//
+// DIE BEIDEN PREISE STEHEN AUF VERSCHIEDENEN SKALEN — BLOCKER (19.08.2026):
+// Erdgas wird in Deutschland auf den BRENNWERT abgerechnet (thermische
+// Gasabrechnung nach DVGW G 685: m³ × Brennwert × Zustandszahl), Heizöl wird
+// üblicherweise über rund 10 kWh je Liter umgerechnet — und das ist der
+// HEIZWERT (Heizöl EL: Heizwert ~9,8, Brennwert ~10,6 kWh/l). Brennwert und
+// Heizwert unterscheiden sich bei Erdgas um rund 11 %, bei Heizöl um 6–8 %.
+// Folge für jeden, der hier etwas anfasst: Der Gas-Wirkungsgrad (0,95) und der
+// Öl-Wirkungsgrad (0,85) sind NICHT direkt vergleichbar, und ein gemeinsamer
+// Auf- oder Abschlag über beide Brennstoffe hinweg ist immer falsch. Ein
+// Wirkungsgrad gehört auf dieselbe Bezugsgröße wie der Preis, gegen den er
+// rechnet. Zweimal ist genau daran eine Korrektur gescheitert; die vollständige
+// Begründung samt geprüfter Sackgassen steht in scripts/waermepumpe-verify.md.
 export const FUEL_PRICE: Record<"gas" | "oil", { price: number; co2PerKwh: number }> = {
   gas: { price: 0.11, co2PerKwh: 0.20 },   // 11 ct/kWh, 200 g CO2/kWh
   oil: { price: 0.10, co2PerKwh: 0.266 },  // 10 ct/kWh, 266 g CO2/kWh
