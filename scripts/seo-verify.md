@@ -76,6 +76,27 @@ unsere Bestandsstatistik —, wir standen auf Position 73,6 und hatten in 28 Tag
 Einblendungen. Bei unserem eigenen Wort („solaratlas rlp") standen wir auf 10,6.
 Vollständig in `docs/seo/befund-2026-08-13.md`.
 
+### Schritt 2b-2 — Zwei eigene Seiten auf einer Anfrage — BLOCKER
+
+Seit dem 18.08.2026 mitzuführen, weil es die teuerste Fehlerklasse dieses Bereichs ist
+und man sie in Summen nicht sieht: Wir haben **zwei Seitenfamilien mit Ortsnamen** —
+`/photovoltaik-foerderung/{land}/{stadt}` und (künftig) `/solar-atlas/{land}/{kreis}/{gemeinde}`.
+Die Rollentrennung lautet: Förderseite = Geld-Wörter, Atlasseite = Bestands-Wörter.
+
+**Sie ist bereits gebrochen.** Nachgezählt an den Anfragendaten: 33 der 108 sichtbaren
+Förder-Anfragen tragen kein Geld-Wort, bei sieben Anfragen erscheinen beide Familien, bei
+dreien steht die Förderseite auf einem reinen Bestands-Wort besser („photovoltaik pfalz":
+Förderseite 32,1 gegen Atlas 43,9).
+
+Je Monatslauf deshalb erheben und in den Schnappschuss schreiben:
+1. Wie viele Förder-Anfragen tragen kein Geld-Wort (absolut und als Anteil)?
+2. Bei welchen Anfragen erscheinen beide Familien gleichzeitig, und welche steht besser?
+
+Steigt die Zahl, ist das ein Befund für den Betreiber — nicht weil er etwas tun muss,
+sondern weil daran hängt, ob die nächste Atlas-Welle überhaupt starten darf. Die statische
+Hälfte (unsere eigenen Titel) hält `lib/__tests__/atlas-foerder-wortklassen.test.ts`; die
+Zuordnung durch Google kann nur diese Messung sehen.
+
 ### Schritt 2c — Durchschnittsposition nie ohne Query-Ebene — BLOCKER
 
 Eine gute Durchschnittsposition bei ~1 % Klickrate ist ein **Warnsignal, kein Erfolg**.
