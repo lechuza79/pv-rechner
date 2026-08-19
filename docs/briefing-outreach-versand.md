@@ -76,4 +76,6 @@ protokolliert: Variante, Kanal, Datum — liegt alles in `kommunen_kontakt`.
 
 `git fetch` + `npm run sessions` vor Start. Die Audit-Session (Haupt-Repo) hat dieses
 Briefing geschrieben und übergibt vollständig — bei Fragen per `send_message` melden.
-Eine Badge-/Siegel-Idee ist ausdrücklich VERWORFEN (19.08.) — nicht wiederbeleben.
+In die Mails gehört KEIN Siegel/Badge — nur Text, Meldung, Link (Betreiber, 19.08.).
+Das geparkte Award-Badge-Konzept (docs/kommunen-award-konsolidierung.md) bleibt davon
+unberührt geparkt — es ist nur nicht Teil dieses Versands.
