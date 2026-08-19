@@ -20,14 +20,29 @@ import { v } from "../../../../lib/theme";
 
 const PRAEFIX = "/balkonkraftwerk/ratgeber/";
 
-export const metadata: Metadata = pageMetadata({
+// SIE STEHT BEWUSST AUF NOINDEX, solange sie dünn ist (adversarialer SEO-Prüfer,
+// 19.08.2026). Der Befund war ein Widerspruch in sich: Der Kopf dieser Datei
+// begründet die Seite damit, dass ein Adress-Segment keine 404 werfen darf — die
+// Umsetzung meldete sie aber zur Indexierung an, obwohl sie außer Überschrift und
+// Vorspann NUR die Titel und Teaser wiederholt, die byte-gleich schon auf
+// /ratgeber stehen. Rund 120 eigene Wörter. Das ist genau der Thin Content, den
+// CLAUDE.md als offenen Punkt führt.
+//
+// `follow` bleibt: Die verlinkten Artikel sollen erreichbar bleiben.
+// UMSTELLEN AUF INDEXIERBAR, sobald die Kategorie mehr trägt als die Registry —
+// also eigene Einordnung statt wiederholter Teaser, und mehr als zwei Artikel.
+// Dann gehört sie auch in die Sitemap und in die Fußzeile.
+export const metadata: Metadata = {
+  ...pageMetadata({
   path: "/balkonkraftwerk/ratgeber",
   title: "Balkonkraftwerk-Ratgeber: alle Artikel im Überblick",
   description:
     "Die Ratgeber rund ums Balkonkraftwerk — Anmeldung im Marktstammdatenregister und die Frage, ob sich ein Speicher trägt. Alle Beispiele live gerechnet, ohne Anmeldung und ohne Verkaufsanruf.",
   ogImageTitle: "Balkonkraftwerk-Ratgeber",
   ogImageSubtitle: "Alle Artikel des Bereichs.",
-});
+  }),
+  robots: { index: false, follow: true },
+};
 
 const S = {
   page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "0 16px 20px" },

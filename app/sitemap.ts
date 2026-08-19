@@ -171,9 +171,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // über einen Rechner-Stand: Ihr Inhalt IST der Katalog, und der trägt sein
     // Prüfdatum je Programm. Kein erfundenes Datum, kein Build-Zeitpunkt.
     { url: `${BASE_URL}/balkonkraftwerk/foerderung`, lastModified: maxFundingDate, changeFrequency: "weekly", priority: 0.7 },
-    // Die Kategorie-Uebersicht selbst — ohne sie fuehrt das Pfadstueck ins Leere.
-    // Kein eigener Wertstand: Sie listet nur, was die Registry ohnehin fuehrt.
-    { url: `${BASE_URL}/balkonkraftwerk/ratgeber`, changeFrequency: "monthly", priority: 0.6 },
+    // Die Kategorie-Uebersicht /balkonkraftwerk/ratgeber steht hier BEWUSST NICHT:
+    // Sie existiert, damit das Pfadstueck keine 404 wirft, wiederholt aber nur
+    // Titel und Teaser aus der Registry und steht deshalb auf noindex. Eine Seite
+    // zur Indexierung anzumelden, die man gleichzeitig auf noindex setzt, ist ein
+    // Widerspruch — und Google meldet ihn als Fehler in der Search Console.
     { url: `${BASE_URL}/balkonkraftwerk/ratgeber/mit-speicher`, lastModified: rechnerStand("/balkonkraftwerk/ratgeber/mit-speicher"), changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/einspeiseverguetung-rechner`, lastModified: rechnerStand("/einspeiseverguetung-rechner"), changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/photovoltaik-foerderung`, lastModified: maxFundingDate, changeFrequency: "weekly", priority: 0.8 },

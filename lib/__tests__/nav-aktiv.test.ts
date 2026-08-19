@@ -115,6 +115,56 @@ describe("Menü-Markierung: Zuordnung Pfad → Menüpunkt", () => {
 // Die saubere Lösung wäre eine gemeinsame Quelle für die Navigation, aus der
 // Menü, Fußzeile und später die Bereichsnavigation lesen — siehe
 // docs/themen-cluster-struktur.md. Bis dahin ist dieser Test das Netz.
+// Ein interner Link auf eine weitergeleitete Adresse ist ein vermeidbarer
+// Fehler: Er kostet einen zusaetzlichen Sprung und streut das Signal auf zwei
+// Adressen. Gefunden am 19.08.2026 von einem adversarialen SEO-Pruefer — die
+// Foerderseite kam aus einer parallelen Sitzung und verlinkte den Anmelde-
+// Ratgeber unter seiner alten Adresse, waehrend die Fusszeile daneben schon die
+// neue trug. Zwei Adressen, ein Ziel, derselbe Ankertext.
+describe("Interne Links zeigen nie auf eine Weiterleitung", () => {
+  const config = readFileSync(resolve(__dirname, "../../next.config.js"), "utf8");
+  /** Alle Quellpfade aus dem redirects()-Block von next.config.js — das sind
+   *  die Adressen, die es nicht mehr gibt.
+   *
+   *  NUR dieser Block: `headers()` und `rewrites()` benutzen dasselbe Feld
+   *  `source`, meinen aber Seiten, die es sehr wohl gibt (/dashboard, /plz.json).
+   *  Ein Test, der die mitzaehlt, meldet dreizehn Fehlalarme und wird dann
+   *  abgeschaltet statt gelesen. */
+  const redirectBlock = config.slice(config.indexOf("async redirects()"));
+  const weitergeleitet = [...redirectBlock.matchAll(/source:\s*"(\/[^"*:]+)"/g)]
+    .map(m => m[1])
+    // Der Wurzelpfad steht dort mit einer `has`-Bedingung (nur mit Query-Param)
+    // und ist keine verschwundene Adresse.
+    .filter(pfad => pfad !== "/");
+
+  it("findet die Weiterleitungen ueberhaupt", () => {
+    expect(weitergeleitet.length).toBeGreaterThan(10);
+  });
+
+  it("keine Seite und kein Baustein verlinkt eine weitergeleitete Adresse", () => {
+    const wurzeln = [resolve(__dirname, "../../app"), resolve(__dirname, "../../components"), resolve(__dirname, "../../lib")];
+    const treffer: string[] = [];
+    const suchen = (ordner: string) => {
+      for (const eintrag of readdirSync(ordner, { withFileTypes: true })) {
+        const voll = resolve(ordner, eintrag.name);
+        if (eintrag.isDirectory()) {
+          if (eintrag.name === "node_modules" || eintrag.name === "__tests__") continue;
+          suchen(voll);
+        } else if (/\.tsx?$/.test(eintrag.name)) {
+          const inhalt = readFileSync(voll, "utf8");
+          for (const alt of weitergeleitet) {
+            // Nur exakte Adressen als String-Literal — ein laengerer Pfad, der
+            // zufaellig damit beginnt, ist eine andere Seite.
+            if (inhalt.includes(`"${alt}"`)) treffer.push(`${eintrag.name}: ${alt}`);
+          }
+        }
+      }
+    };
+    wurzeln.forEach(suchen);
+    expect(treffer, `interne Links auf weitergeleitete Adressen: ${treffer.join(", ")}`).toEqual([]);
+  });
+});
+
 describe("Themen-Cluster: jede Seite ist auch verlinkt", () => {
   const footer = readFileSync(resolve(__dirname, "../../components/Footer.tsx"), "utf8");
 

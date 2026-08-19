@@ -1,3 +1,16 @@
+> **ÜBERHOLT in einem zentralen Punkt (19.08.2026).** Abschnitt 2 empfiehlt, die
+> Kategorien als reine Ansicht zu führen und die Adressen flach zu lassen, und
+> Abschnitt 5 schreibt das künftigen Sitzungen vor. **Beides gilt nicht mehr.**
+> Der Betreiber hat die flache Struktur am selben Tag als nicht skalierbar
+> zurückgewiesen; die Ratgeber liegen seither unter `/balkonkraftwerk/ratgeber/`.
+> Verbindlich ist **`docs/themen-bereich-zielbild.md`**.
+>
+> Warum das Papier trotzdem stehen bleibt: Die Abschnitte 1, 2b und 3 (Ausklapp-
+> Menü ist für Suchmaschinen unsichtbar · drei handgepflegte Navigations-Listen ·
+> was für den Umbau zu bauen wäre) sind unverändert gültig und stehen nirgends
+> sonst. Und die widerlegte Argumentation aus Abschnitt 2 ist die Sorte, die ohne
+> Vermerk in einem halben Jahr wiederkommt.
+
 # Themen-Cluster als eigener Bereich: Zielbild und was es kostet
 
 **Auftrag des Betreibers, 19.08.2026.** Die heutige Navigation ist gewachsen, nicht
@@ -55,9 +68,10 @@ Förderprogramme, Ratgeber, Produktvergleich — können auf zwei Arten existier
 **Empfehlung: als Ansicht.** Vier Gründe, alle aus dem, was im Projekt schon
 entschieden oder gemessen ist:
 
-- **Verzeichnistiefe ist kein Rankingfaktor** (Mueller 2021/2022, in CLAUDE.md
-  belegt). `/balkonkraftwerk/speicher` trägt bereits beide Zielwörter; eine
-  Zwischenebene `ratgeber/` fügt kein Wort hinzu, das jemand sucht.
+- **Verzeichnistiefe kommt in Googles URL-Empfehlung gar nicht vor.** Sie verlangt
+  Adressen, die logisch und für Menschen verständlich aufgebaut sind — mehr nicht
+  (am 19.08.2026 im Original gelesen). Die Zuspitzung „Tiefe ist kein
+  Rankingfaktor“ ist uns nur sekundär belegt und gilt nach Regel 6 nicht als Beleg.
 - **Das Projekt hat diese Entscheidung schon einmal getroffen — genauso.**
   „`/ratgeber` ist eine ANSICHT, kein Ordner": Die Registry akzeptiert jeden
   Pfad und speist Übersicht, Krümelspur und Sitemap. Ein Ratgeber im Cluster

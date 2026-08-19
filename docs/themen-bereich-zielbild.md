@@ -29,13 +29,28 @@ vier Argumente. Drei halten nicht:
   Keyword-Slug. Eine wachsende Kategorie **innerhalb** eines Bereichs ist etwas
   anderes. Die Cluster-Regel in CLAUDE.md sagt sogar das Gegenteil: ab der
   dritten Seite zu einem Thema wird verschachtelt, bevor die zweite live geht.
-- **„Die Steuerungseinheit existiert schon."** Dieses Argument dreht sich um.
-  Flach gibt es **eine** Steuerungseinheit für den ganzen Bereich. Steuerbar ist
-  damit „ganz Balkonkraftwerk", nie „nur die Ratgeber" oder „nur die
-  Produktseiten". Mit vierzig Produktseiten ist „Ratgeber freischalten,
-  Produktseiten halten" schlicht unmöglich — und in der Search Console ist
-  „wie laufen Ratgeber gegen Tools" ohne gemeinsames Pfadstück nicht zu fragen.
-  **Das ist die Nicht-Skalierbarkeit, die der Betreiber gemeint hat.**
+- **„Die Steuerungseinheit existiert schon."** Dieses Argument drehte sich zuerst
+  um (flach gibt es nur EINE Einheit für den ganzen Bereich) — und ist dann von
+  zwei unabhängigen SEO-Prüfern am 19.08.2026 **ganz gekippt** worden. Beide
+  Hälften halten nicht:
+  - **Steuerung:** Das Projekt schaltet längst PRO SEITE frei, ohne Pfadbezug —
+    `atlasRobots(cityIndexFreigegeben(city))` auf den Förder-Stadtseiten,
+    `lib/release-plan.ts` nach Ortsschlüssel × Gattung, dazu eine inhaltliche
+    Thin-Schwelle je Seite. Über hundert Seiten unter EINEM Präfix, einzeln
+    gesteuert. Ein Kategorie-Feld an `lib/ratgeber.ts` hätte dasselbe geliefert.
+  - **Auswertung:** Die Search Console kann seit Juni 2021 einen Regex-Filter auf
+    der Seiten-Dimension; `(/a|/b|/c)` ist genau ein Filter. Ein gemeinsames
+    Präfix braucht sie nicht. Ebenso kennt `robots.txt` Platzhalter.
+
+**Was als Begründung übrig bleibt — schwächer, aber tragfähig:** eine Krümelspur,
+die nicht mehr lügt (vorher behauptete sie eine Hierarchie, die die Adresse nicht
+hatte — CLAUDE.md nennt genau das die schwächste Form), eine Adresse, unter der
+eine Kategorie-Übersicht wohnen kann, und für Menschen lesbare Pfade. Googles
+eigene URL-Empfehlung sagt genau das und nichts weiter.
+
+**Daraus folgt eine Grenze:** Weil die Begründung schwach ist, rechtfertigt sie
+einen Umzug nur dort, wo er fast nichts kostet — vor oder unmittelbar nach dem
+Livegang, **nie auf gewachsenem Bestand**.
 
 Das vierte Argument (Umzugskosten) galt gewachsenen Seiten. Der Balkon-Bereich
 ist vom 18.08.2026 und rankt praktisch nicht (gemessen 18.08.: zwei Balkon-Wörter
@@ -56,10 +71,18 @@ abgeleitet werden — siehe Abschnitt 3. Das war der richtige Kern am falschen O
 /<thema>/produkte/<slug>          Produktseiten       — eigene Ebene, später
 ```
 
-**Regel: Verschachtelt wird, was wächst; flach bleibt, was einzeln bleibt.**
-Das ist die Cluster-Regel aus CLAUDE.md, eine Ebene tiefer angewandt — eigene
-Ebene ab der dritten Seite einer Art, und zwar bevor die zweite live geht. Ein
-Ordner für eine einzige Datei ist Zeremonie (ebenfalls CLAUDE.md).
+**Regel: nach GATTUNG, nicht nach Anzahl.** Eine **Reihe** (Ratgeber, Produkte —
+davon kommen sicher mehr) bekommt ihre Ebene ab der ersten Seite. Was **singulär**
+bleibt (Bereichs-Startseite, Rechner, Förder-Überblick), bleibt für immer flach.
+
+Die erste Fassung stand hier als Zählschwelle („flach, solange ≤ 2"). Der zweite
+Prüfer hat sie zerlegt, und der Einwand sitzt: Eine Zählschwelle löst den Umzug
+genau dann aus, wenn ein Bereich erfolgreich wird — im teuersten Moment. Und sie
+wird ohnehin nicht befolgt: Dieselbe Regel steht seit dem 18.08.2026 in CLAUDE.md,
+und Photovoltaik hat sechs Seiten und ist flach. Eine Regel, die das eigene Repo
+schon verletzt, verletzt es in zwei Jahren wieder. Gattungsbasiert ist die Antwort
+**ablesbar** statt abzuwägen — und genau so steuert `lib/release-plan.ts` bereits,
+über ein Gattungsfeld statt über Pfade.
 
 ### 2a. Ratgeber bekommen eine Ebene
 Zwei Artikel existieren (Anmelden, Speicher), und die Gattung ist als
@@ -144,6 +167,34 @@ Konsolidierung eingehender Links und angelaufener Platzierungen.
 
 ---
 
+## 4b. Drei Gattungen fehlen noch — und genau die erzwingen sonst den zweiten Umzug
+
+Vom zweiten Prüfer am 19.08.2026 gefunden. Sie müssen entschieden sein, **bevor**
+die erste Seite der jeweiligen Gattung entsteht — sonst zahlt man den Umzug
+ausgerechnet dort, wo am meisten Seiten liegen.
+
+1. **Daten- und Nachschlage-Seiten.** `/einspeiseverguetung-tabelle`,
+   `/photovoltaik-zubau-deutschland`, `/photovoltaik-neigungswinkel` sind keine
+   der vier Kategorien — es sind Tabellen und Zeitreihen. Zwei laufen heute
+   notdürftig als Ratgeber-Registry-Einträge, was sie nicht sind. Das ist nicht
+   kosmetisch: Nach eigener Messung ist „veränderlich" die einzige Kategorie mit
+   freier Bahn gegen KI-Antworten. Vorschlag: eigene Gattung, global statt je
+   Thema — aber entschieden, nicht vergessen.
+2. **Handeln ist keine Ratgeber-Gattung.** „Anmelden" ist mit 27.100 Suchen im
+   Monat die stärkste Einzelseite des Bereichs und eine Anleitung, kein Artikel.
+   Der zweite Prüfer empfiehlt, solche Seiten flach unter dem Bereich zu lassen.
+   **Offen** — Abwägung siehe Abschnitt 5.
+3. **`produkte` ist kein Segment, sondern ein Unterbereich.** Marken- und
+   Herstellerseiten sind eine eigene Suchkategorie. Ob `/produkte/<marke>/…` oder
+   ein eigenes `/marken/`, muss **vor** der ersten Produktseite feststehen.
+
+Ausdrücklich **nicht** aufgenommen, mit Begründung: Vergleiche (X gegen Y) und
+Fallbeispiele sind Ratgeber. Thematische Glossarseiten sind Thin Content und
+stehen frontal gegen die KI-Antwort — bleiben global. FAQ ist im Projekt ein
+Block, keine Seite; das gehört als Ausschluss hier hin, sonst baut es jemand.
+Regionale Seiten bleiben im Förder-Verzeichnis (Abschnitt 2c) — diese Trennung
+gilt aber nur, solange die Förder-Stadtseite die Technik-Dimension mitträgt.
+
 ## 5. Offen — gehört dem Betreiber
 
 1. **Segment-Name für die Artikel:** `ratgeber` (gleiches Wort wie in der
@@ -152,5 +203,23 @@ Konsolidierung eingehender Links und angelaufener Platzierungen.
 2. **Gilt das Modell auch für Wärmepumpe und Photovoltaik?** Empfehlung: als
    Navigations- und Kategoriemodell ja (das kostet nichts), als Adressmodell
    nein — dort wäre es ein echter Umzug gewachsener Seiten.
-3. **Suche über den Bereich oder über die ganze Seite?** Bestimmt den Aufwand,
-   siehe `docs/themen-cluster-struktur.md`, Abschnitt 3d.
+3. **`anmelden` unter `ratgeber` oder flach?** Der zweite Prüfer ist dagegen:
+   stärkste Einzelseite des Bereichs (27.100/Monat), eine Anleitung statt eines
+   Artikels, und die Adresse tauscht ein gesuchtes Wort gegen ein ungesuchtes.
+   Dafür spricht: Sie steht in der Ratgeber-Registry, liest sich als Anleitung
+   mit Schritten und FAQ, und eine eigene Gattung „Handeln" wäre eine Taxonomie,
+   die künftige Sitzungen nicht zuverlässig anwenden können. Dazu rankt die Seite
+   heute nichts (Position 102/103 domainweit), das URL-Wort ist also ein schwaches
+   Signal ohne Bestand. **Aktuell verschachtelt; Rücknahme kostet heute eine
+   Zeile, solange der Umzug nicht auf der Hauptlinie ist.**
+4. **Suche über den Bereich oder über die ganze Seite?** Der zweite Prüfer hat
+   zwei Vorgaben nachgeliefert: Titel und Teaser allein reichen NICHT (gesucht
+   wird „800 Watt", „Nullsteuersatz" — Wörter, die dort nicht stehen; der Index
+   braucht auch H2/H3 und die FAQ-Fragen), und Ortssuche gehört NICHT in denselben
+   Index (unscharfes Rangieren gegen Präfix-Treffer sind zwei Mechaniken; 11.000
+   Gemeinden ins Browser-Bundle zu legen wäre der Fehler). Außerdem: `SearchAction`
+   im strukturierten Datensatz ist gegenstandslos — Google hat die Sitelinks-
+   Suchbox am 21.11.2024 abgeschaltet.
+5. **Reihenfolge.** Beide Prüfer ordnen den Struktur-Umbau als Vorsorge ein, nicht
+   als Wachstumsschritt. Der gemessen größte Hebel liegt woanders (Förderseiten
+   vom Text zum Werkzeug). Der Umbau sollte ihn nicht vordrängen.
