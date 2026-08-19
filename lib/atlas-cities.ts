@@ -396,6 +396,21 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "roth", name: "Roth", ags: "09576143", kreis: "Landkreis Roth", bundesland: "Bayern", yieldKwhKwp: 1070, indexFreigabe: false },
   { slug: "dettelbach", name: "Dettelbach", ags: "09675117", kreis: "Landkreis Kitzingen", bundesland: "Bayern", yieldKwhKwp: 1108, indexFreigabe: false },
   { slug: "dietmannsried", name: "Dietmannsried", ags: "09780119", kreis: "Landkreis Oberallgäu", bundesland: "Bayern", yieldKwhKwp: 1149, indexFreigabe: false },
+
+  // Nachzügler vom selben Tag: zehn Programme, die zwischen dem Anlegen der
+  // sechzig und dem Merge in den Katalog kamen. Dass sie hier stehen müssen,
+  // hat der Sync-Test erzwungen — genau dafür ist die pauschale Ausnahme für
+  // achtstellige Schlüssel weggefallen.
+  { slug: "schiltach", name: "Schiltach", ags: "08325051", kreis: "Landkreis Rottweil", bundesland: "Baden-Württemberg", yieldKwhKwp: 1048, indexFreigabe: false },
+  { slug: "altdorf", name: "Altdorf", ags: "08115002", kreis: "Landkreis Böblingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1140, indexFreigabe: false },
+  { slug: "steffenberg", name: "Steffenberg", ags: "06534019", kreis: "Landkreis Marburg-Biedenkopf", bundesland: "Hessen", yieldKwhKwp: 1023, indexFreigabe: false },
+  { slug: "tegernheim", name: "Tegernheim", ags: "09375204", kreis: "Landkreis Regensburg", bundesland: "Bayern", yieldKwhKwp: 1108, indexFreigabe: false },
+  { slug: "lohfelden", name: "Lohfelden", ags: "06633017", kreis: "Landkreis Kassel", bundesland: "Hessen", yieldKwhKwp: 1007, indexFreigabe: false },
+  { slug: "schwebheim", name: "Schwebheim", ags: "09678176", kreis: "Landkreis Schweinfurt", bundesland: "Bayern", yieldKwhKwp: 1097, indexFreigabe: false },
+  { slug: "asbach", name: "Asbach", ags: "07138003", kreis: "Landkreis Neuwied", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1030, indexFreigabe: false },
+  { slug: "parkstein", name: "Parkstein", ags: "09374144", kreis: "Landkreis Neustadt a.d.Waldnaab", bundesland: "Bayern", yieldKwhKwp: 1052, indexFreigabe: false },
+  { slug: "marburg", name: "Marburg", ags: "06534014", kreis: "Landkreis Marburg-Biedenkopf", bundesland: "Hessen", yieldKwhKwp: 1054, indexFreigabe: false },
+  { slug: "schoenbrunn", name: "Schönbrunn", ags: "08226081", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1073, indexFreigabe: false },
 ];
 
 export function cityBySlug(slug: string): AtlasCity | undefined {

@@ -259,6 +259,16 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/roth", destination: "/photovoltaik-foerderung/bayern/roth", permanent: true },
       { source: "/photovoltaik-foerderung/dettelbach", destination: "/photovoltaik-foerderung/bayern/dettelbach", permanent: true },
       { source: "/photovoltaik-foerderung/dietmannsried", destination: "/photovoltaik-foerderung/bayern/dietmannsried", permanent: true },
+      { source: "/photovoltaik-foerderung/schiltach", destination: "/photovoltaik-foerderung/baden-wuerttemberg/schiltach", permanent: true },
+      { source: "/photovoltaik-foerderung/altdorf", destination: "/photovoltaik-foerderung/baden-wuerttemberg/altdorf", permanent: true },
+      { source: "/photovoltaik-foerderung/steffenberg", destination: "/photovoltaik-foerderung/hessen/steffenberg", permanent: true },
+      { source: "/photovoltaik-foerderung/tegernheim", destination: "/photovoltaik-foerderung/bayern/tegernheim", permanent: true },
+      { source: "/photovoltaik-foerderung/lohfelden", destination: "/photovoltaik-foerderung/hessen/lohfelden", permanent: true },
+      { source: "/photovoltaik-foerderung/schwebheim", destination: "/photovoltaik-foerderung/bayern/schwebheim", permanent: true },
+      { source: "/photovoltaik-foerderung/asbach", destination: "/photovoltaik-foerderung/rheinland-pfalz/asbach", permanent: true },
+      { source: "/photovoltaik-foerderung/parkstein", destination: "/photovoltaik-foerderung/bayern/parkstein", permanent: true },
+      { source: "/photovoltaik-foerderung/marburg", destination: "/photovoltaik-foerderung/hessen/marburg", permanent: true },
+      { source: "/photovoltaik-foerderung/schoenbrunn", destination: "/photovoltaik-foerderung/baden-wuerttemberg/schoenbrunn", permanent: true },
       // Hamburg/Bremen: Stadtstaaten — flacher Slug = Bundesland-Slug, daher KEIN
       // Redirect (würde die Bundesland-Seite abfangen). Stadt-Seite liegt unter
       // /hamburg/hamburg bzw. /bremen/bremen, erreichbar über die Bundesland-Seite.
