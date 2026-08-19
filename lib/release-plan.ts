@@ -136,7 +136,7 @@ export const ALTBESTAND_LIVE_SEIT = "2026-06-19";
 export const ALTBESTAND: Record<Seitengattung, string[]> = {
   "foerder-stadt": [
     "03103", // Wolfsburg
-    "03241", // Hannover
+    "03241001", // Hannover — Stadt, nicht Region Hannover (Schlüssel am 19.08.2026 korrigiert)
     "03404", // Osnabrück
     "04011", // Bremen
     "04012", // Bremerhaven

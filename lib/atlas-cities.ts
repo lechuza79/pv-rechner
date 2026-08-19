@@ -60,25 +60,6 @@ export interface AtlasCity {
   /** Id into FUNDING_PROGRAMS. Nur nötig, wenn die Zuordnung über den
    *  Gemeindeschlüssel nicht eindeutig ist — sonst leitet fundingFor() sie ab. */
   fundingId?: string;
-  /**
-   * Seite ist gebaut und erreichbar, aber noch NICHT für den Index freigegeben
-   * (noindex + nicht in der Sitemap). Fehlt das Feld, ist die Seite freigegeben.
-   *
-   * Grund: Förder-Stadtseite und Atlas-Ortsseite tragen denselben Ortsnamen und
-   * dürfen für denselben Ort nie im selben Schub live gehen — Google braucht
-   * Wochen für die Zuordnung, zwei frische Seiten machen sie zum Zufall, und
-   * ein falsch zugeordneter Ort ist teuer zu korrigieren.
-   *
-   * ÜBERGANGSLÖSUNG — dieses Feld verschwindet wieder. Parallel entsteht der
-   * Releaseplan (`lib/release-plan.ts`), der dieselbe Frage je Ort und Schub
-   * beantwortet und dabei weiter geht: Ein nicht freigegebener Ort bekommt dort
-   * gar keine Seite statt einer auf noindex. Sobald er auf der Hauptlinie steht,
-   * wird dieses Feld ersatzlos entfernt — zwei Schalter für eine Frage sind
-   * genau die Doppelpflege, an der im Projekt schon `fundingId` gescheitert ist.
-   * Bis dahin steht es hier, weil ein Merge ohne JEDE Bremse die 60 Seiten auf
-   * einen Schlag veröffentlichen würde.
-   */
-  indexFreigabe?: boolean;
 }
 
 /**
@@ -307,12 +288,12 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "wolfsburg", name: "Wolfsburg", ags: "03103", bundesland: "Niedersachsen", yieldKwhKwp: 1029, fundingId: "wolfsburg-pv" },
   { slug: "worms", name: "Worms", ags: "07319", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1108 },
   { slug: "wuppertal", name: "Wuppertal", ags: "05124", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 992 },
-  // `indexFreigabe` auch hier: Die Seite gab es bis zum 19.08.2026 nicht (der
+  // Auch Zweibrücken steht in keinem Schub: Die Seite gab es bis zum 19.08.2026 nicht (der
   // Programmschlüssel war zu eng gefasst, siehe funding-programs.ts). Sie ist
   // damit genauso eine NEUE Seite wie die 60 Gemeinden — nur ohne Kreis, weil
   // Zweibrücken kreisfrei ist. Sie jetzt zu veröffentlichen wäre wieder eine
   // Nebenwirkung statt einer Entscheidung.
-  { slug: "zweibruecken", name: "Zweibrücken", ags: "07320", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1102, indexFreigabe: false },
+  { slug: "zweibruecken", name: "Zweibrücken", ags: "07320", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1102 },
   // ── Landkreise mit eigenem (wiederkehrendem) Förderprogramm (Juni 2026) ──────
   { slug: "rhein-erft-kreis", name: "Rhein-Erft-Kreis", ags: "05362", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970, fundingId: "rhein-erft-energieoffensive" },
   { slug: "kreis-viersen", name: "Kreis Viersen", ags: "05166", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970, fundingId: "viersen-klimaschutz" },
@@ -330,88 +311,89 @@ export const ATLAS_CITIES: AtlasCity[] = [
   // Landkreises (siehe `ags` oben). Der Ertrag ist je Gemeinde gemessen, nicht
   // als Kreisdurchschnitt geschätzt.
   //
-  // `indexFreigabe: false`: Die Seiten sind fertig, aber noch nicht im Index —
-  // sie warten auf die Reihenfolge aus dem Releaseplan, weil für denselben Ort
-  // nie Förder- und Atlasseite gleichzeitig frisch werden dürfen.
+  // Keine dieser Seiten ist veröffentlicht: Sie stehen in keinem Schub des
+  // Releaseplans (lib/release-plan.ts), und ohne Schub gibt es keine Seite. Sie
+  // warten dort auf ihre Reihenfolge, weil für denselben Ort nie Förder- und
+  // Atlasseite gleichzeitig frisch werden dürfen. Im Rechner wirken sie längst.
   //
   // Zweibrücken fehlt hier bewusst: Es ist eine kreisfreie Stadt und stand
   // längst im Verzeichnis — dort war der Schlüssel des PROGRAMMS zu eng
   // gefasst (achtstellig statt fünfstellig), nicht der Eintrag falsch.
-  { slug: "klempau", name: "Klempau", ags: "01053067", kreis: "Kreis Herzogtum Lauenburg", bundesland: "Schleswig-Holstein", yieldKwhKwp: 1007, indexFreigabe: false },
-  { slug: "helmstedt", name: "Helmstedt", ags: "03154028", kreis: "Landkreis Helmstedt", bundesland: "Niedersachsen", yieldKwhKwp: 1041, indexFreigabe: false },
-  { slug: "goettingen", name: "Göttingen", ags: "03159016", kreis: "Landkreis Göttingen", bundesland: "Niedersachsen", yieldKwhKwp: 1007, indexFreigabe: false },
-  { slug: "herzberg-am-harz", name: "Herzberg am Harz", ags: "03159019", kreis: "Landkreis Göttingen", bundesland: "Niedersachsen", yieldKwhKwp: 1031, indexFreigabe: false },
-  { slug: "weyhe", name: "Weyhe", ags: "03251047", kreis: "Landkreis Diepholz", bundesland: "Niedersachsen", yieldKwhKwp: 1013, indexFreigabe: false },
-  { slug: "wietzen", name: "Wietzen", ags: "03256036", kreis: "Landkreis Nienburg (Weser)", bundesland: "Niedersachsen", yieldKwhKwp: 1017, indexFreigabe: false },
-  { slug: "moormerland", name: "Moormerland", ags: "03457014", kreis: "Landkreis Leer", bundesland: "Niedersachsen", yieldKwhKwp: 1002, indexFreigabe: false },
-  { slug: "bad-rothenfelde", name: "Bad Rothenfelde", ags: "03459006", kreis: "Landkreis Osnabrück", bundesland: "Niedersachsen", yieldKwhKwp: 1019, indexFreigabe: false },
-  { slug: "goch", name: "Goch", ags: "05154016", kreis: "Kreis Kleve", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1048, indexFreigabe: false },
-  { slug: "hueckelhoven", name: "Hückelhoven", ags: "05370020", kreis: "Kreis Heinsberg", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1083, indexFreigabe: false },
-  { slug: "nottuln", name: "Nottuln", ags: "05558032", kreis: "Kreis Coesfeld", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1039, indexFreigabe: false },
-  { slug: "senden", name: "Senden", ags: "05558044", kreis: "Kreis Coesfeld", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1034, indexFreigabe: false },
-  { slug: "ennepetal", name: "Ennepetal", ags: "05954008", kreis: "Ennepe-Ruhr-Kreis", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 960, indexFreigabe: false },
-  { slug: "wenden", name: "Wenden", ags: "05966028", kreis: "Kreis Olpe", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 989, indexFreigabe: false },
-  { slug: "gernsheim", name: "Gernsheim", ags: "06433004", kreis: "Landkreis Groß-Gerau", bundesland: "Hessen", yieldKwhKwp: 1092, indexFreigabe: false },
-  { slug: "bad-homburg", name: "Bad Homburg v. d. Höhe", ags: "06434001", kreis: "Hochtaunuskreis", bundesland: "Hessen", yieldKwhKwp: 1099, indexFreigabe: false },
-  { slug: "linsengericht", name: "Linsengericht", ags: "06435018", kreis: "Main-Kinzig-Kreis", bundesland: "Hessen", yieldKwhKwp: 1028, indexFreigabe: false },
-  { slug: "maintal", name: "Maintal", ags: "06435019", kreis: "Main-Kinzig-Kreis", bundesland: "Hessen", yieldKwhKwp: 1093, indexFreigabe: false },
-  { slug: "hochheim", name: "Hochheim am Main", ags: "06436006", kreis: "Main-Taunus-Kreis", bundesland: "Hessen", yieldKwhKwp: 1105, indexFreigabe: false },
-  { slug: "reichelsheim", name: "Reichelsheim (Odenwald)", ags: "06437013", kreis: "Odenwaldkreis", bundesland: "Hessen", yieldKwhKwp: 1071, indexFreigabe: false },
-  { slug: "rodgau", name: "Rodgau", ags: "06438011", kreis: "Landkreis Offenbach", bundesland: "Hessen", yieldKwhKwp: 1083, indexFreigabe: false },
-  { slug: "hohenahr", name: "Hohenahr", ags: "06532013", kreis: "Lahn-Dill-Kreis", bundesland: "Hessen", yieldKwhKwp: 1055, indexFreigabe: false },
-  { slug: "gudensberg", name: "Gudensberg", ags: "06634007", kreis: "Schwalm-Eder-Kreis", bundesland: "Hessen", yieldKwhKwp: 1037, indexFreigabe: false },
-  { slug: "neuwied", name: "Neuwied", ags: "07138045", kreis: "Landkreis Neuwied", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1054, indexFreigabe: false },
-  { slug: "hillscheid", name: "Hillscheid", ags: "07143031", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1009, indexFreigabe: false },
-  { slug: "hoehr-grenzhausen", name: "Höhr-Grenzhausen", ags: "07143032", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1011, indexFreigabe: false },
-  { slug: "wittlich", name: "Wittlich", ags: "07231134", kreis: "Landkreis Bernkastel-Wittlich", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1073, indexFreigabe: false },
-  { slug: "limburgerhof", name: "Limburgerhof", ags: "07338017", kreis: "Rhein-Pfalz-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1120, indexFreigabe: false },
-  { slug: "holzgerlingen", name: "Holzgerlingen", ags: "08115024", kreis: "Landkreis Böblingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1128, indexFreigabe: false },
-  { slug: "wernau", name: "Wernau (Neckar)", ags: "08116072", kreis: "Landkreis Esslingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1138, indexFreigabe: false },
-  { slug: "hattenhofen", name: "Hattenhofen", ags: "08117029", kreis: "Landkreis Göppingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1126, indexFreigabe: false },
-  { slug: "schlierbach", name: "Schlierbach", ags: "08117044", kreis: "Landkreis Göppingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1133, indexFreigabe: false },
-  { slug: "waiblingen", name: "Waiblingen", ags: "08119079", kreis: "Rems-Murr-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1119, indexFreigabe: false },
-  { slug: "herbrechtingen", name: "Herbrechtingen", ags: "08135020", kreis: "Landkreis Heidenheim", bundesland: "Baden-Württemberg", yieldKwhKwp: 1102, indexFreigabe: false },
-  { slug: "gaiberg", name: "Gaiberg", ags: "08226022", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1084, indexFreigabe: false },
-  { slug: "heddesheim", name: "Heddesheim", ags: "08226028", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1072, indexFreigabe: false },
-  { slug: "leimen", name: "Leimen", ags: "08226041", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1114, indexFreigabe: false },
-  { slug: "oftersheim", name: "Oftersheim", ags: "08226062", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1110, indexFreigabe: false },
-  { slug: "sandhausen", name: "Sandhausen", ags: "08226076", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1110, indexFreigabe: false },
-  { slug: "weinheim", name: "Weinheim", ags: "08226096", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1049, indexFreigabe: false },
-  { slug: "bad-krozingen", name: "Bad Krozingen", ags: "08315006", kreis: "Landkreis Breisgau-Hochschwarzwald", bundesland: "Baden-Württemberg", yieldKwhKwp: 1164, indexFreigabe: false },
-  { slug: "rietheim-weilheim", name: "Rietheim-Weilheim", ags: "08327056", kreis: "Landkreis Tuttlingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1122, indexFreigabe: false },
-  { slug: "gailingen", name: "Gailingen am Hochrhein", ags: "08335026", kreis: "Landkreis Konstanz", bundesland: "Baden-Württemberg", yieldKwhKwp: 1167, indexFreigabe: false },
-  { slug: "walddorfhaeslach", name: "Walddorfhäslach", ags: "08415087", kreis: "Landkreis Reutlingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1147, indexFreigabe: false },
-  { slug: "tuebingen", name: "Tübingen", ags: "08416041", kreis: "Landkreis Tübingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1149, indexFreigabe: false },
-  { slug: "forstinning", name: "Forstinning", ags: "09175118", kreis: "Landkreis Ebersberg", bundesland: "Bayern", yieldKwhKwp: 1128, indexFreigabe: false },
-  { slug: "poing", name: "Poing", ags: "09175135", kreis: "Landkreis Ebersberg", bundesland: "Bayern", yieldKwhKwp: 1137, indexFreigabe: false },
-  { slug: "gaimersheim", name: "Gaimersheim", ags: "09176126", kreis: "Landkreis Eichstätt", bundesland: "Bayern", yieldKwhKwp: 1122, indexFreigabe: false },
-  { slug: "ottobrunn", name: "Ottobrunn", ags: "09184136", kreis: "Landkreis München", bundesland: "Bayern", yieldKwhKwp: 1130, indexFreigabe: false },
-  { slug: "putzbrunn", name: "Putzbrunn", ags: "09184140", kreis: "Landkreis München", bundesland: "Bayern", yieldKwhKwp: 1124, indexFreigabe: false },
-  { slug: "unterhaching", name: "Unterhaching", ags: "09184148", kreis: "Landkreis München", bundesland: "Bayern", yieldKwhKwp: 1138, indexFreigabe: false },
-  { slug: "karlshuld", name: "Karlshuld", ags: "09185139", kreis: "Landkreis Neuburg-Schrobenhausen", bundesland: "Bayern", yieldKwhKwp: 1107, indexFreigabe: false },
-  { slug: "vilshofen", name: "Vilshofen an der Donau", ags: "09275154", kreis: "Landkreis Passau", bundesland: "Bayern", yieldKwhKwp: 1118, indexFreigabe: false },
-  { slug: "muehlhausen", name: "Mühlhausen", ags: "09373146", kreis: "Landkreis Neumarkt i.d.OPf.", bundesland: "Bayern", yieldKwhKwp: 1079, indexFreigabe: false },
-  { slug: "beratzhausen", name: "Beratzhausen", ags: "09375118", kreis: "Landkreis Regensburg", bundesland: "Bayern", yieldKwhKwp: 1099, indexFreigabe: false },
-  { slug: "nittenau", name: "Nittenau", ags: "09376149", kreis: "Landkreis Schwandorf", bundesland: "Bayern", yieldKwhKwp: 1087, indexFreigabe: false },
-  { slug: "feucht", name: "Feucht", ags: "09574123", kreis: "Nürnberger Land", bundesland: "Bayern", yieldKwhKwp: 1042, indexFreigabe: false },
-  { slug: "roth", name: "Roth", ags: "09576143", kreis: "Landkreis Roth", bundesland: "Bayern", yieldKwhKwp: 1070, indexFreigabe: false },
-  { slug: "dettelbach", name: "Dettelbach", ags: "09675117", kreis: "Landkreis Kitzingen", bundesland: "Bayern", yieldKwhKwp: 1108, indexFreigabe: false },
-  { slug: "dietmannsried", name: "Dietmannsried", ags: "09780119", kreis: "Landkreis Oberallgäu", bundesland: "Bayern", yieldKwhKwp: 1149, indexFreigabe: false },
+  { slug: "klempau", name: "Klempau", ags: "01053067", kreis: "Kreis Herzogtum Lauenburg", bundesland: "Schleswig-Holstein", yieldKwhKwp: 1007 },
+  { slug: "helmstedt", name: "Helmstedt", ags: "03154028", kreis: "Landkreis Helmstedt", bundesland: "Niedersachsen", yieldKwhKwp: 1041 },
+  { slug: "goettingen", name: "Göttingen", ags: "03159016", kreis: "Landkreis Göttingen", bundesland: "Niedersachsen", yieldKwhKwp: 1007 },
+  { slug: "herzberg-am-harz", name: "Herzberg am Harz", ags: "03159019", kreis: "Landkreis Göttingen", bundesland: "Niedersachsen", yieldKwhKwp: 1031 },
+  { slug: "weyhe", name: "Weyhe", ags: "03251047", kreis: "Landkreis Diepholz", bundesland: "Niedersachsen", yieldKwhKwp: 1013 },
+  { slug: "wietzen", name: "Wietzen", ags: "03256036", kreis: "Landkreis Nienburg (Weser)", bundesland: "Niedersachsen", yieldKwhKwp: 1017 },
+  { slug: "moormerland", name: "Moormerland", ags: "03457014", kreis: "Landkreis Leer", bundesland: "Niedersachsen", yieldKwhKwp: 1002 },
+  { slug: "bad-rothenfelde", name: "Bad Rothenfelde", ags: "03459006", kreis: "Landkreis Osnabrück", bundesland: "Niedersachsen", yieldKwhKwp: 1019 },
+  { slug: "goch", name: "Goch", ags: "05154016", kreis: "Kreis Kleve", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1048 },
+  { slug: "hueckelhoven", name: "Hückelhoven", ags: "05370020", kreis: "Kreis Heinsberg", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1083 },
+  { slug: "nottuln", name: "Nottuln", ags: "05558032", kreis: "Kreis Coesfeld", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1039 },
+  { slug: "senden", name: "Senden", ags: "05558044", kreis: "Kreis Coesfeld", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1034 },
+  { slug: "ennepetal", name: "Ennepetal", ags: "05954008", kreis: "Ennepe-Ruhr-Kreis", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 960 },
+  { slug: "wenden", name: "Wenden", ags: "05966028", kreis: "Kreis Olpe", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 989 },
+  { slug: "gernsheim", name: "Gernsheim", ags: "06433004", kreis: "Landkreis Groß-Gerau", bundesland: "Hessen", yieldKwhKwp: 1092 },
+  { slug: "bad-homburg", name: "Bad Homburg v. d. Höhe", ags: "06434001", kreis: "Hochtaunuskreis", bundesland: "Hessen", yieldKwhKwp: 1099 },
+  { slug: "linsengericht", name: "Linsengericht", ags: "06435018", kreis: "Main-Kinzig-Kreis", bundesland: "Hessen", yieldKwhKwp: 1028 },
+  { slug: "maintal", name: "Maintal", ags: "06435019", kreis: "Main-Kinzig-Kreis", bundesland: "Hessen", yieldKwhKwp: 1093 },
+  { slug: "hochheim", name: "Hochheim am Main", ags: "06436006", kreis: "Main-Taunus-Kreis", bundesland: "Hessen", yieldKwhKwp: 1105 },
+  { slug: "reichelsheim", name: "Reichelsheim (Odenwald)", ags: "06437013", kreis: "Odenwaldkreis", bundesland: "Hessen", yieldKwhKwp: 1071 },
+  { slug: "rodgau", name: "Rodgau", ags: "06438011", kreis: "Landkreis Offenbach", bundesland: "Hessen", yieldKwhKwp: 1083 },
+  { slug: "hohenahr", name: "Hohenahr", ags: "06532013", kreis: "Lahn-Dill-Kreis", bundesland: "Hessen", yieldKwhKwp: 1055 },
+  { slug: "gudensberg", name: "Gudensberg", ags: "06634007", kreis: "Schwalm-Eder-Kreis", bundesland: "Hessen", yieldKwhKwp: 1037 },
+  { slug: "neuwied", name: "Neuwied", ags: "07138045", kreis: "Landkreis Neuwied", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1054 },
+  { slug: "hillscheid", name: "Hillscheid", ags: "07143031", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1009 },
+  { slug: "hoehr-grenzhausen", name: "Höhr-Grenzhausen", ags: "07143032", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1011 },
+  { slug: "wittlich", name: "Wittlich", ags: "07231134", kreis: "Landkreis Bernkastel-Wittlich", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1073 },
+  { slug: "limburgerhof", name: "Limburgerhof", ags: "07338017", kreis: "Rhein-Pfalz-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1120 },
+  { slug: "holzgerlingen", name: "Holzgerlingen", ags: "08115024", kreis: "Landkreis Böblingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1128 },
+  { slug: "wernau", name: "Wernau (Neckar)", ags: "08116072", kreis: "Landkreis Esslingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1138 },
+  { slug: "hattenhofen", name: "Hattenhofen", ags: "08117029", kreis: "Landkreis Göppingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1126 },
+  { slug: "schlierbach", name: "Schlierbach", ags: "08117044", kreis: "Landkreis Göppingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1133 },
+  { slug: "waiblingen", name: "Waiblingen", ags: "08119079", kreis: "Rems-Murr-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1119 },
+  { slug: "herbrechtingen", name: "Herbrechtingen", ags: "08135020", kreis: "Landkreis Heidenheim", bundesland: "Baden-Württemberg", yieldKwhKwp: 1102 },
+  { slug: "gaiberg", name: "Gaiberg", ags: "08226022", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1084 },
+  { slug: "heddesheim", name: "Heddesheim", ags: "08226028", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1072 },
+  { slug: "leimen", name: "Leimen", ags: "08226041", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1114 },
+  { slug: "oftersheim", name: "Oftersheim", ags: "08226062", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1110 },
+  { slug: "sandhausen", name: "Sandhausen", ags: "08226076", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1110 },
+  { slug: "weinheim", name: "Weinheim", ags: "08226096", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1049 },
+  { slug: "bad-krozingen", name: "Bad Krozingen", ags: "08315006", kreis: "Landkreis Breisgau-Hochschwarzwald", bundesland: "Baden-Württemberg", yieldKwhKwp: 1164 },
+  { slug: "rietheim-weilheim", name: "Rietheim-Weilheim", ags: "08327056", kreis: "Landkreis Tuttlingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1122 },
+  { slug: "gailingen", name: "Gailingen am Hochrhein", ags: "08335026", kreis: "Landkreis Konstanz", bundesland: "Baden-Württemberg", yieldKwhKwp: 1167 },
+  { slug: "walddorfhaeslach", name: "Walddorfhäslach", ags: "08415087", kreis: "Landkreis Reutlingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1147 },
+  { slug: "tuebingen", name: "Tübingen", ags: "08416041", kreis: "Landkreis Tübingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1149 },
+  { slug: "forstinning", name: "Forstinning", ags: "09175118", kreis: "Landkreis Ebersberg", bundesland: "Bayern", yieldKwhKwp: 1128 },
+  { slug: "poing", name: "Poing", ags: "09175135", kreis: "Landkreis Ebersberg", bundesland: "Bayern", yieldKwhKwp: 1137 },
+  { slug: "gaimersheim", name: "Gaimersheim", ags: "09176126", kreis: "Landkreis Eichstätt", bundesland: "Bayern", yieldKwhKwp: 1122 },
+  { slug: "ottobrunn", name: "Ottobrunn", ags: "09184136", kreis: "Landkreis München", bundesland: "Bayern", yieldKwhKwp: 1130 },
+  { slug: "putzbrunn", name: "Putzbrunn", ags: "09184140", kreis: "Landkreis München", bundesland: "Bayern", yieldKwhKwp: 1124 },
+  { slug: "unterhaching", name: "Unterhaching", ags: "09184148", kreis: "Landkreis München", bundesland: "Bayern", yieldKwhKwp: 1138 },
+  { slug: "karlshuld", name: "Karlshuld", ags: "09185139", kreis: "Landkreis Neuburg-Schrobenhausen", bundesland: "Bayern", yieldKwhKwp: 1107 },
+  { slug: "vilshofen", name: "Vilshofen an der Donau", ags: "09275154", kreis: "Landkreis Passau", bundesland: "Bayern", yieldKwhKwp: 1118 },
+  { slug: "muehlhausen", name: "Mühlhausen", ags: "09373146", kreis: "Landkreis Neumarkt i.d.OPf.", bundesland: "Bayern", yieldKwhKwp: 1079 },
+  { slug: "beratzhausen", name: "Beratzhausen", ags: "09375118", kreis: "Landkreis Regensburg", bundesland: "Bayern", yieldKwhKwp: 1099 },
+  { slug: "nittenau", name: "Nittenau", ags: "09376149", kreis: "Landkreis Schwandorf", bundesland: "Bayern", yieldKwhKwp: 1087 },
+  { slug: "feucht", name: "Feucht", ags: "09574123", kreis: "Nürnberger Land", bundesland: "Bayern", yieldKwhKwp: 1042 },
+  { slug: "roth", name: "Roth", ags: "09576143", kreis: "Landkreis Roth", bundesland: "Bayern", yieldKwhKwp: 1070 },
+  { slug: "dettelbach", name: "Dettelbach", ags: "09675117", kreis: "Landkreis Kitzingen", bundesland: "Bayern", yieldKwhKwp: 1108 },
+  { slug: "dietmannsried", name: "Dietmannsried", ags: "09780119", kreis: "Landkreis Oberallgäu", bundesland: "Bayern", yieldKwhKwp: 1149 },
 
   // Nachzügler vom selben Tag: zehn Programme, die zwischen dem Anlegen der
   // sechzig und dem Merge in den Katalog kamen. Dass sie hier stehen müssen,
   // hat der Sync-Test erzwungen — genau dafür ist die pauschale Ausnahme für
   // achtstellige Schlüssel weggefallen.
-  { slug: "schiltach", name: "Schiltach", ags: "08325051", kreis: "Landkreis Rottweil", bundesland: "Baden-Württemberg", yieldKwhKwp: 1048, indexFreigabe: false },
-  { slug: "altdorf", name: "Altdorf", ags: "08115002", kreis: "Landkreis Böblingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1140, indexFreigabe: false },
-  { slug: "steffenberg", name: "Steffenberg", ags: "06534019", kreis: "Landkreis Marburg-Biedenkopf", bundesland: "Hessen", yieldKwhKwp: 1023, indexFreigabe: false },
-  { slug: "tegernheim", name: "Tegernheim", ags: "09375204", kreis: "Landkreis Regensburg", bundesland: "Bayern", yieldKwhKwp: 1108, indexFreigabe: false },
-  { slug: "lohfelden", name: "Lohfelden", ags: "06633017", kreis: "Landkreis Kassel", bundesland: "Hessen", yieldKwhKwp: 1007, indexFreigabe: false },
-  { slug: "schwebheim", name: "Schwebheim", ags: "09678176", kreis: "Landkreis Schweinfurt", bundesland: "Bayern", yieldKwhKwp: 1097, indexFreigabe: false },
-  { slug: "asbach", name: "Asbach", ags: "07138003", kreis: "Landkreis Neuwied", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1030, indexFreigabe: false },
-  { slug: "parkstein", name: "Parkstein", ags: "09374144", kreis: "Landkreis Neustadt a.d.Waldnaab", bundesland: "Bayern", yieldKwhKwp: 1052, indexFreigabe: false },
-  { slug: "marburg", name: "Marburg", ags: "06534014", kreis: "Landkreis Marburg-Biedenkopf", bundesland: "Hessen", yieldKwhKwp: 1054, indexFreigabe: false },
-  { slug: "schoenbrunn", name: "Schönbrunn", ags: "08226081", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1073, indexFreigabe: false },
+  { slug: "schiltach", name: "Schiltach", ags: "08325051", kreis: "Landkreis Rottweil", bundesland: "Baden-Württemberg", yieldKwhKwp: 1048 },
+  { slug: "altdorf", name: "Altdorf", ags: "08115002", kreis: "Landkreis Böblingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1140 },
+  { slug: "steffenberg", name: "Steffenberg", ags: "06534019", kreis: "Landkreis Marburg-Biedenkopf", bundesland: "Hessen", yieldKwhKwp: 1023 },
+  { slug: "tegernheim", name: "Tegernheim", ags: "09375204", kreis: "Landkreis Regensburg", bundesland: "Bayern", yieldKwhKwp: 1108 },
+  { slug: "lohfelden", name: "Lohfelden", ags: "06633017", kreis: "Landkreis Kassel", bundesland: "Hessen", yieldKwhKwp: 1007 },
+  { slug: "schwebheim", name: "Schwebheim", ags: "09678176", kreis: "Landkreis Schweinfurt", bundesland: "Bayern", yieldKwhKwp: 1097 },
+  { slug: "asbach", name: "Asbach", ags: "07138003", kreis: "Landkreis Neuwied", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1030 },
+  { slug: "parkstein", name: "Parkstein", ags: "09374144", kreis: "Landkreis Neustadt a.d.Waldnaab", bundesland: "Bayern", yieldKwhKwp: 1052 },
+  { slug: "marburg", name: "Marburg", ags: "06534014", kreis: "Landkreis Marburg-Biedenkopf", bundesland: "Hessen", yieldKwhKwp: 1054 },
+  { slug: "schoenbrunn", name: "Schönbrunn", ags: "08226081", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1073 },
 ];
 
 export function cityBySlug(slug: string): AtlasCity | undefined {
@@ -533,23 +515,33 @@ export function publishedCitiesInBundesland(blSlug: string): AtlasCity[] {
 }
 
 /**
- * Darf diese Seite in den Index — oder ist sie nur gebaut?
+ * Darf diese Seite in den Index? Es antwortet der Releaseplan.
  *
- * Fehlt `indexFreigabe`, ist die Seite freigegeben (so war es für alle Seiten
- * bis zum 19.08.2026). Die neuen Gemeindeseiten stehen auf `false`, bis der
- * Releaseplan die Reihenfolge gegenüber den Atlas-Ortsseiten festgelegt hat.
+ * Bis zum 19.08.2026 stand die Antwort als Feld `indexFreigabe` an jeder Stadt —
+ * eine bewusste Übergangslösung, damit die 70 neuen Gemeindeseiten nicht ohne
+ * jede Bremse auf die Hauptlinie kamen. Sie ist ersetzt: Ein Ja/Nein je Eintrag
+ * trägt kein Datum, keine Welle, keinen Nachweis und keine Regel über die
+ * zweite Seitenfamilie — genau das braucht aber die Frage „wann geht dieser Ort
+ * live, und haben wir vorher gemessen?". Zwei Schalter für eine Frage sind die
+ * Doppelpflege, an der hier schon `fundingId` gescheitert ist.
  *
- * Die Seite bleibt dabei erreichbar und wird weiter statisch gebaut — nur
- * Sitemap und robots-Angabe hängen an dieser einen Frage, damit sich beide
- * nicht auseinanderentwickeln können.
+ * Sitemap und robots-Angabe hängen weiterhin an dieser EINEN Funktion, damit
+ * sie sich nicht auseinanderentwickeln können.
  */
 export function cityIndexFreigegeben(c: AtlasCity): boolean {
-  return c.indexFreigabe !== false;
+  return releaseFreigegeben("foerder-stadt", c.ags);
 }
 
-/** Veröffentlichte Städte, die auch in den Index dürfen — für die Sitemap. */
+/**
+ * Städte, die in den Index dürfen.
+ *
+ * Seit der Umstellung auf den Releaseplan deckungsgleich mit `publishedCities()`
+ * — und das ist kein Zufall, sondern der Unterschied zur abgelösten Lösung: Ein
+ * Ort ohne Freigabe bekommt gar keine Seite, statt einer gebauten auf noindex.
+ * Eine Seite, die es nicht gibt, kostet auch kein Crawl-Budget.
+ */
 export function indexedCities(): AtlasCity[] {
-  return publishedCities().filter(cityIndexFreigegeben);
+  return publishedCities();
 }
 
 /** Bundesländer with at least one published city (live or archived). */

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { ATLAS_CITIES, fundingFor, fundingForFrom, publishedCities, indexedCities, cityIndexFreigegeben } from "../atlas-cities";
+import { ATLAS_CITIES, fundingFor, fundingForFrom, publishedCities, indexedCities, cityIndexFreigegeben, liveCities, archivedCities } from "../atlas-cities";
 import { allFundingPrograms } from "../funding-programs";
 
 // ─── Katalog und Städte-Verzeichnis dürfen nicht auseinanderlaufen ───────────
@@ -159,18 +159,30 @@ describe("Index-Freigabe", () => {
     expect(indexedCities().length).toBe(37);
   });
 
-  it("die Seiten, die es längst gibt, bleiben freigegeben", () => {
+  it("die Seiten, die es längst gibt, bleiben freigegeben — und zwar dieselben", () => {
     // Gegenrichtung: Die Sperre darf nicht auf die Seiten übergreifen, die seit
-    // Juni im Index stehen — auch nicht auf die drei, die durch die
-    // Schlüsselkorrektur nachträglich kreisangehörig wurden.
-    const NEU_HINZUGEKOMMEN = ["zweibruecken"];
-    const gesperrt = ATLAS_CITIES.filter(
-      (c) =>
-        (!c.kreis || SCHON_IM_INDEX.includes(c.slug)) &&
-        !NEU_HINZUGEKOMMEN.includes(c.slug) &&
-        !cityIndexFreigegeben(c),
-    ).map((c) => c.slug);
-    expect(gesperrt, `unerwartet gesperrt: ${gesperrt.join(", ")}`).toEqual([]);
+    // Juni im Index stehen.
+    //
+    // Geprüft wird die IDENTITÄT, nicht nur die Anzahl. Der Test darüber hält
+    // 37 fest; das allein überlebt einen Tausch (eine Seite fällt raus, eine
+    // andere kommt rein) unbemerkt. Genau das stand am 19.08.2026 bevor: Die
+    // Schlüsselkorrektur von Hannover (03241 = Region, 1,14 Mio. Einwohner →
+    // 03241001 = Stadt) hätte der Stadt still die Freigabe genommen.
+    //
+    // Gemessen wird an den Städten, die ihr Programmstatus überhaupt
+    // veröffentlichbar macht — NICHT am ganzen Verzeichnis: Die rund 70
+    // programmlosen Städte (Nürnberg, Leipzig, Hamburg …) hatten nie eine Seite
+    // und liefern seit Juni 404. Für sie eine Freigabe zu verlangen hieße, sie
+    // für Seiten zu fordern, die es nicht gibt.
+    const SEIT_JUNI_IM_INDEX = [
+      "baden-baden", "berlin", "bonn", "bottrop", "bremen", "bremerhaven", "darmstadt",
+      "dortmund", "duesseldorf", "essen", "frankfurt", "freiburg", "hannover", "heidelberg",
+      "herne", "karlsruhe", "koeln", "krefeld", "kreis-bergstrasse", "kreis-viersen",
+      "ludwigshafen", "mainz", "mannheim", "mayen-koblenz", "memmingen", "muenchen",
+      "muenster", "osnabrueck", "potsdam", "regensburg", "rhein-erft-kreis", "schweinfurt",
+      "schwerin", "stuttgart", "wiesbaden", "wolfsburg", "wuerzburg",
+    ];
+    expect(indexedCities().map((c) => c.slug).sort()).toEqual([...SEIT_JUNI_IM_INDEX].sort());
   });
 
   it("was nicht in den Index darf, steht auch nicht in der Sitemap", () => {
@@ -178,7 +190,24 @@ describe("Index-Freigabe", () => {
     // hält fest, dass niemand die eine Stelle ändert und die andere vergisst:
     // Eine Seite per Sitemap anzubieten und per robots zu verweigern wäre ein
     // Widerspruch, den von außen niemand sieht.
-    const widerspruch = indexedCities().filter((c) => c.indexFreigabe === false).map((c) => c.slug);
+    //
+    // Seit dem 19.08.2026 antwortet dort der Releaseplan statt eines Feldes je
+    // Stadt (siehe cityIndexFreigegeben). Geprüft wird deshalb gegen den Plan.
+    const widerspruch = indexedCities().filter((c) => !cityIndexFreigegeben(c)).map((c) => c.slug);
     expect(widerspruch, `in der Sitemap trotz Sperre: ${widerspruch.join(", ")}`).toEqual([]);
+  });
+
+  it("die Sperre in der Sitemap ist tragend, nicht dekorativ", () => {
+    // Der Test darüber wäre für sich allein wertlos: Beide Seiten der Gleichung
+    // fragen inzwischen denselben Plan, er kann also gar nicht mehr rot werden.
+    // Erst zusammen mit dieser Prüfung sagt er etwas aus — nämlich dass es
+    // überhaupt Städte GIBT, die der Filter entfernt.
+    //
+    // app/sitemap.ts baut seine Liste aus liveCities()/archivedCities(), und die
+    // fragen nur den Programmstatus. Fiele der Filter dort weg, stünden diese
+    // Städte am nächsten Tag in der Sitemap. Wird die Zahl hier 0, ist der
+    // Filter tot und eine Regression unsichtbar.
+    const vomFilterEntfernt = [...liveCities(), ...archivedCities()].filter((c) => !cityIndexFreigegeben(c));
+    expect(vomFilterEntfernt.length).toBeGreaterThan(0);
   });
 });
