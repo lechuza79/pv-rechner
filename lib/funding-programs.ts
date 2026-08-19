@@ -106,6 +106,23 @@ export interface FundingProgram {
   /** Flat base amount added before the per-kWp part (e.g. Düsseldorf 1.000 €). */
   pvSockel?: number;
   speicherPerKwh?: number;
+  /**
+   * Fester Grundbetrag für den Speicher, bevor der Satz je kWh greift — das
+   * Gegenstück zu {@link pvSockel} auf der Speicherseite.
+   *
+   * WARUM ES DAS GIBT (19.08.2026): Die Bauform „Grundbetrag für die ersten
+   * n kWh, danach je weiterer kWh" ist verbreitet und war bis dahin nicht
+   * ausdrückbar. Schwebheim zahlt 400 € bei 3 kWh und 75 € je weiterer voller
+   * kWh; mit `speicherTiers` nachgebaut zahlte das Modell bei 7,5 kWh — einer
+   * der sechs Standardgrößen des Rechners — 775 € statt 700 €, weil
+   * `tierAmount` aufrundet, wo die Richtlinie abrundet. Das Programm stand
+   * deshalb ohne Rechenwert im Katalog.
+   *
+   * Gerechnet wird `speicherSockel + (volle kWh über speicherMin) × speicherPerKwh`,
+   * gedeckelt an `speicherCap`. Der Sockel setzt `speicherMin` voraus — ohne
+   * Untergrenze wäre nicht bestimmt, ab welcher Kapazität er überhaupt anfällt.
+   */
+  speicherSockel?: number;
   /** Share of total cost, e.g. 0.2 for 20 %. */
   percentOfCost?: number;
   /** Total € cap on the PV part — gilt für den €/kWp-Satz UND für
@@ -2847,28 +2864,20 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
     foerdert: ["pv"],
-    // KEIN Rechenwert, obwohl der Satz eindeutig ist — und das ist die
-    // interessante Entscheidung an diesem Eintrag.
+    speicherMin: 3, speicherSockel: 400, speicherPerKwh: 75, speicherCap: 1000,
+    // Das erste Programm mit `speicherSockel` — die Bauform „400 € für die
+    // ersten 3 kWh, danach 75 € je weiterer voller kWh, höchstens 1.000 €".
     //
-    // Die Bauform ist „Sockel für die ersten 3 kWh, danach je kWh": 400 € bei
-    // 3 kWh, dazu 75 € je weiterer voller kWh, gedeckelt bei 1.000 €. Das
-    // Modell kennt für den Speicher entweder einen Satz je kWh oder Stufen —
-    // einen Sockel PLUS Satz gibt es nur für die Dachanlage (`pvSockel`).
+    // Es stand bis zum 19.08.2026 bewusst OHNE Rechenwert hier: Mit
+    // `speicherTiers` nachgebaut zahlte das Modell bei 7,5 kWh 775 € statt 700 €,
+    // weil `tierAmount` die erste nicht überschrittene Stufe nimmt, während die
+    // Richtlinie „auf volle kWh abgerundet" rechnet. 7,5 kWh ist eine der sechs
+    // Standardgrößen des Rechners, der Fehler also nicht theoretisch. Statt die
+    // Zahl zu schönen bekam das Modell das fehlende Feld.
     //
-    // Mit `speicherTiers` nachzubauen scheitert an der Abrundung: `tierAmount`
-    // nimmt die erste Stufe, die der Wert nicht überschreitet, die Richtlinie
-    // rundet dagegen ab. Bei 7,5 kWh — einer der sechs Standardgrößen des
-    // Rechners — käme 775 € heraus, gezahlt werden 700 €. Ein zu hoher Betrag
-    // ist genau der Fehler, den dieses Programm bei niemandem machen soll.
-    //
-    // Also lieber keine Zahl als eine falsche. Wer das ändern will, ergänzt
-    // `speicherSockel` und eine Abrundung in `fundingAmount` — dann trägt der
-    // Eintrag `speicherMin: 3`, `speicherSockel: 400`, `speicherPerKwh: 75`,
-    // `speicherCap: 1000` und rechnet exakt.
-    //
-    // Zweitens fällt auf: Die Richtlinie verlangt nirgends eine PV-Anlage. Ob
-    // ein Speicher ohne Erzeugung förderfähig wäre, bleibt offen und steht
-    // deshalb nicht in den Bedingungen.
+    // Die Richtlinie verlangt nirgends eine PV-Anlage. Ob ein Speicher ohne
+    // Erzeugung förderfähig wäre, bleibt offen und steht deshalb nicht in den
+    // Bedingungen.
   },
 
   "asbach-balkonkraftwerke": {
@@ -3292,7 +3301,17 @@ export function fundingAmount(
   let sp = 0;
   const speicherKwh = anlage.speicherKwh;
   if (f.speicherPerKwh && speicherKwh >= (f.speicherMin ?? 0) && speicherKwh > 0) {
-    sp = speicherKwh * f.speicherPerKwh;
+    if (f.speicherSockel !== undefined) {
+      // Sockel plus Satz: Der Satz greift erst OBERHALB der Mindestkapazität,
+      // und gezählt werden volle kWh. Beides steht so in den Richtlinien dieser
+      // Bauform („für jede weitere kWh", „auf volle kWh abgerundet") — wer
+      // stattdessen die volle Kapazität mal dem Satz nimmt, zahlt den Sockel
+      // ein zweites Mal.
+      const weitere = Math.floor(speicherKwh) - (f.speicherMin ?? 0);
+      sp = f.speicherSockel + Math.max(0, weitere) * f.speicherPerKwh;
+    } else {
+      sp = speicherKwh * f.speicherPerKwh;
+    }
     if (f.speicherCap) sp = Math.min(sp, f.speicherCap);
   } else if (f.speicherTiers && speicherKwh >= (f.speicherMin ?? 0)) {
     sp = tierAmount(f.speicherTiers, speicherKwh);
