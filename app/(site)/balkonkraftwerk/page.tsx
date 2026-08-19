@@ -281,10 +281,16 @@ export default async function BalkonkraftwerkHub() {
               In diesen Bundesländern kennen wir Programme, die Steckersolar ausdrücklich
               einschließen:
             </p>
+            {/* Die Ländernamen führen NICHT mehr auf die Dach-Förderseiten
+                (Stand 19.08.2026). Dort steht die Förderung für Anlagen aufs
+                Dach, und die Gemeinden mit reinem Balkon-Programm tauchen
+                überhaupt nicht auf — der Link versprach also etwas, das sein
+                Ziel nicht einlöst. Die Zahlen bleiben, das Ziel ist jetzt die
+                Balkon-Übersicht. */}
             <ul style={S.landListe}>
               {laender.map(l => (
                 <li key={l.slug} style={S.landZeile}>
-                  <Link href={`/photovoltaik-foerderung/${l.slug}`} style={S.link}>{l.name}</Link>
+                  <span>{l.name}</span>
                   <span style={S.landZahl}>
                     {l.anzahl} {l.anzahl === 1 ? "Programm" : "Programme"}
                   </span>
@@ -294,9 +300,10 @@ export default async function BalkonkraftwerkHub() {
           </>
         )}
         <p style={S.p}>
-          Ob für deinen Ort etwas dabei ist, zeigt die{" "}
-          <Link href="/photovoltaik-foerderung" style={S.link}>Förder-Übersicht</Link> nach
-          Bundesland und Stadt.
+          Wer im Einzelnen zahlt und wie viel, steht in der{" "}
+          <Link href="/balkonkraftwerk/foerderung" style={S.link}>Übersicht der kommunalen
+          Balkon-Förderung</Link>. Für die große Anlage aufs Dach gibt es eine{" "}
+          <Link href="/photovoltaik-foerderung" style={S.link}>eigene Förder-Übersicht</Link>.
         </p>
 
         <h2 style={S.h2}>Was muss ich anmelden?</h2>
