@@ -212,6 +212,55 @@ export const SCHULFERIEN: Record<string, Ferienzeitraum[]> = {
   ],
 };
 
+/**
+ * Gesetzliche Feiertage, die auf einen Versandtag (Di–Do) fallen können.
+ *
+ * Die Ferientabelle kennt sie NICHT: Fronleichnam ist in Hessen, Rheinland-Pfalz
+ * und im Saarland gesetzlicher Feiertag, fällt immer auf einen Donnerstag und
+ * steht in keiner Ferienliste. Dasselbe gilt für den 1. Mai und den 3. Oktober,
+ * wenn sie auf Dienstag bis Donnerstag fallen. In diesem Schub kostet das noch
+ * nichts — beim nächsten wäre es ein still verlorener Versandtag.
+ *
+ * Bundesweite Feiertage stehen unter dem Schlüssel „*", länderspezifische unter
+ * dem Landesschlüssel. Erfasst bis zum selben Datum wie die Ferien.
+ */
+export const FEIERTAGE: Record<string, { tag: string; name: string }[]> = {
+  "*": [
+    { tag: "2026-10-03", name: "Tag der Deutschen Einheit" },
+    { tag: "2026-12-25", name: "1. Weihnachtstag" },
+    { tag: "2027-01-01", name: "Neujahr" },
+    { tag: "2027-03-26", name: "Karfreitag" },
+    { tag: "2027-03-29", name: "Ostermontag" },
+    { tag: "2027-05-01", name: "Tag der Arbeit" },
+    { tag: "2027-05-06", name: "Christi Himmelfahrt" },
+    { tag: "2027-05-17", name: "Pfingstmontag" },
+    { tag: "2027-10-03", name: "Tag der Deutschen Einheit" },
+  ],
+  // Fronleichnam: Baden-Württemberg, Bayern, Hessen, Nordrhein-Westfalen,
+  // Rheinland-Pfalz, Saarland.
+  "06": [{ tag: "2027-05-27", name: "Fronleichnam" }],
+  "07": [{ tag: "2027-05-27", name: "Fronleichnam" }],
+  "10": [
+    { tag: "2027-05-27", name: "Fronleichnam" },
+    { tag: "2026-08-15", name: "Mariä Himmelfahrt" },
+    { tag: "2027-08-15", name: "Mariä Himmelfahrt" },
+  ],
+  "08": [{ tag: "2027-05-27", name: "Fronleichnam" }],
+  "09": [
+    { tag: "2027-05-27", name: "Fronleichnam" },
+    { tag: "2026-08-15", name: "Mariä Himmelfahrt" },
+    { tag: "2027-08-15", name: "Mariä Himmelfahrt" },
+  ],
+  "05": [{ tag: "2027-05-27", name: "Fronleichnam" }],
+};
+
+export function feiertagAm(blAgs: string, iso: string): string | null {
+  const bl = blAgs.slice(0, 2);
+  const treffer =
+    FEIERTAGE["*"].find((f) => f.tag === iso) ?? (FEIERTAGE[bl] ?? []).find((f) => f.tag === iso);
+  return treffer?.name ?? null;
+}
+
 /** Ferien, in die ein Datum fällt — oder null. Beide Grenzen zählen mit. */
 export function ferienAm(blAgs: string, iso: string): Ferienzeitraum | null {
   const liste = SCHULFERIEN[blAgs.slice(0, 2)];
@@ -245,6 +294,10 @@ export function versandfenster(blAgs: string, iso: string): Versandfenster {
   const f = ferienAm(bl, iso);
   if (f) {
     return { frei: false, grund: `Schulferien ${f.name} (${f.von} bis ${f.bis})`, wiederFrei: naechsterTag(f.bis) };
+  }
+  const feiertag = feiertagAm(bl, iso);
+  if (feiertag) {
+    return { frei: false, grund: `Feiertag: ${feiertag}`, wiederFrei: naechsterTag(iso) };
   }
   return { frei: true };
 }

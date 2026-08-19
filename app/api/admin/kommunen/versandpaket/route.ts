@@ -4,6 +4,8 @@ import { briefFuerGemeinde, istBriefFehler } from "../../../../../lib/kommunen-b
 import { istAdminOderCron } from "../../../../../lib/admin-guard";
 import { SCHUEBE, AKTUELLER_SCHUB } from "../../../../../lib/kommunen-testballon";
 import { versandfenster } from "../../../../../lib/schulferien";
+import { postfachBefund } from "../../../../../lib/outreach-mail";
+import { heuteInBerlin } from "../../../../../lib/zeit";
 
 // Das fertige Versandpaket einer Charge: je Gemeinde Empfänger, Betreff und
 // Brieftext — gebaut aus DERSELBEN Funktion wie der Entwurf im Cockpit
@@ -38,7 +40,11 @@ export async function GET(req: NextRequest) {
   if (!schub) return NextResponse.json({ error: `Unbekannter Schub „${schluessel}"` }, { status: 400 });
   const charge = parseInt(sp.get("charge") ?? "1", 10);
   const limit = Math.min(50, Math.max(1, parseInt(sp.get("limit") ?? "25", 10)));
-  const heute = (sp.get("heute") ?? new Date().toISOString().slice(0, 10)).slice(0, 10);
+  // Der Stichtag ist ein DEUTSCHER Kalendertag, kein UTC-Tag. Zwischen 00:00
+  // und 02:00 Sommerzeit liegt das UTC-Datum einen Tag zurück — am ersten
+  // Ferientag hätte die Sperre in diesem Fenster nicht gegriffen. Dieselbe
+  // Falle wie bei der Balkon-Monatsfrist.
+  const heute = (sp.get("heute") ?? heuteInBerlin()).slice(0, 10);
 
   const { data, error } = await serviceDb
     .from("kommunen_kontakt")
@@ -100,8 +106,18 @@ export async function GET(req: NextRequest) {
       skip(fenster.grund);
       continue;
     }
+    // Ist das überhaupt ein Funktionspostfach der zuständigen Verwaltung?
+    // Zwei Briefe des ersten Schubs gingen an das Amtspostfach einer ANDEREN
+    // Kommune, und mehrere an Adressen mit dem Nachnamen eines ehrenamtlichen
+    // Ortsbürgermeisters. Beides ist beim Einsammeln entstanden; hier wird es
+    // abgefangen, statt den Datenbestand rückwirkend umzuschreiben.
+    const postfach = postfachBefund(z.rollen_email, name ?? "");
+    if (!postfach.ok) {
+      skip(postfach.grund);
+      continue;
+    }
 
-    const gebaut = await briefFuerGemeinde(z.region_id);
+    const gebaut = await briefFuerGemeinde(z.region_id, z.rollen_email);
     if (istBriefFehler(gebaut)) {
       skip(`Brief nicht erzeugbar (${gebaut.grund})`);
       continue;

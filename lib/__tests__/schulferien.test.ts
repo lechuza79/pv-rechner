@@ -79,6 +79,24 @@ describe("Versandfenster", () => {
     if (!f.frei) expect(f.grund).toContain("erfasst");
   });
 
+  // Fronleichnam fällt IMMER auf einen Donnerstag — also mitten in das
+  // Versandfenster — und steht in keiner Ferienliste.
+  it("sperrt Fronleichnam in den katholisch geprägten Ländern", () => {
+    for (const bl of ["06", "07", "10"]) {
+      const f = versandfenster(bl, "2027-05-27");
+      expect(f.frei, bl).toBe(false);
+      if (!f.frei) expect(f.grund).toContain("Fronleichnam");
+    }
+    // In Niedersachsen ist es ein normaler Donnerstag.
+    expect(versandfenster("03", "2027-05-27")).toEqual({ frei: true });
+  });
+
+  it("sperrt bundesweite Feiertage überall", () => {
+    for (const bl of ["03", "06", "14"]) {
+      expect(versandfenster(bl, "2027-10-03").frei, bl).toBe(false);
+    }
+  });
+
   it("verweigert für ein unbekanntes Bundesland", () => {
     expect(versandfenster("99", "2026-08-19").frei).toBe(false);
   });

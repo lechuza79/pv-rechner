@@ -43,6 +43,7 @@ import {
 } from "../lib/outreach-mail";
 import { versandfenster } from "../lib/schulferien";
 import { SCHUEBE, AKTUELLER_SCHUB } from "../lib/kommunen-testballon";
+import { heuteInBerlin, wochentagInBerlin } from "../lib/zeit";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PROTOKOLL_DIR = resolve(SCRIPT_DIR, ".cache", "versand");
@@ -120,7 +121,7 @@ const WOCHENTAG = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "F
  * der erste Blick der einzige.
  */
 function versandtag(datum: Date): { ok: boolean; grund?: string } {
-  const tag = datum.getDay();
+  const tag = wochentagInBerlin(datum);
   if (tag >= 2 && tag <= 4) return { ok: true };
   return { ok: false, grund: `${WOCHENTAG[tag]} — versendet wird Dienstag bis Donnerstag.` };
 }
@@ -198,12 +199,70 @@ function protokolliere(name: string, inhalt: unknown): string {
   return pfad;
 }
 
+/**
+ * Ist DKIM überhaupt aktiv?
+ *
+ * SPF bricht bei JEDER Weiterleitung, DKIM überlebt sie — und diese
+ * Empfängerliste besteht überwiegend aus kleinen Ortsgemeinden, deren
+ * `info@`-Adresse an ein anderes Postfach weitergeleitet wird. Ohne DKIM heißt
+ * das am Zielsystem `spf=fail, dkim=none, dmarc=fail`, bei einer Absenderdomain,
+ * die dort noch nie etwas geschickt hat.
+ *
+ * Gemessen am 19.08.2026: Der CNAME steht, am Ziel liegt kein Schlüssel. Die
+ * Prüfung fragt deshalb den öffentlichen Auflöser und nicht unsere eigene
+ * Konfiguration — was zählt, ist, was ein fremder Mailserver findet.
+ */
+async function dkimAktiv(domain: string): Promise<{ ok: boolean; hinweis: string }> {
+  try {
+    const res = await fetch(`https://dns.google/resolve?name=default._domainkey.${domain}&type=TXT`, {
+      headers: { accept: "application/dns-json" },
+    });
+    const json = (await res.json()) as { Answer?: { data: string }[] };
+    const treffer = (json.Answer ?? []).map((a) => a.data).find((d) => d.includes("v=DKIM1"));
+    return treffer
+      ? { ok: true, hinweis: "DKIM-Schlüssel veröffentlicht" }
+      : {
+          ok: false,
+          hinweis:
+            `Kein DKIM-Schlüssel unter default._domainkey.${domain}. Im All-Inkl-KAS die DKIM-Signierung ` +
+            "aktivieren und den TXT-Eintrag anlegen — ohne ihn scheitert DMARC bei jeder weitergeleiteten Mail.",
+        };
+  } catch (e) {
+    return { ok: false, hinweis: `DKIM ließ sich nicht prüfen (${(e as Error).message}) — im Zweifel nicht senden.` };
+  }
+}
+
 async function senden(p: Paket, limit: number, pauseMs: number): Promise<void> {
   const { transport, konfig } = await baueTransport();
+  const absenderDomain = adresseAus(konfig.from).split("@")[1];
+  const dkim = await dkimAktiv(absenderDomain);
+  if (!dkim.ok && !hat("ohne-dkim")) {
+    log(dkim.hinweis, "err");
+    log("Wenn es trotzdem sein muss (Probelauf an eigene Adressen): --ohne-dkim", "warn");
+    transport.close();
+    return;
+  }
+  log(dkim.hinweis, dkim.ok ? "ok" : "warn");
   const widerspruchAn = konfig.replyTo ?? adresseAus(konfig.from);
   const db = await makeClient();
 
-  const zuSenden = p.paket.slice(0, Math.min(limit, MAX_JE_LAUF));
+  // TAGESPENSUM, nicht Laufpensum. Die Obergrenze begrenzte bisher nur den
+  // einzelnen Lauf — zwei Chargen nacheinander ergaben 40 Mails an einem Tag,
+  // ohne dass etwas angeschlagen hätte. Für ein Postfach ohne Sendehistorie ist
+  // die Drosselung die halbe Zustellbarkeit.
+  const tagesbeginn = `${heuteInBerlin()}T00:00:00`;
+  const { count: heuteSchon } = await db
+    .from("kommunen_kontakt")
+    .select("region_id", { count: "exact", head: true })
+    .gte("contacted_at", tagesbeginn);
+  const rest = Math.max(0, MAX_JE_LAUF - (heuteSchon ?? 0));
+  if (rest === 0) {
+    log(`Heute sind bereits ${heuteSchon} Mails hinausgegangen — Tagespensum (${MAX_JE_LAUF}) erreicht.`, "warn");
+    transport.close();
+    return;
+  }
+  if (heuteSchon) log(`Heute schon ${heuteSchon} versendet — es bleiben ${rest}.`);
+  const zuSenden = p.paket.slice(0, Math.min(limit, rest));
   log(`${zuSenden.length} Mails, Pause ${Math.round(pauseMs / 1000)} s — geschätzte Dauer ${Math.round((zuSenden.length * pauseMs) / 60000)} min`);
   log();
 
@@ -217,6 +276,21 @@ async function senden(p: Paket, limit: number, pauseMs: number): Promise<void> {
       protokoll.push({ region_id: b.region_id, name: b.name, gesendet: false, grund: halt });
       continue;
     }
+    // SPERRE UNMITTELBAR VOR DEM SENDEN NOCH EINMAL PRÜFEN. Das Paket wird
+    // einmal geholt, der Lauf dauert bei 90 s Pause eine halbe Stunde. Ein
+    // Widerspruch, der in dieser Zeit eingetragen wird, muss die Mail noch
+    // aufhalten — die Sperre ist der eine Mechanismus, der nie danebengreifen
+    // darf.
+    const { data: jetzt } = await db
+      .from("kommunen_kontakt")
+      .select("outreach_status, contacted_at")
+      .eq("region_id", b.region_id)
+      .maybeSingle();
+    if (jetzt?.outreach_status === "gesperrt" || jetzt?.contacted_at) {
+      log(`${b.name}: übersprungen — Status inzwischen „${jetzt.outreach_status}"`, "warn");
+      protokoll.push({ region_id: b.region_id, name: b.name, gesendet: false, grund: ["Status geändert"] });
+      continue;
+    }
     try {
       const info = await transport.sendMail({
         from: konfig.from,
@@ -224,7 +298,7 @@ async function senden(p: Paket, limit: number, pauseMs: number): Promise<void> {
         replyTo: konfig.replyTo,
         subject: b.subject,
         text: b.body,
-        headers: mailKopfzeilen({ widerspruchAn, betreff: b.subject }),
+        headers: mailKopfzeilen({ widerspruchAn }),
       });
       // ERST schreiben, dann weiter: Bricht der Lauf danach ab, ist die Mail
       // trotzdem draußen — eine Gemeinde, die als „offen" stehenbleibt, bekäme
@@ -240,7 +314,7 @@ async function senden(p: Paket, limit: number, pauseMs: number): Promise<void> {
         })
         .eq("region_id", b.region_id);
       raus++;
-      log(`${String(i + 1).padStart(2)}/${zuSenden.length}  ${b.name} → ${b.empfaenger}${error ? "  (Status NICHT geschrieben: " + error.message + ")" : ""}`, error ? "warn" : "ok");
+      log(`${String(i + 1).padStart(2)}/${zuSenden.length}  ${b.name} → ${b.empfaenger}`, error ? "warn" : "ok");
       protokoll.push({
         region_id: b.region_id,
         name: b.name,
@@ -253,6 +327,16 @@ async function senden(p: Paket, limit: number, pauseMs: number): Promise<void> {
         statusFehler: error?.message ?? null,
         at: new Date().toISOString(),
       });
+      // EIN GESCHEITERTER SCHREIBVORGANG BEENDET DEN LAUF. Die Mail ist
+      // draußen, die Gemeinde steht aber weiter auf „offen" — der nächste Lauf
+      // schickte ihr denselben Brief ein zweites Mal. Bei einer Aussendung,
+      // deren Vertretbarkeit auf „kein Nachfassen" beruht, ist das genau der
+      // Fall, den es nicht geben darf. Also anhalten und den Menschen holen.
+      if (error) {
+        log(`Status für ${b.name} NICHT geschrieben: ${error.message}`, "err");
+        log("Lauf angehalten. Die Mail ist draußen — Status von Hand nachtragen, bevor erneut gesendet wird.", "err");
+        break;
+      }
     } catch (e) {
       log(`${b.name}: Versand fehlgeschlagen — ${(e as Error).message}`, "err");
       protokoll.push({ region_id: b.region_id, name: b.name, gesendet: false, grund: [(e as Error).message] });
@@ -261,7 +345,10 @@ async function senden(p: Paket, limit: number, pauseMs: number): Promise<void> {
   }
 
   transport.close();
-  const pfad = protokolliere(`${p.kampagne}-charge${p.charge}-${new Date().toISOString().slice(0, 10)}.json`, {
+  // MIT UHRZEIT: Zwei Läufe derselben Charge am selben Tag überschrieben sonst
+  // den ersten Nachweis — ausgerechnet die Datei, in der ein nicht
+  // geschriebener Status stünde.
+  const pfad = protokolliere(`${p.kampagne}-charge${p.charge}-${new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19)}.json`, {
     kampagne: p.kampagne,
     charge: p.charge,
     at: new Date().toISOString(),
@@ -274,6 +361,12 @@ async function senden(p: Paket, limit: number, pauseMs: number): Promise<void> {
 async function probemail(an: string, p: Paket): Promise<void> {
   const b = p.paket[0];
   if (!b) throw new Error("Kein Brief im Paket — erst die Charge festschreiben.");
+  // NUR AN DIE EIGENE DOMAIN. Der Probemail-Zweig läuft vor allen Bremsen —
+  // ein Tippfehler im Parameter schickte den Brief mit „[PROBE]" im Betreff an
+  // eine echte Gemeinde, und die wäre damit verbrannt.
+  if (!/@solar-check\.io$/i.test(an.trim())) {
+    throw new Error(`Probemails gehen nur an Adressen auf solar-check.io — ${an} ist keine.`);
+  }
   const { transport, konfig } = await baueTransport();
   const info = await transport.sendMail({
     from: konfig.from,
@@ -281,7 +374,7 @@ async function probemail(an: string, p: Paket): Promise<void> {
     replyTo: konfig.replyTo,
     subject: `[PROBE] ${b.subject}`,
     text: b.body,
-    headers: mailKopfzeilen({ widerspruchAn: konfig.replyTo ?? adresseAus(konfig.from), betreff: b.subject }),
+    headers: mailKopfzeilen({ widerspruchAn: konfig.replyTo ?? adresseAus(konfig.from) }),
   });
   transport.close();
   log(`Probemail an ${an} — ${info.messageId}`, "ok");
@@ -297,15 +390,31 @@ function arg(name: string): string | undefined {
 }
 const hat = (name: string) => process.argv.includes(`--${name}`);
 
+/** Zahl aus einem Parameter — eine unlesbare Angabe bricht ab, statt still zu
+ *  null zu werden (`slice(0, NaN)` schickt kommentarlos nichts). */
+function zahl(name: string, standard: number): number {
+  const roh = arg(name);
+  if (roh === undefined) return standard;
+  const n = parseInt(roh, 10);
+  if (!Number.isFinite(n) || n < 0) throw new Error(`--${name}=${roh} ist keine Zahl.`);
+  return n;
+}
+
 async function main(): Promise<void> {
   loadEnvFile();
 
   const schub = arg("schub") ?? AKTUELLER_SCHUB;
   if (!SCHUEBE[schub]) throw new Error(`Unbekannter Schub „${schub}" — bekannt: ${Object.keys(SCHUEBE).join(", ")}`);
-  const charge = parseInt(arg("charge") ?? "1", 10);
-  const limit = Math.min(MAX_JE_LAUF, parseInt(arg("limit") ?? String(MAX_JE_LAUF), 10));
+  const charge = zahl("charge", 1);
+  const limit = Math.min(MAX_JE_LAUF, zahl("limit", MAX_JE_LAUF));
   const basis = arg("basis") ?? "https://solar-check.io";
-  const pauseMs = arg("pause") ? parseInt(arg("pause")!, 10) * 1000 : PAUSE_MS;
+  // Der Aufruf trägt CRON_SECRET als Bearer. Ein Tippfehler im Hostnamen gäbe
+  // den Schlüssel an einen fremden Server — deshalb nur die eigene Adresse und
+  // der eigene Rechner.
+  if (!/^https:\/\/solar-check\.io($|\/)|^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?($|\/)/.test(basis)) {
+    throw new Error(`--basis=${basis} ist weder solar-check.io noch localhost — der Cron-Schlüssel bleibt hier.`);
+  }
+  const pauseMs = arg("pause") ? zahl("pause", PAUSE_MS / 1000) * 1000 : PAUSE_MS;
 
   const paket = await holePaket(basis, schub, charge, limit);
 

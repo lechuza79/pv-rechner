@@ -53,24 +53,52 @@ describe("Versandliste", () => {
   });
 
   it("Charge 1 nimmt die stärksten Aufhänger, anteilig aus beiden Größen", () => {
+    // Jede Gemeinde in einem eigenen Landkreis (Stellen 1–5), damit hier die
+    // Stärke-Reihenfolge geprüft wird und nicht die Kreis-Streuung.
     const kandidaten = [
-      ...Array.from({ length: 10 }, (_, i) => K({ regionId: `klein${i}`, population: 2000, hookRang: i + 1, hookTotal: 10 })),
-      ...Array.from({ length: 10 }, (_, i) => K({ regionId: `gross${i}`, population: 50_000, hookRang: i + 1, hookTotal: 10 })),
+      ...Array.from({ length: 10 }, (_, i) =>
+        K({ regionId: `07${String(i).padStart(3, "0")}001`, name: `klein${i}`, population: 2000, hookRang: i + 1, hookTotal: 10 }),
+      ),
+      ...Array.from({ length: 10 }, (_, i) =>
+        K({ regionId: `07${String(i + 50).padStart(3, "0")}001`, name: `gross${i}`, population: 50_000, hookRang: i + 1, hookTotal: 10 }),
+      ),
     ];
-    const c1 = waehleTestballon(kandidaten, REGELN).gewaehlt.filter((g) => g.charge === 1);
+    const nameVon = new Map(kandidaten.map((k) => [k.regionId, k.name]));
+    const c1 = waehleTestballon(kandidaten, REGELN)
+      .gewaehlt.filter((g) => g.charge === 1)
+      .map((g) => nameVon.get(g.regionId)!);
     expect(c1).toHaveLength(3);
-    expect(c1.filter((g) => g.regionId.startsWith("klein"))).toHaveLength(2);
-    expect(c1.filter((g) => g.regionId.startsWith("gross"))).toHaveLength(1);
+    expect(c1.filter((n) => n.startsWith("klein"))).toHaveLength(2);
+    expect(c1.filter((n) => n.startsWith("gross"))).toHaveLength(1);
     // die stärksten, also Rang 1 und 2 je Topf
-    expect(c1.map((g) => g.regionId).sort()).toEqual(["gross0", "klein0", "klein1"]);
+    expect(c1.slice().sort()).toEqual(["gross0", "klein0", "klein1"]);
+  });
+
+  // Vier „Platz 1 im Landkreis Birkenfeld" am selben Tag entlarven das
+  // Verfahren bei allen vieren gleichzeitig — und in Rheinland-Pfalz landen
+  // zwei Briefe aus einem Kreis oft auf demselben Schreibtisch.
+  it("setzt nie zwei Gemeinden desselben Landkreises in dieselbe Charge", () => {
+    const kandidaten = Array.from({ length: 6 }, (_, i) =>
+      K({ regionId: `07134${String(i).padStart(3, "0")}`, population: 2000, hookRang: i + 1, hookTotal: 20 }),
+    );
+    const r = waehleTestballon(kandidaten, { ziel: 6, chargeGroesse: 3, kleinAnteil: 2 / 3, grenze: 10_000 });
+    const proCharge = new Map<number, string[]>();
+    for (const g of r.gewaehlt) proCharge.set(g.charge, [...(proCharge.get(g.charge) ?? []), g.regionId.slice(0, 5)]);
+    for (const [charge, kreise] of proCharge) {
+      expect(new Set(kreise).size, `Charge ${charge}`).toBe(kreise.length);
+    }
+    // Alle sechs bleiben in der Kampagne — nur auf sechs Tage verteilt.
+    expect(r.gewaehlt).toHaveLength(6);
   });
 
   // Ein Versandtag ist eine Charge. Vorher war „Charge 1" die halbe Kampagne —
   // nach dem Versand ließ sich damit nicht mehr sagen, was an einem Tag
   // hinausgegangen ist.
   it("teilt die ganze Auswahl in Chargen von Tagespensum-Größe", () => {
+    // Achtstellige Schlüssel mit VERSCHIEDENEN Kreisen (Stellen 1–5), sonst
+    // greift die Kreis-Streuung und verteilt sie auf viele kleine Chargen.
     const kandidaten = Array.from({ length: 20 }, (_, i) =>
-      K({ regionId: `k${i}`, population: 2000, hookRang: i + 1, hookTotal: 20 }),
+      K({ regionId: `07${String(i).padStart(3, "0")}001`, population: 2000, hookRang: i + 1, hookTotal: 20 }),
     );
     const r = waehleTestballon(kandidaten, { ziel: 9, chargeGroesse: 4, kleinAnteil: 2 / 3, grenze: 10_000 });
     const proCharge = new Map<number, number>();

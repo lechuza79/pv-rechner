@@ -43,7 +43,12 @@ export type BriefFehler = { grund: "keine-db" | "unbekannt" | "gesperrt" };
  * Art. 21 DSGVO bzw. § 7 UWG und muss an der Quelle greifen, nicht erst im
  * Versand-Skript.
  */
-export async function briefFuerGemeinde(regionId: string): Promise<BriefErgebnis | BriefFehler> {
+export async function briefFuerGemeinde(
+  regionId: string,
+  /** Empfängeradresse, falls bekannt — sie entscheidet allein, welche Quelle
+   *  die Herkunftsangabe nach Art. 14 nennt (siehe kommunen-outreach-draft). */
+  empfaenger?: string | null,
+): Promise<BriefErgebnis | BriefFehler> {
   if (!serviceDb) return { grund: "keine-db" };
 
   const [{ data: reg }, { data: leadRow }, path, index, elternSlugsMap] = await Promise.all([
@@ -93,6 +98,8 @@ export async function briefFuerGemeinde(regionId: string): Promise<BriefErgebnis
     phrase: hook?.phrase ?? "beim Solar-Ausbau",
     gruppe: hook?.gruppe ?? hook?.wo ?? "in der Region",
     rangWert: hook?.valueStr ?? null,
+    rangBasis: hook?.basisStr ?? null,
+    empfaenger: empfaenger ?? null,
     rang: hook?.rank && hook?.total && hook?.gruppe ? { platz: hook.rank, von: hook.total } : null,
     weitere: hook?.weitere ?? [],
     ranglisteUrl: liste,

@@ -122,11 +122,21 @@ async function main(): Promise<void> {
   const { ImapFlow } = await import("imapflow");
   const client = new ImapFlow({ host, port, secure: port === 993, auth: { user, pass }, logger: false });
   await client.connect();
-  const lock = await client.getMailboxLock("INBOX");
+  // AUCH DER JUNK-ORDNER. Der Spamfilter des Postfachs legt Zustellberichte
+  // fremder Systeme regelmäßig dorthin; die betroffenen Gemeinden blieben sonst
+  // dauerhaft als „kontaktiert" stehen, ohne dass jemand den Bounce sieht.
+  const ordner = ["INBOX", "INBOX.Junk", "Junk", "Spam"];
 
   const befunde: Befund[] = [];
   const unklar: Befund[] = [];
-  try {
+  for (const name of ordner) {
+    let lock;
+    try {
+      lock = await client.getMailboxLock(name);
+    } catch {
+      continue; // Ordner gibt es bei diesem Anbieter nicht — kein Fehler.
+    }
+    try {
     for await (const msg of client.fetch({ since: seit }, { envelope: true, source: true, headers: true })) {
       const roh = String(msg.source ?? "");
       const von = msg.envelope?.from?.[0]?.address?.toLowerCase() ?? "";
@@ -162,10 +172,11 @@ async function main(): Promise<void> {
       if (b.region_id) befunde.push(b);
       else unklar.push(b);
     }
-  } finally {
-    lock.release();
-    await client.logout();
+    } finally {
+      lock.release();
+    }
   }
+  await client.logout();
 
   const zaehler: Record<string, number> = {};
   for (const b of befunde) zaehler[b.art] = (zaehler[b.art] ?? 0) + 1;

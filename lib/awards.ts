@@ -183,6 +183,18 @@ export type AwardCategory = {
    * CLAUDE.md, "Zahlen und Einheiten", Punkt 3.
    */
   basis?: (g: GemeindeStats) => string | null;
+  /**
+   * Dieselbe Grundmenge als ZAHL — für Schwellen, die sich nicht an einem
+   * fertigen Satz prüfen lassen.
+   *
+   * `basis` ist der Text neben der Zahl; er reicht für eine öffentliche
+   * Rangliste, wo der Leser selbst einordnet. Für das Anschreiben reicht er
+   * nicht: Dort behaupten WIR aktiv etwas gegenüber einer Verwaltung, und
+   * „Platz 1 von 150" auf Grundlage eines einzigen Geräts ist eine Behauptung,
+   * die der Empfänger zu Recht als Unsinn liest (siehe MIN_MENGE_FUER_AUFHAENGER
+   * in lib/award-hook.ts).
+   */
+  menge?: (g: GemeindeStats) => number | null;
 };
 
 /** Die zugebaute Leistung hinter einer Tempo-Zahl. Einheit aus dem kanonischen
@@ -281,6 +293,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     format: "wattProKopf",
     metric: (g) => perCapita(g.privatDachKwp, g.population),
     basis: (g) => stueck(g.privatDachCount, "private Dachanlage", "private Dachanlagen"),
+    menge: (g) => g.privatDachCount ?? null,
     plausibel: (g) => mittlereGroesse(g.privatDachKwp, g.privatDachCount) <= MAX_PRIVATDACH_KWP,
     metricVorjahr: (g) => perCapita(g.privatDachKwpLy ?? 0, g.population),
   },
@@ -298,6 +311,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     format: "countPer1000",
     metric: (g) => perCapita(g.balkonCount, g.population),
     basis: (g) => stueck(g.balkonCount, "Balkonkraftwerk", "Balkonkraftwerke"),
+    menge: (g) => g.balkonCount ?? null,
     metricVorjahr: (g) => perCapita(g.balkonCountLy ?? 0, g.population),
   },
   {
@@ -306,9 +320,14 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     slug: "speicher-je-dachanlage",
     label: "Speicher-Quote",
     merit: "Meiste Batteriespeicher je 100 private Dachanlagen.",
-    bestleistung: "die meisten Batteriespeicher je 100 privaten Dachanlagen",
+    // NACH „je" DER NOMINATIV, nicht der Dativ: „je 100 private Dachanlagen".
+    // Die beiden Zeilen darunter standen richtig da, diese beiden falsch — in
+    // 31 von 100 Briefen, und zwar im einzigen Satz, der die Behauptung trägt.
+    // Der Dativ in `themaDativ` gehört an „Batteriespeichern", nicht an die
+    // Bezugsgröße dahinter.
+    bestleistung: "die meisten Batteriespeicher je 100 private Dachanlagen",
     thema: "Batteriespeicher je 100 private Dachanlagen",
-    themaDativ: "Batteriespeichern je 100 privaten Dachanlagen",
+    themaDativ: "Batteriespeichern je 100 private Dachanlagen",
     traeger: "buerger",
     messart: "quote",
     format: "je100Dach",
@@ -319,6 +338,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     plausibel: (g) => (g.privatDachCount ?? 0) >= MIN_DACH_FUER_QUOTE,
     plausibelGrund: `Dort stehen unter ${MIN_DACH_FUER_QUOTE} private Dachanlagen — darunter ist die Quote ein Zufallswert.`,
     basis: (g) => stueck(g.privatDachCount, "private Dachanlage", "private Dachanlagen"),
+    menge: (g) => g.privatDachCount ?? null,
   },
   {
     key: "batterie-privat-pk",
@@ -334,6 +354,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     format: "whProKopf",
     metric: (g) => perCapita(g.batteriePrivatKwh, g.population),
     basis: (g) => stueck(g.batteriePrivatCount, "Hausspeicher", "Hausspeicher"),
+    menge: (g) => g.batteriePrivatCount ?? null,
     // Finsing: eine Gewerbe-Batterie als privat gemeldet, seit jeher als
     // Einzelfall im Code gefuehrt. Die Groessenpruefung faengt die ganze Klasse.
     plausibel: (g) => mittlereGroesse(g.batteriePrivatKwh, g.batteriePrivatCount) <= MAX_HAUSSPEICHER_KWH,
@@ -356,6 +377,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     format: "wattProKopf",
     metric: (g) => perCapita(Math.max(0, g.privatDachKwp - (g.privatDachKwpLy ?? 0)), g.population),
     basis: (g) => zubauBasis(g.privatDachKwp - (g.privatDachKwpLy ?? 0)),
+    menge: (g) => g.privatDachCount ?? null,
   },
   {
     key: "tempo-3j",
@@ -371,6 +393,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     format: "wattProKopf",
     metric: (g) => perCapita(Math.max(0, g.privatDachKwp - (g.privatDachKwpL3 ?? 0)), g.population),
     basis: (g) => zubauBasis(g.privatDachKwp - (g.privatDachKwpL3 ?? 0)),
+    menge: (g) => g.privatDachCount ?? null,
   },
   {
     key: "tempo-5j",
@@ -386,6 +409,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     format: "wattProKopf",
     metric: (g) => perCapita(Math.max(0, g.privatDachKwp - (g.privatDachKwpL5 ?? 0)), g.population),
     basis: (g) => zubauBasis(g.privatDachKwp - (g.privatDachKwpL5 ?? 0)),
+    menge: (g) => g.privatDachCount ?? null,
   },
   // Bürger, absolut — belohnt die großen Städte-Bürgerschaften.
   {

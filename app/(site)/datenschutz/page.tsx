@@ -471,7 +471,7 @@ export default function DatenschutzPage() {
         <h2 style={S.h2}>15. Anschreiben an Städte und Gemeinden</h2>
         <p style={S.p}>
           Wir schreiben Kommunen an, um ihnen die Solar-Zahlen ihres Ortes als
-          fertige Meldung und als einbettbare Übersicht anzubieten. Verarbeitet
+          fertige Meldung und als einbettbare Übersicht anzubieten. Erhoben
           werden dafür ausschließlich <strong>öffentlich zugängliche
           Kontaktdaten</strong> der Verwaltung — die Adresse der amtlichen
           Website, das dort genannte Kontaktformular oder Postfach und, falls
@@ -493,11 +493,37 @@ export default function DatenschutzPage() {
           angeschriebenen Kommune und keiner Person zuordnen. Es werden dabei
           keine Cookies gesetzt und nichts im Browser abgelegt.
         </p>
+        {/* Der Versandweg und das Antwort-Postfach kamen hier gar nicht vor,
+            solange die Anschreiben von Hand verschickt wurden. Mit dem
+            Mailversand ist der Hoster des Postfachs ein Empfänger jeder
+            Nachricht UND jeder Antwort — dieselbe Fehlerklasse wie beim
+            Kontaktformular, das im August 2026 unbemerkt an ein privates
+            Google-Konto ging. */}
+        <p style={S.p}>
+          Die Anschreiben werden über ein E-Mail-Postfach der Domain
+          solar-check.io versendet und empfangen. Betrieben wird es von unserem
+          Hoster <strong>ALL-INKL.COM – Neue Medien Münnich</strong>,
+          Hauptstraße 68, 02742 Friedersdorf, auf Servern in Deutschland; es
+          besteht ein Auftragsverarbeitungsvertrag nach Art. 28 DSGVO. Eine
+          automatische Weiterleitung an andere Postfächer besteht nicht.
+        </p>
+        <p style={S.p}>
+          <strong>Antworten und Rückläufer.</strong> Antwortet eine Verwaltung,
+          verarbeiten wir die Angaben, die in der Antwort stehen — regelmäßig
+          also auch den Namen der schreibenden Person. Aus technischen
+          Rückmeldungen (etwa Unzustellbarkeits-Meldungen) speichern wir
+          Absenderadresse, Betreff und die Einordnung, um dieselbe Adresse nicht
+          erneut anzuschreiben. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO
+          (berechtigtes Interesse an der Bearbeitung der eigenen Korrespondenz).
+        </p>
         <p style={S.p}>
           Die Kontaktdaten werden gelöscht, sobald das Vorhaben abgeschlossen
           ist oder du widersprichst. Ein <strong>Widerspruch</strong> genügt
           formlos an die in Abschnitt 1 genannte Adresse; danach erfolgt keine
-          weitere Ansprache.
+          weitere Ansprache. Damit das auch wirkt, bleibt in diesem Fall ein
+          <strong> Sperrvermerk</strong> gespeichert: die Kennung der Kommune
+          mit dem Hinweis, dass keine Ansprache mehr erfolgen darf. Ohne ihn
+          stünde dieselbe Adresse beim nächsten Durchgang wieder auf der Liste.
         </p>
 
         <p style={S.muted}>Stand: August 2026</p>

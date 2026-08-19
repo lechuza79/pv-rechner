@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { leseSmtpKonfig, fehlendePflichtangaben, mailKopfzeilen, adresseAus } from "../outreach-mail";
+import { leseSmtpKonfig, fehlendePflichtangaben, mailKopfzeilen, adresseAus, postfachBefund } from "../outreach-mail";
 import { ordneEin, STATUS_ZU_ART } from "../outreach-ruecklauf";
 import { renderOutreachDraft } from "../kommunen-outreach-draft";
 
@@ -53,10 +53,31 @@ describe("Versandweg", () => {
   });
 
   it("die Kopfzeilen tragen einen Ein-Klick-Widerspruch und keine Empfänger-Kennung", () => {
-    const k = mailKopfzeilen({ widerspruchAn: "hey@solar-check.io", betreff: "Musterdorf auf Platz 1" });
+    const k = mailKopfzeilen({ widerspruchAn: "hey@solar-check.io" });
     expect(k["List-Unsubscribe"]).toContain("mailto:hey@solar-check.io");
     // Nichts, woraus sich der Empfänger ableiten ließe.
     expect(JSON.stringify(k)).not.toContain("Musterdorf");
+  });
+
+  // Die Mail ist ein einzelner Textbrief an einen Empfänger. Sich per Kopfzeile
+  // selbst als Massensendung zu deklarieren, hilft der Zustellung nicht und
+  // fließt bei Microsoft in die Massen-Einstufung ein.
+  it("deklariert sich nicht selbst als Massensendung", () => {
+    const k = mailKopfzeilen({ widerspruchAn: "hey@solar-check.io" });
+    expect(k["Precedence"]).toBeUndefined();
+    expect(k["Auto-Submitted"]).toBeUndefined();
+  });
+
+  it("verweigert einen Anbieter außerhalb des SPF-Eintrags", () => {
+    const b = leseSmtpKonfig({ ...GUT, OUTREACH_SMTP_HOST: "smtp.strato.de" });
+    expect(b.ok).toBe(false);
+    if (!b.ok) expect(b.fehler.join(" ")).toContain("SPF-Eintrag");
+  });
+
+  it("verweigert einen Absender, der nicht das angemeldete Konto ist", () => {
+    const b = leseSmtpKonfig({ ...GUT, OUTREACH_SMTP_USER: "anders@solar-check.io" });
+    expect(b.ok).toBe(false);
+    if (!b.ok) expect(b.fehler.join(" ")).toContain("SMTP-Konto");
   });
 });
 
@@ -92,6 +113,50 @@ describe("Pflichtangaben", () => {
   it("ein Text ohne Impressum wird beanstandet", () => {
     const ohne = brief.body.replace(/solar-check\.io\/impressum/g, "example.org");
     expect(fehlendePflichtangaben(ohne)).toContain("Impressum-Link");
+  });
+});
+
+// Zwei Briefe des ersten Schubs gingen an das Amtspostfach einer ANDEREN
+// Kommune, mehrere an Adressen mit dem Nachnamen eines ehrenamtlichen
+// Ortsbürgermeisters. Beides entsteht beim Einsammeln; hier wird es abgefangen.
+describe("Wer Empfänger sein darf", () => {
+  it("nimmt ein Funktionspostfach auf der Domain des Ortes", () => {
+    expect(postfachBefund("info@riedstadt.de", "Riedstadt").ok).toBe(true);
+    expect(postfachBefund("stadtkommunikation@langen.de", "Langen (Hessen)").ok).toBe(true);
+    expect(postfachBefund("gemeinde@muendersbach.de", "Mündersbach").ok).toBe(true);
+  });
+
+  it("nimmt eine gemeinsame Verwaltung, wenn die Domain sich als solche zu erkennen gibt", () => {
+    expect(postfachBefund("rathaus@vgv-kelberg.de", "Gelenberg").ok).toBe(true);
+    expect(postfachBefund("info@bitburgerland.de", "Hamm").ok).toBe(true);
+  });
+
+  // Daubach liegt in der VG Nahe-Glan; bad-sobernheim.de ist die Stadt
+  // nebenan, die zufällig im selben Haus sitzt.
+  it("verweigert eine Domain, die schlicht einen anderen Ortsnamen trägt", () => {
+    const b = postfachBefund("stadtbuergermeister@bad-sobernheim.de", "Daubach");
+    expect(b.ok).toBe(false);
+    if (!b.ok) expect(b.grund).toContain("Zuordnung ungeprüft");
+    expect(postfachBefund("info@betzdorf.de", "Scheuerfeld").ok).toBe(false);
+  });
+
+  it("verweigert ein Postfach mit Personennamen", () => {
+    const b = postfachBefund("buergermeister-klein@badem.de", "Badem");
+    expect(b.ok).toBe(false);
+    if (!b.ok) expect(b.grund).toContain("Personenname");
+  });
+
+  it("verweigert die Website-Betreuung und Datenschutz-Postfächer", () => {
+    expect(postfachBefund("webmaster@winterbachsoonwald.de", "Winterbach").ok).toBe(false);
+    expect(postfachBefund("datenschutz@riedstadt.de", "Riedstadt").ok).toBe(false);
+  });
+
+  it("lässt den Ortsnamen als Zusatz im Postfachnamen zu", () => {
+    // Der Zusatz ist der Ortsname, kein Personenname — der Postfach-Teil ist
+    // also in Ordnung. Ob die Domain (hier die der Verbandsgemeinde) zum Ort
+    // gehört, ist die zweite, davon unabhängige Frage.
+    const b = postfachBefund("buergermeister.immert@erbeskopf.de", "Immert");
+    if (!b.ok) expect(b.grund).not.toContain("Personenname");
   });
 });
 

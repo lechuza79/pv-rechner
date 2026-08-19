@@ -95,7 +95,11 @@ describe("Kein Textbaustein-Unfall", () => {
     expect(m.split(BASIS.bestleistung).length - 1).toBe(1); // nur in der Überschrift
     // Der Belegsatz greift die Aussage auf, ohne sie wortgleich zu wiederholen —
     // und nennt dabei die gerankte Messgrösse statt der Gesamtzahlen.
-    expect(m).toContain("Damit hat Höchberg die meiste private Speicherkapazität unter den Kleinen Gemeinden");
+    // „Damit" behauptete, die Gesamtzahlen im Satz davor belegten den Rang. Sie
+    // messen etwas anderes — „Zugleich" sagt, dass beides gilt, und nur das
+    // stimmt.
+    expect(m).toContain("Zugleich hat Höchberg die meiste private Speicherkapazität unter den Kleinen Gemeinden");
+    expect(m).not.toContain("Damit hat");
   });
 
   // GENAU EIN SATZ setzt die Anrede fort — und der beginnt klein.
@@ -430,8 +434,16 @@ describe("Eröffnungszahl erzählt dieselbe Geschichte wie der Rang", () => {
     zahlen: { anlagen: 15, leistungKwp: 2100, privatDachKwp: 260, wpProKopf: 18_894, stand: "2026-07-15" },
   };
 
-  it("nennt den Anteil privater Dächer neben der Gesamtleistung", () => {
-    expect(renderMeldung(parkDorf)).toContain("davon 260 kWp auf privaten Dächern");
+  // Wo der Park die Leistung beherrscht, ERÖFFNEN die privaten Dächer, und die
+  // Gesamtleistung steht dahinter. Vorher stand die Investorenzahl vorn und der
+  // private Anteil als Nachsatz — in Ferschweiler waren das 18,7 MWp gegen
+  // 825 kWp, und die Meldung sagte danach etwas über Hausbatterien.
+  it("stellt die privaten Dächer voran, wo Freifläche und Gewerbe dominieren", () => {
+    const m = renderMeldung(parkDorf);
+    expect(m).toContain("auf privaten Dächern");
+    expect(m).toContain("260 kWp");
+    expect(m.indexOf("260 kWp")).toBeLessThan(m.indexOf("2,1 MWp"));
+    expect(m).not.toContain("davon 260 kWp");
   });
 
   it("lässt die Pro-Kopf-Zahl weg, wo Freifläche und Gewerbe dominieren", () => {

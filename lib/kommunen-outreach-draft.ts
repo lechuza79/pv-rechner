@@ -18,6 +18,7 @@
 // eine andere Zahl steht als auf der verlinkten Seite.
 
 import { fmtPvLeistung, fmtWattProKopf } from "./atlas-format";
+import { kurzOrtsname } from "./atlas-orte";
 import type { AskVariante } from "./kommunen-ask";
 
 export type DraftContext = {
@@ -114,6 +115,17 @@ export type DraftContext = {
    * in derselben Meldung verlinkt ist.
    */
   rangWert?: string | null;
+  /** Die Stückzahl hinter der Rate („1.061 Hausspeicher"). Eine Rate ohne ihre
+   *  Grundmenge kann jede Größe vortäuschen — siehe `basis` in lib/awards.ts. */
+  rangBasis?: string | null;
+  /**
+   * Empfängeradresse, NUR für die Herkunftsangabe nach Art. 14.
+   *
+   * Sie steht nirgends im Brieftext — sie entscheidet allein, ob dort „Website
+   * von Daubach" oder „Impressum von vg-nahe-glan.de" steht. Rund zehn Briefe
+   * behaupteten die falsche Quelle.
+   */
+  empfaenger?: string | null;
   /** Platz und Gruppengröße für den Beleg. */
   rang?: { platz: number; von: number } | null;
   /**
@@ -144,8 +156,29 @@ Impressum: https://solar-check.io/impressum · Datenschutz: https://solar-check.
  * Die Pflichtangabe nach Art. 14 ist der Hinweis auf Herkunft, Zweck und
  * Widerspruchsrecht; den traegt der Link auf die Datenschutzerklaerung.
  */
-const dsgvoHinweis = (ortsname: string) =>
-  `Datenschutz-Hinweis (Art. 14 DSGVO): Ihre öffentlich verfügbaren Kontaktdaten (Website von ${ortsname}) nutze ich für dieses Angebot. Herkunft, Zweck, Speicherdauer und Ihr Widerspruchsrecht: https://solar-check.io/datenschutz`;
+const dsgvoHinweis = (quelle: string) =>
+  `Datenschutz-Hinweis (Art. 14 DSGVO): Ihre öffentlich verfügbaren Kontaktdaten (${quelle}) nutze ich für dieses Angebot. Herkunft, Zweck, Speicherdauer und Ihr Widerspruchsrecht: https://solar-check.io/datenschutz`;
+
+/**
+ * WOHER DIE ADRESSE WIRKLICH STAMMT.
+ *
+ * Vorher stand dort ausnahmslos „Website von <Ortsname>". Bei rund zehn Briefen
+ * war das falsch: Die Adresse kam aus dem Impressum der Verbandsgemeinde, nicht
+ * aus dem des Ortes. Art. 14 verlangt die tatsächliche Herkunft — und eine
+ * falsche Quellenangabe ausgerechnet in dem Absatz, der Seriosität herstellen
+ * soll, ist die teuerste Stelle für eine Ungenauigkeit.
+ *
+ * Steht die Adresse auf der Domain des Ortes, bleibt der Satz wie er war; sonst
+ * nennt er die Domain, aus deren Impressum wir sie haben.
+ */
+export function herkunftsangabe(ortsname: string, empfaenger?: string | null): string {
+  const domain = (empfaenger ?? "").split("@")[1]?.trim().toLowerCase();
+  if (!domain) return `Website von ${ortsname}`;
+  const kern = ortsname.toLowerCase().replace(/[^a-zäöüß]/g, "");
+  const stamm = domain.split(".").slice(0, -1).join(".");
+  const passt = kern.length >= 4 && stamm.replace(/[^a-zäöüß]/g, "").includes(kern.slice(0, 5));
+  return passt ? `Website von ${ortsname}` : `Impressum von ${domain}`;
+}
 
 /**
  * ENTFERNT AM 31.07.2026: Der Brief sprach die Gattung nirgends mehr an, seit
@@ -171,6 +204,10 @@ function standLabel(iso: string): string {
  */
 export function renderMeldung(c: DraftContext): string {
   const { anlagen, leistungKwp, wpProKopf, stand } = c.zahlen;
+  // In der MELDUNG der Kurzname: Kein Ort schreibt seinen Unterscheidungszusatz
+  // in die eigene Pressemitteilung („In Langen (Hessen) sind …"). Der volle Name
+  // steht weiter im Anschreiben drumherum.
+  const kurz = kurzOrtsname(c.name);
   // "pro Person" statt "je Einwohnerin und Einwohner": Die Doppelform macht den
   // Satz schwerfaellig, ohne ihn genauer zu machen. Entscheidung des Betreibers
   // (31.07.2026). Die Einheit selbst kommt weiter aus dem kanonischen
@@ -181,7 +218,7 @@ export function renderMeldung(c: DraftContext): string {
   const { privatDachKwp } = c.zahlen;
   const privatAnteil = leistungKwp > 0 && privatDachKwp != null ? privatDachKwp / leistungKwp : null;
   const privatSatz =
-    privatDachKwp != null && privatAnteil != null
+    privatDachKwp != null && privatAnteil != null && privatAnteil >= 0.35
       ? `, davon ${fmtPvLeistung(privatDachKwp)} auf privaten Dächern`
       : "";
   // Die Pro-Kopf-Zahl NUR, wenn sie die Buerger meint. Wo Freiflaeche und
@@ -210,24 +247,58 @@ export function renderMeldung(c: DraftContext): string {
   // ist. Dieselbe Aufteilung wie bei Betreff und Einstieg des Anschreibens.
   const ueberschrift =
     platz != null
-      ? `${c.name}: Platz ${platz} ${c.phrase}`
-      : `Solarausbau in ${c.name}: der aktuelle Stand`;
+      ? `${kurz}: Platz ${platz} ${c.phrase}`
+      : `Solarausbau in ${kurz}: der aktuelle Stand`;
 
   // DER BELEGSATZ NENNT DIE GERANKTE GROESSE, nicht die Gesamtzahlen.
   // Die Gesamtzahlen bleiben als Einordnung stehen — sie belegen den Rang aber
   // nicht, weil sie etwas anderes messen (Solarparks und Gewerbe zaehlen mit).
+  //
+  // „DAMIT" BEHAUPTETE EINE ABLEITUNG, DIE ES NICHT GIBT.
+  // Der Satz davor nennt Anlagenzahl und Gesamtleistung; der Rang misst etwas
+  // anderes (Hausspeicher, Balkongeräte, Zubau in einem Zeitfenster). Der
+  // Kommentar oben weiß das ausdrücklich — „Damit" sagte trotzdem das
+  // Gegenteil, und ein Redakteur, der den Satz prüft, findet einen Fehlschluss
+  // und traut danach auch dem Rest nicht. „Zugleich" behauptet nur, dass beides
+  // gilt, und genau das stimmt.
+  //
+  // Die Klammer trägt jetzt auch die STÜCKZAHL hinter der Rate. Eine Rate ohne
+  // ihre Grundmenge kann jede Größe vortäuschen — dieselbe Begründung wie beim
+  // Feld `basis` in lib/awards.ts, nur war sie im Brief nie angekommen.
+  const klammer = [c.rangWert, c.rangBasis].filter(Boolean).join(", ");
+  const klammerTeil = klammer ? ` (${klammer})` : "";
   const belegSatz =
     platz === 1
-      ? ` Damit hat ${c.name} ${c.bestleistung} ${unterDen} — Platz 1 von ${c.rang?.von.toLocaleString("de-DE")}${c.rangWert ? ` (${c.rangWert})` : ""}.`
+      ? ` Zugleich hat ${kurz} ${c.bestleistung} ${unterDen} — Platz 1 von ${c.rang?.von.toLocaleString("de-DE")}${klammerTeil}.`
       : platz != null
-        ? ` Bei ${c.themaDativ} liegt ${c.name} damit auf Platz ${platz} von ${c.rang?.von.toLocaleString("de-DE")} ${unterDen}${c.rangWert ? ` (${c.rangWert})` : ""}.`
+        ? ` Bei ${c.themaDativ} liegt ${kurz} auf Platz ${platz} von ${c.rang?.von.toLocaleString("de-DE")} ${unterDen}${klammerTeil}.`
         : "";
+
+  // SINGULAR IST TEIL DER RICHTIGKEIT. „In Hamm sind 1 Solaranlagen mit
+  // zusammen 1 kWp in Betrieb" stand so in einem echten Brief (16 Einwohner,
+  // ein Balkonkraftwerk). Dieselbe Regel wie in CLAUDE.md, „Zahlen und
+  // Einheiten", Punkt 4: „1 neue Anlagen" ist derselbe Fehler in Worten.
+  //
+  // WESSEN ZAHL STEHT ZUERST?
+  //
+  // In Ferschweiler gehören 96 % der installierten Leistung einem
+  // Freiflächenpark. Die Meldung eröffnete mit „18,7 MWp" und sagte im nächsten
+  // Satz etwas über Hausbatterien — ein Ortsbürgermeister erkennt seinen Ort in
+  // dieser Zahl nicht wieder und misstraut ihr. Unterhalb eines Drittels
+  // privaten Anteils führen deshalb die privaten Dächer, und die Gesamtzahl
+  // steht dahinter, wo sie hingehört. Weggelassen wird nichts.
+  const investorenGepraegt = privatAnteil != null && privatAnteil < 0.35 && privatDachKwp != null;
+  const anlagenSatz = investorenGepraegt
+    ? `In ${kurz} stehen ${fmtPvLeistung(privatDachKwp!)} Solarleistung auf privaten Dächern; zusammen mit Gewerbe- und Freiflächenanlagen sind es ${fmtPvLeistung(leistungKwp)} aus ${anlagen.toLocaleString("de-DE")} Anlagen`
+    : anlagen === 1
+      ? `In ${kurz} ist 1 Solaranlage mit ${fmtPvLeistung(leistungKwp)} in Betrieb`
+      : `In ${kurz} sind ${anlagen.toLocaleString("de-DE")} Solaranlagen mit zusammen ${fmtPvLeistung(leistungKwp)} in Betrieb`;
 
   return `${ueberschrift}
 
-In ${c.name} sind ${anlagen.toLocaleString("de-DE")} Solaranlagen mit zusammen ${fmtPvLeistung(leistungKwp)} in Betrieb${privatSatz}${proKopfSatz}.${belegSatz}
+${anlagenSatz}${privatSatz}${proKopfSatz}.${belegSatz}
 
-Grundlage sind die Anlagendaten des Marktstammdatenregisters der Bundesnetzagentur (Stand: ${standLabel(stand)}), Datenlizenz dl-de/by-2-0; Einwohnerzahlen vom Statistischen Bundesamt. Eine laufend aktualisierte Übersicht für ${c.name} gibt es unter ${c.pageUrl ?? "solar-check.io"}.`;
+Grundlage sind die Anlagendaten des Marktstammdatenregisters der Bundesnetzagentur (Stand: ${standLabel(stand)}), Datenlizenz dl-de/by-2-0; Einwohnerzahlen vom Statistischen Bundesamt. Eine laufend aktualisierte Übersicht für ${kurz} gibt es unter ${c.pageUrl ?? "solar-check.io"}.`;
 }
 
 export function renderOutreachDraft(c: DraftContext): OutreachDraft {
@@ -281,6 +352,11 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   // raus (siehe DraftContext), die Rangliste ist der einzige Beleg-Link.
   const linkZeile = c.ranglisteUrl ? `\n\nVollständige Rangliste: ${c.ranglisteUrl}` : "";
 
+  // DER ASK STAND NIRGENDS.
+  // „Fertig formuliert zum Übernehmen" beschreibt den Text; „frei verwendbar,
+  // gern gekürzt" setzt die Entscheidung, ihn zu veröffentlichen, bereits
+  // voraus. Nach zehn Sekunden wusste der Leser, dass jemand Zahlen über seinen
+  // Ort hat — nicht, was er damit tun soll. Jetzt steht es als Bitte da.
   const body = `Sehr geehrte Damen und Herren,${weiterleitung}
 
 ${einstiegGross ? "Aus" : "aus"} dem amtlichen Marktstammdatenregister ergibt sich für ${c.name} gerade eine Meldung — fertig formuliert zum Übernehmen:
@@ -289,13 +365,13 @@ ${einstiegGross ? "Aus" : "aus"} dem amtlichen Marktstammdatenregister ergibt si
 ${meldung}
 ────────────────────────────
 
-Frei verwendbar, gern gekürzt — ich bitte nur darum, den Link stehen zu lassen. Kein Vertrieb, keine Kosten, keine Anmeldung; die Zahlen aktualisiere ich monatlich.${weitereAbsatz}${linkZeile}${widgetAbsatz}
+Wenn Sie mögen, stellen Sie den Text als Kurzmeldung auf Ihre Website — frei verwendbar, gern gekürzt; ich bitte nur darum, den Link stehen zu lassen. Kein Vertrieb, keine Kosten, keine Anmeldung; die Zahlen aktualisiere ich monatlich.${weitereAbsatz}${linkZeile}${widgetAbsatz}
 
 Mit freundlichen Grüßen
 ${SIGNATURE}
 
 —
-${dsgvoHinweis(c.name)}`;
+${dsgvoHinweis(herkunftsangabe(c.name, c.empfaenger))}`;
 
   return { subject: c.betreff, body, meldung };
 }

@@ -214,8 +214,34 @@ export function waehleTestballon(kandidaten: Kandidat[], regeln = TESTBALLON_REG
     if (kleinDran) reihenfolge.push(nimmKlein[ik++]);
     else reihenfolge.push(nimmGross[ig++]);
   }
+  //
+  // HÖCHSTENS EINE GEMEINDE JE LANDKREIS UND TAG.
+  //
+  // Charge 1 enthielt vier winzige Ortsgemeinden aus dem Landkreis Birkenfeld,
+  // jede mit einem eigenen „Platz 1 im Landkreis". Ihre Ortsbürgermeister
+  // sitzen in derselben Verbandsgemeinde-Sitzung und lesen dieselbe
+  // Kreiszeitung — vier gleichzeitige „Ihr Ort ist Nummer 1" entlarven das
+  // Verfahren, und zwar bei allen vieren gleichzeitig. In Rheinland-Pfalz
+  // kommt hinzu, dass die Verbandsgemeinde-Verwaltung die Geschäfte der
+  // Ortsgemeinden führt: Zwei Briefe aus demselben Kreis landen mit einiger
+  // Wahrscheinlichkeit auf demselben Schreibtisch.
+  //
+  // Die Regel verschiebt nur, sie streicht nicht: Wer heute nicht dran ist,
+  // rutscht in die nächste Charge.
   const groesse = Math.max(1, regeln.chargeGroesse);
-  const gewaehlt = reihenfolge.map((k, i) => ({ regionId: k.regionId, charge: Math.floor(i / groesse) + 1 }));
+  const gewaehlt: { regionId: string; charge: number }[] = [];
+  const chargen: { kreise: Set<string>; anzahl: number }[] = [];
+  for (const k of reihenfolge) {
+    const kreis = k.regionId.slice(0, 5);
+    let ziel = chargen.findIndex((c) => c.anzahl < groesse && !c.kreise.has(kreis));
+    if (ziel < 0) {
+      chargen.push({ kreise: new Set(), anzahl: 0 });
+      ziel = chargen.length - 1;
+    }
+    chargen[ziel].kreise.add(kreis);
+    chargen[ziel].anzahl++;
+    gewaehlt.push({ regionId: k.regionId, charge: ziel + 1 });
+  }
 
   return {
     gewaehlt,
