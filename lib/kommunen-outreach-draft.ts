@@ -118,6 +118,21 @@ export type DraftContext = {
    *  Grundmenge kann jede Größe vortäuschen — siehe `basis` in lib/awards.ts. */
   rangBasis?: string | null;
   /**
+   * Wie viel mehr Solarleistung auf den PRIVATEN Dächern steht als im
+   * Landesschnitt, als Anteil (0,42 = 42 % mehr).
+   *
+   * WARUM AUF DEN PRIVATEN DÄCHERN und nicht auf der Gesamtleistung: Die
+   * Gesamtleistung gehört in vielen Orten zu großen Teilen einem
+   * Freiflächenpark. Ein Ort käme damit auf „380 % über dem Landesschnitt",
+   * ohne dass ein einziger Bürger etwas dafür getan hätte — und die Meldung
+   * handelt von den Bürgern.
+   *
+   * WARUM ÜBERHAUPT EIN VERGLEICH: „13,2 MWp" sagt einer Pressestelle nichts.
+   * „42 % mehr als im hessischen Durchschnitt" sagt ihr genau das, was sie
+   * veröffentlichen will (Vorgabe des Betreibers, 19.08.2026).
+   */
+  vergleich?: { anteil: number; bezug: string } | null;
+  /**
    * Empfängeradresse, NUR für die Herkunftsangabe nach Art. 14.
    *
    * Sie steht nirgends im Brieftext — sie entscheidet allein, ob dort „Website
@@ -208,6 +223,15 @@ export function herkunftsangabe(ortsname: string, empfaenger?: string | null): s
  * hätte daraus „gemeinden und Kleinstädten" gemacht. Deshalb eine ausdrückliche
  * Liste statt einer Heuristik.
  */
+/**
+ * Ab wann ein Vorsprung eine Meldung wert ist.
+ *
+ * Unter zehn Prozent ist der Unterschied für einen Leser keiner, und er wäre
+ * auch keiner: Die Einwohnerzahlen stammen aus einer anderen Quelle als die
+ * Anlagendaten, und beide haben ihren eigenen Stichtag.
+ */
+const MIN_VERGLEICH = 0.1;
+
 const KLASSEN_ADJEKTIVE = ["Kleinen", "Mittelgroßen", "Großen", "Kleine", "Mittelgroße", "Große"];
 
 export function kleinKlasse(gruppe: string): string {
@@ -263,6 +287,29 @@ export function renderMeldung(c: DraftContext): string {
       ? `In ${kurz} ist eine Solaranlage in Betrieb.`
       : `In ${kurz} sind ${anlagen.toLocaleString("de-DE")} Solaranlagen in Betrieb.`;
 
+  //
+  // EINE EINZIGE LEISTUNGSAUSSAGE, UND ZWAR ALS VERGLEICH.
+  //
+  // Genannt wird sie NUR, wenn der Ort über dem Landesschnitt liegt. Das ist
+  // keine Schönfärberei, sondern der Zweck des Textes: Wir bieten eine Meldung
+  // an, keine Bilanz. Liegt der Ort darunter, steht dort schlicht nichts — die
+  // verlinkte Gemeindeseite sagt es ohnehin, und zwar in beide Richtungen.
+  //
+  // Ab dem Dreifachen wird aus dem Prozentsatz ein Vielfaches: „280 % mehr"
+  // liest niemand als Größenordnung, „fast das Vierfache" schon. Dieselbe
+  // Schwelle wie auf der Gemeindeseite.
+  const vergleichSatz = (() => {
+    const a = c.vergleich?.anteil;
+    if (a == null || !Number.isFinite(a) || a < MIN_VERGLEICH) return "";
+    const bezug = c.vergleich!.bezug;
+    if (a >= 2) {
+      const fach = (a + 1).toLocaleString("de-DE", { maximumFractionDigits: 1 });
+      return ` Auf den privaten Dächern steht damit je Einwohner das ${fach}-fache des Durchschnitts ${bezug}.`;
+    }
+    const pct = Math.round(a * 100);
+    return ` Auf den privaten Dächern steht damit je Einwohner ${pct} % mehr Solarleistung als im Durchschnitt ${bezug}.`;
+  })();
+
   const unterDen = `unter den ${kleinKlasse(c.gruppe)}`;
 
   // DIE UEBERSCHRIFT IST KURZ UND BEHAUPTET KEINEN GELTUNGSBEREICH.
@@ -293,7 +340,7 @@ export function renderMeldung(c: DraftContext): string {
 
   return `${ueberschrift}
 
-${anlagenSatz}${belegSatz}
+${anlagenSatz}${vergleichSatz}${belegSatz}
 
 Grundlage sind die Anlagendaten des Marktstammdatenregisters der Bundesnetzagentur (Stand: ${standLabel(stand)}), Datenlizenz dl-de/by-2-0; Einwohnerzahlen vom Statistischen Bundesamt. Eine laufend aktualisierte Übersicht für ${kurz} gibt es unter ${c.pageUrl ?? "solar-check.io"}.`;
 }

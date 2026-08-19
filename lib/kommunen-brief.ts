@@ -5,8 +5,10 @@ import { buildHookIndex, loadElternSlugs } from "./awards-server";
 import { AWARD_CATEGORY_BY_KEY } from "./awards";
 import { ranglisteUrl } from "./atlas-ranking";
 import { DEFAULT_HOOK_SETTINGS } from "./award-hook";
-import { atlasPathForRegionId } from "./atlas";
+import { atlasPathForRegionId, getRegionById } from "./atlas";
 import { getRegionAtlasData } from "./mastr-data";
+import { bundeslandByAgs } from "./mastr-regions";
+import { ortPhrase } from "./atlas-orte";
 import { askVariante, type AskVariante } from "./kommunen-ask";
 
 // EINE Stelle, an der ein Anschreiben entsteht.
@@ -65,7 +67,23 @@ export async function briefFuerGemeinde(
   if (!reg) return { grund: "unbekannt" };
   if (leadRow?.outreach_status === "gesperrt") return { grund: "gesperrt" };
 
-  const atlas = await getRegionAtlasData(regionId);
+  // Der Landesschnitt für den Vergleich — auf den PRIVATEN Dächern, nicht auf
+  // der Gesamtleistung (Begründung an `vergleich` in kommunen-outreach-draft).
+  const blAgs = regionId.slice(0, 2);
+  const [atlas, blAtlas, blRegion] = await Promise.all([
+    getRegionAtlasData(regionId),
+    getRegionAtlasData(blAgs),
+    getRegionById(blAgs),
+  ]);
+  const privatKwp = (a: typeof atlas) => a.solar.by_segment.find((x: { segment: string; kwp: number }) => x.segment === "privat_dach")?.kwp ?? 0;
+  const proKopf = (kwp: number, pop: number | null | undefined) => (pop && pop > 0 ? (kwp * 1000) / pop : null);
+  const eigen = proKopf(privatKwp(atlas), reg.population);
+  const land = proKopf(privatKwp(blAtlas), blRegion?.population);
+  const blName = bundeslandByAgs(blAgs)?.name ?? null;
+  const vergleich =
+    eigen != null && land != null && land > 0 && blName
+      ? { anteil: eigen / land - 1, bezug: ortPhrase({ name: blName, level: "bundesland" }) }
+      : null;
   const hook = index.rows.find((r) => r.regionId === regionId);
 
   const seiteUrl = path ? `${SITE_URL}${path}` : null;
@@ -99,6 +117,7 @@ export async function briefFuerGemeinde(
     gruppe: hook?.gruppe ?? hook?.wo ?? "in der Region",
     rangWert: hook?.valueStr ?? null,
     rangBasis: hook?.basisStr ?? null,
+    vergleich,
     empfaenger: empfaenger ?? null,
     rang: hook?.rank && hook?.total && hook?.gruppe ? { platz: hook.rank, von: hook.total } : null,
     weitere: hook?.weitere ?? [],

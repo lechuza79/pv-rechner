@@ -565,3 +565,37 @@ describe("Der Brief bleibt lesbar kurz", () => {
     expect(body.split(MIT_ALLEM.pageUrl as string).length - 1).toBe(1);
   });
 });
+
+// EINE EINZIGE LEISTUNGSAUSSAGE, und die als Vergleich (Vorgabe des Betreibers,
+// 19.08.2026): „13,2 MWp" sagt einer Pressestelle nichts, „42 % mehr als im
+// Durchschnitt" sagt ihr genau das, was sie veröffentlichen will.
+describe("Vergleich zum Landesschnitt", () => {
+  it("nennt den Vorsprung in Prozent", () => {
+    const m = renderMeldung({ ...BASIS, vergleich: { anteil: 0.42, bezug: "in Bayern" } });
+    expect(m).toContain("42 % mehr Solarleistung als im Durchschnitt in Bayern");
+    // Ausdrücklich auf den PRIVATEN Dächern — die Gesamtleistung gehört
+    // vielerorts einem Freiflächenpark.
+    expect(m).toContain("Auf den privaten Dächern");
+  });
+
+  it("schweigt, wo der Ort unter dem Schnitt liegt", () => {
+    const m = renderMeldung({ ...BASIS, vergleich: { anteil: -0.3, bezug: "in Bayern" } });
+    expect(m).not.toContain("Durchschnitt");
+  });
+
+  it("schweigt bei einem Vorsprung, den niemand merkt", () => {
+    const m = renderMeldung({ ...BASIS, vergleich: { anteil: 0.04, bezug: "in Bayern" } });
+    expect(m).not.toContain("Durchschnitt");
+  });
+
+  it("macht aus einem sehr großen Vorsprung ein Vielfaches", () => {
+    // „280 % mehr" liest niemand als Größenordnung.
+    const m = renderMeldung({ ...BASIS, vergleich: { anteil: 2.8, bezug: "in Bayern" } });
+    expect(m).toContain("das 3,8-fache des Durchschnitts in Bayern");
+    expect(m).not.toContain("280 %");
+  });
+
+  it("kommt ohne Vergleich aus", () => {
+    expect(renderMeldung({ ...BASIS, vergleich: null })).toBe(renderMeldung(BASIS));
+  });
+});
