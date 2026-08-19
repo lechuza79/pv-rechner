@@ -512,10 +512,23 @@ describe("atlas-cities registry", () => {
     for (const s of slugs) expect(s).toMatch(/^[a-z0-9-]+$/);
   });
 
-  it("MaStR region ids (AGS) are unique 5-digit codes", () => {
+  it("MaStR region ids (AGS) are unique 5- or 8-digit codes", () => {
+    // Fünf Stellen = kreisfreie Stadt oder Landkreis, acht = Gemeinde. Seit dem
+    // 19.08.2026 gibt es beides: Die kreisangehörigen Gemeinden mit eigenem
+    // Förderprogramm brauchen den achtstelligen Schlüssel, sonst stünde unter
+    // ihrem Namen der Anlagenbestand des ganzen Landkreises.
     const ags = ATLAS_CITIES.map((c) => c.ags);
     expect(new Set(ags).size).toBe(ags.length);
-    for (const a of ags) expect(a).toMatch(/^\d{5}$/);
+    for (const a of ags) expect(a).toMatch(/^(\d{5}|\d{8})$/);
+  });
+
+  it("ein achtstelliger Schlüssel liegt im Kreis, den der Eintrag nennt", () => {
+    // Billige Gegenprobe gegen den Zahlendreher: Die ersten fünf Stellen einer
+    // Gemeinde sind der Schlüssel ihres Kreises. Stimmen Schlüssel und
+    // Kreisangabe nicht überein, zeigt mindestens eines von beiden woandershin.
+    for (const c of ATLAS_CITIES.filter((x) => x.ags.length === 8)) {
+      expect(c.kreis, `${c.slug} ohne Kreisangabe`).toBeTruthy();
+    }
   });
 
   it("yields are in a plausible German range (900–1200 kWh/kWp)", () => {
