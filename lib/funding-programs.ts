@@ -258,6 +258,19 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // 1. Mai 2026, Anlage 1 zu 229/2026 BV; Volltext in docs/quellen/). Vorher
     // standen hier zwei Ungewissheiten als Anzeigetext ("Satz 2026 neu justiert",
     // "ggf. eingestellt") — die Richtlinie beantwortet beide.
+    //
+    // DER SPEICHER-DECKEL BLEIBT BEI 15.000 € — nicht "korrigieren" (19.08.2026):
+    // Die Stadt widerspricht sich auf ihren eigenen Seiten. Die Übersichtsseite
+    // nennt unter "Fördersumme pro Antrag" 10.000 €, die Förderrichtlinie in
+    // Ziffer 4.2 dagegen "Es werden maximal 15.000 Euro je Antrag bezuschusst" —
+    // und dieselbe Übersichtsseite verweist für die Details ausdrücklich auf
+    // ebendiese Richtlinie ("Aktuelle Förderrichtlinie", gültig ab 1. Mai 2026,
+    // byte-gleich mit unserem Exemplar). Bindend ist der Richtlinientext, nicht
+    // die Zusammenfassung. Den Wert auf die Übersichtszahl zu senken wäre kein
+    // vorsichtiger Fix, sondern eine falsche Zahl in der sicher aussehenden
+    // Richtung. Für ein Hausdach greift ohnehin keiner der beiden Deckel: Bei
+    // 100 €/kWh und höchstens 1,0 kWh je kWp wären 15.000 € erst ab 150 kWp
+    // erreicht.
     url: "https://www.stuttgart.de/solaroffensive", stand: "August 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
@@ -269,6 +282,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { label: "Batteriespeicher", value: "100 €/kWh nutzbarer Kapazität, max. 15.000 € je Antrag" },
     ],
     conditions: [
+      "Die Fördermittel für 2026 sind ausgeschöpft: Anträge werden weiterhin angenommen und bearbeitet, die Auszahlung erfolgt aber erst ab 2027",
       "PV-Zuschuss nur für Begleitmaßnahmen (Ertüchtigung der Elektrik und des Zählerplatzes, Gerüst, Statik, Verlegung von Bauteilen, Dachhaut, Blitzschutz) — Module, Montagesysteme und Wechselrichter selbst sind nicht förderfähig",
       "Speicher nur zusammen mit einer neu errichteten PV-Anlage; gefördert wird höchstens 1,0 kWh je kWp (bei 10 kWp also max. 10 kWh)",
       "Der erhöhte Satz von 400 €/kWp gilt nur, wenn die Anlage in die Gründachfläche integriert ist — getrennte Bereiche für PV und Begrünung reichen nicht",
