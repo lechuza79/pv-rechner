@@ -210,6 +210,17 @@ export async function GET(req: NextRequest) {
 
         PRIMARY KEY (region_id, url)
       );
+
+      -- Gedächtnis der Technik-Einordnung. Dieselbe Systematik wie beim
+      -- Screening: Der Versionsstempel steht für einen echten Durchgang, damit
+      -- ein geschärfter Erkenner die längst eingeordneten Seiten von selbst
+      -- wieder nach vorn holt. Ohne ihn bliebe „98 % eingeordnet" stehen,
+      -- während für zwei von drei Techniken nie jemand hingesehen hat.
+      ALTER TABLE funding_seiten ADD COLUMN IF NOT EXISTS eingeordnet_am timestamptz;
+      ALTER TABLE funding_seiten ADD COLUMN IF NOT EXISTS screen_version int;
+      ALTER TABLE funding_seiten ADD COLUMN IF NOT EXISTS screen_verdikt text;
+      CREATE INDEX IF NOT EXISTS idx_fseiten_screen ON funding_seiten (screen_version, eingeordnet_am);
+
       CREATE INDEX IF NOT EXISTS idx_fseiten_region ON funding_seiten (region_id);
       CREATE INDEX IF NOT EXISTS idx_fseiten_gelesen ON funding_seiten (gelesen_am);
       CREATE INDEX IF NOT EXISTS idx_fseiten_gesehen ON funding_seiten (seite_gesehen_am);

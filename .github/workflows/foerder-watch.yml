@@ -145,6 +145,22 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: npm run foerder:seiten-alle -- --limit 3000
 
+      # Welche Technik trägt die Seite? Ohne diese Angabe ist die eigentliche
+      # Frage unbeantwortbar: „Haben wir für DIESE Gemeinde eine
+      # Wärmepumpen-Seite?" Gemessen am 19.08.2026 trugen 149 von 2.672 Seiten
+      # eine Technik; der Rest war eine Adresse ohne Aussage.
+      #
+      # Er benutzt denselben Erkenner wie das Screening — ein zweiter wäre eine
+      # zweite Wahrheit. Und nur ein TREFFER setzt eine Technik: Eine Seite, die
+      # die Wärmepumpe bloß erwähnt, ohne dass in Reichweite Geld steht, ist
+      # keine Wärmepumpen-Förderseite.
+      - name: Technik je Förderseite einordnen
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: npm run foerder:technik -- --limit 800
+
       # Der Katalog soll vollständig werden, nicht stichprobenhaft. Der Bestand
       # wächst jetzt aus zwei Quellen: den Adressen des Kommunen-Outreach und dem
       # Schritt darüber. Unerreichbare Seiten kommen von selbst wieder dran, und
