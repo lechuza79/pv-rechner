@@ -124,15 +124,24 @@ function spitzeSatz(i: RegionHighlightInput): HighlightTeil[] | null {
   const spanne =
     schluss.wPerCapitaDach > 0 ? spitze.wPerCapitaDach / schluss.wPerCapitaDach : 1;
 
-  /** Name (verlinkt, wenn es die Seite gibt) plus Wert in Klammern. */
+  /**
+   * Name (verlinkt, wenn es die Seite gibt) plus Wert in Klammern.
+   *
+   * DER ARTIKEL BLEIBT AUSSERHALB DES VERWEISES: „der" gehört zur Grammatik des
+   * Satzes, nicht zum Namen des Gebiets. Verlinkt wird „Landkreis Biberach" —
+   * das ist auch der Ankertext, den Google liest.
+   */
   const mitWertGenannt = (k: RegionKind & { wPerCapitaDach: number }): HighlightTeil[] => {
-    const name = regionName(k.name);
-    return [
-      k.href ? { text: name, href: k.href } : name,
+    const teile: HighlightTeil[] = [];
+    const artikel = artikelVon(k.name);
+    if (artikel) teile.push(artikel);
+    teile.push(k.href ? { text: k.name, href: k.href } : k.name);
+    teile.push(
       " (",
       { text: fmtWattProKopf(Math.round(k.wPerCapitaDach)), stark: true } as HighlightTeil,
       " je Einwohner)",
-    ];
+    );
+    return teile;
   };
 
   const teile: HighlightTeil[] =
@@ -168,12 +177,18 @@ function spitzeSatz(i: RegionHighlightInput): HighlightTeil[] | null {
  * gehört. Namen ohne vorangestellte Gattung (Städte, Gemeinden) bleiben nackt.
  */
 function regionName(name: string): string {
-  if (/^(Landkreis|Kreis|Saalekreis|Ostalbkreis|Regionalverband)\b/.test(name)) return `der ${name}`;
-  if (/^(Region|Städteregion|Verbandsgemeinde)\b/.test(name)) return `die ${name}`;
+  const artikel = artikelVon(name);
+  return artikel ? `${artikel}${name}` : name;
+}
+
+/** Der Artikel samt Leerzeichen — oder leer, wenn der Name keinen trägt. */
+function artikelVon(name: string): string {
+  if (/^(Landkreis|Kreis|Saalekreis|Ostalbkreis|Regionalverband)\b/.test(name)) return "der ";
+  if (/^(Region|Städteregion|Verbandsgemeinde)\b/.test(name)) return "die ";
   // Genau ein Bundesland trägt einen Artikel — dieselbe Ausnahme, für die es in
   // lib/atlas-orte.ts schon „im Saarland" statt „in Saarland" gibt.
-  if (/^Saarland$/.test(name)) return "das Saarland";
-  return name;
+  if (/^Saarland$/.test(name)) return "das ";
+  return "";
 }
 
 /** Dativ Plural: „von 16 Bundesländern". Endet das Wort schon auf -n oder -s,

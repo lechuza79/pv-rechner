@@ -617,10 +617,18 @@ const S: Record<string, React.CSSProperties> = {
     padding: pad("xl"),
   },
   link: { color: v("--color-accent"), textDecoration: "none", fontSize: 14, fontWeight: 600 },
-  // Verweis MITTEN im Fließtext: erbt Größe und Zeilenhöhe des Absatzes. `link`
-  // ist der Stil für eigenständige Links (14 px) — inline gesetzt macht er das
-  // verlinkte Wort kleiner als den Satz, in dem es steht.
-  linkInline: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
+  // Verweis MITTEN im Fließtext: Akzentfarbe UND Unterstreichung, so wie überall
+  // sonst im Fließtext des Projekts (Quellenangaben, Ratgeber, Förderseiten).
+  // `link` ohne Unterstreichung ist der Stil für eigenständige Links, die durch
+  // ihre Position schon als Link erkennbar sind — inline fehlt ihm die
+  // Erkennbarkeit, und mit festen 14 px wäre das Wort außerdem kleiner als der
+  // Satz, in dem es steht.
+  linkInline: {
+    color: v("--color-accent"),
+    textDecoration: "underline",
+    textUnderlineOffset: 2,
+    fontWeight: 600,
+  },
   disclaimer: {
     fontSize: 11,
     color: v("--color-text-muted"),

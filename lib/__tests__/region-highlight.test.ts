@@ -153,8 +153,11 @@ describe("Einordnungs-Absatz der Regionsseiten", () => {
       "/solar-atlas/bayern/landkreis-dingolfing-landau",
       "/solar-atlas/bayern/muenchen",
     ]);
-    // Der Ankertext ist der Ortsname, nicht „hier" — und er trägt seinen Artikel.
-    expect(links[0].text).toBe("der Landkreis Dingolfing-Landau");
+    // Der Ankertext ist der NAME, ohne Artikel: „der" gehört zur Grammatik des
+    // Satzes, nicht zum Gebiet — und es ist der Text, den Google als Anker liest.
+    expect(links[0].text).toBe("Landkreis Dingolfing-Landau");
+    // Im fertigen Satz steht der Artikel trotzdem davor.
+    expect(text(basis)).toContain("vorn der Landkreis Dingolfing-Landau");
 
     // Ohne Adresse bleibt der Name unverlinkter Text, statt auf „#" zu zeigen.
     const ohne = buildRegionHighlight({
