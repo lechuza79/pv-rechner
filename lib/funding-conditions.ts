@@ -118,6 +118,31 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "maintal-klima", "roth-klimaschutz", "wenden-heizungstausch",
   // Von der Prüfmechanik-Session übergeben und hier im Volltext gegengelesen.
   "hohenahr-pv", "leimen-klimaschutz",
+  "sandhausen-foerderprogramme", "helmstedt-umwelt-klima", "nottuln-klimaschutz",
+  "heddesheim-umwelt", "nittenau-steckersolar", "beratzhausen-effizient",
+  "rietheim-weilheim-pv", "forstinning-energiewende", "oftersheim-co2",
+  "bad-rothenfelde-klima", "vilshofen-steckersolar",
+  // Erste Städte, die überhaupt erst die URL-Suche gefunden hat.
+  "neuwied-balkonkraftwerke", "rodgau-balkonsolar", "tuebingen-balkon-pv",
+  "zweibruecken-balkonkraftwerke", "unterhaching-energiesparen",
+  "hueckelhoven-balkonkraftwerke", "weinheim-effizienz", "ottobrunn-foerderprogramme",
+  "feucht-klimaschutz",
+  // Aus dem Parallel-Lesen vom 18.08.2026, Beträge selbst gegengelesen.
+  "limburgerhof-balkonkraftwerke", "gernsheim-foerderprogramme", "gudensberg-balkonkraftwerke",
+  "poing-energie", "goch-balkonkraftwerke", "herzberg-balkonkraftwerke",
+  "herbrechtingen-balkonkraftwerke", "weyhe-klimaschutz", "moormerland-balkonkraftwerke",
+  "bad-krozingen-balkon-pv",
+  "reichelsheim-steckersolar", "putzbrunn-klimaschutz", "dettelbach-gestaltungssatzung-pv",
+  "gailingen-balkonsolar", "hattenhofen-balkonsolar", "gaiberg-steckersolar",
+  "karlshuld-balkonkraftwerke", "walddorfhaeslach-steckersolar", "klempau-balkonkraftwerke",
+  // Leseliste vom 19.08.2026 — die 42 ungelesenen Fundstellen und die 35 Seiten,
+  // die der Screener automatisch als „ausgelaufen" abgetan hatte. Jede Zahl an
+  // der Amtsseite bzw. im Richtlinien-PDF selbst gegengelesen.
+  "schiltach-pv", "altdorf-bb-balkonkraftwerke", "steffenberg-balkonkraftwerke",
+  "tegernheim-stecker-pv", "lohfelden-100-daecher", "schwebheim-batteriespeicher",
+  "asbach-balkonkraftwerke", "parkstein-nachhaltigkeitszuschuss",
+  "marburg-balkonkraftwerke", "schoenbrunn-balkon-pv",
+  "hillscheid-energie", "schlierbach-energiespeicher",
 ];
 
 /**

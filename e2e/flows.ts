@@ -56,7 +56,7 @@ export const FLOWS: FlowUnterTest[] = [
   },
   {
     name: "Balkonkraftwerk-Rechner",
-    pfad: "/balkonkraftwerk-rechner",
+    pfad: "/balkonkraftwerk/rechner",
     ergebnisEnthaelt: "Deine Empfehlung",
   },
   {
@@ -243,7 +243,21 @@ export async function waehle(page: Page, label: string) {
   // holt ihn nicht zurück, weil das Ereignis nie einen Empfänger hatte.
   try {
     await expect(async () => {
-      await option.click();
+      // Das Klick-Timeout ist der Kern und nicht Kosmetik — BLOCKER.
+      //
+      // Ohne eigenes Timeout erbt click() den TEST-Timeout, nicht die 20 s der
+      // Wiederhol-Schleife. Wartet Playwright dann auf ein Element, das es für
+      // instabil hält (Step-Wechsel animiert 0,3 s, auf einem ausgelasteten
+      // Runner länger), frisst der EINE Klick das ganze Budget von toPass — und
+      // die Schleife, die genau dafür gebaut wurde, läuft kein einziges Mal an.
+      // Gemessen am CI-Lauf vom 18.08.2026: „20 s lang kein aria-pressed=true"
+      // bei einem Knopf, der sichtbar und aktiv war und von Hand einwandfrei
+      // funktioniert; lokal nicht reproduzierbar, weil dort nichts hängt.
+      //
+      // Mit kurzem Klick-Timeout wird aus dem einen hängenden Versuch ein halbes
+      // Dutzend echter. Ein wirklich blockiertes Element (Overlay davor) fällt
+      // weiterhin durch — nur eben nach mehreren Anläufen statt nach einem.
+      await option.click({ timeout: 3_000 });
       await expect(option).toHaveAttribute("aria-pressed", "true", { timeout: 1_000 });
     }).toPass({ timeout: 20_000 });
   } catch {
@@ -258,7 +272,9 @@ export async function waehle(page: Page, label: string) {
     })).catch(() => null);
     throw new Error(
       `Option „${label}" ließ sich nicht wählen (20 s lang kein aria-pressed=true). ` +
-        `Zustand: ${JSON.stringify(zustand)}`,
+        `Zustand: ${JSON.stringify(zustand)}. ` +
+        `Steht dort sichtbar=true und deaktiviert=false, kam der Klick nicht an — ` +
+        `dann liegt etwas darüber oder die Seite ist nicht interaktiv geworden.`,
     );
   }
 }

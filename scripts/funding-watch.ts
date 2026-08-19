@@ -30,7 +30,7 @@
 import { resolve } from "node:path";
 import { readFileSync, existsSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
-import { fingerprintOf, markiert } from "../lib/funding-fingerprint";
+import { fingerprintOf, markiert, unterschiedsGrund, vergleichbar, wegVon } from "../lib/funding-fingerprint";
 import type { FundingProgram } from "../lib/funding-programs";
 
 function loadEnvFile(): void {
@@ -273,9 +273,9 @@ async function main(): Promise<void> {
     // Seite unterscheiden sich immer ein wenig; ohne diese Kennzeichnung meldete
     // jeder Wechsel zwischen beiden Wegen eine Änderung, die es nie gab.
     const fp = ausProduktion ?? markiert(ausArchiv ? "archiv" : "live", fingerprintOf(html));
-    const herkunft = fp.split(":")[0];
-    const gleicheHerkunft = z.page_fingerprint?.split(":")[0] === herkunft;
-    const hatSichGeaendert = !!z.page_fingerprint && gleicheHerkunft && z.page_fingerprint !== fp;
+    const herkunft = wegVon(fp);
+    const istVergleichbar = vergleichbar(z.page_fingerprint, fp);
+    const hatSichGeaendert = istVergleichbar && z.page_fingerprint !== fp;
 
     // NUR ein LIVE gelesener Abruf bestätigt, dass die Amtsseite noch da und
     // unverändert ist — BLOCKER. Ein Archiv-Treffer ist ein wochenalter
@@ -285,11 +285,13 @@ async function main(): Promise<void> {
     // Genau der halbjährig alte Stand, den die Regel verhindern soll.
     const istLiveBestaetigt = herkunft === "live";
 
-    // Wechselt die Herkunft (live ⇄ archiv), ist KEIN Vergleich möglich — wir
-    // halten zwei verschiedene Dinge nebeneinander. Das offen ausweisen, statt
-    // es stillschweigend als "unverändert" durchgehen zu lassen.
-    if (z.page_fingerprint && !gleicheHerkunft) {
-      nichtVergleichbar.push(`${p.name} (${p.region}) — Abrufweg gewechselt (${z.page_fingerprint.split(":")[0]} → ${herkunft})`);
+    // Wechselt der Abrufweg (live ⇄ archiv) ODER unsere Verdichtungs-Fassung, ist
+    // KEIN Vergleich möglich — wir halten zwei verschiedene Dinge nebeneinander.
+    // Das offen ausweisen, statt es als "unverändert" durchgehen zu lassen (dann
+    // stünde eine Bestätigung da, die niemand geprüft hat) und erst recht statt
+    // als "geändert" (dann meldeten wir eine fremde Änderung, die unsere war).
+    if (z.page_fingerprint && !istVergleichbar) {
+      nichtVergleichbar.push(`${p.name} (${p.region}) — ${unterschiedsGrund(z.page_fingerprint, fp)}`);
     }
     if (hatSichGeaendert) {
       geaendert.push(`${p.name} (${p.region})`);
@@ -301,7 +303,7 @@ async function main(): Promise<void> {
           note: `Seiten-Wächter: Inhalt der Amtsseite hat sich geändert (${p.url})`,
         });
       }
-    } else if (z.page_fingerprint && gleicheHerkunft) {
+    } else if (istVergleichbar) {
       unveraendert++;
     }
     if (ausProduktion) ueberProduktion.push(`${p.name} (${p.region})`);

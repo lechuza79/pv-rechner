@@ -43,6 +43,7 @@ import {
   einordnen, sichtbarerText, SCREEN_VERSION,
   type ScreenVerdikt, type ScreenTechnik,
 } from "../lib/funding-screen-erkennung";
+import { inSchueben } from "../lib/lauf-parallel";
 
 function loadEnvFile(): void {
   const envPath = resolve(process.cwd(), ".env.local");
@@ -101,6 +102,8 @@ type CoverageZeile = {
   verdict: string;
   screen_version: number | null;
   techniken: string | null;
+  gelesen_am: string | null;
+  gelesen_ergebnis: string | null;
 };
 
 async function offeneKandidaten(limit: number) {
@@ -119,7 +122,7 @@ async function offeneKandidaten(limit: number) {
 
   const abgelegt = await alleZeilen<CoverageZeile>(
     "funding_coverage",
-    "region_id, verdict, screen_version, techniken",
+    "region_id, verdict, screen_version, techniken, gelesen_am, gelesen_ergebnis",
   );
   const zeileVon = new Map(abgelegt.map((r) => [r.region_id, r]));
 
@@ -170,7 +173,7 @@ async function offeneKandidaten(limit: number) {
 
 async function stand(): Promise<void> {
   const { gesamt, erledigt, nachzuholen } = await offeneKandidaten(1);
-  const zeilen = await alleZeilen<CoverageZeile>("funding_coverage", "region_id, verdict, screen_version, techniken");
+  const zeilen = await alleZeilen<CoverageZeile>("funding_coverage", "region_id, verdict, screen_version, techniken, gelesen_am, gelesen_ergebnis");
   const z = new Map<string, number>();
   for (const r of zeilen) z.set(r.verdict, (z.get(r.verdict) ?? 0) + 1);
   const prozent = gesamt ? Math.round((erledigt / gesamt) * 100) : 0;
@@ -202,13 +205,33 @@ async function treffer(): Promise<void> {
   const i = process.argv.indexOf("--technik");
   const nurTechnik = i >= 0 ? (process.argv[i + 1] as ScreenTechnik) : null;
 
-  const alle = await alleZeilen<{ region_id: string; url: string; evidence: string | null; techniken: string | null }>(
+  const alle = await alleZeilen<{
+    region_id: string; url: string; evidence: string | null; techniken: string | null;
+    gelesen_am: string | null; gelesen_ergebnis: string | null;
+  }>(
     "funding_coverage",
-    "region_id, url, evidence, techniken",
+    "region_id, url, evidence, techniken, gelesen_am, gelesen_ergebnis",
     (q) => q.eq("verdict", "treffer"),
   );
-  const rows = nurTechnik ? alle.filter((r) => (r.techniken ?? "").split(",").includes(nurTechnik)) : alle;
-  if (!rows.length) return console.log("Noch keine Treffer.");
+
+  // Schon gelesene Seiten fallen raus — BLOCKER für die Brauchbarkeit der Liste.
+  //
+  // Der Screener stuft eine Seite bei JEDEM Lauf neu ein, und eine Seite, die
+  // ein Mensch gelesen und verworfen hat, bleibt für ihn ein Treffer: Hildens
+  // „PhotovoltaikCheck" ist eine Beratung, Vaterstettens PV-Position gilt
+  // Planungsleistungen für Garagenhöfe — beide sehen im Text wie Förderung aus
+  // und sind keine. Ohne dieses Gedächtnis stünden sie morgen wieder oben, und
+  // bei mehreren hundert Fundstellen liest irgendwann niemand mehr eine Liste,
+  // die zur Hälfte aus schon Abgelehntem besteht. Dasselbe Prinzip wie beim
+  // Prüf-Arbeitsvorrat und beim Abdeckungs-Screening selbst.
+  const mitGelesenen = process.argv.includes("--alle");
+  const nachTechnik = nurTechnik ? alle.filter((r) => (r.techniken ?? "").split(",").includes(nurTechnik)) : alle;
+  const rows = mitGelesenen ? nachTechnik : nachTechnik.filter((r) => !r.gelesen_am);
+  const verborgen = nachTechnik.length - rows.length;
+  if (!rows.length) {
+    console.log(verborgen ? `Nichts Offenes — ${verborgen} Treffer sind bereits gelesen (--alle zeigt sie).` : "Noch keine Treffer.");
+    return;
+  }
 
   const { data: reg } = await sb
     .from("mastr_regions")
@@ -232,7 +255,10 @@ async function treffer(): Promise<void> {
   }
 
   const sortiert = [...seiten.entries()].sort((a, b) => b[1].pop - a[1].pop);
-  console.log(`Treffer: ${sortiert.length} Seiten (für ${rows.length} Gemeinden), größte zuerst:\n`);
+  console.log(
+    `Treffer: ${sortiert.length} Seiten (für ${rows.length} Gemeinden), größte zuerst` +
+      (verborgen ? ` — ${verborgen} bereits gelesene ausgeblendet` : "") + ":\n",
+  );
   for (const [url, e] of sortiert) {
     const orte = e.orte.length > 3 ? `${e.orte.slice(0, 3).join(", ")} und ${e.orte.length - 3} weitere` : e.orte.join(", ");
     const tech = e.techniken.size ? `  [${[...e.techniken].join(", ")}]` : "";
@@ -248,8 +274,42 @@ async function zeileVersion(regionId: string): Promise<number | null> {
   return (data?.screen_version as number | undefined) ?? null;
 }
 
+/**
+ * Eine Fundstelle als gelesen abhaken.
+ *
+ *   npm run foerder:screen -- --gelesen 05370020 --ergebnis aufgenommen --notiz "150 € je Anlage"
+ *   npm run foerder:screen -- --gelesen 05158016 --ergebnis verworfen --notiz "nur Beratung, keine Förderung"
+ *
+ * `ergebnis` ist bewusst frei und nicht auf eine Auswahl festgelegt: Was beim
+ * Lesen herauskommt, ist mehr als aufgenommen/verworfen — „Betrag nur im PDF"
+ * und „Träger antwortet nicht" sind eigene Zustände, und eine zu enge Liste
+ * drängt sie in die falsche Schublade.
+ */
+async function gelesen(): Promise<void> {
+  const wert = (name: string) => {
+    const i = process.argv.indexOf(`--${name}`);
+    return i >= 0 ? process.argv[i + 1] : null;
+  };
+  const regionId = wert("gelesen");
+  const ergebnis = wert("ergebnis");
+  if (!regionId || !ergebnis) {
+    console.error("Aufruf: --gelesen <region_id> --ergebnis <text> [--notiz <text>]");
+    process.exit(1);
+  }
+  const { error } = await sb
+    .from("funding_coverage")
+    .update({
+      gelesen_am: new Date().toISOString().slice(0, 10),
+      gelesen_ergebnis: ergebnis,
+      gelesen_notiz: wert("notiz"),
+    })
+    .eq("region_id", regionId);
+  console.log(error ? `FEHLER: ${error.message}` : `${regionId} als gelesen vermerkt (${ergebnis}).`);
+}
+
 async function main(): Promise<void> {
   if (process.argv.includes("--stand")) return stand();
+  if (process.argv.includes("--gelesen")) return gelesen();
   if (process.argv.includes("--treffer")) return treffer();
 
   const limit = zahl("limit", 120);
@@ -258,7 +318,9 @@ async function main(): Promise<void> {
 
   const zaehler = new Map<ScreenVerdikt, number>();
   const jeTechnik = new Map<ScreenTechnik, number>();
-  for (const k of naechste) {
+  let fertig = 0;
+
+  await inSchueben(naechste, zahl("gleichzeitig", 6), async (k) => {
     let html = "";
     let http = 0;
     for (const versuch of [0, 1]) {
@@ -297,7 +359,9 @@ async function main(): Promise<void> {
       http,
       checked_at: new Date().toISOString(),
     });
-  }
+
+    if (++fertig % 100 === 0) console.log(`   … ${fertig} von ${naechste.length}`);
+  });
 
   console.log("Ergebnis dieses Laufs:");
   for (const [v, n] of [...zaehler].sort((a, b) => b[1] - a[1])) console.log(`   ${v}: ${n}`);

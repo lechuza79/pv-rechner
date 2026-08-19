@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { fmtPvLeistung, fmtErtragProKwp } from "../../lib/atlas-format";
+import { fmtPvLeistung, fmtErtragProKwp, fmtEuroVoll } from "../../lib/atlas-format";
 import { v, space } from "../../lib/theme";
 import { IconArrowRight, IconTrendUp, IconTrendDown } from "../Icons";
 import { LoadingDots } from "../LoadingDots";
@@ -20,7 +20,7 @@ import { pvErtragSatz, szenarioUeberschrift, type SzenarioTexte } from "../../li
 // stehen schon, nur die Zahlen zeigen LoadingDots — dieselbe Preloader-
 // Konvention wie in den MaStR-Hero-Kacheln.
 
-const nfEuro = (n: number) => `${Math.round(n).toLocaleString("de-DE")} €`;
+const nfEuro = fmtEuroVoll;
 
 /** Auf 100 € gerundet — die Beispiele sind Größenordnungen, keine Zusagen. */
 const round100 = (n: number) => Math.round(n / 100) * 100;
@@ -110,7 +110,7 @@ export default function GemeindePotential({
             </span>
           </Link>
 
-          <Link href="/balkonkraftwerk-rechner" onClick={remember} style={S.exCard}>
+          <Link href="/balkonkraftwerk/rechner" onClick={remember} style={S.exCard}>
             <div style={S.exValRow}>
               <TrendBadge dir="up" />
               <span style={S.exVal}>

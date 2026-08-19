@@ -569,6 +569,10 @@ async function AtlasBody({
             // mehr (showSource=false), daher steht die BKG-Attribution hier.
             <>Kartengeometrien: GeoBasis-DE / BKG, Datenlizenz dl-de/by-2-0 (vereinfacht). </>
           )}
+          {/* Die Rangliste rechnet CO₂-Ersparnis und Stromwert aus Standort-Erträgen —
+              die Quelle dafür gehört hierher, nicht nur in den Tooltip der Spalte.
+              Name aus DATA_SOURCES, damit er nicht gegen die SSOT driftet. */}
+          Standort-Erträge: {DATA_SOURCES.pvgis.name}.{" "}
           Gezählt werden nur Anlagen in Betrieb. Alle Angaben sind Näherungswerte ohne
           Anspruch auf Richtigkeit, Aktualität oder Vollständigkeit.
         </div>

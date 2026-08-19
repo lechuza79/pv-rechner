@@ -200,6 +200,19 @@ async function fetchMetaDataAsOf(): Promise<string> {
   return metaDataAsOfCache;
 }
 
+/**
+ * Datenstand der MaStR-Auswertung als ISO-Datum (YYYY-MM-DD) — oder null, wenn
+ * er sich gerade nicht messen lässt und nur der Platzhalter herauskäme.
+ *
+ * Für eine Anzeige ("Stand …") reicht der Platzhalter; wer daraus ein <lastmod>
+ * in der Sitemap baut, braucht die Unterscheidung: ein geratenes Datum ist dort
+ * schlechter als gar keins. Einzige Quelle bleibt mastr_meta — kein zweiter Read.
+ */
+export async function getMastrDataAsOf(): Promise<string | null> {
+  const iso = await fetchMetaDataAsOf();
+  return iso === PLACEHOLDER_AS_OF ? null : iso;
+}
+
 function traegerList(energietraeger: Energietraeger): string[] {
   return energietraeger === "gesamt" ? RENEWABLE_TRAEGER : [energietraeger];
 }

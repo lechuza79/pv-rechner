@@ -95,6 +95,33 @@ export async function GET(req: NextRequest) {
       -- gescreent" stehen, während für zwei von drei Techniken nie jemand
       -- hingesehen hat — eine Abdeckungszahl, die genau das verdeckt, wofür es
       -- sie gibt. Mit Stempel kommen die alten Zeilen von selbst wieder dran.
+      -- Was ein MENSCH beim Lesen der Seite herausgefunden hat.
+      --
+      -- Der Screener stuft bei jedem Lauf neu ein und kennt kein Gestern: Eine
+      -- Seite, die jemand gelesen und verworfen hat, bleibt für ihn ein Treffer.
+      -- Hildens "PhotovoltaikCheck" ist eine Beratung, Vaterstettens PV-Position
+      -- gilt Planungsleistungen fuer Garagenhoefe — beide sehen im Text wie
+      -- Foerderung aus und sind keine. Ohne dieses Gedaechtnis stuenden sie
+      -- morgen wieder oben, und eine Liste, die zur Haelfte aus schon
+      -- Abgelehntem besteht, liest irgendwann niemand mehr.
+      -- Fingerabdruck der Seite — der AUSLÖSER für eine erneute Einordnung.
+      --
+      -- Nicht der Kalender entscheidet, ob eine bekannte Foerderseite noch einmal
+      -- angesehen wird, sondern ob sie sich bewegt hat. Ein festes Intervall
+      -- hiesse, dass ein Programm bis zum naechsten Termin den falschen Status
+      -- tragen kann; dieselbe Einsicht hatte schon die 180-Tage-Frist beim
+      -- Beleg-Verfall gekippt. Derselbe Abdruck wie bei den gefuehrten
+      -- Programmen (lib/funding-fingerprint.ts).
+      ALTER TABLE funding_coverage ADD COLUMN IF NOT EXISTS fingerprint text;
+      ALTER TABLE funding_coverage ADD COLUMN IF NOT EXISTS seite_gesehen_am timestamptz;
+      ALTER TABLE funding_coverage ADD COLUMN IF NOT EXISTS seite_geaendert_am timestamptz;
+      CREATE INDEX IF NOT EXISTS idx_fcov_seite ON funding_coverage (seite_gesehen_am);
+
+      ALTER TABLE funding_coverage ADD COLUMN IF NOT EXISTS gelesen_am date;
+      ALTER TABLE funding_coverage ADD COLUMN IF NOT EXISTS gelesen_ergebnis text;
+      ALTER TABLE funding_coverage ADD COLUMN IF NOT EXISTS gelesen_notiz text;
+      CREATE INDEX IF NOT EXISTS idx_fcov_gelesen ON funding_coverage (gelesen_am);
+
       ALTER TABLE funding_coverage ADD COLUMN IF NOT EXISTS techniken text;
       ALTER TABLE funding_coverage ADD COLUMN IF NOT EXISTS screen_version int NOT NULL DEFAULT 1;
       CREATE INDEX IF NOT EXISTS idx_fcov_version ON funding_coverage (screen_version);

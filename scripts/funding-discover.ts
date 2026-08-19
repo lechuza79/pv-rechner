@@ -35,6 +35,7 @@ import { createClient } from "@supabase/supabase-js";
 import {
   linkKandidaten, sitemapKandidaten, sitemapIndex, istEndergebnis, SUCH_VERSION, type LinkKandidat,
 } from "../lib/funding-url-suche";
+import { inSchueben } from "../lib/lauf-parallel";
 
 function loadEnvFile(): void {
   const envPath = resolve(process.cwd(), ".env.local");
@@ -250,7 +251,11 @@ async function main(): Promise<void> {
 
   const zaehler = new Map<SuchVerdikt, number>();
   let unerreichbarInFolge = 0;
-  for (const k of naechste) {
+  let abgebrochen = false;
+  let fertig = 0;
+
+  await inSchueben(naechste, zahl("gleichzeitig", 6), async (k) => {
+    if (abgebrochen) return;
     const { beste, erreichbar } = await sucheFoerderseite(k.website);
     const verdikt: SuchVerdikt = !erreichbar ? "unerreichbar" : beste ? "gefunden" : "keine-seite";
     zaehler.set(verdikt, (zaehler.get(verdikt) ?? 0) + 1);
@@ -259,9 +264,10 @@ async function main(): Promise<void> {
     // sondern an uns — kein Netz, gesperrte Adresse, abgestürzter Resolver. Dann
     // weiterzulaufen stempelt hunderte erreichbare Websites als unerreichbar ab.
     unerreichbarInFolge = erreichbar ? 0 : unerreichbarInFolge + 1;
-    if (unerreichbarInFolge >= 15) {
+    if (unerreichbarInFolge >= 15 && !abgebrochen) {
+      abgebrochen = true;
       console.error("\n15 Websites in Folge nicht erreichbar — Lauf abgebrochen. Erst die eigene Verbindung prüfen.");
-      break;
+      return;
     }
 
     await sb.from("funding_url_suche").upsert({
@@ -287,7 +293,9 @@ async function main(): Promise<void> {
         .eq("region_id", k.region_id)
         .is("thema_foerderung_url", null);
     }
-  }
+
+    if (++fertig % 100 === 0) console.log(`   … ${fertig} von ${naechste.length}`);
+  });
 
   console.log("Ergebnis dieses Laufs:");
   for (const [v, n] of [...zaehler].sort((a, b) => b[1] - a[1])) console.log(`   ${v}: ${n}`);

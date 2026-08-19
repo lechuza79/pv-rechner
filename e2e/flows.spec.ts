@@ -125,7 +125,26 @@ async function imFlow(page: Page): Promise<boolean> {
  */
 async function oeffne(page: Page, flowPfad: string, startKnopf?: string) {
   await page.goto(flowPfad, { waitUntil: "domcontentloaded" });
-  if (!startKnopf) return;
+  await page.waitForLoadState("load");
+  if (!startKnopf) {
+    // Warten, bis der Flow SELBST meldet, dass er auf Klicks reagiert.
+    //
+    // WARUM NICHT EINFACH EIN LADEEREIGNIS (18.08.2026): Der Läufer klickte in
+    // Seiten, deren HTML dastand, deren React-Handler aber fehlten — Knopf
+    // sichtbar, anklickbar, ohne Wirkung, Fehlerbild „20 s lang kein
+    // aria-pressed=true". Das Bild WANDERTE zwischen den Rechnern (erst PV und
+    // Wärmepumpe, nach dem ersten Anlauf Klimaanlage und Empfehlung), weil es
+    // kein Fehler einer Seite ist, sondern ein Wettrennen.
+    //
+    // `domcontentloaded` steht vor dem JavaScript, und auch nach `load` lädt
+    // Next.js Teile nach — es gibt kein Browser-Ereignis für „React hat
+    // übernommen". Deshalb setzt FlowNav `data-flow-bereit` in einem Effekt:
+    // Das läuft frühestens nach dem Mounten und ist damit ein Beweis statt einer
+    // Schätzung. Flows MIT Startknopf brauchen es nicht — deren Klick-Schleife
+    // unten wartet ohnehin, bis die Schrittleiste erscheint.
+    await expect(page.locator("[data-flow-bereit]").first()).toBeAttached({ timeout: 30_000 });
+    return;
+  }
   const knopf = page.getByRole("button", { name: new RegExp(startKnopf, "i") }).first();
   await expect(knopf).toBeVisible({ timeout: 15_000 });
   await expect(async () => {

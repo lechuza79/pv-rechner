@@ -43,6 +43,28 @@ Archiv-Stand) · `sekundaer` (nur Dritte) · `pruefseite` (auf der Bot-Prüfung
 hängengeblieben) · `gesperrt` (auf allen Wegen zu). Nur `traeger` setzt das
 Datum, das auf den Seiten als „Zuletzt geprüft" steht.
 
+**Ein Massen-Befund im Vorrat ist zuerst ein Verdacht gegen uns — BLOCKER
+(19.08.2026).** Stehen an einem Tag zehn, zwanzig, dreißig Programme mit „Amtsseite
+hat sich geändert" da, dann haben nicht dreißig Städte gleichzeitig ihre Seite
+umgebaut. Genau das ist am 18.08.2026 passiert: `fingerprintOf` bekam den
+Token-Filter gegen die verwürfelten Kontaktadressen, und weil sich damit für
+**jede** Seite ein anderer Abdruck ergab, verbuchte der Lauf 15 Programme als
+geändert, startete die 14-Tage-Nachprüffrist und hätte sie am 02.09.2026 aus der
+Rechnung fallen lassen — ohne dass sich irgendwo etwas geändert hätte.
+
+Der Abdruck trägt seit dem 19.08.2026 deshalb **Abrufweg und Verfahrensfassung**
+(`live-v2:…`), und `vergleichbar()` lässt nur Gleiches gegen Gleiches antreten;
+eine Fassungsänderung erscheint als „nicht vergleichbar", nie als „geändert". Wer
+`fingerprintOf` anfasst, **zählt `FINGERPRINT_VERSION` hoch** — sonst kommt genau
+dieser Fehlalarm zurück. Der erste Lauf nach einer solchen Änderung meldet einmalig
+alle Seiten als nicht vergleichbar; das ist richtig so und kostet nichts, weil es
+weder eine Frist startet noch eine Bestätigung vortäuscht.
+
+Und beim Aufräumen: Ein zu Unrecht gesetztes Änderungsdatum wird **nicht in der
+Datenbank weggewischt**, sondern auf dem normalen Weg aufgelöst — Amtsseite lesen,
+`--ok … --wie traeger` protokollieren. Das ist derselbe Beleg, den das
+Wiedereinschalten eines Programms braucht, und er ist ohnehin fällig.
+
 ## So wird die Routine ausgelöst
 
 Dem Assistenten sagen: **„Lauf die Förder-Prüfung."** Er liest dieses Runbook,
@@ -114,6 +136,28 @@ deckelt?").
 zu einem automatisch abgezogenen Betrag (siehe `fundingAmount`/`stackFunding`).
 Im Zweifel lieber keinen Betrag zeigen als einen falschen.
 
+**Der Resync kommt NACH dem Deploy, nie davor — BLOCKER (19.08.2026).** Die
+Route `/api/funding/setup?resync=1` schreibt den Katalog aus dem **ausgelieferten**
+Code in die Datenbank. Wer sie direkt nach dem Push aufruft, spiegelt den ALTEN
+Stand und bekommt trotzdem `"success": true` zurück — der einzige Hinweis ist die
+unscheinbare Zeile `history: skipped, keine Änderung gegenüber dem Bestand`. Genau
+das ist an diesem Tag zweimal passiert.
+
+Prüfen, ob der neue Stand wirklich draußen ist, und erst dann resyncen:
+
+```bash
+curl -s https://solar-check.io/api/funding?plz=<PLZ> | grep -c "<neuer Satz>"
+```
+
+**Und rechne damit, dass der Deploy gar nicht läuft.** Der „Ignored Build Step"
+vergleicht nur `HEAD^..HEAD`. Bei einem **Merge-Commit** ist das der Vergleich
+gegen den ersten Elternteil — bringt der Merge nur eine `.md`-Datei mit, während
+auf dem gemergten Zweig echte `.ts`-Änderungen liegen, wird der Build
+übersprungen und die Änderungen liegen auf `main`, ohne live zu sein. Am
+19.08.2026 waren so vier Deployments hintereinander abgebrochen (erkennbar am
+`errorLink` auf „ignored-build-step"). Das heilt sich mit dem nächsten Push, der
+Code anfasst; wer nicht warten will, prüft die Deployments und stößt neu an.
+
 ## Automatisierung: zwei geplante Tasks
 
 Beide laufen über die App (scheduled-tasks, „läuft solange die App offen ist" —
@@ -140,6 +184,33 @@ zusätzlich sinnvoll Anfang Januar (neue Jahres-Budgets). Prompt-Kern:
 > Führe die Förder-Prüfung gemäß `scripts/foerder-verify.md` aus (ein Agent pro
 > Programm), melde die Abweichungs-Liste. Bei klaren Befunden Korrekturen
 > vorschlagen, nicht automatisch in die Live-Daten schreiben.
+
+## Die Namensfalle: „ausgelaufen" steht auf derselben Seite wie „läuft"
+
+**Köln, 19.08.2026.** Eine zusammenfassende Abfrage der Programmseite meldete
+„Seit 27. August 2024 nehmen wir in diesem Programm keine neuen Anträge an" — das
+klang nach dem Freiburger Fall und wäre beinahe ein Abschalten geworden. Im
+Rohtext gelesen steht der Satz aber unter der Zwischenüberschrift **„Ausgelaufene
+Förderprogramme"** und gilt dem Vorgänger. Die Namen unterscheiden sich um zwei
+Wörter:
+
+| läuft | ausgelaufen (seit 27.08.2024) |
+|---|---|
+| Photovoltaik – klimafreundliches Wohnen **in Köln** | Photovoltaik – klimafreundliches Wohnen |
+| Photovoltaik – klimafreundliches Arbeiten **in Köln** | Photovoltaik – klimafreundliches Arbeiten |
+
+Daraus zwei Regeln:
+
+1. **Ein Stopp-Satz wird im Rohtext mit seiner Überschrift gelesen**, nie aus einer
+   Zusammenfassung übernommen. Eine Zusammenfassung kennt die Gliederung der Seite
+   nicht und greift den prominentesten Satz — hier den falschen. Das gilt in beide
+   Richtungen: In Freiburg trugen die Unterseiten den Stopp *nicht*, in Köln trug
+   die Seite einen Stopp, der ein anderes Programm meinte.
+2. **Der Beleg kommt von der Programm-Unterseite, nicht von der Übersicht.** Sie
+   ist die Seite, die „Zum Förderprogramm" verlinkt, und dort standen die Sätze
+   vollständig (PV 1.500/2.000/2.300/2.500 € nach Leistungsspanne, Speicher
+   500/1.000/1.300 € — deckungsgleich mit unserem Eintrag) plus ein eigener,
+   deutlich höherer Satz für gemeinnützige Vereine, den wir bewusst nicht führen.
 
 ## Status-Verlässlichkeit (aktiv/inaktiv) — BLOCKER
 

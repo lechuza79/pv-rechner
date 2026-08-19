@@ -95,6 +95,37 @@
 //     beihilferechtlichen Genehmigung durch die Europäische Kommission und nur
 //     nach Maßgabe dieser Genehmigung angewandt werden."
 //
+// AM 19.08.2026 GEGEN DIE BUNDESRATS-DRUCKSACHE NACHGEPRÜFT — die Auflage des
+// Councils vom 04.08.2026 ist damit erledigt. Der Entwurf liegt seit dem
+// 14.08.2026 als Drucksache 470/26 beim Bundesrat (Gesetzentwurf der
+// Bundesregierung, erster Durchgang nach Art. 76 Abs. 2 GG); Volltext im Repo
+// unter EEG_REFORM_STAND.primaerquelle. Nachgeprüft wurden alle Werte, an denen
+// sich Referenten- und Kabinettsfassung unterschieden hatten, plus jede Zahl in
+// EEG_ENTWURF_WERTE — sämtlich DECKUNGSGLEICH mit der Kabinettsfassung:
+//   · Nr. 78 Buchst. a: "In der Angabe vor Nummer 1 wird die Angabe '7 Cent'
+//     durch die Angabe '6,2 Cent' ersetzt."
+//   · § 21 Abs. 1 S. 1 Nr. 1 Buchst. c: "mit einer installierten Leistung von
+//     weniger als 7 Kilowatt, die vor dem 1. Januar 2031 in Betrieb genommen
+//     worden sind" — die 7-kW-Stufe bleibt also bei 2031, nicht 2030.
+//   · § 9 Abs. 2b: "zweiten Segments mit einer installierten Leistung von
+//     weniger als 100 Kilowatt" / "auf maximal 50 Prozent" / Steckersolar bis
+//     2 kW und 800 VA ausgenommen — die Schwelle bleibt entschieden.
+//   · § 50c Abs. 1/4/5: "weniger als 25 Kilowatt" / "1,5 Cent pro eingespeiste
+//     Kilowattstunde" / "bis zu einem Wechsel … in die Netzbetreiberabnahme,
+//     längstens bis zum Ende des 48. … Kalendermonats".
+//   · § 53 Abs. 1: "wobei von den anzulegenden Werten 1 Cent pro Kilowattstunde
+//     abzuziehen sind"; Übergangszahlung "temporär für maximal 36 Monate".
+//   · Nr. 20 Buchst. c (§ 21b Abs. 2 S. 3 n. F.): "Die Sätze 1 und 2 sind nicht
+//     für die befristete Übergangszahlung, die unentgeltliche Abnahme und den
+//     Mieterstromzuschlag anzuwenden" — das ist die Fundstelle, die
+//     Übergangszahlung und § 50c-Bonus einander ausschließen lässt.
+//   · Nr. 80 (§ 49 S. 1 n. F.): "Der anzulegende Wert nach § 48 Absatz 1
+//     verringert sich ab dem 1. August 2027".
+//   · § 102 Abs. 1: Beihilfevorbehalt unverändert.
+// Der ZUSTAND bleibt "regierungsentwurf": Eine Drucksache ist die amtlich
+// gedruckte Fassung desselben Entwurfs, kein Verfahrensfortschritt. Beschlossen
+// hat weder Bundesrat noch Bundestag etwas.
+//
 // BEWUSST NICHT BEHAUPTET (jeweils mangels tragfähiger Fundstelle):
 //   · ein Termin für die Bundestagsberatung ("ab September") — nur Fachpresse,
 //     keine amtliche Stelle hat einen Termin genannt.
@@ -135,8 +166,11 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // Referentenentwurf, auf dem sie beruht.
   entwurfIso: "2026-07-29",
   kabinettsfassungVeroeffentlicht: true,
-  geprueftIso: "2026-08-04",
-  primaerquelle: "docs/quellen/EEG-2027_Regierungsentwurf_BMWE_2026-07-29.pdf",
+  geprueftIso: "2026-08-19",
+  // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
+  // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
+  // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.
+  primaerquelle: "docs/quellen/EEG-2027_Bundesrats-Drucksache-470-26_2026-08-14.pdf",
 };
 
 const MONATE = [
