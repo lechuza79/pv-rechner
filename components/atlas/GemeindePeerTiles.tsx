@@ -60,7 +60,23 @@ export default function GemeindePeerTiles({
         vor, damit der Vergleich das misst, was eine Gemeinde selbst beeinflusst.
       </div>
 
-      <div className="kpi-reihe" style={{ "--kpi-cols": 4 } as React.CSSProperties}>
+      {/* Die Kachelreihe wird auf schmalen Schirmen zur Wischleiste (Regel in
+          lib/theme.ts). Ohne Tastatur-Attribute gibt es dort für Tastaturnutzer
+          keinen Weg zu den hinteren Kacheln (WCAG 2.1.1), und der
+          `:focus-visible`-Rahmen der Klasse läuft ins Leere — genau so stand es
+          hier bis 08/2026.
+          Anders als bei der Ranglisten-Tabelle wird der Überlauf hier NICHT
+          gemessen: Er entsteht aus einer Media Query, und diese Seite ist eine
+          Server-Komponente. Ein Messen im Browser würde nur nachbilden, was das
+          Stylesheet ohnehin entscheidet; der Preis dafür ist ein Tab-Stopp auf
+          breiten Schirmen, auf denen alle vier Kacheln nebeneinander stehen. */}
+      <div
+        className="kpi-reihe"
+        tabIndex={0}
+        role="region"
+        aria-label="Vergleichskacheln, waagerecht scrollbar"
+        style={{ "--kpi-cols": 4 } as React.CSSProperties}
+      >
         <PlatzKachel label="Ihr Platz bundesweit" row={selfDe} />
         <PlatzKachel label={`Ihr Platz in ${blName}`} row={selfBl} />
         <SpitzeKachel label="Spitze bundesweit" row={fuehrtDe ? selfDe : leadDe} selbst={fuehrtDe} />

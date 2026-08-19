@@ -6,7 +6,10 @@ import {
   fmtBatterieMittel,
   fmtSpeicherJeKwp,
   fmtErtragProKwp,
+  fmtCo2Tonnen,
+  fmtEuro,
   fmtAnteilProzent,
+  anteilProzentTeile,
   fmtAnteilProzentFein,
   fmtTopProzent,
   prozentGerundet,
@@ -32,6 +35,16 @@ describe("Einheit der installierten PV-Leistung", () => {
     expect(fmtPvLeistung(1_000_000)).toBe("1 GWp");
   });
 
+  it("schreibt Anteile als Prozent — aus dem Anteil, nicht aus der Prozentzahl", () => {
+    // Die Verwechslung ist der Grund für die Funktion: Mit 0,27 gerufen käme aus
+    // einer naiven Formatierung „0 %", mit 27 ein „2.700 %".
+    expect(fmtAnteilProzent(0.27)).toBe("27 %");
+    expect(fmtAnteilProzent(0.135)).toBe("14 %");
+    expect(fmtAnteilProzent(1)).toBe("100 %");
+    // Zahl und Einheit bleiben getrennt abrufbar (Kachel/Tabellenzelle).
+    expect(anteilProzentTeile(0.13)).toEqual({ value: "13", unit: "%" });
+  });
+
   it("hält Speicher davon getrennt (Energie, nicht Leistung)", () => {
     expect(fmtSpeicherKwh(117)).toBe("117 kWh");
     expect(fmtSpeicherKwh(999)).toBe("999 kWh");
@@ -45,6 +58,28 @@ describe("Einheit der installierten PV-Leistung", () => {
     // Installierte Leistung geteilt durch Einwohner bleibt Peak-Leistung.
     expect(fmtWattProKopf(526)).toBe("526 Wp");
     expect(fmtWattProKopf(1234)).toBe("1.234 Wp");
+  });
+
+  it("staffelt die Pro-Kopf-Leistung erst bei 10.000 Wp — der Normalfall bleibt in Wp", () => {
+    // Gemessen an allen 10.742 Gemeinden mit Solarbestand: Der Median liegt bei
+    // 1.714 Wp, 78 % liegen über 1.000. Eine Umschaltung bei 1.000 (wie bei der
+    // Gesamtleistung) machte aus dem Normalfall „1,7 kWp" — in einer RANGLISTE,
+    // in der 1.714 und 1.789 Wp dann dieselbe Zahl wären.
+    expect(fmtWattProKopf(1714)).toBe("1.714 Wp");
+    expect(fmtWattProKopf(9_999)).toBe("9.999 Wp");
+    expect(fmtWattProKopf(10_000)).toBe("10 kWp");
+    // Die 6 % darüber messen keinen Hausbestand mehr, sondern einen Solarpark
+    // geteilt durch ein Dorf. Eine Nachkommastelle lässt 100 Wp Auflösung.
+    expect(fmtWattProKopf(48_115)).toBe("48,1 kWp");
+  });
+
+  it("hält auch die Spitzenwerte in ihrer Spalte", () => {
+    // Herbstmühle: 25 Einwohner, 34,9 MWp. Ungestaffelt stand in der
+    // Ranglisten-Tabelle „1.395.922" und stieß ungetrennt an die Zahl der
+    // Nachbarspalte — vollständig lesbar und trotzdem falsch.
+    expect(fmtWattProKopf(1_395_922)).toBe("1.395,9 kWp");
+    // Büttel, der bundesweite Höchstwert.
+    expect(fmtWattProKopf(4_205_483)).toBe("4.205,5 kWp");
   });
 
   it("zeigt die mittlere Batteriegröße mit einer Nachkommastelle", () => {
@@ -136,5 +171,37 @@ describe("Regionsname ohne doppelte Gattung", () => {
     expect(regionDisplayName("Nordrhein-Westfalen")).toBe("Nordrhein-Westfalen");
     // „Kreisfreie Stadt" ist keine vorangestellte Gattung in diesem Feld.
     expect(regionDisplayName("Goldisthal")).toBe("Goldisthal");
+  });
+});
+
+/**
+ * Die Wirkungs-Spalten der Ranking-Tabelle decken vier Größenordnungen ab: eine
+ * kleine Gemeinde liegt bei Hunderten Tonnen, ein Bundesland bei Millionen.
+ * Ohne Staffelung wäre eine der beiden Zahlen unlesbar — und die Schwellen
+ * müssen festgenagelt sein, sonst rutscht die Zuordnung still.
+ */
+describe("Staffelung der Wirkungs-Formatter (CO₂ und Euro)", () => {
+  it("staffelt Tonnen bei 1.000 und 1 Million", () => {
+    expect(fmtCo2Tonnen(812)).toBe("812 t");
+    expect(fmtCo2Tonnen(999)).toBe("999 t");
+    expect(fmtCo2Tonnen(1000)).toBe("1 Tsd. t");
+    expect(fmtCo2Tonnen(1_000_000)).toBe("1 Mio. t");
+    expect(fmtCo2Tonnen(9_800_000)).toBe("9,8 Mio. t");
+  });
+
+  it("staffelt Euro bis in die Milliarden", () => {
+    expect(fmtEuro(950)).toBe("950 €");
+    expect(fmtEuro(1000)).toBe("1 Tsd. €");
+    expect(fmtEuro(315_000)).toBe("315 Tsd. €");
+    expect(fmtEuro(3_900_000_000)).toBe("3,9 Mrd. €");
+  });
+
+  it("zeigt Nachkommastellen nur, wo sie tragen (Modellwerte, keine Scheingenauigkeit)", () => {
+    // Unter 10 trägt die Stelle die Größenordnung (9,8 vs. 10) — darüber ist
+    // „404,2 Tsd. t" bei einem Modellwert Scheingenauigkeit und frisst Platz.
+    expect(fmtCo2Tonnen(43_100)).toBe("43 Tsd. t");
+    expect(fmtCo2Tonnen(404_200)).toBe("404 Tsd. t");
+    expect(fmtEuro(12_500_000)).toBe("13 Mio. €");
+    expect(fmtEuro(1_200_000_000)).toBe("1,2 Mrd. €");
   });
 });

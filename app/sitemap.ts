@@ -10,12 +10,15 @@ import { standLastModIso } from "../lib/stand";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
 // <lastmod> from real change dates, not build time: Google ignores a sitemap
-// whose lastmod is always "now". Funding pages carry the verification date of
-// their program(s); the live energy dashboard genuinely changes daily; the
-// remaining static pages omit lastmod (let the crawler decide) rather than lie.
+// whose lastmod is always "now" — und ein Deploy-Zeitstempel behauptet genau
+// das. Deshalb steht hier NIRGENDS `new Date()` an einem lastModified:
+//   - Förderseiten tragen das Prüfdatum ihres Programms,
+//   - Ratgeber ihr Änderungsdatum aus der Registry,
+//   - Atlas- und Zubau-Seiten den Datenstand des Marktstammdatenregisters
+//     (dieselbe Quelle, aus der die Seiten ihr "Stand …" rendern),
+//   - alles andere lässt lastmod weg und überlässt es dem Crawler.
+// Ein fehlendes Datum ist ehrlicher als ein falsches.
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date();
-
   const programs = await getFundingPrograms();
   const toDate = (iso?: string): Date | undefined => {
     if (!iso) return undefined;
@@ -23,9 +26,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return isNaN(d.getTime()) ? undefined : d;
   };
   const fundingDates = programs.map((p) => toDate(p.lastVerified)).filter((d): d is Date => !!d);
+  // Kein Prüfdatum in den Programmen (z. B. Datenbank aus) → gar kein lastmod,
+  // nicht die Build-Zeit.
   const maxFundingDate = fundingDates.length
     ? new Date(Math.max(...fundingDates.map((d) => d.getTime())))
-    : now;
+    : undefined;
+
+  // Datenstand des Marktstammdatenregisters — er datiert alles, was aus MaStR
+  // gerechnet ist (Atlas + Zubau-Story). Der Read ist ein Einzeiler auf
+  // mastr_meta und intern gecacht; fällt er aus, liefert er null und die Seiten
+  // stehen ohne lastmod in der Sitemap (statt mit einem geratenen Datum).
+  let mastrStand: Date | undefined;
+  try {
+    const { getMastrDataAsOf } = await import("../lib/mastr-data");
+    mastrStand = toDate((await getMastrDataAsOf()) ?? undefined);
+  } catch {
+    // bewusst still: die Sitemap soll am Datenstand nicht scheitern
+  }
 
   // Nur freigegebene Seiten: Eine gebaute, aber noch gesperrte Seite gehört
   // nicht in die Sitemap — sonst laden wir Google genau zu der Seite ein, die
@@ -81,13 +98,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // hinterher, deshalb steht er jetzt VOR ihr bereit und schaltet sich mit.
   const atlasPages: MetadataRoute.Sitemap = [];
   if (atlasLevelReleased("de")) {
-    atlasPages.push({ url: `${BASE_URL}/solar-atlas`, lastModified: now, changeFrequency: "monthly", priority: 0.6 });
+    atlasPages.push({ url: `${BASE_URL}/solar-atlas`, lastModified: mastrStand, changeFrequency: "monthly", priority: 0.6 });
   }
   if (atlasLevelReleased("bundesland")) {
     for (const bl of BUNDESLAENDER) {
       atlasPages.push({
         url: `${BASE_URL}/solar-atlas/${slugify(bl.name)}`,
-        lastModified: now,
+        lastModified: mastrStand,
         changeFrequency: "monthly",
         priority: 0.6,
       });
@@ -103,7 +120,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       for (const p of await getKreisPfade()) {
         atlasPages.push({
           url: `${BASE_URL}/solar-atlas/${p.bundesland}/${p.kreis}`,
-          lastModified: now,
+          lastModified: mastrStand,
           changeFrequency: "monthly",
           priority: 0.5,
         });
@@ -140,12 +157,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/balkonkraftwerk-rechner`, lastModified: rechnerStand("/balkonkraftwerk-rechner"), changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/einspeiseverguetung-rechner`, lastModified: rechnerStand("/einspeiseverguetung-rechner"), changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/photovoltaik-foerderung`, lastModified: maxFundingDate, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${BASE_URL}/photovoltaik-zubau-deutschland`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    // Zubau-Story rechnet auf denselben MaStR-Daten wie der Atlas — also auch
+    // derselbe Stand.
+    { url: `${BASE_URL}/photovoltaik-zubau-deutschland`, lastModified: mastrStand, changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE_URL}/ratgeber`, lastModified: neuesterRatgeber, changeFrequency: "monthly", priority: 0.7 },
     ...ratgeberPages,
     { url: `${BASE_URL}/pv-simulation`, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${BASE_URL}/strommix-deutschland`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
-    { url: `${BASE_URL}/atomstrom-import`, lastModified: now, changeFrequency: "daily", priority: 0.7 },
+    // Die beiden Live-Seiten ändern sich mehrmals täglich, aber ihr echter
+    // Datenstand liegt in der Zeitreihe (Energy-Charts), nicht hier — und die
+    // Build-Zeit wäre das Deploy-Datum, nicht das Änderungsdatum. Deshalb ohne
+    // lastmod: changeFrequency="daily" sagt dem Crawler dasselbe, ohne zu lügen.
+    { url: `${BASE_URL}/strommix-deutschland`, changeFrequency: "daily", priority: 0.8 },
+    { url: `${BASE_URL}/atomstrom-import`, changeFrequency: "daily", priority: 0.7 },
     { url: `${BASE_URL}/atomstrom-import/methodik`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${BASE_URL}/energie-widgets`, changeFrequency: "monthly", priority: 0.6 },
     // Zitierfähigkeit: Die Lizenzseite ist die Stelle, die Redaktionen vor einer

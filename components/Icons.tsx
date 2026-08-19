@@ -71,6 +71,17 @@ export function IconArrowRight({ size = 16, color = "currentColor", style }: Ico
   );
 }
 
+/** Spiegelbild von IconArrowRight — dieselbe Strichstärke, dieselbe Länge. Wird
+ *  dort gebraucht, wo ein Paar „zurück / weiter" nebeneinander steht und zwei
+ *  verschiedene Pfeilformen sofort als Ungleichgewicht auffallen. */
+export function IconArrowLeft({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M12.667 8H3.333m0 0L8 12.667M3.333 8 8 3.333" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 // Long, thin horizontal arrow (→) for breadcrumb separators.
 export function IconArrowLongRight({ size = 14, color = "currentColor", style }: IconProps) {
   const w = Math.round(size * 2);

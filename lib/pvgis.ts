@@ -2,6 +2,7 @@ import { unstable_cache } from "next/cache";
 import { supabase } from "./supabase-server";
 import { PLZ_BL } from "./plz-bundesland";
 import { NATIONAL_AVG_YIELD } from "./constants";
+import { BL_ERTRAG } from "./bundesland-ertrag";
 
 // Standort-Ertrag (kWh/kWp) als servernutzbarer Helper. War vorher nur in der
 // API-Route eingeschlossen; herausgezogen, damit Server Components (z. B. die
@@ -10,11 +11,9 @@ import { NATIONAL_AVG_YIELD } from "./constants";
 // teilen sich diese eine Funktion.
 
 // Bundesland-Fallback (kWh/kWp Durchschnitt), wenn PVGIS nicht erreichbar ist.
-const FALLBACK: Record<string, number> = {
-  BW: 1123, BY: 1123, BE: 1055, BB: 1052, HB: 991, HH: 985,
-  HE: 1079, MV: 1022, NI: 1017, NW: 1035, RP: 1100, SL: 1089,
-  SN: 1067, ST: 1074, SH: 983, TH: 1041,
-};
+// Die Werte leben in lib/bundesland-ertrag.ts (client-tauglich) — die
+// Ranking-Tabelle des Atlas rechnet im Browser mit derselben Tabelle.
+const FALLBACK = BL_ERTRAG;
 
 
 export type PvgisYield = {

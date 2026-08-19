@@ -789,5 +789,117 @@ export const globalStyles = `
   .atlas-rank-row .atlas-go{opacity:0;transform:translateX(-4px);transition:opacity 0.16s ease,transform 0.16s ease}
   .atlas-rank-row:hover .atlas-go{opacity:1;transform:translateX(0)}
 
+  /* ── Waagerecht scrollende Atlas-Tabellen ─────────────────────────────────
+     Eine Tabelle, die breiter ist als der Schirm, scrollt in ihrem EIGENEN
+     Kasten — nie die Seite. Damit sie dann auch bedienbar bleibt, braucht der
+     Kasten zwei Dinge, die ein blosses overflow-x nicht mitbringt:
+
+     1. TASTATURZUGANG. Ein Scrollkasten ohne tabIndex ist mit der Tastatur
+        gar nicht erreichbar — die rechten Spalten sind dann fuer
+        Tastaturnutzer nicht existent (WCAG 2.1.1 Keyboard). Der Aufrufer
+        setzt tabIndex/role/aria-label, und zwar NUR wenn der Inhalt wirklich
+        ueberlaeuft: ein Tab-Stopp, der nichts scrollt, ist Laerm (Pickering,
+        Inclusive Components — Data Tables). Erzwungen von
+        lib/__tests__/atlas-tabellen-waechter.test.ts.
+     2. FOKUSRAHMEN AUF DER KANTE (outline-offset:0), anders als bei .kpi-reihe.
+        Ein nach INNEN gesetzter Ring liegt im Scrollbereich — und dort decken
+        ihn die mitlaufenden Spalten mit ihrem Ueberstand zu: Der linke Schenkel
+        zerfiel in kurze blaue Striche zwischen den Zeilen. Auf der Kante liegt
+        er ausserhalb des Bereichs, den der Kasten beschneidet, und bleibt
+        durchgehend. Die Tabelle traegt dafuer links und rechts einen negativen
+        Aussenabstand, der Platz genug laesst; eine Tabelle ohne diesen Platz
+        braucht ihn, bevor sie diese Klasse benutzt.
+
+     Der Rahmen liegt bewusst auf :focus-visible, nicht auf :focus: Wer mit der
+     Maus in den Kasten klickt, hat den Rahmen nicht angefordert. */
+  .atlas-tabelle-scroller{overflow-x:auto}
+  .atlas-tabelle-scroller:focus-visible{outline:2px solid var(--color-accent);outline-offset:0;border-radius:12px}
+
+  /* Mitlaufende (fixierte) Spalten. Bewusst NICHT auf "die ersten beiden"
+     festgelegt: Jede Zelle sagt ueber --atlas-fix-links selbst, wo sie stehen
+     bleibt, und die letzte fixierte traegt zusaetzlich --kante. Eine Tabelle
+     mit einer oder mit drei fixierten Spalten nutzt dieselben zwei Klassen.
+
+     DREI DINGE, die einzeln schon schiefgegangen sind:
+     · DECKENDER Hintergrund. Ohne ihn scheint der scrollende Inhalt durch.
+       Er kommt aus --atlas-zeilen-bg, das die Zeile setzt — und zwar in JEDEM
+       Zustand (normal, Hover, hervorgehoben), sonst wird genau der eine
+       vergessene Zustand durchsichtig.
+     · Die RASTERLUECKE zwischen fixierter und scrollender Spalte gehoert
+       keiner von beiden, und links vor der ERSTEN fixierten Spalte liegt der
+       Innenabstand der Zeile. Beides gehoert niemandem — ohne Ueberstand sieht
+       man dort hindurch, und zwar sichtbar: Bei halb gescrollter Tabelle
+       standen dort abgeschnittene Ziffern aus den Wertspalten. Die beiden
+       ersten "Schatten" sind deshalb keine Schatten, sondern deckende Flaechen
+       in Zeilenfarbe — eine nach links (--atlas-fix-vorne, nur an der ersten
+       Spalte), eine nach rechts (--atlas-fix-luecke).
+     · Der KANTENSCHATTEN erscheint nur, wenn wirklich gescrollt ist
+       (--atlas-fix-kante wird dann von der Tabelle gesetzt) — sonst behauptet
+       er dauerhaft, rechts liege noch etwas verborgen. */
+  /* BEWUSST OHNE z-index. Eine positionierte Zelle liegt ohnehin ueber ihren
+     nicht positionierten Geschwistern — das reicht, damit der scrollende Inhalt
+     darunter durchlaeuft. Ein z-index macht aus JEDER Zelle einen eigenen
+     Stapelkontext, und bei knapp hundert Zeilen (Gemeindelisten haben mehr) gibt
+     Chrome dann Kacheln auf: In der Liste blieben einzelne Platz- und
+     Namenszellen einfach unbemalt, waehrend im Baum alles korrekt stand. Nur die
+     Kopfzeile braucht einen (--kopf), damit ihr Aufklapp-Menue ueber den Zeilen
+     liegt — das sind zehn Zellen, nicht zweihundert.
+
+     DIESE REGEL STAND HIER SCHON, DER CODE HIELT SIE NICHT EIN (bis 18.08.2026).
+     Die Zeile z-index:1 kam mit demselben Commit wie dieser Absatz herein und
+     hat nie eine Begruendung getragen. Sie blieb folgenlos, solange der
+     Scrollkasten selbst KEIN Stapelkontext war; seit er einen bekam (damit seine
+     Scrollleiste nicht ueber der schwebenden Postleitzahl-Karte liegt), lagen 34
+     Stapelkontexte in einem frischen Stapelkontext, und darueber laeuft auf der
+     Zeilen-Liste eine Ein-/Ausblendung mit opacity + transform (Keyframes fu),
+     die die ganze Gruppe zwischenspeichert. Auf dem Telefon (Safari, 390 px)
+     blieben ab Zeile 3 Platz- und Namensspalte unbemalt, waehrend die Wertspalten
+     daneben korrekt standen — dasselbe Bild, das dieser Absatz schon beschrieb:
+     im Baum ist alles da, gemalt wird es nicht.
+
+     WAS GEMESSEN IST UND WAS NICHT — damit es niemand staerker liest, als es ist:
+     Gemessen ist, dass es KEIN Layoutfehler ist (Rechtecke, Textinhalt, Farben,
+     Deckkraft und Deckung sind in Chromium wie in WebKit, direkt geladen wie nach
+     einer Groessenaenderung, fehlerfrei) und dass jede der 34 Zellen einen eigenen
+     Stapelkontext fuehrte. Gemessen ist auch, dass der Entzug nichts kostet: Die
+     Zellen decken den scrollenden Inhalt weiterhin vollstaendig, der Streifen vor
+     der ersten Spalte bleibt in jeder Raststellung sauber (Pixel gezaehlt).
+     NICHT gemessen ist die Heilung selbst — das fehlerhafte Bild liess sich in
+     keinem steuerbaren Browser nachstellen (headless wie sichtbar, beide
+     Engines), und an das echte Safari kam der Lauf nicht heran. Die Behebung ist
+     also aus dem Mechanismus begruendet, nicht am Fehlerbild bestaetigt; bleibt
+     das Telefon fehlerhaft, sind die naechsten Verdaechtigen der Stapelkontext auf
+     dem Scrollkasten selbst und scroll-snap-type, beide aus demselben Commit.
+     Erzwungen von e2e/ranking-fixspalten.spec.ts. */
+  .atlas-fix-spalte{
+    position:sticky;
+    left:var(--atlas-fix-links,0px);
+    background:var(--atlas-zeilen-bg,var(--color-bg));
+    --atlas-fix-deckung:
+      calc(-1 * var(--atlas-fix-vorne,0px)) 0 0 0 var(--atlas-zeilen-bg,var(--color-bg)),
+      var(--atlas-fix-luecke,11px) 0 0 0 var(--atlas-zeilen-bg,var(--color-bg));
+    box-shadow:var(--atlas-fix-deckung);
+  }
+  .atlas-fix-spalte--kante{
+    box-shadow:var(--atlas-fix-deckung),var(--atlas-fix-kante,0 0 0 0 transparent);
+  }
+  /* Die Kopfzeile steht ueber den Zeilen: Ihre Aufklapp-Menues oeffnen nach
+     unten und muessen die fixierten Zellen der Zeilen ueberdecken. */
+  .atlas-fix-spalte--kopf{z-index:4}
+  /* Die Postleitzahl-Karte der Rangliste schwebt auf schmalen Bildschirmen ueber
+     der Liste und verdeckt dort Zeilen. Ihre Ueberschrift faellt deshalb unter
+     640 px weg (Vorgabe des Betreibers, 19.08.2026): Der Satz darunter sagt
+     ohnehin beides — was zu tun ist und was daraufhin passiert. Als Klasse und
+     nicht als Inline-Stil, weil eine Media Query dort nicht geht. */
+  @media (max-width:640px){
+    .atlas-plz-titel{display:none}
+  }
+
+  /* Zeilenfarbe je Zustand — die fixierten Zellen lesen sie. Hover und
+     Nachbar-Hover spiegeln exakt die background-Regeln daroeber; die
+     hervorgehobene Zeile setzt ihre Farbe inline (und gewinnt damit). */
+  .atlas-rank-row:hover{--atlas-zeilen-bg:var(--color-bg-muted)}
+  .atlas-rank-row:has(.atlas-rank-neben:hover){--atlas-zeilen-bg:var(--color-bg)}
+
 
 `;
