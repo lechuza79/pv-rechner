@@ -187,7 +187,16 @@ export function fundingStandLabel(p: FundingProgram, heute?: string): string {
   // Bundesprogramm wie die 0 % Mehrwertsteuer trägt keinen strukturierten Satz
   // und wird nie eingerechnet — dort wäre "daher nicht eingerechnet" eine
   // beunruhigende Falschaussage über eine dauerhafte Rechtslage.
-  const rechenbar = !!(p.percentOfCost || p.pvPerKwp || p.pvTiers || p.speicherPerKwh || p.speicherTiers);
+  // Alle drei Techniken, nicht nur Dach-PV: Seit der Katalog auch Balkon- und
+  // Wärmepumpen-Sätze trägt, hätte die reine PV-Liste genau bei diesen
+  // Programmen geschwiegen — „Zuletzt geprüft: 18.08.2026" neben einer Rechnung,
+  // die den Zuschuss stillschweigend weglässt. Das ist der Widerspruch zwischen
+  // Text und Zahl, den der Hinweis verhindern soll.
+  const rechenbar = !!(
+    p.percentOfCost || p.pvPerKwp || p.pvTiers || p.speicherPerKwh || p.speicherTiers ||
+    p.balkonPauschale || p.balkonProWp || p.balkonPercentOfCost || p.balkonTiers ||
+    p.wpPauschale || p.wpPercentOfCost
+  );
   const nichtGerechnet =
     rechenbar && p.status === "aktiv" && !fundingBelegAktuell(p, heute ?? heuteIso())
       ? " · aktuell nicht bestätigt, daher nicht eingerechnet"
@@ -2198,7 +2207,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Der Förderantrag muss vor dem Kauf gestellt und bewilligt sein",
       "Dach- und Fassadenanlagen werden seit April 2026 bezuschusst, Balkonkraftwerke seit Februar 2023",
-      "Die Wärmepumpen-Förderung steht in einer eigenen Richtlinie und setzt eine vorherige Energieberatung voraus",
+      "Die Wärmepumpen-Förderung steht in einer eigenen Richtlinie, nicht in der für Photovoltaik",
+      "Ohne Bundesförderung zahlt die Gemeinde nicht — nachzuweisen sind der Antrag beim BAFA und später der Auszahlungsbescheid",
       "Sie gilt nur im Bestand, wenn die Vorgängerheizung mindestens zwei Jahre alt war",
       "Die Anlage muss der BAFA-Förderrichtlinie entsprechen und der hydraulische Abgleich durchgeführt sein",
       "Gerechnet wird der Satz der Luft-Wasser-Pumpe; für Erdwärme oder Grundwasser sind es 200 € mehr",
@@ -2222,6 +2232,16 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // die gewohnte: lieber eine angenehme Überraschung als eine eingeplante
     // Zahl, die nicht kommt.
     wpPauschale: 600,
+    // KORREKTUR 19.08.2026 (Volltext in docs/quellen/): Hier stand als Bedingung
+    // „setzt eine vorherige Energieberatung voraus". Das ist falsch — die
+    // Energieberatung verlangt Poing für DÄMMUNG und FENSTER (Abschnitt 5.1.6),
+    // die Unterlagenliste der Wärmepumpe (5.2.4) nennt sie nicht. Verlangt wird
+    // dort stattdessen der Nachweis der BAFA-Antragstellung und beim Abruf der
+    // Auszahlungsbescheid; zusammen mit Abschnitt 5.2 („gefördert werden
+    // Heizsysteme, die nach den Richtlinien des BAFA im Rahmen der BEG gefördert
+    // werden") setzt der Zuschuss die Bundesförderung also VORAUS, statt mit ihr
+    // zu konkurrieren. Das ist zugleich der Beleg dafür, dass er neben der BEG
+    // stehen darf — Abschnitt 3.4 erlaubt die Kombination ausdrücklich.
   },
 
   "goch-balkonkraftwerke": {
@@ -2854,6 +2874,67 @@ export function foerdertTechnik(f: Pick<FundingProgram, "foerdert">, technik: Fu
  */
 export function programmeFuerTechnik(list: FundingProgram[], technik: FundingTechnik): FundingProgram[] {
   return list.filter((p) => foerdertTechnik(p, technik));
+}
+
+/**
+ * Schließt das Programm eine gleichzeitige Bundesförderung aus?
+ *
+ * WOZU: Der Wärmepumpen-Rechner zieht die BEG des Bundes bereits ab, bevor der
+ * Katalog überhaupt gefragt wird — sie ist kein Katalog-Eintrag, sondern kommt
+ * aus lib/heatpump.ts. `combinableWith` kann sie deshalb nicht benennen, und ein
+ * Programm, das Bundesmittel ausschließt, würde sonst stumm OBEN DRAUF gerechnet.
+ *
+ * Gelesen wird die vorhandene Angabe, kein neues Feld: Eine leere
+ * `combinableWith`-Liste ist im Katalog bereits die Art, „geht nur allein" zu
+ * sagen — Gaiberg trägt sie, weil die Richtlinie eine Förderung durch KfW, BAFA
+ * oder das Land ausdrücklich ausschließt. Jedes andere Programm nennt dort
+ * mindestens die Bundeseinträge.
+ *
+ * Die Richtung ist bewusst vorsichtig: Wer nichts angibt, gilt als
+ * ausschließend. Eine zu Unrecht weggelassene Förderung ist eine angenehme
+ * Überraschung, eine zu Unrecht gewährte ein Zuschuss, den jemand einplant und
+ * nicht bekommt.
+ */
+export function schliesstBundesfoerderungAus(f: Pick<FundingProgram, "combinableWith">): boolean {
+  return (f.combinableWith?.length ?? 0) === 0;
+}
+
+/**
+ * Die Programme, die NEBEN der Bundesförderung stehen dürfen. Nur diese darf ein
+ * Rechner abziehen, der die BEG schon eingerechnet hat.
+ */
+export function programmeNebenBundesfoerderung(list: FundingProgram[]): FundingProgram[] {
+  return list.filter((p) => !schliesstBundesfoerderungAus(p));
+}
+
+/**
+ * Die Förderzeilen, die zu einem gedeckelten Gesamtbetrag GEHÖREN.
+ *
+ * WOZU: Ein Deckel wirkt auf den Stapel, nicht auf ein einzelnes Programm.
+ * Zeigte man die vollen Ansprüche an und zöge nur den gedeckelten Betrag ab,
+ * stünde eine Förderzeile auf dem Bildschirm, die in der Investition nicht
+ * steckt — der Widerspruch zwischen Text und Zahl, den dieses Projekt als
+ * schwersten Fehler führt.
+ *
+ * Aufgefüllt wird der REIHE NACH, bis der Deckel erreicht ist: eine
+ * deterministische, erklärbare Regel. Eine anteilige Verteilung wäre erfunden —
+ * kein Programm kürzt sich anteilig, weil ein anderes auch zahlt.
+ *
+ * Zusicherung, auf die sich die Oberfläche verlassen darf: Die Summe der
+ * zurückgegebenen Beträge ist exakt `min(deckel, Σ applied)`.
+ */
+export function zeilenBisDeckel(
+  applied: { program: FundingProgram; amount: number }[],
+  deckel: number,
+): { program: FundingProgram; amount: number }[] {
+  let rest = Math.max(0, deckel);
+  const zeilen: { program: FundingProgram; amount: number }[] = [];
+  for (const eintrag of applied) {
+    const betrag = Math.min(eintrag.amount, rest);
+    rest -= betrag;
+    if (betrag > 0) zeilen.push({ program: eintrag.program, amount: betrag });
+  }
+  return zeilen;
 }
 
 /** Prozentsatz mit optionalem Deckel — die häufigste Bauform kommunaler Zuschüsse. */
