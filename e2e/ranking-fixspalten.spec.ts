@@ -202,74 +202,156 @@ for (const [name, viewport] of [
     });
 
     /**
-     * DASS ES SEITLICH WEITERGEHT, MUSS ZU SEHEN SEIN — bevor jemand wischt.
+     * DASS ES SEITLICH WEITERGEHT, MUSS ZU SEHEN SEIN — und bedienbar.
      *
-     * DER ANLASS (19.08.2026). Der Betreiber sah auf dem Telefon nicht, dass die
-     * Tabelle scrollt. Der Verlauf an der rechten Kante war da und stand auf
-     * voller Deckkraft — er hatte nur nichts zu tun: Die Tabelle rastet an
-     * Spaltenkanten ein, der rechte Rand fällt deshalb in eine Spaltenlücke, und
-     * ein Verlauf von Seitenfarbe nach Seitenfarbe ist unsichtbar. Nachgemessen
-     * bei 390 px lag in der AUSGANGSSTELLUNG — der, die jeder zuerst sieht — kein
-     * einziges Zeichen auf dem Streifen.
+     * VORGESCHICHTE (19.08.2026, zwei Anläufe an einem Tag). Der Betreiber sah
+     * auf dem Telefon nicht, dass die Tabelle scrollt. Der Verlauf an der
+     * rechten Kante war da und auf voller Deckkraft — er hatte nur nichts zu
+     * tun: Die Tabelle rastet an Spaltenkanten ein, der rechte Rand fällt in
+     * eine Spaltenlücke, und ein Verlauf von Seitenfarbe nach Seitenfarbe ist
+     * unsichtbar (bei 390 px in der Ausgangsstellung kein einziges Zeichen auf
+     * dem Streifen). Der erste Anlauf setzte eine harte Kante darüber und einen
+     * Satz darunter; beides ist zurückgenommen. Jetzt stehen zwei Knöpfe da.
      *
-     * Deshalb prüft dieser Test beides, und zwar in der Reihenfolge, in der ein
-     * Nutzer es erlebt: Der Satz steht da, solange die Tabelle noch nie bewegt
-     * wurde, und er ist weg, sobald sie einmal bewegt wurde. Ein Hinweis, der
-     * nach dem ersten Wischen zurückkäme, wäre eine Belehrung.
-     *
-     * Der Kanten-Verlauf selbst wird hier NICHT auf sein Aussehen geprüft — die
-     * Farbe entsteht aus Tageszeit-Stufe, Token und zwei überlagerten Verläufen
-     * und wäre nur als Pixelvergleich zu fassen. Geprüft wird, dass er da ist,
-     * die volle Höhe deckt und auf der Kante des Scrollkastens sitzt.
+     * Geprüft wird, was ein Nutzer erlebt:
+     *  1. Am linken Rand steht NUR der Weiter-Knopf — ein Zurück-Knopf, der
+     *     nichts zu tun hat, behauptet verborgenen Inhalt links.
+     *  2. Jeder Druck springt auf den NÄCHSTEN RASTPUNKT, nicht um einen
+     *     erfundenen Betrag. Nachweis ohne die Rastpunkte zu kennen: Die
+     *     Stellungen wachsen streng, jede einzelne ist eine Ruhestellung (nach
+     *     dem Loslassen bewegt sich nichts mehr — sonst hätte das Einrasten den
+     *     Knopf korrigiert), und es sind so viele Sprünge wie Wertspalten.
+     *  3. Am rechten Ende verschwindet der Weiter-Knopf und der Zurück-Knopf
+     *     steht da; zurück landet man wieder bei genau 0.
+     *  4. Beide sind echte Knöpfe mit Beschriftung und mit der Tastatur zu
+     *     bedienen (WCAG 2.1.1) — deshalb Fokus + Enter statt Klick.
      */
-    test("sagt vor dem ersten Wischen, dass es rechts weitergeht", async ({ page }) => {
+    test("springt mit den Pfeilen spaltenweise und zeigt sie nur, wo es weitergeht", async ({ page }) => {
       await page.goto("/solar-atlas");
       await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
-      // Erst wenn der Überlauf gemessen ist, steht auch der Hinweis — beides
+      // Erst wenn der Überlauf gemessen ist, stehen auch die Knöpfe — beides
       // hängt an derselben Messung.
       await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
 
-      const hinweis = page.getByText("Die Tabelle geht rechts weiter", { exact: false });
-      await expect(hinweis).toBeVisible();
+      const zurueck = page.getByRole("button", { name: "Eine Spalte zurück" });
+      const weiter = page.getByRole("button", { name: "Eine Spalte weiter" });
+      const stellung = () =>
+        page.evaluate(() => Math.round((document.querySelector(".atlas-tabelle-scroller") as HTMLElement).scrollLeft));
 
-      // Der Verlauf deckt die Kante über die ganze Höhe der Tabelle. Er blendet
-      // über 0,15 s ein — ohne diese Pause misst man einen Zwischenwert der
-      // Animation und der Test flattert (gemessen: 0,61 und 0,9997).
+      await expect(weiter).toBeVisible();
+      await expect(zurueck).toBeHidden();
+      expect(await stellung()).toBe(0);
+
+      // Vorwärts bis ans Ende. Nach jedem Sprung eine zweite Messung: Rastet die
+      // Tabelle nach dem Loslassen noch nach, war das Ziel kein Rastpunkt.
+      const stellungen: number[] = [];
+      for (let i = 0; i < 12 && (await weiter.isVisible()); i++) {
+        await weiter.focus();
+        await page.keyboard.press("Enter");
+        await page.waitForTimeout(600);
+        const gelandet = await stellung();
+        await page.waitForTimeout(300);
+        expect(await stellung(), "nach dem Sprung ist die Tabelle nachgerastet — das Ziel war kein Rastpunkt").toBe(
+          gelandet,
+        );
+        stellungen.push(gelandet);
+      }
+
+      // Streng wachsend, keine Stelle doppelt (ein Knopf, der auf der Stelle
+      // tritt, sah zwischenzeitlich aus wie ein toter Knopf).
+      // Wie viele Sprünge es bis ans Ende sind, hängt an der Fensterbreite: auf
+      // dem Telefon sechs, am Desktop zwei (dort fehlen nur zwei Spalten).
+      expect(stellungen.length, "kein einziger Sprung").toBeGreaterThanOrEqual(2);
+      for (let i = 1; i < stellungen.length; i++) {
+        expect(stellungen[i], `Sprung ${i} ging nicht vorwärts: ${stellungen.join(" → ")}`).toBeGreaterThan(
+          stellungen[i - 1],
+        );
+      }
+      // Sieben Wertspalten, also höchstens sieben Sprünge bis ans Ende — mehr
+      // hieße, dass der Knopf feiner springt als die Tabelle einrastet.
+      expect(stellungen.length).toBeLessThanOrEqual(7);
+
+      await expect(weiter).toBeHidden();
+      await expect(zurueck).toBeVisible();
+
+      // …und wieder zurück, bis genau auf 0.
+      for (let i = 0; i < 12 && (await zurueck.isVisible()); i++) {
+        await zurueck.focus();
+        await page.keyboard.press("Enter");
+        await page.waitForTimeout(600);
+      }
+      expect(await stellung(), "zurück landet nicht am linken Rand").toBe(0);
+      await expect(zurueck).toBeHidden();
+      await expect(weiter).toBeVisible();
+    });
+
+    /**
+     * ZWEI AUSZEICHNUNGEN, ZWEI BEDEUTUNGEN — und keine dritte.
+     *
+     * DER ANLASS (19.08.2026). Seit Platzierung und Sortierung getrennt sind,
+     * tragen zwei Spalten gleichzeitig eine Auszeichnung, und keine sagte, wofür
+     * sie steht. Vorgabe des Betreibers: Die SORTIERTE Spalte bekommt einen
+     * Pfeil, die PLATZIERTE eine blau hinterlegte Box wie das Feld „Platzierung
+     * nach …" darüber — das ist die sichtbare Klammer zwischen beiden.
+     *
+     * Der Test nagelt die drei Aussagen fest, die dabei schiefgehen können:
+     *  1. Genau EINE Box und genau EIN Pfeil, in jedem Zustand. Zwei Pfeile
+     *     (Platz-Kopf und Wertspalte gleichzeitig) waren der erste Fehlversuch.
+     *  2. Box und Pfeil folgen den richtigen Zuständen und lassen sich TRENNEN:
+     *     Nach einem Klick auf eine andere Überschrift wandert der Pfeil, die
+     *     Box bleibt.
+     *  3. Die Marken kosten keine Breite. Die Wertspalten haben 1 bis 2 Pixel
+     *     Luft; wäre der Pfeil ein normales Kind, zöge er die Tabelle auf. Die
+     *     Gesamtbreite muss über alle Zustände dieselbe bleiben — sie bestimmt
+     *     die Rastpunkte, und ein verschobener Rastpunkt schneidet Zahlen an.
+     */
+    test("markiert sortierte und platzierte Spalte verschieden — ohne die Tabelle zu verbreitern", async ({ page }) => {
+      await page.goto("/solar-atlas");
+      await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
+      await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
+
+      const zustand = () =>
+        page.evaluate(() => {
+          const sc = document.querySelector(".atlas-tabelle-scroller") as HTMLElement;
+          return {
+            box: [...document.querySelectorAll<HTMLElement>("[data-platziert]")].map((e) => e.dataset.spaltenkopf),
+            sortiert: [...document.querySelectorAll<HTMLElement>("[data-sortiert]")].map((e) => e.dataset.spaltenkopf),
+            pfeileAn: document.querySelectorAll('[data-sortpfeil="an"]').length,
+            breite: Math.round(sc.scrollWidth),
+          };
+        });
+
+      const start = await zustand();
+      expect(start.box.length, "genau eine Spalte trägt die Platzierungs-Box").toBe(1);
+      expect(start.pfeileAn, "genau ein Sortier-Pfeil").toBe(1);
+      expect(start.sortiert).toEqual(start.box); // beim Laden dieselbe Größe
+
+      // Nach einer anderen Spalte sortieren: der Pfeil wandert, die Box bleibt.
+      await page.getByTitle(/Liste nach Anlagen sortieren/).click();
       await page.waitForTimeout(400);
-      const kante = await page.evaluate(() => {
-        const sc = document.querySelector(".atlas-tabelle-scroller") as HTMLElement;
-        const streifen = sc.parentElement!.querySelector<HTMLElement>(":scope > span[aria-hidden]");
-        if (!streifen) return null;
-        const s = streifen.getBoundingClientRect();
-        const k = sc.getBoundingClientRect();
-        return {
-          deckung: Number(getComputedStyle(streifen).opacity),
-          breite: Math.round(s.width),
-          // Beides in Pixeln: sitzt der Streifen wirklich auf der rechten Kante,
-          // und reicht er über die volle Höhe?
-          abstandZurKante: Math.round(Math.abs(s.right - k.right)),
-          hoehenFehlbetrag: Math.round(k.height - s.height),
-        };
-      });
-      expect(kante).not.toBeNull();
-      expect(kante!.deckung).toBeGreaterThan(0.95);
-      expect(kante!.breite).toBeGreaterThan(20);
-      expect(kante!.abstandZurKante).toBeLessThanOrEqual(1);
-      expect(kante!.hoehenFehlbetrag).toBeLessThanOrEqual(1);
+      const getrennt = await zustand();
+      expect(getrennt.sortiert).toEqual(["count"]);
+      expect(getrennt.box).toEqual(start.box);
+      expect(getrennt.pfeileAn).toBe(1);
 
-      // Einmal seitlich bewegen — danach ist der Satz weg und bleibt weg, auch
-      // wenn man an den linken Rand zurückkehrt.
-      await page.evaluate(() => {
-        const sc = document.querySelector(".atlas-tabelle-scroller") as HTMLElement;
-        sc.scrollLeft = 120;
-      });
-      await expect(hinweis).toHaveCount(0, { timeout: 5_000 });
+      // Andere Platzierung wählen: die Box wandert mit dem Feld darüber.
+      await page.getByRole("button", { name: /Platzierung nach/ }).click();
+      await page.getByRole("button", { name: "CO₂ gespart", exact: true }).first().click();
+      await page.waitForTimeout(400);
+      const umgestellt = await zustand();
+      expect(umgestellt.box).toEqual(["co2"]);
+      expect(umgestellt.pfeileAn).toBe(1);
 
-      await page.evaluate(() => {
-        (document.querySelector(".atlas-tabelle-scroller") as HTMLElement).scrollLeft = 0;
-      });
-      await page.waitForTimeout(200);
-      await expect(hinweis).toHaveCount(0);
+      // Auch die letzte Spalte sortieren — dort hat ein überlaufendes Kind den
+      // meisten Platz zu verderben.
+      await page.getByTitle(/Liste nach Batterien sortieren/).click();
+      await page.waitForTimeout(400);
+      const letzte = await zustand();
+      expect(letzte.sortiert).toEqual(["speicher"]);
+
+      for (const [name, z] of [["getrennt", getrennt], ["umgestellt", umgestellt], ["letzte Spalte", letzte]] as const) {
+        expect(z.breite, `${name}: die Tabelle ist breiter geworden`).toBe(start.breite);
+      }
     });
   });
 }

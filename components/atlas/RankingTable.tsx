@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { v } from "../../lib/theme";
-import { IconArrowUp, IconArrowDown, IconChevronDown, IconArrowRight } from "../Icons";
+import { IconArrowUp, IconArrowDown, IconChevronDown, IconArrowLeft, IconArrowRight } from "../Icons";
 import { useHomeGemeinde, lookupPlz, type GemeindeHit } from "../../lib/home-gemeinde";
 import { SEGMENT_OWNER, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
 import {
@@ -260,6 +260,11 @@ const ON_ACCENT_DIM = "rgba(255,255,255,0.72)";
  * Dieselbe Entscheidung wie in TendTag, wo ebenfalls die ANGEZEIGTE Stufe über
  * Vorzeichen und Ton bestimmt (dort prozentGerundet, hier die ganze Zahl).
  *
+ * Auch der Fall „in der GANZEN Liste bewegt sich nichts" bleibt so: Ein
+ * Vorschlag, die sechzehn Nullen dann durch einen Satz über der Tabelle zu
+ * ersetzen, wurde am 19.08.2026 vom Betreiber verworfen — „±0" sagt in jeder
+ * Zeile dasselbe Richtige, egal wie viele davon untereinander stehen.
+ *
  * `null` bleibt leer: Das heißt nicht „unverändert", sondern „für diesen Ort
  * gibt es keine Vergleichszahl" — und dann steht links schon „—" statt einer
  * Platzziffer.
@@ -287,6 +292,40 @@ function RankDelta({ value, sinceYear, onAccent = false }: { value: number | nul
     >
       <Icon size={9} />
       {Math.abs(value)}
+    </span>
+  );
+}
+
+/**
+ * Das Zeichen für „hiernach ist sortiert" — ein Pfeil in der Richtung, in die
+ * die Liste läuft. Ab = größter Wert oben, Auf = kleinster/A oben.
+ *
+ * ER STEHT DIREKT HINTER SEINER ÜBERSCHRIFT, und das war ein zweiter Anlauf.
+ * Zuerst saß er absolut gesetzt in der Rasterlücke rechts vom Kopf — das kostet
+ * keine Breite, liest sich im Browser aber falsch: Ein Zeichen zwischen zwei
+ * Überschriften gehört optisch der rechten. „Anlagen ? ↓ Leistung" sah aus, als
+ * sei nach Leistung sortiert.
+ *
+ * Jetzt steht er im Fluss hinter dem Titel, und was überläuft, ist das „?" —
+ * es rückt um elf Pixel in die Rasterlücke (die gehört keiner Spalte). Die
+ * Spaltenbreiten, die Rastpunkte und die Gesamtbreite der Tabelle bleiben
+ * dadurch unangetastet: Ein überlaufendes Flex-Kind vergrößert weder den
+ * Rasterplatz noch den Rahmen, an dem das Einrasten misst. Gemessen — die
+ * Wertspalten haben nur 1 bis 2 Pixel Luft, sieben Spalten um zehn zu
+ * verbreitern zöge die Tabelle um siebzig Pixel auf.
+ *
+ * Der Platz ist immer belegt, auch ohne Pfeil (`visibility` statt Ausblenden):
+ * Sonst rückte das „?" bei jedem Sortierwechsel hin und her.
+ */
+function SortPfeil({ an, auf }: { an: boolean; auf: boolean }) {
+  const Icon = auf ? IconArrowUp : IconArrowDown;
+  return (
+    <span
+      aria-hidden={!an}
+      data-sortpfeil={an ? "an" : "aus"}
+      style={{ ...S.sortPfeil, ...(an ? null : { visibility: "hidden" }) }}
+    >
+      <Icon size={9} />
     </span>
   );
 }
@@ -349,13 +388,6 @@ export default function RankingTable({
   // der rechten Kante („hier geht es weiter"). Er darf NUR erscheinen, solange
   // rechts wirklich noch etwas liegt; sonst behauptet er etwas.
   const [scrollRest, setScrollRest] = useState(0);
-  /**
-   * Wurde die Tabelle in dieser Sitzung schon einmal seitlich bewegt? Daran
-   * hängt allein der Hinweis über der Tabelle (siehe dort). Bewusst ein
-   * Einweg-Schalter: Wer zurück an den linken Rand scrollt, hat den Mechanismus
-   * verstanden — der Hinweis käme dann als Belehrung zurück.
-   */
-  const [geschoben, setGeschoben] = useState(false);
   // Welcher Ortsname gerade ausgeklappt ist (nur einer — siehe rowCells).
   const [nameOffen, setNameOffen] = useState<string | null>(null);
   // Läuft die Tabelle in diesem Fenster überhaupt über? Davon hängt beides ab:
@@ -392,6 +424,46 @@ export default function RankingTable({
     if (!el) return;
     setScrollRest(el.scrollWidth - el.clientWidth - el.scrollLeft);
   }, [ueberlauf, endraum, sort, owner, platz]);
+
+  /**
+   * Eine Spalte weiter oder zurück — der Sprung hinter den beiden Pfeilknöpfen.
+   *
+   * „Eine Spalte" ist NICHT eine eigene Schrittweite, sondern der nächste
+   * RASTPUNKT: dieselbe Stellung, in der die Tabelle beim Wischen von selbst
+   * einrastet. Eine zweite Schrittweite wäre der klassische Fehler — Knopf und
+   * Wischen kämen an verschiedenen Stellen zum Stehen, und das Einrasten würde
+   * den Knopf sofort wieder korrigieren.
+   *
+   * Der Toleranzpixel fängt Bruchteile ab: `scrollLeft` ist auf Bildschirmen
+   * mit Skalierung keine ganze Zahl, und ohne ihn träte der Knopf bei 156,8 px
+   * gegen den Rastpunkt 157 auf der Stelle.
+   */
+  const springeSpalte = (richtung: 1 | -1) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    const jetzt = el.scrollLeft;
+    const ziel =
+      richtung > 0
+        ? RASTPUNKTE.find((p) => p > jetzt + 1) ?? max
+        : [...RASTPUNKTE].reverse().find((p) => p < jetzt - 1) ?? 0;
+    // Der Auslauf hebt das Scroll-Ende auf einen Rastpunkt an (endraumFuer);
+    // trotzdem geklemmt, damit ein Rastpunkt jenseits des Endes nicht ins Leere
+    // zielt und der Knopf tot wirkt.
+    el.scrollTo({
+      left: Math.max(0, Math.min(ziel, max)),
+      // Wer Bewegung abbestellt hat, bekommt denselben Sprung ohne Fahrt.
+      behavior:
+        typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+          ? "auto"
+          : "smooth",
+    });
+  };
+  // Ein Pfeil steht nur da, solange in seiner Richtung wirklich noch etwas
+  // liegt. Derselbe Maßstab wie beim Verlauf an der Kante (ein Pixel Toleranz),
+  // damit nicht der eine „hier geht es weiter" sagt und der andere schweigt.
+  const kannWeiter = scrollRest > 1;
+  const kannZurueck = scrollLeft > 1;
 
   // Resolve ?plz= to the child region it belongs to. A postcode can span several
   // Gemeinden; the one that appears in this very list is the right match, so the
@@ -696,15 +768,21 @@ export default function RankingTable({
    * Ortsname — sie sind gleichrangige Messwerte, und ein abgedunkelter Wert
    * sähe aus, als sei er weniger belastbar.
    *
-   * Fett steht die PLATZIERUNGS-Spalte, nicht die sortierte: Sie trägt den
-   * Balken und die Ziffer links, sie gehört zusammen hervorgehoben. Dass nach
-   * einer anderen Spalte sortiert ist, sagt deren blauer Kopf — zwei Aussagen,
-   * zwei Zeichen.
+   * DER FETTDRUCK IST WEG (19.08.2026, Vorgabe des Betreibers). Er war das
+   * dritte Zeichen für dieselbe Aussage — Kopf-Box, Balken und fette Ziffern
+   * sagten alle „hiernach wird platziert", und zusammen mit dem blauen Kopf der
+   * SORTIERTEN Spalte trugen zwei Spalten gleichzeitig eine Auszeichnung, ohne
+   * dass eine von beiden sagte, wofür sie steht. Jetzt: blaue Box am Kopf =
+   * platziert, Pfeil am Kopf = sortiert.
+   *
+   * DER BALKEN BLEIBT, und das ist kein Übersehen. Er ist kein Marker, sondern
+   * die einzige Stelle in der Tabelle, die den ABSTAND zwischen den Werten
+   * zeigt — die Platzziffer sagt nur die Reihenfolge, nicht, ob zwischen Platz
+   * 1 und 2 Welten liegen oder nichts. Dazu kommt: Auf dem Telefon ist die
+   * Kopfzeile beim Lesen der Liste längst aus dem Blick, der Balken steht in
+   * jeder Zeile.
    */
-  const cellNumStyle = (key: Metric): React.CSSProperties => ({
-    ...S.valNum,
-    fontWeight: platz === key ? 700 : 500,
-  });
+  const cellNumStyle = (): React.CSSProperties => S.valNum;
 
   // Zellen einer Zeile. `onAccent` = die Zeile ist blau gefüllt (aktive Kommune):
   // Text wird weiß, der Balken weiß auf hellem Schienen-Weiß. Ein Renderer für
@@ -805,7 +883,7 @@ export default function RankingTable({
         const teil = cellTeile(r, c.key);
         return (
           <span key={c.key} style={S.val}>
-            <span style={{ ...cellNumStyle(c.key), ...(onAccent ? { color: ON_ACCENT } : null) }}>{teil.value}</span>
+            <span style={{ ...cellNumStyle(), ...(onAccent ? { color: ON_ACCENT } : null) }}>{teil.value}</span>
             {/* Die Einheit steht IMMER als eigene Zeile, auch wenn sie leer ist:
                 sonst rutschen Zellen ohne Einheit („Anlagen") in der Zeile hoch
                 und die Zahlenreihe verliert ihre gemeinsame Grundlinie. */}
@@ -928,32 +1006,58 @@ export default function RankingTable({
       )}
 
       {/*
-        DASS DIE TABELLE SEITLICH WEITERGEHT, MUSS EINMAL DASTEHEN.
+        DASS ES SEITLICH WEITERGEHT, MUSS MAN SEHEN — und zwar dauerhaft.
 
-        Der Verlauf an der rechten Kante allein trägt es nicht, und das ist
-        gemessen, nicht vermutet: Bei 390 px liegt in der Ausgangsstellung —
-        also genau der, die jeder zuerst sieht — auf den 28 px des Verlaufs
-        KEIN EINZIGES ZEICHEN. Die Tabelle rastet an Spaltenkanten ein, der
-        rechte Rand fällt deshalb in die Lücke hinter einer Spalte, und der
-        Verlauf blendet Seitenfarbe in Seitenfarbe. Über alle sieben
-        erreichbaren Ruhestellungen waren es 0/12/0/22/0/20/0 von 28 px. Wo
-        nichts angeschnitten ist, kann ein Auslauf nichts anschneiden.
+        Vorlauf, damit niemand das noch einmal umbaut: Erst trug diese Aussage
+        allein der Verlauf an der rechten Kante. Der ist gemessen wirkungslos,
+        solange die Tabelle stillsteht — sie rastet an Spaltenkanten ein, der
+        rechte Rand fällt in eine Spaltenlücke, und ein Verlauf von Seitenfarbe
+        nach Seitenfarbe hat nichts zu färben (bei 390 px über alle sieben
+        Ruhestellungen 0/12/0/22/0/20/0 von 28 px Inhalt auf dem Streifen).
+        Dann stand hier ein Satz („Die Tabelle geht rechts weiter …"), der nach
+        dem ersten Wischen verschwand. Beides ist weg: Der Satz erklärte eine
+        Bedienung, statt sie anzubieten, und war nach einer Sekunde nie wieder
+        zu sehen.
 
-        Angeschnittener Inhalt bleibt der beste Hinweis auf Scrollbarkeit
-        (NN/g, „Mobile Tables") — nur entsteht er hier nicht, weil das
-        Einrasten ihn absichtlich verhindert (es schützt die Zahlen vor der
-        Haltekante links). Deshalb ein Satz, der es sagt, und zwar der
-        mildeste: EINE Zeile, in der Farbe der Nebentexte, und weg, sobald die
-        Tabelle das erste Mal bewegt wurde. Kein Karussell, keine Punkte, keine
-        Wischanimation — die Kante bleibt zusätzlich als dauerhaftes Zeichen.
+        Jetzt stehen zwei Knöpfe da. Sie sagen dasselbe — dauerhaft, sichtbar,
+        und man kann sie drücken. Ein Druck springt genau EINEN Rastpunkt
+        weiter, also eine Spalte; die Rastpunkte sind dieselben, an denen die
+        Tabelle beim Wischen einrastet (RASTPUNKTE), keine zweite Schrittweite.
+
+        WO SIE SITZEN und warum nicht woanders: in einer eigenen Zeile ÜBER der
+        Tabelle, rechtsbündig. Über den Zeilen dürfen sie nicht schweben (sie
+        würden den Zeilen-Link verdecken, der die ganze Zeile ist), in der
+        Kopfzeile nicht sitzen (dort steht in jeder Stellung ein Spaltentitel
+        mit seinem „?"), und breiter machen dürfen sie die Tabelle nicht.
+
+        Sie erscheinen nur, wenn die Tabelle überhaupt überläuft. Der jeweils
+        wirkungslose Knopf wird unsichtbar statt entfernt: So bleibt der andere
+        an seinem Platz stehen, statt beim ersten Klick um eine Knopfbreite zu
+        springen. `visibility: hidden` nimmt ihn zugleich aus Tab-Reihenfolge
+        und Vorlese-Baum — ein Knopf, der nichts mehr tun kann, ist dann auch
+        für die Tastatur weg.
       */}
-      {ueberlauf && !geschoben && (
-        <p style={S.wischHinweis}>
-          Die Tabelle geht rechts weiter — seitlich scrollen zeigt die übrigen Spalten.
-          <span aria-hidden style={S.wischPfeil}>
-            <IconArrowRight size={11} />
-          </span>
-        </p>
+      {ueberlauf && (
+        <div style={S.blaettern}>
+          <button
+            type="button"
+            onClick={() => springeSpalte(-1)}
+            aria-label="Eine Spalte zurück"
+            title="Eine Spalte zurück"
+            style={{ ...S.blaetternBtn, ...(kannZurueck ? null : S.blaetternWeg) }}
+          >
+            <IconArrowLeft size={13} />
+          </button>
+          <button
+            type="button"
+            onClick={() => springeSpalte(1)}
+            aria-label="Eine Spalte weiter"
+            title="Eine Spalte weiter"
+            style={{ ...S.blaetternBtn, ...(kannWeiter ? null : S.blaetternWeg) }}
+          >
+            <IconArrowRight size={13} />
+          </button>
+        </div>
       )}
 
       {/* Der Scrollkasten trägt die Tastatur-Attribute NUR, solange er wirklich
@@ -983,7 +1087,6 @@ export default function RankingTable({
             const el = e.currentTarget;
             setScrollLeft(el.scrollLeft);
             setScrollRest(el.scrollWidth - el.clientWidth - el.scrollLeft);
-            if (el.scrollLeft > 0) setGeschoben(true);
           }}
         >
           <div style={S.table}>
@@ -1002,7 +1105,16 @@ export default function RankingTable({
                 // Die RASTPUNKTE sitzen an den Kopfzellen, einer je Wertspalte —
                 // nicht an jeder Zelle jeder Zeile: gleiche Positionen, aber sieben
                 // statt mehreren hundert.
-                <span key={c.key} style={{ ...S.headCell, scrollSnapAlign: "start" }}>
+                <span
+                  key={c.key}
+                  data-spaltenkopf={c.key}
+                  {...(platz === c.key ? { "data-platziert": "true" } : null)}
+                  {...(sort === c.key ? { "data-sortiert": "true" } : null)}
+                  style={{ ...S.headCellWert, scrollSnapAlign: "start" }}
+                >
+                  {/* Die blaue Klammer zum Feld „Platzierung nach …" — als
+                      eigene Lage HINTER dem Kopf, siehe S.headBox. */}
+                  {platz === c.key && <span aria-hidden style={S.headBox} />}
                   <button
                     type="button"
                     onClick={() => setSort(c.key)}
@@ -1011,11 +1123,15 @@ export default function RankingTable({
                     title={`Liste nach ${c.label} sortieren. Die Platzierung ändert sich dadurch nicht.`}
                     style={{
                       ...S.headBtn,
-                      color: sort === c.key ? v("--color-accent") : v("--color-text-muted"),
-                      fontWeight: sort === c.key ? 700 : 600,
+                      ...(platz === c.key
+                        ? { color: v("--color-accent"), fontWeight: 700 }
+                        : { color: v("--color-text-muted"), fontWeight: sort === c.key ? 700 : 600 }),
                     }}
                   >
                     {c.label}
+                    {/* Alle sieben Wertspalten sortieren absteigend (nachWert),
+                        der Pfeil zeigt deshalb immer nach unten. */}
+                    <SortPfeil an={sort === c.key} auf={false} />
                   </button>
                   {/* Die Erklärung sitzt am Spaltenkopf, wo die Frage entsteht —
                       nicht als Fließtext unter der Tabelle, den man erst nach dem
@@ -1310,7 +1426,7 @@ function RankHeader({
 }) {
   const [open, setOpen] = useState(false);
   const ref = useOutsideClose(open, () => setOpen(false));
-  const aktiv = sort === platz || sort === "delta";
+  const nachBewegung = sort === "delta";
   return (
     // Kein `position: relative` mehr: `sticky` aus der Klasse ist selbst
     // Bezugsrahmen für das Aufklapp-Menü darunter.
@@ -1320,14 +1436,27 @@ function RankHeader({
         onClick={() => setOpen(!open)}
         title={`Sortieren: nach Platz oder nach den Plätzen, die seit Ende ${sinceYear} gutgemacht oder verloren wurden. Das laufende Jahr ist noch unvollständig und daher nicht als Vorjahr gerechnet.`}
         style={{
+          // KEIN Akzent-Blau mehr für „hiernach ist sortiert" (19.08.2026):
+          // Blau gehört seither allein der Platzierungs-Spalte, deren Kopf eine
+          // Box in der Farbe des Feldes „Platzierung nach …" trägt. Sortiert
+          // sagt der Pfeil rechts daneben.
           ...S.headBtnLeft,
-          color: aktiv ? v("--color-accent") : v("--color-text-muted"),
-          fontWeight: aktiv ? 700 : 600,
+          color: v("--color-text-muted"),
+          fontWeight: nachBewegung ? 700 : 600,
         }}
       >
         Platz
         <IconChevronDown size={7} />
       </button>
+      {/*
+        NUR bei „nach Bewegung sortiert" — und das ist die entscheidende Hälfte.
+        Sortiert nach dem Platz selbst heißt: sortiert nach der Größe, die
+        platziert wird; dann trägt DEREN Spaltenkopf den Pfeil (sie ist zugleich
+        die mit der blauen Box). Beide gleichzeitig zu markieren wäre wieder
+        genau der Zustand, gegen den der Umbau gemacht ist: zwei Spalten
+        ausgezeichnet, keine sagt wofür. Größter Gewinn oben → Pfeil nach unten.
+      */}
+      <SortPfeil an={nachBewegung} auf={false} />
       {/*
         Was neben der Ziffer steht, erklärt sich nicht von selbst — „1. ±0"
         liest ohne ein Wort dazu niemand. Die Erklärung sitzt deshalb da, wo
@@ -1389,20 +1518,24 @@ function NameHeader({
   const ref = useOutsideClose(open, () => setOpen(false));
   const active = sort === "name" || sort === "population";
   return (
-    <div ref={ref} className="atlas-fix-spalte atlas-fix-spalte--kante atlas-fix-spalte--kopf" style={fixStil}>
+    <div ref={ref} className="atlas-fix-spalte atlas-fix-spalte--kante atlas-fix-spalte--kopf" style={{ ...S.headCell, ...fixStil }}>
       <button
         type="button"
         onClick={() => setOpen(!open)}
         title="Sortieren: alphabetisch oder nach Einwohnerzahl"
         style={{
+          // Siehe RankHeader: Blau ist seit 19.08.2026 der Platzierung
+          // vorbehalten, sortiert sagt der Pfeil.
           ...S.headNameBtn,
-          color: active ? v("--color-accent") : v("--color-text-muted"),
+          color: v("--color-text-muted"),
           fontWeight: active ? 700 : 600,
         }}
       >
         Name (Einwohner)
         <IconChevronDown size={7} />
       </button>
+      {/* A–Z läuft aufwärts, nach Einwohnern abwärts (größte Zahl oben). */}
+      <SortPfeil an={active} auf={sort === "name"} />
       {open && (
         <div style={S.dropdown}>
           {(
@@ -1656,19 +1789,32 @@ const S: Record<string, React.CSSProperties> = {
   pickWert: { color: v("--color-accent"), fontWeight: 700, whiteSpace: "nowrap" },
   // Der Satz, der erscheint, wenn Rangfolge und Reihenfolge auseinanderfallen.
   hinweis: { fontSize: 12, lineHeight: 1.4, color: v("--color-text-secondary"), margin: "0 0 10px" },
-  // Der Satz über der Tabelle, solange sie noch nie bewegt wurde. Gedämpfter
-  // als `hinweis` — er erklärt eine Bedienung, keinen Befund, und darf die
-  // Zahlen darunter nicht überstimmen.
-  wischHinweis: {
-    fontSize: 12,
-    lineHeight: 1.4,
-    color: v("--color-text-muted"),
-    margin: "0 0 6px",
+  /**
+   * Die Zeile mit den beiden Blätter-Pfeilen. Rechtsbündig, weil dort die
+   * Tabelle weitergeht — der Knopf steht in der Richtung, in die er zeigt.
+   *
+   * Eigene Zeile, kein Überlagern: Die Tabellenzeilen sind selbst Links auf die
+   * Gemeinde, ein schwebender Knopf darüber wäre ein Loch in dieser Fläche. Die
+   * Höhe kostet 22 px einmalig, nicht je Zeile.
+   */
+  blaettern: { display: "flex", justifyContent: "flex-end", gap: 4, marginBottom: 6 },
+  blaetternBtn: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 30,
+    height: 24,
+    padding: 0,
+    border: `1px solid ${v("--color-border-accent")}`,
+    borderRadius: v("--radius-md"),
+    background: v("--color-bg-accent"),
+    color: v("--color-accent"),
+    cursor: "pointer",
+    fontFamily: "inherit",
   },
-  // Der Pfeil zeigt die Richtung, in die es weitergeht. Er läuft IM Text mit
-  // (inline), nicht als Flex-Kind am Zeilenende: Bricht der Satz auf zwei
-  // Zeilen um, stünde er sonst mittig weit rechts und sähe aus wie ein Knopf.
-  wischPfeil: { display: "inline-block", verticalAlign: -1, marginLeft: 4 },
+  // Unsichtbar statt entfernt — der verbleibende Knopf soll nicht springen.
+  // `visibility: hidden` nimmt ihn zugleich aus Tab-Reihenfolge und Vorlese-Baum.
+  blaetternWeg: { visibility: "hidden" },
   chip: {
     border: `1px solid ${v("--color-border")}`,
     borderRadius: 999,
@@ -1709,34 +1855,27 @@ const S: Record<string, React.CSSProperties> = {
    * in fünf davon ein heller Balken. Der Anfang ist `transparent` — CSS
    * überblendet Verläufe vormultipliziert, es entsteht also kein Graustich.
    *
-   * ZWEI LAGEN, WEIL EINE NICHTS ZU TUN HATTE. Bis zum 19.08.2026 stand hier
-   * nur die untere Lage: Seitenfarbe von durchsichtig nach deckend. Sie blendet
-   * aus, was unter die Kante läuft — und im Regelfall läuft dort nichts hin.
-   * Bei 390 px lag in der Ausgangsstellung kein einziges Zeichen auf dem
-   * Streifen (über alle sieben Ruhestellungen: 0/12/0/22/0/20/0 von 28 px),
-   * weil die Tabelle an Spaltenkanten einrastet und der rechte Rand deshalb in
-   * einer Spaltenlücke steht. Ein Verlauf von Seitenfarbe nach Seitenfarbe ist
-   * unsichtbar; „zu schwach" war er nie, er hatte schlicht nichts zu färben.
-   *
-   * Die obere Lage ist deshalb keine Aufhellung, sondern eine KANTE: ein Hauch
-   * Textfarbe am äußersten Rand. Aus dem Textton gemischt und nicht aus einem
-   * getippten Schwarz — auf den drei dunklen Tageszeit-Stufen ist der Textton
-   * hell, die Kante setzt sich also auf jeder Stufe vom Grund ab, statt in drei
-   * von sieben zu verschwinden. Sie steht ZUERST in der Liste, weil CSS die
-   * erste Lage oben malt; unter der deckenden Seitenfarbe wäre sie weg.
+   * WAS ER LEISTET UND WAS NICHT (gemessen am 19.08.2026, zurückgenommen am
+   * selben Tag). Ein Versuch hat ihm eine zweite, dunkle Lage aufgesetzt, damit
+   * er auch dann eine Kante zeigt, wenn nichts unter ihm hindurchläuft — der
+   * Betreiber hat das verworfen: „war gut so wie er war". Der Befund dahinter
+   * bleibt aber richtig und gehört an den Code, damit ihn niemand als Auftrag
+   * missversteht: Bei 390 px liegt in den Ruhestellungen kaum Inhalt auf dem
+   * Streifen (0/12/0/22/0/20/0 von 28 px), weil die Tabelle an Spaltenkanten
+   * einrastet. Der Verlauf wirkt also WÄHREND der Wischbewegung, nicht im
+   * Stillstand. Dass es seitlich weitergeht, sagen seit demselben Tag die
+   * beiden Blätter-Pfeile über der Tabelle — die tragen diese Aussage, nicht
+   * dieser Streifen.
    */
   fadeRechts: {
     position: "absolute",
     top: 0,
     right: 0,
     bottom: 0,
-    width: 36,
+    width: 28,
     zIndex: 1,
     pointerEvents: "none",
-    background: [
-      `linear-gradient(to right, transparent 35%, color-mix(in srgb, ${v("--color-text-primary")} 18%, transparent) 100%)`,
-      `linear-gradient(to right, transparent 0%, ${v("--color-bg")} 70%)`,
-    ].join(", "),
+    background: `linear-gradient(to right, transparent, ${v("--color-bg")})`,
     transition: "opacity 0.15s ease-out",
   },
   /**
@@ -1801,6 +1940,61 @@ const S: Record<string, React.CSSProperties> = {
   // Titel + „?" nebeneinander. Der Titel darf nicht umbrechen — sonst zieht er
   // die ganze Kopfzeile auf; die Spaltenbreiten sind darauf ausgelegt.
   headCell: { display: "flex", alignItems: "center", gap: 3, minWidth: 0 },
+  /**
+   * Wie `headCell`, plus Bezugsrahmen für die beiden absolut gesetzten Marken
+   * der Wertspalten (Sortier-Pfeil in der Lücke, blaue Box dahinter).
+   *
+   * ER GEHÖRT NICHT IN `headCell` — die beiden MITLAUFENDEN Köpfe teilen sich
+   * diesen Stil, und die halten mit `position: sticky` an ihrer Kante. Ein
+   * `position: relative` überschreibt das: Der Name-Kopf sprang dadurch um
+   * seine Haltekante (75 px) nach rechts und deckte den Kopf „Anlagen"
+   * vollständig zu — im Browser gesehen, von keinem Test bemerkt.
+   */
+  headCellWert: { display: "flex", alignItems: "center", gap: 3, minWidth: 0, position: "relative" },
+  /**
+   * DIE BLAUE BOX AM KOPF DER PLATZIERUNGS-SPALTE — die sichtbare Klammer zum
+   * Feld „Platzierung nach …" über der Tabelle. Beide sehen gleich aus (Grund,
+   * Rahmen, Ecken, Akzentfarbe wie `pickBtn`), damit man ohne Erklärung sieht:
+   * Das Feld dort oben und dieser Kopf hier meinen dieselbe Größe.
+   *
+   * Vorher trugen zwei Spalten gleichzeitig eine Auszeichnung — die sortierte
+   * einen blauen Kopf, die platzierte fette Zahlen plus Balken — und beide
+   * Zeichen erklärten nicht, wofür sie stehen. Jetzt: Box = platziert, Pfeil =
+   * sortiert.
+   *
+   * SIE IST EINE EIGENE LAGE HINTER DEM KOPF, kein Innen-/Außenabstand an ihm.
+   * Der erste Versuch war ein negativer Außenabstand (−5 px), durch einen
+   * gleich großen Innenabstand ausgeglichen — die Breite stimmte damit, aber
+   * die Kopfzelle ist zugleich der RASTPUNKT der Tabelle, und ein Rastpunkt
+   * misst am Rahmen samt Außenabstand. Die Spalte rastete danach fünf Pixel zu
+   * früh ein; gemessen sprang die Tabelle auf 152 statt 157, und in genau
+   * dieser Stellung schneidet die mitlaufende Namensspalte fünf Pixel in die
+   * erste Wertzelle — die Fehlerklasse, gegen die es das Einrasten überhaupt
+   * gibt. Eine absolut gesetzte Lage berührt weder Breite noch Rastpunkt.
+   * `zIndex: -1` hält sie hinter Titel und „?" (positionierte Kinder malen
+   * sonst über in-Fluss-Inhalt).
+   */
+  headBox: {
+    position: "absolute",
+    top: -2,
+    bottom: -2,
+    left: -5,
+    right: -5,
+    zIndex: -1,
+    pointerEvents: "none",
+    borderRadius: v("--radius-md"),
+    background: v("--color-bg-accent"),
+    boxShadow: `inset 0 0 0 1px ${v("--color-border-accent")}`,
+  },
+  // Sitzt in der Rasterlücke rechts vom Kopf, nicht in ihm — siehe SortPfeil.
+  // Läuft im Fluss mit, direkt hinter der Überschrift — siehe SortPfeil.
+  sortPfeil: {
+    display: "inline-block",
+    lineHeight: 0,
+    marginLeft: 2,
+    color: v("--color-text-secondary"),
+    flexShrink: 0,
+  },
   headBtn: {
     background: "none",
     border: "none",
@@ -1893,6 +2087,9 @@ const S: Record<string, React.CSSProperties> = {
     fontFamily: v("--font-mono"),
     fontSize: 13,
     lineHeight: 1.25,
+    // Ein Gewicht für ALLE Wertspalten — bis zum 19.08.2026 stand die
+    // Platzierungs-Spalte hier fett (siehe cellNumStyle).
+    fontWeight: 500,
     whiteSpace: "nowrap",
     color: v("--color-text-primary"),
   },
