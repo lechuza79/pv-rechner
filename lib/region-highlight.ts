@@ -39,7 +39,12 @@ export type RegionKind = {
  * indexierte Seite öffnet den Weg in Tausende noindex-Seiten) betrifft neue
  * Pfade, nicht zusätzliche Anker auf bestehende.
  */
-export type HighlightTeil = string | { text: string; href: string };
+export type HighlightTeil =
+  | string
+  | { text: string; href: string }
+  /** Hervorgehobener Wert — dasselbe Textstyling wie im Einstiegsabsatz darüber
+   *  (`S.strong`), nicht ein zweites erfinden. */
+  | { text: string; stark: true };
 
 export type RegionHighlightInput = {
   /** Ebene der Seite selbst. */
@@ -90,11 +95,23 @@ function rangSatz(i: RegionHighlightInput): string | null {
 }
 
 /**
- * Der stärkste Kreis (bzw. die stärkste Gemeinde) mit Namen — und wie weit das
- * Feld auseinanderliegt.
+ * Die Spitze des Feldes mit Namen — und wie weit es auseinanderliegt.
  *
- * Der Abstand wird als Faktor gesagt und der schwächste NICHT benannt: Die Zahl
- * ist die Aussage, der Pranger wäre keine.
+ * DREI SATZFORMEN, gewählt nach der Spanne im Feld, nicht nach Zufall:
+ * Ein Feld, in dem der Erste das Zwanzigfache des Letzten hat, verlangt einen
+ * anderen Satz als eines, in dem alle dicht beieinander liegen. Das ist
+ * strukturelle Variation aus der Datenlage — nicht dasselbe wie Synonyme zu
+ * streuen. Die Warnung im Wellenplan gilt dem Fall, dass die Umformulierung der
+ * EINZIGE Unterschied zwischen zwei Seiten ist; hier unterscheiden sich Namen,
+ * Werte, Reihenfolge und Satzbau.
+ *
+ * Das Schlusslicht wird benannt, nicht als Faktor verrechnet: „das 25-fache des
+ * schwächsten Kreises" konnte niemand einordnen und verdeckte, dass vorn
+ * ländliche Kreise stehen und hinten fast immer eine Großstadt.
+ *
+ * Werte stehen in Klammern hinter dem Namen und tragen die Hervorhebung des
+ * Einstiegsabsatzes — der Satz soll den Ort betonen, nicht die Einheit
+ * wiederholen.
  */
 function spitzeSatz(i: RegionHighlightInput): HighlightTeil[] | null {
   const mitWert = i.kinder.filter(
@@ -104,32 +121,41 @@ function spitzeSatz(i: RegionHighlightInput): HighlightTeil[] | null {
   const sortiert = [...mitWert].sort((a, b) => b.wPerCapitaDach - a.wPerCapitaDach);
   const spitze = sortiert[0];
   const schluss = sortiert[sortiert.length - 1];
-  const spitzeWert = fmtWattProKopf(Math.round(spitze.wPerCapitaDach));
+  const spanne =
+    schluss.wPerCapitaDach > 0 ? spitze.wPerCapitaDach / schluss.wPerCapitaDach : 1;
 
-  /** Der Name als Verweis, wenn es die Seite gibt — sonst als Text. */
-  const benannt = (k: RegionKind & { wPerCapitaDach: number }): HighlightTeil => {
-    const text = regionName(k.name);
-    return k.href ? { text, href: k.href } : text;
+  /** Name (verlinkt, wenn es die Seite gibt) plus Wert in Klammern. */
+  const mitWertGenannt = (k: RegionKind & { wPerCapitaDach: number }): HighlightTeil[] => {
+    const name = regionName(k.name);
+    return [
+      k.href ? { text: name, href: k.href } : name,
+      " (",
+      { text: fmtWattProKopf(Math.round(k.wPerCapitaDach)), stark: true } as HighlightTeil,
+      " je Einwohner)",
+    ];
   };
 
-  // Das SCHLUSSLICHT WIRD BENANNT, nicht nur als Faktor verrechnet. Erste Fassung
-  // sagte „das 25-fache des schwächsten Kreises" — eine Zahl, die niemand
-  // einordnen kann und die eine unfaire Gegenüberstellung verdeckt: Vorn stehen
-  // ländliche Kreise mit viel Dachfläche je Kopf, hinten fast immer eine
-  // Großstadt. Mit beiden Namen sieht man den Grund, statt ihn zu raten
-  // (CLAUDE.md: „Trägt ein Mittelwert überhaupt?" — hier: trägt der Vergleich?).
-  const teile: HighlightTeil[] = [
-    "Am weitesten ist ",
-    benannt(spitze),
-    ` mit ${spitzeWert} auf dem Dach je Einwohner.`,
-  ];
-  if (schluss.wPerCapitaDach > 0 && spitze.wPerCapitaDach / schluss.wPerCapitaDach >= 1.5) {
-    teile.push(
-      " Am anderen Ende steht ",
-      benannt(schluss),
-      ` mit ${fmtWattProKopf(Math.round(schluss.wPerCapitaDach))}.`,
-    );
-  }
+  const teile: HighlightTeil[] =
+    spanne >= 8
+      ? [
+          // „Zwischen den Kreise" — derselbe Dativ-Fehler wie „von 16
+          // Bundesländer", zwei Stunden später an anderer Stelle. Deshalb geht
+          // JEDE Gattungsangabe in diesem Modul durch dativPlural().
+          `Zwischen den ${dativPlural(i.kindWort)} liegen Welten: vorn `,
+          ...mitWertGenannt(spitze),
+          ", am Ende ",
+          ...mitWertGenannt(schluss),
+          ".",
+        ]
+      : spanne >= 1.5
+        ? [
+            "Am weitesten ist ",
+            ...mitWertGenannt(spitze),
+            ", am wenigsten weit ",
+            ...mitWertGenannt(schluss),
+            ".",
+          ]
+        : [`Das Feld liegt dicht beieinander, vorn `, ...mitWertGenannt(spitze), "."];
   return teile;
 }
 

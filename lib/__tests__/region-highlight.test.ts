@@ -56,12 +56,50 @@ describe("Einordnungs-Absatz der Regionsseiten", () => {
   it("setzt den Artikel vor Gattungsnamen", () => {
     expect(text(basis)).toContain("der Landkreis Dingolfing-Landau");
     // Städte bleiben ohne Artikel.
-    expect(text(basis)).toContain("steht München");
+    expect(text(basis)).toContain("am Ende München");
   });
 
   it("benennt das andere Ende, statt nur einen Faktor zu behaupten", () => {
-    expect(text(basis)).toContain("Am anderen Ende steht München mit");
+    expect(text(basis)).toContain("München (174 Wp je Einwohner)");
     expect(text(basis)).not.toMatch(/-fache/);
+  });
+
+  it("wählt die Satzform nach der Spanne im Feld", () => {
+    // Weit auseinander (Faktor 25) → eigener Satzbau.
+    expect(text(basis)).toContain("Zwischen den Kreisen liegen Welten");
+
+    // Mittlere Spanne (Faktor 2) → nüchterne Gegenüberstellung.
+    const mittel = text({
+      ...basis,
+      kinder: [
+        { name: "Kreis A", wPerCapitaDach: 2000, count: 10 },
+        { name: "Kreis B", wPerCapitaDach: 1500, count: 10 },
+        { name: "Kreis C", wPerCapitaDach: 1000, count: 10 },
+      ],
+    });
+    // „der Kreis A" — der Artikel gehört dazu, die Testdaten heißen wirklich so.
+    expect(mittel).toContain("Am weitesten ist der Kreis A");
+    expect(mittel).toContain("am wenigsten weit der Kreis C");
+
+    // Enges Feld → nur die Spitze, kein erzwungener Gegensatz.
+    const eng = text({
+      ...basis,
+      kinder: [
+        { name: "Kreis A", wPerCapitaDach: 1000, count: 10 },
+        { name: "Kreis B", wPerCapitaDach: 950, count: 10 },
+        { name: "Kreis C", wPerCapitaDach: 900, count: 10 },
+      ],
+    });
+    expect(eng).toContain("Das Feld liegt dicht beieinander");
+    expect(eng).not.toContain("am Ende");
+  });
+
+  it("hebt die Werte hervor, statt die Einheit im Satz zu wiederholen", () => {
+    const teile = buildRegionHighlight(basis);
+    const stark = teile.filter((t): t is { text: string; stark: true } => typeof t !== "string" && "stark" in t);
+    expect(stark.map((s) => s.text)).toEqual(["4.339 Wp", "174 Wp"]);
+    // Die Einheit steht genau einmal je Wert — nicht zusätzlich im Fließtext.
+    expect(text(basis)).not.toMatch(/Wp auf dem Dach je Einwohner/);
   });
 
   it("sagt den Zubau als Anteil und mit Richtung", () => {
@@ -108,7 +146,9 @@ describe("Einordnungs-Absatz der Regionsseiten", () => {
 
   it("verlinkt die genannten Gebiete, aber erfindet keine Adresse", () => {
     const teile = buildRegionHighlight(basis);
-    const links = teile.filter((t): t is { text: string; href: string } => typeof t !== "string");
+    const links = teile.filter(
+      (t): t is { text: string; href: string } => typeof t !== "string" && "href" in t,
+    );
     expect(links.map((l) => l.href)).toEqual([
       "/solar-atlas/bayern/landkreis-dingolfing-landau",
       "/solar-atlas/bayern/muenchen",
@@ -121,7 +161,7 @@ describe("Einordnungs-Absatz der Regionsseiten", () => {
       ...basis,
       kinder: basis.kinder.map((k) => ({ ...k, href: null })),
     });
-    expect(ohne.every((t) => typeof t === "string")).toBe(true);
+    expect(ohne.some((t) => typeof t !== "string" && "href" in t)).toBe(false);
     expect(highlightAlsText(ohne)).toContain("der Landkreis Dingolfing-Landau");
   });
 

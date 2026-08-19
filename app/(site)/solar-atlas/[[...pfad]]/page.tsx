@@ -388,15 +388,23 @@ async function AtlasBody({
             Fakten statt einer Schablone — der Grund steht in lib/region-highlight.ts. */}
         {einordnung.length > 0 && (
           <p style={S.intro}>
-            {einordnung.map((teil, idx) =>
-              typeof teil === "string" ? (
-                teil
-              ) : (
-                <Link key={`${teil.href}-${idx}`} href={teil.href} style={S.link}>
+            {einordnung.map((teil, idx) => {
+              if (typeof teil === "string") return teil;
+              if ("href" in teil) {
+                return (
+                  <Link key={`${teil.href}-${idx}`} href={teil.href} style={S.linkInline}>
+                    {teil.text}
+                  </Link>
+                );
+              }
+              // Werte werden hervorgehoben wie im Einstiegsabsatz darüber —
+              // dasselbe Textstyling, kein zweites.
+              return (
+                <strong key={`w-${idx}`} style={S.strong}>
                   {teil.text}
-                </Link>
-              ),
-            )}
+                </strong>
+              );
+            })}
           </p>
         )}
 
@@ -609,6 +617,10 @@ const S: Record<string, React.CSSProperties> = {
     padding: pad("xl"),
   },
   link: { color: v("--color-accent"), textDecoration: "none", fontSize: 14, fontWeight: 600 },
+  // Verweis MITTEN im Fließtext: erbt Größe und Zeilenhöhe des Absatzes. `link`
+  // ist der Stil für eigenständige Links (14 px) — inline gesetzt macht er das
+  // verlinkte Wort kleiner als den Satz, in dem es steht.
+  linkInline: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
   disclaimer: {
     fontSize: 11,
     color: v("--color-text-muted"),
