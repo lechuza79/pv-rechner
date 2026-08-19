@@ -71,3 +71,30 @@ standortgenauen Ertrag" wird unterdrückt, wenn bereits eine gültige PLZ vorlie
 (sonst blinkte er beim Übernehmen kurz fälschlich auf).
 (`components/SimulationPanel.tsx`, `app/(site)/photovoltaik-rechner/rechner.tsx`)
 </content>
+
+---
+
+## Kommunale Förderung im Wärmepumpen-Rechner
+
+### 7. ⏳ Erdwärme bekommt 200 € zu wenig angezeigt
+**Quelle:** eigener Fund beim Bau des Förderchecks (19.08.2026)
+**Problem:** Poing zahlt 800 € für Grundwasser- und Erdwärme-Wärmepumpen und
+600 € für Luft/Wasser (Richtlinie Abschnitt 5.2.2, Volltext in
+`docs/quellen/Poing_Rationelle-Energienutzung_Foerderrichtlinie_2021-06-24.pdf`).
+Der Katalog kennt nur einen pauschalen Satz je Programm (`wpPauschale`), deshalb
+rechnen wir den niedrigeren — obwohl der Rechner die Wärmequelle im Frageweg
+längst abfragt (Luft/Wasser vs. Sole/Wasser). Wer eine Erdwärmepumpe plant,
+bekommt also 200 € weniger angezeigt, als ihm zusteht.
+**Fehlerrichtung bewusst so:** lieber eine angenehme Überraschung als eine
+eingeplante Zahl, die nicht kommt. Der Unterschied steht als Bedingung im
+Detail-Fenster („für Erdwärme oder Grundwasser sind es 200 € mehr").
+**Wartet auf:** das Förder-Datenmodell mit Satz je Wärmequelle — übergeben an die
+Session, die die Förder-Erfassung umbaut (Stand `friendly-benz-99b7f3`,
+19.08.2026), dort als Lücke (a) von dreien geführt. Die anderen beiden:
+(b) Bestand/Neubau als Programm-Bedingung statt als Gate im Rechner,
+(c) ausdrückliches Feld für „schließt Bundesförderung aus" statt der heutigen
+leeren Kombinierbarkeitsliste.
+**Sobald das Modell steht:** `fundingAmount` im Wärmepumpen-Zweig auf den Satz je
+Quelle umstellen und den Rechner `wpType` durchreichen lassen. Der Stolperfallen-
+Test in `lib/__tests__/waermepumpe-kommunalfoerderung.test.ts` meldet sich
+ohnehin, sobald das erste prozentuale WP-Programm dazukommt.
