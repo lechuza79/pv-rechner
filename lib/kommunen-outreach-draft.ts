@@ -199,7 +199,23 @@ export type OutreachDraft = { subject: string; body: string; bodyHtml: string; m
  * Geräten kleiner statt größer.
  */
 const LEISE_ZEILEN = [/^Quelle:/, /^Betreiber solar-check\.io$/, /^Impressum:/, /^Datenschutz:/];
-const LEISE_STIL = `color:${GRAU};font-size:12.5px`;
+
+/**
+ * Leiser heißt KLEINER, nicht grauer (Vorgabe des Betreibers, 19.08.2026).
+ *
+ * Erste Fassung machte beides gleichzeitig. Farbe und Größe zusammen sind eine
+ * Auszeichnung zu viel: Der Unterschied soll spürbar sein, nicht auffällig.
+ * Grau bleibt allein im Fuß, wo es um Pflichtangaben geht.
+ */
+const LEISE_STIL = "font-size:13px";
+
+/**
+ * Der Fließtext bekommt eine ausdrückliche Größe, damit der Abstand zu den
+ * leisen Zeilen überall derselbe ist. 16px ist die übliche Vorgabe der
+ * Mailprogramme — die Angabe verkleinert also nirgends, sie stellt nur sicher,
+ * dass der Unterschied nicht von der Voreinstellung des Empfängers abhängt.
+ */
+const TEXT_STIL = "font-size:16px;line-height:1.6";
 
 export function briefAlsHtml(body: string): string {
   const esc = (t: string) =>
@@ -236,7 +252,7 @@ export function briefAlsHtml(body: string): string {
         .map((a) => absatz(a, `color:${GRAU};font-size:13px;line-height:1.5`))
         .join("\n")
     : "";
-  return `<div style="max-width:640px">\n${kopf}${fuss}\n</div>`;
+  return `<div style="max-width:640px;${TEXT_STIL}">\n${kopf}${fuss}\n</div>`;
 }
 
 const SIGNATURE = `Sebastian Schäder
