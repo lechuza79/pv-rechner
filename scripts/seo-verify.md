@@ -115,6 +115,50 @@ etwas Veränderliches (Live-/Statuswerte), etwas Persönliches (Rechner) oder et
 Handelndes (Checkliste, Antragsweg, Download). Der empfohlene Seitentyp muss
 **Werkzeug** heißen, nicht „Ratgeber", sobald eine KI-Antwort auf der Suche steht.
 
+## Schritt 4b — Vorlauf-Messung für den nächsten Schub — BLOCKER
+
+**Der Wächter misst monatlich im Nachhinein. Ein Schub braucht die Messung VORHER.**
+Beides aus derselben Quelle, sonst entstehen zwei Zahlenstände über dieselbe Frage.
+
+**Wann:** Wenn `npm run release:plan` einen Schub innerhalb der nächsten 14 Tage
+zeigt, dessen `nachweis` noch `null` ist. Sonst entfällt der Schritt ersatzlos —
+er hängt am Plan, nicht am Kalender.
+
+**Warum überhaupt vorher:** Zwei Fehlschläge an einem Tag (18.08.2026) hatten
+dieselbe Ursache — alle vorhandenen Prüfungen waren grün, und die Frage, ob auf
+dieser Ebene überhaupt gesucht wird, hatte niemand gestellt. Nach dem Livegang
+lässt sie sich nicht mehr folgenlos beantworten: Eine Seite, die keine Nachfrage
+bedient, wieder einzusammeln kostet mehr als sie je gebracht hat.
+
+**Was zu erheben ist** — je Schub, nicht je Ort, mit **fünf** Stichproben aus der
+Ortsliste (die größten und die kleinsten, nicht die bequemen):
+
+1. **Suchvolumen im Muster, das Nutzer tippen.**
+   `POST …/dataforseo_labs/google/keyword_ideas/live` bzw. für einzelne Begriffe
+   `…/keywords_for_keywords/live`, `location_code` 2276, `language_code` de.
+   Für Förderseiten: „photovoltaik förderung {ort}", „solar zuschuss {ort}".
+   Für Atlas-Ortsseiten: „photovoltaik {ort}", „solaranlagen {ort}".
+2. **Gegenprobe an wieistmeinsolar.de** (dieselbe Datenbasis, dasselbe Produkt):
+   Rankt der Wettbewerber für Orte dieser Größenordnung? Was der dort nicht
+   schafft, schaffen wir auch nicht.
+3. **Kannibalisierung je Ort:** Steht für „{ort}" schon eine eigene Seite der
+   anderen Familie in der Search Console (`?dim=query`)? Das ist Frage 2 des
+   Nachweises und der einzige Teil, den nur unsere eigenen Daten beantworten.
+
+**Kosten:** ~0,002 $ je SERP-Abruf, ~0,05 $ je Keyword-Satz — ein Schub-Vorlauf
+liegt bei **unter 0,10 $** und damit weit unter dem Deckel von 0,50 $. Der Aufwand
+ist kein Argument gegen die Messung.
+
+**Ergebnis eintragen** — in `nachweis` des Schubes in `lib/release-plan.ts`
+(`gemessenAm`, `nachfrage`, `kannibalisierung`, `beleg`), Beleg als Datei unter
+`docs/seo/`. Ohne diese vier Felder lässt der Test den Schub nicht auf `live`;
+das ist die Sperre, nicht dieser Text.
+
+**Der Befund kann „nicht bauen" lauten, und das ist ein gutes Ergebnis.** Fällt die
+Nachfrage aus, wird der Schub verkleinert oder gestrichen — nicht verschoben, bis
+er niemandem mehr auffällt. Das ist eine Entscheidung des Betreibers und gehört
+als solche in den Bericht.
+
 ## Schritt 5 — Ratgeber-Frische
 
 `lib/ratgeber.ts`: Einträge mit `updated` älter als 6 Monate listen — nur als

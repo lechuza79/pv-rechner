@@ -29,7 +29,8 @@
     "sessions": "tsx scripts/sessions.ts",
     "foerder:suche": "tsx scripts/funding-discover.ts",
     "foerder:seiten": "tsx scripts/funding-coverage-watch.ts",
-    "foerder:ags": "tsx scripts/funding-ags-verify.ts"
+    "foerder:ags": "tsx scripts/funding-ags-verify.ts",
+    "release:plan": "tsx scripts/release-plan.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",

@@ -7,6 +7,7 @@
 // program data can also power an overview page and cross-program links.
 
 import { allFundingPrograms, type FundingStatus, type FundingProgram } from "./funding-programs";
+import { releaseFreigegeben } from "./release-plan";
 
 export interface AtlasCity {
   slug: string;
@@ -339,9 +340,26 @@ export function archivedCities(): AtlasCity[] {
   return ATLAS_CITIES.filter(isCityArchived);
 }
 
-/** A city gets a published page when its program is live OR archived. */
+/**
+ * A city gets a published page when its program is live OR archived — UND der
+ * Releaseplan diesen Ort freigegeben hat.
+ *
+ * WARUM DIE ZWEITE BEDINGUNG (19.08.2026): Bis hierher hing die Veröffentlichung
+ * allein am Status des Förderprogramms. Ein neuer Eintrag in ATLAS_CITIES mit
+ * einem aktiven Programm war damit beim nächsten Deploy eine öffentliche,
+ * indexierte Seite — die Veröffentlichung war keine Entscheidung, sondern eine
+ * Nebenwirkung. Aufgefallen ist das, als der Katalog auf 97 regionale Programme
+ * wuchs und 61 davon (48 aktiv) noch keine Seite hatten: Wer die Einträge anlegt,
+ * hätte 61 Ortsseiten auf einen Schlag veröffentlicht, ohne dass irgendwo die
+ * Frage gestellt worden wäre, ob sie gerade jetzt erscheinen sollen.
+ *
+ * Der Plan (lib/release-plan.ts) beantwortet sie je Ort und Schub. Er steuert
+ * ausschließlich die SEITE — ob ein Programm im Rechner Geld abzieht, entscheidet
+ * unverändert allein fundingZaehlt(). Ein Ort ohne Seite bleibt im Rechner
+ * vollständig wirksam.
+ */
 export function isCityPublished(c: AtlasCity): boolean {
-  return isCityLive(c) || isCityArchived(c);
+  return (isCityLive(c) || isCityArchived(c)) && releaseFreigegeben("foerder-stadt", c.ags);
 }
 
 /** Cities that get a page (live + archived) — drives page generation & sitemap. */
