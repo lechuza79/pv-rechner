@@ -210,12 +210,15 @@ const LEISE_ZEILEN = [/^Quelle:/, /^Betreiber solar-check\.io$/, /^Impressum:/, 
 const LEISE_STIL = "font-size:13px";
 
 /**
- * Der Fließtext bekommt eine ausdrückliche Größe, damit der Abstand zu den
- * leisen Zeilen überall derselbe ist. 16px ist die übliche Vorgabe der
- * Mailprogramme — die Angabe verkleinert also nirgends, sie stellt nur sicher,
- * dass der Unterschied nicht von der Voreinstellung des Empfängers abhängt.
+ * KEINE Schriftgröße für den Fließtext.
+ *
+ * Ein Versuch mit ausdrücklichen 16px sah im echten Postfach zu groß aus —
+ * Mailprogramme rechnen die Vorgabe anders um als ein Browser. Die
+ * Voreinstellung des Empfängers ist die, die er lesen will; wir machen nur die
+ * Nebensachen kleiner. Der Zeilenabstand bleibt gesetzt, der schadet in keiner
+ * Größe.
  */
-const TEXT_STIL = "font-size:16px;line-height:1.6";
+const TEXT_STIL = "line-height:1.6";
 
 export function briefAlsHtml(body: string): string {
   const esc = (t: string) =>
