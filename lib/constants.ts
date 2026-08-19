@@ -80,8 +80,8 @@ export const AUTARKY_GRID = [
 // üblicherweise über rund 10 kWh je Liter umgerechnet — und das ist der
 // HEIZWERT (Heizöl EL: Heizwert ~9,8, Brennwert ~10,6 kWh/l). Brennwert und
 // Heizwert unterscheiden sich bei Erdgas um rund 11 %, bei Heizöl um 6–8 %.
-// Folge für jeden, der hier etwas anfasst: Der Gas-Wirkungsgrad (0,95) und der
-// Öl-Wirkungsgrad (0,85) sind NICHT direkt vergleichbar, und ein gemeinsamer
+// Folge für jeden, der hier etwas anfasst: Der Gas-Wirkungsgrad und der
+// Öl-Wirkungsgrad sind NICHT direkt vergleichbar, und ein gemeinsamer
 // Auf- oder Abschlag über beide Brennstoffe hinweg ist immer falsch. Ein
 // Wirkungsgrad gehört auf dieselbe Bezugsgröße wie der Preis, gegen den er
 // rechnet. Zweimal ist genau daran eine Korrektur gescheitert; die vollständige
@@ -322,7 +322,31 @@ export const WP_FUEL_OPTIONS: {
   price: number; efficiency: number; co2PerKwh: number; bestandsanlage?: boolean;
 }[] = [
   { id: "gas_neu", label: "Gas-Brennwert", refLabel: "Gasheizung", kind: "gas", price: FUEL_PRICE.gas.price, efficiency: 0.95, co2PerKwh: FUEL_PRICE.gas.co2PerKwh },
-  { id: "oil", label: "Heizöl", refLabel: "Ölheizung", kind: "oil", price: FUEL_PRICE.oil.price, efficiency: 0.85, co2PerKwh: FUEL_PRICE.oil.co2PerKwh },
+  // Heizöl NEU eingebaut: 0,92 — der gesetzliche MINDESTWERT, auf unsere
+  // Preisskala umgerechnet. Herleitung (19.08.2026, drei adversariale Prüfungen):
+  // Die Ökodesign-Verordnung (EU) 813/2013 verlangt seit dem 26.09.2015 von jedem
+  // Brennstoffkessel bis 70 kW eine jahreszeitbedingte Raumheizungs-Energie-
+  // effizienz von mindestens 86 % — ohne Unterschied zwischen Öl und Gas
+  // (Anhang II; Volltext in docs/quellen/). Diese Größe ist auf den BRENNWERT
+  // bezogen (Art. 2 Nr. 30), unser Ölpreis dagegen auf den Heizwert (10,2 kWh/l);
+  // zwischen beiden liegen bei Heizöl rund 6,6 % (45,4 zu 42,6 MJ/kg). 0,86 × 1,066
+  // ≈ 0,92. Hier stand vorher 0,85 — ein Wert UNTER dem gesetzlichen Minimum, der
+  // also ein Gerät beschreibt, das man gar nicht verkaufen dürfte.
+  //
+  // Es ist bewusst eine UNTERGRENZE, kein Marktwert: Reale Öl-Brennwertkessel
+  // erreichen laut Herstellerdatenblättern 92–93 % (Brennwert). Damit rechnen wir
+  // die Ölheizung weiterhin etwas zu schlecht — und der verbleibende Fehler geht
+  // weiter zugunsten der Wärmepumpe. Der Marktwert selbst steht bewusst NICHT hier,
+  // weil die Labelzahl zu 85 % bei 30 °C Rücklauf gemessen wird (Fußbodenheizung);
+  // an alten Heizkörpern kondensiert ein Ölkessel kaum. Eine einzelne „genauere"
+  // Zahl gibt es für diesen Kessel also gar nicht — sie hängt an der System-
+  // temperatur. Das ist damit eine ABGESCHLOSSENE Modellprämisse, kein offener
+  // Punkt: belegte Untergrenze statt geschätzter Mitte, Fehlerrichtung benannt.
+  // Wieder aufgemacht nur mit echtem Auslöser (Norm im Repo oder Umbau auf
+  // temperaturabhängige Wirkungsgrade), und dann für Gas und Öl GEMEINSAM —
+  // die amtlichen Aufwandszahlen trennen nicht nach Brennstoff. Begründung und
+  // Vorarbeit: scripts/waermepumpe-verify.md.
+  { id: "oil", label: "Heizöl", refLabel: "Ölheizung", kind: "oil", price: FUEL_PRICE.oil.price, efficiency: 0.92, co2PerKwh: FUEL_PRICE.oil.co2PerKwh },
   // Die beiden Bestands-Einträge sind der Fall „Anschaffung 0" — und der heißt
   // laut Beschreibung des Feldes ausdrücklich „meine Heizung ist noch jung".
   // Bis 18.08.2026 gab es dafür nur den 30 Jahre alten Kessel mit 80 %: Wer
@@ -334,7 +358,13 @@ export const WP_FUEL_OPTIONS: {
   // sind die vorhandene Heizung aus FUEL oben, dieselben, mit denen der
   // PV-Rechner seit jeher gegen die bestehende Heizung rechnet.
   //
-  // OFFEN (bis 01/2027): Für Heizöl fehlt der Bestands-Eintrag noch. Er braucht
+  // Vorhandene Ölheizung: 0,85 — derselbe Wert, mit dem der PV-Rechner seit jeher
+  // gegen eine BESTEHENDE Ölheizung rechnet (FUEL oben). Er beschreibt keinen
+  // Neueinbau und darf deshalb unter dem gesetzlichen Mindestwert liegen: Ein
+  // Kessel, der seit Jahren im Keller steht, musste ihn nie erfüllen.
+  { id: "oil_vorhanden", label: "Vorhandene Ölheizung", refLabel: "Ölheizung", kind: "oil", price: FUEL_PRICE.oil.price, efficiency: FUEL.oil.efficiency, co2PerKwh: FUEL_PRICE.oil.co2PerKwh, bestandsanlage: true },
+  //
+  // ERLEDIGT (19.08.2026): Für Heizöl gab es keinen Bestands-Eintrag. Er braucht
   // zwei verschiedene Nutzungsgrade (vorhanden / neu eingebaut), und die eine Zahl,
   // die das Projekt heute für Öl kennt (0,85), beschreibt die VORHANDENE Anlage —
   // sie steht derzeit an der neu eingebauten. Ein zweiter Eintrag mit derselben
