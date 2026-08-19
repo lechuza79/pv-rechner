@@ -550,7 +550,7 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   // ist, kommt die Vorschau zurück — `widgetUrl` bleibt deshalb im Kontext.
   const widgetAbsatz =
     c.variante === "meldung_plus_widget"
-      ? `\n\nDie Zahlen gibt es auch als Grafik für Ihre Website. Sie aktualisiert sich monatlich von selbst und setzt keine Cookies; Farben und Schrift lassen sich anpassen. Wenn Sie sie einbauen möchten, schicke ich Ihnen den Code und ein Beispiel.`
+      ? `\n\nDie Zahlen gibt es auch als Grafik für Ihre Website. Sie aktualisiert sich monatlich von selbst, Farben und Schrift lassen sich anpassen. Wenn Sie sie einbauen möchten, schicke ich Ihnen den Code und ein Beispiel.`
       : "";
 
   // Weitere Spitzenplaetze — nur im Brief, nie in der Meldung. Sie belegen, dass
@@ -568,7 +568,11 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
     weitereListe.length > 0 && weitereListe.every((w) => w.gruppe === weitereListe[0].gruppe);
   const weitereAbsatz = weitereListe.length
     ? gruppenGleich
-      ? `\n\nAuch sonst steht ${kurzOrtsname(c.name)} weit vorn, jeweils unter den ${kleinKlasse(weitereListe[0].gruppe)}: ${weitereListe
+      ? // Die Vergleichsgruppe steht hier NICHT mehr (Vorgabe des Betreibers,
+        // 19.08.2026). Sie steht bereits in der Meldung darüber, und „von 53"
+        // sagt von selbst, dass es um eine Teilmenge geht — Hessen hat keine
+        // 53 Gemeinden.
+        `\n\nAuch sonst steht ${kurzOrtsname(c.name)} weit vorn: ${weitereListe
           .map((w) => `Platz ${w.platz} von ${w.von.toLocaleString("de-DE")} ${w.phrase}`)
           .join(", ")}.`
       : `\n\nAuch sonst steht ${kurzOrtsname(c.name)} weit vorn:\n${weitereListe

@@ -138,7 +138,19 @@ export function schlusslichterImKreis(gemeinden: GemeindeStats[]): Set<string> {
     // Dieselbe Größe wie auf der Gemeindeseite: installierte Solarleistung.
     if (liste.length < 3) continue;
     const sortiert = liste.slice().sort((a, b) => (b.solarKwp ?? 0) - (a.solarKwp ?? 0));
-    out.add(sortiert[sortiert.length - 1].regionId);
+    // NICHT NUR DER LETZTE PLATZ (erweitert 19.08.2026).
+    //
+    // Die erste Fassung fing nur `rang === total`. Gemessen an den 18 Briefen
+    // des ersten Schubs reichte das nicht: Immert steht auf der eigenen Seite
+    // als „Platz 103 von 107" und „64 % unter dem Landesschnitt", der Brief
+    // titelte „Platz 1". Formal kein Schlusslicht, für einen Leser aber
+    // dasselbe Bild.
+    //
+    // Das letzte Viertel ist die Grenze — nicht gerechnet, sondern die
+    // Antwort auf „ab wann liest sich eine Seite als Nachzügler". Wer dort
+    // steht, bekommt keinen Aufhänger; die Rangliste zeigt ihn unverändert.
+    const abIndex = Math.floor(sortiert.length * 0.75);
+    for (const g of sortiert.slice(abIndex)) out.add(g.regionId);
   }
   return out;
 }

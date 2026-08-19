@@ -125,6 +125,14 @@ export async function GET(req: NextRequest) {
       skip(`Brief nicht erzeugbar (${gebaut.grund})`);
       continue;
     }
+    // OHNE RANG KEIN BRIEF. Verliert eine Gemeinde ihren Aufhänger (zu dünner
+    // Bestand, Schlusslicht auf der eigenen Seite, Datenfehler-Verdacht), baut
+    // die Vorlage eine reine Bestandsmeldung. Die ist für diesen Schub kein
+    // Angebot, sondern nur eine Mail.
+    if (!gebaut.draft.meldung.includes("Platz ")) {
+      skip("kein Aufhänger mehr — die Gemeinde trägt keine Platzierung");
+      continue;
+    }
     paket.push({
       region_id: gebaut.regionId,
       name: gebaut.name,

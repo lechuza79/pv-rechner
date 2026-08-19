@@ -80,8 +80,31 @@ export async function briefFuerGemeinde(
   const eigen = proKopf(privatKwp(atlas), reg.population);
   const land = proKopf(privatKwp(blAtlas), blRegion?.population);
   const blName = bundeslandByAgs(blAgs)?.name ?? null;
+
+  //
+  // DIE SEITE DARF DEN BRIEF NICHT WIDERLEGEN — auch nicht scheinbar.
+  //
+  // Der Brief rechnet den Vergleich auf den PRIVATEN Dächern (das ist die Zahl
+  // über die Bürger). Die Gemeindeseite bildet ihren ersten Absatz aus der
+  // GESAMTLEISTUNG je Einwohner. Beides ist richtig, und beides kann in
+  // verschiedene Richtungen zeigen: Melsungen steht im Brief mit „39 % mehr"
+  // und auf der Seite mit „6 % unter dem Hessen-Schnitt, hier ist also noch
+  // viel Luft nach oben" — im ersten Absatz, ohne Scrollen sichtbar.
+  //
+  // Eine Pressestelle liest das nicht als zwei Messgrößen, sondern als
+  // Widerspruch. Vier der achtzehn Briefe des ersten Schubs waren betroffen.
+  //
+  // Deshalb: Der Satz steht NUR, wenn auch die Gesamtleistung über dem
+  // Landesschnitt liegt. Genannt wird weiterhin der private Wert — er ist der
+  // ehrlichere; die Gesamtzahl entscheidet allein darüber, ob wir überhaupt
+  // etwas behaupten.
+  const eigenGesamt = proKopf(atlas.solar.total_kwp, reg.population);
+  const landGesamt = proKopf(blAtlas.solar.total_kwp, blRegion?.population);
+  const seiteSagtNachzuegler =
+    eigenGesamt != null && landGesamt != null && landGesamt > 0 && eigenGesamt < landGesamt;
+
   const vergleich =
-    eigen != null && land != null && land > 0 && blName
+    eigen != null && land != null && land > 0 && blName && !seiteSagtNachzuegler
       ? { anteil: eigen / land - 1, bezug: ortPhrase({ name: blName, level: "bundesland" }) }
       : null;
   const hook = index.rows.find((r) => r.regionId === regionId);

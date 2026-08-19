@@ -10,6 +10,7 @@ import {
   type Kandidat,
 } from "../../../../../lib/kommunen-testballon";
 import { askVariante, refToken } from "../../../../../lib/kommunen-ask";
+import { postfachBefund } from "../../../../../lib/outreach-mail";
 import { istAdminOderCron } from "../../../../../lib/admin-guard";
 
 // Versandliste zusammenstellen und FESTSCHREIBEN (kampagne + charge je Gemeinde).
@@ -104,7 +105,15 @@ export async function POST(req: NextRequest) {
       // Ein Schub für den Mail-Versand darf keine Gemeinde festschreiben, die
       // nur ein Kontaktformular hat — sie stünde dann in der Kampagne, bekäme
       // aber nie eine Mail und fehlte in jeder Auswertung als „nicht erreicht".
-      hatKanal: schub.kanal === "rollen-postfach" ? !!z.rollen_email : !!(z.kontakt_url || z.rollen_email),
+      // ERREICHBAR HEISST AUCH: an eine Adresse, die wir benutzen dürfen.
+      // Vorher prüfte nur das Versandpaket, ob das Postfach ein Funktionskonto
+      // der zuständigen Verwaltung ist — die Gemeinde stand dann in der
+      // Kampagne, bekam aber nie eine Mail und fehlte in jeder Auswertung als
+      // „nicht erreicht". Dieselbe Prüfung an beiden Enden.
+      hatKanal:
+        schub.kanal === "rollen-postfach"
+          ? !!z.rollen_email && postfachBefund(z.rollen_email, reg?.name ?? "", z.verwaltung_domain).ok
+          : !!(z.kontakt_url || z.rollen_email),
     });
   }
 

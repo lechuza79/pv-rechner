@@ -437,9 +437,10 @@ describe("Weitere Platzierungen im Brief", () => {
     ranglisteUrl: "https://solar-check.io/solar-atlas/ranking/x/kleine-gemeinden/bayern",
   };
 
-  it("klammert die Vergleichsgruppe aus, wenn sie bei allen dieselbe ist", () => {
-    // Sonst stünde „unter den kleinen Gemeinden im Landkreis Würzburg" in jeder
-    // Zeile untereinander — die Stelle, an der ein Brief nach Vorlage aussieht.
+  // Bei gleicher Vergleichsgruppe steht sie GAR NICHT mehr in der Zeile
+  // (Vorgabe des Betreibers, 19.08.2026): Sie steht schon in der Meldung
+  // darüber, und „von 52" sagt von selbst, dass es um eine Teilmenge geht.
+  it("lässt die Vergleichsgruppe weg, wenn sie bei allen dieselbe ist", () => {
     const gleich = renderOutreachDraft({
       ...BASIS,
       weitere: [
@@ -447,10 +448,10 @@ describe("Weitere Platzierungen im Brief", () => {
         { phrase: "beim Solar-Zubau", gruppe: "Kleinen Gemeinden im Landkreis Würzburg", platz: 3, von: 52 },
       ],
     }).body;
-    expect(gleich).toContain("jeweils unter den kleinen Gemeinden im Landkreis Würzburg");
-    expect(gleich.split("kleinen Gemeinden im Landkreis Würzburg").length - 1).toBeLessThanOrEqual(2);
-    expect(gleich).toContain("Platz 2 von 52 bei Balkonkraftwerken");
-    expect(gleich).toContain("Platz 3 von 52 beim Solar-Zubau");
+    const zeile = gleich.split("\n\n").find((a) => a.startsWith("Auch sonst")) ?? "";
+    expect(zeile).toBe(
+      "Auch sonst steht Höchberg weit vorn: Platz 2 von 52 bei Balkonkraftwerken, Platz 3 von 52 beim Solar-Zubau.",
+    );
   });
 
   it("nennt jede weitere Platzierung mit Platz, Gruppengrösse und Vergleichsgruppe", () => {
