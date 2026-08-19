@@ -121,9 +121,25 @@ legt ein Protokoll unter `scripts/.cache/versand/` ab. Bricht der Lauf ab, ist
 alles bis dahin protokolliert und in der Datenbank — ein zweiter Lauf
 überspringt, was schon draußen ist.
 
-Das Skript verweigert von sich aus: an Ferientagen des Ziel-Bundeslands,
-montags und freitags, über einen unzulässigen Anbieter, ohne Pflichtangaben im
-Text und über 25 Mails je Lauf.
+Das Skript verweigert von sich aus:
+
+- an Ferientagen und Feiertagen des Ziel-Bundeslands,
+- montags und freitags,
+- über einen Anbieter, der nicht im SPF-Eintrag steht, oder mit einem Absender,
+  der nicht das angemeldete Konto ist,
+- ohne Pflichtangaben im Text (Klarname, Impressum, Art. 14),
+- über 25 Mails **am Tag** (nicht je Lauf — es zählt, was heute schon in der
+  Datenbank steht),
+- **solange kein DKIM-Schlüssel veröffentlicht ist.** Das ist die Bremse aus
+  Schritt 1: Ohne DKIM scheitert DMARC bei jeder weitergeleiteten Mail, und
+  genau diese Empfängerliste besteht überwiegend aus Ortsgemeinden, deren
+  `info@`-Adresse weitergeleitet wird. Mit `--ohne-dkim` lässt sich das für
+  einen Probelauf an eigene Adressen übergehen.
+
+Bricht das Schreiben des Status fehl, hält der Lauf an: Die Mail ist draußen,
+die Gemeinde steht aber noch auf „offen" — ein zweiter Lauf schickte ihr
+denselben Brief ein zweites Mal, und das ist bei einer Aussendung ohne
+Nachfassen genau der Fall, den es nicht geben darf.
 
 ## 6. Am Folgetag
 

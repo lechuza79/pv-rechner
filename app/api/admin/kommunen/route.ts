@@ -165,7 +165,17 @@ export async function POST(req: NextRequest) {
   // Zusammensetzung des Briefes: lib/kommunen-brief.ts — dieselbe Funktion, die
   // das Versandpaket benutzt. Zwei Zusammensetzungen hießen zwei Fassungen
   // desselben Briefes, und die verschickte wäre die ungeprüfte.
-  const gebaut = await briefFuerGemeinde(region_id);
+  //
+  // MIT der Empfängeradresse, obwohl das Cockpit nicht versendet: Sie bestimmt,
+  // welche Quelle die Herkunftsangabe nach Art. 14 nennt. Ohne sie zeigte die
+  // Vorschau einen anderen Satz als die Mail — und die Vorschau ist genau die
+  // Fassung, die jemand abnimmt.
+  const { data: kontakt } = await serviceDb
+    .from("kommunen_kontakt")
+    .select("rollen_email")
+    .eq("region_id", region_id)
+    .maybeSingle();
+  const gebaut = await briefFuerGemeinde(region_id, kontakt?.rollen_email ?? null);
   if (istBriefFehler(gebaut)) {
     if (gebaut.grund === "gesperrt") {
       return NextResponse.json({ error: "Gemeinde ist gesperrt — kein Anschreiben." }, { status: 403 });
