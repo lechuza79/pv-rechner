@@ -630,8 +630,19 @@ describe("HTML-Fassung", () => {
     expect(h).toMatch(/Impressum[\s\S]*color:/);
   });
 
-  it("stellt die Quellenzeile kursiv", () => {
-    expect(renderOutreachDraft(BASIS).bodyHtml).toMatch(/font-style:italic[^>]*>Quelle:/);
+  it("stellt die Quellenzeile kursiv und leise", () => {
+    const h = renderOutreachDraft(BASIS).bodyHtml;
+    expect(h).toMatch(/font-style:italic[\s\S]{0,80}?>[\s\S]{0,40}?Quelle:/);
+    expect(h).toMatch(/font-size:12\.5px/);
+  });
+
+  // „Betreiber solar-check.io" steht direkt unter dem Namen, nicht als eigener
+  // Absatz — die leise Auszeichnung muss also mitten im Absatz greifen.
+  it("macht die Rollenzeile unter der Unterschrift leise", () => {
+    const h = renderOutreachDraft(BASIS).bodyHtml;
+    expect(h).toMatch(/<span style="[^"]*font-size:12\.5px[^"]*">Betreiber solar-check\.io<\/span>/);
+    // Der Name daneben bleibt normal.
+    expect(h).toMatch(/Sebastian Schäder<br>/);
   });
 
   it("lässt keine spitzen Klammern aus dem Text durch", () => {

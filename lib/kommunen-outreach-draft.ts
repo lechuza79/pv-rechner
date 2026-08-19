@@ -186,6 +186,21 @@ export type OutreachDraft = { subject: string; body: string; bodyHtml: string; m
  * unverlangten Erstansprache genau das falsche Signal, und ein Bild wäre ein
  * Spam-Muster.
  */
+/**
+ * Zeilen, die leiser sein sollen als der Rest: Quellenangabe, die
+ * Rollenzeile unter der Unterschrift und die Pflichtangaben im Fuß.
+ *
+ * ERKANNT AM INHALT, nicht an einer Auszeichnung im Text. Ein Marker im
+ * Klartext („[klein]…") stünde in der Textfassung sichtbar da, und die ist die
+ * Hauptfassung. Die Liste ist kurz und steht neben dem Text, der sie erzeugt.
+ *
+ * KEINE Basisgröße für den Rest: Mailprogramme setzen ihre eigene, und die
+ * kennt der Empfänger. Wer sie überschreibt, macht den Brief auf fremden
+ * Geräten kleiner statt größer.
+ */
+const LEISE_ZEILEN = [/^Quelle:/, /^Betreiber solar-check\.io$/, /^Impressum:/, /^Datenschutz:/];
+const LEISE_STIL = `color:${GRAU};font-size:12.5px`;
+
 export function briefAlsHtml(body: string): string {
   const esc = (t: string) =>
     t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -194,15 +209,24 @@ export function briefAlsHtml(body: string): string {
     t.replace(/https?:\/\/[^\s<]+[^\s<.,;:)]/g, (u) => `<a href="${u}">${u}</a>`);
 
   const [oben, ...unten] = body.split(`\n${FUSS_TRENNER}\n`);
+  // Zeilenweise, damit eine leise Zeile MITTEN in einem Absatz leise sein kann —
+  // „Betreiber solar-check.io" steht direkt unter dem Namen, nicht als eigener
+  // Absatz.
+  const zeile = (z: string) => {
+    const inhalt = verlinke(esc(z));
+    return LEISE_ZEILEN.some((re) => re.test(z.trim()))
+      ? `<span style="${LEISE_STIL}">${inhalt}</span>`
+      : inhalt;
+  };
   const absatz = (t: string, stil = "") =>
-    `<p${stil ? ` style="${stil}"` : ""}>${verlinke(esc(t)).replace(/\n/g, "<br>")}</p>`;
+    `<p${stil ? ` style="${stil}"` : ""}>${t.split("\n").map(zeile).join("<br>")}</p>`;
 
   // Die Quellenzeile kursiv: Sie gehört zur Meldung, ist aber nicht ihre
   // Aussage. Kursiv ist die leiseste Auszeichnung, die es gibt, und sie
   // überlebt das Kopieren in ein Redaktionssystem.
   const kopf = oben
     .split("\n\n")
-    .map((a) => (a.startsWith("Quelle:") ? absatz(a, "font-style:italic") : absatz(a)))
+    .map((a) => (a.startsWith("Quelle:") ? absatz(a, `font-style:italic;${LEISE_STIL}`) : absatz(a)))
     .join("\n");
   const fussText = unten.join(`\n${FUSS_TRENNER}\n`);
   const fuss = fussText
