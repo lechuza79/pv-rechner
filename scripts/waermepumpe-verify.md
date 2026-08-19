@@ -155,7 +155,41 @@ zusätzlich in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
     konsequent an, käme für unseren Gas-Wert auf Brennwert-Basis 0,84 heraus, nicht
     0,95. Wer also die Öl-Zahl aus dieser Quelle holt, muss die Gas-Zahl mitnehmen —
     sonst entsteht die nächste Inkohärenz.
-  **Nächste Adresse, noch ungeprüft:** die Ökodesign-Verordnung (EU) 813/2013 mit
+  **Dritte Prüfung (19.08.2026) — Ökodesign-Verordnung (EU) 813/2013, Volltext im
+  Repo** (`docs/quellen/CELEX%3A32013R0813%3ADE%3ATXT.pdf`, vom Betreiber beschafft,
+  weil EUR-Lex automatisierte Abrufe leer beantwortet). Sie ist die **richtige
+  Quellenklasse** und bringt den Punkt zum ersten Mal wirklich voran:
+  - **Die Größe stimmt:** „jahreszeitbedingte Raumheizungs-Energieeffizienz" (ηs),
+    Artikel 2 Nummer 20 — Quotient aus gedecktem Raumheizwärmebedarf und dem
+    **jährlichen** Energieverbrauch. Also Jahresbetrieb inklusive Teillast und
+    Bereitschaft, nicht Prüfstand. Das war der Bruch der beiden Vorgänger-Quellen.
+  - **Die Bezugsgröße steht fest:** Nummer 30 definiert den jährlichen
+    Energieverbrauch „angegeben in kWh **als Brennwert**". ηs ist damit eine
+    Brennwert-Größe.
+  - **Anhang II:** Seit dem 26.09.2015 dürfen Raumheizgeräte mit Brennstoffheizkessel
+    bis 70 kW eine ηs von **86 %** nicht unterschreiten — **ohne Unterscheidung
+    zwischen Öl und Gas** (nur Typ-B1-Kessel bis 10 kW dürfen auf 75 %).
+  - **Was daraus schon folgt:** Unsere **0,85 für einen NEU eingebauten Ölkessel
+    liegt unter dem gesetzlichen Mindestwert** — auf der Brennwert-Skala ohnehin,
+    und auf der Heizwert-Skala, auf der unser Ölpreis steht, erst recht (dort läge
+    die Untergrenze noch höher). Der Wert beschreibt ein Gerät, das heute gar nicht
+    verkauft werden dürfte. Die Richtung des Fehlers ist damit belegt: zugunsten
+    der Wärmepumpe.
+  - **Was die Verordnung NICHT hergibt:** einen typischen ηs-Wert je Brennstoff.
+    Sie setzt eine Untergrenze, keinen Marktwert.
+
+  **Es fehlt genau noch EIN Datum** — dann ist der Punkt zu, und zwar für beide
+  Brennstoffe in einem Zug: das **Verhältnis Brennwert zu Heizwert für Heizöl EL**
+  (für Erdgas liegt es amtlich vor: AG Energiebilanzen, „Heizwerte der Energieträger",
+  Fußnote 3 — Faktor 0,9024, also Brennwert/Heizwert = 1,108). Alternativ ein
+  belegter typischer ηs je Brennstoff aus Herstellerdatenblättern. Geprüft und
+  erfolglos: das UBA-Papier „Emissionsfaktoren Brennstoffe" (Link tot, 404). Die
+  AGEB-Tabelle nennt für Heizöl leicht nur den Heizwert (42 816 kJ/kg) — was
+  immerhin unsere Preisskala bestätigt: 42 816 kJ/kg bei 0,86 kg/l sind rund
+  10,2 kWh je Liter, und unsere 0,10 €/kWh entsprechen damit gut 102 € je 100 l,
+  also einem **Heizwert**-Preis.
+
+  **Frühere Notiz, überholt durch die Prüfung oben:** die Ökodesign-Verordnung (EU) 813/2013 mit
   der jahreszeitbedingten Raumheizungs-Energieeffizienz ηs. Sie hat die drei
   Eigenschaften, die den bisherigen Quellen fehlen: Sie gilt **neu in Verkehr
   gebrachten** Geräten, sie ist eine **Jahres**größe (Teillast und
