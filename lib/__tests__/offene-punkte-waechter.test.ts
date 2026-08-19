@@ -36,6 +36,7 @@ const CONFIGS = [
   "lib/feedin-config.ts",
   "lib/freiflaeche-config.ts",
   "lib/greengas-config.ts",
+  "lib/marktwert-config.ts",
   "lib/heatpump-config.ts",
   "lib/prices-config.ts",
 ];
