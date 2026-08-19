@@ -136,6 +136,28 @@ deckelt?").
 zu einem automatisch abgezogenen Betrag (siehe `fundingAmount`/`stackFunding`).
 Im Zweifel lieber keinen Betrag zeigen als einen falschen.
 
+**Der Resync kommt NACH dem Deploy, nie davor — BLOCKER (19.08.2026).** Die
+Route `/api/funding/setup?resync=1` schreibt den Katalog aus dem **ausgelieferten**
+Code in die Datenbank. Wer sie direkt nach dem Push aufruft, spiegelt den ALTEN
+Stand und bekommt trotzdem `"success": true` zurück — der einzige Hinweis ist die
+unscheinbare Zeile `history: skipped, keine Änderung gegenüber dem Bestand`. Genau
+das ist an diesem Tag zweimal passiert.
+
+Prüfen, ob der neue Stand wirklich draußen ist, und erst dann resyncen:
+
+```bash
+curl -s https://solar-check.io/api/funding?plz=<PLZ> | grep -c "<neuer Satz>"
+```
+
+**Und rechne damit, dass der Deploy gar nicht läuft.** Der „Ignored Build Step"
+vergleicht nur `HEAD^..HEAD`. Bei einem **Merge-Commit** ist das der Vergleich
+gegen den ersten Elternteil — bringt der Merge nur eine `.md`-Datei mit, während
+auf dem gemergten Zweig echte `.ts`-Änderungen liegen, wird der Build
+übersprungen und die Änderungen liegen auf `main`, ohne live zu sein. Am
+19.08.2026 waren so vier Deployments hintereinander abgebrochen (erkennbar am
+`errorLink` auf „ignored-build-step"). Das heilt sich mit dem nächsten Push, der
+Code anfasst; wer nicht warten will, prüft die Deployments und stößt neu an.
+
 ## Automatisierung: zwei geplante Tasks
 
 Beide laufen über die App (scheduled-tasks, „läuft solange die App offen ist" —
