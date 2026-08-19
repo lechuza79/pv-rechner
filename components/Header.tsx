@@ -20,6 +20,17 @@ interface NavItem {
   label: string;
   desc: string;
   page: string;
+  /**
+   * Zweitnennung: Der Eintrag steht in dieser Gruppe nur zum Finden, seine
+   * Heimat ist eine andere. Er markiert sich NICHT und macht seine Gruppe auch
+   * nicht aktiv — sonst leuchten zwei Menüpunkte gleichzeitig, und der Nutzer
+   * sieht nicht mehr, wo die Seite eigentlich hängt.
+   *
+   * Für Suchmaschinen ist die Zweitnennung folgenlos: Die Einträge werden erst
+   * beim Öffnen erzeugt und stehen in keinem ausgelieferten HTML (nachgemessen
+   * 18.08.2026). Es geht ausschließlich um Auffindbarkeit für Menschen.
+   */
+  zweitnennung?: boolean;
 }
 
 // All calculators grouped under the "Rentabilität berechnen" dropdown. Sub-labels
@@ -29,11 +40,12 @@ const RECHNER_ITEMS: NavItem[] = [
   { href: "/photovoltaik-rechner", label: "Photovoltaik-Rechner", desc: "Lohnt sich meine PV-Anlage?", page: "rechner" },
   { href: "/waermepumpe-rechner", label: "Wärmepumpen-Rechner", desc: "Heizkosten und Förderung vergleichen", page: "waermepumpe" },
   { href: "/klimaanlage-stromkosten", label: "Klimaanlagen-Rechner", desc: "Kühlkosten und Gerätevergleich — auch ergänzend zum Heizen", page: "klima" },
-  // Der Balkon-Rechner steht hier NICHT mehr: Balkonkraftwerk hat einen eigenen
-  // Menüpunkt auf oberster Ebene, und von dort führt der erste Schritt direkt
-  // in den Rechner. Stand er in beiden, leuchteten auf jeder Seite des Clusters
-  // ZWEI Menüpunkte gleichzeitig — der Ausklapp-Auslöser markiert sich, sobald
-  // irgendein Kind aktiv ist.
+  // Zweitnennung: Der Balkon-Rechner wohnt unter „Balkonkraftwerk", steht hier
+  // aber mit, weil ihn jemand sucht, der schlicht einen Rechner will. Er
+  // markiert sich nicht und macht diese Gruppe nicht aktiv — sonst leuchteten
+  // auf jeder Seite des Clusters zwei Menüpunkte, und man sähe nicht mehr, wo
+  // die Seite hängt.
+  { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk-Rechner", desc: "Steckersolar für Miete und Eigentum", page: "balkon-rechner", zweitnennung: true },
   { href: "/pv-bedarf-berechnen", label: "PV-Bedarf berechnen", desc: "Welche Anlage passt zu mir?", page: "empfehlung" },
   { href: "/pv-simulation", label: "PV-Live-Simulation", desc: "Aktuelle Erträge im Tagesverlauf", page: "simulation" },
 ];
@@ -457,7 +469,9 @@ function DesktopDropdown({
 }) {
   const [open, setOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const active = items.some((i) => i.page === activePage);
+  // Zweitnennungen zaehlen hier NICHT mit — sonst leuchtet diese Gruppe mit,
+  // obwohl die Seite in einer anderen haengt.
+  const active = items.some((i) => !i.zweitnennung && i.page === activePage);
 
   const openNow = useCallback(() => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
@@ -510,7 +524,7 @@ function DesktopDropdown({
             gap: 2,
           }}>
             {items.map((item) => {
-              const isActive = activePage === item.page;
+              const isActive = !item.zweitnennung && activePage === item.page;
               return (
                 <Link
                   key={item.href}
@@ -577,7 +591,7 @@ function MobileSection({
           style={{
             fontSize: 16,
             fontWeight: 600,
-            color: activePage === item.page ? v('--color-accent') : v('--color-text-primary'),
+            color: !item.zweitnennung && activePage === item.page ? v('--color-accent') : v('--color-text-primary'),
             textDecoration: "none",
             display: "flex",
             alignItems: "center",
