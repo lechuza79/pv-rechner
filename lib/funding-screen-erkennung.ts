@@ -42,6 +42,27 @@ export type ScreenVerdikt =
 export const SCREEN_VERSION = 2;
 
 /**
+ * Nach so vielen Tagen wird eine Seite ohne Fund erneut angesehen.
+ *
+ * WARUM ES DAS BRAUCHT (18.08.2026): Der Lauf merkte sich, was er geprüft hatte,
+ * und sah es nie wieder an. Für eine Gemeinde, die HEUTE nichts fördert, hieß
+ * das: nie wieder. Genau dort entsteht aber das nächste Programm — kommunale
+ * Zuschüsse werden mit dem Haushalt beschlossen, also jährlich neu, und eine
+ * Gemeinde ohne Programm ist keine Gemeinde, die nie eines haben wird.
+ *
+ * Der Seiten-Wächter schließt die Lücke nicht: Er ruft die Seiten der Programme
+ * ab, die wir FÜHREN (rund 80). Die gut 2.400 übrigen Förderseiten sah nach dem
+ * ersten Durchgang niemand mehr.
+ *
+ * 90 Tage, weil kommunale Programme dem Haushaltsjahr folgen: Viermal im Jahr
+ * hinzusehen fängt sowohl die Neuauflage im Januar als auch das unterjährige
+ * „Topf leer" ein. Bei rund 2.400 Seiten und 250 je Nacht ist ein voller
+ * Durchgang in zehn Tagen erledigt — die Wiedervorlage passt also bequem in den
+ * täglichen Lauf, ohne die frischen Funde zu verdrängen.
+ */
+export const WIEDERVORLAGE_TAGE = 90;
+
+/**
  * Die Begriffe je Technik.
  *
  * Getrennt statt in einem Topf, weil die Techniken in verschiedene Rechner
@@ -205,4 +226,43 @@ export function einordnen(text: string): ScreenBefund {
   if (treffer.length) return { verdikt: "treffer", techniken: treffer, beleg: kuerzen(bester) };
   if (ausgelaufen.length) return { verdikt: "ausgelaufen", techniken: [], beleg: kuerzen(bester) };
   return { verdikt: "kein-treffer", techniken: [], beleg: kuerzen(ersterFund) };
+}
+
+
+/** Der abgelegte Zustand einer Gemeinde, soweit er über die Wiedervorlage entscheidet. */
+export type AbdeckungsZeile = {
+  verdict: string;
+  screen_version: number | null;
+  /** Wann ein Mensch die Seite gelesen hat. */
+  gelesen_am: string | null;
+  /** Letzter Abruf durch den Screener. */
+  checked_at: string | null;
+};
+
+/**
+ * Ist diese Gemeinde erledigt — oder gehört sie in den nächsten Lauf?
+ *
+ * Hier statt im Skript, weil sie erst in Monaten das erste Mal wirkt: Eine Regel,
+ * deren Fehler man frühestens nach 90 Tagen sieht, muss einen Test haben. Im
+ * Skript hinter einem Supabase-Client wäre sie nicht prüfbar.
+ *
+ * Vier Gründe für eine erneute Vorlage:
+ *  1. noch nie angesehen,
+ *  2. beim letzten Mal nicht erreichbar,
+ *  3. mit einer älteren Erkennung geprüft,
+ *  4. seit über {@link WIEDERVORLAGE_TAGE} nicht mehr angesehen.
+ *
+ * Der vierte ist der, der lange gefehlt hat. Der fünfte Fall ist die Ausnahme:
+ * Ein GELESENER Treffer kommt nicht zurück — wurde er aufgenommen, ruft der
+ * Seiten-Wächter seine Amtsseite täglich ab; wurde er verworfen, war es keine
+ * Förderseite, und das ändert sich nicht in einem Quartal.
+ */
+export function istErledigt(z: AbdeckungsZeile | undefined, heuteMs: number): boolean {
+  if (!z) return false;
+  if (z.verdict === "unerreichbar") return false;
+  if ((z.screen_version ?? 1) < SCREEN_VERSION) return false;
+  if (z.gelesen_am) return true;
+  if (!z.checked_at) return false;
+  const tage = Math.round((heuteMs - Date.parse(z.checked_at)) / 86_400_000);
+  return tage <= WIEDERVORLAGE_TAGE;
 }

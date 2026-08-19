@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { einordnen, sichtbarerText, SCREEN_VERSION } from "../funding-screen-erkennung";
+import { einordnen, sichtbarerText, istErledigt, SCREEN_VERSION, WIEDERVORLAGE_TAGE } from "../funding-screen-erkennung";
 
 // Die Vorsortierung ist die einzige Stelle des Abdeckungs-Laufs, die urteilt.
 // Beide Richtungen sind teuer: Ein übersehenes Programm fehlt für immer im
@@ -109,5 +109,41 @@ describe("Versionsstempel", () => {
     // abgehakt wurden. Bleibt er stehen, während sich die Listen ändern, gilt
     // eine Seite als geprüft, die nie durch die neue Erkennung lief.
     expect(SCREEN_VERSION).toBe(2);
+  });
+});
+
+
+describe("Wiedervorlage: einmal ohne Fund heißt nicht für immer ohne Fund", () => {
+  const HEUTE = Date.parse("2026-08-18");
+  const vorTagen = (n: number) => new Date(HEUTE - n * 86_400_000).toISOString();
+  const zeile = (extra: Partial<Parameters<typeof istErledigt>[0]> = {}) => ({
+    verdict: "kein-treffer", screen_version: SCREEN_VERSION, gelesen_am: null,
+    checked_at: vorTagen(1), ...extra,
+  }) as Parameters<typeof istErledigt>[0];
+
+  it("legt eine Gemeinde ohne Fund nach der Frist wieder vor", () => {
+    // Der Fall, für den es die Regel gibt: Kommunale Zuschüsse werden mit dem
+    // Haushalt beschlossen. Eine Gemeinde ohne Programm ist keine Gemeinde, die
+    // nie eines haben wird — vor dieser Regel sah der Lauf sie nie wieder an.
+    expect(istErledigt(zeile({ checked_at: vorTagen(WIEDERVORLAGE_TAGE - 1) }), HEUTE)).toBe(true);
+    expect(istErledigt(zeile({ checked_at: vorTagen(WIEDERVORLAGE_TAGE + 1) }), HEUTE)).toBe(false);
+  });
+
+  it("holt einen GELESENEN Treffer NICHT zurück", () => {
+    // Sonst stünde die mühsam abgearbeitete Leseliste vierteljährlich wieder da.
+    // Aufgenommene Programme ruft der Seiten-Wächter ohnehin täglich ab;
+    // verworfene waren keine Förderseiten, und das ändert sich nicht in 90 Tagen.
+    const gelesen = zeile({ verdict: "treffer", gelesen_am: "2026-08-18", checked_at: vorTagen(999) });
+    expect(istErledigt(gelesen, HEUTE)).toBe(true);
+  });
+
+  it("nimmt Unerreichbare und veraltete Erkennungen immer wieder vor", () => {
+    expect(istErledigt(zeile({ verdict: "unerreichbar" }), HEUTE)).toBe(false);
+    expect(istErledigt(zeile({ screen_version: SCREEN_VERSION - 1 }), HEUTE)).toBe(false);
+  });
+
+  it("behandelt eine nie angesehene Gemeinde als offen", () => {
+    expect(istErledigt(undefined, HEUTE)).toBe(false);
+    expect(istErledigt(zeile({ checked_at: null }), HEUTE)).toBe(false);
   });
 });

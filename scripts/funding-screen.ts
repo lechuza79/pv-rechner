@@ -40,7 +40,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
 import { FUNDING_PROGRAMS } from "../lib/funding-programs";
 import {
-  einordnen, sichtbarerText, SCREEN_VERSION,
+  einordnen, sichtbarerText, istErledigt, SCREEN_VERSION, WIEDERVORLAGE_TAGE,
   type ScreenVerdikt, type ScreenTechnik,
 } from "../lib/funding-screen-erkennung";
 
@@ -101,6 +101,10 @@ type CoverageZeile = {
   verdict: string;
   screen_version: number | null;
   techniken: string | null;
+  /** Wann ein Mensch die Seite gelesen hat — dann keine Wiedervorlage mehr. */
+  gelesen_am: string | null;
+  /** Letzter Abruf durch den Screener; Grundlage der Wiedervorlage. */
+  checked_at: string | null;
 };
 
 async function offeneKandidaten(limit: number) {
@@ -119,27 +123,16 @@ async function offeneKandidaten(limit: number) {
 
   const abgelegt = await alleZeilen<CoverageZeile>(
     "funding_coverage",
-    "region_id, verdict, screen_version, techniken",
+    "region_id, verdict, screen_version, techniken, gelesen_am, checked_at",
   );
   const zeileVon = new Map(abgelegt.map((r) => [r.region_id, r]));
 
-  /**
-   * Ist diese Gemeinde erledigt?
-   *
-   * Drei Gründe, sie erneut vorzunehmen — und der dritte ist der wichtigste:
-   *  1. noch nie angesehen,
-   *  2. beim letzten Mal nicht erreichbar gewesen,
-   *  3. mit einer ÄLTEREN Erkennung geprüft. Die knapp 900 abgehakten Seiten
-   *     liefen durch eine Fassung, die Wärmepumpen nicht kannte; sie als
-   *     „geprüft" zu führen hieße, für zwei von drei Techniken eine Prüfung zu
-   *     behaupten, die nie stattgefunden hat.
-   */
-  const erledigt = (id: string): boolean => {
-    const z = zeileVon.get(id);
-    if (!z) return false;
-    if (z.verdict === "unerreichbar") return false;
-    return (z.screen_version ?? 1) >= SCREEN_VERSION;
+  const tageSeit = (iso: string | null): number => {
+    if (!iso) return Number.POSITIVE_INFINITY;
+    return Math.round((Date.now() - Date.parse(iso)) / 86_400_000);
   };
+
+  const erledigt = (id: string): boolean => istErledigt(zeileVon.get(id), Date.now());
 
   const rest = offenIds.filter((id) => !erledigt(id));
   const pop = new Map<string, number>();
@@ -151,26 +144,35 @@ async function offeneKandidaten(limit: number) {
   }
   const urlVon = new Map(kk.map((r) => [r.region_id, r.thema_foerderung_url as string]));
 
-  // Nie angesehene zuerst, dann die mit veralteter Erkennung — bei beiden die
-  // größten voran. Eine unbekannte Seite kann JEDE Technik bringen, eine
-  // veraltete nur noch die zwei, die der alte Lauf nicht kannte.
+  // Nie angesehene zuerst — dort kann JEDE Technik auftauchen, während eine
+  // Wiedervorlage nur eine Veränderung bringen kann. Innerhalb beider Gruppen
+  // die größten voran, bei den Wiedervorlagen zusätzlich die ältesten.
   const nieGesehen = (id: string) => !zeileVon.has(id);
   const naechste = rest
-    .sort((a, b) => Number(nieGesehen(b)) - Number(nieGesehen(a)) || (pop.get(b) ?? 0) - (pop.get(a) ?? 0))
+    .sort(
+      (a, b) =>
+        Number(nieGesehen(b)) - Number(nieGesehen(a)) ||
+        tageSeit(zeileVon.get(b)?.checked_at ?? null) - tageSeit(zeileVon.get(a)?.checked_at ?? null) ||
+        (pop.get(b) ?? 0) - (pop.get(a) ?? 0),
+    )
     .slice(0, limit)
     .map((id) => ({ region_id: id, url: urlVon.get(id)!, einwohner: pop.get(id) ?? 0 }));
 
   return {
     gesamt: offenIds.length,
     erledigt: offenIds.length - rest.length,
-    nachzuholen: rest.filter((id) => zeileVon.has(id)).length,
+    nachzuholen: rest.filter((id) => zeileVon.has(id) && (zeileVon.get(id)!.screen_version ?? 1) < SCREEN_VERSION).length,
+    wiedervorlage: rest.filter((id) => {
+      const z = zeileVon.get(id);
+      return !!z && (z.screen_version ?? 1) >= SCREEN_VERSION && z.verdict !== "unerreichbar" && !z.gelesen_am;
+    }).length,
     naechste,
   };
 }
 
 async function stand(): Promise<void> {
-  const { gesamt, erledigt, nachzuholen } = await offeneKandidaten(1);
-  const zeilen = await alleZeilen<CoverageZeile>("funding_coverage", "region_id, verdict, screen_version, techniken");
+  const { gesamt, erledigt, nachzuholen, wiedervorlage } = await offeneKandidaten(1);
+  const zeilen = await alleZeilen<CoverageZeile>("funding_coverage", "region_id, verdict, screen_version, techniken, gelesen_am, checked_at");
   const z = new Map<string, number>();
   for (const r of zeilen) z.set(r.verdict, (z.get(r.verdict) ?? 0) + 1);
   const prozent = gesamt ? Math.round((erledigt / gesamt) * 100) : 0;
@@ -193,6 +195,12 @@ async function stand(): Promise<void> {
     console.log(
       `\n${nachzuholen} Gemeinden wurden mit einer älteren Erkennung geprüft und stehen wieder an.\n` +
         `Bis die durch sind, sagt die Abdeckung nichts über Balkon und Wärmepumpe.`,
+    );
+  }
+  if (wiedervorlage) {
+    console.log(
+      `\n${wiedervorlage} Gemeinden sind zur Wiedervorlage fällig (länger als ${WIEDERVORLAGE_TAGE} Tage nicht angesehen).\n` +
+        `Das ist kein Rückschritt: „Hier gibt es nichts" gilt nur bis zum nächsten Haushaltsbeschluss.`,
     );
   }
 }
