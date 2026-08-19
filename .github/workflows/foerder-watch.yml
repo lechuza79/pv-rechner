@@ -129,6 +129,22 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: npm run foerder:seiten -- --limit 3000
 
+      # Dasselbe je EINZELNER Seite statt einer je Gemeinde (19.08.2026). Der
+      # Schritt darüber prüft `funding_coverage`, und die Tabelle kennt je
+      # Gemeinde genau eine Adresse — eine Stadt mit getrennter Photovoltaik- und
+      # Balkonseite bekam eine davon geprüft und die andere nie. „Status ist
+      # aktuell" stimmte damit immer nur für eine Seite pro Ort.
+      #
+      # Er schreibt zusätzlich den Zustand mit: Eine Seite, die nicht mehr
+      # antwortet, ist kein stiller Ausfall, sondern ein Befund. Ohne das Feld
+      # stünde eine tote Adresse unbegrenzt als gültige Fundstelle im Bestand.
+      - name: Jede einzelne Förderseite auf Bewegung prüfen
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: npm run foerder:seiten-alle -- --limit 3000
+
       # Der Katalog soll vollständig werden, nicht stichprobenhaft. Der Bestand
       # wächst jetzt aus zwei Quellen: den Adressen des Kommunen-Outreach und dem
       # Schritt darüber. Unerreichbare Seiten kommen von selbst wieder dran, und

@@ -29,6 +29,7 @@
     "sessions": "tsx scripts/sessions.ts",
     "foerder:suche": "tsx scripts/funding-discover.ts",
     "foerder:seiten": "tsx scripts/funding-coverage-watch.ts",
+    "foerder:seiten-alle": "tsx scripts/funding-seiten-watch.ts",
     "foerder:ags": "tsx scripts/funding-ags-verify.ts",
     "release:plan": "tsx scripts/release-plan.ts"
   },
