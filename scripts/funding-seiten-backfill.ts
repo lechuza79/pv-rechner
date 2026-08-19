@@ -124,6 +124,20 @@ async function main(): Promise<void> {
     jeGemeinde.set(s.regionId, fundEinfuegen(vorher, s));
   };
 
+  // Woher eine Adresse WIRKLICH stammt, steht in der URL-Suche: Was sie gefunden
+  // hat, trägt `gefunden_url`; alles andere kam aus dem Outreach. Das pauschal
+  // als „suche" zu stempeln wäre dieselbe Fehlerklasse wie ein Prüfdatum für eine
+  // Prüfung, die nie stattfand — und es wäre gefährlich, weil ein späterer Lauf
+  // anhand der Herkunft entscheiden könnte, was er neu bewerten darf.
+  const gefundenVon = new Map<string, string>();
+  for (const z of await alleZeilen<{ region_id: string; gefunden_url: string | null }>(
+    "funding_url_suche", "region_id, gefunden_url",
+  )) {
+    if (z.gefunden_url) gefundenVon.set(z.region_id, seitenSchluessel(z.gefunden_url));
+  }
+  const herkunft = (regionId: string, url: string): SeitenQuelle =>
+    gefundenVon.get(regionId) === url ? "suche" : "outreach";
+
   // 1. Die reichere Quelle zuerst: Screening kennt Technik und Leseergebnis.
   for (const c of cov) {
     if (!c.url) continue;
@@ -131,7 +145,7 @@ async function main(): Promise<void> {
       regionId: c.region_id,
       url: seitenSchluessel(c.url),
       techniken: technikenLesen(c.techniken),
-      quelle: "suche" as SeitenQuelle,
+      quelle: herkunft(c.region_id, seitenSchluessel(c.url)),
       zustand: c.verdict === "unerreichbar" ? "unerreichbar" : "erreichbar",
       fingerprint: c.fingerprint,
       seiteGesehenAm: c.seite_gesehen_am,

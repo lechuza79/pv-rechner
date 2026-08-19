@@ -275,6 +275,23 @@ export function fundEinfuegen(bestand: FoerderSeite[], fund: FoerderSeite): Foer
  */
 export function istInterneRoute(url: string): boolean {
   const s = seitenSchluessel(url);
-  const pfad = s.slice(s.indexOf("/") + 1);
-  return pfad.split("/").some((seg) => seg.startsWith(":"));
+  const i = s.indexOf("/");
+  if (i === -1) return false;
+  const segmente = s.slice(i + 1).split("/");
+  if (segmente.some((seg) => seg.startsWith(":"))) return true;
+  return FREMDSPRACHE.test(segmente[0] ?? "");
 }
+
+/**
+ * Vorangestelltes Sprachkürzel — dieselbe Seite in einer Fremdsprache.
+ *
+ * Gemessen an Mainz (19.08.2026): dieselbe Seite unter `/en/`, `/es/`, `/fr/`
+ * und `/uk/`, dazu die deutsche Fassung ohne Kürzel. Als eigene Fundstellen
+ * wären das vier Dubletten mit vier Fingerabdrücken.
+ *
+ * **`de` steht bewusst NICHT in der Liste** — viele Verwaltungen liefern ihre
+ * einzige, deutsche Fassung unter `/de/` aus (Lübeck, Bad Homburg). Wer das
+ * mitfiltert, wirft die richtige Seite weg statt der Übersetzung. Deshalb eine
+ * geschlossene Liste der Fremdsprachen statt „zwei Buchstaben am Anfang".
+ */
+const FREMDSPRACHE = /^(en|fr|es|it|nl|pl|ru|uk|tr|ar|pt|cs|ro|el|da|sv|fi|hu|bg|hr|sr|zh|ja|ko|fa|ku)$/i;

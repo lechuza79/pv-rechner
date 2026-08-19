@@ -185,3 +185,21 @@ describe("Dubletten, die der erste echte Lauf zutage gefördert hat (19.08.2026)
     expect(istInterneRoute("https://www.aachen.de/in-aachen-leben/klima-umwelt/klimaschutz/foerderprogramme")).toBe(false);
   });
 });
+
+describe("Sprachfassungen sind Dubletten, die deutsche Fassung nicht", () => {
+  it("erkennt fremdsprachige Fassungen derselben Seite", () => {
+    // Mainz lieferte dieselbe Seite unter /en/, /es/, /fr/ und /uk/.
+    for (const l of ["en", "es", "fr", "uk"]) {
+      expect(istInterneRoute(`https://www.mainz.de/${l}/vv/produkte/schulamt/x`), l).toBe(true);
+    }
+  });
+
+  it("lässt /de/ in Ruhe — dort liegt bei vielen die EINZIGE Fassung", () => {
+    expect(istInterneRoute("https://www.luebeck.de/de/stadtentwicklung/klima/gruendachfoerderung")).toBe(false);
+    expect(istInterneRoute("https://www.bad-homburg.de/de/suche")).toBe(false);
+  });
+
+  it("verwechselt kein normales Pfadsegment mit einem Sprachkürzel", () => {
+    expect(istInterneRoute("https://www.stadt.de/pv/foerderung")).toBe(false);
+  });
+});
