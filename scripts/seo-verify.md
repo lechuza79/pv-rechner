@@ -122,6 +122,44 @@ sondern weil daran hängt, ob die nächste Atlas-Welle überhaupt starten darf. 
 Hälfte (unsere eigenen Titel) hält `lib/__tests__/atlas-foerder-wortklassen.test.ts`; die
 Zuordnung durch Google kann nur diese Messung sehen.
 
+### Schritt 2b-3 — Der Anteil sichtbarer Anfragen entscheidet, ob eine Position echt ist — BLOCKER
+
+Die Regel „Durchschnittsposition nie ohne Query-Ebene" (unten) sagt, dass man nachsehen
+muss. **Diese hier sagt, was man dabei ausrechnet:** je Seite die Summe der Einblendungen
+aus den sichtbaren Anfragen geteilt durch die Einblendungen der Seitenebene.
+
+- **Anteil hoch (grob über 30 %)** → die Position beschreibt echte Anfragen. Snippet- und
+  Titelarbeit lohnt.
+- **Anteil nahe null** → die Seite lebt von Anfragen, die Google anonymisiert, weil sie zu
+  selten sind. Die schöne Durchschnittsposition ist dann ein Artefakt aus lauter
+  Einzelabfragen, und jede Optimierung schreibt für Verkehr, den es nicht gibt.
+
+**Gemessen am 18.08.2026 an den zwölf stärksten Förder-Stadtseiten** — und das Ergebnis
+hat eine bereits ausgesprochene Empfehlung gekippt, die genau auf die guten Positionen
+gebaut hatte:
+
+| Seite | Einbl. | Pos. | Anteil sichtbar |
+|---|---|---|---|
+| Frankfurt | 214 | 19,0 | **40 %** |
+| Köln | 54 | 9,4 | 11 % |
+| Essen | 89 | 8,5 | 9 % |
+| Viersen | 72 | 6,7 | 4 % |
+| Regensburg | 50 | 7,1 | 4 % |
+| Osnabrück | 71 | 7,2 | 3 % |
+| Hannover | 120 | 7,8 | 2 % |
+| Wiesbaden | 53 | 7,6 | 2 % |
+| Würzburg | 69 | 7,1 | 1 % |
+| Bonn / Rhein-Erft / Mainz | 86 / 83 / 36 | 7,7 / 8,1 / 12,5 | **0 %** |
+
+Die sechs Seiten „auf Seite 1" haben zusammen praktisch keine benennbare Anfrage. Die
+einzige Seite mit Substanz steht auf **Position 19**, nicht auf 7 — und ihre echten
+Anfragen („photovoltaik förderung frankfurt" 11,9, „klimabonus frankfurt 2026" 9,1) sind
+ein Ranking-Thema, kein Snippet-Thema.
+
+**Konsequenz für jeden Lauf:** Diese Spalte gehört in den Monats-Schnappschuss. Eine
+Seite ohne sichtbare Anfragen wird nicht als Chance gemeldet, egal wie gut ihre Position
+aussieht.
+
 ### Schritt 2c — Durchschnittsposition nie ohne Query-Ebene — BLOCKER
 
 Eine gute Durchschnittsposition bei ~1 % Klickrate ist ein **Warnsignal, kein Erfolg**.

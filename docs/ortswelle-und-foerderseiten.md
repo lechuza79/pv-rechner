@@ -18,6 +18,17 @@ tragen sonst denselben Ortsnamen und nehmen sich gegenseitig die Position.
 überhaupt Begriffe mit Kaufabsicht besetzen. Die Ortswelle kommt also nicht auf eine leere
 Fläche, sondern neben etwas Funktionierendes.
 
+**Aber ihre guten Positionen sind größtenteils ein Artefakt** (nachgemessen 18.08.2026,
+zwölf stärkste Stadtseiten): Hannover steht auf Position 7,8 — und **2 %** seiner
+Einblendungen lassen sich einer benennbaren Anfrage zuordnen. Bonn, Rhein-Erft und Mainz:
+**null**. Die Zahl entsteht aus lauter Einzelabfragen, die Google anonymisiert. Die
+einzige Seite mit echter Nachfrage ist Frankfurt (40 % zuordenbar) — und die steht auf
+Position **19**, nicht auf 7.
+
+Das ändert nichts an der Rollentrennung unten, aber es räumt eine Illusion aus: Es gibt
+hier keinen billigen Klick-Gewinn durch bessere Snippets. Die Förderseiten stehen so weit
+vorn, wie es aussieht, nur für Anfragen, die praktisch niemand stellt.
+
 ## 2. Die Rollentrennung — das ist der Kern
 
 Gemessen an der Anfragen-Ebene halten sich die beiden Familien heute sauber auseinander:
