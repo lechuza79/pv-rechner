@@ -91,24 +91,40 @@ function headline(region: AtlasRegion): string {
 }
 
 /**
- * Der Eigenname der Seite — nur für den Titel, NICHT für die Überschrift.
+ * Titel der Regionsseiten: führendes Wort ist „Photovoltaik", dann der Ort.
  *
- * Das Wort „Solaratlas" stand bis 18.08.2026 nirgends auf der Seite, obwohl wir
- * dafür platziert sind: „solaratlas bayern" (90 Suchen/Monat) Position 16,9,
- * „solaratlas rlp" (720) Position 10,6, „solaratlas nrw" (110) Position 15,5
- * (Search Console, Anfragen-Ebene, 18.07.–15.08.2026). Es kostet nichts, es in
- * den Titel zu nehmen.
+ * ZWEI VERWORFENE ANLÄUFE stehen hinter dieser Zeile, beide am 18.08.2026, beide
+ * vom Betreiber gestoppt — deshalb steht die Herleitung hier und nicht nur im
+ * Commit:
  *
- * ABER — die Überschrift bleibt bewusst die beschreibende („Solaranlagen in
- * Bayern"), und der Grund ist eine Zahl, die beim ersten Anlauf fehlte: Die
- * beschreibenden Begriffe sind zusammen das VIERFACHE unseres Eigennamens
- * („solar bayern" 210, „photovoltaik bayern" 110, „solaranlagen bayern" 50 gegen
- * „solaratlas bayern" 90). Den größeren Begriff gegen den kleineren zu tauschen
- * wäre ein Verlustgeschäft gewesen. Der Titel trägt deshalb beide Hälften, die
- * Überschrift die größere.
+ * 1. „Solaratlas Bayern" als ÜBERSCHRIFT. Verworfen, weil nur gemessen worden war,
+ *    wie gut wir für den Eigennamen stehen — nicht, was der Begriff wiegt, den er
+ *    ersetzen sollte.
+ * 2. „Solaratlas Bayern" als TITEL. Ebenfalls verworfen, aus zwei Gründen:
+ *    - Die Suchabsicht passt nicht. Auf Platz 1–10 zu „solaratlas bayern" steht
+ *      ausnahmslos ein Dachflächen-Potenzialkataster (Energie-Atlas Bayern,
+ *      Geoportal, Solaratlas des Landkreises Berchtesgadener Land). Das ist
+ *      dieselbe Falle wie bei „solarkataster", die wir am 13.08.2026 schon einmal
+ *      dokumentiert hatten: „darf ich auf mein Dach?" ist eine andere Frage als
+ *      „was steht hier schon?".
+ *    - Die Nachfrage war Rauschen: „solaratlas bayern" 48 Einblendungen, aber
+ *      „solaratlas nrw" 2 und „solaratlas rlp" 5. Aus einer Seite wurde eine Regel
+ *      für siebzehn.
+ *
+ * WAS STATTDESSEN GEMESSEN IST: Auf unserer stärksten Atlas-Seite (Rheinland-Pfalz)
+ * sind die drei größten Anfragen „photovoltaik pfalz" (18 Einblendungen),
+ * „photovoltaik rheinland-pfalz" (11) und „photovoltaik rheinland pfalz" (7) —
+ * zusammen 36 gegen 5 für den Eigennamen. Über alle Atlas-Seiten: „photovoltaik"
+ * in 36 Anfragen mit 140 Einblendungen, „solaratlas" in 6 mit 71. Das Wort stand
+ * bis dahin in keinem Titel und in keinem sichtbaren Satz.
+ *
+ * Die Ortsangabe kommt aus ortPhrase(), damit die Präposition stimmt („im Landkreis
+ * Würzburg", „in der Region Hannover", „im Saarland") — der Titel wird sonst an
+ * genau den drei Stellen falsch, für die es diese Funktion gibt.
+ * Quelle: Search Console 18.07.–15.08.2026, Anfragen-Ebene; docs/seo/befund-2026-08-18-atlas-wellen.md
  */
-function seitenName(region: AtlasRegion): string {
-  return region.level === "de" ? "Solaratlas Deutschland" : `Solaratlas ${region.name}`;
+function seitenTitel(region: AtlasRegion): string {
+  return `Photovoltaik ${ortPhrase(region)}: Solaranlagen, Bestand & Zubau`;
 }
 
 export async function generateMetadata(props: { params: Promise<Params> }): Promise<Metadata> {
@@ -117,11 +133,15 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
   if (!region) return { robots: atlasRobots(false) };
   return {
     ...pageMetadata({
-      title: `${seitenName(region)}: Solaranlagen, Bestand & Zubau`,
+      title: seitenTitel(region),
       description:
         region.level === "de"
           ? "Wie viel Photovoltaik steht in Deutschland? Bestand und Zubau aus dem Marktstammdatenregister, mit Rangliste aller Bundesländer nach Solarleistung je Einwohner."
-          : `Wie viele Solaranlagen stehen ${ortPhrase(region)}? Photovoltaik-Bestand, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister — mit Rangliste und Landesförderung.`,
+          // Kein Zusatz „mit Rangliste und Landesförderung" mehr (18.08.2026): Er stand
+          // jenseits der angezeigten ~155 Zeichen, versprach auf ~400 Kreisseiten einen
+          // Förderabschnitt, den nur Bundesland-Seiten haben, und trug ein Geld-Wort in
+          // eine Bestands-Seite — gegen unsere eigene Rollentrennung zu den Förderseiten.
+          : `Wie viele Solaranlagen stehen ${ortPhrase(region)}? Photovoltaik-Bestand, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister.`,
       path: `/solar-atlas${params.pfad?.length ? "/" + params.pfad.join("/") : ""}`,
     }),
     robots: atlasRobots(atlasIsIndexable(region.level)),
@@ -327,7 +347,7 @@ async function AtlasBody({
               Suchen/Monat, „solaranlagen bayern" 50), und das Wort gehört hier ohnehin
               hin: Der Satz sagt, woher die Zahlen kommen. Kein zweiter Satz nur für ein
               Wort — er trägt die Herkunftsangabe, die vorher gar nicht dastand. */}
-          Alle Zahlen stammen aus dem Marktstammdatenregister, in dem jede
+          Alle Bestandszahlen stammen aus dem Marktstammdatenregister, in dem jede
           Photovoltaik-Anlage in Deutschland gemeldet sein muss.
         </p>
 

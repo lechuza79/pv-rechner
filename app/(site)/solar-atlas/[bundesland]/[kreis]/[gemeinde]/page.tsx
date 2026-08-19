@@ -107,12 +107,20 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
     : 0;
   return {
     ...pageMetadata({
-      // Ortsname + „Photovoltaik"/„Solaranlagen" — das ist das Muster, mit dem
-      // diese Seitengattung gewinnt, gemessen am Wettbewerber wieistmeinsolar.de:
-      // 139 Platzierungen, 8 davon in den Top 10, sämtlich auf Ortsnamen
-      // („pv erdweg" 5, „pv rendsburg" 7, „solar weinheim" 10) und keine einzige
-      // auf einem Begriff mit dem Wort „Landkreis". Der Ortsname steht deshalb
-      // vorn, damit er auch in der abgeschnittenen Trefferanzeige überlebt.
+      // Führendes Wort + Ortsname — das Muster, mit dem diese Seitengattung
+      // gewinnt, gemessen am Wettbewerber wieistmeinsolar.de (139 Platzierungen,
+      // 123 davon auf Ortsseiten). Sechs seiner Top-10-Treffer sind echte
+      // Ortsanfragen („pv erdweg" 5, „pv rendsburg" 7, „solar weinheim" 10).
+      //
+      // EHRLICH DAZU, weil es gegen die Wortwahl hier spricht: In seinen Top 10
+      // führt KEIN „photovoltaik", sondern durchweg „pv" oder „solar". Umgekehrt
+      // trägt „photovoltaik" bei ihm das mit Abstand größte Volumen (28
+      // Platzierungen, 4.040 Suchen/Monat gegen 2.790 für „pv"). Wir nehmen das
+      // Volumen-Wort, weil unsere eigenen Anfragen dieselbe Richtung zeigen (siehe
+      // seitenTitel() der Regionsseiten) — aber es ist eine Abwägung, keine
+      // Ableitung, und die Gegenzahl gehört dazu.
+      //
+      // Wirkung heute: null. Gemeindeseiten sind noindex, bis Welle 1 läuft.
       // Beleg: docs/seo/befund-2026-08-18-atlas-wellen.md
       title: `Photovoltaik in ${region.name}: Solaranlagen, Bestand & Zubau`,
       description: `Photovoltaik in ${region.name}: Anlagenzahl, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister — je Einwohner und im Vergleich zum ${bezugsebene}.`,

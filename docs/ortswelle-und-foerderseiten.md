@@ -10,7 +10,7 @@ tragen sonst denselben Ortsnamen und nehmen sich gegenseitig die Position.
 
 | Familie | Seiten mit Einblendungen | Einblendungen | Klicks |
 |---|---|---|---|
-| Förderseiten (`/photovoltaik-foerderung/…`) | 41 | 1.879 | 12 |
+| Förderseiten (`/photovoltaik-foerderung/…`) | 42 | 1.879 | 12 |
 | davon Stadtseiten | 33 | 1.551 | 11 |
 | Solar-Atlas (`/solar-atlas/…`) | 18 | 926 | 9 |
 
@@ -29,17 +29,37 @@ Gemessen an der Anfragen-Ebene halten sich die beiden Familien heute sauber ause
 | „Was steht hier schon?" | pv frankfurt | Förder-Stadtseite **78,5** | — |
 | „Was steht hier schon?" | solaranlage hameln | Atlas (Kreisseite als Notnagel) | 63,4 |
 
-Die dritte Zeile ist die wichtige: Auf dem nackten Ortsnamen ist die Förderseite praktisch
-nicht vorhanden. **Diese Lücke soll die Atlas-Ortsseite füllen — und nur sie.**
-
 **Regel:** Förderseite = Geld-Wörter (förderung, zuschuss, klimabonus, programm) + Ort.
 Atlasseite = Bestands-Wörter (pv, solar, photovoltaik, solaranlagen) + Ort. Wer die Titel
 schreibt, hält diese Trennung ein; sie steht deshalb auch als Prüfpunkt im wöchentlichen
 Wellen-Monitor (Schritt 3b).
 
-**Warnzeichen, das den Umbau stoppt:** Sobald eine Förder-Anfrage von der Atlasseite bedient
-wird oder umgekehrt, konkurrieren zwei eigene Seiten um dieselbe Anfrage. Dann gewinnt
-keine von beiden. Erkennbar in der Anfragen-Ebene der Search Console, nicht in den Summen.
+### Die Trennung ist bereits gebrochen — und zwar in der gefährlichen Richtung
+
+**Die erste Fassung dieses Papiers behauptete, die Trennung halte sauber. Das war an
+EINER Stadt gemessen (Frankfurt) und stützte sich dort auf EINE Zeile — „pv frankfurt",
+Position 78,5 —, während die Zeile darüber aus derselben Tabelle unerwähnt blieb: „pv
+anlage frankfurt", 12 Einblendungen, Position 26,8.** Ein adversarialer Prüfer hat das am
+18.08.2026 auseinandergenommen. Nachgezählt:
+
+- **33 der 108 sichtbaren Förder-Anfragen tragen kein Geld-Wort** (65 von 291
+  Einblendungen, 22 %) — darunter „photovoltaik osnabrück" auf **Position 3**,
+  „pv anlage frankfurt" auf 26,8, „photovoltaikanlagen in kreis viersen" auf 20.
+- Umgekehrt trägt **keine einzige** der 149 Atlas-Anfragen ein Geld-Wort.
+- Bei **sieben** Anfragen erscheinen beide Familien gleichzeitig, und bei **drei** davon
+  steht die **Förderseite besser** — auf reinen Bestands-Wörtern: „photovoltaik pfalz"
+  (Förderseite 32,1 gegen Atlas 43,9), „photovoltaik rheinland-pfalz" (81,5 gegen 94,4),
+  „photovoltaik hessen" (85 gegen 92,3).
+
+**Was das bedeutet:** Der Atlas nimmt den Förderseiten nichts weg — die Förderseiten
+besetzen aber längst die Bestands-Ortsanfragen, auf die die neuen Ortsseiten zielen.
+Die Vorsichtsregel „erst die eine Familie, dann die andere" (Abschnitt 5) kommt für jeden
+Ort zu spät, an dem schon eine Förder-Stadtseite steht.
+
+**Vor Welle 1 zu tun:** Für jeden Ort der geplanten Charge messen, auf welchen
+Bestands-Anfragen die Förderseite heute steht. Wo sie dort steht, entweder die Atlas-Seite
+für diesen Ort zurückstellen oder die Förderseite bewusst auf Geld-Wörter zurückschneiden
+— nicht beides gleichzeitig laufen lassen und hoffen.
 
 ## 3. Welche Orte zuerst — hier widerspricht die Messung dem alten Plan
 
@@ -62,11 +82,12 @@ Ergebnisseite. Die Auswahl gehört gemessen, nicht geschätzt: eine Handvoll SER
 
 ## 4. Reihenfolge
 
-1. **Jetzt (erledigt 18.08.):** Der Eigenname kommt in die **Titel** der Landesseiten
-   („Solaratlas Bayern: Solaranlagen, Bestand & Zubau"); die Überschrift bleibt die
-   beschreibende („Solaranlagen in Bayern"), weil die beschreibenden Begriffe zusammen
-   das Vierfache des Eigennamens wiegen (210 + 110 + 50 gegen 90 Suchen/Monat).
-   Gemeindeseiten tragen „Photovoltaik in <Ort>". Kostet nichts und wirkt sofort.
+1. **Jetzt (erledigt 18.08.):** „Photovoltaik" kommt in die **Titel** aller Atlas-Seiten
+   („Photovoltaik in Bayern: Solaranlagen, Bestand & Zubau") und einmal in den sichtbaren
+   Einstiegstext — das Wort fehlte vorher komplett, obwohl es 36 unserer Atlas-Anfragen
+   mit 140 Einblendungen trägt. Die Überschrift bleibt „Solaranlagen in Bayern".
+   Der Eigenname „Solaratlas" wurde **verworfen**, nachdem die Ergebnisseite zeigte, dass
+   dort ausnahmslos Dachflächen-Kataster stehen (Details im Befund).
 2. **Vor Welle 1:** Award-Rangliste (liefert Rang und Nachbarvergleich als *eine* Quelle)
    und die zwei echten Fakten je Ort — größte Einzelanlage, benannter Nachbarvergleich.
    Ohne sie ist jede Ortsseite eine Schablone mit anderen Zahlen.
