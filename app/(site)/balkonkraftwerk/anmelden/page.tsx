@@ -86,11 +86,19 @@ export default function AnmeldenPage() {
   return (
     <div style={S.page}>
       <div style={S.wrap}>
+        {/* Elternteil ist das THEMA, nicht die Ratgeber-Liste. Die Seite liegt
+            unter /balkonkraftwerk/ — eine Krümelspur, die stattdessen „Ratgeber"
+            behauptet, beschreibt eine Hierarchie, die die Adresse nicht hat.
+            Google zieht bei Widerspruch die Pfad-Struktur vor, und auf einer
+            Seite, deren ganzes Versprechen Ehrlichkeit ist, ist eine erfundene
+            Hierarchie im strukturierten Datensatz auch inhaltlich schief.
+            Der Ratgeber-Charakter geht dabei nicht verloren: Der Eintrag steht
+            weiter in der Registry und damit in der Übersicht unter /ratgeber. */}
         <Breadcrumb
           items={[
             { label: "Start", href: "/" },
-            { label: "Ratgeber", href: "/ratgeber" },
-            { label: "Balkonkraftwerk anmelden" },
+            { label: "Balkonkraftwerk", href: "/balkonkraftwerk" },
+            { label: "Anmelden" },
           ]}
           jsonLd
         />
