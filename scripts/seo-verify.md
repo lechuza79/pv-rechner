@@ -76,6 +76,31 @@ unsere Bestandsstatistik —, wir standen auf Position 73,6 und hatten in 28 Tag
 Einblendungen. Bei unserem eigenen Wort („solaratlas rlp") standen wir auf 10,6.
 Vollständig in `docs/seo/befund-2026-08-13.md`.
 
+### Schritt 2b-1 — OFFEN (bis 10/2026): Schreibt Google unsere Atlas-Titel um?
+
+Am 18.08.2026 haben die Atlas-Regionsseiten neue Titel bekommen („Photovoltaik in Bayern:
+…"), während die sichtbare Überschrift die alte blieb („Solaranlagen in Bayern"). Ob diese
+Abweichung etwas kostet, ist **nicht entschieden** — die Daten geben es nicht her, weil
+Titel und Überschrift vorher wortgleich waren. Es gibt nur einen Nullbefund: Im
+gleichlautenden Zustand stand keine der sieben Atlas-Platzierungen in den Top 10.
+
+**Die Messung, die es entscheidet** (frühestens zwei Wochen nach dem Livegang der neuen
+Titel, also ab etwa 09/2026): In `ranked_keywords` je Atlas-URL das von Google **angezeigte**
+`title`-Feld gegen unser title-Tag halten.
+- Steht dort „Photovoltaik in …" → Google übernimmt unseren Titel, die Überschrift ist für
+  den Treffer irrelevant, die heutige Aufteilung bleibt.
+- Steht dort „Solaranlagen in …" → Google zieht die Überschrift heran. Dann ist die
+  Angleichung Pflicht, und die belegte Form wäre eine, die **beide** Wörter trägt: 71 % der
+  echten Ortsanfragen unserer einzigen Atlas-Seite mit Ortsverkehr enthalten „solaranlage",
+  keine einzige „photovoltaik".
+
+Nebenbefund, der dabei mitgeprüft gehört: Bei 6 von 7 Atlas-Platzierungen kürzt Google
+bereits den Marken-Suffix weg. Das ist normal, aber es zeigt, dass die Titel an der
+Längengrenze liegen.
+
+Ergebnis in den Monats-Schnappschuss, dann diesen Abschnitt entweder streichen oder die
+Angleichung als Befund melden.
+
 ### Schritt 2b-2 — Zwei eigene Seiten auf einer Anfrage — BLOCKER
 
 Seit dem 18.08.2026 mitzuführen, weil es die teuerste Fehlerklasse dieses Bereichs ist
