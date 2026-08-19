@@ -2,6 +2,10 @@ import { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumb from "../../../components/Breadcrumb";
 import StandNote from "../../../components/StandNote";
+import RelatedLinks from "../../../components/RelatedLinks";
+import { getFundingPrograms } from "../../../lib/funding-data";
+import { programmeFuerTechnik } from "../../../lib/funding-programs";
+import { publishedBundeslaender } from "../../../lib/atlas-cities";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import { pageMetadata } from "../../../lib/seo";
 import { v } from "../../../lib/theme";
@@ -106,6 +110,9 @@ const S = {
     flexWrap: "wrap" as const,
   },
   schrittText: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6 },
+  landListe: { listStyle: "none", padding: 0, margin: "0 0 16px" },
+  landZeile: { display: "flex", alignItems: "baseline", gap: 8, padding: "6px 0", borderBottom: `1px solid ${v("--color-border")}` },
+  landZahl: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), fontFamily: v("--font-mono") },
   baldBadge: {
     fontSize: v("--font-size-caption"),
     fontWeight: 700,
@@ -146,7 +153,14 @@ const SCHRITTE: { titel: string; text: string; link?: string; href?: string }[] 
   },
 ];
 
-export default function BalkonkraftwerkHub() {
+// Der Katalog kommt zur Laufzeit aus der Datenbank (Seed nur als Rückfallebene) —
+// dieselbe Quelle, aus der die Förderseiten lesen. Deshalb ist die Liste unten
+// keine zweite Wahrheit, sondern dieselbe, nur nach Bundesland verdichtet.
+// `revalidate` wie auf den Förderseiten: Ein ausgelaufenes Programm verschwindet
+// binnen einer Stunde, statt bis zum nächsten Deploy stehen zu bleiben.
+export const revalidate = 3600;
+
+export default async function BalkonkraftwerkHub() {
   // Referenzfall wie im Rechner-FAQ: Zwei-Personen-Haushalt, Standard-Set,
   // senkrecht am Südbalkon, deutscher Durchschnittsertrag. Live gerechnet —
   // kein getippter Euro-Betrag, sonst driftet die Seite vom Rechner weg.
@@ -157,6 +171,19 @@ export default function BalkonkraftwerkHub() {
     haushaltKwh, specificYield: CFG.specificYield, monthlyYield: null, stromPrice: CFG.stromPrice,
   });
   const eur = (n: number) => n.toLocaleString("de-DE");
+
+  // Balkon-Programme nach Bundesland, aber NUR für Länder, die auch eine
+  // Förderseite haben — ein Verweis ins Leere wäre schlechter als keiner.
+  const programme = programmeFuerTechnik(await getFundingPrograms(), "balkon");
+  const mitSeite = new Map(publishedBundeslaender().map(b => [b.name, b.slug]));
+  const proLand = new Map<string, number>();
+  for (const p of programme) {
+    if (!p.bundesland || !mitSeite.has(p.bundesland)) continue;
+    proLand.set(p.bundesland, (proLand.get(p.bundesland) ?? 0) + 1);
+  }
+  const laender = [...proLand.entries()]
+    .map(([name, anzahl]) => ({ name, anzahl, slug: mitSeite.get(name)! }))
+    .sort((a, b) => b.anzahl - a.anzahl || a.name.localeCompare(b.name, "de"));
 
   return (
     <div style={S.page}>
@@ -247,9 +274,29 @@ export default function BalkonkraftwerkHub() {
           klein gemessen an einer Dachanlage, fallen bei einem Set von wenigen Hundert Euro
           aber ins Gewicht: Üblich sind Pauschalen zwischen 50 und 200 € oder ein Anteil an
           den Kosten, häufig gedeckelt. Manche Kommunen fördern ausdrücklich auch Mieter.
-          Welche Programme es in deiner Region gibt, steht in der{" "}
-          <Link href="/photovoltaik-foerderung" style={S.link}>Förder-Übersicht</Link> —
-          dort sind sie nach Bundesland und Stadt sortiert.
+        </p>
+        {laender.length > 0 && (
+          <>
+            <p style={S.p}>
+              In diesen Bundesländern kennen wir Programme, die Steckersolar ausdrücklich
+              einschließen:
+            </p>
+            <ul style={S.landListe}>
+              {laender.map(l => (
+                <li key={l.slug} style={S.landZeile}>
+                  <Link href={`/photovoltaik-foerderung/${l.slug}`} style={S.link}>{l.name}</Link>
+                  <span style={S.landZahl}>
+                    {l.anzahl} {l.anzahl === 1 ? "Programm" : "Programme"}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+        <p style={S.p}>
+          Ob für deinen Ort etwas dabei ist, zeigt die{" "}
+          <Link href="/photovoltaik-foerderung" style={S.link}>Förder-Übersicht</Link> nach
+          Bundesland und Stadt.
         </p>
 
         <h2 style={S.h2}>Was muss ich anmelden?</h2>
@@ -259,28 +306,16 @@ export default function BalkonkraftwerkHub() {
           ist kostenlos und in wenigen Minuten erledigt.
         </p>
 
-        <h2 style={S.h2}>Weiter</h2>
-        <Link href="/balkonkraftwerk/rechner" style={S.karte}>
-          <div style={S.karteTitel}>Für deinen Haushalt rechnen</div>
-          <div style={S.karteText}>
-            Ertrag am eigenen Standort, Ersparnis, Amortisation und die Frage, ob sich ein
-            Speicher trägt — mit einer Empfehlung, welche Set-Größe zu dir passt.
-          </div>
-        </Link>
-        <Link href="/balkonkraftwerk/anmelden" style={S.karte}>
-          <div style={S.karteTitel}>Anmelden: Frist, Angaben und die Fallen</div>
-          <div style={S.karteText}>
-            Was du bereithalten musst, warum das Register das Wort „Balkonkraftwerk“ nicht
-            kennt — und ein Check, der dir deine {ANMELDE_FRIST_MONATE === 1 ? "Monatsfrist" : "Frist"} ausrechnet.
-          </div>
-        </Link>
-        <Link href="/photovoltaik-rechner" style={S.karte}>
-          <div style={S.karteTitel}>Eigenes Dach? Große Anlage rechnen</div>
-          <div style={S.karteText}>
-            Ein Balkonkraftwerk deckt die Grundlast. Wer eine Dachfläche hat und mehr
-            verbraucht, holt mit einer richtigen Anlage ein Vielfaches heraus.
-          </div>
-        </Link>
+        <RelatedLinks
+          title="Weiter"
+          currentPath="/balkonkraftwerk"
+          links={[
+            { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk berechnen", desc: "Ertrag am eigenen Standort, Ersparnis, Amortisation und die Frage, ob sich ein Speicher trägt — mit einer Empfehlung, welche Set-Größe zu dir passt." },
+            { href: "/balkonkraftwerk/anmelden", label: "Balkonkraftwerk anmelden", desc: `Was du bereithalten musst, warum das Register das Wort „Balkonkraftwerk“ nicht kennt — und ein Check, der dir deine ${ANMELDE_FRIST_MONATE === 1 ? "Monatsfrist" : "Frist"} ausrechnet.` },
+            { href: "/photovoltaik-rechner", label: "Photovoltaik-Rechner für das eigene Dach", desc: "Ein Balkonkraftwerk deckt die Grundlast. Wer eine Dachfläche hat und mehr verbraucht, holt mit einer richtigen Anlage ein Vielfaches heraus." },
+            { href: "/photovoltaik-neigungswinkel", label: "Neigungswinkel & Ausrichtung", desc: "Wie viel Ertrag jede Kombination aus Neigung und Himmelsrichtung übrig lässt — der größte Hebel bei Balkon-PV." },
+          ]}
+        />
 
         {/* Stand aus der geteilten Registry, nicht handgeschrieben — sonst
             entsteht genau die Zweitkopie, die lib/__tests__/stand.test.ts
