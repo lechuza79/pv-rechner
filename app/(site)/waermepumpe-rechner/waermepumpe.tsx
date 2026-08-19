@@ -898,48 +898,50 @@ export default function Waermepumpe({
             {/* 2b. Kommunale Förderung — der Ort wird erst HIER gefragt.
                  Reihenfolge mit Absicht: erst die BEG, dann was die Gemeinde
                  obendrauf legt. Umgekehrt stünde der kleinere Betrag über dem
-                 größeren, und der Fördercheck läse sich wie die Hauptsache. */}
+                 größeren, und der Fördercheck läse sich wie die Hauptsache.
+
+                 Frage und Antwort stehen in EINER Karte (`kopf`): Als eigener
+                 Kasten darüber waren es zwei Rahmen mit zwei Überschriften für
+                 eine Sache, und das Postleitzahl-Feld sprang beim Auflösen an
+                 eine andere Stelle.
+
+                 `programs` zeigt alles, was wir für den Ort kennen — abgezogen
+                 wird nur, was `applied` trägt. `brutto` ist die Investition NACH
+                 der BEG, weil die Karte `total` davon abzieht und das Ergebnis
+                 „Investition nach Förderung" nennt; mit dem Bruttopreis stünde
+                 dort dieselbe Zeile mit einem anderen Betrag als oben. */}
             {situation === "bestand" && (
-              <>
-                <div style={{ padding: "14px 16px", marginBottom: 16, borderRadius: v('--radius-lg'), background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}` }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 2 }}>Fördercheck für deine Gemeinde</div>
-                  <div style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginBottom: 10 }}>
-                    Einzelne Städte und Gemeinden legen etwas auf die Bundesförderung drauf. Mit deiner Postleitzahl sehen wir im Förderkatalog nach.
-                  </div>
-                  <div style={{ fontSize: 13 }}>
-                    <StandortField
-                      plz={plz}
-                      onPlzChange={setPlz}
-                      loading={foerderQuelle.laedt}
-                      confirmed={!!foerderQuelle.ags}
-                      onSubmit={() => foerderQuelle.ausPlz(plz)}
-                      label="Postleitzahl"
-                    />
-                  </div>
-                </div>
-                {/* `programs` zeigt ALLES, was wir für den Ort kennen — abgezogen wird
-                    nur, was `applied` trägt. Ein Programm zu verschweigen, weil es sich
-                    nicht mit der BEG stapeln lässt, wäre die schlechtere Auskunft: Für
-                    jemanden ohne BEG-Antrag kann es trotzdem gelten.
-                    `brutto` ist die Investition NACH der BEG, weil die Karte `total`
-                    davon abzieht und das Ergebnis „Investition nach Förderung" nennt —
-                    mit dem Bruttopreis stünde dort dieselbe Zeile mit einem anderen
-                    Betrag als oben im Ergebnis. */}
-                <ResultFunding
-                  loading={foerderQuelle.laedt}
-                  candidates={foerderQuelle.kandidaten}
-                  chosenAgs={foerderQuelle.ags}
-                  onChooseAgs={foerderQuelle.waehleOrt}
-                  programs={foerderQuelle.programme}
-                  applied={foerderZeilen}
-                  total={kappung}
-                  enabled={foerderAktiv}
-                  onToggle={setFundingEnabled}
-                  brutto={Math.max(0, result.investBrutto - result.beg.amount)}
-                  technik="waermepumpe"
-                  hinweis={foerderHinweis}
-                />
-              </>
+              <ResultFunding
+                loading={foerderQuelle.laedt}
+                candidates={foerderQuelle.kandidaten}
+                chosenAgs={foerderQuelle.ags}
+                onChooseAgs={foerderQuelle.waehleOrt}
+                programs={foerderQuelle.programme}
+                applied={foerderZeilen}
+                total={kappung}
+                enabled={foerderAktiv}
+                onToggle={setFundingEnabled}
+                brutto={Math.max(0, result.investBrutto - result.beg.amount)}
+                technik="waermepumpe"
+                hinweis={foerderHinweis}
+                kopf={
+                  <>
+                    <div style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginBottom: 10 }}>
+                      Einzelne Städte und Gemeinden legen etwas auf die Bundesförderung drauf. Mit deiner Postleitzahl sehen wir im Förderkatalog nach.
+                    </div>
+                    <div style={{ fontSize: 13 }}>
+                      <StandortField
+                        plz={plz}
+                        onPlzChange={setPlz}
+                        loading={foerderQuelle.laedt}
+                        confirmed={!!foerderQuelle.ags}
+                        onSubmit={() => foerderQuelle.ausPlz(plz)}
+                        label="Postleitzahl"
+                      />
+                    </div>
+                  </>
+                }
+              />
             )}
 
             {/* 3. Realistische Wege */}

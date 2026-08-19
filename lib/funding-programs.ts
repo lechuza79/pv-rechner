@@ -218,13 +218,28 @@ export function fundingStandLabel(p: FundingProgram, heute?: string): string {
     rechenbar && p.status === "aktiv" && !fundingBelegAktuell(p, heute ?? heuteIso())
       ? " · aktuell nicht bestätigt, daher nicht eingerechnet"
       : "";
+  // BEIDE Daten, nicht eines von beiden — dieselbe Regel wie in der Stand-Zeile
+  // unter den Rechnern (CLAUDE.md, „Aktualisierungsstand"): Der redaktionelle
+  // `stand` sagt, aus welchem Monat die WERTE sind, das Prüfdatum sagt, wann wir
+  // sie zuletzt bestätigt haben. Bis zum 19.08.2026 zeigte diese Funktion
+  // entweder das eine oder das andere, und zwar bevorzugt das Prüfdatum — wer
+  // „Zuletzt geprüft: 19.08.2026" las, konnte nicht wissen, ob die Beträge von
+  // gestern oder von vor einem Jahr stammen.
+  //
+  // Beide auch dann, wenn sie zusammenfallen: Wer die zweite Angabe nur bei
+  // Abweichung sieht, lernt nie, dass es sie gibt — und liest ein späteres
+  // „Werte von Juni, geprüft im Oktober" nicht als das, was es ist: bestätigt,
+  // nicht vergessen.
   if (p.lastVerified) {
     const d = new Date(p.lastVerified);
     if (!isNaN(d.getTime())) {
-      return `Zuletzt geprüft: ${d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })}${unbestaetigt}${nichtGerechnet}`;
+      const tag = d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
+      return `Werte von ${p.stand}, zuletzt geprüft am ${tag}${unbestaetigt}${nichtGerechnet}`;
     }
   }
-  return `Stand: ${p.stand}${unbestaetigt}${nichtGerechnet}`;
+  // Ohne echtes Prüfdatum wird KEINES erfunden — auch kein Rückgriff auf den
+  // Schreibzeitpunkt der Zeile. Dann steht nur da, woher die Werte stammen.
+  return `Werte von ${p.stand}, noch nicht nachgeprüft${unbestaetigt}${nichtGerechnet}`;
 }
 
 // Bund applies everywhere and combines with every regional program.

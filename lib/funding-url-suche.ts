@@ -18,10 +18,18 @@
 /**
  * Version der Bewertung. Wie beim Screening: Wer die Listen ändert, zählt hoch.
  *
- * 2 (19.08.2026): Die Volltextsuche der Website kam dazu. Das ist keine
- * Feinheit der Bewertung, sondern mehr REICHWEITE — die 7.863 Gemeinden, die
- * unter Version 1 als „keine-seite" abgelegt wurden, sind damit nicht mehr
- * beantwortet und stehen von selbst wieder an. Genau dafür ist der Stempel da.
+ * 2 (19.08.2026): Zwei Änderungen aus parallelen Ständen, beide mit demselben
+ * Effekt auf den Stempel.
+ *
+ * Erstens die Volltextsuche der Website. Das ist keine Feinheit der Bewertung,
+ * sondern mehr REICHWEITE — die 7.863 Gemeinden, die unter Version 1 als
+ * „keine-seite" abgelegt wurden, sind damit nicht mehr beantwortet und stehen
+ * von selbst wieder an. Genau dafür ist der Stempel da.
+ *
+ * Zweitens gibt die Suche nicht mehr nur den besten Fund zurück, sondern ALLE
+ * Adressen, die für sich eine Förderseite sind. Damit müssen zusätzlich die
+ * Gemeinden noch einmal dran, bei denen wir längst eine Seite haben — genau
+ * dort liegen die zweiten und dritten Seiten, die vorher auf den Boden fielen.
  */
 export const SUCH_VERSION = 2;
 
@@ -34,9 +42,20 @@ export const SUCH_VERSION = 2;
  */
 /**
  * Wörter, die von einer FÖRDERUNG sprechen — Geld, das die Gemeinde gibt.
+ *
+ * OHNE UMLAUT UND OHNE „oe" (19.08.2026): Manche Verwaltungen entfernen Umlaute
+ * beim Erzeugen der Adresse ersatzlos — Gaimersheim führt sein Programm unter
+ * `/forderprogramme`, Kempten unter `/forderprogramm-35834.html`. Beide sind
+ * echte Förderseiten und wurden bisher nur gefunden, weil sie auf anderem Weg in
+ * den Bestand kamen; über die Linksuche waren sie unsichtbar.
+ *
+ * Aufgenommen sind bewusst NUR die zusammengesetzten Formen. Das nackte
+ * „forderung" bleibt draußen: Es ist ein eigenes deutsches Wort (Forderung =
+ * Anspruch), und „Forderungsmanagement" ist bei Kommunen das Eintreiben offener
+ * Beträge — das genaue Gegenteil von Geld, das die Gemeinde gibt.
  */
 const FOERDER_SIGNALE: { muster: RegExp; punkte: number }[] = [
-  { muster: /foerderprogramm|förderprogramm|foerderrichtlinie|förderrichtlinie/, punkte: 10 },
+  { muster: /foerderprogramm|förderprogramm|foerderrichtlinie|förderrichtlinie|forderprogramm|forderrichtlinie/, punkte: 10 },
   { muster: /foerderung|förderung|zuschuss|zuschuesse|zuschüsse|foerdermittel|fördermittel|praemie|prämie/, punkte: 7 },
 ];
 
@@ -60,9 +79,13 @@ const THEMA_SIGNALE: { muster: RegExp; punkte: number }[] = [
  * sie Essens Kulturförderung und Dresdens Gesundheitsförderung, weil beide
  * Adressen das Thema getrennt vom Wort „Förderung" führen
  * (`/kultur_/foerderung/`) und kein Ausschlussmuster darauf passte.
+ *
+ * „Beförderung" kam am 19.08.2026 dazu und ist der Wortstamm-Klassiker: Mainz
+ * lieferte „Schülerbeförderung — Fahrtkostenerstattung" fünfmal, einmal je
+ * Sprachfassung. Das Wort enthält „förderung", meint aber Transport.
  */
 const AUSSCHLUSS =
-  /foerderverein|förderverein|sportfoerder|sportförder|jugendfoerder|jugendförder|vereinsfoerder|vereinsförder|kulturfoerder|kulturförder|schulfoerder|schulförder|wohnraumfoerder|wohnraumförder|staedtebaufoerder|städtebauförder|foerderschule|förderschule|denkmalfoerder|denkmalförder|gesundheitsfoerder|gesundheitsförder|wirtschaftsfoerder|wirtschaftsförder/;
+  /foerderverein|förderverein|sportfoerder|sportförder|jugendfoerder|jugendförder|vereinsfoerder|vereinsförder|kulturfoerder|kulturförder|schulfoerder|schulförder|wohnraumfoerder|wohnraumförder|staedtebaufoerder|städtebauförder|foerderschule|förderschule|denkmalfoerder|denkmalförder|gesundheitsfoerder|gesundheitsförder|wirtschaftsfoerder|wirtschaftsförder|befoerderung|beförderung/;
 
 /**
  * Andere Ressorts einer Verwaltung — sie verteilen ebenfalls Geld.
@@ -72,9 +95,16 @@ const AUSSCHLUSS =
  * als ERGEBNIS taugt (siehe {@link istEndergebnis}). Und sie ist eine
  * geschlossene Liste — die Ressorts einer Kommune sind abzählbar, anders als die
  * offene Menge möglicher Fehlgriffe.
+ *
+ * STÄMME, NICHT VOLLWÖRTER (19.08.2026): Hier stand „schule" und „sprache", die
+ * Seiten heißen aber „schulamt" und „sprachfoerderung" — beide rutschten durch.
+ * Gemessen an Mainz und Hamm, nachdem die Suche anfing, ALLE Funde zu behalten:
+ * Vorher fielen solche Treffer nicht auf, weil ohnehin nur der beste je Gemeinde
+ * gespeichert wurde und ein echter Treffer ihn fast immer schlug. Wer alle
+ * behält, braucht schärfere Kanten.
  */
 const FREMDES_RESSORT =
-  /kultur|gesundheit|sport|jugend|sozial|schule|bildung|tourismus|wirtschaft|verein|senior|familie|kita|kinderbetreuung|integration|sprache|wohnraum|wohnungsbau|wohnbau|staedtebau|städtebau|denkmal|ehrenamt|landwirtschaft/;
+  /kultur|gesundheit|sport|jugend|sozial|schul|bildung|tourismus|wirtschaft|verein|senior|familie|kita|kinderbetreuung|integration|sprach|wohnraum|wohnungsbau|wohnbau|staedtebau|städtebau|denkmal|ehrenamt|landwirtschaft/;
 
 /**
  * Dateiendungen und Pfade, die kein Lesen lohnen.

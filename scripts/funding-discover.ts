@@ -38,6 +38,7 @@ import {
   type LinkKandidat,
 } from "../lib/funding-url-suche";
 import { inSchueben } from "../lib/lauf-parallel";
+import { seitenSchluessel, istInterneRoute } from "../lib/funding-seiten";
 
 function loadEnvFile(): void {
   const envPath = resolve(process.cwd(), ".env.local");
@@ -56,6 +57,9 @@ if (!url || !key) {
   process.exit(1);
 }
 const sb = createClient(url, key);
+
+/** Obergrenze je Gemeinde — darüber ist es Rauschen, keine Förderseite. */
+const MAX_SEITEN_JE_GEMEINDE = 6;
 
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36";
@@ -132,11 +136,21 @@ async function abrufen(ziel: string, timeoutMs = 15_000): Promise<string | null>
 const TIEFE = 2;
 const MAX_ABRUFE = 9;
 
-async function sucheFoerderseite(startseite: string): Promise<{ beste: LinkKandidat | null; abrufe: number; erreichbar: boolean }> {
+/**
+ * ALLE Fundstellen statt nur der besten (19.08.2026).
+ *
+ * `beste` bleibt, was es war — der eine Fund, der nach `funding_url_suche` und
+ * `kommunen_kontakt` wandert; daran hängt das Screening, und daran wird nicht
+ * gerüttelt. Neu ist `funde`: jede Adresse, die für sich genommen eine
+ * Förderseite ist. Vorher fiel alles außer der besten auf den Boden, und genau
+ * darin steckte die Lücke — eine Stadt mit getrennter Photovoltaik- und
+ * Balkonseite lieferte eine davon, die andere existierte für uns nie.
+ */
+async function sucheFoerderseite(startseite: string): Promise<{ beste: LinkKandidat | null; funde: LinkKandidat[]; abrufe: number; erreichbar: boolean }> {
   let abrufe = 0;
   const html = await abrufen(startseite);
   abrufe++;
-  if (!html) return { beste: null, abrufe, erreichbar: false };
+  if (!html) return { beste: null, funde: [], abrufe, erreichbar: false };
 
   const gesehen = new Set<string>([startseite]);
   let kandidaten = linkKandidaten(html, startseite);
@@ -162,6 +176,16 @@ async function sucheFoerderseite(startseite: string): Promise<{ beste: LinkKandi
 
   kandidaten.sort((a, b) => b.punkte - a.punkte);
 
+  // Jede Adresse, die für sich eine Förderseite ist — nicht nur die beste.
+  const alleFunde = new Map<string, LinkKandidat>();
+  const merken = (liste: LinkKandidat[]) => {
+    for (const k of liste) {
+      if (!istEndergebnis(k) || istInterneRoute(k.url)) continue;
+      alleFunde.set(seitenSchluessel(k.url), k);
+    }
+  };
+  merken(kandidaten);
+
   // Ab hier zählt der Unterschied zwischen VERFOLGEN und ANNEHMEN. Verfolgt wird
   // der beste Link überhaupt — auch eine reine Themenseite („Klimaschutz und
   // Energie"), denn die ist oft der Weg zur Förderseite. Angenommen wird nur,
@@ -179,6 +203,7 @@ async function sucheFoerderseite(startseite: string): Promise<{ beste: LinkKandi
       const tiefer = linkKandidaten(unterHtml, spur.url).filter((k) => !gesehen.has(k.url));
       if (!tiefer.length) break;
 
+      merken(tiefer);
       const besseresErgebnis = tiefer.find((k) => istEndergebnis(k) && k.punkte > (ergebnis?.punkte ?? 0));
       if (besseresErgebnis) ergebnis = besseresErgebnis;
       if (tiefer[0].punkte <= spur.punkte) break;
@@ -234,13 +259,17 @@ async function sucheFoerderseite(startseite: string): Promise<{ beste: LinkKandi
         const treffer = linkKandidaten(trefferSeite, startseite).filter(
           (k) => !gesehen.has(k.url) && k.url !== formular.action,
         );
+        merken(treffer);
         const gut = treffer.find((k) => istEndergebnis(k));
         if (gut) { ergebnis = gut; break; }
       }
     }
   }
 
-  return { beste: ergebnis, abrufe, erreichbar: true };
+  // Gedeckelt: Mehr als eine Handvoll echter Förderseiten hat keine Gemeinde;
+  // was darüber liegt, ist Rauschen aus einer Übersichtsseite.
+  const funde = [...alleFunde.values()].sort((a, b) => b.punkte - a.punkte).slice(0, MAX_SEITEN_JE_GEMEINDE);
+  return { beste: ergebnis, funde, abrufe, erreichbar: true };
 }
 
 type SuchZeile = { region_id: string; verdikt: string; such_version: number | null };
@@ -251,9 +280,14 @@ async function offeneKandidaten(limit: number) {
     "region_id, website, thema_foerderung_url",
     (q) => q.not("website", "is", null),
   );
-  // Wer schon eine Förderseite hat, braucht keine Suche — den nimmt sich das
-  // Screening vor.
-  const ohneSeite = kontakte.filter((k) => !k.thema_foerderung_url);
+  // Bis 19.08.2026 stand hier: „Wer schon eine Förderseite hat, braucht keine
+  // Suche." Das galt, solange wir ohnehin nur eine Adresse je Gemeinde halten
+  // konnten — jetzt ist es genau falsch herum. Bei den Gemeinden MIT Fund liegen
+  // die zweiten und dritten Seiten, die vorher auf den Boden fielen; sie zu
+  // überspringen hieße, den Umbau bei denen nicht wirken zu lassen, über die wir
+  // am meisten wissen. Wer wirklich fertig ist, fällt unten über `erledigt`
+  // heraus — über den Versionsstempel, nicht über das Vorhandensein einer Adresse.
+  const ohneSeite = kontakte;
 
   const abgelegt = await alleZeilen<SuchZeile>("funding_url_suche", "region_id, verdikt, such_version");
   const zeileVon = new Map(abgelegt.map((r) => [r.region_id, r]));
@@ -265,6 +299,9 @@ async function offeneKandidaten(limit: number) {
   };
 
   const rest = ohneSeite.filter((k) => !erledigt(k.region_id));
+  // Wer beim letzten Mal schon nicht erreichbar war, ist ein Wiederholungsversuch
+  // — sein Fehlschlag sagt nichts über unsere Verbindung.
+  const schonUnerreichbar = new Set(abgelegt.filter((z) => z.verdikt === "unerreichbar").map((z) => z.region_id));
   const pop = new Map<string, number>();
   const ids = rest.map((r) => r.region_id);
   for (let i = 0; i < ids.length; i += 500) {
@@ -279,6 +316,7 @@ async function offeneKandidaten(limit: number) {
       .sort((a, b) => (pop.get(b.region_id) ?? 0) - (pop.get(a.region_id) ?? 0))
       .slice(0, limit)
       .map((r) => ({ region_id: r.region_id, website: r.website! })),
+    schonUnerreichbar,
   };
 }
 
@@ -313,7 +351,7 @@ async function main(): Promise<void> {
   if (process.argv.includes("--funde")) return funde();
 
   const limit = zahl("limit", 60);
-  const { gesamt, erledigt, naechste } = await offeneKandidaten(limit);
+  const { gesamt, erledigt, naechste, schonUnerreichbar } = await offeneKandidaten(limit);
   console.log(`Durchsucht vorher: ${erledigt} von ${gesamt}. Nehme mir jetzt ${naechste.length} vor.\n`);
 
   const zaehler = new Map<SuchVerdikt, number>();
@@ -323,14 +361,22 @@ async function main(): Promise<void> {
 
   await inSchueben(naechste, zahl("gleichzeitig", 6), async (k) => {
     if (abgebrochen) return;
-    const { beste, erreichbar } = await sucheFoerderseite(k.website);
+    const { beste, funde, erreichbar } = await sucheFoerderseite(k.website);
     const verdikt: SuchVerdikt = !erreichbar ? "unerreichbar" : beste ? "gefunden" : "keine-seite";
     zaehler.set(verdikt, (zaehler.get(verdikt) ?? 0) + 1);
 
     // Reißleine: Häufen sich die Fehlschläge, liegt es fast nie an den Gemeinden,
     // sondern an uns — kein Netz, gesperrte Adresse, abgestürzter Resolver. Dann
     // weiterzulaufen stempelt hunderte erreichbare Websites als unerreichbar ab.
-    unerreichbarInFolge = erreichbar ? 0 : unerreichbarInFolge + 1;
+    // Die Reißleine misst UNSERE Verbindung, nicht die Hartnäckigkeit der
+    // Gemeinden. Sobald die Warteschlange überwiegend aus Wiederholungsversuchen
+    // besteht — und genau dahin läuft sie mit der Zeit —, sind 15 Fehlschläge in
+    // Folge der Normalfall und die Bremse feuert bei jedem Lauf. Gemessen am
+    // 19.08.2026: Der erste Lauf nach dem Umbau brach nach 18 Versuchen ab,
+    // obwohl das Netz in Ordnung war; in der Warteschlange standen nur noch die
+    // zuvor unerreichbaren. Deshalb zählen nur FRISCHE Fehlschläge.
+    const frischerFehlschlag = !erreichbar && !schonUnerreichbar.has(k.region_id);
+    unerreichbarInFolge = frischerFehlschlag ? unerreichbarInFolge + 1 : erreichbar ? 0 : unerreichbarInFolge;
     if (unerreichbarInFolge >= 15 && !abgebrochen) {
       abgebrochen = true;
       console.error("\n15 Websites in Folge nicht erreichbar — Lauf abgebrochen. Erst die eigene Verbindung prüfen.");
@@ -359,6 +405,22 @@ async function main(): Promise<void> {
         .update({ thema_foerderung_url: beste.url })
         .eq("region_id", k.region_id)
         .is("thema_foerderung_url", null);
+    }
+
+    // Und ALLE Funde in die Seiten-Tabelle. Das ist die Stelle, an der die
+    // Erfassung mehr als eine Seite je Gemeinde behalten kann — `upsert` mit
+    // dem Schlüssel (Gemeinde × Adresse) macht den Lauf idempotent und
+    // überschreibt kein Leseergebnis, weil nur die Fund-Spalten geschrieben werden.
+    if (funde.length) {
+      await sb.from("funding_seiten").upsert(
+        funde.map((f) => ({
+          region_id: k.region_id,
+          url: seitenSchluessel(f.url),
+          quelle: "suche",
+          zustand: "erreichbar",
+        })),
+        { onConflict: "region_id,url", ignoreDuplicates: true },
+      );
     }
 
     if (++fertig % 100 === 0) console.log(`   … ${fertig} von ${naechste.length}`);

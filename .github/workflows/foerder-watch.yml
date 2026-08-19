@@ -129,6 +129,55 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: npm run foerder:seiten -- --limit 3000
 
+      # Dasselbe je EINZELNER Seite statt einer je Gemeinde (19.08.2026). Der
+      # Schritt darüber prüft `funding_coverage`, und die Tabelle kennt je
+      # Gemeinde genau eine Adresse — eine Stadt mit getrennter Photovoltaik- und
+      # Balkonseite bekam eine davon geprüft und die andere nie. „Status ist
+      # aktuell" stimmte damit immer nur für eine Seite pro Ort.
+      #
+      # Er schreibt zusätzlich den Zustand mit: Eine Seite, die nicht mehr
+      # antwortet, ist kein stiller Ausfall, sondern ein Befund. Ohne das Feld
+      # stünde eine tote Adresse unbegrenzt als gültige Fundstelle im Bestand.
+      - name: Jede einzelne Förderseite auf Bewegung prüfen
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: npm run foerder:seiten-alle -- --limit 3000
+
+      # Welche Technik trägt die Seite? Ohne diese Angabe ist die eigentliche
+      # Frage unbeantwortbar: „Haben wir für DIESE Gemeinde eine
+      # Wärmepumpen-Seite?" Gemessen am 19.08.2026 trugen 149 von 2.672 Seiten
+      # eine Technik; der Rest war eine Adresse ohne Aussage.
+      #
+      # Er benutzt denselben Erkenner wie das Screening — ein zweiter wäre eine
+      # zweite Wahrheit. Und nur ein TREFFER setzt eine Technik: Eine Seite, die
+      # die Wärmepumpe bloß erwähnt, ohne dass in Reichweite Geld steht, ist
+      # keine Wärmepumpen-Förderseite.
+      - name: Technik je Förderseite einordnen
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: npm run foerder:technik -- --limit 800
+
+      # Zum Schluss ein Bericht — sonst stehen die Zahlen der vier Läufe nur im
+      # Protokoll dieses Workflows, und das liest niemand. Ein Automatismus,
+      # dessen Ergebnis nirgends ankommt, ist von einem stillstehenden nicht zu
+      # unterscheiden; genau daran ist die Urlaubswoche im August aufgefallen.
+      #
+      # Die Schleuse bleibt, wie sie ist: Der Bericht landet in der Ablage
+      # (/admin/waechter) und wird NUR zugestellt, wenn er eine Entscheidung
+      # enthält, die dem Betreiber gehört. Fortschrittszahlen sind keine.
+      - name: Tagesbericht der Erfassung
+        if: always()
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: npm run foerder:bericht
+
       # Der Katalog soll vollständig werden, nicht stichprobenhaft. Der Bestand
       # wächst jetzt aus zwei Quellen: den Adressen des Kommunen-Outreach und dem
       # Schritt darüber. Unerreichbare Seiten kommen von selbst wieder dran, und

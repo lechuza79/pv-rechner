@@ -73,11 +73,22 @@ interface ResultFundingProps {
    * müssen. Ohne Hinweis bleibt die Karte unverändert.
    */
   hinweis?: string;
+  /**
+   * Inhalt direkt unter der Überschrift — gedacht für die Standort-Eingabe.
+   *
+   * WARUM ALS SLOT: Der Wärmepumpen-Rechner erhebt die Postleitzahl erst im
+   * Ergebnis. Als eigener Kasten darüber standen zwei Rahmen mit zwei
+   * Überschriften untereinander, obwohl es eine Sache ist — Frage und Antwort
+   * gehören in dieselbe Karte. Mit `kopf` bleibt die Karte auch dann sichtbar,
+   * wenn noch keine Postleitzahl aufgelöst ist; ohne `kopf` verhält sich alles
+   * unverändert (PV- und Balkon-Rechner fragen den Ort woanders).
+   */
+  kopf?: React.ReactNode;
 }
 
 export default function ResultFunding({
   loading, candidates, chosenAgs, onChooseAgs,
-  programs, applied, total, enabled, onToggle, brutto, technik = "pv", hinweis,
+  programs, applied, total, enabled, onToggle, brutto, technik = "pv", hinweis, kopf,
 }: ResultFundingProps) {
   const [modalProgram, setModalProgram] = useState<FundingProgram | null>(null);
 
@@ -92,7 +103,8 @@ export default function ResultFunding({
   );
 
   // Nothing to show until a PLZ has been resolved (or a program was pre-armed).
-  if (!loading && candidates === null && !chosenAgs) return null;
+  // Ohne Kopf-Inhalt gibt es vor der ersten Auflösung nichts zu zeigen.
+  if (!kopf && !loading && candidates === null && !chosenAgs) return null;
 
   const card: React.CSSProperties = {
     background: v("--color-bg"), borderRadius: v("--radius-lg"),
@@ -104,20 +116,24 @@ export default function ResultFunding({
     </div>
   );
 
+  // Eine Karte, ein Rahmen, eine Überschrift — der Kopf-Inhalt sitzt in jedem
+  // Zustand an derselben Stelle, damit das Feld beim Auflösen nicht springt.
+  const Karte = ({ children, akzent = false }: { children?: React.ReactNode; akzent?: boolean }) => (
+    <div style={akzent ? { ...card, borderColor: v("--color-positive") } : card}>
+      {heading}
+      {kopf ? <div style={{ marginBottom: 14 }}>{kopf}</div> : null}
+      {children}
+    </div>
+  );
+
   if (loading && !chosenAgs) {
-    return (
-      <div style={card}>
-        {heading}
-        <div style={{ fontSize: 12, color: v("--color-text-muted") }}>Förderprogramme werden geprüft …</div>
-      </div>
-    );
+    return <Karte><div style={{ fontSize: 12, color: v("--color-text-muted") }}>Förderprogramme werden geprüft …</div></Karte>;
   }
 
   // Ambiguous PLZ: ask which municipality the user lives in before computing.
   if (!chosenAgs && candidates && candidates.length > 1) {
     return (
-      <div style={card}>
-        {heading}
+      <Karte>
         <div style={{ fontSize: 12, color: v("--color-text-secondary"), marginBottom: 10 }}>
           Diese PLZ deckt mehrere Orte ab — wo wohnst du?
         </div>
@@ -132,11 +148,11 @@ export default function ResultFunding({
             </button>
           ))}
         </div>
-      </div>
+      </Karte>
     );
   }
 
-  if (!chosenAgs) return null;
+  if (!chosenAgs) return kopf ? <Karte /> : null;
 
   // Location label = most specific matched non-bund program, else fall back to
   // the picked candidate's place name.
@@ -150,9 +166,7 @@ export default function ResultFunding({
   const effektiv = Math.max(0, brutto - (enabled ? total : 0));
 
   return (
-    <div style={{ ...card, borderColor: hasGrant ? v("--color-positive") : v("--color-border") }}>
-      {heading}
-
+    <Karte akzent={hasGrant}>
       {hasGrant ? (
         <>
           <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", marginBottom: enabled ? 12 : 0 }}>
@@ -234,6 +248,6 @@ export default function ResultFunding({
       </Link>
 
       <FundingProgramModal program={modalProgram} onClose={() => setModalProgram(null)} />
-    </div>
+    </Karte>
   );
 }

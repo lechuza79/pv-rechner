@@ -336,3 +336,16 @@ describe("Ein Download ist keine Seite", () => {
     expect(pkt("https://x.de/rathaus/downloadbereich/foerderung-solar")).toBeGreaterThan(0);
   });
 });
+
+describe("Adressen ohne Umlaut (19.08.2026 gemessen)", () => {
+  it("findet Förderprogramme, deren Adresse den Umlaut ersatzlos streicht", () => {
+    // Gaimersheim und Kempten führen echte Programme unter /forderprogramme.
+    expect(istEndergebnis(bewerteLink("https://www.gaimersheim.de/forderprogramme", ""))).toBe(true);
+    expect(istEndergebnis(bewerteLink("https://www.kempten.de/forderprogramm-35834.html", ""))).toBe(true);
+  });
+
+  it("haelt das nackte forderung draussen — das ist ein anderes Wort", () => {
+    // Forderungsmanagement ist das Eintreiben offener Beträge, nicht Förderung.
+    expect(istEndergebnis(bewerteLink("https://www.stadt.de/kaemmerei/forderungsmanagement", ""))).toBe(false);
+  });
+});

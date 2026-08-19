@@ -167,6 +167,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // aus denselben Werten rechnet.
     { url: `${BASE_URL}/balkonkraftwerk`, lastModified: rechnerStand("/balkonkraftwerk"), changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/balkonkraftwerk/rechner`, lastModified: rechnerStand("/balkonkraftwerk/rechner"), changeFrequency: "monthly", priority: 0.8 },
+    // Die Balkon-Förderübersicht datiert sich über die Förderprogramme, nicht
+    // über einen Rechner-Stand: Ihr Inhalt IST der Katalog, und der trägt sein
+    // Prüfdatum je Programm. Kein erfundenes Datum, kein Build-Zeitpunkt.
+    { url: `${BASE_URL}/balkonkraftwerk/foerderung`, lastModified: maxFundingDate, changeFrequency: "weekly", priority: 0.7 },
     // Die Kategorie-Uebersicht selbst — ohne sie fuehrt das Pfadstueck ins Leere.
     // Kein eigener Wertstand: Sie listet nur, was die Registry ohnehin fuehrt.
     { url: `${BASE_URL}/balkonkraftwerk/ratgeber`, changeFrequency: "monthly", priority: 0.6 },

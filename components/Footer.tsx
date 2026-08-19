@@ -41,6 +41,7 @@ const GROUPS: { label: string; links: { href: string; label: string }[] }[] = [
       // Einträge erst beim Öffnen und zählt als interner Verweis nicht.
       { href: "/balkonkraftwerk", label: "Balkonkraftwerk" },
       { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk-Rechner" },
+      { href: "/balkonkraftwerk/foerderung", label: "Balkonkraftwerk-Förderung" },
       { href: "/balkonkraftwerk/ratgeber/anmelden", label: "Balkonkraftwerk anmelden" },
       { href: "/balkonkraftwerk/ratgeber/mit-speicher", label: "Balkonkraftwerk mit Speicher" },
       { href: "/waermepumpe-rechner", label: "Wärmepumpe" },

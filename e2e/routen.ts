@@ -13,6 +13,7 @@ export const SEITEN: Seite[] = [
   { pfad: "/klimaanlage-stromkosten", erwartet: /klima|kühl/i },
   { pfad: "/balkonkraftwerk", erwartet: /balkonkraftwerk/i },
   { pfad: "/balkonkraftwerk/rechner", erwartet: /balkon/i },
+  { pfad: "/balkonkraftwerk/foerderung", erwartet: /balkonkraftwerk-f/i },
   { pfad: "/balkonkraftwerk/ratgeber", erwartet: /ratgeber/i },
   { pfad: "/balkonkraftwerk/ratgeber/anmelden", erwartet: /marktstammdatenregister/i },
   { pfad: "/balkonkraftwerk/ratgeber/mit-speicher", erwartet: /speicher/i },

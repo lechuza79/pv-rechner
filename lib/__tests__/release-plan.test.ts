@@ -8,6 +8,7 @@ import {
   MIN_ABSTAND_GATTUNG_TAGE,
   MIN_ABSTAND_SCHUB_TAGE,
   planBefunde,
+  planMeldungen,
   releaseFreigegeben,
   ortSchluessel,
   schubFuer,
@@ -130,18 +131,107 @@ describe("Releaseplan", () => {
     expect(MIN_ABSTAND_GATTUNG_TAGE).toBeGreaterThan(MIN_ABSTAND_SCHUB_TAGE);
   });
 
-  it("gibt einen geplanten Schub NICHT frei, auch wenn sein Datum erreicht ist", () => {
+  it("gibt nur einen Schub auf live frei — geplant und zurückgenommen nicht", () => {
     // Sonst ginge eine Seite am Stichtag von selbst live, ohne dass jemand die
     // beiden Fragen beantwortet hat — genau die Automatik, die es zu ersetzen galt.
-    const w1 = RELEASE_PLAN.find((s) => s.id === "w1-foerder-dach")!;
-    expect(w1.status).toBe("geplant");
+    //
+    // Bewusst an einem eigenen Plan geprüft, nicht am echten: Die erste Fassung
+    // hing an „w1-foerder-dach ist geplant" und wurde rot, als dieser Schub nach
+    // der Messung zurückgenommen wurde — der Test prüfte damit den Zustand einer
+    // Zeile, nicht die Regel dahinter.
     const langeNach = new Date("2027-01-01");
-    expect(releaseFreigegeben("foerder-stadt", w1.orte[0], langeNach)).toBe(false);
+    const faelle: { status: Schub["status"]; erwartet: boolean }[] = [
+      { status: "geplant", erwartet: false },
+      { status: "zurueckgenommen", erwartet: false },
+      { status: "live", erwartet: true },
+    ];
+    for (const f of faelle) {
+      const plan: Schub[] = [
+        { id: `test-${f.status}`, gattung: "foerder-stadt", datum: "2026-09-02", status: f.status, orte: ["09999001"], begruendung: "x", nachweis: null },
+      ];
+      // Über die Plan-Variante prüfen, damit der echte Plan unberührt bleibt.
+      const frei = plan.some(
+        (s) => s.status === "live" && new Date(s.datum).getTime() <= langeNach.getTime() && s.orte.includes("09999001"),
+      );
+      expect(frei, `Status ${f.status}`).toBe(f.erwartet);
+    }
+
+    // Und die echte Funktion am echten Plan: kein zurückgenommener Ort ist frei.
+    for (const s of RELEASE_PLAN.filter((x) => x.status !== "live")) {
+      for (const o of s.orte) expect(releaseFreigegeben("foerder-stadt", o, langeNach)).toBe(false);
+    }
   });
 
   it("gibt den Altbestand unverändert frei", () => {
     expect(releaseFreigegeben("foerder-stadt", "09663")).toBe(true); // Würzburg
     expect(releaseFreigegeben("foerder-stadt", "11000")).toBe(true); // Berlin
+  });
+
+  it("meldet einen Schub, dessen Datum verstrichen ist", () => {
+    // Ein verstrichenes Datum ist kein Codefehler (deshalb kein roter Test auf
+    // dem echten Plan), sondern Arbeitsvorrat — und muss deshalb GEMELDET
+    // werden, sonst passiert schlicht nichts. Der Gesundheitscheck ruft das alle
+    // drei Stunden auf, unabhängig davon, ob eine Sitzung offen ist.
+    const alt: Schub[] = [
+      { id: "test-alt", gattung: "foerder-stadt", datum: "2026-01-01", status: "geplant", orte: ["09999001"], begruendung: "x", nachweis: null },
+    ];
+    const m = planMeldungen(new Date("2026-08-19"), alt);
+    expect(m).toHaveLength(1);
+    expect(m[0].text).toContain("steht seit");
+  });
+
+  it("mahnt die Messung an, bevor der Schub dran ist — nicht erst danach", () => {
+    // Die Messung kann „keine Nachfrage" ergeben. Fällt dieses Ergebnis erst am
+    // Stichtag, ist die Arbeit schon getan.
+    const bald: Schub[] = [
+      { id: "test-bald", gattung: "foerder-stadt", datum: "2026-08-25", status: "geplant", orte: ["09999001"], begruendung: "x", nachweis: null },
+    ];
+    const m = planMeldungen(new Date("2026-08-19"), bald);
+    expect(m).toHaveLength(1);
+    expect(m[0].text).toContain("release:messen");
+  });
+
+  it("macht aus fehlender Messung KEIN Rot — nur ein widersprüchlicher Plan ist ein Fehler", () => {
+    // Der Befund einer Parallel-Session am 19.08.2026: Mein erster Entwurf legte
+    // jede Meldung auf Rot. Damit stand der Gesundheitscheck alle drei Stunden
+    // rot, solange eine Messung ausstand — startete jedes Mal die Selbstheilung
+    // und hätte nach drei Läufen den Betreiber gefragt. Eine fehlende Messung ist
+    // aber ein legitimer Zustand über Tage. Rot, das dauernd leuchtet, wird
+    // weggefiltert; dann verpasst man das echte.
+    const bald: Schub[] = [
+      { id: "test-bald", gattung: "foerder-stadt", datum: "2026-08-25", status: "geplant", orte: ["09999001"], begruendung: "x", nachweis: null },
+    ];
+    expect(planMeldungen(new Date("2026-08-19"), bald)[0].schwere).toBe("auffaellig");
+
+    const alt: Schub[] = [
+      { id: "test-alt", gattung: "foerder-stadt", datum: "2026-01-01", status: "geplant", orte: ["09999001"], begruendung: "x", nachweis: null },
+    ];
+    expect(planMeldungen(new Date("2026-08-19"), alt)[0].schwere).toBe("auffaellig");
+
+    // Ein Plan, der sich widerspricht, ist dagegen ein Defekt.
+    const kaputt: Schub[] = [
+      { id: "a", gattung: "foerder-stadt", datum: "2026-09-01", status: "geplant", orte: ["09999001"], begruendung: "x", nachweis: null },
+      { id: "b", gattung: "foerder-stadt", datum: "2026-09-03", status: "geplant", orte: ["09999002"], begruendung: "x", nachweis: null },
+    ];
+    expect(planMeldungen(new Date("2026-08-19"), kaputt).some((m) => m.schwere === "fehler")).toBe(true);
+  });
+
+  it("schweigt, solange ein Schub weit weg ist oder seine Messung hat", () => {
+    // Eine Meldung, die bei jedem Lauf angeht, wird weggefiltert — und dann
+    // verpasst man die echte. Dieselbe Regel wie bei der gelben Schwelle des
+    // Gesundheitschecks.
+    const weit: Schub[] = [
+      { id: "test-weit", gattung: "foerder-stadt", datum: "2026-12-01", status: "geplant", orte: ["09999001"], begruendung: "x", nachweis: null },
+    ];
+    expect(planMeldungen(new Date("2026-08-19"), weit)).toEqual([]);
+
+    const gemessen: Schub[] = [
+      {
+        id: "test-gemessen", gattung: "foerder-stadt", datum: "2026-08-25", status: "geplant", orte: ["09999001"], begruendung: "x",
+        nachweis: { gemessenAm: "2026-08-19", nachfrage: "genug Text für die Prüfung dahinter", kannibalisierung: "genug Text für die Prüfung dahinter", beleg: "CLAUDE.md" },
+      },
+    ];
+    expect(planMeldungen(new Date("2026-08-19"), gemessen)).toEqual([]);
   });
 
   it("weist jeden Ort eines Schubes seinem Schub zu", () => {
