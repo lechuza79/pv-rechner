@@ -159,8 +159,8 @@ describe("Stand-Zeile: getrennte Daten für getrennte Sachen", () => {
     expect(iso("/klimaanlage-stromkosten", "Gerätepreise und Effizienzen")).toBe(DEFAULT_AIRCON_CONFIG.geprueftIso);
     expect(iso("/photovoltaik-rechner", "EEG-Vergütungssätze")).toBe(FEED_IN_GEPRUEFT_ISO);
     expect(iso("/photovoltaik-rechner", "Sachstand der EEG-Reform 2027")).toBe(EEG_REFORM_STAND.geprueftIso);
-    expect(iso("/balkonkraftwerk-rechner", "rechtliche Angaben")).toBe(BALKON_RECHT.geprueftIso);
-    expect(iso("/balkonkraftwerk-rechner", "Set- und Speicherpreise")).toBe(DEFAULT_BALKON_CONFIG.geprueftIso);
+    expect(iso("/balkonkraftwerk/rechner", "rechtliche Angaben")).toBe(BALKON_RECHT.geprueftIso);
+    expect(iso("/balkonkraftwerk/rechner", "Set- und Speicherpreise")).toBe(DEFAULT_BALKON_CONFIG.geprueftIso);
   });
 });
 

@@ -62,7 +62,7 @@ export default function ScenarioCards({
           <span style={S.exCta}>Wärmepumpe rechnen <IconArrowRight size={14} /></span>
         </Link>
 
-        <Link href="/balkonkraftwerk-rechner" style={S.exCard}>
+        <Link href="/balkonkraftwerk/rechner" style={S.exCard}>
           <div style={S.exValRow}>
             <TrendBadge dir="up" />
             <span style={S.exVal}>{nfEuro(round100(s.balkonSavingPerYear))}/Jahr</span>

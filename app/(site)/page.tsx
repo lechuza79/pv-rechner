@@ -38,7 +38,7 @@ const tools = [
     cta: "Jetzt berechnen",
   },
   {
-    href: "/balkonkraftwerk-rechner",
+    href: "/balkonkraftwerk/rechner",
     icon: IconPanel,
     title: "Balkonkraftwerk rechnen",
     description: "Lohnt sich Steckersolar? Für Miete und Eigentum ohne eigenes Dach: Ertrag, Stromersparnis und Amortisation eines 800-Watt-Sets — standortgenau.",

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import AtlasSkeleton from "../../../../components/atlas/AtlasSkeleton";
 import Breadcrumb, { type Crumb } from "../../../../components/Breadcrumb";
+import GlossaryTerm from "../../../../components/GlossaryTerm";
 import RegionSearch from "../../../../components/atlas/RegionSearch";
 import { IconArrowRight } from "../../../../components/Icons";
 import { v, space, pad } from "../../../../lib/theme";
@@ -25,8 +26,9 @@ import {
   currentYear,
   type AtlasRegion,
 } from "../../../../lib/atlas";
-import { fmtPvLeistung as fmtLeistung, pvLeistungTeile, wattProKopfTeile } from "../../../../lib/atlas-format";
+import { pvLeistungTeile, wattProKopfTeile } from "../../../../lib/atlas-format";
 import { ortPhrase, childNoun } from "../../../../lib/atlas-orte";
+import { buildRegionHighlight } from "../../../../lib/region-highlight";
 import { rankingKategorienGruppiert } from "../../../../lib/atlas-ranking";
 import { getRegionAtlasData } from "../../../../lib/mastr-data";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
@@ -89,17 +91,57 @@ function headline(region: AtlasRegion): string {
   return `Solaranlagen ${ortPhrase(region)}`;
 }
 
+/**
+ * Titel der Regionsseiten: führendes Wort ist „Photovoltaik", dann der Ort.
+ *
+ * ZWEI VERWORFENE ANLÄUFE stehen hinter dieser Zeile, beide am 18.08.2026, beide
+ * vom Betreiber gestoppt — deshalb steht die Herleitung hier und nicht nur im
+ * Commit:
+ *
+ * 1. „Solaratlas Bayern" als ÜBERSCHRIFT. Verworfen, weil nur gemessen worden war,
+ *    wie gut wir für den Eigennamen stehen — nicht, was der Begriff wiegt, den er
+ *    ersetzen sollte.
+ * 2. „Solaratlas Bayern" als TITEL. Ebenfalls verworfen, aus zwei Gründen:
+ *    - Die Suchabsicht passt nicht. Auf Platz 1–10 zu „solaratlas bayern" steht
+ *      ausnahmslos ein Dachflächen-Potenzialkataster (Energie-Atlas Bayern,
+ *      Geoportal, Solaratlas des Landkreises Berchtesgadener Land). Das ist
+ *      dieselbe Falle wie bei „solarkataster", die wir am 13.08.2026 schon einmal
+ *      dokumentiert hatten: „darf ich auf mein Dach?" ist eine andere Frage als
+ *      „was steht hier schon?".
+ *    - Die Nachfrage war Rauschen: „solaratlas bayern" 48 Einblendungen, aber
+ *      „solaratlas nrw" 2 und „solaratlas rlp" 5. Aus einer Seite wurde eine Regel
+ *      für siebzehn.
+ *
+ * WAS STATTDESSEN GEMESSEN IST: Auf unserer stärksten Atlas-Seite (Rheinland-Pfalz)
+ * sind die drei größten Anfragen „photovoltaik pfalz" (18 Einblendungen),
+ * „photovoltaik rheinland-pfalz" (11) und „photovoltaik rheinland pfalz" (7) —
+ * zusammen 36 gegen 5 für den Eigennamen. Über alle Atlas-Seiten: „photovoltaik"
+ * in 36 Anfragen mit 140 Einblendungen, „solaratlas" in 6 mit 71. Das Wort stand
+ * bis dahin in keinem Titel und in keinem sichtbaren Satz.
+ *
+ * Die Ortsangabe kommt aus ortPhrase(), damit die Präposition stimmt („im Landkreis
+ * Würzburg", „in der Region Hannover", „im Saarland") — der Titel wird sonst an
+ * genau den drei Stellen falsch, für die es diese Funktion gibt.
+ * Quelle: Search Console 18.07.–15.08.2026, Anfragen-Ebene; docs/seo/befund-2026-08-18-atlas-wellen.md
+ */
+function seitenTitel(region: AtlasRegion): string {
+  return `Photovoltaik ${ortPhrase(region)}: Solaranlagen, Bestand & Zubau`;
+}
+
 export async function generateMetadata(props: { params: Promise<Params> }): Promise<Metadata> {
   const params = await props.params;
   const region = await resolve(params.pfad);
   if (!region) return { robots: atlasRobots(false) };
-  const title = headline(region);
   return {
     ...pageMetadata({
-      title: `${title} – Bestand & Zubau`,
+      title: seitenTitel(region),
       description:
         region.level === "de"
           ? "Wie viel Photovoltaik steht in Deutschland? Bestand und Zubau aus dem Marktstammdatenregister, mit Rangliste aller Bundesländer nach Solarleistung je Einwohner."
+          // Kein Zusatz „mit Rangliste und Landesförderung" mehr (18.08.2026): Er stand
+          // jenseits der angezeigten ~155 Zeichen, versprach auf ~400 Kreisseiten einen
+          // Förderabschnitt, den nur Bundesland-Seiten haben, und trug ein Geld-Wort in
+          // eine Bestands-Seite — gegen unsere eigene Rollentrennung zu den Förderseiten.
           : `Wie viele Solaranlagen stehen ${ortPhrase(region)}? Photovoltaik-Bestand, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister.`,
       path: `/solar-atlas${params.pfad?.length ? "/" + params.pfad.join("/") : ""}`,
     }),
@@ -211,6 +253,38 @@ async function AtlasBody({
   const kpiRefs = refData
     .filter((r) => r.pop)
     .map((r) => ({ key: r.key, name: r.name, perCap: perCapOf(r.atlas, r.pop) }));
+  // Zahl und Einheit getrennt, damit im Einstiegssatz nur die EINHEIT den
+  // Glossarbegriff tragen kann (siehe dort). Dieselbe Quelle wie die Kachel.
+  const leistungTeile = pvLeistungTeile(atlas.solar.total_kwp);
+
+  /**
+   * Der eigene Platz unter den Geschwistern — nur für Bundesländer.
+   *
+   * Die Rangliste der 16 liegt in den Kindern der Deutschland-Region und trägt
+   * dort bereits `rankDach`; wir lesen sie, statt eine zweite zu rechnen (zwei
+   * Ranglisten laufen auseinander, das ist im Projekt schon passiert).
+   *
+   * DER FEHLER WIRD GESCHLUCKT — und das ist hier kein Kaschieren, sondern der
+   * Unterschied zwischen einem fehlenden Satz und einer kaputten Seite. Der
+   * Aufruf ist die teuerste Abfrage des Systems: Für die Deutschland-Region
+   * fällt der Präfix-Filter weg (`prefixOf("de") === ""`), die Aggregation läuft
+   * also über den gesamten Bestand. Ein serieller Testlauf am 19.08.2026 hat sie
+   * genau dabei erwischt — „DB read timeout after 8000ms (mastr_children)" auf
+   * der Deutschland-Kinderliste. Ohne dieses `catch` hätte dieselbe Zeitüber-
+   * schreitung die ganze Bundesland-Seite mitgerissen, obwohl sie nur einen
+   * Nebensatz speist. Fällt sie aus, fehlt der Rangsatz und der Rest der Seite
+   * steht.
+   *
+   * Die Abfrage ist `unstable_cache`-gedeckt (children-v2, eine Stunde) und
+   * läuft ohnehin für die Deutschland-Seite; die 16 Länderseiten teilen sich
+   * denselben Eintrag. Zusätzliche Last entsteht also höchstens einmal je
+   * Stunde, nicht je Aufruf.
+   */
+  const geschwister =
+    region.level === "bundesland"
+      ? await getChildren({ region_id: "de", level: "de" } as AtlasRegion).catch(() => [])
+      : [];
+  const eigenerRang = geschwister.find((g) => g.region_id === region.region_id)?.rankDach ?? null;
   const kpiTiles = [
     { label: "Solaranlagen", value: nf(atlas.solar.total_count), metric: "count" },
     { label: "Installiert", ...pvLeistungTeile(atlas.solar.total_kwp), metric: "kwp" },
@@ -226,6 +300,25 @@ async function AtlasBody({
 
   const kindWort = childNoun(childLevel);
   const kindWortGezaehlt = childNoun(childLevel, children.length);
+  const einordnung = buildRegionHighlight({
+    level: region.level as "de" | "bundesland" | "landkreis",
+    name: region.name,
+    kindWort,
+    kinder: children.map((c) => ({
+      name: c.name,
+      wPerCapitaDach: c.wPerCapitaDach,
+      count: c.count,
+      // Dieselbe Adresse wie in der Rangliste weiter unten — der Absatz öffnet
+      // also keinen neuen Crawl-Weg, er benennt einen bestehenden.
+      href: c.slug ? `${basePath}/${c.slug}` : null,
+    })),
+    rang: eigenerRang,
+    rangVon: geschwister.length || null,
+    rangGattung: "Bundesländer",
+    byYear: atlas.solar.by_year,
+    lastYear,
+    count: atlas.solar.total_count,
+  });
 
   // Berlin und Hamburg zerfallen nicht in Kreise — die „Rangliste der Kreise in
   // Berlin" hatte genau eine Zeile: Berlin. Eine Rangliste, in der die Region
@@ -275,13 +368,62 @@ async function AtlasBody({
         <h1 style={S.h1}>{headline(region)}</h1>
         <p style={S.intro}>
           <strong style={S.strong}>{nf(atlas.solar.total_count)} Solaranlagen</strong> mit zusammen{" "}
-          <strong style={S.strong}>{fmtLeistung(atlas.solar.total_kwp)}</strong> installierter Leistung
+          {/* Die EINHEIT trägt den Glossarbegriff, nicht die Zahl: „34" ist kein Begriff,
+              und ein Link um den Zahlenwert sieht aus wie ein Klickziel für die Zahl.
+              Möglich wird die Trennung durch pvLeistungTeile() — dieselbe Quelle wie
+              fmtPvLeistung, nur getrennt abrufbar (CLAUDE.md: „Zahl und Einheit: eine
+              Quelle, aber getrennt abrufbar"). Hier ist die erste Nennung einer
+              Peak-Einheit auf der Seite, deshalb hängt der Begriff hier und nicht
+              weiter unten am Watt Peak je Einwohner. */}
+          <strong style={S.strong}>
+            {leistungTeile.value}{" "}
+            <GlossaryTerm id="kwp">{leistungTeile.unit}</GlossaryTerm>
+          </strong>{" "}
+          installierter Leistung
           sind {ortPhrase(region)} in Betrieb
           {hatVergleichsgruppe ? `, verteilt auf ${nf(children.length)} ${kindWortGezaehlt}.` : "."}
           {wPerCapita !== null && (
-            <> Das sind {nf(wPerCapita)} Watt Peak-Leistung je Einwohner.</>
-          )}
+            <>
+              {" "}
+              {/* Zweite Nennung derselben Größe — der Baustein stellt sie von selbst
+                  als reinen Text dar (Erstnennung oben an der Einheit). Deshalb steht
+                  hier bewusst KEIN zweiter Begriff. */}
+              Das sind {nf(wPerCapita)} Watt Peak-Leistung je Einwohner.
+            </>
+          )}{" "}
+          {/* „Photovoltaik" stand bis 18.08.2026 in keinem sichtbaren Satz dieser Seite —
+              nur „Solaranlagen". Beide Wörter werden gesucht („photovoltaik bayern" 110
+              Suchen/Monat, „solaranlagen bayern" 50), und das Wort gehört hier ohnehin
+              hin: Der Satz sagt, woher die Zahlen kommen. Kein zweiter Satz nur für ein
+              Wort — er trägt die Herkunftsangabe, die vorher gar nicht dastand. */}
+          Alle Bestandszahlen stammen aus dem Marktstammdatenregister, in dem jede
+          Photovoltaik-Anlage in Deutschland gemeldet sein muss.
         </p>
+
+        {/* Der Einordnungs-Absatz: Platz unter den Geschwistern, stärkstes
+            Untergebiet mit Namen, Zubau als Anteil am Bestand. Je Region andere
+            Fakten statt einer Schablone — der Grund steht in lib/region-highlight.ts. */}
+        {einordnung.length > 0 && (
+          <p style={S.intro}>
+            {einordnung.map((teil, idx) => {
+              if (typeof teil === "string") return teil;
+              if ("href" in teil) {
+                return (
+                  <Link key={`${teil.href}-${idx}`} href={teil.href} style={S.linkInline}>
+                    {teil.text}
+                  </Link>
+                );
+              }
+              // Werte werden hervorgehoben wie im Einstiegsabsatz darüber —
+              // dasselbe Textstyling, kein zweites.
+              return (
+                <strong key={`w-${idx}`} style={S.strong}>
+                  {teil.text}
+                </strong>
+              );
+            })}
+          </p>
+        )}
 
         <div style={S.section}>
           <AtlasKpiRow
@@ -427,6 +569,10 @@ async function AtlasBody({
             // mehr (showSource=false), daher steht die BKG-Attribution hier.
             <>Kartengeometrien: GeoBasis-DE / BKG, Datenlizenz dl-de/by-2-0 (vereinfacht). </>
           )}
+          {/* Die Rangliste rechnet CO₂-Ersparnis und Stromwert aus Standort-Erträgen —
+              die Quelle dafür gehört hierher, nicht nur in den Tooltip der Spalte.
+              Name aus DATA_SOURCES, damit er nicht gegen die SSOT driftet. */}
+          Standort-Erträge: {DATA_SOURCES.pvgis.name}.{" "}
           Gezählt werden nur Anlagen in Betrieb. Alle Angaben sind Näherungswerte ohne
           Anspruch auf Richtigkeit, Aktualität oder Vollständigkeit.
         </div>
@@ -492,6 +638,21 @@ const S: Record<string, React.CSSProperties> = {
     padding: pad("xl"),
   },
   link: { color: v("--color-accent"), textDecoration: "none", fontSize: 14, fontWeight: 600 },
+  // Verweis MITTEN im Fließtext: Akzentfarbe UND Unterstreichung, so wie überall
+  // sonst im Fließtext des Projekts (Quellenangaben, Ratgeber, Förderseiten).
+  // `link` ohne Unterstreichung ist der Stil für eigenständige Links, die durch
+  // ihre Position schon als Link erkennbar sind — inline fehlt ihm die
+  // Erkennbarkeit, und mit festen 14 px wäre das Wort außerdem kleiner als der
+  // Satz, in dem es steht.
+  // Der Text behält die Farbe des Satzes, blau ist NUR die Unterstreichung. Ein
+  // durchgehend blaues Wort mitten im Fließtext zieht den Blick auf sich und
+  // zerreißt den Absatz; die farbige Linie reicht als Hinweis.
+  linkInline: {
+    color: "inherit",
+    textDecoration: "underline",
+    textDecorationColor: v("--color-accent"),
+    textUnderlineOffset: 2,
+  },
   disclaimer: {
     fontSize: 11,
     color: v("--color-text-muted"),

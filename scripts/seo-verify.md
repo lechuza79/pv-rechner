@@ -76,6 +76,90 @@ unsere Bestandsstatistik —, wir standen auf Position 73,6 und hatten in 28 Tag
 Einblendungen. Bei unserem eigenen Wort („solaratlas rlp") standen wir auf 10,6.
 Vollständig in `docs/seo/befund-2026-08-13.md`.
 
+### Schritt 2b-1 — OFFEN (bis 10/2026): Schreibt Google unsere Atlas-Titel um?
+
+Am 18.08.2026 haben die Atlas-Regionsseiten neue Titel bekommen („Photovoltaik in Bayern:
+…"), während die sichtbare Überschrift die alte blieb („Solaranlagen in Bayern"). Ob diese
+Abweichung etwas kostet, ist **nicht entschieden** — die Daten geben es nicht her, weil
+Titel und Überschrift vorher wortgleich waren. Es gibt nur einen Nullbefund: Im
+gleichlautenden Zustand stand keine der sieben Atlas-Platzierungen in den Top 10.
+
+**Die Messung, die es entscheidet** (frühestens zwei Wochen nach dem Livegang der neuen
+Titel, also ab etwa 09/2026): In `ranked_keywords` je Atlas-URL das von Google **angezeigte**
+`title`-Feld gegen unser title-Tag halten.
+- Steht dort „Photovoltaik in …" → Google übernimmt unseren Titel, die Überschrift ist für
+  den Treffer irrelevant, die heutige Aufteilung bleibt.
+- Steht dort „Solaranlagen in …" → Google zieht die Überschrift heran. Dann ist die
+  Angleichung Pflicht, und die belegte Form wäre eine, die **beide** Wörter trägt: 71 % der
+  echten Ortsanfragen unserer einzigen Atlas-Seite mit Ortsverkehr enthalten „solaranlage",
+  keine einzige „photovoltaik".
+
+Nebenbefund, der dabei mitgeprüft gehört: Bei 6 von 7 Atlas-Platzierungen kürzt Google
+bereits den Marken-Suffix weg. Das ist normal, aber es zeigt, dass die Titel an der
+Längengrenze liegen.
+
+Ergebnis in den Monats-Schnappschuss, dann diesen Abschnitt entweder streichen oder die
+Angleichung als Befund melden.
+
+### Schritt 2b-2 — Zwei eigene Seiten auf einer Anfrage — BLOCKER
+
+Seit dem 18.08.2026 mitzuführen, weil es die teuerste Fehlerklasse dieses Bereichs ist
+und man sie in Summen nicht sieht: Wir haben **zwei Seitenfamilien mit Ortsnamen** —
+`/photovoltaik-foerderung/{land}/{stadt}` und (künftig) `/solar-atlas/{land}/{kreis}/{gemeinde}`.
+Die Rollentrennung lautet: Förderseite = Geld-Wörter, Atlasseite = Bestands-Wörter.
+
+**Sie ist bereits gebrochen.** Nachgezählt an den Anfragendaten: 33 der 108 sichtbaren
+Förder-Anfragen tragen kein Geld-Wort, bei sieben Anfragen erscheinen beide Familien, bei
+dreien steht die Förderseite auf einem reinen Bestands-Wort besser („photovoltaik pfalz":
+Förderseite 32,1 gegen Atlas 43,9).
+
+Je Monatslauf deshalb erheben und in den Schnappschuss schreiben:
+1. Wie viele Förder-Anfragen tragen kein Geld-Wort (absolut und als Anteil)?
+2. Bei welchen Anfragen erscheinen beide Familien gleichzeitig, und welche steht besser?
+
+Steigt die Zahl, ist das ein Befund für den Betreiber — nicht weil er etwas tun muss,
+sondern weil daran hängt, ob die nächste Atlas-Welle überhaupt starten darf. Die statische
+Hälfte (unsere eigenen Titel) hält `lib/__tests__/atlas-foerder-wortklassen.test.ts`; die
+Zuordnung durch Google kann nur diese Messung sehen.
+
+### Schritt 2b-3 — Der Anteil sichtbarer Anfragen entscheidet, ob eine Position echt ist — BLOCKER
+
+Die Regel „Durchschnittsposition nie ohne Query-Ebene" (unten) sagt, dass man nachsehen
+muss. **Diese hier sagt, was man dabei ausrechnet:** je Seite die Summe der Einblendungen
+aus den sichtbaren Anfragen geteilt durch die Einblendungen der Seitenebene.
+
+- **Anteil hoch (grob über 30 %)** → die Position beschreibt echte Anfragen. Snippet- und
+  Titelarbeit lohnt.
+- **Anteil nahe null** → die Seite lebt von Anfragen, die Google anonymisiert, weil sie zu
+  selten sind. Die schöne Durchschnittsposition ist dann ein Artefakt aus lauter
+  Einzelabfragen, und jede Optimierung schreibt für Verkehr, den es nicht gibt.
+
+**Gemessen am 18.08.2026 an den zwölf stärksten Förder-Stadtseiten** — und das Ergebnis
+hat eine bereits ausgesprochene Empfehlung gekippt, die genau auf die guten Positionen
+gebaut hatte:
+
+| Seite | Einbl. | Pos. | Anteil sichtbar |
+|---|---|---|---|
+| Frankfurt | 214 | 19,0 | **40 %** |
+| Köln | 54 | 9,4 | 11 % |
+| Essen | 89 | 8,5 | 9 % |
+| Viersen | 72 | 6,7 | 4 % |
+| Regensburg | 50 | 7,1 | 4 % |
+| Osnabrück | 71 | 7,2 | 3 % |
+| Hannover | 120 | 7,8 | 2 % |
+| Wiesbaden | 53 | 7,6 | 2 % |
+| Würzburg | 69 | 7,1 | 1 % |
+| Bonn / Rhein-Erft / Mainz | 86 / 83 / 36 | 7,7 / 8,1 / 12,5 | **0 %** |
+
+Die sechs Seiten „auf Seite 1" haben zusammen praktisch keine benennbare Anfrage. Die
+einzige Seite mit Substanz steht auf **Position 19**, nicht auf 7 — und ihre echten
+Anfragen („photovoltaik förderung frankfurt" 11,9, „klimabonus frankfurt 2026" 9,1) sind
+ein Ranking-Thema, kein Snippet-Thema.
+
+**Konsequenz für jeden Lauf:** Diese Spalte gehört in den Monats-Schnappschuss. Eine
+Seite ohne sichtbare Anfragen wird nicht als Chance gemeldet, egal wie gut ihre Position
+aussieht.
+
 ### Schritt 2c — Durchschnittsposition nie ohne Query-Ebene — BLOCKER
 
 Eine gute Durchschnittsposition bei ~1 % Klickrate ist ein **Warnsignal, kein Erfolg**.
@@ -114,6 +198,50 @@ kein gültiger Vorschlag — dann nur empfehlen, was die Antwortmaschine nicht k
 etwas Veränderliches (Live-/Statuswerte), etwas Persönliches (Rechner) oder etwas
 Handelndes (Checkliste, Antragsweg, Download). Der empfohlene Seitentyp muss
 **Werkzeug** heißen, nicht „Ratgeber", sobald eine KI-Antwort auf der Suche steht.
+
+## Schritt 4b — Vorlauf-Messung für den nächsten Schub — BLOCKER
+
+**Der Wächter misst monatlich im Nachhinein. Ein Schub braucht die Messung VORHER.**
+Beides aus derselben Quelle, sonst entstehen zwei Zahlenstände über dieselbe Frage.
+
+**Wann:** Wenn `npm run release:plan` einen Schub innerhalb der nächsten 14 Tage
+zeigt, dessen `nachweis` noch `null` ist. Sonst entfällt der Schritt ersatzlos —
+er hängt am Plan, nicht am Kalender.
+
+**Warum überhaupt vorher:** Zwei Fehlschläge an einem Tag (18.08.2026) hatten
+dieselbe Ursache — alle vorhandenen Prüfungen waren grün, und die Frage, ob auf
+dieser Ebene überhaupt gesucht wird, hatte niemand gestellt. Nach dem Livegang
+lässt sie sich nicht mehr folgenlos beantworten: Eine Seite, die keine Nachfrage
+bedient, wieder einzusammeln kostet mehr als sie je gebracht hat.
+
+**Was zu erheben ist** — je Schub, nicht je Ort, mit **fünf** Stichproben aus der
+Ortsliste (die größten und die kleinsten, nicht die bequemen):
+
+1. **Suchvolumen im Muster, das Nutzer tippen.**
+   `POST …/dataforseo_labs/google/keyword_ideas/live` bzw. für einzelne Begriffe
+   `…/keywords_for_keywords/live`, `location_code` 2276, `language_code` de.
+   Für Förderseiten: „photovoltaik förderung {ort}", „solar zuschuss {ort}".
+   Für Atlas-Ortsseiten: „photovoltaik {ort}", „solaranlagen {ort}".
+2. **Gegenprobe an wieistmeinsolar.de** (dieselbe Datenbasis, dasselbe Produkt):
+   Rankt der Wettbewerber für Orte dieser Größenordnung? Was der dort nicht
+   schafft, schaffen wir auch nicht.
+3. **Kannibalisierung je Ort:** Steht für „{ort}" schon eine eigene Seite der
+   anderen Familie in der Search Console (`?dim=query`)? Das ist Frage 2 des
+   Nachweises und der einzige Teil, den nur unsere eigenen Daten beantworten.
+
+**Kosten:** ~0,002 $ je SERP-Abruf, ~0,05 $ je Keyword-Satz — ein Schub-Vorlauf
+liegt bei **unter 0,10 $** und damit weit unter dem Deckel von 0,50 $. Der Aufwand
+ist kein Argument gegen die Messung.
+
+**Ergebnis eintragen** — in `nachweis` des Schubes in `lib/release-plan.ts`
+(`gemessenAm`, `nachfrage`, `kannibalisierung`, `beleg`), Beleg als Datei unter
+`docs/seo/`. Ohne diese vier Felder lässt der Test den Schub nicht auf `live`;
+das ist die Sperre, nicht dieser Text.
+
+**Der Befund kann „nicht bauen" lauten, und das ist ein gutes Ergebnis.** Fällt die
+Nachfrage aus, wird der Schub verkleinert oder gestrichen — nicht verschoben, bis
+er niemandem mehr auffällt. Das ist eine Entscheidung des Betreibers und gehört
+als solche in den Bericht.
 
 ## Schritt 5 — Ratgeber-Frische
 

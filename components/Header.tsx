@@ -7,6 +7,7 @@ import { IconUser, IconMenu, IconClose, IconChevronDown } from "./Icons";
 import { v, iconSizes } from "../lib/theme";
 import { useAuth, signOut } from "../lib/auth";
 import ThemeController from "./ThemeController";
+import { ratgeberBySlug } from "../lib/ratgeber";
 
 interface HeaderProps {
   onLoginClick?: () => void;
@@ -19,6 +20,17 @@ interface NavItem {
   label: string;
   desc: string;
   page: string;
+  /**
+   * Zweitnennung: Der Eintrag steht in dieser Gruppe nur zum Finden, seine
+   * Heimat ist eine andere. Er markiert sich NICHT und macht seine Gruppe auch
+   * nicht aktiv — sonst leuchten zwei Menüpunkte gleichzeitig, und der Nutzer
+   * sieht nicht mehr, wo die Seite eigentlich hängt.
+   *
+   * Für Suchmaschinen ist die Zweitnennung folgenlos: Die Einträge werden erst
+   * beim Öffnen erzeugt und stehen in keinem ausgelieferten HTML (nachgemessen
+   * 18.08.2026). Es geht ausschließlich um Auffindbarkeit für Menschen.
+   */
+  zweitnennung?: boolean;
 }
 
 // All calculators grouped under the "Rentabilität berechnen" dropdown. Sub-labels
@@ -28,9 +40,42 @@ const RECHNER_ITEMS: NavItem[] = [
   { href: "/photovoltaik-rechner", label: "Photovoltaik-Rechner", desc: "Lohnt sich meine PV-Anlage?", page: "rechner" },
   { href: "/waermepumpe-rechner", label: "Wärmepumpen-Rechner", desc: "Heizkosten und Förderung vergleichen", page: "waermepumpe" },
   { href: "/klimaanlage-stromkosten", label: "Klimaanlagen-Rechner", desc: "Kühlkosten und Gerätevergleich — auch ergänzend zum Heizen", page: "klima" },
-  { href: "/balkonkraftwerk-rechner", label: "Balkonkraftwerk-Rechner", desc: "Steckersolar für Miete und Eigentum", page: "balkon" },
+  // Zweitnennung: Der Balkon-Rechner wohnt unter „Balkonkraftwerk", steht hier
+  // aber mit, weil ihn jemand sucht, der schlicht einen Rechner will. Er
+  // markiert sich nicht und macht diese Gruppe nicht aktiv — sonst leuchteten
+  // auf jeder Seite des Clusters zwei Menüpunkte, und man sähe nicht mehr, wo
+  // die Seite hängt.
+  { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk-Rechner", desc: "Steckersolar für Miete und Eigentum", page: "balkon-rechner", zweitnennung: true },
   { href: "/pv-bedarf-berechnen", label: "PV-Bedarf berechnen", desc: "Welche Anlage passt zu mir?", page: "empfehlung" },
   { href: "/pv-simulation", label: "PV-Live-Simulation", desc: "Aktuelle Erträge im Tagesverlauf", page: "simulation" },
+];
+
+// Balkonkraftwerk: eigenes Thema auf oberster Ebene, weil es die einzige Form
+// von Photovoltaik ist, die auch ohne eigenes Dach funktioniert — wer zur Miete
+// wohnt, sucht sie nicht unter „Rentabilität berechnen".
+//
+// Der Übersichts-Eintrag zeigt auf dasselbe Ziel wie der Auslöser der Gruppe.
+// Das ist beabsichtigt und dasselbe Muster wie bei den anderen Gruppen (der
+// PV-Rechner ist dort ebenfalls Auslöser-Ziel UND erster Eintrag): Wer den
+// Auslöser anklickt, will die Übersicht; wer die Liste liest, sucht einen
+// benannten Punkt.
+//
+// DIESE GRUPPE BRINGT NICHTS FÜR SUCHMASCHINEN — nachgemessen am 18.08.2026,
+// entgegen der ersten Annahme beim Bauen. `DesktopDropdown` rendert seine
+// Einträge erst bei geöffnetem Zustand (`{open && …}`), sie stehen also in
+// keinem ausgelieferten HTML und zählen nicht als interne Verweise. Das gilt
+// für ALLE Gruppen hier, ist also kein neuer Zustand.
+// Die crawlbaren Verweise auf den Cluster kommen aus dem Themen-Einstieg
+// (/balkonkraftwerk verlinkt Rechner und Anmelde-Ratgeber im Fließtext), aus
+// der Fußzeile und aus den Verweisblöcken der Ratgeber. Wer die interne
+// Verlinkung stärken will, setzt dort an, nicht hier.
+// Jeder Eintrag hat einen EIGENEN Schlüssel. Mit einem gemeinsamen leuchteten
+// alle drei gleichzeitig, sobald man irgendwo im Cluster war — der Auslöser
+// oben bleibt trotzdem markiert, weil er prüft, ob IRGENDEIN Kind aktiv ist.
+const BALKON_ITEMS: NavItem[] = [
+  { href: "/balkonkraftwerk", label: "Balkonkraftwerk — Überblick", desc: "Was es bringt, was es kostet, was zu tun ist", page: "balkon" },
+  { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk-Rechner", desc: "Ertrag und Amortisation für deinen Haushalt", page: "balkon-rechner" },
+  { href: "/balkonkraftwerk/anmelden", label: "Balkonkraftwerk anmelden", desc: "Frist, Angaben und die drei Fallen im Register", page: "balkon-anmelden" },
 ];
 
 // PV-Förderung group: the regional funding directory plus the national data
@@ -76,10 +121,22 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     pathname.startsWith("/photovoltaik-rechner") ? "rechner" :
     pathname.startsWith("/waermepumpe-rechner") ? "waermepumpe" :
     pathname.startsWith("/klimaanlage-stromkosten") ? "klima" :
-    pathname.startsWith("/balkonkraftwerk-rechner") ? "balkon" :
+    // Balkon-Cluster: je Seite ein eigener Schlüssel, sonst leuchten im
+    // Ausklappmenü alle drei Einträge gleichzeitig. Die spezifischen Pfade
+    // müssen VOR dem Hub stehen — sonst fängt dessen Präfix sie ab.
+    // Und der ganze Block VOR der Ratgeber-Regel: /balkonkraftwerk/anmelden ist
+    // auch ein Registry-Eintrag, soll aber im Balkon-Menü markieren.
+    pathname.startsWith("/balkonkraftwerk/rechner") ? "balkon-rechner" :
+    pathname.startsWith("/balkonkraftwerk/anmelden") ? "balkon-anmelden" :
+    pathname.startsWith("/balkonkraftwerk") ? "balkon" :
     pathname.startsWith("/photovoltaik-zubau-deutschland") ? "zubau" :
     pathname.startsWith("/photovoltaik-foerderung") ? "foerderung" :
-    pathname.startsWith("/ratgeber") ? "ratgeber" :
+    // Ratgeber kommen aus der Registry, nicht aus dem Pfad. Mehrere liegen
+    // bewusst auf oberster Ebene (/photovoltaik-neigungswinkel,
+    // /einspeiseverguetung-tabelle) — auf denen leuchtete der Menüpunkt bisher
+    // NICHT, weil hier nur auf das Präfix /ratgeber geprüft wurde. Über die
+    // Registry gilt es automatisch auch für jeden künftigen Ratgeber.
+    pathname.startsWith("/ratgeber") || ratgeberBySlug(pathname) ? "ratgeber" :
     pathname.startsWith("/pv-bedarf-berechnen") ? "empfehlung" :
     pathname.startsWith("/dashboard") ? "dashboard" : ""
   );
@@ -197,7 +254,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
             in den Zustand einer Komponente. */}
         <nav className="hdr-nav" style={{ alignItems: "center", gap: 24 }}>
             <DesktopDropdown
-              triggerLabel="Rentabilität berechnen"
+              triggerLabel="PV-Rechner"
               triggerHref="/photovoltaik-rechner"
               items={RECHNER_ITEMS}
               activePage={activePage}
@@ -208,9 +265,15 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
               items={FOERDERUNG_ITEMS}
               activePage={activePage}
             />
+            <DesktopDropdown
+              triggerLabel="Balkonkraftwerk"
+              triggerHref="/balkonkraftwerk"
+              items={BALKON_ITEMS}
+              activePage={activePage}
+            />
             <Link href="/ratgeber" style={linkStyle("ratgeber")}>Ratgeber</Link>
             <DesktopDropdown
-              triggerLabel="Strommix & Energiedaten"
+              triggerLabel="Strommix"
               triggerHref="/strommix-deutschland"
               items={ENERGIE_ITEMS}
               activePage={activePage}
@@ -288,7 +351,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
             padding: "8px 24px 16px",
             boxShadow: v('--shadow-md'),
           }}>
-            <MobileSection title="Rentabilität berechnen" items={RECHNER_ITEMS} activePage={activePage} onNavigate={closeMenu} />
+            <MobileSection title="PV-Rechner" items={RECHNER_ITEMS} activePage={activePage} onNavigate={closeMenu} />
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
@@ -296,11 +359,15 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
+            <MobileSection title="Balkonkraftwerk" items={BALKON_ITEMS} activePage={activePage} onNavigate={closeMenu} />
+
+            <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
+
             <Link href="/ratgeber" style={mobileLinkStyle("ratgeber")} onClick={closeMenu}>Ratgeber</Link>
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
-            <MobileSection title="Strommix & Energiedaten" items={ENERGIE_ITEMS} activePage={activePage} onNavigate={closeMenu} />
+            <MobileSection title="Strommix" items={ENERGIE_ITEMS} activePage={activePage} onNavigate={closeMenu} />
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
@@ -402,7 +469,9 @@ function DesktopDropdown({
 }) {
   const [open, setOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const active = items.some((i) => i.page === activePage);
+  // Zweitnennungen zaehlen hier NICHT mit — sonst leuchtet diese Gruppe mit,
+  // obwohl die Seite in einer anderen haengt.
+  const active = items.some((i) => !i.zweitnennung && i.page === activePage);
 
   const openNow = useCallback(() => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
@@ -455,7 +524,7 @@ function DesktopDropdown({
             gap: 2,
           }}>
             {items.map((item) => {
-              const isActive = activePage === item.page;
+              const isActive = !item.zweitnennung && activePage === item.page;
               return (
                 <Link
                   key={item.href}
@@ -522,7 +591,7 @@ function MobileSection({
           style={{
             fontSize: 16,
             fontWeight: 600,
-            color: activePage === item.page ? v('--color-accent') : v('--color-text-primary'),
+            color: !item.zweitnennung && activePage === item.page ? v('--color-accent') : v('--color-text-primary'),
             textDecoration: "none",
             display: "flex",
             alignItems: "center",

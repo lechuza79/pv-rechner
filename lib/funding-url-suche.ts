@@ -18,10 +18,18 @@
 /**
  * Version der Bewertung. Wie beim Screening: Wer die Listen ändert, zählt hoch.
  *
- * 2 (19.08.2026): Die Suche gibt nicht mehr nur den besten Fund zurück, sondern
- * ALLE Adressen, die für sich eine Förderseite sind. Damit müssen auch die
- * Gemeinden noch einmal durchsucht werden, bei denen wir längst eine Seite haben
- * — genau dort liegen die Geschwister, die vorher auf den Boden fielen.
+ * 2 (19.08.2026): Zwei Änderungen aus parallelen Ständen, beide mit demselben
+ * Effekt auf den Stempel.
+ *
+ * Erstens die Volltextsuche der Website. Das ist keine Feinheit der Bewertung,
+ * sondern mehr REICHWEITE — die 7.863 Gemeinden, die unter Version 1 als
+ * „keine-seite" abgelegt wurden, sind damit nicht mehr beantwortet und stehen
+ * von selbst wieder an. Genau dafür ist der Stempel da.
+ *
+ * Zweitens gibt die Suche nicht mehr nur den besten Fund zurück, sondern ALLE
+ * Adressen, die für sich eine Förderseite sind. Damit müssen zusätzlich die
+ * Gemeinden noch einmal dran, bei denen wir längst eine Seite haben — genau
+ * dort liegen die zweiten und dritten Seiten, die vorher auf den Boden fielen.
  */
 export const SUCH_VERSION = 2;
 
@@ -76,8 +84,23 @@ const AUSSCHLUSS =
 const FREMDES_RESSORT =
   /kultur|gesundheit|sport|jugend|sozial|schule|bildung|tourismus|wirtschaft|verein|senior|familie|kita|kinderbetreuung|integration|sprache|wohnraum|wohnungsbau|wohnbau|staedtebau|städtebau|denkmal|ehrenamt|landwirtschaft/;
 
-/** Dateiendungen und Pfade, die kein Lesen lohnen. */
-const KEIN_ZIEL = /\.(pdf|jpe?g|png|gif|zip|docx?|xlsx?|pptx?)($|\?)|\/(impressum|datenschutz|kontakt|suche|login)\b/;
+/**
+ * Dateiendungen und Pfade, die kein Lesen lohnen.
+ *
+ * Die zweite Hälfte kam am 19.08.2026 dazu und ist die interessantere: Ein
+ * DOWNLOAD ist keine Seite. Gemessen an den bis dahin gespeicherten Adressen
+ * trugen mehrere die Form `/downloads/datei/YmQxOTYxMzlhMTU4NGIx…` — eine
+ * Richtlinien-PDF hinter einer undurchsichtigen Kennung, ganz ohne Endung, und
+ * über ihren Linktext auf volle Punktzahl gekommen. Für den Menschen ist das
+ * genau das richtige Dokument; als gespeicherte `thema_foerderung_url` ist es
+ * wertlos und schädlich zugleich: Der Screening-Lauf verwirft alles, was nicht
+ * als HTML ausgeliefert wird, und die Gemeinde gilt trotzdem als „hat eine
+ * Förderseite" — der Platz ist belegt, und sie kommt nie wieder in die Suche.
+ * Dasselbe gilt für `?file=…pdf`-Adressen, bei denen die Endung im
+ * Abfrageteil steht statt im Pfad.
+ */
+const KEIN_ZIEL =
+  /\.(pdf|jpe?g|png|gif|zip|docx?|xlsx?|pptx?)($|\?)|\/(impressum|datenschutz|kontakt|suche|login)\b|\/downloads?\/(datei|file|document)\/|[?&](file|datei|download)=[^&]*\.(pdf|docx?)/i;
 
 /**
  * Nachrichten und Meldungen — nie als Dauer-Adresse.
@@ -94,6 +117,32 @@ const MELDUNG = /\/(newsroom|nachricht|nachrichten|aktuelles|aktuelle-meldungen|
 
 /** Punkte getrennt nach Gruppe — die Trennung ist der Kern der Bewertung. */
 export type LinkWertung = { foerder: number; thema: number; punkte: number; fremdesRessort: boolean };
+
+/**
+ * Eine Adresse so, wie die Wortlisten sie lesen können.
+ *
+ * BLOCKER (19.08.2026): Deutsche Kommunalseiten schreiben Umlaute in den Pfad,
+ * und `new URL()` liefert sie prozentkodiert zurück — aus `/förderrichtlinien`
+ * wird `/f%c3%b6rderrichtlinien`. Kein einziges Muster oben passt darauf. Die
+ * Folge war nicht sichtbar, weil solche Links über ihren LINKTEXT trotzdem
+ * Punkte bekamen: Wandlitz' `/seite/623011/förderrichtlinien.html` zählte, weil
+ * im Menü „Förderrichtlinien" stand. Wo der Text nichts hergibt — Sitemaps
+ * haben gar keinen —, fiel die Seite lautlos durch.
+ *
+ * Aufgefallen beim Nachzählen: 402 von 2.583 gespeicherten Adressen bekamen
+ * ohne Linktext null Punkte, und der erste Blick in die Liste zeigte lauter
+ * einwandfreie Förderseiten mit Umlaut im Pfad.
+ */
+function adresseLesbar(url: string): string {
+  const klein = url.toLowerCase();
+  try {
+    return decodeURIComponent(klein);
+  } catch {
+    // Kaputte Kodierung („%zz") lässt decodeURIComponent werfen — dann lieber
+    // die Rohfassung bewerten als den Link ganz zu verlieren.
+    return klein;
+  }
+}
 
 /**
  * Wie gut passt dieser Link zu „hier steht die kommunale Energieförderung"?
@@ -113,7 +162,7 @@ export type LinkWertung = { foerder: number; thema: number; punkte: number; frem
  */
 export function bewerteLink(url: string, linktext = ""): LinkWertung {
   const leer: LinkWertung = { foerder: 0, thema: 0, punkte: 0, fremdesRessort: false };
-  const adresse = url.toLowerCase();
+  const adresse = adresseLesbar(url);
   const text = linktext.toLowerCase();
   if (KEIN_ZIEL.test(adresse) || MELDUNG.test(adresse)) return leer;
   // Der Ausschluss gilt beiden Seiten: Ein Link namens „Förderverein Feuerwehr"
@@ -243,4 +292,187 @@ export function sitemapKandidaten(xml: string, basis: string): LinkKandidat[] {
 export function sitemapIndex(xml: string): string[] {
   if (!/<sitemapindex/i.test(xml)) return [];
   return [...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/gi)].map((m) => m[1]);
+}
+
+// ─── Die Suchfunktion der Website selbst ─────────────────────────────────────
+//
+// WARUM (19.08.2026): Der Crawl über Startseite und zwei Menüebenen findet auf
+// nur 13 % der Gemeinde-Websites eine Förderseite — gemessen an 9.722
+// durchsuchten Gemeinden, von denen 7.863 ohne Fund blieben. Bei realistisch
+// 5–10 % Programmdichte fehlen dadurch mehrere hundert Programme. Der Grund ist
+// keine schlechte Bewertung, sondern die Reichweite: Der Crawl sieht nur, was im
+// Menü der Startseite verlinkt ist. Eine Förderseite, die drei Klicks tief unter
+// „Bauen und Wohnen → Umwelt → Energie" hängt oder deren Menü per JavaScript
+// nachgeladen wird, ist für ihn unsichtbar.
+//
+// Fast jede kommunale Website hat aber eine eigene Volltextsuche, und die kennt
+// ihren Bestand vollständig. Sie zu benutzen ist der direkte Weg zu genau den
+// Seiten, die der Crawl verfehlt — und sie kostet EINEN Abruf statt eines
+// tieferen Crawls.
+//
+// KEIN Rateweg über bekannte CMS-Pfade: Deutsche Kommunalseiten laufen auf einem
+// Dutzend Systemen (TYPO3, WordPress, verwaltungsportal.de, nolis, advantic,
+// kommunix …), jedes mit eigenem Pfad und eigenem Feldnamen. Eine gepflegte
+// Liste davon wäre dasselbe Wettrennen wie eine offene Ausschlussliste. Das
+// Formular auf der Startseite sagt beides selbst — Adresse und Feldname —, und
+// zwar in der Fassung, die dieses eine System gerade wirklich benutzt.
+
+/** Ein auswertbares Suchformular: wohin, welches Feld, welche festen Werte. */
+export type SuchFormular = {
+  /** Absolute Adresse, an die die Suche geht. */
+  action: string;
+  /** Name des Eingabefelds — bei TYPO3 gern `tx_solr[q]`, deshalb wörtlich. */
+  feld: string;
+  /** Versteckte Felder des Formulars; TYPO3 braucht z. B. `id=123`. */
+  versteckt: { name: string; wert: string }[];
+};
+
+/** Feldnamen, die eine Volltextsuche verraten, wenn das Formular sonst nichts sagt. */
+const SUCHFELD_NAME =
+  /^(q|s|search|suche|suchbegriff|suchwort|searchterm|search_term|query|keywords?|wort)$|\[(sword|q|search|query)\]/i;
+
+/** Merkmale am Formular selbst — Adresse, id oder class. */
+const SUCHFORMULAR_MERKMAL = /such|search|solr|kesearch|indexedsearch/i;
+
+/**
+ * Das Suchformular einer Seite finden.
+ *
+ * **Auch POST-Formulare zählen — wir schicken trotzdem ein GET.** Das war
+ * zunächst andersherum gebaut, mit dem Argument, ein POST gegen einen fremden
+ * Verwaltungsserver sei eine Schreibgeste. Das Argument stimmt, trifft aber
+ * nicht: Wir übernehmen aus dem Formular nur Adresse und Feldname und stellen
+ * damit eine ganz normale GET-Anfrage. Viele Systeme (TYPO3, WordPress)
+ * beantworten die genauso; wo ein Server auf POST besteht, kommt die Suchseite
+ * ohne Treffer zurück, und die Bewertung findet dort schlicht nichts. Gemessen
+ * am 19.08.2026: Von 39 erreichbaren Gemeinde-Websites trugen nur 14 ein
+ * GET-Formular — die POST-Fassungen auszuschließen kostete also mehr, als der
+ * vermiedene Irrtum wert war.
+ *
+ * Der Feldname wird WÖRTLICH übernommen, samt eckiger Klammern. Ihn zu
+ * normalisieren wäre der eine Fehler, der die halbe TYPO3-Welt kostet:
+ * `tx_solr[q]` und `tx_kesearch_pi1[sword]` sind keine Schreibfehler.
+ */
+export function suchFormular(html: string, basis: string): SuchFormular | null {
+  let host: string;
+  try {
+    host = new URL(basis).host;
+  } catch {
+    return null;
+  }
+
+  for (const m of html.matchAll(/<form\b([^>]*)>([\s\S]*?)<\/form>/gi)) {
+    const attrs = m[1];
+    const inhalt = m[2];
+
+    const actionRoh = attrs.match(/\baction\s*=\s*["']([^"']*)["']/i)?.[1] ?? "";
+    // Ohne `action` schickt ein Formular an die Seite selbst — gültig und bei
+    // WordPress-Startseiten (`?s=…`) der Normalfall.
+    let action: URL;
+    try {
+      action = new URL(actionRoh || basis, basis);
+    } catch {
+      continue;
+    }
+    if (action.host !== host) continue;
+
+    const formularSagtSuche =
+      SUCHFORMULAR_MERKMAL.test(attrs) || SUCHFORMULAR_MERKMAL.test(actionRoh);
+
+    // Das Textfeld der Suche. `type="search"` ist der klare Fall; sonst
+    // entscheidet der Feldname. Ein beliebiges Textfeld gilt nur, wenn das
+    // Formular selbst nach Suche aussieht — sonst kaperten wir Newsletter- und
+    // Kontaktformulare, die auf jeder zweiten Startseite stehen.
+    let feld: string | null = null;
+    let notnagel: string | null = null;
+    for (const i of inhalt.matchAll(/<input\b([^>]*)>/gi)) {
+      const ia = i[1];
+      const typ = ia.match(/\btype\s*=\s*["']?([a-z]+)/i)?.[1]?.toLowerCase() ?? "text";
+      const name = ia.match(/\bname\s*=\s*["']([^"']+)["']/i)?.[1];
+      if (!name) continue;
+      if (typ === "search") { feld = name; break; }
+      if (typ !== "text") continue;
+      if (SUCHFELD_NAME.test(name)) { feld = name; break; }
+      if (formularSagtSuche && !notnagel) notnagel = name;
+    }
+    feld ??= notnagel;
+    if (!feld) continue;
+
+    const versteckt: { name: string; wert: string }[] = [];
+    for (const i of inhalt.matchAll(/<input\b([^>]*)>/gi)) {
+      const ia = i[1];
+      if (!/\btype\s*=\s*["']?hidden/i.test(ia)) continue;
+      const name = ia.match(/\bname\s*=\s*["']([^"']+)["']/i)?.[1];
+      const wert = ia.match(/\bvalue\s*=\s*["']([^"']*)["']/i)?.[1] ?? "";
+      if (name && name !== feld) versteckt.push({ name, wert });
+    }
+
+    return { action: action.origin + action.pathname, feld, versteckt };
+  }
+  return null;
+}
+
+/**
+ * Die Begriffe, mit denen gesucht wird — kurz, einzeln, treffsicherster zuerst.
+ *
+ * Viele Kommunalsuchen verknüpfen Wörter mit UND. „förderprogramm photovoltaik"
+ * verlöre deshalb genau die kleinen Gemeinden, deren Seite schlicht
+ * „Förderprogramme" heißt und Photovoltaik neben Zisternen und Streuobstwiesen
+ * führt — dieselben, die {@link istEndergebnis} ausdrücklich behalten will.
+ * Also ein Wort je Anfrage.
+ *
+ * Ein breiter Begriff kostet keine Präzision: Die Trefferliste läuft durch
+ * dieselbe Bewertung wie jede andere Seite.
+ */
+export const SUCH_BEGRIFFE = ["förderprogramm", "photovoltaik"] as const;
+
+/** Die fertige Adresse für eine Anfrage an die Suche der Website. */
+export function suchAdresse(f: SuchFormular, begriff: string): string {
+  const u = new URL(f.action);
+  for (const { name, wert } of f.versteckt) u.searchParams.set(name, wert);
+  u.searchParams.set(f.feld, begriff);
+  return u.toString();
+}
+
+/**
+ * Wohin man schaut, wenn die Startseite kein Formular hergibt.
+ *
+ * Viele Kommunalseiten tragen oben nur ein Lupen-Symbol, das die Suche per
+ * JavaScript einblendet — im ausgelieferten HTML steht dann kein `<form>`. Die
+ * eigentliche Suchseite hat es aber fast immer, und sie liegt auf einem der
+ * wenigen üblichen Pfade. Gemessen am 19.08.2026: Nur 14 von 39 erreichbaren
+ * Startseiten trugen ein auswertbares Formular — das ist der Engpass des
+ * ganzen Wegs, nicht die Bewertung der Treffer.
+ *
+ * Bewusst KURZ gehalten: Jeder Pfad ist ein Abruf gegen einen fremden Server,
+ * und der Ertrag fällt nach den ersten beiden steil ab.
+ */
+export const SUCHSEITEN_PFADE = ["/suche", "/search"] as const;
+
+/** Ein Link auf der Startseite, der zur Suchseite führt — besser als raten. */
+export function suchseitenLink(html: string, basis: string): string | null {
+  let host: string;
+  try {
+    host = new URL(basis).host;
+  } catch {
+    return null;
+  }
+  for (const m of html.matchAll(/<a\b[^>]*href=["']([^"'#]+)["'][^>]*>([\s\S]*?)<\/a>/gi)) {
+    let ziel: URL;
+    try {
+      ziel = new URL(m[1], basis);
+    } catch {
+      continue;
+    }
+    if (ziel.host !== host) continue;
+    const text = m[2].replace(/<[^>]+>/g, " ").trim();
+    // Der Pfad muss die Suche benennen; ein Linktext „Suche" allein reicht
+    // nicht, sonst landet man auf der Personensuche im Ratsinformationssystem.
+    if (!/\/(suche|search|volltextsuche|suchergebnis)/i.test(ziel.pathname)) continue;
+    // Ohne abschließende Wortgrenze — „ratsinfo" und „personensuche" schreiben
+    // das Wort mit der Suche zusammen, und genau die sollen raus.
+    if (/(^|[/_-])(rats|sitzungs|personen|mitarbeiter|adress|branchen|produkt|stellen)/i.test(ziel.pathname)) continue;
+    if (/\b(ratsinfo|personen|ansprechpartner|mitarbeiter|adressen|branchen)/i.test(text)) continue;
+    return ziel.origin + ziel.pathname;
+  }
+  return null;
 }

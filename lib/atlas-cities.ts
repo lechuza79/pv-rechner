@@ -7,14 +7,55 @@
 // program data can also power an overview page and cross-program links.
 
 import { allFundingPrograms, type FundingStatus, type FundingProgram } from "./funding-programs";
+import { releaseFreigegeben } from "./release-plan";
 
 export interface AtlasCity {
   slug: string;
   name: string;
-  /** MaStR region id = 5-digit Kreis/Stadt AGS. */
+  /**
+   * MaStR-Regionsschlüssel — fünfstellig für eine kreisfreie Stadt oder einen
+   * Landkreis, ACHTSTELLIG für eine kreisangehörige Gemeinde.
+   *
+   * Der Schlüssel bestimmt, welcher Bestand unter dem Ortsnamen steht: Der
+   * Atlas reicht ihn unverändert als Präfix durch. Eine Gemeinde mit dem
+   * Schlüssel ihres Landkreises einzutragen setzt deshalb den Bestand des
+   * ganzen Kreises unter den Ortsnamen — bei Linsengericht der des
+   * Main-Kinzig-Kreises statt der der Gemeinde. Das ist die schwerste
+   * Fehlerklasse des Projekts, und sie fällt niemandem auf, weil die Seite
+   * dabei völlig normal aussieht.
+   *
+   * Genau so lag es bis zum 19.08.2026 bei Aachen, Hannover und Saarbrücken:
+   * Ihre fünfstelligen Schlüssel gehören der StädteRegion, der Region und dem
+   * Regionalverband — nicht der Stadt. Die Hannover-Seite zeigte damit den
+   * Bestand von 1,14 Mio. Einwohnern unter dem Namen einer Stadt mit 522.000.
+   */
   ags: string;
   bundesland: string;
-  /** Regional PV yield kWh per kWp (PVGIS ballpark, manual). */
+  /**
+   * Landkreis einer kreisangehörigen Gemeinde — steht auf der Seite, damit klar
+   * ist, welcher Ort gemeint ist. Ein Ortsname allein ist mehrdeutig:
+   * Mühlhausen gibt es als 5.000-Einwohner-Gemeinde in der Oberpfalz und als
+   * 36.000er-Stadt in Thüringen, Senden in NRW und in Bayern. Ohne den Kreis
+   * daneben liest man den Bestand des einen als den des anderen.
+   *
+   * Leer bei kreisfreien Städten und Landkreisen — die sind für sich eindeutig.
+   */
+  kreis?: string;
+  /**
+   * Standort-Ertrag kWh je kWp bei optimaler Neigung nach Süden.
+   *
+   * Kommt aus `/api/pvgis` an der repräsentativen Lage des Orts
+   * (lib/atlas-geo.ts → gemeindeGeo), also aus derselben Quelle, mit der auch
+   * die Rechner arbeiten — nicht geschätzt. Bis zum 19.08.2026 standen hier von
+   * Hand gesetzte Näherungswerte, und zwar in 104 von 105 Fällen ZU NIEDRIG,
+   * im Mittel um 43 kWh/kWp. Das ist derselbe Fehler, der am 18.08.2026 schon
+   * beim bundesweiten Mittelwert behoben wurde: Ein Sicherheitspuffer gehört
+   * nicht in den Standortwert, sondern dorthin, wo die Angabe des Nutzers ihn
+   * begründet — die Dach-Matrix zieht ihn ohnehin ein zweites Mal ab.
+   *
+   * Landkreis-Einträge behalten einen von Hand gesetzten Wert: Ein Kreis hat
+   * keinen Punkt, an dem man messen könnte.
+   */
   yieldKwhKwp: number;
   /** Id into FUNDING_PROGRAMS. Nur nötig, wenn die Zuordnung über den
    *  Gemeindeschlüssel nicht eindeutig ist — sonst leitet fundingFor() sie ab. */
@@ -85,7 +126,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
     name: "Stuttgart",
     ags: "08111",
     bundesland: "Baden-Württemberg",
-    yieldKwhKwp: 1090,
+    yieldKwhKwp: 1132,
     fundingId: "stuttgart-solaroffensive",
   },
   {
@@ -93,7 +134,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
     name: "Frankfurt am Main",
     ags: "06412",
     bundesland: "Hessen",
-    yieldKwhKwp: 1050,
+    yieldKwhKwp: 1063,
     fundingId: "frankfurt-klimabonus",
   },
   {
@@ -101,7 +142,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
     name: "Karlsruhe",
     ags: "08212",
     bundesland: "Baden-Württemberg",
-    yieldKwhKwp: 1090,
+    yieldKwhKwp: 1138,
     fundingId: "karlsruhe-klimabonus",
   },
   {
@@ -109,7 +150,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
     name: "Regensburg",
     ags: "09362",
     bundesland: "Bayern",
-    yieldKwhKwp: 1080,
+    yieldKwhKwp: 1112,
     fundingId: "regensburg-effizient",
   },
   {
@@ -117,7 +158,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
     name: "Würzburg",
     ags: "09663",
     bundesland: "Bayern",
-    yieldKwhKwp: 1060,
+    yieldKwhKwp: 1104,
     fundingId: "wuerzburg-klimastadt",
   },
   {
@@ -125,7 +166,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
     name: "Darmstadt",
     ags: "06411",
     bundesland: "Hessen",
-    yieldKwhKwp: 1060,
+    yieldKwhKwp: 1076,
     fundingId: "darmstadt-pv",
   },
   {
@@ -133,7 +174,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
     name: "Köln",
     ags: "05315",
     bundesland: "Nordrhein-Westfalen",
-    yieldKwhKwp: 1000,
+    yieldKwhKwp: 1044,
     fundingId: "koeln-pv",
   },
   {
@@ -141,118 +182,218 @@ export const ATLAS_CITIES: AtlasCity[] = [
     name: "Düsseldorf",
     ags: "05111",
     bundesland: "Nordrhein-Westfalen",
-    yieldKwhKwp: 1000,
+    yieldKwhKwp: 1035,
     fundingId: "duesseldorf-klimafreundlich",
   },
   // ── Batch Juni 2026 (je 1 Recherche-Agent → offizielle Quelle) ──────────────
-  { slug: "muenchen", name: "München", ags: "09162", bundesland: "Bayern", yieldKwhKwp: 1040, fundingId: "muenchen-fkg" },
-  { slug: "nuernberg", name: "Nürnberg", ags: "09564", bundesland: "Bayern", yieldKwhKwp: 1050 },
-  { slug: "freiburg", name: "Freiburg im Breisgau", ags: "08311", bundesland: "Baden-Württemberg", yieldKwhKwp: 1090, fundingId: "freiburg-stromerzeugung" },
-  { slug: "heidelberg", name: "Heidelberg", ags: "08221", bundesland: "Baden-Württemberg", yieldKwhKwp: 1040, fundingId: "heidelberg-rev" },
-  { slug: "mannheim", name: "Mannheim", ags: "08222", bundesland: "Baden-Württemberg", yieldKwhKwp: 1060, fundingId: "mannheim-solarbonus" },
-  { slug: "muenster", name: "Münster", ags: "05515", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 960, fundingId: "muenster-klimafreundlich" },
-  { slug: "aachen", name: "Aachen", ags: "05334", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 960 },
-  { slug: "wiesbaden", name: "Wiesbaden", ags: "06414", bundesland: "Hessen", yieldKwhKwp: 1030, fundingId: "wiesbaden-eswe-speicher" },
-  { slug: "mainz", name: "Mainz", ags: "07315", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1040, fundingId: "mainz-kipki-speicher" },
-  { slug: "leipzig", name: "Leipzig", ags: "14713", bundesland: "Sachsen", yieldKwhKwp: 1000 },
-  { slug: "hamburg", name: "Hamburg", ags: "02000", bundesland: "Hamburg", yieldKwhKwp: 950 },
-  { slug: "bremen", name: "Bremen", ags: "04011", bundesland: "Bremen", yieldKwhKwp: 960, fundingId: "bremen-rundumshaus" },
+  { slug: "muenchen", name: "München", ags: "09162", bundesland: "Bayern", yieldKwhKwp: 1140, fundingId: "muenchen-fkg" },
+  { slug: "nuernberg", name: "Nürnberg", ags: "09564", bundesland: "Bayern", yieldKwhKwp: 1071 },
+  { slug: "freiburg", name: "Freiburg im Breisgau", ags: "08311", bundesland: "Baden-Württemberg", yieldKwhKwp: 1119, fundingId: "freiburg-stromerzeugung" },
+  { slug: "heidelberg", name: "Heidelberg", ags: "08221", bundesland: "Baden-Württemberg", yieldKwhKwp: 1064, fundingId: "heidelberg-rev" },
+  { slug: "mannheim", name: "Mannheim", ags: "08222", bundesland: "Baden-Württemberg", yieldKwhKwp: 1108, fundingId: "mannheim-solarbonus" },
+  { slug: "muenster", name: "Münster", ags: "05515", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1025, fundingId: "muenster-klimafreundlich" },
+  { slug: "aachen", name: "Aachen", ags: "05334002", kreis: "StädteRegion Aachen", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1054 },
+  { slug: "wiesbaden", name: "Wiesbaden", ags: "06414", bundesland: "Hessen", yieldKwhKwp: 1109, fundingId: "wiesbaden-eswe-speicher" },
+  { slug: "mainz", name: "Mainz", ags: "07315", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1109, fundingId: "mainz-kipki-speicher" },
+  { slug: "leipzig", name: "Leipzig", ags: "14713", bundesland: "Sachsen", yieldKwhKwp: 1081 },
+  { slug: "hamburg", name: "Hamburg", ags: "02000", bundesland: "Hamburg", yieldKwhKwp: 992 },
+  { slug: "bremen", name: "Bremen", ags: "04011", bundesland: "Bremen", yieldKwhKwp: 1002, fundingId: "bremen-rundumshaus" },
   // ── Batch Juni 2026, Teil 2 (je 1 Recherche-Agent → offizielle Quelle) ──────
   // Deckt die bis dahin fehlenden Bundesländer ab (NI, SH, TH, ST, BB, MV, SL).
-  { slug: "hannover", name: "Hannover", ags: "03241", bundesland: "Niedersachsen", yieldKwhKwp: 970, fundingId: "hannover-proklima" },
-  { slug: "dresden", name: "Dresden", ags: "14612", bundesland: "Sachsen", yieldKwhKwp: 1030 },
-  { slug: "dortmund", name: "Dortmund", ags: "05913", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 980, fundingId: "dortmund-pv" },
-  { slug: "essen", name: "Essen", ags: "05113", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970, fundingId: "essen-solar" },
-  { slug: "bonn", name: "Bonn", ags: "05314", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1000, fundingId: "bonn-solares" },
-  { slug: "kiel", name: "Kiel", ags: "01002", bundesland: "Schleswig-Holstein", yieldKwhKwp: 960 },
-  { slug: "erfurt", name: "Erfurt", ags: "16051", bundesland: "Thüringen", yieldKwhKwp: 1010 },
-  { slug: "magdeburg", name: "Magdeburg", ags: "15003", bundesland: "Sachsen-Anhalt", yieldKwhKwp: 1030 },
-  { slug: "potsdam", name: "Potsdam", ags: "12054", bundesland: "Brandenburg", yieldKwhKwp: 1040, fundingId: "potsdam-klimaschutz" },
-  { slug: "rostock", name: "Rostock", ags: "13003", bundesland: "Mecklenburg-Vorpommern", yieldKwhKwp: 990 },
-  { slug: "saarbruecken", name: "Saarbrücken", ags: "10041", bundesland: "Saarland", yieldKwhKwp: 1060 },
-  { slug: "augsburg", name: "Augsburg", ags: "09761", bundesland: "Bayern", yieldKwhKwp: 1080 },
-  { slug: "kassel", name: "Kassel", ags: "06611", bundesland: "Hessen", yieldKwhKwp: 1010 },
-  { slug: "luebeck", name: "Lübeck", ags: "01003", bundesland: "Schleswig-Holstein", yieldKwhKwp: 960 },
-  { slug: "halle", name: "Halle (Saale)", ags: "15002", bundesland: "Sachsen-Anhalt", yieldKwhKwp: 1040 },
+  { slug: "hannover", name: "Hannover", ags: "03241001", kreis: "Region Hannover", bundesland: "Niedersachsen", yieldKwhKwp: 1013, fundingId: "hannover-proklima" },
+  { slug: "dresden", name: "Dresden", ags: "14612", bundesland: "Sachsen", yieldKwhKwp: 1074 },
+  { slug: "dortmund", name: "Dortmund", ags: "05913", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1024, fundingId: "dortmund-pv" },
+  { slug: "essen", name: "Essen", ags: "05113", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1024, fundingId: "essen-solar" },
+  { slug: "bonn", name: "Bonn", ags: "05314", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1043, fundingId: "bonn-solares" },
+  { slug: "kiel", name: "Kiel", ags: "01002", bundesland: "Schleswig-Holstein", yieldKwhKwp: 989 },
+  { slug: "erfurt", name: "Erfurt", ags: "16051", bundesland: "Thüringen", yieldKwhKwp: 1050 },
+  { slug: "magdeburg", name: "Magdeburg", ags: "15003", bundesland: "Sachsen-Anhalt", yieldKwhKwp: 1070 },
+  { slug: "potsdam", name: "Potsdam", ags: "12054", bundesland: "Brandenburg", yieldKwhKwp: 1041, fundingId: "potsdam-klimaschutz" },
+  { slug: "rostock", name: "Rostock", ags: "13003", bundesland: "Mecklenburg-Vorpommern", yieldKwhKwp: 1031 },
+  { slug: "saarbruecken", name: "Saarbrücken", ags: "10041100", kreis: "Regionalverband Saarbrücken", bundesland: "Saarland", yieldKwhKwp: 1079 },
+  { slug: "augsburg", name: "Augsburg", ags: "09761", bundesland: "Bayern", yieldKwhKwp: 1128 },
+  { slug: "kassel", name: "Kassel", ags: "06611", bundesland: "Hessen", yieldKwhKwp: 1017 },
+  { slug: "luebeck", name: "Lübeck", ags: "01003", bundesland: "Schleswig-Holstein", yieldKwhKwp: 997 },
+  { slug: "halle", name: "Halle (Saale)", ags: "15002", bundesland: "Sachsen-Anhalt", yieldKwhKwp: 1078 },
   // ── Batch Juni 2026, Teil 3: alle restlichen kreisfreien Städte (Katalog komplett) ──
-  { slug: "amberg", name: "Amberg", ags: "09361", bundesland: "Bayern", yieldKwhKwp: 1060 },
-  { slug: "ansbach", name: "Ansbach", ags: "09561", bundesland: "Bayern", yieldKwhKwp: 1050 },
-  { slug: "aschaffenburg", name: "Aschaffenburg", ags: "09661", bundesland: "Bayern", yieldKwhKwp: 1030 },
-  { slug: "baden-baden", name: "Baden-Baden", ags: "08211", bundesland: "Baden-Württemberg", yieldKwhKwp: 1070, fundingId: "baden-baden-pvplus" },
-  { slug: "bamberg", name: "Bamberg", ags: "09461", bundesland: "Bayern", yieldKwhKwp: 1040 },
-  { slug: "bayreuth", name: "Bayreuth", ags: "09462", bundesland: "Bayern", yieldKwhKwp: 1040 },
-  { slug: "berlin", name: "Berlin", ags: "11000", bundesland: "Berlin", yieldKwhKwp: 1010, fundingId: "berlin-solarplus" },
-  { slug: "bielefeld", name: "Bielefeld", ags: "05711", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970 },
-  { slug: "bochum", name: "Bochum", ags: "05911", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970 },
-  { slug: "bottrop", name: "Bottrop", ags: "05512", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970, fundingId: "bottrop-solaroffensive" },
-  { slug: "brandenburg-havel", name: "Brandenburg an der Havel", ags: "12051", bundesland: "Brandenburg", yieldKwhKwp: 1010 },
-  { slug: "braunschweig", name: "Braunschweig", ags: "03101", bundesland: "Niedersachsen", yieldKwhKwp: 970 },
-  { slug: "bremerhaven", name: "Bremerhaven", ags: "04012", bundesland: "Bremen", yieldKwhKwp: 960 },
-  { slug: "chemnitz", name: "Chemnitz", ags: "14511", bundesland: "Sachsen", yieldKwhKwp: 1020 },
-  { slug: "coburg", name: "Coburg", ags: "09463", bundesland: "Bayern", yieldKwhKwp: 1030 },
-  { slug: "cottbus", name: "Cottbus", ags: "12052", bundesland: "Brandenburg", yieldKwhKwp: 1020 },
-  { slug: "delmenhorst", name: "Delmenhorst", ags: "03401", bundesland: "Niedersachsen", yieldKwhKwp: 960 },
-  { slug: "dessau-rosslau", name: "Dessau-Roßlau", ags: "15001", bundesland: "Sachsen-Anhalt", yieldKwhKwp: 1010 },
-  { slug: "duisburg", name: "Duisburg", ags: "05112", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970 },
-  { slug: "emden", name: "Emden", ags: "03402", bundesland: "Niedersachsen", yieldKwhKwp: 960 },
-  { slug: "erlangen", name: "Erlangen", ags: "09562", bundesland: "Bayern", yieldKwhKwp: 1050 },
-  { slug: "flensburg", name: "Flensburg", ags: "01001", bundesland: "Schleswig-Holstein", yieldKwhKwp: 950 },
-  { slug: "frankenthal", name: "Frankenthal (Pfalz)", ags: "07311", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1030 },
-  { slug: "frankfurt-oder", name: "Frankfurt (Oder)", ags: "12053", bundesland: "Brandenburg", yieldKwhKwp: 1020 },
-  { slug: "fuerth", name: "Fürth", ags: "09563", bundesland: "Bayern", yieldKwhKwp: 1050 },
-  { slug: "gelsenkirchen", name: "Gelsenkirchen", ags: "05513", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970 },
-  { slug: "gera", name: "Gera", ags: "16052", bundesland: "Thüringen", yieldKwhKwp: 1010 },
-  { slug: "hagen", name: "Hagen", ags: "05914", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970 },
-  { slug: "hamm", name: "Hamm", ags: "05915", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970 },
-  { slug: "heilbronn", name: "Heilbronn", ags: "08121", bundesland: "Baden-Württemberg", yieldKwhKwp: 1070 },
-  { slug: "herne", name: "Herne", ags: "05916", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970 },
-  { slug: "hof", name: "Hof", ags: "09464", bundesland: "Bayern", yieldKwhKwp: 1030 },
-  { slug: "ingolstadt", name: "Ingolstadt", ags: "09161", bundesland: "Bayern", yieldKwhKwp: 1070 },
-  { slug: "jena", name: "Jena", ags: "16053", bundesland: "Thüringen", yieldKwhKwp: 1010 },
-  { slug: "kaiserslautern", name: "Kaiserslautern", ags: "07312", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1020 },
-  { slug: "kaufbeuren", name: "Kaufbeuren", ags: "09762", bundesland: "Bayern", yieldKwhKwp: 1080 },
-  { slug: "kempten", name: "Kempten (Allgäu)", ags: "09763", bundesland: "Bayern", yieldKwhKwp: 1080 },
-  { slug: "koblenz", name: "Koblenz", ags: "07111", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1010 },
-  { slug: "krefeld", name: "Krefeld", ags: "05114", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970, fundingId: "krefeld-klimafreundlich" },
-  { slug: "landau", name: "Landau in der Pfalz", ags: "07313", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1040 },
-  { slug: "landshut", name: "Landshut", ags: "09261", bundesland: "Bayern", yieldKwhKwp: 1080 },
-  { slug: "leverkusen", name: "Leverkusen", ags: "05316", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 980 },
-  { slug: "ludwigshafen", name: "Ludwigshafen am Rhein", ags: "07314", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1030 },
-  { slug: "memmingen", name: "Memmingen", ags: "09764", bundesland: "Bayern", yieldKwhKwp: 1080, fundingId: "memmingen-ee" },
-  { slug: "moenchengladbach", name: "Mönchengladbach", ags: "05116", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970 },
-  { slug: "muelheim", name: "Mülheim an der Ruhr", ags: "05117", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970 },
-  { slug: "neumuenster", name: "Neumünster", ags: "01004", bundesland: "Schleswig-Holstein", yieldKwhKwp: 950 },
-  { slug: "neustadt-weinstrasse", name: "Neustadt an der Weinstraße", ags: "07316", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1040 },
-  { slug: "oberhausen", name: "Oberhausen", ags: "05119", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970 },
-  { slug: "offenbach", name: "Offenbach am Main", ags: "06413", bundesland: "Hessen", yieldKwhKwp: 1020 },
-  { slug: "oldenburg", name: "Oldenburg (Oldb)", ags: "03403", bundesland: "Niedersachsen", yieldKwhKwp: 960 },
-  { slug: "osnabrueck", name: "Osnabrück", ags: "03404", bundesland: "Niedersachsen", yieldKwhKwp: 960, fundingId: "osnabrueck-saniert" },
-  { slug: "passau", name: "Passau", ags: "09262", bundesland: "Bayern", yieldKwhKwp: 1070 },
-  { slug: "pforzheim", name: "Pforzheim", ags: "08231", bundesland: "Baden-Württemberg", yieldKwhKwp: 1070 },
-  { slug: "pirmasens", name: "Pirmasens", ags: "07317", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1020 },
-  { slug: "remscheid", name: "Remscheid", ags: "05120", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970 },
-  { slug: "rosenheim", name: "Rosenheim", ags: "09163", bundesland: "Bayern", yieldKwhKwp: 1080 },
-  { slug: "salzgitter", name: "Salzgitter", ags: "03102", bundesland: "Niedersachsen", yieldKwhKwp: 970 },
-  { slug: "schwabach", name: "Schwabach", ags: "09565", bundesland: "Bayern", yieldKwhKwp: 1050 },
-  { slug: "schweinfurt", name: "Schweinfurt", ags: "09662", bundesland: "Bayern", yieldKwhKwp: 1030, fundingId: "schweinfurt-pv" },
-  { slug: "schwerin", name: "Schwerin", ags: "13004", bundesland: "Mecklenburg-Vorpommern", yieldKwhKwp: 960, fundingId: "schwerin-pv" },
-  { slug: "solingen", name: "Solingen", ags: "05122", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970 },
-  { slug: "speyer", name: "Speyer", ags: "07318", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1040 },
-  { slug: "straubing", name: "Straubing", ags: "09263", bundesland: "Bayern", yieldKwhKwp: 1080 },
-  { slug: "suhl", name: "Suhl", ags: "16054", bundesland: "Thüringen", yieldKwhKwp: 1010 },
-  { slug: "trier", name: "Trier", ags: "07211", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1020 },
-  { slug: "ulm", name: "Ulm", ags: "08421", bundesland: "Baden-Württemberg", yieldKwhKwp: 1080 },
-  { slug: "weiden", name: "Weiden i.d.OPf.", ags: "09363", bundesland: "Bayern", yieldKwhKwp: 1050 },
-  { slug: "wilhelmshaven", name: "Wilhelmshaven", ags: "03405", bundesland: "Niedersachsen", yieldKwhKwp: 960 },
-  { slug: "wolfsburg", name: "Wolfsburg", ags: "03103", bundesland: "Niedersachsen", yieldKwhKwp: 970, fundingId: "wolfsburg-pv" },
-  { slug: "worms", name: "Worms", ags: "07319", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1030 },
-  { slug: "wuppertal", name: "Wuppertal", ags: "05124", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970 },
-  { slug: "zweibruecken", name: "Zweibrücken", ags: "07320", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1020 },
+  { slug: "amberg", name: "Amberg", ags: "09361", bundesland: "Bayern", yieldKwhKwp: 1070 },
+  { slug: "ansbach", name: "Ansbach", ags: "09561", bundesland: "Bayern", yieldKwhKwp: 1093 },
+  { slug: "aschaffenburg", name: "Aschaffenburg", ags: "09661", bundesland: "Bayern", yieldKwhKwp: 1047 },
+  { slug: "baden-baden", name: "Baden-Baden", ags: "08211", bundesland: "Baden-Württemberg", yieldKwhKwp: 1079, fundingId: "baden-baden-pvplus" },
+  { slug: "bamberg", name: "Bamberg", ags: "09461", bundesland: "Bayern", yieldKwhKwp: 1069 },
+  { slug: "bayreuth", name: "Bayreuth", ags: "09462", bundesland: "Bayern", yieldKwhKwp: 1061 },
+  { slug: "berlin", name: "Berlin", ags: "11000", bundesland: "Berlin", yieldKwhKwp: 1061, fundingId: "berlin-solarplus" },
+  { slug: "bielefeld", name: "Bielefeld", ags: "05711", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 987 },
+  { slug: "bochum", name: "Bochum", ags: "05911", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1020 },
+  { slug: "bottrop", name: "Bottrop", ags: "05512", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1019, fundingId: "bottrop-solaroffensive" },
+  { slug: "brandenburg-havel", name: "Brandenburg an der Havel", ags: "12051", bundesland: "Brandenburg", yieldKwhKwp: 1059 },
+  { slug: "braunschweig", name: "Braunschweig", ags: "03101", bundesland: "Niedersachsen", yieldKwhKwp: 1032 },
+  { slug: "bremerhaven", name: "Bremerhaven", ags: "04012", bundesland: "Bremen", yieldKwhKwp: 1002 },
+  { slug: "chemnitz", name: "Chemnitz", ags: "14511", bundesland: "Sachsen", yieldKwhKwp: 1041 },
+  { slug: "coburg", name: "Coburg", ags: "09463", bundesland: "Bayern", yieldKwhKwp: 1046 },
+  { slug: "cottbus", name: "Cottbus", ags: "12052", bundesland: "Brandenburg", yieldKwhKwp: 1075 },
+  { slug: "delmenhorst", name: "Delmenhorst", ags: "03401", bundesland: "Niedersachsen", yieldKwhKwp: 1003 },
+  { slug: "dessau-rosslau", name: "Dessau-Roßlau", ags: "15001", bundesland: "Sachsen-Anhalt", yieldKwhKwp: 1061 },
+  { slug: "duisburg", name: "Duisburg", ags: "05112", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1012 },
+  { slug: "emden", name: "Emden", ags: "03402", bundesland: "Niedersachsen", yieldKwhKwp: 1024 },
+  { slug: "erlangen", name: "Erlangen", ags: "09562", bundesland: "Bayern", yieldKwhKwp: 1068 },
+  { slug: "flensburg", name: "Flensburg", ags: "01001", bundesland: "Schleswig-Holstein", yieldKwhKwp: 971 },
+  { slug: "frankenthal", name: "Frankenthal (Pfalz)", ags: "07311", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1105 },
+  { slug: "frankfurt-oder", name: "Frankfurt (Oder)", ags: "12053", bundesland: "Brandenburg", yieldKwhKwp: 1061 },
+  { slug: "fuerth", name: "Fürth", ags: "09563", bundesland: "Bayern", yieldKwhKwp: 1094 },
+  { slug: "gelsenkirchen", name: "Gelsenkirchen", ags: "05513", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1022 },
+  { slug: "gera", name: "Gera", ags: "16052", bundesland: "Thüringen", yieldKwhKwp: 1068 },
+  { slug: "hagen", name: "Hagen", ags: "05914", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 985 },
+  { slug: "hamm", name: "Hamm", ags: "05915", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1040 },
+  { slug: "heilbronn", name: "Heilbronn", ags: "08121", bundesland: "Baden-Württemberg", yieldKwhKwp: 1108 },
+  { slug: "herne", name: "Herne", ags: "05916", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1021 },
+  { slug: "hof", name: "Hof", ags: "09464", bundesland: "Bayern", yieldKwhKwp: 1044 },
+  { slug: "ingolstadt", name: "Ingolstadt", ags: "09161", bundesland: "Bayern", yieldKwhKwp: 1121 },
+  { slug: "jena", name: "Jena", ags: "16053", bundesland: "Thüringen", yieldKwhKwp: 1049 },
+  { slug: "kaiserslautern", name: "Kaiserslautern", ags: "07312", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1063 },
+  { slug: "kaufbeuren", name: "Kaufbeuren", ags: "09762", bundesland: "Bayern", yieldKwhKwp: 1152 },
+  { slug: "kempten", name: "Kempten (Allgäu)", ags: "09763", bundesland: "Bayern", yieldKwhKwp: 1157 },
+  { slug: "koblenz", name: "Koblenz", ags: "07111", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1040 },
+  { slug: "krefeld", name: "Krefeld", ags: "05114", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1051, fundingId: "krefeld-klimafreundlich" },
+  { slug: "landau", name: "Landau in der Pfalz", ags: "07313", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1148 },
+  { slug: "landshut", name: "Landshut", ags: "09261", bundesland: "Bayern", yieldKwhKwp: 1121 },
+  { slug: "leverkusen", name: "Leverkusen", ags: "05316", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1033 },
+  { slug: "ludwigshafen", name: "Ludwigshafen am Rhein", ags: "07314", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1107 },
+  { slug: "memmingen", name: "Memmingen", ags: "09764", bundesland: "Bayern", yieldKwhKwp: 1156, fundingId: "memmingen-ee" },
+  { slug: "moenchengladbach", name: "Mönchengladbach", ags: "05116", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1072 },
+  { slug: "muelheim", name: "Mülheim an der Ruhr", ags: "05117", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1019 },
+  { slug: "neumuenster", name: "Neumünster", ags: "01004", bundesland: "Schleswig-Holstein", yieldKwhKwp: 969 },
+  { slug: "neustadt-weinstrasse", name: "Neustadt an der Weinstraße", ags: "07316", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1127 },
+  { slug: "oberhausen", name: "Oberhausen", ags: "05119", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1017 },
+  { slug: "offenbach", name: "Offenbach am Main", ags: "06413", bundesland: "Hessen", yieldKwhKwp: 1084 },
+  { slug: "oldenburg", name: "Oldenburg (Oldb)", ags: "03403", bundesland: "Niedersachsen", yieldKwhKwp: 989 },
+  { slug: "osnabrueck", name: "Osnabrück", ags: "03404", bundesland: "Niedersachsen", yieldKwhKwp: 1006, fundingId: "osnabrueck-saniert" },
+  { slug: "passau", name: "Passau", ags: "09262", bundesland: "Bayern", yieldKwhKwp: 1099 },
+  { slug: "pforzheim", name: "Pforzheim", ags: "08231", bundesland: "Baden-Württemberg", yieldKwhKwp: 1110 },
+  { slug: "pirmasens", name: "Pirmasens", ags: "07317", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1075 },
+  { slug: "remscheid", name: "Remscheid", ags: "05120", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 986 },
+  { slug: "rosenheim", name: "Rosenheim", ags: "09163", bundesland: "Bayern", yieldKwhKwp: 1124 },
+  { slug: "salzgitter", name: "Salzgitter", ags: "03102", bundesland: "Niedersachsen", yieldKwhKwp: 1047 },
+  { slug: "schwabach", name: "Schwabach", ags: "09565", bundesland: "Bayern", yieldKwhKwp: 1087 },
+  { slug: "schweinfurt", name: "Schweinfurt", ags: "09662", bundesland: "Bayern", yieldKwhKwp: 1090, fundingId: "schweinfurt-pv" },
+  { slug: "schwerin", name: "Schwerin", ags: "13004", bundesland: "Mecklenburg-Vorpommern", yieldKwhKwp: 996, fundingId: "schwerin-pv" },
+  { slug: "solingen", name: "Solingen", ags: "05122", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 989 },
+  { slug: "speyer", name: "Speyer", ags: "07318", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1130 },
+  { slug: "straubing", name: "Straubing", ags: "09263", bundesland: "Bayern", yieldKwhKwp: 1130 },
+  { slug: "suhl", name: "Suhl", ags: "16054", bundesland: "Thüringen", yieldKwhKwp: 984 },
+  { slug: "trier", name: "Trier", ags: "07211", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1062 },
+  { slug: "ulm", name: "Ulm", ags: "08421", bundesland: "Baden-Württemberg", yieldKwhKwp: 1112 },
+  { slug: "weiden", name: "Weiden i.d.OPf.", ags: "09363", bundesland: "Bayern", yieldKwhKwp: 1060 },
+  { slug: "wilhelmshaven", name: "Wilhelmshaven", ags: "03405", bundesland: "Niedersachsen", yieldKwhKwp: 976 },
+  { slug: "wolfsburg", name: "Wolfsburg", ags: "03103", bundesland: "Niedersachsen", yieldKwhKwp: 1029, fundingId: "wolfsburg-pv" },
+  { slug: "worms", name: "Worms", ags: "07319", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1108 },
+  { slug: "wuppertal", name: "Wuppertal", ags: "05124", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 992 },
+  // Auch Zweibrücken steht in keinem Schub: Die Seite gab es bis zum 19.08.2026 nicht (der
+  // Programmschlüssel war zu eng gefasst, siehe funding-programs.ts). Sie ist
+  // damit genauso eine NEUE Seite wie die 60 Gemeinden — nur ohne Kreis, weil
+  // Zweibrücken kreisfrei ist. Sie jetzt zu veröffentlichen wäre wieder eine
+  // Nebenwirkung statt einer Entscheidung.
+  { slug: "zweibruecken", name: "Zweibrücken", ags: "07320", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1102 },
   // ── Landkreise mit eigenem (wiederkehrendem) Förderprogramm (Juni 2026) ──────
   { slug: "rhein-erft-kreis", name: "Rhein-Erft-Kreis", ags: "05362", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970, fundingId: "rhein-erft-energieoffensive" },
   { slug: "kreis-viersen", name: "Kreis Viersen", ags: "05166", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970, fundingId: "viersen-klimaschutz" },
   { slug: "kreis-bergstrasse", name: "Kreis Bergstraße", ags: "06431", bundesland: "Hessen", yieldKwhKwp: 1030, fundingId: "bergstrasse-speicher" },
   { slug: "mayen-koblenz", name: "Landkreis Mayen-Koblenz", ags: "07137", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1010, fundingId: "mayen-koblenz-speicher" },
+
+  // ── Kreisangehörige Gemeinden mit eigenem Förderprogramm (19.08.2026) ──────
+  //
+  // Diese 60 Gemeinden haben ein kommunales Programm im Katalog, das im Rechner
+  // längst Geld abzieht — eine eigene Seite gab es dafür nicht. Wer
+  // "photovoltaik förderung neuwied" suchte, fand uns nicht, obwohl wir das
+  // Programm kennen.
+  //
+  // Sie tragen ihren ACHTSTELLIGEN Gemeindeschlüssel, nicht den ihres
+  // Landkreises (siehe `ags` oben). Der Ertrag ist je Gemeinde gemessen, nicht
+  // als Kreisdurchschnitt geschätzt.
+  //
+  // Keine dieser Seiten ist veröffentlicht: Sie stehen in keinem Schub des
+  // Releaseplans (lib/release-plan.ts), und ohne Schub gibt es keine Seite. Sie
+  // warten dort auf ihre Reihenfolge, weil für denselben Ort nie Förder- und
+  // Atlasseite gleichzeitig frisch werden dürfen. Im Rechner wirken sie längst.
+  //
+  // Zweibrücken fehlt hier bewusst: Es ist eine kreisfreie Stadt und stand
+  // längst im Verzeichnis — dort war der Schlüssel des PROGRAMMS zu eng
+  // gefasst (achtstellig statt fünfstellig), nicht der Eintrag falsch.
+  { slug: "klempau", name: "Klempau", ags: "01053067", kreis: "Kreis Herzogtum Lauenburg", bundesland: "Schleswig-Holstein", yieldKwhKwp: 1007 },
+  { slug: "helmstedt", name: "Helmstedt", ags: "03154028", kreis: "Landkreis Helmstedt", bundesland: "Niedersachsen", yieldKwhKwp: 1041 },
+  { slug: "goettingen", name: "Göttingen", ags: "03159016", kreis: "Landkreis Göttingen", bundesland: "Niedersachsen", yieldKwhKwp: 1007 },
+  { slug: "herzberg-am-harz", name: "Herzberg am Harz", ags: "03159019", kreis: "Landkreis Göttingen", bundesland: "Niedersachsen", yieldKwhKwp: 1031 },
+  { slug: "weyhe", name: "Weyhe", ags: "03251047", kreis: "Landkreis Diepholz", bundesland: "Niedersachsen", yieldKwhKwp: 1013 },
+  { slug: "wietzen", name: "Wietzen", ags: "03256036", kreis: "Landkreis Nienburg (Weser)", bundesland: "Niedersachsen", yieldKwhKwp: 1017 },
+  { slug: "moormerland", name: "Moormerland", ags: "03457014", kreis: "Landkreis Leer", bundesland: "Niedersachsen", yieldKwhKwp: 1002 },
+  { slug: "bad-rothenfelde", name: "Bad Rothenfelde", ags: "03459006", kreis: "Landkreis Osnabrück", bundesland: "Niedersachsen", yieldKwhKwp: 1019 },
+  { slug: "goch", name: "Goch", ags: "05154016", kreis: "Kreis Kleve", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1048 },
+  { slug: "hueckelhoven", name: "Hückelhoven", ags: "05370020", kreis: "Kreis Heinsberg", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1083 },
+  { slug: "nottuln", name: "Nottuln", ags: "05558032", kreis: "Kreis Coesfeld", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1039 },
+  { slug: "senden", name: "Senden", ags: "05558044", kreis: "Kreis Coesfeld", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1034 },
+  { slug: "ennepetal", name: "Ennepetal", ags: "05954008", kreis: "Ennepe-Ruhr-Kreis", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 960 },
+  { slug: "wenden", name: "Wenden", ags: "05966028", kreis: "Kreis Olpe", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 989 },
+  { slug: "gernsheim", name: "Gernsheim", ags: "06433004", kreis: "Landkreis Groß-Gerau", bundesland: "Hessen", yieldKwhKwp: 1092 },
+  { slug: "bad-homburg", name: "Bad Homburg v. d. Höhe", ags: "06434001", kreis: "Hochtaunuskreis", bundesland: "Hessen", yieldKwhKwp: 1099 },
+  { slug: "linsengericht", name: "Linsengericht", ags: "06435018", kreis: "Main-Kinzig-Kreis", bundesland: "Hessen", yieldKwhKwp: 1028 },
+  { slug: "maintal", name: "Maintal", ags: "06435019", kreis: "Main-Kinzig-Kreis", bundesland: "Hessen", yieldKwhKwp: 1093 },
+  { slug: "hochheim", name: "Hochheim am Main", ags: "06436006", kreis: "Main-Taunus-Kreis", bundesland: "Hessen", yieldKwhKwp: 1105 },
+  { slug: "reichelsheim", name: "Reichelsheim (Odenwald)", ags: "06437013", kreis: "Odenwaldkreis", bundesland: "Hessen", yieldKwhKwp: 1071 },
+  { slug: "rodgau", name: "Rodgau", ags: "06438011", kreis: "Landkreis Offenbach", bundesland: "Hessen", yieldKwhKwp: 1083 },
+  { slug: "hohenahr", name: "Hohenahr", ags: "06532013", kreis: "Lahn-Dill-Kreis", bundesland: "Hessen", yieldKwhKwp: 1055 },
+  { slug: "gudensberg", name: "Gudensberg", ags: "06634007", kreis: "Schwalm-Eder-Kreis", bundesland: "Hessen", yieldKwhKwp: 1037 },
+  { slug: "neuwied", name: "Neuwied", ags: "07138045", kreis: "Landkreis Neuwied", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1054 },
+  { slug: "hillscheid", name: "Hillscheid", ags: "07143031", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1009 },
+  { slug: "hoehr-grenzhausen", name: "Höhr-Grenzhausen", ags: "07143032", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1011 },
+  { slug: "wittlich", name: "Wittlich", ags: "07231134", kreis: "Landkreis Bernkastel-Wittlich", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1073 },
+  { slug: "limburgerhof", name: "Limburgerhof", ags: "07338017", kreis: "Rhein-Pfalz-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1120 },
+  { slug: "holzgerlingen", name: "Holzgerlingen", ags: "08115024", kreis: "Landkreis Böblingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1128 },
+  { slug: "wernau", name: "Wernau (Neckar)", ags: "08116072", kreis: "Landkreis Esslingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1138 },
+  { slug: "hattenhofen", name: "Hattenhofen", ags: "08117029", kreis: "Landkreis Göppingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1126 },
+  { slug: "schlierbach", name: "Schlierbach", ags: "08117044", kreis: "Landkreis Göppingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1133 },
+  { slug: "waiblingen", name: "Waiblingen", ags: "08119079", kreis: "Rems-Murr-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1119 },
+  { slug: "herbrechtingen", name: "Herbrechtingen", ags: "08135020", kreis: "Landkreis Heidenheim", bundesland: "Baden-Württemberg", yieldKwhKwp: 1102 },
+  { slug: "gaiberg", name: "Gaiberg", ags: "08226022", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1084 },
+  { slug: "heddesheim", name: "Heddesheim", ags: "08226028", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1072 },
+  { slug: "leimen", name: "Leimen", ags: "08226041", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1114 },
+  { slug: "oftersheim", name: "Oftersheim", ags: "08226062", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1110 },
+  { slug: "sandhausen", name: "Sandhausen", ags: "08226076", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1110 },
+  { slug: "weinheim", name: "Weinheim", ags: "08226096", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1049 },
+  { slug: "bad-krozingen", name: "Bad Krozingen", ags: "08315006", kreis: "Landkreis Breisgau-Hochschwarzwald", bundesland: "Baden-Württemberg", yieldKwhKwp: 1164 },
+  { slug: "rietheim-weilheim", name: "Rietheim-Weilheim", ags: "08327056", kreis: "Landkreis Tuttlingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1122 },
+  { slug: "gailingen", name: "Gailingen am Hochrhein", ags: "08335026", kreis: "Landkreis Konstanz", bundesland: "Baden-Württemberg", yieldKwhKwp: 1167 },
+  { slug: "walddorfhaeslach", name: "Walddorfhäslach", ags: "08415087", kreis: "Landkreis Reutlingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1147 },
+  { slug: "tuebingen", name: "Tübingen", ags: "08416041", kreis: "Landkreis Tübingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1149 },
+  { slug: "forstinning", name: "Forstinning", ags: "09175118", kreis: "Landkreis Ebersberg", bundesland: "Bayern", yieldKwhKwp: 1128 },
+  { slug: "poing", name: "Poing", ags: "09175135", kreis: "Landkreis Ebersberg", bundesland: "Bayern", yieldKwhKwp: 1137 },
+  { slug: "gaimersheim", name: "Gaimersheim", ags: "09176126", kreis: "Landkreis Eichstätt", bundesland: "Bayern", yieldKwhKwp: 1122 },
+  { slug: "ottobrunn", name: "Ottobrunn", ags: "09184136", kreis: "Landkreis München", bundesland: "Bayern", yieldKwhKwp: 1130 },
+  { slug: "putzbrunn", name: "Putzbrunn", ags: "09184140", kreis: "Landkreis München", bundesland: "Bayern", yieldKwhKwp: 1124 },
+  { slug: "unterhaching", name: "Unterhaching", ags: "09184148", kreis: "Landkreis München", bundesland: "Bayern", yieldKwhKwp: 1138 },
+  { slug: "karlshuld", name: "Karlshuld", ags: "09185139", kreis: "Landkreis Neuburg-Schrobenhausen", bundesland: "Bayern", yieldKwhKwp: 1107 },
+  { slug: "vilshofen", name: "Vilshofen an der Donau", ags: "09275154", kreis: "Landkreis Passau", bundesland: "Bayern", yieldKwhKwp: 1118 },
+  { slug: "muehlhausen", name: "Mühlhausen", ags: "09373146", kreis: "Landkreis Neumarkt i.d.OPf.", bundesland: "Bayern", yieldKwhKwp: 1079 },
+  { slug: "beratzhausen", name: "Beratzhausen", ags: "09375118", kreis: "Landkreis Regensburg", bundesland: "Bayern", yieldKwhKwp: 1099 },
+  { slug: "nittenau", name: "Nittenau", ags: "09376149", kreis: "Landkreis Schwandorf", bundesland: "Bayern", yieldKwhKwp: 1087 },
+  { slug: "feucht", name: "Feucht", ags: "09574123", kreis: "Nürnberger Land", bundesland: "Bayern", yieldKwhKwp: 1042 },
+  { slug: "roth", name: "Roth", ags: "09576143", kreis: "Landkreis Roth", bundesland: "Bayern", yieldKwhKwp: 1070 },
+  { slug: "dettelbach", name: "Dettelbach", ags: "09675117", kreis: "Landkreis Kitzingen", bundesland: "Bayern", yieldKwhKwp: 1108 },
+  { slug: "dietmannsried", name: "Dietmannsried", ags: "09780119", kreis: "Landkreis Oberallgäu", bundesland: "Bayern", yieldKwhKwp: 1149 },
+
+  // Nachzügler vom selben Tag: zehn Programme, die zwischen dem Anlegen der
+  // sechzig und dem Merge in den Katalog kamen. Dass sie hier stehen müssen,
+  // hat der Sync-Test erzwungen — genau dafür ist die pauschale Ausnahme für
+  // achtstellige Schlüssel weggefallen.
+  { slug: "schiltach", name: "Schiltach", ags: "08325051", kreis: "Landkreis Rottweil", bundesland: "Baden-Württemberg", yieldKwhKwp: 1048 },
+  { slug: "altdorf", name: "Altdorf", ags: "08115002", kreis: "Landkreis Böblingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1140 },
+  { slug: "steffenberg", name: "Steffenberg", ags: "06534019", kreis: "Landkreis Marburg-Biedenkopf", bundesland: "Hessen", yieldKwhKwp: 1023 },
+  { slug: "tegernheim", name: "Tegernheim", ags: "09375204", kreis: "Landkreis Regensburg", bundesland: "Bayern", yieldKwhKwp: 1108 },
+  { slug: "lohfelden", name: "Lohfelden", ags: "06633017", kreis: "Landkreis Kassel", bundesland: "Hessen", yieldKwhKwp: 1007 },
+  { slug: "schwebheim", name: "Schwebheim", ags: "09678176", kreis: "Landkreis Schweinfurt", bundesland: "Bayern", yieldKwhKwp: 1097 },
+  { slug: "asbach", name: "Asbach", ags: "07138003", kreis: "Landkreis Neuwied", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1030 },
+  { slug: "parkstein", name: "Parkstein", ags: "09374144", kreis: "Landkreis Neustadt a.d.Waldnaab", bundesland: "Bayern", yieldKwhKwp: 1052 },
+  { slug: "marburg", name: "Marburg", ags: "06534014", kreis: "Landkreis Marburg-Biedenkopf", bundesland: "Hessen", yieldKwhKwp: 1054 },
+  { slug: "schoenbrunn", name: "Schönbrunn", ags: "08226081", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1073 },
 ];
 
 export function cityBySlug(slug: string): AtlasCity | undefined {
@@ -339,9 +480,26 @@ export function archivedCities(): AtlasCity[] {
   return ATLAS_CITIES.filter(isCityArchived);
 }
 
-/** A city gets a published page when its program is live OR archived. */
+/**
+ * A city gets a published page when its program is live OR archived — UND der
+ * Releaseplan diesen Ort freigegeben hat.
+ *
+ * WARUM DIE ZWEITE BEDINGUNG (19.08.2026): Bis hierher hing die Veröffentlichung
+ * allein am Status des Förderprogramms. Ein neuer Eintrag in ATLAS_CITIES mit
+ * einem aktiven Programm war damit beim nächsten Deploy eine öffentliche,
+ * indexierte Seite — die Veröffentlichung war keine Entscheidung, sondern eine
+ * Nebenwirkung. Aufgefallen ist das, als der Katalog auf 97 regionale Programme
+ * wuchs und 61 davon (48 aktiv) noch keine Seite hatten: Wer die Einträge anlegt,
+ * hätte 61 Ortsseiten auf einen Schlag veröffentlicht, ohne dass irgendwo die
+ * Frage gestellt worden wäre, ob sie gerade jetzt erscheinen sollen.
+ *
+ * Der Plan (lib/release-plan.ts) beantwortet sie je Ort und Schub. Er steuert
+ * ausschließlich die SEITE — ob ein Programm im Rechner Geld abzieht, entscheidet
+ * unverändert allein fundingZaehlt(). Ein Ort ohne Seite bleibt im Rechner
+ * vollständig wirksam.
+ */
 export function isCityPublished(c: AtlasCity): boolean {
-  return isCityLive(c) || isCityArchived(c);
+  return (isCityLive(c) || isCityArchived(c)) && releaseFreigegeben("foerder-stadt", c.ags);
 }
 
 /** Cities that get a page (live + archived) — drives page generation & sitemap. */
@@ -354,6 +512,36 @@ export function publishedCitiesInBundesland(blSlug: string): AtlasCity[] {
   return publishedCities()
     .filter((c) => slugify(c.bundesland) === blSlug)
     .sort((a, b) => Number(isCityLive(b)) - Number(isCityLive(a)));
+}
+
+/**
+ * Darf diese Seite in den Index? Es antwortet der Releaseplan.
+ *
+ * Bis zum 19.08.2026 stand die Antwort als Feld `indexFreigabe` an jeder Stadt —
+ * eine bewusste Übergangslösung, damit die 70 neuen Gemeindeseiten nicht ohne
+ * jede Bremse auf die Hauptlinie kamen. Sie ist ersetzt: Ein Ja/Nein je Eintrag
+ * trägt kein Datum, keine Welle, keinen Nachweis und keine Regel über die
+ * zweite Seitenfamilie — genau das braucht aber die Frage „wann geht dieser Ort
+ * live, und haben wir vorher gemessen?". Zwei Schalter für eine Frage sind die
+ * Doppelpflege, an der hier schon `fundingId` gescheitert ist.
+ *
+ * Sitemap und robots-Angabe hängen weiterhin an dieser EINEN Funktion, damit
+ * sie sich nicht auseinanderentwickeln können.
+ */
+export function cityIndexFreigegeben(c: AtlasCity): boolean {
+  return releaseFreigegeben("foerder-stadt", c.ags);
+}
+
+/**
+ * Städte, die in den Index dürfen.
+ *
+ * Seit der Umstellung auf den Releaseplan deckungsgleich mit `publishedCities()`
+ * — und das ist kein Zufall, sondern der Unterschied zur abgelösten Lösung: Ein
+ * Ort ohne Freigabe bekommt gar keine Seite, statt einer gebauten auf noindex.
+ * Eine Seite, die es nicht gibt, kostet auch kein Crawl-Budget.
+ */
+export function indexedCities(): AtlasCity[] {
+  return publishedCities();
 }
 
 /** Bundesländer with at least one published city (live or archived). */

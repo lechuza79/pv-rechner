@@ -25,6 +25,7 @@
 import { resolve } from "node:path"; import { readFileSync, existsSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
 import { FUNDING_PROGRAMS } from "../lib/funding-programs";
+import { ATLAS_CITIES } from "../lib/atlas-cities";
 const e = resolve(process.cwd(), ".env.local");
 if (existsSync(e)) for (const l of readFileSync(e,"utf8").split("\n")) { const m=l.match(/^([A-Z0-9_]+)=(.*)$/); if(m&&!process.env[m[1]])process.env[m[1]]=m[2].replace(/^["']|["']$/g,""); }
 function norm(s:string){return s.toLowerCase().replace(/[^a-zäöüß]/g,"");}
@@ -41,6 +42,24 @@ async function main(){
     }
   }
   console.log(falsch ? `\n${falsch} Programme zeigen auf die falsche Gemeinde.` : `\nAlle ${alle.length} achtstelligen Schlüssel stimmen.`);
-  process.exit(falsch ? 1 : 0);
+
+  // Dasselbe für das Städte-Verzeichnis. Seit dem 19.08.2026 trägt es
+  // achtstellige Gemeindeschlüssel, und ein vertippter zeigt genauso stumm auf
+  // den falschen Ort — nur wirkt er hier nicht auf einen Förderbetrag, sondern
+  // auf den Anlagenbestand, der unter dem Ortsnamen steht. Die Prüfung gehört
+  // deshalb in denselben täglichen Lauf.
+  const staedte = ATLAS_CITIES.filter((c) => c.ags.length === 8);
+  const { data: sd } = await sb.from("mastr_regions").select("region_id, name").in("region_id", staedte.map((c) => c.ags));
+  const sname = new Map((sd ?? []).map((r: any) => [r.region_id, r.name]));
+  let sFalsch = 0;
+  for (const c of staedte) {
+    const echt = sname.get(c.ags);
+    if (!echt || !norm(echt).startsWith(norm(c.name).slice(0, 5))) {
+      sFalsch++; console.log(`FALSCH  Verzeichnis ${c.slug}: ${c.ags} → "${echt ?? "existiert nicht"}" statt "${c.name}"`);
+    }
+  }
+  console.log(sFalsch ? `${sFalsch} Verzeichnis-Einträge zeigen auf die falsche Gemeinde.` : `Alle ${staedte.length} Verzeichnis-Schlüssel stimmen.`);
+
+  process.exit(falsch + sFalsch ? 1 : 0);
 }
 main();

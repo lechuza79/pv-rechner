@@ -73,6 +73,14 @@ export interface HeatPumpInputs {
   // CO₂), Modell lib/greengas.ts (IW-Report 36/2026). Default aus — bewusst als
   // klar gekennzeichnetes, zuschaltbares Szenario, nie als Standard.
   greenGas?: boolean;
+  /**
+   * Kommunaler Zuschuss (€), den der Nutzer im Ergebnis anrechnen lässt — kommt
+   * aus dem Förderkatalog (stackFunding), NICHT aus diesem Modul. Er wird hier
+   * hereingereicht statt errechnet, weil er am Wohnort hängt und nicht am
+   * Gebäude; gekappt wird er trotzdem hier, weil nur dieses Modul die BEG kennt,
+   * gegen die gekappt werden muss ({@link begKumulierungsSpielraum}).
+   */
+  kommunalFoerderung?: number;
   // Optional overrides (editable in result view)
   override?: {
     qGes?: number;               // thermal demand override (kWh/a)
@@ -104,6 +112,15 @@ export interface HeatPumpResult {
   // Investment
   investBrutto: number;
   beg: { rate: number; amount: number; breakdown: { label: string; rate: number }[] };
+  /**
+   * Kommunaler Zuschuss nach der Kumulierungsgrenze. `roh` ist, was die
+   * Programme ergeben, `angerechnet` was davon abgezogen wird — beide Zahlen,
+   * damit die Oberfläche eine Kürzung benennen kann, statt sie stumm
+   * vorzunehmen. Eine angezeigte Förderzeile, die nicht in der Investition
+   * steckt, wäre genau der Widerspruch zwischen Text und Zahl, den dieses
+   * Projekt als schwersten Fehler führt.
+   */
+  kommunal: { roh: number; angerechnet: number; spielraum: number };
   investNetto: number;
   // 20-year cost totals
   stromKosten: number;           // Σ WP electricity zum vollen Netzpreis (PV separat als pvBenefit)
@@ -203,6 +220,28 @@ export function calcBegSubsidy(situation: "bestand" | "neubau", wpType: "lwwp" |
   return { rate, amount, breakdown };
 }
 
+/**
+ * Wieviel Geld neben der BEG überhaupt noch Platz hat (€).
+ *
+ * Die BEG lässt andere öffentliche Mittel zu, aber nicht unbegrenzt: Gedeckelt
+ * ist die Summe auf `begKumulierungsGrenze` der TATSÄCHLICH GEFÖRDERTEN Kosten
+ * — also auf den bei `begMaxCap` gekappten Investitionsbetrag, nicht auf die
+ * volle Rechnung. Wer eine 45.000-€-Anlage baut, bezieht die Grenze trotzdem auf
+ * die 28.000 €, die überhaupt gefördert werden.
+ *
+ * Herleitung und die bewusst strenge Lesart stehen bei `begKumulierungsGrenze`
+ * in lib/heatpump-config.ts; Beleg: KfW-Merkblatt 458 (Stand 07/2026), Volltext
+ * in docs/quellen/.
+ */
+export function begKumulierungsSpielraum(
+  begAmount: number,
+  investBrutto: number,
+  cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG,
+): number {
+  const gefoerderteKosten = Math.min(investBrutto, cfg.begMaxCap);
+  return Math.max(0, Math.round(gefoerderteKosten * cfg.begKumulierungsGrenze - begAmount));
+}
+
 // ─── Main TCO calculation ──────────────────────────────────────────────────
 
 export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG, scenarioAdj?: { jazFactor: number; stromInflation: number; gasInflation: number; gasScenario?: GasScenario }): HeatPumpResult {
@@ -239,7 +278,17 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
     haushaltseinkommen: inputs.override?.haushaltseinkommen,
     kindImHaushalt: inputs.override?.kindImHaushalt,
   }, cfg);
-  const investNetto = inputs.override?.investNetto ?? (investBrutto - beg.amount);
+  // Kommunaler Zuschuss NEBEN der BEG — gekappt an der Kumulierungsgrenze, damit
+  // die Summe der öffentlichen Mittel nicht über das hinausgeht, was die BEG
+  // neben sich duldet.
+  const kommunalRoh = Math.max(0, Math.round(inputs.kommunalFoerderung ?? 0));
+  const kommunalSpielraum = begKumulierungsSpielraum(beg.amount, investBrutto, cfg);
+  const kommunalAngerechnet = Math.min(kommunalRoh, kommunalSpielraum);
+  const kommunal = { roh: kommunalRoh, angerechnet: kommunalAngerechnet, spielraum: kommunalSpielraum };
+  // Ein von Hand gesetzter Investitionsbetrag ist der Preis, den jemand
+  // TATSÄCHLICH zahlt — da ist jede Förderung schon drin. Sie ein zweites Mal
+  // abzuziehen wäre der doppelte Abzug, vor dem der Hinweis daneben warnt.
+  const investNetto = inputs.override?.investNetto ?? (investBrutto - beg.amount - kommunalAngerechnet);
 
   // 4. 20-Jahre Betriebskosten WP — WP-Strom zum VOLLEN Netzpreis (WP-Tarif).
   // Die PV wird separat mit ihrem GESAMTEN Nutzen gutgeschrieben (pvBenefit),
@@ -383,7 +432,7 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   return {
     qHeiz: demand.qHeiz, qWw: demand.qWw, qGes,
     heizlastKw, auslegungKw, flowTemp, jaz: Math.round(jaz * 100) / 100, eWp,
-    investBrutto, beg, investNetto,
+    investBrutto, beg, kommunal, investNetto,
     stromKosten, wartungWp, tcoWp,
     pvCoverage: Math.round(pvCoverage * 1000) / 1000,
     pvStromSavings,

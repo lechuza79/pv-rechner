@@ -56,7 +56,7 @@ export const FLOWS: FlowUnterTest[] = [
   },
   {
     name: "Balkonkraftwerk-Rechner",
-    pfad: "/balkonkraftwerk-rechner",
+    pfad: "/balkonkraftwerk/rechner",
     ergebnisEnthaelt: "Deine Empfehlung",
   },
   {
