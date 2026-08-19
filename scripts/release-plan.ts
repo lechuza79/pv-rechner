@@ -55,7 +55,7 @@ if (naechster) {
   const frist = inTagen === 1 ? "morgen" : `in ${inTagen} Tagen`;
   console.log(`  Als Nächstes: ${naechster.id} ${frist} (${tag(naechster.datum)}).`);
   if (!naechster.nachweis && naechster.orte.length > 0) {
-    console.log("  Davor läuft die Vorlauf-Messung des SEO-Wächters (scripts/seo-verify.md, Schritt 7).");
+    console.log("  Davor läuft die Vorlauf-Messung des SEO-Wächters (scripts/seo-verify.md, Schritt 4b).");
   }
   console.log("");
 }
