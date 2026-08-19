@@ -4,6 +4,7 @@ import {
   abdeckungJeTechnik, offeneTechniken, brauchtLesen, leseReihenfolge, fundEinfuegen,
   type FoerderSeite,
   istInterneRoute,
+  programmDecktSeite,
 } from "../funding-seiten";
 
 const seite = (p: Partial<FoerderSeite> & Pick<FoerderSeite, "url">): FoerderSeite => ({
@@ -201,5 +202,30 @@ describe("Sprachfassungen sind Dubletten, die deutsche Fassung nicht", () => {
 
   it("verwechselt kein normales Pfadsegment mit einem Sprachkürzel", () => {
     expect(istInterneRoute("https://www.stadt.de/pv/foerderung")).toBe(false);
+  });
+});
+
+describe("Fördergebiet deckt Gemeinde — die Richtung ist der ganze Punkt", () => {
+  it("ein Kreis-Programm gilt der Gemeinde darin", () => {
+    // Würzburgs Katalog-Eintrag trägt 09663, seine Seite 09663000.
+    expect(programmDecktSeite("09663", "09663000")).toBe(true);
+  });
+
+  it("ein Landesprogramm gilt jeder Gemeinde des Landes", () => {
+    expect(programmDecktSeite("11", "11000000")).toBe(true);
+  });
+
+  it("ein Gemeinde-Programm gilt NICHT dem ganzen Kreis", () => {
+    // Höhr-Grenzhausens Dorfzuschuss darf nie für den Westerwaldkreis zählen.
+    expect(programmDecktSeite("07143032", "07143")).toBe(false);
+  });
+
+  it("Nachbargemeinden mit gemeinsamem Kreis-Präfix treffen sich nicht", () => {
+    expect(programmDecktSeite("07143032", "07143099")).toBe(false);
+  });
+
+  it("leere Schlüssel decken nichts", () => {
+    expect(programmDecktSeite("", "09663000")).toBe(false);
+    expect(programmDecktSeite("09663", "")).toBe(false);
   });
 });

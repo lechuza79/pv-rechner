@@ -295,3 +295,36 @@ export function istInterneRoute(url: string): boolean {
  * geschlossene Liste der Fremdsprachen statt „zwei Buchstaben am Anfang".
  */
 const FREMDSPRACHE = /^(en|fr|es|it|nl|pl|ru|uk|tr|ar|pt|cs|ro|el|da|sv|fi|hu|bg|hr|sr|zh|ja|ko|fa|ku)$/i;
+
+// ─── Deckt ein Programm diese Seite ab? ──────────────────────────────────────
+
+/**
+ * Liegt der Gemeindeschlüssel einer Seite im Fördergebiet eines Programms?
+ *
+ * WARUM ES DAS BRAUCHT (19.08.2026): Die Seiten tragen durchweg den
+ * ACHTSTELLIGEN Gemeindeschlüssel, der Katalog dagegen gemischt — gemessen:
+ * 2 Programme mit zwei Stellen (Land), 35 mit fünf (Kreis oder kreisfreie
+ * Stadt), 70 mit acht (Gemeinde). Ein Vergleich auf Gleichheit verfehlt damit
+ * jedes dritte Programm: Würzburgs Seite (09663000) fand seinen eigenen
+ * Katalog-Eintrag (09663) nicht und galt als Lücke, die es zu lesen gilt. Eine
+ * Arbeitsliste, die zu einem Drittel aus schon Erledigtem besteht, liest
+ * irgendwann niemand mehr.
+ *
+ * DIE RICHTUNG IST ENTSCHEIDEND und darf nie umgedreht werden: Das Fördergebiet
+ * enthält die Gemeinde, nicht umgekehrt. Ein Programm mit acht Stellen gilt NUR
+ * seiner Gemeinde — Höhr-Grenzhausens Dorfzuschuss (07143032) darf niemals für
+ * den ganzen Westerwaldkreis zählen. Wer den Programm-Schlüssel kürzt statt den
+ * Seiten-Schlüssel zu prüfen, baut genau diesen Fehler.
+ *
+ * Dieselbe Regel wie `fundingForFrom` in `lib/atlas-cities.ts`, hier für den
+ * Abgleich mit der Erfassung. Beide beschreiben die Hierarchie
+ * Land (2) ⊃ Kreis (5) ⊃ Gemeinde (8).
+ */
+export function programmDecktSeite(agsProgramm: string, agsSeite: string): boolean {
+  const p = (agsProgramm ?? "").trim();
+  const s = (agsSeite ?? "").trim();
+  if (!p || !s) return false;
+  // Ein engeres Fördergebiet als die Seite kann sie nicht enthalten.
+  if (p.length > s.length) return false;
+  return s.startsWith(p);
+}
