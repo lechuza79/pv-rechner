@@ -104,6 +104,19 @@ export async function GET(req: NextRequest) {
       -- Foerderung aus und sind keine. Ohne dieses Gedaechtnis stuenden sie
       -- morgen wieder oben, und eine Liste, die zur Haelfte aus schon
       -- Abgelehntem besteht, liest irgendwann niemand mehr.
+      -- Fingerabdruck der Seite — der AUSLÖSER für eine erneute Einordnung.
+      --
+      -- Nicht der Kalender entscheidet, ob eine bekannte Foerderseite noch einmal
+      -- angesehen wird, sondern ob sie sich bewegt hat. Ein festes Intervall
+      -- hiesse, dass ein Programm bis zum naechsten Termin den falschen Status
+      -- tragen kann; dieselbe Einsicht hatte schon die 180-Tage-Frist beim
+      -- Beleg-Verfall gekippt. Derselbe Abdruck wie bei den gefuehrten
+      -- Programmen (lib/funding-fingerprint.ts).
+      ALTER TABLE funding_coverage ADD COLUMN IF NOT EXISTS fingerprint text;
+      ALTER TABLE funding_coverage ADD COLUMN IF NOT EXISTS seite_gesehen_am timestamptz;
+      ALTER TABLE funding_coverage ADD COLUMN IF NOT EXISTS seite_geaendert_am timestamptz;
+      CREATE INDEX IF NOT EXISTS idx_fcov_seite ON funding_coverage (seite_gesehen_am);
+
       ALTER TABLE funding_coverage ADD COLUMN IF NOT EXISTS gelesen_am date;
       ALTER TABLE funding_coverage ADD COLUMN IF NOT EXISTS gelesen_ergebnis text;
       ALTER TABLE funding_coverage ADD COLUMN IF NOT EXISTS gelesen_notiz text;

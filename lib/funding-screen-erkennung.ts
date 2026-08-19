@@ -42,6 +42,29 @@ export type ScreenVerdikt =
 export const SCREEN_VERSION = 2;
 
 /**
+ * Rückfall-Frist, falls von einer Seite kein Fingerabdruck vorliegt.
+ *
+ * DER NORMALFALL IST EIN ANDERER, und das ist der Punkt: Ob eine Seite erneut
+ * angesehen werden muss, entscheidet nicht der Kalender, sondern ob sie sich
+ * BEWEGT hat. Der Seiten-Wächter ruft täglich ab und vergleicht Fingerabdrücke;
+ * ändert sich einer, kommt die Seite sofort wieder in den Screening-Lauf — nicht
+ * in drei Monaten.
+ *
+ * Eine erste Fassung setzte hier ein festes Vierteljahr. Der Betreiber hat das
+ * zu Recht zurückgewiesen: „ein Förderprogramm das 89 Tage den falschen Status
+ * hat wäre dumm." Genau dasselbe Argument hatte schon einmal die 180-Tage-Frist
+ * beim Beleg-Verfall gekippt — die richtige Größe ist nicht das Alter, sondern
+ * ob wir den Stand gerade bestätigen können.
+ *
+ * Die Frist bleibt trotzdem stehen, als Netz für die Seiten, von denen (noch)
+ * kein Fingerabdruck existiert: neu gefundene Adressen, dauerhaft gesperrte
+ * Server. Ein Jahr, weil kommunale Programme dem Haushaltsjahr folgen — wer in
+ * einem ganzen Jahr keinen einzigen Abruf zustande gebracht hat, soll trotzdem
+ * einmal wieder angesehen werden.
+ */
+export const WIEDERVORLAGE_TAGE = 365;
+
+/**
  * Die Begriffe je Technik.
  *
  * Getrennt statt in einem Topf, weil die Techniken in verschiedene Rechner
@@ -205,4 +228,58 @@ export function einordnen(text: string): ScreenBefund {
   if (treffer.length) return { verdikt: "treffer", techniken: treffer, beleg: kuerzen(bester) };
   if (ausgelaufen.length) return { verdikt: "ausgelaufen", techniken: [], beleg: kuerzen(bester) };
   return { verdikt: "kein-treffer", techniken: [], beleg: kuerzen(ersterFund) };
+}
+
+
+/** Der abgelegte Zustand einer Gemeinde, soweit er über die Wiedervorlage entscheidet. */
+export type AbdeckungsZeile = {
+  verdict: string;
+  screen_version: number | null;
+  /** Wann ein Mensch die Seite gelesen hat. */
+  gelesen_am: string | null;
+  /** Letzter Abruf durch den Screener. */
+  checked_at: string | null;
+  /** Wann der Seiten-Abgleich zuletzt eine Änderung an dieser Seite feststellte. */
+  seite_geaendert_am?: string | null;
+};
+
+/**
+ * Ist diese Gemeinde erledigt — oder gehört sie in den nächsten Lauf?
+ *
+ * Hier statt im Skript, weil sie erst in Monaten das erste Mal wirkt: Eine Regel,
+ * deren Fehler man frühestens nach 90 Tagen sieht, muss einen Test haben. Im
+ * Skript hinter einem Supabase-Client wäre sie nicht prüfbar.
+ *
+ * Vier Gründe für eine erneute Vorlage:
+ *  1. noch nie angesehen,
+ *  2. beim letzten Mal nicht erreichbar,
+ *  3. mit einer älteren Erkennung geprüft,
+ *  4. seit über {@link WIEDERVORLAGE_TAGE} nicht mehr angesehen.
+ *
+ * Der vierte ist der, der lange gefehlt hat. Der fünfte Fall ist die Ausnahme:
+ * Ein GELESENER Treffer kommt nicht zurück — wurde er aufgenommen, ruft der
+ * Seiten-Wächter seine Amtsseite täglich ab; wurde er verworfen, war es keine
+ * Förderseite, und das ändert sich nicht in einem Quartal.
+ */
+export function istErledigt(z: AbdeckungsZeile | undefined, heuteMs: number): boolean {
+  if (!z) return false;
+  if (z.verdict === "unerreichbar") return false;
+  if ((z.screen_version ?? 1) < SCREEN_VERSION) return false;
+
+  // Die Seite hat sich bewegt, seit wir sie zuletzt eingeordnet haben — dann
+  // sofort wieder ansehen, unabhängig von jeder Frist und auch dann, wenn ein
+  // Mensch sie schon gelesen hat. Das ist der eigentliche Auslöser: Ein
+  // Programm, das gestern „aktiv" war und heute „ausgeschöpft", steht morgen
+  // wieder auf der Liste und nicht im nächsten Quartal.
+  if (z.seite_geaendert_am && (!z.checked_at || z.seite_geaendert_am > z.checked_at)) return false;
+
+  // Gelesene Treffer kommen NICHT über die Frist zurück (nur über eine echte
+  // Änderung, siehe oben): Aufgenommene ruft der Seiten-Wächter täglich ab,
+  // verworfene waren keine Förderseiten. Ohne diese Ausnahme stünde die
+  // abgearbeitete Leseliste regelmäßig wieder da.
+  if (z.gelesen_am) return true;
+
+  if (!z.checked_at) return false;
+  const tage = Math.round((heuteMs - Date.parse(z.checked_at)) / 86_400_000);
+  return tage <= WIEDERVORLAGE_TAGE;
 }

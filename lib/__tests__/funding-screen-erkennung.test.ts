@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { einordnen, sichtbarerText, SCREEN_VERSION } from "../funding-screen-erkennung";
+import { einordnen, sichtbarerText, istErledigt, SCREEN_VERSION, WIEDERVORLAGE_TAGE } from "../funding-screen-erkennung";
 
 // Die Vorsortierung ist die einzige Stelle des Abdeckungs-Laufs, die urteilt.
 // Beide Richtungen sind teuer: Ein übersehenes Programm fehlt für immer im
@@ -109,5 +109,54 @@ describe("Versionsstempel", () => {
     // abgehakt wurden. Bleibt er stehen, während sich die Listen ändern, gilt
     // eine Seite als geprüft, die nie durch die neue Erkennung lief.
     expect(SCREEN_VERSION).toBe(2);
+  });
+});
+
+
+describe("Wiedervorlage: was eine Seite zurück auf die Liste holt", () => {
+  const HEUTE = Date.parse("2026-08-18T12:00:00Z");
+  const vorTagen = (n: number) => new Date(HEUTE - n * 86_400_000).toISOString();
+  const zeile = (extra: Record<string, unknown> = {}) => ({
+    verdict: "kein-treffer", screen_version: SCREEN_VERSION, gelesen_am: null,
+    checked_at: vorTagen(30), seite_geaendert_am: null, ...extra,
+  }) as Parameters<typeof istErledigt>[0];
+
+  it("holt eine Seite sofort zurück, sobald sie sich bewegt hat", () => {
+    // DER eigentliche Auslöser. Eine erste Fassung wartete stattdessen ein
+    // festes Vierteljahr ab; der Betreiber hat das zurückgewiesen: „ein
+    // Förderprogramm das 89 Tage den falschen Status hat wäre dumm." Bewegung
+    // schlägt Kalender — dieselbe Einsicht, die schon die 180-Tage-Frist beim
+    // Beleg-Verfall gekippt hat.
+    expect(istErledigt(zeile(), HEUTE)).toBe(true);
+    expect(istErledigt(zeile({ seite_geaendert_am: vorTagen(1) }), HEUTE)).toBe(false);
+  });
+
+  it("holt auch einen GELESENEN Treffer zurück, wenn die Seite sich bewegt", () => {
+    // Der teure Fall: Ein Programm stand als „aktiv" im Katalog, die Stadt
+    // schreibt „Mittel ausgeschöpft" auf die Seite. Ohne diese Regel bliebe der
+    // Eintrag stehen, weil ihn ja jemand gelesen hatte.
+    const gelesen = { verdict: "treffer", gelesen_am: "2026-06-01", checked_at: vorTagen(60) };
+    expect(istErledigt(zeile(gelesen), HEUTE)).toBe(true);
+    expect(istErledigt(zeile({ ...gelesen, seite_geaendert_am: vorTagen(1) }), HEUTE)).toBe(false);
+  });
+
+  it("holt einen gelesenen Treffer NICHT allein wegen Zeitablaufs zurück", () => {
+    // Sonst stünde die abgearbeitete Leseliste regelmäßig wieder da, ohne dass
+    // sich irgendwo etwas geändert hätte.
+    expect(istErledigt(zeile({ verdict: "treffer", gelesen_am: "2024-01-01", checked_at: vorTagen(9999) }), HEUTE)).toBe(true);
+  });
+
+  it("fängt Seiten ohne Fingerabdruck über die Jahresfrist", () => {
+    // Das Netz für neu gefundene Adressen und dauerhaft gesperrte Server: Ohne
+    // Abgleich gäbe es sonst gar keinen Auslöser.
+    expect(istErledigt(zeile({ checked_at: vorTagen(WIEDERVORLAGE_TAGE - 1) }), HEUTE)).toBe(true);
+    expect(istErledigt(zeile({ checked_at: vorTagen(WIEDERVORLAGE_TAGE + 1) }), HEUTE)).toBe(false);
+  });
+
+  it("nimmt Unerreichbare, veraltete Erkennungen und Unbekannte immer wieder vor", () => {
+    expect(istErledigt(zeile({ verdict: "unerreichbar" }), HEUTE)).toBe(false);
+    expect(istErledigt(zeile({ screen_version: SCREEN_VERSION - 1 }), HEUTE)).toBe(false);
+    expect(istErledigt(undefined, HEUTE)).toBe(false);
+    expect(istErledigt(zeile({ checked_at: null }), HEUTE)).toBe(false);
   });
 });
