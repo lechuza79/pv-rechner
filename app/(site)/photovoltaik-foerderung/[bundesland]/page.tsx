@@ -130,7 +130,7 @@ const S = {
 };
 
 function LandProgramBox({ p }: { p: FundingProgram }) {
-  const a = fundingAmount(p, 10, 5, 20000);
+  const a = fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 });
   return (
     <div style={{ ...S.card, borderColor: p.status === "aktiv" ? v("--color-positive") : v("--color-border"), background: v("--color-bg-muted") }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
@@ -204,7 +204,7 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
     // fundingZaehlt statt des rohen Status: Diese Liste nennt Städte, für die
     // wir eine konkrete Förderung vorrechnen — was nicht mehr belegt ist, darf
     // dort nicht als Beispiel auftauchen.
-    .filter((p): p is FundingProgram => Boolean(p) && fundingZaehlt(p!) && fundingAmount(p!, 10, 5, 20000).computable)
+    .filter((p): p is FundingProgram => Boolean(p) && fundingZaehlt(p!) && fundingAmount(p!, { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 }).computable)
     .map((p) => p.region);
 
   return (

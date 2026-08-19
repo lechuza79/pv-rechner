@@ -226,7 +226,30 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // ist der Tag, an dem das Gesetz IN KRAFT trat (`inKraftSeitIso`) — „gilt
   // seit" ist kein „geprüft am". Der tägliche News-Wächter zieht dieses Datum
   // ab jetzt nach.
-  geprueftRechtIso: "2026-07-28",
+  //
+  // 18.08.2026 nachgeprüft und unverändert: Die amtliche Chronologie des
+  // Ministeriums (gmodg.bund.de, GModG_Chronologie) endet mit der Verkündung am
+  // 28.07. und dem Inkrafttreten am 29.07.2026 — kein Eintrag danach, keine
+  // Änderung, keine Korrektur, keine Durchführungsverordnung. „Geprüft und
+  // unverändert" ist das Normalergebnis und genau die Auskunft, die dieses Datum
+  // gibt.
+  //
+  // Warum die Prüfung hier von Hand steht und nicht vom Wächter kam: Das Datum
+  // hatte sich 21 Tage nicht bewegt (erlaubt: 14), ohne dass irgendetwas
+  // gemeldet wurde — der Melder für stillstehende Wächter lief selbst nur
+  // innerhalb der Wächter. Seit dem 18.08.2026 prüft der Gesundheitscheck das
+  // alle drei Stunden mit (scripts/health-check.ts), unabhängig davon, ob der
+  // Rechner des Betreibers an ist.
+  //
+  // 19.08.2026 erneut geprüft, wieder unverändert: dieselbe amtliche Chronologie
+  // schließt weiterhin mit Verkündung 28.07.2026 (BGBl. Nr. 226) und dem
+  // gestaffelten Inkrafttreten ab 29.07.2026. Zum angekündigten Quotengesetz nach
+  // § 42a steht dort nach wie vor nur die Ankündigung selbst — Inverkehrbringer
+  // von Gas, Öl und Flüssiggas sollen bis zum 01.12.2026 per eigenem Gesetz
+  // verpflichtet werden, ab 2045 vollständig auf klimaneutrale Brennstoffe
+  // umzustellen. Kein Entwurf, kein Referentenentwurf, keine Fundstelle. Damit
+  // bleibt auch die Bioheizöl-Lücke im Wärmepumpen-Ergebnis offen und richtig.
+  geprueftRechtIso: "2026-08-19",
   reviewBy: "2027-07-25",
 };
 

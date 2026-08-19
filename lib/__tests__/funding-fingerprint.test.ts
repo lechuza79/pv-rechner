@@ -1,5 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { fingerprintOf, markiert, wegVon } from "../funding-fingerprint";
+import {
+  FINGERPRINT_VERSION,
+  fingerprintOf,
+  markiert,
+  unterschiedsGrund,
+  vergleichbar,
+  wegVon,
+} from "../funding-fingerprint";
 
 // Der Fingerabdruck ist das einzige Signal des Seiten-Wächters. Er muss zwei
 // Dinge gleichzeitig können, und beide sind gegeneinander gerichtet:
@@ -84,5 +91,39 @@ describe("Herkunft am Abdruck", () => {
   it("unbekannte oder fehlende Herkunft ergibt null, statt 'live' zu raten", () => {
     expect(wegVon(null)).toBeNull();
     expect(wegVon("abc")).toBeNull();
+  });
+});
+
+// Am 18.08.2026 bekam `fingerprintOf` den Token-Filter — und der Wächter meldete
+// daraufhin für 15 Programme an EINEM Tag „Amtsseite hat sich geändert", weil für
+// dieselbe unveränderte Seite ein anderer Abdruck anfiel. Diese Tests halten fest,
+// dass eine Änderung UNSERES Verfahrens nie wieder als Änderung der Stadt zählt.
+describe("Vergleichbarkeit: unsere Änderung ist nicht ihre", () => {
+  it("trägt die Fassung des Verfahrens im Schlüssel", () => {
+    expect(markiert("live", "abc")).toBe(`live-v${FINGERPRINT_VERSION}:abc`);
+    expect(wegVon(markiert("live", "abc"))).toBe("live");
+  });
+
+  it("gleicher Weg und gleiche Fassung sind vergleichbar", () => {
+    expect(vergleichbar(markiert("live", "abc"), markiert("live", "xyz"))).toBe(true);
+  });
+
+  it("ein Abdruck aus einer anderen Verfahrensfassung ist NICHT vergleichbar", () => {
+    const alt = `live-v${FINGERPRINT_VERSION - 1}:abc`;
+    expect(vergleichbar(alt, markiert("live", "xyz"))).toBe(false);
+    expect(unterschiedsGrund(alt, markiert("live", "xyz"))).toContain("Abdruck-Verfahren");
+  });
+
+  it("ein Abdruck ohne Fassungskennung (vor dem 19.08.2026) ist NICHT vergleichbar", () => {
+    expect(vergleichbar("live:abc", markiert("live", "xyz"))).toBe(false);
+  });
+
+  it("ein gewechselter Abrufweg bleibt unvergleichbar — und wird als solcher benannt", () => {
+    expect(vergleichbar(markiert("archiv", "abc"), markiert("live", "abc"))).toBe(false);
+    expect(unterschiedsGrund(markiert("archiv", "abc"), markiert("live", "abc"))).toContain("Abrufweg");
+  });
+
+  it("ohne vorherigen Abdruck gibt es nichts zu vergleichen", () => {
+    expect(vergleichbar(null, markiert("live", "abc"))).toBe(false);
   });
 });

@@ -11,11 +11,13 @@ name: Förder-Seiten-Wächter
 # einer Amtsseite etwas bewegt?" zuverlässig beantwortet, unabhängig davon, ob
 # irgendjemand oder irgendetwas sonst läuft.
 #
-# WAS ER NICHT LEISTET: Er versteht nicht, WAS sich geändert hat, und findet
-# keine neuen Förderprogramme. Beides braucht Urteilsvermögen und bleibt beim
-# Modell-Lauf. Ein grüner Lauf heißt „nichts hat sich bewegt", nicht „alles
-# korrekt" — wer das verwechselt, hat wieder ein Monitoring, das Schweigen für
-# Bestätigung hält.
+# WAS ER NICHT LEISTET: Er versteht nicht, WAS sich geändert hat, und er liest
+# nichts. Er findet Förderseiten und sortiert sie vor; ob dort wirklich eine
+# Förderung steht und mit welchen Sätzen, entscheidet erst ein Mensch, der die
+# Amtsseite gelesen hat. Drei Stufen, jede enger als die vorige.
+#
+# Ein grüner Lauf heißt „nichts hat sich bewegt", nicht „alles korrekt" — wer das
+# verwechselt, hat wieder ein Monitoring, das Schweigen für Bestätigung hält.
 #
 # Der Lauf wird NICHT rot, wenn er etwas findet. Eine geänderte Amtsseite ist
 # kein Fehler, sondern Arbeit: Das Programm steht danach oben im Arbeitsvorrat
@@ -37,7 +39,7 @@ concurrency:
 jobs:
   watch:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
 
@@ -66,20 +68,46 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: npm run foerder:probe -- --vorrat
 
-      # Der Katalog soll vollständig werden, nicht stichprobenhaft. 971 Gemeinden
-      # mit Förderseite führen wir noch nicht; in Schüben von 150 ist der Bestand
-      # in gut einer Woche einmal durchgesehen — und danach hält der Lauf ihn
-      # aktuell, weil unerreichbare Seiten wieder drankommen.
+      # Erst suchen, dann screenen — die Reihenfolge ist der Punkt. Was die Suche
+      # findet, schreibt sie nach kommunen_kontakt.thema_foerderung_url; das
+      # Screening im nächsten Schritt bedient sich genau aus diesem Feld. Eine
+      # heute gefundene Förderseite ist damit im selben Lauf eingeordnet, statt
+      # auf einen zweiten Tag zu warten.
+      #
+      # Für rund 9.700 Gemeinden kennen wir die Verwaltungs-Website, aber keine
+      # Themenseite — das ist die größte Lücke im Katalog, und keine Menge
+      # Screening kann sie schließen. Gemessen am ersten Lauf (18.08.2026):
+      # 250 Gemeinden durchsucht, 113 Förderseiten gefunden. In Schüben von 300
+      # ist der Bestand in gut vier Wochen einmal durch.
+      - name: Förderseiten auf den Amtsdomains suchen
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: npm run foerder:suche -- --limit 300
+
+      # Der Katalog soll vollständig werden, nicht stichprobenhaft. Der Bestand
+      # wächst jetzt aus zwei Quellen: den Adressen des Kommunen-Outreach und dem
+      # Schritt darüber. Unerreichbare Seiten kommen von selbst wieder dran, und
+      # nach einer Änderung der Erkennung auch die längst abgehakten. Der Schub
+      # liegt über dem, was der Suchschritt je Lauf an neuen Adressen liefert
+      # (gemessen gut hundert) — sonst wächst der Rückstand schneller, als er
+      # abgetragen wird.
       - name: Abdeckung weiter durchsehen
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: npm run foerder:screen -- --limit 150
+        run: npm run foerder:screen -- --limit 250
 
+      # Nach Technik getrennt, weil die Treffer in drei verschiedene Rechner
+      # führen und drei verschiedene Leselisten sind.
       - name: Treffer zum Nachlesen
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: npm run foerder:screen -- --treffer
+        run: |
+          npm run foerder:screen -- --treffer --technik balkon
+          npm run foerder:screen -- --treffer --technik waermepumpe
+          npm run foerder:screen -- --treffer --technik pv

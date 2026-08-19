@@ -2,6 +2,7 @@ import { YEAR, YEARS, FEED_IN_YEARS, DEGRAD, CONSUMPTION_MONTHLY, FUEL, PERSONEN
 import { calcExtraConsumption, KLIMA_DEFAULT_M2, WP_ANNUAL_KWH } from "./consumption";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
 import { co2PriceForCalendarYear } from "./co2-config";
+import { vermarktungLohnt } from "./einspeise-regime";
 
 // ─── Fuel comparison (WP vs. Gas/Öl) ────────────────────────────────────────
 // CO2-Preis pro Projektions-Offset i. Dünner Adapter: i mappt auf das absolute
@@ -384,25 +385,36 @@ export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, str
         ? einspeiseModell.satzCtImJahr(i)
         : i <= FEED_IN_YEARS ? einspeisung : 0;
       const anteil = einspeiseModell?.einspeiseAnteil ?? 1;
+      // Der Einspeise-Erlös wird getrennt mitgeführt, weil die Grundgebühr des
+      // Vermarkters gegen ihn abgewogen wird (siehe unten) — nicht gegen den
+      // gesamten Jahresnutzen, in dem die Eigenverbrauchs-Ersparnis steckt.
+      let einspeiseErloes = 0;
       if (fracs && monthlyEv) {
         // Monatlich: EV% variiert saisonal (Winter höher, Sommer niedriger),
         // bleibt aber jahresgewichtet auf dem eingegebenen Eigenverbrauch.
         for (let m = 0; m < 12; m++) {
           const mProd = kwp * ertragKwp * fracs[m] * deg;
           const mEv = monthlyEv[m];
-          j += mProd * mEv * sp + mProd * (1 - mEv) * anteil * (feedIn / 100);
+          j += mProd * mEv * sp;
+          einspeiseErloes += mProd * (1 - mEv) * anteil * (feedIn / 100);
         }
       } else {
         // Jährlich (Fallback ohne Monatsprofil)
         const ertrag = kwp * ertragKwp * deg;
-        j = ertrag * (eigenverbrauch / 100) * sp + ertrag * (1 - eigenverbrauch / 100) * anteil * (feedIn / 100);
+        j = ertrag * (eigenverbrauch / 100) * sp;
+        einspeiseErloes = ertrag * (1 - eigenverbrauch / 100) * anteil * (feedIn / 100);
       }
       const fixkosten = einspeiseModell?.fixkostenImJahr?.(i) ?? 0;
-      if (fixkosten && feedIn > 0) {
-        // Die Grundgebühr fällt nur an, solange überhaupt vermarktet wird:
-        // Frisst die mengenabhängige Gebühr den Börsenerlös ganz auf, vermarktet
-        // niemand — dann gibt es auch keinen Vertrag mit einer Grundgebühr.
-        j -= fixkosten;
+      // Vermarktet wird nur, wenn es sich trägt. Bringt der Börsenerlös eines
+      // Jahres weniger ein, als der Dienstleister an Grundgebühr verlangt,
+      // schließt niemand diesen Vertrag — dann gibt es weder Erlös noch Gebühr,
+      // die Anlage speist schlicht unvergütet ein. Die mengenabhängige Gebühr
+      // war schon so gedeckelt (lib/einspeise-regime.ts), die feste nicht:
+      // Eine 3-kWp-Anlage verlor dadurch über die Laufzeit 222 €, sobald man den
+      // Börsenerlös EINSCHALTETE (Council 18.08.2026) — ein Schalter, der das
+      // Ergebnis verschlechtert, obwohl er einen Erlös hinzufügt.
+      if (vermarktungLohnt(einspeiseErloes, fixkosten)) {
+        j += einspeiseErloes - fixkosten;
       }
     }
     // Akku-Tausch nach Ablauf der Speicher-Lebensdauer (einmalig im Horizont)

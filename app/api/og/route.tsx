@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
-import { ANLAGEN, SPEICHER, PERSONEN, INSULATION_BESTAND, HAUSTYP_WP, DACHARTEN, NO_PLZ_DEFAULT_YIELD } from "../../../lib/constants";
+import { ANLAGEN, SPEICHER, PERSONEN, INSULATION_BESTAND, HAUSTYP_WP, DACHARTEN, NATIONAL_AVG_YIELD } from "../../../lib/constants";
 import { dachErtragKwp } from "../../../lib/dach-ertrag";
 import { type TiltOrientation } from "../../../lib/tilt-config";
 import { calcEigenverbrauch, estimateCost, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
@@ -219,7 +219,7 @@ export async function GET(req: NextRequest) {
   // `da`/`az` machen daraus den Ertrag DIESES Dachs. Ohne diesen Schritt zeigt
   // das Vorschaubild eines Ost/West-Links die Amortisation eines Süddachs —
   // dieselbe Regel wie im Rechner (lib/dach-ertrag.ts).
-  const ertragOptimum = paramInt(params, "er", NO_PLZ_DEFAULT_YIELD, 700, 1400);
+  const ertragOptimum = paramInt(params, "er", NATIONAL_AVG_YIELD, 700, 1400);
   const ogDachart = params.da !== undefined ? paramInt(params, "da", -1, 0, DACHARTEN.length - 1) : -1;
   const ogAusrichtung = paramStr(params, "az", "", ["sued", "suedostwest", "ostwest", "nord"]) as TiltOrientation | "";
   const ertragKwp = dachErtragKwp(ertragOptimum, ogDachart >= 0 ? ogDachart : null, ogAusrichtung || null);

@@ -230,7 +230,8 @@ export const DIREKTVERMARKTUNG = {
  *
  * Deshalb: Grundannahme ist ein NOMINAL konstanter Marktwert. Das ist bewusst
  * die zurückhaltende Wahl — der Strompreis, gegen den der Eigenverbrauch
- * gerechnet wird, steigt im Modell mit 3 % pro Jahr, der Markterlös nicht. Real
+ * gerechnet wird, steigt im Modell mit 2 % pro Jahr (SCENARIOS, realistisch),
+ * der Markterlös nicht. Real
  * verliert die Markteinspeisung also über die Laufzeit an Wert.
  *
  * Der Markterlös hängt ausdrücklich NICHT am Strompreispfad: Für Solarstrom sind

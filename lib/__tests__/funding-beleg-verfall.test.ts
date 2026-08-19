@@ -83,20 +83,20 @@ describe("Eine geänderte Amtsseite stellt den geprüften Inhalt in Frage", () =
 
 describe("Was in eine Rechnung einfließen darf", () => {
   it("bestätigt → wird abgezogen", () => {
-    const a = fundingAmount(programm(), 10, 0, 20000, HEUTE);
+    const a = fundingAmount(programm(), { technik: "pv", kwp: 10, speicherKwh: 0, kosten: 20000 }, HEUTE);
     expect(a.active).toBe(true);
     expect(a.total).toBe(2000);
   });
 
   it("unbestätigt → Betrag bleibt berechenbar, zählt aber nicht", () => {
-    const a = fundingAmount(programm({ pageSeenAt: vorTagen(60) }), 10, 0, 20000, HEUTE);
+    const a = fundingAmount(programm({ pageSeenAt: vorTagen(60) }), { technik: "pv", kwp: 10, speicherKwh: 0, kosten: 20000 }, HEUTE);
     expect(a.computable).toBe(true);
     expect(a.active).toBe(false);
   });
 
   it("unbestätigt zieht in der Summe keinen Euro ab", () => {
-    expect(stackFunding([programm()], 10, 0, 20000, HEUTE).total).toBe(2000);
-    expect(stackFunding([programm({ pageSeenAt: vorTagen(60) })], 10, 0, 20000, HEUTE).total).toBe(0);
+    expect(stackFunding([programm()], { technik: "pv", kwp: 10, speicherKwh: 0, kosten: 20000 }, HEUTE).total).toBe(2000);
+    expect(stackFunding([programm({ pageSeenAt: vorTagen(60) })], { technik: "pv", kwp: 10, speicherKwh: 0, kosten: 20000 }, HEUTE).total).toBe(0);
   });
 
   it("eine frische Bestätigung rettet kein eingestelltes Programm", () => {
@@ -145,5 +145,25 @@ describe("Was das Prüfdatum auf der Seite sagt", () => {
     // wäre irreführend, denn bestätigt ist die Seite ja.
     const topfLeer = programm({ status: "ausgeschoepft", pageSeenAt: vorTagen(40) });
     expect(fundingStandLabel(topfLeer, HEUTE)).not.toContain("nicht eingerechnet");
+  });
+});
+
+describe("Prozentualer Zuschuss mit Höchstbetrag", () => {
+  // Die häufigste Bauform kommunaler Zuschüsse: "20 % der Kosten, höchstens
+  // 300 €". Bis 18.08.2026 rechnete der Prozent-Zweig ungedeckelt, solche
+  // Programme mussten deshalb ohne Betrag aufgenommen werden.
+  const prozent = (over: Partial<FundingProgram> = {}) =>
+    ({ ...programm(), pvPerKwp: undefined, percentOfCost: 0.2, ...over }) as FundingProgram;
+
+  it("deckelt, sobald der Prozentsatz den Höchstbetrag übersteigt", () => {
+    expect(fundingAmount(prozent({ pvCap: 300 }), { technik: "pv", kwp: 10, speicherKwh: 0, kosten: 20000 }, HEUTE).total).toBe(300);
+  });
+
+  it("rechnet unterhalb des Deckels weiter prozentual", () => {
+    expect(fundingAmount(prozent({ pvCap: 300 }), { technik: "pv", kwp: 10, speicherKwh: 0, kosten: 1000 }, HEUTE).total).toBe(200);
+  });
+
+  it("ohne Deckel bleibt es beim reinen Prozentsatz", () => {
+    expect(fundingAmount(prozent(), { technik: "pv", kwp: 10, speicherKwh: 0, kosten: 20000 }, HEUTE).total).toBe(4000);
   });
 });

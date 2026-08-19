@@ -350,15 +350,22 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   // Wenn die fossile Anschaffung teurer ist als die geförderte Wärmepumpe, steht die
   // Kurve schon im ersten Jahr im Plus — das ist dann Amortisation 0, nicht 1. Die
   // Schleife allein hätte hier „1 Jahr" gemeldet.
-  let amortisationsJahre: number | null = kum >= 0 ? 0 : null;
   for (let i = 0; i < cfg.years; i++) {
     // WP-Seite: voller Netzstrom minus PV-Vollnutzen des Jahres (WP-Deckung +
     // Haushaltsstrom-Ersparnis + Einspeisung) — so folgt die Kurve exakt dem TCO.
     const annualSaving = (gasPerYear[i] + fixPerYear + ref.wartungPerYear) - (stromPerYear[i] + wpStandingCostPerYear(cfg) - pvBenefitPerYear[i]);
     kum += annualSaving;
     years.push({ i: i + 1, kum: Math.round(kum), annual: Math.round(annualSaving) });
-    if (amortisationsJahre === null && kum >= 0) amortisationsJahre = i + 1;
   }
+  // Amortisation = das erste Jahr, ab dem die Kurve DAUERHAFT im Plus bleibt —
+  // dieselbe Regel wie in lib/calc.ts. Das erste Kreuzen allein genügt nicht: Die
+  // Jahresersparnis kann später drehen (steigender Strompreis gegen gedeckelten
+  // Brennstoffpfad), und dann meldete der Rechner „amortisiert nach 3 Jahren",
+  // während die Bilanz nach 20 Jahren mit 2.067 € im Minus endete (Council
+  // 18.08.2026, 140 m² teilsaniert, alte Heizkörper, pessimistisches Szenario).
+  // Eine Amortisation, die wieder verschwindet, ist keine.
+  const amortisationsJahre: number | null =
+    years.find((y, idx) => y.kum >= 0 && years.slice(idx).every(z => z.kum >= 0))?.i ?? null;
 
   // 8. CO₂-Einsparung — bewusst gegen FOSSILES Gas gerechnet, auch im Grüngas-Modus.
   // Grüngas ist ein KOSTEN-Szenario (teure Biomethan-Pflicht); die Emissions-Kachel

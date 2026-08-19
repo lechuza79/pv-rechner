@@ -43,6 +43,24 @@ export type AtlasLevel = "de" | "bundesland" | "landkreis" | "gemeinde";
 // Der Sitemap-Zweig für Kreise ist inzwischen da (app/sitemap.ts, hängt an
 // atlasLevelReleased) — beim ersten Anlauf fehlte er und die Welle wäre halb
 // wirkungslos gewesen. Nach einem Flip trotzdem nachsehen statt annehmen.
+//
+// ABER — und das ist seit dem 18.08.2026 der eigentliche Grund, warum `landkreis`
+// hier auf false steht: Die drei Auflagen oben sind inzwischen alle erfüllt, und
+// die Welle wird TROTZDEM nicht freigeschaltet. Nicht wegen des Risikos, sondern
+// weil auf dieser Ebene niemand sucht. Gemessen (docs/seo/befund-2026-08-18-atlas-wellen.md):
+//   - Ein Wettbewerber mit demselben Produkt (wieistmeinsolar.de) hat 139
+//     Platzierungen, davon 8 in den Top 10 — und NULL davon auf einem Suchbegriff
+//     mit dem Wort „Landkreis". 125 der 139 liegen auf Ortsseiten.
+//   - Suchvolumen „photovoltaik landkreis würzburg": 10/Monat. Für Hameln-Pyrmont,
+//     Fulda und Bautzen nicht einmal messbar. „photovoltaik münchen": 320.
+//   - Unsere eigene Kreisseite Hameln-Pyrmont, die durch die zwei Stunden am
+//     27.07. im Index hing, brachte 42 Einblendungen — alle fünf Anfragen dahinter
+//     waren ORTSanfragen („solaranlage hameln"), keine einzige Kreisanfrage. Und
+//     0 Klicks.
+// Die Kreisebene ist damit kein eigenes Suchziel, sondern der Umschlagplatz zur
+// Ortsebene. Der nächste sinnvolle Schritt ist Welle 1 (Gemeinden, oberhalb der
+// Thin-Schwelle) mit Ortsname im Titel — nicht 0b. Wer 0b trotzdem flippen will,
+// braucht eine neue Messung, die diese hier widerlegt, nicht nur grüne Auflagen.
 const RELEASED: Record<AtlasLevel, boolean> = {
   de: true,
   bundesland: true,
