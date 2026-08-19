@@ -10,20 +10,32 @@ Die Regeln selbst stehen im Code (`lib/schulferien.ts`, `lib/outreach-mail.ts`,
 
 Im All-Inkl-KAS unter **E-Mail → E-Mail-Postfächer**:
 
-1. Postfach `hey@solar-check.io` anlegen (falls noch nicht vorhanden). Diese
-   Adresse steht bereits im User-Agent des Kontakt-Sammlers und in der
-   Absenderzeile — sie ist die Adresse, unter der wir ansprechbar sind.
-2. **DKIM einschalten** — im KAS unter *Tools → DNS-Einstellungen* bzw. direkt
-   an der Domain. Gemessen am 19.08.2026: Der CNAME
-   `default._domainkey.solar-check.io → w01cbc22.kasserver.com` steht schon, am
-   Ziel liegt aber **kein Schlüssel**. DKIM ist also eingerichtet, aber nicht
-   aktiv. Nach dem Einschalten prüfen:
+1. Postfach `sebastian@solar-check.io` anlegen. **Persönlich, nicht `hey@`**
+   (Entscheidung des Betreibers, 19.08.2026): Der Brief ist mit „Sebastian
+   Schäder, Betreiber solar-check.io" unterschrieben — ein Absender, der genauso
+   heißt, ist stimmig. `hey@` ist das Muster von Newsletter-Absendern; im
+   Rathaus liest sich eine Personenadresse als Mensch, und genau das ist die
+   Erzählung des ganzen Anschreibens.
+2. **DKIM ist bei All-Inkl automatisch aktiv** — es gibt keinen Schalter. Der
+   Schlüssel steht im KAS unter *Tools → DNS-Einstellungen* als TXT-Eintrag,
+   dessen Name auf `._domainkey` endet; bei solar-check.io lautet der Selektor
+   `kas202603240809`.
+
+   **Den Selektor NICHT raten.** Die Zone trägt einen Wildcard-Eintrag (`*`),
+   also antwortet jede beliebige Selektor-Abfrage — eine Abfrage auf den
+   konventionellen Namen `default._domainkey` liefert das Wildcard-Ziel und
+   sieht aus wie ein kaputter DKIM-Eintrag. Genau darauf ist am 19.08.2026 eine
+   Stunde Suche im KAS verschwendet worden. Prüfen mit dem echten Selektor:
 
    ```
-   curl -s "https://dns.google/resolve?name=w01cbc22.kasserver.com&type=TXT"
+   curl -s "https://dns.google/resolve?name=kas202603240809._domainkey.solar-check.io&type=TXT"
    ```
 
-   Solange dort keine Antwort mit `v=DKIM1` steht, ist DKIM aus.
+   Nur eine Antwort, die `v=DKIM1` enthält, zählt.
+
+   **Wenn der Schlüssel erneuert wird, ändert sich der Selektor** (er trägt ein
+   Datum). Dann `OUTREACH_DKIM_SELECTOR` nachziehen — der Versand verweigert
+   sonst, und das ist die richtige Richtung.
 3. **Keine Weiterleitung ins private Postfach einrichten.** Antworten von
    Gemeinden sind personenbezogene Daten Dritter; eine Auto-Weiterleitung in ein
    privates Google-Konto macht Google zum unbenannten Empfänger — genau der
@@ -33,14 +45,15 @@ Im All-Inkl-KAS unter **E-Mail → E-Mail-Postfächer**:
    vorlesen, nicht in eine Datei schreiben, die eingecheckt wird:
 
    ```
+   OUTREACH_DKIM_SELECTOR=kas202603240809
    OUTREACH_SMTP_HOST=w01cbc22.kasserver.com
    OUTREACH_SMTP_PORT=465
-   OUTREACH_SMTP_USER=hey@solar-check.io
+   OUTREACH_SMTP_USER=sebastian@solar-check.io
    OUTREACH_SMTP_PASS=…
-   OUTREACH_MAIL_FROM=Sebastian Schäder <hey@solar-check.io>
+   OUTREACH_MAIL_FROM=Sebastian Schäder <sebastian@solar-check.io>
    OUTREACH_IMAP_HOST=w01cbc22.kasserver.com
    OUTREACH_IMAP_PORT=993
-   OUTREACH_IMAP_USER=hey@solar-check.io
+   OUTREACH_IMAP_USER=sebastian@solar-check.io
    OUTREACH_IMAP_PASS=…
    ```
 

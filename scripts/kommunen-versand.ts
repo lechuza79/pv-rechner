@@ -208,28 +208,53 @@ function protokolliere(name: string, inhalt: unknown): string {
  * das am Zielsystem `spf=fail, dkim=none, dmarc=fail`, bei einer Absenderdomain,
  * die dort noch nie etwas geschickt hat.
  *
- * Gemessen am 19.08.2026: Der CNAME steht, am Ziel liegt kein Schlüssel. Die
- * Prüfung fragt deshalb den öffentlichen Auflöser und nicht unsere eigene
- * Konfiguration — was zählt, ist, was ein fremder Mailserver findet.
+ * DER SELEKTOR MUSS ANGEGEBEN WERDEN, ER LÄSST SICH NICHT RATEN.
+ *
+ * Erste Fassung fragte fest `default._domainkey` ab — der Konvention nach der
+ * naheliegende Name. All-Inkl vergibt aber einen datierten eigenen Selektor
+ * (`kas202603240809`), und die Zone von solar-check.io trägt zusätzlich einen
+ * Wildcard-Eintrag: Damit ANTWORTET jede beliebige Selektor-Abfrage, nur eben
+ * mit dem Wildcard-Ziel statt mit einem Schlüssel. Das Ergebnis las sich wie
+ * „DKIM ist halb eingerichtet und kaputt", während es in Wahrheit längst lief.
+ *
+ * Eine geratene Prüfung ist schlimmer als keine: Sie behauptet einen Befund.
+ * Deshalb kommt der Selektor aus der Umgebung (`OUTREACH_DKIM_SELECTOR`, mehrere
+ * durch Komma getrennt), und ohne Angabe verweigert die Prüfung die Aussage.
+ * Zu finden im KAS unter Tools → DNS-Einstellungen: der TXT-Eintrag, dessen
+ * Name auf `._domainkey` endet und dessen Wert mit `v=DKIM1` beginnt.
  */
 async function dkimAktiv(domain: string): Promise<{ ok: boolean; hinweis: string }> {
-  try {
-    const res = await fetch(`https://dns.google/resolve?name=default._domainkey.${domain}&type=TXT`, {
-      headers: { accept: "application/dns-json" },
-    });
-    const json = (await res.json()) as { Answer?: { data: string }[] };
-    const treffer = (json.Answer ?? []).map((a) => a.data).find((d) => d.includes("v=DKIM1"));
-    return treffer
-      ? { ok: true, hinweis: "DKIM-Schlüssel veröffentlicht" }
-      : {
-          ok: false,
-          hinweis:
-            `Kein DKIM-Schlüssel unter default._domainkey.${domain}. Im All-Inkl-KAS die DKIM-Signierung ` +
-            "aktivieren und den TXT-Eintrag anlegen — ohne ihn scheitert DMARC bei jeder weitergeleiteten Mail.",
-        };
-  } catch (e) {
-    return { ok: false, hinweis: `DKIM ließ sich nicht prüfen (${(e as Error).message}) — im Zweifel nicht senden.` };
+  const selektoren = (process.env.OUTREACH_DKIM_SELECTOR ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (!selektoren.length) {
+    return {
+      ok: false,
+      hinweis:
+        "OUTREACH_DKIM_SELECTOR ist nicht gesetzt — welcher Selektor signiert, lässt sich nicht raten " +
+        "(ein Wildcard-DNS-Eintrag beantwortet jede Abfrage). Im KAS unter Tools → DNS-Einstellungen den " +
+        "TXT-Eintrag suchen, dessen Name auf ._domainkey endet, und den Teil davor eintragen.",
+    };
   }
+  for (const sel of selektoren) {
+    try {
+      const res = await fetch(`https://dns.google/resolve?name=${sel}._domainkey.${domain}&type=TXT`, {
+        headers: { accept: "application/dns-json" },
+      });
+      const json = (await res.json()) as { Answer?: { data: string }[] };
+      // Der Wert MUSS `v=DKIM1` enthalten — ein Wildcard-Treffer tut das nicht.
+      if ((json.Answer ?? []).some((a) => a.data.includes("v=DKIM1"))) {
+        return { ok: true, hinweis: `DKIM-Schlüssel veröffentlicht (Selektor ${sel})` };
+      }
+    } catch (e) {
+      return { ok: false, hinweis: `DKIM ließ sich nicht prüfen (${(e as Error).message}) — im Zweifel nicht senden.` };
+    }
+  }
+  return {
+    ok: false,
+    hinweis: `Unter ${selektoren.map((s) => `${s}._domainkey.${domain}`).join(", ")} steht kein Schlüssel mit v=DKIM1.`,
+  };
 }
 
 async function senden(p: Paket, limit: number, pauseMs: number): Promise<void> {
@@ -361,11 +386,23 @@ async function senden(p: Paket, limit: number, pauseMs: number): Promise<void> {
 async function probemail(an: string, p: Paket): Promise<void> {
   const b = p.paket[0];
   if (!b) throw new Error("Kein Brief im Paket — erst die Charge festschreiben.");
-  // NUR AN DIE EIGENE DOMAIN. Der Probemail-Zweig läuft vor allen Bremsen —
-  // ein Tippfehler im Parameter schickte den Brief mit „[PROBE]" im Betreff an
-  // eine echte Gemeinde, und die wäre damit verbrannt.
-  if (!/@solar-check\.io$/i.test(an.trim())) {
-    throw new Error(`Probemails gehen nur an Adressen auf solar-check.io — ${an} ist keine.`);
+  // NIE AN EINE GEMEINDE. Der Probemail-Zweig läuft vor allen Bremsen — ein
+  // Tippfehler im Parameter schickte den Brief mit „[PROBE]" im Betreff an ein
+  // echtes Rathaus, und das wäre verbrannt.
+  //
+  // Geprüft wird gegen den Kontaktbestand, NICHT gegen die eigene Domain: Die
+  // Probe muss bei einem fremden Anbieter ankommen (Gmail, Outlook), sonst
+  // prüft unser Mailserver sich selbst und die Kopfzeile
+  // `Authentication-Results` sagt nichts über die Ausrichtung aus.
+  const ziel = an.trim().toLowerCase();
+  const db = await makeClient();
+  const { data: kollision } = await db
+    .from("kommunen_kontakt")
+    .select("region_id")
+    .or(`rollen_email.eq.${ziel},email.eq.${ziel}`)
+    .limit(1);
+  if (kollision?.length) {
+    throw new Error(`${an} ist die Kontaktadresse einer Gemeinde — dorthin geht keine Probemail.`);
   }
   const { transport, konfig } = await baueTransport();
   const info = await transport.sendMail({
