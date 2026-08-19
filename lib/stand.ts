@@ -123,7 +123,19 @@ export const STAND: Record<string, StandSeite> = {
     live: ["Standort-Ertrag"],
   },
 
-  "/balkonkraftwerk-rechner": {
+  // Der Themen-Einstieg rechnet mit denselben Werten wie der Rechner — er zeigt
+  // dieselbe Beispielrechnung als Kurzantwort. Deshalb derselbe Stand, und zwar
+  // aus DENSELBEN Quellen abgeleitet statt als Zweitkopie der Literale: Zieht
+  // der Wächter die Config nach, wandert beides gemeinsam.
+  "/balkonkraftwerk": {
+    eintraege: [
+      { was: "Set- und Speicherpreise", iso: DEFAULT_BALKON_CONFIG.geprueftIso, praezision: "tag", wertIso: DEFAULT_BALKON_CONFIG.validFrom },
+      { was: "rechtliche Angaben", iso: BALKON_RECHT.geprueftIso, praezision: "tag" },
+    ],
+    live: ["Strompreis"],
+  },
+
+  "/balkonkraftwerk/rechner": {
     eintraege: [
       { was: "Set- und Speicherpreise", iso: DEFAULT_BALKON_CONFIG.geprueftIso, praezision: "tag", wertIso: DEFAULT_BALKON_CONFIG.validFrom },
       // Rechtsaussagen tragen bewusst KEINEN Wertstand: Sie sind entweder

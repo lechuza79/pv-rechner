@@ -27,10 +27,18 @@ Seitengattung überhaupt Rankings?" nicht Meinung, sondern messbar:
 | Größe | Wert |
 |---|---|
 | Platzierte Suchbegriffe | 139 |
-| davon in den Top 10 | **8** |
+| davon in den Top 10 | 8 — **davon 6 echte Ortsanfragen** |
 | Summe Suchvolumen aller Platzierungen | 16.200 / Monat |
-| Platzierungen mit dem Wort „Landkreis"/„Kreis" im Suchbegriff | **0** |
-| Platzierungen auf Ortsseiten | 125 von 139 |
+| Platzierungen mit dem Wort „Landkreis"/„Kreis" im Suchbegriff | **1** von 139 |
+| Platzierungen auf Ortsseiten | 123 von 139 (14 Kreisseiten, 2 Startseite) |
+
+**Nachgezählt am 18.08.2026 durch einen adversarialen Prüfer, nachdem die erste
+Fassung dieser Tabelle drei Zahlen zu günstig gerundet hatte** — die 8 Top-10-Treffer
+enthalten „solarcheck" (deren Startseite, kein Ort) und „solarstraße friedrichshafen"
+(ein Straßenname ohne Solar-Absicht); die ausgeschriebene Null bei „Landkreis" war
+eine Behauptung, tatsächlich steht dort „solarförderung rhein erft kreis". Die
+Richtung der Aussage ändert sich dadurch nicht, ihre Belastbarkeit schon: **6 saubere
+Ortstreffer mit zusammen 740 Suchen/Monat.**
 
 Die Gewinner-Seiten sind Gemeindeseiten, die Gewinner-Begriffe sind Ortsnamen:
 „pv erdweg" (Position 5), „pv rendsburg" (7), „pv nienburg" (7), „pv winterberg" (9),
@@ -62,8 +70,11 @@ Volumen, die Verwaltungsebene darüber nicht.
 
 `/solar-atlas/niedersachsen/landkreis-hameln-pyrmont` war während der zwei Stunden am
 27.07.2026 indexiert und stand danach noch im Index, bis Google die Seite am 16.08.
-neu gelesen hat. In den 28 Tagen bis zum 15.08. brachte sie **42 Einblendungen aus
-5 Anfragen — und 0 Klicks**:
+neu gelesen hat. In den 28 Tagen bis zum 15.08. brachte sie **58 Einblendungen und
+0 Klicks**; davon sind 42 auf fünf einzeln ausgewiesene Anfragen zurückzuführen, die
+übrigen 16 verteilen sich auf zu seltene Anfragen, die Google nicht mehr benennt
+(Seitenebene 58, Summe der sichtbaren Anfragen 42 — die Differenz ist keine
+Ungenauigkeit, sondern die Anonymisierungsschwelle der Search Console):
 
 | Anfrage | Einblendungen | Position |
 |---|---|---|
@@ -99,15 +110,21 @@ nach einem konkreten Ort ist nicht vorab beantwortbar.
 **Die Wettbewerbslage bleibt trotzdem hart:** Auf „solarkataster hameln" stehen
 hameln.de, hameln-pyrmont.de und die Klimaschutzagentur auf 1–3, auf „solaratlas bayern"
 der Energie-Atlas Bayern und das Geoportal. Das sind amtliche Dachflächen-Werkzeuge —
-die Intent-Falle vom 13.08. Wir gewinnen dort nicht mit dem Wort „Kataster", sondern mit
-dem Ortsnamen plus unserer eigenen Wortwahl („solaratlas nrw" Position 10,6).
+die Intent-Falle vom 13.08. **Und der Eigenname ist kein Ausweg aus ihr, sondern
+dieselbe Falle unter anderem Namen:** Auch auf „solaratlas bayern" stehen auf Platz 1–10
+ausnahmslos Dachflächen-Kataster. Was bleibt, ist der Ortsname plus einem beschreibenden
+Wort — und das gefragteste ist „Photovoltaik" (Abschnitt 6).
 
 ## 6. Unser eigener Stand (Search Console, 18.07.–15.08.)
 
-Alle 17 Atlas-Seiten zusammen: **926 Einblendungen, 9 Klicks (1,0 %)** — dasselbe
-Artefakt-Muster wie am 13.08. beschrieben. Die Anfragen der Landesseiten sind entweder
-zu breit („photovoltaik rheinland-pfalz", Position 94) oder unser eigenes Nischenwort
-(„solaratlas bayern" 48 Einblendungen auf Position 16,9). Platzierte Suchbegriffe der
+Alle Atlas-Seiten mit Einblendungen zusammen — **18**, nicht 17: Die achtzehnte ist die
+Kreisseite Hameln-Pyrmont aus Abschnitt 4, die eigentlich noindex ist. Zusammen **926
+Einblendungen, 9 Klicks (1,0 %)** — dasselbe Artefakt-Muster wie am 13.08. beschrieben.
+
+**Welches Wort die Nachfrage trägt, ist damit gemessen und nicht geraten:**
+„photovoltaik" steht in **36 Anfragen mit 140 Einblendungen**, der Eigenname
+„solaratlas" in **6 mit 71** — und davon entfallen 48 auf eine einzige Seite (Bayern),
+während NRW auf 2 und RLP auf 5 kommt. Platzierte Suchbegriffe der
 Domain insgesamt: 45 (03.08.: 34, 13.08.: 43), davon 0 in den Top 10.
 
 ## 7. Was daraus folgt
@@ -121,11 +138,32 @@ Domain insgesamt: 45 (03.08.: 34, 13.08.: 43), davon 0 in den Top 10.
    und den zwei echten Fakten je Seite (größte Anlage, benannter Nachbar). Die
    Wettbewerbsmessung sagt jetzt, wofür sich der Aufwand lohnt: **Ortsname + „pv" /
    „solar" / „photovoltaik"** gehört in Titel, Überschrift und Einstieg.
-3. **Sofort und billig: die 17 Landesseiten auf unser eigenes Vokabular schärfen.**
-   „solaratlas nrw" (110/Monat, wir auf 10,6) und „solaratlas bayern" (90/Monat, wir auf
-   16,9) sind die einzigen Begriffe, bei denen wir nahe an Seite 1 stehen und die
-   Intention wirklich passt. Das ist der Anreicherungs-Pilot aus dem Wellenplan — er
-   braucht keine neue Welle.
+3. **Sofort und billig: „Photovoltaik" in die Titel der Regionsseiten.** Das Wort stand
+   dort nirgends — weder im Titel noch in einem sichtbaren Satz —, obwohl es der
+   nachweislich gefragte Begriff ist: Auf unserer stärksten Atlas-Seite
+   (Rheinland-Pfalz) sind die drei größten Anfragen „photovoltaik pfalz" (18
+   Einblendungen), „photovoltaik rheinland-pfalz" (11) und „photovoltaik rheinland
+   pfalz" (7). Über alle Atlas-Seiten: **„photovoltaik" in 36 Anfragen mit 140
+   Einblendungen, „solaratlas" in 6 mit 71.**
+
+   **Zwei verworfene Anläufe stehen davor, beide am selben Tag, beide vom Betreiber
+   gestoppt — und beide sind lehrreicher als das Ergebnis:**
+
+   - **Anlauf 1: „Solaratlas Bayern" als Überschrift.** Gemessen war nur, wie gut wir
+     für den Eigennamen stehen — nicht, was der Begriff wiegt, den er ersetzen sollte.
+     **Regel: Wer einen Begriff durch einen anderen ersetzt, misst BEIDE.**
+   - **Anlauf 2: „Solaratlas Bayern" als Titel.** Klang harmlos („kostet ja nichts"),
+     war aber dieselbe Intent-Falle, die dieses Projekt am 13.08.2026 schon einmal
+     dokumentiert hat: Auf Platz 1–10 zu „solaratlas bayern" steht **ausnahmslos ein
+     Dachflächen-Potenzialkataster** (Energie-Atlas Bayern, Geoportal, Solaratlas des
+     Landkreises Berchtesgadener Land). „Darf ich auf mein Dach?" ist eine andere Frage
+     als „was steht hier schon?". Dazu war die Nachfrage Rauschen: 48 Einblendungen bei
+     Bayern, aber **2** bei NRW und **5** bei RLP — aus einer Seite wurde eine Regel für
+     siebzehn.
+   - **Und eine falsche Zahl, die beim Korrigieren der ersten falschen Zahl entstand:**
+     „solaratlas rlp (720/Monat)" — die 720 gehören zu „solarkataster rlp", einem
+     anderen Begriff aus derselben Tabelle. Für „solaratlas rlp" wurde nie ein Volumen
+     gemessen. **Beim Berichtigen einer Zahl entsteht besonders leicht die nächste.**
 4. **Kreisseiten bleiben trotzdem gebaut und erreichbar** (intern verlinkt, on-demand,
    im Gesundheitscheck). Sie sind der Umschlagplatz zur Ortsebene — nur eben kein
    eigenes Suchziel. Wenn die Ortswelle steht, kann die Kreisebene beiläufig mitlaufen.

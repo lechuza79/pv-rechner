@@ -33,6 +33,10 @@ const VERZEICHNISSE = [
 ];
 const EINZELDATEIEN = [
   "lib/gemeinde-highlight.ts",
+  // Derselbe Fall eine Ebene höher: Fließtext mit MaStR-Zahlen, entstanden
+  // 18.08.2026. Eine Prosadatei ohne Wächter ist genau der Ort, an dem die
+  // nächste handgeschriebene Einheit landet.
+  "lib/region-highlight.ts",
   "components/MastrHeroSection.tsx",
   // Die Landes-Karten zeigen denselben MaStR-Bestand wie die Gemeinde-Karten,
   // lagen aber außerhalb des Suchpfads — genau dort stand „GW" über einer
@@ -42,7 +46,9 @@ const EINZELDATEIEN = [
 ];
 
 /**
- * `${…} kWh` — eine Zahl mit direkt angeklebter Einheit.
+ * `${…} kWh` — eine Zahl mit direkt angeklebter Einheit. Seit den
+ * Wirkungs-Spalten der Ranking-Tabelle gehören auch Tonnen, Euro, Cent und
+ * Kilogramm dazu — ihre Formatter leben ebenfalls in lib/atlas-format.ts.
  *
  * Das Prozentzeichen zählt nur in der ANZEIGE-Form, also mit Leerzeichen davor
  * (`${wert} %`, deutsche Typografie nach DIN 5008). Ohne Leerzeichen ist es
@@ -51,8 +57,12 @@ const EINZELDATEIEN = [
  * Satz, und es gibt für sie nichts zu formatieren. Die Trennung geht ohne
  * Sonderfallliste auf, weil beide Formen sich genau in diesem Leerzeichen
  * unterscheiden.
+ *
+ * Das Euro-Zeichen braucht einen eigenen Zweig: `\b` greift hinter einem
+ * Nicht-Wortzeichen nicht. Es steht bewusst unter `\s*` und nicht unter `\s+`,
+ * sonst rutschte `${x}€` durch.
  */
-const ANGEKLEBT = /\}(?:\s*(?:kWp|MWp|GWp|kWh|MWh|GWh|kW|MW|GW|Wp|W)\b|\s+%)/g;
+const ANGEKLEBT = /\}(?:\s*(?:kWp|MWp|GWp|kWh|MWh|GWh|kW|MW|GW|Wp|W|kg|t|ct)\b|\s*€|\s+%)/g;
 
 /**
  * Begründete Ausnahmen. Jede Zeile hier ist eine bewusste Entscheidung:

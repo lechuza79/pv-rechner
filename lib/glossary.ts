@@ -232,6 +232,33 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     long:
       "Die von der Bundesnetzagentur erhobene durchschnittliche Dauer von Stromausfällen pro Verbraucher und Jahr. 2024 lag der Wert für Deutschland bei 11,7 Minuten, ein international sehr niedriger Wert (zum Vergleich: USA 70–80 Minuten).",
   },
+
+  // Vokabular des Balkon-Clusters. Die drei Begriffe kommen auf Hub, Rechner und
+  // Anmelde-Ratgeber ständig vor und waren bisher nirgends erklärt.
+  steckersolar: {
+    term: "Steckersolargerät",
+    aliases: ["Balkonkraftwerk", "Steckersolar", "Steckersolaranlage", "Mini-PV", "Balkon-PV"],
+    short:
+      "Eine kleine Solaranlage mit ein bis vier Modulen, die über einen Stecker direkt ins Hausnetz einspeist — der amtliche Name für das, was alle Balkonkraftwerk nennen.",
+    long:
+      "Ein Steckersolargerät besteht aus ein bis vier Solarmodulen und einem Wechselrichter und wird über einen Stecker direkt an das Hausnetz angeschlossen — ohne Elektriker, ohne Eingriff in die Installation. Der Wechselrichter darf höchstens 800 Voltampere einspeisen, die Module dürfen zusammen bis 2.000 Wattpeak leisten. Wirtschaftlich zählt fast nur der selbst verbrauchte Strom: Eine Einspeisevergütung gibt es dafür nicht. Im Marktstammdatenregister laufen die Geräte als „Steckerfertige Solaranlage“ — das Wort Balkonkraftwerk kommt dort nicht vor.",
+  },
+  wechselrichter: {
+    term: "Wechselrichter",
+    aliases: ["Inverter", "Modulwechselrichter", "Mikrowechselrichter"],
+    short:
+      "Das Gerät, das den Gleichstrom der Solarmodule in haushaltsüblichen Wechselstrom umwandelt — und damit die Obergrenze setzt, wie viel Leistung ankommt.",
+    long:
+      "Solarmodule liefern Gleichstrom; im Hausnetz fließt Wechselstrom. Diese Umwandlung übernimmt der Wechselrichter. Seine Leistung ist eine andere Zahl als die der Module und wird häufig damit verwechselt: Bei Steckersolargeräten dürfen die Module mehr leisten, als der Wechselrichter durchlässt. Das ist erlaubt und sogar sinnvoll — gekappt wird nur die Mittagsspitze, während morgens und abends spürbar mehr ankommt.",
+  },
+  marktstammdatenregister: {
+    term: "Marktstammdatenregister",
+    aliases: ["MaStR", "Marktstammdaten-Register"],
+    short:
+      "Das amtliche Verzeichnis aller Strom- und Gaserzeugungsanlagen bei der Bundesnetzagentur — dort muss jede Solaranlage eingetragen werden, auch ein Balkonkraftwerk.",
+    long:
+      "Das Marktstammdatenregister der Bundesnetzagentur führt alle Anlagen, die Strom oder Gas erzeugen. Betreiber müssen ihre Anlage dort innerhalb eines Monats nach Inbetriebnahme registrieren; maßgeblich ist der Tag, an dem die Anlage das erste Mal Strom ins Hausnetz einspeist, nicht der Kauf. Seit dem Solarpaket I im Mai 2024 genügt bei Steckersolargeräten diese eine Registrierung — die zusätzliche Meldung beim Netzbetreiber ist entfallen. Die Eintragung ist kostenlos; wer die Frist verstreichen lässt, handelt grundsätzlich ordnungswidrig.",
+  },
 };
 
 export type GlossarySlug = keyof typeof GLOSSARY;

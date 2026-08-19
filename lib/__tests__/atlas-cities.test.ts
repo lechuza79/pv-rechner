@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { releaseFreigegeben } from "../release-plan";
 import { ATLAS_CITIES, slugify, cityPath, bundeslaenderWithCities, citiesInBundesland, liveCities, isCityLive, isCityArchived, archivedCities, isCityPublished, publishedCities, publishedCitiesInBundesland, publishedBundeslaender, fundingFor } from "../atlas-cities";
 import { landProgramBundeslaender, getFundingProgram } from "../funding-programs";
 import nextConfig from "../../next.config.js";
@@ -53,13 +54,30 @@ describe("archived cities (inactive but published programs)", () => {
     // nicht archiviert. Die Regel selbst prüft der Test darunter, ohne Namen.
     expect(slugs).not.toContain("heidelberg"); // aktiv → live, nicht Archiv
   });
-  it("live and archived are disjoint; published is their union", () => {
+  it("live and archived are disjoint; published is their released subset", () => {
     const live = new Set(liveCities().map((c) => c.slug));
     const archived = archivedCities().map((c) => c.slug);
     for (const s of archived) expect(live.has(s)).toBe(false);
+
+    // Bis zum 19.08.2026 galt hier Gleichheit: veröffentlicht = live ∪ archiviert.
+    // Seit dem Releaseplan ist es eine TEILMENGE — der Programmstatus sagt, ob
+    // eine Seite etwas zu sagen hätte, der Plan sagt, ob sie jetzt erscheinen
+    // soll. Genau diese Trennung war der Zweck: Vorher war die Veröffentlichung
+    // eine Nebenwirkung des Status, und 48 neue Programme hätten 48 Seiten
+    // gemacht, ohne dass jemand es entschieden hat.
     const published = new Set(publishedCities().map((c) => c.slug));
-    expect(published.size).toBe(live.size + archived.length);
+    const nachStatus = new Set([...live, ...archived]);
+    for (const s of published) expect(nachStatus.has(s)).toBe(true);
+    expect(published.size).toBeLessThanOrEqual(nachStatus.size);
+
     for (const c of publishedCities()) expect(isCityPublished(c)).toBe(true);
+    // Und die Differenz ist nicht Zufall, sondern der Plan: Was der Status
+    // hergäbe, aber der Plan nicht freigibt, bleibt draußen.
+    const gesperrt = [...nachStatus].filter((s) => !published.has(s));
+    for (const s of gesperrt) {
+      const c = ATLAS_CITIES.find((x) => x.slug === s)!;
+      expect(releaseFreigegeben("foerder-stadt", c.ags)).toBe(false);
+    }
   });
   // Die Regel ohne Namen: Solange wir einem Programm nicht trauen, bekommt seine
   // Stadt keine Seite — weder live noch als Archiv. Vorher hing dieser Test an
