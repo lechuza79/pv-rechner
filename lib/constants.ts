@@ -336,10 +336,16 @@ export const WP_FUEL_OPTIONS: {
   // Es ist bewusst eine UNTERGRENZE, kein Marktwert: Reale Öl-Brennwertkessel
   // erreichen laut Herstellerdatenblättern 92–93 % (Brennwert). Damit rechnen wir
   // die Ölheizung weiterhin etwas zu schlecht — und der verbleibende Fehler geht
-  // weiter zugunsten der Wärmepumpe. Der Marktwert selbst ist noch nicht gesetzt,
+  // weiter zugunsten der Wärmepumpe. Der Marktwert selbst steht bewusst NICHT hier,
   // weil die Labelzahl zu 85 % bei 30 °C Rücklauf gemessen wird (Fußbodenheizung);
-  // an alten Heizkörpern kondensiert ein Ölkessel kaum. Die saubere Lösung ist eine
-  // Staffelung nach Heizsystem — offen mit Frist, siehe scripts/waermepumpe-verify.md.
+  // an alten Heizkörpern kondensiert ein Ölkessel kaum. Eine einzelne „genauere"
+  // Zahl gibt es für diesen Kessel also gar nicht — sie hängt an der System-
+  // temperatur. Das ist damit eine ABGESCHLOSSENE Modellprämisse, kein offener
+  // Punkt: belegte Untergrenze statt geschätzter Mitte, Fehlerrichtung benannt.
+  // Wieder aufgemacht nur mit echtem Auslöser (Norm im Repo oder Umbau auf
+  // temperaturabhängige Wirkungsgrade), und dann für Gas und Öl GEMEINSAM —
+  // die amtlichen Aufwandszahlen trennen nicht nach Brennstoff. Begründung und
+  // Vorarbeit: scripts/waermepumpe-verify.md.
   { id: "oil", label: "Heizöl", refLabel: "Ölheizung", kind: "oil", price: FUEL_PRICE.oil.price, efficiency: 0.92, co2PerKwh: FUEL_PRICE.oil.co2PerKwh },
   // Die beiden Bestands-Einträge sind der Fall „Anschaffung 0" — und der heißt
   // laut Beschreibung des Feldes ausdrücklich „meine Heizung ist noch jung".

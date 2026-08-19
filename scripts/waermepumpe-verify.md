@@ -99,14 +99,35 @@ zusätzlich in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
   über 20 Jahre 2.200 € gegen die Wärmepumpe, und die fossile Seite hinge weiter
   an der alten Quelle. Beim nächsten Lauf beide Seiten aus derselben Quelle neu
   belegen oder den Befund als Entscheidung vorlegen.
-- **TEILWEISE GELÖST (19.08.2026) — Nutzungsgrad einer NEU eingebauten Ölheizung.**
+- **ABGESCHLOSSEN (19.08.2026) — Nutzungsgrad einer NEU eingebauten Ölheizung.**
+  **Keine Frist mehr. Das ist eine Modellprämisse, kein liegengebliebener Punkt.**
+  Drei adversariale Prüfungen an einem Tag, drei Widerlegungen — und alle drei aus
+  demselben strukturellen Grund: Ein PRÄZISER Marktwert für diesen Kessel gibt es
+  nicht als eine Zahl. Er hängt an der Systemtemperatur (ein Ölkessel kondensiert
+  an alten Heizkörpern kaum, an einer Fußbodenheizung voll), und die Norm, die das
+  sauber auflöst, ist kostenpflichtig. Jeder Versuch, die Lücke mit einer einzelnen
+  Zahl zu schließen, endete bei einem Handfaktor.
+  **Deshalb steht bewusst die belegte UNTERGRENZE (0,92) statt einer geschätzten
+  Mitte** — dasselbe Prinzip wie beim Bioheizöl: lieber eine Zahl, die nachweislich
+  zu vorsichtig ist und deren Richtung dransteht, als eine, die genauer aussieht
+  und es nicht ist. Der verbleibende Fehler ist **benannt und begrenzt**: höchstens
+  rund sechs Prozentpunkte, immer zugunsten der Wärmepumpe, in einem einzelnen
+  Zweig des Rechners.
+  **Wieder aufgemacht wird das nur mit einem echten Auslöser**, nicht mit einem
+  Kalendertag: wenn DIN V 18599-5 im Repo liegt, oder wenn der Rechner ohnehin auf
+  temperaturabhängige Kesselwirkungsgrade umgebaut wird. Dann gilt: **Gas muss
+  mitwandern** (die amtlichen Aufwandszahlen trennen nicht nach Brennstoff — wer nur
+  Öl anfasst, stellt die beiden auf verschiedene Quellen), und die vorbereitete
+  Grundlage steht unten in der Historie.
+
+  **Historie (Stand der Umsetzung):**
   **Gesetzt ist jetzt 0,92**: der gesetzliche Mindestwert der Ökodesign-Verordnung
   (86 % jahreszeitbedingte Raumheizungs-Energieeffizienz, Brennwert-Basis), auf die
   Heizwert-Skala unseres Ölpreises umgerechnet (× 1,066). Dazu ein eigener
   Bestands-Eintrag „Vorhandene Ölheizung" (0,85) — damit rutscht ein Öl-Haushalt
   bei „Anschaffung 0" nicht mehr still auf Gas.
-  **Was noch offen ist (Frist 01/2027):** der MARKT-Wert statt der Untergrenze, und
-  zwar **gestaffelt nach Heizsystem**. Reale Öl-Brennwertkessel liegen laut
+  **Vorbereitet für einen späteren Umbau (KEINE Frist):** der Marktwert statt der
+  Untergrenze, gestaffelt nach Heizsystem. Reale Öl-Brennwertkessel liegen laut
   Herstellerdatenblättern bei 92–93 % (Brennwert) — aber diese Zahl wird zu 85 %
   bei 30 °C Rücklauf gemessen, also unter Fußbodenheizungs-Bedingungen; an alten
   Heizkörpern (55 °C) kondensiert ein Ölkessel kaum, weil sein Abgas-Taupunkt bei
