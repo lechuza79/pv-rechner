@@ -13,6 +13,7 @@ import {
   type FundingProgram,
 } from "../../../../lib/funding-programs";
 import { DEFAULT_BALKON_CONFIG as CFG } from "../../../../lib/balkon-config";
+import { gemeindeGeo } from "../../../../lib/atlas-geo";
 import { pageMetadata } from "../../../../lib/seo";
 import { v, space, pad, sectionGap, iconSizes } from "../../../../lib/theme";
 
@@ -51,6 +52,7 @@ const S = {
   traeger: { fontWeight: 700, fontSize: "var(--font-size-body)" } as React.CSSProperties,
   zeile: { fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), lineHeight: 1.6, marginTop: 2 } as React.CSSProperties,
   betrag: { fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-positive") } as React.CSSProperties,
+  ortLink: { display: "inline-block", marginTop: space.xs, fontSize: "var(--font-size-small)", fontWeight: 600, color: v("--color-accent"), textDecoration: "none" } as React.CSSProperties,
   cta: { display: "inline-block", marginTop: space.md, padding: pad("sm", "lg"), borderRadius: v("--radius-md"), fontSize: "var(--font-size-body)", fontWeight: 700, background: v("--color-accent"), color: v("--color-text-on-accent"), textDecoration: "none" } as React.CSSProperties,
   hinweis: { background: v("--color-bg-muted"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md"), padding: pad("md", "lg"), fontSize: "var(--font-size-small)", lineHeight: 1.6, color: v("--color-text-secondary") } as React.CSSProperties,
 };
@@ -101,6 +103,30 @@ export default async function BalkonFoerderungPage() {
   );
 
   const aktiv = programme.filter((p) => fundingZaehlt(p)).length;
+
+  // Eine repräsentative Postleitzahl je Programm — damit der Rechner von hier
+  // aus schon auf den Ort eingestellt startet, statt den Besucher die
+  // Postleitzahl noch einmal eintippen zu lassen, die er gerade angeklickt hat.
+  //
+  // Dieselbe Auflösung, aus der auch die Standort-Erträge im Verzeichnis
+  // kommen: Sie dreht die vorhandene PLZ→Gemeinde-Tabelle einmal um und hält
+  // sie im Modul. Die 62 Abfragen kosten deshalb einen Tabellenaufbau, nicht 62.
+  // Fünfstellige Schlüssel gehören kreisfreien Städten und werden auf acht
+  // Stellen aufgefüllt — dieselbe Normalisierung wie im Releaseplan. Ohne sie
+  // fehlte ausgerechnet Zweibrücken und Potsdam der Knopf, also zwei Städte mit
+  // aktivem Programm.
+  //
+  // Nur für kommunale Programme: Ein Landes- oder Kreisprogramm hat keinen
+  // einen Ort, auf den sich ein Rechner einstellen ließe — dort auf gut Glück
+  // eine Postleitzahl zu setzen hieße, einen Standort zu erfinden.
+  const plzFuer = new Map<string, string>();
+  for (const p of programme) {
+    if (p.level !== "kommune" || !p.agsCode) continue;
+    const schluessel = p.agsCode.length === 5 ? `${p.agsCode}000` : p.agsCode;
+    if (schluessel.length !== 8) continue;
+    const geo = await gemeindeGeo(schluessel);
+    if (geo?.plz) plzFuer.set(p.id, geo.plz);
+  }
 
   return (
     <div style={S.page}>
@@ -182,6 +208,19 @@ export default async function BalkonFoerderungPage() {
                             <IconExternal size={iconSizes.sm} />
                           </a>
                         </div>
+                        {/* Nur wo es etwas zu holen gibt: Bei einem
+                            ausgeschöpften Topf führte der Knopf in eine
+                            Rechnung, die den Zuschuss ohnehin weglässt. */}
+                        {zaehlt && plzFuer.get(p.id) && (
+                          <Link
+                            href={`/balkonkraftwerk/rechner?plz=${plzFuer.get(p.id)}`}
+                            style={S.ortLink}
+                          >
+                            <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                              Für {p.region} durchrechnen <IconArrowRight size={iconSizes.xs} />
+                            </span>
+                          </Link>
+                        )}
                       </div>
                       <FundingStatusBadge status={p.status} />
                     </div>
