@@ -73,6 +73,7 @@ export async function GET(req: NextRequest) {
     empfaenger: string;
     subject: string;
     body: string;
+    body_html: string;
     variante: string;
     seite_url: string | null;
     rangliste_url: string | null;
@@ -128,6 +129,7 @@ export async function GET(req: NextRequest) {
       empfaenger: z.rollen_email,
       subject: gebaut.draft.subject,
       body: gebaut.draft.body,
+      body_html: gebaut.draft.bodyHtml,
       variante: gebaut.variante,
       seite_url: gebaut.seiteUrl,
       rangliste_url: gebaut.ranglisteUrl,

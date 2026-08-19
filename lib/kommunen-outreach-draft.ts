@@ -18,6 +18,11 @@
 // eine andere Zahl steht als auf der verlinkten Seite.
 
 import { kurzOrtsname } from "./atlas-orte";
+import { tokens } from "./theme";
+
+// Farben NIE getippt — auch nicht in einer Mail (CLAUDE.md, Farb-Single-Source).
+const GRAU = tokens["--color-text-muted"];
+const RAHMEN = tokens["--color-border"];
 import type { AskVariante } from "./kommunen-ask";
 
 export type DraftContext = {
@@ -164,11 +169,57 @@ export type DraftContext = {
   widgetUrl?: string | null;
 };
 
-export type OutreachDraft = { subject: string; body: string; meldung: string };
+export type OutreachDraft = { subject: string; body: string; bodyHtml: string; meldung: string };
+
+/**
+ * Die HTML-Fassung wird AUS DEM TEXT erzeugt, nie daneben geschrieben.
+ *
+ * Zwei getrennt gepflegte Fassungen desselben Briefes laufen auseinander — und
+ * die, die auseinanderläuft, ist die, die niemand liest (dieselbe Systematik
+ * wie überall in diesem Projekt: eine Quelle, keine zweite). Deshalb baut diese
+ * Funktion das HTML mechanisch aus der Textfassung: Absätze werden Absätze,
+ * Adressen werden Verweise, der Fuß wird klein und grau.
+ *
+ * BEWUSST MINIMAL. Keine Schriftart, keine Farben außer dem Grau des Fußes,
+ * keine Bilder, keine Tabellen, kein Kopfbereich. Die Mail soll aussehen wie
+ * geschrieben, nicht wie gestaltet — eine gestaltete Mail ist bei einer
+ * unverlangten Erstansprache genau das falsche Signal, und ein Bild wäre ein
+ * Spam-Muster.
+ */
+export function briefAlsHtml(body: string): string {
+  const esc = (t: string) =>
+    t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  // Adressen anklickbar machen. Der Punkt am Satzende gehört nicht zur Adresse.
+  const verlinke = (t: string) =>
+    t.replace(/https?:\/\/[^\s<]+[^\s<.,;:)]/g, (u) => `<a href="${u}">${u}</a>`);
+
+  const [oben, ...unten] = body.split(`\n${FUSS_TRENNER}\n`);
+  const absatz = (t: string, stil = "") =>
+    `<p${stil ? ` style="${stil}"` : ""}>${verlinke(esc(t)).replace(/\n/g, "<br>")}</p>`;
+
+  const kopf = oben.split("\n\n").map((a) => absatz(a)).join("\n");
+  const fussText = unten.join(`\n${FUSS_TRENNER}\n`);
+  const fuss = fussText
+    ? `\n<hr style="border:0;border-top:1px solid ${RAHMEN};margin:24px 0 12px">\n` +
+      fussText
+        .split("\n\n")
+        .map((a) => absatz(a, `color:${GRAU};font-size:13px;line-height:1.5`))
+        .join("\n")
+    : "";
+  return `<div style="max-width:640px">\n${kopf}${fuss}\n</div>`;
+}
 
 const SIGNATURE = `Sebastian Schäder
-Betreiber solar-check.io
-Impressum: https://solar-check.io/impressum · Datenschutz: https://solar-check.io/datenschutz`;
+Betreiber solar-check.io`;
+
+/**
+ * Alles, was nach der Unterschrift kommt: Pflichtangaben, keine Botschaft.
+ *
+ * In der Textfassung durch eine Linie abgesetzt, in der HTML-Fassung zusätzlich
+ * kleiner und grau. Es soll erkennbar der Fuß sein und nicht mit dem Angebot
+ * konkurrieren.
+ */
+const FUSS_TRENNER = "--";
 
 /**
  * Der ORTSNAME statt der Gattung: "Website Ihrer Markt" stand so im Brief, weil
@@ -458,7 +509,11 @@ Der Text ist frei verwendbar, gern auch gekürzt. Ich bitte nur darum, den Link 
 Mit freundlichen Grüßen
 ${SIGNATURE}
 
+${FUSS_TRENNER}
+Impressum: https://solar-check.io/impressum
+Datenschutz: https://solar-check.io/datenschutz
+
 ${dsgvoHinweis(herkunftsangabe(c.name, c.empfaenger))}`;
 
-  return { subject: c.betreff, body, meldung };
+  return { subject: c.betreff, body, bodyHtml: briefAlsHtml(body), meldung };
 }

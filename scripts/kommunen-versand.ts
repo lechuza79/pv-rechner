@@ -83,6 +83,8 @@ type Brief = {
   empfaenger: string;
   subject: string;
   body: string;
+  /** Dieselbe Nachricht als HTML, mechanisch aus dem Text erzeugt. */
+  body_html: string;
   variante: string;
   seite_url: string | null;
   rangliste_url: string | null;
@@ -322,7 +324,13 @@ async function senden(p: Paket, limit: number, pauseMs: number): Promise<void> {
         to: b.empfaenger,
         replyTo: konfig.replyTo,
         subject: b.subject,
+        // BEIDE FASSUNGEN. Der Empfänger bekommt die, die sein Programm
+        // bevorzugt; der Text ist dabei nicht die Notlösung, sondern die
+        // Hauptfassung — das HTML unterscheidet sich allein durch den
+        // abgesetzten Fuß. Eine Mail nur als HTML zu schicken ist bei einer
+        // Erstansprache das schlechtere Signal.
         text: b.body,
+        html: b.body_html,
         headers: mailKopfzeilen({ widerspruchAn }),
       });
       // ERST schreiben, dann weiter: Bricht der Lauf danach ab, ist die Mail
@@ -411,6 +419,7 @@ async function probemail(an: string, p: Paket): Promise<void> {
     replyTo: konfig.replyTo,
     subject: `[PROBE] ${b.subject}`,
     text: b.body,
+    html: b.body_html,
     headers: mailKopfzeilen({ widerspruchAn: konfig.replyTo ?? adresseAus(konfig.from) }),
   });
   transport.close();
