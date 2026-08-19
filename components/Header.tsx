@@ -254,7 +254,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
             in den Zustand einer Komponente. */}
         <nav className="hdr-nav" style={{ alignItems: "center", gap: 24 }}>
             <DesktopDropdown
-              triggerLabel="Rentabilität berechnen"
+              triggerLabel="PV-Rechner"
               triggerHref="/photovoltaik-rechner"
               items={RECHNER_ITEMS}
               activePage={activePage}
@@ -273,7 +273,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
             />
             <Link href="/ratgeber" style={linkStyle("ratgeber")}>Ratgeber</Link>
             <DesktopDropdown
-              triggerLabel="Strommix & Energiedaten"
+              triggerLabel="Strommix"
               triggerHref="/strommix-deutschland"
               items={ENERGIE_ITEMS}
               activePage={activePage}
@@ -351,7 +351,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
             padding: "8px 24px 16px",
             boxShadow: v('--shadow-md'),
           }}>
-            <MobileSection title="Rentabilität berechnen" items={RECHNER_ITEMS} activePage={activePage} onNavigate={closeMenu} />
+            <MobileSection title="PV-Rechner" items={RECHNER_ITEMS} activePage={activePage} onNavigate={closeMenu} />
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
@@ -367,7 +367,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
-            <MobileSection title="Strommix & Energiedaten" items={ENERGIE_ITEMS} activePage={activePage} onNavigate={closeMenu} />
+            <MobileSection title="Strommix" items={ENERGIE_ITEMS} activePage={activePage} onNavigate={closeMenu} />
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
