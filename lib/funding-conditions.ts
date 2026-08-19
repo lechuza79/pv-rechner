@@ -127,6 +127,11 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "zweibruecken-balkonkraftwerke", "unterhaching-energiesparen",
   "hueckelhoven-balkonkraftwerke", "weinheim-effizienz", "ottobrunn-foerderprogramme",
   "feucht-klimaschutz",
+  // Aus dem Parallel-Lesen vom 18.08.2026, Beträge selbst gegengelesen.
+  "limburgerhof-balkonkraftwerke", "gernsheim-foerderprogramme", "gudensberg-balkonkraftwerke",
+  "poing-energie", "goch-balkonkraftwerke", "herzberg-balkonkraftwerke",
+  "herbrechtingen-balkonkraftwerke", "weyhe-klimaschutz", "moormerland-balkonkraftwerke",
+  "bad-krozingen-balkon-pv",
 ];
 
 /**
