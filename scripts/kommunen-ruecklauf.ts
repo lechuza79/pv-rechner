@@ -122,10 +122,15 @@ async function main(): Promise<void> {
   const { ImapFlow } = await import("imapflow");
   const client = new ImapFlow({ host, port, secure: port === 993, auth: { user, pass }, logger: false });
   await client.connect();
-  // AUCH DER JUNK-ORDNER. Der Spamfilter des Postfachs legt Zustellberichte
-  // fremder Systeme regelmäßig dorthin; die betroffenen Gemeinden blieben sonst
+  // AUCH DER SPAM-ORDNER. Der Filter des Postfachs legt Zustellberichte fremder
+  // Systeme regelmäßig dorthin; die betroffenen Gemeinden blieben sonst
   // dauerhaft als „kontaktiert" stehen, ohne dass jemand den Bounce sieht.
-  const ordner = ["INBOX", "INBOX.Junk", "Junk", "Spam"];
+  //
+  // Die Namen sind am 19.08.2026 am echten Postfach abgelesen (All-Inkl:
+  // INBOX, Gesendet, Entwürfe, Archiv, Spam, Papierkorb). Die beiden anderen
+  // Schreibweisen stehen als Rückfallebene für ein anderes Postfach; einen
+  // Ordner, den es nicht gibt, überspringt die Schleife ohne Fehler.
+  const ordner = ["INBOX", "Spam", "Junk", "INBOX.Spam"];
 
   const befunde: Befund[] = [];
   const unklar: Befund[] = [];
