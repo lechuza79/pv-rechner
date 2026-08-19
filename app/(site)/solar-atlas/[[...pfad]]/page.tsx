@@ -262,11 +262,28 @@ async function AtlasBody({
    *
    * Die Rangliste der 16 liegt in den Kindern der Deutschland-Region und trägt
    * dort bereits `rankDach`; wir lesen sie, statt eine zweite zu rechnen (zwei
-   * Ranglisten laufen auseinander, das ist im Projekt schon passiert). Beide
-   * Reads sind `unstable_cache`-gedeckt und laufen nur auf 16 Seiten.
+   * Ranglisten laufen auseinander, das ist im Projekt schon passiert).
+   *
+   * DER FEHLER WIRD GESCHLUCKT — und das ist hier kein Kaschieren, sondern der
+   * Unterschied zwischen einem fehlenden Satz und einer kaputten Seite. Der
+   * Aufruf ist die teuerste Abfrage des Systems: Für die Deutschland-Region
+   * fällt der Präfix-Filter weg (`prefixOf("de") === ""`), die Aggregation läuft
+   * also über den gesamten Bestand. Ein serieller Testlauf am 19.08.2026 hat sie
+   * genau dabei erwischt — „DB read timeout after 8000ms (mastr_children)" auf
+   * der Deutschland-Kinderliste. Ohne dieses `catch` hätte dieselbe Zeitüber-
+   * schreitung die ganze Bundesland-Seite mitgerissen, obwohl sie nur einen
+   * Nebensatz speist. Fällt sie aus, fehlt der Rangsatz und der Rest der Seite
+   * steht.
+   *
+   * Die Abfrage ist `unstable_cache`-gedeckt (children-v2, eine Stunde) und
+   * läuft ohnehin für die Deutschland-Seite; die 16 Länderseiten teilen sich
+   * denselben Eintrag. Zusätzliche Last entsteht also höchstens einmal je
+   * Stunde, nicht je Aufruf.
    */
   const geschwister =
-    region.level === "bundesland" ? await getChildren({ region_id: "de", level: "de" } as AtlasRegion) : [];
+    region.level === "bundesland"
+      ? await getChildren({ region_id: "de", level: "de" } as AtlasRegion).catch(() => [])
+      : [];
   const eigenerRang = geschwister.find((g) => g.region_id === region.region_id)?.rankDach ?? null;
   const kpiTiles = [
     { label: "Solaranlagen", value: nf(atlas.solar.total_count), metric: "count" },
