@@ -219,18 +219,21 @@ const LEISE_ZEILEN = [
  * Auszeichnung zu viel: Der Unterschied soll spürbar sein, nicht auffällig.
  * Grau bleibt allein im Fuß, wo es um Pflichtangaben geht.
  */
-const LEISE_STIL = "font-size:13px";
+const LEISE_STIL = "font-size:12px";
 
 /**
- * KEINE Schriftgröße für den Fließtext.
+ * BEIDE GRÖSSEN WERDEN GESETZT, sonst stimmt die Staffelung nicht.
  *
- * Ein Versuch mit ausdrücklichen 16px sah im echten Postfach zu groß aus —
- * Mailprogramme rechnen die Vorgabe anders um als ein Browser. Die
- * Voreinstellung des Empfängers ist die, die er lesen will; wir machen nur die
- * Nebensachen kleiner. Der Zeilenabstand bleibt gesetzt, der schadet in keiner
- * Größe.
+ * Zwei Fehlversuche, beide im echten Postfach gesehen: 16px für den Fließtext
+ * war deutlich zu groß. Gar keine Angabe war noch schlechter — Apple Mail setzt
+ * unausgezeichnetes HTML kleiner als 13px, damit war der Brieftext KLEINER als
+ * seine eigene Fußzeile.
+ *
+ * Die Lehre: Wer eine Staffelung will, muss beide Enden angeben. Eine Größe
+ * gegen eine unbekannte Voreinstellung zu stellen, ist keine Staffelung,
+ * sondern eine Wette.
  */
-const TEXT_STIL = "line-height:1.6";
+const TEXT_STIL = "font-size:14px;line-height:1.6";
 
 export function briefAlsHtml(body: string): string {
   const esc = (t: string) =>
@@ -264,7 +267,7 @@ export function briefAlsHtml(body: string): string {
     ? `\n<hr style="border:0;border-top:1px solid ${RAHMEN};margin:24px 0 12px">\n` +
       fussText
         .split("\n\n")
-        .map((a) => absatz(a, `color:${GRAU};font-size:13px;line-height:1.5`))
+        .map((a) => absatz(a, `color:${GRAU};font-size:12px;line-height:1.5`))
         .join("\n")
     : "";
   return `<div style="max-width:640px;${TEXT_STIL}">\n${kopf}${fuss}\n</div>`;

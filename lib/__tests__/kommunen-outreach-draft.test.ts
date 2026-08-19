@@ -633,7 +633,10 @@ describe("HTML-Fassung", () => {
   it("stellt die Quellenzeile kursiv und leise", () => {
     const h = renderOutreachDraft(BASIS).bodyHtml;
     expect(h).toMatch(/font-style:italic[\s\S]{0,80}?>[\s\S]{0,40}?Quelle:/);
-    expect(h).toMatch(/font-size:13px/);
+    expect(h).toMatch(/font-size:12px/);
+    // Und der Fließtext ist größer als seine Nebensachen — beide Größen werden
+    // gesetzt, sonst entscheidet die Voreinstellung des Mailprogramms.
+    expect(h).toContain("font-size:14px");
   });
 
   // Die Signatur steht mitten in einem Absatz („Mit freundlichen Grüßen", Name,
@@ -642,8 +645,8 @@ describe("HTML-Fassung", () => {
   // blieb groß und wurde dadurch zur größten Zeile des Briefes.
   it("macht die ganze Signatur leise, nicht nur die Rollenzeile", () => {
     const h = renderOutreachDraft(BASIS).bodyHtml;
-    expect(h).toMatch(/<span style="font-size:13px">Sebastian Schäder<\/span>/);
-    expect(h).toMatch(/<span style="font-size:13px">Betreiber solar-check\.io<\/span>/);
+    expect(h).toMatch(/<span style="font-size:12px">Sebastian Schäder<\/span>/);
+    expect(h).toMatch(/<span style="font-size:12px">Betreiber solar-check\.io<\/span>/);
     // LEISER HEISST KLEINER, NICHT GRAUER: Grau bleibt allein im Fuß.
     expect(h).not.toMatch(/<span style="[^"]*color:[^"]*">Sebastian/);
     // Die Grußformel darüber gehört zum Brief und bleibt normal.
