@@ -52,20 +52,18 @@ describe("Versandweg", () => {
     expect(adresseAus("hey@solar-check.io")).toBe("hey@solar-check.io");
   });
 
-  it("die Kopfzeilen tragen einen Ein-Klick-Widerspruch und keine Empfänger-Kennung", () => {
-    const k = mailKopfzeilen({ widerspruchAn: "hey@solar-check.io" });
-    expect(k["List-Unsubscribe"]).toContain("mailto:hey@solar-check.io");
-    // Nichts, woraus sich der Empfänger ableiten ließe.
-    expect(JSON.stringify(k)).not.toContain("Musterdorf");
-  });
-
-  // Die Mail ist ein einzelner Textbrief an einen Empfänger. Sich per Kopfzeile
-  // selbst als Massensendung zu deklarieren, hilft der Zustellung nicht und
-  // fließt bei Microsoft in die Massen-Einstufung ein.
-  it("deklariert sich nicht selbst als Massensendung", () => {
-    const k = mailKopfzeilen({ widerspruchAn: "hey@solar-check.io" });
+  // AN DER ECHTEN PROBEMAIL GEMESSEN (19.08.2026): `List-Unsubscribe` lässt
+  // Apple Mail ein Banner „Diese E-Mail ist von einer Mailing-Liste" ÜBER den
+  // Brief setzen. Der Empfänger liest „Massenpost", bevor er die Anrede sieht.
+  // Dasselbe gilt für `Precedence: bulk` und `Auto-Submitted`.
+  it("deklariert sich mit keiner Kopfzeile selbst als Massensendung", () => {
+    const k = mailKopfzeilen({ widerspruchAn: "sebastian@solar-check.io" });
+    expect(k["List-Unsubscribe"]).toBeUndefined();
+    expect(k["List-Id"]).toBeUndefined();
     expect(k["Precedence"]).toBeUndefined();
     expect(k["Auto-Submitted"]).toBeUndefined();
+    // Und nichts, woraus sich der Empfänger ableiten ließe.
+    expect(JSON.stringify(k)).not.toContain("Musterdorf");
   });
 
   it("verweigert einen Anbieter außerhalb des SPF-Eintrags", () => {

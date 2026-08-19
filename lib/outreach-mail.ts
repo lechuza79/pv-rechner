@@ -289,22 +289,35 @@ export function fehlendePflichtangaben(body: string): string[] {
  * Datenschutzerklärung sagt zu, dass ein Aufruf sich keiner angeschriebenen
  * Kommune zuordnen lässt.
  */
-export function mailKopfzeilen(o: { widerspruchAn: string }): Record<string, string> {
-  return {
-    "List-Unsubscribe": `<mailto:${o.widerspruchAn}?subject=${encodeURIComponent("Keine weiteren Nachrichten")}>`,
-  };
-  // `Precedence: bulk` und `Auto-Submitted: no` standen hier und sind wieder
-  // raus. Die Mail ist ein einzelner Textbrief an einen Empfänger und sieht aus
-  // wie von Hand geschrieben — sich per Kopfzeile selbst als Massensendung zu
-  // deklarieren, hilft der Zustellung nicht (Google hat `Precedence` aus seinen
-  // Absenderrichtlinien gestrichen) und fließt bei Microsoft in die
-  // Massen-Einstufung ein. `Auto-Submitted: no` ist wirkungslos: Eine Mail ohne
-  // dieses Feld gilt nach RFC 3834 ohnehin als von Hand verfasst.
+export function mailKopfzeilen(_o: { widerspruchAn: string }): Record<string, string> {
+  // LEER — UND DAS IST DAS ERGEBNIS EINER MESSUNG, KEINE NACHLÄSSIGKEIT.
   //
-  // `List-Unsubscribe` bleibt: Es gibt dem Empfänger den Widerspruch als
-  // Ein-Klick statt als Suchaufgabe. Als `mailto` und ohne
-  // Ein-Klick-Endpunkt — ein Widerspruch soll bei einem Menschen ankommen und
-  // die Gemeinde dauerhaft sperren.
+  // Hier standen nacheinander drei Kopfzeilen, alle gut gemeint, alle wieder
+  // entfernt:
+  //
+  // `Precedence: bulk` — Google hat den Header aus seinen Absenderrichtlinien
+  // gestrichen, und bei Microsoft fließt er in die Massen-Einstufung ein. Er
+  // half nichts und schadete möglicherweise.
+  //
+  // `Auto-Submitted: no` — wirkungslos: Eine Mail ohne dieses Feld gilt nach
+  // RFC 3834 ohnehin als von Hand verfasst.
+  //
+  // `List-Unsubscribe` — der teuerste. Am 19.08.2026 an der ersten Probemail
+  // gemessen: Apple Mail setzt daraufhin ein Banner ÜBER den Brief, „Diese
+  // E-Mail ist von einer Mailing-Liste", mit einem „Abo beenden"-Knopf. Der
+  // Empfänger liest also „Massenpost", bevor er die Anrede sieht — und der
+  // ganze Brief ist darauf gebaut, dass ein Mensch einem anderen schreibt.
+  // Outlook und Gmail zeigen dasselbe Muster.
+  //
+  // Der Widerspruch geht dadurch nicht verloren, im Gegenteil: Eine Antwort an
+  // den Absender genügt, sie kommt bei einem Menschen an und führt zum
+  // dauerhaften Sperrvermerk. Der Ein-Klick-Endpunkt nach RFC 8058 ist erst ab
+  // 5.000 Mails am Tag gefordert; wir senden zwanzig.
+  //
+  // WER HIER WIEDER ETWAS EINTRÄGT, misst vorher an einer echten Probemail
+  // nach, wie es beim Empfänger aussieht. Kopfzeilen sind unsichtbar, ihre
+  // Wirkung nicht.
+  return {};
 }
 
 /**
