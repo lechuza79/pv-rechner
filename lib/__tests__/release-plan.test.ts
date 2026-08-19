@@ -191,6 +191,31 @@ describe("Releaseplan", () => {
     expect(m[0].text).toContain("release:messen");
   });
 
+  it("macht aus fehlender Messung KEIN Rot — nur ein widersprüchlicher Plan ist ein Fehler", () => {
+    // Der Befund einer Parallel-Session am 19.08.2026: Mein erster Entwurf legte
+    // jede Meldung auf Rot. Damit stand der Gesundheitscheck alle drei Stunden
+    // rot, solange eine Messung ausstand — startete jedes Mal die Selbstheilung
+    // und hätte nach drei Läufen den Betreiber gefragt. Eine fehlende Messung ist
+    // aber ein legitimer Zustand über Tage. Rot, das dauernd leuchtet, wird
+    // weggefiltert; dann verpasst man das echte.
+    const bald: Schub[] = [
+      { id: "test-bald", gattung: "foerder-stadt", datum: "2026-08-25", status: "geplant", orte: ["09999001"], begruendung: "x", nachweis: null },
+    ];
+    expect(planMeldungen(new Date("2026-08-19"), bald)[0].schwere).toBe("auffaellig");
+
+    const alt: Schub[] = [
+      { id: "test-alt", gattung: "foerder-stadt", datum: "2026-01-01", status: "geplant", orte: ["09999001"], begruendung: "x", nachweis: null },
+    ];
+    expect(planMeldungen(new Date("2026-08-19"), alt)[0].schwere).toBe("auffaellig");
+
+    // Ein Plan, der sich widerspricht, ist dagegen ein Defekt.
+    const kaputt: Schub[] = [
+      { id: "a", gattung: "foerder-stadt", datum: "2026-09-01", status: "geplant", orte: ["09999001"], begruendung: "x", nachweis: null },
+      { id: "b", gattung: "foerder-stadt", datum: "2026-09-03", status: "geplant", orte: ["09999002"], begruendung: "x", nachweis: null },
+    ];
+    expect(planMeldungen(new Date("2026-08-19"), kaputt).some((m) => m.schwere === "fehler")).toBe(true);
+  });
+
   it("schweigt, solange ein Schub weit weg ist oder seine Messung hat", () => {
     // Eine Meldung, die bei jedem Lauf angeht, wird weggefiltert — und dann
     // verpasst man die echte. Dieselbe Regel wie bei der gelben Schwelle des

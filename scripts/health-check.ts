@@ -970,9 +970,18 @@ async function main() {
     `Releaseplan: ${RELEASE_PLAN.length} Schübe, ${planOffen.length} offen` +
       (planOffen.length ? ` — ${planOffen.map((p) => p.schub).join(", ")}` : ""),
   );
-  // Immer an Claude, nie an den Betreiber: Ein anstehender Schub ist ein
-  // Arbeitsschritt, keine Entscheidung — dieselbe Trennung wie beim Prüfstand.
-  for (const p of planOffen) forClaude.push(p.text);
+  // Nie an den Betreiber: Ein anstehender Schub ist ein Arbeitsschritt, keine
+  // Entscheidung. Und nur ein widersprüchlicher Plan ist ROT — eine fehlende
+  // Messung ist Arbeitsvorrat und steht tage- bis wochenlang an. Stünde der
+  // Gesundheitscheck deswegen alle drei Stunden auf Rot, liefe jedes Mal die
+  // Selbstheilung an, nach drei Läufen ginge eine Frage an den Betreiber, und
+  // vor allem gewöhnte es uns ab, Rot ernst zu nehmen. Genau davor warnt die
+  // Meldelogik in CLAUDE.md — die gelbe Schwelle sitzt aus demselben Grund bei
+  // 4 s und nicht im Normalbereich.
+  for (const p of planOffen) {
+    if (p.schwere === "fehler") forClaude.push(p.text);
+    else warnings.push(p.text);
+  }
 
   // ── Bericht ───────────────────────────────────────────────────────────────
   const ampel =
