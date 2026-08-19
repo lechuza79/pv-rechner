@@ -57,7 +57,7 @@ const EMPFEHLUNG = "app/(site)/pv-bedarf-berechnen/empfehlung.tsx";
 const EINSPEISE = "app/(site)/einspeiseverguetung-rechner/rechner.tsx";
 const WP_RECHNER = "app/(site)/waermepumpe-rechner/waermepumpe.tsx";
 const KLIMA = "app/(site)/klimaanlage-stromkosten/klimaanlage.tsx";
-const BALKON = "app/(site)/balkonkraftwerk-rechner/balkon.tsx";
+const BALKON = "app/(site)/balkonkraftwerk/rechner/balkon.tsx";
 
 export const INFLOWS: Inflow[] = [
   {

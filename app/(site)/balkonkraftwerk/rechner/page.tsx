@@ -1,17 +1,17 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { ErrorBoundary } from "../../../components/ErrorBoundary";
-import Faq from "../../../components/Faq";
-import RelatedLinks from "../../../components/RelatedLinks";
-import StandNote from "../../../components/StandNote";
-import { balkonFaq } from "../../../lib/faq";
-import { pageMetadata } from "../../../lib/seo";
-import { v } from "../../../lib/theme";
-import { BALKON_RECHT, BALKON_DACH_HINWEIS_KWH, DEFAULT_BALKON_CONFIG as CFG } from "../../../lib/balkon-config";
+import { ErrorBoundary } from "../../../../components/ErrorBoundary";
+import Faq from "../../../../components/Faq";
+import RelatedLinks from "../../../../components/RelatedLinks";
+import StandNote from "../../../../components/StandNote";
+import { balkonFaq } from "../../../../lib/faq";
+import { pageMetadata } from "../../../../lib/seo";
+import { v } from "../../../../lib/theme";
+import { BALKON_RECHT, BALKON_DACH_HINWEIS_KWH, DEFAULT_BALKON_CONFIG as CFG } from "../../../../lib/balkon-config";
 import Balkon from "./balkon";
 
 export const metadata: Metadata = pageMetadata({
-  path: "/balkonkraftwerk-rechner",
+  path: "/balkonkraftwerk/rechner",
   title: "Balkonkraftwerk-Rechner: Ertrag & Amortisation berechnen",
   description:
     "Kostenloser Balkonkraftwerk-Rechner: Ertrag, Stromersparnis und Amortisation für dein Steckersolar-Set — standortgenau, mit und ohne Speicher. Ohne Anmeldung, ohne Verkaufsanrufe.",
@@ -99,7 +99,7 @@ export default function BalkonPage() {
           eigene Dachfläche — und für alle, die klein anfangen wollen.
         </p>
 
-        <Faq items={balkonFaq()} title="Häufige Fragen zum Balkonkraftwerk" currentPath="/balkonkraftwerk-rechner" />
+        <Faq items={balkonFaq()} title="Häufige Fragen zum Balkonkraftwerk" currentPath="/balkonkraftwerk/rechner" />
 
         {/* Aktualisierungsstand. Zwei Daten, weil es zwei Sachen sind: die
             Marktpreise stammen aus der Config-Prüfung, die Rechtsangaben aus dem
@@ -107,10 +107,10 @@ export default function BalkonPage() {
             gemeinsames Datum wäre für eines von beiden gelogen. Welche Stände
             diese Seite trägt, steht in lib/stand.ts — dieselbe Quelle, aus der
             die Sitemap ihr `lastmod` nimmt. */}
-        <StandNote pfad="/balkonkraftwerk-rechner" />
+        <StandNote pfad="/balkonkraftwerk/rechner" />
 
         <RelatedLinks
-          currentPath="/balkonkraftwerk-rechner"
+          currentPath="/balkonkraftwerk/rechner"
           links={[
             { href: "/photovoltaik-rechner", label: "Photovoltaik-Rechner", desc: "Für das eigene Dach: Amortisation, Rendite und Eigenverbrauch — alle Annahmen transparent editierbar." },
             { href: "/photovoltaik-neigungswinkel", label: "Neigungswinkel & Ausrichtung", desc: "Wie viel Ertrag jede Kombination aus Neigung und Himmelsrichtung übrig lässt." },
