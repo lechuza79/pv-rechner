@@ -325,6 +325,7 @@ es eine — und dann gehört sie in **einen** Satz plus Empfehlung.
 | Strommix-Langzeitreihen (monatlicher Scan) | CO₂-Reihen einer neuen UBA-Ausgabe — Council prüft die **Spaltenüberschrift**, nicht die Plausibilität (die Nachbarspalten sind rechnerisch nicht unterscheidbar) | Erzeugungsreihe, geänderte Tabellenstruktur, Wechsel der gelesenen Spalte |
 | Wärmepumpe (quartalsweise) | Investition (Basis, Steigung, Heizkörpertausch) | BEG-Sätze, WP-Tarif, Gaspreis |
 | Geräte-Config (quartalsweise) | Set-/Gerätepreise, Effizienzen **nach der Systematik** | neue Gerätekategorie, neue Effizienz-Systematik |
+| Freiflächen-Zuschlagswerte (3× jährlich) | veröffentlichte Ausschreibungsrunde ins gleitende Fenster, **vollständiges** Ausschreibungsjahr in die Jahresreihe | Fenstergröße, Gewichtungsregel, Versatz-Regel (§ 37e), unvollständiges Jahr |
 | Förderprogramme (täglich + quartalsweise) | Programm abschalten, Sätze senken, Programm einschalten nach Träger-Beleg | neues Programm aufnehmen |
 | Grüngas / GModG | Verkündungs-Flag, Stufenwerte nach Gesetzestext | Quotengesetz nach § 42a, neue Stufen |
 | Legal (quartalsweise) | faktische Rechtsstände in Texten | Struktur der Rechtstexte |

@@ -105,24 +105,39 @@ export const FREIFLAECHE_AW_CT =
 export const FREIFLAECHE_GESETZLICHER_BASISWERT_CT = 7.0;
 
 /**
- * Datenstand dieser Werte (ISO).
+ * Stand der WERTE (ISO) — wandert nur, wenn sich eine Zahl bewegt hat.
  *
- * Hier stand „sichtbar auf /datenstand" — das stimmte nicht: Die Seite führt
- * keinen Freiflächen-Eintrag, und weder `lib/pruefstand.ts` noch ein Runbook
- * kennt diese Datei. Der Datenstand wird also von nichts überwacht; er wandert
- * nur, wenn jemand von Hand nachsieht. Eine Zusage über den eigenen Code gilt
- * erst, wenn sie am Code geprüft ist — deshalb steht hier jetzt, was zutrifft.
+ * Hier stand einmal „sichtbar auf /datenstand"; das war falsch, die Seite führt
+ * keinen Freiflächen-Eintrag. Seit dem 19.08.2026 stimmt der zweite Teil des
+ * damaligen Befunds nicht mehr: Diese Datei hat einen Wächter
+ * (`scripts/freiflaeche-verify.md`) und steht in `lib/pruefstand.ts`, ihr
+ * Prüfdatum wird also überwacht. Auf einer Seite steht es weiterhin nicht —
+ * die Atlas-Bewertung, die diese Werte benutzt, trägt keine Stand-Zeile.
  */
 export const FREIFLAECHE_VALID_FROM = "2026-08-18";
 
 /**
- * Nächste fällige Prüfung: Der letzte Gebotstermin des Jahres 2026 ist der
- * 1. Dezember; sein Ergebnis erscheint erfahrungsgemäß binnen weniger Wochen.
- * Dann ist zweierlei fällig — das gleitende Fenster oben nachführen UND das
- * dann vollständige Ausschreibungsjahr 2026 unten in
- * FREIFLAECHE_AUSSCHREIBUNG_JAHRE eintragen.
+ * Tag des letzten Laufs, der die Leitquelle ERREICHT hat — auch wenn er nichts
+ * geändert hat (Wächter-Gate, Regel 9: „geprüft und unverändert" ist das
+ * Normalergebnis und genau die Auskunft, die dieses Datum gibt).
+ *
+ * Ein Lauf, der an einer Bot-Prüfung, einem 404 oder einer Umstrukturierung der
+ * Amtsseite gescheitert ist, lässt das Datum stehen und meldet den Fehlschlag.
  */
-export const FREIFLAECHE_REVIEW_BY = "2027-01-15";
+export const FREIFLAECHE_GEPRUEFT_ISO = "2026-08-18";
+
+/**
+ * Nächste fällige Prüfung: Der letzte Gebotstermin des Jahres 2026 ist der
+ * 1. Dezember (§ 28a Abs. 1 EEG 2023); sein Ergebnis erscheint erfahrungsgemäß
+ * binnen weniger Wochen. Dann ist zweierlei fällig — das gleitende Fenster oben
+ * nachführen UND das dann vollständige Ausschreibungsjahr 2026 unten in
+ * FREIFLAECHE_AUSSCHREIBUNG_JAHRE eintragen.
+ *
+ * Das Datum liegt bewusst NACH dem Januar-Lauf des Wächters (25.01.), nicht
+ * davor: Eine Frist, die verstreicht, bevor der zuständige Lauf überhaupt
+ * stattfindet, meldet jedes Jahr denselben Fehlalarm und bringt niemandem etwas.
+ */
+export const FREIFLAECHE_REVIEW_BY = "2027-01-31";
 
 export const FREIFLAECHE_QUELLE =
   "Bundesnetzagentur, Ausschreibungen für Solaranlagen des ersten Segments (beendete Ausschreibungen / Statistiken)";
