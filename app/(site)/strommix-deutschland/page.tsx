@@ -13,7 +13,7 @@ export const metadata: Metadata = pageMetadata({
   description:
     "Der deutsche Strommix live und aktuell: wie viel Solar, Wind, Kohle und Gas gerade im Netz sind — heute, im Monat und im Jahresvergleich. Daten: Fraunhofer ISE.",
   ogImageTitle: "Deutschlands Strommix — live",
-  ogImageSubtitle: "Solar, Wind, Gas, Kohle in Echtzeit. Quelle: Fraunhofer ISE.",
+  ogImageSubtitle: "Solar, Wind, Gas, Kohle — stündlich aktuell. Quelle: Fraunhofer ISE.",
   keywords: [
     "Strommix Deutschland",
     "Strommix Deutschland aktuell",

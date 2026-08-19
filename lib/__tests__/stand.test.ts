@@ -141,9 +141,12 @@ describe("Stand-Zeile: getrennte Daten für getrennte Sachen", () => {
   it("die Daten kommen aus den Configs, nicht aus lib/stand.ts", () => {
     // Ein hier getipptes Datum wäre eine Zweitkopie — sie bliebe beim nächsten
     // Wächter-Lauf zurück, und die Seite behauptete eine Prüfung von gestern.
+    // Geprüft wird die ganze Datei, nicht nur die Tabelle: Vorher endete der
+    // Ausschnitt an `export const monatJahr` — als die Formatierer nach
+    // stand-format.ts zogen, hätte dieser Anker ins Leere gezeigt und die
+    // Prüfung wäre still verrutscht.
     const quelle = ohneKommentare(readFileSync(join(ROOT, "lib", "stand.ts"), "utf8"));
-    const tabelle = quelle.slice(quelle.indexOf("export const STAND"), quelle.indexOf("export const monatJahr"));
-    expect(tabelle).not.toMatch(/iso:\s*["'`]/);
+    expect(quelle).not.toMatch(/(?:^|\W)(?:iso|wertIso):\s*["'`]/);
   });
 
   it("die sichtbaren Daten sind die der Configs", () => {
@@ -212,20 +215,62 @@ describe("Stand-Zeile: dasselbe Datum steht in der Sitemap", () => {
     }
   });
 
-  it("jede Seite mit <StandNote> hat einen Eintrag — und umgekehrt", () => {
+  it("jede Seite mit Stand-Zeile hat einen Eintrag — und umgekehrt", () => {
+    // Zwei Aufrufformen, eine Aussage:
+    //   • Server-Seiten rendern <StandNote pfad="…"> direkt.
+    //   • Rechner, deren Stand-Zeile INNERHALB des Client-Rahmens sitzt, lassen
+    //     ihre Server-Seite `standSeite("…")` lesen und reichen den fertigen
+    //     Datensatz durch. Sonst lägen die sieben Config-Module aus lib/stand.ts
+    //     im Browser-Bundle (Prüfagent, 17.08.2026).
+    // Beide nennen den Pfad als Literal — genau deshalb ist diese Prüfung
+    // überhaupt möglich, und deshalb darf keine der beiden Formen ihn aus einer
+    // Variablen bauen.
     const seiten = join(ROOT, "app", "(site)");
-    const gefunden = new Set<string>();
+    const gefunden = new Map<string, string>(); // Pfad → Datei, die ihn nennt
     const suchen = (dir: string) => {
       for (const name of readdirSync(dir)) {
         const p = join(dir, name);
         if (statSync(p).isDirectory()) suchen(p);
         else if (name.endsWith(".tsx")) {
-          for (const m of readFileSync(p, "utf8").matchAll(/StandNote\s+pfad="([^"]+)"/g)) gefunden.add(m[1]);
+          const quelle = readFileSync(p, "utf8");
+          for (const re of [/StandNote\s+pfad="([^"]+)"/g, /standSeite\("([^"]+)"\)/g]) {
+            for (const m of quelle.matchAll(re)) gefunden.set(m[1], p);
+          }
         }
       }
     };
     suchen(seiten);
-    expect([...gefunden].sort()).toEqual(Object.keys(STAND).sort());
+    expect([...gefunden.keys()].sort()).toEqual(Object.keys(STAND).sort());
+  });
+
+  it("ein durchgereichter Datensatz wird auch gerendert", () => {
+    // `standSeite("…")` in einer Server-Seite beweist nur, dass der Datensatz
+    // GEHOLT wird. Ohne diese zweite Frage könnte eine Stand-Zeile spurlos
+    // verschwinden, während der Strukturtest oben weiter grün bliebe — dieselbe
+    // Falle wie am 29.07.2026, als eine Textkorrektur in einem Feld landete, das
+    // nie gerendert wird. Gerendert wird sie von einer Schwester-Datei im selben
+    // Routen-Ordner (der Rechner, in dessen Rahmen die Zeile sitzt).
+    const seiten = join(ROOT, "app", "(site)");
+    const treffer: { pfad: string; dir: string }[] = [];
+    const suchen = (dir: string) => {
+      for (const name of readdirSync(dir)) {
+        const p = join(dir, name);
+        if (statSync(p).isDirectory()) suchen(p);
+        else if (name.endsWith(".tsx")) {
+          for (const m of readFileSync(p, "utf8").matchAll(/standSeite\("([^"]+)"\)/g)) {
+            treffer.push({ pfad: m[1], dir });
+          }
+        }
+      }
+    };
+    suchen(seiten);
+    expect(treffer.length, "keine Seite reicht mehr einen Stand-Datensatz durch").toBeGreaterThan(0);
+    for (const { pfad, dir } of treffer) {
+      const rendert = readdirSync(dir)
+        .filter(n => n.endsWith(".tsx"))
+        .some(n => /<StandNoteView\s/.test(readFileSync(join(dir, n), "utf8")));
+      expect(rendert, `${pfad}: holt den Stand-Datensatz, rendert ihn aber nirgends`).toBe(true);
+    }
   });
 });
 

@@ -11,7 +11,7 @@ import DachField from "../../../components/DachField";
 import ResultSection from "../../../components/ResultSection";
 import { calcEigenverbrauch, calcWeightedFeedIn } from "../../../lib/calc";
 import { dachErtragHinweis, dachErtragKwp, dachNeigungsFaktor } from "../../../lib/dach-ertrag";
-import { DACHARTEN, DEGRAD, FEED_IN_YEARS, NO_PLZ_DEFAULT_YIELD, PERSONEN } from "../../../lib/constants";
+import { DACHARTEN, DEGRAD, FEED_IN_YEARS, NATIONAL_AVG_YIELD, PERSONEN } from "../../../lib/constants";
 import { eegReformStandLabel, eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
 import {
   FEED_IN_BASIS,
@@ -118,7 +118,7 @@ export default function EinspeiseRechner() {
   // Ertrag = Standort-Optimum × Dach. Die Regel steht in lib/dach-ertrag.ts und
   // gilt für alle Rechner gleich — hier wird sie nur aufgerufen.
   const neigungsFaktor = dachNeigungsFaktor(dachartIdx, ausrichtung, neigungGrad);
-  const ertragKwp = dachErtragKwp(standortYield ?? NO_PLZ_DEFAULT_YIELD, dachartIdx, ausrichtung, neigungGrad);
+  const ertragKwp = dachErtragKwp(standortYield ?? NATIONAL_AVG_YIELD, dachartIdx, ausrichtung, neigungGrad);
 
   const jahre = useMemo(() => {
     const list: number[] = [];
@@ -441,7 +441,12 @@ export default function EinspeiseRechner() {
               <div style={label}>Personen im Haushalt</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, marginBottom: space.lg }}>
                 {PERSONEN.map((p, i) => (
-                  <button key={p.label} type="button" style={chip(personenIdx === i)} onClick={() => setPersonenIdx(i)}>
+                  // Kennzeichnung wie an einer Auswahlkarte: Die Chips sind
+                  // bewusst schmal, sollen für den Flow-Läufer aber genauso
+                  // bedienbar sein. Die Gruppe trennt sie vom Speicher darunter
+                  // — beide Fragen stehen in EINEM Schritt.
+                  <button key={p.label} type="button" data-flow-option={p.label === "1" ? "1 Person" : `${p.label} Personen`} data-flow-group="personen"
+                    aria-pressed={personenIdx === i} style={chip(personenIdx === i)} onClick={() => setPersonenIdx(i)}>
                     {p.label}
                   </button>
                 ))}
@@ -463,7 +468,8 @@ export default function EinspeiseRechner() {
           <div style={label}>Batteriespeicher</div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, marginBottom: space.lg }}>
             {SPEICHER_OPTIONS.map((s) => (
-              <button key={s} type="button" style={chip(speicherKwh === s)} onClick={() => setSpeicherKwh(s)}>
+              <button key={s} type="button" data-flow-option={s === 0 ? "Kein Speicher" : `${s} kWh Speicher`} data-flow-group="speicher"
+                aria-pressed={speicherKwh === s} style={chip(speicherKwh === s)} onClick={() => setSpeicherKwh(s)}>
                 {s === 0 ? "Kein Speicher" : `${s} kWh`}
               </button>
             ))}

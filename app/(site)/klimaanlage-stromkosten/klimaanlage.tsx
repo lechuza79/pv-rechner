@@ -1,8 +1,11 @@
 "use client";
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import OptionCard from "../../../components/OptionCard";
-import StandNote from "../../../components/StandNote";
+import FlowNav from "../../../components/FlowNav";
+import StandNoteView from "../../../components/StandNoteView";
+import { type StandSeite } from "../../../lib/stand-format";
 import InlineEdit from "../../../components/InlineEdit";
 import ResultSection from "../../../components/ResultSection";
 import InfoTooltip from "../../../components/InfoTooltip";
@@ -61,8 +64,19 @@ const PROJ_YEAR = (() => {
 })();
 
 
-export default function Klimaanlage() {
+// `stand` kommt fertig aufgelöst von der Server-Seite (page.tsx). Der Rechner
+// liest ihn NICHT selbst aus `lib/stand.ts`: Das Modul zieht sieben Configs
+// nach sich, von denen hier nur die Klima-Config gebraucht wird — im Browser
+// lägen sonst sechs fremde Datentabellen.
+export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
+  const router = useRouter();
   const [step, setStep] = useState(0);
+  // Welche Fragen wirklich beantwortet sind. Die Werte behalten ihre Startwerte
+  // (die Rechnung braucht sie), geben sich aber nicht mehr als Auswahl aus —
+  // Flow-Konvention: keine Vorauswahl, Weiter erst nach echter Wahl.
+  const [beantwortet, setBeantwortet] = useState<Set<string>>(new Set());
+  const markBeantwortet = (key: string) =>
+    setBeantwortet(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
   const [deviceId, setDeviceId] = useState<AcInputs["deviceId"]>("portasplit");
   const [rooms, setRooms] = useState(CFG.defaultRooms);
   const [roomM2, setRoomM2] = useState(CFG.defaultRoomM2);
@@ -111,6 +125,28 @@ export default function Klimaanlage() {
     setStep(target);
   };
   const back = () => step > 0 && setStep(step - 1);
+
+  // Was jeder Schritt braucht — an einer Stelle. Die PLZ im letzten Schritt ist
+  // bewusst KEINE Bedingung: Ohne sie rechnet der Rechner mit dem deutschen
+  // Durchschnitt weiter und sagt das auch. Raumgröße und Postleitzahl sind
+  // Verfeinerungen, keine Fragen mit Vorauswahl.
+  const stepAnforderung: { erfuellt: boolean; hinweis: string }[] = [
+    { erfuellt: beantwortet.has("geraet"), hinweis: "Bitte erst einen Gerätetyp wählen." },
+    {
+      erfuellt: beantwortet.has("raeume") && beantwortet.has("sonne"),
+      hinweis: beantwortet.has("raeume")
+        ? "Bitte noch angeben, wie sonnig die Räume liegen."
+        : "Bitte Anzahl der Räume und Sonnenlage angeben.",
+    },
+    {
+      erfuellt: beantwortet.has("temperatur") && beantwortet.has("zeitfenster"),
+      hinweis: beantwortet.has("temperatur")
+        ? "Bitte noch angeben, wann die Anlage läuft."
+        : "Bitte Zieltemperatur und Laufzeit angeben.",
+    },
+  ];
+  const stepBeantwortet = stepAnforderung[step]?.erfuellt ?? true;
+  const stepHinweis = stepAnforderung[step]?.hinweis ?? "";
 
   const fetchCooling = useCallback(async (inputPlz: string) => {
     if (!/^\d{5}$/.test(inputPlz)) return;
@@ -201,14 +237,19 @@ export default function Klimaanlage() {
             {/* 0: Gerätetyp */}
             {step === 0 && (
               <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 10 }}>
-                {CFG.devices.map(d => (
-                  <button key={d.id} onClick={() => setDeviceId(d.id)} style={{
+                {CFG.devices.map(d => {
+                  const aktiv = beantwortet.has("geraet") && deviceId === d.id;
+                  return (
+                  // Kennzeichnung von Hand statt OptionCard: Die Gerätekarte
+                  // trägt drei Zeilen plus die Effizienz rechts oben, dafür ist
+                  // die Auswahlkarte nicht gebaut.
+                  <button key={d.id} data-flow-option={d.label} aria-pressed={aktiv} onClick={() => { setDeviceId(d.id); markBeantwortet("geraet"); }} style={{
                     textAlign: "left", padding: "14px 16px", borderRadius: v('--radius-md'), cursor: "pointer",
-                    background: deviceId === d.id ? v('--color-accent-dim') : v('--color-bg-muted'),
-                    border: deviceId === d.id ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
+                    background: aktiv ? v('--color-accent-dim') : v('--color-bg-muted'),
+                    border: aktiv ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
                   }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                      <span style={{ fontSize: 14, fontWeight: 700, color: deviceId === d.id ? v('--color-accent') : v('--color-text-primary') }}>{d.label}</span>
+                      <span style={{ fontSize: 14, fontWeight: 700, color: aktiv ? v('--color-accent') : v('--color-text-primary') }}>{d.label}</span>
                       <span style={{ fontSize: 11, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-text-muted'), whiteSpace: "nowrap" }}>Effizienz {d.seer.toString().replace(".", ",")}</span>
                     </div>
                     <div style={{ fontSize: 12, color: v('--color-text-secondary'), lineHeight: 1.5, marginTop: 6 }}>{d.what}</div>
@@ -216,7 +257,8 @@ export default function Klimaanlage() {
                       Typenschild: {d.labelMetric} {d.labelValue.toString().replace(".", ",")} ({d.labelClass})
                     </div>
                   </button>
-                ))}
+                  );
+                })}
                 <div style={{ fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.5, marginTop: 2 }}>
                   Der <GlossaryHint /> sagt, wie effizient gekühlt wird: Ein Split-Gerät zieht für dieselbe Kühlung
                   nur einen Bruchteil des Stroms eines Monoblocks. Wir rechnen für alle drei Typen mit der Effizienz
@@ -230,14 +272,18 @@ export default function Klimaanlage() {
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Wie viele Räume kühlst du?</div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 6, marginBottom: 20 }}>
-                  {[1, 2, 3, 4, 5].map(n => (
-                    <button key={n} onClick={() => setRooms(n)} style={{
+                  {[1, 2, 3, 4, 5].map(n => {
+                    const aktiv = beantwortet.has("raeume") && rooms === n;
+                    return (
+                    <button key={n} data-flow-option={n === 1 ? "1 Raum" : `${n} Räume`} data-flow-group="raeume" aria-pressed={aktiv}
+                      onClick={() => { setRooms(n); markBeantwortet("raeume"); }} style={{
                       padding: "14px 4px", borderRadius: v('--radius-md'), fontSize: 16, fontWeight: 700, cursor: "pointer", textAlign: "center",
-                      background: rooms === n ? v('--color-accent-dim') : v('--color-bg-muted'),
-                      border: rooms === n ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
-                      color: rooms === n ? v('--color-accent') : v('--color-text-secondary'),
+                      background: aktiv ? v('--color-accent-dim') : v('--color-bg-muted'),
+                      border: aktiv ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
+                      color: aktiv ? v('--color-accent') : v('--color-text-secondary'),
                     }}>{n}</button>
-                  ))}
+                    );
+                  })}
                 </div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Fläche je Raum</div>
                 <div style={{
@@ -263,7 +309,7 @@ export default function Klimaanlage() {
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
                   {CFG.exposureOptions.map(opt => (
-                    <OptionCard key={opt.id} selected={exposure === opt.id} onClick={() => setExposure(opt.id)} label={opt.label} sub={opt.sub} />
+                    <OptionCard key={opt.id} group="sonne" selected={beantwortet.has("sonne") && exposure === opt.id} onClick={() => { setExposure(opt.id); markBeantwortet("sonne"); }} label={opt.label} sub={opt.sub} />
                   ))}
                 </div>
                 <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.5 }}>
@@ -278,23 +324,27 @@ export default function Klimaanlage() {
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Auf welche Temperatur kühlen?</div>
                 <div style={{ display: "grid", gridTemplateColumns: `repeat(${CFG.targetTempOptions.length}, 1fr)`, gap: 6, marginBottom: 20 }}>
-                  {CFG.targetTempOptions.map(t => (
-                    <button key={t} onClick={() => setTargetTemp(t)} style={{
+                  {CFG.targetTempOptions.map(t => {
+                    const aktiv = beantwortet.has("temperatur") && targetTemp === t;
+                    return (
+                    <button key={t} data-flow-option={`${t} °C`} data-flow-group="temperatur" aria-pressed={aktiv}
+                      onClick={() => { setTargetTemp(t); markBeantwortet("temperatur"); }} style={{
                       padding: "12px 4px", borderRadius: v('--radius-md'), cursor: "pointer", textAlign: "center",
-                      background: targetTemp === t ? v('--color-accent-dim') : v('--color-bg-muted'),
-                      border: targetTemp === t ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
-                      color: targetTemp === t ? v('--color-accent') : v('--color-text-secondary'),
+                      background: aktiv ? v('--color-accent-dim') : v('--color-bg-muted'),
+                      border: aktiv ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
+                      color: aktiv ? v('--color-accent') : v('--color-text-secondary'),
                     }}>
                       <div style={{ fontSize: 16, fontWeight: 700, fontFamily: v('--font-mono') }}>{t} °C</div>
                       <div style={{ fontSize: 10, color: v('--color-text-muted'), marginTop: 2 }}>{TARGET_LABELS[t]}</div>
                     </button>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Wann läuft die Anlage?</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8, marginBottom: 20 }}>
                   {WINDOWS.map(w => (
-                    <OptionCard key={w.id} selected={window_ === w.id} onClick={() => setWindow(w.id)} label={w.label} sub={w.sub} />
+                    <OptionCard key={w.id} group="zeitfenster" selected={beantwortet.has("zeitfenster") && window_ === w.id} onClick={() => { setWindow(w.id); markBeantwortet("zeitfenster"); }} label={w.label} sub={w.sub} />
                   ))}
                 </div>
 
@@ -352,15 +402,16 @@ export default function Klimaanlage() {
             )}
 
             {/* Nav */}
-            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 24 }}>
-              {step > 0 ? (
-                <button onClick={back} style={{ padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>Zurück</button>
-              ) : (
-                <Link href="/" style={{ padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center" }}>Zurück</Link>
-              )}
-              <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <>Ergebnis anzeigen <IconArrowRight size={iconSizes.md} /></> : <>Weiter <IconArrowRight size={iconSizes.md} /></>}</span>
-              </button>
+            <div style={{ marginTop: 24 }}>
+              <FlowNav
+                weiterAktiv={stepBeantwortet}
+                weiterLabel={step === STEPS.length - 1 ? "Ergebnis anzeigen" : "Weiter"}
+                onWeiter={next}
+                // Im ersten Schritt führt Zurück aus dem Flow heraus auf die
+                // Startseite — wie vorher, nur im gemeinsamen Baustein.
+                onZurueck={step > 0 ? back : () => router.push("/")}
+                inaktivHinweis={stepHinweis}
+              />
             </div>
           </div>
         )}
@@ -702,7 +753,7 @@ export default function Klimaanlage() {
         {/* Innerhalb der Rechner-Spalte, nicht dahinter: Der Rahmen ist
             mindestens bildschirmhoch — ein Absatz darunter stünde hinter einer
             leeren Fläche und würde nie gelesen. */}
-        <StandNote pfad="/klimaanlage-stromkosten" />
+        <StandNoteView seite={stand} />
       </div>
     </div>
   );

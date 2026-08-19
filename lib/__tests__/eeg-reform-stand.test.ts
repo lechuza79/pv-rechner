@@ -62,7 +62,12 @@ describe("EEG-Reform 2027 — Sachstand", () => {
 
   it("Datum und Stand-Label werden aus dem ISO-Datum erzeugt, nicht getippt", () => {
     expect(eegDatum("2026-07-29")).toBe("29. Juli 2026");
-    expect(eegReformStandLabel()).toBe("4. August 2026");
+    // Geprüft wird die HERKUNFT des Labels, nicht ein getippter Tag: Das
+    // Prüfdatum wandert bei jedem Wächter-Lauf, der die amtliche Quelle erreicht
+    // hat (Gate-Regel 9). Ein Test auf den Wortlaut wäre bei jedem dieser Läufe
+    // rot — und würde dazu erziehen, ihn mitzuziehen, statt ihn zu lesen.
+    expect(eegReformStandLabel()).toBe(eegDatum(EEG_REFORM_STAND.geprueftIso));
+    expect(EEG_REFORM_STAND.geprueftIso >= EEG_REFORM_STAND.kabinettBeschlussIso).toBe(true);
   });
 
   it("ein Zustandswechsel erbt keinen Satz, sondern erzwingt eine neue Formulierung", () => {

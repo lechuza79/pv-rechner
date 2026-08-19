@@ -30,7 +30,7 @@
 import { resolve } from "node:path";
 import { readFileSync, existsSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
-import { fingerprintOf, markiert } from "../lib/funding-fingerprint";
+import { fingerprintOf, markiert, unterschiedsGrund, vergleichbar, wegVon } from "../lib/funding-fingerprint";
 import type { FundingProgram } from "../lib/funding-programs";
 
 function loadEnvFile(): void {
@@ -74,6 +74,7 @@ async function main(): Promise<void> {
   const unerreichbar: string[] = [];
   const ueberArchiv: string[] = [];
   const ueberProduktion: string[] = [];
+  const nichtVergleichbar: string[] = [];
   let unveraendert = 0;
 
   for (const z of zeilen) {
@@ -152,8 +153,20 @@ async function main(): Promise<void> {
             headers: { Authorization: `Bearer ${CRON_SECRET}` },
             signal: AbortSignal.timeout(70_000),
           });
-          const j = (await res.json()) as { ok?: boolean; fingerprint?: string; weg?: string; versuche?: unknown[] };
-          prodLog.push(`HTTP ${res.status}${j.weg ? ` via ${j.weg}` : ""}`);
+          const j = (await res.json()) as {
+            ok?: boolean; fingerprint?: string; weg?: string;
+            versuche?: { weg: string; status: number | string }[];
+          };
+          // NICHT den HTTP-Status der Route protokollieren — der ist 200, sobald
+          // sie überhaupt geantwortet hat, auch wenn sie die Amtsseite gar nicht
+          // bekommen hat. Genau so stand am 17.08. „Produktion: HTTP 200" neben
+          // einem Programm, das als unerreichbar gemeldet wurde. Was zählt, ist
+          // ihr eigener Ausgang.
+          prodLog.push(
+            j.ok
+              ? `erreicht via ${j.weg}`
+              : `nicht erreicht (${(j.versuche ?? []).map((v) => `${v.weg}:${v.status}`).join(", ") || `Antwort ${res.status}`})`,
+          );
           if (j.ok && j.fingerprint) {
             ausProduktion = j.fingerprint;
             break;
@@ -260,8 +273,27 @@ async function main(): Promise<void> {
     // Seite unterscheiden sich immer ein wenig; ohne diese Kennzeichnung meldete
     // jeder Wechsel zwischen beiden Wegen eine Änderung, die es nie gab.
     const fp = ausProduktion ?? markiert(ausArchiv ? "archiv" : "live", fingerprintOf(html));
-    const gleicheHerkunft = z.page_fingerprint?.split(":")[0] === fp.split(":")[0];
-    if (z.page_fingerprint && gleicheHerkunft && z.page_fingerprint !== fp) {
+    const herkunft = wegVon(fp);
+    const istVergleichbar = vergleichbar(z.page_fingerprint, fp);
+    const hatSichGeaendert = istVergleichbar && z.page_fingerprint !== fp;
+
+    // NUR ein LIVE gelesener Abruf bestätigt, dass die Amtsseite noch da und
+    // unverändert ist — BLOCKER. Ein Archiv-Treffer ist ein wochenalter
+    // Schnappschuss; ihn als heutige Bestätigung zu stempeln würde die
+    // 14-Tage-Regel aushebeln: Eine dauerhaft gesperrte Stadt bliebe für immer
+    // "bestätigt", weil jede Nacht dieselbe alte Kopie neu gestempelt wird.
+    // Genau der halbjährig alte Stand, den die Regel verhindern soll.
+    const istLiveBestaetigt = herkunft === "live";
+
+    // Wechselt der Abrufweg (live ⇄ archiv) ODER unsere Verdichtungs-Fassung, ist
+    // KEIN Vergleich möglich — wir halten zwei verschiedene Dinge nebeneinander.
+    // Das offen ausweisen, statt es als "unverändert" durchgehen zu lassen (dann
+    // stünde eine Bestätigung da, die niemand geprüft hat) und erst recht statt
+    // als "geändert" (dann meldeten wir eine fremde Änderung, die unsere war).
+    if (z.page_fingerprint && !istVergleichbar) {
+      nichtVergleichbar.push(`${p.name} (${p.region}) — ${unterschiedsGrund(z.page_fingerprint, fp)}`);
+    }
+    if (hatSichGeaendert) {
       geaendert.push(`${p.name} (${p.region})`);
       if (!dry) {
         await sb.from("funding_checks").insert({
@@ -271,7 +303,7 @@ async function main(): Promise<void> {
           note: `Seiten-Wächter: Inhalt der Amtsseite hat sich geändert (${p.url})`,
         });
       }
-    } else if (z.page_fingerprint && gleicheHerkunft) {
+    } else if (istVergleichbar) {
       unveraendert++;
     }
     if (ausProduktion) ueberProduktion.push(`${p.name} (${p.region})`);
@@ -280,7 +312,14 @@ async function main(): Promise<void> {
     if (!dry) {
       await sb
         .from("funding_programs")
-        .update({ page_fingerprint: fp, page_seen_at: new Date().toISOString() })
+        .update({
+          page_fingerprint: fp,
+          // Siehe oben: nur der Live-Abruf setzt die Bestätigung.
+          ...(istLiveBestaetigt ? { page_seen_at: new Date().toISOString() } : {}),
+          // Nur setzen, wenn sich wirklich etwas bewegt hat: Dieses Datum stellt
+          // den geprueften Inhalt in Frage und startet die Nachpruef-Frist.
+          ...(hatSichGeaendert ? { page_changed_at: new Date().toISOString() } : {}),
+        })
         .eq("id", z.id);
     }
   }
@@ -293,6 +332,8 @@ async function main(): Promise<void> {
   for (const a of ueberProduktion) console.log(`     → ${a}`);
   console.log(`  über Archiv:  ${ueberArchiv.length}`);
   for (const a of ueberArchiv) console.log(`     → ${a}`);
+  console.log(`  nicht vergleichbar (Abrufweg gewechselt): ${nichtVergleichbar.length}`);
+  for (const n of nichtVergleichbar) console.log(`     → ${n}`);
   console.log(`  unerreichbar: ${unerreichbar.length}`);
   for (const u of unerreichbar) console.log(`     → ${u}`);
 

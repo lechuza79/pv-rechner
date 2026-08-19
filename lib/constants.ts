@@ -20,12 +20,17 @@ export const FEED_IN_YEARS = 20;
 // NATIONAL_AVG_YIELD ist der PVGIS-Bundesschnitt (optimale Ausrichtung) und dient
 // serverseitig als Fallback, wenn PVGIS nicht erreichbar ist. Hier zentral, damit
 // Client (Rechner/Empfehlung/Balkon) und Server denselben Wert teilen.
+// Er ist zugleich der Startwert der Rechner ohne PLZ. Hier stand bis zum
+// 18.08.2026 ein zweiter, um 100 kWh gekürzter Wert („Puffer für nicht-optimale
+// Dachausrichtung") — und damit ein Dachabschlag an einer Stelle, an der die
+// Größe „Standort-OPTIMUM" heißt. Seit es die Dach-Frage gibt, zieht
+// dachErtragKwp() den Abschlag selbst ab: Wer sein Ost/West-Dach angab, bekam
+// ihn zweimal (rund 20 % zu wenig statt 20 %), und der Hinweis daneben behauptete
+// trotzdem „bei optimaler Neigung nach Süden". Der Abschlag gehört genau an eine
+// Stelle — in die Dach-Matrix, wo er zur Angabe des Nutzers passt und sichtbar
+// begründet ist. Solange niemand sein Dach angegeben hat, gilt das Optimum, und
+// die Rechner schreiben das ausdrücklich hin (dachErtragHinweis).
 export const NATIONAL_AVG_YIELD = 1050;
-// Ohne PLZ zeigen die Rechner einen bewusst KONSERVATIVEN Ertrag: der Bundesschnitt
-// minus 100 kWh Puffer für nicht-optimale Dachausrichtung/-neigung (echte Dächer
-// liegen selten im PVGIS-Optimum). Abgeleitet aus dem geprüften Modell, nicht
-// frei gegriffen — sobald der Nutzer eine PLZ eingibt, ersetzt der PVGIS-Wert ihn.
-export const NO_PLZ_DEFAULT_YIELD = NATIONAL_AVG_YIELD - 100; // = 950
 
 // Saisonaler Verbrauchsfaktor (BDEW Standardlastprofil H0)
 // Winter ~17% über Durchschnitt, Sommer ~15% unter
@@ -68,6 +73,19 @@ export const AUTARKY_GRID = [
 // lib/heatpump-config.ts leiten ihre Gas-/Öl-Werte hieraus ab — bitte nur hier
 // pflegen (jährlicher WP-Wächter, scripts/waermepumpe-verify.md). Der
 // Kessel-Wirkungsgrad bleibt pro Kontext separat (Brennwert/alt/Öl).
+//
+// DIE BEIDEN PREISE STEHEN AUF VERSCHIEDENEN SKALEN — BLOCKER (19.08.2026):
+// Erdgas wird in Deutschland auf den BRENNWERT abgerechnet (thermische
+// Gasabrechnung nach DVGW G 685: m³ × Brennwert × Zustandszahl), Heizöl wird
+// üblicherweise über rund 10 kWh je Liter umgerechnet — und das ist der
+// HEIZWERT (Heizöl EL: Heizwert ~9,8, Brennwert ~10,6 kWh/l). Brennwert und
+// Heizwert unterscheiden sich bei Erdgas um rund 11 %, bei Heizöl um 6–8 %.
+// Folge für jeden, der hier etwas anfasst: Der Gas-Wirkungsgrad und der
+// Öl-Wirkungsgrad sind NICHT direkt vergleichbar, und ein gemeinsamer
+// Auf- oder Abschlag über beide Brennstoffe hinweg ist immer falsch. Ein
+// Wirkungsgrad gehört auf dieselbe Bezugsgröße wie der Preis, gegen den er
+// rechnet. Zweimal ist genau daran eine Korrektur gescheitert; die vollständige
+// Begründung samt geprüfter Sackgassen steht in scripts/waermepumpe-verify.md.
 export const FUEL_PRICE: Record<"gas" | "oil", { price: number; co2PerKwh: number }> = {
   gas: { price: 0.11, co2PerKwh: 0.20 },   // 11 ct/kWh, 200 g CO2/kWh
   oil: { price: 0.10, co2PerKwh: 0.266 },  // 10 ct/kWh, 266 g CO2/kWh
@@ -304,6 +322,61 @@ export const WP_FUEL_OPTIONS: {
   price: number; efficiency: number; co2PerKwh: number; bestandsanlage?: boolean;
 }[] = [
   { id: "gas_neu", label: "Gas-Brennwert", refLabel: "Gasheizung", kind: "gas", price: FUEL_PRICE.gas.price, efficiency: 0.95, co2PerKwh: FUEL_PRICE.gas.co2PerKwh },
-  { id: "oil", label: "Heizöl", refLabel: "Ölheizung", kind: "oil", price: FUEL_PRICE.oil.price, efficiency: 0.85, co2PerKwh: FUEL_PRICE.oil.co2PerKwh },
+  // Heizöl NEU eingebaut: 0,92 — der gesetzliche MINDESTWERT, auf unsere
+  // Preisskala umgerechnet. Herleitung (19.08.2026, drei adversariale Prüfungen):
+  // Die Ökodesign-Verordnung (EU) 813/2013 verlangt seit dem 26.09.2015 von jedem
+  // Brennstoffkessel bis 70 kW eine jahreszeitbedingte Raumheizungs-Energie-
+  // effizienz von mindestens 86 % — ohne Unterschied zwischen Öl und Gas
+  // (Anhang II; Volltext in docs/quellen/). Diese Größe ist auf den BRENNWERT
+  // bezogen (Art. 2 Nr. 30), unser Ölpreis dagegen auf den Heizwert (10,2 kWh/l);
+  // zwischen beiden liegen bei Heizöl rund 6,6 % (45,4 zu 42,6 MJ/kg). 0,86 × 1,066
+  // ≈ 0,92. Hier stand vorher 0,85 — ein Wert UNTER dem gesetzlichen Minimum, der
+  // also ein Gerät beschreibt, das man gar nicht verkaufen dürfte.
+  //
+  // Es ist bewusst eine UNTERGRENZE, kein Marktwert: Reale Öl-Brennwertkessel
+  // erreichen laut Herstellerdatenblättern 92–93 % (Brennwert). Damit rechnen wir
+  // die Ölheizung weiterhin etwas zu schlecht — und der verbleibende Fehler geht
+  // weiter zugunsten der Wärmepumpe. Der Marktwert selbst steht bewusst NICHT hier,
+  // weil die Labelzahl zu 85 % bei 30 °C Rücklauf gemessen wird (Fußbodenheizung);
+  // an alten Heizkörpern kondensiert ein Ölkessel kaum. Eine einzelne „genauere"
+  // Zahl gibt es für diesen Kessel also gar nicht — sie hängt an der System-
+  // temperatur. Das ist damit eine ABGESCHLOSSENE Modellprämisse, kein offener
+  // Punkt: belegte Untergrenze statt geschätzter Mitte, Fehlerrichtung benannt.
+  // Wieder aufgemacht nur mit echtem Auslöser (Norm im Repo oder Umbau auf
+  // temperaturabhängige Wirkungsgrade), und dann für Gas und Öl GEMEINSAM —
+  // die amtlichen Aufwandszahlen trennen nicht nach Brennstoff. Begründung und
+  // Vorarbeit: scripts/waermepumpe-verify.md.
+  { id: "oil", label: "Heizöl", refLabel: "Ölheizung", kind: "oil", price: FUEL_PRICE.oil.price, efficiency: 0.92, co2PerKwh: FUEL_PRICE.oil.co2PerKwh },
+  // Die beiden Bestands-Einträge sind der Fall „Anschaffung 0" — und der heißt
+  // laut Beschreibung des Feldes ausdrücklich „meine Heizung ist noch jung".
+  // Bis 18.08.2026 gab es dafür nur den 30 Jahre alten Kessel mit 80 %: Wer
+  // seine junge Brennwerttherme meinte, bekam den Verbrauch einer Altanlage
+  // gerechnet — 8.084 € zu viel zugunsten der Wärmepumpe (140 m², teilsaniert).
+  // Und für Heizöl gab es gar keinen Bestands-Eintrag, weshalb ein Öl-Haushalt
+  // beim Umstellen still auf Gas rutschte (andere Grundgebühr, anderer
+  // CO₂-Faktor). Die Nutzungsgrade sind KEINE neuen Zahlen: 90 % Gas / 85 % Öl
+  // sind die vorhandene Heizung aus FUEL oben, dieselben, mit denen der
+  // PV-Rechner seit jeher gegen die bestehende Heizung rechnet.
+  //
+  // Vorhandene Ölheizung: 0,85 — derselbe Wert, mit dem der PV-Rechner seit jeher
+  // gegen eine BESTEHENDE Ölheizung rechnet (FUEL oben). Er beschreibt keinen
+  // Neueinbau und darf deshalb unter dem gesetzlichen Mindestwert liegen: Ein
+  // Kessel, der seit Jahren im Keller steht, musste ihn nie erfüllen.
+  { id: "oil_vorhanden", label: "Vorhandene Ölheizung", refLabel: "Ölheizung", kind: "oil", price: FUEL_PRICE.oil.price, efficiency: FUEL.oil.efficiency, co2PerKwh: FUEL_PRICE.oil.co2PerKwh, bestandsanlage: true },
+  //
+  // ERLEDIGT (19.08.2026): Für Heizöl gab es keinen Bestands-Eintrag. Er braucht
+  // zwei verschiedene Nutzungsgrade (vorhanden / neu eingebaut), und die eine Zahl,
+  // die das Projekt heute für Öl kennt (0,85), beschreibt die VORHANDENE Anlage —
+  // sie steht derzeit an der neu eingebauten. Ein zweiter Eintrag mit derselben
+  // Zahl wäre kein Fall, sondern eine Dublette. Das geht zugunsten der Wärmepumpe
+  // (die Ölheizung verbrennt zu viel) — die Richtung ist bekannt und benannt.
+  // Eine naheliegende Quelle wurde am 18.08.2026 geprüft und trägt den Wert NICHT
+  // (Baujahr-Spalten von 2002, Teillast statt Jahresnutzungsgrad, andere
+  // Bezugsgröße) — die Begründung steht ausgeschrieben in
+  // scripts/waermepumpe-verify.md, damit sie niemand ein zweites Mal geht.
+  // Gebraucht wird ein Jahresnutzungsgrad nach DIN V 18599-5. Bis dahin rutscht
+  // ein Öl-Haushalt bei „Anschaffung 0" auf Gas — sichtbar, aber besser als eine
+  // erfundene Zahl.
+  { id: "gas_vorhanden", label: "Vorhandene Gastherme", refLabel: "Gasheizung", kind: "gas", price: FUEL_PRICE.gas.price, efficiency: FUEL.gas.efficiency, co2PerKwh: FUEL_PRICE.gas.co2PerKwh, bestandsanlage: true },
   { id: "gas_alt", label: "Alter Gaskessel", refLabel: "Gasheizung", kind: "gas", price: FUEL_PRICE.gas.price, efficiency: 0.80, co2PerKwh: FUEL_PRICE.gas.co2PerKwh, bestandsanlage: true },
 ];

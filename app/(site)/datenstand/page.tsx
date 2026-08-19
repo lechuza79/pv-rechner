@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumb from "../../../components/Breadcrumb";
+import ObfuscatedEmail from "../../../components/ObfuscatedEmail";
 import { v } from "../../../lib/theme";
 import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
@@ -32,10 +33,15 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = pageMetadata({
   path: "/datenstand",
-  title: "Datenstand – Alle Annahmen & Werte im Überblick",
-  description: "Jeder Wert, mit dem Solar Check rechnet: Preise, Einspeisevergütung, CO₂-Preis, Wärmepumpen-Annahmen — mit Stand und Quelle. Transparent statt Blackbox.",
+  // Titel und OG-Untertitel versprachen bis zum Audit am 17.08.2026 weiterhin
+  // "Alle Annahmen & Werte" bzw. "Jeder Wert … offengelegt" — die Fassung, die
+  // in Suchergebnissen und geteilten Links steht. Der Fließtext war da schon
+  // korrigiert; genau so überlebt eine zurückgenommene Zusage an der Stelle, die
+  // niemand mitliest.
+  title: "Datenstand – Womit wir rechnen, mit Stand und Quelle",
+  description: "Womit Solar Check rechnet: Preise, Einspeisevergütung, CO₂-Preis, Wärmepumpen-Annahmen — jede Größe mit Stand und Quelle. Transparent statt Blackbox.",
   ogImageTitle: "Datenstand",
-  ogImageSubtitle: "Jeder Wert mit Stand und Quelle — offengelegt.",
+  ogImageSubtitle: "Jede Größe mit Stand und Quelle.",
 });
 
 const S = {
@@ -80,7 +86,13 @@ const S = {
     fontWeight: 700,
     color: v("--color-accent"),
     fontFamily: v("--font-mono"),
-    whiteSpace: "nowrap" as const,
+    // KEIN nowrap: Der längste Stand ist "Modell (HTW Berlin · BDEW)" und misst
+    // 230 px. In einer Flex-Zeile, die nicht umbrechen darf, schob er das
+    // Dokument auf schmalen Schirmen auf 518 px auf — die Seite scrollte
+    // seitlich. Gefunden im Audit am 17.08.2026; der Fehler ist älter, fällt
+    // aber jetzt stärker ins Gewicht, weil die Vertrauens-Leiste von jeder
+    // Seite hierher führt.
+    textAlign: "right" as const,
   },
   intro: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6, marginBottom: 12 },
   card: {
@@ -141,6 +153,22 @@ const S = {
     marginTop: 28,
   },
   link: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
+  // Steht anstelle der Wertetabelle. Bewusst dieselbe Kartenform wie eine echte
+  // Tabelle, nur ohne Raster: Der Block soll als Teil der Aufstellung lesbar
+  // sein, nicht als Fehlermeldung oder als Lücke.
+  aufAnfrage: {
+    background: v("--color-bg-muted"),
+    borderRadius: v("--radius-md"),
+    border: `1px solid ${v("--color-border")}`,
+    padding: "14px 16px",
+  },
+  aufAnfrageText: {
+    fontSize: v("--font-size-small"),
+    color: v("--color-text-secondary"),
+    lineHeight: 1.6,
+    margin: 0,
+  },
+  a: { color: v("--color-accent"), textDecoration: "none" },
 };
 
 const nf = (n: number) => n.toLocaleString("de-DE");
@@ -219,12 +247,34 @@ async function fetchFeedIn(): Promise<FeedInRates> {
 
 type Row = { label: string; value: string };
 
-function Section({ title, stand, intro, rows, source, caveat }: {
+// ─── Was diese Seite zeigt und was nicht ─────────────────────────────────────
+//
+// Sie belegt weiterhin für jede Größe, WORAUF wir rechnen, WOHER es kommt und
+// WIE ALT es ist — das ist die Zusage, auf die zwölf andere Seiten verweisen und
+// die die Lizenzbedingungen unserer Datengeber verlangen.
+//
+// Was sie seit dem 17.08.2026 NICHT mehr tut: die durchkalibrierten
+// Modell-Datensätze am Stück ausbreiten (Entscheidung des Betreibers). Diese
+// Blöcke tragen `aufAnfrage` und zeigen statt der Wertetabelle, was darin steht
+// und wie man sie bekommt. Grund ist nicht Geheimhaltung — die Rechner geben
+// jede Zahl aus, sobald man sie benutzt, und einzelne Werte zu zitieren ist
+// ausdrücklich erlaubt (siehe /lizenz). Was wegfällt, ist der bequeme
+// Gesamtabzug: eine fertige Tabelle, aus der sich die Arbeit von Monaten in
+// einem Abruf mitnehmen lässt.
+//
+// Die Grenze verläuft deshalb NICHT entlang "wichtig/unwichtig", sondern hier:
+// Werte, die im Rechner ohnehin offen sitzen und editierbar sind (Preise,
+// Vergütungssätze, Marktwert), bleiben stehen — sie zu verbergen kostete
+// Vertrauen, ohne irgendetwas zu schützen. Verborgen wird nur, was ausschließlich
+// hier als geschlossene Reihe stand.
+function Section({ title, stand, intro, rows, source, caveat, aufAnfrage }: {
   title: string;
   stand: string;
   intro?: string;
   rows: Row[];
   source: string;
+  /** Statt der Wertetabelle einen Hinweis zeigen. Text beschreibt, was drinsteht. */
+  aufAnfrage?: string;
   /** Herkunfts-Vorbehalt, wenn ein Wert (noch) nicht aus der amtlichen Liste stammt. */
   caveat?: string | null;
 }) {
@@ -235,20 +285,37 @@ function Section({ title, stand, intro, rows, source, caveat }: {
         <span style={S.stand}>Stand {stand}</span>
       </div>
       {intro && <p style={S.intro}>{intro}</p>}
-      <div style={S.card}>
-        {/* Der Index gehört in den Schlüssel: Zwei Zeilen mit gleicher
-            Beschriftung sind hier fachlich möglich (Kühlen/Heizen desselben
-            Geräts), und allein der Text als Schlüssel machte daraus einen
-            Zustand, den React ausdrücklich nicht unterstützt — mit dem Risiko,
-            dass eine Zeile still verschwindet. Auf einer Seite, die belegt,
-            welche Werte gelten, fällt genau das niemandem auf. */}
-        {rows.map((r, i) => (
-          <div key={`${i}-${r.label}`} style={i === 0 ? S.rowFirst : S.row}>
-            <span style={S.rowLabel}>{r.label}</span>
-            <span style={S.rowValue}>{r.value}</span>
-          </div>
-        ))}
-      </div>
+      {aufAnfrage ? (
+        <div style={S.aufAnfrage}>
+          <p style={S.aufAnfrageText}>
+            {/* KEINE Anzahl und KEIN "kann man im Rechner überschreiben" mehr.
+                Beides fiel im Audit: Eine Tabellenzeile ist nicht ein Wert (die
+                Wärmepumpen-Zeilen tragen über 30 Zahlen in 15 Zeilen), und von
+                den genannten Größen ist je Rechner nur eine Handvoll editierbar
+                — bei der historischen Vergütungsreihe gibt es gar keinen
+                Rechner, der sie ausgibt. Ein Ersatz für weggenommene Tabellen
+                darf nicht selbst etwas Falsches versprechen. */}
+            {aufAnfrage}. Was davon im Ergebnis überschreibbar ist, steht oben; den
+            vollständigen Satz geben wir auf Anfrage heraus —{" "}
+            <ObfuscatedEmail user="hey" domain="solar-check.io" style={S.a} />.
+          </p>
+        </div>
+      ) : (
+        <div style={S.card}>
+          {/* Der Index gehört in den Schlüssel: Zwei Zeilen mit gleicher
+              Beschriftung sind hier fachlich möglich (Kühlen/Heizen desselben
+              Geräts), und allein der Text als Schlüssel machte daraus einen
+              Zustand, den React ausdrücklich nicht unterstützt — mit dem Risiko,
+              dass eine Zeile still verschwindet. Auf einer Seite, die belegt,
+              welche Werte gelten, fällt genau das niemandem auf. */}
+          {rows.map((r, i) => (
+            <div key={`${i}-${r.label}`} style={i === 0 ? S.rowFirst : S.row}>
+              <span style={S.rowLabel}>{r.label}</span>
+              <span style={S.rowValue}>{r.value}</span>
+            </div>
+          ))}
+        </div>
+      )}
       <p style={S.source}>Quelle: {source}</p>
       {caveat && <p style={S.caveat}>{caveat}</p>}
     </div>
@@ -270,10 +337,16 @@ export default async function DatenstandPage() {
 
         <h1 style={S.h1}>Datenstand</h1>
         <p style={S.subtitle}>
-          Wir rechnen mit offengelegten Annahmen statt einer Blackbox. Hier steht jeder
-          Wert, der in die Berechnung einfließt — mit Stand und Quelle. Marktdaten
+          Wir rechnen mit offengelegten Annahmen statt einer Blackbox. Hier steht für jede
+          Größe, worauf wir rechnen, woher sie stammt und wie alt sie ist. Marktdaten
           (Preise, Vergütung) aktualisieren wir laufend; Modell-Annahmen beruhen auf
           wissenschaftlichen Lastprofilen und ändern sich selten.
+        </p>
+        <p style={S.subtitle}>
+          Die durchkalibrierten Modell-Datensätze breiten wir hier nicht mehr am Stück aus.
+          Ein Teil davon steht im jeweiligen Rechner-Ergebnis und ist dort auch änderbar —
+          welche Größen das sind, steht beim jeweiligen Abschnitt. Den vollständigen Satz
+          bekommst du auf Anfrage.
         </p>
 
         {/* ── Anschaffung & Strompreis (live aus Marktdaten) ── */}
@@ -323,7 +396,14 @@ export default async function DatenstandPage() {
           caveat="Die amtlichen Jahreswerte sind zusätzlich unabhängig aus Solarerzeugung und Börsenpreis nachgerechnet (Abweichung unter 3 %). Der Erlöspfad über die Laufzeit ist eine ausgewiesene Annahme, keine Prognose."
         />
 
-        {/* ── Historische Einspeisevergütung (Zeitreihe für die Zubau-Story) ── */}
+        {/* ── Historische Einspeisevergütung (Zeitreihe für die Zubau-Story) ──
+            BEWUSST NICHT zurückgehalten (Audit 17.08.2026): Dieselbe Reihe steht
+            auf /einspeiseverguetung-tabelle vollständig und in besser
+            abgreifbarer Form, dazu die BNetzA-Monatsmatrix. Sie hier
+            einzuklappen kostete die Offenlegungs-Zusage, ohne irgendetwas zu
+            schützen — und täuschte dem Leser eine Zurückhaltung vor, die es gar
+            nicht gibt. Zurückgehalten wird nur, wo es auch wirkt: bei den
+            kalibrierten Modell-Datensätzen. */}
         <Section
           title="Einspeisevergütung – historische Reihe"
           stand={FEEDIN_HISTORY_META.dataAsOf}
@@ -339,13 +419,18 @@ export default async function DatenstandPage() {
           intro="Aufschlag auf Gas/Öl im Wärmepumpen-Vergleich. Für das laufende Jahr gilt der gesetzliche Korridor. Dass er auch im nächsten Jahr gilt, hat die Koalition beschlossen und das Kabinett als Gesetzentwurf auf den Weg gebracht; beschlossen ist das Gesetz noch nicht. Wir rechnen trotzdem damit, weil das die vorsichtigere Annahme ist. Danach ein konservativer Forecast für den EU-Emissionshandel ab 2028."
           rows={co2Rows}
           source={`${CO2_PRICE.source}. Nächste Prüfung bis ${monthYear(CO2_PRICE.reviewBy)}.`}
+          aufAnfrage={`Ein €/t-Wert je Kalenderjahr ab ${YEAR}`}
         />
 
         {/* ── Wärmepumpe ── */}
         <Section
           title="Wärmepumpe"
           stand={monthYear(HP.validFrom)}
-          intro="Annahmen des Wärmepumpen-Rechners: Heizbedarf, Effizienz, Investition und Förderung. Alle Werte im Ergebnis editierbar."
+          // NICHT "alle Werte editierbar" (Audit 17.08.2026): Das Ergebnis hat
+          // sieben Eingabefelder — Heizwärme, Heizlast, JAZ, Gaspreis, fossile
+          // Anschaffung, WP-Strompreis, Investition. Förderstaffeln, Wartung,
+          // Grundpreise, Betrachtungszeitraum und Teuerung sind es nicht.
+          intro="Annahmen des Wärmepumpen-Rechners: Heizbedarf, Effizienz, Investition und Förderung. Heizwärme, Heizlast, Jahresarbeitszahl, Gaspreis, Strompreis und beide Anschaffungskosten sind im Ergebnis editierbar."
           rows={[
             // Spanne immer über die GANZE Skala — sonst fällt eine neue Stufe still
             // aus der öffentlichen Übersicht. Reihenfolge der Beschriftung MUSS der
@@ -369,7 +454,8 @@ export default async function DatenstandPage() {
             { label: "Wartung je Jahr (fossil / Wärmepumpe)", value: `${nf(HP.gasMaintenance)} / ${nf(HP.wpMaintenance)} €` },
             { label: "Betrachtungszeitraum · Teuerung Strom/Brennstoff", value: `${HP.years} Jahre · ${nf(HP.stromInflation * 100)} / ${nf(HP.gasInflation * 100)} % pro Jahr` },
           ]}
-          source={`${HP.source}. Investition der Wärmepumpe kalibriert an der Auswertung von 160 realen Luft-Wasser-Angeboten (Verbraucherzentrale Rheinland-Pfalz): Median 34.979 €, Mittelwert 36.279 € bei einer Median-Leistung von 10 kW. Anschaffung der fossilen Alternative: Mittelwert der Fraunhofer-ISE-Kurzstudie „Vergleich Wärmeversorgung“ vom 23.06.2026 (Gaskessel Einfamilienhaus 11.400–20.400 € brutto), bestätigt durch die Beispielrechnung der Verbraucherzentrale Rheinland-Pfalz vom 02.06.2025 (16.000 €). Grundpreise und Wartung ebenfalls aus dieser Beispielrechnung.`}
+          source={`${HP.source}. Umrechnung des Norm-Bedarfs auf den erwarteten realen Verbrauch (Prebound-Effekt) nach Sunikka-Blank/Galvin (2012), Building Research & Information 40(3), Auswertung von 3.400 deutschen Wohnungen — im unsanierten Bestand rund ${Math.round(preboundAnteil(HP.specDemandBestand[0]) * 100)} % Abschlag; Heizlast und Warmwasser bleiben unkorrigiert. Investition der Wärmepumpe kalibriert an der Auswertung von 160 realen Luft-Wasser-Angeboten (Verbraucherzentrale Rheinland-Pfalz): Median 34.979 €, Mittelwert 36.279 € bei einer Median-Leistung von 10 kW. Anschaffung der fossilen Alternative: Mittelwert der Fraunhofer-ISE-Kurzstudie „Vergleich Wärmeversorgung“ vom 23.06.2026 (Gaskessel Einfamilienhaus 11.400–20.400 € brutto), bestätigt durch die Beispielrechnung der Verbraucherzentrale Rheinland-Pfalz vom 02.06.2025 (16.000 €). Grundpreise und Wartung ebenfalls aus dieser Beispielrechnung.`}
+          aufAnfrage="Heizbedarf und Heizlast je Dämmstufe, Investitions- und Förderstaffeln, Brennstoff- und Betriebskosten"
         />
 
         {/* ── Grüngas-Pfad (Gas-Referenz im WP-Rechner + Ratgeber) ── */}
@@ -392,7 +478,7 @@ export default async function DatenstandPage() {
         <Section
           title="Klimaanlage (Kühlkosten-Rechner)"
           stand={monthYear(AC.validFrom)}
-          intro="Annahmen des Klimaanlagen-Rechners: Geräte-Effizienz, Preise, Klima- und Hitzedaten. Kern ist Kühlung; Split-Geräte können zusätzlich in der Übergangszeit heizen (günstiger als Gas). Strompreis und Kühlgradstunden im Ergebnis editierbar."
+          intro={`Annahmen des Klimaanlagen-Rechners: Geräte-Effizienz, Preise, Klima- und Hitzedaten. Kern ist Kühlung; Split-Geräte können zusätzlich in der Übergangszeit heizen (günstiger als Gas). Strompreis und Kühlgradstunden im Ergebnis editierbar. Offen ausgewiesen: Der Abschlag vom Laborwert auf den Realbetrieb (${((1 - AC_REAL_FACTOR) * 100).toLocaleString("de-DE")} %) ist am Kühlen gemessen; für die Heizrichtung nennt die Messstudie keinen eigenen Wert, deshalb übertragen wir ihn. Das rechnet die Ersparnis gegenüber Gas eher zu niedrig als zu hoch — wir prüfen es bis Oktober 2026 nach.`}
           rows={[
             { label: "Effizienz Kühlen im Realbetrieb: Monoblock / mobile Split / fest installiert", value: AC.devices.map((d) => d.seer.toLocaleString("de-DE")).join(" / ") },
             { label: "…davon Typenschild Kühlen (EU-Label)", value: AC.devices.map((d) => `${d.labelMetric} ${d.labelValue.toLocaleString("de-DE")}`).join(" / ") },
@@ -412,13 +498,19 @@ export default async function DatenstandPage() {
             { label: "Hitzewelle (Vorhersage)", value: `≥ ${nf(AC.heatwaveMinDays)} Tage ≥ ${nf(AC.heatwaveThreshold)} °C` },
           ]}
           source={`${AC.source}. Nächste Prüfung bis ${monthYear(AC.reviewBy)}.`}
+          aufAnfrage="Effizienzwerte je Gerätetyp für Kühlen und Heizen, Anschaffungspreise, Kühlgradstunden, Sonnen- und Lagefaktoren"
         />
 
         {/* ── Balkonkraftwerk-Rechner ── */}
         <Section
           title="Balkonkraftwerk (Steckersolar)"
           stand={monthYear(BK.validFrom)}
-          intro="Annahmen des Balkonkraftwerk-Rechners. Ertrag, Eigenverbrauch und Speicher-Nutzen werden stündlich über ein Jahr simuliert — sie sind Ergebnis, nicht Annahme. Der Standort-Ertrag kommt live von PVGIS, der Strompreis ist im Ergebnis editierbar."
+          // Die beiden Rechtsaussagen stehen hier im Intro, nicht in den Zeilen:
+          // Der Block ist eingeklappt, und beide tragen einen Vorbehalt, der sie
+          // erst richtig macht (verbindlich vs. freiwillig). Die Zahl ohne ihren
+          // Vorbehalt stehen zu lassen ist genau das Muster, vor dem CLAUDE.md
+          // beim Balkon-Recht warnt — im Audit am 17.08.2026 aufgefallen.
+          intro={`Annahmen des Balkonkraftwerk-Rechners. Ertrag, Eigenverbrauch und Speicher-Nutzen werden stündlich über ein Jahr simuliert — sie sind Ergebnis, nicht Annahme. Der Standort-Ertrag kommt live von PVGIS, der Strompreis ist im Ergebnis editierbar. Rechtlich verbindlich ist allein die Grenze aus § 8 Abs. 5a EEG: 2.000 Wp Module und 800 VA Wechselrichter. Die Schuko-Grenze von ${nf(BK.schukoMaxWp)} Wp stammt dagegen aus der VDE-Vornorm DIN VDE V 0126-95 — eine freiwillige Produktnorm für Hersteller, die nur für Geräte ohne Speicher gilt.`}
           rows={[
             { label: "Set-Preise: 1 Modul / 2 Module / 4 Module", value: BK.sets.map((s) => `~${nf(s.price)} €`).join(" / ") },
             { label: "Modul / Wechselrichter je Set", value: BK.sets.map((s) => `${nf(s.moduleWp)} Wp / ${nf(s.inverterW)} W`).join(" · ") },
@@ -437,6 +529,7 @@ export default async function DatenstandPage() {
             { label: "Einspeisung", value: "keine Vergütung — Überschuss fließt unvergütet ins Netz" },
           ]}
           source={`Marktpreise Steckersolar-Sets 2026 (ADAC, Stiftung Warentest, Verbraucherzentrale); Speicher-Größen/-Preise an getesteten Geräten (Anker Solarbank 2 Pro ~1,6 kWh, Anker Solarbank 3 Pro ~2,7 kWh; Quervergleich Growatt Noah 2000, Zendure SolarFlow 800 Pro — heise Bestenliste, Stiftung Warentest). § 8 Abs. 5a EEG (2.000 Wp / 800 VA), DIN VDE V 0126-95 + DKE-Normauslegung vom 17.12.2025 (Schuko-Grenze der Vornorm), PVGIS (Stundenreihen je Ausrichtung). Nächste Prüfung bis ${monthYear(BK.reviewBy)}; die VDE-Vornorm wird spätestens Ende 2028 überprüft.`}
+          aufAnfrage="Set- und Speicherpreise, Wirkungsgrade, Ertragsanteile je Ausrichtung, Lebensdauer und Degradation"
         />
 
         {/* ── Eigenverbrauch & Verbrauch (Modell-Annahmen) ── */}

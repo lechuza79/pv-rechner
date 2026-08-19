@@ -6,6 +6,7 @@ import KontaktTeaser from "../../../components/KontaktTeaser";
 import { v } from "../../../lib/theme";
 import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
+import { SCENARIOS } from "../../../lib/constants";
 import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
 import { CO2_PRICE, co2PriceForCalendarYear } from "../../../lib/co2-config";
 import { DEFAULT_AIRCON_CONFIG } from "../../../lib/aircon-config";
@@ -386,14 +387,18 @@ export default async function MethodikPage() {
           <br />
           <br />
           <span style={S.label}>3 Szenarien</span>
-          <span style={{ color: v('--color-negative'), fontWeight: 600 }}>Pessimistisch:</span>{" "}
-          Strom +1 %/Jahr
-          <br />
-          <span style={S.accent}>Realistisch:</span> Strom +3 %/Jahr
-          <br />
-          <span style={{ color: v('--color-accent'), fontWeight: 600 }}>Optimistisch:</span>{" "}
-          Strom +5 %/Jahr
-          <br />
+          {/* Die Prozentsätze kommen aus SCENARIOS, nicht aus dem Fließtext: Hier
+              stand die mittlere Annahme um einen Prozentpunkt zu hoch getippt,
+              während der Rechner seit dem 20.07.2026 anders rechnet und sein
+              Reiter das auch so beschriftet (Council 18.08.2026). Eine getippte
+              Modellzahl veraltet lautlos. */}
+          {SCENARIOS.map(s => (
+            <span key={s.id}>
+              <span style={{ color: s.color, fontWeight: 600 }}>{s.label}:</span>{" "}
+              Strom +{(s.strom * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} %/Jahr
+              <br />
+            </span>
+          ))}
           <br />
           <span style={S.muted}>
             Wartungskosten (ca. 150–250 €/Jahr) sind nicht einberechnet.
@@ -427,7 +432,7 @@ export default async function MethodikPage() {
           geht bewusst zu unseren Ungunsten: kleinere Ersparnis, längere Amortisation.
           Und die Investitionskosten sind an rund 160 realen Handwerker-Angeboten
           kalibriert (Datensatz der Verbraucherzentrale Rheinland-Pfalz), nicht an
-          Portal-Preisen. Alle Annahmen stehen im Ergebnis und auf der{" "}
+          Portal-Preisen. Die Annahmen stehen im Ergebnis, Herkunft und Stand auf der{" "}
           <Link href="/datenstand" style={{ ...S.link, fontWeight: 600 }}>Datenstand-Seite</Link>.
         </p>
 
@@ -461,7 +466,7 @@ export default async function MethodikPage() {
           bläst. Wir stellen deshalb alle drei Gerätetypen auf dieselbe Grundlage — die Effizienz im echten Betrieb
           über eine ganze Saison: Monoblock {acSeer("monoblock")}, mobile Split-Anlage {acSeer("portasplit")}, fest
           installierte Split-Anlage {acSeer("split")}. Ein Monoblock zieht damit für dieselbe Kühlung rund das
-          Vierfache einer festen Split-Anlage. Die Werte samt Typenschild-Angabe stehen auf der{" "}
+          Vierfache einer festen Split-Anlage. Womit wir rechnen, mit Stand und Quelle, steht auf der{" "}
           <Link href="/datenstand" style={{ ...S.link, fontWeight: 600 }}>Datenstand-Seite</Link>.
         </p>
         <p style={S.p}>
@@ -531,7 +536,7 @@ export default async function MethodikPage() {
         </div>
 
         <p style={S.p}>
-          Eine kompakte Übersicht aller Werte — Preise, Vergütung, CO₂-Preis,
+          Eine kompakte Übersicht — Preise, Vergütung, CO₂-Preis,
           Wärmepumpen-Annahmen — mit Stand und Quelle findest du auf der{" "}
           <Link href="/datenstand" style={S.link}>Datenstand-Seite</Link>.
         </p>

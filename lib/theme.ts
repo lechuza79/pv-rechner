@@ -229,6 +229,15 @@ export function pad(y: keyof typeof space, x?: keyof typeof space): string {
  * (space.huge = 48) — bewusst großzügig, damit die Rechner-Hero-Fragen oben Luft
  * haben. Lese-/Textseiten legen darüber noch --content-lede-top drauf.
  */
+/**
+ * Abstand zwischen zwei Abschnitten einer Seite — die eine Quelle dafür.
+ *
+ * Vorher brachte jede Seite ihre eigene Zahl mit (22, 28, 32 …), und beim
+ * Durchsehen einer Seite fiel jedes Mal auf, dass Abschnitte zu dicht
+ * aufeinandersitzen. Wer hier dreht, dreht überall.
+ */
+export const sectionGap = 44;
+
 export const headerContentGap = space.huge; // 48
 
 /**
@@ -553,10 +562,88 @@ export const globalStyles = `
   }
   .tool-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media (max-width:720px){.tool-cards-grid{grid-template-columns:1fr}}
+  /* Kopfzeile: Welche Navigation sichtbar ist, entscheidet die Medienabfrage —
+     NICHT der Zustand der Komponente. Das isDesktop-Flag in Header.tsx startet
+     vor der Hydratation auf wahr; der Server lieferte damit auf jedem
+     Gerät die Desktop-Leiste, und auf 375 px riss die das Dokument über die
+     Fensterbreite hinaus. Sichtbar war das als kurzer seitlicher Scroll beim Laden.
+     DER UMSCHALTPUNKT STEHT HIER UND IN Header.tsx (matchMedia) — beide bei
+     1080px. Wer einen ändert, ändert beide, sonst zeigt die Seite für einen
+     Bereich beides oder nichts.
+
+     WARUM 1080 UND NICHT 1000: Bei 1000 px passte die Desktop-Kopfzeile noch
+     gar nicht. Sie braucht rund 1009 px (Logo, vier Menüpunkte, Sonnenanzeige,
+     Einloggen), bekommt bei 1000 px Fenster aber nur 968 px — das Dokument lief
+     auf 1025 px auf und die Seite scrollte seitlich. Betroffen war unter
+     anderem jedes iPad im Querformat (1024 px) und jedes 1280er-Notebook bei
+     125 % Skalierung. Gemessen am 18.08.2026; der Fehler lag schon vorher im
+     matchMedia-Wert, fiel aber erst auf, als die Breite zum geprüften Wert
+     wurde. 1080 lässt Luft für längere Ortsnamen in der Sonnenanzeige — die
+     Kopfzeile wächst mit ihnen. */
+  .hdr-nav{display:flex}
+  .hdr-auth{display:contents}
+  .hdr-burger{display:none}
+  .hdr-aktionen{gap:14px}
+  @media (max-width:1079px){
+    .hdr-nav{display:none}
+    .hdr-auth{display:none}
+    .hdr-burger{display:flex}
+    .hdr-aktionen{gap:8px}
+  }
+  @media (min-width:1080px){
+    .hdr-menu{display:none}
+  }
   .footer-cols{display:grid;grid-template-columns:repeat(3,1fr);max-width:600px;margin:0 auto;gap:0}
   .footer-cols>div{padding:0 22px}
   .footer-cols>div+div{border-left:1px solid var(--color-border)}
   @media (max-width:640px){.footer-cols{grid-template-columns:1fr;max-width:none;gap:20px}.footer-cols>div{padding:0}.footer-cols>div+div{border-left:none}}
+  /* Vertrauens-Leiste über dem Footer (components/TrustBar.tsx). Zwei Spalten
+     auf Desktop statt vier: Die Punkte sind ganze Sätze, und bei der 600px des
+     Footer-Rasters bliebe für vier Spalten je ~140px — zu schmal zum Lesen.
+     Der Abstand nach unten ist das Doppelte der größten Skalenstufe (96px) und
+     damit der einzige Wert hier außerhalb der Skala: Die Leiste ist Inhalt, die
+     Spalten darunter sind Navigation, und bei 48px lasen sich beide als ein
+     Block. Der Sprung muss größer sein als jeder Abstand INNERHALB der Leiste,
+     sonst trennt er nichts. */
+  .trust-bar{max-width:var(--content-max-width);margin:0 auto ${space.huge * 2}px;background:var(--color-bg-muted);border:1px solid var(--color-border);border-radius:14px;padding:${pad("xxl")}}
+  .trust-bar-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:${space.xxl}px}
+  /* Der Punkt ist ein Knopf, kein Link: Alle vier öffnen dasselbe Modal. Der
+     Knopf muss deshalb aussehen und sich anfühlen wie Fließtext, nicht wie ein
+     Formularelement — daher das Zurücksetzen der Browser-Vorgaben. */
+  .trust-item{display:flex;gap:${space.lg}px;align-items:flex-start}
+  .trust-item-icon{flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:var(--color-bg);border:1px solid var(--color-border)}
+  .trust-item-title{display:block;font-size:var(--font-size-body);font-weight:700;color:var(--color-text-primary);line-height:1.35;margin-bottom:2px}
+  .trust-item-text{display:block;font-size:var(--font-size-body);line-height:1.5;color:var(--color-text-muted)}
+  .trust-item-betont{font-weight:700;color:var(--color-text-secondary)}
+  /* Quellenname im Satz: als Link erkennbar, aber leise — er soll den Satz
+     nicht in eine Linkliste verwandeln. Deshalb Unterstreichung statt Farbe;
+     die Akzentfarbe bleibt dem "Mehr erfahren" vorbehalten. */
+  .trust-item-quelle{color:inherit;text-decoration:underline;text-decoration-color:var(--color-border-accent);text-underline-offset:3px}
+  .trust-item-quelle:hover{color:var(--color-accent);text-decoration-color:currentColor}
+  .trust-item-quelle:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px;border-radius:3px}
+  /* "Mehr erfahren" sitzt AM PUNKT, nicht unter der Leiste: Es steht nur dort,
+     wo es hinter der Zusage auch etwas zu lesen gibt. Ein Punkt ohne den Hinweis
+     ist bewusst kein Knopf (.trust-item-still). */
+  .trust-item-mehr{display:inline-flex;align-items:center;gap:${space.xs}px;margin-top:${space.sm}px;background:none;border:0;padding:0;font:inherit;font-size:var(--font-size-small);font-weight:600;color:var(--color-accent);cursor:pointer}
+  .trust-item-mehr:hover{color:var(--color-accent-dark)}
+  .trust-item-mehr:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px;border-radius:6px}
+  /* Modal-Inhalt: je Punkt ein Abschnitt, darunter die Prüftermine. */
+  .trust-modal-punkt{padding-top:${space.xl}px;border-top:1px solid var(--color-border)}
+  .trust-modal-punkt:first-child{padding-top:0;border-top:0}
+  .trust-modal-punkt+.trust-modal-punkt{margin-top:${space.xl}px}
+  .trust-modal-h3{display:flex;align-items:center;gap:${space.md}px;font-size:var(--font-size-body);font-weight:700;color:var(--color-text-primary);margin:0 0 ${space.md}px}
+  .trust-modal-text{font-size:var(--font-size-body);line-height:1.6;color:var(--color-text-muted);margin:0 0 ${space.md}px}
+  .trust-modal-wege{font-size:var(--font-size-small);margin:0}
+  .trust-modal-wege a{color:var(--color-accent);text-decoration:none;font-weight:600}
+  .trust-modal-wege a:hover{text-decoration:underline}
+  .trust-modal-liste{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:${space.sm}px}
+  .trust-modal-liste li{display:flex;justify-content:space-between;gap:${space.lg}px;font-size:var(--font-size-small);color:var(--color-text-muted);line-height:1.5}
+  .trust-modal-rhythmus{flex:0 0 auto;text-align:right;color:var(--color-text-faint)}
+  @media (max-width:640px){
+    .trust-bar-grid{grid-template-columns:1fr;gap:${space.xl}px}
+    .trust-modal-liste li{flex-direction:column;gap:0}
+    .trust-modal-rhythmus{text-align:left}
+  }
   /* KPI-Reihe des Solar-Atlas: sechs Kacheln nebeneinander, auf schmalen
      Schirmen ein Wisch-Slider (Embla). Der Umschaltpunkt steht hier UND als
      Embla-Breakpoint in AtlasKpiRow — beide bei 760px, sonst wischt der Desktop
@@ -612,6 +699,9 @@ export const globalStyles = `
      ueberall gleich sitzt. Zahlen brechen NIE um (nowrap). */
   .kpi-val{font-family:var(--font-mono);font-size:22px;font-weight:700;line-height:1.1;white-space:nowrap}
   .kpi-unit{font-family:var(--font-mono);font-size:var(--font-size-small);font-weight:600;color:var(--color-text-muted);margin-top:2px}
+  /* Trennlinie zwischen Bedingungen und Konditionen auf der Förderkarte. Sobald
+     die beiden Spalten untereinander stehen, liefe sie ins Leere — dann weg. */
+  @media (max-width:700px){.foerder-spalte-links{border-right:none!important;padding-right:0!important}}
   /* Der EINE Abstand: zwischen Zahlenblock und Tendenz. */
   .kpi-tend{margin-top:10px}
   /* Titellose Einzelgruppe (Kreis-/Bundesland): schlichte Kachelreihe. */

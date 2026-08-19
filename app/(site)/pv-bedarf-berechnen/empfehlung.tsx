@@ -15,14 +15,16 @@ import Toast from "../../../components/Toast";
 import DachField, { DACH_FIELDS } from "../../../components/DachField";
 import { dachErtragHinweis, dachErtragKwp } from "../../../lib/dach-ertrag";
 import { type TiltOrientation } from "../../../lib/tilt-config";
-import StandNote from "../../../components/StandNote";
+import StandNoteView from "../../../components/StandNoteView";
+import { type StandSeite } from "../../../lib/stand-format";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
 import PresetNumberInput from "../../../components/PresetNumberInput";
 import { v, iconSizes } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { useFeedInRates } from "../../../lib/feedin";
-import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh } from "../../../components/Icons";
+import { IconArrowRight, IconChevronDown, IconRefresh } from "../../../components/Icons";
+import FlowNav from "../../../components/FlowNav";
 
 // ─── URL slug mappings (sprechende Werte statt Indizes) ─────────────────────
 // Reihenfolge MUSS mit den Arrays in lib/constants.ts übereinstimmen
@@ -74,7 +76,9 @@ const WP_FIELDS = GEBAEUDE_FIELDS;
 const EA_FIELDS = ["ea-km"] as const;
 const GV_FIELDS = [...WP_FIELDS, ...EA_FIELDS];
 
-export default function Empfehlung() {
+// `stand` kommt fertig aufgelöst von der Server-Seite (page.tsx) — siehe dort,
+// warum der Flow ihn nicht selbst aus `lib/stand.ts` liest.
+export default function Empfehlung({ stand }: { stand?: StandSeite }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const prices = usePrices();
@@ -113,6 +117,15 @@ export default function Empfehlung() {
   // Beim "Eingaben ändern" wird auf den letzten Eingabe-Step zurückgesetzt.
   const [wizardStep, setWizardStep] = useState(0);
   const step = isRecommendation ? 3 : wizardStep;
+  // Welche Fragen wirklich beantwortet sind — die Werte darunter behalten ihre
+  // Startwerte für die Rechnung, geben sich aber nicht mehr als Auswahl aus
+  // (Flow-Konvention: keine Vorauswahl, Weiter erst nach echter Wahl). Wer mit
+  // einem fertigen Ergebnis ankommt, hat alles gesetzt.
+  const [beantwortet, setBeantwortet] = useState<Set<string>>(() =>
+    searchParams.get("view") === "ergebnis" ? new Set(["haustyp", "dachart", "personen", "nutzung"]) : new Set()
+  );
+  const markBeantwortet = (key: string) =>
+    setBeantwortet(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
   // Strompreis-Szenario für die gezeigte Rendite/Amortisation der Empfehlung.
   const [scenario, setScenario] = useState("realistic");
 
@@ -296,6 +309,29 @@ export default function Empfehlung() {
   };
   const back = () => wizardStep > 0 && setWizardStep(wizardStep - 1);
 
+  // Was der aktuelle Schritt braucht — an einer Stelle, damit Freigabe und
+  // Hinweistext nicht auseinanderlaufen. Der Großverbraucher-Schritt verlangt
+  // nichts: „nichts davon" ist der Ausgangszustand einer Ein/Aus-Frage.
+  const stepAnforderung: { erfuellt: boolean; hinweis: string }[] = [
+    {
+      // Nur der Haustyp ist Bedingung. Dachform und Ausrichtung stehen im selben
+      // Schritt, kommen aber aus dem geteilten DachField — das führt seine
+      // beantworteten Felder selbst und darf übersprungen werden. Sie hier ein
+      // zweites Mal zu verlangen hieße, zwei Quellen für dieselbe Frage zu haben.
+      erfuellt: beantwortet.has("haustyp"),
+      hinweis: "Bitte erst den Haustyp wählen.",
+    },
+    {
+      erfuellt: beantwortet.has("personen") && beantwortet.has("nutzung"),
+      hinweis: beantwortet.has("personen")
+        ? "Bitte noch das Nutzungsprofil wählen."
+        : "Bitte Haushaltsgröße und Nutzungsprofil wählen.",
+    },
+    { erfuellt: true, hinweis: "" },
+  ];
+  const stepBeantwortet = stepAnforderung[step]?.erfuellt ?? true;
+  const stepHinweis = stepAnforderung[step]?.hinweis ?? "";
+
   // Auto-Berechnung der Dachfläche aus Haustyp + Dachart (für Anzeige in Step 0)
   const computedRoofM2 = Math.round(HAUSTYPEN[haustyp].footprint * DACHARTEN[dachart].factor);
   const effectiveRoofM2 = customRoofM2 ?? computedRoofM2;
@@ -350,7 +386,7 @@ export default function Empfehlung() {
   // Nur aktive, pauschal berechenbare Programme tragen bei. Das zuletzt (am
   // spezifischsten) angewandte Programm wird im Ergebnis vorab scharf geschaltet.
   const fundingStack = rec
-    ? stackFunding(fundingPrograms, rec.kwp, rec.speicherKwh, rec.reasoning.investition)
+    ? stackFunding(fundingPrograms, { technik: "pv", kwp: rec.kwp, speicherKwh: rec.speicherKwh, kosten: rec.reasoning.investition })
     : { total: 0, applied: [] };
   const armedFoeId = fundingStack.applied.length > 0
     ? fundingStack.applied[fundingStack.applied.length - 1].program.id
@@ -447,7 +483,7 @@ export default function Empfehlung() {
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Haustyp</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 18 }}>
                   {HAUSTYPEN.map((h, i) => (
-                    <OptionCard key={i} selected={haustyp === i} onClick={() => setHaustyp(i)} label={h.label} sub={h.sub} />
+                    <OptionCard key={i} group="haustyp" selected={beantwortet.has("haustyp") && haustyp === i} onClick={() => { setHaustyp(i); markBeantwortet("haustyp"); }} label={h.label} sub={h.sub} />
                   ))}
                 </div>
                 <div style={{ marginBottom: 16 }}>
@@ -506,19 +542,26 @@ export default function Empfehlung() {
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Personen im Haushalt</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6, marginBottom: 20 }}>
-                  {PERSONEN.map((p, i) => (
-                    <button key={i} onClick={() => setPersonen(i)} style={{
+                  {PERSONEN.map((p, i) => {
+                    const aktiv = beantwortet.has("personen") && personen === i;
+                    return (
+                    // Kennzeichnung von Hand statt OptionCard: Die vierspaltige
+                    // Zahlenreihe soll schmal bleiben (siehe PV-Rechner). Die
+                    // Gruppe trennt sie vom Nutzungsprofil im selben Schritt.
+                    <button key={i} data-flow-option={p.label === "1" ? "1 Person" : `${p.label} Personen`} data-flow-group="personen" aria-pressed={aktiv}
+                      onClick={() => { setPersonen(i); markBeantwortet("personen"); }} style={{
                       padding: "10px 4px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, cursor: "pointer", textAlign: "center",
-                      background: personen === i ? v('--color-accent-dim') : v('--color-bg-muted'),
-                      border: personen === i ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
-                      color: personen === i ? v('--color-accent') : v('--color-text-secondary'),
+                      background: aktiv ? v('--color-accent-dim') : v('--color-bg-muted'),
+                      border: aktiv ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
+                      color: aktiv ? v('--color-accent') : v('--color-text-secondary'),
                     }}>{p.label}</button>
-                  ))}
+                    );
+                  })}
                 </div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Nutzungsprofil</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                   {NUTZUNG.map((n, i) => (
-                    <OptionCard key={i} selected={nutzung === i} onClick={() => setNutzung(i)} label={n.label} sub={n.sub} />
+                    <OptionCard key={i} group="nutzung" selected={beantwortet.has("nutzung") && nutzung === i} onClick={() => { setNutzung(i); markBeantwortet("nutzung"); }} label={n.label} sub={n.sub} />
                   ))}
                 </div>
               </div>
@@ -594,15 +637,17 @@ export default function Empfehlung() {
             )}
 
             {/* Navigation */}
-            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 24 }}>
-              {step > 0 ? (
-                <button onClick={back} style={{ padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>Zurück</button>
-              ) : (
-                <Link href="/" style={{ padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center" }}>Zurück</Link>
-              )}
-              <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <><IconSparkle size={iconSizes.md} /> Empfehlung anzeigen</> : <>Weiter <IconArrowRight size={iconSizes.md} /></>}</span>
-              </button>
+            <div style={{ marginTop: 24 }}>
+              <FlowNav
+                weiterAktiv={stepBeantwortet}
+                weiterLabel={step === STEPS.length - 1 ? "Empfehlung anzeigen" : "Weiter"}
+                onWeiter={next}
+                // Im ersten Schritt führt Zurück aus dem Flow heraus auf die
+                // Startseite — dieselbe Wirkung wie vorher, nur im gemeinsamen
+                // Baustein statt als eigener Link daneben.
+                onZurueck={step > 0 ? back : () => router.push("/")}
+                inaktivHinweis={stepHinweis}
+              />
             </div>
           </div>
         )}
@@ -832,7 +877,7 @@ export default function Empfehlung() {
                         </span>
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 6, paddingTop: 6, borderTop: `1px dashed ${v('--color-border')}` }}>
-                        <span style={{ fontSize: 11, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Rendite 25 Jahre</span>
+                        <span style={{ fontSize: 11, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Gewinn nach 25 Jahren</span>
                         <span style={{ fontSize: 12, fontFamily: v('--font-mono'), fontWeight: 700, color: (altEco[i]?.npv25 ?? alt.npv25) >= 0 ? v('--color-positive') : v('--color-negative') }}>
                           {(altEco[i]?.npv25 ?? alt.npv25) >= 0 ? "+" : ""}{Math.round(altEco[i]?.npv25 ?? alt.npv25).toLocaleString("de-DE")} €
                         </span>
@@ -851,7 +896,7 @@ export default function Empfehlung() {
 
         {/* Innerhalb der Spalte, nicht dahinter — der Rahmen ist mindestens
             bildschirmhoch, und was dahinter steht, sieht niemand. */}
-        <StandNote pfad="/pv-bedarf-berechnen" />
+        <StandNoteView seite={stand} />
       </div>
     </div>
   );

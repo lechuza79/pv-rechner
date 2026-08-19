@@ -5,7 +5,7 @@ import { useAuth, signInWithMagicLink } from "../../../lib/auth";
 import { useSharedPlz, readLocation } from "../../../lib/location";
 import { paramsToRow } from "../../../lib/types";
 import { einspeiseVerlauf, einspeiseDeckelKw, profilFaktorAus, type EinspeiseRegime } from "../../../lib/einspeise-regime";
-import { PREISFORM_MONAT_STUNDE, MARKTWERT_NIVEAU_CT, DIREKTVERMARKTUNG } from "../../../lib/marktwert-config";
+import { PREISFORM_MONAT_STUNDE, MARKTWERT_NIVEAU_CT } from "../../../lib/marktwert-config";
 import { simulateSolarYear, monthlyFromAnnual } from "../../../lib/balkon-sim";
 // ResultVerguetung umschließt ResultRegime — deshalb hier nur der äußere Import.
 import ResultVerguetung from "./_components/ResultVerguetung";
@@ -13,7 +13,7 @@ import ResultSection from "../../../components/ResultSection";
 // HEIZSYSTEM/HEIZSYSTEM_SHORT/WP_M2_PRESETS brauchte der entfallene
 // Verbrauchs-Abschnitt; die Gebäudefragen holen sie sich jetzt selbst aus
 // components/GebaeudeField.
-import { YEAR, YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, NO_PLZ_DEFAULT_YIELD, type Heizsystem } from "../../../lib/constants";
+import { YEAR, YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, NATIONAL_AVG_YIELD, type Heizsystem } from "../../../lib/constants";
 import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
 import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../lib/pv-sim";
 import { calcWpAnnualElectricity, calcJAZ, flowTempForSystem, DEFAULT_WP_BUILDING, wpGebaeudeUebersprungenFolge } from "../../../lib/heatpump";
@@ -38,7 +38,8 @@ import { v, iconSizes } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { DEFAULT_PRICES } from "../../../lib/prices-config";
 import { useFeedInRates } from "../../../lib/feedin";
-import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh, IconSun } from "../../../components/Icons";
+import { IconArrowRight, IconChevronDown, IconRefresh, IconSun } from "../../../components/Icons";
+import FlowNav from "../../../components/FlowNav";
 import { AccordionField, ChoiceButtons } from "../../../components/AccordionField";
 import ScenarioTabs from "../../../components/ScenarioTabs";
 import { useChartExport } from "../../../lib/useChartExport";
@@ -49,8 +50,9 @@ import ResultHeroCard from "./_components/ResultHeroCard";
 // Verbraucher haben je einen eigenen Abschnitt).
 import ResultStats from "./_components/ResultStats";
 import ResultActions from "./_components/ResultActions";
-import ResultFunding from "./_components/ResultFunding";
-import { stackFunding, type FundingProgram } from "../../../lib/funding-programs";
+import ResultFunding from "../../../components/ResultFunding";
+import { stackFunding } from "../../../lib/funding-programs";
+import { useFoerderung } from "../../../lib/use-foerderung";
 
 // Großverbraucher-Detailfragen in ihrer Akkordeon-Reihenfolge. Pro aktivem
 // Verbraucher wird immer nur die erste noch offene Frage aufgeklappt.
@@ -76,7 +78,21 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const RESULT_KEYS = SHARE_KEYS.filter(k => k !== "er" && k !== "plz" && k !== "foe");
   const hasShare = !!initialParams && RESULT_KEYS.some(k => k in initialParams);
 
+  // 5, nicht 4: Der Dach-Schritt ist inzwischen dazugekommen (Parallel-Session).
   const [step, setStep] = useState(hasShare ? 5 : 0);
+  // Welche Fragen der Nutzer WIRKLICH beantwortet hat.
+  //
+  // Die Werte darunter tragen weiterhin sinnvolle Startwerte — die Rechnung
+  // braucht sie, sobald ein geteilter Link direkt ins Ergebnis springt. Was sie
+  // nicht mehr dürfen, ist sich als Auswahl AUSGEBEN: Nach der Flow-Konvention
+  // startet kein Schritt mit einer Vorauswahl, und Weiter bleibt gesperrt, bis
+  // wirklich jemand gewählt hat. Dasselbe Muster wie `gvAnswered` weiter unten.
+  // Bei geteiltem Link gilt alles als beantwortet — die Werte kommen dort aus
+  // den Parametern.
+  const FLOW_FRAGEN = ["anlage", "speicher", "personen", "nutzung"] as const;
+  const [beantwortet, setBeantwortet] = useState<Set<string>>(() => (hasShare ? new Set(FLOW_FRAGEN) : new Set()));
+  const markBeantwortet = (key: string) =>
+    setBeantwortet(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
   const [anlage, setAnlage] = useState(hasShare ? paramInt(initialParams, "a", 2, 0, 4) : 2);
   // paramFloat, nicht paramInt: Die Größe ist in Halbschritten editierbar, und
   // parseInt hat die Nachkommastelle verschluckt — 12,5 kWp kamen beim Empfänger
@@ -179,7 +195,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [einspeisungModus, setEinspeisungModus] = useState<"aus" | "teil" | "voll">(
     hasShare ? (initialParams?.eia === "2" ? "voll" : initialParams?.eia === "0" ? "aus" : "teil") : "teil"
   );
-  const [oErtrag, setOErtrag] = useState(initialParams?.er ? paramInt(initialParams, "er", NO_PLZ_DEFAULT_YIELD, ERTRAG_OPTIMUM_MIN, ERTRAG_OPTIMUM_MAX) : NO_PLZ_DEFAULT_YIELD);
+  const [oErtrag, setOErtrag] = useState(initialParams?.er ? paramInt(initialParams, "er", NATIONAL_AVG_YIELD, ERTRAG_OPTIMUM_MIN, ERTRAG_OPTIMUM_MAX) : NATIONAL_AVG_YIELD);
   // Vergütungsregime: heutige Konditionen (Default — sie gelten für jede Anlage,
   // die bis Ende 2026 ans Netz geht) oder der Entwurf für Neuanlagen ab 2027.
   // Der Börsenerlös nach der Förderphase ist bewusst separat schaltbar und
@@ -209,12 +225,12 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // (/api/funding liefert die Programme mit). `foe` (Programm-ID) kann ein
   // Programm vorab scharf schalten (Link von einer Stadt-/Förderseite).
   const seedFoeId = typeof initialParams?.foe === "string" ? initialParams.foe : null;
-  type FundingCandidate = { ort: string; ags: string; programs: FundingProgram[] };
-  const [fundingCandidates, setFundingCandidates] = useState<FundingCandidate[] | null>(null);
-  const [fundingAgs, setFundingAgs] = useState<string | null>(null);
-  const [fundingPrograms, setFundingPrograms] = useState<FundingProgram[]>([]);
+  // Abruf, Mehrdeutigkeit einer PLZ und Vorbelegung stecken im geteilten Hook —
+  // Balkon- und Wärmepumpen-Rechner benutzen denselben.
+  const foerderQuelle = useFoerderung("pv", seedFoeId);
+  const fundingPrograms = foerderQuelle.programme;
+  // Ob die Förderung eingerechnet wird, bleibt hier: eine Anzeige-Entscheidung.
   const [fundingEnabled, setFundingEnabled] = useState<boolean>(!!seedFoeId);
-  const [fundingLoading, setFundingLoading] = useState(false);
 
   // Einmaliger PLZ-Toast beim ersten Anzeigen des Ergebnisses.
   const [plzToast, setPlzToast] = useState(false);
@@ -258,59 +274,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // Dach und Gebäude reicht.
   const [folgeToast, setFolgeToast] = useState<string | null>(null);
 
-  // PLZ → zutreffende Förderprogramme (Kandidaten serverseitig auflösen)
-  const fetchFunding = async (inputPlz: string) => {
-    if (!/^\d{5}$/.test(inputPlz)) return;
-    setFundingLoading(true);
-    try {
-      const res = await fetch(`/api/funding?plz=${inputPlz}`);
-      const data = await res.json();
-      const candidates: FundingCandidate[] = Array.isArray(data.candidates) ? data.candidates : [];
-      setFundingCandidates(candidates);
-      if (candidates.length === 1) {
-        // Eindeutig → Programme direkt übernehmen.
-        setFundingAgs(candidates[0].ags);
-        setFundingPrograms(candidates[0].programs);
-      } else {
-        // Mehrdeutig → Nutzer fragen (X oder Y?), bis dahin keine Programme aktiv.
-        setFundingAgs(null);
-        setFundingPrograms([]);
-      }
-    } catch {
-      setFundingCandidates([]);
-      setFundingAgs(null);
-      setFundingPrograms([]);
-    }
-    setFundingLoading(false);
-  };
-
-  // Bei mehrdeutiger PLZ: gewählten Ort übernehmen (Programme liegen schon vor).
-  const chooseFundingAgs = (ags: string) => {
-    setFundingAgs(ags);
-    setFundingPrograms(fundingCandidates?.find((c) => c.ags === ags)?.programs ?? []);
-  };
-
-  // `foe`-Seed: Programm beim Laden serverseitig auflösen + scharf schalten.
-  useEffect(() => {
-    if (!seedFoeId) return;
-    (async () => {
-      setFundingLoading(true);
-      try {
-        const res = await fetch(`/api/funding?foe=${seedFoeId}`);
-        const data = await res.json();
-        if (Array.isArray(data.programs) && data.programs.length) {
-          setFundingPrograms(data.programs);
-          setFundingAgs(typeof data.ags === "string" ? data.ags : null);
-        }
-      } catch { /* ignore */ }
-      setFundingLoading(false);
-    })();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   // PLZ → PVGIS Ertrag laden
   const fetchPvgis = async (inputPlz: string) => {
     if (!/^\d{5}$/.test(inputPlz)) return;
-    fetchFunding(inputPlz);
+    foerderQuelle.ausPlz(inputPlz);
     setPlzLoading(true);
     try {
       // PLZ → Koordinaten (lazy load)
@@ -403,7 +370,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // aktiviert) reduziert sie zur effektiven Investition, mit der gerechnet wird.
   const bruttoKosten = oKosten !== null ? oKosten : estimateCost(kwp, spKwh, prices);
   const fundingStack = useMemo(
-    () => stackFunding(fundingPrograms, kwp, spKwh, bruttoKosten),
+    () => stackFunding(fundingPrograms, { technik: "pv", kwp, speicherKwh: spKwh, kosten: bruttoKosten }),
     [fundingPrograms, kwp, spKwh, bruttoKosten],
   );
   const foerderung = fundingEnabled ? fundingStack.total : 0;
@@ -553,7 +520,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     if (regime === "heute") return undefined;
     return {
       satzCtImJahr: (i: number) => einspeiseVerlaufJahre[i - 1]?.satzCt ?? 0,
-      fixkostenProJahr: DIREKTVERMARKTUNG.grundgebuehrProJahr,
+      // Die Grundgebühr steht je Jahr im Verlauf: In den Übergangsjahren nimmt
+      // der Netzbetreiber ab, da gibt es keinen Vermarkter und keine Gebühr.
+      fixkostenImJahr: (i: number) => einspeiseVerlaufJahre[i - 1]?.fixkosten ?? 0,
       einspeiseAnteil: marktSim.einspeiseAnteil,
     };
   }, [regime, einspeiseVerlaufJahre, marktSim.einspeiseAnteil]);
@@ -595,7 +564,11 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         ? 0
         : Math.min(effEv + s.evDelta, 95, (gesamtVerbrauch / jahresertrag) * 100),
       einspeisung: effEinsp,
-      stromSteigerung: s.strom, ertragKwp: oErtrag, monthly: monthlyProfile,
+      // Der Ertrag DIESER Anlage, nicht das Standort-Optimum: Hier stand `oErtrag`
+      // und damit ein Bestfall-Dach, während jede andere Zahl der Seite mit dem
+      // echten Dach rechnet. Die Wirkung des Börsenerlöses war dadurch bei einem
+      // Ost/West-Dach 25 % zu groß, beim Nord-Pultdach 32 % (Council 18.08.2026).
+      stromSteigerung: s.strom, ertragKwp: effErtrag, monthly: monthlyProfile,
       batteryReplace: batteryReplaceCost(spKwh, prices),
     };
     const total = (mk: boolean) => {
@@ -609,13 +582,17 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         ...gemeinsam,
         einspeiseModell: {
           satzCtImJahr: (i: number) => verlauf[i - 1]?.satzCt ?? 0,
-          fixkostenProJahr: DIREKTVERMARKTUNG.grundgebuehrProJahr,
+          fixkostenImJahr: (i: number) => verlauf[i - 1]?.fixkosten ?? 0,
           einspeiseAnteil: marktSim.einspeiseAnteil,
         },
       }).total;
     };
-    return Math.max(0, total(true) - total(false));
-  }, [regime, effEinspeisungModus, scenario, kwp, kosten, oStrom, effEv, effEinsp, oErtrag,
+    // Kein `Math.max(0, …)`: Seit die Grundgebühr nur noch anfällt, wo sich die
+    // Vermarktung trägt, kann die Differenz nicht mehr negativ werden — und wenn
+    // doch, wäre genau das die Auskunft, die an den Schalter gehört. Eine auf
+    // null gekappte Zahl neben einer sinkenden Hauptzahl erklärt gar nichts.
+    return total(true) - total(false);
+  }, [regime, effEinspeisungModus, scenario, kwp, kosten, oStrom, effEv, effEinsp, effErtrag,
       monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag, marktSim, oMarktwert]);
 
   // Das aktuell gewählte Szenario treibt alle Ergebniszahlen. Fallback auf
@@ -675,6 +652,32 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     setStep(target);
   };
   const back = () => step > 0 && setStep(step - 1);
+
+  // Was der aktuelle Schritt braucht, bevor es weitergeht — an EINER Stelle,
+  // damit Freigabe und Hinweistext nie auseinanderlaufen. Reihenfolge wie STEPS.
+  //
+  // Zwei Schritte verlangen bewusst NICHTS:
+  //   „Dein Dach" (1) trägt ein ausdrückliches „Weiß ich nicht — überspringen".
+  //   Eine Frage mit eigenem Ausweg ist keine Pflichtfrage; wer überspringt,
+  //   bekommt stattdessen den Toast mit der Annahme und ihrer Fehlerrichtung.
+  //   „Großverbraucher" (4) fragt Ein/Aus: „keine Wärmepumpe, kein E-Auto,
+  //   keine Klimaanlage" ist der Ausgangszustand, keine vorausgewählte Antwort —
+  //   wer nichts davon hat, soll nicht erst dreimal „nein" antworten müssen.
+  const stepAnforderung: { erfuellt: boolean; hinweis: string }[] = [
+    { erfuellt: beantwortet.has("anlage"), hinweis: "Bitte erst eine Anlagengröße wählen." },
+    { erfuellt: true, hinweis: "" },
+    { erfuellt: beantwortet.has("speicher"), hinweis: "Bitte erst eine Speichergröße wählen — „Kein Speicher“ zählt auch." },
+    {
+      // Im Direktmodus ersetzt der eingetippte Jahresverbrauch die Personenfrage.
+      erfuellt: (verbrauchMode || beantwortet.has("personen")) && beantwortet.has("nutzung"),
+      hinweis: !beantwortet.has("nutzung") && (verbrauchMode || beantwortet.has("personen"))
+        ? "Bitte noch das Nutzungsprofil wählen."
+        : "Bitte Haushalt und Nutzungsprofil angeben.",
+    },
+    { erfuellt: true, hinweis: "" },
+  ];
+  const stepBeantwortet = step >= STEPS.length || (stepAnforderung[step]?.erfuellt ?? true);
+  const stepHinweis = stepAnforderung[step]?.hinweis ?? "";
   const restart = () => { setStep(0); setOKosten(null); setOEv(null); setOVerbrauch(null); setDachartIdx(null); setAusrichtung(null); if (typeof window !== "undefined") window.history.replaceState(null, "", window.location.pathname); };
 
   const buildShareUrl = () => {
@@ -746,7 +749,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         },
         {
           title: "Szenarien",
-          text: "Die drei Kurven unterscheiden sich im angenommenen Strompreisanstieg (1 %, 3 % und 5 % pro Jahr) und im Eigenverbrauch (±5 Prozentpunkte).",
+          // Die Prozentsätze aus SCENARIOS, nicht getippt: Im Bild stand „1 %, 3 %
+          // und 5 %", gerechnet wurden 1, 2 und 5 — und das Bild ist die Fassung,
+          // die ohne Rückfragemöglichkeit weitergereicht wird (Council 18.08.2026).
+          text: `Die drei Kurven unterscheiden sich im angenommenen Strompreisanstieg (${SCENARIOS.map(s => `${(s.strom * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} %`).join(", ")} pro Jahr) und im Eigenverbrauch (±5 Prozentpunkte).`,
         },
       ] : undefined,
       source: `${sourceLabel(DATA_SOURCES.pvgis)} (Standort-Ertrag) · Marktpreise taptaphome.com`,
@@ -907,7 +913,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 </p>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                   {ANLAGEN.map((a, i) => (
-                    <OptionCard key={i} selected={anlage === i} onClick={() => { setAnlage(i); setOKosten(null); setOEv(null); }} label={a.label} sub={a.sub} icon={a.icon} />
+                    <OptionCard key={i} selected={beantwortet.has("anlage") && anlage === i} onClick={() => { setAnlage(i); setOKosten(null); setOEv(null); markBeantwortet("anlage"); }} label={a.label} sub={a.sub} icon={a.icon} />
                   ))}
                 </div>
                 <div style={{
@@ -915,7 +921,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   marginTop: 14, fontSize: 13, color: v('--color-text-muted'),
                 }}>
                   <span>oder</span>
-                  <InlineEdit value={customKwp} onCommit={v => { setCustomKwp(Math.round(v)); setAnlage(4); setOKosten(null); setOEv(null); }} unit=" kWp" step={1} min={1} max={50} width={48} />
+                  <InlineEdit value={customKwp} onCommit={v => { setCustomKwp(Math.round(v)); setAnlage(4); setOKosten(null); setOEv(null); markBeantwortet("anlage"); }} unit=" kWp" step={1} min={1} max={50} width={48} />
                 </div>
               </div>
             )}
@@ -959,7 +965,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 {[...SPEICHER.map((s, idx) => ({ ...s, idx }))]
                   .sort((a, b) => a.kwh - b.kwh)
                   .map(s => (
-                    <OptionCard key={s.idx} selected={oSpKwh === null && speicher === s.idx} onClick={() => { setSpeicher(s.idx); setOSpKwh(null); setOKosten(null); }} label={s.label} sub={s.sub} icon={s.icon} />
+                    <OptionCard key={s.idx} selected={beantwortet.has("speicher") && oSpKwh === null && speicher === s.idx} onClick={() => { setSpeicher(s.idx); setOSpKwh(null); setOKosten(null); markBeantwortet("speicher"); }} label={s.label} sub={s.sub} icon={s.icon} />
                   ))}
                 </div>
               </div>
@@ -979,6 +985,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                       // Beim Wechsel in den Direktmodus den geschätzten Wert als Startwert übernehmen.
                       setOVerbrauch(opt.mode ? PERSONEN[personen].verbrauch : null);
                       setOEv(null);
+                      // „Verbrauch kenne ich" ersetzt die Personenfrage: Wer den
+                      // Jahreswert eingibt, hat den Haushalt beantwortet — sonst
+                      // bliebe Weiter gesperrt und niemand sähe, woran es liegt.
+                      if (opt.mode) markBeantwortet("personen");
                     }} style={{
                       flex: 1, padding: "8px 4px", borderRadius: v('--radius-sm'), fontSize: 13, fontWeight: 600, cursor: "pointer",
                       background: verbrauchMode === opt.mode ? v('--color-accent') : "transparent",
@@ -993,14 +1003,26 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   <>
                     <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Personen im Haushalt</div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6, marginBottom: 20 }}>
-                      {PERSONEN.map((p, i) => (
-                        <button key={i} onClick={() => { setPersonen(i); setOEv(null); }} style={{
+                      {PERSONEN.map((p, i) => {
+                        // Gewählt erst, wenn wirklich jemand gewählt hat — der
+                        // Startwert allein markiert nichts (Flow-Konvention).
+                        const aktiv = beantwortet.has("personen") && personen === i;
+                        return (
+                        // data-flow-option/-group von Hand statt OptionCard: Die
+                        // Zahlenreihe ist bewusst schmal (vier Spalten), eine
+                        // Auswahlkarte mit Unterzeile würde den Schritt doppelt
+                        // so hoch machen. Die Kennzeichnung ist dieselbe, damit
+                        // der Flow-Läufer die Frage trotzdem bedienen kann; die
+                        // Gruppe trennt sie vom Nutzungsprofil daneben.
+                        <button key={i} data-flow-option={p.label === "1" ? "1 Person" : `${p.label} Personen`} data-flow-group="personen" aria-pressed={aktiv}
+                          onClick={() => { setPersonen(i); setOEv(null); markBeantwortet("personen"); }} style={{
                           padding: "10px 4px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, cursor: "pointer", textAlign: "center",
-                          background: personen === i ? v('--color-accent-dim') : v('--color-bg-muted'),
-                          border: personen === i ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
-                          color: personen === i ? v('--color-accent') : v('--color-text-secondary'),
+                          background: aktiv ? v('--color-accent-dim') : v('--color-bg-muted'),
+                          border: aktiv ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
+                          color: aktiv ? v('--color-accent') : v('--color-text-secondary'),
                         }}>{p.label}</button>
-                      ))}
+                        );
+                      })}
                     </div>
                   </>
                 ) : (
@@ -1022,7 +1044,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Nutzungsprofil</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                   {NUTZUNG.map((n, i) => (
-                    <OptionCard key={i} selected={nutzung === i} onClick={() => { setNutzung(i); setOEv(null); }} label={n.label} sub={n.sub} />
+                    <OptionCard key={i} group="nutzung" selected={beantwortet.has("nutzung") && nutzung === i} onClick={() => { setNutzung(i); setOEv(null); markBeantwortet("nutzung"); }} label={n.label} sub={n.sub} />
                   ))}
                 </div>
               </div>
@@ -1139,13 +1161,15 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               </div>
             )}
 
-            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 24 }}>
-              {step > 0 ? (
-                <button onClick={back} style={{ padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>Zurück</button>
-              ) : <div />}
-              <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <><IconSparkle size={iconSizes.md} /> Berechnen</> : <>Weiter <IconArrowRight size={iconSizes.md} /></>}</span>
-              </button>
+            <div style={{ marginTop: 24 }}>
+              <FlowNav
+                weiterAktiv={stepBeantwortet}
+                weiterLabel={step === STEPS.length - 1 ? "Berechnen" : "Weiter"}
+                onWeiter={next}
+                onZurueck={back}
+                zurueckSichtbar={step > 0}
+                inaktivHinweis={stepHinweis}
+              />
             </div>
           </div>
         )}
@@ -1375,10 +1399,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             )}
 
             <ResultFunding
-              loading={fundingLoading}
-              candidates={fundingCandidates}
-              chosenAgs={fundingAgs}
-              onChooseAgs={chooseFundingAgs}
+              loading={foerderQuelle.laedt}
+              candidates={foerderQuelle.kandidaten}
+              chosenAgs={foerderQuelle.ags}
+              onChooseAgs={foerderQuelle.waehleOrt}
               programs={fundingPrograms}
               applied={fundingStack.applied}
               total={fundingStack.total}
@@ -1444,7 +1468,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               total={sel.data.total} kosten={kosten}
               wp={wp} wpKwh={wpKwh ?? 0} jaz={wpJaz} effEv={effEv} autarkie={autarkie} wpAutarky={pvSim.wpAutarky}
               jahresertrag={jahresertrag} gesamtVerbrauch={gesamtVerbrauch} speicherKwh={spKwh} monthly={pvSim.monthly} exampleDays={exampleDays}
-              oStrom={oStrom} stromSteigerung={sel.strom} fuelType={fuelType} setFuelType={setFuelType}
+              stromSteigerung={sel.strom} fuelType={fuelType} setFuelType={setFuelType}
             />
 
             {spKwh > 0 && effEinspeisungModus !== "voll" && (

@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { uebrigeFragenBeantworten } from "./flows";
 
 // Rechtsaussagen müssen SICHTBAR geprüft werden, nicht nur im Quelltext
 // (scripts/council-verify.md, BLOCKER). Auslöser am 29.07.2026: Eine
@@ -65,11 +66,15 @@ test.describe("EEG-Reform: Sachstand auf den Seiten, an denen ein Nutzer ihn lie
     await page.goto("/photovoltaik-rechner");
 
     // Durch den Flow klicken — dieselbe Mechanik wie in rechner.spec.ts.
+    // In JEDEM Schritt erst die offenen Fragen beantworten: Seit dem Flow-Umbau
+    // startet kein Schritt mehr vorbelegt, Weiter bleibt sonst ausgegraut.
     for (let i = 0; i < 12; i++) {
+      await uebrigeFragenBeantworten(page);
       const weiter = page.getByRole("button", { name: /^weiter$/i });
       if (!(await weiter.count())) break;
       await weiter.first().click();
     }
+    await uebrigeFragenBeantworten(page);
     const rechnen = page.getByRole("button", { name: /berechnen|ergebnis|fertig/i });
     if (await rechnen.count()) await rechnen.first().click();
 

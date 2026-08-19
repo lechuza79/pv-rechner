@@ -1,5 +1,6 @@
 import { v } from "../lib/theme";
-import type { FundingProgram, FundingStatus } from "../lib/funding-programs";
+import InfoTooltip from "./InfoTooltip";
+import { FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE, type FundingProgram, type FundingStatus } from "../lib/funding-programs";
 import type { FundingExample } from "../lib/funding-examples";
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
@@ -10,19 +11,24 @@ const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 // it here, not in four files. Page-specific framing (CTAs, eligibility badges,
 // combinable links, containers) stays in each caller.
 
-export const FUNDING_STATUS_LABEL: Record<FundingStatus, string> = {
-  aktiv: "aktiv", ausgeschoepft: "ausgeschöpft", pausiert: "pausiert", eingestellt: "eingestellt", unsicher: "Status unklar",
-};
+// Wortlaut der Status-Bezeichnungen: umgezogen nach lib/funding-programs.ts
+// (18.08.2026), damit auch der Verlaufs-Vergleich sie benutzen kann, ohne eine
+// React-Komponente in die Schreibseite zu ziehen. Re-Export, damit die
+// bisherigen Aufrufer unverändert bleiben — EINE Quelle, zwei Türen.
+export { FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE };
 
-/** Short status phrase for inline prose on city/archive pages — reads naturally
- *  after "… ist {phrase}" / "… — {phrase}". Keeps the wording in one place so
- *  the city page, the example note and any future caller stay consistent. */
-export const FUNDING_STATUS_NOTE: Record<FundingStatus, string> = {
-  aktiv: "nimmt aktuell Anträge an",
-  ausgeschoepft: "aktuell ausgeschöpft (Fördertopf leer)",
-  pausiert: "aktuell pausiert (keine neuen Anträge)",
-  eingestellt: "eingestellt (wird nicht mehr angeboten)",
-  unsicher: "Status unklar",
+/**
+ * Einheiten, die eine Erklärung brauchen — als „?" hinter der Einheit.
+ *
+ * „Prozentpunkte" ist der Fall, für den es das gibt: +5 Prozentpunkte auf 20 %
+ * ergibt 25 %, nicht 21 %. Der Unterschied sind bei 17.000 € Investition rund
+ * 680 € — die Einheit deshalb NICHT zu „%" zu vereinfachen, sondern zu
+ * erklären, ist die einzige Fassung, die stimmt UND verstanden wird.
+ */
+const EINHEIT_ERKLAERT: Record<string, string> = {
+  Prozentpunkte:
+    "Prozentpunkte werden auf den Fördersatz aufgeschlagen, nicht vom Betrag abgezogen: " +
+    "5 Prozentpunkte auf 20 % ergeben 25 % — nicht 21 %.",
 };
 
 export function fundingStatusColor(status: FundingStatus): string {
@@ -33,8 +39,24 @@ export function fundingStatusColor(status: FundingStatus): string {
 
 export function FundingStatusBadge({ status }: { status: FundingStatus }) {
   const c = fundingStatusColor(status);
+  // „aktiv" ist eine positive Aussage und wird auch so gesetzt: gefüllt in der
+  // Positiv-Farbe des Systems statt als blasser Umriss. Die übrigen Zustände
+  // (ausgeschöpft, pausiert, eingestellt) behalten den Umriss — sie sind
+  // Einschränkungen und sollen nicht wie eine Auszeichnung wirken.
+  const positiv = status === "aktiv";
   return (
-    <span style={{ fontSize: 11, fontWeight: 700, color: c, border: `1px solid ${c}`, borderRadius: 999, padding: "2px 9px", whiteSpace: "nowrap" }}>
+    <span
+      style={{
+        fontSize: "var(--font-size-small)",
+        fontWeight: 700,
+        color: positiv ? v("--color-positive-text") : c,
+        background: positiv ? v("--color-chart-positive-bg") : "transparent",
+        border: `1px solid ${positiv ? "transparent" : c}`,
+        borderRadius: 999,
+        padding: "5px 14px",
+        whiteSpace: "nowrap",
+      }}
+    >
       {FUNDING_STATUS_LABEL[status]}
     </span>
   );
@@ -42,21 +64,93 @@ export function FundingStatusBadge({ status }: { status: FundingStatus }) {
 
 /** The "label … value" rate rows. `bordered` adds the divider used in detail
  *  views (modal, city page); list views (overview, Bundesland) leave it off. */
-export function FundingRates({ rates, bordered = false }: { rates: FundingProgram["rates"]; bordered?: boolean }) {
+export function FundingRates({
+  rates,
+  bordered = false,
+  columns = 1,
+  label,
+}: {
+  rates: FundingProgram["rates"];
+  bordered?: boolean;
+  /** Überschrift über der Liste — damit die Sätze neben den Bedingungen
+   *  genauso beschriftet sind wie diese und nicht als namenlose Tabelle
+   *  danebenstehen. */
+  label?: string;
+  /** Zweispaltig auf breiten Bildschirmen — die Sätze sind kurze
+   *  Beschriftung-Wert-Paare und lassen als einspaltige Liste viel Weißraum
+   *  neben sich stehen. Unter 420 px bleibt es einspaltig, sonst bricht der
+   *  Wert von seiner Beschriftung weg. */
+  columns?: 1 | 2;
+}) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: bordered ? 8 : 4 }}>
-      {rates.map((r) => (
-        <div
-          key={r.label}
-          style={{
-            display: "flex", justifyContent: "space-between", gap: 12, fontSize: 13,
-            ...(bordered ? { borderBottom: `1px solid ${v("--color-border")}`, paddingBottom: 8 } : {}),
-          }}
-        >
-          <span style={{ color: v("--color-text-secondary") }}>{r.label}</span>
-          <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, textAlign: "right" }}>{r.value}</span>
-        </div>
-      ))}
+    <div>
+      {label && (
+        <div style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, color: v("--color-text-secondary"), marginBottom: 12 }}>{label}</div>
+      )}
+    <div
+      style={
+        columns === 2
+          ? { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: bordered ? 8 : 4, columnGap: 20 }
+          : { display: "flex", flexDirection: "column", gap: bordered ? 8 : 4 }
+      }
+    >
+      {rates.map((r) => {
+        // Zahl, Einheit und Zusatz trennen — dieselbe Staffelung wie bei den
+        // Kacheln im Atlas: Der Zahlenwert trägt die Zeile, die Einheit steht
+        // kleiner daneben, eine Bedingung darunter noch kleiner und ruhiger.
+        // „20 % (30 % als Solar-Gründach)" als ein Stück in der Zahlen-Schrift
+        // ließ die Einheit so laut schreien wie den Betrag.
+        const auf = r.value.indexOf(" (");
+        const ohneZusatz = auf > 0 ? r.value.slice(0, auf) : r.value;
+        const zusatz = auf > 0 ? r.value.slice(auf + 2).replace(/\)$/, "") : null;
+        const m = ohneZusatz.match(/^([+\u2212-]?[\d.,]+(?:\s*[\u2013-]\s*[\d.,]+)?)\s*(.*)$/);
+        const zahl = m ? m[1] : ohneZusatz;
+        const einheit = m && m[2] ? m[2] : null;
+        // Kurzzeichen bleiben in der Zeile, ausgeschriebene Einheiten rutschen
+        // darunter — sonst wird die Zeile vom Wort statt von der Zahl geführt.
+        const kurzeEinheit = !!einheit && einheit.length <= 3;
+        return (
+          <div
+            key={r.label}
+            style={{
+              display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 16, paddingTop: 4,
+              fontSize: "var(--font-size-body)",
+              ...(bordered ? { borderBottom: `1px solid ${v("--color-border")}`, paddingBottom: 12 } : {}),
+            }}
+          >
+            <span style={{ color: v("--color-text-secondary") }}>{r.label}</span>
+            <span style={{ textAlign: "right", flexShrink: 0 }}>
+              <span style={{ whiteSpace: "nowrap" }}>
+                <span style={{ fontFamily: v("--font-mono"), fontWeight: 700 }}>{zahl}</span>
+                {einheit && kurzeEinheit && (
+                  <span style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), fontWeight: 400, marginLeft: 4 }}>
+                    {einheit}
+                  </span>
+                )}
+              </span>
+              {einheit && !kurzeEinheit && (
+                <span style={{ display: "block", fontSize: "var(--font-size-caption)", color: v("--color-text-muted"), fontWeight: 400, marginTop: 2 }}>
+                  {einheit}
+                  {/* Fester Platz für das „?": Der Knopf kommt erst mit der
+                      Hydration dazu — ohne reservierte Breite schob er die
+                      Einheit beim Erscheinen zur Seite. */}
+                  {EINHEIT_ERKLAERT[einheit] && (
+                    <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 16, height: 16, verticalAlign: "middle", marginLeft: 3 }}>
+                      <InfoTooltip title="Prozentpunkte" size={12} ariaLabel={`Was bedeutet ${einheit}?`}>{EINHEIT_ERKLAERT[einheit]}</InfoTooltip>
+                    </span>
+                  )}
+                </span>
+              )}
+              {zusatz && (
+                <span style={{ display: "block", fontSize: "var(--font-size-caption)", color: v("--color-text-muted"), fontWeight: 400, marginTop: 2 }}>
+                  {zusatz}
+                </span>
+              )}
+            </span>
+          </div>
+        );
+      })}
+    </div>
     </div>
   );
 }
@@ -89,7 +183,7 @@ export function ExampleCards({ examples }: { examples: FundingExample[] }) {
               <span style={{ fontFamily: v("--font-mono"), fontWeight: 700 }}>{ex.amort !== null ? `${ex.amort} Jahre` : "> 25 J."}</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: v("--color-text-secondary") }}>Rendite 25 J.</span>
+              <span style={{ color: v("--color-text-secondary") }}>Gewinn 25 J.</span>
               <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: ex.total > 0 ? v("--color-positive") : v("--color-negative") }}>{ex.total > 0 ? "+" : ""}{nf(ex.total)} €</span>
             </div>
           </div>
@@ -100,14 +194,36 @@ export function ExampleCards({ examples }: { examples: FundingExample[] }) {
 }
 
 /** "Bedingungen" heading + bullet list. Renders nothing when empty. */
-export function FundingConditions({ conditions }: { conditions: string[] }) {
-  if (conditions.length === 0) return null;
+export function FundingConditions({
+  conditions,
+  eligibility,
+}: {
+  conditions: string[];
+  /** Wer antragsberechtigt ist — wird als ERSTE Bedingung in die Liste
+   *  gesetzt, nicht als Abzeichen darüber. „Privat" und „Gewerblich" sind
+   *  Bedingungen wie jede andere auch: Sie sagen, wer in Frage kommt. Als
+   *  Pillen über der Liste standen sie als Etikett da, das zu nichts gehörte. */
+  eligibility?: FundingProgram["eligibility"];
+}) {
+  const wer =
+    eligibility && eligibility.length > 0
+      ? eligibility.length === 2
+        ? "Für Privatpersonen und Gewerbe"
+        : eligibility[0] === "privat"
+          ? "Nur für Privatpersonen"
+          : "Nur für Gewerbe"
+      : null;
+  const alle = wer ? [wer, ...conditions] : conditions;
+  if (alle.length === 0) return null;
+  // EIN Block, kein Fragment: Als Fragment waren Überschrift und Liste zwei
+  // Geschwister — in einem Raster landeten sie in zwei verschiedenen Spalten,
+  // die Überschrift links und die Bedingungen rechts daneben.
   return (
-    <>
-      <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-secondary"), marginBottom: 6 }}>Bedingungen</div>
-      <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, lineHeight: 1.7, color: v("--color-text-secondary") }}>
-        {conditions.map((c) => <li key={c}>{c}</li>)}
+    <div>
+      <div style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, color: v("--color-text-secondary"), marginBottom: 12 }}>Bedingungen</div>
+      <ul style={{ margin: 0, paddingLeft: 20, fontSize: "var(--font-size-body)", lineHeight: 1.6, color: v("--color-text-secondary") }}>
+        {alle.map((c) => <li key={c} style={{ marginBottom: 4 }}>{c}</li>)}
       </ul>
-    </>
+    </div>
   );
 }

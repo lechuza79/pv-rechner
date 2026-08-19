@@ -6,7 +6,7 @@
 // überschreibt damit die Schnellschätzung. Räume + PLZ sind gesperrt (Anzeige).
 import { useState, useEffect, useMemo } from "react";
 import AirconDetailInputs from "./AirconDetailInputs";
-import Modal from "./Modal";
+import Modal, { ModalSticky } from "./Modal";
 import { IconCheck } from "./Icons";
 import { v, iconSizes } from "../lib/theme";
 import { DEFAULT_AIRCON_CONFIG as CFG, type AcDeviceId } from "../lib/aircon-config";
@@ -57,9 +57,12 @@ export default function KlimaDetailModal({ open, onClose, rooms, plz, stromPrice
         rooms={rooms} plz={plz}
       />
 
-      {/* Ergebnis + Übernehmen */}
+      {/* Ergebnis + Übernehmen — klebt am unteren Rand (ModalSticky): Beim
+          Verstellen der Eingaben darüber bleibt sichtbar, was dabei herauskommt,
+          und „Übernehmen" ist nie weggescrollt. */}
+      <ModalSticky>
       <div style={{
-        marginTop: 20, padding: "14px 16px", background: v('--color-bg-accent'),
+        padding: "14px 16px", background: v('--color-bg-accent'),
         borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border-accent')}`,
         display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10,
       }}>
@@ -85,6 +88,7 @@ export default function KlimaDetailModal({ open, onClose, rooms, plz, stromPrice
           ? `Standort PLZ ${plz} · ${cooling.cdhSet.avg5.toLocaleString("de-DE")} Kühlgradstunden`
           : "Ohne PLZ mit deutschem Durchschnitt gerechnet. PLZ im Ergebnis eingeben für echte Hitzedaten."}
       </div>
+      </ModalSticky>
     </Modal>
   );
 }

@@ -45,7 +45,7 @@ export function buildFundingExamples(yieldKwhKwp: number, f?: FundingProgram): F
     const brutto = estimateCost(kwp, spKwh);
     const einspeisung = calcWeightedFeedIn(kwp, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10);
     // Shared funding math (single source of truth, also used by the rechner).
-    const fa = fundingAmount(f, kwp, spKwh, brutto);
+    const fa = fundingAmount(f, { technik: "pv", kwp, speicherKwh: spKwh, kosten: brutto });
     const foerderComputable = fa.computable;
     // Only subtract when the program currently accepts applications.
     const foerderung = fa.active ? fa.total : 0;

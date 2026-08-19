@@ -39,15 +39,49 @@ export default defineConfig({
     timezoneId: "Europe/Berlin",
   },
 
+  // Zwei Projekte, weil die beiden Stufen verschieden teuer sind:
+  //
+  //   smoke — alles ausser dem Flow-Läufer. Läuft gegen den Dev-Server und ist
+  //           in wenigen Minuten durch.
+  //   flows — der Flow-Läufer allein (e2e/flows.spec.ts). Er baut je Weg die
+  //           Seite neu auf: im Standard-Modus (jede Option, jeder Zweig)
+  //           gegen einen fertigen Build ~7 Minuten; im nächtlichen
+  //           Alle-Kombinationen-Modus (FLOW_ALLE_KOMBINATIONEN=1) Stunden.
+  //
+  // Vorher lagen beide im selben Lauf. Als der Läufer von einem auf sieben
+  // Flows wuchs, riss das die Zeitgrenze des CI-Jobs — und ein abgebrochener
+  // Lauf fällt gar kein Urteil, weder rot noch grün. Getrennt kann jede Stufe
+  // ihr eigenes Zeitmass bekommen, und ein langer Flow-Lauf hält die schnellen
+  // Prüfungen nicht mehr auf.
   projects: [
-    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    { name: "smoke", use: { ...devices["Desktop Chrome"] }, testIgnore: /flows\.spec\.ts/ },
+    { name: "flows", use: { ...devices["Desktop Chrome"] }, testMatch: /flows\.spec\.ts/ },
   ],
 
   webServer: {
     // Dedicated port (3045) so this doesn't fight a manual dev server on 3000/3041
-    command: `next dev -p ${E2E_PORT}`,
+    //
+    // E2E_BUILD=1 prüft gegen einen fertigen Build statt gegen den Dev-Server.
+    // Nötig für den Flow-Automatismus (e2e/flows.spec.ts): Der ruft je Weg die
+    // Seite neu auf, also hunderte Male. Der Dev-Server übersetzt jede Route
+    // beim ersten Aufruf neu und ging dabei nach ~15 Minuten in die Knie — der
+    // Lauf brach dann mit „nicht erreichbar" ab, was wie ein Testfehler aussah,
+    // aber keiner war. Gegen den Build entfällt das Übersetzen komplett.
+    command: process.env.E2E_BUILD
+      ? `next build && next start -p ${E2E_PORT}`
+      : `next dev -p ${E2E_PORT}`,
     url: `http://localhost:${E2E_PORT}`,
     reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    // 4 Minuten statt 2: In einer Worktree liegen die Abhängigkeiten im
+    // Hauptverzeichnis, und der erste Start übersetzt alles neu — die zwei
+    // Minuten liefen dort zuverlässig ab, bevor der Server bereit war, und der
+    // ganze Lauf brach mit einer Meldung ab, die nach einem Testfehler aussieht.
+    //
+    // Im Build-Modus (E2E_BUILD) 10 Minuten: Vor dem Start läuft ein voller
+    // `next build`, und der brauchte auf einer ausgelasteten Maschine (mehrere
+    // parallele Sessions) zweimal am 18.08.2026 länger als 4 Minuten — der
+    // Lauf starb dann VOR dem ersten Test mit „Timed out waiting from
+    // config.webServer", was nach einem Testfehler aussieht, aber keiner ist.
+    timeout: process.env.E2E_BUILD ? 600_000 : 240_000,
   },
 });

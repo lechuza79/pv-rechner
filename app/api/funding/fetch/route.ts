@@ -37,13 +37,48 @@ const UA =
 
 type Versuch = { weg: string; status: number | string };
 
-async function hole(url: string, ms: number, headers: Record<string, string> = {}): Promise<Response | null> {
+/**
+ * Ziel-Adresse nach allen Weiterleitungen prüfen — BLOCKER.
+ *
+ * Die Route nimmt zwar nur eine Programm-Kennung entgegen, aber die Freigabe
+ * gilt sonst nur für den ERSTEN Sprung: Leitet eine Träger-Seite weiter (Domain
+ * übernommen, offene Weiterleitung auf der Stadtseite), folgt der Server blind.
+ * Deshalb muss die Adresse, bei der wir landen, wieder https sein und darf keine
+ * interne Adresse sein.
+ */
+function zielErlaubt(u: string): boolean {
+  let ziel: URL;
   try {
-    return await fetch(url, {
+    ziel = new URL(u);
+  } catch {
+    return false;
+  }
+  if (ziel.protocol !== "https:") return false;
+  const host = ziel.hostname.toLowerCase();
+  if (host === "localhost" || host.endsWith(".localhost") || host.endsWith(".internal")) return false;
+  // IP-Adressen in privaten und Link-Local-Bereichen (u. a. der Metadaten-Dienst
+  // 169.254.169.254) sind nie eine Amtsseite.
+  if (/^\[?::1\]?$/.test(host)) return false;
+  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(host)) {
+    const [a, b] = host.split(".").map(Number);
+    if (a === 10 || a === 127 || (a === 169 && b === 254) || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+async function hole(url: string, ms: number, headers: Record<string, string> = {}): Promise<Response | null> {
+  if (!zielErlaubt(url)) return null;
+  try {
+    const res = await fetch(url, {
       headers: { "User-Agent": UA, "Accept-Language": "de-DE,de;q=0.9", ...headers },
       redirect: "follow",
       signal: AbortSignal.timeout(ms),
     });
+    // res.url ist die Adresse NACH den Weiterleitungen.
+    if (res.url && !zielErlaubt(res.url)) return null;
+    return res;
   } catch {
     return null;
   }
@@ -65,16 +100,29 @@ export async function GET(req: NextRequest) {
   if (!url) return NextResponse.json({ error: "program has no url" }, { status: 400 });
 
   const versuche: Versuch[] = [];
+  const start = Date.now();
+  // Zeitbudget — BLOCKER. Die Function darf maxDuration nicht überschreiten,
+  // sonst wird sie mitten im Lauf abgeschossen und der Aufrufer bekommt ein 504
+  // statt eines Ergebnisses. Vier Anläufe mit wachsendem Timeout summierten sich
+  // im schlechtesten Fall auf rund 105 s bei maxDuration 60 — die Archiv-Stufe
+  // darunter wurde dann NIE erreicht, also ausgerechnet die, die gesperrten
+  // Trägern hilft. Deshalb: Direktabrufe enden nach DIREKT_BUDGET_MS, der Rest
+  // der Zeit gehört dem Archiv.
+  const DIREKT_BUDGET_MS = 28_000;
+  const restZeit = () => maxDuration * 1_000 - 8_000 - (Date.now() - start);
 
   // 1) Die Amtsseite direkt, mit mehreren Anläufen und kurzen Pausen.
   //
   // Gemessen am 17.08.2026 an frankfurt.de aus dieser Function: 403, 403, dann
   // 200 mit 171 KB. Die Sperre ist eine Laune der Bot-Erkennung, kein Zustand —
-  // sie kippt beim Nachfassen. Zwei Anläufe waren dafür zu wenig; mit vieren
-  // löst sich der Fall in derselben Anfrage statt erst am nächsten Tag.
+  // sie kippt beim Nachfassen.
   for (const n of [0, 1, 2, 3]) {
-    if (n > 0) await new Promise((r) => setTimeout(r, 2_500 * n));
-    const res = await hole(url, 15_000 + n * 5_000);
+    if (Date.now() - start > DIREKT_BUDGET_MS) {
+      versuche.push({ weg: "direkt", status: "Zeitbudget aufgebraucht" });
+      break;
+    }
+    if (n > 0) await new Promise((r) => setTimeout(r, 1_500));
+    const res = await hole(url, Math.min(9_000, Math.max(3_000, DIREKT_BUDGET_MS - (Date.now() - start))));
     versuche.push({ weg: "direkt", status: res?.status ?? "keine Antwort" });
     if (res?.ok) {
       const html = await res.text();
@@ -93,7 +141,12 @@ export async function GET(req: NextRequest) {
     `https://web.archive.org/web/${jahr}id_/${url}`,
     `https://web.archive.org/save/${url}`,
   ]) {
-    const res = await hole(ziel, ziel.includes("/save/") ? 45_000 : 25_000);
+    const uebrig = restZeit();
+    if (uebrig < 4_000) {
+      versuche.push({ weg: "archiv", status: "Zeitbudget aufgebraucht" });
+      break;
+    }
+    const res = await hole(ziel, Math.min(ziel.includes("/save/") ? 40_000 : 20_000, uebrig));
     versuche.push({ weg: ziel.includes("/save/") ? "archiv-holen" : "archiv-lesen", status: res?.status ?? "keine Antwort" });
     if (res?.ok) {
       const html = await res.text();

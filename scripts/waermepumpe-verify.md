@@ -99,6 +99,156 @@ zusätzlich in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
   über 20 Jahre 2.200 € gegen die Wärmepumpe, und die fossile Seite hinge weiter
   an der alten Quelle. Beim nächsten Lauf beide Seiten aus derselben Quelle neu
   belegen oder den Befund als Entscheidung vorlegen.
+- **ABGESCHLOSSEN (19.08.2026) — Nutzungsgrad einer NEU eingebauten Ölheizung.**
+  **Keine Frist mehr. Das ist eine Modellprämisse, kein liegengebliebener Punkt.**
+  Drei adversariale Prüfungen an einem Tag, drei Widerlegungen — und alle drei aus
+  demselben strukturellen Grund: Ein PRÄZISER Marktwert für diesen Kessel gibt es
+  nicht als eine Zahl. Er hängt an der Systemtemperatur (ein Ölkessel kondensiert
+  an alten Heizkörpern kaum, an einer Fußbodenheizung voll), und die Norm, die das
+  sauber auflöst, ist kostenpflichtig. Jeder Versuch, die Lücke mit einer einzelnen
+  Zahl zu schließen, endete bei einem Handfaktor.
+  **Deshalb steht bewusst die belegte UNTERGRENZE (0,92) statt einer geschätzten
+  Mitte** — dasselbe Prinzip wie beim Bioheizöl: lieber eine Zahl, die nachweislich
+  zu vorsichtig ist und deren Richtung dransteht, als eine, die genauer aussieht
+  und es nicht ist. Der verbleibende Fehler ist **benannt und begrenzt**: höchstens
+  rund sechs Prozentpunkte, immer zugunsten der Wärmepumpe, in einem einzelnen
+  Zweig des Rechners.
+  **Wieder aufgemacht wird das nur mit einem echten Auslöser**, nicht mit einem
+  Kalendertag: wenn DIN V 18599-5 im Repo liegt, oder wenn der Rechner ohnehin auf
+  temperaturabhängige Kesselwirkungsgrade umgebaut wird. Dann gilt: **Gas muss
+  mitwandern** (die amtlichen Aufwandszahlen trennen nicht nach Brennstoff — wer nur
+  Öl anfasst, stellt die beiden auf verschiedene Quellen), und die vorbereitete
+  Grundlage steht unten in der Historie.
+
+  **Historie (Stand der Umsetzung):**
+  **Gesetzt ist jetzt 0,92**: der gesetzliche Mindestwert der Ökodesign-Verordnung
+  (86 % jahreszeitbedingte Raumheizungs-Energieeffizienz, Brennwert-Basis), auf die
+  Heizwert-Skala unseres Ölpreises umgerechnet (× 1,066). Dazu ein eigener
+  Bestands-Eintrag „Vorhandene Ölheizung" (0,85) — damit rutscht ein Öl-Haushalt
+  bei „Anschaffung 0" nicht mehr still auf Gas.
+  **Vorbereitet für einen späteren Umbau (KEINE Frist):** der Marktwert statt der
+  Untergrenze, gestaffelt nach Heizsystem. Reale Öl-Brennwertkessel liegen laut
+  Herstellerdatenblättern bei 92–93 % (Brennwert) — aber diese Zahl wird zu 85 %
+  bei 30 °C Rücklauf gemessen, also unter Fußbodenheizungs-Bedingungen; an alten
+  Heizkörpern (55 °C) kondensiert ein Ölkessel kaum, weil sein Abgas-Taupunkt bei
+  ~47 °C liegt. Genau diese Staffelung kennt der Rechner schon (`hk_alt` /
+  `hk_neu` / `fbh`), und die BAnz-Tabelle 5 liefert sie auf der richtigen
+  Bezugsgröße (70/55 °C → ~0,94 · 55/45 °C → ~1,01). **Wer das umsetzt, muss Gas
+  mitnehmen** — sonst stünden die beiden Brennstoffe wieder auf verschiedenen
+  Quellen. Bis dahin rechnen wir die Ölheizung weiterhin etwas zu schlecht, also
+  zugunsten der Wärmepumpe; die Richtung ist im Code benannt.
+
+  **Historie der drei Anläufe** (damit niemand einen davon wiederholt): Für Gas
+  trennt `WP_FUEL_OPTIONS` drei Fälle (neu 0,95 · vorhanden 0,90 · alt 0,80), für
+  Öl gibt es nur eine Zahl — **0,85** —, und die beschreibt laut `lib/calc.ts`
+  ausdrücklich die *vorhandene* Anlage. Sie steht damit an der neu eingebauten:
+  Der Rechner verbrennt in der fossilen Referenz mehr Öl, als ein heute
+  eingebauter Brennwertkessel bräuchte, und das geht **zugunsten der Wärmepumpe**
+  (Council 18.08.2026: rund 3.500 € über 20 Jahre, 140 m² teilsaniert). Deshalb
+  fehlt auch der Bestands-Eintrag für Öl — ein zweiter Eintrag mit derselben Zahl
+  wäre eine Dublette, kein zweiter Fall; Folge: Wer die Anschaffung auf 0 setzt,
+  rutscht von Öl auf Gas.
+  **Eine Sackgasse ist geprüft und dokumentiert — nicht noch einmal gehen.** Der
+  Council-Lauf vom 18.08.2026 wollte den Wert aus IWU Darmstadt, „Energetische
+  Kenngrößen für Heizungsanlagen im Bestand", Tab. 3 ableiten (Volltext liegt im
+  Repo: `docs/quellen/IWU_Energetische-Kenngroessen-Heizungsanlagen-Bestand.pdf`).
+  Ein adversarialer Prüfer hat die Herleitung zerlegt, jeder Punkt am Dokument
+  nachgesehen und bestätigt:
+  - **Die Spalten sind Baujahre** (70er / 80er / 90er Jahre), keine Gerätevarianten.
+    Die vermeintliche „Öl-Brennwert 0,94" ist der Kessel der **80er Jahre**; für
+    einen 2026 eingebauten gibt es dort überhaupt keine Spalte. Das Dokument ist
+    vom **1. November 2002** und handelt ausdrücklich vom Bestand 1970–1999.
+  - **Die Größe ist eine andere:** Tab. 3 nennt den 30 %-**Teillast**wirkungsgrad
+    bei der jeweiligen mittleren Kesseltemperatur (Brennwert: 30 °C, also
+    Fußbodenheizung). Unser Modell braucht den Jahresnutzungsgrad, und die
+    Referenzheizung im Bestand hängt meist an alten Heizkörpern (~50 °C) —
+    nach dem Modell im Anhang des Dokuments rund 3 Punkte Unterschied.
+  - **Die Bezugsgröße passt nicht zusammen:** Tab. 3 rechnet auf Heizwert (Hi;
+    nur so ist Gas-Brennwert 1,01 möglich), unser Gaspreis ist ein
+    Abrechnungspreis auf Brennwert (Hs), Heizöl läuft dagegen üblicherweise auf Hi.
+  - **Und die angebliche Regel „Quelle minus 0,02" gibt es nicht:** `0.95` steht
+    seit dem ersten Wärmepumpen-Commit (74b34c9, 14.04.2026) im Code, vier Monate
+    bevor diese Quelle im Repo lag; auf den Altkessel-Wert 0,80 wäre der Abschlag
+    ohnehin nie angewandt worden. Das war ein Handfaktor mit nachgereichter
+    Begründung — genau das, was Regel 5 des Gates verbietet.
+  **Zweite geprüfte Sackgasse (19.08.2026) — die amtliche Bekanntmachung zur
+  Datenaufnahme im Wohngebäudebestand** (BAnz AT 04.12.2020 B1). Sie sieht auf den
+  ersten Blick wie die Lösung aus, trägt den Wert aber nicht:
+  - **Tabelle 7** nennt für Brennwertkessel „Norm-Nutzungsgrade ηK zwischen 102 %
+    und 108 % (bezogen auf Heizwert Hi)" und ausdrücklich „Öl **oder** Gas" — das
+    ist aber **Spalte 6**, und Nummer 4.4 der Bekanntmachung sagt wörtlich, wozu
+    Spalte 6 dient: „zusätzliche[n] Information … um … anhand einfacher Merkmale
+    eine … abweichende Technik festzustellen". Die Zahl steht dort neben
+    „Erkennungsmerkmal: Kondensatablauf" — sie ist eine Wiedererkennungshilfe für
+    den Aufnehmer vor Ort, kein Rechenwert. Der Rechenwert liegt laut Spalte 5 in
+    **DIN V 18599-5, Abschnitt 6.5.4.3** — und die haben wir nicht.
+  - **Tabelle 5** hat die richtige Größenart (Erzeuger-Aufwandszahlen, nach
+    Systemtemperatur getrennt, Bezugsgröße in Nummer 4.1 ausdrücklich „Endenergie
+    (unterer Heizwert)"): Brennwertkessel ab 1995 bei 70/55 °C → 1,07, also rund
+    **0,94**; „Brennwert verbessert" bei 55/45 °C → 0,99, also rund **1,01**.
+    Auch hier **keine Trennung nach Brennstoff**. Verwendbar wäre sie trotzdem
+    nicht ohne Weiteres: Baualtersklassen des BESTANDS, Verfahren nach der
+    abgelösten DIN V 4701-10, Anwendungsbereich sind Energieausweise für
+    bestehende Wohngebäude.
+  - **Der Umkehrschluss ist die eigentliche Warnung:** Wendet man Tabelle 5
+    konsequent an, käme für unseren Gas-Wert auf Brennwert-Basis 0,84 heraus, nicht
+    0,95. Wer also die Öl-Zahl aus dieser Quelle holt, muss die Gas-Zahl mitnehmen —
+    sonst entsteht die nächste Inkohärenz.
+  **Dritte Prüfung (19.08.2026) — Ökodesign-Verordnung (EU) 813/2013, Volltext im
+  Repo** (`docs/quellen/CELEX%3A32013R0813%3ADE%3ATXT.pdf`, vom Betreiber beschafft,
+  weil EUR-Lex automatisierte Abrufe leer beantwortet). Sie ist die **richtige
+  Quellenklasse** und bringt den Punkt zum ersten Mal wirklich voran:
+  - **Die Größe stimmt:** „jahreszeitbedingte Raumheizungs-Energieeffizienz" (ηs),
+    Artikel 2 Nummer 20 — Quotient aus gedecktem Raumheizwärmebedarf und dem
+    **jährlichen** Energieverbrauch. Also Jahresbetrieb inklusive Teillast und
+    Bereitschaft, nicht Prüfstand. Das war der Bruch der beiden Vorgänger-Quellen.
+  - **Die Bezugsgröße steht fest:** Nummer 30 definiert den jährlichen
+    Energieverbrauch „angegeben in kWh **als Brennwert**". ηs ist damit eine
+    Brennwert-Größe.
+  - **Anhang II:** Seit dem 26.09.2015 dürfen Raumheizgeräte mit Brennstoffheizkessel
+    bis 70 kW eine ηs von **86 %** nicht unterschreiten — **ohne Unterscheidung
+    zwischen Öl und Gas** (nur Typ-B1-Kessel bis 10 kW dürfen auf 75 %).
+  - **Was daraus schon folgt:** Unsere **0,85 für einen NEU eingebauten Ölkessel
+    liegt unter dem gesetzlichen Mindestwert** — auf der Brennwert-Skala ohnehin,
+    und auf der Heizwert-Skala, auf der unser Ölpreis steht, erst recht (dort läge
+    die Untergrenze noch höher). Der Wert beschreibt ein Gerät, das heute gar nicht
+    verkauft werden dürfte. Die Richtung des Fehlers ist damit belegt: zugunsten
+    der Wärmepumpe.
+  - **Was die Verordnung NICHT hergibt:** einen typischen ηs-Wert je Brennstoff.
+    Sie setzt eine Untergrenze, keinen Marktwert.
+
+  **Es fehlt genau noch EIN Datum** — dann ist der Punkt zu, und zwar für beide
+  Brennstoffe in einem Zug: das **Verhältnis Brennwert zu Heizwert für Heizöl EL**
+  (für Erdgas liegt es amtlich vor: AG Energiebilanzen, „Heizwerte der Energieträger",
+  Fußnote 3 — Faktor 0,9024, also Brennwert/Heizwert = 1,108). Alternativ ein
+  belegter typischer ηs je Brennstoff aus Herstellerdatenblättern. Geprüft und
+  erfolglos: das UBA-Papier „Emissionsfaktoren Brennstoffe" (Link tot, 404). Die
+  AGEB-Tabelle nennt für Heizöl leicht nur den Heizwert (42 816 kJ/kg) — was
+  immerhin unsere Preisskala bestätigt: 42 816 kJ/kg bei 0,86 kg/l sind rund
+  10,2 kWh je Liter, und unsere 0,10 €/kWh entsprechen damit gut 102 € je 100 l,
+  also einem **Heizwert**-Preis.
+
+  **Frühere Notiz, überholt durch die Prüfung oben:** die Ökodesign-Verordnung (EU) 813/2013 mit
+  der jahreszeitbedingten Raumheizungs-Energieeffizienz ηs. Sie hat die drei
+  Eigenschaften, die den bisherigen Quellen fehlen: Sie gilt **neu in Verkehr
+  gebrachten** Geräten, sie ist eine **Jahres**größe (Teillast und
+  Bereitschaftsverluste eingerechnet), und Öl und Gas stehen getrennt in den
+  Herstellerdatenblättern. **Zuerst zu klären: ihre Bezugsgröße** (vermutlich
+  Brennwert) — für Öl müsste sie dann auf den Heizwert zurückgerechnet werden, für
+  Gas käme sie direkt auf die Skala unseres Gaspreises. EUR-Lex liefert an
+  automatisierte Abrufe nichts aus (leere Antwort über alle Wege, 19.08.2026); der
+  Text ist im Browser frei zugänglich, also beim Betreiber anfragen oder in einer
+  Sitzung mit Browser holen.
+
+  **Was der nächste Lauf wirklich braucht:** einen **Jahresnutzungsgrad bzw. eine
+  Erzeugeraufwandszahl** für einen heute neu eingebauten Öl-Brennwertkessel, auf
+  derselben Bezugsgröße wie unser Ölpreis, möglichst nach Auslegungstemperatur
+  getrennt. Erste Adresse ist **DIN V 18599-5** (die Norm, auf die das GEG verweist;
+  DIN V 4701-10 ist abgelöst), hilfsweise Normnutzungsgrade nach DIN 4702-8 /
+  EN 15502 aus Herstellerunterlagen oder BDH. Kommst du an keine heran: melden,
+  nicht schätzen. Und **bei der Gelegenheit die Bezugsgröße je Brennstoff dort
+  dokumentieren, wo `FUEL_PRICE` steht** — solange Gas auf Hs und Öl auf Hi
+  gerechnet wird, ist jeder gemeinsame Auf- oder Abschlag über beide hinweg falsch.
 - **OFFEN (bis 01/2027): Wartungskosten Heizöl.** `gasMaintenance` gilt aktuell
   für Gas UND Öl. Der Lauf vom 17.08.2026 hat auch in der neuen VZ-Auswertung
   keine getrennten Öl-Wartungskosten gefunden — die Gleichsetzung bleibt, der

@@ -6,7 +6,7 @@ import RelatedLinks from "../../../../components/RelatedLinks";
 import { IconArrowRight } from "../../../../components/Icons";
 import { v, iconSizes } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
-import { publishedBundeslaender, publishedCitiesInBundesland, citiesInBundesland, cityPath, slugify } from "../../../../lib/atlas-cities";
+import { publishedBundeslaender, publishedCitiesInBundesland, citiesInBundesland, cityPath, slugify, fundingForFrom } from "../../../../lib/atlas-cities";
 import { getFundingPrograms } from "../../../../lib/funding-data";
 import { landProgramBundeslaender, fundingAmount, fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../../lib/funding-programs";
 import { FundingStatusBadge, FundingRates } from "../../../../components/FundingProgramParts";
@@ -130,7 +130,7 @@ const S = {
 };
 
 function LandProgramBox({ p }: { p: FundingProgram }) {
-  const a = fundingAmount(p, 10, 5, 20000);
+  const a = fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 });
   return (
     <div style={{ ...S.card, borderColor: p.status === "aktiv" ? v("--color-positive") : v("--color-border"), background: v("--color-bg-muted") }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
@@ -164,7 +164,6 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
 
   const cities = publishedCitiesInBundesland(params.bundesland);
   const programs = await getFundingPrograms();
-  const byId = new Map(programs.map((p) => [p.id, p]));
   const landPrograms = programs.filter(
     (p) => p.level === "land" && p.status === "aktiv" && p.bundesland != null && slugify(p.bundesland) === params.bundesland,
   );
@@ -201,11 +200,11 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
   // Active municipal programs that currently pay out a computable grant — named
   // in the intro so the page leads with the concrete benefit.
   const activeCityNames = cities
-    .map((c) => (c.fundingId ? byId.get(c.fundingId) : undefined))
+    .map((c) => fundingForFrom(programs, c))
     // fundingZaehlt statt des rohen Status: Diese Liste nennt Städte, für die
     // wir eine konkrete Förderung vorrechnen — was nicht mehr belegt ist, darf
     // dort nicht als Beispiel auftauchen.
-    .filter((p): p is FundingProgram => Boolean(p) && fundingZaehlt(p!) && fundingAmount(p!, 10, 5, 20000).computable)
+    .filter((p): p is FundingProgram => Boolean(p) && fundingZaehlt(p!) && fundingAmount(p!, { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 }).computable)
     .map((p) => p.region);
 
   return (
@@ -250,7 +249,7 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
         )}
 
         {cities.map((c) => {
-          const f: FundingProgram | undefined = c.fundingId ? byId.get(c.fundingId) : undefined;
+          const f: FundingProgram | undefined = fundingForFrom(programs, c);
           return (
             <Link key={c.slug} href={cityPath(c)} style={S.card}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: 4 }}>

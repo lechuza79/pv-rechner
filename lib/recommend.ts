@@ -1,4 +1,4 @@
-import { PERSONEN, NUTZUNG, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, SPEICHER, NO_PLZ_DEFAULT_YIELD } from "./constants";
+import { PERSONEN, NUTZUNG, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, SPEICHER, NATIONAL_AVG_YIELD } from "./constants";
 import { calcEigenverbrauch, estimateCost, calc, selectByMarginalReturn, batteryReplaceCost } from "./calc";
 import { simulatePvYear } from "./pv-sim";
 import { calcEaAnnual, calcKlimaAnnual, KLIMA_DEFAULT_M2, type HouseholdProfile } from "./consumption";
@@ -17,7 +17,7 @@ const ALT_SIZE_DIFF_KWP = 3;          // "Max Dachnutzung" wird angeboten ab die
 const ALT_NPV_TOLERANCE = 0.95;       // Alternativen müssen ≥ 95 % NPV der Hauptempfehlung erreichen
 const ALT_MIN_INVEST_DELTA = 2000;    // "Günstiger Einstieg" braucht min. 2.000 € Investitions-Abstand
 const ALT_MIN_INVEST_DELTA_RATIO = 0.15; // ODER min. 15 % weniger Investition
-const DEFAULT_ERTRAG = NO_PLZ_DEFAULT_YIELD;
+const DEFAULT_ERTRAG = NATIONAL_AVG_YIELD;
 
 export interface RecommendInput {
   personen: number;        // Index in PERSONEN
@@ -313,9 +313,14 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
     }
   }
 
+  // Der Vergleichswert „ohne Speicher" muss denselben Haushalt beschreiben wie
+  // alles andere — inklusive Klimaanlage. Ohne sie stand hier ein anderer
+  // Verbrauch als in der Empfehlung darüber, und der ausgewiesene Speicher-Effekt
+  // fiel um bis zu einen Prozentpunkt zu groß aus (Council 18.08.2026).
   const evOhneSpeicher = calcEigenverbrauch({
     personenIdx: input.personen, nutzungIdx: input.nutzung,
     speicherKwh: 0, wp: input.wp, ea: input.ea, eaKm: input.eaKm, wpKwh,
+    klima: ctx.klima, klimaM2: ctx.klimaM2,
     kwp: best.kwp, ertragKwp,
   });
 

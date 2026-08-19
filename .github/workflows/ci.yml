@@ -15,7 +15,7 @@ jobs:
   test:
     name: Type check + unit tests + e2e smoke
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@v4
@@ -44,12 +44,27 @@ jobs:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
 
-      - name: Install Playwright browsers
+      # Browser-Binaries: reiner Download von Playwrights CDN, kein apt.
+      - name: Install Playwright browser
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install chromium --with-deps
+        timeout-minutes: 10
+        run: npx playwright install chromium
 
-      - name: Install Playwright system deps (cache hit)
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
+      # Systembibliotheken — der einzige Schritt, der `apt-get` benutzt, und
+      # damit der einzige, der an fremder Infrastruktur hängt. Dreimal in 18
+      # Stunden (18./19.08.2026) blieb er am Ubuntu-Spiegel der Runner stehen:
+      # einmal 35 Minuten bis zum Job-Abbruch, danach zweimal bis in die
+      # 10-Minuten-Grenze — jedes Mal rot, ohne dass an unserem Code etwas war.
+      #
+      # Deshalb ist er ABSICHTLICH NICHT MEHR FATAL: Das Runner-Image bringt die
+      # Chromium-Bibliotheken bereits mit, der Schritt ist eine Absicherung, kein
+      # Fundament. Fällt er aus, läuft der Lauf weiter — und falls doch eine
+      # Bibliothek fehlt, scheitert der Testschritt danach mit einer klaren
+      # Browser-Meldung statt mit einem apt-Protokoll. Rot bedeutet damit wieder
+      # „unser Code ist kaputt", und genau das ist der Sinn der Ampel.
+      - name: Install Playwright system deps (best effort)
+        continue-on-error: true
+        timeout-minutes: 5
         run: npx playwright install-deps chromium
 
       - name: E2E smoke tests (Playwright)
@@ -78,5 +93,89 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  # Eigener Job, weil diese Stufe eine andere Größenordnung hat: Der Flow-Läufer
+  # klickt jede Option jedes Schritts durch jeden Flow und baut dafür je Weg
+  # die Seite neu auf. Im selben Job wie Typprüfung und Unit-Tests riss er
+  # deren Zeitgrenze, und ein abgebrochener Lauf fällt überhaupt kein Urteil:
+  # weder rot noch grün. Getrennt melden die schnellen Prüfungen weiter nach
+  # wenigen Minuten, und diese hier hat die Zeit, die sie braucht.
+  #
+  # EIN Playwright-Arbeiter (steckt in `npm run test:flows`): Der Runner hat
+  # zwei Kerne, auf denen auch der Produktions-Server läuft. Mit zwei Browsern
+  # war die Maschine so gesättigt, dass React frisch geladene Seiten teils
+  # über 20 s nicht übernahm — „Option ließ sich nicht wählen" für Optionen,
+  # die von Hand funktionieren, in jedem Lauf eine andere (fünf rote Läufe am
+  # 18.08.2026, einer davon auf einem Commit, der nur CLAUDE.md änderte).
+  #
+  # E2E_BUILD=1 (steckt in `npm run test:flows`) ist hier PFLICHT, nicht Kür:
+  # Gegen den Dev-Server übersetzt Next jede Route beim ersten Aufruf neu, und
+  # bei hunderten Aufrufen geht er dabei in die Knie — der Lauf bricht dann mit
+  # „nicht erreichbar" ab, was wie ein Testfehler aussieht, aber keiner ist.
+  flows:
+    name: Flow-Läufer (jede Option, jeder Zweig)
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+
+      # Browser-Binaries: reiner Download von Playwrights CDN, kein apt.
+      - name: Install Playwright browser
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        timeout-minutes: 10
+        run: npx playwright install chromium
+
+      # Systembibliotheken — der einzige Schritt, der `apt-get` benutzt, und
+      # damit der einzige, der an fremder Infrastruktur hängt. Dreimal in 18
+      # Stunden (18./19.08.2026) blieb er am Ubuntu-Spiegel der Runner stehen:
+      # einmal 35 Minuten bis zum Job-Abbruch, danach zweimal bis in die
+      # 10-Minuten-Grenze — jedes Mal rot, ohne dass an unserem Code etwas war.
+      #
+      # Deshalb ist er ABSICHTLICH NICHT MEHR FATAL: Das Runner-Image bringt die
+      # Chromium-Bibliotheken bereits mit, der Schritt ist eine Absicherung, kein
+      # Fundament. Fällt er aus, läuft der Lauf weiter — und falls doch eine
+      # Bibliothek fehlt, scheitert der Testschritt danach mit einer klaren
+      # Browser-Meldung statt mit einem apt-Protokoll. Rot bedeutet damit wieder
+      # „unser Code ist kaputt", und genau das ist der Sinn der Ampel.
+      - name: Install Playwright system deps (best effort)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: npx playwright install-deps chromium
+
+      - name: Flow walker (production build)
+        run: npm run test:flows
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: anon-placeholder-not-used-in-flow-run
+          # Der Produktionsbau rendert die Seiten vor und liest dafür dieselben
+          # Daten wie der Gesundheitscheck — ohne echte Leserechte bricht schon
+          # der Build ab (Atlas, Förderseiten, Ratgeber).
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-flows
           path: playwright-report/
           retention-days: 7

@@ -5,11 +5,12 @@ import { v } from "../../../../lib/theme";
 import { YEARS, FUEL } from "../../../../lib/constants";
 import { fuelKwhForWpHeat, calcWpGridCost } from "../../../../lib/calc";
 import { calcFossilReference, wpStandingCostPerYear, HEATING_YEARS } from "../../../../lib/fossil-reference";
+import { DEFAULT_HEATPUMP_CONFIG } from "../../../../lib/heatpump-config";
 import EnergyFlowModal, { type ExampleDayEntry } from "../../../../components/EnergyFlowModal";
 import type { SolarMonth } from "../../../../lib/balkon-sim";
 
 interface ResultStatsProps {
-  /** Rendite (25-J-Ende) des gewählten Szenarios — die Szenario-Wahl sitzt oben. */
+  /** Gewinn nach 25 Jahren (Ende der Laufzeit) im gewählten Szenario — die Szenario-Wahl sitzt oben. */
   total: number;
   kosten: number;
   wp: string;
@@ -28,7 +29,6 @@ interface ResultStatsProps {
   speicherKwh: number;
   monthly: SolarMonth[];
   exampleDays: ExampleDayEntry[];
-  oStrom: number;
   /** Strompreis-Anstieg des GEWÄHLTEN Szenarios (±1/3/5 %) — Kachel folgt der Wahl oben. */
   stromSteigerung: number;
   fuelType: "gas" | "oil";
@@ -36,7 +36,7 @@ interface ResultStatsProps {
 }
 
 export default function ResultStats({
-  total, kosten, wp, wpKwh, jaz, effEv, autarkie, wpAutarky, jahresertrag, gesamtVerbrauch, speicherKwh, monthly, exampleDays, oStrom, stromSteigerung, fuelType, setFuelType,
+  total, kosten, wp, wpKwh, jaz, effEv, autarkie, wpAutarky, jahresertrag, gesamtVerbrauch, speicherKwh, monthly, exampleDays, stromSteigerung, fuelType, setFuelType,
 }: ResultStatsProps) {
   const [flowOpen, setFlowOpen] = useState(false);
   return (
@@ -86,7 +86,7 @@ export default function ResultStats({
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
         <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", border: `1px solid ${v('--color-border')}` }}>
-          <div style={{ fontSize: 11, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Rendite 25 Jahre</div>
+          <div style={{ fontSize: 11, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Gewinn nach 25 Jahren</div>
           <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v('--font-mono'), color: total >= 0 ? v('--color-positive') : v('--color-negative'), marginTop: 4 }}>
             {total > 0 ? "+" : ""}{total.toLocaleString("de-DE")} €
           </div>
@@ -136,7 +136,14 @@ export default function ResultStats({
           greenGas: true,
         });
         const fuelCost = ref.total;
-        const wpGridCost = calcWpGridCost(wpKwh, wpCoverage, oStrom, stromSteigerung, HEATING_YEARS)
+        // Wärmepumpenstrom kostet den WÄRMEPUMPEN-Tarif, nicht den Haushaltspreis.
+        // Hier stand `oStrom` — und gleichzeitig wurde der Grundpreis des separaten
+        // Wärmepumpen-Zählers berechnet: der Block bezahlte den zweiten Zähler und
+        // verweigerte den Tarif, den es nur mit ihm gibt. Das ist ein halber Fall,
+        // und er stand zugleich im Widerspruch zum Wärmepumpen-Rechner, der dieselbe
+        // Größe mit `wpTarif` rechnet (Council 18.08.2026: 22.348 € statt 31.368 €
+        // Ersparnis für dasselbe Haus). Quelle des Tarifs bleibt die WP-Config.
+        const wpGridCost = calcWpGridCost(wpKwh, wpCoverage, DEFAULT_HEATPUMP_CONFIG.wpTarif, stromSteigerung, HEATING_YEARS)
           + wpStandingCostPerYear() * HEATING_YEARS;
         const netSaving = fuelCost - wpGridCost;
         return (
@@ -174,7 +181,7 @@ export default function ResultStats({
               Ersparnis: {netSaving.toLocaleString("de-DE")} €
             </div>
             <div style={{ fontSize: 11, color: v('--color-text-muted'), marginTop: 4, lineHeight: 1.5 }}>
-              {Math.round(wpKwh * jaz).toLocaleString("de-DE")} kWh Wärme/Jahr · PV-Deckung Heizstrom {Math.round(wpCoverage * 100)} % · Brennstoff bzw. Strom inkl. CO₂-Abgabe, dazu Grundpreis und Wartung
+              {Math.round(wpKwh * jaz).toLocaleString("de-DE")} kWh Wärme/Jahr · PV-Deckung Heizstrom {Math.round(wpCoverage * 100)} % · Heizstrom zum Wärmepumpen-Tarif ({(DEFAULT_HEATPUMP_CONFIG.wpTarif * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} ct/kWh) über einen eigenen Zähler · Brennstoff bzw. Strom inkl. CO₂-Abgabe, dazu Grundpreis und Wartung
             </div>
             {/* Was NICHT drinsteckt, gehört sichtbar an die Zahl. Der Satz zur
                 Grüngas-Pflicht hängt am Ergebnis-Flag, damit Text und Rechnung nicht

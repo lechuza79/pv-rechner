@@ -14,6 +14,14 @@ export function useAuth(): AuthState {
 
   useEffect(() => {
     const supabase = createClient();
+    // Ohne Zugangsdaten (lokale Arbeitskopie ohne eigene Umgebungsdatei) gibt es
+    // keine Anmeldung — die Seite bleibt aber vollständig bedienbar. Vorher
+    // warf der Client hier, und weil der Aufruf im Header jeder Seite sitzt,
+    // riss das den gesamten Aufbau mit.
+    if (!supabase) {
+      setState({ status: "anon" });
+      return;
+    }
 
     supabase.auth.getUser().then(({ data: { user } }) => {
       setState(user ? { status: "authed", user } : { status: "anon" });
@@ -33,6 +41,7 @@ export function useAuth(): AuthState {
 
 export async function signInWithMagicLink(email: string, options?: { next?: string }) {
   const supabase = createClient();
+  if (!supabase) return { error: new Error("Anmeldung ist hier nicht eingerichtet.") };
   const next = options?.next || "/dashboard";
   const { error } = await supabase.auth.signInWithOtp({
     email,
@@ -45,6 +54,7 @@ export async function signInWithMagicLink(email: string, options?: { next?: stri
 
 export async function signOut() {
   const supabase = createClient();
+  if (!supabase) return;
   await supabase.auth.signOut();
 }
 

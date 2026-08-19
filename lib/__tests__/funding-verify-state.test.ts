@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
 import {
   arbeitsvorrat,
   eskalationsVorschlag,
@@ -241,5 +242,25 @@ describe("Crawler-Abbrüche eskalieren nicht", () => {
     // Und: nicht als "geändert" etikettieren — wir haben die Seite nie gesehen.
     expect(stand.seiteUnerreichbar).toBe(true);
     expect(stand.seiteGeaendert).toBe(false);
+  });
+});
+
+// ─── Ein Archiv-Treffer bestätigt die Seite nicht ────────────────────────────
+//
+// Der Seiten-Wächter stempelte anfangs auch dann "Seite heute bestätigt", wenn
+// der Fingerabdruck aus dem Archiv kam. Damit hätte eine dauerhaft gesperrte
+// Stadt für immer als bestätigt gegolten — jede Nacht dieselbe wochenalte Kopie,
+// neu gestempelt. Genau der halbjährig alte Stand, den die Regel verhindern soll.
+describe("Herkunft des Fingerabdrucks", () => {
+  it("nur 'live' darf als Bestätigung gelten", () => {
+    const quelle = readFileSync(new URL("../../scripts/funding-watch.ts", import.meta.url), "utf8");
+    // page_seen_at darf nur unter der Live-Bedingung geschrieben werden.
+    expect(quelle).toMatch(/istLiveBestaetigt\s*\?\s*\{\s*page_seen_at/);
+    expect(quelle).toMatch(/const istLiveBestaetigt = herkunft === "live"/);
+  });
+
+  it("ein Herkunftswechsel wird ausgewiesen, nicht als unverändert verbucht", () => {
+    const quelle = readFileSync(new URL("../../scripts/funding-watch.ts", import.meta.url), "utf8");
+    expect(quelle).toContain("nichtVergleichbar");
   });
 });

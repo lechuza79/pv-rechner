@@ -1,6 +1,8 @@
 "use client";
 import { useState, useMemo, type ReactNode } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import FlowNav from "../../../components/FlowNav";
 import {
   SITUATION, WOHNFLAECHEN, WP_M2_MIN, WP_M2_MAX, INSULATION_BESTAND, INSULATION_NEUBAU,
   PERSONEN, HEIZSYSTEM, WP_TYPE, WP_FUEL_OPTIONS, HAUSTYP_WP, YEAR, FUEL,
@@ -15,7 +17,8 @@ import { bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "../../..
 import OptionCard from "../../../components/OptionCard";
 import ResultSection from "../../../components/ResultSection";
 import GebaeudeField, { GEBAEUDE_FIELDS } from "../../../components/GebaeudeField";
-import StandNote from "../../../components/StandNote";
+import StandNoteView from "../../../components/StandNoteView";
+import { type StandSeite } from "../../../lib/stand-format";
 import InlineEdit from "../../../components/InlineEdit";
 import HeatPumpChart from "./_components/HeatPumpChart";
 import GasPriceStackChart from "../../../components/charts/GasPriceStackChart";
@@ -35,9 +38,22 @@ const STEPS = ["Situation", "Größe & Typ", "Dämmstandard", "Haushalt", "Heizs
 // `embedded` = gerendert in einem Modal (z. B. aus dem Förder-Ratgeber), nicht
 // als eigene Seite: dann ohne 100vh-Höhe, ohne Seitentitel und volle Breite —
 // den Titel liefert der Modal-Header. Kein iframe, keine URL-/Storage-Kopplung.
-export default function Waermepumpe({ embedded = false }: { embedded?: boolean } = {}) {
+// Eingebettet gibt es auch keine Stand-Zeile, deshalb reicht der Ratgeber kein
+// `stand` durch; auf der eigenen Seite kommt es fertig aufgelöst von page.tsx.
+export default function Waermepumpe({
+  embedded = false,
+  stand,
+}: { embedded?: boolean; stand?: StandSeite } = {}) {
   // ── Step state ───────────────────────────────────────────────
+  const router = useRouter();
   const [step, setStep] = useState(0);
+  // Welche Fragen wirklich beantwortet sind. Die Werte darunter behalten ihre
+  // Startwerte (die Rechnung braucht sie), geben sich aber nicht mehr als
+  // Auswahl aus — Flow-Konvention: keine Vorauswahl, Weiter erst nach echter
+  // Wahl.
+  const [beantwortet, setBeantwortet] = useState<Set<string>>(new Set());
+  const markBeantwortet = (key: string) =>
+    setBeantwortet(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
   const [situation, setSituation] = useState<"bestand" | "neubau">("bestand");
   const [flaecheIdx, setFlaecheIdx] = useState(1);         // 140 m² default
   const [customFlaeche, setCustomFlaeche] = useState<number | null>(null);
@@ -105,7 +121,15 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   // Flüssiggas ausdrücklich als zulässige Option.
   const ersatzInvest = oFossilInvest ?? DEFAULT_HEATPUMP_CONFIG.fossilErsatzInvest;
   const fuelOptions = WP_FUEL_OPTIONS.filter(f => ersatzInvest > 0 ? !f.bestandsanlage : !!f.bestandsanlage);
-  const fuel = fuelOptions.find(f => f.id === oFuel) ?? fuelOptions[0];
+  // Der Energieträger überlebt den Wechsel zwischen Neueinbau und Bestand. Vorher
+  // fiel die Auswahl auf den ersten Eintrag der Liste zurück — also auf Gas —,
+  // sobald jemand mit Heizöl die Anschaffung auf 0 setzte. Damit wechselten still
+  // Grundgebühr und CO₂-Faktor mit, ohne dass die Frage „Gas oder Öl?" je anders
+  // beantwortet worden wäre (Council 18.08.2026).
+  const gewaehlt = WP_FUEL_OPTIONS.find(f => f.id === oFuel);
+  const fuel = fuelOptions.find(f => f.id === oFuel)
+    ?? fuelOptions.find(f => f.kind === gewaehlt?.kind)
+    ?? fuelOptions[0];
   // Die Grüngas-Pflicht ist ein GAS-Szenario: Der Preispfad hängt an der
   // Biomethan-Beimischung und an Gas-Netzentgelten (lib/greengas.ts). Bei Heizöl
   // gibt es beides nicht — das Szenario verschwindet dann aus der Auswahl, und ein
@@ -134,6 +158,28 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
     setStep(target);
   };
   const back = () => step > 0 && setStep(step - 1);
+
+  // Was jeder Schritt braucht — an einer Stelle, damit Freigabe und Hinweis
+  // nicht auseinanderlaufen. Reihenfolge wie STEPS.
+  const stepAnforderung: { erfuellt: boolean; hinweis: string }[] = [
+    { erfuellt: beantwortet.has("situation"), hinweis: "Bitte erst Neubau oder Bestand wählen." },
+    {
+      erfuellt: beantwortet.has("flaeche") && beantwortet.has("haustyp"),
+      hinweis: beantwortet.has("flaeche")
+        ? "Bitte noch den Haustyp wählen."
+        : "Bitte Wohnfläche und Haustyp angeben.",
+    },
+    { erfuellt: beantwortet.has("daemmung"), hinweis: "Bitte erst den Dämmstandard wählen." },
+    { erfuellt: beantwortet.has("personen"), hinweis: "Bitte erst die Haushaltsgröße wählen." },
+    {
+      erfuellt: beantwortet.has("heizsystem") && beantwortet.has("wptyp"),
+      hinweis: beantwortet.has("heizsystem")
+        ? "Bitte noch den Wärmepumpen-Typ wählen."
+        : "Bitte bestehendes Heizsystem und Wärmepumpen-Typ wählen.",
+    },
+  ];
+  const stepBeantwortet = stepAnforderung[step]?.erfuellt ?? true;
+  const stepHinweis = stepAnforderung[step]?.hinweis ?? "";
 
   // ── Resolved wohnfläche ──────────────────────────────────────
   const wohnflaeche = customFlaeche ?? WOHNFLAECHEN[flaecheIdx].m2;
@@ -364,9 +410,10 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
             {step === 0 && (
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                 {SITUATION.map(s => (
-                  <OptionCard key={s.id} selected={situation === s.id} onClick={() => {
+                  <OptionCard key={s.id} selected={beantwortet.has("situation") && situation === s.id} onClick={() => {
                     setSituation(s.id as "bestand" | "neubau");
                     setInsulationIdx(1); // reset to middle when switching
+                    markBeantwortet("situation");
                   }} label={s.label} sub={s.sub} />
                 ))}
               </div>
@@ -377,7 +424,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
               <div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 12 }}>
                   {WOHNFLAECHEN.map((f, i) => (
-                    <OptionCard key={i} selected={customFlaeche === null && flaecheIdx === i} onClick={() => { setFlaecheIdx(i); setCustomFlaeche(null); }} label={f.label} sub={f.sub} />
+                    <OptionCard key={i} group="flaeche" selected={beantwortet.has("flaeche") && customFlaeche === null && flaecheIdx === i} onClick={() => { setFlaecheIdx(i); setCustomFlaeche(null); markBeantwortet("flaeche"); }} label={f.label} sub={f.sub} />
                   ))}
                 </div>
                 <div style={{
@@ -398,7 +445,9 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                           setCustomFlaeche(null);
                         } else {
                           const n = parseInt(raw);
-                          if (!isNaN(n) && n >= WP_M2_MIN && n <= WP_M2_MAX) setCustomFlaeche(n);
+                          // Ein eingetragener eigener Wert beantwortet die Frage
+                          // genauso wie eine der Karten darüber.
+                          if (!isNaN(n) && n >= WP_M2_MIN && n <= WP_M2_MAX) { setCustomFlaeche(n); markBeantwortet("flaeche"); }
                         }
                       }}
                       onBlur={() => {
@@ -418,7 +467,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), margin: "20px 0 8px", textTransform: "uppercase", letterSpacing: "0.04em" }}>Haustyp</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                   {HAUSTYP_WP.map((h, i) => (
-                    <OptionCard key={h.id} selected={haustypIdx === i} onClick={() => setHaustypIdx(i)} label={h.label} sub={h.sub} />
+                    <OptionCard key={h.id} group="haustyp" selected={beantwortet.has("haustyp") && haustypIdx === i} onClick={() => { setHaustypIdx(i); markBeantwortet("haustyp"); }} label={h.label} sub={h.sub} />
                   ))}
                 </div>
                 <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 10, lineHeight: 1.5 }}>
@@ -435,7 +484,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                     // Angezeigt wird der erwartete VERBRAUCH, nicht der Norm-Bedarf:
                     // Diese Zahl kann ein Bewohner mit seiner Abrechnung vergleichen,
                     // die Normzahl nicht (siehe lib/heat-consumption.ts).
-                    <OptionCard key={i} selected={insulationIdx === i} onClick={() => setInsulationIdx(i)} label={opt.label} sub={`${opt.sub} · ~${verbrauchSpecKwh(situation, i, cfg)} kWh/m²·a`} />
+                    <OptionCard key={i} selected={beantwortet.has("daemmung") && insulationIdx === i} onClick={() => { setInsulationIdx(i); markBeantwortet("daemmung"); }} label={opt.label} sub={`${opt.sub} · ~${verbrauchSpecKwh(situation, i, cfg)} kWh/m²·a`} />
                   ))}
                 </div>
 
@@ -504,14 +553,20 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Personen im Haushalt</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6 }}>
-                  {PERSONEN.map((p, i) => (
-                    <button key={i} onClick={() => setPersonen(i)} style={{
+                  {PERSONEN.map((p, i) => {
+                    const aktiv = beantwortet.has("personen") && personen === i;
+                    return (
+                    // Kennzeichnung von Hand statt OptionCard: schmale
+                    // Zahlenreihe, siehe PV-Rechner.
+                    <button key={i} data-flow-option={p.label === "1" ? "1 Person" : `${p.label} Personen`} aria-pressed={aktiv}
+                      onClick={() => { setPersonen(i); markBeantwortet("personen"); }} style={{
                       padding: "14px 4px", borderRadius: v('--radius-md'), fontSize: 16, fontWeight: 700, cursor: "pointer", textAlign: "center",
-                      background: personen === i ? v('--color-accent-dim') : v('--color-bg-muted'),
-                      border: personen === i ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
-                      color: personen === i ? v('--color-accent') : v('--color-text-secondary'),
+                      background: aktiv ? v('--color-accent-dim') : v('--color-bg-muted'),
+                      border: aktiv ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
+                      color: aktiv ? v('--color-accent') : v('--color-text-secondary'),
                     }}>{p.label}</button>
-                  ))}
+                    );
+                  })}
                 </div>
                 <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 12, lineHeight: 1.5 }}>
                   Warmwasser-Bedarf wird mit {DEFAULT_HEATPUMP_CONFIG.wwPerPerson} kWh/Person·a angesetzt (Verbraucherzentrale).
@@ -525,28 +580,29 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Bestehendes Heizsystem</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8, marginBottom: 18 }}>
                   {HEIZSYSTEM.map(h => (
-                    <OptionCard key={h.id} selected={heizsystem === h.id} onClick={() => setHeizsystem(h.id as typeof heizsystem)} label={h.label} sub={h.sub} />
+                    <OptionCard key={h.id} group="heizsystem" selected={beantwortet.has("heizsystem") && heizsystem === h.id} onClick={() => { setHeizsystem(h.id as typeof heizsystem); markBeantwortet("heizsystem"); }} label={h.label} sub={h.sub} />
                   ))}
                 </div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Wärmepumpen-Typ</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                   {WP_TYPE.map(w => (
-                    <OptionCard key={w.id} selected={wpType === w.id} onClick={() => setWpType(w.id as typeof wpType)} label={w.label} sub={w.sub} />
+                    <OptionCard key={w.id} group="wptyp" selected={beantwortet.has("wptyp") && wpType === w.id} onClick={() => { setWpType(w.id as typeof wpType); markBeantwortet("wptyp"); }} label={w.label} sub={w.sub} />
                   ))}
                 </div>
               </div>
             )}
 
             {/* Nav */}
-            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 24 }}>
-              {step > 0 ? (
-                <button onClick={back} style={{ padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>Zurück</button>
-              ) : (
-                <Link href="/" style={{ padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center" }}>Zurück</Link>
-              )}
-              <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <>Ergebnis anzeigen <IconArrowRight size={iconSizes.md} /></> : <>Weiter <IconArrowRight size={iconSizes.md} /></>}</span>
-              </button>
+            <div style={{ marginTop: 24 }}>
+              <FlowNav
+                weiterAktiv={stepBeantwortet}
+                weiterLabel={step === STEPS.length - 1 ? "Ergebnis anzeigen" : "Weiter"}
+                onWeiter={next}
+                // Im ersten Schritt führt Zurück aus dem Flow heraus auf die
+                // Startseite — wie vorher, nur im gemeinsamen Baustein.
+                onZurueck={step > 0 ? back : () => router.push("/")}
+                inaktivHinweis={stepHinweis}
+              />
             </div>
           </div>
         )}
@@ -1081,7 +1137,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
             dahinter läge hinter einer leeren Fläche und wäre praktisch
             unsichtbar. Im eingebetteten Widget entfällt er — dort trägt die
             einbettende Seite die Quellenangabe. */}
-        {!embedded && <StandNote pfad="/waermepumpe-rechner" />}
+        {!embedded && <StandNoteView seite={stand} />}
       </div>
     </div>
   );
