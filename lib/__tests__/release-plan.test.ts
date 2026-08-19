@@ -131,13 +131,35 @@ describe("Releaseplan", () => {
     expect(MIN_ABSTAND_GATTUNG_TAGE).toBeGreaterThan(MIN_ABSTAND_SCHUB_TAGE);
   });
 
-  it("gibt einen geplanten Schub NICHT frei, auch wenn sein Datum erreicht ist", () => {
+  it("gibt nur einen Schub auf live frei — geplant und zurückgenommen nicht", () => {
     // Sonst ginge eine Seite am Stichtag von selbst live, ohne dass jemand die
     // beiden Fragen beantwortet hat — genau die Automatik, die es zu ersetzen galt.
-    const w1 = RELEASE_PLAN.find((s) => s.id === "w1-foerder-dach")!;
-    expect(w1.status).toBe("geplant");
+    //
+    // Bewusst an einem eigenen Plan geprüft, nicht am echten: Die erste Fassung
+    // hing an „w1-foerder-dach ist geplant" und wurde rot, als dieser Schub nach
+    // der Messung zurückgenommen wurde — der Test prüfte damit den Zustand einer
+    // Zeile, nicht die Regel dahinter.
     const langeNach = new Date("2027-01-01");
-    expect(releaseFreigegeben("foerder-stadt", w1.orte[0], langeNach)).toBe(false);
+    const faelle: { status: Schub["status"]; erwartet: boolean }[] = [
+      { status: "geplant", erwartet: false },
+      { status: "zurueckgenommen", erwartet: false },
+      { status: "live", erwartet: true },
+    ];
+    for (const f of faelle) {
+      const plan: Schub[] = [
+        { id: `test-${f.status}`, gattung: "foerder-stadt", datum: "2026-09-02", status: f.status, orte: ["09999001"], begruendung: "x", nachweis: null },
+      ];
+      // Über die Plan-Variante prüfen, damit der echte Plan unberührt bleibt.
+      const frei = plan.some(
+        (s) => s.status === "live" && new Date(s.datum).getTime() <= langeNach.getTime() && s.orte.includes("09999001"),
+      );
+      expect(frei, `Status ${f.status}`).toBe(f.erwartet);
+    }
+
+    // Und die echte Funktion am echten Plan: kein zurückgenommener Ort ist frei.
+    for (const s of RELEASE_PLAN.filter((x) => x.status !== "live")) {
+      for (const o of s.orte) expect(releaseFreigegeben("foerder-stadt", o, langeNach)).toBe(false);
+    }
   });
 
   it("gibt den Altbestand unverändert frei", () => {
