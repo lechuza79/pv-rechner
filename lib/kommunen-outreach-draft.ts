@@ -304,10 +304,10 @@ export function renderMeldung(c: DraftContext): string {
     const bezug = c.vergleich!.bezug;
     if (a >= 2) {
       const fach = (a + 1).toLocaleString("de-DE", { maximumFractionDigits: 1 });
-      return ` Auf den privaten Dächern steht damit je Einwohner das ${fach}-fache des Durchschnitts ${bezug}.`;
+      return ` Je Einwohner steht auf den privaten Dächern das ${fach}-fache des Durchschnitts ${bezug}.`;
     }
     const pct = Math.round(a * 100);
-    return ` Auf den privaten Dächern steht damit je Einwohner ${pct} % mehr Solarleistung als im Durchschnitt ${bezug}.`;
+    return ` Je Einwohner steht auf den privaten Dächern ${pct} % mehr Solarleistung als im Durchschnitt ${bezug}.`;
   })();
 
   const unterDen = `unter den ${kleinKlasse(c.gruppe)}`;
@@ -338,11 +338,23 @@ export function renderMeldung(c: DraftContext): string {
         ? ` Bei ${c.themaDativ} liegt ${kurz} auf Platz ${platz} von ${c.rang?.von.toLocaleString("de-DE")} ${unterDen}${klammerTeil}.`
         : "";
 
+  //
+  // DER LINK STEHT IN DER MELDUNG, NICHT IM BRIEF DRUMHERUM — er ist der ganze
+  // Zweck. Veröffentlicht die Gemeinde den Text ohne ihn, haben wir einen
+  // Aufsatz verschenkt und nichts bekommen. Deshalb steht er auf einer eigenen
+  // Zeile: Er soll beim Kürzen als Erstes auffallen, nicht als Letztes.
+  //
+  // DIE QUELLENZEILE IST PFLICHT, aber sie darf kurz sein. Die Datenlizenz
+  // dl-de/by-2-0 verlangt einen Quellenvermerk mit dem Namen der
+  // bereitstellenden Stelle — „Bundesnetzagentur" kann deshalb nicht weg, der
+  // ganze Satz drumherum schon (Vorgabe des Betreibers, 19.08.2026).
   return `${ueberschrift}
 
 ${anlagenSatz}${vergleichSatz}${belegSatz}
 
-Grundlage sind die Anlagendaten des Marktstammdatenregisters der Bundesnetzagentur (Stand: ${standLabel(stand)}), Datenlizenz dl-de/by-2-0; Einwohnerzahlen vom Statistischen Bundesamt. Eine laufend aktualisierte Übersicht für ${kurz} gibt es unter ${c.pageUrl ?? "solar-check.io"}.`;
+Laufend aktualisierte Übersicht für ${kurz}: ${c.pageUrl ?? "https://solar-check.io"}
+
+Quelle: Marktstammdatenregister der Bundesnetzagentur (Stand: ${standLabel(stand)}), Datenlizenz dl-de/by-2-0; Einwohnerzahlen: Statistisches Bundesamt.`;
 }
 
 export function renderOutreachDraft(c: DraftContext): OutreachDraft {

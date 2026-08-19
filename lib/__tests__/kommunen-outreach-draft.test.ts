@@ -306,7 +306,20 @@ describe("Meldung behauptet nur, was stimmt", () => {
     // tragen den Vermerk, dieser muss es auch.
     const m = renderMeldung(BASIS);
     expect(m).toContain("dl-de/by-2-0");
-    expect(m).toMatch(/Statistischen? Bundesamt/);
+    expect(m).toMatch(/Statistische[sn]? Bundesamt/);
+    // Die Lizenz verlangt den Namen der bereitstellenden Stelle. Die Zeile darf
+    // kurz sein, dieses Wort darf sie nicht verlieren.
+    expect(m).toContain("Bundesnetzagentur");
+  });
+
+  // Der Link ist der ganze Zweck: Veröffentlicht die Gemeinde den Text ohne
+  // ihn, haben wir einen Aufsatz verschenkt. Deshalb steht er auf einer eigenen
+  // Zeile — beim Kürzen soll er als Erstes auffallen, nicht als Letztes.
+  it("stellt den Link auf eine eigene Zeile", () => {
+    const m = renderMeldung(BASIS);
+    const zeile = m.split("\n").find((z) => z.includes(BASIS.pageUrl as string));
+    expect(zeile).toBeTruthy();
+    expect(zeile).toMatch(/^Laufend aktualisierte Übersicht für Höchberg: \S+$/);
   });
 });
 
@@ -575,7 +588,7 @@ describe("Vergleich zum Landesschnitt", () => {
     expect(m).toContain("42 % mehr Solarleistung als im Durchschnitt in Bayern");
     // Ausdrücklich auf den PRIVATEN Dächern — die Gesamtleistung gehört
     // vielerorts einem Freiflächenpark.
-    expect(m).toContain("Auf den privaten Dächern");
+    expect(m).toContain("auf den privaten Dächern");
   });
 
   it("schweigt, wo der Ort unter dem Schnitt liegt", () => {
