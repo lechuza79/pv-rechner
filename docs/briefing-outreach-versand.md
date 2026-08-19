@@ -8,8 +8,27 @@
 
 ## Auftrag
 
-Eine schlichte Mail mit Link — fertige Meldung im Text, Link auf Gemeindeseite und
-Rangliste, kein Anhang, keine Grafik, kein Siegel (Betreiber-Ansage 19.08.). Konkret:
+**Ende-zu-Ende bis zum versendeten ersten Batch** (Betreiber-Ansage 19.08.): alles
+final fertigstellen UND challengen, Postfach einrichten, dann Batch 1 raus. Die Mail
+selbst ist schlicht — fertige Meldung im Text, Link auf Gemeindeseite und Rangliste,
+kein Anhang, keine Grafik, kein Siegel.
+
+**Phase 0 — Challenge, bevor irgendetwas rausgeht:** Eine adversariale Prüfrunde über
+das Gesamtpaket (Muster: `scripts/council-verify.md`): Brieftext am echten Beispiel
+(liest sich das im Rathaus gut? stimmt jede Zahl mit der verlinkten Seite überein?),
+Auswahl (sind die stärksten wirklich drin?), Zustellbarkeit (Header, DKIM/SPF am
+Testversand messen), Rechtsrahmen nur auf NEUE Punkte (die Kalibrierung steht, nicht
+neu aufmachen). Befunde fixen, dann erst senden.
+
+**Phase 1 — Postfach-Einrichtung (mit dem Betreiber, er hat die Zugänge):**
+`hey@solar-check.io` im All-Inkl-KAS anlegen, DKIM-Signierung aktivieren (KAS-Schalter),
+Passwort trägt der Betreiber selbst in `.env.local` ein (nie echoen, nie committen).
+Dann Testmail an sein eigenes Postfach: SPF=pass, DKIM=pass, DMARC-Alignment in den
+Headern nachweisen — erst mit diesem Beleg ist der Versandweg abgenommen. Empfang/
+Antworten: mit ihm klären, ob All-Inkl-Postfach (IMAP-Abruf) reicht oder Workspace
+dazukommt; für Batch 1 reicht All-Inkl.
+
+**Phase 2 — Versandpaket:**
 
 1. **Testgruppe neu festschreiben** — die bestehende `kampagne='testballon'` (BW+BY)
    ist obsolet: **NIE in Schulferien des Ziel-Bundeslands senden** (BW bis 12.09.,
@@ -34,6 +53,11 @@ Rangliste, kein Anhang, keine Grafik, kein Siegel (Betreiber-Ansage 19.08.). Kon
 4. **Freigabe-Fluss:** Vor Schub 1 dem Betreiber **5 echte Musterbriefe** zeigen
    (Cockpit oder Text) und die Schub-Liste (Ort, Betreff, Aufhänger) — Versand erst
    auf sein Go. Danach ist das Go pro Schub ein Satz.
+
+**Phase 3 — Batch 1 senden** (15–25 Mails, Di–Do vormittags), Status-Einträge
+kontrollieren, am Folgetag Rückläufer prüfen und dem Betreiber einen Zweizeiler
+berichten: versendet / Bounces / Antworten. Danach Rhythmus für die weiteren Schübe
+vorschlagen.
 
 ## Was existiert und geprüft ist (NICHT neu bauen, Stand 19.08.)
 
