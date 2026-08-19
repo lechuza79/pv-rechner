@@ -453,6 +453,77 @@ export function healRegionConfig(
   return "repariert";
 }
 
+// ─── Frische der MaStR-Daten ─────────────────────────────────────────────────
+//
+// Der gesamte Zahlenbestand des Solar-Atlas — Anlagen, Leistung, Speicher auf
+// über 11.000 Gemeindeseiten — kommt aus EINEM monatlichen Lauf
+// (`scripts/mastr-refresh.ts`). Bleibt der aus, zeigen alle diese Seiten
+// weiterhin sauber gerenderte, schnelle, HTTP-200-Zahlen von vorletztem Monat.
+//
+// Warum das hierher gehört und nicht in einen Wächter (Audit 19.08.2026): Der
+// Datenstand steht zwar sichtbar an den Zahlen, aber NIEMAND wird gewarnt. Das
+// Feld `imported_at` wurde in diesem Skript bereits gelesen — allerdings nur als
+// Latenz-Vergleichswert; sein ALTER hat nie jemand angesehen. Diese Prüfung
+// kostet einen Punkt-Zugriff, läuft alle drei Stunden in GitHub Actions mit,
+// braucht kein Modell und damit kein Geld.
+//
+// Die Schwellen kommen aus dem Rhythmus, nicht aus dem Bauch: Der Import läuft
+// monatlich. 45 Tage sind ein Zyklus plus Luft — darunter ist alles normal.
+// 70 Tage heißen, dass zwei Läufe ausgefallen sind; dann ist es kein Zufall
+// mehr, sondern eine stehengebliebene Pipeline.
+export const MASTR_FRISCHE_WARN_TAGE = 45;
+export const MASTR_FRISCHE_FAIL_TAGE = 70;
+
+/**
+ * Wie alt darf der Anlagenbestand sein?
+ *
+ * Bewusst gegen einen HEREINGEREICHTEN Stichtag gerechnet, nicht gegen
+ * `new Date()` — eine Bewertungsfunktion mit eigener Uhr lässt sich nicht
+ * prüfen, und genau daran ist im Projekt schon ein Prüfdatum falsch geworden.
+ */
+export function mastrFrischeVerdict(alterTage: number): "gruen" | "gelb" | "rot" {
+  if (alterTage >= MASTR_FRISCHE_FAIL_TAGE) return "rot";
+  if (alterTage >= MASTR_FRISCHE_WARN_TAGE) return "gelb";
+  return "gruen";
+}
+
+/** Ganze Tage zwischen dem Importzeitpunkt und dem Stichtag. */
+export function mastrAlterTage(importedAt: string, heute: Date): number {
+  const ms = heute.getTime() - Date.parse(importedAt);
+  return Math.floor(ms / (24 * 60 * 60 * 1000));
+}
+
+export type MastrFrische = { importedAt: string; alterTage: number; urteil: "gruen" | "gelb" | "rot" };
+
+/**
+ * Liest den Datenstand der MaStR-Auswertung.
+ *
+ * Gibt `null` zurück, wenn die Datenbank nicht erreichbar ist oder die Zeile
+ * fehlt — ein fehlgeschlagener Abruf ist KEIN Befund über die Frische, und ihn
+ * als „veraltet" zu melden wäre eine Beobachtung, die es nicht gab (dieselbe
+ * Trennung wie beim Förder-Wächter zwischen „hat sich geändert" und „Abruf kam
+ * nicht durch").
+ */
+async function messeMastrFrische(): Promise<MastrFrische | null> {
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!url || !key) return null;
+  try {
+    const r = await fetch(`${url}/rest/v1/mastr_meta?select=imported_at&id=eq.1`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+      signal: AbortSignal.timeout(20000),
+    });
+    if (!r.ok) return null;
+    const rows = (await r.json()) as { imported_at?: string }[];
+    const importedAt = rows?.[0]?.imported_at;
+    if (!importedAt || Number.isNaN(Date.parse(importedAt))) return null;
+    const alterTage = mastrAlterTage(importedAt, new Date());
+    return { importedAt, alterTage, urteil: mastrFrischeVerdict(alterTage) };
+  } catch {
+    return null;
+  }
+}
+
 function verdict(seconds: number, limits: { warn: number; fail: number }): "gruen" | "gelb" | "rot" {
   if (seconds >= limits.fail) return "rot";
   if (seconds >= limits.warn) return "gelb";
@@ -788,6 +859,36 @@ async function main() {
     }
   }
 
+  // ── Frische der MaStR-Daten ───────────────────────────────────────────────
+  // Weder Statuscode noch Antwortzeit beantworten die Frage, ob die Zahlen im
+  // Atlas noch von diesem Monat sind. Eine stehengebliebene Import-Pipeline
+  // sieht von außen gesund aus — das ist genau die Sorte Fehler, die niemand
+  // bemerkt.
+  const mastr = await messeMastrFrische();
+  if (mastr) {
+    lines.push(`MaStR-Datenstand: ${mastr.importedAt.slice(0, 10)} (${mastr.alterTage} Tage alt).`);
+    if (mastr.urteil === "rot") {
+      forClaude.push(
+        `Der Anlagenbestand im Atlas ist ${mastr.alterTage} Tage alt (Stand ${mastr.importedAt.slice(0, 10)}), ` +
+          `damit sind mindestens zwei monatliche Importe ausgefallen. Über 11.000 Gemeindeseiten zeigen ` +
+          `Zahlen von vorletztem Monat — sichtbar am Datenstand, aber sonst völlig unauffällig. ` +
+          `Zu tun: den MaStR-Lauf lokal nachholen (scripts/mastr-refresh.ts, danach den Rollup auffrischen — ` +
+          `ohne das bleibt der Atlas auf den alten Aggregaten). Der Autofix in GitHub Actions kann das NICHT: ` +
+          `Er darf die Datenbank nicht anfassen, und der Gesamtdatenexport wird dort auch nicht geladen. ` +
+          `Er soll deshalb berichten statt es zu versuchen.`,
+      );
+    } else if (mastr.urteil === "gelb") {
+      warnings.push(
+        `MaStR-Daten sind ${mastr.alterTage} Tage alt (Stand ${mastr.importedAt.slice(0, 10)}) — ` +
+          `ein monatlicher Import fehlt.`,
+      );
+    }
+  } else {
+    // Kein Urteil über die Frische, sondern über den Abruf. Beides zu vermengen
+    // hieße, eine Beobachtung zu behaupten, die es nicht gab.
+    warnings.push("MaStR-Datenstand nicht abrufbar — keine Aussage über die Frische der Atlas-Zahlen.");
+  }
+
   // ── Cache-Wirksamkeit ─────────────────────────────────────────────────────
   // Kein Zeitmaß, sondern eine Ja/Nein-Frage: Kommt die Seite beim zweiten
   // Abruf aus dem CDN? Läuft NACH den Zeitmessungen, damit die zusätzlichen
@@ -869,9 +970,18 @@ async function main() {
     `Releaseplan: ${RELEASE_PLAN.length} Schübe, ${planOffen.length} offen` +
       (planOffen.length ? ` — ${planOffen.map((p) => p.schub).join(", ")}` : ""),
   );
-  // Immer an Claude, nie an den Betreiber: Ein anstehender Schub ist ein
-  // Arbeitsschritt, keine Entscheidung — dieselbe Trennung wie beim Prüfstand.
-  for (const p of planOffen) forClaude.push(p.text);
+  // Nie an den Betreiber: Ein anstehender Schub ist ein Arbeitsschritt, keine
+  // Entscheidung. Und nur ein widersprüchlicher Plan ist ROT — eine fehlende
+  // Messung ist Arbeitsvorrat und steht tage- bis wochenlang an. Stünde der
+  // Gesundheitscheck deswegen alle drei Stunden auf Rot, liefe jedes Mal die
+  // Selbstheilung an, nach drei Läufen ginge eine Frage an den Betreiber, und
+  // vor allem gewöhnte es uns ab, Rot ernst zu nehmen. Genau davor warnt die
+  // Meldelogik in CLAUDE.md — die gelbe Schwelle sitzt aus demselben Grund bei
+  // 4 s und nicht im Normalbereich.
+  for (const p of planOffen) {
+    if (p.schwere === "fehler") forClaude.push(p.text);
+    else warnings.push(p.text);
+  }
 
   // ── Bericht ───────────────────────────────────────────────────────────────
   const ampel =

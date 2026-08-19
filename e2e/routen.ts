@@ -14,6 +14,7 @@ export const SEITEN: Seite[] = [
   { pfad: "/balkonkraftwerk", erwartet: /balkonkraftwerk/i },
   { pfad: "/balkonkraftwerk/rechner", erwartet: /balkon/i },
   { pfad: "/balkonkraftwerk/anmelden", erwartet: /marktstammdatenregister/i },
+  { pfad: "/balkonkraftwerk/foerderung", erwartet: /balkonkraftwerk-f/i },
   { pfad: "/einspeiseverguetung-rechner", erwartet: /einspeisevergütung/i },
   { pfad: "/einspeiseverguetung-tabelle", erwartet: /einspeisevergütung/i },
   { pfad: "/photovoltaik-neigungswinkel", erwartet: /neigungswinkel/i },

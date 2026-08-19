@@ -163,6 +163,28 @@ export default function Balkon() {
     setPlzLoading(false);
   }, []);
 
+  // Standort aus der Adresse — der Weg von der Förder-Übersicht hierher.
+  //
+  // Er läuft VOR dem gemerkten Standort und gewinnt gegen ihn: Wer aus der Liste
+  // auf „In Neuwied durchrechnen" klickt, meint Neuwied, auch wenn im Speicher
+  // noch die eigene Postleitzahl von gestern steht. `useSharedPlz` sieht dann
+  // ein gefülltes Feld und übernimmt nichts mehr — genau der Fall, den es als
+  // „eine bereits sichtbare Postleitzahl gewinnt" vorsieht.
+  //
+  // Gelesen wird einmal beim Aufbau, nicht über useSearchParams: Die Seite ist
+  // statisch, und ein Suspense-Rand nur für diesen einen Parameter würde den
+  // ganzen Rechner dahinter aufhalten.
+  const adresseGelesen = useRef(false);
+  useEffect(() => {
+    if (adresseGelesen.current) return;
+    adresseGelesen.current = true;
+    const ausAdresse = new URLSearchParams(window.location.search).get("plz");
+    if (ausAdresse && /^\d{5}$/.test(ausAdresse)) {
+      setPlz(ausAdresse);
+      fetchPvgis(ausAdresse);
+    }
+  }, [fetchPvgis]);
+
   // Gemerkten Standort übernehmen und direkt anwenden — sonst stünde die PLZ
   // nur im Feld, während weiter mit dem Bundesschnitt gerechnet wird.
   useSharedPlz(plz, (shared) => { setPlz(shared); fetchPvgis(shared); });

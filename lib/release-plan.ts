@@ -197,7 +197,18 @@ export const RELEASE_PLAN: Schub[] = [
     id: "w1-foerder-dach",
     gattung: "foerder-stadt",
     datum: "2026-09-02",
-    status: "geplant",
+    // ZURÜCKGENOMMEN am 19.08.2026, bevor eine Zeile Seite gebaut wurde — genau
+    // dafür gibt es die Vorlauf-Messung. Nach diesen Orten sucht praktisch
+    // niemand: 1 von 14 hat überhaupt ein messbares Suchvolumen (Roth, 10/Monat),
+    // zusammen 10/Monat für vierzehn Seiten. Das Messinstrument ist an bekannten
+    // Fällen gegengeprüft und liefert dort plausible Werte (Köln 70, München 40,
+    // Frankfurt 20, Würzburg 10) — die Null ist also echt und kein Fehlgriff.
+    //
+    // Der Wert dieser Programme liegt im RECHNER, wo die Postleitzahl zählt,
+    // nicht in eigenen Seiten. Sie wirken dort unverändert weiter; hier entsteht
+    // nur keine Seite. Wer den Schub wieder aufmachen will, braucht eine neue
+    // Messung, die diese widerlegt — nicht ein gutes Gefühl.
+    status: "zurueckgenommen",
     orte: [
       "03256036", // Wietzen (Niedersachsen)
       "06433004", // Gernsheim (Hessen)
@@ -221,13 +232,26 @@ export const RELEASE_PLAN: Schub[] = [
       "ausschließlich Balkonkraftwerke, 2 nur Wärmepumpen; die gehören in eine andere " +
       "Seitenfamilie, nicht in diesen Schub. Reihenfolge und Zuschnitt sind ein Vorschlag; " +
       "die Priorisierung gehört dem Betreiber.",
-    nachweis: null,
+    nachweis: {
+      gemessenAm: "2026-08-19",
+      nachfrage:
+        "Nein. 1 von 14 Orten mit messbarem Suchvolumen (Roth, 10/Monat), zusammen 10/Monat. " +
+        "Gegenprobe an bekannten Fällen im selben Abruf: Köln 70, München 40, Frankfurt 20, " +
+        "Würzburg 10 — das Messmuster trifft also, die Null ist echt.",
+      kannibalisierung:
+        "Keine Anfrage, auf der beide Seitenfamilien gleichzeitig erscheinen — bei dieser " +
+        "Nachfrage aber auch ohne Aussagekraft.",
+      beleg: "docs/seo/schub-w1-foerder-dach-2026-08-19.md",
+    },
   },
   {
     id: "w2-foerder-dach-archiv",
     gattung: "foerder-stadt",
     datum: "2026-09-16",
-    status: "geplant",
+    // Ebenfalls zurückgenommen: 0 von 1 Ort mit messbarem Suchvolumen. Eine
+    // Archivseite ohne Geldversprechen für einen Ort, nach dem niemand sucht,
+    // hat keinen Adressaten.
+    status: "zurueckgenommen",
     orte: [
       "07143032", // Höhr-Grenzhausen (Rheinland-Pfalz), Topf ausgeschöpft
     ],
@@ -235,7 +259,12 @@ export const RELEASE_PLAN: Schub[] = [
       "Nachzügler mit Dach-PV-Satz, dessen Topf ausgeschöpft ist — als Archivseite ohne Geldversprechen. " +
       "Bad Homburg (06434001) fehlt hier bewusst: Status unsicher, und Daten, denen wir nicht trauen, " +
       "werden nicht veröffentlicht.",
-    nachweis: null,
+    nachweis: {
+      gemessenAm: "2026-08-19",
+      nachfrage: "Nein. 0 von 1 Ort mit messbarem Suchvolumen.",
+      kannibalisierung: "Keine Anfrage, auf der beide Seitenfamilien gleichzeitig erscheinen.",
+      beleg: "docs/seo/schub-w2-foerder-dach-archiv-2026-08-19.md",
+    },
   },
   {
     id: "w3-atlas-orte-pilot",
@@ -428,7 +457,25 @@ export const MESSUNG_VORLAUF_TAGE = 14;
  * Steht wirklich eine Entscheidung an (soll dieser Schub überhaupt kommen?),
  * läuft sie über die Alarm-Route mit `decisions`, nicht über den Gesundheitscheck.
  */
-export type PlanMeldung = { schub: string; text: string };
+export type PlanMeldung = {
+  /**
+   * Wie schwer wiegt es?
+   *
+   * `auffaellig` = Arbeitsvorrat: Ein Schub braucht seine Messung, ein Datum ist
+   * verstrichen. Das ist ein legitimer Zustand, der Tage bis Wochen anhält —
+   * er gehört ins Protokoll, nicht auf Rot. Ein Wächter, der deswegen alle drei
+   * Stunden rot steht, startet jedes Mal die Selbstheilung, eskaliert nach drei
+   * Läufen als Frage an den Betreiber und gewöhnt uns ab, Rot ernst zu nehmen
+   * (CLAUDE.md, Meldelogik: „eine Warnung, die bei jedem Lauf angeht, filtert
+   * man weg und verpasst dann die rote").
+   *
+   * `fehler` = der Plan widerspricht sich. Das sollte der Test verhindern; kommt
+   * es trotzdem vor, ist es ein Defekt und gehört auf Rot.
+   */
+  schwere: "auffaellig" | "fehler";
+  schub: string;
+  text: string;
+};
 
 /**
  * Was am Plan gerade Aufmerksamkeit braucht — für die laufende Überwachung.
@@ -448,7 +495,7 @@ export function planMeldungen(heute: Date = new Date(), plan: Schub[] = RELEASE_
   // Strukturfehler fängt normalerweise der Test — hier als Netz darunter, falls
   // jemand am Test vorbei committet.
   for (const b of planBefunde(plan)) {
-    m.push({ schub: b.schub, text: `Der Releaseplan widerspricht sich (${b.regel}): ${b.text}` });
+    m.push({ schwere: "fehler", schub: b.schub, text: `Der Releaseplan widerspricht sich (${b.regel}): ${b.text}` });
   }
 
   for (const s of plan) {
@@ -457,6 +504,7 @@ export function planMeldungen(heute: Date = new Date(), plan: Schub[] = RELEASE_
 
     if (tageBis < 0) {
       m.push({
+        schwere: "auffaellig",
         schub: s.id,
         text:
           `Der Schub „${s.id}" war für den ${s.datum} geplant und steht seit ${-tageBis} Tagen. ` +
@@ -467,6 +515,7 @@ export function planMeldungen(heute: Date = new Date(), plan: Schub[] = RELEASE_
       });
     } else if (tageBis <= MESSUNG_VORLAUF_TAGE && !s.nachweis) {
       m.push({
+        schwere: "auffaellig",
         schub: s.id,
         text:
           `Der Schub „${s.id}" ist in ${tageBis} Tagen dran (${s.datum}) und hat noch keine Messung. ` +

@@ -78,8 +78,27 @@ export const MARKTWERT_SOLAR_HISTORIE: ReadonlyArray<MarktwertJahr> = [
  */
 export const MARKTWERT_NIVEAU_CT = 4.93;
 
-/** Datenstand dieser Werte (ISO) — sichtbar auf /datenstand. */
+/** Stand der WERTE (ISO) — sichtbar auf /datenstand; wandert nur mit einem Wert. */
 export const MARKTWERT_VALID_FROM = "2026-08-01";
+
+/**
+ * Tag des letzten Laufs, der die Quellen ERREICHT hat — auch wenn er nichts
+ * geändert hat (Wächter-Gate, Regel 9).
+ *
+ * Warum das Feld erst am 19.08.2026 dazukam: Diese Config hatte ein Runbook
+ * (`scripts/marktwert-verify.md`) und einen Termin, aber keinen Lauf, der beides
+ * ausführt — kein Auftrag nannte das Runbook, und `MARKTWERT_REVIEW_BY` wurde
+ * von nichts kontrolliert. Der Termin war damit eine Notiz, kein Netz. Seit dem
+ * Audit hängt die Prüfung am halbjährlichen EEG-Lauf, dessen Januar-Termin mit
+ * der Veröffentlichung des Jahresmarktwerts zusammenfällt, und der Eintrag in
+ * `lib/pruefstand.ts` meldet, wenn dieses Datum stehenbleibt.
+ *
+ * Der Wert hier ist der Tag, an dem der Jahresmarktwert 2025 zuletzt belegt und
+ * unabhängig nachgerechnet wurde (siehe Kopfkommentar) — NICHT der Tag, an dem
+ * dieses Feld eingeführt wurde. Ein Prüfdatum stempelt die Prüfung, nicht die
+ * Codeänderung.
+ */
+export const MARKTWERT_GEPRUEFT_ISO = "2026-08-01";
 
 /** Nächste fällige Prüfung: der Jahreswert erscheint im Januar. */
 export const MARKTWERT_REVIEW_BY = "2027-02-01";

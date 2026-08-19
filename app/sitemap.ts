@@ -159,6 +159,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // aus denselben Werten rechnet.
     { url: `${BASE_URL}/balkonkraftwerk`, lastModified: rechnerStand("/balkonkraftwerk"), changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/balkonkraftwerk/rechner`, lastModified: rechnerStand("/balkonkraftwerk/rechner"), changeFrequency: "monthly", priority: 0.8 },
+    // Die Balkon-Förderübersicht datiert sich über die Förderprogramme, nicht
+    // über einen Rechner-Stand: Ihr Inhalt IST der Katalog, und der trägt sein
+    // Prüfdatum je Programm. Kein erfundenes Datum, kein Build-Zeitpunkt.
+    { url: `${BASE_URL}/balkonkraftwerk/foerderung`, lastModified: maxFundingDate, changeFrequency: "weekly", priority: 0.7 },
     { url: `${BASE_URL}/einspeiseverguetung-rechner`, lastModified: rechnerStand("/einspeiseverguetung-rechner"), changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/photovoltaik-foerderung`, lastModified: maxFundingDate, changeFrequency: "weekly", priority: 0.8 },
     // Zubau-Story rechnet auf denselben MaStR-Daten wie der Atlas — also auch

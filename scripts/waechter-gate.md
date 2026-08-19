@@ -321,6 +321,7 @@ es eine — und dann gehört sie in **einen** Satz plus Empfehlung.
 |---|---|---|
 | Preis-Pipeline (wöchentlich) | Pipeline-Reparatur, Quellen-Umschaltung | neue Preisquelle einführen |
 | EEG-Vergütung (halbjährlich) | Vergütungssätze, Degressionsschritt, Reform-Sachstand | Wegfall/Neueinführung einer Vergütungsart |
+| Marktwert Solar (halbjährlich, am EEG-Lauf) | Jahresmarktwert ergänzen, gerechnetes Niveau, Preisform (nur gemeinsam mit gegengeprüfter Normierung) | Kosten der Direktvermarktung, Erlöspfad (ausgewiesene Annahme) |
 | CO₂-Preispfad (jährlich + monatlicher Scan) | Preispfad-Stützstellen | Wechsel des Preismechanismus |
 | Strommix-Langzeitreihen (monatlicher Scan) | CO₂-Reihen einer neuen UBA-Ausgabe — Council prüft die **Spaltenüberschrift**, nicht die Plausibilität (die Nachbarspalten sind rechnerisch nicht unterscheidbar) | Erzeugungsreihe, geänderte Tabellenstruktur, Wechsel der gelesenen Spalte |
 | Wärmepumpe (quartalsweise) | Investition (Basis, Steigung, Heizkörpertausch) | BEG-Sätze, WP-Tarif, Gaspreis |
@@ -328,7 +329,7 @@ es eine — und dann gehört sie in **einen** Satz plus Empfehlung.
 | Freiflächen-Zuschlagswerte (3× jährlich) | veröffentlichte Ausschreibungsrunde ins gleitende Fenster, **vollständiges** Ausschreibungsjahr in die Jahresreihe | Fenstergröße, Gewichtungsregel, Versatz-Regel (§ 37e), unvollständiges Jahr |
 | Förderprogramme (täglich + quartalsweise) | Programm abschalten, Sätze senken, Programm einschalten nach Träger-Beleg | neues Programm aufnehmen |
 | Grüngas / GModG | Verkündungs-Flag, Stufenwerte nach Gesetzestext | Quotengesetz nach § 42a, neue Stufen |
-| Legal (quartalsweise) | faktische Rechtsstände in Texten | Struktur der Rechtstexte |
+| Legal (quartalsweise) | faktische Rechtsstände in Texten, Tippfehler und tote Links, nachgeprüfter DPF-Status — dazu der Abgleich der Rechtstexte gegen den Code (`scripts/rechtstexte-verify.md`) | Struktur der Rechtstexte, jede neue oder geänderte Rechtsaussage, jede neue Empfängernennung |
 | Atlas-Index-Wellen | Sitemap-Einreichung, Regressionsbefunde | Welle freischalten |
 | Fehler-Triage (täglich) | Function-Region, eindeutige Betriebsfehler | Berechnungslogik, Zahlen, Datenbank |
 

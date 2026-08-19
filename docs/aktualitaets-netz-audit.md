@@ -7,7 +7,9 @@ aktualitäts safty-net." Ausgelöst hat es `lib/freiflaeche-config.ts`, das am
 **Was diese Datei ist:** eine Bestandsaufnahme, keine Bauanleitung. Jeder Wächter
 kostet laufend (die Läufe hängen am Rechner des Betreibers, der Cloud-Umzug ist
 aus Kostengründen zurückgestellt) — welche Lücken geschlossen werden, entscheidet
-der Betreiber. Erledigt ist nur die Freifläche.
+der Betreiber. Er hat am 19.08.2026 die ersten drei beauftragt; sie stehen unten
+in der Erledigt-Tabelle. **Keine davon brauchte einen neuen Auftrag** — alle drei
+hängen an Läufen, die es schon gab, oder an einer Prüfung, die ohne Modell läuft.
 
 **Wie geprüft wurde:** `npm run stand:faellig --alle` liefert die Werte, die ein
 Netz HABEN. Die Gegenprobe lief über drei Wege: alle `lib/*-config.ts`; alle
@@ -28,11 +30,18 @@ und niemand liest sie mehr.
 |---|---|---|
 | Freiflächen-Zuschlagswerte (`lib/freiflaeche-config.ts`) | kein Wächter, kein Prüfstand-Eintrag, kein Prüfdatum | `FREIFLAECHE_GEPRUEFT_ISO`, Prüfstand-Eintrag, `scripts/freiflaeche-verify.md`, Befugnis-Zeile im Gate, Anker-Test, Auftrag `solar-check-freiflaeche-verify` (3× jährlich) |
 | Prüfstand-Eintrag „Regionale Förderprogramme" | nannte den Auftrag `solar-check-foerder-waechter` — den gibt es nicht | zeigt auf `foerder-vollpruefung-quartal + foerder-news-waechter` |
+| Börsenerlös ab 2027 und Kosten der Direktvermarktung | Runbook da, aber kein Lauf führte es aus; kein Prüfdatum | `MARKTWERT_GEPRUEFT_ISO`, Prüfstand-Eintrag, Befugnis-Zeile im Gate — geprüft wird ab jetzt im halbjährlichen EEG-Lauf (Schritt 8), dessen Januar-Termin mit der Veröffentlichung des Jahresmarktwerts zusammenfällt |
+| Frische der MaStR-Daten | `imported_at` wurde gelesen, aber nur als Latenz-Vergleichswert — sein Alter nie bewertet | Alterprüfung im Gesundheitscheck (gelb ab 45, rot ab 70 Tagen), Test dazu. Läuft alle drei Stunden in GitHub Actions, ohne Modell und ohne Kosten |
+| Rechtstexte gegen den eigenen Code | Runbook seit 16.08.2026 da, kein Auftrag führte es aus | Schritt 0 des quartalsweisen Legal-Wächters; Prüfdatum in `lib/rechtstexte-stand.ts`, Prüfstand-Eintrag, Befugnis-Zeile im Gate geschärft |
 | Vertagte Punkte in Runbooks | `offene-punkte-waechter.test.ts` las nur Configs; die Hälfte aller Marker steht in Runbooks (allein `waermepumpe-verify.md` führt drei) | Der Test liest jetzt zusätzlich `scripts/*-verify.md`, per Verzeichnis statt per Liste |
 
 ---
 
 ## Offen — nach Dringlichkeit
+
+> **Stand 19.08.2026, nachmittags:** Die Punkte 1 bis 3 sind gebaut (siehe Tabelle oben).
+> Sie bleiben hier stehen, weil die Begründung erklärt, WARUM die Lücke bestand —
+> und das ist die Sorte Wissen, die sonst mit der Sitzung stirbt.
 
 ### 1. Marktwert Solar und Direktvermarktungskosten · `lib/marktwert-config.ts`
 
