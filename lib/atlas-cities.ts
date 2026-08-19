@@ -306,7 +306,12 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "wolfsburg", name: "Wolfsburg", ags: "03103", bundesland: "Niedersachsen", yieldKwhKwp: 1029, fundingId: "wolfsburg-pv" },
   { slug: "worms", name: "Worms", ags: "07319", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1108 },
   { slug: "wuppertal", name: "Wuppertal", ags: "05124", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 992 },
-  { slug: "zweibruecken", name: "Zweibrücken", ags: "07320", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1102 },
+  // `indexFreigabe` auch hier: Die Seite gab es bis zum 19.08.2026 nicht (der
+  // Programmschlüssel war zu eng gefasst, siehe funding-programs.ts). Sie ist
+  // damit genauso eine NEUE Seite wie die 60 Gemeinden — nur ohne Kreis, weil
+  // Zweibrücken kreisfrei ist. Sie jetzt zu veröffentlichen wäre wieder eine
+  // Nebenwirkung statt einer Entscheidung.
+  { slug: "zweibruecken", name: "Zweibrücken", ags: "07320", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1102, indexFreigabe: false },
   // ── Landkreise mit eigenem (wiederkehrendem) Förderprogramm (Juni 2026) ──────
   { slug: "rhein-erft-kreis", name: "Rhein-Erft-Kreis", ags: "05362", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970, fundingId: "rhein-erft-energieoffensive" },
   { slug: "kreis-viersen", name: "Kreis Viersen", ags: "05166", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970, fundingId: "viersen-klimaschutz" },

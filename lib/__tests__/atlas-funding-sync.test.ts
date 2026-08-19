@@ -145,12 +145,30 @@ describe("Index-Freigabe", () => {
     ).toEqual([]);
   });
 
+  it("dieser Zweig stellt keine einzige Seite zusätzlich in den Index", () => {
+    // Die härteste Formulierung der Zusage — und die einzige, die auch den Fall
+    // fängt, an den man nicht denkt: Zweibrücken bekam seine Seite nicht durch
+    // einen neuen Eintrag, sondern weil ein zu eng gefasster Programmschlüssel
+    // korrigiert wurde. Es hat keinen Landkreis (kreisfrei) und wäre jeder
+    // Prüfung entgangen, die auf „kreisangehörig" abfragt — und wäre am Tag des
+    // Merges unangekündigt im Index gestanden.
+    //
+    // 37 ist der Stand vom 19.08.2026, deckungsgleich mit dem eingefrorenen
+    // Altbestand des Releaseplans. Wächst die Zahl, ist eine Seite
+    // veröffentlicht worden, ohne dass jemand es entschieden hat.
+    expect(indexedCities().length).toBe(37);
+  });
+
   it("die Seiten, die es längst gibt, bleiben freigegeben", () => {
     // Gegenrichtung: Die Sperre darf nicht auf die Seiten übergreifen, die seit
     // Juni im Index stehen — auch nicht auf die drei, die durch die
     // Schlüsselkorrektur nachträglich kreisangehörig wurden.
+    const NEU_HINZUGEKOMMEN = ["zweibruecken"];
     const gesperrt = ATLAS_CITIES.filter(
-      (c) => (!c.kreis || SCHON_IM_INDEX.includes(c.slug)) && !cityIndexFreigegeben(c),
+      (c) =>
+        (!c.kreis || SCHON_IM_INDEX.includes(c.slug)) &&
+        !NEU_HINZUGEKOMMEN.includes(c.slug) &&
+        !cityIndexFreigegeben(c),
     ).map((c) => c.slug);
     expect(gesperrt, `unerwartet gesperrt: ${gesperrt.join(", ")}`).toEqual([]);
   });
