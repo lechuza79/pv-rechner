@@ -43,6 +43,28 @@ Archiv-Stand) · `sekundaer` (nur Dritte) · `pruefseite` (auf der Bot-Prüfung
 hängengeblieben) · `gesperrt` (auf allen Wegen zu). Nur `traeger` setzt das
 Datum, das auf den Seiten als „Zuletzt geprüft" steht.
 
+**Ein Massen-Befund im Vorrat ist zuerst ein Verdacht gegen uns — BLOCKER
+(19.08.2026).** Stehen an einem Tag zehn, zwanzig, dreißig Programme mit „Amtsseite
+hat sich geändert" da, dann haben nicht dreißig Städte gleichzeitig ihre Seite
+umgebaut. Genau das ist am 18.08.2026 passiert: `fingerprintOf` bekam den
+Token-Filter gegen die verwürfelten Kontaktadressen, und weil sich damit für
+**jede** Seite ein anderer Abdruck ergab, verbuchte der Lauf 15 Programme als
+geändert, startete die 14-Tage-Nachprüffrist und hätte sie am 02.09.2026 aus der
+Rechnung fallen lassen — ohne dass sich irgendwo etwas geändert hätte.
+
+Der Abdruck trägt seit dem 19.08.2026 deshalb **Abrufweg und Verfahrensfassung**
+(`live-v2:…`), und `vergleichbar()` lässt nur Gleiches gegen Gleiches antreten;
+eine Fassungsänderung erscheint als „nicht vergleichbar", nie als „geändert". Wer
+`fingerprintOf` anfasst, **zählt `FINGERPRINT_VERSION` hoch** — sonst kommt genau
+dieser Fehlalarm zurück. Der erste Lauf nach einer solchen Änderung meldet einmalig
+alle Seiten als nicht vergleichbar; das ist richtig so und kostet nichts, weil es
+weder eine Frist startet noch eine Bestätigung vortäuscht.
+
+Und beim Aufräumen: Ein zu Unrecht gesetztes Änderungsdatum wird **nicht in der
+Datenbank weggewischt**, sondern auf dem normalen Weg aufgelöst — Amtsseite lesen,
+`--ok … --wie traeger` protokollieren. Das ist derselbe Beleg, den das
+Wiedereinschalten eines Programms braucht, und er ist ohnehin fällig.
+
 ## So wird die Routine ausgelöst
 
 Dem Assistenten sagen: **„Lauf die Förder-Prüfung."** Er liest dieses Runbook,
