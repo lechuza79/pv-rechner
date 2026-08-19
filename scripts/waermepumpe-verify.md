@@ -99,7 +99,25 @@ zusätzlich in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
   über 20 Jahre 2.200 € gegen die Wärmepumpe, und die fossile Seite hinge weiter
   an der alten Quelle. Beim nächsten Lauf beide Seiten aus derselben Quelle neu
   belegen oder den Befund als Entscheidung vorlegen.
-- **OFFEN (bis 01/2027): Nutzungsgrad einer NEU eingebauten Ölheizung.** Für Gas
+- **TEILWEISE GELÖST (19.08.2026) — Nutzungsgrad einer NEU eingebauten Ölheizung.**
+  **Gesetzt ist jetzt 0,92**: der gesetzliche Mindestwert der Ökodesign-Verordnung
+  (86 % jahreszeitbedingte Raumheizungs-Energieeffizienz, Brennwert-Basis), auf die
+  Heizwert-Skala unseres Ölpreises umgerechnet (× 1,066). Dazu ein eigener
+  Bestands-Eintrag „Vorhandene Ölheizung" (0,85) — damit rutscht ein Öl-Haushalt
+  bei „Anschaffung 0" nicht mehr still auf Gas.
+  **Was noch offen ist (Frist 01/2027):** der MARKT-Wert statt der Untergrenze, und
+  zwar **gestaffelt nach Heizsystem**. Reale Öl-Brennwertkessel liegen laut
+  Herstellerdatenblättern bei 92–93 % (Brennwert) — aber diese Zahl wird zu 85 %
+  bei 30 °C Rücklauf gemessen, also unter Fußbodenheizungs-Bedingungen; an alten
+  Heizkörpern (55 °C) kondensiert ein Ölkessel kaum, weil sein Abgas-Taupunkt bei
+  ~47 °C liegt. Genau diese Staffelung kennt der Rechner schon (`hk_alt` /
+  `hk_neu` / `fbh`), und die BAnz-Tabelle 5 liefert sie auf der richtigen
+  Bezugsgröße (70/55 °C → ~0,94 · 55/45 °C → ~1,01). **Wer das umsetzt, muss Gas
+  mitnehmen** — sonst stünden die beiden Brennstoffe wieder auf verschiedenen
+  Quellen. Bis dahin rechnen wir die Ölheizung weiterhin etwas zu schlecht, also
+  zugunsten der Wärmepumpe; die Richtung ist im Code benannt.
+
+  **Historie der drei Anläufe** (damit niemand einen davon wiederholt): Für Gas
   trennt `WP_FUEL_OPTIONS` drei Fälle (neu 0,95 · vorhanden 0,90 · alt 0,80), für
   Öl gibt es nur eine Zahl — **0,85** —, und die beschreibt laut `lib/calc.ts`
   ausdrücklich die *vorhandene* Anlage. Sie steht damit an der neu eingebauten:
