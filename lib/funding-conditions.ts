@@ -135,6 +135,11 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "reichelsheim-steckersolar", "putzbrunn-klimaschutz", "dettelbach-gestaltungssatzung-pv",
   "gailingen-balkonsolar", "hattenhofen-balkonsolar", "gaiberg-steckersolar",
   "karlshuld-balkonkraftwerke", "walddorfhaeslach-steckersolar", "klempau-balkonkraftwerke",
+  // Leseliste vom 19.08.2026 — die 42 ungelesenen Fundstellen und die 35 Seiten,
+  // die der Screener automatisch als „ausgelaufen" abgetan hatte. Jede Zahl an
+  // der Amtsseite bzw. im Richtlinien-PDF selbst gegengelesen.
+  "schiltach-pv", "altdorf-bb-balkonkraftwerke", "steffenberg-balkonkraftwerke",
+  "tegernheim-stecker-pv", "lohfelden-100-daecher", "schwebheim-batteriespeicher",
   "hillscheid-energie", "schlierbach-energiespeicher",
 ];
 
