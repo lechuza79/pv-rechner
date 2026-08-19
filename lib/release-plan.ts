@@ -203,6 +203,8 @@ export const RELEASE_PLAN: Schub[] = [
       "06433004", // Gernsheim (Hessen)
       "06435018", // Linsengericht (Hessen)
       "06532013", // Hohenahr (Hessen)
+      "06633017", // Lohfelden (Hessen)
+      "08325051", // Schiltach (Baden-Württemberg)
       "07143031", // Hillscheid (Rheinland-Pfalz)
       "08226028", // Heddesheim (Baden-Württemberg)
       "08327056", // Rietheim-Weilheim (Baden-Württemberg)
@@ -213,10 +215,12 @@ export const RELEASE_PLAN: Schub[] = [
       "09576143", // Roth (Bayern)
     ],
     begruendung:
-      "Die zwölf Gemeinden, deren Programm einen aktiven, rechenbaren Satz für DACH-PV trägt — " +
-      "gemessen am 19.08.2026 die einzigen unter 61 Kandidaten, bei denen eine Seite mit dem Titel " +
-      "Photovoltaik-Förderung auch hält, was sie verspricht. Reihenfolge und Zuschnitt sind ein " +
-      "Vorschlag; die Priorisierung gehört dem Betreiber.",
+      "Die vierzehn Gemeinden, deren Programm einen aktiven, rechenbaren Satz für DACH-PV trägt — " +
+      "gemessen am 19.08.2026 die einzigen unter 71 wartenden Orten, bei denen eine Seite mit dem " +
+      "Titel Photovoltaik-Förderung auch hält, was sie verspricht. 37 der übrigen fördern " +
+      "ausschließlich Balkonkraftwerke, 2 nur Wärmepumpen; die gehören in eine andere " +
+      "Seitenfamilie, nicht in diesen Schub. Reihenfolge und Zuschnitt sind ein Vorschlag; " +
+      "die Priorisierung gehört dem Betreiber.",
     nachweis: null,
   },
   {

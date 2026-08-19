@@ -81,10 +81,14 @@ export const STAND: Record<string, StandSeite> = {
     live: ["Anlagen- und Speicherpreise (monatlich neu erhoben)", "Strompreis"],
   },
 
-  // Der Wärmepumpen-Rechner ist der einzige ohne Live-Werte: Investition,
-  // Tarife, Förderung, Gaspreis und CO₂-Pfad stehen alle in Configs. Deshalb
-  // fehlt hier der Live-Satz — und deshalb ist das Prüfdatum hier besonders
-  // wichtig, es ist die einzige Auskunft über das Alter der Zahlen.
+  // Investition, Tarife, BEG, Gaspreis und CO₂-Pfad stehen in Configs — deshalb
+  // ist das Prüfdatum hier die wichtigste Auskunft über das Alter der Zahlen.
+  // EINEN Live-Wert gibt es seit dem 19.08.2026 doch: die kommunale Förderung,
+  // die der Fördercheck im Ergebnis per Postleitzahl aus der Datenbank holt. Sie
+  // trägt kein Datum in dieser Liste, weil jedes Programm sein eigenes Prüfdatum
+  // mitbringt (funding_programs.last_verified) — ein gemeinsames zu nennen wäre
+  // genau die erfundene Prüfung, die die Förder-Regel verbietet. Der Rhythmus
+  // dahinter steht als eigener Posten im Prüfstand (lib/pruefstand.ts).
   "/waermepumpe-rechner": {
     eintraege: [
       { was: "Anschaffung und Tarife", iso: DEFAULT_HEATPUMP_CONFIG.geprueftIso, praezision: "tag", wertIso: DEFAULT_HEATPUMP_CONFIG.validFrom },
@@ -101,7 +105,7 @@ export const STAND: Record<string, StandSeite> = {
       { was: "Gaspreis-Bestandteile", iso: GREEN_GAS_CONFIG.geprueftIso, praezision: "tag", wertIso: GREEN_GAS_CONFIG.validFrom },
       { was: "CO₂-Preispfad", iso: CO2_PRICE.geprueftIso, praezision: "tag", wertIso: CO2_PRICE.validFrom },
     ],
-    live: [],
+    live: ["Kommunale Förderprogramme (mit Postleitzahl, je Programm eigenes Prüfdatum)"],
   },
 
   "/klimaanlage-stromkosten": {
@@ -119,7 +123,19 @@ export const STAND: Record<string, StandSeite> = {
     live: ["Standort-Ertrag"],
   },
 
-  "/balkonkraftwerk-rechner": {
+  // Der Themen-Einstieg rechnet mit denselben Werten wie der Rechner — er zeigt
+  // dieselbe Beispielrechnung als Kurzantwort. Deshalb derselbe Stand, und zwar
+  // aus DENSELBEN Quellen abgeleitet statt als Zweitkopie der Literale: Zieht
+  // der Wächter die Config nach, wandert beides gemeinsam.
+  "/balkonkraftwerk": {
+    eintraege: [
+      { was: "Set- und Speicherpreise", iso: DEFAULT_BALKON_CONFIG.geprueftIso, praezision: "tag", wertIso: DEFAULT_BALKON_CONFIG.validFrom },
+      { was: "rechtliche Angaben", iso: BALKON_RECHT.geprueftIso, praezision: "tag" },
+    ],
+    live: ["Strompreis"],
+  },
+
+  "/balkonkraftwerk/rechner": {
     eintraege: [
       { was: "Set- und Speicherpreise", iso: DEFAULT_BALKON_CONFIG.geprueftIso, praezision: "tag", wertIso: DEFAULT_BALKON_CONFIG.validFrom },
       // Rechtsaussagen tragen bewusst KEINEN Wertstand: Sie sind entweder

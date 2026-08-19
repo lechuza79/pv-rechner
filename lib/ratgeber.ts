@@ -60,6 +60,17 @@ export const RATGEBER: RatgeberEntry[] = [
     updated: "2026-08-04",
   },
   {
+    // Unter dem Themen-Cluster /balkonkraftwerk: „balkonkraftwerk anmelden" ist mit 27.100 Suchen
+    // im Monat das größte Keyword im ganzen Balkon-Umfeld (DataForSEO 08/2026,
+    // Schwierigkeit 17) — und der Wettbewerb besteht fast nur aus Shop-Blogs,
+    // die erklären, DASS man muss, statt WIE es geht und woran es scheitert.
+    slug: "/balkonkraftwerk/anmelden",
+    title: "Balkonkraftwerk anmelden: Frist, Angaben und die drei Fallen",
+    teaser:
+      "Seit 2024 genügt eine Registrierung im Marktstammdatenregister — der Netzbetreiber bekommt sie automatisch. Was du bereithalten musst, wann die Frist läuft und warum der Begriff Inbetriebnahme etwas anderes bedeutet, als die meisten denken.",
+    updated: "2026-08-17",
+  },
+  {
     // Top-Level-Keyword-Slug wie /photovoltaik-neigungswinkel: die historische
     // Tabelle ist das Alleinstellungsmerkmal, „einspeisevergütung tabelle" das
     // erreichbare Keyword (DataForSEO 08/2026: 1.600/Monat, geringe Konkurrenz).

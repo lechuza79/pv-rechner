@@ -71,6 +71,35 @@ export interface HeatPumpConfig {
   begMaxCap: number;             // Förderhöchstbetrag förderfähige Kosten (1. Wohneinheit); sinkt ab 01.02.2027
   begMaxRate: number;            // Gesamt-Obergrenze Fördersatz (Regelfall) — 70%
   begMaxRateLowIncome: number;   // Gesamt-Obergrenze niedrigstes Einkommen (≤30.000 € bzw. ≤40.000 € mit Kind) — 80%
+  /**
+   * Kumulierungsgrenze: bis zu welchem Anteil der tatsächlich geförderten Kosten
+   * öffentliche Mittel INSGESAMT zusammenkommen dürfen — die Schranke, an der ein
+   * kommunaler Zuschuss neben der BEG endet.
+   *
+   * Wortlaut, KfW-Merkblatt 458 (Stand 07/2026, Volltext in docs/quellen/,
+   * Abschnitt „Kombination mit anderen Förderprodukten", am 19.08.2026 gelesen):
+   *   „Eine Kumulierung mit anderen öffentlichen Fördermitteln wie Krediten,
+   *    Zulagen und Zuschüssen ist bis zu 60 Prozent der geförderten
+   *    Investitionskosten möglich. Die Kumulierungsgrenze bezieht sich auf die
+   *    tatsächlich geförderten Kosten."
+   *
+   * DER SATZ IST IN EINEM PUNKT MEHRDEUTIG, und der Unterschied ist hier keine
+   * Feinheit: Bezieht sich „bis zu 60 Prozent" auf die Summe AUS BEG UND den
+   * anderen Mitteln (strenge Lesart) oder nur auf die anderen Mittel für sich
+   * (weite Lesart)? Der BEG-Fördersatz selbst reicht bis 70 % bzw. 80 %, liegt
+   * also über der Grenze — unter der strengen Lesart bleibt einem
+   * Höchstfördersatz-Fall gar kein Spielraum mehr, unter der weiten immer der
+   * volle.
+   *
+   * WIR RECHNEN DIE STRENGE LESART. „Kumulierung" beschreibt den Stapel, nicht
+   * den Zuwachs, und die Fehlerrichtung entscheidet: Zu wenig anzurechnen ist
+   * eine angenehme Überraschung, zu viel ein Zuschuss, den jemand einplant,
+   * beantragt und zurückzahlen muss. Dieselbe Abwägung wie beim Nutzungsgrad der
+   * Ölheizung — lieber belegt vorsichtig als genauer aussehen, als wir sind.
+   * Betroffen ist ohnehin nur, wer über den Einkommens-Bonus über 60 % kommt;
+   * im Regelfall (30 % + 16 %) bleibt reichlich Spielraum.
+   */
+  begKumulierungsGrenze: number; // 60% — Summe aller öffentlichen Mittel
   // Electricity price (§14a EnWG WP tariff, BDEW 2026)
   wpTarif: number;               // €/kWh
   wpMaintenance: number;         // €/a
@@ -185,6 +214,7 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   begMaxCap: 28000,
   begMaxRate: 0.70,
   begMaxRateLowIncome: 0.80,
+  begKumulierungsGrenze: 0.60,
   wpTarif: 0.24,
   // Wartung der Wärmepumpe 250 €/a und Grundpreis des WP-Stromzählers 50 €/a —
   // beides Verbraucherzentrale RLP (Beispielrechnung 02.06.2025), dieselbe Quelle

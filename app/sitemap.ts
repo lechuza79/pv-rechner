@@ -154,7 +154,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/pv-bedarf-berechnen`, lastModified: rechnerStand("/pv-bedarf-berechnen"), changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE_URL}/waermepumpe-rechner`, lastModified: rechnerStand("/waermepumpe-rechner"), changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE_URL}/klimaanlage-stromkosten`, lastModified: rechnerStand("/klimaanlage-stromkosten"), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${BASE_URL}/balkonkraftwerk-rechner`, lastModified: rechnerStand("/balkonkraftwerk-rechner"), changeFrequency: "monthly", priority: 0.8 },
+    // Themen-Einstieg des Balkon-Clusters — die Wurzel, unter der Rechner und
+    // Anmelde-Ratgeber haengen. Traegt denselben Stand wie der Rechner, weil er
+    // aus denselben Werten rechnet.
+    { url: `${BASE_URL}/balkonkraftwerk`, lastModified: rechnerStand("/balkonkraftwerk"), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE_URL}/balkonkraftwerk/rechner`, lastModified: rechnerStand("/balkonkraftwerk/rechner"), changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/einspeiseverguetung-rechner`, lastModified: rechnerStand("/einspeiseverguetung-rechner"), changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/photovoltaik-foerderung`, lastModified: maxFundingDate, changeFrequency: "weekly", priority: 0.8 },
     // Zubau-Story rechnet auf denselben MaStR-Daten wie der Atlas — also auch

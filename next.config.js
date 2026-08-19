@@ -74,6 +74,13 @@ const nextConfig = {
       // damit geteilte Links (Query-Parameter werden automatisch durchgereicht)
       // und Google-Index nicht brechen.
       { source: "/rechner", destination: "/photovoltaik-rechner", permanent: true },
+      // Balkon-Cluster (August 2026): Der Rechner ist unter /balkonkraftwerk
+      // eingehängt worden, damit Rechner, Anmelde-Ratgeber und Themen-Einstieg
+      // ein gemeinsames Präfix haben. EINE Zeile für den ganzen Bereich — genau
+      // die Asymmetrie, wegen der die Entscheidung so gefallen ist: Die
+      // Förderseiten unter uns haben dieselbe Umstellung 109 Zeilen gekostet,
+      // weil dort jede Seite einzeln umziehen musste.
+      { source: "/balkonkraftwerk-rechner", destination: "/balkonkraftwerk/rechner", permanent: true },
       { source: "/waermepumpe", destination: "/waermepumpe-rechner", permanent: true },
       { source: "/energie", destination: "/strommix-deutschland", permanent: true },
       { source: "/empfehlung", destination: "/pv-bedarf-berechnen", permanent: true },

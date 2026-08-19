@@ -33,6 +33,10 @@ const VERZEICHNISSE = [
 ];
 const EINZELDATEIEN = [
   "lib/gemeinde-highlight.ts",
+  // Derselbe Fall eine Ebene höher: Fließtext mit MaStR-Zahlen, entstanden
+  // 18.08.2026. Eine Prosadatei ohne Wächter ist genau der Ort, an dem die
+  // nächste handgeschriebene Einheit landet.
+  "lib/region-highlight.ts",
   "components/MastrHeroSection.tsx",
   // Die Landes-Karten zeigen denselben MaStR-Bestand wie die Gemeinde-Karten,
   // lagen aber außerhalb des Suchpfads — genau dort stand „GW" über einer

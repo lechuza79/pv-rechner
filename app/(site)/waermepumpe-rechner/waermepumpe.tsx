@@ -20,6 +20,10 @@ import GebaeudeField, { GEBAEUDE_FIELDS } from "../../../components/GebaeudeFiel
 import StandNoteView from "../../../components/StandNoteView";
 import { type StandSeite } from "../../../lib/stand-format";
 import InlineEdit from "../../../components/InlineEdit";
+import StandortField from "../../../components/StandortField";
+import ResultFunding from "../../../components/ResultFunding";
+import { stackFunding, programmeNebenBundesfoerderung, zeilenBisDeckel } from "../../../lib/funding-programs";
+import { useFoerderung } from "../../../lib/use-foerderung";
 import HeatPumpChart from "./_components/HeatPumpChart";
 import GasPriceStackChart from "../../../components/charts/GasPriceStackChart";
 import HeatCostCompareChart from "../../../components/charts/HeatCostCompareChart";
@@ -96,6 +100,15 @@ export default function Waermepumpe({
   const [kindImHaushalt, setKindImHaushalt] = useState(false);        // Familienzuschlag hebt die Einkommensgrenze
   const [heizkoerperTausch, setHeizkoerperTausch] = useState(false);  // Maßnahme: alte HK auf Niedertemperatur tauschen
   const [wegId, setWegId] = useState("ist");  // aktiver Sanierungs-/Maßnahmen-Weg (Szenario-Vergleich)
+  // ── Kommunale Förderung ──────────────────────────────────────
+  // Der Wohnort wird bewusst NICHT im Frageweg erhoben: Er ändert nichts am
+  // Gebäude und nichts an der Wärmepumpe, sondern nur daran, ob die Gemeinde
+  // etwas dazugibt. Ein sechster Schritt für eine Frage, die bei den allermeisten
+  // Orten „nein" ergibt, kostet mehr Abbrüche als er Nutzen bringt — deshalb
+  // steht der Check im Ergebnis, wo er eine bereits gerechnete Zahl verbessert.
+  const [plz, setPlz] = useState("");
+  const foerderQuelle = useFoerderung("waermepumpe");
+  const [fundingEnabled, setFundingEnabled] = useState(true);
   const [showDetails, setShowDetails] = useState(false);
   // Szenario-Auswahl (steuert TCO/Amortisation/Ersparnis/CO₂ + Chart):
   //  "gruengas"                       = beschlossenes Heizungsgesetz (GModG Bio-Treppe),
@@ -206,7 +219,7 @@ export default function Waermepumpe({
   const cfg = DEFAULT_HEATPUMP_CONFIG;
 
   // ── Build inputs + calculate ─────────────────────────────────
-  const inputs: HeatPumpInputs = useMemo(() => ({
+  const inputsOhneFoerderung: HeatPumpInputs = useMemo(() => ({
     situation, wohnflaeche, insulationIdx,
     personen: PERSONEN[personen].count,
     heizsystem, wpType, heizkoerperTausch,
@@ -231,6 +244,47 @@ export default function Waermepumpe({
       kindImHaushalt: selbstnutzer && kindImHaushalt,
     },
   }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, haustypIdx, greenGas, pvStatus, pvKwp, pvSpeicher, oQges, oHeizlast, oJaz, oInvest, oStromPrice, oGasPrice, oFossilInvest, fuel, selbstnutzer, altheizung, einkommen, kindImHaushalt]);
+
+  // ── Kommunaler Zuschuss ──────────────────────────────────────
+  // Henne und Ei: Der Zuschuss kann von der Investition abhängen (Prozentsätze),
+  // die Investition hängt am Zuschuss. Deshalb erst OHNE Förderung rechnen, um
+  // die Investition zu bekommen, und den Zuschuss dann in den echten Lauf geben.
+  // Der Vorlauf ist eine reine Funktion ohne Zustand — nachrechnen ist billiger
+  // und ehrlicher, als die Investitionsformel hier ein zweites Mal aufzuschreiben.
+  //
+  // BEZUGSGRÖSSE IST DER BASIS-WEG, nicht der gewählte Sanierungs-Weg. Für einen
+  // pauschalen Zuschuss (der einzige rechenbare Fall im Katalog) ist das
+  // gleichgültig. Käme je ein PROZENTUALER kommunaler WP-Zuschuss dazu, würde er
+  // auf der Investition des Basis-Wegs gerechnet, während daneben die des
+  // gewählten Wegs steht — abgezogen wird zwar genau der angezeigte Betrag, die
+  // Bemessungsgrundlage wäre aber die falsche. Ein Test in
+  // lib/__tests__/waermepumpe-kommunalfoerderung.test.ts schlägt an, sobald ein
+  // solches Programm auftaucht; dann gehört hier der Patch des aktiven Wegs
+  // hinein (`wege` hängt nicht an `inputs`, ist also zirkelfrei erreichbar).
+  const foerderBasis = useMemo(() => calcHeatPump(inputsOhneFoerderung, cfg), [inputsOhneFoerderung, cfg]);
+  // Programme, die eine Bundesförderung ausschließen, fallen hier raus — die BEG
+  // ist oben schon abgezogen, sie stünden also auf einem Stapel, den ihre eigene
+  // Richtlinie verbietet.
+  const kommunaleProgramme = useMemo(
+    () => programmeNebenBundesfoerderung(foerderQuelle.programme),
+    [foerderQuelle.programme],
+  );
+  const foerderStack = useMemo(
+    () => stackFunding(kommunaleProgramme, { technik: "waermepumpe", kosten: foerderBasis.investBrutto }),
+    [kommunaleProgramme, foerderBasis.investBrutto],
+  );
+  // Drei Gründe, warum nicht gerechnet wird — jeder trägt unten seinen eigenen Satz:
+  // abgeschaltet, von Hand gesetzte Investition (da steckt die Förderung schon
+  // drin), oder Neubau. Neubau: Der einzige rechenbare kommunale Zuschuss im
+  // Katalog (Poing) setzt den AUSTAUSCH einer mindestens zwei Jahre alten Heizung
+  // voraus, und die BEG gibt es im Neubau ohnehin nicht. Sobald ein Programm
+  // auftaucht, das den Neubau fördert, gehört diese Bedingung ins Programm statt
+  // hierher — der Katalog kennt dafür heute kein Feld.
+  const foerderAktiv = fundingEnabled && oInvest === null && situation === "bestand";
+  const inputs: HeatPumpInputs = useMemo(
+    () => ({ ...inputsOhneFoerderung, kommunalFoerderung: foerderAktiv ? foerderStack.total : 0 }),
+    [inputsOhneFoerderung, foerderAktiv, foerderStack.total],
+  );
 
   // ── Realistische Wege (Szenario-Vergleich) ───────────────────
   // Ein unsaniertes Haus bleibt selten 20 Jahre unangetastet. Statt nur den
@@ -293,6 +347,34 @@ export default function Waermepumpe({
     () => calcHeatPump(activeInputs, cfg, heatPumpScenarioAdj(greenGas ? "realistic" : effScenario, cfg)),
     [activeInputs, cfg, effScenario, greenGas],
   );
+
+  // Der Betrag, der neben der BEG noch Platz hat — die Anspruchshöhe, nicht die
+  // Anzeige-Entscheidung. `kappung` hängt deshalb bewusst NICHT an `foerderAktiv`:
+  // Der Schalter „Förderung anrechnen" wird nur neben einer Förderzeile gerendert,
+  // und ohne Zeilen verschwände beim Ausschalten der Schalter gleich mit — aus
+  // „anrechnen" würde ein Einwegschalter. Solange gerechnet wird, ist `kappung`
+  // identisch mit `result.kommunal.angerechnet`.
+  const kappung = Math.min(foerderStack.total, result.kommunal.spielraum);
+  // Die Zeilen müssen sich zu genau dieser Summe addieren, deshalb werden sie der
+  // Reihe nach aufgefüllt, bis der Spielraum aufgebraucht ist. Eine Förderzeile
+  // anzuzeigen, die nicht in der Investition steckt, wäre der Widerspruch zwischen
+  // Text und Zahl, den dieses Projekt als schwersten Fehler führt.
+  const foerderZeilen = useMemo(
+    () => zeilenBisDeckel(foerderStack.applied, kappung),
+    [foerderStack.applied, kappung],
+  );
+
+  const foerderHinweis = useMemo(() => {
+    if (oInvest !== null) {
+      return "Die Investition ist von Hand gesetzt — darin steckt der Preis, den du tatsächlich zahlst, also samt Förderung. Der Zuschuss wird deshalb nicht noch einmal abgezogen.";
+    }
+    if (!fundingEnabled || foerderStack.total === 0) return undefined;
+    if (kappung >= foerderStack.total) return undefined;
+    const grenze = Math.round(DEFAULT_HEATPUMP_CONFIG.begKumulierungsGrenze * 100);
+    return result.kommunal.spielraum === 0
+      ? `Bundesförderung und kommunaler Zuschuss zusammen dürfen ${grenze} % der geförderten Kosten nicht übersteigen. Deine BEG-Förderung schöpft das bereits aus, deshalb ist der kommunale Zuschuss hier nicht eingerechnet — beantragen kannst du ihn trotzdem, entschieden wird es im Bescheid.`
+      : `Bundesförderung und kommunaler Zuschuss zusammen dürfen ${grenze} % der geförderten Kosten nicht übersteigen. Neben deiner BEG-Förderung bleiben davon ${result.kommunal.spielraum.toLocaleString("de-DE")} € — mehr wird nicht angerechnet.`;
+  }, [oInvest, fundingEnabled, foerderStack.total, kappung, result.kommunal.spielraum]);
   // Die drei Preis-Szenarien rechnen bewusst OHNE Grüngas-Pflicht — sie zeigen die
   // reine Energiepreis-Bandbreite ("was, wenn die Pflicht doch nicht greift").
   const scenariosPlain = useMemo(() => calcHeatPumpScenarios({ ...activeInputs, greenGas: false }, cfg), [activeInputs, cfg]);
@@ -811,6 +893,53 @@ export default function Waermepumpe({
                   <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 6 }}>Investition manuell überschrieben — Förderung wirkt erst wieder nach Zurücksetzen.</div>
                 )}
               </div>
+            )}
+
+            {/* 2b. Kommunale Förderung — der Ort wird erst HIER gefragt.
+                 Reihenfolge mit Absicht: erst die BEG, dann was die Gemeinde
+                 obendrauf legt. Umgekehrt stünde der kleinere Betrag über dem
+                 größeren, und der Fördercheck läse sich wie die Hauptsache. */}
+            {situation === "bestand" && (
+              <>
+                <div style={{ padding: "14px 16px", marginBottom: 16, borderRadius: v('--radius-lg'), background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}` }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 2 }}>Fördercheck für deine Gemeinde</div>
+                  <div style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginBottom: 10 }}>
+                    Einzelne Städte und Gemeinden legen etwas auf die Bundesförderung drauf. Mit deiner Postleitzahl sehen wir im Förderkatalog nach.
+                  </div>
+                  <div style={{ fontSize: 13 }}>
+                    <StandortField
+                      plz={plz}
+                      onPlzChange={setPlz}
+                      loading={foerderQuelle.laedt}
+                      confirmed={!!foerderQuelle.ags}
+                      onSubmit={() => foerderQuelle.ausPlz(plz)}
+                      label="Postleitzahl"
+                    />
+                  </div>
+                </div>
+                {/* `programs` zeigt ALLES, was wir für den Ort kennen — abgezogen wird
+                    nur, was `applied` trägt. Ein Programm zu verschweigen, weil es sich
+                    nicht mit der BEG stapeln lässt, wäre die schlechtere Auskunft: Für
+                    jemanden ohne BEG-Antrag kann es trotzdem gelten.
+                    `brutto` ist die Investition NACH der BEG, weil die Karte `total`
+                    davon abzieht und das Ergebnis „Investition nach Förderung" nennt —
+                    mit dem Bruttopreis stünde dort dieselbe Zeile mit einem anderen
+                    Betrag als oben im Ergebnis. */}
+                <ResultFunding
+                  loading={foerderQuelle.laedt}
+                  candidates={foerderQuelle.kandidaten}
+                  chosenAgs={foerderQuelle.ags}
+                  onChooseAgs={foerderQuelle.waehleOrt}
+                  programs={foerderQuelle.programme}
+                  applied={foerderZeilen}
+                  total={kappung}
+                  enabled={foerderAktiv}
+                  onToggle={setFundingEnabled}
+                  brutto={Math.max(0, result.investBrutto - result.beg.amount)}
+                  technik="waermepumpe"
+                  hinweis={foerderHinweis}
+                />
+              </>
             )}
 
             {/* 3. Realistische Wege */}
