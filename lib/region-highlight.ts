@@ -24,7 +24,22 @@ export type RegionKind = {
   /** Dach-Leistung je Einwohner — der faire Bürger-Vergleich (Freifläche raus). */
   wPerCapitaDach: number | null;
   count: number;
+  /** Adresse der Unterseite. Fehlt sie, bleibt der Name unverlinkter Text. */
+  href?: string | null;
 };
+
+/**
+ * Ein Textstück des Absatzes — entweder nackter Text oder ein benannter Verweis.
+ *
+ * WARUM DER ABSATZ NICHT EINFACH EIN STRING IST: Die im Text genannten Gebiete
+ * sind Seiten, die es gibt, und ein Verweis mit dem Ortsnamen als Ankertext ist
+ * der stärkste interne Hinweis nach der Navigation. Neue Crawl-Wege entstehen
+ * dadurch KEINE — die Rangliste weiter unten verlinkt dieselben Gebiete ohnehin
+ * alle. Genau deshalb ist es hier gefahrlos: Die Sorge aus dem Juli 2026 (eine
+ * indexierte Seite öffnet den Weg in Tausende noindex-Seiten) betrifft neue
+ * Pfade, nicht zusätzliche Anker auf bestehende.
+ */
+export type HighlightTeil = string | { text: string; href: string };
 
 export type RegionHighlightInput = {
   /** Ebene der Seite selbst. */
@@ -81,7 +96,7 @@ function rangSatz(i: RegionHighlightInput): string | null {
  * Der Abstand wird als Faktor gesagt und der schwächste NICHT benannt: Die Zahl
  * ist die Aussage, der Pranger wäre keine.
  */
-function spitzeSatz(i: RegionHighlightInput): string | null {
+function spitzeSatz(i: RegionHighlightInput): HighlightTeil[] | null {
   const mitWert = i.kinder.filter(
     (k): k is RegionKind & { wPerCapitaDach: number } => k.wPerCapitaDach !== null,
   );
@@ -91,17 +106,31 @@ function spitzeSatz(i: RegionHighlightInput): string | null {
   const schluss = sortiert[sortiert.length - 1];
   const spitzeWert = fmtWattProKopf(Math.round(spitze.wPerCapitaDach));
 
+  /** Der Name als Verweis, wenn es die Seite gibt — sonst als Text. */
+  const benannt = (k: RegionKind & { wPerCapitaDach: number }): HighlightTeil => {
+    const text = regionName(k.name);
+    return k.href ? { text, href: k.href } : text;
+  };
+
   // Das SCHLUSSLICHT WIRD BENANNT, nicht nur als Faktor verrechnet. Erste Fassung
   // sagte „das 25-fache des schwächsten Kreises" — eine Zahl, die niemand
   // einordnen kann und die eine unfaire Gegenüberstellung verdeckt: Vorn stehen
   // ländliche Kreise mit viel Dachfläche je Kopf, hinten fast immer eine
   // Großstadt. Mit beiden Namen sieht man den Grund, statt ihn zu raten
   // (CLAUDE.md: „Trägt ein Mittelwert überhaupt?" — hier: trägt der Vergleich?).
-  const spanne =
-    schluss.wPerCapitaDach > 0 && spitze.wPerCapitaDach / schluss.wPerCapitaDach >= 1.5
-      ? ` Am anderen Ende steht ${regionName(schluss.name)} mit ${fmtWattProKopf(Math.round(schluss.wPerCapitaDach))}.`
-      : "";
-  return `Am weitesten ist ${regionName(spitze.name)} mit ${spitzeWert} auf dem Dach je Einwohner.${spanne}`;
+  const teile: HighlightTeil[] = [
+    "Am weitesten ist ",
+    benannt(spitze),
+    ` mit ${spitzeWert} auf dem Dach je Einwohner.`,
+  ];
+  if (schluss.wPerCapitaDach > 0 && spitze.wPerCapitaDach / schluss.wPerCapitaDach >= 1.5) {
+    teile.push(
+      " Am anderen Ende steht ",
+      benannt(schluss),
+      ` mit ${fmtWattProKopf(Math.round(schluss.wPerCapitaDach))}.`,
+    );
+  }
+  return teile;
 }
 
 /**
@@ -168,12 +197,83 @@ function zubauSatz(i: RegionHighlightInput): string | null {
  */
 
 /**
+ * Wie auffällig ist diese Tatsache für DIESE Region? Höher = gehört nach vorn.
+ *
+ * DER AUFHÄNGER ROTIERT DATENGETRIEBEN, ER WIRD NICHT UMFORMULIERT. Das ist der
+ * Unterschied, auf dem der Wellenplan besteht: Dieselbe Aussage in Synonyme zu
+ * kleiden ist Content-Spinning und selbst ein Thin-Signal. Was einen Text
+ * unterscheidbar macht, ist die Frage, WOMIT er anfängt — und die beantwortet
+ * hier die Datenlage, nicht ein Zufallsgenerator (der bei jedem Aufbau eine
+ * andere Fassung liefern würde; die Seite ist gecacht, das wäre bloß Unruhe).
+ *
+ * Die Skala ist bewusst grob. Sie muss nur sortieren, nicht messen.
+ */
+function auffaelligkeit(i: RegionHighlightInput): { rang: number; spitze: number; zubau: number } {
+  // Rang: Erster und Letzter sind eine Nachricht, Platz 8 von 16 ist keine.
+  let rang = 0;
+  if (i.rang && i.rangVon && i.rangVon >= 3) {
+    const relativ = (i.rang - 1) / (i.rangVon - 1); // 0 = vorn, 1 = hinten
+    rang = i.rang === 1 || i.rang === i.rangVon ? 3 : relativ <= 0.2 || relativ >= 0.8 ? 2 : 1;
+  }
+
+  // Spanne: Ein Feld, in dem der Erste ein Vielfaches des Letzten hat, erklärt
+  // die Region besser als ihr Mittelwert.
+  const werte = i.kinder.map((k) => k.wPerCapitaDach).filter((w): w is number => w !== null);
+  let spitze = werte.length >= 3 ? 1 : 0;
+  if (werte.length >= 3) {
+    const max = Math.max(...werte);
+    const min = Math.min(...werte);
+    if (min > 0 && max / min >= 8) spitze = 3;
+    else if (min > 0 && max / min >= 3) spitze = 2;
+  }
+
+  // Zubau: auffällig ist die Richtung, nicht die Menge.
+  let zubau = 0;
+  if (i.byYear && i.lastYear != null && i.count) {
+    const letztes = i.byYear.find((y) => y.year === i.lastYear);
+    const vorletztes = i.byYear.find((y) => y.year === (i.lastYear as number) - 1);
+    if (letztes && letztes.count > 0) {
+      zubau = 1;
+      if (vorletztes && vorletztes.count > 0) {
+        const v = letztes.count / vorletztes.count;
+        if (v >= 1.25 || v <= 0.75) zubau = 3;
+        else if (v >= 1.05 || v <= 0.95) zubau = 2;
+      }
+    }
+  }
+  return { rang, spitze, zubau };
+}
+
+/**
  * Setzt den Absatz zusammen. Leere Sätze fallen weg, statt „—" zu schreiben:
  * Eine Region ohne Kinder oder ohne Zubau bekommt einen kürzeren Text, keinen
  * mit Lücken.
+ *
+ * Die Reihenfolge folgt der Auffälligkeit (siehe oben). Bei Gleichstand bleibt
+ * es bei Rang → Spitze → Zubau, damit dieselbe Datenlage immer denselben Text
+ * ergibt: Ein Text, der sich bei jedem Aufbau umsortiert, wäre für Google eine
+ * wechselnde Seite und für einen wiederkehrenden Leser Verwirrung.
  */
-export function buildRegionHighlight(i: RegionHighlightInput): string {
-  return [rangSatz(i), spitzeSatz(i), zubauSatz(i)].filter(Boolean).join(" ");
+export function buildRegionHighlight(i: RegionHighlightInput): HighlightTeil[] {
+  const gewicht = auffaelligkeit(i);
+  const rang = rangSatz(i);
+  const zubau = zubauSatz(i);
+  const saetze: { teile: HighlightTeil[] | null; gewicht: number; reihenfolge: number }[] = [
+    { teile: rang ? [rang] : null, gewicht: gewicht.rang, reihenfolge: 0 },
+    { teile: spitzeSatz(i), gewicht: gewicht.spitze, reihenfolge: 1 },
+    { teile: zubau ? [zubau] : null, gewicht: gewicht.zubau, reihenfolge: 2 },
+  ];
+  const gewaehlt = saetze
+    .filter((s): s is { teile: HighlightTeil[]; gewicht: number; reihenfolge: number } => !!s.teile)
+    .sort((a, b) => b.gewicht - a.gewicht || a.reihenfolge - b.reihenfolge);
+
+  // Zwischen den Sätzen ein Leerzeichen, aber keins am Anfang.
+  return gewaehlt.flatMap((s, idx) => (idx === 0 ? s.teile : [" ", ...s.teile]));
+}
+
+/** Der Absatz als reiner Text — für Tests und für Stellen ohne Markup. */
+export function highlightAlsText(teile: HighlightTeil[]): string {
+  return teile.map((t) => (typeof t === "string" ? t : t.text)).join("");
 }
 
 /** Nur für die Überschrift des Blocks — sagt, worauf sich die Sätze beziehen. */

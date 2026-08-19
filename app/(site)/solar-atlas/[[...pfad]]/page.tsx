@@ -287,7 +287,14 @@ async function AtlasBody({
     level: region.level as "de" | "bundesland" | "landkreis",
     name: region.name,
     kindWort,
-    kinder: children.map((c) => ({ name: c.name, wPerCapitaDach: c.wPerCapitaDach, count: c.count })),
+    kinder: children.map((c) => ({
+      name: c.name,
+      wPerCapitaDach: c.wPerCapitaDach,
+      count: c.count,
+      // Dieselbe Adresse wie in der Rangliste weiter unten — der Absatz öffnet
+      // also keinen neuen Crawl-Weg, er benennt einen bestehenden.
+      href: c.slug ? `${basePath}/${c.slug}` : null,
+    })),
     rang: eigenerRang,
     rangVon: geschwister.length || null,
     rangGattung: "Bundesländer",
@@ -379,7 +386,19 @@ async function AtlasBody({
         {/* Der Einordnungs-Absatz: Platz unter den Geschwistern, stärkstes
             Untergebiet mit Namen, Zubau als Anteil am Bestand. Je Region andere
             Fakten statt einer Schablone — der Grund steht in lib/region-highlight.ts. */}
-        {einordnung && <p style={S.intro}>{einordnung}</p>}
+        {einordnung.length > 0 && (
+          <p style={S.intro}>
+            {einordnung.map((teil, idx) =>
+              typeof teil === "string" ? (
+                teil
+              ) : (
+                <Link key={`${teil.href}-${idx}`} href={teil.href} style={S.link}>
+                  {teil.text}
+                </Link>
+              ),
+            )}
+          </p>
+        )}
 
         <div style={S.section}>
           <AtlasKpiRow
