@@ -31,6 +31,7 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { DB_READ_TIMEOUT_MS } from "../lib/db-timeout";
 import { PRUEFSTAND, faelligkeiten } from "../lib/pruefstand";
+import { RELEASE_PLAN, planMeldungen } from "../lib/release-plan";
 
 // In der GitHub-Action kommen die Zugangsdaten aus den Repo-Secrets. Lokal
 // standen sie nicht zur Verfügung — der Check fiel dann still auf die feste
@@ -855,6 +856,22 @@ async function main() {
       );
     }
   }
+
+  // ── Releaseplan ───────────────────────────────────────────────────────────
+  //
+  // Aus demselben Grund hier und nicht nur im Wächter-Lauf (siehe oben): Ein
+  // Plan, der sich nur meldet, wenn ihn jemand abfragt, meldet sich nicht. Der
+  // Plan entscheidet, welche Ortsseiten wann erscheinen — verstreicht ein Datum
+  // unbemerkt, passiert nichts Schlimmes, aber es passiert eben auch nichts.
+  // Liest nur Konstanten, kein Netz, keine Datenbank.
+  const planOffen = planMeldungen(new Date());
+  lines.push(
+    `Releaseplan: ${RELEASE_PLAN.length} Schübe, ${planOffen.length} offen` +
+      (planOffen.length ? ` — ${planOffen.map((p) => p.schub).join(", ")}` : ""),
+  );
+  // Immer an Claude, nie an den Betreiber: Ein anstehender Schub ist ein
+  // Arbeitsschritt, keine Entscheidung — dieselbe Trennung wie beim Prüfstand.
+  for (const p of planOffen) forClaude.push(p.text);
 
   // ── Bericht ───────────────────────────────────────────────────────────────
   const ampel =
