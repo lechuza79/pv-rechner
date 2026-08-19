@@ -163,6 +163,7 @@ tagQuote 0.30 ≈ HTW Standard-Profil, andere Werte skaliert nach Nutzungsprofil
 3. **Trägt ein Mittelwert überhaupt?** Bei sehr kleinen Stückzahlen oder gemischten Grundgesamtheiten (Haushalt + Gewerbe) entweder unterdrücken oder dranschreiben, was gemischt ist.
 4. **Grammatik ist Teil der Richtigkeit** — „1 neue Anlagen" ist derselbe Fehler in Worten. Singular/Plural immer mitbauen.
 5. **Weggelassenes sichtbar erklären.** Was bewusst nicht in einer Zahl steckt (z. B. Pumpspeicher in der Speicher-Kachel), gehört sichtbar an die Zahl — nicht nur in einen Code-Kommentar.
+6. **Die 25-Jahres-Summe heißt „Gewinn nach 25 Jahren"** (Betreiber-Entscheidung 18.08.2026), kurz „Gewinn 25 J." — nie „Rendite" (das ist ein Prozentsatz, kein Betrag) und ausdrücklich **nie „Ertrag"**: So heißt im Rechner der Stromertrag in kWh je kWp, und der steht in derselben Karte. Zwei Kacheln sagten längst „Gewinn", der Rest „Rendite" — ein Wort, zwei Bedeutungen, auf einer Seite. Erzwungen von `lib/__tests__/modell-kohaerenz.test.ts`.
 
 **Bei Verdacht: messen, nicht schätzen.** Eine aggregierte Abfrage gegen die echten Daten kostet Sekunden und ist die einzige Art, eine Zahl zu belegen (DB dabei schonen, siehe unten).
 
@@ -172,7 +173,7 @@ tagQuote 0.30 ≈ HTW Standard-Profil, andere Werte skaliert nach Nutzungsprofil
 
 | Wofür | Kanonische Quelle | Typische Falle |
 |---|---|---|
-| **Standort-Ertrag** | `/api/pvgis` liefert `annual` **und `monthly`** (12 Werte, in Supabase gecacht) | Nur `annual` nehmen → Sommer/Winter existiert nicht mehr, Standort wirkt bei gedeckelten Anlagen gar nicht |
+| **Standort-Ertrag** | `/api/pvgis` liefert `annual` **und `monthly`** (12 Werte, in Supabase gecacht); ohne PLZ `NATIONAL_AVG_YIELD` — der Bundesschnitt **bei optimaler Ausrichtung**, ohne jeden Dachabschlag | Nur `annual` nehmen → Sommer/Winter existiert nicht mehr, Standort wirkt bei gedeckelten Anlagen gar nicht. **Und: keinen „Sicherheitspuffer" in den Standortwert rechnen** — bis 18.08.2026 stand dort der Schnitt minus 100 kWh, den die Dach-Matrix dann ein zweites Mal abzog (Ost/West 760 statt 840 kWh/kWp), während der Hinweis daneben „bei optimaler Neigung nach Süden" behauptete. Ein Abschlag gehört genau dorthin, wo die Angabe des Nutzers ihn begründet |
 | **Ertrag DIESER Anlage** (Dach + Ausrichtung) | `dachErtragKwp()` (`lib/dach-ertrag.ts`) = Standort-Optimum × Neigungsmatrix; UI immer `components/DachField.tsx` | Den Standort-Ertrag ungefiltert nehmen. Er kommt mit `optimalinclination=1`/`aspect=0`, ist also der **Bestfall** — ein Ost/West-Dach wird so 25 % zu gut gerechnet, ein Nord-Pultdach 39 % |
 | **Stundenlast Haushalt** | `calcHourlyConsumption(household, hour, month)` + `HouseholdProfile` (`lib/consumption.ts`, BDEW H0 / VDI 4655) | Eigenes Lastprofil bauen |
 | **Stunden-Jahressimulation** | `simulateSolarYear` (`lib/balkon-sim.ts`): Erzeugung/Verbrauch/Speicher Stunde für Stunde; Balkon + Dach-PV teilen sie | Eigene Dispatch-Schleife bauen |
