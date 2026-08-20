@@ -166,9 +166,31 @@ export function abstandTeile(abstand: number): { vielfaches: string | null; proz
  *    Option. Der Satz bleibt, wie er war. Der Brief schweigt in diesem Fall
  *    ohnehin: Sein Vergleich liegt dann unter `MIN_VERGLEICH`.
  */
+/**
+ * Ein Stück Satz, das auf eine Einstellung weiter unten zeigen darf.
+ *
+ * WARUM DER SATZ ZERLEGT WIRD: Er nennt zwei Messgrößen nebeneinander, und der
+ * Leser kann beide unten im Bestandsblock nachsehen — aber nur, wenn er den
+ * Umschalter findet und weiß, auf welche Stellung. Der Verweis nimmt ihm
+ * beides ab. Genau deshalb steht das Ziel HIER und nicht beim Aufrufer: Wer
+ * die Formulierung ändert, sieht in derselben Zeile, worauf sie zeigt.
+ *
+ * `ziel` ist die Messgröße, nicht die Adresse — welcher Anker daraus wird,
+ * entscheidet die Oberfläche. Diese Datei kennt keine URLs.
+ */
+export type SatzTeil = { text: string; ziel?: "privat" | "alle" };
+
+/** Aus Satzteilen wieder ein Satz. Gegenstück zu `…Teile()`/`fmt…()` in
+ *  lib/atlas-format.ts — eine Quelle, zwei Ausgabeformen. */
+export const satzAusTeilen = (teile: SatzTeil[]): string => teile.map((t) => t.text).join("");
+
 export function proKopfSatz(v: GemeindeVergleich): string {
+  return satzAusTeilen(proKopfSatzTeile(v));
+}
+
+export function proKopfSatzTeile(v: GemeindeVergleich): SatzTeil[] {
   const { privat, gesamt, blName } = v;
-  if (!gesamt) return "";
+  if (!gesamt) return [];
 
   const abstandText = (g: VergleichGroesse, richtung: "über" | "unter") => {
     const t = abstandTeile(g.abstand);
@@ -178,19 +200,32 @@ export function proKopfSatz(v: GemeindeVergleich): string {
   };
 
   // Fall 2: Die Seite stellt das Positive heraus und benennt die andere Größe.
+  //
+  // Beide Messgrößen zeigen auf ihre Stellung im Bestandsblock: Der Satz nennt
+  // zwei Zahlen aus zwei Grundgesamtheiten, und wer das nachsehen will, soll
+  // nicht raten müssen, welcher Umschalter gemeint ist.
   if (gesamt.abstand < 0 && privat && privat.abstand >= MIN_VERGLEICH) {
-    return (
-      `Je Einwohner stehen auf den privaten Dächern ${fmtWattProKopf(Math.round(privat.proKopf))} ` +
-      `Photovoltaik — ${abstandText(privat, "über")}, jedoch ` +
-      `${abstandTeile(gesamt.abstand).prozent} unter dem Durchschnitt in ${blName} für alle Anlagen.`
-    );
+    return [
+      { text: "Je Einwohner stehen " },
+      { text: "auf den privaten Dächern", ziel: "privat" },
+      { text: ` ${fmtWattProKopf(Math.round(privat.proKopf))} Photovoltaik — ${abstandText(privat, "über")}, jedoch ` },
+      { text: `${abstandTeile(gesamt.abstand).prozent} unter dem Durchschnitt in ${blName} ` },
+      { text: "für alle Anlagen", ziel: "alle" },
+      { text: "." },
+    ];
   }
 
-  // Fall 1 und 3: die Gesamtleistung trägt den Satz.
+  // Fall 1 und 3: die Gesamtleistung trägt den Satz. Hier steht nur EINE
+  // Messgröße im Satz — es gibt nichts zu verwechseln, also auch nichts
+  // aufzulösen. Ein Verweis wäre hier nur Dekoration.
   const wert = fmtWattProKopf(Math.round(gesamt.proKopf));
   return gesamt.abstand >= 0
-    ? `Je Einwohner sind das ${wert} Photovoltaik — ${abstandText(gesamt, "über")}.`
-    : `Je Einwohner sind das ${wert} — ${abstandText(gesamt, "unter")}, hier ist also noch viel Luft nach oben.`;
+    ? [{ text: `Je Einwohner sind das ${wert} Photovoltaik — ${abstandText(gesamt, "über")}.` }]
+    : [
+        {
+          text: `Je Einwohner sind das ${wert} — ${abstandText(gesamt, "unter")}, hier ist also noch viel Luft nach oben.`,
+        },
+      ];
 }
 
 /**

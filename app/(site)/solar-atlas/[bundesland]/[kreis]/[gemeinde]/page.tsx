@@ -21,7 +21,7 @@ import GemeindeErneuerbareWidget from "../../../../../../components/atlas/Gemein
 import GemeindeSolarLive from "../../../../../../components/atlas/GemeindeSolarLive";
 import { MastrHeroSection } from "../../../../../../components/MastrHeroSection";
 import { gemeindeGeo } from "../../../../../../lib/atlas-geo";
-import { buildGemeindeHighlight } from "../../../../../../lib/gemeinde-highlight";
+import { gemeindeHighlightTeile } from "../../../../../../lib/gemeinde-highlight";
 import { gemeindeSzenarioTexte } from "../../../../../../lib/gemeinde-szenario-text";
 import {
   resolveSlugPath,
@@ -32,6 +32,7 @@ import {
   getRankingData,
   foldSiblings,
   atlasOwnerSlice,
+  ownerAnker,
   speicherHinweis,
   type AtlasOwner,
   type AtlasRegion,
@@ -444,7 +445,13 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
           <div style={{ minWidth: 0 }}>
             <h1 style={S.h1}>Solaranlagen in {region.name}</h1>
             <CollapsibleIntro>
-          {buildGemeindeHighlight({
+          {/*
+            Der Einleitungstext kommt in Stücken, weil zwei davon auf eine
+            Stellung des Eigentümer-Umschalters weiter unten zeigen. Welche
+            Messgröße wohin gehört, entscheidet der Rechenkern
+            (lib/gemeinde-vergleich.ts) — hier wird daraus nur eine Adresse.
+          */}
+          {gemeindeHighlightTeile({
             name: region.name,
             atlas,
             blAtlas,
@@ -457,7 +464,15 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
             kreisTotal,
             byYear: atlas.solar.by_year,
             lastYear,
-          })}
+          }).map((teil, i) =>
+            teil.ziel ? (
+              <a key={i} href={`#${ownerAnker(teil.ziel)}`} style={S.introLink}>
+                {teil.text}
+              </a>
+            ) : (
+              <span key={i}>{teil.text}</span>
+            ),
+          )}
             </CollapsibleIntro>
           </div>
           <GemeindePlatzierungen regionId={region.region_id} />
@@ -732,4 +747,15 @@ const S: Record<string, React.CSSProperties> = {
     marginBottom: space.xxxl,
   },
   licLink: { color: "inherit", textDecoration: "underline" },
+  // Verweis INNERHALB eines Fließtextsatzes: gepunktet unterstrichen in der
+  // Textfarbe, nicht blau. Er führt nicht weg, sondern an eine Stelle weiter
+  // unten auf derselben Seite — ein Akzent-Link mittendrin sähe aus wie ein
+  // Absprung und würde den Satz zerreißen. Dieselbe Affordanz wie beim
+  // Click-to-Edit im Rechner.
+  introLink: {
+    color: "inherit",
+    textDecoration: "underline",
+    textDecorationStyle: "dotted",
+    textUnderlineOffset: 3,
+  },
 };

@@ -6,6 +6,8 @@ import {
   briefVergleichSatz,
   gemeindeVergleich,
   proKopfSatz,
+  proKopfSatzTeile,
+  satzAusTeilen,
 } from "../gemeinde-vergleich";
 
 // Dieser Test ist der Mechanismus, nicht die Dokumentation.
@@ -171,6 +173,57 @@ describe("Was als Leistung auf privaten Dächern zählt", () => {
     // Satz. Die private Zahl steht dort nur, wo sie gebraucht wird.
     expect(v.gesamt!.abstand).toBeGreaterThan(0);
     expect(proKopfSatz(v)).not.toContain("für alle Anlagen");
+  });
+});
+
+describe("Der Satz zeigt auf die Einstellung, die er meint", () => {
+  //
+  // Der Satz nennt im Konfliktfall zwei Messgrößen nebeneinander. Beide sind
+  // unten im Bestandsblock nachzusehen — aber nur, wenn der Leser den
+  // Umschalter findet UND die richtige Stellung errät. Genau daraus entsteht
+  // der Eindruck, die Zahlen widersprächen sich.
+  //
+  // Ein falsch gesetzter Verweis ist dabei schlimmer als gar keiner: Er führt
+  // den Leser zu Zahlen, die seine Frage nicht beantworten, und bestätigt den
+  // Verdacht, statt ihn auszuräumen.
+  const nachzuegler = vergleichFuer({ privat_dach: 3_000, gewerbe_dach: 1_000 }, 10_000);
+
+  it("„auf den privaten Dächern“ zeigt auf die private Stellung", () => {
+    const teil = proKopfSatzTeile(nachzuegler).find((t) => t.ziel === "privat");
+    expect(teil?.text).toBe("auf den privaten Dächern");
+  });
+
+  it("„für alle Anlagen“ zeigt auf die Gesamt-Stellung", () => {
+    const teil = proKopfSatzTeile(nachzuegler).find((t) => t.ziel === "alle");
+    expect(teil?.text).toBe("für alle Anlagen");
+  });
+
+  it("kein Verweis zeigt auf die falsche Stellung", () => {
+    // Die Zuordnung ist per Wortlaut prüfbar: Ein Teil, der von privaten
+    // Dächern spricht, darf nie auf „alle" zeigen und umgekehrt.
+    for (const t of proKopfSatzTeile(nachzuegler)) {
+      if (t.ziel === "privat") expect(t.text).toMatch(/privat/i);
+      if (t.ziel === "alle") expect(t.text).toMatch(/alle/i);
+    }
+  });
+
+  it("wo nur EINE Messgröße im Satz steht, gibt es nichts zu verweisen", () => {
+    // Ein Verweis ohne Verwechslungsgefahr ist Dekoration — und jeder Verweis
+    // im Fließtext kostet Lesefluss.
+    for (const v of [
+      vergleichFuer({ privat_dach: 5_000, gewerbe_dach: 3_000 }, 10_000), // alles vorn
+      vergleichFuer({ privat_dach: 1_000, gewerbe_dach: 500 }, 10_000), // alles hinten
+    ]) {
+      expect(proKopfSatzTeile(v).filter((t) => t.ziel)).toHaveLength(0);
+    }
+  });
+
+  it("die Teile ergeben zusammen genau den Satz", () => {
+    // Sonst wäre die Textfassung (Tests, Meta-Angaben) eine zweite Quelle —
+    // und die driftet, sobald jemand nur eine der beiden anfasst.
+    for (const v of [nachzuegler, vergleichFuer({ privat_dach: 5_000 }, 10_000)]) {
+      expect(satzAusTeilen(proKopfSatzTeile(v))).toBe(proKopfSatz(v));
+    }
   });
 });
 

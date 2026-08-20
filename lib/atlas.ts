@@ -413,6 +413,25 @@ export const SEGMENT_OWNER: Record<string, "privat" | "gewerbe" | null> = {
 
 export type AtlasOwner = "alle" | "privat" | "gewerbe";
 
+/**
+ * Sprungziel für eine Stellung des Eigentümer-Umschalters.
+ *
+ * Zwei Stellen müssen denselben Namen kennen: der Bestandsblock, der die Anker
+ * setzt und die Adresse beim Laden liest, und der Einleitungstext, der darauf
+ * verweist. Ein Anker, der an einer der beiden Stellen umbenannt wird, führt
+ * ins Leere — und ein toter Anker sieht in keinem Test und in keinem Browser
+ * nach einem Fehler aus, der Leser landet einfach am Seitenanfang.
+ */
+export const ownerAnker = (owner: AtlasOwner): string => `bestand-${owner}`;
+
+/** Umkehrung: Welche Stellung meint dieser Rauteteil? `null`, wenn keiner —
+ *  dann bleibt die Voreinstellung stehen, statt auf „alle" zurückzufallen. */
+export function ownerAusAnker(hash: string): AtlasOwner | null {
+  const roh = hash.replace(/^#/, "");
+  const treffer = (["alle", "privat", "gewerbe"] as AtlasOwner[]).find((o) => ownerAnker(o) === roh);
+  return treffer ?? null;
+}
+
 /** True when a solar segment belongs to the selected owner filter. "alle" means
  *  every segment that HAS an owner — "sonstige" stays out, exactly as in the
  *  donut and the ranking table. Solar only; storage has its own rule below. */

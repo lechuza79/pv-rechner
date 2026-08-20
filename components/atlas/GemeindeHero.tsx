@@ -5,7 +5,7 @@ import Link from "next/link";
 import DonutChart from "../charts/DonutChart";
 import { IconArrowRight, IconChevronDown, IconChevronLeft, IconChevronRight } from "../Icons";
 import { v, tokens, space } from "../../lib/theme";
-import { SEGMENT_OWNER, type AtlasOwner, type SiblingRow } from "../../lib/atlas";
+import { SEGMENT_OWNER, ownerAnker, ownerAusAnker, type AtlasOwner, type SiblingRow } from "../../lib/atlas";
 import {
   fmtAnteilProzent,
   fmtPvLeistung as fmtLeistung,
@@ -227,6 +227,32 @@ export default function GemeindeHero({
 }) {
   const [owner, setOwner] = useState<Owner>("alle");
   const [metric, setMetric] = useState<Metric>("perCapita");
+
+  //
+  // DIE ADRESSE DARF DEN UMSCHALTER STELLEN.
+  //
+  // Der Einleitungstext verweist auf eine bestimmte Stellung („auf den
+  // privaten Dächern" → privat). Der Sprung allein bringt den Leser nur an den
+  // Block; stünde der Umschalter dann auf „Alle", sähe er andere Zahlen als
+  // die, deretwegen er geklickt hat — also genau die Verwechslung, gegen die
+  // der Verweis gebaut ist.
+  //
+  // NICHT als Startwert von `useState`: Der Server kennt den Rauteteil nicht
+  // (er wird nie mitgeschickt), und ein abweichender erster Client-Render wäre
+  // ein Hydratations-Fehler. Deshalb im Effekt, also nach dem ersten Render.
+  //
+  // `hashchange` muss mit: Ein zweiter Klick auf einen Verweis derselben Seite
+  // ändert nur den Rauteteil und löst kein Neuladen aus — ohne den Zuhörer
+  // wirkt der erste Verweis und jeder weitere nicht mehr.
+  useEffect(() => {
+    const ausAdresse = () => {
+      const gewuenscht = ownerAusAnker(window.location.hash);
+      if (gewuenscht) setOwner(gewuenscht);
+    };
+    ausAdresse();
+    window.addEventListener("hashchange", ausAdresse);
+    return () => window.removeEventListener("hashchange", ausAdresse);
+  }, []);
   const [active, setActive] = useState<string | null>(null);
   const [listeOffen, setListeOffen] = useState(false);
 
@@ -313,6 +339,28 @@ export default function GemeindeHero({
 
   return (
     <div style={S.card}>
+      {/*
+        SPRUNGZIELE AUS DEM EINLEITUNGSTEXT.
+
+        Der erste Absatz nennt zwei Messgrößen nebeneinander („auf den privaten
+        Dächern … jedoch … für alle Anlagen") und verweist mit jeder auf ihre
+        Stellung hier. Ohne den Verweis müsste der Leser den Umschalter erst
+        finden und dann raten, welche Stellung gemeint war — und genau daraus
+        entsteht der Eindruck, die Zahlen widersprächen sich.
+
+        DREI ANKER STATT EINEM: Eine Adresse trägt genau einen Rauteteil, also
+        muss die gewünschte Stellung darin stecken. Alle drei stehen an
+        derselben Position, der Sprung landet also immer gleich; verschieden
+        ist nur, was der Umschalter danach zeigt.
+
+        Sie stehen im ausgelieferten HTML, nicht erst nach der Hydratation:
+        Der Sprung funktioniert damit auch, wenn JavaScript nicht durchkommt —
+        dann eben ohne Umschalten, was schlechter ist als der Vollfall, aber
+        besser als ein Link ins Leere.
+      */}
+      {OWNERS.map((o) => (
+        <span key={o.key} id={ownerAnker(o.key)} style={S.anker} aria-hidden />
+      ))}
       <div style={S.chips}>
         {OWNERS.map((o) => (
           <button
@@ -522,6 +570,9 @@ function PeerZeile({
 const S: Record<string, React.CSSProperties> = {
   // Einheitlicher Section-Abstand (space.huge) — wie die übrigen Blöcke der Seite.
   card: { marginBottom: space.huge },
+  // Sprungziel ohne eigene Höhe; der Abstand nach oben ist der Platz für die
+  // Kopfzeile, sonst beginnt der Block unter ihr.
+  anker: { display: "block", height: 0, scrollMarginTop: space.huge },
   chips: { display: "flex", gap: 4, marginBottom: 14 },
   chip: {
     border: `1px solid ${v("--color-border")}`,

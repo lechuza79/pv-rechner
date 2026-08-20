@@ -6,7 +6,12 @@
 
 import { fmtAnteilProzent, fmtPvLeistung } from "./atlas-format";
 import { ortPhrase } from "./atlas-orte";
-import { gemeindeVergleich, proKopfSatz } from "./gemeinde-vergleich";
+import {
+  gemeindeVergleich,
+  proKopfSatzTeile,
+  satzAusTeilen,
+  type SatzTeil,
+} from "./gemeinde-vergleich";
 
 type SegRow = { segment: string; count: number; kwp: number };
 type MiniAtlas = {
@@ -139,7 +144,15 @@ function zubauSentence(byYear: { year: number; count: number }[], lastYear: numb
     : `Zuletzt kamen ${nf(last)} Solaranlagen dazu (${lastYear}).`;
 }
 
-export function buildGemeindeHighlight(opts: {
+/** Der Einleitungstext als reiner Text — für alles, was keine Verweise
+ *  darstellen kann (Tests, künftige Meta-Angaben). Abgeleitet aus
+ *  `gemeindeHighlightTeile`, nie zweitgebaut: Dieselbe Trennung wie
+ *  `fmt…()`/`…Teile()` in lib/atlas-format.ts. */
+export function buildGemeindeHighlight(opts: Parameters<typeof gemeindeHighlightTeile>[0]): string {
+  return satzAusTeilen(gemeindeHighlightTeile(opts));
+}
+
+export function gemeindeHighlightTeile(opts: {
   name: string;
   atlas: MiniAtlas;
   blAtlas: MiniAtlas;
@@ -159,7 +172,7 @@ export function buildGemeindeHighlight(opts: {
   kreisTotal?: number | null;
   byYear?: { year: number; count: number }[];
   lastYear?: number;
-}): string {
+}): SatzTeil[] {
   const { name, atlas, blAtlas, blName } = opts;
 
   // "sind 1 Solaranlagen" — derselbe Fehler wie eine falsche Einheit, nur in
@@ -180,7 +193,7 @@ export function buildGemeindeHighlight(opts: {
   // Outreach-Briefs (lib/gemeinde-vergleich.ts). Vorher rechnete ihn jede Seite
   // für sich — und der Brief verwies auf eine Seite, die ihm scheinbar
   // widersprach, weil beide etwas anderes maßen.
-  const perCap = proKopfSatz(
+  const perCap = proKopfSatzTeile(
     gemeindeVergleich({
       atlas,
       population: opts.population,
@@ -190,5 +203,9 @@ export function buildGemeindeHighlight(opts: {
     }),
   );
 
-  return [base, character, rank, zubau, perCap].filter(Boolean).join(" ");
+  // Die vorderen Sätze tragen keine Verweise — sie nennen je eine Größe, und
+  // gegen was verglichen wird, steht im Satz selbst.
+  const vorn = [base, character, rank, zubau].filter(Boolean) as string[];
+  if (perCap.length === 0) return [{ text: vorn.join(" ") }];
+  return [{ text: `${vorn.join(" ")} ` }, ...perCap];
 }
