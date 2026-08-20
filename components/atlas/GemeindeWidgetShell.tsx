@@ -173,7 +173,7 @@ const S: Record<string, React.CSSProperties> = {
     // einer Kachelreihe landete er an der Untergrenze und war immer noch zu
     // lang. Eine so flache Karte sah ohnehin gedrungen aus — die Höhe ist also
     // kein Zugeständnis an die Kante, sondern beides zugleich.
-    minHeight: 340,
+    minHeight: 360,
     overflow: "hidden",
   },
   title: { fontSize: 16, fontWeight: 700, margin: "0 0 4px", lineHeight: 1.25 },

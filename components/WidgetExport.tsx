@@ -303,7 +303,13 @@ export function WidgetSourceEdge({
   useEffect(() => {
     setHeute(new Date().toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" }));
   }, []);
-  const datum = stand ?? heute;
+  // Auf einer sehr flachen Karte (Einzel-Kennzahl, Ampel) passt selbst bei
+  // kleinster Schrift nicht alles an die Kante. Dann fällt ZUERST das Datum —
+  // es ist der einzige Teil, den keine Lizenz verlangt. Der Bereitsteller, das
+  // Lizenzkürzel und der Änderungshinweis bleiben in jedem Fall stehen; lieber
+  // ein Vermerk ohne Datum als ein abgeschnittener.
+  const [ohneDatum, setOhneDatum] = useState(false);
+  const datum = ohneDatum ? "" : (stand ?? heute);
 
   // Der VOLLE Quellenvermerk, nicht eine Kurzform davon. Bis 08/2026 warf die
   // Kante jeden Klammer-Zusatz aus dem Namen — das traf nicht nur Beiwerk wie
@@ -347,6 +353,8 @@ export function WidgetSourceEdge({
         groesse = Math.round((groesse - 0.2) * 10) / 10;
         el.style.fontSize = `${groesse}px`;
       }
+      // Untergrenze erreicht und immer noch zu lang: Datum weg, dann neu messen.
+      if (el.scrollHeight > el.clientHeight) setOhneDatum(true);
     };
     passeAn();
     // Noch einmal, sobald die echte Schrift da ist: Beim ersten Lauf misst der
