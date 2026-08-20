@@ -40,6 +40,7 @@ export default function AtlasKpiRow({
   references,
   defaultRefKey,
   refVorgabe,
+  onRefChange,
   note,
 }: {
   groups: KpiGroup[];
@@ -61,6 +62,10 @@ export default function AtlasKpiRow({
    * seine Wahl.
    */
   refVorgabe?: string | null;
+  /** Meldet jede Änderung der Bezugsebene nach oben. Der Hero braucht sie, weil
+   *  die Nachbarschafts-Liste darunter derselben Ebene folgt — sonst vergleicht
+   *  die eine Hälfte der Karte mit Hessen und die andere mit dem Landkreis. */
+  onRefChange?: (key: string) => void;
   /** Satz hinter der Vergleichs-Erklärung, z. B. wenn ein Eigentümer-Filter aktiv
    *  ist und Werte wie Vergleichsbasis auf dieselbe Kategorie eingeschränkt sind. */
   note?: string;
@@ -73,6 +78,15 @@ export default function AtlasKpiRow({
   useEffect(() => {
     if (refVorgabe && references.some((r) => r.key === refVorgabe)) setRefKey(refVorgabe);
   }, [refVorgabe, references]);
+
+  // Nach oben gemeldet wird die WIRKLICH gesetzte Ebene, nicht die Vorgabe:
+  // Eine Vorgabe, die es in dieser Region gar nicht gibt (eine kreisfreie Stadt
+  // hat keinen Landkreis), fällt oben durch — und die Liste darunter würde
+  // einer Ebene folgen, die die Kacheln nie angenommen haben.
+  useEffect(() => {
+    onRefChange?.(refKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refKey]);
   const ref = references.find((r) => r.key === refKey) ?? references[0] ?? null;
 
   const dev = (m?: string): number | null => {

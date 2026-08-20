@@ -75,6 +75,36 @@ test.describe("Bestandsblock: die Adresse stellt den Umschalter", () => {
     await expect(tendenz).toContainText("Hessen");
   });
 
+  //
+  // DIE LISTE FOLGT DER BEZUGSGRÖSSE MIT.
+  //
+  // Ohne das vergleicht die eine Hälfte der Karte mit Hessen und die andere mit
+  // dem Landkreis — an Melsungen gemessen: „+39 %" über einer Liste, in der der
+  // Ort auf dem letzten Platz stand. Der Betreiber hat es zweimal im Browser
+  // bemängelt, bevor es gebaut war.
+  //
+  // Geprüft werden die GRUPPE und dass die eigene Zeile mitkommt, nicht die
+  // Platzziffer: Die hängt am Datenstand, die Mechanik an diesem Code.
+  test("die Nachbarschafts-Liste wechselt auf die Landesgruppe", async ({ page }) => {
+    await page.goto(ORT);
+    const titel = page.locator("text=/^Gemeinden und Kleinstädte /").first();
+    await expect(titel).toContainText("Schwalm-Eder-Kreis");
+
+    await page.click('a[href="#bestand-privat"]');
+    await expect.poll(() => aktiveStellung(page)).toEqual(["Privat"]);
+    // Nachladen über /api/atlas/nachbarn — deshalb großzügig warten.
+    await expect(titel).toContainText("in Hessen", { timeout: 15_000 });
+
+    // Die eigene Zeile MUSS dabei sein, sonst zeigt die Liste eine
+    // Vergleichsgruppe ohne die Zeile, um die es geht.
+    const karte = page.locator("#bestand-privat").locator("xpath=..");
+    await expect(karte).toContainText("Melsungen");
+    // Und der Nenner des Platzes steht daneben: Ohne ihn ist „Platz 135" keine
+    // Einordnung. Ein Fenster „Vollständige Rangliste" gibt es hier bewusst
+    // nicht — der Browser kennt nur die fünf Zeilen.
+    await expect(karte).toContainText(/Kommunen in dieser Gruppe/);
+  });
+
   test("ein Klick auf den Verweis im Text schaltet um — und zurück", async ({ page }) => {
     await page.goto(ORT);
     await expect.poll(() => aktiveStellung(page)).toEqual(["Alle"]);

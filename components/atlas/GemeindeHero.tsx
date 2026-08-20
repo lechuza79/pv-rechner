@@ -21,10 +21,29 @@ import {
   pvLeistungTeile,
 } from "../../lib/atlas-format";
 import AtlasKpiRow, { type KpiGroup, type RefLevel } from "./AtlasKpiRow";
+import { ortPraeposition } from "../../lib/atlas-orte";
+
 import TendTag from "./TendTag";
 import Modal from "../Modal";
 
 export type HeroCell = { segment: string; count: number; kwp: number };
+
+/**
+ * Eine Zeile der nachgeladenen Vergleichsgruppe (Land/Bund).
+ *
+ * Bewusst hier noch einmal beschrieben und nicht aus lib/atlas-nachbarn.ts
+ * geholt: Das Modul ist `server-only`, und ein Typ-Import daraus in eine
+ * Client-Komponente ist zwar zur Laufzeit harmlos, lädt aber jeden Leser zu der
+ * Annahme ein, man könne dort auch eine Funktion holen.
+ */
+type FernZeile = {
+  regionId: string;
+  name: string;
+  href: string | null;
+  wert: number;
+  platz: number;
+  selbst: boolean;
+};
 
 /**
  * Everything the KPI tiles need for ONE owner filter — values and the comparison
@@ -332,9 +351,62 @@ export default function GemeindeHero({
   );
 
   const vergleichsListe = klassen?.orte ?? siblings;
-  const listenTitel = klassen
-    ? `${klassen.klasse.label}${vergleichWo ? ` ${vergleichWo}` : ""}`
-    : (vergleichTitel ?? "Top Kommunen");
+
+  //
+  // DIE LISTE FOLGT DER BEZUGSGRÖSSE DER KACHELN.
+  //
+  // Sonst vergleicht die eine Hälfte der Karte mit Hessen und die andere mit
+  // dem Landkreis — an Melsungen gemessen: oben „+39 %", unten „Platz 27 von
+  // 27". Beides richtig, nebeneinander unlesbar.
+  //
+  // Die Kreis-Nachbarn liegen auf der Seite und werden hier sortiert. Land und
+  // Bund werden nachgeladen: Hessen hat rund 420 Gemeinden, Deutschland über
+  // elftausend — sie vorsorglich mitzuliefern wäre ein Vielfaches der Seite für
+  // eine Liste, die die meisten nie aufschlagen.
+  //
+  // NUR FÜR „Leistung je Einwohner": Die serverseitige Rangliste kennt diese
+  // eine Kennzahl. Bei den anderen dreien bleibt es beim Kreis — und die
+  // Überschrift sagt es, statt eine Gruppe zu behaupten, die nicht gezeigt wird.
+  const [refEbene, setRefEbene] = useState("landkreis");
+  const [fern, setFern] = useState<{ zeilen: FernZeile[]; total: number } | null>(null);
+  const [fernLaedt, setFernLaedt] = useState(false);
+
+  const fernGebiet =
+    refEbene === "bundesland" ? regionId.slice(0, 2) : refEbene === "de" ? "" : null;
+  const fernMoeglich = !!klassen && metric === "perCapita" && fernGebiet !== null;
+
+  useEffect(() => {
+    if (!fernMoeglich) {
+      setFern(null);
+      return;
+    }
+    let aktiv = true;
+    setFernLaedt(true);
+    const p = new URLSearchParams({
+      gebiet: fernGebiet as string,
+      owner,
+      klasse: klassen!.klasse.slug,
+      region: regionId,
+    });
+    fetch(`/api/atlas/nachbarn?${p}`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((j) => aktiv && setFern(j))
+      // Ohne Daten bleibt die Kreis-Liste stehen. Eine leere Fläche wäre die
+      // schlechtere Antwort als eine Liste, die eine andere Frage beantwortet
+      // und das in ihrer Überschrift sagt.
+      .catch(() => aktiv && setFern(null))
+      .finally(() => aktiv && setFernLaedt(false));
+    return () => {
+      aktiv = false;
+    };
+  }, [fernMoeglich, fernGebiet, owner, klassen, regionId]);
+
+  const fernName = kpi[owner].references.find((r) => r.key === refEbene)?.name ?? null;
+  const listenTitel = fern
+    ? `${klassen!.klasse.label}${fernName ? ` ${ortPraeposition(fernName)} ${fernName}` : ""}`
+    : klassen
+      ? `${klassen.klasse.label}${vergleichWo ? ` ${vergleichWo}` : ""}`
+      : (vergleichTitel ?? "Top Kommunen");
 
   // Rank every Gemeinde in the Kreis, client-side, from the same cells the big
   // table uses — that is what lets owner and metric recombine without a refetch.
@@ -388,17 +460,41 @@ export default function GemeindeHero({
     return { rows: [...leaders, ranked[selfIdx]], selfDetached: true };
   }, [ranked]);
 
+  //
+  // DIE NACHGELADENE GRUPPE ERSETZT DIE ZEILEN, NICHT DIE DARSTELLUNG.
+  //
+  // Sie kommt fertig gerankt vom Server (vier Spitzenreiter plus die eigene
+  // Zeile mit ihrem echten Platz) und wird auf dieselbe Form gebracht wie die
+  // im Browser sortierten Kreis-Nachbarn. Alles darunter — Balkenlänge,
+  // Abstands-Badge, abgesetzte eigene Zeile — bleibt eine Mechanik statt zwei.
+  const fernRows: PeerRow[] | null = fern
+    ? fern.zeilen.map((z) => ({
+        region_id: z.regionId,
+        name: z.name,
+        href: z.href,
+        value: z.wert,
+        rang: z.platz,
+        isSelf: z.selbst,
+      }))
+    : null;
+
+  const zeigeRows = fernRows ?? rows;
+  const zeigeSelfDetached = fernRows
+    ? (fernRows.find((r) => r.isSelf)?.rang ?? 0) > fernRows.length
+    : selfDetached;
+  const gruppenGroesse = fern ? fern.total : ranked.length;
+
   // Cap at the runner-up: one Gemeinde with a solar park (126.865 W/head against
   // 17.705 on second place) would flatten every other bar to a hairline.
   const scale = useMemo(() => {
-    const vals = rows.map((r) => r.value).sort((a, b) => b - a);
+    const vals = zeigeRows.map((r) => r.value).sort((a, b) => b - a);
     return Math.max(1, vals[1] ?? vals[0] ?? 1);
-  }, [rows]);
+  }, [zeigeRows]);
 
   // Bezugswert der „− x %"-Badges ist die Spitze der GANZEN Gruppe, nicht die
   // der fünf sichtbaren Zeilen — sonst stünde neben der eigenen, abgesetzten
   // Zeile ein anderer Prozentwert als in der vollständigen Liste.
-  const spitze = ranked[0]?.value ?? 0;
+  const spitze = (fernRows ?? ranked)[0]?.value ?? 0;
 
   return (
     <div style={S.card}>
@@ -449,6 +545,7 @@ export default function GemeindeHero({
         references={kpi[owner].references}
         defaultRefKey="landkreis"
         refVorgabe={refVorgabe}
+        onRefChange={setRefEbene}
         note={
           owner === "privat"
             ? "Verglichen werden nur private Anlagen, auch beim Durchschnitt."
@@ -517,8 +614,16 @@ export default function GemeindeHero({
 
           {/* Re-keyed on filter+metric so the whole set fades in on a switch —
               softens the reorder that a per-row width transition can't cover. */}
-          <div key={`${owner}-${metric}`} style={S.rowsFade}>
-            {rows.map((r) => (
+          {/* Während die Landes-/Bundesgruppe geladen wird, steht noch die
+              Kreis-Liste da. Sie wird abgeblendet statt ausgeblendet: Eine leere
+              Fläche lässt die Karte springen, und die Zeilen sind ja nicht
+              falsch — sie beantworten nur noch die vorige Frage. */}
+          <div
+            key={`${owner}-${metric}`}
+            style={{ ...S.rowsFade, opacity: fernLaedt ? 0.45 : 1, transition: "opacity .15s" }}
+            aria-busy={fernLaedt || undefined}
+          >
+            {zeigeRows.map((r) => (
               <PeerZeile
                 key={r.region_id}
                 row={r}
@@ -528,15 +633,27 @@ export default function GemeindeHero({
                 // Five rows, always the same height. When self is beyond the top
                 // it takes the last slot and floats above the table (shadow) —
                 // its real rank makes clear the ranks in between are skipped.
-                floating={selfDetached && r.isSelf}
+                floating={zeigeSelfDetached && r.isSelf}
               />
             ))}
           </div>
 
-          {ranked.length > rows.length && (
-            <button type="button" onClick={() => setListeOffen(true)} style={S.alleBtn}>
-              Alle {nf(ranked.length)} anzeigen
-            </button>
+          {/* „Alle anzeigen" öffnet die vollständige Liste — die gibt es nur für
+              die Nachbarn im Kreis, die ohnehin auf der Seite liegen. Bei einer
+              Landes- oder Bundesgruppe kennt der Browser nur die fünf Zeilen;
+              ein Fenster mit der Überschrift „Vollständige Rangliste" und fünf
+              Einträgen wäre eine Behauptung. Dort steht deshalb schlicht, wie
+              groß die Gruppe ist — das ist der Nenner des Platzes daneben. */}
+          {fern ? (
+            gruppenGroesse > zeigeRows.length && (
+              <div style={S.gruppenGroesse}>{`${nf(gruppenGroesse)} Kommunen in dieser Gruppe`}</div>
+            )
+          ) : (
+            ranked.length > rows.length && (
+              <button type="button" onClick={() => setListeOffen(true)} style={S.alleBtn}>
+                Alle {nf(ranked.length)} anzeigen
+              </button>
+            )
           )}
         </div>
       </div>
@@ -783,6 +900,11 @@ const S: Record<string, React.CSSProperties> = {
   // Eigene Spalte fuer den Abstands-Badge: in die Wertspalte gestapelt waere die
   // Zeile drei Zeilen hoch (Zahl, Balken, Badge) und die Tabelle doppelt so lang.
   peerDev: { display: "flex", justifyContent: "flex-end", alignItems: "center" },
+  gruppenGroesse: {
+    fontSize: 12,
+    color: v("--color-text-muted"),
+    marginTop: space.sm,
+  },
   alleBtn: {
     marginTop: space.sm,
     padding: 0,
