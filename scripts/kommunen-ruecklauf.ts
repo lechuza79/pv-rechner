@@ -34,6 +34,22 @@ import { ordneEin, STATUS_ZU_ART, type Ruecklaufart, type RohMail } from "../lib
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
+// DAS POSTFACH IST NICHT NUR FÜR DEN OUTREACH DA.
+//
+// hey@solar-check.io steht auch bei Dritten als Kontaktadresse (Awin), deren
+// Nachrichten jeden Lauf in der Liste „bitte selbst ansehen" auftauchen. Eine
+// Liste, die zur Hälfte aus Bekanntem besteht, liest irgendwann niemand mehr —
+// dieselbe Erfahrung wie beim Förder-Screening.
+//
+// ENG HALTEN: nur Absender-Domains, von denen sicher keine Gemeinde schreibt.
+// Eine großzügige Liste macht die Prüfung wertlos, ohne dass es auffällt.
+const FREMD_ABSENDER = ["awin.com", "mail.awin.com"];
+
+function istFremdverkehr(von: string): boolean {
+  const domain = von.split("@")[1]?.toLowerCase() ?? "";
+  return FREMD_ABSENDER.includes(domain);
+}
+
 function log(msg = "", level: "info" | "ok" | "err" | "warn" = "info"): void {
   const prefix = level === "ok" ? "✓ " : level === "err" ? "✗ " : level === "warn" ? "! " : "  ";
   // eslint-disable-next-line no-console
@@ -134,6 +150,7 @@ async function main(): Promise<void> {
 
   const befunde: Befund[] = [];
   const unklar: Befund[] = [];
+  const fremd: Befund[] = [];
   for (const name of ordner) {
     let lock;
     try {
@@ -175,6 +192,7 @@ async function main(): Promise<void> {
         name: treffer.length === 1 ? treffer[0].name : null,
       };
       if (b.region_id) befunde.push(b);
+      else if (istFremdverkehr(von)) fremd.push(b);
       else unklar.push(b);
     }
     } finally {
@@ -192,6 +210,13 @@ async function main(): Promise<void> {
     log();
     log(`${unklar.length} nicht zuzuordnen — bitte selbst ansehen:`, "warn");
     for (const b of unklar) log(`${b.art.padEnd(13)} ${b.von} — „${b.betreff}"`);
+  }
+  // Gezählt, nicht verschwunden: Wer die Liste kürzt, muss sagen, um wie viel.
+  // Sonst ist eine zu weit geratene Ausblendung von einem leeren Postfach nicht
+  // zu unterscheiden — und genau das soll die Liste ja beantworten.
+  if (fremd.length) {
+    log();
+    log(`${fremd.length} Mails gehören nicht zum Outreach (${FREMD_ABSENDER.join(", ")}) — ausgeblendet.`);
   }
 
   if (!hat("schreiben")) {
