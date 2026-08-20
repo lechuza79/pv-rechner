@@ -45,21 +45,28 @@ Im All-Inkl-KAS unter **E-Mail → E-Mail-Postfächer**:
    vorlesen, nicht in eine Datei schreiben, die eingecheckt wird:
 
    ```
-   OUTREACH_DKIM_SELECTOR=kas202603240809
-   OUTREACH_SMTP_HOST=w01cbc22.kasserver.com
+   OUTREACH_DKIM_SELECTOR=<selektor aus dem DNS>
+   OUTREACH_SMTP_HOST=<kasserver-host>
    OUTREACH_SMTP_PORT=465
-   OUTREACH_SMTP_USER=sebastian@solar-check.io
+   OUTREACH_SMTP_USER=<postfach>@solar-check.io
    OUTREACH_SMTP_PASS=…
-   OUTREACH_MAIL_FROM=Sebastian Schäder <sebastian@solar-check.io>
-   OUTREACH_IMAP_HOST=w01cbc22.kasserver.com
+   OUTREACH_MAIL_FROM=Vorname Nachname <postfach@solar-check.io>
+   OUTREACH_IMAP_HOST=<kasserver-host>
    OUTREACH_IMAP_PORT=993
-   OUTREACH_IMAP_USER=sebastian@solar-check.io
+   OUTREACH_IMAP_USER=<postfach>@solar-check.io
    OUTREACH_IMAP_PASS=…
    ```
 
-   Der genaue Hostname steht im KAS am Postfach; `w01cbc22.kasserver.com` ist
-   der MX der Domain und damit die wahrscheinliche, aber nicht garantierte
-   Antwort.
+   **Hier stehen bewusst Platzhalter statt der echten Werte.** Das Repo ist
+   öffentlich, und ein Block aus Host, Postfach und `…_PASS=` liest sich für
+   jeden Scanner wie ein Fund — GitGuardian hat ihn am 19.08.2026 als
+   „SMTP credentials" gemeldet. Ein Passwort stand nie darin, aber ein Alarm,
+   den man als Fehlalarm abtut, ist genau der, den man beim nächsten Mal auch
+   abtut. Die konkreten Werte gehören in `.env.local`, sonst nirgendwo hin.
+
+   Den Hostnamen zeigt das KAS am Postfach; der MX-Eintrag der Domain ist die
+   wahrscheinliche, aber nicht garantierte Antwort. Der DKIM-Selektor steht im
+   DNS und trägt ein Datum — beim Schlüsseltausch ändert er sich.
 
 ### Warum nicht über den bestehenden Mail-Dienst
 

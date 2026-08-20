@@ -273,7 +273,7 @@ export default function KommunenCockpit() {
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 720 }}>
           <thead>
             <tr>
-              {["Gemeinde", "Website-Themen", "Variante", "Kontakt", "Status", "Anschreiben", "Notiz"].map((h) => (
+              {["Gemeinde", "Website-Themen", "Variante", "Kontakt", "Status", "Korrespondenz", "Notiz"].map((h) => (
                 <th key={h} style={thStyle}>
                   {h}
                 </th>
@@ -320,6 +320,9 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
   const [notes, setNotes] = useState(lead.notes ?? "");
   const [busy, setBusy] = useState(false);
   const [draftOpen, setDraftOpen] = useState(false);
+  // Aus derselben Notiz gelesen wie der Verlauf im Fenster — eine zweite
+  // Zählung hier hieße zwei Wahrheiten über dieselbe Zeile.
+  const rueckläufe = liesNotiz(lead.notes).verlauf.length;
   const savedNotes = useRef(lead.notes ?? "");
 
   const patch = useCallback(
@@ -501,10 +504,21 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
         )}
       </td>
 
-      {/* Anschreiben */}
+      {/* KORRESPONDENZ — der Knopf sagt, was er öffnet.
+          „Anschreiben ✎" versprach ein Entwurfsfeld, auch wo längst
+          verschickt war und das Fenster ein Protokoll zeigt. Bei einer
+          angeschriebenen Gemeinde steht deshalb die Zahl der Rückläufe daneben:
+          Ob etwas zurückkam, ist die eigentliche Frage an dieser Zeile, und
+          man sollte sie beantwortet bekommen, ohne zu klicken. */}
       <td style={tdStyle}>
         <button style={draftBtn} onClick={() => setDraftOpen(true)}>
-          {lead.draft_body ? "Anschreiben ✎" : "Anschreiben +"}
+          {lead.contacted_at
+            ? rueckläufe > 0
+              ? `Verlauf (${rueckläufe})`
+              : "Verlauf"
+            : lead.draft_body
+              ? "Entwurf ✎"
+              : "Entwurf +"}
         </button>
         <DraftModal open={draftOpen} lead={lead} onClose={() => setDraftOpen(false)} onPatched={onPatched} />
       </td>
