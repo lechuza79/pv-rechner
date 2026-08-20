@@ -690,9 +690,20 @@ function DraftModal({
               <button style={pagerBtn} disabled={busy} onClick={save}>
                 Speichern
               </button>
-              <button style={pagerBtn} disabled={busy} onClick={generate}>
-                {busy ? "…" : "Neu generieren"}
-              </button>
+              {/* Nach dem Versand gibt es nichts mehr zu generieren: Was im
+                  Feld steht, IST der verschickte Brief. Die Route verweigert
+                  das ohnehin — der Knopf verschwindet, damit niemand erst
+                  dagegenläuft. */}
+              {lead.contacted_at ? (
+                <span style={{ fontSize: 11, color: v("--color-text-muted"), alignSelf: "center" }}>
+                  Verschickt am {new Date(lead.contacted_at).toLocaleDateString("de-DE")} — das ist der Text, der
+                  hinausgegangen ist.
+                </span>
+              ) : (
+                <button style={pagerBtn} disabled={busy} onClick={generate}>
+                  {busy ? "…" : "Neu generieren"}
+                </button>
+              )}
               <div style={{ display: "flex", gap: space.xs, alignItems: "center", marginLeft: "auto" }}>
                 <label style={{ fontSize: 11, color: v("--color-text-muted") }} htmlFor="kanal-wahl">
                   über
