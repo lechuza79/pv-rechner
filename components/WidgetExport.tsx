@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR } from "../lib/export-markers";
 import { useExportNotes } from "./export-notes";
-import { DataSourceNote, PoweredBy } from "./PoweredBy";
+import { PoweredBy } from "./PoweredBy";
 import ChartActionBar from "./ChartActionBar";
 import CiteModal from "./CiteModal";
 import { sourceLabel } from "../lib/data-sources";
@@ -204,8 +204,12 @@ export function WidgetFooter({
           // nächste Schritt und die Aktionsleiste nicht nebeneinander, und die
           // Karte schneidet Überstehendes ab (overflow: hidden).
           flexWrap: "wrap",
-          alignItems: narrow ? "stretch" : "center",
-          justifyContent: cta ? "space-between" : "flex-end",
+          // Nie „stretch": in der Spalten-Anordnung zieht das den blauen Knopf
+          // über die ganze Karte, und ein Knopf, der so breit ist wie das
+          // Chart darüber, ist optisch die Hauptsache der Karte — er ist aber
+          // nur der nächste Schritt.
+          alignItems: "center",
+          justifyContent: narrow ? "center" : cta ? "space-between" : "flex-end",
           gap: 10,
         }}
       >
@@ -275,38 +279,113 @@ export function WidgetFooter({
  * of the card, never a horizontal block. External embeds show it permanently
  * (licence), on our own pages it fades in on hover — there the page credits.
  */
+export const SOURCE_EDGE_WIDTH = 14;
+/** Ausgangsgröße der Kanten-Schrift und die Grenze, unter die sie nicht fällt. */
+const SOURCE_EDGE_FONT = 9;
+const SOURCE_EDGE_FONT_MIN = 6;
+
 export function WidgetSourceEdge({
   widget,
   visible = true,
+  stand,
 }: {
   widget: WidgetDef;
   visible?: boolean;
+  /** Datenstand, hinten angehängt. Ein weitergereichtes Bild ohne Datum lässt
+   *  nicht erkennen, ob die Zahlen von heute oder von vorletztem Jahr sind.
+   *  Ohne Angabe steht das Abrufdatum da — die ehrlichere Aussage bei
+   *  Live-Daten, die sich stündlich ändern. */
+  stand?: string;
 }) {
-  // Sichtbar: Kurzform Name + Lizenzkürzel — das Lizenzkürzel ist der Teil, den
-  // die Lizenz verlangt (dl-de/by-2-0, CC BY 4.0), und darf deshalb nicht in den
-  // Tooltip wandern. Klammer-Zusätze („(Fraunhofer ISE)") fliegen raus, sonst
-  // wird die schmale Kante mehrspaltig; der volle Text steht im title.
-  // `shortName` schlägt die automatische Kurzform, wo diese etwas wegwerfen
-  // würde, das der Quellenvermerk verlangt (BKG: Bezugsjahr in Klammern).
-  const label = widget.sources
-    .map((s) => `${s.shortName ?? s.name.replace(/\s*\([^)]*\)/g, "")}${s.license ? `, ${s.license}` : ""}`)
-    .join(" · ");
-  const full = widget.sources.map(sourceLabel).join(" · ");
+  // Abrufdatum erst nach dem Mounten: Server- und Client-Render dürfen nicht
+  // auseinanderlaufen, wenn der Tag zwischen beiden wechselt.
+  const [heute, setHeute] = useState("");
+  useEffect(() => {
+    setHeute(new Date().toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" }));
+  }, []);
+  const datum = stand ?? heute;
+
+  // Der VOLLE Quellenvermerk, nicht eine Kurzform davon. Bis 08/2026 warf die
+  // Kante jeden Klammer-Zusatz aus dem Namen — das traf nicht nur Beiwerk wie
+  // „(Fraunhofer ISE)", sondern beim Anlagenregister den Bereitsteller selbst
+  // („(Bundesnetzagentur)"), und den verlangt dl-de/by-2-0 ausdrücklich. Kurz
+  // genug wird der Vermerk jetzt an der Quelle (lib/data-sources.ts), nicht
+  // hier durch Wegschneiden. `shortName` bleibt als bewusste Ausnahme.
+  const label =
+    widget.sources
+      .map((s) => (s.shortName ? `${s.shortName}${s.license ? `, ${s.license}` : ""}` : sourceLabel(s)))
+      .join(" · ") + (datum ? ` · Stand: ${datum}` : "");
+
+  // Der Vermerk passt sich der Kartenhöhe an, statt abgeschnitten zu werden.
+  //
+  // Eine feste Schriftgröße hat genau zwei Ausgänge, und beide sind falsch: Ist
+  // die Karte niedrig, fehlt hinten ein Stück — und weggeschnitten wird zuerst
+  // der Änderungshinweis, also ausgerechnet der Pflichtbestandteil. Ist sie hoch,
+  // steht der Vermerk unnötig klein da. Gemessen an einer Karte mit einer
+  // Kachelreihe: 348 px Text auf 275 px Höhe.
+  //
+  // Die Größe wird direkt am Element gesetzt, nicht über einen Zustand: Ergibt
+  // die Messung denselben Wert wie beim letzten Mal, rendert React nicht neu —
+  // der Messwert wäre dann gesetzt, aber die Anzeige fiele auf die geerbte
+  // Schriftgröße zurück. Genau so stand der Vermerk zwischenzeitlich in 14 px
+  // quer über der Karte.
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const passeAn = () => {
+      // Immer von der Ausgangsgröße aus messen, sonst schaukelt sich die
+      // Anpassung über mehrere Läufe nach unten.
+      let groesse = SOURCE_EDGE_FONT;
+      el.style.fontSize = `${groesse}px`;
+      // Schrittweise verkleinern statt einmal hochzurechnen: Der Laufabstand
+      // zwischen den Buchstaben skaliert nicht mit der Schriftgröße, deshalb
+      // trifft eine Dreisatz-Rechnung knapp daneben und der Vermerk bleibt um
+      // ein, zwei Pixel abgeschnitten — unsichtbar im Bild, aber es fehlt hinten
+      // ein Stück, und hinten steht der Änderungshinweis.
+      while (el.scrollHeight > el.clientHeight && groesse > SOURCE_EDGE_FONT_MIN) {
+        groesse = Math.round((groesse - 0.2) * 10) / 10;
+        el.style.fontSize = `${groesse}px`;
+      }
+    };
+    passeAn();
+    // Noch einmal, sobald die echte Schrift da ist: Beim ersten Lauf misst der
+    // Browser mit der Ersatzschrift, und die ist breiter — der Vermerk landete
+    // dadurch dauerhaft kleiner als nötig (6,4 statt 7,8 px). Die
+    // Größenüberwachung merkt das nicht, weil sich die Karte dabei nicht ändert.
+    document.fonts?.ready.then(passeAn).catch(() => {});
+    const ro = new ResizeObserver(passeAn);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [label]);
+
   return (
     <div
-      {...{ [EXPORT_IGNORE_ATTR]: "" }}
-      title={`Quelle: ${full}`}
+      ref={wrapRef}
+      // Im Bild immer sichtbar: Auf eigenen Seiten blendet die Kante erst beim
+      // Überfahren ein — ein PNG hat kein Überfahren, und die Lizenz verlangt
+      // den Vermerk gerade dort, wo das Bild ohne die Seite weiterwandert.
+      {...{ [EXPORT_CSS_ATTR]: "opacity:1;" }}
+      title={`Quelle: ${label}`}
       style={{
         position: "absolute",
         top: 0,
         bottom: 0,
-        right: 4,
+        right: 0,
+        // Feste Breite plus nowrap: der senkrechte Text kann damit weder in eine
+        // zweite Spalte umbrechen noch nach links in den Inhalt wachsen. Genau
+        // das passierte vorher — ohne Breitenangabe ist der Kasten so breit wie
+        // sein Inhalt, und bei zu geringer Höhe waren das zwei bis drei Spalten,
+        // die quer über die Kennzahlen liefen.
+        width: SOURCE_EDGE_WIDTH,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         writingMode: "vertical-rl",
         transform: "rotate(180deg)",
-        fontSize: 9,
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        fontSize: SOURCE_EDGE_FONT,
         lineHeight: 1.4,
         letterSpacing: 0.2,
         color: v("--color-text-faint"),
@@ -339,7 +418,6 @@ export function WidgetExportFooter({
   legend,
   branding = true,
   note,
-  dataAsOf,
 }: {
   /** Registry entry — carries sources and decides the brand wording. It keeps
    * image, page footer and gallery in sync. */
@@ -349,21 +427,13 @@ export function WidgetExportFooter({
   branding?: boolean;
   /** Extra line (assumptions, reference year) that only the image needs. */
   note?: string;
-  /** Datenstand, wenn er bekannt ist (z. B. „Juli 2026" beim Anlagenregister).
-   * Ohne Angabe steht das Abrufdatum im Bild — das ist die ehrlichere Aussage
-   * bei Live-Daten, die sich stündlich ändern. */
-  dataAsOf?: string;
 }) {
   const notes = useExportNotes();
-  const sources = widget?.sources;
-  // Abrufdatum, erst nach dem Mounten gesetzt: Server- und Client-Render dürfen
-  // nicht auseinanderlaufen, wenn der Tag wechselt.
-  const [heute, setHeute] = useState("");
-  useEffect(() => {
-    setHeute(new Date().toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" }));
-  }, []);
-  const stand = dataAsOf ?? heute;
-  if (!sources) return null;
+  // Quellenvermerk und Datenstand trägt seit 08/2026 die senkrechte Kante
+  // (WidgetSourceEdge) — auch im Bild. Deshalb nimmt dieser Fuß kein
+  // `dataAsOf` mehr entgegen: zwei Stellen für dieselbe Angabe waren der
+  // Grund, aus dem die Quelle im Bild anders aussah als auf der Seite.
+  if (!widget?.sources) return null;
   return (
     <ExportOnly>
       <div
@@ -415,21 +485,20 @@ export function WidgetExportFooter({
           </div>
         )}
 
-        {/* Datenquelle links, Marke rechts. Im Bild gibt es keine Knöpfe mehr —
-            deshalb trägt die Markenzeile hier die Einladung. */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 16 }}>
-          <span style={{ flex: 1, minWidth: 0 }}>
-            <DataSourceNote source={sources} plain label="Datenquelle:" />
-            {/* Ohne Datum ist ein weitergereichtes Bild wertlos: Niemand kann
-                sehen, ob die Zahlen von heute oder von vorletztem Jahr sind. */}
-            {stand && <span> · Stand: {stand}</span>}
-          </span>
-          {/* Unsere eigene Lizenz gehört ins Bild, nicht nur auf die Seite:
-              /lizenz macht den Lizenzcode zum Pflichtbestandteil der
-              Namensnennung, und ein weitergereichtes PNG hat sonst nichts
-              dabei. Er hängt deshalb NICHT am branding-Flag — fehlt die
-              Markenzeile, trägt er den Namen selbst. */}
-          <span style={{ flexShrink: 0, whiteSpace: "nowrap", textAlign: "right" }}>
+        {/* Nur noch die Marke, linksbündig. Der Quellenvermerk stand hier bis
+            08/2026 als waagerechter Block und lief in einer schmalen Karte über
+            sechs bis acht Zeilen — er sitzt jetzt senkrecht an der rechten
+            Kante, im Bild wie auf der Seite, und damit an genau EINER Stelle.
+            Im Bild gibt es keine Knöpfe mehr, deshalb trägt die Markenzeile
+            hier die Einladung.
+
+            Unsere eigene Lizenz gehört ins Bild, nicht nur auf die Seite:
+            /lizenz macht den Lizenzcode zum Pflichtbestandteil der
+            Namensnennung, und ein weitergereichtes PNG hat sonst nichts dabei.
+            Er hängt deshalb NICHT am branding-Flag — fehlt die Markenzeile,
+            trägt er den Namen selbst. */}
+        <div style={{ display: "flex", alignItems: "flex-end" }}>
+          <span style={{ whiteSpace: "nowrap" }}>
             {branding ? (
               <>
                 <PoweredBy label={brandLabel(widget?.kind ?? "chart")} />

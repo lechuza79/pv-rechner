@@ -708,7 +708,25 @@ function SummaryPanel({
   );
 }
 
-export function Kachel({ label, value, hint }: { label: string; value: ReactNode; hint?: string }) {
+/**
+ * Eine Kennzahl-Kachel. `unit` steht bewusst getrennt vom Wert: Der Zahlenwert
+ * trägt die Kachel, die Einheit steht kleiner daneben und bricht nie in eine
+ * eigene Zeile um. Wer stattdessen den fertigen String („41,8 MWp") übergibt,
+ * bekommt in einer schmalen Spalte genau das — die Einheit rutscht unter die
+ * Zahl und schreit in Kachelgröße mit. Die Werte kommen deshalb aus den
+ * `…Teile()`-Funktionen, nicht aus `fmt…()`.
+ */
+export function Kachel({
+  label,
+  value,
+  unit,
+  hint,
+}: {
+  label: string;
+  value: ReactNode;
+  unit?: string;
+  hint?: string;
+}) {
   return (
     <div
       className="kachel-tile"
@@ -726,6 +744,12 @@ export function Kachel({ label, value, hint }: { label: string; value: ReactNode
           letterSpacing: 0.8,
           color: v("--color-text-muted"),
           marginBottom: 4,
+          lineHeight: 1.2,
+          // Platz für zwei Zeilen, auch wenn die Beschriftung nur eine braucht:
+          // In einer Kachelreihe bricht mal eine Beschriftung um („Je Einwohner")
+          // und mal nicht — dann steht deren Zahl eine Zeile tiefer als die
+          // Nachbarwerte, und die Reihe liest sich nicht mehr als Raster.
+          minHeight: "2.4em",
         }}
       >
         {label}
@@ -739,9 +763,19 @@ export function Kachel({ label, value, hint }: { label: string; value: ReactNode
           fontVariantNumeric: "tabular-nums",
           fontFamily: v("--font-mono"),
           letterSpacing: -0.3,
+          // Zahl und Einheit bleiben zusammen in einer Zeile.
+          display: "flex",
+          alignItems: "baseline",
+          gap: 4,
+          whiteSpace: "nowrap",
         }}
       >
-        {value}
+        <span>{value}</span>
+        {unit && (
+          <span style={{ fontSize: 12, fontWeight: 600, color: v("--color-text-secondary"), letterSpacing: 0 }}>
+            {unit}
+          </span>
+        )}
       </div>
       {hint && (
         <div style={{ fontSize: 12, color: v("--color-text-secondary"), marginTop: 2 }}>{hint}</div>
