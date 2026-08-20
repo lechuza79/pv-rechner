@@ -244,10 +244,22 @@ export default function GemeindeHero({
   // `hashchange` muss mit: Ein zweiter Klick auf einen Verweis derselben Seite
   // ändert nur den Rauteteil und löst kein Neuladen aus — ohne den Zuhörer
   // wirkt der erste Verweis und jeder weitere nicht mehr.
+  //
+  // MIT DER STELLUNG WIRD AUCH DIE BEZUGSGRÖSSE GESETZT.
+  //
+  // Der Einleitungstext vergleicht mit dem Bundesland, die Kacheln von Haus
+  // aus mit dem Landkreis. Ohne diese Zeile führt der Verweis „39 % über dem
+  // Hessen-Schnitt" auf eine Kachel mit „−28 %" — beides richtig, beides eine
+  // andere Bezugsgröße, und der Leser sieht einen Widerspruch, wo keiner ist.
+  const [refVorgabe, setRefVorgabe] = useState<string | null>(null);
+
   useEffect(() => {
     const ausAdresse = () => {
       const gewuenscht = ownerAusAnker(window.location.hash);
-      if (gewuenscht) setOwner(gewuenscht);
+      if (gewuenscht) {
+        setOwner(gewuenscht);
+        setRefVorgabe("bundesland");
+      }
     };
     ausAdresse();
     window.addEventListener("hashchange", ausAdresse);
@@ -385,6 +397,7 @@ export default function GemeindeHero({
         regionPerCap={kpi[owner].perCap}
         references={kpi[owner].references}
         defaultRefKey="landkreis"
+        refVorgabe={refVorgabe}
         note={
           owner === "privat"
             ? "Verglichen werden nur private Anlagen, auch beim Durchschnitt."

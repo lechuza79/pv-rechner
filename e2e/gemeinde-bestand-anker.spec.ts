@@ -54,6 +54,27 @@ test.describe("Bestandsblock: die Adresse stellt den Umschalter", () => {
     await expect.poll(() => aktiveStellung(page)).toEqual(["Privat"]);
   });
 
+  //
+  // DER VERWEIS MUSS AUCH DIE BEZUGSGRÖSSE MITBRINGEN.
+  //
+  // Der Einleitungssatz vergleicht mit dem BUNDESLAND, die Kacheln von Haus
+  // aus mit dem LANDKREIS. Ohne diesen Schritt führte der Verweis „39 % über
+  // dem Hessen-Schnitt" auf eine Kachel mit „−28 %" — beides richtig, beides
+  // eine andere Bezugsgröße. Gemessen an Melsungen, und genau so vom Betreiber
+  // im Browser bemängelt.
+  //
+  // Geprüft wird die BEZUGSGRÖSSE, nicht der Prozentwert: Der hängt am
+  // Datenstand, die Bezugsgröße an dieser Mechanik.
+  test("mit der Stellung kommt die Bezugsgröße des Satzes mit", async ({ page }) => {
+    await page.goto(ORT);
+    const tendenz = page.locator("text=/Tendenz: je Einwohner gegenüber dem Durchschnitt/").first();
+    await expect(tendenz).toContainText("Schwalm-Eder-Kreis");
+
+    await page.click('a[href="#bestand-privat"]');
+    await expect.poll(() => aktiveStellung(page)).toEqual(["Privat"]);
+    await expect(tendenz).toContainText("Hessen");
+  });
+
   test("ein Klick auf den Verweis im Text schaltet um — und zurück", async ({ page }) => {
     await page.goto(ORT);
     await expect.poll(() => aktiveStellung(page)).toEqual(["Alle"]);

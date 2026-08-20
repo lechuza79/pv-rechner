@@ -39,17 +39,40 @@ export default function AtlasKpiRow({
   regionPerCap,
   references,
   defaultRefKey,
+  refVorgabe,
   note,
 }: {
   groups: KpiGroup[];
   regionPerCap: PerCap;
   references: RefLevel[];
   defaultRefKey: string;
+  /**
+   * Bezugsebene von außen setzen — für Verweise, die eine bestimmte Aussage
+   * belegen sollen.
+   *
+   * WARUM ES DAS BRAUCHT: Der Einleitungstext vergleicht mit dem BUNDESLAND,
+   * die Kacheln von Haus aus mit dem LANDKREIS. In Melsungen heißt das oben
+   * „39 % über dem Hessen-Schnitt" und unten „−28 %" — beides richtig, beides
+   * eine andere Bezugsgröße, und wer dem Verweis folgt, liest es als
+   * Widerspruch. Ein Verweis, der die Stellung setzt, aber nicht den Bezug,
+   * beweist das Gegenteil dessen, was er belegen soll.
+   *
+   * Nur eine VORGABE, kein fester Wert: Wer danach selbst umschaltet, behält
+   * seine Wahl.
+   */
+  refVorgabe?: string | null;
   /** Satz hinter der Vergleichs-Erklärung, z. B. wenn ein Eigentümer-Filter aktiv
    *  ist und Werte wie Vergleichsbasis auf dieselbe Kategorie eingeschränkt sind. */
   note?: string;
 }) {
   const [refKey, setRefKey] = useState(defaultRefKey);
+
+  // Der Startwert von `useState` gilt nur beim ersten Render — eine später
+  // hereingereichte Vorgabe (der Rauteteil kommt erst nach der Hydratation an)
+  // erreicht ihn nicht. Deshalb ein Effekt, und nur wenn die Ebene es auch gibt.
+  useEffect(() => {
+    if (refVorgabe && references.some((r) => r.key === refVorgabe)) setRefKey(refVorgabe);
+  }, [refVorgabe, references]);
   const ref = references.find((r) => r.key === refKey) ?? references[0] ?? null;
 
   const dev = (m?: string): number | null => {
