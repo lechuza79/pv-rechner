@@ -549,15 +549,29 @@ describe("atlas-cities registry", () => {
 // ist das Vertrauenssignal, auf dem die Förderseiten aufbauen; ein falsches ist
 // die schwerste Fehlerklasse dieses Projekts (CLAUDE.md, "Zahlen und Einheiten").
 describe("Herkunft des Prüfdatums", () => {
-  it("ohne echtes Prüfdatum steht der redaktionelle Stand da, keine behauptete Prüfung", () => {
+  // Der Wortlaut trägt seit dem 19.08.2026 BEIDE Daten („Werte von …, zuletzt
+  // geprüft am …"), weil ein Prüfdatum allein nicht sagt, aus welchem Monat die
+  // Beträge stammen. Geprüft wird hier deshalb nicht mehr der ganze Satz,
+  // sondern die Zusage dahinter — sonst ginge beim nächsten Umformulieren
+  // entweder der Test kaputt oder die Zusage verloren.
+  it("ohne echtes Prüfdatum wird KEIN Prüftag behauptet", () => {
     const p = { ...FUNDING_PROGRAMS["bund-nullsteuer"], stand: "Juni 2026", verified: true, lastVerified: undefined };
-    expect(fundingStandLabel(p)).toBe("Stand: Juni 2026");
-    expect(fundingStandLabel(p)).not.toContain("geprüft");
+    const label = fundingStandLabel(p);
+    expect(label).toContain("Juni 2026");
+    // Der gefährliche Satzbau ist „geprüft am <Datum>" — ein Datum, das eine
+    // Prüfung behauptet, die nie stattfand. Ein „noch nicht nachgeprüft" sagt
+    // das Gegenteil und ist erlaubt.
+    expect(label).not.toMatch(/geprüft am/);
+    expect(label).not.toMatch(/\d{2}\.\d{2}\.\d{4}/);
   });
 
-  it("mit echtem Prüfdatum steht die Prüfung da", () => {
-    const p = { ...FUNDING_PROGRAMS["bund-nullsteuer"], verified: true, lastVerified: "2026-08-16" };
-    expect(fundingStandLabel(p)).toBe("Zuletzt geprüft: 16.08.2026");
+  it("mit echtem Prüfdatum stehen Wertstand UND Prüftag da", () => {
+    const p = { ...FUNDING_PROGRAMS["bund-nullsteuer"], stand: "Juni 2026", verified: true, lastVerified: "2026-08-16" };
+    const label = fundingStandLabel(p);
+    // Beide Angaben, nicht eine von beiden: Der Prüftag allein ließ offen, ob
+    // die Beträge von gestern oder von vor einem Jahr sind.
+    expect(label).toContain("Juni 2026");
+    expect(label).toContain("geprüft am 16.08.2026");
   });
 
   it("der Lader zieht updated_at nicht als Ersatz heran", () => {

@@ -38,6 +38,24 @@ describe("Menü-Markierung: Zuordnung Pfad → Menüpunkt", () => {
     expect(header.indexOf('"/balkonkraftwerk/rechner"')).toBeLessThan(header.indexOf('startsWith("/balkonkraftwerk")'));
   });
 
+  // Als REGEL statt als Aufzählung — die Fassung darüber kannte genau drei
+  // Pfade, und als am 19.08.2026 /balkonkraftwerk/foerderung dazukam, blieb sie
+  // grün, während im Menü „Überblick" leuchtete. Ein Test, der eine Liste
+  // wiederholt, prüft den Stand von gestern; dieser liest die Menüpunkte selbst.
+  it("JEDE Seite des Balkon-Clusters hat ihren eigenen Schlüssel — vor dem Hub", () => {
+    const block = header.slice(header.indexOf("const BALKON_ITEMS"), header.indexOf("];", header.indexOf("const BALKON_ITEMS")));
+    const hrefs = [...block.matchAll(/href: "(\/balkonkraftwerk[^"]*)"/g)].map((m) => m[1]);
+    const tiefer = hrefs.filter((h) => h !== "/balkonkraftwerk");
+    expect(tiefer.length, "der Cluster hat Unterseiten").toBeGreaterThanOrEqual(3);
+
+    const hub = header.indexOf('startsWith("/balkonkraftwerk")');
+    for (const h of tiefer) {
+      const zweig = header.indexOf(`startsWith("${h}")`);
+      expect(zweig, `${h} hat keinen eigenen Zweig in der Zuordnung`).toBeGreaterThan(-1);
+      expect(zweig, `${h} steht hinter dem Hub-Präfix und wird davon verschluckt`).toBeLessThan(hub);
+    }
+  });
+
   it("Ratgeber werden über die Registry erkannt, nicht über das Pfad-Präfix", () => {
     // Sonst leuchtet der Menüpunkt auf jedem Ratgeber mit eigenem Slug nicht.
     expect(header).toMatch(/ratgeberBySlug\(pathname\)\s*\?\s*"ratgeber"/);

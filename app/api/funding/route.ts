@@ -32,6 +32,26 @@ export async function GET(req: NextRequest) {
 
   const plz = req.nextUrl.searchParams.get("plz") ?? "";
   const foe = req.nextUrl.searchParams.get("foe") ?? "";
+
+  // Ungültige Anfrage abweisen, BEVOR die Programmliste gelesen wird.
+  //
+  // Die Prüfung stand bis 20.08.2026 unterhalb des Reads: Jede Anfrage ohne
+  // brauchbare PLZ las erst den gesamten Förderkatalog aus der Datenbank und
+  // warf ihn dann weg. Aufgefallen an 326 abgewiesenen Anfragen an einem Tag
+  // (19.08.2026) — keine davon aus unserer eigenen Oberfläche: Beide Aufrufer
+  // (lib/use-foerderung.ts, der Empfehlungs-Flow) prüfen die fünf Ziffern
+  // selbst, bevor sie abrufen. Es war also Fremdverkehr, und der konnte über
+  // eine öffentliche Route ohne Anmeldung Datenbankarbeit auslösen. Der
+  // 10-Minuten-Zwischenspeicher in getFundingPrograms() hat den Großteil
+  // abgefangen; das ist ein Dämpfer, keine Grenze.
+  //
+  // Verhalten nach außen unverändert: derselbe Statuscode, derselbe Rumpf.
+  // `foe` behält seinen Vorrang — eine Anfrage mit Programm-Kennung braucht
+  // keine PLZ und wird hier nicht abgewiesen.
+  if (!foe && !/^\d{5}$/.test(plz)) {
+    return NextResponse.json({ error: "invalid plz" }, { status: 400 });
+  }
+
   const all = await getFundingPrograms();
 
   // Pre-arm a specific program by id.
@@ -43,9 +63,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ foe, ags, programs }, { headers });
   }
 
-  if (!/^\d{5}$/.test(plz)) {
-    return NextResponse.json({ error: "invalid plz" }, { status: 400 });
-  }
   let candidates: { ort: string; ags: string; programs: FundingProgram[] }[] = [];
   try {
     const table = await loadTable();

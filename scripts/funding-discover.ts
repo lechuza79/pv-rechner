@@ -33,9 +33,12 @@ import { resolve } from "node:path";
 import { readFileSync, existsSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
 import {
-  linkKandidaten, sitemapKandidaten, sitemapIndex, istEndergebnis, SUCH_VERSION, type LinkKandidat,
+  linkKandidaten, sitemapKandidaten, sitemapIndex, istEndergebnis, SUCH_VERSION,
+  suchFormular, suchAdresse, suchseitenLink, SUCH_BEGRIFFE, SUCHSEITEN_PFADE,
+  type LinkKandidat,
 } from "../lib/funding-url-suche";
 import { inSchueben } from "../lib/lauf-parallel";
+import { seitenSchluessel, istInterneRoute } from "../lib/funding-seiten";
 
 function loadEnvFile(): void {
   const envPath = resolve(process.cwd(), ".env.local");
@@ -54,6 +57,9 @@ if (!url || !key) {
   process.exit(1);
 }
 const sb = createClient(url, key);
+
+/** Obergrenze je Gemeinde — darüber ist es Rauschen, keine Förderseite. */
+const MAX_SEITEN_JE_GEMEINDE = 6;
 
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36";
@@ -107,24 +113,44 @@ async function abrufen(ziel: string, timeoutMs = 15_000): Promise<string | null>
 /**
  * Die Förderseite einer Gemeinde suchen.
  *
- * Zwei Wege, absichtlich in dieser Reihenfolge:
+ * Drei Wege, absichtlich in dieser Reihenfolge:
  *  1. Die Startseite und die besten Links daraus — der Weg, der immer geht.
  *  2. Die sitemap.xml, falls vorhanden — findet tiefer liegende Seiten, die im
  *     Menü der Startseite nicht auftauchen.
+ *  3. **Die Volltextsuche der Website selbst** — aber nur, wenn 1 und 2 nichts
+ *     ergeben haben.
+ *
+ * Warum die Suche zuletzt und nur im Notfall (19.08.2026): Gemessen an 9.722
+ * durchsuchten Gemeinden fanden Weg 1 und 2 zusammen nur bei 13 % eine
+ * Förderseite; 7.863 blieben ohne Fund. Für die 13 %, bei denen es klappt,
+ * ändert sich nichts — sie kosten keinen zusätzlichen Abruf. Die Mehrkosten
+ * fallen genau dort an, wo bisher gar nichts herauskam, und das ist der ganze
+ * Zweck.
  *
  * Höchstens `TIEFE` Ebenen und `MAX_ABRUFE` Anfragen je Gemeinde. Die Grenze ist
  * kein Sparzwang, sondern Rücksicht: Das hier läuft über tausende fremde
  * Verwaltungs-Server, und ein Crawler, der sich festbeißt, ist ein Ärgernis, das
- * uns irgendwann aussperrt.
+ * uns irgendwann aussperrt. Deshalb steigt die Grenze mit der Suche nur um die
+ * zwei Anfragen, die sie wirklich braucht — nicht auf Vorrat.
  */
 const TIEFE = 2;
-const MAX_ABRUFE = 6;
+const MAX_ABRUFE = 9;
 
-async function sucheFoerderseite(startseite: string): Promise<{ beste: LinkKandidat | null; abrufe: number; erreichbar: boolean }> {
+/**
+ * ALLE Fundstellen statt nur der besten (19.08.2026).
+ *
+ * `beste` bleibt, was es war — der eine Fund, der nach `funding_url_suche` und
+ * `kommunen_kontakt` wandert; daran hängt das Screening, und daran wird nicht
+ * gerüttelt. Neu ist `funde`: jede Adresse, die für sich genommen eine
+ * Förderseite ist. Vorher fiel alles außer der besten auf den Boden, und genau
+ * darin steckte die Lücke — eine Stadt mit getrennter Photovoltaik- und
+ * Balkonseite lieferte eine davon, die andere existierte für uns nie.
+ */
+async function sucheFoerderseite(startseite: string): Promise<{ beste: LinkKandidat | null; funde: LinkKandidat[]; abrufe: number; erreichbar: boolean }> {
   let abrufe = 0;
   const html = await abrufen(startseite);
   abrufe++;
-  if (!html) return { beste: null, abrufe, erreichbar: false };
+  if (!html) return { beste: null, funde: [], abrufe, erreichbar: false };
 
   const gesehen = new Set<string>([startseite]);
   let kandidaten = linkKandidaten(html, startseite);
@@ -149,31 +175,101 @@ async function sucheFoerderseite(startseite: string): Promise<{ beste: LinkKandi
   }
 
   kandidaten.sort((a, b) => b.punkte - a.punkte);
-  if (!kandidaten.length) return { beste: null, abrufe, erreichbar: true };
+
+  // Jede Adresse, die für sich eine Förderseite ist — nicht nur die beste.
+  const alleFunde = new Map<string, LinkKandidat>();
+  const merken = (liste: LinkKandidat[]) => {
+    for (const k of liste) {
+      if (!istEndergebnis(k) || istInterneRoute(k.url)) continue;
+      alleFunde.set(seitenSchluessel(k.url), k);
+    }
+  };
+  merken(kandidaten);
 
   // Ab hier zählt der Unterschied zwischen VERFOLGEN und ANNEHMEN. Verfolgt wird
   // der beste Link überhaupt — auch eine reine Themenseite („Klimaschutz und
   // Energie"), denn die ist oft der Weg zur Förderseite. Angenommen wird nur,
   // was von Geld UND vom Thema spricht.
-  let spur = kandidaten[0];
   let ergebnis: LinkKandidat | null = kandidaten.find((k) => istEndergebnis(k)) ?? null;
 
-  for (let ebene = 1; ebene < TIEFE && abrufe < MAX_ABRUFE; ebene++) {
-    if (gesehen.has(spur.url)) break;
-    gesehen.add(spur.url);
-    const unterHtml = await abrufen(spur.url);
-    abrufe++;
-    if (!unterHtml) break;
-    const tiefer = linkKandidaten(unterHtml, spur.url).filter((k) => !gesehen.has(k.url));
-    if (!tiefer.length) break;
+  if (kandidaten.length) {
+    let spur = kandidaten[0];
+    for (let ebene = 1; ebene < TIEFE && abrufe < MAX_ABRUFE; ebene++) {
+      if (gesehen.has(spur.url)) break;
+      gesehen.add(spur.url);
+      const unterHtml = await abrufen(spur.url);
+      abrufe++;
+      if (!unterHtml) break;
+      const tiefer = linkKandidaten(unterHtml, spur.url).filter((k) => !gesehen.has(k.url));
+      if (!tiefer.length) break;
 
-    const besseresErgebnis = tiefer.find((k) => istEndergebnis(k) && k.punkte > (ergebnis?.punkte ?? 0));
-    if (besseresErgebnis) ergebnis = besseresErgebnis;
-    if (tiefer[0].punkte <= spur.punkte) break;
-    spur = tiefer[0];
+      merken(tiefer);
+      const besseresErgebnis = tiefer.find((k) => istEndergebnis(k) && k.punkte > (ergebnis?.punkte ?? 0));
+      if (besseresErgebnis) ergebnis = besseresErgebnis;
+      if (tiefer[0].punkte <= spur.punkte) break;
+      spur = tiefer[0];
+    }
   }
 
-  return { beste: ergebnis, abrufe, erreichbar: true };
+  // Letzter Weg: die Volltextsuche der Website. NUR wenn bis hierhin nichts
+  // herauskam — für die Gemeinden, bei denen der Crawl schon trägt, kostet sie
+  // keinen Abruf.
+  //
+  // Das ist der eigentliche Hebel: Der Crawl sieht zwei Klicks weit und nur, was
+  // verlinkt ist; die Suche der Website kennt deren ganzen Bestand. Eine
+  // Förderseite unter „Bauen und Wohnen → Umwelt → Energie → Förderungen" ist
+  // für den Crawl unsichtbar und für die Suche ein Treffer.
+  if (!ergebnis && abrufe < MAX_ABRUFE) {
+    let formular = suchFormular(html, startseite);
+
+    // Kein Formular auf der Startseite? Dann liegt die Suche hinter einem
+    // Lupen-Symbol, das sie per JavaScript einblendet — im ausgelieferten HTML
+    // steht dann nichts. Die Suchseite selbst hat das Formular fast immer.
+    // Gemessen am 19.08.2026 trugen nur 14 von 39 erreichbaren Startseiten ein
+    // auswertbares Formular; das ist der Engpass dieses Wegs.
+    if (!formular) {
+      const wege: string[] = [];
+      const verlinkt = suchseitenLink(html, startseite);
+      if (verlinkt) wege.push(verlinkt);
+      for (const p of SUCHSEITEN_PFADE) {
+        const u = new URL(p, startseite).toString();
+        if (!wege.includes(u)) wege.push(u);
+      }
+      // Höchstens zwei Versuche: der verlinkte Weg und ein geratener. Danach
+      // fällt der Ertrag steil ab, die Abrufe gegen fremde Server nicht.
+      for (const w of wege.slice(0, 2)) {
+        if (abrufe >= MAX_ABRUFE) break;
+        const seite = await abrufen(w);
+        abrufe++;
+        if (!seite) continue;
+        formular = suchFormular(seite, w);
+        if (formular) break;
+      }
+    }
+
+    if (formular) {
+      for (const begriff of SUCH_BEGRIFFE) {
+        if (abrufe >= MAX_ABRUFE) break;
+        const trefferSeite = await abrufen(suchAdresse(formular, begriff));
+        abrufe++;
+        if (!trefferSeite) continue;
+        // Die Trefferliste läuft durch dieselbe Bewertung wie jede andere Seite.
+        // Wichtig ist der Ausschluss der Suchseite selbst: Sie verlinkt sich
+        // gern mit Blätter- und Sortierlinks, die alle dieselbe Adresse tragen.
+        const treffer = linkKandidaten(trefferSeite, startseite).filter(
+          (k) => !gesehen.has(k.url) && k.url !== formular.action,
+        );
+        merken(treffer);
+        const gut = treffer.find((k) => istEndergebnis(k));
+        if (gut) { ergebnis = gut; break; }
+      }
+    }
+  }
+
+  // Gedeckelt: Mehr als eine Handvoll echter Förderseiten hat keine Gemeinde;
+  // was darüber liegt, ist Rauschen aus einer Übersichtsseite.
+  const funde = [...alleFunde.values()].sort((a, b) => b.punkte - a.punkte).slice(0, MAX_SEITEN_JE_GEMEINDE);
+  return { beste: ergebnis, funde, abrufe, erreichbar: true };
 }
 
 type SuchZeile = { region_id: string; verdikt: string; such_version: number | null };
@@ -184,9 +280,14 @@ async function offeneKandidaten(limit: number) {
     "region_id, website, thema_foerderung_url",
     (q) => q.not("website", "is", null),
   );
-  // Wer schon eine Förderseite hat, braucht keine Suche — den nimmt sich das
-  // Screening vor.
-  const ohneSeite = kontakte.filter((k) => !k.thema_foerderung_url);
+  // Bis 19.08.2026 stand hier: „Wer schon eine Förderseite hat, braucht keine
+  // Suche." Das galt, solange wir ohnehin nur eine Adresse je Gemeinde halten
+  // konnten — jetzt ist es genau falsch herum. Bei den Gemeinden MIT Fund liegen
+  // die zweiten und dritten Seiten, die vorher auf den Boden fielen; sie zu
+  // überspringen hieße, den Umbau bei denen nicht wirken zu lassen, über die wir
+  // am meisten wissen. Wer wirklich fertig ist, fällt unten über `erledigt`
+  // heraus — über den Versionsstempel, nicht über das Vorhandensein einer Adresse.
+  const ohneSeite = kontakte;
 
   const abgelegt = await alleZeilen<SuchZeile>("funding_url_suche", "region_id, verdikt, such_version");
   const zeileVon = new Map(abgelegt.map((r) => [r.region_id, r]));
@@ -198,6 +299,9 @@ async function offeneKandidaten(limit: number) {
   };
 
   const rest = ohneSeite.filter((k) => !erledigt(k.region_id));
+  // Wer beim letzten Mal schon nicht erreichbar war, ist ein Wiederholungsversuch
+  // — sein Fehlschlag sagt nichts über unsere Verbindung.
+  const schonUnerreichbar = new Set(abgelegt.filter((z) => z.verdikt === "unerreichbar").map((z) => z.region_id));
   const pop = new Map<string, number>();
   const ids = rest.map((r) => r.region_id);
   for (let i = 0; i < ids.length; i += 500) {
@@ -212,6 +316,7 @@ async function offeneKandidaten(limit: number) {
       .sort((a, b) => (pop.get(b.region_id) ?? 0) - (pop.get(a.region_id) ?? 0))
       .slice(0, limit)
       .map((r) => ({ region_id: r.region_id, website: r.website! })),
+    schonUnerreichbar,
   };
 }
 
@@ -246,7 +351,7 @@ async function main(): Promise<void> {
   if (process.argv.includes("--funde")) return funde();
 
   const limit = zahl("limit", 60);
-  const { gesamt, erledigt, naechste } = await offeneKandidaten(limit);
+  const { gesamt, erledigt, naechste, schonUnerreichbar } = await offeneKandidaten(limit);
   console.log(`Durchsucht vorher: ${erledigt} von ${gesamt}. Nehme mir jetzt ${naechste.length} vor.\n`);
 
   const zaehler = new Map<SuchVerdikt, number>();
@@ -256,14 +361,22 @@ async function main(): Promise<void> {
 
   await inSchueben(naechste, zahl("gleichzeitig", 6), async (k) => {
     if (abgebrochen) return;
-    const { beste, erreichbar } = await sucheFoerderseite(k.website);
+    const { beste, funde, erreichbar } = await sucheFoerderseite(k.website);
     const verdikt: SuchVerdikt = !erreichbar ? "unerreichbar" : beste ? "gefunden" : "keine-seite";
     zaehler.set(verdikt, (zaehler.get(verdikt) ?? 0) + 1);
 
     // Reißleine: Häufen sich die Fehlschläge, liegt es fast nie an den Gemeinden,
     // sondern an uns — kein Netz, gesperrte Adresse, abgestürzter Resolver. Dann
     // weiterzulaufen stempelt hunderte erreichbare Websites als unerreichbar ab.
-    unerreichbarInFolge = erreichbar ? 0 : unerreichbarInFolge + 1;
+    // Die Reißleine misst UNSERE Verbindung, nicht die Hartnäckigkeit der
+    // Gemeinden. Sobald die Warteschlange überwiegend aus Wiederholungsversuchen
+    // besteht — und genau dahin läuft sie mit der Zeit —, sind 15 Fehlschläge in
+    // Folge der Normalfall und die Bremse feuert bei jedem Lauf. Gemessen am
+    // 19.08.2026: Der erste Lauf nach dem Umbau brach nach 18 Versuchen ab,
+    // obwohl das Netz in Ordnung war; in der Warteschlange standen nur noch die
+    // zuvor unerreichbaren. Deshalb zählen nur FRISCHE Fehlschläge.
+    const frischerFehlschlag = !erreichbar && !schonUnerreichbar.has(k.region_id);
+    unerreichbarInFolge = frischerFehlschlag ? unerreichbarInFolge + 1 : erreichbar ? 0 : unerreichbarInFolge;
     if (unerreichbarInFolge >= 15 && !abgebrochen) {
       abgebrochen = true;
       console.error("\n15 Websites in Folge nicht erreichbar — Lauf abgebrochen. Erst die eigene Verbindung prüfen.");
@@ -292,6 +405,22 @@ async function main(): Promise<void> {
         .update({ thema_foerderung_url: beste.url })
         .eq("region_id", k.region_id)
         .is("thema_foerderung_url", null);
+    }
+
+    // Und ALLE Funde in die Seiten-Tabelle. Das ist die Stelle, an der die
+    // Erfassung mehr als eine Seite je Gemeinde behalten kann — `upsert` mit
+    // dem Schlüssel (Gemeinde × Adresse) macht den Lauf idempotent und
+    // überschreibt kein Leseergebnis, weil nur die Fund-Spalten geschrieben werden.
+    if (funde.length) {
+      await sb.from("funding_seiten").upsert(
+        funde.map((f) => ({
+          region_id: k.region_id,
+          url: seitenSchluessel(f.url),
+          quelle: "suche",
+          zustand: "erreichbar",
+        })),
+        { onConflict: "region_id,url", ignoreDuplicates: true },
+      );
     }
 
     if (++fertig % 100 === 0) console.log(`   … ${fertig} von ${naechste.length}`);

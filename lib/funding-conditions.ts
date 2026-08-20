@@ -203,7 +203,22 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
       },
     ],
     durchRegion: ["Grundstück im Stadtgebiet Frankfurt"],
-    hinweise: [],
+    hinweise: [
+      {
+        ausBedingung: "Pflichtmaßnahmen werden nicht gefördert",
+        warum:
+          "Ob eine Maßnahme gesetzlich vorgeschrieben ist, hängt am Gebäude und am " +
+          "Zeitpunkt — das weiß der Rechner nicht. Für eine neue Dachanlage auf einem " +
+          "Bestandsgebäude ist es der Regelfall, dass keine Pflicht besteht; sicher " +
+          "sagen kann es nur die Stadt.",
+      },
+      {
+        ausBedingung: "Die Investitionen dürfen nicht zu einer Mieterhöhung führen",
+        warum:
+          "Betrifft nur, wer vermietet, und ist eine Zusage über die Zukunft — nicht " +
+          "aus den Eingaben ableitbar. Für Selbstnutzer ohne Belang.",
+      },
+    ],
   },
 };
 

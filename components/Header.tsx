@@ -76,6 +76,7 @@ const BALKON_ITEMS: NavItem[] = [
   { href: "/balkonkraftwerk", label: "Balkonkraftwerk — Überblick", desc: "Was es bringt, was es kostet, was zu tun ist", page: "balkon" },
   { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk-Rechner", desc: "Ertrag und Amortisation für deinen Haushalt", page: "balkon-rechner" },
   { href: "/balkonkraftwerk/anmelden", label: "Balkonkraftwerk anmelden", desc: "Frist, Angaben und die drei Fallen im Register", page: "balkon-anmelden" },
+  { href: "/balkonkraftwerk/foerderung", label: "Balkonkraftwerk-Förderung", desc: "Welche Kommunen einen Zuschuss zahlen", page: "balkon-foerderung" },
 ];
 
 // PV-Förderung group: the regional funding directory plus the national data
@@ -83,6 +84,11 @@ const BALKON_ITEMS: NavItem[] = [
 const FOERDERUNG_ITEMS: NavItem[] = [
   { href: "/photovoltaik-foerderung", label: "Förderprogramme", desc: "Bundes-, Landes- und Kommunalförderung nach Region", page: "foerderung" },
   { href: "/photovoltaik-zubau-deutschland", label: "Solar-Zubau & Förderung", desc: "Wie Förderung den Ausbau geformt hat — die Datenstory", page: "zubau" },
+  // Zweitnennung: Die Balkon-Förderung wohnt unter „Balkonkraftwerk", steht
+  // hier aber mit, weil sie sucht, wer schlicht „Förderung" im Menü ansteuert.
+  // Sie markiert sich nicht und macht diese Gruppe nicht aktiv — sonst
+  // leuchteten auf der Seite zwei Menüpunkte.
+  { href: "/balkonkraftwerk/foerderung", label: "Balkonkraftwerk-Förderung", desc: "Kommunale Zuschüsse für Steckersolar", page: "balkon-foerderung", zweitnennung: true },
 ];
 
 // Energy-data hub: the dashboard plus the embeddable widgets. The embed page is
@@ -128,6 +134,10 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     // auch ein Registry-Eintrag, soll aber im Balkon-Menü markieren.
     pathname.startsWith("/balkonkraftwerk/rechner") ? "balkon-rechner" :
     pathname.startsWith("/balkonkraftwerk/anmelden") ? "balkon-anmelden" :
+    // Vor dem Hub-Präfix, sonst verschluckt es die Seite: /balkonkraftwerk/foerderung
+    // beginnt mit /balkonkraftwerk und fiele auf "balkon" durch — markiert wäre
+    // dann „Überblick", während man auf der Förderseite steht.
+    pathname.startsWith("/balkonkraftwerk/foerderung") ? "balkon-foerderung" :
     pathname.startsWith("/balkonkraftwerk") ? "balkon" :
     pathname.startsWith("/photovoltaik-zubau-deutschland") ? "zubau" :
     pathname.startsWith("/photovoltaik-foerderung") ? "foerderung" :
@@ -254,7 +264,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
             in den Zustand einer Komponente. */}
         <nav className="hdr-nav" style={{ alignItems: "center", gap: 24 }}>
             <DesktopDropdown
-              triggerLabel="Rentabilität berechnen"
+              triggerLabel="PV-Rechner"
               triggerHref="/photovoltaik-rechner"
               items={RECHNER_ITEMS}
               activePage={activePage}
@@ -273,7 +283,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
             />
             <Link href="/ratgeber" style={linkStyle("ratgeber")}>Ratgeber</Link>
             <DesktopDropdown
-              triggerLabel="Strommix & Energiedaten"
+              triggerLabel="Strommix"
               triggerHref="/strommix-deutschland"
               items={ENERGIE_ITEMS}
               activePage={activePage}
@@ -351,7 +361,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
             padding: "8px 24px 16px",
             boxShadow: v('--shadow-md'),
           }}>
-            <MobileSection title="Rentabilität berechnen" items={RECHNER_ITEMS} activePage={activePage} onNavigate={closeMenu} />
+            <MobileSection title="PV-Rechner" items={RECHNER_ITEMS} activePage={activePage} onNavigate={closeMenu} />
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
@@ -367,7 +377,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
-            <MobileSection title="Strommix & Energiedaten" items={ENERGIE_ITEMS} activePage={activePage} onNavigate={closeMenu} />
+            <MobileSection title="Strommix" items={ENERGIE_ITEMS} activePage={activePage} onNavigate={closeMenu} />
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 

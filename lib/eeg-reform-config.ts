@@ -166,7 +166,15 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // Referentenentwurf, auf dem sie beruht.
   entwurfIso: "2026-07-29",
   kabinettsfassungVeroeffentlicht: true,
-  geprueftIso: "2026-08-19",
+  // 20.08.2026 erneut geprüft, Zustand und Werte unverändert: Der Entwurf liegt
+  // weiterhin als Bundesrats-Drucksache 470/26 im ersten Durchgang; die nächste
+  // Bundesratssitzung ist der 25.09.2026, eine erste Lesung im Bundestag hat es
+  // nicht gegeben. Die drei Werte, die zwischen Referenten- und Kabinettsfassung
+  // schon einmal gewandert sind, im Drucksachen-Volltext nachgeschlagen und
+  // zellgleich vorgefunden: „6,2 Cent", „vor dem 1. Januar 2031 — also im Laufe
+  // der Jahre 2029 und 2030" und die 50-%-Grenze für Anlagen „weniger als 100
+  // Kilowatt des zweiten Segments".
+  geprueftIso: "2026-08-20",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

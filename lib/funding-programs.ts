@@ -106,6 +106,23 @@ export interface FundingProgram {
   /** Flat base amount added before the per-kWp part (e.g. Düsseldorf 1.000 €). */
   pvSockel?: number;
   speicherPerKwh?: number;
+  /**
+   * Fester Grundbetrag für den Speicher, bevor der Satz je kWh greift — das
+   * Gegenstück zu {@link pvSockel} auf der Speicherseite.
+   *
+   * WARUM ES DAS GIBT (19.08.2026): Die Bauform „Grundbetrag für die ersten
+   * n kWh, danach je weiterer kWh" ist verbreitet und war bis dahin nicht
+   * ausdrückbar. Schwebheim zahlt 400 € bei 3 kWh und 75 € je weiterer voller
+   * kWh; mit `speicherTiers` nachgebaut zahlte das Modell bei 7,5 kWh — einer
+   * der sechs Standardgrößen des Rechners — 775 € statt 700 €, weil
+   * `tierAmount` aufrundet, wo die Richtlinie abrundet. Das Programm stand
+   * deshalb ohne Rechenwert im Katalog.
+   *
+   * Gerechnet wird `speicherSockel + (volle kWh über speicherMin) × speicherPerKwh`,
+   * gedeckelt an `speicherCap`. Der Sockel setzt `speicherMin` voraus — ohne
+   * Untergrenze wäre nicht bestimmt, ab welcher Kapazität er überhaupt anfällt.
+   */
+  speicherSockel?: number;
   /** Share of total cost, e.g. 0.2 for 20 %. */
   percentOfCost?: number;
   /** Total € cap on the PV part — gilt für den €/kWp-Satz UND für
@@ -201,13 +218,28 @@ export function fundingStandLabel(p: FundingProgram, heute?: string): string {
     rechenbar && p.status === "aktiv" && !fundingBelegAktuell(p, heute ?? heuteIso())
       ? " · aktuell nicht bestätigt, daher nicht eingerechnet"
       : "";
+  // BEIDE Daten, nicht eines von beiden — dieselbe Regel wie in der Stand-Zeile
+  // unter den Rechnern (CLAUDE.md, „Aktualisierungsstand"): Der redaktionelle
+  // `stand` sagt, aus welchem Monat die WERTE sind, das Prüfdatum sagt, wann wir
+  // sie zuletzt bestätigt haben. Bis zum 19.08.2026 zeigte diese Funktion
+  // entweder das eine oder das andere, und zwar bevorzugt das Prüfdatum — wer
+  // „Zuletzt geprüft: 19.08.2026" las, konnte nicht wissen, ob die Beträge von
+  // gestern oder von vor einem Jahr stammen.
+  //
+  // Beide auch dann, wenn sie zusammenfallen: Wer die zweite Angabe nur bei
+  // Abweichung sieht, lernt nie, dass es sie gibt — und liest ein späteres
+  // „Werte von Juni, geprüft im Oktober" nicht als das, was es ist: bestätigt,
+  // nicht vergessen.
   if (p.lastVerified) {
     const d = new Date(p.lastVerified);
     if (!isNaN(d.getTime())) {
-      return `Zuletzt geprüft: ${d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })}${unbestaetigt}${nichtGerechnet}`;
+      const tag = d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
+      return `Werte von ${p.stand}, zuletzt geprüft am ${tag}${unbestaetigt}${nichtGerechnet}`;
     }
   }
-  return `Stand: ${p.stand}${unbestaetigt}${nichtGerechnet}`;
+  // Ohne echtes Prüfdatum wird KEINES erfunden — auch kein Rückgriff auf den
+  // Schreibzeitpunkt der Zeile. Dann steht nur da, woher die Werte stammen.
+  return `Werte von ${p.stand}, noch nicht nachgeprüft${unbestaetigt}${nichtGerechnet}`;
 }
 
 // Bund applies everywhere and combines with every regional program.
@@ -387,7 +419,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "frankfurt-klimabonus", name: "Frankfurter Klimabonus",
     traeger: "Stadt Frankfurt am Main", level: "kommune", region: "Frankfurt am Main", bundesland: "Hessen", agsCode: "06412",
     url: "https://frankfurt.de/themen/klima-und-energie/stadtklima/klimabonus",
-    stand: "Juli 2026", status: "aktiv", capped: true, verified: true,
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "20 % von Material- und Arbeitskosten",
     maxFoerderung: "max. 100.000 €",
@@ -403,6 +435,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Grundstück im Stadtgebiet Frankfurt",
       "Batteriespeicher und Ladesäulen nur in Kombination mit einer neuen PV-Anlage",
       "Balkonkraftwerke werden seit dem 03.06.2025 nicht mehr gefördert",
+      "Pflichtmaßnahmen werden nicht gefördert",
+      "Die Investitionen dürfen nicht zu einer Mieterhöhung führen",
     ],
     combinableWith: BUND,
     percentOfCost: 0.2,
@@ -502,7 +536,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "hannover-proklima": {
     id: "hannover-proklima", name: "proKlima (enercity-Fonds)",
     traeger: "Region Hannover", level: "landkreis", region: "Region Hannover", bundesland: "Niedersachsen", agsCode: "03241",
-    url: "https://www.proklima-hannover.de/wohngebaeude/foerderangebote/solarstrom/dachvolltoll/", stand: "Juni 2026",
+    url: "https://www.proklima-hannover.de/wohngebaeude/foerderangebote/solarstrom/dachvolltoll/", stand: "August 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Zuschuss je kWp bei voller Dachbelegung (Baustein DachVollToll)",
@@ -716,8 +750,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "wiesbaden-eswe-speicher": {
     id: "wiesbaden-eswe-speicher", name: "ESWE Solar-Speicherbatterie",
     traeger: "ESWE Versorgungs AG / Klimaschutzagentur Wiesbaden", level: "kommune", region: "Wiesbaden", bundesland: "Hessen", agsCode: "06414",
-    url: "https://ksa-wiesbaden.de/foerderung/eswe-solar-speicherbatterie/", stand: "Juni 2026",
-    status: "aktiv", capped: true, verified: false,
+    // Am 20.08.2026 an der Trägerseite gelesen: „Bis 3,0 kWh = 500 Euro / bis
+    // 6,0 kWh = 750 Euro / > 6,0 kWh = 1.000 Euro" — zellgleich zu unseren
+    // Sätzen. Damit steht der Eintrag nicht mehr auf einer Sekundärquelle.
+    url: "https://ksa-wiesbaden.de/foerderung/eswe-solar-speicherbatterie/", stand: "August 2026",
+    status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Zuschuss für Batteriespeicher mit neuer PV (nur ESWE-Kunden)",
     rates: [
@@ -1008,8 +1045,16 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Mitgliedsgemeinden geteilt — das Programm ist aber ausdrücklich das der
     // Gemeinde Wietzen. Das Screening hatte die Seite deshalb zunächst allen
     // Nachbarorten zugeordnet; gefördert wird nur in Wietzen.
+    //
+    // AUSGESCHÖPFT seit dem 20.08.2026 — an der Amtsseite selbst gelesen, erster
+    // Satz der Seite: „Leider stehen aktuell keine weiteren Fördermittel für 2026
+    // mehr zur Verfügung!" Der Eintrag stand auf `aktiv` und zog damit bis zu
+    // 2.000 € ab (1.000 € PV + 1.000 € Speicher), die es dieses Jahr nicht mehr
+    // gibt. Die Sätze selbst stehen unverändert daneben und bleiben deshalb
+    // stehen; der Topf ist auf 20.000 € im Jahr begrenzt, das nächste Haushalts-
+    // jahr füllt ihn wieder. Wieder einschalten darf das nur ein Träger-Beleg.
     url: "https://www.weser-aue.de/rathaus-politik/foerderprogramme/",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "August 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Anteiliger Zuschuss je kWp und je kWh Speicher",
     maxFoerderung: "max. 1.000 € je Förderfall",
@@ -2867,28 +2912,20 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
     foerdert: ["pv"],
-    // KEIN Rechenwert, obwohl der Satz eindeutig ist — und das ist die
-    // interessante Entscheidung an diesem Eintrag.
+    speicherMin: 3, speicherSockel: 400, speicherPerKwh: 75, speicherCap: 1000,
+    // Das erste Programm mit `speicherSockel` — die Bauform „400 € für die
+    // ersten 3 kWh, danach 75 € je weiterer voller kWh, höchstens 1.000 €".
     //
-    // Die Bauform ist „Sockel für die ersten 3 kWh, danach je kWh": 400 € bei
-    // 3 kWh, dazu 75 € je weiterer voller kWh, gedeckelt bei 1.000 €. Das
-    // Modell kennt für den Speicher entweder einen Satz je kWh oder Stufen —
-    // einen Sockel PLUS Satz gibt es nur für die Dachanlage (`pvSockel`).
+    // Es stand bis zum 19.08.2026 bewusst OHNE Rechenwert hier: Mit
+    // `speicherTiers` nachgebaut zahlte das Modell bei 7,5 kWh 775 € statt 700 €,
+    // weil `tierAmount` die erste nicht überschrittene Stufe nimmt, während die
+    // Richtlinie „auf volle kWh abgerundet" rechnet. 7,5 kWh ist eine der sechs
+    // Standardgrößen des Rechners, der Fehler also nicht theoretisch. Statt die
+    // Zahl zu schönen bekam das Modell das fehlende Feld.
     //
-    // Mit `speicherTiers` nachzubauen scheitert an der Abrundung: `tierAmount`
-    // nimmt die erste Stufe, die der Wert nicht überschreitet, die Richtlinie
-    // rundet dagegen ab. Bei 7,5 kWh — einer der sechs Standardgrößen des
-    // Rechners — käme 775 € heraus, gezahlt werden 700 €. Ein zu hoher Betrag
-    // ist genau der Fehler, den dieses Programm bei niemandem machen soll.
-    //
-    // Also lieber keine Zahl als eine falsche. Wer das ändern will, ergänzt
-    // `speicherSockel` und eine Abrundung in `fundingAmount` — dann trägt der
-    // Eintrag `speicherMin: 3`, `speicherSockel: 400`, `speicherPerKwh: 75`,
-    // `speicherCap: 1000` und rechnet exakt.
-    //
-    // Zweitens fällt auf: Die Richtlinie verlangt nirgends eine PV-Anlage. Ob
-    // ein Speicher ohne Erzeugung förderfähig wäre, bleibt offen und steht
-    // deshalb nicht in den Bedingungen.
+    // Die Richtlinie verlangt nirgends eine PV-Anlage. Ob ein Speicher ohne
+    // Erzeugung förderfähig wäre, bleibt offen und steht deshalb nicht in den
+    // Bedingungen.
   },
 
   "asbach-balkonkraftwerke": {
@@ -3373,7 +3410,17 @@ export function fundingAmount(
   let sp = 0;
   const speicherKwh = anlage.speicherKwh;
   if (f.speicherPerKwh && speicherKwh >= (f.speicherMin ?? 0) && speicherKwh > 0) {
-    sp = speicherKwh * f.speicherPerKwh;
+    if (f.speicherSockel !== undefined) {
+      // Sockel plus Satz: Der Satz greift erst OBERHALB der Mindestkapazität,
+      // und gezählt werden volle kWh. Beides steht so in den Richtlinien dieser
+      // Bauform („für jede weitere kWh", „auf volle kWh abgerundet") — wer
+      // stattdessen die volle Kapazität mal dem Satz nimmt, zahlt den Sockel
+      // ein zweites Mal.
+      const weitere = Math.floor(speicherKwh) - (f.speicherMin ?? 0);
+      sp = f.speicherSockel + Math.max(0, weitere) * f.speicherPerKwh;
+    } else {
+      sp = speicherKwh * f.speicherPerKwh;
+    }
     if (f.speicherCap) sp = Math.min(sp, f.speicherCap);
   } else if (f.speicherTiers && speicherKwh >= (f.speicherMin ?? 0)) {
     sp = tierAmount(f.speicherTiers, speicherKwh);

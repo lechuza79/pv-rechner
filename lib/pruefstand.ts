@@ -24,9 +24,12 @@ import { DEFAULT_BALKON_CONFIG, BALKON_RECHT } from "./balkon-config";
 import { CO2_PRICE } from "./co2-config";
 import { EEG_REFORM_STAND } from "./eeg-reform-config";
 import { FEED_IN_GEPRUEFT_ISO } from "./feedin-config";
+import { FREIFLAECHE_GEPRUEFT_ISO, FREIFLAECHE_REVIEW_BY } from "./freiflaeche-config";
 import { GREEN_GAS_CONFIG } from "./greengas-config";
+import { MARKTWERT_GEPRUEFT_ISO, MARKTWERT_REVIEW_BY } from "./marktwert-config";
 import { DEFAULT_HEATPUMP_CONFIG } from "./heatpump-config";
 import { DEFAULT_PRICES } from "./prices-config";
+import { RECHTSTEXTE_GEPRUEFT_ISO } from "./rechtstexte-stand";
 
 export interface PruefEintrag {
   /** In der Sprache der Seite, damit die Meldung ohne Code-Kenntnis lesbar ist. */
@@ -190,6 +193,47 @@ export const PRUEFSTAND: PruefEintrag[] = [
     runbook: "scripts/eeg-verify.md",
   },
   {
+    was: "Börsenerlös ab 2027 und Kosten der Direktvermarktung",
+    feld: "MARKTWERT_GEPRUEFT_ISO",
+    geprueftIso: MARKTWERT_GEPRUEFT_ISO,
+    reviewBy: MARKTWERT_REVIEW_BY,
+    waechter: "eeg-verguetung-verify-halbjaehrlich",
+    rhythmus: "halbjährlich, 28. Januar und 28. Juli",
+    // Derselbe Lauf und dieselbe Grenze wie bei den Vergütungssätzen: Der
+    // Januar-Termin fällt mit der Veröffentlichung des Jahresmarktwerts
+    // zusammen, ein halbes Jahr plus Luft für einen ausgefallenen Lauf.
+    maxAlterTage: 210,
+    runbook: "scripts/marktwert-verify.md",
+  },
+  {
+    was: "Solar-Atlas: Zuschlagswerte der Freiflächen-Ausschreibungen",
+    feld: "FREIFLAECHE_GEPRUEFT_ISO",
+    geprueftIso: FREIFLAECHE_GEPRUEFT_ISO,
+    reviewBy: FREIFLAECHE_REVIEW_BY,
+    waechter: "solar-check-freiflaeche-verify",
+    rhythmus: "dreimal jährlich, 25. Januar/April/August — je gut sechs Wochen nach einem Gebotstermin",
+    // Der Rhythmus folgt der Behörde, nicht dem Kalender: Gebotstermine sind der
+    // 1. März, 1. Juli und 1. Dezember (§ 28a Abs. 1 EEG 2023), die Ergebnisse
+    // erscheinen wenige Wochen später. Die längste normale Lücke ist deshalb
+    // 25.08. → 25.01. = 153 Tage; 180 lässt einem ausgefallenen Lauf Luft und
+    // schlägt trotzdem an, bevor der übernächste Termin heranrückt.
+    maxAlterTage: 180,
+    runbook: "scripts/freiflaeche-verify.md",
+  },
+  {
+    was: "Datenschutzerklärung und Impressum gegen den Code",
+    feld: "RECHTSTEXTE_GEPRUEFT_ISO",
+    geprueftIso: RECHTSTEXTE_GEPRUEFT_ISO,
+    // Kein fachlicher Termin: Diese Texte altern nicht am Kalender, sondern an
+    // unseren eigenen Deploys. Ein Datum „bis wann neu geprüft" würde einen
+    // Rhythmus behaupten, den die Sache nicht hat — was zählt, ist allein, dass
+    // der Lauf stattfindet.
+    waechter: "solar-check-legal-waechter",
+    rhythmus: "quartalsweise, 15. Februar/Mai/August/November",
+    maxAlterTage: 120,
+    runbook: "scripts/rechtstexte-verify.md",
+  },
+  {
     was: "Anschaffungspreise und Strompreis",
     feld: "market_prices (Supabase), Rückfall: DEFAULT_PRICES.validFrom",
     // Kein Prüfdatum im Code: Der gültige Stand steht je Zeile in der Datenbank.
@@ -209,8 +253,15 @@ export const PRUEFSTAND: PruefEintrag[] = [
     // ein gemeinsames gibt es nicht — und es zu erfinden wäre genau das, was die
     // Förder-Regel verbietet.
     geprueftIso: DEFAULT_PRICES.validFrom,
-    waechter: "solar-check-foerder-waechter",
-    rhythmus: "quartalsweise, dazu täglicher Seiten-Abgleich",
+    // Der Name hier hieß bis 19.08.2026 "solar-check-foerder-waechter" — einen
+    // Auftrag dieses Namens gibt es nicht. Ein Prüfstand, der auf einen Lauf
+    // zeigt, den niemand starten kann, ist genau die Fehlerklasse, gegen die er
+    // gebaut wurde (Wächter-Gate, Regel 3: Aussagen über den eigenen Betrieb
+    // sind unbelegt, bis nachgesehen wurde). Die Namen sind an der
+    // Auftragsliste abgeglichen; ein Test kann das nicht halten, weil die
+    // Aufträge außerhalb des Repos liegen.
+    waechter: "foerder-vollpruefung-quartal + foerder-news-waechter",
+    rhythmus: "quartalsweise, dazu täglicher Seiten-Abgleich (Action foerder-watch.yml)",
     maxAlterTage: 120,
     runbook: "scripts/foerder-verify.md",
     standAusDb: true,
