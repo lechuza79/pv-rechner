@@ -501,6 +501,12 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
                 : region.region_id
           }
           vergleichTitel={`Top ${vergleich.was}${vergleich.wo ? ` ${vergleich.wo}` : ""}`}
+          eigenePopulation={region.population ?? null}
+          // Größenklassen gibt es nur für Gemeinden. Bei einer kreisfreien Stadt
+          // sind die Nachbarn in dieser Liste Kreise, bei einem Stadtstaat
+          // Bundesländer — dort wäre eine Klasse eine erfundene Einteilung.
+          klassenVergleich={vergleich.was === "Kommunen"}
+          vergleichWo={vergleich.wo}
           // DIE ZIELADRESSE DER ZEILEN — dieselbe Ebenen-Unterscheidung wie beim
           // regionId darüber, und aus demselben Grund: Steht die Vergleichsgruppe
           // eine Ebene höher, sind ihre Zeilen Kreise bzw. Bundesländer und

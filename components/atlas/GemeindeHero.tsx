@@ -5,7 +5,14 @@ import Link from "next/link";
 import DonutChart from "../charts/DonutChart";
 import { IconArrowRight, IconChevronDown, IconChevronLeft, IconChevronRight } from "../Icons";
 import { v, tokens, space } from "../../lib/theme";
-import { SEGMENT_OWNER, ownerAnker, ownerAusAnker, type AtlasOwner, type SiblingRow } from "../../lib/atlas";
+import {
+  SEGMENT_OWNER,
+  klassenNachbarn,
+  ownerAnker,
+  ownerAusAnker,
+  type AtlasOwner,
+  type SiblingRow,
+} from "../../lib/atlas";
 import {
   fmtAnteilProzent,
   fmtPvLeistung as fmtLeistung,
@@ -203,6 +210,9 @@ export default function GemeindeHero({
   siblings,
   regionId,
   vergleichTitel,
+  eigenePopulation,
+  klassenVergleich,
+  vergleichWo,
   basePath,
 }: {
   kpi: Record<Owner, KpiOwnerData>;
@@ -223,6 +233,18 @@ export default function GemeindeHero({
    *  Baden-Württemberg" — und bei einer kreisfreien Stadt ist der Bezug ein
    *  anderer als der Elternteil in der Hierarchie. */
   vergleichTitel?: string;
+  /**
+   * Einwohnerzahl dieser Kommune und die Ortsangabe der Vergleichsgruppe —
+   * zusammen ergeben sie die Größenklasse, in der verglichen wird.
+   *
+   * `klassenVergleich` ist NUR wahr, wenn hier wirklich Gemeinden gegen
+   * Gemeinden stehen. Bei einer kreisfreien Stadt sind die Nachbarn Kreise, bei
+   * einem Stadtstaat Bundesländer — für die gibt es keine Größenklassen, und
+   * eine Klasse darüberzulegen wäre eine erfundene Einteilung.
+   */
+  eigenePopulation?: number | null;
+  klassenVergleich?: boolean;
+  vergleichWo?: string;
   basePath: string;
 }) {
   const [owner, setOwner] = useState<Owner>("alle");
@@ -285,10 +307,39 @@ export default function GemeindeHero({
   const total = slices.reduce((a, s) => a + s.value, 0);
   const shown = active ? slices.find((s) => s.key === active) : null;
 
+  //
+  // VERGLICHEN WIRD INNERHALB DER GRÖSSENKLASSE.
+  //
+  // DER FALL (Melsungen, 20.08.2026): Die Liste führte alle 27 Gemeinden des
+  // Schwalm-Eder-Kreises gemeinsam — 13 kleine Gemeinden und 14 Gemeinden und
+  // Kleinstädte in EINER Rangliste. Melsungen stand dort mit 14.000
+  // Einwohnern auf Platz 27 von 27 und „−52 %", während der Satz oben sagte,
+  // der Ort liege 39 % über dem Landesschnitt. Beides stimmt, und trotzdem
+  // war die Liste die falsche Auskunft: Eine Pro-Kopf-Zahl fällt in einem Dorf
+  // schon durch drei Dächer aus, in einer Kleinstadt braucht es hunderte. Wer
+  // eine Stadt gegen Dörfer stellt, misst die Einwohnerzahl im Nenner, nicht
+  // den Ausbau.
+  //
+  // Dieselbe Einteilung, mit der die Ranglisten-Seiten und die Auszeichnungen
+  // seit dem 31.07.2026 arbeiten (lib/gemeindegroesse.ts) — sie stand hier nur
+  // noch nicht.
+  //
+  // NUR BEI GEMEINDEN: Eine kreisfreie Stadt vergleicht sich mit Kreisen, ein
+  // Stadtstaat mit Bundesländern. Für die gibt es keine Größenklassen.
+  const klassen = useMemo(
+    () => klassenNachbarn(siblings, eigenePopulation, !!klassenVergleich),
+    [siblings, eigenePopulation, klassenVergleich],
+  );
+
+  const vergleichsListe = klassen?.orte ?? siblings;
+  const listenTitel = klassen
+    ? `${klassen.klasse.label}${vergleichWo ? ` ${vergleichWo}` : ""}`
+    : (vergleichTitel ?? "Top Kommunen");
+
   // Rank every Gemeinde in the Kreis, client-side, from the same cells the big
   // table uses — that is what lets owner and metric recombine without a refetch.
   const ranked = useMemo(() => {
-    const rows = siblings
+    const rows = vergleichsListe
       .map((r) => {
         const a = r.sums[owner];
         const value =
@@ -310,7 +361,7 @@ export default function GemeindeHero({
       isSelf: x.region.region_id === regionId,
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [siblings, owner, metric, basePath, regionId]);
+  }, [vergleichsListe, owner, metric, basePath, regionId]);
 
   /**
    * Zwei Blöcke statt einer Liste — und das ist kein Layout-Detail.
@@ -449,7 +500,7 @@ export default function GemeindeHero({
 
         <div style={S.right}>
           <div className="rank-head">
-            <div style={S.rankTitle}>{vergleichTitel ?? "Top Kommunen"}</div>
+            <div style={S.rankTitle}>{listenTitel}</div>
             <MetricPicker metric={metric} onChange={setMetric} />
           </div>
 
@@ -493,7 +544,7 @@ export default function GemeindeHero({
       <Modal
         open={listeOffen}
         onClose={() => setListeOffen(false)}
-        title={vergleichTitel ?? "Rangliste"}
+        title={listenTitel}
         intro={`Vollständige Rangliste nach ${METRICS.find((m) => m.key === metric)?.label ?? "Leistung"}. Die eigene Zeile ist hervorgehoben; die Prozentzahl ist der Abstand zur Spitze.`}
         maxWidth={560}
       >

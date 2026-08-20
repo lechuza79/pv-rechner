@@ -12,6 +12,7 @@ import { unstable_cache } from "next/cache";
 import { loadChildren, LEVEL_LEN, type Level, type ChildRow } from "./mastr-data";
 import { withDbTimeout } from "./db-timeout";
 import { fmtSpeicherKwh, regionDisplayName } from "./atlas-format";
+import { klasseVon, type Groessenklasse } from "./gemeindegroesse";
 
 export { fmtPvLeistung, fmtSpeicherKwh, regionDisplayName } from "./atlas-format";
 
@@ -603,6 +604,51 @@ export type ChildYearRow = {
   kwp: number;
   kwh: number;
 };
+
+/**
+ * Ab so vielen Orten trägt eine Rangliste innerhalb einer Größenklasse.
+ *
+ * Darunter ist „Platz 2 von 3" keine Einordnung, sondern eine Zufallszahl —
+ * dann lieber die vollständige Liste mit ihrer bekannten Schwäche als eine
+ * leere Genauigkeit.
+ */
+export const MIN_ORTE_FUER_KLASSE = 5;
+
+/**
+ * Die Nachbarn, mit denen sich eine Kommune sinnvoll vergleicht: dieselbe
+ * Größenklasse.
+ *
+ * DER FALL (Melsungen, 20.08.2026): Die Nachbarschafts-Liste führte alle 27
+ * Gemeinden des Schwalm-Eder-Kreises gemeinsam — 13 kleine Gemeinden und 14
+ * Gemeinden und Kleinstädte in EINER Rangliste. Melsungen stand dort mit 14.000
+ * Einwohnern auf Platz 27 von 27, während der Einleitungssatz sagte, der Ort
+ * liege 39 % über dem Landesschnitt. Beides stimmt, und trotzdem war die Liste
+ * die falsche Auskunft: Eine Pro-Kopf-Zahl fällt in einem Dorf schon durch drei
+ * Dächer aus, in einer Kleinstadt braucht es hunderte. Wer eine Stadt gegen
+ * Dörfer stellt, misst die Einwohnerzahl im Nenner, nicht den Ausbau.
+ *
+ * Dieselbe Einteilung, mit der die Ranglisten-Seiten und die Auszeichnungen
+ * seit dem 31.07.2026 arbeiten — sie stand in dieser Liste nur noch nicht.
+ *
+ * Gibt `null` zurück, wenn nicht nach Klassen verglichen werden kann oder darf:
+ * ohne Einwohnerzahl, bei zu wenigen Orten in der Klasse — und ausdrücklich
+ * überall dort, wo die Nachbarn gar keine Gemeinden sind (kreisfreie Stadt:
+ * Kreise, Stadtstaat: Bundesländer). Dann bleibt es bei der vollen Liste.
+ */
+export function klassenNachbarn<T extends { population: number | null }>(
+  nachbarn: T[],
+  eigenePopulation: number | null | undefined,
+  /** Nur wahr, wenn hier wirklich Gemeinden gegen Gemeinden stehen. */
+  sindGemeinden: boolean,
+): { orte: T[]; klasse: Groessenklasse } | null {
+  if (!sindGemeinden || !eigenePopulation) return null;
+  const eigene = klasseVon(eigenePopulation);
+  if (!eigene) return null;
+  const orte = nachbarn.filter(
+    (n) => n.population && klasseVon(n.population)?.slug === eigene.slug,
+  );
+  return orte.length >= MIN_ORTE_FUER_KLASSE ? { orte, klasse: eigene } : null;
+}
 
 /** Die drei Summen, aus denen die Nachbarschafts-Liste ihre vier Kennzahlen
  *  bildet (je Einwohner = kwp ÷ Einwohner). */
