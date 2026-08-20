@@ -658,13 +658,16 @@ describe("HTML-Fassung", () => {
   });
 
   // Die Signatur steht mitten in einem Absatz („Mit freundlichen Grüßen", Name,
-  // Rolle) — die leise Auszeichnung muss also zeilenweise greifen. Und sie gilt
-  // der GANZEN Signatur: Zuerst war nur die Rollenzeile klein, der Name darüber
-  // blieb groß und wurde dadurch zur größten Zeile des Briefes.
-  it("macht die ganze Signatur leise, nicht nur die Rollenzeile", () => {
+  // Rolle) — die leise Auszeichnung muss also zeilenweise greifen. Sie beginnt
+  // aber ERST UNTER DEM NAMEN: In einem Brief steht der Absender in derselben
+  // Größe wie das, was er schreibt. Eine Zwischenfassung setzte auch den Namen
+  // klein, weil er in einem früheren Stand als größte Zeile wirkte — das lag am
+  // damals zu kleinen Fließtext, nicht am Namen.
+  it("setzt die Rolle leise, den Namen aber in Textgröße", () => {
     const h = renderOutreachDraft(BASIS).bodyHtml;
-    expect(h).toMatch(/<span style="font-size:12px">Sebastian Schäder<\/span>/);
     expect(h).toMatch(/<span style="font-size:12px">Betreiber solar-check\.io<\/span>/);
+    expect(h).not.toMatch(/<span style="font-size:12px">Sebastian Schäder<\/span>/);
+    expect(h).toContain("Sebastian Schäder");
     // LEISER HEISST KLEINER, NICHT GRAUER: Grau bleibt allein im Fuß.
     expect(h).not.toMatch(/<span style="[^"]*color:[^"]*">Sebastian/);
     // Die Grußformel darüber gehört zum Brief und bleibt normal.

@@ -213,11 +213,20 @@ const LEISE_ZEILEN = [
   /^Quelle:/,
   /^Impressum:/,
   /^Datenschutz:/,
-  // JEDE Zeile der Signatur, aus der Signatur selbst abgeleitet. Zuerst stand
-  // hier nur „Betreiber solar-check.io" von Hand — der Name darüber blieb groß
-  // und wirkte dadurch als größte Zeile des ganzen Briefes. Wer die Signatur
-  // ändert, ändert damit auch, was leise gesetzt wird.
-  ...SIGNATURE.split("\n").map((z) => new RegExp(`^${z.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`)),
+  // DER NAME BLEIBT IN TEXTGRÖSSE, alles darunter wird leise.
+  //
+  // Eine Zwischenfassung setzte die ganze Signatur klein, weil der Name in
+  // einem früheren Stand als größte Zeile des Briefes wirkte — das lag aber am
+  // damals zu kleinen Fließtext, nicht am Namen. In einem Brief steht der
+  // Absender in derselben Größe wie das, was er schreibt; klein gesetzt liest
+  // er sich wie eine Fußnote in eigener Sache.
+  //
+  // Abgeleitet, nicht getippt: Wer die Signatur um eine Zeile erweitert,
+  // bekommt sie automatisch leise — und wer den Namen ändert, muss nichts
+  // nachziehen.
+  ...SIGNATURE.split("\n")
+    .slice(1)
+    .map((z) => new RegExp(`^${z.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`)),
 ];
 
 /**
