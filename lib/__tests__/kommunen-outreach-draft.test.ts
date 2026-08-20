@@ -178,6 +178,10 @@ describe("Kein Textbaustein-Unfall", () => {
         if (i <= 1) continue;
         // Aufzählungen, Trennlinien und die Meldung selbst sind keine Sätze.
         if (/^[·─—\d]/.test(erstesZeichen)) continue;
+        // Die Kontaktzeilen der Signatur ebenso wenig: Eine Adresse schreibt
+        // man klein, auch am Absatzanfang. Geprüft wird der Fließtext — hier
+        // ginge es sonst darum, „Solar-check.io" zu schreiben.
+        if (/^(solar-check\.io|\d{4}\/)/.test(absatz.trimStart())) continue;
         expect(
           erstesZeichen === erstesZeichen.toUpperCase(),
           `funktion=${funktion}, Absatz ${i}: „${absatz.slice(0, 40)}…"`,
@@ -566,8 +570,13 @@ describe("Der Brief bleibt lesbar kurz", () => {
   });
 
   it("kommt drumherum mit höchstens acht Absätzen aus", () => {
+    // Die Schranke zählt Absätze als Näherung für Länge. Die Signatur trägt
+    // seit dem 20.08.2026 einen zweiten Block (Adresse und Telefonnummer unter
+    // dem Namen, so wie im Mailprogramm des Betreibers) — das ist eine
+    // Absatzgrenze mehr, aber keine Aussage mehr. Deshalb 10 statt 9; die
+    // Zeichengrenze darüber bleibt die schärfere Bremse.
     const absaetze = rahmen(MIT_ALLEM).split(/\n\n+/).filter((x) => x.trim());
-    expect(absaetze.length, absaetze.map((a) => a.slice(0, 36)).join(" | ")).toBeLessThanOrEqual(9);
+    expect(absaetze.length, absaetze.map((a) => a.slice(0, 36)).join(" | ")).toBeLessThanOrEqual(10);
   });
 
   // WIE VIELE LINKS DARF EIN BRIEF ANS RATHAUS TRAGEN?
@@ -663,11 +672,17 @@ describe("HTML-Fassung", () => {
   // Größe wie das, was er schreibt. Eine Zwischenfassung setzte auch den Namen
   // klein, weil er in einem früheren Stand als größte Zeile wirkte — das lag am
   // damals zu kleinen Fließtext, nicht am Namen.
-  it("setzt die Rolle leise, den Namen aber in Textgröße", () => {
+  it("setzt den Titel leise, Name und Kontakt aber in Textgröße", () => {
     const h = renderOutreachDraft(BASIS).bodyHtml;
-    expect(h).toMatch(/<span style="font-size:12px">Betreiber solar-check\.io<\/span>/);
+    expect(h).toMatch(/<span style="font-size:12px">Dipl\. Des\.<\/span>/);
     expect(h).not.toMatch(/<span style="font-size:12px">Sebastian Schäder<\/span>/);
     expect(h).toContain("Sebastian Schäder");
+    // Eine Telefonnummer, die zum Anruf einladen soll, gehört nicht in die
+    // kleinste Zeile des Briefes.
+    expect(h).not.toMatch(/<span style="font-size:12px">0177/);
+    // Die Adresse in der Signatur ist anklickbar — sonst ist sie im HTML die
+    // einzige tote Adresse des Briefes.
+    expect(h).toContain('<a href="https://solar-check.io">solar-check.io</a>');
     // LEISER HEISST KLEINER, NICHT GRAUER: Grau bleibt allein im Fuß.
     expect(h).not.toMatch(/<span style="[^"]*color:[^"]*">Sebastian/);
     // Die Grußformel darüber gehört zum Brief und bleibt normal.

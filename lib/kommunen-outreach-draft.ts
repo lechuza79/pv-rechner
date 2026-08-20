@@ -206,27 +206,45 @@ export type OutreachDraft = { subject: string; body: string; bodyHtml: string; m
  * kennt der Empfänger. Wer sie überschreibt, macht den Brief auf fremden
  * Geräten kleiner statt größer.
  */
+/**
+ * Die Signatur ist die aus dem Mailprogramm des Betreibers (Vorgabe 20.08.2026)
+ * — dieselbe, die jemand sieht, der später auf den Brief antwortet. Zwei
+ * Fassungen desselben Absenders wären in genau dem Moment sichtbar, in dem
+ * jemand prüft, ob da wirklich ein Mensch sitzt.
+ *
+ * „Betreiber solar-check.io" ist bewusst raus: Die Rolle steht schon im ersten
+ * Satz des Briefes, und wer sie unter den Namen setzt, sagt sie zweimal.
+ *
+ * Die Telefonnummer ist eine Entscheidung des Betreibers, keine Pflicht — für
+ * die Anbieterkennzeichnung genügt ein Weg für unmittelbaren Kontakt, und den
+ * trägt die Mailadresse. Sie steht hier, weil eine Pressestelle mit einer
+ * Rückfrage zu einer Zahl eher anruft als schreibt.
+ */
+const NAMENSZUSATZ = "Dipl. Des.";
+
 const SIGNATURE = `Sebastian Schäder
-Betreiber solar-check.io`;
+${NAMENSZUSATZ}
+
+solar-check.io
+0177/2897086`;
 
 const LEISE_ZEILEN = [
   /^Quelle:/,
-  /^Impressum:/,
-  /^Datenschutz:/,
-  // DER NAME BLEIBT IN TEXTGRÖSSE, alles darunter wird leise.
+  // IMPRESSUM UND DATENSCHUTZ STEHEN HIER NICHT MEHR.
   //
-  // Eine Zwischenfassung setzte die ganze Signatur klein, weil der Name in
-  // einem früheren Stand als größte Zeile des Briefes wirkte — das lag aber am
-  // damals zu kleinen Fließtext, nicht am Namen. In einem Brief steht der
-  // Absender in derselben Größe wie das, was er schreibt; klein gesetzt liest
-  // er sich wie eine Fußnote in eigener Sache.
+  // Sie liegen im Fuß, und der setzt seine Größe bereits am Absatz. Die Zeilen
+  // trugen zusätzlich diese Auszeichnung — 12px INNERHALB des Fußes — und waren
+  // damit die kleinste Schrift des ganzen Briefes. Eine Vergrößerung des Fußes
+  // wirkte an ihnen deshalb gar nicht: Die innere Angabe gewinnt.
   //
-  // Abgeleitet, nicht getippt: Wer die Signatur um eine Zeile erweitert,
-  // bekommt sie automatisch leise — und wer den Namen ändert, muss nichts
-  // nachziehen.
-  ...SIGNATURE.split("\n")
-    .slice(1)
-    .map((z) => new RegExp(`^${z.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`)),
+  // Allgemein: Zwei Größenangaben für dieselbe Zeile sind keine Staffelung,
+  // sondern ein Wettlauf, den man erst am erzeugten HTML sieht.
+  // NUR DER TITEL IST LEISE. Name, Adresse und Nummer stehen in Textgröße:
+  // In einem Brief steht der Absender so groß wie das, was er schreibt, und
+  // eine Telefonnummer, die zum Anruf einladen soll, gehört nicht in die
+  // kleinste Zeile der Seite. Eine Zwischenfassung setzte die ganze Signatur
+  // klein — der Grund dafür lag im damals zu kleinen Fließtext, nicht am Namen.
+  new RegExp(`^${NAMENSZUSATZ.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`),
 ];
 
 /**
@@ -265,8 +283,15 @@ export function briefAlsHtml(body: string): string {
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#39;");
   // Adressen anklickbar machen. Der Punkt am Satzende gehört nicht zur Adresse.
+  //
+  // Dazu die EIGENE Domain ohne Protokoll: In der Signatur steht „solar-check.io"
+  // so, wie man es aufschreibt, und im HTML wäre das sonst als einzige Adresse
+  // des Briefes tote Schrift. Bewusst nur unsere eigene Domain — eine allgemeine
+  // Regel für „Wort mit Punkt drin" macht aus jedem Dateinamen einen Link.
   const verlinke = (t: string) =>
-    t.replace(/https?:\/\/[^\s<]+[^\s<.,;:)]/g, (u) => `<a href="${u}">${u}</a>`);
+    t
+      .replace(/https?:\/\/[^\s<]+[^\s<.,;:)]/g, (u) => `<a href="${u}">${u}</a>`)
+      .replace(/(^|[\s(])(solar-check\.io)(?![\w./-])/g, (_, vor, d) => `${vor}<a href="https://${d}">${d}</a>`);
 
   const [oben, ...unten] = body.split(`\n${FUSS_TRENNER}\n`);
   // Zeilenweise, damit eine leise Zeile MITTEN in einem Absatz leise sein kann —
@@ -324,7 +349,11 @@ export function briefAlsHtml(body: string): string {
     ? `\n<hr style="border:0;border-top:1px solid ${RAHMEN};margin:24px 0 12px">\n` +
       fussText
         .split("\n\n")
-        .map((a) => absatz(a, `color:${GRAU};font-size:12px;line-height:1.5`))
+        // 13px, nicht 12: Der Fuß soll als Fuß erkennbar sein, aber die
+        // Pflichtangaben muss man auch lesen können — im echten Postfach war
+        // die Impressum-Zeile die kleinste Schrift des Briefes (Betreiber,
+        // 20.08.2026). Grau trägt den Unterschied bereits.
+        .map((a) => absatz(a, `color:${GRAU};font-size:13px;line-height:1.5`))
         .join("\n")
     : "";
   return `<div style="max-width:640px;${TEXT_STIL}">\n${kopf}${fuss}\n</div>`;
