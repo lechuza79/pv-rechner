@@ -327,12 +327,28 @@ export function vergleichsBasisPfad(
  * Ohne Groessenklasse landet der Leser auf der Uebersicht aller Klassen und
  * sucht dort vergeblich seinen "Platz 1 von 119".
  */
+/**
+ * Sprungziel auf der Ranking-Seite, dort wo die Liste beginnt.
+ *
+ * Steht hier und nicht in der Seite, weil zwei Stellen ihn kennen müssen: die
+ * Seite, die ihn setzt, und `ranglisteUrl`, die ihn anhängt. Ein Anker, der an
+ * einer der beiden Stellen umbenannt wird, führt ins Leere — und ein toter
+ * Anker sieht in keinem Test und in keinem Browser nach einem Fehler aus, der
+ * Leser landet einfach am Seitenanfang.
+ */
+export const RANGLISTE_ANKER = "rangliste";
+
 export function ranglisteUrl(
   katSlug: string | undefined,
   klasseSlug: string | null,
   gebiet: (string | null | undefined)[],
+  /** Bis zur Liste springen statt an den Seitenanfang. Für Links, die eine
+   *  konkrete Platzierung belegen sollen (Outreach-Brief) — nicht für die
+   *  Navigation, wo der Leser die Umschalter oben sehen soll. */
+  mitAnker = false,
 ): string | null {
   if (!katSlug) return null;
   const teile = gebiet.filter((x): x is string => !!x);
-  return ["/solar-atlas/ranking", katSlug, ...(klasseSlug ? [klasseSlug] : []), ...teile].join("/");
+  const pfad = ["/solar-atlas/ranking", katSlug, ...(klasseSlug ? [klasseSlug] : []), ...teile].join("/");
+  return mitAnker ? `${pfad}#${RANGLISTE_ANKER}` : pfad;
 }

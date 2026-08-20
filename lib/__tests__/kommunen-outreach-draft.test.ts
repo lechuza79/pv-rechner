@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { renderOutreachDraft, renderMeldung, kleinKlasse, type DraftContext } from "../kommunen-outreach-draft";
 import { AWARD_CATEGORIES } from "../awards";
+import type { GemeindeVergleich } from "../gemeinde-vergleich";
+import { RANGLISTE_ANKER } from "../atlas-ranking";
 
 // Die Fälle stammen aus dem Gegenlesen echter Entwürfe (27./28.07.2026) — jeder
 // „nicht"-Test steht für einen Fehler, der wirklich im Brief stand.
@@ -221,13 +223,35 @@ describe("Jeder Link im Anschreiben ist die echte Adresse", () => {
     expect(`${d.subject} ${d.body} ${d.meldung}`).not.toMatch(/zähl|Zähl|Klick|tracking/i);
   });
 
-  // ENTSCHEIDUNG DES BETREIBERS (19.08.2026): Die Ranglisten-Zeile ist raus,
-  // zugunsten des Hinweises auf die Grafik. Nachprüfbar bleibt der Rang über die
-  // Gemeindeseite, die in der Meldung steht und selbst zu den Ranglisten führt.
-  it("trägt keine Ranglisten-Zeile mehr", () => {
-    const mit = renderOutreachDraft({ ...BASIS, ranglisteUrl: "https://solar-check.io/solar-atlas/ranking/x" });
-    expect(mit.body).not.toContain("Vollständige Rangliste");
-    expect(mit.body).not.toContain("/solar-atlas/ranking/x");
+  // ENTSCHEIDUNG DES BETREIBERS (20.08.2026): Die Ranglisten-Zeile ist zurück
+  // — als BELEG der behaupteten Platzierung, mit Sprung in die Tabelle.
+  //
+  // Am 19.08.2026 war sie gestrichen worden (dritter Link im Brief), weil der
+  // Rang über die Gemeindeseite auffindbar bleibt. Genau daran hakte es: Der
+  // Brief behauptet „Platz 3 von 240", und wer das prüfen will, musste sich
+  // von der Gemeindeseite zur richtigen Liste durchklicken — Kategorie,
+  // Zeitraum und Vergleichsgruppe raten, ohne zu wissen, welche gemeint ist.
+  // Ein Beleg, den man suchen muss, belegt nichts.
+  it("belegt die Platzierung mit einem Link, der in der Tabelle landet", () => {
+    const mit = renderOutreachDraft({
+      ...BASIS,
+      ranglisteUrl: `https://solar-check.io/solar-atlas/ranking/x#${RANGLISTE_ANKER}`,
+    });
+    expect(mit.body).toContain(`/solar-atlas/ranking/x#${RANGLISTE_ANKER}`);
+  });
+
+  it("die Ranglisten-Zeile steht im Brief, NICHT in der Meldung", () => {
+    // Die Meldung ist der Text, den die Gemeinde veröffentlicht. Sie trägt
+    // genau einen Link — die Gemeindeseite. Ein zweiter darin wäre ein Link,
+    // den eine Pressestelle beim Kürzen zuerst herausnimmt, und dabei
+    // erwischt sie womöglich den falschen.
+    const d = renderOutreachDraft({ ...BASIS, ranglisteUrl: "https://solar-check.io/solar-atlas/ranking/x#rangliste" });
+    expect(d.meldung).not.toContain("/solar-atlas/ranking/");
+  });
+
+  it("ohne Rangliste bleibt die Zeile weg statt leer dazustehen", () => {
+    const ohne = renderOutreachDraft({ ...BASIS, ranglisteUrl: null });
+    expect(ohne.body).not.toContain("Die Platzierung im Einzelnen");
   });
 
   it("der Link auf die Gemeindeseite bleibt — er ist der Zweck des Ganzen", () => {
@@ -466,8 +490,12 @@ describe("Weitere Platzierungen im Brief", () => {
     expect(renderOutreachDraft(MIT).body).not.toMatch(/von 1840/);
   });
 
-  it("verlinkt die Rangliste NICHT mehr im Brief", () => {
-    expect(renderOutreachDraft(MIT).body).not.toContain(MIT.ranglisteUrl as string);
+  it("verlinkt die Rangliste im Brief — sie belegt die Aufzählung darüber", () => {
+    // Umgekehrt seit dem 20.08.2026 (Entscheidung des Betreibers): Der Absatz
+    // darüber zählt bis zu drei Platzierungen auf. Ohne Beleg ist das eine
+    // Behauptungsliste; mit der Adresse, die Kategorie, Größenklasse und
+    // Gebiet bereits ausgewählt trägt, ist es eine nachprüfbare.
+    expect(renderOutreachDraft(MIT).body).toContain(MIT.ranglisteUrl as string);
   });
 
   it("lässt die weiteren Platzierungen aus der Meldung heraus", () => {
@@ -555,32 +583,45 @@ describe("Der Brief bleibt lesbar kurz", () => {
   const rahmen = (c: DraftContext) =>
     renderOutreachDraft(c).body.replace(/-{40}[\s\S]*?-{40}/, "");
 
-  it("hält die Verpackung im aufwendigsten Fall unter 1.400 Zeichen", () => {
+  it("hält die Verpackung im aufwendigsten Fall unter 1.500 Zeichen", () => {
     // Die Grenze ist am 19.08.2026 von 1.350 auf 1.400 gegangen: Die
     // Weiterleitungs-Bitte nennt jetzt Website, Mitteilungsblatt und Social
     // Media statt nur „Website- oder Pressestelle". Das sind 40 Zeichen für
     // einen Kanal, über den kleine Gemeinden häufiger erreichbar sind als über
     // eine Pressestelle, die es dort nicht gibt.
+    //
+    // Am 20.08.2026 auf 1.500: Die Ranglisten-Zeile ist zurück (Entscheidung
+    // des Betreibers) und kostet rund 100 Zeichen, davon zwei Drittel die
+    // Adresse selbst. Sie ist der einzige Beleg für die Platzierungen, die der
+    // Brief behauptet — dafür ist eine Zeile der richtige Preis.
+    //
+    // DIE GRENZE WIRD NICHT ANGEHOBEN, DAMIT ETWAS DURCHGEHT: Jede Erhöhung
+    // steht hier mit dem, was für sie eingetauscht wurde. Wächst der Brief
+    // ohne einen solchen Eintrag, ist das der Aufsatz, der er einmal war.
     const r = rahmen(MIT_ALLEM);
-    expect(r.length, `${r.length} Zeichen Verpackung`).toBeLessThanOrEqual(1400);
+    expect(r.length, `${r.length} Zeichen Verpackung`).toBeLessThanOrEqual(1500);
   });
 
-  it("kommt drumherum mit höchstens acht Absätzen aus", () => {
+  it("kommt drumherum mit höchstens zehn Absätzen aus", () => {
+    // Von neun auf zehn am 20.08.2026 — die Ranglisten-Zeile steht auf einer
+    // eigenen: Eine Adresse, die im Fließtext klebt, überlebt weder das
+    // Kürzen noch das Kopieren zuverlässig.
     const absaetze = rahmen(MIT_ALLEM).split(/\n\n+/).filter((x) => x.trim());
-    expect(absaetze.length, absaetze.map((a) => a.slice(0, 36)).join(" | ")).toBeLessThanOrEqual(9);
+    expect(absaetze.length, absaetze.map((a) => a.slice(0, 36)).join(" | ")).toBeLessThanOrEqual(10);
   });
 
   // WIE VIELE LINKS DARF EIN BRIEF ANS RATHAUS TRAGEN?
   //
-  // Er trug einmal vier: Zähl-Weiterleitung, Gemeindeseite, Rangliste,
-  // Impressum/Datenschutz. Übrig sind die, die einen Zweck haben: die
-  // Gemeindeseite (sie ist der Ask — sie soll veröffentlicht werden), die
+  // Er trug einmal vier, davon eine Zähl-Weiterleitung. Übrig sind die mit
+  // Zweck: die Gemeindeseite (sie ist der Ask — sie soll veröffentlicht
+  // werden), die Rangliste als Beleg der behaupteten Platzierung, die
   // Pflichtangaben, und in der Widget-Fassung die Vorschau der Grafik.
-  it("trägt keine zusätzlichen Beleg-Links mehr", () => {
+  it("nennt die Gemeindeseite genau einmal — im Meldungstext, wo sie hingehört", () => {
     const body = renderOutreachDraft(MIT_ALLEM).body;
+    // Die alte Beschriftung ist weg: Sie stand im Fließtext („· Vollständige
+    // Rangliste") und wurde beim Kürzen mitgenommen. Die Zeile steht jetzt
+    // allein.
     expect(body).not.toContain("Vollständige Rangliste");
-    expect(body).not.toMatch(/·\s+Vollständige Rangliste/);
-    // Die Gemeindeseite genau einmal — im Meldungstext, wo sie hingehört.
     expect(body.split(MIT_ALLEM.pageUrl as string).length - 1).toBe(1);
   });
 });
@@ -589,8 +630,19 @@ describe("Der Brief bleibt lesbar kurz", () => {
 // 19.08.2026): „13,2 MWp" sagt einer Pressestelle nichts, „42 % mehr als im
 // Durchschnitt" sagt ihr genau das, was sie veröffentlichen will.
 describe("Vergleich zum Landesschnitt", () => {
+  /** Eine Pro-Kopf-Lage mit vorgegebenen Abständen. `gesamt` steht getrennt,
+   *  weil genau das Auseinandergehen der beiden Größen der Anlass für die
+   *  gemeinsame Quelle war (siehe lib/gemeinde-vergleich.ts). */
+  const vgl = (privatAbstand: number, gesamtAbstand = privatAbstand): GemeindeVergleich => ({
+    privat: { proKopf: 200 * (1 + privatAbstand), landProKopf: 200, abstand: privatAbstand },
+    gesamt: { proKopf: 500 * (1 + gesamtAbstand), landProKopf: 500, abstand: gesamtAbstand },
+    blName: "Bayern",
+  });
+  const meldung = (v: GemeindeVergleich | null) =>
+    renderMeldung({ ...BASIS, vergleich: v, vergleichBezug: "in Bayern" });
+
   it("nennt den Vorsprung in Prozent", () => {
-    const m = renderMeldung({ ...BASIS, vergleich: { anteil: 0.42, bezug: "in Bayern" } });
+    const m = meldung(vgl(0.42));
     expect(m).toContain("42 % mehr Solarleistung als im Durchschnitt in Bayern");
     // Ausdrücklich auf den PRIVATEN Dächern — die Gesamtleistung gehört
     // vielerorts einem Freiflächenpark.
@@ -598,20 +650,42 @@ describe("Vergleich zum Landesschnitt", () => {
   });
 
   it("schweigt, wo der Ort unter dem Schnitt liegt", () => {
-    const m = renderMeldung({ ...BASIS, vergleich: { anteil: -0.3, bezug: "in Bayern" } });
-    expect(m).not.toContain("Durchschnitt");
+    expect(meldung(vgl(-0.3))).not.toContain("Durchschnitt");
   });
 
   it("schweigt bei einem Vorsprung, den niemand merkt", () => {
-    const m = renderMeldung({ ...BASIS, vergleich: { anteil: 0.04, bezug: "in Bayern" } });
-    expect(m).not.toContain("Durchschnitt");
+    expect(meldung(vgl(0.04))).not.toContain("Durchschnitt");
   });
 
   it("macht aus einem sehr großen Vorsprung ein Vielfaches", () => {
     // „280 % mehr" liest niemand als Größenordnung.
-    const m = renderMeldung({ ...BASIS, vergleich: { anteil: 2.8, bezug: "in Bayern" } });
+    const m = meldung(vgl(2.8));
     expect(m).toContain("das 3,8-fache des Durchschnitts in Bayern");
     expect(m).not.toContain("280 %");
+  });
+
+  //
+  // DIE BREMSE VOM 19.08.2026 IST WEG — UND ZWAR ERSETZT, NICHT GESTRICHEN.
+  //
+  // Solange Brief und Gemeindeseite den Vergleich getrennt rechneten, musste
+  // der Brief schweigen, sobald die GESAMTleistung unter dem Landesschnitt lag
+  // (`seiteSagtNachzuegler` in lib/kommunen-brief.ts) — sonst hätte die
+  // verlinkte Seite ihm scheinbar widersprochen. Er verlor damit seine einzige
+  // eingängige Zahl, ausgerechnet in den Orten, in denen die Bürger viel getan
+  // haben und ein Investorenpark fehlt.
+  //
+  // Jetzt nennt die Seite beide Größen und kennzeichnet die schwächere als
+  // „für alle Anlagen". Der Brief darf deshalb wieder sprechen.
+  it("spricht auch dort, wo die Gesamtleistung unter dem Landesschnitt liegt", () => {
+    const m = meldung(vgl(0.39, -0.06));
+    expect(m).toContain("39 % mehr Solarleistung als im Durchschnitt in Bayern");
+  });
+
+  it("die Gesamtleistung entscheidet NICHT mehr, ob der Brief etwas behauptet", () => {
+    // Derselbe private Vorsprung, einmal mit starker und einmal mit schwacher
+    // Gesamtleistung: derselbe Satz. Ginge das auseinander, wäre die Bremse
+    // durch die Hintertür zurück.
+    expect(meldung(vgl(0.39, 1.2))).toBe(meldung(vgl(0.39, -0.06)));
   });
 
   it("kommt ohne Vergleich aus", () => {

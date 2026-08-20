@@ -18,6 +18,7 @@
 // eine andere Zahl steht als auf der verlinkten Seite.
 
 import { kurzOrtsname } from "./atlas-orte";
+import { briefVergleichSatz, type GemeindeVergleich } from "./gemeinde-vergleich";
 import { tokens } from "./theme";
 
 // Farben NIE getippt — auch nicht in einer Mail (CLAUDE.md, Farb-Single-Source).
@@ -131,11 +132,18 @@ export type DraftContext = {
    *  Grundmenge kann jede Größe vortäuschen — siehe `basis` in lib/awards.ts. */
   rangBasis?: string | null;
   /**
-   * Wie viel mehr Solarleistung auf den PRIVATEN Dächern steht als im
-   * Landesschnitt, als Anteil (0,42 = 42 % mehr).
+   * Die Pro-Kopf-Lage des Orts — DIESELBE Rechnung, aus der die verlinkte
+   * Gemeindeseite ihren Einleitungssatz bildet (lib/gemeinde-vergleich.ts).
    *
-   * WARUM AUF DEN PRIVATEN DÄCHERN und nicht auf der Gesamtleistung: Die
-   * Gesamtleistung gehört in vielen Orten zu großen Teilen einem
+   * WARUM NICHT MEHR NUR EINE ZAHL: Der Brief bekam bis zum 20.08.2026 einen
+   * fertigen Anteil hereingereicht und formulierte daraus selbst. Die Seite
+   * rechnete parallel ihren eigenen — auf einer anderen Messgröße. Damit
+   * konnten sich Brief und verlinkte Seite widersprechen, ohne dass eine der
+   * beiden Stellen davon etwas wusste. Jetzt kommt beides aus einem Objekt,
+   * und der Satz entsteht in `briefVergleichSatz`.
+   *
+   * WARUM DER BRIEF DIE PRIVATEN DÄCHER NENNT und nicht die Gesamtleistung:
+   * Die Gesamtleistung gehört in vielen Orten zu großen Teilen einem
    * Freiflächenpark. Ein Ort käme damit auf „380 % über dem Landesschnitt",
    * ohne dass ein einziger Bürger etwas dafür getan hätte — und die Meldung
    * handelt von den Bürgern.
@@ -144,7 +152,11 @@ export type DraftContext = {
    * „42 % mehr als im hessischen Durchschnitt" sagt ihr genau das, was sie
    * veröffentlichen will (Vorgabe des Betreibers, 19.08.2026).
    */
-  vergleich?: { anteil: number; bezug: string } | null;
+  vergleich?: GemeindeVergleich | null;
+  /** Ortsangabe im Dativ für den Vergleichssatz („in Hessen"). Steht getrennt,
+   *  weil der Vergleich selbst keinen Satzbau kennt — die Seite schreibt
+   *  „dem Hessen-Schnitt", der Brief „im Durchschnitt in Hessen". */
+  vergleichBezug?: string;
   /**
    * Empfängeradresse, NUR für die Herkunftsangabe nach Art. 14.
    *
@@ -354,14 +366,9 @@ export function herkunftsangabe(ortsname: string, empfaenger?: string | null): s
  * hätte daraus „gemeinden und Kleinstädten" gemacht. Deshalb eine ausdrückliche
  * Liste statt einer Heuristik.
  */
-/**
- * Ab wann ein Vorsprung eine Meldung wert ist.
- *
- * Unter zehn Prozent ist der Unterschied für einen Leser keiner, und er wäre
- * auch keiner: Die Einwohnerzahlen stammen aus einer anderen Quelle als die
- * Anlagendaten, und beide haben ihren eigenen Stichtag.
- */
-const MIN_VERGLEICH = 0.1;
+// Die Schwelle „ab wann ein Vorsprung eine Meldung wert ist" stand hier als
+// MIN_VERGLEICH und lebt jetzt in lib/gemeinde-vergleich.ts — dort sieht sie
+// auch die Gemeindeseite, die denselben Vergleich zieht.
 
 const KLASSEN_ADJEKTIVE = ["Kleinen", "Mittelgroßen", "Großen", "Kleine", "Mittelgroße", "Große"];
 
@@ -426,20 +433,14 @@ export function renderMeldung(c: DraftContext): string {
   // an, keine Bilanz. Liegt der Ort darunter, steht dort schlicht nichts — die
   // verlinkte Gemeindeseite sagt es ohnehin, und zwar in beide Richtungen.
   //
-  // Ab dem Dreifachen wird aus dem Prozentsatz ein Vielfaches: „280 % mehr"
-  // liest niemand als Größenordnung, „fast das Vierfache" schon. Dieselbe
-  // Schwelle wie auf der Gemeindeseite.
-  const vergleichSatz = (() => {
-    const a = c.vergleich?.anteil;
-    if (a == null || !Number.isFinite(a) || a < MIN_VERGLEICH) return "";
-    const bezug = c.vergleich!.bezug;
-    if (a >= 2) {
-      const fach = (a + 1).toLocaleString("de-DE", { maximumFractionDigits: 1 });
-      return ` Je Einwohner steht auf den privaten Dächern das ${fach}-fache des Durchschnitts ${bezug}.`;
-    }
-    const pct = Math.round(a * 100);
-    return ` Je Einwohner steht auf den privaten Dächern ${pct} % mehr Solarleistung als im Durchschnitt ${bezug}.`;
-  })();
+  // Der Satz selbst entsteht in lib/gemeinde-vergleich.ts, gemeinsam mit dem
+  // Einleitungssatz der verlinkten Seite. Zwei Fassungen desselben Vergleichs
+  // sind hier schon einmal auseinandergelaufen — bis hin zu zwei verschiedenen
+  // Schwellen für „ab wann ein Vielfaches statt eines Prozentsatzes", die
+  // beide im Kommentar als dieselbe beschrieben waren.
+  const vergleichSatz = c.vergleich
+    ? briefVergleichSatz(c.vergleich, c.vergleichBezug ?? "")
+    : "";
 
   const unterDen = `unter den ${kleinKlasse(c.gruppe)}`;
 
@@ -584,14 +585,33 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
     : "";
 
   //
-  // DIE RANGLISTEN-ZEILE IST RAUS (Entscheidung des Betreibers, 19.08.2026).
+  // DIE RANGLISTEN-ZEILE IST WIEDER DA — ALS BELEG, MIT SPRUNG IN DIE TABELLE
+  // (Entscheidung des Betreibers, 20.08.2026).
   //
-  // Sie stand als eigener Absatz zwischen Meldung und Widget-Hinweis und war
-  // der dritte Link im Brief. Nachprüfbar bleibt der Rang trotzdem: Die
-  // Gemeindeseite, die in der Meldung steht, führt selbst zu den Ranglisten.
-  // Das Feld `ranglisteUrl` bleibt im Kontext — das Cockpit zeigt es weiterhin
-  // an, damit ein Mensch vor dem Versand nachsehen kann.
-  const linkZeile = "";
+  // Sie war am 19.08.2026 gestrichen worden, weil sie als dritter Link im
+  // Brief zu viel war und der Rang über die Gemeindeseite auffindbar bleibt.
+  // „Auffindbar" war dabei die schwache Stelle: Der Brief behauptet eine
+  // Platzierung, und wer sie prüfen will, musste sich von der Gemeindeseite
+  // erst zur richtigen Liste durchklicken — Kategorie, Zeitraum und
+  // Vergleichsgruppe von Hand nachstellen, ohne zu wissen, welche gemeint war.
+  //
+  // Jetzt trägt die Adresse die Auswahl (Kategorie, Größenklasse, Gebiet) und
+  // der Anker führt direkt an die Tabelle. Sie steht IM BRIEF, nicht in der
+  // Meldung: Die Meldung ist der Text, den die Gemeinde veröffentlicht, und
+  // die trägt weiterhin genau einen Link — die Gemeindeseite.
+  // DIE ZEILE NENNT, WELCHE RANGLISTE SIE ZEIGT.
+  //
+  // Beim ersten Gegenlesen stand dort „Die Platzierung im Einzelnen:" — und
+  // zwar hinter dem Absatz „Auch sonst steht X weit vorn", der bis zu drei
+  // ANDERE Platzierungen aufzählt. Der Link führt aber zur Rangliste des
+  // Aufhängers, also der Platzierung aus der Meldung. Wer ihn öffnet,
+  // erwartete die zuletzt genannte und bekam eine andere: derselbe Fehlertyp,
+  // gegen den dieser ganze Umbau steht, nur zwei Zeilen tiefer.
+  //
+  // Deshalb trägt sie die Messgröße im Namen und steht VOR der Aufzählung.
+  const linkZeile = c.ranglisteUrl
+    ? `\n\nDie ganze Rangliste ${c.phrase}: ${c.ranglisteUrl}`
+    : "";
 
   // DER ASK STAND NIRGENDS.
   // „Fertig formuliert zum Übernehmen" beschreibt den Text; „frei verwendbar,
@@ -606,7 +626,7 @@ ${einstiegGross ? "Im" : "im"} Marktstammdatenregister der Bundesnetzagentur ste
 ${meldung}
 ----------------------------------------
 
-Der Text ist frei verwendbar, gern auch gekürzt. Ich bitte nur darum, den Link stehen zu lassen. Kein Vertrieb und keine Kosten; anmelden muss sich auch niemand. Die Zahlen aktualisiere ich monatlich.${weitereAbsatz}${linkZeile}${widgetAbsatz}
+Der Text ist frei verwendbar, gern auch gekürzt. Ich bitte nur darum, den Link stehen zu lassen. Kein Vertrieb und keine Kosten; anmelden muss sich auch niemand. Die Zahlen aktualisiere ich monatlich.${linkZeile}${weitereAbsatz}${widgetAbsatz}
 
 Mit freundlichen Grüßen
 ${SIGNATURE}

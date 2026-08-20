@@ -4,8 +4,9 @@
 // (Anlagen-Mix, Speicher, Pro-Kopf, Rang im Landkreis, Zubau-Trend), aktualisiert
 // sich mit dem Monatslauf von selbst. SEO über Ort + Solar/Photovoltaik + Vergleich.
 
-import { fmtAnteilProzent, fmtPvLeistung, fmtWattProKopf } from "./atlas-format";
+import { fmtAnteilProzent, fmtPvLeistung } from "./atlas-format";
 import { ortPhrase } from "./atlas-orte";
+import { gemeindeVergleich, proKopfSatz } from "./gemeinde-vergleich";
 
 type SegRow = { segment: string; count: number; kwp: number };
 type MiniAtlas = {
@@ -143,8 +144,14 @@ export function buildGemeindeHighlight(opts: {
   atlas: MiniAtlas;
   blAtlas: MiniAtlas;
   blName: string;
-  perCapita: number | null;
-  perCapitaVsBl: number | null;
+  /** Einwohner der Kommune und des Bundeslands — NICHT die fertige Pro-Kopf-Zahl.
+   *
+   *  Der Satz braucht seit dem 20.08.2026 ZWEI Pro-Kopf-Größen (private Dächer
+   *  und Gesamtbestand), und welche davon er nennt, entscheidet er selbst.
+   *  Vorgerechnet hereinzureichen hieße, die Auswahl beim Aufrufer zu treffen —
+   *  und damit stünde die Regel wieder an zwei Stellen. */
+  population: number | null;
+  blPopulation: number | null;
   /** Amtliche Bezeichnung der Gemeinde (Stadt/Markt/Gemeinde) für den Rangsatz. */
   bezeichnung?: string | null;
   kreisName?: string | null;
@@ -153,7 +160,7 @@ export function buildGemeindeHighlight(opts: {
   byYear?: { year: number; count: number }[];
   lastYear?: number;
 }): string {
-  const { name, atlas, blAtlas, blName, perCapita, perCapitaVsBl } = opts;
+  const { name, atlas, blAtlas, blName } = opts;
 
   // "sind 1 Solaranlagen" — derselbe Fehler wie eine falsche Einheit, nur in
   // Worten. Kleine Gemeinden mit einer einzigen Anlage gibt es wirklich.
@@ -169,20 +176,19 @@ export function buildGemeindeHighlight(opts: {
   const zubau =
     opts.byYear && opts.lastYear != null ? zubauSentence(opts.byYear, opts.lastYear) : null;
 
-  let perCap = "";
-  if (perCapita !== null && perCapitaVsBl !== null) {
-    // Ein Solarpark in einem 700-Einwohner-Ort ergibt "4.935 % über dem
-    // Schnitt". Rechnerisch richtig, als Satz unlesbar — ab dem Dreifachen
-    // sagt der Text das Vielfache, das liest sich als Größenordnung.
-    const abstand =
-      perCapitaVsBl >= 3
-        ? `das ${nf(perCapitaVsBl + 1)}-fache des ${blName}-Schnitts`
-        : `${pct(perCapitaVsBl)} über dem ${blName}-Schnitt`;
-    perCap =
-      perCapitaVsBl >= 0
-        ? `Je Einwohner sind das ${fmtWattProKopf(perCapita)} Photovoltaik — ${abstand}.`
-        : `Je Einwohner sind das ${fmtWattProKopf(perCapita)} — ${pct(perCapitaVsBl)} unter dem ${blName}-Schnitt, hier ist also noch viel Luft nach oben.`;
-  }
+  // Der Pro-Kopf-Satz kommt aus derselben Quelle wie der Vergleichssatz des
+  // Outreach-Briefs (lib/gemeinde-vergleich.ts). Vorher rechnete ihn jede Seite
+  // für sich — und der Brief verwies auf eine Seite, die ihm scheinbar
+  // widersprach, weil beide etwas anderes maßen.
+  const perCap = proKopfSatz(
+    gemeindeVergleich({
+      atlas,
+      population: opts.population,
+      blAtlas,
+      blPopulation: opts.blPopulation,
+      blName,
+    }),
+  );
 
   return [base, character, rank, zubau, perCap].filter(Boolean).join(" ");
 }

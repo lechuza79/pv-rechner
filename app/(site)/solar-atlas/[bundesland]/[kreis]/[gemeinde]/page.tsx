@@ -182,11 +182,10 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
 
   const speicher = atlas.speicher;
 
-  const perCapita = region.population
-    ? Math.round((atlas.solar.total_kwp * 1000) / region.population)
-    : null;
-  const blPerCapita = blRegion?.population ? (blAtlas.solar.total_kwp * 1000) / blRegion.population : null;
-  const perCapitaVsBl = perCapita != null && blPerCapita ? perCapita / blPerCapita - 1 : null;
+  // Der Pro-Kopf-Vergleich gegen das Bundesland stand bis zum 20.08.2026 hier
+  // und ein zweites Mal im Outreach-Brief — auf einer anderen Messgröße. Er
+  // lebt jetzt vollständig in lib/gemeinde-vergleich.ts; die Seite reicht nur
+  // noch die beiden Einwohnerzahlen durch.
 
   // Die Kacheln gibt es für jeden Eigentümer-Filter fertig gerechnet — auch die
   // Vergleichsbasis. Wer „Privat" wählt, sieht die privaten Zahlen der Gemeinde
@@ -243,6 +242,21 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
               label: "je Einwohner",
               ...(wPerHead === null ? { value: "—" } : wattProKopfTeile(wPerHead)),
               metric: "kwp",
+              //
+              // ZWEI ZAHLEN FÜR „PRIVAT" AUF EINER SEITE — und beide richtig.
+              //
+              // Der Eigentümer-Filter versteht unter „Privat" alles in
+              // Bürgerhand, also Dächer UND Balkongeräte. Die Auszeichnung
+              // darüber misst „private Solarleistung auf den DÄCHERN je
+              // Einwohner" und lässt die Balkone weg. In Eichenzell sind das
+              // 1.204 gegen 1.185 Wp; wer beide sieht, hält eine für falsch.
+              //
+              // Zusammenlegen wäre der falsche Ausweg: Ein Balkongerät gehört
+              // einem Bürger (also in den Eigentümer-Filter) und hängt nicht
+              // auf dem Dach (also nicht in die Dach-Auszeichnung). Der
+              // Unterschied ist zu benennen, nicht zu beseitigen — dieselbe
+              // Regel wie bei jedem Nenner, der sichtbar an seiner Zahl steht.
+              sub: owner === "privat" ? "Dächer und Balkone zusammen" : undefined,
             },
             { label: `Neu ${lastYear}`, value: nf(s.neu), metric: "neu" },
           ],
@@ -435,8 +449,8 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
             atlas,
             blAtlas,
             blName: bl?.name ?? "Landes",
-            perCapita,
-            perCapitaVsBl,
+            population: region.population ?? null,
+            blPopulation: blRegion?.population ?? null,
             bezeichnung: region.bezeichnung,
             kreisName: istKreisfreiStadt ? null : (kreis?.name ?? null),
             rankInKreis: istKreisfreiStadt ? null : rankInKreis,

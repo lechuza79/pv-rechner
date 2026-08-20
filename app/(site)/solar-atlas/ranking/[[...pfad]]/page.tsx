@@ -22,6 +22,7 @@ import {
   rankingRows,
   rankingTitel,
   traegtRangliste,
+  RANGLISTE_ANKER,
 } from "../../../../../lib/atlas-ranking";
 import { DATA_SOURCES } from "../../../../../lib/data-sources";
 
@@ -443,6 +444,23 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
           )}
         </p>
 
+        {/*
+          SPRUNGZIEL FÜR DEN OUTREACH-BRIEF.
+
+          Der Brief nennt „Platz 3 von 240" und verlinkt hierher zum
+          Nachprüfen. Ohne Anker landet der Leser am Seitenanfang, über drei
+          Reihen von Umschaltern (Kategorie, Zeitraum, Vergleich) — und muss
+          die Tabelle selbst suchen, obwohl die Adresse die richtige Auswahl
+          längst trägt. WELCHE Liste gemeint ist, steht im Pfad; der Anker sagt
+          nur, wo auf der Seite sie beginnt.
+
+          Bewusst ein eigenes, immer vorhandenes Element und nicht die
+          Kopfzeile der Tabelle: Die gibt es in der Spitzenreiter-Ansicht
+          nicht, und ein Link ins Leere ist schlechter als keiner.
+          `scrollMarginTop` hält den Sprung unter der Kopfzeile der Seite.
+        */}
+        <div id={RANGLISTE_ANKER} style={S.anker} aria-hidden />
+
         {zeigtSpitzenreiter &&
           spitzenreiter.map(({ klasse: k, zeilen: z }) => {
             const sieger = z[0];
@@ -675,6 +693,9 @@ const S: Record<string, React.CSSProperties> = {
     fontWeight: 700,
     marginBottom: 4,
   },
+  // Sprungziel ohne eigene Höhe. Der Abstand nach oben ist der Platz, den die
+  // Kopfzeile beansprucht — ohne ihn beginnt die Tabelle unter ihr.
+  anker: { scrollMarginTop: space.huge },
   kats: { display: "flex", flexWrap: "wrap", gap: 6 },
   katKlein: { fontSize: 11, padding: "2px 10px" },
   zeitraeume: { display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6, marginBottom: space.lg },
