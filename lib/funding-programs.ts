@@ -750,8 +750,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "wiesbaden-eswe-speicher": {
     id: "wiesbaden-eswe-speicher", name: "ESWE Solar-Speicherbatterie",
     traeger: "ESWE Versorgungs AG / Klimaschutzagentur Wiesbaden", level: "kommune", region: "Wiesbaden", bundesland: "Hessen", agsCode: "06414",
-    url: "https://ksa-wiesbaden.de/foerderung/eswe-solar-speicherbatterie/", stand: "Juni 2026",
-    status: "aktiv", capped: true, verified: false,
+    // Am 20.08.2026 an der Trägerseite gelesen: „Bis 3,0 kWh = 500 Euro / bis
+    // 6,0 kWh = 750 Euro / > 6,0 kWh = 1.000 Euro" — zellgleich zu unseren
+    // Sätzen. Damit steht der Eintrag nicht mehr auf einer Sekundärquelle.
+    url: "https://ksa-wiesbaden.de/foerderung/eswe-solar-speicherbatterie/", stand: "August 2026",
+    status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Zuschuss für Batteriespeicher mit neuer PV (nur ESWE-Kunden)",
     rates: [
@@ -1042,8 +1045,16 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Mitgliedsgemeinden geteilt — das Programm ist aber ausdrücklich das der
     // Gemeinde Wietzen. Das Screening hatte die Seite deshalb zunächst allen
     // Nachbarorten zugeordnet; gefördert wird nur in Wietzen.
+    //
+    // AUSGESCHÖPFT seit dem 20.08.2026 — an der Amtsseite selbst gelesen, erster
+    // Satz der Seite: „Leider stehen aktuell keine weiteren Fördermittel für 2026
+    // mehr zur Verfügung!" Der Eintrag stand auf `aktiv` und zog damit bis zu
+    // 2.000 € ab (1.000 € PV + 1.000 € Speicher), die es dieses Jahr nicht mehr
+    // gibt. Die Sätze selbst stehen unverändert daneben und bleiben deshalb
+    // stehen; der Topf ist auf 20.000 € im Jahr begrenzt, das nächste Haushalts-
+    // jahr füllt ihn wieder. Wieder einschalten darf das nur ein Träger-Beleg.
     url: "https://www.weser-aue.de/rathaus-politik/foerderprogramme/",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "August 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Anteiliger Zuschuss je kWp und je kWh Speicher",
     maxFoerderung: "max. 1.000 € je Förderfall",

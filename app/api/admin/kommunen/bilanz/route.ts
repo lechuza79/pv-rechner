@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase as serviceDb } from "../../../../../lib/supabase-server";
-import { bilanziere } from "../../../../../lib/kommunen-ask";
+import { verteile } from "../../../../../lib/kommunen-ask";
 
-// Auswertung je Ask-Variante. Zweck: nach einem Durchgang wissen, ob das Widget
-// überhaupt nachgefragt wird — oder ob die fertige Meldung allein reicht.
+// Verteilung je Ask-Variante: wie viele Briefe welcher Fassung hinausgegangen
+// sind. KEIN Vergleich — die Variante hängt an der Gemeindegröße, die beiden
+// Gruppen unterscheiden sich also nicht im Text, sondern in der Größe der
+// Verwaltung. Die Begründung steht bei `VariantenVerteilung`.
 //
 // Gezählt wird nur, was VERSENDET wurde (`versendet_variante`), nicht die
-// aktuelle Zuordnung: Wer die Variante später ändert, darf die Bilanz nicht
+// aktuelle Zuordnung: Wer die Variante später ändert, darf die Zahlen nicht
 // rückwirkend verschieben.
 
 export const dynamic = "force-dynamic";
@@ -33,14 +35,14 @@ export async function GET(req: NextRequest) {
 
   const { data, error } = await serviceDb
     .from("kommunen_kontakt")
-    .select("versendet_variante, ref_klicks, responded_at, widget_anfrage, ask_variante, outreach_status")
+    .select("versendet_variante, responded_at, widget_anfrage, ask_variante, outreach_status")
     .eq("kampagne", kampagne);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   const zeilen = data ?? [];
   return NextResponse.json({
     kampagne,
-    bilanz: bilanziere(zeilen),
+    verteilung: verteile(zeilen),
     // Was noch aussteht — sonst liest sich „0 Antworten" wie ein Ergebnis,
     // obwohl schlicht noch nichts raus ist.
     offen: {

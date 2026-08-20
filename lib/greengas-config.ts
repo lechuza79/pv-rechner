@@ -249,7 +249,15 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // verpflichtet werden, ab 2045 vollständig auf klimaneutrale Brennstoffe
   // umzustellen. Kein Entwurf, kein Referentenentwurf, keine Fundstelle. Damit
   // bleibt auch die Bioheizöl-Lücke im Wärmepumpen-Ergebnis offen und richtig.
-  geprueftRechtIso: "2026-08-19",
+  //
+  // 20.08.2026 erneut an gmodg.bund.de geprüft, wieder unverändert. Die
+  // Meldungsliste dort endet weiterhin mit dem 28.07.2026 (Verkündung) und nennt
+  // die Bio-Treppe mit genau den Stufen, die hier stehen: 2029 10 %, 2030 15 %,
+  // 2035 30 %, 2040 60 %. Zum Quotengesetz nach § 42a steht dort weiter nur die
+  // Ankündigung vom 08.07.2026 aus dem Wirtschaftsausschuss — kein Entwurf, also
+  // auch keine Preisreihe für Bioheizöl und keine Grundlage, die Lücke im
+  // Wärmepumpen-Ergebnis zu schließen.
+  geprueftRechtIso: "2026-08-20",
   reviewBy: "2027-07-25",
 };
 

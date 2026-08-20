@@ -1,6 +1,6 @@
 // Anmeldung eines Steckersolargeräts im Marktstammdatenregister.
 //
-// EINE Quelle für die Ratgeber-Seite (/balkonkraftwerk/anmelden), ihren
+// EINE Quelle für die Ratgeber-Seite (/balkonkraftwerk/ratgeber/anmelden), ihren
 // Fristen-Check und das FAQ. Die Rechtsaussagen selbst — Anmeldeweg, Frist,
 // Ordnungswidrigkeit, Nullsteuersatz — stehen in BALKON_RECHT
 // (lib/balkon-config.ts) und werden hier NICHT dupliziert; dieses Modul

@@ -1,17 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase as serviceDb } from "../../../../lib/supabase-server";
-import { renderOutreachDraft } from "../../../../lib/kommunen-outreach-draft";
-import { buildHookIndex, loadElternSlugs } from "../../../../lib/awards-server";
-import { AWARD_CATEGORY_BY_KEY } from "../../../../lib/awards";
-import { ranglisteUrl } from "../../../../lib/atlas-ranking";
-import { DEFAULT_HOOK_SETTINGS } from "../../../../lib/award-hook";
-import { atlasPathForRegionId } from "../../../../lib/atlas";
-import { getRegionAtlasData } from "../../../../lib/mastr-data";
-import { askVariante, type AskVariante } from "../../../../lib/kommunen-ask";
+import { briefFuerGemeinde, istBriefFehler } from "../../../../lib/kommunen-brief";
 import { isOutreachStatus } from "../../../../lib/outreach-status";
 import { isAdminSession } from "../../../../lib/admin-guard";
-
-const SITE_URL = "https://solar-check.io";
 
 // Admin-Cockpit für den Kommunen-Outreach. Liest/schreibt kommunen_kontakt
 // (interne, nicht-öffentliche Tabelle) über den Service-Client. Auth läuft über
@@ -171,82 +162,52 @@ export async function POST(req: NextRequest) {
   const { region_id } = (await req.json()) as { region_id?: string };
   if (!region_id) return NextResponse.json({ error: "region_id fehlt" }, { status: 400 });
 
-  // Name + Atlas-Pfad + der Anschreiben-Aufhänger aus der Award-Hook-Logik (eine
-  // Quelle mit der Vorschau /admin/awards/anschreiben — kein Drift). Der Index ist
-  // prozess-lokal memoisiert, der Lookup je Gemeinde damit billig.
-  const [{ data: reg }, { data: leadRow }, path, index, elternSlugsMap] = await Promise.all([
-    serviceDb.from("mastr_regions").select("name, bezeichnung, population, slug").eq("region_id", region_id).single(),
-    serviceDb
-      .from("kommunen_kontakt")
-      .select("outreach_status, verantwortlich_funktion, verantwortlich_operativ, ask_variante")
-      .eq("region_id", region_id)
-      .maybeSingle(),
-    atlasPathForRegionId(region_id),
-    buildHookIndex(DEFAULT_HOOK_SETTINGS),
-    loadElternSlugs(),
-  ]);
-  if (!reg) return NextResponse.json({ error: "Gemeinde nicht gefunden" }, { status: 404 });
-  // Harte Sperre: für gesperrte Gemeinden nie ein Anschreiben erzeugen.
-  if (leadRow?.outreach_status === "gesperrt") {
-    return NextResponse.json({ error: "Gemeinde ist gesperrt — kein Anschreiben." }, { status: 403 });
+  // Zusammensetzung des Briefes: lib/kommunen-brief.ts — dieselbe Funktion, die
+  // das Versandpaket benutzt. Zwei Zusammensetzungen hießen zwei Fassungen
+  // desselben Briefes, und die verschickte wäre die ungeprüfte.
+  //
+  // MIT der Empfängeradresse, obwohl das Cockpit nicht versendet: Sie bestimmt,
+  // welche Quelle die Herkunftsangabe nach Art. 14 nennt. Ohne sie zeigte die
+  // Vorschau einen anderen Satz als die Mail — und die Vorschau ist genau die
+  // Fassung, die jemand abnimmt.
+  const { data: kontakt } = await serviceDb
+    .from("kommunen_kontakt")
+    .select("rollen_email, contacted_at")
+    .eq("region_id", region_id)
+    .maybeSingle();
+
+  // WAS VERSCHICKT WURDE, WIRD NICHT ÜBERSCHRIEBEN.
+  //
+  // Der Versand legt den tatsächlich versendeten Text in `draft_body` ab. Diese
+  // Route erzeugt einen frischen Entwurf und schreibt ihn genau dorthin — ein
+  // Klick auf „Neu generieren" im Cockpit hätte den Nachweis gelöscht, und zwar
+  // unwiederbringlich: Der verschickte Text steht sonst nirgends.
+  //
+  // Die Sperre sitzt hier und nicht in der Oberfläche. Eine Oberfläche kann man
+  // umgehen, eine Route nicht — und es ist dieselbe Klasse von Grenze wie die
+  // Sperre für widersprechende Gemeinden zwei Zeilen weiter unten.
+  if (kontakt?.contacted_at) {
+    return NextResponse.json(
+      {
+        error:
+          `Diese Gemeinde wurde am ${kontakt.contacted_at.slice(0, 10)} angeschrieben. ` +
+          "Der verschickte Text bleibt stehen — ein neuer Entwurf würde ihn überschreiben.",
+      },
+      { status: 409 },
+    );
   }
+  const gebaut = await briefFuerGemeinde(region_id, kontakt?.rollen_email ?? null);
+  if (istBriefFehler(gebaut)) {
+    if (gebaut.grund === "gesperrt") {
+      return NextResponse.json({ error: "Gemeinde ist gesperrt — kein Anschreiben." }, { status: 403 });
+    }
+    if (gebaut.grund === "unbekannt") {
+      return NextResponse.json({ error: "Gemeinde nicht gefunden" }, { status: 404 });
+    }
+    return NextResponse.json({ error: "DB not configured" }, { status: 500 });
+  }
+  const { draft, variante } = gebaut;
 
-  // Zahlen für die Meldung aus DERSELBEN Quelle wie die Atlas-Seite — sonst
-  // steht in der Meldung eine andere Zahl als auf der verlinkten Seite.
-  const atlas = await getRegionAtlasData(region_id);
-  const hook = index.rows.find((r) => r.regionId === region_id);
-
-  // Die kanonische Adresse — der Link, den die Gemeinde veröffentlicht, und
-  // seit dem 31.07.2026 der einzige, den der Brief auf sich selbst setzt: Die
-  // zählende Weiterleitung (`/r/…`) steht bewusst nicht mehr im Anschreiben
-  // (Begründung an DraftContext in lib/kommunen-outreach-draft.ts).
-  const seiteUrl = path ? `${SITE_URL}${path}` : null;
-
-  const variante: AskVariante =
-    (leadRow?.ask_variante as AskVariante | null) ??
-    askVariante({ population: reg.population, operativeStelle: !!leadRow?.verantwortlich_operativ });
-
-  const draft = renderOutreachDraft({
-    name: reg.name,
-    pageUrl: seiteUrl,
-    betreff: hook?.betreff ?? `So steht ${reg.name} beim Solar-Ausbau da`,
-    einstieg:
-      hook?.einstieg ??
-      `Wir haben den Solarausbau in ${reg.name} aus den amtlichen Anlagendaten aufbereitet — hier der Überblick für Ihre Gemeinde.`,
-    variante,
-    // Nur eine OPERATIVE Stelle wird direkt adressiert. Der Bürgermeister steht
-    // zwar fast immer im Impressum, betreut die Website aber nicht.
-    funktion: leadRow?.verantwortlich_operativ ? leadRow.verantwortlich_funktion : null,
-    
-    wo: hook?.wo ?? "in der Region",
-    bestleistung: hook?.bestleistung ?? "einen bemerkenswerten Solar-Ausbau",
-    themaDativ: hook?.themaDativ ?? "Solar-Ausbau",
-    phrase: hook?.phrase ?? "beim Solar-Ausbau",
-    // Ohne Vergleichsgruppe keine Rang-Aussage — dann bleibt die Meldung beim
-    // reinen Bestandsbericht (siehe renderMeldung).
-    gruppe: hook?.gruppe ?? hook?.wo ?? "in der Region",
-    rangWert: hook?.valueStr ?? null,
-    rang: hook?.rank && hook?.total && hook?.gruppe ? { platz: hook.rank, von: hook.total } : null,
-    weitere: hook?.weitere ?? [],
-    // Zeigt auf genau die Liste, in der der Platz gilt — Klasse und Gebiet drin.
-    ranglisteUrl: (() => {
-      const kat = hook?.categoryKey ? AWARD_CATEGORY_BY_KEY[hook.categoryKey]?.slug : undefined;
-      const bl = elternSlugsMap[region_id.slice(0, 2)];
-      const kreis = elternSlugsMap[region_id.slice(0, 5)];
-      const gebiet = hook?.level === "bund" ? [] : hook?.level === "land" ? [bl] : [bl, kreis];
-      const pfad = ranglisteUrl(kat, hook?.klasseSlug ?? null, gebiet);
-      return pfad ? `${SITE_URL}${pfad}` : null;
-    })(),
-    zahlen: {
-      anlagen: atlas.solar.total_count,
-      leistungKwp: atlas.solar.total_kwp,
-      // Anteil privater Daecher — sonst eroeffnet die Meldung mit der Leistung
-      // eines Solarparks und behauptet danach etwas ueber die Buerger.
-      privatDachKwp: atlas.solar.by_segment.find((x) => x.segment === "privat_dach")?.kwp ?? null,
-      wpProKopf: reg.population ? Math.round((atlas.solar.total_kwp * 1000) / reg.population) : null,
-      stand: atlas.data_as_of,
-    },
-  });
 
   const { data, error } = await serviceDb
     .from("kommunen_kontakt")

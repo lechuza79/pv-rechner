@@ -3,41 +3,47 @@ import { supabase as serviceDb } from "../../../../../lib/supabase-server";
 import { buildHookIndex } from "../../../../../lib/awards-server";
 import { DEFAULT_HOOK_SETTINGS } from "../../../../../lib/award-hook";
 import { domainOf } from "../../../../../lib/kommunen-profil";
-import { waehleTestballon, TESTBALLON_REGELN, type Kandidat } from "../../../../../lib/kommunen-testballon";
+import {
+  waehleTestballon,
+  SCHUEBE,
+  AKTUELLER_SCHUB,
+  type Kandidat,
+} from "../../../../../lib/kommunen-testballon";
 import { askVariante, refToken } from "../../../../../lib/kommunen-ask";
+import { postfachBefund } from "../../../../../lib/outreach-mail";
+import { istAdminOderCron } from "../../../../../lib/admin-guard";
 
 // Versandliste zusammenstellen und FESTSCHREIBEN (kampagne + charge je Gemeinde).
 // Läuft in der Next-Umgebung, weil der Aufhänger aus dem Award-Rechenkern kommt
 // (lib/awards-server ist server-only und im Script nicht importierbar) — und
 // weil es damit dieselbe Aufhänger-Quelle ist wie der Anschreiben-Generator.
 //
-// POST /api/admin/kommunen/testballon   { bl?: string[], dry?: boolean }
+// POST /api/admin/kommunen/testballon   { schub?: string, dry?: boolean }
+//
+// WELCHER Schub gezogen wird, steht nicht mehr im Aufruf, sondern in
+// lib/kommunen-testballon.ts (`SCHUEBE`). Gebiet, Kanal und Zielmenge gehören
+// zur Kampagne — wer sie beim zweiten Zug anders angibt, bekommt eine andere
+// Liste unter demselben Namen, und die Auswertung vergleicht danach zwei Dinge,
+// die nur gleich heißen.
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "")
-  .split(",")
-  .map((e) => e.trim().toLowerCase())
-  .filter(Boolean);
-
-async function isAdmin(): Promise<boolean> {
-  const { createClient } = await import("../../../../../lib/supabase-server-component");
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  return !!user && ADMIN_EMAILS.includes(user.email?.toLowerCase() || "");
-}
-
-const KAMPAGNE = "testballon";
-
 export async function POST(req: NextRequest) {
-  if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!(await istAdminOderCron(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!serviceDb) return NextResponse.json({ error: "DB not configured" }, { status: 500 });
 
-  const body = (await req.json().catch(() => ({}))) as { bl?: string[]; dry?: boolean };
-  const bl = body.bl?.length ? body.bl : ["08", "09"]; // BW + BY
+  const body = (await req.json().catch(() => ({}))) as { schub?: string; dry?: boolean };
+  const schluessel = body.schub ?? AKTUELLER_SCHUB;
+  const schub = SCHUEBE[schluessel];
+  if (!schub) {
+    return NextResponse.json(
+      { error: `Unbekannter Schub „${schluessel}" — bekannt: ${Object.keys(SCHUEBE).join(", ")}` },
+      { status: 400 },
+    );
+  }
+  const bl = schub.bl;
+  const KAMPAGNE = schub.kampagne;
   const dry = !!body.dry;
 
   // Kontaktzeilen der Ziel-Bundesländer, paginiert.
@@ -95,11 +101,23 @@ export async function POST(req: NextRequest) {
       hookKind: hook.kind,
       hookRang: hook.rank ?? 99,
       hookTotal: hook.total ?? 0,
-      hatKanal: !!(z.kontakt_url || z.rollen_email),
+      // Erreichbar heißt: über DEN Kanal erreichbar, den dieser Schub testet.
+      // Ein Schub für den Mail-Versand darf keine Gemeinde festschreiben, die
+      // nur ein Kontaktformular hat — sie stünde dann in der Kampagne, bekäme
+      // aber nie eine Mail und fehlte in jeder Auswertung als „nicht erreicht".
+      // ERREICHBAR HEISST AUCH: an eine Adresse, die wir benutzen dürfen.
+      // Vorher prüfte nur das Versandpaket, ob das Postfach ein Funktionskonto
+      // der zuständigen Verwaltung ist — die Gemeinde stand dann in der
+      // Kampagne, bekam aber nie eine Mail und fehlte in jeder Auswertung als
+      // „nicht erreicht". Dieselbe Prüfung an beiden Enden.
+      hatKanal:
+        schub.kanal === "rollen-postfach"
+          ? !!z.rollen_email && postfachBefund(z.rollen_email, reg?.name ?? "", z.verwaltung_domain).ok
+          : !!(z.kontakt_url || z.rollen_email),
     });
   }
 
-  const auswahl = waehleTestballon(kandidaten, TESTBALLON_REGELN);
+  const auswahl = waehleTestballon(kandidaten, schub.regeln);
 
   // Bereits vergebene Weiterleitungs-Token, damit ein zweiter Lauf keine
   // Dubletten erzeugt und bestehende Links gültig bleiben.
@@ -139,11 +157,23 @@ export async function POST(req: NextRequest) {
   }
 
   const namen = new Map(kandidaten.map((k) => [k.regionId, k.name]));
+  const proCharge = new Map<number, number>();
+  for (const g of auswahl.gewaehlt) proCharge.set(g.charge, (proCharge.get(g.charge) ?? 0) + 1);
   return NextResponse.json({
+    schub: schluessel,
     kampagne: KAMPAGNE,
+    kanal: schub.kanal,
+    bl,
     dry,
     bericht: auswahl.bericht,
-    charge1: auswahl.gewaehlt.filter((g) => g.charge === 1).map((g) => ({ region_id: g.regionId, name: namen.get(g.regionId) })),
-    anzahl: { gesamt: auswahl.gewaehlt.length, charge1: auswahl.gewaehlt.filter((g) => g.charge === 1).length },
+    charge1: auswahl.gewaehlt
+      .filter((g) => g.charge === 1)
+      .map((g) => ({ region_id: g.regionId, name: namen.get(g.regionId) })),
+    anzahl: {
+      gesamt: auswahl.gewaehlt.length,
+      chargen: Array.from(proCharge.entries())
+        .sort((a, b) => a[0] - b[0])
+        .map(([charge, n]) => ({ charge, n })),
+    },
   });
 }
