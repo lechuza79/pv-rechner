@@ -1,29 +1,35 @@
-# Sitemap bei der Google Search Console neu einreichen — von Hand auslösbar.
+# Sitemap bei der Google Search Console neu einreichen — von Hand ausloesbar.
 #
 # WARUM ES DEN LAUF GIBT (20.08.2026): Die Sitemap erzeugt sich bei jedem Deploy
-# selbst, aber Google holt sie nach eigenem Rhythmus — im Juli 2026 fünf Tage
-# gar nicht. Nach einem Livegang neuer Seiten will man sie deshalb anstoßen. Der
-# Endpunkt dafür existiert seit Wochen, hing aber am Rechner des Betreibers:
-# Er ist mit `Bearer $CRON_SECRET` geschützt, und das Secret liegt hier im Repo.
+# selbst, aber Google holt sie nach eigenem Rhythmus — im Juli 2026 fuenf Tage
+# gar nicht. Nach einem Livegang neuer Seiten will man sie deshalb anstossen.
+# Der Endpunkt dafuer existiert seit Wochen, hing aber am Rechner des Betreibers:
+# Er ist mit "Bearer $CRON_SECRET" geschuetzt, und das Secret liegt hier im Repo.
 #
-# Der Lauf entscheidet NICHTS selbst. Die Route reicht nur ein, wenn Google
-# lange nicht geschaut hat ODER unsere Sitemap GEWACHSEN ist — die sichere
-# Richtung. Ist sie geschrumpft, meldet sie das und tut nichts, weil ein
-# gewollter Rückbau und ein still ausgefallener Sitemap-Zweig von außen gleich
-# aussehen. `force` überschreibt das nach menschlicher Klärung.
+# Der Lauf entscheidet NICHTS selbst. Die Route reicht nur ein, wenn Google lange
+# nicht geschaut hat ODER unsere Sitemap GEWACHSEN ist — die sichere Richtung.
+# Ist sie geschrumpft, meldet sie das und tut nichts, weil ein gewollter Rueckbau
+# und ein still ausgefallener Sitemap-Zweig von aussen gleich aussehen. Die
+# Eingabe "force" ueberschreibt das nach menschlicher Klaerung.
+#
+# Bewusst OHNE eingebettetes Auswerte-Skript: Die erste Fassung trug ein
+# mehrzeiliges Python mit verschachtelten Anfuehrungszeichen im Block-Skalar,
+# und GitHub konnte die Datei nicht mehr parsen — der Lauf war registriert, hatte
+# aber keinen Ausloeser mehr. Die Antwort steht formatiert im Protokoll, das
+# genuegt.
 name: GSC Sitemap
 
 on:
   workflow_dispatch:
     inputs:
       force:
-        description: "Auch einreichen, wenn die Route es nicht für nötig hält (nur nach Klärung)"
+        description: 'Auch einreichen, wenn die Route es nicht fuer noetig haelt'
         type: boolean
         default: false
       urls:
-        description: "Adressen zum Prüfen, kommagetrennt (z. B. /balkonkraftwerk/ratgeber/mit-speicher)"
+        description: 'Adressen zum Pruefen, kommagetrennt'
         type: string
-        default: ""
+        default: ''
 
 jobs:
   einreichen:
@@ -32,36 +38,26 @@ jobs:
       - name: Sitemap-Stand abfragen und ggf. neu einreichen
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
-          FORCE: ${{ inputs.force && '1' || '0' }}
+          FORCE: ${{ inputs.force }}
           URLS: ${{ inputs.urls }}
         run: |
           set -euo pipefail
           if [ -z "${CRON_SECRET:-}" ]; then
-            echo "::error::CRON_SECRET fehlt in den Repo-Secrets"; exit 1
+            echo "::error::CRON_SECRET fehlt in den Repo-Secrets"
+            exit 1
           fi
-          ziel="https://solar-check.io/api/seo/index-status?resubmit=1&force=${FORCE}"
+          if [ "${FORCE}" = "true" ]; then f=1; else f=0; fi
+          ziel="https://solar-check.io/api/seo/index-status?resubmit=1&force=${f}"
           if [ -n "${URLS:-}" ]; then ziel="${ziel}&urls=${URLS}"; fi
-          # -f faellt bei 4xx/5xx aus, damit ein abgelehnter Aufruf den Lauf rot
-          # macht statt still eine Fehlermeldung als Erfolg zu protokollieren.
-          antwort=$(curl -sS -f -m 60 -H "Authorization: Bearer ${CRON_SECRET}" "$ziel")
-          echo "$antwort" | python3 -m json.tool
-          # Zusammenfassung ins Lauf-Protokoll, damit man das Ergebnis sieht,
-          # ohne die ganze Antwort zu lesen.
-          echo "$antwort" | python3 -c '
-import json,sys
-d=json.load(sys.stdin)
-if not d.get("configured"):
-    print("::warning::GSC ist nicht eingerichtet:", d.get("hint","")); sys.exit(0)
-for s in d.get("sitemaps") or []:
-    if isinstance(s, dict):
-        print(f"Sitemap {s.get(\"path\")}: von Google zuletzt geholt vor {s.get(\"tageSeitAbruf\")} Tagen, "
-              f"Google zaehlt {s.get(\"urlCount\") or s.get(\"warnings\") or \"?\"}, wir liefern {s.get(\"eigeneUrls\")}")
-neu = d.get("erneutEingereicht")
-if neu:
-    for e in neu: print(("eingereicht: " if e.get("ok") else "::error::einreichen fehlgeschlagen: ") + str(e))
-else:
-    print("nichts eingereicht — Google hat den aktuellen Stand bereits geholt oder es war nicht noetig")
-zurueck = d.get("zurueckgehalten")
-if zurueck:
-    for z in zurueck: print("::warning::zurueckgehalten (Sitemap geschrumpft, bitte pruefen):", z)
-'
+          # -f laesst den Lauf bei 4xx/5xx rot werden, statt eine Fehlermeldung
+          # still als Erfolg zu protokollieren.
+          curl -sS -f -m 60 -H "Authorization: Bearer ${CRON_SECRET}" "$ziel" \
+            | python3 -m json.tool | tee antwort.json
+          if grep -q '"erneutEingereicht"' antwort.json; then
+            echo "Sitemap wurde neu eingereicht — Einzelheiten oben."
+          else
+            echo "Nichts eingereicht: Google hat den aktuellen Stand bereits geholt, oder es war nicht noetig."
+          fi
+          if grep -q '"zurueckgehalten"' antwort.json; then
+            echo "::warning::Etwas wurde zurueckgehalten (Sitemap geschrumpft) — bitte oben nachsehen."
+          fi
