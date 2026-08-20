@@ -172,9 +172,30 @@ export async function POST(req: NextRequest) {
   // Fassung, die jemand abnimmt.
   const { data: kontakt } = await serviceDb
     .from("kommunen_kontakt")
-    .select("rollen_email")
+    .select("rollen_email, contacted_at")
     .eq("region_id", region_id)
     .maybeSingle();
+
+  // WAS VERSCHICKT WURDE, WIRD NICHT ÜBERSCHRIEBEN.
+  //
+  // Der Versand legt den tatsächlich versendeten Text in `draft_body` ab. Diese
+  // Route erzeugt einen frischen Entwurf und schreibt ihn genau dorthin — ein
+  // Klick auf „Neu generieren" im Cockpit hätte den Nachweis gelöscht, und zwar
+  // unwiederbringlich: Der verschickte Text steht sonst nirgends.
+  //
+  // Die Sperre sitzt hier und nicht in der Oberfläche. Eine Oberfläche kann man
+  // umgehen, eine Route nicht — und es ist dieselbe Klasse von Grenze wie die
+  // Sperre für widersprechende Gemeinden zwei Zeilen weiter unten.
+  if (kontakt?.contacted_at) {
+    return NextResponse.json(
+      {
+        error:
+          `Diese Gemeinde wurde am ${kontakt.contacted_at.slice(0, 10)} angeschrieben. ` +
+          "Der verschickte Text bleibt stehen — ein neuer Entwurf würde ihn überschreiben.",
+      },
+      { status: 409 },
+    );
+  }
   const gebaut = await briefFuerGemeinde(region_id, kontakt?.rollen_email ?? null);
   if (istBriefFehler(gebaut)) {
     if (gebaut.grund === "gesperrt") {

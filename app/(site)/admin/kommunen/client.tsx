@@ -259,7 +259,7 @@ export default function KommunenCockpit() {
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 720 }}>
           <thead>
             <tr>
-              {["Gemeinde", "Aufhänger", "Variante", "Kontakt", "Status", "Anschreiben", "Notiz"].map((h) => (
+              {["Gemeinde", "Website-Themen", "Variante", "Kontakt", "Status", "Anschreiben", "Notiz"].map((h) => (
                 <th key={h} style={thStyle}>
                   {h}
                 </th>
@@ -357,14 +357,20 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
         </div>
       </td>
 
-      {/* Aufhänger: vorhandene Themenseiten + wer laut Impressum zuständig ist */}
+      {/* WEBSITE-THEMEN, NICHT DER AUFHÄNGER DES BRIEFES.
+          Die Spalte hieß „Aufhänger" und zeigte, ob die Gemeinde eine Solar-
+          oder Klimaseite hat — gefunden vom Kontakt-Sammler. Der Aufhänger des
+          Anschreibens ist etwas völlig anderes (bei Riedstadt „private
+          Speicherkapazität") und kommt aus dem Award-Rechenkern. Zwei Dinge
+          unter einem Namen: Wer die Spalte las, hielt sie für die Aussage des
+          Briefes. */}
       <td style={tdStyle}>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 3 }}>
           {lead.thema_solar_url && <Merkmal label="Solar" href={lead.thema_solar_url} stark />}
           {lead.thema_klima_url && <Merkmal label="Klima" href={lead.thema_klima_url} />}
           {lead.thema_blatt_url && <Merkmal label="Blatt" href={lead.thema_blatt_url} />}
           {!lead.thema_solar_url && !lead.thema_klima_url && !lead.thema_blatt_url && (
-            <span style={{ fontSize: 11, color: v("--color-text-muted") }}>kein Aufhänger</span>
+            <span style={{ fontSize: 11, color: v("--color-text-muted") }}>keine Themenseite</span>
           )}
         </div>
         {lead.verantwortlich_funktion && (
@@ -406,7 +412,15 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
         </select>
         <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 3 }}>
           {lead.variante_manuell ? "von Hand · " : ""}
-          {lead.ref_klicks ? `${lead.ref_klicks} Klicks` : "keine Klicks"}
+          {/* DIE ZÄHLUNG MISST HIER NICHTS.
+              Der Brief trägt seit dem 31.07.2026 keinen zählenden Link mehr
+              (Entscheidung des Betreibers): Eine kryptische Weiterleitung in
+              einer Mail ans Rathaus kostet Vertrauen, und der Link in der
+              Meldung ist genau der, den die Gemeinde VERÖFFENTLICHEN soll —
+              eine Weiterleitung stünde danach dauerhaft auf einer fremden
+              Website. „keine Klicks" las sich wie ein Messergebnis; es ist
+              keines. */}
+          {lead.ref_klicks ? `${lead.ref_klicks} Klicks` : "Klicks werden nicht gezählt"}
         </div>
         {lead.versendet_variante && (
           <div style={{ fontSize: 10, color: v("--color-text-muted") }}>versendet als {ASK_LABEL[lead.versendet_variante]}</div>
@@ -676,9 +690,20 @@ function DraftModal({
               <button style={pagerBtn} disabled={busy} onClick={save}>
                 Speichern
               </button>
-              <button style={pagerBtn} disabled={busy} onClick={generate}>
-                {busy ? "…" : "Neu generieren"}
-              </button>
+              {/* Nach dem Versand gibt es nichts mehr zu generieren: Was im
+                  Feld steht, IST der verschickte Brief. Die Route verweigert
+                  das ohnehin — der Knopf verschwindet, damit niemand erst
+                  dagegenläuft. */}
+              {lead.contacted_at ? (
+                <span style={{ fontSize: 11, color: v("--color-text-muted"), alignSelf: "center" }}>
+                  Verschickt am {new Date(lead.contacted_at).toLocaleDateString("de-DE")} — das ist der Text, der
+                  hinausgegangen ist.
+                </span>
+              ) : (
+                <button style={pagerBtn} disabled={busy} onClick={generate}>
+                  {busy ? "…" : "Neu generieren"}
+                </button>
+              )}
               <div style={{ display: "flex", gap: space.xs, alignItems: "center", marginLeft: "auto" }}>
                 <label style={{ fontSize: 11, color: v("--color-text-muted") }} htmlFor="kanal-wahl">
                   über

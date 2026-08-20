@@ -281,8 +281,39 @@ export function briefAlsHtml(body: string): string {
       ? `<span style="${LEISE_STIL}">${inhalt}</span>`
       : inhalt;
   };
-  const absatz = (t: string, stil = "") =>
-    `<p${stil ? ` style="${stil}"` : ""}>${t.split("\n").map(zeile).join("<br>")}</p>`;
+  //
+  // EINE STRICHLINIE WIRD EINE LINIE.
+  //
+  // Im Quelltext der ersten echten Probemail (20.08.2026) hing die untere
+  // Trennlinie der Meldung im selben Absatz wie die Quellenzeile — und erbte
+  // damit deren Kursiv und deren Schriftgröße. Der Grund: Trenner und Meldung
+  // stehen im Text nur durch einen einzelnen Zeilenumbruch getrennt, die
+  // Absatzteilung sieht sie also als einen Block.
+  //
+  // In der Textfassung sind die Striche richtig — dort gibt es keine Linien.
+  // In der HTML-Fassung sind sie ein Notbehelf, der wie ein Fehler aussieht.
+  const TRENNER = `<hr style="border:0;border-top:1px solid ${RAHMEN};margin:18px 0">`;
+  const absatz = (t: string, stil = "") => {
+    const teile: string[] = [];
+    let puffer: string[] = [];
+    const abgeben = () => {
+      while (puffer.length && !puffer[puffer.length - 1].trim()) puffer.pop();
+      if (puffer.length) {
+        teile.push(`<p${stil ? ` style="${stil}"` : ""}>${puffer.map(zeile).join("<br>")}</p>`);
+      }
+      puffer = [];
+    };
+    for (const z of t.split("\n")) {
+      if (/^-{10,}$/.test(z.trim())) {
+        abgeben();
+        teile.push(TRENNER);
+      } else {
+        puffer.push(z);
+      }
+    }
+    abgeben();
+    return teile.join("\n");
+  };
 
   // Die Quellenzeile kursiv: Sie gehört zur Meldung, ist aber nicht ihre
   // Aussage. Kursiv ist die leiseste Auszeichnung, die es gibt, und sie

@@ -704,6 +704,18 @@ describe("HTML-Fassung", () => {
     }
   });
 
+  // Im Quelltext der ersten echten Probemail hing die untere Trennlinie der
+  // Meldung im selben Absatz wie die Quellenzeile und erbte deren Kursiv.
+  it("macht aus den Strichlinien echte Linien", () => {
+    const h = renderOutreachDraft(BASIS).bodyHtml;
+    expect(h).not.toContain("----------");
+    // Zwei um die Meldung, eine vor dem Fuß.
+    expect(h.split("<hr").length - 1).toBe(3);
+    // Und die Quellenzeile steht in einem eigenen Absatz, nicht mit einer
+    // Linie zusammen.
+    expect(h).toMatch(/<p style="font-style:italic[^"]*">[\s\S]*?Quelle:[^<]*<\/span><\/p>/);
+  });
+
   it("setzt den Fuß ab und färbt ihn", () => {
     const h = renderOutreachDraft(BASIS).bodyHtml;
     expect(h).toContain("<hr");
