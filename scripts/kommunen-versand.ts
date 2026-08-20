@@ -409,6 +409,21 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
           contacted_at: new Date().toISOString(),
           channel: "mail",
           versendet_variante: b.variante,
+          // DEN VERSCHICKTEN TEXT AUFHEBEN.
+          //
+          // Das Cockpit erzeugte beim Öffnen bisher IMMER einen frischen
+          // Entwurf — auch für längst angeschriebene Gemeinden. Wer nach einer
+          // Antwort nachsehen wollte, was die Gemeinde bekommen hat, sah
+          // stattdessen, was sie heute bekäme. Nach einem Tag mit einem Dutzend
+          // Textänderungen ist das nicht dasselbe.
+          //
+          // `draft_manuell` verhindert genau dieses Neuerzeugen. Der Name meint
+          // eigentlich „von Hand bearbeitet"; hier heißt er „das ist die echte
+          // Fassung, fass sie nicht an" — dieselbe Wirkung, und die Alternative
+          // wäre eine zweite Spalte für denselben Zweck.
+          draft_subject: b.subject,
+          draft_body: b.body,
+          draft_manuell: true,
           updated_at: new Date().toISOString(),
         })
         .eq("region_id", b.region_id);
