@@ -196,26 +196,63 @@ describe("Themen-Cluster: jede Seite ist auch verlinkt", () => {
     expect(seiten).toContain("/balkonkraftwerk");
   });
 
-  // Die Kategorie-Übersicht selbst steht bewusst NICHT in Menü und Fußzeile:
-  // Sie ist ein Verteiler auf Seiten, die dort schon einzeln stehen, und wird
-  // von der Bereichs-Startseite und den Krümelspuren erreicht. Ein vierter
-  // Menüeintrag, der nur auf zwei vorhandene zeigt, ist Lärm.
-  const verlinkungspflichtig = seiten.filter(p => p !== "/balkonkraftwerk/ratgeber");
+  // ── Zwei Klassen, zwei Pflichten (Betreiber-Vorgabe 20.08.2026) ──────────
+  //
+  // „Nicht jeder Ratgeber kann einen Eintrag in der Hauptnavigation haben."
+  // Stimmt — und die erste Fassung dieses Tests verlangte genau das. Sie wäre
+  // beim fünften Artikel entweder rot geworden oder hätte die Navigation mit
+  // Einträgen geflutet, die dort niemand sucht. Deshalb unterscheidet der Test
+  // jetzt nach der Stelle im Baum:
+  //
+  //   • DIREKT unter dem Bereich (Startseite, Rechner, Förder-Überblick) —
+  //     eine kleine, feste Menge, die sich kaum ändert. Sie gehört in Menü UND
+  //     Fußzeile: Das sind die einzigen Stellen, an denen der Bereich von
+  //     außerhalb überhaupt crawlbar verlinkt ist.
+  //   • In einer KATEGORIE (Artikel unter /ratgeber/, später /produkte/) —
+  //     eine wachsende Reihe. Sie gehört NICHT ins Menü, sondern in die
+  //     Übersicht ihrer Kategorie. Die ist genau dafür da.
+  //
+  // Was in beiden Fällen gilt: Jede Seite muss von irgendwo crawlbar erreichbar
+  // sein. Nur das „von wo" unterscheidet sich.
+  const bereichsWurzel = "/balkonkraftwerk";
+  const kategorieUebersichten = seiten.filter(p => p.split("/").length === 3 && seiten.some(k => k.startsWith(`${p}/`)));
+  const direktUnterBereich = seiten.filter(p =>
+    p !== bereichsWurzel && p.split("/").length === 3 && !kategorieUebersichten.includes(p));
+  const inKategorie = seiten.filter(p => p.split("/").length > 3);
 
-  it("steht in der Fußzeile — der einzigen crawlbaren Stelle auf jeder Seite", () => {
-    for (const pfad of verlinkungspflichtig) {
-      expect(footer, `${pfad} fehlt in der Fußzeile und ist damit von außerhalb des Clusters nicht crawlbar verlinkt`)
+  it("teilt die Seiten überhaupt in beide Klassen (sonst prüft der Test die Hälfte nicht)", () => {
+    expect(direktUnterBereich.length).toBeGreaterThan(0);
+    expect(inKategorie.length).toBeGreaterThan(0);
+    expect(kategorieUebersichten).toContain("/balkonkraftwerk/ratgeber");
+  });
+
+  it("Bereichs-Seiten stehen in der Fußzeile — der einzigen crawlbaren Stelle auf jeder Seite", () => {
+    for (const pfad of [bereichsWurzel, ...direktUnterBereich]) {
+      expect(footer, `${pfad} fehlt in der Fußzeile und ist damit von außerhalb des Bereichs nicht crawlbar verlinkt`)
         .toContain(`href: "${pfad}"`);
     }
   });
 
-  it("steht in der Menügruppe und hat dort einen eigenen Markierungs-Schlüssel", () => {
-    for (const pfad of verlinkungspflichtig) {
+  it("Bereichs-Seiten stehen im Menü und haben einen eigenen Markierungs-Schlüssel", () => {
+    for (const pfad of [bereichsWurzel, ...direktUnterBereich]) {
       expect(header, `${pfad} fehlt in der Menügruppe`).toContain(`href: "${pfad}"`);
-      if (pfad !== "/balkonkraftwerk") {
-        expect(header, `${pfad} hat keinen eigenen Markierungs-Schlüssel — im Menü leuchtet dann der Hub statt der Seite`)
+      if (pfad !== bereichsWurzel) {
+        expect(header, `${pfad} hat keinen eigenen Markierungs-Schlüssel — im Menü leuchtet dann der Bereich statt der Seite`)
           .toContain(`startsWith("${pfad}")`);
       }
+    }
+  });
+
+  it("Artikel einer Kategorie stehen in der Übersicht ihrer Kategorie", () => {
+    // Nicht im Menü — dort werden es sonst zu viele. Die Kategorie-Übersicht
+    // listet sie aus der Registry, also genügt der Registry-Eintrag; ohne den
+    // taucht der Artikel nirgends auf.
+    for (const pfad of inKategorie) {
+      const kategorie = pfad.slice(0, pfad.lastIndexOf("/"));
+      expect(kategorieUebersichten, `${pfad} liegt in einer Kategorie ohne Übersichtsseite — die Adresse führt dann ins Leere`)
+        .toContain(kategorie);
+      expect(RATGEBER.map(r => r.slug), `${pfad} steht in keiner Registry und erscheint damit in keiner Übersicht`)
+        .toContain(pfad);
     }
   });
 });
