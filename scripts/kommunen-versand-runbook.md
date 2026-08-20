@@ -180,3 +180,24 @@ Datum; die Auswertung je Variante liefert `/api/admin/kommunen/bilanz`.
 
 Der Klickzähler (`ref_klicks`) misst hier nichts: Der Brief trägt seit dem
 31.07.2026 keinen zählenden Link mehr.
+
+### Schub 1 und Schub 2 sind nicht derselbe Text — BLOCKER für die Auswertung
+
+Die 20 Briefe des Schubs `mail-he-rp-sl` (verschickt am **20.08.2026**) tragen
+noch die Fassung **vor** dem Umbau vom selben Tag. Zwei Unterschiede, beide
+sichtbar für den Empfänger:
+
+1. **Keine Ranglisten-Zeile.** Schub 1 belegt seine Platzierung nicht; ab
+   Schub 2 steht „Die ganze Rangliste bei <Messgröße>: …" mit Sprung direkt
+   in die Tabelle.
+2. **Der Vergleichssatz fehlt in einem Teil der Briefe.** Bis zum Umbau
+   schwieg er, sobald die Gesamtleistung des Orts unter dem Landesschnitt lag
+   (die Bremse `seiteSagtNachzuegler`) — betroffen waren gerade die Orte, in
+   denen die Bürger viel gebaut haben und ein Investorenpark fehlt. Ab Schub 2
+   steht er überall, wo er wahr ist.
+
+**Wer Rückläufe zwischen den Schüben vergleicht, vergleicht deshalb zwei
+Texte, nicht zwei Zielgruppen.** Ein Unterschied in der Veröffentlichungsquote
+ist zwischen Schub 1 und 2 nicht als Wirkung der Auswahl lesbar. Innerhalb
+eines Schubs bleibt der Vergleich der beiden Ask-Varianten gültig — sie
+unterscheiden sich weiterhin um genau einen Absatz.
