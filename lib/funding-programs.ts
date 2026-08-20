@@ -419,7 +419,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "frankfurt-klimabonus", name: "Frankfurter Klimabonus",
     traeger: "Stadt Frankfurt am Main", level: "kommune", region: "Frankfurt am Main", bundesland: "Hessen", agsCode: "06412",
     url: "https://frankfurt.de/themen/klima-und-energie/stadtklima/klimabonus",
-    stand: "Juli 2026", status: "aktiv", capped: true, verified: true,
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "20 % von Material- und Arbeitskosten",
     maxFoerderung: "max. 100.000 €",
@@ -435,6 +435,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Grundstück im Stadtgebiet Frankfurt",
       "Batteriespeicher und Ladesäulen nur in Kombination mit einer neuen PV-Anlage",
       "Balkonkraftwerke werden seit dem 03.06.2025 nicht mehr gefördert",
+      "Pflichtmaßnahmen werden nicht gefördert",
+      "Die Investitionen dürfen nicht zu einer Mieterhöhung führen",
     ],
     combinableWith: BUND,
     percentOfCost: 0.2,
@@ -534,7 +536,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "hannover-proklima": {
     id: "hannover-proklima", name: "proKlima (enercity-Fonds)",
     traeger: "Region Hannover", level: "landkreis", region: "Region Hannover", bundesland: "Niedersachsen", agsCode: "03241",
-    url: "https://www.proklima-hannover.de/wohngebaeude/foerderangebote/solarstrom/dachvolltoll/", stand: "Juni 2026",
+    url: "https://www.proklima-hannover.de/wohngebaeude/foerderangebote/solarstrom/dachvolltoll/", stand: "August 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Zuschuss je kWp bei voller Dachbelegung (Baustein DachVollToll)",
@@ -748,8 +750,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "wiesbaden-eswe-speicher": {
     id: "wiesbaden-eswe-speicher", name: "ESWE Solar-Speicherbatterie",
     traeger: "ESWE Versorgungs AG / Klimaschutzagentur Wiesbaden", level: "kommune", region: "Wiesbaden", bundesland: "Hessen", agsCode: "06414",
-    url: "https://ksa-wiesbaden.de/foerderung/eswe-solar-speicherbatterie/", stand: "Juni 2026",
-    status: "aktiv", capped: true, verified: false,
+    // Am 20.08.2026 an der Trägerseite gelesen: „Bis 3,0 kWh = 500 Euro / bis
+    // 6,0 kWh = 750 Euro / > 6,0 kWh = 1.000 Euro" — zellgleich zu unseren
+    // Sätzen. Damit steht der Eintrag nicht mehr auf einer Sekundärquelle.
+    url: "https://ksa-wiesbaden.de/foerderung/eswe-solar-speicherbatterie/", stand: "August 2026",
+    status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Zuschuss für Batteriespeicher mit neuer PV (nur ESWE-Kunden)",
     rates: [
@@ -1040,8 +1045,16 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Mitgliedsgemeinden geteilt — das Programm ist aber ausdrücklich das der
     // Gemeinde Wietzen. Das Screening hatte die Seite deshalb zunächst allen
     // Nachbarorten zugeordnet; gefördert wird nur in Wietzen.
+    //
+    // AUSGESCHÖPFT seit dem 20.08.2026 — an der Amtsseite selbst gelesen, erster
+    // Satz der Seite: „Leider stehen aktuell keine weiteren Fördermittel für 2026
+    // mehr zur Verfügung!" Der Eintrag stand auf `aktiv` und zog damit bis zu
+    // 2.000 € ab (1.000 € PV + 1.000 € Speicher), die es dieses Jahr nicht mehr
+    // gibt. Die Sätze selbst stehen unverändert daneben und bleiben deshalb
+    // stehen; der Topf ist auf 20.000 € im Jahr begrenzt, das nächste Haushalts-
+    // jahr füllt ihn wieder. Wieder einschalten darf das nur ein Träger-Beleg.
     url: "https://www.weser-aue.de/rathaus-politik/foerderprogramme/",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "August 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Anteiliger Zuschuss je kWp und je kWh Speicher",
     maxFoerderung: "max. 1.000 € je Förderfall",

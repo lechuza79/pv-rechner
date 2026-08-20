@@ -1,6 +1,6 @@
 # Balkonkraftwerk-Vergleichsseite + Affiliate — Konzept und Sachstand
 
-**Stand: 18.08.2026. Entscheidung des Betreibers: zurückgestellt, nicht verworfen.**
+**Stand: 20.08.2026. Entscheidung des Betreibers: zurückgestellt, nicht verworfen.**
 Zuerst kommt der Anmelde-Guide, dann wird gemessen, ob unser Muster überhaupt
 greift. Dieses Dokument hält fest, was recherchiert ist — damit die Arbeit beim
 Wiederaufnehmen nicht bei null anfängt.
@@ -101,25 +101,96 @@ Thin-Content-Seiten, die sich nur in einer Zahl unterscheiden.
 
 ---
 
-## 4. Affiliate: Konditionen (Stand 18.08.2026)
+## 4. Affiliate: Partner und Konditionen (Stand 20.08.2026)
 
-**Fachshops** — Werbeaussagen der Programme selbst, nicht nachverhandelt:
+**Zwei Vorgaben des Betreibers (19./20.08.2026), die alles andere steuern:**
 
-| Programm | Provision | Warenkorb | Netzwerk |
-|---|---|---|---|
-| Kleines Kraftwerk | bis 10 % | ~920 € | 100partnerprogramme |
-| solago | bis 6 % | – | affiliate-marketing.de |
-| MyVoltaics | 6 % | – | affiliate-marketing.de |
-| Solakon | 5 % | – | **Awin** |
-| PVundSO | bis 5 % | – | – |
-| Yuma | eigenes Programm | – | – |
-| Indevolt | – | – | **Awin** |
+1. **Nur führende Set-Händler, keine Einzelhersteller.** Wechselrichter- und
+   Speicherhersteller (Hoymiles, Zendure, SENEC, Renogy) gehören nicht in eine
+   Tabelle, die über Komplettsets urteilt. Ebenso raus: Anbieter ohne nennenswerte
+   Marktstellung, auch wenn ihr Programm bequem erreichbar ist.
+2. **Die Reihenfolge richtet sich nach dem Preis für den Nutzer, nicht nach
+   unserer Provision.** Der Satz gehört sichtbar auf die Seite, sonst ist er nur
+   eine Behauptung im Code.
 
-10 % auf 920 € sind rund **92 € pro Verkauf**. Awin-Programme liefern
-**Produktdatenfeeds** — das löst die Preispflege maschinell.
+### Wer führend ist — gemessen, nicht geschätzt
 
-**Offen:** reale Provision, Cookie-Laufzeit, Stornoquote. Steht erst nach
-Anmeldung fest.
+Organische Sichtbarkeit in Deutschland, am 19.08.2026 über DataForSEO für alle
+Kandidaten gleich erhoben:
+
+| Händler | Besuche/Monat | Keywords | Top-3 | Netzwerk |
+|---|---|---|---|---|
+| solago.de | 207.700 | 3.760 | 923 | affiliate-marketing.de |
+| kleineskraftwerk.de | 164.100 | 4.523 | 779 | **unbekannt** |
+| yuma.de | 161.600 | 3.772 | 318 | eigenes Programm |
+| solakon.de | 161.400 | 4.322 | 842 | **Awin** |
+| priwatt.de | 123.000 | 12.219 | 1.195 | – |
+| solarmars.de (ergofino) | 8.700 | 878 | 56 | Awin |
+| myvoltaics.de | 6.500 | 1.074 | 45 | affiliate-marketing.de |
+| indevolt.de | **0** | 0 | 0 | Awin |
+
+**Die oberen fünf liegen innerhalb eines Faktors 1,7 — das ist eine Gruppe, keine
+Rangfolge.** Tragend ist der Abstand nach unten: Platz sechs hat ein Vierzehntel
+der Reichweite. Daraus folgt die Auswahl: die fünf oben ja, alles darunter nein.
+**Indevolt fliegt trotz Awin-Mitgliedschaft raus** — er stand nur deshalb je auf
+der Liste, weil er bequem erreichbar war, und genau diese Logik hat der Betreiber
+zurückgewiesen.
+
+*Vorbehalt:* Das misst Reichweite über Google, nicht Umsatz. Ein Shop kann groß
+sein, ohne organisch zu ranken (Anzeigen, Marktplätze). Für die Unterscheidung
+„führend oder Nischenshop" trägt die Zahl, für eine Reihenfolge innerhalb der
+Top fünf nicht.
+
+### Von den fünf Führenden ist genau einer bei Awin
+
+Am 20.08.2026 im öffentlichen Advertiser-Verzeichnis geprüft (`awin.com/de/search/advertiser-directory`,
+Volltextsuche ohne Login): **Solakon ja.** Solago, Kleines Kraftwerk, Yuma,
+priwatt, myvoltaics und EPP: **nein.** Die Vergleichsseite kommt also mit einem
+Netzwerk nicht aus. Das ist normal und kein Konstruktionsfehler, bedeutet aber
+mehrere Anmeldungen und später mehrere Preisquellen.
+
+Awin-Publisher-ID: **3047037** (Segment „redaktionelle Seite"). Kein Geheimnis —
+sie steht als `awinaffid` in jedem Affiliate-Link und darf in den Code.
+
+### Kleines Kraftwerk: Konditionen belegt, Netzwerk nicht auffindbar
+
+Am 20.08.2026 im Original nachgelesen (`100partnerprogramme.de/p/kleineskraftwerk-de/`),
+weil eine Suchmaschine zwischendurch eine falsche Cookie-Laufzeit lieferte:
+
+- **6,00 bis 10,00 % Pay per Sale** (die Vergütungstabelle nennt die Spanne; die
+  oft zitierten „bis zu 10 %" sind der Spitzenwert). Bei 920 € Warenkorb also
+  **55 bis 92 € je Verkauf** — planen sollte man mit der kleineren Zahl.
+- **90 Tage Cookie-Tracking**, Reklamationsquote unter 1 %, SEA eingeschränkt erlaubt.
+- **Keine Produktdaten-Feeds.** Ihre Preise wären also von Hand zu pflegen, egal
+  über welches Netzwerk wir hereinkommen. Sie taugen als starke Einzelempfehlung
+  mit hoher Provision, nicht als Datenlieferant für eine automatisch aktuelle Tabelle.
+
+**Über welches Netzwerk das Programm läuft, ist öffentlich nirgends dokumentiert.**
+Erfolglos geprüft: Awin-Verzeichnis, vier naheliegende Partnerprogramm-Adressen auf
+der Website (alle 404), Netzwerk-Skripte im Quelltext der Startseite, die komplette
+Datenschutzerklärung (über 60.000 Zeichen, das Wort „Affiliate" kommt nicht vor),
+Partner- und Affiliate-Subdomains, die Pfade der gängigen Shopify-Partnerprogramm-Apps.
+Der Knopf „Beim Netzwerk direkt verfügbar" im Verzeichnis ist **kein Link**, sondern
+ein abgeschaltetes `<span>` ohne Ziel; auch ein Konto dort führt nicht weiter.
+
+**Am 20.08.2026 Anfrage an `kundenservice@kleineskraftwerk.de` verschickt.** Falls
+nach rund einer Woche nichts kommt: anrufen (04202 5079110), nicht nachmailen.
+
+**Der Händler selbst ist geprüft und unauffällig:** Kleines Kraftwerk DE GmbH,
+Achim, Amtsgericht Walsrode HRB 210570, Stammkapital 27.000 €, Geschäftsführer
+Markus Struck, Status aktiv, seit 2019 im Register (zunächst als Mellon Services
+GmbH). Trusted Shops mit 14.342 Bewertungen, Trustpilot 4,6. Was undurchsichtig
+wirkte, war die Verzeichnisseite, nicht der Laden. Ihre eigenen Marketingzahlen
+(„über 100.000 Kunden", „130 Mio. kWh") sind **nicht** unabhängig belegt und
+gehören nicht in unsere Texte.
+
+### 100partnerprogramme.de ist kein Netzwerk
+
+Betrieben von der Internet Allstars GmbH, Selbstbeschreibung: „die größte
+Suchmaschine für Partnerprogramme des DACH-Markts". Also ein **Verzeichnis** —
+es misst nichts, zahlt nichts aus und wickelt nichts ab. Ein Konto dort verdient
+kein Geld; es ist ein Nachschlagewerk. Nicht mit einem Netzwerk verwechseln, die
+frühere Fassung dieser Tabelle tat das.
 
 ### Amazon — am Original geprüft
 
@@ -160,7 +231,57 @@ Zusatzspalte, keine tragende.
 
 ---
 
-## 5. Was der Wiederaufnahme im Weg steht
+## 5. Affiliate jenseits Balkon: die anderen Flächen
+
+Am 20.08.2026 im Awin-Verzeichnis erhoben, weil die Frage aufkam, wo sich eine
+Anmeldung sonst noch lohnt. Sichtbarkeitszahlen wie oben über DataForSEO.
+
+**Wärmepumpe — gute Lage, aber ein Haken.** Die zwei führenden Heizungs-Onlineshops
+sind beide bei Awin: **Heima24** (286.400 Besuche/Monat) und **Heizungsdiscount24**
+(241.600). Selfio (126.900) und unidomo (80.700) sind ebenfalls groß, aber nicht
+dort; RALEO (17.000) und Heizbude (6.200) sind klein.
+**Der Haken ist nicht das Angebot, sondern was der Leser danach tut:** Eine
+Wärmepumpe kauft niemand ohne Handwerker. Nach unserem Rechner geht er Angebote
+einholen, nicht ein Gerät in den Warenkorb legen. Was an dieser Stelle wirklich
+konvertieren würde, ist eine Angebotsvermittlung — **und das ist genau der
+Lead-Funnel, gegen den die Seite positioniert ist.** Ungelöster Zielkonflikt, er
+gehört dem Betreiber. Der Ausweg ohne Positionswechsel: Zubehör und Nachrüstung
+(Heizkörper, Pufferspeicher, Thermostate) sind Online-Käufe. Der Rechner behandelt
+den **Heizkörpertausch** ohnehin als eigene Option mit eigenen Kosten und besserer
+Jahresarbeitszahl — das ist die ehrliche Fläche, und mit ihr wurde am 20.08.2026
+bei beiden Shops geworben.
+
+**Klimaanlage — Awin taugt dafür nicht.** Dort stehen nur Pro Breeze und Bauknecht;
+„Klimagerät" und „mobile Klimaanlage" ergeben null Treffer. Für den Impulskauf
+eines mobilen Splitgeräts (Vorstellung des Betreibers) bräuchte es ein anderes
+Netzwerk. Das ist zugleich der Fall, in dem Amazon inhaltlich am besten passen
+würde — mit dem bekannten Vorbehalt, dass ohne Preis nichts angezeigt wird.
+
+**Wallbox** — Elli (VW), Energielösung, SENEC sind bei Awin. Die Fläche muss erst
+gebaut werden, vorher keine Bewerbung.
+
+**Finanzierung — inhaltlich naheliegend, rechtlich der heikelste Fall.** Bei Awin
+sind CHECK24, smava, Verivox, Sparkassen S-Kredit-per-Klick, DKB und swk-bank.
+Unsere Rechner nennen Investitionssummen zwischen 5.000 und 30.000 €, der Anschluss
+liegt also auf der Hand. **BLOCKER vor jedem Bau:** Werbung mit Kreditzahlen
+verlangt nach § 6a PAngV das repräsentative Beispiel samt effektivem Jahreszins —
+das schlägt genau bei Sätzen wie „schon ab 89 € im Monat" zu. Dazu die Abgrenzung
+zwischen Werbung und erlaubnispflichtiger Vermittlung (§ 34c GewO). Beides gehört
+in den Legal-Judge-Durchgang nach `scripts/council-verify.md`, nicht in eine
+Einschätzung nebenbei.
+
+**Ökostrom** — vorhanden und gut besetzt (Tibber, LichtBlick, NaturStrom, Ostrom,
+entega, Rabot Energy), vom Betreiber am 20.08.2026 **verworfen**: Wir sind keine
+Tarifvergleichsseite, es gäbe keine Fläche, an der ein solcher Link Sinn ergäbe.
+
+**Grundsatz, der aus dieser Runde entstanden ist:** Sich bei einem Programm zu
+bewerben, für das es keine Fläche gibt, ist nicht folgenlos. Händler werfen
+inaktive Publisher wieder heraus, und beim zweiten Anlauf ist man der, der schon
+einmal nichts geliefert hat. **Erst die Fläche, dann die Bewerbung.**
+
+---
+
+## 6. Was der Wiederaufnahme im Weg steht
 
 1. **Anmeldung bei mindestens einem Programm** (Empfehlung: Awin + Kleines
    Kraftwerk). Gehört dem Betreiber, da Vertragsbindung.
@@ -180,15 +301,51 @@ Zusatzspalte, keine tragende.
 
 ---
 
-## 6. Reihenfolge, auf die wir uns geeinigt haben
+## 7. Reihenfolge, auf die wir uns geeinigt haben
 
-1. **Anmelde-Guide** live (27.100/Monat, echte Info-Absicht) — gebaut, wartet auf Abnahme.
-2. **Messen**, 2–3 Wochen: landet die Seite? Vorher wissen wir nicht, ob unser
-   Muster überhaupt greift.
-3. **Vergleichsseite** auf die INFO-Keywords ausgerichtet, mit gerechnetem Ranking.
-4. **Hub** `/balkonkraftwerk`, sobald drei Seiten stehen.
+1. **Anmelde-Guide** (27.100/Monat, echte Info-Absicht) — **live seit 19.08.2026**
+   unter `/balkonkraftwerk/anmelden`.
+2. **Hub** `/balkonkraftwerk` — **live seit 19.08.2026**, zusammen mit dem Umzug des
+   Rechners nach `/balkonkraftwerk/rechner`. Die Reihenfolge ist damit gegenüber der
+   ursprünglichen Planung getauscht: Der Cluster stand vor der Messung, weil ab der
+   dritten Seite eines Themas ohnehin verschachtelt wird (siehe CLAUDE.md,
+   Routen-Schema) und ein späterer Umzug teurer gewesen wäre.
+3. **Messen**, 2–3 Wochen ab Livegang: landet der Cluster? Vorher wissen wir nicht,
+   ob unser Muster überhaupt greift. Sitemap am 19.08.2026 bei der Search Console
+   nachgereicht.
+4. **Vergleichsseite** auf die INFO-Keywords ausgerichtet, mit gerechnetem Ranking.
+   Wartet auf einen freigeschalteten Partner und die Datenfeed-Frage.
 
 Der Positionierungs-Konflikt ist geklärt: Der Betreiber hat am 17.08.2026
 entschieden, dass Werbefreiheit **nicht** das Versprechen ist — sondern
 barrierefreier Zugang zu Information. Eine konkrete Kaufempfehlung gilt als
 nächster logischer Serviceschritt, wenn der Bedarf geklärt ist.
+
+---
+
+## 8. Sachstand 20.08.2026 — was auf wen wartet
+
+**Beim Händler:**
+
+- **Solakon** (Awin) — Bewerbung raus. Text im Gesprächsverlauf, Kern: Platzierung
+  am Ende des Rechners, Vergleichsseite als Ausblick, Reihenfolge nach Nutzerpreis.
+- **Heima24** und **Heizungsdiscount24** (Awin) — Bewerbung raus, mit dem
+  Heizkörpertausch als benannter Fläche.
+- **Kleines Kraftwerk** — Anfrage per Mail raus, offen ist allein die Frage, über
+  welches Netzwerk sie laufen.
+
+**Beim Betreiber (Entscheidungen, die niemand sonst treffen kann):**
+
+- Der **Wärmepumpen-Zielkonflikt** aus Abschnitt 5: Zubehör verlinken oder die
+  Positionierung gegen Lead-Funnel überdenken.
+- Ob **Solago, Yuma und priwatt** einzeln angemeldet werden. Sie sind führend, aber
+  jeder braucht ein eigenes Konto in einem eigenen Netzwerk.
+
+**Bei mir, sobald es gebraucht wird:**
+
+- **Legal-Durchgang Finanzierung** (§ 6a PAngV, § 34c GewO) — kann jederzeit laufen,
+  hängt an keiner Antwort von außen.
+- **Datenfeed-Prüfung**, sobald der erste Partner freigeschaltet ist. Das ist die
+  Frage, an der das Format der Seite hängt: gerechneter Vergleich oder kuratierte
+  Empfehlung von Hand.
+- **Wächter-Runbook** für die Preispflege, vor dem Livegang der Vergleichsseite.

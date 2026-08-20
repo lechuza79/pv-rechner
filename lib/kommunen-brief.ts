@@ -1,0 +1,174 @@
+import "server-only";
+import { supabase as serviceDb } from "./supabase-server";
+import { renderOutreachDraft, type OutreachDraft } from "./kommunen-outreach-draft";
+import { buildHookIndex, loadElternSlugs } from "./awards-server";
+import { AWARD_CATEGORY_BY_KEY } from "./awards";
+import { ranglisteUrl } from "./atlas-ranking";
+import { DEFAULT_HOOK_SETTINGS } from "./award-hook";
+import { atlasPathForRegionId, getRegionById } from "./atlas";
+import { getRegionAtlasData } from "./mastr-data";
+import { bundeslandByAgs } from "./mastr-regions";
+import { ortPhrase } from "./atlas-orte";
+import { askVariante, type AskVariante } from "./kommunen-ask";
+
+// EINE Stelle, an der ein Anschreiben entsteht.
+//
+// Die Zusammensetzung — Aufhänger aus dem Award-Kern, Zahlen aus derselben
+// Quelle wie die Atlas-Seite, Rangliste-Adresse aus derselben Rechnung wie der
+// Rang — stand bis zum 19.08.2026 nur im Cockpit-Endpunkt. Das Versandpaket
+// hätte sie ein zweites Mal zusammengesetzt, und damit wäre genau das möglich
+// geworden, wogegen die ganze Konstruktion gebaut ist: im Cockpit steht eine
+// Zahl, in der verschickten Mail eine andere.
+//
+// Server-only, weil der Award-Kern die Grundtabelle über den Service-Key liest.
+
+const SITE_URL = "https://solar-check.io";
+
+export type BriefErgebnis = {
+  regionId: string;
+  name: string;
+  population: number | null;
+  variante: AskVariante;
+  seiteUrl: string | null;
+  ranglisteUrl: string | null;
+  /** Datenstand des Marktstammdatenregisters (ISO) — steht in der Meldung. */
+  stand: string;
+  draft: OutreachDraft;
+};
+
+export type BriefFehler = { grund: "keine-db" | "unbekannt" | "gesperrt" };
+
+/**
+ * Anschreiben für EINE Gemeinde bauen.
+ *
+ * Gesperrte Gemeinden bekommen nie eines — die Sperre ist der Widerspruch nach
+ * Art. 21 DSGVO bzw. § 7 UWG und muss an der Quelle greifen, nicht erst im
+ * Versand-Skript.
+ */
+export async function briefFuerGemeinde(
+  regionId: string,
+  /** Empfängeradresse, falls bekannt — sie entscheidet allein, welche Quelle
+   *  die Herkunftsangabe nach Art. 14 nennt (siehe kommunen-outreach-draft). */
+  empfaenger?: string | null,
+): Promise<BriefErgebnis | BriefFehler> {
+  if (!serviceDb) return { grund: "keine-db" };
+
+  const [{ data: reg }, { data: leadRow }, path, index, elternSlugsMap] = await Promise.all([
+    serviceDb.from("mastr_regions").select("name, bezeichnung, population, slug").eq("region_id", regionId).single(),
+    serviceDb
+      .from("kommunen_kontakt")
+      .select("outreach_status, verantwortlich_funktion, verantwortlich_operativ, ask_variante")
+      .eq("region_id", regionId)
+      .maybeSingle(),
+    atlasPathForRegionId(regionId),
+    buildHookIndex(DEFAULT_HOOK_SETTINGS),
+    loadElternSlugs(),
+  ]);
+  if (!reg) return { grund: "unbekannt" };
+  if (leadRow?.outreach_status === "gesperrt") return { grund: "gesperrt" };
+
+  // Der Landesschnitt für den Vergleich — auf den PRIVATEN Dächern, nicht auf
+  // der Gesamtleistung (Begründung an `vergleich` in kommunen-outreach-draft).
+  const blAgs = regionId.slice(0, 2);
+  const [atlas, blAtlas, blRegion] = await Promise.all([
+    getRegionAtlasData(regionId),
+    getRegionAtlasData(blAgs),
+    getRegionById(blAgs),
+  ]);
+  const privatKwp = (a: typeof atlas) => a.solar.by_segment.find((x: { segment: string; kwp: number }) => x.segment === "privat_dach")?.kwp ?? 0;
+  const proKopf = (kwp: number, pop: number | null | undefined) => (pop && pop > 0 ? (kwp * 1000) / pop : null);
+  const eigen = proKopf(privatKwp(atlas), reg.population);
+  const land = proKopf(privatKwp(blAtlas), blRegion?.population);
+  const blName = bundeslandByAgs(blAgs)?.name ?? null;
+
+  //
+  // DIE SEITE DARF DEN BRIEF NICHT WIDERLEGEN — auch nicht scheinbar.
+  //
+  // Der Brief rechnet den Vergleich auf den PRIVATEN Dächern (das ist die Zahl
+  // über die Bürger). Die Gemeindeseite bildet ihren ersten Absatz aus der
+  // GESAMTLEISTUNG je Einwohner. Beides ist richtig, und beides kann in
+  // verschiedene Richtungen zeigen: Melsungen steht im Brief mit „39 % mehr"
+  // und auf der Seite mit „6 % unter dem Hessen-Schnitt, hier ist also noch
+  // viel Luft nach oben" — im ersten Absatz, ohne Scrollen sichtbar.
+  //
+  // Eine Pressestelle liest das nicht als zwei Messgrößen, sondern als
+  // Widerspruch. Vier der achtzehn Briefe des ersten Schubs waren betroffen.
+  //
+  // Deshalb: Der Satz steht NUR, wenn auch die Gesamtleistung über dem
+  // Landesschnitt liegt. Genannt wird weiterhin der private Wert — er ist der
+  // ehrlichere; die Gesamtzahl entscheidet allein darüber, ob wir überhaupt
+  // etwas behaupten.
+  const eigenGesamt = proKopf(atlas.solar.total_kwp, reg.population);
+  const landGesamt = proKopf(blAtlas.solar.total_kwp, blRegion?.population);
+  const seiteSagtNachzuegler =
+    eigenGesamt != null && landGesamt != null && landGesamt > 0 && eigenGesamt < landGesamt;
+
+  const vergleich =
+    eigen != null && land != null && land > 0 && blName && !seiteSagtNachzuegler
+      ? { anteil: eigen / land - 1, bezug: ortPhrase({ name: blName, level: "bundesland" }) }
+      : null;
+  const hook = index.rows.find((r) => r.regionId === regionId);
+
+  const seiteUrl = path ? `${SITE_URL}${path}` : null;
+
+  const variante: AskVariante =
+    (leadRow?.ask_variante as AskVariante | null) ??
+    askVariante({ population: reg.population, operativeStelle: !!leadRow?.verantwortlich_operativ });
+
+  const liste = (() => {
+    const kat = hook?.categoryKey ? AWARD_CATEGORY_BY_KEY[hook.categoryKey]?.slug : undefined;
+    const bl = elternSlugsMap[regionId.slice(0, 2)];
+    const kreis = elternSlugsMap[regionId.slice(0, 5)];
+    const gebiet = hook?.level === "bund" ? [] : hook?.level === "land" ? [bl] : [bl, kreis];
+    const pfad = ranglisteUrl(kat, hook?.klasseSlug ?? null, gebiet);
+    return pfad ? `${SITE_URL}${pfad}` : null;
+  })();
+
+  const draft = renderOutreachDraft({
+    name: reg.name,
+    pageUrl: seiteUrl,
+    betreff: hook?.betreff ?? `So steht ${reg.name} beim Solar-Ausbau da`,
+    einstieg:
+      hook?.einstieg ??
+      `Wir haben den Solarausbau in ${reg.name} aus den amtlichen Anlagendaten aufbereitet — hier der Überblick für Ihre Gemeinde.`,
+    variante,
+    funktion: leadRow?.verantwortlich_operativ ? leadRow.verantwortlich_funktion : null,
+    einwohner: reg.population ?? null,
+    wo: hook?.wo ?? "in der Region",
+    bestleistung: hook?.bestleistung ?? "einen bemerkenswerten Solar-Ausbau",
+    themaDativ: hook?.themaDativ ?? "Solar-Ausbau",
+    phrase: hook?.phrase ?? "beim Solar-Ausbau",
+    gruppe: hook?.gruppe ?? hook?.wo ?? "in der Region",
+    rangWert: hook?.valueStr ?? null,
+    rangBasis: hook?.basisStr ?? null,
+    vergleich,
+    empfaenger: empfaenger ?? null,
+    rang: hook?.rank && hook?.total && hook?.gruppe ? { platz: hook.rank, von: hook.total } : null,
+    weitere: hook?.weitere ?? [],
+    ranglisteUrl: liste,
+    // Die fertige Grafik für genau diesen Ort — live geprüft, kein Anhang.
+    widgetUrl: `${SITE_URL}/embed/gemeinde-solar?ags=${regionId}`,
+    zahlen: {
+      anlagen: atlas.solar.total_count,
+      leistungKwp: atlas.solar.total_kwp,
+      privatDachKwp: atlas.solar.by_segment.find((x) => x.segment === "privat_dach")?.kwp ?? null,
+      wpProKopf: reg.population ? Math.round((atlas.solar.total_kwp * 1000) / reg.population) : null,
+      stand: atlas.data_as_of,
+    },
+  });
+
+  return {
+    regionId,
+    name: reg.name,
+    population: reg.population ?? null,
+    variante,
+    seiteUrl,
+    ranglisteUrl: liste,
+    stand: atlas.data_as_of,
+    draft,
+  };
+}
+
+export function istBriefFehler(x: BriefErgebnis | BriefFehler): x is BriefFehler {
+  return "grund" in x;
+}

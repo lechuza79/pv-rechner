@@ -70,11 +70,21 @@ describe("Aufhänger-Guardrails (Gegenprüfung 2026-07-25)", () => {
 
 describe("selectHook", () => {
   const P = (over: Partial<Placement>): Placement => ({
-    categoryKey: "dach-privat-pk", level: "kreis", scopeId: "09111", klasseSlug: "kleine-gemeinden", klasseLabel: "Kleinen Gemeinden", rank: 1, total: 20, value: 100, spike: false, ...over,
+    categoryKey: "dach-privat-pk", level: "kreis", scopeId: "09111", klasseSlug: "kleine-gemeinden", klasseLabel: "Kleinen Gemeinden", rank: 1, total: 20, value: 100, spike: false, duenn: false, schlusslicht: false, ...over,
   });
 
   it("überspringt Spike-Platzierungen (Datenfehler-Verdacht)", () => {
     expect(selectHook([P({ rank: 1, total: 20, spike: true })]).kind).toBe("neutral");
+  });
+
+  // Hamm im Eifelkreis: 16 Einwohner, ein Balkonkraftwerk, „Platz 1 von 150".
+  it("überspringt Platzierungen mit zu dünnem Bestand", () => {
+    expect(selectHook([P({ rank: 1, total: 150, duenn: true })]).kind).toBe("neutral");
+  });
+
+  // Dintesheim: Brief „Platz 1", verlinkte Seite „an letzter Stelle im Landkreis".
+  it("überspringt Gemeinden, die auf ihrer eigenen Seite Schlusslicht sind", () => {
+    expect(selectHook([P({ rank: 1, total: 69, schlusslicht: true })]).kind).toBe("neutral");
   });
 
   it("wählt einen Sieg", () => {
@@ -131,7 +141,7 @@ describe("hookText", () => {
     // als Superlativ. Stünde beides gleich, läse sich der Brief wie ein
     // Textbaustein-Unfall.
     const s = sieger("dach-privat-abs", "Solardach-Hauptstadt");
-    expect(s.betreff).toMatch(/^Musterdorf bei .+ auf Platz 1 im Landkreis$/);
+    expect(s.betreff).toMatch(/^Musterdorf bei .+ auf Platz 1 von 34 im Landkreis$/);
     expect(s.betreff).not.toContain("die meiste"); // Superlativ gehört in die Meldung
     expect(s.einstieg).toContain("die meiste"); // dort steht er
   });
@@ -157,10 +167,30 @@ describe("hookText", () => {
     // Die Groessenklasse steht im Satz — ohne sie behauptete der Brief einen
     // Vergleich mit ALLEN Orten des Kreises, waehrend die verlinkte Rangliste
     // innerhalb der Klasse rechnet.
-    expect(s.betreff).toBe("Musterdorf bei Balkonkraftwerken auf Platz 1 im Landkreis");
+    // MIT DER GRUPPENGROESSE: "Platz 1 in Hessen" las sich als erster Platz
+    // unter allen hessischen Kommunen — auf unserer eigenen verlinkten
+    // Rangliste in einem Klick zu widerlegen. "von 34" sagt, dass es um eine
+    // Teilmenge geht, ohne den Betreff zu sprengen.
+    expect(s.betreff).toBe("Musterdorf bei Balkonkraftwerken auf Platz 1 von 34 im Landkreis");
     // Die Einzelheiten stehen im Einstieg, nicht im Betreff.
-    expect(s.einstieg).toContain("unter den Kleinen Gemeinden im Landkreis Musterkreis");
+    // „Musterkreis" trägt die Gattung selbst — „im Landkreis Musterkreis" wäre
+    // die doppelte Gattung, die in 23 von 100 echten Briefen stand.
+    expect(s.einstieg).toContain("unter den Kleinen Gemeinden im Musterkreis");
+    expect(s.einstieg).not.toContain("Landkreis Musterkreis");
     expect(s.einstieg).toContain("Platz 1 von 34");
+  });
+
+  // Die Gattung fällt nur weg, wo der Name sie selbst trägt. Ein normaler
+  // Kreisname behält sie — sonst stünde „im Würzburg" im Brief.
+  it("behält die Gattung, wo der Name sie nicht selbst trägt", () => {
+    const s = hookText(
+      { kind: "sieger", categoryKey: "balkon-pk", categoryLabel: "x", klasseLabel: "Kleinen Gemeinden", traeger: "buerger", level: "kreis", scopeId: "09679", rank: 1, total: 34, percentile: null, value: 65 },
+      { gemeinde: "Höchberg", kreis: "Landkreis Würzburg", land: "Bayern" },
+    );
+    expect(s.einstieg).toContain("im Landkreis Würzburg");
+    // Der Betreff kürzt weiterhin auf die Gattung — der Empfänger sitzt dort.
+    expect(s.betreff).toContain("im Landkreis");
+    expect(s.betreff).not.toContain("Würzburg");
   });
 
   it("lässt die internen Titel NIRGENDS nach außen", () => {
@@ -182,7 +212,7 @@ describe("hookText", () => {
       { kind: "podium", categoryKey: "balkon-pk", categoryLabel: "Balkon-Pionier", klasseLabel: "Kleinen Gemeinden", traeger: "buerger", level: "kreis", scopeId: "09111", rank: 3, total: 34, percentile: null, value: 40 },
       names,
     );
-    expect(p.betreff).toBe("Musterdorf bei Balkonkraftwerken auf Platz 3 im Landkreis");
+    expect(p.betreff).toBe("Musterdorf bei Balkonkraftwerken auf Platz 3 von 34 im Landkreis");
     expect(p.betreff).not.toContain("die meisten");
   });
 

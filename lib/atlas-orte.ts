@@ -19,7 +19,11 @@ export type OrtRegion = {
 // drei Kreisen Unsinn: "im Region Hannover" und "im Städteregion Aachen" (beide
 // tragen die Bezeichnung "Landkreis"/"Kreis") sowie "in Regionalverband
 // Saarbrücken" (Bezeichnung "Regionalverband").
-const MASKULIN = /^(Landkreis|Kreis|Regionalverband|Saalekreis|Ostalbkreis)\b/;
+// Zusätzlich alles, was auf „-kreis" ENDET: „im Wetteraukreis", „im
+// Main-Taunus-Kreis", „im Eifelkreis Bitburg-Prüm". Das trat erst zutage, als
+// der Anschreiben-Text den bereinigten Anzeigenamen benutzte — vorher stand
+// immer die vorangestellte Gattung davor und traf die erste Alternative.
+const MASKULIN = /^(Landkreis|Kreis|Regionalverband|Saalekreis|Ostalbkreis)\b|kreis\b/i;
 // "Regionalverband" trifft das nicht: kein Wortende nach "Region".
 const FEMININ = /^(Region|Städteregion|Verbandsgemeinde)\b/;
 // Genau ein Bundesland trägt einen Artikel: das Saarland → "im Saarland".
@@ -85,6 +89,31 @@ export function gattungPhrase(name: string): string {
   const erstes = idx > 0 ? name.slice(0, idx) : "";
   if (!(VORANGESTELLTE_GATTUNG as readonly string[]).includes(erstes)) return ortPhrase({ name });
   return `${ortPraeposition(erstes)} ${erstes}`;
+}
+
+/**
+ * Der Ortsname ohne Unterscheidungszusatz: „Langen (Hessen)" → „Langen",
+ * „Ilbesheim bei Landau in der Pfalz" → „Ilbesheim".
+ *
+ * WOFÜR: Für Texte, die die Gemeinde ÜBER SICH SELBST veröffentlichen soll.
+ * Kein Ort schreibt den Zusatz in seine eigene Pressemeldung — er existiert nur,
+ * um ihn von einem gleichnamigen Ort anderswo zu unterscheiden. Die
+ * Anschreiben-Meldung trug ihn („In Langen (Hessen) sind 1.422 Solaranlagen…"),
+ * und damit musste die Stadtkommunikation doch redigieren, obwohl der Brief
+ * „fertig formuliert" verspricht. Nebenbei kostete der längste Zusatz 24
+ * Zeichen im Betreff und war der einzige, der im Postfach abgeschnitten wurde.
+ *
+ * NICHT für Adressen, Verzeichnisse oder irgendetwas, das eindeutig sein muss —
+ * dort ist der Zusatz die ganze Aussage.
+ */
+export function kurzOrtsname(name: string): string {
+  const ohneKlammer = name.replace(/\s*\(.*?\)\s*$/, "").trim();
+  // NUR „bei" wird abgeschnitten, NICHT „am", „an der" oder „i. d.". „Neustadt
+  // an der Weinstraße" heißt auch vor Ort so; „Ilbesheim bei Landau in der
+  // Pfalz" nennt sich selbst „Ilbesheim". Der Unterschied ist, ob der Zusatz
+  // zum Namen gehört oder ihn nur von einem anderen Ort abgrenzt.
+  const ohneZusatz = ohneKlammer.split(/\s+bei\s+/)[0].trim();
+  return ohneZusatz.length >= 3 ? ohneZusatz : ohneKlammer || name;
 }
 
 /** Gattungswort der untergeordneten Ebene, mit korrektem Numerus. */
