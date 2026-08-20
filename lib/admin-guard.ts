@@ -11,6 +11,20 @@ const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "")
   .map((e) => e.trim().toLowerCase())
   .filter(Boolean);
 
+/**
+ * Admin-Session ODER der Cron-Schlüssel.
+ *
+ * Für Endpunkte, die auch ohne Browser angesprochen werden müssen — der
+ * Kommunen-Versand läuft als Skript und hat keine Session. Der Schlüssel ist
+ * derselbe wie bei den Wächter-Routen und steht nur in der Umgebung; ist er
+ * nicht gesetzt, gilt allein die Session (kein stiller Freibrief).
+ */
+export async function istAdminOderCron(req: { headers: { get(name: string): string | null } }): Promise<boolean> {
+  const secret = process.env.CRON_SECRET;
+  if (secret && req.headers.get("authorization") === `Bearer ${secret}`) return true;
+  return isAdminSession();
+}
+
 /** Gehört die aktuelle Session einem Admin? */
 export async function isAdminSession(): Promise<boolean> {
   const { createClient } = await import("./supabase-server-component");

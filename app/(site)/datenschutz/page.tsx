@@ -471,11 +471,13 @@ export default function DatenschutzPage() {
         <h2 style={S.h2}>15. Anschreiben an Städte und Gemeinden</h2>
         <p style={S.p}>
           Wir schreiben Kommunen an, um ihnen die Solar-Zahlen ihres Ortes als
-          fertige Meldung und als einbettbare Übersicht anzubieten. Verarbeitet
-          werden dafür ausschließlich <strong>öffentlich zugängliche
-          Kontaktdaten</strong> der Verwaltung — die Adresse der amtlichen
-          Website, das dort genannte Kontaktformular oder Postfach und, falls
-          im Impressum benannt, die Funktionsbezeichnung der zuständigen Stelle.
+          fertige Meldung und als einbettbare Übersicht anzubieten. Erhoben
+          werden dafür <strong>öffentlich zugängliche Kontaktdaten</strong> der
+          Verwaltung: die Adresse der amtlichen Website, das dort genannte
+          Kontaktformular oder Postfach, die im Impressum genannte
+          Verantwortlichen-Zeile samt Funktionsbezeichnung und, sofern dort
+          angegeben, eine personenbezogene Adresse der zuständigen Stelle.
+          Angeschrieben werden ausschließlich Funktionspostfächer.
           Quelle sind die Websites der Kommunen selbst sowie Wikidata.
           Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse
           an der Ansprache der zuständigen Stelle); die Herkunftsangabe erfolgt
@@ -493,11 +495,55 @@ export default function DatenschutzPage() {
           angeschriebenen Kommune und keiner Person zuordnen. Es werden dabei
           keine Cookies gesetzt und nichts im Browser abgelegt.
         </p>
+        {/* Der Versandweg und das Antwort-Postfach kamen hier gar nicht vor,
+            solange die Anschreiben von Hand verschickt wurden. Mit dem
+            Mailversand ist der Hoster des Postfachs ein Empfänger jeder
+            Nachricht UND jeder Antwort — dieselbe Fehlerklasse wie beim
+            Kontaktformular, das im August 2026 unbemerkt an ein privates
+            Google-Konto ging. */}
+        <p style={S.p}>
+          Die Anschreiben werden über ein E-Mail-Postfach der Domain
+          solar-check.io versendet und empfangen. Betrieben wird es von unserem
+          Hoster <strong>ALL-INKL.COM – Neue Medien Münnich</strong>,
+          Hauptstraße 68, 02742 Friedersdorf, auf Servern in Deutschland; es
+          besteht ein Auftragsverarbeitungsvertrag nach Art. 28 DSGVO. Das
+          Postfach wird nicht an andere Postfächer weitergeleitet (zuletzt
+          geprüft am 19. August 2026).
+        </p>
+        <p style={S.p}>
+          <strong>Antworten und Rückläufer.</strong> Antwortet eine Verwaltung,
+          verarbeiten wir die Angaben, die in der Antwort stehen — regelmäßig
+          also auch den Namen der schreibenden Person. Zu jeder Rückmeldung,
+          auch zu automatischen wie Unzustellbarkeits-Meldungen, halten wir
+          Absenderadresse, Betreff und unsere Einordnung fest, um dieselbe
+          Adresse nicht erneut anzuschreiben. Der Text der Antwort selbst wird
+          nicht in unsere Datenbank übernommen; er verbleibt im Postfach.
+          Gespeichert wird der Bearbeitungsstand in unserer Datenbank bei
+          Supabase (Einzelheiten und Drittlandbezug in Abschnitt 9); zusätzlich
+          führen wir einen Versandnachweis je Aussendung mit Empfängeradresse,
+          Betreff und Zeitpunkt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO
+          (berechtigtes Interesse an der Bearbeitung der eigenen Korrespondenz
+          und am Nachweis, wer wann angeschrieben wurde).
+        </p>
         <p style={S.p}>
           Die Kontaktdaten werden gelöscht, sobald das Vorhaben abgeschlossen
-          ist oder du widersprichst. Ein <strong>Widerspruch</strong> genügt
-          formlos an die in Abschnitt 1 genannte Adresse; danach erfolgt keine
-          weitere Ansprache.
+          ist.
+        </p>
+        <p style={S.p}>
+          <strong>Widerspruch.</strong> Ein Widerspruch gegen die Ansprache
+          genügt formlos an die in Abschnitt 1 genannte Adresse oder als Antwort
+          auf das Anschreiben; danach erfolgt keine weitere Ansprache. Der
+          Eintrag der Kommune bleibt in diesem Fall <strong>mit einem
+          Sperrvermerk bestehen</strong> und wird nicht gelöscht — nur so lässt
+          sich verhindern, dass dieselbe Adresse beim nächsten Durchgang wieder
+          angeschrieben wird. Rechtsgrundlage dafür ist Art. 6 Abs. 1 lit. c
+          DSGVO in Verbindung mit Art. 21 Abs. 3 DSGVO — wir müssen den
+          Widerspruch dauerhaft beachten können; von der Löschung ist der
+          Sperrvermerk deshalb ausgenommen (Art. 17 Abs. 3 lit. b DSGVO). Zu
+          einem anderen Zweck wird er nicht verwendet. Das Widerspruchsrecht
+          besteht ohne Begründung und jederzeit (Art. 21 Abs. 2 DSGVO); die
+          übrigen Rechte — Auskunft, Berichtigung, Löschung, Einschränkung und
+          Beschwerde bei einer Aufsichtsbehörde — stehen in Abschnitt 12.
         </p>
 
         <p style={S.muted}>Stand: August 2026</p>

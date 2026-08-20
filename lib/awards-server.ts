@@ -11,6 +11,7 @@ import {
   type HookExample,
   type HookKind,
   type HookSettings,
+  type Placement,
 } from "./award-hook";
 
 // Geteilter Server-Loader für die Award-Ansichten. Die breite Grundtabelle
@@ -98,7 +99,15 @@ export const loadAwardStats = memoize(async (): Promise<GemeindeStats[]> => {
   });
 });
 
-/** Kreis-Namen (5-stelliger AGS → Anzeigename) für die Anschreiben-Aufhänger. */
+/**
+ * Kreis-Namen (5-stelliger AGS → amtlicher Name) für die Anschreiben-Aufhänger.
+ *
+ * BEWUSST DER VOLLE NAME, inklusive vorangestellter Gattung. Der Betreff bildet
+ * daraus „im Landkreis" (`gattungPhrase`), der Fließtext den Ortsnamen
+ * (`scopeIn`, dort läuft `regionDisplayName`). Beide Wege brauchen den vollen
+ * Namen als Ausgangspunkt — ihn hier zu kürzen machte aus „im Landkreis" ein
+ * „in Schwalm-Eder-Kreis".
+ */
 export const loadKreisNames = memoize(async (): Promise<Record<string, string>> => {
   const rows = await pageAll("mastr_regions", "region_id, name", (q) => q.eq("level", "landkreis"));
   const out: Record<string, string> = {};
@@ -150,15 +159,35 @@ export async function buildHookIndex(settings: HookSettings): Promise<HookIndex>
       .map((p) => `${AWARD_CATEGORY_BY_KEY[p.categoryKey]?.label} · ${LEVEL_LABEL[p.level]} · Platz ${p.rank}/${p.total}`);
     // Weitere Spitzenplaetze — dieselbe Gemeinde, andere Kategorie oder Ebene.
     // Der gewaehlte Aufhaenger faellt raus, sonst stuende er zweimal im Brief.
-    const weitere = (placements.get(g.regionId) ?? [])
-      .filter(
-        (p) =>
-          p.total >= settings.minTotal &&
-          p.rank <= 3 &&
-          !(p.categoryKey === hook.categoryKey && p.level === hook.level),
-      )
+    //
+    // EINE ZEILE JE MESSGRÖSSE, NICHT JE EBENE.
+    //
+    // Vorher stand dieselbe Tatsache bis zu dreimal untereinander, absteigend
+    // nach Beeindruckendheit: „Platz 1 von 4.008 bundesweit", darunter „Platz 1
+    // von 568 in Rheinland-Pfalz", darunter „Platz 1 von 33 im Landkreis" — und
+    // die letzte Zeile entwertete die erste. Ebenso die drei Zubau-Fenster
+    // (seit Ende 2025 / 2023 / 2021), die als drei Zeilen dastanden, obwohl sie
+    // ineinandergeschachtelt sind. Das ist die Stelle, an der ein Leser merkt,
+    // dass niemand den Brief angesehen hat.
+    //
+    // Deshalb: je Messgröße die stärkste Zeile (größte Vergleichsgruppe), die
+    // Zubau-Fenster als EINE Familie, und die gewählte Messgröße ganz heraus —
+    // sie steht schon oben.
+    const familie = (key: string) => (key.startsWith("tempo-") ? "tempo" : key);
+    const besteJeFamilie = new Map<string, Placement>();
+    for (const p of placements.get(g.regionId) ?? []) {
+      if (p.spike || p.duenn || p.schlusslicht) continue;
+      if (p.total < settings.minTotal || p.rank > 3) continue;
+      if (familie(p.categoryKey) === familie(hook.categoryKey ?? "")) continue;
+      const f = familie(p.categoryKey);
+      const bisher = besteJeFamilie.get(f);
+      if (!bisher || p.rank < bisher.rank || (p.rank === bisher.rank && p.total > bisher.total)) {
+        besteJeFamilie.set(f, p);
+      }
+    }
+    const weitere = Array.from(besteJeFamilie.values())
       .sort((a, b) => a.rank - b.rank || b.total - a.total)
-      .slice(0, 3)
+      .slice(0, 2)
       .map((p) => ({
         phrase: AWARD_CATEGORY_BY_KEY[p.categoryKey]?.betreffPhrase ?? `bei ${AWARD_CATEGORY_BY_KEY[p.categoryKey]?.themaDativ}`,
         gruppe: `${p.klasseLabel} ${scopeIn(p.level, names)}`,
@@ -195,6 +224,7 @@ export async function buildHookIndex(settings: HookSettings): Promise<HookIndex>
         hook.value != null && hook.categoryKey
           ? formatAwardValue(hook.value, AWARD_CATEGORY_BY_KEY[hook.categoryKey].format)
           : null,
+      basisStr: hook.categoryKey ? (AWARD_CATEGORY_BY_KEY[hook.categoryKey]?.basis?.(g) ?? null) : null,
     };
   });
 
