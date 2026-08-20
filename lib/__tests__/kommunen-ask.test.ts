@@ -1,5 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { askVariante, bilanziere, refToken, WIDGET_AB_EINWOHNER } from "../kommunen-ask";
+import {
+  askVariante,
+  refToken,
+  verteile,
+  VARIANTE_ERKLAERUNG,
+  VERTEILUNG_HINWEIS,
+  WIDGET_AB_EINWOHNER,
+} from "../kommunen-ask";
 
 describe("Ask-Variante", () => {
   it("große Gemeinden bekommen den Widget-Absatz", () => {
@@ -22,31 +29,45 @@ describe("Ask-Variante", () => {
   });
 });
 
-describe("Auswertung je Variante", () => {
-  const zeilen = [
-    { versendet_variante: "nur_meldung", ref_klicks: 3, responded_at: "2026-07-30", widget_anfrage: false },
-    { versendet_variante: "nur_meldung", ref_klicks: 0, responded_at: null, widget_anfrage: false },
-    { versendet_variante: "meldung_plus_widget", ref_klicks: 5, responded_at: "2026-07-31", widget_anfrage: true },
+describe("Verteilung je Variante", () => {
+  const zeilen: { versendet_variante: string | null; responded_at: string | null; widget_anfrage: boolean }[] = [
+    { versendet_variante: "nur_meldung", responded_at: "2026-07-30", widget_anfrage: false },
+    { versendet_variante: "nur_meldung", responded_at: null, widget_anfrage: false },
+    { versendet_variante: "meldung_plus_widget", responded_at: "2026-07-31", widget_anfrage: true },
     // noch nicht versendet — zählt nirgends mit
-    { versendet_variante: null, ref_klicks: 9, responded_at: "2026-08-01", widget_anfrage: true },
+    { versendet_variante: null, responded_at: "2026-08-01", widget_anfrage: true },
   ];
 
   it("zählt je Variante getrennt und ignoriert Unversendetes", () => {
-    const b = bilanziere(zeilen);
+    const b = verteile(zeilen);
     const nur = b.find((x) => x.variante === "nur_meldung")!;
     const plus = b.find((x) => x.variante === "meldung_plus_widget")!;
     expect(nur.versendet).toBe(2);
-    expect(nur.klicks).toBe(3);
     expect(nur.antworten).toBe(1);
     expect(plus.versendet).toBe(1);
     expect(plus.widgetAnfragen).toBe(1);
   });
 
-  it("zählt Gemeinden mit Klick getrennt von der Klicksumme", () => {
-    // Ein Sicherheits-Scanner im Mailserver kann die Summe hochtreiben; die
-    // Zahl der Gemeinden mit überhaupt einem Klick ist robuster.
-    const b = bilanziere(zeilen);
-    expect(b.find((x) => x.variante === "nur_meldung")!.gemeindenMitKlick).toBe(1);
+  // DIE VARIANTE IST EINE ZIELREGEL, KEIN VERSUCH.
+  //
+  // Sie hängt an der Einwohnerzahl, die beiden Gruppen unterscheiden sich also
+  // nach Gemeindegröße und nicht nach Zufall. Die Oberfläche behauptete bis zum
+  // 20.08.2026 das Gegenteil („beide Fassungen sind sonst identisch — sonst
+  // wüssten wir hinterher nicht, woran eine Reaktion lag"), und dieser Satz war
+  // im Browser nicht als falsch zu erkennen: Er beschrieb einen Versuchsaufbau,
+  // den es nie gab.
+  //
+  // Geprüft wird die AUSSAGE, nicht der Wortlaut — ein Test auf den alten Satz
+  // wäre grün, sobald jemand ihn umformuliert (derselbe Fehler wie beim
+  // Vertrauens-Leisten-Audit).
+  it("behauptet nirgends, die Varianten seien vergleichbar", () => {
+    const beide = `${VARIANTE_ERKLAERUNG} ${VERTEILUNG_HINWEIS}`.toLowerCase();
+    expect(beide).not.toMatch(/sonst identisch|im übrigen identisch|woran eine reaktion lag/);
+    expect(beide).not.toMatch(/\ba\/b\b|test der beiden|versuchsaufbau/);
+    // Und sie sagt, WORAN die Zuordnung hängt — ohne das ist „Verteilung" nur
+    // ein anderes Wort für dieselbe Behauptung.
+    expect(VARIANTE_ERKLAERUNG).toMatch(/Größe|Einwohner/);
+    expect(VERTEILUNG_HINWEIS).toMatch(/kein Vergleich/i);
   });
 });
 

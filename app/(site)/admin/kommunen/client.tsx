@@ -5,7 +5,16 @@ import { v, space, pad } from "../../../../lib/theme";
 import { BUNDESLAENDER } from "../../../../lib/mastr-regions";
 import { OUTREACH_STATUS, OUTREACH_STATUS_LABEL } from "../../../../lib/outreach-status";
 import Modal from "../../../../components/Modal";
-import { ASK_LABEL, ASK_VARIANTEN, type AskVariante, type VariantenBilanz } from "../../../../lib/kommunen-ask";
+import ResultSection from "../../../../components/ResultSection";
+import { ART_LABEL, liesNotiz } from "../../../../lib/outreach-ruecklauf";
+import {
+  ASK_LABEL,
+  ASK_VARIANTEN,
+  VARIANTE_ERKLAERUNG,
+  VERTEILUNG_HINWEIS,
+  type AskVariante,
+  type VariantenVerteilung,
+} from "../../../../lib/kommunen-ask";
 import { SCHUEBE } from "../../../../lib/kommunen-testballon";
 
 // ─── Typen ──────────────────────────────────────────────────────────────────
@@ -124,14 +133,14 @@ export default function KommunenCockpit() {
 
   const maxPage = Math.max(0, Math.ceil(total / pageSize) - 1);
 
-  const [bilanz, setBilanz] = useState<VariantenBilanz[] | null>(null);
+  const [verteilung, setVerteilung] = useState<VariantenVerteilung[] | null>(null);
   const [offen, setOffen] = useState<{ nochNichtVersendet: number } | null>(null);
   useEffect(() => {
     fetch("/api/admin/kommunen/bilanz")
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => {
         if (j) {
-          setBilanz(j.bilanz);
+          setVerteilung(j.verteilung);
           setOffen(j.offen);
         }
       })
@@ -147,19 +156,21 @@ export default function KommunenCockpit() {
           Kontaktdaten der ~11.000 Gemeinden. Filtern, Status pflegen, Kontaktseite öffnen.
         </p>
         <p style={{ fontSize: 13, color: v("--color-text-muted"), marginTop: 4, maxWidth: 720, lineHeight: 1.5 }}>
-          <strong>Variante</strong> = welches der beiden Anschreiben diese Gemeinde bekommt.{" "}
-          <em>Nur Meldung</em> bietet ausschließlich den fertigen Pressetext an — ein Beteiligter, kein Technikaufwand.{" "}
-          <em>Meldung + Widget</em> hängt einen Absatz an, der zusätzlich das einbettbare Widget anbietet; nur für
-          Verwaltungen, die jemanden haben, der es umsetzen kann (ab 20.000 Einwohnern oder mit belegter Pressestelle).
-          Beide Fassungen sind sonst identisch — sonst wüssten wir hinterher nicht, woran eine Reaktion lag.
+          {/* Der Text steht in lib/kommunen-ask.ts. Er sagt, wie die Variante
+              ZUSTANDE KOMMT, und das ist eine Aussage über das Verfahren — an
+              der Oberfläche ist ein falscher Satz darüber nicht zu erkennen.
+              Hier stand bis zum 20.08.2026, beide Fassungen seien „sonst
+              identisch, sonst wüssten wir hinterher nicht, woran eine Reaktion
+              lag": die Beschreibung eines Versuchsaufbaus, den es nie gab. */}
+          {VARIANTE_ERKLAERUNG}
         </p>
       </div>
 
-      {/* Auswertung je Ask-Variante — beantwortet die eine Frage des Durchgangs:
-          wird das Widget überhaupt nachgefragt? */}
-      {bilanz && bilanz.some((b) => b.versendet > 0) && (
+      {/* Verteilung je Ask-Variante — wie viele Briefe welcher Fassung raus
+          sind. Kein Vergleich, Begründung in lib/kommunen-ask.ts. */}
+      {verteilung && verteilung.some((b) => b.versendet > 0) && (
         <div style={{ display: "flex", gap: space.md, flexWrap: "wrap", marginBottom: space.md }}>
-          {bilanz.map((b) => (
+          {verteilung.map((b) => (
             <div
               key={b.variante}
               style={{
@@ -171,16 +182,19 @@ export default function KommunenCockpit() {
               }}
             >
               <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-secondary") }}>{ASK_LABEL[b.variante]}</div>
+              {/* KEINE KLICKZAHLEN MEHR. Der Brief trägt keinen zählenden
+                  Link, „0 mit Klick" war deshalb kein Messergebnis, sondern
+                  eine leere Spalte, die wie eines aussah. */}
               <div style={{ fontSize: 13, marginTop: 4, fontFamily: v("--font-mono") }}>
-                {b.versendet} versendet · {b.gemeindenMitKlick} mit Klick
+                {b.versendet} versendet
                 <div style={{ color: v("--color-text-muted"), fontSize: 12 }}>
-                  {b.klicks} Klicks gesamt · {b.antworten} Antworten · {b.widgetAnfragen} Widget-Anfragen
+                  {b.antworten} Antworten · {b.widgetAnfragen} Widget-Anfragen
                 </div>
               </div>
             </div>
           ))}
-          <div style={{ fontSize: 11, color: v("--color-text-muted"), alignSelf: "center", maxWidth: 260, lineHeight: 1.4 }}>
-            Klicks sind eine Obergrenze — Sicherheits-Scanner in Mailservern öffnen Links automatisch.
+          <div style={{ fontSize: 11, color: v("--color-text-muted"), alignSelf: "center", maxWidth: 300, lineHeight: 1.4 }}>
+            {VERTEILUNG_HINWEIS}
             {offen ? ` ${offen.nochNichtVersendet} noch nicht versendet.` : ""}
           </div>
         </div>
@@ -527,6 +541,10 @@ function DraftModal({
 }) {
   const r = region(lead);
   const blocked = lead.outreach_status === "gesperrt";
+  // Angeschrieben = das Fenster zeigt den Verlauf, nicht den Entwurf. Der
+  // Zeitstempel entscheidet, nicht der Status: Ein Widerspruch setzt den Status
+  // auf „gesperrt", der Brief ist trotzdem hinausgegangen und gehört gezeigt.
+  const kontaktiert = !!lead.contacted_at;
   const [subject, setSubject] = useState(lead.draft_subject ?? "");
   const [body, setBody] = useState(lead.draft_body ?? "");
   const [busy, setBusy] = useState(false);
@@ -594,7 +612,7 @@ function DraftModal({
   // immer noch" gemeldet, obwohl der Generator längst korrekt war. Ein
   // erzeugter Entwurf ist ein Zwischenstand, kein Dokument.
   useEffect(() => {
-    if (open && !busy && !blocked && !lead.draft_manuell) generate();
+    if (open && !busy && !blocked && !kontaktiert && !lead.draft_manuell) generate();
     // Nur beim Öffnen — generate/body absichtlich nicht in den Deps.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -623,16 +641,27 @@ function DraftModal({
     <Modal
       open={open}
       onClose={onClose}
-      title={`Anschreiben · ${r?.name ?? lead.region_id}`}
-      intro="Aus Vorlage + echten Solar-Zahlen der Gemeinde erzeugt. Vor dem Versenden prüfen und anpassen."
+      title={`${kontaktiert ? "Verlauf" : "Anschreiben"} · ${r?.name ?? lead.region_id}`}
+      intro={
+        kontaktiert
+          ? "Was rausgegangen ist und was zurückkam."
+          : "Aus Vorlage + echten Solar-Zahlen der Gemeinde erzeugt. Vor dem Versenden prüfen und anpassen."
+      }
       maxWidth={640}
     >
       <div style={{ display: "flex", flexDirection: "column", gap: space.md }}>
-        {blocked ? (
+        {/* Die Sperre ist ein HINWEIS, kein Ersatz für den Verlauf. Eine
+            Gemeinde, die widersprochen hat, ist angeschrieben worden — gerade
+            dort will man sehen, was rausging und was zurückkam. Vorher verdeckte
+            der Sperr-Kasten beides. */}
+        {blocked && (
           <div style={{ background: v("--color-bg-muted"), border: `1px solid ${v("--color-negative")}`, borderRadius: v("--radius-sm"), padding: pad("md", "md"), fontSize: 13, color: v("--color-text-secondary") }}>
-            Diese Gemeinde ist <strong style={{ color: v("--color-negative") }}>gesperrt</strong> — es wird kein Anschreiben
-            erzeugt oder versendet. Um die Sperre aufzuheben, den Status in der Tabelle ändern.
+            Diese Gemeinde ist <strong style={{ color: v("--color-negative") }}>gesperrt</strong> — es wird kein weiteres
+            Anschreiben erzeugt oder versendet. Um die Sperre aufzuheben, den Status in der Tabelle ändern.
           </div>
+        )}
+        {blocked && !kontaktiert ? null : kontaktiert ? (
+          <Verlauf lead={lead} onStatus={setStatus} busy={busy} />
         ) : (
           <>
             {/* Erstkontakt bevorzugt über das Kontaktformular (dann ist die Folge-Mail angefordert). */}
@@ -690,20 +719,12 @@ function DraftModal({
               <button style={pagerBtn} disabled={busy} onClick={save}>
                 Speichern
               </button>
-              {/* Nach dem Versand gibt es nichts mehr zu generieren: Was im
-                  Feld steht, IST der verschickte Brief. Die Route verweigert
-                  das ohnehin — der Knopf verschwindet, damit niemand erst
-                  dagegenläuft. */}
-              {lead.contacted_at ? (
-                <span style={{ fontSize: 11, color: v("--color-text-muted"), alignSelf: "center" }}>
-                  Verschickt am {new Date(lead.contacted_at).toLocaleDateString("de-DE")} — das ist der Text, der
-                  hinausgegangen ist.
-                </span>
-              ) : (
-                <button style={pagerBtn} disabled={busy} onClick={generate}>
-                  {busy ? "…" : "Neu generieren"}
-                </button>
-              )}
+              {/* Nach dem Versand kommt dieser Zweig gar nicht mehr zum Zug —
+                  dann zeigt das Fenster den Verlauf. Die Route verweigert das
+                  Neuerzeugen zusätzlich, denn eine Oberfläche kann man umgehen. */}
+              <button style={pagerBtn} disabled={busy} onClick={generate}>
+                {busy ? "…" : "Neu generieren"}
+              </button>
               <div style={{ display: "flex", gap: space.xs, alignItems: "center", marginLeft: "auto" }}>
                 <label style={{ fontSize: 11, color: v("--color-text-muted") }} htmlFor="kanal-wahl">
                   über
@@ -732,6 +753,145 @@ function DraftModal({
         )}
       </div>
     </Modal>
+  );
+}
+
+// ─── Verlauf einer angeschriebenen Gemeinde ──────────────────────────────────
+//
+// Was hier steht, ist ein PROTOKOLL und kein Entwurfsfeld. Solange das Fenster
+// nur den Brief zeigte, war der Verlauf über zwei Stellen verstreut: der
+// Versand als Datum in der Tabelle, die Rückläufe als angehängte Zeilen im
+// Notizfeld — lesbar nur, wenn man das Feld aufzog und selbst sortierte.
+//
+// Der Brief bleibt sichtbar, aber eingeklappt und nicht mehr änderbar: Es ist
+// die verschickte Fassung, und daran gibt es nichts mehr zu bearbeiten.
+
+function Verlauf({
+  lead,
+  onStatus,
+  busy,
+}: {
+  lead: Lead;
+  onStatus: (status: string) => void;
+  busy: boolean;
+}) {
+  const { verlauf, freitext } = liesNotiz(lead.notes);
+  const versendet = lead.contacted_at ? new Date(lead.contacted_at) : null;
+  const fassung = lead.versendet_variante ?? lead.ask_variante;
+  const [copied, setCopied] = useState(false);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: space.md }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: space.xs }}>
+        {versendet && (
+          <VerlaufsZeileView
+            datum={versendet.toLocaleDateString("de-DE")}
+            was="Verschickt"
+            detail={[lead.channel === "mail" ? "per Mail" : lead.channel, lead.email ?? lead.rollen_email]
+              .filter(Boolean)
+              .join(" an ")}
+            zusatz={fassung ? `Fassung: ${ASK_LABEL[fassung]}` : null}
+            ton="accent"
+          />
+        )}
+        {verlauf.map((z, i) => (
+          <VerlaufsZeileView
+            key={`${z.datum}-${i}`}
+            datum={new Date(z.datum).toLocaleDateString("de-DE")}
+            was={ART_LABEL[z.art] ?? z.art}
+            detail={z.betreff}
+            zusatz={z.von}
+            ton={z.art === "widerspruch" || z.art === "unzustellbar" ? "negativ" : "neutral"}
+          />
+        ))}
+        {!verlauf.length && (
+          <div style={{ fontSize: 12, color: v("--color-text-muted"), paddingLeft: 2 }}>
+            {/* „Noch nichts" ist eine Auskunft, kein leerer Bildschirm. */}
+            Noch nichts zurückgekommen. Rückläufe trägt der Postfach-Lauf hier ein.
+          </div>
+        )}
+      </div>
+
+      {freitext.length > 0 && (
+        <div>
+          <label style={fieldLabel}>Notizen</label>
+          <div style={{ fontSize: 12.5, color: v("--color-text-secondary"), lineHeight: 1.5, whiteSpace: "pre-wrap" }}>
+            {freitext.join("\n")}
+          </div>
+        </div>
+      )}
+
+      <ResultSection title="Verschickter Brief" summary={lead.draft_subject ?? "kein Text gespeichert"}>
+        <div style={{ display: "flex", flexDirection: "column", gap: space.sm }}>
+          <div style={{ fontSize: 12.5, lineHeight: 1.6, whiteSpace: "pre-wrap", color: v("--color-text-secondary") }}>
+            {lead.draft_body ?? "Für diese Gemeinde ist kein Text gespeichert — sie wurde vor dem 20.08.2026 oder von Hand angeschrieben."}
+          </div>
+          {lead.draft_body && (
+            <button
+              style={pagerBtn}
+              onClick={async () => {
+                await navigator.clipboard.writeText(lead.draft_body ?? "");
+                setCopied(true);
+                setTimeout(() => setCopied(false), 1500);
+              }}
+            >
+              {copied ? "kopiert ✓" : "Text kopieren"}
+            </button>
+          )}
+        </div>
+      </ResultSection>
+
+      <div style={{ display: "flex", gap: space.sm, flexWrap: "wrap", alignItems: "center" }}>
+        {(lead.email ?? lead.rollen_email) && (
+          <a
+            href={`mailto:${lead.email ?? lead.rollen_email}?subject=${encodeURIComponent(`Re: ${lead.draft_subject ?? ""}`)}`}
+            style={{ ...pagerBtn, textDecoration: "none", display: "inline-block" }}
+          >
+            Antworten ↗
+          </a>
+        )}
+        {/* Der eine Ausgang, auf den alles zielt. Ohne eigenen Knopf müsste man
+            ihn in der Tabelle suchen — und eine Veröffentlichung sieht man
+            genau hier, wenn man gerade die Antwort liest. */}
+        {lead.outreach_status !== "veroeffentlicht" && (
+          <button
+            style={{ ...pagerBtn, color: v("--color-positive"), fontWeight: 700 }}
+            disabled={busy}
+            onClick={() => onStatus("veroeffentlicht")}
+          >
+            Hat veröffentlicht →
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function VerlaufsZeileView({
+  datum,
+  was,
+  detail,
+  zusatz,
+  ton,
+}: {
+  datum: string;
+  was: string;
+  detail?: string | null;
+  zusatz?: string | null;
+  ton: "accent" | "neutral" | "negativ";
+}) {
+  const farbe = ton === "accent" ? v("--color-accent") : ton === "negativ" ? v("--color-negative") : v("--color-text-secondary");
+  return (
+    <div style={{ display: "flex", gap: space.sm, alignItems: "baseline", fontSize: 12.5, lineHeight: 1.5 }}>
+      <span style={{ fontFamily: v("--font-mono"), fontSize: 11.5, color: v("--color-text-muted"), whiteSpace: "nowrap" }}>
+        {datum}
+      </span>
+      <span style={{ fontWeight: 700, color: farbe, whiteSpace: "nowrap" }}>{was}</span>
+      <span style={{ color: v("--color-text-secondary"), minWidth: 0, overflowWrap: "anywhere" }}>
+        {detail}
+        {zusatz && <span style={{ color: v("--color-text-muted") }}> · {zusatz}</span>}
+      </span>
+    </div>
   );
 }
 

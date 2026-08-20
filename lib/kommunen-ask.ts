@@ -45,34 +45,63 @@ export const ASK_LABEL: Record<AskVariante, string> = {
   meldung_plus_widget: "Meldung + Widget",
 };
 
-/** Kennzahlen einer Variante für die Auswertung. Zweck: nach einem Durchgang
- *  wissen, ob das Widget überhaupt nachgefragt wird. */
-export type VariantenBilanz = {
+/**
+ * DIE VARIANTE IST EINE ZIELREGEL, KEIN VERSUCH — und das ist der Unterschied,
+ * an dem die Auswertung hängt.
+ *
+ * Wer die Variante bekommt, entscheidet die Einwohnerzahl (oben): große
+ * Verwaltungen den Widget-Absatz, kleine nur die Meldung. Die beiden Gruppen
+ * unterscheiden sich damit NICHT im Text, sondern in der Gemeindegröße — eine
+ * Stadt mit Pressestelle antwortet aus hundert Gründen anders als ein Dorf mit
+ * drei Beschäftigten. Eine Gegenüberstellung der Rückmeldequoten sagt deshalb
+ * nichts über den Text aus; sie vergleicht groß gegen klein.
+ *
+ * Das stand hier bis zum 20.08.2026 anders: Die Zahlen liefen als „Bilanz je
+ * Variante" nebeneinander, mit dem ausdrücklichen Zweck, herauszufinden, ob das
+ * Widget nachgefragt wird — und die Oberfläche versprach dazu, beide Fassungen
+ * seien „sonst identisch, sonst wüssten wir hinterher nicht, woran eine Reaktion
+ * lag". Der Satz beschreibt einen Versuchsaufbau, den es nie gab.
+ *
+ * Was hier zu sehen ist, ist eine VERTEILUNG: wie viele Briefe welcher Fassung
+ * hinausgegangen sind. Ob die Ansprache trägt, beantwortet nicht diese Tabelle,
+ * sondern die Frage, ob eine Gemeinde die Meldung veröffentlicht.
+ */
+export type VariantenVerteilung = {
   variante: AskVariante;
   versendet: number;
-  klicks: number;
-  /** Gemeinden mit mindestens einem Klick — aussagekräftiger als die reine
-   *  Klicksumme, die ein einzelner Sicherheits-Scanner hochtreiben kann. */
-  gemeindenMitKlick: number;
   antworten: number;
   widgetAnfragen: number;
 };
 
-export function bilanziere(
-  zeilen: { versendet_variante: string | null; ref_klicks: number | null; responded_at: string | null; widget_anfrage: boolean | null }[],
-): VariantenBilanz[] {
+export function verteile(
+  zeilen: { versendet_variante: string | null; responded_at: string | null; widget_anfrage: boolean | null }[],
+): VariantenVerteilung[] {
   return ASK_VARIANTEN.map((variante) => {
     const eigene = zeilen.filter((z) => z.versendet_variante === variante);
     return {
       variante,
       versendet: eigene.length,
-      klicks: eigene.reduce((s, z) => s + (z.ref_klicks ?? 0), 0),
-      gemeindenMitKlick: eigene.filter((z) => (z.ref_klicks ?? 0) > 0).length,
       antworten: eigene.filter((z) => z.responded_at).length,
       widgetAnfragen: eigene.filter((z) => z.widget_anfrage).length,
     };
   });
 }
+
+/**
+ * Die Erklärung im Cockpit — hier, weil sie eine Aussage über das Verfahren ist
+ * und nicht über die Darstellung. Ein Satz, der die Zielregel als Versuch
+ * beschreibt, ist an der Oberfläche nicht als falsch zu erkennen.
+ */
+export const VARIANTE_ERKLAERUNG =
+  "Variante = welches der beiden Anschreiben diese Gemeinde bekommt. " +
+  "Nur Meldung bietet ausschließlich den fertigen Pressetext an — ein Beteiligter, kein Technikaufwand. " +
+  "Meldung + Widget hängt einen Absatz an, der zusätzlich das einbettbare Widget anbietet. " +
+  `Wer was bekommt, entscheidet die Größe: ab ${WIDGET_AB_EINWOHNER.toLocaleString("de-DE")} Einwohnern ` +
+  "oder mit belegter Pressestelle der Widget-Absatz, sonst nur die Meldung.";
+
+export const VERTEILUNG_HINWEIS =
+  "Das ist eine Verteilung, kein Vergleich: Die beiden Gruppen unterscheiden sich nach Gemeindegröße, " +
+  "nicht nach Zufall. Ob die Ansprache trägt, zeigt sich daran, ob eine Gemeinde die Meldung veröffentlicht.";
 
 /** Kurzer, sprechender Weiterleitungs-Token je Gemeinde. Aus dem Slug, damit
  *  der Link im Anschreiben lesbar bleibt (`solar-check.io/r/hoechberg`) — der

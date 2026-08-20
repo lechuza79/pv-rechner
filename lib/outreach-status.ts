@@ -23,6 +23,7 @@ export type OutreachStatus =
   | "entwurf"
   | "kontaktiert"
   | "geantwortet"
+  | "veroeffentlicht"
   | "bounce"
   | "zu"
   | "gesperrt";
@@ -32,6 +33,11 @@ export const OUTREACH_STATUS: { key: OutreachStatus; label: string; color: Token
   { key: "entwurf", label: "Entwurf", color: "--color-accent", bg: "--color-accent-dim" },
   { key: "kontaktiert", label: "Kontaktiert", color: "--color-accent-dark", bg: "--color-accent-dim" },
   { key: "geantwortet", label: "Geantwortet", color: "--color-positive", bg: "--color-bg-muted" },
+  // DAS IST DAS ERGEBNIS, auf das der ganze Durchgang zielt: Die Gemeinde hat
+  // die Meldung veröffentlicht. Bis zum 20.08.2026 gab es dafür keinen Status —
+  // eine Veröffentlichung war von einer freundlichen Antwort nicht zu
+  // unterscheiden, obwohl nur die eine den Link auf einer Amtsseite erzeugt.
+  { key: "veroeffentlicht", label: "Veröffentlicht", color: "--color-positive", bg: "--color-accent-dim" },
   { key: "bounce", label: "Unzustellbar", color: "--color-negative", bg: "--color-bg-muted" },
   { key: "zu", label: "Zu", color: "--color-text-muted", bg: "--color-bg-muted" },
   { key: "gesperrt", label: "Gesperrt", color: "--color-negative", bg: "--color-bg-muted" },

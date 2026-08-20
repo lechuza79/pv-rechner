@@ -196,3 +196,57 @@ export const STATUS_ZU_ART: Record<Ruecklaufart, string | null> = {
   abwesenheit: null,
   antwort: "geantwortet",
 };
+
+// ─── Verlauf: eine Zeile, ein Format ─────────────────────────────────────────
+//
+// Der Rücklauf-Lauf hängt jeden Befund als Zeile an die Notiz der Gemeinde; das
+// Cockpit zeigt daraus den Verlauf. Beide müssen dasselbe Format meinen — wer
+// die Zeile an einer Stelle baut und an der anderen liest, hat zwei Fassungen
+// derselben Vereinbarung, und die zweite merkt es nicht, wenn die erste sich
+// ändert. Sie steht deshalb hier, mit einem Test, der schreibt und wieder liest.
+//
+// DIE NOTIZ BLEIBT DER SPEICHER, nicht eine eigene Tabelle: Es sind wenige
+// Zeilen je Gemeinde, sie werden nur gelesen, und der Betreiber schreibt in
+// dasselbe Feld von Hand. Eine Tabelle daneben hieße, dass seine Notiz und
+// unsere an verschiedenen Orten liegen.
+
+export type VerlaufsZeile = {
+  datum: string; // ISO-Tag
+  art: Ruecklaufart;
+  betreff: string;
+  von: string;
+};
+
+const ZEILE = /^\[(\d{4}-\d{2}-\d{2})\] ([a-zä-]+) aus Postfach: „(.*)" \((.+)\)$/;
+
+/** Eine Verlaufszeile schreiben. */
+export function notizZeile(z: VerlaufsZeile): string {
+  return `[${z.datum}] ${z.art} aus Postfach: „${z.betreff}" (${z.von})`;
+}
+
+/**
+ * Eine Notiz in Verlauf und Freitext zerlegen.
+ *
+ * Was nicht als Verlaufszeile lesbar ist, gilt als Freitext und geht NICHT
+ * verloren — es ist im Zweifel von Hand geschrieben und damit das Wertvollere.
+ */
+export function liesNotiz(notes: string | null): { verlauf: VerlaufsZeile[]; freitext: string[] } {
+  const verlauf: VerlaufsZeile[] = [];
+  const freitext: string[] = [];
+  for (const zeile of (notes ?? "").split("\n")) {
+    if (!zeile.trim()) continue;
+    const m = zeile.match(ZEILE);
+    if (m) verlauf.push({ datum: m[1], art: m[2] as Ruecklaufart, betreff: m[3], von: m[4] });
+    else freitext.push(zeile);
+  }
+  return { verlauf, freitext };
+}
+
+/** Wie eine Einordnung im Cockpit heißt. */
+export const ART_LABEL: Record<Ruecklaufart, string> = {
+  widerspruch: "Widerspruch",
+  unzustellbar: "Unzustellbar",
+  "unklar-maschinell": "Maschinelle Meldung",
+  abwesenheit: "Abwesenheitsnotiz",
+  antwort: "Antwort",
+};

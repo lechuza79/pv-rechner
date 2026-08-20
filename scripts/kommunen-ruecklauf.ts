@@ -30,7 +30,7 @@
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync } from "node:fs";
-import { ordneEin, STATUS_ZU_ART, type Ruecklaufart, type RohMail } from "../lib/outreach-ruecklauf";
+import { ordneEin, notizZeile, STATUS_ZU_ART, type Ruecklaufart, type RohMail } from "../lib/outreach-ruecklauf";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -241,7 +241,12 @@ async function main(): Promise<void> {
       .select("notes")
       .eq("region_id", b.region_id)
       .maybeSingle();
-    const neueNotiz = `[${new Date().toISOString().slice(0, 10)}] ${b.art} aus Postfach: „${b.betreff}" (${b.von})`;
+    const neueNotiz = notizZeile({
+      datum: new Date().toISOString().slice(0, 10),
+      art: b.art,
+      betreff: b.betreff,
+      von: b.von,
+    });
     patch.notes = vorher?.notes ? `${vorher.notes}\n${neueNotiz}` : neueNotiz;
     // „GESPERRT" IST EINE EINBAHNSTRASSE.
     //

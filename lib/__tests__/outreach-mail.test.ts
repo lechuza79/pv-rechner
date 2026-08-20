@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { leseSmtpKonfig, fehlendePflichtangaben, mailKopfzeilen, adresseAus, postfachBefund } from "../outreach-mail";
-import { ordneEin, STATUS_ZU_ART } from "../outreach-ruecklauf";
+import { ART_LABEL, liesNotiz, notizZeile, ordneEin, STATUS_ZU_ART } from "../outreach-ruecklauf";
 import { renderOutreachDraft } from "../kommunen-outreach-draft";
 
 const GUT = {
@@ -226,5 +226,55 @@ describe("Rückläufer einordnen", () => {
   it("alles andere ist eine echte Antwort", () => {
     expect(mail({ betreff: "Re: Musterdorf auf Platz 1", text: "Vielen Dank, wir nehmen das auf." })).toBe("antwort");
     expect(STATUS_ZU_ART.antwort).toBe("geantwortet");
+  });
+});
+
+// ─── Verlaufszeilen ──────────────────────────────────────────────────────────
+//
+// Der Rücklauf-Lauf schreibt die Zeile, das Cockpit liest sie. Solange beide
+// dasselbe Format nur MEINEN, merkt der Leser nicht, wenn der Schreiber sich
+// ändert — die Zeile fiele dann stillschweigend in den Freitext, und der
+// Verlauf bliebe leer, ohne dass irgendwo etwas rot wird.
+describe("Verlauf in der Notiz", () => {
+  it("was geschrieben wurde, lässt sich wieder lesen", () => {
+    const z = {
+      datum: "2026-08-20",
+      art: "antwort" as const,
+      betreff: "Re: Riedstadt auf Platz 1 von 53",
+      von: "presse@riedstadt.de",
+    };
+    const { verlauf, freitext } = liesNotiz(notizZeile(z));
+    expect(verlauf).toEqual([z]);
+    expect(freitext).toEqual([]);
+  });
+
+  it("hält mehrere Zeilen in der Reihenfolge, in der sie angehängt wurden", () => {
+    const notes = [
+      notizZeile({ datum: "2026-08-20", art: "abwesenheit", betreff: "Urlaub", von: "info@a.de" }),
+      notizZeile({ datum: "2026-08-22", art: "antwort", betreff: "Danke", von: "info@a.de" }),
+    ].join("\n");
+    expect(liesNotiz(notes).verlauf.map((z) => z.art)).toEqual(["abwesenheit", "antwort"]);
+  });
+
+  // Von Hand Geschriebenes ist im Zweifel das Wertvollere — es darf nicht
+  // verschwinden, nur weil es nicht ins Muster passt.
+  it("behält handgeschriebene Notizen als Freitext", () => {
+    const hand = "Telefonat mit Frau Weber, ruft zurück";
+    const notes = `${hand}\n${notizZeile({ datum: "2026-08-21", art: "antwort", betreff: "Re: X", von: "b@c.de" })}`;
+    const { verlauf, freitext } = liesNotiz(notes);
+    expect(freitext).toEqual([hand]);
+    expect(verlauf).toHaveLength(1);
+  });
+
+  it("kommt mit einer leeren Notiz klar", () => {
+    expect(liesNotiz(null)).toEqual({ verlauf: [], freitext: [] });
+  });
+
+  // Jede Einordnung braucht eine Beschriftung — sonst steht im Verlauf der
+  // interne Bezeichner, und „unklar-maschinell" liest sich für niemanden.
+  it("jede Rücklaufart hat eine Beschriftung", () => {
+    for (const art of Object.keys(STATUS_ZU_ART) as (keyof typeof STATUS_ZU_ART)[]) {
+      expect(ART_LABEL[art]).toBeTruthy();
+    }
   });
 });
