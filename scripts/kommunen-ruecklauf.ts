@@ -263,7 +263,9 @@ async function main(): Promise<void> {
     if (error) log(`${b.name}: ${error.message}`, "err");
     else geschrieben++;
   }
-  log(`${geschrieben} Gemeinden nachgetragen`, "ok");
+  // Singular mitbauen: „1 Gemeinden nachgetragen" ist derselbe Fehler wie
+  // „1 neue Anlagen" im Atlas — Grammatik ist Teil der Richtigkeit.
+  log(`${geschrieben} ${geschrieben === 1 ? "Gemeinde" : "Gemeinden"} nachgetragen`, "ok");
 }
 
 main().catch((e) => {
