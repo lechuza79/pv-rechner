@@ -175,6 +175,10 @@ export async function GET(req: NextRequest) {
         // "Platz 3 im Landkreis" als Vergleich mit ALLEN Orten des Kreises —
         // gerankt wird aber innerhalb der Groessenklasse.
         klasse: GROESSENKLASSE_BY_SLUG[p.klasseSlug]?.label ?? p.klasseLabel,
+        // Das Kuerzel MUSS mit: Die Anzeige erklaert die Groessenklasse, und
+        // ohne den Schluessel muesste sie den Namen zurueckuebersetzen — also
+        // eine zweite Zuordnung pflegen, die beim naechsten Umbenennen bricht.
+        klasseSlug: p.klasseSlug,
         gruppe: `${GROESSENKLASSE_BY_SLUG[p.klasseSlug]?.label ?? p.klasseLabel} ${woLabel(p.level)}`,
         platz: p.rank,
         von: p.total,

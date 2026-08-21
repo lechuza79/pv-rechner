@@ -28,12 +28,47 @@ import {
 // Die Klassen kommen aus GROESSENKLASSEN, die Spannen aus `spanneVon()`. Hier
 // wird keine Grenze getippt: Wer den Zuschnitt ändert, ändert ihn einmal.
 
+/**
+ * Der Inhalt der Erklärung — als eigener Baustein, weil er in ZWEI Hüllen
+ * steckt: im Fenster (normale Seiten) und in einem Tooltip (innerhalb eines
+ * Fensters, wo ein zweites Fenster nicht geht).
+ */
+export function GroessenklassenListe({ aktiv }: { aktiv?: Groessenklasse | null }) {
+  return (
+    <>
+      <div style={S.liste}>
+        {GROESSENKLASSEN.map((kl) => {
+          const istAktiv = aktiv?.slug === kl.slug;
+          return (
+            <div key={kl.slug} style={{ ...S.eintrag, ...(istAktiv ? S.eintragAktiv : null) }}>
+              <span style={{ ...S.name, fontWeight: istAktiv ? 700 : 400 }}>{kl.label}</span>
+              <span style={S.spanne}>{`${spanneVon(kl)} Einwohner`}</span>
+            </div>
+          );
+        })}
+      </div>
+      {/* Was die Einteilung NICHT kann, gehört dazu: Ohne Einwohnerzahl gibt
+          es keine Pro-Kopf-Zahl und damit keine Klasse. Das betrifft wenige
+          Orte, aber wer dort steht, sucht sonst vergeblich nach seiner Zeile. */}
+      <p style={S.fuss}>
+        Orte ohne hinterlegte Einwohnerzahl stehen in keiner dieser Listen — ohne sie lässt sich
+        nichts je Einwohner rechnen.
+      </p>
+    </>
+  );
+}
+
+/** Die Klasse zu einem Kürzel, oder `undefined` bei einer Rolle. */
+export function klasseZuSlug(slug: string | undefined | null): Groessenklasse | undefined {
+  return slug ? GROESSENKLASSE_BY_SLUG[slug] : undefined;
+}
+
 export default function GroessenklasseLink({
   klasse,
   slug,
   text,
 }: {
-  /** Die Klasse, um die es geht — sie wird im Fenster hervorgehoben. */
+  /** Die Klasse, um die es geht — sie wird hervorgehoben. */
   klasse?: Groessenklasse;
   /**
    * Oder ihr Kürzel, wo der Aufrufer die Klasse nicht typisiert hat.
@@ -50,7 +85,7 @@ export default function GroessenklasseLink({
   text?: string;
 }) {
   const [offen, setOffen] = useState(false);
-  const k = klasse ?? (slug ? GROESSENKLASSE_BY_SLUG[slug] : undefined);
+  const k = klasse ?? klasseZuSlug(slug);
   if (!k) return <>{text ?? slug ?? ""}</>;
 
   return (
@@ -71,25 +106,7 @@ export default function GroessenklasseLink({
         intro={GROESSENKLASSEN_WARUM}
         maxWidth={480}
       >
-        <div style={S.liste}>
-          {GROESSENKLASSEN.map((kl) => {
-            const istAktiv = k.slug === kl.slug;
-            return (
-              <div key={kl.slug} style={{ ...S.eintrag, ...(istAktiv ? S.eintragAktiv : null) }}>
-                <span style={{ ...S.name, fontWeight: istAktiv ? 700 : 400 }}>{kl.label}</span>
-                <span style={S.spanne}>{`${spanneVon(kl)} Einwohner`}</span>
-              </div>
-            );
-          })}
-        </div>
-        {/* Was die Einteilung NICHT kann, gehört dazu: Ohne Einwohnerzahl gibt
-            es keine Pro-Kopf-Zahl und damit keine Klasse. Das betrifft wenige
-            Orte, aber wer dort steht, sucht sonst vergeblich nach seiner
-            Zeile. */}
-        <p style={S.fuss}>
-          Orte ohne hinterlegte Einwohnerzahl stehen in keiner dieser Listen — ohne sie lässt sich
-          nichts je Einwohner rechnen.
-        </p>
+        <GroessenklassenListe aktiv={k} />
       </Modal>
     </>
   );

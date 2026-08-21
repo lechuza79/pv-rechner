@@ -6,6 +6,9 @@ import { v, space, pad } from "../../lib/theme";
 import { fmtTopProzent } from "../../lib/atlas-format";
 import { IconArrowRight } from "../Icons";
 import Modal from "../Modal";
+import InfoTooltip from "../InfoTooltip";
+import { GroessenklassenListe, klasseZuSlug } from "./GroessenklasseLink";
+import { GROESSENKLASSEN_WARUM } from "../../lib/gemeindegroesse";
 
 // Die beste Platzierung der Gemeinde als EIN fokussiertes Element über dem
 // Hero — nicht als zweite Rangliste.
@@ -30,6 +33,9 @@ type Platzierung = {
   wo: string;
   /** Groessenklasse des Vergleichs ("Kleine Gemeinden"). */
   klasse: string;
+  /** Ihr Kuerzel — damit die Anzeige die Klasse erklaeren kann, ohne den Namen
+   *  zurueckzuuebersetzen. */
+  klasseSlug: string;
   /** Klasse und Gebiet zusammen ("Kleine Gemeinden im Landkreis Miltenberg") —
    *  ohne die Klasse liest sich "Platz 3 im Landkreis" als Vergleich mit ALLEN
    *  Orten des Kreises, gerankt wird aber innerhalb der Groesse. */
@@ -49,6 +55,45 @@ type Platzierung = {
 type Zeile = { platz: number; name: string; href: string | null; wert: string; selbst: boolean };
 
 const nf = (n: number) => n.toLocaleString("de-DE");
+
+/**
+ * Die Einleitung des Ranglisten-Fensters — mit erklärter Größenklasse.
+ *
+ * WARUM HIER EIN TOOLTIP UND KEIN FENSTER (Vorgabe des Betreibers,
+ * 20.08.2026): Auf normalen Seiten öffnet der Klassenname die Erklärung als
+ * Fenster. Hier steht er SCHON in einem Fenster, und ein zweites darüber wäre
+ * zwei Fokus-Fallen übereinander. Der Inhalt ist derselbe Baustein
+ * (`GroessenklassenListe`), nur die Hülle ist eine andere.
+ *
+ * Der Gruppen-Text beginnt mit dem Klassennamen (so baut ihn die Schnittstelle
+ * zusammen). Getrennt wird deshalb an dessen Länge — und wenn das nicht passt,
+ * bleibt der Satz eben ganz stehen, statt an einer geratenen Stelle zu brechen.
+ */
+function Einleitung({ p }: { p: Platzierung }) {
+  const klasse = klasseZuSlug(p.klasseSlug);
+  const rest = p.gruppe.startsWith(p.klasse) ? p.gruppe.slice(p.klasse.length) : null;
+  const menge = p.tabelleGekuerzt
+    ? `Die ersten ${nf(p.tabelle.length)} von ${nf(p.von)} — `
+    : `Alle ${nf(p.tabelle.length)} — `;
+  return (
+    <>
+      {menge}
+      {klasse && rest !== null ? (
+        <>
+          {p.klasse}
+          <InfoTooltip title="Größenklassen" ariaLabel="Was die Größenklassen bedeuten" exportNote={false}>
+            <p style={{ margin: `0 0 ${space.md}px` }}>{GROESSENKLASSEN_WARUM}</p>
+            <GroessenklassenListe aktiv={klasse} />
+          </InfoTooltip>
+          {rest}
+        </>
+      ) : (
+        p.gruppe
+      )}
+      {", gerechnet aus dem Marktstammdatenregister."}
+    </>
+  );
+}
 
 /** Die Kategorienamen sind für den Fliesstext geschrieben ("private
  *  Speicherkapazität je Einwohner"). Als eigene Zeile beginnen sie gross. */
@@ -139,13 +184,7 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
         title={offen !== null ? `${gross(daten.alle[offen].thema)} — ${daten.alle[offen].wo}` : ""}
         // „Alle 300" wäre gelogen, wenn die Gruppe 1.101 Kommunen hat und die
         // Liste bei 300 endet. Der Satz sagt beides.
-        intro={
-          offen === null
-            ? ""
-            : daten.alle[offen].tabelleGekuerzt
-              ? `Die ersten ${nf(daten.alle[offen].tabelle.length)} von ${nf(daten.alle[offen].von)} — ${daten.alle[offen].gruppe}, gerechnet aus dem Marktstammdatenregister.`
-              : `Alle ${nf(daten.alle[offen].tabelle.length)} — ${daten.alle[offen].gruppe}, gerechnet aus dem Marktstammdatenregister.`
-        }
+        intro={offen === null ? "" : <Einleitung p={daten.alle[offen]} />}
         maxWidth={560}
       >
         {offen !== null && (
