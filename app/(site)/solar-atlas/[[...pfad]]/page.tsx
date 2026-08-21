@@ -28,6 +28,7 @@ import {
 } from "../../../../lib/atlas";
 import { pvLeistungTeile, wattProKopfTeile } from "../../../../lib/atlas-format";
 import { ortPhrase, childNoun } from "../../../../lib/atlas-orte";
+import { GROESSENKLASSEN_WARUM } from "../../../../lib/gemeindegroesse";
 import { buildRegionHighlight } from "../../../../lib/region-highlight";
 import { rankingKategorienGruppiert } from "../../../../lib/atlas-ranking";
 import { getRegionAtlasData } from "../../../../lib/mastr-data";
@@ -483,9 +484,7 @@ async function AtlasBody({
                 Ueberschrift haette fuer sie etwas Falsches behauptet. */}
             <h2 style={S.h2}>{`Wer vorn liegt${region.level === "de" ? "" : ` — ${ortPhrase(region)}`}`}</h2>
             <p style={S.sub}>
-              Ranglisten aus denselben Zahlen, gemessen an der Einwohnerzahl statt an der Größe der Kommune.
-              Verglichen wird innerhalb der Größenklasse, damit Großstädte gegen Großstädte antreten und nicht
-              gegen Dörfer.
+              {`Ranglisten aus denselben Zahlen, gemessen an der Einwohnerzahl statt an der Größe der Kommune. ${GROESSENKLASSEN_WARUM}`}
             </p>
             <div style={S.rangKacheln}>
               {rankingKategorienGruppiert().buerger.map((k) => (

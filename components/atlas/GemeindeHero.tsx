@@ -22,7 +22,7 @@ import {
 } from "../../lib/atlas-format";
 import AtlasKpiRow, { type KpiGroup, type RefLevel } from "./AtlasKpiRow";
 import { ortPraeposition } from "../../lib/atlas-orte";
-import { spanneVon } from "../../lib/gemeindegroesse";
+import GroessenklassenHinweis from "./GroessenklassenHinweis";
 
 import TendTag from "./TendTag";
 import Modal from "../Modal";
@@ -644,16 +644,16 @@ export default function GemeindeHero({
               also genau dort nicht, wo die meisten den Badge sehen.
               Dieselbe Stelle und dieselbe Rolle wie die Tendenz-Zeile über den
               Kacheln (AtlasKpiRow) — Erklärung vor den Werten, nicht danach. */}
-          {/* WAS DIE GRUPPE IST, STEHT AN DER GRUPPE.
-              „Gemeinden und Kleinstädte" verrät die Grenze nicht — und wer sie
-              nicht kennt, liest die Liste als „alle Orte hier" und den Platz
-              als etwas anderes, als er ist. Die Ranglisten-Seiten erklären das
-              seit jeher; auf der Gemeindeseite fehlte es, seit die Liste nach
-              Klassen vergleicht. Die Spanne kommt aus derselben Quelle wie die
-              Einteilung, nicht aus einem getippten Satz. */}
+          {/* WAS DIE GRUPPE IST, STEHT AN DER GRUPPE — aber als Verweis, nicht
+              als Satz. „Gemeinden und Kleinstädte" verrät die Grenze nicht, und
+              ein erklärender Satz an jeder Liste erklärt immer nur die eine
+              Klasse, die gerade dran ist. Das Fenster zeigt die ganze
+              Einteilung und wird an einer Stelle gepflegt. */}
           <div style={S.rankHinweis}>
-            {klassen ? `Verglichen wird innerhalb der Größenklasse (${spanneVon(klassen.klasse)} Einwohner). ` : ""}
-            Prozentzahl: Abstand zur Spitze dieser Liste.
+            <GroessenklassenHinweis
+              aktiv={klassen?.klasse ?? null}
+              praefix="Prozentzahl: Abstand zur Spitze dieser Liste."
+            />
           </div>
 
           {/* Re-keyed on filter+metric so the whole set fades in on a switch —

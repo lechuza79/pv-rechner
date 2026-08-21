@@ -77,6 +77,22 @@ export function spanneVon(k: Pick<Groessenklasse, "min" | "max">): string {
   return `${nf(k.min)}–${nf(k.max - 1)}`;
 }
 
+/**
+ * WARUM ES DIE KLASSEN GIBT — einmal formuliert, überall gezeigt.
+ *
+ * Der Satz stand am 20.08.2026 in drei handgetippten Fassungen im Code (zweimal
+ * auf den Ranglisten-Seiten, einmal auf der Atlas-Übersicht), und keine davon
+ * nannte die Klassen selbst. Wer eine Einteilung erklärt, ohne sie zu zeigen,
+ * erklärt nichts: „Gemeinden und Kleinstädte" verrät die Grenze nicht.
+ *
+ * Dieselbe Systematik wie bei den Einheiten und der Bio-Treppe: eine Quelle,
+ * sonst driften die Fassungen und niemand merkt es.
+ */
+export const GROESSENKLASSEN_WARUM =
+  "Eine Pro-Kopf-Zahl fällt in einem Dorf mit 150 Einwohnern schon durch drei neue Anlagen aus, " +
+  "in einer Großstadt braucht es tausende. Verglichen wird deshalb innerhalb der Größenklasse — " +
+  "Großstädte gegen Großstädte, nicht gegen Dörfer.";
+
 export const GROESSENKLASSEN: Groessenklasse[] = [
   {
     // "Dörfer" statt "Kleingemeinden": Unter 1.000 Einwohnern sind nur 14 von

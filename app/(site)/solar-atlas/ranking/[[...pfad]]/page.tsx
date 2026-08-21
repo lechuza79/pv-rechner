@@ -25,6 +25,7 @@ import {
   RANGLISTE_ANKER,
 } from "../../../../../lib/atlas-ranking";
 import { DATA_SOURCES } from "../../../../../lib/data-sources";
+import { GROESSENKLASSEN_WARUM } from "../../../../../lib/gemeindegroesse";
 
 /**
  * EINEN TAG, nicht eine Stunde.
@@ -410,7 +411,11 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
         </h1>
         <p style={S.intro}>
           {zeigtSpitzenreiter ? (
-            `Verglichen wird innerhalb der Größenklasse: Eine Pro-Kopf-Zahl fällt in einem Dorf mit 150 Einwohnern schon durch drei neue Anlagen aus, in einer Großstadt braucht es tausende. Jede Klasse hat deshalb ihre eigene Liste. Gerechnet aus dem Marktstammdatenregister.`
+            <>
+              {/* Eine Quelle für die Begründung — sie stand hier, zwei Absätze
+                  tiefer und auf der Atlas-Übersicht in drei Fassungen. */}
+              {`${GROESSENKLASSEN_WARUM} Jede Klasse hat ihre eigene Liste. Gerechnet aus dem Marktstammdatenregister.`}
+            </>
           ) : alle.length > 0 ? (
             <>
               {/* „sortiert nach" verlangt den Dativ — dafür gibt es themaDativ.
@@ -637,10 +642,9 @@ function Uebersicht() {
         <Breadcrumb items={[{ label: "Solar-Atlas", href: "/solar-atlas" }, { label: "Rankings" }]} />
         <h1 style={S.h1}>Rankings der Städte und Gemeinden</h1>
         <p style={S.intro}>
-          Wer baut am meisten — gemessen an der Einwohnerzahl. Verglichen wird innerhalb der Größenklasse, damit
-          Großstädte gegen Großstädte antreten und nicht gegen Dörfer. Vorn steht der Zubau: Was ein Ort früher
-          gebaut hat, kann er nicht mehr ändern. Jede Liste reicht von Deutschland über die Länder bis in den
-          Landkreis.
+          {`Wer baut am meisten — gemessen an der Einwohnerzahl. ${GROESSENKLASSEN_WARUM} `}
+          Vorn steht der Zubau: Was ein Ort früher gebaut hat, kann er nicht mehr ändern. Jede Liste reicht von
+          Deutschland über die Länder bis in den Landkreis.
         </p>
         {(
           [
