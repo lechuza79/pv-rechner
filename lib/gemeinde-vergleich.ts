@@ -215,6 +215,26 @@ export function proKopfSatzTeile(v: GemeindeVergleich): SatzTeil[] {
     ];
   }
 
+  //
+  // DIE ZAHL DES BRIEFES MUSS AUF DER SEITE STEHEN — auch ohne Widerspruch.
+  //
+  // DER FALL (Biebergemünd, 21.08.2026, an der Produktion gemessen): Der Ort
+  // liegt auf beiden Größen vorn, also gab es nichts aufzulösen, und der Satz
+  // nannte nur die Gesamtleistung („65 % über dem Hessen-Schnitt"). Die
+  // MELDUNG im Brief — der Text, den die Gemeinde veröffentlichen soll — sagt
+  // aber „122 % mehr auf den privaten Dächern". Diese Zahl stand nirgends auf
+  // der verlinkten Seite.
+  //
+  // Für die Gemeindeseite allein war das kein Fehler: zwei richtige Zahlen über
+  // zwei Größen, beide positiv. Für eine Pressestelle, die „122 % mehr" druckt
+  // und danach gefragt wird, woher das kommt, schon. Die Zusage ist deshalb
+  // nicht mehr „die Seite widerspricht dem Brief nicht", sondern: WAS DER BRIEF
+  // NENNT, STEHT AUF DER SEITE.
+  const privatSatz =
+    privat && privat.abstand >= MIN_VERGLEICH
+      ? ` Auf den privaten Dächern sind es ${fmtWattProKopf(Math.round(privat.proKopf))} je Einwohner, ${abstandText(privat, "über")}.`
+      : "";
+
   // Fall 1 und 3: die Gesamtleistung trägt den Satz.
   //
   // AUCH HIER EIN VERWEIS, obwohl nichts zu verwechseln ist: Die Zahl steht
@@ -227,11 +247,19 @@ export function proKopfSatzTeile(v: GemeindeVergleich): SatzTeil[] {
   // Messgröße, und genau so heißt die Kachel, auf der man landet.
   const wert = fmtWattProKopf(Math.round(gesamt.proKopf));
   const ziel = { text: "Je Einwohner", ziel: "alle" as const };
+  const privatTeile: SatzTeil[] = privatSatz
+    ? [
+        { text: " Auf den " },
+        { text: "privaten Dächern", ziel: "privat" },
+        { text: privatSatz.replace(" Auf den privaten Dächern", "") },
+      ]
+    : [];
   return gesamt.abstand >= 0
-    ? [ziel, { text: ` sind das ${wert} Photovoltaik — ${abstandText(gesamt, "über")}.` }]
+    ? [ziel, { text: ` sind das ${wert} Photovoltaik — ${abstandText(gesamt, "über")}.` }, ...privatTeile]
     : [
         ziel,
         { text: ` sind das ${wert} — ${abstandText(gesamt, "unter")}, hier ist also noch viel Luft nach oben.` },
+        ...privatTeile,
       ];
 }
 

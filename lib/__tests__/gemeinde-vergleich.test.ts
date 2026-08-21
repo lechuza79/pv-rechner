@@ -73,10 +73,21 @@ describe("Eine Rechnung für beide Oberflächen", () => {
         const zahl = t.vielfaches ? `${t.vielfaches}-fache` : t.prozent;
         expect(brief, lage).toContain(zahl);
 
+        // DIE ZUSAGE, VERSCHÄRFT AM 21.08.2026: Was der Brief nennt, steht auf
+        // der Seite — nicht bloß „die Seite widerspricht nicht".
+        //
+        // Vorher galt das nur im Konfliktfall. Biebergemünd liegt auf beiden
+        // Größen vorn; die Meldung sagte „122 % mehr auf den privaten Dächern",
+        // die Seite nur „65 % über dem Schnitt" (Gesamtleistung), und die 122 %
+        // standen nirgends. Für die Seite allein waren das zwei richtige
+        // Zahlen — für eine Pressestelle, die die eine druckt und auf der
+        // anderen landet, nicht.
+        expect(seite, lage).toContain("privaten Dächern");
+        expect(seite, lage).toContain(zahl);
+
         if (v.gesamt!.abstand < 0) {
-          // Die Seite muss den Konflikt auflösen, nicht verschweigen.
-          expect(seite, lage).toContain("auf den privaten Dächern");
-          expect(seite, lage).toContain(zahl);
+          // Zusätzlich im Konfliktfall: die schwächere Größe wird benannt,
+          // sonst steht eine Zahl gegen die andere.
           expect(seite, lage).toContain("für alle Anlagen");
           expect(seite, lage).not.toContain("Luft nach oben");
           mitAufloesung++;
@@ -222,10 +233,15 @@ describe("Der Satz zeigt auf die Einstellung, die er meint", () => {
     ]) {
       const teile = proKopfSatzTeile(v);
       const verweise = teile.filter((t) => t.ziel);
-      expect(verweise).toHaveLength(1);
+      // „Je Einwohner" führt immer nach unten — es ist der Name der Messgröße,
+      // und genau so heißt die Kachel, auf der man landet.
       expect(verweise[0]).toEqual({ text: "Je Einwohner", ziel: "alle" });
       // Der Satz selbst bleibt unverändert — der Verweis zerlegt ihn nur.
       expect(satzAusTeilen(teile).startsWith("Je Einwohner sind das ")).toBe(true);
+      // Ein ZWEITER Verweis steht da, sobald der Satz auch die privaten Dächer
+      // nennt — also genau dann, wenn der Brief eine Zahl darüber behauptet.
+      const erwartetPrivat = (v.privat?.abstand ?? -1) >= MIN_VERGLEICH;
+      expect(verweise.some((t) => t.ziel === "privat")).toBe(erwartetPrivat);
     }
   });
 
