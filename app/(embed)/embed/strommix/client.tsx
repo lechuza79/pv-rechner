@@ -522,7 +522,12 @@ function Headline({
       {shares.nuclear >= 0.5 && (
         <SharePill
           color={CATEGORY_COLORS.nuclear}
-          label="Kernenergie"
+          // Die Zahl enthält heimische Erzeugung UND den rechnerischen Import —
+          // seit April 2023 ist sie sogar ausschließlich Import. „Kernenergie"
+          // allein liest sich in einem weitergereichten Bild als deutsche
+          // Erzeugung, und genau isoliert wird dieses Bild geteilt. Der Zusatz
+          // stimmt für jeden Zeitraum, den das Widget zeigen kann.
+          label="Kernenergie (inkl. Import)"
           value={shares.nuclear}
         />
       )}

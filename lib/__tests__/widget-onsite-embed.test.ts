@@ -124,6 +124,25 @@ describe("Das geteilte Bild bleibt hell", () => {
   });
 });
 
+// Ein geteiltes Bild wird ohne die Seite drumherum gelesen. Was die Seite im
+// Text erklärt, muss deshalb an der Zahl selbst stehen.
+describe("Was das Bild allein tragen muss", () => {
+  it("nennt den Datenstand des Datensatzes, nicht den heutigen Tag", () => {
+    const client = lies("app/(embed)/embed/zubau-erneuerbare-atom/client.tsx");
+    // Ohne Angabe stempelt der Quellenvermerk das Abrufdatum — bei Live-Daten
+    // richtig, neben einer Reihe, die 2024 endet, eine falsche Aussage.
+    expect(client).toContain("COUNTRY_COMPARE_META.dataAsOf");
+  });
+
+  it("sagt an der Kernenergie-Zahl, dass der Import darin steckt", () => {
+    const client = lies("app/(embed)/embed/strommix/client.tsx");
+    // Die Zahl summiert heimische Erzeugung und rechnerischen Import; seit
+    // April 2023 ist sie ausschließlich Import. „Kernenergie" allein liest sich
+    // im weitergereichten Bild als deutsche Erzeugung.
+    expect(client).toMatch(/label="Kernenergie \(inkl\. Import\)"/);
+  });
+});
+
 describe("Aktionsmenü in einer Karte, die abschneidet", () => {
   const bar = lies("components/ChartActionBar.tsx");
 

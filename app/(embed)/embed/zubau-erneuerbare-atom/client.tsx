@@ -27,6 +27,7 @@ import {
 import {
   ZUBAU_BY_COUNTRY,
   YEARS_2010_2024,
+  COUNTRY_COMPARE_META,
 } from "../../../../lib/country-comparison";
 
 // Identität (Titel, Teilen-Ziel, Quellen, nächster Schritt) kommt aus dem
@@ -182,7 +183,15 @@ export default function ZubauWidget() {
         <div style={{ position: "relative", paddingRight: 18 }}>
           {/* Quelle vertikal an der rechten Kante (geteilter Baustein). Auf einer
               eigenen Seite (onsite) kreditiert die Seite zentral. */}
-          <WidgetSourceEdge widget={WIDGET} visible={!settings.onsite} />
+          {/* Der Datenstand kommt aus dem Datensatz, nicht von der Uhr: ohne ihn
+              steht neben einer Reihe, die 2024 endet, das heutige Datum — und
+              „Stand" liest sich als Datenstand, nicht als Abrufdatum. Bei den
+              Live-Widgets ist das Abrufdatum richtig, hier nicht. */}
+          <WidgetSourceEdge
+            widget={WIDGET}
+            visible={!settings.onsite}
+            stand={COUNTRY_COMPARE_META.dataAsOf}
+          />
           <ExportBox key={view.id} style={{ animation: "sc-fade 0.35s ease" }}>
             <LineChart years={YEARS_2010_2024} series={series} unit="GW" xDomain={[2010, 2024]} height={300} />
           </ExportBox>
