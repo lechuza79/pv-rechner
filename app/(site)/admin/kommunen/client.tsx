@@ -3,7 +3,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { v, space, pad } from "../../../../lib/theme";
 import { BUNDESLAENDER } from "../../../../lib/mastr-regions";
-import { OUTREACH_STATUS, OUTREACH_STATUS_LABEL } from "../../../../lib/outreach-status";
+import {
+  OUTREACH_STATUS,
+  OUTREACH_STATUS_LABEL,
+  UNBEANTWORTET,
+  UNBEANTWORTET_TAGE,
+} from "../../../../lib/outreach-status";
 import Modal from "../../../../components/Modal";
 import ResultSection from "../../../../components/ResultSection";
 import { ART_LABEL, liesNotiz } from "../../../../lib/outreach-ruecklauf";
@@ -260,6 +265,15 @@ export default function KommunenCockpit() {
         {STATUS.map((s) => (
           <StatusTab key={s.key} active={status === s.key} label={s.label} onClick={() => setStatus(s.key)} />
         ))}
+        {/* Abgeleitet, nicht gespeichert (lib/outreach-status.ts): angeschrieben,
+            keine Antwort, mindestens zwei Wochen her. Als eigener Status wäre es
+            eine dritte Wahrheit neben den beiden Zeitstempeln — falsch in dem
+            Moment, in dem eine Antwort eintrifft und niemand nachzieht. */}
+        <StatusTab
+          active={status === UNBEANTWORTET}
+          label={`Nicht beantwortet (${UNBEANTWORTET_TAGE} T.)`}
+          onClick={() => setStatus(UNBEANTWORTET)}
+        />
       </div>
 
       {/* Ergebniszeile */}

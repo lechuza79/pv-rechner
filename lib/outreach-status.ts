@@ -52,3 +52,31 @@ export const OUTREACH_STATUS_LABEL: Record<string, string> = Object.fromEntries(
 export function isOutreachStatus(value: string): value is OutreachStatus {
   return OUTREACH_STATUS_KEYS.includes(value);
 }
+
+// ─── „Nicht beantwortet" ist eine ABLEITUNG, kein Status ─────────────────────
+//
+// Er ergibt sich vollständig aus zwei Feldern, die ohnehin gepflegt werden:
+// angeschrieben, keine Antwort, und das ist lange genug her. Ihn zu SPEICHERN
+// hieße, eine dritte Wahrheit neben `contacted_at` und `responded_at` zu führen
+// — sie wäre in dem Moment falsch, in dem eine Antwort eintrifft und niemand
+// den Status nachzieht. Genau die Fehlerklasse, die dieses Projekt beim
+// Förder-Prüfdatum schon einmal teuer bezahlt hat.
+//
+// Die Frist ist kein Naturgesetz, sondern eine Beobachtung: Nidda hat am selben
+// Tag geantwortet, die zweite Rückfrage kam am Morgen danach. Wer nach zwei
+// Wochen nichts geschickt hat, schickt erfahrungsgemäß nichts mehr — bis dahin
+// steht die Gemeinde schlicht auf „kontaktiert".
+export const UNBEANTWORTET_TAGE = 14;
+
+/** Schlüssel für den abgeleiteten Filter — bewusst KEIN Wert von `OutreachStatus`. */
+export const UNBEANTWORTET = "unbeantwortet";
+
+export function istUnbeantwortet(
+  zeile: { outreach_status: string; contacted_at: string | null; responded_at: string | null },
+  jetzt: Date,
+): boolean {
+  if (zeile.outreach_status !== "kontaktiert") return false;
+  if (!zeile.contacted_at || zeile.responded_at) return false;
+  const tage = (jetzt.getTime() - new Date(zeile.contacted_at).getTime()) / 86_400_000;
+  return tage >= UNBEANTWORTET_TAGE;
+}

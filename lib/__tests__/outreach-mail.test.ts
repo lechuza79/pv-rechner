@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { leseSmtpKonfig, fehlendePflichtangaben, mailKopfzeilen, adresseAus, postfachBefund } from "../outreach-mail";
 import { ART_LABEL, liesNotiz, notizZeile, ordneEin, STATUS_ZU_ART } from "../outreach-ruecklauf";
+import { istUnbeantwortet } from "../outreach-status";
 import { renderOutreachDraft } from "../kommunen-outreach-draft";
 
 const GUT = {
@@ -226,6 +227,43 @@ describe("Rückläufer einordnen", () => {
   it("alles andere ist eine echte Antwort", () => {
     expect(mail({ betreff: "Re: Musterdorf auf Platz 1", text: "Vielen Dank, wir nehmen das auf." })).toBe("antwort");
     expect(STATUS_ZU_ART.antwort).toBe("geantwortet");
+  });
+});
+
+// ─── „Nicht beantwortet" ─────────────────────────────────────────────────────
+//
+// Abgeleitet statt gespeichert. Der Test hält die drei Bedingungen fest, weil
+// jede einzeln weggelassen zu einer Liste führt, die etwas anderes zeigt, als
+// ihre Beschriftung sagt.
+describe("Nicht beantwortet", () => {
+  const jetzt = new Date("2026-09-10T12:00:00Z");
+  const vorLangem = "2026-08-20T08:00:00Z";
+  const gestern = "2026-09-09T08:00:00Z";
+
+  it("angeschrieben, ohne Antwort, lange genug her", () => {
+    expect(
+      istUnbeantwortet({ outreach_status: "kontaktiert", contacted_at: vorLangem, responded_at: null }, jetzt),
+    ).toBe(true);
+  });
+
+  it("wer geantwortet hat, zählt nicht — auch wenn der Status noch steht", () => {
+    expect(
+      istUnbeantwortet({ outreach_status: "kontaktiert", contacted_at: vorLangem, responded_at: gestern }, jetzt),
+    ).toBe(false);
+  });
+
+  it("frisch angeschrieben ist nicht unbeantwortet, sondern unterwegs", () => {
+    expect(
+      istUnbeantwortet({ outreach_status: "kontaktiert", contacted_at: gestern, responded_at: null }, jetzt),
+    ).toBe(false);
+  });
+
+  // Eine unzustellbare Adresse hat niemand gelesen; sie unter „nicht
+  // beantwortet" zu führen hieße, jemandem Schweigen zu unterstellen.
+  it("Bounce und Widerspruch fallen heraus", () => {
+    for (const s of ["bounce", "gesperrt", "veroeffentlicht"]) {
+      expect(istUnbeantwortet({ outreach_status: s, contacted_at: vorLangem, responded_at: null }, jetzt)).toBe(false);
+    }
   });
 });
 

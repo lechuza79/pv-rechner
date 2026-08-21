@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase as serviceDb } from "../../../../lib/supabase-server";
 import { briefFuerGemeinde, istBriefFehler } from "../../../../lib/kommunen-brief";
-import { isOutreachStatus } from "../../../../lib/outreach-status";
+import { isOutreachStatus, UNBEANTWORTET, UNBEANTWORTET_TAGE } from "../../../../lib/outreach-status";
 import { isAdminSession } from "../../../../lib/admin-guard";
 
 // Admin-Cockpit für den Kommunen-Outreach. Liest/schreibt kommunen_kontakt
@@ -45,7 +45,21 @@ export async function GET(req: NextRequest) {
   query = query.range(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE - 1);
 
   if (bl) query = query.like("region_id", `${bl}%`);
-  if (status) query = query.eq("outreach_status", status);
+  // „Nicht beantwortet" wird ABGELEITET (lib/outreach-status.ts), nicht
+  // gespeichert: angeschrieben, keine Antwort, lange genug her. Die Bedingung
+  // steht hier als Abfrage statt als Filter im Browser, damit die Seitenzahlen
+  // und die Gesamtzahl darüber stimmen — ein nachträgliches Wegfiltern zeigte
+  // „50 von 79" und listete drei.
+  if (status === UNBEANTWORTET) {
+    const grenze = new Date(Date.now() - UNBEANTWORTET_TAGE * 86_400_000).toISOString();
+    query = query
+      .eq("outreach_status", "kontaktiert")
+      .is("responded_at", null)
+      .not("contacted_at", "is", null)
+      .lt("contacted_at", grenze);
+  } else if (status) {
+    query = query.eq("outreach_status", status);
+  }
   if (hasLink) query = query.not("kontakt_url", "is", null);
   if (kampagne) query = query.eq("kampagne", kampagne);
   if (charge) query = query.eq("charge", parseInt(charge, 10));
