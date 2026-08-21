@@ -95,9 +95,15 @@ export default function ZubauWidget() {
 
   const view = VIEWS[idx];
   const { series, sub } = useMemo(() => seriesFor(view), [view]);
-  // Wofür die Zahlen gelten — dieselbe Angabe für die Kennzahlen-Zeile und den
-  // Untertitel des Bildes, damit beide nicht auseinanderlaufen können.
+  // Wofür die Zahlen gelten, steht im Titel. Beim Zwei-Länder-Vergleich nicht:
+  // „Zubau Deutschland ↔ China: Erneuerbare vs. Atomkraft" passt auf einer
+  // schmalen Karte in keine Zeile, und dort nennt der Untertitel die beiden
+  // Länder ohnehin — samt ihrer Farben.
   const gebiet = view.kind === "compare" ? "Deutschland ↔ China" : `${view.flag} ${view.label}`;
+  const titel =
+    view.kind === "compare"
+      ? "Zubau: Erneuerbare vs. Atomkraft"
+      : `Zubau ${view.label}: Erneuerbare vs. Atomkraft`;
 
   // Abgeleitet, nicht doppelt gepflegt: der Register-Titel plus das gewählte
   // Land — ohne es teilt man ein Bild, dessen Bezug niemand kennt.
@@ -151,8 +157,15 @@ export default function ZubauWidget() {
               darunter auf ihrer gemessenen Höhe blieb, und beide lagen
               übereinander. Der Titel ist kurz genug, dass er auf jeder
               Kartenbreite in eine Zeile passt. */}
+          {/* Das Gebiet steht IM Titel — damit sagt schon die erste Zeile, wofür
+              die Zahlen gelten, und die Angabe steht nur einmal da (vorher: eine
+              eigene Zeile nur fürs Bild, plus der Wähler daneben).
+              Nicht umbrechen: Im Bild rendert die Aufnahme den Text etwas breiter
+              als die Messung — der Titel lief dann zweizeilig, während die Zeile
+              darunter auf ihrer gemessenen Höhe blieb, und beide lagen
+              übereinander. */}
           <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2, whiteSpace: "nowrap" }}>
-            Zubau: Erneuerbare vs. Atomkraft
+            {titel}
           </div>
           {/* Bleibt auch nach einem Umbruch rechts: sein Ausklapp-Menü ist an
               der rechten Kante ausgerichtet, und links ausgerückt ragte es auf
@@ -175,7 +188,7 @@ export default function ZubauWidget() {
             ein geteiltes Bild zeigte damit Zahlen, von denen niemand weiß,
             wofür sie gelten. Beide gehören an die Zahlen, die sie bestimmen. */}
         <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: "var(--widget-muted)", marginBottom: 6 }}>
-          Zubau gesamt {ERSTES_JAHR}–{LETZTES_JAHR} · {gebiet}
+          Zubau gesamt {ERSTES_JAHR}–{LETZTES_JAHR}
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 14 }}>
           {series.map((s) => (
