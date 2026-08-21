@@ -885,6 +885,105 @@ async function getTopGemeindenUncached(opts: {
   }));
 }
 
+/**
+ * Wie viele Kommunen die Gruppe insgesamt hat — der Nenner eines Platzes.
+ *
+ * WARUM NICHT EINFACH DIE LISTE ZÄHLEN: PostgREST deckelt jede Antwort bei
+ * 1.000 Zeilen, ohne es zu sagen, und `.range()` hebt das nicht auf (gemessen
+ * 20.08.2026). Eine bundesweite Größenklasse hat mehr: „Gemeinden und
+ * Kleinstädte" 2.235, „Dörfer" 3.795. Wer die Liste zählt, bekommt exakt 1.000
+ * zurück und schreibt „1.000 Kommunen in dieser Gruppe" auf die Seite — eine
+ * runde Zahl, die niemandem auffällt und trotzdem falsch ist. Genau so stand es
+ * einen Nachmittag lang da.
+ *
+ * `head: true` überträgt keine Zeile, nur den Zähler.
+ */
+async function getGruppenGroesseUncached(opts: {
+  prefix: string;
+  owner: Owner;
+  minPop?: number;
+  maxPop?: number;
+}): Promise<number> {
+  const supabase = await db();
+  const { count, error } = await withDbTimeout(
+    supabase.rpc(
+      "mastr_top_gemeinden",
+      {
+        p_prefix: opts.prefix,
+        p_owner: opts.owner,
+        p_limit: RANG_LIMIT,
+        p_min_pop: opts.minPop ?? 0,
+        p_max_pop: opts.maxPop ?? null,
+      },
+      { count: "exact", head: true },
+    ),
+    "mastr_top_gemeinden/count",
+  );
+  if (error) throw new Error(`mastr_top_gemeinden count failed: ${error.message}`);
+  return count ?? 0;
+}
+
+export const getGruppenGroesse = unstable_cache(getGruppenGroesseUncached, ["gruppen-groesse-v1"], {
+  revalidate: 86400,
+});
+
+/**
+ * Die eigene Zeile MIT ihrem echten Platz in der ganzen Gruppe.
+ *
+ * Der Rang entsteht als Fensterfunktion über den vollständigen Datensatz, also
+ * IN der Datenbank; gefiltert wird erst danach. Deshalb stimmt „Platz 1.849 von
+ * 2.235", obwohl nur eine Zeile über die Leitung geht.
+ *
+ * Ohne diesen Weg fiel die eigene Zeile bundesweit einfach weg: Sie stand nicht
+ * unter den ersten 1.000, die Liste kannte sie nicht, und die Karte zeigte vier
+ * fremde Spitzenreiter ohne den Ort, um den es geht.
+ */
+async function getGemeindeRangUncached(opts: {
+  prefix: string;
+  owner: Owner;
+  regionId: string;
+  minPop?: number;
+  maxPop?: number;
+}): Promise<TopGemeinde | null> {
+  const supabase = await db();
+  const { data, error } = await withDbTimeout(
+    supabase
+      .rpc("mastr_top_gemeinden", {
+        p_prefix: opts.prefix,
+        p_owner: opts.owner,
+        p_limit: RANG_LIMIT,
+        p_min_pop: opts.minPop ?? 0,
+        p_max_pop: opts.maxPop ?? null,
+      })
+      .eq("region_id", opts.regionId),
+    "mastr_top_gemeinden/eigene",
+  );
+  if (error) throw new Error(`mastr_top_gemeinden eigene failed: ${error.message}`);
+  const r = (data as TopGemeinde[] | null)?.[0];
+  return r
+    ? {
+        ...r,
+        population: Number(r.population),
+        kwp: Number(r.kwp),
+        w_per_capita: Number(r.w_per_capita),
+        rang: Number(r.rang),
+      }
+    : null;
+}
+
+export const getGemeindeRang = unstable_cache(getGemeindeRangUncached, ["gemeinde-rang-v1"], {
+  revalidate: 86400,
+});
+
+/**
+ * Obergrenze INNERHALB der Datenbank-Funktion (nicht der Antwort).
+ *
+ * Sie muss über der größten Gruppe liegen, sonst wird der Rang über einen
+ * abgeschnittenen Datensatz gebildet und die hinteren Plätze fehlen ganz.
+ * Größte Gruppe heute: „Dörfer" bundesweit mit 3.795.
+ */
+const RANG_LIMIT = 12_000;
+
 // Die bundesweiten Größenklassen-Spitzen (prefix "") sind der teuerste Teil der
 // Gemeinde-Seite (~5 s, Scan über alle Gemeinden) — aber je (Band × Eigentümer)
 // identisch über tausende Gemeinden. Cachen macht praktisch jede Seite nach der

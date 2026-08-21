@@ -368,7 +368,7 @@ export default function GemeindeHero({
   // eine Kennzahl. Bei den anderen dreien bleibt es beim Kreis — und die
   // Überschrift sagt es, statt eine Gruppe zu behaupten, die nicht gezeigt wird.
   const [refEbene, setRefEbene] = useState("landkreis");
-  const [fern, setFern] = useState<{ zeilen: FernZeile[]; total: number } | null>(null);
+  const [fern, setFern] = useState<{ zeilen: FernZeile[]; total: number; spitzeZeilen: number } | null>(null);
   const [fernLaedt, setFernLaedt] = useState(false);
 
   const fernGebiet =
@@ -400,6 +400,37 @@ export default function GemeindeHero({
       aktiv = false;
     };
   }, [fernMoeglich, fernGebiet, owner, klassen, regionId]);
+
+  //
+  // DIE LÄNGERE LISTE FÜRS FENSTER — erst auf Klick.
+  //
+  // Die fünf Zeilen der Karte und die hundert des Fensters sind derselbe Abruf
+  // mit einer anderen Länge. Sie vorsorglich zu laden hieße, für jeden Leser
+  // hundert Zeilen zu holen, die die wenigsten aufschlagen.
+  const [fernVoll, setFernVoll] = useState<{ zeilen: FernZeile[]; spitzeZeilen: number } | null>(null);
+  const [fernVollLaedt, setFernVollLaedt] = useState(false);
+
+  // Wechselt die Gruppe, ist die geladene Liste die falsche — verwerfen, sonst
+  // zeigt das Fenster beim nächsten Öffnen die vorige Vergleichsgruppe.
+  useEffect(() => setFernVoll(null), [fernGebiet, owner, metric]);
+
+  const volleListeLaden = () => {
+    setListeOffen(true);
+    if (!fern || fernVoll || fernVollLaedt) return;
+    setFernVollLaedt(true);
+    const p = new URLSearchParams({
+      gebiet: fernGebiet as string,
+      owner,
+      klasse: klassen!.klasse.slug,
+      region: regionId,
+      voll: "1",
+    });
+    fetch(`/api/atlas/nachbarn?${p}`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((j) => setFernVoll(j))
+      .catch(() => setFernVoll(null))
+      .finally(() => setFernVollLaedt(false));
+  };
 
   const fernName = kpi[owner].references.find((r) => r.key === refEbene)?.name ?? null;
   const listenTitel = fern
@@ -467,15 +498,17 @@ export default function GemeindeHero({
   // Zeile mit ihrem echten Platz) und wird auf dieselbe Form gebracht wie die
   // im Browser sortierten Kreis-Nachbarn. Alles darunter — Balkenlänge,
   // Abstands-Badge, abgesetzte eigene Zeile — bleibt eine Mechanik statt zwei.
+  const alsPeer = (z: FernZeile): PeerRow => ({
+    region_id: z.regionId,
+    name: z.name,
+    href: z.href,
+    value: z.wert,
+    rang: z.platz,
+    isSelf: z.selbst,
+  });
+
   const fernRows: PeerRow[] | null = fern
-    ? fern.zeilen.map((z) => ({
-        region_id: z.regionId,
-        name: z.name,
-        href: z.href,
-        value: z.wert,
-        rang: z.platz,
-        isSelf: z.selbst,
-      }))
+    ? fern.zeilen.map(alsPeer)
     : null;
 
   const zeigeRows = fernRows ?? rows;
@@ -644,17 +677,22 @@ export default function GemeindeHero({
               ein Fenster mit der Überschrift „Vollständige Rangliste" und fünf
               Einträgen wäre eine Behauptung. Dort steht deshalb schlicht, wie
               groß die Gruppe ist — das ist der Nenner des Platzes daneben. */}
-          {fern ? (
-            gruppenGroesse > zeigeRows.length && (
-              <div style={S.gruppenGroesse}>{`${nf(gruppenGroesse)} Kommunen in dieser Gruppe`}</div>
-            )
-          ) : (
-            ranked.length > rows.length && (
-              <button type="button" onClick={() => setListeOffen(true)} style={S.alleBtn}>
-                Alle {nf(ranked.length)} anzeigen
-              </button>
-            )
-          )}
+          {/* „Alle N anzeigen" gibt es nur, wo N wirklich gezeigt werden kann —
+              bei den Kreis-Nachbarn, die ohnehin auf der Seite liegen. Eine
+              Landes- oder Bundesgruppe ist größer als das, was eine Antwort
+              trägt; dort lädt das Fenster die ersten hundert und sagt es auch,
+              statt „alle" zu behaupten. */}
+          {fern
+            ? gruppenGroesse > zeigeRows.length && (
+                <button type="button" onClick={volleListeLaden} style={S.alleBtn}>
+                  {`Rangliste ansehen (${nf(gruppenGroesse)} Kommunen)`}
+                </button>
+              )
+            : ranked.length > rows.length && (
+                <button type="button" onClick={() => setListeOffen(true)} style={S.alleBtn}>
+                  Alle {nf(ranked.length)} anzeigen
+                </button>
+              )}
         </div>
       </div>
 
@@ -662,13 +700,25 @@ export default function GemeindeHero({
         open={listeOffen}
         onClose={() => setListeOffen(false)}
         title={listenTitel}
-        intro={`Vollständige Rangliste nach ${METRICS.find((m) => m.key === metric)?.label ?? "Leistung"}. Die eigene Zeile ist hervorgehoben; die Prozentzahl ist der Abstand zur Spitze.`}
+        intro={
+          // „Vollständige Rangliste" stimmt nur, wo sie es ist. Bei einer
+          // Landes- oder Bundesgruppe stehen hundert von tausenden im Fenster —
+          // das gehört in den Satz, nicht in eine Fußnote.
+          fern
+            ? `Die ersten ${nf(fernVoll?.spitzeZeilen ?? fern.spitzeZeilen)} von ${nf(gruppenGroesse)} Kommunen nach ${METRICS.find((m) => m.key === metric)?.label ?? "Leistung"}, dazu die eigene Zeile. Die Prozentzahl ist der Abstand zur Spitze.`
+            : `Vollständige Rangliste nach ${METRICS.find((m) => m.key === metric)?.label ?? "Leistung"}. Die eigene Zeile ist hervorgehoben; die Prozentzahl ist der Abstand zur Spitze.`
+        }
         maxWidth={560}
       >
         <div style={S.modalListe}>
-          {ranked.map((r) => (
+          {/* Bei den Kreis-Nachbarn liegt die ganze Liste im Browser. Bei einer
+              Landes- oder Bundesgruppe kommen die ersten hundert nach — bis sie
+              da sind, stehen die fünf Zeilen der Karte, damit das Fenster nicht
+              leer aufgeht. */}
+          {(fern ? (fernVoll?.zeilen ?? fern.zeilen).map(alsPeer) : ranked).map((r) => (
             <PeerZeile key={r.region_id} row={r} metric={metric} scale={spitze || 1} dev={abstandZurSpitze(r.value, spitze)} />
           ))}
+          {fernVollLaedt && <div style={S.gruppenGroesse}>Wird geladen …</div>}
         </div>
       </Modal>
     </div>

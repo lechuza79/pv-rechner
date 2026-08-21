@@ -100,9 +100,58 @@ test.describe("Bestandsblock: die Adresse stellt den Umschalter", () => {
     const karte = page.locator("#bestand-privat").locator("xpath=..");
     await expect(karte).toContainText("Melsungen");
     // Und der Nenner des Platzes steht daneben: Ohne ihn ist „Platz 135" keine
-    // Einordnung. Ein Fenster „Vollständige Rangliste" gibt es hier bewusst
-    // nicht — der Browser kennt nur die fünf Zeilen.
-    await expect(karte).toContainText(/Kommunen in dieser Gruppe/);
+    // Einordnung. Der Knopf sagt „Rangliste ansehen" statt „Alle N anzeigen" —
+    // gezeigt werden die ersten hundert, und das Fenster schreibt es hin.
+    await expect(karte).toContainText(/Rangliste ansehen \(\d/);
+  });
+
+  //
+  // DIE 1.000-ZEILEN-GRENZE DER DATENBANK.
+  //
+  // Jede Antwort ist bei 1.000 Zeilen gedeckelt, ohne dass es jemand sagt, und
+  // `.range()` hebt das nicht auf. Die erste Fassung holte die ganze
+  // Größenklasse und zählte sie: In Hessen (240) ging das gut, bundesweit stand
+  // „1.000 Kommunen in dieser Gruppe" statt 2.235 — eine runde Zahl, die
+  // niemandem auffällt — und die eigene Zeile fiel weg, weil sie hinter Platz
+  // 1.000 lag.
+  //
+  // Dieser Test prüft beides an der einzigen Stelle, an der es sichtbar wird:
+  // einer Gruppe, die größer als der Deckel ist. Er schlägt an, sobald jemand
+  // wieder aus einer Zeilenliste zählt.
+  test("eine Gruppe über 1.000 Kommunen wird vollständig gezählt", async ({ request }) => {
+    const r = await request.get("/api/atlas/nachbarn", {
+      params: {
+        gebiet: "", // bundesweit
+        owner: "alle",
+        klasse: "gemeinden-und-kleinstaedte",
+        region: "06634014", // Melsungen
+      },
+    });
+    expect(r.ok()).toBe(true);
+    const d = await r.json();
+
+    // 1.000 wäre der Deckel, nicht die Wahrheit.
+    expect(d.total).toBeGreaterThan(1000);
+    expect(d.total).not.toBe(1000);
+
+    // Die eigene Zeile MUSS dabei sein, auch weit hinten — sonst zeigt die
+    // Karte vier fremde Spitzenreiter ohne den Ort, um den es geht.
+    const eigen = d.zeilen.find((z: { selbst: boolean }) => z.selbst);
+    expect(eigen, "eigene Zeile fehlt").toBeTruthy();
+    expect(eigen.platz).toBeGreaterThan(1000);
+    expect(eigen.platz).toBeLessThanOrEqual(d.total);
+  });
+
+  test("die Karte holt nur fünf Zeilen, das Fenster hundert", async ({ request }) => {
+    // Der Unterschied ist der Grund, warum die lange Liste erst auf Klick lädt.
+    const hole = async (voll: boolean) => {
+      const r = await request.get("/api/atlas/nachbarn", {
+        params: { gebiet: "", owner: "alle", klasse: "gemeinden-und-kleinstaedte", region: "06634014", ...(voll ? { voll: "1" } : {}) },
+      });
+      return r.json();
+    };
+    expect((await hole(false)).spitzeZeilen).toBe(4);
+    expect((await hole(true)).spitzeZeilen).toBe(100);
   });
 
   test("ein Klick auf den Verweis im Text schaltet um — und zurück", async ({ page }) => {

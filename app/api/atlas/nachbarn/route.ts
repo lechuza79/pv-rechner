@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit } from "../../../../lib/rate-limit";
-import { nachbarschaft } from "../../../../lib/atlas-nachbarn";
+import { nachbarschaft, VOLLE_LISTE_ZEILEN } from "../../../../lib/atlas-nachbarn";
 import { GROESSENKLASSE_BY_SLUG } from "../../../../lib/gemeindegroesse";
 
 // Die Vergleichsgruppe einer Kommune in einem größeren Gebiet.
@@ -52,6 +52,10 @@ export async function GET(req: NextRequest) {
       owner: owner as (typeof OWNERS)[number],
       klasseSlug,
       regionId,
+      // Zwei Größen, sonst nichts: die fünf Zeilen der Karte oder die hundert
+      // des Fensters. Eine freie Zahl von außen wäre ein Hebel, mit dem sich
+      // beliebig große Antworten bestellen lassen.
+      top: p.get("voll") === "1" ? VOLLE_LISTE_ZEILEN : undefined,
     });
     if (!daten) return NextResponse.json({ error: "keine Daten" }, { status: 404 });
     return NextResponse.json(daten, {
