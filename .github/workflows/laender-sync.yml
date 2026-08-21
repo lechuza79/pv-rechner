@@ -1,0 +1,78 @@
+name: Länderdaten (Ember)
+
+# Holt Embers "Yearly Electricity Data" und schreibt die Länderreihen neu
+# (scripts/ember-laender-sync.ts). Die Datei stand ein Jahr auf dem Stand von
+# 2024, obwohl Ember zweimal im Monat nachliefert — weil ihre Fortschreibung an
+# einer Erinnerung hing statt an einem Lauf.
+#
+# Warum das ohne Rückfrage committen darf (Wächter-Gate, scripts/waechter-gate.md):
+#  • Leitquelle ist der Datensatz selbst, keine Sekundärquelle.
+#  • Realitäts-Anker: Das Skript rechnet die zurückliegenden Jahre neu und
+#    vergleicht sie mit dem bisherigen Stand; ein Sprung über 30 % bricht ab.
+#  • Die Reihen hängen an Kohärenz-Tests (lib/__tests__/country-comparison.test.ts):
+#    jede Reihe muss zu ihrer Jahresachse passen, der angeschriebene Stand zum
+#    letzten Jahr. Rot heißt: kein Commit.
+#
+# Zeitpunkt: monatlich am 6., einen Tag nach dem MaStR-Lauf, damit nicht zwei
+# Datenläufe am selben Morgen auf main schieben.
+
+on:
+  schedule:
+    - cron: "0 5 6 * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: laender-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Datensatz holen und Reihen schreiben
+        run: npm run laender:sync
+
+      - name: Hat sich etwas geändert?
+        id: diff
+        run: |
+          if git diff --quiet -- lib/country-comparison.ts; then
+            echo "geaendert=nein" >> "$GITHUB_OUTPUT"
+            echo "Keine neuen Werte."
+          else
+            echo "geaendert=ja" >> "$GITHUB_OUTPUT"
+            git diff --stat -- lib/country-comparison.ts
+          fi
+
+      # Erst prüfen, dann schieben: Die Kohärenz-Tests sind der Grund, aus dem
+      # dieser Lauf ohne Menschen auskommt.
+      - name: Typen und Tests
+        if: steps.diff.outputs.geaendert == 'ja'
+        run: |
+          npx tsc --noEmit
+          npx vitest run
+
+      - name: Committen
+        if: steps.diff.outputs.geaendert == 'ja'
+        run: |
+          git config user.name "solar-check laender-sync"
+          git config user.email "noreply@solar-check.io"
+          git add lib/country-comparison.ts
+          git commit -m "[auto] Laenderdaten: neuer Stand aus Embers Jahresdatensatz
+
+          Erzeugt von scripts/ember-laender-sync.ts. Zurueckliegende Jahre wurden
+          gegen den bisherigen Stand geprueft (Abbruch ab 30 % Abweichung), die
+          Kohaerenz-Tests sind gruen."
+          git push

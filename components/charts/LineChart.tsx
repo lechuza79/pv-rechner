@@ -187,6 +187,14 @@ function LineChartInner({
   const xTicks: number[] = [];
   for (let y = Math.ceil(domain[0] / 10) * 10; y <= domain[1]; y += 10) xTicks.push(y);
   if (xTicks[0] !== domain[0]) xTicks.unshift(domain[0]);
+  // Das letzte Jahr wird immer angeschrieben. Ohne diese Marke endete die Achse
+  // bei „2020", während die Kurve fünf Jahre weiterlief — bis wann die Daten
+  // reichen, war dem Bild damit nicht zu entnehmen, und genau das ist bei einer
+  // Zeitreihe die erste Frage. Zu dicht am Dekaden-Tick lassen wir sie weg:
+  // zwei Beschriftungen übereinander sind schlechter als eine fehlende.
+  const ENDMARKE_MIN_ABSTAND = 3;
+  const letzterTick = xTicks[xTicks.length - 1];
+  if (domain[1] - letzterTick >= ENDMARKE_MIN_ABSTAND) xTicks.push(domain[1]);
   const labelFont = compact ? 10 : 11.5;
 
   return (

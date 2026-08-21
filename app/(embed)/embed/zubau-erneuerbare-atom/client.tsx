@@ -5,7 +5,6 @@ import LineChart, { type LineSeries } from "../../../../components/charts/LineCh
 import {
   ExportBox,
   ExportNotesProvider,
-  ExportOnly,
   WidgetExportFooter,
   WidgetFooter,
   WidgetSourceEdge,
@@ -75,7 +74,10 @@ function seriesFor(view: View): { series: LineSeries[]; sub: string } {
       { key: "ee", label: "Erneuerbare", colorToken: "--color-energy-cat-renewable", values: c.windsolar },
       { key: "atom", label: "Atomkraft", colorToken: "--color-energy-nuclear", values: c.nuclear },
     ],
-    sub: "So viel Wind + Solar kommt jährlich neu ans Netz, verglichen mit neuer Atomkraft.",
+    // Kein Untertitel: Titel, Kennzahlen und die Zeile unter dem Chart sagen
+    // bereits, was gezeigt wird. Beim Zwei-Länder-Vergleich bleibt er, weil er
+    // dort die Farben erklärt — das ist eine Legende, keine Wiederholung.
+    sub: "",
   };
 }
 
@@ -93,6 +95,9 @@ export default function ZubauWidget() {
 
   const view = VIEWS[idx];
   const { series, sub } = useMemo(() => seriesFor(view), [view]);
+  // Wofür die Zahlen gelten — dieselbe Angabe für die Kennzahlen-Zeile und den
+  // Untertitel des Bildes, damit beide nicht auseinanderlaufen können.
+  const gebiet = view.kind === "compare" ? "Deutschland ↔ China" : `${view.flag} ${view.label}`;
 
   // Abgeleitet, nicht doppelt gepflegt: der Register-Titel plus das gewählte
   // Land — ohne es teilt man ein Bild, dessen Bezug niemand kennt.
@@ -104,7 +109,7 @@ export default function ZubauWidget() {
   const chartExport = useChartExport({
     context: {
       title: WIDGET.title,
-      subtitle: view.kind === "compare" ? "Deutschland ↔ China" : `${view.flag} ${view.label}`,
+      subtitle: gebiet,
       source: sourceLabel(DATA_SOURCES.ember),
     },
     filename: "solar-check-zubau-erneuerbare-atom.png",
@@ -156,20 +161,21 @@ export default function ZubauWidget() {
             <CountryMultitool idx={idx} onChange={setIdx} />
           </span>
         </div>
-        {/* Im Bild ersetzt der Ländername den Wähler — ohne ihn zeigt das Bild
-            Zahlen, von denen niemand weiß, für welches Land sie gelten. */}
-        <ExportOnly style={{ fontSize: 13.5, fontWeight: 700, color: "var(--widget-fg)", marginTop: 2 }}>
-          {view.kind === "compare" ? "Deutschland ↔ China" : `${view.flag} ${view.label}`}
-        </ExportOnly>
-        <div style={{ fontSize: 12, color: "var(--widget-muted)", marginBottom: 12 }}>{sub}</div>
+        {sub && (
+          <div style={{ fontSize: 12, color: "var(--widget-muted)", marginBottom: 12, marginTop: 2 }}>
+            {sub}
+          </div>
+        )}
 
         {/* KPIs: Zubau-Summe über die ganze Reihe — Kreis = Farbcode, Zahl
-            neutral, geboxt. Der Zeitraum wird AUS DEN DATEN geschrieben: er
-            stand hier getippt und wäre beim ersten Datenlauf still falsch
-            geworden — die Summe unter der Überschrift enthält dann ein Jahr,
-            das die Überschrift nicht nennt. */}
+            neutral, geboxt.
+            Zeitraum UND Gebiet stehen hier, nicht in einer eigenen Zeile: Der
+            Zeitraum stand getippt da und wäre beim ersten Datenlauf still falsch
+            geworden; das Gebiet stand nur im Wähler, den das Bild nicht hat —
+            ein geteiltes Bild zeigte damit Zahlen, von denen niemand weiß,
+            wofür sie gelten. Beide gehören an die Zahlen, die sie bestimmen. */}
         <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: "var(--widget-muted)", marginBottom: 6 }}>
-          Zubau gesamt {ERSTES_JAHR}–{LETZTES_JAHR}
+          Zubau gesamt {ERSTES_JAHR}–{LETZTES_JAHR} · {gebiet}
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 14 }}>
           {series.map((s) => (
