@@ -13,16 +13,35 @@
 
 export type AskVariante = "nur_meldung" | "meldung_plus_widget";
 
-/** Ab hier hat eine Verwaltung erfahrungsgemäß eine Pressestelle oder ein
- *  Klimaschutzmanagement. Gemessen am 27.07.2026: Über 20.000 Einwohner trifft
- *  33 % der Versandliste und damit die angepeilte 30/70-Verteilung.
+/**
+ * Ab wie vielen Einwohnern bekommt eine Gemeinde den Widget-Absatz?
  *
- *  Die naheliegende Alternative — „hat eine Pressestelle im Menü" — wurde
- *  geprüft und verworfen: Sie fände nur 13 % und erkennt von 33 großen
- *  Gemeinden lediglich 9, weil große Portale ihre Struktur nicht im Menü
- *  zeigen. Die Einwohnerzahl ist unvollständiger im Signal, aber vollständig
- *  in der Abdeckung — und das schlägt hier. */
-export const WIDGET_AB_EINWOHNER = 20_000;
+ * Die Einwohnerzahl ist ein Behelf. Die naheliegende Alternative — „hat eine
+ * Pressestelle im Menü" — wurde am 27.07.2026 geprüft und verworfen: Sie fände
+ * nur 13 % und erkennt von 33 großen Gemeinden lediglich 9, weil große Portale
+ * ihre Struktur nicht im Menü zeigen. Unvollständig im Signal, aber vollständig
+ * in der Abdeckung, und das schlägt hier.
+ */
+/**
+ * GESENKT AUF 5.000 (21.08.2026), weil die Schwelle das Falsche gemessen hat.
+ *
+ * Nidda (17.060 Einwohner) bekam in Charge 1 die Fassung OHNE Widget-Absatz und
+ * hat trotzdem von sich aus nach dem Einbau gefragt: „Oder würden Kosten für uns
+ * anfallen, wenn wir beispielsweise den Zubau in unserer Website einbinden
+ * möchten?" Dort sitzt ein Klimaschutz-Fachgebiet mit Newsletter und
+ * Social-Media-Team — die Einwohnerzahl hat das nicht gesehen.
+ *
+ * Die Untergrenze bleibt, sie misst etwas anderes: Unter rund 5.000 Einwohnern
+ * wird die Website meist von der Verbandsgemeinde gepflegt, das Angebot ginge
+ * also an die falsche Stelle. Wo dort trotzdem jemand sitzt, greift ohnehin die
+ * zweite Bedingung (belegte operative Stelle) — in Charge 1 hat sie Rengsdorf
+ * (3.001) und Schwalmtal (2.750) erfasst.
+ *
+ * Die Zahl ist ein Urteil, kein Messwert. Nach den Rückläufen aus Charge 2 lässt
+ * sich das erste Mal daran prüfen, ob die kleineren Gemeinden das Angebot
+ * überhaupt aufgreifen.
+ */
+export const WIDGET_AB_EINWOHNER = 5_000;
 
 /**
  * Variante bestimmen.
