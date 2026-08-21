@@ -26,6 +26,7 @@ import {
 } from "../../../../../lib/atlas-ranking";
 import { DATA_SOURCES } from "../../../../../lib/data-sources";
 import { GROESSENKLASSEN_WARUM } from "../../../../../lib/gemeindegroesse";
+import GroessenklasseLink from "../../../../../components/atlas/GroessenklasseLink";
 
 /**
  * EINEN TAG, nicht eine Stunde.
@@ -407,7 +408,12 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
 
         <h1 style={S.h1}>
           {rankingTitel(kategorie, wo)}
-          {klasse && <span style={S.h1Zusatz}>{` — ${klasse.langform}`}</span>}
+          {klasse && (
+            <span style={S.h1Zusatz}>
+              {" — "}
+              <GroessenklasseLink slug={klasse.slug} text={klasse.langform} />
+            </span>
+          )}
         </h1>
         <p style={S.intro}>
           {zeigtSpitzenreiter ? (
@@ -428,11 +434,17 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
                   so auf jeder Bundesland-Liste mit genau einem Treffer.
                   Grammatik ist Teil der Richtigkeit. */}
               <strong style={S.strong}>
-                {`${nf(alle.length)} ${
-                  alle.length === 1
-                    ? (klasse ? klasse.einzahl : "Ort")
-                    : (klasse ? klasse.label : "Städte und Gemeinden")
-                }`}
+                {`${nf(alle.length)} `}
+                {klasse ? (
+                  <GroessenklasseLink
+                    slug={klasse.slug}
+                    text={alle.length === 1 ? klasse.einzahl : klasse.label}
+                  />
+                ) : alle.length === 1 ? (
+                  "Ort"
+                ) : (
+                  "Städte und Gemeinden"
+                )}
               </strong>
               {` ${wo} ${alle.length === 1 ? "ist" : "sind"} gewertet, sortiert nach ${kategorie.themaDativ}. Gerechnet aus dem Marktstammdatenregister.`}
               {/* Die Untergrenze schliesst mehr als die Haelfte aller Kommunen
@@ -472,7 +484,9 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
             return (
               <div key={k.slug} style={S.klassenKarte}>
                 <div style={S.klassenKopf}>
-                  <span style={S.klassenLabel}>{k.langform}</span>
+                  <span style={S.klassenLabel}>
+                    <GroessenklasseLink slug={k.slug} text={k.langform} />
+                  </span>
                   <Link href={listenLink(kategorie.slug, k.slug)} style={S.klassenLink}>
                     {`Ganze Liste (${nf(z.length)}) `}
                     <IconArrowRight size={12} />

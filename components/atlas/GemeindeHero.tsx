@@ -22,7 +22,7 @@ import {
 } from "../../lib/atlas-format";
 import AtlasKpiRow, { type KpiGroup, type RefLevel } from "./AtlasKpiRow";
 import { ortPraeposition } from "../../lib/atlas-orte";
-import GroessenklassenHinweis from "./GroessenklassenHinweis";
+import GroessenklasseLink from "./GroessenklasseLink";
 
 import TendTag from "./TendTag";
 import Modal from "../Modal";
@@ -434,11 +434,35 @@ export default function GemeindeHero({
   };
 
   const fernName = kpi[owner].references.find((r) => r.key === refEbene)?.name ?? null;
-  const listenTitel = fern
-    ? `${klassen!.klasse.label}${fernName ? ` ${ortPraeposition(fernName)} ${fernName}` : ""}`
-    : klassen
-      ? `${klassen.klasse.label}${vergleichWo ? ` ${vergleichWo}` : ""}`
-      : (vergleichTitel ?? "Top Kommunen");
+
+  // Die Ortsangabe der Überschrift — der Klassenname davor wird zum Verweis.
+  const listenWo = fern
+    ? fernName
+      ? ` ${ortPraeposition(fernName)} ${fernName}`
+      : ""
+    : vergleichWo
+      ? ` ${vergleichWo}`
+      : "";
+  const listenTitel = klassen
+    ? `${klassen.klasse.label}${listenWo}`
+    : (vergleichTitel ?? "Top Kommunen");
+  /**
+   * Dieselbe Überschrift, aber mit anklickbarem Klassennamen.
+   *
+   * KEIN ERKLÄRENDER SATZ DANEBEN (Entscheidung des Betreibers): „Gemeinden und
+   * Kleinstädte" verrät die Grenze nicht, also wird der Name selbst der
+   * Verweis — gleiche Zeile, kein zusätzlicher Text. Wo nach Klassen gar nicht
+   * verglichen wird (kreisfreie Stadt, Stadtstaat), bleibt die Überschrift
+   * schlichter Text: Dort gäbe es nichts zu erklären.
+   */
+  const listenTitelNode = klassen ? (
+    <>
+      <GroessenklasseLink klasse={klassen.klasse} />
+      {listenWo}
+    </>
+  ) : (
+    listenTitel
+  );
 
   // Rank every Gemeinde in the Kreis, client-side, from the same cells the big
   // table uses — that is what lets owner and metric recombine without a refetch.
@@ -631,7 +655,7 @@ export default function GemeindeHero({
 
         <div style={S.right}>
           <div className="rank-head">
-            <div style={S.rankTitle}>{listenTitel}</div>
+            <div style={S.rankTitle}>{listenTitelNode}</div>
             <MetricPicker metric={metric} onChange={setMetric} />
           </div>
 
@@ -644,17 +668,7 @@ export default function GemeindeHero({
               also genau dort nicht, wo die meisten den Badge sehen.
               Dieselbe Stelle und dieselbe Rolle wie die Tendenz-Zeile über den
               Kacheln (AtlasKpiRow) — Erklärung vor den Werten, nicht danach. */}
-          {/* WAS DIE GRUPPE IST, STEHT AN DER GRUPPE — aber als Verweis, nicht
-              als Satz. „Gemeinden und Kleinstädte" verrät die Grenze nicht, und
-              ein erklärender Satz an jeder Liste erklärt immer nur die eine
-              Klasse, die gerade dran ist. Das Fenster zeigt die ganze
-              Einteilung und wird an einer Stelle gepflegt. */}
-          <div style={S.rankHinweis}>
-            <GroessenklassenHinweis
-              aktiv={klassen?.klasse ?? null}
-              praefix="Prozentzahl: Abstand zur Spitze dieser Liste."
-            />
-          </div>
+          <div style={S.rankHinweis}>Prozentzahl: Abstand zur Spitze dieser Liste.</div>
 
           {/* Re-keyed on filter+metric so the whole set fades in on a switch —
               softens the reorder that a per-row width transition can't cover. */}
