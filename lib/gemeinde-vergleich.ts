@@ -215,16 +215,23 @@ export function proKopfSatzTeile(v: GemeindeVergleich): SatzTeil[] {
     ];
   }
 
-  // Fall 1 und 3: die Gesamtleistung trägt den Satz. Hier steht nur EINE
-  // Messgröße im Satz — es gibt nichts zu verwechseln, also auch nichts
-  // aufzulösen. Ein Verweis wäre hier nur Dekoration.
+  // Fall 1 und 3: die Gesamtleistung trägt den Satz.
+  //
+  // AUCH HIER EIN VERWEIS, obwohl nichts zu verwechseln ist: Die Zahl steht
+  // unten im Bestandsblock noch einmal, und der Leser soll sie dort finden,
+  // ohne den richtigen Umschalter zu erraten. Bis zum 21.08.2026 verwies nur
+  // der Konfliktfall — auf einer Seite wie Biebergemünd, die überall vorn
+  // liegt, führte deshalb gar nichts nach unten.
+  //
+  // Verwiesen wird auf „Je Einwohner", nicht auf die Zahl: Das ist der Name der
+  // Messgröße, und genau so heißt die Kachel, auf der man landet.
   const wert = fmtWattProKopf(Math.round(gesamt.proKopf));
+  const ziel = { text: "Je Einwohner", ziel: "alle" as const };
   return gesamt.abstand >= 0
-    ? [{ text: `Je Einwohner sind das ${wert} Photovoltaik — ${abstandText(gesamt, "über")}.` }]
+    ? [ziel, { text: ` sind das ${wert} Photovoltaik — ${abstandText(gesamt, "über")}.` }]
     : [
-        {
-          text: `Je Einwohner sind das ${wert} — ${abstandText(gesamt, "unter")}, hier ist also noch viel Luft nach oben.`,
-        },
+        ziel,
+        { text: ` sind das ${wert} — ${abstandText(gesamt, "unter")}, hier ist also noch viel Luft nach oben.` },
       ];
 }
 

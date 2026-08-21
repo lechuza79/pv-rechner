@@ -179,6 +179,13 @@ export async function GET(req: NextRequest) {
         // ohne den Schluessel muesste sie den Namen zurueckuebersetzen — also
         // eine zweite Zuordnung pflegen, die beim naechsten Umbenennen bricht.
         klasseSlug: p.klasseSlug,
+        // Welche Stellung des Eigentuemer-Umschalters diese Auszeichnung zeigt.
+        // Buerger-Kategorien messen, was Haushalte gebaut haben ("privat"),
+        // Standort-Kategorien den Bestand am Ort ("gewerbe"). Die Zuordnung
+        // gehoert HIER hin, wo die Kategorie definiert ist — im Browser waere
+        // sie eine zweite Tabelle, die beim naechsten Kategorie-Zuwachs
+        // stillschweigend danebenliegt.
+        bestandOwner: cat.traeger === "buerger" ? "privat" : "gewerbe",
         gruppe: `${GROESSENKLASSE_BY_SLUG[p.klasseSlug]?.label ?? p.klasseLabel} ${woLabel(p.level)}`,
         platz: p.rank,
         von: p.total,

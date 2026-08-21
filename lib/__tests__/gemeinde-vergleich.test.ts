@@ -207,14 +207,25 @@ describe("Der Satz zeigt auf die Einstellung, die er meint", () => {
     }
   });
 
-  it("wo nur EINE Messgröße im Satz steht, gibt es nichts zu verweisen", () => {
-    // Ein Verweis ohne Verwechslungsgefahr ist Dekoration — und jeder Verweis
-    // im Fließtext kostet Lesefluss.
+  it("auch ohne Verwechslungsgefahr führt ein Verweis nach unten", () => {
+    // UMGEDREHT AM 21.08.2026 (Betreiber, an Biebergemünd gesehen). Vorher
+    // verwies nur der Konfliktfall — mit der Begründung, ein Verweis ohne
+    // Verwechslungsgefahr sei Dekoration. Auf einer Seite, die überall vorn
+    // liegt, führte damit gar nichts nach unten, und die Zahl aus dem ersten
+    // Absatz war im Bestandsblock nur durch Raten wiederzufinden.
+    //
+    // Verwiesen wird auf „Je Einwohner" — der Name der Messgröße, und genau so
+    // heißt die Kachel, auf der man landet.
     for (const v of [
       vergleichFuer({ privat_dach: 5_000, gewerbe_dach: 3_000 }, 10_000), // alles vorn
       vergleichFuer({ privat_dach: 1_000, gewerbe_dach: 500 }, 10_000), // alles hinten
     ]) {
-      expect(proKopfSatzTeile(v).filter((t) => t.ziel)).toHaveLength(0);
+      const teile = proKopfSatzTeile(v);
+      const verweise = teile.filter((t) => t.ziel);
+      expect(verweise).toHaveLength(1);
+      expect(verweise[0]).toEqual({ text: "Je Einwohner", ziel: "alle" });
+      // Der Satz selbst bleibt unverändert — der Verweis zerlegt ihn nur.
+      expect(satzAusTeilen(teile).startsWith("Je Einwohner sind das ")).toBe(true);
     }
   });
 

@@ -9,6 +9,7 @@ import Modal from "../Modal";
 import InfoTooltip from "../InfoTooltip";
 import { GroessenklassenListe, klasseZuSlug } from "./GroessenklasseLink";
 import { GROESSENKLASSEN_WARUM } from "../../lib/gemeindegroesse";
+import { ownerAnker } from "../../lib/atlas";
 
 // Die beste Platzierung der Gemeinde als EIN fokussiertes Element über dem
 // Hero — nicht als zweite Rangliste.
@@ -36,6 +37,8 @@ type Platzierung = {
   /** Ihr Kuerzel — damit die Anzeige die Klasse erklaeren kann, ohne den Namen
    *  zurueckzuuebersetzen. */
   klasseSlug: string;
+  /** Stellung des Eigentuemer-Umschalters, die diese Auszeichnung zeigt. */
+  bestandOwner: "privat" | "gewerbe";
   /** Klasse und Gebiet zusammen ("Kleine Gemeinden im Landkreis Miltenberg") —
    *  ohne die Klasse liest sich "Platz 3 im Landkreis" als Vergleich mit ALLEN
    *  Orten des Kreises, gerankt wird aber innerhalb der Groesse. */
@@ -146,7 +149,15 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
           wie Kopfzeile und Kategorie zusammen. Jetzt: eine Zeile Rang, eine
           Zeile Kategorie, eine Zeile Bezug — und der ganze Block ist der
           Knopf zur Rangliste. */}
-      <button type="button" onClick={() => setOffen(0)} style={S.badge} aria-label={`Rangliste: ${b.thema}`}>
+      {/*
+        DIE KACHEL IST KEIN KLICKZIEL MEHR (Vorgabe des Betreibers, 21.08.2026).
+        Sie war ein einziger grosser Knopf, und damit gab es genau EINEN Weg
+        hinaus: die Rangliste. Der zweite — „zeig mir das unten im Bestand" —
+        haette einen Knopf im Knopf gebraucht, also ungueltiges Markup.
+        Jetzt traegt die Kachel zwei benannte Verweise; dass beide sichtbar
+        beschriftet sind, sagt ausserdem, wohin sie fuehren.
+      */}
+      <div style={S.badge}>
         <span style={S.rangZeile}>
           <Insignie platz={b.platz} gross />
           <span style={S.rang}>Platz {b.platz}</span>
@@ -159,7 +170,21 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
         <span style={S.bezug}>
           {b.gruppe} · <span style={S.wert}>{b.wert}</span>
         </span>
-      </button>
+        <span style={S.aktionen}>
+          <button type="button" onClick={() => setOffen(0)} style={S.aktion} aria-label={`Rangliste: ${b.thema}`}>
+            {"Rangliste "}
+            <IconArrowRight size={10} />
+          </button>
+          {/* Der zweite Weg: dieselbe Aussage unten im Bestand, mit der
+              Stellung, die sie zeigt. Ohne ihn muesste der Leser raten, ob
+              „privat" oder „alle" gemeint ist — und genau dieses Raten ist der
+              Fehler, gegen den der ganze Umbau steht. */}
+          <a href={`#${ownerAnker(b.bestandOwner)}`} style={S.aktion}>
+            {"Im Bestand zeigen "}
+            <IconArrowRight size={10} />
+          </a>
+        </span>
+      </div>
 
       {/* Weitere Auszeichnungen: je eine eigene Zeile mit Rahmen — sie sind
           eigenständige Platzierungen mit eigener Rangliste, keine Fußnote der
@@ -325,6 +350,21 @@ const S: Record<string, React.CSSProperties> = {
     color: v("--color-text-primary"),
   },
   bezug: { fontSize: v("--font-size-caption"), color: v("--color-text-secondary"), lineHeight: 1.35 },
+  aktionen: { display: "flex", flexWrap: "wrap", gap: space.md, marginTop: 6 },
+  aktion: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 3,
+    background: "none",
+    border: "none",
+    padding: 0,
+    fontFamily: "inherit",
+    fontSize: v("--font-size-caption"),
+    fontWeight: 700,
+    color: v("--color-accent"),
+    textDecoration: "none",
+    cursor: "pointer",
+  },
   wert: { fontFamily: v("--font-mono") },
   // Weitere Auszeichnungen: eine Zeile je Stück, ohne Überschrift.
   weitere: { margin: 0, padding: 0, listStyle: "none" },

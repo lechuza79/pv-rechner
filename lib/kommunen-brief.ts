@@ -5,7 +5,7 @@ import { buildHookIndex, loadElternSlugs } from "./awards-server";
 import { AWARD_CATEGORY_BY_KEY } from "./awards";
 import { ranglisteUrl } from "./atlas-ranking";
 import { DEFAULT_HOOK_SETTINGS } from "./award-hook";
-import { atlasPathForRegionId, getRegionById } from "./atlas";
+import { atlasPathForRegionId, getRegionById, ownerAnker, type AtlasOwner } from "./atlas";
 import { getRegionAtlasData } from "./mastr-data";
 import { bundeslandByAgs } from "./mastr-regions";
 import { ortPhrase } from "./atlas-orte";
@@ -105,7 +105,23 @@ export async function briefFuerGemeinde(
   const vergleichBezug = blName ? ortPhrase({ name: blName, level: "bundesland" }) : "";
   const hook = index.rows.find((r) => r.regionId === regionId);
 
-  const seiteUrl = path ? `${SITE_URL}${path}` : null;
+  //
+  // DER LINK OEFFNET DIE SEITE IN DER STELLUNG, VON DER DER BRIEF HANDELT.
+  //
+  // Die Gemeindeseite zeigt von Haus aus alle Anlagen. Der Brief handelt aber
+  // von dem, was die Buerger gebaut haben — und genau diese Zahl suchte der
+  // Leser dann von Hand, waehrend oben eine andere stand (Melsungen: 880 Wp
+  // gesamt gegen 576 Wp privat). Der Rauteteil stellt den Umschalter, der
+  // Sprung landet am Bestandsblock.
+  //
+  // Abgeleitet aus der KATEGORIE des Aufhaengers, nicht fest gesetzt: Heute
+  // sind alle Aufhaenger Buerger-Kategorien (HOOK_TRAEGER), aber das ist eine
+  // Einstellung und keine Naturkonstante.
+  const bestandOwner: AtlasOwner =
+    hook?.categoryKey && AWARD_CATEGORY_BY_KEY[hook.categoryKey]?.traeger === "gewerbe"
+      ? "gewerbe"
+      : "privat";
+  const seiteUrl = path ? `${SITE_URL}${path}#${ownerAnker(bestandOwner)}` : null;
 
   const variante: AskVariante =
     (leadRow?.ask_variante as AskVariante | null) ??
