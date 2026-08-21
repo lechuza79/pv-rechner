@@ -46,12 +46,24 @@ test.describe("Ranglisten: die Beschriftung sagt, was gerechnet wird", () => {
     // Ohne Rücksicht auf Groß-/Kleinschreibung: Die Kopfzeile wird per CSS in
     // Versalien gesetzt, und innerText liefert genau das, was zu sehen ist.
     const kopf = await kopfzeile.innerText();
-    expect(kopf).toMatch(/je 1\.000 Ew\./i);
-    expect(kopf).not.toMatch(/je Einwohner/i);
+    // GEPRÜFT WIRD DER NENNER, NICHT DIE SCHREIBWEISE (korrigiert 20.08.2026).
+    // Die erste Fassung verlangte wörtlich „je 1.000 Ew." in Kopf UND Zeile.
+    // Am 19.08. hat eine andere Sitzung `formatAwardValue` bewusst auf
+    // „je 1.000 Einwohner" umgestellt — „Ew." ist Verwaltungsjargon und stand
+    // im Kommunen-Anschreiben, das dieselbe Funktion benutzt. Der Spaltenkopf
+    // kürzt weiter, weil er in eine schmale Tabellenspalte muss. Beides ist
+    // richtig und meint dasselbe; nur der Test klemmte an den Zeichen.
+    //
+    // Der Fehler, um den es wirklich geht, war ein anderer: Über Werten der
+    // Form „38,1 je 1.000 Ew." stand „je Einwohner" — die Beschriftung verfehlte
+    // den Wert um den Faktor tausend. Genau das prüft die Zahl im Nenner.
+    expect(kopf).toMatch(/je 1\.000\s*(Ew\.|Einwohner)/i);
+    expect(kopf).not.toMatch(/je Einwohner(?!\w)/i);
 
-    // Und die Werte in der Spalte tragen denselben Nenner.
+    // Und die Werte in der Spalte tragen denselben Nenner — wieder die Zahl,
+    // nicht die Schreibweise.
     const ersteZeile = await page.locator("ol li").first().innerText();
-    expect(ersteZeile).toContain("je 1.000 Ew.");
+    expect(ersteZeile).toMatch(/je 1\.000\s*(Ew\.|Einwohner)/i);
   });
 
   test("nennt die Stadtstaaten mit, statt 16 Landeshauptstädte zu behaupten", async ({ page }) => {

@@ -84,19 +84,28 @@ describe("Zwei Ask-Varianten", () => {
     expect(d.body).toContain("Grafik für Ihre Website");
   });
 
-  // WEDER ANHANG NOCH VORSCHAU-LINK (19.08.2026). Der Anhang fiel wegen der
-  // Zustellbarkeit, die Vorschau nach dem ersten Blick darauf: Die Grafik ist in
-  // dieser Breite nicht vorzeigbar, die Quellenangabe läuft in die letzte
-  // Kachel. Ein Angebot, das man nicht ansehen kann, ist besser als eines, das
-  // man ansieht und dann nicht will.
-  it("zeigt die Grafik nicht, auch wenn eine Adresse bekannt ist", () => {
+  // VORSCHAU-LINK JA, ANHANG NEIN (20.08.2026).
+  //
+  // Der Anhang bleibt draußen: ein Bild in der ersten unverlangten Mail einer
+  // Domain ohne Sendehistorie ist ein Spam-Muster. Der Vorschau-Link war einen
+  // Tag lang mit draußen, weil die Grafik schmal nicht vorzeigbar war; das ist
+  // behoben (Quellen-Kante mit eigener Spur, Zahl und Einheit gestaffelt).
+  it("zeigt die Grafik, sobald eine Adresse bekannt ist", () => {
     const d = renderOutreachDraft({
       ...BASIS,
       variante: "meldung_plus_widget",
       widgetUrl: "https://solar-check.io/embed/gemeinde-solar?ags=09679138",
     });
-    expect(d.body).not.toContain("/embed/");
+    expect(d.body).toContain("https://solar-check.io/embed/gemeinde-solar?ags=09679138");
+    expect(d.body).toContain("So sieht sie");
+  });
+
+  // Ohne Adresse KEIN halber Satz: Der Brief darf nicht „So sieht sie aus:" ohne
+  // Link sagen — das liest sich wie ein kaputter Serienbrief.
+  it("nennt ohne Adresse keine Vorschau", () => {
+    const d = renderOutreachDraft({ ...BASIS, variante: "meldung_plus_widget", widgetUrl: null });
     expect(d.body).not.toContain("So sieht sie");
+    expect(d.body).toContain("Grafik für Ihre Website");
   });
 
   it("beide Fassungen sind sonst identisch", () => {

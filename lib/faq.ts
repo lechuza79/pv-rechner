@@ -563,7 +563,7 @@ export function balkonFaq(): FaqEntry[] {
   ];
 }
 
-/** FAQ for the registration guide (/balkonkraftwerk/anmelden).
+/** FAQ for the registration guide (/balkonkraftwerk/ratgeber/anmelden).
  *
  *  Every legal statement here comes from BALKON_RECHT or is cited at its own
  *  source in lib/balkon-anmeldung.ts — all verified in full text on 16.08.2026
@@ -575,7 +575,7 @@ export function balkonAnmeldenFaq(): FaqEntry[] {
     {
       q: "Muss ich mein Balkonkraftwerk anmelden?",
       a: `Ja. ${BALKON_RECHT.anmeldung} ${BALKON_RECHT.anmeldeFrist}`,
-      cta: { label: "Deine Frist ausrechnen", href: "/balkonkraftwerk/anmelden" },
+      cta: { label: "Deine Frist ausrechnen", href: "/balkonkraftwerk/ratgeber/anmelden" },
     },
     {
       q: "Wie lange habe ich Zeit, ein Balkonkraftwerk anzumelden?",
@@ -636,6 +636,87 @@ export function strommixFaq(): FaqEntry[] {
     {
       q: "Woher kommen die Daten zum Strommix?",
       a: "Von Energy-Charts, der Datenplattform des Fraunhofer-Instituts für Solare Energiesysteme (ISE). Gezeigt wird die öffentliche Nettostromerzeugung — also der Strom, der ins öffentliche Netz eingespeist wird — in 15-Minuten-Schritten. Die Daten stehen unter der offenen Lizenz CC BY 4.0.",
+    },
+  ];
+}
+
+/** FAQ for the storage guide (/balkonkraftwerk/ratgeber/mit-speicher).
+ *
+ *  Same rule as balkonFaq(): every figure is computed from the model the
+ *  calculator runs, so a config change moves the guide with it. The reference
+ *  case is BALKON_SPEICHER_REFERENZ and is named inside the answers — a payback
+ *  figure without its household is meaningless.
+ *
+ *  The round-trip efficiency is the one number that carries this page. It is
+ *  NOT a datasheet value: it is what the HTW Berlin assumes for exactly this
+ *  device class (≤ 3 kWh, AC-coupled) — verified in full text on 19.08.2026,
+ *  see docs/quellen/HTW-Stecker-Solar-Simulator-Dokumentation-V3.pdf, Kap. 4.2.
+ *  Derivation and the counter-checks live in lib/balkon-config.ts. */
+const BALKON_SPEICHER_REFERENZ = {
+  personenIndex: 1,                          // 2-Personen-Haushalt
+  setId: "duo" as const,                     // Standard-Set, 960 Wp
+  orientationId: "sued_gelaender" as const,  // senkrecht am Südbalkon
+  presenceId: "teils" as const,              // Homeoffice-Tage
+} as const;
+
+export function balkonSpeicherFaq(): FaqEntry[] {
+  const cfg = DEFAULT_BALKON_CONFIG;
+  const haushaltKwh = PERSONEN[BALKON_SPEICHER_REFERENZ.personenIndex].verbrauch;
+  const base = {
+    setId: BALKON_SPEICHER_REFERENZ.setId,
+    orientationId: BALKON_SPEICHER_REFERENZ.orientationId,
+    presenceId: BALKON_SPEICHER_REFERENZ.presenceId,
+    haushaltKwh,
+    specificYield: cfg.specificYield,
+    monthlyYield: null,
+    stromPrice: cfg.stromPrice,
+  };
+  const ohne = calcBalkon({ ...base, storageId: "none" });
+  const klein = calcBalkon({ ...base, storageId: "small" });
+  const gross = calcBalkon({ ...base, storageId: "large" });
+  // Dasselbe am größten Set: Dort kippt die Antwort auf die Speichergröße, und
+  // ohne diesen Fall widerspräche das FAQ der Empfehlung des Rechners.
+  const maxGross = calcBalkon({ ...base, setId: "max", storageId: "large" });
+
+  const eur = (n: number) => n.toLocaleString("de-DE");
+  const jahre = (n: number) => (isFinite(n) ? n.toFixed(1).replace(".", ",") : "—");
+  const kwh = (n: number) => Math.round(n).toLocaleString("de-DE");
+  // Verlust je gespeicherter Kilowattstunde, in Wattstunden — aus derselben
+  // Konstante, mit der die Simulation entlädt.
+  const verlustWh = Math.round((1 - cfg.storageRoundtrip) * 1000);
+  const prozentMehrPreis = Math.round((gross.storagePrice / klein.storagePrice - 1) * 100);
+  const prozentMehrStrom = Math.round((gross.storageAddedKwh / klein.storageAddedKwh - 1) * 100);
+
+  return [
+    {
+      q: "Lohnt sich ein Balkonkraftwerk mit Speicher?",
+      a: `Das entscheidet eine einzige Größe: wie viel Strom mittags übrig bleibt. Ein Speicher erzeugt nichts, er kann nur verschieben. Beispiel: Ein Zwei-Personen-Haushalt mit ${eur(haushaltKwh)} kWh Jahresverbrauch und einem Standard-Set senkrecht am Südbalkon lässt rund ${kwh(ohne.feedInKwh)} kWh im Jahr ungenutzt ins Netz fließen. Ein Speicher mit ${cfg.storage.find(s => s.id === "small")!.kwh.toLocaleString("de-DE")} kWh holt davon ${kwh(klein.storageAddedKwh)} kWh zurück, kostet ${eur(klein.storagePrice)} € und ist damit nach etwa ${jahre(klein.storagePayback)} Jahren wieder drin — bei rund ${cfg.storageLifeYears} Jahren, die so ein Akku hält. Das trägt sich, aber ohne Reserve; in größeren Haushalten mit viel Tagverbrauch trägt es sich gar nicht.`,
+      cta: { label: "Für deinen Haushalt rechnen", href: "/balkonkraftwerk/rechner" },
+    },
+    {
+      q: "Lohnt sich ein Balkonkraftwerk ohne Speicher?",
+      a: `Fast immer, und deutlich schneller. Dasselbe Set ohne Speicher spart im Beispiel rund ${eur(ohne.savingPerYear)} € im Jahr und hat sich bei ${eur(ohne.invest)} € Anschaffung nach etwa ${jahre(ohne.amortYears)} Jahren bezahlt gemacht. Das sind zwei getrennte Entscheidungen: Die Module rechnen sich für sich genommen, der Speicher muss sich zusätzlich rechnen — und tut das nicht automatisch, nur weil die Module es tun.`,
+    },
+    {
+      q: "Ist ein größerer Balkonspeicher besser?",
+      a: `Das hängt an der Modulfläche, nicht am Akku. Am Standard-Set mit zwei Modulen kostet der Sprung von ${cfg.storage.find(s => s.id === "small")!.kwh.toLocaleString("de-DE")} auf ${cfg.storage.find(s => s.id === "large")!.kwh.toLocaleString("de-DE")} kWh ${prozentMehrPreis} Prozent mehr und bringt nur ${prozentMehrStrom} Prozent mehr Strom — es entsteht schlicht nicht genug Überschuss, um den größeren Akku zu füllen. Über ${cfg.lifetimeYears} Jahre bleiben dort mit dem großen Speicher rund ${eur(gross.lifetimeSaving)} € übrig, mit dem kleinen ${eur(klein.lifetimeSaving)} € und ganz ohne ${eur(ohne.lifetimeSaving)} €; er ist also die schlechteste der drei Möglichkeiten. Mit vier Modulen kehrt sich das um: Dann fällt genug Überschuss an, der große Speicher trägt sich nach ${jahre(maxGross.storagePayback)} Jahren und liefert mit ${eur(maxGross.lifetimeSaving)} € das beste Ergebnis. Erst die Fläche, dann der Speicher.`,
+    },
+    {
+      q: "Wie viel Strom geht in einem Balkonspeicher verloren?",
+      a: `Rund ${verlustWh} Wattstunden je gespeicherter Kilowattstunde, also gut ${((1 - cfg.storageRoundtrip) * 100).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} Prozent. Wir rechnen mit einem Wirkungsgrad von ${(cfg.storageRoundtrip * 100).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} Prozent über den ganzen Umlauf — dem Wert, den die HTW Berlin für genau diese Geräteklasse in ihrem Stecker-Solar-Simulator ansetzt. Er ist eher zu freundlich als zu streng: Standby- und Regelungsverluste sind darin ausdrücklich nicht enthalten, und die laufen das ganze Jahr mit.`,
+    },
+    {
+      q: "Wie lange hält ein Balkonspeicher?",
+      a: `Realistisch rund ${cfg.storageLifeYears} Jahre — deutlich kürzer als die Module, die ${cfg.lifetimeYears} Jahre und mehr laufen. Daraus folgt die eigentliche Regel: Der Speicher muss sich innerhalb seiner eigenen Lebensdauer bezahlt machen, nicht innerhalb der Lebensdauer der Anlage. Unser Rechner empfiehlt einen Speicher deshalb nur, wenn er sich in ${cfg.storageRecommendMaxPayback} Jahren trägt, und schreibt sonst ausdrücklich hin, dass er sich nicht lohnt.`,
+    },
+    {
+      q: "Für wen lohnt sich ein Balkonspeicher am ehesten?",
+      a: "Für kleine Haushalte, die tagsüber wenig verbrauchen, und für große Module-Sets mit guter Ausrichtung — also überall dort, wo mittags viel Strom übrig bleibt. Das ist genau umgekehrt zu der Faustregel, die man für Dachanlagen hört: Wer viel zu Hause ist, verbraucht den Mittagsstrom bereits direkt und hat für den Speicher nichts mehr übrig. Und wer nur ein einzelnes Modul hängen hat, erzeugt gar keinen nennenswerten Überschuss.",
+      cta: { label: "Set-Größe und Speicher durchrechnen", href: "/balkonkraftwerk/rechner" },
+    },
+    {
+      q: "Fällt auf einen Balkonspeicher Mehrwertsteuer an?",
+      a: BALKON_RECHT.nullsteuer,
     },
   ];
 }

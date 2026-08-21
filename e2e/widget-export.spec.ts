@@ -22,12 +22,25 @@ test.describe("Widget-Bildexport", () => {
     // … und darf auf der Seite NICHT sichtbar sein.
     await expect(exportOnly.first()).toBeHidden();
 
-    // Legende, Quelle und die Texte hinter den „?" sitzen im Bild-Fuß.
-    const footer = exportOnly.filter({ hasText: "Quelle:" });
+    // Legende und die Texte hinter den „?" sitzen im Bild-Fuß.
+    const footer = exportOnly.filter({ hasText: "Ersparnis über 20 Jahre" });
     await expect(footer).toContainText("Gasheizung");
     await expect(footer).toContainText("Wärmepumpe + PV");
-    await expect(footer).toContainText("Ersparnis über 20 Jahre");
-    await expect(footer).toContainText("Institut der deutschen Wirtschaft");
+
+    // Die Quelle steht NICHT mehr im Bild-Fuß, sondern senkrecht an der rechten
+    // Kante — auf der Seite und im Bild dieselbe Stelle. Zwei Kopien derselben
+    // Angabe waren der Grund, aus dem sie im Bild anders aussah als auf der
+    // Seite. Der Vermerk muss vollständig sein (Bereitsteller UND Lizenz) und
+    // darf nicht aus dem Bild geworfen werden.
+    const kante = page.locator('[title^="Quelle:"]');
+    await expect(kante).toHaveCount(1);
+    await expect(kante).toContainText("Institut der deutschen Wirtschaft");
+    // Der Zusatz hinter dem Namen (hier die Einordnung, bei Behördendaten der
+    // Änderungshinweis) muss die Kürzung überleben — er ist bei dl-de/by-2-0
+    // Pflichtbestandteil, und die alte Kurzform warf genau ihn weg.
+    await expect(kante).toContainText("Preisszenarien");
+    await expect(kante).toHaveAttribute("data-sc-export-css", /opacity:\s*1/);
+    await expect(exportOnly.filter({ hasText: "Quelle:" })).toHaveCount(0);
 
     const downloadPromise = page.waitForEvent("download");
     await page.getByTitle("Als Bild herunterladen").click();

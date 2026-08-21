@@ -64,3 +64,22 @@ describe("Sitemap: lastmod trägt echte Daten, nie die Build-Zeit", () => {
     expect(QUELLE).not.toMatch(/lastModified:\s*(now|new Date\(\))/);
   });
 });
+
+// Zweite Frage an dieselbe Datei: Steht jede Adresse genau EINMAL darin?
+//
+// Der Anlass (19.08.2026): Der Speicher-Ratgeber ist beides — Registry-Eintrag
+// (und damit automatisch in `ratgeberPages`) UND eine Seite mit eigenem
+// Wertstand (und damit von Hand in der Liste unten). Ohne Filter stand er
+// zweimal drin, mit zwei verschiedenen `lastmod`. Das ist kein doppelter
+// Eintrag, sondern ein widersprüchlicher: Welches Datum gilt, entschiede dann
+// die Reihenfolge statt die Wahrheit — und genau die Verlässlichkeit des
+// Signals ist der Grund, warum es die ganze lastmod-Regel gibt.
+describe("Sitemap: jede Adresse genau einmal", () => {
+  it("enthält keine doppelte URL", async () => {
+    const eintraege = await sitemap();
+    const gesehen = new Map<string, number>();
+    for (const e of eintraege) gesehen.set(e.url, (gesehen.get(e.url) ?? 0) + 1);
+    const doppelt = [...gesehen.entries()].filter(([, n]) => n > 1).map(([url]) => url);
+    expect(doppelt, `doppelte Sitemap-Einträge: ${doppelt.join(", ")}`).toEqual([]);
+  });
+});

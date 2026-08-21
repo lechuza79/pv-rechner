@@ -607,19 +607,23 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   //
   // KEINE VORSCHAU, KEIN ANHANG (Stand 19.08.2026).
   //
-  // Erst stand hier ein Anhang zur Debatte: abgelehnt, weil ein Bild in der
-  // ersten unverlangten Mail einer Absenderdomain ohne Sendehistorie ein
-  // Spam-Muster ist. Dann ein Link auf die Live-Vorschau — bis der Blick darauf
-  // zeigte, dass die Grafik in dieser Breite nicht vorzeigbar ist: Die
-  // Quellenangabe an der Kante läuft in die letzte Kachel.
+  // KEIN ANHANG, aber wieder ein Vorschau-Link (20.08.2026).
   //
-  // Ein Angebot, das man nicht ansehen kann, ist besser als eines, das man
-  // ansieht und dann nicht will. Der Absatz bietet die Grafik weiter an; wer
-  // sie will, bekommt sie samt Code von Hand. Sobald das Widget überarbeitet
-  // ist, kommt die Vorschau zurück — `widgetUrl` bleibt deshalb im Kontext.
+  // Der Anhang war nie eine Option: ein Bild in der ersten unverlangten Mail
+  // einer Absenderdomain ohne Sendehistorie ist ein Spam-Muster. Der
+  // Vorschau-Link dagegen war einen Tag lang draußen, weil die Grafik in
+  // schmaler Darstellung nicht vorzeigbar war — die Quellenangabe an der Kante
+  // lief quer über die letzte Kachel, und Zahl und Einheit brachen um.
+  //
+  // Beides ist behoben (die Kante hat eine eigene, feste Spur über die volle
+  // Kartenhöhe, Zahl und Einheit stehen gestaffelt nebeneinander), nachgesehen
+  // bei 375, 640, 900 und 1.280 px. Damit gilt wieder das Ursprüngliche: Ein
+  // Angebot, das man ansehen kann, ist besser als eines, das man glauben muss.
   const widgetAbsatz =
     c.variante === "meldung_plus_widget"
-      ? `\n\nDie Zahlen gibt es auch als Grafik für Ihre Website. Sie aktualisiert sich monatlich von selbst, Farben und Schrift lassen sich anpassen. Wenn Sie sie einbauen möchten, schicke ich Ihnen den Code und ein Beispiel.`
+      ? `\n\nDie Zahlen gibt es auch als Grafik für Ihre Website. Sie aktualisiert sich monatlich von selbst, Farben und Schrift lassen sich anpassen.${
+          c.widgetUrl ? ` So sieht sie für ${c.name} aus: ${c.widgetUrl}` : ""
+        } Wenn Sie sie einbauen möchten, schicke ich Ihnen den Code.`
       : "";
 
   // Weitere Spitzenplaetze — nur im Brief, nie in der Meldung. Sie belegen, dass

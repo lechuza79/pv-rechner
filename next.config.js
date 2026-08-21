@@ -81,6 +81,16 @@ const nextConfig = {
       // Förderseiten unter uns haben dieselbe Umstellung 109 Zeilen gekostet,
       // weil dort jede Seite einzeln umziehen musste.
       { source: "/balkonkraftwerk-rechner", destination: "/balkonkraftwerk/rechner", permanent: true },
+      // Ratgeber des Balkon-Bereichs bekommen eine eigene Ebene (19.08.2026).
+      // Grund ist NICHT das Ranking — Verzeichnistiefe zaehlt dort nicht —,
+      // sondern Steuerung und Auswertung: Nur mit gemeinsamem Pfadstueck laesst
+      // sich eine Kategorie einzeln freischalten, auf noindex setzen und in der
+      // Search Console gegen die Werkzeuge vergleichen. Flach gibt es genau eine
+      // Steuerungseinheit fuer den ganzen Bereich.
+      // Bewusst JETZT, einen Tag nach dem Livegang: Die Adressen sind gerade erst
+      // zur Indexierung eingereicht, eine Weiterleitung darauf ist der billigste
+      // Moment ueberhaupt. Es ist EINE Zeile — spaeter waere es eine je Artikel.
+      { source: "/balkonkraftwerk/anmelden", destination: "/balkonkraftwerk/ratgeber/anmelden", permanent: true },
       { source: "/waermepumpe", destination: "/waermepumpe-rechner", permanent: true },
       { source: "/energie", destination: "/strommix-deutschland", permanent: true },
       { source: "/empfehlung", destination: "/pv-bedarf-berechnen", permanent: true },

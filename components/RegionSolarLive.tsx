@@ -88,7 +88,7 @@ export default function RegionSolarLive({
 
   const stand = weather ? `${weather.current.time.slice(11, 16)} Uhr` : null;
   const subline =
-    "Simuliert aus dem heutigen Wetter — kein Messwert" + (stand ? ` · Stand ${stand}` : "");
+    "Simuliert aus dem heutigen Wetter" + (stand ? ` · Stand ${stand}` : "");
 
   const widget = widgetForPlace(WIDGETS.regionSolarleistung, name, liveUrl);
   const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -98,7 +98,7 @@ export default function RegionSolarLive({
       widget={widget}
       subline={subline}
       filename={`solar-check-solarleistung-${slug}.png`}
-      note={`Simulierter Tagesverlauf des Anlagenbestands (${fmtPvLeistung(totalKwp)}) aus dem heutigen Wetter — kein Messwert.`}
+      note={`Simulierter Tagesverlauf des Anlagenbestands (${fmtPvLeistung(totalKwp)}) aus dem heutigen Wetter.`}
       onsite={onsite}
       share={share}
       // Vertikales Quellen-Label endet über der Auslastungs-Zeile des Radials,
