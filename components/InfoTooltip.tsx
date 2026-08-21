@@ -19,7 +19,9 @@ import { nodeToText, useRegisterExportNote } from "./export-notes";
 // never gets clipped by overflow:hidden ancestors. Positioning/close logic
 // mirrors GlossaryTerm, but the content is arbitrary (not glossary-bound).
 
-const TOOLTIP_MAX_WIDTH = 280;
+// Etwas breiter als frueher (280): Inhalte mit zwei Spalten — Name links, Wert
+// rechts, etwa die Groessenklassen — brachen darunter jede Zeile um.
+const TOOLTIP_MAX_WIDTH = 340;
 const GAP = 8; // px between trigger and tooltip
 const EDGE = 8; // min px from viewport edge
 
@@ -138,6 +140,10 @@ export default function InfoTooltip({ title, children, size = 13, ariaLabel = "M
         style={{
           display: "inline-flex",
           alignItems: "center",
+          justifyContent: "center",
+          // Mitten im Fliesstext sitzt das Zeichen sonst auf der Grundlinie und
+          // haengt unter der Zeile. `middle` stellt es auf die Mittelhoehe.
+          verticalAlign: "middle",
           background: "none",
           border: "none",
           padding: 0,

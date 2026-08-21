@@ -122,6 +122,10 @@ const S: Record<string, React.CSSProperties> = {
     padding: 0,
     font: "inherit",
     color: "inherit",
+    // Ein <button> zentriert seinen Text von Haus aus. In der Ueberschrift der
+    // Nachbarschafts-Liste bricht der Klassenname auf zwei Zeilen — und stand
+    // dann mittig, waehrend der Rest der Zeile links begann.
+    textAlign: "left",
     textDecoration: "underline",
     textDecorationStyle: "dotted",
     textUnderlineOffset: 3,
