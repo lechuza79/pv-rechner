@@ -80,8 +80,16 @@ function Einleitung({ p }: { p: Platzierung }) {
       {menge}
       {klasse && rest !== null ? (
         <>
-          {p.klasse}
-          <InfoTooltip title="Größenklassen" ariaLabel="Was die Größenklassen bedeuten" exportNote={false}>
+          {/* Der Klassenname TRAEGT die Erklaerung — kein „?" daneben. Das
+              waere ein zweites Zeichen fuer denselben Zweck und zieht die
+              Zeile auseinander; unterstrichen ist es dieselbe Affordanz wie
+              der Verweis auf den normalen Seiten. */}
+          <InfoTooltip
+            title="Größenklassen"
+            ariaLabel="Was die Größenklassen bedeuten"
+            exportNote={false}
+            label={p.klasse}
+          >
             <p style={{ margin: `0 0 ${space.md}px` }}>{GROESSENKLASSEN_WARUM}</p>
             <GroessenklassenListe aktiv={klasse} />
           </InfoTooltip>

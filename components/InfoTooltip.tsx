@@ -41,9 +41,29 @@ interface Props {
    * image ("click a year to compare").
    */
   exportNote?: boolean;
+  /**
+   * Text als Ausloeser statt des „?"-Zeichens.
+   *
+   * WOFUER: Wo der Begriff selbst schon dasteht — ein Klassenname, ein
+   * Fachwort — ist ein zusaetzliches Zeichen daneben Laerm, und es braucht
+   * einen Abstand, der die Zeile auseinanderzieht. Dann traegt der Begriff die
+   * Erklaerung selbst, gepunktet unterstrichen wie ueberall im Projekt.
+   *
+   * Der Text bleibt im Bild-Export stehen (er ist Inhalt, kein Bedienelement) —
+   * anders als das „?", das dort weggelassen wird, weil man es nicht anklicken
+   * kann.
+   */
+  label?: React.ReactNode;
 }
 
-export default function InfoTooltip({ title, children, size = 13, ariaLabel = "Mehr Infos", exportNote = true }: Props) {
+export default function InfoTooltip({
+  title,
+  children,
+  size = 13,
+  ariaLabel = "Mehr Infos",
+  exportNote = true,
+  label,
+}: Props) {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const tooltipRef = useRef<HTMLSpanElement>(null);
   const [open, setOpen] = useState(false);
@@ -126,7 +146,7 @@ export default function InfoTooltip({ title, children, size = 13, ariaLabel = "M
         type="button"
         // A "?" you cannot click is noise in a still image — the text it hides
         // is carried into the export footer instead (see useRegisterExportNote).
-        {...{ [EXPORT_IGNORE_ATTR]: "" }}
+        {...(label ? {} : { [EXPORT_IGNORE_ATTR]: "" })}
         aria-label={ariaLabel}
         aria-describedby={open ? tooltipId : undefined}
         onMouseEnter={() => setOpen(true)}
@@ -137,23 +157,41 @@ export default function InfoTooltip({ title, children, size = 13, ariaLabel = "M
           e.preventDefault();
           setOpen((o) => !o);
         }}
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          // Mitten im Fliesstext sitzt das Zeichen sonst auf der Grundlinie und
-          // haengt unter der Zeile. `middle` stellt es auf die Mittelhoehe.
-          verticalAlign: "middle",
-          background: "none",
-          border: "none",
-          padding: 0,
-          margin: 0,
-          color: v("--color-text-muted"),
-          cursor: "help",
-          lineHeight: 0,
-        }}
+        style={
+          label
+            ? {
+                // Text-Ausloeser: erbt Groesse, Gewicht und Farbe der Stelle, an
+                // der er steht — der Satz soll ein Satz bleiben.
+                background: "none",
+                border: "none",
+                padding: 0,
+                margin: 0,
+                font: "inherit",
+                color: "inherit",
+                textAlign: "left",
+                textDecoration: "underline",
+                textDecorationStyle: "dotted",
+                textUnderlineOffset: 3,
+                cursor: "help",
+              }
+            : {
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                // Mitten im Fliesstext sitzt das Zeichen sonst auf der Grundlinie
+                // und haengt unter der Zeile. `middle` stellt es auf Mittelhoehe.
+                verticalAlign: "middle",
+                background: "none",
+                border: "none",
+                padding: 0,
+                margin: 0,
+                color: v("--color-text-muted"),
+                cursor: "help",
+                lineHeight: 0,
+              }
+        }
       >
-        <IconHelpCircle size={size} />
+        {label ?? <IconHelpCircle size={size} />}
       </button>
       {mounted &&
         open &&

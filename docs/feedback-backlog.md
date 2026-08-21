@@ -98,3 +98,59 @@ leeren Kombinierbarkeitsliste.
 Quelle umstellen und den Rechner `wpType` durchreichen lassen. Der Stolperfallen-
 Test in `lib/__tests__/waermepumpe-kommunalfoerderung.test.ts` meldet sich
 ohnehin, sobald das erste prozentuale WP-Programm dazukommt.
+
+---
+
+## Solar-Atlas: Vergleichsgruppen der Gemeindeseite
+
+Aus der Sitzung vom 20./21.08.2026, in der Brief und Gemeindeseite auf eine
+gemeinsame Rechnung gestellt wurden. Beide Punkte sind BEKANNT und bewusst
+offen gelassen — nicht übersehen.
+
+### 8. ⏳ Kein Verweis auf die vollständige Rangliste
+
+**Wunsch des Betreibers:** Von der Nachbarschafts-Liste auf der Gemeindeseite
+auf die ganze Tabelle verlinken statt hundert Zeilen nachzuladen.
+
+**Warum es nicht gebaut ist:** Es gibt keine Ranglisten-Seite, die dasselbe
+rechnet wie der Eigentümer-Umschalter der Gemeindeseite.
+
+| Umschalter | rechnet | passende Ranking-Seite |
+|---|---|---|
+| Privat | privat_dach + steckersolar je Einwohner | nur `dach-privat-pk` (Dächer OHNE Balkone) |
+| Gewerbe | gewerbe_dach + freiflaeche je Einwohner | keine |
+| Alle | alles je Einwohner | **bewusst keine** |
+
+Der letzte Fall ist der aufschlussreiche: Für „alle Anlagen je Einwohner" gibt
+es absichtlich keine Rangliste. Der Grund steht an `solar-gesamt` in
+`lib/awards.ts` — „je Einwohner führt Büttel mit 4.205.483 Wp je Kopf (rund 120
+Einwohner neben einer Industrieanlage), eine Zahl, die niemand lesen kann".
+Deshalb ist diese Liste dort nur ABSOLUT veröffentlicht.
+
+Ein Link würde also auf eine Seite führen, die anders rechnet als die Liste
+darüber — genau die Sorte Widerspruch, die diese Sitzung beseitigt hat.
+
+**Zwei Wege, wenn es wieder aufgegriffen wird:**
+- klein: das Fenster weiterblättern lassen (die nächsten 100 auf Klick, 15 KB je
+  Abruf, eine einzige Rechnung, kein Widerspruch möglich);
+- groß: Umschalter und Award-Kategorien auf DIESELBE Einteilung bringen. Dann
+  passt der Link überall — es heißt aber, „Privat" projektweit gleich zu
+  schneiden und zu entscheiden, ob es „Alle je Einwohner" als Liste geben soll.
+
+### 9. ⏳ „Alle · Leistung je Einwohner" ist bundesweit unlesbar
+
+**Befund (21.08.2026, am laufenden Build gemessen):** In der bundesweiten
+Gruppe „Gemeinden und Kleinstädte" führt Neukieritzsch mit 61,6 kWp je
+Einwohner — ein Ort mit großem Solarpark auf einer früheren Tagebaufläche.
+Melsungen steht dann bei −99 %, und sämtliche Balken sind Haarlinien.
+
+Dieselbe Erscheinung, wegen der es die Award-Rangliste „alle je Einwohner" nicht
+gibt (siehe Punkt 8). Die Größenklasse hilft hier nicht: Diese Orte SIND
+Gemeinden und Kleinstädte, sie haben nur einen Investorenpark an der Gemarkung.
+
+Unter „Privat" tritt es nicht auf — dort gibt es keine Freiflächen.
+
+**Entscheidung des Betreibers steht aus.** Denkbare Antworten: die
+Freiflächen in der Landes-/Bundesansicht aus der Pro-Kopf-Zahl nehmen (weicht
+dann von der Kreis-Ansicht ab), diese Kombination dort gar nicht anbieten, oder
+so lassen und die Spitze als das lesen, was sie ist.
