@@ -300,3 +300,24 @@ export function regionDisplayName(name: string): string {
   if (!VORANGESTELLT.includes(erstes)) return name;
   return traegtGattung(rest) ? rest : name;
 }
+
+const MONATE_DE = [
+  "Januar", "Februar", "März", "April", "Mai", "Juni",
+  "Juli", "August", "September", "Oktober", "November", "Dezember",
+];
+
+/**
+ * Ein Datenstand als Monat und Jahr ("Juli 2026").
+ *
+ * Taggenau wäre meist erfundene Genauigkeit: Ein Registerauszug beschreibt
+ * einen Meldestand, ein gepflegter Stichtagswert den Tag seiner letzten
+ * Änderung — beide sagen über den Tag nichts aus, was jemand braucht. Hier
+ * statt in einer Komponente, weil außer dem Atlas auch die Charts ihn brauchen;
+ * sie ihn über die große Karten-Komponente zu importieren, zöge deren gesamtes
+ * Modul in ihr Bündel.
+ */
+export function formatDataAsOf(iso: string): string {
+  const m = /^(\d{4})-(\d{2})-\d{2}$/.exec(iso);
+  if (!m) return iso;
+  return `${MONATE_DE[parseInt(m[2], 10) - 1]} ${m[1]}`;
+}

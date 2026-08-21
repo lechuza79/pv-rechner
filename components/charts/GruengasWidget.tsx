@@ -16,7 +16,8 @@ import { useChartExport } from "../../lib/useChartExport";
 import { EXPORT_IGNORE_ATTR } from "../../lib/export-markers";
 import { WIDGETS } from "../../lib/widget-registry";
 import { v } from "../../lib/theme";
-import type { MusterVariant } from "../../lib/greengas-muster";
+import { MUSTER_STAND_ISO, type MusterVariant } from "../../lib/greengas-muster";
+import { formatDataAsOf } from "../../lib/atlas-format";
 
 // Grüngas-Widget: Gasheizung mit GModG-Grüngas-Pflicht vs. Wärmepumpe über 20
 // Jahre. Selbst-enthaltendes Kombi-Widget (Graph + Ersparnis + Kosten) — dasselbe
@@ -452,7 +453,13 @@ function GruengasCard({
       )}
 
       {!(onsite && isBars) && (
-        <WidgetSourceEdge widget={WIDGETS.gruengasHeizkosten} visible={!onsite || showCredit} />
+        <WidgetSourceEdge
+          widget={WIDGETS.gruengasHeizkosten}
+          visible={!onsite || showCredit}
+          // Ohne Angabe stünde das Abrufdatum da, also das heutige — an einer
+          // Rechnung mit gepflegten Stichtagswerten eine falsche Aussage.
+          stand={formatDataAsOf(MUSTER_STAND_ISO)}
+        />
       )}
 
       {/* Nur im Bild: Legende, die Texte hinter den „?", Quelle + Marke. */}

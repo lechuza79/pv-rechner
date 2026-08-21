@@ -12,6 +12,7 @@ import { DataSourceNote } from "./PoweredBy";
 import { isEmbedContext } from "../lib/embed-context";
 import { v } from "../lib/theme";
 import RegionSearch from "./atlas/RegionSearch";
+import { formatDataAsOf } from "../lib/atlas-format";
 
 // Tab order: aggregate first, then individual renewables, then storage (separated)
 const RENEWABLE_TRAEGER: { key: Energietraeger; label: string }[] = [
@@ -482,16 +483,11 @@ const SEGMENT_DISPLAY: Record<SegmentFilter, string> = {
   freiflaeche: "Freifläche",
 };
 
-const MONTHS_DE = [
-  "Januar", "Februar", "März", "April", "Mai", "Juni",
-  "Juli", "August", "September", "Oktober", "November", "Dezember",
-];
-
-export function formatDataAsOf(iso: string): string {
-  const m = /^(\d{4})-(\d{2})-\d{2}$/.exec(iso);
-  if (!m) return iso;
-  return `${MONTHS_DE[parseInt(m[2], 10) - 1]} ${m[1]}`;
-}
+// Wohnt bei den übrigen Atlas-Formatierern (lib/atlas-format.ts) — die Charts
+// brauchen ihn ebenfalls, und über diese Datei importiert zögen sie das ganze
+// Karten-Modul in ihr Bündel. Hier weiterhin ausgereicht, damit die bisherigen
+// Importstellen nicht umgehängt werden müssen.
+export { formatDataAsOf };
 
 // Shown under the map once you have drilled into a Kreis (which then shows its
 // Gemeinden). Tells the visitor the Gemeinden are clickable and offers a jump to

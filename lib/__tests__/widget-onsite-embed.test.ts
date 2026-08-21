@@ -7,6 +7,11 @@ import {
   WIDGET_THEME_DEFAULTS,
 } from "../widget-theme";
 import { parseHostPfad } from "../widget-settings";
+import { formatDataAsOf } from "../atlas-format";
+import { MUSTER_STAND_ISO } from "../greengas-muster";
+import { GREEN_GAS_CONFIG } from "../greengas-config";
+import { DEFAULT_HEATPUMP_CONFIG } from "../heatpump-config";
+import { CO2_PRICE } from "../co2-config";
 import { exportHelligkeitsTokens } from "../chart-export";
 import { tokens, stageDefaults, STAGE_COUNT } from "../theme";
 
@@ -132,6 +137,37 @@ describe("Was das Bild allein tragen muss", () => {
     // Ohne Angabe stempelt der Quellenvermerk das Abrufdatum — bei Live-Daten
     // richtig, neben einer Reihe, die 2024 endet, eine falsche Aussage.
     expect(client).toContain("COUNTRY_COMPARE_META.dataAsOf");
+  });
+
+  it("nennt auch bei den beiden anderen festen Reihen den echten Stand", () => {
+    // Dieselbe Fehlerklasse, zweimal übersehen: ein Chart mit gepflegten
+    // Stichtagswerten, dem der Vermerk mangels Angabe das heutige Datum
+    // anschreibt.
+    expect(lies("components/charts/ZubauWidget.tsx")).toContain(
+      "formatDataAsOf(series.data_as_of)",
+    );
+    expect(lies("components/charts/GruengasWidget.tsx")).toContain(
+      "formatDataAsOf(MUSTER_STAND_ISO)",
+    );
+  });
+
+  it("die Musterrechnung nennt ihren ÄLTESTEN Wert-Stand", () => {
+    // Sie mischt drei gepflegte Größen. Den jüngsten anzuschreiben behauptete
+    // für die anderen eine Aktualität, die sie nicht haben.
+    const beteiligt = [
+      GREEN_GAS_CONFIG.validFrom,
+      DEFAULT_HEATPUMP_CONFIG.validFrom,
+      CO2_PRICE.validFrom,
+    ];
+    expect(MUSTER_STAND_ISO).toBe(beteiligt.slice().sort()[0]);
+    expect(beteiligt).toContain(MUSTER_STAND_ISO);
+  });
+
+  it("ein Datenstand steht als Monat und Jahr da", () => {
+    // Taggenau wäre erfundene Genauigkeit; ein unbekanntes Format wird
+    // unverändert durchgereicht, statt still etwas Falsches zu erzeugen.
+    expect(formatDataAsOf("2026-07-25")).toBe("Juli 2026");
+    expect(formatDataAsOf("2026")).toBe("2026");
   });
 
   it("sagt an der Kernenergie-Zahl, dass der Import darin steckt", () => {
