@@ -26,13 +26,18 @@ import {
 } from "../../../../lib/widget-settings";
 import {
   ZUBAU_BY_COUNTRY,
-  YEARS_2010_2024,
+  YEARS_ZUBAU,
   COUNTRY_COMPARE_META,
 } from "../../../../lib/country-comparison";
 
 // Identität (Titel, Teilen-Ziel, Quellen, nächster Schritt) kommt aus dem
 // Register — ein Eintrag speist Fußzeile, Quellen-Kante und Bild-Fuß.
 const WIDGET = WIDGETS.zubauErneuerbareAtom;
+
+// Anfang und Ende der Reihe kommen aus den Daten, nicht aus dem Text: Chart-Achse
+// und Überschrift der Summe müssen denselben Zeitraum meinen wie die Zahlen.
+const ERSTES_JAHR = YEARS_ZUBAU[0];
+const LETZTES_JAHR = YEARS_ZUBAU[YEARS_ZUBAU.length - 1];
 
 const byLabel = (label: string) =>
   ZUBAU_BY_COUNTRY.find((c) => c.label === label)!;
@@ -136,7 +141,12 @@ export default function ZubauWidget() {
       >
         {/* TopBar: Titel + Länder-Multitool */}
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 2 }}>
-          <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2 }}>
+          {/* Nicht umbrechen: Im Bild rendert die Aufnahme den Text etwas breiter
+              als die Messung — der Titel lief dann zweizeilig, während die Zeile
+              darunter auf ihrer gemessenen Höhe blieb, und beide lagen
+              übereinander. Der Titel ist kurz genug, dass er auf jeder
+              Kartenbreite in eine Zeile passt. */}
+          <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2, whiteSpace: "nowrap" }}>
             Zubau: Erneuerbare vs. Atomkraft
           </div>
           {/* Bleibt auch nach einem Umbruch rechts: sein Ausklapp-Menü ist an
@@ -153,9 +163,13 @@ export default function ZubauWidget() {
         </ExportOnly>
         <div style={{ fontSize: 12, color: "var(--widget-muted)", marginBottom: 12 }}>{sub}</div>
 
-        {/* KPIs: Zubau-Summe 2010–2024 — Kreis = Farbcode, Zahl neutral, geboxt */}
+        {/* KPIs: Zubau-Summe über die ganze Reihe — Kreis = Farbcode, Zahl
+            neutral, geboxt. Der Zeitraum wird AUS DEN DATEN geschrieben: er
+            stand hier getippt und wäre beim ersten Datenlauf still falsch
+            geworden — die Summe unter der Überschrift enthält dann ein Jahr,
+            das die Überschrift nicht nennt. */}
         <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: "var(--widget-muted)", marginBottom: 6 }}>
-          Zubau gesamt 2010–2024
+          Zubau gesamt {ERSTES_JAHR}–{LETZTES_JAHR}
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 14 }}>
           {series.map((s) => (
@@ -193,7 +207,7 @@ export default function ZubauWidget() {
             stand={COUNTRY_COMPARE_META.dataAsOf}
           />
           <ExportBox key={view.id} style={{ animation: "sc-fade 0.35s ease" }}>
-            <LineChart years={YEARS_2010_2024} series={series} unit="GW" xDomain={[2010, 2024]} height={300} />
+            <LineChart years={YEARS_ZUBAU} series={series} unit="GW" xDomain={[ERSTES_JAHR, LETZTES_JAHR]} height={300} />
           </ExportBox>
           <div style={{ fontSize: 11, color: "var(--widget-muted)", marginTop: 2, paddingLeft: 48 }}>
             Neu ans Netz gebrachte Leistung pro Jahr (GW, netto inkl. Rückbau). Negativ = mehr abgebaut als zugebaut.

@@ -39,17 +39,21 @@ test.describe("Widget auf eigener Seite", () => {
   test("zeigt keinen Knopf auf die Seite, die man gerade liest", async ({ page }) => {
     await page.goto("/atomstrom-import");
 
-    // Das Strommix-Anteil-Widget führt laut Register nach /atomstrom-import —
+    // Zwei der drei Widgets hier führen laut Register nach /atomstrom-import —
     // eingebettet auf ebenjener Seite ist das kein nächster Schritt, sondern Lärm.
-    const anteil = page.frameLocator('iframe[src*="strommix-anteil"]');
-    await expect(anteil.locator('a[href="/atomstrom-import"]')).toHaveCount(0);
+    for (const muster of ["strommix-anteil", "zubau-erneuerbare-atom"]) {
+      const rahmen = page.frameLocator(`iframe[src*="${muster}"]`);
+      await expect(rahmen.locator('a[href="/atomstrom-import"]')).toHaveCount(0);
+    }
   });
 
   test("öffnet den nächsten Schritt im ganzen Fenster, nicht im Rahmen", async ({ page }) => {
     await page.goto("/atomstrom-import");
 
-    const rahmen = page.frameLocator('iframe[src*="zubau-erneuerbare-atom"]');
-    const knopf = rahmen.locator('a[href="/laendervergleich"]');
+    // Das Strommix-Widget führt nach /strommix-deutschland — ein echter nächster
+    // Schritt, der auf dieser Seite stehen bleibt.
+    const rahmen = page.frameLocator('iframe[src*="embed/strommix?"]');
+    const knopf = rahmen.locator('a[href="/strommix-deutschland"]');
     await expect(knopf).toHaveCount(1);
     // Ohne Ziel navigiert der Klick nur das iframe — der Artikel erschien dann
     // innerhalb des Charts.

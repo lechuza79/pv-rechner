@@ -6,10 +6,11 @@ import { v } from "../../../lib/theme";
 import { DataSourceNote } from "../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../lib/data-sources";
 import {
-  YEARS_2000_2024,
+  YEARS_ANTEIL,
   WINDSOLAR_SHARE_SERIES,
   CO2_INTENSITY_COMPARE_SERIES,
   PERCAPITA_SERIES,
+  YEARS_PERCAPITA,
 } from "../../../lib/country-comparison";
 
 function ChartHead({ title, unit, hint }: { title: string; unit: string; hint?: string }) {
@@ -80,9 +81,9 @@ export default function LaendervergleichClient() {
           title="Anteil Wind &amp; Solar an der Stromerzeugung"
           unit="%"
           hint="Vorsicht: Anteile lassen Deutschland wie einen Ausreißer wirken — Absolutwerte erzählen mehr."
-          years={YEARS_2000_2024}
+          years={YEARS_ANTEIL}
           series={WINDSOLAR_SHARE_SERIES}
-          xDomain={[2000, 2024]}
+          xDomain={[YEARS_ANTEIL[0], YEARS_ANTEIL[YEARS_ANTEIL.length - 1]]}
           height={300}
         />
 
@@ -90,9 +91,9 @@ export default function LaendervergleichClient() {
           title="CO₂-Intensität der Stromerzeugung"
           unit="g CO₂/kWh"
           hint="Produktionsbasiert: direkte Emissionen der Erzeugung im Land. Frankreich (Atom) unten, Indien oben."
-          years={YEARS_2000_2024}
+          years={YEARS_ANTEIL}
           series={CO2_INTENSITY_COMPARE_SERIES}
-          xDomain={[2000, 2024]}
+          xDomain={[YEARS_ANTEIL[0], YEARS_ANTEIL[YEARS_ANTEIL.length - 1]]}
           height={280}
         />
         <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 4, paddingLeft: 48, lineHeight: 1.45 }}>
@@ -110,18 +111,28 @@ export default function LaendervergleichClient() {
           />
         </div>
 
+        {/* EIGENE Jahresachse: Diese Reihe endet ein Jahr früher als die
+            übrigen, weil Ember die Einwohnerzahl aus dem Datensatz genommen
+            hat. Gegen die längere Achse gezeichnet läge jeder Wert ein Jahr
+            daneben — im Bild nicht zu erkennen. */}
         <StaticChart
           title="Wind- &amp; Solarstrom pro Kopf"
           unit="kWh je Einwohner"
           hint="Bereinigt um die Landesgröße. Dänemark, Australien, Niederlande bauen pro Kopf mehr als Deutschland."
-          years={YEARS_2000_2024}
+          years={YEARS_PERCAPITA}
           series={PERCAPITA_SERIES}
-          xDomain={[2000, 2024]}
+          xDomain={[YEARS_PERCAPITA[0], YEARS_PERCAPITA[YEARS_PERCAPITA.length - 1]]}
           height={300}
         />
+        <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 4, paddingLeft: 48, lineHeight: 1.45 }}>
+          Diese Reihe endet {YEARS_PERCAPITA[YEARS_PERCAPITA.length - 1]}, ein Jahr vor den
+          übrigen: Sie braucht die Einwohnerzahl, und die führt der Datensatz seit der
+          Umstellung im Juli 2026 nicht mehr mit.
+        </div>
 
         <div style={{ marginTop: 22, paddingTop: 12, borderTop: `1px solid ${v("--color-border")}`, fontSize: 11, lineHeight: 1.6, color: v("--color-text-muted") }}>
-          <DataSourceNote source={DATA_SOURCES.ember} />. Bevölkerung für Pro-Kopf aus Embers Verbrauchsdaten abgeleitet.
+          <DataSourceNote source={DATA_SOURCES.ember} />. Bevölkerung für Pro-Kopf aus Embers
+          früheren Verbrauchsdaten abgeleitet.
         </div>
       </div>
     </div>
