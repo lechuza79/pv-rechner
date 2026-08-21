@@ -59,6 +59,34 @@ describe("Länderreihen und ihre Jahresachsen", () => {
     expect(COUNTRY_COMPARE_META.dataAsOf).toBe(String(YEARS_ZUBAU[YEARS_ZUBAU.length - 1]));
   });
 
+  it("die Einordnung behauptet keine Einzigartigkeit, die die Daten nicht hergeben", () => {
+    const welt = ZUBAU_BY_COUNTRY.find((c) => c.label === "Welt")!.windsolar;
+    const rueckgaenge = welt.filter((w, i) => i > 0 && w < welt[i - 1]).length;
+    // Sobald es mehr als einen Rückgang gibt, ist „der einzige Rückgang" falsch.
+    // Der Text sagt deshalb „der jüngste" — und der Code sucht auch den.
+    const seite = readFileSync(join(process.cwd(), "app/(site)/laendervergleich/client.tsx"), "utf8");
+    const absatz = seite.slice(seite.indexOf("function ZubauEinordnung"));
+    if (rueckgaenge > 1) expect(absatz).not.toMatch(/einzige[rn]? Rückgang/);
+    expect(absatz).toMatch(/jüngste Rückgang/);
+  });
+
+  it("die Einordnung rechnet ihre Zahlen, statt sie zu tippen", () => {
+    const seite = readFileSync(join(process.cwd(), "app/(site)/laendervergleich/client.tsx"), "utf8");
+    const absatz = seite.slice(
+      seite.indexOf("function ZubauEinordnung"),
+      seite.indexOf("function ChartHead"),
+    );
+    // Keine getippte Jahreszahl und kein getippter GW-Wert: beides veraltet
+    // beim nächsten Datenlauf, ohne dass es jemand merkt. Kommentare zählen
+    // nicht mit — dort dürfen Beispieljahre stehen, sie erreichen niemanden.
+    const ohneKommentare = absatz
+      .replace(/\{\/\*[\s\S]*?\*\/\}/g, "")
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/\/\/[^\n]*/g, "");
+    expect(ohneKommentare).not.toMatch(/\b(19|20)\d{2}\b/);
+    expect(ohneKommentare).not.toMatch(/\d+\s*GW/);
+  });
+
   it("das Widget schreibt den Zeitraum aus den Daten, nicht aus dem Text", () => {
     const client = readFileSync(
       join(process.cwd(), "app/(embed)/embed/zubau-erneuerbare-atom/client.tsx"),

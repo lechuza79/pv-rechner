@@ -7,11 +7,72 @@ import { DataSourceNote } from "../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../lib/data-sources";
 import {
   YEARS_ANTEIL,
+  YEARS_ZUBAU,
   WINDSOLAR_SHARE_SERIES,
   CO2_INTENSITY_COMPARE_SERIES,
   PERCAPITA_SERIES,
   YEARS_PERCAPITA,
+  ZUBAU_BY_COUNTRY,
 } from "../../../lib/country-comparison";
+
+/**
+ * Was die Weltkurve wirklich zeigt.
+ *
+ * Jede Zahl wird aus derselben Reihe gerechnet, die das Chart darüber zeichnet —
+ * kein getippter Wert, der beim nächsten Datenlauf still veraltet. Auch die
+ * JAHRE werden gesucht statt genannt: Das Rückgangsjahr ist das jüngste mit
+ * negativer Veränderung, nicht „2021".
+ */
+function ZubauEinordnung() {
+  const welt = ZUBAU_BY_COUNTRY.find((c) => c.label === "Welt")!;
+  const china = ZUBAU_BY_COUNTRY.find((c) => c.label === "China")!;
+  const i = YEARS_ZUBAU.length - 1;
+  const anteil = Math.round((china.windsolar[i] / welt.windsolar[i]) * 100);
+
+  // Das jüngste Jahr, in dem der weltweite Zubau ZURÜCKGING — dort liegt der
+  // einzige Knick nach unten, und er ist die Probe aufs Exempel.
+  let rueck = -1;
+  for (let n = 1; n <= i; n++) if (welt.windsolar[n] < welt.windsolar[n - 1]) rueck = n;
+  const weltDelta = rueck > 0 ? welt.windsolar[rueck] - welt.windsolar[rueck - 1] : 0;
+  const chinaDelta = rueck > 0 ? china.windsolar[rueck] - china.windsolar[rueck - 1] : 0;
+  // Ohne China: Wäre der Rest der Welt in dem Jahr gewachsen?
+  const restWuchs = weltDelta - chinaDelta > 0;
+  const gw = (n: number) => `${Math.round(Math.abs(n)).toLocaleString("de-DE")} GW`;
+
+  return (
+    <div
+      style={{
+        fontSize: 13,
+        lineHeight: 1.6,
+        color: v("--color-text-secondary"),
+        marginTop: 12,
+        paddingLeft: 48,
+      }}
+    >
+      <strong style={{ color: v("--color-text-primary") }}>
+        Die Weltkurve ist zum großen Teil eine chinesische.
+      </strong>{" "}
+      Von den {gw(welt.windsolar[i])} Wind und Solar, die {YEARS_ZUBAU[i]} weltweit neu ans Netz
+      gingen, entfielen {gw(china.windsolar[i])} auf China — {anteil}&nbsp;Prozent.
+      {rueck > 0 && (
+        <>
+          {" "}
+          {/* „der jüngste", nicht „der einzige": Die Weltreihe hat zwei
+              Rückgänge (2013 und 2021), und der Code sucht ohnehin den
+              jüngsten. Eine Behauptung von Einzigartigkeit wäre schon heute
+              falsch und würde beim nächsten Datenlauf niemandem auffallen. */}
+          Auch der jüngste Rückgang kommt von dort: {YEARS_ZUBAU[rueck]} sank der
+          weltweite Zubau um {gw(weltDelta)}, während China allein um {gw(chinaDelta)} zurückfiel
+          {restWuchs ? " — der Rest der Welt wuchs in diesem Jahr" : ""}. Dahinter stand kein
+          Nachfrageeinbruch, sondern ein vorgezogener Boom: Chinas Förderung lief aus, und die
+          Projekte wurden noch ins Vorjahr gezogen. Die Internationale Energieagentur beziffert den
+          Rückschlag danach auf 55&nbsp;% weniger Onshore-Wind und 22&nbsp;% weniger
+          Freiflächen-Solar gegenüber dem Rekordjahr.
+        </>
+      )}
+    </div>
+  );
+}
 
 function ChartHead({ title, unit, hint }: { title: string; unit: string; hint?: string }) {
   return (
@@ -110,6 +171,7 @@ export default function LaendervergleichClient() {
             fallbackHeight={420}
           />
         </div>
+        <ZubauEinordnung />
 
         {/* EIGENE Jahresachse: Diese Reihe endet ein Jahr früher als die
             übrigen, weil Ember die Einwohnerzahl aus dem Datensatz genommen
