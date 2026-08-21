@@ -106,9 +106,12 @@ export function selectionToVars(sel: WidgetThemeSelection): Record<string, strin
  * Voreinstellungen (weiß) mitten auf einer Seite, die der Sonne folgt — abends
  * eine weiße Kachel auf dunklem Grund.
  *
- * Die SCHRIFT steht bewusst nicht darin: die Site-Schriften sind lokal
- * gebündelt und im Embed-Layout gar nicht geladen, ein durchgereichter
- * Font-Stack liefe dort ins Leere.
+ * Die SCHRIFTEN gehören dazu: Das Embed-Layout hält dieselben Schriften bereit
+ * wie die Site, benutzt aber von sich aus die neutrale System-Schrift (fremde
+ * Einbettungen sollen sich in deren Design einfügen). Nur wer sie hier
+ * durchreicht, bekommt sie — sonst stünde ein eingebettetes Chart in einer
+ * anderen Schrift als der Text daneben, und die großen Kennzahlen in anderen
+ * Ziffern als die der Seite.
  */
 export const WIDGET_VAR_QUELLE: Record<string, string> = {
   "--widget-bg": "--color-bg",
@@ -118,6 +121,8 @@ export const WIDGET_VAR_QUELLE: Record<string, string> = {
   "--widget-accent-fg": "--color-text-on-accent",
   "--widget-highlight": "--color-highlight",
   "--widget-border-radius": "--radius-md",
+  "--widget-font-family": "--font-text",
+  "--widget-font-mono": "--font-mono",
 };
 
 /**

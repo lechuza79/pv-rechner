@@ -10,7 +10,15 @@ import {
 
 // Every CSS var an embed widget may have themed: the colour/radius tokens plus
 // the resolved font family.
-const ALLOWED = new Set<string>([...Object.values(WIDGET_THEME_PARAMS), "--widget-font-family"]);
+const ALLOWED = new Set<string>([
+  ...Object.values(WIDGET_THEME_PARAMS),
+  "--widget-font-family",
+  // Ziffernschrift: nur über den same-origin-Kanal gesetzt (eigene Seiten
+  // reichen ihre Schriften durch), bewusst ohne URL-Parameter — ein freier
+  // Font-Stack aus einer Adresse ist genau das, was der Schlüsselwort-Katalog
+  // für die Schrift verhindern soll.
+  "--widget-font-mono",
+]);
 
 /**
  * Single source for embed-widget theming AND functional settings. Both travel

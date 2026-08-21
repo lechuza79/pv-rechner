@@ -31,11 +31,23 @@ describe("First-Party-Embed: was das iframe von der Seite braucht", () => {
     });
   });
 
-  it("die Schrift wird bewusst NICHT übergeben", () => {
-    // Die Site-Schriften sind lokal gebündelt und im Embed-Layout nicht geladen —
-    // ein durchgereichter Font-Stack (`var(--font-dm-sans), …`) liefe dort ins
-    // Leere und ersetzte eine funktionierende Schrift durch keine.
-    expect(Object.keys(WIDGET_VAR_QUELLE)).not.toContain("--widget-font-family");
+  it("reicht auch die Schriften durch — und das Embed-Layout hält sie bereit", () => {
+    // Ein Chart in einer anderen Schrift als der Text daneben fällt auf, und in
+    // den großen Kennzahlen sind es andere Ziffern.
+    expect(Object.keys(WIDGET_VAR_QUELLE)).toContain("--widget-font-family");
+    expect(Object.keys(WIDGET_VAR_QUELLE)).toContain("--widget-font-mono");
+
+    const layout = lies("app/(embed)/layout.tsx");
+    // Die durchgereichten Stacks verweisen auf die next/font-Variablen — ohne
+    // sie im Embed-Layout liefe die Übergabe ins Leere und ersetzte eine
+    // funktionierende Schrift durch keine.
+    expect(layout).toContain("--font-dm-sans");
+    expect(layout).toContain("--font-jetbrains-mono");
+    // Fremde Einbettungen dürfen das nichts kosten: ohne Vorabladen holt der
+    // Browser die Dateien nur, wo eine Regel sie wirklich verlangt.
+    expect(layout.match(/^\s+preload: false,$/gm) ?? []).toHaveLength(2);
+    // Und sie bleiben dort auf der neutralen System-Schrift.
+    expect(layout).toMatch(/--widget-font-family:\s*system-ui/);
   });
 
   it("die Tinte folgt dem Hintergrund, nicht der Textfarbe", () => {
