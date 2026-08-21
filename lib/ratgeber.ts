@@ -64,11 +64,25 @@ export const RATGEBER: RatgeberEntry[] = [
     // im Monat das größte Keyword im ganzen Balkon-Umfeld (DataForSEO 08/2026,
     // Schwierigkeit 17) — und der Wettbewerb besteht fast nur aus Shop-Blogs,
     // die erklären, DASS man muss, statt WIE es geht und woran es scheitert.
-    slug: "/balkonkraftwerk/anmelden",
+    slug: "/balkonkraftwerk/ratgeber/anmelden",
     title: "Balkonkraftwerk anmelden: Frist, Angaben und die drei Fallen",
     teaser:
       "Seit 2024 genügt eine Registrierung im Marktstammdatenregister — der Netzbetreiber bekommt sie automatisch. Was du bereithalten musst, wann die Frist läuft und warum der Begriff Inbetriebnahme etwas anderes bedeutet, als die meisten denken.",
     updated: "2026-08-17",
+  },
+  {
+    // Vierte Seite im Balkon-Cluster. Zielt auf die INFO-Keywords, die eine
+    // echte Frage stellen („lohnt sich ein balkonkraftwerk", „balkonkraftwerk
+    // mit speicher sinnvoll" — zusammen rund 3.600 Suchen im Monat bei
+    // Schwierigkeit 0–6, DataForSEO 18.08.2026). Ausdrücklich NICHT auf
+    // „balkonkraftwerk mit speicher" (135.000/Monat): Diese Suchergebnisseite
+    // besteht zu 80 % aus Shops plus drei Produktkarussellen — dort gewinnt,
+    // wer verkauft. Messung und Begründung: docs/balkon-vergleichsseite-konzept.md.
+    slug: "/balkonkraftwerk/ratgeber/mit-speicher",
+    title: "Lohnt sich ein Balkonkraftwerk mit Speicher?",
+    teaser:
+      "Der Speicher verdoppelt die Anschaffung ungefähr und hält deutlich kürzer als die Module — er muss sich also für sich rechnen. Wann er das tut und wann nicht, hier durchgerechnet: mit dem gemessenen Wirkungsgrad statt dem aus dem Datenblatt.",
+    updated: "2026-08-19",
   },
   {
     // Top-Level-Keyword-Slug wie /photovoltaik-neigungswinkel: die historische

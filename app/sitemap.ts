@@ -80,7 +80,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // derselben Zeile wie Titel und Teaser (lib/ratgeber.ts). Bis 27.07.2026
   // standen die vier Pfade hier von Hand und trugen KEIN lastmod; Google kannte
   // die (am 25.07. umgezogenen) URLs deshalb nicht.
-  const ratgeberPages: MetadataRoute.Sitemap = RATGEBER.map((r) => ({
+  // Ein Ratgeber, der seine Zahlen aus einer Config rechnet, traegt einen
+  // eigenen Wertstand (lib/stand.ts) und steht damit schon weiter unten mit
+  // `rechnerStand(...)` in der Liste. Er wird hier uebersprungen: Dieselbe URL
+  // zweimal in einer Sitemap ist kein doppelter Eintrag, sondern ein
+  // widerspruechlicher — die beiden Zeilen tragen verschiedene `lastmod`, und
+  // welches gilt, entscheidet dann die Reihenfolge statt die Wahrheit.
+  // Der Wertstand gewinnt, weil er sagt, wann sich die ZAHLEN bewegt haben;
+  // `updated` ist das Datum der redaktionellen Ueberarbeitung.
+  const ratgeberPages: MetadataRoute.Sitemap = RATGEBER.filter((r) => !standLastModIso(r.slug)).map((r) => ({
     url: `${BASE_URL}${r.slug}`,
     lastModified: toDate(r.updated),
     changeFrequency: "monthly",
@@ -163,6 +171,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // über einen Rechner-Stand: Ihr Inhalt IST der Katalog, und der trägt sein
     // Prüfdatum je Programm. Kein erfundenes Datum, kein Build-Zeitpunkt.
     { url: `${BASE_URL}/balkonkraftwerk/foerderung`, lastModified: maxFundingDate, changeFrequency: "weekly", priority: 0.7 },
+    // Die Kategorie-Uebersicht /balkonkraftwerk/ratgeber steht hier BEWUSST NICHT:
+    // Sie existiert, damit das Pfadstueck keine 404 wirft, wiederholt aber nur
+    // Titel und Teaser aus der Registry und steht deshalb auf noindex. Eine Seite
+    // zur Indexierung anzumelden, die man gleichzeitig auf noindex setzt, ist ein
+    // Widerspruch — und Google meldet ihn als Fehler in der Search Console.
+    { url: `${BASE_URL}/balkonkraftwerk/ratgeber/mit-speicher`, lastModified: rechnerStand("/balkonkraftwerk/ratgeber/mit-speicher"), changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/einspeiseverguetung-rechner`, lastModified: rechnerStand("/einspeiseverguetung-rechner"), changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/photovoltaik-foerderung`, lastModified: maxFundingDate, changeFrequency: "weekly", priority: 0.8 },
     // Zubau-Story rechnet auf denselben MaStR-Daten wie der Atlas — also auch

@@ -218,18 +218,45 @@ export type OutreachDraft = { subject: string; body: string; bodyHtml: string; m
  * kennt der Empfänger. Wer sie überschreibt, macht den Brief auf fremden
  * Geräten kleiner statt größer.
  */
+/**
+ * Die Signatur ist die aus dem Mailprogramm des Betreibers (Vorgabe 20.08.2026)
+ * — dieselbe, die jemand sieht, der später auf den Brief antwortet. Zwei
+ * Fassungen desselben Absenders wären in genau dem Moment sichtbar, in dem
+ * jemand prüft, ob da wirklich ein Mensch sitzt.
+ *
+ * „Betreiber solar-check.io" ist bewusst raus: Die Rolle steht schon im ersten
+ * Satz des Briefes, und wer sie unter den Namen setzt, sagt sie zweimal.
+ *
+ * Die Telefonnummer ist eine Entscheidung des Betreibers, keine Pflicht — für
+ * die Anbieterkennzeichnung genügt ein Weg für unmittelbaren Kontakt, und den
+ * trägt die Mailadresse. Sie steht hier, weil eine Pressestelle mit einer
+ * Rückfrage zu einer Zahl eher anruft als schreibt.
+ */
+const NAMENSZUSATZ = "Dipl. Des.";
+
 const SIGNATURE = `Sebastian Schäder
-Betreiber solar-check.io`;
+${NAMENSZUSATZ}
+
+solar-check.io
+0177/2897086`;
 
 const LEISE_ZEILEN = [
   /^Quelle:/,
-  /^Impressum:/,
-  /^Datenschutz:/,
-  // JEDE Zeile der Signatur, aus der Signatur selbst abgeleitet. Zuerst stand
-  // hier nur „Betreiber solar-check.io" von Hand — der Name darüber blieb groß
-  // und wirkte dadurch als größte Zeile des ganzen Briefes. Wer die Signatur
-  // ändert, ändert damit auch, was leise gesetzt wird.
-  ...SIGNATURE.split("\n").map((z) => new RegExp(`^${z.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`)),
+  // IMPRESSUM UND DATENSCHUTZ STEHEN HIER NICHT MEHR.
+  //
+  // Sie liegen im Fuß, und der setzt seine Größe bereits am Absatz. Die Zeilen
+  // trugen zusätzlich diese Auszeichnung — 12px INNERHALB des Fußes — und waren
+  // damit die kleinste Schrift des ganzen Briefes. Eine Vergrößerung des Fußes
+  // wirkte an ihnen deshalb gar nicht: Die innere Angabe gewinnt.
+  //
+  // Allgemein: Zwei Größenangaben für dieselbe Zeile sind keine Staffelung,
+  // sondern ein Wettlauf, den man erst am erzeugten HTML sieht.
+  // NUR DER TITEL IST LEISE. Name, Adresse und Nummer stehen in Textgröße:
+  // In einem Brief steht der Absender so groß wie das, was er schreibt, und
+  // eine Telefonnummer, die zum Anruf einladen soll, gehört nicht in die
+  // kleinste Zeile der Seite. Eine Zwischenfassung setzte die ganze Signatur
+  // klein — der Grund dafür lag im damals zu kleinen Fließtext, nicht am Namen.
+  new RegExp(`^${NAMENSZUSATZ.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`),
 ];
 
 /**
@@ -268,8 +295,15 @@ export function briefAlsHtml(body: string): string {
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#39;");
   // Adressen anklickbar machen. Der Punkt am Satzende gehört nicht zur Adresse.
+  //
+  // Dazu die EIGENE Domain ohne Protokoll: In der Signatur steht „solar-check.io"
+  // so, wie man es aufschreibt, und im HTML wäre das sonst als einzige Adresse
+  // des Briefes tote Schrift. Bewusst nur unsere eigene Domain — eine allgemeine
+  // Regel für „Wort mit Punkt drin" macht aus jedem Dateinamen einen Link.
   const verlinke = (t: string) =>
-    t.replace(/https?:\/\/[^\s<]+[^\s<.,;:)]/g, (u) => `<a href="${u}">${u}</a>`);
+    t
+      .replace(/https?:\/\/[^\s<]+[^\s<.,;:)]/g, (u) => `<a href="${u}">${u}</a>`)
+      .replace(/(^|[\s(])(solar-check\.io)(?![\w./-])/g, (_, vor, d) => `${vor}<a href="https://${d}">${d}</a>`);
 
   const [oben, ...unten] = body.split(`\n${FUSS_TRENNER}\n`);
   // Zeilenweise, damit eine leise Zeile MITTEN in einem Absatz leise sein kann —
@@ -327,7 +361,11 @@ export function briefAlsHtml(body: string): string {
     ? `\n<hr style="border:0;border-top:1px solid ${RAHMEN};margin:24px 0 12px">\n` +
       fussText
         .split("\n\n")
-        .map((a) => absatz(a, `color:${GRAU};font-size:12px;line-height:1.5`))
+        // 13px, nicht 12: Der Fuß soll als Fuß erkennbar sein, aber die
+        // Pflichtangaben muss man auch lesen können — im echten Postfach war
+        // die Impressum-Zeile die kleinste Schrift des Briefes (Betreiber,
+        // 20.08.2026). Grau trägt den Unterschied bereits.
+        .map((a) => absatz(a, `color:${GRAU};font-size:13px;line-height:1.5`))
         .join("\n")
     : "";
   return `<div style="max-width:640px;${TEXT_STIL}">\n${kopf}${fuss}\n</div>`;
@@ -570,19 +608,23 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   //
   // KEINE VORSCHAU, KEIN ANHANG (Stand 19.08.2026).
   //
-  // Erst stand hier ein Anhang zur Debatte: abgelehnt, weil ein Bild in der
-  // ersten unverlangten Mail einer Absenderdomain ohne Sendehistorie ein
-  // Spam-Muster ist. Dann ein Link auf die Live-Vorschau — bis der Blick darauf
-  // zeigte, dass die Grafik in dieser Breite nicht vorzeigbar ist: Die
-  // Quellenangabe an der Kante läuft in die letzte Kachel.
+  // KEIN ANHANG, aber wieder ein Vorschau-Link (20.08.2026).
   //
-  // Ein Angebot, das man nicht ansehen kann, ist besser als eines, das man
-  // ansieht und dann nicht will. Der Absatz bietet die Grafik weiter an; wer
-  // sie will, bekommt sie samt Code von Hand. Sobald das Widget überarbeitet
-  // ist, kommt die Vorschau zurück — `widgetUrl` bleibt deshalb im Kontext.
+  // Der Anhang war nie eine Option: ein Bild in der ersten unverlangten Mail
+  // einer Absenderdomain ohne Sendehistorie ist ein Spam-Muster. Der
+  // Vorschau-Link dagegen war einen Tag lang draußen, weil die Grafik in
+  // schmaler Darstellung nicht vorzeigbar war — die Quellenangabe an der Kante
+  // lief quer über die letzte Kachel, und Zahl und Einheit brachen um.
+  //
+  // Beides ist behoben (die Kante hat eine eigene, feste Spur über die volle
+  // Kartenhöhe, Zahl und Einheit stehen gestaffelt nebeneinander), nachgesehen
+  // bei 375, 640, 900 und 1.280 px. Damit gilt wieder das Ursprüngliche: Ein
+  // Angebot, das man ansehen kann, ist besser als eines, das man glauben muss.
   const widgetAbsatz =
     c.variante === "meldung_plus_widget"
-      ? `\n\nDie Zahlen gibt es auch als Grafik für Ihre Website. Sie aktualisiert sich monatlich von selbst, Farben und Schrift lassen sich anpassen. Wenn Sie sie einbauen möchten, schicke ich Ihnen den Code und ein Beispiel.`
+      ? `\n\nDie Zahlen gibt es auch als Grafik für Ihre Website. Sie aktualisiert sich monatlich von selbst, Farben und Schrift lassen sich anpassen.${
+          c.widgetUrl ? ` So sieht sie für ${c.name} aus: ${c.widgetUrl}` : ""
+        } Wenn Sie sie einbauen möchten, schicke ich Ihnen den Code.`
       : "";
 
   // Weitere Spitzenplaetze — nur im Brief, nie in der Meldung. Sie belegen, dass

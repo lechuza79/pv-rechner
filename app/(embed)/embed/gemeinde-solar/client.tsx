@@ -6,7 +6,7 @@ import GemeindeWidgetShell from "../../../../components/atlas/GemeindeWidgetShel
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
 import { WIDGETS, widgetForPlace, WIDGET_MAX_WIDTH_COMPACT } from "../../../../lib/widget-registry";
 import { WIDGET_SETTINGS_DEFAULTS, type WidgetSettings } from "../../../../lib/widget-settings";
-import { fmtPvLeistung, fmtSpeicherKwh, fmtWattProKopf } from "../../../../lib/atlas-format";
+import { pvLeistungTeile, speicherKwhTeile, wattProKopfTeile } from "../../../../lib/atlas-format";
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
@@ -74,16 +74,21 @@ export default function GemeindeSolarWidget(props: GemeindeWidgetProps) {
       showEmbed={settings.embed}
       branding={settings.branding}
     >
-      <div style={{ width: "100%", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(88px, 1fr))", gap: 8 }}>
+      {/* Zahl und Einheit getrennt (…Teile statt fmt…): In einer 100-px-Spalte
+          umbricht „41,8 MWp" als ein Text zwischen Zahl und Einheit — die
+          Einheit landet dann allein in der zweiten Zeile und liest sich so
+          groß wie der Wert. Die Mindestbreite trägt die längste Zahl mit ihrer
+          Einheit („1.678 Wp"). */}
+      <div style={{ width: "100%", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(112px, 1fr))", gap: 8 }}>
         <Kachel label="Anlagen" value={nf(count)} />
-        <Kachel label="Installiert" value={fmtPvLeistung(kwp)} />
+        <Kachel label="Installiert" {...pvLeistungTeile(kwp)} />
         {wPerCapitaDach !== null && (
-          <Kachel label="Leistung je Einwohner" value={fmtWattProKopf(wPerCapitaDach)} hint="Dach" />
+          <Kachel label="Je Einwohner" {...wattProKopfTeile(wPerCapitaDach)} hint="Dachanlagen" />
         )}
         {/* „Batteriespeicher", nicht „Speicher": der Wert zählt nur Batterien, wie
             auf der Atlas-Seite. Ein Pumpspeicherwerk im Ort steckt nicht darin —
             das Widget darf nicht mehr behaupten als die Seite. */}
-        {speicherKwh > 0 && <Kachel label="Batteriespeicher" value={fmtSpeicherKwh(speicherKwh)} />}
+        {speicherKwh > 0 && <Kachel label="Batteriespeicher" {...speicherKwhTeile(speicherKwh)} />}
       </div>
     </GemeindeWidgetShell>
   );

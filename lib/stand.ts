@@ -147,6 +147,19 @@ export const STAND: Record<string, StandSeite> = {
     live: ["Strompreis", "Standort-Ertrag"],
   },
 
+  // Der Speicher-Ratgeber rechnet seine Beispiele mit denselben Set- und
+  // Speicherpreisen wie der Rechner — deshalb derselbe Eintrag, aus derselben
+  // Quelle abgeleitet statt abgeschrieben. Ein Standort-Ertrag steht hier
+  // bewusst NICHT unter den Live-Werten: Die Seite hat kein Postleitzahl-Feld
+  // und rechnet durchgehend mit dem Bundesschnitt, was sie auch dazuschreibt.
+  "/balkonkraftwerk/ratgeber/mit-speicher": {
+    eintraege: [
+      { was: "Set- und Speicherpreise", iso: DEFAULT_BALKON_CONFIG.geprueftIso, praezision: "tag", wertIso: DEFAULT_BALKON_CONFIG.validFrom },
+      { was: "rechtliche Angaben", iso: BALKON_RECHT.geprueftIso, praezision: "tag" },
+    ],
+    live: ["Strompreis"],
+  },
+
   // Die Live-Simulation hat keinen Stichtag, und einen zu erfinden wäre
   // schlimmer als keinen zu haben: Sie rechnet ausschließlich mit Wetterdaten
   // des laufenden Tages. Deshalb kein Eintrag — und in der Sitemap kein

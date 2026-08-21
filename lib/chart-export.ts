@@ -16,7 +16,7 @@
 
 import { domToBlob } from 'modern-screenshot';
 import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR } from './export-markers';
-import { tokens, TokenName } from './theme';
+import { tokens, TokenName, stageDefaults, STAGE_COUNT } from './theme';
 import { brandLabel, type WidgetKind } from './widget-registry';
 
 // Die Marker-Konstanten leben in lib/export-markers.ts (ohne Abhängigkeiten) und
@@ -444,6 +444,36 @@ export async function exportChart(
   return blob;
 }
 
+// ─── Helligkeit des Bildes ───────────────────────────────────────────────────
+
+/** Die `--widget-*`-Tokens, an denen ein eigenes Farbschema des Einbettenden
+ *  erkennbar ist. Setzt er eines, gewinnt es — sein Bild soll zu seiner Seite
+ *  passen, nicht zu unserer Tageszeit. */
+const WIDGET_THEME_MARKER = ['--widget-bg', '--widget-text', '--widget-accent'];
+
+/**
+ * Das heruntergeladene Bild entsteht IMMER auf unserer hellsten Tagesstufe.
+ *
+ * Die Seite folgt der echten Sonne und steht abends auf einer dunklen Stufe —
+ * ein Bild, das dabei entsteht, trägt diese Stimmung für immer mit sich, obwohl
+ * sie nichts über die Daten aussagt: Dieselbe Gemeinde sah je nach Uhrzeit des
+ * Klicks anders aus. Ein weitergereichtes PNG landet außerdem auf fremden
+ * Seiten und in Präsentationen, die hell sind.
+ *
+ * Umgesetzt als Token-Werte auf der Hülle statt über `data-theme` am Dokument:
+ * Die Stufen-Regeln greifen nur auf dem Wurzelelement, und dieses umzuschalten
+ * würde die sichtbare Seite für die Dauer der Aufnahme aufblitzen lassen.
+ * Bewusste Grenze: Eine im Admin-Bereich getunte Fassung der hellsten Stufe
+ * wirkt hier nicht — das Bild nimmt die Werte des Designsystems.
+ */
+function applyBrightestStage(wrapper: HTMLElement): void {
+  const rootStyle = document.documentElement.style;
+  const custom = WIDGET_THEME_MARKER.some((k) => rootStyle.getPropertyValue(k).trim() !== '');
+  if (custom) return;
+  const hell = stageDefaults(STAGE_COUNT - 1);
+  Object.entries(hell).forEach(([token, value]) => wrapper.style.setProperty(token, value));
+}
+
 // ─── 1:1 Node Capture (modern-screenshot) ────────────────────────────────────
 
 /**
@@ -469,6 +499,7 @@ export async function captureNodeToBlob(node: HTMLElement, scale = 2): Promise<B
   const wrapper = document.createElement('div');
   wrapper.style.cssText =
     'position:fixed;top:0;left:-100000px;pointer-events:none;opacity:1;';
+  applyBrightestStage(wrapper);
   const clone = node.cloneNode(true) as HTMLElement;
   applyExportMarkers(clone);
   // Links aren't clickable in a PNG — drop underlines so credits read as plain

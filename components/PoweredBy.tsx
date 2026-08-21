@@ -60,7 +60,8 @@ export function DataSourceNote({
           ) : (
             ""
           )}
-          {s.note ? ` (${s.note})` : ""}
+          {/* Komma statt Klammer — gleiche Schreibweise wie sourceLabel(). */}
+          {s.note ? `, ${s.note}` : ""}
         </span>
       ))}
     </span>

@@ -73,11 +73,14 @@ export const DATA_SOURCES = {
     license: "dl-de/by-2-0",
     licenseUrl: "https://www.govdata.de/dl-de/by-2-0",
     url: "https://www.marktstammdatenregister.de",
-    note: "Daten aggregiert",
+    note: "aggregiert",
   },
   /** Live weather feed powering the PV simulation. */
   openMeteo: {
-    name: "Open-Meteo (DWD, NOAA)",
+    // Ohne die Vorlieferanten (DWD, NOAA): Die Lizenz verlangt Open-Meteo als
+    // Rechteinhaber, nicht die Wetterdienste dahinter — und der Quellenvermerk
+    // steht in der schmalen senkrechten Kante, wo jedes Wort Höhe kostet.
+    name: "Open-Meteo",
     license: "CC BY 4.0",
     licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
     url: "https://open-meteo.com",
@@ -201,9 +204,19 @@ export const DATA_SOURCES = {
   },
 } as const satisfies Record<string, DataSource>;
 
-/** "Energy-Charts (Fraunhofer ISE), CC BY 4.0" — the credit label as one string.
- * Appends the licence's change notice, if any, e.g. "…, dl-de/by-2-0 (Daten aggregiert)". */
+/**
+ * "Energy-Charts (Fraunhofer ISE), CC BY 4.0" — der Quellenvermerk als ein String.
+ * Der Änderungshinweis hängt mit Komma hinten dran, z. B.
+ * "Marktstammdatenregister (Bundesnetzagentur), dl-de/by-2-0, aggregiert".
+ *
+ * Bewusst Komma statt Klammer: Der Vermerk steht seit 08/2026 senkrecht an der
+ * Kante der Widget-Karte und im heruntergeladenen Bild — dort ist er eine
+ * einzige Zeile, und geschachtelte Klammern lesen sich darin wie ein Nachtrag
+ * statt wie ein gleichrangiger Pflichtbestandteil. Drei Teile müssen die
+ * Kürzung überleben, weil die Lizenzen sie verlangen: WER die Daten
+ * bereitstellt, unter WELCHER Lizenz, und DASS wir sie verändert haben.
+ */
 export function sourceLabel(source: DataSource): string {
   const withLicense = source.license ? `${source.name}, ${source.license}` : source.name;
-  return source.note ? `${withLicense} (${source.note})` : withLicense;
+  return source.note ? `${withLicense}, ${source.note}` : withLicense;
 }

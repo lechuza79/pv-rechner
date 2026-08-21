@@ -8,6 +8,7 @@ import {
   WidgetExportFooter,
   WidgetFooter,
   WidgetSourceEdge,
+  SOURCE_EDGE_WIDTH,
   type ExportLegendEntry,
 } from "../WidgetExport";
 import { sourceLabel } from "../../lib/data-sources";
@@ -107,20 +108,14 @@ export default function GemeindeWidgetShell({
           <div style={S.sub}>{subline}</div>
         </div>
 
-        {/* Body grows, so two cards side by side end at the same height. The
-            source sits slim and vertical along the right edge; the padding
-            reserves its lane permanently, so nothing jumps when it fades in. */}
+        {/* Body grows, so two cards side by side end at the same height. */}
         <div style={S.body}>
-          <div style={{ ...S.sourceLane, bottom: sourceBottomInset }}>
-            <WidgetSourceEdge widget={widget} visible={!onsite || showCredit} />
-          </div>
           <div style={S.bodyInner}>
             <ExportBox style={S.box}>{children}</ExportBox>
           </div>
         </div>
 
         <div style={S.footer}>
-          <div style={S.rule} />
           <WidgetFooter
             widget={widget}
             chartExport={chartExport}
@@ -133,14 +128,21 @@ export default function GemeindeWidgetShell({
           />
         </div>
 
-        {/* Image only: legend, the texts behind the "?", source and brand. */}
-        <WidgetExportFooter
-          widget={widget}
-          legend={legend}
-          note={note}
-          dataAsOf={dataAsOf}
-          branding={branding}
-        />
+        {/* Die Quelle steht senkrecht an der rechten Kante — auf der Seite wie
+            im Bild, über die GANZE Kartenhöhe. Vorher spannte sie nur über den
+            Inhaltsbereich: In einer Karte mit einer kurzen Kachelreihe reichte
+            dessen Höhe nicht für eine Zeile, der Vermerk brach in mehrere
+            Spalten um und lief quer über die Kennzahlen. */}
+        <div style={{ ...S.sourceLane, bottom: 8 + sourceBottomInset }}>
+          <WidgetSourceEdge
+            widget={widget}
+            visible={!onsite || showCredit}
+            stand={dataAsOf}
+          />
+        </div>
+
+        {/* Image only: legend, the texts behind the "?", brand. */}
+        <WidgetExportFooter widget={widget} legend={legend} note={note} branding={branding} />
       </div>
     </ExportNotesProvider>
   );
@@ -161,17 +163,31 @@ const S: Record<string, React.CSSProperties> = {
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border")}`,
     borderRadius: "var(--widget-border-radius, 14px)",
-    padding: "16px 18px",
+    // Rechts ist Platz für die Quellen-Kante: 16 Innenabstand + Spurbreite.
+    // Damit hat die Inhaltsspalte EINE Breite — Titel, Chart-Kasten und
+    // Fußzeile fluchten, statt dass der Kasten schmaler ist als die Zeile
+    // darüber.
+    padding: `16px ${16 + SOURCE_EDGE_WIDTH}px 16px 16px`,
+    // Mindesthöhe, damit der senkrechte Quellenvermerk lesbar hineinpasst. Er
+    // schrumpft sich zwar in die vorhandene Höhe, aber bei einer Karte mit nur
+    // einer Kachelreihe landete er an der Untergrenze und war immer noch zu
+    // lang. Eine so flache Karte sah ohnehin gedrungen aus — die Höhe ist also
+    // kein Zugeständnis an die Kante, sondern beides zugleich.
+    minHeight: 360,
     overflow: "hidden",
   },
   title: { fontSize: 16, fontWeight: 700, margin: "0 0 4px", lineHeight: 1.25 },
   sub: { fontSize: 12, color: v("--color-text-muted"), margin: "0 0 14px", lineHeight: 1.4 },
-  body: { flex: 1, position: "relative", display: "flex", paddingRight: 18 },
-  // Lane for the vertical source label: the edge positions itself against this
-  // box, so shortening it at the bottom needs no second copy of the label.
-  sourceLane: { position: "absolute", top: 0, right: 0, width: 14 },
+  body: { flex: 1, display: "flex" },
+  // Spur der senkrechten Quellen-Beschriftung: über die ganze Kartenhöhe, nicht
+  // nur über den Inhalt — sonst reicht die Höhe für den Vermerk nicht.
+  sourceLane: { position: "absolute", top: 8, right: 2, width: SOURCE_EDGE_WIDTH },
   bodyInner: { flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" },
-  box: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" },
+  // Der Kasten füllt den Inhaltsbereich, statt mittig darin zu schweben: Im Bild
+  // ist er die einzige sichtbare Fläche, und eine Karte mit Mindesthöhe hätte
+  // sonst oben und unten je einen Streifen Nichts um ihn herum.
+  box: { flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" },
+  // Ohne Trennlinie: Der Chart-Kasten gliedert die Karte bereits, ein Strich
+  // darunter zieht im Bild eine zweite, konkurrierende Kante.
   footer: { marginTop: 14 },
-  rule: { height: 1, background: v("--color-border"), opacity: 0.6 },
 };

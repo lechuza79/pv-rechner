@@ -1,18 +1,18 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import ArticleMeta from "../../../../components/ArticleMeta";
-import Breadcrumb from "../../../../components/Breadcrumb";
-import Faq from "../../../../components/Faq";
-import RelatedLinks from "../../../../components/RelatedLinks";
-import { balkonAnmeldenFaq } from "../../../../lib/faq";
-import { pageMetadata } from "../../../../lib/seo";
-import { v } from "../../../../lib/theme";
-import { BALKON_RECHT } from "../../../../lib/balkon-config";
-import { ANMELDE_SCHRITTE, MASTR_KATEGORIE, SOLARPAKET_ENTFALLEN } from "../../../../lib/balkon-anmeldung";
+import ArticleMeta from "../../../../../components/ArticleMeta";
+import Breadcrumb from "../../../../../components/Breadcrumb";
+import Faq from "../../../../../components/Faq";
+import RelatedLinks from "../../../../../components/RelatedLinks";
+import { balkonAnmeldenFaq } from "../../../../../lib/faq";
+import { pageMetadata } from "../../../../../lib/seo";
+import { v } from "../../../../../lib/theme";
+import { BALKON_RECHT } from "../../../../../lib/balkon-config";
+import { ANMELDE_SCHRITTE, MASTR_KATEGORIE, SOLARPAKET_ENTFALLEN } from "../../../../../lib/balkon-anmeldung";
 import Fristencheck from "./Fristencheck";
 
 export const metadata: Metadata = pageMetadata({
-  path: "/balkonkraftwerk/anmelden",
+  path: "/balkonkraftwerk/ratgeber/anmelden",
   title: "Balkonkraftwerk anmelden: Anleitung, Frist & Fristen-Check",
   description:
     "Balkonkraftwerk anmelden — Schritt für Schritt durchs Marktstammdatenregister, mit Fristen-Check und den Stellen, an denen das Formular kippt. Beim Netzbetreiber ist seit 2024 nichts mehr zu melden.",
@@ -98,6 +98,7 @@ export default function AnmeldenPage() {
           items={[
             { label: "Start", href: "/" },
             { label: "Balkonkraftwerk", href: "/balkonkraftwerk" },
+            { label: "Ratgeber", href: "/balkonkraftwerk/ratgeber" },
             { label: "Anmelden" },
           ]}
           jsonLd
@@ -112,7 +113,7 @@ export default function AnmeldenPage() {
         <ArticleMeta
           headline="Balkonkraftwerk anmelden: Anleitung, Frist und Fristen-Check"
           description="Schritt für Schritt durchs Marktstammdatenregister, mit den Stellen, an denen es real schiefgeht."
-          path="/balkonkraftwerk/anmelden"
+          path="/balkonkraftwerk/ratgeber/anmelden"
           published="2026-08-16"
           modified="2026-08-16"
         />
@@ -223,7 +224,7 @@ export default function AnmeldenPage() {
           Dafür gilt seit 2024 eine eigene Regel: {BALKON_RECHT.mieteEigentum}
         </p>
 
-        <Faq items={balkonAnmeldenFaq()} title="Häufige Fragen zur Anmeldung" currentPath="/balkonkraftwerk/anmelden" />
+        <Faq items={balkonAnmeldenFaq()} title="Häufige Fragen zur Anmeldung" currentPath="/balkonkraftwerk/ratgeber/anmelden" />
 
         <p style={{ ...S.small, marginTop: 28 }}>
           <span style={S.strong}>Stand:</span> Rechtliche Angaben geprüft am{" "}
@@ -235,7 +236,7 @@ export default function AnmeldenPage() {
         </p>
 
         <RelatedLinks
-          currentPath="/balkonkraftwerk/anmelden"
+          currentPath="/balkonkraftwerk/ratgeber/anmelden"
           links={[
             { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk-Rechner", desc: "Was dein Set einbringt: Ertrag, Ersparnis und Amortisation — standortgenau, mit und ohne Speicher." },
             { href: "/photovoltaik-neigungswinkel", label: "Neigungswinkel & Ausrichtung", desc: "Warum der Winkel bei Balkon-Photovoltaik der größte Hebel ist." },

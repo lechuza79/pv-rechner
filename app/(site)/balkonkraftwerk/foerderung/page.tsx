@@ -253,7 +253,7 @@ export default async function BalkonFoerderungPage() {
               desc: "Ertrag, Preis und Amortisation eines Steckersolar-Geräts — die drei Kernfragen, live gerechnet.",
             },
             {
-              href: "/balkonkraftwerk/anmelden",
+              href: "/balkonkraftwerk/ratgeber/anmelden",
               label: "Balkonkraftwerk anmelden",
               desc: "Was bei der Bundesnetzagentur und beim Netzbetreiber zu tun ist — und woran es in der Praxis hakt.",
             },

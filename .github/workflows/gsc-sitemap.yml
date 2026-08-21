@@ -1,0 +1,63 @@
+# Sitemap bei der Google Search Console neu einreichen — von Hand ausloesbar.
+#
+# WARUM ES DEN LAUF GIBT (20.08.2026): Die Sitemap erzeugt sich bei jedem Deploy
+# selbst, aber Google holt sie nach eigenem Rhythmus — im Juli 2026 fuenf Tage
+# gar nicht. Nach einem Livegang neuer Seiten will man sie deshalb anstossen.
+# Der Endpunkt dafuer existiert seit Wochen, hing aber am Rechner des Betreibers:
+# Er ist mit "Bearer $CRON_SECRET" geschuetzt, und das Secret liegt hier im Repo.
+#
+# Der Lauf entscheidet NICHTS selbst. Die Route reicht nur ein, wenn Google lange
+# nicht geschaut hat ODER unsere Sitemap GEWACHSEN ist — die sichere Richtung.
+# Ist sie geschrumpft, meldet sie das und tut nichts, weil ein gewollter Rueckbau
+# und ein still ausgefallener Sitemap-Zweig von aussen gleich aussehen. Die
+# Eingabe "force" ueberschreibt das nach menschlicher Klaerung.
+#
+# Bewusst OHNE eingebettetes Auswerte-Skript: Die erste Fassung trug ein
+# mehrzeiliges Python mit verschachtelten Anfuehrungszeichen im Block-Skalar,
+# und GitHub konnte die Datei nicht mehr parsen — der Lauf war registriert, hatte
+# aber keinen Ausloeser mehr. Die Antwort steht formatiert im Protokoll, das
+# genuegt.
+name: GSC Sitemap
+
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Auch einreichen, wenn die Route es nicht fuer noetig haelt'
+        type: boolean
+        default: false
+      urls:
+        description: 'Adressen zum Pruefen, kommagetrennt'
+        type: string
+        default: ''
+
+jobs:
+  einreichen:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sitemap-Stand abfragen und ggf. neu einreichen
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          FORCE: ${{ inputs.force }}
+          URLS: ${{ inputs.urls }}
+        run: |
+          set -euo pipefail
+          if [ -z "${CRON_SECRET:-}" ]; then
+            echo "::error::CRON_SECRET fehlt in den Repo-Secrets"
+            exit 1
+          fi
+          if [ "${FORCE}" = "true" ]; then f=1; else f=0; fi
+          ziel="https://solar-check.io/api/seo/index-status?resubmit=1&force=${f}"
+          if [ -n "${URLS:-}" ]; then ziel="${ziel}&urls=${URLS}"; fi
+          # -f laesst den Lauf bei 4xx/5xx rot werden, statt eine Fehlermeldung
+          # still als Erfolg zu protokollieren.
+          curl -sS -f -m 60 -H "Authorization: Bearer ${CRON_SECRET}" "$ziel" \
+            | python3 -m json.tool | tee antwort.json
+          if grep -q '"erneutEingereicht"' antwort.json; then
+            echo "Sitemap wurde neu eingereicht — Einzelheiten oben."
+          else
+            echo "Nichts eingereicht: Google hat den aktuellen Stand bereits geholt, oder es war nicht noetig."
+          fi
+          if grep -q '"zurueckgehalten"' antwort.json; then
+            echo "::warning::Etwas wurde zurueckgehalten (Sitemap geschrumpft) — bitte oben nachsehen."
+          fi

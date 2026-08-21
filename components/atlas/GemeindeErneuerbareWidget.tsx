@@ -124,7 +124,10 @@ const S: Record<string, React.CSSProperties> = {
   center: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" },
   centerValue: { fontFamily: v("--font-mono"), fontSize: 30, fontWeight: 700, color: v("--color-text-primary"), lineHeight: 1 },
   centerUnit: { fontSize: 13, color: v("--color-text-secondary"), marginTop: 4, letterSpacing: 0.5 },
-  legend: { display: "flex", flexDirection: "column", gap: 8 },
+  // Zwei Spalten: Bei vier Technologien wird aus einer hohen Liste ein 2×2-Block
+  // — im heruntergeladenen Bild sparte die einspaltige Fassung nichts und machte
+  // die Karte um vier Zeilen länger als der Ring daneben hoch ist.
+  legend: { display: "grid", gridTemplateColumns: "repeat(2, auto)", columnGap: 20, rowGap: 8 },
   legItem: { display: "flex", alignItems: "center", gap: 8, fontSize: 13 },
   dot: { width: 10, height: 10, borderRadius: 3, flex: "0 0 auto" },
   legLabel: { color: v("--color-text-primary") },

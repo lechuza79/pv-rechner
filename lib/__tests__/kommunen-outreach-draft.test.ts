@@ -86,19 +86,28 @@ describe("Zwei Ask-Varianten", () => {
     expect(d.body).toContain("Grafik für Ihre Website");
   });
 
-  // WEDER ANHANG NOCH VORSCHAU-LINK (19.08.2026). Der Anhang fiel wegen der
-  // Zustellbarkeit, die Vorschau nach dem ersten Blick darauf: Die Grafik ist in
-  // dieser Breite nicht vorzeigbar, die Quellenangabe läuft in die letzte
-  // Kachel. Ein Angebot, das man nicht ansehen kann, ist besser als eines, das
-  // man ansieht und dann nicht will.
-  it("zeigt die Grafik nicht, auch wenn eine Adresse bekannt ist", () => {
+  // VORSCHAU-LINK JA, ANHANG NEIN (20.08.2026).
+  //
+  // Der Anhang bleibt draußen: ein Bild in der ersten unverlangten Mail einer
+  // Domain ohne Sendehistorie ist ein Spam-Muster. Der Vorschau-Link war einen
+  // Tag lang mit draußen, weil die Grafik schmal nicht vorzeigbar war; das ist
+  // behoben (Quellen-Kante mit eigener Spur, Zahl und Einheit gestaffelt).
+  it("zeigt die Grafik, sobald eine Adresse bekannt ist", () => {
     const d = renderOutreachDraft({
       ...BASIS,
       variante: "meldung_plus_widget",
       widgetUrl: "https://solar-check.io/embed/gemeinde-solar?ags=09679138",
     });
-    expect(d.body).not.toContain("/embed/");
+    expect(d.body).toContain("https://solar-check.io/embed/gemeinde-solar?ags=09679138");
+    expect(d.body).toContain("So sieht sie");
+  });
+
+  // Ohne Adresse KEIN halber Satz: Der Brief darf nicht „So sieht sie aus:" ohne
+  // Link sagen — das liest sich wie ein kaputter Serienbrief.
+  it("nennt ohne Adresse keine Vorschau", () => {
+    const d = renderOutreachDraft({ ...BASIS, variante: "meldung_plus_widget", widgetUrl: null });
     expect(d.body).not.toContain("So sieht sie");
+    expect(d.body).toContain("Grafik für Ihre Website");
   });
 
   it("beide Fassungen sind sonst identisch", () => {
@@ -180,6 +189,10 @@ describe("Kein Textbaustein-Unfall", () => {
         if (i <= 1) continue;
         // Aufzählungen, Trennlinien und die Meldung selbst sind keine Sätze.
         if (/^[·─—\d]/.test(erstesZeichen)) continue;
+        // Die Kontaktzeilen der Signatur ebenso wenig: Eine Adresse schreibt
+        // man klein, auch am Absatzanfang. Geprüft wird der Fließtext — hier
+        // ginge es sonst darum, „Solar-check.io" zu schreiben.
+        if (/^(solar-check\.io|\d{4}\/)/.test(absatz.trimStart())) continue;
         expect(
           erstesZeichen === erstesZeichen.toUpperCase(),
           `funktion=${funktion}, Absatz ${i}: „${absatz.slice(0, 40)}…"`,
@@ -602,12 +615,25 @@ describe("Der Brief bleibt lesbar kurz", () => {
     expect(r.length, `${r.length} Zeichen Verpackung`).toBeLessThanOrEqual(1500);
   });
 
-  it("kommt drumherum mit höchstens zehn Absätzen aus", () => {
-    // Von neun auf zehn am 20.08.2026 — die Ranglisten-Zeile steht auf einer
-    // eigenen: Eine Adresse, die im Fließtext klebt, überlebt weder das
-    // Kürzen noch das Kopieren zuverlässig.
+  it("kommt drumherum mit höchstens elf Absätzen aus", () => {
+    // Die Schranke zählt Absätze als Näherung für Länge. Am 20.08.2026 kamen
+    // in ZWEI Zweigen gleichzeitig Gründe dafür zusammen, und beide gelten:
+    //
+    // - Die Signatur trägt einen zweiten Block (Adresse und Telefonnummer unter
+    //   dem Namen, so wie im Mailprogramm des Betreibers) — eine Absatzgrenze
+    //   mehr, aber keine Aussage mehr.
+    // - Die Ranglisten-Zeile steht auf einer eigenen: Eine Adresse, die im
+    //   Fließtext klebt, überlebt weder das Kürzen noch das Kopieren
+    //   zuverlässig.
+    //
+    // Zusammen sind das zwei Absätze mehr als vorher, also elf. Beim
+    // Zusammenführen der beiden Zweige hatten BEIDE Seiten unabhängig auf zehn
+    // gehoben und je einen Grund notiert — die Summe hat erst der Test gezeigt.
+    //
+    // Die Zeichengrenze darüber bleibt die schärfere Bremse — sie zählt, was
+    // wirklich zu lesen ist, nicht wie es umbrochen wird.
     const absaetze = rahmen(MIT_ALLEM).split(/\n\n+/).filter((x) => x.trim());
-    expect(absaetze.length, absaetze.map((a) => a.slice(0, 36)).join(" | ")).toBeLessThanOrEqual(10);
+    expect(absaetze.length, absaetze.map((a) => a.slice(0, 36)).join(" | ")).toBeLessThanOrEqual(11);
   });
 
   // WIE VIELE LINKS DARF EIN BRIEF ANS RATHAUS TRAGEN?
@@ -732,13 +758,22 @@ describe("HTML-Fassung", () => {
   });
 
   // Die Signatur steht mitten in einem Absatz („Mit freundlichen Grüßen", Name,
-  // Rolle) — die leise Auszeichnung muss also zeilenweise greifen. Und sie gilt
-  // der GANZEN Signatur: Zuerst war nur die Rollenzeile klein, der Name darüber
-  // blieb groß und wurde dadurch zur größten Zeile des Briefes.
-  it("macht die ganze Signatur leise, nicht nur die Rollenzeile", () => {
+  // Rolle) — die leise Auszeichnung muss also zeilenweise greifen. Sie beginnt
+  // aber ERST UNTER DEM NAMEN: In einem Brief steht der Absender in derselben
+  // Größe wie das, was er schreibt. Eine Zwischenfassung setzte auch den Namen
+  // klein, weil er in einem früheren Stand als größte Zeile wirkte — das lag am
+  // damals zu kleinen Fließtext, nicht am Namen.
+  it("setzt den Titel leise, Name und Kontakt aber in Textgröße", () => {
     const h = renderOutreachDraft(BASIS).bodyHtml;
-    expect(h).toMatch(/<span style="font-size:12px">Sebastian Schäder<\/span>/);
-    expect(h).toMatch(/<span style="font-size:12px">Betreiber solar-check\.io<\/span>/);
+    expect(h).toMatch(/<span style="font-size:12px">Dipl\. Des\.<\/span>/);
+    expect(h).not.toMatch(/<span style="font-size:12px">Sebastian Schäder<\/span>/);
+    expect(h).toContain("Sebastian Schäder");
+    // Eine Telefonnummer, die zum Anruf einladen soll, gehört nicht in die
+    // kleinste Zeile des Briefes.
+    expect(h).not.toMatch(/<span style="font-size:12px">0177/);
+    // Die Adresse in der Signatur ist anklickbar — sonst ist sie im HTML die
+    // einzige tote Adresse des Briefes.
+    expect(h).toContain('<a href="https://solar-check.io">solar-check.io</a>');
     // LEISER HEISST KLEINER, NICHT GRAUER: Grau bleibt allein im Fuß.
     expect(h).not.toMatch(/<span style="[^"]*color:[^"]*">Sebastian/);
     // Die Grußformel darüber gehört zum Brief und bleibt normal.

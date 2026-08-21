@@ -99,7 +99,7 @@ export default function GemeindeSolarLive({
   // weil eine Simulation kein Live-Messwert ist.
   const stand = weather ? `${weather.current.time.slice(11, 16)} Uhr` : null;
   const subline =
-    "Simuliert aus dem heutigen Wetter am Standort — kein Messwert" + (stand ? ` · Stand ${stand}` : "");
+    "Simuliert aus dem heutigen Wetter am Standort" + (stand ? ` · Stand ${stand}` : "");
 
   const widget = widgetForPlace(WIDGETS.gemeindeSolarleistung, name, liveUrl);
   const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -111,7 +111,7 @@ export default function GemeindeSolarLive({
       filename={`solar-check-solarleistung-${slug}.png`}
       // Das Bild zeigt eine Momentaufnahme — ohne diesen Satz wüsste niemand,
       // dass die Kurve gerechnet und nicht gemessen ist.
-      note={`Simulierter Tagesverlauf des Anlagenbestands (${fmtPvLeistung(totalKwp)}) aus dem heutigen Wetter am Standort — kein Messwert.`}
+      note={`Simulierter Tagesverlauf des Anlagenbestands (${fmtPvLeistung(totalKwp)}) aus dem heutigen Wetter am Standort.`}
       onsite={onsite}
       share={share}
       showEmbed={showEmbed}
