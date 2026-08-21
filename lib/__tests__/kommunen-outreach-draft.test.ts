@@ -236,30 +236,27 @@ describe("Jeder Link im Anschreiben ist die echte Adresse", () => {
     expect(`${d.subject} ${d.body} ${d.meldung}`).not.toMatch(/zähl|Zähl|Klick|tracking/i);
   });
 
-  // ENTSCHEIDUNG DES BETREIBERS (20.08.2026): Die Ranglisten-Zeile ist zurück
-  // — als BELEG der behaupteten Platzierung, mit Sprung in die Tabelle.
+  // ENTSCHEIDUNG DES BETREIBERS (20.08.2026, endgültig): KEIN Ranglisten-Link
+  // im Brief. Der Auftrag „mit Anker auf die Tabelle verlinken" galt der
+  // GEMEINDESEITE — dort steht die Verlinkung, dort gehört sie hin.
   //
-  // Am 19.08.2026 war sie gestrichen worden (dritter Link im Brief), weil der
-  // Rang über die Gemeindeseite auffindbar bleibt. Genau daran hakte es: Der
-  // Brief behauptet „Platz 3 von 240", und wer das prüfen will, musste sich
-  // von der Gemeindeseite zur richtigen Liste durchklicken — Kategorie,
-  // Zeitraum und Vergleichsgruppe raten, ohne zu wissen, welche gemeint ist.
-  // Ein Beleg, den man suchen muss, belegt nichts.
-  it("belegt die Platzierung mit einem Link, der in der Tabelle landet", () => {
+  // Die Zeile war am 19.08. gestrichen, am 20.08. als Beleg wieder eingebaut und
+  // am selben Tag wieder verworfen. Für den Brief zählt: möglichst wenige Links,
+  // und der Rang bleibt über die Gemeindeseite erreichbar, die in der Meldung
+  // ohnehin steht.
+  //
+  // GEPRÜFT WIRD, DASS ER AUCH DANN WEGBLEIBT, WENN EINE ADRESSE DA IST.
+  // `ranglisteUrl` steckt weiter im Kontext (das Cockpit zeigt sie an, damit ein
+  // Mensch die Platzierung vor dem Versand nachsehen kann) — ein Test, der nur
+  // den Fall ohne Adresse prüft, wäre gegen ein versehentliches Wiedereinbauen
+  // blind.
+  it("trägt keinen Ranglisten-Link, auch wenn eine Adresse bekannt ist", () => {
     const mit = renderOutreachDraft({
       ...BASIS,
       ranglisteUrl: `https://solar-check.io/solar-atlas/ranking/x#${RANGLISTE_ANKER}`,
     });
-    expect(mit.body).toContain(`/solar-atlas/ranking/x#${RANGLISTE_ANKER}`);
-  });
-
-  it("die Ranglisten-Zeile steht im Brief, NICHT in der Meldung", () => {
-    // Die Meldung ist der Text, den die Gemeinde veröffentlicht. Sie trägt
-    // genau einen Link — die Gemeindeseite. Ein zweiter darin wäre ein Link,
-    // den eine Pressestelle beim Kürzen zuerst herausnimmt, und dabei
-    // erwischt sie womöglich den falschen.
-    const d = renderOutreachDraft({ ...BASIS, ranglisteUrl: "https://solar-check.io/solar-atlas/ranking/x#rangliste" });
-    expect(d.meldung).not.toContain("/solar-atlas/ranking/");
+    expect(mit.body).not.toContain("/solar-atlas/ranking/");
+    expect(mit.meldung).not.toContain("/solar-atlas/ranking/");
   });
 
   it("ohne Rangliste bleibt die Zeile weg statt leer dazustehen", () => {
@@ -503,12 +500,11 @@ describe("Weitere Platzierungen im Brief", () => {
     expect(renderOutreachDraft(MIT).body).not.toMatch(/von 1840/);
   });
 
-  it("verlinkt die Rangliste im Brief — sie belegt die Aufzählung darüber", () => {
-    // Umgekehrt seit dem 20.08.2026 (Entscheidung des Betreibers): Der Absatz
-    // darüber zählt bis zu drei Platzierungen auf. Ohne Beleg ist das eine
-    // Behauptungsliste; mit der Adresse, die Kategorie, Größenklasse und
-    // Gebiet bereits ausgewählt trägt, ist es eine nachprüfbare.
-    expect(renderOutreachDraft(MIT).body).toContain(MIT.ranglisteUrl as string);
+  it("verlinkt die Rangliste auch neben der Aufzählung nicht", () => {
+    // Die Aufzählung nennt bis zu drei weitere Platzierungen. Sie ohne Link
+    // stehenzulassen ist die Entscheidung des Betreibers vom 20.08.2026:
+    // nachprüfbar bleibt sie über die Gemeindeseite, die in der Meldung steht.
+    expect(renderOutreachDraft(MIT).body).not.toContain(MIT.ranglisteUrl as string);
   });
 
   it("lässt die weiteren Platzierungen aus der Meldung heraus", () => {

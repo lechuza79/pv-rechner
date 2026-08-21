@@ -658,33 +658,22 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
     : "";
 
   //
-  // DIE RANGLISTEN-ZEILE IST WIEDER DA — ALS BELEG, MIT SPRUNG IN DIE TABELLE
-  // (Entscheidung des Betreibers, 20.08.2026).
+  // KEINE RANGLISTEN-ZEILE IM BRIEF (Entscheidung des Betreibers, 20.08.2026,
+  // nach einem Hin und Her — deshalb steht die Begründung hier ausführlich).
   //
-  // Sie war am 19.08.2026 gestrichen worden, weil sie als dritter Link im
-  // Brief zu viel war und der Rang über die Gemeindeseite auffindbar bleibt.
-  // „Auffindbar" war dabei die schwache Stelle: Der Brief behauptet eine
-  // Platzierung, und wer sie prüfen will, musste sich von der Gemeindeseite
-  // erst zur richtigen Liste durchklicken — Kategorie, Zeitraum und
-  // Vergleichsgruppe von Hand nachstellen, ohne zu wissen, welche gemeint war.
+  // Sie war am 19.08. gestrichen, am 20.08. als Beleg mit Sprungmarke wieder
+  // eingebaut und am selben Tag wieder verworfen. Der Auftrag „mit Anker auf die
+  // Tabelle verlinken" galt der GEMEINDESEITE, nicht dem Brief — dort führt die
+  // Verlinkung in die Tabelle, und dort gehört sie hin.
   //
-  // Jetzt trägt die Adresse die Auswahl (Kategorie, Größenklasse, Gebiet) und
-  // der Anker führt direkt an die Tabelle. Sie steht IM BRIEF, nicht in der
-  // Meldung: Die Meldung ist der Text, den die Gemeinde veröffentlicht, und
-  // die trägt weiterhin genau einen Link — die Gemeindeseite.
-  // DIE ZEILE NENNT, WELCHE RANGLISTE SIE ZEIGT.
+  // Für den Brief zählt die Rechnung anders herum: Er soll möglichst wenige
+  // Links tragen, und der Rang bleibt über die Gemeindeseite erreichbar, die in
+  // der Meldung ohnehin steht. Ein dritter Link kostet mehr, als die eingesparte
+  // Klickstrecke wert ist.
   //
-  // Beim ersten Gegenlesen stand dort „Die Platzierung im Einzelnen:" — und
-  // zwar hinter dem Absatz „Auch sonst steht X weit vorn", der bis zu drei
-  // ANDERE Platzierungen aufzählt. Der Link führt aber zur Rangliste des
-  // Aufhängers, also der Platzierung aus der Meldung. Wer ihn öffnet,
-  // erwartete die zuletzt genannte und bekam eine andere: derselbe Fehlertyp,
-  // gegen den dieser ganze Umbau steht, nur zwei Zeilen tiefer.
-  //
-  // Deshalb trägt sie die Messgröße im Namen und steht VOR der Aufzählung.
-  const linkZeile = c.ranglisteUrl
-    ? `\n\nDie ganze Rangliste ${c.phrase}: ${c.ranglisteUrl}`
-    : "";
+  // `ranglisteUrl` bleibt im Kontext: Das Cockpit zeigt sie weiterhin an, damit
+  // ein Mensch die behauptete Platzierung vor dem Versand nachsehen kann.
+  const linkZeile = "";
 
   // DER ASK STAND NIRGENDS.
   // „Fertig formuliert zum Übernehmen" beschreibt den Text; „frei verwendbar,
