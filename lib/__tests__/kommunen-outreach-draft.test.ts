@@ -120,6 +120,22 @@ describe("Zwei Ask-Varianten", () => {
     expect(b.filter((abs) => !a.includes(abs))).toHaveLength(1);
   });
 
+  // DIE KOSTENFRAGE WIRD DORT BEANTWORTET, WO SIE ENTSTEHT (21.08.2026).
+  //
+  // Der Brief sagte „Kein Vertrieb und keine Kosten" — aber mitten im Absatz
+  // über den TEXT. Nidda hat daraufhin genau das gefragt, was der Satz hätte
+  // beantworten sollen: „Oder würden Kosten für uns anfallen, wenn wir
+  // beispielsweise den Zubau in unserer Website einbinden möchten?"
+  //
+  // Die Frage entsteht beim Einbau, also muss die Antwort im Widget-Absatz
+  // stehen — nicht drei Absätze darüber bei einer anderen Sache.
+  it("sagt im Widget-Absatz selbst, dass es für Kommunen nichts kostet", () => {
+    const d = renderOutreachDraft({ ...BASIS, variante: "meldung_plus_widget" });
+    const widgetAbsatz = d.body.split("\n\n").find((a) => a.includes("Grafik für Ihre Website"));
+    expect(widgetAbsatz).toBeDefined();
+    expect(widgetAbsatz).toMatch(/kostenfrei|kostenlos|keine Kosten/);
+  });
+
   it("die Meldung ist in beiden Fassungen dieselbe", () => {
     expect(renderOutreachDraft(BASIS).meldung).toBe(
       renderOutreachDraft({ ...BASIS, variante: "meldung_plus_widget" }).meldung,

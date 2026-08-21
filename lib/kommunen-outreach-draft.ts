@@ -624,7 +624,7 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
     c.variante === "meldung_plus_widget"
       ? `\n\nDie Zahlen gibt es auch als Grafik für Ihre Website. Sie aktualisiert sich monatlich von selbst, Farben und Schrift lassen sich anpassen.${
           c.widgetUrl ? ` So sieht sie für ${c.name} aus: ${c.widgetUrl}` : ""
-        } Wenn Sie sie einbauen möchten, schicke ich Ihnen den Code.`
+        } Für Kommunen ist das kostenfrei; wenn Sie sie einbauen möchten, schicke ich Ihnen den Code.`
       : "";
 
   // Weitere Spitzenplaetze — nur im Brief, nie in der Meldung. Sie belegen, dass
@@ -688,7 +688,7 @@ ${einstiegGross ? "Im" : "im"} Marktstammdatenregister der Bundesnetzagentur ste
 ${meldung}
 ----------------------------------------
 
-Der Text ist frei verwendbar, gern auch gekürzt. Ich bitte nur darum, den Link stehen zu lassen. Kein Vertrieb und keine Kosten; anmelden muss sich auch niemand. Die Zahlen aktualisiere ich monatlich.${linkZeile}${weitereAbsatz}${widgetAbsatz}
+Der Text ist frei verwendbar, gern auch gekürzt. Ich bitte nur darum, den Link stehen zu lassen. Für Kommunen ist das Angebot kostenfrei, und anmelden muss sich auch niemand. Die Zahlen aktualisiere ich monatlich.${linkZeile}${weitereAbsatz}${widgetAbsatz}
 
 Mit freundlichen Grüßen
 ${SIGNATURE}
