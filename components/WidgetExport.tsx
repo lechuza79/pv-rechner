@@ -10,6 +10,7 @@ import CiteModal from "./CiteModal";
 import { sourceLabel } from "../lib/data-sources";
 import { OWN_WORK_LICENSE } from "../lib/license";
 import { brandLabel, type WidgetDef } from "../lib/widget-registry";
+import { parseHostPfad } from "../lib/widget-settings";
 import type { useChartExport } from "../lib/useChartExport";
 import { v } from "../lib/theme";
 
@@ -190,9 +191,30 @@ export function WidgetFooter({
   // Lärm. Das galt schon als Regel (showCta), musste aber von Hand gesetzt
   // werden — und wurde beim Einbetten des Erzeugungs-Widgets in die
   // Strommix-Seite prompt vergessen. Jetzt merkt es der Baustein selbst.
+  //
+  // Im iframe ist `usePathname()` die Adresse des Widgets (`/embed/…`), nicht
+  // die der Seite — dort trägt die Seite ihren Pfad als `hp` bei. Ohne ihn stand
+  // auf `/atomstrom-import` ein Knopf, der genau diese Seite noch einmal
+  // aufgerufen hat, und zwar innerhalb des iframes.
   const pathname = usePathname();
-  const zeigtHierhin = !!pathname && pathname === widget.cta?.href;
+  const [rahmen, setRahmen] = useState<{ imIframe: boolean; hostPfad: string | null }>({
+    imIframe: false,
+    hostPfad: null,
+  });
+  useEffect(() => {
+    setRahmen({
+      imIframe: window.self !== window.top,
+      hostPfad: parseHostPfad(window.location.search),
+    });
+  }, []);
+  const seitenPfad = rahmen.hostPfad ?? pathname;
+  const zeigtHierhin = !!seitenPfad && seitenPfad === widget.cta?.href;
   const cta = showCta && !zeigtHierhin ? widget.cta : undefined;
+  // Ein Link im iframe navigiert sonst NUR das iframe: der Artikel erschien im
+  // Chart-Rahmen. Auf einer eigenen Seite öffnet `_top` ihn im ganzen Fenster,
+  // auf einer fremden ein neuer Tab — deren Seite bleibt stehen. Außerhalb eines
+  // iframes bleibt es der ganz normale Klick.
+  const ctaZiel = !rahmen.imIframe ? undefined : rahmen.hostPfad ? "_top" : "_blank";
 
   return (
     <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ marginTop: 14 }}>
@@ -216,6 +238,8 @@ export function WidgetFooter({
         {cta && (
           <a
             href={cta.href}
+            target={ctaZiel}
+            rel={ctaZiel === "_blank" ? "noopener" : undefined}
             style={{
               flexShrink: 0,
               textAlign: "center",

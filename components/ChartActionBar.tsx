@@ -20,6 +20,28 @@ import {
 // "Powered by" footer line.
 const IMPRESSUM_URL = "https://solar-check.io/impressum";
 
+/** Mindestbreite des Aktionsmenüs — dieselbe Zahl entscheidet über die
+ *  Aufklapp-Richtung und steht deshalb nicht zweimal da. */
+const MENU_BREITE = 184;
+
+/**
+ * Der Kasten, an dem ein Überstand wirklich abgeschnitten wird: der nächste
+ * Vorfahre, der nicht überlaufen lässt — in einem Widget die Karte
+ * (overflow: hidden), sonst das Fenster.
+ */
+function clippendeGrenze(el: HTMLElement): { left: number; right: number } {
+  let cur: HTMLElement | null = el.parentElement;
+  while (cur) {
+    const overflow = getComputedStyle(cur).overflowX;
+    if (overflow !== "visible") {
+      const r = cur.getBoundingClientRect();
+      return { left: r.left, right: r.right };
+    }
+    cur = cur.parentElement;
+  }
+  return { left: 0, right: el.ownerDocument.documentElement.clientWidth };
+}
+
 export interface ChartActionBarProps {
   onDownload: () => void;
   onCopyLink: () => void;
@@ -78,6 +100,7 @@ export default function ChartActionBar({
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
+  const [ausrichtung, setAusrichtung] = useState<"rechts" | "links">("rechts");
 
   useEffect(() => {
     if (!open) return;
@@ -87,6 +110,28 @@ export default function ChartActionBar({
     document.addEventListener("mousedown", onDoc);
     return () => document.removeEventListener("mousedown", onDoc);
   }, [open]);
+
+  // Zu welcher Seite das Menü aufklappt, ist keine Geschmacksfrage, sondern eine
+  // Messung: die Aktionsleiste steht meist rechts (dann muss das Menü nach links
+  // wachsen), nach einem Umbruch auf schmalen Karten aber links (dann nach
+  // rechts). Beide Fehlrichtungen sind real vorgekommen — und die Widget-Karte
+  // schneidet Überstehendes ab (overflow: hidden), das Menü war also nicht nur
+  // verschoben, sondern halb weg.
+  //
+  // Gemessen wird VOR dem Öffnen am Knopf, nicht danach am Menü: nachträglich
+  // umzuhängen hieße, das Menü einen Frame lang an der falschen Stelle zu zeigen.
+  const umschalten = () => {
+    setOpen((o) => {
+      if (o) return false;
+      const knopf = wrapRef.current;
+      if (knopf) {
+        const r = knopf.getBoundingClientRect();
+        const grenze = clippendeGrenze(knopf);
+        setAusrichtung(r.right - MENU_BREITE < grenze.left ? "links" : "rechts");
+      }
+      return true;
+    });
+  };
 
   const run = (fn: () => void) => () => {
     setOpen(false);
@@ -114,18 +159,22 @@ export default function ChartActionBar({
     padding: 0,
   };
   const icon = Math.round(size * 0.42);
+  // Gemessene Aufklapp-Richtung, zuletzt gemischt: sie gilt für beide Varianten
+  // und schlägt die Grundausrichtung.
+  const seite: React.CSSProperties =
+    ausrichtung === "links" ? { left: 0, right: "auto" } : { right: 0, left: "auto" };
 
   // ─── Compact ⋯ menu (small widgets) ───────────────────────────────────────
   if (variant === "menu") {
     return (
       <div ref={wrapRef} style={{ position: "relative", display: "inline-flex" }}>
         {copied && (
-          <div style={{ ...S.toast, ...(menuUp ? null : S.toastBelow) }}>
+          <div style={{ ...S.toast, ...(menuUp ? null : S.toastBelow), ...seite }}>
             <IconCheck size={iconSizes.sm} color={v("--color-bg")} /> Link kopiert
           </div>
         )}
         <button
-          onClick={() => setOpen((o) => !o)}
+          onClick={umschalten}
           title="Aktionen"
           aria-label="Aktionen"
           aria-expanded={open}
@@ -134,7 +183,7 @@ export default function ChartActionBar({
           <IconMore size={icon} />
         </button>
         {open && (
-          <div style={{ ...S.menu, ...(menuUp ? S.menuUpRight : S.menuBelowRight) }} role="menu">
+          <div style={{ ...S.menu, ...(menuUp ? S.menuUpRight : S.menuBelowRight), ...seite }} role="menu">
             {showDownload && (
               <>
                 <MenuItem
@@ -176,7 +225,7 @@ export default function ChartActionBar({
   return (
     <div style={{ display: "flex", gap: 6, flexShrink: 0, position: "relative" }}>
       {copied && (
-        <div style={S.toast}>
+        <div style={{ ...S.toast, ...seite }}>
           <IconCheck size={iconSizes.sm} color={v("--color-bg")} /> Link kopiert
         </div>
       )}
@@ -192,11 +241,11 @@ export default function ChartActionBar({
       )}
 
       <div ref={wrapRef} style={{ position: "relative" }}>
-        <button onClick={() => setOpen((o) => !o)} title="Teilen" aria-expanded={open} style={btn}>
+        <button onClick={umschalten} title="Teilen" aria-expanded={open} style={btn}>
           <IconShare size={icon} />
         </button>
         {open && (
-          <div style={S.menu} role="menu">
+          <div style={{ ...S.menu, ...seite }} role="menu">
             <MenuItem icon={IconLink} label="Link kopieren" onClick={copyLink} />
             {canNativeShare && onShareImage && (
               <MenuItem icon={IconShare} label="Als Bild teilen" onClick={run(onShareImage)} />
@@ -265,8 +314,10 @@ const S: Record<string, React.CSSProperties> = {
   menu: {
     position: "absolute",
     bottom: 42,
-    left: 0,
-    minWidth: 184,
+    // Ausgangsseite; die tatsächliche Richtung misst `umschalten` am Knopf und
+    // überschreibt sie (`seite`).
+    right: 0,
+    minWidth: MENU_BREITE,
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border")}`,
     borderRadius: v("--radius-md"),
@@ -311,7 +362,8 @@ const S: Record<string, React.CSSProperties> = {
   toast: {
     position: "absolute",
     bottom: 44,
-    left: 0,
+    // Wie das Menü: rechtsbündig, sonst läuft die Bestätigung aus der Karte.
+    right: 0,
     display: "flex",
     alignItems: "center",
     gap: 6,

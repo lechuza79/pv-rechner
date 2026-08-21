@@ -138,7 +138,10 @@ export default function ZubauWidget() {
           <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2 }}>
             Zubau: Erneuerbare vs. Atomkraft
           </div>
-          <span data-sc-export-ignore="" style={{ display: "inline-flex" }}>
+          {/* Bleibt auch nach einem Umbruch rechts: sein Ausklapp-Menü ist an
+              der rechten Kante ausgerichtet, und links ausgerückt ragte es auf
+              schmalen Karten über den Rand — den die Karte abschneidet. */}
+          <span data-sc-export-ignore="" style={{ display: "inline-flex", marginLeft: "auto" }}>
             <CountryMultitool idx={idx} onChange={setIdx} />
           </span>
         </div>

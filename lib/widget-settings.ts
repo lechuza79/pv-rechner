@@ -66,6 +66,27 @@ export function parseWidgetSettingsQuery(search: string): Partial<WidgetSettings
   return out;
 }
 
+/**
+ * Der Pfad der Seite, in der das Widget steckt (`hp`, gesetzt von
+ * `components/AutoHeightIframe.tsx`).
+ *
+ * Im iframe ist die eigene Adresse `/embed/…` — ein Widget kann von sich aus
+ * also nicht merken, dass sein „nächster Schritt" auf genau die Seite zeigt,
+ * die man gerade liest. Auf `/atomstrom-import` stand deshalb ein Knopf
+ * „Fakten zum Atomstrom-Import", der die Seite ein zweites Mal geöffnet hat —
+ * und zwar IM iframe.
+ *
+ * Angenommen wird nur ein eigener Pfad: mit einem Schrägstrich beginnend, ohne
+ * zweiten (`//host` wäre eine fremde Adresse) und ohne Doppelpunkt.
+ */
+export function parseHostPfad(search: string): string | null {
+  const roh = new URLSearchParams(search).get("hp");
+  if (!roh) return null;
+  const pfad = roh.trim();
+  if (pfad.charAt(0) !== "/" || pfad.charAt(1) === "/" || pfad.indexOf(":") !== -1) return null;
+  return pfad;
+}
+
 /** Coerce a postMessage settings object into a validated partial override.
  * Shares the same validation as the URL parser so the two paths never drift —
  * crucially this accepts every valid range (incl. "24h"). */

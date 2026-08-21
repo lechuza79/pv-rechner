@@ -47,13 +47,16 @@ export function useWidgetTheme(opts?: {
 
     // Static theme + settings from the iframe URL.
     setVars(parseWidgetThemeQuery(window.location.search));
+    if (Object.keys(parseWidgetThemeQuery(window.location.search)).length > 0) {
+      root.dataset.scThemeQuelle = "einbettend";
+    }
     onSettingsRef.current?.(parseWidgetSettingsQuery(window.location.search));
 
     // Live updates from the parent frame — same-origin only (the demo).
     function onMessage(event: MessageEvent) {
       if (event.origin !== window.location.origin) return;
       const payload = event.data as
-        | { type?: unknown; vars?: unknown; settings?: unknown }
+        | { type?: unknown; vars?: unknown; settings?: unknown; quelle?: unknown }
         | undefined;
       if (!payload) return;
 
@@ -69,8 +72,14 @@ export function useWidgetTheme(opts?: {
           : {};
       if (Object.keys(vars).length === 0) {
         ALLOWED.forEach((k) => root.style.removeProperty(k));
+        delete root.dataset.scThemeQuelle;
         return;
       }
+      // Wer das Schema gesetzt hat, entscheidet später über das geteilte Bild:
+      // Farben von UNSERER eigenen Seite (First-Party-Embed, Tagesstufe) dürfen
+      // nicht ins PNG wandern — das Bild steht immer auf der hellsten Stufe.
+      // Ein Einbettender, der sein eigenes Schema wählt, behält es dagegen.
+      root.dataset.scThemeQuelle = payload.quelle === "seite" ? "seite" : "einbettend";
       setVars(vars);
     }
 

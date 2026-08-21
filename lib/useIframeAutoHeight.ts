@@ -13,6 +13,10 @@ import { useEffect, useRef, useState } from "react";
 export function useIframeAutoHeight(fallback: number) {
   const ref = useRef<HTMLIFrameElement>(null);
   const [height, setHeight] = useState(fallback);
+  // Die erste Höhenmeldung ist zugleich der Nachweis, dass im iframe React
+  // läuft und zuhört — vorher gesendete Nachrichten (z. B. das Farbschema der
+  // Seite) verpufften. Deshalb wird sie mitgeteilt, statt sie zu erraten.
+  const [bereit, setBereit] = useState(false);
 
   useEffect(() => {
     const onMsg = (e: MessageEvent) => {
@@ -20,11 +24,12 @@ export function useIframeAutoHeight(fallback: number) {
       const d = e.data as { type?: string; height?: number } | null;
       if (d && d.type === "widget:height" && typeof d.height === "number" && d.height > 0) {
         setHeight(Math.ceil(d.height));
+        setBereit(true);
       }
     };
     window.addEventListener("message", onMsg);
     return () => window.removeEventListener("message", onMsg);
   }, []);
 
-  return { ref, height };
+  return { ref, height, bereit };
 }
