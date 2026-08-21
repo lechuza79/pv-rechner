@@ -83,9 +83,28 @@ function LineChartInner({
   highlightKey,
 }: LineChartProps & { width: number; height: number }) {
   const dimmed = (key: string) => highlightKey != null && highlightKey !== key;
+  // Der rechte Rand trägt die Beschriftung der Kurven — er muss sich also nach
+  // ihr richten, nicht nach einem festen Wert. „🇨🇳 Erneuerbare" (Länder-Vergleich)
+  // ist rund ein Drittel breiter als „Deutschland" und wurde abgeschnitten: Im
+  // Bild stand „Erneuerba", und ein abgeschnittenes Label ist im geteilten Bild
+  // nicht mehr zu reparieren. Gedeckelt, damit ein langes Label nicht die
+  // Chartfläche auffrisst.
+  const beschriftungsBreite = (() => {
+    const font = compact ? 10 : 11.5;
+    const laengste = series.reduce((max, s) => Math.max(max, s.label.length), 0);
+    const mitFahne = series.some((s) => s.flag);
+    // 0,62 em je Zeichen (halbfett), Fahne plus Abstand pauschal 22 px.
+    const geschaetzt = laengste * font * 0.62 + (mitFahne ? 22 : 0);
+    // Zuschlag von einem Viertel: Die Bildaufnahme rendert Text breiter als die
+    // Messung auf der Seite — dieselbe Ursache, aus der auch der Titel im Bild
+    // umbrach. Auf der Seite passte „🇨🇳 Erneuerbare" mit 13 px Reserve, im Bild
+    // stand „Erneuerba". Reserve ist hier billig, ein abgeschnittenes Label im
+    // geteilten Bild nicht mehr zu reparieren.
+    return Math.min(Math.round(geschaetzt * 1.25) + 8, 160);
+  })();
   const margin = compact
-    ? { top: 12, right: 78, bottom: 26, left: 40 }
-    : { top: 16, right: 104, bottom: 30, left: 48 };
+    ? { top: 12, right: Math.max(78, beschriftungsBreite), bottom: 26, left: 40 }
+    : { top: 16, right: Math.max(104, beschriftungsBreite), bottom: 30, left: 48 };
   const innerWidth = Math.max(0, width - margin.left - margin.right);
   const innerHeight = Math.max(0, height - margin.top - margin.bottom);
 

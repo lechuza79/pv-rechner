@@ -47,6 +47,9 @@ function ZubauEinordnung() {
         color: v("--color-text-secondary"),
         marginTop: 12,
         paddingLeft: 48,
+        // Lesebreite, nicht Chartbreite: Ein Absatz über 880 px liest sich
+        // schlecht. Der Einzug hält ihn bündig zur Chartfläche.
+        maxWidth: `calc(48px + var(--content-max-width))`,
       }}
     >
       <strong style={{ color: v("--color-text-primary") }}>
@@ -77,9 +80,15 @@ function ZubauEinordnung() {
 function ChartHead({ title, unit, hint }: { title: string; unit: string; hint?: string }) {
   return (
     <>
-      <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 2 }}>
-        <span style={{ fontSize: 14, fontWeight: 700, color: v("--color-text-primary") }}>{title}</span>
-        <span style={{ fontSize: 12, color: v("--color-text-muted") }}>in {unit}</span>
+      {/* Einheit im TEXTFLUSS hinter dem Titel, nicht als zweites Flex-Kind:
+          Nebeneinander gestellt rutschte sie beim Umbruch allein an den rechten
+          Rand der nächsten Zeile („Anteil Wind & Solar an der / Stromerzeugung
+          [           in %]") — auf einem Handy bei jedem der drei Charts. */}
+      <div style={{ fontSize: 14, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 2, lineHeight: 1.3 }}>
+        {title}{" "}
+        <span style={{ fontSize: 12, fontWeight: 400, color: v("--color-text-muted"), whiteSpace: "nowrap" }}>
+          in {unit}
+        </span>
       </div>
       {hint && (
         <div style={{ fontSize: 12.5, color: v("--color-text-secondary"), marginBottom: 4, lineHeight: 1.45 }}>
@@ -118,7 +127,11 @@ function StaticChart({
 
 export default function LaendervergleichClient() {
   return (
-    <div style={{ maxWidth: 760, margin: "0 auto" }}>
+    // Dieselbe Breite wie die Zubau-Story — vorher ein eigener Wert (760), der
+    // zu keiner anderen Seite passte: schmaler als die Kopfzeile, breiter als
+    // die Lesespalte, und zu eng für das 900-px-Chart darin, das deshalb seinen
+    // Kopf umbrach.
+    <div style={{ maxWidth: v("--chart-max-width"), margin: "0 auto" }}>
       <div
         style={{
           background: v("--color-bg"),
@@ -157,7 +170,7 @@ export default function LaendervergleichClient() {
           xDomain={[YEARS_ANTEIL[0], YEARS_ANTEIL[YEARS_ANTEIL.length - 1]]}
           height={280}
         />
-        <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 4, paddingLeft: 48, lineHeight: 1.45 }}>
+        <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 4, paddingLeft: 48, lineHeight: 1.45, maxWidth: `calc(48px + var(--content-max-width))` }}>
           Hinweis: produktionsbasierte Werte (Ember). Frankreichs Wert liegt
           dadurch etwas höher als die verbrauchs-/lebenszyklusbasierten Zahlen des
           Netzbetreibers RTE (~20–30&nbsp;g/kWh) — dieselbe Größenordnung, andere
@@ -186,7 +199,7 @@ export default function LaendervergleichClient() {
           xDomain={[YEARS_PERCAPITA[0], YEARS_PERCAPITA[YEARS_PERCAPITA.length - 1]]}
           height={300}
         />
-        <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 4, paddingLeft: 48, lineHeight: 1.45 }}>
+        <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 4, paddingLeft: 48, lineHeight: 1.45, maxWidth: `calc(48px + var(--content-max-width))` }}>
           Diese Reihe endet {YEARS_PERCAPITA[YEARS_PERCAPITA.length - 1]}, ein Jahr vor den
           übrigen: Sie braucht die Einwohnerzahl, und die führt der Datensatz seit der
           Umstellung im Juli 2026 nicht mehr mit.

@@ -65,7 +65,10 @@ function seriesFor(view: View): { series: LineSeries[]; sub: string } {
         { key: "cn-ee", label: "Erneuerbare", flag: "🇨🇳", colorToken: "--color-negative", values: cn.windsolar },
         { key: "cn-atom", label: "Atom", flag: "🇨🇳", colorToken: "--color-negative-light", values: cn.nuclear },
       ],
-      sub: "Deutschland (blau) gegen China (rot) — Wind + Solar kräftig, Atomkraft im hellen Ton",
+      // Kein Untertitel: Die Kurven tragen ihre Beschriftung mitsamt Fahne
+      // („🇩🇪 Erneuerbare"), und die Kennzahlen darüber ebenso — eine Legende in
+      // Worten würde nur wiederholen, was direkt an der Kurve steht.
+      sub: "",
     };
   }
   const c = byLabel(view.id);
@@ -95,15 +98,8 @@ export default function ZubauWidget() {
 
   const view = VIEWS[idx];
   const { series, sub } = useMemo(() => seriesFor(view), [view]);
-  // Wofür die Zahlen gelten, steht im Titel. Beim Zwei-Länder-Vergleich nicht:
-  // „Zubau Deutschland ↔ China: Erneuerbare vs. Atomkraft" passt auf einer
-  // schmalen Karte in keine Zeile, und dort nennt der Untertitel die beiden
-  // Länder ohnehin — samt ihrer Farben.
-  const gebiet = view.kind === "compare" ? "Deutschland ↔ China" : `${view.flag} ${view.label}`;
-  const titel =
-    view.kind === "compare"
-      ? "Zubau: Erneuerbare vs. Atomkraft"
-      : `Zubau ${view.label}: Erneuerbare vs. Atomkraft`;
+  // Wofür die Zahlen gelten, steht im Titel — für jede Ansicht gleich gebaut.
+  const titel = `Zubau ${view.label}: Erneuerbare vs. Atomkraft`;
 
   // Abgeleitet, nicht doppelt gepflegt: der Register-Titel plus das gewählte
   // Land — ohne es teilt man ein Bild, dessen Bezug niemand kennt.
@@ -114,8 +110,8 @@ export default function ZubauWidget() {
 
   const chartExport = useChartExport({
     context: {
-      title: WIDGET.title,
-      subtitle: gebiet,
+      // Der Titel trägt das Gebiet bereits; ein Untertitel würde es wiederholen.
+      title: titel,
       source: sourceLabel(DATA_SOURCES.ember),
     },
     filename: "solar-check-zubau-erneuerbare-atom.png",
@@ -158,13 +154,14 @@ export default function ZubauWidget() {
               übereinander. Der Titel ist kurz genug, dass er auf jeder
               Kartenbreite in eine Zeile passt. */}
           {/* Das Gebiet steht IM Titel — damit sagt schon die erste Zeile, wofür
-              die Zahlen gelten, und die Angabe steht nur einmal da (vorher: eine
-              eigene Zeile nur fürs Bild, plus der Wähler daneben).
-              Nicht umbrechen: Im Bild rendert die Aufnahme den Text etwas breiter
-              als die Messung — der Titel lief dann zweizeilig, während die Zeile
-              darunter auf ihrer gemessenen Höhe blieb, und beide lagen
-              übereinander. */}
-          <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2, whiteSpace: "nowrap" }}>
+              die Zahlen gelten, und die Angabe steht nur einmal da.
+              Das Umbruchverhalten steckt in der Klasse (Embed-Layout): Auf einer
+              breiten Karte bleibt der Titel in einer Zeile, weil die Aufnahme
+              ihn sonst zweizeilig rendert, während die Zeile darunter auf ihrer
+              gemessenen Höhe bleibt — beide lagen dann übereinander. Auf einer
+              schmalen Karte MUSS er umbrechen dürfen: „Zubau Deutschland ↔
+              China: …" ragte sonst über den Rand, den die Karte abschneidet. */}
+          <div className="sc-chart-titel" style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2 }}>
             {titel}
           </div>
           {/* Bleibt auch nach einem Umbruch rechts: sein Ausklapp-Menü ist an
@@ -202,7 +199,11 @@ export default function ZubauWidget() {
             >
               <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
                 <span style={{ width: 6, height: 6, borderRadius: "50%", background: `var(${s.colorToken})`, flexShrink: 0 }} />
-                <span style={{ fontSize: 11, color: "var(--widget-muted)" }}>
+                {/* Fahne und Wort bleiben zusammen: Die Bildaufnahme rendert
+                    das Emoji breiter als die Messung, das Wort rutschte dadurch
+                    in eine zweite Zeile — und die lag auf der Zahl darunter
+                    („Atom" quer durch „−20 GW"). */}
+                <span style={{ fontSize: 11, color: "var(--widget-muted)", whiteSpace: "nowrap" }}>
                   {(s.flag ? s.flag + " " : "") + s.label}
                 </span>
               </div>

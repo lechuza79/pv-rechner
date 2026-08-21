@@ -21,7 +21,7 @@ test.describe("Widget auf eigener Seite", () => {
 
     const rahmen = page.frameLocator('iframe[src*="zubau-erneuerbare-atom"]');
     // Warten, bis das Widget steht — vorher gibt es nichts zu messen.
-    await expect(rahmen.getByText("Zubau: Erneuerbare vs. Atomkraft", { exact: true })).toBeVisible();
+    await expect(rahmen.getByText(/^Zubau .+: Erneuerbare vs\. Atomkraft$/)).toBeVisible();
 
     await expect
       .poll(
@@ -65,7 +65,7 @@ test.describe("Widget auf eigener Seite", () => {
     await page.goto("/atomstrom-import");
 
     const rahmen = page.frameLocator('iframe[src*="zubau-erneuerbare-atom"]');
-    await expect(rahmen.getByText("Zubau: Erneuerbare vs. Atomkraft", { exact: true })).toBeVisible();
+    await expect(rahmen.getByText(/^Zubau .+: Erneuerbare vs\. Atomkraft$/)).toBeVisible();
     await rahmen.locator('button[title="Teilen"]').click();
 
     const menu = rahmen.locator('[role="menu"]');

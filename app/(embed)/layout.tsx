@@ -179,6 +179,16 @@ ${energyVars}
     *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important }
   }
 
+  /* Chart-Titel: auf breiten Karten einzeilig, auf schmalen umbruchfähig.
+     Beide Richtungen sind aus einem gemessenen Fehler entstanden — einzeilig
+     erzwungen ragte der Titel auf einer 300-px-Karte über den Rand (den die
+     Karte abschneidet), umbruchfähig auf einer breiten Karte rendert die
+     Bildaufnahme ihn zweizeilig, während die Zeile darunter auf ihrer
+     gemessenen Höhe bleibt: beide lagen dann übereinander. Die Grenze liegt
+     über der breitesten Titelvariante (~300 px) plus Innenabstand. */
+  .sc-chart-titel{white-space:nowrap}
+  @media (max-width:460px){ .sc-chart-titel{white-space:normal} }
+
   /* Map widget: map left, value tiles right (like the main site). Stacks on
      very narrow embeds. */
   .mastr-hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:24px;align-items:start}
