@@ -30,6 +30,18 @@ export interface RecommendInput {
   haustyp: number;         // Index in HAUSTYPEN
   dachart: number;         // Index in DACHARTEN
   budgetLimit: number | null;
+  /** Der Ertrag DIESER Anlage — Standort-Optimum MAL Dachfaktor, also das
+   *  Ergebnis von `dachErtragKwp()`. Nicht der rohe PVGIS-Wert.
+   *
+   *  Ohne Angabe gilt der Bundesschnitt bei optimaler Ausrichtung, und das ist
+   *  der Bestfall: ein perfekt nach Süden geneigtes Dach. Genau darüber ist die
+   *  Empfehlungsseite bis zum 22.08.2026 gestolpert — sie reichte ohne PLZ gar
+   *  nichts durch, und damit fiel der Abschlag für die tatsächliche Ausrichtung
+   *  ersatzlos weg (Ost/West gemessen: 12 statt 14 Jahre Amortisation). Die
+   *  Ausrichtung steht bewusst NICHT in dieser Eingabe: Sie hier ein zweites Mal
+   *  anzuwenden wäre der doppelte Abschlag, den `dach-ertrag.ts` beschreibt.
+   *  Weglassen ist deshalb nur zulässig, wenn über das Dach wirklich nichts
+   *  bekannt ist — und dann gehört der Bestfall sichtbar an die Zahl. */
   ertragKwp?: number;
   // 12 × kWh/kWp aus PVGIS (Monatsform des Standorts) für die angezeigte Autarkie.
   // Ohne PLZ null → deutscher Durchschnitt. Muss durchgereicht werden, damit Zwischen-

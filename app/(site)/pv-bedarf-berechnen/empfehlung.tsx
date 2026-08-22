@@ -2,7 +2,7 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useRouter, useSearchParams, type ReadonlyURLSearchParams } from "next/navigation";
 import Link from "next/link";
-import { PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, SPEICHER, INSULATION_BESTAND, SCENARIOS, type Heizsystem } from "../../../lib/constants";
+import { PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, SPEICHER, INSULATION_BESTAND, NATIONAL_AVG_YIELD, SCENARIOS, type Heizsystem } from "../../../lib/constants";
 import { recommend, economicsForScenario } from "../../../lib/recommend";
 import ScenarioTabs from "../../../components/ScenarioTabs";
 import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING, wpGebaeudeUebersprungenFolge } from "../../../lib/heatpump";
@@ -369,13 +369,23 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
   // Der Ertrag, mit dem gerechnet wird: Standort-Optimum × Dach. Ohne diesen
   // Schritt bekäme ein Ost/West-Dach die Empfehlung eines Süddachs — und damit
   // eine zu große Anlage bei zu kurzer Amortisation.
-  const effErtragKwp = ertragKwp !== null ? dachErtragKwp(ertragKwp, dachart, ausrichtung, neigungGrad) : null;
+  // OHNE PLZ gilt derselbe Rechenweg, nur mit dem Bundesmittel als Standortwert
+  // — BLOCKER. Vorher wurde in diesem Fall gar kein Ertrag durchgereicht, und
+  // die Empfehlung fiel auf den nackten Bundesschnitt zurück: also auf ein
+  // perfekt nach Süden geneigtes Dach, egal was jemand angegeben hatte. Wirkung
+  // gemessen am 22.08.2026 (Ost/West-Satteldach, sonst gleiche Eingaben):
+  // 12 Jahre und 10.916 € statt 14 Jahre und 6.449 €, und die empfohlene Anlage
+  // war 8 statt 6,5 kWp. Für den Nutzer sah es dabei aus, als mache die PLZ das
+  // Ergebnis SCHLECHTER — in Wahrheit hörte es erst dort auf zu schmeicheln.
+  // Der PV-Rechner nebenan macht es seit jeher so (`effErtrag` dort); die beiden
+  // Seiten zeigten damit für dieselben Eingaben verschiedene Zahlen.
+  const effErtragKwp = dachErtragKwp(ertragKwp ?? NATIONAL_AVG_YIELD, dachart, ausrichtung, neigungGrad);
 
   // Empfehlung berechnen (mit PLZ-spezifischem Ertrag und ggf. eigener Dachfläche)
   const recInput = {
     personen, nutzung, wp, ea, eaKm, klima,
     haustyp, dachart, budgetLimit: null,
-    ertragKwp: effErtragKwp ?? undefined,
+    ertragKwp: effErtragKwp,
     monthlyYieldPerKwp: monthlyProfile,
     customRoofM2: customRoofM2 ?? undefined,
     wpWohnflaeche, wpInsulation, wpHeizsystem, wpHaustyp,
@@ -516,7 +526,7 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                     nimmZurueck={nimmDachZurueck}
                     bearbeitet={gvEditing}
                     setBearbeitet={setGvEditing}
-                    hinweis={effErtragKwp !== null ? dachErtragHinweis(effErtragKwp, dachart, ausrichtung, true, neigungGrad) : undefined}
+                    hinweis={dachErtragHinweis(effErtragKwp, dachart, ausrichtung, ertragKwp !== null, neigungGrad)}
                   />
                 </div>
 
@@ -704,7 +714,7 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                 </div>
               )}
               <div style={{ fontSize: 13, color: v('--color-text-secondary'), marginTop: 8, paddingTop: 8, borderTop: `1px solid ${v('--color-border-accent')}` }}>
-                Rendite nach 25 Jahren: <span style={{ fontWeight: 700, color: (selRec?.eco.npv25 ?? 0) >= 0 ? v('--color-positive') : v('--color-negative'), fontFamily: v('--font-mono') }}>
+                Gewinn nach 25 Jahren: <span style={{ fontWeight: 700, color: (selRec?.eco.npv25 ?? 0) >= 0 ? v('--color-positive') : v('--color-negative'), fontFamily: v('--font-mono') }}>
                   {(selRec?.eco.npv25 ?? 0) >= 0 ? "+" : ""}{Math.round(selRec?.eco.npv25 ?? 0).toLocaleString("de-DE")} €
                 </span>
               </div>
@@ -728,7 +738,7 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                   <div style={{ fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.5 }}>
                     {ertragKwp
                       ? `PLZ ${plz}: ${ertragKwp} kWh/kWp/Jahr${plzSource ? ` · ${plzSource}` : ""}`
-                      : "PLZ angeben — wir holen den echten Sonnenertrag deines Standorts. Sonst rechnen wir mit dem Bundesmittel (950 kWh/kWp)."}
+                      : `PLZ angeben — wir holen den echten Sonnenertrag deines Standorts. Sonst rechnen wir mit dem Bundesmittel (${NATIONAL_AVG_YIELD.toLocaleString("de-DE")} kWh/kWp).`}
                   </div>
                 </div>
                 <div style={{ display: "flex", gap: 6, alignItems: "center" }}>

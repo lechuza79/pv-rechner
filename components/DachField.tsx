@@ -14,7 +14,7 @@
 // Beim Flachdach lautet die Frage anders: nicht „wie steil", sondern ob die
 // Module aufgeständert sind — eine Entscheidung, die man kennt, und nach Süden
 // 9 Punkte wert. Die Stufen kommen aus lib/dach-ertrag.ts, nicht von hier.
-import { AccordionField, ChoiceButtons } from "./AccordionField";
+import { AccordionField, ChoiceButtons, flowWahl } from "./AccordionField";
 import PresetNumberInput from "./PresetNumberInput";
 import { v, space } from "../lib/theme";
 import { DACHARTEN } from "../lib/constants";
@@ -72,6 +72,11 @@ export default function DachField({
   const hat = (k: string) => beantwortet.has(k);
   const stufen = neigungsStufen(dachartIdx);
   const dach = dachartIdx !== null ? DACHARTEN[dachartIdx] : null;
+  // Beim Flachdach lautet die Frage anders (Montage statt Grad) — der Name
+  // steht deshalb einmal hier und geht an die Überschrift UND an die
+  // Kennzeichnung der Knöpfe. Zwei getippte Fassungen wären zwei Namen für
+  // dieselbe Frage, und der Läufer fände die Knöpfe nicht mehr.
+  const neigungFrage = dach?.aufgestaendert ? "Montage" : "Dachneigung";
 
   // Die Neigung zählt nur als offene Frage, wenn sie hier überhaupt etwas
   // bewegt — sonst wäre sie ein Pflichtschritt für einen Prozentpunkt.
@@ -164,7 +169,7 @@ export default function DachField({
 
       {hat(F_AUSRICHTUNG) && stufen.length > 0 && (
         <AccordionField
-          label={dach?.aufgestaendert ? "Montage" : "Dachneigung"}
+          label={neigungFrage}
           open={offen === F_NEIGUNG}
           /* Sichtbar als Zeile, sobald die Ausrichtung steht — auch unbeantwortet.
              Sonst käme niemand an die Frage heran, wo sie nicht von selbst
@@ -176,12 +181,13 @@ export default function DachField({
           onEdit={() => setBearbeitet(F_NEIGUNG)}
         >
           <div style={{ display: "flex", gap: space.sm, alignItems: "center", flexWrap: "wrap" }}>
-            {stufen.map(s => {
+            {stufen.map((s, si) => {
               const aktiv = hat(F_NEIGUNG) && neigungGrad === s.grad;
               return (
                 <button
                   key={s.grad}
                   onClick={() => { setNeigungGrad(s.grad); markiereBeantwortet(F_NEIGUNG); }}
+                  {...flowWahl(neigungFrage, si, aktiv)}
                   title={s.sub}
                   style={{
                     padding: "7px 12px", borderRadius: v("--radius-sm"), fontSize: 12, fontWeight: 600, cursor: "pointer",
