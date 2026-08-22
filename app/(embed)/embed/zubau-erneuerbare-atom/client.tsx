@@ -45,8 +45,14 @@ const byLabel = (label: string) =>
 
 type View = { id: string; label: string; flag: string };
 
-/** Reihenfolge des Multitools — Welt zuerst (Default). */
-const VIEWS: View[] = ["Welt", "Deutschland", "China", "USA", "Frankreich", "Indien"].map((l) => {
+/**
+ * Reihenfolge des Multitools — Welt zuerst (Default), Deutschland zuletzt.
+ *
+ * Deutschland ist hier nicht eines unter sechs, sondern der Maßstab: Es lässt
+ * sich zu jedem anderen Land dazuschalten. Als eigener Eintrag steht es deshalb
+ * am Ende — dort, wo man es sucht, wenn man es einmal für sich sehen will.
+ */
+const VIEWS: View[] = ["Welt", "China", "USA", "Frankreich", "Indien", "Deutschland"].map((l) => {
   const c = byLabel(l);
   // Anzeige-Label: "Weltweit" statt "Welt" (Daten-Key bleibt via id = c.key).
   return { id: c.key, label: l === "Welt" ? "Weltweit" : c.label, flag: c.flag };
@@ -140,6 +146,56 @@ export function vergleichZuDeutschland(land: number, de: number): string {
   if (faktor >= 1.15) return `${faktor.toFixed(faktor >= 10 ? 0 : 1).replace(".", ",")}× weniger`;
   if (faktor <= 1 / 1.15) return `${(1 / faktor).toFixed(faktor <= 0.1 ? 0 : 1).replace(".", ",")}× mehr`;
   return "etwa gleich viel";
+}
+
+/**
+ * Der deutsche Wert in der Kachel — die Abweichung in Prozent kommt erst beim
+ * Überfahren oder mit der Tastatur dazu.
+ *
+ * Dauerhaft sagte sie dasselbe wie das Größenverhältnis eine Zeile tiefer, nur
+ * in anderer Form; zwei Deltas nebeneinander liest niemand als zwei Antworten
+ * auf dieselbe Frage, sondern als Fehler.
+ *
+ * Bewusst über einen Zustand statt über eine `:hover`-Regel: Im Widget hat die
+ * Klassenlösung nicht zuverlässig gegriffen, und ein Effekt, der sich nicht
+ * prüfen lässt, ist keiner. Der Zustand ist außerdem der einzige Weg, der auch
+ * die Tastatur bedient.
+ */
+function DeutschlandWert({
+  wert,
+  abweichung,
+  bezug,
+}: {
+  wert: string;
+  abweichung: string;
+  bezug: string;
+}) {
+  return (
+    <span
+      className={abweichung ? "sc-deltahost" : undefined}
+      tabIndex={abweichung ? 0 : undefined}
+      title={abweichung ? `Deutschland: ${abweichung} gegenüber ${bezug}` : undefined}
+      style={{
+        display: "inline-flex",
+        alignItems: "baseline",
+        gap: 6,
+        fontFamily: "var(--font-mono)",
+        fontSize: 12,
+        fontWeight: 600,
+        color: "var(--widget-fg)",
+        borderRadius: 4,
+      }}
+    >
+      <span>
+        {DEUTSCHLAND.code} {wert}
+      </span>
+      {/* Im Markup steht die Abweichung immer — für Screenreader und für die
+          Suche im Text. Sichtbar wird sie über CSS, nicht über einen Zustand:
+          Ein React-Zustand ging bei jedem Neuzeichnen der Karte verloren, und
+          der Wert flackerte beim Überfahren. */}
+      {abweichung && <span className="sc-delta">{abweichung}</span>}
+    </span>
+  );
 }
 
 export default function ZubauWidget() {
@@ -294,37 +350,32 @@ export default function ZubauWidget() {
                   {fmtGw(eigen)}
                 </div>
                 {/* Der Vergleich steht UNTER der Zahl, Zeile für Zeile: So wächst
-                    die Kachel beim Einschalten nur in der Höhe. Nebeneinander
-                    wären die Kacheln breiter geworden und hätten auf schmalen
-                    Karten die Reihe umbrechen lassen — beim Umschalten springt
-                    dann das halbe Widget. */}
-                {zeigtDeutschland && (
-                  <div className="sc-nebenlinie" style={{ marginTop: 6, whiteSpace: "nowrap" }}>
-                    {/* Ohne Abweichung stehen keine leeren Klammern da: Wo der
-                        Prozentwert nichts aussagt (Zubau gegen Rückbau), bleibt
-                        nur der deutsche Wert — dann ohne Klammern, weil er
-                        nichts mehr ergänzt, sondern die Aussage selbst ist. */}
-                    <div style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700, color: "var(--widget-muted)" }}>
-                      {abw ? (
-                        <>
-                          {abw}{" "}
-                          <span style={{ fontWeight: 500 }}>
-                            ({DEUTSCHLAND.code} {fmtGw(de)})
-                          </span>
-                        </>
-                      ) : (
-                        <span style={{ fontWeight: 500 }}>
-                          {DEUTSCHLAND.code} {fmtGw(de)}
-                        </span>
+                    die Kachel beim Einschalten nur in der Höhe — und sie wächst
+                    mit, statt zu springen (Raster-Zeilenhöhe 0fr → 1fr).
+                    Nebeneinander wären die Kacheln breiter geworden und hätten
+                    auf schmalen Karten die Reihe umbrechen lassen. */}
+                <div className="sc-aufklapp" data-offen={zeigtDeutschland ? "ja" : "nein"}>
+                  <div>
+                    <div
+                      style={{
+                        marginTop: 8,
+                        paddingTop: 7,
+                        // Feine Linie zwischen der Referenz und Deutschland:
+                        // Ohne sie lesen sich vier Zeilen als eine Aufzählung,
+                        // in der die große Zahl ihren Vorrang verliert.
+                        borderTop: "1px solid var(--color-border)",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      <DeutschlandWert wert={fmtGw(de)} abweichung={abw} bezug={land.code} />
+                      {verhaeltnis && (
+                        <div style={{ fontSize: 11, color: "var(--widget-muted)", marginTop: 3 }}>
+                          {verhaeltnis}
+                        </div>
                       )}
                     </div>
-                    {verhaeltnis && (
-                      <div style={{ fontSize: 11, color: "var(--widget-muted)", marginTop: 3 }}>
-                        {verhaeltnis}
-                      </div>
-                    )}
                   </div>
-                )}
+                </div>
               </div>
             );
           })}

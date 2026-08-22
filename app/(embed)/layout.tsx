@@ -176,13 +176,38 @@ ${energyVars}
 
   /* Bewegung respektiert die Systemeinstellung. */
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important }
+    /* Auch Übergänge, nicht nur Animationen: Das Aufklappen einer Kachel und
+       der Schiebeschalter laufen über transition, und ohne diese Zeile bewegten
+       sie sich weiter, obwohl das System das Gegenteil verlangt. */
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 
   /* Vergleichslinie im Chart: zieht beim Einblenden auf, statt schlagartig da
      zu sein — sonst sucht man, was sich gerade geändert hat. */
   @keyframes sc-linie-auf { from { opacity: 0 } to { opacity: 1 } }
   .sc-nebenlinie { animation: sc-linie-auf .45s ease-out }
+
+  /* Eine Kachel, die beim Einschalten wächst, tut das mit — nicht als Sprung.
+     Über die Zeilenhöhe des Rasters (0fr → 1fr), weil eine Höhe in Pixeln
+     vorher niemand kennt und „auf gut Glück" gesetzte Maximalhöhen entweder
+     abschneiden oder die Bewegung verzögert aussehen lassen. */
+  .sc-aufklapp { display:grid; grid-template-rows:0fr; transition:grid-template-rows .28s ease }
+  .sc-aufklapp > * { overflow:hidden; min-height:0 }
+  .sc-aufklapp[data-offen="ja"] { grid-template-rows:1fr }
+
+  /* Der Prozentwert am deutschen Vergleichswert erscheint erst beim Überfahren
+     oder mit der Tastatur. Dauerhaft stand er neben dem Größenverhältnis eine
+     Zeile tiefer und sagte dasselbe zweimal; im geteilten Bild bleibt damit das
+     Verhältnis („12× weniger") die Aussage — die greifbarere von beiden. */
+  .sc-delta { opacity:0; font-weight:700; color:var(--widget-muted); transition:opacity .18s ease }
+  .sc-deltahost:hover .sc-delta,
+  .sc-deltahost:focus-visible .sc-delta,
+  .sc-deltahost:focus .sc-delta { opacity:1 }
+  .sc-deltahost:focus-visible { outline:2px solid var(--color-accent); outline-offset:2px }
 
   /* Chart-Titel: auf breiten Karten einzeilig, auf schmalen umbruchfähig.
      Beide Richtungen sind aus einem gemessenen Fehler entstanden — einzeilig
