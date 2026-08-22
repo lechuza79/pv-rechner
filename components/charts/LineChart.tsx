@@ -26,6 +26,17 @@ export interface LineSeries {
   values: number[];
   /** Optionales Flaggen-Emoji für Label/Legende. */
   flag?: string;
+  /**
+   * Nebenlinie: dünn und blass, in derselben Farbe wie ihre Hauptlinie.
+   *
+   * Für Reihen, die zum Vergleich danebengelegt werden (im Zubau-Widget das
+   * eingeblendete Deutschland). Die FARBE bleibt die der Sache — grün ist
+   * Erneuerbare, egal welches Land —, unterschieden wird über Strichstärke und
+   * Deckkraft. Eine eigene Farbe je Land ergäbe zwei Farbwelten, in denen man
+   * erst die Legende lesen muss, um zwei Erneuerbaren-Kurven als solche zu
+   * erkennen.
+   */
+  duenn?: boolean;
 }
 
 interface LineChartProps {
@@ -65,6 +76,8 @@ export default function LineChart(props: LineChartProps) {
 }
 
 const DIM_OPACITY = 0.16;
+/** Nebenlinien (Vergleichsreihen): sichtbar, aber deutlich hinter der Hauptlinie. */
+const NEBENLINIE_OPACITY = 0.55;
 
 interface HoverState {
   year: number;
@@ -285,11 +298,24 @@ function LineChartInner({
                   y={(d) => yScale(d.value)}
                   stroke={cssVar(s.colorToken)}
                   strokeWidth={
-                    s.key === highlightKey ? (compact ? 2.5 : 3) : compact ? 1.75 : 2.25
+                    s.duenn
+                      ? 1
+                      : s.key === highlightKey
+                        ? compact
+                          ? 2.5
+                          : 3
+                        : compact
+                          ? 1.75
+                          : 2.25
                   }
-                  strokeOpacity={dim ? DIM_OPACITY : 1}
+                  strokeOpacity={dim ? DIM_OPACITY : s.duenn ? NEBENLINIE_OPACITY : 1}
                   strokeLinecap="round"
                   curve={curveMonotoneX}
+                  // Beim Einblenden sanft aufziehen — sonst erscheint die
+                  // Vergleichslinie schlagartig und man sucht, was sich geändert
+                  // hat. Bewegung nur, wo das System sie zulässt (die Regel für
+                  // reduzierte Bewegung steht im Embed-Layout).
+                  className={s.duenn ? "sc-nebenlinie" : undefined}
                 />
               );
             })}

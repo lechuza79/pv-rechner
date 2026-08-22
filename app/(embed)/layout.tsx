@@ -179,6 +179,11 @@ ${energyVars}
     *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important }
   }
 
+  /* Vergleichslinie im Chart: zieht beim Einblenden auf, statt schlagartig da
+     zu sein — sonst sucht man, was sich gerade geändert hat. */
+  @keyframes sc-linie-auf { from { opacity: 0 } to { opacity: 1 } }
+  .sc-nebenlinie { animation: sc-linie-auf .45s ease-out }
+
   /* Chart-Titel: auf breiten Karten einzeilig, auf schmalen umbruchfähig.
      Beide Richtungen sind aus einem gemessenen Fehler entstanden — einzeilig
      erzwungen ragte der Titel auf einer 300-px-Karte über den Rand (den die

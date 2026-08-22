@@ -56,17 +56,19 @@ export interface ZubauCountry {
   key: string;
   label: string;
   flag: string;
+  /** Länderkürzel (ISO 3) aus der Quelle; die Welt trägt „WELT". */
+  code: string;
   colorToken: string;
   windsolar: number[];
   nuclear: number[];
 }
 export const ZUBAU_BY_COUNTRY: ZubauCountry[] = [
-  { key: "Deutschland", label: "Deutschland", flag: "🇩🇪", colorToken: "--color-accent", windsolar: [8.6, 9.7, 10.4, 5.1, 6.3, 7.3, 6.3, 7.8, 6, 5.8, 6.2, 7.9, 3.6, 17.6, 19, 20.1], nuclear: [0, 0, -8.4, 0, 0, -1.3, 0, 0, 0, -1.3, -1.4, 0, -3.9, -4.2, 0, 0] },
-  { key: "China", label: "China", flag: "🇨🇳", colorToken: "--color-negative", windsolar: [12.6, 18.8, 18.9, 26.2, 30.7, 49.4, 51.7, 68.9, 64.7, 54.6, 121.3, 100.1, 123, 292.8, 356.6, 434.4], nuclear: [1.7, 1.8, 0, 2.1, 5.4, 7.1, 6.5, 2.2, 8.8, 4.1, 1.1, 3.4, 2.3, 1.4, 3.9, 1.6] },
-  { key: "USA", label: "USA", flag: "🇺🇸", colorToken: "--color-energy-gas", windsolar: [6.1, 8.8, 16.4, 5.3, 8.9, 14.1, 20, 14.7, 15.4, 18.4, 29.8, 33.4, 26.7, 33.1, 42.8, 40.2], nuclear: [0.2, 0.3, 0.5, -2.7, -0.7, 0.1, 0.9, 0.1, -0.2, -1.3, -1.6, -1, -0.9, 1, 1.1, 0.1] },
-  { key: "Frankreich", label: "Frankreich", flag: "🇫🇷", colorToken: "--color-energy-nuclear", windsolar: [2.1, 2.8, 2.2, 1.4, 1.7, 2.1, 1.8, 2.1, 2.6, 2.6, 2.4, 4.1, 5.1, 5.5, 6.5, 7.2], nuclear: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1.7, 0, 0, 0, 0, 0] },
-  { key: "Indien", label: "Indien", flag: "🇮🇳", colorToken: "--color-energy-lignite", windsolar: [2.3, 3.5, 1.5, 1.7, 6.2, 4.5, 7.9, 12.4, 11.7, 10, 5.5, 11.8, 15.4, 12.4, 28.8, 43.4], nuclear: [0.2, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0.7, 0.7, 0.6] },
-  { key: "Welt", label: "Welt", flag: "🌍", colorToken: "--color-text-muted", windsolar: [48.6, 70.5, 76.8, 69.6, 88.9, 114.7, 122.7, 141.3, 144.1, 162, 241.6, 235.8, 270.9, 479.1, 572.8, 669.8], nuclear: [1.7, 4.7, -7.5, -2, 7.9, 5.5, 8.8, -0.4, 6.5, -1.6, -6.2, 3.3, -1.4, -0.4, 8.2, -0.4] },
+  { key: "Deutschland", label: "Deutschland", flag: "🇩🇪", code: "DEU", colorToken: "--color-accent", windsolar: [8.6, 9.7, 10.4, 5.1, 6.3, 7.3, 6.3, 7.8, 6, 5.8, 6.2, 7.9, 3.6, 17.6, 19, 20.1], nuclear: [0, 0, -8.4, 0, 0, -1.3, 0, 0, 0, -1.3, -1.4, 0, -3.9, -4.2, 0, 0] },
+  { key: "China", label: "China", flag: "🇨🇳", code: "CHN", colorToken: "--color-negative", windsolar: [12.6, 18.8, 18.9, 26.2, 30.7, 49.4, 51.7, 68.9, 64.7, 54.6, 121.3, 100.1, 123, 292.8, 356.6, 434.4], nuclear: [1.7, 1.8, 0, 2.1, 5.4, 7.1, 6.5, 2.2, 8.8, 4.1, 1.1, 3.4, 2.3, 1.4, 3.9, 1.6] },
+  { key: "USA", label: "USA", flag: "🇺🇸", code: "USA", colorToken: "--color-energy-gas", windsolar: [6.1, 8.8, 16.4, 5.3, 8.9, 14.1, 20, 14.7, 15.4, 18.4, 29.8, 33.4, 26.7, 33.1, 42.8, 40.2], nuclear: [0.2, 0.3, 0.5, -2.7, -0.7, 0.1, 0.9, 0.1, -0.2, -1.3, -1.6, -1, -0.9, 1, 1.1, 0.1] },
+  { key: "Frankreich", label: "Frankreich", flag: "🇫🇷", code: "FRA", colorToken: "--color-energy-nuclear", windsolar: [2.1, 2.8, 2.2, 1.4, 1.7, 2.1, 1.8, 2.1, 2.6, 2.6, 2.4, 4.1, 5.1, 5.5, 6.5, 7.2], nuclear: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1.7, 0, 0, 0, 0, 0] },
+  { key: "Indien", label: "Indien", flag: "🇮🇳", code: "IND", colorToken: "--color-energy-lignite", windsolar: [2.3, 3.5, 1.5, 1.7, 6.2, 4.5, 7.9, 12.4, 11.7, 10, 5.5, 11.8, 15.4, 12.4, 28.8, 43.4], nuclear: [0.2, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0.7, 0.7, 0.6] },
+  { key: "Welt", label: "Welt", flag: "🌍", code: "WELT", colorToken: "--color-text-muted", windsolar: [48.6, 70.5, 76.8, 69.6, 88.9, 114.7, 122.7, 141.3, 144.1, 162, 241.6, 235.8, 270.9, 479.1, 572.8, 669.8], nuclear: [1.7, 4.7, -7.5, -2, 7.9, 5.5, 8.8, -0.4, 6.5, -1.6, -6.2, 3.3, -1.4, -0.4, 8.2, -0.4] },
 ];
 
 export { PERCAPITA_SERIES, YEARS_PERCAPITA } from "./country-comparison-percapita";

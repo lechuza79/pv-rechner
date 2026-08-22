@@ -16,6 +16,7 @@ import {
   IconChevronLeft,
   IconChevronRight,
 } from "../../../../components/Icons";
+import Switch from "../../../../components/Switch";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
 import { WIDGETS, WIDGET_MAX_WIDTH } from "../../../../lib/widget-registry";
 import { useChartExport } from "../../../../lib/useChartExport";
@@ -64,27 +65,29 @@ const DEUTSCHLAND = byLabel("Deutschland");
  */
 function seriesFor(view: View, mitDeutschland: boolean): LineSeries[] {
   const c = byLabel(view.id);
-  const eigene: LineSeries[] = [
-    {
-      key: "ee",
-      label: "Erneuerbare",
-      flag: mitDeutschland ? view.flag : undefined,
-      colorToken: "--color-energy-cat-renewable",
-      values: c.windsolar,
-    },
-    {
-      key: "atom",
-      label: "Atomkraft",
-      flag: mitDeutschland ? view.flag : undefined,
-      colorToken: "--color-energy-nuclear",
-      values: c.nuclear,
-    },
-  ];
+  const eigene: LineSeries[] = KENNZAHLEN.map((k) => ({
+    key: k.key,
+    label: k.label,
+    flag: mitDeutschland ? view.flag : undefined,
+    colorToken: k.colorToken,
+    values: k.werte(c),
+  }));
   if (!mitDeutschland) return eigene;
+  // Deutschland behält die FARBE DES ENERGIETRÄGERS — grün bleibt Erneuerbare,
+  // magenta bleibt Atomkraft. Nur so vergleicht man Gleiches mit Gleichem; eine
+  // eigene Landesfarbe machte aus dem Chart zwei Farbwelten, in denen man erst
+  // die Legende lesen muss, um zwei Erneuerbaren-Kurven als solche zu erkennen.
+  // Unterschieden wird über die Linie selbst: dünner und blasser.
   return [
     ...eigene,
-    { key: "de-ee", label: "Erneuerbare", flag: "🇩🇪", colorToken: "--color-accent", values: DEUTSCHLAND.windsolar },
-    { key: "de-atom", label: "Atomkraft", flag: "🇩🇪", colorToken: "--color-accent-light", values: DEUTSCHLAND.nuclear },
+    ...KENNZAHLEN.map((k) => ({
+      key: `de-${k.key}`,
+      label: k.label,
+      flag: "🇩🇪",
+      colorToken: k.colorToken,
+      values: k.werte(DEUTSCHLAND),
+      duenn: true,
+    })),
   ];
 }
 
@@ -109,13 +112,25 @@ const fmtGw = (n: number) =>
   `${n < 0 ? "−" : ""}${Math.abs(Math.round(n)).toLocaleString("de-DE")} GW`;
 
 /**
- * Wie sich Deutschland zum gewählten Land verhält — als Satzteil hinter dem
- * deutschen Wert.
+ * Wie weit Deutschland vom gewählten Land entfernt liegt, in Prozent.
  *
- * Ein Faktor wird NUR gebildet, wenn er etwas bedeutet: Bei verschiedenen
- * Vorzeichen (China baut Atomkraft zu, Deutschland hat abgebaut) beschreibt
- * kein „×" die Lage, und nahe null wird jeder Faktor beliebig groß. Dann steht
- * dort nur der Wert — lieber keine Einordnung als eine erfundene.
+ * Neutral gehalten — kein Grün, kein Rot: „weniger Zubau" ist keine schlechte
+ * Nachricht, die man einfärben dürfte, sondern eine Größenangabe. Wo die Basis
+ * nahe null liegt oder die Vorzeichen auseinandergehen (Zubau gegen Rückbau),
+ * ergibt ein Prozentwert keine Aussage; dann bleibt nur der Wert selbst.
+ */
+export function abweichung(land: number, de: number): string {
+  if (Math.abs(land) < 1 || Math.sign(land) !== Math.sign(de)) return "";
+  const pct = Math.round(((de - land) / Math.abs(land)) * 100);
+  return `${pct > 0 ? "+" : pct < 0 ? "−" : "±"}${Math.abs(pct)} %`;
+}
+
+/**
+ * Dasselbe als Größenverhältnis — „12× weniger" ist greifbarer als „−92 %".
+ *
+ * Ein Faktor entsteht NUR, wenn er etwas bedeutet: Bei verschiedenen Vorzeichen
+ * (China baut Atomkraft zu, Deutschland hat abgebaut) beschreibt kein „×" die
+ * Lage, und nahe null wird jeder Faktor beliebig groß.
  */
 export function vergleichZuDeutschland(land: number, de: number): string {
   const NAHE_NULL = 1; // GW — darunter ist ein Verhältnis Rauschen
@@ -215,9 +230,18 @@ export default function ZubauWidget() {
             {view.flag} {view.label}
             {zeigtDeutschland ? " · mit Deutschland" : ""}
           </ExportOnly>
+          {/* Links neben dem Wähler, nicht am rechten Rand: Beides gehört zur
+              Frage „was zeige ich", und getrennte Ecken lassen sie wie zwei
+              verschiedene Dinge aussehen. */}
           {kannVergleichen && (
-            <span data-sc-export-ignore="" style={{ display: "inline-flex", marginLeft: "auto" }}>
-              <DeutschlandSchalter an={mitDeutschland} onChange={setMitDeutschland} />
+            <span data-sc-export-ignore="" style={{ display: "inline-flex" }}>
+              <Switch
+                an={mitDeutschland}
+                onChange={setMitDeutschland}
+                label="Deutschland zum Vergleich einblenden"
+                text="Vergleich Deutschland"
+                size="sm"
+              />
             </span>
           )}
         </div>
@@ -241,6 +265,7 @@ export default function ZubauWidget() {
             const eigen = sum(k.werte(land));
             const de = sum(k.werte(DEUTSCHLAND));
             const verhaeltnis = zeigtDeutschland ? vergleichZuDeutschland(eigen, de) : "";
+            const abw = zeigtDeutschland ? abweichung(eigen, de) : "";
             return (
               <div
                 key={k.key}
@@ -252,25 +277,51 @@ export default function ZubauWidget() {
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
                   <span style={{ width: 6, height: 6, borderRadius: "50%", background: `var(${k.colorToken})`, flexShrink: 0 }} />
-                  {/* Fahne und Wort bleiben zusammen: Die Bildaufnahme rendert
-                      das Emoji breiter als die Messung, das Wort rutschte dadurch
-                      in eine zweite Zeile — und die lag auf der Zahl darunter
-                      („Atom" quer durch „−20 GW"). */}
                   <span style={{ fontSize: 11, color: "var(--widget-muted)", whiteSpace: "nowrap" }}>
-                    {zeigtDeutschland ? `${view.flag} ` : ""}
                     {k.label}
+                    {/* Das Land als Kürzel hinter der Sache, nicht als Fahne
+                        davor: Es beantwortet „von wem ist diese Zahl", sobald
+                        zwei Länder in der Karte stehen, und ändert dabei die
+                        Breite der Kachel kaum. */}
+                    {zeigtDeutschland && (
+                      <span style={{ marginLeft: 5, fontWeight: 700, letterSpacing: "0.03em" }}>
+                        {land.code}
+                      </span>
+                    )}
                   </span>
                 </div>
                 <div style={{ fontFamily: "var(--font-mono)", fontSize: 18, fontWeight: 800, lineHeight: 1, color: "var(--widget-fg)" }}>
                   {fmtGw(eigen)}
                 </div>
+                {/* Der Vergleich steht UNTER der Zahl, Zeile für Zeile: So wächst
+                    die Kachel beim Einschalten nur in der Höhe. Nebeneinander
+                    wären die Kacheln breiter geworden und hätten auf schmalen
+                    Karten die Reihe umbrechen lassen — beim Umschalten springt
+                    dann das halbe Widget. */}
                 {zeigtDeutschland && (
-                  <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginTop: 6, whiteSpace: "nowrap" }}>
-                    <span style={{ fontFamily: "var(--font-mono)", fontSize: 12.5, fontWeight: 700, color: "var(--color-accent)" }}>
-                      🇩🇪 {fmtGw(de)}
-                    </span>
+                  <div className="sc-nebenlinie" style={{ marginTop: 6, whiteSpace: "nowrap" }}>
+                    {/* Ohne Abweichung stehen keine leeren Klammern da: Wo der
+                        Prozentwert nichts aussagt (Zubau gegen Rückbau), bleibt
+                        nur der deutsche Wert — dann ohne Klammern, weil er
+                        nichts mehr ergänzt, sondern die Aussage selbst ist. */}
+                    <div style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700, color: "var(--widget-muted)" }}>
+                      {abw ? (
+                        <>
+                          {abw}{" "}
+                          <span style={{ fontWeight: 500 }}>
+                            ({DEUTSCHLAND.code} {fmtGw(de)})
+                          </span>
+                        </>
+                      ) : (
+                        <span style={{ fontWeight: 500 }}>
+                          {DEUTSCHLAND.code} {fmtGw(de)}
+                        </span>
+                      )}
+                    </div>
                     {verhaeltnis && (
-                      <span style={{ fontSize: 11, color: "var(--widget-muted)" }}>· {verhaeltnis}</span>
+                      <div style={{ fontSize: 11, color: "var(--widget-muted)", marginTop: 3 }}>
+                        {verhaeltnis}
+                      </div>
                     )}
                   </div>
                 )}
@@ -318,45 +369,6 @@ export default function ZubauWidget() {
 
 // Länder-Multitool: ‹ [Dropdown] › — einzeln durchsteppbar, wie der
 // Jahreswähler im Strommix-Widget.
-/**
- * „Deutschland dazu" — ein Schalter, kein eigener Eintrag im Länderwähler.
- *
- * Vorher gab es eine feste Ansicht „Deutschland ↔ China". Die beantwortete
- * genau eine Frage; jede andere (Deutschland gegen Indien, gegen die USA) war
- * nicht zu stellen, und im Wähler stand ein Eintrag, der etwas ganz anderes war
- * als seine sechs Nachbarn.
- */
-function DeutschlandSchalter({ an, onChange }: { an: boolean; onChange: (v: boolean) => void }) {
-  return (
-    <button
-      type="button"
-      onClick={() => onChange(!an)}
-      aria-pressed={an}
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 6,
-        height: 30,
-        padding: "0 10px",
-        fontSize: 12,
-        fontWeight: 600,
-        fontFamily: "inherit",
-        cursor: "pointer",
-        whiteSpace: "nowrap",
-        borderRadius: "var(--radius-sm)",
-        border: `1px solid ${an ? "var(--color-accent)" : "var(--color-border)"}`,
-        // Angeschaltet trägt der Knopf die Farbe, in der Deutschland im Chart
-        // gezeichnet wird — so ist ohne Legende klar, welche Linien dazugehören.
-        background: an ? "color-mix(in srgb,var(--widget-accent) 12%,transparent)" : "var(--widget-bg)",
-        color: an ? "var(--color-accent)" : "var(--widget-fg)",
-      }}
-    >
-      <span aria-hidden="true">🇩🇪</span>
-      <span>{an ? "eingeblendet" : "vergleichen"}</span>
-    </button>
-  );
-}
-
 function CountryMultitool({ idx, onChange }: { idx: number; onChange: (i: number) => void }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);

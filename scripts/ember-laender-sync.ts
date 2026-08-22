@@ -44,6 +44,9 @@ const ZUBAU_LAENDER = ["Germany", "China", "United States", "France", "India", "
 const ANTEIL_START = 2000;
 const ZUBAU_START = 2010;
 
+/** Länderkürzel aus der Quelle (ISO 3), für die Welt gibt es keins. */
+const codes = new Map<string, string>();
+
 type Zelle = {
   anteil?: number;
   intensitaet?: number;
@@ -63,6 +66,7 @@ function parseCsv(text: string): Map<string, Map<number, Zelle>> {
     return i;
   };
   const iArea = idx("Area");
+  const iCode = idx("ISO 3 code");
   const iYear = idx("Year");
   const iSource = idx("Electricity source");
   const iShare = idx("Share of generation (%)");
@@ -79,6 +83,7 @@ function parseCsv(text: string): Map<string, Map<number, Zelle>> {
     if (!gesucht.has(area)) continue;
     const jahr = Number(f[iYear]);
     if (!Number.isFinite(jahr)) continue;
+    if (f[iCode] && !codes.has(area)) codes.set(area, f[iCode]);
     const quelle = f[iSource];
     const land = out.get(area) ?? new Map<number, Zelle>();
     const zelle = land.get(jahr) ?? {};
@@ -286,6 +291,8 @@ export interface ZubauCountry {
   key: string;
   label: string;
   flag: string;
+  /** Länderkürzel (ISO 3) aus der Quelle; die Welt trägt „WELT". */
+  code: string;
   colorToken: string;
   windsolar: number[];
   nuclear: number[];
@@ -295,6 +302,7 @@ ${zubau
   .map(
     (z) =>
       `  { key: ${JSON.stringify(z.label)}, label: ${JSON.stringify(z.label)}, flag: "${z.flag}", ` +
+      `code: ${JSON.stringify(codes.get(z.ember) ?? "WELT")}, ` +
       `colorToken: "${z.colorToken}", windsolar: [${z.windsolar.join(", ")}], ` +
       `nuclear: [${z.nuclear.join(", ")}] },`,
   )

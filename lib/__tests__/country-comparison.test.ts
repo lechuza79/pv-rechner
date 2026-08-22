@@ -11,7 +11,7 @@ import {
   ZUBAU_BY_COUNTRY,
   COUNTRY_COMPARE_META,
 } from "../country-comparison";
-import { vergleichZuDeutschland } from "../../app/(embed)/embed/zubau-erneuerbare-atom/client";
+import { vergleichZuDeutschland, abweichung } from "../../app/(embed)/embed/zubau-erneuerbare-atom/client";
 
 // Die Länderreihen werden erzeugt (scripts/ember-laender-sync.ts), nicht
 // gepflegt. Geprüft wird deshalb, was ein Lauf kaputt machen kann: eine Reihe,
@@ -132,5 +132,34 @@ describe("Deutschland im Vergleich", () => {
 
   it("nennt Gleichstand als solchen", () => {
     expect(vergleichZuDeutschland(150, 148)).toBe("etwa gleich viel");
+  });
+
+  it("die Abweichung zeigt die Richtung, nicht eine Wertung", () => {
+    // Deutschland liegt 92 % unter China.
+    expect(abweichung(1825, 148)).toBe("−92 %");
+    // Und darüber, wenn es mehr ist.
+    expect(abweichung(53, 148)).toBe("+179 %");
+  });
+
+  it("die Abweichung schweigt, wo Prozent nichts aussagen", () => {
+    // Zubau gegen Rückbau: Ein Prozentwert würde hier eine Richtung behaupten,
+    // die es nicht gibt.
+    expect(abweichung(53, -20)).toBe("");
+    expect(abweichung(0.2, 148)).toBe("");
+  });
+
+  it("der Ein/Aus-Schalter ist der geteilte Baustein", () => {
+    // Er saß fest im Ergebnis-Abschnitt; als das Widget einen brauchte, wäre er
+    // dort ein zweites Mal entstanden — mit eigenen Maßen und eigener Bewegung.
+    const widget = readFileSync(
+      join(process.cwd(), "app/(embed)/embed/zubau-erneuerbare-atom/client.tsx"),
+      "utf8",
+    );
+    const abschnitt = readFileSync(join(process.cwd(), "components/ResultSection.tsx"), "utf8");
+    expect(widget).toMatch(/from "\.\.\/\.\.\/\.\.\/\.\.\/components\/Switch"/);
+    expect(abschnitt).toMatch(/from "\.\/Switch"/);
+    // Und keine zweite Bauanleitung daneben.
+    expect(abschnitt).not.toMatch(/role="switch"/);
+    expect(widget).not.toMatch(/role="switch"/);
   });
 });
