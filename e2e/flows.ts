@@ -96,6 +96,32 @@ export const NOCH_NICHT_BEDIENBAR: { name: string; pfad: string; grund: string }
 export const NOCH_OHNE_FLOWNAV: { name: string; pfad: string }[] = [];
 
 /**
+ * Schritte, in denen der Läufer NICHTS anzuklicken findet — angemeldet, mit
+ * Grund.
+ *
+ * Das ist die Bremse gegen den nächsten blinden Fleck. Bis zum 22.08.2026 nahm
+ * der Läufer einen solchen Schritt stillschweigend hin („Vorbelegung
+ * übernommen") und ging weiter. Genau da fiel der Großverbraucher-Schritt
+ * hinein: Seine Ein/Aus-Schalter trugen keine Kennzeichnung, der Läufer sah
+ * keine Auswahl, klickte nur Weiter — und hat die Wärmepumpe nie eingeschaltet.
+ * Der Lauf meldete trotzdem „jede Option jedes Schritts geprüft".
+ *
+ * Ein Schritt ohne Auswahl ist also entweder eine BEHAUPTUNG (hier steht
+ * wirklich nur ein vorbelegtes Eingabefeld) — dann gehört er hierher — oder
+ * eine fehlende Kennzeichnung. Beides sieht im Browser gleich aus, und nur die
+ * Anmeldung unterscheidet sie.
+ */
+export const SCHRITTE_OHNE_AUSWAHL: { flow: string; tiefe: number; grund: string }[] = [
+  {
+    flow: "Einspeisevergütungs-Rechner",
+    tiefe: 1,
+    grund:
+      "Monat und Jahr der Inbetriebnahme stehen als Auswahlfelder da, nicht als Knopfreihe — " +
+      "12 × 25 Kombinationen wären als Wege sinnlos, der Läufer belegt sie einmal gültig.",
+  },
+];
+
+/**
  * Zwei Betriebsarten (Vorgabe des Betreibers, 18.08.2026: möglichst alle
  * Kombinationen testen, bevor ein Nutzer sie trifft):
  *
@@ -172,6 +198,249 @@ export async function uebrigeFragenBeantworten(page: Page) {
     return [...ersteJeGruppe.values()];
   });
   for (const label of offene) await waehle(page, label);
+  await akkordeonFragenBeantworten(page);
+}
+
+// ─── Akkordeon-Fragen (components/AccordionField) ────────────────────────────
+//
+// Sie sind ein eigener Bedienweg, nicht bloß anders aussehende Auswahlkarten:
+// Nach der Wahl klappt die Frage zu einer Zeile ein, die Knöpfe verschwinden.
+// Der Läufer kann also nicht am Knopf ablesen, was gewählt ist — er muss die
+// Frage wieder AUFKLAPPEN. Genau daraus zieht er hier seinen schärfsten Nachweis
+// (`akkordeonWahlenPruefen`): Was ich gewählt habe, muss auch gespeichert sein.
+//
+// Warum das nötig war (22.08.2026): Diese Fragen trugen gar keine Kennzeichnung
+// und waren für den Läufer unsichtbar — Dachform, Ausrichtung, Neigung und alle
+// vier Gebäudefragen. Der Lauf meldete trotzdem „jede Option jedes Schritts
+// geprüft". Durchgekommen ist damit ein Fehler, bei dem ein Klick auf
+// „Flachdach" die Dachform wieder auf „Satteldach" zurückfallen ließ: sichtbar
+// im Browser, unsichtbar für jede Prüfung, die wir hatten.
+
+/** Namen der gerade sichtbaren Akkordeon-Fragen — aufgeklappt wie eingeklappt. */
+export async function akkordeonFragen(page: Page): Promise<string[]> {
+  return page.evaluate(() => {
+    const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null;
+    const namen: string[] = [];
+    for (const e of Array.from(document.querySelectorAll("[data-flow-akkordeon-offen], [data-flow-akkordeon]"))) {
+      if (!sichtbar(e)) continue;
+      const name = e.getAttribute("data-flow-akkordeon-offen") ?? e.getAttribute("data-flow-akkordeon");
+      if (name && !namen.includes(name)) namen.push(name);
+    }
+    return namen;
+  });
+}
+
+/** Zustand einer Frage: wie viele Wahlmöglichkeiten, welche ist markiert, wie
+ *  heißen sie. Alles in EINEM Durchgriff, damit sich zwischen zwei Abfragen
+ *  nichts ändern kann. */
+async function akkordeonZustand(page: Page, frage: string) {
+  return page.evaluate((f) => {
+    const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null;
+    const block = Array.from(document.querySelectorAll("[data-flow-akkordeon-offen]"))
+      .filter(sichtbar)
+      .find((e) => e.getAttribute("data-flow-akkordeon-offen") === f);
+    if (!block) {
+      const zeile = Array.from(document.querySelectorAll("[data-flow-akkordeon]"))
+        .filter(sichtbar)
+        .find((e) => e.getAttribute("data-flow-akkordeon") === f);
+      return { offen: false, da: !!zeile, wahlen: [] as string[], gewaehlt: -1 };
+    }
+    const knoepfe = Array.from(block.querySelectorAll("[data-flow-wahl]")).filter(sichtbar);
+    return {
+      offen: true,
+      da: true,
+      wahlen: knoepfe.map((k) => (k as HTMLElement).innerText.trim()),
+      gewaehlt: knoepfe.findIndex((k) => k.getAttribute("aria-pressed") === "true"),
+    };
+  }, frage);
+}
+
+/** Frage aufklappen (falls eingeklappt) und warten, bis ihre Knöpfe dastehen. */
+export async function akkordeonOeffnen(page: Page, frage: string): Promise<boolean> {
+  if ((await akkordeonZustand(page, frage)).offen) return true;
+  const zeile = page.locator(`[data-flow-akkordeon="${frage.replace(/"/g, '\\"')}"]:visible`).first();
+  if ((await zeile.count()) === 0) return false;
+  try {
+    await expect(async () => {
+      await zeile.click({ timeout: 3_000 });
+      expect((await akkordeonZustand(page, frage)).offen).toBe(true);
+    }).toPass({ timeout: 10_000 });
+  } catch {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Eine Wahl innerhalb einer Akkordeon-Frage anklicken — und nachweisen, dass sie
+ * gesetzt ist.
+ *
+ * Der Nachweis kann NICHT am Knopf hängen: Die meisten dieser Fragen klappen
+ * nach der Wahl zu, der Knopf ist dann gar nicht mehr da. Es genügt aber auch
+ * NICHT, „zugeklappt" als Erfolg zu werten — genau daran ist die erste Fassung
+ * gescheitert: Eine Frage, die noch gar nicht AUFgeklappt war, ist ebenfalls
+ * „nicht offen", und der Helfer meldete Erfolg, ohne je geklickt zu haben. Die
+ * Ausrichtung blieb so ungesetzt, und der Test, der den fehlenden Dachabschlag
+ * nachweisen sollte, prüfte in Wahrheit gar nichts (gefunden im Lauf mit
+ * Datenbank am 22.08.2026, während er in der Worktree grün war).
+ *
+ * Deshalb: aufklappen, klicken, und beim Zuklappen wieder aufklappen und
+ * nachsehen. Ein Helfer, der stillschweigend „erledigt" sagt, ist derselbe
+ * Fehler wie die Prüfung, die er belegen soll.
+ *
+ * `pruefeWert: false` nur für den Sweep — der prüft den Wert selbst und
+ * formuliert daraus seinen Befund („die Antwort hält nicht") statt einer
+ * Ausnahme.
+ */
+export async function akkordeonWaehlen(page: Page, frage: string, index: number, pruefeWert = true) {
+  const knopf = page
+    .locator(`[data-flow-frage="${frage.replace(/"/g, '\\"')}"][data-flow-wahl="${index}"]:visible`)
+    .first();
+  try {
+    await expect(async () => {
+      // Aufgeklappt sein ist Voraussetzung: Ein Klick auf einen Knopf, den es
+      // gerade nicht gibt, wäre sonst 20 s Warten ohne Aussage.
+      if (!(await akkordeonZustand(page, frage)).offen) await akkordeonOeffnen(page, frage);
+      expect((await akkordeonZustand(page, frage)).offen, `Frage „${frage}" ließ sich nicht aufklappen`).toBe(true);
+      await knopf.click({ timeout: 3_000 });
+      const z = await akkordeonZustand(page, frage);
+      if (z.offen) {
+        expect(z.gewaehlt).toBe(index);
+        return;
+      }
+      if (!pruefeWert) return;
+      // Zugeklappt: Der Wert steht nur beim Wiederaufklappen fest.
+      await akkordeonOeffnen(page, frage);
+      expect((await akkordeonZustand(page, frage)).gewaehlt).toBe(index);
+      // Und wieder zuklappen — sonst bleibt die Frage offen, die nächste
+      // erscheint gar nicht, und der Flow steht anders da als nach einer
+      // normalen Bedienung. Derselbe Klick, derselbe Wert.
+      await knopf.click({ timeout: 3_000 });
+    }).toPass({ timeout: 20_000 });
+  } catch {
+    // Die nackte Meldung von toPass sagt nur „Timeout while waiting on the
+    // predicate". Bei einem Läufer über hunderte Wege ist das nicht auswertbar —
+    // sie muss sagen, WELCHE Frage in WELCHEM Zustand klemmt.
+    const z = await akkordeonZustand(page, frage);
+    const alle = await akkordeonFragen(page);
+    // Der häufigste Fall ist kein hängender Knopf, sondern eine Frage, die es
+    // nicht mehr gibt: Eine Antwort hat den Zustand mitgerissen, an dem die
+    // Frage hängt (Wärmepumpe wieder aus → die vier Gebäudefragen weg). Das
+    // gehört so gemeldet, sonst sucht jemand den Fehler im Testwerkzeug.
+    if (!z.da) {
+      throw new Error(
+        `Frage „${frage}" ist verschwunden, während sie beantwortet wurde — eine ` +
+          `Antwort hat den Zustand mitgenommen, an dem die Frage hängt. ` +
+          `Sichtbar sind jetzt: ${alle.join(", ") || "keine Frage mehr"}.`,
+      );
+    }
+    throw new Error(
+      `Frage „${frage}": Wahl Nr. ${index} ließ sich nicht setzen. ` +
+        `Zustand: ${JSON.stringify(z)}. Sichtbare Fragen: ${alle.join(", ") || "keine"}.`,
+    );
+  }
+}
+
+/**
+ * Offene Akkordeon-Fragen mit ihrer ersten Wahl beantworten — die schnelle
+ * Variante fürs Nachstellen eines Weges. Wiederholt, weil eine beantwortete
+ * Frage die nächste aufklappt (progressive Disclosure).
+ */
+export async function akkordeonFragenBeantworten(page: Page) {
+  for (let runde = 0; runde < 10; runde++) {
+    const offeneOhneAntwort = await page.evaluate(() => {
+      const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null;
+      for (const block of Array.from(document.querySelectorAll("[data-flow-akkordeon-offen]")).filter(sichtbar)) {
+        const knoepfe = Array.from(block.querySelectorAll("[data-flow-wahl]")).filter(sichtbar);
+        if (knoepfe.length === 0) continue; // Frage ohne Knopfreihe (reines Eingabefeld)
+        if (knoepfe.some((k) => k.getAttribute("aria-pressed") === "true")) continue;
+        return block.getAttribute("data-flow-akkordeon-offen");
+      }
+      return null;
+    });
+    if (!offeneOhneAntwort) return;
+    await akkordeonWaehlen(page, offeneOhneAntwort, 0);
+  }
+}
+
+/**
+ * Jede Wahl jeder Akkordeon-Frage einmal anklicken — und nach jedem Klick
+ * nachsehen, ob sie STEHEN GEBLIEBEN ist.
+ *
+ * Das Aufklappen-und-Nachsehen ist der ganze Punkt und bewusst nicht über den
+ * Text der eingeklappten Zeile gelöst: Deren Wortlaut ist nicht immer der der
+ * Knopfbeschriftung (das Heizsystem trägt im Knopf ein Kürzel, in der Zeile den
+ * ganzen Namen). Ein Textvergleich wäre dort falsch-rot, der Vergleich der
+ * Markierung ist es nie.
+ *
+ * Linear, nicht multiplikativ: jede Wahl einmal, nicht jede Kombination — wie
+ * beim Läufer selbst. Was die Werte inhaltlich ergeben, prüfen die Rechen-Tests.
+ */
+export async function akkordeonWahlenPruefen(page: Page): Promise<string[]> {
+  const fehler: string[] = [];
+  const erledigt = new Set<string>();
+  for (let runde = 0; runde < 12; runde++) {
+    const frage = (await akkordeonFragen(page)).find((f) => !erledigt.has(f));
+    if (!frage) break;
+    erledigt.add(frage);
+    if (!(await akkordeonOeffnen(page, frage))) continue;
+    // Was hier schiefgeht, ist ein BEFUND über die Seite, kein Absturz des
+    // Läufers: gemeldet und weitergegangen. Ein abgebrochener Lauf fällt kein
+    // Urteil über die übrigen Fragen — und „abgebrochen" liest sich als „egal".
+    try {
+      await akkordeonFragePruefen(page, frage, fehler);
+    } catch (e) {
+      fehler.push((e as Error).message);
+    }
+  }
+  return fehler;
+}
+
+async function akkordeonFragePruefen(page: Page, frage: string, fehler: string[]) {
+    const anfang = await akkordeonZustand(page, frage);
+    // Eine Frage ohne Knopfreihe (nur ein Eingabefeld, etwa die Laufleistung des
+    // E-Autos) hat hier nichts zu prüfen — und darf vor allem nicht „mit ihrer
+    // ersten Wahl" zurückgelassen werden: Es gibt keine. Genau daran hing der
+    // erste Lauf 20 Sekunden an einem Knopf, den es nicht gibt.
+    if (anfang.wahlen.length === 0) return;
+    for (let i = 0; i < anfang.wahlen.length; i++) {
+      if (!(await akkordeonOeffnen(page, frage))) break;
+      const vorher = await akkordeonZustand(page, frage);
+      // Die Auswahl kann sich unterwegs verkürzen — auf einem aufgeständerten
+      // Dach fällt „Nord" weg. Das ist gewollt und kein Befund.
+      if (i >= vorher.wahlen.length) break;
+      await akkordeonWaehlen(page, frage, i, false);
+
+      // Nicht sofort nachsehen, sondern nachsehen BIS es steht — bewusst
+      // wiederholend. Manche dieser Flows halten ihren Zustand in der Adresse,
+      // und `router.replace` wirkt erst im nächsten Render; gemessen am
+      // Dev-Server dauert das mehrere hundert Millisekunden. Ein Blick direkt
+      // nach dem Klick misst gegen den Router und macht den Läufer zufällig rot
+      // — genau das tat die erste Fassung, mit einer Meldung, die nach einem
+      // echten Fehler aussah. Wo die Antwort WIRKLICH nicht hält, wird sie auch
+      // in sechs Sekunden nicht richtig.
+      let nachher = await akkordeonZustand(page, frage);
+      const haelt = await expect(async () => {
+        await akkordeonOeffnen(page, frage);
+        nachher = await akkordeonZustand(page, frage);
+        expect(nachher.gewaehlt).toBe(i);
+      })
+        .toPass({ timeout: 6_000 })
+        .then(() => true)
+        .catch(() => false);
+      if (!haelt) {
+        fehler.push(
+          `Frage „${frage}": „${vorher.wahlen[i]}" gewählt, gespeichert ist ` +
+            `${nachher.gewaehlt >= 0 ? `„${nachher.wahlen[nachher.gewaehlt]}"` : "nichts"} — ` +
+            `die Antwort hält nicht`,
+        );
+        break; // Eine Meldung je Frage genügt; alles Weitere ist dieselbe Ursache.
+      }
+    }
+    // Die Frage wieder einklappen und beantwortet zurücklassen, damit der Flow
+    // hinterher im selben Zustand ist wie ohne diese Prüfung.
+    const ende = await akkordeonZustand(page, frage);
+    if (ende.offen && ende.wahlen.length > 0) await akkordeonWaehlen(page, frage, 0);
 }
 
 /**

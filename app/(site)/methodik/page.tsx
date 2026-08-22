@@ -6,7 +6,7 @@ import KontaktTeaser from "../../../components/KontaktTeaser";
 import { v } from "../../../lib/theme";
 import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
-import { SCENARIOS } from "../../../lib/constants";
+import { SCENARIOS, NATIONAL_AVG_YIELD } from "../../../lib/constants";
 import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
 import { CO2_PRICE, co2PriceForCalendarYear } from "../../../lib/co2-config";
 import { DEFAULT_AIRCON_CONFIG } from "../../../lib/aircon-config";
@@ -353,8 +353,11 @@ export default async function MethodikPage() {
           <br />
           <br />
           <span style={S.muted}>
-            Ohne PLZ-Eingabe rechnen wir mit 950 kWh/kWp (konservativer
-            Durchschnitt). Der Wert ist im Ergebnis jederzeit manuell anpassbar.
+            Ohne PLZ-Eingabe rechnen wir mit {NATIONAL_AVG_YIELD.toLocaleString("de-DE")} kWh/kWp
+            — dem Bundesmittel bei optimaler Ausrichtung. Der Abschlag für dein
+            Dach kommt in beiden Fällen aus deiner Angabe zu Form und
+            Ausrichtung, nicht aus diesem Wert. Er ist im Ergebnis jederzeit
+            manuell anpassbar.
           </span>
         </div>
 

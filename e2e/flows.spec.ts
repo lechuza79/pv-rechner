@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { FLOWS, NOCH_OHNE_FLOWNAV, NOCH_NICHT_BEDIENBAR, MAX_WEGE_JE_FLOW, ALLE_KOMBINATIONEN, uebrigeFragenBeantworten, waehle, weiterKlicken } from "./flows";
+import { FLOWS, NOCH_OHNE_FLOWNAV, NOCH_NICHT_BEDIENBAR, SCHRITTE_OHNE_AUSWAHL, MAX_WEGE_JE_FLOW, ALLE_KOMBINATIONEN, uebrigeFragenBeantworten, akkordeonWahlenPruefen, akkordeonFragen, waehle, weiterKlicken } from "./flows";
 
 /**
  * Der Flow-Läufer: klickt jede OPTION jedes Schritts und jeden ZWEIG durch
@@ -54,6 +54,10 @@ interface LaufErgebnis {
   /** Schritte (Signatur aus Tiefe + Optionsliste), deren Optionen schon alle
    *  durchgespielt wurden — bei erneutem Erreichen genügt die erste Option. */
   erschoepfteSchritte: Set<string>;
+  /** Schritte, deren Akkordeon-Fragen schon durchgeklickt wurden. Einmal je
+   *  Schritt genügt: „hält die Antwort" hängt am Bauteil, nicht am Weg dorthin
+   *  — und je Weg zu prüfen würde den Lauf vervielfachen. */
+  akkordeonsGeprueft: Set<string>;
 }
 
 /**
@@ -181,6 +185,42 @@ async function gehe(
   }
 
   if (wahlen.length === 0) {
+    // Ein Schritt kann seine ganze Auswahl in Akkordeon-Fragen tragen — der
+    // Dach-Schritt des PV-Rechners besteht aus nichts anderem. Er ist damit
+    // KEIN Schritt ohne Auswahl, und er wird hier auch geprüft: Ohne diesen
+    // Zweig lief die Akkordeon-Prüfung nur dort, wo daneben eine Auswahlkarte
+    // stand — der Dach-Schritt wäre also weiter ungeprüft geblieben, obwohl
+    // seine Fragen inzwischen gekennzeichnet sind. Gefunden von der Meldung
+    // unten, die ihn zuerst als „ohne Auswahl" anzeigte.
+    const akkordeons = await akkordeonFragen(page);
+    if (akkordeons.length > 0) {
+      const akkSignatur = `${pfad.length}:${akkordeons.join("¦")}`;
+      if (!erg.akkordeonsGeprueft.has(akkSignatur)) {
+        erg.akkordeonsGeprueft.add(akkSignatur);
+        for (const f of await akkordeonWahlenPruefen(page)) {
+          erg.fehler.push(`[${pfad.join(" → ") || "Start"}] ${f}`);
+        }
+      }
+      await uebrigeFragenBeantworten(page);
+      await weiterKlicken(page);
+      await gehe(page, flowName, flowPfad, startKnopf, ergebnisEnthaelt, [...pfad, VORBELEGT], erg);
+      return;
+    }
+
+    // Ein Schritt, in dem der Läufer nichts anzuklicken findet, ist ab jetzt
+    // erklärungspflichtig — siehe SCHRITTE_OHNE_AUSWAHL. Ohne diese Anmeldung
+    // ist „hier gibt es nur ein vorbelegtes Feld" von „hier fehlt die
+    // Kennzeichnung" nicht zu unterscheiden, und die zweite Lesart hat den
+    // Großverbraucher-Schritt monatelang aus der Prüfung gehalten.
+    const angemeldet = SCHRITTE_OHNE_AUSWAHL.some(s => s.flow === flowName && s.tiefe === pfad.length);
+    if (!angemeldet) {
+      erg.fehler.push(
+        `[${pfad.join(" → ") || "Start"}] Schritt ohne anklickbare Auswahl. Entweder fehlt den ` +
+          `Bedienelementen die Kennzeichnung (data-flow-option / data-flow-wahl) — dann prüft hier ` +
+          `niemand etwas —, oder der Schritt hat wirklich keine und gehört mit Grund in ` +
+          `SCHRITTE_OHNE_AUSWAHL (e2e/flows.ts).`,
+      );
+    }
     // Schritte ohne Auswahlkarten gibt es wirklich — etwa eine Datums- oder
     // Größenangabe mit sinnvoller Vorbelegung. Sie sind gültig, solange der
     // Weiter-Knopf offen ist: Genau so geht ein Besucher hindurch, der die
@@ -265,6 +305,30 @@ async function gehe(
     }
 
     await waehle(page, wahl);
+
+    // Akkordeon-Fragen dieses Schritts: jede Wahl einmal, mit dem Nachweis,
+    // dass sie stehen bleibt. VOR dem Beantworten der übrigen Fragen, weil die
+    // Prüfung selbst durchklickt und dabei alles beantwortet zurücklässt.
+    //
+    // Der Merker hängt an den SICHTBAREN FRAGEN, nicht am Schritt und nicht am
+    // Weg — BLOCKER. Erst die gewählte Option entscheidet, welche Fragen der
+    // Schritt zeigt: Die vier Gebäudefragen erscheinen nur hinter „Wärmepumpe:
+    // Ja". Ein Merker auf den Schritt hakt ihn bei der ERSTEN Option ab
+    // („Wärmepumpe: Nein", wo es nichts zu sehen gibt) und hätte den ganzen
+    // Zweig nie geprüft — wieder ein grüner Lauf über eine Fläche, die niemand
+    // angesehen hat. Ein Merker auf die Option wäre das andere Extrem: Er
+    // wiederholt dieselbe Prüfung für jede der neun Optionen des Schritts und
+    // trieb den Lauf über die Zeitgrenze — ein abgebrochener Lauf fällt gar
+    // kein Urteil. Die Frageliste trifft genau das Neue: einmal je Zusammen-
+    // stellung, egal auf welchem Weg man sie erreicht.
+    const sichtbareFragen = await akkordeonFragen(page);
+    const akkSignatur = `${pfad.length}:${sichtbareFragen.join("¦")}`;
+    if (sichtbareFragen.length > 0 && !erg.akkordeonsGeprueft.has(akkSignatur)) {
+      erg.akkordeonsGeprueft.add(akkSignatur);
+      for (const f of await akkordeonWahlenPruefen(page)) {
+        erg.fehler.push(`[${[...pfad, wahl].join(" → ")}] ${f}`);
+      }
+    }
     await uebrigeFragenBeantworten(page);
 
     // Dieselbe Toleranz wie oben: Die Freigabe darf einen React-Commit nach
@@ -338,6 +402,7 @@ for (const flow of FLOWS) {
       fehler: [],
       bilder: new Set(),
       erschoepfteSchritte: new Set(),
+      akkordeonsGeprueft: new Set(),
     };
     await bildAblegen(page, flow.name, "01-start", erg);
     await gehe(page, flow.name, flow.pfad, flow.startKnopf, flow.ergebnisEnthaelt, [], erg);

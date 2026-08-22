@@ -1,8 +1,8 @@
 "use client";
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useRouter, useSearchParams, type ReadonlyURLSearchParams } from "next/navigation";
 import Link from "next/link";
-import { PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, SPEICHER, INSULATION_BESTAND, SCENARIOS, type Heizsystem } from "../../../lib/constants";
+import { PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, SPEICHER, INSULATION_BESTAND, NATIONAL_AVG_YIELD, SCENARIOS, type Heizsystem } from "../../../lib/constants";
 import { recommend, economicsForScenario } from "../../../lib/recommend";
 import ScenarioTabs from "../../../components/ScenarioTabs";
 import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING, wpGebaeudeUebersprungenFolge } from "../../../lib/heatpump";
@@ -211,9 +211,24 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
   // here; the URL syncs once the input is a full PLZ.
   const [plzInput, setPlzInput] = useState(plz);
 
+  // Der zuletzt GESCHRIEBENE Stand der Adresse — nicht der zuletzt gelesene.
+  //
+  // `router.replace` wirkt erst im nächsten Render; bis dahin liefert
+  // `searchParams` weiter den alten Stand. Zwei Schreibvorgänge in EINEM Klick
+  // bauten deshalb beide auf demselben alten Stand auf, und der zweite machte
+  // den ersten rückgängig: Ein Klick auf „Flachdach" setzt die Dachform UND
+  // nimmt die Neigung zurück — die Dachform verschwand dabei aus der Adresse
+  // und fiel still auf den Vorgabewert Satteldach zurück (gemessen am
+  // 22.08.2026: nach dem Klick stand wieder „Satteldach" in der Zeile und die
+  // Dachfläche rechnete mit dem Satteldach-Faktor). Dieselbe Fehlerklasse hatte
+  // fetchPvgis unten schon einmal von Hand umgangen, indem es die PLZ eigens
+  // mitgab; über diesen Stand braucht es das nicht mehr.
+  const geschriebeneParams = useRef(searchParams.toString());
+  useEffect(() => { geschriebeneParams.current = searchParams.toString(); }, [searchParams]);
+
   // Patch the URL — drops keys whose value equals the default (keeps URLs short).
   const updateUrl = useCallback((updates: Record<string, string | number | null>) => {
-    const next = new URLSearchParams(searchParams.toString());
+    const next = new URLSearchParams(geschriebeneParams.current);
     for (const [key, value] of Object.entries(updates)) {
       if (value === null || value === "" || value === undefined) {
         next.delete(key);
@@ -221,8 +236,9 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
         next.set(key, String(value));
       }
     }
+    geschriebeneParams.current = next.toString();
     router.replace(`/pv-bedarf-berechnen?${next.toString()}`, { scroll: false });
-  }, [searchParams, router]);
+  }, [router]);
 
   // Setters — each writes back to the URL with speaking slugs
   // Defaults werden weggelassen → kurze URLs
@@ -292,9 +308,10 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
       const data = await res.json();
       if (data.monthly && data.monthly.length === 12) setMonthlyProfile(data.monthly);
       if (data.annual && data.annual >= 700 && data.annual <= 1400) {
-        // Write PLZ + Ertrag together: this runs after an async await, so the
-        // updateUrl closure here predates setPlz and would otherwise drop the
-        // freshly-set PLZ from the URL. Passing inputPlz keeps both in sync.
+        // PLZ und Ertrag zusammen schreiben: Der Abruf startet auch aus dem
+        // Aufbau heraus (geteilte Adresse mit PLZ, aber ohne Ertrag), wo es
+        // vorher gar kein setPlz gab. Die PLZ hier mitzugeben ist deshalb keine
+        // Umgehung mehr, sondern die vollständige Angabe.
         updateUrl({ plz: inputPlz, ertrag: data.annual });
         setPlzSource(data.source);
       }
@@ -352,13 +369,23 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
   // Der Ertrag, mit dem gerechnet wird: Standort-Optimum × Dach. Ohne diesen
   // Schritt bekäme ein Ost/West-Dach die Empfehlung eines Süddachs — und damit
   // eine zu große Anlage bei zu kurzer Amortisation.
-  const effErtragKwp = ertragKwp !== null ? dachErtragKwp(ertragKwp, dachart, ausrichtung, neigungGrad) : null;
+  // OHNE PLZ gilt derselbe Rechenweg, nur mit dem Bundesmittel als Standortwert
+  // — BLOCKER. Vorher wurde in diesem Fall gar kein Ertrag durchgereicht, und
+  // die Empfehlung fiel auf den nackten Bundesschnitt zurück: also auf ein
+  // perfekt nach Süden geneigtes Dach, egal was jemand angegeben hatte. Wirkung
+  // gemessen am 22.08.2026 (Ost/West-Satteldach, sonst gleiche Eingaben):
+  // 12 Jahre und 10.916 € statt 14 Jahre und 6.449 €, und die empfohlene Anlage
+  // war 8 statt 6,5 kWp. Für den Nutzer sah es dabei aus, als mache die PLZ das
+  // Ergebnis SCHLECHTER — in Wahrheit hörte es erst dort auf zu schmeicheln.
+  // Der PV-Rechner nebenan macht es seit jeher so (`effErtrag` dort); die beiden
+  // Seiten zeigten damit für dieselben Eingaben verschiedene Zahlen.
+  const effErtragKwp = dachErtragKwp(ertragKwp ?? NATIONAL_AVG_YIELD, dachart, ausrichtung, neigungGrad);
 
   // Empfehlung berechnen (mit PLZ-spezifischem Ertrag und ggf. eigener Dachfläche)
   const recInput = {
     personen, nutzung, wp, ea, eaKm, klima,
     haustyp, dachart, budgetLimit: null,
-    ertragKwp: effErtragKwp ?? undefined,
+    ertragKwp: effErtragKwp,
     monthlyYieldPerKwp: monthlyProfile,
     customRoofM2: customRoofM2 ?? undefined,
     wpWohnflaeche, wpInsulation, wpHeizsystem, wpHaustyp,
@@ -499,7 +526,7 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                     nimmZurueck={nimmDachZurueck}
                     bearbeitet={gvEditing}
                     setBearbeitet={setGvEditing}
-                    hinweis={effErtragKwp !== null ? dachErtragHinweis(effErtragKwp, dachart, ausrichtung, true, neigungGrad) : undefined}
+                    hinweis={dachErtragHinweis(effErtragKwp, dachart, ausrichtung, ertragKwp !== null, neigungGrad)}
                   />
                 </div>
 
@@ -687,7 +714,7 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                 </div>
               )}
               <div style={{ fontSize: 13, color: v('--color-text-secondary'), marginTop: 8, paddingTop: 8, borderTop: `1px solid ${v('--color-border-accent')}` }}>
-                Rendite nach 25 Jahren: <span style={{ fontWeight: 700, color: (selRec?.eco.npv25 ?? 0) >= 0 ? v('--color-positive') : v('--color-negative'), fontFamily: v('--font-mono') }}>
+                Gewinn nach 25 Jahren: <span style={{ fontWeight: 700, color: (selRec?.eco.npv25 ?? 0) >= 0 ? v('--color-positive') : v('--color-negative'), fontFamily: v('--font-mono') }}>
                   {(selRec?.eco.npv25 ?? 0) >= 0 ? "+" : ""}{Math.round(selRec?.eco.npv25 ?? 0).toLocaleString("de-DE")} €
                 </span>
               </div>
@@ -711,7 +738,7 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                   <div style={{ fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.5 }}>
                     {ertragKwp
                       ? `PLZ ${plz}: ${ertragKwp} kWh/kWp/Jahr${plzSource ? ` · ${plzSource}` : ""}`
-                      : "PLZ angeben — wir holen den echten Sonnenertrag deines Standorts. Sonst rechnen wir mit dem Bundesmittel (950 kWh/kWp)."}
+                      : `PLZ angeben — wir holen den echten Sonnenertrag deines Standorts. Sonst rechnen wir mit dem Bundesmittel (${NATIONAL_AVG_YIELD.toLocaleString("de-DE")} kWh/kWp).`}
                   </div>
                 </div>
                 <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
