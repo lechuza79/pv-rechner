@@ -13,7 +13,7 @@ import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
 // 28 Jahresbalken zu gedrängt.
 const S: Record<string, React.CSSProperties> = {
   textCol: { maxWidth: v("--content-max-width"), margin: "0 auto" },
-  wide: { maxWidth: 880, margin: "0 auto" },
+  wide: { maxWidth: v("--chart-max-width"), margin: "0 auto" },
   label: {
     fontSize: v("--font-size-caption"),
     fontWeight: 700,

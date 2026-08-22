@@ -94,6 +94,55 @@ export function selectionToVars(sel: WidgetThemeSelection): Record<string, strin
   };
 }
 
+/**
+ * Which site token feeds which widget token. EINE Quelle für die beiden
+ * Stellen, an denen ein Widget die Farben der Seite tragen soll:
+ *  - der First-Party-Embed (die Seite reicht ihre aktuelle Tagesstufe ans
+ *    iframe — siehe components/AutoHeightIframe.tsx), und
+ *  - der Bild-Export, der davon wieder auf die hellste Stufe zurückstellt
+ *    (lib/chart-export.ts).
+ *
+ * Ohne diese Zuordnung stand das eingebettete Widget auf seinen eigenen
+ * Voreinstellungen (weiß) mitten auf einer Seite, die der Sonne folgt — abends
+ * eine weiße Kachel auf dunklem Grund.
+ *
+ * Die SCHRIFTEN gehören dazu: Das Embed-Layout hält dieselben Schriften bereit
+ * wie die Site, benutzt aber von sich aus die neutrale System-Schrift (fremde
+ * Einbettungen sollen sich in deren Design einfügen). Nur wer sie hier
+ * durchreicht, bekommt sie — sonst stünde ein eingebettetes Chart in einer
+ * anderen Schrift als der Text daneben, und die großen Kennzahlen in anderen
+ * Ziffern als die der Seite.
+ */
+export const WIDGET_VAR_QUELLE: Record<string, string> = {
+  "--widget-bg": "--color-bg",
+  "--widget-fg": "--color-text-primary",
+  "--widget-muted": "--color-text-secondary",
+  "--widget-accent": "--color-accent",
+  "--widget-accent-fg": "--color-text-on-accent",
+  "--widget-highlight": "--color-highlight",
+  "--widget-border-radius": "--radius-md",
+  "--widget-font-family": "--font-text",
+  "--widget-font-mono": "--font-mono",
+};
+
+/**
+ * Widget-Tokens aus den Site-Tokens ableiten. `lies` liefert den Wert eines
+ * Site-Tokens — zur Laufzeit `getComputedStyle(...).getPropertyValue`, im
+ * Export die Token-Tabelle der hellsten Stufe.
+ *
+ * `--widget-ink` (Gitterlinien, Ränder) folgt dem Kontrast des Hintergrunds,
+ * nicht der Textfarbe: eine dunkle Stufe dreht Linien damit von selbst auf hell.
+ */
+export function widgetVarsAusTokens(lies: (token: string) => string): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const widgetVar in WIDGET_VAR_QUELLE) {
+    const wert = lies(WIDGET_VAR_QUELLE[widgetVar]).trim();
+    if (wert) out[widgetVar] = wert;
+  }
+  if (out["--widget-bg"]) out["--widget-ink"] = contrastColor(out["--widget-bg"]);
+  return out;
+}
+
 /** Build a query string (no leading "?") from a selection, omitting any value
  * equal to the default so the standard look yields a param-free URL. */
 export function buildWidgetThemeQuery(sel: WidgetThemeSelection): string {

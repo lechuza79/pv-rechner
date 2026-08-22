@@ -63,6 +63,29 @@ describe("Der Fingerabdruck ignoriert, was nur rauscht", () => {
     expect(fingerprintOf(mitMail("i rder a t w e z g e"))).toBe(fingerprintOf(mitMail("l m e a t e u .")));
   });
 
+  // Gemessen am 22.08.2026 an acht Amtsseiten: sieben lieferten bei zwei Abrufen
+  // im Abstand von Sekunden einen anderen Abdruck. Ursache war NICHT der
+  // Buchstabensalat oben, sondern die zweite Bauform desselben Spamschutzes:
+  // TYPO3 kodiert die Kontaktadresse als Zeichenverweise und würfelt je Zeichen
+  // aus, ob dezimal (`&#105;`) oder hexadezimal (`&#x0069;`). Die dezimale Form
+  // fiel längst weg, die hexadezimale hinterließ das Token `x0069` — fünf
+  // Zeichen lang und damit ÜBER der Schwelle, die den Salat aussortiert.
+  it("dezimal und hexadezimal verschlüsselte E-Mail-Adressen ergeben denselben Abdruck", () => {
+    // Beides ist `info@` — dieselbe Adresse, zwei Schreibweisen desselben Aufrufs.
+    const dezimal = mitMail("&#105;&#110;&#102;&#111;&#64;");
+    const hexadezimal = mitMail("&#x0069;&#x006e;&#x0066;&#x006f;&#x0040;");
+    const gemischt = mitMail("&#105;&#x006e;&#102;&#x006f;&#64;");
+    expect(fingerprintOf(hexadezimal)).toBe(fingerprintOf(dezimal));
+    expect(fingerprintOf(gemischt)).toBe(fingerprintOf(dezimal));
+  });
+
+  it("ein hexadezimaler Zeichenverweis hinterlässt kein Token", () => {
+    // Die Gegenprobe zum Fehler selbst: Vor dem 22.08.2026 blieb aus `&#x0066;`
+    // das Token `x0066` stehen. Wäre es wieder da, unterschiede sich die Seite
+    // mit Verweisen von der ohne.
+    expect(fingerprintOf(mitMail("&#x0066;&#x006f;&#x006f;"))).toBe(fingerprintOf(mitMail("")));
+  });
+
   it("Skripte und Stile zählen nicht mit", () => {
     const a = seite("<p>Photovoltaik: 250 Euro je kWp.</p><script>var t=Date.now();</script>");
     const b = seite("<p>Photovoltaik: 250 Euro je kWp.</p><script>var t=1234567;</script>");

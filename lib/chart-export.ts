@@ -18,6 +18,7 @@ import { domToBlob } from 'modern-screenshot';
 import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR } from './export-markers';
 import { tokens, TokenName, stageDefaults, STAGE_COUNT } from './theme';
 import { brandLabel, type WidgetKind } from './widget-registry';
+import { widgetVarsAusTokens } from './widget-theme';
 
 // Die Marker-Konstanten leben in lib/export-markers.ts (ohne Abhängigkeiten) und
 // werden hier nur weitergereicht: Wer nur einen Marker braucht, soll nicht
@@ -449,7 +450,7 @@ export async function exportChart(
 /** Die `--widget-*`-Tokens, an denen ein eigenes Farbschema des Einbettenden
  *  erkennbar ist. Setzt er eines, gewinnt es — sein Bild soll zu seiner Seite
  *  passen, nicht zu unserer Tageszeit. */
-const WIDGET_THEME_MARKER = ['--widget-bg', '--widget-text', '--widget-accent'];
+const WIDGET_THEME_MARKER = ['--widget-bg', '--widget-fg', '--widget-accent'];
 
 /**
  * Das heruntergeladene Bild entsteht IMMER auf unserer hellsten Tagesstufe.
@@ -466,12 +467,39 @@ const WIDGET_THEME_MARKER = ['--widget-bg', '--widget-text', '--widget-accent'];
  * Bewusste Grenze: Eine im Admin-Bereich getunte Fassung der hellsten Stufe
  * wirkt hier nicht — das Bild nimmt die Werte des Designsystems.
  */
-function applyBrightestStage(wrapper: HTMLElement): void {
-  const rootStyle = document.documentElement.style;
-  const custom = WIDGET_THEME_MARKER.some((k) => rootStyle.getPropertyValue(k).trim() !== '');
-  if (custom) return;
+export function exportHelligkeitsTokens(opts: {
+  /** Wer das Farbschema gesetzt hat: "seite" = unsere eigene Seite (Tagesstufe),
+   *  "einbettend" = ein Einbettender, undefined = niemand. */
+  themeQuelle?: string;
+  /** Stehen `--widget-*`-Werte fest am Wurzelelement? */
+  eigenesSchema: boolean;
+}): Record<string, string> | null {
+  // Farben, die UNSERE eigene Seite ihrem eingebetteten Widget geschickt hat,
+  // sind kein fremdes Farbschema, sondern die Tagesstufe — genau das, was hier
+  // zurückgestellt werden soll. Ohne diese Unterscheidung hätte der
+  // First-Party-Embed den Export lautlos abgeschaltet: die Marker-Tokens sind
+  // dann gesetzt, und die Prüfung hätte sie für fremd gehalten.
+  if (opts.themeQuelle !== 'seite' && opts.eigenesSchema) return null;
   const hell = stageDefaults(STAGE_COUNT - 1);
-  Object.entries(hell).forEach(([token, value]) => wrapper.style.setProperty(token, value));
+  // Im Embed sind die `--color-*` Aliase auf die `--widget-*`; die hellen
+  // Site-Tokens allein erreichen deshalb alles nicht, was ein Widget DIREKT auf
+  // `--widget-bg`/`--widget-fg` malt (Kartengrund, Titel) — im Bild stünde ein
+  // heller Chart in einer dunklen Karte.
+  return {
+    ...hell,
+    ...widgetVarsAusTokens((token: string) => hell[token as TokenName] ?? ''),
+  };
+}
+
+function applyBrightestStage(wrapper: HTMLElement): void {
+  const root = document.documentElement;
+  const rootStyle = root.style;
+  const werte = exportHelligkeitsTokens({
+    themeQuelle: root.dataset.scThemeQuelle,
+    eigenesSchema: WIDGET_THEME_MARKER.some((k) => rootStyle.getPropertyValue(k).trim() !== ''),
+  });
+  if (!werte) return;
+  Object.keys(werte).forEach((token) => wrapper.style.setProperty(token, werte[token]));
 }
 
 // ─── 1:1 Node Capture (modern-screenshot) ────────────────────────────────────

@@ -174,7 +174,15 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // zellgleich vorgefunden: „6,2 Cent", „vor dem 1. Januar 2031 — also im Laufe
   // der Jahre 2029 und 2030" und die 50-%-Grenze für Anlagen „weniger als 100
   // Kilowatt des zweiten Segments".
-  geprueftIso: "2026-08-20",
+  //
+  // 22.08.2026 erneut geprüft, Zustand unverändert — diesmal über die beiden
+  // Terminkalender, weil sie die Frage abschließend beantworten, statt sie
+  // wahrscheinlich zu machen: Der Bundesrat führt als nächste Plenarsitzung den
+  // 25.09.2026 (bundesrat.de, Termine der Plenarsitzungen), seit dem Eingang der
+  // Drucksache am 14.08.2026 hat also gar keine Sitzung stattgefunden. Der
+  // Bundestag ist im August ohne Sitzungswoche; die erste nach der Sommerpause
+  // ist der 07.–11.09.2026. Eine erste Lesung kann es damit nicht gegeben haben.
+  geprueftIso: "2026-08-22",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

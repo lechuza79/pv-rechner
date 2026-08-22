@@ -143,10 +143,15 @@ export const WIDGETS = {
     id: "zubau-erneuerbare-atom",
     title: "Zubau: Erneuerbare vs. Atomkraft",
     kind: "chart",
-    shareUrl: `${SITE}/laendervergleich`,
+    // Ziel ist die Atomstrom-Seite, NICHT der Ländervergleich: der steht noch
+    // auf „nicht indexieren" und ist als Prototyp angelegt. Ein geteiltes Bild
+    // führte damit auf eine Seite, die es für Google nicht gibt und die im Menü
+    // nicht vorkommt. Zurückstellen, sobald der Ländervergleich fertig ist
+    // (Betreiber, 21.08.2026: „die seite müssen wir erst noch fertigmachen").
+    shareUrl: `${SITE}/atomstrom-import`,
     shareText: "Zubau Erneuerbare vs. Atomkraft im Ländervergleich",
     sources: [DATA_SOURCES.ember],
-    cta: { label: "Ländervergleich ansehen", href: "/laendervergleich" },
+    cta: { label: "Fakten zum Atomstrom-Import", href: "/atomstrom-import" },
   },
   einspeiseVerlauf: {
     id: "einspeiseverguetung-verlauf",

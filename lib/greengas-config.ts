@@ -257,7 +257,17 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // Ankündigung vom 08.07.2026 aus dem Wirtschaftsausschuss — kein Entwurf, also
   // auch keine Preisreihe für Bioheizöl und keine Grundlage, die Lücke im
   // Wärmepumpen-Ergebnis zu schließen.
-  geprueftRechtIso: "2026-08-20",
+  //
+  // 22.08.2026 erneut an gmodg.bund.de geprüft, wieder unverändert: Die
+  // Chronologie endet unverändert mit „im Bundesgesetzblatt verkündet. Erste
+  // Regelungen treten am 29.07.2026 in Kraft." Zum Quotengesetz nach § 42a gibt
+  // es weiterhin keinen eigenen Chronologie-Eintrag, nur die Ankündigung aus dem
+  // Ausschuss vom 08.07.2026. Die Bioheizöl-Lücke bleibt damit offen — auch die
+  // Gegensuche nach einer Trägerquelle mit echter Bioheizöl-/HVO-Preisreihe war
+  // erfolglos: Es gibt weiterhin nur Portalangaben und Marktkommentare, keine
+  // amtliche oder verbandsgeführte Reihe, auf die sich ein Preispfad stützen
+  // ließe.
+  geprueftRechtIso: "2026-08-22",
   reviewBy: "2027-07-25",
 };
 

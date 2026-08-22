@@ -29,6 +29,7 @@
     "foerder:screen": "tsx scripts/funding-screen.ts",
     "stand:faellig": "tsx scripts/stand-faellig.ts",
     "sessions": "tsx scripts/sessions.ts",
+    "laender:sync": "tsx scripts/ember-laender-sync.ts",
     "foerder:suche": "tsx scripts/funding-discover.ts",
     "foerder:seiten": "tsx scripts/funding-coverage-watch.ts",
     "foerder:seiten-alle": "tsx scripts/funding-seiten-watch.ts",

@@ -19,6 +19,7 @@
 import { ReactNode, useId, useState } from "react";
 import { v, iconSizes, space, pad } from "../lib/theme";
 import { IconChevronDown } from "./Icons";
+import Switch from "./Switch";
 
 export interface ResultSectionProps {
   /** Überschrift des Abschnitts — benennt das Thema, nicht die Aktion. */
@@ -72,23 +73,11 @@ export default function ResultSection({
           Klick auf die Zeile hätte zwei Bedeutungen. */}
       <div style={{ display: "flex", alignItems: "center", padding: pad("lg", "xl"), gap: space.md }}>
         {schaltbar && (
-          <button
-            onClick={() => setAktiv!(!aktiv)}
-            role="switch"
-            aria-checked={aktiv}
-            aria-label={aktivLabel ?? `${title} mitrechnen`}
-            style={{
-              flexShrink: 0, width: 36, height: 20, borderRadius: 10, cursor: "pointer", padding: 0,
-              background: aktiv ? v("--color-accent") : v("--color-border"),
-              border: "none", position: "relative", transition: "background .2s ease",
-            }}
-          >
-            <span style={{
-              position: "absolute", top: 2, left: aktiv ? 18 : 2,
-              width: 16, height: 16, borderRadius: "50%", background: v("--color-bg"),
-              transition: "left .2s ease", display: "block",
-            }} />
-          </button>
+          <Switch
+            an={!!aktiv}
+            onChange={setAktiv!}
+            label={aktivLabel ?? `${title} mitrechnen`}
+          />
         )}
         <button
           id={headId}

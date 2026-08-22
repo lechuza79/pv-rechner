@@ -26,6 +26,17 @@ export interface LineSeries {
   values: number[];
   /** Optionales Flaggen-Emoji für Label/Legende. */
   flag?: string;
+  /**
+   * Nebenlinie: dünn und blass, in derselben Farbe wie ihre Hauptlinie.
+   *
+   * Für Reihen, die zum Vergleich danebengelegt werden (im Zubau-Widget das
+   * eingeblendete Deutschland). Die FARBE bleibt die der Sache — grün ist
+   * Erneuerbare, egal welches Land —, unterschieden wird über Strichstärke und
+   * Deckkraft. Eine eigene Farbe je Land ergäbe zwei Farbwelten, in denen man
+   * erst die Legende lesen muss, um zwei Erneuerbaren-Kurven als solche zu
+   * erkennen.
+   */
+  duenn?: boolean;
 }
 
 interface LineChartProps {
@@ -65,6 +76,8 @@ export default function LineChart(props: LineChartProps) {
 }
 
 const DIM_OPACITY = 0.16;
+/** Nebenlinien (Vergleichsreihen): sichtbar, aber deutlich hinter der Hauptlinie. */
+const NEBENLINIE_OPACITY = 0.55;
 
 interface HoverState {
   year: number;
@@ -83,9 +96,28 @@ function LineChartInner({
   highlightKey,
 }: LineChartProps & { width: number; height: number }) {
   const dimmed = (key: string) => highlightKey != null && highlightKey !== key;
+  // Der rechte Rand trägt die Beschriftung der Kurven — er muss sich also nach
+  // ihr richten, nicht nach einem festen Wert. „🇨🇳 Erneuerbare" (Länder-Vergleich)
+  // ist rund ein Drittel breiter als „Deutschland" und wurde abgeschnitten: Im
+  // Bild stand „Erneuerba", und ein abgeschnittenes Label ist im geteilten Bild
+  // nicht mehr zu reparieren. Gedeckelt, damit ein langes Label nicht die
+  // Chartfläche auffrisst.
+  const beschriftungsBreite = (() => {
+    const font = compact ? 10 : 11.5;
+    const laengste = series.reduce((max, s) => Math.max(max, s.label.length), 0);
+    const mitFahne = series.some((s) => s.flag);
+    // 0,62 em je Zeichen (halbfett), Fahne plus Abstand pauschal 22 px.
+    const geschaetzt = laengste * font * 0.62 + (mitFahne ? 22 : 0);
+    // Zuschlag von einem Viertel: Die Bildaufnahme rendert Text breiter als die
+    // Messung auf der Seite — dieselbe Ursache, aus der auch der Titel im Bild
+    // umbrach. Auf der Seite passte „🇨🇳 Erneuerbare" mit 13 px Reserve, im Bild
+    // stand „Erneuerba". Reserve ist hier billig, ein abgeschnittenes Label im
+    // geteilten Bild nicht mehr zu reparieren.
+    return Math.min(Math.round(geschaetzt * 1.25) + 8, 160);
+  })();
   const margin = compact
-    ? { top: 12, right: 78, bottom: 26, left: 40 }
-    : { top: 16, right: 104, bottom: 30, left: 48 };
+    ? { top: 12, right: Math.max(78, beschriftungsBreite), bottom: 26, left: 40 }
+    : { top: 16, right: Math.max(104, beschriftungsBreite), bottom: 30, left: 48 };
   const innerWidth = Math.max(0, width - margin.left - margin.right);
   const innerHeight = Math.max(0, height - margin.top - margin.bottom);
 
@@ -187,6 +219,14 @@ function LineChartInner({
   const xTicks: number[] = [];
   for (let y = Math.ceil(domain[0] / 10) * 10; y <= domain[1]; y += 10) xTicks.push(y);
   if (xTicks[0] !== domain[0]) xTicks.unshift(domain[0]);
+  // Das letzte Jahr wird immer angeschrieben. Ohne diese Marke endete die Achse
+  // bei „2020", während die Kurve fünf Jahre weiterlief — bis wann die Daten
+  // reichen, war dem Bild damit nicht zu entnehmen, und genau das ist bei einer
+  // Zeitreihe die erste Frage. Zu dicht am Dekaden-Tick lassen wir sie weg:
+  // zwei Beschriftungen übereinander sind schlechter als eine fehlende.
+  const ENDMARKE_MIN_ABSTAND = 3;
+  const letzterTick = xTicks[xTicks.length - 1];
+  if (domain[1] - letzterTick >= ENDMARKE_MIN_ABSTAND) xTicks.push(domain[1]);
   const labelFont = compact ? 10 : 11.5;
 
   return (
@@ -258,11 +298,24 @@ function LineChartInner({
                   y={(d) => yScale(d.value)}
                   stroke={cssVar(s.colorToken)}
                   strokeWidth={
-                    s.key === highlightKey ? (compact ? 2.5 : 3) : compact ? 1.75 : 2.25
+                    s.duenn
+                      ? 1
+                      : s.key === highlightKey
+                        ? compact
+                          ? 2.5
+                          : 3
+                        : compact
+                          ? 1.75
+                          : 2.25
                   }
-                  strokeOpacity={dim ? DIM_OPACITY : 1}
+                  strokeOpacity={dim ? DIM_OPACITY : s.duenn ? NEBENLINIE_OPACITY : 1}
                   strokeLinecap="round"
                   curve={curveMonotoneX}
+                  // Beim Einblenden sanft aufziehen — sonst erscheint die
+                  // Vergleichslinie schlagartig und man sucht, was sich geändert
+                  // hat. Bewegung nur, wo das System sie zulässt (die Regel für
+                  // reduzierte Bewegung steht im Embed-Layout).
+                  className={s.duenn ? "sc-nebenlinie" : undefined}
                 />
               );
             })}

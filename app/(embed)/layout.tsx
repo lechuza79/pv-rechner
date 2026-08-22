@@ -1,6 +1,31 @@
 import type { Metadata, Viewport } from "next";
+import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import WidgetAutoHeight from "../../components/WidgetAutoHeight";
 import { tokens } from "../../lib/theme";
+
+// Dieselben Schriften wie die Site, aus derselben Quelle (next/font lädt sie
+// beim Bauen herunter und liefert sie von unserer Domain — kein Aufruf bei
+// Google). Sie stehen hier nur BEREIT: Welche Schrift ein Widget benutzt,
+// entscheidet `--widget-font-family`, und das bleibt für fremde Einbettungen
+// auf der neutralen System-Schrift. Nur unsere eigenen Seiten reichen ihre
+// Schrift durch (components/AutoHeightIframe.tsx), damit ein eingebettetes
+// Chart nicht in einer anderen Schrift steht als der Text daneben.
+//
+// `preload: false` ist der Grund, warum das fremde Einbettungen nichts kostet:
+// die Schriftdateien werden nur geholt, wenn eine CSS-Regel sie wirklich
+// verlangt — also nur auf unseren Seiten.
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-dm-sans",
+  preload: false,
+});
+const jetBrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-jetbrains-mono",
+  preload: false,
+});
 
 // Green/energy values are NOT re-typed here — they are read from the single
 // source (lib/theme.ts tokens) so the embed palette can never drift from the
@@ -47,6 +72,10 @@ const baseStyles = `
     --widget-awareness:${tokens["--color-awareness"]};
     --widget-border-radius:14px;
     --widget-font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    /* Zahlen stehen in einer Schreibmaschinenschrift — als eigenes Token, damit
+       eine eigene Seite auch sie mitgeben kann (die großen Kennzahlen stehen
+       darin, und eine fremde Ziffernschrift fällt neben dem Text sofort auf). */
+    --widget-font-mono:ui-monospace,SFMono-Regular,Menlo,monospace;
 
     /* Structural "ink" — grid lines, borders, faint axis labels. Derived from
        the BACKGROUND's contrast (set by the parent via postMessage/URL), not
@@ -81,7 +110,7 @@ const baseStyles = `
     --color-highlight:var(--widget-highlight);
     --color-awareness:var(--widget-awareness);
     --font-text:var(--widget-font-family);
-    --font-mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+    --font-mono:var(--widget-font-mono);
     --radius-sm:6px;
     --radius-md:var(--widget-border-radius);
     /* Shadows — light values (widgets default to a light background). Present so
@@ -147,8 +176,48 @@ ${energyVars}
 
   /* Bewegung respektiert die Systemeinstellung. */
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important }
+    /* Auch Übergänge, nicht nur Animationen: Das Aufklappen einer Kachel und
+       der Schiebeschalter laufen über transition, und ohne diese Zeile bewegten
+       sie sich weiter, obwohl das System das Gegenteil verlangt. */
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
+
+  /* Vergleichslinie im Chart: zieht beim Einblenden auf, statt schlagartig da
+     zu sein — sonst sucht man, was sich gerade geändert hat. */
+  @keyframes sc-linie-auf { from { opacity: 0 } to { opacity: 1 } }
+  .sc-nebenlinie { animation: sc-linie-auf .45s ease-out }
+
+  /* Eine Kachel, die beim Einschalten wächst, tut das mit — nicht als Sprung.
+     Über die Zeilenhöhe des Rasters (0fr → 1fr), weil eine Höhe in Pixeln
+     vorher niemand kennt und „auf gut Glück" gesetzte Maximalhöhen entweder
+     abschneiden oder die Bewegung verzögert aussehen lassen. */
+  .sc-aufklapp { display:grid; grid-template-rows:0fr; transition:grid-template-rows .28s ease }
+  .sc-aufklapp > * { overflow:hidden; min-height:0 }
+  .sc-aufklapp[data-offen="ja"] { grid-template-rows:1fr }
+
+  /* Der Prozentwert am deutschen Vergleichswert erscheint erst beim Überfahren
+     oder mit der Tastatur. Dauerhaft stand er neben dem Größenverhältnis eine
+     Zeile tiefer und sagte dasselbe zweimal; im geteilten Bild bleibt damit das
+     Verhältnis („12× weniger") die Aussage — die greifbarere von beiden. */
+  .sc-delta { opacity:0; font-weight:700; color:var(--widget-muted); transition:opacity .18s ease }
+  .sc-deltahost:hover .sc-delta,
+  .sc-deltahost:focus-visible .sc-delta,
+  .sc-deltahost:focus .sc-delta { opacity:1 }
+  .sc-deltahost:focus-visible { outline:2px solid var(--color-accent); outline-offset:2px }
+
+  /* Chart-Titel: auf breiten Karten einzeilig, auf schmalen umbruchfähig.
+     Beide Richtungen sind aus einem gemessenen Fehler entstanden — einzeilig
+     erzwungen ragte der Titel auf einer 300-px-Karte über den Rand (den die
+     Karte abschneidet), umbruchfähig auf einer breiten Karte rendert die
+     Bildaufnahme ihn zweizeilig, während die Zeile darunter auf ihrer
+     gemessenen Höhe bleibt: beide lagen dann übereinander. Die Grenze liegt
+     über der breitesten Titelvariante (~300 px) plus Innenabstand. */
+  .sc-chart-titel{white-space:nowrap}
+  @media (max-width:460px){ .sc-chart-titel{white-space:normal} }
 
   /* Map widget: map left, value tiles right (like the main site). Stacks on
      very narrow embeds. */
@@ -184,7 +253,7 @@ export default function EmbedRootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="de">
+    <html lang="de" className={`${dmSans.variable} ${jetBrainsMono.variable}`}>
       <head>
         <style dangerouslySetInnerHTML={{ __html: baseStyles }} />
       </head>

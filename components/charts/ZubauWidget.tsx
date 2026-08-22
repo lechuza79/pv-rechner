@@ -26,6 +26,7 @@ import { ExportBox, ExportNotesProvider, WidgetExportFooter, WidgetFooter, Widge
 import ZubauTimelineChart from "./ZubauTimelineChart";
 import EventTimeline, { TimelineEvent } from "./EventTimeline";
 import type { NationalSolarSeries } from "../../lib/mastr-data";
+import { formatDataAsOf } from "../../lib/atlas-format";
 import { FEEDIN_HISTORY_YEARS, FEEDIN_HISTORY_VALUES } from "../../lib/feedin-history";
 import { PRICE_YEARS, PRICE_HOUSEHOLD } from "../../lib/strommix-history";
 import { EEG_REFORM_STAND, eegDatum } from "../../lib/eeg-reform-config";
@@ -204,7 +205,15 @@ export default function ZubauWidget({
         <div style={{ position: "relative", ...(isEmbed ? { paddingRight: 16 } : null) }}>
           {/* Quelle vertikal an der rechten Kante (geteilter Baustein). Im Artikel
               trägt der Seitenfuß die Quelle — dort bleibt das Widget ruhig. */}
-          <WidgetSourceEdge widget={WIDGET} visible={isEmbed && !isOnsite} />
+          {/* Der Datenstand kommt aus dem Auszug des Anlagenregisters selbst.
+              Ohne ihn setzt der Vermerk das Abrufdatum ein — bei Live-Daten
+              richtig, an einer Jahresreihe aber eine Aktualität, die die Zahlen
+              nicht haben. */}
+          <WidgetSourceEdge
+            widget={WIDGET}
+            visible={isEmbed && !isOnsite}
+            stand={formatDataAsOf(series.data_as_of)}
+          />
           <ExportBox>
             <ZubauTimelineChart
               years={years}

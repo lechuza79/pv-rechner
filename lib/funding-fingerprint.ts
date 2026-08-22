@@ -19,7 +19,28 @@ export function fingerprintOf(html: string): string {
     .replace(/<(script|style|noscript|svg)[^>]*>[\s\S]*?<\/\1>/gi, " ")
     .replace(/<!--[\s\S]*?-->/g, " ")
     .replace(/<[^>]+>/g, " ")
-    .replace(/&[a-z]+;|&#\d+;/gi, " ")
+    // Zeichenverweise fallen weg — benannte (&auml;), dezimale (&#105;) UND
+    // hexadezimale (&#x0069;). Die Hex-Form ist dieselbe HTML-Notation wie die
+    // dezimale, stand hier aber bis zum 22.08.2026 nicht, und das war kein
+    // Schönheitsfehler: Aus `&#x0066;` wird nach dem Entfernen der Sonderzeichen
+    // das Token `x0066` — genau fünf Zeichen lang und damit ÜBER der Schwelle,
+    // die den Buchstabensalat unten aussortiert.
+    //
+    // WARUM DAS ZÄHLT (22.08.2026, gemessen): Kommunale Redaktionssysteme
+    // (TYPO3) verschlüsseln ihre Kontaktadresse als Spamschutz bei jedem Aufruf
+    // neu — und wählen dabei je Zeichen zufällig die dezimale oder die
+    // hexadezimale Schreibweise. gudensberg.de liefert für dieselbe Adresse
+    // `info@stadt-gudensberg.de` einmal `&#x0073;` und einmal `&#115;`. Die
+    // dezimalen verschwanden, die hexadezimalen blieben als `x00NN` stehen —
+    // also wechselte der Abdruck bei zwei Abrufen im Abstand von Sekunden.
+    // Nachgemessen an acht Amtsseiten: sieben instabil, eine stabil.
+    //
+    // Wirkung: Der Seiten-Wächter meldete für 24 AKTIVE Programme „Amtsseite hat
+    // sich geändert" und startete je die 14-Tage-Nachprüffrist; am 05.09.2026
+    // wären sie geschlossen und lautlos aus der Rechnung gefallen. Dieselbe
+    // Fehlerklasse wie am 18.08.2026 (Fassungswechsel) und am 17.08.2026
+    // (würzburg.de) — nur diesmal nicht im Filter, sondern eine Stufe davor.
+    .replace(/&[a-z]+;|&#\d+;|&#x[0-9a-f]+;/gi, " ")
     .toLowerCase();
 
   // Der Abdruck entsteht aus ZAHLEN und LANGEN WÖRTERN, nicht aus jedem Zeichen.
@@ -62,13 +83,18 @@ export function fingerprintOf(html: string): string {
  * Schlüssel. Ein Wächter, der eine eigene Änderung als fremde meldet, ist
  * schlimmer als einer, der schweigt: Er erzeugt Arbeit, die niemand braucht, und
  * nimmt nebenbei Förderungen weg, die es gibt.
+ *
+ * FASSUNG 3 (22.08.2026): `fingerprintOf` entfernt jetzt auch hexadezimale
+ * Zeichenverweise. Für jede Seite fällt damit ein anderer Abdruck an als vorher —
+ * genau der Grund, aus dem es dieses Feld gibt. Ohne das Hochzählen hätte der
+ * nächste Lauf die Reparatur selbst als 109 fremde Änderungen verbucht.
  */
-export const FINGERPRINT_VERSION = 2;
+export const FINGERPRINT_VERSION = 3;
 
 /** Kennzeichnet, auf welchem Weg der Abdruck entstand. Nur Gleiches vergleichen. */
 export type Abrufweg = "live" | "archiv";
 
-/** `live-v2:a1b2…` — Abrufweg UND Verfahrensfassung vor dem Abdruck. */
+/** `live-v3:a1b2…` — Abrufweg UND Verfahrensfassung vor dem Abdruck. */
 export function markiert(weg: Abrufweg, fp: string): string {
   return `${weg}-v${FINGERPRINT_VERSION}:${fp}`;
 }

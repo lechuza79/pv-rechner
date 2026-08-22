@@ -139,6 +139,11 @@ export const tokens = {
   // ─── Layout (3) ────────────────────────────────────────────────────────────
   '--page-max-width': '480px',       // Rechner/Tools — kompakte, fokussierte Spalte
   '--content-max-width': '640px',    // Redaktionelle Lese-/Textseiten (Ratgeber, Methodik, …)
+  // Datenseiten mit breiten Charts (Zubau-Story, Ländervergleich): breiter als
+  // die Lesespalte, damit eine Zeitreihe über 25 Jahre nicht zusammengedrückt
+  // wird, aber schmaler als die Kopfzeile. Der Fließtext DARIN bleibt auf
+  // --content-max-width — 880 px lange Zeilen liest niemand gern.
+  '--chart-max-width': '880px',
   '--header-max-width': '1040px',
 
   // Redaktionelle Kopf-Luft NUR auf Lese-/Textseiten — zusätzlich zum zentralen

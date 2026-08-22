@@ -6,6 +6,8 @@
 import { calcHeatPump, heatPumpScenarioAdj, type HeatPumpInputs } from "./heatpump";
 import { DEFAULT_HEATPUMP_CONFIG } from "./heatpump-config";
 import { annualHeatingCostSeries, type HeatCostPoint } from "./greengas";
+import { GREEN_GAS_CONFIG } from "./greengas-config";
+import { CO2_PRICE } from "./co2-config";
 import { PERSONEN, HAUSTYP_WP } from "./constants";
 
 export interface MusterVariant {
@@ -55,3 +57,18 @@ export function greengasMusterVariants(): MusterVariant[] {
       "Im teilsanierten Haus fällt die Ersparnis etwas kleiner aus — schlicht weil weniger (teures) Gas gebraucht wird. Günstiger als die Gasheizung bleibt die Wärmepumpe trotzdem klar."),
   ];
 }
+
+/**
+ * Stand der Musterrechnung: der ÄLTESTE der beteiligten Werte-Stände.
+ *
+ * Die Rechnung mischt drei gepflegte Größen (Grüngas-Preispfad, Anschaffung und
+ * Förderung der Wärmepumpe, CO₂-Preispfad). Den jüngsten davon anzuschreiben
+ * hieße, für die anderen eine Aktualität zu behaupten, die sie nicht haben —
+ * und ohne jede Angabe setzt der Quellenvermerk das Abrufdatum ein, also das
+ * heutige. Beides ist eine Aussage über die Daten, die nicht stimmt.
+ */
+export const MUSTER_STAND_ISO = [
+  GREEN_GAS_CONFIG.validFrom,
+  DEFAULT_HEATPUMP_CONFIG.validFrom,
+  CO2_PRICE.validFrom,
+].sort()[0];

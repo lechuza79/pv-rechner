@@ -2666,7 +2666,27 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "hillscheid-energie", name: "Förderung privater Energiegewinnung",
     traeger: "Ortsgemeinde Hillscheid", level: "kommune", region: "Hillscheid",
     bundesland: "Rheinland-Pfalz", agsCode: "07143031",
-    url: "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderrichtlinie-der-stadt-hoehr-grenzhausen/",
+    // WIR ZEIGTEN AUF DIE FALSCHE RICHTLINIE (korrigiert 22.08.2026). Hier stand
+    // die Seite der STADT Höhr-Grenzhausen — das ist die Quelle des
+    // Nachbarprogramms `hoehr-grenzhausen-energie`, nicht die dieses Eintrags.
+    // Die Verbandsgemeinde führt zwei getrennte Richtlinien unter derselben
+    // Rubrik, und die Ortsgemeinde Hillscheid hat ihre eigene Seite.
+    //
+    // Das war kein Schönheitsfehler an einem Link: Die Seite der Stadt trägt seit
+    // dem 18.08.2026 den Satz „Für das Haushaltsjahr 2026 sind alle Fördermittel
+    // ausgeschöpft." Wer dem Quellenlink dieses Eintrags folgte, las also eine
+    // Absage für ein Programm, das noch läuft — und der Seiten-Wächter beobachtete
+    // für Hillscheid die ganze Zeit die Bewegungen einer fremden Gemeinde.
+    // Genau davor warnt der Hinweis unten; die Falle hat diesmal nicht den Status
+    // erwischt, sondern die Adresse.
+    //
+    // An der eigenen Richtlinie der Ortsgemeinde am 22.08.2026 gelesen: kein
+    // Ausschöpfungshinweis, nur „Die Förderung stellt eine freiwillige Leistung
+    // der Ortsgemeinde Hillscheid dar, auf die kein Rechtsanspruch besteht."
+    // Die Sätze sind zellgleich zu den hier hinterlegten — 150 € pro kWp,
+    // max. 1.500 €; 100 € pro kWh, max. 1.000 €; Solarthermie 100/150 € pro m²,
+    // max. 900 €. Der Status bleibt deshalb `aktiv`.
+    url: "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderrichtlinie-der-ortsgemeinde-hillscheid/",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Zuschuss je kWp und je kWh Speicher, dazu Solarthermie",
