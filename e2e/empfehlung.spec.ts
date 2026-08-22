@@ -1,9 +1,19 @@
 import { test, expect } from "@playwright/test";
-import { akkordeonWaehlen, akkordeonOeffnen } from "./flows";
+import { akkordeonWaehlen, akkordeonOeffnen, waehle, weiterKlicken } from "./flows";
 
 // Recommendation flow smoke test.
 // Three steps: Haus + Dach → Haushalt → Großverbraucher → Empfehlung-Zwischenseite.
 // Confirms the algorithm runs end-to-end without state-passing breakage.
+//
+// Geklickt wird über die geteilten Helfer (e2e/flows.ts), NICHT mit einem
+// nackten click(): Ein Klick, der auf eine noch nicht übernommene Seite trifft,
+// verpufft stumm. Unter zwei parallelen Arbeitern ist dieser Test genau daran
+// umgefallen — mit einer Meldung, die nach einem Produktfehler aussah.
+
+const DACHFORM = "Dachform";
+const SATTELDACH = 0; // Reihenfolge aus DACHARTEN
+const FLACHDACH = 1;
+const NORD = 3;       // Reihenfolge aus TILT_ORIENTATIONS
 
 test("Empfehlung flow ends on a recommendation with kWp + storage suggestion", async ({ page }) => {
   await page.goto("/pv-bedarf-berechnen");
@@ -13,20 +23,18 @@ test("Empfehlung flow ends on a recommendation with kWp + storage suggestion", a
   // components/DachField) — ohne sie rechnet der Flow mit dem Standort-Optimum,
   // also einem perfekten Süddach. Der Test klickt sie deshalb mit: er soll den
   // Weg abbilden, den ein Nutzer geht, nicht den kürzesten durch die Seite.
-  await page.getByText("Einfamilienhaus", { exact: false }).first().click();
-  await page.getByText("Satteldach", { exact: false }).first().click();
-  await page.getByRole("button", { name: "Süd", exact: true }).click();
-  await page.getByRole("button", { name: /weiter/i }).click();
+  await waehle(page, "Einfamilienhaus");
+  await akkordeonWaehlen(page, DACHFORM, SATTELDACH);
+  await akkordeonWaehlen(page, "Ausrichtung", 0); // Süd
+  await weiterKlicken(page);
 
   // Step 1: Haushalt — 3-4 persons + teils zuhause
-  await page.getByText("3–4", { exact: false }).first().click();
-  await page.getByText("Teils zuhause", { exact: false }).first().click();
-  await page.getByRole("button", { name: /weiter/i }).click();
+  await waehle(page, "3–4 Personen");
+  await waehle(page, "Teils zuhause");
+  await weiterKlicken(page);
 
   // Step 2: Großverbraucher — keep WP/EA at default (nein), proceed.
-  // Exact button name: /berechnen/i also matches other controls on the page,
-  // and clicking one of those looks identical to a click that did nothing.
-  await page.getByRole("button", { name: /empfehlung anzeigen/i }).click();
+  await weiterKlicken(page);
 
   // The recommendation lives at ?view=ergebnis — wait for the state change
   // rather than for text, so a failure says WHICH step broke.
@@ -58,10 +66,6 @@ test("Empfehlung flow ends on a recommendation with kWp + storage suggestion", a
 // mit „gespeichert ist Satteldach", also der Meldung des Fehlers, den sie
 // nachweisen soll. Ein Test, der aus zwei Gründen dasselbe Bild zeigt, taugt
 // nicht als Beweis.
-const DACHFORM = "Dachform";
-const FLACHDACH = 1; // Reihenfolge aus DACHARTEN
-const SATTELDACH = 0;
-const NORD = 3;      // Reihenfolge aus TILT_ORIENTATIONS
 
 test.describe("Ein Klick darf keine andere Antwort aus der Adresse werfen", () => {
   const dachformZeile = (page: import("@playwright/test").Page) =>

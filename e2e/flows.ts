@@ -272,25 +272,50 @@ export async function akkordeonOeffnen(page: Page, frage: string): Promise<boole
 }
 
 /**
- * Eine Wahl innerhalb einer Akkordeon-Frage anklicken.
+ * Eine Wahl innerhalb einer Akkordeon-Frage anklicken — und nachweisen, dass sie
+ * gesetzt ist.
  *
- * Der Beweis, dass der Klick angekommen ist, ist bewusst NICHT „der Knopf ist
- * jetzt markiert": Die meisten dieser Fragen klappen nach der Wahl zu, der
- * Knopf ist dann gar nicht mehr da. Beides zählt deshalb — markiert ODER
- * eingeklappt. Ob dabei das RICHTIGE gespeichert wurde, prüft der Aufrufer.
+ * Der Nachweis kann NICHT am Knopf hängen: Die meisten dieser Fragen klappen
+ * nach der Wahl zu, der Knopf ist dann gar nicht mehr da. Es genügt aber auch
+ * NICHT, „zugeklappt" als Erfolg zu werten — genau daran ist die erste Fassung
+ * gescheitert: Eine Frage, die noch gar nicht AUFgeklappt war, ist ebenfalls
+ * „nicht offen", und der Helfer meldete Erfolg, ohne je geklickt zu haben. Die
+ * Ausrichtung blieb so ungesetzt, und der Test, der den fehlenden Dachabschlag
+ * nachweisen sollte, prüfte in Wahrheit gar nichts (gefunden im Lauf mit
+ * Datenbank am 22.08.2026, während er in der Worktree grün war).
+ *
+ * Deshalb: aufklappen, klicken, und beim Zuklappen wieder aufklappen und
+ * nachsehen. Ein Helfer, der stillschweigend „erledigt" sagt, ist derselbe
+ * Fehler wie die Prüfung, die er belegen soll.
+ *
+ * `pruefeWert: false` nur für den Sweep — der prüft den Wert selbst und
+ * formuliert daraus seinen Befund („die Antwort hält nicht") statt einer
+ * Ausnahme.
  */
-export async function akkordeonWaehlen(page: Page, frage: string, index: number) {
+export async function akkordeonWaehlen(page: Page, frage: string, index: number, pruefeWert = true) {
   const knopf = page
     .locator(`[data-flow-frage="${frage.replace(/"/g, '\\"')}"][data-flow-wahl="${index}"]:visible`)
     .first();
   try {
     await expect(async () => {
-      // Aufgeklappt bleiben ist Voraussetzung: Ein Klick auf einen Knopf, den es
+      // Aufgeklappt sein ist Voraussetzung: Ein Klick auf einen Knopf, den es
       // gerade nicht gibt, wäre sonst 20 s Warten ohne Aussage.
       if (!(await akkordeonZustand(page, frage)).offen) await akkordeonOeffnen(page, frage);
+      expect((await akkordeonZustand(page, frage)).offen, `Frage „${frage}" ließ sich nicht aufklappen`).toBe(true);
       await knopf.click({ timeout: 3_000 });
       const z = await akkordeonZustand(page, frage);
-      expect(!z.offen || z.gewaehlt === index).toBe(true);
+      if (z.offen) {
+        expect(z.gewaehlt).toBe(index);
+        return;
+      }
+      if (!pruefeWert) return;
+      // Zugeklappt: Der Wert steht nur beim Wiederaufklappen fest.
+      await akkordeonOeffnen(page, frage);
+      expect((await akkordeonZustand(page, frage)).gewaehlt).toBe(index);
+      // Und wieder zuklappen — sonst bleibt die Frage offen, die nächste
+      // erscheint gar nicht, und der Flow steht anders da als nach einer
+      // normalen Bedienung. Derselbe Klick, derselbe Wert.
+      await knopf.click({ timeout: 3_000 });
     }).toPass({ timeout: 20_000 });
   } catch {
     // Die nackte Meldung von toPass sagt nur „Timeout while waiting on the
@@ -384,7 +409,7 @@ async function akkordeonFragePruefen(page: Page, frage: string, fehler: string[]
       // Die Auswahl kann sich unterwegs verkürzen — auf einem aufgeständerten
       // Dach fällt „Nord" weg. Das ist gewollt und kein Befund.
       if (i >= vorher.wahlen.length) break;
-      await akkordeonWaehlen(page, frage, i);
+      await akkordeonWaehlen(page, frage, i, false);
 
       // Nicht sofort nachsehen, sondern nachsehen BIS es steht — bewusst
       // wiederholend. Manche dieser Flows halten ihren Zustand in der Adresse,
