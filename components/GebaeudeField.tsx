@@ -13,7 +13,7 @@
 // Derselbe Baustein im Frage-Flow UND in der Verfeinerung des Ergebnisses. Eine
 // Angabe, die eine Zahl im Ergebnis bewegt, muss vom Ergebnis aus erreichbar
 // sein; vorher war die Wärmepumpe dort nur ein Häkchen ohne jede Detailfrage.
-import { AccordionField, ChoiceButtons } from "./AccordionField";
+import { AccordionField, ChoiceButtons, flowWahl } from "./AccordionField";
 import PresetNumberInput from "./PresetNumberInput";
 import { v, space } from "../lib/theme";
 import {
@@ -39,6 +39,11 @@ export interface GebaeudeWerte {
  *  tragen die Schlüssel ein Präfix und werden nicht je Seite neu getippt. */
 export const GEBAEUDE_FIELDS = ["wp-haustyp", "wp-flaeche", "wp-daemmung", "wp-heizsystem"] as const;
 const [F_HAUSTYP, F_FLAECHE, F_DAEMMUNG, F_HEIZSYSTEM] = GEBAEUDE_FIELDS;
+
+// Der Name der Frage steht einmal da: als Überschrift UND als Kennzeichnung der
+// Knöpfe für den Flow-Läufer. Zwei getippte Fassungen wären zwei Namen für
+// dieselbe Frage, und der Läufer fände die Knöpfe nicht mehr.
+const FRAGE_FLAECHE = "Wohnfläche";
 
 export default function GebaeudeField({
   werte,
@@ -106,19 +111,20 @@ export default function GebaeudeField({
       </AccordionField>
 
       <AccordionField
-        label="Wohnfläche"
+        label={FRAGE_FLAECHE}
         open={offen === F_FLAECHE}
         answered={hat(F_FLAECHE)}
         summary={`${werte.wohnflaeche} m²`}
         onEdit={() => setBearbeitet(F_FLAECHE)}
       >
         <div style={{ display: "flex", gap: space.sm, alignItems: "center", flexWrap: "wrap" }}>
-          {WP_M2_PRESETS.map(m2 => {
+          {WP_M2_PRESETS.map((m2, mi) => {
             const aktiv = hat(F_FLAECHE) && werte.wohnflaeche === m2;
             return (
               <button
                 key={m2}
                 onClick={() => waehle(F_FLAECHE, { wohnflaeche: m2 })}
+                {...flowWahl(FRAGE_FLAECHE, mi, aktiv)}
                 style={{
                   padding: "7px 10px", borderRadius: v("--radius-sm"), fontSize: 12, fontWeight: 600, cursor: "pointer",
                   background: aktiv ? v("--color-accent-dim") : v("--color-bg-muted"),
