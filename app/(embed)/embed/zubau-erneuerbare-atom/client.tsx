@@ -5,6 +5,7 @@ import LineChart, { type LineSeries } from "../../../../components/charts/LineCh
 import {
   ExportBox,
   ExportNotesProvider,
+  ExportOnly,
   WidgetExportFooter,
   WidgetFooter,
   WidgetSourceEdge,
@@ -41,72 +42,114 @@ const LETZTES_JAHR = YEARS_ZUBAU[YEARS_ZUBAU.length - 1];
 const byLabel = (label: string) =>
   ZUBAU_BY_COUNTRY.find((c) => c.label === label)!;
 
-type View = { id: string; label: string; flag: string; kind: "single" | "compare" };
+type View = { id: string; label: string; flag: string };
 
-// Reihenfolge des Multitools — Welt zuerst (Default), Vergleich am Ende.
-const VIEWS: View[] = [
-  ...["Welt", "Deutschland", "China", "USA", "Frankreich", "Indien"].map((l) => {
-    const c = byLabel(l);
-    // Anzeige-Label: "Weltweit" statt "Welt" (Daten-Key bleibt via id = c.key).
-    return { id: c.key, label: l === "Welt" ? "Weltweit" : c.label, flag: c.flag, kind: "single" as const };
-  }),
-  { id: "de-cn", label: "Deutschland ↔ China", flag: "🇩🇪", kind: "compare" as const },
-];
+/** Reihenfolge des Multitools — Welt zuerst (Default). */
+const VIEWS: View[] = ["Welt", "Deutschland", "China", "USA", "Frankreich", "Indien"].map((l) => {
+  const c = byLabel(l);
+  // Anzeige-Label: "Weltweit" statt "Welt" (Daten-Key bleibt via id = c.key).
+  return { id: c.key, label: l === "Welt" ? "Weltweit" : c.label, flag: c.flag };
+});
 
-function seriesFor(view: View): { series: LineSeries[]; sub: string } {
-  if (view.kind === "compare") {
-    const de = byLabel("Deutschland");
-    const cn = byLabel("China");
-    // Landesfarbe = Land, Abstufung = Technik: Erneuerbare kräftig, Atom hell.
-    return {
-      series: [
-        { key: "de-ee", label: "Erneuerbare", flag: "🇩🇪", colorToken: "--color-accent", values: de.windsolar },
-        { key: "de-atom", label: "Atom", flag: "🇩🇪", colorToken: "--color-accent-light", values: de.nuclear },
-        { key: "cn-ee", label: "Erneuerbare", flag: "🇨🇳", colorToken: "--color-negative", values: cn.windsolar },
-        { key: "cn-atom", label: "Atom", flag: "🇨🇳", colorToken: "--color-negative-light", values: cn.nuclear },
-      ],
-      // Kein Untertitel: Die Kurven tragen ihre Beschriftung mitsamt Fahne
-      // („🇩🇪 Erneuerbare"), und die Kennzahlen darüber ebenso — eine Legende in
-      // Worten würde nur wiederholen, was direkt an der Kurve steht.
-      sub: "",
-    };
-  }
+const DEUTSCHLAND = byLabel("Deutschland");
+
+/**
+ * Die Kurven: immer das gewählte Land, auf Wunsch Deutschland dazu.
+ *
+ * Farben tragen zwei Bedeutungen gleichzeitig — Technik (Erneuerbare grün,
+ * Atomkraft magenta) beim gewählten Land, und beim eingeblendeten Deutschland
+ * die Zugehörigkeit (Akzentblau in zwei Tönen). Ohne diese Trennung wären vier
+ * gleichfarbige Linien nicht auseinanderzuhalten; die Fahne am Kurvenende sagt
+ * zusätzlich, wer wer ist.
+ */
+function seriesFor(view: View, mitDeutschland: boolean): LineSeries[] {
   const c = byLabel(view.id);
-  return {
-    series: [
-      { key: "ee", label: "Erneuerbare", colorToken: "--color-energy-cat-renewable", values: c.windsolar },
-      { key: "atom", label: "Atomkraft", colorToken: "--color-energy-nuclear", values: c.nuclear },
-    ],
-    // Kein Untertitel: Titel, Kennzahlen und die Zeile unter dem Chart sagen
-    // bereits, was gezeigt wird. Beim Zwei-Länder-Vergleich bleibt er, weil er
-    // dort die Farben erklärt — das ist eine Legende, keine Wiederholung.
-    sub: "",
-  };
+  const eigene: LineSeries[] = [
+    {
+      key: "ee",
+      label: "Erneuerbare",
+      flag: mitDeutschland ? view.flag : undefined,
+      colorToken: "--color-energy-cat-renewable",
+      values: c.windsolar,
+    },
+    {
+      key: "atom",
+      label: "Atomkraft",
+      flag: mitDeutschland ? view.flag : undefined,
+      colorToken: "--color-energy-nuclear",
+      values: c.nuclear,
+    },
+  ];
+  if (!mitDeutschland) return eigene;
+  return [
+    ...eigene,
+    { key: "de-ee", label: "Erneuerbare", flag: "🇩🇪", colorToken: "--color-accent", values: DEUTSCHLAND.windsolar },
+    { key: "de-atom", label: "Atomkraft", flag: "🇩🇪", colorToken: "--color-accent-light", values: DEUTSCHLAND.nuclear },
+  ];
 }
+
+/** Die beiden Kennzahlen der Karte — Reihenfolge wie im Chart. */
+const KENNZAHLEN = [
+  {
+    key: "ee",
+    label: "Erneuerbare",
+    colorToken: "--color-energy-cat-renewable",
+    werte: (c: (typeof ZUBAU_BY_COUNTRY)[number]) => c.windsolar,
+  },
+  {
+    key: "atom",
+    label: "Atomkraft",
+    colorToken: "--color-energy-nuclear",
+    werte: (c: (typeof ZUBAU_BY_COUNTRY)[number]) => c.nuclear,
+  },
+];
 
 const sum = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
 const fmtGw = (n: number) =>
   `${n < 0 ? "−" : ""}${Math.abs(Math.round(n)).toLocaleString("de-DE")} GW`;
 
+/**
+ * Wie sich Deutschland zum gewählten Land verhält — als Satzteil hinter dem
+ * deutschen Wert.
+ *
+ * Ein Faktor wird NUR gebildet, wenn er etwas bedeutet: Bei verschiedenen
+ * Vorzeichen (China baut Atomkraft zu, Deutschland hat abgebaut) beschreibt
+ * kein „×" die Lage, und nahe null wird jeder Faktor beliebig groß. Dann steht
+ * dort nur der Wert — lieber keine Einordnung als eine erfundene.
+ */
+export function vergleichZuDeutschland(land: number, de: number): string {
+  const NAHE_NULL = 1; // GW — darunter ist ein Verhältnis Rauschen
+  if (Math.abs(land) < NAHE_NULL || Math.abs(de) < NAHE_NULL) return "";
+  if (Math.sign(land) !== Math.sign(de)) return "";
+  const faktor = Math.abs(land) / Math.abs(de);
+  if (faktor >= 1.15) return `${faktor.toFixed(faktor >= 10 ? 0 : 1).replace(".", ",")}× weniger`;
+  if (faktor <= 1 / 1.15) return `${(1 / faktor).toFixed(faktor <= 0.1 ? 0 : 1).replace(".", ",")}× mehr`;
+  return "etwa gleich viel";
+}
+
 export default function ZubauWidget() {
   const [settings, setSettings] = useState<WidgetSettings>(WIDGET_SETTINGS_DEFAULTS);
   const [idx, setIdx] = useState(0); // Default: Welt
+  const [mitDeutschland, setMitDeutschland] = useState(false);
 
   useWidgetTheme({
     onSettings: (partial) => setSettings((prev) => ({ ...prev, ...partial })),
   });
 
   const view = VIEWS[idx];
-  const { series, sub } = useMemo(() => seriesFor(view), [view]);
-  // Wofür die Zahlen gelten, steht im Titel — für jede Ansicht gleich gebaut.
+  // Deutschland lässt sich zu jedem anderen Land dazulegen — bei Deutschland
+  // selbst wäre der Schalter sinnlos, dort verschwindet er.
+  const kannVergleichen = view.id !== DEUTSCHLAND.key;
+  const zeigtDeutschland = kannVergleichen && mitDeutschland;
+  const series = useMemo(() => seriesFor(view, zeigtDeutschland), [view, zeigtDeutschland]);
+  const land = byLabel(view.id);
   const titel = `Zubau ${view.label}: Erneuerbare vs. Atomkraft`;
 
   // Abgeleitet, nicht doppelt gepflegt: der Register-Titel plus das gewählte
   // Land — ohne es teilt man ein Bild, dessen Bezug niemand kennt.
-  const shareText =
-    view.kind === "compare"
-      ? "Zubau Wind + Solar: Deutschland vs. China"
-      : `${WIDGET.title} — ${view.label}`;
+  const shareText = zeigtDeutschland
+    ? `${WIDGET.title} — ${view.label} und Deutschland`
+    : `${WIDGET.title} — ${view.label}`;
 
   const chartExport = useChartExport({
     context: {
@@ -146,36 +189,38 @@ export default function ZubauWidget() {
         }}
         ref={chartExport.chartRef}
       >
-        {/* TopBar: Titel + Länder-Multitool */}
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 2 }}>
-          {/* Nicht umbrechen: Im Bild rendert die Aufnahme den Text etwas breiter
-              als die Messung — der Titel lief dann zweizeilig, während die Zeile
-              darunter auf ihrer gemessenen Höhe blieb, und beide lagen
-              übereinander. Der Titel ist kurz genug, dass er auf jeder
-              Kartenbreite in eine Zeile passt. */}
-          {/* Das Gebiet steht IM Titel — damit sagt schon die erste Zeile, wofür
-              die Zahlen gelten, und die Angabe steht nur einmal da.
-              Das Umbruchverhalten steckt in der Klasse (Embed-Layout): Auf einer
-              breiten Karte bleibt der Titel in einer Zeile, weil die Aufnahme
-              ihn sonst zweizeilig rendert, während die Zeile darunter auf ihrer
-              gemessenen Höhe bleibt — beide lagen dann übereinander. Auf einer
-              schmalen Karte MUSS er umbrechen dürfen: „Zubau Deutschland ↔
-              China: …" ragte sonst über den Rand, den die Karte abschneidet. */}
-          <div className="sc-chart-titel" style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2 }}>
-            {titel}
-          </div>
-          {/* Bleibt auch nach einem Umbruch rechts: sein Ausklapp-Menü ist an
-              der rechten Kante ausgerichtet, und links ausgerückt ragte es auf
-              schmalen Karten über den Rand — den die Karte abschneidet. */}
-          <span data-sc-export-ignore="" style={{ display: "inline-flex", marginLeft: "auto" }}>
+        {/* Die Überschrift steht FEST — sie ändert sich mit keiner Auswahl.
+            Vorher trug sie das gewählte Gebiet, und damit sprang bei jedem
+            Umschalten die ganze Karte: Der Titel wurde länger oder kürzer, auf
+            schmalen Karten wechselte er zwischen einer und zwei Zeilen, und
+            alles darunter rutschte mit. */}
+        <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2 }}>
+          Erneuerbare vs. Atomkraft
+        </div>
+
+        {/* Darunter das Veränderliche: „Zubau:" plus Wähler. Im Bild, wo es
+            keinen Wähler gibt, steht an seiner Stelle derselbe Satz als Text —
+            samt der Angabe, ob Deutschland eingeblendet ist. Was ein Umschalter
+            bestimmt, muss im geteilten Bild lesbar sein. */}
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginTop: 6, marginBottom: 12 }}>
+          <span style={{ fontSize: 12, color: "var(--widget-muted)" }}>Zubau:</span>
+          <span data-sc-export-ignore="" style={{ display: "inline-flex" }}>
             <CountryMultitool idx={idx} onChange={setIdx} />
           </span>
+          {/* Nicht umbrechen — sonst rutscht „Deutschland" in eine zweite Zeile
+              und liegt auf der Überschrift der Kennzahlen. Derselbe Grund wie
+              bei der Kachel-Beschriftung: Die Bildaufnahme rendert breiter, als
+              die Messung ergibt. */}
+          <ExportOnly style={{ fontSize: 12.5, fontWeight: 700, color: "var(--widget-fg)", whiteSpace: "nowrap" }}>
+            {view.flag} {view.label}
+            {zeigtDeutschland ? " · mit Deutschland" : ""}
+          </ExportOnly>
+          {kannVergleichen && (
+            <span data-sc-export-ignore="" style={{ display: "inline-flex", marginLeft: "auto" }}>
+              <DeutschlandSchalter an={mitDeutschland} onChange={setMitDeutschland} />
+            </span>
+          )}
         </div>
-        {sub && (
-          <div style={{ fontSize: 12, color: "var(--widget-muted)", marginBottom: 12, marginTop: 2 }}>
-            {sub}
-          </div>
-        )}
 
         {/* KPIs: Zubau-Summe über die ganze Reihe — Kreis = Farbcode, Zahl
             neutral, geboxt.
@@ -187,31 +232,51 @@ export default function ZubauWidget() {
         <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: "var(--widget-muted)", marginBottom: 6 }}>
           Zubau gesamt {ERSTES_JAHR}–{LETZTES_JAHR}
         </div>
+        {/* Zwei Kacheln, eine je Technik — auch im Vergleich. Deutschland steht
+            als Zeile IN der Kachel, nicht als eigene daneben: Vier Kacheln
+            zwingen zum Suchen, welche zu welchem Land gehört, und auf schmalen
+            Karten brechen sie in zwei Reihen um. */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 14 }}>
-          {series.map((s) => (
-            <div
-              key={s.key}
-              style={{
-                border: "1px solid var(--color-border)",
-                borderRadius: "var(--radius-sm)",
-                padding: "8px 12px",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
-                <span style={{ width: 6, height: 6, borderRadius: "50%", background: `var(${s.colorToken})`, flexShrink: 0 }} />
-                {/* Fahne und Wort bleiben zusammen: Die Bildaufnahme rendert
-                    das Emoji breiter als die Messung, das Wort rutschte dadurch
-                    in eine zweite Zeile — und die lag auf der Zahl darunter
-                    („Atom" quer durch „−20 GW"). */}
-                <span style={{ fontSize: 11, color: "var(--widget-muted)", whiteSpace: "nowrap" }}>
-                  {(s.flag ? s.flag + " " : "") + s.label}
-                </span>
+          {KENNZAHLEN.map((k) => {
+            const eigen = sum(k.werte(land));
+            const de = sum(k.werte(DEUTSCHLAND));
+            const verhaeltnis = zeigtDeutschland ? vergleichZuDeutschland(eigen, de) : "";
+            return (
+              <div
+                key={k.key}
+                style={{
+                  border: "1px solid var(--color-border)",
+                  borderRadius: "var(--radius-sm)",
+                  padding: "8px 12px",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: `var(${k.colorToken})`, flexShrink: 0 }} />
+                  {/* Fahne und Wort bleiben zusammen: Die Bildaufnahme rendert
+                      das Emoji breiter als die Messung, das Wort rutschte dadurch
+                      in eine zweite Zeile — und die lag auf der Zahl darunter
+                      („Atom" quer durch „−20 GW"). */}
+                  <span style={{ fontSize: 11, color: "var(--widget-muted)", whiteSpace: "nowrap" }}>
+                    {zeigtDeutschland ? `${view.flag} ` : ""}
+                    {k.label}
+                  </span>
+                </div>
+                <div style={{ fontFamily: "var(--font-mono)", fontSize: 18, fontWeight: 800, lineHeight: 1, color: "var(--widget-fg)" }}>
+                  {fmtGw(eigen)}
+                </div>
+                {zeigtDeutschland && (
+                  <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginTop: 6, whiteSpace: "nowrap" }}>
+                    <span style={{ fontFamily: "var(--font-mono)", fontSize: 12.5, fontWeight: 700, color: "var(--color-accent)" }}>
+                      🇩🇪 {fmtGw(de)}
+                    </span>
+                    {verhaeltnis && (
+                      <span style={{ fontSize: 11, color: "var(--widget-muted)" }}>· {verhaeltnis}</span>
+                    )}
+                  </div>
+                )}
               </div>
-              <div style={{ fontFamily: "var(--font-mono)", fontSize: 18, fontWeight: 800, lineHeight: 1, color: "var(--widget-fg)" }}>
-                {fmtGw(sum(s.values))}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div style={{ position: "relative", paddingRight: 18 }}>
@@ -253,6 +318,45 @@ export default function ZubauWidget() {
 
 // Länder-Multitool: ‹ [Dropdown] › — einzeln durchsteppbar, wie der
 // Jahreswähler im Strommix-Widget.
+/**
+ * „Deutschland dazu" — ein Schalter, kein eigener Eintrag im Länderwähler.
+ *
+ * Vorher gab es eine feste Ansicht „Deutschland ↔ China". Die beantwortete
+ * genau eine Frage; jede andere (Deutschland gegen Indien, gegen die USA) war
+ * nicht zu stellen, und im Wähler stand ein Eintrag, der etwas ganz anderes war
+ * als seine sechs Nachbarn.
+ */
+function DeutschlandSchalter({ an, onChange }: { an: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <button
+      type="button"
+      onClick={() => onChange(!an)}
+      aria-pressed={an}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        height: 30,
+        padding: "0 10px",
+        fontSize: 12,
+        fontWeight: 600,
+        fontFamily: "inherit",
+        cursor: "pointer",
+        whiteSpace: "nowrap",
+        borderRadius: "var(--radius-sm)",
+        border: `1px solid ${an ? "var(--color-accent)" : "var(--color-border)"}`,
+        // Angeschaltet trägt der Knopf die Farbe, in der Deutschland im Chart
+        // gezeichnet wird — so ist ohne Legende klar, welche Linien dazugehören.
+        background: an ? "color-mix(in srgb,var(--widget-accent) 12%,transparent)" : "var(--widget-bg)",
+        color: an ? "var(--color-accent)" : "var(--widget-fg)",
+      }}
+    >
+      <span aria-hidden="true">🇩🇪</span>
+      <span>{an ? "eingeblendet" : "vergleichen"}</span>
+    </button>
+  );
+}
+
 function CountryMultitool({ idx, onChange }: { idx: number; onChange: (i: number) => void }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);

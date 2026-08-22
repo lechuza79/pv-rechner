@@ -11,6 +11,7 @@ import {
   ZUBAU_BY_COUNTRY,
   COUNTRY_COMPARE_META,
 } from "../country-comparison";
+import { vergleichZuDeutschland } from "../../app/(embed)/embed/zubau-erneuerbare-atom/client";
 
 // Die Länderreihen werden erzeugt (scripts/ember-laender-sync.ts), nicht
 // gepflegt. Geprüft wird deshalb, was ein Lauf kaputt machen kann: eine Reihe,
@@ -96,5 +97,40 @@ describe("Länderreihen und ihre Jahresachsen", () => {
     // hätte die Summe darunter ein Jahr mehr enthalten als die Überschrift nennt.
     expect(client).not.toMatch(/Zubau gesamt \d{4}/);
     expect(client).toContain("{ERSTES_JAHR}–{LETZTES_JAHR}");
+  });
+
+  it("die Überschrift des Widgets hängt an keiner Auswahl", () => {
+    const client = readFileSync(
+      join(process.cwd(), "app/(embed)/embed/zubau-erneuerbare-atom/client.tsx"),
+      "utf8",
+    );
+    // Sie trug einmal das gewählte Gebiet — dann sprang bei jedem Umschalten die
+    // ganze Karte, weil der Titel länger oder kürzer wurde und auf schmalen
+    // Karten zwischen einer und zwei Zeilen wechselte. Das Veränderliche steht
+    // seitdem in der Zeile darunter, beim Wähler.
+    // Der Text steht als fester Inhalt im Markup, nicht als Platzhalter.
+    expect(client).toMatch(/>\s*\n\s*Erneuerbare vs\. Atomkraft\s*\n\s*<\/div>/);
+  });
+});
+
+describe("Deutschland im Vergleich", () => {
+  it("nennt den Faktor, wenn er etwas bedeutet", () => {
+    // China 1.825 GW gegen Deutschland 148 GW.
+    expect(vergleichZuDeutschland(1825, 148)).toBe("12× weniger");
+    // Und andersherum, wenn Deutschland vorn liegt.
+    expect(vergleichZuDeutschland(53, 148)).toBe("2,8× mehr");
+  });
+
+  it("schweigt, wo ein Faktor nichts beschreibt", () => {
+    // Verschiedene Vorzeichen: China baut Atomkraft zu, Deutschland hat
+    // abgebaut. „× weniger" wäre hier keine Aussage, sondern eine Verdrehung.
+    expect(vergleichZuDeutschland(53, -20)).toBe("");
+    // Nahe null wird jedes Verhältnis beliebig groß.
+    expect(vergleichZuDeutschland(120, 0.4)).toBe("");
+    expect(vergleichZuDeutschland(0, 148)).toBe("");
+  });
+
+  it("nennt Gleichstand als solchen", () => {
+    expect(vergleichZuDeutschland(150, 148)).toBe("etwa gleich viel");
   });
 });
