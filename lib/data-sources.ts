@@ -259,7 +259,17 @@ export const DATA_SOURCES = {
  * Kürzung überleben, weil die Lizenzen sie verlangen: WER die Daten
  * bereitstellt, unter WELCHER Lizenz, und DASS wir sie verändert haben.
  */
-export function sourceLabel(source: DataSource): string {
-  const withLicense = source.license ? `${source.name}, ${source.license}` : source.name;
+export function sourceLabel(source: DataSource, { kurz = false } = {}): string {
+  // `kurz` tauscht NUR den Namen gegen die Kurzform — Lizenz und
+  // Änderungshinweis bleiben, weil beide Lizenzbestandteile sind.
+  //
+  // Die Quellenkante baute ihre Kurzform bis 22.08.2026 selbst zusammen
+  // (`shortName` + Lizenz) und ließ dabei den Änderungshinweis weg, direkt
+  // unter einem Kommentar, der das Gegenteil versprach. Getroffen hat es das
+  // BKG — als einzige Quelle mit Kurzform trägt es „Daten verändert", und
+  // genau das verlangt dl-de/by-2-0. Der Fehler wäre bei jeder neuen Quelle
+  // mit Kurzform wiedergekommen.
+  const name = (kurz && source.shortName) || source.name;
+  const withLicense = source.license ? `${name}, ${source.license}` : name;
   return source.note ? `${withLicense}, ${source.note}` : withLicense;
 }

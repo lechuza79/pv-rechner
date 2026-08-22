@@ -99,6 +99,25 @@ describe("Quellenangaben", () => {
     expect(rumpf, "fetchSpotPrices liefert ungeprüfte Börsenpreise aus").toContain("spotPreisFreigegeben");
   });
 
+  it("die Kurzform kürzt den NAMEN, nie die Lizenz oder den Änderungshinweis", () => {
+    // Die Quellenkante am Widget-Rand und der Bild-Fuß bauten ihre Kurzform
+    // selbst: shortName + Lizenz — und ließen den Änderungshinweis weg, unter
+    // einem Kommentar, der versprach, er bleibe "in jedem Fall" stehen. Das
+    // traf das BKG ("Daten verändert", von dl-de/by-2-0 verlangt) und hätte
+    // jede neue Quelle mit Kurzform ebenso getroffen.
+    for (const [schluessel, q] of Object.entries(DATA_SOURCES)) {
+      const quelle = q as { license?: string; note?: string };
+      const kurz = sourceLabel(quelle as never, { kurz: true });
+      if (quelle.license) expect(kurz, `${schluessel}: Lizenz fehlt in der Kurzform`).toContain(quelle.license);
+      if (quelle.note) expect(kurz, `${schluessel}: Änderungshinweis fehlt in der Kurzform`).toContain(quelle.note);
+    }
+
+    // Und die Kurzform wird auch wirklich benutzt, statt an der Kante erneut
+    // von Hand zusammengesetzt zu werden.
+    const quelle = readFileSync(join(wurzel, "components/WidgetExport.tsx"), "utf8");
+    expect(quelle, "Kante baut die Kurzform wieder selbst zusammen").not.toMatch(/\$\{s\.shortName\}/);
+  });
+
   it("Destatis nennt die tatsächliche Erlaubnis statt einer erfundenen Lizenz", () => {
     expect((DATA_SOURCES.destatis as { license?: string }).license).toBeUndefined();
     expect(sourceLabel(DATA_SOURCES.destatis)).toContain("mit Quellennachweis gestattet");

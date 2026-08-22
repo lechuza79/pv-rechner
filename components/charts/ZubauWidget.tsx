@@ -175,7 +175,7 @@ export default function ZubauWidget({
     context: {
       title: WIDGET_TITLE,
       subtitle: WIDGET_SUBLINE,
-      source: ZUBAU_WIDGET_SOURCES.map(sourceLabel).join(" · "),
+      source: ZUBAU_WIDGET_SOURCES.map((q) => sourceLabel(q)).join(" · "),
     },
     filename: "solar-check-pv-zubau-deutschland",
     shareText: WIDGET.shareText,

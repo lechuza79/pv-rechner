@@ -30,7 +30,7 @@ function heute(): string {
 }
 
 export function citeHtml(widget: WidgetDef, datum: string): string {
-  const quellen = widget.sources.map(sourceLabel).join(" · ");
+  const quellen = widget.sources.map((q) => sourceLabel(q)).join(" · ");
   return (
     `<p>Grafik: <a href="${widget.shareUrl}">${widget.title}</a> — ` +
     `<a href="https://${SITE}">${SITE}</a>, ` +
@@ -44,7 +44,7 @@ export function citeHtml(widget: WidgetDef, datum: string): string {
 // HTML-Fassung erfüllt das der gesetzte Link — im Klartext (Print, PDF, Folie)
 // gibt es keinen, also muss die Adresse ausgeschrieben dastehen.
 export function citePlain(widget: WidgetDef, datum: string): string {
-  const quellen = widget.sources.map(sourceLabel).join(" · ");
+  const quellen = widget.sources.map((q) => sourceLabel(q)).join(" · ");
   return (
     `${widget.title}. ${SITE}, ${LIZENZ} (${LIZENZ_URL}). ` +
     `Datenquelle: ${quellen}. Abgerufen am ${datum}. ${widget.shareUrl}`
