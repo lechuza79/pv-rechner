@@ -1,0 +1,73 @@
+# Energy-Charts API
+
+> European electricity data (production, forecasts, day-ahead prices, cross-border exchange, renewable shares, grid frequency) by energy-charts.info / Fraunhofer ISE. Every data endpoint returns the same self-describing envelope: ISO 8601 timestamps in the stated `timezone`, series identified by the ids listed in `series`, units and resolution declared inline, and `available_from` / `available_until` marking the span that actually contains data. Timestamps always mark the START of the period they refer to, with one exception: installed_power, where values represent the state at the END of the labelled year or month.
+
+Base URL: http://api.energy-charts.info
+
+## Docs
+
+- [Machine-readable endpoint catalog](http://api.energy-charts.info/v2): JSON directory of all v2 endpoints with parameters, accepted values and defaults
+- [OpenAPI 3 schema](http://api.energy-charts.info/openapi.json)
+- [Interactive documentation](http://api.energy-charts.info/)
+- [Full endpoint reference](http://api.energy-charts.info/llms-full.txt): complete parameter documentation for every endpoint
+
+## Usage conventions
+
+- Prefer the `/v2/...` endpoints: one uniform JSON envelope, interpretable without external documentation. The v1 endpoints (same names without the `/v2` prefix) return compact columnar JSON (`unix_seconds` + parallel value arrays) and remain supported.
+- Timestamps in v2 responses are ISO 8601 with UTC offset in the stated `timezone` and always mark the START of the period they refer to. Single exception: `installed_power`, where the timestamp labels the reporting year or month and values represent the installed power at the END of that period (or the net change during it, with installation_decommission=true). `series[*].id` are the keys of every `data[*].values` record; series entries carry `unit` or `description` only where they differ from the envelope level. Units and resolution are declared inline; `null` values mean "not (yet) available". `available_from`/`available_until` span the records that actually contain data at generation time.
+- `start`/`end` query parameters accept ISO 8601 (`2026-01-01T17:00Z`), a date (`2026-01-01`, interpreted in the local timezone of the country / bidding zone) or unix seconds (`1767222000`). Omitted `start` defaults to today, omitted `end` to `start`.
+- Requests are rate limited per IP and endpoint; on HTTP 429, wait and retry (honour the `Retry-After` header) and cache results on your side. Identical requests are served from a short-lived server-side cache.
+- Data license: CC BY 4.0 with attribution to energy-charts.info unless the response's `license` field states otherwise (day-ahead prices carry their license per bidding zone; several zones are CC BY 4.0 from Bundesnetzagentur | SMARD.de, all others are restricted to private and internal use).
+
+## Response envelope (all /v2 endpoints)
+
+```json
+{
+  "schema_version": "2.0",
+  "endpoint": "public_power",
+  "country": "de",
+  "timezone": "Europe/Berlin",
+  "resolution": "PT15M",
+  "interval_minutes": 15,
+  "unit": "MW",
+  "generated_at": "2026-07-20T19:45:00+02:00",
+  "available_from": "2026-07-20T00:00:00+02:00",
+  "available_until": "2026-07-20T19:30:00+02:00",
+  "series": [{"id": "solar", "name": "Solar"},
+             {"id": "renewable_share_of_load", "name": "Renewable share of load", "unit": "%"}],
+  "data": [{"timestamp": "2026-07-20T12:00:00+02:00", "values": {"solar": 42135.7, "renewable_share_of_load": 61.4}}],
+  "attributes": {},
+  "license": "CC BY 4.0 (creativecommons.org/licenses/by/4.0), attribution: energy-charts.info",
+  "deprecated": false
+}
+```
+
+## Endpoints
+
+- [GET /v2/cbet](http://api.energy-charts.info/v2/cbet): Cross-border electricity trading (scheduled commercial exchanges). Params: country, start, end.
+- [GET /v2/cbpf](http://api.energy-charts.info/v2/cbpf): Cross-border physical flows. Params: country, start, end.
+- [GET /v2/frequency](http://api.energy-charts.info/v2/frequency): Grid frequency (RG Continental Europe), 1 second resolution. Params: region, start, end.
+- [GET /v2/installed_power](http://api.energy-charts.info/v2/installed_power): Installed power per production type. Params: country, time_step, installation_decommission.
+- [GET /v2/price](http://api.energy-charts.info/v2/price): Day-ahead spot market price. Params: bzn, start, end.
+- [GET /v2/price_current](http://api.energy-charts.info/v2/price_current): Day-ahead spot market price of the current interval. Params: bzn.
+- [GET /v2/price_next_day](http://api.energy-charts.info/v2/price_next_day): Day-ahead spot market price for the next day. Params: bzn.
+- [GET /v2/public_power](http://api.energy-charts.info/v2/public_power): Public net electricity production per production type. Params: country, start, end, subtype.
+- [GET /v2/public_power_forecast](http://api.energy-charts.info/v2/public_power_forecast): Forecast of public net electricity production or load. Params: country, production_type, forecast_type, start, end.
+- [GET /v2/ren_share_daily_avg](http://api.energy-charts.info/v2/ren_share_daily_avg): Average daily renewable share of load. Params: country, year.
+- [GET /v2/ren_share_forecast](http://api.energy-charts.info/v2/ren_share_forecast): Renewable share of load forecast. Params: country.
+- [GET /v2/signal](http://api.energy-charts.info/v2/signal): Electricity traffic signal (renewable share of load). Params: country, postal_code.
+- [GET /v2/solar_share](http://api.energy-charts.info/v2/solar_share): Solar share of load. Params: country.
+- [GET /v2/solar_share_daily_avg](http://api.energy-charts.info/v2/solar_share_daily_avg): Average daily solar share of load. Params: country, year.
+- [GET /v2/total_power](http://api.energy-charts.info/v2/total_power): Total net electricity production (incl. industrial self supply). Params: country, start, end.
+- [GET /v2/wind_offshore_share](http://api.energy-charts.info/v2/wind_offshore_share): Wind offshore share of load. Params: country.
+- [GET /v2/wind_offshore_share_daily_avg](http://api.energy-charts.info/v2/wind_offshore_share_daily_avg): Average daily wind offshore share of load. Params: country, year.
+- [GET /v2/wind_onshore_share](http://api.energy-charts.info/v2/wind_onshore_share): Wind onshore share of load. Params: country.
+- [GET /v2/wind_onshore_share_daily_avg](http://api.energy-charts.info/v2/wind_onshore_share_daily_avg): Average daily wind onshore share of load. Params: country, year.
+
+## country values
+
+ch, eu, all, at, ba, be, bg, cy, cz, de, dk, ee, es, fi, fr, ge, gr, hr, hu, ie, it, lt, lu, lv, md, me, mk, nl, no, pl, pt, ro, rs, se, si, sk, ua, uk, xk
+
+## bzn values (bidding zones)
+
+DE-LU, AT, BE, BG, CH, CZ, DK1, DK2, EE, ES, FI, FR, GR, HR, HU, IT-Calabria, IT-Centre-North, IT-Centre-South, IT-North, IT-SACOAC, IT-SACODC, IT-Sardinia, IT-Sicily, IT-South, LT, LV, ME, NL, NO1, NO2, NO2NSL, NO3, NO4, NO5, PL, PT, RO, RS, SE1, SE2, SE3, SE4, SI, SK, DE-AT-LU, IE(SEM), UA-IPS, UA-BEI, IT-Brindisi, IT-Foggia, IT-GR, IT-North-AT, IT-North-CH, IT-North-SI, IT-North-FR, IT-Priolo, IT-Rossano

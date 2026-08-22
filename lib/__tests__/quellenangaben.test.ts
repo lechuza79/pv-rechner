@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { DATA_SOURCES, sourceLabel } from "../data-sources";
+import { spotPreisFreigegeben } from "../energy-api";
 import { OWN_WORK_LICENSE } from "../license";
 import { allWidgets, embedExamplePath } from "../widget-registry";
 
@@ -45,6 +46,57 @@ describe("Quellenangaben", () => {
     // Die schmale Kante wirft Klammer-Zusätze weg — das Bezugsjahr darf sie
     // nicht mitnehmen, deshalb die Kurzform.
     expect(bkg.shortName).toContain("(");
+  });
+
+  it("jede CC-BY-Quelle verweist auf den Lizenztext", () => {
+    // CC BY 4.0 Sec. 3(a)(1)(A)(iii) + 3(a)(2): Der Vermerk muss auf die Lizenz
+    // verweisen; ein Link auf die Lizenzressource genügt. Der Vermerk rendert
+    // die Lizenz aber nur dann als Link, wenn licenseUrl gesetzt ist
+    // (components/PoweredBy.tsx) — ohne sie steht die Pflichtangabe als toter
+    // Text da. Energy-Charts und Ember fehlte sie bis zum 22.08.2026,
+    // ausgerechnet den beiden Quellen hinter den meisten Widgets.
+    for (const [schluessel, q] of Object.entries(DATA_SOURCES)) {
+      const quelle = q as { license?: string; licenseUrl?: string };
+      if (quelle.license !== "CC BY 4.0") continue;
+      expect(quelle.licenseUrl, `${schluessel}: Lizenzadresse fehlt`).toBe(OWN_WORK_LICENSE.url);
+    }
+  });
+
+  it("wo wir CC-BY-Daten verändern, steht der Änderungshinweis dran", () => {
+    // Sec. 3(a)(1)(B) verlangt die Angabe, DASS verändert wurde — aber nur
+    // dann, wenn wirklich verändert wird. Deshalb eine benannte Liste mit
+    // Grund statt einer Pauschalregel für alle CC-BY-Quellen: Eine Quelle, die
+    // wir unverändert durchreichen, dürfte den Hinweis gar nicht tragen. Er
+    // wäre dann eine falsche Angabe — derselbe Fehlertyp wie ein erfundenes
+    // Prüfdatum, nur in die andere Richtung.
+    const veraendert: Record<string, string> = {
+      energyCharts: "Viertelstunden zu Wochenwerten gemittelt; nuclear-import.ts leitet eine Größe ab, die so nicht geliefert wird",
+      ember: "Länderreihen werden bei jedem Sync neu gerechnet",
+      openMeteo: "cdhFromDailyMinMax bildet aus Tages-Min/Max einen synthetischen Tagesgang",
+    };
+    for (const [schluessel, grund] of Object.entries(veraendert)) {
+      const quelle = DATA_SOURCES[schluessel as keyof typeof DATA_SOURCES] as { note?: string };
+      expect(quelle.note, `${schluessel}: Änderungshinweis fehlt — ${grund}`).toBeTruthy();
+    }
+  });
+
+  it("Börsenpreise werden an der Antwort geprüft, nicht an einer getippten Zonenliste", () => {
+    // Energy-Charts liefert /price NICHT pauschal unter CC BY: für einen Teil
+    // der Gebotszonen ist die Nutzung "in its raw or derived form, for external
+    // or commercial purposes … expressly prohibited". Die Doku-Liste der
+    // CC-BY-Zonen ist dabei veraltet — IT-North steht dort und antwortet live
+    // restriktiv (geprüft 22.08.2026). Wer die Liste in den Code tippt, baut
+    // den Fehler ein, den die Prüfung verhindern soll.
+    expect(spotPreisFreigegeben("CC BY 4.0 (creativecommons.org/licenses/by/4.0) from Bundesnetzagentur | SMARD.de")).toBe(true);
+    expect(spotPreisFreigegeben("The data provided herein is for private and internal use only. ...")).toBe(false);
+    // Fehlt die Angabe ganz, wird nicht ausgeliefert — die vorsichtige Richtung.
+    expect(spotPreisFreigegeben(undefined)).toBe(false);
+    expect(spotPreisFreigegeben("")).toBe(false);
+
+    const quelle = readFileSync(join(wurzel, "lib/energy-api.ts"), "utf8");
+    const ab = quelle.slice(quelle.indexOf("export async function fetchSpotPrices"));
+    const rumpf = ab.slice(0, ab.indexOf("\n}"));
+    expect(rumpf, "fetchSpotPrices liefert ungeprüfte Börsenpreise aus").toContain("spotPreisFreigegeben");
   });
 
   it("Destatis nennt die tatsächliche Erlaubnis statt einer erfundenen Lizenz", () => {
