@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useRouter, useSearchParams, type ReadonlyURLSearchParams } from "next/navigation";
 import Link from "next/link";
 import { PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, SPEICHER, INSULATION_BESTAND, SCENARIOS, type Heizsystem } from "../../../lib/constants";
@@ -211,9 +211,24 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
   // here; the URL syncs once the input is a full PLZ.
   const [plzInput, setPlzInput] = useState(plz);
 
+  // Der zuletzt GESCHRIEBENE Stand der Adresse — nicht der zuletzt gelesene.
+  //
+  // `router.replace` wirkt erst im nächsten Render; bis dahin liefert
+  // `searchParams` weiter den alten Stand. Zwei Schreibvorgänge in EINEM Klick
+  // bauten deshalb beide auf demselben alten Stand auf, und der zweite machte
+  // den ersten rückgängig: Ein Klick auf „Flachdach" setzt die Dachform UND
+  // nimmt die Neigung zurück — die Dachform verschwand dabei aus der Adresse
+  // und fiel still auf den Vorgabewert Satteldach zurück (gemessen am
+  // 22.08.2026: nach dem Klick stand wieder „Satteldach" in der Zeile und die
+  // Dachfläche rechnete mit dem Satteldach-Faktor). Dieselbe Fehlerklasse hatte
+  // fetchPvgis unten schon einmal von Hand umgangen, indem es die PLZ eigens
+  // mitgab; über diesen Stand braucht es das nicht mehr.
+  const geschriebeneParams = useRef(searchParams.toString());
+  useEffect(() => { geschriebeneParams.current = searchParams.toString(); }, [searchParams]);
+
   // Patch the URL — drops keys whose value equals the default (keeps URLs short).
   const updateUrl = useCallback((updates: Record<string, string | number | null>) => {
-    const next = new URLSearchParams(searchParams.toString());
+    const next = new URLSearchParams(geschriebeneParams.current);
     for (const [key, value] of Object.entries(updates)) {
       if (value === null || value === "" || value === undefined) {
         next.delete(key);
@@ -221,8 +236,9 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
         next.set(key, String(value));
       }
     }
+    geschriebeneParams.current = next.toString();
     router.replace(`/pv-bedarf-berechnen?${next.toString()}`, { scroll: false });
-  }, [searchParams, router]);
+  }, [router]);
 
   // Setters — each writes back to the URL with speaking slugs
   // Defaults werden weggelassen → kurze URLs
@@ -292,9 +308,10 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
       const data = await res.json();
       if (data.monthly && data.monthly.length === 12) setMonthlyProfile(data.monthly);
       if (data.annual && data.annual >= 700 && data.annual <= 1400) {
-        // Write PLZ + Ertrag together: this runs after an async await, so the
-        // updateUrl closure here predates setPlz and would otherwise drop the
-        // freshly-set PLZ from the URL. Passing inputPlz keeps both in sync.
+        // PLZ und Ertrag zusammen schreiben: Der Abruf startet auch aus dem
+        // Aufbau heraus (geteilte Adresse mit PLZ, aber ohne Ertrag), wo es
+        // vorher gar kein setPlz gab. Die PLZ hier mitzugeben ist deshalb keine
+        // Umgehung mehr, sondern die vollständige Angabe.
         updateUrl({ plz: inputPlz, ertrag: data.annual });
         setPlzSource(data.source);
       }

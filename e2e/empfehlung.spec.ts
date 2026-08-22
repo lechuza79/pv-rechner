@@ -39,3 +39,48 @@ test("Empfehlung flow ends on a recommendation with kWp + storage suggestion", a
   // Must contain a kWp recommendation
   expect(bodyText).toMatch(/\d+(\.\d+)?\s*kWp/);
 });
+
+// Ein Klick, mehrere Werte in der Adresse — die dürfen sich nicht gegenseitig
+// löschen. Der Zustand dieses Flows lebt vollständig in der Adresse; ein
+// Schreibvorgang, der auf dem vorletzten Stand aufsetzt, nimmt den letzten
+// stillschweigend zurück. Gemessen am 22.08.2026 auf der Produktion: Ein Klick
+// auf „Flachdach" setzt die Dachform UND nimmt die Neigung zurück — danach
+// stand wieder „Satteldach" in der eingeklappten Zeile, und die nutzbare
+// Dachfläche rechnete mit dem Satteldach-Faktor.
+//
+// Geprüft wird an der eingeklappten Zeile, also dort, wo ein Nutzer es sieht —
+// die Adresse allein wäre nur der halbe Beweis.
+test.describe("Ein Klick darf keine andere Antwort aus der Adresse werfen", () => {
+  const dachformZeile = (page: import("@playwright/test").Page) =>
+    page.getByRole("button", { name: /^Dachform/ });
+
+  test("Dachform überlebt den Klick, der zugleich die Neigung zurücknimmt", async ({ page }) => {
+    await page.goto("/pv-bedarf-berechnen?haus=reihenhaus");
+
+    await page.getByRole("button", { name: "Flachdach", exact: true }).click();
+
+    await expect(dachformZeile(page)).toContainText("Flachdach");
+    await expect(page).toHaveURL(/dach=flachdach/);
+    // Was vorher in der Adresse stand, bleibt ebenfalls stehen.
+    await expect(page).toHaveURL(/haus=reihenhaus/);
+  });
+
+  test("Dachform überlebt auch den Wechsel, der zusätzlich die Nord-Ausrichtung verwirft", async ({ page }) => {
+    await page.goto("/pv-bedarf-berechnen");
+
+    // Satteldach + Nord: Nord ist auf einem aufgeständerten Dach keine Wahl —
+    // der Wechsel darauf schreibt deshalb gleich dreimal in die Adresse.
+    await page.getByRole("button", { name: "Satteldach", exact: true }).click();
+    await page.getByRole("button", { name: "Nord", exact: true }).click();
+
+    await dachformZeile(page).click();
+    await page.getByRole("button", { name: "Flachdach", exact: true }).click();
+
+    await expect(dachformZeile(page)).toContainText("Flachdach");
+    await expect(page).toHaveURL(/dach=flachdach/);
+    // Die Nord-Ausrichtung ist verworfen und die Frage wieder offen — sonst
+    // rechnete der Flow still mit dem Bestfall weiter.
+    await expect(page).not.toHaveURL(/az=nord/);
+    await expect(page.getByRole("button", { name: "Süd", exact: true })).toBeVisible();
+  });
+});
