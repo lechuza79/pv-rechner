@@ -92,25 +92,26 @@ async function holeSeite(url: string): Promise<{ html: string } | { fehler: stri
 type Kandidat = { id: string; name: string; website: string | null; einwohner: number };
 
 /**
- * Die Grundgesamtheit der Erhebung — und die Regel dafür steht hier, nicht in
- * einer Notiz: ein integrierter Versorger (nicht erkennbar Netzgesellschaft),
- * mit Website, dessen Gebiet zwischen 10.000 und 150.000 Einwohnern liegt.
+ * Erkennt eine Netzgesellschaft am Firmennamen. Sie wird NUR aus der Stichprobe
+ * herausgehalten, nicht aus der Vollerhebung.
  *
- * Bewusst NICHT die Spitze der Rangfolge aus der Adressen-Recherche: Deren
- * Gewichte sind eine unkalibrierte Hypothese, und für die Frage "erreichen wir
- * den Vertrieb?" trägt eine begründete Auswahl plausibler Ziele genauso weit.
- * Die Rangfolge nach oben zu bestätigen wäre ein Zirkelschluss.
+ * Die Stichprobe zieht bewusst nicht aus der Spitze der Rangfolge der
+ * Adressen-Recherche: Deren Gewichte sind eine unkalibrierte Hypothese, und die
+ * Rangfolge an ihrer eigenen Spitze zu prüfen wäre ein Zirkelschluss. Sie zieht
+ * stattdessen plausible Ziele — integriert, mit Website, 10.000 bis 150.000
+ * Einwohner im Gebiet.
+ *
+ * KEIN führendes \b im Muster: Die Firmen heißen "Energienetze Weimar",
+ * "Elektrizitätsnetze Allgäu", "Kommunale Energienetze Inn-Salzach" — das Wort
+ * steht als hinterer Teil eines zusammengesetzten Worts, und davor gibt es
+ * keine Wortgrenze. Mit \b davor rutschten in der ersten Stichprobe DREI von
+ * zwanzig durch (gemessen 23.08.2026). Das ist keine Randnotiz: Ein
+ * Netzbetreiber beliefert niemanden und schuldet deshalb gar keine
+ * Stromkennzeichnung — wer ihn mitzählt, misst eine Lücke, die keine ist.
  */
-// KEIN führendes \b: Die Firmen heißen "Energienetze Weimar",
-// "Elektrizitätsnetze Allgäu", "Kommunale Energienetze Inn-Salzach" — das Wort
-// steht als hinterer Teil eines zusammengesetzten Worts, und davor gibt es
-// keine Wortgrenze. Mit \b davor rutschten in der ersten Stichprobe DREI von
-// zwanzig durch (gemessen 23.08.2026). Sie sind hier keine Randnotiz: Ein
-// Netzbetreiber beliefert niemanden und schuldet deshalb gar keine
-// Stromkennzeichnung — wer sie mitzählt, misst eine Lücke, die keine ist.
 const NETZGESELLSCHAFT = /netze?\b|netzbetrieb|verteilnetz|hochspannungsnetz|netzgesellschaft/i;
 
-async function kandidaten(db: SupabaseLike): Promise<Kandidat[]> {
+async function kandidaten(db: SupabaseLike, nurStichprobe: boolean): Promise<Kandidat[]> {
   const versorger: { id: string; name: string; website: string | null }[] = [];
   for (let from = 0; ; from += 1000) {
     const { data, error } = await db.from("utilities").select("id,name,website").range(from, from + 999);
@@ -140,10 +141,21 @@ async function kandidaten(db: SupabaseLike): Promise<Kandidat[]> {
     summe.set(z.utility_id, (summe.get(z.utility_id) ?? 0) + (einwohnerJeGemeinde.get(z.commune_id) ?? 0));
   }
 
-  return versorger
-    .map((v) => ({ ...v, einwohner: summe.get(v.id) ?? 0 }))
-    .filter((v) => !!v.website && !NETZGESELLSCHAFT.test(v.name) && v.einwohner >= 10_000 && v.einwohner <= 150_000)
-    .sort((a, b) => a.id.localeCompare(b.id)); // stabil, damit ein zweiter Lauf dieselbe Stichprobe trifft
+  const mitGebiet = versorger.map((v) => ({ ...v, einwohner: summe.get(v.id) ?? 0 })).filter((v) => !!v.website);
+
+  // Die VOLLERHEBUNG nimmt jeden mit Website — auch die Netzgesellschaften und
+  // die ganz kleinen. Das ist die Lehre aus der Adressen-Recherche vom
+  // 22.08.2026: Ein Filter wirft weg, eine Rangfolge sortiert. Wer hier schon
+  // aussiebt, kann die Frage "wen können wir ansprechen?" später nicht mehr
+  // stellen, ohne alles neu abzurufen. Bei einer Netzgesellschaft ist die
+  // fehlende Stromkennzeichnung sogar der BEFUND — sie beliefert niemanden.
+  if (nurStichprobe) {
+    return mitGebiet
+      .filter((v) => !NETZGESELLSCHAFT.test(v.name) && v.einwohner >= 10_000 && v.einwohner <= 150_000)
+      .sort((a, b) => a.id.localeCompare(b.id)); // stabil: ein zweiter Lauf trifft dieselben
+  }
+  // Größte zuerst — bricht der Lauf ab, sind die wichtigsten schon erhoben.
+  return mitGebiet.sort((a, b) => b.einwohner - a.einwohner);
 }
 
 /** Roher Text einer Datei (Sitemaps sind XML, nicht HTML — `holeSeite` würde sie
@@ -281,7 +293,7 @@ async function main(): Promise<void> {
   const stichtag = new Date();
 
   const db = await makeClient();
-  const liste = (await kandidaten(db)).slice(0, n === Infinity ? undefined : n);
+  const liste = (await kandidaten(db, !alle)).slice(0, n === Infinity ? undefined : n);
   log(`${liste.length} Versorger in der Erhebung (Pflichtjahr nach § 42: ${pflichtjahr(stichtag)})`);
   log(schreiben ? "Modus: messen UND schreiben" : "Modus: nur messen (--schreiben zum Speichern)");
   log("");
