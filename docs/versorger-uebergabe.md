@@ -60,3 +60,9 @@ Recherche, bevor mit einem echten Versorger gesprochen wurde.
 
 docs/versorger-geschaeftsmodell.md · docs/versorger-adressen-recherche.md ·
 docs/versorger-preisstrategie.md
+
+## Nachtrag
+
+docs/versorger-fachpresse.md — Fachpresse und Presseverteiler, mit einem
+belegten Praezedenzfall: Ein Wettbewerber hat mit genau unserer Datenstory
+dreimal redaktionelle Berichterstattung bekommen, ohne zu zahlen.
