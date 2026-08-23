@@ -39,7 +39,25 @@ concurrency:
 jobs:
   watch:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    # 35 → 60 Minuten (23.08.2026). Das ist AUSDRÜCKLICH kein Hochsetzen einer
+    # Schwelle, damit ein Befund verschwindet — der Befund IST, dass die Arbeit
+    # gewachsen ist: Der Seitenbestand ging von 2.672 (19.08.) auf 6.922
+    # (23.08.), und der letzte grüne Lauf am 19.08. brauchte 4 Minuten für das,
+    # wofür heute die Zeit nicht mehr reicht. Actions-Minuten sind für dieses
+    # öffentliche Repo kostenlos; die 35 waren nie eine Kostengrenze, sondern
+    # eine Notbremse aus einer Zeit mit einem Viertel des Bestands.
+    #
+    # Gemessen am Lauf vom 23.08.2026 (Job 04:20:22–04:55:40):
+    #   Setup + npm ci      ~2 min
+    #   Amtsseiten          04:20 → 04:27   7 min   ← kritisch, kein Schrittlimit
+    #   Suche               04:27 → 04:39  12 min   ← abschneidbar
+    #   AGS + bekannte S.   04:39 → 04:47   8 min   ← kritisch (14-Tage-Frist)
+    #   jede einzelne Seite 04:47 → 04:55   8 min   ← abschneidbar, riss den Job
+    # Mit den Schrittlimits unten bleiben von 60 Minuten rund 19 für die
+    # Schritte am Ende — Technik, Bericht, Screening, Leseliste. Genau die sind
+    # vier Tage lang ausgefallen, weil sie hinten stehen und vorne jemand alles
+    # aufgebraucht hat.
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 
@@ -92,7 +110,14 @@ jobs:
       # bekommt gemessene 2,9 Anfragen — unabhängig davon, ob der Lauf 300 oder
       # 1.000 Gemeinden abarbeitet. Was steigt, ist allein unsere eigene
       # Laufzeit (grob eine Viertelstunde).
+      # Eigenes Zeitlimit aus demselben Grund wie unten beim Seiten-Abgleich: Der
+      # Schritt ist fortschreitend gebaut und darf abgeschnitten werden, aber er
+      # darf die Schritte danach nicht mitreißen. Am 23.08.2026 brauchte er 12
+      # der 35 Minuten — der zweitgrößte Posten im Lauf und einer, der mit der
+      # Zahl der Gemeinden weiterwächst.
       - name: Förderseiten auf den Amtsdomains suchen
+        timeout-minutes: 12
+        continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -138,12 +163,51 @@ jobs:
       # Er schreibt zusätzlich den Zustand mit: Eine Seite, die nicht mehr
       # antwortet, ist kein stiller Ausfall, sondern ein Befund. Ohne das Feld
       # stünde eine tote Adresse unbegrenzt als gültige Fundstelle im Bestand.
+      # DER SCHRITT HAT EIN EIGENES ZEITLIMIT — und das ist der wichtigere Teil
+      # dieser Zeilen (23.08.2026). Vier Läufe in Folge (20.–23.08.) endeten hier
+      # mit „cancelled": Der Bestand war von 2.672 auf 6.922 Seiten gewachsen,
+      # das Pensum von 3.000 passte nicht mehr in die Restzeit, und weil der Job
+      # nur EIN Limit für alle Schritte hatte, riss dieser Schritt die
+      # nachfolgenden mit. Ausgefallen sind vier Tage lang die
+      # Technik-Einordnung, das Screening und die Leseliste — also genau die
+      # Arbeit an der Katalog-Vollständigkeit.
+      #
+      # Sichtbar war das fast nicht: „cancelled" liest sich als „egal", nicht als
+      # „rot". Der Tagesbericht lief (`if: always()`) und trug den Beweis sogar
+      # bei sich — dreimal „unverändert" in Folge bei genau den Zahlen, die diese
+      # Schritte bewegen —, aber „unverändert" ist auch das Normalergebnis.
+      #
+      # Deshalb zwei Bremsen statt einer neuen Zahl:
+      #  · `timeout-minutes` hier begrenzt den Schaden strukturell. Der Bestand
+      #    wächst um mehrere hundert Seiten am Tag; jede feste Pensumszahl wird
+      #    also irgendwann wieder zu groß, und dann darf sie nur SICH SELBST
+      #    abschneiden.
+      #  · `continue-on-error`, weil ein abgeschnittener Schub hier kein Fehler
+      #    ist, sondern die Bauart: Das Skript nimmt die am längsten nicht
+      #    gesehenen Seiten zuerst, jede kommt reihum dran. Was heute nicht mehr
+      #    passt, steht morgen oben.
+      #
+      # Das Pensum geht auf 1.500 — halbe Last bei anderthalbfacher Zeit. Die
+      # Zahl ist NICHT aus einem gemessenen Durchsatz abgeleitet: Der Schritt
+      # wurde jedes Mal abgebrochen, bevor er eine Zwischenzahl meldete, und ein
+      # Trockenlauf braucht Zugangsdaten, die in der Worktree nicht liegen. Sie
+      # ist aus dem Zeitbudget gegriffen und darf beim nächsten grünen Lauf
+      # gegen die dann gemeldeten Zahlen korrigiert werden — dass sie zu grob
+      # ist, kostet nichts, weil ein zu großes Pensum jetzt nur noch sich selbst
+      # abschneidet.
+      #
+      # Was hier NICHT dranhängt: die 14-Tage-Frist der Katalogprogramme. Deren
+      # Bestätigung bedient der Schritt darüber (`foerder:seiten`), und der
+      # bleibt ohne Limit und ohne continue-on-error — wenn DER nicht durchläuft,
+      # soll der Lauf rot werden.
       - name: Jede einzelne Förderseite auf Bewegung prüfen
+        timeout-minutes: 12
+        continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: npm run foerder:seiten-alle -- --limit 3000
+        run: npm run foerder:seiten-alle -- --limit 1500
 
       # Welche Technik trägt die Seite? Ohne diese Angabe ist die eigentliche
       # Frage unbeantwortbar: „Haben wir für DIESE Gemeinde eine
