@@ -471,6 +471,35 @@ describe("Modell-Kohärenz: eine Aussage gilt über die ganze Laufzeit", () => {
     expect(dachErtragKwp(NATIONAL_AVG_YIELD, null, null)).toBe(NATIONAL_AVG_YIELD);
   });
 
+  it("der Bundesschnitt steht im Text nicht als getippte Zahl", () => {
+    // Als der Puffer am 18.08.2026 aus der Rechnung fiel (950 → 1.050), blieb er
+    // in den TEXTEN stehen: Die Empfehlungsseite versprach „Bundesmittel
+    // (950 kWh/kWp)" und rechnete mit 1.050, die Methodik-Seite ebenso. Eine
+    // Seite, die für die Ehrlichkeit der Zahlen bürgt, nennt dort eine Zahl, die
+    // nicht stimmt — und niemandem fällt es auf, weil beides plausibel aussieht.
+    // Die Zahl kommt deshalb aus der Konstanten, nicht aus der Tastatur.
+    const SEITEN = [
+      "app/(site)/pv-bedarf-berechnen/empfehlung.tsx",
+      "app/(site)/methodik/page.tsx",
+    ];
+    for (const datei of SEITEN) {
+      const quelle = readFileSync(join(ROOT, datei), "utf8");
+      // Sätze über den Fall „keine PLZ angegeben" — dort steht der Wert.
+      const stellen = [...quelle.matchAll(/[^\n]*(?:Bundesmittel|Ohne PLZ-Eingabe)[^\n]*/g)].map(m => m[0]);
+      expect(stellen.length, `${datei}: kein Satz über den Fall ohne PLZ gefunden`).toBeGreaterThan(0);
+      for (const satz of stellen) {
+        // Ein reiner Kommentar erklärt die Regel und nennt keine Zahl.
+        if (/^\s*(\/\/|\*)/.test(satz)) continue;
+        const getippt = satz.match(/\d[\d.]*\s*kWh\s*\/?\s*kWp/);
+        expect(
+          getippt,
+          `${datei} nennt den Bundesschnitt als getippte Zahl (${getippt?.[0]}) statt aus ` +
+          `NATIONAL_AVG_YIELD. Ändert sich die Konstante, steht hier still eine Falschaussage.`,
+        ).toBeNull();
+      }
+    }
+  });
+
   it("keine zweite, gekürzte Ertragskonstante", () => {
     const quelle = readFileSync(join(ROOT, "lib/constants.ts"), "utf8");
     expect(
@@ -496,7 +525,12 @@ describe("Modell-Kohärenz: eine Aussage gilt über die ganze Laufzeit", () => {
     ];
     for (const datei of KACHELN) {
       const quelle = readFileSync(join(ROOT, datei), "utf8");
-      const funde = [...quelle.matchAll(/>\s*Rendite\s*\d|Rendite\s*2?5?\s*J(?:ahre|\.)?\s*</g)]
+      // Das Muster darf nicht am WORTLAUT hängen: Die erste Fassung verlangte
+      // „Rendite" unmittelbar vor der Zahl und ließ deshalb „Rendite nach 25
+      // Jahren" durch — genau so stand es bis zum 22.08.2026 über dem größten
+      // Euro-Betrag der Empfehlungsseite, mit grünem Test. Jetzt zählt jede
+      // Erwähnung, die innerhalb weniger Zeichen auf eine Jahresangabe zuläuft.
+      const funde = [...quelle.matchAll(/Rendite[^<>{}]{0,24}?(?:\d\d\s*J|Jahre|J\.)/g)]
         .map(m => m[0].trim());
       expect(
         funde,

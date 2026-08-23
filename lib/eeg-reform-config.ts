@@ -182,7 +182,21 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // Drucksache am 14.08.2026 hat also gar keine Sitzung stattgefunden. Der
   // Bundestag ist im August ohne Sitzungswoche; die erste nach der Sommerpause
   // ist der 07.–11.09.2026. Eine erste Lesung kann es damit nicht gegeben haben.
-  geprueftIso: "2026-08-22",
+  //
+  // 23.08.2026 erneut geprüft, Zustand unverändert: Der Entwurf liegt seit dem
+  // 14.08.2026 als Bundesrats-Drucksache 470/26 im ersten Durchgang, die nächste
+  // Plenarsitzung des Bundesrates bleibt der 25.09.2026 — dazwischen liegt keine
+  // Sitzung. Der Kabinettsbeschluss vom 29.07.2026 ist auf bundesregierung.de
+  // unverändert der letzte Verfahrensschritt, den eine amtliche Stelle nennt;
+  // weder Bundestag noch Bundesrat haben sich befasst.
+  //
+  // BEWUSST NICHT ÜBERNOMMEN: Die Fachpresse beziffert die Übergangszahlung
+  // inzwischen auf „5,20 ct, ab August 2027 rund 5,14 ct". Das ist keine vierte
+  // Zahl neben unseren Werten, sondern dieselbe — der anzulegende Wert 6,2 ct
+  // minus 1 ct nach § 53 Abs. 1, gerundet. Ein zweiter getippter Wert daneben
+  // wäre genau die Kopie, die dieser Config-Block verhindern soll; gerechnet
+  // wird weiter aus AW und Abschlag.
+  geprueftIso: "2026-08-23",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

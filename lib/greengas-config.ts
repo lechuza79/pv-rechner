@@ -267,7 +267,28 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // erfolglos: Es gibt weiterhin nur Portalangaben und Marktkommentare, keine
   // amtliche oder verbandsgeführte Reihe, auf die sich ein Preispfad stützen
   // ließe.
-  geprueftRechtIso: "2026-08-22",
+  //
+  // 23.08.2026 erneut an der amtlichen Chronologie geprüft, unverändert: Sie
+  // endet weiter mit dem 28.07.2026 — „Das Änderungsgesetz zum
+  // Gebäudeenergiegesetz … wurde im Bundesgesetzblatt verkündet" (BGBl. Nr. 226
+  // vom 28.07.2026), „Erste Regelungen treten am 29.07.2026 in Kraft (Artikel 1,
+  // 5, 6 und 8)". Artikel 1 trägt § 43, die Bio-Treppe gilt also seit dem
+  // 29.07.2026 — deckungsgleich mit GMODG_RECHTSSTAND.
+  //
+  // Zum Quotengesetz nach § 42a weiterhin nur die Ankündigung: Es „kündigt bis
+  // zum 01.12.2026 ein Gesetz an, das Inverkehrbringer von Gas, Öl und
+  // Flüssiggas für die Gebäudeheizung dazu verpflichtet, ab dem Jahr 2045
+  // vollständig auf klimaneutrale Brennstoffe umzustellen." Kein Entwurf, keine
+  // Drucksache, kein Datum.
+  //
+  // Bioheizöl-Gegensuche zum vierten Mal erfolglos, und der Grund ist stabil
+  // genug, um ihn zu benennen: Was es gibt, sind Preismeldungen kommerzieller
+  // Marktdienste und Portalangaben zu HVO-Aufschlägen — keine amtliche und keine
+  // verbandsgeführte Reihe. Die DIN 51603-1 (seit 11/2024) erlaubt Beimischung
+  // bis 100 %, sagt aber nichts über Preise. Die Lücke im Öl-Ergebnis des
+  // Wärmepumpen-Rechners bleibt deshalb offen UND sichtbar; sie wirkt zu unseren
+  // Ungunsten (Öl wird zu günstig gerechnet), was die vertretbare Richtung ist.
+  geprueftRechtIso: "2026-08-23",
   reviewBy: "2027-07-25",
 };
 

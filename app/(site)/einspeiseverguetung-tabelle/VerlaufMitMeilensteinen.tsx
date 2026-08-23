@@ -87,7 +87,7 @@ export default function VerlaufMitMeilensteinen({
     context: {
       title: WIDGET.title,
       subtitle: WIDGET_SUBLINE,
-      source: WIDGET.sources.map(sourceLabel).join(" · "),
+      source: WIDGET.sources.map((q) => sourceLabel(q)).join(" · "),
     },
     filename: "solar-check-einspeiseverguetung-verlauf",
     shareText: WIDGET.shareText,

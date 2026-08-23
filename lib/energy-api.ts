@@ -341,13 +341,43 @@ export async function fetchPublicPower(country: string, start: string, end: stri
   return rows;
 }
 
-/** Fetch Energy-Charts spot prices */
+/**
+ * Erkennt an der Lizenzangabe DER ANTWORT, ob wir diese Börsenpreise zeigen
+ * dürfen. Nur CC BY erlaubt das; alles andere ist bei Energy-Charts
+ * ausdrücklich "for private and internal use only".
+ *
+ * Bewusst KEINE Liste erlaubter Gebotszonen im Code, obwohl die Doku eine
+ * nennt: Sie ist nachweislich veraltet. IT-North steht dort auf der CC-BY-Seite
+ * und liefert live (geprüft 22.08.2026) die restriktive Fassung. Eine getippte
+ * Liste wäre also genau dann falsch, wenn es darauf ankommt — und der Fehler
+ * fiele niemandem auf, weil die Zahlen ganz normal aussehen.
+ */
+export function spotPreisFreigegeben(licenseInfo: unknown): boolean {
+  return typeof licenseInfo === "string" && /CC[ -]BY/i.test(licenseInfo);
+}
+
+/**
+ * Fetch Energy-Charts spot prices.
+ *
+ * ACHTUNG, anders als alle anderen Endpunkte hier: Die Börsenpreise stehen NICHT
+ * pauschal unter CC BY 4.0. Für einen Teil der Gebotszonen liefert
+ * Energy-Charts sie mit dem Vorbehalt "The utilization of any data whether in
+ * its raw or derived form, for external or commercial purposes is expressly
+ * prohibited" (Rechte der Börsen, u. a. EPEX SPOT SE) — "derived form" heißt:
+ * auch ein Chart daraus ist nicht gedeckt.
+ *
+ * Deshalb liefert diese Funktion nur, was die Antwort selbst als CC BY
+ * ausweist. Gesperrte Zonen geben eine leere Reihe zurück, nicht etwa Zahlen
+ * ohne Vermerk. Wer den Spotpreis-Chart aus WP 9 baut, darf diese Prüfung nicht
+ * umgehen — sie ist der Unterschied zwischen erlaubter und untersagter Nutzung.
+ */
 export async function fetchSpotPrices(bzn: string, start: string, end: string): Promise<TimeseriesRow[]> {
   const url = ecUrl("price", { bzn, start, end });
   const res = await fetchWithTimeout(url, 10000);
   const json = await res.json();
 
   if (!json.unix_seconds || !json.price) return [];
+  if (!spotPreisFreigegeben(json.license_info)) return [];
 
   return json.unix_seconds.map((ts: number, i: number) => ({
     source: "energy-charts",

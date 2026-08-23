@@ -343,7 +343,7 @@ export function WidgetSourceEdge({
   // hier durch Wegschneiden. `shortName` bleibt als bewusste Ausnahme.
   const label =
     widget.sources
-      .map((s) => (s.shortName ? `${s.shortName}${s.license ? `, ${s.license}` : ""}` : sourceLabel(s)))
+      .map((s) => sourceLabel(s, { kurz: true }))
       .join(" · ") + (datum ? ` · Stand: ${datum}` : "");
 
   // Der Vermerk passt sich der Kartenhöhe an, statt abgeschnitten zu werden.

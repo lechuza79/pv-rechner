@@ -55,17 +55,56 @@ export interface DataSource {
 const BKG_DATENBEZUG_JAHR = 2026;
 
 export const DATA_SOURCES = {
-  /** Live electricity mix, generation, cross-border flows. */
+  /**
+   * Live electricity mix, generation, cross-border flows.
+   *
+   * CC BY 4.0 am 22.08.2026 an der Primärquelle geprüft (Council 3/3, zwei
+   * Legal-Judges) — die Angabe stand vorher unbelegt im Register und war
+   * nur über Drittverzeichnisse (apis.io, api-evangelist) gestützt. Fraunhofer
+   * sagt es dreifach selbst: in der Spezifikation unter "Data License"
+   * ("Unless stated otherwise, the data provided by the Energy-Charts API is
+   * licensed under the CC BY 4.0 license"), in `llms.txt`, und — am stärksten —
+   * als Feld `license` in JEDER v2-Antwort. Volltexte und die abgerufenen
+   * Lizenzfelder liegen in docs/quellen/energy-charts-lizenz/.
+   *
+   * Die Gegenstimme kennen und nicht neu aufmachen: Das Feld `info.license`
+   * der Spezifikation verweist formal auf publishing-notes.html, und das ist
+   * das Fraunhofer-Impressum mit "Alle Rechte vorbehalten … kommerzielle
+   * Nutzung … nicht gestattet". Dieselbe Boilerplate steht wortgleich auf
+   * ise.fraunhofer.de; sie regelt nach ihrem eigenen Wortlaut "diese Webseite"
+   * und "Download oder Ausdruck dieser Veröffentlichungen" (Belegexemplare,
+   * Bildmotive) — nicht die API auf einem anderen Host. Die speziellere,
+   * mit jeder Lieferung mitgeschickte Erklärung geht vor.
+   *
+   * ACHTUNG bei Börsenpreisen: Für /price gilt das NICHT pauschal — siehe
+   * `fetchSpotPrices` in lib/energy-api.ts.
+   */
   energyCharts: {
     name: "Energy-Charts (Fraunhofer ISE)",
     license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
     url: "https://energy-charts.info",
+    // CC BY 4.0 Sec. 3(a)(1)(B) verlangt den Hinweis, DASS wir verändert haben.
+    // Wir mitteln Viertelstunden zu Tages- und Wochenwerten und leiten daraus
+    // Größen ab, die so nirgends geliefert werden (lib/nuclear-import.ts sagt
+    // selbst: "derived, not metered").
+    note: "aggregiert",
   },
-  /** Yearly country electricity data (mix, capacity additions, CO₂). */
+  /**
+   * Yearly country electricity data (mix, capacity additions, CO₂).
+   *
+   * CC BY 4.0 am 22.08.2026 an der Primärquelle geprüft (ember-energy.org/creative-commons):
+   * "Ember content is released under a Creative Commons Attribution Licence
+   * (CC-BY-4.0)". Das Logo ist ausdrücklich NICHT mitlizenziert — wir benutzen
+   * es nicht und sollten das so lassen.
+   */
   ember: {
     name: "Ember",
     license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
     url: "https://ember-energy.org",
+    // Die Länderreihen werden bei jedem Sync neu gerechnet (scripts/ember-laender-sync.ts).
+    note: "aggregiert",
   },
   /** German installation register (PV/battery stock). */
   mastr: {
@@ -84,6 +123,10 @@ export const DATA_SOURCES = {
     license: "CC BY 4.0",
     licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
     url: "https://open-meteo.com",
+    // Sec. 3(a)(1)(B) wie bei den anderen CC-BY-Quellen: Aus Tages-Min/Max
+    // rechnet cdhFromDailyMinMax() einen synthetischen Tagesgang und daraus die
+    // Kühlgradstunden — das ist eine Ableitung, keine Weitergabe.
+    note: "abgeleitet",
   },
   /** Location-based PV yield model. */
   pvgis: {
@@ -216,7 +259,17 @@ export const DATA_SOURCES = {
  * Kürzung überleben, weil die Lizenzen sie verlangen: WER die Daten
  * bereitstellt, unter WELCHER Lizenz, und DASS wir sie verändert haben.
  */
-export function sourceLabel(source: DataSource): string {
-  const withLicense = source.license ? `${source.name}, ${source.license}` : source.name;
+export function sourceLabel(source: DataSource, { kurz = false } = {}): string {
+  // `kurz` tauscht NUR den Namen gegen die Kurzform — Lizenz und
+  // Änderungshinweis bleiben, weil beide Lizenzbestandteile sind.
+  //
+  // Die Quellenkante baute ihre Kurzform bis 22.08.2026 selbst zusammen
+  // (`shortName` + Lizenz) und ließ dabei den Änderungshinweis weg, direkt
+  // unter einem Kommentar, der das Gegenteil versprach. Getroffen hat es das
+  // BKG — als einzige Quelle mit Kurzform trägt es „Daten verändert", und
+  // genau das verlangt dl-de/by-2-0. Der Fehler wäre bei jeder neuen Quelle
+  // mit Kurzform wiedergekommen.
+  const name = (kurz && source.shortName) || source.name;
+  const withLicense = source.license ? `${name}, ${source.license}` : name;
   return source.note ? `${withLicense}, ${source.note}` : withLicense;
 }

@@ -113,6 +113,39 @@ test.describe("Lizenz: Abgrenzung zwischen Darstellung und Datenbestand", () => 
     expect(text).toMatch(/für die gesamte Seite, auch für die frei lizenzierten Teile/);
   });
 
+  test("die CC-BY-Quellen tragen sichtbar Lizenzlink und Änderungshinweis", async ({ page }) => {
+    // Council 22.08.2026 (3/3 bestätigt, zwei Legal-Judges): Die Angabe
+    // "CC BY 4.0" für Energy-Charts stand bis dahin unbelegt im Register und
+    // war nur über Drittverzeichnisse gestützt. Sie ist richtig — Fraunhofer
+    // sagt es in der API-Spezifikation und in JEDER v2-Antwort selbst
+    // (Belege in docs/quellen/energy-charts-lizenz/). Falsch war, was daneben
+    // fehlte: der Lizenzverweis (Sec. 3(a)(1)(A)(iii)) und der Hinweis, dass
+    // wir verändern (Sec. 3(a)(1)(B)).
+    //
+    // Warum im Browser und nicht nur als Unit-Test: Der Hinweis rendert nur
+    // dann als Link, wenn licenseUrl gesetzt ist. Ein Test auf die Konstante
+    // hätte einen Eintrag ohne Adresse für erfüllt gehalten — die Pflichtangabe
+    // stünde als toter Text auf der Seite, und genau das war der Zustand.
+    await page.goto("/lizenz");
+
+    const eintraege = page.locator("li", { hasText: "CC BY 4.0" });
+    await expect(eintraege.first()).toBeVisible({ timeout: 15_000 });
+
+    for (const [quelle, hinweis] of [
+      ["Energy-Charts (Fraunhofer ISE)", "aggregiert"],
+      ["Ember", "aggregiert"],
+      ["Open-Meteo", "abgeleitet"],
+    ] as const) {
+      const zeile = page.locator("li", { hasText: quelle }).first();
+      await expect(zeile, `${quelle}: Eintrag fehlt`).toContainText("CC BY 4.0");
+      await expect(zeile, `${quelle}: Änderungshinweis fehlt`).toContainText(hinweis);
+      await expect(
+        zeile.locator('a[href="https://creativecommons.org/licenses/by/4.0/"]'),
+        `${quelle}: Lizenz ist nicht verlinkt`,
+      ).toHaveCount(1);
+    }
+  });
+
   test("zitierende Crawler bleiben in der robots.txt offen", async ({ request }) => {
     const antwort = await request.get("/robots.txt");
     expect(antwort.status()).toBe(200);

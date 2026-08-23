@@ -85,7 +85,7 @@ export default function GemeindeWidgetShell({
     context: {
       title: widget.title,
       subtitle: subline,
-      source: widget.sources.map(sourceLabel).join(" · "),
+      source: widget.sources.map((q) => sourceLabel(q)).join(" · "),
     },
     filename,
     shareText: widget.shareText,
