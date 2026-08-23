@@ -1278,7 +1278,20 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "viersen-klimaschutz", name: "Förderprogramm Klimaschutz Kreis Viersen",
     traeger: "Kreis Viersen", level: "landkreis", region: "Kreis Viersen", bundesland: "Nordrhein-Westfalen", agsCode: "05166",
     url: "https://www.kreis-viersen.de/themen/klima/klimaschutz/foerderprogramm-klimaschutz",
-    stand: "Juni 2026", status: "ausgeschoepft", capped: true, verified: true,
+    // BEENDET, NICHT NUR AUSGESCHÖPFT (korrigiert 23.08.2026). Hier stand
+    // `ausgeschoepft` und daneben „Neuauflage offen" — beides sagte die
+    // Amtsseite schon nicht mehr. Sie trägt unter „aktuelle Informationen vom
+    // 13.04.2026": „Das Förderprogramm Klimaschutz wurde beendet. Eine
+    // Antragstellung ist nicht mehr möglich. Es ist kein neuer Förderaufruf
+    // geplant."
+    //
+    // Der Unterschied kostet kein Geld — beide Zustände ziehen nichts ab —, aber
+    // er ist genau die Auskunft, für die jemand die Seite aufschlägt:
+    // „ausgeschöpft, Neuauflage offen" heißt „im nächsten Haushaltsjahr wieder
+    // versuchen", „beendet, kein neuer Förderaufruf geplant" heißt „hier kommt
+    // nichts mehr". Wer auf die erste Auskunft hin wartet, wartet auf etwas, das
+    // der Träger ausgeschlossen hat.
+    stand: "August 2026", status: "eingestellt", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Zuschuss je kWp Dach-PV ODER je kWh Speicher (nicht kombinierbar)",
     maxFoerderung: "max. 1.000 € je Position",
@@ -1287,7 +1300,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { label: "Batteriespeicher", value: "200 €/kWh, max. 1.000 €" },
     ],
     conditions: [
-      "Programm zum 13.04.2026 beendet (Budget erschöpft); Neuauflage offen",
+      "Programm zum 13.04.2026 beendet; eine Antragstellung ist nicht mehr möglich, ein neuer Förderaufruf ist nicht geplant",
       "PV und Speicher nicht kombinierbar — nur eine Position je Antrag",
     ],
     combinableWith: BUND,
