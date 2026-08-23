@@ -645,13 +645,13 @@ export function eskalationNoetig(vorherigeLaeufe: ("success" | "failure" | strin
   return vorherigeLaeufe.slice(0, ESKALATION_AB_LAEUFEN - 1).every((c) => c === "failure");
 }
 
-async function letzteLaufErgebnisse(): Promise<string[]> {
+async function letzteLaufErgebnisse(workflow = "health-check.yml"): Promise<string[]> {
   const token = process.env.GITHUB_TOKEN;
   const repo = process.env.GITHUB_REPOSITORY;
   if (!token || !repo) return [];
   try {
     const res = await fetch(
-      `https://api.github.com/repos/${repo}/actions/workflows/health-check.yml/runs?status=completed&per_page=5`,
+      `https://api.github.com/repos/${repo}/actions/workflows/${workflow}/runs?status=completed&per_page=5`,
       { headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" }, signal: AbortSignal.timeout(10000) },
     );
     if (!res.ok) return [];
@@ -660,6 +660,68 @@ async function letzteLaufErgebnisse(): Promise<string[]> {
   } catch {
     return [];
   }
+}
+
+/**
+ * Die TÄGLICH geplanten Läufe, die niemand von Hand anstößt — und die deshalb
+ * ausfallen können, ohne dass es jemandem auffällt.
+ *
+ * Drei Sorten stehen bewusst NICHT hier, jede aus einem eigenen Grund:
+ *  · **Push-getriebene** (`ci`, `claude-autofix`): Ihr Ausbleiben heißt „niemand
+ *    hat etwas geschoben", nicht „kaputt" — an einem ruhigen Wochenende wäre das
+ *    ein sicherer Fehlalarm.
+ *  · **Nur auf Zuruf** (`gsc-sitemap` hat allein `workflow_dispatch`): dasselbe.
+ *    Diese Zeile stand hier schon einmal, weil ich den Zeitplan angenommen statt
+ *    nachgesehen habe — Gate-Regel 3, am eigenen Code geprüft, nicht geglaubt.
+ *  · **Selten geplante** (`laender-sync` monatlich, `mastr-refresh` monatlich):
+ *    Drei Läufe ohne Erfolg wären dort ein Vierteljahr. Ein Melder, der so spät
+ *    anschlägt, ist keiner; die gehören an ihr Prüfdatum, nicht hierher.
+ *  · **Der Gesundheitscheck selbst**: Läuft der nicht, läuft auch diese Prüfung
+ *    nicht. Dafür gibt es `eskalationNoetig` weiter oben.
+ */
+export const GEPLANTE_LAEUFE: ReadonlyArray<{ datei: string; was: string }> = [
+  { datei: "foerder-watch.yml", was: "Förder-Seiten-Wächter" },
+  { datei: "flows-nightly.yml", was: "Nächtlicher Flow-Läufer" },
+];
+
+/** Ab so vielen Läufen ohne Erfolg in Folge ist ein geplanter Lauf auffällig. */
+export const LAUF_STUMM_AB = 3;
+
+/**
+ * Läuft dieser geplante Lauf noch durch — und wenn nicht, wie endet er?
+ *
+ * WARUM DAS HIER STEHT (23.08.2026): Der Abschnitt „Stillstehende Wächter"
+ * darüber merkt einen Ausfall daran, dass ein PRÜFDATUM sich nicht mehr bewegt.
+ * Das trägt nur für die modellgesteuerten Aufträge — ein GitHub-Workflow
+ * stempelt kein Prüfdatum, sein Ausfall ist dort strukturell unsichtbar.
+ *
+ * Genau so ist es passiert: Der Förder-Seiten-Wächter endete vom 20. bis
+ * 23.08.2026 viermal in Folge mit `cancelled` (Zeitlimit), und vier Tage lang
+ * fielen Technik-Einordnung, Screening und Leseliste aus — die Arbeit an der
+ * Katalog-Vollständigkeit. Gemeldet hat das nichts: Der Prüfstand war
+ * vollständig grün, weil die Prüfdaten an anderen Läufen hängen.
+ *
+ * `cancelled` ist dabei die gefährlichste Endung und wird deshalb eigens
+ * benannt. Rot sieht man; „abgebrochen" liest man als „egal" — dabei ist ein
+ * Lauf ohne Urteil schlimmer als ein roter, weil niemand weiß, wie weit er kam.
+ *
+ * Reine Funktion mit hereingereichter Liste: Sie soll ohne Netz prüfbar sein.
+ * Eine leere Liste (kein Token, lokaler Lauf) meldet NICHTS — im Zweifel nicht
+ * behaupten, ein Lauf sei stumm, wenn wir bloß nicht nachsehen konnten.
+ */
+export function laufStumm(
+  ergebnisse: ReadonlyArray<string | null>,
+): { stumm: boolean; wie: string } {
+  const jung = ergebnisse.slice(0, LAUF_STUMM_AB);
+  if (jung.length < LAUF_STUMM_AB) return { stumm: false, wie: "" };
+  if (jung.some((c) => c === "success")) return { stumm: false, wie: "" };
+
+  // Wie endeten sie? Häufigste Endung zuerst — sie benennt die Ursache besser
+  // als ein pauschales „nicht erfolgreich".
+  const zaehler = new Map<string, number>();
+  for (const c of jung) zaehler.set(c ?? "ohne Ergebnis", (zaehler.get(c ?? "ohne Ergebnis") ?? 0) + 1);
+  const haeufigste = [...zaehler.entries()].sort((a, b) => b[1] - a[1])[0][0];
+  return { stumm: true, wie: haeufigste };
 }
 
 async function main() {
@@ -956,6 +1018,27 @@ async function main() {
           `Der Wächter läuft, hat den Wert aber nicht nachgezogen.`,
       );
     }
+  }
+
+  // ── Geplante Läufe, die nicht mehr durchkommen ────────────────────────────
+  //
+  // Der Abschnitt darüber sieht Prüfdaten; dieser sieht die Läufe selbst. Beides
+  // ist nötig, weil ein GitHub-Workflow kein Prüfdatum stempelt und deshalb
+  // oben nicht auftauchen kann (Begründung an `laufStumm`).
+  for (const lauf of GEPLANTE_LAEUFE) {
+    const ergebnisse = await letzteLaufErgebnisse(lauf.datei);
+    if (!ergebnisse.length) continue; // kein Token / lokal — nichts behaupten
+    const { stumm, wie } = laufStumm(ergebnisse);
+    if (!stumm) continue;
+    forClaude.push(
+      `Der geplante Lauf „${lauf.was}" (${lauf.datei}) endete ${LAUF_STUMM_AB}× in Folge ohne Erfolg, zuletzt „${wie}". ` +
+        (wie === "cancelled"
+          ? `„Abgebrochen" heißt Zeitlimit, nicht Fehler — und es liest sich als „egal", ` +
+            `deshalb steht es hier. Nachsehen, welcher Schritt die Zeit frisst und ob die ` +
+            `Schritte DANACH überhaupt noch drankommen; ein Lauf ohne Urteil ist schlimmer als ein roter. `
+          : `Nachsehen, woran er scheitert. `) +
+        `Das Job-Zeitlimit NICHT ohne Messung hochsetzen — erst herausfinden, was gewachsen ist.`,
+    );
   }
 
   // ── Releaseplan ───────────────────────────────────────────────────────────
