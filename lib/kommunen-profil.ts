@@ -173,18 +173,59 @@ export function domainOf(url: string): string | null {
 
 /** Link zum Impressum aus der Startseite. Es ist per § 5 DDG von jeder Seite aus
  *  verlinkt, meist im Fuß, und die Beschriftung ist sehr einheitlich. */
-export function findImpressumUrl(html: string, baseUrl: string): string | null {
-  for (const m of Array.from(html.matchAll(/<a[^>]+href=["']([^"']+)["'][^>]*>([\s\S]{0,120}?)<\/a>/gi))) {
-    const label = decodeEntities(m[2].replace(/<[^>]*>/g, " ")).trim();
-    if (!/impressum/i.test(label) && !/impressum/i.test(m[1])) continue;
+/**
+ * Erster Link, dessen Beschriftung ODER Adresse auf `muster` passt.
+ *
+ * Beides zu prüfen ist Absicht: Manche Seiten beschriften den Link mit einem
+ * Bild oder einem Kürzel (Adresse trägt), manche hängen ihn an eine
+ * nichtssagende Kennung (Beschriftung trägt). Wer nur eines prüft, verliert je
+ * nach Bauart der Website die Hälfte der Treffer.
+ */
+export function findLinkUrl(html: string, baseUrl: string, muster: RegExp): string | null {
+  const absolut = (roh: string): string | null => {
     try {
-      const u = new URL(m[1], baseUrl).toString();
-      if (u.startsWith("http")) return u;
+      const u = new URL(roh, baseUrl).toString();
+      return u.startsWith("http") ? u : null;
     } catch {
-      /* unbrauchbarer Link */
+      return null;
     }
+  };
+
+  // Erster Durchgang: nur die ADRESSE, am reinen Start-Tag. Er braucht den
+  // Linktext nicht und ist deshalb unabhängig davon, wie viel Auszeichnung in
+  // einem Menü-Link steckt. Genau daran ist der Durchgang unten gescheitert:
+  // Sein Muster verlangt einen Linktext von höchstens 120 Zeichen, und ein
+  // Menü-Link mit Symbol und verschachtelten Kästen ist länger — bei
+  // stadtwerke-lingen.de stand href="/kontakt" im HTML und wurde nicht gefunden
+  // (gemessen 23.08.2026).
+  for (const m of Array.from(html.matchAll(/<a[^>]+href=["']([^"']+)["']/gi))) {
+    // Dekodiert prüfen: `new URL()` liefert prozentkodierte Umlaute
+    // (/energietr%c3%a4germix), und daran ist die Förder-Suche schon einmal
+    // blind vorbeigelaufen.
+    let href: string;
+    try {
+      href = decodeURIComponent(m[1].toLowerCase().replace(/&amp;/g, "&"));
+    } catch {
+      href = m[1].toLowerCase();
+    }
+    if (!muster.test(href)) continue;
+    const u = absolut(m[1]);
+    if (u) return u;
+  }
+
+  // Zweiter Durchgang: die BESCHRIFTUNG, für Links mit nichtssagender Adresse
+  // (`/cms/index.php?id=4711`).
+  for (const m of Array.from(html.matchAll(/<a[^>]+href=["']([^"']+)["'][^>]*>([\s\S]{0,200}?)<\/a>/gi))) {
+    const label = decodeEntities(m[2].replace(/<[^>]*>/g, " ")).replace(/\s+/g, " ").trim();
+    if (!muster.test(label)) continue;
+    const u = absolut(m[1]);
+    if (u) return u;
   }
   return null;
+}
+
+export function findImpressumUrl(html: string, baseUrl: string): string | null {
+  return findLinkUrl(html, baseUrl, /impressum/i);
 }
 
 // ─── Verantwortliche ──────────────────────────────────────────────────────────

@@ -138,6 +138,35 @@ async function setup(): Promise<void> {
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS pruefung_ampel text;
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS pruefung jsonb;
 
+    -- Erhebung 08/2026 (scripts/versorger-erhebung.ts). Zwei Fragen, ein Abruf:
+    -- erreichen wir den Vertrieb, und wie loesen sie ihre Stromkennzeichnung?
+    --
+    -- Warum eigene Spalten neben rollen_email: Das ist eine ANDERE Frage. Der
+    -- Profil-Lauf vom 27.07.2026 sucht den nach Medienrecht Verantwortlichen und
+    -- ein allgemeines Postfach; gemessen erkannte er bei 937 Versorgern 73 mal
+    -- eine Funktion, davon 38 "Redaktion". Wer die Website verantwortet, ist
+    -- nicht, wer ein Beratungswerkzeug einkauft.
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS vertrieb_email text;
+    -- Das Postfach des NETZBETRIEBS, ausdruecklich festgehalten statt verworfen:
+    -- Es ist die Meldeadresse gegenueber der Bundesnetzagentur und damit der
+    -- Grund, warum die Adressliste aus dem Anlagenregister systematisch
+    -- danebenzeigt. Wer es wegwirft, kann den Befund spaeter nicht belegen.
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS netz_email text;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS kontaktformular boolean;
+    -- Stromkennzeichnung nach § 42 EnWG: die Pflichtseite jedes Stromlieferanten.
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS stromkennzeichnung_url text;
+    -- Indizien zur Darstellung (Grafik/Tabelle/PDF) — KEIN Urteil darueber, ob
+    -- die Grafikpflicht aus § 42 Abs. 2 erfuellt ist. Das entscheidet ein Mensch.
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS stromkennzeichnung_form jsonb;
+    -- Juengstes auf der Seite genanntes Bezugsjahr. NULL heisst "keines erkannt"
+    -- und ist ausdruecklich nicht dasselbe wie "veraltet".
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS stromkennzeichnung_jahr int;
+    -- Nur ein Lauf, der die Startseite WIRKLICH geladen hat, stempelt hier.
+    -- Ein gescheiterter Abruf laesst das Datum stehen — dieselbe Regel wie beim
+    -- Foerder-Wachter: "nicht erreicht" ist kein Pruefergebnis.
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS erhebung_geprueft_am timestamptz;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS erhebung_fehler text;
+
     -- Belege der gemessenen Zuordnung.
     ALTER TABLE utility_communes ADD COLUMN IF NOT EXISTS anlagen int;
     ALTER TABLE utility_communes ADD COLUMN IF NOT EXISTS anteil numeric;
