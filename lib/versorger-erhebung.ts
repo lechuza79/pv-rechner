@@ -24,21 +24,48 @@
 // Stromkennzeichnung" — dieselbe Fehlerklasse, gegen die der Förder-Wächter
 // seine eigene Kennung `seite-unerreichbar` trägt.
 
-import { decodeEntities, findLinkUrl, toText } from "./kommunen-profil";
+import {
+  type Verantwortlich,
+  VERSORGER_VOKABULAR,
+  decodeEntities,
+  extractVerantwortlich,
+  findLinkUrl,
+  toText,
+} from "./kommunen-profil";
 
 // ─── Postfächer ───────────────────────────────────────────────────────────────
 
 /**
- * Postfächer, die erkennbar zum VERTRIEB oder zur Kommunikation gehören — also
- * zu der Stelle, die ein Beratungswerkzeug auf die eigene Website stellt.
+ * Postfächer der Stelle, die **die Website verantwortet** — Kommunikation,
+ * Presse, Marketing, Online-Redaktion.
  *
- * Bewusst getrennt vom allgemeinen Rollen-Postfach (`info@`, `service@`): Beide
- * sind erreichbar, aber nur dieses landet ohne Weiterleitung am richtigen
- * Schreibtisch. Wer beide in einen Topf wirft, kann die Frage „erreichen wir
- * den Entscheider?" nicht mehr beantworten — und genau die steht hier an.
+ * WARUM DAS NICHT „VERTRIEB" HEISST (Korrektur vom 23.08.2026, Einwand des
+ * Betreibers): Eine erste Fassung warf `vertrieb@`, `kundencenter@` und
+ * `privatkunden@` mit `marketing@` in einen Topf und nannte das Ganze
+ * „Vertriebspostfach". Das ist falsch herum gedacht. `vertrieb@` bei einem
+ * Stadtwerk ist der EINGANG für Leute, die dort Strom kaufen wollen — eine
+ * Warteschlange des Kundendienstes, nicht der Schreibtisch, an dem jemand
+ * entscheidet, was auf die eigene Website kommt. Wer dort anfragt, landet bei
+ * jemandem, der Tarife verkauft.
+ *
+ * Gemessen an der Stichprobe: 5 vermeintliche Treffer, davon 3 × `vertrieb@`,
+ * 1 × `kundencenter@` und nur 1 × `marketing@`. Vier von fünf zeigten auf die
+ * falsche Stelle, und die Zahl „5 von 20 erreichen den Entscheider" war damit
+ * eine Selbsttäuschung.
  */
-export const VERTRIEB_ROLLE =
-  /^(vertrieb|marketing|presse|pressestelle|kommunikation|unternehmenskommunikation|oeffentlichkeitsarbeit|öffentlichkeitsarbeit|produktmanagement|energieberatung|beratung|privatkunden|kundencenter|kundenzentrum)([.-]?\w+)?@/i;
+export const WEBSITE_ROLLE =
+  /^(marketing|presse|pressestelle|pressekontakt|kommunikation|unternehmenskommunikation|oeffentlichkeitsarbeit|öffentlichkeitsarbeit|redaktion|onlineredaktion|webredaktion|webmaster|web|online|internet|digital)([.-]?\w+)?@/i;
+
+/**
+ * Postfächer der KUNDEN-Warteschlange. Erreichbar, aber der falsche
+ * Schreibtisch: Dort sitzt, wer Tarife verkauft und Rechnungen erklärt.
+ *
+ * Sie werden trotzdem festgehalten statt verworfen — bei einem kleinen
+ * Stadtwerk ist es oft dieselbe Person, und ohne die Adresse ließe sich das
+ * später nicht mehr prüfen, ohne alles neu abzurufen.
+ */
+export const KUNDENANFRAGE_ROLLE =
+  /^(vertrieb|privatkunden|geschaeftskunden|geschäftskunden|kundenservice|kundenbetreuung|kundencenter|kundenzentrum|energieberatung|beratung|angebot|tarife?)([.-]?\w+)?@/i;
 
 /** Postfächer des NETZBETRIEBS. Sie sind die Meldeadresse gegenüber der
  *  Bundesnetzagentur und stehen deshalb im Anlagenregister — sie sind der
@@ -46,15 +73,22 @@ export const VERTRIEB_ROLLE =
 export const NETZ_ROLLE =
   /^(netz|netze|einspeis\w*|einspeisung|netzanschluss|anschluss|zaehler\w*|zähler\w*|messstellenbetrieb|messwesen|marktkommunikation|edifact|technik|entstoerung|entstörung|bereitschaft)([.-]?\w+)?@/i;
 
-export type PostfachArt = "vertrieb" | "allgemein" | "netz" | "person";
+export type PostfachArt = "website" | "kundenanfrage" | "allgemein" | "netz" | "person";
 
-/** Einordnung einer einzelnen Adresse. Reihenfolge ist Absicht: Ein
- *  `vertrieb@`-Postfach schlägt die Netz-Einordnung, falls beide Muster
- *  greifen (`vertrieb-netz@` gibt es, `netz-vertrieb@` auch). */
+/**
+ * Einordnung einer einzelnen Adresse.
+ *
+ * Die Reihenfolge ist Absicht und bildet ab, wie nah die Stelle an der
+ * Entscheidung sitzt: Website-Schreibtisch vor Netzbetrieb (`presse-netz@`
+ * gehört der Pressestelle), Netzbetrieb vor Kundenwarteschlange
+ * (`vertrieb-netznutzung@` ist Netz), Kundenwarteschlange vor dem allgemeinen
+ * Eingang.
+ */
 export function postfachArt(mail: string, allgemein: RegExp): PostfachArt {
   const m = mail.trim().toLowerCase();
-  if (VERTRIEB_ROLLE.test(m)) return "vertrieb";
+  if (WEBSITE_ROLLE.test(m)) return "website";
   if (NETZ_ROLLE.test(m)) return "netz";
+  if (KUNDENANFRAGE_ROLLE.test(m)) return "kundenanfrage";
   if (allgemein.test(m)) return "allgemein";
   return "person";
 }
@@ -270,8 +304,25 @@ export type Erhebung = {
   fehler: string | null;
   kontaktseiteUrl: string | null;
   kontaktformular: boolean;
-  vertriebEmail: string | null;
+  /**
+   * ALLE Adressen auf der eigenen Domain, mit ihrer Einordnung.
+   *
+   * Der Grund steht in der Korrektur vom 23.08.2026: Die erste Fassung
+   * speicherte nur zwei ausgewählte Adressen — also ein URTEIL — und warf den
+   * Rest weg. Als sich herausstellte, dass die Einordnung falsch war, hätte
+   * jede Neubewertung einen kompletten neuen Abruf aller Versorger gekostet.
+   * Wer die Funde behält, ordnet später in Sekunden neu ein.
+   */
+  postfaecher: { mail: string; art: PostfachArt }[];
+  /** Bester Weg zum Website-Schreibtisch, nach der Rangfolge oben. */
+  websiteEmail: string | null;
+  kundenanfrageEmail: string | null;
   netzEmail: string | null;
+  /** Die im Impressum als verantwortlich genannte Stelle (§ 18 MStV). Bei einem
+   *  Versorger ist das die Redaktion oder Unternehmenskommunikation — also
+   *  genau der Schreibtisch, der über die Website entscheidet. `operativ`
+   *  trennt sie von der bloßen gesetzlichen Vertretung (Geschäftsführung). */
+  verantwortlich: Verantwortlich | null;
   kennzeichnungUrl: string | null;
   /** Die Kennzeichnung ist eine PDF-Datei, keine Seite. */
   kennzeichnungPdf: boolean;
@@ -287,8 +338,11 @@ export const LEER: Erhebung = {
   fehler: null,
   kontaktseiteUrl: null,
   kontaktformular: false,
-  vertriebEmail: null,
+  postfaecher: [],
+  websiteEmail: null,
+  kundenanfrageEmail: null,
   netzEmail: null,
+  verantwortlich: null,
   kennzeichnungUrl: null,
   kennzeichnungPdf: false,
   kennzeichnungForm: null,
@@ -320,17 +374,16 @@ export function werteAus(
   // Postfächer: nur die eigene Domain zählt. Adressen auf fremden Domains sind
   // Agentur oder Dienstleister — dieselbe Regel wie bei den Kommunen, und sie
   // ist dort an ~90 Gemeinden gemessen worden.
-  let vertrieb: string | null = null;
-  let netz: string | null = null;
+  const postfaecher: { mail: string; art: PostfachArt }[] = [];
   for (const roh of Array.from(new Set(adressenAus(gesamtHtml, gesamtText)))) {
     const mail = decodeEntities(roh).trim().toLowerCase();
     const dom = mail.split("@")[1];
     if (!dom) continue;
     if (eigeneDomain && dom !== eigeneDomain && !dom.endsWith(`.${eigeneDomain}`)) continue;
-    const art = postfachArt(mail, allgemeinesRollenmuster);
-    if (art === "vertrieb") vertrieb ??= mail;
-    if (art === "netz") netz ??= mail;
+    if (postfaecher.some((p) => p.mail === mail)) continue;
+    postfaecher.push({ mail, art: postfachArt(mail, allgemeinesRollenmuster) });
   }
+  const erste = (art: PostfachArt) => postfaecher.find((p) => p.art === art)?.mail ?? null;
 
   const fund = kennzeichnungFund(gesamtHtml, seiten.start.url);
   const kennzeichnungUrl = fund?.url ?? null;
@@ -357,8 +410,11 @@ export function werteAus(
     fehler: null,
     kontaktseiteUrl,
     kontaktformular: !!mitFormular,
-    vertriebEmail: vertrieb,
-    netzEmail: netz,
+    postfaecher,
+    websiteEmail: erste("website"),
+    kundenanfrageEmail: erste("kundenanfrage"),
+    netzEmail: erste("netz"),
+    verantwortlich: extractVerantwortlich(gesamtText, VERSORGER_VOKABULAR),
     kennzeichnungUrl,
     kennzeichnungPdf: fund?.pdf ?? false,
     kennzeichnungForm: form,

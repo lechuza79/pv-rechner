@@ -11,7 +11,8 @@ import {
   NETZ_ROLLE,
   pflichtjahr,
   postfachArt,
-  VERTRIEB_ROLLE,
+  WEBSITE_ROLLE,
+  KUNDENANFRAGE_ROLLE,
   werteAus,
 } from "../versorger-erhebung";
 import { VERSORGER_VOKABULAR, findLinkUrl } from "../kommunen-profil";
@@ -19,25 +20,36 @@ import { VERSORGER_VOKABULAR, findLinkUrl } from "../kommunen-profil";
 const ALLGEMEIN = VERSORGER_VOKABULAR.rolle;
 
 describe("Postfach-Einordnung", () => {
-  it("erkennt das Vertriebspostfach, das dem alten Vokabular fehlte", () => {
-    // Genau der Fall aus der Adressen-Recherche vom 22.08.2026: Ein Mensch fand
-    // `Vertrieb@` bei BeSte Stadtwerke, der Automat nicht.
-    expect(ALLGEMEIN.test("vertrieb@beste-stadtwerke.de")).toBe(false);
-    expect(postfachArt("Vertrieb@beste-stadtwerke.de", ALLGEMEIN)).toBe("vertrieb");
+  it("zaehlt vertrieb@ NICHT zum Website-Schreibtisch", () => {
+    // Korrektur vom 23.08.2026 (Einwand des Betreibers): vertrieb@ bei einem
+    // Stadtwerk ist der Eingang fuer Leute, die dort Strom KAUFEN wollen — eine
+    // Warteschlange des Kundendienstes. Nicht der Schreibtisch, der entscheidet,
+    // was auf die Website kommt. Die erste Fassung warf beides zusammen.
+    for (const m of ["vertrieb@sw.de", "kundencenter@sw.de", "privatkunden@sw.de", "energieberatung@sw.de"]) {
+      expect(postfachArt(m, ALLGEMEIN)).toBe("kundenanfrage");
+    }
   });
 
-  it("trennt Netzbetrieb vom Vertrieb", () => {
+  it("erkennt den Website-Schreibtisch", () => {
+    for (const m of ["marketing@sw.de", "presse@sw.de", "unternehmenskommunikation@sw.de", "redaktion@sw.de"]) {
+      expect(postfachArt(m, ALLGEMEIN)).toBe("website");
+    }
+  });
+
+  it("trennt den Netzbetrieb von beiden", () => {
     for (const m of ["einspeisung@sw.de", "netzanschluss@sw.de", "zaehlerwesen@sw.de", "marktkommunikation@sw.de"]) {
       expect(postfachArt(m, ALLGEMEIN)).toBe("netz");
     }
-    for (const m of ["marketing@sw.de", "privatkunden@sw.de", "energieberatung@sw.de"]) {
-      expect(postfachArt(m, ALLGEMEIN)).toBe("vertrieb");
-    }
   });
 
-  it("Vertrieb schlaegt Netz, wenn beide Muster greifen könnten", () => {
-    // `vertrieb-netz@` gibt es, und die Adresse gehört dem Vertrieb.
-    expect(postfachArt("vertrieb-netz@sw.de", ALLGEMEIN)).toBe("vertrieb");
+  it("entscheidet bei zusammengesetzten Adressen das ERSTE Wort", () => {
+    // Alle drei Muster sind am Anfang verankert. Das ist die einfachste Regel,
+    // die sich verteidigen laesst: presse-netz@ gehoert der Pressestelle,
+    // vertrieb-netznutzung@ der Vertriebs-Warteschlange. Wer stattdessen
+    // irgendwo im Namen sucht, bekommt widerspruechliche Treffer.
+    expect(postfachArt("presse-netz@sw.de", ALLGEMEIN)).toBe("website");
+    expect(postfachArt("vertrieb-netznutzung@sw.de", ALLGEMEIN)).toBe("kundenanfrage");
+    expect(postfachArt("netz-vertrieb@sw.de", ALLGEMEIN)).toBe("netz");
   });
 
   it("laesst das allgemeine Postfach allgemein und die Person Person", () => {
@@ -45,9 +57,67 @@ describe("Postfach-Einordnung", () => {
     expect(postfachArt("erika.mustermann@sw.de", ALLGEMEIN)).toBe("person");
   });
 
-  it("die beiden Muster ueberschneiden sich nicht", () => {
-    for (const m of ["vertrieb@x.de", "marketing@x.de", "presse@x.de"]) expect(NETZ_ROLLE.test(m)).toBe(false);
-    for (const m of ["netz@x.de", "einspeisung@x.de"]) expect(VERTRIEB_ROLLE.test(m)).toBe(false);
+  it("die drei Muster ueberschneiden sich nicht in der falschen Richtung", () => {
+    for (const m of ["marketing@x.de", "presse@x.de", "redaktion@x.de"]) {
+      expect(NETZ_ROLLE.test(m)).toBe(false);
+      expect(KUNDENANFRAGE_ROLLE.test(m)).toBe(false);
+    }
+    for (const m of ["netz@x.de", "einspeisung@x.de"]) expect(WEBSITE_ROLLE.test(m)).toBe(false);
+    for (const m of ["vertrieb@x.de", "kundencenter@x.de"]) expect(WEBSITE_ROLLE.test(m)).toBe(false);
+  });
+});
+
+describe("Alle Funde werden aufgehoben, nicht nur das Urteil", () => {
+  it("haelt jede Adresse der eigenen Domain mit ihrer Einordnung fest", () => {
+    // Der Grund fuer diese Zusage: Als sich die Einordnung am 23.08.2026 als
+    // falsch herausstellte, waere eine Neubewertung ohne die Rohfunde nur ueber
+    // einen kompletten neuen Abruf aller Versorger moeglich gewesen.
+    const erg = werteAus(
+      {
+        start: {
+          url: "https://sw.de/",
+          html: `<a href="mailto:info@sw.de">A</a><a href="mailto:vertrieb@sw.de">B</a>
+                 <a href="mailto:marketing@sw.de">C</a><a href="mailto:einspeisung@sw.de">D</a>`,
+        },
+        weitere: [],
+      },
+      "sw.de",
+      ALLGEMEIN,
+      new Date("2026-08-23T12:00:00Z"),
+    );
+    expect(erg.postfaecher).toEqual([
+      { mail: "info@sw.de", art: "allgemein" },
+      { mail: "vertrieb@sw.de", art: "kundenanfrage" },
+      { mail: "marketing@sw.de", art: "website" },
+      { mail: "einspeisung@sw.de", art: "netz" },
+    ]);
+    expect(erg.websiteEmail).toBe("marketing@sw.de");
+    expect(erg.kundenanfrageEmail).toBe("vertrieb@sw.de");
+    expect(erg.netzEmail).toBe("einspeisung@sw.de");
+  });
+
+  it("nimmt die im Impressum verantwortliche Stelle als eigenen Weg mit", () => {
+    const erg = werteAus(
+      {
+        start: { url: "https://sw.de/", html: "<p>Redaktionell verantwortlich: Unternehmenskommunikation</p>" },
+        weitere: [],
+      },
+      "sw.de",
+      ALLGEMEIN,
+      new Date("2026-08-23T12:00:00Z"),
+    );
+    expect(erg.verantwortlich?.operativ).toBe(true);
+    expect(erg.verantwortlich?.zeile).toMatch(/unternehmenskommunikation/i);
+  });
+
+  it("erkennt die Geschaeftsfuehrung als Vertretung, nicht als operative Stelle", () => {
+    const erg = werteAus(
+      { start: { url: "https://sw.de/", html: "<p>Vertreten durch: Geschäftsführer Max Mustermann</p>" }, weitere: [] },
+      "sw.de",
+      ALLGEMEIN,
+      new Date("2026-08-23T12:00:00Z"),
+    );
+    expect(erg.verantwortlich?.operativ).toBe(false);
   });
 });
 
@@ -244,7 +314,7 @@ describe("Gesamtauswertung", () => {
       STICHTAG,
     );
     expect(erg.abruf).toBe("ok");
-    expect(erg.vertriebEmail).toBe("vertrieb@sw-musterstadt.de");
+    expect(erg.kundenanfrageEmail).toBe("vertrieb@sw-musterstadt.de");
     expect(erg.netzEmail).toBe("einspeisung@sw-musterstadt.de");
     expect(erg.kontaktformular).toBe(true);
     expect(erg.kennzeichnungUrl).toBe("https://sw-musterstadt.de/stromkennzeichnung");
@@ -287,6 +357,7 @@ describe("Gesamtauswertung", () => {
       ALLGEMEIN,
       STICHTAG,
     );
-    expect(erg.vertriebEmail).toBeNull();
+    expect(erg.websiteEmail).toBeNull();
+    expect(erg.postfaecher).toEqual([]);
   });
 });

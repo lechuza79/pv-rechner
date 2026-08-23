@@ -146,12 +146,36 @@ async function setup(): Promise<void> {
     -- ein allgemeines Postfach; gemessen erkannte er bei 937 Versorgern 73 mal
     -- eine Funktion, davon 38 "Redaktion". Wer die Website verantwortet, ist
     -- nicht, wer ein Beratungswerkzeug einkauft.
-    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS vertrieb_email text;
+    --
+    -- ALLE gefundenen Adressen der eigenen Domain mit ihrer Einordnung. Die
+    -- Spalten darunter sind nur der bequeme Zugriff auf je die erste ihrer Art.
+    --
+    -- Warum die Rohfunde und nicht nur das Urteil: Am 23.08.2026 stellte sich
+    -- die erste Einordnung als falsch heraus (vertrieb@ ist die Warteschlange
+    -- fuer Leute, die Strom KAUFEN wollen, nicht der Schreibtisch, der ueber
+    -- die Website entscheidet). Weil nur zwei ausgewaehlte Adressen gespeichert
+    -- waren, haette die Neubewertung einen kompletten neuen Abruf aller
+    -- Versorger gekostet. Wer die Funde behaelt, ordnet in Sekunden neu ein.
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS postfaecher jsonb;
+    -- Die Stelle, die die WEBSITE verantwortet (Kommunikation, Presse,
+    -- Marketing, Online-Redaktion) — der richtige Adressat.
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS website_email text;
+    -- Die Kunden-Warteschlange (vertrieb@, kundencenter@). Erreichbar, aber der
+    -- falsche Schreibtisch. Festgehalten, weil es bei kleinen Versorgern
+    -- dieselbe Person sein kann.
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS kundenanfrage_email text;
     -- Das Postfach des NETZBETRIEBS, ausdruecklich festgehalten statt verworfen:
     -- Es ist die Meldeadresse gegenueber der Bundesnetzagentur und damit der
     -- Grund, warum die Adressliste aus dem Anlagenregister systematisch
     -- danebenzeigt. Wer es wegwirft, kann den Befund spaeter nicht belegen.
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS netz_email text;
+    -- Die im Impressum nach § 18 MStV verantwortliche Stelle, frisch erhoben.
+    -- Das Merkmal "operativ" trennt die Redaktion von der Geschaeftsfuehrung.
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS erhebung_verantwortlich jsonb;
+    -- Die erste Fassung hiess vertrieb_email und vermengte Website-Schreibtisch
+    -- mit Kunden-Warteschlange. Sie wird entfernt statt umbenannt, damit keine
+    -- Auswertung stillschweigend auf der alten Bedeutung weiterrechnet.
+    ALTER TABLE utilities DROP COLUMN IF EXISTS vertrieb_email;
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS kontaktformular boolean;
     -- Stromkennzeichnung nach § 42 EnWG: die Pflichtseite jedes Stromlieferanten.
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS stromkennzeichnung_url text;

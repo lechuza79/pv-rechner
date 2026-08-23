@@ -304,7 +304,12 @@ async function main(): Promise<void> {
       e.abruf === "unerreichbar"
         ? `Abruf fehlgeschlagen: ${e.fehler}`
         : [
-            e.vertriebEmail ? `Vertrieb ${e.vertriebEmail}` : "kein Vertriebspostfach",
+            e.websiteEmail
+              ? `Website ${e.websiteEmail}`
+              : e.verantwortlich?.operativ
+                ? `Impressum ${e.verantwortlich.funktion ?? "operative Stelle"}`
+                : "kein Website-Schreibtisch",
+            e.kundenanfrageEmail ? `Kunden ${e.kundenanfrageEmail}` : null,
             e.netzEmail ? `Netz ${e.netzEmail}` : null,
             e.kontaktformular ? "Formular" : "kein Formular",
             e.kennzeichnungUrl
@@ -328,10 +333,20 @@ async function main(): Promise<void> {
   log("");
   log("── Ergebnis ───────────────────────────────────────────");
   log(`abgerufen                  : ${erreicht.length} von ${ergebnisse.length}`);
-  log(`  Vertriebs-/Kommunikationspostfach : ${z((e) => !!e.vertriebEmail)}`);
-  log(`  nur Netz-Postfach gefunden        : ${z((e) => !e.vertriebEmail && !!e.netzEmail)}`);
-  log(`  Kontaktformular vorhanden         : ${z((e) => e.kontaktformular)}`);
-  log(`  irgendein Weg zum Vertrieb        : ${z((e) => !!e.vertriebEmail || e.kontaktformular)}`);
+  // Die Reihenfolge ist die Rangfolge der Ansprache, nicht bloß eine Aufzählung.
+  log(`  Website-Postfach (Kommunikation)   : ${z((e) => !!e.websiteEmail)}`);
+  log(`  operative Stelle im Impressum      : ${z((e) => !!e.verantwortlich?.operativ)}`);
+  log(`  Kontaktformular vorhanden          : ${z((e) => e.kontaktformular)}`);
+  log(`  nur Kunden-Warteschlange           : ${z((e) => !e.websiteEmail && !e.verantwortlich?.operativ && !e.kontaktformular && !!e.kundenanfrageEmail)}`);
+  log(`  nur Netz-Postfach gefunden         : ${z((e) => !e.websiteEmail && !e.kundenanfrageEmail && !!e.netzEmail)}`);
+  // Zwei Zahlen, nicht eine — und der Unterschied ist der ganze Punkt.
+  // Ein Kontaktformular ist ein Weg INS UNTERNEHMEN; wo es ankommt, weiß
+  // niemand. Beides in eine Zahl zu ziehen war genau der Fehler, der die erste
+  // Fassung dieses Laufs zu optimistisch aussehen ließ.
+  log(
+    `  ─ direkt am richtigen Schreibtisch  : ${z((e) => !!e.websiteEmail || !!e.verantwortlich?.operativ)}`,
+  );
+  log(`  ─ irgendein Weg ins Unternehmen     : ${z((e) => !!e.websiteEmail || !!e.verantwortlich?.operativ || e.kontaktformular || !!e.kundenanfrageEmail)}`);
   log("");
   log(`  Stromkennzeichnungsseite gefunden : ${mitSeite.length}`);
   log(`    davon mit Grafik-Indiz          : ${mitSeite.filter((r) => r.e.kennzeichnungForm?.grafik).length}`);
@@ -362,8 +377,11 @@ async function main(): Promise<void> {
     const { error } = await db
       .from("utilities")
       .update({
-        vertrieb_email: e.vertriebEmail,
+        postfaecher: e.postfaecher,
+        website_email: e.websiteEmail,
+        kundenanfrage_email: e.kundenanfrageEmail,
         netz_email: e.netzEmail,
+        erhebung_verantwortlich: e.verantwortlich,
         kontaktformular: e.kontaktformular,
         kontaktseite_url: e.kontaktseiteUrl,
         stromkennzeichnung_url: e.kennzeichnungUrl,
