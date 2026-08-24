@@ -718,7 +718,17 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                   {(selRec?.eco.npv25 ?? 0) >= 0 ? "+" : ""}{Math.round(selRec?.eco.npv25 ?? 0).toLocaleString("de-DE")} €
                 </span>
               </div>
-              {rec.reasoning.budgetConstrained && (
+              {/* Zwei verschiedene Aussagen, nicht eine (Audit 24.08.2026): Passt eine
+                  kleinere Anlage ins Budget, ist die Empfehlung nach unten begrenzt.
+                  Reicht das Budget für GAR KEINE Anlage, liegt die Empfehlung darueber
+                  — und dann ist "ohne Limit waere mehr moeglich" die falsche Auskunft,
+                  weil sie verschweigt, dass die genannte Zahl das eigene Budget
+                  ueberschreitet. */}
+              {rec.reasoning.budgetZuKnapp ? (
+                <div style={{ fontSize: 12, color: v('--color-negative'), marginTop: 8, fontWeight: 600 }}>
+                  Für dein Budget reicht es nicht — das ist die kleinste sinnvolle Anlage.
+                </div>
+              ) : rec.reasoning.budgetConstrained && (
                 <div style={{ fontSize: 12, color: v('--color-negative'), marginTop: 8, fontWeight: 600 }}>
                   Budget-begrenzt — ohne Limit wäre mehr möglich
                 </div>
