@@ -546,6 +546,24 @@ export default function DatenschutzPage() {
           Beschwerde bei einer Aufsichtsbehörde — stehen in Abschnitt 12.
         </p>
 
+        {/* Nur ein Verweis, kein eigener Abschnitt: Die LinkedIn-Angaben
+            betreffen Besucher unserer LinkedIn-Seite, nicht die dieser Website.
+            Sie hier auszubreiten verlängerte die Erklärung für alle, die sie
+            nichts angeht. Ohne diesen Satz wäre die Unterseite allerdings eine
+            Waise — erreichbar nur über LinkedIn selbst. */}
+        <h2 style={S.h2}>16. Unsere Präsenz auf LinkedIn</h2>
+        <p style={S.p}>
+          Wir betreiben eine Unternehmensseite auf LinkedIn. Was dort verarbeitet
+          wird, findet auf den Systemen von LinkedIn statt und nicht auf dieser
+          Website; die Angaben dazu — insbesondere zur gemeinsamen
+          Verantwortlichkeit für die Seitenstatistiken (Art. 26 DSGVO) — stehen
+          gesondert unter{" "}
+          <a href="/datenschutz-linkedin" style={S.a}>
+            Datenschutz für unsere LinkedIn-Seite
+          </a>
+          .
+        </p>
+
         <p style={S.muted}>Stand: August 2026</p>
       </div>
     </div>

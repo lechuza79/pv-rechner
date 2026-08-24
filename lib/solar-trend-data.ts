@@ -5,27 +5,45 @@
 
 import { unstable_cache } from "next/cache";
 import { supabase } from "./supabase-server";
+import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
 import type { SolarMonat } from "./solar-trend";
 
 async function readSolarMonthlySeries(): Promise<SolarMonat[]> {
   if (!supabase) return [];
 
-  const [gen, inst] = await Promise.all([
-    supabase
-      .from("energy_monthly")
-      .select("period, data")
-      .eq("metric", "generation_monthly")
-      .eq("country", "de")
-      .order("period", { ascending: true })
-      .limit(1000),
-    supabase
-      .from("energy_monthly")
-      .select("period, data")
-      .eq("metric", "installed_solar_monthly")
-      .eq("country", "de")
-      .order("period", { ascending: true })
-      .limit(1000),
-  ]);
+  // Zeitbudget + eigener Fang: Ohne beides hängt der Seitenaufbau an einer
+  // kränkelnden Datenbank, statt den Trend-Block einfach wegzulassen. Das
+  // Ergebnis (auch das leere) hält der Cache, es wird also nicht sofort
+  // nachgefeuert.
+  let gen, inst;
+  try {
+    [gen, inst] = await Promise.all([
+      withDbTimeout(
+        supabase
+          .from("energy_monthly")
+          .select("period, data")
+          .eq("metric", "generation_monthly")
+          .eq("country", "de")
+          .order("period", { ascending: true })
+          .limit(1000),
+        "solar-trend (Erzeugung)",
+        DB_SOFT_READ_TIMEOUT_MS,
+      ),
+      withDbTimeout(
+        supabase
+          .from("energy_monthly")
+          .select("period, data")
+          .eq("metric", "installed_solar_monthly")
+          .eq("country", "de")
+          .order("period", { ascending: true })
+          .limit(1000),
+        "solar-trend (Leistung)",
+        DB_SOFT_READ_TIMEOUT_MS,
+      ),
+    ]);
+  } catch {
+    return [];
+  }
   if (gen.error || !gen.data) return [];
 
   const installedByPeriod = new Map<string, number>();

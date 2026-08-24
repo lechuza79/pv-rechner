@@ -17,6 +17,7 @@
  */
 
 import { supabase } from "./supabase-server";
+import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
 import {
   RENEWABLE_KEYS,
   FOSSIL_KEYS,
@@ -62,11 +63,18 @@ export async function getStrommixYtd(now: Date): Promise<StrommixYtd | null> {
   if (!supabase) return null;
   const year = now.getUTCFullYear();
 
-  const { data, error } = await supabase
-    .from("energy_weekly")
-    .select("*")
-    .eq("country", "de")
-    .eq("year", year);
+  // Zeitbudget + eigener Fang: Fällt der Read aus, blendet sich der Block aus
+  // (null ist der vorgesehene Rückfall) — statt den Seitenaufbau anzuhalten.
+  let data, error;
+  try {
+    ({ data, error } = await withDbTimeout(
+      supabase.from("energy_weekly").select("*").eq("country", "de").eq("year", year),
+      "strommix-ytd",
+      DB_SOFT_READ_TIMEOUT_MS,
+    ));
+  } catch {
+    return null;
+  }
 
   if (error || !data || data.length === 0) return null;
   const rows = data as WeeklyRow[];
