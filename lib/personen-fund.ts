@@ -184,7 +184,7 @@ export function personenAus(html: string): Person[] {
     const nameStart = posVor >= 0 && posName - posVor < 40 ? posVor : posName;
     const nameEnde = posName + nachname.length;
     const name = fenster.slice(nameStart, nameEnde).replace(MARKEN, " ").replace(/\s+/g, " ").trim();
-    if (!name || name.length > 60) continue;
+    if (!istPlausiblerName(name)) continue;
 
     // Zwischen Name und Adresse steht die Funktion, dahinter die Durchwahl.
     let rest = fenster.slice(nameEnde);
@@ -242,5 +242,28 @@ export function saeubereFunktion(roh: string): string | null {
   if (s.length < 3 || s.length > 70) return null;
   if (/[.!?]\s/.test(s)) return null; // Fließtext
   if (!/^[A-ZÄÖÜ]/.test(s)) return null; // Funktionsbezeichnungen beginnen groß
+  // Eine Restadresse ist keine Funktion. Gemessen am ersten Lauf: „E-Mail
+  // anschluss@thueringer-energienetze.com" landete als Funktionsbezeichnung in
+  // der Wortliste — und verzerrt damit genau die Erhebung, um die es geht.
+  if (s.includes("@")) return null;
+  // Längere Ziffernfolgen sind Reste von Durchwahlen und Hausnummern.
+  if (/\d{3,}/.test(s)) return null;
+  // Mehr als sechs Wörter ist keine Funktionsbezeichnung mehr, sondern ein Satz.
+  if (s.split(" ").length > 6) return null;
   return s;
+}
+
+/**
+ * Sieht der Fund nach einem echten Personennamen aus?
+ *
+ * Gegen den zweiten gemessenen Fehlgriff des ersten Laufs: „G) Ihr Kontakt
+ * Johannes Sambale" wurde als Name übernommen, weil der Nachname darin vorkam.
+ * Erlaubt sind Buchstaben, Bindestriche, Apostrophe und der Punkt akademischer
+ * Grade — mehr braucht ein Name nicht.
+ */
+export function istPlausiblerName(name: string): boolean {
+  if (!/^[A-ZÄÖÜ]/.test(name)) return false;
+  if (!/^[\p{L}\s.'’-]+$/u.test(name)) return false;
+  const woerter = name.split(/\s+/);
+  return woerter.length >= 2 && woerter.length <= 5;
 }

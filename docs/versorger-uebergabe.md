@@ -42,6 +42,19 @@ unter docs/ nicht — was er entscheiden soll, wird im Gespräch erklärt.
 - Stromkennzeichnung als Produkt: tot. Der Branchenverband liefert das Werkzeug
   kostenlos, das Gesetz kennt keine Sanktion.
 - Wir vermitteln keine Leads. Markenkern, nicht verhandelbar.
+- **Ein namentlicher Ansprechpartner ist bei Versorgern öffentlich nicht zu
+  holen** (gemessen 24.08.2026, geschichtete Stichprobe über 60 Versorger nach
+  Größe × Landesteil, 54 erreicht). Nur 8 zeigen überhaupt eine Person mit
+  eigener Mailadresse — und **6 davon sind Netzgesellschaften**. Am Ende bleibt
+  genau EIN brauchbarer Fund auf der Vertriebsseite. Die Ursache ist
+  regulatorisch und ändert sich mit keinem besseren Werkzeug: Den Netzbetrieb
+  zwingt das Recht, Menschen zu benennen (Gleichbehandlungsbeauftragte,
+  technische Ansprechpartner, Veröffentlichungspflichten) — den Vertrieb
+  zwingt niemand. Dieselbe Schieflage wie bei den Adressen aus dem
+  Anlagenregister, aus demselben Grund.
+  **Folge: Eine schriftliche Erstansprache an eine benannte Person ist in
+  diesem Markt nicht skalierbar.** Was bleibt, ist das Rollenpostfach, das
+  Kontaktformular — und ein Adressat statt fünfhundert (ASEW).
 
 ## Was offen ist
 
