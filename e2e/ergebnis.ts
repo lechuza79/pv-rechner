@@ -109,20 +109,34 @@ export async function ergebnisFingerabdruck(page: Page): Promise<string> {
   });
 }
 
-/** Wartet, bis das Ergebnis wirklich steht — sonst misst der Abdruck den Aufbau. */
+/**
+ * Wartet, bis das Ergebnis wirklich steht — sonst misst der Abdruck den Aufbau.
+ *
+ * ZWEI Bedingungen, und die erste ist die wichtige: Die Marktpreise kommen
+ * NACHGELADEN. Bis sie da sind, rechnet die Seite mit dem Rückfallwert im Code
+ * und zeigt trotzdem ein vollständiges, plausibles Ergebnis. Genau daran ist
+ * der erste Lauf in der Cloud gescheitert (24.08.2026): Vor dem Neuladen stand
+ * ein Anlagenpreis von 14.000 €, danach der live geholte von 13.500 € — der
+ * Vergleich meldete einen Unterschied, den kein Nutzer je sieht. Lokal fiel es
+ * nicht auf, weil die Antwort dort in Millisekunden da ist.
+ *
+ * Deshalb: erst auf die Preis-Antwort warten (weich — kommt sie aus dem
+ * Zwischenspeicher, gibt es gar keine Anfrage), dann auf einen Abdruck, der
+ * sich eine Sekunde lang nicht mehr bewegt.
+ */
 export async function ergebnisBereit(page: Page, enthaelt: string) {
+  await page
+    .waitForResponse((r) => r.url().includes("/api/prices"), { timeout: 8_000 })
+    .catch(() => null);
   await expect(page.getByText(enthaelt, { exact: false }).first()).toBeVisible({ timeout: 30_000 });
-  // Die Zahlen kommen teils aus nachgeladenen Preisen. Ein Abdruck, der sich
-  // nicht mehr bewegt, ist das verlässliche Signal — eine feste Wartezeit wäre
-  // auf einem ausgelasteten Rechner wieder zu kurz.
   let vorher = await ergebnisFingerabdruck(page);
   await expect(async () => {
-    await page.waitForTimeout(300);
+    await page.waitForTimeout(1_000);
     const jetzt = await ergebnisFingerabdruck(page);
     expect(jetzt).toBe(vorher);
     expect(jetzt.length).toBeGreaterThan(0);
     vorher = jetzt;
-  }).toPass({ timeout: 20_000 });
+  }).toPass({ timeout: 30_000 });
 }
 
 /** Die Ein/Aus-Schalter des Ergebnisses, mit Beschriftung und Stellung. */
