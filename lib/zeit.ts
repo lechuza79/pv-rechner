@@ -11,6 +11,30 @@
 // Für ZEITSTEMPEL (wann ist etwas passiert) bleibt UTC richtig — die Funktion
 // hier ist ausschließlich für Kalendertage.
 
+/**
+ * „24.08.2026, 16:45" — ein gemessener Zeitpunkt in deutscher Ortszeit.
+ *
+ * Gedacht für Angaben, die ein BILD verlassen: Das Vorschaubild der Startseite
+ * zeigt die gerade laufende Erzeugung, und ein soziales Netzwerk holt so ein Bild
+ * genau einmal beim Posten und friert es dauerhaft ein. Über der Zahl stand
+ * „gerade eben" — ein Beitrag von heute hätte damit in vier Wochen noch immer den
+ * Momentanwert von heute getragen, ausgewiesen als aktuell. Mit Zeitpunkt bleibt
+ * dasselbe Bild auch später eine wahre Aussage.
+ *
+ * Anders als der Kalendertag oben ist das ein Zeitstempel — er kommt aus der
+ * Messung und nie aus der Uhr des Servers.
+ */
+export function zeitpunktInBerlin(iso: string | null | undefined): string | null {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return null;
+  return new Intl.DateTimeFormat("de-DE", {
+    day: "2-digit", month: "2-digit", year: "numeric",
+    hour: "2-digit", minute: "2-digit",
+    timeZone: "Europe/Berlin",
+  }).format(d);
+}
+
 /** „2026-08-19" — der laufende Kalendertag in Deutschland. */
 export function heuteInBerlin(jetzt: Date = new Date()): string {
   // `sv-SE` formatiert als YYYY-MM-DD; das ist der kürzeste zuverlässige Weg
