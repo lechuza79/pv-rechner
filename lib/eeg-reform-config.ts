@@ -196,7 +196,15 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // minus 1 ct nach § 53 Abs. 1, gerundet. Ein zweiter getippter Wert daneben
   // wäre genau die Kopie, die dieser Config-Block verhindern soll; gerechnet
   // wird weiter aus AW und Abschlag.
-  geprueftIso: "2026-08-23",
+  //
+  // 24.08.2026 nachgesehen, unverändert: Die Bundesrats-Drucksache 470/26 steht
+  // weiter als Grunddrucksache der Bundesregierung („Entwurf eines Gesetzes für
+  // einen planbaren, kosteneffizienten, netzverträglichen und marktorientierten
+  // Ausbau der erneuerbaren Energien im Stromsektor") ohne verzeichneten
+  // Beschluss; das nächste Bundesratsplenum bleibt der 25.09.2026. Im Bundestag
+  // ist der Entwurf nicht aufgerufen worden — die energiepolitischen Vorgänge
+  // dieses Sommers betreffen Versorgungssicherheit und Netzausbau, nicht diesen.
+  geprueftIso: "2026-08-24",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

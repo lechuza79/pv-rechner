@@ -288,7 +288,18 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // bis 100 %, sagt aber nichts über Preise. Die Lücke im Öl-Ergebnis des
   // Wärmepumpen-Rechners bleibt deshalb offen UND sichtbar; sie wirkt zu unseren
   // Ungunsten (Öl wird zu günstig gerechnet), was die vertretbare Richtung ist.
-  geprueftRechtIso: "2026-08-23",
+  //
+  // 24.08.2026 an der amtlichen Chronologie nachgesehen, unverändert: Sie endet
+  // weiter mit der Verkündung am 28.07.2026 (BGBl. 2026 I Nr. 226), davor
+  // Kabinett 13.05., erste Lesung 11.06., Anhörung 22.06., Beschluss in dritter
+  // Lesung 10.07.2026. Kein Eintrag nach dem 28.07.2026, das Quotengesetz nach
+  // § 42a weiterhin nur als Ankündigung geführt.
+  //
+  // Bioheizöl-Gegensuche zum FÜNFTEN Mal erfolglos, mit demselben Befund: Die
+  // Treffer sind HVO-Kraftstoffpreise (Diesel, nicht Heizöl) und Portalangaben
+  // zu Aufschlägen. Beides taugt nicht — der eine misst den falschen Markt, der
+  // andere ist keine Trägerquelle.
+  geprueftRechtIso: "2026-08-24",
   reviewBy: "2027-07-25",
 };
 

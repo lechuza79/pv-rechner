@@ -473,17 +473,34 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // eigentlich meine eigenen Fehler derselben Runde suchen sollte. Wirkung
     // vorher: Die Bad Homburger Förderung wurde 3.000 Einwohnern im Taunus
     // angeboten und den 57.000 in Bad Homburg vorenthalten.
-    url: "https://www.bad-homburg.de", stand: "Juni 2026",
-    status: "unsicher", capped: true, verified: false,
+    // ANTRAGSSTOPP, NICHT AUSGESCHÖPFT (korrigiert 24.08.2026). Hier stand
+    // „Haushaltsmittel laut mehreren Quellen derzeit ausgeschöpft" — eine
+    // Sekundärquellen-Aussage, die als Adresse nur die nackte Homepage hatte und
+    // deshalb nie nachprüfbar war. Die Amtsseite sagt etwas anderes und nennt
+    // einen anderen Grund: „Zum 10.08.2026 wird die Annahme neuer Förderanträge
+    // im Rahmen des kommunalen Förderprogramms vorübergehend gestoppt.
+    // Hintergrund ist eine Umstrukturierung des digitalen Antragsprozesses sowie
+    // die Optimierung interner Arbeitsabläufe."
+    //
+    // Der Unterschied ist die Auskunft, für die jemand die Seite aufschlägt: Ein
+    // leerer Topf heißt „im nächsten Haushaltsjahr wieder versuchen", ein
+    // Verwaltungsumbau heißt „kommt wieder, Termin offen". Beide Zustände ziehen
+    // nichts ab, aber nur einer stimmt. Beträge am 24.08.2026 an der Richtlinie
+    // selbst geprüft (§ 3 Abs. 2 Buchst. a und d) und zellgleich bestätigt.
+    url: "https://www.bad-homburg.de/de/stadt/umwelt-und-klima/umwelt-und-klimaschutz/energieberatung",
+    stand: "August 2026",
+    status: "pausiert", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "Zuschuss je kWp + je kWh Speicher (Mittel ggf. ausgeschöpft)",
+    coveredCosts: "Zuschuss je kWp + je kWh Speicher (derzeit keine Antragsannahme)",
     rates: [
       { label: "PV-Anlage", value: "300 €/kWp, max. 6.000 €" },
       { label: "Batteriespeicher", value: "300 €/kWh, max. 3.000 €" },
     ],
     conditions: [
+      "Seit dem 10. August 2026 nimmt die Stadt keine neuen Förderanträge an — sie baut das digitale Antragsverfahren um; wie lange das dauert, sagt sie nicht",
+      "Vollständige Anträge, die vor dem 10. August 2026 eingegangen sind, werden regulär weiterbearbeitet",
       "Mieter ausdrücklich antragsberechtigt",
-      "Beträge gemäß Richtlinie 2022; Haushaltsmittel laut mehreren Quellen derzeit ausgeschöpft — vor Antrag bei der Stadt prüfen",
+      "Gefördert werden Gebäude mit bis zu acht Wohneinheiten",
     ],
     combinableWith: BUND,
     pvPerKwp: 300, speicherPerKwh: 300, pvCap: 6000, speicherCap: 3000,
