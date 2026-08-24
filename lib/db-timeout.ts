@@ -29,13 +29,38 @@
 // DB_READ_TIMEOUT_MS ändert, muss die Schwellen dort mit anpassen.
 export const DB_READ_TIMEOUT_MS = 8000;
 
+// Kurzes Budget für Reads mit HARMLOSEM Rückfall.
+//
+// Der Unterschied ist nicht die Query, sondern was ein Fehlschlag kostet. Fällt
+// eine Atlas-Abfrage aus, gibt es keine Seite — dafür lohnt es zu warten. Fällt
+// dagegen die Theming-Überlagerung, der Marktpreis oder der Förderkatalog aus,
+// steht sofort ein vollwertiger Ersatz bereit (keine Überlagerung, Config-Preise,
+// Code-Seed): Dort ist Warten reine Verzögerung — der Besucher bekommt nach 8 s
+// exakt das, was er nach 3 s auch bekommen hätte.
+//
+// Und genau daran hängt der Verstärker: Diese Reads laufen im Layout und auf den
+// meistbesuchten Seiten, also bei JEDEM Aufbau. Acht Sekunden je Aufbau halten
+// die Function-Slots besetzt und schieben die nächste Anfrage nach — aus einem
+// DB-Schluckauf wird so ein Rückstau, der sich selbst am Leben hält (gemessene
+// Kette bei einem Schwesterprojekt am 21.08.2026: überlastete DB, danach 2 Mio
+// Anfragen/Stunde der eigenen Functions gegen die bereits tote Datenbank; die DB
+// war 20 Minuten vor dem Endpunkt wieder gesund).
+export const DB_SOFT_READ_TIMEOUT_MS = 3000;
+
 /**
  * Rennt einen supabase-Query (thenable) gegen einen Timeout. Gewinnt der Timeout,
  * rejectet die Promise mit einer sprechenden Meldung. Der Query selbst läuft
  * serverseitig ggf. weiter — bei einer hängenden Verbindung ist er ohnehin
  * blockiert; wichtig ist, dass der Render-Pfad nicht mitblockiert.
+ *
+ * `ms` nur setzen, wenn der Aufrufer einen vollwertigen Rückfall hat
+ * (DB_SOFT_READ_TIMEOUT_MS); ohne Rückfall bleibt es beim Default.
  */
-export function withDbTimeout<T>(query: PromiseLike<T>, label: string): Promise<T> {
+export function withDbTimeout<T>(
+  query: PromiseLike<T>,
+  label: string,
+  ms: number = DB_READ_TIMEOUT_MS,
+): Promise<T> {
   if (schutzschalterOffen()) {
     // Abgelehntes Versprechen, KEIN synchroner Wurf: Die Aufrufer fangen den
     // Fehler durchweg mit .catch() bzw. await ab. Ein synchroner Wurf flöge an
@@ -46,10 +71,7 @@ export function withDbTimeout<T>(query: PromiseLike<T>, label: string): Promise<
   }
   let timer: ReturnType<typeof setTimeout>;
   const timeout = new Promise<T>((_, reject) => {
-    timer = setTimeout(
-      () => reject(new Error(`DB read timeout after ${DB_READ_TIMEOUT_MS}ms (${label})`)),
-      DB_READ_TIMEOUT_MS,
-    );
+    timer = setTimeout(() => reject(new Error(`DB read timeout after ${ms}ms (${label})`)), ms);
   });
   // clearTimeout, damit der Timer die Serverless-Function nach einem schnellen
   // Erfolg nicht bis zum Ablauf wachhält.
