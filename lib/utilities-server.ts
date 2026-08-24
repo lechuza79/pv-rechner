@@ -1,5 +1,6 @@
 import "server-only";
 import { supabase } from "./supabase-server";
+import { withDbTimeout } from "./db-timeout";
 import { loadAwardStats } from "./awards-server";
 import type { GemeindeStats } from "./awards";
 import {
@@ -79,7 +80,12 @@ async function alleZeilen(tabelle: string, spalten: string): Promise<Row[]> {
   if (!supabase) return [];
   const out: Row[] = [];
   for (let von = 0; ; von += 1000) {
-    const { data, error } = await supabase.from(tabelle).select(spalten).range(von, von + 999);
+    // Zeitbudget je Block — sonst hält ein einziger hängender Block die ganze
+    // Schleife bis zum Function-Limit fest.
+    const { data, error } = await withDbTimeout(
+      supabase.from(tabelle).select(spalten).range(von, von + 999),
+      `${tabelle} ab ${von}`,
+    );
     if (error) throw new Error(`${tabelle} laden: ${error.message}`);
     if (!data?.length) break;
     out.push(...(data as unknown as Row[]));
