@@ -106,6 +106,13 @@ type Befund = {
   art: Ruecklaufart;
   von: string;
   betreff: string;
+  /**
+   * Der Tag, an dem die Mail ANKAM — nicht der Tag, an dem wir nachgesehen
+   * haben. Beides zu verwechseln ist dieselbe Fehlerklasse wie das erfundene
+   * Förder-Prüfdatum: Der Verlauf behauptet sonst, eine Antwort sei an dem Tag
+   * eingegangen, an dem zufällig ein Abruf lief.
+   */
+  datum: string;
   region_id: string | null;
   name: string | null;
 };
@@ -188,6 +195,7 @@ async function main(): Promise<void> {
         art,
         von,
         betreff,
+        datum: (msg.envelope?.date ?? new Date()).toISOString().slice(0, 10),
         region_id: treffer.length === 1 ? treffer[0].region_id : null,
         name: treffer.length === 1 ? treffer[0].name : null,
       };
@@ -226,6 +234,7 @@ async function main(): Promise<void> {
   }
 
   let geschrieben = 0;
+  const geschriebeneOrte: string[] = [];
   for (const b of befunde) {
     const status = STATUS_ZU_ART[b.art];
     if (!status || !b.region_id) continue;
@@ -242,11 +251,22 @@ async function main(): Promise<void> {
       .eq("region_id", b.region_id)
       .maybeSingle();
     const neueNotiz = notizZeile({
-      datum: new Date().toISOString().slice(0, 10),
+      datum: b.datum,
       art: b.art,
       betreff: b.betreff,
       von: b.von,
     });
+    // NUR EINMAL EINTRAGEN.
+    //
+    // Der Lauf sieht dasselbe Postfach jeden Tag an und findet dieselbe Antwort
+    // wieder. Ohne diese Pruefung waechst die Notiz bei jedem Lauf um eine
+    // identische Zeile — nach einer Woche steht dieselbe Rueckmeldung siebenmal
+    // da und sieht aus wie sieben. Genau so ist es Nidda ergangen.
+    //
+    // Verglichen wird die fertige Zeile: Sie traegt Datum, Art, Betreff und
+    // Absender. Eine echte zweite Antwort am selben Tag kommt durch, weil ihr
+    // Betreff sich unterscheidet.
+    if ((vorher?.notes ?? "").split("\n").includes(neueNotiz)) continue;
     patch.notes = vorher?.notes ? `${vorher.notes}\n${neueNotiz}` : neueNotiz;
     // „GESPERRT" IST EINE EINBAHNSTRASSE.
     //
@@ -261,11 +281,21 @@ async function main(): Promise<void> {
       .eq("region_id", b.region_id)
       .neq("outreach_status", "gesperrt");
     if (error) log(`${b.name}: ${error.message}`, "err");
-    else geschrieben++;
+    else {
+      geschrieben++;
+      geschriebeneOrte.push(b.region_id);
+    }
   }
   // Singular mitbauen: „1 Gemeinden nachgetragen" ist derselbe Fehler wie
   // „1 neue Anlagen" im Atlas — Grammatik ist Teil der Richtigkeit.
-  log(`${geschrieben} ${geschrieben === 1 ? "Gemeinde" : "Gemeinden"} nachgetragen`, "ok");
+  // Gemeinden zaehlen, nicht Schreibvorgaenge. Drei Mails aus Nidda meldeten
+  // vorher „3 Gemeinden nachgetragen" — es war eine.
+  const orte = new Set(geschriebeneOrte).size;
+  log(
+    `${geschrieben} ${geschrieben === 1 ? "Rückmeldung" : "Rückmeldungen"} nachgetragen ` +
+      `(${orte} ${orte === 1 ? "Gemeinde" : "Gemeinden"})`,
+    "ok",
+  );
 }
 
 main().catch((e) => {
