@@ -73,6 +73,19 @@ export interface RecommendReasoning {
   autarkieOhneSpeicher: number;    // gleiche Anlage, ohne Speicher → Speicher-Effekt
   paybackYears: number | null;
   budgetConstrained: boolean;
+  /**
+   * Das angegebene Budget reicht nicht einmal für die kleinste Anlage — die
+   * Empfehlung liegt DARÜBER statt darunter.
+   *
+   * Muss getrennt von `budgetConstrained` stehen (Audit 24.08.2026): Beide Fälle
+   * setzten dasselbe Flag, und die Oberfläche schrieb daraufhin „ohne Limit wäre
+   * mehr möglich". Bei 1.000 € Budget und einer 4.000-€-Empfehlung ist das zwar
+   * nicht falsch, verschweigt aber das Entscheidende — dass die genannte Zahl das
+   * eigene Budget überschreitet. Eine vom Nutzer selbst gesetzte Grenze
+   * stillschweigend zu überschreiten ist genau die Sorte Irritation, wegen der
+   * jemand dem Ergebnis nicht mehr traut.
+   */
+  budgetZuKnapp: boolean;
   investition: number;
   npv25: number;           // Rendite nach 25 J (Gesamtgewinn nach Investitionsabzug)
 }
@@ -309,6 +322,7 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
 
   // 5. Budget-Constraint: nur Kombinationen die ins Budget passen, dann dasselbe Gate
   let budgetConstrained = false;
+  let budgetZuKnapp = false;
   if (input.budgetLimit !== null) {
     const affordable = valid.filter(c => c.investition <= input.budgetLimit!);
     const affordableBest = gatedBest(affordable);
@@ -319,7 +333,9 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
       }
     } else {
       budgetConstrained = true;
-      // Kleinste verfügbare Kombination als Fallback
+      // Kleinste verfügbare Kombination als Fallback — sie liegt dann ÜBER dem
+      // Budget, und genau das muss die Oberfläche sagen können.
+      budgetZuKnapp = true;
       const cheapest = [...candidates].sort((a, b) => a.investition - b.investition)[0];
       best = cheapest;
     }
@@ -426,6 +442,7 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
       autarkieOhneSpeicher: autarkyFor(ctx, best.kwp, 0),
       paybackYears: best.paybackYears,
       budgetConstrained,
+      budgetZuKnapp,
       investition: best.investition,
       npv25: best.npv25,
     },
