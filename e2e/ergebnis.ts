@@ -109,19 +109,49 @@ export async function ergebnisFingerabdruck(page: Page): Promise<string> {
   });
 }
 
+/**
+ * So viele ruhige Proben in Folge (à 300 ms) gelten als „das Ergebnis steht".
+ * Vier davon sind gut eine Sekunde — genug, dass ein nachgeladener Preis
+ * angekommen ist, und weit unter dem Zeitlimit der Wartefunktion.
+ */
+const RUHIGE_PROBEN = 4;
+
 /** Wartet, bis das Ergebnis wirklich steht — sonst misst der Abdruck den Aufbau. */
 export async function ergebnisBereit(page: Page, enthaelt: string) {
   await expect(page.getByText(enthaelt, { exact: false }).first()).toBeVisible({ timeout: 30_000 });
   // Die Zahlen kommen teils aus nachgeladenen Preisen. Ein Abdruck, der sich
   // nicht mehr bewegt, ist das verlässliche Signal — eine feste Wartezeit wäre
   // auf einem ausgelasteten Rechner wieder zu kurz.
+  // Der Merker wird IMMER fortgeschrieben, auch wenn der Vergleich scheitert —
+  // sonst kann der Wiederholungslauf sich nicht erholen. Die erste Fassung setzte
+  // ihn ERST NACH der Prüfung; ein `expect` wirft, also blieb der Merker für
+  // immer auf dem allerersten Abdruck stehen, während die Seite längst auf ihrem
+  // zweiten stand. Damit verglich jede Wiederholung dieselben zwei
+  // unterschiedlichen Stände und konnte nie grün werden. Genau EIN Wechsel ist
+  // hier aber der Normalfall: Die Anschaffungskosten kommen nachgeladen (im
+  // fehlgeschlagenen Lauf 14.000 → 13.500), und auf diesen Wechsel zu warten ist
+  // der einzige Zweck dieser Funktion. Alle neun Fehlschläge am 24.08.2026
+  // trugen deshalb zeichengleiche Werte und meldeten „Zeitlimit überschritten".
+  // Erst warten, bis nichts mehr nachgeladen wird. Die Ruhe-Proben allein
+  // reichen nicht: Der Preis-Abruf kann länger unterwegs sein als das
+  // Probenfenster, und die Seite steht solange völlig still auf dem
+  // Schnappschuss aus dem Code — ruhig, aber noch nicht fertig.
+  await page.waitForLoadState("networkidle").catch(() => {});
   let vorher = await ergebnisFingerabdruck(page);
+  let ruhig = 0;
   await expect(async () => {
     await page.waitForTimeout(300);
     const jetzt = await ergebnisFingerabdruck(page);
-    expect(jetzt).toBe(vorher);
-    expect(jetzt.length).toBeGreaterThan(0);
+    ruhig = jetzt === vorher ? ruhig + 1 : 0;
     vorher = jetzt;
+    expect(jetzt.length).toBeGreaterThan(0);
+    // MEHRERE ruhige Proben, nicht eine. Eine einzige beweist nur, dass sich in
+    // den letzten 300 ms nichts bewegt hat — und genau so lange ist die Seite
+    // still, während der Preis-Abruf noch unterwegs ist. Der Abdruck stand dann
+    // auf dem Schnappschuss aus dem Code (Anschaffung 14.000), der Neuaufbau traf
+    // den nachgeladenen Wert (13.500), und der Vergleich „derselbe Link, dieselben
+    // Zahlen" verglich zwei verschiedene Ladezustände statt zwei Ergebnisse.
+    expect(ruhig, `Ergebnis bewegt sich noch: ${jetzt}`).toBeGreaterThanOrEqual(RUHIGE_PROBEN);
   }).toPass({ timeout: 20_000 });
 }
 
