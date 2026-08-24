@@ -638,11 +638,42 @@ export const ESKALATION_AB_LAEUFEN = 3;
  * Selbstheilung committet wird, würde genau im Fehlerfall nichts festhalten.
  *
  * Ohne Token (lokaler Lauf) wird NICHT eskaliert — im Zweifel keine Mail.
+ *
+ * EINMAL JE ROT-SERIE, NICHT JE LAUF (24.08.2026) — das ist der Kern dieser
+ * Funktion, nicht die Schwelle. Die erste Fassung fragte nur „sind die letzten
+ * zwei rot?", und das ist ab dem dritten roten Lauf für immer wahr: Der Check
+ * läuft alle drei Stunden, also ging dieselbe Frage acht Mal am Tag hinaus.
+ * Gemessen am 23./24.08.2026: sechs wortgleiche Mails in fünfzehn Stunden, alle
+ * über denselben abgebrochenen Förder-Lauf — dessen Behebung schon gepusht war
+ * und nur auf den nächsten Tageslauf wartete. Genau der Fall, der Teil 3 des
+ * Wächter-Gates ausgelöst hat („sieben Mails in drei Tagen ... zu viel Text, zu
+ * viel was irrelevant ist"): Ein Absender, der sich wiederholt, wird
+ * weggefiltert — und dann fehlt die eine Mail, die zählt.
+ *
+ * Deshalb wird die FLANKE gemeldet, also nur der Lauf, mit dem die Serie die
+ * Schwelle erreicht: davor muss ein Lauf stehen, der nicht rot war. Das ist
+ * ausdrücklich kein Hochsetzen einer Schwelle, damit ein Befund verschwindet
+ * (Gate, Teil 2) — der Befund bleibt unverändert sichtbar, der Workflow bleibt
+ * rot, die Autofix-Action läuft weiter, und im Sonntagsbericht steht er auch.
+ * Was wegfällt, ist allein die Wiederholung derselben Frage.
+ *
+ * Bekannte Grenze, bewusst nicht gelöst: Löst sich Befund A und tritt in
+ * derselben Rot-Serie Befund B auf, meldet sich niemand ein zweites Mal. Dafür
+ * müsste die Historie den Befundtext tragen, den die GitHub-API nicht kennt —
+ * und der Preis wäre die Zustandsdatei, die oben aus gutem Grund verworfen ist.
+ * Rot bleibt rot; gesehen wird B über den Workflow, nicht über das Postfach.
  */
 export function eskalationNoetig(vorherigeLaeufe: ("success" | "failure" | string)[]): boolean {
   if (vorherigeLaeufe.length < ESKALATION_AB_LAEUFEN - 1) return false;
   // -1, weil der laufende (rote) Durchgang selbst mitzählt.
-  return vorherigeLaeufe.slice(0, ESKALATION_AB_LAEUFEN - 1).every((c) => c === "failure");
+  const serie = vorherigeLaeufe.slice(0, ESKALATION_AB_LAEUFEN - 1);
+  if (!serie.every((c) => c === "failure")) return false;
+  // Der Lauf VOR der Serie entscheidet, ob wir gerade erst die Schwelle
+  // erreichen (melden) oder längst darüber hinaus sind (schweigen). Reicht die
+  // Historie nicht so weit zurück, fängt die Serie am Anfang des Bekannten an —
+  // dann ist es die Flanke.
+  const davor = vorherigeLaeufe[ESKALATION_AB_LAEUFEN - 1];
+  return davor === undefined || davor !== "failure";
 }
 
 async function letzteLaufErgebnisse(workflow = "health-check.yml"): Promise<string[]> {

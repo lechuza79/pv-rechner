@@ -67,6 +67,18 @@ besetzen aber längst die Bestands-Ortsanfragen, auf die die neuen Ortsseiten zi
 Die Vorsichtsregel „erst die eine Familie, dann die andere" (Abschnitt 5) kommt für jeden
 Ort zu spät, an dem schon eine Förder-Stadtseite steht.
 
+**Präzisiert am 24.08.2026 — die Überschneidung liegt auf der BUNDESLAND-Ebene, auf der
+Ortsebene gibt es bisher keine einzige.** Alle neun gemessenen Paarungen betreffen
+Rheinland-Pfalz, Hessen und Mecklenburg-Vorpommern; kein Ort ist darunter. Das ist kein
+Entwarnungssignal, sondern eine Folge der Bauart: Auf Ortsebene steht den Förderseiten
+niemand von uns gegenüber, weil die Atlas-Ortsseiten noindex sind. Sie stehen dort sehr
+wohl auf Bestands-Anfragen („photovoltaik osnabrück" Position 3, „photovoltaik krefeld" 4).
+**Die Frage dieses Abschnitts ist also nicht beantwortet, sondern vertagt — sie stellt sich
+am Tag von Welle 1, für genau diese Orte.** Auf Bundesland-Ebene, wo beide Familien seit
+Welle 0a indexiert sind, ist die Konkurrenz real, aber bisher folgenlos: acht der neun
+Paarungen liegen jenseits von Position 80, einzige Ausnahme „photovoltaik pfalz" (33,3
+gegen 40,7). Zahlen und Zählregel: `docs/seo/rollentrennung-messregel.md`.
+
 **Vor Welle 1 zu tun:** Für jeden Ort der geplanten Charge messen, auf welchen
 Bestands-Anfragen die Förderseite heute steht. Wo sie dort steht, entweder die Atlas-Seite
 für diesen Ort zurückstellen oder die Förderseite bewusst auf Geld-Wörter zurückschneiden
