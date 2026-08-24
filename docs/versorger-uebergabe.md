@@ -66,3 +66,37 @@ docs/versorger-preisstrategie.md
 docs/versorger-fachpresse.md — Fachpresse und Presseverteiler, mit einem
 belegten Praezedenzfall: Ein Wettbewerber hat mit genau unserer Datenstory
 dreimal redaktionelle Berichterstattung bekommen, ohne zu zahlen.
+
+## Auftrag des Betreibers (23.08.2026): ganzheitliche Positionierung
+
+Nicht "wie unterbieten wir co2online", sondern: **Wo stehen wir zwischen allen
+Angeboten, die eine Kommune oder ein Versorger auf die eigene Website setzen
+kann?** Der Betreiber haelt es fuer machbar, sie zu unterbieten ODER das bessere
+Angebot zu machen — sein Eindruck von co2online ist "UX-seitig die Hoelle".
+Ausdruecklich ohne Feindbild: "an sich will ich denen auch nix schlechtes, ist
+aber ein super projekt."
+
+**Methode: ein gemeinsamer Testfall durch jedes Werkzeug.** Nicht Werbeseiten
+nebeneinanderlegen — das ist die Art Vergleich, die nichts zeigt. Derselbe
+Haushalt (etwa 8 kWp, 4.500 kWh, mit Speicher, Ort Nidda) durch jedes Angebot,
+und je Anbieter dasselbe protokollieren: Wie viele Fragen bis zum Ergebnis, wie
+lange, was steht am Ende da, wird die Rechenmethode offengelegt, was verlangt
+das Werkzeug vom Besucher, bevor es das Ergebnis zeigt.
+
+**Vergleichsmenge:** co2online · tetraeder.solar (live zu sehen bei den
+Stadtwerken Emden) · Solantiq · geoplex (Stadtwerke Elmshorn) · das ASEW-Paket ·
+ein Landes-Solarkataster als kostenlose Referenz · wir.
+
+**Arbeitsteilung, so vereinbart:** Claude nimmt die objektive Seite — Datenquelle,
+Aktualitaet, Offenlegung der Methode, Preis, Umgang mit Besucherdaten. Die
+Bedienung beurteilt der Betreiber selbst; er ist UX-Architekt, seine
+Einschaetzung dazu wiegt mehr.
+
+**Ergebnisform:** keine Punktetabelle, sondern zwei Saetze je Anbieter — wofuer
+ihn jemand nimmt, und woran er scheitert. Daraus ergibt sich die eigene Position,
+oder es zeigt sich, dass es keine gibt.
+
+**Was dabei nicht passieren darf:** Preis als Hebel gegen co2online. 87 % ihres
+Geldes kommt aus oeffentlicher Foerderung, die Rechner stecken im kleinen
+kommerziellen Rest — sie koennen bis auf null mitgehen, ohne dass es sie
+schmerzt. Wenn wir gewinnen, dann ueber das Angebot, nicht ueber den Preis.
