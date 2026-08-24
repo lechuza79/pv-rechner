@@ -110,49 +110,53 @@ export async function ergebnisFingerabdruck(page: Page): Promise<string> {
 }
 
 /**
- * So viele ruhige Proben in Folge (à 300 ms) gelten als „das Ergebnis steht".
- * Vier davon sind gut eine Sekunde — genug, dass ein nachgeladener Preis
- * angekommen ist, und weit unter dem Zeitlimit der Wartefunktion.
+ * Wartet, bis das Ergebnis wirklich steht — sonst misst der Abdruck den Aufbau.
+ *
+ * ZWEI Bedingungen, und die erste ist die wichtige: Die Marktpreise kommen
+ * NACHGELADEN. Bis sie da sind, rechnet die Seite mit dem Rückfallwert im Code
+ * und zeigt trotzdem ein vollständiges, plausibles Ergebnis. Genau daran ist
+ * der erste Lauf in der Cloud gescheitert (24.08.2026): Vor dem Neuladen stand
+ * ein Anlagenpreis von 14.000 €, danach der live geholte von 13.500 € — der
+ * Vergleich meldete einen Unterschied, den kein Nutzer je sieht. Lokal fiel es
+ * nicht auf, weil die Antwort dort in Millisekunden da ist.
+ *
+ * Deshalb: erst auf die Preis-Antwort warten (weich — kommt sie aus dem
+ * Zwischenspeicher, gibt es gar keine Anfrage), dann auf einen Abdruck, der
+ * sich eine Sekunde lang nicht mehr bewegt.
  */
 const RUHIGE_PROBEN = 4;
 
-/** Wartet, bis das Ergebnis wirklich steht — sonst misst der Abdruck den Aufbau. */
 export async function ergebnisBereit(page: Page, enthaelt: string) {
+  await page
+    .waitForResponse((r) => r.url().includes("/api/prices"), { timeout: 8_000 })
+    .catch(() => null);
   await expect(page.getByText(enthaelt, { exact: false }).first()).toBeVisible({ timeout: 30_000 });
-  // Die Zahlen kommen teils aus nachgeladenen Preisen. Ein Abdruck, der sich
-  // nicht mehr bewegt, ist das verlässliche Signal — eine feste Wartezeit wäre
-  // auf einem ausgelasteten Rechner wieder zu kurz.
-  // Der Merker wird IMMER fortgeschrieben, auch wenn der Vergleich scheitert —
-  // sonst kann der Wiederholungslauf sich nicht erholen. Die erste Fassung setzte
-  // ihn ERST NACH der Prüfung; ein `expect` wirft, also blieb der Merker für
-  // immer auf dem allerersten Abdruck stehen, während die Seite längst auf ihrem
-  // zweiten stand. Damit verglich jede Wiederholung dieselben zwei
-  // unterschiedlichen Stände und konnte nie grün werden. Genau EIN Wechsel ist
-  // hier aber der Normalfall: Die Anschaffungskosten kommen nachgeladen (im
-  // fehlgeschlagenen Lauf 14.000 → 13.500), und auf diesen Wechsel zu warten ist
-  // der einzige Zweck dieser Funktion. Alle neun Fehlschläge am 24.08.2026
-  // trugen deshalb zeichengleiche Werte und meldeten „Zeitlimit überschritten".
-  // Erst warten, bis nichts mehr nachgeladen wird. Die Ruhe-Proben allein
-  // reichen nicht: Der Preis-Abruf kann länger unterwegs sein als das
-  // Probenfenster, und die Seite steht solange völlig still auf dem
-  // Schnappschuss aus dem Code — ruhig, aber noch nicht fertig.
+  // Der Preis ist die bekannte Ursache, aber nicht die einzige nachgeladene
+  // Größe (der PV-Rechner holt auch seinen Standort-Ertrag). Ein zusätzlicher
+  // Halt, bis überhaupt nichts mehr unterwegs ist, kostet auf einer fertigen
+  // Seite nichts und deckt die übrigen ab.
   await page.waitForLoadState("networkidle").catch(() => {});
   let vorher = await ergebnisFingerabdruck(page);
   let ruhig = 0;
   await expect(async () => {
     await page.waitForTimeout(300);
     const jetzt = await ergebnisFingerabdruck(page);
+    // Der Merker wird IMMER fortgeschrieben, auch wenn die Prüfung gleich
+    // scheitert. Vorher stand er ERST NACH dem `expect` — das wirft, also blieb
+    // er für immer auf dem allerersten Abdruck stehen, während die Seite längst
+    // auf ihrem zweiten stand: Jede Wiederholung verglich dieselben zwei
+    // verschiedenen Stände, und der Lauf konnte nicht mehr grün werden. Genau
+    // EIN Wechsel ist hier aber der Normalfall — auf ihn zu warten ist der
+    // Zweck dieser Funktion. Alle neun Fehlschläge vom 24.08.2026 trugen
+    // deshalb zeichengleiche Werte und meldeten „Zeitlimit überschritten".
     ruhig = jetzt === vorher ? ruhig + 1 : 0;
     vorher = jetzt;
     expect(jetzt.length).toBeGreaterThan(0);
-    // MEHRERE ruhige Proben, nicht eine. Eine einzige beweist nur, dass sich in
-    // den letzten 300 ms nichts bewegt hat — und genau so lange ist die Seite
-    // still, während der Preis-Abruf noch unterwegs ist. Der Abdruck stand dann
-    // auf dem Schnappschuss aus dem Code (Anschaffung 14.000), der Neuaufbau traf
-    // den nachgeladenen Wert (13.500), und der Vergleich „derselbe Link, dieselben
-    // Zahlen" verglich zwei verschiedene Ladezustände statt zwei Ergebnisse.
+    // MEHRERE ruhige Proben, nicht eine: Eine einzelne beweist nur, dass sich
+    // in ihrem Fenster nichts bewegt hat — und so sieht eine Seite auch aus,
+    // während ein Abruf noch unterwegs ist.
     expect(ruhig, `Ergebnis bewegt sich noch: ${jetzt}`).toBeGreaterThanOrEqual(RUHIGE_PROBEN);
-  }).toPass({ timeout: 20_000 });
+  }).toPass({ timeout: 30_000 });
 }
 
 /** Die Ein/Aus-Schalter des Ergebnisses, mit Beschriftung und Stellung. */
