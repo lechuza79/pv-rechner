@@ -1,4 +1,5 @@
 import { supabase } from "./supabase-server";
+import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
 import { FUNDING_PROGRAMS, type FundingProgram } from "./funding-programs";
 
 // Server-side read of the funding dataset. Source of truth is Supabase
@@ -9,11 +10,24 @@ import { FUNDING_PROGRAMS, type FundingProgram } from "./funding-programs";
 let cache: { data: FundingProgram[]; ts: number } | null = null;
 const TTL = 10 * 60 * 1000; // 10 min in-memory cache (warm function reuse)
 
+// Kurze Ruhepause nach einem Fehlschlag — der Verstärker, nicht der Auslöser.
+//
+// Ohne sie feuert JEDER Seitenaufbau sofort wieder gegen eine Datenbank, die
+// gerade nicht kann: Die Last steigt genau dann, wenn sie sinken müsste, und der
+// Ausfall hält sich selbst am Leben (so lief die Kette bei einem
+// Schwesterprojekt am 21.08.2026 — die Datenbank war 20 Minuten vor der Seite
+// wieder gesund). 30 s sind kurz genug, dass eine Erholung sofort ankommt, und
+// lang genug, dass zwischen zwei Versuchen Luft ist. Ausgeliefert wird in dieser
+// Zeit der Code-Seed, also genau das, was ein Fehlschlag ohnehin liefert.
+const FEHLER_RUHE = 30 * 1000;
+let fehlerBis = 0;
+
 export async function getFundingPrograms(): Promise<FundingProgram[]> {
   if (cache && Date.now() - cache.ts < TTL) return cache.data;
 
   const seed = Object.values(FUNDING_PROGRAMS);
   if (!supabase) return seed;
+  if (Date.now() < fehlerBis) return seed;
 
   try {
     // Pull the provenance column alongside the program json so pages can show
@@ -39,11 +53,17 @@ export async function getFundingPrograms(): Promise<FundingProgram[]> {
     // exist"). Fehlen die Spalten, lesen wir ohne sie weiter: Die Beträge bleiben
     // sichtbar, nur die tagesaktuelle Bestätigung fehlt, bis das Setup lief.
     let rows: Record<string, unknown>[] | null = null;
-    const voll = await supabase
-      .from("funding_programs")
-      .select("data, last_verified, page_seen_at, page_changed_at");
+    const voll = await withDbTimeout(
+      supabase.from("funding_programs").select("data, last_verified, page_seen_at, page_changed_at"),
+      "funding-programs",
+      DB_SOFT_READ_TIMEOUT_MS,
+    );
     if (voll.error) {
-      const schmal = await supabase.from("funding_programs").select("data, last_verified");
+      const schmal = await withDbTimeout(
+        supabase.from("funding_programs").select("data, last_verified"),
+        "funding-programs (schmal)",
+        DB_SOFT_READ_TIMEOUT_MS,
+      );
       if (schmal.error || !schmal.data) return seed;
       rows = schmal.data as Record<string, unknown>[];
     } else {
@@ -68,6 +88,7 @@ export async function getFundingPrograms(): Promise<FundingProgram[]> {
     cache = { data: programs, ts: Date.now() };
     return programs;
   } catch {
+    fehlerBis = Date.now() + FEHLER_RUHE;
     return seed;
   }
 }
@@ -78,4 +99,7 @@ export async function getFundingProgramById(id: string): Promise<FundingProgram 
 
 export function invalidateFundingCache(): void {
   cache = null;
+  // Auch die Ruhepause aufheben: Wer gerade geschrieben hat, will den neuen
+  // Stand sehen, nicht 30 s lang den Seed.
+  fehlerBis = 0;
 }
