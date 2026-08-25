@@ -30,8 +30,18 @@
  * Adressen, die für sich eine Förderseite sind. Damit müssen zusätzlich die
  * Gemeinden noch einmal dran, bei denen wir längst eine Seite haben — genau
  * dort liegen die zweiten und dritten Seiten, die vorher auf den Boden fielen.
+ *
+ * 3 (25.08.2026): Wieder Reichweite, wieder aus einem gemessenen Verlust — und
+ * diesmal ist das Hochzählen der eigentliche Hebel. Zwei Fehler warfen Funde
+ * weg, ohne je einen Fehler zu melden: Bei einer in mehrere Dateien geteilten
+ * Sitemap wurde nur die erste gelesen (stuttgart.de: null statt 216 Funde), und
+ * wenn eine Gemeinde ohne „www" erfasst ist und darauf umleitet, verwarf der
+ * Host-Filter jede einzelne Adresse. Beide Male lautete das Ergebnis
+ * „keine-seite" — ein Verdikt, das ohne neuen Stempel für immer stehen bliebe.
+ * Dazu fliegen unaufgelöste Template-Platzhalter raus, die als Förderseite
+ * gespeichert wurden und eine Gemeinde als versorgt auswiesen.
  */
-export const SUCH_VERSION = 2;
+export const SUCH_VERSION = 3;
 
 /**
  * Wortstämme, die auf eine Förderseite deuten, mit ihrem Gewicht.
@@ -120,9 +130,18 @@ const FREMDES_RESSORT =
  * Förderseite" — der Platz ist belegt, und sie kommt nie wieder in die Suche.
  * Dasselbe gilt für `?file=…pdf`-Adressen, bei denen die Endung im
  * Abfrageteil steht statt im Pfad.
+ *
+ * Der letzte Zweig fängt UNAUFGELÖSTE TEMPLATE-PLATZHALTER (25.08.2026).
+ * Gemessen auf Niddas Förderübersicht: Der bestbewertete Kandidat der Seite war
+ * `…/%7B%7B%20item.self.webUrl%20%7D%7D` — das Template der Website hatte seine
+ * Schleifenvariable nicht ersetzt, und weil `adresseLesbar` prozentkodierte
+ * Zeichen zurückverwandelt, kam die Adresse mit voller Punktzahl durch und galt
+ * als Endergebnis. Als gespeicherte Förderseiten-Adresse ist sie eine 404, die
+ * bei jedem Screening-Lauf abgerufen wird — und der Platz der Gemeinde ist
+ * belegt, dieselbe Falle wie beim Download.
  */
 const KEIN_ZIEL =
-  /\.(pdf|jpe?g|png|gif|zip|docx?|xlsx?|pptx?)($|\?)|\/(impressum|datenschutz|kontakt|suche|login)\b|\/downloads?\/(datei|file|document)\/|[?&](file|datei|download)=[^&]*\.(pdf|docx?)/i;
+  /\.(pdf|jpe?g|png|gif|zip|docx?|xlsx?|pptx?)($|\?)|\/(impressum|datenschutz|kontakt|suche|login)\b|\/downloads?\/(datei|file|document)\/|[?&](file|datei|download)=[^&]*\.(pdf|docx?)|\{\{|\}\}|\$\{/i;
 
 /**
  * Nachrichten und Meldungen — nie als Dauer-Adresse.
@@ -314,6 +333,28 @@ export function sitemapKandidaten(xml: string, basis: string): LinkKandidat[] {
 export function sitemapIndex(xml: string): string[] {
   if (!/<sitemapindex/i.test(xml)) return [];
   return [...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/gi)].map((m) => m[1]);
+}
+
+/**
+ * In welcher Reihenfolge die Unter-Sitemaps eines Index gelesen werden.
+ *
+ * Wer nicht alle lesen kann, muss die richtigen zuerst lesen. Zwei Fälle, und
+ * beide kommen real vor: Teilt eine Website nach THEMEN (`sitemap-umwelt.xml`,
+ * `sitemap-news.xml`), sagt der Dateiname etwas — dann bewerten wir ihn mit
+ * derselben Wortliste wie jede andere Adresse. Teilt sie nach MENGE
+ * (`sitemap-1.xml`, `sitemap-content-2.xml`, der häufigere Fall), sagt er
+ * nichts, alle bekommen null Punkte, und die Reihenfolge des Index bleibt
+ * unverändert erhalten.
+ *
+ * Genau deshalb ist die Sortierung stabil über den ursprünglichen Platz: Ohne
+ * den Index als zweites Kriterium würfelte sie die Mengen-Teilung durch, ohne
+ * dafür irgendetwas zu gewinnen.
+ */
+export function sitemapIndexReihenfolge(unter: string[]): string[] {
+  return unter
+    .map((url, platz) => ({ url, platz, punkte: bewerteLink(url).punkte }))
+    .sort((a, b) => b.punkte - a.punkte || a.platz - b.platz)
+    .map((e) => e.url);
 }
 
 // ─── Die Suchfunktion der Website selbst ─────────────────────────────────────
