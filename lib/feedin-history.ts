@@ -64,5 +64,11 @@ export const FEEDIN_HISTORY_YEARS: number[] = [
 export const FEEDIN_HISTORY_VALUES: number[] = [
   50.62, 50.62, 48.1, 45.7, 57.4, 54.53, 51.8, 49.21, 46.75, 43.01, 39.14,
   28.74, 24.43, 17.02, 13.68, 12.56, 12.31, 12.3, 12.2, 11.47, 9.87, 8.16, 6.83,
-  8.2, 8.11, 7.94, 7.78,
+  // 2023–2026: Werte zum 1. JANUAR, wie die Metrik oben es sagt. Bis zum
+  // 25.08.2026 standen hier die Februar-Werte (8,11 / 7,94 / 7,78) — die Reihe
+  // hielt ihre eigene Metrik ab 2024 nicht mehr ein. Aufgefallen ist es erst in
+  // der Inhalts-Inventur, weil der Kohärenztest nur bis 2022 reichte: genau dort
+  // beginnt die Lücke. Dass 2023 und 2024 gleich sind, ist richtig — die
+  // Degression setzte erst zum 01.02.2024 wieder ein.
+  8.2, 8.2, 8.03, 7.86,
 ];
