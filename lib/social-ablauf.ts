@@ -17,6 +17,12 @@ export type SocialKonto = {
   gueltig_bis: string;
   /** Berechtigungen, die der Login tatsächlich erteilt hat. */
   scopes: string[];
+  /**
+   * Bei welcher Warnstufe zuletzt gemeldet wurde (siehe WARNSTUFEN_TAGE).
+   * `null` heißt: noch nie gewarnt. Verhindert, dass derselbe Hinweis bei jedem
+   * Lauf erneut zugestellt wird.
+   */
+  gewarnt_bei_stufe: number | null;
   aktualisiert_am: string;
 };
 
@@ -40,6 +46,7 @@ export const SOCIAL_KONTEN_DDL = `
     scopes text[] NOT NULL DEFAULT '{}',
     aktualisiert_am timestamptz NOT NULL DEFAULT now()
   );
+  ALTER TABLE social_konten ADD COLUMN IF NOT EXISTS gewarnt_bei_stufe int;
   ALTER TABLE social_konten ENABLE ROW LEVEL SECURITY;
   REVOKE ALL ON social_konten FROM PUBLIC;
   REVOKE ALL ON social_konten FROM anon;
@@ -55,6 +62,17 @@ export const SOCIAL_KONTEN_DDL = `
  */
 export const SOCIAL_ABLAUF_WARNUNG_TAGE = 14;
 
+/**
+ * Restlaufzeiten, bei denen gemeldet wird — absteigend.
+ *
+ * Gestaffelt statt täglich, weil der Gesundheitscheck alle drei Stunden läuft:
+ * Eine Meldung „ab jetzt warnen" ergäbe über hundert Mails in zwei Wochen, und
+ * wer so viele bekommt, filtert den Absender weg und verpasst dann die eine,
+ * die zählt. Die Stufe wird am Konto vermerkt; gemeldet wird nur, wenn eine
+ * NIEDRIGERE Stufe erreicht ist als zuletzt.
+ */
+export const WARNSTUFEN_TAGE = [14, 7, 3, 1, 0] as const;
+
 export type AblaufBefund = {
   plattform: SocialPlattform;
   /** Negativ, wenn der Schlüssel bereits abgelaufen ist. */
@@ -62,6 +80,25 @@ export type AblaufBefund = {
   abgelaufen: boolean;
   warnung: boolean;
 };
+
+/**
+ * Die erreichte Warnstufe, oder null wenn noch keine erreicht ist.
+ * Ein abgelaufener Zugang landet auf der untersten Stufe (0).
+ */
+export function warnstufe(tageBisAblauf: number): number | null {
+  const erreicht = WARNSTUFEN_TAGE.filter((s) => tageBisAblauf <= s);
+  return erreicht.length ? Math.min(...erreicht) : null;
+}
+
+/**
+ * Soll jetzt gemeldet werden? Nur, wenn eine Stufe erreicht ist, die tiefer
+ * liegt als die zuletzt gemeldete.
+ */
+export function sollWarnen(tageBisAblauf: number, zuletztGemeldet: number | null): boolean {
+  const stufe = warnstufe(tageBisAblauf);
+  if (stufe === null) return false;
+  return zuletztGemeldet === null || stufe < zuletztGemeldet;
+}
 
 /**
  * Zustand eines Kontos zum übergebenen Zeitpunkt.

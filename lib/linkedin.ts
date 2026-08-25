@@ -95,6 +95,8 @@ export async function loginAbschliessen(code: string, origin: string): Promise<{
     access_token: token.access_token,
     gueltig_bis: gueltigBis,
     scopes: token.scope ? token.scope.split(/[ ,]+/).filter(Boolean) : LINKEDIN_SCOPES,
+    // Frischer Zugang: die Warnkette beginnt von vorn.
+    gewarnt_bei_stufe: null,
   });
 
   return { name: me.name ?? me.sub, gueltigBis };

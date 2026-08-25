@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { SOCIAL_ABLAUF_WARNUNG_TAGE, SOCIAL_KONTEN_DDL, ablaufBefund, type SocialKonto } from "../social-ablauf";
+import {
+  SOCIAL_ABLAUF_WARNUNG_TAGE,
+  SOCIAL_KONTEN_DDL,
+  WARNSTUFEN_TAGE,
+  ablaufBefund,
+  sollWarnen,
+  warnstufe,
+  type SocialKonto,
+} from "../social-ablauf";
 
 const konto = (gueltigBis: string): SocialKonto => ({
   plattform: "linkedin",
@@ -8,6 +16,7 @@ const konto = (gueltigBis: string): SocialKonto => ({
   access_token: "geheim",
   gueltig_bis: gueltigBis,
   scopes: ["w_member_social"],
+  gewarnt_bei_stufe: null,
   aktualisiert_am: "2026-08-25T00:00:00.000Z",
 });
 
@@ -44,5 +53,42 @@ describe("Ablauf des Social-Zugangs", () => {
     expect(SOCIAL_KONTEN_DDL).toMatch(/REVOKE ALL[\s\S]*anon/);
     expect(SOCIAL_KONTEN_DDL).toMatch(/REVOKE ALL[\s\S]*authenticated/);
     expect(SOCIAL_KONTEN_DDL).not.toMatch(/CREATE POLICY/);
+  });
+});
+
+describe("Gestaffelte Warnung", () => {
+  it("schweigt, solange keine Stufe erreicht ist", () => {
+    expect(warnstufe(59)).toBeNull();
+    expect(sollWarnen(59, null)).toBe(false);
+  });
+
+  it("meldet jede Stufe genau einmal", () => {
+    // Der Gesundheitscheck läuft alle drei Stunden. Ohne diese Regel entstünden
+    // über hundert Mails in zwei Wochen, und wer so viele bekommt, filtert den
+    // Absender weg — dann fehlt auch die eine Meldung, die zählt.
+    let gemeldet: number | null = null;
+    const meldungen: number[] = [];
+    for (const tag of [20, 14, 14, 13, 10, 7, 7, 5, 3, 2, 1, 1, 0, -1, -3]) {
+      if (sollWarnen(tag, gemeldet)) {
+        gemeldet = warnstufe(tag);
+        meldungen.push(tag);
+      }
+    }
+    expect(meldungen).toEqual([14, 7, 3, 1, 0]);
+    expect(meldungen.length).toBe(WARNSTUFEN_TAGE.length);
+  });
+
+  it("meldet einen bereits abgelaufenen Zugang auf der untersten Stufe", () => {
+    expect(warnstufe(-5)).toBe(0);
+    expect(sollWarnen(-5, null)).toBe(true);
+    // Und danach nicht endlos weiter: der Befund steht dann im Bericht, nicht
+    // alle drei Stunden erneut im Postfach.
+    expect(sollWarnen(-6, 0)).toBe(false);
+  });
+
+  it("beginnt nach einer Neuanmeldung von vorn", () => {
+    // Ein frisches Konto trägt keine Stufe; die Kette läuft wieder ab 14 Tagen.
+    expect(sollWarnen(14, null)).toBe(true);
+    expect(SOCIAL_ABLAUF_WARNUNG_TAGE).toBe(Math.max(...WARNSTUFEN_TAGE));
   });
 });

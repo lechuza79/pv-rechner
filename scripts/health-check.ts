@@ -32,6 +32,7 @@ import { fileURLToPath } from "node:url";
 import { DB_READ_TIMEOUT_MS } from "../lib/db-timeout";
 import { PRUEFSTAND, faelligkeiten } from "../lib/pruefstand";
 import { RELEASE_PLAN, planMeldungen } from "../lib/release-plan";
+import { sollWarnen, warnstufe } from "../lib/social-ablauf";
 
 // In der GitHub-Action kommen die Zugangsdaten aus den Repo-Secrets. Lokal
 // standen sie nicht zur Verfügung — der Check fiel dann still auf die feste
@@ -524,6 +525,61 @@ async function messeMastrFrische(): Promise<MastrFrische | null> {
   }
 }
 
+// ─── Ablauf der Social-Zugänge ───────────────────────────────────────────────
+//
+// Der Zugangsschlüssel für LinkedIn läuft nach zwei Monaten ab, und er lässt
+// sich nur durch einen Login im Browser erneuern — der Autofix kann das nicht,
+// niemand außer dem Betreiber kann es. Ohne Vorwarnung hört das Veröffentlichen
+// an einem beliebigen Tag still auf; das ist dieselbe Fehlerklasse wie ein
+// Wächter, der nicht mehr läuft und deswegen auch nichts mehr meldet.
+//
+// Der Befund macht den Lauf bewusst NICHT rot: Rot startet den Autofix, und der
+// hätte hier nichts zu tun. Er geht direkt in die Mail an den Betreiber.
+
+type SocialAblauf = { plattform: string; tageBisAblauf: number; stufe: number; konto: string | null };
+
+async function messeSocialAblauf(): Promise<SocialAblauf[]> {
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!url || !key) return [];
+  const kopf = { apikey: key, Authorization: `Bearer ${key}` };
+  try {
+    const r = await fetch(
+      `${url}/rest/v1/social_konten?select=plattform,anzeigename,gueltig_bis,gewarnt_bei_stufe`,
+      { headers: kopf, signal: AbortSignal.timeout(20000) },
+    );
+    if (!r.ok) return [];
+    const rows = (await r.json()) as {
+      plattform: string;
+      anzeigename: string | null;
+      gueltig_bis: string;
+      gewarnt_bei_stufe: number | null;
+    }[];
+
+    const faellig: SocialAblauf[] = [];
+    for (const row of rows) {
+      const tage = Math.floor((Date.parse(row.gueltig_bis) - Date.now()) / 86_400_000);
+      if (!sollWarnen(tage, row.gewarnt_bei_stufe)) continue;
+      const stufe = warnstufe(tage);
+      if (stufe === null) continue;
+      // Die Stufe wird sofort quittiert, nicht erst nach erfolgreicher Zustellung:
+      // Ein fehlgeschlagener Mailversand darf nicht dazu führen, dass beim
+      // nächsten Lauf drei Stunden später dieselbe Meldung noch einmal ansetzt.
+      // Der Befund steht ohnehin im Protokoll des Laufs.
+      await fetch(`${url}/rest/v1/social_konten?plattform=eq.${encodeURIComponent(row.plattform)}`, {
+        method: "PATCH",
+        headers: { ...kopf, "Content-Type": "application/json", Prefer: "return=minimal" },
+        body: JSON.stringify({ gewarnt_bei_stufe: stufe }),
+        signal: AbortSignal.timeout(20000),
+      }).catch(() => {});
+      faellig.push({ plattform: row.plattform, tageBisAblauf: tage, stufe, konto: row.anzeigename });
+    }
+    return faellig;
+  } catch {
+    return [];
+  }
+}
+
 function verdict(seconds: number, limits: { warn: number; fail: number }): "gruen" | "gelb" | "rot" {
   if (seconds >= limits.fail) return "rot";
   if (seconds >= limits.warn) return "gelb";
@@ -775,6 +831,11 @@ async function main() {
   //                 Geld, Produkt). Genau das und nur das rechtfertigt eine Mail.
   const forClaude: string[] = [];
   const forOperator: string[] = [];
+  // Geht an den Betreiber wie `forOperator`, macht den Lauf aber NICHT rot:
+  // für Dinge, die nur er erledigen kann und bei denen es nichts zu analysieren
+  // gibt. Rot würde hier den Autofix starten, der nichts ausrichten kann, und
+  // uns nebenbei abgewöhnen, Rot ernst zu nehmen.
+  const fuerBetreiberOhneRot: string[] = [];
   const selfHealed: string[] = [];
   const warnings: string[] = [];
 
@@ -982,6 +1043,20 @@ async function main() {
     warnings.push("MaStR-Datenstand nicht abrufbar — keine Aussage über die Frische der Atlas-Zahlen.");
   }
 
+  // ── Ablauf der Social-Zugänge ─────────────────────────────────────────────
+  for (const s of await messeSocialAblauf()) {
+    const wer = s.konto ? ` (${s.konto})` : "";
+    fuerBetreiberOhneRot.push(
+      s.tageBisAblauf < 0
+        ? `Der ${s.plattform}-Zugang${wer} ist abgelaufen — seitdem wird nichts mehr veröffentlicht. ` +
+          `Zum Erneuern einmal solar-check.io/api/linkedin/start aufrufen (eingeloggt als Admin). ` +
+          `Das kann nur jemand mit deinem Konto, ich komme da nicht heran.`
+        : `Der ${s.plattform}-Zugang${wer} läuft in ${s.tageBisAblauf} Tagen ab. Danach hört das ` +
+          `Veröffentlichen still auf. Einmal solar-check.io/api/linkedin/start aufrufen (eingeloggt ` +
+          `als Admin) setzt die Frist zurück — das dauert zwei Klicks und kann nur jemand mit deinem Konto.`,
+    );
+  }
+
   // ── Cache-Wirksamkeit ─────────────────────────────────────────────────────
   // Kein Zeitmaß, sondern eine Ja/Nein-Frage: Kommt die Seite beim zweiten
   // Abruf aus dem CDN? Läuft NACH den Zeitmessungen, damit die zusätzlichen
@@ -1099,13 +1174,23 @@ async function main() {
 
   // ── Bericht ───────────────────────────────────────────────────────────────
   const ampel =
-    forOperator.length || forClaude.length ? "ROT" : selfHealed.length ? "REPARIERT" : warnings.length ? "GELB" : "GRUEN";
+    forOperator.length || forClaude.length
+      ? "ROT"
+      : selfHealed.length
+        ? "REPARIERT"
+        : // Eine Sache, die nur der Betreiber erledigen kann, ist mindestens gelb:
+          // grün mit einer offenen Bitte im Bericht wäre ein Widerspruch.
+          warnings.length || fuerBetreiberOhneRot.length
+          ? "GELB"
+          : "GRUEN";
   const report = [
     `Solar Check Gesundheitscheck: ${ampel}`,
     "",
     ...lines,
     ...(selfHealed.length ? ["", "Selbst repariert (nichts zu tun):", ...selfHealed.map((s) => `- ${s}`)] : []),
-    ...(forOperator.length ? ["", "Entscheidung des Betreibers:", ...forOperator.map((p) => `- ${p}`)] : []),
+    ...(forOperator.length || fuerBetreiberOhneRot.length
+      ? ["", "Entscheidung des Betreibers:", ...[...forOperator, ...fuerBetreiberOhneRot].map((p) => `- ${p}`)]
+      : []),
     ...(forClaude.length ? ["", "Fuer Claude zur Analyse:", ...forClaude.map((p) => `- ${p}`)] : []),
     ...(warnings.length ? ["", "Auffaellig (nichts zu tun):", ...warnings.map((w) => `- ${w}`)] : []),
   ].join("\n");
@@ -1125,6 +1210,7 @@ async function main() {
   const festgefahren = forClaude.length > 0 && eskalationNoetig(vorlaeufe);
   const entscheidungen = [
     ...forOperator,
+    ...fuerBetreiberOhneRot,
     ...(festgefahren
       ? [
           `Seit ${ESKALATION_AB_LAEUFEN} Prüfläufen in Folge komme ich an derselben Stelle nicht weiter: ` +
