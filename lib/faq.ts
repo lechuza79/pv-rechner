@@ -218,7 +218,20 @@ export function pvSpeicherFaq(prices?: PriceConfig): FaqEntry[] {
   return [
     {
       q: "Wie groß sollte ein Stromspeicher sein?",
-      a: "Für ein Einfamilienhaus sind 5–10 kWh typisch. Bei aktuellen Speicherpreisen ist der Aufpreis pro zusätzlicher Kilowattstunde klein, deshalb lohnt oft auch die nächstgrößere Stufe. Ab einer gewissen Größe bringt mehr Kapazität aber kaum noch etwas: Der Speicher ist im Sommer ohnehin voll, und im Winter fehlt die Sonne zum Laden. Die Empfehlung rechnet die wirtschaftlich sinnvolle Kombination aus Anlagengröße und Speicher für deinen Haushalt durch.",
+      // Diese Antwort nennt bewusst KEINE typische Größe mehr.
+      //
+      // Bis zum 25.08.2026 stand hier „für ein Einfamilienhaus sind 5–10 kWh
+      // typisch" plus „deshalb lohnt oft auch die nächstgrößere Stufe". Beides
+      // widersprach dem eigenen Werkzeug: Die Empfehlung gibt einem Haushalt mit
+      // ein bis drei Personen ohne Wärmepumpe und ohne E-Auto GAR KEINEN
+      // Speicher, weil sie ihn an den Jahresverbrauch koppelt — 5 kWh erreicht
+      // sie dort erst ab vier Personen. Ein Leser bekam also eine Faustregel
+      // genannt und wurde dann zu einem Rechner geschickt, der ihr widerspricht.
+      //
+      // Entscheidung des Betreibers am 25.08.2026: „das werkzeug muss immer
+      // führend sein". Wo Text und Rechnung auseinandergehen, weicht der Text —
+      // festgehalten von `lib/__tests__/faq-gegen-werkzeug.test.ts`.
+      a: "Das hängt weniger am Haus als am Verbrauch: Ein Speicher lohnt sich erst, wenn abends und nachts genug Strom gebraucht wird, um ihn wieder zu leeren. Bei einem kleinen Haushalt ohne Wärmepumpe und ohne E-Auto ist das oft gar nicht der Fall — dann rechnet sich die Anlage ohne Speicher besser. Kommen große Verbraucher dazu, ändert sich das schnell. Ab einer gewissen Größe bringt mehr Kapazität ohnehin kaum noch etwas: Der Speicher ist im Sommer voll, und im Winter fehlt die Sonne zum Laden. Die Empfehlung rechnet die wirtschaftlich sinnvolle Kombination aus Anlagengröße und Speicher für deinen Haushalt durch.",
       links: [{ phrase: "Die Empfehlung", href: "/pv-bedarf-berechnen" }],
       cta: { label: "Passende Größe finden", href: "/pv-bedarf-berechnen" },
     },
@@ -603,7 +616,7 @@ export function balkonAnmeldenFaq(): FaqEntry[] {
     },
     {
       q: "Was passiert, wenn ich mein Balkonkraftwerk nicht anmelde?",
-      a: "Wer die Frist versäumt, handelt nach Angabe der Bundesnetzagentur grundsätzlich ordnungswidrig — vorausgesetzt, es geschieht vorsätzlich oder fahrlässig. Der gesetzliche Bußgeldrahmen für diesen Verstoß liegt bei bis zu 50.000 Euro und halbiert sich bei Fahrlässigkeit; das ist die Obergrenze für alle Verstöße dieser Kategorie, einschließlich gewerblicher Großanlagen, und nicht der Betrag, der bei einem Balkongerät zu erwarten wäre. Die Behörde nennt selbst keine Summe. Wie oft tatsächlich Bußgelder verhängt werden, ist nicht öffentlich belegt — weder in der einen noch in der anderen Richtung. Nachholen lässt sich die Registrierung jederzeit.",
+      a: "Wer die Frist versäumt, handelt nach Angabe der Bundesnetzagentur grundsätzlich ordnungswidrig — vorausgesetzt, es geschieht vorsätzlich oder fahrlässig. Im Netz kursiert dazu eine hohe Bußgeld-Summe; sie steht im Gesetz, ist aber die Obergrenze für alle Verstöße dieser Kategorie einschließlich gewerblicher Großanlagen und nicht der Betrag, der bei einem Balkongerät zu erwarten wäre. Bei bloßer Fahrlässigkeit halbiert sich der Rahmen, und auf ihren Seiten zum Steckersolar nennt die Bundesnetzagentur selbst keine Summe. Wie oft tatsächlich Bußgelder verhängt werden, ist nicht öffentlich belegt — weder in der einen noch in der anderen Richtung. Nachholen lässt sich die Registrierung jederzeit.",
     },
     {
       q: "Kostet die Anmeldung etwas?",

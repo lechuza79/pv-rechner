@@ -205,12 +205,13 @@ export default function AnmeldenPage() {
 
         <h2 style={S.h2}>Wenn die Frist schon abgelaufen ist</h2>
         <p style={S.p}>
-          {BALKON_RECHT.anmeldeFrist} Der gesetzliche Bußgeldrahmen für diesen Verstoß liegt
-          bei bis zu 50.000 Euro und halbiert sich, wenn nur Fahrlässigkeit vorliegt. Diese
-          Zahl braucht aber Kontext, den die meisten Seiten weglassen: Sie ist die Obergrenze
-          für <span style={S.strong}>alle</span> Verstöße dieser Kategorie, gewerbliche
-          Großanlagen eingeschlossen. Die Bundesnetzagentur nennt sie selbst nirgends, und
-          das Gesetz bemisst ein Bußgeld nach Bedeutung der Tat und Vorwurf.
+          {BALKON_RECHT.anmeldeFrist} Im Netz kursiert dazu eine hohe Bußgeld-Summe. Sie steht
+          zwar im Gesetz, meint aber die Obergrenze für <span style={S.strong}>alle</span>
+          Verstöße dieser Kategorie — gewerbliche Großanlagen eingeschlossen. Auf ein
+          Balkongerät lässt sie sich nicht übertragen: Das Gesetz bemisst ein Bußgeld nach
+          Bedeutung der Tat und Vorwurf, bei bloßer Fahrlässigkeit halbiert sich der Rahmen,
+          und die Bundesnetzagentur nennt auf ihren Seiten zum Steckersolar selbst keine
+          Summe. Wir schreiben die Zahl deshalb nicht hin.
         </p>
         <p style={S.p}>
           Wie häufig überhaupt Bußgelder verhängt werden, ist nicht öffentlich belegt — auch

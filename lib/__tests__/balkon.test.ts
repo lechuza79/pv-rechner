@@ -1,8 +1,10 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "fs";
+import { join } from "path";
 import { calcBalkon, recommendBalkon } from "../balkon";
 import { simulateSolarYear, monthlyFromAnnual } from "../balkon-sim";
 import { DEFAULT_BALKON_CONFIG as CFG, BALKON_RECHT } from "../balkon-config";
-import { balkonFaq } from "../faq";
+import { balkonFaq, balkonAnmeldenFaq } from "../faq";
 import { SOLAR_YEAR_DE, referenceYearKwh } from "../solar-year";
 import { DAYS_IN_MONTH, type HouseholdProfile } from "../consumption";
 
@@ -525,7 +527,34 @@ describe("Geprüfte Rechtsaussagen: die Vorbehalte", () => {
     expect(BALKON_RECHT.anmeldeFrist).toMatch(/nicht ab Kauf/);
     // Der gesetzliche Höchstrahmen gilt für alle Verstöße dieser Nummer und ist
     // als Drohung gegenüber einem Balkon-Betreiber irreführend (§ 17 OWiG).
-    const antworten = balkonFaq().map(e => e.a).join(" ");
-    expect(antworten).not.toMatch(/50\.?000/);
+    //
+    // Die Regel galt bis zum 25.08.2026 nur für DIESE eine FAQ — und deshalb
+    // stand die Zahl weiter im Anmelde-Ratgeber und in dessen eigener FAQ, also
+    // ausgerechnet auf der Seite, auf der jemand landet, der Angst vor
+    // Konsequenzen hat. Dort war sie sauber eingeordnet; als abgeschnittener
+    // Suchergebnis-Ausschnitt überlebt aber nur der Drohsatz, und genau den
+    // vermeidet das Projekt bewusst. Betreiber-Entscheidung: Regel ausweiten.
+    //
+    // Geprüft ist die Zahl übrigens und richtig (§ 95 Abs. 2 Nr. 6 EnWG,
+    // Halbierung nach § 17 Abs. 2 OWiG, beides im Volltext gelesen) — sie wird
+    // nicht als falsch verschwiegen, sondern als irreführend weggelassen.
+    const antworten = [
+      ...balkonFaq(),
+      ...balkonAnmeldenFaq(),
+    ].map(e => e.a).join(" ");
+    expect(
+      antworten,
+      "Keine Balkon-Antwort nennt den Bußgeld-Höchstrahmen als Zahl.",
+    ).not.toMatch(/50\.?000/);
+
+    // Und ebenso wenig die Ratgeber-Seite, auf die sie verlinken.
+    const seite = readFileSync(
+      join(__dirname, "..", "..", "app", "(site)", "balkonkraftwerk", "ratgeber", "anmelden", "page.tsx"),
+      "utf8",
+    );
+    expect(
+      seite.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, ""),
+      "Der Anmelde-Ratgeber nennt den Bußgeld-Höchstrahmen als Zahl.",
+    ).not.toMatch(/50\.?000/);
   });
 });

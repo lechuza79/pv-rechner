@@ -869,15 +869,27 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Anträge sind nur noch bis zum 31. Oktober 2026 möglich; die Bearbeitung ruht bis zum 16. September 2026 und läuft danach in der Reihenfolge des E-Mail-Eingangs",
       "Energieberatung eines zertifizierten Energieberaters vor Antragstellung und Umsetzung erforderlich",
-      "Antrag vor Maßnahmenbeginn; zertifizierter Ökostrom-Tarif als Voraussetzung",
-      "nur für Privatpersonen mit Wohnsitz/Immobilie in Potsdam",
+      "Antrag vor Maßnahmenbeginn; bei Luftwärmepumpe oder Batteriespeicher zusätzlich ein zertifizierter Ökostrom-Tarif",
+      "nur für Privatpersonen mit Erstwohnsitz in Potsdam — Eigentum allein genügt nicht",
       "Nicht förderfähig an Passivhäusern Plus/Premium und KfW-Effizienzhäusern 40plus",
       "Je Haushalt und Jahr wird dieselbe Maßnahme nur einmal gefördert",
     ],
     combinableWith: BUND,
-    foerdert: ["pv", "balkon"],
+    foerdert: ["pv", "balkon", "waermepumpe"],
     pvPerKwp: 200, pvCap: 1200,
     speicherTiers: [{ upTo: 999, amount: 1000 }], speicherMin: 5,
+    // WÄRMEPUMPE NACHGETRAGEN (25.08.2026). Die Richtlinie fördert sie seit
+    // jeher — der Eintrag kannte sie nicht, also zeigte der Wärmepumpen-Rechner
+    // Potsdamern 0 €. Wörtlich in der Richtlinie vom 26.03.2026 (Volltext in
+    // docs/quellen/): „Luftwärme- bzw. Erdwärmepumpen oder sog.
+    // Luft-Wasser-Wärmepumpen (Split-Wärmepumpen) — 2.000 € pauschal je Objekt".
+    //
+    // Die übrigen Bedingungen (Energieberatung vorab, Erstwohnsitz, Antrag vor
+    // Maßnahmenbeginn, Jahresfrist) kann das Modell nicht rechnen; sie stehen
+    // deshalb als Hinweis in `conditions` und niemand bekommt sie abgezogen.
+    // Das ist die übliche Trennung: Was rechenbar ist, wird gerechnet; was
+    // nicht, wird gesagt.
+    wpPauschale: 2000,
   },
   "dortmund-pv": {
     id: "dortmund-pv", name: "Förderung von Photovoltaik auf Ein- und Zweifamilienhäusern",
