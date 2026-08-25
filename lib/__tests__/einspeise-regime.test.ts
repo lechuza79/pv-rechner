@@ -188,12 +188,23 @@ describe("Einspeisegrenze (§ 9 Abs. 2b)", () => {
     expect(einspeiseDeckelKw(10, "reform2027")).toBe(5);
   });
 
-  it("gilt nur unter 100 Kilowatt und nicht für Steckersolar", () => {
-    // Beide Schwellen standen im Referentenentwurf noch in eckigen Klammern und
-    // sind erst in der Kabinettsfassung entschieden (§ 9 Abs. 2b S. 1 und 2).
+  it("gilt unter 100 Kilowatt — ohne Ausnahme für kleine Dachanlagen", () => {
+    // Die 100-kW-Schwelle stand im Referentenentwurf noch in eckigen Klammern
+    // und ist erst in der Kabinettsfassung entschieden (§ 9 Abs. 2b Satz 1).
     expect(einspeiseDeckelKw(99.9, "reform2027")).toBeCloseTo(49.95, 2);
     expect(einspeiseDeckelKw(100, "reform2027")).toBeUndefined();
-    expect(einspeiseDeckelKw(2, "reform2027")).toBeUndefined();
+
+    // Bis zum 25.08.2026 nahm die Funktion jede Anlage bis 2 kWp aus und dieser
+    // Test schrieb das fest. § 9 Abs. 2b Satz 2 nimmt aber nur Steckersolar-
+    // GERÄTE aus, und zwar kumulativ: bis 2 kW Solarleistung, bis 800 Voltampere
+    // Wechselrichterleistung, hinter der Entnahmestelle eines Letztverbrauchers.
+    // Eine fest installierte kleine Dachanlage — der Rechner lässt eigene Werte
+    // ab 1 kWp zu — fällt unter den Deckel. Nachgebaut wird die Bedingung nicht:
+    // Dieser Rechner kennt die Wechselrichterleistung gar nicht, und für echtes
+    // Steckersolar wäre sie wirkungslos (bei höchstens 800 VA liegt die
+    // Einspeisung immer unter 50 % von höchstens 2 kWp).
+    expect(einspeiseDeckelKw(1.5, "reform2027")).toBeCloseTo(0.75, 2);
+    expect(einspeiseDeckelKw(2, "reform2027")).toBeCloseTo(1, 2);
     expect(einspeiseDeckelKw(2.1, "reform2027")).toBeCloseTo(1.05, 2);
   });
 

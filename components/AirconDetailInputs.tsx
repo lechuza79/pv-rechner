@@ -100,8 +100,12 @@ export default function AirconDetailInputs({
       <div style={{ ...labelStyle, display: "inline-flex", alignItems: "center", gap: 4 }}>
         Wie sonnig liegen die Räume?
         <InfoTooltip title="Warum Sonne, nicht Dämmung?" ariaLabel="Warum fragen wir nach der Sonne statt nach der Dämmung?" size={iconSizes.sm}>
-          Beim Kühlen kommt der größte Wärmeeintrag durch die Fenster — Sonne, Ausrichtung, fehlende Verschattung,
-          vor allem ein Dachgeschoss. Deshalb fragen wir nach der Lage zur Sonne statt nach dem Dämmstandard.
+          Beim Kühlen kommt der größte Wärmeeintrag durch die Fenster — Sonne, Ausrichtung, fehlende
+          Verschattung. Der Dämmstandard ist dagegen der schwächste der untersuchten Einflüsse; eine
+          Innendämmung verschlechtert die Überhitzung sogar. Eine Ausnahme ist das Dach: Bei dunkler
+          Eindeckung wirkt die Dämmstärke dort stark. Deshalb fragen wir nach der Lage zur Sonne statt
+          nach dem Dämmstandard. Quelle: „Kühle Gebäude im Sommer", Studie im Auftrag des
+          Umweltbundesamtes (CLIMATE CHANGE 14/2023), S. 27, 177 und 184.
         </InfoTooltip>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8, marginBottom: 20 }}>

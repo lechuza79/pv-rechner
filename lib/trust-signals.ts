@@ -163,7 +163,7 @@ export const TRUST_SIGNALS: readonly TrustSignal[] = [
     text: "Das Ergebnis der Rechner erscheint sofort, die Berechnung läuft in deinem Browser.",
     betont: "in deinem Browser",
     detail:
-      "Die Rechenkerne laufen als JavaScript auf deinem Gerät — dein Ergebnis entsteht dort und wird nirgends gespeichert. An unseren Server geht die Postleitzahl, damit wir Standort-Ertrag, Wetter und Förderprogramme für deinen Ort holen können. Für die Reichweitenmessung zählen wir außerdem anonym mit, welche Anlagen- und Speichergröße gewählt wurde; das lässt sich weder dir noch einem Gerät zuordnen.",
+      "Die Rechenkerne laufen als JavaScript auf deinem Gerät — dein Ergebnis entsteht dort. Gespeichert wird es nur, wenn du dich anmeldest und es ausdrücklich speicherst. An unseren Server geht die Postleitzahl, damit wir Standort-Ertrag, Wetter und Förderprogramme für deinen Ort holen können. Für die Reichweitenmessung zählen wir außerdem anonym mit, welche Anlagen- und Speichergröße gewählt wurde; das lässt sich weder dir noch einem Gerät zuordnen.",
     href: "/datenschutz",
     icon: "lock",
     // KEIN "Mehr erfahren": Der Satz sagt bereits alles, was der Punkt zusagt.

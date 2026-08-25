@@ -730,7 +730,7 @@ export default function Waermepumpe({
                   <>
                   <strong style={{ color: v('--color-text-primary') }}>Beim Heizöl fehlt ein Kostenblock — bewusst.</strong>{" "}
                   Das Heizungsgesetz nennt Heizöl gleichrangig neben Gas: Eine neu eingebaute Ölheizung muss ab 2029{" "}
-                  {bioTreppeStufenText()} ihrer Wärme klimafreundlich erzeugen — bei Öl über Bioheizöl, wahlweise auch über
+                  {bioTreppeStufenText()} ihrer Wärme klimafreundlich erzeugen — bei Öl über Bioheizöl, in den Jahren 2029 bis 2034 bei ausreichender Auslegung auch über
                   Wasserstoff-Derivate oder ganz ohne Beimischung über Solarthermie, eine Lüftung mit Wärmerückgewinnung oder
                   eine Hybridlösung mit Wärmepumpe (§ 43 Abs. 3–5 GModG).
                   Dass das den Brennstoff verteuert, ist sicher — <strong>wie stark, ist es nicht.</strong> Marktangaben reichen
@@ -800,7 +800,7 @@ export default function Waermepumpe({
               {/* Erklärabschnitte */}
               <div style={{ fontSize: 13, lineHeight: 1.6, color: v('--color-text-secondary'), marginTop: 22, borderTop: `1px solid ${v('--color-border')}`, paddingTop: 16 }}>
                 {[
-                  { h: "Die Bio-Treppe (§ 43 GModG)", p: `Das Gebäudemodernisierungsgesetz verpflichtet eine Heizung für Gas, Heizöl oder Flüssiggas, die nach dem ${GMODG_RECHTSSTAND.inKraftSeit} neu eingebaut wird — beim Einbau in ein bestehendes Gebäude ebenso wie in Neubauten, die bis zum ${GMODG_RECHTSSTAND.neubauBioTreppeBis} errichtet werden —, ab 2029 einen wachsenden Anteil klimafreundlicher Brennstoffe beizumischen. Das Gesetz nennt vier Stufen: ${bioTreppeStufenText()}. Anrechenbar sind neben Biomethan auch Bioheizöl, biogenes Flüssiggas sowie Wasserstoff und dessen Derivate; beim Netzgas läuft es auf Biomethan hinaus, und das kostet rund doppelt so viel wie Erdgas. Zusammen mit steigenden Netzentgelten — weil immer weniger Haushalte am Gasnetz hängen — treibt das den Gaspreis deutlich stärker als die allgemeine Teuerung. Statt beizumischen lässt sich die Pflicht auch über Solarthermie, eine Lüftungsanlage mit Wärmerückgewinnung oder eine Wärmepumpen-Hybridheizung erfüllen (§ 43 Absatz 3 bis 5 GModG); fällt die alte Anlage irreparabel aus, greift sie zwölf Monate später (§ 43 Absatz 7). Wir rechnen den teuersten Weg, die reine Beimischung.` },
+                  { h: "Die Bio-Treppe (§ 43 GModG)", p: `Das Gebäudemodernisierungsgesetz verpflichtet eine Heizung für Gas, Heizöl oder Flüssiggas, die nach dem ${GMODG_RECHTSSTAND.inKraftSeit} neu eingebaut wird — beim Einbau in ein bestehendes Gebäude ebenso wie in Neubauten, die bis zum ${GMODG_RECHTSSTAND.neubauBioTreppeBis} errichtet werden —, ab 2029 einen wachsenden Anteil klimafreundlicher Brennstoffe beizumischen. Das Gesetz nennt vier Stufen: ${bioTreppeStufenText()}. Anrechenbar sind neben Biomethan auch Bioheizöl, biogenes Flüssiggas sowie grüner, blauer, orangener oder türkiser Wasserstoff und dessen Derivate; beim Netzgas läuft es auf Biomethan hinaus, und das kostet rund doppelt so viel wie Erdgas. Zusammen mit steigenden Netzentgelten — weil immer weniger Haushalte am Gasnetz hängen — treibt das den Gaspreis deutlich stärker als die allgemeine Teuerung. Statt beizumischen lässt sich die Pflicht auch über Solarthermie, eine Lüftungsanlage mit Wärmerückgewinnung oder eine Wärmepumpen-Hybridheizung erfüllen (§ 43 Absatz 3 bis 5 GModG); fällt die alte Anlage irreparabel aus, bleibt zwölf Monate lang die Stufe stehen, die beim Einbau galt (§ 43 Absatz 7 GModG). Wir rechnen den teuersten Weg, die reine Beimischung.` },
                   { h: "Beschlossen ist die Pflicht, nicht der Preis", p: `${gmodgStandSatz()} Wie teuer Biomethan und Netzentgelte tatsächlich werden, ist dagegen eine Annahme — ein plausibler Korridor, keine punktgenaue Prognose. Ebenfalls Annahme ist der Weg nach 2040: Eine 100-%-Stufe steht nicht im Gesetz, die vollständige Klimaneutralität ab 2045 kündigt § 42a GModG nur an — als Quote für die Brennstoff-Anbieter, die dann auch Bestandsheizungen verteuern würde. Sie soll bis zum ${GMODG_RECHTSSTAND.quoteGesetzBis} in einem eigenen Gesetz geregelt werden; die Gesetzesbegründung geht von einem Start 2028 mit bis zu einem Prozent aus, im Gesetzestext steht das nicht. Wir rechnen sie nicht mit. Die drei Preis-Szenarien zeigen den Gegenfall: reine Energiepreis-Fortschreibung ohne die Grüngas-Pflicht.` },
                   { h: "Warum wir je Kilowattstunde Wärme rechnen", p: "Gas- und Strompreis lassen sich nicht direkt vergleichen: Eine Wärmepumpe macht aus einer Kilowattstunde Strom rund drei Kilowattstunden Wärme, ein Gaskessel aus einer Kilowattstunde Gas nur knapp eine. Deshalb rechnen wir beide auf die Kosten pro gelieferter Kilowattstunde Wärme um — die Jahresarbeitszahl der Wärmepumpe und der Kesselwirkungsgrad sind darin enthalten. Grundgebühr und Wartung bleiben außen vor, sie gehören nicht in einen Preis-je-Kilowattstunde-Vergleich." },
                   { h: "Quelle", p: "IW-Report 36/2026 „Wie hoch sind die Mehrkostenrisiken durch das Gebäudemodernisierungsgesetz?“ (Henger, Küper, Wünsch — Institut der deutschen Wirtschaft, Juli 2026). Die Preispfade stammen aus dem Anhang der Studie." },
@@ -857,7 +857,7 @@ export default function Waermepumpe({
                       <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
                         Alte Heizung
                         <InfoTooltip title="Klima-Geschwindigkeits-Bonus" ariaLabel="Klima-Geschwindigkeits-Bonus">
-                          16 % Zusatzförderung, wenn eine funktionierende fossile Heizung ersetzt wird: Öl, Kohle und Nachtspeicher zählen unabhängig vom Alter, Gas-, Holz- und Pelletheizungen erst ab 20 Jahren. Das Baujahr steht auf dem Typenschild am Kessel. Der Bonus sinkt ab dem 1. Februar 2027 schrittweise. Quelle: KfW Merkblatt 458 (BEG EM), gültig ab 21.07.2026.
+                          16 % Zusatzförderung, wenn eine funktionierende fossile Heizung ersetzt wird: Öl, Kohle, Nachtspeicher und die Gas-Etagenheizung zählen unabhängig vom Alter, eine Gas-Zentralheizung sowie Holz- und Pelletheizungen erst ab 20 Jahren. Das Baujahr steht auf dem Typenschild am Kessel. Der Bonus sinkt ab dem 1. Februar 2027 halbjährlich um 4 Prozentpunkte und entfällt bei Antragstellung ab dem 1. August 2028. Quelle: KfW Merkblatt 458 (BEG EM), gültig ab 21.07.2026.
                         </InfoTooltip>
                       </span>
                       <select value={altheizung} onChange={e => { setAltheizung(e.target.value as AltheizungKey); setOInvest(null); }}
@@ -1056,7 +1056,7 @@ export default function Waermepumpe({
                   Heizwärme pro Jahr: <InlineEdit value={result.qGes} onCommit={v => setOQges(v)} unit=" kWh" min={1000} max={80000} step={500} width={90} />
                   <InfoTooltip title="Woher diese Menge kommt" ariaLabel="Woher kommt der Jahres-Heizwärmebedarf?">
                     Geschätzt aus Wohnfläche, Dämmzustand und Personenzahl — und zwar als <strong>erwarteter Verbrauch</strong>, nicht als Norm-Bedarf. Der Unterschied ist groß: Die Norm rechnet ein Gebäude durch, in dem alle Räume auf Solltemperatur stehen. Real wird weniger geheizt (Räume bleiben kühl, nachts wird abgesenkt), im Altbau rund 30 % weniger.<br /><br />
-                    <strong>Du kennst deinen Gas- oder Ölverbrauch? Trag ihn im Schritt „Dämmstandard" ein</strong> — oder rechne hier direkt: Jahresverbrauch in kWh × {Math.round(fuel.efficiency * 100)} % (Kesselverlust). Ein gemessener Wert schlägt jede Schätzung.<br /><br />
+                    <strong>Du kennst deinen Gas- oder Ölverbrauch? Trag ihn im Schritt „Dämmstandard" ein</strong> — oder rechne hier direkt: Jahresverbrauch in kWh × {Math.round(fuel.efficiency * 100)} % (Kessel-Nutzungsgrad). Ein gemessener Wert schlägt jede Schätzung.<br /><br />
                     Diese Menge steht auf beiden Seiten der Rechnung — sie bestimmt den Gasverbrauch genauso wie den Strom der Wärmepumpe. <strong>Wenn nach dem Wechsel wärmer oder in mehr Räumen geheizt wird, steigt sie</strong>, und die Ersparnis fällt kleiner aus als hier gezeigt. Nach Sanierungen wird dieser Effekt mit 10 bis 30 % beziffert; wie stark er bei einem reinen Heizungstausch auftritt, ist nicht belastbar gemessen — deshalb rechnen wir ihn nicht ein, sondern nennen ihn.
                   </InfoTooltip>
                 </div>
@@ -1347,10 +1347,20 @@ const einkommenIncome = (k: EinkommenKey): number | undefined => EINKOMMEN_OPTIO
 // Welche alte Heizung ersetzt wird, entscheidet über den Klima-Geschwindigkeits-Bonus:
 // Öl/Kohle/Nachtspeicher zählen unabhängig vom Alter, Gas/Biomasse erst ab 20 Jahren.
 type AltheizungKey = "oel_kohle" | "gas_alt" | "gas_neu" | "andere";
+// Die Gas-ETAGENHEIZUNG steht bewusst in der altersfreien Zeile und nicht bei den
+// übrigen Gasheizungen: Das Merkblatt zählt sie wörtlich neben Öl, Kohle und
+// Nachtstromspeicher auf, „unabhängig von deren Alter" (KfW-Merkblatt 458,
+// Stand 07/2026, S. 3, am 25.08.2026 im Volltext gelesen —
+// docs/quellen/KfW-Merkblatt-458_BEG-Heizungsfoerderung_2026-07.pdf).
+// Vorher fehlte sie ganz. Wer eine Gas-Etagenheizung unter 20 Jahren hatte,
+// landete zwangsläufig in der Zeile ohne Bonus und bekam 16 % Förderung nicht
+// gerechnet — ein Fehler, den man dem Ergebnis nicht ansieht, weil die Zahl
+// einfach kleiner ist. Deshalb nennen die Gas-Zeilen jetzt ausdrücklich die
+// ZENTRALheizung: „Gas" allein ließ beide Lesarten zu.
 const ALTHEIZUNG_OPTIONS: { key: AltheizungKey; label: string; klima: boolean }[] = [
-  { key: "oel_kohle", label: "Öl, Kohle oder Nachtspeicher", klima: true },
-  { key: "gas_alt",   label: "Gas, Holz oder Pellets — 20 Jahre oder älter", klima: true },
-  { key: "gas_neu",   label: "Gas, Holz oder Pellets — jünger als 20 Jahre", klima: false },
+  { key: "oel_kohle", label: "Öl, Kohle, Nachtspeicher oder Gas-Etagenheizung", klima: true },
+  { key: "gas_alt",   label: "Gas-Zentralheizung, Holz oder Pellets — 20 Jahre oder älter", klima: true },
+  { key: "gas_neu",   label: "Gas-Zentralheizung, Holz oder Pellets — jünger als 20 Jahre", klima: false },
   { key: "andere",    label: "Etwas anderes (z. B. schon Strom/Wärmepumpe)", klima: false },
 ];
 const altheizungKlima = (k: AltheizungKey): boolean => ALTHEIZUNG_OPTIONS.find(o => o.key === k)?.klima ?? false;

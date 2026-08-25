@@ -185,12 +185,13 @@ export default function AnmeldenPage() {
           ))}
         </ol>
 
-        <h2 style={S.h2}>Warum „Balkonkraftwerk“ im Formular nicht vorkommt</h2>
+        <h2 style={S.h2}>Wonach du im Formular suchst</h2>
         <p style={S.p}>
-          Das Register kennt den Begriff nicht. Es führt die Geräte als{" "}
-          <span style={S.strong}>{MASTR_KATEGORIE}</span> — wer nach dem umgangssprachlichen
-          Wort sucht, findet nichts und legt am Ende eine gewöhnliche Solaranlage an. Das
-          ist der lange Weg mit Feldern, die es für ein Balkongerät gar nicht gibt.
+          Das Register führt die Geräte als{" "}
+          <span style={S.strong}>{MASTR_KATEGORIE}</span> und nennt das umgangssprachliche
+          Wort in derselben Zeile mit. Es gibt dafür einen eigenen, kurzen Assistenten —
+          wer ihn übersieht, landet im langen Formular für Dachanlagen, mit Feldern, die
+          es für ein Balkongerät gar nicht gibt.
         </p>
 
         <h2 style={S.h2}>Was 2024 wegfiel — und was nicht</h2>

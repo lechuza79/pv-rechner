@@ -284,12 +284,12 @@ const RULES: { icon: typeof IconBolt; title: string; body: React.ReactNode }[] =
   {
     icon: IconBolt,
     title: "Kostenlos und ohne Anmeldung",
-    body: "Kopiere den Code und füge ihn in deine Seite ein. Es gibt keine Registrierung, keine Kosten und kein Limit.",
+    body: "Kopiere den Code und füge ihn in deine Seite ein. Es gibt keine Registrierung und keine Kosten. Für den fairen Betrieb gilt eine großzügige Abrufgrenze je Besucher.",
   },
   {
     icon: IconRefresh,
     title: "Immer aktuell",
-    body: "Das Widget lädt die Daten live von Solar Check. Du musst nie etwas nachpflegen – die Werte bleiben automatisch auf dem neuesten Stand.",
+    body: "Das Widget lädt die Daten von Solar Check. Du musst nichts nachpflegen – wir aktualisieren sie, sobald die Quelle neue Zahlen liefert.",
   },
   {
     icon: IconLink,

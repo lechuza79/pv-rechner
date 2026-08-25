@@ -99,4 +99,25 @@ describe("Historische Einspeisevergütung 2012–2022 (Monats-Archiv)", () => {
       expect(jahresWert).toBe(januar.u10);
     }
   });
+
+  it("Kohärenz: auch die Jahrgänge ab 2023 tragen den Januar-Wert, nicht den Februar-Wert", () => {
+    // Die Lücke, durch die ein Fehler drei Jahre lang gefallen ist: Der Test
+    // darüber endet 2022, weil das Monatsarchiv dort endet — und genau ab 2023
+    // begann die Reihe, die Februar-Werte zu führen, obwohl ihre eigene Metrik
+    // „Wert zu Jahresbeginn" sagt. Sichtbar war das auf der Datenstand-Seite und
+    // im Zubau-Chart; auffallen konnte es niemandem, weil beide Werte plausibel
+    // aussehen und nur eine Degressionsstufe auseinanderliegen.
+    //
+    // Ab 2023 gibt es kein Monatsarchiv mehr, wohl aber die gesetzliche Kette —
+    // gegen die wird hier gerechnet. Dass 2023 und 2024 denselben Wert tragen,
+    // ist richtig: Die Degression setzte erst zum 01.02.2024 wieder ein.
+    for (const jahr of FEEDIN_HISTORY_YEARS.filter((j) => j >= 2023)) {
+      const jahresWert = FEEDIN_HISTORY_VALUES[FEEDIN_HISTORY_YEARS.indexOf(jahr)];
+      const ausKette = feedInRatesForCommissioning(`${jahr}-01-15`);
+      expect(ausKette, `kein Satz für Januar ${jahr}`).not.toBeNull();
+      expect(jahresWert, `Jahresreihe ${jahr} weicht vom Januar-Satz ab`).toBe(
+        ausKette!.teilUnder10,
+      );
+    }
+  });
 });

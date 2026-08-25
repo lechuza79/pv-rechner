@@ -146,7 +146,7 @@ export default function GasheizungWaermepumpePage() {
           Maßgeblich ist dabei der tatsächliche Einbau, nicht das Bestell- oder Rechnungsdatum.
           Wer eine solche Heizung betreibt, muss ab 2029 einen wachsenden Anteil klimafreundlicher
           Brennstoffe beimischen. Das Gesetz nennt vier Stufen: {bioTreppeStufenText("Prozent")}.
-          Anrechenbar sind neben Biomethan auch Bioheizöl, biogenes Flüssiggas sowie Wasserstoff und
+          Anrechenbar sind neben Biomethan auch Bioheizöl, biogenes Flüssiggas sowie grüner, blauer, orangener oder türkiser Wasserstoff und
           daraus hergestellte Derivate. Beim leitungsgebundenen Gas führt das in der Praxis zu
           Biomethan, und das kostet rund doppelt so viel wie Erdgas. Dazu steigen die
           Gasnetzentgelte, weil immer weniger Haushalte am Gasnetz hängen und dessen Fixkosten
@@ -184,7 +184,7 @@ export default function GasheizungWaermepumpePage() {
           <strong style={S.strong}>Und wenn ich schon eine Gasheizung habe?</strong> Von der
           Bio-Treppe wird sie nicht erfasst — die trifft nur neu eingebaute Anlagen. Ganz
           verschont bleiben Bestandsheizungen aber voraussichtlich nicht: Dasselbe Gesetz kündigt
-          in § 42a eine <strong style={S.strong}>Grüngas- und Grünheizölquote</strong> an: Ein
+          in § 42a GModG eine <strong style={S.strong}>Grüngas- und Grünheizölquote</strong> an: Ein
           eigenes Gesetz — vorzulegen bis zum {GMODG_RECHTSSTAND.quoteGesetzBis} — soll nicht die
           Heizung, sondern die Anbieter von Gas, Heizöl und Flüssiggas verpflichten, ihre
           Brennstoffe bis 2045 vollständig auf klimaneutrale umzustellen. Das wirkt auf alle, die
