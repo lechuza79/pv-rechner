@@ -498,9 +498,9 @@ export default function DatenschutzPage() {
           einbettenden Website, die Bezeichnung des Widgets und der
           Kalendertag — also zum Beispiel „musterstadt.de, Strommix-Grafik,
           25.08.2026". Nicht gespeichert werden deine IP-Adresse, eine Kennung,
-          die aufgerufene Unterseite oder eine Uhrzeit; eine Zuordnung zu dir
-          ist damit auch nachträglich nicht möglich. Gezählt werden Aufrufe,
-          nicht Personen. Zweck ist ausschließlich die Frage, ob unser Angebot
+          die aufgerufene Unterseite oder eine Uhrzeit; aus diesen Angaben ist
+          eine Zuordnung zu dir auch nachträglich nicht möglich. Gezählt werden
+          Aufrufe, nicht Personen. Zweck ist ausschließlich die Frage, ob unser Angebot
           an Städte und Gemeinden (Abschnitt 15) angenommen wird.
           Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse
           daran zu erfahren, auf welchen Websites unsere Widgets genutzt

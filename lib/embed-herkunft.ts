@@ -27,6 +27,28 @@ import { supabase } from "./supabase-server";
 //   * Kein Schreiben und kein Lesen im Browser des Besuchers.
 // Wer hier eine Spalte ergänzt, prüft zuerst, ob sie diese drei Sätze noch
 // wahr lässt — sonst wird aus einer Einbau-Zählung eine Besucher-Messung.
+//
+// OFFEN (bis 11/2026) — eine Rechtsfrage, die hier ehrlich benannt und nicht
+// entschieden ist: Ist das Lesen der Einbettungs-Herkunft im Browser
+// (`ancestorOrigins`, ersatzweise der Referrer) ein "Zugriff auf Informationen,
+// die bereits in der Endeinrichtung gespeichert sind" nach § 25 Abs. 1 TDDDG?
+//   * DAGEGEN spricht: Beides ist keine gespeicherte Information, sondern eine
+//     Angabe, die der Browser bei jeder Navigation ohnehin selbst erzeugt und
+//     im Anfrage-Kopf mitsendet. Wir lesen nichts aus, was dort abgelegt wurde.
+//   * DAFÜR spricht: Der EDSA legt den Anwendungsbereich der Vorschrift bewusst
+//     weit aus und bezieht Fälle ein, in denen gar nichts gespeichert wurde.
+// Träfe die weite Lesart zu, bräuchte die Zählung eine Einwilligung — und
+// § 25 kennt keine Interessenabwägung, ein Cookie-Banner für eine Domain-Zählung
+// wäre das Ergebnis. Dann fiele die Zählung ersatzlos weg; ein Banner für DIESEN
+// Zweck wäre absurd.
+// Die vorsichtigere Bauweise gäbe es: die Herkunft serverseitig aus dem
+// Anfrage-Kopf des Embed-Dokuments lesen, statt sie im Browser zu erfragen. Sie
+// kostet die statische Auslieferung aller Embed-Seiten — jeder Widget-Abruf
+// liefe dann durch eine Function. Deshalb steht sie hier als benannte
+// Alternative und nicht als stiller Umbau.
+// Zu klären mit zwei Legal-Prüfern, die einander widerlegen sollen
+// (scripts/council-verify.md); bis dahin gilt die gebaute Fassung, weil sie die
+// datensparsamste ist, die technisch ohne diesen Preis auskommt.
 
 /** Ein Kalendertag, eine Host-Domain, ein Widget, ein Zähler. */
 export type EinbettungsZeile = {

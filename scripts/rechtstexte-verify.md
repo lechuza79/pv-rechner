@@ -126,6 +126,22 @@ Datenschutzerklärung.**
 ## Offene Punkte
 
 - **OFFEN (bis 03/2027):** Resend-Zertifizierung im DPF-Register nachprüfen (fällig 03.03.2027).
+- **OFFEN (bis 11/2026):** Einbettungs-Zählung nach § 25 Abs. 1 TDDDG einordnen —
+  **mit zwei Prüfern, von denen der zweite den ersten widerlegen soll.** Seit
+  25.08.2026 liest ein Baustein im Embed-Layout die Herkunft der einbettenden Seite
+  (`ancestorOrigins`, ersatzweise der Referrer) und meldet die Domain an uns; gespeichert
+  werden Domain, Widget und Kalendertag, sonst nichts (`lib/embed-herkunft.ts`).
+  Die Frage ist dieselbe wie beim Messskript eine Zeile weiter unten: Ist das Lesen einer
+  Angabe, die der Browser ohnehin selbst erzeugt und im Anfrage-Kopf mitsendet, schon ein
+  „Zugriff" im Sinne der Vorschrift? Träfe die weite Lesart zu, bräuchte die Zählung eine
+  Einwilligung — § 25 kennt keine Interessenabwägung —, und dann fällt sie ersatzlos weg;
+  ein Cookie-Banner für eine Domain-Zählung wäre absurd. Die vorsichtigere Bauweise
+  (Herkunft serverseitig aus dem Anfrage-Kopf) ist im Code als benannte Alternative
+  hinterlegt und kostet die statische Auslieferung aller Embed-Seiten.
+  **Nicht vergessen:** An der Einordnung hängen zwei Texte, die schon live sind —
+  Datenschutzerklärung Abschnitt 14 und der Textbaustein, den Einbettende in ihre
+  eigene Erklärung übernehmen (`/energie-widgets`).
+
 ## Erledigt, aber nachzumessen
 
 **Was das Messskript vom Gerät liest, wird am Skript gemessen, nicht der Dokumentation
