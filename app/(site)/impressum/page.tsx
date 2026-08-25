@@ -118,11 +118,9 @@ export default function ImpressumPage() {
         <p style={S.p}>
           Die Inhalte dieser Seite wurden mit größter Sorgfalt erstellt. Für die
           Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir
-          jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7
-          Abs. 1 DDG für eigene Inhalte auf diesen Seiten nach den allgemeinen
-          Gesetzen verantwortlich. Nach §§ 8 bis 10 DDG sind wir als
-          Diensteanbieter jedoch nicht verpflichtet, übermittelte oder
-          gespeicherte fremde Informationen zu überwachen.
+          jedoch keine Gewähr übernehmen. Für die eigenen Inhalte dieser Seiten
+          sind wir nach den allgemeinen Gesetzen verantwortlich. Fremde oder von
+          Nutzern eingestellte Inhalte gibt es hier nicht.
         </p>
 
         <h3 style={S.h3}>Haftung für Links</h3>

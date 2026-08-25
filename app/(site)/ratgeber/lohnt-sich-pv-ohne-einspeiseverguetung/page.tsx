@@ -600,7 +600,7 @@ export default async function LohntSichPvOhneEinspeisungPage() {
         <p style={S.p}>
           Ein Beispielhaushalt: 3–4 Personen ({PERSONEN[EX.personenIdx].verbrauch.toLocaleString("de-DE")} kWh
           Jahresverbrauch), teils im Homeoffice, {EX.kwp} <GlossaryTerm id="kwp">kWp</GlossaryTerm>-Anlage,
-          konservativer Ertrag von {EX.ertragKwp} kWh pro kWp. Beide Spalten rechnen{" "}
+          Ertrag von {EX.ertragKwp} kWh pro kWp. Beide Spalten rechnen{" "}
           <strong style={S.strong}>ohne Einspeisevergütung</strong> (Einspeisung auf „Aus"),
           also im geplanten Fall ab 2027. Oben wählst du, wie stark der Strompreis steigt —
           das schaltet beide Spalten gleichzeitig:

@@ -145,7 +145,7 @@ export default function AnmeldenPage() {
 
         <h2 style={S.h2}>Die Anmeldung, Schritt für Schritt</h2>
         <p style={S.p}>
-          Fünf Schritte. Bei vier davon gibt es eine Stelle, an der es typischerweise
+          Fünf Schritte, und bei jedem gibt es eine Stelle, an der es typischerweise
           hakt — die steht jeweils dabei.
         </p>
         <ol style={{ listStyle: "none", padding: 0, margin: "0 0 24px" }}>

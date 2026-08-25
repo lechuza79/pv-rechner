@@ -240,7 +240,19 @@ export const DATA_SOURCES = {
    */
   uba: {
     name: "Umweltbundesamt",
-    license: "§ 12a EGovG",
+    // § 12a EGovG stand hier bis zum 25.08.2026 als „Lizenz". Er ist keine: Der
+    // Paragraf verpflichtet Bundesbehörden, offene Daten BEREITZUSTELLEN
+    // (Abs. 1 Satz 1) und den Abruf entgeltfrei und uneingeschränkt
+    // weiterverwendbar zu ermöglichen (Abs. 6 Satz 1). Er räumt niemandem
+    // Nutzungsrechte ein und kennt keine Quellenangabepflicht. Am 25.08.2026 im
+    // Volltext gelesen.
+    //
+    // Unsere Erlaubnis kommt aus den Nutzungsbedingungen der Behörde selbst
+    // (vervielfältigen, verändern, weitergeben — gegen Quellenvermerk). Die
+    // Behörde beruft sich darin ihrerseits auf § 12a EGovG; wir haben ihre
+    // Selbstbezeichnung übernommen und dabei eine Vorschrift ins Lizenzfeld
+    // geschrieben, die keine ist.
+    license: "Nutzungsbedingungen des Umweltbundesamtes (Quellenangabe erforderlich)",
     licenseUrl: "https://www.umweltbundesamt.de/datenschutz-haftung-urheberrecht",
     url: "https://www.umweltbundesamt.de/daten/umweltzustand-trends/energie/erneuerbare-konventionelle-stromerzeugung",
     note: "Datenbasis: AG Energiebilanzen",

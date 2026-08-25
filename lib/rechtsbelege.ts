@@ -328,6 +328,43 @@ export const RECHTSBELEGE: Rechtsbeleg[] = [
     geprueftIso: "2026-08-25",
     zustand: "gesetz",
   },
+  {
+    norm: "EEG §20",
+    gesetz: "Erneuerbare-Energien-Gesetz",
+    traegt:
+      "Die einmalige Absenkung der Vergütung Mitte 2010 (Dach −13 %, Freifläche −12 %, " +
+      "ab Oktober je weitere −3 %) und die Rundung auf zwei Stellen am Ende der Kette — " +
+      "Grundlage der Jahrgänge 2010 und 2011.",
+    fundstelle:
+      "§ 20 Abs. 4 Satz 1 Nr. 1–3 und Abs. 5 EEG 2009 i. d. F. vom 11.08.2010 " +
+      "(BGBl. I 2010 Nr. 43, S. 1171). Vor dem 11.08.2010 stand die Rundung in Abs. 3.",
+    quelle: "Bundesgesetzblatt I 2010 Nr. 43",
+    volltext: "docs/quellen/EEG-2009-Aenderung_11-08-2010_BGBl-I-2010-Nr43-S1170.pdf",
+    geprueftIso: "2026-08-25",
+    zustand: "gesetz",
+  },
+  {
+    norm: "EEG §32",
+    gesetz: "Erneuerbare-Energien-Gesetz",
+    traegt: "Freiflächen-Vergütungssatz des Jahrgangs 2009 (31,94 ct/kWh).",
+    fundstelle: "§ 32 Abs. 1 EEG 2009 (BGBl. I 2008 Nr. 49, S. 2083)",
+    quelle: "Bundesgesetzblatt I 2008 Nr. 49",
+    volltext: "docs/quellen/EEG-2009_BGBl-I-2008-Nr49-S2074.pdf",
+    geprueftIso: "2026-08-25",
+    zustand: "gesetz",
+  },
+  {
+    norm: "EEG §33",
+    gesetz: "Erneuerbare-Energien-Gesetz",
+    traegt:
+      "Gebäude-Vergütungssätze des Jahrgangs 2009 (43,01 / 40,91 / 39,58 / 33,0 ct/kWh) " +
+      "und die Eigenverbrauchsvergütung bis 30 kW.",
+    fundstelle: "§ 33 Abs. 1 Nr. 1–4 und Abs. 2 EEG 2009 (BGBl. I 2008 Nr. 49, S. 2083)",
+    quelle: "Bundesgesetzblatt I 2008 Nr. 49",
+    volltext: "docs/quellen/EEG-2009_BGBl-I-2008-Nr49-S2074.pdf",
+    geprueftIso: "2026-08-25",
+    zustand: "gesetz",
+  },
 ];
 
 
@@ -345,56 +382,26 @@ export const RECHTSBELEGE: Rechtsbeleg[] = [
  * Oberfläche nehmen.
  */
 export const NOCH_NICHT_BELEGT: { norm: string; warum: string; frist: string }[] = [
-  {
-    norm: "DDG §7",
-    warum: "Haftungsabschnitt des Impressums. Der Wortlaut wurde in dieser Inventur nicht gelesen.",
-    frist: "2026-11",
-  },
-  {
-    norm: "DDG §8",
-    warum: "Teil der zitierten Spanne §§ 8 bis 10 im Impressum, nicht einzeln geprüft.",
-    frist: "2026-11",
-  },
-  {
-    norm: "DDG §9",
-    warum: "Teil der zitierten Spanne §§ 8 bis 10 im Impressum, nicht einzeln geprüft.",
-    frist: "2026-11",
-  },
-  {
-    norm: "DDG §10",
-    warum: "Teil der zitierten Spanne §§ 8 bis 10 im Impressum, nicht einzeln geprüft.",
-    frist: "2026-11",
-  },
-  {
-    norm: "EEG §20",
-    warum:
-      "Degression der Jahrgänge 2010–2011 (EEG 2009 in der Fassung vom 11.08.2010). " +
-      "Das EEG 2009 ist auf gesetze-im-internet.de nicht mehr abrufbar und liegt nicht " +
-      "im Repo — die Werte sind rechnerisch stimmig, die Fundstelle ungeprüft.",
-    frist: "2027-02",
-  },
-  {
-    norm: "EEG §32",
-    warum: "Vergütungssätze EEG 2009, Primärquelle nicht beschaffbar (siehe EEG §20).",
-    frist: "2027-02",
-  },
-  {
-    norm: "EEG §33",
-    warum: "Vergütungssätze EEG 2009, Primärquelle nicht beschaffbar (siehe EEG §20).",
-    frist: "2027-02",
-  },
-  {
-    norm: "EnWG §14a",
-    warum:
-      "Beschriftung des Wärmepumpen-Stromtarifs auf der Datenstand-Seite. Der Tarifwert " +
-      "selbst trägt zusätzlich ein unbelegtes Quellenetikett (siehe heatpump-config).",
-    frist: "2026-11",
-  },
-  {
-    norm: "EGovG §12a",
-    warum: "Lizenzangabe einer Datenquelle im Quellenregister, in dieser Inventur nicht am Text geprüft.",
-    frist: "2026-11",
-  },
+  // Leer — und das ist ein Ergebnis, kein Zustand.
+  //
+  // Am 25.08.2026 standen hier neun Vorschriften. Sechs davon sind nicht belegt
+  // worden, sondern ENTFERNT: Ihre Nennung trug nicht. Das Impressum führte
+  // einen alten Textbaustein, in dem jemand nur das Gesetzeskürzel getauscht
+  // hatte — die vier zitierten Paragrafen regeln im neuen Gesetz Sperransprüche,
+  // Behördenlisten und Auskunftsverlangen, nicht die Haftung für eigene Inhalte;
+  // die Freistellung von der Überwachungspflicht steht heute in einer
+  // EU-Verordnung, und sie ginge uns ohnehin nichts an, weil wir keine fremden
+  // Inhalte verbreiten. Eine Datenquelle trug eine Bereitstellungspflicht als
+  // „Lizenz". Und eine Marktzahl war mit einer Vorschrift beschriftet, die
+  // keinen Preis setzt.
+  //
+  // Die drei übrigen galten als „nicht beschaffbar" — auch das war falsch. Die
+  // Bundesgesetzblatt-Faksimiles sind frei abrufbar, nur nicht über die Wege,
+  // die zuerst probiert wurden; die nach dem Gesetz eingerichtete Clearingstelle
+  // führt zu jeder Fassung den amtlichen Auszug. Sie stehen jetzt im Register.
+  //
+  // Merksatz aus beidem: Eine Vorschrift, die sich nicht belegen lässt, ist
+  // häufiger falsch zitiert als unauffindbar.
 ];
 
 /** Schneller Zugriff für den Test und für Aufrufer. */

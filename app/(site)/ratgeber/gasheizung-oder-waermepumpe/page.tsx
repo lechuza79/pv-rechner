@@ -260,7 +260,7 @@ export default function GasheizungWaermepumpePage() {
           proTitle="Spricht für die Wärmepumpe"
           proItems={[
             { term: "Niedrige laufende Kosten", desc: "Strom statt teurer werdendem Gas — über 20 Jahre der entscheidende Hebel." },
-            { term: "Hohe Förderung", desc: "Die BEG-Förderung deckt oft 50 bis 70 % der Investition." },
+            { term: "Hohe Förderung", desc: "Die BEG-Förderung übernimmt je nach Selbstnutzung, Alter der alten Heizung und Einkommen 30 bis 80 % der förderfähigen Kosten — gedeckelt, sodass davon bei einer typischen Anlage rund ein Drittel bis gut die Hälfte der Gesamtinvestition übrig bleibt." },
             { term: "Unabhängig vom Grüngas-Risiko", desc: "Keine Beimischpflicht, keine Netzentgelt-Umlage des schrumpfenden Gasnetzes." },
             { term: "Mit PV noch günstiger", desc: "Eigener Solarstrom senkt die Heizkosten weiter." },
           ]}

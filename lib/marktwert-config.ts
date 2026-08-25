@@ -10,7 +10,8 @@
 //
 // Die richtige Größe heißt Marktwert Solar: der erzeugungsgewichtete
 // Börsenpreis, den die Übertragungsnetzbetreiber monatlich und jährlich
-// veröffentlichen (§ 23b i. V. m. Anlage 1 EEG).
+// veröffentlichen (Anlage 1 zu § 23a EEG, Nr. 3.3.4 „MW Solar" und Nr. 4.3.4 „JW Solar" —
+// NICHT § 23b, der regelt die Verguetung ausgefoerderter Anlagen).
 //
 // ── Die amtlichen Jahreswerte ───────────────────────────────────────────────
 // 2024: 4,624 ct/kWh · 2025: 4,508 ct/kWh (Übertragungsnetzbetreiber, publiziert

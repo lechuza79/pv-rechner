@@ -147,7 +147,10 @@ export default function DatenschutzPage() {
           entstehen beim Hosting-Anbieter und werden dort nach einer vom
           gebuchten Tarif abhängigen Frist automatisch gelöscht — je nach Tarif
           zwischen einer Stunde und längstens 30 Tagen. Wir werten diese
-          Logfiles nicht aus und führen sie nicht mit anderen Daten zusammen.
+          Logfiles nicht aus, um das Verhalten einzelner Nutzer nachzuvollziehen, und
+          führen sie nicht mit anderen Daten zusammen. Für den Betrieb sehen wir uns
+          Fehlermeldungen und Antwortzeiten an — dabei geht es um die Funktionsfähigkeit
+          der Seite, nicht um einzelne Besucher.
           Rechtsgrundlage ist Art. 6 Abs. 1
           lit. f DSGVO (berechtigtes Interesse an einem sicheren und stabilen
           Betrieb der Website).
@@ -259,7 +262,7 @@ export default function DatenschutzPage() {
         </p>
 
         <p style={S.p}>
-          Dauerhaft — also auch bei einem späteren Besuch — merken wir uns im Browser-Speicher nur Einstellungen, die du selbst triffst: die von dir eingegebene <strong>Postleitzahl</strong>, dein gewähltes <strong>Farbschema</strong> (hell, dunkel oder automatisch) und, falls du im Solar-Atlas einen <strong>Heimatort</strong> festgelegt hast, dessen Namen samt Landkreis und Bundesland. Die Postleitzahl wird für alle Rechner und für die Sonnenanzeige gemeinsam genutzt, damit du sie nur einmal eingeben musst. Diese Werte verbleiben auf deinem Gerät, werden keinem Konto und keiner Kennung zugeordnet und fließen nicht in die Reichweitenmessung ein; die Postleitzahl wird für ortsbezogene Abfragen verwendet — Standort-Ertrag, Wetter- und Klimadaten, die Sonnenanzeige und die Suche nach Förderprogrammen für deinen Ort (siehe Abschnitt 8). Du kannst die Postleitzahl in der Sonnenanzeige und den Heimatort im Solar-Atlas jederzeit wieder entfernen oder den Browser-Speicher löschen. Weil es sich um Einstellungen handelt, die du für die gewünschte Funktion selbst gesetzt hast, ist für diese Speicherung auf deinem Gerät nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung nötig.
+          Dauerhaft — also auch bei einem späteren Besuch — merken wir uns im Browser-Speicher Einstellungen, die du selbst triffst: die von dir eingegebene <strong>Postleitzahl</strong> und, falls du im Solar-Atlas einen <strong>Heimatort</strong> festgelegt hast, dessen Namen samt Landkreis und Bundesland. Dazu kommt das <strong>Farbschema</strong> (hell, dunkel oder automatisch) — dieser Eintrag entsteht bei jedem Besuch, auch wenn du nie eines ausgewählt hast, und hält dann schlicht die automatische Voreinstellung fest. Klickst du im Ergebnis auf „Speichern“, ohne angemeldet zu sein, wird die Berechnung außerdem vorgemerkt, bis du dem Anmeldelink folgst; folgst du ihm nie, bleibt sie liegen, bis du den Browser-Speicher löschst. Die Postleitzahl wird für alle Rechner und für die Sonnenanzeige gemeinsam genutzt, damit du sie nur einmal eingeben musst. Diese Werte verbleiben auf deinem Gerät, werden keinem Konto und keiner Kennung zugeordnet und fließen nicht in die Reichweitenmessung ein; die Postleitzahl wird für ortsbezogene Abfragen verwendet — Standort-Ertrag, Wetter- und Klimadaten, die Sonnenanzeige und die Suche nach Förderprogrammen für deinen Ort (siehe Abschnitt 8). Du kannst die Postleitzahl in der Sonnenanzeige und den Heimatort im Solar-Atlas jederzeit wieder entfernen oder den Browser-Speicher löschen. Weil es sich um Einstellungen handelt, die du für die gewünschte Funktion selbst gesetzt hast, ist für diese Speicherung auf deinem Gerät nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung nötig.
         </p>
 
         <h2 style={S.h2}>8. Standortgenaue Ertragsprognose</h2>
@@ -309,9 +312,12 @@ export default function DatenschutzPage() {
           oder auf Anfrage bei uns. Die Daten werden ausschließlich zur Bereitstellung
           deines Kontos und deiner gespeicherten Berechnungen verarbeitet und
           nicht zu Werbezwecken genutzt oder an Dritte verkauft. Rechtsgrundlage ist Art. 6 Abs. 1 lit.
-          b DSGVO (Erfüllung des von dir gewünschten Dienstes). Du kannst dein
-          Konto und alle gespeicherten Berechnungen jederzeit löschen, indem du
-          dich an{" "}
+          b DSGVO (Erfüllung des von dir gewünschten Dienstes). Wir speichern
+          Konto und Berechnungen so lange, wie du das Konto behältst — es gibt
+          keine automatische Löschfrist, weil gespeicherte Berechnungen genau
+          dafür da sind, später wieder aufgerufen zu werden. Einzelne
+          Berechnungen kannst du jederzeit selbst in deinem Bereich löschen; das
+          ganze Konto samt aller Berechnungen löschen wir, wenn du dich an{" "}
           <a href="mailto:hey@solar-check.io" style={S.a}>
             hey [at] solar-check.io
           </a>{" "}
@@ -397,7 +403,21 @@ export default function DatenschutzPage() {
           spätestens mit dem Neustart der Serverinstanz verworfen.
           Rechtsgrundlage hierfür ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes
           Interesse an einem funktionsfähigen, vor automatisierten Einsendungen
-          geschützten Formular).
+          geschützten Formular). Gegen diese Verarbeitung kannst du nach Art. 21
+          DSGVO Widerspruch einlegen.
+        </p>
+        <p style={S.p}>
+          Dieselbe Abwehr läuft auf allen Schnittstellen, über die unsere Rechner
+          Daten nachladen — Standort-Ertrag, Wetter- und Klimadaten, Förderprogramme,
+          Strommix und die Karten des Solar-Atlas. Auch dort merkt sich unser Server
+          die IP-Adresse der anfragenden Verbindung kurzzeitig im Arbeitsspeicher,
+          um die Zahl der Abrufe je Verbindung zu begrenzen. Das betrifft jeden
+          Aufruf einer Seite mit nachgeladenen Daten, also auch dann, wenn du kein
+          Formular abschickst. Die Adresse wird nicht dauerhaft gespeichert, nicht
+          mit anderen Daten zusammengeführt und spätestens mit dem Neustart der
+          Serverinstanz verworfen. Rechtsgrundlage ist ebenfalls Art. 6 Abs. 1
+          lit. f DSGVO (berechtigtes Interesse am stabilen Betrieb); auch hier
+          steht dir das Widerspruchsrecht nach Art. 21 DSGVO zu.
         </p>
 
         {/* Dieser Abschnitt stand vor dem Kontaktformular hier und beschrieb
