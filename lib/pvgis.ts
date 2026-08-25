@@ -1,5 +1,6 @@
 import { unstable_cache } from "next/cache";
 import { supabase } from "./supabase-server";
+import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
 import { PLZ_BL } from "./plz-bundesland";
 import { NATIONAL_AVG_YIELD } from "./constants";
 import { BL_ERTRAG } from "./bundesland-ertrag";
@@ -42,16 +43,29 @@ async function getPvgisYieldUncached({
   const rLon = Math.round(lon * 100) / 100;
 
   // 1. Supabase Cache prüfen
+  //
+  // Zeitbudget + eigener Fang: Der Cache ist eine Abkürzung, kein Fundament —
+  // hängt er, wird der Wert live bei PVGIS geholt (der Aufruf hat sein eigenes
+  // Zeitlimit). Ohne beides hielte ausgerechnet die Abkürzung den ganzen Abruf
+  // an.
   if (supabase) {
-    const { data: cached } = await supabase
-      .from("pvgis_cache")
-      .select("annual_kwh_per_kwp, monthly")
-      .eq("lat", rLat)
-      .eq("lon", rLon)
-      .maybeSingle();
+    try {
+      const { data: cached } = await withDbTimeout(
+        supabase
+          .from("pvgis_cache")
+          .select("annual_kwh_per_kwp, monthly")
+          .eq("lat", rLat)
+          .eq("lon", rLon)
+          .maybeSingle(),
+        "pvgis-cache",
+        DB_SOFT_READ_TIMEOUT_MS,
+      );
 
-    if (cached) {
-      return { annual: cached.annual_kwh_per_kwp, monthly: cached.monthly, source: "cache" };
+      if (cached) {
+        return { annual: cached.annual_kwh_per_kwp, monthly: cached.monthly, source: "cache" };
+      }
+    } catch {
+      // weiter zu PVGIS
     }
   }
 
@@ -78,11 +92,21 @@ async function getPvgisYieldUncached({
       outputs.monthly?.fixed?.map((m: { E_m: number }) => Math.round(m.E_m)) || null;
 
     // 3. In Supabase cachen
+    //
+    // Der Wert steht schon fest; das Schreiben darf die Antwort nicht aufhalten.
+    // Schlägt es fehl, kostet das nur den nächsten Abruf dieser Koordinate.
     if (supabase && annual > 0) {
-      await supabase
-        .from("pvgis_cache")
-        .upsert({ lat: rLat, lon: rLon, annual_kwh_per_kwp: annual, monthly }, { onConflict: "lat,lon" })
-        .then(() => {});
+      try {
+        await withDbTimeout(
+          supabase
+            .from("pvgis_cache")
+            .upsert({ lat: rLat, lon: rLon, annual_kwh_per_kwp: annual, monthly }, { onConflict: "lat,lon" }),
+          "pvgis-cache (schreiben)",
+          DB_SOFT_READ_TIMEOUT_MS,
+        );
+      } catch {
+        // Cache-Schreiben ist optional
+      }
     }
 
     return { annual, monthly, source: "pvgis" };

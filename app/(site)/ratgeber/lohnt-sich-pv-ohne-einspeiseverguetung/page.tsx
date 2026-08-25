@@ -506,7 +506,7 @@ export default async function LohntSichPvOhneEinspeisungPage() {
           soll für neue Anlagen enden. Für Anlagen unter 25 Kilowatt installierter
           Leistung ist keine dauerhafte Förderung mehr vorgesehen, sondern eine Starthilfe
           in Form eines vierjährigen Bonus für die Direktvermarktung. Zusätzlich soll die
-          Einspeiseleistung <em>neuer</em> Dachanlagen unter{" "}
+          Einspeiseleistung <em>neuer</em> Gebäudeanlagen unter{" "}
           {EEG_ENTWURF_WERTE.einspeiseGrenzeUnterKw} Kilowatt dauerhaft auf 50 Prozent
           ihrer installierten Leistung begrenzt werden — begründet damit, Mittagsspitzen zu
           vermeiden und den Zubau von Speichern anzureizen. Steckersolargeräte sind davon
@@ -600,7 +600,7 @@ export default async function LohntSichPvOhneEinspeisungPage() {
         <p style={S.p}>
           Ein Beispielhaushalt: 3–4 Personen ({PERSONEN[EX.personenIdx].verbrauch.toLocaleString("de-DE")} kWh
           Jahresverbrauch), teils im Homeoffice, {EX.kwp} <GlossaryTerm id="kwp">kWp</GlossaryTerm>-Anlage,
-          konservativer Ertrag von {EX.ertragKwp} kWh pro kWp. Beide Spalten rechnen{" "}
+          Ertrag von {EX.ertragKwp} kWh pro kWp. Beide Spalten rechnen{" "}
           <strong style={S.strong}>ohne Einspeisevergütung</strong> (Einspeisung auf „Aus"),
           also im geplanten Fall ab 2027. Oben wählst du, wie stark der Strompreis steigt —
           das schaltet beide Spalten gleichzeitig:

@@ -54,6 +54,7 @@ export const SEITEN: Seite[] = [
   // im Rundgang nicht enthalten.
   { pfad: "/kontakt", erwartet: /kontakt/i },
   { pfad: "/datenschutz", erwartet: /datenschutzerklärung/i },
+  { pfad: "/datenschutz-linkedin", erwartet: /gemeinsam mit der/i },
 ];
 
 /** Die Embed-Widgets sind das Produkt, das wir an Kommunen verteilen — sie

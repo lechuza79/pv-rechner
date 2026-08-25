@@ -270,12 +270,16 @@ describe("Vertrauens-Leiste", () => {
       expect(alleTexte).not.toMatch(/\d{4}-\d{2}-\d{2}/);
     });
 
-    it.each(["zuletzt am", "stand vom", "geprüft am"])(
-      "kündigt mit '%s' keines an",
-      (wendung) => {
-        expect(alleTexte.toLowerCase()).not.toContain(wendung);
-      },
-    );
+    // Muster statt Wortliste: Die Regel verbietet die AUSSAGE „hier steht ein
+    // Prüfdatum", nicht drei Formulierungen davon. Eine Liste aus „zuletzt am /
+    // stand vom / geprüft am" ließ „zuletzt geprüft", „Stand: …" und
+    // „aktualisiert am" durch — dieselbe Fehlerklasse, wegen der diese Datei
+    // überhaupt auf Muster prüft (ein Wort daneben, Test grün, Falschaussage live).
+    it("kündigt kein Prüfdatum an", () => {
+      expect(alleTexte.toLowerCase()).not.toMatch(
+        /\b(zuletzt|stand|geprüft|aktualisiert|erhoben|nachgesehen)\s*[:,]?\s*(am|vom|seit)\b/,
+      );
+    });
 
     // Dieselbe Begründung von der anderen Seite: Ohne Datum darf erst recht kein
     // Takt behauptet werden. Die Wächter laufen nur, wenn der Rechner des
@@ -286,13 +290,16 @@ describe("Vertrauens-Leiste", () => {
     // dieselbe Liste. Verboten bleiben die Wörter, die einen KONKRETEN Takt oder
     // einen Zustand behaupten — die Wächter laufen nur, wenn der Rechner des
     // Betreibers an ist (09.–13.08.2026 lief fünf Tage keiner).
+    // Muster statt Wortliste, aus demselben Grund: „täglich" zu verbieten und
+    // „jeden Tag" durchzulassen sichert nichts ab.
     it("behauptet keinen konkreten Takt", () => {
-      for (const wort of ["täglich", "stündlich", "wöchentlich", "lückenlos", "in echtzeit"]) {
-        expect(
-          alleTexte.toLowerCase(),
-          `"${wort}" behauptet mehr, als die Wächter-Läufe hergeben`,
-        ).not.toContain(wort);
-      }
+      const takt =
+        /\b(täglich|stündlich|wöchentlich|monatlich|jede[nr]?\s+(tag|stunde|woche|minute)|rund um die uhr|24\s*\/\s*7|lückenlos|in echtzeit|permanent|ununterbrochen|durchgehend)\b/;
+      const treffer = alleTexte.toLowerCase().match(takt);
+      expect(
+        treffer?.[0] ?? null,
+        `behauptet einen Takt, den die Wächter-Läufe nicht hergeben (sie laufen nur, wenn der Rechner des Betreibers an ist)`,
+      ).toBeNull();
     });
 
     // "Immer aktuell" ist als ÜBERSCHRIFT gewollt (Betreiber-Vorgabe
@@ -351,25 +358,26 @@ describe("Vertrauens-Leiste", () => {
     // "kein" fehlt hier bewusst: "kein Konto, kein Verkaufskontakt" ist eine
     // Verneinung über unser eigenes Verhalten, die wir belegen können — anders
     // als eine Allaussage über Daten, für die wir nicht einstehen können.
-    it.each([
-      "alle ",
-      "jeder wert",
-      "jede annahme",
-      "sämtliche",
-      "vollständig offen",
-      "niemals",
-      // "immer" steht NICHT mehr hier: "Immer aktuell" ist als Titel gewollt
-      // und wird vom Paarungs-Test oben abgesichert, der schärfer prüft als ein
-      // Wortverbot — er verlangt die Einlösung im Satz darunter.
-      "100 %",
-      "garantiert",
-      "zu keiner Zeit",
-    ])("'%s' kommt nicht vor", (wort) => {
+    // EIN Muster statt einer Wortliste. Eine Liste fängt nur die Beugungen, an
+    // die jemand beim Schreiben des Tests gedacht hat: "alle " ließ "alles"
+    // durch, "sämtliche" ließ "sämtlicher" durch. Die Regel verbietet die
+    // ALLAUSSAGE, nicht ihre Schreibweisen.
+    //
+    // "immer" fehlt bewusst: "Immer aktuell" ist als Titel gewollt und wird vom
+    // Paarungs-Test oben schärfer abgesichert — er verlangt die Einlösung im
+    // Satz darunter.
+    // "kein" fehlt ebenso bewusst: "kein Konto, kein Verkaufskontakt" ist eine
+    // Verneinung über unser eigenes Verhalten, die wir belegen können — anders
+    // als eine Allaussage über Daten, für die wir nicht einstehen können.
+    it("macht keine Allaussage", () => {
+      const allaussage =
+        /\b(alle[nrsm]?|alles|jede[nrsm]?|sämtliche[nrsm]?|ausnahmslos|restlos|durchweg|vollständig|lückenlos|niemals|garantiert|zu keiner zeit|100\s*%)\b/;
       for (const s of TRUST_SIGNALS) {
+        const treffer = `${s.titel} ${s.text}`.toLowerCase().match(allaussage);
         expect(
-          `${s.titel} ${s.text}`.toLowerCase(),
+          treffer?.[0] ?? null,
           `"${s.titel}" macht eine Allaussage — die Seite dahinter muss sie halten können`,
-        ).not.toContain(wort.toLowerCase());
+        ).toBeNull();
       }
     });
 

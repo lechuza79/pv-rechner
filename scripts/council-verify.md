@@ -4,6 +4,61 @@
 **mehreren unabhängigen Agenten** gegenprüfen. So schiebt kein einzelner —
 womöglich falsch gelesener — Rechercheschritt einen falschen Wert in Production.
 
+## Was der Gegenprüfer wirklich findet — gemessen, nicht vermutet
+
+**Die Inhalts-Inventur vom 25.08.2026 ist die erste Messung mit belastbarer
+Stückzahl: rund 45 Rechtsbefunde, jeder von einem zweiten Prüfer angegriffen.
+Acht haben das nicht überlebt — knapp ein Fünftel. Bei vieren hätte die
+„Korrektur" eine richtige Angabe durch eine falsche ersetzt.**
+
+Das ist die eigentliche Rechtfertigung des Protokolls, und sie ist eine andere
+als die erwartete: Der Gegenprüfer schützt nicht in erster Linie davor, dass ein
+Fehler stehenbleibt. Er schützt davor, dass ein Prüfer **etwas Richtiges
+kaputtmacht**. Ein Befund fühlt sich wie ein Fund an, ein „stimmt so" nicht —
+und dieses Gefälle wirkt in jedem Lauf.
+
+### Die fünf Fehlgriffe, alle aus dieser Inventur
+
+1. **Der günstige Referenzfall, für typisch gehalten.** Eine Autarkie-Spanne
+   wurde als zu niedrig gemeldet, gerechnet an einem kleinen Haushalt mit großer
+   Anlage. Über die üblichen Haushalte gerechnet stimmte die Spanne. — *Gegenprobe:
+   Rechne die BENACHBARTE Aussage mit. Traf sie, stammen beide aus derselben
+   Kalibrierung und die beanstandete stimmt vermutlich auch.*
+2. **Der verschobene Nenner.** „Fast ein Viertel" wurde als überzeichnet
+   gemeldet, „eher 16 %". Die 16 % entstehen nur, wenn man den Nenner anders
+   zieht. — *Gegenprobe: Vor jeder Prozentzahl fragen, was oben und was unten
+   steht. Zwei Zahlen, die nicht dasselbe messen, widerlegen einander nicht.*
+3. **Ungleiches verglichen.** Eine Netzausfallzeit wurde „korrigiert" auf einen
+   Wert, der Wirbelstürme einschließt — unser deutscher Wert rechnet ohne höhere
+   Gewalt. Die Korrektur wäre um Faktor fünf danebengelegen. — *Gegenprobe: Bei
+   jedem Ländervergleich die Bereinigung prüfen, bevor die Zahl getauscht wird.*
+4. **Bot-Sperre für „existiert nicht" gehalten.** Zwei Ministeriums-Zitate wurden
+   als unauffindbar gemeldet; sie standen wörtlich dort, der Prüfer hatte auf der
+   falschen Seite gesucht und war einer Abrufsperre aufgesessen — genau der
+   Falle, vor der die betroffene Datei in ihrem eigenen Kommentar warnt.
+5. **Die Herleitung nicht gelesen, die zwei Bildschirmseiten höher stand.** Eine
+   Zahl wurde als unbelegt gemeldet, obwohl ihr Beleg im selben Dokument steht.
+   — *Gegenprobe: Vor „unbelegt" die ganze Datei lesen, nicht nur die Zeile.*
+
+### Zwei Regeln für den Auftrag des Gegenprüfers
+
+- **Er muss ausdrücklich beauftragt werden, auch die BESTÄTIGUNGEN anzugreifen.**
+  Mehrere echte Fehler dieser Inventur fand erst der Gegenprüfer in dem, was der
+  erste abgehakt hatte — ein Prüfer, der neun Fehler findet, sieht beim zehnten
+  Punkt weniger genau hin, wenn er ihn für richtig hält. Ohne diesen Satz im
+  Auftrag prüft er nur die Liste und nicht den Bestand.
+- **Er muss sagen dürfen, dass ein Befund ÜBERTRIEBEN ist.** Ohne diese
+  ausdrückliche Erlaubnis stuft er im Zweifel mit — „teilweise bestätigt" ist der
+  bequeme Ausweg, und er führt dazu, dass eine korrekte Aussage vorsichtshalber
+  unpräziser gemacht wird. Unpräziser ist nicht sicherer.
+
+### Und eine für den ersten Prüfer
+
+**Ein Befund über eine Zahl braucht die Gegenrechnung, nicht nur den Verdacht.**
+Wer meldet „X ist zu hoch", nennt den Wert, den er selbst gerechnet hat, samt
+Annahmen — dann sieht der Gegenprüfer sofort, ob die Annahmen tragen. Drei der
+fünf Fehlgriffe oben wären damit schon im ersten Lauf aufgefallen.
+
 ## Wann das greift — BLOCKER
 
 **Der Auslöser ist die ÄNDERUNG, nicht ihre Herkunft.** Ein Council läuft bei

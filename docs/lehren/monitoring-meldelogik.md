@@ -39,3 +39,45 @@ Zwei getrennte Ebenen — Datenwerte und Verfügbarkeit:
 **Konfiguration und Messung sind zwei Fragen — beide stellen.** Der Check prüft nicht nur, ob es *gerade* richtig läuft (Antwort-Header), sondern unabhängig davon, ob es richtig *bleibt* (`vercel.json`). Nur zu messen wäre zu spät: Nimmt jemand den `regions`-Eintrag heraus, läuft Production bis zum nächsten Deploy weiter in Frankfurt und der Check meldet grün — der Ausfall ist dann schon scharf und geht beim nächsten Push los.
 
 **Der Frühindikator ist der Abstand zur Notbremse, nicht der Statuscode.** Genau daran ist der Juli-Ausfall zwei Tage lang vorbeigelaufen: 500er tauchen erst auf, wenn es schon zu spät ist — eine Seite, die 6 s statt 1 s braucht, liefert noch sauber 200 und steht trotzdem kurz vorm Kippen. Beide Wächter schlagen deshalb bei einem Kaltrender über 5 s an, **auch ohne einen einzigen Fehler im Log**, und prüfen dann als Erstes die Function-Region.
+
+---
+
+## Nachtrag 24.08.2026: ausgelagert aus CLAUDE.md
+
+### Vier Tage „cancelled", und der Prüfstand war grün (20.–23.08.2026)
+
+Der Förder-Seiten-Wächter endete viermal in Folge mit „cancelled" — das Job-Zeitlimit reichte dem
+gewachsenen Seitenbestand nicht mehr (2.672 → 6.922 Seiten in vier Tagen). Vier Tage lang fielen
+Technik-Einordnung, Screening und Leseliste aus.
+
+`npm run stand:faellig` war die ganze Zeit vollständig grün — **zu Recht**: Der Abschnitt erkennt einen
+Ausfall daran, dass ein Prüfdatum stillsteht, und ein GitHub-Workflow stempelt keins.
+
+Der Tagesbericht lief weiter und trug den Beweis sogar bei sich: dreimal „unverändert" in Folge bei genau
+den Zahlen, die die toten Schritte bewegen. Nur ist „unverändert" auch das Normalergebnis.
+
+**„cancelled" ist die gefährlichste Endung** — Rot sieht man, „abgebrochen" liest man als „egal".
+
+Beim Zusammenstellen der beobachteten Läufe stand die Sitemap-Einreichung zunächst in der Liste, weil ihr
+Zeitplan **angenommen** statt nachgesehen wurde (Gate-Regel 3) — sie hat gar keinen, nur Handstart.
+
+### Die Urlaubswoche (09.–13.08.2026)
+
+Es lief **kein einziger** Wächter: keine automatischen Commits, die Laufzeitstempel springen vom 08.08.
+auf den 13./15.08. Die Health-Check-Action lief in derselben Zeit lückenlos alle drei Stunden weiter.
+
+Beim Zurückkommen feuerten die aufgelaufenen Läufe gleichzeitig — am 13.08. vier in 31 Minuten, am 15.08.
+zwei in derselben Sekunde, jeder mit eigenem Bericht.
+
+Niemand hat die Lücke bemerkt. Es gibt keinen Totmann-Schalter, der prüft, ob ein Wächter überhaupt noch
+meldet.
+
+### Der Soft-404 im Atlas (bis 29.07.2026)
+
+`/solar-atlas/quatsch/quatsch/quatsch` antwortete mit **HTTP 200** und der 404-Seite im Text; kreisfreie
+Städte mit 200 statt 307. Ursache: eine Ladehülle über der ganzen Route — die Antwort geht raus, bevor die
+Seite weiß, ob es die angefragte Sache gibt.
+
+Für Google zählt der Statuscode, nicht der Text. Erfundene Adressen galten als gültige Seiten und wurden
+weiter gecrawlt, ausgerechnet auf dem SEO-Hebel des Projekts. Von außen unsichtbar: Die Seite ist schnell,
+grün und liefert 200.

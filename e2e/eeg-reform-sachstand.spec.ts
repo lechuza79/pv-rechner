@@ -39,7 +39,13 @@ test.describe("EEG-Reform: Sachstand auf den Seiten, an denen ein Nutzer ihn lie
     // Anteil der installierten Leistung. Ohne beides liest ein PV-Besitzer, seine
     // laufende Anlage werde gekappt bzw. verliere die Hälfte des Ertrags.
     expect(text).toMatch(/50 Prozent ihrer installierten Leistung/);
-    expect(text).toMatch(/neuer<?\/?e?m?>? ?Dachanlagen|neuer Dachanlagen/);
+    // Geprüft wird die AUSSAGE „nur Neuanlagen", nicht ihre Formulierung. Der
+    // Test verlangte bis 25.08.2026 wörtlich „neuer Dachanlagen" und wurde rot,
+    // als die Inventur den Satz auf „neuer Gebäudeanlagen" korrigierte — so
+    // steht die Gattung in § 9 Abs. 2b, „Dachanlagen" war enger als das Gesetz.
+    // Der Test hätte damit eine RICHTIGE Korrektur blockiert; dieselbe
+    // Fehlerklasse wie bei den Wortlisten in `trust-signals.test.ts`.
+    expect(text).toMatch(/neuer? (Gebäude|Dach)anlagen/);
     expect(text).toMatch(/laufende Anlagen nicht|bereits in Betrieb/);
 
     // Entwurfswerte sind als solche gekennzeichnet — beschlossen ist ein

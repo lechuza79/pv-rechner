@@ -8,6 +8,7 @@ import { calcWpAnnualElectricity } from "../../../lib/heatpump";
 import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
 import { DEFAULT_PRICES } from "../../../lib/prices-config";
 import { tokens } from "../../../lib/theme";
+import { zeitpunktInBerlin } from "../../../lib/zeit";
 
 // The OG image is a fixed light-brand render (satori has no CSS variables), so
 // colours are read as raw literals from the single source (theme.ts base tokens)
@@ -23,7 +24,20 @@ function fmt(n: number): string {
   return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-type RadialData = { frac: number[]; currentGW: number };
+type RadialData = { frac: number[]; currentGW: number; standIso: string | null };
+
+/**
+ * Der Zeitpunkt der Messung, wie er im Bild steht.
+ *
+ * Die Formatierung liegt in lib/zeit.ts — Next lässt aus einer Route nur die
+ * vorgesehenen Felder heraus und bricht den Build bei jedem anderen Export ab.
+ * Sie dort zu halten ist ohnehin richtig: Die Zeitzone ist die eigentliche Falle
+ * (Messwerte kommen in Weltzeit), und nur so lässt sie sich prüfen.
+ */
+function standText(iso: string | null): string | null {
+  const t = zeitpunktInBerlin(iso);
+  return t ? `${t} UHR` : null;
+}
 
 // Fetch the last 24h of renewable generation and reduce it to N normalized bars
 // plus the current GW value. Mirrors the live-radial widget, including the
@@ -55,7 +69,13 @@ async function loadEnergyRadial(origin: string, bars: number): Promise<RadialDat
     for (let i = 0; i < bars; i++) {
       frac.push(series[Math.floor((i / bars) * series.length)] / max);
     }
-    return { frac, currentGW: series[series.length - 1] / 1000 };
+    // Der Zeitstempel des zuletzt VERWENDETEN Punkts, nicht der des letzten
+    // gelieferten: Die neuesten Punkte tragen noch keinen Solarwert und werden
+    // oben abgeschnitten. Ein Stand, der eine Viertelstunde weiter ist als die
+    // Zahl daneben, wäre wieder eine Beschriftung, die etwas anderes sagt.
+    const letzter = usable[usable.length - 1];
+    const standIso = typeof letzter?.ts === "string" ? letzter.ts : null;
+    return { frac, currentGW: series[series.length - 1] / 1000, standIso };
   } catch {
     return null;
   }
@@ -130,7 +150,11 @@ export async function GET(req: NextRequest) {
                 Energie ehrlich berechnet.
               </span>
               <span style={{ fontSize: 28, color: "#777777", lineHeight: 1.4, marginTop: 20 }}>
-                Fünf Tools. Ohne Anmeldung, ohne Verkaufsanrufe.
+                {/* Hier stand „Fünf Tools" — es sind acht. Der Beleg dafür, dass
+                    eine getippte Anzahl still veraltet: Dieses Rückfallbild
+                    erscheint nur, wenn die Live-Daten ausfallen, und niemandem
+                    ist es aufgefallen. Deshalb jetzt ohne Zahl. */}
+                Ohne Anmeldung, ohne Verkaufsanrufe.
               </span>
             </div>
             <span style={{ fontSize: 18, color: "#949494" }}>Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.</span>
@@ -154,6 +178,7 @@ export async function GET(req: NextRequest) {
       };
     });
     const gwStr = data.currentGW.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    const stand = standText(data.standIso);
 
     return new ImageResponse(
       (
@@ -171,7 +196,9 @@ export async function GET(req: NextRequest) {
             <div style={{ display: "flex", flexDirection: "column", width: 560 }}>
               <div style={{ display: "flex", alignItems: "center" }}>
                 <div style={{ width: 12, height: 12, borderRadius: 6, background: C_POSITIVE, marginRight: 10 }} />
-                <span style={{ fontSize: 17, color: "#777777", letterSpacing: 1 }}>ERNEUERBARE · GERADE EBEN</span>
+                <span style={{ fontSize: 17, color: "#777777", letterSpacing: 1 }}>
+                  {stand ? `ERNEUERBARE · ${stand}` : "ERNEUERBARE"}
+                </span>
               </div>
               <span style={{ fontSize: 50, fontWeight: 700, color: "#1365EA", lineHeight: 1.15, marginTop: 14 }}>
                 Energie ehrlich berechnet.
@@ -199,7 +226,10 @@ export async function GET(req: NextRequest) {
           </div>
 
           <span style={{ fontSize: 16, color: "#949494" }}>
-            Erneuerbare Erzeugung in Deutschland · letzte 24 Stunden
+            {/* „letzte 24 Stunden" ist relativ und wird in einem eingefrorenen
+                Bild ebenso falsch wie „gerade eben" darüber. Der Verlauf selbst
+                umfasst 24 Stunden — das bleibt wahr, der Bezugspunkt steht oben. */}
+            Erneuerbare Erzeugung in Deutschland · 24-Stunden-Verlauf
           </span>
         </div>
       ),

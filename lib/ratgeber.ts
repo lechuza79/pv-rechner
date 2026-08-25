@@ -81,7 +81,7 @@ export const RATGEBER: RatgeberEntry[] = [
     slug: "/balkonkraftwerk/ratgeber/mit-speicher",
     title: "Lohnt sich ein Balkonkraftwerk mit Speicher?",
     teaser:
-      "Der Speicher verdoppelt die Anschaffung ungefähr und hält deutlich kürzer als die Module — er muss sich also für sich rechnen. Wann er das tut und wann nicht, hier durchgerechnet: mit dem gemessenen Wirkungsgrad statt dem aus dem Datenblatt.",
+      "Der Speicher verdoppelt die Anschaffung ungefähr und hält deutlich kürzer als die Module — er muss sich also für sich rechnen. Wann er das tut und wann nicht, hier durchgerechnet: mit dem Wirkungsgrad eines real vermessenen Systems statt dem aus dem Datenblatt.",
     updated: "2026-08-19",
   },
   {

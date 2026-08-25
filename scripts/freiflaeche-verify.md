@@ -37,6 +37,32 @@ https://www.bundesnetzagentur.de/DE/Fachthemen/ElektrizitaetundGas/Ausschreibung
 (Pfad in der Seitennavigation: Fachthemen → Elektrizität und Gas →
 Ausschreibungen → Solaranlagen1 → Beendete Ausschreibungen.)
 
+**Die Tabelle steht NICHT im Seitentext — sie liegt in der verlinkten Amtsdatei**
+(gemessen am 25.08.2026: die HTML-Seite sind 18 kB Navigation, die Datei 3,5 MB):
+
+```
+https://www.bundesnetzagentur.de/DE/Fachthemen/ElektrizitaetundGas/Ausschreibungen/_DL/Statistiken/statistik_solar1.xlsx?__blob=publicationFile
+```
+
+Blatt **„Übersicht"** trägt alle Runden als Zeilen (daneben ein Blatt je
+Gebotstermin). Wer stattdessen nur die HTML-Seite abruft, muss der
+Zusammenfassung eines Lesewerkzeugs glauben, statt die Zahl zu sehen — und die
+Datei führt die Werte **ungerundet**, was die Gegenprobe unten erst scharf macht
+(2024 kommt darüber auf 4,9752, nicht auf ein aus gerundeten Runden gebasteltes
+Ergebnis). Der Parameter `?__blob=publicationFile` ist Pflicht; ohne ihn kommt
+eine HTML-Hülle (dieselbe Falle wie bei den Ministeriums-PDFs).
+
+**Spaltenfalle in der Datei:** Die Kopfzeile ist zweistöckig. Es gibt **zwei**
+Spalten „Gew. Mittel" — eine im Block GEBOTE, eine im Block ZUSCHLÄGE. Es gilt
+die im Block **ZUSCHLÄGE**; die andere mittelt alle eingereichten Gebote und
+liegt regelmäßig darüber (07/2026: 4,90 gegen 4,79). Danebengegriffen ist das
+rechnerisch nicht als falsch erkennbar — genau der Fall, vor dem der Absatz oben
+warnt. Ebenso zweimal vorhanden ist die **Zuschlagsmenge**: die zweite Spalte
+steht nach Entwertungen und weicht in älteren Runden ab (03/2021: 619.735 gegen
+553.540 kW). Für das Jahresmittel gilt die Zuschlagsmenge **bei
+Zuschlagserteilung**, also die erste — das ist die Menge, hinter der die
+Zuschlagswerte stehen, die gemittelt werden.
+
 **Es gilt genau eine Spalte:** „**Durchschnittlicher, mengengewichteter
 Zuschlagswert (ct/kWh)**". Nicht der niedrigste, nicht der höchste, nicht der
 Höchstwert der Runde — die stehen in der Tabelle daneben und sind rechnerisch

@@ -116,10 +116,10 @@ describe("EEG-Reform 2027 — Formulierungsfehler, die nicht zurückkommen dürf
   });
 
   it("begrenzt die 50-Prozent-Regel sichtbar auf Neuanlagen und nennt ihren Nenner", () => {
-    // § 9 Abs. 2b Begründung S. 190: "findet nur auf Neuanlagen Anwendung".
+    // § 9 Abs. 2b Begründung S. 192: "findet nur auf Neuanlagen Anwendung".
     // Ohne das "neu" liest ein PV-Besitzer, seine laufende Anlage werde gekappt.
     const lang = pvOhneEinspeisungFaq().map((e) => e.a).join("\n");
-    expect(lang).toMatch(/neuer Dachanlagen/);
+    expect(lang).toMatch(/neuer Gebäudeanlagen/);
     expect(lang).toMatch(/50 Prozent ihrer installierten Leistung/);
     expect(lang).toMatch(/bereits in Betrieb sind, gilt das nicht/);
   });

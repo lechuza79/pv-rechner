@@ -113,9 +113,32 @@ describe("Befund je Programm", () => {
     expect(b.befund).toBe("moeglich");
   });
 
-  it("die Nullsteuer endet bei 30 kWp", () => {
-    expect(pruefeProgramm(nullsteuer, { kwp: 40, gebaeude: "wohn" }).befund).toBe("ausgeschlossen");
+  it("über 30 kWp entfällt nur die Vermutung, nicht die Begünstigung", () => {
+    // Der Fehler, den dieser Test ersetzt: Er hieß „die Nullsteuer endet bei
+    // 30 kWp" und erwartete bei 40 kWp „ausgeschlossen" — er hat den Fehler
+    // im Code mit sich selbst verglichen und war deshalb grün, während der
+    // Fördercheck zwei falsche Auskünfte gab.
+    //
+    // § 12 Abs. 3 Nr. 1 Satz 1 UStG verlangt die Anlage an einer Wohnung oder
+    // einem dem Gemeinwohl dienenden Gebäude. Satz 2 sagt, diese Voraussetzung
+    // „gilt als erfüllt" bis 30 kW (peak). Eine Fiktion wirkt nur in eine
+    // Richtung: Über der Schwelle muss die Belegenheit nachgewiesen statt
+    // vermutet werden — begünstigt bleibt die Anlage.
+    // Im Volltext geprüft am 25.08.2026: § 12 Abs. 3 Nr. 1 UStG, dazu
+    // UStAE 12.18 Abs. 5 Satz 2 und Abs. 6 Satz 2 („entweder … oder").
+
+    // Groß und auf einem Wohnhaus: begünstigt, die Vermutung wird nur nicht mehr gebraucht.
+    expect(pruefeProgramm(nullsteuer, { kwp: 40, gebaeude: "wohn" }).befund).toBe("moeglich");
+    // Klein: begünstigt, ohne dass die Gebäudeart geprüft würde.
     expect(pruefeProgramm(nullsteuer, { kwp: 12, gebaeude: "wohn" }).befund).toBe("moeglich");
+  });
+
+  it("vermutet die Gebäudeart bis 30 kWp — auch ohne Wohngebäude", () => {
+    // Genau der Fall, für den die Vermutungsregel geschaffen wurde, und die
+    // zweite falsche Auskunft der alten Fassung: eine kleine Anlage auf einem
+    // Gebäude, dessen Art der Fördercheck nicht als „wohn" führt, galt als
+    // ausgeschlossen.
+    expect(pruefeProgramm(nullsteuer, { kwp: 8, gebaeude: "mfh" }).befund).toBe("moeglich");
   });
 
   it("ein Einfamilienhaus ist ein Wohngebäude", () => {

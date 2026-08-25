@@ -72,7 +72,7 @@
 //     folgenden Kalendermonat". Kalendermonats-Mechanik, nicht Datum plus 36.
 //   · § 53 Abs. 1 — Höhe: "wobei von den anzulegenden Werten 1 Cent pro
 //     Kilowattstunde abzuziehen sind".
-//   · Begründung S. 197 — "ab dem Inbetriebnahmejahr 2031 steht das
+//   · Begründung S. 199 — "ab dem Inbetriebnahmejahr 2031 steht das
 //     Übergangsinstrument der befristeten Übergangszahlung nicht mehr zur
 //     Verfügung". § 85 Abs. 2 Nr. 2a gibt der Bundesnetzagentur daneben die
 //     Befugnis, die Übergangsphase zu verlängern (Buchst. a Dauer, Buchst. b
@@ -84,14 +84,14 @@
 //     müssen "die Wirkleistungseinspeisung dauerhaft und unabhängig vom Einbau
 //     eines intelligentem Messsystems und der Veräußerungsform auf maximal 50
 //     Prozent der installierten Leistung … begrenzen"; Steckersolargeräte bis
-//     2 kW und 800 VA sind nach Satz 2 ausgenommen. Begründung S. 190 wörtlich:
+//     2 kW und 800 VA sind nach Satz 2 ausgenommen. Begründung S. 192 wörtlich:
 //     "§ 9 Absatz 2b EEG 2027 findet nur auf Neuanlagen Anwendung." Ohne dieses
 //     "nur auf Neuanlagen" liest ein PV-Besitzer, seine laufende Anlage werde
 //     gekappt.
 //   · § 100 Abs. 1 — Bestandsschutz: für Strom aus Anlagen, "die vor dem 1.
 //     Januar 2027 in Betrieb genommen worden sind", gilt das EEG "in der am 31.
 //     Dezember 2026 geltenden Fassung".
-//   · § 102 — "Die Bestimmungen des Teils 3 … dürfen erst nach der
+//   · § 104 — "Die Bestimmungen des Teils 3 … dürfen erst nach der
 //     beihilferechtlichen Genehmigung durch die Europäische Kommission und nur
 //     nach Maßgabe dieser Genehmigung angewandt werden."
 //
@@ -121,7 +121,7 @@
 //     Übergangszahlung und § 50c-Bonus einander ausschließen lässt.
 //   · Nr. 80 (§ 49 S. 1 n. F.): "Der anzulegende Wert nach § 48 Absatz 1
 //     verringert sich ab dem 1. August 2027".
-//   · § 102 Abs. 1: Beihilfevorbehalt unverändert.
+//   · § 104 Abs. 1: Beihilfevorbehalt unverändert.
 // Der ZUSTAND bleibt "regierungsentwurf": Eine Drucksache ist die amtlich
 // gedruckte Fassung desselben Entwurfs, kein Verfahrensfortschritt. Beschlossen
 // hat weder Bundesrat noch Bundestag etwas.
@@ -204,7 +204,15 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // Beschluss; das nächste Bundesratsplenum bleibt der 25.09.2026. Im Bundestag
   // ist der Entwurf nicht aufgerufen worden — die energiepolitischen Vorgänge
   // dieses Sommers betreffen Versorgungssicherheit und Netzausbau, nicht diesen.
-  geprueftIso: "2026-08-24",
+  //
+  // 25.08.2026 nachgesehen, unverändert — beide Kammern einzeln geprüft, weil
+  // „Regierungsentwurf" erst kippt, wenn EINE von ihnen sich befasst hat:
+  // bundesrat.de führt 470/26 weiter allein als Grunddrucksache der
+  // Bundesregierung, ohne verzeichneten Beschluss; die Tagesordnungsseite des
+  // Bundestages steht unverändert auf dem Stand vom 13.07.2026 (Sitzungen
+  // 91.–94., also vor der Sommerpause) und nennt keinen EEG-Punkt. Der Entwurf
+  // ist damit in keiner Kammer aufgerufen.
+  geprueftIso: "2026-08-25",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.
@@ -262,7 +270,7 @@ export function eegVerfahrenSatz(
  * 1. Januar 2030", in der beschlossenen Fassung "vor dem 1. Januar 2031". Die
  * 7-kW-Stufe deckt damit die Inbetriebnahmejahre 2029 UND 2030 ab, und die
  * Übergangszahlung entfällt erst ab Inbetriebnahmejahr 2031. Die Begründung
- * (S. 197) sagt es wörtlich: "im Laufe der Jahre 2029 und 2030" und "ab dem
+ * (S. 199) sagt es wörtlich: "im Laufe der Jahre 2029 und 2030" und "ab dem
  * Inbetriebnahmejahr 2031 steht das Übergangsinstrument der befristeten
  * Übergangszahlung nicht mehr zur Verfügung."
  *
@@ -306,13 +314,13 @@ export function eegStaffelSatz(): string {
 //
 //  · § 48 Abs. 1 Satz 1 (Änderungsbefehl Nr. 78 Buchst. a): "In der Angabe vor
 //    Nummer 1 wird die Angabe '7 Cent' durch die Angabe '6,2 Cent' ersetzt."
-//    Die Begründung (S. 248) sagt dazu ausdrücklich, der anzulegende Wert werde
+//    Die Begründung (S. 251) sagt dazu ausdrücklich, der anzulegende Wert werde
 //    "nominell einheitlich auf 6,2 Cent pro Kilowattstunde festgelegt" und die
 //    höheren Werte für Gebäudeanlagen nach § 48 Abs. 2, 2a und 3 EEG 2023
 //    würden "demnach abgeschafft". Das betrifft ausdrücklich AUCH den Aufschlag
 //    für Volleinspeisung (§ 48 Abs. 2a EEG 2023) — die Unterscheidung
 //    Teil-/Volleinspeisung, die unser Rechner heute kennt, gäbe es für
-//    Neuanlagen nicht mehr. Die ausführliche Passage dazu steht auf S. 250;
+//    Neuanlagen nicht mehr. Die ausführliche Passage dazu steht auf S. 253;
 //    beide Seiten sind zitierbar.
 //    ACHTUNG bei Formulierungen nach außen: "einheitlicher Wert bis 100 kW" ist
 //    FALSCH. Der gesetzlich bestimmte Wert reicht bis zur Ausschreibungsschwelle
@@ -358,7 +366,7 @@ export function eegStaffelSatz(): string {
 // eine Anlage prozentual auf mehrere Veräußerungsformen aufzuteilen — dann wären
 // beide gleichzeitig denkbar. Tragend ist der geänderte § 21b Abs. 2 Satz 3, der
 // die prozentuale Aufteilung bei Zuordnung zur Übergangszahlung ausschließt
-// (Begründung S. 199). Erst damit ist es ein echtes Entweder-oder.
+// (Begründung S. 202). Erst damit ist es ein echtes Entweder-oder.
 // (Fundstelle ergänzt nach dem Council vom 04.08.2026 — § 50c Abs. 2 wurde
 // vorher als alleiniger Beleg geführt.)
 //
@@ -374,7 +382,7 @@ export const EEG_ENTWURF_WERTE = {
   anzulegenderWertCt: 6.2,
   /** Abschlag auf den anzulegenden Wert für die Übergangszahlung (§ 53 Abs. 1). */
   uebergangAbschlagCt: 1.0,
-  /** Dauer der Übergangszahlung in Monaten (§ 25 Abs. 1a). */
+  /** Dauer der Übergangszahlung in Monaten (§ 25 Abs. 2). */
   uebergangMonate: 36,
   /** Direktvermarktungsbonus, ct/kWh (§ 50c Abs. 4). */
   bonusCt: 1.5,
@@ -393,14 +401,14 @@ export const EEG_ENTWURF_WERTE = {
 } as const;
 
 /**
- * ALLE Geldwerte oben stehen unter EU-Beihilfevorbehalt. § 102 des Entwurfs:
+ * ALLE Geldwerte oben stehen unter EU-Beihilfevorbehalt. § 104 des Entwurfs:
  * Die Bestimmungen des Teils 3 "dürfen erst nach der beihilferechtlichen
  * Genehmigung durch die Europäische Kommission und nur nach Maßgabe dieser
  * Genehmigung angewandt werden." Wo eine Geldzahl nach außen steht, gehört
  * dieser Vorbehalt als eigener Satz dazu.
  *
  * NICHT dagegen bei der 50-%-Einspeisegrenze: Die steht in Teil 2 (§ 9) und ist
- * von § 102 nicht erfasst. Den Vorbehalt pauschal über alles zu legen wäre
+ * von § 104 nicht erfasst. Den Vorbehalt pauschal über alles zu legen wäre
  * bequem und falsch. (Auflage des Legal-Judge, 04.08.2026.)
  */
 export const EEG_BEIHILFEVORBEHALT =
@@ -418,7 +426,7 @@ export function eegUebergangszahlungCt(w = EEG_ENTWURF_WERTE): number {
  *
  *  Dass ab Inbetriebnahmejahr 2031 gar nichts mehr geht, folgt aus der Staffel
  *  selbst (§ 21 Abs. 1 S. 1 Nr. 1 a–c nennt nur 2028/2029/2031 als Endtermine)
- *  und der Begründung S. 197 — NICHT aus § 85 Abs. 2 Nr. 2a. Der regelt
+ *  und der Begründung S. 199 — NICHT aus § 85 Abs. 2 Nr. 2a. Der regelt
  *  ausschließlich die Befugnis der Bundesnetzagentur, und zwar in zwei
  *  Buchstaben: Buchst. a verlängert die DAUER des Anspruchs, Buchst. b
  *  erweitert seine ANWENDBARKEIT; beide nur für Anlagen unter 25 kW und beide

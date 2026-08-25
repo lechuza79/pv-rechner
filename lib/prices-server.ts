@@ -3,20 +3,27 @@
 // /ratgeber/lohnt-sich-pv-mit-speicher so every guide page reads prices the same way and
 // the fetch logic cannot drift between pages.
 import { supabase } from "./supabase-server";
+import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
 
 export async function fetchMarketPrices(): Promise<PriceConfig> {
   if (!supabase) return DEFAULT_PRICES;
   try {
-    const { data } = await supabase
-      .from("market_prices")
-      .select("*")
-      .neq("source", "SCRAPE_ERROR")
-      .gt("pv_price_small", 0)
-      .lte("valid_from", new Date().toISOString().split("T")[0])
-      .order("valid_from", { ascending: false })
-      .limit(1)
-      .single();
+    // Kurzes Zeitbudget: Der Config-Schnappschuss ist ein vollwertiger Ersatz,
+    // Warten bringt dem Besucher hier nichts.
+    const { data } = await withDbTimeout(
+      supabase
+        .from("market_prices")
+        .select("*")
+        .neq("source", "SCRAPE_ERROR")
+        .gt("pv_price_small", 0)
+        .lte("valid_from", new Date().toISOString().split("T")[0])
+        .order("valid_from", { ascending: false })
+        .limit(1)
+        .single(),
+      "market-prices",
+      DB_SOFT_READ_TIMEOUT_MS,
+    );
     if (!data) return DEFAULT_PRICES;
     return {
       pvPriceSmall: Number(data.pv_price_small),

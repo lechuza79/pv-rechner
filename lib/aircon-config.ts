@@ -493,7 +493,10 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
   heatwaveMinDays: 3,
 
   stromPrice: DEFAULT_PRICES.electricityPrice, // kanonischer Haushaltspreis (kein eigener Wert → kein Drift)
-  gridCo2PerKwh: 0.38,   // kg CO₂/kWh deutscher Strommix (UBA 2023, sinkend) — wie heatpump.ts
+  // Identisch zur Waermepumpen-Config und aus demselben Grund bewusst hoch —
+  // die Begruendung steht dort (gridCo2PerKwh). Zwei Etiketten fuer eine Zahl
+  // waren der Befund der Inhalts-Inventur vom 25.08.2026.
+  gridCo2PerKwh: 0.38,
 
   source: "Open-Meteo Wetterarchiv + Climate API (CMIP6, Kühlgradstunden), DWD/UBA (Hitzetage-Trend), EU-Verordnung 626/2011 + EN 14825/14511 (Effizienz-Skalen), Topten.eu + Hersteller-Datenblätter (Labelwerte), Energy and Buildings 2025 + test.de 2025/26 (Realbetrieb), ADAC/daibau/reduco Festpreise 2026 (Anschaffung/Montage), dena Gebäudereport/DIN V 18599 (Heizwärmebedarf je Gebäudestandard, geteilt mit dem Wärmepumpen-Rechner), BDEW (Strom/Gas), UBA (Strommix-CO₂)",
   validFrom: "2026-07-15",

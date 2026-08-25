@@ -1,5 +1,6 @@
 import "server-only";
 import { supabase } from "./supabase-server";
+import { withDbTimeout } from "./db-timeout";
 import { AWARD_CATEGORY_BY_KEY, dedupFreiflaeche, formatAwardValue, type GemeindeStats } from "./awards";
 import { bundeslandByAgs } from "./mastr-regions";
 import {
@@ -44,7 +45,10 @@ async function pageAll(table: string, select: string, refine?: (q: any) => any):
   for (let from = 0; ; from += size) {
     let q = supabase.from(table).select(select).order("region_id", { ascending: true }).range(from, from + size - 1);
     if (refine) q = refine(q);
-    const { data, error } = await q;
+    // Zeitbudget je Seite: Diese Schleife holt über 20.000 Zeilen in Blöcken.
+    // Ohne Notbremse hängt ein einziger kränkelnder Block die ganze Seite bis
+    // zum Function-Limit — mit ihr wirft er, und der Aufrufer merkt es.
+    const { data, error } = await withDbTimeout(q, `awards: ${table} ab ${from}`);
     // Fehler werfen statt still abbrechen: ein Teil-Ergebnis (z. B. nur die ersten
     // 3.000 Gemeinden) würde sonst eine Stunde lang falsche Ranglisten cachen. Der
     // Aufrufer memoisiert nur erfolgreiche, vollständige Läufe.

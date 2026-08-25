@@ -128,6 +128,10 @@ function fragenFuerPruefung(p: Pruefung): FrageId[] {
     case "anlage-groesse":
       return ["kwp"];
     case "gebaeude-art":
+      // Trägt die Prüfung eine Vermutungsschwelle, entscheidet die Größe mit —
+      // nicht über den Ausschluss, aber darüber, ob nach der Gebäudeart
+      // überhaupt gefragt werden muss.
+      return p.vermutetBisKwp != null ? ["kwp", "gebaeude"] : ["gebaeude"];
     case "gebaeude-bestand":
       return ["gebaeude"];
     default:
@@ -255,7 +259,9 @@ export function pruefeProgramm(prog: FundingProgram, a: FlowAntworten): Programm
         break;
       }
       case "gebaeude-art": {
-        if (a.gebaeude && !erfuelltGebaeude(a.gebaeude, p.nur)) {
+        // Greift die Vermutung, wird die Gebäudeart gar nicht erst geprüft.
+        const vermutet = p.vermutetBisKwp != null && a.kwp != null && a.kwp <= p.vermutetBisKwp;
+        if (!vermutet && a.gebaeude && !erfuelltGebaeude(a.gebaeude, p.nur)) {
           const nurMfh = p.nur.includes("mfh") && !p.nur.includes("efh");
           gruende.push(
             nurMfh

@@ -31,6 +31,7 @@
 import type { FundingProgram } from "./funding-programs";
 import { FUNDING_STATUS_LABEL } from "./funding-programs";
 import { supabase } from "./supabase-server";
+import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
 
 /**
  * Welche Sache sich geändert hat.
@@ -245,11 +246,15 @@ export async function getFundingHistory(): Promise<Map<string, HistorieEintrag[]
   if (!supabase) return leer;
 
   try {
-    const { data, error } = await supabase
-      .from("funding_history")
-      .select("program_id, observed_at, feld, bedeutung, alt, neu, quelle, belegt_am")
-      .order("observed_at", { ascending: false })
-      .limit(2000);
+    const { data, error } = await withDbTimeout(
+      supabase
+        .from("funding_history")
+        .select("program_id, observed_at, feld, bedeutung, alt, neu, quelle, belegt_am")
+        .order("observed_at", { ascending: false })
+        .limit(2000),
+      "funding-history",
+      DB_SOFT_READ_TIMEOUT_MS,
+    );
     if (error || !data) return leer;
 
     const karte = new Map<string, HistorieEintrag[]>();

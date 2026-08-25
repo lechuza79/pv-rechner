@@ -307,12 +307,14 @@ export default function WaermepumpeFoerderungPage() {
           <span style={S.accent}>2. Klima-Geschwindigkeits-Bonus — +{pct(HP.begKlimaBonus)}</span>
           <br />
           Nur für <strong style={S.strong}>selbstnutzende Eigentümer</strong>, die eine noch
-          funktionierende fossile Heizung ersetzen. Öl-, Kohle-, Gas-Etagen- und
+          funktionierende alte Heizung ersetzen. Öl-, Kohle-, Gas-Etagen- und
           Nachtspeicherheizungen zählen <strong style={S.strong}>unabhängig vom Alter</strong>.
-          Zentrale Gas-, Holz- und Pelletheizungen zählen erst{" "}
-          <strong style={S.strong}>ab 20 Jahren</strong> (gerechnet ab Einbau) — das Baujahr
-          steht auf dem Typenschild am Kessel. Dieser Bonus soll ab dem 1. Februar 2027
-          schrittweise sinken.
+          Zentrale Gasheizungen und Biomasseheizungen (Holz, Pellets) zählen erst{" "}
+          <strong style={S.strong}>ab 20 Jahren</strong> — maßgeblich ist, dass die
+          Inbetriebnahme am Tag der Antragstellung mindestens 20 Jahre zurückliegt; das
+          Baujahr steht auf dem Typenschild am Kessel. Dieser Bonus sinkt ab dem
+          1. Februar 2027 halbjährlich um 4 Prozentpunkte und entfällt bei Anträgen ab
+          dem 1. August 2028 ganz.
         </div>
         <div style={S.card}>
           <span style={S.accent}>

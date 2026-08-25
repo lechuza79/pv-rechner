@@ -301,10 +301,13 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, marginTop: 22, textTransform: "uppercase", letterSpacing: "0.04em", display: "inline-flex", alignItems: "center", gap: 4 }}>
                   Wie sonnig liegt der Raum?
                   <InfoTooltip title="Warum Sonne, nicht Dämmung?" ariaLabel="Warum fragen wir nach der Sonne statt nach der Dämmung?" size={iconSizes.sm}>
-                    Beim Kühlen kommt der größte Wärmeeintrag durch die Fenster — Sonne, Ausrichtung, fehlende
-                    Verschattung, vor allem ein Dachgeschoss. Wärmedämmung ist dagegen ein schwacher, teils
-                    kontraproduktiver Hebel (sie hält Wärme auch im Haus). Deshalb fragen wir nach der Lage zur
-                    Sonne statt nach dem Dämmstandard. Quelle: Umweltbundesamt, Gebäudeforum.
+                    Beim Kühlen kommt der größte Wärmeeintrag durch die Fenster — Sonne, Ausrichtung,
+                    fehlende Verschattung. Der Dämmstandard ist dagegen der schwächste der untersuchten
+                    Einflüsse; eine Innendämmung verschlechtert die Überhitzung sogar, weil sie die
+                    Speichermasse der Wand vom Raum abtrennt. Eine Ausnahme ist das Dach: Bei dunkler
+                    Eindeckung wirkt die Dämmstärke dort stark. Deshalb fragen wir nach der Lage zur
+                    Sonne statt nach dem Dämmstandard. Quelle: „Kühle Gebäude im Sommer", Studie im
+                    Auftrag des Umweltbundesamtes (CLIMATE CHANGE 14/2023), S. 27, 177 und 184.
                   </InfoTooltip>
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
@@ -626,7 +629,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                   <span style={{ fontSize: 14, fontWeight: 700 }}>Auch heizen?</span>
                   <InfoTooltip title="Split-Klima als Heizung" ariaLabel="Wie gut heizt eine Split-Klimaanlage?" size={iconSizes.sm}>
                     Split-Geräte sind reversibel — sie funktionieren wie eine Luft-Luft-Wärmepumpe und heizen mit einer
-                    Arbeitszahl (SCOP) von rund 4. In der Übergangszeit ist das günstiger als Gas. Für tiefe Winterkälte
+                    Jahresarbeitszahl von rund 3,4 im Realbetrieb — auf dem Typenschild steht 4,0, damit rechnen wir bewusst nicht. In der Übergangszeit ist das günstiger als Gas. Für tiefe Winterkälte
                     und das ganze Haus sinkt die Effizienz — dann ist eine wassergeführte Wärmepumpe die bessere Wahl.
                   </InfoTooltip>
                 </span>

@@ -29,21 +29,109 @@
 // DB_READ_TIMEOUT_MS ändert, muss die Schwellen dort mit anpassen.
 export const DB_READ_TIMEOUT_MS = 8000;
 
+// Kurzes Budget für Reads mit HARMLOSEM Rückfall.
+//
+// Der Unterschied ist nicht die Query, sondern was ein Fehlschlag kostet. Fällt
+// eine Atlas-Abfrage aus, gibt es keine Seite — dafür lohnt es zu warten. Fällt
+// dagegen die Theming-Überlagerung, der Marktpreis oder der Förderkatalog aus,
+// steht sofort ein vollwertiger Ersatz bereit (keine Überlagerung, Config-Preise,
+// Code-Seed): Dort ist Warten reine Verzögerung — der Besucher bekommt nach 8 s
+// exakt das, was er nach 3 s auch bekommen hätte.
+//
+// Und genau daran hängt der Verstärker: Diese Reads laufen im Layout und auf den
+// meistbesuchten Seiten, also bei JEDEM Aufbau. Acht Sekunden je Aufbau halten
+// die Function-Slots besetzt und schieben die nächste Anfrage nach — aus einem
+// DB-Schluckauf wird so ein Rückstau, der sich selbst am Leben hält (gemessene
+// Kette bei einem Schwesterprojekt am 21.08.2026: überlastete DB, danach 2 Mio
+// Anfragen/Stunde der eigenen Functions gegen die bereits tote Datenbank; die DB
+// war 20 Minuten vor dem Endpunkt wieder gesund).
+export const DB_SOFT_READ_TIMEOUT_MS = 3000;
+
 /**
  * Rennt einen supabase-Query (thenable) gegen einen Timeout. Gewinnt der Timeout,
  * rejectet die Promise mit einer sprechenden Meldung. Der Query selbst läuft
  * serverseitig ggf. weiter — bei einer hängenden Verbindung ist er ohnehin
  * blockiert; wichtig ist, dass der Render-Pfad nicht mitblockiert.
+ *
+ * `ms` nur setzen, wenn der Aufrufer einen vollwertigen Rückfall hat
+ * (DB_SOFT_READ_TIMEOUT_MS); ohne Rückfall bleibt es beim Default.
  */
-export function withDbTimeout<T>(query: PromiseLike<T>, label: string): Promise<T> {
+export function withDbTimeout<T>(
+  query: PromiseLike<T>,
+  label: string,
+  ms: number = DB_READ_TIMEOUT_MS,
+): Promise<T> {
+  if (schutzschalterOffen()) {
+    // Abgelehntes Versprechen, KEIN synchroner Wurf: Die Aufrufer fangen den
+    // Fehler durchweg mit .catch() bzw. await ab. Ein synchroner Wurf flöge an
+    // dieser Behandlung vorbei und würde aus einer gedämpften Störung einen
+    // ungefangenen Fehler machen — also genau das Gegenteil dessen, wofür der
+    // Schalter da ist.
+    return Promise.reject(new Error(`DB read skipped, circuit open (${label})`));
+  }
   let timer: ReturnType<typeof setTimeout>;
   const timeout = new Promise<T>((_, reject) => {
-    timer = setTimeout(
-      () => reject(new Error(`DB read timeout after ${DB_READ_TIMEOUT_MS}ms (${label})`)),
-      DB_READ_TIMEOUT_MS,
-    );
+    timer = setTimeout(() => reject(new Error(`DB read timeout after ${ms}ms (${label})`)), ms);
   });
   // clearTimeout, damit der Timer die Serverless-Function nach einem schnellen
   // Erfolg nicht bis zum Ablauf wachhält.
-  return Promise.race([Promise.resolve(query).finally(() => clearTimeout(timer)), timeout]);
+  return Promise.race([Promise.resolve(query).finally(() => clearTimeout(timer)), timeout])
+    .then(
+      (wert) => { erfolgMelden(); return wert; },
+      (fehler) => { fehlschlagMelden(); throw fehler; },
+    );
+}
+
+// ─── Schutzschalter gegen die Selbstverstärkung ──────────────────────────────
+//
+// Der Timeout oben verhindert, dass EIN Aufruf hängenbleibt. Er verhindert
+// nicht, dass tausend Aufrufe nacheinander dasselbe tote Ziel anfahren — und
+// genau das ist die Fehlerklasse, die am 21.08.2026 ein Nachbarprojekt zwei
+// Stunden lang lahmgelegt hat (gemeldet von der dortigen Sitzung): Die Datenbank
+// war unter Crawler-Last überlastet, die eigenen Server feuerten in der
+// Spitzenstunde 2,08 Mio Anfragen gegen sie, und der Ausfall hielt sich dadurch
+// selbst am Leben — die Datenbank war zwanzig Minuten früher wieder gesund als
+// die Seite.
+//
+// Der Schalter macht aus vielen Fehlversuchen wenige: Nach `FEHLER_BIS_OFFEN`
+// Fehlschlägen in Folge wird für `OFFEN_MS` gar nicht mehr angefragt, sondern
+// sofort geworfen. Der Aufrufer sieht denselben Fehler wie bisher und zeigt
+// dieselbe ruhige Seite — nur ohne die Datenbank weiter zu belasten. Ein
+// einzelner Erfolg schließt den Schalter wieder.
+//
+// Bewusst schlicht gehalten: Der Zustand lebt im Speicher einer Server-Instanz
+// und ist nicht geteilt. Das reicht — jede Instanz dämpft ihre eigene Last, und
+// eine geteilte Ablage bräuchte ausgerechnet die Datenbank, die gerade das
+// Problem ist.
+const FEHLER_BIS_OFFEN = 3;
+const OFFEN_MS = 10_000;
+
+let fehlerInFolge = 0;
+let offenBis = 0;
+
+function schutzschalterOffen(): boolean {
+  return Date.now() < offenBis;
+}
+
+function fehlschlagMelden(): void {
+  fehlerInFolge += 1;
+  if (fehlerInFolge >= FEHLER_BIS_OFFEN) {
+    offenBis = Date.now() + OFFEN_MS;
+  }
+}
+
+function erfolgMelden(): void {
+  fehlerInFolge = 0;
+  offenBis = 0;
+}
+
+/** Nur für Tests: setzt den Schalter in den Ausgangszustand zurück. */
+export function schutzschalterZuruecksetzen(): void {
+  fehlerInFolge = 0;
+  offenBis = 0;
+}
+
+/** Nur für Tests und Diagnose: aktueller Zustand des Schalters. */
+export function schutzschalterZustand(): { offen: boolean; fehlerInFolge: number } {
+  return { offen: schutzschalterOffen(), fehlerInFolge };
 }
