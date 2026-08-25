@@ -246,10 +246,19 @@ Ortsliste (die größten und die kleinsten, nicht die bequemen):
    Für Atlas-Ortsseiten: „photovoltaik {ort}", „solaranlagen {ort}".
 2. **Gegenprobe an wieistmeinsolar.de** (dieselbe Datenbasis, dasselbe Produkt):
    Rankt der Wettbewerber für Orte dieser Größenordnung? Was der dort nicht
-   schafft, schaffen wir auch nicht.
+   schafft, schaffen wir auch nicht. Statt fünf Stichproben von Hand geht das
+   vollständig über `POST …/dataforseo_labs/google/domain_intersection/live`
+   (beide Domains, `intersections: false` liefert die Lücke — Begriffe, für die
+   er rankt und wir nicht).
 3. **Kannibalisierung je Ort:** Steht für „{ort}" schon eine eigene Seite der
    anderen Familie in der Search Console (`?dim=query`)? Das ist Frage 2 des
-   Nachweises und der einzige Teil, den nur unsere eigenen Daten beantworten.
+   Nachweises. **Die Search Console beantwortet sie nur dort, wo wir sichtbare
+   Anfragen haben — und das ist die Ausnahme:** Bei sechs der zwölf stärksten
+   Förder-Stadtseiten lag der Anteil sichtbarer Anfragen bei 0–4 % (Messung
+   18.08.2026, Schritt 2b-3). Für den Rest bleibt die Frage per Search Console
+   unbeantwortbar. `POST …/dataforseo_labs/google/page_intersection/live` mit
+   zwei eigenen Adressen liefert sie unabhängig davon; die eigenen Daten bleiben
+   die belastbarere Quelle, wo es sie gibt.
 
 **Kosten:** ~0,002 $ je SERP-Abruf, ~0,05 $ je Keyword-Satz — ein Schub-Vorlauf
 liegt bei **unter 0,10 $** und damit weit unter dem Deckel von 0,50 $. Der Aufwand
@@ -296,3 +305,62 @@ Aktualität sichern die Fach-Wächter).
 **Nicht tun:** Titles/Content „schnell mitfixen" (Außenwirkung → Session mit
 Abnahme) · Rankings aus Impressionen ableiten · KD/Volumen aus dem Gedächtnis
 statt aus der API · Shortlists über 5 Einträge (verwässert die Entscheidung).
+
+## Anhang — Was der Anbieter sonst kann, und was wir davon nehmen
+
+Bewertet am 25.08.2026 anhand der Angebotsübersicht des Anbieters. **Nicht neu
+erheben** — wer eine der verworfenen Auswertungen wieder vorschlägt, braucht einen
+neuen Grund, nicht die alte Produktliste. Preise sind hier **nicht geprüft**; belegt
+sind nur die zwei, die wir zahlen (Ranking-Abruf ~0,02 $, Einzel-SERP 0,002 $).
+
+**Aufgenommen** (siehe Schritt 4b):
+- **Domain-Lücke gegen den Wettbewerber** — ersetzt die Stichproben-Gegenprobe.
+- **Überschneidung zweier eigener Adressen** — beantwortet die Kannibalisierungs-Frage
+  auch dort, wo die Search Console wegen anonymisierter Mikro-Anfragen schweigt.
+
+**Zu prüfen, wenn ein Anlass da ist** (nicht als Dauerlauf, jeweils erst einmalig
+messen und den Nutzen belegen):
+- **Saisonalität eines Begriffs.** Unsere Themen sind gegenläufig saisonal (Klimaanlage
+  im Sommer, Wärmepumpe im Winter), und der Releaseplan legt Schübe heute allein nach
+  Abstandsregeln. Ein Schub, der zwei Monate vor der Nachfragespitze live geht, hat
+  Vorlauf; einer danach misst sich gegen eine fallende Kurve. Offen ist, ob das die
+  Terminierung wirklich ändert — der Plan ist eine Betreiber-Entscheidung, keine
+  Rechnung.
+- **Sichtbarkeit in KI-Antworten außerhalb von Google.** Der Ratgeber-Strang zielt
+  ausdrücklich auf KI-Zitate; gemessen wird davon heute nur die Quellenliste der
+  Google-KI-Antwort (Schritt 6). Erwähnungen in ChatGPT, Perplexity und Gemini sehen
+  wir gar nicht — das ist die einzige offene Lücke im einzigen Erfolgsmaß dieses
+  Strangs. Datenqualität und Kosten sind **ungeprüft**.
+
+**Verworfen, mit Grund:**
+- **Keyword-Schwierigkeit als Zukauf** — die Kennzahl selbst ist nicht verworfen,
+  sondern **im Einsatz**: Sie ist der Kern der Chancen-Bewertung in Schritt 4
+  (`Volumen × (100 − KD)`). Verworfen ist nur, sie zusätzlich einzukaufen. Ihre
+  Grenze bleibt: Die Zahl sieht den Absichts-Konflikt nicht („balkonkraftwerk mit
+  speicher", KD niedrig, Ergebnisseite zu 80 % Shops) und ersetzt Schritt 2b nicht.
+- **On-Page-Audit (120+ Kennzahlen)** — deckt der eigene Seiten-Rundgang und die
+  Kohärenz-Tests ab, und zwar bei jedem Push statt monatlich.
+
+**Backlinks — die Einordnung war zu kurz und ist am 25.08.2026 korrigiert worden.**
+Erste Fassung: „verworfen, der Hebel ist die Widget-Distribution". Das stimmt als
+Strategie und beantwortet die Frage trotzdem falsch, weil es zwei sehr verschiedene
+Anwendungsfälle in einen Topf wirft:
+- **Erfolg des Kommunen-Outreach messen** — der naheliegende Fall, und gerade dafür
+  sind gekaufte Link-Daten das schlechtere Werkzeug: Auf der Gemeindeseite steht nur
+  ein Einbettungsrahmen, unser „Powered by" liegt IM eingebetteten Dokument und damit
+  auf unserer eigenen Domain. Ob ein Link-Index eine iframe-Quelle mitzählt, ist von
+  außen nicht erkennbar. Gebaut wurde deshalb die eigene Zählung
+  (`lib/embed-herkunft.ts`, Ansicht `/admin/einbettungen`): Ohne Abruf bei uns gibt es
+  kein Widget — die Auskunft hatten wir ohnehin, wir haben sie nur nie aufgeschrieben.
+- **Fremde Links als Zielliste** — hier liefern die Daten etwas, das wir nicht haben:
+  Wer verlinkt auf den Wettbewerber mit demselben Produkt und auf die Vergleichs-
+  portale? Das sind Kandidaten für die Widget-Verbreitung jenseits der Kommunen.
+  **Einmalig ansehen, kein Dauerlauf** — eine Zielliste altert langsam, und ein
+  monatlicher Abruf produziert Zahlen, die niemand liest.
+
+**Termin 20.01.2027:** Der Anbieter entfernt sechs veraltete Ja/Nein-Felder an
+organischen Treffern (u. a. „ist Bildtreffer", „ist Featured Snippet", „ist
+AMP-Fassung"). **Wir lesen keines davon** — geprüft am 25.08.2026 über das ganze
+Repo. Schritt 2b prüft auf das eigenständige Antwortbox-Element im Aufbau der
+Ergebnisliste, und das bleibt. Kein Handlungsbedarf; der Eintrag steht hier, damit
+die Ankündigung beim nächsten Lauf nicht noch einmal geprüft wird.

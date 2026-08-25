@@ -126,6 +126,60 @@ Datenschutzerklärung.**
 ## Offene Punkte
 
 - **OFFEN (bis 03/2027):** Resend-Zertifizierung im DPF-Register nachprüfen (fällig 03.03.2027).
+- **Einbettungs-Zählung nach § 25 Abs. 1 TDDDG — Restrisiko bewusst getragen
+  (Betreiber-Entscheidung 25.08.2026).** Kein offener Punkt mehr, aber auch keine
+  Unbedenklichkeitsbescheinigung: Die Bauweise ist am selben Tag einmal an dieser
+  Frage gescheitert und umgestellt worden, und die Gegenprüfung der neuen
+  Einordnung ist **schwächer ausgefallen als der erste Eindruck**.
+  - **Was die Gegenprüfung wirklich ergab:** Das Hauptargument („Rn. 43 nennt
+    Kopfzeilen-Mechanismen nur im Zusammenhang mit Fingerprinting") trägt nicht —
+    dort steht „for example", also eine Aufzählung, keine Einschränkung. Dazu
+    Rn. 39 (Herkunft und Art der Information sind gleichgültig) und Rn. 32
+    („usually", nicht „always", für die aktive Anweisung ans Gerät). Es bleibt:
+    Wir werten nur aus, was der Browser ohnehin sendet, die Angabe beschreibt die
+    einbettende Website statt des Geräts, und nichts Gespeichertes zeigt auf eine
+    Person. Vertretbar, nicht sicher.
+  - **Die Entscheidung war eine Abwägung, keine Rechtsauskunft:** Nutzen konkret
+    (einziges Maß für den Erfolg des Kommunen-Outreach), möglicher Verstoß formal
+    und ohne Schaden für einen Besucher. Wer sie neu aufmacht, braucht einen neuen
+    Anlass — eine Aufsichtsäußerung, eine Gerichtsentscheidung oder eine
+    Erweiterung der gespeicherten Felder.
+  - **Die Gegenprüfung kam von derselben Instanz, die die Einordnung getroffen
+    hat** (die unabhängigen Prüfläufe waren in der Sitzung abgeschaltet). Wer
+    ohnehin einen Legal-Lauf fährt, hängt sie mit dran.
+  - **Verworfen (erste Fassung, wenige Stunden live):** Ein Baustein im Embed-Layout
+    las die Herkunft im Browser (`ancestorOrigins`, ersatzweise `document.referrer`)
+    und meldete sie an eine eigene Route. Die EDSA-Leitlinien 2/2023 (Fassung 2.0,
+    07.10.2024, Volltext am 25.08.2026 gelesen) beschreiben genau das: Rn. 33
+    („JavaScript code, where the accessing entity instructs the browser … to send
+    asynchronous requests with the targeted information. Such access **clearly**
+    falls within the scope"), Rn. 53 für lokal erzeugte Information und Rn. 63 für
+    ausgelieferten Client-Code. Die Ausnahme in § 25 Abs. 2 greift nicht — für die
+    Anzeige des Widgets ist die Zählung nicht erforderlich.
+  - **Gebaut:** Die Middleware liest den `referer`-Anfragekopf beim Ausliefern des
+    eingebetteten Dokuments (`middleware.ts`, Logik in `lib/embed-herkunft-core.ts`).
+    Der Unterschied ist der aus Rn. 32: Dort weist die auslesende Stelle das Gerät
+    an, etwas zu senden — hier weist niemand etwas an, die Angabe kommt mit der
+    Anfrage, weil das Protokoll sie vorsieht, und sie beschreibt die **einbettende
+    Website**, nicht das Gerät.
+  - **Der befürchtete Preis tritt nicht ein.** Beim Abwägen stand hier, der
+    serverseitige Weg koste die statische Auslieferung aller Embed-Seiten. Falsch:
+    Die Middleware sitzt vor der Auslieferung und ersetzt sie nicht — auf der
+    Produktion antwortet `/embed/strommix` weiterhin aus dem CDN (`x-vercel-cache:
+    HIT`, gemessen 25.08.2026). Es bleibt eine Middleware-Ausführung je Abruf.
+  - **Was die Gegenprüfung angreifen soll:** Rn. 43 nennt Kopfzeilen-Mechanismen
+    ausdrücklich und sagt, deren Auswertung *könne* die Vorschrift auslösen — dort
+    allerdings im Zusammenhang mit Fingerprinting und dem Verfolgen von
+    Ressourcen-Kennungen. Ob diese Einschränkung trägt, ist die eigentliche Frage.
+  - **Nicht vergessen:** An der Einordnung hängen zwei Texte, die live sind —
+    Datenschutzerklärung Abschnitt 14 und der Textbaustein, den Einbettende in ihre
+    eigene Erklärung übernehmen (`/energie-widgets`). Beide sagen inzwischen
+    ausdrücklich, dass im Browser des Besuchers **kein Code von uns läuft**; fällt
+    die Einordnung anders aus, ist das keine Ungenauigkeit mehr, sondern eine
+    Falschaussage — auch in der Erklärung jeder einbettenden Gemeinde.
+  - Festgenagelt von `lib/__tests__/embed-herkunft.test.ts` → „liest die Herkunft
+    NUR aus dem Anfrage-Kopf": Der Browser-Weg darf nicht zurückkommen.
+
 ## Erledigt, aber nachzumessen
 
 **Was das Messskript vom Gerät liest, wird am Skript gemessen, nicht der Dokumentation

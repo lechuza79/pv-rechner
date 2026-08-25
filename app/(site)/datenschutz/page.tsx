@@ -479,10 +479,37 @@ export default function DatenschutzPage() {
           unser Hoster Vercel deine IP-Adresse und den Referrer in
           Server-Logfiles, um dir die Inhalte des Widgets auszuliefern. Dabei
           werden keine Cookies gesetzt, keine Daten in deinem Browser
-          gespeichert, kein Tracking durchgeführt und keine Nutzerprofile
-          gebildet. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO
+          gespeichert, einzelne Besucher nicht wiedererkannt und keine
+          Nutzerprofile gebildet. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO
           (berechtigtes Interesse an der Auslieferung der Widget-Inhalte). Die
           Speicherdauer der Logfiles entspricht Abschnitt 3 (Hosting).
+        </p>
+        {/* Ergänzt am 25.08.2026 mit der Einbettungs-Zählung. Der Absatz davor
+            verneinte pauschal jede Nachverfolgung — eine Absolutaussage, die
+            eine reine Domain-Zählung streng gelesen widerlegt hätte, obwohl
+            kein Besucher wiedererkannt wird. Deshalb steht dort jetzt, was wir
+            wirklich nicht tun (wiedererkennen), statt eines Wortes, das jeder
+            anders auslegt. Fehlerklasse: absolute Zusage, vom eigenen Code
+            widerlegt. Ein Test verbietet die alte Formel in dieser Datei und in
+            der Galerie — auch im Kommentar, deshalb steht sie hier nicht. */}
+        <p style={S.p}>
+          Zusätzlich zählen wir, <strong>wo</strong> unsere Widgets eingebunden
+          sind. Grundlage dafür ist allein die Angabe, die dein Browser beim
+          Laden des Widgets von sich aus mitschickt — welche Seite es
+          eingebunden hat. Wir lesen dafür nichts von deinem Gerät und führen
+          in deinem Browser keinen Code aus, der uns etwas zurückmeldet.
+          Gespeichert werden ausschließlich die Domain der
+          einbettenden Website, die Bezeichnung des Widgets und der
+          Kalendertag — also zum Beispiel „musterstadt.de, Strommix-Grafik,
+          25.08.2026". Nicht gespeichert werden deine IP-Adresse, eine Kennung,
+          die aufgerufene Unterseite oder eine Uhrzeit; aus diesen Angaben ist
+          eine Zuordnung zu dir auch nachträglich nicht möglich. Gezählt werden
+          Aufrufe, nicht Personen. Wir nutzen die Zählung, um zu sehen, ob unser
+          Angebot an Städte und Gemeinden (Abschnitt 15) angenommen wird und
+          welche Widgets tatsächlich eingesetzt werden. Rechtsgrundlage ist
+          Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse daran zu erfahren,
+          auf welchen Websites unsere Widgets genutzt werden); dieser
+          Verarbeitung kannst du jederzeit widersprechen (Abschnitt 12).
         </p>
 
         {/* Der Kommunen-Outreach kam in dieser Erklärung überhaupt nicht vor,
