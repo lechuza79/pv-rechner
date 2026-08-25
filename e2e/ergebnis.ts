@@ -63,7 +63,7 @@ export const ERGEBNISSE: ErgebnisUnterTest[] = [
     name: "Wärmepumpen-Rechner",
     pfad: "/waermepumpe-rechner",
     enthaelt: "Deine Wärmepumpen-Prognose",
-    kernzahlen: [/([\d.,]+)\s*€\s*(?:im Jahr|pro Jahr)/],
+    kernzahlen: [/⌀ Ersparnis\/Jahr\s*\n?\s*([\d.,]+)\s*€/, /CO₂ 20 J\s*\n?\s*([\d.,]+)\s*t/],
     ohneTeilenLink:
       "Der Wärmepumpen-Rechner kennt keinen Teilen-Link — sein Ergebnis lässt sich weder " +
       "verschicken noch neu laden, es lebt nur im Browser. Das steht als offener Punkt in der " +
@@ -220,5 +220,45 @@ export async function kernzahlen(page: Page, muster: RegExp[]): Promise<string> 
     for (const weg of wurzel.querySelectorAll("header, footer, nav, script, style")) weg.remove();
     return (wurzel as HTMLElement).innerText || "";
   });
-  return muster.map((m) => text.match(m)?.[1] ?? "fehlt").join("¦");
+  const treffer = muster.map((m) => text.match(m)?.[1] ?? null);
+  // Eine Kernzahl, die das Muster nicht findet, ist ein BEFUND — und zwar ein
+  // gefährlicher: Fehlen sie alle, vergleicht jede Prüfung „fehlt" mit „fehlt"
+  // und meldet Gleichstand, wo in Wahrheit gar nichts gemessen wurde. Genau so
+  // lief die Wärmepumpen-Prüfung am 25.08.2026 ins Leere (das Muster suchte
+  // eine Formulierung, die es auf der Seite nie gab).
+  if (treffer.every((t) => t === null)) {
+    throw new Error(
+      `Keines der Kernzahl-Muster trifft auf dieses Ergebnis zu — dann misst der Lauf nichts. ` +
+        `Entweder heißt die Zahl inzwischen anders, oder sie steht nicht mehr da.`,
+    );
+  }
+  return treffer.map((t) => t ?? "fehlt").join("¦");
+}
+
+/**
+ * Die editierbaren Werte des Ergebnisses — Zahlen, die ein Nutzer mit eigenen
+ * Annahmen überschreiben kann (Anschaffungskosten, Strompreis, Eigenverbrauch …).
+ *
+ * Erkannt an ihrer Beschriftung („… bearbeiten"), nicht an einem Testmarker:
+ * Das ist derselbe Griff, mit dem ein Screenreader sie findet.
+ */
+export async function editierbareWerte(page: Page) {
+  return page.locator('[role="button"][aria-label$="bearbeiten"]:visible').evaluateAll((els) =>
+    els
+      .filter((e) => !e.closest("header, footer, nav"))
+      .map((e) => ({ label: e.getAttribute("aria-label") ?? "", text: (e as HTMLElement).innerText.trim() })),
+  );
+}
+
+/**
+ * Einen editierbaren Wert überschreiben — anklicken, tippen, mit Enter
+ * bestätigen. Genau der Weg, den die Bedienung vorsieht.
+ */
+export async function wertSetzen(page: Page, label: string, wert: string) {
+  const feld = page.locator(`[role="button"][aria-label="${label.replace(/"/g, '\\"')}"]:visible`).first();
+  await feld.click();
+  const eingabe = page.locator("input[inputmode='decimal']:visible").first();
+  await expect(eingabe).toBeVisible({ timeout: 5_000 });
+  await eingabe.fill(wert);
+  await eingabe.press("Enter");
 }
