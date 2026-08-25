@@ -333,14 +333,30 @@ messen und den Nutzen belegen):
   Strangs. Datenqualität und Kosten sind **ungeprüft**.
 
 **Verworfen, mit Grund:**
-- **Keyword-Schwierigkeit** — nutzen wir bereits, mit dokumentierter Grenze: Die Zahl
-  sieht den Absichts-Konflikt nicht („balkonkraftwerk mit speicher", KD niedrig, SERP
-  zu 80 % Shops). Sie ersetzt Schritt 2b nicht.
-- **Backlinks** — unser Reichweiten-Hebel ist die Widget-Distribution, nicht
-  Link-Autorität; Rechner-Verzeichnisse haben sich als untauglich erwiesen. Eine
-  Autoritäts-Metrik ändert daran keine Entscheidung.
+- **Keyword-Schwierigkeit als Zukauf** — die Kennzahl selbst ist nicht verworfen,
+  sondern **im Einsatz**: Sie ist der Kern der Chancen-Bewertung in Schritt 4
+  (`Volumen × (100 − KD)`). Verworfen ist nur, sie zusätzlich einzukaufen. Ihre
+  Grenze bleibt: Die Zahl sieht den Absichts-Konflikt nicht („balkonkraftwerk mit
+  speicher", KD niedrig, Ergebnisseite zu 80 % Shops) und ersetzt Schritt 2b nicht.
 - **On-Page-Audit (120+ Kennzahlen)** — deckt der eigene Seiten-Rundgang und die
   Kohärenz-Tests ab, und zwar bei jedem Push statt monatlich.
+
+**Backlinks — die Einordnung war zu kurz und ist am 25.08.2026 korrigiert worden.**
+Erste Fassung: „verworfen, der Hebel ist die Widget-Distribution". Das stimmt als
+Strategie und beantwortet die Frage trotzdem falsch, weil es zwei sehr verschiedene
+Anwendungsfälle in einen Topf wirft:
+- **Erfolg des Kommunen-Outreach messen** — der naheliegende Fall, und gerade dafür
+  sind gekaufte Link-Daten das schlechtere Werkzeug: Auf der Gemeindeseite steht nur
+  ein Einbettungsrahmen, unser „Powered by" liegt IM eingebetteten Dokument und damit
+  auf unserer eigenen Domain. Ob ein Link-Index eine iframe-Quelle mitzählt, ist von
+  außen nicht erkennbar. Gebaut wurde deshalb die eigene Zählung
+  (`lib/embed-herkunft.ts`, Ansicht `/admin/einbettungen`): Ohne Abruf bei uns gibt es
+  kein Widget — die Auskunft hatten wir ohnehin, wir haben sie nur nie aufgeschrieben.
+- **Fremde Links als Zielliste** — hier liefern die Daten etwas, das wir nicht haben:
+  Wer verlinkt auf den Wettbewerber mit demselben Produkt und auf die Vergleichs-
+  portale? Das sind Kandidaten für die Widget-Verbreitung jenseits der Kommunen.
+  **Einmalig ansehen, kein Dauerlauf** — eine Zielliste altert langsam, und ein
+  monatlicher Abruf produziert Zahlen, die niemand liest.
 
 **Termin 20.01.2027:** Der Anbieter entfernt sechs veraltete Ja/Nein-Felder an
 organischen Treffern (u. a. „ist Bildtreffer", „ist Featured Snippet", „ist

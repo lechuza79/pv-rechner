@@ -308,7 +308,7 @@ const RULES: { icon: typeof IconBolt; title: string; body: React.ReactNode }[] =
   },
 ];
 
-const PRIVACY_SNIPPET = `Auf dieser Seite ist ein Energiedaten-Widget von solar-check.io (Sebastian Schäder, Höchberg) eingebunden. Beim Laden des Widgets werden technisch bedingt Ihre IP-Adresse, die aufgerufene Seite (Referrer) und Ihr User-Agent an solar-check.io übermittelt (Hosting: Vercel Inc., USA; Übermittlung auf Grundlage des EU-US Data Privacy Framework). Das Widget setzt keine Cookies, speichert keine Daten in Ihrem Browser und führt kein Tracking durch. Rechtsgrundlage ist unser berechtigtes Interesse an der Darstellung aktueller Energiedaten (Art. 6 Abs. 1 lit. f DSGVO). Details: https://solar-check.io/datenschutz`;
+const PRIVACY_SNIPPET = `Auf dieser Seite ist ein Energiedaten-Widget von solar-check.io (Sebastian Schäder, Höchberg) eingebunden. Beim Laden des Widgets werden technisch bedingt Ihre IP-Adresse, die aufgerufene Seite (Referrer) und Ihr User-Agent an solar-check.io übermittelt (Hosting: Vercel Inc., USA; Übermittlung auf Grundlage des EU-US Data Privacy Framework). Das Widget setzt keine Cookies, speichert keine Daten in Ihrem Browser und erkennt einzelne Besucher nicht wieder. solar-check.io zählt lediglich, auf welcher Domain das Widget eingebunden ist (gespeichert werden Domain, Bezeichnung des Widgets und Kalendertag — keine IP-Adresse, keine Kennung, keine Uhrzeit). Rechtsgrundlage ist unser berechtigtes Interesse an der Darstellung aktueller Energiedaten (Art. 6 Abs. 1 lit. f DSGVO). Details: https://solar-check.io/datenschutz`;
 
 
 /** Kennung der Beispiel-Gemeinde in den Vorschauen (Höchberg). */
@@ -449,8 +449,11 @@ export default function WidgetsClient() {
             Beim Laden eines Widgets gehen technisch bedingt die IP-Adresse, die aufgerufene Seite
             (Referrer) und der User-Agent des Besuchers deiner Website an solar-check.io (Hosting:
             Vercel Inc., USA — zertifiziert unter dem EU-US Data Privacy Framework). Dabei werden
-            keine Cookies gesetzt, kein Speicher im Browser des Besuchers beschrieben und kein
-            Tracking durchgeführt. Wenn du ein Widget einbindest, solltest du das in deiner eigenen
+            keine Cookies gesetzt, kein Speicher im Browser des Besuchers beschrieben und einzelne
+            Besucher nicht wiedererkannt. Wir zählen lediglich, auf welcher Domain ein Widget
+            eingebunden ist — gespeichert werden dazu die Domain, die Bezeichnung des Widgets und
+            der Kalendertag, weder IP-Adresse noch Kennung noch Uhrzeit noch die aufgerufene
+            Unterseite. Wenn du ein Widget einbindest, solltest du das in deiner eigenen
             Datenschutzerklärung erwähnen — den passenden Textbaustein kannst du unten direkt
             übernehmen.
           </p>

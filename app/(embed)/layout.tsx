@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import WidgetAutoHeight from "../../components/WidgetAutoHeight";
+import WidgetHerkunft from "../../components/WidgetHerkunft";
 import { tokens } from "../../lib/theme";
 
 // Dieselben Schriften wie die Site, aus derselben Quelle (next/font lädt sie
@@ -260,6 +261,7 @@ export default function EmbedRootLayout({
       <body>
         {children}
         <WidgetAutoHeight />
+        <WidgetHerkunft />
       </body>
     </html>
   );
