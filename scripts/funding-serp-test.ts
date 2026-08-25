@@ -29,6 +29,8 @@ import { resolve } from "node:path";
 import { readFileSync, existsSync, writeFileSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
 import { bewerteLink, istEndergebnis } from "../lib/funding-url-suche";
+import { programmDecktSeite } from "../lib/funding-seiten";
+import { FUNDING_PROGRAMS } from "../lib/funding-programs";
 
 function loadEnvFile(): void {
   const envPath = resolve(process.cwd(), ".env.local");
@@ -154,22 +156,61 @@ async function stichprobe(limit: number) {
     }
   }
 
-  // Größte zuerst — dieselbe Reihenfolge wie die Linksuche, damit die
-  // Trefferquoten überhaupt vergleichbar sind. Eine zufällige Stichprobe wäre
-  // repräsentativer und würde einen anderen Wert messen als den, gegen den wir
-  // sie halten wollen.
+  // ZWEI HÄLFTEN, und das ist keine Feinheit der Statistik.
+  //
+  // Die erste Fassung nahm schlicht die größten zuerst — dieselbe Reihenfolge
+  // wie die Linksuche. Der Trockenlauf lieferte daraufhin Hamburg, München,
+  // Düsseldorf, Nürnberg, Hannover: Städte, deren Programme teilweise längst im
+  // Katalog stehen. Ein Treffer dort beweist nichts, weil wir die Antwort schon
+  // kennen; gemessen worden wäre die bequemste Teilmenge statt der Frage.
+  //
+  // Die eigentliche Lücke ist der lange Schwanz — die Gemeinden, über die
+  // niemand schreibt und die keine Presseabteilung hat. Deshalb: eine Hälfte
+  // die größten (dort ist die Gegenprobe zum Katalog möglich), eine Hälfte
+  // gleichmäßig über den Rest verteilt.
+  //
+  // Verteilt statt zufällig gezogen, damit derselbe Aufruf dieselbe Stichprobe
+  // liefert. Eine Messung, die sich bei jeder Wiederholung selbst verschiebt,
+  // lässt sich mit keiner späteren vergleichen.
+  const nachGroesse = ohneFund.sort((a, b) => (pop.get(b.region_id) ?? 0) - (pop.get(a.region_id) ?? 0));
+  const halb = Math.floor(limit / 2);
+  const kopf = nachGroesse.slice(0, halb);
+  const rest = nachGroesse.slice(halb);
+  const schritt = Math.max(1, Math.floor(rest.length / Math.max(1, limit - halb)));
+  const schwanz = rest.filter((_, i) => i % schritt === 0).slice(0, limit - halb);
+
   return {
     gesamtOhneFund: ohneFund.length,
-    auswahl: ohneFund
-      .sort((a, b) => (pop.get(b.region_id) ?? 0) - (pop.get(a.region_id) ?? 0))
-      .slice(0, limit)
-      .map((r) => ({
-        regionId: r.region_id,
-        name: namen.get(r.region_id) ?? r.region_id,
-        website: r.website!,
-        standDerPruefung: zeileVon.get(r.region_id)?.such_version ?? 1,
-      })),
+    auswahl: [...kopf, ...schwanz].map((r) => ({
+      regionId: r.region_id,
+      name: namen.get(r.region_id) ?? r.region_id,
+      website: r.website!,
+      einwohner: pop.get(r.region_id) ?? 0,
+      teil: (kopf.includes(r) ? "gross" : "schwanz") as "gross" | "schwanz",
+      standDerPruefung: zeileVon.get(r.region_id)?.such_version ?? 1,
+    })),
   };
+}
+
+/**
+ * Kennen wir für diese Gemeinde bereits ein Programm?
+ *
+ * Die Gegenprobe zum Trefferwert: Findet die Suchmaschine eine Förderseite in
+ * einer Stadt, deren Programm längst im Katalog steht, ist das kein neuer Fund,
+ * sondern eine bekannte Antwort. Beim ersten Trockenlauf betraf das die halbe
+ * Stichprobe — ohne diese Spalte hätte der Bericht die Trefferquote deutlich zu
+ * gut ausgewiesen.
+ *
+ * Zugeordnet wird über das FÖRDERGEBIET, nie über gleiche Schlüssel: Ein
+ * Landes- oder Kreisprogramm trägt zwei oder fünf Stellen, die Gemeinde acht.
+ * Die Richtung ist der Punkt — das Gebiet enthält die Gemeinde, nie umgekehrt.
+ */
+const KATALOG_GEBIETE = Object.values(FUNDING_PROGRAMS)
+  .map((p) => p.agsCode)
+  .filter((a): a is string => !!a);
+
+function imKatalog(regionId: string): boolean {
+  return KATALOG_GEBIETE.some((gebiet) => programmDecktSeite(gebiet, regionId));
 }
 
 /** Die blanke Domain einer Adresse, ohne Schema und ohne Pfad. */
@@ -207,6 +248,16 @@ async function serp(domain: string, frage: string): Promise<{ adressen: string[]
     if (!res.ok) return { adressen: [], fehler: `HTTP ${res.status}` };
     const daten: any = await res.json();
     const aufgabe = daten?.tasks?.[0];
+    // „No Search Results" ist ein ERGEBNIS, kein Fehlschlag: Google kennt auf
+    // dieser Domain nichts zu diesem Begriff. Die Schnittstelle meldet es als
+    // Statuscode im Fehlerbereich, und die erste Fassung zählte es entsprechend
+    // — der Lauf wies daraufhin „Abruf kam nicht durch: 127" aus, wo in
+    // Wahrheit 127-mal sauber „nichts vorhanden" geantwortet wurde. Die
+    // Trefferquoten stimmten, die Beschriftung log: genau die Fehlerklasse
+    // „die Zahl misst etwas anderes, als daneben steht".
+    if (/no search results/i.test(String(aufgabe?.status_message ?? ""))) {
+      return { adressen: [], fehler: null };
+    }
     if (aufgabe?.status_code && aufgabe.status_code >= 40000) {
       return { adressen: [], fehler: String(aufgabe.status_message ?? aufgabe.status_code) };
     }
@@ -253,6 +304,10 @@ type Zeile = {
   regionId: string;
   name: string;
   domain: string;
+  einwohner: number;
+  teil: "gross" | "schwanz";
+  /** Steht für diese Gemeinde schon ein Programm im Katalog? */
+  imKatalog: boolean;
   standDerPruefung: number;
   treffer: Partial<Record<BegriffName, string>>;
   fehler: Partial<Record<BegriffName, string>>;
@@ -267,16 +322,29 @@ async function main(): Promise<void> {
   const abrufe = mitDomain.length * BEGRIFFE.length;
   const kosten = abrufe * PREIS_JE_ABRUF;
 
+  const anzahlGross = mitDomain.filter((a) => a.teil === "gross").length;
+  const imKatalogSchon = mitDomain.filter((a) => imKatalog(a.regionId)).length;
+
   console.log(`Gemeinden ohne eigenen Fund insgesamt: ${gesamtOhneFund.toLocaleString("de-DE")}`);
-  console.log(`Stichprobe: ${mitDomain.length} (größte zuerst)`);
+  console.log(
+    `Stichprobe: ${mitDomain.length} — ${anzahlGross} große Städte, ` +
+      `${mitDomain.length - anzahlGross} aus dem langen Schwanz`,
+  );
+  console.log(`Davon mit bereits bekanntem Programm: ${imKatalogSchon}`);
   console.log(`Geplante Abrufe: ${abrufe} × ${PREIS_JE_ABRUF} $ = ${kosten.toFixed(2)} $\n`);
 
   if (trocken) {
     console.log("Trockenlauf — es wird nichts abgefragt und nichts bezahlt.\n");
-    for (const a of mitDomain.slice(0, 5)) {
-      for (const b of BEGRIFFE) console.log(`  site:${a.domain} ${b.frage}`);
+    // Aus BEIDEN Hälften zeigen: Die ersten fünf sind immer Großstädte, und an
+    // denen sieht man dem Lauf nicht an, ob der Schwanz überhaupt greift.
+    const probe = [...mitDomain.filter((a) => a.teil === "gross").slice(0, 3), ...mitDomain.filter((a) => a.teil === "schwanz").slice(0, 3)];
+    for (const a of probe) {
+      const marke = a.teil === "gross" ? "groß" : "Schwanz";
+      const kat = imKatalog(a.regionId) ? ", Programm bekannt" : "";
+      console.log(`  ${a.name} (${marke}, ${a.einwohner.toLocaleString("de-DE")} Einw.${kat})`);
+      for (const b of BEGRIFFE) console.log(`      site:${a.domain} ${b.frage}`);
     }
-    if (mitDomain.length > 5) console.log(`  … und ${(mitDomain.length - 5) * BEGRIFFE.length} weitere Abrufe`);
+    console.log(`\n  … insgesamt ${abrufe} Abrufe`);
     return;
   }
 
@@ -298,6 +366,9 @@ async function main(): Promise<void> {
       regionId: a.regionId,
       name: a.name,
       domain: a.domain,
+      einwohner: a.einwohner,
+      teil: a.teil,
+      imKatalog: imKatalog(a.regionId),
       standDerPruefung: a.standDerPruefung,
       treffer: {},
       fehler: {},
@@ -336,6 +407,30 @@ async function main(): Promise<void> {
   console.log(`Nur der eine Begriff fand es:  photovoltaik ${nurPv} · balkonkraftwerk ${nurBkw}`);
   console.log(`Beide fanden etwas:            ${beide} (davon dieselbe Adresse: ${gleicheAdresse})`);
   console.log(`Abruf kam nicht durch:         ${fehlgeschlagen}`);
+
+  // Getrennt nach den beiden Hälften — die große Stadt ist der leichte Fall.
+  // Zusammengezählt sähe der lange Schwanz besser aus, als er ist, und genau
+  // ihn müssen wir erreichen.
+  for (const teil of ["gross", "schwanz"] as const) {
+    const t = zeilen.filter((z) => z.teil === teil);
+    if (!t.length) continue;
+    const tTreffer = t.filter((z) => z.treffer.photovoltaik || z.treffer.balkonkraftwerk).length;
+    const wort = teil === "gross" ? "Große Städte" : "Langer Schwanz";
+    const median = t.map((z) => z.einwohner).sort((a, b) => a - b)[Math.floor(t.length / 2)] ?? 0;
+    console.log(
+      `\n${wort} (${t.length}, Median ${median.toLocaleString("de-DE")} Einwohner): ` +
+        `${tTreffer} Treffer (${((tTreffer / t.length) * 100).toFixed(1)} %)`,
+    );
+  }
+
+  // Was davon wirklich NEU ist. Ein Treffer in einer Stadt, deren Programm wir
+  // längst führen, ist eine bekannte Antwort und kein Fund.
+  const neu = zeilen.filter((z) => (z.treffer.photovoltaik || z.treffer.balkonkraftwerk) && !z.imKatalog).length;
+  const bekannt = irgendeiner - neu;
+  console.log(
+    `\nDavon in Gemeinden OHNE bekanntes Programm: ${neu} (${quote(neu)}) — ` +
+      `${bekannt} Treffer entfallen auf Gebiete, die der Katalog schon abdeckt.`,
+  );
   if (alterStand) {
     console.log(
       `\nVORBEHALT: ${alterStand} dieser Gemeinden tragen ein Verdikt aus einem älteren\n` +
@@ -354,6 +449,7 @@ async function main(): Promise<void> {
     kostenUsd: Number(ausgegeben.toFixed(3)),
     quoten: {
       irgendeiner,
+      neuOhneKatalogProgramm: neu,
       photovoltaik: mitTreffer("photovoltaik"),
       balkonkraftwerk: mitTreffer("balkonkraftwerk"),
       nurPhotovoltaik: nurPv,
@@ -362,8 +458,17 @@ async function main(): Promise<void> {
       gleicheAdresse,
       fehlgeschlagen,
       ausAelteremSuchstand: alterStand,
+      grosseStaedte: zeilen.filter((z) => z.teil === "gross").length,
+      langerSchwanz: zeilen.filter((z) => z.teil === "schwanz").length,
     },
     funde: zeilen.filter((z) => z.treffer.photovoltaik || z.treffer.balkonkraftwerk),
+    // Die Fehlschläge gehören in den Bericht, nicht nur in eine Zählung.
+    // Der erste Lauf meldete 127 betroffene Gemeinden und ließ offen, WORAN es
+    // lag — dieselbe Sorte Verlust, gegen die dieser ganze Strang gebaut wird:
+    // die Zahl behalten, den Inhalt wegwerfen.
+    fehlschlaege: zeilen
+      .filter((z) => Object.keys(z.fehler).length)
+      .map((z) => ({ name: z.name, domain: z.domain, fehler: z.fehler })),
   };
   const ziel = resolve(process.cwd(), "docs/foerder-serp-test.json");
   writeFileSync(ziel, JSON.stringify(bericht, null, 2));
