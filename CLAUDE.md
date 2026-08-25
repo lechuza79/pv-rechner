@@ -1,7 +1,7 @@
 # CLAUDE.md – Solar Check (solar-check.io)
 
 > **Ausgelagert, nicht gelöscht.** Die ausführlichen Vorfallsberichte liegen in `docs/lehren/`,
-> die abgehakte Roadmap in `docs/roadmap-archiv.md`. Jede Regel hier nennt ihren Bericht.
+> die Roadmap (abgehakt und offen) in `docs/roadmap-archiv.md`. Jede Regel hier nennt ihren Bericht.
 > Was gekürzt wurde und warum: `docs/claude-md-kuerzung.md`.
 
 ## Deine Rolle
@@ -59,7 +59,7 @@ An diesem Repo arbeiten regelmäßig mehrere Sessions gleichzeitig, dazu die Wä
 
 **Ab der dritten Seite zu einem Thema wird verschachtelt — und zwar BEVOR die zweite live geht (Entscheidung 18.08.2026).** Ein Cluster bekommt einen Hub und hängt seine Seiten darunter (`/balkonkraftwerk` + `/rechner` + `/anmelden`); Einzelthemen ohne Cluster bleiben flach (`/photovoltaik-neigungswinkel`, `/einspeiseverguetung-tabelle` — ein Ordner mit einer Datei ist Zeremonie). Der Bestand mit gewachsenem Ranking zieht **nicht** um.
 - **Der Grund ist nicht SEO, sondern Betrieb.** Verzeichnistiefe kommt in Googles URL-Empfehlung **überhaupt nicht vor**: Sie verlangt Adressen, die logisch und für Menschen möglichst verständlich aufgebaut sind, und lesbare Wörter statt Kennnummern — mehr nicht (Search Central, URL structure, am 19.08.2026 im Original gelesen). `/balkonkraftwerk/rechner` trägt dieselben zwei Wörter wie `/balkonkraftwerk-rechner`. **Was hier NICHT als Beleg gilt** (Faktenprüfungs-Regel 6): die kursierenden Zuspitzungen „Tiefe ist kein Rankingfaktor“ und „Hierarchie wegen Crawl-Segmentierung“ — nur über Sekundärberichte bekannt, nie am Original geprüft, standen hier trotzdem zweieinhalb Wochen als Google-Aussage. Wer sie braucht, beschafft zuerst die Fundstelle. „Verzeichnisse erzeugen thematische Autorität" ist SEO-Blog-Literatur ohne Google-Aussage.
-- **Die Asymmetrie ist der Punkt:** Verschachtelt kostet ein späterer Umzug **eine** Weiterleitung für den Bereich, flach **eine pro Seite** — und man zahlt sie später, mit mehr Seiten und mehr eingehenden Links. Das Repo hat diese Rechnung schon einmal bezahlt: 109 der 127 Zeilen in `next.config.js` sind Förderseiten, die ohne Bundesland-Ebene starteten.
+- **Die Asymmetrie ist der Punkt:** Verschachtelt kostet ein späterer Umzug **eine** Weiterleitung für den Bereich, flach **eine pro Seite** — und man zahlt sie später, mit mehr Seiten und mehr eingehenden Links. Das Repo hat diese Rechnung schon einmal bezahlt: 180 der 199 Weiterleitungen in `next.config.js` sind Förderseiten, die ohne Bundesland-Ebene starteten.
 - **Ein Präfix ist die einzige Steuerungseinheit, die die Plattform kennt** — Header, Middleware-Matcher, robots, gestaffelte Index-Freischaltung arbeiten alle darauf. Die Namenskonvention „Themenwort zuerst" trägt das nicht: `photovoltaik-rechner`, `-foerderung`, `-neigungswinkel` und `-zubau-deutschland` gehören zu **vier** Themen, und derselbe PV-Bereich benutzt zusätzlich `pv-simulation` und `pv-bedarf-berechnen`.
 - **`/ratgeber` ist eine ANSICHT, kein Ordner.** Die Registry (`lib/ratgeber.ts`) akzeptiert jeden Pfad und speist Übersicht, Krümelspur und Sitemap — ein Ratgeber im Themen-Cluster bleibt Registry-Eintrag. Seine Krümelspur nennt aber das **Thema** als Elternteil, nicht die Ratgeber-Liste: Eine BreadcrumbList, die eine Hierarchie behauptet, die die Adresse nicht hat, ist die schwächste Form davon.
 
@@ -67,7 +67,7 @@ An diesem Repo arbeiten regelmäßig mehrere Sessions gleichzeitig, dazu die Wä
 - **Die Begründung, die dafür KURZ im Umlauf war, ist widerlegt — nicht wiederverwenden.** „Nur mit gemeinsamem Pfadstück lässt sich eine Kategorie einzeln freischalten, noindexen und auswerten" ist in diesem Repo doppelt falsch: Die **Steuerung** läuft längst pro Seite über Registry-Felder statt über Pfade (über hundert Seiten unter EINEM Präfix, einzeln freigeschaltet), und die **Auswertung** kann die Search Console per Regex-Filter auf der Seiten-Dimension. Wer mit diesem Argument einen Umzug begründet, begründet ihn irgendwann auf gewachsenen Seiten, wo er echtes Geld kostet.
 - **Was die Ebene wirklich trägt, ist schwächer und reicht trotzdem:** eine Krümelspur, die nicht mehr lügt (vorher behauptete sie eine Hierarchie, die die Adresse nicht hatte — genau der Fall, den der Absatz über `/ratgeber` als schwächste Form benennt), eine Adresse, unter der eine Kategorie-Übersicht wohnen kann, und für Menschen lesbare Pfade (Googles eigene URL-Empfehlung nennt genau das und nichts weiter). **Weil die Begründung schwächer ist, gilt sie nur, wo der Umzug fast nichts kostet** — also vor oder unmittelbar nach dem Livegang, nie auf gewachsenem Bestand.
 - **Entschieden wird nach GATTUNG, nicht nach Anzahl.** Eine Reihe (Ratgeber, Produkte — davon kommen sicher mehr) bekommt ihre Ebene ab der ersten Seite; was singulär bleibt (Bereichs-Startseite, Rechner, Förder-Überblick), bleibt für immer flach. Eine Zählschwelle („ab der dritten") wäre schlechter: Sie löst den Umzug genau dann aus, wenn ein Bereich erfolgreich wird, also im teuersten Moment — und sie wird ohnehin nicht befolgt (Photovoltaik hat sechs Seiten und ist flach).
-- **Gewachsene Bereiche ziehen NICHT nach.** Photovoltaik und Wärmepumpe bleiben flach und verstreut; der Förderbereich hat diese Rechnung schon bezahlt (179 der 199 Weiterleitungen in `next.config.js`). Zwei Muster nebeneinander sind vertretbar, **solange die Kategorie am Registry-Eintrag hängt und nicht am Pfad** — dann sehen beide Bereiche in der Oberfläche gleich aus.
+- **Gewachsene Bereiche ziehen NICHT nach.** Photovoltaik und Wärmepumpe bleiben flach und verstreut; der Förderbereich hat diese Rechnung schon bezahlt (siehe oben). Zwei Muster nebeneinander sind vertretbar, **solange die Kategorie am Registry-Eintrag hängt und nicht am Pfad** — dann sehen beide Bereiche in der Oberfläche gleich aus.
 - **Eine Kategorie-Übersicht, die nur Titel und Teaser aus der Registry wiederholt, steht auf `noindex, follow` und NICHT in der Sitemap** (`/balkonkraftwerk/ratgeber`). Sie existiert, damit das Adress-Segment keine 404 wirft. Sie zur Indexierung anzumelden und gleichzeitig auf noindex zu setzen wäre ein Widerspruch, den Google als Fehler meldet. Indexierbar wird sie erst mit eigener Einordnung und mehr als zwei Artikeln.
 - **Nicht dringend:** Ausklapp-Einträge zählen für Suchmaschinen ohnehin nicht (siehe unten) — dass manche Seiten im Menü stehen und manche nicht, kostet keine Sichtbarkeit, sondern nur Bedienbarkeit. **Die zweite Voraussetzung ist eine gemeinsame Quelle für die Navigation:** Eine neue Cluster-Seite muss heute in die Menügruppe, in die Markierungs-Kette (beide `Header.tsx`) UND in die Fußzeile (`Footer.tsx`) eingetragen werden — beim Speicher-Ratgeber wurden zwei davon vergessen, bei der Förderseite einer, und das fällt im Browser nicht auf. **Die Fußzeile ist die wichtige:** Sie ist neben dem Themen-Einstieg der einzige Ort, an dem der Cluster von außen crawlbar verlinkt ist. `lib/__tests__/nav-aktiv.test.ts` leitet das seit 19.08.2026 aus dem **Dateibaum** ab (nicht aus einer vierten Liste), prüft zusätzlich, dass kein interner Link auf eine weitergeleitete Adresse zeigt, und wird rot, wenn eine Seite irgendwo fehlt.
 - **Nicht jede Seite gehört ins Menü — die Pflicht hängt an der Stelle im Baum** (Betreiber, 20.08.2026: „nicht jeder Ratgeber kann einen Eintrag dort haben“). Direkt unter dem Bereich (Startseite, Rechner, Förder-Überblick) ist eine kleine, feste Menge: Sie gehört in Menü UND Fußzeile, weil das die einzigen Stellen sind, an denen der Bereich von außen crawlbar verlinkt ist. Was in einer **Kategorie** liegt (Artikel unter `/ratgeber/`, später `/produkte/`), ist eine wachsende Reihe und gehört NICHT ins Menü, sondern in die Übersicht seiner Kategorie — dafür genügt der Registry-Eintrag. Die erste Fassung des Tests verlangte beides für alle Seiten; sie wäre beim fünften Artikel entweder rot geworden oder hätte die Navigation geflutet.
@@ -75,13 +75,13 @@ An diesem Repo arbeiten regelmäßig mehrere Sessions gleichzeitig, dazu die Wä
 **Menü-Markierung: je Seite ein eigener Schlüssel** (`components/Header.tsx`, festgenagelt von `lib/__tests__/nav-aktiv.test.ts`). Zwei Fehler dieser Klasse sind real passiert, beide von außen unsichtbar — die Seite funktioniert, nur die Markierung fehlt: ein zu tiefes Präfix nach einem Umzug (Hub und Ratgeber fielen durch), und Ratgeber mit Top-Level-Slug, die **nie** markiert wurden, weil nur auf `/ratgeber` geprüft wurde (sie laufen jetzt über `ratgeberBySlug`). Spezifische Pfade müssen vor dem Hub-Präfix stehen. **Die Gegenrichtung ist seit 19.08.2026 mitgeprüft:** Jede Seite eines Clusters muss im Menü stehen — der Speicher-Ratgeber fehlte dort zunächst als einzige der vier Balkon-Seiten, und das fällt von außen nicht auf. Eine Seite darf in zwei Gruppen stehen (`zweitnennung: true`) — die Zweitnennung markiert sich nicht und macht ihre Gruppe nicht aktiv, sonst leuchten zwei Menüpunkte und niemand sieht mehr, wo die Seite wohnt.
 - **Ausklapp-Einträge sind für Suchmaschinen unsichtbar** (nachgemessen 18.08.2026): `DesktopDropdown` rendert sie erst bei geöffnetem Zustand, sie stehen in keinem ausgelieferten HTML und zählen als interner Verweis nicht. Wer die interne Verlinkung stärken will, setzt an Fußzeile, Themen-Hub und `RelatedLinks` an — nicht am Menü.
 
-**Flow 1: Rechner (`/photovoltaik-rechner`)** — „Ich kenne meine Anlage": Anlagengröße (5/8/10/15 kWp + eigener Wert) → Speicher (nein/5/10/15 kWh) → Haushalt (Personen + Nutzungsprofil) → Großverbraucher (WP, E-Auto, Klimaanlage als TriToggles; WP an → Gebäude-Detail mit Wohnfläche, Dämmung, Heizsystem, **Haustyp** — konsistent zum WP-Rechner) → Ergebnis auf derselben Seite.
+**Flow 1: Rechner (`/photovoltaik-rechner`)** — für „ich kenne meine Anlage schon". Ergebnis auf derselben Seite.
 
-**Flow 2: Empfehlung (`/pv-bedarf-berechnen`)** — „Was passt zu mir?": Haushalt → Großverbraucher → Dach (Haustyp, Dachart, opt. Budget) → Zwischenseite mit Empfehlung, Warum und Alternativen → Ergebnis auf `/photovoltaik-rechner` mit „Warum diese Anlage?"-Sektion.
+**Flow 2: Empfehlung (`/pv-bedarf-berechnen`)** — für „was passt zu mir?". Endet über eine Zwischenseite (Empfehlung, Warum, Alternativen) auf `/photovoltaik-rechner` mit einer „Warum diese Anlage?"-Sektion. **Beide Flows landen bewusst auf DERSELBEN Ergebnisseite** — das ist eine Architekturentscheidung, keine Zufälligkeit.
+
+**Die Schrittfolge steht im Code, nicht hier.** Sie ändert sich dort zuerst; die frühere Aufzählung an dieser Stelle nannte für beide Flows die falsche Zahl und für einen die falsche Reihenfolge. Welche Frage in welchen Rechner gehört, hält `lib/inflows.ts` samt Test fest.
 
 **Konditionen ab 2027 im Ergebnis (`ResultRegime`):** Umschalter „Heute / Ab 2027" plus abschaltbarer Börsenerlös. Default ist **heute** (gilt für jede Anlage bis Ende 2026) und der Börsenerlös **aus** — aus demselben Grund, aus dem der Rechner nach 20 Jahren null ansetzt: Was in 15 Jahren an der Börse zu holen ist, weiß niemand. Der Deckel des Entwurfs (50 % Einspeiseleistung) und der Wert des eigenen Einspeiseprofils fallen aus der Stundensimulation an, nicht aus einer Annahme. Regime, Marktschalter und ein editiertes Marktwert-Niveau stehen im Teilen-Link (`rg`, `mk`, `mw`) — sonst rechnet der Empfänger etwas anderes. Wächter: `scripts/marktwert-verify.md`.
-
-**Gemeinsame Ergebnisseite:** Hero-Card (Amortisation + editierbares Grid) · Quick Settings (WP, E-Auto, Speicher) · Energie-Paar Autarkie/Eigenverbrauch mit Erklärung des Unterschieds · Stats (Rendite 25 J + ⌀ Ersparnis/Jahr) · SVG-Amortisationskurve mit 3 Szenarien · Methodik/Save/Share/Neu-Berechnen.
 
 **Weitere Rechner und Seiten:**
 - **`/waermepumpe-rechner`** — Neubau/Bestand, 5 Steps. `lib/heatpump.ts` + `lib/heatpump-config.ts`. Modellprämissen siehe unten.
@@ -467,7 +467,7 @@ Er saß bis 22.08.2026 fest in `ResultSection` („rechnet mit"). Als das Zubau-
 - **Was keinen Schalter bekommt:** alles, was man nicht weglassen kann (ein Dach) und alles, was nichts verbraucht. Der Speicher gehört deshalb nicht in die Verbraucher-Reihe, sondern als editierbarer Wert in die Ergebnis-Karte.
 - **Wo dieselbe Zahl zwei Wege haben darf** — die einzige Ausnahme im Projekt: Im Wärmepumpen-Rechner ist neben dem Gebäude-Abschnitt weiterhin die abgeleitete Heizwärme editierbar. Das sind zwei verschiedene Nutzer (schätzen über das Gebäude, messen über die eigene Gasrechnung), und ein gemessener Wert schlägt jede Schätzung. Wer das Gebäude ändert, dessen von Hand gesetzte Ableitung wird zurückgenommen — sie beschrieb das alte Gebäude und würde die neue Angabe stumm schalten.
 
-**Migrationsstand (17.08.2026):** PV-Rechner (Vergütung · Dach · Wärmepumpe · E-Auto · Klimaanlage), Einspeisevergütung („Standort und Dach"), Wärmepumpe („Dein Gebäude"), Klimaanlage („Kühlbedarf"). **Offen: Balkonkraftwerk** — lag zum Zeitpunkt der Umstellung in einer fremden Worktree (`balkon-seo`) und wurde bewusst nicht angefasst.
+**Der Balkon-Rechner nutzt den Baustein als einziger noch nicht** — das ist eine offene Umstellung, keine bewusste Abweichung.
 
 **Welche Frage in welchen Rechner gehört, steht in `lib/inflows.ts`** — samt der Rechner, die sie **begründet nicht** bekommen. Ohne diese Ausnahmeliste ist „fehlt" nicht von „gehört da nicht hin" zu unterscheiden. `lib/__tests__/inflows.test.ts` liest die Rechner-Dateien und prüft die Liste dagegen, in beide Richtungen: ein vorgesehener Einbau, der fehlt, schlägt an — und ein Baustein, der auftaucht, wo die Liste ihn ausnimmt, ebenso. Jede Ausnahme braucht einen ausgeschriebenen Grund, jedes „OFFEN" eine Frist im Format `OFFEN (bis MM/JJJJ)`; läuft sie ab, wird der Test rot.
 
@@ -475,7 +475,7 @@ Er saß bis 22.08.2026 fest in `ResultSection` („rechnet mit"). Als das Zubau-
 
 **`components/FlowNav.tsx` ist der Standard für jeden Schritt-Flow** (Betreiber-Vorgabe 05.08.2026): Kein Schritt startet mit einer Vorauswahl · ein Klick auf eine Option **wählt nur aus**, er springt nicht weiter · der Weiter-Button ist ausgegraut, bis eine gültige Auswahl existiert · **Zurück sitzt immer links, Weiter immer rechts** — auch im ersten Schritt ohne Zurück bleibt Weiter rechts. Die Auto-Advance-Variante (Klick auf Option springt direkt) existiert als zentraler Schalter `FLOW_ADVANCE_ON_SELECT` im Baustein — sie wird nie pro Seite gebaut, sondern nur dort umgelegt.
 
-**Alle sechs Flows nutzen den Baustein (Stand 17.08.2026):** Einspeisevergütung, PV-Rechner, Bedarf/Empfehlung, Wärmepumpe, Klimaanlage, Balkonkraftwerk. Damit ist `NOCH_OHNE_FLOWNAV` in `e2e/flows.ts` leer und der Flow-Läufer prüft jeden davon.
+**Jeder Flow nutzt den Baustein** — festgehalten dadurch, dass die Ausnahmeliste `NOCH_OHNE_FLOWNAV` (`e2e/flows.ts`) leer ist; der Flow-Läufer prüft deshalb jeden.
 
 - **Keine Vorauswahl heißt nicht „kein Startwert".** Die Rechner brauchen ihre Startwerte weiterhin — ein geteilter Link springt direkt ins Ergebnis, ohne je einen Schritt gesehen zu haben. Getrennt wird deshalb der *Wert* von der *Aussage, dass jemand ihn gewählt hat*: ein `beantwortet`-Set je Rechner (dasselbe Muster wie `gvAnswered`), das die Markierung der Optionen und die Freigabe des Weiter-Knopfes steuert. Wer stattdessen die Werte auf `null` setzt, muss jede Rechenfunktion dahinter anfassen.
 - **Was der Schritt verlangt, steht an EINER Stelle je Rechner** (`stepAnforderung`: erfüllt + Hinweistext nebeneinander). Sonst sagt der ausgegraute Knopf etwas anderes, als die Freigabe prüft.
@@ -497,18 +497,7 @@ Umgesetzt als geteilte Feld-Bausteine: **`components/DachField.tsx`** (Dachform 
 
 ## Design-System
 
-| Element | Wert |
-|---|---|
-| Hintergrund / Karten | `#FFFFFF`, Karten mit `#E9E9E9` Border |
-| Input-Hintergrund | `#F8F8F8` mit `#E9E9E9` Border |
-| Hero-Hintergrund | `#F1F6FE` |
-| Akzent (CTAs, interaktiv) | `#1365EA`, dunkel/hell `#073C93` / `#6A9EF2` |
-| Positiv / Negativ | `#00D950` / `#EF4444` |
-| Text primär / sekundär / muted | `#3F3F3F` / `#777777` / `#949494` |
-| Font Text / Zahlen | DM Sans 400–800 / JetBrains Mono 400–700 |
-| Layout | Mobile-first, Content max-width 480px zentriert, Header max-width 960px, Burger-Menu <768px |
-| Border-Radius | Cards 14px, Buttons 10–12px |
-| Animation | fadeUp 0.3s ease-out bei Step-Wechsel |
+**Mobile-first.** Farben, Maße, Ecken, Schriften und Keyframes stehen ausschließlich als Tokens in `lib/theme.ts` — hier bewusst keine Zweitfassung: Die frühere Tabelle an dieser Stelle war zuletzt in sechs von zehn Zeilen falsch (Kopfzeilen-Breite, Umschaltpunkt, Ecken, zwei Textfarben, ein Keyframe-Name) und war zugleich die einzige Stelle im Projekt, an der Hex-Werte außerhalb des Themes standen. Zwei Spalten sind je Seitenart verschieden: 480 px für Rechner, 640 px für Leseseiten. Das Theme hat sieben Tagesstufen mit je eigenen Textfarben — ein einzelner Hex je Rolle kann gar nicht stimmen.
 
 **Semantisches Farbsystem:** Blau (`--color-accent`) = interaktive Elemente · Grün (`--color-positive`) = positive Werte (Rendite, Ersparnis) · Rot (`--color-negative`) = negative Werte (Kosten, Verluste) · Grau = neutrale Dimensionen (kWh, kWp, %, Labels).
 
@@ -520,7 +509,7 @@ Umgesetzt als geteilte Feld-Bausteine: **`components/DachField.tsx`** (Dachform 
 
 **Admin-Backend (`/admin`):** Geschützte Übersicht (`ADMIN_EMAILS`-Guard) mit Kacheln zu den internen Views — neue Admin-Seiten hier als Kachel ergänzen; erreichbar über einen „Admin"-Eintrag im Header, der nur eingeloggten Admins erscheint. Die Admin-Erkennung läuft **client-seitig** über `useIsAdmin` (`lib/auth.ts`) → `GET /api/admin/status`, damit die öffentlichen Seiten **statisch bleiben** und die Admin-Mail-Liste nicht in den Browser wandert — bewusst NICHT im Layout auf `getUser()` prüfen (das würde jede Seite dynamisch machen).
 
-**Abstands-Skala (`space` + `pad()` in `lib/theme.ts`):** Zahlen statt CSS-Variablen, weil Abstände in Inline-Styles stehen (`gap: space.md`, `padding: pad("lg", "xl")`). Stufen: 2 · 4 · 6 · 8 · 12 · 16 · 24 · 32 · 48. **10, 14, 18 und 28 gibt es bewusst nicht** — sie waren Drift; wer sie brauchte, entscheidet sich sichtbar für die Stufe darunter oder darüber. Neue Komponenten setzen Abstände **nur** aus der Skala. *Migrationsstand:* umgestellt sind Atlas-Gemeindeseite, Kommunen-Box, `Modal`, `ContactForm`/`ContactPerson`, `AtlasKpiRow`; der Rest wird stückweise nachgezogen (jede Rundung ist eine sichtbare Änderung).
+**Abstands-Skala (`space` + `pad()` in `lib/theme.ts`):** Zahlen statt CSS-Variablen, weil Abstände in Inline-Styles stehen (`gap: space.md`, `padding: pad("lg", "xl")`). Stufen: 2 · 4 · 6 · 8 · 12 · 16 · 24 · 32 · 48. **10, 14, 18 und 28 gibt es bewusst nicht** — sie waren Drift; wer sie brauchte, entscheidet sich sichtbar für die Stufe darunter oder darüber. Neue Komponenten setzen Abstände **nur** aus der Skala. Der Bestand wird stückweise nachgezogen, nicht in einem Zug — jede Rundung ist eine sichtbare Änderung und gehört einzeln abgenommen.
 
 **Header→Content-Abstand — BLOCKER:** Der Abstand kommt aus **einer** Quelle (`headerContentGap` + `--content-lede-top` in `lib/theme.ts`), nicht mehr aus jeder Seite einzeln (vorher projektweit driftend, sichtbar 32–108 px).
 - **`headerContentGap`** (= `space.huge`, 48px) sitzt als unteres Padding des Header-Wrappers im `app/(site)/layout.tsx`. Der Header hat **kein** `marginBottom`, und **keine** (site)-Seite setzt eigenes Top-Padding — Wurzel-Container tragen nur horizontales Gutter (16px) + Bottom. Desktop **und** Mobile.
@@ -529,20 +518,9 @@ Umgesetzt als geteilte Feld-Bausteine: **`components/DachField.tsx`** (Dachform 
 
 ## Tech-Stack & Struktur
 
-| Komponente | Technologie | Warum |
-|---|---|---|
-| Framework | **Next.js 14 (App Router)** | SEO-fähig, Vercel-Integration, erweiterbar für Content-Seiten |
-| UI | **React 18 (Client Components)** | Interaktiver Rechner braucht Client-State |
-| Styling | **Inline Styles + CSS Custom Properties** | Tokens in `lib/theme.ts`, referenziert via `v()` |
-| Fonts | **DM Sans + JetBrains Mono** | lokal gebündelt |
-| Deployment / Backend | **Vercel** / **Supabase** | Zero-Config; Auth (Magic Link), Caches, Berechnungen |
-| PV-Ertrag / Energiedaten | **PVGIS API** (EU JRC) / **Energy-Charts** (Fraunhofer ISE) | via eigene API-Routen + Cache |
-| Charts / Tests | **Visx** / **Vitest** | Low-level SVG-Primitives; Pure-Function-Coverage |
-| Package Manager | **npm** | Standard reicht bei dieser Projektgröße |
+Next.js (App Router) · React · Vercel · Supabase · Visx für Charts · Vitest und Playwright für Tests · npm. **Versionen stehen in `package.json` und werden hier nicht wiederholt** — die frühere Tabelle nannte zuletzt zwei Hauptversionen zu alt.
 
 **Bewusst nicht im Stack:** Tailwind, shadcn/ui, State-Management-Libraries, CSS-in-JS, Recharts/Nivo (zu wenig Kontrolle), Component-Testing-Library (kommt erst, wenn die großen Client-Komponenten zerlegt werden). Erst einführen, wenn es einen konkreten Grund gibt.
-
-**Wo liegt was** (Ordnerbaum bewusst nicht mehr abgebildet — er driftet; `ls`/`grep` ist genauer): `lib/` = Rechenkerne (`calc`, `heatpump`, `aircon`, `balkon`, `pv-sim`, `balkon-sim`, `recommend`, `consumption`, `simulation`, `fossil-reference`), Configs mit `validFrom`/`reviewBy` (`*-config.ts`), Datenquellen-SSOT (`data-sources.ts`), Theme, Energie-Datalake, Atlas (`atlas-format`, `mastr-region-sql`), Supabase-Clients, `constants.ts`, `types.ts` · `components/` = geteilte Bausteine (`Modal`, `InlineEdit`, `OptionCard`, `TriToggle`, `Chart`, `ChartActionBar`, `PoweredBy`/`DataSourceNote`, `StandortField`, `KontaktTeaser` (Kontakt-Einstieg mit Formular-Modal, Thema aus der Allowlist), `GlossaryTerm`, `Icons`, `charts/*`) · `app/(site)` öffentliche Seiten, `app/(embed)/embed/*` Widgets, `app/api/*` Proxys/Crons/Admin · `scripts/` Wächter-Runbooks (`*-verify.md`), `waechter-gate.md`, `council-verify.md`, MaStR-Pipeline, `health-check.ts` · `docs/` Konzepte, beschaffte Primärquellen (`quellen/`, `gmodg/`), Lehren (`lehren/`), Roadmap-Archiv.
 
 **Architektur:** Berechnungslogik, Konstanten und UI-Komponenten liegen in `lib/` und `components/`; alle Flows teilen sich dieselben Komponenten und Berechnungsfunktionen.
 
@@ -621,7 +599,7 @@ npm run laender:sync  # Länderreihen aus Embers Jahresdatensatz neu erzeugen (l
 | Komponente | Wert |
 |---|---|
 | Production | `solar-check.io` (Branch `main`), `www.` → Redirect |
-| Preview | `pv-rechner-alpha.vercel.app` (Vorschau-Builds sind abgeschaltet, siehe unten) |
+| Preview | keine — Vorschau-Builds sind abgeschaltet (siehe unten) |
 | Domain-Registrar | All-Inkl |
 | **Function-Region** | **`fra1` (Frankfurt)** — `regions` in `vercel.json` |
 
@@ -710,7 +688,7 @@ Der Umzug nach GitHub Actions ist **fertig recherchiert, aber nicht beauftragt**
 
 **Meldelogik — Benachrichtigung nur bei echtem Handlungsbedarf** (Vorgabe des Betreibers: „nur benachrichtigung wenn ich was tun muss"). Vier Stufen, im Code als `selfHealed` / `warnings` / `problems` getrennt:
 - **selbst repariert** → Protokollzeile, keine Nachricht (Exit-Code 2 heißt „repariert", nicht „fehlgeschlagen").
-- **auffällig** → Workflow-Log + Tagesbericht, keine Nachricht. Gelb sitzt bei 4 s (Normalbereich 1,8–3,4 s) — eine Warnung, die bei jedem Lauf angeht, filtert man weg und verpasst dann die rote.
+- **auffällig** → Workflow-Log + Tagesbericht, keine Nachricht. Gelb sitzt bei 4 s (Normalbereich 1,8–3,2 s) — eine Warnung, die bei jedem Lauf angeht, filtert man weg und verpasst dann die rote.
 - **muss Claude anschauen** → Workflow rot, Autofix springt an. **Keine Mail.** Erst wenn dieselbe Stelle **drei Läufe in Folge** rot bleibt, ist die Selbstheilung erkennbar gescheitert und daraus wird eine Frage an ihn (`eskalationNoetig`, festgenagelt von `lib/__tests__/health-check-eskalation.test.ts`).
 - **muss der Betreiber entscheiden** → Mail über `/api/alert`. Nur Fälle mit mehreren vertretbaren Antworten: War das Absicht? Geld ausgeben? Produkt/Priorität?
 
@@ -975,7 +953,7 @@ Live unter solar-check.io. Phase 0–3 sowie WP 1–3, 5, 8, 10 sind abgeschloss
 
 | Datei | Inhalt |
 |---|---|
-| `docs/roadmap-archiv.md` | Vollständige abgehakte Roadmap (Phase 0–3, WP 1–10) im Wortlaut |
+| `docs/roadmap-archiv.md` | Vollständige Roadmap im Wortlaut — abgehakt (Phase 0–3, WP 1–10) **und offen** (Favicon, Eurostat, Spotpreis, Phase 4/5, Mehrfamilienhaus) |
 | `docs/produkt-referenz.md` | Alte Langfassung von Seitenbeschreibungen, Ordnerbaum, Komponententabelle, Design-System, SEO (reine Referenz, driftet — verbindlich sind Code und Config) |
 | `docs/lehren/waermepumpe-modell-entscheidungen.md` | WP-Modellprämissen und der abgeschaltete WP-Preis-Scrape, mit Zahlen und Fundstellen |
 | `docs/lehren/atlas-performance-2026-07.md` | Function-Region, Präfix-Literal, `vercel.json`, Messfallen |
