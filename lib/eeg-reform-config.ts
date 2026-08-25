@@ -204,7 +204,15 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // Beschluss; das nächste Bundesratsplenum bleibt der 25.09.2026. Im Bundestag
   // ist der Entwurf nicht aufgerufen worden — die energiepolitischen Vorgänge
   // dieses Sommers betreffen Versorgungssicherheit und Netzausbau, nicht diesen.
-  geprueftIso: "2026-08-24",
+  //
+  // 25.08.2026 nachgesehen, unverändert — beide Kammern einzeln geprüft, weil
+  // „Regierungsentwurf" erst kippt, wenn EINE von ihnen sich befasst hat:
+  // bundesrat.de führt 470/26 weiter allein als Grunddrucksache der
+  // Bundesregierung, ohne verzeichneten Beschluss; die Tagesordnungsseite des
+  // Bundestages steht unverändert auf dem Stand vom 13.07.2026 (Sitzungen
+  // 91.–94., also vor der Sommerpause) und nennt keinen EEG-Punkt. Der Entwurf
+  // ist damit in keiner Kammer aufgerufen.
+  geprueftIso: "2026-08-25",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

@@ -299,7 +299,22 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // Treffer sind HVO-Kraftstoffpreise (Diesel, nicht Heizöl) und Portalangaben
   // zu Aufschlägen. Beides taugt nicht — der eine misst den falschen Markt, der
   // andere ist keine Trägerquelle.
-  geprueftRechtIso: "2026-08-24",
+  //
+  // 25.08.2026 am amtlichen Infoportal (gmodg.bund.de) nachgesehen, unverändert:
+  // Die Stufen der Bio-Treppe stehen dort weiter bei 2029: 10 %, 2030: 15 %,
+  // 2035: 30 %, 2040: 60 % — zellgleich mit `quoteStops`. § 42a ist unverändert
+  // nur die Ankündigungspflicht („bis zum 01.12.2026 ein Gesetz"), ein
+  // Quotengesetz gibt es nicht.
+  //
+  // Bioheizöl, SECHSTE Gegensuche, Befund unverändert und diesmal benannt, damit
+  // die nächste Sitzung nicht denselben Weg noch einmal geht: Was kursiert, ist
+  // „Quotenstart 2028 mit 1 %". Das ist KEINE neue Erkenntnis, sondern genau die
+  // Zahl, die oben bei `quoteStops` schon eingeordnet ist — sie steht in der
+  // Spalte der § 42a-Quote (Inverkehrbringer-Ebene), nicht in der Bio-Treppe,
+  // und ein Quotengesetz, das sie tragen würde, existiert nicht. Eine Preisreihe
+  // gibt es weiterhin nicht: Die Treffer sind HVO-Kraftstoff (Diesel) und
+  // Portalaufschläge; Destatis führt Mineralölerzeugnisse ohne Bio-Heizöl-Zeile.
+  geprueftRechtIso: "2026-08-25",
   reviewBy: "2027-07-25",
 };
 

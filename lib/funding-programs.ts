@@ -845,6 +845,15 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Steckersolar-Grenze (die Richtlinie kennt 0,8 kW Wechselrichter und 2,0 kW
     // Modulleistung, nicht 0,6 kWp), das unbelegte „ab 6 kWp" und die fehlende
     // neue Pauschale für Speicher an Steckersolar-Geräten.
+    //
+    // ANTRAGSFRIST NACHGETRAGEN (25.08.2026). Alle vier Beträge am selben PDF
+    // erneut geprüft und zellgleich bestätigt; die Amtsseite trug aber einen
+    // Hinweiskasten, den der Eintrag nicht kannte: „Fördermittelanträge können
+    // noch bis zum 31.10.2026 per E-Mail […] gestellt werden" — und die
+    // Bearbeitung ruht bis zum 16.09.2026. Ein befristetes Programm ohne Frist
+    // im Text ist kein kleiner Anzeigefehler: Wer die Seite im November liest,
+    // sieht einen Betrag und keinen Grund, sich zu beeilen. Der Abzug bleibt
+    // unverändert — die Frist läuft erst.
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Zuschuss je kWp für Dach-/Fassaden-PV + Pauschale für Batteriespeicher",
@@ -855,6 +864,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { label: "Speicher für Steckersolar (ab 3 kWh)", value: "500 € pauschal" },
     ],
     conditions: [
+      "Anträge sind nur noch bis zum 31. Oktober 2026 möglich; die Bearbeitung ruht bis zum 16. September 2026 und läuft danach in der Reihenfolge des E-Mail-Eingangs",
       "Energieberatung eines zertifizierten Energieberaters vor Antragstellung und Umsetzung erforderlich",
       "Antrag vor Maßnahmenbeginn; zertifizierter Ökostrom-Tarif als Voraussetzung",
       "nur für Privatpersonen mit Wohnsitz/Immobilie in Potsdam",
@@ -1947,13 +1957,27 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Stadt Vilshofen an der Donau", level: "kommune", region: "Vilshofen an der Donau",
     bundesland: "Bayern", agsCode: "09275154",
     url: "https://www.vilshofen.de/wir-in-vilshofen/bauen-und-stadtentwicklung/foerderprogramme-und-zuschuesse",
+    // BETRAG NACHGETRAGEN (25.08.2026). Hier stand „Betrag nur in der
+    // Förderrichtlinie" — ehrlich, aber für den Leser wertlos, und es war nicht
+    // wahr: Die Richtlinie liegt als PDF auf derselben Amtsseite verlinkt
+    // (Stand 30.04.2026, Stadtratsbeschluss vom selben Tag). Ihre Präambel nennt
+    // den Betrag im Klartext: „Die Förderung beträgt 50 € je Anlage." Grenzen
+    // aus § 3 Abs. 1 (2.000 W Modul / 800 W Wechselrichter), Antragsberechtigung
+    // aus § 2, Ein-Antrag-Regel aus § 1 Abs. 6.
+    //
+    // Weiterhin OHNE Rechenwert: 50 € sind ein fester Betrag, den der Rechner
+    // abziehen könnte — aber die Richtlinie gibt ihn nur Mietern (§ 2 Abs. 1),
+    // und ob jemand zur Miete wohnt, fragt der Balkon-Rechner nicht ab. Ein
+    // Abzug wäre für jeden Eigentümer falsch. Das Programm informiert deshalb,
+    // es rechnet nicht.
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Zuschuss für Steckersolargeräte — ausdrücklich für Mieter gedacht",
-    rates: [{ label: "Steckersolargerät", value: "Betrag nur in der Förderrichtlinie" }],
+    rates: [{ label: "Steckersolargerät", value: "50 € je Anlage" }],
     conditions: [
-      "Das Programm richtet sich an Mieterinnen und Mieter",
-      "Der Förderbetrag steht ausschließlich in der herunterladbaren Richtlinie",
+      "Nur Mieterinnen und Mieter, die die Wohnung selbst bewohnen und dort mit Hauptwohnsitz gemeldet sind",
+      "Gefördert werden Geräte bis 2.000 W Modulleistung und 800 W Wechselrichterleistung",
+      "Je Wohneinheit ist nur ein Antrag möglich; Antrag in Papierform mit Kaufbeleg",
       "Dach-Photovoltaik ist nicht Teil des Programms",
     ],
     combinableWith: BUND,
@@ -2567,7 +2591,13 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     eligibility: ["privat"],
     coveredCosts: "Pauschale je Wohneinheit, unabhängig von der Modulzahl",
     maxFoerderung: "100 € je Anlage",
-    rates: [{ label: "Balkon-Solaranlage", value: "100 € pauschal je Wohneinheit" }],
+    // „je Wohneinheit" auf „je Anlage" korrigiert (25.08.2026): Die Gemeinde
+    // schreibt „Die Förderung beträgt pauschal 100,00 € pro Anlage." Der
+    // Unterschied ist keine Wortklauberei — mit „je Wohneinheit" liest sich der
+    // Satz als Begrenzung auf einen Zuschuss je Wohnung, die der Träger so
+    // nirgends ausspricht. Betrag und Kontingent (20 Anträge je Jahr) am selben
+    // Tag zellgleich bestätigt.
+    rates: [{ label: "Balkon-Solaranlage", value: "100 € pauschal je Anlage" }],
     conditions: [
       "Antragsberechtigt sind Vermieter, Mieter und Eigentümer einer Wohneinheit in Gailingen",
       "Der Antrag wird nach dem Kauf gestellt; Rechnung und Foto der montierten Anlage sind beizulegen",
