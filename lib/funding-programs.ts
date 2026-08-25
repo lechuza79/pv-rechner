@@ -253,9 +253,12 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://www.bundesfinanzministerium.de", stand: "Juni 2026",
     status: "aktiv", capped: false, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "0 % USt auf Kauf + Installation (Anlagen bis 30 kWp)",
+    coveredCosts:
+      "0 % USt auf Kauf + Installation (Anlage an einem Wohngebäude; bis 30 kWp gilt das ohne Nachweis)",
     rates: [{ label: "Umsatzsteuer", value: "0 %" }],
-    conditions: ["Wohngebäude", "Anlage bis 30 kWp"],
+    conditions: [
+      "Anlage an einer Wohnung oder einem dem Gemeinwohl dienenden Gebäude — bis 30 kWp ohne Nachweis der Gebäudeart",
+    ],
     combinableWith: ["bund-kfw270"],
   },
   "bund-kfw270": {

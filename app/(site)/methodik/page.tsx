@@ -405,7 +405,7 @@ export default async function MethodikPage() {
           <br />
           <span style={S.muted}>
             Wartungskosten (ca. 150–250 €/Jahr) sind nicht einberechnet.
-            Alle Werte im Ergebnis manuell anpassbar.
+            Ein Teil dieser Werte lässt sich im Ergebnis von Hand anpassen.
           </span>
         </div>
         <p style={S.p}>

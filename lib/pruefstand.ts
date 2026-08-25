@@ -30,6 +30,7 @@ import { MARKTWERT_GEPRUEFT_ISO, MARKTWERT_REVIEW_BY } from "./marktwert-config"
 import { DEFAULT_HEATPUMP_CONFIG } from "./heatpump-config";
 import { DEFAULT_PRICES } from "./prices-config";
 import { RECHTSTEXTE_GEPRUEFT_ISO } from "./rechtstexte-stand";
+import { rechtsbelegeGeprueftIso } from "./rechtsbelege";
 
 export interface PruefEintrag {
   /** In der Sprache der Seite, damit die Meldung ohne Code-Kenntnis lesbar ist. */
@@ -231,6 +232,18 @@ export const PRUEFSTAND: PruefEintrag[] = [
     waechter: "solar-check-legal-waechter",
     rhythmus: "quartalsweise, 15. Februar/Mai/August/November",
     maxAlterTage: 120,
+    runbook: "scripts/rechtstexte-verify.md",
+  },
+  {
+    was: "Belege der Rechtsaussagen in Rechnern und Ratgebern",
+    feld: "RECHTSBELEGE (ältester Eintrag)",
+    // Bewusst das ÄLTESTE Prüfdatum, nicht das jüngste und keinen Mittelwert:
+    // Ein Durchschnitt würde einen vergessenen Eintrag hinter frisch geprüften
+    // verstecken — und genau der vergessene ist der, den man sehen will.
+    geprueftIso: rechtsbelegeGeprueftIso(),
+    waechter: "solar-check-legal-waechter",
+    rhythmus: "quartalsweise, zusammen mit den Rechtstexten",
+    maxAlterTage: 200,
     runbook: "scripts/rechtstexte-verify.md",
   },
   {
