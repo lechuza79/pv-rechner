@@ -77,6 +77,29 @@ export const NETZ_ROLLE =
 export type PostfachArt = "website" | "kundenanfrage" | "allgemein" | "netz" | "person";
 
 /**
+ * Stellen, die im Impressum eines Versorgers stehen MUESSEN oder regelmaessig
+ * stehen — und die nie unser Adressat sind.
+ *
+ * Gemessen 24.08.2026 ueber alle Versorger: Von 232 Adressen auf fremder Domain
+ * waren die haeufigsten die Bundesnetzagentur (40x) und die Schlichtungsstelle
+ * Energie (38x). Beide schreibt das Energiewirtschaftsgesetz vor; dazu kommen
+ * Landesregulierungsbehoerden und die Webagentur des Hauses. Eine Adresse aus
+ * dem Impressum ungeprueft zu uebernehmen hiesse, dem Betreiber die
+ * Bundesnetzagentur als Kontakt anzubieten.
+ */
+export const FREMDE_STELLE =
+  /bnetza\.de|bundesnetzagentur|schlichtungsstelle|universalschlichtung|regulierungskammer|landesregulierungsbehoerde|\.bund\.de$|\.hessen\.de$|\.bwl\.de$|\.nrw\.de$|\.rlp\.de$|\.bayern\.de$|verbraucherzentrale|datenschutz\w*\.de$/i;
+
+/**
+ * Dienstleister, die ihre eigene Adresse ins Impressum setzen (Webagentur,
+ * Hoster, Rechtsberatung). Erkannt am Umfeld, nicht an einer Firmenliste —
+ * eine gepflegte Agenturliste waere dasselbe Wettrennen wie eine offene
+ * Ausschlussliste und nie fertig.
+ */
+export const DIENSTLEISTER_HINWEIS =
+  /realisierung|umsetzung|technische\s+umsetzung|gestaltung|webdesign|webentwicklung|programmierung|agentur|hosting|konzeption/i;
+
+/**
  * Einordnung einer einzelnen Adresse.
  *
  * Die Reihenfolge ist Absicht und bildet ab, wie nah die Stelle an der
@@ -116,6 +139,14 @@ export const KONTAKT_MUSTER = /kontakt|ansprechpartner|kundenservice|schreiben-s
  * dass es einen Weg gibt, ohne Mail eine Nachricht zu hinterlassen — und genau
  * das ist der nach § 7 UWG saubere Erstkontakt.
  */
+/** Steht die Adresse im Umfeld eines Dienstleister-Hinweises? 300 Zeichen davor
+ *  — so weit reicht ein "Technische Umsetzung: ..."-Block. */
+export function naheDienstleisterHinweis(html: string, mail: string): boolean {
+  const i = html.indexOf(mail);
+  if (i < 0) return false;
+  return DIENSTLEISTER_HINWEIS.test(html.slice(Math.max(0, i - 300), i));
+}
+
 export function hatFormular(html: string): boolean {
   return /<textarea[\s>]/i.test(html);
 }
@@ -404,7 +435,14 @@ export function werteAus(
       const dom = mail.split("@")[1];
       if (!dom) continue;
       const eigen = !eigeneDomain || dom === eigeneDomain || dom.endsWith(`.${eigeneDomain}`);
-      if (!eigen && !istImpressum) continue;
+      // Eine fremde Domain kommt nur aus dem Impressum herein — und auch dort
+      // nicht blind: Behoerden und Schlichtungsstellen stehen dort kraft
+      // Gesetzes, die Agentur aus Eitelkeit. Beide sind nie unser Adressat.
+      if (!eigen) {
+        if (!istImpressum) continue;
+        if (FREMDE_STELLE.test(dom)) continue;
+        if (naheDienstleisterHinweis(seite.html, roh)) continue;
+      }
       if (postfaecher.some((p) => p.mail === mail)) continue;
       postfaecher.push({ mail, art: postfachArt(mail, allgemeinesRollenmuster) });
     }

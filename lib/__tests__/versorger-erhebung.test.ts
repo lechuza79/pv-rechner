@@ -368,6 +368,49 @@ describe("Gesamtauswertung", () => {
     expect(erg.postfaecher.map((p) => p.mail)).toContain("info@sw-freudenstadt.de");
   });
 
+  it("nimmt Behoerden und Schlichtungsstellen NICHT aus dem Impressum mit", () => {
+    // Gemessen ueber alle Versorger: 40x Bundesnetzagentur, 38x
+    // Schlichtungsstelle Energie. Beide schreibt das Energiewirtschaftsgesetz
+    // ins Impressum — sie ungeprueft zu uebernehmen hiesse, dem Betreiber die
+    // Aufsichtsbehoerde als Kontakt anzubieten.
+    const erg = werteAus(
+      {
+        start: { url: "https://sw.de/", html: "<p>Willkommen</p>" },
+        weitere: [
+          {
+            url: "https://sw.de/impressum",
+            html: "<p>info@sw-abkuerzung.de</p><p>Schlichtungsstelle: info@schlichtungsstelle-energie.de</p><p>verbraucherservice@bnetza.de</p>",
+          },
+        ],
+      },
+      "sw.de",
+      ALLGEMEIN,
+      new Date("2026-08-24T12:00:00Z"),
+    );
+    const mails = erg.postfaecher.map((p) => p.mail);
+    expect(mails).toContain("info@sw-abkuerzung.de");
+    expect(mails).not.toContain("info@schlichtungsstelle-energie.de");
+    expect(mails).not.toContain("verbraucherservice@bnetza.de");
+  });
+
+  it("nimmt die Agentur aus dem Impressum nicht mit", () => {
+    const erg = werteAus(
+      {
+        start: { url: "https://sw.de/", html: "<p>Willkommen</p>" },
+        weitere: [
+          {
+            url: "https://sw.de/impressum",
+            html: "<p>info@sw-abkuerzung.de</p><p>Technische Umsetzung und Gestaltung: kontakt@agentur-beispiel.de</p>",
+          },
+        ],
+      },
+      "sw.de",
+      ALLGEMEIN,
+      new Date("2026-08-24T12:00:00Z"),
+    );
+    expect(erg.postfaecher.map((p) => p.mail)).not.toContain("kontakt@agentur-beispiel.de");
+  });
+
   it("nimmt keine Adresse von einer fremden Domain", () => {
     const erg = werteAus(
       { start: { url: "https://sw.de/", html: "vertrieb@agentur-webdesign.de" }, weitere: [] },
