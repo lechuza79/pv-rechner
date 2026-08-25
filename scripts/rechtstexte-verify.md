@@ -146,6 +146,11 @@ Datenschutzerklärung.**
     an, etwas zu senden — hier weist niemand etwas an, die Angabe kommt mit der
     Anfrage, weil das Protokoll sie vorsieht, und sie beschreibt die **einbettende
     Website**, nicht das Gerät.
+  - **Der befürchtete Preis tritt nicht ein.** Beim Abwägen stand hier, der
+    serverseitige Weg koste die statische Auslieferung aller Embed-Seiten. Falsch:
+    Die Middleware sitzt vor der Auslieferung und ersetzt sie nicht — auf der
+    Produktion antwortet `/embed/strommix` weiterhin aus dem CDN (`x-vercel-cache:
+    HIT`, gemessen 25.08.2026). Es bleibt eine Middleware-Ausführung je Abruf.
   - **Was die Gegenprüfung angreifen soll:** Rn. 43 nennt Kopfzeilen-Mechanismen
     ausdrücklich und sagt, deren Auswertung *könne* die Vorschrift auslösen — dort
     allerdings im Zusammenhang mit Fingerprinting und dem Verfolgen von

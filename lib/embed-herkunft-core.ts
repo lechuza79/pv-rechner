@@ -32,6 +32,16 @@
 // vertretbare als die erste. Nachzuprüfen bleibt sie trotzdem
 // (`scripts/rechtstexte-verify.md`).
 //
+// WAS DIESER WEG NICHT KOSTET — nachgemessen, weil ich das Gegenteil behauptet
+// hatte: Beim Aufschreiben der Alternative stand hier, sie koste „die statische
+// Auslieferung aller Embed-Seiten, jeder Widget-Abruf liefe durch eine
+// Function". Das ist falsch. Die Middleware sitzt VOR der Auslieferung und
+// ersetzt sie nicht; auf der Produktion antwortet `/embed/strommix` weiterhin
+// mit `x-vercel-cache: HIT` (gemessen 25.08.2026, direkt nach dem Umbau). Es
+// bleibt bei einer Middleware-Ausführung je Abruf — das ist der wirkliche
+// Preis, und er ist ein anderer als der befürchtete. Wer eine Bauweise wegen
+// ihrer Kosten verwirft, misst sie vorher.
+//
 // DATENSPARSAMKEIT ist die Bedingung, unter der das überhaupt gebaut werden
 // darf — die Widgets sind Einbettenden gegenüber als „cookielos, kein
 // Browser-Speicher" zugesagt:
