@@ -18,14 +18,22 @@
 // genau diese Anlagen tragen die Leistung, die im Atlas summiert wird. Ihr
 // anzulegender Wert ist der Zuschlagswert der Ausschreibung.
 //
-// Quelle (zuletzt am 18.08.2026 direkt bei der Behörde abgelesen):
-// Bundesnetzagentur, "Solaranlagen des ersten Segments — Beendete
+// Quelle: Bundesnetzagentur, "Solaranlagen des ersten Segments — Beendete
 // Ausschreibungen / Statistiken" (bundesnetzagentur.de → Fachthemen →
 // Ausschreibungen → Solaranlagen1 → BeendeteAusschreibungen), Spalte
-// "durchschnittlicher, mengengewichteter Zuschlagswert". Die jüngste Runde
-// (Gebotstermin 1. Juli 2026) steht dort mit 2.134.567 kW ausgeschrieben,
-// 2.134.657 kW bezuschlagt und 4,79 ct/kWh — also erneut praktisch vollständig
-// bezuschlagt.
+// "Durchschnittlicher, mengengewichteter Zuschlagswert (ct/kWh)". Wann zuletzt
+// jemand dort nachgesehen hat, sagt FREIFLAECHE_GEPRUEFT_ISO — hier stand das
+// Datum ein zweites Mal getippt, und eine zweite Kopie eines Datums wird
+// irgendwann nicht mitgepflegt. Die jüngste Runde (Gebotstermin 1. Juli 2026)
+// steht dort mit 2.134.567 kW ausgeschrieben, 2.134.657 kW bezuschlagt und
+// 4,79 ct/kWh — also erneut praktisch vollständig bezuschlagt.
+//
+// DIE TABELLE STEHT NICHT IM SEITENTEXT, sondern in der verlinkten Amtsdatei
+// (_DL/Statistiken/statistik_solar1.xlsx, Blatt "Übersicht" — ein Blatt je
+// Gebotstermin daneben). Wer nur die HTML-Seite abruft, bekommt Navigation und
+// muss der Zusammenfassung eines Lesewerkzeugs glauben; die Datei trägt die
+// Zahlen ungerundet. Spalte "Gew. Mittel" im Block ZUSCHLÄGE — im Block GEBOTE
+// steht eine gleichnamige Spalte, die etwas anderes misst.
 //
 // ── BEWUSSTE GRENZEN ────────────────────────────────────────────────────────
 //  · NICHT abgebildet ist der gesetzliche anzulegende Wert für die kleinen,
@@ -124,7 +132,7 @@ export const FREIFLAECHE_VALID_FROM = "2026-08-18";
  * Ein Lauf, der an einer Bot-Prüfung, einem 404 oder einer Umstrukturierung der
  * Amtsseite gescheitert ist, lässt das Datum stehen und meldet den Fehlschlag.
  */
-export const FREIFLAECHE_GEPRUEFT_ISO = "2026-08-18";
+export const FREIFLAECHE_GEPRUEFT_ISO = "2026-08-25";
 
 /**
  * Nächste fällige Prüfung: Der letzte Gebotstermin des Jahres 2026 ist der

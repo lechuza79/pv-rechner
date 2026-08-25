@@ -223,7 +223,13 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   // zugunsten der Wärmepumpe, auch wenn sie klein war (1.000 € über 20 Jahre).
   wpMaintenance: 250,
   wpFixCostPerYear: 50,
-  gridCo2PerKwh: 0.38,   // DE-Netzmix 2024, konservativ statisch
+  gridCo2PerKwh: 0.38,   //  CO2/kWh. BEWUSST ueber dem aktuellen Strommix: Das Umweltbundesamt weist
+  // fuer 2023 379 g aus, fuer 2024 353 g und fuer 2025 344 g (CLIMATE CHANGE
+  // 16/2026, im Repo unter docs/quellen/). Der Wert bleibt statisch und hoch,
+  // weil er zulasten der Waermepumpe wirkt — die vorsichtige Richtung. Bis zum
+  // 25.08.2026 stand hier „DE-Netzmix 2024", was schlicht das falsche Jahr nannte
+  // und die Absicht verschwieg; die Klima-Config beschriftete dieselbe Zahl
+  // wieder anders. Wer ihn senkt, senkt ihn in BEIDEN Configs gemeinsam.
   gasPriceCtPerKwh: Math.round(FUEL_PRICE.gas.price * 100), // = 11, aus FUEL_PRICE (Single Source)
   gasEfficiency: 0.95,
   gasCo2PerKwh: FUEL_PRICE.gas.co2PerKwh, // = 0.20, aus FUEL_PRICE

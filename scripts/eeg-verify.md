@@ -152,7 +152,7 @@ falsch. Also: **Sachstand ändern heißt Modul ändern, nicht Texte suchen.**
 
 **Aktueller Zustand (04.08.2026):** Regierungsentwurf, im Kabinett beschlossen am
 29.07.2026 — kein Gesetz. Als Nächstes Bundesrat und Bundestag, dazu die
-beihilferechtliche Genehmigung der EU-Kommission (§ 102 des Entwurfs). Die
+beihilferechtliche Genehmigung der EU-Kommission (§ 104 des Entwurfs). Die
 **Kabinettsfassung ist amtlich veröffentlicht** und die maßgebliche Primärquelle:
 `docs/quellen/EEG-2027_Regierungsentwurf_BMWE_2026-07-29.pdf` (der ältere
 Referentenentwurf vom 18.07. bleibt daneben liegen — nur noch historisch).

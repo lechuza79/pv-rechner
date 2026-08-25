@@ -125,7 +125,7 @@ export function anzulegenderWertCt(inbetriebnahmeJahr: number, w = EEG_ENTWURF_W
  * dem Wechsel in die Direktvermarktung, nicht mit der Inbetriebnahme.
  *
  * Erfüllt die Anlage die Größenstaffel nicht (zu groß im Inbetriebnahmejahr oder
- * Inbetriebnahme ab 2030), gibt es die Übergangszahlung nicht — dann steht ab
+ * Inbetriebnahme ab 2031), gibt es die Übergangszahlung nicht — dann steht ab
  * dem ersten Jahr nur der Markt da.
  */
 export function einspeiseVerlauf(input: RegimeInput): RegimeJahr[] {
@@ -209,16 +209,34 @@ export function mittlererSatzCt(verlauf: RegimeJahr[]): number {
  * Der Einspeisedeckel des Entwurfs als Leistung in kW (§ 9 Abs. 2b), oder
  * `undefined`, wenn er auf diese Anlage nicht anzuwenden ist.
  *
- * Er greift nur für Solaranlagen des zweiten Segments (Gebäude) mit weniger als
- * 100 Kilowatt und nicht für Steckersolargeräte bis 2 kW. Beide Schwellen
- * standen im Referentenentwurf noch in eckigen Klammern und sind erst in der
- * Kabinettsfassung entschieden — wer sie aus der älteren Fassung übernimmt,
- * deckelt Anlagen, die der Entwurf gar nicht meint.
+ * Er greift für Solaranlagen des zweiten Segments — nach § 3 Nr. 41b n. F. jede
+ * Anlage auf, an oder in einem Gebäude oder einer Lärmschutzwand — mit weniger
+ * als 100 Kilowatt. Die 100-kW-Schwelle stand im Referentenentwurf noch in
+ * eckigen Klammern und ist erst in der Kabinettsfassung entschieden; wer sie aus
+ * der älteren Fassung übernimmt, deckelt Anlagen, die der Entwurf nicht meint.
+ *
+ * KEINE Steckersolar-Ausnahme hier — sie stand bis zum 25.08.2026 als
+ * `kwp <= 2` in dieser Funktion und war in zwei Richtungen falsch:
+ *
+ *   • § 9 Abs. 2b Satz 2 nimmt nicht jede kleine Anlage aus, sondern nur
+ *     Steckersolargeräte, die kumulativ bis 2 kW Solarleistung UND bis 800
+ *     Voltampere Wechselrichterleistung haben und hinter der Entnahmestelle
+ *     eines Letztverbrauchers laufen. Eine fest installierte 1,5-kWp-Dachanlage
+ *     blieb hier ungedeckelt, obwohl der Entwurf sie erfasst — der Rechner
+ *     ließ eigene Werte ab 1 kWp zu, der Fall ist also erreichbar.
+ *   • Die Bedingung gehört auch nicht nachgebaut: Dieser Rechner modelliert
+ *     per Konstruktion eine Dachanlage (Dachform, Ausrichtung, Neigung), die
+ *     Wechselrichterleistung kennt er gar nicht. Steckersolar hat einen eigenen
+ *     Rechner mit eigenem Kern. Für echtes Steckersolar wäre die Ausnahme
+ *     ohnehin wirkungslos: Bei höchstens 800 VA liegt die Einspeisung immer
+ *     unter 50 % von höchstens 2 kWp.
+ *
+ * Geprüft am 25.08.2026 im Volltext der Bundesrats-Drucksache 470/26, § 9
+ * Abs. 2b (gedruckte S. 10) und § 3 Nr. 41b (S. 6).
  */
 export function einspeiseDeckelKw(kwp: number, regime: EinspeiseRegime): number | undefined {
   if (regime !== "reform2027") return undefined;
   if (kwp >= EEG_ENTWURF_WERTE.einspeiseGrenzeUnterKw) return undefined;
-  if (kwp <= EEG_ENTWURF_WERTE.einspeiseGrenzeSteckerBisKw) return undefined;
   return kwp * EEG_ENTWURF_WERTE.einspeiseGrenzeAnteil;
 }
 

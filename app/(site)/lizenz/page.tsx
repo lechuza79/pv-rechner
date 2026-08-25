@@ -112,7 +112,7 @@ export default function LizenzPage() {
 
         <h2 style={S.h2}>Was unter dieser Lizenz steht</h2>
         <p style={S.p}>
-          {OWN_WORK_LICENSE.name} ({OWN_WORK_LICENSE.code}) gilt für diese vier Dinge:
+          {OWN_WORK_LICENSE.name} ({OWN_WORK_LICENSE.code}) gilt für Folgendes:
         </p>
         <ul style={S.liste}>
           <li style={S.li}>die Charts und Grafiken auf dieser Seite, auch als heruntergeladenes Bild,</li>

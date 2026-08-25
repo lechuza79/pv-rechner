@@ -316,7 +316,7 @@ export default async function EinspeiseverguetungTabellePage() {
         </p>
         <VerlaufMitMeilensteinen jahre={chartJahre} />
         <p style={{ ...S.small, marginBottom: 16, marginTop: 12 }}>
-          Kleinste Dachanlagen-Klasse (bis 2008: bis 30 kW, ab 2009: bis 10 kWp), ab dem
+          Kleinste Dachanlagen-Klasse (bis März 2012: bis 30 kW, ab April 2012: bis 10 kWp), ab dem
           30.07.2022 Teileinspeisung; 2000–2011 Jahresanfangswerte. Der sichtbare Sprung
           im Juli 2022 ist die EEG-2023-Anhebung zum Stichtag 30.07.2022 — real, kein
           Datenfehler; die Linie zeigt für Juli 2022 den bis zum 29.07. gültigen Satz.
@@ -438,7 +438,7 @@ export default async function EinspeiseverguetungTabellePage() {
         </div>
         <p style={{ ...S.small, marginBottom: 16 }}>
           Klasse: bis 2008 Dachanlagen bis 30 kW (die 10-kWp-Klasse existierte noch
-          nicht), ab 2009 bis 10 kWp.{" "}
+          nicht), ab April 2012 bis 10 kWp.{" "}
           <DataSourceNote source={DATA_SOURCES.eegVerguetung} /> Wie der fallende Satz und
           der Zubau zusammenhängen, zeigt die{" "}
           <Link href="/photovoltaik-zubau-deutschland" style={S.link}>PV-Zubau-Datenstory</Link>{" "}

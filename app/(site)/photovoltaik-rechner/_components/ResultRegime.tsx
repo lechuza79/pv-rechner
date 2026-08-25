@@ -43,7 +43,7 @@ export interface ResultRegimeProps {
   heuteSatzCt: number;
   /** Ist im Ergebnis Volleinspeisung gewählt? Der Entwurf streicht den
    *  Volleinspeisungs-Aufschlag für Neuanlagen (§ 48 Abs. 2a EEG 2023 entfällt,
-   *  Begründung S. 248/250) — der Schalter bleibt bewusst bedienbar
+   *  Begründung S. 251/250) — der Schalter bleibt bewusst bedienbar
    *  (Betreiber-Entscheidung 05.08.2026), aber der Reform-Zweig erklärt,
    *  dass sich Volleinspeisen dann nicht mehr lohnt. */
   vollGewaehlt: boolean;
@@ -175,7 +175,7 @@ export default function ResultRegime({
             )}
             {verlustProzent > 0 && (
               <>
-                {" "}Neue Dachanlagen unter {EEG_ENTWURF_WERTE.einspeiseGrenzeUnterKw} Kilowatt
+                {" "}Neue Gebäudeanlagen unter {EEG_ENTWURF_WERTE.einspeiseGrenzeUnterKw} Kilowatt
                 dürfen zudem nur die Hälfte ihrer Leistung einspeisen; hier gehen dadurch{" "}
                 <strong style={{ color: v("--color-text-primary") }}>{verlustProzent} %</strong> des
                 Überschusses verloren{einspeiseAnteil < 1 ? " — ein größerer Speicher fängt einen Teil auf" : ""}.

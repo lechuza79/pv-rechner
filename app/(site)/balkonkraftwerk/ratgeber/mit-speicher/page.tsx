@@ -39,7 +39,7 @@ export const metadata: Metadata = pageMetadata({
   path: "/balkonkraftwerk/ratgeber/mit-speicher",
   title: "Lohnt sich ein Balkonkraftwerk mit Speicher? Ehrlich gerechnet",
   description:
-    "Ein Balkonspeicher ist eine zweite Anschaffung in der Größenordnung der Module und hält deutlich kürzer. Wann er sich trägt und wann nicht — durchgerechnet für jede Haushaltsgröße, mit dem gemessenen Wirkungsgrad statt dem Datenblatt-Wert.",
+    "Ein Balkonspeicher ist eine zweite Anschaffung in der Größenordnung der Module und hält deutlich kürzer. Wann er sich trägt und wann nicht — durchgerechnet für jede Haushaltsgröße, mit dem Wirkungsgrad eines real vermessenen Systems statt dem Datenblatt-Wert.",
   ogImageTitle: "Balkonkraftwerk mit Speicher",
   ogImageSubtitle: "Wann er sich trägt — und wann nicht.",
 });
@@ -237,7 +237,7 @@ export default function BalkonSpeicherPage() {
 
         <ArticleMeta
           headline="Lohnt sich ein Balkonkraftwerk mit Speicher?"
-          description="Wann sich ein Balkonspeicher trägt und wann nicht — für jede Haushaltsgröße durchgerechnet, mit dem gemessenen Wirkungsgrad statt dem aus dem Datenblatt."
+          description="Wann sich ein Balkonspeicher trägt und wann nicht — für jede Haushaltsgröße durchgerechnet, mit dem Wirkungsgrad eines real vermessenen Systems statt dem aus dem Datenblatt."
           path="/balkonkraftwerk/ratgeber/mit-speicher"
           published="2026-08-19"
           modified="2026-08-19"

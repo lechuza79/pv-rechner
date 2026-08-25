@@ -23,7 +23,7 @@ export interface FeedInRates {
  * source: the Supabase `feed_in_rates` table is not provisioned, so the API
  * always falls back here.
  *
- * The rates drop by a fixed 1 % every half-year (Feb 1 / Aug 1, § 49 Abs. 1 EEG
+ * The rates drop by a fixed 1 % every half-year (Feb 1 / Aug 1, § 49 EEG
  * 2023) — that is a schedule, not an event. Keeping the periods side by side
  * means the switch happens on its own at the cutoff instead of depending on
  * someone deploying that morning (same reasoning as the absolute calendar years
@@ -32,12 +32,12 @@ export interface FeedInRates {
  * DERIVATION (the rule, so no one has to guess a value again):
  *   anzulegender Wert  = Basiswert × 0,99^n, gerundet auf 2 Nachkommastellen
  *   Einspeisevergütung = anzulegender Wert − 0,40 ct/kWh (§ 53 Abs. 1 EEG)
- *   Basiswerte (§ 48 Abs. 2 / Abs. 2a EEG 2023, Gebäude):
+ *   Basiswerte (§ 48 Abs. 2 / Abs. 2a EEG 2023 i. d. F. vom 15.05.2024 — der heutige Wortlaut nennt andere Zahlen, die Behörde führt die Kette aber von diesen fort, § 100 Abs. 40 EEG):
  *     Teileinspeisung 8,60 (≤10 kWp) / 7,50 (≤40 kWp)
  *     Volleinspeisung 13,40 (≤10 kWp) / 11,30 (≤40 kWp)
  *   n = Zahl der Halbjahresschritte seit 2024-02-01 (n = 1 für 02/2024).
  *
- * Critical: § 49 Abs. 1 Satz 2 requires the UNROUNDED value to be carried
+ * Critical: § 49 Satz 2 requires the UNROUNDED value to be carried
  * forward. Degressing the already-rounded published rate instead drifts and
  * misses 11 of the officially published cells — e.g. Teileinspeisung ≤40 kWp in
  * 02/2026 (7,13 amtlich vs. 7,15 verdriftet). That same shortcut produces the
@@ -135,7 +135,7 @@ export function naechsteDegressionIso(todayIso: string): string {
 }
 
 /** Degressionsschritte seit dem 01.02.2024 für ein Inbetriebnahme-Datum
- *  (§ 49 Abs. 1 EEG: 1 % je Halbjahr, Stichtage 1.2. und 1.8.). */
+ *  (§ 49 EEG: 1 % je Halbjahr, Stichtage 1.2. und 1.8.). */
 export function feedInDegressionSteps(dateIso: string): number {
   if (dateIso < "2024-02-01") return 0;
   const [y, m] = dateIso.split("-").map(Number);

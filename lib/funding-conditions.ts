@@ -48,7 +48,32 @@ export type Pruefung =
   | { art: "antragsweg"; weg: "online" | "hausbank" | "formular" | "zweistufig"; registrierung?: boolean }
   | { art: "antragsteller"; wer: Antragsteller[] }
   | { art: "gebaeude-bestand"; bauantragVorIso?: string }
-  | { art: "gebaeude-art"; nur: GebaeudeArt[] }
+  | {
+      art: "gebaeude-art";
+      nur: GebaeudeArt[];
+      /**
+       * Bis zu dieser Anlagengröße gilt die Gebäudeart als erfüllt, ohne dass
+       * sie geprüft wird — eine VERMUTUNGSREGEL, keine Obergrenze.
+       *
+       * Gebraucht wird das für den umsatzsteuerlichen Nullsatz: § 12 Abs. 3
+       * Nr. 1 Satz 1 UStG verlangt die Anlage an einer Wohnung oder einem dem
+       * Gemeinwohl dienenden Gebäude; Satz 2 sagt, die Voraussetzungen des
+       * Satzes 1 „gelten als erfüllt", wenn die Bruttoleistung nicht mehr als
+       * 30 kW (peak) beträgt. Eine Fiktion wirkt nur in eine Richtung: Sie sagt,
+       * wann etwas als erfüllt GILT, nie wann es als nicht erfüllt gilt.
+       *
+       * Ohne dieses Feld waren beide Sätze als zwei UND-verknüpfte Bedingungen
+       * erfasst, und das gab zwei falsche Auskünfte gleichzeitig: 40 kWp auf
+       * einem Wohnhaus galten als ausgeschlossen (obwohl Satz 1 unmittelbar
+       * erfüllt ist und nur nachgewiesen statt vermutet werden muss), und
+       * 8 kWp auf einem Nicht-Wohngebäude ebenso — ausgerechnet der Fall, für
+       * den die Vermutung geschaffen wurde. Geprüft am 25.08.2026 im Volltext:
+       * § 12 Abs. 3 Nr. 1 UStG sowie UStAE 12.18 Abs. 5 Satz 2 („Vereinfachung
+       * für die Prüfung der Gebäudeart") und Abs. 6 Satz 2, der die beiden
+       * Wege ausdrücklich mit „entweder … oder" verbindet.
+       */
+      vermutetBisKwp?: number;
+    }
   | { art: "anlage-groesse"; minKwp?: number; maxKwp?: number }
   | {
       art: "anlage-speicher";
@@ -160,8 +185,14 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
         "es gibt weder Antrag noch Frist noch einen Topf, der leerlaufen kann.",
     },
     pruefungen: [
-      { ausBedingung: "Wohngebäude", pruefung: { art: "gebaeude-art", nur: ["wohn"] } },
-      { ausBedingung: "Anlage bis 30 kWp", pruefung: { art: "anlage-groesse", maxKwp: 30 } },
+      {
+        ausBedingung:
+          "Anlage an einer Wohnung oder einem dem Gemeinwohl dienenden Gebäude — bis 30 kWp ohne Nachweis der Gebäudeart",
+        // EINE Bedingung mit zwei Nachweiswegen, nicht zwei Bedingungen: siehe
+        // die Begründung an `vermutetBisKwp`. Eine Größenprüfung steht hier
+        // bewusst NICHT mehr — der Nullsatz kennt keine Leistungsobergrenze.
+        pruefung: { art: "gebaeude-art", nur: ["wohn", "gruendach", "fassade", "denkmal"], vermutetBisKwp: 30 },
+      },
     ],
     durchRegion: [],
     hinweise: [],

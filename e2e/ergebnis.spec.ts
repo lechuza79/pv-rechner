@@ -8,6 +8,8 @@ import {
   kernzahlen,
   reiter,
   abschnitte,
+  editierbareWerte,
+  wertSetzen,
 } from "./ergebnis";
 
 /**
@@ -124,6 +126,46 @@ for (const erg of ERGEBNISSE) {
             `der Schalter hat Eingaben verworfen statt sie ruhen zu lassen.`,
         ).toBe(vorher);
       }
+    });
+
+    /**
+     * Ein von Hand eingetragener Wert muss im Ergebnis ankommen.
+     *
+     * Das ist die Bedienung, mit der jemand seine EIGENEN Annahmen einträgt —
+     * ein Angebot, das er vorliegen hat, sein tatsächlicher Strompreis. Kommt
+     * sie nicht an, rechnet die Seite weiter mit unserer Schätzung und zeigt
+     * trotzdem die eingetippte Zahl an: der Fehler, den man am wenigsten
+     * bemerkt, weil alles danach plausibel aussieht.
+     *
+     * Geprüft wird der ERSTE editierbare Wert des Ergebnisses. Alle wären
+     * schöner, kosten aber je Wert einen vollen Neuaufbau — und die Bauweise
+     * ist bei allen dieselbe.
+     */
+    test("ein von Hand gesetzter Wert kommt im Ergebnis an", async ({ page }) => {
+      await page.goto(erg.pfad);
+      if (erg.ohneTeilenLink) await bisZumErgebnis(page);
+      await ergebnisBereit(page, erg.enthaelt);
+
+      const werte = await editierbareWerte(page);
+      test.skip(werte.length === 0, "dieses Ergebnis hat keine editierbaren Werte");
+
+      const vorher = await kernzahlen(page, erg.kernzahlen);
+      const ziel = werte[0];
+      // Die Zahl aus der Beschriftung lesen und deutlich verändern — ein
+      // kleiner Unterschied könnte an einer Rundung hängenbleiben.
+      const roh = ziel.text.replace(/[^\d,.]/g, "").replace(/\./g, "").replace(",", ".");
+      const alt = Number.parseFloat(roh);
+      test.skip(!Number.isFinite(alt) || alt <= 0, `„${ziel.label}" trägt keine lesbare Zahl`);
+      const neuerWert = String(Math.round(alt * 1.5));
+
+      await wertSetzen(page, ziel.label, neuerWert);
+      await ergebnisBereit(page, erg.enthaelt);
+
+      expect(
+        await kernzahlen(page, erg.kernzahlen),
+        `„${ziel.label}" von ${alt} auf ${neuerWert} gesetzt — die Kernzahlen bleiben gleich. ` +
+          `Die Eingabe wird angezeigt, aber nicht gerechnet.`,
+      ).not.toBe(vorher);
     });
 
     test("jeder Szenario-Reiter rechnet neu", async ({ page }) => {
