@@ -26,7 +26,8 @@ Neun Prüfer parallel, je ein Themengebiet. Jede Rechtsaussage danach von einem
 zweiten Prüfer angegriffen, dessen Auftrag lautete zu **widerlegen**, nicht zu
 bestätigen.
 
-**Das hat sich gelohnt: fünf Befunde haben die Gegenprüfung nicht überlebt.**
+**Das hat sich gelohnt: acht Befunde haben die Gegenprüfung nicht überlebt** —
+knapp ein Fünftel aller Rechtsbefunde.
 Der lehrreichste: Ein Prüfer wollte eine Aussage über den Primärenergie-Vergleich
 bei Neubauten streichen, weil sie unbelegt sei. Der Gegenprüfer zeigte, dass sie
 belastbar und sogar konservativ ist — die Streichung wäre der Fehler gewesen.
@@ -97,3 +98,31 @@ ungeprüfte Bestand einfach weitergewachsen.
   fehlt im Katalog. Der Betrag wäre rechenbar, seine Bedingungen (Ökostrom-
   Pflicht, Erstwohnsitz, Beratung vorab, Jahresdeckel) kann das Modell nicht
   ausdrücken.
+
+
+## Die widerlegten Befunde, weil sie am meisten lehren
+
+Acht Befunde hielten der Gegenprüfung nicht stand. Vier davon hätte ich ohne sie
+„korrigiert" — und dabei richtige Angaben durch falsche ersetzt:
+
+1. **Primärenergie-Vergleich im Neubau.** Als unbelegt gemeldet, tatsächlich
+   belastbar und sogar konservativ formuliert.
+2. **Der Anteil negativer Börsenpreise.** Als überzeichnet gemeldet („eher 16 %").
+   Die 24 % stimmen — die 16 % entstehen nur mit verschobenem Nenner, und die
+   Herleitung stand zwei Bildschirmseiten über der beanstandeten Zahl.
+3. **Die Autarkie-Spanne.** Der Prüfer rechnete mit einem günstigen Fall und
+   hielt ihn für den typischen. Der Nachbarsatz traf die Simulation punktgenau —
+   beide stammen erkennbar aus derselben Betrachtung.
+4. **Der Vergleich der Netzausfallzeiten.** Hier wäre die „Korrektur" der
+   schlimmere Fehler gewesen: Der vorgeschlagene Ersatzwert misst mit
+   Wirbelstürmen, unser deutscher Wert ohne höhere Gewalt. Faktor 57 statt der
+   ehrlichen 11.
+5. **Zwei Ministeriums-Zitate**, als nicht auffindbar gemeldet. Sie standen
+   wörtlich dort; der Prüfer hatte auf der falschen Seite gesucht und war einer
+   Bot-Sperre aufgesessen — genau der Falle, vor der die betroffene Datei in
+   ihrem eigenen Kommentar warnt.
+
+**Das Muster:** Ein Prüfer, der viele echte Fehler findet, wird beim nächsten
+Befund mutiger, nicht vorsichtiger. Und beim Bestätigen sieht er weniger genau
+hin als beim Beanstanden — mehrere Fehler fand erst der Gegenprüfer in dem, was
+der erste abgehakt hatte.
