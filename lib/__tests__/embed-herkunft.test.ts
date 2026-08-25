@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readdirSync, readFileSync } from "fs";
 import { join } from "path";
-import { EMBED_WIDGETS, hostAusHerkunft, istEmbedWidget } from "../embed-herkunft";
+import { EMBED_WIDGETS, hostAusHerkunft, istEmbedWidget, widgetAusPfad } from "../embed-herkunft-core";
 
 const WURZEL = join(__dirname, "..", "..");
 
@@ -25,11 +25,25 @@ describe("Einbettungs-Zählung", () => {
     expect(istEmbedWidget("<script>alert(1)</script>")).toBe(false);
   });
 
+  describe("Widget aus der eigenen Adresse", () => {
+    it("liest das erste Segment nach /embed", () => {
+      expect(widgetAusPfad("/embed/strommix")).toBe("strommix");
+      expect(widgetAusPfad("/embed/karte/bayern")).toBe("karte");
+    });
+
+    it("verwirft alles andere", () => {
+      expect(widgetAusPfad("/embed")).toBeNull();
+      expect(widgetAusPfad("/embed/erfunden")).toBeNull();
+      expect(widgetAusPfad("/photovoltaik-rechner")).toBeNull();
+    });
+  });
+
   describe("Herkunft → Domain", () => {
     it("kürzt einen vollständigen Ursprung auf die Domain", () => {
       expect(hostAusHerkunft("https://www.musterstadt.de")).toBe("www.musterstadt.de");
       // Der Pfad wird nie gespeichert — er wäre eine Aussage darüber, welche
-      // Unterseite jemand aufruft, und genau das wollen wir nicht wissen.
+      // Unterseite jemand aufruft, und genau das wollen wir nicht wissen. Der
+      // Anfrage-Kopf trägt ihn je nach Einstellung der einbettenden Seite mit.
       expect(hostAusHerkunft("https://musterstadt.de/rathaus/energie")).toBe("musterstadt.de");
     });
 
@@ -46,8 +60,8 @@ describe("Einbettungs-Zählung", () => {
       expect(hostAusHerkunft(null)).toBeNull();
       expect(hostAusHerkunft("ohne-punkt")).toBeNull();
       expect(hostAusHerkunft("a".repeat(300) + ".de")).toBeNull();
-      // Eine Host-Angabe kommt aus einem fremden Browser und ist frei wählbar;
-      // sie landet als Text in einer Admin-Ansicht.
+      // Der Anfrage-Kopf kommt aus einem fremden Browser und ist frei wählbar;
+      // sein Inhalt landet als Text in einer Admin-Ansicht.
       expect(hostAusHerkunft("<script>alert(1)</script>")).toBeNull();
       expect(hostAusHerkunft("boese.de' or 1=1--")).toBeNull();
     });
@@ -64,13 +78,12 @@ describe("Einbettungs-Zählung", () => {
     // Browser-Speicher). Sie steht in der Tabellendefinition und ist von außen
     // nicht sichtbar — deshalb hier festgenagelt.
     const quelle = readFileSync(join(WURZEL, "lib", "embed-herkunft.ts"), "utf8");
-    const ddl = quelle.slice(quelle.indexOf("EMBED_HERKUNFT_DDL"), quelle.indexOf("EIGENE"));
-    const spalten = ddl.slice(ddl.indexOf("create table"), ddl.indexOf("primary key"));
-    expect(spalten).not.toMatch(/\bip\b|adresse|user_agent|besucher|session|cookie/i);
+    const ddl = quelle.slice(quelle.indexOf("EMBED_HERKUNFT_DDL"), quelle.indexOf("primary key"));
+    expect(ddl).not.toMatch(/\bip\b|adresse|user_agent|besucher|session|cookie/i);
     // Der Kalendertag ist bewusst ein `date`, kein `timestamp`: Mit einer
     // Uhrzeit wäre eine Zeile wieder einem einzelnen Aufruf zuzuordnen.
-    expect(spalten).toMatch(/tag\s+date\s+not null/);
-    expect(spalten).not.toMatch(/timestamptz|timestamp\b/);
+    expect(ddl).toMatch(/tag\s+date\s+not null/);
+    expect(ddl).not.toMatch(/timestamptz|timestamp\b/);
   });
 
   it("hält die Zähl-Funktion von den öffentlichen Rollen fern", () => {
@@ -83,6 +96,33 @@ describe("Einbettungs-Zählung", () => {
     for (const rolle of ["public", "anon", "authenticated"]) {
       expect(quelle).toMatch(new RegExp(`revoke all on function sc_embed_herkunft_zaehlen\\(text, text\\) from ${rolle}`));
     }
+  });
+
+  it("liest die Herkunft NUR aus dem Anfrage-Kopf, nie im Browser — BLOCKER", () => {
+    // Der Kern der Rechtsfrage. Die erste Fassung (25.08.2026, wenige Stunden
+    // live) lieferte JavaScript aus, das den Browser anwies, die Herkunft zu
+    // senden — nach den EDSA-Leitlinien 2/2023 Rn. 33, 53 und 63 ein Zugriff
+    // auf die Endeinrichtung, der eine Einwilligung verlangt hätte. Wer diesen
+    // Weg wieder aufmacht, macht die Zählung einwilligungspflichtig, ohne dass
+    // es irgendwo auffällt.
+    const middleware = readFileSync(join(WURZEL, "middleware.ts"), "utf8");
+    expect(middleware).toMatch(/headers\.get\("referer"\)/);
+
+    for (const datei of ["embed-herkunft-core.ts", "embed-herkunft.ts"]) {
+      const quelle = readFileSync(join(WURZEL, "lib", datei), "utf8");
+      expect(quelle).not.toMatch(/ancestorOrigins|document\.referrer/);
+      expect(quelle).not.toMatch(/localStorage|sessionStorage|document\.cookie/);
+    }
+
+    // Und es darf keinen offenen Eingang mehr geben, über den ein Browser eine
+    // Herkunft melden könnte.
+    let routeDa = true;
+    try {
+      readFileSync(join(WURZEL, "app", "api", "embed", "herkunft", "route.ts"), "utf8");
+    } catch {
+      routeDa = false;
+    }
+    expect(routeDa, "die offene Melde-Route ist wieder da").toBe(false);
   });
 
   it("wird dort beschrieben, wo wir sie zusagen", () => {
@@ -99,10 +139,6 @@ describe("Einbettungs-Zählung", () => {
       join(WURZEL, "app", "(site)", "energie-widgets", "client.tsx"),
     ];
     for (const pfad of stellen) {
-      // Ohne Kommentare geprüft: Geprüft wird, was ein Leser sieht. Sonst
-      // schlägt die Prüfung schon an, wenn ein Kommentar die frühere
-      // Formulierung zitiert — und genau das tut der Kommentar, der die
-      // Änderung begründet.
       // Bewusst UNGEFILTERT geprüft, Kommentare eingeschlossen. Ein Versuch,
       // Kommentare vorher wegzuschneiden, hat in der Galerie-Datei quer durch
       // echten Code gegriffen und ausgerechnet den Textabschnitt gelöscht, um
@@ -120,20 +156,5 @@ describe("Einbettungs-Zählung", () => {
       expect(text).toMatch(/nicht wiedererkannt|nicht wieder\b|erkennt einzelne Besucher nicht/i);
       expect(text).toMatch(/Kalendertag/);
     }
-  });
-
-  it("meldet nur aus einem fremden Rahmen heraus", () => {
-    // Ohne diese Bedingung zählt jeder direkte Aufruf unserer eigenen
-    // Embed-Adresse als Einbettung.
-    const client = readFileSync(join(WURZEL, "components", "WidgetHerkunft.tsx"), "utf8");
-    expect(client).toMatch(/window\.self === window\.top/);
-    // Und die eigene Adresse wird gar nicht erst gemeldet. Ohne diese Zeile
-    // feuerte die Galerie bei JEDEM Aufruf 18 Anfragen, die der Server
-    // anschließend wegwarf (im Browser nachgemessen, 25.08.2026) — bezahlte
-    // Arbeit für nichts. Die Prüfung im Server bleibt trotzdem, sie ist die
-    // Sicherung gegen eine Meldung aus einem fremden Browser.
-    expect(client).toMatch(/new URL\(herkunft\)\.host === window\.location\.host/);
-    // Und nichts davon darf im Browser des Besuchers liegenbleiben.
-    expect(client).not.toMatch(/localStorage|sessionStorage|document\.cookie/);
   });
 });

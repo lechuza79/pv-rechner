@@ -494,7 +494,11 @@ export default function DatenschutzPage() {
             der Galerie — auch im Kommentar, deshalb steht sie hier nicht. */}
         <p style={S.p}>
           Zusätzlich zählen wir, <strong>wo</strong> unsere Widgets eingebunden
-          sind. Gespeichert werden dabei ausschließlich die Domain der
+          sind. Grundlage dafür ist allein die Angabe, die dein Browser beim
+          Laden des Widgets von sich aus mitschickt — welche Seite es
+          eingebunden hat. Wir lesen dafür nichts von deinem Gerät und führen
+          in deinem Browser keinen Code aus, der uns etwas zurückmeldet.
+          Gespeichert werden ausschließlich die Domain der
           einbettenden Website, die Bezeichnung des Widgets und der
           Kalendertag — also zum Beispiel „musterstadt.de, Strommix-Grafik,
           25.08.2026". Nicht gespeichert werden deine IP-Adresse, eine Kennung,
