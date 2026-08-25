@@ -24,6 +24,7 @@
 // Stromkennzeichnung" — dieselbe Fehlerklasse, gegen die der Förder-Wächter
 // seine eigene Kennung `seite-unerreichbar` trägt.
 
+import { entwirreAdressen } from "./personen-fund";
 import {
   type Verantwortlich,
   VERSORGER_VOKABULAR,
@@ -375,7 +376,7 @@ export function werteAus(
   // Agentur oder Dienstleister — dieselbe Regel wie bei den Kommunen, und sie
   // ist dort an ~90 Gemeinden gemessen worden.
   const postfaecher: { mail: string; art: PostfachArt }[] = [];
-  for (const roh of Array.from(new Set(adressenAus(gesamtHtml, gesamtText)))) {
+  for (const roh of Array.from(new Set(adressenAus(gesamtHtml, entwirreAdressen(gesamtText))))) {
     const mail = decodeEntities(roh).trim().toLowerCase();
     const dom = mail.split("@")[1];
     if (!dom) continue;

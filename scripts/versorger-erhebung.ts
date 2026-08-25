@@ -30,6 +30,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import { VERSORGER_VOKABULAR, domainOf, findImpressumUrl, findLinkUrl } from "../lib/kommunen-profil";
+import { suchAdresse, suchFormular } from "../lib/funding-url-suche";
 import {
   type Werkzeugbefund,
   KEIN_WERKZEUG,
@@ -290,6 +291,30 @@ async function erhebe(k: Kandidat, stichtag: Date): Promise<ErhebungMitWerkzeug>
     for (const u of ziele) await hole(u);
   }
 
+  // STUFE 4 — die Suchfunktion der Website, wenn wir immer noch keine Adresse
+  // und kein Formular haben. Derselbe Weg, der bei der Foerder-Suche die
+  // Trefferquote gerettet hat: Das Formular auf der Seite nennt Adresse und
+  // Feldname selbst, statt CMS-Pfade zu raten. Nur als letzte Stufe — die
+  // meisten Versorger sind vorher gefunden, und jeder Abruf belastet fremde
+  // Server.
+  {
+    const zwischen = werteAus(
+      { start: { url: basis, html: start.html }, weitere },
+      domainOf(basis),
+      VERSORGER_VOKABULAR.rolle,
+      stichtag,
+    );
+    if (!zwischen.postfaecher.length && !zwischen.kontaktformular) {
+      const formular = suchFormular(start.html, basis);
+      if (formular) {
+        for (const wort of ["Impressum", "Kontakt"]) {
+          const treffer = await holeSeite(suchAdresse(formular, wort));
+          if ("html" in treffer) weitere.push({ url: suchAdresse(formular, wort), html: treffer.html });
+        }
+      }
+    }
+  }
+
   const erhebung = werteAus(
     { start: { url: basis, html: start.html }, weitere },
     domainOf(basis),
@@ -394,7 +419,7 @@ async function main(): Promise<void> {
   log("");
   log("");
   log("── Werkzeug auf der eigenen Website ───────────────────");
-  for (const z of ["leadfunnel", "eingekauft", "rechner", "gratis-kataster", "unklar", "keins"]) {
+  for (const z of ["rechner-mit-leadfunnel", "eingekauft", "rechner", "gratis-kataster", "kontaktformular", "unklar", "keins"]) {
     log(`  ${z.padEnd(16)} : ${erreicht.filter((r) => r.e.werkzeug.zustand === z).length}`);
   }
   log("  nach Thema:");

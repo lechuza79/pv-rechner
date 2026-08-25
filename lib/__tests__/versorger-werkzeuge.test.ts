@@ -19,20 +19,32 @@ describe("Die drei Zustaende", () => {
     expect(werkzeugAusSeite(html, URL_SW).zustand).toBe("rechner");
   });
 
-  it("erkennt den Leadfunnel an den Personenfeldern", () => {
+  it("nennt ein Formular OHNE Rechnung ein Kontaktformular", () => {
+    // Es heisst "Rechner", rechnet aber nicht. Beweist NICHTS ueber ein
+    // vorhandenes Werkzeug — im Gegensatz zum Rechner mit Leadfunnel.
     const html = `<h1>Solarrechner</h1>
       <input type="text" name="vorname"><input type="text" name="nachname">
       <input type="tel" name="telefon">`;
-    expect(werkzeugAusSeite(html, URL_SW).zustand).toBe("leadfunnel");
+    expect(werkzeugAusSeite(html, URL_SW).zustand).toBe("kontaktformular");
   });
 
-  it("nennt einen Rechner MIT Kontaktabfrage einen Leadfunnel", () => {
-    // Das ist die Kernunterscheidung: Wer erst rechnen laesst und dann die
-    // Kontaktdaten abfragt, betreibt einen Funnel mit vorgeschalteter Rechnung.
-    // Fuer unsere Ansprache zaehlt der Funnel, nicht die Rechnung.
+  it("nennt einen Rechner MIT Kontaktabfrage Rechner mit Leadfunnel", () => {
+    // Die Kernunterscheidung: Hier IST ein Rechner da — er gibt sein Ergebnis
+    // nur nicht ohne Kontaktdaten heraus. Das belegt Budget und Zustaendigkeit,
+    // ein blosses Kontaktformular belegt beides nicht.
     const html = `<input type="number" name="kwp" min="1">
       <input type="tel" name="telefon"><input type="text" name="nachname">`;
-    expect(werkzeugAusSeite(html, URL_SW).zustand).toBe("leadfunnel");
+    expect(werkzeugAusSeite(html, URL_SW).zustand).toBe("rechner-mit-leadfunnel");
+  });
+
+  it("haelt die beiden Faelle sauber auseinander", () => {
+    const nurFormular = werkzeugAusSeite('<h1>Solarrechner</h1><input type="tel" name="telefon">', URL_SW);
+    const mitRechnung = werkzeugAusSeite(
+      '<h1>Solarrechner</h1><input type="range" min="1" max="20"><input type="tel" name="telefon">',
+      URL_SW,
+    );
+    expect(nurFormular.zustand).toBe("kontaktformular");
+    expect(mitRechnung.zustand).toBe("rechner-mit-leadfunnel");
   });
 
   it("zaehlt ein reines Newsletter-Feld nicht als Leadfunnel", () => {
@@ -109,10 +121,16 @@ describe("Fremde Einbettung", () => {
     expect(werkzeugAusSeite(html, "https://sw.de/solar").zustand).toBe("gratis-kataster");
   });
 
-  it("meldet eine fremde Einbettung auch ohne bekannten Anbieter", () => {
-    const b = werkzeugAusSeite('<iframe src="https://irgendein-anbieter.example/tool"></iframe>', URL_SW);
+  it("ein anonymer Rahmen ist KEIN Befund", () => {
+    // Gemessen 24.08.2026: Von 43 "unklar" waren fast alle nur ein Video, ein
+    // Einwilligungsbanner oder eine Karte. Jede Seite hat irgendeinen Rahmen.
+    const b = werkzeugAusSeite('<h1>Photovoltaik</h1><iframe src="https://www.youtube.com/embed/x"></iframe>', URL_SW);
     expect(b.eingebettet).toBe(true);
-    expect(b.anbieter).toBeNull();
+    expect(b.zustand).toBe("keins");
+  });
+
+  it("ein Rahmen, der selbst nach einem Werkzeug aussieht, bleibt ein Befund", () => {
+    const b = werkzeugAusSeite('<iframe src="https://irgendwer.example/solarrechner"></iframe>', URL_SW);
     expect(b.zustand).toBe("unklar");
   });
 
@@ -141,7 +159,7 @@ describe("Nur echte Werkzeugseiten werden beurteilt", () => {
 
   it("haelt einen Suchschlitz nicht fuer ein Personenfeld", () => {
     const html = '<h1>Solarrechner</h1><input id="CMSSuchformularSuchbegriff" name="VolltextSuchbegriff" type="text">';
-    expect(werkzeugAusSeite(html, "https://sw.de/solarrechner").zustand).not.toBe("leadfunnel");
+    expect(werkzeugAusSeite(html, "https://sw.de/solarrechner").zustand).not.toBe("kontaktformular");
   });
 
   it("beurteilt eine echte Rechnerseite weiterhin", () => {
@@ -238,12 +256,12 @@ describe("Belegstelle", () => {
 });
 
 describe("Bester Befund aus mehreren Seiten", () => {
-  it("laesst den Leadfunnel den echten Rechner schlagen", () => {
+  it("laesst den Rechner mit Leadfunnel den blossen Rechner schlagen", () => {
     // Rangfolge als inhaltliche Aussage: Beim Leadfunnel ist unser Argument am
     // staerksten, also darf er nicht von einem Rechner ueberdeckt werden.
     const a = werkzeugAusSeite('<input type="number" name="kwp" min="1">', URL_SW);
-    const b = werkzeugAusSeite('<input type="tel" name="telefon">', `${URL_SW}-2`);
-    expect(besterBefund([a, b]).zustand).toBe("leadfunnel");
+    const b = werkzeugAusSeite('<input type="number" min="1"><input type="tel" name="telefon">', `${URL_SW}-2`);
+    expect(besterBefund([a, b]).zustand).toBe("rechner-mit-leadfunnel");
   });
 
   it("verliert die Bestandsdaten nicht, wenn sie auf einer anderen Seite stehen", () => {

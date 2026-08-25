@@ -138,8 +138,17 @@ export type WerkzeugZustand =
   /** Kostenloses Angebot der öffentlichen Hand, nur eingebunden. Kein Beleg
    *  für Zahlungsbereitschaft. */
   | "gratis-kataster"
-  /** Heißt „Rechner", sammelt aber Kontaktdaten. */
-  | "leadfunnel"
+  /** Rechnet WIRKLICH, gibt das Ergebnis aber erst gegen Kontaktdaten frei.
+   *  Beweist, dass ein Rechner da ist — und ist genau der Fall, gegen den
+   *  dieses Produkt antritt. */
+  | "rechner-mit-leadfunnel"
+  /** Heißt „Rechner", rechnet aber gar nicht: nur ein Formular. Beweist NICHTS
+   *  über ein vorhandenes Werkzeug.
+   *
+   *  DIE TRENNUNG IST DER PUNKT (Betreiber, 24.08.2026): Beides in einen Topf
+   *  zu werfen zerstoert die Aussagekraft — der eine Fall belegt Budget und
+   *  Zustaendigkeit, der andere belegt nichts. */
+  | "kontaktformular"
   /** Etwas ist da, aber die Bauart ließ sich nicht bestimmen. */
   | "unklar";
 
@@ -272,6 +281,7 @@ export function werkzeugAusSeite(html: string, url: string): Werkzeugbefund {
   const anbieterTreffer = BEKANNTE_ANBIETER.find((a) => a.re.test(html));
   let eingebettet = false;
   let oeffentlich = false;
+  let werkzeugRahmen = false;
   for (const m of Array.from(html.matchAll(FREMD_EINGEBETTET))) {
     const src = m[1];
     // Eine Einbettung der eigenen Domain ist keine fremde. Relative Adressen
@@ -283,6 +293,10 @@ export function werkzeugAusSeite(html: string, url: string): Werkzeugbefund {
       if (fremd === eigen || fremd.endsWith(`.${eigen}`)) continue;
       eingebettet = true;
       if (OEFFENTLICHES_ANGEBOT.test(src)) oeffentlich = true;
+      // Sieht die Einbettung selbst nach einem Werkzeug aus? Ein anonymer
+      // Rahmen ist KEIN Befund — gemessen 24.08.2026: Von 43 "unklar" waren
+      // fast alle nur ein Video, ein Einwilligungsbanner oder eine Karte.
+      if (WERKZEUG_MUSTER.test(src)) werkzeugRahmen = true;
     } catch {
       /* unbrauchbare Adresse */
     }
@@ -300,10 +314,13 @@ export function werkzeugAusSeite(html: string, url: string): Werkzeugbefund {
   let zustand: WerkzeugZustand;
   if (oeffentlich) zustand = "gratis-kataster";
   else if (verlinkt) zustand = "eingekauft";
-  else if (hatPerson) zustand = "leadfunnel";
+  else if (hatPerson && hatZahlen) zustand = "rechner-mit-leadfunnel";
+  else if (hatPerson) zustand = "kontaktformular";
   else if (eingebettet && anbieterTreffer) zustand = "eingekauft";
   else if (hatZahlen) zustand = "rechner";
-  else if (eingebettet || anbieterTreffer) zustand = "unklar";
+  // NUR ein Rahmen, der selbst nach einem Werkzeug aussieht, oder ein bekannter
+  // Anbieter bleibt "unklar". Ein anonymer Rahmen ist nichts.
+  else if (werkzeugRahmen || anbieterTreffer) zustand = "unklar";
   else zustand = "keins";
 
   return {
@@ -342,11 +359,13 @@ function beleg(html: string, muster: RegExp): string | null {
  * echter Rechner schlägt „unklar", und alles schlägt „keins".
  */
 export function besterBefund(befunde: Werkzeugbefund[]): Werkzeugbefund {
+  // Rangfolge = Staerke des Belegs fuer ein vorhandenes Werkzeug.
   const rang: Record<WerkzeugZustand, number> = {
-    leadfunnel: 5,
-    eingekauft: 4,
-    rechner: 3,
-    "gratis-kataster": 2,
+    "rechner-mit-leadfunnel": 6,
+    eingekauft: 5,
+    rechner: 4,
+    "gratis-kataster": 3,
+    kontaktformular: 2,
     unklar: 1,
     keins: 0,
   };
