@@ -190,6 +190,10 @@ async function setup(): Promise<void> {
     -- Foerder-Wachter: "nicht erreicht" ist kein Pruefergebnis.
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS erhebung_geprueft_am timestamptz;
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS erhebung_fehler text;
+    -- Was der Versorger auf seiner eigenen Website schon einsetzt: Zustand
+    -- (keins / rechner / eingekauft / leadfunnel / gratis-kataster / unklar),
+    -- Anbieter, Belegstelle. Entscheidet, OB und WOMIT angesprochen wird.
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS werkzeug jsonb;
 
     -- Belege der gemessenen Zuordnung.
     ALTER TABLE utility_communes ADD COLUMN IF NOT EXISTS anlagen int;

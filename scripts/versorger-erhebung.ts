@@ -31,6 +31,17 @@ import { fileURLToPath } from "node:url";
 
 import { VERSORGER_VOKABULAR, domainOf, findImpressumUrl, findLinkUrl } from "../lib/kommunen-profil";
 import {
+  type Werkzeugbefund,
+  KEIN_WERKZEUG,
+  besterBefund,
+  werkzeugAusSeite,
+  SOLARSEITE_MUSTER,
+  istBeurteilbar,
+  solarseitenLinks,
+  werkzeugKandidaten,
+  werkzeugLink,
+} from "../lib/versorger-werkzeuge";
+import {
   type Erhebung,
   KENNZEICHNUNG_MUSTER,
   KONTAKT_MUSTER,
@@ -215,10 +226,12 @@ async function sitemapAdressen(basis: string): Promise<string[]> {
   return [...adressen];
 }
 
-async function erhebe(k: Kandidat, stichtag: Date): Promise<Erhebung> {
+type ErhebungMitWerkzeug = Erhebung & { werkzeug: Werkzeugbefund };
+
+async function erhebe(k: Kandidat, stichtag: Date): Promise<ErhebungMitWerkzeug> {
   const basis = k.website!;
   const start = await holeSeite(basis);
-  if ("fehler" in start) return { ...LEER, fehler: start.fehler };
+  if ("fehler" in start) return { ...LEER, fehler: start.fehler, werkzeug: KEIN_WERKZEUG };
 
   const weitere: { url: string; html: string }[] = [];
   const geholt = new Set<string>([basis]);
@@ -247,9 +260,19 @@ async function erhebe(k: Kandidat, stichtag: Date): Promise<Erhebung> {
   const kennzeichnungOffen = !kennzeichnungFund(bisher(), basis);
   const kontaktOffen = !findLinkUrl(bisher(), basis, KONTAKT_MUSTER);
 
-  if (kennzeichnungOffen || kontaktOffen) {
+  {
     const alleAdressen = await sitemapAdressen(basis);
     const ziele: string[] = [];
+    // Werkzeugseiten IMMER holen — der Zustand (schon ein Rechner? nur ein
+    // Formular? nur das Landeskataster eingebunden?) entscheidet, ob und womit
+    // dieser Versorger angesprochen wird.
+    // DIE SOLARSEITE GEZIELT SUCHEN — von der Startseite aus und aus dem
+    // Seitenverzeichnis. Die Startseite ist der WEG dorthin, nicht das Urteil.
+    ziele.push(...solarseitenLinks(start.html, basis, 3));
+    ziele.push(...alleAdressen.filter((u) => SOLARSEITE_MUSTER.test(u)).sort((a, b) => a.length - b.length).slice(0, 3));
+    ziele.push(...werkzeugKandidaten(alleAdressen, 2));
+    const vonStartWerkzeug = werkzeugLink(start.html, basis);
+    if (vonStartWerkzeug) ziele.push(vonStartWerkzeug);
     if (kennzeichnungOffen) {
       const direkt = alleAdressen.filter((u) => {
         try {
@@ -267,12 +290,29 @@ async function erhebe(k: Kandidat, stichtag: Date): Promise<Erhebung> {
     for (const u of ziele) await hole(u);
   }
 
-  return werteAus(
+  const erhebung = werteAus(
     { start: { url: basis, html: start.html }, weitere },
     domainOf(basis),
     VERSORGER_VOKABULAR.rolle,
     stichtag,
   );
+  // Über ALLE geholten Seiten urteilen, nicht nur über die Werkzeugseite: Ein
+  // Formular-„Rechner" hängt oft auf der Produktseite, nicht unter /rechner.
+  // EINE EBENE TIEFER: Der Rechner liegt oft nicht auf der Solarseite, sondern
+  // dahinter — bei Stadtwerke Schwaebisch Gmuend als "PV-Anlagencheck" auf einer
+  // eigenen Unterseite. Wer nur die Solarseite ansieht, meldet dort "unklar".
+  for (const sn of [...weitere]) {
+    if (!istBeurteilbar(sn.html, sn.url)) continue;
+    const tiefer = werkzeugLink(sn.html, sn.url);
+    if (tiefer) await hole(tiefer);
+  }
+
+  const werkzeug = besterBefund(
+    [{ url: basis, html: start.html }, ...weitere]
+      .filter((sn) => istBeurteilbar(sn.html, sn.url))
+      .map((sn) => werkzeugAusSeite(sn.html, sn.url)),
+  );
+  return { ...erhebung, werkzeug };
 }
 
 /** Wenige Aufgaben gleichzeitig, Reihenfolge egal. */
@@ -312,6 +352,10 @@ async function main(): Promise<void> {
             e.kundenanfrageEmail ? `Kunden ${e.kundenanfrageEmail}` : null,
             e.netzEmail ? `Netz ${e.netzEmail}` : null,
             e.kontaktformular ? "Formular" : "kein Formular",
+            e.werkzeug.zustand === "keins"
+              ? null
+              : `Werkzeug: ${e.werkzeug.zustand}/${e.werkzeug.thema}${e.werkzeug.anbieter ? ` (${e.werkzeug.anbieter})` : ""}`,
+            e.werkzeug.bestandsdaten ? "Bestandsdaten" : null,
             e.kennzeichnungUrl
               ? `Kennzeichnung ${e.kennzeichnungJahr ?? "Jahr?"}${
                   e.kennzeichnungForm?.grafik ? " Grafik" : ""
@@ -347,6 +391,24 @@ async function main(): Promise<void> {
     `  ─ direkt am richtigen Schreibtisch  : ${z((e) => !!e.websiteEmail || !!e.verantwortlich?.operativ)}`,
   );
   log(`  ─ irgendein Weg ins Unternehmen     : ${z((e) => !!e.websiteEmail || !!e.verantwortlich?.operativ || e.kontaktformular || !!e.kundenanfrageEmail)}`);
+  log("");
+  log("");
+  log("── Werkzeug auf der eigenen Website ───────────────────");
+  for (const z of ["leadfunnel", "eingekauft", "rechner", "gratis-kataster", "unklar", "keins"]) {
+    log(`  ${z.padEnd(16)} : ${erreicht.filter((r) => r.e.werkzeug.zustand === z).length}`);
+  }
+  log("  nach Thema:");
+  for (const t of ["solar", "waermepumpe", "tarif", "unbekannt"]) {
+    const n = erreicht.filter((r) => r.e.werkzeug.zustand !== "keins" && r.e.werkzeug.thema === t).length;
+    log(`    ${t.padEnd(14)} : ${n}`);
+  }
+  log(`  Bestandsdaten/Atlas-artig        : ${erreicht.filter((r) => r.e.werkzeug.bestandsdaten).length}`);
+  const anbieter = new Map<string, number>();
+  for (const r of erreicht) if (r.e.werkzeug.anbieter) anbieter.set(r.e.werkzeug.anbieter, (anbieter.get(r.e.werkzeug.anbieter) ?? 0) + 1);
+  if (anbieter.size) {
+    log("  erkannte Anbieter:");
+    for (const [a, n] of [...anbieter.entries()].sort((x, y) => y[1] - x[1])) log(`    ${n} x ${a}`);
+  }
   log("");
   log(`  Stromkennzeichnungsseite gefunden : ${mitSeite.length}`);
   log(`    davon mit Grafik-Indiz          : ${mitSeite.filter((r) => r.e.kennzeichnungForm?.grafik).length}`);
@@ -387,6 +449,7 @@ async function main(): Promise<void> {
         stromkennzeichnung_url: e.kennzeichnungUrl,
         stromkennzeichnung_form: e.kennzeichnungForm,
         stromkennzeichnung_jahr: e.kennzeichnungJahr,
+        werkzeug: e.werkzeug,
         erhebung_geprueft_am: jetzt,
         erhebung_fehler: null,
       })
