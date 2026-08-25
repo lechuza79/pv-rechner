@@ -79,9 +79,21 @@ einer abgelaufenen Belegschuld.
 einen echten Konstruktionsfehler in sich selbst: Weil das Register unter `lib/`
 liegt, zählten seine eigenen Einträge als Nennung; er belegte sich selbst.
 
-Neun Vorschriften stehen offen als Belegschuld mit Frist statt stillschweigend zu
-fehlen. Die EEG-2009-Fundstellen sind derzeit nicht beschaffbar — das Gesetz ist
-nicht mehr abrufbar und liegt nicht im Repo.
+Die Belegschuld ist auf null. Neun Vorschriften standen zwischenzeitlich offen —
+**keine davon blieb ungeklärt, aber nur drei wurden belegt.** Sechs wurden
+entfernt, weil ihre Nennung nicht trug: Das Impressum führte einen alten
+Textbaustein, in dem jemand nur das Gesetzeskürzel getauscht hatte (die vier
+zitierten Paragrafen regeln heute Sperransprüche, Anbieterlisten und
+Auskunftsverlangen — nicht die Haftung für eigene Inhalte); eine Datenquelle
+trug eine Bereitstellungspflicht als „Lizenz"; und eine Marktzahl war mit einer
+Vorschrift beschriftet, die überhaupt keinen Preis setzt.
+
+Die drei übrigen galten als „nicht beschaffbar" — auch das war falsch. Die
+amtlichen Gesetzblatt-Faksimiles sind frei abrufbar, nur nicht über die Wege,
+die zuerst probiert wurden.
+
+**Daraus die vielleicht nützlichste Regel der ganzen Inventur: Eine Vorschrift,
+die sich nicht belegen lässt, ist häufiger falsch zitiert als unauffindbar.**
 
 Damit stimmt der Satz „ab jetzt nur noch Aktualität und Neues" — vorher wäre der
 ungeprüfte Bestand einfach weitergewachsen.
