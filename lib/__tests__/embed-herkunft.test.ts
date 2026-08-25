@@ -111,6 +111,12 @@ describe("Einbettungs-Zählung", () => {
       // nicht wörtlich zitieren. Das ist der günstigere der beiden Fehler.
       const text = readFileSync(pfad, "utf8");
       expect(text).not.toMatch(/kein\s+Tracking/i);
+      // Und keine zweite Absolutformel an ihre Stelle setzen. „Zweck ist
+      // ausschließlich …" stand am 25.08.2026 einen CI-Lauf lang in dieser
+      // Erklärung und hat einen bestehenden Browser-Test umgeworfen, der die
+      // Formel seitenweit verbietet — zu Recht: Sie war schon beim Schreiben
+      // unwahr, weil dieselbe Ansicht auch zeigt, welches Widget wo läuft.
+      expect(text).not.toMatch(/Zweck ist ausschließlich/);
       expect(text).toMatch(/nicht wiedererkannt|nicht wieder\b|erkennt einzelne Besucher nicht/i);
       expect(text).toMatch(/Kalendertag/);
     }

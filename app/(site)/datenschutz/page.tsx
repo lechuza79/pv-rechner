@@ -500,11 +500,12 @@ export default function DatenschutzPage() {
           25.08.2026". Nicht gespeichert werden deine IP-Adresse, eine Kennung,
           die aufgerufene Unterseite oder eine Uhrzeit; aus diesen Angaben ist
           eine Zuordnung zu dir auch nachträglich nicht möglich. Gezählt werden
-          Aufrufe, nicht Personen. Zweck ist ausschließlich die Frage, ob unser Angebot
-          an Städte und Gemeinden (Abschnitt 15) angenommen wird.
-          Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse
-          daran zu erfahren, auf welchen Websites unsere Widgets genutzt
-          werden).
+          Aufrufe, nicht Personen. Wir nutzen die Zählung, um zu sehen, ob unser
+          Angebot an Städte und Gemeinden (Abschnitt 15) angenommen wird und
+          welche Widgets tatsächlich eingesetzt werden. Rechtsgrundlage ist
+          Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse daran zu erfahren,
+          auf welchen Websites unsere Widgets genutzt werden); dieser
+          Verarbeitung kannst du jederzeit widersprechen (Abschnitt 12).
         </p>
 
         {/* Der Kommunen-Outreach kam in dieser Erklärung überhaupt nicht vor,
