@@ -126,6 +126,44 @@ Datenschutzerklärung.**
 ## Offene Punkte
 
 - **OFFEN (bis 03/2027):** Resend-Zertifizierung im DPF-Register nachprüfen (fällig 03.03.2027).
+- **OFFEN (bis 11/2026):** Einbettungs-Zählung nach § 25 Abs. 1 TDDDG gegenprüfen
+  lassen — **mit zwei Prüfern, von denen der zweite den ersten widerlegen soll.**
+  Die Bauweise ist am 25.08.2026 bereits einmal an dieser Frage gescheitert und
+  umgestellt worden; was bleibt, ist die Bestätigung der neuen Einordnung, nicht
+  mehr die offene Grundsatzfrage.
+  - **Verworfen (erste Fassung, wenige Stunden live):** Ein Baustein im Embed-Layout
+    las die Herkunft im Browser (`ancestorOrigins`, ersatzweise `document.referrer`)
+    und meldete sie an eine eigene Route. Die EDSA-Leitlinien 2/2023 (Fassung 2.0,
+    07.10.2024, Volltext am 25.08.2026 gelesen) beschreiben genau das: Rn. 33
+    („JavaScript code, where the accessing entity instructs the browser … to send
+    asynchronous requests with the targeted information. Such access **clearly**
+    falls within the scope"), Rn. 53 für lokal erzeugte Information und Rn. 63 für
+    ausgelieferten Client-Code. Die Ausnahme in § 25 Abs. 2 greift nicht — für die
+    Anzeige des Widgets ist die Zählung nicht erforderlich.
+  - **Gebaut:** Die Middleware liest den `referer`-Anfragekopf beim Ausliefern des
+    eingebetteten Dokuments (`middleware.ts`, Logik in `lib/embed-herkunft-core.ts`).
+    Der Unterschied ist der aus Rn. 32: Dort weist die auslesende Stelle das Gerät
+    an, etwas zu senden — hier weist niemand etwas an, die Angabe kommt mit der
+    Anfrage, weil das Protokoll sie vorsieht, und sie beschreibt die **einbettende
+    Website**, nicht das Gerät.
+  - **Der befürchtete Preis tritt nicht ein.** Beim Abwägen stand hier, der
+    serverseitige Weg koste die statische Auslieferung aller Embed-Seiten. Falsch:
+    Die Middleware sitzt vor der Auslieferung und ersetzt sie nicht — auf der
+    Produktion antwortet `/embed/strommix` weiterhin aus dem CDN (`x-vercel-cache:
+    HIT`, gemessen 25.08.2026). Es bleibt eine Middleware-Ausführung je Abruf.
+  - **Was die Gegenprüfung angreifen soll:** Rn. 43 nennt Kopfzeilen-Mechanismen
+    ausdrücklich und sagt, deren Auswertung *könne* die Vorschrift auslösen — dort
+    allerdings im Zusammenhang mit Fingerprinting und dem Verfolgen von
+    Ressourcen-Kennungen. Ob diese Einschränkung trägt, ist die eigentliche Frage.
+  - **Nicht vergessen:** An der Einordnung hängen zwei Texte, die live sind —
+    Datenschutzerklärung Abschnitt 14 und der Textbaustein, den Einbettende in ihre
+    eigene Erklärung übernehmen (`/energie-widgets`). Beide sagen inzwischen
+    ausdrücklich, dass im Browser des Besuchers **kein Code von uns läuft**; fällt
+    die Einordnung anders aus, ist das keine Ungenauigkeit mehr, sondern eine
+    Falschaussage — auch in der Erklärung jeder einbettenden Gemeinde.
+  - Festgenagelt von `lib/__tests__/embed-herkunft.test.ts` → „liest die Herkunft
+    NUR aus dem Anfrage-Kopf": Der Browser-Weg darf nicht zurückkommen.
+
 ## Erledigt, aber nachzumessen
 
 **Was das Messskript vom Gerät liest, wird am Skript gemessen, nicht der Dokumentation

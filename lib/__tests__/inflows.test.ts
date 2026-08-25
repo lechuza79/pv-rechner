@@ -88,15 +88,25 @@ describe("Inflows: jede Frage steht dort, wo sie stehen muss", () => {
     // Bombe ohne Wecker. Der Test schlägt an, sobald die Frist abgelaufen ist.
     const heute = new Date();
     for (const inflow of INFLOWS) {
-      for (const aus of inflow.ausgenommen) {
-        const treffer = aus.grund.match(/OFFEN \(bis (\d{2})\/(\d{4})\)/);
-        if (!aus.grund.includes("OFFEN")) continue;
-        expect(treffer, `${inflow.id} → ${aus.datei}: "OFFEN" ohne Frist im Format OFFEN (bis MM/JJJJ)`).not.toBeNull();
+      // BEIDE Textfelder, nicht nur die Ausnahmen: Ein „OFFEN" in der
+      // Begründung eines Einbauorts wurde bis 25.08.2026 nicht geprüft — die
+      // Regel galt breiter als ihr Test, also war sie dort eine Bombe ohne
+      // Wecker. Genau die Lücke, die diese Datei sonst bei anderen anmahnt.
+      const texte: Array<{ wo: string; text: string }> = [
+        ...inflow.ausgenommen.map((a) => ({ wo: a.datei, text: a.grund })),
+        ...inflow.einbau
+          .filter((e) => e.begruendung)
+          .map((e) => ({ wo: e.datei, text: e.begruendung! })),
+      ];
+      for (const aus of texte) {
+        const treffer = aus.text.match(/OFFEN \(bis (\d{2})\/(\d{4})\)/);
+        if (!aus.text.includes("OFFEN")) continue;
+        expect(treffer, `${inflow.id} → ${aus.wo}: "OFFEN" ohne Frist im Format OFFEN (bis MM/JJJJ)`).not.toBeNull();
         const [, monat, jahr] = treffer!;
         const frist = new Date(Number(jahr), Number(monat), 0);
         expect(
           frist >= heute,
-          `${inflow.id} → ${aus.datei}: Frist ${monat}/${jahr} abgelaufen — entscheiden statt verlängern`,
+          `${inflow.id} → ${aus.wo}: Frist ${monat}/${jahr} abgelaufen — entscheiden statt verlängern`,
         ).toBe(true);
       }
     }

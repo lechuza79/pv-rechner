@@ -35,6 +35,7 @@ import { createClient } from "@supabase/supabase-js";
 import {
   linkKandidaten, sitemapKandidaten, sitemapIndex, istEndergebnis, SUCH_VERSION,
   suchFormular, suchAdresse, suchseitenLink, SUCH_BEGRIFFE, SUCHSEITEN_PFADE,
+  sitemapIndexReihenfolge,
   type LinkKandidat,
 } from "../lib/funding-url-suche";
 import { inSchueben } from "../lib/lauf-parallel";
@@ -94,6 +95,41 @@ async function alleZeilen<T>(tabelle: string, spalten: string, filter?: (q: any)
   return out;
 }
 
+/**
+ * Wie `abrufen`, liefert aber zusätzlich die Adresse NACH allen Umleitungen.
+ *
+ * BLOCKER (25.08.2026): Der Host-Filter in `linkKandidaten` und
+ * `sitemapKandidaten` wirft jede Adresse weg, die nicht zum Host der
+ * übergebenen Basis gehört — das ist richtig so, es hält KfW, BAFA und L-Bank
+ * heraus. Nur war die Basis bisher die ERFASSTE Adresse, nicht die
+ * tatsächliche: Steht eine Gemeinde ohne „www" in unserem Bestand und leitet
+ * ihre Domain auf „www" um, ist jeder Link und jeder Sitemap-Eintrag ein
+ * Fremdhost. Ergebnis: null Kandidaten, kein Fehler, keine Meldung — die
+ * Gemeinde gilt als erreichbar und ergebnislos. Nachgestellt an nidda.de: mit
+ * `https://nidda.de/` als Basis liefern beide Funktionen 0 Treffer, mit
+ * `https://www.nidda.de/` findet die Sitemap 45 Kandidaten, darunter die
+ * Förderseite.
+ *
+ * Die Umleitung wurde immer schon verfolgt (`redirect: "follow"`), das Ergebnis
+ * nur weggeworfen. Genau daran ist der Fehler unsichtbar: Die Seite kommt an,
+ * sie ist nur ab da unter falschem Namen gemessen.
+ */
+async function abrufenMitZiel(ziel: string, timeoutMs = 15_000): Promise<{ html: string; startseite: string } | null> {
+  try {
+    const res = await fetch(ziel, {
+      headers: { "User-Agent": UA, "Accept-Language": "de-DE,de;q=0.9" },
+      redirect: "follow",
+      signal: AbortSignal.timeout(timeoutMs),
+    });
+    if (!res.ok) return null;
+    const typ = res.headers.get("content-type") ?? "";
+    if (!/text\/html|xml/i.test(typ)) return null;
+    return { html: await res.text(), startseite: res.url || ziel };
+  } catch {
+    return null;
+  }
+}
+
 async function abrufen(ziel: string, timeoutMs = 15_000): Promise<string | null> {
   try {
     const res = await fetch(ziel, {
@@ -108,6 +144,66 @@ async function abrufen(ziel: string, timeoutMs = 15_000): Promise<string | null>
   } catch {
     return null;
   }
+}
+
+/**
+ * Wie viele Unter-Sitemaps eines Sitemap-Index gelesen werden.
+ *
+ * Eigener Deckel, absichtlich NICHT gegen `MAX_ABRUFE` verrechnet: Das sind
+ * statische XML-Dateien, kein aufgebauter Seiteninhalt, und die Rücksichtsregel
+ * meint den teuren Fall. Ein Deckel muss es trotzdem sein — stuttgart.de führt
+ * 90 Unter-Sitemaps, und die alle zu holen wäre je Gemeinde ein Vielfaches des
+ * gesamten übrigen Laufs.
+ */
+const SITEMAP_MAX_UNTER = 10;
+
+/**
+ * Alle Unter-Sitemaps eines Index lesen, nicht nur die erste (25.08.2026).
+ *
+ * Vorher stand hier `unter[0]` mit der Begründung, wir suchten „keine
+ * Vollständigkeit, sondern einen guten Einstieg". Das war bei einer geteilten
+ * Sitemap kein Einstieg, sondern ein Zufallstreffer: Welche Datei zuerst steht,
+ * entscheidet das Redaktionssystem, nicht der Inhalt. Gemessen an den elf
+ * Index-Fällen einer 50er-Stichprobe: stuttgart.de lieferte **null** Funde,
+ * obwohl seine Förderseite in einer der 90 Dateien steht (rekursiv: 216),
+ * potsdam.de 1 statt 52. Betroffen ist rund ein Fünftel der Kommunal-Domains —
+ * und zwar die einwohnerstärksten, weil nur große Websites ihre Sitemap teilen.
+ *
+ * Gelesen werden die Dateien mit den aussagekräftigsten NAMEN zuerst: Eine
+ * `sitemap-umwelt.xml` schlägt eine `sitemap-news.xml`. Wo die Namen nichts
+ * hergeben (`sitemap-1.xml`, der häufigere Fall), bleibt die Reihenfolge des
+ * Index erhalten — die Sortierung ist stabil und ändert dann nichts.
+ *
+ * Eine Verschachtelungsebene wird mitgenommen: Ein Index, der auf weitere
+ * Indizes zeigt, kommt vor. Tiefer nicht — dort hört die Ersparnis auf und die
+ * Zahl der Dateien wächst multiplikativ.
+ */
+async function ausSitemapIndex(unter: string[], startseite: string): Promise<LinkKandidat[]> {
+  const gefunden: LinkKandidat[] = [];
+  const gesehen = new Set<string>();
+  const warteschlange = sitemapIndexReihenfolge(unter);
+
+  let gelesen = 0;
+  let verschachtelt = false;
+  while (warteschlange.length && gelesen < SITEMAP_MAX_UNTER) {
+    const url = warteschlange.shift()!;
+    if (gesehen.has(url)) continue;
+    gesehen.add(url);
+    const xml = await abrufen(url, 10_000);
+    gelesen++;
+    if (!xml) continue;
+    const tiefer = sitemapIndex(xml);
+    if (tiefer.length) {
+      // Ein Index im Index — einmal, dann ist Schluss.
+      if (!verschachtelt) {
+        verschachtelt = true;
+        warteschlange.unshift(...tiefer.filter((u) => !gesehen.has(u)));
+      }
+      continue;
+    }
+    gefunden.push(...sitemapKandidaten(xml, startseite));
+  }
+  return gefunden;
 }
 
 /**
@@ -146,11 +242,13 @@ const MAX_ABRUFE = 9;
  * darin steckte die Lücke — eine Stadt mit getrennter Photovoltaik- und
  * Balkonseite lieferte eine davon, die andere existierte für uns nie.
  */
-async function sucheFoerderseite(startseite: string): Promise<{ beste: LinkKandidat | null; funde: LinkKandidat[]; abrufe: number; erreichbar: boolean }> {
+async function sucheFoerderseite(gemeldeteAdresse: string): Promise<{ beste: LinkKandidat | null; funde: LinkKandidat[]; abrufe: number; erreichbar: boolean }> {
   let abrufe = 0;
-  const html = await abrufen(startseite);
+  const erstAbruf = await abrufenMitZiel(gemeldeteAdresse);
   abrufe++;
-  if (!html) return { beste: null, funde: [], abrufe, erreichbar: false };
+  if (!erstAbruf) return { beste: null, funde: [], abrufe, erreichbar: false };
+  // Ab hier gilt die Adresse NACH der Umleitung, nicht die erfasste (25.08.2026).
+  const { html, startseite } = erstAbruf;
 
   const gesehen = new Set<string>([startseite]);
   let kandidaten = linkKandidaten(html, startseite);
@@ -162,12 +260,8 @@ async function sucheFoerderseite(startseite: string): Promise<{ beste: LinkKandi
     abrufe++;
     if (sm) {
       const unter = sitemapIndex(sm);
-      if (unter.length && abrufe < MAX_ABRUFE) {
-        // Nur die erste Unter-Sitemap — bei großen Städten sind es Dutzende, und
-        // wir suchen keine Vollständigkeit, sondern einen guten Einstieg.
-        const tief = await abrufen(unter[0], 10_000);
-        abrufe++;
-        if (tief) kandidaten = kandidaten.concat(sitemapKandidaten(tief, startseite));
+      if (unter.length) {
+        kandidaten = kandidaten.concat(await ausSitemapIndex(unter, startseite));
       } else {
         kandidaten = kandidaten.concat(sitemapKandidaten(sm, startseite));
       }

@@ -1,7 +1,29 @@
 import { createServerClient } from "@supabase/ssr";
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
+import { hostAusHerkunft, widgetAusPfad, zaehleEinbettung } from "./lib/embed-herkunft-core";
 
-export async function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest, event: NextFetchEvent) {
+  // ─── Embed-Zweig: zählen, sonst nichts ─────────────────────────────────────
+  //
+  // Läuft VOR dem Auth-Zweig und kehrt sofort zurück. Ein Widget hat keine
+  // Sitzung, und `getUser()` hier auszuführen wäre ein Supabase-Aufruf je
+  // Widget-Abruf — teuer und zwecklos.
+  //
+  // Die Seite selbst bleibt statisch: Die Middleware sitzt davor, sie ersetzt
+  // die Auslieferung nicht. Gezählt wird ohne `await` über `waitUntil`, damit
+  // die Antwort nicht auf die Datenbank wartet — ein Widget darf nie langsamer
+  // werden, weil wir mitschreiben.
+  if (request.nextUrl.pathname.startsWith("/embed/")) {
+    const widget = widgetAusPfad(request.nextUrl.pathname);
+    // `referer` (die Schreibweise mit einem r ist der Fehler von 1996 und steht
+    // so im Standard) trägt beim Laden eines eingebetteten Dokuments die
+    // einbettende Seite. Fehlt er, war es ein direkter Aufruf oder eine
+    // Einbettung, die ihn unterdrückt — beides ist keine zählbare Einbettung.
+    const host = hostAusHerkunft(request.headers.get("referer"));
+    if (widget && host) event.waitUntil(zaehleEinbettung(host, widget));
+    return NextResponse.next({ request });
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -32,12 +54,15 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Only run middleware on routes that actually need auth session refresh.
+  // Only run middleware on routes that actually need auth session refresh —
+  // plus /embed, where it counts embeddings from the request header (see the
+  // embed branch above; that branch does NOT touch Supabase auth).
   // Keeps Vercel middleware-invocations (and Supabase getUser() calls) low.
   matcher: [
     "/dashboard/:path*",
     "/admin/:path*",
     "/api/calculations/:path*",
     "/auth/callback",
+    "/embed/:path*",
   ],
 };

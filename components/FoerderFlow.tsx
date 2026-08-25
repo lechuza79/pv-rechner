@@ -117,7 +117,7 @@ export default function FoerderFlow({
             gridTemplateColumns: `repeat(${Math.min(aktuell.optionen.length, 3)}, 1fr)`,
             gap: space.sm,
             marginBottom: space.md,
-            animation: nudge ? "fadeUp 0.3s ease-out" : undefined,
+            animation: nudge ? "fu 0.3s ease-out" : undefined,
           }}
         >
           {aktuell.optionen.map((o) => (
