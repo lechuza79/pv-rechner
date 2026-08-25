@@ -14,6 +14,7 @@ import {
 } from "../../../../lib/widget-settings";
 import { calcBegSubsidy, calcInvestBrutto } from "../../../../lib/heatpump";
 import { DEFAULT_HEATPUMP_CONFIG } from "../../../../lib/heatpump-config";
+import { BEG_ANTRAG_KURZ } from "../../../../lib/beg-antrag";
 
 // Förder-Check: a slim, embeddable calculator that answers one question —
 // "wie viel BEG-Förderung bekomme ich für eine Wärmepumpe?". A short guided
@@ -580,6 +581,26 @@ function ResultView({
             </div>
           </div>
 
+          {/* Die Bedingung, unter der es den Betrag darüber überhaupt gibt.
+              Wortlaut aus lib/beg-antrag.ts — derselbe Satz steht im
+              Wärmepumpen-Rechner; hier bewusst OHNE Link: Das Widget hängt
+              onsite unter genau dem Ratgeber, der die Langfassung trägt, und
+              extern führt der CTA am Fuß ohnehin dorthin. */}
+          <div
+            style={{
+              fontSize: 11,
+              color: "var(--widget-fg)",
+              lineHeight: 1.5,
+              marginBottom: 12,
+              padding: "9px 11px",
+              borderRadius: "var(--radius-sm)",
+              background: "var(--color-bg-muted)",
+              borderLeft: "3px solid var(--color-negative)",
+            }}
+          >
+            {BEG_ANTRAG_KURZ}
+          </div>
+
           {alterUnbekannt && (
             <div
               style={{
@@ -700,8 +721,8 @@ function ResultView({
 
       <div style={{ fontSize: 10.5, color: "var(--widget-muted)", lineHeight: 1.5, marginTop: 10 }}>
         Bezogen auf eine Wohneinheit — bei Mehrfamilienhäusern gelten je weiterer Wohnung eigene Höchstbeträge.
-        Schätzung nach den aktuellen KfW-Sätzen (gültig ab 21.07.2026) — ohne Gewähr, verbindlich ist der
-        KfW-Zuschussbescheid. Boni hängen von deiner individuellen Situation ab.
+        Schätzung nach den aktuellen KfW-Sätzen (gültig ab 21.07.2026) — ohne Gewähr, verbindlich ist die
+        Zusage der KfW. Boni hängen von deiner individuellen Situation ab.
       </div>
     </div>
   );
