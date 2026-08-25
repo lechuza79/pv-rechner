@@ -126,11 +126,27 @@ Datenschutzerklärung.**
 ## Offene Punkte
 
 - **OFFEN (bis 03/2027):** Resend-Zertifizierung im DPF-Register nachprüfen (fällig 03.03.2027).
-- **OFFEN (bis 11/2026):** Einbettungs-Zählung nach § 25 Abs. 1 TDDDG gegenprüfen
-  lassen — **mit zwei Prüfern, von denen der zweite den ersten widerlegen soll.**
-  Die Bauweise ist am 25.08.2026 bereits einmal an dieser Frage gescheitert und
-  umgestellt worden; was bleibt, ist die Bestätigung der neuen Einordnung, nicht
-  mehr die offene Grundsatzfrage.
+- **Einbettungs-Zählung nach § 25 Abs. 1 TDDDG — Restrisiko bewusst getragen
+  (Betreiber-Entscheidung 25.08.2026).** Kein offener Punkt mehr, aber auch keine
+  Unbedenklichkeitsbescheinigung: Die Bauweise ist am selben Tag einmal an dieser
+  Frage gescheitert und umgestellt worden, und die Gegenprüfung der neuen
+  Einordnung ist **schwächer ausgefallen als der erste Eindruck**.
+  - **Was die Gegenprüfung wirklich ergab:** Das Hauptargument („Rn. 43 nennt
+    Kopfzeilen-Mechanismen nur im Zusammenhang mit Fingerprinting") trägt nicht —
+    dort steht „for example", also eine Aufzählung, keine Einschränkung. Dazu
+    Rn. 39 (Herkunft und Art der Information sind gleichgültig) und Rn. 32
+    („usually", nicht „always", für die aktive Anweisung ans Gerät). Es bleibt:
+    Wir werten nur aus, was der Browser ohnehin sendet, die Angabe beschreibt die
+    einbettende Website statt des Geräts, und nichts Gespeichertes zeigt auf eine
+    Person. Vertretbar, nicht sicher.
+  - **Die Entscheidung war eine Abwägung, keine Rechtsauskunft:** Nutzen konkret
+    (einziges Maß für den Erfolg des Kommunen-Outreach), möglicher Verstoß formal
+    und ohne Schaden für einen Besucher. Wer sie neu aufmacht, braucht einen neuen
+    Anlass — eine Aufsichtsäußerung, eine Gerichtsentscheidung oder eine
+    Erweiterung der gespeicherten Felder.
+  - **Die Gegenprüfung kam von derselben Instanz, die die Einordnung getroffen
+    hat** (die unabhängigen Prüfläufe waren in der Sitzung abgeschaltet). Wer
+    ohnehin einen Legal-Lauf fährt, hängt sie mit dran.
   - **Verworfen (erste Fassung, wenige Stunden live):** Ein Baustein im Embed-Layout
     las die Herkunft im Browser (`ancestorOrigins`, ersatzweise `document.referrer`)
     und meldete sie an eine eigene Route. Die EDSA-Leitlinien 2/2023 (Fassung 2.0,
