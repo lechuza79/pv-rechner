@@ -350,6 +350,24 @@ describe("Gesamtauswertung", () => {
     expect(erg.kennzeichnungAktuell).toBeNull();
   });
 
+  it("nimmt die Adresse aus dem IMPRESSUM auch auf fremder Domain", () => {
+    // Gemessen an Stadtwerke Freudenstadt: Website stadtwerke-freudenstadt.de,
+    // Impressums-Adresse info@sw-freudenstadt.de. Der Domain-Filter warf die
+    // gesetzlich vorgeschriebene Kontaktadresse des Betreibers weg.
+    const erg = werteAus(
+      {
+        start: { url: "https://www.stadtwerke-freudenstadt.de/", html: "<p>Willkommen</p>" },
+        weitere: [
+          { url: "https://www.stadtwerke-freudenstadt.de/impressum", html: "<p>info@sw-freudenstadt.de</p>" },
+        ],
+      },
+      "stadtwerke-freudenstadt.de",
+      ALLGEMEIN,
+      new Date("2026-08-24T12:00:00Z"),
+    );
+    expect(erg.postfaecher.map((p) => p.mail)).toContain("info@sw-freudenstadt.de");
+  });
+
   it("nimmt keine Adresse von einer fremden Domain", () => {
     const erg = werteAus(
       { start: { url: "https://sw.de/", html: "vertrieb@agentur-webdesign.de" }, weitere: [] },

@@ -384,13 +384,30 @@ export function werteAus(
   // Agentur oder Dienstleister — dieselbe Regel wie bei den Kommunen, und sie
   // ist dort an ~90 Gemeinden gemessen worden.
   const postfaecher: { mail: string; art: PostfachArt }[] = [];
-  for (const roh of Array.from(new Set(adressenAus(gesamtHtml, entwirreAdressen(gesamtText))))) {
-    const mail = decodeEntities(roh).trim().toLowerCase();
-    const dom = mail.split("@")[1];
-    if (!dom) continue;
-    if (eigeneDomain && dom !== eigeneDomain && !dom.endsWith(`.${eigeneDomain}`)) continue;
-    if (postfaecher.some((p) => p.mail === mail)) continue;
-    postfaecher.push({ mail, art: postfachArt(mail, allgemeinesRollenmuster) });
+  for (const seite of alle) {
+    // DIE ADRESSE IM IMPRESSUM ZAEHLT IMMER — auch auf fremder Domain.
+    //
+    // Gemessen 24.08.2026 an Stadtwerke Freudenstadt: Die Website heisst
+    // stadtwerke-freudenstadt.de, die Mailadresse im Impressum lautet
+    // info@sw-freudenstadt.de. Der Domain-Filter warf damit ausgerechnet die
+    // gesetzlich vorgeschriebene Kontaktadresse des Betreibers weg. Versorger
+    // benutzen fuer Mail regelmaessig eine Abkuerzung oder die Domain der
+    // Muttergesellschaft — das ist der Normalfall, nicht die Ausnahme, und es
+    // erklaert den groessten Teil der 127 Versorger ohne gefundenen Weg.
+    //
+    // Auf allen ANDEREN Seiten bleibt der Filter: Dort stehen Agentur- und
+    // Dienstleisteradressen, und die gehoeren nicht dem Versorger.
+    const istImpressum = /impressum|anbieterkennzeichnung|rechtliche-hinweise/i.test(seite.url);
+    const text = entwirreAdressen(toText(seite.html));
+    for (const roh of adressenAus(seite.html, text)) {
+      const mail = decodeEntities(roh).trim().toLowerCase();
+      const dom = mail.split("@")[1];
+      if (!dom) continue;
+      const eigen = !eigeneDomain || dom === eigeneDomain || dom.endsWith(`.${eigeneDomain}`);
+      if (!eigen && !istImpressum) continue;
+      if (postfaecher.some((p) => p.mail === mail)) continue;
+      postfaecher.push({ mail, art: postfachArt(mail, allgemeinesRollenmuster) });
+    }
   }
   const erste = (art: PostfachArt) => postfaecher.find((p) => p.art === art)?.mail ?? null;
 
