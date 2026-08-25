@@ -425,7 +425,12 @@ async function main(): Promise<void> {
   log(`  operative Stelle im Impressum      : ${z((e) => !!e.verantwortlich?.operativ)}`);
   log(`  Kontaktformular vorhanden          : ${z((e) => e.kontaktformular)}`);
   log(`  nur Kunden-Warteschlange           : ${z((e) => !e.websiteEmail && !e.verantwortlich?.operativ && !e.kontaktformular && !!e.kundenanfrageEmail)}`);
-  log(`  nur Netz-Postfach gefunden         : ${z((e) => !e.websiteEmail && !e.kundenanfrageEmail && !!e.netzEmail)}`);
+  // AUSSCHLIESSLICH Netz — kein allgemeines Postfach, kein Formular. Eine
+  // erste Fassung liess das allgemeine info@ zu und meldete deshalb 82 statt
+  // 11; das Etikett behauptete ein Problem, das es nicht gab.
+  log(
+    `  ausschliesslich Netz-Postfach      : ${z((e) => e.postfaecher.length > 0 && e.postfaecher.every((p) => p.art === "netz") && !e.kontaktformular)}`,
+  );
   // Zwei Zahlen, nicht eine — und der Unterschied ist der ganze Punkt.
   // Ein Kontaktformular ist ein Weg INS UNTERNEHMEN; wo es ankommt, weiß
   // niemand. Beides in eine Zahl zu ziehen war genau der Fehler, der die erste
