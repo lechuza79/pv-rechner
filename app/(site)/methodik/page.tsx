@@ -251,8 +251,8 @@ export default async function MethodikPage() {
         <p style={S.p}>
           <strong>Wichtige Korrektur bei Wärmepumpen:</strong> Das HTW-Berlin-Modell
           wurde an Haushalten <em>ohne</em> Wärmepumpe kalibriert. Eine WP zieht
-          aber etwa 80 % ihres Stroms zwischen Oktober und April — genau dann,
-          wenn die Sonne nur ~30 % des Jahresertrags liefert. Der Speicher kann
+          aber rund 79 % ihres Stroms zwischen Oktober und März — genau dann,
+          wenn die Sonne nur etwa 25 % des Jahresertrags liefert. Der Speicher kann
           diesen Winterverbrauch kaum decken, weil er in den dunklen Monaten
           selten voll wird. Wir gewichten den Speicher-Vorteil bei
           WP-Haushalten deshalb mit einer Saisonkorrektur nach unten — das
@@ -404,8 +404,9 @@ export default async function MethodikPage() {
           ))}
           <br />
           <span style={S.muted}>
-            Wartungskosten (ca. 150–250 €/Jahr) sind nicht einberechnet.
-            Ein Teil dieser Werte lässt sich im Ergebnis von Hand anpassen.
+            Wartungskosten sind nicht einberechnet. Im 15. Jahr rechnen wir dagegen
+            einen Speichertausch mit — das ist die Lebensdauer, die wir für den Akku
+            ansetzen. Ein Teil dieser Werte lässt sich im Ergebnis von Hand anpassen.
           </span>
         </div>
         <p style={S.p}>

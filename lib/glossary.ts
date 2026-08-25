@@ -22,6 +22,23 @@ export interface GlossaryEntry {
 // Slugs are stable kebab-case keys — used as anchor IDs on /glossar and as the
 // lookup key for <GlossaryTerm id="...">. Don't rename a key without updating
 // every usage; renaming `term` (the display text) is free.
+/**
+ * Prüfdatum der DATIERTEN Sachstände in diesem Glossar.
+ *
+ * Die meisten Einträge altern nicht — was eine Kilowattstunde ist, bleibt. Ein
+ * knappes Dutzend trägt aber einen Stand, der kippen kann: der Kapazitätsmarkt,
+ * die französische Atomstrom-Regelung, die Netzausfalldauer, der Anteil
+ * negativer Börsenpreise, die Volleinspeisungs-Vergütung.
+ *
+ * Warum das hier steht (Inhalts-Inventur 25.08.2026): Das Glossar hing an
+ * keinem Wächter und in keinem Prüfstand. Der Kapazitätsmarkt stand deshalb
+ * sechs Wochen lang auf „ab 2028 geplant", obwohl das Gesetz seit dem
+ * 22.07.2026 auf das Lieferjahr 2031 zielt — 2028 war einmal ein echter
+ * amtlicher Stand und ist es seitdem nicht mehr. Niemandem ist es aufgefallen,
+ * weil eine Definition nicht danach aussieht, als könne sie veralten.
+ */
+export const GLOSSAR_GEPRUEFT_ISO = "2026-08-25";
+
 export const GLOSSARY: Record<string, GlossaryEntry> = {
   kwp: {
     term: "kWp",
@@ -29,7 +46,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     short:
       "Kilowatt-Peak — die Nennleistung einer PV-Anlage unter Idealbedingungen. Faustregel: 1 kWp braucht ca. 5 m² Dachfläche.",
     long:
-      "kWp (Kilowatt-Peak) ist die Maßeinheit für die Leistung einer Photovoltaikanlage. Sie gibt an, wie viel Leistung die Anlage unter genormten Testbedingungen (1.000 W/m² Sonneneinstrahlung, 25 °C) maximal liefert. Eine 10-kWp-Anlage produziert in Deutschland je nach Standort grob 9.500–11.500 kWh Strom pro Jahr. Als grobe Daumenregel braucht 1 kWp rund 5 m² Dachfläche und kostet aktuell etwa 1.250–1.400 € inklusive Installation.",
+      "kWp (Kilowatt-Peak) ist die Maßeinheit für die Leistung einer Photovoltaikanlage. Sie gibt an, wie viel Leistung die Anlage unter genormten Testbedingungen maximal liefert (1.000 W/m² Einstrahlung im Normspektrum AM 1,5 und 25 °C ZELLtemperatur — nicht Lufttemperatur). Eine 10-kWp-Anlage produziert in Deutschland je nach Standort grob 9.500–11.500 kWh Strom pro Jahr. Als grobe Daumenregel braucht 1 kWp rund 5 m² Dachfläche; was ein Kilowattpeak kostet, steht tagesaktuell im Rechner.",
   },
   kwh: {
     term: "kWh",
@@ -92,7 +109,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     short:
       "Du speist den gesamten Solarstrom ins Netz ein und nutzt nichts selbst — dafür gibt es eine höhere Vergütung.",
     long:
-      "Bei der Volleinspeisung wird der komplette Solarstrom ins Netz eingespeist, ohne dass du selbst etwas davon nutzt. Als Ausgleich ist die Einspeisevergütung deutlich höher als bei Teileinspeisung (rund 13 statt 8 ct/kWh bei kleinen Anlagen). Das lohnt sich vor allem bei sehr geringem eigenem Stromverbrauch oder auf einem reinen Investitions-Dach. Für die meisten Haushalte ist Teileinspeisung wirtschaftlicher, weil der gesparte Strompreis höher ist als die Mehrvergütung.",
+      "Bei der Volleinspeisung wird der komplette Solarstrom ins Netz eingespeist, ohne dass du selbst etwas davon nutzt. Als Ausgleich ist die Einspeisevergütung deutlich höher als bei Teileinspeisung (rund 12 statt 8 ct/kWh bei kleinen Anlagen). Das lohnt sich vor allem bei sehr geringem eigenem Stromverbrauch oder auf einem reinen Investitions-Dach. Für die meisten Haushalte ist Teileinspeisung wirtschaftlicher, weil der gesparte Strompreis höher ist als die Mehrvergütung.",
   },
   amortisation: {
     term: "Amortisation",
@@ -140,7 +157,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     short:
       "Die Zell-Betriebstemperatur eines Solarmoduls unter realistischen Bedingungen — Grundlage, um die echte Momentanleistung zu schätzen.",
     long:
-      "NOCT (Nominal Operating Cell Temperature) ist die Temperatur, die eine Solarzelle unter realistischen Betriebsbedingungen erreicht (800 W/m² Einstrahlung, 20 °C Luft, 1 m/s Wind) — typisch rund 45 °C. Module verlieren bei Hitze an Leistung, deshalb nutzen wir die NOCT zusammen mit dem Temperaturkoeffizienten in der Live-Simulation, um aus aktuellen Wetterdaten die momentane PV-Leistung zu schätzen. An kühlen, sonnigen Tagen liefert eine Anlage daher oft mehr als an heißen.",
+      "NOCT (Nominal Operating Cell Temperature) ist die Temperatur, die eine Solarzelle unter realistischen Betriebsbedingungen erreicht (800 W/m² Einstrahlung, 20 °C Lufttemperatur, 1 m/s Wind, Modul im offenen Gestell bei 45° Neigung) — bei marktüblichen Modulen rund 45 °C, das ist allerdings ein Erfahrungswert aus Datenblättern und kein Normwert. Die Modulnorm hat den Kennwert 2021 durch den NMOT abgelöst, der an der Modulrückseite und im Arbeitspunkt statt im Leerlauf gemessen wird; auf Datenblättern stehen weiterhin beide. Module verlieren bei Hitze an Leistung, deshalb nutzen wir die NOCT zusammen mit dem Temperaturkoeffizienten in der Live-Simulation, um aus aktuellen Wetterdaten die momentane PV-Leistung zu schätzen. An kühlen, sonnigen Tagen liefert eine Anlage daher oft mehr als an heißen.",
   },
   ertrag: {
     term: "Spezifischer Ertrag",
@@ -163,7 +180,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     short:
       "Französisches Regulierungssystem, das Stromanbietern Zugang zu Atomstrom von EDF zu einem staatlich festgelegten Preis garantierte — Ende 2025 ausgelaufen.",
     long:
-      "ARENH war das französische Regulierungssystem, das Energieversorgern Zugang zu Atomstrom von EDF zu einem staatlich festgelegten Preis garantierte. Es lief Ende 2025 aus; seit 1. Januar 2026 gilt eine neue Regelung mit einem garantierten Durchschnittspreis von rund 70 €/MWh (7 Ct/kWh) statt vorher 4,2 Ct/kWh.",
+      "ARENH war das französische Regulierungssystem, das Energieversorgern Zugang zu Atomstrom von EDF zu einem staatlich festgelegten Preis garantierte. Es lief Ende 2025 aus; seit 1. Januar 2026 gilt keine garantierte Belieferung mehr, sondern eine Abgabe: Der Staat schöpft einen Teil der Erlöse ab, die EDF oberhalb festgelegter Schwellen erzielt. Einen garantierten Preis gibt es damit nicht — greift der Mechanismus in einem Jahr nicht, zahlt EDF nichts. Vorher lag der ARENH-Preis bei 4,2 Ct/kWh.",
   },
   blackout: {
     term: "Blackout",
@@ -179,7 +196,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     short:
       "Ein Zeitraum mit gleichzeitig wenig Wind und wenig Sonne, in dem Wind- und Solaranlagen kaum Strom liefern.",
     long:
-      "Ein Zeitraum mit wenig Wind und wenig Sonne gleichzeitig, in dem Wind- und Solaranlagen kaum Strom liefern. Je nach Definition gab es davon 2025 in Deutschland 19 bis 22 Tage, rund 6 % des Jahres. Mehrtägige Dunkelflauten (eine Woche oder länger mit durchgehend schwacher Erzeugung) sind die eigentliche Herausforderung, weil sie die Kapazität heutiger Batteriespeicher übersteigen.",
+      "Ein Zeitraum mit wenig Wind und wenig Sonne gleichzeitig, in dem Wind- und Solaranlagen kaum Strom liefern. Wie viele Tage im Jahr darunterfallen, hängt vollständig davon ab, wo man die Schwelle zieht — eine allgemein anerkannte Definition gibt es nicht. Legt man eine harte Schwelle an (mindestens 48 Stunden unter einem Zehntel der Nennleistung), waren es 2025 in Deutschland vier Phasen. Mehrtägige Dunkelflauten (eine Woche oder länger mit durchgehend schwacher Erzeugung) sind die eigentliche Herausforderung, weil sie die Kapazität heutiger Batteriespeicher übersteigen.",
   },
   grenzkosten: {
     term: "Grenzkosten",
@@ -201,7 +218,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     short:
       "Ein Bezahlmodell, bei dem Kraftwerke schon dafür Geld bekommen, dass sie Leistung bereithalten — nicht nur für gelieferten Strom.",
     long:
-      "Ein Bezahlmodell, bei dem Kraftwerksbetreiber schon dafür Geld bekommen, dass sie Leistung bereithalten — nicht nur für tatsächlich gelieferten Strom. Soll die Versorgung in Extremzeiten wie Dunkelflauten absichern. In Deutschland ab 2028 geplant.",
+      "Ein Bezahlmodell, bei dem Kraftwerksbetreiber schon dafür Geld bekommen, dass sie Leistung bereithalten — nicht nur für tatsächlich gelieferten Strom. Soll die Versorgung in Extremzeiten wie Dunkelflauten absichern. In Deutschland auf das Lieferjahr 2031 ausgerichtet; die ersten Ausschreibungen laufen ab Herbst 2026. Die Zuschläge stehen unter dem Vorbehalt der beihilferechtlichen Genehmigung durch die EU-Kommission.",
   },
   "merit-order": {
     term: "Merit-Order",
@@ -230,7 +247,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     short:
       "Die durchschnittliche Dauer von Stromausfällen pro Verbraucher und Jahr, erhoben von der Bundesnetzagentur.",
     long:
-      "Die von der Bundesnetzagentur erhobene durchschnittliche Dauer von Stromausfällen pro Verbraucher und Jahr. 2024 lag der Wert für Deutschland bei 11,7 Minuten, ein international sehr niedriger Wert (zum Vergleich: USA 70–80 Minuten).",
+      "Die von der Bundesnetzagentur erhobene durchschnittliche Dauer von Stromausfällen pro Verbraucher und Jahr. 2024 lag der Wert für Deutschland bei 11,7 Minuten, ein international sehr niedriger Wert (zum Vergleich: in den USA rund 130 Minuten, ebenfalls ohne Großereignisse gerechnet — mit Wirbelstürmen und ähnlichen Ereignissen sind es dort ein Vielfaches).",
   },
 
   // Vokabular des Balkon-Clusters. Die drei Begriffe kommen auf Hub, Rechner und
