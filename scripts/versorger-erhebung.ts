@@ -229,6 +229,24 @@ async function sitemapAdressen(basis: string): Promise<string[]> {
 
 type ErhebungMitWerkzeug = Erhebung & { werkzeug: Werkzeugbefund };
 
+/**
+ * Eine Adresse aus einer Sitemap lesbar machen, bevor ein Muster darauf trifft.
+ *
+ * IN EINER SITEMAP GIBT ES KEINEN LINKTEXT — nur die Adresse. Steht dort
+ * `/photovoltaik-f%c3%b6rderung`, passt kein Muster, und anders als bei einem
+ * Verweis auf einer Seite gibt es keine Beschriftung als Rueckfall. Genau daran
+ * ist die Foerder-Suche gescheitert: 60 von 2.583 gespeicherten Adressen waren
+ * betroffen, und der Fehler blieb verdeckt, weil er auf Seiten mit Linktext
+ * nicht auffiel.
+ */
+function lesbar(u: string): string {
+  try {
+    return decodeURIComponent(u);
+  } catch {
+    return u;
+  }
+}
+
 async function erhebe(k: Kandidat, stichtag: Date): Promise<ErhebungMitWerkzeug> {
   const basis = k.website!;
   const start = await holeSeite(basis);
@@ -270,7 +288,7 @@ async function erhebe(k: Kandidat, stichtag: Date): Promise<ErhebungMitWerkzeug>
     // DIE SOLARSEITE GEZIELT SUCHEN — von der Startseite aus und aus dem
     // Seitenverzeichnis. Die Startseite ist der WEG dorthin, nicht das Urteil.
     ziele.push(...solarseitenLinks(start.html, basis, 3));
-    ziele.push(...alleAdressen.filter((u) => SOLARSEITE_MUSTER.test(u)).sort((a, b) => a.length - b.length).slice(0, 3));
+    ziele.push(...alleAdressen.filter((u) => SOLARSEITE_MUSTER.test(lesbar(u))).sort((a, b) => a.length - b.length).slice(0, 3));
     ziele.push(...werkzeugKandidaten(alleAdressen, 2));
     const vonStartWerkzeug = werkzeugLink(start.html, basis);
     if (vonStartWerkzeug) ziele.push(vonStartWerkzeug);
@@ -285,7 +303,7 @@ async function erhebe(k: Kandidat, stichtag: Date): Promise<ErhebungMitWerkzeug>
       ziele.push(...direkt.slice(0, 2), ...nahbereichKandidaten(alleAdressen, 5));
     }
     if (kontaktOffen) {
-      const kontakt = alleAdressen.filter((u) => KONTAKT_MUSTER.test(u)).sort((a, b) => a.length - b.length);
+      const kontakt = alleAdressen.filter((u) => KONTAKT_MUSTER.test(lesbar(u))).sort((a, b) => a.length - b.length);
       ziele.push(...kontakt.slice(0, 1));
     }
     for (const u of ziele) await hole(u);
@@ -415,7 +433,12 @@ async function main(): Promise<void> {
   log(
     `  ─ direkt am richtigen Schreibtisch  : ${z((e) => !!e.websiteEmail || !!e.verantwortlich?.operativ)}`,
   );
-  log(`  ─ irgendein Weg ins Unternehmen     : ${z((e) => !!e.websiteEmail || !!e.verantwortlich?.operativ || e.kontaktformular || !!e.kundenanfrageEmail)}`);
+  // JEDES Postfach zaehlt, auch das allgemeine info@ — es ist der haeufigste
+  // brauchbare Weg. Eine erste Fassung liess es weg und meldete deshalb 465
+  // statt 688 erreichbare Versorger; der Betreiber hat die Zahl zu Recht als
+  // unglaubwuerdig zurueckgewiesen (24.08.2026).
+  log(`  ─ irgendein Weg ins Unternehmen     : ${z((e) => e.postfaecher.length > 0 || e.kontaktformular)}`);
+  log(`  ─ gar kein Weg gefunden             : ${z((e) => e.postfaecher.length === 0 && !e.kontaktformular)}`);
   log("");
   log("");
   log("── Werkzeug auf der eigenen Website ───────────────────");

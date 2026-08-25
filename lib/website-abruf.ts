@@ -72,19 +72,26 @@ export async function holeRoh(url: string): Promise<string | null> {
  * Die Adresse der Sitemap kommt aus robots.txt — kein Rateweg über bekannte
  * CMS-Pfade, sondern die Stelle, an der die Website sie selbst nennt.
  */
-export async function sitemapAdressen(basis: string, maxSitemaps = 3): Promise<string[]> {
+export async function sitemapAdressen(basis: string, maxSitemaps = 8): Promise<string[]> {
   let robots: string | null = null;
   try {
     robots = await holeRoh(new URL("/robots.txt", basis).toString());
   } catch {
     return [];
   }
-  const erste = robots
-    ? Array.from(robots.matchAll(/^\s*sitemap:\s*(\S+)/gim)).map((m) => m[1])
-    : [new URL("/sitemap.xml", basis).toString()];
+  const ausRobots = robots ? Array.from(robots.matchAll(/^\s*sitemap:\s*(\S+)/gim)).map((m) => m[1]) : [];
+  // DIE STANDARDADRESSE IMMER MITVERSUCHEN, nicht nur wenn robots.txt fehlt.
+  // Eine erste Fassung nahm sie nur als Ersatz für eine fehlende robots.txt —
+  // eine Website MIT robots.txt, aber ohne Sitemap-Zeile darin, war damit
+  // vollständig unsichtbar, obwohl ihre Sitemap an der üblichen Stelle liegt.
+  // Das ist kein Rateweg über CMS-Pfade: /sitemap.xml ist die im Standard
+  // festgelegte Adresse, keine Vermutung über ein bestimmtes System.
+  const erste = [...ausRobots];
+  const standard = new URL("/sitemap.xml", basis).toString();
+  if (!erste.includes(standard)) erste.push(standard);
 
   const adressen = new Set<string>();
-  const offen = erste.slice(0, 2);
+  const offen = erste.slice(0, 3);
   const gesehen = new Set<string>();
   // Eine Ebene Sitemap-Index auflösen. Mehr wäre bei großen Websites ein
   // eigener Crawl, und den wollen wir hier nicht.

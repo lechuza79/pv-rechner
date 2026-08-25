@@ -159,7 +159,15 @@ export const KENNZEICHNUNG_NAHBEREICH: { re: RegExp; punkte: number }[] = [
 export function nahbereichKandidaten(adressen: string[], hoechstens: number): string[] {
   return adressen
     .map((u) => {
-      const punkte = KENNZEICHNUNG_NAHBEREICH.reduce((p, n) => (n.re.test(u) ? Math.max(p, n.punkte) : p), 0);
+      // Dekodiert pruefen: In einer Sitemap gibt es keinen Linktext als
+      // Rueckfall, und `/f%c3%b6rderung` passt auf kein Muster.
+      let lesbar = u;
+      try {
+        lesbar = decodeURIComponent(u);
+      } catch {
+        /* bleibt roh */
+      }
+      const punkte = KENNZEICHNUNG_NAHBEREICH.reduce((p, n) => (n.re.test(lesbar) ? Math.max(p, n.punkte) : p), 0);
       return { u, punkte };
     })
     .filter((k) => k.punkte > 0)

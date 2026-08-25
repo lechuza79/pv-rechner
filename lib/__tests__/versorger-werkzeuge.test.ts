@@ -291,4 +291,12 @@ describe("Kandidaten aus dem Seitenverzeichnis", () => {
   it("nimmt nichts, wo nichts passt", () => {
     expect(werkzeugKandidaten(["https://sw.de/karriere", "https://sw.de/impressum"], 3)).toEqual([]);
   });
+
+  it("liest prozentkodierte Umlaute — in einer Sitemap gibt es keinen Linktext", () => {
+    // Der Fehler, an dem die Foerder-Suche gescheitert ist: 60 von 2.583
+    // Adressen waren betroffen. Auf einer Seite faengt der Linktext das ab,
+    // in einer Sitemap gibt es keinen.
+    const erg = werkzeugKandidaten(["https://sw.de/solar-wirtschaftlichkeits%C3%BCbersicht"], 1);
+    expect(erg).toHaveLength(1);
+  });
 });
