@@ -1,17 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../../lib/supabase-server";
+import { istAdminOderCron } from "../../../../lib/admin-guard";
 import { SOCIAL_KONTEN_DDL } from "../../../../lib/social-konten";
 
-// Einmalige Einrichtung der Konten-Ablage. Aufruf mit Bearer $CRON_SECRET,
-// mehrfach aufrufbar. RLS ist an und es gibt keine Policy — die Tabelle hält
-// Zugangsschlüssel und ist damit ausschließlich über den Service-Key erreichbar.
+// Einmalige Einrichtung der Konten-Ablage, mehrfach aufrufbar. RLS ist an und es
+// gibt keine Policy — die Tabelle hält Zugangsschlüssel und ist damit
+// ausschließlich über den Service-Key erreichbar.
+//
+// Admin-Session ODER Cron-Schlüssel: Die Einrichtung gehört zum Anmeldeweg, den
+// der Betreiber im Browser durchläuft; ihn dafür einen Kopfzeilen-Schlüssel
+// setzen zu lassen, ginge im Browser gar nicht.
 
 export const dynamic = "force-dynamic";
 
-const CRON_SECRET = process.env.CRON_SECRET;
-
 export async function GET(req: NextRequest) {
-  if (!CRON_SECRET || req.headers.get("authorization") !== `Bearer ${CRON_SECRET}`) {
+  if (!(await istAdminOderCron(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   if (!supabase) {
