@@ -921,19 +921,15 @@ Was sich automatisch ändern sollte (Jahreszahlen, "aktuelle" Werte, "heute"-bez
 - **Antworten an den Nutzer = Klartext, keine Code-Sprache.** Keine Dateipfade, keine Variablennamen, keine API-Namen im Erklärtext — übersetzen in das, was sie tun. Stichpunkte statt Textwand. Am Ende eine konkrete Frage. Diese Regel steht ausführlich in der globalen CLAUDE.md unter „Klartext bei technischen Entscheidungen" und gilt hier 1:1.
 - **Konzepte und Docs sind DEIN Arbeitsmaterial, nicht seine Lektüre.** Alles unter `docs/` schreibst du für dich und für künftige Sessions. Der Betreiber liest es nicht und soll es nicht lesen müssen (seine Ansage, 13.08.2026: „die docs sind für dich, wir klären hier"). Steht eine Entscheidung an, erklärst du sie **vollständig im Gespräch** — auch die Zusammenfassung-plus-Link ist falsch, weil der Link signalisiert, das Eigentliche stehe woanders. Das Dokument wird höchstens beiläufig erwähnt („ist festgehalten"), nie als Leseauftrag. Eine Entscheidung, für die er erst ein Papier lesen müsste, hast du ihm abgenommen statt vorgelegt.
 
-## Roadmap: offene Punkte
+## Roadmap
 
-Live unter solar-check.io. Phase 0–3 sowie WP 1–3, 5, 8, 10 sind abgeschlossen — Wortlaut im Archiv (`docs/roadmap-archiv.md`). **Aktuelle Priorität: WP 9 (Energiedaten-Datalake) + Phase 4 (Content & Reichweite).**
+Live unter solar-check.io. **Aktuelle Priorität: Energiedaten-Ausbau (WP 9) + Phase 4 (Content & Reichweite).**
 
-**Offen:**
-- **Sonstiges:** Favicon / OG-Image · mehrtägige Live-Simulation (Open-Meteo Forecast bis 16 Tage).
-- **WP 9 (Datalake):** Supabase-Tabellen anlegen (`energy_timeseries`, `energy_monthly`, `data_source_meta`; SQL in `/api/energy/setup`) · Cron-Routes (live 15 min, daily, monthly) + `vercel.json` · Eurostat-Integration (Haushaltsstrompreise EU) · Spotpreis-Chart · Grenzflüsse-Chart · `/energie/frankreich` · Navigation-Updates (Hub + Header) · SEO-Metadata für `/energie` · EE-Ampel auf Startseite/Simulation einbinden.
-- **WP 10 (Wärmepumpe):** PV-Synergie als Toggle im Ergebnis (aktuell nur Link) · Share-URL + Dashboard-Save für WP-Berechnungen · belastbarer Öl-Wartungswert (Frist 01/2027) · Klima-SCOP noch am Typenschild (Frist 10/2026).
-- **Phase 4 (Content):** weitere Long-Tail-Landingpages · „PV kaufen vs. Enpal mieten" als Killer-Content · Blog-/Ratgeber-Sektion ausbauen · Thin-Content-Konzept vor Atlas-Index-Freischaltung.
-- **Kommunen-Outreach:** Award-Konzept (evaluiert, geparkt) als stärkerer Embed-Aufhänger — gehört mit der Thin-Content-/Atlas-Arbeit in **eine** Session, Briefing in `docs/kommunen-award-konsolidierung.md`.
-- **Phase 5 (Horizont):** PV-Besitzer-Tracking („Meine Anlage", Ist-vs-Soll) · Solateur-Widget (White-Label, Lead-Funktion, Dashboard) · PDF-Export · Finanzierungsrechner · Community-Features · Mehrfamilienhaus-Rechner (MFH-Haustyp, Wohneinheiten, angepasstes Verbrauchsmodell, Mieterstrom, andere Kostenstruktur).
+**Die Liste der offenen und erledigten Punkte steht vollständig in `docs/roadmap-archiv.md` — und NUR dort.** Sie stand bis 25.08.2026 zusätzlich hier, mit dem absehbaren Ergebnis: Arbeitspaket 10 galt in dieser Datei als abgeschlossen und trug fünf Zeilen darunter vier offene Punkte. Eine Statusliste ist der Inhalt, der am schnellsten veraltet; zwei Fassungen davon driften zwangsläufig. Vier fachliche Fristen daraus hängen ohnehin im Code und laufen gegen einen Test, nicht an dieser Aufzählung.
 
-**Interner Bereich — Kommunen-Outreach** (Widget-Distribution an ~11.000 Gemeinden): Tabelle `kommunen_kontakt` (Supabase, RLS **nur service_role** — interne Daten, bewusste Abweichung vom Atlas-Muster), befüllt von `scripts/kommunen-kontakt-refresh.ts` (Phasen `--setup`, `--wikidata`, `--forms`/`--probe`, `--wahl`, `--rang`, `--stats`; DB-schonend). Cockpit `/admin/kommunen` mit Anschreiben-Generator (**Template statt LLM**, Einheiten nur aus `atlas-format`). **Kein Auto-Versand — der Absende-Klick bleibt beim Menschen.** Rechtsrahmen: Legal-Checkliste #6.
+## Kommunen-Outreach (interner Bereich)
+
+Widget-Distribution an ~11.000 Gemeinden. Tabelle `kommunen_kontakt` (Supabase, RLS **nur service_role** — interne Daten, bewusste Abweichung vom Atlas-Muster), befüllt von `scripts/kommunen-kontakt-refresh.ts` (Phasen `--setup`, `--wikidata`, `--forms`/`--probe`, `--wahl`, `--rang`, `--stats`; DB-schonend). Cockpit `/admin/kommunen` mit Anschreiben-Generator (**Template statt LLM**, Einheiten nur aus `atlas-format`). **Kein Auto-Versand — der Absende-Klick bleibt beim Menschen.** Rechtsrahmen: Legal-Checkliste #6.
 
 **Ein Anschreiben entsteht an EINER Stelle: `lib/kommunen-brief.ts` — BLOCKER.** Cockpit-Entwurf und Versandpaket rufen dieselbe Funktion; eine zweite Zusammensetzung hieße, dass die abgenommene Vorschau und die verschickte Mail verschiedene Zahlen tragen können. Der Aufhänger kommt aus dem Award-Rechenkern (`server-only`), deshalb liegt das Versandpaket als Route (`/api/admin/kommunen/versandpaket`, Admin-Session **oder** `CRON_SECRET`) und nicht als Skript vor — ein Skript hätte die Ranglisten ein zweites Mal nachgebaut.
 
