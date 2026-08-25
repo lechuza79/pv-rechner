@@ -121,6 +121,12 @@ describe("Einbettungs-Zählung", () => {
     // Embed-Adresse als Einbettung.
     const client = readFileSync(join(WURZEL, "components", "WidgetHerkunft.tsx"), "utf8");
     expect(client).toMatch(/window\.self === window\.top/);
+    // Und die eigene Adresse wird gar nicht erst gemeldet. Ohne diese Zeile
+    // feuerte die Galerie bei JEDEM Aufruf 18 Anfragen, die der Server
+    // anschließend wegwarf (im Browser nachgemessen, 25.08.2026) — bezahlte
+    // Arbeit für nichts. Die Prüfung im Server bleibt trotzdem, sie ist die
+    // Sicherung gegen eine Meldung aus einem fremden Browser.
+    expect(client).toMatch(/new URL\(herkunft\)\.host === window\.location\.host/);
     // Und nichts davon darf im Browser des Besuchers liegenbleiben.
     expect(client).not.toMatch(/localStorage|sessionStorage|document\.cookie/);
   });

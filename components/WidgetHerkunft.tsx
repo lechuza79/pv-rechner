@@ -39,6 +39,23 @@ export default function WidgetHerkunft() {
       : document.referrer;
     if (!herkunft) return;
 
+    // Eigene Seiten gar nicht erst melden. Der Server verwirft sie ohnehin,
+    // aber die Galerie zeigt ein Dutzend Widgets auf EINER Seite — das waren
+    // (im Browser nachgemessen, 25.08.2026) ein Dutzend Anfragen je Aufruf, die
+    // nur weggeworfen werden. Bezahlte Arbeit für nichts.
+    //
+    // Geprüft wird gegen die eigene Adresse statt gegen eine Domain-Liste:
+    // Das Widget wird von derselben Herkunft ausgeliefert wie die einbettende
+    // Seite, wenn wir selbst einbetten — und das gilt auf dem eigenen Rechner,
+    // in der Vorschau und in der Produktion gleichermaßen, ohne dass jemand
+    // eine Liste pflegen muss. Die Liste im Server bleibt als Sicherung: Was
+    // aus einem fremden Browser kommt, ist nie ein Beweis.
+    try {
+      if (new URL(herkunft).host === window.location.host) return;
+    } catch {
+      return;
+    }
+
     // /embed/<widget>/… — das erste Segment nach /embed ist die Kennung. Was
     // dort steht, prüft der Server gegen seine Liste; hier wird nur gelesen.
     const widget = window.location.pathname.split("/").filter(Boolean)[1];
