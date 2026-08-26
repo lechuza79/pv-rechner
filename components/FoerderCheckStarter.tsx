@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "./Modal";
 import FoerderFlow from "./FoerderFlow";
 import { IconArrowRight } from "./Icons";
@@ -15,6 +15,9 @@ import type { FundingProgram } from "../lib/funding-programs";
  * schob die Beispielrechnungen nach unten, obwohl ihn niemand angefordert
  * hatte. Im Fenster ist er da, wenn er gebraucht wird, und sonst nicht.
  */
+/** Ereignis, mit dem der Förder-Check von anderer Stelle geöffnet wird. */
+export const FOERDER_CHECK_OEFFNEN = "sc:foerder-check-oeffnen";
+
 export default function FoerderCheckStarter({
   programme,
   ortName,
@@ -23,6 +26,18 @@ export default function FoerderCheckStarter({
   ortName: string;
 }) {
   const [offen, setOffen] = useState(false);
+
+  // Von außen öffnen: Die klebende Leiste am Seitenfuß bietet den Förder-Check
+  // als zweiten Weg an, steht aber in einem anderen Zweig des Baums. Statt den
+  // Zustand nach oben zu ziehen (und damit die halbe Seite zur
+  // Client-Komponente zu machen) hört diese Komponente auf ein Ereignis.
+  // Bewusst klein gehalten: EIN Ereignisname, eine Richtung, kein Rückkanal.
+  useEffect(() => {
+    const auf = () => setOffen(true);
+    window.addEventListener(FOERDER_CHECK_OEFFNEN, auf);
+    return () => window.removeEventListener(FOERDER_CHECK_OEFFNEN, auf);
+  }, []);
+
   return (
     <>
       <button type="button" onClick={() => setOffen(true)} style={knopf}>

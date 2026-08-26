@@ -1,6 +1,9 @@
 import { v } from "../lib/theme";
 import InfoTooltip from "./InfoTooltip";
-import { FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE, type FundingProgram, type FundingStatus } from "../lib/funding-programs";
+import {
+  FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE, bedingungenFuer, saetzeFuer,
+  type FundingProgram, type FundingStatus, type FundingCondition, type FundingTechnik,
+} from "../lib/funding-programs";
 import type { FundingExample } from "../lib/funding-examples";
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
@@ -98,10 +101,51 @@ export function zerlegeSatz(value: string): {
     auf > 0 ? (zu > 0 ? `${value.slice(auf + 2, zu)}${value.slice(zu + 1)}` : value.slice(auf + 2)) : null;
   const m = ohneZusatz.match(/^([+−-]?[\d.,]+(?:\s*[–-]\s*[\d.,]+)?)\s*(.*)$/);
   const zahl = m ? m[1] : ohneZusatz;
-  const einheit = m && m[2] ? m[2] : null;
+  let einheit = m && m[2] ? m[2] : null;
+  let zusatz2 = zusatz;
+
+  // DER DECKEL IST KEINE EINHEIT (26.08.2026).
+  //
+  // 88 von 201 Sätzen im Katalog tragen ihren Höchstbetrag im selben String:
+  // „100 €/kWp, max. 1.000 €". Alles davon landete in der Einheit, die damit
+  // zu lang für die Zeile wurde und unter die Zahl rutschte — übrig blieb oben
+  // eine nackte „100". Bei „50 % der Kosten, max. 200 €" war es schlimmer: Dort
+  // stand als Wert „50" ohne Prozentzeichen, also eine Zahl, der man nicht
+  // ansieht, ob Euro oder Prozent gemeint sind. Genau die Fehlerklasse, gegen
+  // die im Projekt die Regel „Zahl und Einheit gehören zusammen" steht.
+  const deckel = einheit?.match(/^(.*?),\s*(max\..*)$/);
+  if (deckel) {
+    einheit = deckel[1] || null;
+    zusatz2 = zusatz2 ? `${deckel[2]}, ${zusatz2}` : deckel[2];
+  }
+
+  // DAS SYMBOL GEHÖRT AN DIE ZAHL, DIE ERLÄUTERUNG NICHT.
+  //
+  // „50 % der Kosten" ließ nach dem Deckel-Schnitt immer noch „50" allein oben
+  // stehen, weil „% der Kosten" als ausgeschriebene Einheit gilt. Eine 50 ohne
+  // Prozentzeichen ist aber keine schwächere Angabe, sondern eine andere: Man
+  // sieht ihr nicht an, ob Euro oder Prozent gemeint sind. Getrennt wird
+  // deshalb am ersten Leerzeichen nach dem Symbol — „%" trägt die Zeile,
+  // „der Kosten" steht als Erläuterung darunter.
+  // Kurzzeichen ohne Symbol zählen mit: „85 ct je Watt Wechselrichterleistung"
+  // ließ sonst eine blanke 85 stehen. „Prozentpunkte" bleibt unberührt — es
+  // steht ohne Erläuterung dahinter und ist selbst das ganze Wort.
+  const symbolTeil = einheit?.match(/^([%€$£][^\s]*|ct|kW[hp]?|MWh?|W)\s+(.+)$/);
+  if (symbolTeil) {
+    einheit = symbolTeil[1];
+    zusatz2 = zusatz2 ? `${symbolTeil[2]}, ${zusatz2}` : symbolTeil[2];
+  }
+
   // Kurzzeichen bleiben in der Zeile, ausgeschriebene Einheiten rutschen
   // darunter — sonst wird die Zeile vom Wort statt von der Zahl geführt.
-  return { zahl, einheit, zusatz, kurzeEinheit: !!einheit && einheit.length <= 3 };
+  //
+  // Gemessen an der LÄNGE ging das schief: „€/kWp" und „€/kWh" sind fünf
+  // Zeichen und damit nach der alten Regel (≤ 3) ausgeschriebene Wörter, obwohl
+  // sie genau das Gegenteil sind. Maßgeblich ist deshalb die Form: ein
+  // Kurzzeichen enthält ein Symbol und kein Leerzeichen; „Prozentpunkte" und
+  // „% der Kosten" bleiben damit unten, wo sie hingehören.
+  const kurzeEinheit = !!einheit && !einheit.includes(" ") && /^(?:[%€$£][^\s]*|ct|kW[hp]?|MWh?|W)$/.test(einheit);
+  return { zahl, einheit, zusatz: zusatz2, kurzeEinheit };
 }
 
 /** The "label … value" rate rows. `bordered` adds the divider used in detail
@@ -111,9 +155,12 @@ export function FundingRates({
   bordered = false,
   columns = 1,
   label,
+  technik,
 }: {
   rates: FundingProgram["rates"];
   bordered?: boolean;
+  /** Nur die Sätze dieser Technik zeigen — ohne Angabe alle. */
+  technik?: FundingTechnik;
   /** Überschrift über der Liste — damit die Sätze neben den Bedingungen
    *  genauso beschriftet sind wie diese und nicht als namenlose Tabelle
    *  danebenstehen. */
@@ -136,7 +183,7 @@ export function FundingRates({
           : { display: "flex", flexDirection: "column", gap: bordered ? 8 : 4 }
       }
     >
-      {rates.map((r) => {
+      {saetzeFuer(rates, technik).map((r) => {
         const { zahl, einheit, zusatz, kurzeEinheit } = zerlegeSatz(r.value);
         return (
           <div
@@ -226,13 +273,31 @@ export function ExampleCards({ examples }: { examples: FundingExample[] }) {
 export function FundingConditions({
   conditions,
   eligibility,
+  technik,
+  zeigeErste,
 }: {
-  conditions: string[];
+  conditions: FundingCondition[];
   /** Wer antragsberechtigt ist — wird als ERSTE Bedingung in die Liste
    *  gesetzt, nicht als Abzeichen darüber. „Privat" und „Gewerblich" sind
    *  Bedingungen wie jede andere auch: Sie sagen, wer in Frage kommt. Als
    *  Pillen über der Liste standen sie als Etikett da, das zu nichts gehörte. */
   eligibility?: FundingProgram["eligibility"];
+  /** Nur die Bedingungen dieser Technik zeigen — ohne Angabe alle. */
+  technik?: FundingTechnik;
+  /**
+   * So viele Bedingungen offen zeigen, den Rest hinter einem Knopf.
+   *
+   * Ohne Angabe stehen alle da — der Fall der Übersicht und des Ergebnis-
+   * Fensters, wo die Liste ohnehin kurz ist. Auf der Stadtseite stehen
+   * Bedingungen und Konditionen NEBENEINANDER und werden im Raster gleich hoch:
+   * Neun Bedingungen neben drei Konditionen ziehen die ganze Karte auf die
+   * dreifache Höhe, und rechts steht Weißraum.
+   *
+   * ALLE BLEIBEN IM HTML, auch die eingeklappten — das ist der Unterschied
+   * zwischen Kürzen und Verstecken. Wer ohne JavaScript liest oder die Seite
+   * druckt, bekommt die vollständige Liste; nur die Darstellung klappt sie zu.
+   */
+  zeigeErste?: number;
 }) {
   const wer =
     eligibility && eligibility.length > 0
@@ -242,17 +307,45 @@ export function FundingConditions({
           ? "Nur für Privatpersonen"
           : "Nur für Gewerbe"
       : null;
-  const alle = wer ? [wer, ...conditions] : conditions;
+  const texte = bedingungenFuer(conditions, technik);
+  const alle = wer ? [wer, ...texte] : texte;
   if (alle.length === 0) return null;
+  const kuerzbar = typeof zeigeErste === "number" && alle.length > zeigeErste + 1;
   // EIN Block, kein Fragment: Als Fragment waren Überschrift und Liste zwei
   // Geschwister — in einem Raster landeten sie in zwei verschiedenen Spalten,
   // die Überschrift links und die Bedingungen rechts daneben.
   return (
     <div>
       <div style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, color: v("--color-text-secondary"), marginBottom: 12 }}>Bedingungen</div>
+      {/* Die Kürzung läuft über CSS, nicht über eine kürzere Liste: Ein
+          `<details>` hält den ganzen Inhalt im HTML, auch zugeklappt. Wer die
+          Seite ohne JavaScript liest, druckt oder durchsucht, findet alles —
+          nur zusammengeklappt. Eine im JavaScript abgeschnittene Liste wäre
+          dagegen für Suchmaschinen und Vorlesegeräte schlicht weg. */}
       <ul style={{ margin: 0, paddingLeft: 20, fontSize: "var(--font-size-body)", lineHeight: 1.6, color: v("--color-text-secondary") }}>
-        {alle.map((c) => <li key={c} style={{ marginBottom: 4 }}>{c}</li>)}
+        {(kuerzbar ? alle.slice(0, zeigeErste) : alle).map((c) => <li key={c} style={{ marginBottom: 4 }}>{c}</li>)}
       </ul>
+      {kuerzbar && (
+        <details style={{ marginTop: 6 }}>
+          <summary
+            style={{
+              cursor: "pointer",
+              listStyle: "none",
+              fontSize: "var(--font-size-caption)",
+              fontWeight: 700,
+              color: v("--color-accent"),
+              padding: "4px 0",
+            }}
+          >
+            {/* Die Zahl gehört in den Knopf: „mehr anzeigen" verschweigt, ob
+                noch eine Zeile kommt oder sieben. */}
+            {alle.length - zeigeErste!} weitere Bedingungen anzeigen
+          </summary>
+          <ul style={{ margin: "6px 0 0", paddingLeft: 20, fontSize: "var(--font-size-body)", lineHeight: 1.6, color: v("--color-text-secondary") }}>
+            {alle.slice(zeigeErste).map((c) => <li key={c} style={{ marginBottom: 4 }}>{c}</li>)}
+          </ul>
+        </details>
+      )}
     </div>
   );
 }

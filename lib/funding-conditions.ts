@@ -303,7 +303,7 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
           "einmal gefördert wurde — eine Auskunft, die nur die Stadt hat.",
       },
       {
-        ausBedingung: "Mini-PV: höchstens zwei Module je Haushalt, höchstens 800 W Einspeisung",
+        ausBedingung: "Höchstens zwei Module je Haushalt, höchstens 800 W Einspeisung",
         warum:
           "Die 800 W sind seit 2024 ohnehin die gesetzliche Obergrenze für " +
           "Steckersolar und damit im Balkon-Rechner der Normalfall. Die Modulzahl " +
@@ -317,13 +317,20 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
           "prüfbar. Dass der Topf leerlaufen kann, trägt bereits `capped: true`.",
       },
       {
-        ausBedingung: "Für die Dachanlage braucht es Wohneigentum in Nidda; beim Balkonkraftwerk genügt der Hauptwohnsitz, Mieter sind dort ausdrücklich dabei",
+        ausBedingung: "Wohneigentum in Nidda ist Voraussetzung",
         warum:
-          "Die Antragsberechtigung ist hier JE TECHNIK verschieden, und die Prüfform " +
-          "`antragsteller` gilt dem ganzen Programm. Sie hier zu setzen hieße, eine " +
-          "der beiden Hälften falsch darzustellen — entweder verlöre der Mieter sein " +
-          "Balkonkraftwerk oder der Rechner böte ihm die Dachförderung an. Bis das " +
-          "Modell eine Technik-Dimension bei den Bedingungen kennt, bleibt es ein Satz.",
+          "Die Prüfform `antragsteller` gilt dem ganzen Programm; hier hängt die " +
+          "Berechtigung an der TECHNIK. Seit die Bedingungen je Technik getrennt " +
+          "sind, steht der Satz wenigstens nur noch dort, wo er zutrifft — als " +
+          "Prüfung ließe er sich erst erfassen, wenn auch die Prüfformen eine " +
+          "Technik-Dimension bekommen.",
+      },
+      {
+        ausBedingung: "Hauptwohnsitz in Nidda genügt — Mieterinnen und Mieter sind ausdrücklich antragsberechtigt",
+        warum:
+          "Dieselbe Grenze wie beim Wohneigentum, nur andersherum: eine Erleichterung " +
+          "statt einer Hürde, und genau der Punkt, auf den die Stadt zielt. Sie steht " +
+          "im Balkon-Reiter und nirgends sonst.",
       },
     ],
   },

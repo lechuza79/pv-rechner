@@ -430,7 +430,10 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
     // Der Grund samt Stichtag steht sichtbar dabei, sonst wirkt die leere Kachel
     // wie ein Datenfehler statt wie eine Tatsache.
     expect(p.conditions.join(" ")).toMatch(/14\.07\.2026/);
-    expect(p.conditions.join(" ")).toMatch(/Balkonmodul/i);
+    // Geprüft wird die AUSSAGE („auch Balkonkraftwerke sind betroffen"), nicht
+    // das Wort: Am 26.08.2026 wurden die 39 Bezeichnungen des Katalogs auf eine
+    // vereinheitlicht, und aus „Balkonmodule" wurde „Balkonkraftwerke".
+    expect(p.conditions.join(" ")).toMatch(/Balkonkraftwerk/i);
   });
 
   // Eine Startseiten-URL ist als Quellenangabe unter einem Förderbetrag wertlos:
@@ -488,9 +491,13 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
     expect(p.pvCap).toBe(1200);
     expect(fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 10, kosten: 25000 }).total).toBe(2200); // 1.200 PV + 1.000 Speicher
     expect(fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 4, kosten: 25000 }).total).toBe(1200); // unter 5 kWh kein Speichergeld
-    const stecker = p.rates.find((r) => /steckersolar/i.test(r.label))!;
-    expect(stecker.label).not.toMatch(/0,6/);
-    expect(stecker.label).toMatch(/0,8 kW/);
+    // Gesucht wird die Zeile über „Balkonkraftwerk": Am 26.08.2026 wurden die
+    // 39 Bezeichnungen des Katalogs auf eine vereinheitlicht, „Steckersolar"
+    // gehörte dazu. Geprüft wird unverändert die WATT-GRENZE — sie ist der
+    // Grund für diesen Test, nicht das Wort davor.
+    const balkon = p.rates.find((r) => /balkonkraftwerk/i.test(r.label))!;
+    expect(balkon.label).not.toMatch(/0,6/);
+    expect(balkon.label).toMatch(/0,8 kW/);
   });
 
   // Ein Anzeigetext, der selbst zugibt, dass er unsicher ist, ist kein Fördersatz —

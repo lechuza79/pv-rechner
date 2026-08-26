@@ -8,7 +8,7 @@ import ArticleMeta from "../../../../components/ArticleMeta";
 import AutoHeightIframe from "../../../../components/AutoHeightIframe";
 import { DataSourceNote } from "../../../../components/PoweredBy";
 import GlossaryTerm from "../../../../components/GlossaryTerm";
-import StickyCta from "./StickyCta";
+import StickyCta from "../../../../components/StickyCta";
 import WpRechnerModal from "./WpRechnerModal";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
 import { waermepumpeFoerderungFaq } from "../../../../lib/faq";
@@ -860,7 +860,10 @@ export default function WaermepumpeFoerderungPage() {
             sie den Footer/Rechtstext nicht verdeckt. */}
         <div id="sc-cta-sentinel" style={{ height: 1 }} aria-hidden />
       </div>
-      <StickyCta foerderHref="#foerder-check" />
+      <StickyCta
+        primaer={{ href: "#wp-rechner", label: "Wärmepumpe rechnen" }}
+        sekundaer={{ href: "#foerder-check", label: "Förderung berechnen" }}
+      />
       <WpRechnerModal />
     </div>
   );
