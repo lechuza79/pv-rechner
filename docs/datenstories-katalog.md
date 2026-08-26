@@ -447,8 +447,70 @@ Datenbestand rekonstruierbar publiziert — und damit genau das getan, was Aufla
 diese Datenquelle gilt deshalb: Nenner ja im Einzelfall, **nicht in einer flächendeckenden
 Tabelle**. Die Grenze gehört in einen Test, nicht in einen Merksatz.
 
-**BAFA ist der schwächere Kandidat und geprüft verworfen:** vier monatliche Statistiken, nur als
-PDF, und die Heizungsförderung ist seit 2024 gar nicht mehr dabei (sie läuft über die KfW).
+**BAFA ist der schwächere Kandidat und weitgehend verworfen:** rund 80 Statistiken auf der
+Übersichtsseite (in der Volltextsuche über 260), ausschließlich PDF, kein Excel und kein CSV. Die
+Heizungsförderung ist seit 2024 nicht mehr dabei (sie läuft über die KfW). Die verbliebenen Reihen
+— Kraft-Wärme-Kopplung, Wärmenetze, Energieberatung — berühren weder Photovoltaik noch die
+Wärmepumpe im Einfamilienhaus. **Ungeprüft geblieben:** ob die Monatsstatistik nach Bundesland
+aufschlüsselt. Der Server weist unsere Abrufe pauschal ab; wer das klären will, braucht denselben
+Abrufweg aus der eigenen Produktion, den der Förder-Wächter schon benutzt.
+
+---
+
+### Was der Förderreport SONST hergibt (geprüft 26.08.2026 am Jahrgang 2025)
+
+**Alle 65 Programme des Berichts stehen auf Kreisebene**, nicht nur die Heizungsförderung — 404
+Kreis-Abschnitte, je Zeile Programm, Anzahl der Zusagen und Volumen in Mio. Euro. Jahrgänge
+2020–2025 abrufbar, davor nicht.
+
+**Die Unterdrückung trifft die Programme sehr verschieden** (gemessen, nicht geschätzt):
+
+| Programm | Kreis-Zeilen unterdrückt | brauchbar? |
+|---|---|---|
+| Heizungsförderung privat | **0 von 323** | ja, flächendeckend |
+| Sanierung auf Effizienzhaus (Kredit) | 73 von 398 (18 %) | ja |
+| Klimafreundlicher Neubau, Selbstnutzung | 179 von 379 (47 %) | eingeschränkt |
+| Einzelmaßnahmen-Ergänzungskredit | 247 von 370 (67 %) | nein |
+| Erneuerbare Energien (gewerblich) | 266 von 298 (89 %) | nein |
+
+Zwei Details dazu: Die Unterdrückung gilt nur der **Anzahl**, nie dem Volumen — eine Karte
+„Fördervolumen je Kreis" ist also lückenlos, eine Karte „Anzahl" nicht. Und die Sammelposten
+„keine Angabe" enthalten **keine einzige** Zeile der Gebäudeförderung; die ist vollständig einem
+Kreis zugeordnet.
+
+**G19.2 — Sanierungstiefe und Neubaustandard je Kreis** (neu, uns fehlt beides komplett)
+Beispiel: „In [Landkreis] wurden [X] Wohngebäude auf Effizienzhaus-Niveau saniert und [Y]
+klimafreundlich neu gebaut. [Nachbarkreis] kommt bei ähnlicher Einwohnerzahl auf [Z]."
+Quelle: KfW-Förderreport **N** · Takt: jährlich · Für: HW, KOM, FACH
+
+**G19.3 — Wer die Förderung wirklich zieht** ← inhaltlich der stärkste Fund
+Die Verwendungszwecke schlüsseln jede Förderung nach Boni auf. Das ist eine Aussage über die
+Menschen, nicht über die Technik: Der Klimabonus setzt den Austausch einer alten fossilen Heizung
+voraus, der Effizienzbonus eine Erdwärme- oder Wasser-Wärmepumpe, der Einkommensbonus ein
+Haushaltseinkommen unter einer Schwelle. Der durchschnittliche Zuschuss je Fall fällt nebenbei ab.
+Beispiel: „Von [A] geförderten Heizungen bekamen [B] den Klimabonus für den Ausstieg aus einer
+alten fossilen Anlage und [C] den Effizienzbonus, den es nur für Erdwärme, Wasser oder natürliche
+Kältemittel gibt. Im Schnitt kamen [D] Euro je Fall zusammen."
+Quelle: KfW-Förderreport **N** · Takt: jährlich · Für: PRIV, HW, FACH · Kanal: alle
+**Schranke: nur auf Bundesebene.** Es gibt keine Kreuztabelle Verwendungszweck × Region — wer
+diese Anteile auf einen Kreis anwendet, macht denselben Fehler wie mit der 87-Prozent-Quote.
+
+**Photovoltaik und Speicher aus dieser Quelle: Absage.** Das einzige PV-nahe Programm ist ein
+gewerblicher Investitionskredit, auf Kreisebene zu 89 Prozent unterdrückt, bundesweit rund 700
+Maßnahmen. Gezählt werden Kredite, nicht Anlagen. Unser Anlagenregister ist dort in jeder Hinsicht
+besser — feinere Gebietsebene, Leistung in Kilowatt, keine Unterdrückungsschwelle. Ein eigenes
+Speicherprogramm gibt es seit 2020 nicht mehr.
+
+**Keine durchgehende Reihe seit 2020 — BLOCKER.** Die Gebäudeförderung wurde 2021 vollständig
+umbenannt, 2024 kam die Heizungsförderung als eigenes Programm dazu, und Zusagen aus Altprodukten
+werden laut Bericht in den Nachfolgeprodukten ausgewiesen. Sechs Balken unter einem Namen wären
+eine erfundene Kontinuität. Ehrlich sind Vergleiche innerhalb 2021–2023 und ab 2024.
+Ebenso weggefallen: die Spalte „geförderte Wohneinheiten" gibt es nur 2024, nicht mehr 2025.
+
+**Zwei Betriebshinweise für den Parser:** Programmnamen brechen im ausgelesenen Text mitten in der
+Zeile um — ein naiver Parser verliert etwa jede zehnte Zeile und merkt es nicht. Deshalb zwingend
+eine Kontrollsumme gegen die Bundeswerte. Und die Anzahl bei Wohneigentumsgemeinschaften enthält
+laut Bericht Basis- **und** Zusatzanträge, zählt dort also doppelt.
 
 ---
 

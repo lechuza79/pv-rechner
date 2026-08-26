@@ -13,6 +13,7 @@ import { loadChildren, LEVEL_LEN, type Level, type ChildRow } from "./mastr-data
 import { withDbTimeout } from "./db-timeout";
 import { fmtSpeicherKwh, regionDisplayName } from "./atlas-format";
 import { klasseVon, type Groessenklasse } from "./gemeindegroesse";
+import { ATLAS_DATEN_TAG } from "./atlas-revalidate-routen";
 
 export { fmtPvLeistung, fmtSpeicherKwh, regionDisplayName } from "./atlas-format";
 
@@ -158,6 +159,7 @@ async function getRegionByIdUncached(regionId: string): Promise<AtlasRegion | nu
 // greift er, kostet eine Gemeindeseite die Vorfahren-Lookups gar nicht mehr.
 export const getRegionById = unstable_cache(getRegionByIdUncached, ["region-by-id-v1"], {
   revalidate: STAMMDATEN_TTL,
+  tags: [ATLAS_DATEN_TAG],
 });
 
 /** Ein Suchtreffer für die Karten-Suche: `label` ist die anzuzeigende Gattung
@@ -251,6 +253,7 @@ async function resolveSlugPathUncached(slugs: string[]): Promise<AtlasRegion | n
 // der häufigste Verursacher der Atlas-Timeouts.
 export const resolveSlugPath = unstable_cache(resolveSlugPathUncached, ["resolve-slug-v1"], {
   revalidate: STAMMDATEN_TTL,
+  tags: [ATLAS_DATEN_TAG],
 });
 
 /** Ancestors from Deutschland down to (but excluding) the region — for breadcrumbs. */
@@ -375,6 +378,7 @@ async function getChildrenUncached(region: AtlasRegion, energietraeger = "solar"
 // ISR/CDN-Cache). unstable_cache kapselt das Ergebnis, die Route bleibt statisch.
 export const getChildren = unstable_cache(getChildrenUncached, ["children-v2"], {
   revalidate: 3600,
+  tags: [ATLAS_DATEN_TAG],
 });
 
 function assignRank(children: AtlasChild[], metric: "wPerCapita" | "wPerCapitaDach", field: "rank" | "rankDach") {
@@ -772,6 +776,7 @@ async function getRankingDataUncached(
 // cachen spart die wiederholte Zellen-Aggregation auf jeder Gemeinde-Seite.
 export const getRankingData = unstable_cache(getRankingDataUncached, ["ranking-data-v1"], {
   revalidate: 3600,
+  tags: [ATLAS_DATEN_TAG],
 });
 
 /**
@@ -925,6 +930,7 @@ async function getGruppenGroesseUncached(opts: {
 
 export const getGruppenGroesse = unstable_cache(getGruppenGroesseUncached, ["gruppen-groesse-v1"], {
   revalidate: 86400,
+  tags: [ATLAS_DATEN_TAG],
 });
 
 /**
@@ -973,6 +979,7 @@ async function getGemeindeRangUncached(opts: {
 
 export const getGemeindeRang = unstable_cache(getGemeindeRangUncached, ["gemeinde-rang-v1"], {
   revalidate: 86400,
+  tags: [ATLAS_DATEN_TAG],
 });
 
 /**
@@ -990,6 +997,7 @@ const RANG_LIMIT = 12_000;
 // ersten pro Band schnell. revalidate großzügig, ändert sich nur mit dem Bestand.
 export const getTopGemeinden = unstable_cache(getTopGemeindenUncached, ["top-gemeinden-v1"], {
   revalidate: 86400,
+  tags: [ATLAS_DATEN_TAG],
 });
 
 // Größenklassen-Vergleich in EINEM Aufruf: Anführer der Klasse ('leader') und
@@ -1053,6 +1061,7 @@ async function getPeerContextUncached(
 
 export const getPeerContext = unstable_cache(getPeerContextUncached, ["peer-context-v1"], {
   revalidate: 86400,
+  tags: [ATLAS_DATEN_TAG],
 });
 
 /** Bundesland-Slug + Kreis-Slug jedes Landkreises — für die Sitemap.
@@ -1083,4 +1092,5 @@ async function getKreisPfadeUncached(): Promise<{ bundesland: string; kreis: str
 // wie Verzeichnis und Vorfahren (STAMMDATEN_TTL), nicht die Stunde der Anlagenzahlen.
 export const getKreisPfade = unstable_cache(getKreisPfadeUncached, ["kreis-pfade-v1"], {
   revalidate: STAMMDATEN_TTL,
+  tags: [ATLAS_DATEN_TAG],
 });
