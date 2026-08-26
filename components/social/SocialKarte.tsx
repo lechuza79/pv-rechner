@@ -1,3 +1,4 @@
+import Logo from "../Logo";
 import { v, space } from "../../lib/theme";
 import type { PostBild } from "../../lib/social-posts";
 
@@ -125,9 +126,13 @@ export function SocialKarte({ bild, skala = 1 }: { bild: PostBild; skala?: numbe
         <div style={{ fontSize: 24 * skala, color: v("--color-text-muted"), lineHeight: 1.35, maxWidth: "72%" }}>
           {bild.quelle}
         </div>
-        {/* Im Bild lädt die Marke ein, statt sich zu nennen — einen Knopf gibt
-            es hier nicht mehr, der ihn ersetzen könnte. */}
-        <div style={{ fontSize: 26 * skala, fontWeight: 600, whiteSpace: "nowrap" }}>solar-check.io</div>
+        {/* Die Marke als Logo, nicht als getippter Name: Im geteilten Bild ist
+            sie das Einzige, was die Herkunft zeigt — einen Knopf, der darauf
+            führt, gibt es hier nicht mehr. Das Logo führt seine Farben als
+            Token, folgt also demselben Farbschema wie die Karte. */}
+        <div style={{ flexShrink: 0 }}>
+          <Logo width={200 * skala} />
+        </div>
       </div>
     </div>
   );
