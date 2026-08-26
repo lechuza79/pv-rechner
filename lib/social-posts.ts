@@ -96,10 +96,18 @@ export const FEED_ABSCHNITT_ZEICHEN = 210;
 const de = (n: number, stellen = 0) =>
   n.toLocaleString("de-DE", { minimumFractionDigits: stellen, maximumFractionDigits: stellen });
 
+/**
+ * Der Markenname steht hier, weil die Erwähnung der Unternehmensseite ihn im
+ * Text finden muss — eine Erwähnung entsteht nur, wo der Name wörtlich
+ * vorkommt. Die Quellenzeile ist dafür die natürliche Stelle: Sie sagt ohnehin,
+ * wer gerechnet hat.
+ */
+const MARKE = "Solar Check";
+
 function quellenzeile(standIso: string): string {
   const d = new Date(standIso);
   const datum = d.toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" });
-  return `Marktstammdatenregister (Bundesnetzagentur), Stand ${datum}. Eigene Berechnung.`;
+  return `Marktstammdatenregister (Bundesnetzagentur), Stand ${datum}. Eigene Berechnung, ${MARKE}.`;
 }
 
 /**

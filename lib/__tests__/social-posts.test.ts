@@ -106,6 +106,10 @@ describe("Alle Posts", () => {
       expect(p.text).toMatch(/Marktstammdatenregister/);
       expect(p.bild?.quelle).toMatch(/Marktstammdatenregister/);
       expect(p.bild?.quelle).toMatch(/Eigene Berechnung/);
+      // Der Markenname muss wörtlich im Text stehen, sonst findet die
+      // Erwähnung der Unternehmensseite ihn nicht und der Verweis entfällt
+      // stillschweigend.
+      expect(p.text).toContain("Solar Check");
       expect(p.text).toMatch(/5\. August 2026/);
     }
   });
