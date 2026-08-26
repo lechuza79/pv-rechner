@@ -754,127 +754,6 @@ export default function Waermepumpe({
           // (`.wp-ergebnis` in lib/theme.ts) — kein Zustand, kein matchMedia.
           <div className="fu wp-ergebnis">
           <div>
-            {/* Szenario-Auswahl ganz oben: das beschlossene Heizungsgesetz (Grüngas-Pflicht,
-                beschlossen, Inkrafttreten mit der Verkündung) gesondert + hervorgehoben, darunter drei reine
-                Preis-Annahmen ohne Grüngas. Die Wahl rechnet alle Zahlen darunter um. */}
-            <div style={{ marginBottom: 16 }}>
-              {/* Primär: das Heizungsgesetz (Grüngas-Pflicht). Klickbare Kachel; das
-                  „Mehr erfahren" darin öffnet das Modal (stopPropagation, damit der
-                  Kachel-Klick nicht zugleich das Szenario umstellt). */}
-              {gruengasVerfuegbar ? (
-              <div role="button" tabIndex={0} aria-pressed={greenGas}
-                onClick={() => { setScenario("gruengas"); setPreisExpanded(false); }}
-                onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setScenario("gruengas"); setPreisExpanded(false); } }}
-                style={{ cursor: "pointer", padding: "12px 14px", borderRadius: v('--radius-md'), background: greenGas ? v('--color-accent-dim') : v('--color-bg'), border: `1.5px solid ${greenGas ? v('--color-accent') : v('--color-border')}` }}>
-                <span style={{ display: "inline-block", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v('--color-text-on-accent'), background: v('--color-accent'), padding: "2px 7px", borderRadius: 999, marginBottom: 6 }}>Neues Heizungsgesetz</span>
-                <div style={{ fontSize: 14, fontWeight: 700, color: greenGas ? v('--color-accent') : v('--color-text-primary') }}>Grüngas-Pflicht ab 2029</div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 10, marginTop: 2 }}>
-                  <span style={{ fontSize: 11.5, color: v('--color-text-muted') }}>Gas wird durch die gesetzliche Biomethan-Beimischung Jahr für Jahr teurer</span>
-                  <button onClick={e => { e.stopPropagation(); setShowGasInfo(true); }} style={{ background: "none", border: "none", padding: 0, color: v('--color-accent'), cursor: "pointer", fontSize: 12, fontFamily: "inherit", fontWeight: 700, whiteSpace: "nowrap", flexShrink: 0 }}>Mehr erfahren →</button>
-                </div>
-              </div>
-              ) : (
-                /* Heizöl: Die Bio-Treppe des Heizungsgesetzes gilt zwar auch für Öl,
-                   aber unser Preispfad bildet nur den Gas-Mix ab. Statt eine Zahl zu
-                   erfinden, sagen wir offen, was in der Rechnung fehlt. */
-                <div style={{ padding: "12px 14px", borderRadius: v('--radius-md'), background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-secondary'), lineHeight: 1.55 }}>
-                  {ersatzInvest <= 0 ? (
-                    <>
-                      <strong style={{ color: v('--color-text-primary') }}>Ohne neue Heizung greift die Grüngas-Pflicht nicht.</strong>{" "}
-                      Du hast die Anschaffung einer neuen {fuel.refLabel} auf 0 € gesetzt — deine jetzige Heizung läuft also
-                      weiter. Die Beimischungspflicht des Heizungsgesetzes gilt nur für Heizungen, die neu eingebaut werden,
-                      deshalb rechnen wir sie hier nicht mit. Bleibt die normale Teuerung und der steigende CO₂-Preis.
-                      Eine Einschränkung: Zusätzlich soll eine Quote für alle Brennstoff-Anbieter kommen, die auch bestehende
-                      Heizungen verteuern dürfte. Das Gesetz dazu liegt noch nicht vor — es muss bis zum {GMODG_RECHTSSTAND.quoteGesetzBis} vorgelegt
-                      werden und nennt bisher nur das Ziel, ab 2045 vollständig auf klimaneutrale Brennstoffe umzustellen. Wir rechnen es nicht mit.
-                    </>
-                  ) : (
-                  <>
-                  <strong style={{ color: v('--color-text-primary') }}>Beim Heizöl fehlt ein Kostenblock — bewusst.</strong>{" "}
-                  Das Heizungsgesetz nennt Heizöl gleichrangig neben Gas: Eine neu eingebaute Ölheizung muss ab 2029{" "}
-                  {bioTreppeStufenText()} ihrer Wärme klimafreundlich erzeugen — bei Öl über Bioheizöl, in den Jahren 2029 bis 2034 bei ausreichender Auslegung auch über
-                  Wasserstoff-Derivate oder ganz ohne Beimischung über Solarthermie, eine Lüftung mit Wärmerückgewinnung oder
-                  eine Hybridlösung mit Wärmepumpe (§ 43 Abs. 3–5 GModG).
-                  Dass das den Brennstoff verteuert, ist sicher — <strong>wie stark, ist es nicht.</strong> Marktangaben reichen
-                  von wenigen Prozent Aufschlag bis zu rund der Hälfte, je nachdem ob man beigemischtes Bioheizöl oder reines
-                  HVO betrachtet. Eine belastbare Preisreihe gibt es dafür bislang nicht, deshalb rechnen wir hier nur die
-                  normale Teuerung und den steigenden CO₂-Preis. <strong>Deine Ölheizung dürfte also teurer werden, als hier
-                  steht</strong> — die Wärmepumpe schneidet in Wirklichkeit eher besser ab als in dieser Rechnung.
-                  </>
-                  )}
-                </div>
-              )}
-
-              {/* Secondary: die reinen Preis-Modelle, standardmäßig eingeklappt. */}
-              <div style={{ marginTop: 8, borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, overflow: "hidden", background: !greenGas ? v('--color-bg-muted') : "transparent" }}>
-                <button onClick={() => setPreisExpanded(p => !p)} aria-expanded={preisExpanded}
-                  style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, padding: "10px 14px", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}>
-                  <span style={{ fontSize: 12.5, fontWeight: 600, color: !greenGas ? v('--color-text-primary') : v('--color-text-secondary') }}>
-                    Marktübliche Preissteigerung{!greenGas ? ` · ${sel.label}` : ""}
-                  </span>
-                  <span style={{ display: "inline-flex", transform: preisExpanded ? "rotate(180deg)" : "none", transition: "transform .15s", color: v('--color-text-muted') }}><IconChevronDown size={iconSizes.sm} /></span>
-                </button>
-                {preisExpanded && (
-                  <div style={{ padding: "0 14px 12px" }}>
-                    <p style={{ fontSize: 11.5, color: v('--color-text-secondary'), lineHeight: 1.55, margin: "0 0 10px" }}>
-                      Ohne die Grüngas-Pflicht — nur die normale Teuerung. Die drei Modelle spannen auf, wie stark Strom- und Gaspreis in {DEFAULT_HEATPUMP_CONFIG.years} Jahren steigen könnten (allgemeine Inflation plus CO₂-Preis auf fossile Energie). Aus Sicht der Wärmepumpe von ungünstig (Strom teuer, Gas billig) bis günstig (Strom stabil, Gas teuer).
-                    </p>
-                    <div style={{ display: "flex", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, overflow: "hidden", background: v('--color-bg') }} role="tablist" aria-label="Preis-Modell">
-                      {scenariosPlain.map(s => {
-                        const on = !greenGas && s.id === effScenario;
-                        return (
-                          <button key={s.id} role="tab" aria-selected={on} onClick={() => { setScenario(s.id); setPreisExpanded(true); }}
-                            style={{ flex: 1, padding: "9px 6px", cursor: "pointer", textAlign: "center", background: on ? v('--color-accent-dim') : "transparent", border: "none", borderBottom: `2px solid ${on ? v('--color-accent') : "transparent"}` }}>
-                            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: on ? v('--color-accent') : v('--color-text-muted') }}>{s.label}</div>
-                            <div style={{ fontSize: 10, color: v('--color-text-muted'), fontFamily: v('--font-mono'), marginTop: 2 }}>{s.sub}</div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                    {!greenGas && (
-                      // Bewusst selPrice statt sel: dieser Block erklärt IMMER das
-                      // gewählte Preis-Modell. Über sel wäre der Text im Grüngas-Fall
-                      // stumm — genau die Falle, in die eine Textkorrektur am
-                      // 29.07.2026 lief (geändert wurde ein Satz, der nie erscheint).
-                      <div style={{ fontSize: 11.5, color: v('--color-text-secondary'), lineHeight: 1.5, marginTop: 10 }}>{selPrice.explain}</div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Modal: alle erklärenden Grüngas-Texte gebündelt (Modal-Baustein →
-                Transitions/Fokus/Bottom-Sheet kommen aus components/Modal.tsx). */}
-            <Modal open={showGasInfo} onClose={() => setShowGasInfo(false)} title="Grüngas-Pflicht: was dahintersteckt" intro="Warum eine neue Gasheizung durch das Heizungsgesetz teurer wird — und wie wir das rechnen." maxWidth={560}>
-              {/* Kernaussage */}
-              <div style={{ padding: "10px 12px", borderRadius: v('--radius-md'), background: v('--color-chart-positive-bg'), marginBottom: 18, fontSize: 12.5, lineHeight: 1.6, color: v('--color-text-secondary') }}>
-                Durch die Grüngas-Pflicht spart die Wärmepumpe über {DEFAULT_HEATPUMP_CONFIG.years} Jahre{" "}
-                <span style={{ fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-positive') }}>+{greenGasDelta.toLocaleString("de-DE")} €</span>{" "}mehr als bei reiner Preisfortschreibung.
-              </div>
-              {/* Chart B: Heizkosten je kWh Wärme */}
-              <div style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 2 }}>Heizkosten je Kilowattstunde Wärme</div>
-              <div style={{ fontSize: 11.5, color: v('--color-text-muted'), marginBottom: 8 }}>Gasheizung mit Grüngas-Pflicht gegen Wärmepumpe, {YEAR}–{YEAR + DEFAULT_HEATPUMP_CONFIG.years - 1}</div>
-              <HeatCostCompareChart data={heatCostData} pvCoveragePct={Math.round(pvCoverageForChart * 100)} />
-              {/* Chart A: Gaspreis-Zusammensetzung */}
-              <div style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.06em", margin: "20px 0 2px" }}>Woraus sich der Gaspreis zusammensetzt</div>
-              <div style={{ fontSize: 11.5, color: v('--color-text-muted'), marginBottom: 8 }}>Endkundenpreis in ct/kWh — der Biomethan-Block wächst mit der Bio-Treppe</div>
-              <GasPriceStackChart data={gasStackData} />
-              {/* Erklärabschnitte */}
-              <div style={{ fontSize: 13, lineHeight: 1.6, color: v('--color-text-secondary'), marginTop: 22, borderTop: `1px solid ${v('--color-border')}`, paddingTop: 16 }}>
-                {[
-                  { h: "Die Bio-Treppe (§ 43 GModG)", p: `Das Gebäudemodernisierungsgesetz verpflichtet eine Heizung für Gas, Heizöl oder Flüssiggas, die nach dem ${GMODG_RECHTSSTAND.inKraftSeit} neu eingebaut wird — beim Einbau in ein bestehendes Gebäude ebenso wie in Neubauten, die bis zum ${GMODG_RECHTSSTAND.neubauBioTreppeBis} errichtet werden —, ab 2029 einen wachsenden Anteil klimafreundlicher Brennstoffe beizumischen. Das Gesetz nennt vier Stufen: ${bioTreppeStufenText()}. Anrechenbar sind neben Biomethan auch Bioheizöl, biogenes Flüssiggas sowie grüner, blauer, orangener oder türkiser Wasserstoff und dessen Derivate; beim Netzgas läuft es auf Biomethan hinaus, und das kostet rund doppelt so viel wie Erdgas. Zusammen mit steigenden Netzentgelten — weil immer weniger Haushalte am Gasnetz hängen — treibt das den Gaspreis deutlich stärker als die allgemeine Teuerung. Statt beizumischen lässt sich die Pflicht auch über Solarthermie, eine Lüftungsanlage mit Wärmerückgewinnung oder eine Wärmepumpen-Hybridheizung erfüllen (§ 43 Absatz 3 bis 5 GModG); fällt die alte Anlage irreparabel aus, bleibt zwölf Monate lang die Stufe stehen, die beim Einbau galt (§ 43 Absatz 7 GModG). Wir rechnen den teuersten Weg, die reine Beimischung.` },
-                  { h: "Beschlossen ist die Pflicht, nicht der Preis", p: `${gmodgStandSatz()} Wie teuer Biomethan und Netzentgelte tatsächlich werden, ist dagegen eine Annahme — ein plausibler Korridor, keine punktgenaue Prognose. Ebenfalls Annahme ist der Weg nach 2040: Eine 100-%-Stufe steht nicht im Gesetz, die vollständige Klimaneutralität ab 2045 kündigt § 42a GModG nur an — als Quote für die Brennstoff-Anbieter, die dann auch Bestandsheizungen verteuern würde. Sie soll bis zum ${GMODG_RECHTSSTAND.quoteGesetzBis} in einem eigenen Gesetz geregelt werden; die Gesetzesbegründung geht von einem Start 2028 mit bis zu einem Prozent aus, im Gesetzestext steht das nicht. Wir rechnen sie nicht mit. Die drei Preis-Szenarien zeigen den Gegenfall: reine Energiepreis-Fortschreibung ohne die Grüngas-Pflicht.` },
-                  { h: "Warum wir je Kilowattstunde Wärme rechnen", p: "Gas- und Strompreis lassen sich nicht direkt vergleichen: Eine Wärmepumpe macht aus einer Kilowattstunde Strom rund drei Kilowattstunden Wärme, ein Gaskessel aus einer Kilowattstunde Gas nur knapp eine. Deshalb rechnen wir beide auf die Kosten pro gelieferter Kilowattstunde Wärme um — die Jahresarbeitszahl der Wärmepumpe und der Kesselwirkungsgrad sind darin enthalten. Grundgebühr und Wartung bleiben außen vor, sie gehören nicht in einen Preis-je-Kilowattstunde-Vergleich." },
-                  { h: "Quelle", p: "IW-Report 36/2026 „Wie hoch sind die Mehrkostenrisiken durch das Gebäudemodernisierungsgesetz?“ (Henger, Küper, Wünsch — Institut der deutschen Wirtschaft, Juli 2026). Die Preispfade stammen aus dem Anhang der Studie." },
-                ].map((s, i) => (
-                  <div key={i} style={{ marginTop: i === 0 ? 0 : 14 }}>
-                    <div style={{ fontSize: 13.5, fontWeight: 700, color: v('--color-text-primary'), marginBottom: 4 }}>{s.h}</div>
-                    <p style={{ margin: 0 }}>{s.p}</p>
-                  </div>
-                ))}
-              </div>
-            </Modal>
-
             {/* 1. Ist-Konklusion (klein, oben) */}
             {zeigeWege && (
               <div style={{ padding: "12px 14px", marginBottom: 12, borderRadius: v('--radius-md'), background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}` }}>
@@ -891,160 +770,6 @@ export default function Waermepumpe({
                   {" "}So wirken sich weitere Schritte auf die Wirtschaftlichkeit aus:
                 </div>
               </div>
-            )}
-
-            {/* 2. Förder-Settings — nach der Konklusion, sie bestimmen alle Zahlen */}
-            {situation === "bestand" && (
-              <div style={{ padding: "14px 16px", marginBottom: 16, borderRadius: v('--radius-lg'), background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}` }}>
-                <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: 4, marginBottom: 2 }}>
-                  <span style={{ fontSize: 13, fontWeight: 700 }}>Deine BEG-Förderung</span>
-                  <span style={{ fontFamily: v('--font-mono'), fontWeight: 800, fontSize: 15, color: v('--color-accent') }}>−{result.beg.amount.toLocaleString("de-DE")} €</span>
-                </div>
-                {/* Der gewählte Förderstand gehört in die Kopfzeile, nicht nur in
-                    den Schalter weiter unten: Wer die Zahl darüber liest, muss
-                    ohne Suchen sehen, nach welchem Stand sie gerechnet ist. */}
-                <div style={{ fontSize: 11.5, color: v('--color-text-muted'), marginBottom: 10 }}>
-                  {Math.round(result.beg.rate * 100)} % der förderfähigen Kosten
-                  {stufeNaechste
-                    ? <> · Stand {begStand === "naechste" ? stufeNaechste.bezeichnung : "heute"}</>
-                    : null}
-                  {result.investBrutto > begStufe.maxCap
-                    ? <> · gedeckelt bei {begStufe.maxCap.toLocaleString("de-DE")} € (deine Anlage liegt darüber, daher {Math.round(result.beg.rate * 100)} % × {begStufe.maxCap.toLocaleString("de-DE")} €)</>
-                    : null}
-                </div>
-                <BegStandSchalter
-                  stand={begStand}
-                  setStand={s => { setBegStand(s); setOInvest(null); }}
-                  jetzt={stufeJetzt}
-                  naechste={stufeNaechste}
-                  euUrsprung={euUrsprung}
-                  setEuUrsprung={b => { setEuUrsprung(b); setOInvest(null); }}
-                  betragJetzt={begVergleich.jetzt}
-                  betragNaechsteOhneEu={begVergleich.naechsteOhneEu}
-                  betragNaechsteMitEu={begVergleich.naechsteMitEu}
-                />
-                {/* Der Satz kommt aus der gewählten Stufe, nicht als getippte
-                    Zahl. Er stand hier bis zum 26.08.2026 als „30 %" im Text —
-                    genau die Sorte Zahl, die beim ersten Stichtag still falsch
-                    wird, während die Rechnung daneben längst richtig rechnet. */}
-                <div style={{ fontSize: 12, color: v('--color-text-muted'), display: "flex", alignItems: "center", gap: 5, marginBottom: 6 }}>
-                  <span style={{ display: "inline-block", width: 13, height: 13, borderRadius: 3, background: v('--color-accent'), flexShrink: 0 }} />
-                  Grundförderung {Math.round(begStufe.grundfoerderung * 100)} % — bekommt jeder Heizungstausch im Bestand
-                </div>
-                <BonusToggle checked={selbstnutzer} onChange={c => { setSelbstnutzer(c); setOInvest(null); }} label="Ich wohne selbst im Gebäude" tipTitle="Selbstnutzung">
-                  Sowohl der Klima-Geschwindigkeits-Bonus als auch der Einkommens-Bonus setzen voraus, dass du selbst im Gebäude wohnst. Wer vermietet, bekommt nur die Grundförderung von {Math.round(begStufe.grundfoerderung * 100)} %. Der Bonus für Wärmepumpen aus der EU ist dagegen nicht an die Selbstnutzung gebunden. Quelle: Förderrichtlinie BEG EM vom 17.07.2026.
-                </BonusToggle>
-                {selbstnutzer ? (
-                  <>
-                    {/* Ab dem 1. August 2028 gibt es den Klima-Geschwindigkeits-Bonus
-                        nicht mehr. Die Frage nach der alten Heizung dann trotzdem
-                        anzubieten, hieße eine Wahl anzubieten, die nichts bewirkt. */}
-                    {begStufe.klimaBonus === 0 ? (
-                      <div style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginBottom: 4 }}>
-                        Den Klima-Geschwindigkeits-Bonus für den Austausch einer alten fossilen Heizung
-                        gibt es zu diesem Zeitpunkt nicht mehr.
-                      </div>
-                    ) : (
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: v('--color-text-secondary'), marginBottom: 4, flexWrap: "wrap" }}>
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                        Alte Heizung
-                        <InfoTooltip title="Klima-Geschwindigkeits-Bonus" ariaLabel="Klima-Geschwindigkeits-Bonus">
-                          {Math.round(begStufe.klimaBonus * 100)} % Zusatzförderung, wenn eine funktionierende fossile Heizung ersetzt wird: Öl, Kohle, Nachtspeicher und die Gas-Etagenheizung zählen unabhängig vom Alter, eine Gas-Zentralheizung sowie Holz- und Pelletheizungen erst ab 20 Jahren. Maßgeblich ist, wann die alte Anlage in Betrieb ging — das Datum steht auf dem Typenschild am Kessel. Der Bonus sinkt ab dem 1. Februar 2027 halbjährlich um 4 Prozentpunkte und entfällt bei Antragstellung ab dem 1. August 2028. Quelle: Förderrichtlinie BEG EM vom 17.07.2026.
-                        </InfoTooltip>
-                      </span>
-                      <select value={altheizung} onChange={e => { setAltheizung(e.target.value as AltheizungKey); setOInvest(null); }}
-                        style={{ fontSize: 12, padding: "3px 6px", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, background: v('--color-bg'), color: v('--color-text-secondary'), cursor: "pointer", maxWidth: "100%" }}>
-                        {ALTHEIZUNG_OPTIONS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
-                      </select>
-                    </div>
-                    )}
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: v('--color-text-secondary'), marginBottom: 4, flexWrap: "wrap" }}>
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                        Einkommens-Bonus
-                        <InfoTooltip title="Einkommens-Bonus" ariaLabel="Einkommens-Bonus">
-                          Zusatzförderung für selbstnutzende Eigentümer, gestaffelt nach zu versteuerndem Haushaltsjahreseinkommen: bis 30.000 € +40 %, bis 40.000 € +30 %, bis 50.000 € +10 %. Bei der untersten Stufe steigt der Förderdeckel auf 80 %. Quelle: KfW Merkblatt 458 (BEG EM), gültig ab 21.07.2026.
-                        </InfoTooltip>
-                      </span>
-                      <select value={einkommen} onChange={e => { setEinkommen(e.target.value as EinkommenKey); setOInvest(null); }}
-                        style={{ fontSize: 12, padding: "3px 6px", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, background: v('--color-bg'), color: v('--color-text-secondary'), cursor: "pointer", maxWidth: "100%" }}>
-                        {EINKOMMEN_OPTIONS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
-                      </select>
-                    </div>
-                    {einkommen !== "none" && (
-                      <label style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, color: v('--color-text-secondary'), cursor: "pointer", marginBottom: 4 }}>
-                        <input type="checkbox" checked={kindImHaushalt} onChange={e => { setKindImHaushalt(e.target.checked); setOInvest(null); }} style={{ cursor: "pointer" }} />
-                        Mindestens ein Kind im Haushalt (Einkommensgrenze +10.000 €)
-                      </label>
-                    )}
-                  </>
-                ) : (
-                  <div style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginTop: 2 }}>
-                    Als Vermieter bleibt es bei der Grundförderung — Klima- und Einkommens-Bonus sind an die Selbstnutzung gebunden.
-                  </div>
-                )}
-                {oInvest !== null && (
-                  <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 6 }}>Investition manuell überschrieben — Förderung wirkt erst wieder nach Zurücksetzen.</div>
-                )}
-                {/* Die Bedingung gehört an den Betrag, nicht in den Rechtstext am
-                    Seitenende: Eine Zahl ohne diesen Satz sagt, wie viel es gibt,
-                    und verschweigt das Einzige, was sie kosten kann. Wortlaut aus
-                    lib/beg-antrag.ts — derselbe Satz steht im Förder-Check. */}
-                <div style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginTop: 10, paddingTop: 8, borderTop: `1px solid ${v('--color-border')}` }}>
-                  {BEG_ANTRAG_KURZ}{" "}
-                  <a href={BEG_ANTRAG_HREF} style={{ color: v('--color-accent'), fontWeight: 600, textDecoration: "none" }}>
-                    Die Reihenfolge Schritt für Schritt
-                  </a>
-                </div>
-              </div>
-            )}
-
-            {/* 2b. Kommunale Förderung — der Ort wird erst HIER gefragt.
-                 Reihenfolge mit Absicht: erst die BEG, dann was die Gemeinde
-                 obendrauf legt. Umgekehrt stünde der kleinere Betrag über dem
-                 größeren, und der Fördercheck läse sich wie die Hauptsache.
-
-                 Frage und Antwort stehen in EINER Karte (`kopf`): Als eigener
-                 Kasten darüber waren es zwei Rahmen mit zwei Überschriften für
-                 eine Sache, und das Postleitzahl-Feld sprang beim Auflösen an
-                 eine andere Stelle.
-
-                 `programs` zeigt alles, was wir für den Ort kennen — abgezogen
-                 wird nur, was `applied` trägt. `brutto` ist die Investition NACH
-                 der BEG, weil die Karte `total` davon abzieht und das Ergebnis
-                 „Investition nach Förderung" nennt; mit dem Bruttopreis stünde
-                 dort dieselbe Zeile mit einem anderen Betrag als oben. */}
-            {situation === "bestand" && (
-              <ResultFunding
-                loading={foerderQuelle.laedt}
-                candidates={foerderQuelle.kandidaten}
-                chosenAgs={foerderQuelle.ags}
-                onChooseAgs={foerderQuelle.waehleOrt}
-                programs={foerderQuelle.programme}
-                applied={foerderZeilen}
-                total={kappung}
-                enabled={foerderAktiv}
-                onToggle={setFundingEnabled}
-                brutto={Math.max(0, result.investBrutto - result.beg.amount)}
-                technik="waermepumpe"
-                hinweis={foerderHinweis}
-                kopf={
-                  <>
-                    <div style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginBottom: 10 }}>
-                      Einzelne Städte und Gemeinden legen etwas auf die Bundesförderung drauf. Mit deiner Postleitzahl sehen wir im Förderkatalog nach.
-                    </div>
-                    <div style={{ fontSize: 13 }}>
-                      <StandortField
-                        plz={plz}
-                        onPlzChange={setPlz}
-                        loading={foerderQuelle.laedt}
-                        confirmed={!!foerderQuelle.ags}
-                        onSubmit={() => foerderQuelle.ausPlz(plz)}
-                        label="Postleitzahl"
-                      />
-                    </div>
-                  </>
-                }
-              />
             )}
 
             {/* 3. Realistische Wege */}
@@ -1253,6 +978,309 @@ export default function Waermepumpe({
                 )}
               </div>
             </div>
+
+
+
+            {/* Die Preisannahme steht hinter der Antwort, aus demselben Grund
+                wie die Förderung: Sie bestimmt die Zahlen, ist aber nicht die
+                Frage, mit der jemand herkommt. Voreingestellt rechnet sie
+                ohnehin — wer die Annahme prüfen oder wechseln will, findet sie
+                hier, direkt neben den übrigen Stellschrauben.
+
+                Vorher stand sie an erster Stelle des Ergebnisses und schob die
+                Einsparung um weitere 164 px nach unten. */}
+            {/* Szenario-Auswahl ganz oben: das beschlossene Heizungsgesetz (Grüngas-Pflicht,
+                beschlossen, Inkrafttreten mit der Verkündung) gesondert + hervorgehoben, darunter drei reine
+                Preis-Annahmen ohne Grüngas. Die Wahl rechnet alle Zahlen darunter um. */}
+            <div style={{ marginBottom: 16 }}>
+              {/* Primär: das Heizungsgesetz (Grüngas-Pflicht). Klickbare Kachel; das
+                  „Mehr erfahren" darin öffnet das Modal (stopPropagation, damit der
+                  Kachel-Klick nicht zugleich das Szenario umstellt). */}
+              {gruengasVerfuegbar ? (
+              <div role="button" tabIndex={0} aria-pressed={greenGas}
+                onClick={() => { setScenario("gruengas"); setPreisExpanded(false); }}
+                onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setScenario("gruengas"); setPreisExpanded(false); } }}
+                style={{ cursor: "pointer", padding: "12px 14px", borderRadius: v('--radius-md'), background: greenGas ? v('--color-accent-dim') : v('--color-bg'), border: `1.5px solid ${greenGas ? v('--color-accent') : v('--color-border')}` }}>
+                <span style={{ display: "inline-block", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v('--color-text-on-accent'), background: v('--color-accent'), padding: "2px 7px", borderRadius: 999, marginBottom: 6 }}>Neues Heizungsgesetz</span>
+                <div style={{ fontSize: 14, fontWeight: 700, color: greenGas ? v('--color-accent') : v('--color-text-primary') }}>Grüngas-Pflicht ab 2029</div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 10, marginTop: 2 }}>
+                  <span style={{ fontSize: 11.5, color: v('--color-text-muted') }}>Gas wird durch die gesetzliche Biomethan-Beimischung Jahr für Jahr teurer</span>
+                  <button onClick={e => { e.stopPropagation(); setShowGasInfo(true); }} style={{ background: "none", border: "none", padding: 0, color: v('--color-accent'), cursor: "pointer", fontSize: 12, fontFamily: "inherit", fontWeight: 700, whiteSpace: "nowrap", flexShrink: 0 }}>Mehr erfahren →</button>
+                </div>
+              </div>
+              ) : (
+                /* Heizöl: Die Bio-Treppe des Heizungsgesetzes gilt zwar auch für Öl,
+                   aber unser Preispfad bildet nur den Gas-Mix ab. Statt eine Zahl zu
+                   erfinden, sagen wir offen, was in der Rechnung fehlt. */
+                <div style={{ padding: "12px 14px", borderRadius: v('--radius-md'), background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-secondary'), lineHeight: 1.55 }}>
+                  {ersatzInvest <= 0 ? (
+                    <>
+                      <strong style={{ color: v('--color-text-primary') }}>Ohne neue Heizung greift die Grüngas-Pflicht nicht.</strong>{" "}
+                      Du hast die Anschaffung einer neuen {fuel.refLabel} auf 0 € gesetzt — deine jetzige Heizung läuft also
+                      weiter. Die Beimischungspflicht des Heizungsgesetzes gilt nur für Heizungen, die neu eingebaut werden,
+                      deshalb rechnen wir sie hier nicht mit. Bleibt die normale Teuerung und der steigende CO₂-Preis.
+                      Eine Einschränkung: Zusätzlich soll eine Quote für alle Brennstoff-Anbieter kommen, die auch bestehende
+                      Heizungen verteuern dürfte. Das Gesetz dazu liegt noch nicht vor — es muss bis zum {GMODG_RECHTSSTAND.quoteGesetzBis} vorgelegt
+                      werden und nennt bisher nur das Ziel, ab 2045 vollständig auf klimaneutrale Brennstoffe umzustellen. Wir rechnen es nicht mit.
+                    </>
+                  ) : (
+                  <>
+                  <strong style={{ color: v('--color-text-primary') }}>Beim Heizöl fehlt ein Kostenblock — bewusst.</strong>{" "}
+                  Das Heizungsgesetz nennt Heizöl gleichrangig neben Gas: Eine neu eingebaute Ölheizung muss ab 2029{" "}
+                  {bioTreppeStufenText()} ihrer Wärme klimafreundlich erzeugen — bei Öl über Bioheizöl, in den Jahren 2029 bis 2034 bei ausreichender Auslegung auch über
+                  Wasserstoff-Derivate oder ganz ohne Beimischung über Solarthermie, eine Lüftung mit Wärmerückgewinnung oder
+                  eine Hybridlösung mit Wärmepumpe (§ 43 Abs. 3–5 GModG).
+                  Dass das den Brennstoff verteuert, ist sicher — <strong>wie stark, ist es nicht.</strong> Marktangaben reichen
+                  von wenigen Prozent Aufschlag bis zu rund der Hälfte, je nachdem ob man beigemischtes Bioheizöl oder reines
+                  HVO betrachtet. Eine belastbare Preisreihe gibt es dafür bislang nicht, deshalb rechnen wir hier nur die
+                  normale Teuerung und den steigenden CO₂-Preis. <strong>Deine Ölheizung dürfte also teurer werden, als hier
+                  steht</strong> — die Wärmepumpe schneidet in Wirklichkeit eher besser ab als in dieser Rechnung.
+                  </>
+                  )}
+                </div>
+              )}
+
+              {/* Secondary: die reinen Preis-Modelle, standardmäßig eingeklappt. */}
+              <div style={{ marginTop: 8, borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, overflow: "hidden", background: !greenGas ? v('--color-bg-muted') : "transparent" }}>
+                <button onClick={() => setPreisExpanded(p => !p)} aria-expanded={preisExpanded}
+                  style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, padding: "10px 14px", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}>
+                  <span style={{ fontSize: 12.5, fontWeight: 600, color: !greenGas ? v('--color-text-primary') : v('--color-text-secondary') }}>
+                    Marktübliche Preissteigerung{!greenGas ? ` · ${sel.label}` : ""}
+                  </span>
+                  <span style={{ display: "inline-flex", transform: preisExpanded ? "rotate(180deg)" : "none", transition: "transform .15s", color: v('--color-text-muted') }}><IconChevronDown size={iconSizes.sm} /></span>
+                </button>
+                {preisExpanded && (
+                  <div style={{ padding: "0 14px 12px" }}>
+                    <p style={{ fontSize: 11.5, color: v('--color-text-secondary'), lineHeight: 1.55, margin: "0 0 10px" }}>
+                      Ohne die Grüngas-Pflicht — nur die normale Teuerung. Die drei Modelle spannen auf, wie stark Strom- und Gaspreis in {DEFAULT_HEATPUMP_CONFIG.years} Jahren steigen könnten (allgemeine Inflation plus CO₂-Preis auf fossile Energie). Aus Sicht der Wärmepumpe von ungünstig (Strom teuer, Gas billig) bis günstig (Strom stabil, Gas teuer).
+                    </p>
+                    <div style={{ display: "flex", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, overflow: "hidden", background: v('--color-bg') }} role="tablist" aria-label="Preis-Modell">
+                      {scenariosPlain.map(s => {
+                        const on = !greenGas && s.id === effScenario;
+                        return (
+                          <button key={s.id} role="tab" aria-selected={on} onClick={() => { setScenario(s.id); setPreisExpanded(true); }}
+                            style={{ flex: 1, padding: "9px 6px", cursor: "pointer", textAlign: "center", background: on ? v('--color-accent-dim') : "transparent", border: "none", borderBottom: `2px solid ${on ? v('--color-accent') : "transparent"}` }}>
+                            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: on ? v('--color-accent') : v('--color-text-muted') }}>{s.label}</div>
+                            <div style={{ fontSize: 10, color: v('--color-text-muted'), fontFamily: v('--font-mono'), marginTop: 2 }}>{s.sub}</div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {!greenGas && (
+                      // Bewusst selPrice statt sel: dieser Block erklärt IMMER das
+                      // gewählte Preis-Modell. Über sel wäre der Text im Grüngas-Fall
+                      // stumm — genau die Falle, in die eine Textkorrektur am
+                      // 29.07.2026 lief (geändert wurde ein Satz, der nie erscheint).
+                      <div style={{ fontSize: 11.5, color: v('--color-text-secondary'), lineHeight: 1.5, marginTop: 10 }}>{selPrice.explain}</div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Modal: alle erklärenden Grüngas-Texte gebündelt (Modal-Baustein →
+                Transitions/Fokus/Bottom-Sheet kommen aus components/Modal.tsx). */}
+            <Modal open={showGasInfo} onClose={() => setShowGasInfo(false)} title="Grüngas-Pflicht: was dahintersteckt" intro="Warum eine neue Gasheizung durch das Heizungsgesetz teurer wird — und wie wir das rechnen." maxWidth={560}>
+              {/* Kernaussage */}
+              <div style={{ padding: "10px 12px", borderRadius: v('--radius-md'), background: v('--color-chart-positive-bg'), marginBottom: 18, fontSize: 12.5, lineHeight: 1.6, color: v('--color-text-secondary') }}>
+                Durch die Grüngas-Pflicht spart die Wärmepumpe über {DEFAULT_HEATPUMP_CONFIG.years} Jahre{" "}
+                <span style={{ fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-positive') }}>+{greenGasDelta.toLocaleString("de-DE")} €</span>{" "}mehr als bei reiner Preisfortschreibung.
+              </div>
+              {/* Chart B: Heizkosten je kWh Wärme */}
+              <div style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 2 }}>Heizkosten je Kilowattstunde Wärme</div>
+              <div style={{ fontSize: 11.5, color: v('--color-text-muted'), marginBottom: 8 }}>Gasheizung mit Grüngas-Pflicht gegen Wärmepumpe, {YEAR}–{YEAR + DEFAULT_HEATPUMP_CONFIG.years - 1}</div>
+              <HeatCostCompareChart data={heatCostData} pvCoveragePct={Math.round(pvCoverageForChart * 100)} />
+              {/* Chart A: Gaspreis-Zusammensetzung */}
+              <div style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.06em", margin: "20px 0 2px" }}>Woraus sich der Gaspreis zusammensetzt</div>
+              <div style={{ fontSize: 11.5, color: v('--color-text-muted'), marginBottom: 8 }}>Endkundenpreis in ct/kWh — der Biomethan-Block wächst mit der Bio-Treppe</div>
+              <GasPriceStackChart data={gasStackData} />
+              {/* Erklärabschnitte */}
+              <div style={{ fontSize: 13, lineHeight: 1.6, color: v('--color-text-secondary'), marginTop: 22, borderTop: `1px solid ${v('--color-border')}`, paddingTop: 16 }}>
+                {[
+                  { h: "Die Bio-Treppe (§ 43 GModG)", p: `Das Gebäudemodernisierungsgesetz verpflichtet eine Heizung für Gas, Heizöl oder Flüssiggas, die nach dem ${GMODG_RECHTSSTAND.inKraftSeit} neu eingebaut wird — beim Einbau in ein bestehendes Gebäude ebenso wie in Neubauten, die bis zum ${GMODG_RECHTSSTAND.neubauBioTreppeBis} errichtet werden —, ab 2029 einen wachsenden Anteil klimafreundlicher Brennstoffe beizumischen. Das Gesetz nennt vier Stufen: ${bioTreppeStufenText()}. Anrechenbar sind neben Biomethan auch Bioheizöl, biogenes Flüssiggas sowie grüner, blauer, orangener oder türkiser Wasserstoff und dessen Derivate; beim Netzgas läuft es auf Biomethan hinaus, und das kostet rund doppelt so viel wie Erdgas. Zusammen mit steigenden Netzentgelten — weil immer weniger Haushalte am Gasnetz hängen — treibt das den Gaspreis deutlich stärker als die allgemeine Teuerung. Statt beizumischen lässt sich die Pflicht auch über Solarthermie, eine Lüftungsanlage mit Wärmerückgewinnung oder eine Wärmepumpen-Hybridheizung erfüllen (§ 43 Absatz 3 bis 5 GModG); fällt die alte Anlage irreparabel aus, bleibt zwölf Monate lang die Stufe stehen, die beim Einbau galt (§ 43 Absatz 7 GModG). Wir rechnen den teuersten Weg, die reine Beimischung.` },
+                  { h: "Beschlossen ist die Pflicht, nicht der Preis", p: `${gmodgStandSatz()} Wie teuer Biomethan und Netzentgelte tatsächlich werden, ist dagegen eine Annahme — ein plausibler Korridor, keine punktgenaue Prognose. Ebenfalls Annahme ist der Weg nach 2040: Eine 100-%-Stufe steht nicht im Gesetz, die vollständige Klimaneutralität ab 2045 kündigt § 42a GModG nur an — als Quote für die Brennstoff-Anbieter, die dann auch Bestandsheizungen verteuern würde. Sie soll bis zum ${GMODG_RECHTSSTAND.quoteGesetzBis} in einem eigenen Gesetz geregelt werden; die Gesetzesbegründung geht von einem Start 2028 mit bis zu einem Prozent aus, im Gesetzestext steht das nicht. Wir rechnen sie nicht mit. Die drei Preis-Szenarien zeigen den Gegenfall: reine Energiepreis-Fortschreibung ohne die Grüngas-Pflicht.` },
+                  { h: "Warum wir je Kilowattstunde Wärme rechnen", p: "Gas- und Strompreis lassen sich nicht direkt vergleichen: Eine Wärmepumpe macht aus einer Kilowattstunde Strom rund drei Kilowattstunden Wärme, ein Gaskessel aus einer Kilowattstunde Gas nur knapp eine. Deshalb rechnen wir beide auf die Kosten pro gelieferter Kilowattstunde Wärme um — die Jahresarbeitszahl der Wärmepumpe und der Kesselwirkungsgrad sind darin enthalten. Grundgebühr und Wartung bleiben außen vor, sie gehören nicht in einen Preis-je-Kilowattstunde-Vergleich." },
+                  { h: "Quelle", p: "IW-Report 36/2026 „Wie hoch sind die Mehrkostenrisiken durch das Gebäudemodernisierungsgesetz?“ (Henger, Küper, Wünsch — Institut der deutschen Wirtschaft, Juli 2026). Die Preispfade stammen aus dem Anhang der Studie." },
+                ].map((s, i) => (
+                  <div key={i} style={{ marginTop: i === 0 ? 0 : 14 }}>
+                    <div style={{ fontSize: 13.5, fontWeight: 700, color: v('--color-text-primary'), marginBottom: 4 }}>{s.h}</div>
+                    <p style={{ margin: 0 }}>{s.p}</p>
+                  </div>
+                ))}
+              </div>
+            </Modal>
+
+            {/* Die Förderung steht NACH der Antwort — und das ist eine
+                Entscheidung über die Reihenfolge, keine über den Inhalt.
+
+                Gemessen am 26.08.2026 auf 375 px: Die Einsparung, also die
+                Antwort auf die Frage, mit der jemand hierherkommt, stand an
+                siebter Stelle nach 1.531 Pixeln — fast zwei Bildschirmlängen.
+                Davor lagen 886 px Förderdetails: ein Auswahlfeld für den
+                Förderstand, zwei Aufklappmenüs, Kästchen, dazu der kommunale
+                Check. Also ein Formular vor dem Ergebnis.
+
+                Entstanden ist das nicht aus einer Absicht, sondern weil jede
+                Sitzung ihren Block dorthin gesetzt hat, wo er thematisch
+                hinpasste — und die Förderung wuchs am schnellsten, weil sie
+                der größte Hebel ist. Die Reihenfolge hat das nie jemand
+                nachgemessen.
+
+                Die Beträge oben rechnen weiterhin MIT der Förderung; wer die
+                Annahmen prüfen oder ändern will, findet sie hier. */}
+            {/* 2. Förder-Settings — nach der Konklusion, sie bestimmen alle Zahlen */}
+            {situation === "bestand" && (
+              <div style={{ padding: "14px 16px", marginBottom: 16, borderRadius: v('--radius-lg'), background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}` }}>
+                <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: 4, marginBottom: 2 }}>
+                  <span style={{ fontSize: 13, fontWeight: 700 }}>Deine BEG-Förderung</span>
+                  <span style={{ fontFamily: v('--font-mono'), fontWeight: 800, fontSize: 15, color: v('--color-accent') }}>−{result.beg.amount.toLocaleString("de-DE")} €</span>
+                </div>
+                {/* Der gewählte Förderstand gehört in die Kopfzeile, nicht nur in
+                    den Schalter weiter unten: Wer die Zahl darüber liest, muss
+                    ohne Suchen sehen, nach welchem Stand sie gerechnet ist. */}
+                <div style={{ fontSize: 11.5, color: v('--color-text-muted'), marginBottom: 10 }}>
+                  {Math.round(result.beg.rate * 100)} % der förderfähigen Kosten
+                  {stufeNaechste
+                    ? <> · Stand {begStand === "naechste" ? stufeNaechste.bezeichnung : "heute"}</>
+                    : null}
+                  {result.investBrutto > begStufe.maxCap
+                    ? <> · gedeckelt bei {begStufe.maxCap.toLocaleString("de-DE")} € (deine Anlage liegt darüber, daher {Math.round(result.beg.rate * 100)} % × {begStufe.maxCap.toLocaleString("de-DE")} €)</>
+                    : null}
+                </div>
+                <BegStandSchalter
+                  stand={begStand}
+                  setStand={s => { setBegStand(s); setOInvest(null); }}
+                  jetzt={stufeJetzt}
+                  naechste={stufeNaechste}
+                  euUrsprung={euUrsprung}
+                  setEuUrsprung={b => { setEuUrsprung(b); setOInvest(null); }}
+                  betragJetzt={begVergleich.jetzt}
+                  betragNaechsteOhneEu={begVergleich.naechsteOhneEu}
+                  betragNaechsteMitEu={begVergleich.naechsteMitEu}
+                />
+                {/* Der Satz kommt aus der gewählten Stufe, nicht als getippte
+                    Zahl. Er stand hier bis zum 26.08.2026 als „30 %" im Text —
+                    genau die Sorte Zahl, die beim ersten Stichtag still falsch
+                    wird, während die Rechnung daneben längst richtig rechnet. */}
+                <div style={{ fontSize: 12, color: v('--color-text-muted'), display: "flex", alignItems: "center", gap: 5, marginBottom: 6 }}>
+                  <span style={{ display: "inline-block", width: 13, height: 13, borderRadius: 3, background: v('--color-accent'), flexShrink: 0 }} />
+                  Grundförderung {Math.round(begStufe.grundfoerderung * 100)} % — bekommt jeder Heizungstausch im Bestand
+                </div>
+                <BonusToggle checked={selbstnutzer} onChange={c => { setSelbstnutzer(c); setOInvest(null); }} label="Ich wohne selbst im Gebäude" tipTitle="Selbstnutzung">
+                  Sowohl der Klima-Geschwindigkeits-Bonus als auch der Einkommens-Bonus setzen voraus, dass du selbst im Gebäude wohnst. Wer vermietet, bekommt nur die Grundförderung von {Math.round(begStufe.grundfoerderung * 100)} %. Der Bonus für Wärmepumpen aus der EU ist dagegen nicht an die Selbstnutzung gebunden. Quelle: Förderrichtlinie BEG EM vom 17.07.2026.
+                </BonusToggle>
+                {selbstnutzer ? (
+                  <>
+                    {/* Ab dem 1. August 2028 gibt es den Klima-Geschwindigkeits-Bonus
+                        nicht mehr. Die Frage nach der alten Heizung dann trotzdem
+                        anzubieten, hieße eine Wahl anzubieten, die nichts bewirkt. */}
+                    {begStufe.klimaBonus === 0 ? (
+                      <div style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginBottom: 4 }}>
+                        Den Klima-Geschwindigkeits-Bonus für den Austausch einer alten fossilen Heizung
+                        gibt es zu diesem Zeitpunkt nicht mehr.
+                      </div>
+                    ) : (
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: v('--color-text-secondary'), marginBottom: 4, flexWrap: "wrap" }}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                        Alte Heizung
+                        <InfoTooltip title="Klima-Geschwindigkeits-Bonus" ariaLabel="Klima-Geschwindigkeits-Bonus">
+                          {Math.round(begStufe.klimaBonus * 100)} % Zusatzförderung, wenn eine funktionierende fossile Heizung ersetzt wird: Öl, Kohle, Nachtspeicher und die Gas-Etagenheizung zählen unabhängig vom Alter, eine Gas-Zentralheizung sowie Holz- und Pelletheizungen erst ab 20 Jahren. Maßgeblich ist, wann die alte Anlage in Betrieb ging — das Datum steht auf dem Typenschild am Kessel. Der Bonus sinkt ab dem 1. Februar 2027 halbjährlich um 4 Prozentpunkte und entfällt bei Antragstellung ab dem 1. August 2028. Quelle: Förderrichtlinie BEG EM vom 17.07.2026.
+                        </InfoTooltip>
+                      </span>
+                      <select value={altheizung} onChange={e => { setAltheizung(e.target.value as AltheizungKey); setOInvest(null); }}
+                        style={{ fontSize: 12, padding: "3px 6px", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, background: v('--color-bg'), color: v('--color-text-secondary'), cursor: "pointer", maxWidth: "100%" }}>
+                        {ALTHEIZUNG_OPTIONS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
+                      </select>
+                    </div>
+                    )}
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: v('--color-text-secondary'), marginBottom: 4, flexWrap: "wrap" }}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                        Einkommens-Bonus
+                        <InfoTooltip title="Einkommens-Bonus" ariaLabel="Einkommens-Bonus">
+                          Zusatzförderung für selbstnutzende Eigentümer, gestaffelt nach zu versteuerndem Haushaltsjahreseinkommen: bis 30.000 € +40 %, bis 40.000 € +30 %, bis 50.000 € +10 %. Bei der untersten Stufe steigt der Förderdeckel auf 80 %. Quelle: KfW Merkblatt 458 (BEG EM), gültig ab 21.07.2026.
+                        </InfoTooltip>
+                      </span>
+                      <select value={einkommen} onChange={e => { setEinkommen(e.target.value as EinkommenKey); setOInvest(null); }}
+                        style={{ fontSize: 12, padding: "3px 6px", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, background: v('--color-bg'), color: v('--color-text-secondary'), cursor: "pointer", maxWidth: "100%" }}>
+                        {EINKOMMEN_OPTIONS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
+                      </select>
+                    </div>
+                    {einkommen !== "none" && (
+                      <label style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, color: v('--color-text-secondary'), cursor: "pointer", marginBottom: 4 }}>
+                        <input type="checkbox" checked={kindImHaushalt} onChange={e => { setKindImHaushalt(e.target.checked); setOInvest(null); }} style={{ cursor: "pointer" }} />
+                        Mindestens ein Kind im Haushalt (Einkommensgrenze +10.000 €)
+                      </label>
+                    )}
+                  </>
+                ) : (
+                  <div style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginTop: 2 }}>
+                    Als Vermieter bleibt es bei der Grundförderung — Klima- und Einkommens-Bonus sind an die Selbstnutzung gebunden.
+                  </div>
+                )}
+                {oInvest !== null && (
+                  <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 6 }}>Investition manuell überschrieben — Förderung wirkt erst wieder nach Zurücksetzen.</div>
+                )}
+                {/* Die Bedingung gehört an den Betrag, nicht in den Rechtstext am
+                    Seitenende: Eine Zahl ohne diesen Satz sagt, wie viel es gibt,
+                    und verschweigt das Einzige, was sie kosten kann. Wortlaut aus
+                    lib/beg-antrag.ts — derselbe Satz steht im Förder-Check. */}
+                <div style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginTop: 10, paddingTop: 8, borderTop: `1px solid ${v('--color-border')}` }}>
+                  {BEG_ANTRAG_KURZ}{" "}
+                  <a href={BEG_ANTRAG_HREF} style={{ color: v('--color-accent'), fontWeight: 600, textDecoration: "none" }}>
+                    Die Reihenfolge Schritt für Schritt
+                  </a>
+                </div>
+              </div>
+            )}
+
+            {/* 2b. Kommunale Förderung — der Ort wird erst HIER gefragt.
+                 Reihenfolge mit Absicht: erst die BEG, dann was die Gemeinde
+                 obendrauf legt. Umgekehrt stünde der kleinere Betrag über dem
+                 größeren, und der Fördercheck läse sich wie die Hauptsache.
+
+                 Frage und Antwort stehen in EINER Karte (`kopf`): Als eigener
+                 Kasten darüber waren es zwei Rahmen mit zwei Überschriften für
+                 eine Sache, und das Postleitzahl-Feld sprang beim Auflösen an
+                 eine andere Stelle.
+
+                 `programs` zeigt alles, was wir für den Ort kennen — abgezogen
+                 wird nur, was `applied` trägt. `brutto` ist die Investition NACH
+                 der BEG, weil die Karte `total` davon abzieht und das Ergebnis
+                 „Investition nach Förderung" nennt; mit dem Bruttopreis stünde
+                 dort dieselbe Zeile mit einem anderen Betrag als oben. */}
+            {situation === "bestand" && (
+              <ResultFunding
+                loading={foerderQuelle.laedt}
+                candidates={foerderQuelle.kandidaten}
+                chosenAgs={foerderQuelle.ags}
+                onChooseAgs={foerderQuelle.waehleOrt}
+                programs={foerderQuelle.programme}
+                applied={foerderZeilen}
+                total={kappung}
+                enabled={foerderAktiv}
+                onToggle={setFundingEnabled}
+                brutto={Math.max(0, result.investBrutto - result.beg.amount)}
+                technik="waermepumpe"
+                hinweis={foerderHinweis}
+                kopf={
+                  <>
+                    <div style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginBottom: 10 }}>
+                      Einzelne Städte und Gemeinden legen etwas auf die Bundesförderung drauf. Mit deiner Postleitzahl sehen wir im Förderkatalog nach.
+                    </div>
+                    <div style={{ fontSize: 13 }}>
+                      <StandortField
+                        plz={plz}
+                        onPlzChange={setPlz}
+                        loading={foerderQuelle.laedt}
+                        confirmed={!!foerderQuelle.ags}
+                        onSubmit={() => foerderQuelle.ausPlz(plz)}
+                        label="Postleitzahl"
+                      />
+                    </div>
+                  </>
+                }
+              />
+            )}
 
             {/* Details aufklappbar */}
             <details
