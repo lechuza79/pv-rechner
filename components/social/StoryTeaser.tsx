@@ -71,26 +71,30 @@ export function StoryTeaser({ stories }: { stories: SocialPost[] }) {
             onClick={() => setOffen(s.id)}
             style={{
               flex: "0 0 auto",
-              width: 280,
+              width: 240,
               scrollSnapAlign: "start",
               textAlign: "left",
               cursor: "pointer",
               background: v("--color-bg-muted"),
               border: `1px solid ${v("--color-border-muted")}`,
               borderRadius: v("--radius-md"),
-              padding: pad("lg", "lg"),
+              padding: 0,
               color: "inherit",
               font: "inherit",
+              overflow: "hidden",
             }}
           >
-            <div style={{ fontSize: v("--font-size-h3"), fontWeight: 600, lineHeight: 1.3, marginBottom: space.xs }}>
-              {s.onsite!.ueberschrift}
-            </div>
-            <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.45 }}>
-              {s.onsite!.absaetze[0].slice(0, 110)}…
-            </div>
-            <div style={{ fontSize: v("--font-size-small"), color: v("--color-accent"), marginTop: space.sm }}>
-              Ansehen
+            {/* Das Bild trägt die Aussage schon — im Teaser steht deshalb keine
+                zweite Überschrift darüber, sondern nur der Anriss darunter.
+                Beides wäre dieselbe Zeile zweimal. */}
+            <SocialKarte bild={s.bild!} skala={240 / 1080} />
+            <div style={{ padding: pad("md", "md") }}>
+              <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.45 }}>
+                {s.onsite!.absaetze[0].slice(0, 90)}…
+              </div>
+              <div style={{ fontSize: v("--font-size-small"), color: v("--color-accent"), marginTop: space.xs }}>
+                Ansehen
+              </div>
             </div>
           </button>
         ))}

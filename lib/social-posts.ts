@@ -268,6 +268,14 @@ export function postWachstum(k: SocialKennzahlen): SocialPost {
       ],
       quelle: quellenzeile(k.standIso, false),
     },
+    onsite: {
+      anker: "balkon-wachstum",
+      ueberschrift: "Balkonkraftwerke wachsen schneller als die Solarleistung insgesamt",
+      absaetze: [
+        `Deutschlands installierte Solarleistung ist in zwölf Monaten um ${de(solarProzent, 0)} Prozent gewachsen, auf ${gwp(w.solarKwpJetzt)} Gigawatt. Die Zahl der angemeldeten Steckersolargeräte im selben Zeitraum um ${de(balkonProzent, 0)} Prozent, von ${de(w.balkonVorJahr / 1_000_000, 2)} auf ${de(w.balkonJetzt / 1_000_000, 2)} Millionen.`,
+        `An der Leistung gemessen ist das eine Randnotiz: Ein Balkonkraftwerk bringt einen Bruchteil dessen, was eine Dachanlage liefert. Als Zahl der Haushalte, die zum ersten Mal eigenen Strom erzeugen, ist es die größere Bewegung — ${de(Math.round(zuwachs / 1000))}.000 in einem Jahr, ohne Handwerker, ohne Kredit und ohne Genehmigung.`,
+      ],
+    },
     belege: [
       `Solar ${fmtPvLeistung(w.solarKwpJetzt)} gegen ${fmtPvLeistung(w.solarKwpVorJahr)} (+${de(solarProzent, 1)} %)`,
       `Balkon ${de(w.balkonJetzt)} gegen ${de(w.balkonVorJahr)} (+${de(balkonProzent, 1)} %), Zuwachs ${de(zuwachs)}`,
