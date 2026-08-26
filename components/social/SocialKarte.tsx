@@ -35,7 +35,6 @@ export function SocialKarte({ bild, skala = 1 }: { bild: PostBild; skala?: numbe
         padding: `${72 * skala}px ${64 * skala}px`,
         boxSizing: "border-box",
         fontFamily: v("--font-text"),
-        borderRadius: v("--radius-lg"),
         overflow: "hidden",
       }}
     >

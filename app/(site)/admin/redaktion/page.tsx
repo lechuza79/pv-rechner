@@ -1,18 +1,22 @@
 import { redirect } from "next/navigation";
 import { isAdminSession } from "../../../../lib/admin-guard";
 import { socialKennzahlen } from "../../../../lib/social-kennzahlen";
-import { baueAllePosts, FEED_ABSCHNITT_ZEICHEN } from "../../../../lib/social-posts";
-import { SocialKarte } from "../../../../components/social/SocialKarte";
+import { baueAllePosts } from "../../../../lib/social-posts";
+import { FAMILIEN } from "../../../../lib/redaktionsplan";
+import { FeedVorschau } from "../../../../components/social/FeedVorschau";
 import { v, space, pad } from "../../../../lib/theme";
 
-// Entwicklung: Hier wird ein Post so lange gedreht, bis er sitzt.
+// Entwicklung: Der Post so, wie er im Feed erscheint — Bild oben, Text darunter
+// eingeklappt.
 //
-// Text und Bild stehen nebeneinander, weil sie aus derselben Berechnung kommen
-// und nur gemeinsam beurteilt werden können. Zwei Dinge zeigt die Seite
-// zusätzlich, die man sonst erst nach dem Veröffentlichen merkt: wo der Feed
-// den Text abschneidet, und wie die Karte in Vorschaugröße aussieht — im Feed
-// entscheidet sich in dieser Größe, ob jemand stehenbleibt, nicht in der
-// Vollansicht.
+// Die Anordnung ist der Kern dieser Seite. Wer einen Beitrag mit vollständigem
+// Text neben einem großen Bild beurteilt, beurteilt eine Ansicht, die niemand
+// zu sehen bekommt: Im Feed kommt das Bild zuerst, der Text steht darunter nach
+// wenigen Zeilen abgeschnitten, und in dieser Ansicht entscheidet sich, ob
+// jemand stehenbleibt.
+//
+// Rechts daneben der Vorrat an Geschichten-Familien, damit beim Entwickeln
+// sichtbar ist, was es sonst noch gibt und woran es jeweils hängt.
 
 export const metadata = {
   title: "Redaktion – Entwicklung",
@@ -20,6 +24,13 @@ export const metadata = {
 };
 
 export const dynamic = "force-dynamic";
+
+const ZUSTAND_TEXT: Record<string, string> = {
+  gebaut: "gebaut",
+  "daten-da": "Daten da",
+  "fehlt-daten": "Daten fehlen",
+  spaeter: "später",
+};
 
 export default async function RedaktionEntwicklung() {
   if (!(await isAdminSession())) redirect("/login?next=/admin/redaktion");
@@ -36,8 +47,9 @@ export default async function RedaktionEntwicklung() {
     <div style={{ maxWidth: 1240, margin: "0 auto" }}>
       <h1 style={{ fontSize: v("--font-size-h1"), marginBottom: space.sm }}>Entwicklung</h1>
       <p style={{ color: v("--color-text-secondary"), marginBottom: space.huge, maxWidth: 760 }}>
-        Text und Bild kommen aus derselben Berechnung. Ändert sich der Datenstand, ändern sich beide
-        gemeinsam — ein Post kann hier keine Zahl behaupten, die das Bild widerlegt.
+        Text und Bild kommen aus derselben Berechnung — ein Post kann hier keine Zahl behaupten, die
+        das Bild widerlegt. Die Vorschau zeigt den Beitrag so, wie er im Feed steht: Bild zuerst,
+        Text darunter eingeklappt.
       </p>
 
       {fehler && (
@@ -46,91 +58,91 @@ export default async function RedaktionEntwicklung() {
         </p>
       )}
 
-      {posts?.map((p) => {
-        const abgeschnitten = p.text.length > FEED_ABSCHNITT_ZEICHEN;
-        const sichtbar = p.text.slice(0, FEED_ABSCHNITT_ZEICHEN);
-        const rest = p.text.slice(FEED_ABSCHNITT_ZEICHEN);
-        return (
-          <section
-            key={p.id}
-            style={{
-              marginBottom: space.huge * 2,
-              paddingBottom: space.huge,
-              borderBottom: `1px solid ${v("--color-border-muted")}`,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "baseline", gap: space.md, marginBottom: space.lg, flexWrap: "wrap" }}>
-              <h2 style={{ fontSize: v("--font-size-h2"), margin: 0 }}>{p.titel}</h2>
-              <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
-                {p.kanal.join(" · ")} · {p.bild?.art === "kennzahl" ? "Einzelkennzahl" : "Vergleich"} ·{" "}
-                {p.text.length} Zeichen
-              </span>
-            </div>
+      <div style={{ display: "flex", gap: space.huge, alignItems: "flex-start", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: space.huge, flex: "0 0 auto" }}>
+          {posts?.map((p) => (
+            <section key={p.id}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "baseline",
+                  gap: space.md,
+                  marginBottom: space.md,
+                  flexWrap: "wrap",
+                  maxWidth: 500,
+                }}
+              >
+                <h2 style={{ fontSize: v("--font-size-h3"), margin: 0 }}>{p.titel}</h2>
+                <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
+                  {p.kanal.join(" · ")} · {p.bild?.art === "kennzahl" ? "Einzelkennzahl" : "Vergleich"} ·{" "}
+                  {p.text.length} Zeichen
+                </span>
+              </div>
 
-            <div style={{ display: "flex", gap: space.xxxl, alignItems: "flex-start", flexWrap: "wrap" }}>
-              <div style={{ flex: "1 1 400px", minWidth: 300, maxWidth: 540 }}>
-                <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginBottom: space.xs }}>
-                  Im Feed sichtbar, bevor jemand aufklappt
-                </div>
-                <div
+              <FeedVorschau bild={p.bild!} text={p.text} breite={500} />
+
+              <details style={{ marginTop: space.md, maxWidth: 500 }}>
+                <summary
+                  style={{ cursor: "pointer", fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}
+                >
+                  Belege ({p.belege.length})
+                </summary>
+                <ul
                   style={{
-                    background: v("--color-bg-muted"),
-                    borderRadius: v("--radius-md"),
-                    padding: pad("xxl", "xxl"),
-                    whiteSpace: "pre-wrap",
-                    fontSize: v("--font-size-body"),
-                    lineHeight: 1.55,
+                    fontSize: v("--font-size-small"),
+                    color: v("--color-text-secondary"),
+                    marginTop: space.sm,
+                    paddingLeft: space.lg,
                   }}
                 >
-                  {sichtbar}
-                  {abgeschnitten && (
-                    <>
-                      <span style={{ color: v("--color-text-faint") }}>{rest}</span>
-                      <div
-                        style={{
-                          marginTop: space.md,
-                          fontSize: v("--font-size-caption"),
-                          color: v("--color-text-muted"),
-                        }}
-                      >
-                        Der graue Teil steht hinter „mehr anzeigen". Die Aussage muss davor stehen.
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
+                  {p.belege.map((b) => (
+                    <li key={b} style={{ marginBottom: space.xs }}>
+                      {b}
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            </section>
+          ))}
+        </div>
 
-              <div style={{ display: "flex", gap: space.xxl, alignItems: "flex-start" }}>
-                <div>
-                  <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginBottom: space.xs }}>
-                    Vorschaugröße im Feed
-                  </div>
-                  <SocialKarte bild={p.bild!} skala={0.19} />
+        <aside style={{ flex: "1 1 300px", minWidth: 280, maxWidth: 420 }}>
+          <h2 style={{ fontSize: v("--font-size-h3"), marginTop: 0 }}>Der Vorrat</h2>
+          <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginTop: 0 }}>
+            Neunzehn Geschichten-Familien. Was hier als „Daten da" steht, lässt sich ohne neuen
+            Datenbestand bauen.
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: space.xs }}>
+            {FAMILIEN.map((f) => (
+              <div
+                key={f.kuerzel}
+                style={{
+                  background: v("--color-bg-muted"),
+                  borderRadius: v("--radius-sm"),
+                  padding: pad("sm", "md"),
+                  opacity: f.zustand === "spaeter" ? 0.6 : 1,
+                }}
+              >
+                <div style={{ display: "flex", gap: space.sm, alignItems: "baseline" }}>
+                  <span style={{ fontSize: v("--font-size-body"), flex: 1 }}>{f.name}</span>
+                  <span
+                    style={{
+                      fontSize: v("--font-size-caption"),
+                      color: f.zustand === "gebaut" ? v("--color-positive") : v("--color-text-muted"),
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {ZUSTAND_TEXT[f.zustand]}
+                  </span>
                 </div>
-                <div>
-                  <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginBottom: space.xs }}>
-                    Aufgeklappt (1080 × 1350)
-                  </div>
-                  <SocialKarte bild={p.bild!} skala={0.34} />
-                </div>
+                {f.hinweis && (
+                  <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>{f.hinweis}</div>
+                )}
               </div>
-            </div>
-
-            <details style={{ marginTop: space.xxl }}>
-              <summary style={{ cursor: "pointer", fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>
-                Belege ({p.belege.length})
-              </summary>
-              <ul style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginTop: space.sm }}>
-                {p.belege.map((b) => (
-                  <li key={b} style={{ marginBottom: space.xs }}>
-                    {b}
-                  </li>
-                ))}
-              </ul>
-            </details>
-          </section>
-        );
-      })}
+            ))}
+          </div>
+        </aside>
+      </div>
     </div>
   );
 }

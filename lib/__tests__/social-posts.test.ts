@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { baueAllePosts, postStadtLand, postWachstum, type SocialKennzahlen } from "../social-posts";
+import {
+  FEED_ABSCHNITT_ZEICHEN,
+  baueAllePosts,
+  postStadtLand,
+  postWachstum,
+  type SocialKennzahlen,
+} from "../social-posts";
 
 // Der Wert dieses Moduls ist nicht der schöne Satz, sondern dass Satz und Zahl
 // nicht auseinanderlaufen können. Genau das prüfen diese Tests: Sie drehen die
@@ -74,10 +80,15 @@ describe("Wachstums-Post", () => {
     expect(p.text).toContain("127 Gigawatt");
   });
 
-  it("bezieht den Zuwachs auf Haushalte, nicht auf Leistung", () => {
+  it("nennt den gerechneten Zuwachs, und zwar in den ersten zwei Zeilen", () => {
     const p = postWachstum(basis);
     // 1.453.026 - 1.202.467 = 250.559 → auf Tausender gerundet
-    expect(p.text).toContain("251.000 Haushalte");
+    const ersteZeile = p.text.split("\n")[0];
+    expect(ersteZeile).toContain("251.000");
+    // Der Feed zeigt vor „mehr anzeigen" nur zwei Zeilen. Steht die Aussage
+    // dahinter, bekommt sie niemand zu sehen — im Redaktionstisch aufgefallen,
+    // als die Vorschau die richtige Reihenfolge bekam.
+    expect(ersteZeile.length).toBeLessThanOrEqual(FEED_ABSCHNITT_ZEICHEN);
   });
 });
 
@@ -99,6 +110,15 @@ describe("Alle Posts", () => {
     // mehr lesbar — und genau dort entscheidet sich, ob jemand stehen bleibt.
     for (const p of baueAllePosts(basis)) {
       expect(p.bild!.aussage.length).toBeLessThanOrEqual(80);
+    }
+  });
+
+  it("tragen die Aussage in der ersten Zeile", () => {
+    // Alles nach den ersten zwei Zeilen liest nur, wer schon interessiert ist.
+    for (const p of baueAllePosts(basis)) {
+      const ersteZeile = p.text.split("\n")[0];
+      expect(ersteZeile.length).toBeGreaterThan(40);
+      expect(ersteZeile.length).toBeLessThanOrEqual(FEED_ABSCHNITT_ZEICHEN);
     }
   });
 

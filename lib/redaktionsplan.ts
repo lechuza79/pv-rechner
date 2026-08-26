@@ -45,6 +45,43 @@ export const SLOTS: Slot[] = [
 /** Wie viele fertige Posts vorliegen sollten, bevor der erste rausgeht. */
 export const PUFFER_VOR_START = 8;
 
+/**
+ * Die Geschichten-Familien aus dem Katalog, als lebende Übersicht.
+ *
+ * Bewusst nur Kurzform mit Zustand — die Langfassung mit Beispielen, Quellen und
+ * Schranken steht in docs/datenstories-katalog.md und wird hier nicht ein
+ * zweites Mal getippt. Diese Liste beantwortet beim Entwickeln genau eine Frage:
+ * Was gibt es noch, und was ist davon schon gebaut?
+ */
+export type Familie = {
+  kuerzel: string;
+  name: string;
+  zustand: "gebaut" | "daten-da" | "fehlt-daten" | "spaeter";
+  hinweis?: string;
+};
+
+export const FAMILIEN: Familie[] = [
+  { kuerzel: "G1", name: "Der Puls: was gerade passiert", zustand: "fehlt-daten", hinweis: "Regionaler Tageswert braucht Bestand × Wetter" },
+  { kuerzel: "G2", name: "Der Zubau: was sich bewegt", zustand: "fehlt-daten", hinweis: "Braucht den Anschlussmonat statt nur das Jahr" },
+  { kuerzel: "G3", name: "Der Vergleich: Rang und Kontrast", zustand: "gebaut", hinweis: "Stadt gegen Land ist Post 1" },
+  { kuerzel: "G4", name: "Das Geld: was ein Ort eingespielt hat", zustand: "daten-da" },
+  { kuerzel: "G5", name: "Die Förderung: Wochenbewegung", zustand: "daten-da" },
+  { kuerzel: "G6", name: "Wendepunkte: Schwellen und Stichtage", zustand: "daten-da" },
+  { kuerzel: "G7", name: "Mythos-Check", zustand: "daten-da" },
+  { kuerzel: "G8", name: "Das Ausland", zustand: "daten-da" },
+  { kuerzel: "G9", name: "Der Preis", zustand: "daten-da" },
+  { kuerzel: "G10", name: "Die Anomalie als offene Frage", zustand: "daten-da", hinweis: "Stärkster Kommentar-Motor" },
+  { kuerzel: "G11", name: "Der eigene Fehler", zustand: "daten-da" },
+  { kuerzel: "G12", name: "Kommunen-Service ohne Ranking", zustand: "daten-da" },
+  { kuerzel: "G13", name: "Balkonkraftwerke als eigenes Feld", zustand: "gebaut", hinweis: "Wachstum ist Post 2" },
+  { kuerzel: "G14", name: "Die Flächenfrage", zustand: "daten-da", hinweis: "Hoher Ertrag, hohes Risiko" },
+  { kuerzel: "G15", name: "Was nicht gebaut wurde", zustand: "fehlt-daten", hinweis: "Braucht den Gebäudebestand" },
+  { kuerzel: "G16", name: "Die Kohorte", zustand: "daten-da" },
+  { kuerzel: "G17", name: "Frag den Datensatz", zustand: "daten-da" },
+  { kuerzel: "G18", name: "Der Bau selbst, aus UX-Sicht", zustand: "spaeter" },
+  { kuerzel: "G19", name: "Wärmepumpen-Förderung je Landkreis", zustand: "fehlt-daten", hinweis: "Eigene Sitzung bringt es ins Produkt" },
+];
+
 export type Regel = { regel: string; grund: string };
 
 /**

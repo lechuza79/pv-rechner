@@ -120,12 +120,14 @@ export function postStadtLand(k: SocialKennzahlen): SocialPost {
   const schluss = sortiert[sortiert.length - 1];
   const zweitLetzter = sortiert[sortiert.length - 2];
 
+  // Die ersten zwei Zeilen sind alles, was der Feed vor „mehr anzeigen" zeigt.
+  // Hier stand zuerst die Prämisse und die Pointe kam danach — im
+  // Redaktionstisch sofort sichtbar geworden, sobald die Vorschau die richtige
+  // Reihenfolge hatte. Jetzt: Widerspruch zuerst, Herleitung danach.
   const text = [
-    `Das Balkonkraftwerk gilt als Lösung für Mieter in der Stadt. Kleine Wohnung, kein eigenes Dach, 800 Watt am Geländer.`,
+    `In deutschen Großstädten stehen nur halb so viele Balkonkraftwerke wie in kleinen Gemeinden. Bei einem Gerät, das als Lösung für Mieter in der Stadt gilt.`,
     ``,
-    `Die Anmeldedaten sagen etwas anderes.`,
-    ``,
-    `In den ${de(s.stadtAnzahl)} deutschen Städten über ${de(s.stadtAb / 1000)}.000 Einwohnern kommen ${de(s.stadtJeTausend, 1)} Steckersolargeräte auf 1.000 Einwohner. In den gut ${de(Math.round(s.landAnzahl / 1000))}.000 Gemeinden unter ${de(s.landUnter / 1000)}.000 Einwohnern sind es ${de(s.landJeTausend, 1)}. Also ${staerker ? `${de(faktor, 1)}-mal so viele` : `weniger`} — und zwar dort, wo die meisten Leute ohnehin ein eigenes Dach hätten.`,
+    `Die Anmeldedaten: In den ${de(s.stadtAnzahl)} deutschen Städten über ${de(s.stadtAb / 1000)}.000 Einwohnern kommen ${de(s.stadtJeTausend, 1)} Steckersolargeräte auf 1.000 Einwohner. In den gut ${de(Math.round(s.landAnzahl / 1000))}.000 Gemeinden unter ${de(s.landUnter / 1000)}.000 Einwohnern sind es ${de(s.landJeTausend, 1)}. Also ${staerker ? `${de(faktor, 1)}-mal so viele` : `weniger`} — und zwar dort, wo die meisten Leute ohnehin ein eigenes Dach hätten.`,
     ``,
     `Bei den Stadtstaaten wird es noch deutlicher: ${schluss.name} ${de(schluss.balkonJeTausend, 1)}, ${zweitLetzter.name} ${de(zweitLetzter.balkonJeTausend, 1)}. ${spitze.name} kommt auf ${de(spitze.balkonJeTausend, 1)}.`,
     ``,
@@ -185,12 +187,13 @@ export function postWachstum(k: SocialKennzahlen): SocialPost {
   const zuwachs = w.balkonJetzt - w.balkonVorJahr;
   const gwp = (n: number) => de(n / 1_000_000, 0);
 
+  // Aussage in die ersten zwei Zeilen, siehe postStadtLand.
   const text = [
-    `Deutschlands Solarleistung ist in den letzten zwölf Monaten um ${de(solarProzent, 0)} Prozent gewachsen. Auf jetzt ${gwp(w.solarKwpJetzt)} Gigawatt.`,
+    `Balkonkraftwerke wachsen ${de(balkonProzent / solarProzent, 1)}-mal so schnell wie Deutschlands Solarleistung insgesamt. ${de(Math.round(zuwachs / 1000))}.000 neue in zwölf Monaten.`,
     ``,
-    `Die Zahl der Balkonkraftwerke im selben Zeitraum: plus ${de(balkonProzent, 0)} Prozent. Von ${de(w.balkonVorJahr / 1_000_000, 2)} auf ${de(w.balkonJetzt / 1_000_000, 2)} Millionen.`,
+    `Die Solarleistung ist im selben Zeitraum um ${de(solarProzent, 0)} Prozent gewachsen, auf ${gwp(w.solarKwpJetzt)} Gigawatt. Die Zahl der Balkonkraftwerke um ${de(balkonProzent, 0)} Prozent, von ${de(w.balkonVorJahr / 1_000_000, 2)} auf ${de(w.balkonJetzt / 1_000_000, 2)} Millionen.`,
     ``,
-    `Leistungsmäßig ist das eine Randnotiz. Aber als Zahl der Menschen, die zum ersten Mal selbst Strom erzeugen, ist es die interessantere Größe: ${de(Math.round(zuwachs / 1000))}.000 Haushalte in einem Jahr, ohne Handwerker, ohne Kredit, ohne Genehmigung.`,
+    `Leistungsmäßig ist das eine Randnotiz. Aber als Zahl der Menschen, die zum ersten Mal selbst Strom erzeugen, ist es die interessantere Größe: so viele Haushalte in einem Jahr, ohne Handwerker, ohne Kredit, ohne Genehmigung.`,
     ``,
     `Ich finde die zweite Zahl aussagekräftiger als die erste, auch wenn sie in keiner Ausbaustatistik auftaucht.`,
     ``,
