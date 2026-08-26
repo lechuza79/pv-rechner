@@ -37,6 +37,7 @@ interface Props {
 
 interface Antwort {
   empfehlungen: Empfehlung[];
+  alternativ?: Empfehlung[];
   abgerufenIso?: string | null;
   auswahlAus?: number;
   grund?: string;
@@ -401,6 +402,7 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
   }
 
   const fall = { auslegungKw, vorlaufC, wpType };
+  const alternativ = antwort?.alternativ ?? [];
 
   return (
     <div style={{ display: "grid", gap: space.md }}>
@@ -426,6 +428,32 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
           ))}
         </ul>
       </div>
+
+      {alternativ.length > 0 && (
+        <div
+          style={{
+            borderTop: `1px solid ${v("--color-border")}`,
+            paddingTop: space.md,
+            display: "grid",
+            gap: space.sm,
+          }}
+        >
+          <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: v("--color-text-secondary") }}>
+            <strong style={{ color: v("--color-text-primary") }}>Nur die Wärmepumpe</strong> — wenn
+            Speicher und Regelung schon da sind oder getrennt gekauft werden.
+          </p>
+          <ul
+            className="wp-geraete-reihe"
+            style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", gap: space.md }}
+          >
+            {alternativ.map((e) => (
+              <li key={e.geraet.id} className="wp-geraete-kachel" style={{ minWidth: 0 }}>
+                <Karte e={e} rang={-1} fall={fall} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Der teuerste Satz der Seite — und er wird hier NICHT formuliert.
 

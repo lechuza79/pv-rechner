@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { beurteile, empfehlungenFuer, type WpFall } from "../wp-empfehlung";
+import { beurteile, empfehlungenFuer, einzelgeraeteAlternativ, type WpFall } from "../wp-empfehlung";
 import type { WpGeraet } from "../wp-katalog";
 
 const geraet = (ueber: Partial<WpGeraet> = {}): WpGeraet => ({
@@ -180,5 +180,32 @@ describe("Toleranz nach unten", () => {
     // 11 % zu wenig und damit ein Gerät, das am kältesten Tag nachheizen muss.
     const fall: WpFall = { auslegungKw: 12.3, vorlaufC: 35, wpType: "lwwp" };
     expect(beurteile(geraet({ leistungKw: 11 }), fall).geeignet).toBe(false);
+  });
+});
+
+describe("Einzelgeräte als abgesetzte Alternative", () => {
+  const katalog = [
+    geraet({ id: "paket", marke: "A", preisEur: 10329, umfang: "paket" }),
+    geraet({ id: "einzeln-a", marke: "B", preisEur: 4598, umfang: "geraet" }),
+    geraet({ id: "einzeln-b", marke: "C", preisEur: 6649, umfang: "geraet" }),
+  ];
+
+  it("die Hauptliste zeigt nur Pakete", () => {
+    expect(empfehlungenFuer(katalog, altbau).map((x) => x.geraet.id)).toEqual(["paket"]);
+  });
+
+  it("die Einzelgeräte kommen getrennt, nach Preis", () => {
+    expect(einzelgeraeteAlternativ(katalog, altbau).map((x) => x.geraet.id)).toEqual([
+      "einzeln-a",
+      "einzeln-b",
+    ]);
+  });
+
+  it("ohne Pakete bleibt der Alternativ-Block leer", () => {
+    // Sonst stünden dieselben Geräte zweimal: oben als Hauptliste (weil es
+    // keine Pakete gibt) und darunter noch einmal als „Alternative".
+    const ohnePaket = [geraet({ id: "einzeln", umfang: "geraet" })];
+    expect(empfehlungenFuer(ohnePaket, altbau).map((x) => x.geraet.id)).toEqual(["einzeln"]);
+    expect(einzelgeraeteAlternativ(ohnePaket, altbau)).toEqual([]);
   });
 });

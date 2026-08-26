@@ -223,3 +223,43 @@ export function empfehlungenFuer(
   const pakete = geeignet.filter((e) => e.geraet.umfang === "paket");
   return pakete.length > 0 ? jeMarke(pakete) : jeMarke(geeignet);
 }
+
+/**
+ * Einzelgeräte als abgesetzte Alternative unter den Paketen.
+ *
+ * Getrennt geliefert, nicht in dieselbe Liste gemischt: In einer Reihe stünde
+ * das Einzelgerät wegen des Preises immer oben, obwohl es Speicher und Regelung
+ * nicht enthält — rund 4.000 € Unterschied, die man der Zahl nicht ansieht. Als
+ * eigener, ausdrücklich beschrifteter Block ist es eine Alternative für den, der
+ * Speicher und Regelung schon hat oder getrennt kauft.
+ *
+ * Leer, wenn es ohnehin keine Pakete gab: Dann zeigt `empfehlungenFuer` bereits
+ * Einzelgeräte, und derselbe Block ein zweites Mal wäre eine Dublette.
+ */
+export function einzelgeraeteAlternativ(
+  katalog: WpGeraet[],
+  fall: WpFall,
+  grenze = 2,
+): Empfehlung[] {
+  const quelle = fall.wpType === "swwp" ? "sole-wasser" : "luft-wasser";
+  const geeignet = katalog
+    .filter((g) => g.bauart === quelle)
+    .map((g) => beurteile(g, fall))
+    .filter((e) => e.geeignet);
+
+  if (!geeignet.some((e) => e.geraet.umfang === "paket")) return [];
+
+  const einzeln = geeignet
+    .filter((e) => e.geraet.umfang === "geraet")
+    .sort((a, b) => a.geraet.preisEur - b.geraet.preisEur);
+
+  const gesehen = new Set<string>();
+  const auswahl: Empfehlung[] = [];
+  for (const e of einzeln) {
+    if (gesehen.has(e.geraet.marke)) continue;
+    gesehen.add(e.geraet.marke);
+    auswahl.push(e);
+    if (auswahl.length === grenze) break;
+  }
+  return auswahl;
+}

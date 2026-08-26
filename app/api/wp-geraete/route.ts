@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ladeKatalog } from "../../../lib/wp-katalog-db";
-import { empfehlungenFuer, type WpFall } from "../../../lib/wp-empfehlung";
+import { empfehlungenFuer, einzelgeraeteAlternativ, type WpFall } from "../../../lib/wp-empfehlung";
 
 // ─── Passende Geräte zum gerechneten Fall ─────────────────────────────────────
 //
@@ -49,6 +49,7 @@ export async function GET(req: NextRequest) {
   return NextResponse.json(
     {
       empfehlungen: empfehlungenFuer(stand.geraete, fall),
+      alternativ: einzelgeraeteAlternativ(stand.geraete, fall),
       abgerufenIso: stand.abgerufenIso,
       auswahlAus: stand.geraete.length,
     },
