@@ -947,7 +947,7 @@ export default function Waermepumpe({
                         </InfoTooltip>
                       </span>
                       <select value={altheizung} onChange={e => { setAltheizung(e.target.value as AltheizungKey); setOInvest(null); }}
-                        style={{ fontSize: 12, padding: "3px 6px", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, background: v('--color-bg'), color: v('--color-text-secondary'), cursor: "pointer" }}>
+                        style={{ fontSize: 12, padding: "3px 6px", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, background: v('--color-bg'), color: v('--color-text-secondary'), cursor: "pointer", maxWidth: "100%" }}>
                         {ALTHEIZUNG_OPTIONS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
                       </select>
                     </div>
@@ -960,7 +960,7 @@ export default function Waermepumpe({
                         </InfoTooltip>
                       </span>
                       <select value={einkommen} onChange={e => { setEinkommen(e.target.value as EinkommenKey); setOInvest(null); }}
-                        style={{ fontSize: 12, padding: "3px 6px", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, background: v('--color-bg'), color: v('--color-text-secondary'), cursor: "pointer" }}>
+                        style={{ fontSize: 12, padding: "3px 6px", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, background: v('--color-bg'), color: v('--color-text-secondary'), cursor: "pointer", maxWidth: "100%" }}>
                         {EINKOMMEN_OPTIONS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
                       </select>
                     </div>
