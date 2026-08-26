@@ -71,8 +71,18 @@ function betragText(p: FundingProgram): { zahl: string | null; text: string } {
   const a = fundingAmount(p, { technik: "balkon", wattPeak: REFERENZ.moduleWp, kosten: REFERENZ.price });
   if (!a.computable) {
     // Kein strukturierter Satz: Das Programm fördert Steckersolar, aber die Höhe
-    // hängt an etwas, das dieses Modell nicht kennt (Einkommensgrenze, Bausteine).
-    // Lieber keine Zahl als eine falsche.
+    // hängt an etwas, das dieses Modell nicht kennt (Einkommensgrenze, Bausteine,
+    // ein erschöpftes Teilkontingent). Lieber keine Zahl als eine falsche.
+    //
+    // WAS DA TROTZDEM STEHEN KANN (26.08.2026): Bis hierher lief jeder dieser
+    // Fälle in denselben Satz — „Betrag richtet sich nach dem Einzelfall". Das
+    // ist zu wenig, denn nicht rechenbar heißt nicht unbekannt: Bei
+    // Mecklenburg-Vorpommern sind es belegte 500 €, sie hängen nur an einer
+    // Bedingung, die der Rechner nicht kennt. Der Katalog führt den Satz im
+    // Klartext (`rates`) — ihn hier zu verschweigen und stattdessen auf den
+    // Träger zu verweisen, ist eine Auskunft weniger, als wir haben.
+    const satz = p.rates[0];
+    if (satz) return { zahl: null, text: `${satz.value} — die Höhe hängt am Einzelfall` };
     return { zahl: null, text: "Betrag richtet sich nach dem Einzelfall — Konditionen beim Träger" };
   }
   return {
@@ -103,6 +113,16 @@ export default async function BalkonFoerderungPage() {
   );
 
   const aktiv = programme.filter((p) => fundingZaehlt(p)).length;
+
+  // Seit dem 26.08.2026 stehen Landesprogramme mit in der Liste, und damit wird
+  // die Zählung zu einer eigenen Angabe: „62 kommunale Programme" wäre falsch,
+  // sobald ein Land dabei ist, und „62 Programme" verschweigt den Unterschied,
+  // auf den es hier ankommt — ein Landesprogramm gilt für jeden Ort seines
+  // Landes, ein kommunales nur für einen. Gezählt wird aus den Daten, nicht
+  // getippt: Eine Zahl im Fließtext veraltet an dem Tag, an dem ein Programm
+  // dazukommt.
+  const landesProgramme = programme.filter((p) => p.level === "land");
+  const kommunale = programme.length - landesProgramme.length;
 
   // Eine repräsentative Postleitzahl je Programm — damit der Rechner von hier
   // aus schon auf den Ort eingestellt startet, statt den Besucher die
@@ -146,23 +166,39 @@ export default async function BalkonFoerderungPage() {
             dem Tag, an dem das erste Programm ausläuft. */}
         <p style={S.intro}>
           Vom Bund gibt es für Balkonkraftwerke <span style={S.strong}>keine Förderung</span> — dafür
-          von immer mehr Städten und Gemeinden. Wir führen aktuell{" "}
-          <span style={S.strong}>{programme.length} kommunale Programme</span> in {laender.length}{" "}
-          Bundesländern, davon {aktiv} mit offenen Anträgen. Üblich sind Pauschalen zwischen 50 und
-          200 € oder ein Anteil an den Kosten — bei einem Set für rund {REFERENZ.price} € ist das ein
-          spürbarer Teil des Preises.
+          von einigen Bundesländern und von immer mehr Städten und Gemeinden. Wir führen aktuell{" "}
+          <span style={S.strong}>{kommunale} kommunale Programme</span>
+          {landesProgramme.length > 0 && (
+            <>
+              {" "}
+              und{" "}
+              <span style={S.strong}>
+                {landesProgramme.length === 1 ? "1 Landesprogramm" : `${landesProgramme.length} Landesprogramme`}
+              </span>
+            </>
+          )}{" "}
+          in {laender.length} Bundesländern, davon {aktiv} mit offenen Anträgen. Üblich sind
+          Pauschalen zwischen 50 und 200 € oder ein Anteil an den Kosten — bei einem Set für rund{" "}
+          {REFERENZ.price} € ist das ein spürbarer Teil des Preises.
         </p>
 
         {/* Der Vorbehalt gehört nach oben, nicht ans Ende: Wer aus einem Land ohne
             Eintrag kommt, soll nicht erst die ganze Liste durchsuchen, um zu
             merken, dass wir dazu nichts haben. */}
+        {/* Der Vorbehalt gehört nach oben und muss sagen, WO die Lücke liegt.
+            Bis 26.08.2026 führte die Liste nur kommunale Programme und der
+            Vorbehalt nannte die Landesebene pauschal als unerfasst. Inzwischen
+            stehen die geprüften Landesprogramme mit drin — vollständig ist die
+            Ebene damit aber nicht, und das ist der Unterschied, den der Satz
+            tragen muss: Erfasst ist, was wir an der Amtsseite selbst gelesen
+            haben, nicht was in Ratgeberlisten steht. */}
         <div style={{ ...S.hinweis, marginBottom: space.xl }}>
-          <span style={S.strong}>Was hier steht und was nicht:</span> Diese Liste führt{" "}
-          <span style={S.strong}>kommunale</span> Programme — Städte, Gemeinden und Landkreise.
-          Einige Bundesländer fördern Steckersolar zusätzlich über eigene Landesprogramme; die sind
-          hier noch nicht vollständig erfasst. Ein Ort ohne Eintrag heißt also nicht sicher „keine
-          Förderung", sondern zuerst: uns ist keine bekannt. Verbindlich ist immer die Auskunft des
-          Trägers.
+          <span style={S.strong}>Was hier steht und was nicht:</span> Diese Liste führt Programme von
+          Städten, Gemeinden und Landkreisen — und die Landesprogramme, die wir an der Seite des
+          Trägers selbst geprüft haben. <span style={S.strong}>Vollständig ist sie nicht:</span> Für
+          einige Bundesländer steht die Prüfung der Landesebene noch aus. Ein Ort ohne Eintrag heißt
+          also nicht sicher „keine Förderung", sondern zuerst: uns ist keine bekannt. Verbindlich ist
+          immer die Auskunft des Trägers.
         </div>
 
         {laender.map(([land, liste]) => {

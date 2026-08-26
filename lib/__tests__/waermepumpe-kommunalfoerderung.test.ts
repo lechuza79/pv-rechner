@@ -277,7 +277,19 @@ describe("Leere Liste, fehlendes Feld — zwei verschiedene Fragen", () => {
     // gaiberg-steckersolar: schließt KfW, BAFA und Land ausdrücklich aus.
     // tegernheim-stecker-pv: „nur, sofern keine zusätzlichen Drittförderungen
     //   in Anspruch genommen werden" (Nr. 3 der Richtlinie).
-    const BELEGTE_AUSSCHLUESSE = ["gaiberg-steckersolar", "tegernheim-stecker-pv"];
+    const BELEGTE_AUSSCHLUESSE = [
+      "gaiberg-steckersolar",
+      "tegernheim-stecker-pv",
+      // Sachsen (26.08.2026): Die FAQ der SAB beantwortet die Frage
+      // ausdrücklich — „Ich möchte für meine Stecker-PV-Anlage zusätzlich noch
+      // eine Förderung aus einem anderen Förderprogramm beantragen. Ist das
+      // möglich? Nein, das ist nicht zulässig." Volltext-Auszug in
+      // docs/quellen/landesprogramme-balkon/sab-sachsen-balkonkraftwerke.txt.
+      // Das Programm nimmt seit dem 30.06.2026 ohnehin keine Anträge mehr an;
+      // die leere Liste ist trotzdem die richtige Angabe, weil sie die
+      // Rechtslage des Programms wiedergibt und nicht seinen Betriebszustand.
+      "sachsen-balkon",
+    ];
     const ausschluss = Object.values(FUNDING_PROGRAMS).filter(schliesstBundesfoerderungAus);
     expect(
       ausschluss.map(p => p.id).sort(),

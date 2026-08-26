@@ -307,6 +307,131 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
   },
 
+  // Am 26.08.2026 an der Programmseite der SAB im Volltext gelesen (Auszug in
+  // docs/quellen/landesprogramme-balkon/). Aufgenommen wird hier ein Programm,
+  // das GERADE AUSGELAUFEN IST — und das ist der Punkt: Auf „balkonkraftwerk
+  // förderung sachsen" (390 Suchen/Monat, die stärkste Bundesland-Anfrage
+  // überhaupt) steht der halbe Markt weiter mit „300 € Zuschuss 2026" da.
+  // Gemessen am 26.08.2026: sechs von sechs Ratgeberseiten in den Suchtreffern
+  // führen den Zuschuss als abrufbar. Die Amtsseite sagt seit acht Wochen das
+  // Gegenteil, wörtlich: „[01.07.2026] Das Programm ist ausgelaufen. Eine
+  // Antragstellung ist nicht mehr möglich." Ein eingestelltes Programm zu
+  // führen ist deshalb kein Ballast, sondern die einzige richtige Antwort auf
+  // die Frage, die gestellt wird.
+  //
+  // Rechtsgrundlage ist Programmteil B der FRL EEuS/2023, der laut derselben
+  // Seite „am 30. Juni 2026 […] planmäßig außer Kraft" trat — planmäßig, nicht
+  // wegen leerer Kasse. Programmteil A (Anlagen über 30 kWp über den
+  // Sachsenkredit) bleibt in Kraft und ist eine andere Sache; er gehört nicht
+  // in den Balkon-Katalog.
+  "sachsen-balkon": {
+    id: "sachsen-balkon", name: "Zuschuss für steckerfertige PV-Anlagen (FRL EEuS/2023, Programmteil B)",
+    traeger: "Sächsische Aufbaubank (SAB) / Freistaat Sachsen",
+    level: "land", region: "Sachsen", bundesland: "Sachsen", agsCode: "14",
+    url: "https://www.sab.sachsen.de/balkonkraftwerke-stecker-pv-anlagen",
+    stand: "Juli 2026", status: "eingestellt", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Festbetrag je steckerfertiger PV-Anlage — Programm ausgelaufen",
+    rates: [{ label: "Balkonkraftwerk", value: "300 € pauschal (bis 30.06.2026)" }],
+    conditions: [
+      "Das Programm ist zum 30. Juni 2026 ausgelaufen; neue Anträge sind nicht mehr möglich",
+      "Gefördert wurden rund 16.600 Anlagen mit über 5 Mio. € Landesmitteln",
+      "Der Antrag war erst nach Kauf und Inbetriebnahme zu stellen",
+      "Antragsberechtigt waren Privatpersonen mit Erstwohnsitz in Sachsen — Mieter und selbstnutzende Eigentümer",
+      "Gefördert wurden Anlagen ab 300 Wp Modulleistung und höchstens 800 W je Wechselrichter",
+      "Eine zusätzliche Förderung aus einem anderen Programm war ausgeschlossen",
+    ],
+    // Leere Liste heißt im Katalog „geht nur allein" — hier belegt durch die
+    // FAQ der SAB: „Ich möchte für meine Stecker-PV-Anlage zusätzlich noch eine
+    // Förderung aus einem anderen Förderprogramm beantragen. Ist das möglich?
+    // Nein, das ist nicht zulässig." Das galt auch gegenüber dem Nullsteuersatz
+    // nicht — der ist keine Förderung, sondern eine Steuerregel; er steht
+    // deshalb hier trotzdem nicht, weil das Programm ohnehin keine Anträge mehr
+    // annimmt und eine Kombinationsangabe nichts mehr steuert.
+    combinableWith: [],
+    foerdert: ["balkon"],
+    // KEIN `balkonPauschale`: Ein eingestelltes Programm darf nichts abziehen.
+    // `fundingZaehlt()` würde es ohnehin aussortieren — aber ein Rechenwert an
+    // einem toten Programm ist eine Zahl, die nur darauf wartet, dass jemand
+    // den Status versehentlich zurücksetzt.
+  },
+
+  // Am 26.08.2026 an der Programmseite des LFI M-V im Volltext gelesen (Auszug
+  // in docs/quellen/landesprogramme-balkon/). Das einzige Landesprogramm für
+  // Steckersolar, das derzeit noch Anträge annimmt.
+  "mv-mini-solar": {
+    id: "mv-mini-solar", name: "Zuwendungen für steckerfertige PV-Anlagen (Mini-Solaranlagen)",
+    traeger: "Landesförderinstitut M-V / Ministerium für Klimaschutz, Landwirtschaft, ländliche Räume und Umwelt",
+    level: "land", region: "Mecklenburg-Vorpommern", bundesland: "Mecklenburg-Vorpommern", agsCode: "13",
+    url: "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Festbetrag für Anschaffung und Installation — Eigentümer-Kontingent ausgeschöpft",
+    rates: [{ label: "Balkonkraftwerk", value: "bis 500 € (nur noch für Mietende)" }],
+    conditions: [
+      "Das Kontingent für Eigentümer ist ausgeschöpft; nur Mietende können noch beantragen",
+      "Antragsberechtigt sind Privatpersonen mit Erstwohnsitz in Mecklenburg-Vorpommern",
+      "Der Antrag wird erst nach Kauf und Installation gestellt",
+      "Der Antrag ist schriftlich auf dem Formular einzureichen — per E-Mail übersandte Anträge sind unwirksam",
+      "Gefördert werden nur Anlagen mit Kaufdatum nach dem 07.11.2022",
+      "Zubehör, Umbausätze, Eigenleistungen und Eigenbau sind nicht förderfähig",
+      "Unvollständige Anträge werden nicht bewilligt; es zählt die Reihenfolge vollständiger Anträge",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // KEIN `balkonPauschale`, obwohl 500 € ein glatter Festbetrag sind — und
+    // das ist eine bewusste Entscheidung gegen die naheliegende Zahl.
+    //
+    // Die Amtsseite sagt wörtlich: „Die Mittel des Programms für Eigentümer
+    // einer Wohneinheit sind vollständig ausgeschöpft. Bitte sehen Sie von
+    // einer Antragstellung als Eigentümer ab, da keinerlei Aussicht auf Erfolg
+    // besteht." Für Mietende sind noch Mittel da. Der Zuschuss hängt damit an
+    // einer Größe, die der Balkon-Rechner NICHT als Rechenweg führt: Miete oder
+    // Eigentum steht dort als Hinweis (privilegierte Maßnahme seit 2024), nicht
+    // als Eingabe, aus der eine Zahl folgt. Wer hier 500 € einträgt, zieht sie
+    // jedem Eigentümer in M-V ab, der sie nachweislich nicht bekommt.
+    //
+    // Dieselbe Regel wie bei den einkommensgebundenen Zuschüssen (Bad Krozingen,
+    // Tübingen): Was das Modell nicht ausdrücken kann, bekommt keinen
+    // strukturierten Satz. Das Programm informiert, es rechnet nicht.
+  },
+
+  // Am 26.08.2026 an der Seite der Hamburger Umweltbehörde im Volltext gelesen
+  // (Auszug in docs/quellen/landesprogramme-balkon/).
+  "hamburg-balkon-geringes-einkommen": {
+    id: "hamburg-balkon-geringes-einkommen",
+    name: "Balkonkraftwerk – Förderung für Haushalte mit geringem Einkommen",
+    traeger: "BUKEA Hamburg / Caritasverband für das Erzbistum Hamburg",
+    level: "land", region: "Hamburg", bundesland: "Hamburg", agsCode: "02",
+    url: "https://www.hamburg.de/politik-und-verwaltung/behoerden/bukea/themen/energie/erneuerbare-energien/photovoltaik/solarstrom-fuer-mieter-innen/strom-vom-balkon-foerderung-1054204",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "bis zu 90 % der Anschaffungskosten — nur für Haushalte mit geringem Einkommen",
+    rates: [{ label: "Balkonkraftwerk", value: "bis zu 90 % der Anschaffungskosten" }],
+    conditions: [
+      "Antragsberechtigt sind nur Haushalte mit geringem Einkommen",
+      "Als geringes Einkommen gilt der Bezug von Bürgergeld, Sozialhilfe, Grundsicherung, Wohngeld, Asylbewerberleistungen, Kinderzuschlag oder BAföG — oder ein Haushaltseinkommen unter dem Pfändungsfreibetrag",
+      "Der Weg beginnt mit der Beratung durch die Caritas; das geförderte Gerät wird danach ausgewählt",
+      "Der Haushalt braucht einen geeigneten Balkon oder eine Terrasse mit Außensteckdose",
+      "Die Installation nehmen die Haushalte selbst vor",
+      "Das Projekt ist zunächst auf zwei Jahre ab Frühsommer 2025 angelegt",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // KEIN Rechenwert: „bis zu 90 % der Anschaffungskosten" wäre als
+    // `balkonPercentOfCost: 0.9` ausdrückbar — aber die Einkommensgrenze davor
+    // ist es nicht. Ein Prozentsatz ohne die Bedingung, die ihn erst auslöst,
+    // zöge jedem Hamburger Nutzer 90 % ab.
+    //
+    // ZU DEN 500 €, die überall kursieren: Sie stehen tatsächlich beim Träger
+    // (Pressemitteilung des Caritasverbands vom 28.02.2025) — aber als
+    // ERSPARNIS, nicht als Höchstbetrag: „So können Haushalte bis zu 500 Euro
+    // bei der Anschaffung […] sparen." Auf der Programmseite der Umweltbehörde
+    // steht überhaupt kein Betrag. Die Zahl als `balkonCap` zu führen hieße,
+    // aus einer Beispielrechnung einen Deckel zu machen — dieselbe Fehlerklasse
+    // wie eine Beschriftung, die etwas anderes sagt als die Zahl darunter.
+  },
+
   // ── Kommune – aktiv & solide ────────────────────────────────────────────────
   "stuttgart-solaroffensive": {
     id: "stuttgart-solaroffensive", name: "Stuttgarter Solaroffensive",

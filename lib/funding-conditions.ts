@@ -168,6 +168,16 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "asbach-balkonkraftwerke", "parkstein-nachhaltigkeitszuschuss",
   "marburg-balkonkraftwerke", "schoenbrunn-balkon-pv",
   "hillscheid-energie", "schlierbach-energiespeicher",
+  // Hamburg (26.08.2026) — und hier steht ausnahmsweise, WAS genau fehlt, weil
+  // es eine einzelne beschaffbare Angabe ist: der Antragszeitpunkt. Sachsen und
+  // M-V derselben Runde sind vollständig erfasst; bei Hamburg sagen weder die
+  // Seite der Umweltbehörde noch die Pressemitteilung des Caritasverbands, ob
+  // vor dem Kauf zu beantragen ist. Der belegte Ablauf (erst Beratung, dann
+  // wird das geförderte Gerät ausgewählt) legt „vorher" nahe — aber „legt nahe"
+  // ist bei genau der Bedingung zu wenig, deren Verletzung die ganze Förderung
+  // kostet. Zu klären ist das nur bei der Caritas selbst, und das ist
+  // Außenkontakt.
+  "hamburg-balkon-geringes-einkommen",
 ];
 
 /**
@@ -251,6 +261,109 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
       },
     ],
   },
+
+  // ── Landesprogramme Steckersolar (erfasst 26.08.2026) ──────────────────────
+  // Bewusst vollständig zugeordnet statt in NOCH_NICHT_ERFASST abgelegt: Es
+  // sind drei Programme mit zusammen 18 Bedingungen, und zwei davon tragen
+  // genau die Sorte Bedingung, für die der Flow gebaut wurde — eine, deren
+  // Verletzung die ganze Förderung kostet.
+
+  "sachsen-balkon": {
+    pruefungen: [
+      {
+        ausBedingung:
+          "Der Antrag war erst nach Kauf und Inbetriebnahme zu stellen",
+        pruefung: { art: "antrag-zeitpunkt", zeitpunkt: "nach-inbetriebnahme" },
+      },
+      {
+        ausBedingung:
+          "Antragsberechtigt waren Privatpersonen mit Erstwohnsitz in Sachsen — Mieter und selbstnutzende Eigentümer",
+        pruefung: { art: "antragsteller", wer: ["eigentuemer", "mieter"] },
+      },
+      {
+        ausBedingung:
+          "Gefördert wurden Anlagen ab 300 Wp Modulleistung und höchstens 800 W je Wechselrichter",
+        pruefung: { art: "anlage-balkon", regel: "nur-balkon" },
+      },
+    ],
+    durchRegion: [],
+    hinweise: [
+      {
+        ausBedingung:
+          "Das Programm ist zum 30. Juni 2026 ausgelaufen; neue Anträge sind nicht mehr möglich",
+        warum:
+          "Der Status trägt das bereits (`eingestellt`), und `fundingZaehlt()` " +
+          "sortiert das Programm damit aus jeder Rechnung aus. Als Prüfung im " +
+          "Flow wäre es eine Frage, die nie zu einem Ja führen kann — der Satz " +
+          "steht hier, weil der Leser den Grund sehen soll, nicht weil er etwas " +
+          "zu prüfen hätte.",
+      },
+      {
+        ausBedingung:
+          "Gefördert wurden rund 16.600 Anlagen mit über 5 Mio. € Landesmitteln",
+        warum:
+          "Eine Bilanz, keine Bedingung. Sie steht in der Liste, weil sie die " +
+          "Größenordnung einordnet, die hier gerade weggefallen ist.",
+      },
+      {
+        ausBedingung:
+          "Eine zusätzliche Förderung aus einem anderen Programm war ausgeschlossen",
+        warum:
+          "Steht bereits strukturiert in der leeren `combinableWith`-Liste. Als " +
+          "eigene Prüfung wäre es eine zweite Fassung derselben Angabe — genau " +
+          "die Sorte Kopie, die im Katalog schon einmal auseinandergelaufen ist.",
+      },
+    ],
+  },
+
+  "mv-mini-solar": {
+    pruefungen: [
+      {
+        ausBedingung: "Der Antrag wird erst nach Kauf und Installation gestellt",
+        pruefung: { art: "antrag-zeitpunkt", zeitpunkt: "nach-inbetriebnahme" },
+      },
+      {
+        ausBedingung:
+          "Der Antrag ist schriftlich auf dem Formular einzureichen — per E-Mail übersandte Anträge sind unwirksam",
+        pruefung: { art: "antragsweg", weg: "formular" },
+      },
+      {
+        // Der Eigentümer-Topf ist leer — antragsberechtigt sind faktisch nur
+        // noch Mietende. Das ist bewusst als PRÜFUNG erfasst und nicht als
+        // Hinweis: Es ist die Bedingung, an der hier alles hängt, und die
+        // einzige, die im Flow ein klares Nein erzeugen kann.
+        ausBedingung:
+          "Das Kontingent für Eigentümer ist ausgeschöpft; nur Mietende können noch beantragen",
+        pruefung: { art: "antragsteller", wer: ["mieter"] },
+      },
+      {
+        ausBedingung:
+          "Zubehör, Umbausätze, Eigenleistungen und Eigenbau sind nicht förderfähig",
+        pruefung: { art: "ausfuehrung", eigenleistungAusgeschlossen: true },
+      },
+    ],
+    durchRegion: [
+      "Antragsberechtigt sind Privatpersonen mit Erstwohnsitz in Mecklenburg-Vorpommern",
+    ],
+    hinweise: [
+      {
+        ausBedingung: "Gefördert werden nur Anlagen mit Kaufdatum nach dem 07.11.2022",
+        warum:
+          "Ein Stichtag, der bald vier Jahre zurückliegt — für jeden, der heute " +
+          "kauft, erfüllt. Als Frage im Flow wäre er reine Reibung; als Hinweis " +
+          "steht er für die wenigen, die eine ältere Anlage nachträglich " +
+          "anmelden wollen.",
+      },
+      {
+        ausBedingung:
+          "Unvollständige Anträge werden nicht bewilligt; es zählt die Reihenfolge vollständiger Anträge",
+        warum:
+          "Eine Verfahrensregel über die Sorgfalt beim Ausfüllen, nicht über " +
+          "die Anlage oder den Antragsteller. Aus keiner Eingabe ableitbar.",
+      },
+    ],
+  },
+
 };
 
 // ── Ableitungen für den Flow ─────────────────────────────────────────────────

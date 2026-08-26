@@ -22,7 +22,12 @@ describe("live cities (only active programs)", () => {
     expect(slugs).not.toContain("schweinfurt"); // eingestellt (Council Juli 2026)
     expect(slugs).not.toContain("muenchen"); // eingestellt
     expect(slugs).not.toContain("karlsruhe"); // ausgeschoepft
-    expect(slugs).not.toContain("dresden"); // kein Programm
+    // Dresden: bis 26.08.2026 „kein Programm", seitdem das eingestellte
+    // sächsische Landesprogramm (siehe die ausführliche Begründung im
+    // Archiv-Test weiter unten). Nicht live bleibt es so oder so — nur der
+    // Grund hat gewechselt, und ein Kommentar, der den alten Grund nennt,
+    // schickt den nächsten Leser auf die falsche Fährte.
+    expect(slugs).not.toContain("dresden"); // eingestelltes Landesprogramm
   });
   it("isCityLive is false for cities without any program", () => {
     const noProg = ATLAS_CITIES.find((c) => !fundingFor(c))!;
@@ -47,7 +52,21 @@ describe("archived cities (inactive but published programs)", () => {
     expect(slugs).toContain("karlsruhe"); // ausgeschoepft
     expect(slugs).toContain("duesseldorf"); // pausiert
     expect(slugs).not.toContain("wuerzburg"); // aktiv
-    expect(slugs).not.toContain("dresden"); // kein Programm
+    // Dresden stand hier als Beispiel für „kein Programm → nicht archiviert".
+    // Seit dem 26.08.2026 gilt das nicht mehr, und der Grund ist lehrreich: Der
+    // Katalog führt jetzt das sächsische Landesprogramm für Steckersolar
+    // (eingestellt zum 30.06.2026, Schlüssel „14"). Ein Landesschlüssel deckt
+    // JEDEN Ort seines Landes — Dresden hat damit ein Programm, ohne dass
+    // jemand Dresden angefasst hätte. Für Berlin und Bremen fiel das nie auf,
+    // weil dort Land und Stadt derselbe Ort sind; Sachsen ist der erste
+    // Flächenstaat mit Landesprogramm im Katalog.
+    //
+    // Als Beispiel für „kein Programm" dient deshalb ein Ort ohne Programm auf
+    // JEDER Ebene. Veröffentlicht wird Dresden dadurch nicht — das entscheidet
+    // der Releaseplan, und genau dafür gibt es ihn.
+    const ohneProgramm = ATLAS_CITIES.find((c) => !fundingFor(c));
+    expect(ohneProgramm, "kein einziger Atlas-Ort mehr ohne Programm — dann prüft dieser Fall nichts").toBeTruthy();
+    expect(slugs).not.toContain(ohneProgramm!.slug);
     // Heidelberg stand hier als Beispiel für "unsicher → bewusst nicht
     // veröffentlicht". Seit dem 14.08.2026 ist der Status an der Förderrichtlinie
     // 2026 geklärt (Council 3/3), das Programm läuft — die Stadt ist damit live,
@@ -175,5 +194,40 @@ describe("slug redirects stay in sync with atlas-cities", () => {
       expect(r!.destination).toBe(cityPath(c));
       expect(r!.permanent).toBe(true);
     }
+  });
+});
+
+// Die Förder-Stadtseite ist die PV-Seite: Ihr Titel lautet „Photovoltaik-
+// Förderung {Ort} — Zuschüsse & Bestand", sobald das zugeordnete Programm
+// aktiv ist. Ein Programm, das ausschließlich Balkonkraftwerke fördert, macht
+// diesen Titel zu einem Versprechen, das die Seite nicht halten kann: Wer nach
+// Geld für eine Dachanlage sucht, findet einen Zuschuss für ein Steckergerät.
+//
+// GEMESSEN AM 26.08.2026: 46 Atlas-Orte haben ein zugeordnetes Programm, das
+// kein PV fördert (41 rein Balkon, 2 rein Wärmepumpe, dazu drei durch die neu
+// aufgenommenen Landesprogramme). Veröffentlicht sind davon zwei — München und
+// Ludwigshafen —, und beide nur deshalb unauffällig, weil ihr Programm
+// EINGESTELLT ist und damit der vorsichtige Titel greift („aktueller Status &
+// Bestand" statt „Zuschüsse"). Der Schaden entsteht erst, wenn ein Ort mit
+// AKTIVEM, PV-losem Programm freigegeben wird — und dann still: Die Seite
+// funktioniert, sieht normal aus und verspricht das Falsche.
+//
+// Der Test verhindert das nicht durch einen Umbau der Zuordnung (die trägt an
+// vielen Stellen), sondern macht die Freigabe zu einer sichtbaren Entscheidung
+// — dieselbe Systematik wie beim Releaseplan und beim Freigabe-Nachweis.
+describe("kein Zuschuss-Versprechen ohne PV-Förderung", () => {
+  it("keine veröffentlichte Stadtseite trägt ein aktives Programm ohne PV", () => {
+    const verstoesse = publishedCities()
+      .map((c) => ({ c, p: fundingFor(c) }))
+      .filter(({ p }) => p?.status === "aktiv" && !(p.foerdert ?? ["pv"]).includes("pv"))
+      .map(({ c, p }) => `${c.slug} → ${p!.id} [${(p!.foerdert ?? []).join(",")}]`);
+
+    expect(
+      verstoesse,
+      "Diese Orte sind freigegeben, ihr aktives Programm fördert aber kein PV. Der " +
+        "Seitentitel verspricht damit „Zuschüsse\" für eine Dachanlage, die es dort " +
+        "nicht gibt. Entweder aus dem Releaseplan nehmen, oder die Stadtseite muss " +
+        "erst lernen, ein reines Balkon-Programm als solches zu benennen.",
+    ).toEqual([]);
   });
 });
