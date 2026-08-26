@@ -31,6 +31,7 @@
     "sessions": "tsx scripts/sessions.ts",
     "laender:sync": "tsx scripts/ember-laender-sync.ts",
     "foerder:serp": "tsx scripts/funding-serp-test.ts",
+    "foerder:verlauf-bereinigen": "tsx scripts/funding-history-bereinigen.ts",
     "foerder:suche": "tsx scripts/funding-discover.ts",
     "foerder:seiten": "tsx scripts/funding-coverage-watch.ts",
     "foerder:seiten-alle": "tsx scripts/funding-seiten-watch.ts",
