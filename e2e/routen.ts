@@ -40,7 +40,7 @@ export const SEITEN: Seite[] = [
   { pfad: "/ratgeber", erwartet: /ratgeber/i },
   { pfad: "/ratgeber/lohnt-sich-pv-mit-speicher", erwartet: /speicher/i },
   { pfad: "/ratgeber/gasheizung-oder-waermepumpe", erwartet: /wärmepumpe|gasheizung/i },
-  { pfad: "/ratgeber/waermepumpe-foerderung-2026", erwartet: /wärmepumpe/i },
+  { pfad: "/ratgeber/waermepumpe-foerderung", erwartet: /wärmepumpe/i },
   // Datenseiten
   { pfad: "/photovoltaik-zubau-deutschland", erwartet: /zubau/i },
   { pfad: "/atomstrom-import", erwartet: /atomstrom|kernstrom/i },

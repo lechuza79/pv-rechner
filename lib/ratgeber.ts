@@ -44,8 +44,12 @@ export const RATGEBER: RatgeberEntry[] = [
     updated: "2026-07-26",
   },
   {
-    slug: "/ratgeber/waermepumpe-foerderung-2026",
-    title: "Wärmepumpen-Förderung 2026: Wie viel Zuschuss gibt es?",
+    slug: "/ratgeber/waermepumpe-foerderung",
+    // Ohne Jahreszahl: Diese Zeile speist Übersicht, Krümelspur und Sitemap und
+    // ist eine feste Zeichenkette — ein Jahr darin wäre am 1. Januar falsch, und
+    // zwar an drei Stellen gleichzeitig. Das Jahr trägt die Seite selbst, dort
+    // kommt es aus dem Kalender (siehe `JAHR` in ihrer page.tsx).
+    title: "Wärmepumpen-Förderung: Wie viel Zuschuss gibt es?",
     teaser:
       "Grundförderung, Klima-Bonus, Einkommens-Bonus: Wie sich der BEG-Zuschuss für den Heizungstausch zusammensetzt — mit live gerechneten Beispielfällen, dem Förder-Check zum selbst Ausprobieren und der Antragsreihenfolge, in der der Zuschuss steckt oder verlorengeht.",
     updated: "2026-08-25",

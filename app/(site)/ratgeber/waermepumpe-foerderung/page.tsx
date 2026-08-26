@@ -16,6 +16,7 @@ import { v } from "../../../../lib/theme";
 import { calcBegSubsidy, calcInvestBrutto, calcHeatLoad } from "../../../../lib/heatpump";
 import {
   DEFAULT_HEATPUMP_CONFIG as HP,
+  BEG_FAHRPLAN,
   begStufeAm,
   begNaechsteStufe,
   BEG_WERTSCHOEPFUNGS_BONUS,
@@ -38,13 +39,37 @@ import { pageMetadata } from "../../../../lib/seo";
 // not a rounding choice. ISR keeps the render-time date fresh without a rebuild.
 export const revalidate = 3600;
 
+// ─── Die Jahreszahl steht im TITEL, nicht in der Adresse ────────────────────
+//
+// Am 26.08.2026 ist die Seite von `/ratgeber/waermepumpe-foerderung-2026` auf
+// den zeitlosen Pfad umgezogen. Gemessen (DataForSEO, Deutschland, drei
+// unabhängige Prüfer): Die jahreslose Anfrage bringt 33.100 Aufrufe im Monat
+// und läuft ganzjährig; die Jahresvariante bricht zum Jahreswechsel um 93 %
+// ein („wärmepumpe förderung 2025": 6.600 → 40). Auf der Anfrage MIT Jahr
+// stehen die Plätze 1–3 trotzdem auf jahreslosen Adressen (KfW, ADAC, Bosch) —
+// Google zieht das Jahr aus dem Titel, nicht aus dem Pfad.
+//
+// **Was Google dazu NICHT sagt:** Die URL-Empfehlung von Search Central äußert
+// sich zu Datumsangaben in Adressen überhaupt nicht. Wer den Umzug mit einer
+// Google-Aussage begründet, hat keine — dieselbe Falle wie die kursierende
+// Behauptung über Verzeichnistiefe, die hier schon einmal zweieinhalb Wochen
+// als Google-Aussage im Regelwerk stand.
+//
+// Die Jahreszahl kommt aus dem KALENDER, nicht aus der Förderstufe. Naheliegend
+// wäre `begStufeAm(...)`, und es wäre falsch: Wer im Januar 2028 liest, steht
+// auf der Stufe „August 2027" — der Titel sagte dann 2027, während der Leser
+// 2028 schreibt. Die Zahlen im Text ziehen sich ihre Stufe ohnehin selbst; das
+// Jahr im Titel beantwortet die andere Frage, nämlich „gilt das noch für mich".
+// Mit ISR (siehe `revalidate`) wandert es ohne Deploy mit.
+const JAHR = new Date().getFullYear();
+
 export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
-    path: "/ratgeber/waermepumpe-foerderung-2026",
-    title: "Wärmepumpen-Förderung 2026: Wie viel Zuschuss gibt es wirklich?",
+    path: "/ratgeber/waermepumpe-foerderung",
+    title: `Wärmepumpen-Förderung ${JAHR}: Wie viel Zuschuss gibt es wirklich?`,
     description:
       "Grundförderung, Klima-Bonus, Einkommens-Bonus: Wie sich der BEG-Zuschuss für den Heizungstausch zusammensetzt — mit live gerechneten Beispielfällen nach KfW Merkblatt 458 und dem Förder-Check zum selbst Durchrechnen. Ohne Anmeldung.",
-    ogImageTitle: "Wärmepumpen-Förderung 2026",
+    ogImageTitle: `Wärmepumpen-Förderung ${JAHR}`,
     ogImageSubtitle: "Wie viel Zuschuss wirklich drin ist.",
   });
 }
@@ -318,21 +343,21 @@ export default function WaermepumpeFoerderungPage() {
           items={[
             { label: "Start", href: "/" },
             { label: "Ratgeber", href: "/ratgeber" },
-            { label: "Wärmepumpen-Förderung 2026" },
+            { label: `Wärmepumpen-Förderung ${JAHR}` },
           ]}
           jsonLd
         />
 
-        <h1 style={S.h1}>Wärmepumpen-Förderung 2026: Wie viel Zuschuss gibt es wirklich?</h1>
+        <h1 style={S.h1}>Wärmepumpen-Förderung {JAHR}: Wie viel Zuschuss gibt es wirklich?</h1>
         <p style={S.subtitle}>
           Der Staat übernimmt beim Heizungstausch einen erheblichen Teil der Kosten — aber
           wie viel genau, hängt davon ab, wer du bist und was du bisher heizt. Hier steht,
           wie sich der Zuschuss zusammensetzt.
         </p>
         <ArticleMeta
-          headline="Wärmepumpen-Förderung 2026: Wie viel Zuschuss gibt es wirklich?"
+          headline={`Wärmepumpen-Förderung ${JAHR}: Wie viel Zuschuss gibt es wirklich?`}
           description="Grundförderung, Klima-Bonus, Einkommens-Bonus: wie sich der BEG-Zuschuss zusammensetzt."
-          path="/ratgeber/waermepumpe-foerderung-2026"
+          path="/ratgeber/waermepumpe-foerderung"
           published="2026-07-20"
           modified="2026-08-25"
         />
@@ -724,11 +749,99 @@ export default function WaermepumpeFoerderungPage() {
           </p>
         )}
 
+        {/* ── Die ganze Zeitleiste ────────────────────────────────────────────
+            Statt eines zweiten Artikels je Jahr. Der Betreiber fragte am
+            26.08.2026, ob die auslaufende Fassung archiviert gehört; gemessen
+            hat die Vorjahres-Anfrage 40 Aufrufe im Monat gegen 33.100 auf der
+            zeitlosen — eine Archivseite wäre kein Verkehr, sondern eine zweite
+            Fläche mit Förderbeträgen, also genau die Zweitfassung, die dieses
+            Projekt bei Zahlen überall verbietet. Dasselbe Muster nutzt schon die
+            Einspeisevergütung: eine Seite, historische Sätze als Tabelle.
+
+            Die Tabelle wächst von selbst ins Archiv hinein. Heute steht die
+            erste Zeile auf „gilt jetzt" und alles darunter ist Ausblick; ab
+            Januar 2027 wandert die Markierung, und die 2026er Zeile wird zu dem
+            Nachschlagewert, den jemand mit einer Zusage von damals sucht — er
+            hat 36 Monate Zeit und sieht so den ganzen Verlauf statt einer
+            eingefrorenen Momentaufnahme.
+
+            Kein Wert getippt: alles aus BEG_FAHRPLAN, mit Fundstelle je Stufe. */}
+        <h2 style={S.h2}>Alle Stufen auf einen Blick</h2>
+        <p style={S.p}>
+          Maßgeblich ist der Tag, an dem der Antrag eingeht — nicht der Einbau. Wer heute
+          beantragt, rechnet mit der markierten Zeile, auch wenn die Anlage erst nächstes
+          Jahr läuft.
+        </p>
+        <div style={{ ...S.card, padding: "6px 10px", overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                <th style={S.th}>Antrag ab</th>
+                <th style={S.thNum}>Grundförderung</th>
+                <th style={S.thNum}>Klima-Bonus</th>
+                <th style={S.thNum}>Höchstbetrag</th>
+              </tr>
+            </thead>
+            <tbody>
+              {BEG_FAHRPLAN.map((stufe, i) => {
+                const jetzt = stufe.abIso === STUFE.abIso;
+                const vorbei = stufe.abIso < STUFE.abIso;
+                const letzte = i === BEG_FAHRPLAN.length - 1;
+                // Ab dem Wertschöpfungs-Bonus ist „15 %" allein die halbe
+                // Auskunft: Für ein Gerät mit EU-Ursprung kommen 15 Punkte
+                // zurück, der Satz bleibt also derselbe. Eine Spalte, die nur
+                // die Kürzung zeigt, wäre dieselbe Zahl-ohne-Bedingung, die
+                // diesen Abschnitt schon einmal falsch gemacht hat.
+                const mitEuBonus = stufe.abIso >= BEG_WERTSCHOEPFUNGS_BONUS.abIso;
+                const rand = { borderBottom: letzte ? "none" : undefined };
+                const blass = vorbei ? { opacity: 0.55 } : undefined;
+                return (
+                  <tr key={stufe.abIso}>
+                    <td style={{ ...S.td, ...rand, ...blass }}>
+                      {/* Die erste Stufe heißt im Fahrplan „heute" — als
+                          Zeilenbeschriftung wäre das genau die Sorte Etikett,
+                          die mit der Zeit lügt: 2027 stünde dort „heute" über
+                          „vorbei". Für sie steht deshalb ihr Stichtag; die
+                          übrigen tragen ihre eigene Bezeichnung, die absichtlich
+                          unscharf ist, wo die Richtlinie keinen Tag nennt
+                          („Anfang 2027"). */}
+                      <span style={{ ...S.strong, display: "block" }}>
+                        {stufe.bezeichnung === "heute" ? formatFullDate(stufe.abIso) : stufe.bezeichnung}
+                      </span>
+                      <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
+                        {jetzt ? "gilt jetzt" : vorbei ? "vorbei" : stufe.aenderung}
+                      </span>
+                    </td>
+                    <td style={{ ...S.tdNum, ...rand, ...blass, color: jetzt ? v("--color-positive") : v("--color-text-primary"), fontWeight: jetzt ? 700 : undefined }}>
+                      {pct(stufe.grundfoerderung)}
+                      {mitEuBonus ? (
+                        <span style={{ display: "block", fontFamily: v("--font-text"), fontSize: v("--font-size-caption"), color: v("--color-text-muted"), whiteSpace: "normal" }}>
+                          + {pct(BEG_WERTSCHOEPFUNGS_BONUS.satz)} bei EU-Ursprung
+                        </span>
+                      ) : null}
+                    </td>
+                    <td style={{ ...S.tdNum, ...rand, ...blass }}>
+                      {stufe.klimaBonus > 0 ? pct(stufe.klimaBonus) : "—"}
+                    </td>
+                    <td style={{ ...S.tdNum, ...rand, ...blass }}>{eur(stufe.maxCap)}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        <p style={{ ...S.p, fontSize: v("--font-size-small") }}>
+          Der Klima-Bonus setzt weiterhin Selbstnutzung und eine funktionierende alte Heizung
+          voraus, der Einkommens-Bonus kommt gegebenenfalls oben drauf — die Tabelle zeigt die
+          Stufen, nicht deine Bedingungen. Der Höchstbetrag gilt der ersten Wohnung. Quelle:
+          Förderrichtlinie BEG Einzelmaßnahmen, Fundstelle je Stufe im Code hinterlegt.
+        </p>
+
         {/* ── FAQ (visible accordion + FAQPage JSON-LD from the same data) ── */}
-        <Faq items={faqItems} title="Häufige Fragen zur Wärmepumpen-Förderung" currentPath="/ratgeber/waermepumpe-foerderung-2026" />
+        <Faq items={faqItems} title="Häufige Fragen zur Wärmepumpen-Förderung" currentPath="/ratgeber/waermepumpe-foerderung" />
 
         <RelatedLinks
-          currentPath="/ratgeber/waermepumpe-foerderung-2026"
+          currentPath="/ratgeber/waermepumpe-foerderung"
           links={[
             { href: "/waermepumpe-rechner", label: "Wärmepumpen-Rechner", desc: "Stromverbrauch, Kosten und Ersparnis gegenüber Gas oder Öl — mit eingerechneter Förderung." },
             { href: "/ratgeber/gasheizung-oder-waermepumpe", label: "Gasheizung oder Wärmepumpe?", desc: "Was sich nach dem Gebäudemodernisierungsgesetz noch rechnet — mit Grüngas-Kostenpfad." },
