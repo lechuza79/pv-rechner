@@ -29,7 +29,7 @@
 // längst eingestellten Programmen werden deshalb NICHT gelöscht.
 
 import type { FundingProgram } from "./funding-programs";
-import { FUNDING_STATUS_LABEL } from "./funding-programs";
+import { FUNDING_STATUS_LABEL, bedingungText } from "./funding-programs";
 import { supabase } from "./supabase-server";
 import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
 
@@ -152,7 +152,7 @@ type Ableitung = { feld: HistorieFeld; bedeutung: Bedeutung; lies: (p: FundingPr
 const ABLEITUNGEN: Ableitung[] = [
   { feld: "status", bedeutung: "inhalt", lies: (p) => FUNDING_STATUS_LABEL[p.status] ?? p.status },
   { feld: "rates", bedeutung: "inhalt", lies: (p) => ausRaten(p.rates) },
-  { feld: "conditions", bedeutung: "inhalt", lies: (p) => ausListe(p.conditions) },
+  { feld: "conditions", bedeutung: "inhalt", lies: (p) => ausListe(p.conditions.map(bedingungText)) },
   { feld: "coveredCosts", bedeutung: "inhalt", lies: (p) => p.coveredCosts || null },
   { feld: "maxFoerderung", bedeutung: "inhalt", lies: (p) => p.maxFoerderung || null },
   { feld: "eligibility", bedeutung: "inhalt", lies: (p) => ausListe(p.eligibility) },

@@ -71,7 +71,23 @@ const GV_FIELDS = [...WP_FIELDS, ...EA_FIELDS, ...KLIMA_FIELDS, ...DACH_FIELDS];
 const KLIMA_DEVICE_LABEL = (CFG.devices.find(d => d.id === CFG.defaultDeviceId)?.label ?? "Split-Anlage").split(" (")[0];
 
 // ─── Main ────────────────────────────────────────────────────────────────────
-export default function PVRechner({ initialParams }: { initialParams?: Record<string, string | string[] | undefined> }) {
+export default function PVRechner({
+  initialParams,
+  sharePfad,
+}: {
+  initialParams?: Record<string, string | string[] | undefined>;
+  /**
+   * Pfad, auf den der Teilen-Link zeigt — nötig, wenn der Rechner NICHT unter
+   * seiner eigenen Adresse läuft (26.08.2026).
+   *
+   * Er wird auch in einem Fenster auf den Förder-Stadtseiten geöffnet. Ohne
+   * diesen Wert baute er den Link aus der Adresse der Seite, auf der er gerade
+   * steht — der Empfänger landete dann auf einer Stadtseite mit einer Query,
+   * die dort niemand liest, und sähe die geteilte Rechnung nie. Ein Teilen-Link,
+   * der ins Leere führt, ist schlimmer als kein Teilen-Knopf.
+   */
+  sharePfad?: string;
+}) {
   // 'er' (Ertrag) und 'plz' sind reine Vorbefüll-Hinweise (z.B. von einer
   // regionalen Landingpage): sie seeden State, dürfen aber NICHT direkt ins
   // Ergebnis springen — das tut nur eine echte Konfiguration (a/s/p/n/…).
@@ -678,7 +694,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   ];
   const stepBeantwortet = step >= STEPS.length || (stepAnforderung[step]?.erfuellt ?? true);
   const stepHinweis = stepAnforderung[step]?.hinweis ?? "";
-  const restart = () => { setStep(0); setOKosten(null); setOEv(null); setOVerbrauch(null); setDachartIdx(null); setAusrichtung(null); if (typeof window !== "undefined") window.history.replaceState(null, "", window.location.pathname); };
+  const restart = () => { setStep(0); setOKosten(null); setOEv(null); setOVerbrauch(null); setDachartIdx(null); setAusrichtung(null); // Die Adresse nur aufräumen, wenn der Rechner unter seiner EIGENEN läuft.
+    // Im Fenster einer Stadtseite gehört sie dieser Seite; ein Neustart des
+    // Rechners darf ihr nicht die Query wegnehmen.
+    if (typeof window !== "undefined" && !sharePfad) window.history.replaceState(null, "", window.location.pathname); };
 
   const buildShareUrl = () => {
     const p = new URLSearchParams();
@@ -722,7 +741,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       p.set("flow", "emp");
       if (htIdx >= 0) p.set("ht", String(htIdx));
     }
-    return `${window.location.origin}${window.location.pathname}?${p.toString()}`;
+    return `${window.location.origin}${sharePfad ?? window.location.pathname}?${p.toString()}`;
   };
 
   const shareText = `Meine PV-Anlage (${kwp} kWp) amortisiert sich in ${be ? be.i : ">25"} Jahren.`;
