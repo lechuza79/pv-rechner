@@ -61,7 +61,7 @@ function kennwerte(g: WpGeraet): { label: string; wert: string; mono: boolean }[
   if (g.kaeltemittel) {
     w.push({
       label: "Kältemittel",
-      wert: g.kaeltemittel === "r290" ? "Propan" : "R32",
+      wert: g.kaeltemittel === "r290" ? "Propan (natürlich)" : "R32 (fluoriert)",
       mono: false,
     });
   }
@@ -101,6 +101,28 @@ function passungsSatz(befunde: Befund[], fall: Props): string | null {
  * kommentarlos zu zeigen wäre die andere Übertreibung. Also steht die Lücke da,
  * wo sie zählt — direkt an der Kachel, für den, der 55 °C braucht.
  */
+/**
+ * Der Stichtag, ab dem das Kältemittel über die Förderfähigkeit entscheidet.
+ *
+ * Wortlaut der Technischen Mindestanforderungen zur Förderrichtlinie, Nr. 3.4.4
+ * (`docs/quellen/BEG-EM-Richtlinie_2026-07-17.pdf`, am 26.08.2026 im Volltext
+ * gelesen): „Empfohlen wird die Installation von Wärmepumpen mit natürlichen
+ * Kältemitteln. Ab 1. Januar 2028 werden nur noch Wärmepumpen mit natürlichen
+ * Kältemitteln gefördert." Als natürlich anerkannt sind dort R290, R600a,
+ * R1270, R717, R718 und R744 — R32 gehört nicht dazu.
+ *
+ * Warum das an die Kachel gehört und nicht in einen Ratgeber: Es ist die eine
+ * Frage zur künftigen Förderung, die wir am einzelnen Gerät beantworten können.
+ * Der EU-Ursprungsbonus zum selben Zeitraum ist es nicht — woran er sich
+ * entscheidet, steht in einem Infoblatt, das nicht vorliegt, und aus dem
+ * Markennamen folgt er nicht.
+ *
+ * Der Satz sagt bewusst „ab 2028", nicht „nicht förderfähig": Heute gekauft
+ * bekommt auch ein R32-Gerät den vollen Zuschuss. Es ist eine Information für
+ * den, der später plant, keine Warnung vor dem Gerät.
+ */
+const KAELTEMITTEL_STICHTAG_JAHR = 2028;
+
 function unsicherheit(befunde: Befund[]): string | null {
   if (befunde.some((b) => b.art === "vorlauf-unbekannt")) {
     return "Vorlauftemperatur nicht angegeben — beim Fachbetrieb prüfen lassen";
@@ -261,6 +283,25 @@ function Karte({ e, rang, fall }: { e: Empfehlung; rang: number; fall: Props }) 
             <IconCheck size={13} />
           </span>
           <span>{satz}</span>
+        </div>
+      )}
+
+      {g.kaeltemittel === "r32" && (
+        <div
+          style={{
+            display: "flex",
+            gap: space.xs,
+            fontSize: 12,
+            lineHeight: 1.4,
+            color: v("--color-text-muted"),
+            marginBottom: space.sm,
+          }}
+        >
+          <span aria-hidden style={{ flex: "0 0 auto", marginTop: 1 }}>·</span>
+          <span>
+            Ab {KAELTEMITTEL_STICHTAG_JAHR} nicht mehr förderfähig — dann fördert die BEG nur
+            noch natürliche Kältemittel
+          </span>
         </div>
       )}
 
