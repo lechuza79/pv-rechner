@@ -16,6 +16,7 @@ import { v } from "../../../../lib/theme";
 import { calcBegSubsidy, calcInvestBrutto, calcHeatLoad } from "../../../../lib/heatpump";
 import {
   DEFAULT_HEATPUMP_CONFIG as HP,
+  BEG_FAHRPLAN,
   begStufeAm,
   begNaechsteStufe,
   BEG_WERTSCHOEPFUNGS_BONUS,
@@ -747,6 +748,94 @@ export default function WaermepumpeFoerderungPage() {
             einen Rechtsanspruch auf die Förderung gibt es nicht.
           </p>
         )}
+
+        {/* ── Die ganze Zeitleiste ────────────────────────────────────────────
+            Statt eines zweiten Artikels je Jahr. Der Betreiber fragte am
+            26.08.2026, ob die auslaufende Fassung archiviert gehört; gemessen
+            hat die Vorjahres-Anfrage 40 Aufrufe im Monat gegen 33.100 auf der
+            zeitlosen — eine Archivseite wäre kein Verkehr, sondern eine zweite
+            Fläche mit Förderbeträgen, also genau die Zweitfassung, die dieses
+            Projekt bei Zahlen überall verbietet. Dasselbe Muster nutzt schon die
+            Einspeisevergütung: eine Seite, historische Sätze als Tabelle.
+
+            Die Tabelle wächst von selbst ins Archiv hinein. Heute steht die
+            erste Zeile auf „gilt jetzt" und alles darunter ist Ausblick; ab
+            Januar 2027 wandert die Markierung, und die 2026er Zeile wird zu dem
+            Nachschlagewert, den jemand mit einer Zusage von damals sucht — er
+            hat 36 Monate Zeit und sieht so den ganzen Verlauf statt einer
+            eingefrorenen Momentaufnahme.
+
+            Kein Wert getippt: alles aus BEG_FAHRPLAN, mit Fundstelle je Stufe. */}
+        <h2 style={S.h2}>Alle Stufen auf einen Blick</h2>
+        <p style={S.p}>
+          Maßgeblich ist der Tag, an dem der Antrag eingeht — nicht der Einbau. Wer heute
+          beantragt, rechnet mit der markierten Zeile, auch wenn die Anlage erst nächstes
+          Jahr läuft.
+        </p>
+        <div style={{ ...S.card, padding: "6px 10px", overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                <th style={S.th}>Antrag ab</th>
+                <th style={S.thNum}>Grundförderung</th>
+                <th style={S.thNum}>Klima-Bonus</th>
+                <th style={S.thNum}>Höchstbetrag</th>
+              </tr>
+            </thead>
+            <tbody>
+              {BEG_FAHRPLAN.map((stufe, i) => {
+                const jetzt = stufe.abIso === STUFE.abIso;
+                const vorbei = stufe.abIso < STUFE.abIso;
+                const letzte = i === BEG_FAHRPLAN.length - 1;
+                // Ab dem Wertschöpfungs-Bonus ist „15 %" allein die halbe
+                // Auskunft: Für ein Gerät mit EU-Ursprung kommen 15 Punkte
+                // zurück, der Satz bleibt also derselbe. Eine Spalte, die nur
+                // die Kürzung zeigt, wäre dieselbe Zahl-ohne-Bedingung, die
+                // diesen Abschnitt schon einmal falsch gemacht hat.
+                const mitEuBonus = stufe.abIso >= BEG_WERTSCHOEPFUNGS_BONUS.abIso;
+                const rand = { borderBottom: letzte ? "none" : undefined };
+                const blass = vorbei ? { opacity: 0.55 } : undefined;
+                return (
+                  <tr key={stufe.abIso}>
+                    <td style={{ ...S.td, ...rand, ...blass }}>
+                      {/* Die erste Stufe heißt im Fahrplan „heute" — als
+                          Zeilenbeschriftung wäre das genau die Sorte Etikett,
+                          die mit der Zeit lügt: 2027 stünde dort „heute" über
+                          „vorbei". Für sie steht deshalb ihr Stichtag; die
+                          übrigen tragen ihre eigene Bezeichnung, die absichtlich
+                          unscharf ist, wo die Richtlinie keinen Tag nennt
+                          („Anfang 2027"). */}
+                      <span style={{ ...S.strong, display: "block" }}>
+                        {stufe.bezeichnung === "heute" ? formatFullDate(stufe.abIso) : stufe.bezeichnung}
+                      </span>
+                      <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
+                        {jetzt ? "gilt jetzt" : vorbei ? "vorbei" : stufe.aenderung}
+                      </span>
+                    </td>
+                    <td style={{ ...S.tdNum, ...rand, ...blass, color: jetzt ? v("--color-positive") : v("--color-text-primary"), fontWeight: jetzt ? 700 : undefined }}>
+                      {pct(stufe.grundfoerderung)}
+                      {mitEuBonus ? (
+                        <span style={{ display: "block", fontFamily: v("--font-text"), fontSize: v("--font-size-caption"), color: v("--color-text-muted"), whiteSpace: "normal" }}>
+                          + {pct(BEG_WERTSCHOEPFUNGS_BONUS.satz)} bei EU-Ursprung
+                        </span>
+                      ) : null}
+                    </td>
+                    <td style={{ ...S.tdNum, ...rand, ...blass }}>
+                      {stufe.klimaBonus > 0 ? pct(stufe.klimaBonus) : "—"}
+                    </td>
+                    <td style={{ ...S.tdNum, ...rand, ...blass }}>{eur(stufe.maxCap)}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        <p style={{ ...S.p, fontSize: v("--font-size-small") }}>
+          Der Klima-Bonus setzt weiterhin Selbstnutzung und eine funktionierende alte Heizung
+          voraus, der Einkommens-Bonus kommt gegebenenfalls oben drauf — die Tabelle zeigt die
+          Stufen, nicht deine Bedingungen. Der Höchstbetrag gilt der ersten Wohnung. Quelle:
+          Förderrichtlinie BEG Einzelmaßnahmen, Fundstelle je Stufe im Code hinterlegt.
+        </p>
 
         {/* ── FAQ (visible accordion + FAQPage JSON-LD from the same data) ── */}
         <Faq items={faqItems} title="Häufige Fragen zur Wärmepumpen-Förderung" currentPath="/ratgeber/waermepumpe-foerderung" />

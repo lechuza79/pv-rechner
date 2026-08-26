@@ -208,3 +208,46 @@ Texte, nicht zwei Zielgruppen.** Ein Unterschied in der Veröffentlichungsquote
 ist zwischen Schub 1 und 2 nicht als Wirkung der Auswahl lesbar. Innerhalb
 eines Schubs bleibt der Vergleich der beiden Ask-Varianten gültig — sie
 unterscheiden sich weiterhin um genau einen Absatz.
+
+---
+
+## Neue Sitzung: wo stehen wir?
+
+**Erster Befehl, immer:**
+
+```
+npm run kommunen:stand
+```
+
+Er sagt in einem Bildschirm, was verschickt ist, welche Charge offen wäre, was
+zurückkam und ob heute überhaupt gesendet werden darf. **Der Zustand liegt
+vollständig in der Datenbank, nicht in einer Sitzung** — eine neue Sitzung
+braucht deshalb keinen Kontext aus der vorigen, nur diesen Befehl.
+
+**Der Versand bleibt manuell.** Kein Zeitplan, kein Automatismus: Der
+Absende-Klick gehört einem Menschen (Projektregel). Eine automatisch verschickte
+Kaltakquise ist genau der Fall, in dem ein Fehler in der Auswahl niemandem
+auffällt, bis er bei zweihundert Rathäusern liegt. Was automatisch läuft, sind
+die SPERREN — Ferien, Wochentag, Tagesgrenze, DKIM —, und die greifen unabhängig
+davon, wer den Lauf startet.
+
+## Der Schub mail-he-rp-sl ist abgeschlossen
+
+79 Gemeinden in Hessen, Rheinland-Pfalz und dem Saarland, verschickt zwischen
+dem 20. und dem 26.08.2026 in sechs Chargen. Ein weiterer Schub bedeutet neue
+Bundesländer und eine neue Auswahl — das ist kein Routineversand, sondern
+Auswahl, Gegenlesen und Abnahme (Schritt 3 oben).
+
+## Was gemessen wird — und womit
+
+| Frage | Befehl |
+|---|---|
+| Wo stehen wir? | `npm run kommunen:stand` |
+| Was kam per Mail zurück? | `npm run kommunen:ruecklauf` (mit `--schreiben` nachtragen) |
+| Wer hat veröffentlicht? | `npm run kommunen:veroeffentlicht` (mit `--schreiben` nachtragen) |
+
+Die Veröffentlichung ist die eigentliche Messgröße, nicht die Antwortquote: Wer
+die Meldung übernimmt, schreibt uns dafür nicht. Gefragt wird über die
+Verweise auf unsere Domain, eine Anfrage für alle Gemeinden, rund drei Cent.
+Zwei Grenzen stehen im Kopf des Skripts — Verweis-Verzeichnisse hinken Tage bis
+Wochen nach, und eine Veröffentlichung ohne Link taucht gar nicht auf.

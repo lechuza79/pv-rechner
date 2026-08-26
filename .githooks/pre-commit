@@ -12,6 +12,12 @@
 #      calculation logic (PV economics, heat pump, chart utils)
 #      that tsc cannot see. ~5 seconds on this project; if it ever
 #      gets too slow, scope it down to changed files.
+#
+# Checks 2 and 3 run behind a queue (see below). Measured 26.08.2026:
+# six concurrent type checks across parallel sessions took 29 minutes
+# for two minutes of work — they starve each other on eight cores and
+# one disk, and new ones keep arriving. Waiting costs nothing;
+# competing costs everything.
 
 set -euo pipefail
 
@@ -26,6 +32,74 @@ if [ -n "$ENV_LEAK" ]; then
   echo "  Remove with: git restore --staged <file> && add to .gitignore"
   exit 1
 fi
+
+# ─── Queue: only one expensive check at a time, repo-wide ─────────
+# The lock lives in the SHARED git directory, so every worktree of
+# this repo queues on the same lock while a different repo is
+# unaffected. `mkdir` is the atomic primitive — macOS has no flock.
+#
+# Three ways out, so the queue can never wedge a commit:
+#   · the holder's PID is gone      → take it over
+#   · the lock is older than STALE  → take it over
+#   · we waited longer than MAX     → run anyway, slowly
+# Running anyway is deliberate: a queue that blocks a commit
+# outright would be worse than the contention it prevents.
+LOCK_DIR="$(git rev-parse --git-common-dir)/sc-precommit.lock"
+LOCK_WAIT_MAX=900   # seconds we are willing to queue
+LOCK_STALE=1800     # seconds after which a lock counts as abandoned
+LOCK_HELD=0
+
+release_lock() {
+  [ "$LOCK_HELD" = "1" ] && rm -rf "$LOCK_DIR" 2>/dev/null || true
+}
+trap release_lock EXIT INT TERM
+
+lock_age() {
+  local started
+  started="$(cat "$LOCK_DIR/started" 2>/dev/null || echo 0)"
+  case "$started" in (*[!0-9]*|"") echo 0 ;; (*) echo $(( $(date +%s) - started )) ;; esac
+}
+
+acquire_lock() {
+  local waited=0 holder="" announced=0
+  while ! mkdir "$LOCK_DIR" 2>/dev/null; do
+    holder="$(cat "$LOCK_DIR/pid" 2>/dev/null || true)"
+
+    # Holder died without cleaning up (kill -9, crash, closed session).
+    if [ -n "$holder" ] && ! kill -0 "$holder" 2>/dev/null; then
+      echo "  pre-commit: taking over an abandoned lock (PID $holder is gone)"
+      rm -rf "$LOCK_DIR" 2>/dev/null || true
+      continue
+    fi
+
+    # No PID file, or a lock that outlived any plausible run.
+    if [ -z "$holder" ] || [ "$(lock_age)" -gt "$LOCK_STALE" ]; then
+      echo "  pre-commit: taking over a stale lock"
+      rm -rf "$LOCK_DIR" 2>/dev/null || true
+      continue
+    fi
+
+    if [ "$waited" -ge "$LOCK_WAIT_MAX" ]; then
+      echo "  pre-commit: waited ${waited}s, running anyway (the other check is slow, not stuck)"
+      return 1
+    fi
+
+    if [ "$announced" = "0" ]; then
+      echo "→ pre-commit: another session is checking (PID $holder) — queueing instead of competing"
+      announced=1
+    fi
+    sleep 5
+    waited=$(( waited + 5 ))
+  done
+
+  echo $$ > "$LOCK_DIR/pid"
+  date +%s > "$LOCK_DIR/started"
+  LOCK_HELD=1
+  [ "$waited" -gt 0 ] && echo "  pre-commit: waited ${waited}s, our turn"
+  return 0
+}
+
+acquire_lock || true
 
 # ─── 2. TypeScript check on the working tree ──────────────────────
 # We type-check the working tree (not the index) because tsc has no
@@ -47,5 +121,8 @@ if ! npm exec --no -- vitest run --reporter=dot; then
   echo "✖ pre-commit: tests failed. Fix the failing tests before committing."
   exit 1
 fi
+
+release_lock
+LOCK_HELD=0
 
 echo "✓ pre-commit: ok"
