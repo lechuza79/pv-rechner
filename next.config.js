@@ -212,6 +212,7 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/kreis-viersen", destination: "/photovoltaik-foerderung/nordrhein-westfalen/kreis-viersen", permanent: true },
       { source: "/photovoltaik-foerderung/kreis-bergstrasse", destination: "/photovoltaik-foerderung/hessen/kreis-bergstrasse", permanent: true },
       { source: "/photovoltaik-foerderung/mayen-koblenz", destination: "/photovoltaik-foerderung/rheinland-pfalz/mayen-koblenz", permanent: true },
+      { source: "/photovoltaik-foerderung/nidda", destination: "/photovoltaik-foerderung/hessen/nidda", permanent: true },
       // Flache Alt-URLs der Gemeindeseiten (19.08.2026). Die Seiten sind neu und
       // hatten nie eine flache Adresse — der Eintrag hält nur die Regel ganz,
       // dass JEDE Stadtseite unter beiden Formen erreichbar ist, statt eine

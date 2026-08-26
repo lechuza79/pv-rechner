@@ -321,7 +321,18 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // und ein Quotengesetz, das sie tragen würde, existiert nicht. Eine Preisreihe
   // gibt es weiterhin nicht: Die Treffer sind HVO-Kraftstoff (Diesel) und
   // Portalaufschläge; Destatis führt Mineralölerzeugnisse ohne Bio-Heizöl-Zeile.
-  geprueftRechtIso: "2026-08-25",
+  //
+  // 26.08.2026 nachgesehen, unverändert — diesmal am GESETZESTEXT statt am
+  // Infoportal, weil das Portal die Stufen gar nicht ausschreibt und ein Lauf,
+  // der sie dort sucht, nichts bestätigt: § 43 Abs. 1 nennt „ab 1. Januar 2029
+  // mindestens 10 %", 2030: 15 %, 2035: 30 %, 2040: 60 %, für Gas, Heizöl UND
+  // Flüssiggas gleichermaßen — zellgleich mit `quoteStops`. § 42a ist unverändert
+  // die reine Vorlagepflicht bis zum 01.12.2026 mit vollständiger Umstellung ab
+  // 2045 und NENNT SELBST KEINEN PROZENTSATZ; das kursierende „2028 mit 1 %"
+  // steht in keinem Gesetz. Ein Quotengesetz gibt es weiterhin nicht.
+  //
+  // Bioheizöl, siebte Gegensuche, unverändert ohne Preisreihe.
+  geprueftRechtIso: "2026-08-26",
   reviewBy: "2027-07-25",
 };
 
