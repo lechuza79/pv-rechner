@@ -93,9 +93,12 @@ export function StoryTeaser({ stories }: { stories: SocialPost[] }) {
                 zweite Überschrift darüber, sondern nur der Anriss darunter.
                 Beides wäre dieselbe Zeile zweimal. */}
             <SocialKarte bild={s.bild!} skala={240 / 1080} stufe="teaser" />
+            {/* Die Aussage steht hier als Text, nicht im Bild darüber. Ein
+                Anriss des ersten Absatzes stand hier zuerst und wiederholte
+                sinngemäß dasselbe. */}
             <div style={{ padding: pad("md", "md"), marginTop: "auto" }}>
-              <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.45 }}>
-                {s.onsite!.absaetze[0].slice(0, 90)}…
+              <div style={{ fontSize: v("--font-size-body"), fontWeight: 600, lineHeight: 1.35 }}>
+                {s.bild!.aussage}
               </div>
               <div style={{ fontSize: v("--font-size-small"), color: v("--color-accent"), marginTop: space.xs }}>
                 Ansehen

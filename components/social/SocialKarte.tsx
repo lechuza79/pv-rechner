@@ -90,7 +90,11 @@ export function SocialKarte({
       }}
     >
       {/* Die Aussage, nicht die Achsenbeschriftung. Ein Bild ohne Aussage ist
-          im Feed eine Zahlentafel, die niemand entziffert. */}
+          im Feed eine Zahlentafel, die niemand entziffert.
+          Im Teaser ist es umgekehrt: Dort steht die Aussage als Text unter der
+          Karte, und das Bild zeigt nur die Zahlen. Zweimal derselbe Satz auf
+          240 Pixeln wäre die Hälfte der Fläche für nichts. */}
+      {!klein && (
       <div
         style={{
           fontSize: px(g.aussage),
@@ -102,6 +106,7 @@ export function SocialKarte({
       >
         {bild.aussage}
       </div>
+      )}
       {!klein && (
         <div style={{ fontSize: px(g.untertitel), color: v("--color-text-muted"), marginBottom: px(64) }}>
           {bild.gemessen}
