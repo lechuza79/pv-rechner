@@ -18,6 +18,7 @@ const TOKEN_URL = "https://www.linkedin.com/oauth/v2/accessToken";
 const USERINFO_URL = "https://api.linkedin.com/v2/userinfo";
 const POSTS_URL = "https://api.linkedin.com/rest/posts";
 const SOCIAL_ACTIONS_URL = "https://api.linkedin.com/rest/socialActions";
+const IMAGES_URL = "https://api.linkedin.com/rest/images";
 
 /**
  * Kennung unserer Unternehmensseite, für die Erwähnung im Beitragstext.
@@ -153,13 +154,61 @@ export async function kommentiere(postUrn: string, text: string): Promise<void> 
 }
 
 /**
+ * Lädt ein Bild hoch und gibt seine Kennung zurück.
+ *
+ * Zwei Schritte, so schreibt es die Schnittstelle vor: erst eine Adresse zum
+ * Hochladen anfordern, dann die Bytes dorthin schicken. Die Kennung entsteht
+ * schon im ersten Schritt und wird danach im Beitrag genannt.
+ */
+export async function ladeBildHoch(png: ArrayBuffer): Promise<string> {
+  const konto = await ladeKonto("linkedin");
+  if (!konto) throw new Error("Kein LinkedIn-Konto hinterlegt.");
+  const kopf = {
+    Authorization: `Bearer ${konto.access_token}`,
+    "X-Restli-Protocol-Version": "2.0.0",
+    "LinkedIn-Version": API_VERSION,
+  };
+
+  const init = await fetch(`${IMAGES_URL}?action=initializeUpload`, {
+    method: "POST",
+    headers: { ...kopf, "Content-Type": "application/json" },
+    body: JSON.stringify({ initializeUploadRequest: { owner: konto.konto_id } }),
+  });
+  if (!init.ok) {
+    throw new Error(`Bild-Upload konnte nicht begonnen werden (${init.status}): ${await init.text()}`);
+  }
+  const { value } = (await init.json()) as { value: { uploadUrl: string; image: string } };
+
+  const put = await fetch(value.uploadUrl, {
+    method: "PUT",
+    headers: { Authorization: `Bearer ${konto.access_token}`, "Content-Type": "image/png" },
+    body: png,
+  });
+  if (!put.ok) {
+    throw new Error(`Bild-Upload fehlgeschlagen (${put.status}): ${await put.text()}`);
+  }
+  return value.image;
+}
+
+/**
  * Veröffentlicht einen Textbeitrag unter dem hinterlegten Konto.
  *
  * Bilder folgen als eigener Schritt (sie brauchen erst einen Upload und dann
  * eine Bild-Kennung im Beitrag) — ein Textbeitrag ist der Beweis, dass die
  * Kette Login → Schlüssel → Veröffentlichung steht.
  */
-export async function posteText(text: string, ersterKommentar?: string): Promise<PostErgebnis> {
+export async function posteText(
+  text: string,
+  opts: {
+    ersterKommentar?: string;
+    /** Bild-Kennung aus ladeBildHoch. Ohne sie bleibt es ein Textbeitrag. */
+    bildUrn?: string;
+    /** Kurze Beschreibung des Bildes. Pflicht, sobald ein Bild dabei ist:
+     *  Ein Diagramm ohne Alternativtext ist für Menschen mit Screenreader
+     *  eine leere Fläche — und für sie ist die Zahl genauso interessant. */
+    bildAlt?: string;
+  } = {},
+): Promise<PostErgebnis> {
   const konto = await ladeKonto("linkedin");
   if (!konto) throw new Error("Kein LinkedIn-Konto hinterlegt — erst anmelden.");
   if (new Date(konto.gueltig_bis).getTime() < Date.now()) {
@@ -181,6 +230,9 @@ export async function posteText(text: string, ersterKommentar?: string): Promise
       distribution: { feedDistribution: "MAIN_FEED", targetEntities: [], thirdPartyDistributionChannels: [] },
       lifecycleState: "PUBLISHED",
       isReshareDisabledByAuthor: false,
+      ...(opts.bildUrn
+        ? { content: { media: { id: opts.bildUrn, altText: opts.bildAlt ?? "" } } }
+        : {}),
     }),
   });
   if (!res.ok) {
@@ -193,8 +245,8 @@ export async function posteText(text: string, ersterKommentar?: string): Promise
   // veröffentlicht, und ein Fehlschlag hier heißt „Link fehlt", nicht „Post
   // fehlgeschlagen". Ein Wurf würde den Aufrufer glauben lassen, es sei nichts
   // rausgegangen — und ein zweiter Versuch veröffentlichte dann doppelt.
-  if (ersterKommentar && id) {
-    await kommentiere(id, ersterKommentar).catch((e) => {
+  if (opts.ersterKommentar && id) {
+    await kommentiere(id, opts.ersterKommentar).catch((e) => {
       console.error("Erster Kommentar konnte nicht gesetzt werden:", (e as Error).message);
     });
   }

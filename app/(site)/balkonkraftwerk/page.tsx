@@ -13,9 +13,6 @@ import { DEFAULT_BALKON_CONFIG as CFG, BALKON_RECHT } from "../../../lib/balkon-
 import { calcBalkon } from "../../../lib/balkon";
 import { PERSONEN } from "../../../lib/constants";
 import { ANMELDE_FRIST_MONATE } from "../../../lib/balkon-anmeldung";
-import { StoryTeaser } from "../../../components/social/StoryTeaser";
-import { socialKennzahlen } from "../../../lib/social-kennzahlen";
-import { baueAllePosts } from "../../../lib/social-posts";
 
 // Themen-Einstieg für den Balkon-Cluster.
 //
@@ -164,12 +161,6 @@ const SCHRITTE: { titel: string; text: string; link?: string; href?: string }[] 
 export const revalidate = 3600;
 
 export default async function BalkonkraftwerkHub() {
-  // Die Geschichte fällt aus, wenn die Zahlen gerade nicht kommen — der Rest
-  // der Seite steht ohne sie genauso. Ein Block, der eine Seite mitreißt, wäre
-  // der schlechtere Tausch.
-  const stories = await socialKennzahlen()
-    .then(baueAllePosts)
-    .catch(() => []);
 
   // Referenzfall wie im Rechner-FAQ: Zwei-Personen-Haushalt, Standard-Set,
   // senkrecht am Südbalkon, deutscher Durchschnittsertrag. Live gerechnet —
@@ -331,12 +322,6 @@ export default async function BalkonkraftwerkHub() {
           Tag, an dem die Module das erste Mal Strom liefern — nicht der Kauf. Die Anmeldung
           ist kostenlos und in wenigen Minuten erledigt.
         </p>
-
-        {/* Datengeschichten als Teaser-Reihe, keine eigenen Seiten: Ein Beitrag
-            verlinkt auf …#anker, dann öffnet sich die Geschichte beim Ankommen.
-            Die Texte stehen im ausgelieferten HTML und sind nur verborgen —
-            nachgeladen sähe sie der Besucher, Google nie. */}
-        <StoryTeaser stories={stories} />
 
         <RelatedLinks
           title="Weiter"
