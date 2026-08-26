@@ -299,6 +299,12 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "kreis-viersen", name: "Kreis Viersen", ags: "05166", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970, fundingId: "viersen-klimaschutz" },
   { slug: "kreis-bergstrasse", name: "Kreis Bergstraße", ags: "06431", bundesland: "Hessen", yieldKwhKwp: 1030, fundingId: "bergstrasse-speicher" },
   { slug: "mayen-koblenz", name: "Landkreis Mayen-Koblenz", ags: "07137", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1010, fundingId: "mayen-koblenz-speicher" },
+  // Nidda kam am 26.08.2026 über den Rücklauf einer Outreach-Mail herein: Die
+  // Klimaschutz-Beauftragte der Stadt hat uns ihre Förderseite selbst geschickt.
+  // Achtstelliger Schlüssel mit Kreis, weil kreisangehörig — 06440016 ist Nidda,
+  // 06440017 wäre Niddatal, und genau dafür gibt es die Schlüsselprüfung.
+  // Ertrag am 26.08.2026 an der repräsentativen Lage gemessen (50,43 / 9,01).
+  { slug: "nidda", name: "Nidda", ags: "06440016", kreis: "Wetteraukreis", bundesland: "Hessen", yieldKwhKwp: 1056 },
 
   // ── Kreisangehörige Gemeinden mit eigenem Förderprogramm (19.08.2026) ──────
   //
