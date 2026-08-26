@@ -251,6 +251,82 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
       },
     ],
   },
+
+  "nidda-solar": {
+    pruefungen: [
+      {
+        ausBedingung: "Die Anlage muss mindestens 4 kWp leisten — kleinere Dachanlagen werden nicht gefördert",
+        pruefung: { art: "anlage-groesse", minKwp: 4 },
+      },
+      {
+        ausBedingung: "Der Antrag wird erst NACH Inbetriebnahme gestellt, und zwar binnen vier Wochen",
+        // Die Frist steht bewusst NICHT als `fristMonate` da. Die Richtlinie
+        // sagt „binnen vier Wochen"; ein Monat hat 28 bis 31 Tage, und die
+        // Rundung ginge in die gefährliche Richtung — wer sich auf einen Monat
+        // verlässt, verpasst die Frist um bis zu drei Tage. Lieber der bloße
+        // Zeitpunkt hier und die vier Wochen im Text daneben.
+        pruefung: { art: "antrag-zeitpunkt", zeitpunkt: "nach-inbetriebnahme" },
+      },
+      {
+        ausBedingung: "Antrag und Nachweise nur digital über das Online-Formular der Stadt",
+        pruefung: { art: "antragsweg", weg: "online" },
+      },
+      {
+        ausBedingung: "Haltedauer zehn Jahre, sonst wird der Zuschuss zurückgefordert",
+        pruefung: { art: "bindung", jahre: 10 },
+      },
+      {
+        ausBedingung: "Nicht gefördert: Eigenleistung, gebrauchte Teile, Anlagen aus einer gesetzlichen Pflicht (etwa nach dem Gebäudeenergiegesetz)",
+        pruefung: { art: "ausfuehrung", eigenleistungAusgeschlossen: true },
+      },
+    ],
+    durchRegion: [],
+    hinweise: [
+      {
+        ausBedingung: "Die Anlage muss im Marktstammdatenregister registriert sein",
+        warum:
+          "Gilt ohnehin für jede Anlage (§ 5 MaStRV) und ist keine zusätzliche Hürde " +
+          "dieses Programms — die Stadt macht die Auszahlung nur ausdrücklich davon " +
+          "abhängig. Unser Anmelde-Ratgeber führt durch den Vorgang.",
+      },
+      {
+        ausBedingung: "Kein Ersatzneukauf und keine Erweiterung einer bestehenden Anlage",
+        warum:
+          "Der Rechner rechnet eine Neuanlage; ob jemand in Wahrheit erweitert oder " +
+          "ersetzt, steht in keiner Eingabe. Wer eine bestehende Anlage aufstockt, " +
+          "muss es selbst wissen.",
+      },
+      {
+        ausBedingung: "Je Wohngebäude eine Anlage im Förderzeitraum; Anlage und Speicher zusammen zählen als eine",
+        warum:
+          "Setzt voraus zu wissen, ob für dieses Gebäude im laufenden Jahr schon " +
+          "einmal gefördert wurde — eine Auskunft, die nur die Stadt hat.",
+      },
+      {
+        ausBedingung: "Mini-PV: höchstens zwei Module je Haushalt, höchstens 800 W Einspeisung",
+        warum:
+          "Die 800 W sind seit 2024 ohnehin die gesetzliche Obergrenze für " +
+          "Steckersolar und damit im Balkon-Rechner der Normalfall. Die Modulzahl " +
+          "steht in keiner Prüfform, weil sie sonst nirgends vorkommt — ein eigenes " +
+          "Feld für einen einzigen Fall wäre Zeremonie.",
+      },
+      {
+        ausBedingung: "Freiwillige Leistung ohne Rechtsanspruch, nur solange Mittel vorhanden sind",
+        warum:
+          "Gilt für praktisch jedes kommunale Programm und ist nicht aus Eingaben " +
+          "prüfbar. Dass der Topf leerlaufen kann, trägt bereits `capped: true`.",
+      },
+      {
+        ausBedingung: "Für die Dachanlage braucht es Wohneigentum in Nidda; beim Balkonkraftwerk genügt der Hauptwohnsitz, Mieter sind dort ausdrücklich dabei",
+        warum:
+          "Die Antragsberechtigung ist hier JE TECHNIK verschieden, und die Prüfform " +
+          "`antragsteller` gilt dem ganzen Programm. Sie hier zu setzen hieße, eine " +
+          "der beiden Hälften falsch darzustellen — entweder verlöre der Mieter sein " +
+          "Balkonkraftwerk oder der Rechner böte ihm die Dachförderung an. Bis das " +
+          "Modell eine Technik-Dimension bei den Bedingungen kennt, bleibt es ein Satz.",
+      },
+    ],
+  },
 };
 
 // ── Ableitungen für den Flow ─────────────────────────────────────────────────

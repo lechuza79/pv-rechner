@@ -11,6 +11,7 @@ import { waermeAusEndenergie, OEL_KWH_PRO_LITER } from "../../../lib/heat-consum
 import { verbrauchSpecKwh } from "../../../lib/heatpump-core";
 import { calcHeatPump, calcHeatPumpScenarios, heatPumpScenarioAdj, estimatePvCoverageOfWp, type HeatPumpInputs, type HeatPumpResult } from "../../../lib/heatpump";
 import { DEFAULT_HEATPUMP_CONFIG } from "../../../lib/heatpump-config";
+import { BEG_ANTRAG_KURZ, BEG_ANTRAG_HREF } from "../../../lib/beg-antrag";
 import { greenGasApplies } from "../../../lib/fossil-reference";
 import { gasMixSeries, heatCostComparisonSeries } from "../../../lib/greengas";
 import { bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "../../../lib/greengas-config";
@@ -892,6 +893,16 @@ export default function Waermepumpe({
                 {oInvest !== null && (
                   <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 6 }}>Investition manuell überschrieben — Förderung wirkt erst wieder nach Zurücksetzen.</div>
                 )}
+                {/* Die Bedingung gehört an den Betrag, nicht in den Rechtstext am
+                    Seitenende: Eine Zahl ohne diesen Satz sagt, wie viel es gibt,
+                    und verschweigt das Einzige, was sie kosten kann. Wortlaut aus
+                    lib/beg-antrag.ts — derselbe Satz steht im Förder-Check. */}
+                <div style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginTop: 10, paddingTop: 8, borderTop: `1px solid ${v('--color-border')}` }}>
+                  {BEG_ANTRAG_KURZ}{" "}
+                  <a href={BEG_ANTRAG_HREF} style={{ color: v('--color-accent'), fontWeight: 600, textDecoration: "none" }}>
+                    Die Reihenfolge Schritt für Schritt
+                  </a>
+                </div>
               </div>
             )}
 
@@ -1202,7 +1213,7 @@ export default function Waermepumpe({
                 </div>
                 {inputs.situation === "bestand" && result.beg.amount > 0 && (
                   <div style={{ fontSize: 11, color: v('--color-text-muted'), paddingTop: 8, lineHeight: 1.6 }}>
-                    Voreingestellt ist der Regelfall: selbstnutzender Eigentümer, der eine mindestens 20 Jahre alte Gasheizung ersetzt (Grundförderung + Klima-Geschwindigkeits-Bonus). Selbstnutzung und alte Heizung kannst du oben umstellen; der Einkommens-Bonus hängt von deinem Haushaltseinkommen ab und ist standardmäßig nicht eingerechnet. Die Förderung muss vor der Beauftragung bei der KfW beantragt werden — ob die Boni bei dir greifen, hängt von deiner individuellen Situation ab.
+                    Voreingestellt ist der Regelfall: selbstnutzender Eigentümer, der eine mindestens 20 Jahre alte Gasheizung ersetzt (Grundförderung + Klima-Geschwindigkeits-Bonus). Selbstnutzung und alte Heizung kannst du oben umstellen; der Einkommens-Bonus hängt von deinem Haushaltseinkommen ab und ist standardmäßig nicht eingerechnet. Ob die Boni bei dir greifen, hängt von deiner individuellen Situation ab. Wann der Antrag gestellt sein muss, steht oben am Förderbetrag — dort in der geprüften Fassung, statt hier ein zweites Mal.
                   </div>
                 )}
               </div>
