@@ -279,6 +279,20 @@ describe("BEG-Antragsreihenfolge — eine Quelle, kein zweites Tippen", () => {
     }
   });
 
+  it("die Zuständigkeit im Glossar folgt dem VORGANG, nicht der Gattung „Heizung“", () => {
+    // Gemessener Fehlgriff (26.08.2026): „bei der Heizung die Zusage der KfW"
+    // war falsch. Nach Richtlinie Nr. 9.1 liegen ZWEI Heizungs-Sachen beim BAFA
+    // — das Gebäudenetz (Nr. 5.3 g) und die Heizungsoptimierung (Nr. 5.4), und
+    // zu letzterer gehört ausdrücklich „im Fall einer Wärmepumpe auch die
+    // Optimierung der Wärmepumpe". Also das Thema dieser Seite selbst.
+    // Nur der Heizungs-TAUSCH (Einbau nach 5.3 a–f/j, Netzanschluss 5.3 h/i)
+    // liegt ausnahmslos bei der KfW.
+    const src = lies("lib/glossary.ts");
+    expect(src).not.toMatch(/bei der Heizung die Zusage der KfW/);
+    expect(src).toMatch(/beim Heizungstausch die Zusage der KfW/);
+    expect(src).toMatch(/Heizungsoptimierung der Bescheid des BAFA/);
+  });
+
   it("der Anker-Link zeigt auf den Ratgeber und trägt den Anker", () => {
     // Verweisende Seiten (Rechner, später die Geräteempfehlung) importieren
     // diesen Pfad. Ein abgetippter Anker bricht stumm.

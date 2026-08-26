@@ -215,8 +215,9 @@ export const BEG_KEINE_AUFSTOCKUNG =
  *
  * Der adversariale Prüfer des Councils vom 25.08.2026 hat beide Einschränkungen
  * gefunden, und sie betreffen dieselbe Gruppe: In Wohnungseigentümergemeinschaften
- * und Mehrfamilienhäusern gibt es neben dem gemeinschaftlichen Basisantrag einen
- * eigenen Zusatzantrag für die persönlichen Boni — damit sind es mehr als sechs
+ * und Mehrfamilienhäusern kann neben dem gemeinschaftlichen Basisantrag ein
+ * eigener Zusatzantrag für die persönlichen Boni stehen — er ist eine Möglichkeit
+ * für selbstnutzende Eigentümer, keine Stufe des Verfahrens; damit sind es mehr als sechs
  * Schritte, und er hat zwei eigene Fristen: gestellt werden muss er spätestens
  * sechs Monate nach Zusage des Basisantrags und vor dessen Nachweiseinreichung
  * (Merkblatt S. 7), seine eigenen Nachweise spätestens sechs Monate nach dem

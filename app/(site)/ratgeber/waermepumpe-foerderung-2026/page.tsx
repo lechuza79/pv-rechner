@@ -529,9 +529,9 @@ export default function WaermepumpeFoerderungPage() {
           </strong>{" "}
           — wer erst danach einreicht, verliert den Anspruch auf die Auszahlung, obwohl
           der Zuschuss längst zugesagt war. Das ist der zweite Weg, auf dem das Geld
-          verschwindet, und der unauffälligere. Die erste Frist ist deswegen nicht
-          folgenlos: Die Förderrichtlinie schreibt die Einreichung dort vor. Nur der
-          Verfall hängt an der zweiten.
+          verschwindet, und der unauffälligere. Verbindlich ist die erste Frist trotzdem:
+          Die Förderrichtlinie schreibt die Einreichung dort vor. Ausdrücklich an die
+          zweite geknüpft ist nur der Verlust des Anspruchs.
         </p>
         <p style={S.p}>
           <strong style={S.strong}>Der dritte Weg ist der leiseste.</strong>{" "}
@@ -543,7 +543,7 @@ export default function WaermepumpeFoerderungPage() {
         <p style={{ ...S.p, fontSize: v("--font-size-small") }}>
           {BEG_ANTRAG_GELTUNGSBEREICH} Das beschreibt das Verfahren, wie die KfW es
           veröffentlicht, und ist keine Rechts- oder Förderberatung. Auf die Zusage
-          besteht kein Anspruch, und verbindlich ist sie allein.
+          besteht kein Anspruch — und sie allein ist verbindlich.
           Grundlage ist das KfW-Merkblatt 458, gültig ab {gueltigAb}, zusammen mit der
           BEG-EM-Förderrichtlinie; zuletzt geprüft am {verfahrenGeprueft}.
         </p>
