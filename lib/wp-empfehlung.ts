@@ -1,0 +1,181 @@
+// ─── Welches Gerät zu diesem Haus passt ───────────────────────────────────────
+//
+// Nimmt den gerechneten Fall aus dem Wärmepumpen-Rechner und sucht die Geräte
+// heraus, die dazu passen — mit den Gründen, warum sie passen oder eben nicht.
+//
+// Die Gründe sind hier BEFUNDE, keine fertigen Sätze. Die Formulierung gehört in
+// die Oberfläche, weil jeder Satz über Kältemittel, Förderfähigkeit oder
+// Installationspflichten eine belegpflichtige Aussage ist und getrennt geprüft
+// werden muss. Ein Rechenmodul, das Werbetexte erzeugt, vermischt beides.
+
+import type { WpGeraet } from "./wp-katalog";
+import { leistungAnzeigbar } from "./wp-katalog";
+
+/** Der Fall, wie ihn der Rechner ausgibt. */
+export interface WpFall {
+  /** Auslegungsleistung der Anlage in kW — NICHT die Norm-Heizlast des Gebäudes. */
+  auslegungKw: number;
+  /** Benötigte Vorlauftemperatur in °C (35 Fußboden, 45 getauscht, 55 alte Heizkörper). */
+  vorlaufC: number;
+  /** Wärmequelle, die der Nutzer gewählt hat. */
+  wpType: "lwwp" | "swwp";
+}
+
+export type Befund =
+  | { art: "leistung-passt"; abweichungProzent: number }
+  | { art: "leistung-knapp"; fehltKw: number }
+  | { art: "leistung-reichlich"; ueberKw: number }
+  | { art: "leistung-unsicher" }
+  | { art: "vorlauf-reicht"; geraetC: number; noetigC: number }
+  | { art: "vorlauf-knapp"; geraetC: number; noetigC: number }
+  | { art: "vorlauf-zu-niedrig"; geraetC: number; noetigC: number }
+  | { art: "vorlauf-unbekannt" }
+  | { art: "kaeltemittel-natuerlich" }
+  | { art: "kaeltemittel-fluoriert" }
+  | { art: "aufbau-monoblock" }
+  | { art: "aufbau-split" };
+
+export interface Empfehlung {
+  geraet: WpGeraet;
+  /** Warum es passt — und woran es hakt. */
+  befunde: Befund[];
+  /** Trägt das Gerät den Fall überhaupt? */
+  geeignet: boolean;
+}
+
+/**
+ * Wie weit die Geräteleistung von der Auslegung abweichen darf.
+ *
+ * **Die Untergrenze ist 0 — kein Gerät darf unter der Auslegungsleistung
+ * liegen.** Das ist strenger als fachlich nötig, und der Grund ist die
+ * Datenlage, nicht die Physik: Die Kilowattzahl im Händlerkatalog trägt keinen
+ * Betriebspunkt. Hersteller bewerben mal die Leistung bei +7 °C, mal bei −7 °C
+ * Außentemperatur — am selben Gerät liegen dazwischen bis zu Faktor zwei, und
+ * die Richtung ist nicht einmal einheitlich (bei Vaillant liegt der −7-°C-Wert
+ * über dem +7-°C-Wert, bei Dimplex darunter). Belegt am eigenen Bestand: Der
+ * Artikel „VWL 105/8.1 A … 10 kW" nennt im Datenblatt DESSELBEN Händlers
+ * 5,69 kW bei A7/W35.
+ *
+ * Ein Toleranzband nach unten würde diesen Fehler verstärken: Ein mit der
+ * +7-°C-Zahl beworbenes Gerät ist am Auslegungspunkt ohnehin schon 20–25 %
+ * schwächer, als der Katalog es führt. Es zusätzlich 10 % unter die Auslegung
+ * zu lassen hieße, genau die unterdimensionierte Anlage zu empfehlen, deren
+ * Heizstab-Betrieb der Rechner nicht abbildet.
+ *
+ * **Das ist eine Zwischenlösung, keine Antwort.** Die Antwort ist die amtliche
+ * Liste förderfähiger Wärmepumpen, die die Nennleistung getrennt für 35 und
+ * 55 °C führt und sich über die Artikelnummer mit dem Katalog verbinden lässt.
+ * Solange sie nicht angebunden ist, gilt: lieber ein etwas zu großes Gerät
+ * empfehlen als ein zu kleines.
+ */
+const LEISTUNG_UNTER = 0;
+const LEISTUNG_UEBER = 0.25;
+
+/** Wie viel Spielraum die Vorlauftemperatur haben soll, bevor sie „knapp“ heißt. */
+const VORLAUF_PUFFER_C = 5;
+
+/**
+ * Das Warmwasser braucht seine eigene Temperatur — unabhängig vom Heizsystem.
+ *
+ * Ohne diese Schwelle galt ein 35-°C-Gerät im Neubau mit Fußbodenheizung als
+ * geeignet. Das Haus wird damit warm, das Duschwasser nicht: Ein Speicher
+ * braucht rund 50 °C Ladetemperatur, und nach dem Wärmeübergang bleibt davon
+ * ohnehin weniger übrig. Der Bewohner merkt es nach dem Einbau.
+ *
+ * Eine gesetzliche 60-°C-Pflicht gibt es im Einfamilienhaus nicht — die
+ * Legionellen-Anforderung des DVGW-Arbeitsblatts W 551 greift erst bei
+ * Speichern über 400 l oder mehr als 3 l Rohrinhalt je Strang. 50 °C ist der
+ * übliche Auslegungswert, keine Rechtspflicht.
+ */
+const WARMWASSER_C = 50;
+
+function leistungsBefund(g: WpGeraet, fall: WpFall): Befund {
+  const abw = (g.leistungKw - fall.auslegungKw) / fall.auslegungKw;
+  if (abw < -LEISTUNG_UNTER) {
+    return { art: "leistung-knapp", fehltKw: Math.round((fall.auslegungKw - g.leistungKw) * 10) / 10 };
+  }
+  if (abw > LEISTUNG_UEBER) {
+    return { art: "leistung-reichlich", ueberKw: Math.round((g.leistungKw - fall.auslegungKw) * 10) / 10 };
+  }
+  // Eine aus der Typenbezeichnung abgeleitete Leistung ist auf ganze kW
+  // gerundet. Sie taugt zum Filtern, aber „passt auf 3 % genau" wäre eine
+  // Genauigkeit, die die Zahl nicht hat.
+  if (!leistungAnzeigbar(g)) return { art: "leistung-unsicher" };
+  return { art: "leistung-passt", abweichungProzent: Math.round(abw * 100) };
+}
+
+function vorlaufBefund(g: WpGeraet, fall: WpFall): Befund {
+  if (g.vorlaufMaxC === null) return { art: "vorlauf-unbekannt" };
+  // Maßgeblich ist die höhere der beiden Anforderungen: das Heizsystem oder
+  // das Warmwasser. Im Neubau gewinnt fast immer das Warmwasser.
+  const noetigC = Math.max(fall.vorlaufC, WARMWASSER_C);
+  if (g.vorlaufMaxC < noetigC) {
+    return { art: "vorlauf-zu-niedrig", geraetC: g.vorlaufMaxC, noetigC };
+  }
+  if (g.vorlaufMaxC < noetigC + VORLAUF_PUFFER_C) {
+    return { art: "vorlauf-knapp", geraetC: g.vorlaufMaxC, noetigC };
+  }
+  return { art: "vorlauf-reicht", geraetC: g.vorlaufMaxC, noetigC };
+}
+
+export function beurteile(g: WpGeraet, fall: WpFall): Empfehlung {
+  const befunde: Befund[] = [leistungsBefund(g, fall), vorlaufBefund(g, fall)];
+
+  if (g.kaeltemittel === "r290") befunde.push({ art: "kaeltemittel-natuerlich" });
+  if (g.kaeltemittel === "r32") befunde.push({ art: "kaeltemittel-fluoriert" });
+  if (g.aufbau === "monoblock") befunde.push({ art: "aufbau-monoblock" });
+  if (g.aufbau === "split") befunde.push({ art: "aufbau-split" });
+
+  // Drei Ausschlussgründe, alle hart. Ein Gerät, das die Wohnung nicht warm
+  // bekommt, darf nicht als günstigere Alternative danebenstehen — es wäre die
+  // billigste Zeile der Liste und damit die, auf die zuerst jemand klickt.
+  //
+  // Eine UNBEKANNTE Vorlauftemperatur schließt immer aus, nicht erst im Altbau.
+  // Die frühere Schwelle („erst ab 50 °C Bedarf") übersah, dass auch der Neubau
+  // Warmwasser braucht: Dort galt ein Gerät ohne jede Angabe als geeignet,
+  // obwohl niemand wusste, ob es einen Speicher laden kann.
+  const geeignet = !befunde.some(
+    (b) =>
+      b.art === "leistung-knapp" ||
+      b.art === "vorlauf-zu-niedrig" ||
+      b.art === "vorlauf-unbekannt",
+  );
+
+  return { geraet: g, befunde, geeignet };
+}
+
+/**
+ * Die passenden Geräte, das günstigste zuerst.
+ *
+ * Sortiert wird nach dem Preis für den Nutzer, nicht nach unserer Provision
+ * (Vorgabe des Betreibers vom 19.08.2026 für die Balkon-Vergleichsseite, gilt
+ * hier genauso). Der Grundsatz gehört sichtbar auf die Seite — sonst ist er
+ * nur eine Behauptung im Code.
+ */
+export function empfehlungenFuer(
+  katalog: WpGeraet[],
+  fall: WpFall,
+  grenze = 3,
+): Empfehlung[] {
+  const quelle = fall.wpType === "swwp" ? "sole-wasser" : "luft-wasser";
+
+  const geeignet = katalog
+    .filter((g) => g.bauart === quelle)
+    .map((g) => beurteile(g, fall))
+    .filter((e) => e.geeignet)
+    .sort((a, b) => a.geraet.preisEur - b.geraet.preisEur);
+
+  // Höchstens ein Gerät je Hersteller. Ohne diese Regel stehen dreimal
+  // Nachbarmodelle derselben Baureihe untereinander — gemessen lieferte der
+  // Altbau-Fall drei LG-Monoblocks, zwei davon mit identischem Preis. Das ist
+  // keine Auswahl, sondern eine Liste mit drei Zeilen desselben Geräts.
+  const gesehen = new Set<string>();
+  const auswahl: Empfehlung[] = [];
+  for (const e of geeignet) {
+    if (gesehen.has(e.geraet.marke)) continue;
+    gesehen.add(e.geraet.marke);
+    auswahl.push(e);
+    if (auswahl.length === grenze) break;
+  }
+  return auswahl;
+}

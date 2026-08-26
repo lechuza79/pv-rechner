@@ -22,6 +22,7 @@ import { type StandSeite } from "../../../lib/stand-format";
 import InlineEdit from "../../../components/InlineEdit";
 import StandortField from "../../../components/StandortField";
 import ResultFunding from "../../../components/ResultFunding";
+import WpGeraeteEmpfehlung from "../../../components/WpGeraeteEmpfehlung";
 import { stackFunding, programmeNebenBundesfoerderung, zeilenBisDeckel } from "../../../lib/funding-programs";
 import { useFoerderung } from "../../../lib/use-foerderung";
 import HeatPumpChart from "./_components/HeatPumpChart";
@@ -943,6 +944,26 @@ export default function Waermepumpe({
                 }
               />
             )}
+
+            {/* Passende Geräte aus dem Sortiment unseres Partners.
+
+                Steht bewusst NACH dem Fördercheck: Der Hinweis „erst beantragen,
+                dann kaufen" ergibt nur Sinn, wenn der Nutzer den Förderbetrag
+                vorher gesehen hat. Und der Abschnitt startet zugeklappt — er ist
+                ein Angebot, keine Aussage über die Wirtschaftlichkeit, und darf
+                das Ergebnis nicht überlagern. */}
+            <div style={{ marginTop: 16 }}>
+              <ResultSection
+                title="Passende Geräte"
+                summary={`${result.auslegungKw.toLocaleString("de-DE")} kW · ${result.flowTemp} °C Vorlauf`}
+              >
+                <WpGeraeteEmpfehlung
+                  auslegungKw={result.auslegungKw}
+                  vorlaufC={result.flowTemp}
+                  wpType={wpType}
+                />
+              </ResultSection>
+            </div>
 
             {/* 3. Realistische Wege */}
             {zeigeWege && (
