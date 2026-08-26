@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { v, space, pad } from "../../lib/theme";
+import { STAGE_COUNT, space, stageDefaults } from "../../lib/theme";
 import { SocialKarte } from "./SocialKarte";
 import type { PostBild } from "../../lib/social-posts";
 
@@ -15,6 +15,24 @@ import type { PostBild } from "../../lib/social-posts";
 // Aussage hat, bekommt das Bild gar nicht erst angesehen.
 
 const ABSCHNITT_ZEILEN = 2;
+
+// Der Rahmen um den Beitrag gehört LinkedIn, nicht uns. Feste Farben statt
+// unserer Tokens: Unsere Seite folgt der Sonne und steht abends auf einer
+// dunklen Stufe — die Vorschau sähe dann aus wie ein Feed, den es nicht gibt,
+// und man beurteilte den Kontrast gegen den falschen Grund.
+const FEED = {
+  grund: "#ffffff",
+  rand: "#e0dfdc",
+  text: "#000000e6",
+  gedimmt: "#00000099",
+  platzhalter: "#e9e5df",
+};
+
+// Die Karte dagegen ist unser Produkt — sie wird aber IMMER auf der hellsten
+// Tagesstufe aufgenommen (dieselbe Regel wie beim Bild-Export). Sie hier der
+// aktuellen Stufe folgen zu lassen hieße, eine Fassung zu beurteilen, die nie
+// als Bild entsteht.
+const HELLSTE_STUFE = stageDefaults(STAGE_COUNT - 1) as Record<string, string>;
 
 export function FeedVorschau({
   bild,
@@ -34,39 +52,39 @@ export function FeedVorschau({
     <div
       style={{
         width: breite,
-        background: v("--color-bg"),
-        border: `1px solid ${v("--color-border-muted")}`,
-        borderRadius: v("--radius-md"),
+        background: FEED.grund,
+        border: `1px solid ${FEED.rand}`,
+        borderRadius: 8,
         overflow: "hidden",
+        color: FEED.text,
+        fontFamily: "-apple-system, system-ui, sans-serif",
       }}
     >
       {/* Kopfzeile: Im Feed steht über jedem Beitrag, wer ihn geschrieben hat.
           Sie kostet Platz, den der Text nicht bekommt — deshalb gehört sie in
           die Vorschau, auch wenn sie nichts über den Post aussagt. */}
-      <div style={{ display: "flex", gap: space.sm, alignItems: "center", padding: pad("lg", "lg") }}>
+      <div style={{ display: "flex", gap: space.sm, alignItems: "center", padding: 12 }}>
         <div
           style={{
             width: 44,
             height: 44,
             borderRadius: "50%",
-            background: v("--color-bg-muted"),
+            background: FEED.platzhalter,
             flex: "0 0 auto",
           }}
         />
         <div style={{ lineHeight: 1.25 }}>
-          <div style={{ fontSize: v("--font-size-body"), fontWeight: 600 }}>Sebastian Schäder</div>
-          <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
-            Design meets business.
-          </div>
-          <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>jetzt · 🌐</div>
+          <div style={{ fontSize: 14, fontWeight: 600 }}>Sebastian Schäder</div>
+          <div style={{ fontSize: 12, color: FEED.gedimmt }}>Design meets business.</div>
+          <div style={{ fontSize: 12, color: FEED.gedimmt }}>jetzt · 🌐</div>
         </div>
       </div>
 
-      <div style={{ padding: `0 ${space.lg}px ${space.md}px` }}>
+      <div style={{ padding: "0 12px 8px" }}>
         <div
           style={{
-            fontSize: v("--font-size-body"),
-            lineHeight: 1.5,
+            fontSize: 14,
+            lineHeight: 1.45,
             whiteSpace: "pre-wrap",
             ...(offen
               ? {}
@@ -89,15 +107,19 @@ export function FeedVorschau({
             border: "none",
             padding: 0,
             cursor: "pointer",
-            color: v("--color-text-muted"),
-            fontSize: v("--font-size-small"),
+            color: FEED.gedimmt,
+            fontSize: 14,
           }}
         >
           {offen ? "weniger anzeigen" : "… mehr"}
         </button>
       </div>
 
-      <SocialKarte bild={bild} skala={skala} />
+      {/* Eigene Token-Hülle: Die Karte steht auf der hellsten Stufe, unabhängig
+          davon, welche Tagesstufe die umgebende Seite gerade zeigt. */}
+      <div style={HELLSTE_STUFE as React.CSSProperties}>
+        <SocialKarte bild={bild} skala={skala} />
+      </div>
     </div>
   );
 }
