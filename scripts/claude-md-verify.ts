@@ -147,11 +147,18 @@ const ZAHLEN: Zahlenpruefung[] = [
   },
   {
     was: "Davon Foerderseiten",
+    // Gezaehlt wird der PFAD der Foerderseiten, nicht das Wort „foerderung".
+    // Vorher genuegte das Wort irgendwo in der Zeile — damit zaehlte die
+    // Weiterleitung des Waermepumpen-Foerderratgebers als Foerderseite mit, und
+    // die Anleitung sagte 181, wo 180 richtig war. Aufgefallen erst, als am
+    // 26.08.2026 eine zweite Ratgeber-Weiterleitung dazukam und die Zahl auf 182
+    // sprang, obwohl keine Foerderseite entstanden war. Eine Zaehlung, die auf
+    // ein Wort statt auf die Sache prueft, wird still ungenau.
     wahrheit: () =>
       String(
-        (lies("next.config.js")
+        lies("next.config.js")
           .split("\n")
-          .filter((z) => z.includes("source:") && z.includes("foerderung")) ?? []).length,
+          .filter((z) => z.includes("source:") && z.includes('"/photovoltaik-foerderung')).length,
       ),
     behauptung: () => greif(claudeMd, /(\d+) der \d+ Weiterleitungen in `next\.config\.js`/),
   },

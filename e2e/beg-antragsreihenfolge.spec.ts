@@ -12,7 +12,7 @@ import { bisZumErgebnis } from "./ergebnis";
 
 test.describe("BEG-Antragsreihenfolge: sichtbar dort, wo der Betrag steht", () => {
   test("Ratgeber führt die Reihenfolge im Fließtext, mit Regel, Entwarnung und allen sechs Schritten", async ({ page }) => {
-    await page.goto("/ratgeber/waermepumpe-foerderung-2026", { waitUntil: "domcontentloaded" });
+    await page.goto("/ratgeber/waermepumpe-foerderung", { waitUntil: "domcontentloaded" });
 
     // Der Abschnitt hat eine eigene Überschrift im Fließtext — kein Kleingedrucktes.
     const ueberschrift = page.getByRole("heading", { name: /Die Reihenfolge entscheidet/i });
@@ -96,7 +96,7 @@ test.describe("BEG-Antragsreihenfolge: sichtbar dort, wo der Betrag steht", () =
 
     // Und der Weg zur Langfassung steht daneben.
     await expect(
-      page.locator('a[href="/ratgeber/waermepumpe-foerderung-2026#antrag-reihenfolge"]').first(),
+      page.locator('a[href="/ratgeber/waermepumpe-foerderung#antrag-reihenfolge"]').first(),
     ).toBeVisible();
   });
 });

@@ -36,7 +36,7 @@ const lies = (p: string) => readFileSync(join(REPO, p), "utf8");
 
 /** Oberflächen, die einen BEG-Betrag zeigen und die Bedingung deshalb nennen müssen. */
 const OBERFLAECHEN = [
-  "app/(site)/ratgeber/waermepumpe-foerderung-2026/page.tsx",
+  "app/(site)/ratgeber/waermepumpe-foerderung/page.tsx",
   "app/(site)/waermepumpe-rechner/waermepumpe.tsx",
   "app/(embed)/embed/foerder-check/client.tsx",
 ];
@@ -152,7 +152,7 @@ describe("BEG-Antragsreihenfolge — Fristen und Eigenleistung", () => {
     // sechs Monate nach Ablauf des Bewilligungszeitraums". Eine Fassung, die den
     // Verfall auf beide Fristen bezog, hätte einem Leser, der früh fertig wird,
     // bis zu 30 Monate lang „Geld weg" gemeldet, obwohl sein Anspruch besteht.
-    const src = lies("app/(site)/ratgeber/waermepumpe-foerderung-2026/page.tsx");
+    const src = lies("app/(site)/ratgeber/waermepumpe-foerderung/page.tsx");
     expect(src).toMatch(/harte Grenze ist die zweite/);
     // Und der Fristbeginn ist definiert — sonst rechnet der Leser ab Einbautag.
     expect(src).toMatch(/Datum der\s+letzten Rechnung/);
@@ -216,7 +216,7 @@ describe("BEG-Antragsreihenfolge — eine Quelle, kein zweites Tippen", () => {
     // Ein Test auf die Konstante allein genügt nicht (Council-Runbook:
     // „sichtbar geprüft, nicht nur im Quelltext"). Hier die Code-Seite, den
     // Rest prüft e2e/waermepumpe-foerderung.spec.ts im Browser.
-    const src = lies("app/(site)/ratgeber/waermepumpe-foerderung-2026/page.tsx");
+    const src = lies("app/(site)/ratgeber/waermepumpe-foerderung/page.tsx");
     expect(src).toMatch(/id=\{BEG_ANTRAG_ANKER\}/);
     expect(src).toMatch(/BEG_ANTRAG_SCHRITTE\.map/);
     expect(src).toMatch(/BEG_VORHABENBEGINN\.regelZitat/);
@@ -233,7 +233,7 @@ describe("BEG-Antragsreihenfolge — eine Quelle, kein zweites Tippen", () => {
     // Stand UNSERER Werte (HP.validFrom). Das Merkblatt gilt ab dem 21.07.2026.
     // Ein Gültigkeitsdatum, das es nicht gibt, auf der Seite, die für ehrliche
     // Zahlen bürgt.
-    const src = lies("app/(site)/ratgeber/waermepumpe-foerderung-2026/page.tsx");
+    const src = lies("app/(site)/ratgeber/waermepumpe-foerderung/page.tsx");
     expect(src).not.toMatch(/gültig ab \{standDatum\}/);
     expect(src).toMatch(/gültig ab \{gueltigAb\}/);
     expect(BEG_ANTRAG_STAND.validFrom).toBe("2026-07-21");
@@ -247,7 +247,7 @@ describe("BEG-Antragsreihenfolge — eine Quelle, kein zweites Tippen", () => {
     // was der Absatz darüber gerade erklärt hatte. Gefunden erst von der
     // Nachprüfung der Endfassung, nachdem beide Legal-Judges den Entwurf
     // freigegeben hatten.
-    const src = lies("app/(site)/ratgeber/waermepumpe-foerderung-2026/page.tsx");
+    const src = lies("app/(site)/ratgeber/waermepumpe-foerderung/page.tsx");
     expect(src).not.toMatch(/Anspruch auf\s+die Förderung gibt es nicht/);
     expect(src).not.toMatch(/Einen Anspruch auf die Förderung gibt es nicht/);
     // Und der Rechenkern sagt dasselbe Wort.
@@ -267,7 +267,7 @@ describe("BEG-Antragsreihenfolge — eine Quelle, kein zweites Tippen", () => {
     // stehen lassen — genau die Fehlerklasse, an der sich hier schon einmal eine
     // zurückgenommene Zusage in vier Oberflächen gehalten hat.
     for (const pfad of [
-      "app/(site)/ratgeber/waermepumpe-foerderung-2026/page.tsx",
+      "app/(site)/ratgeber/waermepumpe-foerderung/page.tsx",
       "app/(embed)/embed/foerder-check/client.tsx",
       "lib/glossary.ts",
       "lib/faq.ts",
@@ -296,7 +296,7 @@ describe("BEG-Antragsreihenfolge — eine Quelle, kein zweites Tippen", () => {
   it("der Anker-Link zeigt auf den Ratgeber und trägt den Anker", () => {
     // Verweisende Seiten (Rechner, später die Geräteempfehlung) importieren
     // diesen Pfad. Ein abgetippter Anker bricht stumm.
-    expect(BEG_ANTRAG_HREF).toBe(`/ratgeber/waermepumpe-foerderung-2026#${BEG_ANTRAG_ANKER}`);
-    expect(existsSync(join(REPO, "app/(site)/ratgeber/waermepumpe-foerderung-2026/page.tsx"))).toBe(true);
+    expect(BEG_ANTRAG_HREF).toBe(`/ratgeber/waermepumpe-foerderung#${BEG_ANTRAG_ANKER}`);
+    expect(existsSync(join(REPO, "app/(site)/ratgeber/waermepumpe-foerderung/page.tsx"))).toBe(true);
   });
 });
