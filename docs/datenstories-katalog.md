@@ -360,6 +360,133 @@ kein Freibrief für eine ungeprüfte Zahl.
 
 ---
 
+### G19 — Wärmepumpen-Förderung je Landkreis (Kandidat, Lizenz offen)
+
+**Übergabe aus einer Parallelsitzung am 25.08.2026, an der Primärquelle geprüft.** Die
+Zusagen der Bundesförderung stehen je Landkreis und je Programm im Förderreport der KfW
+(Anzahl und Summe), mit einer Reihe zurück bis 2020. Es wäre die erste Zahl im Haus, die
+etwas über WÄRMEPUMPEN sagt statt über Photovoltaik, und sie liegt auf derselben
+Gebietsgliederung wie der Atlas.
+
+**G19.1** Beispiel: „Im Landkreis [X] wurden im ersten Halbjahr [861] Heizungsförderungen
+zugesagt, [11,5] Mio Euro. Je 1.000 Einwohner ist das [Y] — im Nachbarkreis [Z]."
+Quelle: KfW-Förderreport **N** (nicht importiert) · Takt: quartalsweise · Für: HW, KOM, FACH
+Kanal: LinkedIn, Website
+
+**Vier Schranken, drei davon inhaltlich:**
+- **„Zusagen Heizungsförderung" heißt nicht „Wärmepumpen".** Auf Kreisebene ist nicht nach
+  Technik aufgeschlüsselt; die kursierende Quote von rund 87 Prozent ist ein Bundeswert. Sie
+  auf einen Kreis anzuwenden hieße, eine Annahme in eine Zahl hineinzurechnen, die die Quelle
+  nicht hergibt.
+- **Werte unter zehn sind unterdrückt** (Datenschutz). Eine Spaltensumme ist damit zwangsläufig
+  zu niedrig, und bei kleinen Kreisen fehlen ganze Zeilen.
+- **Eine Zusage ist keine Anlage.** Zwischen Zusage und Einbau liegen Monate, ein Teil wird nie
+  abgerufen.
+- **Die Datei des laufenden Jahres wird unter derselben Adresse überschrieben.** Wer einen
+  Zwischenstand später belegen können will, legt ihn selbst ab.
+
+**Keine Seitengattung.** Auf Kreisebene wird praktisch nicht gesucht — das ist im Freigabe-Nachweis
+des Atlas für den 18.08.2026 gemessen und der Grund, warum die Kreisebene gesperrt ist. Vehikel
+wäre eine einzelne nationale Geschichte mit Kreis-Rangliste plus Widget.
+
+**Lizenz — zwei unabhängige Prüfungen am 25.08.2026, eine davon mit dem Auftrag, die andere zu
+widerlegen. Ergebnis: nutzbar, mit Auflagen.** Beide kommen unabhängig auf dieselbe Grundlage und
+dieselben zwei untauglichen Begründungen. EuGH-Volltexte zum Datenbankrecht liegen in
+`docs/quellen/eugh-datenbankrecht/`.
+
+Es gibt eine ausdrückliche Erlaubnis. Das Impressum der KfW verbietet Vervielfältigung und
+Weitergabe generell, nimmt davon aber Newsroom-Beiträge aus: Sie dürfen „unter Angabe der Quelle
+zu Informations-Zwecken an Dritte weitergereicht und vervielfältigt werden". Der Förderreport liegt
+im Newsroom, die Ausnahme greift also.
+
+**Was NICHT als Begründung taugt — beides würde falsche Sicherheit dokumentieren:**
+- **§ 5 UrhG (amtliche Werke)** trägt hier nicht: Ein Presse-Report ist keine amtliche
+  Bekanntmachung, und ob § 5 überhaupt gegen das Datenbankherstellerrecht hilft, ist eine vom BGH
+  aufgeworfene, ungeklärte Analogiefrage.
+- **Das Datennutzungsgesetz trägt hier ebenfalls nicht.** Der Satz, mit dem wir das Crawlen
+  kommunaler Seiten begründen (öffentliche Stellen dürfen sich nicht auf das
+  Datenbankherstellerrecht berufen), funktioniert bei Gemeinden, weil deren Informationsarbeit in
+  den Gemeindeordnungen verankert ist. Das KfW-Gesetz kennt keine Pflicht zur Veröffentlichung von
+  Fördererfolgen — der Report ist freiwillige Pressearbeit, und damit ist die Anwendbarkeit offen.
+
+Tragend ist allein: Zahlen sind keine Werke, und ein Datenbankherstellerrecht an Daten, die im
+Kreditgeschäft ohnehin anfallen, ist nach der Rechtsprechung zu Nebenprodukt-Datenbanken
+zweifelhaft. Gegenargument, das man kennen muss: Der Report weist selbst aus, dass die Anzahlen
+hochgerechnet und die Kreiszuordnungen konsolidiert werden — das ist Aufbereitung und könnte als
+wesentliche Investition durchgehen.
+
+**Vier Auflagen, unabhängig vom Ausgang der zweiten Prüfung:**
+1. Quelle mit Stichtag in **jeder** Oberfläche, **jedem** Bild und **jedem** Embed — unabhängig vom
+   Marken-Schalter. Die Erlaubnis der KfW steht unter Quellenvorbehalt; ein Embed ohne Nennung
+   verlässt genau den einzigen sicheren Boden, den wir haben.
+2. Kein Roh-Download und keine offene Schnittstelle auf den übernommenen Bestand. Veröffentlicht
+   werden Auswertungen, nicht die Datenbank.
+3. Die Lizenzseite nimmt den KfW-Bestand ausdrücklich aus der offenen Freigabe aus, datiert und nur
+   nach vorn wirkend — sonst verschenken wir fremde Daten unwiderruflich.
+4. **Keine Zelle unter zehn ausweisen, auch nicht als errechnete Restgröße.** Die KfW unterdrückt
+   Werte unter zehn aus Datenschutzgründen; wer mehrere Jahrgänge und Ebenen vollständig übernimmt,
+   kann sie über Differenzbildung rekonstruieren. In einem kleinen Landkreis ist „eine Zusage" ein
+   identifizierbarer Haushalt. Das ist ein eigenes Datenschutzrisiko, das kein
+   Urheberrechtsargument abdeckt — und es entsteht erst durch die Vollübernahme.
+5. **Die vollständige Kreismatrix mit absoluten Werten wird nie ausgeliefert** — auch nicht
+   mittelbar. Veröffentlicht werden abgeleitete Kennzahlen und Ränge flächendeckend, absolute
+   Zusagezahlen und Beträge nur punktuell (Beispielkreise im Text, Bundeslandvergleich).
+6. **Quellenzeile im Wortlaut:** „Quelle: KfW-Förderreport [Jahrgang], Stichtag [Datum],
+   KfW Bankengruppe. Eigene Berechnung." Der Zusatz „Eigene Berechnung" ist nicht Kosmetik: Das
+   Änderungsverbot der KfW wird von ihrer Newsroom-Ausnahme nicht aufgehoben, und die Kennzeichnung
+   stellt klar, dass wir kein verändertes fremdes Werk zeigen. **Jeder Jahrgang mit eigenem
+   Stichtag** — die Stichtage sind unterjährig verschieden, eine Reihe über gemischte Stichtage wäre
+   unabhängig vom Recht schlicht falsch.
+7. **Kein KfW-Logo**, keine Formulierung, die eine Zusammenarbeit oder Billigung nahelegt.
+
+**Ein Konflikt mit unserer EIGENEN Regel — BLOCKER, und er ist nicht offensichtlich.** Unsere
+Konvention verlangt, dass jede Pro-Kopf-Zahl ihren Nenner sichtbar trägt. Genau das macht die
+Kennzahl aber **umkehrbar**: „14,2 Zusagen je 1.000 Einwohner, Bezugsgröße 57.000" ist die Rohzahl
+mit einem Zwischenschritt. Wer die vollständige Kreistabelle in dieser Form veröffentlicht, hat den
+Datenbestand rekonstruierbar publiziert — und damit genau das getan, was Auflage 5 verbietet. Für
+diese Datenquelle gilt deshalb: Nenner ja im Einzelfall, **nicht in einer flächendeckenden
+Tabelle**. Die Grenze gehört in einen Test, nicht in einen Merksatz.
+
+**BAFA ist der schwächere Kandidat und geprüft verworfen:** vier monatliche Statistiken, nur als
+PDF, und die Heizungsförderung ist seit 2024 gar nicht mehr dabei (sie läuft über die KfW).
+
+---
+
+### G18 — Der Bau selbst, aus UX-Sicht (Ausbauphase)
+
+**Vorgemerkt vom Betreiber am 25.08.2026, ausdrücklich für später** („ist v x.0"). Nicht im
+Startpaket, aber im Konzept festgehalten, damit die Familie nicht verlorengeht.
+
+Neben den fachlichen Themen lässt sich der Entstehungsprozess selbst aufbereiten — nicht als
+Entwicklertagebuch, sondern aus der Perspektive, die der Betreiber ohnehin hat: Wie eine
+Entscheidung über Aussehen und Bedienung fällt, was dabei verworfen wurde und warum.
+
+**G18.1 — Die verworfene Fassung**
+Beispiel: „So sah der Fördercheck zuerst aus. Zwei Rahmen, zwei Überschriften, eine Sache. Wir
+haben daraus eine Karte gemacht — und das Eingabefeld hört auf zu springen, sobald eine Antwort
+da ist."
+Quelle: eigene Arbeit ✓ · Takt: unregelmäßig · Für: FACH (UX, Produkt) · Kanal: LinkedIn (persönliches Profil)
+
+**G18.2 — Die Regel hinter der Entscheidung**
+Beispiel: „Kein Schritt in unseren Rechnern startet mit einer Vorauswahl. Das kostet einen Klick
+und verhindert, dass jemand ein Ergebnis mitnimmt, das er nie gewählt hat."
+Quelle: eigene Konventionen ✓ · Für: FACH · Kanal: LinkedIn
+
+**G18.3 — Der Fehler, den die Oberfläche nicht zeigt**
+Beispiel: „Ein Klick auf ‚Flachdach' hinterließ wieder ‚Satteldach'. Die Seite reagierte, klappte
+zu und zeigte eine plausible Zahl — nur die falsche. Solche Fehler findet keine Abnahme im
+Browser, dafür braucht es einen Test, der die Antwort nachliest."
+Quelle: eigene Vorfälle ✓ · Für: FACH · Kanal: LinkedIn
+
+**Warum das auf sein persönliches Profil gehört und nicht auf den Marken-Kanal:** Es ist seine
+Arbeit und seine Perspektive. Dieselbe Trennung wie oben — Fachliches unter dem Namen, Zahlen
+unter der Marke. Und es passt zu dem, wofür sein Profil ohnehin steht.
+
+**Die Schranke:** Nichts posten, was einen Fehler auf einer Seite beschreibt, die noch live falsch
+ist. Erst beheben, dann erzählen. Sonst ist der Post eine öffentliche Fehlermeldung mit Adresse.
+
+---
+
 ## Querregeln — gelten für jeden Eintrag
 
 **Nenner.** Jede Pro-Kopf-, Je-Anlage- und Durchschnittszahl trägt ihren Nenner sichtbar.
