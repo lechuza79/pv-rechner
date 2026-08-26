@@ -69,6 +69,15 @@ woanders — Merkblätter, Formulare, Programmseiten — fällt nicht darunter. 
 `docs/quellen/kfw-foerderreport/kfw-impressum-nutzungsklausel.txt`. Ändert sich der Wortlaut, geht
 das als **Entscheidung** an den Betreiber, nicht als Auto-Fix.
 
+**Wird der Realitäts-Anker rot, ist zuerst der Bundesschnitt verdächtig — nicht unsere Rechnung.**
+Die beiden Zahlen messen nicht dasselbe: unsere ist ein Fall, seine ein Mittelwert über
+Gebäudegrößen, Einkommensstufen und Heiztechniken. Der Bericht kennt **keine** Aufschlüsselung nach
+Wärmeerzeuger — die Verwendungszwecke sind Basisförderung und Boni —, die Vermischung ist aus dieser
+Quelle also nicht zu beheben. Prüfreihenfolge bei Rot: (1) Hat sich der Bundeswert verschoben und
+wodurch? (2) Hat sich die Förderstufe geändert? Erst dann (3) unsere Rechnung. Und: Der Korridor
+wird nicht verschärft, solange es keine Technik-Spalte gibt — sonst sieht die Prüfung genauer aus,
+als sie sein kann.
+
 **Die Regeln der Förderung ändern sich schneller als der Bericht.** Der Jahrgang 2025 wurde nach
 den Regeln von 2025 gefördert — damals gab es einen Effizienzbonus, den es heute nicht mehr gibt.
 Wer die Zahlen als Erwartung für heute darstellt, ohne das zu sagen, macht aus einer Messung eine

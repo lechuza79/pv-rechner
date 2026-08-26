@@ -186,25 +186,48 @@ describe("Die Quellenzeile", () => {
 
 describe("Realitäts-Anker: unsere Förderrechnung gegen den Bundesdurchschnitt", () => {
   /**
-   * Der eigentliche Grund, diese Zahlen überhaupt zu holen.
+   * Der eigentliche Grund, diese Zahlen überhaupt zu holen — MIT seiner Grenze.
    *
-   * Über 850 Tests prüfen unsere Rechnung gegen sich selbst. Der Förderreport
+   * Über 2.100 Tests prüfen unsere Rechnung gegen sich selbst. Der Förderreport
    * ist die erste unabhängige Messung derselben Größe: was der Bund für einen
-   * Heizungstausch tatsächlich ausgezahlt hat. Weicht unsere Rechnung
-   * systematisch davon ab, ist entweder sie zu optimistisch oder unser
-   * Referenzfall untypisch — beides will man wissen.
+   * Heizungstausch tatsächlich ausgezahlt hat.
    *
-   * Die Spanne ist bewusst weit und die Gründe dafür sind benannt:
-   *   • Der Durchschnitt umfasst ALLE Heiztechniken des Programms, nicht nur
-   *     Wärmepumpen. Andere Techniken sind billiger, ziehen ihn also nach unten.
-   *   • Er stammt aus dem Jahr 2025 und damit aus einer Zeit MIT Effizienzbonus,
-   *     den es heute nicht mehr gibt — er liegt deshalb über dem, was dieselbe
-   *     Anlage heute bekäme.
-   *   • Er mittelt über alle Haushalte, unser Referenzfall ist einer.
+   * ────────────────────────────────────────────────────────────────────────
+   * WAS DIESER TEST NICHT IST: ein Genauigkeitsnachweis
+   * ────────────────────────────────────────────────────────────────────────
    *
-   * Ein enger Korridor wäre bei dieser Streuung eine Scheingenauigkeit. Was
-   * dieser Test fängt, ist die Größenordnung: ein Vorzeichenfehler, ein
-   * vergessener Deckel, ein doppelt gezählter Bonus.
+   * Die beiden Zahlen messen nicht dasselbe. Unsere sind EIN Fall — 130 m²,
+   * teilsaniert, Luft/Wasser, Selbstnutzer mit alter fossiler Heizung. Die des
+   * Bundes ist der MITTELWERT über alle Zusagen: über Gebäudegrößen,
+   * Einkommensstufen und Heiztechniken.
+   *
+   * Die Vermischung der Techniken ist aus dieser Quelle NICHT zu beheben, und
+   * das ist nachgesehen, nicht vermutet: Der Bericht schlüsselt die
+   * Heizungsförderung nach Verwendungszwecken auf — Basisförderung und die
+   * einzelnen Boni —, nicht nach Wärmeerzeuger. Eine Kreuztabelle Technik ×
+   * Betrag gibt es nirgends in ihm. Wer sich die Wärmepumpen-Teilmenge über
+   * einen Bonus zusammenreimt, macht denselben Fehler wie mit der kursierenden
+   * 87-Prozent-Quote.
+   *
+   * Dazu kommt: Der Wert stammt aus einem Jahr MIT Effizienzbonus, den es heute
+   * nicht mehr gibt — er liegt deshalb über dem, was dieselbe Anlage heute
+   * bekäme.
+   *
+   * ────────────────────────────────────────────────────────────────────────
+   * WENN ER ROT WIRD: ZUERST DEN BUNDESSCHNITT VERDÄCHTIGEN
+   * ────────────────────────────────────────────────────────────────────────
+   *
+   * Er kann rot werden, ohne dass an unserem Modell etwas falsch ist — es
+   * genügt, dass sich die Zusammensetzung der Bewilligungen verschiebt oder die
+   * KfW im nächsten Jahrgang anders abgrenzt. Wer hier ansetzt, prüft in dieser
+   * Reihenfolge: (1) Hat sich der Bundeswert verschoben, und wodurch? (2) Hat
+   * sich die Förderstufe geändert (BEG_FAHRPLAN)? Erst danach (3) unsere
+   * Rechnung. Andersherum sucht man am falschen Ende.
+   *
+   * Ein enger Korridor wäre bei dieser Streuung eine Scheingenauigkeit. Was der
+   * Test fängt, ist die Größenordnung: ein Vorzeichenfehler, ein vergessener
+   * Deckel, ein doppelt gezählter Bonus. Gemessen am 26.08.2026: 12.880 € gegen
+   * 13.918 €, Verhältnis 0,93.
    */
   const REFERENZ_WOHNFLAECHE = 130;
   const REFERENZ_DAEMMUNG = 1; // teilsaniert
@@ -216,10 +239,20 @@ describe("Realitäts-Anker: unsere Förderrechnung gegen den Bundesdurchschnitt"
   // Heizung, kein Einkommens-Bonus.
   const beg = calcBegSubsidy("bestand", "lwwp", investBrutto, { klimaBonus: true });
 
-  it("liegt in derselben Größenordnung wie der gemessene Durchschnitt", () => {
+  it("belegt die Größenordnung — nicht die Richtigkeit im Einzelfall", () => {
     const verhaeltnis = beg.amount / SCHNITT_2025;
     expect(verhaeltnis).toBeGreaterThan(0.6);
     expect(verhaeltnis).toBeLessThan(1.6);
+  });
+
+  it("und der Bericht gibt keine engere Prüfung her — es gibt keine Technik-Spalte", () => {
+    // Nachgesehen, nicht vermutet: Die Verwendungszwecke sind Basisförderung
+    // und Boni. Gäbe es eine nach Wärmeerzeuger, ließe sich gegen die
+    // Wärmepumpen-Teilmenge prüfen statt gegen den Gesamtschnitt — und dieser
+    // Test dürfte enger werden. Solange diese Zusicherung hält, darf niemand
+    // den Korridor verschärfen und dabei glauben, er vergleiche dieselbe Technik.
+    const vwz = ZEILEN_2025.map((z) => z.verwendungszweck);
+    expect(vwz.some((v) => /wärmepumpe|biomasse|solarthermie|wärmenetz/i.test(v))).toBe(false);
   });
 
   it("bleibt unter dem Höchstbetrag, den die Richtlinie zulässt", () => {
