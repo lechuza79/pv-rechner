@@ -25,3 +25,4 @@ scripts/mastr-bnetza-schema.json
 
 # Signed legal documents (contracts, DPAs) — never commit
 docs/legal/
+scratch/
