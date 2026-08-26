@@ -165,7 +165,12 @@ describe("BEG-Antragsreihenfolge — Fristen und Eigenleistung", () => {
     // wird gesagt — eine Anleitung, die für alle Fälle gleichzeitig stimmt,
     // stimmt am Ende für keinen.
     expect(BEG_ANTRAG_GELTUNGSBEREICH).toMatch(/Wohnungseigentümergemeinschaft/);
-    expect(BEG_ANTRAG_GELTUNGSBEREICH).toMatch(/Zusatzantrag/);
+    expect(BEG_ANTRAG_GELTUNGSBEREICH).toMatch(/zusätzlichen Antrag/);
+    // Aber als Möglichkeit, nicht als Pflichtstufe: „In diesem Fall KÖNNEN Sie …
+    // einen Zusatzantrag stellen" (Merkblatt S. 7). Ein vermietetes
+    // Mehrfamilienhaus hat gar keinen — die Boni hängen an der Selbstnutzung.
+    expect(BEG_ANTRAG_GELTUNGSBEREICH).toMatch(/können selbstnutzende Eigentümer/);
+    expect(BEG_ANTRAG_GELTUNGSBEREICH).not.toMatch(/kommt ein Zusatzantrag/);
   });
 
   it("die Höhe steht mit dem Antrag fest — kein Nachlegen", () => {
@@ -232,6 +237,22 @@ describe("BEG-Antragsreihenfolge — eine Quelle, kein zweites Tippen", () => {
     expect(src).not.toMatch(/gültig ab \{standDatum\}/);
     expect(src).toMatch(/gültig ab \{gueltigAb\}/);
     expect(BEG_ANTRAG_STAND.validFrom).toBe("2026-07-21");
+  });
+
+  it("die Seite sagt nicht an einer Stelle „kein Anspruch auf die Förderung“ und an der anderen das Gegenteil", () => {
+    // Der Widerspruch war real und selbst gebaut: Schritt 4 wurde auf „kein
+    // Anspruch auf die ZUSAGE" verengt, weil nach Richtlinie Nr. 9.5.1 sehr wohl
+    // ein AUSZAHLUNGSanspruch besteht — und im selben Commit stand drei Zeilen
+    // unter dem Fristen-Absatz wieder die weite Fassung, die genau das verneint,
+    // was der Absatz darüber gerade erklärt hatte. Gefunden erst von der
+    // Nachprüfung der Endfassung, nachdem beide Legal-Judges den Entwurf
+    // freigegeben hatten.
+    const src = lies("app/(site)/ratgeber/waermepumpe-foerderung-2026/page.tsx");
+    expect(src).not.toMatch(/Anspruch auf\s+die Förderung gibt es nicht/);
+    expect(src).not.toMatch(/Einen Anspruch auf die Förderung gibt es nicht/);
+    // Und der Rechenkern sagt dasselbe Wort.
+    expect(BEG_ANTRAG_SCHRITTE[3].text).toMatch(/auf die Zusage selbst besteht kein Anspruch/);
+    expect(BEG_ANTRAG_SCHRITTE[3].text).not.toMatch(/Bewilligung/);
   });
 
   it("die KfW-Entscheidung heißt überall Zusage, nicht Bescheid", () => {

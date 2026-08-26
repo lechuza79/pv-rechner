@@ -14,7 +14,12 @@ import {
 } from "../../../../lib/widget-settings";
 import { calcBegSubsidy, calcInvestBrutto } from "../../../../lib/heatpump";
 import { DEFAULT_HEATPUMP_CONFIG } from "../../../../lib/heatpump-config";
-import { BEG_ANTRAG_KURZ } from "../../../../lib/beg-antrag";
+import { BEG_ANTRAG_KURZ, BEG_ANTRAG_STAND } from "../../../../lib/beg-antrag";
+
+// Das Gültigkeitsdatum des Merkblatts stand hier bis zum 26.08.2026 handgetippt
+// — in derselben Datei, die den Hinweistext schon aus dem Modul holt. Beim
+// nächsten Merkblatt wäre genau diese eine Zahl stehengeblieben, still.
+const GUELTIG_AB = BEG_ANTRAG_STAND.validFrom.split("-").reverse().join(".");
 
 // Förder-Check: a slim, embeddable calculator that answers one question —
 // "wie viel BEG-Förderung bekomme ich für eine Wärmepumpe?". A short guided
@@ -721,7 +726,7 @@ function ResultView({
 
       <div style={{ fontSize: 10.5, color: "var(--widget-muted)", lineHeight: 1.5, marginTop: 10 }}>
         Bezogen auf eine Wohneinheit — bei Mehrfamilienhäusern gelten je weiterer Wohnung eigene Höchstbeträge.
-        Schätzung nach den aktuellen KfW-Sätzen (gültig ab 21.07.2026) — ohne Gewähr, verbindlich ist die
+        Schätzung nach den aktuellen KfW-Sätzen (gültig ab {GUELTIG_AB}) — ohne Gewähr, verbindlich ist die
         Zusage der KfW. Boni hängen von deiner individuellen Situation ab.
       </div>
     </div>

@@ -115,8 +115,15 @@ export const BEG_ANTRAG_SCHRITTE: readonly BegAntragSchritt[] = [
     // Zusage sehr wohl — Richtlinie Nr. 9.5.1 setzt ihn voraus, sonst könnte man
     // ihn nicht durch Fristversäumnis „verlieren". Der Satz widersprach damit dem
     // Fristen-Absatz zwei Bildschirmzeilen weiter.
+    //
+    // Und es heißt ZUSAGE, nicht Bewilligung: Die Richtlinie führt beide Wörter
+    // als Paar („Bewilligung beziehungsweise Förderzusage", Nr. 9.2.1), und das
+    // Paar trennt die zwei Durchführer — nach Nr. 9.1 macht das BAFA die
+    // Maßnahmen 5.1, 5.2, 5.3 g, 5.4 und 5.5 per Bescheid, die KfW die Nummern
+    // 5.3 a–f und h–j auf privatrechtlicher Grundlage. Die Wärmepumpe ist 5.3 c,
+    // also KfW, also Zusage. „Bewilligung" wäre das Wort der anderen Schiene.
     text:
-      "Mit der Zusage steht der Vertrag endgültig, und das Vorhaben darf starten. Nach der Förderrichtlinie ist es zwar zulässig, schon vorher loszulegen — das geschieht aber auf eigenes Risiko, denn auf die Bewilligung selbst besteht kein Anspruch: Die KfW entscheidet nach pflichtgemäßem Ermessen im Rahmen der verfügbaren Mittel.",
+      "Mit der Zusage steht der Vertrag endgültig, und das Vorhaben darf starten. Nach der Förderrichtlinie ist es zwar zulässig, schon vorher loszulegen — das geschieht aber auf eigenes Risiko, denn auf die Zusage selbst besteht kein Anspruch: Die KfW entscheidet nach pflichtgemäßem Ermessen im Rahmen der verfügbaren Mittel.",
   },
   {
     titel: "Durchführung bestätigen lassen",
@@ -220,8 +227,13 @@ export const BEG_KEINE_AUFSTOCKUNG =
  * Anleitung, die für alle Fälle gleichzeitig stimmen soll, stimmt am Ende für
  * keinen. Der Regelfall bleibt scharf, die Ausnahme wird benannt.
  */
+// „kommt ein Zusatzantrag dazu" stand hier bis zum 26.08.2026 und war eine Spur
+// zu bestimmt: Der Zusatzantrag ist eine Möglichkeit, keine Stufe des Verfahrens
+// („In diesem Fall KÖNNEN Sie … für sich selbst einen Zusatzantrag stellen",
+// Merkblatt S. 7), und er hängt an den persönlichen Boni. Ein vermietetes
+// Mehrfamilienhaus hat gar keinen.
 export const BEG_ANTRAG_GELTUNGSBEREICH =
-  "Diese Reihenfolge beschreibt den Regelfall: ein Haus, eine Eigentümerin oder ein Eigentümer, ein Antrag. In einer Wohnungseigentümergemeinschaft oder einem Mehrfamilienhaus kommt ein Zusatzantrag für die persönlichen Boni dazu, mit eigenen Fristen.";
+  "Diese Reihenfolge beschreibt den Regelfall: ein Haus, eine Eigentümerin oder ein Eigentümer, ein Antrag. In einer Wohnungseigentümergemeinschaft oder einem Mehrfamilienhaus können selbstnutzende Eigentümer die persönlichen Boni über einen zusätzlichen Antrag beanspruchen — der hat eigene Fristen.";
 
 /** Fristen, die nach der Zusage laufen (Richtlinie Nr. 9.4.1 und 9.5.1). */
 export const BEG_ANTRAG_FRISTEN = {
