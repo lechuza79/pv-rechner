@@ -30,7 +30,7 @@
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync } from "node:fs";
-import { ordneEin, notizZeile, STATUS_ZU_ART, type Ruecklaufart, type RohMail } from "../lib/outreach-ruecklauf";
+import { ordneEin, notizZeile, notizMitText, STATUS_ZU_ART, type Ruecklaufart, type RohMail } from "../lib/outreach-ruecklauf";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -115,6 +115,17 @@ type Befund = {
   datum: string;
   region_id: string | null;
   name: string | null;
+  /**
+   * Der Rohtext der Mail — was davon aufgehoben wird, entscheidet
+   * `notizMitText` (eigener Teil ohne Zitat, gekürzt).
+   *
+   * Bis zum 26.08.2026 gab es dieses Feld nicht, und damit war der Inhalt jeder
+   * Antwort nach dem Lauf verloren: gespeichert wurde nur, DASS jemand
+   * geschrieben hat. Bei Nidda kostete das drei Links, einen Hinweis auf den
+   * Newsletter mit den Programm-Neuauflagen und den Vier-Jahres-Ertrag einer
+   * echten Anlage.
+   */
+  text: string;
 };
 
 async function main(): Promise<void> {
@@ -198,6 +209,7 @@ async function main(): Promise<void> {
         datum: (msg.envelope?.date ?? new Date()).toISOString().slice(0, 10),
         region_id: treffer.length === 1 ? treffer[0].region_id : null,
         name: treffer.length === 1 ? treffer[0].name : null,
+        text,
       };
       if (b.region_id) befunde.push(b);
       else if (istFremdverkehr(von)) fremd.push(b);
@@ -270,7 +282,16 @@ async function main(): Promise<void> {
     // Absender. Eine echte zweite Antwort am selben Tag kommt durch, weil ihr
     // Betreff sich unterscheidet.
     if ((vorher?.notes ?? "").split("\n").includes(neueNotiz)) continue;
-    patch.notes = vorher?.notes ? `${vorher.notes}\n${neueNotiz}` : neueNotiz;
+    // Verglichen wird die ZEILE, angehängt wird Zeile PLUS Text (26.08.2026).
+    // Die Dublettenprüfung darf den Textblock nicht mitlesen: Sie sucht
+    // zeilenweise, und ein mehrzeiliger Block hätte nie eine Übereinstimmung
+    // ergeben — dieselbe Antwort stünde nach einer Woche siebenmal da, also
+    // genau der Fehler, den die Prüfung verhindern soll.
+    const neuerEintrag = notizMitText(
+      { datum: b.datum, art: b.art, betreff: b.betreff, von: b.von },
+      b.text,
+    );
+    patch.notes = vorher?.notes ? `${vorher.notes}\n${neuerEintrag}` : neuerEintrag;
     // „GESPERRT" IST EINE EINBAHNSTRASSE.
     //
     // Ohne diese Bedingung hob die nächste Mail derselben Stelle den Widerspruch

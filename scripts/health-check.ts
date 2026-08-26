@@ -32,6 +32,7 @@ import { fileURLToPath } from "node:url";
 import { DB_READ_TIMEOUT_MS } from "../lib/db-timeout";
 import { PRUEFSTAND, faelligkeiten } from "../lib/pruefstand";
 import { RELEASE_PLAN, planMeldungen } from "../lib/release-plan";
+import { sollWarnen, warnstufe } from "../lib/social-ablauf";
 
 // In der GitHub-Action kommen die Zugangsdaten aus den Repo-Secrets. Lokal
 // standen sie nicht zur Verfügung — der Check fiel dann still auf die feste
@@ -524,6 +525,61 @@ async function messeMastrFrische(): Promise<MastrFrische | null> {
   }
 }
 
+// ─── Ablauf der Social-Zugänge ───────────────────────────────────────────────
+//
+// Der Zugangsschlüssel für LinkedIn läuft nach zwei Monaten ab, und er lässt
+// sich nur durch einen Login im Browser erneuern — der Autofix kann das nicht,
+// niemand außer dem Betreiber kann es. Ohne Vorwarnung hört das Veröffentlichen
+// an einem beliebigen Tag still auf; das ist dieselbe Fehlerklasse wie ein
+// Wächter, der nicht mehr läuft und deswegen auch nichts mehr meldet.
+//
+// Der Befund macht den Lauf bewusst NICHT rot: Rot startet den Autofix, und der
+// hätte hier nichts zu tun. Er geht direkt in die Mail an den Betreiber.
+
+type SocialAblauf = { plattform: string; tageBisAblauf: number; stufe: number; konto: string | null };
+
+async function messeSocialAblauf(): Promise<SocialAblauf[]> {
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!url || !key) return [];
+  const kopf = { apikey: key, Authorization: `Bearer ${key}` };
+  try {
+    const r = await fetch(
+      `${url}/rest/v1/social_konten?select=plattform,anzeigename,gueltig_bis,gewarnt_bei_stufe`,
+      { headers: kopf, signal: AbortSignal.timeout(20000) },
+    );
+    if (!r.ok) return [];
+    const rows = (await r.json()) as {
+      plattform: string;
+      anzeigename: string | null;
+      gueltig_bis: string;
+      gewarnt_bei_stufe: number | null;
+    }[];
+
+    const faellig: SocialAblauf[] = [];
+    for (const row of rows) {
+      const tage = Math.floor((Date.parse(row.gueltig_bis) - Date.now()) / 86_400_000);
+      if (!sollWarnen(tage, row.gewarnt_bei_stufe)) continue;
+      const stufe = warnstufe(tage);
+      if (stufe === null) continue;
+      // Die Stufe wird sofort quittiert, nicht erst nach erfolgreicher Zustellung:
+      // Ein fehlgeschlagener Mailversand darf nicht dazu führen, dass beim
+      // nächsten Lauf drei Stunden später dieselbe Meldung noch einmal ansetzt.
+      // Der Befund steht ohnehin im Protokoll des Laufs.
+      await fetch(`${url}/rest/v1/social_konten?plattform=eq.${encodeURIComponent(row.plattform)}`, {
+        method: "PATCH",
+        headers: { ...kopf, "Content-Type": "application/json", Prefer: "return=minimal" },
+        body: JSON.stringify({ gewarnt_bei_stufe: stufe }),
+        signal: AbortSignal.timeout(20000),
+      }).catch(() => {});
+      faellig.push({ plattform: row.plattform, tageBisAblauf: tage, stufe, konto: row.anzeigename });
+    }
+    return faellig;
+  } catch {
+    return [];
+  }
+}
+
 function verdict(seconds: number, limits: { warn: number; fail: number }): "gruen" | "gelb" | "rot" {
   if (seconds >= limits.fail) return "rot";
   if (seconds >= limits.warn) return "gelb";
@@ -676,7 +732,10 @@ export function eskalationNoetig(vorherigeLaeufe: ("success" | "failure" | strin
   return davor === undefined || davor !== "failure";
 }
 
-async function letzteLaufErgebnisse(workflow = "health-check.yml"): Promise<string[]> {
+/** Ein abgeschlossener Lauf, wie ihn die GitHub-API beschreibt. */
+export type LaufAkte = { conclusion: string; dauerMin: number | null };
+
+async function letzteLaeufe(workflow = "health-check.yml"): Promise<LaufAkte[]> {
   const token = process.env.GITHUB_TOKEN;
   const repo = process.env.GITHUB_REPOSITORY;
   if (!token || !repo) return [];
@@ -686,11 +745,77 @@ async function letzteLaufErgebnisse(workflow = "health-check.yml"): Promise<stri
       { headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" }, signal: AbortSignal.timeout(10000) },
     );
     if (!res.ok) return [];
-    const data = (await res.json()) as { workflow_runs?: { conclusion: string }[] };
-    return (data.workflow_runs ?? []).map((r) => r.conclusion);
+    const data = (await res.json()) as {
+      workflow_runs?: { conclusion: string; run_started_at?: string; created_at?: string; updated_at?: string }[];
+    };
+    return (data.workflow_runs ?? []).map((r) => {
+      // Gemessen wird ab `run_started_at`, nicht ab `created_at`: Sonst zählt die
+      // Wartezeit auf einen freien Runner mit, und die hat mit dem Job-Zeitlimit
+      // nichts zu tun. Bekannte Grenze der Näherung: Über den ganzen Lauf
+      // gerechnet, nicht je Job — bei einem Workflow mit einem einzigen Job
+      // (unsere geplanten Läufe) ist das derselbe Wert.
+      const start = r.run_started_at ?? r.created_at;
+      const ende = r.updated_at;
+      const dauerMin =
+        start && ende ? Math.max(0, (new Date(ende).getTime() - new Date(start).getTime()) / 60000) : null;
+      return { conclusion: r.conclusion, dauerMin: Number.isFinite(dauerMin) ? dauerMin : null };
+    });
   } catch {
     return [];
   }
+}
+
+async function letzteLaufErgebnisse(workflow = "health-check.yml"): Promise<string[]> {
+  return (await letzteLaeufe(workflow)).map((l) => l.conclusion);
+}
+
+/**
+ * Das Job-Zeitlimit aus der Workflow-Datei — gelesen, nicht angenommen.
+ *
+ * Zweite Liste wäre die falsche Lösung (dieselbe Begründung wie beim Zeitplan im
+ * Test daneben): Wer das Limit in der Datei anhebt und die Kopie hier vergisst,
+ * bekommt eine Warnung, die auf eine Zahl zeigt, die es nicht mehr gibt.
+ * Ohne Angabe gilt GitHubs Vorgabe von 360 Minuten je Job.
+ */
+export function jobZeitlimitMinuten(workflowText: string): number {
+  const treffer = [...workflowText.matchAll(/^\s*timeout-minutes:\s*(\d+)/gm)].map((m) => Number(m[1]));
+  // Der größte Wert ist das Job-Limit: Die kleineren gehören einzelnen Schritten
+  // (bei uns Browser-Download und Systempakete), und ein Schritt-Limit sagt über
+  // die Gesamtdauer nichts.
+  return treffer.length ? Math.max(...treffer) : 360;
+}
+
+/**
+ * Wie viel Reserve muss ein geplanter Lauf zu seinem Zeitlimit behalten?
+ *
+ * Ein Viertel — und die Zahl kommt aus der MELDEVERZÖGERUNG, nicht aus Optik:
+ * Reißt ein Lauf sein Limit, endet er „cancelled", und das meldet `laufStumm`
+ * erst nach `LAUF_STUMM_AB` erfolglosen Läufen. Bei einem nächtlichen Lauf sind
+ * das drei Nächte ohne Prüfung, bevor überhaupt jemand hinsieht — genau so ist
+ * es dem Förder-Wächter im August 2026 ergangen. Die Warnung muss deshalb
+ * greifen, solange noch Luft für einen gewöhnlichen Ausbau ist (eine Frage mehr
+ * im Flow, ein Rechner mehr), nicht erst, wenn er schon abbricht.
+ */
+export const ZEITRESERVE_ANTEIL = 0.25;
+
+/**
+ * Braucht dieser geplante Lauf zu viel von seinem Zeitlimit?
+ *
+ * Bewertet wird der jüngste ERFOLGREICHE Lauf. Abgebrochene sind hier wertlos:
+ * Sie dauern per Definition genau so lange wie das Limit, „knapp" daraus
+ * abzuleiten wäre ein Zirkelschluss — und der Fall gehört ohnehin `laufStumm`.
+ *
+ * Reine Funktion mit hereingereichten Läufen: ohne Netz prüfbar. Kein Ergebnis,
+ * keine Dauer, kein Urteil — nicht behaupten, was nicht gemessen wurde.
+ */
+export function zeitreserveKnapp(
+  laeufe: ReadonlyArray<LaufAkte>,
+  limitMin: number,
+): { knapp: boolean; dauerMin: number; anteil: number } | null {
+  const letzterErfolg = laeufe.find((l) => l.conclusion === "success" && l.dauerMin !== null);
+  if (!letzterErfolg || letzterErfolg.dauerMin === null || !(limitMin > 0)) return null;
+  const anteil = letzterErfolg.dauerMin / limitMin;
+  return { knapp: anteil > 1 - ZEITRESERVE_ANTEIL, dauerMin: letzterErfolg.dauerMin, anteil };
 }
 
 /**
@@ -775,6 +900,11 @@ async function main() {
   //                 Geld, Produkt). Genau das und nur das rechtfertigt eine Mail.
   const forClaude: string[] = [];
   const forOperator: string[] = [];
+  // Geht an den Betreiber wie `forOperator`, macht den Lauf aber NICHT rot:
+  // für Dinge, die nur er erledigen kann und bei denen es nichts zu analysieren
+  // gibt. Rot würde hier den Autofix starten, der nichts ausrichten kann, und
+  // uns nebenbei abgewöhnen, Rot ernst zu nehmen.
+  const fuerBetreiberOhneRot: string[] = [];
   const selfHealed: string[] = [];
   const warnings: string[] = [];
 
@@ -982,6 +1112,20 @@ async function main() {
     warnings.push("MaStR-Datenstand nicht abrufbar — keine Aussage über die Frische der Atlas-Zahlen.");
   }
 
+  // ── Ablauf der Social-Zugänge ─────────────────────────────────────────────
+  for (const s of await messeSocialAblauf()) {
+    const wer = s.konto ? ` (${s.konto})` : "";
+    fuerBetreiberOhneRot.push(
+      s.tageBisAblauf < 0
+        ? `Der ${s.plattform}-Zugang${wer} ist abgelaufen — seitdem wird nichts mehr veröffentlicht. ` +
+          `Zum Erneuern einmal solar-check.io/api/linkedin/start aufrufen (eingeloggt als Admin). ` +
+          `Das kann nur jemand mit deinem Konto, ich komme da nicht heran.`
+        : `Der ${s.plattform}-Zugang${wer} läuft in ${s.tageBisAblauf} Tagen ab. Danach hört das ` +
+          `Veröffentlichen still auf. Einmal solar-check.io/api/linkedin/start aufrufen (eingeloggt ` +
+          `als Admin) setzt die Frist zurück — das dauert zwei Klicks und kann nur jemand mit deinem Konto.`,
+    );
+  }
+
   // ── Cache-Wirksamkeit ─────────────────────────────────────────────────────
   // Kein Zeitmaß, sondern eine Ja/Nein-Frage: Kommt die Seite beim zweiten
   // Abruf aus dem CDN? Läuft NACH den Zeitmessungen, damit die zusätzlichen
@@ -1057,8 +1201,32 @@ async function main() {
   // ist nötig, weil ein GitHub-Workflow kein Prüfdatum stempelt und deshalb
   // oben nicht auftauchen kann (Begründung an `laufStumm`).
   for (const lauf of GEPLANTE_LAEUFE) {
-    const ergebnisse = await letzteLaufErgebnisse(lauf.datei);
+    const akten = await letzteLaeufe(lauf.datei);
+    const ergebnisse = akten.map((a) => a.conclusion);
     if (!ergebnisse.length) continue; // kein Token / lokal — nichts behaupten
+
+    // Frühindikator: nicht der Abbruch, sondern der Abstand zum Zeitlimit.
+    // Dieselbe Logik wie beim Kaltaufbau gegen die Notbremse — wer erst auf das
+    // „cancelled" wartet, hat drei Nächte ohne Prüfung hinter sich.
+    //
+    // Steht ausdrücklich in `warnings` und macht den Lauf NICHT rot: Es ist
+    // nichts kaputt, und rot würde die Autofix-Action auf ein Problem ansetzen,
+    // dessen naheliegendster Griff — das Limit hochsetzen — genau der verbotene
+    // ist (Gate, Teil 2). Gehört gemessen, nicht weggedrückt.
+    const wurzel = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+    const pfad = resolve(wurzel, ".github", "workflows", lauf.datei);
+    if (existsSync(pfad)) {
+      const limitMin = jobZeitlimitMinuten(readFileSync(pfad, "utf8"));
+      const reserve = zeitreserveKnapp(akten, limitMin);
+      if (reserve?.knapp) {
+        warnings.push(
+          `Der geplante Lauf „${lauf.was}" braucht ${Math.round(reserve.dauerMin)} von ${limitMin} erlaubten Minuten ` +
+            `(${Math.round(reserve.anteil * 100)} %). Reißt er das Limit, endet er „abgebrochen" — und das fällt erst ` +
+            `nach ${LAUF_STUMM_AB} Läufen auf. Nachsehen, was gewachsen ist; das Limit NICHT ohne Messung hochsetzen.`,
+        );
+      }
+    }
+
     const { stumm, wie } = laufStumm(ergebnisse);
     if (!stumm) continue;
     forClaude.push(
@@ -1099,13 +1267,23 @@ async function main() {
 
   // ── Bericht ───────────────────────────────────────────────────────────────
   const ampel =
-    forOperator.length || forClaude.length ? "ROT" : selfHealed.length ? "REPARIERT" : warnings.length ? "GELB" : "GRUEN";
+    forOperator.length || forClaude.length
+      ? "ROT"
+      : selfHealed.length
+        ? "REPARIERT"
+        : // Eine Sache, die nur der Betreiber erledigen kann, ist mindestens gelb:
+          // grün mit einer offenen Bitte im Bericht wäre ein Widerspruch.
+          warnings.length || fuerBetreiberOhneRot.length
+          ? "GELB"
+          : "GRUEN";
   const report = [
     `Solar Check Gesundheitscheck: ${ampel}`,
     "",
     ...lines,
     ...(selfHealed.length ? ["", "Selbst repariert (nichts zu tun):", ...selfHealed.map((s) => `- ${s}`)] : []),
-    ...(forOperator.length ? ["", "Entscheidung des Betreibers:", ...forOperator.map((p) => `- ${p}`)] : []),
+    ...(forOperator.length || fuerBetreiberOhneRot.length
+      ? ["", "Entscheidung des Betreibers:", ...[...forOperator, ...fuerBetreiberOhneRot].map((p) => `- ${p}`)]
+      : []),
     ...(forClaude.length ? ["", "Fuer Claude zur Analyse:", ...forClaude.map((p) => `- ${p}`)] : []),
     ...(warnings.length ? ["", "Auffaellig (nichts zu tun):", ...warnings.map((w) => `- ${w}`)] : []),
   ].join("\n");
@@ -1125,6 +1303,7 @@ async function main() {
   const festgefahren = forClaude.length > 0 && eskalationNoetig(vorlaeufe);
   const entscheidungen = [
     ...forOperator,
+    ...fuerBetreiberOhneRot,
     ...(festgefahren
       ? [
           `Seit ${ESKALATION_AB_LAEUFEN} Prüfläufen in Folge komme ich an derselben Stelle nicht weiter: ` +

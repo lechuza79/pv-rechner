@@ -201,15 +201,26 @@ describe("stackFunding", () => {
     expect(stackFunding(fundingForAgs("09663000"), { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 }).total).toBe(0);
   });
 
-  // Regression: Bad Homburg amounts are correct but the program is not reliably
-  // accepting applications → status "unsicher" must NOT be auto-deducted.
-  it("Bad Homburg (status unsicher) is not auto-applied", () => {
+  // Regression: Bad Homburg amounts are correct but the city stopped accepting new
+  // applications on 10.08.2026 (digital application process being rebuilt) → status
+  // "pausiert" must NOT be auto-deducted. The assertion that matters is the pair
+  // "computable but not active", not the particular status word: the entry moved
+  // unsicher → pausiert on 24.08.2026 when the official page finally stated a reason.
+  //
+  // DIE ZWEITE ZEILE HAT BIS ZUM 24.08.2026 DEN FALSCHEN ORT GEPRÜFT: 06434003 ist
+  // Glashütten. Der Katalog-Schlüssel wurde am 19.08.2026 auf 06434001 korrigiert,
+  // dieser Test nicht — er fragte danach eine Gemeinde ab, die gar kein Programm
+  // hat, und war deshalb zwangsläufig grün. Dieselbe Fehlerklasse wie der Test, der
+  // damals den falschen Schlüssel festgeschrieben hatte: Er verglich den Fehler mit
+  // sich selbst. Mit dem echten Schlüssel prüft die Zeile endlich, was sie behauptet.
+  it("Bad Homburg (pausiert seit 10.08.2026) is not auto-applied", () => {
     const p = getFundingProgram("badhomburg-energiespar")!;
-    expect(p.status).toBe("unsicher");
+    expect(p.status).toBe("pausiert");
     const a = fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 });
     expect(a.computable).toBe(true);
     expect(a.active).toBe(false); // computable, but not active → no deduction
-    expect(stackFunding(fundingForAgs("06434003"), { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 }).total).toBe(0);
+    expect(fundingForAgs("06434001").some((f) => f.id === "badhomburg-energiespar")).toBe(true);
+    expect(stackFunding(fundingForAgs("06434001"), { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 }).total).toBe(0);
   });
 });
 

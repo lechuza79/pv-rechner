@@ -42,7 +42,14 @@ import GroessenklasseLink from "../../../../../components/atlas/GroessenklasseLi
  * laeuft nach jedem Datenlauf und fuellt den Speicher, damit kein Besucher den
  * ersten Aufbau bezahlt.
  */
-export const revalidate = 86400;
+// Sieben Tage statt einem (26.08.2026) — Begruendung ausfuehrlich in
+// app/(site)/solar-atlas/[bundesland]/[kreis]/[gemeinde]/page.tsx.
+// Fuer diese Route kommt ein zweiter Grund dazu: Sie hat die Kombinatorik aus
+// Kennzahl x Groessenklasse x Bundesland x Landkreis, also Tausende Adressen,
+// und war damit die teuerste Route der ganzen Domain (57 % aller Aufrufe, jeder
+// einzelne ein Cache-Fehlschlag). Seit dem 26.08.2026 ist sie zusaetzlich fuer
+// Crawler gesperrt (app/robots.ts) — sie stand ohnehin auf noindex.
+export const revalidate = 604800;
 
 // Kein Vorab-Rendern: Drei Kategorien × 417 Gebiete sind über 1.200 Seiten, und
 // Next rendert die Einträge dieser Liste PARALLEL — genau das hat am 27.07.2026

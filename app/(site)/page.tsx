@@ -48,7 +48,7 @@ const tools = [
     href: "/waermepumpe-rechner",
     icon: IconBattery,
     title: "Wärmepumpe rechnen",
-    description: "Einsparung, Amortisation und CO₂ einer Wärmepumpe vs. Gas/Öl — mit BEG-Förderung, transparent nach Fraunhofer ISE & BWP.",
+    description: "Einsparung, Amortisation und CO₂ einer Wärmepumpe vs. Gas/Öl — mit BEG-Förderung, transparent nach Fraunhofer ISE & Verbraucherzentrale.",
     cta: "Prognose starten",
   },
   {
@@ -74,6 +74,28 @@ const tools = [
   },
 ];
 
+/**
+ * Die Anzahl der Werkzeuge als deutsches Zahlwort — abgeleitet, nicht getippt.
+ *
+ * Hier stand bis 24.08.2026 „Acht Tools" als Text. Die Zahl stimmte, aber sie
+ * hätte beim nächsten Rechner still falsch dagestanden: Niemand denkt beim
+ * Anlegen einer neunten Karte an einen Satz zwei Bildschirme weiter oben.
+ * Dieselbe Fehlerklasse wie eine abgezählte Aufzählung in der
+ * Datenschutzerklärung — sie wird nicht falsch geschrieben, sie wird falsch
+ * gelassen.
+ */
+const ZAHLWORTE = [
+  "Keine", "Ein", "Zwei", "Drei", "Vier", "Fünf", "Sechs", "Sieben",
+  "Acht", "Neun", "Zehn", "Elf", "Zwölf",
+] as const;
+
+// Bewusst NICHT exportiert: Next lässt aus einer Seiten-Datei nur die
+// vorgesehenen Felder heraus und bricht den Build bei allem anderen ab.
+function toolAnzahlSatz(anzahl: number): string {
+  const wort = ZAHLWORTE[anzahl] ?? String(anzahl);
+  return anzahl === 1 ? `${wort} Tool.` : `${wort} Tools.`;
+}
+
 export default function Home() {
   return (
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
@@ -84,7 +106,7 @@ export default function Home() {
         {/* Hero Text */}
         <div style={{ textAlign: "center", marginBottom: 20 }}>
           <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Energie ehrlich berechnet.</h1>
-          <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>Acht Tools. Ohne Anmeldung, ohne Verkaufsanrufe.</p>
+          <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>{toolAnzahlSatz(tools.length)} Ohne Anmeldung, ohne Verkaufsanrufe.</p>
         </div>
       </div>
 

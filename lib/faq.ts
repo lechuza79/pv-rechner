@@ -23,7 +23,7 @@ import {
   EEG_REFORM_STAND, eegDatum, eegReformStandLabel, eegStaffelSatz, eegVerfahrenSatz,
 } from "./eeg-reform-config";
 import type { PriceConfig } from "./prices-config";
-import { DEFAULT_HEATPUMP_CONFIG } from "./heatpump-config";
+import { DEFAULT_HEATPUMP_CONFIG, begStufeAm } from "./heatpump-config";
 
 export interface FaqLink {
   /** Exact phrase inside `a`; its first occurrence becomes a link. */
@@ -218,7 +218,20 @@ export function pvSpeicherFaq(prices?: PriceConfig): FaqEntry[] {
   return [
     {
       q: "Wie groß sollte ein Stromspeicher sein?",
-      a: "Für ein Einfamilienhaus sind 5–10 kWh typisch. Bei aktuellen Speicherpreisen ist der Aufpreis pro zusätzlicher Kilowattstunde klein, deshalb lohnt oft auch die nächstgrößere Stufe. Ab einer gewissen Größe bringt mehr Kapazität aber kaum noch etwas: Der Speicher ist im Sommer ohnehin voll, und im Winter fehlt die Sonne zum Laden. Die Empfehlung rechnet die wirtschaftlich sinnvolle Kombination aus Anlagengröße und Speicher für deinen Haushalt durch.",
+      // Diese Antwort nennt bewusst KEINE typische Größe mehr.
+      //
+      // Bis zum 25.08.2026 stand hier „für ein Einfamilienhaus sind 5–10 kWh
+      // typisch" plus „deshalb lohnt oft auch die nächstgrößere Stufe". Beides
+      // widersprach dem eigenen Werkzeug: Die Empfehlung gibt einem Haushalt mit
+      // ein bis drei Personen ohne Wärmepumpe und ohne E-Auto GAR KEINEN
+      // Speicher, weil sie ihn an den Jahresverbrauch koppelt — 5 kWh erreicht
+      // sie dort erst ab vier Personen. Ein Leser bekam also eine Faustregel
+      // genannt und wurde dann zu einem Rechner geschickt, der ihr widerspricht.
+      //
+      // Entscheidung des Betreibers am 25.08.2026: „das werkzeug muss immer
+      // führend sein". Wo Text und Rechnung auseinandergehen, weicht der Text —
+      // festgehalten von `lib/__tests__/faq-gegen-werkzeug.test.ts`.
+      a: "Das hängt weniger am Haus als am Verbrauch: Ein Speicher lohnt sich erst, wenn abends und nachts genug Strom gebraucht wird, um ihn wieder zu leeren. Bei einem kleinen Haushalt ohne Wärmepumpe und ohne E-Auto ist das oft gar nicht der Fall — dann rechnet sich die Anlage ohne Speicher besser. Kommen große Verbraucher dazu, ändert sich das schnell. Ab einer gewissen Größe bringt mehr Kapazität ohnehin kaum noch etwas: Der Speicher ist im Sommer voll, und im Winter fehlt die Sonne zum Laden. Die Empfehlung rechnet die wirtschaftlich sinnvolle Kombination aus Anlagengröße und Speicher für deinen Haushalt durch.",
       links: [{ phrase: "Die Empfehlung", href: "/pv-bedarf-berechnen" }],
       cta: { label: "Passende Größe finden", href: "/pv-bedarf-berechnen" },
     },
@@ -290,7 +303,7 @@ export function pvOhneEinspeisungFaq(prices?: PriceConfig): FaqEntry[] {
     },
     {
       q: "Fällt die Einspeisevergütung 2027 weg?",
-      a: `Beschlossen ist bislang ein Gesetzentwurf, nicht das Gesetz. ${eegVerfahrenSatz()} Inhaltlich soll die feste Einspeisevergütung für Neuanlagen enden: Für Anlagen unter 25 Kilowatt installierter Leistung ist keine dauerhafte Förderung mehr vorgesehen, sondern eine Starthilfe in Form eines vierjährigen Bonus für die Direktvermarktung. Zusätzlich soll die Einspeiseleistung neuer Dachanlagen unter 100 Kilowatt dauerhaft auf 50 Prozent ihrer installierten Leistung begrenzt werden; begründet wird das damit, Mittagsspitzen zu vermeiden und den Zubau von Speichern anzureizen. Für Anlagen, die bereits in Betrieb sind, gilt das nicht. Der Entwurf vom ${eegDatum(EEG_REFORM_STAND.entwurfIso)} nennt außerdem eine auf 36 Monate befristete Übergangszahlung, die 1 ct/kWh unter dem anzulegenden Wert liegt, und staffelt die Leistungsgrenze dafür: ${eegStaffelSatz()}. Diese Werte stehen im Gesetzentwurf und sind kein geltendes Recht; die Fördersätze stehen zusätzlich unter dem Vorbehalt der beihilferechtlichen Genehmigung durch die EU-Kommission. Ob und in welcher Form die Reform kommt, ist offen — verbindlich ist allein die offizielle Gesetzeslage. (Stand: ${eegReformStandLabel()})`,
+      a: `Beschlossen ist bislang ein Gesetzentwurf, nicht das Gesetz. ${eegVerfahrenSatz()} Inhaltlich soll die feste Einspeisevergütung für Neuanlagen enden: Für Anlagen unter 25 Kilowatt installierter Leistung ist keine dauerhafte Förderung mehr vorgesehen, sondern eine Starthilfe in Form eines vierjährigen Bonus für die Direktvermarktung. Zusätzlich soll die Einspeiseleistung neuer Gebäudeanlagen unter 100 Kilowatt dauerhaft auf 50 Prozent ihrer installierten Leistung begrenzt werden; begründet wird das damit, Mittagsspitzen zu vermeiden und den Zubau von Speichern anzureizen. Für Anlagen, die bereits in Betrieb sind, gilt das nicht. Der Entwurf vom ${eegDatum(EEG_REFORM_STAND.entwurfIso)} nennt außerdem eine auf 36 Monate befristete Übergangszahlung, die 1 ct/kWh unter dem anzulegenden Wert liegt, und staffelt die Leistungsgrenze dafür: ${eegStaffelSatz()}. Diese Werte stehen im Gesetzentwurf und sind kein geltendes Recht; die Fördersätze stehen zusätzlich unter dem Vorbehalt der beihilferechtlichen Genehmigung durch die EU-Kommission. Ob und in welcher Form die Reform kommt, ist offen — verbindlich ist allein die offizielle Gesetzeslage. (Stand: ${eegReformStandLabel()})`,
       cta: { label: "Aktuelle Vergütung ansehen", href: "/datenstand" },
     },
     {
@@ -313,18 +326,24 @@ export function pvOhneEinspeisungFaq(prices?: PriceConfig): FaqEntry[] {
   ];
 }
 
-/** FAQ for the heat-pump funding guide (/ratgeber/waermepumpe-foerderung-2026).
+/** FAQ for the heat-pump funding guide (/ratgeber/waermepumpe-foerderung).
  *  All rates/caps come from the geprüfte BEG config (KfW Merkblatt 458) — never
  *  hardcode a percentage or euro figure here. */
 export function waermepumpeFoerderungFaq(): FaqEntry[] {
   const c = DEFAULT_HEATPUMP_CONFIG;
+  // Grundsatz, Klimabonus und Höchstbetrag kommen aus dem Fahrplan der
+  // Richtlinie, nicht aus der Config-Konstante: Sie ändern sich zu festen
+  // Stichtagen, und diese Antworten landen zusätzlich im strukturierten
+  // FAQ-Auszug für Suchmaschinen. Eine dort eingefrorene Zahl wäre ab dem
+  // ersten Stichtag eine falsche Angabe an einer besonders sichtbaren Stelle.
+  const heute = begStufeAm(new Date());
   const pct = (r: number) => `${Math.round(r * 100)} %`;
-  const grund = pct(c.begGrundfoerderung);
-  const klima = pct(c.begKlimaBonus);
+  const grund = pct(heute.grundfoerderung);
+  const klima = pct(heute.klimaBonus);
   const staffel = c.begEinkommensStaffel;
   const einkommenGrenze = staffel[staffel.length - 1].maxIncome.toLocaleString("de-DE");
-  const maxZuschuss = Math.round(c.begMaxCap * c.begMaxRateLowIncome).toLocaleString("de-DE");
-  const capKosten = c.begMaxCap.toLocaleString("de-DE");
+  const maxZuschuss = Math.round(heute.maxCap * c.begMaxRateLowIncome).toLocaleString("de-DE");
+  const capKosten = heute.maxCap.toLocaleString("de-DE");
   const familie = c.begFamilienzuschlag.toLocaleString("de-DE");
   return [
     {
@@ -360,7 +379,7 @@ export function waermepumpeFoerderungFaq(): FaqEntry[] {
     },
     {
       q: "Ich kenne das Alter meiner Gasheizung nicht — bekomme ich den Klima-Bonus?",
-      a: "Bei Öl-, Kohle-, Gas-Etagen- und Nachtspeicherheizungen ist der Klima-Bonus unabhängig vom Alter sicher. Bei zentralen Gas-, Holz- und Pelletheizungen hängt er an der 20-Jahre-Grenze. Das Baujahr steht auf dem Typenschild am Heizkessel oder in den Unterlagen des Schornsteinfegers. Solange das Alter unklar ist, solltest du den Bonus vorsichtshalber nicht fest einplanen — verbindlich ist am Ende der Zuschussbescheid der KfW.",
+      a: "Bei Öl-, Kohle-, Gas-Etagen- und Nachtspeicherheizungen ist der Klima-Bonus unabhängig vom Alter sicher. Bei zentralen Gas-, Holz- und Pelletheizungen hängt er an der 20-Jahre-Grenze. Das Baujahr steht auf dem Typenschild am Heizkessel oder in den Unterlagen des Schornsteinfegers. Solange das Alter unklar ist, solltest du den Bonus vorsichtshalber nicht fest einplanen — verbindlich ist am Ende die Zusage der KfW.",
       cta: { label: "Beide Fälle durchrechnen", href: "/waermepumpe-rechner" },
     },
   ];
@@ -368,15 +387,18 @@ export function waermepumpeFoerderungFaq(): FaqEntry[] {
 
 /** FAQ für den Ratgeber „Gasheizung oder Wärmepumpe" (GModG-Grüngas-Pflicht). */
 export function gasheizungWaermepumpeFaq(): FaqEntry[] {
+  const HP = DEFAULT_HEATPUMP_CONFIG;
+  const pct = (r: number) => `${Math.round(r * 100)} %`;
+  const eur = (n: number) => `${n.toLocaleString("de-DE")} €`;
   return [
     {
-      q: "Darf ich 2026 noch eine neue Gasheizung einbauen?",
+      q: `Darf ich ${new Date().getFullYear()} noch eine neue Gasheizung einbauen?`,
       a: "Ja. Das Gebäudemodernisierungsgesetz (GModG) hebt die 65-Prozent-Erneuerbaren-Pflicht auf und lässt neue Gasheizungen wieder grundsätzlich zu. Die Anschaffung ist günstiger als eine Wärmepumpe — aber ab 2029 greift die Grüngas-Pflicht, die den Gasbetrieb Jahr für Jahr teurer macht.",
       links: [{ phrase: "Wärmepumpe", href: "/waermepumpe-rechner" }],
     },
     {
       q: "Was ist die Grüngas-Pflicht?",
-      a: `Die Bio-Treppe (§ 43 GModG) gilt für Heizungen für Gas, Heizöl oder Flüssiggas, die nach dem ${GMODG_RECHTSSTAND.inKraftSeit} neu eingebaut werden — im Bestand wie im Neubau (dort für Gebäude, die bis zum ${GMODG_RECHTSSTAND.neubauBioTreppeBis} errichtet werden). Wer eine solche Heizung betreibt, muss ab 2029 einen steigenden Anteil klimafreundlicher Brennstoffe beimischen. Das Gesetz nennt vier Stufen: ${bioTreppeStufenText("Prozent")}. Eine 100-Prozent-Stufe steht dort nicht; dass Heizungsbrennstoffe ab 2045 vollständig klimaneutral sein sollen, folgt aus einer eigenen Ankündigung des Gesetzes (§ 42a GModG), für die ein gesondertes Quotengesetz erst noch kommen muss. Anrechenbar sind neben Biomethan auch Bioheizöl, biogenes Flüssiggas sowie Wasserstoff und daraus hergestellte Derivate. Biomethan kostet rund doppelt so viel wie Erdgas, deshalb steigt der Gaspreis deutlich stärker als durch die normale Teuerung.`,
+      a: `Die Bio-Treppe (§ 43 GModG) gilt für Heizungen für Gas, Heizöl oder Flüssiggas, die nach dem ${GMODG_RECHTSSTAND.inKraftSeit} neu eingebaut werden — im Bestand wie im Neubau (dort für Gebäude, die bis zum ${GMODG_RECHTSSTAND.neubauBioTreppeBis} errichtet werden). Wer eine solche Heizung betreibt, muss ab 2029 einen steigenden Anteil klimafreundlicher Brennstoffe beimischen. Das Gesetz nennt vier Stufen: ${bioTreppeStufenText("Prozent")}. Eine 100-Prozent-Stufe steht dort nicht; dass Heizungsbrennstoffe ab 2045 vollständig klimaneutral sein sollen, folgt aus einer eigenen Ankündigung des Gesetzes (§ 42a GModG), für die ein gesondertes Quotengesetz erst noch kommen muss. Anrechenbar sind neben Biomethan auch Bioheizöl, biogenes Flüssiggas sowie grüner, blauer, orangener oder türkiser Wasserstoff und daraus hergestellte Derivate. Biomethan kostet rund doppelt so viel wie Erdgas, deshalb steigt der Gaspreis deutlich stärker als durch die normale Teuerung.`,
     },
     {
       q: "Gilt die Grüngas-Pflicht auch im Neubau?",
@@ -384,7 +406,7 @@ export function gasheizungWaermepumpeFaq(): FaqEntry[] {
     },
     {
       q: "Gilt die Grüngas-Pflicht auch für meine bestehende Gasheizung?",
-      a: `Die Bio-Treppe nicht — sie erfasst nur Heizungen, die nach dem ${GMODG_RECHTSSTAND.inKraftSeit} neu eingebaut werden. Ganz verschont bleiben Bestandsanlagen aber voraussichtlich nicht: Dasselbe Gesetz kündigt in § 42a eine Grüngas- und Grünheizölquote an. Ein eigenes Gesetz — vorzulegen bis zum ${GMODG_RECHTSSTAND.quoteGesetzBis} — soll die Anbieter von Gas, Heizöl und Flüssiggas verpflichten, ihre Brennstoffe bis 2045 vollständig auf klimaneutrale umzustellen. Diese Quote setzt beim Brennstoff an, nicht bei der Heizung, und wirkt damit auch auf ältere Anlagen. Wie hoch sie zu Beginn ausfällt, ist noch offen: Die Gesetzesbegründung geht von einem Start im Jahr 2028 mit zunächst bis zu einem Prozent aus, im Gesetzestext steht diese Zahl nicht. Unsere Rechnung bildet deshalb nur die Bio-Treppe für neue Heizungen ab.`,
+      a: `Die Bio-Treppe nicht — sie erfasst nur Heizungen, die nach dem ${GMODG_RECHTSSTAND.inKraftSeit} neu eingebaut werden. Ganz verschont bleiben Bestandsanlagen aber voraussichtlich nicht: Dasselbe Gesetz kündigt in § 42a GModG eine Grüngas- und Grünheizölquote an. Ein eigenes Gesetz — vorzulegen bis zum ${GMODG_RECHTSSTAND.quoteGesetzBis} — soll die Anbieter von Gas, Heizöl und Flüssiggas verpflichten, ihre Brennstoffe bis 2045 vollständig auf klimaneutrale umzustellen. Diese Quote setzt beim Brennstoff an, nicht bei der Heizung, und wirkt damit auch auf ältere Anlagen. Wie hoch sie zu Beginn ausfällt, ist noch offen: Die Gesetzesbegründung geht von einem Start im Jahr 2028 mit zunächst bis zu einem Prozent aus, im Gesetzestext steht diese Zahl nicht. Unsere Rechnung bildet deshalb nur die Bio-Treppe für neue Heizungen ab.`,
     },
     {
       q: "Wie viel teurer wird Gas dadurch?",
@@ -392,13 +414,22 @@ export function gasheizungWaermepumpeFaq(): FaqEntry[] {
     },
     {
       q: "Geht eine Wärmepumpe auch im unsanierten Altbau?",
-      a: "Ja. Die verbreitete Annahme, im Altbau brauche man erst eine Vollsanierung, stimmt so pauschal nicht. Eine Luft-Wasser-Wärmepumpe arbeitet auch bei höheren Vorlauftemperaturen — nur mit etwas schlechterer Arbeitszahl, also höherem Stromverbrauch. Weil die Gasheizung durch die Grüngas-Pflicht so stark teurer wird, ist die Wärmepumpe selbst im unsanierten Haus über 20 Jahre klar günstiger. Größere Heizkörper oder eine Teilsanierung verbessern die Arbeitszahl zusätzlich.",
+      a: "Ja. Die verbreitete Annahme, im Altbau brauche man erst eine Vollsanierung, stimmt so pauschal nicht. Eine Luft-Wasser-Wärmepumpe arbeitet auch bei höheren Vorlauftemperaturen — nur mit etwas schlechterer Arbeitszahl, also höherem Stromverbrauch. Weil die Gasheizung durch die Grüngas-Pflicht so stark teurer wird, liegt die Wärmepumpe in unserer Modellrechnung auch im unsanierten Haus über 20 Jahre vorn — wie deutlich, hängt an Heizlast, Dämmung und Strompreis. Größere Heizkörper oder eine Teilsanierung verbessern die Arbeitszahl zusätzlich.",
       cta: { label: "Für mein Haus rechnen", href: "/waermepumpe-rechner" },
     },
     {
       q: "Lohnt sich die Wärmepumpe trotz höherer Anschaffung?",
-      a: "In den meisten Fällen ja. Die Wärmepumpe kostet in der Anschaffung mehr, aber die BEG-Förderung deckt oft 50 bis 70 Prozent, und die laufenden Kosten liegen deutlich unter denen einer Gasheizung mit Grüngas-Pflicht. Über 20 Jahre entsteht so ein Vorsprung von mehreren zehntausend Euro. Wie es für dein Haus aussieht, rechnet der Wärmepumpen-Rechner aus.",
-      links: [{ phrase: "BEG-Förderung", href: "/ratgeber/waermepumpe-foerderung-2026" }],
+      // Die Spanne kommt aus der Config, nicht aus dem Kopf. Vorher stand hier
+      // „deckt oft 50 bis 70 Prozent" — unten zu hoch (ein Vermieter bekommt die
+      // Grundförderung von 30 %, ein Selbstnutzer mit Klimabonus 46 %) und oben
+      // zu niedrig (mit Einkommensbonus sind es bis zu 80 %). Dazu ein falscher
+      // Nenner: Die Sätze gelten den förderfähigen Kosten, die bei begMaxCap
+      // gedeckelt sind, nicht der ganzen Investition. Die Nachbarantwort nannte
+      // längst die richtigen Werte — zwei Zahlen für dieselbe Förderung, beide
+      // im FAQPage-JSON-LD. Geprüft am 25.08.2026 gegen das KfW-Merkblatt 458,
+      // Stand 07/2026, S. 3 f. (docs/quellen/).
+      a: `In den meisten Fällen ja. Die Wärmepumpe kostet in der Anschaffung mehr, aber die BEG-Förderung übernimmt je nach Selbstnutzung, Alter der alten Heizung und Einkommen ${pct(begStufeAm(new Date()).grundfoerderung)} bis ${pct(HP.begMaxRateLowIncome)} der förderfähigen Kosten, und die laufenden Kosten liegen deutlich unter denen einer Gasheizung mit Grüngas-Pflicht. Gefördert wird dabei höchstens bis ${eur(begStufeAm(new Date()).maxCap)}. Wie viel für dein Haus zusammenkommt, rechnet der Wärmepumpen-Rechner aus.`,
+      links: [{ phrase: "BEG-Förderung", href: "/ratgeber/waermepumpe-foerderung" }],
       cta: { label: "Ersparnis berechnen", href: "/waermepumpe-rechner" },
     },
     {
@@ -591,7 +622,7 @@ export function balkonAnmeldenFaq(): FaqEntry[] {
     },
     {
       q: "Was passiert, wenn ich mein Balkonkraftwerk nicht anmelde?",
-      a: "Wer die Frist versäumt, handelt nach Angabe der Bundesnetzagentur grundsätzlich ordnungswidrig — vorausgesetzt, es geschieht vorsätzlich oder fahrlässig. Der gesetzliche Bußgeldrahmen für diesen Verstoß liegt bei bis zu 50.000 Euro und halbiert sich bei Fahrlässigkeit; das ist die Obergrenze für alle Verstöße dieser Kategorie, einschließlich gewerblicher Großanlagen, und nicht der Betrag, der bei einem Balkongerät zu erwarten wäre. Die Behörde nennt selbst keine Summe. Wie oft tatsächlich Bußgelder verhängt werden, ist nicht öffentlich belegt — weder in der einen noch in der anderen Richtung. Nachholen lässt sich die Registrierung jederzeit.",
+      a: "Wer die Frist versäumt, handelt nach Angabe der Bundesnetzagentur grundsätzlich ordnungswidrig — vorausgesetzt, es geschieht vorsätzlich oder fahrlässig. Im Netz kursiert dazu eine hohe Bußgeld-Summe; sie steht im Gesetz, ist aber die Obergrenze für alle Verstöße dieser Kategorie einschließlich gewerblicher Großanlagen und nicht der Betrag, der bei einem Balkongerät zu erwarten wäre. Bei bloßer Fahrlässigkeit halbiert sich der Rahmen, und auf ihren Seiten zum Steckersolar nennt die Bundesnetzagentur selbst keine Summe. Wie oft tatsächlich Bußgelder verhängt werden, ist nicht öffentlich belegt — weder in der einen noch in der anderen Richtung. Nachholen lässt sich die Registrierung jederzeit.",
     },
     {
       q: "Kostet die Anmeldung etwas?",

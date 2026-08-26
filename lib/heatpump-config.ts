@@ -45,30 +45,28 @@ export interface HeatPumpConfig {
   investSwwpPerKw: number;
   // Radiator replacement cost (triggered when old radiators selected)
   heizkoerperTauschKosten: number;
-  // BEG funding rates — KfW Merkblatt Nr. 458 (BEG EM), gültig ab 21.07.2026 (GmodG)
+  // BEG funding rates — die Werte des HEUTIGEN Standes.
   //
-  // OFFEN (bis 01/2027): Zwei dieser Werte sinken am 01.02.2027 planmäßig — der
-  // Termin und die Schrittweite stehen bereits im Merkblatt, nicht erst in einer
-  // künftigen Ankündigung. Ohne diese Frist stünden ab dem 01.02.2027 zwei zu
-  // hohe Förderwerte im Rechner, bis der Quartals-Wächter zufällig darüber läuft;
-  // der Frist-Test (lib/__tests__/offene-punkte-waechter.test.ts) schlägt jetzt
-  // vorher an. Beide Schritte wiederholen sich danach halbjährlich zum 01.02. und
-  // 01.08. — beim Nachziehen also die Frist mitschieben, nicht streichen:
-  //   begMaxCap      −750 € je Schritt (28.000 → 27.250 am 01.02.2027)
-  //   begKlimaBonus  −4 Prozentpunkte je Schritt (16 % → 12 % am 01.02.2027);
-  //                  ab Antragstellung 01.08.2028 entfällt er ganz
-  // Maßgeblich ist der Zeitpunkt der Antragstellung. Beleg: KfW-Merkblatt 458,
-  // Abschnitte „Klimageschwindigkeitsbonus" und „Obergrenze des Fördersatzes und
-  // Höchstbetrag der förderfähigen Gesamtkosten" (am 08.08.2026 im Volltext
-  // geprüft). Die Werte selbst bleiben Vorschlag an den Menschen, nicht Auto-Fix
+  // Quelle ist die Förderrichtlinie BEG EM vom 17.07.2026 (in Kraft ab
+  // 21.07.2026, Volltext in docs/quellen/BEG-EM-Richtlinie_2026-07-17.pdf),
+  // nicht mehr allein das KfW-Merkblatt 458. Der Grund steht bei BEG_AB_2027:
+  // Das Merkblatt kennt den Stichtag Q1/2027 gar nicht, die Richtlinie hat nach
+  // ihrer eigenen Nr. 9.1 Vorrang.
+  //
+  // WAS SICH WANN ÄNDERT, steht nicht mehr als Merksatz hier, sondern als Datum
+  // und Wert in BEG_AB_2027 weiter unten — dort, wo der Rechner es auch benutzt.
+  // Ein Fristvermerk, der einen Menschen an eine Zahl erinnern soll, ist die
+  // schwächere Form davon: Er wirkt erst, wenn jemand ihn liest.
+  //
+  // Die Werte selbst bleiben Vorschlag an den Menschen, nicht Auto-Fix
   // (Wächter-Gate, Teil 4: „BEG-Sätze bleiben Vorschlag").
-  begGrundfoerderung: number;    // 30% — jeder Heizungstausch im Bestand
-  begKlimaBonus: number;         // 16% — Bestand, Austausch funktionsfähige fossile Heizung (Eigennutzer); sinkt ab 01.02.2027
+  begGrundfoerderung: number;    // 30% — jeder Heizungstausch im Bestand (Nr. 8.4.1 Buchst. c Satz 1)
+  begKlimaBonus: number;         // 16% — Bestand, Austausch funktionsfähige fossile Heizung (Eigennutzer); Staffel siehe BEG_KLIMABONUS_STAFFEL
   // Einkommens-Bonus: gestaffelt nach zu versteuerndem Haushaltsjahreseinkommen.
   // Aufsteigend nach maxIncome sortiert; der erste Treffer (income ≤ maxIncome) gilt.
   begEinkommensStaffel: { maxIncome: number; rate: number }[];
   begFamilienzuschlag: number;   // € — hebt die maßgebliche Einkommensgrenze bei ≥1 Kind im Haushalt
-  begMaxCap: number;             // Förderhöchstbetrag förderfähige Kosten (1. Wohneinheit); sinkt ab 01.02.2027
+  begMaxCap: number;             // Förderhöchstbetrag förderfähige Kosten (1. Wohneinheit); Staffel siehe BEG_FAHRPLAN
   begMaxRate: number;            // Gesamt-Obergrenze Fördersatz (Regelfall) — 70%
   begMaxRateLowIncome: number;   // Gesamt-Obergrenze niedrigstes Einkommen (≤30.000 € bzw. ≤40.000 € mit Kind) — 80%
   /**
@@ -83,19 +81,30 @@ export interface HeatPumpConfig {
    *    Investitionskosten möglich. Die Kumulierungsgrenze bezieht sich auf die
    *    tatsächlich geförderten Kosten."
    *
-   * DER SATZ IST IN EINEM PUNKT MEHRDEUTIG, und der Unterschied ist hier keine
-   * Feinheit: Bezieht sich „bis zu 60 Prozent" auf die Summe AUS BEG UND den
-   * anderen Mitteln (strenge Lesart) oder nur auf die anderen Mittel für sich
-   * (weite Lesart)? Der BEG-Fördersatz selbst reicht bis 70 % bzw. 80 %, liegt
-   * also über der Grenze — unter der strengen Lesart bleibt einem
-   * Höchstfördersatz-Fall gar kein Spielraum mehr, unter der weiten immer der
-   * volle.
+   * DIESER SATZ WAR MEHRDEUTIG — die RICHTLINIE ist es nicht (nachgelesen am
+   * 26.08.2026, Nr. 8.6):
+   *   „Im Falle einer Kombination mit anderen Fördermitteln gilt eine
+   *    Höchstgrenze für die Förderung aus öffentlichen Mitteln
+   *    (Kumulierungsgrenze) in Höhe von 60 % der geförderten
+   *    Investitionsausgaben. … Die Kumulierung bezieht sich dabei auf die
+   *    jeweils tatsächlich geförderten Kosten … Maximal ist der jeweilige
+   *    Förderhöchstbetrag zu berücksichtigen."
+   * „Höchstgrenze für die Förderung aus öffentlichen Mitteln" ist der ganze
+   * Stapel, nicht der Zuwachs neben der BEG. Die strenge Lesart, die hier aus
+   * Vorsicht gewählt worden war, ist damit die vom Text getragene — und auch
+   * die Bezugsgröße bestätigt sich: die tatsächlich geförderten, also am
+   * Höchstbetrag gekappten Kosten. Wer beides künftig anzweifelt, liest Nr. 8.6
+   * der Richtlinie, nicht den zusammenfassenden Satz des Merkblatts.
    *
-   * WIR RECHNEN DIE STRENGE LESART. „Kumulierung" beschreibt den Stapel, nicht
-   * den Zuwachs, und die Fehlerrichtung entscheidet: Zu wenig anzurechnen ist
-   * eine angenehme Überraschung, zu viel ein Zuschuss, den jemand einplant,
-   * beantragt und zurückzahlen muss. Dieselbe Abwägung wie beim Nutzungsgrad der
-   * Ölheizung — lieber belegt vorsichtig als genauer aussehen, als wir sind.
+   * WAS DIE RICHTLINIE ANDERS LÖST ALS WIR — ohne Folge für die Summe: Bei
+   * Überschreitung wird nach Nr. 8.6 „der Anteil der BEG-Förderung … reduziert",
+   * nicht der kommunale Zuschuss. Wir kürzen umgekehrt (siehe
+   * begKumulierungsSpielraum), weil der Rechner die BEG als feste Größe zeigt
+   * und der kommunale Zuschuss der Posten ist, der hinzukommt. Die
+   * GESAMTSUMME — und nur die geht in die Wirtschaftlichkeit ein — ist in beiden
+   * Richtungen dieselbe. Wer die Aufteilung je einzeln ausweist, muss das
+   * umdrehen.
+   *
    * Betroffen ist ohnehin nur, wer über den Einkommens-Bonus über 60 % kommt;
    * im Regelfall (30 % + 16 %) bleibt reichlich Spielraum.
    */
@@ -223,7 +232,13 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   // zugunsten der Wärmepumpe, auch wenn sie klein war (1.000 € über 20 Jahre).
   wpMaintenance: 250,
   wpFixCostPerYear: 50,
-  gridCo2PerKwh: 0.38,   // DE-Netzmix 2024, konservativ statisch
+  gridCo2PerKwh: 0.38,   //  CO2/kWh. BEWUSST ueber dem aktuellen Strommix: Das Umweltbundesamt weist
+  // fuer 2023 379 g aus, fuer 2024 353 g und fuer 2025 344 g (CLIMATE CHANGE
+  // 16/2026, im Repo unter docs/quellen/). Der Wert bleibt statisch und hoch,
+  // weil er zulasten der Waermepumpe wirkt — die vorsichtige Richtung. Bis zum
+  // 25.08.2026 stand hier „DE-Netzmix 2024", was schlicht das falsche Jahr nannte
+  // und die Absicht verschwieg; die Klima-Config beschriftete dieselbe Zahl
+  // wieder anders. Wer ihn senkt, senkt ihn in BEIDEN Configs gemeinsam.
   gasPriceCtPerKwh: Math.round(FUEL_PRICE.gas.price * 100), // = 11, aus FUEL_PRICE (Single Source)
   gasEfficiency: 0.95,
   gasCo2PerKwh: FUEL_PRICE.gas.co2PerKwh, // = 0.20, aus FUEL_PRICE
@@ -273,13 +288,206 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   // 10-kW-Fall — 0,3 % Abweichung, deshalb kein Wert
   // geändert und `validFrom` unverändert. Genau dafür gibt es dieses Datum.
   geprueftIso: "2026-08-17",
-  // Förderung am selben Tag am KfW-Merkblatt 458 (Stand 07/2026) nachgelesen:
-  // Grundförderung 30 %, Klimabonus 16 % (sinkt erstmalig 01.02.2027 um 4 pp,
-  // ab Antragstellung 01.08.2028 keiner mehr), Einkommensbonus 40/30/10 % bei
-  // 30/40/50 T€, Familienzuschlag 10 T€, Förderhöchstbetrag 28.000 € für die
-  // erste Wohneinheit (sinkt ab 01.02.2027 halbjährlich um 750 €), Obergrenze
-  // 70 % bzw. 80 %. Alles unverändert — damit ist auch der [auto]-Fix vom
-  // 08.08.2026 (Wecker für die Absenkung) an der Quelle nachgeprüft.
-  geprueftFoerderungIso: "2026-08-17",
+  // 26.08.2026: Erstmals gegen die FÖRDERRICHTLINIE selbst geprüft, nicht mehr
+  // nur gegen das KfW-Merkblatt — und genau das hat die Lücke aufgedeckt, die
+  // das Merkblatt nicht zeigt: die Halbierung des Fördersatzes zum 01.01.2027
+  // (Nr. 8.4.1 Buchst. c). Der frühere Wecker als Fristvermerk ist dadurch
+  // hinfällig; der Fahrplan steht jetzt als Datum und Wert in BEG_FAHRPLAN.
+  // Am selben Tag bestätigt: Grundförderung 30 %, Klimabonus 16 %,
+  // Einkommensbonus 40/30/10 % bei 30/40/50 T€, Familienzuschlag 10 T€,
+  // Förderhöchstbetrag 28.000 € für die erste Wohneinheit, Obergrenze 70 %
+  // bzw. 80 % (Nr. 8.4.1 Satz 1). Kein heutiger Wert geändert.
+  geprueftFoerderungIso: "2026-08-26",
   reviewBy: "2026-10-20",   // quartalsweiser Wächter (Jan/Apr/Jul/Okt); der Januar-Lauf 2027 fällt zusätzlich vor die Degression der Boni/Förderhöchstbeträge zum 01.02.2027
 };
+
+// ─── Der Fahrplan der BEG-Förderung ────────────────────────────────────────
+//
+// WARUM DAS EIN PLAN IST UND KEIN EINZELWERT: Die Fördersätze der BEG stehen
+// nicht still. Die Richtlinie vom 17.07.2026 schreibt ihre eigene Absenkung
+// über die volle Laufzeit im Voraus fest — mit Datum, Schrittweite und
+// Endwert. Ein Rechner, der nur den heutigen Wert kennt, zeigt ab dem ersten
+// Stichtag stillschweigend einen zu hohen Zuschuss; beim Grundfördersatz wäre
+// das ab dem 01.01.2027 der DOPPELTE, in einem üblichen Fall rund 12.900 €
+// zu viel. Deshalb dieselbe Bauform wie beim Einspeise-Fahrplan
+// (FEED_IN_SCHEDULE in lib/feedin-config.ts): Der Wechsel passiert am Stichtag
+// von selbst, nicht erst beim nächsten Deploy.
+//
+// QUELLE — Förderrichtlinie BEG EM vom 17.07.2026, in Kraft ab 21.07.2026,
+// Geltungsdauer bis 31.12.2030 (Nr. 10). Volltext:
+// docs/quellen/BEG-EM-Richtlinie_2026-07-17.pdf. Am 26.08.2026 Nummer für
+// Nummer im Volltext geprüft; die Fundstellen stehen an jedem Feld.
+//
+// WARUM NICHT DAS KfW-MERKBLATT: Das Merkblatt 458 (Stand 07/2026) nennt
+// schlicht „30 %" ohne den Stichtag. Das ist kein Widerspruch, den jemand
+// auflösen müsste — die Richtlinie regelt ihren Vorrang selbst (Nr. 9.1:
+// „Widersprechen sich die Programminformationen und die vorliegende
+// Förderrichtlinie, hat letztere Vorrang"), und das Merkblatt ist eine solche
+// Programminformation. Es hinkt hinterher, es widerspricht nicht. Wer künftig
+// eine Abweichung findet, prüft deshalb ZUERST die Richtlinie.
+//
+// MASSGEBLICH IST DIE ANTRAGSTELLUNG, nicht der Einbau und nicht die
+// Inbetriebnahme: „Für den Zeitpunkt der Antragstellung ist das Datum des
+// Eingangs des Antrags beim Durchführer maßgeblich" (Nr. 9.2.1).
+//
+// WER DEN FAHRPLAN AUF EINER SEITE BENUTZT, PRÜFT DEREN RENDER-ART. Ein
+// Fahrplan, der auf einer rein statisch gebauten Seite ausgewertet wird, friert
+// beim Build ein — dann wandert der Wert eben doch erst beim nächsten Deploy,
+// und der ganze Zweck ist dahin. Geprüft am 26.08.2026: Die drei
+// Server-Aufrufer (Datenstand, beide Wärmepumpen-Ratgeber) tragen alle
+// `revalidate = 3600`, bauen sich also stündlich neu; Rechner und
+// Förder-Check-Widget sind Client-Komponenten und lösen im Browser des
+// Betrachters auf. Ein künftiger Aufrufer ohne Revalidierung braucht eine.
+
+/** Ein Zeitraum des Fahrplans. `abIso` ist der erste Tag, an dem er gilt. */
+export interface BegStufe {
+  abIso: string;
+  /**
+   * Wie der Zeitpunkt dem Nutzer gegenüber zu NENNEN ist — nicht aus `abIso`
+   * generiert, und das ist Absicht.
+   *
+   * Die Richtlinie ist unterschiedlich genau: Die Absenkungen von Bonus und
+   * Höchstbetrag datiert sie tagesgenau („ab 1. Februar 2027"), die vier
+   * wärmepumpen-relevanten Änderungen dagegen nur auf „Ab Quartal 1 2027" — an
+   * fünf Stellen, ohne den Begriff je zu definieren, während sie an anderen
+   * Stellen tagesgenau schreibt. `abIso` trägt dafür den 01.01. als
+   * Arbeitsannahme („ab" plus Zeitraum meint dessen Beginn); ein Nutzertext,
+   * der daraus „ab dem 1. Januar" machte, wäre genauer als die Quelle.
+   */
+  bezeichnung: string;
+  /** Fördersatz für elektrisch angetriebene Wärmepumpen (Nr. 5.3 Buchst. c). */
+  grundfoerderung: number;
+  /** Klimageschwindigkeits-Bonus (Nr. 8.4.4). 0 = entfallen. */
+  klimaBonus: number;
+  /** Höchstbetrag förderfähiger Ausgaben, erste Wohneinheit (Nr. 8.3.1 Buchst. a). */
+  maxCap: number;
+  /** Was sich an DIESEM Stichtag ändert — für die Erklärung im Ergebnis. */
+  aenderung: string;
+}
+
+/**
+ * Der Fahrplan, aufsteigend nach Datum.
+ *
+ * Drei Größen sinken hier, und sie sinken NICHT im Gleichschritt — das ist der
+ * Grund, warum sie in einer gemeinsamen Tabelle stehen müssen und nicht als
+ * drei einzelne Fristen:
+ *
+ *   • Der Grundfördersatz halbiert sich EINMAL, zum 01.01.2027, von 30 % auf
+ *     15 % (Nr. 8.4.1 Buchst. c: „Für Maßnahmen nach Nummer 5.3 beträgt der
+ *     Fördersatz 30 %. Ab Quartal 1 2027: Abweichend davon beträgt der
+ *     Fördersatz für Maßnahmen nach Nummer 5.3 Buchstabe c 15 %."). Danach
+ *     bleibt er, soweit die Richtlinie reicht, unverändert.
+ *   • Klimageschwindigkeits-Bonus und Höchstbetrag sinken halbjährlich, aber
+ *     erst ab dem 01.02.2027 (Nr. 8.4.4 bzw. Nr. 8.3.1 Buchst. a).
+ *
+ * Der Januar 2027 ist deshalb ein eigener Zeitraum: halbierte Grundförderung,
+ * aber noch der volle Bonus und der volle Höchstbetrag. Ihn zu übergehen wäre
+ * bequem und für jeden falsch, der in diesem Monat beantragt.
+ *
+ * NUR 5.3 Buchst. c IST BETROFFEN. Die Halbierung trifft die elektrisch
+ * angetriebenen Wärmepumpen und sonst nichts: Solarthermie (Buchst. a) und
+ * Biomasseheizungen (Buchst. b) behalten ihre 30 %. In der Fördersatz-Tabelle
+ * unter Nr. 8.4.1 hängt die Fußnote „Der Fördersatz reduziert sich ggf. gemäß
+ * Nummer 8.4.1 Buchstabe c" an der Wärmepumpen-Zeile und an keiner anderen.
+ * Dieser Rechner kennt nur Wärmepumpen — wer ihn je um eine andere Technik
+ * erweitert, darf diesen Fahrplan nicht mitbenutzen.
+ */
+export const BEG_FAHRPLAN: BegStufe[] = [
+  // Nr. 8.4.1 Buchst. c Satz 1 · Nr. 8.4.4 erster Spiegelstrich · Nr. 8.3.1 Buchst. a
+  { abIso: "2026-07-21", bezeichnung: "heute", grundfoerderung: 0.30, klimaBonus: 0.16, maxCap: 28000,
+    aenderung: "Inkrafttreten der Richtlinie" },
+  // Nr. 8.4.1 Buchst. c Satz 2 — der einzige Sprung beim Fördersatz, und der
+  // einzige Stichtag, den die Richtlinie nicht tagesgenau nennt.
+  { abIso: "2027-01-01", bezeichnung: "Anfang 2027", grundfoerderung: 0.15, klimaBonus: 0.16, maxCap: 28000,
+    aenderung: "Der Grundfördersatz für Wärmepumpen halbiert sich von 30 auf 15 Prozent." },
+  { abIso: "2027-02-01", bezeichnung: "Februar 2027", grundfoerderung: 0.15, klimaBonus: 0.12, maxCap: 27250,
+    aenderung: "Der Klimageschwindigkeits-Bonus sinkt auf 12 Prozent, der Höchstbetrag auf 27.250 €." },
+  { abIso: "2027-08-01", bezeichnung: "August 2027", grundfoerderung: 0.15, klimaBonus: 0.08, maxCap: 26500,
+    aenderung: "Der Klimageschwindigkeits-Bonus sinkt auf 8 Prozent, der Höchstbetrag auf 26.500 €." },
+  { abIso: "2028-02-01", bezeichnung: "Februar 2028", grundfoerderung: 0.15, klimaBonus: 0.04, maxCap: 25750,
+    aenderung: "Der Klimageschwindigkeits-Bonus sinkt auf 4 Prozent, der Höchstbetrag auf 25.750 €." },
+  // Nr. 8.4.4 letzter Satz: „Ab 1. August 2028 entfällt der Bonus."
+  { abIso: "2028-08-01", bezeichnung: "August 2028", grundfoerderung: 0.15, klimaBonus: 0, maxCap: 25000,
+    aenderung: "Der Klimageschwindigkeits-Bonus entfällt, der Höchstbetrag sinkt auf 25.000 €." },
+  { abIso: "2029-02-01", bezeichnung: "Februar 2029", grundfoerderung: 0.15, klimaBonus: 0, maxCap: 24250,
+    aenderung: "Der Höchstbetrag sinkt auf 24.250 €." },
+  { abIso: "2029-08-01", bezeichnung: "August 2029", grundfoerderung: 0.15, klimaBonus: 0, maxCap: 23500,
+    aenderung: "Der Höchstbetrag sinkt auf 23.500 €." },
+  { abIso: "2030-02-01", bezeichnung: "Februar 2030", grundfoerderung: 0.15, klimaBonus: 0, maxCap: 22750,
+    aenderung: "Der Höchstbetrag sinkt auf 22.750 €." },
+  { abIso: "2030-08-01", bezeichnung: "August 2030", grundfoerderung: 0.15, klimaBonus: 0, maxCap: 22000,
+    aenderung: "Der Höchstbetrag sinkt auf 22.000 €." },
+];
+
+/** Letzter Tag der Geltungsdauer der Richtlinie (Nr. 10). */
+export const BEG_GELTUNG_BIS_ISO = "2030-12-31";
+
+/**
+ * Der Wertschöpfungs-Bonus nach Nr. 8.4.6 — 15 Prozentpunkte ab dem ersten
+ * Quartal 2027, „wenn die geförderte Wärmepumpe ihren Ursprung in der Union
+ * hat".
+ *
+ * ER IST BETRAGSGLEICH MIT DER HALBIERUNG, und darin liegt die eigentliche
+ * Aussage der Reform: Der Grundsatz sinkt um 15 Punkte, dieser Bonus gibt 15
+ * Punkte zurück. Wo keine Obergrenze greift, ändert sich der Fördersatz für
+ * eine Wärmepumpe aus der EU ab 2027 GAR NICHT. Die Reform ist damit keine
+ * Kürzung, sondern eine Bedingung: voller Satz bei EU-Herkunft, halber sonst.
+ *
+ * DESHALB WIRD ER GEFRAGT UND NICHT WEGGELASSEN. Eine erste Fassung dieses
+ * Rechners ließ ihn aus, weil sein Ursprung „aus unseren Daten nicht ableitbar"
+ * sei — richtig beobachtet, falsch geschlossen: Herausgekommen wäre eine
+ * behauptete Kürzung, die es für einen Teil der Geräte nicht gibt. Nicht „etwas
+ * zu vorsichtig gerechnet", sondern die falsche Frage beantwortet. Der Nutzer
+ * kann sie dagegen beantworten — spätestens sein Angebot nennt das Gerät.
+ *
+ * WAS WIR TATSÄCHLICH NICHT KÖNNEN, ist es ihm abzunehmen:
+ *   • Die Richtlinie sagt selbst nicht, woran sich der Ursprung entscheidet:
+ *     „Näheres regelt das ,Infoblatt zu den förderfähigen Maßnahmen und
+ *     Leistungen'." Dieses Infoblatt liegt uns nicht vor. **Deshalb steht in
+ *     unseren Texten auch keine eigene Definition** — eine erste Fassung
+ *     schrieb, der Ursprung hänge „am Produktionsort und an der Fertigungstiefe",
+ *     und behauptete damit eine Abgrenzung, die wir nirgends gelesen haben
+ *     (gefunden in der Gegenprüfung, 26.08.2026). Was sich sagen lässt: Vom
+ *     Markennamen lässt sich nicht darauf schließen — „Ursprung" ist kein
+ *     Synonym für „Hersteller mit Sitz in".
+ *   • Die amtliche BAFA-Geräteliste führt kein Ursprungsfeld (geprüft
+ *     26.08.2026: Marke, Bezeichnung, Artikelnummer, EAN, Pumpentyp,
+ *     Nennwärmeleistung, ETAs, Kältemittel, Netzdienlichkeit,
+ *     Schallleistungspegel, Energieeffizienzklasse).
+ * Deshalb ist die Voreinstellung „nein" und die Frage steht sichtbar daneben,
+ * samt beider Beträge. Wer das Infoblatt beschafft, legt es nach `docs/quellen/`
+ * — dann lässt sich die Frage womöglich enger stellen als „aus der EU: ja/nein".
+ *
+ * KEINE SELBSTNUTZER-BINDUNG, anders als Klima- und Einkommens-Bonus: Nr. 8.4.6
+ * nennt keine. Ein Vermieter bekommt ihn, obwohl ihm sonst nur die
+ * Grundförderung zusteht.
+ */
+export const BEG_WERTSCHOEPFUNGS_BONUS = { abIso: "2027-01-01", satz: 0.15 } as const;
+
+/** Welche Stufe des Fahrplans gerechnet wird. */
+export type BegStand = "jetzt" | "naechste";
+
+/** Die Stufe, die an einem gegebenen Tag gilt. */
+export function begStufeAm(datum: Date, fahrplan: BegStufe[] = BEG_FAHRPLAN): BegStufe {
+  const iso = datum.toISOString().slice(0, 10);
+  let treffer = fahrplan[0];
+  for (const stufe of fahrplan) {
+    if (stufe.abIso <= iso) treffer = stufe;
+  }
+  return treffer;
+}
+
+/**
+ * Die nächste Stufe nach der heute geltenden — oder `undefined`, wenn der
+ * Fahrplan ausgelaufen ist.
+ *
+ * Der Umschalter im Ergebnis stellt genau diese beiden Stände gegenüber. Er ist
+ * bewusst NICHT auf das feste Jahr 2027 verdrahtet: „heute" und „ab 2027" wären
+ * am 01.01.2027 dieselbe Sache, und ein Rechner, der zwei gleiche Zustände
+ * anbietet, sieht kaputt aus. So wandert die Frage mit — sie lautet immer „was
+ * ändert sich, wenn ich erst nach dem nächsten Stichtag beantrage?".
+ */
+export function begNaechsteStufe(datum: Date, fahrplan: BegStufe[] = BEG_FAHRPLAN): BegStufe | undefined {
+  const iso = datum.toISOString().slice(0, 10);
+  return fahrplan.find((stufe) => stufe.abIso > iso);
+}

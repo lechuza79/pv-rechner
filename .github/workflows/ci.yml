@@ -35,6 +35,16 @@ jobs:
       - name: Unit tests (Vitest)
         run: npm test
 
+      # Hält CLAUDE.md gegen den Code. Läuft hier und nicht als Tageslauf, weil
+      # die Drift bei einem PUSH entsteht: Jemand ändert eine Konstante, und die
+      # Anleitung nennt ab da eine Zahl, die es nicht mehr gibt. Am 25.08.2026
+      # waren es elf solcher Stellen, gefunden von einem einmaligen Prüfdurchgang
+      # — im Alltag fällt so etwas niemandem auf, weil niemand die Anleitung
+      # gegen den Code liest. Kostet keine Netzwerkzugriffe und unter einer
+      # Sekunde; sie darf rot werden, das ist ihr Zweck.
+      - name: CLAUDE.md gegen den Code
+        run: npm run claude-md:verify
+
       # Cache Playwright browsers — saves ~30s on every run.
       # Cache key is tied to package-lock so a Playwright version bump invalidates it.
       - name: Cache Playwright browsers

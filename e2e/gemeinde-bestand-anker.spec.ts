@@ -1,4 +1,5 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
+import { GEMEINDE_ANKER_ORT } from "./routen";
 
 //
 // DER VERWEIS AUS DEM EINLEITUNGSTEXT MUSS DEN UMSCHALTER STELLEN.
@@ -20,17 +21,75 @@ import { test, expect } from "@playwright/test";
 // die Mechanik (Adresse → Stellung), die auf jeder Gemeindeseite gleich ist.
 // Ob dieser Ort gerade den Konfliktsatz trägt, hängt am Datenstand und wäre
 // eine wackelige Zusage — das prüft der Unit-Test an festen Zahlen.
-const ORT = "/solar-atlas/hessen/landkreis-schwalm-eder-kreis/melsungen";
+const ORT = GEMEINDE_ANKER_ORT;
+
+/** Die Karte um den Bestandsblock — Bezugspunkt für alles hier drin. */
+function karte(page: Page) {
+  return page.locator("#bestand-privat").locator("xpath=..");
+}
 
 /** Die aktive Stellung des Eigentümer-Umschalters, am eingefärbten Knopf
  *  abgelesen — also da, wo ein Nutzer sie auch sieht. */
-async function aktiveStellung(page: import("@playwright/test").Page): Promise<string[]> {
-  const karte = page.locator("#bestand-privat").locator("xpath=..");
-  return karte.locator("button", { hasText: /^(Alle|Privat|Gewerbe)$/ }).evaluateAll((els) =>
-    els
-      .filter((el) => getComputedStyle(el).backgroundColor !== "rgba(0, 0, 0, 0)")
-      .map((el) => el.textContent?.trim() ?? ""),
-  );
+async function aktiveStellung(page: Page): Promise<string[]> {
+  return karte(page)
+    .locator("button", { hasText: /^(Alle|Privat|Gewerbe)$/ })
+    .evaluateAll((els) =>
+      els
+        .filter((el) => getComputedStyle(el).backgroundColor !== "rgba(0, 0, 0, 0)")
+        .map((el) => el.textContent?.trim() ?? ""),
+    );
+}
+
+function stellungsKnopf(page: Page, stellung: "Alle" | "Privat" | "Gewerbe") {
+  return karte(page)
+    .locator("button")
+    .filter({ hasText: new RegExp(`^${stellung}$`) });
+}
+
+/**
+ * WARTET, BIS DER UMSCHALTER NICHT NUR DA, SONDERN BEDIENBAR IST.
+ *
+ * „Alle" steht schon im ausgelieferten HTML — der Baustein startet mit dieser
+ * Stellung, der Server rendert sie mit. Darauf zu warten belegt also nur, dass
+ * gezeichnet wurde, nicht dass React die Seite übernommen hat. Genau das war
+ * die Lücke: Beide Tests weiter unten warteten auf „Alle" und setzten dann den
+ * Rauteteil — im CI fielen sie deshalb im ERSTEN Versuch durch, und ob der Lauf
+ * am Ende grün war, entschied allein der Wiederholungsversuch.
+ *
+ * WAS IN DIESEM FENSTER PASSIERT, IST GEMESSEN (24.08.2026, gegen die
+ * Produktion, CPU 20-fach gedrosselt, vier Läufe): Wer den Rauteteil dort
+ * setzt, verliert ihn zweimal. Der Zuhörer des Bausteins hängt noch nicht, der
+ * Wechsel verpufft also — und unmittelbar danach schreibt der Router die
+ * Adresse auf den Pfad OHNE Rauteteil zurück (`replaceState`, aufgezeichnet mit
+ * „vorher: #bestand-gewerbe"). Der Effekt, der die Adresse beim Übernehmen
+ * liest, findet dann nichts mehr. Es wird also nicht spät richtig, sondern gar
+ * nicht: In drei der vier Läufe stand danach wieder „Alle" und die Adresse war
+ * leer; im vierten kam der Router der Zuweisung zuvor, und alles ging gut.
+ *
+ * Länger warten wäre deshalb die falsche Antwort — gewartet würde auf etwas,
+ * das nicht mehr kommt.
+ *
+ * DER NACHWEIS IST EIN KLICK, DER WIRKT: Ein Zustandswechsel kann nur aus React
+ * kommen, die Übernahme ist damit durch. Gegengemessen im selben Lauf — nach
+ * diesem Nachweis kam die Zuweisung bei jeder Drosselstufe an, auch bei
+ * 20-facher. Danach wird zurückgestellt, damit jeder Test von derselben
+ * Ausgangslage aus prüft wie zuvor; was geprüft wird, bleibt unverändert.
+ */
+async function umschalterBedienbar(page: Page) {
+  await expect.poll(() => aktiveStellung(page), { timeout: 30_000 }).toEqual(["Alle"]);
+  await expect
+    .poll(
+      async () => {
+        // Vor der Übernahme verpufft der Klick, danach wirkt er — deshalb im
+        // Takt der Prüfung wiederholen statt einmal blind zu klicken.
+        await stellungsKnopf(page, "Gewerbe").click();
+        return aktiveStellung(page);
+      },
+      { timeout: 30_000 },
+    )
+    .toEqual(["Gewerbe"]);
+  await stellungsKnopf(page, "Alle").click();
+  await expect.poll(() => aktiveStellung(page)).toEqual(["Alle"]);
 }
 
 test.describe("Bestandsblock: die Adresse stellt den Umschalter", () => {
@@ -50,8 +109,18 @@ test.describe("Bestandsblock: die Adresse stellt den Umschalter", () => {
   });
 
   test("mit #bestand-privat steht der Umschalter auf „Privat“", async ({ page }) => {
+    // Der geteilte Link braucht den Bedienbarkeits-Nachweis NICHT, und das ist
+    // gemessen, nicht angenommen: Steht der Rauteteil schon beim Aufruf in der
+    // Adresse, trägt der Router ihn in seine eigene Rückschreibung hinein
+    // (`replaceState -> …#bestand-privat`). Vier Läufe bei 20-facher
+    // CPU-Drosselung, viermal die richtige Stellung. Verloren geht nur, was im
+    // Fenster vor der Übernahme NEU gesetzt wird — siehe `umschalterBedienbar`.
+    // Hier ist längeres Warten deshalb ausnahmsweise die RICHTIGE Antwort: Der
+    // Wert geht nicht verloren, er kommt nur spät. Gemessen bei 20-facher
+    // Drosselung sechsmal 31–42 s, jedes Mal mit der richtigen Stellung; bei
+    // 6-facher waren es 3 s. Kein CI-Rechner ist so langsam.
     await page.goto(`${ORT}#bestand-privat`);
-    await expect.poll(() => aktiveStellung(page)).toEqual(["Privat"]);
+    await expect.poll(() => aktiveStellung(page), { timeout: 30_000 }).toEqual(["Privat"]);
   });
 
   //
@@ -67,6 +136,7 @@ test.describe("Bestandsblock: die Adresse stellt den Umschalter", () => {
   // Datenstand, die Bezugsgröße an dieser Mechanik.
   test("mit der Stellung kommt die Bezugsgröße des Satzes mit", async ({ page }) => {
     await page.goto(ORT);
+    await umschalterBedienbar(page);
     const tendenz = page.locator("text=/Tendenz: je Einwohner gegenüber dem Durchschnitt/").first();
     await expect(tendenz).toContainText("Schwalm-Eder-Kreis");
 
@@ -87,6 +157,7 @@ test.describe("Bestandsblock: die Adresse stellt den Umschalter", () => {
   // Platzziffer: Die hängt am Datenstand, die Mechanik an diesem Code.
   test("die Nachbarschafts-Liste wechselt auf die Landesgruppe", async ({ page }) => {
     await page.goto(ORT);
+    await umschalterBedienbar(page);
     const titel = page.locator("text=/^Gemeinden und Kleinstädte /").first();
     await expect(titel).toContainText("Schwalm-Eder-Kreis");
 
@@ -97,12 +168,11 @@ test.describe("Bestandsblock: die Adresse stellt den Umschalter", () => {
 
     // Die eigene Zeile MUSS dabei sein, sonst zeigt die Liste eine
     // Vergleichsgruppe ohne die Zeile, um die es geht.
-    const karte = page.locator("#bestand-privat").locator("xpath=..");
-    await expect(karte).toContainText("Melsungen");
+    await expect(karte(page)).toContainText("Melsungen");
     // Und der Nenner des Platzes steht daneben: Ohne ihn ist „Platz 135" keine
     // Einordnung. Der Knopf sagt „Rangliste ansehen" statt „Alle N anzeigen" —
     // gezeigt werden die ersten hundert, und das Fenster schreibt es hin.
-    await expect(karte).toContainText(/Rangliste ansehen \(\d/);
+    await expect(karte(page)).toContainText(/Rangliste ansehen \(\d/);
   });
 
   //
@@ -156,7 +226,7 @@ test.describe("Bestandsblock: die Adresse stellt den Umschalter", () => {
 
   test("ein Klick auf den Verweis im Text schaltet um — und zurück", async ({ page }) => {
     await page.goto(ORT);
-    await expect.poll(() => aktiveStellung(page)).toEqual(["Alle"]);
+    await umschalterBedienbar(page);
 
     // Nicht über den Textlink klicken: Ob der Einleitungssatz gerade beide
     // Messgrößen nennt, hängt am Datenstand (siehe oben). Geprüft wird, dass
@@ -177,12 +247,7 @@ test.describe("Bestandsblock: die Adresse stellt den Umschalter", () => {
 
   test("ein fremder Rauteteil setzt den Umschalter nicht zurück", async ({ page }) => {
     await page.goto(ORT);
-    // ERST den geladenen Zustand abwarten, DANN den Rauteteil setzen: Eine
-    // Zuweisung an `location.hash` während die Seite noch streamt geht
-    // verloren — gemessen, nicht vermutet. Für einen echten Leser spielt das
-    // keine Rolle (er klickt auf eine fertige Seite), für einen Test schon:
-    // ohne dieses Abwarten prüft er eine Zuweisung, die nie ankam.
-    await expect.poll(() => aktiveStellung(page)).toEqual(["Alle"]);
+    await umschalterBedienbar(page);
     await page.evaluate(() => {
       window.location.hash = "bestand-gewerbe";
     });

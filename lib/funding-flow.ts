@@ -51,10 +51,27 @@ export interface FlowFrage {
  * einer stillen Fehlauskunft.
  */
 export const GROESSEN_STUFEN = [
-  { wert: "8", kwp: 8, label: "Bis 10 kWp", sub: "typisches Einfamilienhaus" },
-  { wert: "15", kwp: 15, label: "10 – 20 kWp", sub: "großes Dach" },
-  { wert: "25", kwp: 25, label: "20 – 30 kWp", sub: "sehr großes Dach" },
-  { wert: "40", kwp: 40, label: "Über 30 kWp", sub: "Mehrfamilienhaus, Gewerbe" },
+  // Die kleinste Stufe wurde am 26.08.2026 geteilt, weil Niddas Programm erst ab
+  // 4 kWp fördert und die Schwelle damit mitten in „Bis 10 kWp" lag. Wer diese
+  // Stufe wählte, bekäme eine Auskunft, die bei 3 kWp falsch und bei 8 kWp
+  // richtig ist — und beides sieht am Bildschirm gleich aus. Gefunden vom Test
+  // in `funding-flow.test.ts`, nicht von Hand.
+  //
+  // Der Zuschnitt folgt der Wirklichkeit kleiner Dächer: Unter 4 kWp sind
+  // Einzelmodul-Anlagen, Garagen- und Carportdächer; darüber beginnt das, was
+  // ein Fachbetrieb als übliche Hausanlage plant.
+  //
+  // `von`/`bis` sind die Grenzen der Stufe und stehen hier als DATEN, nicht nur
+  // in der Beschriftung. Der Test führte sie bis zum 26.08.2026 als eigene
+  // Liste — zwei Wahrheiten, die man synchron halten muss, und beim Teilen der
+  // ersten Stufe lief genau das auseinander: Die Stufen sagten „Bis 4 kWp", der
+  // Test rechnete weiter mit „0–10" und meldete einen Fehler, den es nicht mehr
+  // gab. Jetzt leitet er beides von hier ab.
+  { wert: "3", kwp: 3, von: 0, bis: 4, label: "Bis 4 kWp", sub: "kleines Dach, Garage, Carport" },
+  { wert: "8", kwp: 8, von: 4, bis: 10, label: "4 – 10 kWp", sub: "typisches Einfamilienhaus" },
+  { wert: "15", kwp: 15, von: 10, bis: 20, label: "10 – 20 kWp", sub: "großes Dach" },
+  { wert: "25", kwp: 25, von: 20, bis: 30, label: "20 – 30 kWp", sub: "sehr großes Dach" },
+  { wert: "40", kwp: 40, von: 30, bis: Infinity, label: "Über 30 kWp", sub: "Mehrfamilienhaus, Gewerbe" },
 ] as const;
 
 const ALLE_FRAGEN: Record<FrageId, FlowFrage> = {
@@ -128,6 +145,10 @@ function fragenFuerPruefung(p: Pruefung): FrageId[] {
     case "anlage-groesse":
       return ["kwp"];
     case "gebaeude-art":
+      // Trägt die Prüfung eine Vermutungsschwelle, entscheidet die Größe mit —
+      // nicht über den Ausschluss, aber darüber, ob nach der Gebäudeart
+      // überhaupt gefragt werden muss.
+      return p.vermutetBisKwp != null ? ["kwp", "gebaeude"] : ["gebaeude"];
     case "gebaeude-bestand":
       return ["gebaeude"];
     default:
@@ -255,7 +276,9 @@ export function pruefeProgramm(prog: FundingProgram, a: FlowAntworten): Programm
         break;
       }
       case "gebaeude-art": {
-        if (a.gebaeude && !erfuelltGebaeude(a.gebaeude, p.nur)) {
+        // Greift die Vermutung, wird die Gebäudeart gar nicht erst geprüft.
+        const vermutet = p.vermutetBisKwp != null && a.kwp != null && a.kwp <= p.vermutetBisKwp;
+        if (!vermutet && a.gebaeude && !erfuelltGebaeude(a.gebaeude, p.nur)) {
           const nurMfh = p.nur.includes("mfh") && !p.nur.includes("efh");
           gruende.push(
             nurMfh

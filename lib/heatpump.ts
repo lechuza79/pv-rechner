@@ -9,6 +9,8 @@
 //   E_WP     = Q_ges / JAZ                                  (Energiebilanz)
 //   Invest   = base + perKw × Auslegung                     (VZ-Angebotsauswertung)
 //   BEG      = Grund 30% + Klima 16% (+Einkommen 40/30/10%, einkommensgestaffelt)  — Bestand only
+//              Grund, Klima und Höchstbetrag folgen dem Fahrplan der Richtlinie
+//              (BEG_FAHRPLAN); der Fördersatz halbiert sich zum 01.01.2027.
 //   Gas-Ref  = fuelKwh × (price × 1.02^t + CO2_t)  + Grundgebühr + Wartung
 //   TCO_WP   = Invest_netto + Σ Strom + Σ Wartung
 //   Einsparung = TCO_Gas − TCO_WP
@@ -16,7 +18,13 @@
 // PV-Synergie wird separat über calcEigenverbrauch (lib/calc.ts) integriert,
 // indem E_WP als Teil des Gesamtverbrauchs übergeben wird.
 
-import { DEFAULT_HEATPUMP_CONFIG, type HeatPumpConfig } from "./heatpump-config";
+import {
+  DEFAULT_HEATPUMP_CONFIG,
+  begStufeAm,
+  BEG_WERTSCHOEPFUNGS_BONUS,
+  type HeatPumpConfig,
+  type BegStufe,
+} from "./heatpump-config";
 import { calcWeightedFeedIn, calcPvBenefitPerYear } from "./calc";
 import { calcFossilReference, wpStandingCostPerYear } from "./fossil-reference";
 import { DEFAULT_PRICES } from "./prices-config";
@@ -81,6 +89,16 @@ export interface HeatPumpInputs {
    * gegen die gekappt werden muss ({@link begKumulierungsSpielraum}).
    */
   kommunalFoerderung?: number;
+  /**
+   * Welche Stufe des BEG-Fahrplans gerechnet wird (BEG_FAHRPLAN in
+   * lib/heatpump-config.ts). Ohne Angabe: die heute geltende.
+   *
+   * Bewusst KEIN Datum, sondern die Stufe selbst: Ein Datum müsste hier ein
+   * zweites Mal in den Fahrplan aufgelöst werden, und die Oberfläche zeigt dem
+   * Nutzer ohnehin die Stufe (samt dem, was sich an ihrem Stichtag ändert).
+   * Zwei Auflösungen desselben Datums sind eine Gelegenheit, auseinanderzulaufen.
+   */
+  begStufe?: BegStufe;
   // Optional overrides (editable in result view)
   override?: {
     qGes?: number;               // thermal demand override (kWh/a)
@@ -95,6 +113,7 @@ export interface HeatPumpInputs {
     klimaBonus?: boolean;           // BEG Klima-Geschwindigkeits-Bonus (Eigennutzer) — default true
     haushaltseinkommen?: number;    // zu versteuerndes Haushaltsjahreseinkommen (€) für den gestaffelten Einkommens-Bonus; undefined = kein Bonus
     kindImHaushalt?: boolean;       // Familienzuschlag: hebt die Einkommensgrenze (begFamilienzuschlag)
+    euUrsprung?: boolean;           // Wertschöpfungs-Bonus: Wärmepumpe mit Ursprung in der Union (wirkt erst ab dessen Stichtag)
   };
 }
 
@@ -174,29 +193,77 @@ export interface BegOptions {
   klimaBonus?: boolean;           // Klima-Geschwindigkeits-Bonus (Eigennutzer, alte fossile Heizung) — default true
   haushaltseinkommen?: number;    // zu versteuerndes Haushaltsjahreseinkommen (€); undefined/über der obersten Stufe = kein Einkommens-Bonus
   kindImHaushalt?: boolean;       // Familienzuschlag: hebt die maßgebliche Einkommensgrenze um begFamilienzuschlag
+  /**
+   * Welche Stufe des Fahrplans gilt (BEG_FAHRPLAN in lib/heatpump-config.ts).
+   * Ohne Angabe: die heute geltende — der Fall, der für jeden zutrifft, der
+   * jetzt beantragt.
+   */
+  stufe?: BegStufe;
+  /**
+   * Hat die Wärmepumpe ihren Ursprung in der Union (Nr. 8.4.6)? Wirkt erst ab
+   * dem Stichtag des Bonus und nur, wenn die Stufe ihn schon trägt.
+   *
+   * OHNE ANGABE: nein — nicht weil das wahrscheinlicher wäre, sondern weil es
+   * die Richtung ist, in der eine Enttäuschung ausbleibt. Die Oberfläche fragt
+   * ausdrücklich nach und nennt beide Beträge, statt die Annahme stillschweigend
+   * zu treffen.
+   *
+   * ER IST NICHT AN DIE SELBSTNUTZUNG GEBUNDEN, anders als Klima- und
+   * Einkommens-Bonus: Nr. 8.4.6 nennt keine solche Voraussetzung. Ein Vermieter
+   * bekommt ihn also, obwohl er sonst nur die Grundförderung hat.
+   */
+  euUrsprung?: boolean;
 }
 
-// KfW Merkblatt Nr. 458 (BEG EM), gültig ab 21.07.2026:
-//   Grundförderung 30 % (immer, Bestand)
-//   + Klima-Geschwindigkeits-Bonus 16 % (Eigennutzer, alte fossile Heizung)
-//   + Einkommens-Bonus gestaffelt 40/30/10 % nach Haushaltseinkommen
-//   Deckel 70 % (Regelfall) bzw. 80 % (niedrigstes Einkommen), max. 28.000 € Kosten.
+// Förderrichtlinie BEG EM vom 17.07.2026 (Volltext in docs/quellen/):
+//   Grundförderung 30 % für Wärmepumpen (Nr. 8.4.1 Buchst. c) — ab dem
+//     01.01.2027 nur noch 15 %, siehe BEG_FAHRPLAN
+//   + Klima-Geschwindigkeits-Bonus 16 % (Eigennutzer, alte fossile Heizung, Nr. 8.4.4)
+//   + Einkommens-Bonus gestaffelt 40/30/10 % nach Haushaltseinkommen (Nr. 8.4.5)
+//   Deckel 70 % bzw. 80 % beim niedrigsten Einkommen (Nr. 8.4.1 Satz 1),
+//   höchstens 28.000 € förderfähige Kosten für die erste Wohneinheit (Nr. 8.3.1 Buchst. a).
 // Der frühere Effizienz-Bonus (5 % für natürliches Kältemittel) ist mit der Reform entfallen.
+//
+// DIE SÄTZE KOMMEN AUS DER STUFE, nicht direkt aus der Config: Grundförderung,
+// Klimabonus und Höchstbetrag ändern sich zu festen Stichtagen, und zwar zu
+// VERSCHIEDENEN. Wer hier wieder cfg.begGrundfoerderung liest, friert den Stand
+// von heute ein — das ist genau der Fehler, den der Fahrplan behebt.
+// Unberührt vom Fahrplan bleiben Einkommens-Staffel, Familienzuschlag und die
+// Obergrenzen: Für sie sieht die Richtlinie keine Absenkung vor.
 export function calcBegSubsidy(situation: "bestand" | "neubau", wpType: "lwwp" | "swwp", investBrutto: number, opts: BegOptions = {}, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG) {
   void wpType; // Kältemittel-/Quellentyp spielt für die Fördersätze keine Rolle mehr (Effizienz-Bonus entfallen)
   if (situation === "neubau") {
     return { rate: 0, amount: 0, breakdown: [{ label: "Neubau ohne BEG-Förderung", rate: 0 }] };
   }
   const klimaBonus = opts.klimaBonus ?? true;
+  const stufe = opts.stufe ?? begStufeAm(new Date());
 
   const breakdown: { label: string; rate: number }[] = [];
-  let rate = cfg.begGrundfoerderung;
-  breakdown.push({ label: "Grundförderung", rate: cfg.begGrundfoerderung });
+  let rate = stufe.grundfoerderung;
+  breakdown.push({ label: "Grundförderung", rate: stufe.grundfoerderung });
 
-  // Klima-Geschwindigkeits-Bonus: Tausch einer funktionierenden (alten) fossilen Heizung
-  if (klimaBonus) {
-    rate += cfg.begKlimaBonus;
-    breakdown.push({ label: "Klima-Geschwindigkeits-Bonus", rate: cfg.begKlimaBonus });
+  // Klima-Geschwindigkeits-Bonus: Tausch einer funktionierenden (alten) fossilen Heizung.
+  // Ab dem 01.08.2028 gibt es ihn nicht mehr (Stufe trägt dann 0) — dann darf auch
+  // keine Zeile dafür im Ergebnis stehen, sonst zeigt die Aufschlüsselung einen
+  // Posten über null Euro.
+  if (klimaBonus && stufe.klimaBonus > 0) {
+    rate += stufe.klimaBonus;
+    breakdown.push({ label: "Klima-Geschwindigkeits-Bonus", rate: stufe.klimaBonus });
+  }
+
+  // Wertschöpfungs-Bonus (Nr. 8.4.6): 15 Prozentpunkte ab dem ersten Quartal
+  // 2027 für Wärmepumpen mit Ursprung in der Union.
+  //
+  // ER IST BETRAGSGLEICH MIT DER HALBIERUNG — und das ist die eigentliche
+  // Aussage der Reform: −15 Punkte auf den Grundsatz, +15 Punkte für ein Gerät
+  // aus der EU. Wo keine Obergrenze greift, ändert sich der Fördersatz für ein
+  // solches Gerät ab 2027 GAR NICHT. Wer den Bonus wegließe und nur die
+  // Halbierung zeigte, behauptete eine Kürzung, die es für einen Teil der Geräte
+  // nicht gibt — nicht „etwas zu ungünstig gerechnet", sondern die falsche
+  // Frage beantwortet.
+  if (opts.euUrsprung && stufe.abIso >= BEG_WERTSCHOEPFUNGS_BONUS.abIso) {
+    rate += BEG_WERTSCHOEPFUNGS_BONUS.satz;
+    breakdown.push({ label: "Wertschöpfungs-Bonus", rate: BEG_WERTSCHOEPFUNGS_BONUS.satz });
   }
 
   // Einkommens-Bonus: gestaffelt. Ein Kind im Haushalt hebt die maßgebliche
@@ -215,7 +282,7 @@ export function calcBegSubsidy(situation: "bestand" | "neubau", wpType: "lwwp" |
 
   rate = Math.min(rate, lowIncome ? cfg.begMaxRateLowIncome : cfg.begMaxRate);
 
-  const cappedInvest = Math.min(investBrutto, cfg.begMaxCap);
+  const cappedInvest = Math.min(investBrutto, stufe.maxCap);
   const amount = Math.round(cappedInvest * rate);
   return { rate, amount, breakdown };
 }
@@ -232,13 +299,19 @@ export function calcBegSubsidy(situation: "bestand" | "neubau", wpType: "lwwp" |
  * Herleitung und die bewusst strenge Lesart stehen bei `begKumulierungsGrenze`
  * in lib/heatpump-config.ts; Beleg: KfW-Merkblatt 458 (Stand 07/2026), Volltext
  * in docs/quellen/.
+ *
+ * Der Höchstbetrag kommt aus DERSELBEN Stufe wie die Förderung selbst. Zwei
+ * verschiedene Höchstbeträge in einer Rechnung — der Zuschuss nach dem einen,
+ * der Spielraum daneben nach dem anderen — ergäben einen Spielraum, der zu
+ * keinem der beiden Stände gehört.
  */
 export function begKumulierungsSpielraum(
   begAmount: number,
   investBrutto: number,
   cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG,
+  stufe: BegStufe = begStufeAm(new Date()),
 ): number {
-  const gefoerderteKosten = Math.min(investBrutto, cfg.begMaxCap);
+  const gefoerderteKosten = Math.min(investBrutto, stufe.maxCap);
   return Math.max(0, Math.round(gefoerderteKosten * cfg.begKumulierungsGrenze - begAmount));
 }
 
@@ -273,16 +346,19 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
 
   // 3. Investition & Förderung
   const investBrutto = calcInvestBrutto(inputs.wpType, auslegungKw, doHkTausch, cfg);
+  const begStufe = inputs.begStufe ?? begStufeAm(new Date());
   const beg = calcBegSubsidy(inputs.situation, inputs.wpType, investBrutto, {
     klimaBonus: inputs.override?.klimaBonus ?? true,
     haushaltseinkommen: inputs.override?.haushaltseinkommen,
     kindImHaushalt: inputs.override?.kindImHaushalt,
+    euUrsprung: inputs.override?.euUrsprung,
+    stufe: begStufe,
   }, cfg);
   // Kommunaler Zuschuss NEBEN der BEG — gekappt an der Kumulierungsgrenze, damit
   // die Summe der öffentlichen Mittel nicht über das hinausgeht, was die BEG
   // neben sich duldet.
   const kommunalRoh = Math.max(0, Math.round(inputs.kommunalFoerderung ?? 0));
-  const kommunalSpielraum = begKumulierungsSpielraum(beg.amount, investBrutto, cfg);
+  const kommunalSpielraum = begKumulierungsSpielraum(beg.amount, investBrutto, cfg, begStufe);
   const kommunalAngerechnet = Math.min(kommunalRoh, kommunalSpielraum);
   const kommunal = { roh: kommunalRoh, angerechnet: kommunalAngerechnet, spielraum: kommunalSpielraum };
   // Ein von Hand gesetzter Investitionsbetrag ist der Preis, den jemand

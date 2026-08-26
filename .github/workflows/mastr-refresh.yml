@@ -74,13 +74,56 @@ jobs:
           if-no-files-found: warn
           retention-days: 90
 
-  # Nach dem Datenlauf alle Atlas-Gemeinde- (und Kreis-)Seiten aufwärmen: die
-  # ISR-Seiten sind jetzt stale und rendern beim nächsten Zugriff neu — dieser
-  # Crawl löst das gedrosselt aus, damit der erste echte Besucher eine gecachte
-  # Seite bekommt statt den Kaltrender zu zahlen. Läuft NUR bei erfolgreichem
-  # refresh; die Drosselung (Conc/Delay) schont die Supabase-Instanz.
-  warm:
+  # Nach dem Datenlauf alle Atlas-Seiten fuer ungueltig erklaeren, DANN aufwaermen.
+  #
+  # Die Reihenfolge ist nicht vertauschbar, und der erste Schritt ist seit dem
+  # 26.08.2026 neu — vorher verliess sich das Aufwaermen darauf, dass die Seiten
+  # nach 24 Stunden ohnehin verfallen waren. Das stimmte, war aber teuer: Die
+  # Daten kommen einmal im Monat, die Seiten verfielen dreissigmal oefter, und
+  # jeder Verfall kostet einen kompletten Neuaufbau samt Datenbank-Abfragen.
+  #
+  # Sobald die Haltbarkeit auf den Datentakt steht, traefe der Aufwaermlauf
+  # lauter noch gueltige Seiten und ruehrte sie nicht an — auf 11.000 Seiten
+  # stuenden die Zahlen des Vormonats. Das Ungueltig-Erklaeren ist deshalb keine
+  # Optimierung, sondern die Bedingung dafuer, dass die neuen Zahlen ueberhaupt
+  # sichtbar werden.
+  #
+  # Dass es NACH der Plausibilitaetspruefung laeuft (die im Job `refresh` steckt
+  # und ihn rot macht, wenn die Zahlen durchfallen), ist Absicht — aber es leistet
+  # WENIGER, als hier zunaechst stand. Die Formulierung "erst wenn die Zahlen die
+  # Pruefung bestanden haben, duerfen sie sichtbar werden" war falsch: Der Schritt
+  # davor hat sie da laengst in die Datenbank geschrieben. Faellt die Pruefung
+  # durch, wird zwar nicht invalidiert — aber jede Seite, deren Eintrag von selbst
+  # ablaeuft, zeigt die ungeprueften Zahlen trotzdem. Die Reihenfolge steuert also
+  # nur, WIE SCHNELL sie sichtbar werden, nicht OB. Wer das wirklich verhindern
+  # will, muss den Upload selbst hinter die Pruefung legen.
+  invalidate:
     needs: refresh
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Atlas-Seiten fuer ungueltig erklaeren
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          antwort=$(curl -sS -w '\n%{http_code}' -X POST \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            https://solar-check.io/api/atlas/revalidate)
+          code=$(echo "$antwort" | tail -n1)
+          echo "$antwort" | sed '$d'
+          # Schlaegt das fehl, MUSS der Lauf rot werden: Ein stiller Fehlschlag
+          # hiesse, dass der Aufwaermlauf gleich die alten Seiten bestaetigt und
+          # die neuen Zahlen einen Monat lang unsichtbar bleiben.
+          if [ "$code" != "200" ]; then
+            echo "::error::Ungueltig-Erklaeren fehlgeschlagen (HTTP $code) — die neuen Zahlen wuerden nicht sichtbar."
+            exit 1
+          fi
+
+  # Aufwaermen: baut die soeben fuer ungueltig erklaerten Seiten gedrosselt neu
+  # auf, damit der erste echte Besucher eine fertige Seite bekommt statt den
+  # Neuaufbau zu bezahlen. Die Drosselung schont die Supabase-Instanz.
+  warm:
+    needs: invalidate
     runs-on: ubuntu-latest
     # ~11k Gemeinden gedrosselt (~2 req/s) = gut 1,5–2 h; großzügig gedeckelt.
     timeout-minutes: 180

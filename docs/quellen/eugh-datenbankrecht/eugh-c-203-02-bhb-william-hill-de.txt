@@ -1,0 +1,1087 @@
+
+
+ Arrêt de la Cour
+
+ Rechtssache C-203/02
+
+ The British Horseracing Board Ltd u. a.
+
+ gegen
+
+ William Hill Organization Ltd
+
+ (Vorabentscheidungsersuchen des Court of Appeal [England & Wales] 
+[Civil Division])
+
+ „Richtlinie 96/9/EG – Rechtlicher Schutz von Datenbanken – Schutzrecht sui generis – Beschaffung, Überprüfung oder Darstellung des Inhalts einer Datenbank – Unwesentlicher Teil des Inhalts einer Datenbank – Entnahme und Weiterverwendung – Normale Nutzung – Unzumutbare Verletzung der berechtigten Interessen des Herstellers – Pferdesportdatenbank – Verzeichnisse von Rennen – Wettspiele“
+
+ Leitsätze des Urteils
+
+ 1. Rechtsangleichung – Rechtlicher Schutz von Datenbanken – Richtlinie 96/9 – Begriff der mit der Beschaffung und Überprüfung
+ des Inhalts einer Datenbank verbundenen Investition – Der Aufstellung und der Überprüfung der Listen der zur Teilnahme an
+ Pferderennen zugelassenen Pferde gewidmete Mittel – Ausschluss
+
+ (Richtlinie 96/9 des Europäischen Parlaments und des Rates, Artikel 7 Absatz 1)
+
+ 2. Rechtsangleichung – Rechtlicher Schutz von Datenbanken – Richtlinie 96/9 – Begriffe Entnahme und Weiterverwendung des Inhalts
+ einer Datenbank – Recht des Urhebers der Datenbank, derartige Handlugen zu verbieten – Der Öffentlichkeit zugänglich gemachte
+ Datenbank – Keine Auswirkung auf dieses Recht
+
+ (Richtlinie 96/9 des Europäischen Parlaments und des Rates, Artikel 7)
+
+ 3. Rechtsangleichung – Rechtlicher Schutz von Datenbanken – Richtlinie 96/9 – Begriff des wesentlichen Teils des Inhalts einer
+ Datenbank – Beurteilung in quantitativer und qualitativer Hinsicht
+
+ (Richtlinie 96/9 des Europäischen Parlaments und des Rates, Artikel 7)
+
+ 4. Rechtsangleichung – Rechtlicher Schutz von Datenbanken – Richtlinie 96/9 – Verbot der Entnahme und der Weiterverwendung nicht
+ wesentlicher Teile des Inhalts einer Datenbank – Tragweite
+
+ (Richtlinie 96/9 des Europäischen Parlaments und des Rates, Artikel 7 Absatz 5)
+
+ 1. Der Begriff der mit der Beschaffung des Inhalts einer Datenbank verbundenen Investition im Sinne von Artikel 7 Absatz 1 der
+ Richtlinie 96/9 über den rechtlichen Schutz von Datenbanken ist dahin zu verstehen, dass er die Mittel bezeichnet, die der
+ Ermittlung von vorhandenen Elementen und deren Zusammenstellung in dieser Datenbank gewidmet werden. Er umfasst nicht die
+ Mittel, die eingesetzt werden, um die Elemente zu erzeugen, aus denen der Inhalt einer Datenbank besteht.
+
+ Der Begriff der mit der Überprüfung des Inhalts der Datenbank verbundenen Investition im Sinne von Artikel 7 Absatz 1 der
+ Richtlinie ist dahin zu verstehen, dass er die Mittel erfasst, die, um die Verlässlichkeit der in dieser Datenbank enthaltenen
+ Information sicherzustellen, der Kontrolle der Richtigkeit der ermittelten Elemente bei der Erstellung der Datenbank und während
+ des Zeitraums des Betriebs der Datenbank gewidmet sind. Die Mittel, die Überprüfungsmaßnahmen im Stadium der Erzeugung von
+ Elementen gewidmet werden, die anschließend in einer Datenbank gesammelt werden, fallen nicht unter diesen Begriff.
+
+ Im Rahmen der Aufstellung von Listen für Pferderennen stellen die Mittel, die der Bestimmung der zur Teilnahme an dem Rennen
+ zugelassenen Pferde gewidmet werden, eine Investition dar, die nicht mit der Beschaffung des Inhalts der Datenbank, sondern
+ mit dem Erzeugen von Daten verbunden ist, aus denen diese Rennen betreffende Listen bestehen. Die Mittel, die der Aufnahme
+ eines Pferdes in einer Rennliste vorausgehenden Überprüfungen gewidmet werden, fallen unter das Stadium der Erzeugung der
+ Daten, aus denen diese Liste besteht, und stellen daher keine mit der Überprüfung des Inhalts der Datenbank verbundene Investition
+ dar.
+
+ (vgl. Randnrn. 30-31, 34, 38, 40-42 und Tenor 1)
+
+ 2. Die Begriffe Entnahme und Weiterverwendung im Sinne von Artikel 7 der Richtlinie 96/9 über den rechtlichen Schutz von Datenbanken
+ sind dahin auszulegen, dass sie sich auf unzulässige Handlungen beziehen, mit denen jemand sich die Gesamtheit oder einen
+ Teil des Inhalts einer Datenbank aneignet oder diesen in der Öffentlichkeit verbreitet. Diese Begriffe setzen keinen direkten
+ Zugang zu der betreffenden Datenbank voraus.
+
+ Der Umstand, dass der Inhalt der Datenbank der Öffentlichkeit durch die Person, die sie erstellt hat, oder mit deren Zustimmung
+ zugänglich gemacht worden ist, berührt deren Recht nicht, Entnahme‑ und/oder Weiterverwendungshandlungen, die sich auf die
+ Gesamtheit oder auf einen wesentlichen Teil dieses Inhalts erstrecken, zu untersagen.
+
+ (vgl. Randnr. 67 und Tenor 2)
+
+ 3. Der Begriff in quantitativer Hinsicht wesentlicher Teil des Inhalts einer Datenbank im Sinne von Artikel 7 der Richtlinie
+ 96/9 über den rechtlichen Schutz von Datenbanken bezieht sich auf das entnommene und/oder weiterverwendete Datenvolumen und
+ ist nach dem Verhältnis zum Gesamtvolumen des Inhalts der Datenbank zu beurteilen. Der Begriff in qualitativer Hinsicht wesentlicher
+ Teil des Inhalts einer Datenbank bezieht sich auf den Umfang der mit der Beschaffung, der Überprüfung oder der Darstellung
+ des Inhalts des Gegenstands der Entnahme‑ und/oder Weiterverwendungshandlung verbundenen Investition unabhängig davon, ob
+ dieser Gegenstand einen quantitativ wesentlichen Teil des allgemeinen Inhalts der geschützten Datenbank darstellt.
+
+ Unter den Begriff unwesentlicher Teil des Inhalts einer Datenbank fällt jeder Teil, der dem Begriff wesentlicher Teil sowohl
+ in quantitativer als auch in qualitativer Hinsicht nicht entspricht.
+
+ (vgl. Randnrn. 70-71, 73 und Tenor 3)
+
+ 4. Artikel 7 Absatz 5 der Richtlinie 96/9 über den rechtlichen Schutz von Datenbanken, der in bestimmten Fällen Handlungen der
+ wiederholten und systematischen Entnahme und/oder Weiterverwendung unwesentlicher Teile des Inhalts der Datenbank verbietet,
+ erfasst u. a. unzulässige Entnahme‑ und/oder Weiterverwendungshandlungen, die durch ihre kumulative Wirkung dahin gehen, ohne
+ Genehmigung der Person, die die Datenbank erstellt hat, die Gesamtheit oder einen wesentlichen Teil des Inhalts dieser Datenbank
+ wiederherzustellen und/oder der Öffentlichkeit zur Verfügung zu stellen, und die damit die Investition dieser Person schwerwiegend
+ beeinträchtigen.
+
+ (vgl. Randnr. 95 und Tenor 4)
+
+ URTEIL DES GERICHTSHOFES (Große Kammer)
+9. November 2004(1)
+
+ „Richtlinie 96/9/EG – Rechtlicher Schutz von Datenbanken – Schutzrecht sui generis – Beschaffung, Überprüfung oder Darstellung des Inhalts einer Datenbank – (Un)wesentlicher Teil des Inhalts einer Datenbank – Entnahme und Weiterverwendung – Normale Nutzung – Unzumutbare Verletzung der berechtigten Interessen des Herstellers – Pferdesportdatenbank – Verzeichnisse von Rennen – Wettspiele“
+
+ In der Rechtssache C-203/02betreffend ein Vorabentscheidungsersuchen nach Artikel 234 EG,eingereicht vom Court of Appeal (England & Wales) (Civil Division) (Vereinigtes Königreich) mit Entscheidung vom 24. Mai 2002, eingegangen beim Gerichtshof am 31. Mai 2002, in dem Verfahren 
+
+The British Horseracing Board Ltd u. a.
+
+ gegen
+
+William Hill Organization Ltd
+
+ erlässt
+
+ DER GERICHTSHOF (Große Kammer),
+
+ unter Mitwirkung des Präsidenten V. Skouris, der Kammerpräsidenten P. Jann, C. W. A. Timmermans, A. Rosas und K. Lenaerts
+ (Berichterstatter), der Richter J.-P. Puissochet und R. Schintgen sowie der Richterin N. Colneric und des Richters J. N. Cunha
+ Rodrigues,
+
+ Generalanwältin: C. Stix-Hackl,
+Kanzler: M. Múgica Arzamendi und M.-F. Contet, Hauptverwaltungsrätinnen,
+
+ aufgrund des schriftlichen Verfahrens und auf die mündliche Verhandlung vom 30. März 2004,unter Berücksichtigung der Erklärungen
+
+ –
+ der The British Horseracing Board Ltd u. a., vertreten durch P. Prescott, QC, L. Lane, Barrister, und H. Porter, Solicitor,
+
+ –
+ der William Hill Organization Ltd, vertreten durch M. Platts-Mills, QC, M. J. Abrahams, Barrister, S. Kon und T. Usher, sowie
+ S. Turnbull, Solicitors,
+
+ –
+ der belgischen Regierung, vertreten durch A. Snoecx als Bevollmächtigte, Beistand: P. Vlaemminck, Advocaat,
+
+ –
+ der deutschen Regierung, vertreten durch W. D. Plessing als Bevollmächtigten,
+
+ –
+ der portugiesischen Regierung, vertreten durch L. Fernandes und A. P. Matos Barros als Bevollmächtigte,
+
+ –
+ der Kommission der Europäischen Gemeinschaften, vertreten durch K. Banks als Bevollmächtigte,
+
+ nach Anhörung der Schlussanträge der Generalanwältin in der Sitzung vom 8. Juni 2004,
+
+ folgendes
+
+Urteil
+
+ 1
+
+ Das Vorabentscheidungsersuchen betrifft die Auslegung der Artikel 7 und 10 Absatz 3 der Richtlinie 96/9/EG des Europäischen
+ Parlaments und des Rates vom 11. März 1996 über den rechtlichen Schutz von Datenbanken (ABl. L 77, S. 20, im Folgenden: Richtlinie).
+
+ 2
+
+ Dieses Ersuchen ergeht in einem Rechtsstreit zwischen der The British Horseracing Board Ltd (im Folgenden: BHB), dem Jockey
+ Club und der Weatherbys Group Ltd (im Folgenden: Kläger) und der William Hill Organization Ltd (im Folgenden: Beklagte). Dieser
+ Rechtsstreit ist dadurch ausgelöst worden, dass die Beklagte für die Veranstaltung von Pferdewetten Daten verwendet hat, die
+ aus der Datenbank des BHB stammen.
+
+ Rechtlicher Rahmen
+
+ 3
+
+ Gegenstand der Richtlinie ist nach Artikel 1 Absatz 1 der Rechtschutz von Datenbanken jeglicher Form. Eine Datenbank ist nach
+ Artikel 1 Absatz 2 der Richtlinie definiert als „eine Sammlung von Werken, Daten oder anderen unabhängigen Elementen, die
+ systematisch oder methodisch angeordnet und einzeln mit elektronischen Mitteln oder auf andere Weise zugänglich sind“.
+
+ 4
+
+ Nach Artikel 3 der Richtlinie werden „Datenbanken, die aufgrund der Auswahl oder Anordnung des Stoffes eine eigene geistige
+ Schöpfung ihres Urhebers darstellen“, urheberrechtlich geschützt.
+
+ 5
+
+ Durch Artikel 7 der Richtlinie wird ein Schutzrecht sui generis wie folgt eingeführt:
+
+„Gegenstand des Schutzes
+
+(1) Die Mitgliedstaaten sehen für den Hersteller einer Datenbank, bei der für die Beschaffung, die Überprüfung oder die Darstellung
+ ihres Inhalts eine in qualitativer oder quantitativer Hinsicht wesentliche Investition erforderlich ist, das Recht vor, die
+ Entnahme und/oder die Weiterverwendung der Gesamtheit oder eines in qualitativer oder quantitativer Hinsicht wesentlichen
+ Teils des Inhalts dieser Datenbank zu untersagen.
+
+(2) Für die Zwecke dieses Kapitels gelten folgende Begriffsbestimmungen:
+
+ a)
+ ‚Entnahme‘ bedeutet die ständige oder vorübergehende Übertragung der Gesamtheit oder eines wesentlichen Teils des Inhalts
+ einer Datenbank auf einen anderen Datenträger, ungeachtet der dafür verwendeten Mittel und der Form der Entnahme; 
+
+ b)
+ ‚Weiterverwendung‘ bedeutet jede Form öffentlicher Verfügbarmachung der Gesamtheit oder eines wesentlichen Teils des Inhalts
+ der Datenbank durch die Verbreitung von Vervielfältigungsstücken, durch Vermietung, durch Online-Übermittlung oder durch andere
+ Formen der Übermittlung. Mit dem Erstverkauf eines Vervielfältigungsstücks einer Datenbank in der Gemeinschaft durch den Rechtsinhaber
+ oder mit seiner Zustimmung erschöpft sich in der Gemeinschaft das Recht, den Weiterverkauf dieses Vervielfältigungsstücks
+ zu kontrollieren.
+
+ Der öffentliche Verleih ist keine Entnahme oder Weiterverwendung.
+
+(3) Das in Absatz 1 genannte Recht kann übertragen oder abgetreten werden oder Gegenstand vertraglicher Lizenzen sein.
+
+(4) Das in Absatz 1 vorgesehene Recht gilt unabhängig davon, ob die Datenbank für einen Schutz durch das Urheberrecht oder durch
+ andere Rechte in Betracht kommt. Es gilt ferner unabhängig davon, ob der Inhalt der Datenbank für einen Schutz durch das Urheberrecht
+ oder durch andere Rechte in Betracht kommt. Der Schutz von Datenbanken durch das nach Absatz 1 gewährte Recht berührt nicht
+ an ihrem Inhalt bestehende Rechte.
+
+(5) Unzulässig ist die wiederholte und systematische Entnahme und/oder Weiterverwendung unwesentlicher Teile des Inhalts der Datenbank,
+ wenn dies auf Handlungen hinausläuft, die einer normalen Nutzung der Datenbank entgegenstehen oder die berechtigten Interessen
+ des Herstellers der Datenbank unzumutbar beeinträchtigen.“
+
+ 6
+
+ Artikel 8 Absatz 1 der Richtlinie bestimmt:
+
+„Der Hersteller einer der Öffentlichkeit – in welcher Weise auch immer – zur Verfügung gestellten Datenbank kann dem rechtmäßigen
+ Benutzer dieser Datenbank nicht untersagen, in qualitativer und/oder quantitativer Hinsicht unwesentliche Teile des Inhalts
+ der Datenbank zu beliebigen Zwecken zu entnehmen und/oder weiterzuverwenden. Sofern der rechtmäßige Benutzer nur berechtigt
+ ist, einen Teil der Datenbank zu entnehmen und/oder weiterzuverwenden, gilt dieser Absatz nur für diesen Teil.“
+
+ 7
+
+ Artikel 9 der Richtlinie sieht vor:
+
+„Die Mitgliedstaaten können festlegen, dass der rechtmäßige Benutzer einer der Öffentlichkeit – in welcher Weise auch immer
+ – zur Verfügung gestellten Datenbank ohne Genehmigung des Herstellers der Datenbank in folgenden Fällen einen wesentlichen
+ Teil des Inhalts der Datenbank entnehmen und/oder weiterverwenden kann:
+
+ a)
+ für eine Entnahme des Inhalts einer nichtelektronischen Datenbank zu privaten Zwecken; 
+
+ b)
+ für eine Entnahme zur Veranschaulichung des Unterrichts oder zu Zwecken der wissenschaftlichen Forschung, sofern er die Quelle
+ angibt und soweit dies durch den nichtkommerziellen Zweck gerechtfertigt ist; 
+
+ c)
+ für eine Entnahme und/oder Weiterverwendung zu Zwecken der öffentlichen Sicherheit oder eines Verwaltungs- oder Gerichtsverfahrens.
+
+ 8
+
+ Artikel 10 der Richtlinie bestimmt:
+
+„(1) Das in Artikel 7 vorgesehene Recht entsteht mit dem Zeitpunkt des Abschlusses der Herstellung der Datenbank. Es erlischt 15
+ Jahre nach dem 1. Januar des auf den Tag des Abschlusses der Herstellung folgenden Jahres.
+
+…
+
+(3) Jede in qualitativer oder quantitativer Hinsicht wesentliche Änderung des Inhalts einer Datenbank einschließlich wesentlicher
+ Änderungen infolge der Anhäufung von aufeinanderfolgenden Zusätzen, Löschungen oder Veränderungen, aufgrund deren angenommen
+ werden kann, dass eine in qualitativer oder quantitativer Hinsicht wesentliche Neuinvestition erfolgt ist, begründet für die
+ Datenbank, die das Ergebnis dieser Investition ist, eine eigene Schutzdauer.“
+
+ 9
+
+ Die Richtlinie ist im Vereinigten Königreich durch den Erlass der Copyright and Rights in Databases Regulations 1997 umgesetzt
+ worden, die am 1. Januar 1998 in Kraft getreten sind. Der Wortlaut dieser Regulations ist mit dem der Richtlinie identisch.
+
+Ausgangsverfahren und Vorabentscheidungsfragen
+
+ 10
+
+ Die Kläger organisieren den Pferderennsport im Vereinigten Königreich und sorgen in diesem Rahmen mit unterschiedlichen Funktionen
+ für die Entwicklung und den Betrieb der Datenbank des BHB, in der eine erhebliche Zahl von Informationen zusammengefasst ist,
+ die bei Pferdeeigentümern, Trainern, Veranstaltern von Pferderennen und anderen Personen aus dem Bereich des Pferderennsports
+ eingeholt worden sind. Diese Datenbank umfasst Informationen, die sich u. a. auf den Stammbaum von etwa einer Million Pferde
+ beziehen, sowie als „Vorabinformationen“ bezeichnete Informationen, die sich auf die Rennen beziehen, die im Vereinigten Königreich
+ stattfinden sollen. Die letztgenannten Informationen betreffen u. a. die Bezeichnung, den Ort und das Datum des Rennens, die
+ Renndistanz, die Zulassungskriterien, das Datum des Meldeschlusses, die Höhe der Meldegebühr und den Betrag, in dessen Höhe
+ die Rennbahn zu dem nach dem Rennen vergebenen Preis beitragen wird.
+
+ 11
+
+ Die Weatherbys Group Ltd, die Gesellschaft, die die Datenbank des BHB beschickt und betreibt, übt in Bezug auf die Vorabinformationen
+ drei Haupttätigkeiten aus.
+
+ 12
+
+ Erstens registriert sie Informationen, die u. a. die Eigentümer, die Trainer, die Jockeys, die Pferde und deren Leistungen
+ in den einzelnen Rennen betreffen.
+
+ 13
+
+ Zweitens nimmt sie eine Gewichtszuteilung für die zu den einzelnen Rennen gemeldeten Pferde vor und legt ein Handicap fest.
+
+ 14
+
+ Drittens erstellt sie die Liste der an diesen Rennen teilnehmenden Pferde. Dieser Vorgang wird von einem ihr gehörenden Call‑Center
+ durchgeführt, bei dem etwa 30 Personen beschäftigt sind. Diese nehmen telefonisch die Meldung der Pferde für jedes veranstaltete
+ Rennen auf. Die Identität und die Qualität der Person, die die Meldung vorgenommen hat, sowie die Übereinstimmung zwischen
+ den Merkmalen des Pferdes und den Zulassungskriterien für das Rennen werden anschließend überprüft. Nach diesen Überprüfungen
+ werden die Meldungen vorläufig veröffentlicht. Für die Teilnahme am Rennen muss der Trainer die Teilnahme des Pferdes telefonisch
+ in der Weise bestätigen, dass er spätestens am Vortag des Rennens eine Erklärung für dieses Pferd abgibt. Die Bearbeiter müssen
+ dann überprüfen, ob das Pferd nach Maßgabe der Zahl der bereits registrierten Erklärungen zur Teilnahme am Rennen zugelassen
+ werden kann. Ein Zentralcomputer teilt dann jedem Pferd eine Satteldeckennummer zu und legt dessen Startbox fest. Die endgültige
+ Teilnehmerliste wird am Vortag des Rennens veröffentlicht.
+
+ 15
+
+ Die Datenbank des BHB enthält wesentliche Informationen nicht nur für die unmittelbar durch die Pferderennen betroffenen Personen,
+ sondern auch für die Rundfunk‑ und Fernsehanstalten sowie für Wettfirmen und deren Kunden. Die mit dem Betrieb der Datenbank
+ des BHB verbundenen Kosten belaufen sich auf 4 Mio. GBP pro Jahr. Die Gebühren, die Dritten für die Nutzung der in dieser
+ Datenbank enthaltenen Informationen in Rechnung gestellt werden, decken etwa ein Viertel dieses Betrages ab.
+
+ 16
+
+ Die Datenbank ist online über ein gemeinsames Internet‑Portal des BHB und der Weatherbys Group Ltd zugänglich. Ein Teil ihres
+ Inhalts wird wöchentlich auch im amtlichen Mitteilungsblatt des BHB veröffentlicht. Der Inhalt der Datenbank wird auch ganz
+ oder teilweise der Firma Racing Pages Ltd zur Verfügung gestellt, die von der Weatherbys Group Ltd und der Press Association
+ gemeinsam kontrolliert wird und die die Informationen am Vortag des Rennens verschiedenen Abonnenten, zu denen Wettfirmen
+ gehören, in Form von „Declarations Feed“ übermittelt. Die Firma Satellite Informations Services Ltd (im Folgenden: SIS) ist
+ von der Racing Pages Ltd dazu ermächtigt, die Informationen an ihre eigenen Abonnenten in der Form von nichtüberarbeiteten
+ Informationen (raw data feed, im Folgenden: RDF) zu übermitteln. Die RDF enthalten eine große Zahl von Informationen, insbesondere
+ die Namen der an den Rennen teilnehmenden Pferde, die Namen der Jockeys, die Satteldeckennummern und die Gewichtszuteilung
+ für jedes Pferd. Die Namen der an einem bestimmten Rennen teilnehmenden Pferde werden der Öffentlichkeit an dem dem Tag des
+ Rennens vorausgehenden Nachmittag in der Presse und über die Dienste Ceefax und Teletext zugänglich gemacht.
+
+ 17
+
+ Die Beklagte, die Declarations Feed und RDF abonniert hat, ist eine der Hauptveranstalterinnen von Wetten „außerhalb der Pferderennbahn“
+ im Vereinigten Königreich für britische und internationale Kunden. Sie hat einen Online‑Wettdienst auf zwei Internetseiten
+ aufgenommen. Interessenten können auf diesen Seiten die einzelnen veranstalteten Rennen, die betreffenden Pferderennbahnen,
+ die teilnehmenden Pferde und die von der Beklagten angebotenen Quoten erfahren.
+
+ 18
+
+ Die Informationen, die diese auf ihren Internetseiten bietet, sind zum einen den am Vortag des Rennens erschienenen Zeitungen
+ und zum anderen den von der SIS am Morgen des Rennens gelieferten RDF entnommen.
+
+ 19
+
+ Nach den Angaben im Vorlagebeschluss stellen die Informationen auf den Internetseiten der Beklagten nur einen sehr geringen
+ Teil der Gesamtzahl der in der BHB‑Datenbank enthaltenen Daten dar, da sie nur folgende Elemente dieser Datenbank betreffen:
+ die Namen aller an dem betreffenden Rennen teilnehmenden Pferde, das Datum, die Uhrzeit und/oder die Bezeichnung des Rennens
+ sowie den Namen der Pferderennbahn. Ebenfalls nach den Angaben im Vorlagebeschluss werden die Pferderennen und die Verzeichnisse
+ der teilnehmenden Pferde auf den Internetseiten der Beklagten und in der BHB‑Datenbank nicht in der gleichen Weise dargestellt.
+
+ 20
+
+ Im März 2000 erhoben die Kläger beim High Court of Justice (England & Wales), Chancery Division (Vereinigtes Königreich) eine
+ auf eine angebliche Verletzung ihres Schutzrechts sui generis gestützte Klage gegen die Beklagte. Sie machen zum einen geltend,
+ dass die tägliche Nutzung von den Zeitungen und den RDF entnommenen Informationen über Pferderennen durch die Beklagte eine
+ gegen Artikel 7 Absatz 1 der Richtlinie verstoßende Entnahme oder Weiterverwendung eines wesentlichen Teils des Inhalts der
+ BHB‑Datenbank darstelle. Zum anderen tragen sie vor, selbst wenn man annehme, dass die einzelnen Entnahmen, die die Beklagte
+ vornehme, unwesentlich seien, müssten diese nach Artikel 7 Absatz 5 verboten sein.
+
+ 21
+
+ Mit Urteil vom 9. Februar 2001 hat der High Court of Justice (England & Wales), Chancery Division, die Klage für begründet
+ erklärt. Die Beklagte hat gegen dieses Urteil ein Rechtsmittel beim vorlegenden Gericht eingelegt.
+
+ 22
+
+ Angesicht von Problemen bei der Auslegung der Richtlinie hat der Court of Appeal (England & Wales) (Civil Division) beschlossen,
+ das Verfahren auszusetzen und dem Gerichtshof folgende Fragen zur Vorabentscheidung vorzulegen:
+
+ 1.
+ Kann einer der Begriffe
+
+ a)
+ „wesentlicher Teil des Inhalts der Datenbank“; oder
+
+ b)
+ „unwesentliche Teile des Inhalts der Datenbank“
+
+ in Artikel 7 der Richtlinie aus der Datenbank stammende Werke, Daten oder andere Elemente erfassen, wenn diese nicht ebenso
+ systematisch oder methodisch angeordnet und einzeln zugänglich sind wie in der Datenbank?
+
+ 2.
+ Was bedeutet „Beschaffung“ in Artikel 7 Absatz 1 der Richtlinie? Können insbesondere die [in der Randnummer 14 dieses Urteils
+ genannten Gesichtspunkte] eine solche Beschaffung darstellen?
+
+ 3.
+ Ist die „Überprüfung“ in Artikel 7 Absatz 1 der Richtlinie darauf beschränkt, aus gegebenem Anlass sicherzustellen, dass die
+ in der Datenbank enthaltene Information zutreffend ist oder bleibt?
+
+ 4.
+ Was bedeuten in Artikel 7 Absatz 1 der Richtlinie die Begriffe:
+
+ a)
+ ein „in qualitativer Hinsicht … wesentlicher Teil des Inhalts dieser Datenbank“; und
+
+ b)
+ ein „in … quantitativer Hinsicht wesentlicher Teil des Inhalts dieser Datenbank“?
+
+ 5.
+ Was bedeutet der Begriff „unwesentliche Teile der Datenbank“ in Artikel 7 Absatz 5 der Richtlinie?
+
+ 6.
+ Insbesondere:
+
+ a)
+ Bedeutet „wesentlich“ mehr als „unbedeutend“ und, wenn ja, was?
+
+ b)
+ Bedeutet „unwesentlicher“ Teil lediglich, dass er nicht wesentlich ist?
+
+ 7.
+ Erfasst „Entnahme“ in Artikel 7 der Richtlinie nur die Übertragung des Inhalts der Datenbank direkt von der Datenbank auf
+ einen anderen Datenträger oder auch die Übertragung von indirekt aus der Datenbank stammenden Werken, Daten oder anderen Elementen,
+ ohne direkten Zugriff auf die Datenbank?
+
+ 8.
+ Erfasst „Weiterverwendung“ in Artikel 7 der Richtlinie nur das öffentliche Verfügbarmachen des Inhalts der Datenbank direkt
+ aus der Datenbank oder auch das öffentliche Verfügbarmachen von indirekt aus der Datenbank stammenden Werken, Daten oder anderen
+ Elementen, ohne direkten Zugriff auf die Datenbank?
+
+ 9.
+ Erfasst „Weiterverwendung“ in Artikel 7 der Richtlinie nur das erste öffentliche Verfügbarmachen des Inhalts der Datenbank?
+
+ 10.
+ Was bedeutet „Handlungen … die einer normalen Nutzung der Datenbank entgegenstehen oder die berechtigten Interessen des Herstellers
+ der Datenbank unzumutbar beeinträchtigen“ in Artikel 7 Absatz 5 der Richtlinie? Können insbesondere die [in den Randnummern
+ 17 bis 19 dieses Urteils beschriebenen Verhaltensweisen] im Zusammenhang mit den [in Randnummer 15 dieses Urteils genannten
+ Gesichtspunkten] solche Handlungen darstellen?
+
+ 11.
+ Bedeutet Artikel 10 Absatz 3 der Richtlinie, dass jede „wesentliche Änderung“ des Inhalts der Datenbank, die eine eigene Schutzdauer
+ für die sich ergebende Datenbank begründet, dazu führt, dass die sich ergebende Datenbank auch für die Zwecke des Artikels
+ 7 Absatz 5 als eine neue, separate Datenbank anzusehen ist?
+
+Zu den Vorabentscheidungsfragen
+Vorbemerkungen
+
+ 23
+
+ Artikel 7 Absatz 1 der Richtlinie gewährt der Person, die eine Datenbank im Sinne von Artikel 1 Absatz 2 der Richtlinie erstellt,
+ einen als Schutzrecht sui generis bezeichneten besonderen Schutz, sofern „für die Beschaffung, die Überprüfung oder die Darstellung
+ ihres Inhalts eine in qualitativer oder quantitativer Hinsicht wesentliche Investition erforderlich ist“.
+
+ 24
+
+ Mit der zweiten und der dritten Frage, die zusammen zu prüfen sind, will das vorlegende Gericht eine Auslegung des Begriffes
+ der mit der Beschaffung bzw. der Überprüfung des Inhalts einer Datenbank im Sinne des Artikels 7 Absatz 1 der Richtlinie verbundenen
+ Investition erreichen.
+
+ 25
+
+ Nach Artikel 7 Absatz 1 der Richtlinie ist die Person, die eine durch das Schutzrecht sui generis geschützte Datenbank erstellt
+ hat, berechtigt, die Entnahme und/oder die Weiterverwendung der Gesamtheit oder eines wesentlichen Teils des Inhalts dieser
+ Datenbank zu untersagen. Artikel 7 Absatz 5 verbietet außerdem Handlungen der wiederholten und systematischen Entnahme und/oder
+ Weiterverwendung unwesentlicher Teile des Inhalts der Datenbank, die einer normalen Nutzung der Datenbank entgegenstehen oder
+ die berechtigten Interessen der Person, die die Datenbank erstellt hat, unzumutbar beeinträchtigen.
+
+ 26
+
+ Die siebte, die achte und die neunte Vorlagefrage, die zusammen zu prüfen sind, beziehen sich auf die Begriffe Entnahme und
+ Weiterverwendung. Die Begriffe wesentlicher Teil und unwesentlicher Teil einer Datenbank stehen ihrerseits im Mittelpunkt
+ der ersten, der vierten, der fünften und der sechsten Frage, die ebenfalls zusammen zu prüfen sind.
+
+ 27
+
+ Die zehnte Frage betrifft die Tragweite des in Artikel 7 Absatz 5 der Richtlinie ausgesprochenen Verbots. Die elfte Frage
+ geht dahin, ob eine wesentliche Änderung des Inhalts der Datenbank, die von der Person vorgenommen wird, die die Datenbank
+ erstellt hat, den Schluss zulässt, dass es sich für die Beurteilung im Rahmen des Artikels 7 Absatz 5 der Richtlinie, ob unwesentliche
+ Teile der Datenbank betreffende Entnahme‑ und/oder Weiterverwendungshandlungen wiederholt und systematisch sind, um eine neue
+ Datenbank handelt.
+
+Zur zweiten und zur dritten Frage: Begriff der mit der Beschaffung und der Überprüfung des Inhalts einer Datenbank verbundenen
+ Investition im Sinne von Artikel 7 Absatz 1 der Richtlinie 
+
+ 28
+
+ Die zweite und die dritte Frage des vorlegenden Gerichts beziehen sich auf den Begriff der mit der Beschaffung oder der Überprüfung
+ des Inhalts einer Datenbank verbundenen Investition im Sinne von Artikel 7 Absatz 1 der Richtlinie. 
+
+ 29
+
+ In diesem Zusammenhang ist darauf hinzuweisen, dass der Schutz durch das Schutzrecht sui generis nach Artikel 7 Absatz 1 der
+ Richtlinie Datenbanken vorbehalten ist, die ein bestimmtes Kriterium erfüllen, nämlich dass für die Beschaffung, die Überprüfung
+ oder die Darstellung ihres Inhalts eine in qualitativer oder quantitativer Hinsicht wesentliche Investition erforderlich ist.
+
+ 30
+
+ Nach der 9., der 10. und der 12. Begründungserwägung der Richtlinie soll diese, wie die Beklagte ausführt, Investitionen in
+ „Datenspeicher und Datenverarbeitungs“‑Systeme fördern und schützen, die zur Entwicklung des Informationsmarktes in einem
+ Rahmen beitragen, der durch eine exponentielle Zunahme der Daten geprägt ist, die jedes Jahr in allen Tätigkeitsbereichen
+ erzeugt und verarbeitet werden. Daraus folgt, dass der Begriff der mit der Beschaffung, der Überprüfung oder der Darstellung
+ des Inhalts einer Datenbank verbundenen Investition allgemein dahin zu verstehen ist, dass er der Erstellung dieser Datenbank
+ als solche gewidmete Investition bezeichnet.
+
+ 31
+
+ In diesem Zusammenhang ist der Begriff der mit der Beschaffung des Inhalts einer Datenbank verbundenen Investition, wie die
+ Beklagte sowie die belgische, die deutsche und die portugiesische Regierung unterstreichen, dahin zu verstehen, dass die der
+ Suche nach vorhandenen unabhängigen Elementen und deren Sammlung in dieser Datenbank gewidmeten Mittel unter Ausschluss der
+ Mittel bezeichnet, die für das Erzeugen der unabhängigen Elemente als solches eingesetzt werden. Das Ziel des durch die Richtlinie
+ eingerichteten Schutzes durch das Schutzrecht sui generis besteht nämlich darin, einen Anreiz für die Einrichtung von Systemen
+ für die Speicherung und die Verarbeitung vorhandener Informationen zu geben und nicht für das Erzeugen von Elementen, die
+ später in einer Datenbank zusammengestellt werden können.
+
+ 32
+
+ Diese Auslegung wird durch die 39. Begründungserwägung der Richtlinie bestätigt, nach dem das Ziel des Schutzrechts sui generis
+ darin besteht, einen Schutz gegen die widerrechtliche Aneignung der Ergebnisse der finanziellen und beruflichen Investitionen
+ sicherzustellen, die „für die Beschaffung und das Sammeln des Inhalts“ einer Datenbank getätigt wurden. Wie die Generalanwältin
+ in den Nummern 41 bis 46 ihrer Schlussanträge feststellt, sprechen alle Sprachfassungen dieser 39. Begründungserwägung trotz
+ leichter terminologischer Abweichungen für eine Auslegung, die von dem Begriff Beschaffung das Erzeugen der in der Datenbank
+ enthaltenen Elemente ausschließt.
+
+ 33
+
+ Die 19. Begründungserwägung der Richtlinie, nach der die Zusammenstellung mehrerer Aufzeichnungen musikalischer Darbietungen
+ auf einer CD keine Investition darstellt, die ausreichend erheblich wäre, um in den Genuss des Rechts sui generis zu kommen,
+ liefert ein zusätzliches Argument für diese Auslegung. Daraus geht nämlich hervor, dass die Mittel, die für das Erzeugen der
+ Werke oder der Elemente, die sich in der Datenbank, in diesem Fall auf einer CD finden, eingesetzt werden, einer mit der Beschaffung
+ des Inhalts dieser Datenbank verbundenen Investition nicht gleichzustellen sind und folglich bei der Beurteilung, ob die mit
+ der Erstellung dieser Datenbank verbundene Investition wesentlich ist, nicht berücksichtigt werden können.
+
+ 34
+
+ Der Begriff der mit der Überprüfung des Inhalts der Datenbank verbundenen Investition ist dahin zu verstehen, dass er die
+ Mittel erfasst, die, um die Verlässlichkeit der in der Datenbank enthaltenen Information sicherzustellen, der Kontrolle der
+ Richtigkeit der ermittelten Elemente bei der Erstellung der Datenbank und während des Zeitraums des Betriebs dieser Datenbank
+ gewidmet werden. Die Mittel, die Überprüfungsmaßnahmen im Laufe des Stadiums der Erzeugung von Daten oder sonstigen Elementen
+ gewidmet werden, die anschließend in einer Datenbank gesammelt werden, stellen dagegen diese Erzeugung betreffende Mittel
+ dar und können daher bei der Beurteilung, ob eine wesentliche Investition vorliegt, im Rahmen des Artikels 7 Absatz 1 der
+ Richtlinie nicht berücksichtigt werden.
+
+ 35
+
+ In diesem Zusammenhang schließt der Umstand, dass die Erstellung einer Datenbank mit der Ausübung einer Haupttätigkeit verbunden
+ ist, in deren Rahmen die Person, die die Datenbank erstellt, auch die in dieser Datenbank enthaltenen Elemente erzeugt, als
+ solcher nicht aus, dass diese Person den Schutz durch das Schutzrecht sui generis beanspruchen kann, sofern sie nachweist,
+ dass die Beschaffung dieser Elemente, ihre Überprüfung oder ihre Darstellung in dem in den Randnummern 31 bis 34 dieses Urteils
+ angegebenen Sinn Anlass zu einer in quantitativer oder qualitativer Hinsicht wesentlichen Investition gegeben haben, die im
+ Verhältnis zu den Mitteln selbständig ist, die eingesetzt worden sind, um diese Elemente zu erzeugen.
+
+ 36
+
+ Dabei verlangen die Ermittlung der Daten und die Überprüfung ihrer Richtigkeit im Zeitpunkt der Erstellung der Datenbank von
+ der Person, die die Datenbank erstellt, zwar grundsätzlich nicht, dass sie besondere Mittel einsetzt, da es sich um Daten
+ handelt, die sie erzeugt hat und die ihr zur Verfügung stehen, die Zusammenstellung dieser Daten, ihre systematische oder
+ methodische Anordnung innerhalb der Datenbank, die Organisation ihrer individuellen Zugänglichkeit und die Überprüfung ihrer
+ Richtigkeit während des gesamten Zeitraums des Betriebs der Datenbank können aber eine in quantitativer und/oder qualitativer
+ Hinsicht wesentliche Investition im Sinne von Artikel 7 Absatz 1 der Richtlinie erfordern.
+
+ 37
+
+ Im Ausgangsverfahren fragt das vorlegende Gericht, ob die in Randnummer 14 des vorliegenden Urteils beschriebenen Investitionen
+ einer mit der Beschaffung des Inhalts der BHB‑Datenbank verbundenen Investition gleichzustellen sind. Die Klägerinnen des
+ Ausgangsverfahrens bestehen in diesem Zusammenhang darauf, dass die genannten Investitionen wesentlich seien.
+
+ 38
+
+ Die Investitionen, die damit verbunden sind, dass zur Veranstaltung von Pferderennen die Pferde bestimmt werden, die zur Teilnahme
+ an dem betreffenden Rennen zugelassen sind, beziehen sich jedoch auf das Erzeugen der Daten, aus denen die Listen für diese
+ Rennen bestehen, die sich in der BHB‑Datenbank finden. Sie entsprechen keiner mit der Beschaffung des Inhalts der Datenbank
+ verbundenen Investition. Sie können daher bei der Beurteilung, ob die mit der Erstellung dieser Datenbank verbundene Investition
+ wesentlich ist, nicht berücksichtigt werden.
+
+ 39
+
+ Gewiss erfordert das Verfahren der Eintragung eines Pferdes auf der Liste für ein Rennen eine Reihe von vorherigen Überprüfungen,
+ die sich auf die Identität desjenigen, der die Anmeldung vornimmt, die Merkmale des Pferdes sowie die Qualifikationen des
+ Pferdes, seines Eigentümers und des Jockeys erstrecken.
+
+ 40
+
+ Diese Arbeit der vorherigen Überprüfung erfolgt jedoch im Stadium der Erzeugung der Liste für das betreffende Rennen. Sie
+ stellt daher eine mit dem Erzeugen von Daten und nicht mit der Überprüfung des Inhalts der Datenbank verbundene Investition
+ dar.
+
+ 41
+
+ Die der Aufstellung einer Liste der an einem Rennen teilnehmenden Pferde und den in diesem Rahmen stehenden Überprüfungsmaßnahmen
+ gewidmeten Mittel entsprechen daher keiner Investition, die mit der Beschaffung und der Überprüfung des Inhalts der Datenbank,
+ in der sich diese Liste findet, verbunden ist.
+
+ 42
+
+ Nach alledem sind die zweite und die dritte Vorlagefrage wie folgt zu beantworten:
+
+ –
+ Der Begriff der mit der Beschaffung des Inhalts einer Datenbank verbundenen Investition im Sinne von Artikel 7 Absatz 1 der
+ Richtlinie ist dahin zu verstehen, dass er die Mittel bezeichnet, die der Ermittlung von vorhandenen Elementen und deren Zusammenstellung
+ in dieser Datenbank gewidmet werden. Er umfasst nicht die Mittel, die eingesetzt werden, um die Elemente zu erzeugen, aus
+ denen der Inhalt einer Datenbank besteht.
+
+ –
+ Der Begriff der mit der Überprüfung des Inhalts der Datenbank verbundenen Investition im Sinne von Artikel 7 Absatz 1 der
+ Richtlinie ist dahin zu verstehen, dass er die Mittel erfasst, die, um die Verlässlichkeit der in dieser Datenbank enthaltenen
+ Information sicherzustellen, der Kontrolle der Richtigkeit der ermittelten Elemente bei der Erstellung der Datenbank und während
+ des Zeitraums des Betriebs der Datenbank gewidmet sind. Die Mittel, die Überprüfungsmaßnahmen im Stadium der Erzeugung von
+ Elementen gewidmet werden, die anschließend in einer Datenbank gesammelt werden, fallen nicht unter diesen Begriff.
+
+ –
+ Die der Aufstellung einer Liste der an einem Rennen teilnehmenden Pferde und den in diesem Rahmen stehenden Überprüfungsmaßnahmen
+ gewidmeten Mittel entsprechen keiner Investition, die mit der Beschaffung und der Überprüfung des Inhalts der Datenbank verbunden
+ ist, in der sich diese Liste befindet.
+
+Zur siebten, achten und neunten Frage: Begriffe Entnahme und Weiterverwendung im Sinne des Artikels 7 der Richtlinie
+
+ 43
+
+ Die siebte, die achte und die neunte Frage des vorlegenden Gerichts gehen im Wesentlichen dahin, ob die Nutzung einer Datenbank,
+ wie sie die Beklagte vornimmt, eine Entnahme und/oder eine Weiterverwendung im Sinne von Artikel 7 der Richtlinie darstellt.
+ Das vorlegende Gericht fragt insbesondere, ob der durch das Schutzrecht sui generis gewährte Schutz sich auch auf die Fälle
+ einer Nutzung von Daten erstreckt, die zwar aus einer geschützten Datenbank stammen, von dem Nutzer aber anderen Quellen als
+ dieser Datenbank entnommen worden sind.
+
+ 44
+
+ Nach der 41. Begründungserwägung der Richtlinie gibt der Schutz durch das durch Artikel 7 Absatz 1 der Richtlinie eingeführte
+ Schutzrecht sui generis der Person, die eine Datenbank erstellt hat, die Möglichkeit, die unerlaubte Entnahme und/oder Weiterverwendung
+ der Gesamtheit oder wesentlicher Teile des Inhalts dieser Datenbank zu unterbinden. Darüber hinaus verbietet Artikel 7 Absatz
+ 5 der Richtlinie unter bestimmten Voraussetzungen die Entnahme und/oder Weiterverwendung unwesentlicher Teile des Inhalts
+ einer Datenbank.
+
+ 45
+
+ Die Begriffe Entnahme und Weiterverwendung sind anhand des Zieles auszulegen, das mit dem Schutzrecht sui generis verfolgt
+ wird. Dieses soll die Person, die die Datenbank erstellt hat, gegen „Handlungen des Benutzers … [schützen], die über dessen
+ begründete Rechte hinausgehen und somit der Investition [dieser Person] schaden“, wie in der 42. Begründungserwägung der Richtlinie
+ ausgeführt wird.
+
+ 46
+
+ Aus der 48. Begründungserwägung der Richtlinie geht hervor, dass das Schutzrecht sui generis auf einer wirtschaftlichen Rechtfertigung
+ beruht, die darin besteht, für die Person, die die Datenbank erstellt hat, zu gewährleisten, dass die der Erstellung und dem
+ Betrieb dieser Datenbank gewidmete Investition geschützt wird und sie dafür eine Vergütung erhält.
+
+ 47
+
+ Unter diesen Voraussetzungen ist es für die Beurteilung des Umfangs des Schutzes durch das Schutzrecht sui generis unerheblich,
+ ob Ziel der Entnahme – und/oder Weiterverwendungshandlung die Erstellung einer anderen Datenbank ist, die mit der Ursprungsdatenbank
+ im Wettbewerb steht oder nicht und die gleiche oder eine andere Größe hat, oder ob diese Handlung sich in den Rahmen einer
+ anderen Tätigkeit als der Erstellung einer Datenbank einfügt. Die 42. Begründungserwägung der Richtlinie bestätigt in diesem
+ Zusammenhang, dass das „Recht auf Verbot der Entnahme und/oder Weiterverwendung der Gesamtheit oder eines wesentlichen Teils
+ des Inhalts … sich nicht nur auf die Herstellung eines parasitären Konkurrenzprodukts [bezieht], sondern auch auf einen Benutzer,
+ der durch seine Handlungen einen qualitativ oder quantitativ erheblichen Schaden für die Investition verursacht“.
+
+ 48
+
+ Außerdem ist festzustellen, dass in dem von der Kommission am 15. April 1992 vorgelegten Vorschlag für eine Richtlinie des
+ Rates über den rechtlichen Schutz von Datenbanken (ABl. L 1992, C 156, S. 4) nach Artikel 2 Absatz 5 der Bereich des Schutzes
+ durch das Schutzrecht sui generis zwar auf unzulässiger Entnahme – und/oder Weiterverwendungshandlungen beschränkt war, die
+ „zu kommerziellen Zwecken“ vorgenommen werden, dass aber das Fehlen einer Verweisung auf eine solche Zweckbestimmung in Artikel
+ 7 der Richtlinie bedeutet, dass es für die Beurteilung, ob eine Handlung in Bezug auf diesen Artikel erlaubt ist, unerheblich
+ ist, ob die Handlung einen kommerziellen oder einen nicht kommerziellen Zweck verfolgt.
+
+ 49
+
+ In Artikel 7 Absatz 2 Buchstabe a der Richtlinie wird die Entnahme definiert als „die ständige oder vorübergehende Übertragung
+ der Gesamtheit oder eines wesentlichen Teils des Inhalts einer Datenbank auf einen anderen Datenträger, ungeachtet der dafür
+ verwendeten Mittel und der Form der Entnahme“, während in Artikel 7 Absatz 2 Buchstabe b die Weiterverwendung definiert wird
+ als „jede Form öffentlicher Verfügbarmachung der Gesamtheit oder eines wesentlichen Teils des Inhalts der Datenbank durch
+ die Verbreitung von Vervielfältigungsstücken, durch Vermietung, durch Online-Übermittlung oder durch andere Formen der Übermittlung“.
+
+ 50
+
+ Die Bezugnahme auf „einen wesentlichen Teil“ in der Definition der Begriffe Entnahme und Weiterverwendung gibt Anlass zu Verwirrung,
+ da aus Artikel 7 Absatz 5 der Richtlinie hervorgeht, dass eine Entnahme oder eine Weiterverwendung sich auch auf einen unwesentlichen
+ Teil einer Datenbank beziehen kann. Wie die Generalanwältin in Nummer 90 ihrer Schlussanträge ausführt, betrifft die Bezugnahme
+ auf die Wesentlichkeit des entnommenen oder weiterverwendeten Teils in Artikel 7 Absatz 2 der Richtlinie die Definition dieser
+ Begriffe als solche nicht, sondern sie ist dahin zu verstehen, dass sie sich auf eine der Anwendungsvoraussetzungen des durch
+ Artikel 7 Absatz 1 dieser Richtlinie eingeführten Schutzrechts sui generis bezieht.
+
+ 51
+
+ Die Verwendung von Formulierungen wie „ungeachtet der dafür verwendeten Mittel und der Form der Entnahme“ und „jede Form öffentlicher
+ Verfügbarmachung“ zeigt, dass der Gemeinschaftsgesetzgeber den Begriffen Entnahme und Weiterverwendung eine weit gefasste
+ Bedeutung verleihen wollte. Mit Rücksicht auf das mit der Richtlinie verfolgte Ziel sind diese Begriffe also dahin auszulegen,
+ dass sie sich auf jede Handlung beziehen, die darin besteht, sich ohne die Zustimmung der Person, die die Datenbank erstellt
+ hat, die Ergebnisse ihrer Investition anzueignen bzw. sie öffentlich verfügbar zu machen und ihr damit die Einkünfte zu entziehen,
+ die es ihr ermöglichen sollen, die Kosten dieser Investition zu amortisieren.
+
+ 52
+
+ In einem solchen Zusammenhang können die Begriffe Entnahme und Weiterverwendung entgegen der von der Beklagten sowie der belgischen
+ und der portugiesischen Regierung vertretenen Auffassung nicht auf die Fälle beschränkt werden, in denen die Entnahme und
+ die Weiterverwendung unmittelbar von der Ursprungsdatenbank aus erfolgt, wenn man die Person, die die Datenbank erstellt hat,
+ nicht ohne Schutz gegen unzulässige Kopierhandlungen lassen will, die von einer Kopie seiner Datenbank aus vorgenommen werden.
+ Diese Auslegung wird durch Artikel 7 Absatz 2 Buchstabe b der Richtlinie bestätigt, nach dem sich mit dem Erstverkauf eines
+ Vervielfältigungsstücks einer Datenbank in der Gemeinschaft durch den Rechtsinhaber oder mit seiner Zustimmung das Recht,
+ den „Weiterverkauf“ dieses Vervielfältigungsstücks zu kontrollieren, erschöpft, nicht aber das Recht, die Entnahme und die
+ Weiterverwendung des Inhalts dieses Vervielfältigungsstücks zu kontrollieren.
+
+ 53
+
+ Da unzulässige Entnahme‑ und/oder Weiterverwendungshandlungen, die von einem Dritten von einer anderen Quelle als der betreffenden
+ Datenbank aus vorgenommen werden, ebenso wie derartige Handlungen, die unmittelbar von dieser Datenbank aus vorgenommen werden,
+ geeignet sind, die Investition der Person, die diese Datenbank erstellt hat, zu beeinträchtigen, ist davon auszugehen, dass
+ die Begriffe Entnahme und Weiterverwendung keinen direkten Zugang zu der betreffenden Datenbank voraussetzen.
+
+ 54
+
+ Es ist jedoch zu unterstreichen, dass der Schutz durch das Schutzrecht sui generis sich nur auf Entnahme‑ und Weiterverwendungshandlungen
+ im Sinne der Definition in Artikel 7 Absatz 2 der Richtlinie bezieht. Dieser Schutz erstreckt sich dagegen nicht auf Handlungen,
+ mit denen eine Datenbank abgefragt wird.
+
+ 55
+
+ Zwar kann die Person, die eine Datenbank erstellt hat, sich ein ausschließliches Recht auf Zugang zu ihrer Datenbank vorbehalten
+ oder den Zugang zu dieser bestimmten Personen vorbehalten. Macht sie jedoch selbst den Inhalt einer Datenbank oder einen Teil
+ davon der Öffentlichkeit zugänglich, so erlaubt ihr Schutzrecht sui generis ihr nicht, sich dem Abfragen dieser Datenbank
+ durch Dritte entgegenzustellen.
+
+ 56
+
+ Das Gleiche gilt, wenn die Person, die eine Datenbank erstellt hat, einem Dritten gestattet, den Inhalt ihrer Datenbank weiterzuverwenden,
+ d. h. diesen in der Öffentlichkeit zu verbreiten. Aus der Definition des Begriffes der Weiterverwendung in Artikel 7 Absatz
+ 2 Buchstabe b der Richtlinie geht nämlich in Verbindung mit der 41. Begründungserwägung der Richtlinie hervor, dass die Zustimmung
+ dieser Person dazu, ihre Datenbank oder einen Teil der Datenbank weiterzuverwenden, bedeutet, dass sie dem zustimmt, dass
+ ihre Datenbank oder der betreffende Teil der Öffentlichkeit durch einen Dritten, der diese Erlaubnis besitzt, zugänglich gemacht
+ wird. Dadurch, dass sie die Weiterverwendung zulässt, schafft die Person, die die Datenbank erstellt hat, somit für Interessierte
+ eine alternative Quelle für den Zugang zum Inhalt ihrer Datenbank und für deren Konsultation.
+
+ 57
+
+ Dass die Datenbank von Dritten bei einem „Weiterverwender“ abgefragt werden kann, der eine Erlaubnis der Person besitzt, die
+ diese Datenbank errichtet hat, hindert den Letztgenannten im Übrigen nicht daran, den Wert seiner Investition wiederzuerlangen.
+ Es steht dieser Person nämlich frei, eine Gebühr für die Weiterverwendung der Gesamtheit oder eines Teils der Datenbank festzusetzen,
+ bei der u. a. die Aussichten auf nachfolgende Abfragen berücksichtigt werden, und die ihr damit eine ausreichende Verzinsung
+ seiner Investitionen garantiert.
+
+ 58
+
+ Dagegen kann der rechtmäßige Benutzer einer Datenbank, d. h. der Benutzer, dessen Zugang zum Inhalt der Datenbank zu Zwecken
+ der Abfragen auf der unmittelbaren oder mittelbaren Zustimmung der Person beruht, die die Datenbank errichtet hat, von dieser
+ aufgrund des durch Artikel 7 Absatz 1 der Richtlinie eingeführten Schutzrechts sui generis daran gehindert werden, Handlungen
+ vorzunehmen, die darin bestehen, seinerseits die Gesamtheit oder einen wesentlichen Teil des Inhalts der Datenbank zu entnehmen
+ und/oder weiterzuverwenden. Die Zustimmung der Person, die die Datenbank erstellt hat, zu deren Konsultation, führt nämlich
+ nicht zu einer Erschöpfung ihres Schutzrechts sui generis.
+
+ 59
+
+ Dieses Ergebnis der Untersuchung wird, was die Entnahme angeht, durch die 44. Begründungserwägung der Richtlinie bestätigt,
+ nach der, „[wenn] für die Darstellung des Inhalts einer Datenbank auf dem Bildschirm die ständige oder vorübergehende Übertragung
+ der Gesamtheit oder eines wesentlichen Teils dieses Inhalts auf einen anderen Datenträger erforderlich [ist], …diese Handlung
+ der Genehmigung durch den Rechtsinhaber [bedarf]“. Was die Weiterverwendung angeht, heißt es in der 43. Begründungserwägung
+ der Richtlinie im gleichen Sinne: „Im Fall einer Online-Übermittlung erschöpft sich das Recht, die Weiterverwendung zu untersagen,
+ weder hinsichtlich der Datenbank noch hinsichtlich eines vom Empfänger der Übermittlung mit Zustimmung des Rechtsinhabers
+ angefertigten physischen Vervielfältigungsstücks dieser Datenbank oder eines Teils davon.“
+
+ 60
+
+ Das Verbot des Artikels 7 Absatz 1 der Richtlinie betrifft jedoch nur die Fälle der Entnahme und/oder Weiterverwendung, die
+ sich auf die Gesamtheit oder einen wesentlichen Teil des Inhalts einer Datenbank beziehen, für deren Errichtung eine wesentliche
+ Investition erforderlich war. Aus Artikel 8 Absatz 1 der Richtlinie geht hervor, dass das Schutzrecht sui generis außer den
+ in Artikel 7 Absatz 5 der Richtlinie genannten Fällen einem rechtmäßigen Benutzer nicht verbietet, unwesentliche Teile des
+ Inhalts einer Datenbank zu entnehmen und weiterzuverwenden.
+
+ 61
+
+ Aus dem Vorstehenden ergibt sich, dass für Entnahmehandlungen, d. h. die Übertragung des Inhalts einer Datenbank auf einen
+ anderen Träger, und für Weiterverwendungshandlungen, d. h. die öffentliche Zurverfügungstellung des Inhalts einer Datenbank,
+ die sich auf die Gesamtheit oder auf einen wesentlichen Teil des Inhalts einer Datenbank beziehen, eine Genehmigung der Person
+ erforderlich ist, die die Datenbank erstellt hat, auch wenn diese ihre Datenbank ganz oder teilweise der Öffentlichkeit zugänglich
+ gemacht oder einem Dritten oder bestimmten Dritten erlaubt haben sollte, diese der Öffentlichkeit zur Verfügung zu stellen.
+
+ 62
+
+ Die Richtlinie enthält eine Ausnahme von dem in der vorstehenden Randnummer formulierten Grundsatz. Artikel 9 definiert abschließend
+ drei Fallgestaltungen, in denen die Mitgliedstaaten festlegen können, dass der rechtmäßige Benutzer einer der Öffentlichkeit
+ – in welcher Weise auch immer – zur Verfügung gestellten Datenbank ohne Genehmigung desjenigen, der die Datenbank errichtet
+ hat, einen „wesentlichen Teil“ dieser Datenbank entnehmen und/oder weiterverwenden kann. Es handelt sich um die Entnahme des
+ Inhalts einer nichtelektronischen Datenbank zu privaten Zwecken, um die Entnahme zur Veranschaulichung des Unterrichts oder
+ zu Zwecken der wissenschaftlichen Forschung und um die Entnahme und/oder Weiterverwendung zu Zwecken der öffentlichen Sicherheit
+ oder eines Verwaltungs‑ oder Gerichtsverfahrens.
+
+ 63
+
+ Im Ausgangsverfahren wird im Vorlagebeschluss angegeben, dass die Pferderennen betreffenden Daten, die die Beklagte auf ihre
+ Internet-Seite stellt und die aus der BHB‑Datenbank stammen, zum einen den am Vortrag des Rennens erscheinenden Zeitungen
+ und zum anderen den von der Firma SIS gelieferten RDF entnommen werden.
+
+ 64
+
+ Nach dem Vorlagebeschluss werden die in den Zeitungen veröffentlichten Informationen der Presse unmittelbar durch die Weatherbys
+ Group Ltd, die Gesellschaft, die die Datenbank des BHB verwaltet, geliefert. Was die andere Informationsquelle der Beklagten
+ angeht, ist darauf hinzuweisen, dass die SIS von der Racing Pages Ltd, die zum Teil durch die Weatherbys Group Ltd kontrolliert
+ wird, ermächtigt ist, Informationen über die Pferderennen in der Form von RDF an ihre eigenen Abonnenten zu übermitteln, zu
+ denen die Beklagte gehört. Die Daten der BHB‑Datenbank über die Pferderennen sind also der Öffentlichkeit für Konsultationszwecke
+ mit Genehmigung des BHB zugänglich gemacht worden.
+
+ 65
+
+ Auch wenn die Beklagte eine rechtmäßige Benutzerin der der Öffentlichkeit zugänglich gemachten Datenbank ist, zumindest was
+ den Teil dieser Datenbank angeht, der den Informationen über Rennen entspricht, geht doch aus dem Vorlagebeschluss hervor,
+ dass sie Entnahme‑ und Weiterverwendungshandlungen im Sinne von Artikel 7 Absatz 2 der Richtlinie vornimmt. Zum einen entnimmt
+ sie dadurch Daten, deren Quelle die BHB‑Datenbank ist, dass sie diese von einem Datenträger auf einen anderen überträgt. Sie
+ nimmt nämlich diese Daten in ihr eigenes elektronisches System auf. Zum anderen verwendet sie diese Daten in der Weise weiter,
+ dass sie sie ihrerseits der Öffentlichkeit auf ihrer Internet‑Seite zur Verfügung stellt, damit ihre Kunden Wetten auf Pferderennen
+ abschließen können.
+
+ 66
+
+ Aus dem Vorlagebeschluss ergibt sich auch, dass diese Entnahmen und Weiterverwendungen ohne Genehmigung durch die Kläger vorgenommen
+ worden sind. Da die vorliegende Rechtssache unter keinen der Tatbestände des Artikels 9 der Richtlinie fällt, könnten Handlungen
+ wie die von der Beklagten vorgenommenen daher von den Klägern aufgrund von deren Schutzrecht sui generis unter der Voraussetzung
+ untersagt werden, dass sie sich auf die Gesamtheit oder auf einen wesentlichen Teil des Inhalts der BHB‑Datenbank im Sinne
+ von Artikel 7 Absatz 1 der Richtlinie erstrecken. Erstrecken sich derartige Handlungen auf unwesentliche Teile dieser Datenbank,
+ so wären sie nur untersagt, wenn die Voraussetzungen des Artikels 7 Absatz 5 der Richtlinie erfüllt sind.
+
+ 67
+
+ Nach alledem sind die siebte, die achte und die neunte Vorlagefrage wie folgt zu beantworten:
+
+ –
+ Die Begriffe Entnahme und Weiterverwendung im Sinne von Artikel 7 der Richtlinie sind dahin auszulegen, dass sie sich auf
+ unzulässige Handlungen beziehen, mit denen jemand sich die Gesamtheit oder einen Teil des Inhalts einer Datenbank aneignet
+ oder diesen in der Öffentlichkeit verbreitet. Diese Begriffe setzen keinen direkten Zugang zu der betreffenden Datenbank voraus.
+
+ –
+ Der Umstand, dass der Inhalt der Datenbank der Öffentlichkeit durch die Person, die sie erstellt hat, oder mit deren Zustimmung
+ zugänglich gemacht worden ist, berührt deren Recht nicht, Entnahme‑ und/oder Weiterverwendungshandlungen, die sich auf die
+ Gesamtheit oder auf einen wesentlichen Teil des Inhalts einer Datenbank erstrecken, zu untersagen.
+
+Zur ersten, zur vierten, zur fünften und zur sechsten Frage: Begriffe wesentlicher Teil und unwesentlicher Teil des Inhalts
+ einer Datenbank im Sinne von Artikel 7 der Richtlinie
+
+ 68
+
+ Die vierte, die fünfte und die sechste Frage des vorlegenden Gerichts beziehen sich auf die Bedeutung der Begriffe wesentlicher
+ Teil und unwesentlicher Teil des Inhalts einer Datenbank im Rahmen des Artikels 7 der Richtlinie. Die erste Frage des vorlegenden
+ Gerichts geht außerdem dahin, ob die aus einer Datenbank stammenden Elemente nicht als – wesentlicher oder unwesentlicher
+ – Teil dieser Datenbank qualifiziert werden können, wenn die systematische oder methodische Anordnung diese Elemente und die
+ Voraussetzungen ihrer individuellen Zugänglichkeit von dem Urheber der Entnahme und/oder der Weiterverwendung geändert worden
+ sind.
+
+ 69
+
+ In diesem Zusammenhang ist darauf hinzuweisen, dass der Schutz durch das Schutzrecht sui generis die Datenbanken betrifft,
+ für deren Erstellung eine erhebliche Investition erforderlich war. In diesem Rahmen verbietet Artikel 7 Absatz 1 der Richtlinie
+ die Entnahme und/oder die Weiterverwendung nicht nur der Gesamtheit einer durch das Schutzrecht sui generis geschützten Datenbank,
+ sondern auch eines in qualitativer und quantitativer Hinsicht wesentlichen Teils des Inhalts der Datenbank. Diese Vorschrift
+ soll nach der 42. Begründungserwägung der Richtlinie verhindern, dass ein Benutzer „durch seine Handlungen einen qualitativ
+ oder quantitativ erheblichen Schaden für die Investition verursacht“. Aus dieser Begründungserwägung geht hervor, dass bei
+ der Beurteilung in qualitativer Hinsicht, ob der betreffende Teil wesentlich ist, ebenso wie bei der Beurteilung in quantitativer
+ Hinsicht auf die mit der Erstellung der Datenbank verbundene Investition und auf die Beeinträchtigung dieser Investition durch
+ die diesen Teil betreffenden Entnahme‑ und/oder Weiterverwendungshandlungen abzustellen ist.
+
+ 70
+
+ Der Begriff in quantitativer Hinsicht wesentlicher Teil des Inhalts der Datenbank im Sinne von Artikel 7 Absatz 1 der Richtlinie
+ bezieht sich auf das entnommene und/oder weiterverwendete Datenvolumen der Datenbank und ist im Verhältnis zum Volumen des
+ gesamten Inhalts der Datenbank zu beurteilen. Wenn ein Benutzer nämlich einen quantitativ erheblichen Teil des Inhalts einer
+ Datenbank, für deren Erstellung der Einsatz wesentlicher Mittel erforderlich war, entnimmt und/oder weiterverwendet, so ist
+ die Investition, die den entnommenen und/oder weiterverwendeten Teil betrifft, proportional ebenfalls erheblich.
+
+ 71
+
+ Der Begriff in qualitativer Hinsicht wesentlicher Teil des Inhalts der Datenbank bezieht sich auf die Bedeutung der mit der
+ Beschaffung, der Überprüfung oder der Darstellung des Inhalts des Gegenstands der Entnahme‑ und/oder Weiterverwendungshandlung
+ verbundenen Investition unabhängig davon, ob dieser Gegenstand einen quantitativ wesentlichen Teil des allgemeinen Inhalts
+ der geschützten Datenbank darstellt. Ein quantitativ geringfügiger Teil des Inhalts einer Datenbank kann nämlich, was die
+ Beschaffung, die Überprüfung oder die Darstellung angeht, eine ganz erhebliche menschliche, technische oder finanzielle Investition
+ erfordern.
+
+ 72
+
+ Außerdem führt die Existenz des Schutzrechts sui generis nach der 46. Begründungserwägung der Richtlinie nicht zur Entstehung
+ eines neuen Rechts an den Werken, Daten oder Elementen der Datenbank als solchen und der den durch die Entnahme‑ und/oder
+ Weiterverwendungshandlungen betroffenen Elemente innewohnende Wert stellt daher kein erhebliches Kriterium für die Beurteilung
+ dar, ob der betroffene Teil wesentlich ist.
+
+ 73
+
+ Was den Begriff unwesentlicher Teil des Inhalts einer Datenbank angeht, ist davon auszugehen, dass unter diesen Begriff jeder
+ Teil fällt, der sowohl in quantitativer als auch in qualitativer Hinsicht nicht dem Begriff wesentlicher Teil entspricht.
+
+ 74
+
+ In diesem Zusammenhang ergibt sich aus dem Vorlagebeschluss, dass die auf den Internet‑Seiten der Beklagten wiedergegebenen
+ Elemente, die aus der BHB‑Datenbank stammen, nur einen sehr geringen Anteil des Gesamtumfangs dieser Datenbank ausmachen,
+ wie in Randnummer 19 dieses Urteils festgestellt worden ist. In quantitativer Hinsicht ist daher anzunehmen, dass diese Elemente
+ keinen wesentlichen Teil des Inhalts dieser Datenbank darstellen.
+
+ 75
+
+ Nach dem Vorlagebeschluss betreffen die von der Beklagten veröffentlichten Informationen nur folgende Elemente der BHB‑Datenbank:
+ die Namen aller an dem betreffenden Rennen teilnehmenden Pferde, das Datum, die Uhrzeit und/oder die Bezeichnung des Rennens
+ sowie den Namen der Pferderennbahn, wie ebenfalls in Randnummer 19 dieses Urteils angegeben worden ist.
+
+ 76
+
+ Für die Beurteilung, ob diese Elemente einen in qualitativer Hinsicht wesentlichen Teil des Inhalts der BHB‑Datenbank darstellen,
+ ist zu prüfen, ob die menschlichen, technischen und finanziellen Anstrengungen, die die Person, die die Datenbank erstellt
+ hat, für die Beschaffung, die Überprüfung und die Darstellung dieser Daten getätigt hat, eine wesentliche Investition darstellen.
+
+ 77
+
+ Die Kläger machen in diesem Zusammenhang geltend, die von der Beklagten entnommenen und weiterverwendeten Daten seien grundlegend,
+ denn ohne Teilnehmerlisten könnten die Pferderennen nicht stattfinden. Außerdem stünden diese Daten für eine erhebliche Investition,
+ die durch die Tätigkeit eines Call‑Centers gekennzeichnet sei, bei dem mehr als 30 Personen eingesetzt seien.
+
+ 78
+
+ Es ist jedoch zunächst darauf hinzuweisen, dass der den durch die Entnahme und/oder Weiterverwendungshandlung betroffenen
+ Daten innewohnende Wert kein erhebliches Kriterium bei der Beurteilung darstellt, ob der betreffende Teil in qualitativer
+ Hinsicht wesentlich ist. Der Umstand, dass die von der Firma William Hill entnommenen und weiterverwendeten Daten für die
+ Veranstaltung der Pferderennen, mit denen die Kläger betraut sind, unbedingt erforderlich sind, ist daher für die Beurteilung,
+ ob die Handlungen der Beklagten sich auf einen wesentlichen Teil des Inhalts der BHB‑Datenbank erstrecken, unerheblich.
+
+ 79
+
+ Sodann ist darauf hinzuweisen, dass die Mittel, die für das Erzeugen der Elemente, die sich in einer Datenbank finden, als
+ solches eingesetzt werden, bei der Beurteilung, ob die mit der Erstellung dieser Datenbank verbundene Investition wesentlich
+ ist, nicht berücksichtigt werden können, wie in den Randnummern 31 bis 33 dieses Urteils ausgeführt worden ist.
+
+ 80
+
+ Die Mittel, die die Kläger einsetzen, um zur Veranstaltung von Pferderennen das Datum, die Uhrzeit, den Ort und/oder die Bezeichnung
+ des Rennens sowie die an diesem teilnehmenden Pferde zu ermitteln, entsprechen aber einer Investition, die mit dem Erzeugen
+ von in der BHB‑Datenbank enthaltenen Elementen verbunden ist. Demzufolge – und wenn, wie aus dem Vorlagebeschluss hervorgeht,
+ die von der Beklagten entnommenen und weiterverwendeten Elemente von den Klägern keine im Verhältnis zu den für das Erzeugen
+ dieser Elemente erforderliche Mitteln selbständige Investition verlangt haben – müsste davon ausgegangen werden, dass diese
+ Elemente keinen in qualitativer Hinsicht wesentlichen Teil der BHB‑Datenbank darstellen.
+
+ 81
+
+ Unter diesen Voraussetzungen braucht die erste Vorlagefrage daher nicht beantwortet zu werden. Die Änderung, die der Urheber
+ der Entnahme‑ und Weiterverwendungshandlung an der Anordnung oder an den Voraussetzungen der individuellen Zugänglichkeit
+ der durch diese Handlung betroffenen Daten vorgenommen hat, kann auf jeden Fall nicht zur Folge haben, dass in einem wesentlichen
+ Teil des Inhalts der betreffenden Datenbank ein Teil umgewandelt wird, der diese Eigenschaft nicht besitzt.
+
+ 82
+
+ Nach alledem sind die vierte, die fünfte und die sechste Vorlagefrage wie folgt zu beantworten:
+
+ –
+ Der Begriff in quantitativer Hinsicht wesentlicher Teil des Inhalts einer Datenbank im Sinne von Artikel 7 der Richtlinie
+ bezieht sich auf das entnommene und/oder weiterverwendete Datenvolumen der Datenbank und ist nach dem Verhältnis zum Gesamtvolumen
+ des Inhalts der Datenbank zu beurteilen.
+
+ –
+ Der Begriff in qualitativer Hinsicht wesentlicher Teil des Inhalts einer Datenbank bezieht sich auf den Umfang der mit der
+ Beschaffung, der Überprüfung oder der Darstellung des Inhalts des Gegenstands der Entnahme‑ und/oder Weiterverwendungshandlung
+ verbundenen Investition unabhängig davon, ob dieser Gegenstand einen quantitativ wesentlichen Teil des allgemeinen Inhalts
+ der geschützten Datenbank darstellt.
+
+ –
+ Unter den Begriff unwesentlicher Teil des Inhalts einer Datenbank fällt jeder Teil, der dem Begriff wesentlicher Teil sowohl
+ in quantitativer als auch in qualitativer Hinsicht nicht entspricht.
+
+Zur zehnten Frage: Tragweite des in Artikel 7 Absatz 5 der Richtlinie ausgesprochenen Verbots
+
+ 83
+
+ Die zehnte Frage des vorlegenden Gerichts geht dahin, welche Art von Handlungen durch das in Artikel 7 Absatz 5 der Richtlinie
+ ausgesprochene Verbot erfasst wird. Das vorlegende Gericht möchte darüber hinaus wissen, ob Handlungen wie die von der Beklagten
+ vorgenommenen durch dieses Verbot betroffen sind.
+
+ 84
+
+ In diesem Zusammenhang geht aus Artikel 8 Absatz 1 und aus der 42. Begründungserwägung der Richtlinie hervor, dass die Person,
+ die eine Datenbank erstellt hat, dem rechtmäßigen Benutzer dieser Datenbank grundsätzlich nicht untersagen kann, Entnahme‑
+ und Weiterverwendungshandlungen vorzunehmen, die sich auf einen unwesentlichen Teil des Inhalts der Datenbank erstrecken.
+ Artikel 7 Absatz 5 der Richtlinie, der es der Person, die eine Datenbank erstellt hat, unter bestimmten Voraussetzungen erlaubt,
+ sich derartigen Handlungen entgegenzustellen, stellt also eine Ausnahme von diesem Grundsatz dar.
+
+ 85
+
+ In dem vom Rat am 10. Juli 1995 festgelegten gemeinsamen Standpunkt (EG) Nr. 20/95 (ABl. C 288, S. 14) heißt es in Nummer
+ 14 der Begründung: „Um … zu vermeiden, dass … [der] fehlende Schutz für unwesentliche Teile zu einer missbräuchlichen, wiederholten
+ und systematischen Entnahme und/oder Weiterverwendung führt, ist im Absatz 5 dieses Artikels des gemeinsamen Standpunkts eine
+ Schutzklausel aufgenommen worden.“
+
+ 86
+
+ Daraus folgt, dass Artikel 7 Absatz 5 der Richtlinie eine Umgehung des Verbots des Artikels 7 Absatz 1 der Richtlinie verhindern
+ soll. Ziel dieser Vorschrift ist es, eine wiederholte und systematische Entnahme und/oder Weiterverwendung unwesentlicher
+ Teile des Inhalts einer Datenbank zu verhindern, die durch ihre kumulative Wirkung die Investition der Person, die die Datenbank
+ erstellt hat, wie die durch Artikel 7 Absatz 1 der Richtlinie erfassten Fälle der Entnahme und/oder Weiterverwendung schwerwiegend
+ beeinträchtigen würde.
+
+ 87
+
+ Die Vorschrift verbietet folglich von Benutzern der Datenbank vorgenommene Entnahmehandlungen, die durch ihren wiederholten
+ und systematischen Charakter darauf hinauslaufen würden, ohne Genehmigung der Person, die diese Datenbank erstellt hat, diese
+ in ihrer Gesamtheit oder zumindest zu einem wesentlichen Teil wieder zu erstellen, sei es zur Erstellung einer anderen Datenbank
+ oder zur Ausübung einer anderen Tätigkeit als der Erstellung einer solchen Datenbank.
+
+ 88
+
+ In gleicher Weise verbietet Artikel 7 Absatz 5 der Richtlinie einem Dritten, das in Artikel 7 Absatz 1 der Richtlinie ausgesprochene
+ Verbot der Weiterverwendung dadurch zu umgehen, dass er der Öffentlichkeit systematisch und wiederholt unwesentliche Teile
+ des Inhalts der Datenbank zugänglich macht.
+
+ 89
+
+ Somit sind mit „Handlungen …, die einer normalen Nutzung … [einer] Datenbank entgegenstehen oder die berechtigten Interessen
+ des Herstellers der Datenbank unzumutbar beeinträchtigen“, unzulässige Verhaltensweisen gemeint, die darauf gerichtet sind,
+ durch die kumulative Wirkung von Entnahmehandlungen die Gesamtheit oder einen wesentlichen Teil des Inhalts der durch das
+ Schutzrecht sui generis geschützten Datenbank wieder zu erstellen und/oder der Öffentlichkeit durch die kumulative Wirkung
+ von Weiterverwendungshandlungen die Gesamtheit oder einen wesentlichen Teil des Inhalts einer Datenbank zur Verfügung zu stellen,
+ und die dadurch die Investition der Person, die diese Datenbank erstellt hat, schwerwiegend beeinträchtigen.
+
+ 90
+
+ Im Ausgangsverfahren erstrecken sich die von der Beklagten vorgenommenen Entnahme‑ und Weiterverwendungshandlungen nach den
+ Angaben im Vorlagebeschluss auf unwesentliche Teile des Inhalts der BHB‑Datenbank, wie in den Randnummern 74 bis 80 dieses
+ Urteils festgestellt worden ist. Nach dem Vorlagebeschluss werden sie anlässlich jedes Rennens, das veranstaltet wird, vorgenommen.
+ Sie sind also wiederholt und systematisch.
+
+ 91
+
+ Mit derartigen Handlungen soll jedoch das in Artikel 7 Absatz 1 der Richtlinie ausgesprochene Verbot nicht umgangen werden.
+ Es ist nämlich ausgeschlossen, dass die Firma William Hill durch die kumulative Wirkung ihrer Handlungen die Gesamtheit oder
+ einen wesentlichen Teil des Inhalts der BHB‑Datenbank wieder erstellt und der Öffentlichkeit zur Verfügung stellt und damit
+ die von den Klägern zur Herstellung dieser Datenbank getätigte Investition schwerwiegend beeinträchtigt.
+
+ 92
+
+ Dabei ist zu unterstreichen, dass die aus der BHB‑Datenbank stammenden Elemente, die täglich auf den Internet‑Seiten der Beklagten
+ veröffentlicht werden, nur die Rennen des Tages betreffen und sich auf die in Randnummer 19 dieses Urteils genannten Informationen
+ beschränken.
+
+ 93
+
+ Wie in Randnummer 80 dieses Urteils ausgeführt worden ist, ergibt sich aus dem Vorlagebeschluss, dass dafür, dass sich die
+ durch die Handlungen der Beklagten betroffenen Elemente in der Datenbank der Klägerin befinden, von deren Seiten keine Investition
+ erforderlich war, die im Verhältnis zu den zur Erzeugung dieser Elemente eingesetzten Mitteln selbständig wäre.
+
+ 94
+
+ Es ist deshalb davon auszugehen, dass das Verbot des Artikels 7 Absatz 5 der Richtlinie Handlungen wie diejenigen der Beklagten
+ nicht erfasst.
+
+ 95
+
+ Nach alledem ist auf die zehnte Vorlagefrage zu antworten, dass das in Artikel 7 Absatz 5 der Richtlinie ausgesprochene Verbot
+ unzulässige Entnahme‑ und/oder Weiterverwendungshandlungen erfasst, die durch ihre kumulative Wirkung dahin gehen, ohne Genehmigung
+ der Person, die die Datenbank erstellt hat, die Gesamtheit oder einen wesentlichen Teil des Inhalts dieser Datenbank wieder
+ herzustellen und/oder der Öffentlichkeit zur Verfügung zu stellen, und die damit die Investition dieser Person schwerwiegend
+ beeinträchtigen.
+
+ 96
+
+ Unter diesen Voraussetzungen braucht die elfte Vorlagefrage nicht beantwortet zu werden.
+
+Kosten
+
+ 97
+
+ Für die Parteien des Ausgangsverfahrens ist das Verfahren ein Zwischenstreit in dem bei dem vorlegenden Gericht anhängigen
+ Rechtsstreit; die Kostenentscheidung ist daher Sache dieses Gerichts. Die Auslagen anderer Beteiligten für die Abgabe von
+ Erklärungen vor dem Gerichtshof sind nicht erstattungsfähig.
+
+ Aus diesen Gründen hat der Gerichtshof (Große Kammer) für Recht erkannt:
+
+ 1.
+ Der Begriff der mit der Beschaffung des Inhalts einer Datenbank verbundenen Investition im Sinne von Artikel 7 Absatz 1 der
+ Richtlinie 96/9/EG des Europäischen Parlaments und des Rates vom 11. März 1996 über den rechtlichen Schutz von Datenbanken
+ ist dahin zu verstehen, dass er die Mittel bezeichnet, die der Ermittlung von vorhandenen Elementen und deren Zusammenstellung
+ in dieser Datenbank gewidmet werden. Er umfasst nicht die Mittel, die eingesetzt werden, um die Elemente zu erzeugen, aus
+ denen der Inhalt einer Datenbank besteht.
+
+ Der Begriff der mit der Überprüfung des Inhalts der Datenbank verbundenen Investition im Sinne von Artikel 7 Absatz 1 der
+ Richtlinie ist dahin zu verstehen, dass er die Mittel erfasst, die, um die Verlässlichkeit der in dieser Datenbank enthaltenen
+ Information sicherzustellen, der Kontrolle der Richtigkeit der ermittelten Elemente bei der Erstellung der Datenbank und während
+ des Zeitraums des Betriebs der Datenbank gewidmet sind. Die Mittel, die Überprüfungsmaßnahmen im Stadium der Erzeugung von
+ Elementen gewidmet werden, die anschließend in einer Datenbank gesammelt werden, fallen nicht unter diesen Begriff.
+
+ Die der Aufstellung einer Liste der an einem Rennen teilnehmenden Pferde und den in diesem Rahmen stehenden Überprüfungsmaßnahmen
+ gewidmeten Mittel entsprechen keiner Investition, die mit der Beschaffung und der Überprüfung des Inhalts der Datenbank verbunden
+ ist, in der sich diese Liste befindet.
+
+ 2.
+ Die Begriffe Entnahme und Weiterverwendung im Sinne von Artikel 7 der Richtlinie sind dahin auszulegen, dass sie sich auf
+ unzulässige Handlungen beziehen, mit denen jemand sich die Gesamtheit oder einen Teil des Inhalts einer Datenbank aneignet
+ oder diesen in der Öffentlichkeit verbreitet. Diese Begriffe setzen keinen direkten Zugang zu der betreffenden Datenbank voraus.
+
+ Der Umstand, dass der Inhalt der Datenbank der Öffentlichkeit durch die Person, die sie erstellt hat, oder mit deren Zustimmung
+ zugänglich gemacht worden ist, berührt deren Recht nicht, Entnahme und/oder Weiterverwendungshandlungen, die sich auf die
+ Gesamtheit oder auf einen wesentlichen Teil des Inhalts einer Datenbank erstrecken, zu untersagen.
+
+ 3.
+ Der Begriff in quantitativer Hinsicht wesentlicher Teil des Inhalts einer Datenbank im Sinne von Artikel 7 der Richtlinie
+ bezieht sich auf das entnommene und/oder weiterverwendete Datenvolumen der Datenbank und ist nach dem Verhältnis zum Gesamtvolumen
+ des Inhalts der Datenbank zu beurteilen.
+
+ Der Begriff in qualitativer Hinsicht wesentlicher Teil des Inhalts einer Datenbank bezieht sich auf den Umfang der mit der
+ Beschaffung, der Überprüfung oder der Darstellung des Inhalts des Gegenstands der Entnahme und/oder Weiterverwendungshandlung
+ verbundenen Investition unabhängig davon, ob dieser Gegenstand einen quantitativ wesentlichen Teil des allgemeinen Inhalts
+ der geschützten Datenbank darstellt.
+
+ Unter den Begriff unwesentlicher Teil des Inhalts einer Datenbank fällt jeder Teil, der dem Begriff wesentlicher Teil sowohl
+ in quantitativer als auch in qualitativer Hinsicht nicht entspricht.
+
+ 4.
+ Das in Artikel 7 Absatz 5 der Richtlinie ausgesprochene Verbot erfasst unzulässige Entnahme und/oder Weiterverwendungshandlungen,
+ die durch ihre kumulative Wirkung dahin gehen, ohne Genehmigung der Person, die die Datenbank erstellt hat, die Gesamtheit
+ oder einen wesentlichen Teil des Inhalts dieser Datenbank wieder herzustellen und/oder der Öffentlichkeit zur Verfügung zu
+ stellen, und die damit die Investition dieser Person schwerwiegend beeinträchtigen.
+
+ Unterschriften.
+
+ 1 –
+
+ Verfahrenssprache: Englisch.
+

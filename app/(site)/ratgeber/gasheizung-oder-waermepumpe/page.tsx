@@ -146,7 +146,7 @@ export default function GasheizungWaermepumpePage() {
           Maßgeblich ist dabei der tatsächliche Einbau, nicht das Bestell- oder Rechnungsdatum.
           Wer eine solche Heizung betreibt, muss ab 2029 einen wachsenden Anteil klimafreundlicher
           Brennstoffe beimischen. Das Gesetz nennt vier Stufen: {bioTreppeStufenText("Prozent")}.
-          Anrechenbar sind neben Biomethan auch Bioheizöl, biogenes Flüssiggas sowie Wasserstoff und
+          Anrechenbar sind neben Biomethan auch Bioheizöl, biogenes Flüssiggas sowie grüner, blauer, orangener oder türkiser Wasserstoff und
           daraus hergestellte Derivate. Beim leitungsgebundenen Gas führt das in der Praxis zu
           Biomethan, und das kostet rund doppelt so viel wie Erdgas. Dazu steigen die
           Gasnetzentgelte, weil immer weniger Haushalte am Gasnetz hängen und dessen Fixkosten
@@ -184,7 +184,7 @@ export default function GasheizungWaermepumpePage() {
           <strong style={S.strong}>Und wenn ich schon eine Gasheizung habe?</strong> Von der
           Bio-Treppe wird sie nicht erfasst — die trifft nur neu eingebaute Anlagen. Ganz
           verschont bleiben Bestandsheizungen aber voraussichtlich nicht: Dasselbe Gesetz kündigt
-          in § 42a eine <strong style={S.strong}>Grüngas- und Grünheizölquote</strong> an: Ein
+          in § 42a GModG eine <strong style={S.strong}>Grüngas- und Grünheizölquote</strong> an: Ein
           eigenes Gesetz — vorzulegen bis zum {GMODG_RECHTSSTAND.quoteGesetzBis} — soll nicht die
           Heizung, sondern die Anbieter von Gas, Heizöl und Flüssiggas verpflichten, ihre
           Brennstoffe bis 2045 vollständig auf klimaneutrale umzustellen. Das wirkt auf alle, die
@@ -260,7 +260,7 @@ export default function GasheizungWaermepumpePage() {
           proTitle="Spricht für die Wärmepumpe"
           proItems={[
             { term: "Niedrige laufende Kosten", desc: "Strom statt teurer werdendem Gas — über 20 Jahre der entscheidende Hebel." },
-            { term: "Hohe Förderung", desc: "Die BEG-Förderung deckt oft 50 bis 70 % der Investition." },
+            { term: "Hohe Förderung", desc: "Die BEG-Förderung übernimmt je nach Selbstnutzung, Alter der alten Heizung und Einkommen 30 bis 80 % der förderfähigen Kosten — gedeckelt, sodass davon bei einer typischen Anlage rund ein Drittel bis gut die Hälfte der Gesamtinvestition übrig bleibt." },
             { term: "Unabhängig vom Grüngas-Risiko", desc: "Keine Beimischpflicht, keine Netzentgelt-Umlage des schrumpfenden Gasnetzes." },
             { term: "Mit PV noch günstiger", desc: "Eigener Solarstrom senkt die Heizkosten weiter." },
           ]}
@@ -295,7 +295,7 @@ export default function GasheizungWaermepumpePage() {
         <RelatedLinks
           currentPath="/ratgeber/gasheizung-oder-waermepumpe"
           links={[
-            { href: "/ratgeber/waermepumpe-foerderung-2026", label: "Wärmepumpen-Förderung 2026", desc: "Grundförderung, Klima-Bonus, Einkommens-Bonus: wie viel Zuschuss es wirklich gibt." },
+            { href: "/ratgeber/waermepumpe-foerderung", label: "Wärmepumpen-Förderung 2026", desc: "Grundförderung, Klima-Bonus, Einkommens-Bonus: wie viel Zuschuss es wirklich gibt." },
             { href: "/klimaanlage-stromkosten", label: "Klimaanlagen-Rechner", desc: "Kühl- und Heizkosten einer Klimaanlage — inklusive Heizen in der Übergangszeit." },
             { href: "/ratgeber/lohnt-sich-pv-mit-speicher", label: "Lohnt sich PV mit Speicher?", desc: "Eigener Solarstrom macht die Wärmepumpe noch günstiger — die ehrliche Rechnung." },
             { href: "/datenstand", label: "Aktuelle Werte & Annahmen" },

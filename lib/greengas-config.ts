@@ -2,7 +2,9 @@
 // Modelliert den künftigen Gas-Endkundenpreis unter dem Gebäudemodernisierungs-
 // gesetz (GModG): ab 2029 muss ein steigender Anteil klimafreundlicher Brennstoffe
 // beigemischt werden ("Bio-Treppe", § 43 GModG) — anrechenbar sind Biomethan,
-// Bioheizöl, biogenes Flüssiggas sowie Wasserstoff und daraus hergestellte Derivate.
+// Bioheizöl, biogenes Flüssiggas sowie grüner, blauer, orangener oder türkiser Wasserstoff und daraus
+// hergestellte Derivate — grauer Wasserstoff zählt NICHT (§ 43 Abs. 1 i. V. m.
+// § 3 Abs. 1 Nr. 4b GModG, BGBl. 2026 I Nr. 226, S. 4 und 9).
 // Wir rechnen mit Biomethan als Leitpreis (leitungsgebundenes Gas). Biomethan ist
 // rund doppelt so teuer wie Erdgas; zusätzlich steigen die Gasnetzentgelte (weniger
 // Anschlussnutzer) und der CO₂-Preis. Der resultierende Gas-Mix-Preis ist die
@@ -211,8 +213,13 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   emissionFactorKgPerKwh: 0.1833,
   vat: 0.19,
   source:
-    "IW-Report 36/2026 (Henger/Küper/Wünsch), Anhang Kap. 6 (S. 31–32) und Tabelle 3-2 " +
-    "(S. 15): 1.080 € (2026) / 1.952 € (2040) / 2.366 € (2045) bei 10.000 kWh im " +
+    // Von den drei Beträgen steht nur der erste in Tabelle 3-2; 1.952 € und
+    // 2.366 € stehen im Fließtext auf S. 18 (und in der Zusammenfassung S. 4).
+    // Anhang Kap. 6 trägt die elf Preisbestandteile, nicht diese Summen.
+    // Nachgeschlagen am 25.08.2026 von zwei Prüfern unabhängig.
+    "IW-Report 36/2026 (Henger/Küper/Wünsch), Tabelle 3-2 (S. 15) und Kap. 4 (S. 18), " +
+    "Preisbestandteile im Anhang Kap. 6 (S. 31–32): " +
+    "1.080 € (2026) / 1.952 € (2040) / 2.366 € (2045) bei 10.000 kWh im " +
     "Basisszenario; der 2045er-Wert unter der Annahme vollständiger Grüngas-Versorgung. " +
     "Das Basisszenario ist laut Report ein analytischer Referenzpfad, keine Prognose",
   validFrom: "2026-07-25",
@@ -288,7 +295,44 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // bis 100 %, sagt aber nichts über Preise. Die Lücke im Öl-Ergebnis des
   // Wärmepumpen-Rechners bleibt deshalb offen UND sichtbar; sie wirkt zu unseren
   // Ungunsten (Öl wird zu günstig gerechnet), was die vertretbare Richtung ist.
-  geprueftRechtIso: "2026-08-23",
+  //
+  // 24.08.2026 an der amtlichen Chronologie nachgesehen, unverändert: Sie endet
+  // weiter mit der Verkündung am 28.07.2026 (BGBl. 2026 I Nr. 226), davor
+  // Kabinett 13.05., erste Lesung 11.06., Anhörung 22.06., Beschluss in dritter
+  // Lesung 10.07.2026. Kein Eintrag nach dem 28.07.2026, das Quotengesetz nach
+  // § 42a weiterhin nur als Ankündigung geführt.
+  //
+  // Bioheizöl-Gegensuche zum FÜNFTEN Mal erfolglos, mit demselben Befund: Die
+  // Treffer sind HVO-Kraftstoffpreise (Diesel, nicht Heizöl) und Portalangaben
+  // zu Aufschlägen. Beides taugt nicht — der eine misst den falschen Markt, der
+  // andere ist keine Trägerquelle.
+  //
+  // 25.08.2026 am amtlichen Infoportal (gmodg.bund.de) nachgesehen, unverändert:
+  // Die Stufen der Bio-Treppe stehen dort weiter bei 2029: 10 %, 2030: 15 %,
+  // 2035: 30 %, 2040: 60 % — zellgleich mit `quoteStops`. § 42a ist unverändert
+  // nur die Ankündigungspflicht („bis zum 01.12.2026 ein Gesetz"), ein
+  // Quotengesetz gibt es nicht.
+  //
+  // Bioheizöl, SECHSTE Gegensuche, Befund unverändert und diesmal benannt, damit
+  // die nächste Sitzung nicht denselben Weg noch einmal geht: Was kursiert, ist
+  // „Quotenstart 2028 mit 1 %". Das ist KEINE neue Erkenntnis, sondern genau die
+  // Zahl, die oben bei `quoteStops` schon eingeordnet ist — sie steht in der
+  // Spalte der § 42a-Quote (Inverkehrbringer-Ebene), nicht in der Bio-Treppe,
+  // und ein Quotengesetz, das sie tragen würde, existiert nicht. Eine Preisreihe
+  // gibt es weiterhin nicht: Die Treffer sind HVO-Kraftstoff (Diesel) und
+  // Portalaufschläge; Destatis führt Mineralölerzeugnisse ohne Bio-Heizöl-Zeile.
+  //
+  // 26.08.2026 nachgesehen, unverändert — diesmal am GESETZESTEXT statt am
+  // Infoportal, weil das Portal die Stufen gar nicht ausschreibt und ein Lauf,
+  // der sie dort sucht, nichts bestätigt: § 43 Abs. 1 nennt „ab 1. Januar 2029
+  // mindestens 10 %", 2030: 15 %, 2035: 30 %, 2040: 60 %, für Gas, Heizöl UND
+  // Flüssiggas gleichermaßen — zellgleich mit `quoteStops`. § 42a ist unverändert
+  // die reine Vorlagepflicht bis zum 01.12.2026 mit vollständiger Umstellung ab
+  // 2045 und NENNT SELBST KEINEN PROZENTSATZ; das kursierende „2028 mit 1 %"
+  // steht in keinem Gesetz. Ein Quotengesetz gibt es weiterhin nicht.
+  //
+  // Bioheizöl, siebte Gegensuche, unverändert ohne Preisreihe.
+  geprueftRechtIso: "2026-08-26",
   reviewBy: "2027-07-25",
 };
 
@@ -314,7 +358,7 @@ export function bioTreppeStufenText(unit: "%" | "Prozent" = "%"): string {
 }
 
 /** Datierter Sachstand des Gesetzgebungsverfahrens — kein rollierender Wert.
- *  Stand: Bundestag und Bundesrat haben das GModG am 10.07.2026 beschlossen; es
+ *  Stand: Der Bundestag hat das GModG am 10.07.2026 beschlossen (Einspruchsgesetz); es
  *  wurde am 28.07.2026 im Bundesgesetzblatt verkündet (BGBl. 2026 I Nr. 226,
  *  Gesetz vom 23.07.2026) und tritt nach Artikel 9 Absatz 1 am Tag nach der
  *  Verkündung in Kraft — dem 29.07.2026. § 43 (Bio-Treppe) steht in Artikel 1 und
@@ -380,7 +424,10 @@ export const GMODG_RECHTSSTAND = {
  *      Satz die Pflicht, und zwar ausgerechnet dort, wo wir die Wärmepumpe
  *      rechnen. Genau benannt (Legal-Judge, 29.07.2026): § 43 Abs. 3 bis 5 sind
  *      Erfüllungswege (Solarthermie, Lüftung mit Wärmerückgewinnung,
- *      WP-Hybrid), Abs. 7 ist ein Aufschub bei irreparablem Ausfall. Abs. 6 ist
+ *      WP-Hybrid), Abs. 7 regelt den irreparablen Ausfall: Satz 1 schiebt die Pflicht um zwölf
+ *      Monate, aber nur für Einbauten im Jahr 2028; Satz 2 (Einbau ab 2029)
+ *      schiebt nichts, sondern hält die beim Einbau geltende Stufe zwölf Monate
+ *      fest, danach gilt nach Satz 3 die dann erreichte Stufe. Abs. 6 ist
  *      KEIN Ersatzweg (er verlagert die Pflicht auf den Betreiber), und der
  *      echte Härtefall-Dispens steht in § 102, nicht in § 43 — die früher hier
  *      stehende Spanne „Abs. 3–7" mit dem Etikett „Ersatzwege und Härtefälle"
@@ -405,5 +452,5 @@ export function gmodgStandSatz(today: Date = new Date()): string {
   if (!inKraft) {
     return `Das GModG wurde am ${R.ausgefertigtAm} ausgefertigt und am ${R.verkuendetAm} im Bundesgesetzblatt verkündet (${R.fundstelle}); es tritt am ${R.inKraftSeit} in Kraft.`;
   }
-  return `Das GModG wurde am ${R.verkuendetAm} im Bundesgesetzblatt verkündet (Gesetz vom ${R.ausgefertigtAm}, ${R.fundstelle}) und ist seit dem ${R.inKraftSeit} in Kraft. Die Beimischpflicht gilt damit für Heizungen für Gas, Heizöl oder Flüssiggas, die nach dem ${R.inKraftSeit} neu eingebaut werden — beim Einbau in ein bestehendes Gebäude, typischerweise beim Heizungstausch (§ 43 GModG), ebenso wie in Neubauten, die bis zum ${R.neubauBioTreppeBis} errichtet werden (§ 10 Absatz 2 Nummer 3 in Verbindung mit § 43 GModG); ihre erste Stufe greift ${ersteStufe.year}, und neben der Beimischung lässt das Gesetz weitere Erfüllungswege sowie einen Aufschub bei irreparablem Ausfall zu (§ 43 Absatz 3 bis 5 und Absatz 7 GModG).`;
+  return `Das GModG wurde am ${R.verkuendetAm} im Bundesgesetzblatt verkündet (Gesetz vom ${R.ausgefertigtAm}, ${R.fundstelle}) und ist seit dem ${R.inKraftSeit} in Kraft. Die Beimischpflicht gilt damit für Heizungen für Gas, Heizöl oder Flüssiggas, die nach dem ${R.inKraftSeit} neu eingebaut werden — beim Einbau in ein bestehendes Gebäude, typischerweise beim Heizungstausch (§ 43 GModG), ebenso wie in Neubauten, die bis zum ${R.neubauBioTreppeBis} errichtet werden (§ 10 Absatz 2 Nummer 3 in Verbindung mit § 43 GModG); ihre erste Stufe greift ${ersteStufe.year}, und neben der Beimischung lässt das Gesetz weitere Erfüllungswege sowie eine Übergangsregelung bei irreparablem Ausfall zu (§ 43 Absatz 3 bis 5 und Absatz 7 GModG).`;
 }

@@ -303,7 +303,7 @@ export const BALKON_RECHT = {
     "Anmeldung seit 2024 vereinfacht: eine Registrierung im Marktstammdatenregister genügt, keine Netzbetreiber-Genehmigung.",
   /** Mietwohnung und Eigentümergemeinschaft. */
   mieteEigentum:
-    "Seit 2024 gelten Steckersolargeräte als privilegierte Maßnahme — Vermieter und Eigentümergemeinschaft dürfen die Montage nur noch aus wichtigem Grund ablehnen. Ein kurzes Einverständnis vorab bleibt trotzdem sinnvoll.",
+    "Seit 2024 gelten Steckersolargeräte als privilegierte Maßnahme: Der Vermieter kann die Montage nur ablehnen, wenn sie ihm auch unter Würdigung deiner Interessen nicht zuzumuten ist; in der Eigentümergemeinschaft besteht ein Anspruch auf eine angemessene Anbringung, über deren Ausführung die Gemeinschaft beschließt. Die Erlaubnis einzuholen ist deshalb kein Hoeflichkeitsschritt, sondern Voraussetzung.",
   /** Keine Vergütung für den Überschuss — der Grund, warum nur Eigenverbrauch zählt. */
   keineVerguetung:
     "Für Balkonkraftwerke gibt es keine Einspeisevergütung — der Überschuss fließt unvergütet ins Netz. Deshalb zählt nur der Strom, den du selbst verbrauchst.",

@@ -107,7 +107,7 @@ Aus der Sitzung vom 20./21.08.2026, in der Brief und Gemeindeseite auf eine
 gemeinsame Rechnung gestellt wurden. Beide Punkte sind BEKANNT und bewusst
 offen gelassen — nicht übersehen.
 
-### 8. ⏳ Kein Verweis auf die vollständige Rangliste
+### 8. 🚫 Kein Verweis auf die vollständige Rangliste — ZURÜCKGESTELLT
 
 **Wunsch des Betreibers:** Von der Nachbarschafts-Liste auf der Gemeindeseite
 auf die ganze Tabelle verlinken statt hundert Zeilen nachzuladen.
@@ -130,14 +130,19 @@ Deshalb ist diese Liste dort nur ABSOLUT veröffentlicht.
 Ein Link würde also auf eine Seite führen, die anders rechnet als die Liste
 darüber — genau die Sorte Widerspruch, die diese Sitzung beseitigt hat.
 
-**Zwei Wege, wenn es wieder aufgegriffen wird:**
+**ENTSCHEIDUNG DES BETREIBERS (21.08.2026): „vollständig erst mal weglassen."**
+Nicht bauen. Was heute da ist, bleibt: In der Landes- und Bundesansicht öffnet
+„Rangliste ansehen (N Kommunen)" ein Fenster mit den ersten hundert plus der
+eigenen Zeile, und der Titel sagt, dass es hundert von N sind. Das reicht.
+
+**Zwei Wege, falls es doch wieder aufgegriffen wird:**
 - klein: das Fenster weiterblättern lassen (die nächsten 100 auf Klick, 15 KB je
   Abruf, eine einzige Rechnung, kein Widerspruch möglich);
 - groß: Umschalter und Award-Kategorien auf DIESELBE Einteilung bringen. Dann
   passt der Link überall — es heißt aber, „Privat" projektweit gleich zu
   schneiden und zu entscheiden, ob es „Alle je Einwohner" als Liste geben soll.
 
-### 9. ⏳ „Alle · Leistung je Einwohner" ist bundesweit unlesbar
+### 9. 🚫 „Alle · Leistung je Einwohner" bundesweit — ENTSCHIEDEN, kein Fehler
 
 **Befund (21.08.2026, am laufenden Build gemessen):** In der bundesweiten
 Gruppe „Gemeinden und Kleinstädte" führt Neukieritzsch mit 61,6 kWp je
@@ -150,7 +155,15 @@ Gemeinden und Kleinstädte, sie haben nur einen Investorenpark an der Gemarkung.
 
 Unter „Privat" tritt es nicht auf — dort gibt es keine Freiflächen.
 
-**Entscheidung des Betreibers steht aus.** Denkbare Antworten: die
-Freiflächen in der Landes-/Bundesansicht aus der Pro-Kopf-Zahl nehmen (weicht
-dann von der Kreis-Ansicht ab), diese Kombination dort gar nicht anbieten, oder
-so lassen und die Spitze als das lesen, was sie ist.
+**ENTSCHEIDUNG DES BETREIBERS (21.08.2026): kein Handlungsbedarf — „dafür haben
+wir doch die Filter und Kategorien."**
+
+Und das trifft es: „Alle" ist die Ansicht über den gesamten Bestand, und dass
+dort ein Ort mit Solarpark vorn steht, ist keine Verzerrung, sondern die
+Auskunft. Wer wissen will, was die Bürger gebaut haben, stellt auf „Privat" —
+dort gibt es keine Freiflächen und das Bild ist sofort ein anderes. Die
+Umschalter sind die Antwort, nicht ein Sonderweg in der Rechnung.
+
+NICHT ERNEUT VORLEGEN. Wer diese Beobachtung wieder macht (sie fällt beim
+Umschalten auf Deutschland sofort auf), soll sie hier wiederfinden statt sie
+noch einmal als Befund zu melden.

@@ -44,11 +44,15 @@ export const RATGEBER: RatgeberEntry[] = [
     updated: "2026-07-26",
   },
   {
-    slug: "/ratgeber/waermepumpe-foerderung-2026",
-    title: "Wärmepumpen-Förderung 2026: Wie viel Zuschuss gibt es?",
+    slug: "/ratgeber/waermepumpe-foerderung",
+    // Ohne Jahreszahl: Diese Zeile speist Übersicht, Krümelspur und Sitemap und
+    // ist eine feste Zeichenkette — ein Jahr darin wäre am 1. Januar falsch, und
+    // zwar an drei Stellen gleichzeitig. Das Jahr trägt die Seite selbst, dort
+    // kommt es aus dem Kalender (siehe `JAHR` in ihrer page.tsx).
+    title: "Wärmepumpen-Förderung: Wie viel Zuschuss gibt es?",
     teaser:
-      "Grundförderung, Klima-Bonus, Einkommens-Bonus: Wie sich der BEG-Zuschuss für den Heizungstausch zusammensetzt — mit live gerechneten Beispielfällen und dem Förder-Check zum selbst Ausprobieren.",
-    updated: "2026-07-26",
+      "Grundförderung, Klima-Bonus, Einkommens-Bonus: Wie sich der BEG-Zuschuss für den Heizungstausch zusammensetzt — mit live gerechneten Beispielfällen, dem Förder-Check zum selbst Ausprobieren und der Antragsreihenfolge, in der der Zuschuss steckt oder verlorengeht.",
+    updated: "2026-08-25",
   },
   {
     // Deliberately a top-level slug (keyword URL), not /ratgeber/… — the
@@ -81,7 +85,7 @@ export const RATGEBER: RatgeberEntry[] = [
     slug: "/balkonkraftwerk/ratgeber/mit-speicher",
     title: "Lohnt sich ein Balkonkraftwerk mit Speicher?",
     teaser:
-      "Der Speicher verdoppelt die Anschaffung ungefähr und hält deutlich kürzer als die Module — er muss sich also für sich rechnen. Wann er das tut und wann nicht, hier durchgerechnet: mit dem gemessenen Wirkungsgrad statt dem aus dem Datenblatt.",
+      "Der Speicher verdoppelt die Anschaffung ungefähr und hält deutlich kürzer als die Module — er muss sich also für sich rechnen. Wann er das tut und wann nicht, hier durchgerechnet: mit dem Wirkungsgrad eines real vermessenen Systems statt dem aus dem Datenblatt.",
     updated: "2026-08-19",
   },
   {

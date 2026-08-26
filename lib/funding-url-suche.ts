@@ -30,8 +30,32 @@
  * Adressen, die für sich eine Förderseite sind. Damit müssen zusätzlich die
  * Gemeinden noch einmal dran, bei denen wir längst eine Seite haben — genau
  * dort liegen die zweiten und dritten Seiten, die vorher auf den Boden fielen.
+ *
+ * 3 (25.08.2026): Wieder Reichweite, wieder aus einem gemessenen Verlust — und
+ * diesmal ist das Hochzählen der eigentliche Hebel. Zwei Fehler warfen Funde
+ * weg, ohne je einen Fehler zu melden: Bei einer in mehrere Dateien geteilten
+ * Sitemap wurde nur die erste gelesen (stuttgart.de: null statt 216 Funde), und
+ * wenn eine Gemeinde ohne „www" erfasst ist und darauf umleitet, verwarf der
+ * Host-Filter jede einzelne Adresse. Beide Male lautete das Ergebnis
+ * „keine-seite" — ein Verdikt, das ohne neuen Stempel für immer stehen bliebe.
+ * Dazu fliegen unaufgelöste Template-Platzhalter raus, die als Förderseite
+ * gespeichert wurden und eine Gemeinde als versorgt auswiesen.
+ *
+ * 4 (25.08.2026): Diesmal keine Reichweite, sondern die ERKENNUNG — und der
+ * Anlass ist eine Gegenprobe, die es vorher nie gab. Alle Regeln dieses Moduls
+ * sind aus Fehlgriffen entstanden und machen den Filter schärfer; niemand hat je
+ * gemessen, ob die richtigen Seiten noch durchkommen. Gemessen an den 105
+ * bestätigten kommunalen Programmen unseres eigenen Katalogs: 75,2 %. Jedes
+ * vierte eigene Programm hätte unsere Suche nicht gefunden.
+ *
+ * Drei Ursachen, alle behoben, alle in `funding-suche-gegenprobe.test.ts`
+ * festgenagelt: die Ressort-Regel schlug auf breite Oberrubriken an (Balve
+ * fördert Balkonkraftwerke unter „wirtschaft-und-bauen"), die Meldungs-Regel
+ * tötete Sachseiten unter „Aktuelles" (drei bestätigte Programme kleiner
+ * Gemeinden), und die Förderwortliste kannte nur die erwarteten Wörter, nicht
+ * die erfundenen („Förderbaustein", „Klimabonus"). Danach 81,0 %.
  */
-export const SUCH_VERSION = 2;
+export const SUCH_VERSION = 4;
 
 /**
  * Wortstämme, die auf eine Förderseite deuten, mit ihrem Gewicht.
@@ -57,6 +81,21 @@ export const SUCH_VERSION = 2;
 const FOERDER_SIGNALE: { muster: RegExp; punkte: number }[] = [
   { muster: /foerderprogramm|förderprogramm|foerderrichtlinie|förderrichtlinie|forderprogramm|forderrichtlinie/, punkte: 10 },
   { muster: /foerderung|förderung|zuschuss|zuschuesse|zuschüsse|foerdermittel|fördermittel|praemie|prämie/, punkte: 7 },
+  // Der schwächste Zweig, aus der Gegenprobe gegen den eigenen Katalog
+  // (25.08.2026): Verwaltungen erfinden für ihr Programm eigene Wörter, und die
+  // ersten beiden Zeilen kennen nur die erwarteten. Gemessen an bestätigten
+  // Programmen: Heidelberg nennt es „Förderbaustein", Frankfurt „Klimabonus",
+  // andere „Solarprämie" oder „Energiebonus". Alle drei fielen mit null Punkten
+  // durch, obwohl sie Geld von der Gemeinde beschreiben.
+  //
+  // Der blanke Stamm „foerder"/„förder" ist hier vertretbar, weil die
+  // Ausschlussliste die Fehlgriffe schon abräumt (Förderverein, Förderschule,
+  // Sport-, Kultur-, Wirtschaftsförderung) — anders als beim umlautlosen
+  // „forder", das ein eigenes Wort ist und deshalb NICHT mitkommt.
+  //
+  // „bonus" und „praemie" nur in Verbindung mit dem Thema: Ein „Bonusprogramm"
+  // der Stadtbücherei ist kein Zuschuss, ein „Klimabonus" schon.
+  { muster: /foerder|förder|klimabonus|energiebonus|solarbonus|solarpraemie|solarprämie/, punkte: 5 },
 ];
 
 /**
@@ -107,6 +146,13 @@ const FREMDES_RESSORT =
   /kultur|gesundheit|sport|jugend|sozial|schul|bildung|tourismus|wirtschaft|verein|senior|familie|kita|kinderbetreuung|integration|sprach|wohnraum|wohnungsbau|wohnbau|staedtebau|städtebau|denkmal|ehrenamt|landwirtschaft/;
 
 /**
+ * Wörter, die die Sache so eindeutig benennen, dass keine Oberrubrik dagegen
+ * ankommt. Bewusst nur die Technik selbst — „energie", „klima" und „umwelt"
+ * stehen NICHT hier, die sind zu breit (siehe Begründung in `bewerteLink`).
+ */
+const EINDEUTIGE_TECHNIK = /photovoltaik|balkonkraftwerk|steckersolar|solaranlage|solarstrom|solaroffensive|waermepumpe|wärmepumpe/;
+
+/**
  * Dateiendungen und Pfade, die kein Lesen lohnen.
  *
  * Die zweite Hälfte kam am 19.08.2026 dazu und ist die interessantere: Ein
@@ -120,9 +166,18 @@ const FREMDES_RESSORT =
  * Förderseite" — der Platz ist belegt, und sie kommt nie wieder in die Suche.
  * Dasselbe gilt für `?file=…pdf`-Adressen, bei denen die Endung im
  * Abfrageteil steht statt im Pfad.
+ *
+ * Der letzte Zweig fängt UNAUFGELÖSTE TEMPLATE-PLATZHALTER (25.08.2026).
+ * Gemessen auf Niddas Förderübersicht: Der bestbewertete Kandidat der Seite war
+ * `…/%7B%7B%20item.self.webUrl%20%7D%7D` — das Template der Website hatte seine
+ * Schleifenvariable nicht ersetzt, und weil `adresseLesbar` prozentkodierte
+ * Zeichen zurückverwandelt, kam die Adresse mit voller Punktzahl durch und galt
+ * als Endergebnis. Als gespeicherte Förderseiten-Adresse ist sie eine 404, die
+ * bei jedem Screening-Lauf abgerufen wird — und der Platz der Gemeinde ist
+ * belegt, dieselbe Falle wie beim Download.
  */
 const KEIN_ZIEL =
-  /\.(pdf|jpe?g|png|gif|zip|docx?|xlsx?|pptx?)($|\?)|\/(impressum|datenschutz|kontakt|suche|login)\b|\/downloads?\/(datei|file|document)\/|[?&](file|datei|download)=[^&]*\.(pdf|docx?)/i;
+  /\.(pdf|jpe?g|png|gif|zip|docx?|xlsx?|pptx?)($|\?)|\/(impressum|datenschutz|kontakt|suche|login)\b|\/downloads?\/(datei|file|document)\/|[?&](file|datei|download)=[^&]*\.(pdf|docx?)|\{\{|\}\}|\$\{/i;
 
 /**
  * Nachrichten und Meldungen — nie als Dauer-Adresse.
@@ -136,6 +191,22 @@ const KEIN_ZIEL =
  * Adresse trotzdem wertlos.
  */
 const MELDUNG = /\/(newsroom|nachricht|nachrichten|aktuelles|aktuelle-meldungen|meldung|meldungen|presse|pressemitteilung|news|archiv)\b|\/20\d\d\//;
+
+/**
+ * „Aktuelles" ist die einzige Meldungs-Rubrik, die auch eine Sachseite tragen kann.
+ *
+ * Der Unterschied ist die Größe der Verwaltung, und er ist an der Adresse
+ * ablesbar: Wer einen „Newsroom" oder eine „Pressemitteilung" hat, hat auch
+ * einen richtigen Ort für Dauerseiten — dort ist ein Förderwort in der Adresse
+ * die Schlagzeile einer Meldung (gemessen: Dortmunds
+ * `/newsroom/nachrichten/foerderprogramm-…`). Eine Gemeinde mit 3.000
+ * Einwohnern hat dagegen oft nur „Aktuelles", und drei bestätigte Programme
+ * unseres Katalogs liegen genau dort.
+ *
+ * Der Datumspfad bleibt in JEDEM Fall ausgeschlossen: `/2026/` ist ein Archiv,
+ * egal unter welcher Rubrik.
+ */
+const MELDUNG_NUR_AKTUELLES = /^(?!.*\/(newsroom|nachricht|nachrichten|meldung|meldungen|presse|pressemitteilung|news|archiv)\b)(?!.*\/20\d\d\/).*\/aktuelles/;
 
 /** Punkte getrennt nach Gruppe — die Trennung ist der Kern der Bewertung. */
 export type LinkWertung = { foerder: number; thema: number; punkte: number; fremdesRessort: boolean };
@@ -186,7 +257,23 @@ export function bewerteLink(url: string, linktext = ""): LinkWertung {
   const leer: LinkWertung = { foerder: 0, thema: 0, punkte: 0, fremdesRessort: false };
   const adresse = adresseLesbar(url);
   const text = linktext.toLowerCase();
-  if (KEIN_ZIEL.test(adresse) || MELDUNG.test(adresse)) return leer;
+  if (KEIN_ZIEL.test(adresse)) return leer;
+  // Die Meldungs-Regel gilt weiter — mit einer Ausnahme, die aus der
+  // Gegenprobe gegen den eigenen Katalog stammt (25.08.2026): Steht das Wort
+  // „Förderprogramm" oder „Förderrichtlinie" IM Adressteil, ist es die
+  // Dauerseite und nicht die Meldung darüber. Drei bestätigte Programme liegen
+  // genau so — Dietmannsried unter `/aktuelles-bekanntmachungen/
+  // foerderprogramm-pv-anlagen`, Rietheim-Weilheim und Walddorfhäslach unter
+  // `/aktuelles/…foerderprogramme`. Kleine Verwaltungen haben oft gar keinen
+  // anderen Ort für eine Sachseite als ihre Aktuelles-Rubrik.
+  //
+  // Der Grund für die Regel bleibt unberührt: Was sie abwehren soll, sind
+  // Nachrichten ÜBER Förderung („Rekord für den Klimaschutz: 1.100 Anträge",
+  // „Förderstopp im Energiesparprogramm"). Die tragen das Programmwort nicht in
+  // der Adresse, sondern eine Schlagzeile — und ein Datumspfad wie `/2024/`
+  // schließt sie weiterhin aus, ausnahmslos.
+  const dauerseite = /foerderprogramm|förderprogramm|forderprogramm|foerderrichtlinie|förderrichtlinie/.test(adresse);
+  if (MELDUNG.test(adresse) && !(dauerseite && MELDUNG_NUR_AKTUELLES.test(adresse))) return leer;
   // Der Ausschluss gilt beiden Seiten: Ein Link namens „Förderverein Feuerwehr"
   // unter einer harmlosen Adresse ist derselbe Fehlgriff wie umgekehrt.
   if (AUSSCHLUSS.test(adresse) || AUSSCHLUSS.test(text)) return leer;
@@ -204,7 +291,23 @@ export function bewerteLink(url: string, linktext = ""): LinkWertung {
     foerder,
     thema,
     punkte: foerder + thema,
-    fremdesRessort: FREMDES_RESSORT.test(adresse) || FREMDES_RESSORT.test(text),
+    // EIN EINDEUTIGES TECHNIKWORT SCHLÄGT DIE RESSORT-VERMUTUNG (25.08.2026).
+    //
+    // Die Ressort-Liste prüft die ganze Adresse, und deutsche Verwaltungen
+    // hängen ihre Sachseiten unter breite Oberrubriken: Balve fördert
+    // Balkonkraftwerke mit 100 € unter `/wirtschaft-und-bauen/bauen-und-wohnen/
+    // balkonkraftwerke`, Sandhausen sein Förderprogramm unter
+    // `/Wirtschaft-Bauen/(Um)Bauen/Foerderprogramme`. Beide fielen durch, weil
+    // irgendwo im Pfad „wirtschaft" steht — und beide sind bestätigte Programme
+    // aus unserem eigenen Katalog.
+    //
+    // Die Regel bleibt, sie verliert nur gegen ein Wort, das die Sache
+    // eindeutig benennt. Keine Wirtschafts-, Kultur- oder Sportförderung der
+    // Welt hat eine Seite namens „balkonkraftwerke" oder „photovoltaik"; die
+    // schwächeren Themenwörter (energie, klima, umwelt) zählen hier bewusst
+    // NICHT, denn „Energieberatung für Vereine" ist genau der Fall, den die
+    // Ressort-Regel abfangen soll.
+    fremdesRessort: (FREMDES_RESSORT.test(adresse) || FREMDES_RESSORT.test(text)) && !EINDEUTIGE_TECHNIK.test(`${adresse} ${text}`),
   };
 }
 
@@ -314,6 +417,28 @@ export function sitemapKandidaten(xml: string, basis: string): LinkKandidat[] {
 export function sitemapIndex(xml: string): string[] {
   if (!/<sitemapindex/i.test(xml)) return [];
   return [...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/gi)].map((m) => m[1]);
+}
+
+/**
+ * In welcher Reihenfolge die Unter-Sitemaps eines Index gelesen werden.
+ *
+ * Wer nicht alle lesen kann, muss die richtigen zuerst lesen. Zwei Fälle, und
+ * beide kommen real vor: Teilt eine Website nach THEMEN (`sitemap-umwelt.xml`,
+ * `sitemap-news.xml`), sagt der Dateiname etwas — dann bewerten wir ihn mit
+ * derselben Wortliste wie jede andere Adresse. Teilt sie nach MENGE
+ * (`sitemap-1.xml`, `sitemap-content-2.xml`, der häufigere Fall), sagt er
+ * nichts, alle bekommen null Punkte, und die Reihenfolge des Index bleibt
+ * unverändert erhalten.
+ *
+ * Genau deshalb ist die Sortierung stabil über den ursprünglichen Platz: Ohne
+ * den Index als zweites Kriterium würfelte sie die Mengen-Teilung durch, ohne
+ * dafür irgendetwas zu gewinnen.
+ */
+export function sitemapIndexReihenfolge(unter: string[]): string[] {
+  return unter
+    .map((url, platz) => ({ url, platz, punkte: bewerteLink(url).punkte }))
+    .sort((a, b) => b.punkte - a.punkte || a.platz - b.platz)
+    .map((e) => e.url);
 }
 
 // ─── Die Suchfunktion der Website selbst ─────────────────────────────────────

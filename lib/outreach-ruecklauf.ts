@@ -225,6 +225,64 @@ export function notizZeile(z: VerlaufsZeile): string {
 }
 
 /**
+ * So viel Antworttext wird aufgehoben.
+ *
+ * Nicht die ganze Mail: Das Feld trägt auch die Handnotizen des Betreibers, und
+ * eine Notiz, die zu neun Zehnteln aus zitiertem Fließtext besteht, liest
+ * niemand mehr. Zwölfhundert Zeichen sind gemessen an den bisherigen Antworten
+ * die volle Nachricht bei fast allen — Niddas Antwort, die längste bisher,
+ * passt vollständig hinein.
+ */
+export const ANTWORT_MAX_ZEICHEN = 1200;
+
+/**
+ * Verlaufszeile PLUS den eigenen Text der Antwort (26.08.2026).
+ *
+ * WARUM (der Anlass): Von der wertvollsten Rückmeldung, die dieses Projekt je
+ * bekommen hat, stand bei uns eine Zeile — Datum, Art, Betreff, Absenderin. Die
+ * Stadt Nidda hatte darin ihre eigene Förderseite verlinkt (die unsere Suche
+ * nicht hatte), den Newsletter genannt, über den sie Neuauflagen ankündigt,
+ * einen Versorger mit Montage- und Anmeldeservice empfohlen und den Ertrag
+ * ihrer eigenen Anlage über vier Jahre mitgeteilt. Nichts davon war gespeichert.
+ * Wir behielten den Umschlag und warfen den Brief weg.
+ *
+ * Das ist teurer als es klingt: Der Rücklauf ist der einzige Kanal, in dem eine
+ * Gemeinde uns von sich aus Daten gibt, und er hat die beste Quellenqualität,
+ * die es gibt — die Stelle, die das Programm selbst pflegt. Ein Crawl über
+ * 9.700 Websites findet 13 %; hundert Briefe lieferten mindestens eine
+ * Förderseite, die uns fehlte.
+ *
+ * NUR DER SELBST GESCHRIEBENE TEIL, und das ist keine Feinheit: `ohneZitat`
+ * schneidet den mitzitierten Brieftext ab. Ohne diesen Schnitt stünde unser
+ * eigenes Anschreiben unter jeder Antwort noch einmal im Datenbestand —
+ * dieselbe Falle, an der die Widerspruchs-Erkennung fast alle hundert Briefe
+ * als Widerspruch eingestuft hätte.
+ *
+ * Der Text steht als eingerückter Block unter seiner Verlaufszeile. Dass
+ * `liesNotiz` ihn als Freitext behandelt, ist Absicht: Freitext gilt dort als
+ * das Wertvollere und geht nie verloren.
+ *
+ * OFFEN, und der Betreiber entscheidet es: Das ist eine neue Verarbeitung
+ * personenbezogener Daten einer namentlich schreibenden Amtsperson. Absender
+ * und Betreff speichern wir längst, der Inhalt ist dieselbe Kategorie und mehr
+ * davon — die Datenschutzerklärung nennt bisher weder das eine noch das andere.
+ * Gehört in den nächsten Lauf von `scripts/rechtstexte-verify.md`.
+ */
+export function notizMitText(z: VerlaufsZeile, mailText: string): string {
+  const eigen = ohneZitat(mailText).trim();
+  if (!eigen) return notizZeile(z);
+  const gekuerzt =
+    eigen.length > ANTWORT_MAX_ZEICHEN ? `${eigen.slice(0, ANTWORT_MAX_ZEICHEN).trimEnd()} […]` : eigen;
+  // Einrückung, damit der Block im Cockpit als zusammengehörig lesbar ist und
+  // die Zeilen-Erkennung ihn nicht versehentlich als Verlaufszeile liest.
+  const block = gekuerzt
+    .split(/\r?\n/)
+    .map((zeile) => `    ${zeile}`.trimEnd())
+    .join("\n");
+  return `${notizZeile(z)}\n${block}`;
+}
+
+/**
  * Eine Notiz in Verlauf und Freitext zerlegen.
  *
  * Was nicht als Verlaufszeile lesbar ist, gilt als Freitext und geht NICHT

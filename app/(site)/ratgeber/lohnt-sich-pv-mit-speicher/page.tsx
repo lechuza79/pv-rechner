@@ -453,7 +453,9 @@ export default async function LohntSichPvMitSpeicherPage() {
           Mittagsüberschuss in den Abend und die Nacht. Jede so verschobene Kilowattstunde
           ist rund das Vierfache wert. Der{" "}
           <GlossaryTerm id="eigenverbrauch">Eigenverbrauch</GlossaryTerm> — der Anteil des
-          Solarstroms, den du selbst nutzt — steigt dadurch typisch von 15–30 % auf 40–60 %.
+          Solarstroms, den du selbst nutzt — steigt dadurch deutlich: im Beispiel unten von{" "}
+          {rows[0].ev} auf {rows[2].ev} %. Wie weit genau, hängt an der Anlagengröße im
+          Verhältnis zum Verbrauch; die Tabelle zeigt es für diesen Haushalt.
         </p>
         <p style={S.p}>
           Ob sich das <em>rechnet</em>, entscheidet der Preis pro Kilowattstunde{" "}
@@ -490,7 +492,7 @@ export default async function LohntSichPvMitSpeicherPage() {
         <p style={S.p}>
           Ein Beispielhaushalt: 3–4 Personen ({PERSONEN[EX.personenIdx].verbrauch.toLocaleString("de-DE")} kWh
           Jahresverbrauch), teils im Homeoffice, {EX.kwp} <GlossaryTerm id="kwp">kWp</GlossaryTerm>-Anlage,
-          konservativer Ertrag von {EX.ertragKwp} kWh pro kWp (deutscher Durchschnitt ohne
+          Ertrag von {EX.ertragKwp} kWh pro kWp (deutscher Schnitt bei optimaler Ausrichtung, ohne
           Standortdaten). Gerechnet mit unserem Modell im realistischen Szenario
           (Strompreis +{(prices.electricityIncrease * 100).toLocaleString("de-DE")} %/Jahr):
         </p>

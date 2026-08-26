@@ -147,7 +147,10 @@ export default function DatenschutzPage() {
           entstehen beim Hosting-Anbieter und werden dort nach einer vom
           gebuchten Tarif abhängigen Frist automatisch gelöscht — je nach Tarif
           zwischen einer Stunde und längstens 30 Tagen. Wir werten diese
-          Logfiles nicht aus und führen sie nicht mit anderen Daten zusammen.
+          Logfiles nicht aus, um das Verhalten einzelner Nutzer nachzuvollziehen, und
+          führen sie nicht mit anderen Daten zusammen. Für den Betrieb sehen wir uns
+          Fehlermeldungen und Antwortzeiten an — dabei geht es um die Funktionsfähigkeit
+          der Seite, nicht um einzelne Besucher.
           Rechtsgrundlage ist Art. 6 Abs. 1
           lit. f DSGVO (berechtigtes Interesse an einem sicheren und stabilen
           Betrieb der Website).
@@ -259,7 +262,7 @@ export default function DatenschutzPage() {
         </p>
 
         <p style={S.p}>
-          Dauerhaft — also auch bei einem späteren Besuch — merken wir uns im Browser-Speicher nur Einstellungen, die du selbst triffst: die von dir eingegebene <strong>Postleitzahl</strong>, dein gewähltes <strong>Farbschema</strong> (hell, dunkel oder automatisch) und, falls du im Solar-Atlas einen <strong>Heimatort</strong> festgelegt hast, dessen Namen samt Landkreis und Bundesland. Die Postleitzahl wird für alle Rechner und für die Sonnenanzeige gemeinsam genutzt, damit du sie nur einmal eingeben musst. Diese Werte verbleiben auf deinem Gerät, werden keinem Konto und keiner Kennung zugeordnet und fließen nicht in die Reichweitenmessung ein; die Postleitzahl wird für ortsbezogene Abfragen verwendet — Standort-Ertrag, Wetter- und Klimadaten, die Sonnenanzeige und die Suche nach Förderprogrammen für deinen Ort (siehe Abschnitt 8). Du kannst die Postleitzahl in der Sonnenanzeige und den Heimatort im Solar-Atlas jederzeit wieder entfernen oder den Browser-Speicher löschen. Weil es sich um Einstellungen handelt, die du für die gewünschte Funktion selbst gesetzt hast, ist für diese Speicherung auf deinem Gerät nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung nötig.
+          Dauerhaft — also auch bei einem späteren Besuch — merken wir uns im Browser-Speicher Einstellungen, die du selbst triffst: die von dir eingegebene <strong>Postleitzahl</strong> und, falls du im Solar-Atlas einen <strong>Heimatort</strong> festgelegt hast, dessen Namen samt Landkreis und Bundesland. Dazu kommt das <strong>Farbschema</strong> (hell, dunkel oder automatisch) — dieser Eintrag entsteht bei jedem Besuch, auch wenn du nie eines ausgewählt hast, und hält dann schlicht die automatische Voreinstellung fest. Klickst du im Ergebnis auf „Speichern“, ohne angemeldet zu sein, wird die Berechnung außerdem vorgemerkt, bis du dem Anmeldelink folgst; folgst du ihm nie, bleibt sie liegen, bis du den Browser-Speicher löschst. Die Postleitzahl wird für alle Rechner und für die Sonnenanzeige gemeinsam genutzt, damit du sie nur einmal eingeben musst. Diese Werte verbleiben auf deinem Gerät, werden keinem Konto und keiner Kennung zugeordnet und fließen nicht in die Reichweitenmessung ein; die Postleitzahl wird für ortsbezogene Abfragen verwendet — Standort-Ertrag, Wetter- und Klimadaten, die Sonnenanzeige und die Suche nach Förderprogrammen für deinen Ort (siehe Abschnitt 8). Du kannst die Postleitzahl in der Sonnenanzeige und den Heimatort im Solar-Atlas jederzeit wieder entfernen oder den Browser-Speicher löschen. Weil es sich um Einstellungen handelt, die du für die gewünschte Funktion selbst gesetzt hast, ist für diese Speicherung auf deinem Gerät nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung nötig.
         </p>
 
         <h2 style={S.h2}>8. Standortgenaue Ertragsprognose</h2>
@@ -309,9 +312,12 @@ export default function DatenschutzPage() {
           oder auf Anfrage bei uns. Die Daten werden ausschließlich zur Bereitstellung
           deines Kontos und deiner gespeicherten Berechnungen verarbeitet und
           nicht zu Werbezwecken genutzt oder an Dritte verkauft. Rechtsgrundlage ist Art. 6 Abs. 1 lit.
-          b DSGVO (Erfüllung des von dir gewünschten Dienstes). Du kannst dein
-          Konto und alle gespeicherten Berechnungen jederzeit löschen, indem du
-          dich an{" "}
+          b DSGVO (Erfüllung des von dir gewünschten Dienstes). Wir speichern
+          Konto und Berechnungen so lange, wie du das Konto behältst — es gibt
+          keine automatische Löschfrist, weil gespeicherte Berechnungen genau
+          dafür da sind, später wieder aufgerufen zu werden. Einzelne
+          Berechnungen kannst du jederzeit selbst in deinem Bereich löschen; das
+          ganze Konto samt aller Berechnungen löschen wir, wenn du dich an{" "}
           <a href="mailto:hey@solar-check.io" style={S.a}>
             hey [at] solar-check.io
           </a>{" "}
@@ -397,7 +403,21 @@ export default function DatenschutzPage() {
           spätestens mit dem Neustart der Serverinstanz verworfen.
           Rechtsgrundlage hierfür ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes
           Interesse an einem funktionsfähigen, vor automatisierten Einsendungen
-          geschützten Formular).
+          geschützten Formular). Gegen diese Verarbeitung kannst du nach Art. 21
+          DSGVO Widerspruch einlegen.
+        </p>
+        <p style={S.p}>
+          Dieselbe Abwehr läuft auf allen Schnittstellen, über die unsere Rechner
+          Daten nachladen — Standort-Ertrag, Wetter- und Klimadaten, Förderprogramme,
+          Strommix und die Karten des Solar-Atlas. Auch dort merkt sich unser Server
+          die IP-Adresse der anfragenden Verbindung kurzzeitig im Arbeitsspeicher,
+          um die Zahl der Abrufe je Verbindung zu begrenzen. Das betrifft jeden
+          Aufruf einer Seite mit nachgeladenen Daten, also auch dann, wenn du kein
+          Formular abschickst. Die Adresse wird nicht dauerhaft gespeichert, nicht
+          mit anderen Daten zusammengeführt und spätestens mit dem Neustart der
+          Serverinstanz verworfen. Rechtsgrundlage ist ebenfalls Art. 6 Abs. 1
+          lit. f DSGVO (berechtigtes Interesse am stabilen Betrieb); auch hier
+          steht dir das Widerspruchsrecht nach Art. 21 DSGVO zu.
         </p>
 
         {/* Dieser Abschnitt stand vor dem Kontaktformular hier und beschrieb
@@ -459,10 +479,37 @@ export default function DatenschutzPage() {
           unser Hoster Vercel deine IP-Adresse und den Referrer in
           Server-Logfiles, um dir die Inhalte des Widgets auszuliefern. Dabei
           werden keine Cookies gesetzt, keine Daten in deinem Browser
-          gespeichert, kein Tracking durchgeführt und keine Nutzerprofile
-          gebildet. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO
+          gespeichert, einzelne Besucher nicht wiedererkannt und keine
+          Nutzerprofile gebildet. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO
           (berechtigtes Interesse an der Auslieferung der Widget-Inhalte). Die
           Speicherdauer der Logfiles entspricht Abschnitt 3 (Hosting).
+        </p>
+        {/* Ergänzt am 25.08.2026 mit der Einbettungs-Zählung. Der Absatz davor
+            verneinte pauschal jede Nachverfolgung — eine Absolutaussage, die
+            eine reine Domain-Zählung streng gelesen widerlegt hätte, obwohl
+            kein Besucher wiedererkannt wird. Deshalb steht dort jetzt, was wir
+            wirklich nicht tun (wiedererkennen), statt eines Wortes, das jeder
+            anders auslegt. Fehlerklasse: absolute Zusage, vom eigenen Code
+            widerlegt. Ein Test verbietet die alte Formel in dieser Datei und in
+            der Galerie — auch im Kommentar, deshalb steht sie hier nicht. */}
+        <p style={S.p}>
+          Zusätzlich zählen wir, <strong>wo</strong> unsere Widgets eingebunden
+          sind. Grundlage dafür ist allein die Angabe, die dein Browser beim
+          Laden des Widgets von sich aus mitschickt — welche Seite es
+          eingebunden hat. Wir lesen dafür nichts von deinem Gerät und führen
+          in deinem Browser keinen Code aus, der uns etwas zurückmeldet.
+          Gespeichert werden ausschließlich die Domain der
+          einbettenden Website, die Bezeichnung des Widgets und der
+          Kalendertag — also zum Beispiel „musterstadt.de, Strommix-Grafik,
+          25.08.2026". Nicht gespeichert werden deine IP-Adresse, eine Kennung,
+          die aufgerufene Unterseite oder eine Uhrzeit; aus diesen Angaben ist
+          eine Zuordnung zu dir auch nachträglich nicht möglich. Gezählt werden
+          Aufrufe, nicht Personen. Wir nutzen die Zählung, um zu sehen, ob unser
+          Angebot an Städte und Gemeinden (Abschnitt 15) angenommen wird und
+          welche Widgets tatsächlich eingesetzt werden. Rechtsgrundlage ist
+          Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse daran zu erfahren,
+          auf welchen Websites unsere Widgets genutzt werden); dieser
+          Verarbeitung kannst du jederzeit widersprechen (Abschnitt 12).
         </p>
 
         {/* Der Kommunen-Outreach kam in dieser Erklärung überhaupt nicht vor,
@@ -544,6 +591,24 @@ export default function DatenschutzPage() {
           besteht ohne Begründung und jederzeit (Art. 21 Abs. 2 DSGVO); die
           übrigen Rechte — Auskunft, Berichtigung, Löschung, Einschränkung und
           Beschwerde bei einer Aufsichtsbehörde — stehen in Abschnitt 12.
+        </p>
+
+        {/* Nur ein Verweis, kein eigener Abschnitt: Die LinkedIn-Angaben
+            betreffen Besucher unserer LinkedIn-Seite, nicht die dieser Website.
+            Sie hier auszubreiten verlängerte die Erklärung für alle, die sie
+            nichts angeht. Ohne diesen Satz wäre die Unterseite allerdings eine
+            Waise — erreichbar nur über LinkedIn selbst. */}
+        <h2 style={S.h2}>16. Unsere Präsenz auf LinkedIn</h2>
+        <p style={S.p}>
+          Wir betreiben eine Unternehmensseite auf LinkedIn. Was dort verarbeitet
+          wird, findet auf den Systemen von LinkedIn statt und nicht auf dieser
+          Website; die Angaben dazu — insbesondere zur gemeinsamen
+          Verantwortlichkeit für die Seitenstatistiken (Art. 26 DSGVO) — stehen
+          gesondert unter{" "}
+          <a href="/datenschutz-linkedin" style={S.a}>
+            Datenschutz für unsere LinkedIn-Seite
+          </a>
+          .
         </p>
 
         <p style={S.muted}>Stand: August 2026</p>

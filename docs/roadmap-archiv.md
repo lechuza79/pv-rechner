@@ -191,6 +191,7 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 - [ ] /energie/frankreich (Strommix FR inkl. Kernenergie)
 - [ ] Navigation-Updates (Hub + Header → /energie)
 - [ ] SEO-Metadata für /energie
+- [ ] EE-Ampel auf Startseite und Simulation einbinden (das Widget selbst ist fertig, nur die Einbindung fehlt)
 
 **MaStR-Datenpipeline (Anlagenstammdaten für Choropleth)**
 - [x] Quellwechsel von open-MaStR (Zenodo, jährlich) auf BNetzA Gesamtdatenexport (monatlich)
@@ -218,6 +219,7 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 - [ ] Weitere Long-Tail-Landingpages (z.B. `/pv-kaufen-vs-enpal-mieten`)
 - [ ] "Vergleich: PV kaufen vs. Enpal mieten" als Killer-Content
 - [ ] Blog/Ratgeber-Sektion
+- [ ] Thin-Content-Konzept vor der Atlas-Index-Freischaltung (gehört mit dem Award-Konzept in EINE Session)
 
 ### Phase 5: Plattform (Horizont)
 

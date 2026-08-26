@@ -9,8 +9,15 @@ import {
 } from "../../../lib/constants";
 import { waermeAusEndenergie, OEL_KWH_PRO_LITER } from "../../../lib/heat-consumption";
 import { verbrauchSpecKwh } from "../../../lib/heatpump-core";
-import { calcHeatPump, calcHeatPumpScenarios, heatPumpScenarioAdj, estimatePvCoverageOfWp, type HeatPumpInputs, type HeatPumpResult } from "../../../lib/heatpump";
-import { DEFAULT_HEATPUMP_CONFIG } from "../../../lib/heatpump-config";
+import { calcHeatPump, calcHeatPumpScenarios, heatPumpScenarioAdj, estimatePvCoverageOfWp, calcBegSubsidy, type HeatPumpInputs, type HeatPumpResult } from "../../../lib/heatpump";
+import {
+  DEFAULT_HEATPUMP_CONFIG,
+  begStufeAm,
+  begNaechsteStufe,
+  type BegStand,
+} from "../../../lib/heatpump-config";
+import BegStandSchalter from "./_components/BegStandSchalter";
+import { BEG_ANTRAG_KURZ, BEG_ANTRAG_HREF } from "../../../lib/beg-antrag";
 import { greenGasApplies } from "../../../lib/fossil-reference";
 import { gasMixSeries, heatCostComparisonSeries } from "../../../lib/greengas";
 import { bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "../../../lib/greengas-config";
@@ -99,6 +106,24 @@ export default function Waermepumpe({
   const [einkommen, setEinkommen] = useState<EinkommenKey>("none");   // BEG Einkommens-Bonus (gestaffelt nach Haushaltseinkommen)
   const [kindImHaushalt, setKindImHaushalt] = useState(false);        // Familienzuschlag hebt die Einkommensgrenze
   const [heizkoerperTausch, setHeizkoerperTausch] = useState(false);  // Maßnahme: alte HK auf Niedertemperatur tauschen
+  // ── Förderstand: heute oder ab dem nächsten Stichtag ─────────
+  // Voreinstellung „jetzt", weil das für jeden gilt, der in diesem Jahr
+  // beantragt. Die beiden Stufen kommen aus dem Fahrplan der Richtlinie und
+  // werden NICHT auf ein festes Jahr verdrahtet: Am 01.01.2027 wären „heute"
+  // und „ab 2027" dieselbe Sache, und ein Rechner mit zwei gleichen Zuständen
+  // sieht kaputt aus. `heute` einmal je Render — ein Datum mitten im Render
+  // erzeugt sonst bei jedem Durchlauf ein neues Objekt und damit eine
+  // Neuberechnung.
+  const heute = useMemo(() => new Date(), []);
+  const stufeJetzt = useMemo(() => begStufeAm(heute), [heute]);
+  const stufeNaechste = useMemo(() => begNaechsteStufe(heute), [heute]);
+  const [begStand, setBegStand] = useState<BegStand>("jetzt");
+  // Ursprung des Geräts — Voreinstellung „nein", weil das die Richtung ist, in
+  // der niemand enttäuscht wird. Gefragt wird trotzdem sichtbar: Der Bonus ist
+  // betragsgleich mit der Halbierung, ihn stillschweigend wegzulassen behauptete
+  // eine Kürzung, die es für ein EU-Gerät gar nicht gibt.
+  const [euUrsprung, setEuUrsprung] = useState(false);
+  const begStufe = begStand === "naechste" && stufeNaechste ? stufeNaechste : stufeJetzt;
   const [wegId, setWegId] = useState("ist");  // aktiver Sanierungs-/Maßnahmen-Weg (Szenario-Vergleich)
   // ── Kommunale Förderung ──────────────────────────────────────
   // Der Wohnort wird bewusst NICHT im Frageweg erhoben: Er ändert nichts am
@@ -227,6 +252,7 @@ export default function Waermepumpe({
     fuelKind: fuel.kind,
     greenGas,
     pv: pvStatus !== "nein" ? { status: pvStatus, kwp: pvKwp, speicherKwh: pvSpeicher } : undefined,
+    begStufe: begStufe,
     override: {
       qGes: oQges ?? undefined,
       heizlast: oHeizlast ?? undefined,
@@ -242,8 +268,11 @@ export default function Waermepumpe({
       klimaBonus: selbstnutzer && altheizungKlima(altheizung),
       haushaltseinkommen: selbstnutzer ? einkommenIncome(einkommen) : undefined,
       kindImHaushalt: selbstnutzer && kindImHaushalt,
+      // Nicht an die Selbstnutzung gebunden — anders als Klima- und
+      // Einkommens-Bonus verlangt der Wertschöpfungs-Bonus sie nicht.
+      euUrsprung,
     },
-  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, haustypIdx, greenGas, pvStatus, pvKwp, pvSpeicher, oQges, oHeizlast, oJaz, oInvest, oStromPrice, oGasPrice, oFossilInvest, fuel, selbstnutzer, altheizung, einkommen, kindImHaushalt]);
+  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, haustypIdx, greenGas, pvStatus, pvKwp, pvSpeicher, oQges, oHeizlast, oJaz, oInvest, oStromPrice, oGasPrice, oFossilInvest, fuel, selbstnutzer, altheizung, einkommen, kindImHaushalt, begStufe, euUrsprung]);
 
   // ── Kommunaler Zuschuss ──────────────────────────────────────
   // Henne und Ei: Der Zuschuss kann von der Investition abhängen (Prozentsätze),
@@ -347,6 +376,33 @@ export default function Waermepumpe({
     () => calcHeatPump(activeInputs, cfg, heatPumpScenarioAdj(greenGas ? "realistic" : effScenario, cfg)),
     [activeInputs, cfg, effScenario, greenGas],
   );
+
+  // Was der Wechsel des Förderstands in EURO ausmacht — beide Stände auf
+  // derselben Investition gerechnet.
+  //
+  // WARUM NICHT EINFACH DIE PROZENTPUNKTE: Weil der Fördersatz bei 70 % bzw.
+  // 80 % gekappt ist und deshalb nicht jeder die vollen 15 Punkte verliert. Ein
+  // selbstnutzender Haushalt mit niedrigem Einkommen und altem Gaskessel kommt
+  // heute auf 30 + 16 + 40 = 86 Punkte und wird auf 80 gekappt; nach der
+  // Halbierung sind es 71, also ungekappt. Ihn kostet die Halbierung 9 Punkte,
+  // nicht 15 — „der Zuschuss halbiert sich" wäre für ihn schlicht falsch. Wer
+  // dagegen keinen Einkommens-Bonus bekommt (der Regelfall), verliert die
+  // vollen 15. Nur der Euro-Betrag stimmt für beide.
+  const begVergleich = useMemo(() => {
+    const opts = {
+      klimaBonus: selbstnutzer && altheizungKlima(altheizung),
+      haushaltseinkommen: selbstnutzer ? einkommenIncome(einkommen) : undefined,
+      kindImHaushalt: selbstnutzer && kindImHaushalt,
+    };
+    const fuer = (stufe: typeof stufeJetzt, eu: boolean) =>
+      calcBegSubsidy(situation, wpType, result.investBrutto, { ...opts, stufe, euUrsprung: eu }, cfg).amount;
+    return {
+      // Heute gibt es den EU-Bonus noch nicht — der Schalter wäre hier wirkungslos.
+      jetzt: fuer(stufeJetzt, false),
+      naechsteOhneEu: stufeNaechste ? fuer(stufeNaechste, false) : 0,
+      naechsteMitEu: stufeNaechste ? fuer(stufeNaechste, true) : 0,
+    };
+  }, [situation, wpType, result.investBrutto, cfg, selbstnutzer, altheizung, einkommen, kindImHaushalt, stufeJetzt, stufeNaechste]);
 
   // Der Betrag, der neben der BEG noch Platz hat — die Anspruchshöhe, nicht die
   // Anzeige-Entscheidung. `kappung` hängt deshalb bewusst NICHT an `foerderAktiv`:
@@ -730,7 +786,7 @@ export default function Waermepumpe({
                   <>
                   <strong style={{ color: v('--color-text-primary') }}>Beim Heizöl fehlt ein Kostenblock — bewusst.</strong>{" "}
                   Das Heizungsgesetz nennt Heizöl gleichrangig neben Gas: Eine neu eingebaute Ölheizung muss ab 2029{" "}
-                  {bioTreppeStufenText()} ihrer Wärme klimafreundlich erzeugen — bei Öl über Bioheizöl, wahlweise auch über
+                  {bioTreppeStufenText()} ihrer Wärme klimafreundlich erzeugen — bei Öl über Bioheizöl, in den Jahren 2029 bis 2034 bei ausreichender Auslegung auch über
                   Wasserstoff-Derivate oder ganz ohne Beimischung über Solarthermie, eine Lüftung mit Wärmerückgewinnung oder
                   eine Hybridlösung mit Wärmepumpe (§ 43 Abs. 3–5 GModG).
                   Dass das den Brennstoff verteuert, ist sicher — <strong>wie stark, ist es nicht.</strong> Marktangaben reichen
@@ -800,7 +856,7 @@ export default function Waermepumpe({
               {/* Erklärabschnitte */}
               <div style={{ fontSize: 13, lineHeight: 1.6, color: v('--color-text-secondary'), marginTop: 22, borderTop: `1px solid ${v('--color-border')}`, paddingTop: 16 }}>
                 {[
-                  { h: "Die Bio-Treppe (§ 43 GModG)", p: `Das Gebäudemodernisierungsgesetz verpflichtet eine Heizung für Gas, Heizöl oder Flüssiggas, die nach dem ${GMODG_RECHTSSTAND.inKraftSeit} neu eingebaut wird — beim Einbau in ein bestehendes Gebäude ebenso wie in Neubauten, die bis zum ${GMODG_RECHTSSTAND.neubauBioTreppeBis} errichtet werden —, ab 2029 einen wachsenden Anteil klimafreundlicher Brennstoffe beizumischen. Das Gesetz nennt vier Stufen: ${bioTreppeStufenText()}. Anrechenbar sind neben Biomethan auch Bioheizöl, biogenes Flüssiggas sowie Wasserstoff und dessen Derivate; beim Netzgas läuft es auf Biomethan hinaus, und das kostet rund doppelt so viel wie Erdgas. Zusammen mit steigenden Netzentgelten — weil immer weniger Haushalte am Gasnetz hängen — treibt das den Gaspreis deutlich stärker als die allgemeine Teuerung. Statt beizumischen lässt sich die Pflicht auch über Solarthermie, eine Lüftungsanlage mit Wärmerückgewinnung oder eine Wärmepumpen-Hybridheizung erfüllen (§ 43 Absatz 3 bis 5 GModG); fällt die alte Anlage irreparabel aus, greift sie zwölf Monate später (§ 43 Absatz 7). Wir rechnen den teuersten Weg, die reine Beimischung.` },
+                  { h: "Die Bio-Treppe (§ 43 GModG)", p: `Das Gebäudemodernisierungsgesetz verpflichtet eine Heizung für Gas, Heizöl oder Flüssiggas, die nach dem ${GMODG_RECHTSSTAND.inKraftSeit} neu eingebaut wird — beim Einbau in ein bestehendes Gebäude ebenso wie in Neubauten, die bis zum ${GMODG_RECHTSSTAND.neubauBioTreppeBis} errichtet werden —, ab 2029 einen wachsenden Anteil klimafreundlicher Brennstoffe beizumischen. Das Gesetz nennt vier Stufen: ${bioTreppeStufenText()}. Anrechenbar sind neben Biomethan auch Bioheizöl, biogenes Flüssiggas sowie grüner, blauer, orangener oder türkiser Wasserstoff und dessen Derivate; beim Netzgas läuft es auf Biomethan hinaus, und das kostet rund doppelt so viel wie Erdgas. Zusammen mit steigenden Netzentgelten — weil immer weniger Haushalte am Gasnetz hängen — treibt das den Gaspreis deutlich stärker als die allgemeine Teuerung. Statt beizumischen lässt sich die Pflicht auch über Solarthermie, eine Lüftungsanlage mit Wärmerückgewinnung oder eine Wärmepumpen-Hybridheizung erfüllen (§ 43 Absatz 3 bis 5 GModG); fällt die alte Anlage irreparabel aus, bleibt zwölf Monate lang die Stufe stehen, die beim Einbau galt (§ 43 Absatz 7 GModG). Wir rechnen den teuersten Weg, die reine Beimischung.` },
                   { h: "Beschlossen ist die Pflicht, nicht der Preis", p: `${gmodgStandSatz()} Wie teuer Biomethan und Netzentgelte tatsächlich werden, ist dagegen eine Annahme — ein plausibler Korridor, keine punktgenaue Prognose. Ebenfalls Annahme ist der Weg nach 2040: Eine 100-%-Stufe steht nicht im Gesetz, die vollständige Klimaneutralität ab 2045 kündigt § 42a GModG nur an — als Quote für die Brennstoff-Anbieter, die dann auch Bestandsheizungen verteuern würde. Sie soll bis zum ${GMODG_RECHTSSTAND.quoteGesetzBis} in einem eigenen Gesetz geregelt werden; die Gesetzesbegründung geht von einem Start 2028 mit bis zu einem Prozent aus, im Gesetzestext steht das nicht. Wir rechnen sie nicht mit. Die drei Preis-Szenarien zeigen den Gegenfall: reine Energiepreis-Fortschreibung ohne die Grüngas-Pflicht.` },
                   { h: "Warum wir je Kilowattstunde Wärme rechnen", p: "Gas- und Strompreis lassen sich nicht direkt vergleichen: Eine Wärmepumpe macht aus einer Kilowattstunde Strom rund drei Kilowattstunden Wärme, ein Gaskessel aus einer Kilowattstunde Gas nur knapp eine. Deshalb rechnen wir beide auf die Kosten pro gelieferter Kilowattstunde Wärme um — die Jahresarbeitszahl der Wärmepumpe und der Kesselwirkungsgrad sind darin enthalten. Grundgebühr und Wartung bleiben außen vor, sie gehören nicht in einen Preis-je-Kilowattstunde-Vergleich." },
                   { h: "Quelle", p: "IW-Report 36/2026 „Wie hoch sind die Mehrkostenrisiken durch das Gebäudemodernisierungsgesetz?“ (Henger, Küper, Wünsch — Institut der deutschen Wirtschaft, Juli 2026). Die Preispfade stammen aus dem Anhang der Studie." },
@@ -838,33 +894,64 @@ export default function Waermepumpe({
                   <span style={{ fontSize: 13, fontWeight: 700 }}>Deine BEG-Förderung</span>
                   <span style={{ fontFamily: v('--font-mono'), fontWeight: 800, fontSize: 15, color: v('--color-accent') }}>−{result.beg.amount.toLocaleString("de-DE")} €</span>
                 </div>
+                {/* Der gewählte Förderstand gehört in die Kopfzeile, nicht nur in
+                    den Schalter weiter unten: Wer die Zahl darüber liest, muss
+                    ohne Suchen sehen, nach welchem Stand sie gerechnet ist. */}
                 <div style={{ fontSize: 11.5, color: v('--color-text-muted'), marginBottom: 10 }}>
                   {Math.round(result.beg.rate * 100)} % der förderfähigen Kosten
-                  {result.investBrutto > DEFAULT_HEATPUMP_CONFIG.begMaxCap
-                    ? <> · gedeckelt bei {DEFAULT_HEATPUMP_CONFIG.begMaxCap.toLocaleString("de-DE")} € (deine Anlage liegt darüber, daher {Math.round(result.beg.rate * 100)} % × {DEFAULT_HEATPUMP_CONFIG.begMaxCap.toLocaleString("de-DE")} €)</>
+                  {stufeNaechste
+                    ? <> · Stand {begStand === "naechste" ? stufeNaechste.bezeichnung : "heute"}</>
+                    : null}
+                  {result.investBrutto > begStufe.maxCap
+                    ? <> · gedeckelt bei {begStufe.maxCap.toLocaleString("de-DE")} € (deine Anlage liegt darüber, daher {Math.round(result.beg.rate * 100)} % × {begStufe.maxCap.toLocaleString("de-DE")} €)</>
                     : null}
                 </div>
+                <BegStandSchalter
+                  stand={begStand}
+                  setStand={s => { setBegStand(s); setOInvest(null); }}
+                  jetzt={stufeJetzt}
+                  naechste={stufeNaechste}
+                  euUrsprung={euUrsprung}
+                  setEuUrsprung={b => { setEuUrsprung(b); setOInvest(null); }}
+                  betragJetzt={begVergleich.jetzt}
+                  betragNaechsteOhneEu={begVergleich.naechsteOhneEu}
+                  betragNaechsteMitEu={begVergleich.naechsteMitEu}
+                />
+                {/* Der Satz kommt aus der gewählten Stufe, nicht als getippte
+                    Zahl. Er stand hier bis zum 26.08.2026 als „30 %" im Text —
+                    genau die Sorte Zahl, die beim ersten Stichtag still falsch
+                    wird, während die Rechnung daneben längst richtig rechnet. */}
                 <div style={{ fontSize: 12, color: v('--color-text-muted'), display: "flex", alignItems: "center", gap: 5, marginBottom: 6 }}>
                   <span style={{ display: "inline-block", width: 13, height: 13, borderRadius: 3, background: v('--color-accent'), flexShrink: 0 }} />
-                  Grundförderung 30 % — bekommt jeder Heizungstausch im Bestand
+                  Grundförderung {Math.round(begStufe.grundfoerderung * 100)} % — bekommt jeder Heizungstausch im Bestand
                 </div>
                 <BonusToggle checked={selbstnutzer} onChange={c => { setSelbstnutzer(c); setOInvest(null); }} label="Ich wohne selbst im Gebäude" tipTitle="Selbstnutzung">
-                  Sowohl der Klima-Geschwindigkeits-Bonus als auch der Einkommens-Bonus setzen voraus, dass du selbst im Gebäude wohnst. Wer vermietet, bekommt nur die Grundförderung von 30 %. Quelle: KfW Merkblatt 458 (BEG EM), gültig ab 21.07.2026.
+                  Sowohl der Klima-Geschwindigkeits-Bonus als auch der Einkommens-Bonus setzen voraus, dass du selbst im Gebäude wohnst. Wer vermietet, bekommt nur die Grundförderung von {Math.round(begStufe.grundfoerderung * 100)} %. Der Bonus für Wärmepumpen aus der EU ist dagegen nicht an die Selbstnutzung gebunden. Quelle: Förderrichtlinie BEG EM vom 17.07.2026.
                 </BonusToggle>
                 {selbstnutzer ? (
                   <>
+                    {/* Ab dem 1. August 2028 gibt es den Klima-Geschwindigkeits-Bonus
+                        nicht mehr. Die Frage nach der alten Heizung dann trotzdem
+                        anzubieten, hieße eine Wahl anzubieten, die nichts bewirkt. */}
+                    {begStufe.klimaBonus === 0 ? (
+                      <div style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginBottom: 4 }}>
+                        Den Klima-Geschwindigkeits-Bonus für den Austausch einer alten fossilen Heizung
+                        gibt es zu diesem Zeitpunkt nicht mehr.
+                      </div>
+                    ) : (
                     <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: v('--color-text-secondary'), marginBottom: 4, flexWrap: "wrap" }}>
                       <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
                         Alte Heizung
                         <InfoTooltip title="Klima-Geschwindigkeits-Bonus" ariaLabel="Klima-Geschwindigkeits-Bonus">
-                          16 % Zusatzförderung, wenn eine funktionierende fossile Heizung ersetzt wird: Öl, Kohle und Nachtspeicher zählen unabhängig vom Alter, Gas-, Holz- und Pelletheizungen erst ab 20 Jahren. Das Baujahr steht auf dem Typenschild am Kessel. Der Bonus sinkt ab dem 1. Februar 2027 schrittweise. Quelle: KfW Merkblatt 458 (BEG EM), gültig ab 21.07.2026.
+                          {Math.round(begStufe.klimaBonus * 100)} % Zusatzförderung, wenn eine funktionierende fossile Heizung ersetzt wird: Öl, Kohle, Nachtspeicher und die Gas-Etagenheizung zählen unabhängig vom Alter, eine Gas-Zentralheizung sowie Holz- und Pelletheizungen erst ab 20 Jahren. Maßgeblich ist, wann die alte Anlage in Betrieb ging — das Datum steht auf dem Typenschild am Kessel. Der Bonus sinkt ab dem 1. Februar 2027 halbjährlich um 4 Prozentpunkte und entfällt bei Antragstellung ab dem 1. August 2028. Quelle: Förderrichtlinie BEG EM vom 17.07.2026.
                         </InfoTooltip>
                       </span>
                       <select value={altheizung} onChange={e => { setAltheizung(e.target.value as AltheizungKey); setOInvest(null); }}
-                        style={{ fontSize: 12, padding: "3px 6px", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, background: v('--color-bg'), color: v('--color-text-secondary'), cursor: "pointer" }}>
+                        style={{ fontSize: 12, padding: "3px 6px", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, background: v('--color-bg'), color: v('--color-text-secondary'), cursor: "pointer", maxWidth: "100%" }}>
                         {ALTHEIZUNG_OPTIONS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
                       </select>
                     </div>
+                    )}
                     <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: v('--color-text-secondary'), marginBottom: 4, flexWrap: "wrap" }}>
                       <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
                         Einkommens-Bonus
@@ -873,7 +960,7 @@ export default function Waermepumpe({
                         </InfoTooltip>
                       </span>
                       <select value={einkommen} onChange={e => { setEinkommen(e.target.value as EinkommenKey); setOInvest(null); }}
-                        style={{ fontSize: 12, padding: "3px 6px", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, background: v('--color-bg'), color: v('--color-text-secondary'), cursor: "pointer" }}>
+                        style={{ fontSize: 12, padding: "3px 6px", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, background: v('--color-bg'), color: v('--color-text-secondary'), cursor: "pointer", maxWidth: "100%" }}>
                         {EINKOMMEN_OPTIONS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
                       </select>
                     </div>
@@ -892,6 +979,16 @@ export default function Waermepumpe({
                 {oInvest !== null && (
                   <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 6 }}>Investition manuell überschrieben — Förderung wirkt erst wieder nach Zurücksetzen.</div>
                 )}
+                {/* Die Bedingung gehört an den Betrag, nicht in den Rechtstext am
+                    Seitenende: Eine Zahl ohne diesen Satz sagt, wie viel es gibt,
+                    und verschweigt das Einzige, was sie kosten kann. Wortlaut aus
+                    lib/beg-antrag.ts — derselbe Satz steht im Förder-Check. */}
+                <div style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginTop: 10, paddingTop: 8, borderTop: `1px solid ${v('--color-border')}` }}>
+                  {BEG_ANTRAG_KURZ}{" "}
+                  <a href={BEG_ANTRAG_HREF} style={{ color: v('--color-accent'), fontWeight: 600, textDecoration: "none" }}>
+                    Die Reihenfolge Schritt für Schritt
+                  </a>
+                </div>
               </div>
             )}
 
@@ -1056,7 +1153,7 @@ export default function Waermepumpe({
                   Heizwärme pro Jahr: <InlineEdit value={result.qGes} onCommit={v => setOQges(v)} unit=" kWh" min={1000} max={80000} step={500} width={90} />
                   <InfoTooltip title="Woher diese Menge kommt" ariaLabel="Woher kommt der Jahres-Heizwärmebedarf?">
                     Geschätzt aus Wohnfläche, Dämmzustand und Personenzahl — und zwar als <strong>erwarteter Verbrauch</strong>, nicht als Norm-Bedarf. Der Unterschied ist groß: Die Norm rechnet ein Gebäude durch, in dem alle Räume auf Solltemperatur stehen. Real wird weniger geheizt (Räume bleiben kühl, nachts wird abgesenkt), im Altbau rund 30 % weniger.<br /><br />
-                    <strong>Du kennst deinen Gas- oder Ölverbrauch? Trag ihn im Schritt „Dämmstandard" ein</strong> — oder rechne hier direkt: Jahresverbrauch in kWh × {Math.round(fuel.efficiency * 100)} % (Kesselverlust). Ein gemessener Wert schlägt jede Schätzung.<br /><br />
+                    <strong>Du kennst deinen Gas- oder Ölverbrauch? Trag ihn im Schritt „Dämmstandard" ein</strong> — oder rechne hier direkt: Jahresverbrauch in kWh × {Math.round(fuel.efficiency * 100)} % (Kessel-Nutzungsgrad). Ein gemessener Wert schlägt jede Schätzung.<br /><br />
                     Diese Menge steht auf beiden Seiten der Rechnung — sie bestimmt den Gasverbrauch genauso wie den Strom der Wärmepumpe. <strong>Wenn nach dem Wechsel wärmer oder in mehr Räumen geheizt wird, steigt sie</strong>, und die Ersparnis fällt kleiner aus als hier gezeigt. Nach Sanierungen wird dieser Effekt mit 10 bis 30 % beziffert; wie stark er bei einem reinen Heizungstausch auftritt, ist nicht belastbar gemessen — deshalb rechnen wir ihn nicht ein, sondern nennen ihn.
                   </InfoTooltip>
                 </div>
@@ -1202,7 +1299,7 @@ export default function Waermepumpe({
                 </div>
                 {inputs.situation === "bestand" && result.beg.amount > 0 && (
                   <div style={{ fontSize: 11, color: v('--color-text-muted'), paddingTop: 8, lineHeight: 1.6 }}>
-                    Voreingestellt ist der Regelfall: selbstnutzender Eigentümer, der eine mindestens 20 Jahre alte Gasheizung ersetzt (Grundförderung + Klima-Geschwindigkeits-Bonus). Selbstnutzung und alte Heizung kannst du oben umstellen; der Einkommens-Bonus hängt von deinem Haushaltseinkommen ab und ist standardmäßig nicht eingerechnet. Die Förderung muss vor der Beauftragung bei der KfW beantragt werden — ob die Boni bei dir greifen, hängt von deiner individuellen Situation ab.
+                    Voreingestellt ist der Regelfall: selbstnutzender Eigentümer, der eine mindestens 20 Jahre alte Gasheizung ersetzt (Grundförderung + Klima-Geschwindigkeits-Bonus). Selbstnutzung und alte Heizung kannst du oben umstellen; der Einkommens-Bonus hängt von deinem Haushaltseinkommen ab und ist standardmäßig nicht eingerechnet. Ob die Boni bei dir greifen, hängt von deiner individuellen Situation ab. Wann der Antrag gestellt sein muss, steht oben am Förderbetrag — dort in der geprüften Fassung, statt hier ein zweites Mal.
                   </div>
                 )}
               </div>
@@ -1347,10 +1444,20 @@ const einkommenIncome = (k: EinkommenKey): number | undefined => EINKOMMEN_OPTIO
 // Welche alte Heizung ersetzt wird, entscheidet über den Klima-Geschwindigkeits-Bonus:
 // Öl/Kohle/Nachtspeicher zählen unabhängig vom Alter, Gas/Biomasse erst ab 20 Jahren.
 type AltheizungKey = "oel_kohle" | "gas_alt" | "gas_neu" | "andere";
+// Die Gas-ETAGENHEIZUNG steht bewusst in der altersfreien Zeile und nicht bei den
+// übrigen Gasheizungen: Das Merkblatt zählt sie wörtlich neben Öl, Kohle und
+// Nachtstromspeicher auf, „unabhängig von deren Alter" (KfW-Merkblatt 458,
+// Stand 07/2026, S. 3, am 25.08.2026 im Volltext gelesen —
+// docs/quellen/KfW-Merkblatt-458_BEG-Heizungsfoerderung_2026-07.pdf).
+// Vorher fehlte sie ganz. Wer eine Gas-Etagenheizung unter 20 Jahren hatte,
+// landete zwangsläufig in der Zeile ohne Bonus und bekam 16 % Förderung nicht
+// gerechnet — ein Fehler, den man dem Ergebnis nicht ansieht, weil die Zahl
+// einfach kleiner ist. Deshalb nennen die Gas-Zeilen jetzt ausdrücklich die
+// ZENTRALheizung: „Gas" allein ließ beide Lesarten zu.
 const ALTHEIZUNG_OPTIONS: { key: AltheizungKey; label: string; klima: boolean }[] = [
-  { key: "oel_kohle", label: "Öl, Kohle oder Nachtspeicher", klima: true },
-  { key: "gas_alt",   label: "Gas, Holz oder Pellets — 20 Jahre oder älter", klima: true },
-  { key: "gas_neu",   label: "Gas, Holz oder Pellets — jünger als 20 Jahre", klima: false },
+  { key: "oel_kohle", label: "Öl, Kohle, Nachtspeicher oder Gas-Etagenheizung", klima: true },
+  { key: "gas_alt",   label: "Gas-Zentralheizung, Holz oder Pellets — 20 Jahre oder älter", klima: true },
+  { key: "gas_neu",   label: "Gas-Zentralheizung, Holz oder Pellets — jünger als 20 Jahre", klima: false },
   { key: "andere",    label: "Etwas anderes (z. B. schon Strom/Wärmepumpe)", klima: false },
 ];
 const altheizungKlima = (k: AltheizungKey): boolean => ALTHEIZUNG_OPTIONS.find(o => o.key === k)?.klima ?? false;

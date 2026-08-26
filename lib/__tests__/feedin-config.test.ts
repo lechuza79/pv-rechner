@@ -42,7 +42,7 @@ const ABZUG_53 = 0.4; // § 53 Abs. 1 EEG: Einspeisevergütung statt Marktprämi
  */
 const round2 = (x: number) => Math.round(Number((x * 100).toFixed(6))) / 100;
 
-/** Anzulegender Wert nach n Halbjahresschritten (§ 49 Abs. 1: 1 %, ungerundet fortgeschrieben). */
+/** Anzulegender Wert nach n Halbjahresschritten (§ 49 Satz 1: 1 %, ungerundet fortgeschrieben). */
 const anzulegenderWert = (basis: number, n: number) => round2(basis * Math.pow(0.99, n));
 
 /** Einspeisevergütung = anzulegender Wert − 0,4 ct. */
