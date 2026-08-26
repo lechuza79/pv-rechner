@@ -82,6 +82,17 @@ export type SocialPost = {
   belege: string[];
 };
 
+/**
+ * Ab wie vielen Zeichen der Feed den Beitrag hinter „mehr anzeigen" versteckt.
+ *
+ * Näherungswert für LinkedIn auf dem Desktop — die genaue Grenze hängt an der
+ * Zeilenzahl und damit an der Fensterbreite, ist also nicht als Zahl zu haben.
+ * Sie steht hier trotzdem, weil eine ungefähre Grenze in der Vorschau mehr wert
+ * ist als gar keine: Die Aussage muss davor stehen, alles danach liest nur, wer
+ * schon interessiert ist.
+ */
+export const FEED_ABSCHNITT_ZEICHEN = 210;
+
 const de = (n: number, stellen = 0) =>
   n.toLocaleString("de-DE", { minimumFractionDigits: stellen, maximumFractionDigits: stellen });
 
