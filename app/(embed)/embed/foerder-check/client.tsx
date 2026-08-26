@@ -13,7 +13,7 @@ import {
   type WidgetSettings,
 } from "../../../../lib/widget-settings";
 import { calcBegSubsidy, calcInvestBrutto } from "../../../../lib/heatpump";
-import { DEFAULT_HEATPUMP_CONFIG } from "../../../../lib/heatpump-config";
+import { DEFAULT_HEATPUMP_CONFIG, begStufeAm } from "../../../../lib/heatpump-config";
 import { BEG_ANTRAG_KURZ, BEG_ANTRAG_STAND } from "../../../../lib/beg-antrag";
 
 // Das Gültigkeitsdatum des Merkblatts stand hier bis zum 26.08.2026 handgetippt
@@ -32,6 +32,12 @@ const GUELTIG_AB = BEG_ANTRAG_STAND.validFrom.split("-").reverse().join(".");
 // so a future BEG change updates the widget automatically.
 
 const cfg = DEFAULT_HEATPUMP_CONFIG;
+// Grundsatz, Klimabonus und Höchstbetrag ändern sich zu festen Stichtagen der
+// Förderrichtlinie. Die RECHNUNG zieht sie sich ohnehin selbst (calcBegSubsidy
+// löst ohne Angabe den heutigen Stand auf); die angezeigten Zahlen daneben
+// müssen aus derselben Stufe kommen, sonst erklärt der Text ab dem ersten
+// Stichtag eine andere Förderung, als das Widget darunter ausrechnet.
+const stufeHeute = begStufeAm(new Date());
 // Identität (Titel, Teilen-Ziel, Quelle, nächster Schritt) kommt aus dem
 // Register — ein Eintrag speist Fußzeile, Quellen-Kante und Zitat.
 const WIDGET = WIDGETS.foerderCheck;
@@ -132,7 +138,7 @@ export default function FoerderCheckWidget() {
     [neubau, invest, fossil, selbstnutzer, einkommen, kind],
   );
 
-  const capped = invest > cfg.begMaxCap;
+  const capped = invest > stufeHeute.maxCap;
 
   return (
     <div
@@ -291,7 +297,7 @@ function FlowView({
       >
         <OptionRow
           label="Öl, Kohle, Gas-Etage oder Nachtspeicher"
-          sub={`Klima-Bonus +${Math.round(cfg.begKlimaBonus * 100)} % (unabhängig vom Alter)`}
+          sub={`Klima-Bonus +${Math.round(stufeHeute.klimaBonus * 100)} % (unabhängig vom Alter)`}
           onClick={() => {
             setFossil(true);
             setAlterUnbekannt(false);
@@ -326,7 +332,7 @@ function FlowView({
       >
         <OptionRow
           label="20 Jahre oder älter"
-          sub={`Klima-Bonus +${Math.round(cfg.begKlimaBonus * 100)} %`}
+          sub={`Klima-Bonus +${Math.round(stufeHeute.klimaBonus * 100)} %`}
           onClick={() => {
             setFossil(true);
             setAlterUnbekannt(false);
@@ -568,7 +574,7 @@ function ResultView({
             </div>
             <div style={{ fontSize: 11, color: "var(--widget-muted)" }}>
               {Math.round(beg.rate * 100)} % {capped ? "von max. " : "der "}
-              {capped ? `${nf(cfg.begMaxCap)} € förderfähigen Kosten` : "Investition"}
+              {capped ? `${nf(stufeHeute.maxCap)} € förderfähigen Kosten` : "Investition"}
             </div>
             {/* Bonus-Aufschlüsselung */}
             <div style={{ marginTop: 10, display: "flex", flexDirection: "column", gap: 3 }}>
@@ -619,7 +625,7 @@ function ResultView({
                 borderLeft: "3px solid var(--widget-accent)",
               }}
             >
-              Enthält den Klima-Bonus (+{Math.round((cfg.begKlimaBonus) * 100)} %). Der gilt nur, wenn deine Gas-,
+              Enthält den Klima-Bonus (+{Math.round(stufeHeute.klimaBonus * 100)} %). Der gilt nur, wenn deine Gas-,
               Holz- oder Pelletheizung <strong>mindestens 20 Jahre</strong> alt ist. Prüfe das Baujahr auf dem
               Typenschild am Kessel – ist sie jünger, fällt dieser Anteil weg.
             </div>

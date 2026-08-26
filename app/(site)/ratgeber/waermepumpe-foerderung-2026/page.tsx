@@ -14,7 +14,12 @@ import { DATA_SOURCES } from "../../../../lib/data-sources";
 import { waermepumpeFoerderungFaq } from "../../../../lib/faq";
 import { v } from "../../../../lib/theme";
 import { calcBegSubsidy, calcInvestBrutto, calcHeatLoad } from "../../../../lib/heatpump";
-import { DEFAULT_HEATPUMP_CONFIG as HP } from "../../../../lib/heatpump-config";
+import {
+  DEFAULT_HEATPUMP_CONFIG as HP,
+  begStufeAm,
+  begNaechsteStufe,
+  BEG_WERTSCHOEPFUNGS_BONUS,
+} from "../../../../lib/heatpump-config";
 import {
   BEG_ANTRAG_ANKER,
   BEG_ANTRAG_GELTUNGSBEREICH,
@@ -272,6 +277,19 @@ export default function WaermepumpeFoerderungPage() {
   // Gefunden vom zweiten Legal-Judge; die Fehlerklasse ist die teuerste des
   // Projekts, eine falsche Zahl, die niemandem auffällt.
   const standDatum = formatFullDate(HP.validFrom);
+  // Grundsatz, Klimabonus und Höchstbetrag aus dem Fahrplan der Richtlinie
+  // (BEG_FAHRPLAN), nicht aus der Config-Konstante: Alle drei ändern sich zu
+  // festen Stichtagen, der Fördersatz für Wärmepumpen halbiert sich Anfang
+  // 2027. Die Beispielrechnungen darunter ziehen sich den Stand ohnehin selbst
+  // (calcBegSubsidy löst ohne Angabe den heutigen auf) — stünden die Zahlen im
+  // Fließtext daneben fest, erklärte der Text ab dem Stichtag eine andere
+  // Förderung, als die Tabelle darunter ausrechnet.
+  const STUFE = begStufeAm(new Date());
+  // Der nächste Stichtag und der übernächste — beide aus dem Fahrplan, damit der
+  // Ausblick unten mitwandert, statt beim ersten Wechsel von einer künftigen
+  // Änderung im Präsens zu erzählen, die längst eingetreten ist.
+  const NAECHSTE = begNaechsteStufe(new Date());
+  const NACH_NAECHSTE = NAECHSTE ? begNaechsteStufe(new Date(NAECHSTE.abIso)) : undefined;
   const gueltigAb = formatFullDate(BEG_ANTRAG_STAND.validFrom);
   const verfahrenGeprueft = formatFullDate(BEG_ANTRAG_STAND.geprueftIso);
 
@@ -290,7 +308,7 @@ export default function WaermepumpeFoerderungPage() {
   // Zuschuss zum Beispielfall.
   const maxAmount = Math.max(...rows.map((r) => r.amount));
 
-  const maxZuschuss = Math.round(HP.begMaxCap * HP.begMaxRateLowIncome);
+  const maxZuschuss = Math.round(STUFE.maxCap * HP.begMaxRateLowIncome);
   const staffel = HP.begEinkommensStaffel;
 
   return (
@@ -322,11 +340,11 @@ export default function WaermepumpeFoerderungPage() {
         {/* ── Kurzantwort ── */}
         <div style={S.hero}>
           <span style={S.label}>Die Kurzantwort</span>
-          <strong style={S.strong}>Zwischen {pct(HP.begGrundfoerderung)} und {pct(HP.begMaxRateLowIncome)} der Kosten.</strong>{" "}
-          Jeder Heizungstausch im Bestand bekommt die Grundförderung von {pct(HP.begGrundfoerderung)} —
+          <strong style={S.strong}>Zwischen {pct(STUFE.grundfoerderung)} und {pct(HP.begMaxRateLowIncome)} der Kosten.</strong>{" "}
+          Jeder Heizungstausch im Bestand bekommt die Grundförderung von {pct(STUFE.grundfoerderung)} —
           auch Vermieter. Selbstnutzende Eigentümer können über den Klima-Bonus und einen
           einkommensabhängigen Bonus auf bis zu {pct(HP.begMaxRateLowIncome)} kommen. Gefördert
-          werden Kosten bis {eur(HP.begMaxCap)} für die erste Wohnung, der maximale Zuschuss
+          werden Kosten bis {eur(STUFE.maxCap)} für die erste Wohnung, der maximale Zuschuss
           liegt damit bei {eur(maxZuschuss)}. Im Neubau gibt es diesen Zuschuss dagegen nicht.
         </div>
         <p style={{ ...S.p, fontSize: v("--font-size-small"), marginBottom: 0 }}>
@@ -359,17 +377,35 @@ export default function WaermepumpeFoerderungPage() {
           Der Fördersatz der{" "}
           <GlossaryTerm id="beg">BEG</GlossaryTerm>-Heizungsförderung ist kein fester Wert,
           sondern wird aus bis zu drei Bausteinen zusammengesetzt. Alle beziehen sich auf die
-          förderfähigen Kosten (gedeckelt bei {eur(HP.begMaxCap)} für die erste Wohnung):
+          förderfähigen Kosten (gedeckelt bei {eur(STUFE.maxCap)} für die erste Wohnung):
         </p>
 
         <div style={S.card}>
-          <span style={S.accent}>1. Grundförderung — {pct(HP.begGrundfoerderung)}</span>
+          <span style={S.accent}>1. Grundförderung — {pct(STUFE.grundfoerderung)}</span>
           <br />
           Bekommt jeder Heizungstausch im Bestand, ohne Bedingungen an Person oder alte
           Heizung. Auch Vermieter erhalten diesen Anteil.
+          {/* Der Stichtag gehört AN den Baustein, nicht nur in den Ausblick am
+              Seitenende: Wer hier den Satz abliest und danach wegklickt, hat sonst
+              eine Zahl mitgenommen, die in wenigen Monaten die Hälfte wert ist.
+              Steht ab dem Stichtag der halbierte Satz oben, wird dieser Absatz
+              rückblickend zur Erklärung, warum. */}
+          {NAECHSTE && NAECHSTE.grundfoerderung < STUFE.grundfoerderung && (
+            <>
+              {" "}
+              <strong style={S.strong}>
+                Für Anträge ab {NAECHSTE.bezeichnung} sinkt dieser Anteil auf{" "}
+                {pct(NAECHSTE.grundfoerderung)}
+              </strong>{" "}
+              — allerdings nur für Wärmepumpen; Solarthermie und Holzheizungen behalten ihre{" "}
+              {pct(STUFE.grundfoerderung)}. Zum selben Zeitpunkt kommt ein neuer Bonus in
+              gleicher Höhe für Wärmepumpen mit Ursprung in der EU dazu, der die Kürzung
+              ausgleicht (siehe unten).
+            </>
+          )}
         </div>
         <div style={S.card}>
-          <span style={S.accent}>2. Klima-Geschwindigkeits-Bonus — +{pct(HP.begKlimaBonus)}</span>
+          <span style={S.accent}>2. Klima-Geschwindigkeits-Bonus — +{pct(STUFE.klimaBonus)}</span>
           <br />
           Nur für <strong style={S.strong}>selbstnutzende Eigentümer</strong>, die eine noch
           funktionierende alte Heizung ersetzen. Öl-, Kohle-, Gas-Etagen- und
@@ -628,14 +664,65 @@ export default function WaermepumpeFoerderungPage() {
           </div>
         </div>
 
-        {/* ── Reform-Hinweis ── */}
-        <p style={{ ...S.p, marginTop: 20 }}>
-          <strong style={S.strong}>Ausblick:</strong> Die Boni sollen ab dem 1. Februar 2027
-          schrittweise sinken, ebenso der Förderhöchstbetrag. Wer den Heizungstausch ohnehin
-          plant, sichert sich mit einem Antrag zu den aktuellen Sätzen den heute gültigen
-          Zuschuss. Das ist eine allgemeine Einordnung, keine individuelle Beratung —
-          maßgeblich ist die jeweils gültige KfW-Richtlinie.
-        </p>
+        {/* ── Reform-Hinweis ──
+             Dieser Absatz nannte bis zum 26.08.2026 nur die Absenkung von Boni und
+             Höchstbetrag, und das im Konjunktiv („sollen sinken"). Beides war zu
+             schwach: Die mit Abstand größte Änderung — die Halbierung des
+             Grundfördersatzes für Wärmepumpen — fehlte ganz, und was in der
+             geltenden Richtlinie steht, „soll" nicht, sondern kommt. Ein Leser, der
+             hier den Ausblick liest und im Januar wiederkommt, hätte sich die
+             veränderten Zahlen sonst nicht erklären können. Alle Werte aus dem
+             Fahrplan, kein getippter Prozentsatz. */}
+        <h2 style={S.h2}>Was sich {NAECHSTE ? NAECHSTE.bezeichnung : "in den nächsten Jahren"} ändert</h2>
+        {NAECHSTE && NAECHSTE.grundfoerderung < STUFE.grundfoerderung ? (
+          <>
+            <p style={S.p}>
+              <strong style={S.strong}>
+                Der Grundfördersatz für Wärmepumpen halbiert sich von{" "}
+                {pct(STUFE.grundfoerderung)} auf {pct(NAECHSTE.grundfoerderung)}.
+              </strong>{" "}
+              Das ist beschlossen und steht bereits in der geltenden Förderrichtlinie — anders
+              als bei einem Gesetzentwurf muss dafür nichts mehr entschieden werden. Einen
+              tagesgenauen Termin nennt sie allerdings nicht, sondern nur das erste Quartal
+              2027. Maßgeblich ist, wann der Antrag eingeht, nicht wann eingebaut wird.
+            </p>
+            <p style={S.p}>
+              <strong style={S.strong}>Es ist trotzdem keine Kürzung für alle.</strong> Zum
+              selben Zeitpunkt kommt ein neuer Bonus von{" "}
+              {pct(BEG_WERTSCHOEPFUNGS_BONUS.satz)} dazu, wenn die Wärmepumpe ihren Ursprung in
+              der EU hat — genau so viel, wie die Halbierung wegnimmt. Für ein solches Gerät
+              bleibt der Zuschuss also gleich. Wer eines von außerhalb einbaut, bekommt
+              dagegen wirklich nur noch die Hälfte des Grundzuschusses.
+              {" "}
+              <strong style={S.strong}>
+                Woran sich der Ursprung entscheidet, legt die Richtlinie allerdings nicht
+                selbst fest
+              </strong>{" "}
+              — sie verweist dafür auf ein gesondertes Infoblatt, das bislang nicht vorliegt.
+              Vom Markennamen lässt sich jedenfalls nicht darauf schließen. Wer 2027 baut,
+              sollte seinen Fachbetrieb ausdrücklich danach fragen, sobald die Abgrenzung
+              veröffentlicht ist. Anders als beim Klima- und beim Einkommens-Bonus spielt es
+              hier keine Rolle, ob man selbst im Haus wohnt.
+            </p>
+            <p style={S.p}>
+              Daneben sinken ab {NACH_NAECHSTE ? NACH_NAECHSTE.bezeichnung : "Februar 2027"} in
+              halbjährlichen Schritten auch der Klima-Geschwindigkeits-Bonus und der Betrag,
+              bis zu dem Kosten überhaupt angerechnet werden. Wer den Heizungstausch ohnehin
+              plant, sichert sich mit einem Antrag in diesem Jahr die heutigen Sätze. Das ist
+              eine allgemeine Einordnung, keine individuelle Beratung — maßgeblich ist die
+              jeweils gültige Förderrichtlinie, und einen Rechtsanspruch auf die Förderung gibt
+              es nicht.
+            </p>
+          </>
+        ) : (
+          <p style={S.p}>
+            Die Boni und der Förderhöchstbetrag sinken in halbjährlichen Schritten weiter. Wer
+            den Heizungstausch ohnehin plant, sichert sich mit einem Antrag zu den aktuellen
+            Sätzen den heute gültigen Zuschuss. Das ist eine allgemeine Einordnung, keine
+            individuelle Beratung — maßgeblich ist die jeweils gültige Förderrichtlinie, und
+            einen Rechtsanspruch auf die Förderung gibt es nicht.
+          </p>
+        )}
 
         {/* ── FAQ (visible accordion + FAQPage JSON-LD from the same data) ── */}
         <Faq items={faqItems} title="Häufige Fragen zur Wärmepumpen-Förderung" currentPath="/ratgeber/waermepumpe-foerderung-2026" />

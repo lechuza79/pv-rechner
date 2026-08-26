@@ -89,8 +89,14 @@ jobs:
   # sichtbar werden.
   #
   # Dass es NACH der Plausibilitaetspruefung laeuft (die im Job `refresh` steckt
-  # und ihn rot macht, wenn die Zahlen durchfallen), ist Absicht: Erst wenn die
-  # frischen Zahlen die Pruefung bestanden haben, duerfen sie sichtbar werden.
+  # und ihn rot macht, wenn die Zahlen durchfallen), ist Absicht — aber es leistet
+  # WENIGER, als hier zunaechst stand. Die Formulierung "erst wenn die Zahlen die
+  # Pruefung bestanden haben, duerfen sie sichtbar werden" war falsch: Der Schritt
+  # davor hat sie da laengst in die Datenbank geschrieben. Faellt die Pruefung
+  # durch, wird zwar nicht invalidiert — aber jede Seite, deren Eintrag von selbst
+  # ablaeuft, zeigt die ungeprueften Zahlen trotzdem. Die Reihenfolge steuert also
+  # nur, WIE SCHNELL sie sichtbar werden, nicht OB. Wer das wirklich verhindern
+  # will, muss den Upload selbst hinter die Pruefung legen.
   invalidate:
     needs: refresh
     runs-on: ubuntu-latest
