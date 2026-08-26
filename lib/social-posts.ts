@@ -33,7 +33,25 @@ export type SocialKennzahlen = {
     solarKwpJetzt: number;
     solarKwpVorJahr: number;
   };
-  laender: { name: string; balkonJeTausend: number; wpProKopf: number }[];
+  segmente: {
+    privatDachKwp: number;
+    gewerbeDachKwp: number;
+    freiflaecheKwp: number;
+    solarGesamtKwp: number;
+  };
+  ueberEinwohner: {
+    mindestEinwohner: number;
+    betrachtet: number;
+    darueber: number;
+  };
+  laender: {
+    name: string;
+    balkonJeTausend: number;
+    wpProKopf: number;
+    freiflaecheAnteil: number;
+    solarKwp: number;
+    wachstumFuenfJahre: number;
+  }[];
 };
 
 export type BildSerie = {
@@ -283,7 +301,200 @@ export function postWachstum(k: SocialKennzahlen): SocialPost {
   };
 }
 
-export const ALLE_POSTS = [postStadtLand, postWachstum] as const;
+/**
+ * Post 3 — Der Osten baut auf Feldern, der Westen auf Dächern.
+ *
+ * Der schärfste geografische Kontrast im Bestand, und einer mit einer Ursache,
+ * die man nennen kann: verfügbare Fläche. Die Reihenfolge wird gerechnet, nicht
+ * behauptet — kippt sie, kippt der Satz mit.
+ */
+export function postFreiflaeche(k: SocialKennzahlen): SocialPost {
+  const sortiert = [...k.laender].sort((a, b) => b.freiflaecheAnteil - a.freiflaecheAnteil);
+  const oben = sortiert[0];
+  // Stadtstaaten haben praktisch keine Freifläche und wären ein unfairer
+  // Gegenpol — verglichen wird das schwächste FLÄCHENLAND.
+  const stadtstaaten = ["Berlin", "Hamburg", "Bremen"];
+  const flaechen = sortiert.filter((l) => !stadtstaaten.includes(l.name));
+  const unten = flaechen[flaechen.length - 1];
+
+  const text = [
+    `${oben.name} hat ${de(oben.freiflaecheAnteil, 0)} Prozent seiner Solarleistung auf Freiflächen stehen. ${unten.name} ${de(unten.freiflaecheAnteil, 0)} Prozent. Beide bauen Solar aus, aber an völlig verschiedenen Orten.`,
+    ``,
+    `Die Spanne über alle Flächenländer reicht von ${de(unten.freiflaecheAnteil, 0)} bis ${de(oben.freiflaecheAnteil, 0)} Prozent. In den Stadtstaaten liegt der Anteil unter einem Prozent — dort gibt es schlicht keine Flächen.`,
+    ``,
+    `Das ist keine Frage der Förderung und auch keine der Einstellung, sondern eine der verfügbaren Fläche. Wo Ackerland günstig und Siedlungsdichte niedrig ist, entstehen Solarparks. Wo beides umgekehrt ist, bleibt das Dach.`,
+    ``,
+    `Für die Debatte über Flächenverbrauch heißt das: Sie wird in wenigen Bundesländern geführt und betrifft die anderen kaum.`,
+    ``,
+    quellenzeile(k.standIso, true),
+  ].join("\n");
+
+  return {
+    id: "freiflaeche-ost-west",
+    titel: "Der Osten baut auf Feldern, der Westen auf Dächern",
+    kanal: ["linkedin"],
+    text,
+    bild: {
+      art: "vergleich",
+      aussage: `Wo die Solarleistung steht, entscheidet die Fläche`,
+      gemessen: `Anteil Freiflächen an der Solarleistung`,
+      serien: [
+        { label: oben.name, wert: oben.freiflaecheAnteil, einheit: "%", stellen: 0, hervorgehoben: true },
+        { label: unten.name, wert: unten.freiflaecheAnteil, einheit: "%", stellen: 0 },
+      ],
+      quelle: quellenzeile(k.standIso, false),
+    },
+    belege: [
+      `Spitze ${oben.name} ${de(oben.freiflaecheAnteil, 1)} % (${fmtPvLeistung(oben.solarKwp)})`,
+      `Schwächstes Flächenland ${unten.name} ${de(unten.freiflaecheAnteil, 1)} % (${fmtPvLeistung(unten.solarKwp)})`,
+      `Stadtstaaten ausgenommen: ${stadtstaaten.join(", ")}`,
+    ],
+  };
+}
+
+/**
+ * Post 4 — Die Energiewende liegt nicht auf Privatdächern.
+ *
+ * Widerspricht dem verbreiteten Bild und braucht dafür keinen Ortsnamen, also
+ * auch kein Kränkungsrisiko.
+ */
+export function postSegmente(k: SocialKennzahlen): SocialPost {
+  const s = k.segmente;
+  const anteil = (v: number) => (s.solarGesamtKwp ? (v / s.solarGesamtKwp) * 100 : 0);
+  const privat = anteil(s.privatDachKwp);
+  const gewerbe = anteil(s.gewerbeDachKwp);
+  const frei = anteil(s.freiflaecheKwp);
+
+  const text = [
+    `Auf privaten Dächern liegen ${de(privat, 0)} Prozent der deutschen Solarleistung. Gewerbedächer und Freiflächen tragen zusammen den Rest.`,
+    ``,
+    `Die genaue Aufteilung: privates Dach ${de(privat, 1)} Prozent, Gewerbe ${de(gewerbe, 1)}, Freifläche ${de(frei, 1)}. Zusammen ${fmtPvLeistung(s.solarGesamtKwp)}.`,
+    ``,
+    `Das Bild von der Energiewende auf dem Einfamilienhausdach stimmt also nur für gut ein Viertel. Der größere Teil entsteht dort, wo jemand gewerblich rechnet — auf Hallendächern und auf Feldern.`,
+    ``,
+    `Was das für die eigene Anlage bedeutet: nichts. Sie rechnet sich unabhängig davon, wie groß ihr Anteil an der Gesamtstatistik ist. Für die Debatte darüber, wo Solar hingehört, ist es aber der Ausgangspunkt.`,
+    ``,
+    quellenzeile(k.standIso, true),
+  ].join("\n");
+
+  return {
+    id: "segmente-anteile",
+    titel: "Die Energiewende liegt nicht auf Privatdächern",
+    kanal: ["linkedin", "instagram"],
+    text,
+    bild: {
+      art: "vergleich",
+      aussage: `Nur gut ein Viertel der Solarleistung liegt auf privaten Dächern`,
+      gemessen: `Anteil an der installierten Solarleistung`,
+      serien: [
+        { label: "Freifläche", wert: frei, einheit: "%", stellen: 0 },
+        { label: "Gewerbedach", wert: gewerbe, einheit: "%", stellen: 0 },
+        { label: "Privates Dach", wert: privat, einheit: "%", stellen: 0, hervorgehoben: true },
+      ],
+      quelle: quellenzeile(k.standIso, false),
+    },
+    belege: [
+      `Gesamt ${fmtPvLeistung(s.solarGesamtKwp)}`,
+      `privat ${fmtPvLeistung(s.privatDachKwp)} · Gewerbe ${fmtPvLeistung(s.gewerbeDachKwp)} · Freifläche ${fmtPvLeistung(s.freiflaecheKwp)}`,
+    ],
+  };
+}
+
+/**
+ * Post 5 — Die Städte holen auf.
+ *
+ * Gegenstück zur Stadt-Land-Geschichte: Beim Bestand liegen die Städte hinten,
+ * beim Wachstum vorn. Beide Aussagen stimmen und widersprechen einander nicht —
+ * wer wenig hat, wächst schneller.
+ */
+export function postAufholjagd(k: SocialKennzahlen): SocialPost {
+  const sortiert = [...k.laender].filter((l) => l.wachstumFuenfJahre > 0).sort((a, b) => b.wachstumFuenfJahre - a.wachstumFuenfJahre);
+  const oben = sortiert[0];
+  const unten = sortiert[sortiert.length - 1];
+
+  const text = [
+    `${oben.name} hat seine Solarleistung in fünf Jahren mehr als ${de(Math.floor(oben.wachstumFuenfJahre), 0)}-mal so groß gemacht. ${unten.name} kam auf das ${de(unten.wachstumFuenfJahre, 1)}-fache.`,
+    ``,
+    `Das klingt nach einer Überraschung, ist aber die Regel: Wer wenig hatte, wächst schneller. Die Stadtstaaten führen diese Liste an, weil sie von einem sehr niedrigen Stand kommen — an installierter Leistung je Einwohner liegen sie weiter hinten.`,
+    ``,
+    `Beide Zahlen stimmen gleichzeitig, und sie beantworten verschiedene Fragen. Wer wissen will, wo viel Solar steht, schaut auf den Bestand. Wer wissen will, wo sich gerade etwas bewegt, auf das Wachstum.`,
+    ``,
+    quellenzeile(k.standIso, true),
+  ].join("\n");
+
+  return {
+    id: "aufholjagd-fuenf-jahre",
+    titel: "Die Städte holen auf",
+    kanal: ["linkedin"],
+    text,
+    bild: {
+      art: "vergleich",
+      aussage: `Wer wenig hatte, wächst am schnellsten`,
+      gemessen: `Solarleistung heute im Verhältnis zu vor fünf Jahren`,
+      serien: [
+        { label: oben.name, wert: oben.wachstumFuenfJahre, einheit: "fach", stellen: 1, hervorgehoben: true },
+        { label: unten.name, wert: unten.wachstumFuenfJahre, einheit: "fach", stellen: 1 },
+      ],
+      quelle: quellenzeile(k.standIso, false),
+    },
+    belege: sortiert.map((l) => `${l.name} ${de(l.wachstumFuenfJahre, 2)}x`),
+  };
+}
+
+/**
+ * Post 6 — Zwei von drei Gemeinden haben mehr Kilowatt als Einwohner.
+ *
+ * Eine Bundeszahl mit anschaulicher Größenordnung. Die Mindest-Einwohnerzahl
+ * steht im Text: Ohne sie wäre die Aussage eine Eigenschaft des Nenners.
+ */
+export function postUeberEinwohner(k: SocialKennzahlen): SocialPost {
+  const u = k.ueberEinwohner;
+  const anteil = u.betrachtet ? (u.darueber / u.betrachtet) * 100 : 0;
+
+  const text = [
+    `In ${de(u.darueber, 0)} von ${de(u.betrachtet, 0)} deutschen Gemeinden steht mehr Solarleistung, als der Ort Einwohner hat. Also mehr als ein Kilowatt je Kopf.`,
+    ``,
+    `Das sind ${de(anteil, 0)} Prozent aller Gemeinden ab ${de(u.mindestEinwohner, 0)} Einwohnern. Kleinere sind ausgenommen: Dort entscheidet ein einzelner Solarpark über die Zahl, und dann sagt sie mehr über den Nenner als über den Ort.`,
+    ``,
+    `Ein Kilowatt je Einwohner klingt nach wenig und ist es nicht. Es erzeugt im Jahr grob so viel Strom, wie ein Ein-Personen-Haushalt verbraucht — für jeden Einwohner, vom Säugling bis zum Rentner.`,
+    ``,
+    quellenzeile(k.standIso, true),
+  ].join("\n");
+
+  return {
+    id: "mehr-kwp-als-einwohner",
+    titel: "Zwei von drei Gemeinden haben mehr Kilowatt als Einwohner",
+    kanal: ["linkedin", "instagram"],
+    text,
+    bild: {
+      art: "kennzahl",
+      aussage: `In den meisten Gemeinden steht mehr Solarleistung als Einwohner`,
+      gemessen: `Gemeinden ab ${de(u.mindestEinwohner, 0)} Einwohnern`,
+      serien: [
+        {
+          label: `von ${de(u.betrachtet, 0)} Gemeinden haben mehr als ein Kilowatt Solarleistung je Einwohner`,
+          wert: u.darueber,
+          einheit: "",
+          hervorgehoben: true,
+        },
+      ],
+      quelle: quellenzeile(k.standIso, false),
+    },
+    belege: [
+      `${de(u.darueber, 0)} von ${de(u.betrachtet, 0)} (${de(anteil, 1)} %)`,
+      `Untergrenze ${de(u.mindestEinwohner, 0)} Einwohner`,
+    ],
+  };
+}
+
+export const ALLE_POSTS = [
+  postStadtLand,
+  postWachstum,
+  postFreiflaeche,
+  postSegmente,
+  postAufholjagd,
+  postUeberEinwohner,
+] as const;
 
 export function baueAllePosts(k: SocialKennzahlen): SocialPost[] {
   return ALLE_POSTS.map((f) => f(k));

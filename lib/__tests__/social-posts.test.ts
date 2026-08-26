@@ -32,11 +32,21 @@ const basis: SocialKennzahlen = {
     solarKwpJetzt: 127_100_000,
     solarKwpVorJahr: 117_600_000,
   },
+  segmente: {
+    privatDachKwp: 36_200_000,
+    gewerbeDachKwp: 44_500_000,
+    freiflaecheKwp: 44_900_000,
+    solarGesamtKwp: 127_100_000,
+  },
+  ueberEinwohner: { mindestEinwohner: 500, betrachtet: 10_000, darueber: 6_848 },
   laender: [
-    { name: "Niedersachsen", balkonJeTausend: 23.1, wpProKopf: 505 },
-    { name: "Rheinland-Pfalz", balkonJeTausend: 21.7, wpProKopf: 558 },
-    { name: "Berlin", balkonJeTausend: 7.1, wpProKopf: 72 },
-    { name: "Hamburg", balkonJeTausend: 6.1, wpProKopf: 84 },
+    { name: "Niedersachsen", balkonJeTausend: 23.1, wpProKopf: 505, freiflaecheAnteil: 17.4, solarKwp: 11_300_000, wachstumFuenfJahre: 2.23 },
+    { name: "Rheinland-Pfalz", balkonJeTausend: 21.7, wpProKopf: 558, freiflaecheAnteil: 32.9, solarKwp: 6_500_000, wachstumFuenfJahre: 2.32 },
+    { name: "Brandenburg", balkonJeTausend: 20.5, wpProKopf: 377, freiflaecheAnteil: 70.3, solarKwp: 9_800_000, wachstumFuenfJahre: 2.05 },
+    { name: "Nordrhein-Westfalen", balkonJeTausend: 16.1, wpProKopf: 378, freiflaecheAnteil: 9.1, solarKwp: 15_500_000, wachstumFuenfJahre: 2.33 },
+    { name: "Thüringen", balkonJeTausend: 18.7, wpProKopf: 295, freiflaecheAnteil: 39.6, solarKwp: 3_300_000, wachstumFuenfJahre: 1.75 },
+    { name: "Berlin", balkonJeTausend: 7.1, wpProKopf: 72, freiflaecheAnteil: 0.4, solarKwp: 500_000, wachstumFuenfJahre: 3.48 },
+    { name: "Hamburg", balkonJeTausend: 6.1, wpProKopf: 84, freiflaecheAnteil: 0.4, solarKwp: 300_000, wachstumFuenfJahre: 4.38 },
   ],
 };
 
