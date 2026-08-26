@@ -11,6 +11,7 @@ import {
   type WpGeraet,
 } from "../lib/wp-katalog";
 import type { Befund, Empfehlung } from "../lib/wp-empfehlung";
+import { BEG_ANTRAG_HREF, BEG_ANTRAG_KURZ, BEG_EIGENLEISTUNG } from "../lib/beg-antrag";
 
 // ─── Passende Geräte zum Ergebnis ─────────────────────────────────────────────
 //
@@ -296,21 +297,20 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
         ))}
       </ul>
 
-      {/* Der teuerste Satz der Seite.
+      {/* Der teuerste Satz der Seite — und er wird hier NICHT formuliert.
 
-          ÜBERGANGSFASSUNG: Eine Parallel-Sitzung baut gerade `lib/beg-antrag.ts`
-          mit `BEG_ANTRAG_KURZ` und `BEG_ANTRAG_HREF` als einziger Quelle für
-          diese Regel — sobald deren Zweig gemergt ist, wird der Satz hier durch
-          die Konstante ersetzt, sonst steht dieselbe Rechtsaussage zweimal im
-          Code (und ihr Test schlägt zu Recht an).
+          Wortlaut und Ziel kommen aus `lib/beg-antrag.ts`, der einen Quelle für
+          diese Regel. Dieselbe Aussage steht im Ergebnis des Rechners, im
+          Förder-Check-Widget und im Ratgeber; ein Test verbietet, sie ein
+          zweites Mal zu tippen.
 
-          Die Aussage war in der ersten Fassung FALSCH und zu streng: „Ein Kauf
-          vor der Förderzusage schließt die Förderung aus". Der Ausschluss hängt
-          an der ANTRAGSTELLUNG, nicht an der Zusage — die Richtlinie erklärt den
-          Beginn zwischen beidem ausdrücklich für zulässig (Nr. 9.2.1: „Der
-          Vorhabenbeginn vor Bewilligung beziehungsweise Förderzusage des Antrags
-          ist zulässig, erfolgt aber auf eigenes Risiko"). Gefunden von der
-          Parallel-Sitzung, im Volltext gegengeprüft am 26.08.2026. */}
+          Warum das mehr ist als Ordnungsliebe: Die erste hier getippte Fassung
+          war FALSCH und zu streng („ein Kauf vor der Förderzusage schließt die
+          Förderung aus"). Der Ausschluss hängt an der ANTRAGSTELLUNG — die
+          Richtlinie erklärt den Beginn zwischen Antrag und Zusage ausdrücklich
+          für zulässig (Nr. 9.2.1). Aufgefallen ist das einer Parallel-Sitzung,
+          nicht hier. Aus einer geteilten Quelle korrigiert man solche Sätze
+          einmal statt an vier Stellen, von denen man drei vergisst. */}
       <div
         style={{
           border: `1px solid ${v("--color-border")}`,
@@ -323,14 +323,8 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
         }}
       >
         <strong style={{ color: v("--color-text-primary") }}>Erst der Antrag, dann der Kauf.</strong>{" "}
-        Wer bestellt, bevor der Förderantrag gestellt ist, verliert die Förderung — also genau
-        den Betrag, den wir oben abziehen. Der Kaufvertrag muss dafür schon vorliegen, aber
-        unter dem Vorbehalt der Förderzusage geschlossen sein. Und wer selbst einbaut, bekommt
-        nur die Materialkosten gefördert, auch die nur mit Bestätigung eines Fachbetriebs.{" "}
-        <Link
-          href="/ratgeber/waermepumpe-foerderung-2026#antrag-reihenfolge"
-          style={{ color: v("--color-accent") }}
-        >
+        {BEG_ANTRAG_KURZ} {BEG_EIGENLEISTUNG}{" "}
+        <Link href={BEG_ANTRAG_HREF} style={{ color: v("--color-accent") }}>
           So läuft es richtig
         </Link>
       </div>
