@@ -26,12 +26,17 @@ import { ATLAS_REVALIDATE_ROUTEN, ATLAS_DATEN_TAG } from "../../../../lib/atlas-
  *
  * REIHENFOLGE IM DATENLAUF, und sie ist nicht vertauschbar:
  *   1. Daten hochladen        (mastr:refresh-bnetza)
- *   2. Plausibilität prüfen   (mastr-plausibilitaet.ts) — erst wenn die Zahlen
- *      die Prüfung bestehen, dürfen sie überhaupt sichtbar werden
+ *   2. Plausibilität prüfen   (mastr-plausibilitaet.ts) — fällt sie durch, wird
+ *      der Lauf rot und es wird nicht invalidiert
  *   3. DIESE ROUTE            — alle Atlas-Seiten für ungültig erklären
  *   4. Aufwärmen              (atlas:warm) — baut sie mit den neuen Zahlen neu auf
- * Wer 3 vor 2 stellt, macht ungeprüfte Zahlen sichtbar. Wer 3 weglässt, macht
- * die neuen Zahlen gar nicht sichtbar.
+ *
+ * Wer 3 weglässt, macht die neuen Zahlen gar nicht sichtbar. Was die Reihenfolge
+ * dagegen NICHT leistet — hier stand vorher, ungeprüfte Zahlen könnten nicht
+ * sichtbar werden, und das war falsch: Schritt 1 schreibt sie bereits in die
+ * Datenbank. Fällt die Prüfung durch, unterbleibt nur das aktive Sichtbarmachen;
+ * jede Seite, deren Eintrag von selbst abläuft, zeigt sie trotzdem. Die
+ * Reihenfolge steuert das Tempo, nicht das Ob.
  *
  * WARUM ÜBER EINEN MARKER AN DEN DATEN UND NICHT ÜBER DIE ADRESSEN — gemessen,
  * nicht angenommen:
@@ -66,11 +71,18 @@ const CRON_SECRET = process.env.CRON_SECRET;
  * `lib/atlas-revalidate-routen.ts`, damit ein Test sie gegen den Dateibaum
  * halten kann.
  *
- * Bewusst NICHT dabei sind die Förderseiten: Deren Daten bewegen sich täglich
- * (auslaufende Programme, Vierzehn-Tage-Fristen der Beleg-Prüfung), sie behalten
- * ihre Haltbarkeit von einer Stunde und brauchen kein Ungültig-Erklären. Sie
- * hier aufzunehmen würde eine monatliche Invalidierung suggerieren, wo eine
- * stündliche gilt.
+ * Bewusst NICHT in der Routen-Liste stehen die Förderseiten: Deren Daten bewegen
+ * sich täglich (auslaufende Programme, Vierzehn-Tage-Fristen der Beleg-Prüfung),
+ * sie behalten ihre Haltbarkeit von einer Stunde und brauchen kein monatliches
+ * Ungültig-Erklären.
+ *
+ * DAS HEISST ABER NICHT, DASS SIE UNBERÜHRT BLEIBEN — die frühere Fassung dieses
+ * Absatzes behauptete das, und ein Prüfer hat es widerlegt: Die Förder-Stadtseite
+ * benutzt `getRegionAtlasData` für den Anlagenbestand, und die trägt den Marker.
+ * Dasselbe gilt für drei Widgets und die Sitemap (über `getKreisPfade`). Sie
+ * werden also mit-invalidiert. Schaden entsteht dadurch keiner — sie bauen mit
+ * frischen Zahlen neu auf —, es kostet einmal im Monat ein paar Aufbauten mehr,
+ * als der Kommentar früher versprach.
  */
 const ATLAS_ROUTEN = ATLAS_REVALIDATE_ROUTEN;
 
