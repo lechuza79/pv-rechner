@@ -67,8 +67,21 @@ export interface Empfehlung {
  * 55 °C führt und sich über die Artikelnummer mit dem Katalog verbinden lässt.
  * Solange sie nicht angebunden ist, gilt: lieber ein etwas zu großes Gerät
  * empfehlen als ein zu kleines.
+ *
+ * NACHTRAG 26.08.2026 — von null auf 10 %: Die Null war Scheingenauigkeit. Der
+ * Betreiber sah in einem unsanierten Fall (12,3 kW) nur Einzelgeräte; gemessen
+ * fiel das passende Vaillant-Paket für 10.329 € mit 12 kW durch — Abweichung
+ * 2 %. Über 12,3 kW hat der Katalog überhaupt kein Paket.
+ *
+ * Zwei Prozent sind an dieser Stelle keine Aussage: Die Auslegungsleistung ist
+ * selbst geschätzt (Wohnfläche × Dämmkennwert × Haustyp) und trägt bereits den
+ * Auslegungsfaktor 0,85. Auf eine Zahl dieser Herkunft eine harte Grenze zu
+ * setzen, verwechselt Vorsicht mit Genauigkeit — und kostet hier die gesamte
+ * Paket-Auswahl. Fachlich wäre sogar mehr Spielraum nach unten vertretbar (der
+ * Fachverband empfiehlt 50–80 % der Norm-Heizlast); 10 % bleibt bewusst darunter,
+ * weil der Betriebspunkt der Katalogzahl weiter unbekannt ist.
  */
-const LEISTUNG_UNTER = 0;
+const LEISTUNG_UNTER = 0.1;
 const LEISTUNG_UEBER = 0.25;
 
 /** Wie viel Spielraum die Vorlauftemperatur haben soll, bevor sie „knapp“ heißt. */

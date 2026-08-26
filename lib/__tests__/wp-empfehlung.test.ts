@@ -165,3 +165,20 @@ describe("Komplettpakete vor Einzelgeräten", () => {
     expect(empfehlungenFuer(katalog, altbau).map((x) => x.geraet.id)).toEqual(["nur-geraet"]);
   });
 });
+
+describe("Toleranz nach unten", () => {
+  it("ein Gerät knapp unter der Auslegung bleibt drin", () => {
+    // Gemessener Anlass: Bei 12,3 kW Auslegung fiel das einzige passende
+    // Komplettpaket (12 kW, 10.329 €) durch — 2 % Abweichung. Über 12,3 kW hat
+    // der Katalog gar kein Paket, die Liste zeigte deshalb nur Einzelgeräte.
+    const fall: WpFall = { auslegungKw: 12.3, vorlaufC: 35, wpType: "lwwp" };
+    expect(beurteile(geraet({ leistungKw: 12 }), fall).geeignet).toBe(true);
+  });
+
+  it("deutlich zu klein fällt weiterhin raus", () => {
+    // Die Toleranz ist Modellunschärfe, kein Freibrief: 11 kW auf 12,3 sind
+    // 11 % zu wenig und damit ein Gerät, das am kältesten Tag nachheizen muss.
+    const fall: WpFall = { auslegungKw: 12.3, vorlaufC: 35, wpType: "lwwp" };
+    expect(beurteile(geraet({ leistungKw: 11 }), fall).geeignet).toBe(false);
+  });
+});
