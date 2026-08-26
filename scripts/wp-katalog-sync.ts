@@ -89,6 +89,34 @@ async function feedAdresse(): Promise<{ url: string; produkte: number; stand: st
   };
 }
 
+/**
+ * Hinweise auf eine Herkunftsangabe — der Wecker für den EU-Ursprungsbonus.
+ *
+ * Ab Anfang 2027 gibt die BEG 15 Prozentpunkte zurück, wenn die Wärmepumpe
+ * ihren Ursprung in der Union hat. Genau so viel, wie die Halbierung des
+ * Grundsatzes wegnimmt — für ein EU-Gerät ändert sich also nichts, für ein
+ * anderes halbiert sich der Zuschuss. Das ist die teuerste Einzelangabe, die
+ * wir am Gerät NICHT beantworten können: Der Datenstrom führt heute keine
+ * einzige der 59 Spalten mit Herkunftsbezug, und aus dem Markennamen folgt es
+ * nicht (deutsche Marken lassen außerhalb fertigen, asiatische innerhalb).
+ *
+ * Weil es ein Verkaufsargument werden dürfte, könnte der Händler die Angabe
+ * nachliefern. Dann soll es am selben Tag auffallen und nicht zufällig Monate
+ * später — deshalb sieht der Lauf beiläufig nach. Ein Feld dafür wird bewusst
+ * NICHT auf Verdacht angelegt: Wie die Angabe aussieht, entscheidet, wie man
+ * sie liest.
+ *
+ * GEPRÜFT WIRD NUR EINE EIGENE SPALTE, nicht der Beschreibungstext. Die erste
+ * Fassung sah auch dort nach und meldete sofort neun Treffer — allesamt Carrier
+ * AquaSnap mit demselben Satz im Serientext der Baureihe: „entwickelt und
+ * hergestellt in einem der europäischen Carrier-Werke". Das ist Werbung, kein
+ * Ursprungsnachweis: Der Bonus hängt am zollrechtlichen Ursprung, also an der
+ * letzten wesentlichen Be- oder Verarbeitung, nicht am Standort eines Werks.
+ * Als Wecker wäre es zudem wertlos gewesen — er hätte ab sofort bei JEDEM Lauf
+ * angeschlagen, und eine Warnung, die immer angeht, filtert man weg.
+ */
+const HERKUNFT_SPALTE = /(land|origin|herkunft|country|manufactur)/i;
+
 /** Lädt den Datenstrom und filtert die Geräte heraus. */
 async function geraeteLaden(url: string): Promise<WpGeraet[]> {
   const antwort = await fetch(url);
@@ -96,6 +124,7 @@ async function geraeteLaden(url: string): Promise<WpGeraet[]> {
 
   const geraete: WpGeraet[] = [];
   let gesehen = 0;
+  const herkunftSpalten = new Set<string>();
 
   await new Promise<void>((fertig, fehler) => {
     Readable.fromWeb(antwort.body as never)
@@ -103,6 +132,11 @@ async function geraeteLaden(url: string): Promise<WpGeraet[]> {
       .pipe(parse({ columns: true, relax_quotes: true, skip_records_with_error: true }))
       .on("data", (zeile: FeedZeile) => {
         gesehen++;
+        if (gesehen === 1) {
+          for (const spalte of Object.keys(zeile)) {
+            if (HERKUNFT_SPALTE.test(spalte)) herkunftSpalten.add(spalte);
+          }
+        }
         const g = geraetAusZeile(zeile);
         if (g) geraete.push(g);
       })
@@ -111,6 +145,18 @@ async function geraeteLaden(url: string): Promise<WpGeraet[]> {
   });
 
   console.log(`  ${gesehen} Artikel gelesen, ${geraete.length} Geräte erkannt`);
+
+  if (herkunftSpalten.size > 0) {
+    console.log(
+      "\n  ── NEU: Der Datenstrom führt jetzt eine Herkunfts-Spalte ──\n" +
+        `  Spalten: ${[...herkunftSpalten].join(", ")}\n` +
+        "  Damit wird der EU-Ursprungsbonus der BEG ab 2027 möglicherweise\n" +
+        "  zuordenbar. Vor dem Einbau prüfen, ob die Angabe den ZOLLRECHTLICHEN\n" +
+        "  Ursprung meint — der Produktionsort allein reicht nicht, und die\n" +
+        "  Richtlinie verweist für die Definition auf ein Infoblatt, das noch\n" +
+        "  beschafft werden muss.",
+    );
+  }
   return geraete;
 }
 
