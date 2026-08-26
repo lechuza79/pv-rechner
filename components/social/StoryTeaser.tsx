@@ -54,6 +54,9 @@ export function StoryTeaser({ stories }: { stories: SocialPost[] }) {
       <div
         style={{
           display: "flex",
+          // Gleich hoch, auch wenn die Aussagen verschieden lang umbrechen —
+          // sonst steht eine Reihe mit stufigem Rand da.
+          alignItems: "stretch",
           gap: space.lg,
           overflowX: "auto",
           scrollSnapType: "x mandatory",
@@ -82,13 +85,15 @@ export function StoryTeaser({ stories }: { stories: SocialPost[] }) {
               color: "inherit",
               font: "inherit",
               overflow: "hidden",
+              display: "flex",
+              flexDirection: "column",
             }}
           >
             {/* Das Bild trägt die Aussage schon — im Teaser steht deshalb keine
                 zweite Überschrift darüber, sondern nur der Anriss darunter.
                 Beides wäre dieselbe Zeile zweimal. */}
-            <SocialKarte bild={s.bild!} skala={240 / 1080} />
-            <div style={{ padding: pad("md", "md") }}>
+            <SocialKarte bild={s.bild!} skala={240 / 1080} stufe="teaser" />
+            <div style={{ padding: pad("md", "md"), marginTop: "auto" }}>
               <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.45 }}>
                 {s.onsite!.absaetze[0].slice(0, 90)}…
               </div>
