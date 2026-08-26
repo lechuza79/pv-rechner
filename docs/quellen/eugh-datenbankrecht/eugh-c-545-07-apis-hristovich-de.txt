@@ -1,0 +1,697 @@
+
+
+ Rechtssache C‑545/07
+
+ Apis-Hristovich EOOD
+
+ gegen
+
+ Lakorda AD
+
+ (Vorabentscheidungsersuchen des Sofiyski gradski sad (Bulgarien)
+
+ „Richtlinie 96/9/EG – Rechtlicher Schutz von Datenbanken – Schutzrecht sui generis – Beschaffung, Überprüfung oder Darstellung des Inhalts einer Datenbank – Entnahme – Wesentlicher Teil des Inhalts einer Datenbank – Elektronische Datenbank mit amtlichen Rechtsdaten“
+
+ Leitsätze des Urteils
+
+ 1. Rechtsangleichung – Rechtlicher Schutz von Datenbanken – Richtlinie 96/9
+
+ (Richtlinie 96/9 des Europäischen Parlaments und des Rates, Art. 7)
+
+ 2. Rechtsangleichung – Rechtlicher Schutz von Datenbanken – Richtlinie 96/9
+
+ (Richtlinie 96/9 des Europäischen Parlaments und des Rates, Art. 7)
+
+ 3. Rechtsangleichung – Rechtlicher Schutz von Datenbanken – Richtlinie 96/9
+
+ (Richtlinie 96/9 des Europäischen Parlaments und des Rates, Art. 1 Abs. 2 und Art. 7)
+
+ 1. Bereits aus dem Wortlaut von Art. 7 Abs. 2 Buchst. a der Richtlinie 96/9 über den rechtlichen Schutz von Datenbanken ergibt
+ sich, dass der Gemeinschaftsgesetzgeber nicht nur die Fälle der „ständigen Übertragung“, sondern auch diejenigen der „vorübergehenden
+ Übertragung“ unter den Begriff „Entnahme“ im Sinne von Art. 7 fassen wollte. Diese in Art. 7 genannten Begriffe werden voneinander
+ nach dem Kriterium der Dauer der Sicherung der aus einer geschützten Datenbank entnommenen Elemente auf einem anderen Datenträger
+ als dem dieser Datenbank abgegrenzt. Zeitpunkt einer Entnahme im Sinne von Art. 7 aus einer elektronisch zugänglichen geschützten
+ Datenbank ist der Moment, in dem die von der Übertragung erfassten Elemente auf einem anderen Datenträger als dem dieser Datenbank
+ fixiert werden. Für diesen Entnahmebegriff spielen das Ziel des Urhebers der fraglichen Handlung, die von ihm unter Umständen
+ vorgenommenen Änderungen des Inhalts der auf diese Weise übertragenen Elemente und die etwaigen Unterschiede in der strukturellen
+ Organisation der betreffenden Datenbanken keine Rolle.
+
+ Der Umstand, dass die materiellen und technischen Merkmale, die der Inhalt einer geschützten Datenbank eines Herstellers aufweist,
+ auch im Inhalt einer Datenbank eines anderen Herstellers vorkommen, kann als Indiz für eine Entnahme im Sinne von Art. 7 der
+ Richtlinie 96/9 gedeutet werden, sofern sich eine solche Übereinstimmung nicht durch andere Faktoren als eine Übertragung
+ zwischen den beiden Datenbanken erklären lässt. Die Tatsache, dass die Elemente, die der Hersteller einer Datenbank aus nicht
+ öffentlich zugänglichen Quellen beschafft hat, auch in der Datenbank eines anderen Herstellers vorkommen, genügt als solche
+ nicht, um eine derartige Entnahme zu beweisen, kann aber ein Indiz dafür bilden.
+
+ Welcher Art die Computerprogramme sind, die für die Verwaltung zweier elektronischer Datenbanken verwendet werden, ist kein
+ Kriterium für die Beurteilung der Frage, ob eine Entnahme im Sinne von Art. 7 der Richtlinie 96/9 vorliegt.
+
+ (vgl. Randnrn. 42, 55, Tenor 1)
+
+ 2. Art. 7 der Richtlinie 96/9 über den rechtlichen Schutz von Datenbanken ist dahin auszulegen, dass im Fall eines Gesamtbestands
+ von Elementen, der einzelne Untergruppen umfasst, das Volumen der angeblich entnommenen und/oder weiterverwendeten Elemente
+ jeweils einer Untergruppe zur Beurteilung der Frage, ob eine Entnahme und/oder eine Weiterverwendung eines in quantitativer
+ Hinsicht wesentlichen Teils des Inhalts einer Datenbank im Sinne dieses Artikels vorliegt, mit dem Volumen des Gesamtinhalts
+ dieser Untergruppe zu vergleichen ist, wenn Letztere als solche eine Datenbank darstellt, die die Voraussetzungen für die
+ Gewährung des Schutzes durch das in Art. 7 Abs. 1 der Richtlinie verankerte Schutzrecht sui generis erfüllt. Andernfalls –
+ und soweit der genannte Bestand eine solche geschützte Datenbank darstellt – ist der Vergleich zwischen dem Volumen der angeblich
+ entnommenen und/oder weiterverwendeten Elemente der verschiedenen Untergruppen dieses Bestands und dem Volumen des Gesamtinhalts
+ des Bestands anzustellen.
+
+ Der Umstand, dass Elemente, die aus einer durch das Schutzrecht sui generis geschützten Datenbank entnommen und/oder weiterverwendet
+ worden sein sollen, vom Hersteller der Datenbank aus nicht öffentlich zugänglichen Quellen beschafft wurden, kann sich je
+ nach Umfang der menschlichen, technischen und/oder finanziellen Mittel, die der Hersteller eingesetzt hat, um diese Elemente
+ aus derartigen Quellen zusammenzustellen, auf die Einstufung der Elemente als in qualitativer Hinsicht wesentlicher Teil des
+ Inhalts der betreffenden Datenbank im Sinne von Art. 7 der Richtlinie 96/9 auswirken.
+
+ Der Umstand, dass ein Teil der in einer Datenbank enthaltenen Elemente amtlich und öffentlich zugänglich ist, befreit das
+ nationale Gericht nicht von der Verpflichtung, zur Beurteilung der Frage, ob eine Entnahme und/oder eine Weiterverwendung
+ eines wesentlichen Teils des Inhalts dieser Datenbank vorliegt, festzustellen, ob die angeblich aus der Datenbank entnommenen
+ und/oder weiterverwendeten Elemente in quantitativer Hinsicht einen wesentlichen Teil des Gesamtinhalts der Datenbank darstellen
+ oder ob sie gegebenenfalls in qualitativer Hinsicht einen solchen wesentlichen Teil bilden, weil sie, was die Beschaffung,
+ die Überprüfung oder die Darstellung angeht, eine erhebliche menschliche, technische oder finanzielle Investition darstellen.
+
+ (vgl. Randnr. 74, Tenor 2)
+
+ 3. Sowohl aus der Allgemeinheit der Formulierung, die in Art. 1 Abs. 2 der Richtlinie 96/9 über den rechtlichen Schutz von Datenbanken
+ für die Definition des Begriffs der Datenbank im Sinne dieser Richtlinie verwendet wird, als auch aus dem Ziel des Schutzes
+ durch das in Art. 7 der Richtlinie eingeführte Schutzrecht sui generis ergibt sich, dass der Gemeinschaftsgesetzgeber diesem
+ Begriff eine weite, von Erwägungen insbesondere in Bezug auf den materiellen Inhalt des fraglichen Bestands von Elementen
+ freie Bedeutung verleihen wollte.
+
+ Wie aus Art. 7 Abs. 4 der Richtlinie 96/9 hervorgeht, gilt das Schutzrecht sui generis zudem unabhängig davon, ob die Datenbank
+ und/oder ihr Inhalt für einen Schutz etwa durch das Urheberrecht in Betracht kommen.
+
+ Der Umstand, dass die in einem Rechtsinformationssystem enthaltenen Elemente aufgrund ihres amtlichen Charakters nicht die
+ Voraussetzungen für einen Schutz durch das Urheberrecht erfüllten, kann folglich als solcher nicht rechtfertigen, dass ein
+ derartige Elemente umfassender Bestand nicht als Datenbank im Sinne von Art. 1 Abs. 2 der Richtlinie 96/9 eingestuft wird
+ oder dass ein solcher Bestand vom Geltungsbereich des Schutzes durch das Schutzrecht sui generis ausgeschlossen wird.
+
+ (vgl. Randnrn. 69-71)
+
+ URTEIL DES GERICHTSHOFS (Vierte Kammer)
+
+ 5. März 2009(*)
+
+ „Richtlinie 96/9/EG – Rechtlicher Schutz von Datenbanken – Schutzrecht sui generis – Beschaffung, Überprüfung oder Darstellung des Inhalts einer Datenbank – Entnahme – Wesentlicher Teil des Inhalts einer Datenbank – Elektronische Datenbank mit amtlichen Rechtsdaten“
+
+ In der Rechtssache C‑545/07
+
+ betreffend ein Vorabentscheidungsersuchen nach Art. 234 EG, eingereicht vom Sofiyski gradski sad (Bulgarien) mit Entscheidung
+ vom 19. November 2007, beim Gerichtshof eingegangen am 4. Dezember 2007, in dem Verfahren
+
+ Apis-Hristovich EOOD
+
+ gegen
+
+ Lakorda AD
+
+ erlässt
+
+ DER GERICHTSHOF (Vierte Kammer)
+
+ unter Mitwirkung des Kammerpräsidenten K. Lenaerts (Berichterstatter), des Richters T. von Danwitz, der Richterin R. Silva
+ de Lapuerta sowie der Richter E. Juhász und J. Malenovský,
+
+ Generalanwältin: E. Sharpston,
+
+ Kanzler: N. Nanchev, Verwaltungsrat,
+
+ aufgrund des schriftlichen Verfahrens und auf die mündliche Verhandlung vom 27. November 2008,
+
+ unter Berücksichtigung der Erklärungen
+
+ – der Apis-Hristovich EOOD, vertreten durch E. Markov und A. Andreev, advokati,
+
+ – der Lakorda AD, vertreten durch D. Mateva und M. Mladenov, advokati,
+
+ – der bulgarischen Regierung, vertreten durch E. Petranova, D. Drambozova und A. Ananiev als Bevollmächtigte,
+
+ – der Kommission der Europäischen Gemeinschaften, vertreten durch N. Nikolova und H. Krämer als Bevollmächtigte,
+
+ aufgrund des nach Anhörung der Generalanwältin ergangenen Beschlusses, ohne Schlussanträge über die Rechtssache zu entscheiden,
+
+ folgendes
+
+ Urteil
+
+ 1 Das Vorabentscheidungsersuchen betrifft die Auslegung von Art. 7 Abs. 1 und 2 der Richtlinie 96/9/EG des Europäischen Parlaments
+ und des Rates vom 11. März 1996 über den rechtlichen Schutz von Datenbanken (ABl. L 77, S. 20).
+
+ 2 Dieses Ersuchen ergeht im Rahmen eines Rechtsstreits zwischen der Apis-Hristovich EOOD (im Folgenden: Apis) und der Lakorda
+ AD (im Folgenden: Lakorda), zwei Gesellschaften des bulgarischen Rechts, die elektronische Datenbanken mit amtlichen Rechtsdaten
+ vertreiben.
+
+ Rechtlicher Rahmen
+
+ 3 Gegenstand der Richtlinie 96/9 ist nach Art. 1 Abs. 1 der „Rechtsschutz von Datenbanken in jeglicher Form“.
+
+ 4 Der Begriff der Datenbank wird für die Zwecke der Richtlinie in Art. 1 Abs. 2 definiert als „eine Sammlung von Werken, Daten
+ oder anderen unabhängigen Elementen, die systematisch oder methodisch angeordnet und einzeln mit elektronischen Mitteln oder
+ auf andere Weise zugänglich sind“.
+
+ 5 Nach Art. 1 Abs. 3 der Richtlinie „[erstreckt sich der] durch diese Richtlinie gewährte Schutz … nicht auf für die Herstellung
+ oder den Betrieb elektronisch zugänglicher Datenbanken verwendete Computerprogramme“.
+
+ 6 Art. 2 der Richtlinie 96/9 bestimmt:
+
+ „Diese Richtlinie gilt unbeschadet der gemeinschaftlichen Bestimmungen
+
+ a) über den Rechtsschutz von Computerprogrammen;
+
+ …“
+
+ 7 Nach Art. 3 Abs. 1 der Richtlinie werden „Datenbanken, die aufgrund der Auswahl oder Anordnung des Stoffes eine eigene geistige
+ Schöpfung ihres Urhebers darstellen“, urheberrechtlich geschützt.
+
+ 8 Art. 7 („Gegenstand des Schutzes“) der Richtlinie führt wie folgt ein Schutzrecht sui generis ein:
+
+ „(1) Die Mitgliedstaaten sehen für den Hersteller einer Datenbank, bei der für die Beschaffung, die Überprüfung oder die Darstellung
+ ihres Inhalts eine in qualitativer oder quantitativer Hinsicht wesentliche Investition erforderlich ist, das Recht vor, die
+ Entnahme und/oder die Weiterverwendung der Gesamtheit oder eines in qualitativer oder quantitativer Hinsicht wesentlichen
+ Teils des Inhalts dieser Datenbank zu untersagen.
+
+ (2) Für die Zwecke dieses Kapitels gelten folgende Begriffsbestimmungen:
+
+ a) ‚Entnahme‘ bedeutet die ständige oder vorübergehende Übertragung der Gesamtheit oder eines wesentlichen Teils des Inhalts
+ einer Datenbank auf einen anderen Datenträger, ungeachtet der dafür verwendeten Mittel und der Form der Entnahme;
+
+ b) ‚Weiterverwendung‘ bedeutet jede Form öffentlicher Verfügbarmachung der Gesamtheit oder eines wesentlichen Teils des Inhalts
+ der Datenbank durch die Verbreitung von Vervielfältigungsstücken, durch Vermietung, durch Online-Übermittlung oder durch andere
+ Formen der Übermittlung. Mit dem Erstverkauf eines Vervielfältigungsstücks einer Datenbank in der Gemeinschaft durch den Rechtsinhaber
+ oder mit seiner Zustimmung erschöpft sich in der Gemeinschaft das Recht, den Weiterverkauf dieses Vervielfältigungsstücks
+ zu kontrollieren.
+
+ Der öffentliche Verleih ist keine Entnahme oder Weiterverwendung.
+
+ (3) Das in Absatz 1 genannte Recht kann übertragen oder abgetreten werden oder Gegenstand vertraglicher Lizenzen sein.
+
+ (4) Das in Absatz 1 vorgesehene Recht gilt unabhängig davon, ob die Datenbank für einen Schutz durch das Urheberrecht oder durch
+ andere Rechte in Betracht kommt. Es gilt ferner unabhängig davon, ob der Inhalt der Datenbank für einen Schutz durch das Urheberrecht
+ oder durch andere Rechte in Betracht kommt. Der Schutz von Datenbanken durch das nach Absatz 1 gewährte Recht berührt nicht
+ an ihrem Inhalt bestehende Rechte.
+
+ (5) Unzulässig ist die wiederholte und systematische Entnahme und/oder Weiterverwendung unwesentlicher Teile des Inhalts der Datenbank,
+ wenn dies auf Handlungen hinausläuft, die einer normalen Nutzung der Datenbank entgegenstehen oder die berechtigten Interessen
+ des Herstellers der Datenbank unzumutbar beeinträchtigen.“
+
+ 9 Im Recht der Republik Bulgarien ist der Rechtsschutz von Datenbanken im Zakon za avtorskoto pravo i srodnite mu prava (Gesetz
+ über das Urheberrecht und die verwandten Rechte, Darzhaven Vestnik Nr. 56 vom 29. Juni 1993) in der im Darzhaven Vestnik Nr. 73 vom 5. September 2006 veröffentlichten geänderten Fassung (im Folgenden: ZAPSP) geregelt. Art. 1 Abs. 2 und 3 der
+ Richtlinie 96/9 wurde durch § 2 Nr. 13 der Zusatzbestimmungen des ZAPSP umgesetzt und Art. 7 Abs. 1 und 2 der Richtlinie durch
+ die Art. 93b und 93c Abs. 1 dieses Gesetzes.
+
+ Sachverhalt und Vorlagefragen
+
+ 10 Apis erhob beim Sofiyski gradski sad (Sofioter Stadtgericht) eine Klage, die zum einen darauf gerichtet ist, dass Lakorda
+ die angeblich rechtswidrige Entnahme und Weiterverwendung wesentlicher Teile ihrer Module „Apis pravo“ („Apis Recht“) und
+ „Apis praktika“ („Apis Rechtsprechung“), die Teil eines umfassenden Rechtsinformationssystems (im maßgeblichen Zeitraum „Apis
+ 5x“, später „Apis 6“) sind, einstellt, und zum anderen darauf, dass sie den Schaden ersetzt, der Apis durch ihr Verhalten
+ entstanden sei.
+
+ 11 Apis trägt vor, sie sei eine Datenbankherstellerin im Sinne des ZAPSP und habe erheblich in die Zusammenstellung, die Überprüfung,
+ die Systematisierung und die Aktualisierung der Datenbanken in ihren Modulen „Apis pravo“ und „Apis praktika“ investiert.
+ Die wichtigsten Tätigkeiten im Zusammenhang mit dieser Investition seien die Digitalisierung, Konvertierung, Korrekturbearbeitung,
+ technologische Verarbeitung, Konsolidierung von Rechtstexten und juristische Bearbeitung gewesen.
+
+ 12 Frühere Mitarbeiter ihrer Informatikabteilung, die anschließend Lakorda gegründet hätten, hätten rechtswidrig wesentliche
+ Teile ihrer Module entnommen, was es Lakorda ermöglicht habe, ihre eigenen Module, „Balgarsko pravo“ („Bulgarisches Recht“)
+ und „Sadebna praktika“ („Rechtsprechung der Gerichte“), die Teil des umfassenden Rechtsinformationssystems „Lakorda legis“
+ seien, herzustellen und im September 2006 auf den Markt zu bringen. 
+
+ 13 Aus dem Modul „Apis pravo“ habe Lakorda ohne ihre Genehmigung die Texte (in konsolidierter Fassung) von über 19 700 Dokumenten
+ entnommen, bei denen es sich um geltende Rechtsetzungsakte, Akte zur Änderung oder Aufhebung früherer Akte und nichtnormative
+ Akte handele. Außerdem seien aus dem Modul „Apis pravo“ über 2 500 Dokumente, bei denen es sich um frühere Fassungen von Rechtsetzungsakten
+ aus dem Zeitraum 2001 bis 2006 handele, entnommen und im System „Lakorda legis“ weiterverwendet worden. Lakorda habe somit
+ 82,5 % der Gesamtzahl von Dokumenten in diesem Modul entnommen und weiterverwendet, was einen in quantitativer Hinsicht wesentlichen
+ Teil des Inhalts dieses Moduls darstelle.
+
+ 14 Ferner seien 2 516 nicht veröffentlichte Gerichtsentscheidungen, die sich Apis mit Erlaubnis der betreffenden Gerichte beschafft
+ und in ihrem Modul „Apis praktika“ gesammelt habe, von Lakorda entnommen und in das Modul „Sadebna praktika“ aufgenommen worden,
+ was angesichts des besonderen Wertes dieser nicht veröffentlichten Rechtsprechung einen in qualitativer Hinsicht wesentlichen
+ Teil des Moduls „Apis praktika“ darstelle.
+
+ 15 Die Entnahme und die Weiterverwendung durch Lakorda hätten nicht nur die Texte der in den Modulen „Apis pravo“ und „Apis praktika“
+ erfassten Dokumente betroffen, sondern auch Daten, die mit diesen Dokumenten verbunden seien, etwa Verweise zwischen den Dokumenten
+ und Legaldefinitionen bestimmter Termini und Begriffe. Dass diese nicht genehmigten Handlungen erfolgt seien, werde dadurch
+ belegt, dass die Module von Lakorda Merkmale aufwiesen, die mit denen ihrer eigenen Module identisch seien, so z. B. redaktionelle
+ Vermerke, Verweise auf Übersetzungen ins Englische, Befehle, Felder, Hyperlinks und Angaben zur Chronologie der Gesetzgebungsakte.
+
+ 16 Lakorda bestreitet jegliche rechtswidrige Entnahme und Weiterverwendung von Daten aus den Apis-Modulen. Ihr System „Lakorda
+ legis“ sei das Ergebnis einer erheblichen eigenständigen Investition in Höhe von 215 000 BGN. Die Errichtung dieses Systems,
+ für die ein Team von Informatikern, Juristen und Verwaltern eingesetzt worden sei, beruhe auf originalen Computerprogrammen
+ für die Errichtung, Aktualisierung und Visualisierung von Datenbanken, die eine sehr viel schnellere und effizientere Datenverarbeitung
+ und einen sehr viel schnelleren und effizienteren Informationszugang zuließen als die übrigen Rechtsinformationssysteme. Die
+ Module dieses Systems hätten zudem eine andere Struktur als die Apis-Module.
+
+ 17 Um ihr Projekt erfolgreich durchzuführen, habe sie sich ihre Beziehungen zu verschiedenen nationalen und europäischen Behörden
+ zunutze gemacht. Darüber hinaus habe sie öffentlich zugängliche Quellen wie den Darzhaven Vestnik (Amtsblatt der Republik Bulgarien) und die offiziellen Websites der nationalen Einrichtungen und Gerichte genutzt, was die
+ große Ähnlichkeit zwischen den Inhalten ihrer eigenen Module und denen von Apis sowie den Umstand erkläre, dass ihre Module
+ – wenn auch in beschränktem Umfang – vergleichbare Merkmale wie die Apis-Module aufwiesen, insbesondere was Verweise auf Übersetzungen
+ und Befehle angehe. Im Übrigen würden die offiziellen Akte der staatlichen Stellen von der Regelung über den urheberrechtlichen
+ Schutz nicht erfasst.
+
+ 18 Lakorda ergänzt, dass die große Mehrzahl der redaktionellen Vermerke und die Hyperlinks, die sich im System „Lakorda legis“
+ befänden, aus einer individuellen Gestaltung resultierten, die darauf beruhe, dass die erfassten Akte systematisch äußerst
+ detailliert bearbeitet, klassifiziert und bezeichnet würden. Das System enthalte auf diese Weise 1 200 000 strukturierte und
+ individuell zugängliche Daten sowie über 2 700 000 Hyperlinks, die nach einer einmaligen Methode für die Erkennung und Klassifizierung
+ gestaltet seien. Zudem bestünden in Bezug auf die in den Informationssystemen von Lakorda und Apis erfassten Gerichtsentscheidungen
+ erhebliche Unterschiede, insbesondere was die für die Lektüre der jeweiligen Entscheidung als wesentlich angeführten Elemente
+ angehe. Die für die Apis-Module charakteristischen redaktionellen Techniken wiederum ergäben sich aus den allgemein gültigen
+ Zeichensetzungsregeln des Bulgarischen.
+
+ 19 Das Sofiyski gradski sad erklärt, dass es, um festzustellen, ob in der bei ihm anhängigen Rechtssache ein Verstoß vorliege,
+ Art. 93c Abs. 1 des ZAPSP auslegen müsse, durch den Art. 7 Abs. 2 der Richtlinie 96/9 umgesetzt worden sei.
+
+ 20 Unter Hinweis darauf, dass im Mittelpunkt des Ausgangsrechtsstreits die Frage stehe, ob Lakorda, wie behauptet, rechtswidrig
+ den Inhalt der Apis-Module entnommen habe, und dass dieser Inhalt aus Akten staatlicher Stellen bestehe, die der ständigen
+ Änderung, Ergänzung oder Aufhebung unterlägen, vertritt das vorlegende Gericht die Auffassung, um das Vorliegen eines Verstoßes
+ gegen den ZAPSP festzustellen, sei sowohl der Zeitpunkt zu ermitteln, zu dem die behauptete Entnahme erfolgt sei, als auch
+ zu klären, ob diese eine ständige Übertragung oder eine vorübergehende Übertragung darstelle.
+
+ 21 Da die beiden letztgenannten Begriffe im ZAPSP nicht definiert seien, stelle sich die Frage, ob bei der Auslegung der Begriffe
+ „ständig“ und „vorübergehend“ in Art. 7 Abs. 2 Buchst. a der Richtlinie 96/9 auf die Dauer der Übertragung oder auf die Dauer
+ der Sicherung des Ergebnisses der Entnahme auf einem anderen Datenträger abzustellen sei. Würde letzteres Kriterium herangezogen,
+ müsse geprüft werden, ob die Datenbank, aus der die behauptete Entnahme erfolgt sei, dauerhaft auf einem festen Datenträger
+ (Hardware) gespeichert worden sei, so dass es sich um eine ständige Übertragung handle, oder ob sie vorübergehend im Arbeitsspeicher
+ des Computers gesichert worden sei, so dass eine vorübergehende Übertragung vorliege.
+
+ 22 Angesichts des Vorbringens von Lakorda, die Module „Apis pravo“ und „Apis praktika“ stellten einen in quantitativer Hinsicht
+ unwesentlichen Teil ihres Systems „Lakorda legis“ dar, sieht sich das vorlegende Gericht überdies verpflichtet, den Begriff
+ des in quantitativer Hinsicht wesentlichen Teils im Sinne von Art. 7 Abs. 1 und 2 der Richtlinie 96/9 auszulegen. Fraglich
+ sei, ob zur Klärung des Vorliegens eine Entnahme eines derartigen Teils die Zahl der aus den genannten Modulen entnommenen
+ Daten mit der Zahl der Daten in den Lakorda-Modulen als Einzelnen oder als Gesamtheit zu vergleichen sei.
+
+ 23 Das Vorbringen von Apis, ihr Modul „Apis praktika“ enthalte Gerichtsentscheidungen, die sie sich von Gerichten beschafft habe,
+ deren Rechtsprechung nicht öffentlich zugänglich sei, veranlasst das vorlegende Gericht zu der Frage, ob für das Vorliegen
+ eines in qualitativer Hinsicht wesentlichen Teils des Inhalts einer Datenbank im Sinne von Art. 7 Abs. 1 und 2 der Richtlinie
+ 96/9 auf die Zugänglichkeit der Daten im Hinblick auf ihre Erfassung abzustellen sei oder darauf, wie hoch der Informationswert
+ dieser Daten sei.
+
+ 24 Schließlich überlegt das vorlegende Gericht, ob zur Klärung des Vorliegens einer Entnahme im Sinne von Art. 7 der Richtlinie
+ 96/9 nicht nur die Datenbanken als solche zu vergleichen seien, sondern auch die Computerprogramme für die Datenbankverwaltung.
+
+ 25 In Anbetracht dieser Auslegungsschwierigkeiten hat das Sofiyski gradski sad das Verfahren ausgesetzt und dem Gerichtshof folgende
+ Fragen zur Vorabentscheidung vorgelegt:
+
+ 1. Wie sind die Begriffe „ständige Übertragung“ und „vorübergehende Übertragung“ auszulegen und voneinander abzugrenzen zum Zweck
+
+ – der Feststellung, ob eine Entnahme im Sinne von Art. 7 Abs. 2 Buchst. a der Richtlinie 96/9 aus einer mit elektronischen Mitteln
+ zugänglichen Datenbank erfolgt ist?
+
+ – Zu welchem Zeitpunkt ist dabei davon auszugehen, dass eine Entnahme im Sinne von Art. 7 Abs. 2 Buchst. a der Richtlinie 96/9
+ aus einer mit elektronischen Mitteln zugänglichen Datenbank erfolgt ist?
+
+ – Welche Bedeutung hat es für die Beurteilung einer Entnahme, wenn der auf diese Weise entnommene Inhalt einer Datenbank zur
+ Errichtung einer neuen und geänderten Datenbank gedient hat?
+
+ 2. Welches Kriterium ist im Rahmen der Auslegung des Begriffs „Entnahme eines in quantitativer Hinsicht wesentlichen Teils“ anzuwenden,
+ wenn die Datenbanken in einzelne Untergruppen aufgeteilt sind und in diesen Untergruppen verwendet werden, die selbständige
+ Marktprodukte sind? Ist als Kriterium der Umfang der Datenbanken im gesamten Marktprodukt oder der Umfang der Datenbanken
+ in der jeweiligen Untergruppe heranzuziehen?
+
+ 3. Ist im Rahmen der Auslegung des Begriffs „ein in qualitativer Hinsicht wesentlicher Teil“ als Kriterium der Umstand heranzuziehen,
+ dass eine bestimmte Art angeblich entnommener Daten vom Hersteller aus einer Quelle beschafft wurde, die nicht allgemein zugänglich
+ ist, so dass die Erlangung der Daten nur durch deren Entnahme aus den Datenbanken eben dieses Herstellers möglich war?
+
+ 4. Welche Kriterien sind anzuwenden, um festzustellen, ob eine Entnahme einer mit elektronischen Mitteln zugänglichen Datenbank
+ erfolgt ist? Kann es als Hinweis auf eine erfolgte Entnahme angesehen werden, wenn die Datenbank des Herstellers über eine
+ spezifische Struktur, Vermerke, Verweise, Befehle, Felder, Hypertextlinks und redaktionelle Texte verfügt und diese Elemente
+ auch in der Datenbank des Urhebers des angeblichen Verstoßes gefunden werden? Spielen die verschiedenen Originalstrukturen
+ der Organisation der beiden einander gegenübergestellten Datenbanken im Rahmen dieser Beurteilung eine Rolle?
+
+ 5. Hat im Rahmen der Feststellung, ob eine Entnahme erfolgt ist, das Computerprogramm/das System für die Datenbankverwaltung
+ eine Bedeutung, wenn es nicht Teil der Datenbank ist?
+
+ 6. Da nach der Richtlinie 96/9 und der Rechtsprechung des Gerichtshofs der Europäischen Gemeinschaften „ein in quantitativer
+ und qualitativer Hinsicht wesentlicher Teil der Datenbank“ mit wesentlichen Investitionen in die Beschaffung, Überprüfung
+ oder Gestaltung einer Datenbank verbunden ist: Wie sind diese Begriffe im Zusammenhang mit öffentlich zugänglichen Rechtsetzungsakten
+ und Akten individueller Geltung staatlicher Stellen der Exekutive, ihren amtlichen Übersetzungen und der Rechtsprechung auszulegen?
+
+ Zu den Vorlagefragen
+
+ Zur Zulässigkeit
+
+ 26 Nach Auffassung von Lakorda ist das Vorabentscheidungsersuchen nicht erforderlich, um den Ausgangsrechtsstreit zu entscheiden.
+
+ 27 Dieser Rechtsstreit betreffe nicht die Frage, wie Begriffe wie „Entnahme“ oder „wesentlicher Teil des Inhalts einer Datenbank“
+ im Sinne der Richtlinie 96/9 auszulegen seien. Der Begriff der Entnahme sei im bulgarischen Recht definiert, und die im Vorabentscheidungsersuchen
+ genannten Bestimmungen der Richtlinie seien vom Gerichtshof bereits ausgelegt worden. Was die ihr vorgeworfene rechtswidrige
+ Entnahme angehe, sei das vorlegende Gericht in der Lage, die ihm von den Parteien vorgelegten Beweise insbesondere unter Berücksichtigung
+ des technischen und des Wirtschaftsprüfergutachtens, die es zur Entscheidung des Ausgangsrechtsstreits angefordert und erhalten
+ habe, zu beurteilen, ohne dass der Gerichtshof eingeschaltet werden müsse.
+
+ 28 Hierzu ist daran zu erinnern, dass es nach ständiger Rechtsprechung allein Sache des nationalen Gerichts ist, das mit dem
+ Rechtsstreit befasst ist und in dessen Verantwortungsbereich die zu erlassende gerichtliche Entscheidung fällt, im Hinblick
+ auf die Besonderheiten der Rechtssache sowohl die Erforderlichkeit einer Vorabentscheidung für den Erlass seines Urteils als
+ auch die Erheblichkeit der dem Gerichtshof von ihm vorgelegten Fragen zu beurteilen (Urteile vom 15. Dezember 1995, Bosman,
+ C‑415/93, Slg. 1995, I‑4921, Randnr. 59, vom 31. Januar 2008, Centro Europa 7, C‑380/05, Slg. 2008, I‑349, Randnr. 52, und
+ vom 16. Dezember 2008, Michaniki, C‑213/07, Slg. 2008, I‑0000, Randnr. 32).
+
+ 29 Daher ist der Gerichtshof grundsätzlich gehalten, über ihm vorgelegte Fragen zu befinden, wenn diese die Auslegung des Gemeinschaftsrechts
+ betreffen (vgl. u. a. Urteile vom 25. Februar 2003, IKA, C‑326/00, Slg. 2003, I‑1703, Randnr. 27, und Michaniki, Randnr. 33).
+
+ 30 Die Entscheidung über eine Vorlagefrage eines nationalen Gerichts kann nur dann abgelehnt werden, wenn die erbetene Auslegung
+ des Gemeinschaftsrechts offensichtlich in keinem Zusammenhang mit der Realität oder dem Gegenstand des Ausgangsrechtsstreits
+ steht, wenn das Problem hypothetischer Natur ist oder wenn der Gerichtshof nicht über die tatsächlichen und rechtlichen Angaben
+ verfügt, die für eine sachdienliche Beantwortung der ihm vorgelegten Fragen erforderlich sind (vgl. u. a. Urteile vom 13.
+ März 2001, PreussenElektra, C‑379/98, Slg. 2001, I‑2099, Randnr. 39, und Michaniki, Randnr. 34).
+
+ 31 Die vorliegende Rechtssache gehört jedoch zu keiner der in der vorstehenden Randnummer genannten Fallgruppen. Aus der Darstellung
+ des rechtlichen Rahmens und des Sachverhalts des Ausgangsrechtsstreits im Vorabentscheidungsersuchen wird vielmehr deutlich
+ – und dies ist auch in der mündlichen Verhandlung bestätigt worden –, dass die Entscheidung des beim vorlegenden Gericht anhängigen
+ Rechtsstreits insbesondere davon abhängt, dass das Gericht eine Reihe von Erläuterungen zu den Begriffen der „Entnahme“ und
+ des in qualitativer oder quantitativer „wesentlichen Teils“ des Inhalts einer Datenbank im Sinne von Art. 7 der Richtlinie
+ 96/9 erhält.
+
+ 32 Zu ergänzen ist, dass im Verfahren nach Art. 234 EG, das auf einer klaren Aufgabentrennung zwischen den nationalen Gerichten
+ und dem Gerichtshof beruht, jede Beurteilung des Sachverhalts in die Zuständigkeit des vorlegenden Gerichts fällt. Um diesem
+ eine sachdienliche Antwort zu geben, kann ihm der Gerichtshof jedoch im Geist der Zusammenarbeit alle Hinweise geben, die
+ er für erforderlich hält (vgl. Urteil vom 1. Juli 2008, MOTOE, C‑49/07, Slg. 2008, I‑0000, Randnr. 30 und die dort angeführte
+ Rechtsprechung).
+
+ 33 Das Vorabentscheidungsersuchen ist somit als zulässig anzusehen.
+
+ Zur Beantwortung der Fragen
+
+ 34 Die Fragen 1, 4 und 5, die zusammen zu prüfen sind, betreffen den Begriff der Entnahme als physische Übertragung von Daten
+ im Rahmen der Richtlinie 96/9. Die Fragen 2, 3 und 6, die ebenfalls zu gemeinsamer Prüfung zusammenzuziehen sind, beziehen
+ sich auf den Begriff des in qualitativer oder quantitativer Hinsicht wesentlichen Teils des Inhalts einer Datenbank im selben
+ Rahmen.
+
+ Zu den Fragen 1, 4 und 5 bezüglich des Begriffs „Entnahme“ im Sinne von Art. 7 der Richtlinie 96/9
+
+ 35 Mit seiner ersten Frage bittet das vorlegende Gericht um Auslegung der Begriffe „ständige Übertragung“ und „vorübergehende
+ Übertragung“, die in Art. 7 Abs. 2 Buchst. a der Richtlinie 96/9 zur Definition des Begriffs der Entnahme verwendet werden.
+ Das Gericht ist sich außerdem nicht sicher, zu welchem Zeitpunkt eine Entnahme aus einer elektronisch zugänglichen Datenbank
+ erfolgt und ob die Tatsache, dass der angeblich aus einer Datenbank entnommene Inhalt zur Errichtung einer neuen und geänderten
+ Datenbank gedient hat, die Beurteilung des Vorliegens einer solchen Entnahme beeinflussen kann.
+
+ 36 In der vierten Frage geht es darum, ob im Rahmen der Beurteilung des Vorliegens einer Entnahme aus einer elektronisch zugänglichen
+ Datenbank zum einen der Umstand, dass sich die materiellen und technischen Merkmale dieser Datenbank in der Datenbank des
+ angeblichen Urhebers einer Verletzung des Schutzrechts sui generis wiederfinden, und zum anderen die unterschiedliche strukturelle Organisation der beiden Datenbanken relevant sind.
+
+ 37 Mit seiner fünften Frage möchte das vorlegende Gericht wissen, ob das Computerprogramm, das für die Datenbankverwaltung verwendet
+ wird, ohne Teil der Datenbank zu sein, im Rahmen der Beurteilung des Vorliegens einer Entnahme eine Bedeutung hat.
+
+ 38 In diesem Zusammenhang ist daran zu erinnern, dass der Begriff der Entnahme in Art. 7 Abs. 2 Buchst. a der Richtlinie 96/9
+ definiert ist als „ständige oder vorübergehende Übertragung der Gesamtheit oder eines wesentlichen Teils des Inhalts einer
+ Datenbank auf einen anderen Datenträger, ungeachtet der dafür verwendeten Mittel und der Form der Entnahme“.
+
+ 39 Da der Begriff der Entnahme in verschiedenen Bestimmungen des Art. 7 der Richtlinie 96/9 verwendet wird, sind die Antworten
+ auf die geprüften Fragen im allgemeinen Kontext dieses Artikels zu erteilen (vgl. in diesem Sinne Urteil vom 9. Oktober 2008,
+ Directmedia Publishing, C‑304/07, Slg. 2008, I‑0000, Randnr. 28).
+
+ 40 Der Gerichtshof hat bereits entschieden, dass angesichts der in Art. 7 Abs. 2 Buchst. a der Richtlinie 96/9 für die Definition
+ des Begriffs der Entnahme verwendeten Formulierung sowie des Ziels des vom Gemeinschaftsgesetzgeber eingeführten Schutzrechts
+ sui generis (vgl. hierzu Urteile vom 9. November 2004, The British Horseracing Board u. a., C‑203/02, Slg. 2004, I‑10415, Randnrn. 45,
+ 46 und 51, sowie Directmedia Publishing, Randnrn. 31 bis 33) dieser Begriff im Kontext von Art. 7 in einem weiten Sinne dahin
+ zu verstehen ist, dass er jede unerlaubte Aneignung der Gesamtheit oder eines Teils des Inhalts einer Datenbank erfasst, ohne
+ dass es dabei auf die Art und die Form des angewandten Verfahrens ankommt (vgl. in diesem Sinne Urteile The British Horseracing
+ Board u. a., Randnrn. 51 und 67, sowie Directmedia Publishing, Randnrn. 34, 35, 37 und 38).
+
+ 41 Entscheidendes Kriterium ist insoweit, ob eine „Übertragung“ der Gesamtheit oder eines Teils des Inhalts der betreffenden
+ Datenbank auf einen anderen – gleich- oder andersartigen – Datenträger vorliegt. Eine solche Übertragung setzt voraus, dass
+ sich die Gesamtheit oder ein Teil des Inhalts einer Datenbank auf einem anderen Datenträger als dem der Ursprungsdatenbank
+ wiederfindet (vgl. Urteil Directmedia Publishing, Randnr. 36).
+
+ 42 In diesem Zusammenhang ist zur ersten Frage des vorlegenden Gerichts festzustellen, dass, wie sich bereits aus dem Wortlaut
+ von Art. 7 Abs. 2 Buchst. a der Richtlinie 96/9 ergibt, der Gemeinschaftsgesetzgeber nicht nur die Fälle der „ständigen Übertragung“,
+ sondern auch diejenigen der „vorübergehenden Übertragung“ unter den Begriff der „Entnahme“ im Sinne von Art. 7 fassen wollte.
+
+ 43 Wie die Kommission der Europäischen Gemeinschaften in der Sitzung erläutert hat, war es das Ziel des Gesetzgebers, eine Art
+ De-minimis-Regel im Rahmen der Auslegung und Anwendung des Begriffs der „Übertragung“ im Sinne von Art. 7 der Richtlinie 96/9
+ ausdrücklich auszuschließen. Im Übrigen knüpft die Richtlinie, wie die Kommission in der Sitzung außerdem bestätigt hat, zwar
+ selbst keine besonderen Rechtsfolgen daran, ob die betreffende Übertragung ständiger oder vorübergehender Art ist. Gleichwohl
+ kann die Frage, ob eine ständige oder eine vorübergehende Übertragung vorliegt, je nach dem Kontext des in Rede stehenden
+ nationalen Rechts von Bedeutung sein, um die Schwere einer etwaigen Verletzung des Schutzrechts sui generis des Herstellers einer geschützten Datenbank oder den Umfang des aufgrund einer solchen Verletzung zu ersetzenden Schadens
+ zu beurteilen.
+
+ 44 Der Kommission ist darin zuzustimmen, dass der Unterschied zwischen einer ständigen und einer vorübergehenden Übertragung
+ in der Dauer der Sicherung der aus der Ursprungsdatenbank entnommenen Elemente auf einem anderen Datenträger besteht. Eine
+ ständige Übertragung liegt vor, wenn die betreffenden Elemente in dauerhafter Weise auf einem anderen als dem Ursprungsdatenträger
+ fixiert werden, während es sich um eine vorübergehende Übertragung handelt, wenn die Elemente für begrenzte Dauer auf einem
+ anderen Datenträger, z. B. im Arbeitsspeicher eines Computers, gespeichert werden.
+
+ 45 Als Zeitpunkt, zu dem eine Entnahme aus einer elektronischen Datenbank erfolgt, ist der Moment anzusehen, in dem die von der
+ Entnahme erfassten Elemente auf einem anderen Datenträger als dem der Ursprungsdatenbank fixiert werden, ohne dass es darauf
+ ankäme, ob es sich um eine ständige oder eine vorübergehende Fixierung handelt.
+
+ 46 Auch auf den mit der Übertragung verfolgten Zweck kommt es für die Frage, ob eine Entnahme vorliegt, nicht an. So ist es unerheblich,
+ ob Ziel der Übertragung die Erstellung einer anderen Datenbank ist, die mit der Ursprungsdatenbank im Wettbewerb steht oder
+ nicht, oder ob sich diese Handlung in den Rahmen einer anderen – kommerziellen oder nicht kommerziellen – Tätigkeit als der
+ Erstellung einer Datenbank einfügt (vgl. in diesem Sinne Urteil Directmedia Publishing, Randnrn. 46 und 47 sowie die dort
+ angeführte Rechtsprechung).
+
+ 47 Wie der 38. Erwägungsgrund der Richtlinie 96/9 bestätigt, ist auch ohne Bedeutung für die Auslegung des Begriffs der Entnahme,
+ dass die Übertragung des Inhalts einer geschützten Datenbank auf einen anderen Datenträger in eine andere Anordnung oder Organisation
+ der betroffenen Elemente als in der Ursprungsdatenbank mündet (vgl. in diesem Sinne Urteil Directmedia Publishing, Randnr.
+ 39).
+
+ 48 Angesichts der technischen Möglichkeiten einer Reorganisation, die elektronische Datenbanken bieten können, hindert der Umstand,
+ dass sich die Gesamtheit oder ein Teil des Inhalts einer solchen durch das Schutzrecht sui generis geschützten Datenbank in geänderter Form in einer anderen Datenbank wiederfindet, als solcher nicht daran, das Vorliegen einer
+ Entnahme festzustellen. Dasselbe gilt für den vom vorlegenden Gericht in seiner vierten Frage erwähnten Umstand, dass die
+ strukturelle Organisation der beiden Datenbanken Unterschiede aufweist.
+
+ 49 Dabei ist außerdem Folgendes zu beachten: Sollte erwiesen sein – dies zu prüfen ist Sache des vorlegenden Gerichts –, dass
+ der Inhalt oder ein wesentlicher Teil des Inhalts einer durch das Schutzrecht sui generis geschützten Datenbank ohne Genehmigung ihres Herstellers auf einen Datenträger übertragen wurde, der einer anderen Person
+ gehört, um anschließend von dieser der Öffentlichkeit z. B. in Form einer anderen, unter Umständen geänderten Datenbank zur
+ Verfügung gestellt zu werden, ist dieser Umstand geeignet, neben einer Entnahme eine Weiterverwendung im Sinne von Art. 7
+ der Richtlinie 96/9 zu belegen, da der Begriff der Weiterverwendung unzulässige Handlungen bezeichnet, mit denen jemand den
+ Inhalt einer geschützten Datenbank oder einen wesentlichen Teil eines solchen Inhalts in der Öffentlichkeit verbreitet (vgl.
+ in diesem Sinne Urteil The British Horseracing Board u. a., Randnrn. 61 und 67).
+
+ 50 Wie die Kommission ausgeführt hat, ist darüber hinaus der Umstand – dessen Vorliegen ebenfalls das vorlegende Gericht zu prüfen
+ hat –, dass eine rechtswidrige Entnahme aus einer geschützten Datenbank zum Zweck der Errichtung und des Vertriebs einer neuen,
+ mit der Ursprungsdatenbank im Wettbewerb stehenden Datenbank erfolgt ist, gegebenenfalls für die Bewertung des Umfangs des
+ Schadens von Bedeutung, der dem Hersteller der Ursprungsdatenbank durch diese Handlung entstanden ist.
+
+ 51 Der vom vorlegenden Gericht in seiner vierten Frage ebenfalls erwähnte Umstand, dass die materiellen und technischen Merkmale,
+ die der Inhalt einer Datenbank aufweist, auch im Inhalt einer anderen Datenbank vorkommen, kann als Indiz für eine Übertragung
+ zwischen diesen beiden Datenbanken und damit eine Entnahme gedeutet werden. Wie Lakorda unterstrichen hat, ist es jedoch Sache
+ des vorlegenden Gerichts, zu prüfen, ob sich diese Übereinstimmung nicht durch andere Faktoren erklären lässt, etwa dadurch,
+ dass bei der Errichtung der beiden Datenbanken dieselben Quellen genutzt wurden und diese gemeinsamen Quellen derartige Merkmale
+ aufweisen.
+
+ 52 Entsprechend dem Vorbringen der bulgarischen Regierung genügt zudem die Tatsache, dass die Elemente, die der Hersteller einer
+ Datenbank aus nicht öffentlich zugänglichen Quellen beschafft hat, auch in einer Datenbank eines anderen Herstellers vorkommen,
+ als solche nicht, um zu beweisen, dass eine Übertragung vom Datenträger der ersten Datenbank auf den Träger der zweiten Datenbank
+ erfolgt ist, da die Möglichkeit besteht, dass der Hersteller der zweiten Datenbank die betreffenden Elemente unmittelbar aus
+ denselben Quellen zusammengestellt hat wie der Hersteller der ersten Datenbank. Eine solche Tatsache kann allerdings ein Indiz
+ für eine Entnahme bilden.
+
+ 53 Schließlich könnte sich, wie die bulgarische Regierung und die Kommission geltend gemacht haben, der Umstand – den Lakorda
+ im Ausgangsverfahren angeführt hat und der der fünften Frage des vorlegenden Gerichts zugrunde liegt ?, dass es sich bei dem
+ vom Urheber einer angeblichen Verletzung des Schutzrechts sui generis des Herstellers einer Datenbank für die Verwaltung seiner eigenen Datenbank verwendeten Computerprogramm um ein originales
+ Programm handelt, zwar gegebenenfalls im Rahmen der Richtlinie 91/250/EWG des Rates vom 14. Mai 1991 über den Rechtsschutz
+ von Computerprogrammen (ABl. L 122, S. 42) als relevant erweisen (vgl. insoweit den 23. Erwägungsgrund und Art. 2 Buchst. a
+ der Richtlinie 96/9).
+
+ 54 Dieser Umstand kann aber als solcher nicht ausschließen, dass sich alle oder ein Teil der Elemente auf dem Datenträger der
+ Datenbank des angeblichen Urhebers einer solchen Verletzung deshalb dort befinden, weil diese Elemente ohne Genehmigung vom
+ Datenträger der geschützten Datenbank aus übertragen wurden.
+
+ 55 Demnach ist auf die Fragen 1, 4 und 5 wie folgt zu antworten:
+
+ – Die Begriffe „ständige Übertragung“ und „vorübergehende Übertragung“ im Sinne von Art. 7 der Richtlinie 96/9 werden voneinander
+ nach dem Kriterium der Dauer der Sicherung der aus einer geschützten Datenbank entnommenen Elemente auf einem anderen Datenträger
+ als dem dieser Datenbank abgegrenzt. Zeitpunkt einer Entnahme im Sinne von Art. 7 aus einer elektronisch zugänglichen geschützten
+ Datenbank ist der Moment, in dem die von der Übertragung erfassten Elemente auf einem anderen Datenträger als dem dieser Datenbank
+ fixiert werden. Für diesen Entnahmebegriff spielen das Ziel des Urhebers der fraglichen Handlung, die von ihm unter Umständen
+ vorgenommenen Änderungen des Inhalts der auf diese Weise übertragenen Elemente und die etwaigen Unterschiede in der strukturellen
+ Organisation der betreffenden Datenbanken keine Rolle.
+
+ – Der Umstand, dass die materiellen und technischen Merkmale, die der Inhalt einer geschützten Datenbank eines Herstellers aufweist,
+ auch im Inhalt einer Datenbank eines anderen Herstellers vorkommen, kann als Indiz für eine Entnahme im Sinne von Art. 7 der
+ Richtlinie 96/9 gedeutet werden, sofern sich eine solche Übereinstimmung nicht durch andere Faktoren als eine Übertragung
+ zwischen den beiden Datenbanken erklären lässt. Die Tatsache, dass die Elemente, die der Hersteller einer Datenbank aus nicht
+ öffentlich zugänglichen Quellen beschafft hat, auch in der Datenbank eines anderen Herstellers vorkommen, genügt als solche
+ nicht, um eine derartige Entnahme zu beweisen, kann aber ein Indiz dafür bilden.
+
+ – Welcher Art die Computerprogramme sind, die für die Verwaltung zweier elektronischer Datenbanken verwendet werden, ist kein
+ Kriterium für die Beurteilung der Frage, ob eine Entnahme im Sinne von Art. 7 der Richtlinie 96/9 vorliegt.
+
+ Zu den Fragen 2, 3 und 6 bezüglich des Begriffs „wesentlicher Teil des Inhalts einer Datenbank“ im Sinne von Art. 7 der Richtlinie
+ 96/9
+
+ 56 Mit seiner zweiten Frage möchte das vorlegende Gericht wissen, wie der Begriff der Entnahme eines in quantitativer Hinsicht
+ „wesentlichen Teils“ des Inhalts einer Datenbank im Sinne von Art. 7 der Richtlinie 96/9 auszulegen ist, wenn die betreffenden
+ Datenbanken innerhalb eines Bestands von Elementen einzelne „Untergruppen“ (Module) bilden, die selbständige Marktprodukte
+ sind.
+
+ 57 In der dritten Frage geht es darum, ob der Umstand, dass bestimmte der angeblich aus einer Datenbank entnommenen Elemente
+ vom Hersteller der Datenbank aus einer Quelle beschafft wurden, die für die Öffentlichkeit nicht frei zugänglich ist, die
+ Auslegung des Begriffs des in qualitativer Hinsicht „wesentlichen Teils“ des Inhalts einer Datenbank im Sinne von Art. 7 der
+ Richtlinie 96/9 beeinflussen kann.
+
+ 58 Mit seiner sechsten Frage begehrt das Gericht Aufschluss darüber, wie im Rahmen von Art. 7 der Richtlinie 96/9 der Begriff
+ „wesentlicher Teil des Inhalts einer Datenbank“ unter Berücksichtigung der bereits in der Rechtsprechung des Gerichtshofs
+ enthaltenen Erläuterungen auszulegen ist, wenn diese Datenbank öffentlich zugängliche amtliche Akte, wie z. B. Rechtsetzungsakte
+ und Akte individueller Geltung der staatlichen Exekutive und ihre amtlichen Übersetzungen, sowie Rechtsprechung umfasst.
+
+ 59 Bezüglich der zweiten Frage des vorlegenden Gerichts ist daran zu erinnern, dass sich der Begriff des in quantitativer Hinsicht
+ wesentlichen Teils des Inhalts einer geschützten Datenbank nach der Rechtsprechung des Gerichtshofs auf das Volumen der entnommenen
+ und/oder weiterverwendeten Elemente dieser Datenbank bezieht und im Verhältnis zum Volumen des gesamten Inhalts der Datenbank
+ zu beurteilen ist. Wenn ein Benutzer nämlich einen quantitativ erheblichen Teil des Inhalts einer Datenbank, für deren Erstellung
+ der Einsatz wesentlicher Mittel erforderlich war, entnimmt und/oder weiterverwendet, so ist die Investition, die den entnommenen
+ und/oder weiterverwendeten Teil betrifft, proportional ebenfalls erheblich (vgl. Urteil The British Horseracing Board u. a.,
+ Randnr. 70).
+
+ 60 Wie die Kommission vorgetragen hat, hat das Volumen des Inhalts der Datenbank, auf deren Datenträger Elemente einer geschützten
+ Datenbank übertragen worden sein sollen, hingegen keine Relevanz für die Beurteilung der Frage, ob der von der behaupteten
+ Entnahme und/oder Weiterverwendung betroffene Teil des Inhalts der geschützten Datenbank wesentlich ist.
+
+ 61 Im Übrigen kann, wie sowohl Apis als auch die bulgarische Regierung und die Kommission unterstrichen haben, die quantitative
+ Beurteilung der Wesentlichkeit einer Entnahme und/oder Weiterverwendung nur in Bezug auf einen Bestand von Elementen erfolgen,
+ der durch das Schutzrecht sui generis geschützt werden kann, weil er zum einen die Eigenschaft einer Datenbank im Sinne von Art. 1 Abs. 2 der Richtlinie 96/9 hat
+ und weil zum anderen die mit der Errichtung dieser Datenbank verbundene Investition wesentlich im Sinne von Art. 7 Abs. 1
+ der Richtlinie war.
+
+ 62 In dem vom vorlegenden Gericht in seiner zweiten Frage erwähnten Fall, dass ein Bestand von Elementen aus einzelnen „Untergruppen“
+ besteht, setzt die Beurteilung, ob sich eine Entnahme und/oder Weiterverwendung, die angeblich aus einer dieser Untergruppen
+ erfolgt ist, auf einen in quantitativer Hinsicht wesentlichen Teil des Inhalts einer Datenbank bezogen hat, folglich voraus,
+ dass zunächst festgestellt wird, ob diese Untergruppe selbst eine Datenbank im Sinne der Richtlinie 96/9 darstellt (vgl. hierzu
+ Urteil vom 9. November 2004, Fixtures Marketing, C‑444/02, Slg. 2004, I‑10549, Randnrn. 19 bis 32), die darüber hinaus die
+ in Art. 7 Abs. 1 der Richtlinie genannten Voraussetzungen für die Gewährung der Schutzes durch das Schutzrecht sui generis erfüllt.
+
+ 63 Ist dies der Fall, muss das Volumen der angeblich entnommenen und/oder weiterverwendeten Elemente der betreffenden Untergruppe
+ mit dem Volumen des Gesamtinhalts dieser Untergruppe allein verglichen werden.
+
+ 64 Ist dies nicht der Fall und stellt der Bestand von Elementen, zu dem die betreffende Untergruppe gehört, selbst eine Datenbank
+ dar, die nach Art. 1 Abs. 2 in Verbindung mit Art. 7 Abs. 1 der Richtlinie 96/9 die Voraussetzungen für den Schutz durch das
+ Schutzrecht sui generis erfüllt, so ist der Vergleich zwischen dem Volumen der angeblich entnommenen und/oder weiterverwendeten Elemente dieser Untergruppe
+ sowie unter Umständen anderer Untergruppen und dem Volumen des Gesamtinhalts des genannten Bestands anzustellen.
+
+ 65 Zu diesem Punkt ist zu ergänzen, dass der Umstand, dass die verschiedenen Untergruppen ein und desselben Bestands von Elementen
+ getrennt als selbständige Produkte vertrieben werden, nicht bereits genügt, um sie jeweils als Datenbank einzustufen, die
+ als solche die Voraussetzungen für den Schutz durch das Schutzrecht sui generis erfüllt. Eine solche Einstufung hängt nämlich nicht von geschäftlichen Überlegungen ab, sondern davon, dass die in den Art. 1
+ Abs. 2 und Art. 7 Abs. 1 der Richtlinie 96/9 genannten rechtlichen Voraussetzungen erfüllt sind.
+
+ 66 Bezüglich der dritten Frage des vorlegenden Gerichts ist zu unterstreichen, dass sich der Begriff des in qualitativer Hinsicht
+ wesentlichen Teils des Inhalts einer geschützten Datenbank nach der Rechtsprechung des Gerichtshofs auf die Bedeutung der
+ mit der Beschaffung, der Überprüfung oder der Darstellung des Inhalts des Gegenstands der Entnahme- und/oder Weiterverwendungshandlung
+ verbundenen Investition unabhängig davon bezieht, ob dieser Gegenstand einen quantitativ wesentlichen Teil des allgemeinen
+ Inhalts der geschützten Datenbank darstellt. Ein quantitativ geringfügiger Teil des Inhalts einer Datenbank kann nämlich,
+ was die Beschaffung, die Überprüfung oder die Darstellung angeht, eine erhebliche menschliche, technische oder finanzielle
+ Investition darstellen (vgl. Urteil The British Horseracing Board u. a., Randnr. 71).
+
+ 67 In Anbetracht des 46. Erwägungsgrundes der Richtlinie 96/9, wonach die Existenz des Schutzrechts sui generis nicht zur Entstehung eines neuen Rechts an den Werken, Daten oder Elementen einer Datenbank als solchen führt, ist außerdem
+ entschieden worden, dass der Wert, der den durch die Entnahme‑ und/oder Weiterverwendungshandlungen betroffenen Elementen
+ innewohnt, dabei kein erhebliches Kriterium für die Beurteilung darstellt (vgl. Urteil The British Horseracing Board u. a.,
+ Randnrn. 72 und 78).
+
+ 68 Angesichts der Ausführungen in Randnr. 66 des vorliegenden Urteils kann sich der Umstand, dass Elemente, die aus einer durch
+ das Schutzrecht sui generis geschützten Datenbank entnommen und/oder weiterverwendet worden sein sollen, vom Hersteller der Datenbank aus nicht öffentlich
+ zugänglichen Quellen beschafft wurden, je nach Umfang der menschlichen, technischen oder finanziellen Mittel, die der Hersteller
+ eingesetzt hat, um diese Elemente aus derartigen Quellen zusammenzustellen, auf die Beurteilung der Frage auswirken, ob mit
+ der „Beschaffung“ dieser Elemente eine wesentliche Investition im Sinne von Art. 7 Abs. 1 der Richtlinie 96/9 verbunden war
+ (vgl. in diesem Sinne Urteil vom 9. November 2004, Fixtures Marketing, C‑46/02, Slg. 2004, I‑10365, Randnrn. 34 und 38), und
+ damit die Einstufung dieser Elemente als in qualitativer Hinsicht wesentlicher Teil des Inhalts der betreffenden Datenbank
+ beeinflussen.
+
+ 69 Was schließlich den vom vorlegenden Gericht in seiner sechsten Frage erwähnten Umstand angeht, dass die betreffende Datenbank
+ der Öffentlichkeit zugängliche amtliche Elemente enthält, ist darauf hinzuweisen, dass sich sowohl aus der Allgemeinheit der
+ Formulierung, die in Art. 1 Abs. 2 der Richtlinie 96/9 für die Definition des Begriffs der Datenbank im Sinne dieser Richtlinie
+ verwendet wird, als auch aus dem Ziel des Schutzes durch das Schutzrecht sui generis ergibt, dass der Gemeinschaftsgesetzgeber diesem Begriff eine weite, von Erwägungen insbesondere in Bezug auf den materiellen
+ Inhalt des fraglichen Bestands von Elementen freie Bedeutung verleihen wollte (vgl. in diesem Sinne Urteil Fixtures Marketing,
+ C‑444/02, Randnrn. 19 bis 21).
+
+ 70 Wie aus Art. 7 Abs. 4 der Richtlinie 96/9 hervorgeht, gilt das Schutzrecht sui generis zudem unabhängig davon, ob die Datenbank und/oder ihr Inhalt für einen Schutz etwa durch das Urheberrecht in Betracht kommen.
+
+ 71 Wie die bulgarische Regierung ausgeführt hat, kann folglich der von Lakorda behauptete Umstand, dass die im Rechtsinformationssystem
+ von Apis enthaltenen Elemente aufgrund ihres amtlichen Charakters nicht die Voraussetzungen für einen Schutz durch das Urheberrecht
+ erfüllten, als solcher nicht rechtfertigen, dass ein derartige Elemente umfassender Bestand nicht als Datenbank im Sinne von
+ Art. 1 Abs. 2 der Richtlinie 96/9 eingestuft wird oder dass ein solcher Bestand vom Geltungsbereich des Schutzes durch das
+ in Art. 7 der Richtlinie eingeführte Schutzrecht sui generis ausgeschlossen wird.
+
+ 72 Wie Apis, die bulgarische Regierung und die Kommission geltend gemacht haben, befreit somit der Umstand, dass alle oder ein
+ Teil der in einem Datenbestand zusammengestellten Elemente amtlich und öffentlich zugänglich sind, das vorlegende Gericht
+ nicht von der Verpflichtung, unter Berücksichtigung sämtlicher relevanten Tatsachen zu prüfen, ob dieser Bestand eine Datenbank
+ darstellt, die durch das Schutzrecht sui generis geschützt werden kann, weil für die Beschaffung, die Überprüfung und/oder die Darstellung ihres Gesamtinhalts eine in quantitativer
+ oder qualitativer Hinsicht wesentliche Investition erforderlich war (vgl. in diesem Sinne Urteil Fixtures Marketing, C‑46/02,
+ Randnrn. 32 bis 38).
+
+ 73 Der Umstand, dass der Inhalt einer geschützten Datenbank im Wesentlichen öffentlich zugängliche amtliche Elemente enthält,
+ befreit das nationale Gericht ebenso wenig von der Verpflichtung, zur Beurteilung der Frage, ob eine Entnahme und/oder eine
+ Weiterverwendung eines wesentlichen Teils dieses Inhalts vorliegt, festzustellen, ob die angeblich aus der betreffenden Datenbank
+ entnommenen und/oder weiterverwendeten Elemente in quantitativer Hinsicht einen wesentlichen Teil des Gesamtinhalts dieser
+ Datenbank darstellen oder ob sie gegebenenfalls in qualitativer Hinsicht einen solchen wesentlichen Teil bilden, weil sie,
+ was die Beschaffung, die Überprüfung oder die Darstellung angeht, eine erhebliche menschliche, technische oder finanzielle
+ Investition darstellen.
+
+ 74 Demnach ist auf die Fragen 2, 3 und 6 wie folgt zu antworten:
+
+ – Art. 7 der Richtlinie 96/9 ist dahin auszulegen, dass im Fall eines Gesamtbestands von Elementen, der einzelne Untergruppen
+ umfasst, das Volumen der angeblich entnommenen und/oder weiterverwendeten Elemente jeweils einer Untergruppe zur Beurteilung
+ der Frage, ob eine Entnahme und/oder eine Weiterverwendung eines in quantitativer Hinsicht wesentlichen Teils des Inhalts
+ einer Datenbank im Sinne dieses Artikels vorliegt, mit dem Volumen des Gesamtinhalts dieser Untergruppe zu vergleichen ist,
+ wenn Letztere als solche eine Datenbank darstellt, die die Voraussetzungen für die Gewährung des Schutzes durch das Schutzrecht
+ sui generis erfüllt. Andernfalls – und soweit der genannte Bestand eine solche geschützte Datenbank darstellt – ist der Vergleich zwischen
+ dem Volumen der angeblich entnommenen und/oder weiterverwendeten Elemente der verschiedenen Untergruppen dieses Bestands und
+ dem Volumen des Gesamtinhalts des Bestands anzustellen.
+
+ – Der Umstand, dass Elemente, die aus einer durch das Schutzrecht sui generis geschützten Datenbank entnommen und/oder weiterverwendet worden sein sollen, vom Hersteller der Datenbank aus nicht öffentlich
+ zugänglichen Quellen beschafft wurden, kann sich je nach Umfang der menschlichen, technischen und/oder finanziellen Mittel,
+ die der Hersteller eingesetzt hat, um diese Elemente aus derartigen Quellen zusammenzustellen, auf die Einstufung der Elemente
+ als in qualitativer Hinsicht wesentlicher Teil des Inhalts der betreffenden Datenbank im Sinne von Art. 7 der Richtlinie 96/9
+ auswirken. 
+
+ – Der Umstand, dass ein Teil der in einer Datenbank enthaltenen Elemente amtlich und öffentlich zugänglich ist, befreit das
+ nationale Gericht nicht von der Verpflichtung, zur Beurteilung der Frage, ob eine Entnahme und/oder eine Weiterverwendung
+ eines wesentlichen Teils des Inhalts dieser Datenbank vorliegt, festzustellen, ob die angeblich aus der Datenbank entnommenen
+ und/oder weiterverwendeten Elemente in quantitativer Hinsicht einen wesentlichen Teil des Gesamtinhalts der Datenbank darstellen
+ oder ob sie gegebenenfalls in qualitativer Hinsicht einen solchen wesentlichen Teil bilden, weil sie, was die Beschaffung,
+ die Überprüfung oder die Darstellung angeht, eine erhebliche menschliche, technische oder finanzielle Investition darstellen.
+
+ Kosten
+
+ 75 Für die Parteien des Ausgangsverfahrens ist das Verfahren ein Zwischenstreit in dem bei dem vorlegenden Gericht anhängigen
+ Rechtsstreit; die Kostenentscheidung ist daher Sache dieses Gerichts. Die Auslagen anderer Beteiligter für die Abgabe von
+ Erklärungen vor dem Gerichtshof sind nicht erstattungsfähig.
+
+ Aus diesen Gründen hat der Gerichtshof (Vierte Kammer) für Recht erkannt:
+
+ 1. Die Begriffe „ständige Übertragung“ und „vorübergehende Übertragung“ im Sinne von Art. 7 der Richtlinie 96/9/EG des Europäischen
+ Parlaments und des Rates vom 11. März 1996 über den rechtlichen Schutz von Datenbanken werden voneinander nach dem Kriterium
+ der Dauer der Sicherung der aus einer geschützten Datenbank entnommenen Elemente auf einem anderen Datenträger als dem dieser
+ Datenbank abgegrenzt. Zeitpunkt einer Entnahme im Sinne von Art. 7 aus einer elektronisch zugänglichen geschützten Datenbank
+ ist der Moment, in dem die von der Übertragung erfassten Elemente auf einem anderen Datenträger als dem dieser Datenbank fixiert
+ werden. Für diesen Entnahmebegriff spielen das Ziel des Urhebers der fraglichen Handlung, die von ihm unter Umständen vorgenommenen
+ Änderungen des Inhalts der auf diese Weise übertragenen Elemente und die etwaigen Unterschiede in der strukturellen Organisation
+ der betreffenden Datenbanken keine Rolle.
+
+ Der Umstand, dass die materiellen und technischen Merkmale, die der Inhalt einer geschützten Datenbank eines Herstellers aufweist,
+ auch im Inhalt einer Datenbank eines anderen Herstellers vorkommen, kann als Indiz für eine Entnahme im Sinne von Art. 7 der
+ Richtlinie 96/9 gedeutet werden, sofern sich eine solche Übereinstimmung nicht durch andere Faktoren als eine Übertragung
+ zwischen den beiden Datenbanken erklären lässt. Die Tatsache, dass die Elemente, die der Hersteller einer Datenbank aus nicht
+ öffentlich zugänglichen Quellen beschafft hat, auch in der Datenbank eines anderen Herstellers vorkommen, genügt als solche
+ nicht, um eine derartige Entnahme zu beweisen, kann aber ein Indiz dafür bilden.
+
+ Welcher Art die Computerprogramme sind, die für die Verwaltung zweier elektronischer Datenbanken verwendet werden, ist kein
+ Kriterium für die Beurteilung der Frage, ob eine Entnahme im Sinne von Art. 7 der Richtlinie 96/9 vorliegt.
+
+ 2. Art. 7 der Richtlinie 96/9 ist dahin auszulegen, dass im Fall eines Gesamtbestands von Elementen, der einzelne Untergruppen
+ umfasst, das Volumen der angeblich entnommenen und/oder weiterverwendeten Elemente jeweils einer Untergruppe zur Beurteilung
+ der Frage, ob eine Entnahme und/oder eine Weiterverwendung eines in quantitativer Hinsicht wesentlichen Teils des Inhalts
+ einer Datenbank im Sinne dieses Artikels vorliegt, mit dem Volumen des Gesamtinhalts dieser Untergruppe zu vergleichen ist,
+ wenn Letztere als solche eine Datenbank darstellt, die die Voraussetzungen für die Gewährung des Schutzes durch das Schutzrecht
+ sui generis erfüllt. Andernfalls – und soweit der genannte Bestand eine solche geschützte Datenbank darstellt – ist der Vergleich zwischen
+ dem Volumen der angeblich entnommenen und/oder weiterverwendeten Elemente der verschiedenen Untergruppen dieses Bestands und
+ dem Volumen des Gesamtinhalts des Bestands anzustellen.
+
+ Der Umstand, dass Elemente, die aus einer durch das Schutzrecht sui generis geschützten Datenbank entnommen und/oder weiterverwendet worden sein sollen, vom Hersteller der Datenbank aus nicht öffentlich
+ zugänglichen Quellen beschafft wurden, kann sich je nach Umfang der menschlichen, technischen und/oder finanziellen Mittel,
+ die der Hersteller eingesetzt hat, um diese Elemente aus derartigen Quellen zusammenzustellen, auf die Einstufung der Elemente
+ als in qualitativer Hinsicht wesentlicher Teil des Inhalts der betreffenden Datenbank im Sinne von Art. 7 der Richtlinie 96/9
+ auswirken.
+
+ Der Umstand, dass ein Teil der in einer Datenbank enthaltenen Elemente amtlich und öffentlich zugänglich ist, befreit das
+ nationale Gericht nicht von der Verpflichtung, zur Beurteilung der Frage, ob eine Entnahme und/oder eine Weiterverwendung
+ eines wesentlichen Teils des Inhalts dieser Datenbank vorliegt, festzustellen, ob die angeblich aus der Datenbank entnommenen
+ und/oder weiterverwendeten Elemente in quantitativer Hinsicht einen wesentlichen Teil des Gesamtinhalts der Datenbank darstellen
+ oder ob sie gegebenenfalls in qualitativer Hinsicht einen solchen wesentlichen Teil bilden, weil sie, was die Beschaffung,
+ die Überprüfung oder die Darstellung angeht, eine erhebliche menschliche, technische oder finanzielle Investition darstellen.
+
+ Unterschriften
+
+ * Verfahrenssprache: Bulgarisch.
+

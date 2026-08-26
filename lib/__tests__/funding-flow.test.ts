@@ -48,12 +48,11 @@ describe("Größenstufen liegen eindeutig zu jeder Schwelle", () => {
     // eine falsche Auskunft, ohne dass es jemandem auffiele.
     const alle = allFundingPrograms();
     const schwellen = alleGroessenSchwellen(alle);
-    const grenzen: [number, number][] = [
-      [0, 10],
-      [10, 20],
-      [20, 30],
-      [30, Infinity],
-    ];
+    // Die Grenzen kommen aus den Stufen selbst. Sie hier ein zweites Mal zu
+    // tippen war der eigentliche Fehler dieser Datei: Beim Teilen der ersten
+    // Stufe meldete der Test einen Konflikt mit einer Stufe, die es nicht mehr
+    // gab — er prüfte seine eigene veraltete Kopie.
+    const grenzen: [number, number][] = GROESSEN_STUFEN.map((s) => [s.von, s.bis]);
     for (const s of schwellen) {
       for (const [von, bis] of grenzen) {
         expect(
@@ -68,18 +67,24 @@ describe("Größenstufen liegen eindeutig zu jeder Schwelle", () => {
   it("jede Stufe hat einen Wert, der zu ihrer Beschriftung passt", () => {
     // Beschriftung und gerechneter Wert dürfen nicht auseinanderlaufen —
     // dieselbe Regel wie bei jeder anderen Zahl mit Einheit im Projekt.
-    const erwartet: Record<string, [number, number]> = {
-      "8": [0, 10],
-      "15": [10, 20],
-      "25": [20, 30],
-      "40": [30, Infinity],
-    };
     for (const stufe of GROESSEN_STUFEN) {
-      const [von, bis] = erwartet[stufe.wert];
-      expect(stufe.kwp).toBeGreaterThan(von);
-      expect(stufe.kwp).toBeLessThan(bis);
+      // Der gerechnete Wert muss INNERHALB der eigenen Stufe liegen — sonst
+      // rechnet die Auswahl „4 – 10 kWp" mit einer Zahl, die dort nicht
+      // vorkommt. Die untere Grenze ist ausgeschlossen, weil eine Anlage von
+      // genau 4 kWp bereits zur nächsten Stufe gehört.
+      expect(stufe.kwp, `${stufe.label}: Wert ${stufe.kwp} liegt nicht in ${stufe.von}–${stufe.bis}`).toBeGreaterThan(stufe.von);
+      expect(stufe.kwp, `${stufe.label}: Wert ${stufe.kwp} liegt nicht in ${stufe.von}–${stufe.bis}`).toBeLessThan(stufe.bis);
       expect(Number(stufe.wert)).toBe(stufe.kwp);
     }
+
+    // Die Stufen müssen lückenlos aneinandergrenzen: Jede Lücke ist eine
+    // Anlagengröße, für die es keine Antwortmöglichkeit gibt, jede
+    // Überlappung eine Größe mit zwei Antworten.
+    for (let i = 1; i < GROESSEN_STUFEN.length; i++) {
+      expect(GROESSEN_STUFEN[i].von, `Lücke oder Überlappung vor „${GROESSEN_STUFEN[i].label}"`).toBe(GROESSEN_STUFEN[i - 1].bis);
+    }
+    expect(GROESSEN_STUFEN[0].von).toBe(0);
+    expect(GROESSEN_STUFEN[GROESSEN_STUFEN.length - 1].bis).toBe(Infinity);
   });
 });
 

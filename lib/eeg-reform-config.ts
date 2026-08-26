@@ -212,7 +212,15 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // Bundestages steht unverändert auf dem Stand vom 13.07.2026 (Sitzungen
   // 91.–94., also vor der Sommerpause) und nennt keinen EEG-Punkt. Der Entwurf
   // ist damit in keiner Kammer aufgerufen.
-  geprueftIso: "2026-08-25",
+  //
+  // 26.08.2026 nachgesehen, unverändert, beide Kammern erneut einzeln: 470/26
+  // steht auf bundesrat.de weiter ohne verzeichneten Beschluss, die
+  // Tagesordnungsseite des Bundestages trägt unverändert den Stand 13.07.2026
+  // (Sitzungen 91.–94.) und nennt keinen EEG-Punkt. Was in der Fachpresse als
+  // „Bundestag und Bundesrat beraten ab September" kursiert, ist eine
+  // Ankündigung, kein Verfahrensschritt — der Zustand bleibt
+  // „Regierungsentwurf".
+  geprueftIso: "2026-08-26",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

@@ -365,6 +365,23 @@ export const RECHTSBELEGE: Rechtsbeleg[] = [
     geprueftIso: "2026-08-25",
     zustand: "gesetz",
   },
+  {
+    norm: "MaStRV §5",
+    gesetz: "Marktstammdatenregisterverordnung",
+    traegt:
+      "Registrierungspflicht für jede Stromerzeugungseinheit — Grundlage dafür, dass wir " +
+      "die Anmeldung im Marktstammdatenregister als allgemeine Pflicht bezeichnen und " +
+      "nicht als besondere Auflage einzelner Förderprogramme.",
+    // Am 26.08.2026 im Original gelesen. Absatz 1 Satz 1 ist der Kern
+    // („Betreiber müssen ihre Einheiten … registrieren"); Absatz 2 Nr. 1 nimmt
+    // aus, was weder unmittelbar noch mittelbar ans Stromnetz angeschlossen ist
+    // — also reine Inselanlagen. Für alles, was diese Seite rechnet, greift die
+    // Pflicht deshalb ausnahmslos.
+    fundstelle: "§ 5 Abs. 1 Satz 1, Ausnahme in Abs. 2 Nr. 1",
+    quelle: "gesetze-im-internet.de/mastrv/__5.html",
+    geprueftIso: "2026-08-26",
+    zustand: "gesetz",
+  },
 ];
 
 

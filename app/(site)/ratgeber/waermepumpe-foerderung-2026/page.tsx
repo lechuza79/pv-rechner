@@ -15,6 +15,16 @@ import { waermepumpeFoerderungFaq } from "../../../../lib/faq";
 import { v } from "../../../../lib/theme";
 import { calcBegSubsidy, calcInvestBrutto, calcHeatLoad } from "../../../../lib/heatpump";
 import { DEFAULT_HEATPUMP_CONFIG as HP } from "../../../../lib/heatpump-config";
+import {
+  BEG_ANTRAG_ANKER,
+  BEG_ANTRAG_GELTUNGSBEREICH,
+  BEG_ANTRAG_STAND,
+  BEG_ANTRAG_SCHRITTE,
+  BEG_ANTRAG_FRISTEN,
+  BEG_EIGENLEISTUNG,
+  BEG_KEINE_AUFSTOCKUNG,
+  BEG_VORHABENBEGINN,
+} from "../../../../lib/beg-antrag";
 import { pageMetadata } from "../../../../lib/seo";
 
 // Figures on this page come live from the same BEG engine the calculator and
@@ -90,6 +100,40 @@ const S = {
     fontSize: v("--font-size-body"),
     color: v("--color-text-primary"),
     lineHeight: 1.7,
+  },
+  // Der einzige rot gerahmte Kasten der Seite. Er gehört der Reihenfolge-Regel,
+  // weil sie die einzige Aussage hier ist, bei der ein Fehler den ganzen
+  // Zuschuss kostet — ein zweiter roter Kasten würde ihn entwerten.
+  warn: {
+    background: v("--color-negative-dim"),
+    border: `1px solid ${v("--color-negative-border")}`,
+    borderRadius: v("--radius-md"),
+    padding: "14px 16px",
+    marginBottom: 14,
+    fontSize: v("--font-size-body"),
+    color: v("--color-text-primary"),
+    lineHeight: 1.7,
+  },
+  stepRow: {
+    display: "flex",
+    gap: 12,
+    alignItems: "flex-start",
+    padding: "12px 0",
+    borderTop: `1px solid ${v("--color-border")}`,
+  },
+  stepNum: {
+    flex: "0 0 auto",
+    width: 26,
+    height: 26,
+    borderRadius: "50%",
+    background: v("--color-bg-accent"),
+    color: v("--color-accent"),
+    fontFamily: v("--font-mono"),
+    fontSize: v("--font-size-caption"),
+    fontWeight: 700,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   label: {
     fontSize: v("--font-size-caption"),
@@ -221,7 +265,15 @@ const CASES: CaseRow[] = [
 
 export default function WaermepumpeFoerderungPage() {
   const faqItems = waermepumpeFoerderungFaq();
+  // ZWEI Daten, die bis 25.08.2026 verwechselt waren: `HP.validFrom` ist der
+  // Stand UNSERER Werte, nicht der Tag, ab dem das KfW-Merkblatt gilt. Die Seite
+  // schrieb damit „KfW-Zuschuss 458, gültig ab 27. Juli 2026" — ein
+  // Gültigkeitsdatum, das es nicht gibt (das Merkblatt gilt ab dem 21.07.2026).
+  // Gefunden vom zweiten Legal-Judge; die Fehlerklasse ist die teuerste des
+  // Projekts, eine falsche Zahl, die niemandem auffällt.
   const standDatum = formatFullDate(HP.validFrom);
+  const gueltigAb = formatFullDate(BEG_ANTRAG_STAND.validFrom);
+  const verfahrenGeprueft = formatFullDate(BEG_ANTRAG_STAND.geprueftIso);
 
   // Representative gross investment for a typical detached EFH (shared engine).
   const heizlast = calcHeatLoad("bestand", EX_WOHNFLAECHE, EX_INSULATION, 1);
@@ -231,6 +283,12 @@ export default function WaermepumpeFoerderungPage() {
     const beg = calcBegSubsidy("bestand", "lwwp", investBrutto, c.opts);
     return { ...c, rate: beg.rate, amount: beg.amount, rest: investBrutto - beg.amount };
   });
+
+  // Der größte Betrag, den ein Leser auf dieser Seite gesehen hat — also genau
+  // das, was er bei falscher Reihenfolge verliert. Aus den gerechneten Zeilen,
+  // nicht aus dem Deckel: Der Deckel gilt der Kostenobergrenze, hier steht der
+  // Zuschuss zum Beispielfall.
+  const maxAmount = Math.max(...rows.map((r) => r.amount));
 
   const maxZuschuss = Math.round(HP.begMaxCap * HP.begMaxRateLowIncome);
   const staffel = HP.begEinkommensStaffel;
@@ -258,7 +316,7 @@ export default function WaermepumpeFoerderungPage() {
           description="Grundförderung, Klima-Bonus, Einkommens-Bonus: wie sich der BEG-Zuschuss zusammensetzt."
           path="/ratgeber/waermepumpe-foerderung-2026"
           published="2026-07-20"
-          modified="2026-07-26"
+          modified="2026-08-25"
         />
 
         {/* ── Kurzantwort ── */}
@@ -272,8 +330,15 @@ export default function WaermepumpeFoerderungPage() {
           liegt damit bei {eur(maxZuschuss)}. Im Neubau gibt es diesen Zuschuss dagegen nicht.
         </div>
         <p style={{ ...S.p, fontSize: v("--font-size-small"), marginBottom: 0 }}>
-          Grundlage: KfW-Zuschuss 458 (BEG Einzelmaßnahme), gültig ab {standDatum} · unverbindliche
-          Näherungswerte, ohne Gewähr — verbindlich ist der Zuschussbescheid der KfW.
+          Grundlage: KfW-Zuschuss 458 (BEG Einzelmaßnahme), gültig ab {gueltigAb} · unverbindliche
+          Näherungswerte, ohne Gewähr — verbindlich ist die Zusage der KfW.
+        </p>
+        <p style={{ ...S.p, marginTop: 12 }}>
+          Bevor du weiterliest, die eine Sache, die den ganzen Zuschuss kosten kann:{" "}
+          <a href={`#${BEG_ANTRAG_ANKER}`} style={S.link}>
+            Der Antrag muss vor dem ersten verbindlichen Auftrag gestellt sein
+          </a>{" "}
+          — sonst gibt es nichts, egal wie hoch der Satz wäre.
         </p>
 
         {/* ── Bestand vs. Neubau ── */}
@@ -388,6 +453,101 @@ export default function WaermepumpeFoerderungPage() {
           Abzug von {eur(HP.begFamilienzuschlag)} rutscht sie eine Stufe höher.
         </p>
 
+        {/* ── Antragsreihenfolge ──────────────────────────────────────────────
+            Steht bewusst hier: direkt hinter der Tabelle, in der der Leser
+            gerade den größten Betrag der Seite gesehen hat, und im Fließtext
+            statt im Kleingedruckten. Bis 08/2026 war davon nur ein Halbsatz
+            unter dem Rechtshinweis übrig — die teuerste Auskunft der Seite an
+            der Stelle, die niemand liest. Der Anker `antrag-reihenfolge` kommt
+            aus lib/beg-antrag.ts, damit verweisende Seiten ihn importieren
+            können, statt ihn abzutippen. */}
+        <h2 id={BEG_ANTRAG_ANKER} style={{ ...S.h2, scrollMarginTop: 80 }}>
+          Die Reihenfolge entscheidet — sonst ist der Zuschuss weg
+        </h2>
+        <div style={S.warn}>
+          <strong style={S.strong}>
+            Der Zuschuss ist verloren, wenn das Vorhaben vor dem Antrag beginnt.
+          </strong>{" "}
+          Nicht ein Teil davon — der ganze Betrag, im Beispiel oben bis zu{" "}
+          {eur(maxAmount)}. So steht es wörtlich im Merkblatt der KfW:
+          „{BEG_VORHABENBEGINN.regelZitat}“ {BEG_VORHABENBEGINN.stichtag} Für eine
+          bereits begonnene Maßnahme ist ein nachträglicher Antrag im Verfahren nicht
+          vorgesehen.
+        </div>
+        <p style={S.p}>
+          Dann kommt es darauf an, was „beginnen“ heißt — und das ist enger gefasst,
+          als die meisten befürchten. <strong style={S.strong}>Als Beginn zählt</strong>{" "}
+          {BEG_VORHABENBEGINN.zaehltAlsBeginn.join(" oder ")}.{" "}
+          {BEG_VORHABENBEGINN.keineNachtraeglicheBedingung}
+        </p>
+        <p style={S.p}>
+          <strong style={S.strong}>Ausdrücklich nicht als Beginn zählen</strong>{" "}
+          {BEG_VORHABENBEGINN.zaehltNicht.join(" sowie ")}. Reden kostet also nichts —
+          und das ist die Entwarnung, die die meisten brauchen: Angebote einholen und
+          sich beraten lassen ist nicht nur erlaubt, es ist der erste Schritt.
+        </p>
+
+        <div style={{ ...S.card, padding: "4px 16px 14px" }}>
+          <span style={{ ...S.label, marginTop: 12 }}>So läuft es der Reihe nach</span>
+          {BEG_ANTRAG_SCHRITTE.map((s, i) => (
+            <div key={s.titel} style={{ ...S.stepRow, borderTop: i === 0 ? "none" : undefined }}>
+              <span style={S.stepNum} aria-hidden>{i + 1}</span>
+              <div>
+                <strong style={{ ...S.strong, display: "block", marginBottom: 2 }}>
+                  {s.titel}
+                </strong>
+                {s.text}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p style={S.p}>
+          <strong style={S.strong}>Und zwischen Antrag und Zusage?</strong>{" "}
+          {BEG_VORHABENBEGINN.nachAntragVorZusage} Die KfW selbst nennt in ihrem
+          Merkblatt nur den Start nach der Zusage. In der Praxis heißt das: Der
+          Vertrag unter Vorbehalt löst keinen Vorhabenbeginn aus und hält dir trotzdem
+          den Preis — das Warten auf die Zusage ist der sichere Weg.
+        </p>
+        {/* Die Verfallsfolge hängt allein an der ÄUSSEREN Frist — Richtlinie
+            Nr. 9.5.1 Satz 2 sanktioniert nur die Einreichung „später als sechs
+            Monate nach Ablauf des Bewilligungszeitraums". Eine Fassung, die sie
+            auf beide Fristen bezog, hätte einem Leser, der früh fertig wird, bis
+            zu 30 Monate lang „Geld weg" gemeldet, obwohl sein Anspruch besteht —
+            und in genau der Richtung, in der jemand aufgibt und den Zuschuss
+            liegen lässt. Gefunden vom zweiten Legal-Judge am 25.08.2026. */}
+        <p style={S.p}>
+          Nach der Zusage laufen zwei Fristen weiter. Das Vorhaben muss innerhalb von{" "}
+          <strong style={S.strong}>{BEG_ANTRAG_FRISTEN.bewilligungMonate} Monaten</strong>{" "}
+          ab Zugang der Zusage abgeschlossen sein — als Abschluss gilt das Datum der
+          letzten Rechnung. Die Nachweise gehören innerhalb von{" "}
+          <strong style={S.strong}>{BEG_ANTRAG_FRISTEN.nachweisNachAbschlussMonate} Monaten</strong>{" "}
+          nach diesem Abschluss ins Kundenportal. Die harte Grenze ist die zweite:{" "}
+          <strong style={S.strong}>
+            {BEG_ANTRAG_FRISTEN.nachweisSpaetestensNachBewilligungMonate} Monate nach
+            Ablauf der {BEG_ANTRAG_FRISTEN.bewilligungMonate} Monate
+          </strong>{" "}
+          — wer erst danach einreicht, verliert den Anspruch auf die Auszahlung, obwohl
+          der Zuschuss längst zugesagt war. Das ist der zweite Weg, auf dem das Geld
+          verschwindet, und der unauffälligere. Verbindlich ist die erste Frist trotzdem:
+          Die Förderrichtlinie schreibt die Einreichung dort vor. Ausdrücklich an die
+          zweite geknüpft ist nur der Verlust des Anspruchs.
+        </p>
+        <p style={S.p}>
+          <strong style={S.strong}>Der dritte Weg ist der leiseste.</strong>{" "}
+          {BEG_KEINE_AUFSTOCKUNG}
+        </p>
+        <p style={S.p}>
+          <strong style={S.strong}>Selbst einbauen?</strong> {BEG_EIGENLEISTUNG}
+        </p>
+        <p style={{ ...S.p, fontSize: v("--font-size-small") }}>
+          {BEG_ANTRAG_GELTUNGSBEREICH} Das beschreibt das Verfahren, wie die KfW es
+          veröffentlicht, und ist keine Rechts- oder Förderberatung. Auf die Zusage
+          besteht kein Anspruch — und sie allein ist verbindlich.
+          Grundlage ist das KfW-Merkblatt 458, gültig ab {gueltigAb}, zusammen mit der
+          BEG-EM-Förderrichtlinie; zuletzt geprüft am {verfahrenGeprueft}.
+        </p>
+
         {/* ── Interaktiver Förder-Check (Embed) ── */}
         <h2 id="foerder-check" style={{ ...S.h2, scrollMarginTop: 80 }}>Deine Förderung selbst ausrechnen</h2>
         <p style={S.p}>
@@ -440,9 +600,12 @@ export default function WaermepumpeFoerderungPage() {
           <br />
           <span style={S.muted}>
             Alle Beträge auf dieser Seite sind unverbindliche Näherungswerte ohne Gewähr und
-            ersetzen keine Förderberatung. Verbindlich ist allein der Zuschussbescheid der
-            KfW; die Antragstellung läuft vor Auftragsvergabe über das KfW-Zuschussportal. Die
-            Stand und Quelle der Fördersätze findest du auf der{" "}
+            ersetzen keine Förderberatung. Verbindlich ist allein die Zusage der
+            KfW; wie der Antrag zeitlich zum Auftrag stehen muss, steht oben unter{" "}
+            <a href={`#${BEG_ANTRAG_ANKER}`} style={S.link}>
+              Die Reihenfolge entscheidet
+            </a>
+            . Stand und Quelle der Fördersätze findest du auf der{" "}
             <Link href="/datenstand" style={S.link}>Datenstand-Seite</Link>.
           </span>
         </div>
@@ -489,7 +652,7 @@ export default function WaermepumpeFoerderungPage() {
           ]}
         />
         <p style={{ ...S.p, fontSize: v("--font-size-small"), marginTop: 16 }}>
-          Grundlage: KfW-Zuschuss 458 (BEG Einzelmaßnahme), Stand {standDatum}. Die
+          Grundlage: KfW-Zuschuss 458 (BEG Einzelmaßnahme), gültig ab {gueltigAb}; unsere Werte auf dem Stand vom {standDatum}. Die
           Fördersätze auf dieser Seite werden direkt aus den geprüften Werten berechnet und
           bleiben so mit dem Rechner konsistent.
         </p>

@@ -1,7 +1,14 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
-import { laufStumm, LAUF_STUMM_AB, GEPLANTE_LAEUFE } from "../../scripts/health-check";
+import {
+  laufStumm,
+  LAUF_STUMM_AB,
+  GEPLANTE_LAEUFE,
+  jobZeitlimitMinuten,
+  zeitreserveKnapp,
+  ZEITRESERVE_ANTEIL,
+} from "../../scripts/health-check";
 
 // GEMESSEN AM 23.08.2026: Der Förder-Seiten-Wächter endete vom 20. bis 23.08.
 // viermal in Folge mit `cancelled` — das Job-Zeitlimit von 35 Minuten reichte
@@ -86,6 +93,72 @@ describe("Geplante Läufe, die nicht mehr durchkommen", () => {
         ).toBe("**");
       }
     }
+  });
+
+  // GEMESSEN AM 26.08.2026: Der nächtliche Flow-Läufer brauchte am 21./22.08.
+  // noch 1 h 22 bzw. 1 h 40; ab dem 23.08. dreimal in Folge 4 h 24, 4 h 18 und
+  // 4 h 20 — bei einem Job-Zeitlimit von 300 Minuten. Ursache ist kein Defekt,
+  // sondern gewollte Arbeit: Seit dem 22.08. sieht der Läufer zwei weitere
+  // Bedienfamilien (Akkordeon-Fragen und Ein/Aus-Schalter), also mehr
+  // Kombinationen. Nur: Die Restluft betrug damit rund 40 Minuten, und der
+  // Melder daneben hätte erst nach drei abgebrochenen Nächten angeschlagen.
+  //
+  // Derselbe Gedanke wie beim Kaltaufbau gegen die 8-Sekunden-Notbremse: Der
+  // Frühindikator ist der ABSTAND zum Limit, nicht das Reißen.
+  describe("Zeitreserve eines geplanten Laufs", () => {
+    it("meldet den Anlassfall: 4 h 20 von 5 h erlaubten", () => {
+      const befund = zeitreserveKnapp([{ conclusion: "success", dauerMin: 260 }], 300);
+      expect(befund?.knapp).toBe(true);
+      expect(Math.round((befund?.anteil ?? 0) * 100)).toBe(87);
+    });
+
+    it("schweigt, solange die Reserve steht — der Zustand vor dem 23.08.", () => {
+      expect(zeitreserveKnapp([{ conclusion: "success", dauerMin: 100 }], 300)?.knapp).toBe(false);
+      // Genau auf der Schwelle ist noch keine Warnung: die Reserve ist erfüllt.
+      expect(zeitreserveKnapp([{ conclusion: "success", dauerMin: 225 }], 300)?.knapp).toBe(false);
+      expect(ZEITRESERVE_ANTEIL).toBe(0.25);
+    });
+
+    it("bewertet nur erfolgreiche Läufe — ein Abbruch dauert immer genau das Limit", () => {
+      // Aus einem „cancelled" auf „knapp" zu schließen wäre ein Zirkelschluss:
+      // Der Lauf endet dort, weil das Limit erreicht ist. Diesen Fall meldet
+      // `laufStumm`, und zwar als Befund, nicht als Warnung.
+      expect(zeitreserveKnapp([{ conclusion: "cancelled", dauerMin: 300 }], 300)).toBeNull();
+      const gemischt = zeitreserveKnapp(
+        [
+          { conclusion: "cancelled", dauerMin: 300 },
+          { conclusion: "success", dauerMin: 100 },
+        ],
+        300,
+      );
+      expect(gemischt?.dauerMin).toBe(100);
+    });
+
+    it("behauptet nichts ohne Messwert", () => {
+      expect(zeitreserveKnapp([], 300)).toBeNull();
+      expect(zeitreserveKnapp([{ conclusion: "success", dauerMin: null }], 300)).toBeNull();
+      expect(zeitreserveKnapp([{ conclusion: "success", dauerMin: 260 }], 0)).toBeNull();
+    });
+
+    it("liest das Job-Limit aus der Datei und verwechselt es nicht mit einem Schritt-Limit", () => {
+      // Die Flow-Datei trägt drei Angaben: 300 für den Job, 10 und 5 für zwei
+      // Schritte. Wer die erste nimmt, die er findet, misst gegen 5 Minuten.
+      const text = readFileSync(
+        resolve(__dirname, "..", "..", ".github", "workflows", "flows-nightly.yml"),
+        "utf8",
+      );
+      expect(jobZeitlimitMinuten(text)).toBe(300);
+      // Ohne Angabe gilt GitHubs Vorgabe — nicht 0 und nicht „unbegrenzt".
+      expect(jobZeitlimitMinuten("jobs:\n  x:\n    runs-on: ubuntu-latest\n")).toBe(360);
+    });
+
+    it("jeder beobachtete Lauf hat ein Zeitlimit, gegen das sich messen lässt", () => {
+      const wurzel = resolve(__dirname, "..", "..");
+      for (const lauf of GEPLANTE_LAEUFE) {
+        const text = readFileSync(resolve(wurzel, ".github", "workflows", lauf.datei), "utf8");
+        expect(jobZeitlimitMinuten(text), `${lauf.datei} ohne brauchbares Zeitlimit`).toBeGreaterThan(0);
+      }
+    });
   });
 
   it("die Schwelle ist drei Läufe — darunter ist es ein Ausrutscher", () => {

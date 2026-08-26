@@ -8,8 +8,13 @@
 #     Option jedes Schritts, jeder Zweig — fängt kaputte Knöpfe und
 #     gebrochene Wege in Minuten, bevor der Push durch ist.
 #   - Hier, einmal pro Nacht, läuft derselbe Läufer OHNE die Abkürzung
-#     (FLOW_ALLE_KOMBINATIONEN=1): ~2.100 Kombinationen über sieben Flows,
-#     gut zwei Stunden. Auf jedem Push wäre das unhaltbar — und unter
+#     (FLOW_ALLE_KOMBINATIONEN=1): in der Nacht zum 25.08.2026 gemessene
+#     3.440 Wege über sieben Flows in 4 h 20. Bis zum 22.08. waren es rund
+#     zwei Stunden; seit der Läufer auch Akkordeon-Fragen und Ein/Aus-Schalter
+#     sieht, sind es gut vier. Das Job-Zeitlimit unten steht bei 5 Stunden —
+#     der Gesundheitscheck warnt, sobald davon weniger als ein Viertel frei
+#     bleibt, damit ein weiterer Ausbau nicht in einem „abgebrochen" endet,
+#     das erst nach drei Nächten auffällt. Auf jedem Push wäre das unhaltbar — und unter
 #     Parallellast produzierte genau diese Menge am 18.08.2026 Fehlalarme
 #     („Option ließ sich nicht wählen" auf einem Doku-Commit). Nachts, mit
 #     einem Arbeiter und ohne Zeitdruck, ist sie tragbar.

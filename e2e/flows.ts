@@ -128,8 +128,11 @@ export const SCHRITTE_OHNE_AUSWAHL: { flow: string; tiefe: number; grund: string
  *   Standard (jeder Push)         — jede OPTION jedes Schritts und jeder
  *     Zweig, nicht jede Kombination. Schnell und auf dem CI-Runner stabil.
  *   FLOW_ALLE_KOMBINATIONEN=1     — wirklich jede Kombination, ohne die
- *     Erschöpft-Abkürzung. Läuft nächtlich (flows-nightly.yml), wo zwei
- *     Stunden Laufzeit niemanden aufhalten.
+ *     Erschöpft-Abkürzung. Läuft nächtlich (flows-nightly.yml), wo eine lange
+ *     Laufzeit niemanden aufhält: gemessen in der Nacht zum 25.08.2026 sind es
+ *     3.440 Wege in 4 h 20 bei 5 Stunden erlaubter Zeit. Wer hier eine
+ *     Bedienfamilie ergänzt, vervielfacht diese Zahl — der Gesundheitscheck
+ *     warnt deshalb, sobald weniger als ein Viertel der Zeit frei bleibt.
  */
 export const ALLE_KOMBINATIONEN = !!process.env.FLOW_ALLE_KOMBINATIONEN;
 

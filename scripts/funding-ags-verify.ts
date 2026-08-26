@@ -29,8 +29,41 @@ import { ATLAS_CITIES } from "../lib/atlas-cities";
 const e = resolve(process.cwd(), ".env.local");
 if (existsSync(e)) for (const l of readFileSync(e,"utf8").split("\n")) { const m=l.match(/^([A-Z0-9_]+)=(.*)$/); if(m&&!process.env[m[1]])process.env[m[1]]=m[2].replace(/^["']|["']$/g,""); }
 function norm(s:string){return s.toLowerCase().replace(/[^a-zäöüß]/g,"");}
+
+/**
+ * Nachschlagen statt raten: `npm run foerder:ags -- --suche Nidda`
+ *
+ * Die Regel lautet, den Gemeindeschlüssel IMMER aus dem Melderegister zu holen
+ * und nie aus einer Bildschirmliste — nur gab es dafür bisher keinen Weg außer
+ * einer selbstgeschriebenen Abfrage. Eine Regel ohne Werkzeug wird umgangen,
+ * und das Umgehen ist hier ein vertippter Schlüssel, der niemandem auffällt.
+ *
+ * Sucht über den Namen und zeigt Schlüssellänge und Einwohnerzahl mit, weil
+ * beides bei der Aufnahme entscheidet: fünf Stellen sind eine kreisfreie Stadt
+ * oder ein Landkreis, acht eine kreisangehörige Gemeinde — und ein
+ * Kreisschlüssel unter einem Stadtnamen setzt den Bestand des ganzen Kreises
+ * dorthin.
+ */
+async function suche(sb: any, begriff: string): Promise<void> {
+  const { data } = await sb
+    .from("mastr_regions")
+    .select("region_id, name, population")
+    .ilike("name", `%${begriff}%`)
+    .order("population", { ascending: false })
+    .limit(25);
+  const treffer = (data ?? []) as { region_id: string; name: string; population: number | null }[];
+  if (!treffer.length) { console.log(`Nichts gefunden für „${begriff}".`); return; }
+  console.log(`Treffer für „${begriff}":\n`);
+  for (const t of treffer) {
+    const art = t.region_id.length === 2 ? "Land" : t.region_id.length === 5 ? "Kreis/kreisfrei" : "Gemeinde";
+    console.log(`  ${t.region_id.padEnd(9)} ${art.padEnd(16)} ${(t.population ?? 0).toLocaleString("de-DE").padStart(10)} Einw.  ${t.name}`);
+  }
+}
+
 async function main(){
   const sb = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_KEY!);
+  const i = process.argv.indexOf("--suche");
+  if (i >= 0) { await suche(sb, process.argv.slice(i + 1).join(" ")); return; }
   const alle = Object.values(FUNDING_PROGRAMS).filter((p:any)=>p.agsCode && p.agsCode.length===8);
   const { data } = await sb.from("mastr_regions").select("region_id, name").in("region_id", alle.map((p:any)=>p.agsCode));
   const name = new Map((data??[]).map((r:any)=>[r.region_id, r.name]));

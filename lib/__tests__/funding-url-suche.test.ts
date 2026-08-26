@@ -170,7 +170,7 @@ describe("Sitemap", () => {
 });
 
 describe("Versionsstempel", () => {
-  it("steht bei 3 — wer die Wortlisten oder die Reichweite ändert, zählt hoch", () => {
+  it("steht bei 4 — wer die Wortlisten oder die Reichweite ändert, zählt hoch", () => {
     // Auf 2 gezogen, als die Volltextsuche der Website dazukam: Die 7.863
     // Gemeinden mit Verdikt „keine-seite" wurden mit der alten, flacheren
     // Reichweite geprüft und müssen deshalb von selbst wieder anstehen.
@@ -180,7 +180,7 @@ describe("Versionsstempel", () => {
     // Host-Filter gegen die erfasste statt die ausgelieferte Adresse). Ohne
     // neuen Stempel bliebe ihr Verdikt „keine-seite" für immer stehen — das
     // Hochzählen ist hier nicht Buchhaltung, sondern der Fix selbst.
-    expect(SUCH_VERSION).toBe(3);
+    expect(SUCH_VERSION).toBe(4);
   });
 });
 

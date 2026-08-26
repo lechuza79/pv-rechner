@@ -149,7 +149,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     short:
       "Bundesförderung für effiziente Gebäude — das staatliche Zuschussprogramm für Heizungstausch und Sanierung, für den Heizungstausch umgesetzt über die KfW.",
     long:
-      "Die BEG (Bundesförderung für effiziente Gebäude) ist das zentrale Förderprogramm des Bundes für energetische Maßnahmen an Wohngebäuden. Für den Heizungstausch — etwa den Einbau einer Wärmepumpe im Bestand — gibt es einen Zuschuss über die KfW (Zuschuss 458), der sich aus einer Grundförderung und mehreren Boni zusammensetzt (Klima-Geschwindigkeits-Bonus, Einkommens-Bonus). Daneben fördert die BEG auch Dämmung, Fenster und Anlagentechnik. Die Sätze und Bedingungen ändern sich regelmäßig; verbindlich ist stets die jeweils gültige Richtlinie und der Zuschussbescheid der KfW.",
+      "Die BEG (Bundesförderung für effiziente Gebäude) ist das zentrale Förderprogramm des Bundes für energetische Maßnahmen an Wohngebäuden. Für den Heizungstausch — etwa den Einbau einer Wärmepumpe im Bestand — gibt es einen Zuschuss über die KfW (Zuschuss 458), der sich aus einer Grundförderung und mehreren Boni zusammensetzt (Klima-Geschwindigkeits-Bonus, Einkommens-Bonus). Daneben fördert die BEG auch Dämmung, Fenster und Anlagentechnik. Die Sätze und Bedingungen ändern sich regelmäßig; verbindlich sind stets die jeweils gültige Richtlinie und die Entscheidung der zuständigen Stelle — beim Heizungstausch die Zusage der KfW, bei Dämmung, Fenstern, Anlagentechnik und Heizungsoptimierung der Bescheid des BAFA.",
   },
   noct: {
     term: "NOCT",
