@@ -352,5 +352,42 @@ export function mailKopfzeilen(_o: { widerspruchAn: string }): Record<string, st
  */
 export const PAUSE_MS = 90_000;
 
-/** Obergrenze je Lauf — das Tagespensum aus dem Briefing (15–25). */
-export const MAX_JE_LAUF = 25;
+/**
+ * Tagespensum — GEMESSEN ANGEHOBEN, nicht geraten (26.08.2026: 25 → 40).
+ *
+ * Die 25 stammten aus dem Briefing, und dessen Quelle waren Ratgeber von
+ * Anbietern, die Aufwärm-Dienste verkaufen. Unsere eigene Messung sagt etwas
+ * anderes: 79 Mails in sechs Läufen, **kein einziger Bounce**, zwei Rathäuser
+ * antworteten automatisch, und die Probemail bestand alle drei Echtheitsprüfungen
+ * mit gutem Spam-Wert. Die Fachliteratur der Versanddienste beginnt ihre
+ * Aufwärmpläne bei tausend Mails am Tag — der Unterschied zwischen 25 und 40 ist
+ * dort kein Ereignis.
+ *
+ * WARUM ÜBERHAUPT ANHEBEN: 3.453 Gemeinden haben ein Rollen-Postfach und sind
+ * noch nicht angeschrieben. Bei 20 Mails an drei Versandtagen je Woche dauert
+ * das ein Jahr. Die Grenze ist damit nicht die Vorsicht, sondern der Engpass.
+ *
+ * DIE STUFE IST EINE STUFE, kein Endzustand. Vor der nächsten Anhebung muss die
+ * Zustellungsprobe (`ZUSTELLPROBE`) aus mindestens drei Läufen sauber sein —
+ * Bounces zeigen sich erst, wenn es längst zu spät ist, die Einsortierung in den
+ * Spam-Ordner dagegen sofort.
+ */
+export const MAX_JE_LAUF = 40;
+
+/**
+ * Empfänger der Zustellungsprobe: je Versandlauf eine zusätzliche Mail an ein
+ * Postfach bei einem großen Anbieter, um zu sehen, WO sie landet.
+ *
+ * Der Grund für diese Messung: Ein Bounce sagt „die Adresse gibt es nicht" und
+ * kommt sofort. Die teurere Fehlentwicklung ist leise — die Mail wird
+ * angenommen, landet aber im Spam-Ordner, und niemand merkt es, weil ein Rathaus
+ * uns nicht schreibt, dass es unsere Nachricht nicht gesehen hat. Ohne diese
+ * Probe würde eine steigende Menge erst auffallen, wenn der Ruf der Domain
+ * beschädigt ist.
+ *
+ * Leer = keine Probe. Der Versand läuft dann trotzdem, meldet die Lücke aber.
+ */
+export const ZUSTELLPROBE = (process.env.OUTREACH_PROBE_ADRESSEN ?? "")
+  .split(",")
+  .map((a) => a.trim())
+  .filter(Boolean);

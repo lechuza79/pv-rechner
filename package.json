@@ -28,6 +28,7 @@
     "foerder:abdeckung": "tsx scripts/funding-coverage.ts",
     "foerder:screen": "tsx scripts/funding-screen.ts",
     "stand:faellig": "tsx scripts/stand-faellig.ts",
+    "waechter:gesundheit": "tsx scripts/waechter-gesundheit.ts",
     "sessions": "tsx scripts/sessions.ts",
     "laender:sync": "tsx scripts/ember-laender-sync.ts",
     "foerder:serp": "tsx scripts/funding-serp-test.ts",
