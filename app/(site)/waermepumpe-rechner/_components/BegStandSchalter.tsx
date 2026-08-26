@@ -140,14 +140,14 @@ export default function BegStandSchalter({
               wenn die Wärmepumpe ihren Ursprung in der EU hat. Weil der Grundsatz zum selben
               Zeitpunkt um 15 Punkte sinkt, ändert sich für ein solches Gerät am Fördersatz
               nichts — die Kürzung trifft nur Geräte von außerhalb.
-              Ob ein bestimmtes Gerät den Bonus bekommt, können wir nicht für dich beantworten:
-              Der Ursprung hängt am Produktionsort und an der Fertigungstiefe, nicht am
-              Firmensitz — ein deutscher Markenname belegt ihn nicht, ein asiatischer schließt
-              ihn nicht aus, und mehrere asiatische Hersteller fertigen in Europa. Die
-              amtlichen Gerätelisten führen dazu kein Feld, und die Einzelheiten regelt ein
-              gesondertes Infoblatt. Dein Angebot nennt das Gerät — danach lässt sich fragen.
-              Anders als Klima- und Einkommens-Bonus setzt dieser Bonus keine Selbstnutzung
-              voraus.
+              Ob ein bestimmtes Gerät den Bonus bekommt, können wir nicht für dich beantworten,
+              und zwar aus zwei Gründen: Die amtlichen Gerätelisten führen dazu kein Feld —
+              und woran sich der Ursprung überhaupt entscheidet, legt die Richtlinie nicht
+              selbst fest, sondern verweist auf ein gesondertes Infoblatt, das bislang nicht
+              vorliegt. Vom Markennamen lässt sich jedenfalls nicht darauf schließen. Frag
+              deinen Fachbetrieb nach dem konkreten Gerät, sobald die Abgrenzung
+              veröffentlicht ist. Anders als Klima- und Einkommens-Bonus setzt dieser Bonus
+              keine Selbstnutzung voraus.
             </InfoTooltip>
           </>
         ) : null}

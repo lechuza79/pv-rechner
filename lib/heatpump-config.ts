@@ -441,19 +441,22 @@ export const BEG_GELTUNG_BIS_ISO = "2030-12-31";
  * kann sie dagegen beantworten — spätestens sein Angebot nennt das Gerät.
  *
  * WAS WIR TATSÄCHLICH NICHT KÖNNEN, ist es ihm abzunehmen:
- *   • „Ursprung in der Union" ist eine zollrechtliche Kategorie. Sie hängt am
- *     Produktionsort und an der Fertigungstiefe, nicht am Firmensitz — ein
- *     deutscher Markenname belegt ihn so wenig, wie ein koreanischer ihn
- *     ausschließt; mehrere asiatische Hersteller fertigen in Europa.
+ *   • Die Richtlinie sagt selbst nicht, woran sich der Ursprung entscheidet:
+ *     „Näheres regelt das ,Infoblatt zu den förderfähigen Maßnahmen und
+ *     Leistungen'." Dieses Infoblatt liegt uns nicht vor. **Deshalb steht in
+ *     unseren Texten auch keine eigene Definition** — eine erste Fassung
+ *     schrieb, der Ursprung hänge „am Produktionsort und an der Fertigungstiefe",
+ *     und behauptete damit eine Abgrenzung, die wir nirgends gelesen haben
+ *     (gefunden in der Gegenprüfung, 26.08.2026). Was sich sagen lässt: Vom
+ *     Markennamen lässt sich nicht darauf schließen — „Ursprung" ist kein
+ *     Synonym für „Hersteller mit Sitz in".
  *   • Die amtliche BAFA-Geräteliste führt kein Ursprungsfeld (geprüft
  *     26.08.2026: Marke, Bezeichnung, Artikelnummer, EAN, Pumpentyp,
  *     Nennwärmeleistung, ETAs, Kältemittel, Netzdienlichkeit,
  *     Schallleistungspegel, Energieeffizienzklasse).
- *   • Die Richtlinie verweist für die Einzelheiten selbst weiter: „Näheres
- *     regelt das ,Infoblatt zu den förderfähigen Maßnahmen und Leistungen'."
- *     Dieses Infoblatt liegt uns nicht vor.
  * Deshalb ist die Voreinstellung „nein" und die Frage steht sichtbar daneben,
- * samt beider Beträge.
+ * samt beider Beträge. Wer das Infoblatt beschafft, legt es nach `docs/quellen/`
+ * — dann lässt sich die Frage womöglich enger stellen als „aus der EU: ja/nein".
  *
  * KEINE SELBSTNUTZER-BINDUNG, anders als Klima- und Einkommens-Bonus: Nr. 8.4.6
  * nennt keine. Ein Vermieter bekommt ihn, obwohl ihm sonst nur die
