@@ -20,6 +20,28 @@ export const ATLAS_REVALIDATE_ROUTEN = [
 ] as const;
 
 /**
+ * DER GEMEINSAME MARKER ALLER ATLAS-DATEN — und der Weg, der wirklich wirkt.
+ *
+ * Am 26.08.2026 auf Produktion gemessen: Das Ungültig-Erklären über die
+ * Routenmuster oben wirkt NICHT. Alle drei Ebenen (Gemeinde, Bundesland,
+ * Rangliste) lieferten davor und danach unverändert einen Cache-Treffer,
+ * über anderthalb Minuten hinweg beobachtet — und die Schnittstelle meldete
+ * dabei Erfolg. Der Grund: Die Atlas-Seiten entstehen erst beim Zugriff
+ * (die Liste der vorab gebauten Seiten ist leer), also kennt das Framework
+ * die konkreten Adressen gar nicht, auf die das Muster passen müsste.
+ *
+ * Deshalb hängt die Invalidierung an den DATEN statt an den Adressen: Jede
+ * zwischengespeicherte Atlas-Abfrage trägt diesen Marker, und ein einziger
+ * Aufruf erklärt alles für ungültig, was daran hängt — unabhängig davon, wie
+ * viele Adressen daraus entstanden sind.
+ *
+ * Die Routenmuster bleiben zusätzlich stehen: Sie kosten nichts, und falls das
+ * Framework sie später doch bedient, schadet der zweite Weg nicht. Verlassen
+ * darf man sich nur auf den Marker.
+ */
+export const ATLAS_DATEN_TAG = "atlas-daten";
+
+/**
  * Ab welcher Haltbarkeit eine Seite zwingend in die Liste oben gehört.
  *
  * Bis zu einem Tag verfällt eine Seite von selbst schnell genug, dass der
