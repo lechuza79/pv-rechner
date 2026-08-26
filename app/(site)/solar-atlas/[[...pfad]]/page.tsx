@@ -34,7 +34,12 @@ import { rankingKategorienGruppiert } from "../../../../lib/atlas-ranking";
 import { getRegionAtlasData } from "../../../../lib/mastr-data";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
 
-export const revalidate = 86400;
+// Sieben Tage statt einem (26.08.2026) — Begruendung ausfuehrlich in
+// app/(site)/solar-atlas/[bundesland]/[kreis]/[gemeinde]/page.tsx: Die Zahlen
+// kommen monatlich, sichtbar gemacht werden sie aktiv nach dem Datenlauf
+// (POST /api/atlas/revalidate), und diese Haltbarkeit ist nur noch das
+// Sicherheitsnetz, falls dieser Schritt ausfaellt.
+export const revalidate = 604800;
 // Zwei Ziele:
 // 1) Ohne generateStaticParams behandelt Next die dynamische Route als voll
 //    dynamisch (no-store). Mit ihr wird sie ISR (s-maxage=3600).

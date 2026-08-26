@@ -267,6 +267,40 @@ export const RELEASE_PLAN: Schub[] = [
     },
   },
   {
+    id: "w4-nidda-rueckmeldung",
+    gattung: "foerder-stadt",
+    datum: "2026-08-26",
+    status: "live",
+    orte: ["06440016"], // Nidda (Hessen, Wetteraukreis)
+    begruendung:
+      "Ein Schub aus EINEM Ort, und der Grund ist nicht die Nachfrage, sondern die Herkunft: " +
+      "Die Klimaschutz-Beauftragte der Stadt hat uns ihr Förderprogramm selbst geschickt, als " +
+      "Antwort auf eine Outreach-Mail über etwas ganz anderes. Es ist das erste Programm im " +
+      "Katalog, das eine Gemeinde uns gegeben hat — unsere eigene Suche hatte es nicht, und im " +
+      "ganzen Wetteraukreis stand bis dahin keins.\n\n" +
+      "ZWECK IST DER BELEG, NICHT DIE SICHTBARKEIT (Betreiber-Entscheidung 26.08.2026). Der " +
+      "Satz „Ihr Programm steht in unserem Rechner\" ist mit Seite ein Link und ohne Seite eine " +
+      "Behauptung. Für den Kommunen-Outreach — 100 Briefe verschickt, weitere geplant — ist das " +
+      "der Unterschied zwischen einer Zusage und einem Nachweis. Diese Seite wird also nicht " +
+      "für Suchende gebaut, sondern für die Verwaltung, die uns geantwortet hat.\n\n" +
+      "Der Fall ist damit ausdrücklich KEIN Präzedenzfall für Ortsseiten allgemein: w1 bleibt " +
+      "zurückgenommen, und die Messung dort gilt unverändert. Wer aus diesem Schub ableitet, " +
+      "man könne Ortsseiten wieder pauschal freischalten, hat die Begründung nicht gelesen.",
+    nachweis: {
+      gemessenAm: "2026-08-19",
+      nachfrage:
+        "Nein, und das ist hier kein Ausschlussgrund. Die Messung vom 19.08.2026 über 14 " +
+        "vergleichbare Orte ergab 10 Suchen im Monat für alle zusammen; für Nidda selbst ist " +
+        "nichts messbar. Der Schub wird trotzdem live genommen, weil sein Zweck der " +
+        "Outreach-Beleg ist — eine Nachfrage zu behaupten, die es nicht gibt, wäre die " +
+        "Fehlerklasse, gegen die dieser Nachweis gebaut wurde.",
+      kannibalisierung:
+        "Keine. Die Atlas-Gemeindeebene ist nicht freigeschaltet (RELEASED.gemeinde = false in " +
+        "lib/atlas-index.ts), es gibt also keine zweite eigene Seite mit dem Ortsnamen Nidda.",
+      beleg: "docs/seo/schub-w1-foerder-dach-2026-08-19.md",
+    },
+  },
+  {
     id: "w3-atlas-orte-pilot",
     gattung: "atlas-gemeinde",
     datum: "2026-10-14",

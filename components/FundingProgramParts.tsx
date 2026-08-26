@@ -62,6 +62,48 @@ export function FundingStatusBadge({ status }: { status: FundingStatus }) {
   );
 }
 
+/**
+ * Einen Fördersatz in Zahl, Einheit und Zusatz zerlegen.
+ *
+ * Dieselbe Staffelung wie bei den Kacheln im Atlas: Der Zahlenwert trägt die
+ * Zeile, die Einheit steht kleiner daneben, eine Bedingung darunter noch
+ * kleiner und ruhiger. „20 % (30 % als Solar-Gründach)" als ein Stück in der
+ * Zahlen-Schrift ließ die Einheit so laut schreien wie den Betrag.
+ *
+ * DIE KLAMMER MUSS NICHT AM ENDE STEHEN (26.08.2026). Hier stand
+ * `.replace(/\)$/, "")` — das entfernt die schließende Klammer nur, wenn sie
+ * das letzte Zeichen ist. Steht hinter ihr noch etwas, blieb sie mitten im Text
+ * stehen: Niddas Höchstbetrag erschien als „1.500 € Anlage + Speicher),
+ * Mini-PV max. 200 €", mit einer Klammer, die nirgends aufgeht. Es war kein
+ * Einzelfall — fünf Programme im Katalog tragen eine Klammer, und jedes hätte
+ * denselben Rest hinter sich haben können.
+ *
+ * ALS EIGENE FUNKTION, nicht inline in der Zeile: Die Zerlegung ist Logik mit
+ * Randfällen und stand mitten im JSX, wo kein Test sie erreichte. Genau deshalb
+ * fiel der Klammerfehler auch nicht auf, sondern erst beim Ansehen der fertigen
+ * Seite.
+ */
+export function zerlegeSatz(value: string): {
+  zahl: string;
+  einheit: string | null;
+  zusatz: string | null;
+  kurzeEinheit: boolean;
+} {
+  const auf = value.indexOf(" (");
+  const zu = auf > 0 ? value.indexOf(")", auf) : -1;
+  const ohneZusatz = auf > 0 ? value.slice(0, auf) : value;
+  // Was hinter der schließenden Klammer steht, gehört zum Zusatz — nur ohne die
+  // Klammerzeichen selbst.
+  const zusatz =
+    auf > 0 ? (zu > 0 ? `${value.slice(auf + 2, zu)}${value.slice(zu + 1)}` : value.slice(auf + 2)) : null;
+  const m = ohneZusatz.match(/^([+−-]?[\d.,]+(?:\s*[–-]\s*[\d.,]+)?)\s*(.*)$/);
+  const zahl = m ? m[1] : ohneZusatz;
+  const einheit = m && m[2] ? m[2] : null;
+  // Kurzzeichen bleiben in der Zeile, ausgeschriebene Einheiten rutschen
+  // darunter — sonst wird die Zeile vom Wort statt von der Zahl geführt.
+  return { zahl, einheit, zusatz, kurzeEinheit: !!einheit && einheit.length <= 3 };
+}
+
 /** The "label … value" rate rows. `bordered` adds the divider used in detail
  *  views (modal, city page); list views (overview, Bundesland) leave it off. */
 export function FundingRates({
@@ -95,20 +137,7 @@ export function FundingRates({
       }
     >
       {rates.map((r) => {
-        // Zahl, Einheit und Zusatz trennen — dieselbe Staffelung wie bei den
-        // Kacheln im Atlas: Der Zahlenwert trägt die Zeile, die Einheit steht
-        // kleiner daneben, eine Bedingung darunter noch kleiner und ruhiger.
-        // „20 % (30 % als Solar-Gründach)" als ein Stück in der Zahlen-Schrift
-        // ließ die Einheit so laut schreien wie den Betrag.
-        const auf = r.value.indexOf(" (");
-        const ohneZusatz = auf > 0 ? r.value.slice(0, auf) : r.value;
-        const zusatz = auf > 0 ? r.value.slice(auf + 2).replace(/\)$/, "") : null;
-        const m = ohneZusatz.match(/^([+\u2212-]?[\d.,]+(?:\s*[\u2013-]\s*[\d.,]+)?)\s*(.*)$/);
-        const zahl = m ? m[1] : ohneZusatz;
-        const einheit = m && m[2] ? m[2] : null;
-        // Kurzzeichen bleiben in der Zeile, ausgeschriebene Einheiten rutschen
-        // darunter — sonst wird die Zeile vom Wort statt von der Zahl geführt.
-        const kurzeEinheit = !!einheit && einheit.length <= 3;
+        const { zahl, einheit, zusatz, kurzeEinheit } = zerlegeSatz(r.value);
         return (
           <div
             key={r.label}

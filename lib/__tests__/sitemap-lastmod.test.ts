@@ -40,8 +40,26 @@ describe("Sitemap: lastmod trägt echte Daten, nie die Build-Zeit", () => {
     vi.setSystemTime(new Date("2026-09-14T22:30:00Z"));
     const zweiter = stempel(await sitemap());
 
-    expect(zweiter).toEqual(erster);
-    expect(erster.size).toBeGreaterThan(10);
+    // Verglichen werden die STEMPEL der Adressen, die in beiden Läufen
+    // vorkommen — nicht die Menge der Adressen (26.08.2026).
+    //
+    // Der Unterschied ist keine Bequemlichkeit, sondern der Zuschnitt der
+    // Frage: Dieser Test klärt, ob `lastmod` ein echtes Datum trägt oder die
+    // Bauzeit. Wie VIELE Seiten in der Sitemap stehen, ist eine andere Frage,
+    // und dort gehört sie auch hin — `atlas-funding-sync.test.ts` hält die Zahl
+    // der freigegebenen Seiten und ihre Identität fest.
+    //
+    // Dass die Menge zeitabhängig IST, ist Absicht: Ein Schub des Releaseplans
+    // trägt ein Datum, und vor diesem Tag gibt er seine Orte nicht frei. Der
+    // ursprüngliche Vergleich der ganzen Map wurde deshalb rot, sobald irgendein
+    // Schub zwischen den beiden gestellten Uhrzeiten liegt — er hätte künftig
+    // bei JEDER Freischaltung angeschlagen und dabei etwas gemeldet, das er gar
+    // nicht prüfen will.
+    const gemeinsam = [...erster.keys()].filter((u) => zweiter.has(u));
+    expect(gemeinsam.length).toBeGreaterThan(10);
+    for (const url of gemeinsam) {
+      expect(zweiter.get(url), `${url} hat je nach Bauzeitpunkt ein anderes Datum`).toBe(erster.get(url));
+    }
   });
 
   it("gibt keinem Atlas-Eintrag einen Zeitstempel aus dem Bauzeitpunkt", async () => {

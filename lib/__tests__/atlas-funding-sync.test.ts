@@ -131,7 +131,25 @@ describe("Zuordnung über den Gemeindeschlüssel", () => {
  * damit zwar kreisangehörig, gehören aber nicht zur neuen Welle: Ihre Seiten
  * gibt es seit Juni.
  */
-const SCHON_IM_INDEX = ["aachen", "hannover", "saarbruecken"];
+const SCHON_IM_INDEX = [
+  "aachen",
+  "hannover",
+  "saarbruecken",
+  // Nidda kam am 26.08.2026 dazu, und zwar über den Releaseplan
+  // (Schub „w4-nidda-rueckmeldung", status live) — also genau auf dem Weg, den
+  // dieser Test verlangt, nicht an ihm vorbei.
+  //
+  // Der Grund ist bewusst KEIN Suchvolumen: Die Klimaschutz-Beauftragte der
+  // Stadt hat uns ihr Förderprogramm selbst geschickt, und für den
+  // Kommunen-Outreach ist der Satz „Ihr Programm steht in unserem Rechner" mit
+  // Seite ein Link und ohne Seite eine Behauptung. Die volle Begründung samt
+  // Messung steht am Schub.
+  //
+  // Damit ist die Welle NICHT eröffnet: Die übrigen kreisangehörigen Orte
+  // bleiben gesperrt, und w1 bleibt zurückgenommen. Wer hier einen weiteren
+  // Slug einträgt, braucht einen eigenen Schub mit eigenem Nachweis.
+  "nidda",
+];
 
 describe("Index-Freigabe", () => {
   it("die neuen Gemeindeseiten stehen noch nicht im Index", () => {
@@ -153,10 +171,17 @@ describe("Index-Freigabe", () => {
     // Prüfung entgangen, die auf „kreisangehörig" abfragt — und wäre am Tag des
     // Merges unangekündigt im Index gestanden.
     //
-    // 37 ist der Stand vom 19.08.2026, deckungsgleich mit dem eingefrorenen
+    // 37 war der Stand vom 19.08.2026, deckungsgleich mit dem eingefrorenen
     // Altbestand des Releaseplans. Wächst die Zahl, ist eine Seite
     // veröffentlicht worden, ohne dass jemand es entschieden hat.
-    expect(indexedCities().length).toBe(37);
+    //
+    // 38 seit dem 26.08.2026: Nidda, über den Schub „w4-nidda-rueckmeldung".
+    // Die Zahl anzuheben ist hier ausdrücklich KEIN Aufweichen der Schwelle —
+    // sie ist die Buchführung über bewusste Freischaltungen, und diese eine ist
+    // im Releaseplan begründet und mit Nachweis versehen. Wer sie erhöht, ohne
+    // dass ein Schub auf „live" steht, hat genau den Fehler gemacht, den der
+    // Test verhindern soll.
+    expect(indexedCities().length).toBe(38);
   });
 
   it("die Seiten, die es längst gibt, bleiben freigegeben — und zwar dieselben", () => {
@@ -181,6 +206,11 @@ describe("Index-Freigabe", () => {
       "ludwigshafen", "mainz", "mannheim", "mayen-koblenz", "memmingen", "muenchen",
       "muenster", "osnabrueck", "potsdam", "regensburg", "rhein-erft-kreis", "schweinfurt",
       "schwerin", "stuttgart", "wiesbaden", "wolfsburg", "wuerzburg",
+      // Nachträglich freigeschaltet, nicht seit Juni dabei: Nidda (26.08.2026,
+      // Schub „w4-nidda-rueckmeldung"). Steht hier, weil dieser Test die
+      // IDENTITÄT der freigegebenen Seiten hält — eine bewusste Freischaltung
+      // muss sichtbar dazukommen, sonst könnte ein stiller Tausch sie ersetzen.
+      "nidda",
     ];
     expect(indexedCities().map((c) => c.slug).sort()).toEqual([...SEIT_JUNI_IM_INDEX].sort());
   });

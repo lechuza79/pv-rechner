@@ -53,7 +53,29 @@ import { publishedCities, cityPath } from "../../../../../../lib/atlas-cities";
 import { landProgramBundeslaender } from "../../../../../../lib/funding-programs";
 import { DATA_SOURCES } from "../../../../../../lib/data-sources";
 
-export const revalidate = 86400;
+// Haltbarkeit: sieben Tage, NICHT ein Tag (Umstellung 26.08.2026).
+//
+// Die Zahlen dieser Seite kommen aus dem MaStR-Datenlauf — einmal im Monat, am
+// 5. Bei 24 Stunden Haltbarkeit verfiel die Seite dreissigmal oefter als ihre
+// Daten sich aendern, und jeder Verfall kostet einen vollstaendigen Neuaufbau
+// mit rund zehn Datenbank-Abfragen, einem Cache-Schreibvorgang und einer
+// Uebertragung ans Auslieferungsnetz. Bei ueber 11.000 Gemeindeseiten unter
+// Dauerbeschuss von Crawlern war das ein Hauptposten der Vercel-Rechnung.
+//
+// WARUM SIEBEN TAGE UND NICHT DREISSIG: Die neuen Zahlen werden nach dem
+// Datenlauf aktiv sichtbar gemacht (POST /api/atlas/revalidate, am 26.08.2026
+// auf Produktion nachgewiesen: Treffer -> Neuaufbau auf allen drei Ebenen).
+// Faellt dieser Schritt einmal aus, ist die Haltbarkeit das Sicherheitsnetz —
+// und dann entscheidet sie, wie lange veraltete Zahlen stehen bleiben. Der
+// Schritt von einem Tag auf sieben holt bereits den groessten Teil der
+// Ersparnis (statt dreissig Verfaellen im Monat nur noch vier); der weitere
+// Schritt auf dreissig Tage braechte wenige Prozentpunkte mehr, vervierfachte
+// aber das Schadensfenster. Schlechtes Verhaeltnis.
+//
+// Wer diesen Wert aendert, prueft lib/atlas-revalidate-routen.ts mit: Ab einem
+// Tag Haltbarkeit MUSS die Route dort stehen, sonst zeigt sie nach dem
+// Datenlauf die Zahlen des Vormonats. Ein Test erzwingt das.
+export const revalidate = 604800;
 // Ohne generateStaticParams wäre die Route voll dynamisch (no-store). Leeres
 // Array = keine Vorab-Renders (zu viele Gemeinden), aber ISR: jede Gemeinde-Seite
 // rendert einmal on-demand und liegt dann s-maxage=3600 im CDN.

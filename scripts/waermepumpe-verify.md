@@ -26,14 +26,30 @@ zusätzlich in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
   Boni — Klimageschwindigkeitsbonus und Einkommensbonus; einen Effizienzbonus
   nennt es nicht, und im Code gibt es ihn auch nicht. Die frühere Zeile hier
   verlangte die Prüfung eines Feldes, das gar nicht existiert.)
-  **Zwei davon sinken am 01.02.2027 planmäßig, danach halbjährlich zum 01.02. und
-  01.08.:** `begMaxCap` um 750 € je Schritt, `begKlimaBonus` um 4 Prozentpunkte je
-  Schritt (ab Antragstellung 01.08.2028 entfällt er ganz). Termin und Schrittweite
-  stehen bereits im Merkblatt 458 — das ist keine Prognose, sondern ein Fahrplan.
-  Der Marker `OFFEN (bis 01/2027)` in `lib/heatpump-config.ts` lässt den Frist-Test
-  rechtzeitig anschlagen; beim Nachziehen die Frist **mitschieben, nicht streichen**,
-  weil der nächste Schritt schon feststeht. Die neuen Werte trotzdem am Merkblatt
-  ablesen statt fortzurechnen — die Schrittweite kann der Gesetzgeber ändern.
+  **Der ZEITVERLAUF dieser Werte steht seit 26.08.2026 in `BEG_FAHRPLAN`
+  (`lib/heatpump-config.ts`) und wird nicht mehr über Fristvermerke verwaltet.**
+  Grundfördersatz, Klimageschwindigkeits-Bonus und Höchstbetrag ändern sich zu
+  festen, im Voraus feststehenden Stichtagen; der Rechner löst sie zur Laufzeit
+  auf, ein Umschalter im Ergebnis stellt den heutigen Stand dem nach dem nächsten
+  Stichtag gegenüber. Der frühere Marker `OFFEN (bis 01/2027)` ist damit
+  hinfällig. Was der Wächter hier tut: die Stufen **gegen die Quelle abgleichen**,
+  nicht fortrechnen — die Schrittweite kann der Gesetzgeber ändern, und
+  `lib/__tests__/beg-fahrplan.test.ts` nagelt jede Zelle mit ihrer Fundstelle fest.
+
+  **Leitquelle ist die FÖRDERRICHTLINIE, nicht das Merkblatt** (Volltext:
+  `docs/quellen/BEG-EM-Richtlinie_2026-07-17.pdf`). Genau daran hing die Lücke,
+  die dieser Wächter monatelang nicht sah: Das Merkblatt 458 (07/2026) nennt die
+  Grundförderung schlicht mit „30 %" **ohne den Stichtag** — und die Richtlinie
+  halbiert sie zum ersten Quartal 2027 für Wärmepumpen auf 15 % (Nr. 8.4.1
+  Buchst. c i. V. m. Nr. 5.3 Buchst. c). Kein Widerspruch, den man auflösen
+  müsste: Nr. 9.1 der Richtlinie gibt sich selbst den Vorrang vor
+  Programminformationen, und das Merkblatt ist eine solche. **Wer künftig eine
+  Abweichung zwischen beiden findet, prüft ZUERST die Richtlinie.**
+
+  **Und: Zum selben Stichtag gibt Nr. 8.4.6 fünfzehn Prozentpunkte zurück**, wenn
+  die Wärmepumpe ihren Ursprung in der Union hat — betragsgleich mit der
+  Halbierung. Wer nur die Kürzung prüft und meldet, meldet die halbe Sache. Der
+  Rechner fragt den Ursprung deshalb ab, statt ihn anzunehmen.
 - `investLwwpBase` / `investLwwpPerKw` / `investSwwpBase` / `investSwwpPerKw` /
   `heizkoerperTauschKosten` — **Leitquelle: die jährliche Auswertung echter
   Wärmepumpen-Angebote der Verbraucherzentrale Rheinland-Pfalz.** Beide Jahrgänge

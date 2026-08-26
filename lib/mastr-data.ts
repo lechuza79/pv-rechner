@@ -7,6 +7,7 @@ import { unstable_cache } from "next/cache";
 import { BUNDESLAENDER, bundeslandByAgs } from "./mastr-regions";
 import { withDbTimeout } from "./db-timeout";
 import { ENCLOSED_CITIES } from "./enclosed-cities";
+import { ATLAS_DATEN_TAG } from "./atlas-revalidate-routen";
 
 export type Energietraeger = "solar" | "wind" | "biomasse" | "wasser" | "speicher" | "gesamt";
 export type Segment = "steckersolar" | "privat_dach" | "gewerbe_dach" | "freiflaeche" | "n/a";
@@ -650,6 +651,7 @@ async function getRegionAtlasDataUncached(regionId: string): Promise<RegionAtlas
 // Teil des Cache-Keys; revalidate passend zur monatlichen Datenaktualität + ISR.
 export const getRegionAtlasData = unstable_cache(getRegionAtlasDataUncached, ["region-atlas-v2"], {
   revalidate: 3600,
+  tags: [ATLAS_DATEN_TAG],
 });
 
 // ─── National yearly solar additions (for the "Zubau-Zeitleiste" story) ──────
