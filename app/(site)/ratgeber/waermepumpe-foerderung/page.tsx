@@ -10,6 +10,8 @@ import { DataSourceNote } from "../../../../components/PoweredBy";
 import GlossaryTerm from "../../../../components/GlossaryTerm";
 import StickyCta from "./StickyCta";
 import WpRechnerModal from "./WpRechnerModal";
+import KfwFoerderpraxis from "../../../../components/KfwFoerderpraxis";
+import { heizungsfoerderungBund } from "../../../../lib/kfw-foerderdaten";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
 import { waermepumpeFoerderungFaq } from "../../../../lib/faq";
 import { v } from "../../../../lib/theme";
@@ -292,7 +294,11 @@ const CASES: CaseRow[] = [
   },
 ];
 
-export default function WaermepumpeFoerderungPage() {
+export default async function WaermepumpeFoerderungPage() {
+  // Was aus der Bundesförderung wirklich geworden ist. Auf dem Server geholt:
+  // Die Tabellen liegen hinter dem Dienstschlüssel, und die Seite soll
+  // vorgerendert bleiben.
+  const kfw = await heizungsfoerderungBund();
   const faqItems = waermepumpeFoerderungFaq();
   // ZWEI Daten, die bis 25.08.2026 verwechselt waren: `HP.validFrom` ist der
   // Stand UNSERER Werte, nicht der Tag, ab dem das KfW-Merkblatt gilt. Die Seite
@@ -648,6 +654,31 @@ export default function WaermepumpeFoerderungPage() {
             { term: "Neubau", desc: "Kein prozentualer Zuschuss — dort läuft die Förderung nur über KfW-Kredite fürs ganze Gebäude." },
           ]}
         />
+
+        {/* ── Was daraus wirklich geworden ist ──
+
+             Alles über diesem Abschnitt beschreibt das Regelwerk: welche Sätze
+             es gibt, wer welchen Bonus bekommen KANN. Das ist die Auskunft, die
+             auch das Merkblatt gibt. Was den Unterschied zu einer Merkblattseite
+             macht, ist die Gegenprobe: wie oft das tatsächlich passiert ist.
+             Deshalb steht der Block direkt hinter der Regel-Gegenüberstellung
+             und nicht am Seitenende — er beantwortet dieselbe Frage noch
+             einmal, nur mit gezählten statt möglichen Fällen.
+
+             Fehlt die Datenbank, entfällt er lautlos; die Seite bleibt
+             vollständig. */}
+        {kfw && (
+          <>
+            <h2 style={S.h2}>Und wie oft kommt das wirklich vor?</h2>
+            <p style={S.p}>
+              Die Übersicht darüber sagt, wer welchen Bonus bekommen <em>kann</em>. Der
+              Förderreport der KfW sagt, wie oft es tatsächlich passiert ist.
+            </p>
+            <div style={S.card}>
+              <KfwFoerderpraxis daten={kfw} nackt />
+            </div>
+          </>
+        )}
 
         {/* ── Ehrlicher Hinweis ── */}
         <div style={S.card}>

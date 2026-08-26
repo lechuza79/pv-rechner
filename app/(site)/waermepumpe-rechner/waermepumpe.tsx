@@ -31,6 +31,9 @@ import StandortField from "../../../components/StandortField";
 import ResultFunding from "../../../components/ResultFunding";
 import { stackFunding, programmeNebenBundesfoerderung, zeilenBisDeckel } from "../../../lib/funding-programs";
 import { useFoerderung } from "../../../lib/use-foerderung";
+import KfwFoerderpraxis, { kfwPraxisZusammenfassung } from "../../../components/KfwFoerderpraxis";
+import { useKfwKreis } from "../../../lib/use-kfw-kreis";
+import { type HeizungsfoerderungBund } from "../../../lib/kfw-format";
 import HeatPumpChart from "./_components/HeatPumpChart";
 import GasPriceStackChart from "../../../components/charts/GasPriceStackChart";
 import HeatCostCompareChart from "../../../components/charts/HeatCostCompareChart";
@@ -54,7 +57,18 @@ const STEPS = ["Situation", "Größe & Typ", "Dämmstandard", "Haushalt", "Heizs
 export default function Waermepumpe({
   embedded = false,
   stand,
-}: { embedded?: boolean; stand?: StandSeite } = {}) {
+  kfw = null,
+}: {
+  embedded?: boolean;
+  stand?: StandSeite;
+  /**
+   * Was aus der Bundesförderung im letzten Jahrgang wirklich geworden ist —
+   * auf dem Server nachgeschlagen und hereingereicht, damit die Seite statisch
+   * bleibt und die Tabellen hinter dem Dienstschlüssel bleiben. Fehlt sie
+   * (kein Datenbankzugriff), entfällt der Abschnitt lautlos.
+   */
+  kfw?: HeizungsfoerderungBund | null;
+} = {}) {
   // ── Step state ───────────────────────────────────────────────
   const router = useRouter();
   const [step, setStep] = useState(0);
@@ -133,6 +147,9 @@ export default function Waermepumpe({
   // steht der Check im Ergebnis, wo er eine bereits gerechnete Zahl verbessert.
   const [plz, setPlz] = useState("");
   const foerderQuelle = useFoerderung("waermepumpe");
+  // Der Kreisbezug hängt am Ort, den der Fördercheck ohnehin schon aufgelöst
+  // hat — keine zweite Ortsfrage, kein Abruf ohne Ort.
+  const kfwKreis = useKfwKreis(foerderQuelle.ags);
   const [fundingEnabled, setFundingEnabled] = useState(true);
   const [showDetails, setShowDetails] = useState(false);
   // Szenario-Auswahl (steuert TCO/Amortisation/Ersparnis/CO₂ + Chart):
@@ -1039,6 +1056,27 @@ export default function Waermepumpe({
                   </>
                 }
               />
+            )}
+
+            {/* Was aus der Bundesförderung wirklich geworden ist.
+
+                Alles darüber beschreibt, was die Förderung HERGIBT — Sätze, Boni,
+                Höchstbetrag. Die Frage, mit der die meisten herkommen, ist eine
+                andere: „bekomme ich das auch?" Darauf antwortet nur das, was
+                das Amt gezählt hat. Der Abschnitt steht deshalb direkt unter dem
+                Förderblock und nicht am Seitenende.
+
+                Nur im Bestand: Im Neubau gibt es diese Förderung nicht, und
+                Zahlen zu einer Förderung zu zeigen, die der gerechnete Fall gar
+                nicht bekommt, wäre die Sorte Zahl, die zur falschen Erwartung
+                führt. */}
+            {situation === "bestand" && kfw && (
+              <ResultSection
+                title="Wer bekommt die Förderung wirklich?"
+                summary={kfwPraxisZusammenfassung(kfw)}
+              >
+                <KfwFoerderpraxis daten={kfw} kreis={kfwKreis} nackt />
+              </ResultSection>
             )}
 
             {/* 3. Realistische Wege */}
