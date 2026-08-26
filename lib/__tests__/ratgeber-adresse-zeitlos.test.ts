@@ -84,6 +84,30 @@ describe("Ratgeber-Adresse ohne Jahreszahl", () => {
     }
   });
 
+  it("die Zeitleiste ersetzt den Archiv-Artikel — aus dem Fahrplan, nicht getippt", () => {
+    // Der Betreiber fragte, ob die auslaufende Fassung eine eigene Seite
+    // bekommt. Gemessen: 40 Aufrufe im Monat für die Vorjahres-Anfrage gegen
+    // 33.100 zeitlos. Eine zweite Seite wäre kein Verkehr, sondern eine zweite
+    // Fläche mit Förderbeträgen — dieselbe Zweitfassung, die dieses Projekt bei
+    // Zahlen überall verbietet. Stattdessen: alle Stufen in EINER Tabelle, die
+    // von selbst ins Archiv hineinwächst.
+    const src = lies(SEITE);
+    expect(src).toMatch(/BEG_FAHRPLAN\.map/);
+    expect(src).toMatch(/Alle Stufen auf einen Blick/);
+    // Der Antragstag entscheidet, nicht der Einbau — sonst rechnet jemand mit
+    // der falschen Zeile.
+    expect(src).toMatch(/Tag, an dem der Antrag eingeht — nicht der Einbau/);
+    // Und ab 2027 ist „15 %" allein die halbe Auskunft: Der EU-Bonus gibt
+    // dieselben 15 Punkte zurück. Eine Spalte ohne diese Bedingung wäre genau
+    // die Zahl-ohne-Bedingung, die diesen Abschnitt schon einmal falsch machte.
+    expect(src).toMatch(/BEG_WERTSCHOEPFUNGS_BONUS\.abIso/);
+    expect(src).toMatch(/bei EU-Ursprung/);
+    // Die erste Fahrplan-Stufe heißt „heute". Als Zeilenbeschriftung wäre das
+    // ein Etikett, das mit der Zeit lügt — 2027 stünde „heute" über „vorbei".
+    // Sie trägt deshalb ihren Stichtag.
+    expect(src).toMatch(/stufe\.bezeichnung === "heute" \? formatFullDate\(stufe\.abIso\)/);
+  });
+
   it("niemand verlinkt die alte Adresse", () => {
     // nav-aktiv.test.ts prüft das allgemein; hier steht es zusätzlich, weil
     // sechzehn offene Arbeitsstände den alten Pfad tragen und ihn beim
