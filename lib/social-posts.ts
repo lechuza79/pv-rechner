@@ -12,6 +12,7 @@
 // lib/social-kennzahlen.ts (server-only) und werden hereingereicht.
 
 import { fmtPvLeistung } from "./atlas-format";
+import { fuelle, type PlatzhalterInfo } from "./social-vorlage";
 
 /** Zahlenbasis eines Posts. Kommt aus der Datenbank, wird hereingereicht. */
 export type SocialKennzahlen = {
@@ -116,6 +117,15 @@ export type SocialPost = {
   belege: string[];
   /** Fassung für die eigene Seite. Fehlt, solange es keine passende Seite gibt. */
   onsite?: OnsiteFassung;
+  /**
+   * Der Text als bearbeitbare Vorlage mit Platzhaltern, plus die Werte dazu.
+   *
+   * Damit kann im Redaktionstisch frei formuliert werden, ohne dass eine Zahl
+   * anfassbar wäre. Fehlt beides, ist der Post noch nicht auf Vorlagen
+   * umgestellt und dort nur lesbar.
+   */
+  vorlage?: string;
+  platzhalter?: PlatzhalterInfo[];
 };
 
 /**
@@ -161,7 +171,7 @@ function quellenzeile(standIso: string, mitMarke: boolean): string {
  * Post die Richtung mit, statt sie zu behaupten: Kippt das Verhältnis eines
  * Tages, kippt der Satz mit.
  */
-export function postStadtLand(k: SocialKennzahlen): SocialPost {
+export function postStadtLand(k: SocialKennzahlen, eigeneVorlage?: string): SocialPost {
   const s = k.stadtLand;
   const faktor = s.landJeTausend / s.stadtJeTausend;
   const staerker = faktor >= 1;
@@ -175,24 +185,51 @@ export function postStadtLand(k: SocialKennzahlen): SocialPost {
   const flaechenlaender = sortiert.filter((l) => !stadtstaatNamen.includes(l.name));
   const spitze = flaechenlaender[0] ?? sortiert[0];
 
+  // Werte einmal benannt, danach nur noch über Platzhalter angesprochen. Das
+  // ist die Bedingung dafür, dass im Redaktionstisch frei formuliert werden
+  // kann, ohne dass jemand eine Zahl überschreibt.
+  const platzhalter: PlatzhalterInfo[] = [
+    { name: "stadtAnzahl", wert: de(s.stadtAnzahl), erklaerung: "Zahl der Städte über der Schwelle" },
+    { name: "stadtSchwelle", wert: `${de(s.stadtAb / 1000)}.000`, erklaerung: "Einwohnerschwelle Stadt" },
+    { name: "stadtQuote", wert: de(s.stadtJeTausend, 1), erklaerung: "Geräte je 1.000 Einwohner, Städte" },
+    { name: "landAnzahl", wert: de(Math.round(s.landAnzahl / 1000)), erklaerung: "Gemeinden unter der Schwelle, in Tausend" },
+    { name: "landSchwelle", wert: `${de(s.landUnter / 1000)}.000`, erklaerung: "Einwohnerschwelle Gemeinde" },
+    { name: "landQuote", wert: de(s.landJeTausend, 1), erklaerung: "Geräte je 1.000 Einwohner, Gemeinden" },
+    { name: "faktor", wert: de(faktor, 1), erklaerung: "Verhältnis Land zu Stadt" },
+    {
+      name: "stadtstaaten",
+      wert: stadtstaaten.map((l) => `${l.name} ${de(l.balkonJeTausend, 1)}`).join(", "),
+      erklaerung: "Stadtstaaten mit ihrer Quote",
+    },
+    { name: "spitzenland", wert: spitze.name, erklaerung: "stärkstes Flächenland" },
+    { name: "spitzenwert", wert: de(spitze.balkonJeTausend, 1), erklaerung: "dessen Quote" },
+    { name: "quelle", wert: quellenzeile(k.standIso, true), erklaerung: "Quellenzeile mit Datenstand" },
+  ];
+
   // Die ersten zwei Zeilen sind alles, was der Feed vor „mehr anzeigen" zeigt.
   // Hier stand zuerst die Prämisse und die Pointe kam danach — im
   // Redaktionstisch sofort sichtbar geworden, sobald die Vorschau die richtige
   // Reihenfolge hatte. Jetzt: Widerspruch zuerst, Herleitung danach.
-  const text = [
+  const standardVorlage = [
     `In deutschen Großstädten stehen nur halb so viele Balkonkraftwerke wie in kleinen Gemeinden. Bei einem Gerät, das als Lösung für Mieter in der Stadt gilt.`,
     ``,
-    `Die Anmeldedaten: In den ${de(s.stadtAnzahl)} deutschen Städten über ${de(s.stadtAb / 1000)}.000 Einwohnern kommen ${de(s.stadtJeTausend, 1)} Steckersolargeräte auf 1.000 Einwohner. In den gut ${de(Math.round(s.landAnzahl / 1000))}.000 Gemeinden unter ${de(s.landUnter / 1000)}.000 Einwohnern sind es ${de(s.landJeTausend, 1)}. Also ${staerker ? `${de(faktor, 1)}-mal so viele` : `weniger`} — und zwar dort, wo die meisten Leute ohnehin ein eigenes Dach hätten.`,
+    `Die Anmeldedaten: In den {stadtAnzahl} deutschen Städten über {stadtSchwelle} Einwohnern kommen {stadtQuote} Steckersolargeräte auf 1.000 Einwohner. In den gut {landAnzahl}.000 Gemeinden unter {landSchwelle} Einwohnern sind es {landQuote}. Also ${staerker ? `{faktor}-mal so viele` : `weniger`} — und zwar dort, wo die meisten Leute ohnehin ein eigenes Dach hätten.`,
     ``,
-    `Am deutlichsten in den Stadtstaaten: ${stadtstaaten.map((l) => `${l.name} ${de(l.balkonJeTausend, 1)}`).join(", ")}. Unter den Flächenländern führt ${spitze.name} mit ${de(spitze.balkonJeTausend, 1)}.`,
+    `Am deutlichsten in den Stadtstaaten: {stadtstaaten}. Unter den Flächenländern führt {spitzenland} mit {spitzenwert}.`,
     ``,
     `Warum das plausibel ist, wenn man kurz nachdenkt: Ein Balkonkraftwerk braucht keine Baugenehmigung und keinen Handwerker, aber es braucht jemanden, der es aufstellt und anmeldet. Im Reihenhaus mit Garten ist beides einfacher als im vierten Stock einer Mietwohnung, deren Balkon nach Norden zeigt.`,
     ``,
-    quellenzeile(k.standIso, true),
+    `{quelle}`,
   ].join("\n");
+
+  const werte = Object.fromEntries(platzhalter.map((p) => [p.name, p.wert]));
+  const vorlage = eigeneVorlage ?? standardVorlage;
+  const text = fuelle(vorlage, werte);
 
   return {
     id: "stadt-land-balkon",
+    vorlage,
+    platzhalter,
     titel: "Das Balkonkraftwerk ist kein Stadtthema",
     kanal: ["linkedin", "instagram"],
     text,
@@ -496,6 +533,16 @@ export const ALLE_POSTS = [
   postUeberEinwohner,
 ] as const;
 
-export function baueAllePosts(k: SocialKennzahlen): SocialPost[] {
-  return ALLE_POSTS.map((f) => f(k));
+/**
+ * Alle Posts, mit optional bearbeiteten Vorlagen.
+ *
+ * Nur Posts, die auf Vorlagen umgestellt sind, nehmen eine eigene an. Die
+ * übrigen liefern ihren eingebauten Text — sie sind im Redaktionstisch dann
+ * lesbar, aber nicht bearbeitbar, und das steht dort auch so.
+ */
+export function baueAllePosts(k: SocialKennzahlen, vorlagen: Record<string, string> = {}): SocialPost[] {
+  return ALLE_POSTS.map((f) => {
+    const roh = f(k);
+    return f.length > 1 ? (f as (k: SocialKennzahlen, v?: string) => SocialPost)(k, vorlagen[roh.id]) : roh;
+  });
 }

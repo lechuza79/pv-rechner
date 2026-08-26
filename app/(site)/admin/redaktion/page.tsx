@@ -4,6 +4,8 @@ import { socialKennzahlen } from "../../../../lib/social-kennzahlen";
 import { baueAllePosts } from "../../../../lib/social-posts";
 import { FAMILIEN } from "../../../../lib/redaktionsplan";
 import { FeedVorschau } from "../../../../components/social/FeedVorschau";
+import { VorlagenEditor } from "../../../../components/social/VorlagenEditor";
+import { ladeVorlagen } from "../../../../lib/social-vorlagen-db";
 import { v, space, pad } from "../../../../lib/theme";
 
 // Entwicklung: Der Post so, wie er im Feed erscheint — Bild oben, Text darunter
@@ -38,7 +40,8 @@ export default async function RedaktionEntwicklung() {
   let posts;
   let fehler: string | null = null;
   try {
-    posts = baueAllePosts(await socialKennzahlen());
+    const [kennzahlen, vorlagen] = await Promise.all([socialKennzahlen(), ladeVorlagen()]);
+    posts = baueAllePosts(kennzahlen, vorlagen);
   } catch (e) {
     fehler = (e as Error).message;
   }
@@ -80,6 +83,14 @@ export default async function RedaktionEntwicklung() {
               </div>
 
               <FeedVorschau bild={p.bild!} text={p.text} breite={500} />
+
+              {p.vorlage && p.platzhalter ? (
+                <VorlagenEditor postId={p.id} vorlage={p.vorlage} platzhalter={p.platzhalter} />
+              ) : (
+                <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: space.sm }}>
+                  Noch nicht auf Vorlagen umgestellt — hier nur lesbar.
+                </p>
+              )}
 
               <details style={{ marginTop: space.md, maxWidth: 500 }}>
                 <summary
