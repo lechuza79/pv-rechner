@@ -103,6 +103,7 @@ const ENERGIE_ITEMS: NavItem[] = [
   // Menuepunkt traegt. Vorher standen beide gleichrangig hier, waehrend die
   // Kruemelspur die Listen unter den Atlas haengte; das widersprach sich.
   { href: "/solar-atlas", label: "Solar-Atlas", desc: "Solar-Bestand je Region und die Ranglisten der Städte und Gemeinden", page: "atlas" },
+  { href: "/photovoltaik-bestand-deutschland", label: "Solaranlagen in Deutschland", desc: "Wie viele Anlagen gemeldet sind und welche Leistung installiert ist", page: "bestand" },
   { href: "/energie-widgets", label: "Charts einbetten", desc: "Kostenlose Energie-Widgets für die eigene Website", page: "widgets" },
 ];
 
@@ -142,6 +143,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     pathname.startsWith("/balkonkraftwerk/foerderung") ? "balkon-foerderung" :
     pathname.startsWith("/balkonkraftwerk") ? "balkon" :
     pathname.startsWith("/photovoltaik-zubau-deutschland") ? "zubau" :
+    pathname.startsWith("/photovoltaik-bestand-deutschland") ? "bestand" :
     pathname.startsWith("/photovoltaik-foerderung") ? "foerderung" :
     // Ratgeber kommen aus der Registry, nicht aus dem Pfad. Mehrere liegen
     // bewusst auf oberster Ebene (/photovoltaik-neigungswinkel,

@@ -43,6 +43,7 @@ export const SEITEN: Seite[] = [
   { pfad: "/ratgeber/waermepumpe-foerderung", erwartet: /wärmepumpe/i },
   // Datenseiten
   { pfad: "/photovoltaik-zubau-deutschland", erwartet: /zubau/i },
+  { pfad: "/photovoltaik-bestand-deutschland", erwartet: /solaranlagen/i },
   { pfad: "/atomstrom-import", erwartet: /atomstrom|kernstrom/i },
   { pfad: "/langzeit-strommix", erwartet: /strommix/i },
   { pfad: "/datenstand", erwartet: /stand|daten/i },
@@ -71,6 +72,7 @@ export const EMBEDS: string[] = [
   "/embed/region-solarleistung?bl=13",
   "/embed/simulation?plz=10115",
   "/embed/pv-zubau-deutschland",
+  "/embed/anlagenbestand-deutschland",
   "/embed/einspeiseverguetung-verlauf",
   "/embed/ee-ampel",
   "/embed/karte",

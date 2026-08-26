@@ -182,6 +182,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Zubau-Story rechnet auf denselben MaStR-Daten wie der Atlas — also auch
     // derselbe Stand.
     { url: `${BASE_URL}/photovoltaik-zubau-deutschland`, lastModified: mastrStand, changeFrequency: "monthly", priority: 0.7 },
+    // Die Bestandsseite hat keinen Stand-Eintrag mit Wert (sie holt alles live),
+    // wohl aber ein ehrliches Datum: den Stand des Registerauszugs. Genau der
+    // ist ihr Inhalt — ändert er sich, ändert sich jede Zahl auf der Seite.
+    { url: `${BASE_URL}/photovoltaik-bestand-deutschland`, lastModified: mastrStand, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/ratgeber`, lastModified: neuesterRatgeber, changeFrequency: "monthly", priority: 0.7 },
     ...ratgeberPages,
     { url: `${BASE_URL}/pv-simulation`, changeFrequency: "monthly", priority: 0.8 },

@@ -14,6 +14,7 @@ import "server-only";
 import { unstable_cache } from "next/cache";
 import { supabase } from "./supabase-server";
 import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
+import { getNationalSolarStock } from "./mastr-data";
 import type { SocialKennzahlen } from "./social-posts";
 
 /** Ab wann eine Gemeinde als Stadt zählt. Runde Schwelle, im Text genannt. */
@@ -21,14 +22,14 @@ const STADT_AB = 100_000;
 /** Bis wohin als kleine Gemeinde. Dazwischen bleibt bewusst eine Lücke. */
 const LAND_UNTER = 20_000;
 
+// Nur, was der Einwohnerbezug braucht. Die Bundessummen kommen aus dem Rollup;
+// sie hier ein zweites Mal mitzuziehen hieße, zwei Zahlen für dieselbe Größe
+// durch die Leitung zu schicken und sich später zu fragen, welche gilt.
 type AwardZeile = {
   region_id: string;
   population: number;
   balkon_count: number | null;
-  balkon_count_ly: number | null;
   privat_dach_kwp: string | number | null;
-  solar_kwp: string | number | null;
-  solar_kwp_ly: string | number | null;
 };
 
 const zahl = (v: string | number | null | undefined) => (v == null ? 0 : Number(v) || 0);
@@ -40,7 +41,7 @@ const zahl = (v: string | number | null | undefined) => (v == null ? 0 : Number(
  */
 async function ladeGemeinden(): Promise<AwardZeile[]> {
   if (!supabase) throw new Error("Datenbank nicht konfiguriert");
-  const spalten = "region_id,population,balkon_count,balkon_count_ly,privat_dach_kwp,solar_kwp,solar_kwp_ly";
+  const spalten = "region_id,population,balkon_count,privat_dach_kwp";
   const alle: AwardZeile[] = [];
   const schritt = 1000;
   for (let von = 0; ; von += schritt) {
@@ -79,7 +80,21 @@ async function ladeStand(): Promise<string> {
 }
 
 async function rechne(): Promise<SocialKennzahlen> {
-  const [zeilen, namen, standIso] = await Promise.all([ladeGemeinden(), ladeNamen(), ladeStand()]);
+  // Die Bundeszahlen kommen aus dem Rollup, nicht aus der Summe der
+  // Gemeindezeilen: Die Award-Tabelle lässt Gemeinden ohne Einwohner oder ohne
+  // Slug weg und verfehlt den Bundesbestand dadurch um rund 1.500 Anlagen
+  // (gemessen 26.08.2026). Solange die Posts die einzige Oberfläche waren, fiel
+  // das in gerundeten Millionen nicht auf; seit die Bestandsseite dieselben
+  // Zahlen groß hinschreibt, wäre es ein Widerspruch zwischen zwei Absätzen
+  // derselben Seite. Stadt/Land und die Länderdichte bleiben bei den
+  // Gemeindezeilen — dort ist der Einwohnerbezug der Punkt.
+  const [zeilen, namen, standIso, bund] = await Promise.all([
+    ladeGemeinden(),
+    ladeNamen(),
+    ladeStand(),
+    getNationalSolarStock(),
+  ]);
+  const balkon = bund.segmente.find((s) => s.segment === "steckersolar");
 
   // Nur bewohnte Gemeinden mit achtstelligem Schlüssel. Kreis- und
   // Landeszeilen stünden sonst zusätzlich im Nenner und verdoppelten Einwohner.
@@ -106,6 +121,7 @@ async function rechne(): Promise<SocialKennzahlen> {
 
   return {
     standIso,
+    stichtagJahr: bund.stichtagJahr,
     stadtLand: {
       stadtAb: STADT_AB,
       landUnter: LAND_UNTER,
@@ -115,10 +131,10 @@ async function rechne(): Promise<SocialKennzahlen> {
       landJeTausend: je1000(land),
     },
     wachstum: {
-      balkonJetzt: gem.reduce((s, r) => s + (r.balkon_count ?? 0), 0),
-      balkonVorJahr: gem.reduce((s, r) => s + (r.balkon_count_ly ?? 0), 0),
-      solarKwpJetzt: gem.reduce((s, r) => s + zahl(r.solar_kwp), 0),
-      solarKwpVorJahr: gem.reduce((s, r) => s + zahl(r.solar_kwp_ly), 0),
+      balkonJetzt: balkon?.anzahl ?? 0,
+      balkonVorJahr: balkon?.stichtag.anzahl ?? 0,
+      solarKwpJetzt: bund.gesamt.kwp,
+      solarKwpVorJahr: bund.stichtagGesamt.kwp,
     },
     laender: [...proLand.entries()]
       .map(([ags, e]) => ({

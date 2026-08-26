@@ -12,6 +12,7 @@ import { baueAllePosts, postStadtLand, postWachstum, type SocialKennzahlen } fro
 
 const basis: SocialKennzahlen = {
   standIso: "2026-08-05T00:00:00+00:00",
+  stichtagJahr: 2025,
   stadtLand: {
     stadtAb: 100_000,
     landUnter: 20_000,
@@ -107,6 +108,57 @@ describe("Alle Posts", () => {
     // vollständig sein; der Link gehört in den ersten Kommentar.
     for (const p of baueAllePosts(basis)) {
       expect(p.text).not.toMatch(/https?:\/\//);
+    }
+  });
+});
+
+describe("Gruppenbehauptungen werden gerechnet, nicht getippt", () => {
+  // Der Satz „bei den Stadtstaaten wird es noch deutlicher" stand hier als
+  // feste Formulierung, während der Code nur „die letzten zwei Plätze" holte.
+  // Am 26.08.2026 stimmte er zufällig — Hamburg, Berlin und Bremen belegten
+  // wirklich die letzten drei Plätze. An dem Tag, an dem ein Flächenland
+  // durchsackt, wäre daraus eine Falschaussage geworden, ohne dass sich eine
+  // sichtbare Zahl bewegt hätte.
+  const mitStadtstaaten: SocialKennzahlen = {
+    ...basis,
+    laender: [
+      { name: "Niedersachsen", balkonJeTausend: 23.1, wpProKopf: 505 },
+      { name: "Bayern", balkonJeTausend: 16.7, wpProKopf: 2567 },
+      { name: "Bremen", balkonJeTausend: 11.1, wpProKopf: 300 },
+      { name: "Berlin", balkonJeTausend: 7.1, wpProKopf: 148 },
+      { name: "Hamburg", balkonJeTausend: 6.1, wpProKopf: 157 },
+    ],
+  };
+
+  it("nennt die Stadtstaaten nur, wenn sie wirklich die letzten drei sind", () => {
+    expect(postStadtLand(mitStadtstaaten).text).toContain("die Stadtstaaten");
+  });
+
+  it("lässt den Gruppennamen weg, sobald ein Flächenland durchsackt", () => {
+    const gekippt: SocialKennzahlen = {
+      ...mitStadtstaaten,
+      laender: mitStadtstaaten.laender.map((l) =>
+        l.name === "Bayern" ? { ...l, balkonJeTausend: 2.0 } : l,
+      ),
+    };
+    const t = postStadtLand(gekippt).text;
+    expect(t).not.toContain("Stadtstaaten");
+    expect(t).toContain("Bayern");
+  });
+
+  it("zählt alle drei Schlusslichter auf, wenn es sie benennt", () => {
+    const t = postStadtLand(mitStadtstaaten).text;
+    for (const name of ["Hamburg", "Berlin", "Bremen"]) expect(t).toContain(name);
+  });
+
+  it("liefert für jeden Post eine Onsite-Fassung ohne Ich-Form und ohne Quellenzeile", () => {
+    // Auf einer Seite trägt der Fuß die Quelle, und ein „Ich finde" gehört
+    // nicht in einen Abschnitt, der eine Frage beantwortet.
+    for (const p of baueAllePosts(mitStadtstaaten)) {
+      expect(p.onsite.absaetze.length, `${p.id} ohne Onsite-Absätze`).toBeGreaterThan(0);
+      const text = p.onsite.absaetze.join(" ");
+      expect(text, `${p.id}: Ich-Form in der Onsite-Fassung`).not.toMatch(/\bIch\b/);
+      expect(text, `${p.id}: Quellenzeile in der Onsite-Fassung`).not.toContain("Eigene Berechnung");
     }
   });
 });

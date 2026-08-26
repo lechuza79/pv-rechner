@@ -168,6 +168,18 @@ export const STAND: Record<string, StandSeite> = {
     eintraege: [],
     live: ["Wetterdaten", "Standort-Ertrag"],
   },
+
+  // Die Bestandsseite hat keinen einzigen Stichtagswert: Jede Zahl darauf kommt
+  // aus dem Registerauszug, den die Seite bei jedem Aufruf liest — samt seinem
+  // eigenen Datenstand, der sichtbar an den Zahlen steht. Ein Prüfdatum in
+  // dieser Liste wäre genau das erfundene, das die Regel oben verbietet: Wir
+  // prüfen die Werte nicht, wir holen sie. Folglich auch kein `lastmod`.
+  "/photovoltaik-bestand-deutschland": {
+    eintraege: [],
+    live: [
+      "Anlagenbestand aus dem Marktstammdatenregister (der Datenstand des Auszugs steht an den Zahlen)",
+    ],
+  },
 };
 
 /**

@@ -170,6 +170,18 @@ const SECTIONS: WidgetSection[] = [
     variants: [{ id: "pv-zubau-deutschland", label: "PV-Zubau", src: "/embed/pv-zubau-deutschland", height: 760 }],
   },
   {
+    id: "anlagenbestand-deutschland",
+    label: "Solaranlagen in Deutschland",
+    intro:
+      "Wie viele Solaranlagen in Deutschland gemeldet sind, welche Leistung installiert ist und wie sich beides auf Balkonkraftwerke, private und gewerbliche Dächer und Freiflächen verteilt. Stückzahl und Leistung stehen nebeneinander, weil sie gegenläufig sind — nach Anzahl dominieren die kleinen Anlagen, nach Leistung die großen. Monatlich aus dem Marktstammdatenregister.",
+    attribution: {
+      path: "/photovoltaik-bestand-deutschland",
+      text: "Solaranlagen in Deutschland – Solar Check",
+    },
+    showFrameWidth: true,
+    variants: [{ id: "anlagenbestand-deutschland", label: "Anlagenbestand", src: "/embed/anlagenbestand-deutschland", height: 560 }],
+  },
+  {
     id: "karte",
     label: "Deutschland-Karte",
     intro:

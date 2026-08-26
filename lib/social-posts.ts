@@ -12,11 +12,21 @@
 // lib/social-kennzahlen.ts (server-only) und werden hereingereicht.
 
 import { fmtPvLeistung } from "./atlas-format";
+import { zeitraumSeitStichtag } from "./anlagenbestand";
 
 /** Zahlenbasis eines Posts. Kommt aus der Datenbank, wird hereingereicht. */
 export type SocialKennzahlen = {
   /** Datenstand des Anlagenregisters (ISO-Datum). */
   standIso: string;
+  /**
+   * Das Jahr, dessen 31.12. die Vergleichsbasis von `wachstum` ist.
+   *
+   * Ohne dieses Feld war der Zeitraum nicht benennbar, und der Post nannte ihn
+   * „zwölf Monate" — bei einem Datenstand im August waren es sieben. Das
+   * Register führt je Anlage nur das JAHR der Inbetriebnahme; ein Bestand vor
+   * genau zwölf Monaten ist daraus nicht ableitbar, ein Jahresendbestand schon.
+   */
+  stichtagJahr: number;
   stadtLand: {
     /** Städte ab dieser Einwohnerzahl. */
     stadtAb: number;
@@ -29,6 +39,7 @@ export type SocialKennzahlen = {
   };
   wachstum: {
     balkonJetzt: number;
+    /** Bestand am 31.12. von `stichtagJahr` — nicht „vor einem Jahr". */
     balkonVorJahr: number;
     solarKwpJetzt: number;
     solarKwpVorJahr: number;
@@ -71,12 +82,29 @@ export type PostBild = {
   quelle: string;
 };
 
+/**
+ * Dieselbe Aussage für die eigene Seite.
+ *
+ * Der Feed-Text ist in der ersten Person geschrieben und endet mit einer
+ * Quellenzeile, weil dort nichts mitreist. Auf einer Seite wäre beides falsch:
+ * Die Quelle steht dort einmal zentral, und ein „Ich finde" gehört nicht in
+ * einen Abschnitt, der eine Frage beantwortet. Was NICHT zweimal existieren
+ * darf, sind die Zahlen — deshalb entstehen beide Fassungen aus derselben
+ * Berechnung und nicht aus zwei Texten.
+ */
+export type PostOnsite = {
+  ueberschrift: string;
+  absaetze: string[];
+};
+
 export type SocialPost = {
   id: string;
   /** Interne Bezeichnung für die Vorschau, nicht Teil des Beitrags. */
   titel: string;
   kanal: ("linkedin" | "instagram")[];
   text: string;
+  /** Fassung für die eigene Seite — dieselben Zahlen, andere Stimme. */
+  onsite: PostOnsite;
   bild: PostBild | null;
   /** Was ein Prüfer nachrechnen können muss. Erscheint nur in der Vorschau. */
   belege: string[];
@@ -84,6 +112,29 @@ export type SocialPost = {
 
 const de = (n: number, stellen = 0) =>
   n.toLocaleString("de-DE", { minimumFractionDigits: stellen, maximumFractionDigits: stellen });
+
+/**
+ * Die drei Stadtstaaten. Nur zum Prüfen einer Aussage über sie — nicht als
+ * Auswahl: Wer die Namen in einen Satz tippt, behauptet ihre Reihenfolge.
+ */
+const STADTSTAATEN = ["Berlin", "Hamburg", "Bremen"];
+
+/**
+ * Stehen wirklich die drei Stadtstaaten am Ende der Rangliste?
+ *
+ * Der Satz „bei den Stadtstaaten wird es noch deutlicher" stand hier als
+ * Behauptung, während der Code nur die zwei letzten Plätze holte — welche
+ * Länder das sind, war ihm gleich. Am 26.08.2026 stimmte es zufällig (Hamburg,
+ * Berlin, Bremen belegen die letzten drei Plätze); an dem Tag, an dem ein
+ * Flächenland durchsackt, wäre daraus eine Falschaussage geworden, ohne dass
+ * sich eine Zahl sichtbar bewegt hätte. Jetzt entscheidet die Messung, ob der
+ * Satz mit Gruppennamen erscheint oder nur mit den gemessenen Namen.
+ */
+function stadtstaatenAmEnde(sortiert: { name: string }[]): boolean {
+  if (!STADTSTAATEN.every((n) => sortiert.some((l) => l.name === n))) return false;
+  const letzteDrei = sortiert.slice(-3).map((l) => l.name);
+  return STADTSTAATEN.every((n) => letzteDrei.includes(n));
+}
 
 function quellenzeile(standIso: string): string {
   const d = new Date(standIso);
@@ -107,7 +158,17 @@ export function postStadtLand(k: SocialKennzahlen): SocialPost {
   const sortiert = [...k.laender].sort((a, b) => b.balkonJeTausend - a.balkonJeTausend);
   const spitze = sortiert[0];
   const schluss = sortiert[sortiert.length - 1];
-  const zweitLetzter = sortiert[sortiert.length - 2];
+  // Das untere Ende wird aufgezählt, nicht zusammengefasst: Sobald ein
+  // Gruppenname fällt („die Stadtstaaten"), muss die Gruppe auch vollständig
+  // dastehen — sonst behauptet der Satz mehr, als er zeigt.
+  const unten = sortiert.slice(-3).reverse();
+  const untenText = unten
+    .map((l) => `${l.name} mit ${de(l.balkonJeTausend, 1)}`)
+    .join(", ")
+    .replace(/, ([^,]*)$/, " und $1");
+  const schlussSatz = stadtstaatenAmEnde(sortiert)
+    ? `Die letzten drei Plätze belegen die Stadtstaaten:`
+    : `Am unteren Ende stehen`;
 
   const text = [
     `Das Balkonkraftwerk gilt als Lösung für Mieter in der Stadt. Kleine Wohnung, kein eigenes Dach, 800 Watt am Geländer.`,
@@ -116,7 +177,7 @@ export function postStadtLand(k: SocialKennzahlen): SocialPost {
     ``,
     `In den ${de(s.stadtAnzahl)} deutschen Städten über ${de(s.stadtAb / 1000)}.000 Einwohnern kommen ${de(s.stadtJeTausend, 1)} Steckersolargeräte auf 1.000 Einwohner. In den gut ${de(Math.round(s.landAnzahl / 1000))}.000 Gemeinden unter ${de(s.landUnter / 1000)}.000 Einwohnern sind es ${de(s.landJeTausend, 1)}. Also ${staerker ? `${de(faktor, 1)}-mal so viele` : `weniger`} — und zwar dort, wo die meisten Leute ohnehin ein eigenes Dach hätten.`,
     ``,
-    `Bei den Stadtstaaten wird es noch deutlicher: ${schluss.name} ${de(schluss.balkonJeTausend, 1)}, ${zweitLetzter.name} ${de(zweitLetzter.balkonJeTausend, 1)}. ${spitze.name} kommt auf ${de(spitze.balkonJeTausend, 1)}.`,
+    `${schlussSatz} ${untenText}. ${spitze.name} kommt auf ${de(spitze.balkonJeTausend, 1)}.`,
     ``,
     `Warum das plausibel ist, wenn man kurz nachdenkt: Ein Balkonkraftwerk braucht keine Baugenehmigung und keinen Handwerker, aber es braucht jemanden, der es aufstellt und anmeldet. Im Reihenhaus mit Garten ist beides einfacher als im vierten Stock einer Mietwohnung, deren Balkon nach Norden zeigt.`,
     ``,
@@ -128,6 +189,14 @@ export function postStadtLand(k: SocialKennzahlen): SocialPost {
     titel: "Das Balkonkraftwerk ist kein Stadtthema",
     kanal: ["linkedin", "instagram"],
     text,
+    onsite: {
+      ueberschrift: "Balkonkraftwerke stehen nicht dort, wo man sie vermutet",
+      absaetze: [
+        `Das Balkonkraftwerk gilt als Lösung für Mieter in der Stadt: kleine Wohnung, kein eigenes Dach, 800 Watt am Geländer. Die Anmeldedaten zeigen das Gegenteil.`,
+        `In den ${de(s.stadtAnzahl)} Städten über ${de(s.stadtAb / 1000)}.000 Einwohnern kommen ${de(s.stadtJeTausend, 1)} Steckersolargeräte auf 1.000 Einwohner, in den gut ${de(Math.round(s.landAnzahl / 1000))}.000 Gemeinden unter ${de(s.landUnter / 1000)}.000 Einwohnern sind es ${de(s.landJeTausend, 1)} — ${staerker ? `das ${de(faktor, 1)}-Fache` : `weniger`}. ${schlussSatz} ${untenText} je 1.000 Einwohner; an der Spitze steht ${spitze.name} mit ${de(spitze.balkonJeTausend, 1)}.`,
+        `Plausibel wird das, wenn man sich den Aufbau vorstellt: Ein Balkonkraftwerk braucht keine Genehmigung und keinen Handwerker, aber jemanden, der es aufstellt, ausrichtet und anmeldet. Im Reihenhaus mit Garten ist das einfacher als im vierten Stock über einem Balkon nach Norden.`,
+      ],
+    },
     bild: {
       art: "vergleich",
       aussage: staerker
@@ -173,13 +242,18 @@ export function postWachstum(k: SocialKennzahlen): SocialPost {
   const solarProzent = (w.solarKwpJetzt / w.solarKwpVorJahr - 1) * 100;
   const zuwachs = w.balkonJetzt - w.balkonVorJahr;
   const gwp = (n: number) => de(n / 1_000_000, 0);
+  // Der Zeitraum wird aus den Daten benannt, nicht behauptet: Vergleichsbasis
+  // ist der Jahresendbestand, der Abstand zum Datenstand also so lang, wie das
+  // laufende Jahr alt ist. Bis zum 26.08.2026 stand hier „in den letzten zwölf
+  // Monaten" — bei einem Datenstand vom 5. August waren es sieben.
+  const zeitraum = zeitraumSeitStichtag(k.standIso, k.stichtagJahr);
 
   const text = [
-    `Deutschlands Solarleistung ist in den letzten zwölf Monaten um ${de(solarProzent, 0)} Prozent gewachsen. Auf jetzt ${gwp(w.solarKwpJetzt)} Gigawatt.`,
+    `Deutschlands Solarleistung ist ${zeitraum} um ${de(solarProzent, 0)} Prozent gewachsen. Auf jetzt ${gwp(w.solarKwpJetzt)} Gigawatt.`,
     ``,
     `Die Zahl der Balkonkraftwerke im selben Zeitraum: plus ${de(balkonProzent, 0)} Prozent. Von ${de(w.balkonVorJahr / 1_000_000, 2)} auf ${de(w.balkonJetzt / 1_000_000, 2)} Millionen.`,
     ``,
-    `Leistungsmäßig ist das eine Randnotiz. Aber als Zahl der Menschen, die zum ersten Mal selbst Strom erzeugen, ist es die interessantere Größe: ${de(Math.round(zuwachs / 1000))}.000 Haushalte in einem Jahr, ohne Handwerker, ohne Kredit, ohne Genehmigung.`,
+    `Leistungsmäßig ist das eine Randnotiz. Aber als Zahl der Menschen, die zum ersten Mal selbst Strom erzeugen, ist es die interessantere Größe: ${de(Math.round(zuwachs / 1000))}.000 Haushalte, ohne Handwerker, ohne Kredit, ohne Genehmigung.`,
     ``,
     `Ich finde die zweite Zahl aussagekräftiger als die erste, auch wenn sie in keiner Ausbaustatistik auftaucht.`,
     ``,
@@ -191,6 +265,14 @@ export function postWachstum(k: SocialKennzahlen): SocialPost {
     titel: "Wo der Zubau wirklich stattfindet",
     kanal: ["linkedin", "instagram"],
     text,
+    onsite: {
+      ueberschrift: "Wie schnell der Bestand wächst",
+      absaetze: [
+        `Die installierte Solarleistung ist ${zeitraum} um ${de(solarProzent, 0)} Prozent gewachsen, auf ${fmtPvLeistung(w.solarKwpJetzt)}. Die Zahl der Balkonkraftwerke ist im selben Zeitraum um ${de(balkonProzent, 0)} Prozent gestiegen, von ${de(w.balkonVorJahr / 1_000_000, 2)} auf ${de(w.balkonJetzt / 1_000_000, 2)} Millionen.`,
+        `Leistungsmäßig bleibt der zweite Wert eine Randnotiz — wie klein der Beitrag ist, zeigt die Aufteilung nach Segmenten weiter oben. Als Zahl der Haushalte, die zum ersten Mal selbst Strom erzeugen, ist er die aussagekräftigere Größe: ${de(Math.round(zuwachs / 1000))}.000 kamen ${zeitraum} dazu.`,
+        `Beide Werte beziehen sich auf den Bestand am 31. Dezember ${k.stichtagJahr}. Das Register führt je Anlage nur das Jahr der Inbetriebnahme — ein Bestand vor genau zwölf Monaten lässt sich daraus nicht ableiten, ein Jahresendbestand schon.`,
+      ],
+    },
     bild: {
       art: "kennzahl",
       aussage: `Balkonkraftwerke wachsen ${de(balkonProzent / solarProzent, 1)}-mal so schnell wie die Solarleistung`,
