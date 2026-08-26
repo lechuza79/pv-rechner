@@ -92,6 +92,38 @@ describe("Der Fingerabdruck ignoriert, was nur rauscht", () => {
     expect(fingerprintOf(a)).toBe(fingerprintOf(b));
   });
 
+  // GEMESSEN AM 26.08.2026: herbrechtingen.de lieferte bei acht Abrufen
+  // hintereinander drei verschiedene Abdrücke — bei leerem Token-Vergleich in
+  // beide Richtungen. Es fehlte kein Wort und kam keines hinzu; die Seite ordnete
+  // dieselben Bausteine anders an. Über den ganzen Katalog trugen dadurch 45 von
+  // 109 Programmen binnen sechs Tagen eine Änderungsmeldung, und 27 der 75
+  // aktiven standen unter der 14-Tage-Nachprüffrist — auf dem Weg, ab dem
+  // 02.09.2026 lautlos aus jeder Rechnung zu fallen.
+  it("dieselben Bausteine in anderer Reihenfolge lösen keine Änderung aus", () => {
+    const a = seite(
+      "<div>Photovoltaik: 250 Euro je kWp, maximal 5.000 €.</div>" +
+        "<div>Aktuelles aus dem Rathaus</div><div>Öffnungszeiten Bürgerbüro</div>",
+    );
+    const b = seite(
+      "<div>Öffnungszeiten Bürgerbüro</div><div>Aktuelles aus dem Rathaus</div>" +
+        "<div>Photovoltaik: 250 Euro je kWp, maximal 5.000 €.</div>",
+    );
+    expect(fingerprintOf(b)).toBe(fingerprintOf(a));
+  });
+
+  // Die Gegenrichtung derselben Regel, und sie ist der Grund, warum das Sortieren
+  // vertretbar ist: Ein Betrag, eine Frist oder ein gestrichenes Programm ändern
+  // IMMER den Bestand der Token, nie bloß deren Anordnung.
+  it("eine Umsortierung mit geändertem Betrag fällt trotzdem auf", () => {
+    const a = seite(
+      "<div>Photovoltaik: 250 Euro je kWp, maximal 5.000 €.</div><div>Aktuelles aus dem Rathaus</div>",
+    );
+    const b = seite(
+      "<div>Aktuelles aus dem Rathaus</div><div>Photovoltaik: 150 Euro je kWp, maximal 5.000 €.</div>",
+    );
+    expect(fingerprintOf(b)).not.toBe(fingerprintOf(a));
+  });
+
   it("Uhrzeiten werden BEWUSST nicht ausgefiltert — Fristen wiegen schwerer", () => {
     // Abwägung, festgehalten statt stillschweigend getroffen: Eine Uhrzeit
     // (09:14) und ein kurzes Datum (14.06.) sind mit einem Muster nicht zu

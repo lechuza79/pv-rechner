@@ -60,7 +60,36 @@ export function fingerprintOf(html: string): string {
     .split(/[^0-9a-zäöüß€%]+/)
     .filter((t) => t.length >= zeichen || /[0-9€%]/.test(t));
 
-  return createHash("sha256").update(tokens.join(" ")).digest("hex");
+  // SORTIERT, nicht in Dokumentreihenfolge — der Abdruck fragt nach dem INHALT,
+  // nicht nach seiner Anordnung.
+  //
+  // WARUM (26.08.2026, gemessen): herbrechtingen.de liefert bei acht Abrufen
+  // hintereinander DREI verschiedene Abdrücke — und der Vergleich der Token
+  // beider Fassungen ist in beide Richtungen LEER. Es fehlt kein Wort und es
+  // kommt keines hinzu; die Seite ordnet dieselben Bausteine nur anders an.
+  // In Dokumentreihenfolge gehasht ist das jedes Mal ein anderer Abdruck.
+  //
+  // Dasselbe eine Ebene langsamer bei Seiten, die ihre Fassung nachts neu
+  // erzeugen: Lohfelden, Memmingen, Feucht, Weinheim und Karlsruhe lieferten am
+  // 26.08.2026 von diesem Rechner, aus unserer Produktion und aus dem Nachtlauf
+  // denselben Abdruck — und wurden trotzdem an fünf von sechs Tagen als
+  // „geändert" gemeldet. Innerhalb eines Tages stabil, über Nacht ein anderer:
+  // genau das Bild einer zwischengespeicherten Seite, die beim nächtlichen
+  // Neuaufbau anders sortiert.
+  //
+  // Wirkung der alten Fassung: 45 der 109 Programme trugen binnen sechs Tagen
+  // eine Änderungsmeldung, 22 davon an drei oder mehr Tagen. 27 der 75 aktiven
+  // Programme standen dadurch unter der 14-Tage-Nachprüffrist; ab dem 02.09.2026
+  // wären die ersten lautlos aus jeder Rechnung gefallen — für eine Änderung,
+  // die nie stattgefunden hat. Dieselbe Fehlerklasse wie am 17., 18. und
+  // 22.08.2026, nur nicht im Filter und nicht eine Stufe davor, sondern im Hash.
+  //
+  // WAS DAMIT NICHT MEHR AUFFÄLLT — und warum das richtig so ist: eine Seite,
+  // die exakt dieselben Wörter in anderer Reihenfolge zeigt. Ein Betrag, eine
+  // Frist, eine Bedingung, ein gestrichenes Programm ändern immer den Bestand
+  // der Token, nie bloß deren Anordnung. Der Abdruck beantwortet weiterhin die
+  // Frage, für die es ihn gibt: Steht auf dieser Seite noch dasselbe?
+  return createHash("sha256").update([...tokens].sort().join(" ")).digest("hex");
 }
 
 /**
@@ -88,8 +117,15 @@ export function fingerprintOf(html: string): string {
  * Zeichenverweise. Für jede Seite fällt damit ein anderer Abdruck an als vorher —
  * genau der Grund, aus dem es dieses Feld gibt. Ohne das Hochzählen hätte der
  * nächste Lauf die Reparatur selbst als 109 fremde Änderungen verbucht.
+ *
+ * FASSUNG 4 (26.08.2026): `fingerprintOf` hasht die Token jetzt sortiert statt in
+ * Dokumentreihenfolge. Wieder fällt für jede Seite ein anderer Abdruck an als
+ * vorher — und wieder ist das Hochzählen der Unterschied zwischen „einmal nicht
+ * vergleichbar" und „109 fremde Änderungen". Der nächste Lauf weist die Seiten
+ * deshalb als **nicht vergleichbar** aus (kein Fehlversuch, keine Nachprüffrist)
+ * und legt am Tag darauf wieder los.
  */
-export const FINGERPRINT_VERSION = 3;
+export const FINGERPRINT_VERSION = 4;
 
 /** Kennzeichnet, auf welchem Weg der Abdruck entstand. Nur Gleiches vergleichen. */
 export type Abrufweg = "live" | "archiv";
