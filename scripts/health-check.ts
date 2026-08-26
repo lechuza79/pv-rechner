@@ -732,7 +732,10 @@ export function eskalationNoetig(vorherigeLaeufe: ("success" | "failure" | strin
   return davor === undefined || davor !== "failure";
 }
 
-async function letzteLaufErgebnisse(workflow = "health-check.yml"): Promise<string[]> {
+/** Ein abgeschlossener Lauf, wie ihn die GitHub-API beschreibt. */
+export type LaufAkte = { conclusion: string; dauerMin: number | null };
+
+async function letzteLaeufe(workflow = "health-check.yml"): Promise<LaufAkte[]> {
   const token = process.env.GITHUB_TOKEN;
   const repo = process.env.GITHUB_REPOSITORY;
   if (!token || !repo) return [];
@@ -742,11 +745,77 @@ async function letzteLaufErgebnisse(workflow = "health-check.yml"): Promise<stri
       { headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" }, signal: AbortSignal.timeout(10000) },
     );
     if (!res.ok) return [];
-    const data = (await res.json()) as { workflow_runs?: { conclusion: string }[] };
-    return (data.workflow_runs ?? []).map((r) => r.conclusion);
+    const data = (await res.json()) as {
+      workflow_runs?: { conclusion: string; run_started_at?: string; created_at?: string; updated_at?: string }[];
+    };
+    return (data.workflow_runs ?? []).map((r) => {
+      // Gemessen wird ab `run_started_at`, nicht ab `created_at`: Sonst zählt die
+      // Wartezeit auf einen freien Runner mit, und die hat mit dem Job-Zeitlimit
+      // nichts zu tun. Bekannte Grenze der Näherung: Über den ganzen Lauf
+      // gerechnet, nicht je Job — bei einem Workflow mit einem einzigen Job
+      // (unsere geplanten Läufe) ist das derselbe Wert.
+      const start = r.run_started_at ?? r.created_at;
+      const ende = r.updated_at;
+      const dauerMin =
+        start && ende ? Math.max(0, (new Date(ende).getTime() - new Date(start).getTime()) / 60000) : null;
+      return { conclusion: r.conclusion, dauerMin: Number.isFinite(dauerMin) ? dauerMin : null };
+    });
   } catch {
     return [];
   }
+}
+
+async function letzteLaufErgebnisse(workflow = "health-check.yml"): Promise<string[]> {
+  return (await letzteLaeufe(workflow)).map((l) => l.conclusion);
+}
+
+/**
+ * Das Job-Zeitlimit aus der Workflow-Datei — gelesen, nicht angenommen.
+ *
+ * Zweite Liste wäre die falsche Lösung (dieselbe Begründung wie beim Zeitplan im
+ * Test daneben): Wer das Limit in der Datei anhebt und die Kopie hier vergisst,
+ * bekommt eine Warnung, die auf eine Zahl zeigt, die es nicht mehr gibt.
+ * Ohne Angabe gilt GitHubs Vorgabe von 360 Minuten je Job.
+ */
+export function jobZeitlimitMinuten(workflowText: string): number {
+  const treffer = [...workflowText.matchAll(/^\s*timeout-minutes:\s*(\d+)/gm)].map((m) => Number(m[1]));
+  // Der größte Wert ist das Job-Limit: Die kleineren gehören einzelnen Schritten
+  // (bei uns Browser-Download und Systempakete), und ein Schritt-Limit sagt über
+  // die Gesamtdauer nichts.
+  return treffer.length ? Math.max(...treffer) : 360;
+}
+
+/**
+ * Wie viel Reserve muss ein geplanter Lauf zu seinem Zeitlimit behalten?
+ *
+ * Ein Viertel — und die Zahl kommt aus der MELDEVERZÖGERUNG, nicht aus Optik:
+ * Reißt ein Lauf sein Limit, endet er „cancelled", und das meldet `laufStumm`
+ * erst nach `LAUF_STUMM_AB` erfolglosen Läufen. Bei einem nächtlichen Lauf sind
+ * das drei Nächte ohne Prüfung, bevor überhaupt jemand hinsieht — genau so ist
+ * es dem Förder-Wächter im August 2026 ergangen. Die Warnung muss deshalb
+ * greifen, solange noch Luft für einen gewöhnlichen Ausbau ist (eine Frage mehr
+ * im Flow, ein Rechner mehr), nicht erst, wenn er schon abbricht.
+ */
+export const ZEITRESERVE_ANTEIL = 0.25;
+
+/**
+ * Braucht dieser geplante Lauf zu viel von seinem Zeitlimit?
+ *
+ * Bewertet wird der jüngste ERFOLGREICHE Lauf. Abgebrochene sind hier wertlos:
+ * Sie dauern per Definition genau so lange wie das Limit, „knapp" daraus
+ * abzuleiten wäre ein Zirkelschluss — und der Fall gehört ohnehin `laufStumm`.
+ *
+ * Reine Funktion mit hereingereichten Läufen: ohne Netz prüfbar. Kein Ergebnis,
+ * keine Dauer, kein Urteil — nicht behaupten, was nicht gemessen wurde.
+ */
+export function zeitreserveKnapp(
+  laeufe: ReadonlyArray<LaufAkte>,
+  limitMin: number,
+): { knapp: boolean; dauerMin: number; anteil: number } | null {
+  const letzterErfolg = laeufe.find((l) => l.conclusion === "success" && l.dauerMin !== null);
+  if (!letzterErfolg || letzterErfolg.dauerMin === null || !(limitMin > 0)) return null;
+  const anteil = letzterErfolg.dauerMin / limitMin;
+  return { knapp: anteil > 1 - ZEITRESERVE_ANTEIL, dauerMin: letzterErfolg.dauerMin, anteil };
 }
 
 /**
@@ -1132,8 +1201,32 @@ async function main() {
   // ist nötig, weil ein GitHub-Workflow kein Prüfdatum stempelt und deshalb
   // oben nicht auftauchen kann (Begründung an `laufStumm`).
   for (const lauf of GEPLANTE_LAEUFE) {
-    const ergebnisse = await letzteLaufErgebnisse(lauf.datei);
+    const akten = await letzteLaeufe(lauf.datei);
+    const ergebnisse = akten.map((a) => a.conclusion);
     if (!ergebnisse.length) continue; // kein Token / lokal — nichts behaupten
+
+    // Frühindikator: nicht der Abbruch, sondern der Abstand zum Zeitlimit.
+    // Dieselbe Logik wie beim Kaltaufbau gegen die Notbremse — wer erst auf das
+    // „cancelled" wartet, hat drei Nächte ohne Prüfung hinter sich.
+    //
+    // Steht ausdrücklich in `warnings` und macht den Lauf NICHT rot: Es ist
+    // nichts kaputt, und rot würde die Autofix-Action auf ein Problem ansetzen,
+    // dessen naheliegendster Griff — das Limit hochsetzen — genau der verbotene
+    // ist (Gate, Teil 2). Gehört gemessen, nicht weggedrückt.
+    const wurzel = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+    const pfad = resolve(wurzel, ".github", "workflows", lauf.datei);
+    if (existsSync(pfad)) {
+      const limitMin = jobZeitlimitMinuten(readFileSync(pfad, "utf8"));
+      const reserve = zeitreserveKnapp(akten, limitMin);
+      if (reserve?.knapp) {
+        warnings.push(
+          `Der geplante Lauf „${lauf.was}" braucht ${Math.round(reserve.dauerMin)} von ${limitMin} erlaubten Minuten ` +
+            `(${Math.round(reserve.anteil * 100)} %). Reißt er das Limit, endet er „abgebrochen" — und das fällt erst ` +
+            `nach ${LAUF_STUMM_AB} Läufen auf. Nachsehen, was gewachsen ist; das Limit NICHT ohne Messung hochsetzen.`,
+        );
+      }
+    }
+
     const { stumm, wie } = laufStumm(ergebnisse);
     if (!stumm) continue;
     forClaude.push(
