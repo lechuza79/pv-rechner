@@ -93,6 +93,20 @@ export default function KfwFoerderpraxis({ daten, kreis, nackt }: KfwFoerderprax
               </div>
             ))}
           </div>
+          {/* Der Satz, ohne den die Prozentzahl die falsche Frage beantwortet.
+              Auf dem Förder-Ratgeber steht diese Karte unmittelbar neben den
+              ANSPRUCHSVORAUSSETZUNGEN, und nebeneinander liest sich eine
+              Beobachtung leicht wie eine Quote: „68 %" klingt nach „so
+              wahrscheinlich ist es bei mir". Das ist es nicht — gemessen wurde,
+              wer den Bonus bekommen HAT, und diese Menge hat mit dem einzelnen
+              Leser nichts zu tun. Eine Zahl ohne ihre Bedingung ist dieselbe
+              Fehlerklasse wie eine Beschriftung, die etwas anderes sagt als die
+              Zahl misst. */}
+          <p style={{ fontSize: 12, lineHeight: 1.65, margin: `0 0 ${space.lg}px`, color: v("--color-text-muted") }}>
+            Das ist eine Beobachtung, keine Wahrscheinlichkeit. Ob ein Bonus bei dir greift, hängt an deiner alten
+            Heizung, an deinem Einkommen und daran, ob du selbst dort wohnst — nicht daran, wie oft ihn andere
+            bekommen haben.
+          </p>
         </>
       )}
 

@@ -163,6 +163,21 @@ describe("Die Quellenzeile", () => {
     expect(karte).not.toMatch(/branding[\s\S]{0,200}kfwQuellenzeile/);
   });
 
+  it("sagt bei den Bonusanteilen, dass sie keine Wahrscheinlichkeit sind", () => {
+    // Auf dem Förder-Ratgeber steht diese Karte unmittelbar neben den
+    // ANSPRUCHSVORAUSSETZUNGEN. Nebeneinander liest sich „68 %" leicht als
+    // „so wahrscheinlich ist es bei mir" — gemessen wurde aber, wer den Bonus
+    // bekommen HAT. Wer daraus seine eigene Chance ableitet, hat sich
+    // verrechnet, und die Seite hätte ihn dazu eingeladen.
+    const karte = readFileSync(join(ROOT, "components", "KfwFoerderpraxis.tsx"), "utf8");
+    expect(karte).toMatch(/Beobachtung, keine Wahrscheinlichkeit/);
+    // Und die Bedingungen, an denen es wirklich hängt, werden benannt — sonst
+    // ist der Satz eine Warnung ohne Ausweg.
+    expect(karte).toMatch(/alte[\s\S]{0,40}Heizung/);
+    expect(karte).toMatch(/Einkommen/);
+    expect(karte).toMatch(/selbst dort wohnst/);
+  });
+
   it("nennt die KfW nicht als Mitwirkende", () => {
     const karte = readFileSync(join(ROOT, "components", "KfwFoerderpraxis.tsx"), "utf8");
     expect(karte).not.toMatch(/in Zusammenarbeit|gemeinsam mit der KfW|mit freundlicher/i);
