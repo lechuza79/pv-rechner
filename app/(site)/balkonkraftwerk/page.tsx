@@ -13,6 +13,9 @@ import { DEFAULT_BALKON_CONFIG as CFG, BALKON_RECHT } from "../../../lib/balkon-
 import { calcBalkon } from "../../../lib/balkon";
 import { PERSONEN } from "../../../lib/constants";
 import { ANMELDE_FRIST_MONATE } from "../../../lib/balkon-anmeldung";
+import { StoryBlock } from "../../../components/social/StoryBlock";
+import { socialKennzahlen } from "../../../lib/social-kennzahlen";
+import { postStadtLand } from "../../../lib/social-posts";
 
 // Themen-Einstieg für den Balkon-Cluster.
 //
@@ -161,6 +164,13 @@ const SCHRITTE: { titel: string; text: string; link?: string; href?: string }[] 
 export const revalidate = 3600;
 
 export default async function BalkonkraftwerkHub() {
+  // Die Geschichte fällt aus, wenn die Zahlen gerade nicht kommen — der Rest
+  // der Seite steht ohne sie genauso. Ein Block, der eine Seite mitreißt, wäre
+  // der schlechtere Tausch.
+  const story = await socialKennzahlen()
+    .then(postStadtLand)
+    .catch(() => null);
+
   // Referenzfall wie im Rechner-FAQ: Zwei-Personen-Haushalt, Standard-Set,
   // senkrecht am Südbalkon, deutscher Durchschnittsertrag. Live gerechnet —
   // kein getippter Euro-Betrag, sonst driftet die Seite vom Rechner weg.
@@ -321,6 +331,13 @@ export default async function BalkonkraftwerkHub() {
           Tag, an dem die Module das erste Mal Strom liefern — nicht der Kauf. Die Anmeldung
           ist kostenlos und in wenigen Minuten erledigt.
         </p>
+
+        {/* Datengeschichte als Block, nicht als eigene Seite: Ein Beitrag auf
+            LinkedIn verlinkt auf #stadt-land und landet direkt hier. Der Text
+            steht im ausgelieferten HTML — ein Overlay, das ihn nachlädt, sähe
+            der Besucher, Google nie (im Projekt an den Ausklapp-Menüs
+            gemessen). */}
+        {story?.onsite && story.bild && <StoryBlock onsite={story.onsite} bild={story.bild} />}
 
         <RelatedLinks
           title="Weiter"

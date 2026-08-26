@@ -71,6 +71,22 @@ export type PostBild = {
   quelle: string;
 };
 
+/**
+ * Dieselbe Erkenntnis für die eigene Seite.
+ *
+ * NICHT derselbe Text: Der Beitrag ist in der ersten Person geschrieben und auf
+ * den Feed zugeschnitten („Ich finde die zweite Zahl aussagekräftiger"). Auf
+ * einer Ratgeberseite wäre das die falsche Stimme. Gemeinsam ist beiden nur die
+ * Berechnung — und genau darum geht es: Post und Seite können nicht
+ * auseinanderlaufen, weil die Zahlen aus derselben Funktion kommen.
+ */
+export type OnsiteFassung = {
+  /** Anker in der Adresse, damit ein Beitrag direkt hierher verlinken kann. */
+  anker: string;
+  ueberschrift: string;
+  absaetze: string[];
+};
+
 export type SocialPost = {
   id: string;
   /** Interne Bezeichnung für die Vorschau, nicht Teil des Beitrags. */
@@ -80,6 +96,8 @@ export type SocialPost = {
   bild: PostBild | null;
   /** Was ein Prüfer nachrechnen können muss. Erscheint nur in der Vorschau. */
   belege: string[];
+  /** Fassung für die eigene Seite. Fehlt, solange es keine passende Seite gibt. */
+  onsite?: OnsiteFassung;
 };
 
 /**
@@ -182,6 +200,15 @@ export function postStadtLand(k: SocialKennzahlen): SocialPost {
         },
       ],
       quelle: quellenzeile(k.standIso, false),
+    },
+    onsite: {
+      anker: "stadt-land",
+      ueberschrift: "Balkonkraftwerke stehen häufiger auf dem Land als in der Stadt",
+      absaetze: [
+        `Steckersolargeräte gelten als Lösung für Mieter in der Stadt. Die Anmeldungen im Marktstammdatenregister zeigen das Gegenteil: In den ${de(s.stadtAnzahl)} deutschen Städten über ${de(s.stadtAb / 1000)}.000 Einwohnern kommen ${de(s.stadtJeTausend, 1)} Geräte auf 1.000 Einwohner, in den Gemeinden unter ${de(s.landUnter / 1000)}.000 sind es ${de(s.landJeTausend, 1)}.`,
+        `Am deutlichsten ist der Abstand in den Stadtstaaten: ${stadtstaaten.map((l) => `${l.name} ${de(l.balkonJeTausend, 1)}`).join(", ")}. Unter den Flächenländern führt ${spitze.name} mit ${de(spitze.balkonJeTausend, 1)}.`,
+        `Der Grund liegt vermutlich nicht am Gerät, sondern an der Aufstellung: Ein Balkonkraftwerk braucht keine Genehmigung und keinen Handwerker, aber jemanden, der es anbringt und anmeldet. Auf einer Terrasse oder im Garten ist das einfacher als an einem Mietbalkon, der nach Norden zeigt.`,
+      ],
     },
     belege: [
       `Städte ab ${de(s.stadtAb)} Einwohnern: ${de(s.stadtAnzahl)} Gemeinden, ${de(s.stadtJeTausend, 1)} je 1.000 Einwohner`,
