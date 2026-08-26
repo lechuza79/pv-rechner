@@ -329,6 +329,15 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
 // MASSGEBLICH IST DIE ANTRAGSTELLUNG, nicht der Einbau und nicht die
 // Inbetriebnahme: „Für den Zeitpunkt der Antragstellung ist das Datum des
 // Eingangs des Antrags beim Durchführer maßgeblich" (Nr. 9.2.1).
+//
+// WER DEN FAHRPLAN AUF EINER SEITE BENUTZT, PRÜFT DEREN RENDER-ART. Ein
+// Fahrplan, der auf einer rein statisch gebauten Seite ausgewertet wird, friert
+// beim Build ein — dann wandert der Wert eben doch erst beim nächsten Deploy,
+// und der ganze Zweck ist dahin. Geprüft am 26.08.2026: Die drei
+// Server-Aufrufer (Datenstand, beide Wärmepumpen-Ratgeber) tragen alle
+// `revalidate = 3600`, bauen sich also stündlich neu; Rechner und
+// Förder-Check-Widget sind Client-Komponenten und lösen im Browser des
+// Betrachters auf. Ein künftiger Aufrufer ohne Revalidierung braucht eine.
 
 /** Ein Zeitraum des Fahrplans. `abIso` ist der erste Tag, an dem er gilt. */
 export interface BegStufe {
