@@ -13,9 +13,9 @@ import { DEFAULT_BALKON_CONFIG as CFG, BALKON_RECHT } from "../../../lib/balkon-
 import { calcBalkon } from "../../../lib/balkon";
 import { PERSONEN } from "../../../lib/constants";
 import { ANMELDE_FRIST_MONATE } from "../../../lib/balkon-anmeldung";
-import { StoryBlock } from "../../../components/social/StoryBlock";
+import { StoryTeaser } from "../../../components/social/StoryTeaser";
 import { socialKennzahlen } from "../../../lib/social-kennzahlen";
-import { postStadtLand } from "../../../lib/social-posts";
+import { baueAllePosts } from "../../../lib/social-posts";
 
 // Themen-Einstieg für den Balkon-Cluster.
 //
@@ -167,9 +167,9 @@ export default async function BalkonkraftwerkHub() {
   // Die Geschichte fällt aus, wenn die Zahlen gerade nicht kommen — der Rest
   // der Seite steht ohne sie genauso. Ein Block, der eine Seite mitreißt, wäre
   // der schlechtere Tausch.
-  const story = await socialKennzahlen()
-    .then(postStadtLand)
-    .catch(() => null);
+  const stories = await socialKennzahlen()
+    .then(baueAllePosts)
+    .catch(() => []);
 
   // Referenzfall wie im Rechner-FAQ: Zwei-Personen-Haushalt, Standard-Set,
   // senkrecht am Südbalkon, deutscher Durchschnittsertrag. Live gerechnet —
@@ -332,12 +332,11 @@ export default async function BalkonkraftwerkHub() {
           ist kostenlos und in wenigen Minuten erledigt.
         </p>
 
-        {/* Datengeschichte als Block, nicht als eigene Seite: Ein Beitrag auf
-            LinkedIn verlinkt auf #stadt-land und landet direkt hier. Der Text
-            steht im ausgelieferten HTML — ein Overlay, das ihn nachlädt, sähe
-            der Besucher, Google nie (im Projekt an den Ausklapp-Menüs
-            gemessen). */}
-        {story?.onsite && story.bild && <StoryBlock onsite={story.onsite} bild={story.bild} />}
+        {/* Datengeschichten als Teaser-Reihe, keine eigenen Seiten: Ein Beitrag
+            verlinkt auf …#anker, dann öffnet sich die Geschichte beim Ankommen.
+            Die Texte stehen im ausgelieferten HTML und sind nur verborgen —
+            nachgeladen sähe sie der Besucher, Google nie. */}
+        <StoryTeaser stories={stories} />
 
         <RelatedLinks
           title="Weiter"
