@@ -1,7 +1,7 @@
 "use client";
 import { useState, useMemo, type ReactNode } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import FlowNav from "../../../components/FlowNav";
 import {
   SITUATION, WOHNFLAECHEN, WP_M2_MIN, WP_M2_MAX, INSULATION_BESTAND, INSULATION_NEUBAU,
@@ -38,7 +38,7 @@ import HeatCostCompareChart from "../../../components/charts/HeatCostCompareChar
 import Modal from "../../../components/Modal";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import InfoTooltip from "../../../components/InfoTooltip";
-import { IconArrowRight, IconRefresh, IconChevronDown, IconSun, IconSparkle, IconCheck } from "../../../components/Icons";
+import { IconArrowRight, IconRefresh, IconChevronDown, IconSun, IconSparkle, IconCheck, IconLink } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
 import { trackEvent } from "../../../lib/analytics";
 
@@ -58,7 +58,40 @@ export default function Waermepumpe({
 }: { embedded?: boolean; stand?: StandSeite } = {}) {
   // ── Step state ───────────────────────────────────────────────
   const router = useRouter();
-  const [step, setStep] = useState(0);
+  const suchParams = useSearchParams();
+
+  // ── Zustand in der Adresse ─────────────────────────────────────────────────
+  //
+  // Der Rechner war der einzige ohne Teilen-Link: Zum Ergebnis kam man nur
+  // durch alle fünf Schritte. Das trifft nicht nur, wer ein Ergebnis
+  // weitergeben will — es trifft jeden, der zurückkommt, und jede
+  // Gestaltungsrunde am Ergebnis selbst.
+  //
+  // Gelesen wird EINMAL beim ersten Rendern (useState-Initialisierer), nicht
+  // fortlaufend: Der Frageweg schreibt danach seine eigenen Werte, und ein
+  // Zustand, der beides gleichzeitig aus der Adresse und aus Klicks bezieht,
+  // löscht sich gegenseitig — dieselbe Falle, die im Empfehlungs-Flow schon
+  // einmal steckte (dort wird auf den zuletzt GESCHRIEBENEN Stand aufgesetzt).
+  const p0 = (k: string) => suchParams.get(k);
+  const z0 = (k: string, fallback: number) => {
+    const v = p0(k);
+    if (v === null) return fallback;
+    const n = Number.parseFloat(v);
+    return Number.isFinite(n) ? n : fallback;
+  };
+  const b0 = (k: string, fallback: boolean) => {
+    const v = p0(k);
+    return v === null ? fallback : v === "1";
+  };
+  /** Optionaler, von Hand gesetzter Wert — `null` heißt „nicht gesetzt". */
+  const o0 = (k: string) => {
+    const v = p0(k);
+    if (v === null) return null;
+    const n = Number.parseFloat(v);
+    return Number.isFinite(n) ? n : null;
+  };
+
+  const [step, setStep] = useState(() => (suchParams.get("e") === "1" ? STEPS.length : 0));
   // Welche Fragen wirklich beantwortet sind. Die Werte darunter behalten ihre
   // Startwerte (die Rechnung braucht sie), geben sich aber nicht mehr als
   // Auswahl aus — Flow-Konvention: keine Vorauswahl, Weiter erst nach echter
@@ -66,47 +99,51 @@ export default function Waermepumpe({
   const [beantwortet, setBeantwortet] = useState<Set<string>>(new Set());
   const markBeantwortet = (key: string) =>
     setBeantwortet(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
-  const [situation, setSituation] = useState<"bestand" | "neubau">("bestand");
-  const [flaecheIdx, setFlaecheIdx] = useState(1);         // 140 m² default
-  const [customFlaeche, setCustomFlaeche] = useState<number | null>(null);
+  const [situation, setSituation] = useState<"bestand" | "neubau">(p0("si") === "neubau" ? "neubau" : "bestand");
+  const [flaecheIdx, setFlaecheIdx] = useState(z0("fl", 1));         // 140 m² default
+  const [customFlaeche, setCustomFlaeche] = useState<number | null>(o0("cf"));
   const [customFlaecheDraft, setCustomFlaecheDraft] = useState<string>("");
-  const [haustypIdx, setHaustypIdx] = useState(0);         // freistehend default
-  const [insulationIdx, setInsulationIdx] = useState(1);   // teilsaniert / KfW 55
-  const [personen, setPersonen] = useState(2);             // 3–4
-  const [heizsystem, setHeizsystem] = useState<"fbh" | "hk_neu" | "hk_alt">("fbh");
+  const [haustypIdx, setHaustypIdx] = useState(z0("ht", 0));         // freistehend default
+  const [insulationIdx, setInsulationIdx] = useState(z0("da", 1));   // teilsaniert / KfW 55
+  const [personen, setPersonen] = useState(z0("pe", 2));             // 3–4
+  const [heizsystem, setHeizsystem] = useState<"fbh" | "hk_neu" | "hk_alt">(
+    (["fbh", "hk_neu", "hk_alt"] as const).find((x) => x === p0("hz")) ?? "fbh",
+  );
   // Welche Gebäudefrage im Ergebnis gerade aufgeklappt ist.
   const [gebaeudeEditing, setGebaeudeEditing] = useState<string | null>(null);
-  const [wpType, setWpType] = useState<"lwwp" | "swwp">("lwwp");
+  const [wpType, setWpType] = useState<"lwwp" | "swwp">(p0("wt") === "swwp" ? "swwp" : "lwwp");
 
   // PV-Integration (Ergebnis-Overlay)
-  const [pvStatus, setPvStatus] = useState<"nein" | "geplant" | "vorhanden">("nein");
+  const [pvStatus, setPvStatus] = useState<"nein" | "geplant" | "vorhanden">(
+    (["nein", "geplant", "vorhanden"] as const).find((x) => x === p0("pv")) ?? "nein",
+  );
   const [pvKwp, setPvKwp] = useState<number>(10);
   const [pvSpeicher, setPvSpeicher] = useState<number>(10);
 
   // ── Result overrides (editable) ──────────────────────────────
   const [oGasPrice, setOGasPrice] = useState<number | null>(null);
   const [oStromPrice, setOStromPrice] = useState<number | null>(null);
-  const [oFuel, setOFuel] = useState<string>("gas_neu");
+  const [oFuel, setOFuel] = useState<string>(p0("br") ?? "gas_neu");
   const [oJaz, setOJaz] = useState<number | null>(null);
-  const [oInvest, setOInvest] = useState<number | null>(null);
-  const [oQges, setOQges] = useState<number | null>(null);
+  const [oInvest, setOInvest] = useState<number | null>(o0("iv"));
+  const [oQges, setOQges] = useState<number | null>(o0("qg"));
   // Gemessener Jahresverbrauch statt Schätzung aus Fläche × Kennwert. Er schreibt
   // auf denselben Override wie das Eingabefeld im Ergebnis (oQges) — eine Größe,
   // ein Wert. `verbrauchKwh` hält die daraus abgeleitete Wärmemenge für die Anzeige.
   const [verbrauchDraft, setVerbrauchDraft] = useState<string>("");
   const [verbrauchEinheit, setVerbrauchEinheit] = useState<VerbrauchEinheit>("gas");
   const [verbrauchKwh, setVerbrauchKwh] = useState<number | null>(null);
-  const [oHeizlast, setOHeizlast] = useState<number | null>(null);
+  const [oHeizlast, setOHeizlast] = useState<number | null>(o0("hl"));
   // Anschaffung der fossilen Alternative (0 = die vorhandene Heizung hält die 20 Jahre durch).
   const [oFossilInvest, setOFossilInvest] = useState<number | null>(null);
   // BEG Klima-Geschwindigkeits-Bonus: braucht BEIDES — Selbstnutzung und eine
   // passende alte Heizung. Früher war das ein einziger Schalter, was Vermietern
   // fälschlich den Bonus geben konnte und das Alterskriterium verdeckte.
-  const [selbstnutzer, setSelbstnutzer] = useState(true);        // Eigennutzer? (Bedingung für Klima- UND Einkommens-Bonus)
+  const [selbstnutzer, setSelbstnutzer] = useState(b0("sn", true));        // Eigennutzer? (Bedingung für Klima- UND Einkommens-Bonus)
   const [altheizung, setAltheizung] = useState<AltheizungKey>("gas_alt"); // welche Heizung wird ersetzt
   const [einkommen, setEinkommen] = useState<EinkommenKey>("none");   // BEG Einkommens-Bonus (gestaffelt nach Haushaltseinkommen)
-  const [kindImHaushalt, setKindImHaushalt] = useState(false);        // Familienzuschlag hebt die Einkommensgrenze
-  const [heizkoerperTausch, setHeizkoerperTausch] = useState(false);  // Maßnahme: alte HK auf Niedertemperatur tauschen
+  const [kindImHaushalt, setKindImHaushalt] = useState(b0("ki", false));        // Familienzuschlag hebt die Einkommensgrenze
+  const [heizkoerperTausch, setHeizkoerperTausch] = useState(b0("hk", false));  // Maßnahme: alte HK auf Niedertemperatur tauschen
   // ── Förderstand: heute oder ab dem nächsten Stichtag ─────────
   // Voreinstellung „jetzt", weil das für jeden gilt, der in diesem Jahr
   // beantragt. Die beiden Stufen kommen aus dem Fahrplan der Richtlinie und
@@ -123,16 +160,16 @@ export default function Waermepumpe({
   // der niemand enttäuscht wird. Gefragt wird trotzdem sichtbar: Der Bonus ist
   // betragsgleich mit der Halbierung, ihn stillschweigend wegzulassen behauptete
   // eine Kürzung, die es für ein EU-Gerät gar nicht gibt.
-  const [euUrsprung, setEuUrsprung] = useState(false);
+  const [euUrsprung, setEuUrsprung] = useState(b0("eu", false));
   const begStufe = begStand === "naechste" && stufeNaechste ? stufeNaechste : stufeJetzt;
-  const [wegId, setWegId] = useState("ist");  // aktiver Sanierungs-/Maßnahmen-Weg (Szenario-Vergleich)
+  const [wegId, setWegId] = useState(p0("wg") ?? "ist");  // aktiver Sanierungs-/Maßnahmen-Weg (Szenario-Vergleich)
   // ── Kommunale Förderung ──────────────────────────────────────
   // Der Wohnort wird bewusst NICHT im Frageweg erhoben: Er ändert nichts am
   // Gebäude und nichts an der Wärmepumpe, sondern nur daran, ob die Gemeinde
   // etwas dazugibt. Ein sechster Schritt für eine Frage, die bei den allermeisten
   // Orten „nein" ergibt, kostet mehr Abbrüche als er Nutzen bringt — deshalb
   // steht der Check im Ergebnis, wo er eine bereits gerechnete Zahl verbessert.
-  const [plz, setPlz] = useState("");
+  const [plz, setPlz] = useState(p0("plz") ?? "");
   const foerderQuelle = useFoerderung("waermepumpe");
   const [fundingEnabled, setFundingEnabled] = useState(true);
   const [showDetails, setShowDetails] = useState(false);
@@ -144,7 +181,7 @@ export default function Waermepumpe({
   //                                     10.07.2026" — dieses Datum ließ sich an keiner
   //                                     amtlichen Quelle belegen, Council 28.07.2026.)
   //  "pessimistic"/"realistic"/"optimistic" = reine Preis-Annahmen OHNE Grüngas.
-  const [scenario, setScenario] = useState("gruengas");
+  const [scenario, setScenario] = useState(p0("sz") ?? "gruengas");
 
   // Welche Referenzheizungen zur Wahl stehen, hängt daran, ob eine Anschaffung
   // angesetzt ist — nicht am Energieträger:
@@ -190,6 +227,57 @@ export default function Waermepumpe({
   const [preisExpanded, setPreisExpanded] = useState(false);
 
   const isResult = step >= STEPS.length;
+
+  /**
+   * Die aktuelle Rechnung als Adresse.
+   *
+   * Aufgenommen wird nur, was das Ergebnis WIRKLICH verändert — jeder weitere
+   * Parameter ist eine Stelle, an der Absender und Empfänger auseinanderlaufen
+   * können. Von Hand gesetzte Werte (Investition, Heizwärme, Heizlast) müssen
+   * mit: Ohne sie rechnet der Empfänger mit unseren Schätzungen weiter und
+   * sieht eine andere Zahl unter derselben Überschrift.
+   *
+   * `e=1` schaltet direkt ins Ergebnis. Das ist kein Entwicklungs-Kürzel,
+   * sondern der Sinn der Sache: Ein geteilter Link, der den Empfänger erst
+   * durch fünf Fragen schickt, teilt kein Ergebnis.
+   */
+  const teilenAdresse = () => {
+    const p = new URLSearchParams();
+    p.set("e", "1");
+    p.set("si", situation);
+    p.set("fl", String(flaecheIdx));
+    if (customFlaeche !== null) p.set("cf", String(customFlaeche));
+    p.set("ht", String(haustypIdx));
+    p.set("da", String(insulationIdx));
+    p.set("pe", String(personen));
+    p.set("hz", heizsystem);
+    p.set("wt", wpType);
+    if (wegId !== "ist") p.set("wg", wegId);
+    if (scenario !== "gruengas") p.set("sz", scenario);
+    if (oFuel !== "gas_neu") p.set("br", oFuel);
+    if (heizkoerperTausch) p.set("hk", "1");
+    if (!selbstnutzer) p.set("sn", "0");
+    if (kindImHaushalt) p.set("ki", "1");
+    if (euUrsprung) p.set("eu", "1");
+    if (pvStatus !== "nein") p.set("pv", pvStatus);
+    if (plz) p.set("plz", plz);
+    if (oInvest !== null) p.set("iv", String(oInvest));
+    if (oQges !== null) p.set("qg", String(oQges));
+    if (oHeizlast !== null) p.set("hl", String(oHeizlast));
+    const basis = typeof window !== "undefined" ? window.location.origin : "https://solar-check.io";
+    return `${basis}/waermepumpe-rechner?${p.toString()}`;
+  };
+
+  const [linkKopiert, setLinkKopiert] = useState(false);
+  const linkKopieren = async () => {
+    try {
+      await navigator.clipboard.writeText(teilenAdresse());
+      setLinkKopiert(true);
+      setTimeout(() => setLinkKopiert(false), 2000);
+    } catch {
+      prompt("Link kopieren:", teilenAdresse());
+    }
+  };
   const next = () => {
     if (step >= STEPS.length) return;
     const target = step + 1;
@@ -1382,6 +1470,25 @@ export default function Waermepumpe({
               </Link>
               <button onClick={() => { setHeizkoerperTausch(false); setWegId("ist"); setSelbstnutzer(true); setAltheizung("gas_alt"); setEinkommen("none"); setKindImHaushalt(false); setOHeizlast(null); setOQges(null); setOJaz(null); setOInvest(null); setOGasPrice(null); setOStromPrice(null); setOFossilInvest(null); setOFuel("gas_neu"); setHaustypIdx(0); setStep(0); }} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={iconSizes.sm} /> Neu berechnen</span>
+              </button>
+            </div>
+
+            {/* Teilen — die Adresse trägt die ganze Rechnung. Bis hierher war
+                dieser Rechner der einzige ohne: Wer zurückkam, klickte sich
+                erneut durch fünf Fragen, und ein Ergebnis weiterzugeben war gar
+                nicht möglich. */}
+            <div style={{ textAlign: "center", marginBottom: 12 }}>
+              <button
+                onClick={linkKopieren}
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 6,
+                  background: "none", border: "none", padding: "6px 8px",
+                  fontSize: 12, fontFamily: "inherit", fontWeight: 700,
+                  color: v('--color-accent'), cursor: "pointer",
+                }}
+              >
+                <IconLink size={iconSizes.sm} />
+                {linkKopiert ? "Link kopiert" : "Ergebnis als Link kopieren"}
               </button>
             </div>
 
