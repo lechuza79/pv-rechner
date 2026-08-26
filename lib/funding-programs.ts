@@ -508,6 +508,67 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
     pvPerKwp: 300, speicherPerKwh: 300, pvCap: 6000, speicherCap: 3000,
   },
+  "nidda-solar": {
+    id: "nidda-solar", name: "Förderprogramm Photovoltaik, Stromspeicher und Mini-PV",
+    traeger: "Stadt Nidda", level: "kommune", region: "Nidda", bundesland: "Hessen", agsCode: "06440016",
+    // Aufgenommen am 26.08.2026, nachdem die Klimaschutz-Beauftragte der Stadt
+    // uns die Seite selbst geschickt hat — auf eine Outreach-Mail hin, in der es
+    // um etwas anderes ging. Unsere eigene Suche hatte sie nicht: Sie liegt
+    // sechs Menüebenen tief, und im ganzen Wetteraukreis führten wir bis dahin
+    // kein einziges Programm.
+    //
+    // ZAHLEN AUS DEN RICHTLINIEN, NICHT AUS DER ÜBERSICHTSSEITE. Beide PDF am
+    // 26.08.2026 im Volltext gelesen und im Repo gesichert
+    // (docs/quellen/nidda/26-rl-pv.pdf und 26-rl-minipv.pdf, beide Stand
+    // 14.08.2025, Förderzeitraum 01.01.–31.12.2026). Die Übersichtsseite
+    // weicht an drei Stellen ab, und jede davon hätte hier einen falschen Wert
+    // erzeugt:
+    //  · Sie nennt „in Kombination mit einem Stromspeicher bis zu 1.500 €" und
+    //    lässt offen, wie sich das aufteilt. Die Richtlinie sagt es: 100 €/kWp
+    //    bis 1.000 € für die Anlage PLUS 50 €/kWh bis 500 € für den Speicher.
+    //    Ohne die Richtlinie hätte hier ein geratener Speichersatz gestanden
+    //    oder gar keiner.
+    //  · Sie schreibt „startet am 01.01.2025" — ein stehengebliebener
+    //    Vorjahrestext, zwei Absätze über der Aussage, der Beschluss gelte 2026.
+    //  · Sie sagt nichts zur Antragsberechtigung. Die Richtlinie beschränkt die
+    //    Dach-Förderung auf Privatpersonen mit Wohneigentum; „gewerblich" wäre
+    //    hier falsch. Bei Mini-PV genügt der Hauptwohnsitz — Mieter sind also
+    //    ausdrücklich dabei, und genau darauf zielt die Stadt.
+    url: "https://www.nidda.de/leben/infrastruktur/klima-umwelt-wasser/klima/foerderprogramme/foerderung-stadt-nidda/",
+    stand: "August 2026",
+    status: "aktiv", capped: true, verified: true,
+    // Nur privat: „ausschließlich Privatpersonen mit Wohneigentum in Nidda"
+    // (PV-Richtlinie Nr. 1), bei Mini-PV „Privatpersonen mit Hauptwohnsitz".
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp und je kWh Speicher; Mini-PV anteilig",
+    maxFoerderung: "max. 1.500 € (Anlage + Speicher), Mini-PV max. 200 €",
+    rates: [
+      { label: "PV-Anlage (Dach/Fassade)", value: "100 €/kWp, max. 1.000 €" },
+      { label: "Stromspeicher", value: "50 €/kWh, max. 500 €" },
+      { label: "Mini-PV / Balkonkraftwerk", value: "50 % der Kosten, max. 200 €" },
+    ],
+    conditions: [
+      "Die Anlage muss mindestens 4 kWp leisten — kleinere Dachanlagen werden nicht gefördert",
+      "Der Antrag wird erst NACH Inbetriebnahme gestellt, und zwar binnen vier Wochen",
+      "Die Anlage muss im Marktstammdatenregister registriert sein",
+      "Kein Ersatzneukauf und keine Erweiterung einer bestehenden Anlage",
+      "Je Wohngebäude eine Anlage im Förderzeitraum; Anlage und Speicher zusammen zählen als eine",
+      "Mini-PV: höchstens zwei Module je Haushalt, höchstens 800 W Einspeisung",
+      "Haltedauer zehn Jahre, sonst wird der Zuschuss zurückgefordert",
+      "Freiwillige Leistung ohne Rechtsanspruch, nur solange Mittel vorhanden sind",
+      "Nicht gefördert: Eigenleistung, gebrauchte Teile, Anlagen aus einer gesetzlichen Pflicht (etwa nach dem Gebäudeenergiegesetz)",
+      "Antrag und Nachweise nur digital über das Online-Formular der Stadt",
+      "Für die Dachanlage braucht es Wohneigentum in Nidda; beim Balkonkraftwerk genügt der Hauptwohnsitz, Mieter sind dort ausdrücklich dabei",
+    ],
+    // Die Richtlinie erlaubt die Kombination ausdrücklich („Der Zuschuss ist mit
+    // Angeboten oder anderen Förderungen kombinierbar"), schiebt die Prüfung auf
+    // Rückwirkungen aber der antragstellenden Person zu.
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    pvPerKwp: 100, pvCap: 1000,
+    speicherPerKwh: 50, speicherCap: 500,
+    balkonPercentOfCost: 0.5, balkonCap: 200,
+  },
   "koeln-pv": {
     id: "koeln-pv", name: "Klimafreundliches Wohnen & Arbeiten",
     traeger: "Stadt Köln", level: "kommune", region: "Köln", bundesland: "Nordrhein-Westfalen", agsCode: "05315",
