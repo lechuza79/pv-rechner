@@ -693,7 +693,12 @@ export default function Waermepumpe({
 
         {/* ── RESULT ── */}
         {isResult && (
-          <div className="fu">
+          // Zweispaltig ab 1024 px: links das Ergebnis, rechts die mitlaufende
+          // Geräteliste. Darunter greift die Rasterregel nicht, dann steht die
+          // Liste als Wischleiste unter dem Ergebnis. Beides entscheidet CSS
+          // (`.wp-ergebnis` in lib/theme.ts) — kein Zustand, kein matchMedia.
+          <div className="fu wp-ergebnis">
+          <div>
             {/* Szenario-Auswahl ganz oben: das beschlossene Heizungsgesetz (Grüngas-Pflicht,
                 beschlossen, Inkrafttreten mit der Verkündung) gesondert + hervorgehoben, darunter drei reine
                 Preis-Annahmen ohne Grüngas. Die Wahl rechnet alle Zahlen darunter um. */}
@@ -955,26 +960,6 @@ export default function Waermepumpe({
                 }
               />
             )}
-
-            {/* Passende Geräte aus dem Sortiment unseres Partners.
-
-                Steht bewusst NACH dem Fördercheck: Der Hinweis „erst beantragen,
-                dann kaufen" ergibt nur Sinn, wenn der Nutzer den Förderbetrag
-                vorher gesehen hat. Und der Abschnitt startet zugeklappt — er ist
-                ein Angebot, keine Aussage über die Wirtschaftlichkeit, und darf
-                das Ergebnis nicht überlagern. */}
-            <div style={{ marginTop: 16 }}>
-              <ResultSection
-                title="Passende Geräte"
-                summary={`${result.auslegungKw.toLocaleString("de-DE")} kW · ${result.flowTemp} °C Vorlauf`}
-              >
-                <WpGeraeteEmpfehlung
-                  auslegungKw={result.auslegungKw}
-                  vorlaufC={result.flowTemp}
-                  wpType={wpType}
-                />
-              </ResultSection>
-            </div>
 
             {/* 3. Realistische Wege */}
             {zeigeWege && (
@@ -1292,6 +1277,24 @@ export default function Waermepumpe({
                   Die ehrliche ist die Spanne im Ergebnis. */}
               Gerechnet mit Durchschnittswerten über {DEFAULT_HEATPUMP_CONFIG.years} Jahre. Wie weit das Ergebnis je nach Energiepreis-Annahme auseinandergeht, steht als Spanne unter der Einsparung.
             </div>
+            </div>
+
+            {/* Zweite Spalte: die Geräte. Auf schmalen Schirmen steht sie
+                schlicht darunter — dort ist sie eine Wischleiste, kein Anhängsel.
+
+                Sie kommt NACH dem Ergebnis, auch im Quelltext: Wer den Rechner
+                ohne Stylesheet oder mit Vorlesesoftware benutzt, soll erst das
+                Ergebnis hören und dann das Angebot. */}
+            <aside className="wp-geraete-spalte" aria-label="Passende Geräte">
+              <div style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-primary'), marginBottom: 10 }}>
+                Passende Geräte
+              </div>
+              <WpGeraeteEmpfehlung
+                auslegungKw={result.auslegungKw}
+                vorlaufC={result.flowTemp}
+                wpType={wpType}
+              />
+            </aside>
           </div>
         )}
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import useEmblaCarousel from "embla-carousel-react";
 import { v, space, pad } from "../lib/theme";
 import { IconExternal, IconCheck } from "./Icons";
 import {
@@ -11,7 +12,7 @@ import {
   type WpGeraet,
 } from "../lib/wp-katalog";
 import type { Befund, Empfehlung } from "../lib/wp-empfehlung";
-import { BEG_ANTRAG_HREF, BEG_ANTRAG_KURZ, BEG_EIGENLEISTUNG } from "../lib/beg-antrag";
+import { BEG_ANTRAG_HREF, BEG_EIGENLEISTUNG } from "../lib/beg-antrag";
 
 // ─── Passende Geräte zum Ergebnis ─────────────────────────────────────────────
 //
@@ -19,6 +20,14 @@ import { BEG_ANTRAG_HREF, BEG_ANTRAG_KURZ, BEG_EIGENLEISTUNG } from "../lib/beg-
 // Gründen, warum sie passen. Die Reihenfolge richtet sich nach dem Preis für
 // den Nutzer, nicht nach unserer Provision — und dieser Grundsatz steht
 // sichtbar auf der Seite, sonst ist er nur eine Behauptung im Code.
+//
+// Auf breiten Schirmen steht die Liste als mitlaufende Seitenspalte neben dem
+// Ergebnis (siehe `.wp-ergebnis` in lib/theme.ts), auf schmalen als
+// Wischleiste. Beides ist dieselbe Kachel — nur die Anordnung wechselt, und
+// zwar über CSS und die Breakpoint-Einstellung des Karussells, nicht über einen
+// Zustand in dieser Komponente. Ein `matchMedia`-Flag hätte vor der Hydratation
+// einen Startwert gebraucht und damit für jedes Gerät die falsche Variante
+// ausgeliefert — derselbe Fehler, der in der Kopfzeile schon einmal steckte.
 
 interface Props {
   auslegungKw: number;
@@ -33,163 +42,116 @@ interface Antwort {
   grund?: string;
 }
 
-/** Übersetzt einen Befund in einen Satz. Nur belegte Aussagen, keine Werbung. */
-function befundText(b: Befund): { text: string; gut: boolean } | null {
-  switch (b.art) {
-    case "leistung-passt":
-      return { text: "Leistung passt zur berechneten Anlagengröße", gut: true };
-    case "leistung-reichlich":
-      return { text: `${b.ueberKw} kW mehr als berechnet — läuft öfter im Takt`, gut: false };
-    case "leistung-unsicher":
-      return { text: "Leistung aus der Typenbezeichnung abgeleitet", gut: false };
-    case "vorlauf-reicht":
-      return { text: `Schafft ${b.geraetC} °C Vorlauf, nötig sind ${b.noetigC} °C`, gut: true };
-    case "vorlauf-knapp":
-      return { text: `Schafft ${b.geraetC} °C — wenig Reserve über den nötigen ${b.noetigC} °C`, gut: false };
-    case "kaeltemittel-natuerlich":
-      return { text: "Propan als Kältemittel", gut: true };
-    case "kaeltemittel-fluoriert":
-      return { text: "Fluoriertes Kältemittel (R32)", gut: false };
-    case "aufbau-monoblock":
-      return { text: "Monoblock — kein Kältekreis im Haus", gut: true };
-    case "aufbau-split":
-      return { text: "Split — Kältetechniker für den Anschluss nötig", gut: false };
-    default:
-      return null;
+/** Die vier Kennwerte, die über die Eignung entscheiden. Mehr wäre Datenblatt. */
+function kennwerte(g: WpGeraet): { label: string; wert: string; mono: boolean }[] {
+  const w: { label: string; wert: string; mono: boolean }[] = [];
+  if (leistungAnzeigbar(g)) {
+    const t = geraetLeistungTeile(g.leistungKw);
+    w.push({ label: "Heizleistung", wert: `${t.value} ${t.unit}`, mono: true });
   }
-}
-
-function Abzeichen({ text, gut }: { text: string; gut: boolean }) {
-  return (
-    <li
-      style={{
-        display: "flex",
-        alignItems: "flex-start",
-        gap: space.xs,
-        fontSize: 12,
-        lineHeight: 1.45,
-        color: v("--color-text-secondary"),
-      }}
-    >
-      <span
-        aria-hidden
-        style={{
-          flex: "0 0 auto",
-          marginTop: 2,
-          color: gut ? v("--color-positive") : v("--color-text-muted"),
-        }}
-      >
-        {gut ? <IconCheck size={13} /> : <span style={{ fontSize: 13, lineHeight: 1 }}>·</span>}
-      </span>
-      <span>{text}</span>
-    </li>
-  );
+  if (g.vorlaufMaxC !== null) {
+    w.push({ label: "Vorlauf max.", wert: `${g.vorlaufMaxC} °C`, mono: true });
+  }
+  if (g.kaeltemittel) {
+    w.push({
+      label: "Kältemittel",
+      wert: g.kaeltemittel === "r290" ? "Propan" : "R32",
+      mono: false,
+    });
+  }
+  if (g.aufbau) {
+    w.push({ label: "Bauart", wert: g.aufbau === "monoblock" ? "Monoblock" : "Split", mono: false });
+  }
+  return w;
 }
 
 /**
- * Zahl groß, Einheit kleiner daneben, beide untrennbar in einer Zeile.
- *
- * Das Leerzeichen ist ein echtes (geschütztes), kein Außenabstand: Ein bloßes
- * `marginLeft` ist im Textfluss nicht vorhanden — kopierter Text und
- * Vorlese-Software bekommen dann „4.598€" und „14kW" zu sehen. Beim ersten
- * Blick auf die fertige Seite stand genau das da.
+ * Der eine Satz, der Rechnung und Gerät verbindet — mit den eigenen Zahlen des
+ * Nutzers, nicht als Häkchen. Ohne die Zahlen wäre die Kachel Werbung.
  */
-function Wert({ teile, gross }: { teile: { value: string; unit: string }; gross?: boolean }) {
-  return (
-    <span style={{ whiteSpace: "nowrap" }}>
-      <span
-        style={{
-          fontFamily: "var(--font-mono)",
-          fontSize: gross ? 20 : 15,
-          fontWeight: 700,
-          color: v("--color-text-primary"),
-        }}
-      >
-        {teile.value}
-      </span>
-      <span
-        style={{
-          fontSize: gross ? 13 : 11,
-          color: v("--color-text-secondary"),
-        }}
-      >
-        {" "}
-        {teile.unit}
-      </span>
-    </span>
-  );
+function passungsSatz(befunde: Befund[], fall: Props): string | null {
+  const leistungOk = befunde.some((b) => b.art === "leistung-passt");
+  const vorlaufOk = befunde.some((b) => b.art === "vorlauf-reicht");
+  if (leistungOk && vorlaufOk) {
+    return `Passt zu ${fall.auslegungKw.toLocaleString("de-DE")} kW und ${fall.vorlaufC} °C Vorlauf`;
+  }
+  const gross = befunde.find((b) => b.art === "leistung-reichlich");
+  if (gross && gross.art === "leistung-reichlich") {
+    return `${gross.ueberKw.toLocaleString("de-DE")} kW mehr als berechnet — läuft öfter im Takt`;
+  }
+  const knapp = befunde.find((b) => b.art === "vorlauf-knapp");
+  if (knapp && knapp.art === "vorlauf-knapp") {
+    return `Schafft ${knapp.geraetC} °C — wenig Reserve über den nötigen ${knapp.noetigC} °C`;
+  }
+  return null;
 }
 
-function Karte({ e, rang }: { e: Empfehlung; rang: number }) {
-  const g: WpGeraet = e.geraet;
-  const befunde = e.befunde.map(befundText).filter(Boolean) as { text: string; gut: boolean }[];
+function Karte({ e, rang, fall }: { e: Empfehlung; rang: number; fall: Props }) {
+  const g = e.geraet;
+  const werte = kennwerte(g);
+  const satz = passungsSatz(e.befunde, fall);
+  const preis = geraetPreisTeile(g.preisEur);
+  const empfohlen = rang === 0;
 
   return (
-    <li
+    <div
       style={{
-        border: `1px solid ${rang === 0 ? v("--color-accent") : v("--color-border")}`,
-        borderRadius: v("--radius-lg"),
-        padding: pad("md", "md"),
-        background: v("--color-bg"),
+        // Im Karussell trägt der Rahmen die Kachelbreite, in der Spalte die
+        // Spalte selbst — deshalb volle Breite und die Begrenzung außen.
+        height: "100%",
         display: "flex",
         flexDirection: "column",
-        gap: space.sm,
+        background: v("--color-bg"),
+        border: `${empfohlen ? 2 : 1}px solid ${empfohlen ? v("--color-accent") : v("--color-border")}`,
+        borderRadius: v("--radius-lg"),
+        padding: pad("md", "md"),
       }}
     >
-      {rang === 0 && (
-        <span
+      {empfohlen && (
+        <div
           style={{
-            alignSelf: "flex-start",
             fontSize: 11,
             fontWeight: 700,
-            letterSpacing: 0.3,
             color: v("--color-accent"),
-            textTransform: "uppercase",
+            marginBottom: space.sm,
           }}
         >
-          Günstigstes passendes Gerät
-        </span>
+          Günstigstes passendes
+        </div>
       )}
 
-      <div style={{ display: "flex", gap: space.md, alignItems: "flex-start" }}>
-        {g.bildUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={g.bildUrl}
-            alt=""
-            width={64}
-            height={64}
-            loading="lazy"
-            style={{
-              flex: "0 0 auto",
-              width: 64,
-              height: 64,
-              objectFit: "contain",
-              borderRadius: v("--radius-sm"),
-              background: v("--color-bg-muted"),
-            }}
-          />
-        )}
-        <div style={{ minWidth: 0, flex: 1 }}>
-          <div
-            style={{
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: 0.3,
-              color: v("--color-text-muted"),
-              textTransform: "uppercase",
-            }}
-          >
+      <div style={{ display: "flex", gap: space.md, marginBottom: space.sm }}>
+        <div
+          style={{
+            width: 64,
+            height: 64,
+            flex: "0 0 auto",
+            borderRadius: v("--radius-sm"),
+            // Fester heller Grund, KEIN Theme-Token: Händlerbilder sind auf
+            // Weiß freigestellt. Auf einer dunklen Tagesstufe verschwindet das
+            // Gerät sonst in der Fläche — gemessen an den ersten drei Kacheln,
+            // alle drei praktisch unsichtbar. Das ist kein Farbschema-Verstoß,
+            // sondern derselbe Fall wie das feste Ampel-Grün: Die Fläche gehört
+            // zum fremden Bild, nicht zu unserer Oberfläche.
+            background: "#ffffff",
+            overflow: "hidden",
+          }}
+        >
+          {g.bildUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={g.bildUrl}
+              alt=""
+              loading="lazy"
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+            />
+          )}
+        </div>
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontSize: 11, color: v("--color-text-muted"), marginBottom: 2 }}>
             {g.marke}
           </div>
-          <div
-            style={{
-              fontSize: 13,
-              lineHeight: 1.4,
-              color: v("--color-text-primary"),
-              fontWeight: 600,
-            }}
-          >
+          <div style={{ fontSize: 13, lineHeight: 1.35, color: v("--color-text-primary") }}>
             {g.name}
           </div>
         </div>
@@ -199,44 +161,105 @@ function Karte({ e, rang }: { e: Empfehlung; rang: number }) {
         style={{
           display: "flex",
           alignItems: "baseline",
-          justifyContent: "space-between",
-          gap: space.sm,
+          gap: space.xs,
+          marginBottom: space.sm,
           flexWrap: "wrap",
         }}
       >
-        <Wert teile={geraetPreisTeile(g.preisEur)} gross />
-        {leistungAnzeigbar(g) && (
-          <span style={{ fontSize: 12, color: v("--color-text-secondary") }}>
-            Heizleistung <Wert teile={geraetLeistungTeile(g.leistungKw)} />
+        <span style={{ whiteSpace: "nowrap" }}>
+          <span
+            style={{
+              fontFamily: v("--font-mono"),
+              fontSize: 22,
+              fontWeight: 700,
+              color: v("--color-text-primary"),
+            }}
+          >
+            {preis.value}
           </span>
-        )}
+          <span style={{ fontSize: 13, color: v("--color-text-secondary") }}> {preis.unit}</span>
+        </span>
+        {/* Der Preis ist rund ein Drittel der Anlage — wer das erst im
+            Kleingedruckten liest, hat sich schon verrechnet. */}
+        <span style={{ fontSize: 11, color: v("--color-text-muted"), marginLeft: "auto" }}>
+          Gerätepreis
+        </span>
       </div>
 
-      <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: space.xs }}>
-        {befunde.map((b, i) => (
-          <Abzeichen key={i} text={b.text} gut={b.gut} />
-        ))}
-      </ul>
+      {werte.length > 0 && (
+        <dl
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, minmax(0,1fr))",
+            gap: space.sm,
+            margin: 0,
+            padding: `${space.sm}px 0`,
+            borderTop: `1px solid ${v("--color-border")}`,
+            borderBottom: `1px solid ${v("--color-border")}`,
+            marginBottom: space.sm,
+          }}
+        >
+          {werte.map((w) => (
+            <div key={w.label}>
+              <dt style={{ fontSize: 11, color: v("--color-text-muted") }}>{w.label}</dt>
+              <dd
+                style={{
+                  margin: 0,
+                  fontSize: 14,
+                  color: v("--color-text-primary"),
+                  fontFamily: w.mono ? v("--font-mono") : undefined,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {w.wert}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      )}
+
+      {satz && (
+        <div
+          style={{
+            display: "flex",
+            gap: space.xs,
+            fontSize: 12,
+            lineHeight: 1.4,
+            color: v("--color-text-secondary"),
+            marginBottom: space.sm,
+          }}
+        >
+          <span aria-hidden style={{ flex: "0 0 auto", marginTop: 1, color: v("--color-positive") }}>
+            <IconCheck size={13} />
+          </span>
+          <span>{satz}</span>
+        </div>
+      )}
 
       <a
         href={g.link}
         target="_blank"
         rel="nofollow sponsored noopener noreferrer"
         style={{
+          marginTop: "auto",
           display: "inline-flex",
           alignItems: "center",
+          justifyContent: "center",
           gap: space.xs,
-          alignSelf: "flex-start",
+          padding: pad("sm", "md"),
           fontSize: 13,
           fontWeight: 700,
           color: v("--color-accent"),
+          background: v("--color-accent-dim"),
+          border: `1px solid ${v("--color-border-accent")}`,
+          borderRadius: v("--radius-sm"),
           textDecoration: "none",
         }}
       >
         Beim Händler ansehen
         <IconExternal size={13} />
       </a>
-    </li>
+    </div>
   );
 }
 
@@ -244,11 +267,19 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
   const [antwort, setAntwort] = useState<Antwort | null>(null);
   const [laedt, setLaedt] = useState(true);
 
+  // Wischleiste auf schmalen Schirmen, ab der Seitenspalte abgeschaltet — die
+  // Umschaltung macht Embla selbst über seine Breakpoint-Option, damit es nur
+  // EINEN Umschaltpunkt gibt und nicht zwei, die auseinanderlaufen können.
+  const [emblaRef] = useEmblaCarousel({
+    align: "start",
+    containScroll: "trimSnaps",
+    breakpoints: { "(min-width: 1024px)": { active: false } },
+  });
+
   useEffect(() => {
     let abgebrochen = false;
     setLaedt(true);
-    const u = `/api/wp-geraete?kw=${auslegungKw}&vorlauf=${vorlaufC}&typ=${wpType}`;
-    fetch(u)
+    fetch(`/api/wp-geraete?kw=${auslegungKw}&vorlauf=${vorlaufC}&typ=${wpType}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d: Antwort | null) => {
         if (!abgebrochen) setAntwort(d);
@@ -284,25 +315,43 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
     );
   }
 
+  const fall = { auslegungKw, vorlaufC, wpType };
+
   return (
     <div style={{ display: "grid", gap: space.md }}>
-      <p style={{ margin: 0, fontSize: 13, lineHeight: 1.55, color: v("--color-text-secondary") }}>
-        Diese Geräte passen zur berechneten Anlage. Sortiert nach dem Preis für dich, nicht
-        nach unserer Provision.
+      <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: v("--color-text-secondary") }}>
+        Passend zur berechneten Anlage. Sortiert nach dem Preis für dich, nicht nach unserer
+        Provision.
       </p>
 
-      <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: space.md }}>
-        {treffer.map((e, i) => (
-          <Karte key={e.geraet.id} e={e} rang={i} />
-        ))}
-      </ul>
+      {/* Ein Baum für beide Anordnungen: Der Rahmen ist auf schmalen Schirmen
+          das Sichtfenster des Karussells, ab 1024 px ein gewöhnlicher Stapel.
+          Die Breiten stehen als Inline-Regel am Element, weil sie zur Mechanik
+          des Karussells gehören — CSS-Klassen dafür würden die Zuständigkeit
+          zwischen Stylesheet und Karussell aufteilen. */}
+      <div ref={emblaRef} style={{ overflow: "hidden" }}>
+        <ul
+          className="wp-geraete-reihe"
+          style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", gap: space.md }}
+        >
+          {treffer.map((e, i) => (
+            <li key={e.geraet.id} className="wp-geraete-kachel" style={{ minWidth: 0 }}>
+              <Karte e={e} rang={i} fall={fall} />
+            </li>
+          ))}
+        </ul>
+      </div>
 
       {/* Der teuerste Satz der Seite — und er wird hier NICHT formuliert.
 
-          Wortlaut und Ziel kommen aus `lib/beg-antrag.ts`, der einen Quelle für
-          diese Regel. Dieselbe Aussage steht im Ergebnis des Rechners, im
-          Förder-Check-Widget und im Ratgeber; ein Test verbietet, sie ein
-          zweites Mal zu tippen.
+          Ziel und Wortlaut kommen aus `lib/beg-antrag.ts`, der einen Quelle für
+          diese Regel; ein Test verbietet, sie ein zweites Mal zu tippen.
+
+          Hier steht bewusst NUR der Merksatz mit Verweis, nicht die ganze Regel:
+          Der Förderblock derselben Seite trägt sie bereits im Volltext. Am
+          Bildschirm standen beide untereinander — zweimal dasselbe, einmal beim
+          Betrag und einmal beim Kaufknopf. Der Merksatz gehört trotzdem hierher,
+          weil an dieser Stelle geklickt wird.
 
           Warum das mehr ist als Ordnungsliebe: Die erste hier getippte Fassung
           war FALSCH und zu streng („ein Kauf vor der Förderzusage schließt die
@@ -313,28 +362,27 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
           einmal statt an vier Stellen, von denen man drei vergisst. */}
       <div
         style={{
-          border: `1px solid ${v("--color-border")}`,
           borderLeft: `3px solid ${v("--color-negative")}`,
-          borderRadius: v("--radius-sm"),
           padding: pad("sm", "md"),
           fontSize: 12,
-          lineHeight: 1.55,
+          lineHeight: 1.5,
           color: v("--color-text-secondary"),
+          background: v("--color-negative-dim"),
         }}
       >
         <strong style={{ color: v("--color-text-primary") }}>Erst der Antrag, dann der Kauf.</strong>{" "}
-        {BEG_ANTRAG_KURZ} {BEG_EIGENLEISTUNG}{" "}
         <Link href={BEG_ANTRAG_HREF} style={{ color: v("--color-accent") }}>
-          So läuft es richtig
+          Die Reihenfolge Schritt für Schritt
         </Link>
       </div>
 
-      <p style={{ margin: 0, fontSize: 11, lineHeight: 1.55, color: v("--color-text-muted") }}>
+      <p style={{ margin: 0, fontSize: 11, lineHeight: 1.5, color: v("--color-text-muted") }}>
         Angegeben ist der Gerätepreis des Händlers, nicht der Preis der fertigen Anlage —
         Speicher, Regelung, Montage und Inbetriebnahme kommen dazu. Hersteller messen die
         Heizleistung außerdem bei unterschiedlichen Außentemperaturen; die Zahl taugt zum
-        Vorauswählen, die verbindliche Auslegung macht der Fachbetrieb. Über die Links
-        erhalten wir beim Kauf eine Provision, für dich ändert sich am Preis nichts.
+        Vorauswählen, die verbindliche Auslegung macht der Fachbetrieb. {BEG_EIGENLEISTUNG}{" "}
+        Über die Links erhalten wir beim Kauf eine Provision, für dich ändert sich am Preis
+        nichts.
         {antwort?.auswahlAus ? ` Ausgewählt aus ${antwort.auswahlAus} Geräten.` : ""}
       </p>
     </div>
