@@ -78,11 +78,18 @@ export function fingerprintOf(html: string): string {
   // Neuaufbau anders sortiert.
   //
   // Wirkung der alten Fassung: 45 der 109 Programme trugen binnen sechs Tagen
-  // eine Änderungsmeldung, 22 davon an drei oder mehr Tagen. 27 der 75 aktiven
-  // Programme standen dadurch unter der 14-Tage-Nachprüffrist; ab dem 02.09.2026
-  // wären die ersten lautlos aus jeder Rechnung gefallen — für eine Änderung,
-  // die nie stattgefunden hat. Dieselbe Fehlerklasse wie am 17., 18. und
-  // 22.08.2026, nur nicht im Filter und nicht eine Stufe davor, sondern im Hash.
+  // eine Änderungsmeldung, 22 davon an drei oder mehr Tagen. Ein Teil der
+  // aktiven Programme stand dadurch unter der 14-Tage-Nachprüffrist und wäre
+  // lautlos aus jeder Rechnung gefallen — für eine Änderung, die nie
+  // stattgefunden hat. Dieselbe Fehlerklasse wie am 17., 18. und 22.08.2026, nur
+  // nicht im Filter und nicht eine Stufe davor, sondern im Hash.
+  //
+  // WIE VIELE ES SIND, ZÄHLT MAN NICHT AN `page_changed_at` AB. Die erste
+  // Messung dieses Laufs tat das und kam auf 27 von 75 — zu hoch. Die Uhr in
+  // `fundingBelegAktuell` läuft nur bei einer Änderung, die NEUER ist als unsere
+  // letzte inhaltliche Prüfung; eine Meldung, die vor `lastVerified` liegt, ist
+  // längst beantwortet. Nach den zehn Quellenprüfungen dieses Laufs waren es
+  // 13 aktive Programme, alle mit 13 bis 14 Tagen Luft.
   //
   // WAS DAMIT NICHT MEHR AUFFÄLLT — und warum das richtig so ist: eine Seite,
   // die exakt dieselben Wörter in anderer Reihenfolge zeigt. Ein Betrag, eine

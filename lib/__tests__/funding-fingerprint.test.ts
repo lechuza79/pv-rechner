@@ -96,9 +96,8 @@ describe("Der Fingerabdruck ignoriert, was nur rauscht", () => {
   // hintereinander drei verschiedene Abdrücke — bei leerem Token-Vergleich in
   // beide Richtungen. Es fehlte kein Wort und kam keines hinzu; die Seite ordnete
   // dieselben Bausteine anders an. Über den ganzen Katalog trugen dadurch 45 von
-  // 109 Programmen binnen sechs Tagen eine Änderungsmeldung, und 27 der 75
-  // aktiven standen unter der 14-Tage-Nachprüffrist — auf dem Weg, ab dem
-  // 02.09.2026 lautlos aus jeder Rechnung zu fallen.
+  // 109 Programmen binnen sechs Tagen eine Änderungsmeldung — auf dem Weg, unter
+  // der 14-Tage-Nachprüffrist lautlos aus jeder Rechnung zu fallen.
   it("dieselben Bausteine in anderer Reihenfolge lösen keine Änderung aus", () => {
     const a = seite(
       "<div>Photovoltaik: 250 Euro je kWp, maximal 5.000 €.</div>" +
