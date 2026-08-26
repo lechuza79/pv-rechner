@@ -403,6 +403,7 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
 
   const fall = { auslegungKw, vorlaufC, wpType };
   const alternativ = antwort?.alternativ ?? [];
+  const nurEinzelgeraete = treffer.every((e) => e.geraet.umfang === "geraet");
 
   return (
     <div style={{ display: "grid", gap: space.md }}>
@@ -410,6 +411,20 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
         Passend zur berechneten Anlage. Sortiert nach dem Preis für dich, nicht nach unserer
         Provision.
       </p>
+
+      {/* Warum hier nur Einzelgeräte stehen, gehört gesagt.
+
+          Über rund 12,5 kW führt der Händler keine Komplettpakete mehr — bei
+          12 kW sind es drei, bei 15 kW keins. Ohne diesen Satz sieht es aus, als
+          hätten wir grundsätzlich keine Pakete im Programm, und der Nutzer
+          vergleicht einen Gerätepreis mit dem Anlagenpreis oben, ohne zu wissen,
+          dass es an seiner Anlagengröße liegt. */}
+      {nurEinzelgeraete && (
+        <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: v("--color-text-muted") }}>
+          In dieser Anlagengröße führt unser Partner keine Komplettpakete. Die Geräte unten sind
+          die Wärmepumpe allein — Speicher, Regelung und Montage kommen dazu.
+        </p>
+      )}
 
       {/* Ein Baum für beide Anordnungen: Der Rahmen ist auf schmalen Schirmen
           das Sichtfenster des Karussells, ab 1024 px ein gewöhnlicher Stapel.
