@@ -99,7 +99,14 @@ const nextConfig = {
       // Ratgeber unter /ratgeber/ gebündelt (Slug-Umstellung Juli 2026) — alte flache Pfade dauerhaft umleiten
       { source: "/lohnt-sich-pv-mit-speicher", destination: "/ratgeber/lohnt-sich-pv-mit-speicher", permanent: true },
       { source: "/lohnt-sich-pv-ohne-einspeiseverguetung", destination: "/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung", permanent: true },
-      { source: "/waermepumpe-foerderung-2026", destination: "/ratgeber/waermepumpe-foerderung-2026", permanent: true },
+      // Jahreszahl aus der Adresse (26.08.2026). Beide alten Pfade zeigen direkt
+      // auf das ENDZIEL, nicht aufeinander: Der erste Eintrag zeigte bis dahin auf
+      // `/ratgeber/waermepumpe-foerderung-2026` und wurde umgebogen. Wer ihn stehen
+      // lässt und die zweite Weiterleitung danebenhängt, baut eine Kette aus zwei
+      // Sprüngen — Google folgt ihr zwar, überträgt die Signale aber über den
+      // Umweg, und jeder weitere Umzug verlängert sie.
+      { source: "/waermepumpe-foerderung-2026", destination: "/ratgeber/waermepumpe-foerderung", permanent: true },
+      { source: "/ratgeber/waermepumpe-foerderung-2026", destination: "/ratgeber/waermepumpe-foerderung", permanent: true },
       // Förder-Stadtseiten: flache Slugs → Hierarchie Bundesland/Kommune.
       // Feste historische Zuordnung (alte URLs wachsen nicht mehr) — bei neuer
       // Stadt hier ergänzen (Quelle: lib/atlas-cities.ts).

@@ -326,7 +326,7 @@ export function pvOhneEinspeisungFaq(prices?: PriceConfig): FaqEntry[] {
   ];
 }
 
-/** FAQ for the heat-pump funding guide (/ratgeber/waermepumpe-foerderung-2026).
+/** FAQ for the heat-pump funding guide (/ratgeber/waermepumpe-foerderung).
  *  All rates/caps come from the geprüfte BEG config (KfW Merkblatt 458) — never
  *  hardcode a percentage or euro figure here. */
 export function waermepumpeFoerderungFaq(): FaqEntry[] {
@@ -429,7 +429,7 @@ export function gasheizungWaermepumpeFaq(): FaqEntry[] {
       // im FAQPage-JSON-LD. Geprüft am 25.08.2026 gegen das KfW-Merkblatt 458,
       // Stand 07/2026, S. 3 f. (docs/quellen/).
       a: `In den meisten Fällen ja. Die Wärmepumpe kostet in der Anschaffung mehr, aber die BEG-Förderung übernimmt je nach Selbstnutzung, Alter der alten Heizung und Einkommen ${pct(begStufeAm(new Date()).grundfoerderung)} bis ${pct(HP.begMaxRateLowIncome)} der förderfähigen Kosten, und die laufenden Kosten liegen deutlich unter denen einer Gasheizung mit Grüngas-Pflicht. Gefördert wird dabei höchstens bis ${eur(begStufeAm(new Date()).maxCap)}. Wie viel für dein Haus zusammenkommt, rechnet der Wärmepumpen-Rechner aus.`,
-      links: [{ phrase: "BEG-Förderung", href: "/ratgeber/waermepumpe-foerderung-2026" }],
+      links: [{ phrase: "BEG-Förderung", href: "/ratgeber/waermepumpe-foerderung" }],
       cta: { label: "Ersparnis berechnen", href: "/waermepumpe-rechner" },
     },
     {

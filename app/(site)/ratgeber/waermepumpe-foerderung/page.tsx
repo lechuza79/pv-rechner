@@ -38,13 +38,37 @@ import { pageMetadata } from "../../../../lib/seo";
 // not a rounding choice. ISR keeps the render-time date fresh without a rebuild.
 export const revalidate = 3600;
 
+// ─── Die Jahreszahl steht im TITEL, nicht in der Adresse ────────────────────
+//
+// Am 26.08.2026 ist die Seite von `/ratgeber/waermepumpe-foerderung-2026` auf
+// den zeitlosen Pfad umgezogen. Gemessen (DataForSEO, Deutschland, drei
+// unabhängige Prüfer): Die jahreslose Anfrage bringt 33.100 Aufrufe im Monat
+// und läuft ganzjährig; die Jahresvariante bricht zum Jahreswechsel um 93 %
+// ein („wärmepumpe förderung 2025": 6.600 → 40). Auf der Anfrage MIT Jahr
+// stehen die Plätze 1–3 trotzdem auf jahreslosen Adressen (KfW, ADAC, Bosch) —
+// Google zieht das Jahr aus dem Titel, nicht aus dem Pfad.
+//
+// **Was Google dazu NICHT sagt:** Die URL-Empfehlung von Search Central äußert
+// sich zu Datumsangaben in Adressen überhaupt nicht. Wer den Umzug mit einer
+// Google-Aussage begründet, hat keine — dieselbe Falle wie die kursierende
+// Behauptung über Verzeichnistiefe, die hier schon einmal zweieinhalb Wochen
+// als Google-Aussage im Regelwerk stand.
+//
+// Die Jahreszahl kommt aus dem KALENDER, nicht aus der Förderstufe. Naheliegend
+// wäre `begStufeAm(...)`, und es wäre falsch: Wer im Januar 2028 liest, steht
+// auf der Stufe „August 2027" — der Titel sagte dann 2027, während der Leser
+// 2028 schreibt. Die Zahlen im Text ziehen sich ihre Stufe ohnehin selbst; das
+// Jahr im Titel beantwortet die andere Frage, nämlich „gilt das noch für mich".
+// Mit ISR (siehe `revalidate`) wandert es ohne Deploy mit.
+const JAHR = new Date().getFullYear();
+
 export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
-    path: "/ratgeber/waermepumpe-foerderung-2026",
-    title: "Wärmepumpen-Förderung 2026: Wie viel Zuschuss gibt es wirklich?",
+    path: "/ratgeber/waermepumpe-foerderung",
+    title: `Wärmepumpen-Förderung ${JAHR}: Wie viel Zuschuss gibt es wirklich?`,
     description:
       "Grundförderung, Klima-Bonus, Einkommens-Bonus: Wie sich der BEG-Zuschuss für den Heizungstausch zusammensetzt — mit live gerechneten Beispielfällen nach KfW Merkblatt 458 und dem Förder-Check zum selbst Durchrechnen. Ohne Anmeldung.",
-    ogImageTitle: "Wärmepumpen-Förderung 2026",
+    ogImageTitle: `Wärmepumpen-Förderung ${JAHR}`,
     ogImageSubtitle: "Wie viel Zuschuss wirklich drin ist.",
   });
 }
@@ -318,21 +342,21 @@ export default function WaermepumpeFoerderungPage() {
           items={[
             { label: "Start", href: "/" },
             { label: "Ratgeber", href: "/ratgeber" },
-            { label: "Wärmepumpen-Förderung 2026" },
+            { label: `Wärmepumpen-Förderung ${JAHR}` },
           ]}
           jsonLd
         />
 
-        <h1 style={S.h1}>Wärmepumpen-Förderung 2026: Wie viel Zuschuss gibt es wirklich?</h1>
+        <h1 style={S.h1}>Wärmepumpen-Förderung {JAHR}: Wie viel Zuschuss gibt es wirklich?</h1>
         <p style={S.subtitle}>
           Der Staat übernimmt beim Heizungstausch einen erheblichen Teil der Kosten — aber
           wie viel genau, hängt davon ab, wer du bist und was du bisher heizt. Hier steht,
           wie sich der Zuschuss zusammensetzt.
         </p>
         <ArticleMeta
-          headline="Wärmepumpen-Förderung 2026: Wie viel Zuschuss gibt es wirklich?"
+          headline={`Wärmepumpen-Förderung ${JAHR}: Wie viel Zuschuss gibt es wirklich?`}
           description="Grundförderung, Klima-Bonus, Einkommens-Bonus: wie sich der BEG-Zuschuss zusammensetzt."
-          path="/ratgeber/waermepumpe-foerderung-2026"
+          path="/ratgeber/waermepumpe-foerderung"
           published="2026-07-20"
           modified="2026-08-25"
         />
@@ -725,10 +749,10 @@ export default function WaermepumpeFoerderungPage() {
         )}
 
         {/* ── FAQ (visible accordion + FAQPage JSON-LD from the same data) ── */}
-        <Faq items={faqItems} title="Häufige Fragen zur Wärmepumpen-Förderung" currentPath="/ratgeber/waermepumpe-foerderung-2026" />
+        <Faq items={faqItems} title="Häufige Fragen zur Wärmepumpen-Förderung" currentPath="/ratgeber/waermepumpe-foerderung" />
 
         <RelatedLinks
-          currentPath="/ratgeber/waermepumpe-foerderung-2026"
+          currentPath="/ratgeber/waermepumpe-foerderung"
           links={[
             { href: "/waermepumpe-rechner", label: "Wärmepumpen-Rechner", desc: "Stromverbrauch, Kosten und Ersparnis gegenüber Gas oder Öl — mit eingerechneter Förderung." },
             { href: "/ratgeber/gasheizung-oder-waermepumpe", label: "Gasheizung oder Wärmepumpe?", desc: "Was sich nach dem Gebäudemodernisierungsgesetz noch rechnet — mit Grüngas-Kostenpfad." },
