@@ -61,10 +61,15 @@ describe("Stadt-Land-Post", () => {
     expect(postStadtLand(gedreht).bild?.aussage).toMatch(/in der Stadt/);
   });
 
-  it("nimmt Spitze und Schlusslicht aus den Daten, nicht aus dem Text", () => {
+  it("nennt Stadtstaaten und Flächenländer getrennt", () => {
+    // Der Satz hieß zuerst „bei den Stadtstaaten … Hamburg, Berlin.
+    // Niedersachsen kommt auf …" und machte Niedersachsen damit zum
+    // Stadtstaat. Die Gruppen werden jetzt namentlich getrennt, nicht über die
+    // Sortierung erraten.
     const p = postStadtLand(basis);
-    expect(p.text).toContain("Hamburg");
-    expect(p.text).toContain("Niedersachsen");
+    expect(p.text).toMatch(/Stadtstaaten: Berlin [\d,]+, Hamburg [\d,]+/);
+    expect(p.text).toMatch(/Flächenländern führt Niedersachsen/);
+    expect(p.text).not.toMatch(/Stadtstaaten[^.]*Niedersachsen/);
     // Vertauscht man die Reihenfolge der Länder, muss dasselbe herauskommen —
     // die Funktion sortiert selbst.
     const gemischt = { ...basis, laender: [...basis.laender].reverse() };

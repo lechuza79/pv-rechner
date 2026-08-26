@@ -116,9 +116,14 @@ export function postStadtLand(k: SocialKennzahlen): SocialPost {
   const faktor = s.landJeTausend / s.stadtJeTausend;
   const staerker = faktor >= 1;
   const sortiert = [...k.laender].sort((a, b) => b.balkonJeTausend - a.balkonJeTausend);
-  const spitze = sortiert[0];
-  const schluss = sortiert[sortiert.length - 1];
-  const zweitLetzter = sortiert[sortiert.length - 2];
+  // Stadtstaaten namentlich, nicht als „die letzten der Liste". Der Satz hieß
+  // zuerst „bei den Stadtstaaten … Hamburg, Berlin. Niedersachsen kommt auf …"
+  // und machte Niedersachsen damit zum Stadtstaat — die Aussage stimmte nur,
+  // solange die Sortierung zufällig passte.
+  const stadtstaatNamen = ["Berlin", "Hamburg", "Bremen"];
+  const stadtstaaten = sortiert.filter((l) => stadtstaatNamen.includes(l.name));
+  const flaechenlaender = sortiert.filter((l) => !stadtstaatNamen.includes(l.name));
+  const spitze = flaechenlaender[0] ?? sortiert[0];
 
   // Die ersten zwei Zeilen sind alles, was der Feed vor „mehr anzeigen" zeigt.
   // Hier stand zuerst die Prämisse und die Pointe kam danach — im
@@ -129,7 +134,7 @@ export function postStadtLand(k: SocialKennzahlen): SocialPost {
     ``,
     `Die Anmeldedaten: In den ${de(s.stadtAnzahl)} deutschen Städten über ${de(s.stadtAb / 1000)}.000 Einwohnern kommen ${de(s.stadtJeTausend, 1)} Steckersolargeräte auf 1.000 Einwohner. In den gut ${de(Math.round(s.landAnzahl / 1000))}.000 Gemeinden unter ${de(s.landUnter / 1000)}.000 Einwohnern sind es ${de(s.landJeTausend, 1)}. Also ${staerker ? `${de(faktor, 1)}-mal so viele` : `weniger`} — und zwar dort, wo die meisten Leute ohnehin ein eigenes Dach hätten.`,
     ``,
-    `Bei den Stadtstaaten wird es noch deutlicher: ${schluss.name} ${de(schluss.balkonJeTausend, 1)}, ${zweitLetzter.name} ${de(zweitLetzter.balkonJeTausend, 1)}. ${spitze.name} kommt auf ${de(spitze.balkonJeTausend, 1)}.`,
+    `Am deutlichsten in den Stadtstaaten: ${stadtstaaten.map((l) => `${l.name} ${de(l.balkonJeTausend, 1)}`).join(", ")}. Unter den Flächenländern führt ${spitze.name} mit ${de(spitze.balkonJeTausend, 1)}.`,
     ``,
     `Warum das plausibel ist, wenn man kurz nachdenkt: Ein Balkonkraftwerk braucht keine Baugenehmigung und keinen Handwerker, aber es braucht jemanden, der es aufstellt und anmeldet. Im Reihenhaus mit Garten ist beides einfacher als im vierten Stock einer Mietwohnung, deren Balkon nach Norden zeigt.`,
     ``,
@@ -168,7 +173,7 @@ export function postStadtLand(k: SocialKennzahlen): SocialPost {
       `Städte ab ${de(s.stadtAb)} Einwohnern: ${de(s.stadtAnzahl)} Gemeinden, ${de(s.stadtJeTausend, 1)} je 1.000 Einwohner`,
       `Gemeinden unter ${de(s.landUnter)}: ${de(s.landAnzahl)}, ${de(s.landJeTausend, 1)} je 1.000 Einwohner`,
       `Faktor ${de(faktor, 2)}`,
-      `Spitze ${spitze.name} ${de(spitze.balkonJeTausend, 1)} · Schlusslicht ${schluss.name} ${de(schluss.balkonJeTausend, 1)}`,
+      `Stärkstes Flächenland ${spitze.name} ${de(spitze.balkonJeTausend, 1)} · Stadtstaaten ${stadtstaaten.map((l) => `${l.name} ${de(l.balkonJeTausend, 1)}`).join(", ")}`,
     ],
   };
 }
