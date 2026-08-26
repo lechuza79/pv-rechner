@@ -395,7 +395,7 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
     return (
       <div style={{ fontSize: 13, color: v("--color-text-secondary"), lineHeight: 1.5 }}>
         Für diese Anlagengröße und Vorlauftemperatur ist gerade kein passendes Gerät im
-        Sortiment unseres Partners. Das heißt nicht, dass es keins gibt — nur, dass wir
+        Sortiment von Heizungsdiscount24. Das heißt nicht, dass es keins gibt — nur, dass wir
         keins belegen können.
       </div>
     );
@@ -407,9 +407,43 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
 
   return (
     <div style={{ display: "grid", gap: space.md }}>
+      {/* Werbekennzeichnung — Stelle und Wortlaut sind geprüft, nicht gewählt.
+
+          ÜBER den Kacheln, nicht darunter: Die Aufsicht verlangt Erkennbarkeit
+          „ohne Scrollen", die Rechtsprechung „auf den ersten Blick". Der Hinweis
+          stand zuvor als vierter Satz eines 11-px-Absatzes UNTER allen Kacheln —
+          auf dem Handy erreichbar erst nach der Wischleiste, auf dem Desktop
+          unterhalb des Sichtbereichs der klebenden Spalte. Beide Male ist der
+          Kaufknopf vorher da. Das Landgericht Berlin hat 2024 einen fast
+          gleichen Fall entschieden (102 O 27/24).
+
+          Das Wort „Anzeige": Zwei Prüfer sind hier auseinandergegangen. Der
+          Leitfaden der Medienanstalten trennt Affiliate-Links (Symbol plus
+          Erläuterung genügt) von werblichen Links (Wort nötig) — und wir liegen
+          näher am zweiten Fall, weil wir das Sortiment EINES Händlers zeigen,
+          nicht eine Marktauswahl. Dazu ist die Frage für Zivilgerichte
+          ungeklärt: Es gibt keine obergerichtliche Entscheidung, die einen
+          reinen Provisionshinweis genügen lässt. Bei ungeklärter Lage
+          entscheidet die Fehlerrichtung — eine Kennzeichnung zu viel ist
+          praktisch nicht angreifbar, eine zu wenig war der Grund, aus dem ein
+          vergleichbares Verbraucherportal verurteilt wurde (OLG Dresden
+          14 U 207/19, rechtskräftig).
+
+          Der Händlername steht ausdrücklich da: § 6 Abs. 1 Nr. 2 DDG verlangt,
+          dass erkennbar ist, in wessen Auftrag geworben wird. „Unser Partner"
+          erfüllt das nicht, und das Linkziel ist eine Netzwerk-Adresse.
+
+          Und der Sortiments-Zuschnitt: Der BGH hat für ein Preisportal
+          entschieden, dass die Beschränkung auf provisionspflichtige Anbieter
+          eine wesentliche Information ist (I ZR 55/16). Unser Fall ist enger —
+          ein einziger Händler. Ohne den Satz lesen sich Überschrift und
+          „ausgewählt aus N Geräten" als Marktüberblick. */}
       <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: v("--color-text-secondary") }}>
-        Passend zur berechneten Anlage. Sortiert nach dem Preis für dich, nicht nach unserer
-        Provision.
+        <strong style={{ color: v("--color-text-primary") }}>Anzeige</strong> — Die Geräte kommen
+        aus dem Sortiment von Heizungsdiscount24, sind also kein Marktüberblick. Über die Links
+        erhalten wir eine Provision, wenn du dort kaufst; für dich ändert sich am Preis nichts.
+        Ausgewählt wird nach der Passung zu deiner Anlage, sortiert nach dem Preis für dich —
+        nicht nach unserer Provision.
       </p>
 
       {/* Warum hier nur Einzelgeräte stehen, gehört gesagt.
@@ -421,7 +455,7 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
           dass es an seiner Anlagengröße liegt. */}
       {nurEinzelgeraete && (
         <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: v("--color-text-muted") }}>
-          In dieser Anlagengröße führt unser Partner keine Komplettpakete. Die Geräte unten sind
+          In dieser Anlagengröße führt Heizungsdiscount24 keine Komplettpakete. Die Geräte unten sind
           die Wärmepumpe allein — Speicher, Regelung und Montage kommen dazu.
         </p>
       )}
@@ -508,10 +542,8 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
         Angegeben ist der Gerätepreis des Händlers, nicht der Preis der fertigen Anlage —
         Speicher, Regelung, Montage und Inbetriebnahme kommen dazu. Hersteller messen die
         Heizleistung außerdem bei unterschiedlichen Außentemperaturen; die Zahl taugt zum
-        Vorauswählen, die verbindliche Auslegung macht der Fachbetrieb. {BEG_EIGENLEISTUNG}{" "}
-        Über die Links erhalten wir beim Kauf eine Provision, für dich ändert sich am Preis
-        nichts.
-        {antwort?.auswahlAus ? ` Ausgewählt aus ${antwort.auswahlAus} Geräten.` : ""}
+        Vorauswählen, die verbindliche Auslegung macht der Fachbetrieb. {BEG_EIGENLEISTUNG}
+        {antwort?.auswahlAus ? ` Ausgewählt aus ${antwort.auswahlAus} Geräten des Sortiments.` : ""}
       </p>
     </div>
   );
