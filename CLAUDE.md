@@ -651,6 +651,10 @@ Vollständige Vorfallsberichte: `docs/lehren/atlas-performance-2026-07.md`.
 ### Vercel-Kosten
 
 1. **Build-Cache reaktiviert** — `prebuild` räumt `.next/` nur lokal auf (spart 40–60 % Build-Zeit).
+1b. **Build-Maschine steht auf `standard`, NICHT auf `turbo` — und das ist der größte Hebel dieses Postens** (26.08.2026). Die Maschinengröße wird nach Kernen abgerechnet; `turbo` ist die größte, die Vercel anbietet. Das Projekt stand fest darauf, obwohl ein Build **41 Sekunden** dauert (im Build-Log nachgelesen: Cache wird wiederhergestellt, 151 Seiten, „Build Completed in 41s"). So entstanden rechnerisch **35 abgerechnete Rechenminuten je Auslieferung** — die Lücke zwischen Buildzeit und Rechnung, die vorher niemand erklären konnte. Bauzeit war damit mit 37 von 67 $ der größte Einzelposten dieses Projekts, größer als der gesamte Auslieferungsverkehr.
+    - **Nicht am Build sparen, sondern an der Maschine.** Die Zahl der Auslieferungen (351 im Monat) ist der falsche Hebel: Sie ist bei elf parallelen Arbeitsständen kaum zu senken, und die Bündelung passiert längst von selbst (827 Änderungen ergaben 351 Auslieferungen).
+    - **Die Einstellung liegt NICHT im Repo**, sondern in der Vercel-Projektkonfiguration (`resourceConfig.buildMachineType`, dazu `buildMachineSelection: "fixed"`). Sie ist also im Diff unsichtbar — deshalb steht sie hier. Der Team-Standard ist `turbo`; ein neues Projekt erbt ihn und zahlt still mit.
+    - **Wenn ein Build zu lang wird:** eine Stufe hoch (`enhanced`), nicht zurück auf `turbo`. Alternativ `buildMachineSelection: "elastic"` — dann wählt Vercel selbst und stuft bei kurzen Builds herunter.
 2. **Ignored Build Step** (Vercel Dashboard → Build and Deployment), Exit 0 = Build überspringen:
    ```sh
    bash -c 'if [ "$VERCEL_ENV" = "preview" ]; then exit 0; fi; if git rev-parse HEAD^ >/dev/null 2>&1; then git diff --quiet HEAD^ HEAD -- ":!*.md" ":!.claude/"; else exit 1; fi'
