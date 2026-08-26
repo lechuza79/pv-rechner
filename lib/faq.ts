@@ -23,7 +23,7 @@ import {
   EEG_REFORM_STAND, eegDatum, eegReformStandLabel, eegStaffelSatz, eegVerfahrenSatz,
 } from "./eeg-reform-config";
 import type { PriceConfig } from "./prices-config";
-import { DEFAULT_HEATPUMP_CONFIG } from "./heatpump-config";
+import { DEFAULT_HEATPUMP_CONFIG, begStufeAm } from "./heatpump-config";
 
 export interface FaqLink {
   /** Exact phrase inside `a`; its first occurrence becomes a link. */
@@ -331,13 +331,19 @@ export function pvOhneEinspeisungFaq(prices?: PriceConfig): FaqEntry[] {
  *  hardcode a percentage or euro figure here. */
 export function waermepumpeFoerderungFaq(): FaqEntry[] {
   const c = DEFAULT_HEATPUMP_CONFIG;
+  // Grundsatz, Klimabonus und Höchstbetrag kommen aus dem Fahrplan der
+  // Richtlinie, nicht aus der Config-Konstante: Sie ändern sich zu festen
+  // Stichtagen, und diese Antworten landen zusätzlich im strukturierten
+  // FAQ-Auszug für Suchmaschinen. Eine dort eingefrorene Zahl wäre ab dem
+  // ersten Stichtag eine falsche Angabe an einer besonders sichtbaren Stelle.
+  const heute = begStufeAm(new Date());
   const pct = (r: number) => `${Math.round(r * 100)} %`;
-  const grund = pct(c.begGrundfoerderung);
-  const klima = pct(c.begKlimaBonus);
+  const grund = pct(heute.grundfoerderung);
+  const klima = pct(heute.klimaBonus);
   const staffel = c.begEinkommensStaffel;
   const einkommenGrenze = staffel[staffel.length - 1].maxIncome.toLocaleString("de-DE");
-  const maxZuschuss = Math.round(c.begMaxCap * c.begMaxRateLowIncome).toLocaleString("de-DE");
-  const capKosten = c.begMaxCap.toLocaleString("de-DE");
+  const maxZuschuss = Math.round(heute.maxCap * c.begMaxRateLowIncome).toLocaleString("de-DE");
+  const capKosten = heute.maxCap.toLocaleString("de-DE");
   const familie = c.begFamilienzuschlag.toLocaleString("de-DE");
   return [
     {
@@ -422,7 +428,7 @@ export function gasheizungWaermepumpeFaq(): FaqEntry[] {
       // längst die richtigen Werte — zwei Zahlen für dieselbe Förderung, beide
       // im FAQPage-JSON-LD. Geprüft am 25.08.2026 gegen das KfW-Merkblatt 458,
       // Stand 07/2026, S. 3 f. (docs/quellen/).
-      a: `In den meisten Fällen ja. Die Wärmepumpe kostet in der Anschaffung mehr, aber die BEG-Förderung übernimmt je nach Selbstnutzung, Alter der alten Heizung und Einkommen ${pct(HP.begGrundfoerderung)} bis ${pct(HP.begMaxRateLowIncome)} der förderfähigen Kosten, und die laufenden Kosten liegen deutlich unter denen einer Gasheizung mit Grüngas-Pflicht. Gefördert wird dabei höchstens bis ${eur(HP.begMaxCap)}. Wie viel für dein Haus zusammenkommt, rechnet der Wärmepumpen-Rechner aus.`,
+      a: `In den meisten Fällen ja. Die Wärmepumpe kostet in der Anschaffung mehr, aber die BEG-Förderung übernimmt je nach Selbstnutzung, Alter der alten Heizung und Einkommen ${pct(begStufeAm(new Date()).grundfoerderung)} bis ${pct(HP.begMaxRateLowIncome)} der förderfähigen Kosten, und die laufenden Kosten liegen deutlich unter denen einer Gasheizung mit Grüngas-Pflicht. Gefördert wird dabei höchstens bis ${eur(begStufeAm(new Date()).maxCap)}. Wie viel für dein Haus zusammenkommt, rechnet der Wärmepumpen-Rechner aus.`,
       links: [{ phrase: "BEG-Förderung", href: "/ratgeber/waermepumpe-foerderung-2026" }],
       cta: { label: "Ersparnis berechnen", href: "/waermepumpe-rechner" },
     },

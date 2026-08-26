@@ -12,7 +12,7 @@ import {
   MARKTWERT_REVIEW_BY, MARKTWERT_QUELLE, DIREKTVERMARKTUNG,
 } from "../../../lib/marktwert-config";
 import { CO2_PRICE, co2PriceForCalendarYear } from "../../../lib/co2-config";
-import { DEFAULT_HEATPUMP_CONFIG as HP } from "../../../lib/heatpump-config";
+import { DEFAULT_HEATPUMP_CONFIG as HP, begStufeAm } from "../../../lib/heatpump-config";
 import { GREEN_GAS_CONFIG as GG, bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "../../../lib/greengas-config";
 import { DEFAULT_AIRCON_CONFIG as AC, AC_REAL_FACTOR } from "../../../lib/aircon-config";
 import { acHeatSpecKwhPerM2 } from "../../../lib/aircon";
@@ -443,7 +443,11 @@ export default async function DatenstandPage() {
             { label: "Warmwasser je Person", value: `${nf(HP.wwPerPerson)} kWh/a` },
             { label: "Investition Luft/Wasser (brutto, inkl. MwSt.)", value: `${nf(HP.investLwwpBase)} € + ${nf(HP.investLwwpPerKw)} €/kW` },
             { label: "Investition Sole/Wasser (brutto, inkl. MwSt.)", value: `${nf(HP.investSwwpBase)} € + ${nf(HP.investSwwpPerKw)} €/kW` },
-            { label: "BEG-Förderung (Grund + Boni)", value: `${nf(HP.begGrundfoerderung * 100)}–${nf(HP.begMaxRateLowIncome * 100)} %, max. ${nf(HP.begMaxCap)} €` },
+            // Grundsatz und Höchstbetrag aus dem Fahrplan der Richtlinie, nicht
+            // aus der Config-Konstante: Beide ändern sich zu festen Stichtagen.
+            // Ausgerechnet auf der Seite, die für die Ehrlichkeit der Zahlen
+            // bürgt, wäre ein eingefrorener Wert der schlechteste Ort dafür.
+            { label: "BEG-Förderung (Grund + Boni)", value: `${nf(begStufeAm(new Date()).grundfoerderung * 100)}–${nf(HP.begMaxRateLowIncome * 100)} %, max. ${nf(begStufeAm(new Date()).maxCap)} €` },
             { label: "Wärmepumpen-Stromtarif (günstiger, weil das Netzentgelt für steuerbare Wärmepumpen reduziert ist)", value: `${(HP.wpTarif * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} ct/kWh` },
             { label: "Gas-Referenz", value: `${nf(HP.gasPriceCtPerKwh)} ct/kWh, ${nf(HP.gasCo2PerKwh * 1000)} g CO₂/kWh, ${nf(FUEL.gas.efficiency * 100)} % Kessel` },
             // Der Öl-Fall ist seit 28.07.2026 ein eigener Rechenweg (anderer Preis,

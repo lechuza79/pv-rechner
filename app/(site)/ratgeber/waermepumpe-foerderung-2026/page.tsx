@@ -14,7 +14,7 @@ import { DATA_SOURCES } from "../../../../lib/data-sources";
 import { waermepumpeFoerderungFaq } from "../../../../lib/faq";
 import { v } from "../../../../lib/theme";
 import { calcBegSubsidy, calcInvestBrutto, calcHeatLoad } from "../../../../lib/heatpump";
-import { DEFAULT_HEATPUMP_CONFIG as HP } from "../../../../lib/heatpump-config";
+import { DEFAULT_HEATPUMP_CONFIG as HP, begStufeAm } from "../../../../lib/heatpump-config";
 import { pageMetadata } from "../../../../lib/seo";
 
 // Figures on this page come live from the same BEG engine the calculator and
@@ -222,6 +222,14 @@ const CASES: CaseRow[] = [
 export default function WaermepumpeFoerderungPage() {
   const faqItems = waermepumpeFoerderungFaq();
   const standDatum = formatFullDate(HP.validFrom);
+  // Grundsatz, Klimabonus und Höchstbetrag aus dem Fahrplan der Richtlinie
+  // (BEG_FAHRPLAN), nicht aus der Config-Konstante: Alle drei ändern sich zu
+  // festen Stichtagen, der Fördersatz für Wärmepumpen halbiert sich Anfang
+  // 2027. Die Beispielrechnungen darunter ziehen sich den Stand ohnehin selbst
+  // (calcBegSubsidy löst ohne Angabe den heutigen auf) — stünden die Zahlen im
+  // Fließtext daneben fest, erklärte der Text ab dem Stichtag eine andere
+  // Förderung, als die Tabelle darunter ausrechnet.
+  const STUFE = begStufeAm(new Date());
 
   // Representative gross investment for a typical detached EFH (shared engine).
   const heizlast = calcHeatLoad("bestand", EX_WOHNFLAECHE, EX_INSULATION, 1);
@@ -232,7 +240,7 @@ export default function WaermepumpeFoerderungPage() {
     return { ...c, rate: beg.rate, amount: beg.amount, rest: investBrutto - beg.amount };
   });
 
-  const maxZuschuss = Math.round(HP.begMaxCap * HP.begMaxRateLowIncome);
+  const maxZuschuss = Math.round(STUFE.maxCap * HP.begMaxRateLowIncome);
   const staffel = HP.begEinkommensStaffel;
 
   return (
@@ -264,11 +272,11 @@ export default function WaermepumpeFoerderungPage() {
         {/* ── Kurzantwort ── */}
         <div style={S.hero}>
           <span style={S.label}>Die Kurzantwort</span>
-          <strong style={S.strong}>Zwischen {pct(HP.begGrundfoerderung)} und {pct(HP.begMaxRateLowIncome)} der Kosten.</strong>{" "}
-          Jeder Heizungstausch im Bestand bekommt die Grundförderung von {pct(HP.begGrundfoerderung)} —
+          <strong style={S.strong}>Zwischen {pct(STUFE.grundfoerderung)} und {pct(HP.begMaxRateLowIncome)} der Kosten.</strong>{" "}
+          Jeder Heizungstausch im Bestand bekommt die Grundförderung von {pct(STUFE.grundfoerderung)} —
           auch Vermieter. Selbstnutzende Eigentümer können über den Klima-Bonus und einen
           einkommensabhängigen Bonus auf bis zu {pct(HP.begMaxRateLowIncome)} kommen. Gefördert
-          werden Kosten bis {eur(HP.begMaxCap)} für die erste Wohnung, der maximale Zuschuss
+          werden Kosten bis {eur(STUFE.maxCap)} für die erste Wohnung, der maximale Zuschuss
           liegt damit bei {eur(maxZuschuss)}. Im Neubau gibt es diesen Zuschuss dagegen nicht.
         </div>
         <p style={{ ...S.p, fontSize: v("--font-size-small"), marginBottom: 0 }}>
@@ -294,17 +302,17 @@ export default function WaermepumpeFoerderungPage() {
           Der Fördersatz der{" "}
           <GlossaryTerm id="beg">BEG</GlossaryTerm>-Heizungsförderung ist kein fester Wert,
           sondern wird aus bis zu drei Bausteinen zusammengesetzt. Alle beziehen sich auf die
-          förderfähigen Kosten (gedeckelt bei {eur(HP.begMaxCap)} für die erste Wohnung):
+          förderfähigen Kosten (gedeckelt bei {eur(STUFE.maxCap)} für die erste Wohnung):
         </p>
 
         <div style={S.card}>
-          <span style={S.accent}>1. Grundförderung — {pct(HP.begGrundfoerderung)}</span>
+          <span style={S.accent}>1. Grundförderung — {pct(STUFE.grundfoerderung)}</span>
           <br />
           Bekommt jeder Heizungstausch im Bestand, ohne Bedingungen an Person oder alte
           Heizung. Auch Vermieter erhalten diesen Anteil.
         </div>
         <div style={S.card}>
-          <span style={S.accent}>2. Klima-Geschwindigkeits-Bonus — +{pct(HP.begKlimaBonus)}</span>
+          <span style={S.accent}>2. Klima-Geschwindigkeits-Bonus — +{pct(STUFE.klimaBonus)}</span>
           <br />
           Nur für <strong style={S.strong}>selbstnutzende Eigentümer</strong>, die eine noch
           funktionierende alte Heizung ersetzen. Öl-, Kohle-, Gas-Etagen- und

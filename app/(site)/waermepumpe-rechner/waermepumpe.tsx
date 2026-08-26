@@ -9,8 +9,14 @@ import {
 } from "../../../lib/constants";
 import { waermeAusEndenergie, OEL_KWH_PRO_LITER } from "../../../lib/heat-consumption";
 import { verbrauchSpecKwh } from "../../../lib/heatpump-core";
-import { calcHeatPump, calcHeatPumpScenarios, heatPumpScenarioAdj, estimatePvCoverageOfWp, type HeatPumpInputs, type HeatPumpResult } from "../../../lib/heatpump";
-import { DEFAULT_HEATPUMP_CONFIG } from "../../../lib/heatpump-config";
+import { calcHeatPump, calcHeatPumpScenarios, heatPumpScenarioAdj, estimatePvCoverageOfWp, calcBegSubsidy, type HeatPumpInputs, type HeatPumpResult } from "../../../lib/heatpump";
+import {
+  DEFAULT_HEATPUMP_CONFIG,
+  begStufeAm,
+  begNaechsteStufe,
+  type BegStand,
+} from "../../../lib/heatpump-config";
+import BegStandSchalter from "./_components/BegStandSchalter";
 import { greenGasApplies } from "../../../lib/fossil-reference";
 import { gasMixSeries, heatCostComparisonSeries } from "../../../lib/greengas";
 import { bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "../../../lib/greengas-config";
@@ -99,6 +105,24 @@ export default function Waermepumpe({
   const [einkommen, setEinkommen] = useState<EinkommenKey>("none");   // BEG Einkommens-Bonus (gestaffelt nach Haushaltseinkommen)
   const [kindImHaushalt, setKindImHaushalt] = useState(false);        // Familienzuschlag hebt die Einkommensgrenze
   const [heizkoerperTausch, setHeizkoerperTausch] = useState(false);  // Maßnahme: alte HK auf Niedertemperatur tauschen
+  // ── Förderstand: heute oder ab dem nächsten Stichtag ─────────
+  // Voreinstellung „jetzt", weil das für jeden gilt, der in diesem Jahr
+  // beantragt. Die beiden Stufen kommen aus dem Fahrplan der Richtlinie und
+  // werden NICHT auf ein festes Jahr verdrahtet: Am 01.01.2027 wären „heute"
+  // und „ab 2027" dieselbe Sache, und ein Rechner mit zwei gleichen Zuständen
+  // sieht kaputt aus. `heute` einmal je Render — ein Datum mitten im Render
+  // erzeugt sonst bei jedem Durchlauf ein neues Objekt und damit eine
+  // Neuberechnung.
+  const heute = useMemo(() => new Date(), []);
+  const stufeJetzt = useMemo(() => begStufeAm(heute), [heute]);
+  const stufeNaechste = useMemo(() => begNaechsteStufe(heute), [heute]);
+  const [begStand, setBegStand] = useState<BegStand>("jetzt");
+  // Ursprung des Geräts — Voreinstellung „nein", weil das die Richtung ist, in
+  // der niemand enttäuscht wird. Gefragt wird trotzdem sichtbar: Der Bonus ist
+  // betragsgleich mit der Halbierung, ihn stillschweigend wegzulassen behauptete
+  // eine Kürzung, die es für ein EU-Gerät gar nicht gibt.
+  const [euUrsprung, setEuUrsprung] = useState(false);
+  const begStufe = begStand === "naechste" && stufeNaechste ? stufeNaechste : stufeJetzt;
   const [wegId, setWegId] = useState("ist");  // aktiver Sanierungs-/Maßnahmen-Weg (Szenario-Vergleich)
   // ── Kommunale Förderung ──────────────────────────────────────
   // Der Wohnort wird bewusst NICHT im Frageweg erhoben: Er ändert nichts am
@@ -227,6 +251,7 @@ export default function Waermepumpe({
     fuelKind: fuel.kind,
     greenGas,
     pv: pvStatus !== "nein" ? { status: pvStatus, kwp: pvKwp, speicherKwh: pvSpeicher } : undefined,
+    begStufe: begStufe,
     override: {
       qGes: oQges ?? undefined,
       heizlast: oHeizlast ?? undefined,
@@ -242,8 +267,11 @@ export default function Waermepumpe({
       klimaBonus: selbstnutzer && altheizungKlima(altheizung),
       haushaltseinkommen: selbstnutzer ? einkommenIncome(einkommen) : undefined,
       kindImHaushalt: selbstnutzer && kindImHaushalt,
+      // Nicht an die Selbstnutzung gebunden — anders als Klima- und
+      // Einkommens-Bonus verlangt der Wertschöpfungs-Bonus sie nicht.
+      euUrsprung,
     },
-  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, haustypIdx, greenGas, pvStatus, pvKwp, pvSpeicher, oQges, oHeizlast, oJaz, oInvest, oStromPrice, oGasPrice, oFossilInvest, fuel, selbstnutzer, altheizung, einkommen, kindImHaushalt]);
+  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, haustypIdx, greenGas, pvStatus, pvKwp, pvSpeicher, oQges, oHeizlast, oJaz, oInvest, oStromPrice, oGasPrice, oFossilInvest, fuel, selbstnutzer, altheizung, einkommen, kindImHaushalt, begStufe, euUrsprung]);
 
   // ── Kommunaler Zuschuss ──────────────────────────────────────
   // Henne und Ei: Der Zuschuss kann von der Investition abhängen (Prozentsätze),
@@ -347,6 +375,33 @@ export default function Waermepumpe({
     () => calcHeatPump(activeInputs, cfg, heatPumpScenarioAdj(greenGas ? "realistic" : effScenario, cfg)),
     [activeInputs, cfg, effScenario, greenGas],
   );
+
+  // Was der Wechsel des Förderstands in EURO ausmacht — beide Stände auf
+  // derselben Investition gerechnet.
+  //
+  // WARUM NICHT EINFACH DIE PROZENTPUNKTE: Weil der Fördersatz bei 70 % bzw.
+  // 80 % gekappt ist und deshalb nicht jeder die vollen 15 Punkte verliert. Ein
+  // selbstnutzender Haushalt mit niedrigem Einkommen und altem Gaskessel kommt
+  // heute auf 30 + 16 + 40 = 86 Punkte und wird auf 80 gekappt; nach der
+  // Halbierung sind es 71, also ungekappt. Ihn kostet die Halbierung 9 Punkte,
+  // nicht 15 — „der Zuschuss halbiert sich" wäre für ihn schlicht falsch. Wer
+  // dagegen keinen Einkommens-Bonus bekommt (der Regelfall), verliert die
+  // vollen 15. Nur der Euro-Betrag stimmt für beide.
+  const begVergleich = useMemo(() => {
+    const opts = {
+      klimaBonus: selbstnutzer && altheizungKlima(altheizung),
+      haushaltseinkommen: selbstnutzer ? einkommenIncome(einkommen) : undefined,
+      kindImHaushalt: selbstnutzer && kindImHaushalt,
+    };
+    const fuer = (stufe: typeof stufeJetzt, eu: boolean) =>
+      calcBegSubsidy(situation, wpType, result.investBrutto, { ...opts, stufe, euUrsprung: eu }, cfg).amount;
+    return {
+      // Heute gibt es den EU-Bonus noch nicht — der Schalter wäre hier wirkungslos.
+      jetzt: fuer(stufeJetzt, false),
+      naechsteOhneEu: stufeNaechste ? fuer(stufeNaechste, false) : 0,
+      naechsteMitEu: stufeNaechste ? fuer(stufeNaechste, true) : 0,
+    };
+  }, [situation, wpType, result.investBrutto, cfg, selbstnutzer, altheizung, einkommen, kindImHaushalt, stufeJetzt, stufeNaechste]);
 
   // Der Betrag, der neben der BEG noch Platz hat — die Anspruchshöhe, nicht die
   // Anzeige-Entscheidung. `kappung` hängt deshalb bewusst NICHT an `foerderAktiv`:
@@ -838,26 +893,56 @@ export default function Waermepumpe({
                   <span style={{ fontSize: 13, fontWeight: 700 }}>Deine BEG-Förderung</span>
                   <span style={{ fontFamily: v('--font-mono'), fontWeight: 800, fontSize: 15, color: v('--color-accent') }}>−{result.beg.amount.toLocaleString("de-DE")} €</span>
                 </div>
+                {/* Der gewählte Förderstand gehört in die Kopfzeile, nicht nur in
+                    den Schalter weiter unten: Wer die Zahl darüber liest, muss
+                    ohne Suchen sehen, nach welchem Stand sie gerechnet ist. */}
                 <div style={{ fontSize: 11.5, color: v('--color-text-muted'), marginBottom: 10 }}>
                   {Math.round(result.beg.rate * 100)} % der förderfähigen Kosten
-                  {result.investBrutto > DEFAULT_HEATPUMP_CONFIG.begMaxCap
-                    ? <> · gedeckelt bei {DEFAULT_HEATPUMP_CONFIG.begMaxCap.toLocaleString("de-DE")} € (deine Anlage liegt darüber, daher {Math.round(result.beg.rate * 100)} % × {DEFAULT_HEATPUMP_CONFIG.begMaxCap.toLocaleString("de-DE")} €)</>
+                  {stufeNaechste
+                    ? <> · Stand {begStand === "naechste" ? stufeNaechste.bezeichnung : "heute"}</>
+                    : null}
+                  {result.investBrutto > begStufe.maxCap
+                    ? <> · gedeckelt bei {begStufe.maxCap.toLocaleString("de-DE")} € (deine Anlage liegt darüber, daher {Math.round(result.beg.rate * 100)} % × {begStufe.maxCap.toLocaleString("de-DE")} €)</>
                     : null}
                 </div>
+                <BegStandSchalter
+                  stand={begStand}
+                  setStand={s => { setBegStand(s); setOInvest(null); }}
+                  jetzt={stufeJetzt}
+                  naechste={stufeNaechste}
+                  euUrsprung={euUrsprung}
+                  setEuUrsprung={b => { setEuUrsprung(b); setOInvest(null); }}
+                  betragJetzt={begVergleich.jetzt}
+                  betragNaechsteOhneEu={begVergleich.naechsteOhneEu}
+                  betragNaechsteMitEu={begVergleich.naechsteMitEu}
+                />
+                {/* Der Satz kommt aus der gewählten Stufe, nicht als getippte
+                    Zahl. Er stand hier bis zum 26.08.2026 als „30 %" im Text —
+                    genau die Sorte Zahl, die beim ersten Stichtag still falsch
+                    wird, während die Rechnung daneben längst richtig rechnet. */}
                 <div style={{ fontSize: 12, color: v('--color-text-muted'), display: "flex", alignItems: "center", gap: 5, marginBottom: 6 }}>
                   <span style={{ display: "inline-block", width: 13, height: 13, borderRadius: 3, background: v('--color-accent'), flexShrink: 0 }} />
-                  Grundförderung 30 % — bekommt jeder Heizungstausch im Bestand
+                  Grundförderung {Math.round(begStufe.grundfoerderung * 100)} % — bekommt jeder Heizungstausch im Bestand
                 </div>
                 <BonusToggle checked={selbstnutzer} onChange={c => { setSelbstnutzer(c); setOInvest(null); }} label="Ich wohne selbst im Gebäude" tipTitle="Selbstnutzung">
-                  Sowohl der Klima-Geschwindigkeits-Bonus als auch der Einkommens-Bonus setzen voraus, dass du selbst im Gebäude wohnst. Wer vermietet, bekommt nur die Grundförderung von 30 %. Quelle: KfW Merkblatt 458 (BEG EM), gültig ab 21.07.2026.
+                  Sowohl der Klima-Geschwindigkeits-Bonus als auch der Einkommens-Bonus setzen voraus, dass du selbst im Gebäude wohnst. Wer vermietet, bekommt nur die Grundförderung von {Math.round(begStufe.grundfoerderung * 100)} %. Der Bonus für Wärmepumpen aus der EU ist dagegen nicht an die Selbstnutzung gebunden. Quelle: Förderrichtlinie BEG EM vom 17.07.2026.
                 </BonusToggle>
                 {selbstnutzer ? (
                   <>
+                    {/* Ab dem 1. August 2028 gibt es den Klima-Geschwindigkeits-Bonus
+                        nicht mehr. Die Frage nach der alten Heizung dann trotzdem
+                        anzubieten, hieße eine Wahl anzubieten, die nichts bewirkt. */}
+                    {begStufe.klimaBonus === 0 ? (
+                      <div style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginBottom: 4 }}>
+                        Den Klima-Geschwindigkeits-Bonus für den Austausch einer alten fossilen Heizung
+                        gibt es zu diesem Zeitpunkt nicht mehr.
+                      </div>
+                    ) : (
                     <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: v('--color-text-secondary'), marginBottom: 4, flexWrap: "wrap" }}>
                       <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
                         Alte Heizung
                         <InfoTooltip title="Klima-Geschwindigkeits-Bonus" ariaLabel="Klima-Geschwindigkeits-Bonus">
-                          16 % Zusatzförderung, wenn eine funktionierende fossile Heizung ersetzt wird: Öl, Kohle, Nachtspeicher und die Gas-Etagenheizung zählen unabhängig vom Alter, eine Gas-Zentralheizung sowie Holz- und Pelletheizungen erst ab 20 Jahren. Das Baujahr steht auf dem Typenschild am Kessel. Der Bonus sinkt ab dem 1. Februar 2027 halbjährlich um 4 Prozentpunkte und entfällt bei Antragstellung ab dem 1. August 2028. Quelle: KfW Merkblatt 458 (BEG EM), gültig ab 21.07.2026.
+                          {Math.round(begStufe.klimaBonus * 100)} % Zusatzförderung, wenn eine funktionierende fossile Heizung ersetzt wird: Öl, Kohle, Nachtspeicher und die Gas-Etagenheizung zählen unabhängig vom Alter, eine Gas-Zentralheizung sowie Holz- und Pelletheizungen erst ab 20 Jahren. Maßgeblich ist, wann die alte Anlage in Betrieb ging — das Datum steht auf dem Typenschild am Kessel. Der Bonus sinkt ab dem 1. Februar 2027 halbjährlich um 4 Prozentpunkte und entfällt bei Antragstellung ab dem 1. August 2028. Quelle: Förderrichtlinie BEG EM vom 17.07.2026.
                         </InfoTooltip>
                       </span>
                       <select value={altheizung} onChange={e => { setAltheizung(e.target.value as AltheizungKey); setOInvest(null); }}
@@ -865,6 +950,7 @@ export default function Waermepumpe({
                         {ALTHEIZUNG_OPTIONS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
                       </select>
                     </div>
+                    )}
                     <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: v('--color-text-secondary'), marginBottom: 4, flexWrap: "wrap" }}>
                       <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
                         Einkommens-Bonus
