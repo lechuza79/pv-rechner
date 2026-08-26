@@ -26,7 +26,31 @@ const FEED = {
   text: "#000000e6",
   gedimmt: "#00000099",
   platzhalter: "#e9e5df",
+  erwaehnung: "#0a66c2",
 };
+
+/**
+ * Der Markenname erscheint im Feed als Erwähnung, also als Link auf die
+ * Unternehmensseite. Im Beitragstext steht er als gewöhnliches Wort — die
+ * Erwähnung entsteht erst beim Veröffentlichen. Ohne diese Darstellung sähe man
+ * in der Vorschau nicht, dass dort ein Verweis liegt.
+ */
+const MARKE = "Solar Check";
+
+function mitErwaehnungDarstellen(text: string) {
+  const teile = text.split(MARKE);
+  if (teile.length === 1) return text;
+  return teile.flatMap((t, i) =>
+    i === 0
+      ? [t]
+      : [
+          <span key={i} style={{ color: FEED.erwaehnung, fontWeight: 600 }}>
+            {MARKE}
+          </span>,
+          t,
+        ],
+  );
+}
 
 // Die Karte dagegen ist unser Produkt — sie wird aber IMMER auf der hellsten
 // Tagesstufe aufgenommen (dieselbe Regel wie beim Bild-Export). Sie hier der
@@ -96,7 +120,7 @@ export function FeedVorschau({
                 }),
           }}
         >
-          {text}
+          {mitErwaehnungDarstellen(text)}
         </div>
         <button
           type="button"

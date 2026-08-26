@@ -104,10 +104,16 @@ const de = (n: number, stellen = 0) =>
  */
 const MARKE = "Solar Check";
 
-function quellenzeile(standIso: string): string {
+/**
+ * Zwei Fassungen derselben Angabe, und der Unterschied ist der Markenname:
+ * Im TEXT muss er stehen, damit die Erwähnung der Unternehmensseite ihn findet.
+ * Im BILD steht daneben das Logo — dort wäre der Name ein zweites Mal dasselbe.
+ */
+function quellenzeile(standIso: string, mitMarke: boolean): string {
   const d = new Date(standIso);
   const datum = d.toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" });
-  return `Marktstammdatenregister (Bundesnetzagentur), Stand ${datum}. Eigene Berechnung, ${MARKE}.`;
+  const basis = `Marktstammdatenregister (Bundesnetzagentur), Stand ${datum}. Eigene Berechnung`;
+  return mitMarke ? `${basis}, ${MARKE}.` : `${basis}.`;
 }
 
 /**
@@ -146,7 +152,7 @@ export function postStadtLand(k: SocialKennzahlen): SocialPost {
     ``,
     `Warum das plausibel ist, wenn man kurz nachdenkt: Ein Balkonkraftwerk braucht keine Baugenehmigung und keinen Handwerker, aber es braucht jemanden, der es aufstellt und anmeldet. Im Reihenhaus mit Garten ist beides einfacher als im vierten Stock einer Mietwohnung, deren Balkon nach Norden zeigt.`,
     ``,
-    quellenzeile(k.standIso),
+    quellenzeile(k.standIso, true),
   ].join("\n");
 
   return {
@@ -175,7 +181,7 @@ export function postStadtLand(k: SocialKennzahlen): SocialPost {
           hervorgehoben: true,
         },
       ],
-      quelle: quellenzeile(k.standIso),
+      quelle: quellenzeile(k.standIso, false),
     },
     belege: [
       `Städte ab ${de(s.stadtAb)} Einwohnern: ${de(s.stadtAnzahl)} Gemeinden, ${de(s.stadtJeTausend, 1)} je 1.000 Einwohner`,
@@ -210,7 +216,7 @@ export function postWachstum(k: SocialKennzahlen): SocialPost {
     ``,
     `Ich finde die zweite Zahl aussagekräftiger als die erste, auch wenn sie in keiner Ausbaustatistik auftaucht.`,
     ``,
-    quellenzeile(k.standIso),
+    quellenzeile(k.standIso, true),
   ].join("\n");
 
   return {
@@ -233,7 +239,7 @@ export function postWachstum(k: SocialKennzahlen): SocialPost {
           hervorgehoben: true,
         },
       ],
-      quelle: quellenzeile(k.standIso),
+      quelle: quellenzeile(k.standIso, false),
     },
     belege: [
       `Solar ${fmtPvLeistung(w.solarKwpJetzt)} gegen ${fmtPvLeistung(w.solarKwpVorJahr)} (+${de(solarProzent, 1)} %)`,
