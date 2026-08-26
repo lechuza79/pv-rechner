@@ -40,7 +40,8 @@
     "release:plan": "tsx scripts/release-plan.ts",
     "release:messen": "tsx scripts/release-messen.ts",
     "kommunen:veroeffentlicht": "tsx scripts/kommunen-veroeffentlicht.ts",
-    "claude-md:verify": "tsx scripts/claude-md-verify.ts"
+    "claude-md:verify": "tsx scripts/claude-md-verify.ts",
+    "kommunen:stand": "tsx scripts/kommunen-stand.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",
