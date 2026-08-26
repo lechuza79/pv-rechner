@@ -41,6 +41,7 @@ export async function GET(req: NextRequest) {
         vorlauf_max_c smallint,
         kaeltemittel  text,
         aufbau        text,
+        umfang        text NOT NULL DEFAULT 'geraet',
         abgerufen_am  timestamptz NOT NULL
       );
 
@@ -48,6 +49,9 @@ export async function GET(req: NextRequest) {
       -- nach Leistung; der Index deckt genau diesen einen Aufrufweg.
       CREATE INDEX IF NOT EXISTS ${WP_KATALOG_TABELLE}_auswahl_idx
         ON ${WP_KATALOG_TABELLE} (bauart, lieferbar, leistung_kw);
+
+      -- Nachträglich, damit ein bestehender Bestand die Spalte bekommt.
+      ALTER TABLE ${WP_KATALOG_TABELLE} ADD COLUMN IF NOT EXISTS umfang text NOT NULL DEFAULT 'geraet';
 
       ALTER TABLE ${WP_KATALOG_TABELLE} ENABLE ROW LEVEL SECURITY;
 

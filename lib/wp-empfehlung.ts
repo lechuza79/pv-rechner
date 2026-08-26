@@ -126,19 +126,34 @@ export function beurteile(g: WpGeraet, fall: WpFall): Empfehlung {
   if (g.aufbau === "monoblock") befunde.push({ art: "aufbau-monoblock" });
   if (g.aufbau === "split") befunde.push({ art: "aufbau-split" });
 
-  // Drei Ausschlussgründe, alle hart. Ein Gerät, das die Wohnung nicht warm
-  // bekommt, darf nicht als günstigere Alternative danebenstehen — es wäre die
-  // billigste Zeile der Liste und damit die, auf die zuerst jemand klickt.
+  // Zwei harte Ausschlussgründe: zu wenig Leistung, zu kalter Vorlauf. Ein
+  // Gerät, das die Wohnung nicht warm bekommt, darf nicht als günstigere
+  // Alternative danebenstehen — es wäre die billigste Zeile der Liste und damit
+  // die, auf die zuerst jemand klickt.
   //
-  // Eine UNBEKANNTE Vorlauftemperatur schließt immer aus, nicht erst im Altbau.
-  // Die frühere Schwelle („erst ab 50 °C Bedarf") übersah, dass auch der Neubau
-  // Warmwasser braucht: Dort galt ein Gerät ohne jede Angabe als geeignet,
-  // obwohl niemand wusste, ob es einen Speicher laden kann.
+  // Eine UNBEKANNTE Vorlauftemperatur schließt NICHT mehr aus. Diese Regel gab
+  // es zwischenzeitlich, und sie hat sich als teurer erwiesen als der Fehler,
+  // vor dem sie schützen sollte:
+  //
+  //   Sie trifft nicht Geräte, sondern Werbetexte. Weil die Angabe aus dem
+  //   Serientext der Baureihe kommt, ist sie ein Alles-oder-nichts je Baureihe:
+  //   Wer sie in seine Produktbeschreibung schreibt, kommt durch, wer nicht,
+  //   fällt komplett heraus. Gemessen blieben von 28 Luft/Wasser-Komplettpaketen
+  //   ganze 2 übrig — Bosch und Vaillant nennen die Temperatur in ihren
+  //   Paketnamen nicht, Remko schon. Das ist dieselbe markenabhängige
+  //   Verzerrung, die der Modulkopf des Katalogs als eigentliches Risiko
+  //   beschreibt, nur an anderer Stelle.
+  //
+  //   Dazu die Marktlage: Von den nachgeschlagenen aktuellen Baureihen erreicht
+  //   jede mindestens 55 °C (aroTHERM plus 75, pro 70, Split 63, LG R32 65,
+  //   R290 75, Stiebel WPL 20 65, Bosch CS7000iAW 62). Der Fall, gegen den der
+  //   Ausschluss schützt, ist im heutigen Sortiment die Ausnahme.
+  //
+  // Stattdessen steht die Unsicherheit als Befund in der Kachel. Wer 55 °C
+  // braucht, sieht dort „Vorlauftemperatur nicht angegeben" statt einer
+  // Behauptung — und die Auswahl bleibt eine Auswahl.
   const geeignet = !befunde.some(
-    (b) =>
-      b.art === "leistung-knapp" ||
-      b.art === "vorlauf-zu-niedrig" ||
-      b.art === "vorlauf-unbekannt",
+    (b) => b.art === "leistung-knapp" || b.art === "vorlauf-zu-niedrig",
   );
 
   return { geraet: g, befunde, geeignet };
@@ -165,17 +180,33 @@ export function empfehlungenFuer(
     .filter((e) => e.geeignet)
     .sort((a, b) => a.geraet.preisEur - b.geraet.preisEur);
 
-  // Höchstens ein Gerät je Hersteller. Ohne diese Regel stehen dreimal
+  // Höchstens ein Angebot je Hersteller. Ohne diese Regel stehen dreimal
   // Nachbarmodelle derselben Baureihe untereinander — gemessen lieferte der
   // Altbau-Fall drei LG-Monoblocks, zwei davon mit identischem Preis. Das ist
   // keine Auswahl, sondern eine Liste mit drei Zeilen desselben Geräts.
-  const gesehen = new Set<string>();
-  const auswahl: Empfehlung[] = [];
-  for (const e of geeignet) {
-    if (gesehen.has(e.geraet.marke)) continue;
-    gesehen.add(e.geraet.marke);
-    auswahl.push(e);
-    if (auswahl.length === grenze) break;
-  }
-  return auswahl;
+  const jeMarke = (kandidaten: Empfehlung[]): Empfehlung[] => {
+    const gesehen = new Set<string>();
+    const auswahl: Empfehlung[] = [];
+    for (const e of kandidaten) {
+      if (gesehen.has(e.geraet.marke)) continue;
+      gesehen.add(e.geraet.marke);
+      auswahl.push(e);
+      if (auswahl.length === grenze) break;
+    }
+    return auswahl;
+  };
+
+  // Komplettpakete zuerst — und wenn es welche gibt, AUSSCHLIESSLICH sie.
+  //
+  // Eine gemischte Liste wäre der schlechteste Fall: Der Monoblock allein
+  // kostet für dieselbe Anlagengröße rund 4.000 € weniger als das Paket und
+  // stünde damit immer oben, obwohl er ohne Speicher und Regelung keine
+  // Heizung ergibt. Wer nur den Preis vergleicht, kauft dann die Hälfte.
+  //
+  // Reine Geräte bleiben als Rückfall, denn nicht jede Größe hat ein Paket:
+  // gemessen 5 bis 22 Pakete je Größenklasse, aber eben nicht in jeder. Dann
+  // ist ein Gerät mit ausgeschriebenem Umfang besser als eine leere Liste —
+  // die Kachel sagt in beiden Fällen, was drin ist.
+  const pakete = geeignet.filter((e) => e.geraet.umfang === "paket");
+  return pakete.length > 0 ? jeMarke(pakete) : jeMarke(geeignet);
 }

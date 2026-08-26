@@ -16,6 +16,7 @@ const geraet = (ueber: Partial<WpGeraet> = {}): WpGeraet => ({
   vorlaufMaxC: 70,
   kaeltemittel: "r290",
   aufbau: "monoblock",
+  umfang: "paket",
   ...ueber,
 });
 
@@ -58,23 +59,25 @@ describe("Vorlauftemperatur", () => {
     expect(e.befunde).toContainEqual({ art: "vorlauf-knapp", geraetC: 58, noetigC: 55 });
   });
 
-  it("eine fehlende Angabe schließt auch im Neubau aus", () => {
-    // Frühere Fassung ließ sie bei 35 °C durch — mit der Begründung, jede
-    // Wasser-Wärmepumpe schaffe diesen Vorlauf. Stimmt fürs Heizen, übersieht
-    // aber das Warmwasser: Ohne Angabe weiß niemand, ob das Gerät einen
-    // Speicher laden kann.
-    const neubau: WpFall = { auslegungKw: 10, vorlaufC: 35, wpType: "lwwp" };
-    const e = beurteile(geraet({ vorlaufMaxC: null }), neubau);
-    expect(e.geeignet).toBe(false);
+  it("eine fehlende Angabe schließt NICHT aus, sondern wird benannt", () => {
+    // Zwischenzeitlich schloss sie aus. Die Regel kostete zwei Drittel der
+    // Komplettpakete, weil die Angabe aus dem Serientext der Baureihe kommt:
+    // Bosch und Vaillant nennen sie in ihren Paketnamen nicht, Remko schon —
+    // von 28 Luft/Wasser-Paketen blieben 2 übrig. Das ist dieselbe
+    // markenabhängige Verzerrung, gegen die der Katalog seine Typenschlüssel
+    // baut, nur an anderer Stelle. Die Unsicherheit steht jetzt als Befund in
+    // der Kachel.
+    const e = beurteile(geraet({ vorlaufMaxC: null }), altbau);
+    expect(e.geeignet).toBe(true);
     expect(e.befunde).toContainEqual({ art: "vorlauf-unbekannt" });
   });
 
-  it("an alten Heizkörpern ist eine fehlende Angabe ein Ausschlussgrund", () => {
-    // Dort hängt alles an dieser Zahl. Ein Gerät zu empfehlen, von dem wir sie
-    // nicht kennen, wäre geraten — und der Fehlkauf fiele erst im Winter auf.
-    const e = beurteile(geraet({ vorlaufMaxC: null }), altbau);
+  it("eine ZU NIEDRIGE Angabe schließt weiterhin aus", () => {
+    // Der Unterschied ist der ganze Punkt: Wir wissen es nicht (durchlassen und
+    // sagen) gegen wir wissen, dass es nicht reicht (ausschließen).
+    const e = beurteile(geraet({ vorlaufMaxC: 45 }), altbau);
     expect(e.geeignet).toBe(false);
-    expect(e.befunde).toContainEqual({ art: "vorlauf-unbekannt" });
+    expect(e.befunde).toContainEqual({ art: "vorlauf-zu-niedrig", geraetC: 45, noetigC: 55 });
   });
 
   it("ein 35-°C-Gerät scheitert am Warmwasser, auch bei Fußbodenheizung", () => {
@@ -140,5 +143,25 @@ describe("Auswahl", () => {
 
   it("liefert nichts statt irgendetwas, wenn nichts passt", () => {
     expect(empfehlungenFuer([geraet({ leistungKw: 4 })], altbau)).toEqual([]);
+  });
+});
+
+describe("Komplettpakete vor Einzelgeräten", () => {
+  it("zeigt Pakete, auch wenn ein Einzelgerät günstiger ist", () => {
+    // Der reale Preisabstand: derselbe 10-kW-Fall kostet als Monoblock allein
+    // 3.698 €, als Paket mit Speicher 7.879 €. Nach Preis sortiert stünde das
+    // halbe Angebot immer oben — und wer nur Zahlen vergleicht, kauft es.
+    const katalog = [
+      geraet({ id: "nur-geraet", marke: "A", preisEur: 3698, umfang: "geraet" }),
+      geraet({ id: "paket", marke: "B", preisEur: 7879, umfang: "paket" }),
+    ];
+    expect(empfehlungenFuer(katalog, altbau).map((x) => x.geraet.id)).toEqual(["paket"]);
+  });
+
+  it("fällt auf Einzelgeräte zurück, wenn es kein Paket gibt", () => {
+    // Nicht jede Größenklasse hat ein Paket. Eine leere Liste wäre dann
+    // schlechter als ein Gerät, dessen Umfang die Kachel ausschreibt.
+    const katalog = [geraet({ id: "nur-geraet", umfang: "geraet" })];
+    expect(empfehlungenFuer(katalog, altbau).map((x) => x.geraet.id)).toEqual(["nur-geraet"]);
   });
 });

@@ -44,6 +44,7 @@ interface Zeile {
   vorlauf_max_c: number | null;
   kaeltemittel: string | null;
   aufbau: string | null;
+  umfang: string | null;
   abgerufen_am: string;
 }
 
@@ -62,6 +63,9 @@ function ausZeile(z: Zeile): WpGeraet {
     vorlaufMaxC: z.vorlauf_max_c === null ? null : Number(z.vorlauf_max_c),
     kaeltemittel: (z.kaeltemittel as WpGeraet["kaeltemittel"]) ?? null,
     aufbau: (z.aufbau as WpGeraet["aufbau"]) ?? null,
+    // Altbestand ohne Spalte gilt als Einzelgerät — die vorsichtige Richtung:
+    // lieber ein Paket als Gerät auszeichnen als umgekehrt.
+    umfang: z.umfang === "paket" ? "paket" : "geraet",
   };
 }
 
@@ -84,7 +88,7 @@ export async function ladeKatalog(bauart: "luft-wasser" | "sole-wasser"): Promis
     supabase
       .from(WP_KATALOG_TABELLE)
       .select(
-        "id,name,marke,leistung_kw,herkunft,bauart,preis_eur,link,bild_url,lieferbar,vorlauf_max_c,kaeltemittel,aufbau,abgerufen_am",
+        "id,name,marke,leistung_kw,herkunft,bauart,preis_eur,link,bild_url,lieferbar,vorlauf_max_c,kaeltemittel,aufbau,umfang,abgerufen_am",
       )
       .eq("bauart", bauart)
       .eq("lieferbar", true),

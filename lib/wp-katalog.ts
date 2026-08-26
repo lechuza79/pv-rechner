@@ -63,7 +63,23 @@ export interface WpGeraet {
   vorlaufMaxC: number | null;
   kaeltemittel: Kaeltemittel | null;
   aufbau: Aufbau | null;
+  umfang: Umfang;
 }
+
+/**
+ * Was man für den Preis wirklich bekommt.
+ *
+ * `paket` nennt Außen- UND Innenteil, meist mit Speicher — das ist die Anlage,
+ * die ein Installateur anschließt. `geraet` ist die Wärmepumpe allein; bei
+ * einem Monoblock ist das ein vollständiges Gerät, aber ohne Speicher und
+ * Regelung noch keine Heizung.
+ *
+ * Der Unterschied ist kein Etikett, sondern rund 4.000 €: Ein Monoblock ab
+ * 3.698 € und ein Paket derselben Größe ab 7.879 € stehen sonst nebeneinander,
+ * als wäre das eine schlicht günstiger. Vorgabe des Betreibers vom 26.08.2026:
+ * „die einzelnen wps machen ja wenig sinn".
+ */
+export type Umfang = "paket" | "geraet";
 
 /**
  * Nur die beiden Kältemittel, die im Bestand wirklich vorkommen (gemessen:
@@ -379,6 +395,27 @@ export function aufbauAus(text: string): Aufbau | null {
  * eine Sole-Wärmepumpe steht komplett im Haus und hat keine Außeneinheit, von
  * der sie getrennt sein könnte. Die Sole-Prüfung läuft deshalb zuerst.
  */
+/**
+ * Nennt der Artikel Außen- UND Innenteil?
+ *
+ * Ein Paket heißt „Set", „Paket" oder „… mit Luft/Wasser-Wärmepumpe" UND nennt
+ * zusätzlich das, was ins Haus kommt: Speicher, Puffer, Tower, Hydraulikstation
+ * oder eine Innengeräte-Typennummer. Beides muss zusammenkommen — „Set" allein
+ * trägt auch ein Anschlussset, ein Speicher allein ist die Innenhälfte.
+ *
+ * Gemessen am Bestand vom 25.08.2026: 115 Artikel erfüllen beides, 45 davon
+ * mit ableitbarer Leistung — zwischen 5 und 22 je Größenklasse. Genug für eine
+ * Empfehlung, und der Preisunterschied ist der Punkt: dieselbe Anlagengröße
+ * kostet als Monoblock allein 3.698 €, als Paket 7.879 €.
+ */
+const PAKET_WORT = /(\bPaket\b|\bSet\b|\bKomplett|\bmit\s+(luft|sole)[/\s-]?wasser-?wärmepumpe)/i;
+const INNENTEIL =
+  /(speicher|puffer|tower|hydraulikstation|hydrobox|hydrounit|\b\d{3}\s?l\b|\bWH\s?\d{3}|\bBST\b|\bBH\d)/i;
+
+export function umfangAus(name: string): Umfang {
+  return PAKET_WORT.test(name) && INNENTEIL.test(name) ? "paket" : "geraet";
+}
+
 export function bauartAus(name: string, pfad: string): WpBauart {
   const t = `${name} ${pfad}`.toLowerCase();
   if (/sole|erdw|erdreich|geotherm/.test(t)) return "sole-wasser";
@@ -406,9 +443,21 @@ export function geraetAusZeile(z: FeedZeile): WpGeraet | null {
   // Ein Gerät, das sich als vollständig ausweist, darf Zubehör ENTHALTEN.
   // Ausschließen dürfen nur noch Wörter, die eine echte Teilkomponente
   // benennen — und „Außeneinheit" auch das nur bei Split-Bauweise.
-  if (TEILGERAET.test(name)) return null;
-  if (AUSSENEINHEIT.test(name) && /\bsplit\b/i.test(name)) return null;
-  if (ZUBEHOER.test(name)) return null;
+  // Ein PAKET darf Teilkomponenten nennen — es besteht ja aus ihnen. Die
+  // Sperren unten treffen nur, was sich NICHT als Paket ausweist.
+  //
+  // Ohne diese Ausnahme fielen fast alle Komplettangebote heraus: „Vaillant Set
+  // aroTHERM VWL 55/8.2 AS S2 mit uniTOWER Split plus VWL 58/8.2 IS" ist genau
+  // das Paket, das wir zeigen wollen, und scheiterte am Wort „uniTOWER" in der
+  // Teilgerät-Liste. Gemessen kamen so von 115 Paketen nur 17 durch. Dieselbe
+  // Verwechslung wie beim Speicher zwei Filter weiter oben: „ist ein Teil"
+  // gegen „enthält ein Teil".
+  const istPaket = umfangAus(name) === "paket";
+  if (!istPaket) {
+    if (TEILGERAET.test(name)) return null;
+    if (AUSSENEINHEIT.test(name) && /\bsplit\b/i.test(name)) return null;
+    if (ZUBEHOER.test(name)) return null;
+  }
 
   const preis = Number.parseFloat(z.search_price);
   if (!Number.isFinite(preis) || preis < MINDESTPREIS_EUR) return null;
@@ -435,5 +484,8 @@ export function geraetAusZeile(z: FeedZeile): WpGeraet | null {
     vorlaufMaxC: vorlaufAus(merkmalstext),
     kaeltemittel: kaeltemittelAus(merkmalstext),
     aufbau: aufbauAus(merkmalstext),
+    // Nur aus dem NAMEN, nicht aus dem Serientext: Der Umfang ist eine Aussage
+    // über diesen einen Artikel, nicht über die Baureihe.
+    umfang: istPaket ? "paket" : "geraet",
   };
 }

@@ -134,6 +134,7 @@ async function schreibe(geraete: WpGeraet[], abgerufenIso: string): Promise<void
     vorlauf_max_c: g.vorlaufMaxC,
     kaeltemittel: g.kaeltemittel,
     aufbau: g.aufbau,
+    umfang: g.umfang,
     abgerufen_am: abgerufenIso,
   }));
 

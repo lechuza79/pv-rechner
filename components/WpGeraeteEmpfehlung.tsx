@@ -44,7 +44,13 @@ interface Antwort {
 
 /** Die vier Kennwerte, die über die Eignung entscheiden. Mehr wäre Datenblatt. */
 function kennwerte(g: WpGeraet): { label: string; wert: string; mono: boolean }[] {
-  const w: { label: string; wert: string; mono: boolean }[] = [];
+  const w: { label: string; wert: string; mono: boolean }[] = [
+    {
+      label: "Umfang",
+      wert: g.umfang === "paket" ? "Außen- + Innenteil" : "Wärmepumpe allein",
+      mono: false,
+    },
+  ];
   if (leistungAnzeigbar(g)) {
     const t = geraetLeistungTeile(g.leistungKw);
     w.push({ label: "Heizleistung", wert: `${t.value} ${t.unit}`, mono: true });
@@ -86,10 +92,30 @@ function passungsSatz(befunde: Befund[], fall: Props): string | null {
   return null;
 }
 
+/**
+ * Was wir NICHT wissen — als eigene Zeile, nicht weggelassen.
+ *
+ * Die Vorlauftemperatur fehlt bei rund vier von zehn Angeboten, weil sie im
+ * Serientext der Baureihe steht und manche Hersteller sie dort nicht nennen.
+ * Solche Geräte auszuschließen kostete zwei Drittel der Komplettpakete; sie
+ * kommentarlos zu zeigen wäre die andere Übertreibung. Also steht die Lücke da,
+ * wo sie zählt — direkt an der Kachel, für den, der 55 °C braucht.
+ */
+function unsicherheit(befunde: Befund[]): string | null {
+  if (befunde.some((b) => b.art === "vorlauf-unbekannt")) {
+    return "Vorlauftemperatur nicht angegeben — beim Fachbetrieb prüfen lassen";
+  }
+  if (befunde.some((b) => b.art === "leistung-unsicher")) {
+    return "Leistung aus der Typenbezeichnung abgeleitet";
+  }
+  return null;
+}
+
 function Karte({ e, rang, fall }: { e: Empfehlung; rang: number; fall: Props }) {
   const g = e.geraet;
   const werte = kennwerte(g);
   const satz = passungsSatz(e.befunde, fall);
+  const offen = unsicherheit(e.befunde);
   const preis = geraetPreisTeile(g.preisEur);
   const empfohlen = rang === 0;
 
@@ -179,10 +205,12 @@ function Karte({ e, rang, fall }: { e: Empfehlung; rang: number; fall: Props }) 
           </span>
           <span style={{ fontSize: 13, color: v("--color-text-secondary") }}> {preis.unit}</span>
         </span>
-        {/* Der Preis ist rund ein Drittel der Anlage — wer das erst im
-            Kleingedruckten liest, hat sich schon verrechnet. */}
+        {/* Was im Preis steckt, gehört NEBEN den Preis. Ein Monoblock allein
+            kostet für dieselbe Anlagengröße rund 4.000 € weniger als ein Paket
+            mit Speicher — ohne diese Zeile sieht das eine schlicht günstiger
+            aus, und der Nutzer kauft die Hälfte. */}
         <span style={{ fontSize: 11, color: v("--color-text-muted"), marginLeft: "auto" }}>
-          Gerätepreis
+          {g.umfang === "paket" ? "Paketpreis" : "nur Gerät"}
         </span>
       </div>
 
@@ -233,6 +261,22 @@ function Karte({ e, rang, fall }: { e: Empfehlung; rang: number; fall: Props }) 
             <IconCheck size={13} />
           </span>
           <span>{satz}</span>
+        </div>
+      )}
+
+      {offen && (
+        <div
+          style={{
+            display: "flex",
+            gap: space.xs,
+            fontSize: 12,
+            lineHeight: 1.4,
+            color: v("--color-text-muted"),
+            marginBottom: space.sm,
+          }}
+        >
+          <span aria-hidden style={{ flex: "0 0 auto", marginTop: 1 }}>·</span>
+          <span>{offen}</span>
         </div>
       )}
 
