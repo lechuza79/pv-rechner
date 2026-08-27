@@ -36,6 +36,43 @@
  * `server-only` lädt — ein Auffrisch-Lauf aus der Kommandozeile käme damit gar
  * nicht erst zum Start.
  */
+/**
+ * Der Händler, dessen Sortiment die Empfehlungen zeigen — an EINER Stelle.
+ *
+ * Rechtsträger und Anschrift stehen hier, weil sie Pflichtangaben sind und
+ * nicht, weil sie schön aussehen: Sobald Merkmale und Preis so zusammenstehen,
+ * dass jemand kaufen kann, sind Identität UND Anschrift des Unternehmers
+ * wesentliche Informationen — ausdrücklich auch die desjenigen, "für den"
+ * gehandelt wird (§ 5b Abs. 1 Nr. 2 UWG). Der naheliegende Einwand, die
+ * Adresse stehe einen Klick weiter im Impressum des Shops, ist vom BGH
+ * verworfen worden: Sie kommt dann "zu spät, um ihm eine informationsgeleitete
+ * Entscheidung darüber zu ermöglichen, ob er sich überhaupt näher mit einem
+ * der angebotenen Produkte befassen und dafür dieses Internetportal aufsuchen
+ * will" (I ZR 231/14, MeinPaket.de II, Rn. 30). Der Klick IST die geschäftliche
+ * Entscheidung, die geschützt wird.
+ *
+ * `firma` trägt die Rechtsform, nicht die Wortmarke: Gemeint ist die Identität
+ * des Unternehmens, nicht sein Logo. `kurz` ist für Fließtext, wo die volle
+ * Firmierung den Satz erschlägt.
+ *
+ * Am 27.08.2026 aus dem Impressum geprüft (heizungsdiscount24.de/impressum.html,
+ * Angaben gemäß § 5 DDG). Wer den Händler wechselt oder einen zweiten aufnimmt,
+ * ändert das hier — und liest die Anmerkung zur Ranking-Offenlegung unten.
+ */
+export const WP_HAENDLER = {
+  firma: "Heizungsdiscount 24 GmbH",
+  kurz: "Heizungsdiscount24",
+  strasse: "Stolzenmorgen 15",
+  ort: "35394 Gießen",
+  impressum: "https://www.heizungsdiscount24.de/impressum.html",
+  geprueftIso: "2026-08-27",
+} as const;
+
+/** Firmierung mit Anschrift in einer Zeile — für den Anzeigen-Block. */
+export function haendlerAnschrift(): string {
+  return `${WP_HAENDLER.firma}, ${WP_HAENDLER.strasse}, ${WP_HAENDLER.ort}`;
+}
+
 export const WP_KATALOG_TABELLE = "wp_geraete";
 
 /** Ein Gerät aus dem Händler-Datenstrom, mit zugeordneter Heizleistung. */
@@ -465,6 +502,55 @@ const INNENTEIL =
 
 export function umfangAus(name: string): Umfang {
   return PAKET_WORT.test(name) && INNENTEIL.test(name) ? "paket" : "geraet";
+}
+
+/**
+ * Nennt der Händler eine Dienstleistung im Produktnamen?
+ *
+ * 29 der 2.413 Wärmepumpen tragen "inkl. Erstinbetriebnahme". Bei denen stand
+ * bis 27.08.2026 im selben Bildausschnitt der Produktname mit dieser Zusage und
+ * daneben unsere Beschriftung "nur Gerät" — ein Widerspruch, den ein Leser
+ * nicht auflösen kann und der die Frage aufwirft, welche der beiden Angaben
+ * stimmt. Beide stimmten: Unser "nur Gerät" meint "ohne Speicher und Regelung",
+ * der Händler meint "mit Inbetriebnahme". Zwei Aussagen über verschiedene
+ * Dinge, die wie ein Widerspruch aussehen.
+ *
+ * Nur "Erstinbetriebnahme"/"Inbetriebnahme" — bewusst NICHT "Montage" oder
+ * "Installation": Die kommen im Bestand gar nicht vor, und ein Muster auf
+ * Verdacht zu erweitern hieße, eine Beschriftung für einen Fall zu bauen, den
+ * niemand geprüft hat.
+ */
+export function inbetriebnahmeInklusive(name: string): boolean {
+  return /inkl\.?\s*(erst)?inbetriebnahme/i.test(name);
+}
+
+/**
+ * Was im Preis steckt, in drei Worten — die Beschriftung neben dem Preis.
+ *
+ * Sie hat einen eigenen Formatierer, weil sie sonst an der Kachel entstünde und
+ * dort beim nächsten Sonderfall wieder auseinanderliefe.
+ */
+export function umfangText(g: WpGeraet): string {
+  if (g.umfang === "paket") return "Paketpreis";
+  return inbetriebnahmeInklusive(g.name) ? "Gerät + Inbetriebnahme" : "nur Gerät";
+}
+
+/**
+ * Was geliefert wird — der ausführliche Zwilling für das Kennwerte-Raster.
+ *
+ * Zwei Formatierer für zwei Fragen: `umfangText` sagt, was im PREIS steckt,
+ * diese Funktion, was ANKOMMT. Sie müssen dieselbe Dienstleistung nennen, sonst
+ * ist der Widerspruch nur an eine andere Stelle gewandert.
+ */
+export function lieferumfangText(g: WpGeraet): string {
+  if (inbetriebnahmeInklusive(g.name)) {
+    // KURZ, nicht ausführlich: "Wärmepumpe allein + Inbetriebnahme" sprengte die
+    // Rasterzelle und lief sichtbar über die Nachbarspalte (gemessen bei 1280 px
+    // in der rechten Spalte — der Text lag quer über der Heizleistung). Ein
+    // Kennwert, der seinen Nachbarn überschreibt, ist schlimmer als ein knapper.
+    return g.umfang === "paket" ? "Paket + Inbetriebnahme" : "Gerät + Inbetriebnahme";
+  }
+  return g.umfang === "paket" ? "Außen- + Innenteil" : "Wärmepumpe allein";
 }
 
 export function bauartAus(name: string, pfad: string): WpBauart {

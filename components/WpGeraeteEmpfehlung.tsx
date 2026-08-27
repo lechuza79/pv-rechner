@@ -9,7 +9,11 @@ import ContactPerson from "./ContactPerson";
 import {
   geraetLeistungTeile,
   geraetPreisTeile,
+  haendlerAnschrift,
+  lieferumfangText,
   preisZusatz,
+  umfangText,
+  WP_HAENDLER,
   leistungAnzeigbar,
   type WpGeraet,
 } from "../lib/wp-katalog";
@@ -50,7 +54,7 @@ function kennwerte(g: WpGeraet): { label: string; wert: string; mono: boolean }[
   const w: { label: string; wert: string; mono: boolean }[] = [
     {
       label: "Umfang",
-      wert: g.umfang === "paket" ? "Außen- + Innenteil" : "Wärmepumpe allein",
+      wert: lieferumfangText(g),
       mono: false,
     },
   ];
@@ -158,18 +162,46 @@ function Karte({ e, rang, fall }: { e: Empfehlung; rang: number; fall: Props }) 
         padding: pad("md", "md"),
       }}
     >
-      {empfohlen && (
-        <div
+      {/* Kopfzeile der Kachel: Spitzenstellung mit Bezugsgröße links, Anzeigen-
+          Kennzeichnung rechts.
+
+          BEIDES ist eine Korrektur, keine Verzierung.
+
+          "Günstigstes passendes" allein ist eine Spitzenstellungsbehauptung
+          ohne Grundgesamtheit — günstigstes wovon? Gemeint ist: von den Geräten
+          EINES Shops, die zur berechneten Heizlast passen. Die Bezugsgröße muss
+          dort stehen, wo der Superlativ steht, nicht drei Absätze höher.
+
+          Und die Kennzeichnung steht je Kachel, nicht nur einmal über dem
+          Block: Der Leitfaden der Medienanstalten verlangt Erkennbarkeit
+          "insbesondere ohne Scrollen oder Ausklappen" und sagt ausdrücklich,
+          ein pauschaler Hinweis für ein ganzes Angebot genüge nicht. Wer auf
+          der Wischleiste bei der dritten Kachel ankommt, hatte den Block oben
+          längst aus dem Blick. */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "baseline",
+          justifyContent: "space-between",
+          gap: space.sm,
+          marginBottom: space.sm,
+        }}
+      >
+        <span style={{ fontSize: 11, fontWeight: 700, color: v("--color-accent") }}>
+          {empfohlen ? `Günstigstes passendes bei ${WP_HAENDLER.kurz}` : "\u00a0"}
+        </span>
+        <span
           style={{
-            fontSize: 11,
+            fontSize: 10,
             fontWeight: 700,
-            color: v("--color-accent"),
-            marginBottom: space.sm,
+            letterSpacing: "0.04em",
+            color: v("--color-text-muted"),
+            flex: "0 0 auto",
           }}
         >
-          Günstigstes passendes
-        </div>
-      )}
+          ANZEIGE
+        </span>
+      </div>
 
       <div style={{ display: "flex", gap: space.md, marginBottom: space.sm }}>
         <div
@@ -235,7 +267,7 @@ function Karte({ e, rang, fall }: { e: Empfehlung; rang: number; fall: Props }) 
             mit Speicher — ohne diese Zeile sieht das eine schlicht günstiger
             aus, und der Nutzer kauft die Hälfte. */}
         <span style={{ fontSize: 11, color: v("--color-text-muted"), marginLeft: "auto" }}>
-          {g.umfang === "paket" ? "Paketpreis" : "nur Gerät"}
+          {umfangText(g)}
         </span>
       </div>
 
@@ -270,7 +302,14 @@ function Karte({ e, rang, fall }: { e: Empfehlung; rang: number; fall: Props }) 
                   fontSize: 14,
                   color: v("--color-text-primary"),
                   fontFamily: w.mono ? v("--font-mono") : undefined,
-                  whiteSpace: "nowrap",
+                  // `nowrap` NUR für Zahlen mit Einheit — dort gehört beides in
+                  // eine Zeile, sonst steht die Einheit allein darunter und
+                  // liest sich so groß wie der Wert. Ein Textwert dagegen muss
+                  // umbrechen dürfen: Mit erzwungenem `nowrap` lief die
+                  // Umfangs-Angabe quer über die Nachbarspalte, statt eine
+                  // zweite Zeile zu nehmen.
+                  whiteSpace: w.mono ? "nowrap" : "normal",
+                  overflowWrap: "anywhere",
                 }}
               >
                 {w.wert}
@@ -406,7 +445,7 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
     return (
       <div style={{ fontSize: 13, color: v("--color-text-secondary"), lineHeight: 1.5 }}>
         Für diese Anlagengröße und Vorlauftemperatur ist gerade kein passendes Gerät im
-        Sortiment von Heizungsdiscount24. Das heißt nicht, dass es keins gibt — nur, dass wir
+        Sortiment von {WP_HAENDLER.kurz}. Das heißt nicht, dass es keins gibt — nur, dass wir
         keins belegen können.
       </div>
     );
@@ -419,10 +458,28 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
    *
    * Ein Preis ohne Erhebungszeitpunkt behauptet Aktualität, die wir nicht
    * zusagen können: Der Datenstrom wird einmal täglich abgerufen, der Händler
-   * ändert seine Preise, wann er will. Der BGH verlangt bei Preisvergleichs-
-   * Darstellungen genau diesen Hinweis, wenn der angezeigte Preis nicht der
-   * aktuelle sein muss (I ZR 140/07). Der Zusatz "es gilt der Preis im Shop"
-   * sagt zusätzlich, welcher der beiden im Zweifel zählt.
+   * ändert seine Preise, wann er will.
+   *
+   * Fundstelle ist BGH, Urt. v. 11.03.2010 – I ZR 123/08 (Espressomaschine),
+   * Leitsatz 1: Der Nutzer eines Preisvergleichsportals erwartet "vorbehaltlich
+   * klarer gegenteiliger Hinweise regelmäßig ... höchstmögliche Aktualität" —
+   * schon eine Preiserhöhung, die nur für einige Stunden auseinanderfällt,
+   * führt in die Irre. (Am 27.08.2026 im Volltext gelesen. Ein früherer
+   * Kommentar nannte hier I ZR 140/07; das ist "Versandkosten bei Froogle" und
+   * betrifft eine andere Frage.)
+   *
+   * ZWEI Dinge folgen daraus für die FORM des Hinweises, nicht nur für sein
+   * Vorhandensein — Leitsatz 2 derselben Entscheidung verwarf ein "Alle Angaben
+   * ohne Gewähr" in der FUSSZEILE als untauglich, ausdrücklich auch dann, wenn
+   * es auf eine Erläuterungsseite verlinkt: Kaufinteressenten rufen solche
+   * Seiten nicht auf. Deshalb steht unser Hinweis oben im Anzeigen-Block statt
+   * unter den Kacheln, und er ist konkret (Datum plus "es gilt der Preis im
+   * Shop") statt eine allgemeine Haftungsformel. Wer ihn je nach unten
+   * verschiebt oder zu "ohne Gewähr" verkürzt, baut genau den Fall nach, den
+   * der BGH entschieden hat.
+   *
+   * Adressat dort war der werbende Händler, nicht das Portal — unser Hinweis
+   * ist insoweit vorsorglich, nicht geschuldet.
    */
   const preisStand = antwort?.abgerufenIso
     ? new Date(antwort.abgerufenIso).toLocaleDateString("de-DE", {
@@ -477,19 +534,42 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
       >
         <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: v("--color-text-secondary") }}>
           <strong style={{ color: v("--color-text-primary") }}>Anzeige</strong> — Die Geräte kommen
-          aus dem Sortiment von Heizungsdiscount24, sind also kein Marktüberblick. Über die Links
-          erhalten wir eine Provision, wenn du dort kaufst; für dich ändert sich am Preis nichts.
+          aus dem Sortiment der {haendlerAnschrift()}, sind also kein Marktüberblick. Gekauft wird
+          dort, nicht bei uns; bei einer Bestellung im Shop besteht ein Widerrufsrecht. Über die
+          Links erhalten wir eine Provision, wenn du dort kaufst; für dich ändert sich am Preis
+          nichts.
           {preisStand ? ` Preise vom ${preisStand}; es gilt der Preis im Shop.` : null}
         </p>
         {/* Das Versprechen steht NEBEN der Kennzeichnung, nicht statt ihrer.
 
             Ein Gesicht und ein Satz in der ersten Person sind kein Ersatz für
             die Offenlegung — sie sind die Antwort auf die Frage, die sie
-            aufwirft: Wenn ihr mitverdient, wonach wählt ihr dann aus? Der Satz
-            benennt genau das und ist im Code nachprüfbar: `empfehlungenFuer`
-            sortiert nach `preisEur`, die Provision kommt in der Auswahl nicht
-            vor. Eine Zusage, die der Code nicht hält, wäre schlimmer als keine. */}
-        <ContactPerson note="Mein Versprechen: Wir empfehlen, was zu deinem Fall passt — sortiert nach dem Preis für dich, nie nach unserer Provision." />
+            aufwirft: Wenn ihr mitverdient, wonach wählt ihr dann aus?
+
+            DER SATZ NENNT SEINE DIMENSION — das ist die ganze Korrektur.
+
+            Die erste Fassung endete auf "nie nach unserer Provision". Angreifbar
+            war daran nicht die Aussage, sondern ihre Reichweite: Ein Leser
+            bezieht sie darauf, ob Provision beeinflusst, WAS ER ÜBERHAUPT SIEHT
+            — und da lautet die ehrliche Antwort: ja, vollständig, es gibt genau
+            einen Partnershop. Eine absolute Aussage über die eigenen Beweggründe
+            ist zudem als irreführungsfähig ausdrücklich benannt (§ 5 Abs. 2
+            Nr. 3 UWG), und wer sie aufstellt, trägt sie.
+
+            Ein zweiter Anlauf schrieb daraufhin nur noch über Sortierreihenfolge
+            und Partnerprogramm — und warf damit die Zusage weg, um die es geht:
+            dass wir nach Sinnhaftigkeit für den Nutzer entscheiden. Das war
+            überkorrigiert. Eine wahre Aussage vorsichtshalber vager zu machen
+            ist keine Verbesserung, und der Gegenprüfer hatte ausdrücklich davor
+            gewarnt.
+
+            Jetzt steht dort, WORAUF sich das Versprechen bezieht: auf die Wahl
+            des Geräts. Die ist vollständig durch Heizlast, Vorlauftemperatur und
+            Preis bestimmt — nachprüfbar in `beurteile` und `empfehlungenFuer`,
+            wo die Provision überhaupt nicht vorkommt. Dass die Geräte alle aus
+            einem Sortiment stammen, sagt der Absatz darüber ("kein
+            Marktüberblick"), und zwar bevor das Versprechen kommt. */}
+        <ContactPerson note="Mein Versprechen: Welches Gerät wir dir empfehlen, entscheiden deine Heizlast, deine Vorlauftemperatur und der Preis für dich — nicht, woran wir mehr verdienen." />
       </div>
 
       {/* Warum hier nur Einzelgeräte stehen, gehört gesagt.
@@ -501,7 +581,7 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
           dass es an seiner Anlagengröße liegt. */}
       {nurEinzelgeraete && (
         <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: v("--color-text-muted") }}>
-          In dieser Anlagengröße führt Heizungsdiscount24 keine Komplettpakete. Die Geräte unten sind
+          In dieser Anlagengröße führt {WP_HAENDLER.kurz} keine Komplettpakete. Die Geräte unten sind
           die Wärmepumpe allein — Speicher, Regelung und Montage kommen dazu.
         </p>
       )}
