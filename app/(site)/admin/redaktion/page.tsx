@@ -66,6 +66,7 @@ export default async function RedaktionEntwicklung({
     <div style={{ maxWidth: 1240, margin: "0 auto" }}>
       <KategorieNav
         aktiv={kat.schluessel}
+        uebersicht={uebersicht}
         bereiche={BEREICHE.map((b) => ({
           schluessel: b.schluessel,
           name: b.name,

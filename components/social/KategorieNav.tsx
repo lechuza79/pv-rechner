@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AuswahlSkipper } from "../AuswahlSkipper";
-import { v, space } from "../../lib/theme";
+import { v, space, pad } from "../../lib/theme";
 import type { Bereich } from "../../lib/redaktionsplan";
 
 // Die Kategorie-Navigation: ein Wähler je Überkategorie.
@@ -23,7 +24,16 @@ export type NavBereich = {
   eintraege: { wert: string; text: string; zusatz?: string }[];
 };
 
-export function KategorieNav({ bereiche, aktiv }: { bereiche: NavBereich[]; aktiv: string }) {
+export function KategorieNav({
+  bereiche,
+  aktiv,
+  uebersicht,
+}: {
+  bereiche: NavBereich[];
+  aktiv: string;
+  /** Steht gerade das Raster über alles? Dann ist der Weg zurück der aktive. */
+  uebersicht?: boolean;
+}) {
   const router = useRouter();
 
   return (
@@ -38,11 +48,48 @@ export function KategorieNav({ bereiche, aktiv }: { bereiche: NavBereich[]; akti
         marginBottom: space.xl,
       }}
     >
+      {/* Der Weg zurück zum Raster. Er steht in derselben Leiste wie die
+          Kategorien, nicht als Pfeil darüber: Von hier aus wählt man, was man
+          sieht — „alles" ist eine dieser Wahlen und keine andere Sorte Sprung.
+          Ohne ihn kam man aus einer Kategorie nur über das Hauptmenü zurück, und
+          dort ist „Entwicklung" bereits als aktiv markiert. */}
+      <div style={{ display: "flex", flexDirection: "column", gap: space.xs }}>
+        <span
+          style={{
+            fontSize: v("--font-size-caption"),
+            textTransform: "uppercase",
+            letterSpacing: "0.06em",
+            color: uebersicht ? v("--color-accent") : v("--color-text-muted"),
+          }}
+        >
+          Übersicht
+        </span>
+        <Link
+          href="/admin/redaktion"
+          aria-current={uebersicht ? "page" : undefined}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            height: 38,
+            padding: pad("sm", "lg"),
+            borderRadius: v("--radius-md"),
+            border: `1px solid ${uebersicht ? v("--color-accent") : v("--color-border")}`,
+            background: uebersicht ? v("--color-accent-dim") : v("--color-bg-muted"),
+            color: uebersicht ? v("--color-accent") : v("--color-text-secondary"),
+            fontSize: 14,
+            textDecoration: "none",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Alle Beiträge
+        </Link>
+      </div>
+
       {bereiche.map((b) => {
         // Der Bereich, in dem die gewählte Familie liegt, zeigt sie an; die
         // übrigen stehen auf ihrem ersten Eintrag. Sie deshalb auszugrauen wäre
         // falsch — sie sind bedienbar, nur nicht aktiv.
-        const eigener = b.eintraege.some((e) => e.wert === aktiv);
+        const eigener = !uebersicht && b.eintraege.some((e) => e.wert === aktiv);
         return (
           <div key={b.schluessel} style={{ display: "flex", flexDirection: "column", gap: space.xs }}>
             <span
