@@ -1067,6 +1067,74 @@ Widget-Distribution an ~11.000 Gemeinden. Tabelle `kommunen_kontakt` (Supabase, 
 
 **Die Rückläufer-Erkennung liest nur den selbst geschriebenen Teil** (`ohneZitat`). Unser eigener Brief endet mit „Ihr Widerspruchsrecht"; Outlook zitiert ihn in jede Antwort. Eine Wortsuche über den ganzen Text hätte **jede freundliche Antwort** als Widerspruch eingestuft und die Gemeinde dauerhaft gesperrt — bei allen 100 Briefen. Wer den Zweig für maschinelle Zustellmeldungen betreten hat, kommt nie als „Widerspruch" heraus, sondern im Zweifel als `unklar-maschinell` in die Liste „bitte selbst ansehen".
 
+## PV-Fachbetriebe (interner Bereich)
+
+Erhebung der Solarteure und Elektro-Fachbetriebe mit PV-Geschäft, angelegt 27.08.2026.
+**Anlass ist gemessen:** Der HTW-Rechner — kostenlos, unabhängig, ohne Leadfunnel, also
+unser Zwilling — hat 2.080 verweisende Domains, wir null echte; größte Gruppe darunter
+sind Fachbetriebe. Ein Fachbetrieb verlinkt einen unabhängigen Rechner, weil er die eigene
+Beratung stützt und selbst keinen bauen will. `scripts/fachbetriebe-refresh.ts` +
+`lib/fachbetrieb-extrakt.ts`, Tabellen `fachbetriebe`, `fachbetrieb_belege`,
+`fachbetrieb_treffer`, `fachbetrieb_suchlauf` (RLS an, nur service_role — die Sätze
+enthalten bei Einzelunternehmern personenbezogene Daten). Quellenbewertung:
+`docs/fachbetriebe-quellen.md`.
+
+**Es gibt keinen Vermittlungsweg und es wird nichts verschickt — BLOCKER.** Die Zusage
+„ohne Verkaufsanrufe · keine Lead-Erfassung · kein Vertriebskontakt" steht an vierzehn
+Stellen im Code und in der Datenschutzerklärung. Wer die Adressen nutzen will, klärt
+vorher zwei Fragen, die dem Betreiber gehören: ob ein Fachbetrieb ein Widget einbettet,
+das ihm keine Leads liefert (der Wettbewerbsbefund nennt das ausdrücklich als offen und
+sagt, es sei „eine Frage an drei Betriebe, nicht an eine Datenbank"), und die
+Informationspflicht nach Art. 14 DSGVO — die Datenschutzerklärung nennt diese
+Verarbeitung heute **nicht**.
+
+**Google scheidet als Quelle aus, nicht nur für Bewertungen.** Maps Platform Terms
+3.2.3(a)(iii) untersagt „copy and save business names, addresses, or user reviews", (b)
+das Zwischenspeichern über Kennnummern hinaus, (d)(iii) ausdrücklich die Nutzung „in a
+listings or directory service" — wortwörtlich dieser Fall. Volltext:
+`docs/quellen/fachbetriebe/`. Eine Bewertung wird deshalb **nur** als Selbstauskunft der
+eigenen Website erfasst (`bewertung_quelle`), nie als „Google-Bewertung" beschriftet.
+
+**Der Merksatz „öffentliche Stelle, also kein § 87b UrhG" trägt bei Handwerkskammern
+NICHT.** Sie sind zwar Körperschaften des öffentlichen Rechts (§ 90 Abs. 1 HwO), aber
+§ 2 Abs. 5 DNG gilt nur im Anwendungsbereich des Gesetzes — und § 2 Abs. 3 Nr. 1 nimmt
+davon aus, was personenbezogen ist (Buchst. a Doppelbuchst. aa) und was nicht zum
+gesetzlichen Auftrag gehört (Buchst. d; die Betriebsdatenbank ist eine freiwillige
+Werbedatenbank, nicht die Handwerksrolle nach § 6 HwO). Die Quelle ist fachlich die beste
+von allen — amtliche Gewerke aus der Handwerksrolle, Landkreis frei Haus — und bleibt
+eine **offene Entscheidung für zwei Legal-Judges**, keine Sackgasse. Der Förder-Merksatz
+wäre hier ungeprüft übernommen worden; genau davor warnt die Faktenprüfungs-Regel, dass
+ein „gilt nicht für X" eine eigene Fundstelle braucht.
+
+**Betrieb oder Portal entscheidet die STREUUNG, nicht eine gepflegte Liste**
+(`portalSchwelle`). Ein Fachbetrieb erscheint in ein bis drei Landkreisen, ein
+Vergleichsportal in jedem. Eine Sperrliste wäre dasselbe Wettrennen wie beim Förder-Crawl.
+Die Schwelle wächst mit der Zahl der abgefragten Kreise — sonst wäre in einem Teillauf
+jedes Portal ein „Betrieb", und nach der Vollabfrage prüft das niemand mehr nach.
+
+**Kein Merkmal ohne Beleg.** Jeder Fund landet mit Fundstelle, Textstelle und Datum in
+`fachbetrieb_belege`; die Spalte in `fachbetriebe` ist nur die Auswertung. Eine spätere
+Neubewertung kostet damit keinen zweiten Crawl. „Vermutlich Meisterbetrieb" gibt es nicht.
+
+**Die Trust-Signale stehen NICHT im Impressum.** Beim Eichen an drei Betrieben trug keines
+der drei Impressen die Handwerkskammer, obwohl § 5 Abs. 1 Nr. 5 DDG sie für
+zulassungspflichtige Handwerke verlangt; Meisterbetrieb, Gründungsjahr und Einzugsgebiet
+standen im Marketing-Text der Startseite. Beide Seiten werden gelesen. Und die
+Impressum-Adresse ist nicht ratbar — `/impressum` traf in zwei von drei Fällen daneben.
+
+**Wer einen Extraktor baut, liest dreißig Zeilen Ergebnis von Hand gegen.** Der erste
+Profil-Lauf lieferte gute Quoten (88 % mit Anschrift, 40 % mit Handelsregisternummer) und
+enthielt sechs Fehlerklassen, von denen keine an einer Quote zu erkennen war: Rechtsform
+aus der Wortmitte („DORFMANAGEMENT" → AG), Gründungsjahr aus einem beliebigen
+„seit"-Satz, eine Beispieladresse und die Adresse des Hosters als Kontaktweg, eine
+Überschrift als Kammername, und „nichts gefunden" als Urteil „ist kein Betrieb". Alle sechs
+sind in `lib/__tests__/fachbetrieb-extrakt.test.ts` festgenagelt; **ein Muster
+aufzuweichen, damit mehr Treffer entstehen, ist genau der Weg, auf dem sie zurückkommen.**
+
+**Nicht mit dem Versorger-Modul vermischen** (937 Stadtwerke, `docs/versorger-uebergabe.md`).
+Fachbetriebe sind Handwerk, Versorger sind Energieversorger — andere Käufer, andere
+Budgets, anderer Rechtsrahmen.
+
 ## Archiv & Lehren
 
 | Datei | Inhalt |
