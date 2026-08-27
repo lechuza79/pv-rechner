@@ -187,6 +187,33 @@ describe("Bundesland-Umrisse", () => {
     }
   });
 
+  it("kein Land verschwindet in seiner eigenen Bounding-Box", () => {
+    // Hamburg gehört die Insel Neuwerk, hundert Kilometer draußen in der
+    // Nordsee. Solange sie mitgerechnet wurde, spannte sie das Quadrat auf und
+    // das Stadtgebiet — das, was man erkennen soll — füllte davon 31 Prozent.
+    // Von außen sah das nach einem Staubkorn aus, nicht nach einem Fehler.
+    //
+    // Die Schwelle liegt zwischen diesen 31 Prozent und dem engsten ECHTEN Fall:
+    // Bremen besteht wirklich aus zwei getrennten Teilen, und der größere füllt
+    // 50 Prozent. Beide Zahlen gemessen, nicht geschätzt — wer die Schwelle
+    // verschiebt, misst nach.
+    for (const [name, pfad] of Object.entries(BUNDESLAND_UMRISS)) {
+      const teile = pfad.split("M").filter(Boolean);
+      const groesste = Math.max(
+        ...teile.map((t) => {
+          const punkte = t
+            .replace("Z", "")
+            .split("L")
+            .map((paar) => paar.trim().split(" ").map(Number));
+          const xs = punkte.map((p) => p[0]);
+          const ys = punkte.map((p) => p[1]);
+          return Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys));
+        }),
+      );
+      expect(groesste, `${name}: größte Teilfläche füllt das Quadrat kaum`).toBeGreaterThan(40);
+    }
+  });
+
   it("kennt alle sechzehn Länder und hält sie klein", () => {
     const namen = Object.keys(BUNDESLAND_UMRISS);
     expect(namen.length).toBe(16);

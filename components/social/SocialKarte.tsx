@@ -221,6 +221,34 @@ export function SocialKarte({
 }
 
 /**
+ * Der Umriss eines Bundeslands, schwach hinter dem Wert.
+ *
+ * Er ordnet zu, ohne zu erklären — auf einem Bild, das ohne Bildunterschrift
+ * durch fremde Feeds reist, ist die Form das Einzige, was ohne Lesen ankommt.
+ * Er sitzt hinter der ZAHL, nicht neben der Bezeichnung: Die Zahl ist groß und
+ * dunkel und steht klar davor, ein Ländername in Fließtextgröße nicht.
+ *
+ * Ein eigenes Bauteil, weil ihn beide Bildformen tragen. Als Kopie im Ringteil
+ * blieb er in der Säule stumm liegen: Das Feld war gesetzt, gezeichnet wurde
+ * nichts, und auffallen konnte das nur dem, der es vermisst.
+ */
+function UmrissZeichen({ name, skala }: { name?: string; skala: number }) {
+  const pfad = name ? BUNDESLAND_UMRISS[name] : undefined;
+  if (!pfad) return null;
+  return (
+    <svg
+      viewBox={`0 0 ${BUNDESLAND_UMRISS_SEITE} ${BUNDESLAND_UMRISS_SEITE}`}
+      width={132 * skala}
+      height={132 * skala}
+      aria-hidden="true"
+      style={{ position: "absolute", right: 0, bottom: 0, opacity: 0.1, pointerEvents: "none" }}
+    >
+      <path d={pfad} fill={v("--color-text-primary")} />
+    </svg>
+  );
+}
+
+/**
  * Zwei Werte als konzentrische Ringe, darunter zwei Kacheln mit Legendenpunkt.
  *
  * Woran normiert wird, entscheidet `bild.ganzes` — und das ist der ganze Punkt.
@@ -338,23 +366,7 @@ function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: n
       <div style={{ display: "flex", gap: 40 * skala }}>
         {bild.serien.map((s) => (
           <div key={s.label} style={{ flex: 1, minWidth: 0, position: "relative" }}>
-            {/* Der Umriss des Landes, schwach hinter dem Wert. Er ordnet zu, ohne
-                zu erklären — auf einem Bild, das ohne Bildunterschrift durch
-                fremde Feeds reist, ist die Form das Einzige, was ohne Lesen
-                ankommt. Er sitzt hinter der ZAHL, nicht neben der Bezeichnung:
-                Die Zahl ist groß und dunkel und steht klar davor, ein Ländername
-                in Fließtextgröße nicht. */}
-            {s.umriss && BUNDESLAND_UMRISS[s.umriss] && (
-              <svg
-                viewBox={`0 0 ${BUNDESLAND_UMRISS_SEITE} ${BUNDESLAND_UMRISS_SEITE}`}
-                width={132 * skala}
-                height={132 * skala}
-                aria-hidden="true"
-                style={{ position: "absolute", right: 0, bottom: 0, opacity: 0.1, pointerEvents: "none" }}
-              >
-                <path d={BUNDESLAND_UMRISS[s.umriss]} fill={v("--color-text-primary")} />
-              </svg>
-            )}
+            <UmrissZeichen name={s.umriss} skala={skala} />
             {/* Die Farbe trägt der Punkt, nicht der Text: Zwei eingefärbte Zahlen
                 nebeneinander lesen sich als Wertung, und auf dem blauen
                 Farbschema sind sie ohnehin kaum zu unterscheiden. */}
@@ -428,16 +440,22 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
   const [gross, klein] = [...bild.serien].sort((a, b) => Math.abs(b.wert) - Math.abs(a.wert));
   const zeigeEinheit = bild.einheitAmWert !== false;
 
-  // Die Säule füllt den Mittelteil der Karte. Kleiner gesetzt schwimmt sie in
-  // der Fläche, und der Höhenunterschied — die ganze Aussage — wird zur
-  // Fußnote.
-  const HOEHE = 640;
-  const BREITE = 170;
+  // Die Maße folgen den VERHÄLTNISSEN der Vorlage, nicht ihren Pixeln: Sie ist
+  // bei knapp halber Kartenbreite gezeichnet, und ihre Zahlen eins zu eins
+  // übernommen ergäben ein Element, das in dieser Fläche verloren geht.
+  //
+  // Das Verhältnis von Breite zu Höhe ist dabei das Entscheidende. Eine erste
+  // Fassung war fast doppelt so schlank wie die Vorlage — dieselbe Rechnung,
+  // dasselbe Segmentverhältnis, und trotzdem wirkte sie wie ein Diagrammrest
+  // statt wie ein Körper, an dem man Höhe abliest.
+  const BREITE = 280;
+  const HOEHE = Math.round(BREITE * 2.22);
   // Der Ausleger neben dem Sockel trägt dessen Höhe nach rechts, damit die
   // Kante auch dort ablesbar ist, wo die Beschriftung steht.
-  const AUSLEGER = 50;
+  const AUSLEGER = Math.round(BREITE * 0.31);
+  const ABSTAND = Math.round(BREITE * 0.3);
   const sockel = Math.max(0, Math.min(Math.abs(klein.wert) / Math.abs(gross.wert), 1)) * HOEHE;
-  const ecke = 14 * skala;
+  const ecke = Math.round(BREITE * 0.09) * skala;
 
   const wert = (s: BildSerie) =>
     s.wert.toLocaleString("de-DE", {
@@ -446,15 +464,19 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
     });
 
   const block = (s: BildSerie, gruppe: boolean) => (
-    <>
-      <div style={{ fontSize: 27 * skala, color: v("--color-text-muted"), lineHeight: 1.3 }}>
+    <div style={{ position: "relative" }}>
+      <UmrissZeichen name={s.umriss} skala={skala} />
+      <div style={{ fontSize: 30 * skala, color: v("--color-text-muted"), lineHeight: 1.3 }}>
         {s.zusatz ?? s.label}
       </div>
       <div style={{ display: "flex", alignItems: "baseline", gap: 12 * skala, whiteSpace: "nowrap" }}>
         <span
           style={{
-            fontSize: (gruppe ? 84 : 56) * skala,
-            fontWeight: 700,
+            fontSize: (gruppe ? 88 : 60) * skala,
+            // Halbfett statt fett: In der Vorlage stehen die Werte im mittleren
+            // Schnitt, und daneben wirkt die volle Fettung wie ein Ausrufezeichen
+            // an einer Zahl, die für sich spricht.
+            fontWeight: 600,
             lineHeight: 1.1,
             color: v("--color-text-primary"),
           }}
@@ -464,9 +486,11 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
         {zeigeEinheit && <span style={{ fontSize: 28 * skala, color: v("--color-text-muted") }}>{s.einheit}</span>}
       </div>
       {s.delta && (
-        <div style={{ fontSize: 30 * skala, fontWeight: 700, color: v("--color-accent") }}>{s.delta}</div>
+        <div style={{ fontSize: 32 * skala, fontWeight: 600, color: v("--color-accent"), marginTop: 4 * skala }}>
+          {s.delta}
+        </div>
       )}
-    </>
+    </div>
   );
 
   return (
@@ -479,7 +503,7 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
             position: "absolute",
             left: 0,
             bottom: 0,
-            width: (BREITE + AUSLEGER + 40) * skala,
+            width: (BREITE + AUSLEGER + ABSTAND / 2) * skala,
             height: Math.max(1, 2 * skala),
             background: v("--color-border"),
           }}
@@ -528,7 +552,7 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
         <div
           style={{
             position: "absolute",
-            left: (BREITE + AUSLEGER + 40) * skala,
+            left: (BREITE + AUSLEGER + ABSTAND) * skala,
             top: 0,
             right: 0,
           }}
@@ -538,7 +562,7 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
         <div
           style={{
             position: "absolute",
-            left: (BREITE + AUSLEGER + 40) * skala,
+            left: (BREITE + AUSLEGER + ABSTAND) * skala,
             bottom: 0,
             right: 0,
             height: sockel * skala,

@@ -70,7 +70,23 @@ const eintraege = daten.features.map((f) => {
 
   // Nur die AUSSENRINGE. Löcher (Enklaven) trügen bei dieser Deckkraft nichts
   // bei und verdoppelten die Datenmenge.
-  const ringe = polygone.map((p) => vereinfachen(p[0], TOLERANZ)).filter((r) => r.length >= 3);
+  const alleRinge = polygone.map((p) => vereinfachen(p[0], TOLERANZ)).filter((r) => r.length >= 3);
+
+  // Winzige Exklaven fliegen raus, und zwar nicht aus Sparsamkeit: Hamburg
+  // gehört die Insel Neuwerk, hundert Kilometer nordwestlich in der Nordsee.
+  // Sie spannt die Bounding-Box des Landes auf ein Vielfaches auf, und das
+  // Stadtgebiet — das, was man erkennen soll — schrumpft dabei auf einen Punkt.
+  // Gemessen an der größten Teilfläche, nicht an einem festen Maß: Bremen
+  // insgesamt ist kleiner als manche Insel.
+  const flaeche = (r: Ring) =>
+    Math.abs(
+      r.reduce((summe, [x, y], i) => {
+        const [x2, y2] = r[(i + 1) % r.length];
+        return summe + (x * y2 - x2 * y);
+      }, 0) / 2,
+    );
+  const groesste = Math.max(...alleRinge.map(flaeche));
+  const ringe = alleRinge.filter((r) => flaeche(r) >= groesste * 0.03);
 
   const alle = ringe.flat();
   const minX = Math.min(...alle.map((p) => p[0]));
