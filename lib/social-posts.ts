@@ -106,6 +106,19 @@ export type PostBild = {
   /** Pflicht: Lizenz der Quelle. Reist im Bild mit, weil der Beitragstext das nicht tut. */
   quelle: string;
   /**
+   * Das Ganze, auf das sich die Werte beziehen — falls es eines gibt.
+   *
+   * Bei Anteilen ist es 100: „70 Prozent" ist eine Aussage über ein Ganzes, und
+   * ein voller Ring für 70 behauptete 100. Dann heißt der ungefüllte Rest im
+   * Bild wirklich etwas — hier: die Solarleistung, die eben nicht auf Freiflächen
+   * steht.
+   *
+   * Fehlt es, wird am größeren der beiden Werte normiert. Das gilt für Zahlen
+   * ohne Ganzes („9,9 gegen 22,8 je 1.000 Einwohner"), wo der ungefüllte Rest
+   * nichts bedeutet.
+   */
+  ganzes?: number;
+  /**
    * Steht die Einheit an der Zahl?
    *
    * Aus, wo der Untertitel sie ohnehin trägt („Angemeldete Steckersolargeräte je
@@ -452,6 +465,10 @@ export function postFreiflaeche(k: SocialKennzahlen): SocialPost {
       art: "donut",
       aussage: `Wo die Solarleistung steht, entscheidet die Fläche`,
       gemessen: `Anteil Freiflächen an der Solarleistung`,
+      // Anteile beziehen sich auf ein Ganzes, also wird daran normiert und nicht
+      // am größeren der beiden Werte: Ein voller Ring für 70 Prozent behauptete
+      // 100. Der leere Rest im Ring ist hier die Leistung, die auf Dächern steht.
+      ganzes: 100,
       // Das Prozentzeichen bleibt: „70" ohne es ist keine gekürzte Angabe,
       // sondern eine andere Zahl.
       einheitAmWert: true,

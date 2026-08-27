@@ -105,6 +105,21 @@ describe("Bildform und Einheit", () => {
     }
   });
 
+  it("Anteile werden am Ganzen normiert, nicht am größeren Wert", () => {
+    // Ein voller Ring für 70 Prozent behauptet 100. Wo es ein Ganzes gibt, muss
+    // es am Bild stehen — und kein Wert darf darüber liegen, sonst wird der Ring
+    // stillschweigend gekappt und zeigt eine andere Zahl als die Kachel.
+    const freiflaeche = posts.find((p) => p.id === "freiflaeche-ost-west")!;
+    expect(freiflaeche.bild?.ganzes).toBe(100);
+    for (const p of posts) {
+      const ganzes = p.bild?.ganzes;
+      if (ganzes == null) continue;
+      for (const s of p.bild!.serien) {
+        expect(Math.abs(s.wert), `${p.id}: ${s.label} liegt über dem Ganzen`).toBeLessThanOrEqual(ganzes);
+      }
+    }
+  });
+
   it("wo die Einheit nicht an der Zahl steht, nennt der Untertitel sie", () => {
     // Der eigentliche Punkt: „ohne Einheit an der Zahl" darf nie „ohne Einheit
     // im Bild" bedeuten. Eine Einheit, die still verschwindet, ist der teuerste

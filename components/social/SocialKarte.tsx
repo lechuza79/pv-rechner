@@ -219,18 +219,18 @@ export function SocialKarte({
 /**
  * Zwei Werte als konzentrische Ringe, darunter zwei Kacheln mit Legendenpunkt.
  *
- * Normiert wird am GRÖSSEREN der beiden Werte, nicht an ihrer Summe: Zwischen
- * „9,9 Geräte je 1.000 Einwohner" und „22,8" gibt es kein Ganzes, das sich
- * aufteilen ließe. Der größere Wert füllt seinen Ring ganz, der kleinere
- * anteilig dazu — was man abliest, ist das Verhältnis, nicht ein Anteil an einer
- * erfundenen Summe.
+ * Woran normiert wird, entscheidet `bild.ganzes` — und das ist der ganze Punkt.
+ * Bei Anteilen gibt es ein Ganzes (100 Prozent); dort wäre ein voller Ring für
+ * 70 Prozent schlicht falsch, und der leere Rest bedeutet etwas. Wo es kein
+ * Ganzes gibt („9,9 gegen 22,8 je 1.000 Einwohner"), wird am größeren der beiden
+ * Werte normiert; dann füllt er seinen Ring ganz und der kleinere kommt
+ * anteilig dazu.
  *
- * Der größere Wert liegt AUSSEN. Andersherum wäre der innere Ring voll und der
- * äußere angebrochen, und das liest sich wie ein Fehler.
+ * Der größere Wert liegt AUSSEN. Andersherum wäre der innere Ring länger als der
+ * äußere, und das liest sich wie ein Fehler.
  *
- * Die schwache Spur unter jedem Ring ist die Referenz „so weit reicht der
- * größere" — ohne sie sähe man bei kleinen Werten nur ein Bogenfragment und
- * wüsste nicht, woran es gemessen ist.
+ * Die schwache Spur unter jedem Ring ist die Referenz — ohne sie sähe man bei
+ * kleinen Werten nur ein Bogenfragment und wüsste nicht, woran es gemessen ist.
  */
 /**
  * Sichtbare Bogenlänge bei runden Enden.
@@ -253,6 +253,9 @@ function bogen(umfang: number, anteil: number, breite: number): number {
 function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: number }) {
   const sortiert = [...bild.serien].sort((a, b) => Math.abs(b.wert) - Math.abs(a.wert));
   const zeigeEinheit = bild.einheitAmWert !== false;
+  // Gibt es ein Ganzes, wird daran normiert — dann ist kein Ring voll, außer der
+  // Wert füllt es wirklich aus. Sonst am größeren der beiden Werte.
+  const grund = bild.ganzes ?? max;
 
   const SEITE = 560;
   const RINGE = [
@@ -275,7 +278,7 @@ function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: n
           {sortiert.map((s, i) => {
             const { r, breite } = RINGE[i];
             const umfang = 2 * Math.PI * r;
-            const anteil = Math.min(Math.abs(s.wert) / max, 1);
+            const anteil = Math.min(Math.abs(s.wert) / grund, 1);
             return (
               <g key={s.label}>
                 <circle
