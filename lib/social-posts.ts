@@ -12,6 +12,8 @@
 // lib/social-kennzahlen.ts (server-only) und werden hereingereicht.
 
 import { fmtPvLeistung } from "./atlas-format";
+import { kategorie, type KategorieSchluessel } from "./redaktions-kategorien";
+import { istKartenStil, type KartenStil } from "./social-karten-stil";
 import { fuelle, type PlatzhalterInfo } from "./social-vorlage";
 
 /** Zahlenbasis eines Posts. Kommt aus der Datenbank, wird hereingereicht. */
@@ -88,6 +90,18 @@ export type PostBild = {
   serien: BildSerie[];
   /** Pflicht: Lizenz der Quelle. Reist im Bild mit, weil der Beitragstext das nicht tut. */
   quelle: string;
+  /**
+   * Farbschema der Karte.
+   *
+   * Steht am BILD und nicht an der Ansicht: Sonst zeigte das Werkzeug beim
+   * Entwickeln etwas anderes, als beim Veröffentlichen aufgenommen wird. Weil es
+   * hier steht, geht es von selbst in den Fingerabdruck der Prüfung ein — wer
+   * nach der Freigabe umfärbt, verliert sie.
+   *
+   * Wird von `baueAllePosts` gesetzt: gespeicherte Wahl, sonst die Vorgabe der
+   * Kategorie.
+   */
+  stil: KartenStil;
 };
 
 /**
@@ -110,6 +124,14 @@ export type SocialPost = {
   id: string;
   /** Interne Bezeichnung für die Vorschau, nicht Teil des Beitrags. */
   titel: string;
+  /**
+   * Aussageform, und damit das Design, dem diese Story folgt.
+   *
+   * Pflichtfeld: Eine Story ohne Kategorie stünde in der Ansicht unter keinem
+   * Reiter und wäre nirgends zu sehen — ein Ausfall, den nur bemerkt, wer sie
+   * vermisst.
+   */
+  kategorie: KategorieSchluessel;
   kanal: ("linkedin" | "instagram")[];
   text: string;
   bild: PostBild | null;
@@ -231,9 +253,11 @@ export function postStadtLand(k: SocialKennzahlen, eigeneVorlage?: string): Soci
     vorlage,
     platzhalter,
     titel: "Das Balkonkraftwerk ist kein Stadtthema",
+    kategorie: "kontrast",
     kanal: ["linkedin", "instagram"],
     text,
     bild: {
+      stil: kategorie("kontrast").stil,
       art: "vergleich",
       aussage: staerker
         ? `Balkonkraftwerke stehen auf dem Land, nicht in der Stadt`
@@ -304,9 +328,11 @@ export function postWachstum(k: SocialKennzahlen): SocialPost {
   return {
     id: "wachstum-balkon-solar",
     titel: "Wo der Zubau wirklich stattfindet",
+    kategorie: "bewegung",
     kanal: ["linkedin", "instagram"],
     text,
     bild: {
+      stil: kategorie("bewegung").stil,
       art: "kennzahl",
       aussage: `Balkonkraftwerke wachsen ${de(balkonProzent / solarProzent, 1)}-mal so schnell wie die Solarleistung`,
       gemessen: `Veränderung in zwölf Monaten`,
@@ -369,9 +395,11 @@ export function postFreiflaeche(k: SocialKennzahlen): SocialPost {
   return {
     id: "freiflaeche-ost-west",
     titel: "Der Osten baut auf Feldern, der Westen auf Dächern",
+    kategorie: "kontrast",
     kanal: ["linkedin"],
     text,
     bild: {
+      stil: kategorie("kontrast").stil,
       art: "vergleich",
       aussage: `Wo die Solarleistung steht, entscheidet die Fläche`,
       gemessen: `Anteil Freiflächen an der Solarleistung`,
@@ -417,9 +445,11 @@ export function postSegmente(k: SocialKennzahlen): SocialPost {
   return {
     id: "segmente-anteile",
     titel: "Die Energiewende liegt nicht auf Privatdächern",
+    kategorie: "aufteilung",
     kanal: ["linkedin", "instagram"],
     text,
     bild: {
+      stil: kategorie("aufteilung").stil,
       art: "vergleich",
       aussage: `Nur gut ein Viertel der Solarleistung liegt auf privaten Dächern`,
       gemessen: `Anteil an der installierten Solarleistung`,
@@ -462,9 +492,11 @@ export function postAufholjagd(k: SocialKennzahlen): SocialPost {
   return {
     id: "aufholjagd-fuenf-jahre",
     titel: "Die Städte holen auf",
+    kategorie: "bewegung",
     kanal: ["linkedin"],
     text,
     bild: {
+      stil: kategorie("bewegung").stil,
       art: "vergleich",
       aussage: `Wer wenig hatte, wächst am schnellsten`,
       gemessen: `Solarleistung heute im Verhältnis zu vor fünf Jahren`,
@@ -501,9 +533,11 @@ export function postUeberEinwohner(k: SocialKennzahlen): SocialPost {
   return {
     id: "mehr-kwp-als-einwohner",
     titel: "Zwei von drei Gemeinden haben mehr Kilowatt als Einwohner",
+    kategorie: "groessenordnung",
     kanal: ["linkedin", "instagram"],
     text,
     bild: {
+      stil: kategorie("groessenordnung").stil,
       art: "kennzahl",
       aussage: `In den meisten Gemeinden steht mehr Solarleistung als Einwohner`,
       gemessen: `Gemeinden ab ${de(u.mindestEinwohner, 0)} Einwohnern`,
@@ -534,15 +568,32 @@ export const ALLE_POSTS = [
 ] as const;
 
 /**
- * Alle Posts, mit optional bearbeiteten Vorlagen.
- *
- * Nur Posts, die auf Vorlagen umgestellt sind, nehmen eine eigene an. Die
- * übrigen liefern ihren eingebauten Text — sie sind im Redaktionstisch dann
- * lesbar, aber nicht bearbeitbar, und das steht dort auch so.
+ * Was der Redaktionstisch je Story gespeichert hat: der umformulierte Text und
+ * das gewählte Farbschema. Beides zusammen ist die FASSUNG einer Story — und
+ * beides zusammen prüft die Freigabe.
  */
-export function baueAllePosts(k: SocialKennzahlen, vorlagen: Record<string, string> = {}): SocialPost[] {
+export type GespeicherteFassung = { vorlage?: string; stil?: KartenStil };
+
+/**
+ * Alle Posts, mit optional bearbeiteten Fassungen.
+ *
+ * Nur Posts, die auf Vorlagen umgestellt sind, nehmen einen eigenen Text an. Die
+ * übrigen liefern ihren eingebauten — sie sind im Redaktionstisch dann lesbar,
+ * aber nicht bearbeitbar, und das steht dort auch so. Das Farbschema dagegen
+ * lässt sich an jeder Story stellen; es hängt nicht am Text.
+ */
+export function baueAllePosts(k: SocialKennzahlen, fassungen: Record<string, GespeicherteFassung> = {}): SocialPost[] {
   return ALLE_POSTS.map((f) => {
     const roh = f(k);
-    return f.length > 1 ? (f as (k: SocialKennzahlen, v?: string) => SocialPost)(k, vorlagen[roh.id]) : roh;
+    const fassung = fassungen[roh.id];
+    const post =
+      f.length > 1 ? (f as (k: SocialKennzahlen, v?: string) => SocialPost)(k, fassung?.vorlage) : roh;
+    // Ein unbekannter Stil aus der Ablage fällt auf die Vorgabe der Kategorie
+    // zurück, statt die Karte ungefärbt zu lassen: Ein Wert, den wir nicht mehr
+    // kennen, ist ein Fund für den Code, kein Grund für ein kaputtes Bild.
+    if (post.bild && istKartenStil(fassung?.stil)) {
+      post.bild = { ...post.bild, stil: fassung!.stil! };
+    }
+    return post;
   });
 }

@@ -1,5 +1,6 @@
 import Logo from "../Logo";
 import { v, space } from "../../lib/theme";
+import { kartenTokens } from "../../lib/social-karten-stil";
 import type { PostBild } from "../../lib/social-posts";
 
 // Das Bildformat für den Feed. Hochkant (4:5), höchstens drei Serien,
@@ -75,6 +76,11 @@ export function SocialKarte({
     <div
       data-social-karte
       style={{
+        // Die Karte bringt ihr Farbschema selbst mit, statt es von der Seite zu
+        // erben. Vorher hing das an der Vorschau — wer die Karte woanders
+        // rendert (oder als Bild aufnimmt), bekam die Tagesstufe der Seite und
+        // damit eine Karte, die es so nie geben sollte.
+        ...(kartenTokens(bild.stil) as React.CSSProperties),
         width: BREITE * skala,
         // Der Teaser hört auf, wo sein Inhalt endet — eine erzwungene
         // 4:5-Fläche wäre hier zur Hälfte leer.

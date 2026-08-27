@@ -1,24 +1,25 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isAdminSession } from "../../../../lib/admin-guard";
 import { socialKennzahlen } from "../../../../lib/social-kennzahlen";
-import { baueAllePosts } from "../../../../lib/social-posts";
-import { FAMILIEN } from "../../../../lib/redaktionsplan";
-import { FeedVorschau } from "../../../../components/social/FeedVorschau";
-import { VorlagenEditor } from "../../../../components/social/VorlagenEditor";
-import { ladeVorlagen } from "../../../../lib/social-vorlagen-db";
+import { baueAllePosts, type SocialPost } from "../../../../lib/social-posts";
+import { KATEGORIEN, kategorieAusAdresse } from "../../../../lib/redaktions-kategorien";
+import { KARTEN_STIL_NAME } from "../../../../lib/social-karten-stil";
+import { ladeFassungen } from "../../../../lib/social-vorlagen-db";
+import { ladePruefungen } from "../../../../lib/social-pruefung";
+import { StoryTisch } from "../../../../components/social/StoryTisch";
 import { v, space, pad } from "../../../../lib/theme";
 
-// Entwicklung: Der Post so, wie er im Feed erscheint — Bild oben, Text darunter
-// eingeklappt.
+// Das Design-Werkzeug: Kategorien oben, darunter ihre Beschreibung und ihre
+// Stories.
 //
-// Die Anordnung ist der Kern dieser Seite. Wer einen Beitrag mit vollständigem
-// Text neben einem großen Bild beurteilt, beurteilt eine Ansicht, die niemand
-// zu sehen bekommt: Im Feed kommt das Bild zuerst, der Text steht darunter nach
-// wenigen Zeilen abgeschnitten, und in dieser Ansicht entscheidet sich, ob
-// jemand stehenbleibt.
+// Eine Kategorie ist eine AUSSAGEFORM und damit die Einheit, für die ein Design
+// gilt (lib/redaktions-kategorien.ts). Die Stories einer Kategorie sollen wie
+// Geschwister aussehen; wo eine ausschert, sagt der Tisch das dazu.
 //
-// Rechts daneben der Vorrat an Geschichten-Familien, damit beim Entwickeln
-// sichtbar ist, was es sonst noch gibt und woran es jeweils hängt.
+// Jede Story steht so, wie sie im Feed steht: Text zuerst, nach zwei Zeilen
+// gekappt, Bild darunter. Bild und Text tragen gemeinsam — deshalb wird beides
+// zusammen beurteilt und nicht nebeneinander in zwei Vorschauen.
 
 export const metadata = {
   title: "Redaktion – Entwicklung",
@@ -27,32 +28,80 @@ export const metadata = {
 
 export const dynamic = "force-dynamic";
 
-const ZUSTAND_TEXT: Record<string, string> = {
-  gebaut: "gebaut",
-  "daten-da": "Daten da",
-  "fehlt-daten": "Daten fehlen",
-  spaeter: "später",
-};
-
-export default async function RedaktionEntwicklung() {
+export default async function RedaktionEntwicklung({
+  searchParams,
+}: {
+  searchParams: Promise<{ k?: string }>;
+}) {
   if (!(await isAdminSession())) redirect("/login?next=/admin/redaktion");
 
-  let posts;
+  const kat = kategorieAusAdresse((await searchParams).k);
+
+  let posts: SocialPost[] | undefined;
   let fehler: string | null = null;
   try {
-    const [kennzahlen, vorlagen] = await Promise.all([socialKennzahlen(), ladeVorlagen()]);
-    posts = baueAllePosts(kennzahlen, vorlagen);
+    const [kennzahlen, fassungen] = await Promise.all([socialKennzahlen(), ladeFassungen()]);
+    posts = baueAllePosts(kennzahlen, fassungen);
   } catch (e) {
     fehler = (e as Error).message;
   }
 
+  const dieser = posts?.filter((p) => p.kategorie === kat.schluessel) ?? [];
+  // Die Prüfungen kommen je Story mit: Das Urteil rechnet der Tisch selbst, weil
+  // es sich mit jeder Änderung dort bewegen muss.
+  const pruefungen = Object.fromEntries(
+    await Promise.all(dieser.map(async (p) => [p.id, await ladePruefungen(p.id)] as const)),
+  );
+
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto" }}>
-      <h1 style={{ fontSize: v("--font-size-h1"), marginBottom: space.sm }}>Entwicklung</h1>
-      <p style={{ color: v("--color-text-secondary"), marginBottom: space.huge, maxWidth: 760 }}>
-        Text und Bild kommen aus derselben Berechnung — ein Post kann hier keine Zahl behaupten, die
-        das Bild widerlegt. Die Vorschau zeigt den Beitrag so, wie er im Feed steht: Bild zuerst,
-        Text darunter eingeklappt.
+      <nav
+        aria-label="Kategorien"
+        style={{
+          display: "flex",
+          gap: space.xs,
+          flexWrap: "wrap",
+          borderBottom: `1px solid ${v("--color-border-muted")}`,
+          paddingBottom: space.md,
+          marginBottom: space.xl,
+        }}
+      >
+        {KATEGORIEN.map((k) => {
+          const aktiv = k.schluessel === kat.schluessel;
+          const anzahl = posts?.filter((p) => p.kategorie === k.schluessel).length ?? 0;
+          return (
+            <Link
+              key={k.schluessel}
+              href={`/admin/redaktion?k=${k.schluessel}`}
+              aria-current={aktiv ? "page" : undefined}
+              style={{
+                padding: pad("sm", "lg"),
+                borderRadius: v("--radius-sm"),
+                background: aktiv ? v("--color-accent-dim") : "transparent",
+                color: aktiv ? v("--color-accent") : v("--color-text-secondary"),
+                fontSize: v("--font-size-body"),
+                fontWeight: aktiv ? 600 : 400,
+                textDecoration: "none",
+              }}
+            >
+              {k.kurz}{" "}
+              <span style={{ color: v("--color-text-muted"), fontWeight: 400 }}>{anzahl}</span>
+            </Link>
+          );
+        })}
+      </nav>
+
+      <h1 style={{ fontSize: v("--font-size-h1"), marginBottom: space.sm }}>{kat.name}</h1>
+      <p style={{ color: v("--color-text-secondary"), maxWidth: 760, marginTop: 0 }}>{kat.beschreibung}</p>
+      <p
+        style={{
+          fontSize: v("--font-size-small"),
+          color: v("--color-text-muted"),
+          marginTop: space.md,
+          marginBottom: space.huge,
+        }}
+      >
+        Design dieser Kategorie: {KARTEN_STIL_NAME[kat.stil]}.
       </p>
 
       {fehler && (
@@ -62,102 +111,9 @@ export default async function RedaktionEntwicklung() {
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: space.huge * 1.5 }}>
-          {posts?.map((p) => (
-            <section key={p.id} style={{ borderTop: `1px solid ${v("--color-border-muted")}`, paddingTop: space.xxl }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "baseline",
-                  gap: space.md,
-                  marginBottom: space.md,
-                  flexWrap: "wrap",
-                  maxWidth: 500,
-                }}
-              >
-                <h2 style={{ fontSize: v("--font-size-h3"), margin: 0 }}>{p.titel}</h2>
-                <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
-                  {p.kanal.join(" · ")} · {p.bild?.art === "kennzahl" ? "Einzelkennzahl" : "Vergleich"} ·{" "}
-                  {p.text.length} Zeichen
-                </span>
-              </div>
-
-              {/* Vorschau links, Bearbeitung rechts: Wer eine Formulierung
-                  ändert, will die Wirkung sehen, ohne zu scrollen. */}
-              <div style={{ display: "flex", gap: space.xxxl, alignItems: "flex-start", flexWrap: "wrap" }}>
-                <div style={{ flex: "0 0 auto" }}>
-                  <FeedVorschau bild={p.bild!} text={p.text} breite={440} />
-                </div>
-                <div style={{ flex: "1 1 460px", minWidth: 340 }}>
-                  {p.vorlage && p.platzhalter ? (
-                    <VorlagenEditor postId={p.id} vorlage={p.vorlage} platzhalter={p.platzhalter} />
-                  ) : (
-                    <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
-                      Noch nicht auf Vorlagen umgestellt — hier nur lesbar.
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <details style={{ marginTop: space.md, maxWidth: 500 }}>
-                <summary
-                  style={{ cursor: "pointer", fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}
-                >
-                  Belege ({p.belege.length})
-                </summary>
-                <ul
-                  style={{
-                    fontSize: v("--font-size-small"),
-                    color: v("--color-text-secondary"),
-                    marginTop: space.sm,
-                    paddingLeft: space.lg,
-                  }}
-                >
-                  {p.belege.map((b) => (
-                    <li key={b} style={{ marginBottom: space.xs }}>
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-              </details>
-            </section>
-          ))}
-
-        <aside style={{ maxWidth: 700 }}>
-          <h2 style={{ fontSize: v("--font-size-h3"), marginTop: 0 }}>Der Vorrat</h2>
-          <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginTop: 0 }}>
-            Neunzehn Geschichten-Familien. Was hier als „Daten da" steht, lässt sich ohne neuen
-            Datenbestand bauen.
-          </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: space.xs }}>
-            {FAMILIEN.map((f) => (
-              <div
-                key={f.kuerzel}
-                style={{
-                  background: v("--color-bg-muted"),
-                  borderRadius: v("--radius-sm"),
-                  padding: pad("sm", "md"),
-                  opacity: f.zustand === "spaeter" ? 0.6 : 1,
-                }}
-              >
-                <div style={{ display: "flex", gap: space.sm, alignItems: "baseline" }}>
-                  <span style={{ fontSize: v("--font-size-body"), flex: 1 }}>{f.name}</span>
-                  <span
-                    style={{
-                      fontSize: v("--font-size-caption"),
-                      color: f.zustand === "gebaut" ? v("--color-positive") : v("--color-text-muted"),
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {ZUSTAND_TEXT[f.zustand]}
-                  </span>
-                </div>
-                {f.hinweis && (
-                  <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>{f.hinweis}</div>
-                )}
-              </div>
-            ))}
-          </div>
-        </aside>
+        {dieser.map((p) => (
+          <StoryTisch key={p.id} post={p} pruefungen={pruefungen[p.id] ?? []} kategorieStil={kat.stil} />
+        ))}
       </div>
     </div>
   );

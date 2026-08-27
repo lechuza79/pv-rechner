@@ -51,12 +51,22 @@ export function fuelle(vorlage: string, werte: Record<string, string>): string {
   return vorlage.replace(MUSTER, (ganz, name: string) => werte[name] ?? ganz);
 }
 
+/**
+ * Die Zeile hält die redaktionelle Fassung einer Story: Text UND Farbschema.
+ *
+ * `vorlage` ist bewusst NULL-fähig — eine Story kann ein eigenes Farbschema
+ * tragen und trotzdem den eingebauten Text benutzen. Mit NOT NULL müsste
+ * „Text zurücksetzen" die ganze Zeile löschen und nähme das Farbschema mit,
+ * das damit nichts zu tun hat.
+ */
 export const SOCIAL_VORLAGEN_DDL = `
   CREATE TABLE IF NOT EXISTS social_vorlagen (
     post_id text PRIMARY KEY,
-    vorlage text NOT NULL,
+    vorlage text,
     geaendert_am timestamptz NOT NULL DEFAULT now()
   );
+  ALTER TABLE social_vorlagen ADD COLUMN IF NOT EXISTS stil text;
+  ALTER TABLE social_vorlagen ALTER COLUMN vorlage DROP NOT NULL;
   ALTER TABLE social_vorlagen ENABLE ROW LEVEL SECURITY;
   REVOKE ALL ON social_vorlagen FROM PUBLIC;
   REVOKE ALL ON social_vorlagen FROM anon;
