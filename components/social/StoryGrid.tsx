@@ -28,10 +28,13 @@ export type GridEintrag = {
   pruefungen: Pruefung[];
   kategorie: { name: string; schluessel: string };
   /**
-   * Hat jemand an dieser Story etwas eingestellt — Text, Farbschema oder
-   * Bildform? Gemessen am Vorhandensein einer gespeicherten Fassung, nicht an
-   * einem Häkchen: Ein Zustand, den jemand von Hand setzen muss, steht
-   * irgendwann auf „fertig" an einer Story, die niemand angefasst hat.
+   * Ist das Design dieser Story durchgesehen — im Code abgenommen ODER im
+   * Browser eingestellt?
+   *
+   * Beides zusammen, weil beides vorkommt. Nur die gespeicherte Fassung zu
+   * zählen war der Fehler: Stories, deren Bildform im Code ausgearbeitet und
+   * abgenommen wurde, standen unter „Roh", weil niemand einen Knopf gedrückt
+   * hatte.
    */
   bearbeitet: boolean;
 };

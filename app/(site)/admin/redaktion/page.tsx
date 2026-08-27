@@ -113,7 +113,7 @@ export default async function RedaktionEntwicklung({
               post: p,
               pruefungen: pruefungen[p.id] ?? [],
               kategorie: { name: k.name, schluessel: k.schluessel },
-              bearbeitet: p.id in fassungen,
+              bearbeitet: p.gestaltet === true || p.id in fassungen,
             };
           })}
         />

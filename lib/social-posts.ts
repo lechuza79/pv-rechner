@@ -244,6 +244,19 @@ export type SocialPost = {
    * vermisst.
    */
   kategorie: KategorieSchluessel;
+  /**
+   * Ist das Design dieser Story durchgesehen und abgenommen?
+   *
+   * Steht am POST und nicht in der Ablage. Die Ablage weiß nur, ob jemand im
+   * Browser einen Knopf gedrückt hat — eine Story, deren Bildform im Code
+   * ausgearbeitet und abgenommen wurde, hat dort keinen Eintrag und galt
+   * deshalb als roh. Das war der Fehler: Gemessen wurde die Zufälligkeit eines
+   * Klicks, nicht der Arbeitsstand.
+   *
+   * Der umgekehrte Fall bleibt mitgezählt: Wer im Browser etwas einstellt, hat
+   * an der Story gearbeitet, auch ohne dass hier ein Flag steht.
+   */
+  gestaltet?: boolean;
   kanal: ("linkedin" | "instagram")[];
   text: string;
   bild: PostBild | null;
@@ -386,6 +399,8 @@ export function postStadtLand(k: SocialKennzahlen, eigeneVorlage?: string): Soci
     platzhalter,
     titel: "Das Balkonkraftwerk ist kein Stadtthema",
     kategorie: "g13",
+    // Design durchgesehen und abgenommen — Schaustück für seine Bildform.
+    gestaltet: true,
     kanal: ["linkedin", "instagram"],
     text,
     bild: {
@@ -537,6 +552,8 @@ export function postFreiflaeche(k: SocialKennzahlen): SocialPost {
     id: "freiflaeche-ost-west",
     titel: "Der Osten baut auf Feldern, der Westen auf Dächern",
     kategorie: "g14",
+    // Design durchgesehen und abgenommen — Schaustück für seine Bildform.
+    gestaltet: true,
     kanal: ["linkedin"],
     text,
     bild: {
@@ -863,6 +880,8 @@ export function postSpeicherJeLand(k: SocialKennzahlen): SocialPost {
     id: "g16-speicher-je-land",
     titel: "Wo der Speicher Standard ist",
     kategorie: "g16",
+    // Design durchgesehen und abgenommen — Schaustück für seine Bildform.
+    gestaltet: true,
     kanal: ["linkedin"],
     text,
     bild: {
@@ -917,6 +936,8 @@ export function postPrivatdachAnteil(k: SocialKennzahlen): SocialPost {
     id: "g14-privatdach-anteil",
     titel: "Wo der Strom vom eigenen Dach kommt",
     kategorie: "g14",
+    // Design durchgesehen und abgenommen — Schaustück für seine Bildform.
+    gestaltet: true,
     kanal: ["linkedin"],
     text,
     bild: {
