@@ -33,7 +33,7 @@ const basis: SocialKennzahlen = {
   },
   ueberEinwohner: { mindestEinwohner: 500, betrachtet: 10_000, darueber: 6_848 },
   foerderung: { programme: 108, gemeinden: 97, nurBalkon: 12, ohneHoechstbetrag: 61, mitAntragVorher: 74 },
-  kohorte: { privatAnlagen: 3_120_000, mittlereKwp: 9.4, mitSpeicher: 1_180_000, speicherQuote: 37.8 },
+  kohorte: { privatAnlagen: 3_120_000, mittlereKwp: 9.4, speicherEinheiten: 1_180_000, speicherJe100: 37.8 },
   anomalie: {
     ort: "Beispielstadt",
     einwohner: 24_500,
@@ -42,12 +42,12 @@ const basis: SocialKennzahlen = {
     mindestEinwohner: 5_000,
   },
   laender: [
-    { name: "Niedersachsen", balkonJeTausend: 23.1, wpProKopf: 505, privatDachKwp: 4_000_000, speicherQuote: 30, freiflaecheAnteil: 17.4, solarKwp: 11_300_000, wachstumFuenfJahre: 2.23 },
-    { name: "Brandenburg", balkonJeTausend: 20.5, wpProKopf: 377, privatDachKwp: 950_000, speicherQuote: 30, freiflaecheAnteil: 70.3, solarKwp: 9_800_000, wachstumFuenfJahre: 2.05 },
-    { name: "Nordrhein-Westfalen", balkonJeTausend: 16.1, wpProKopf: 378, privatDachKwp: 6_800_000, speicherQuote: 30, freiflaecheAnteil: 9.1, solarKwp: 15_500_000, wachstumFuenfJahre: 2.33 },
-    { name: "Berlin", balkonJeTausend: 7.1, wpProKopf: 72, privatDachKwp: 260_000, speicherQuote: 30, freiflaecheAnteil: 0.4, solarKwp: 500_000, wachstumFuenfJahre: 3.48 },
-    { name: "Hamburg", balkonJeTausend: 6.1, wpProKopf: 84, privatDachKwp: 150_000, speicherQuote: 30, freiflaecheAnteil: 0.4, solarKwp: 300_000, wachstumFuenfJahre: 4.38 },
-    { name: "Bremen", balkonJeTausend: 5.4, wpProKopf: 61, privatDachKwp: 110_000, speicherQuote: 30, freiflaecheAnteil: 0.2, solarKwp: 200_000, wachstumFuenfJahre: 3.9 },
+    { name: "Niedersachsen", balkonJeTausend: 23.1, wpProKopf: 505, privatDachKwp: 4_000_000, speicherJe100: 30, freiflaecheAnteil: 17.4, solarKwp: 11_300_000, wachstumFuenfJahre: 2.23 },
+    { name: "Brandenburg", balkonJeTausend: 20.5, wpProKopf: 377, privatDachKwp: 950_000, speicherJe100: 30, freiflaecheAnteil: 70.3, solarKwp: 9_800_000, wachstumFuenfJahre: 2.05 },
+    { name: "Nordrhein-Westfalen", balkonJeTausend: 16.1, wpProKopf: 378, privatDachKwp: 6_800_000, speicherJe100: 30, freiflaecheAnteil: 9.1, solarKwp: 15_500_000, wachstumFuenfJahre: 2.33 },
+    { name: "Berlin", balkonJeTausend: 7.1, wpProKopf: 72, privatDachKwp: 260_000, speicherJe100: 30, freiflaecheAnteil: 0.4, solarKwp: 500_000, wachstumFuenfJahre: 3.48 },
+    { name: "Hamburg", balkonJeTausend: 6.1, wpProKopf: 84, privatDachKwp: 150_000, speicherJe100: 30, freiflaecheAnteil: 0.4, solarKwp: 300_000, wachstumFuenfJahre: 4.38 },
+    { name: "Bremen", balkonJeTausend: 5.4, wpProKopf: 61, privatDachKwp: 110_000, speicherJe100: 30, freiflaecheAnteil: 0.2, solarKwp: 200_000, wachstumFuenfJahre: 3.9 },
   ],
 };
 
@@ -285,6 +285,29 @@ describe("Bildform und Einheit", () => {
   });
 });
 
+describe("Was die Zahl misst", () => {
+  it("beschriftet Speicher-Zahlen nicht als Anteil", () => {
+    // Der teuerste Fund dieser Arbeit: `batterie_privat_count` zählt angemeldete
+    // SPEICHER, nicht Dachanlagen mit Speicher. Ein Haushalt kann mehrere
+    // anmelden, ein Balkonspeicher hat gar keine Dachanlage — als Anteil
+    // beschriftet kam Bremen auf 98 Prozent und der Bund auf 67. Beides las sich
+    // plausibel und war falsch.
+    //
+    // Geprüft wird die MECHANIK, nicht der Wortlaut: kein Prozentzeichen an der
+    // Zahl, kein Ganzes am Bild. Eine erste Fassung suchte nach den Wörtern
+    // „Anteil" und „Quote" — und schlug bei dem Satz an, der genau das
+    // ausdrücklich verneint.
+    for (const p of posts) {
+      const worum = `${p.bild?.aussage ?? ""} ${p.bild?.gemessen ?? ""}`;
+      if (!/Speicher/i.test(worum)) continue;
+      expect(p.bild?.ganzes, `${p.id}: Speicherzahl mit einem Ganzen`).toBeUndefined();
+      for (const s of p.bild?.serien ?? []) {
+        expect(s.einheit, `${p.id}: Speicherzahl in Prozent`).not.toBe("%");
+      }
+    }
+  });
+});
+
 describe("Das Formen-Register", () => {
   it("jede Form nennt, wofür sie taugt und woran sie scheitert", () => {
     // Das Register ist die Vorlage: Wer eine Form ergänzt, schreibt Bedingung
@@ -339,6 +362,17 @@ describe("Bundesland-Umrisse", () => {
         }),
       );
       expect(groesste, `${name}: größte Teilfläche füllt das Quadrat kaum`).toBeGreaterThan(40);
+    }
+  });
+
+  it("jedes Land ist gleich fein aufgelöst, auch die kleinen", () => {
+    // Die Vereinfachung lief zuerst mit einer festen Toleranz in Grad. Für
+    // Bayern war das ein Zweihundertstel der Form, für Berlin ein Zwanzigstel —
+    // die Stadtstaaten kamen als Klötze heraus, während die Flächenländer sauber
+    // aussahen. Dieselbe Zahl, zwei völlig verschiedene Auflösungen.
+    for (const [name, pfad] of Object.entries(BUNDESLAND_UMRISS)) {
+      const punkte = (pfad.match(/[ML]/g) ?? []).length;
+      expect(punkte, `${name}: nur ${punkte} Punkte — als Form nicht mehr erkennbar`).toBeGreaterThan(40);
     }
   });
 

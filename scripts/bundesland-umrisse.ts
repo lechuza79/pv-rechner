@@ -17,10 +17,18 @@ import { readFileSync, writeFileSync } from "node:fs";
 type Ring = [number, number][];
 
 /**
- * Douglas-Peucker. Die Toleranz ist in Grad und bewusst grob: Der Umriss steht
- * schwach hinter Text und soll die Form erkennbar machen, nicht die Küste.
+ * Douglas-Peucker, mit einer Toleranz RELATIV zur Ausdehnung des Landes.
+ *
+ * Absolut in Grad war der Fehler: 0,02 Grad sind bei Bayern (gut vier Grad breit)
+ * ein Zweihundertstel der Form und damit fein, bei Berlin (0,4 Grad) ein
+ * Zwanzigstel — die Stadtstaaten kamen als Klötze heraus, während die
+ * Flächenländer sauber aussahen. Dieselbe Zahl, zwei völlig verschiedene
+ * Auflösungen.
+ *
+ * Der Anteil gilt für alle gleich: Jedes Land wird auf denselben Bruchteil
+ * seiner eigenen Größe vereinfacht.
  */
-const TOLERANZ = 0.02;
+const TOLERANZ_ANTEIL = 0.004;
 
 function vereinfachen(punkte: Ring, toleranz: number): Ring {
   if (punkte.length < 3) return punkte;
@@ -70,7 +78,7 @@ const eintraege = daten.features.map((f) => {
 
   // Nur die AUSSENRINGE. Löcher (Enklaven) trügen bei dieser Deckkraft nichts
   // bei und verdoppelten die Datenmenge.
-  const alleRinge = polygone.map((p) => vereinfachen(p[0], TOLERANZ)).filter((r) => r.length >= 3);
+  const roh = polygone.map((p) => p[0]).filter((r) => r.length >= 3);
 
   // Winzige Exklaven fliegen raus, und zwar nicht aus Sparsamkeit: Hamburg
   // gehört die Insel Neuwerk, hundert Kilometer nordwestlich in der Nordsee.
@@ -85,8 +93,20 @@ const eintraege = daten.features.map((f) => {
         return summe + (x * y2 - x2 * y);
       }, 0) / 2,
     );
-  const groesste = Math.max(...alleRinge.map(flaeche));
-  const ringe = alleRinge.filter((r) => flaeche(r) >= groesste * 0.03);
+  const groessteFlaeche = Math.max(...roh.map(flaeche));
+  const behalten = roh.filter((r) => flaeche(r) >= groessteFlaeche * 0.03);
+
+  // Die Toleranz hängt an der Ausdehnung DIESES Landes, also erst messen, dann
+  // vereinfachen — die umgekehrte Reihenfolge hätte die Spanne aus bereits
+  // vergröberten Ringen genommen.
+  const rohPunkte = behalten.flat();
+  const spanne = Math.max(
+    Math.max(...rohPunkte.map((p) => p[0])) - Math.min(...rohPunkte.map((p) => p[0])),
+    Math.max(...rohPunkte.map((p) => p[1])) - Math.min(...rohPunkte.map((p) => p[1])),
+  );
+  const ringe = behalten
+    .map((r) => vereinfachen(r, spanne * TOLERANZ_ANTEIL))
+    .filter((r) => r.length >= 3);
 
   const alle = ringe.flat();
   const minX = Math.min(...alle.map((p) => p[0]));

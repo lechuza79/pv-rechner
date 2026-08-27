@@ -54,12 +54,21 @@ export type SocialKennzahlen = {
     betrachtet: number;
     darueber: number;
   };
-  /** Die typische private Dachanlage und ihr Speicher. */
+  /**
+   * Die typische private Dachanlage — und wie viele Heimspeicher daneben stehen.
+   *
+   * ACHTUNG, das ist KEIN Anteil: Gezählt werden angemeldete SPEICHER-Einheiten,
+   * nicht Dachanlagen mit Speicher. Ein Haushalt kann mehrere anmelden, und ein
+   * Balkonspeicher hat gar keine Dachanlage — deshalb kommen Werte über hundert
+   * vor (Bremen). Als „Quote" beschriftet wäre das eine falsche Aussage auf der
+   * Fläche, die weitergeteilt wird.
+   */
   kohorte: {
     privatAnlagen: number;
     mittlereKwp: number;
-    mitSpeicher: number;
-    speicherQuote: number;
+    speicherEinheiten: number;
+    /** Heimspeicher je 100 private Dachanlagen. Verhältnis, kein Anteil. */
+    speicherJe100: number;
   };
   /**
    * Der stärkste POSITIVE Ausschlag bei Balkonkraftwerken, über einer
@@ -93,8 +102,8 @@ export type SocialKennzahlen = {
     wpProKopf: number;
     /** Private Dachleistung des Landes. Für den Anteil am Landesbestand. */
     privatDachKwp: number;
-    /** Anteil der privaten Dachanlagen mit Batterie, in Prozent. */
-    speicherQuote: number;
+    /** Heimspeicher je 100 private Dachanlagen. Verhältnis, kein Anteil. */
+    speicherJe100: number;
     freiflaecheAnteil: number;
     solarKwp: number;
     wachstumFuenfJahre: number;
@@ -745,16 +754,15 @@ export function postUeberEinwohner(k: SocialKennzahlen): SocialPost {
  */
 export function postKohorte(k: SocialKennzahlen): SocialPost {
   const c = k.kohorte;
-  const jede = c.speicherQuote > 0 ? 100 / c.speicherQuote : 0;
 
   const text = [
-    `Die typische private Dachanlage in Deutschland ist ${de(c.mittlereKwp, 1)} Kilowatt groß. Jede ${de(jede, 1)}-te hat einen Speicher.`,
+    `Die typische private Dachanlage in Deutschland ist ${de(c.mittlereKwp, 1)} Kilowatt groß. Auf 100 solcher Anlagen kommen ${de(c.speicherJe100, 0)} angemeldete Heimspeicher.`,
     ``,
-    `Gerechnet über alle ${de(Math.round(c.privatAnlagen / 1000))}.000 privaten Dachanlagen im Anlagenregister. ${de(Math.round(c.mitSpeicher / 1000))}.000 davon sind mit einer Batterie angemeldet, das sind ${de(c.speicherQuote, 0)} Prozent.`,
+    `Gerechnet über alle ${de(Math.round(c.privatAnlagen / 1000))}.000 privaten Dachanlagen und ${de(Math.round(c.speicherEinheiten / 1000))}.000 Speicher im Anlagenregister.`,
     ``,
-    `Beide Zahlen sind Durchschnitte über alle Jahrgänge und sagen deshalb wenig über das, was heute gebaut wird — eine Anlage von 2012 zieht den Schnitt nach unten, bei der Größe wie beim Speicher. Wer wissen will, wohin es geht, muss nach Jahrgängen trennen. Das ist die nächste Ausbaustufe.`,
+    `Das ist ausdrücklich KEINE Quote „so viele Anlagen haben einen Speicher". Das Register zählt Speicher als eigene Einheiten: Ein Haushalt kann mehrere anmelden, und ein Balkonspeicher hat gar keine Dachanlage. Die beiden Zahlen lassen sich ins Verhältnis setzen, aber nicht einander zuordnen.`,
     ``,
-    `Für die eigene Planung ist der Schnitt trotzdem der bessere Anker als das, was in Foren steht: Er ist gemessen, nicht erinnert.`,
+    `Beide sind außerdem Durchschnitte über alle Jahrgänge und sagen wenig über das, was heute gebaut wird — eine Anlage von 2012 zieht den Schnitt nach unten, bei der Größe wie beim Speicher.`,
     ``,
     quellenzeile(k.standIso, true),
   ].join("\n");
@@ -768,21 +776,23 @@ export function postKohorte(k: SocialKennzahlen): SocialPost {
     bild: {
       stil: KARTEN_STIL_STANDARD,
       art: "kennzahl",
-      aussage: `Jede ${de(jede, 1)}-te private Dachanlage hat einen Speicher`,
-      gemessen: `Alle privaten Dachanlagen im Anlagenregister`,
+      aussage: `Auf 100 private Dachanlagen kommen ${de(c.speicherJe100, 0)} Heimspeicher`,
+      gemessen: `Angemeldete Anlagen im Register, alle Jahrgänge`,
       serien: [
         {
-          label: `von ${de(Math.round(c.privatAnlagen / 1000))}.000 privaten Dachanlagen sind mit Batterie angemeldet`,
-          wert: Math.round(c.mitSpeicher / 1000),
-          einheit: "Tausend",
+          label: `angemeldete Heimspeicher je 100 private Dachanlagen — nicht jede Anlage hat einen, manche Haushalte mehrere`,
+          wert: c.speicherJe100,
+          einheit: "",
+          stellen: 0,
           hervorgehoben: true,
         },
       ],
       quelle: quellenzeile(k.standIso, false),
     },
     belege: [
-      `${de(c.privatAnlagen)} private Dachanlagen, davon ${de(c.mitSpeicher)} mit Speicher (${de(c.speicherQuote, 1)} %)`,
+      `${de(c.privatAnlagen)} private Dachanlagen, ${de(c.speicherEinheiten)} Heimspeicher (${de(c.speicherJe100, 1)} je 100)`,
       `Mittlere Größe ${de(c.mittlereKwp, 2)} kWp`,
+      `Speicher sind eigene Einheiten im Register — die Zahl ist ein Verhältnis, kein Anteil`,
     ],
   };
 }
@@ -860,18 +870,19 @@ export function postAnomalie(k: SocialKennzahlen): SocialPost {
  * über Beratung und Handwerk vor Ort als über Sonne.
  */
 export function postSpeicherJeLand(k: SocialKennzahlen): SocialPost {
-  const sortiert = [...k.laender].filter((l) => l.speicherQuote > 0).sort((a, b) => b.speicherQuote - a.speicherQuote);
+  const sortiert = [...k.laender].filter((l) => l.speicherJe100 > 0).sort((a, b) => b.speicherJe100 - a.speicherJe100);
   const oben = sortiert[0];
   const unten = sortiert[sortiert.length - 1];
+  const faktor = unten.speicherJe100 ? oben.speicherJe100 / unten.speicherJe100 : 0;
 
   const text = [
-    `In ${oben.name} hat jede ${de(oben.speicherQuote ? 100 / oben.speicherQuote : 0, 1)}-te private Dachanlage einen Speicher. In ${unten.name} jede ${de(unten.speicherQuote ? 100 / unten.speicherQuote : 0, 1)}-te.`,
+    `In ${oben.name} kommen auf 100 private Dachanlagen ${de(oben.speicherJe100, 0)} angemeldete Heimspeicher. In ${unten.name} sind es ${de(unten.speicherJe100, 0)}.`,
     ``,
-    `${de(oben.speicherQuote, 0)} Prozent gegen ${de(unten.speicherQuote, 0)} Prozent — der größte Unterschied zwischen den Ländern, den wir im Bestand finden. Größer als beim Zubau, größer als bei der Anlagengröße.`,
+    `Das ${de(faktor, 1)}-fache — der größte Unterschied zwischen den Ländern, den wir im Bestand finden. Größer als beim Zubau, größer als bei der Anlagengröße.`,
     ``,
-    `Die Sonne erklärt das nicht: Beide Länder liegen beim Standort-Ertrag nah beieinander. Was sich unterscheidet, ist eher, was vor Ort angeboten und beraten wird — ein Speicher wird verkauft, nicht gesucht.`,
+    `Wichtig für die Einordnung: Das ist keine Quote „so viele Anlagen haben einen Speicher". Das Register führt Speicher als eigene Einheiten — ein Haushalt kann mehrere anmelden, und ein Balkonspeicher hat gar keine Dachanlage. Gerade in den Stadtstaaten hebt das die Zahl.`,
     ``,
-    `Für Handwerk und Vertrieb ist das die interessantere Zahl als jeder Zubau-Wert: Sie sagt, wo ein Angebot noch nicht angekommen ist.`,
+    `Die Sonne erklärt den Abstand nicht. Was sich unterscheidet, ist eher, was vor Ort angeboten und beraten wird — ein Speicher wird verkauft, nicht gesucht.`,
     ``,
     quellenzeile(k.standIso, true),
   ].join("\n");
@@ -880,24 +891,36 @@ export function postSpeicherJeLand(k: SocialKennzahlen): SocialPost {
     id: "g16-speicher-je-land",
     titel: "Wo der Speicher Standard ist",
     kategorie: "g16",
-    // Design durchgesehen und abgenommen — Schaustück für seine Bildform.
-    gestaltet: true,
     kanal: ["linkedin"],
     text,
     bild: {
       stil: KARTEN_STIL_STANDARD,
-      art: "umriss",
-      aussage: `Anteil privater Dachanlagen mit Speicher`,
-      gemessen: ``,
-      ganzes: 100,
-      einheitAmWert: true,
+      // Säule und nicht gefüllter Umriss: Ein Verhältnis hat kein Ganzes, und
+      // ein Umriss, der sich füllt, behauptete genau das. Bremen läge damit über
+      // dem Rand — die Form würde gekappt und zeigte eine andere Zahl als die
+      // Beschriftung darunter.
+      art: "saeule",
+      aussage: `Heimspeicher je 100 private Dachanlagen`,
+      gemessen: `Angemeldete Speicher-Einheiten im Verhältnis zu den Dachanlagen`,
+      einheitAmWert: false,
       serien: [
-        { label: oben.name, umriss: oben.name, wert: oben.speicherQuote, einheit: "%", stellen: 0, hervorgehoben: true },
-        { label: unten.name, umriss: unten.name, wert: unten.speicherQuote, einheit: "%", stellen: 0 },
+        {
+          label: oben.name,
+          umriss: oben.name,
+          wert: oben.speicherJe100,
+          einheit: "je 100",
+          stellen: 0,
+          hervorgehoben: true,
+          delta: `${de(faktor, 1)}×`,
+        },
+        { label: unten.name, umriss: unten.name, wert: unten.speicherJe100, einheit: "je 100", stellen: 0 },
       ],
       quelle: quellenzeile(k.standIso, false),
     },
-    belege: sortiert.map((l) => `${l.name} ${de(l.speicherQuote, 1)} % mit Speicher`),
+    belege: [
+      ...sortiert.map((l) => `${l.name} ${de(l.speicherJe100, 1)} Speicher je 100 Dachanlagen`),
+      `Speicher sind eigene Einheiten im Register — Werte über 100 sind möglich und kein Fehler`,
+    ],
   };
 }
 

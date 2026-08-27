@@ -192,7 +192,11 @@ async function rechne(): Promise<SocialKennzahlen> {
   const bewertbar = gem.filter((r) => r.population >= MIN_EW);
 
   const privatAnlagen = summe((r) => r.privat_dach_count ?? 0);
-  const mitSpeicher = summe((r) => r.batterie_privat_count ?? 0);
+  // SPEICHER-EINHEITEN, nicht „Anlagen mit Speicher": Das Register führt
+  // Heimspeicher als eigene Anlagen (Energieträger „speicher"). Ein Haushalt
+  // kann mehrere anmelden, und ein Balkonspeicher hat gar keine Dachanlage —
+  // deshalb ist das Verhältnis kein Anteil und kann über 100 liegen.
+  const speicherEinheiten = summe((r) => r.batterie_privat_count ?? 0);
 
   // Der Ausreißer: höchste Balkon-Quote über einer Mindestgröße. Die Schwelle
   // liegt deutlich höher als die der Bundeszahl oben — bei einem Dorf mit
@@ -239,8 +243,8 @@ async function rechne(): Promise<SocialKennzahlen> {
     kohorte: {
       privatAnlagen,
       mittlereKwp: privatAnlagen ? summe((r) => zahl(r.privat_dach_kwp)) / privatAnlagen : 0,
-      mitSpeicher,
-      speicherQuote: privatAnlagen ? (mitSpeicher / privatAnlagen) * 100 : 0,
+      speicherEinheiten,
+      speicherJe100: privatAnlagen ? (speicherEinheiten / privatAnlagen) * 100 : 0,
     },
     anomalie: {
       ort: spitzeName,
@@ -256,7 +260,7 @@ async function rechne(): Promise<SocialKennzahlen> {
         balkonJeTausend: e.ew ? (e.balkon / e.ew) * 1000 : 0,
         wpProKopf: e.ew ? (e.pv * 1000) / e.ew : 0,
         privatDachKwp: e.pv,
-        speicherQuote: e.anlagen ? (e.speicher / e.anlagen) * 100 : 0,
+        speicherJe100: e.anlagen ? (e.speicher / e.anlagen) * 100 : 0,
         freiflaecheAnteil: e.solar ? (e.frei / e.solar) * 100 : 0,
         solarKwp: e.solar,
         wachstumFuenfJahre: e.solar5 ? e.solar / e.solar5 : 0,
@@ -274,7 +278,7 @@ async function rechne(): Promise<SocialKennzahlen> {
  * aber ein Fehler in der Haltbarkeit. Wer ein Feld ergänzt oder entfernt, zählt
  * hier hoch.
  */
-const FORM_VERSION = "v5";
+const FORM_VERSION = "v6";
 
 export const socialKennzahlen = unstable_cache(rechne, ["social-kennzahlen", FORM_VERSION], {
   revalidate: 86_400,
