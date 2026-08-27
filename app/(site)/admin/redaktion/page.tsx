@@ -1,9 +1,10 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isAdminSession } from "../../../../lib/admin-guard";
 import { socialKennzahlen } from "../../../../lib/social-kennzahlen";
 import { baueAllePosts, type SocialPost } from "../../../../lib/social-posts";
 import { KATEGORIEN, kategorieAusAdresse } from "../../../../lib/redaktions-kategorien";
+import { BEREICHE } from "../../../../lib/redaktionsplan";
+import { KategorieNav } from "../../../../components/social/KategorieNav";
 import { ladeFassungen } from "../../../../lib/social-vorlagen-db";
 import { ladePruefungen } from "../../../../lib/social-pruefung";
 import { StoryTisch } from "../../../../components/social/StoryTisch";
@@ -12,9 +13,11 @@ import { v, space, pad } from "../../../../lib/theme";
 // Das Design-Werkzeug: Kategorien oben, darunter ihre Beschreibung und ihre
 // Stories.
 //
-// Eine Kategorie ist eine AUSSAGEFORM (lib/redaktions-kategorien.ts), keine
-// Ablagestruktur — sie sagt, was ein Beitrag dieser Art behauptet und woran er
-// scheitert. Das Farbschema gehört dagegen an den einzelnen Post.
+// Eine Kategorie ist eine Geschichten-Familie aus dem Katalog
+// (lib/redaktionsplan.ts) — sie sagt, was ein Beitrag dieser Art behauptet und
+// woran er scheitert. Die vier Wähler oben gruppieren nach dem, WORAUS ein
+// Beitrag entsteht; daran hängt, wer ihn bauen kann. Das Farbschema gehört
+// dagegen an den einzelnen Post.
 //
 // Jede Story steht so, wie sie im Feed steht: Text zuerst, nach zwei Zeilen
 // gekappt, Bild darunter. Bild und Text tragen gemeinsam — deshalb wird beides
@@ -54,41 +57,18 @@ export default async function RedaktionEntwicklung({
 
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto" }}>
-      <nav
-        aria-label="Kategorien"
-        style={{
-          display: "flex",
-          gap: space.xs,
-          flexWrap: "wrap",
-          borderBottom: `1px solid ${v("--color-border-muted")}`,
-          paddingBottom: space.md,
-          marginBottom: space.xl,
-        }}
-      >
-        {KATEGORIEN.map((k) => {
-          const aktiv = k.schluessel === kat.schluessel;
-          const anzahl = posts?.filter((p) => p.kategorie === k.schluessel).length ?? 0;
-          return (
-            <Link
-              key={k.schluessel}
-              href={`/admin/redaktion?k=${k.schluessel}`}
-              aria-current={aktiv ? "page" : undefined}
-              style={{
-                padding: pad("sm", "lg"),
-                borderRadius: v("--radius-sm"),
-                background: aktiv ? v("--color-accent-dim") : "transparent",
-                color: aktiv ? v("--color-accent") : v("--color-text-secondary"),
-                fontSize: v("--font-size-body"),
-                fontWeight: aktiv ? 600 : 400,
-                textDecoration: "none",
-              }}
-            >
-              {k.kurz}{" "}
-              <span style={{ color: v("--color-text-muted"), fontWeight: 400 }}>{anzahl}</span>
-            </Link>
-          );
-        })}
-      </nav>
+      <KategorieNav
+        aktiv={kat.schluessel}
+        bereiche={BEREICHE.map((b) => ({
+          schluessel: b.schluessel,
+          name: b.name,
+          eintraege: KATEGORIEN.filter((k) => k.bereich === b.schluessel).map((k) => ({
+            wert: k.schluessel,
+            text: k.kurz,
+            zusatz: String(posts?.filter((p) => p.kategorie === k.schluessel).length ?? 0),
+          })),
+        })).filter((b) => b.eintraege.length > 0)}
+      />
 
       {/* Keine Überschrift: Die Leiste darüber sagt bereits, wo man ist, und der
           Name stünde zweimal untereinander. */}

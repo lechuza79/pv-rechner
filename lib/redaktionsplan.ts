@@ -63,9 +63,31 @@ export const PUFFER_VOR_START = 8;
  * hier steht, ist das, was beim Entwickeln in der Ansicht gebraucht wird: wie die
  * Familie heißt, was sie behauptet, woran sie scheitert, und was ihr fehlt.
  */
+/**
+ * Die vier Überkategorien der Redaktionsansicht.
+ *
+ * Sie ordnen nicht nach Thema, sondern danach, WORAUS ein Beitrag entsteht —
+ * daran hängt, wer ihn bauen kann und was ihn blockiert: „daten" braucht eine
+ * Abfrage, „ratgeber" einen Text mit Fundstellen, „ux" einen Vorgang aus der
+ * eigenen Werkstatt, „feature" ein Werkzeug, das fertig ist.
+ *
+ * Der Katalog ist ein Datenkatalog, deshalb ist die Verteilung sehr ungleich.
+ * Das als Fehler zu glätten hieße, Familien in Bereiche zu schieben, in die sie
+ * nicht gehören, damit die Leiste hübscher aussieht.
+ */
+export type Bereich = "daten" | "ratgeber" | "ux" | "feature";
+
+export const BEREICHE: { schluessel: Bereich; name: string }[] = [
+  { schluessel: "daten", name: "Daten" },
+  { schluessel: "ratgeber", name: "Ratgeber" },
+  { schluessel: "ux", name: "UX" },
+  { schluessel: "feature", name: "Feature" },
+];
+
 export type Familie = {
   /** Adressteil der Ansicht. Klein, stabil, nicht der Anzeigename. */
   schluessel: string;
+  bereich: Bereich;
   kuerzel: string;
   /** Beschriftung in der Navigationsleiste. Ein Wort, sonst bricht die Leiste. */
   kurz: string;
@@ -79,6 +101,7 @@ export type Familie = {
 export const FAMILIEN: Familie[] = [
   {
     schluessel: "g1",
+    bereich: "daten",
     kuerzel: "G1",
     kurz: "Puls",
     name: "Der Puls: was gerade passiert",
@@ -89,6 +112,7 @@ export const FAMILIEN: Familie[] = [
   },
   {
     schluessel: "g2",
+    bereich: "daten",
     kuerzel: "G2",
     kurz: "Zubau",
     name: "Der Zubau: was sich bewegt",
@@ -99,6 +123,7 @@ export const FAMILIEN: Familie[] = [
   },
   {
     schluessel: "g3",
+    bereich: "daten",
     kuerzel: "G3",
     kurz: "Vergleich",
     name: "Der Vergleich: Rang und Kontrast",
@@ -108,6 +133,7 @@ export const FAMILIEN: Familie[] = [
   },
   {
     schluessel: "g4",
+    bereich: "daten",
     kuerzel: "G4",
     kurz: "Geld",
     name: "Das Geld: was ein Ort eingespielt hat",
@@ -117,6 +143,7 @@ export const FAMILIEN: Familie[] = [
   },
   {
     schluessel: "g5",
+    bereich: "daten",
     kuerzel: "G5",
     kurz: "Förderung",
     name: "Die Förderung: Wochenbewegung",
@@ -126,6 +153,7 @@ export const FAMILIEN: Familie[] = [
   },
   {
     schluessel: "g6",
+    bereich: "daten",
     kuerzel: "G6",
     kurz: "Stichtag",
     name: "Wendepunkte: Schwellen und Stichtage",
@@ -135,6 +163,7 @@ export const FAMILIEN: Familie[] = [
   },
   {
     schluessel: "g7",
+    bereich: "ratgeber",
     kuerzel: "G7",
     kurz: "Mythos",
     name: "Mythos-Check",
@@ -144,6 +173,7 @@ export const FAMILIEN: Familie[] = [
   },
   {
     schluessel: "g8",
+    bereich: "daten",
     kuerzel: "G8",
     kurz: "Ausland",
     name: "Das Ausland",
@@ -153,6 +183,7 @@ export const FAMILIEN: Familie[] = [
   },
   {
     schluessel: "g9",
+    bereich: "daten",
     kuerzel: "G9",
     kurz: "Preis",
     name: "Der Preis",
@@ -162,6 +193,7 @@ export const FAMILIEN: Familie[] = [
   },
   {
     schluessel: "g10",
+    bereich: "daten",
     kuerzel: "G10",
     kurz: "Anomalie",
     name: "Die Anomalie als offene Frage",
@@ -172,6 +204,7 @@ export const FAMILIEN: Familie[] = [
   },
   {
     schluessel: "g11",
+    bereich: "ux",
     kuerzel: "G11",
     kurz: "Fehler",
     name: "Der eigene Fehler",
@@ -181,6 +214,7 @@ export const FAMILIEN: Familie[] = [
   },
   {
     schluessel: "g12",
+    bereich: "ratgeber",
     kuerzel: "G12",
     kurz: "Service",
     name: "Kommunen-Service ohne Ranking",
@@ -190,6 +224,7 @@ export const FAMILIEN: Familie[] = [
   },
   {
     schluessel: "g13",
+    bereich: "daten",
     kuerzel: "G13",
     kurz: "Balkon",
     name: "Balkonkraftwerke als eigenes Feld",
@@ -199,6 +234,7 @@ export const FAMILIEN: Familie[] = [
   },
   {
     schluessel: "g14",
+    bereich: "daten",
     kuerzel: "G14",
     kurz: "Fläche",
     name: "Die Flächenfrage",
@@ -209,6 +245,7 @@ export const FAMILIEN: Familie[] = [
   },
   {
     schluessel: "g15",
+    bereich: "daten",
     kuerzel: "G15",
     kurz: "Ungebaut",
     name: "Was nicht gebaut wurde",
@@ -219,6 +256,7 @@ export const FAMILIEN: Familie[] = [
   },
   {
     schluessel: "g16",
+    bereich: "daten",
     kuerzel: "G16",
     kurz: "Kohorte",
     name: "Die Kohorte",
@@ -228,6 +266,7 @@ export const FAMILIEN: Familie[] = [
   },
   {
     schluessel: "g17",
+    bereich: "daten",
     kuerzel: "G17",
     kurz: "Zuruf",
     name: "Frag den Datensatz",
@@ -237,6 +276,7 @@ export const FAMILIEN: Familie[] = [
   },
   {
     schluessel: "g18",
+    bereich: "ux",
     kuerzel: "G18",
     kurz: "Werkstatt",
     name: "Der Bau selbst, aus UX-Sicht",
@@ -246,6 +286,7 @@ export const FAMILIEN: Familie[] = [
   },
   {
     schluessel: "g19",
+    bereich: "daten",
     kuerzel: "G19",
     kurz: "Wärmepumpe",
     name: "Wärmepumpen-Förderung je Landkreis",
@@ -256,6 +297,7 @@ export const FAMILIEN: Familie[] = [
   },
   {
     schluessel: "g20",
+    bereich: "feature",
     kuerzel: "G20",
     kurz: "Funktion",
     name: "Featurevorstellung",
