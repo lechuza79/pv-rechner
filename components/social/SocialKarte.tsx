@@ -232,6 +232,24 @@ export function SocialKarte({
  * größere" — ohne sie sähe man bei kleinen Werten nur ein Bogenfragment und
  * wüsste nicht, woran es gemessen ist.
  */
+/**
+ * Sichtbare Bogenlänge bei runden Enden.
+ *
+ * Eine runde Kappe ragt an jedem Ende um die halbe Strichbreite über den Bogen
+ * hinaus. Ungekürzt wäre ein 9-Prozent-Bogen auf diesem Ring fast doppelt so
+ * lang, wie er sein darf — der Ring zeigte dann eine andere Zahl als die Kachel
+ * darunter. Deshalb wird um eine volle Strichbreite gekürzt und bei null
+ * abgefangen: Ein sehr kleiner Wert wird zum Punkt, nicht zu einem negativen
+ * Strich.
+ *
+ * Ein VOLLER Ring wird nicht gekürzt und behält gerade Enden — dort gibt es
+ * keine zwei Enden, sie stoßen aneinander.
+ */
+function bogen(umfang: number, anteil: number, breite: number): number {
+  if (anteil >= 1) return umfang;
+  return Math.max(0, umfang * anteil - breite);
+}
+
 function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: number }) {
   const sortiert = [...bild.serien].sort((a, b) => Math.abs(b.wert) - Math.abs(a.wert));
   const zeigeEinheit = bild.einheitAmWert !== false;
@@ -276,8 +294,8 @@ function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: n
                   fill="none"
                   stroke={farbe(s)}
                   strokeWidth={breite}
-                  strokeDasharray={`${umfang * anteil} ${umfang}`}
-                  strokeLinecap="butt"
+                  strokeDasharray={`${bogen(umfang, anteil, breite)} ${umfang}`}
+                  strokeLinecap={anteil >= 1 ? "butt" : "round"}
                 />
               </g>
             );
@@ -290,7 +308,10 @@ function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: n
       <div style={{ display: "flex", gap: 40 * skala }}>
         {bild.serien.map((s) => (
           <div key={s.label} style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 16 * skala, whiteSpace: "nowrap" }}>
+            {/* Die Farbe trägt der Punkt, nicht der Text: Zwei eingefärbte Zahlen
+                nebeneinander lesen sich als Wertung, und auf dem blauen
+                Farbschema sind sie ohnehin kaum zu unterscheiden. */}
+            <div style={{ display: "flex", alignItems: "center", gap: 14 * skala }}>
               <span
                 style={{
                   width: 26 * skala,
@@ -300,7 +321,33 @@ function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: n
                   flex: "0 0 auto",
                 }}
               />
-              <span style={{ fontSize: 84 * skala, fontWeight: 700, lineHeight: 1, color: farbe(s) }}>
+              <span style={{ fontSize: 38 * skala, lineHeight: 1.2, color: v("--color-text-secondary") }}>
+                {s.label}
+              </span>
+            </div>
+            {s.zusatz && (
+              <div
+                style={{
+                  fontSize: 27 * skala,
+                  color: v("--color-text-muted"),
+                  lineHeight: 1.3,
+                  marginLeft: 40 * skala,
+                }}
+              >
+                {s.zusatz}
+              </div>
+            )}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "baseline",
+                gap: 12 * skala,
+                marginTop: 16 * skala,
+                marginLeft: 40 * skala,
+                whiteSpace: "nowrap",
+              }}
+            >
+              <span style={{ fontSize: 84 * skala, fontWeight: 700, lineHeight: 1, color: v("--color-text-primary") }}>
                 {s.wert.toLocaleString("de-DE", {
                   minimumFractionDigits: s.stellen ?? 0,
                   maximumFractionDigits: s.stellen ?? 0,
@@ -310,10 +357,6 @@ function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: n
                 <span style={{ fontSize: 28 * skala, color: v("--color-text-muted") }}>{s.einheit}</span>
               )}
             </div>
-            <div style={{ fontSize: 38 * skala, marginTop: 14 * skala, lineHeight: 1.2 }}>{s.label}</div>
-            {s.zusatz && (
-              <div style={{ fontSize: 27 * skala, color: v("--color-text-muted"), lineHeight: 1.3 }}>{s.zusatz}</div>
-            )}
           </div>
         ))}
       </div>
