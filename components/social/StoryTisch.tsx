@@ -4,6 +4,7 @@ import { useState } from "react";
 import { v, space, pad } from "../../lib/theme";
 import { FeedVorschau } from "./FeedVorschau";
 import { VorlagenEditor } from "./VorlagenEditor";
+import { Kennung } from "./Kennung";
 import { fuelle } from "../../lib/social-vorlage";
 import { KARTEN_STILE, KARTEN_STIL_NAME, KARTEN_STIL_STANDARD, type KartenStil } from "../../lib/social-karten-stil";
 import { urteil, type Pruefung } from "../../lib/social-pruefung-kern";
@@ -129,8 +130,19 @@ export function StoryTisch({
             {post.titel}
           </h3>
         )}
-        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: space.xs }}>
-          {post.kanal.join(" · ")} · {BILDFORM[post.bild?.art ?? "vergleich"]} · {text.length} Zeichen
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: space.sm,
+            flexWrap: "wrap",
+            marginTop: space.xs,
+          }}
+        >
+          <Kennung id={post.id} />
+          <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
+            {post.kanal.join(" · ")} · {BILDFORM[post.bild?.art ?? "vergleich"]} · {text.length} Zeichen
+          </span>
         </div>
 
         {/* Farbschema: Eigenschaft der Karte, nicht der Ansicht. Wird sofort

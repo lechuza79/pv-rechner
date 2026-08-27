@@ -5,6 +5,7 @@ import Link from "next/link";
 import Modal from "../Modal";
 import { FeedVorschau } from "./FeedVorschau";
 import { StoryTisch } from "./StoryTisch";
+import { Kennung } from "./Kennung";
 import { v, space, pad } from "../../lib/theme";
 import type { Pruefung } from "../../lib/social-pruefung-kern";
 import { urteil } from "../../lib/social-pruefung-kern";
@@ -72,6 +73,7 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
                 {kategorie.name}
               </Link>
               <div style={{ fontSize: v("--font-size-body"), fontWeight: 600, lineHeight: 1.3 }}>{post.titel}</div>
+              <Kennung id={post.id} />
 
               {/* Die Karte im Raster ist dieselbe Vorschau, nur schmaler. Ein
                   eigenes Kachelbild wäre eine zweite Darstellung derselben
