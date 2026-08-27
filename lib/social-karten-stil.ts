@@ -74,7 +74,7 @@ const HIGHLIGHT: Partial<Record<TokenName, string>> = {
   // Die Töne sind die ausgerechneten Mischungen auf dem blauen Grund, eine Spur
   // heller gesetzt: Der abgesetzte Ring soll sich vom Grund lösen, nicht mit ihm
   // verschwimmen.
-  "--color-text-primary": "#DCE8FD",
+  "--color-text-primary": "#EAF1FE",
   // Reiner TEXT darf durchscheinen — er überlappt sich nicht.
   "--color-text-secondary": "rgba(255,255,255,0.94)",
   "--color-text-muted": "rgba(255,255,255,0.92)",
