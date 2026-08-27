@@ -987,6 +987,61 @@ Live unter solar-check.io. **Aktuelle Priorität: Energiedaten-Ausbau (WP 9) + P
 
 **Die Liste der offenen und erledigten Punkte steht vollständig in `docs/roadmap-archiv.md` — und NUR dort.** Sie stand bis 25.08.2026 zusätzlich hier, mit dem absehbaren Ergebnis: Arbeitspaket 10 galt in dieser Datei als abgeschlossen und trug fünf Zeilen darunter vier offene Punkte. Eine Statusliste ist der Inhalt, der am schnellsten veraltet; zwei Fassungen davon driften zwangsläufig. Vier fachliche Fristen daraus hängen ohnehin im Code und laufen gegen einen Test, nicht an dieser Aufzählung.
 
+## Datenstories und Social-Posting (interner Bereich)
+
+Das Projekt veröffentlicht seit 26.08.2026 selbst auf LinkedIn. Der Redaktionsbereich liegt unter
+`/admin/redaktion` (Entwicklung, Planung, Auswertung); der Ausbau der Ansicht zum Design-Werkzeug
+läuft in einer eigenen Sitzung — Übergabe mit den Fallen: `docs/redaktionssystem-uebergabe.md`.
+Der Vorrat an Geschichten steht in `docs/datenstories-katalog.md`.
+
+**Ein Post wird GERECHNET, nicht getippt — BLOCKER.** Text und Bild entstehen aus derselben
+Funktion (`lib/social-posts.ts`), gespeist aus einer Kennzahlen-Abfrage (`lib/social-kennzahlen.ts`).
+Ein Beitrag kann damit keine Zahl behaupten, die das Diagramm daneben widerlegt. Wer das Bearbeiten
+ausbaut, hält diese Eigenschaft über Platzhalter (`lib/social-vorlage.ts`): Im bearbeitbaren Text
+stehen Namen, die Werte setzt die Berechnung ein. Dieselbe Fehlerklasse wie bei den Gemeindebriefen,
+wo ein Brief einen Rang behauptete, den die verlinkte Seite widerlegte.
+
+**Jede Aussage rechnet ihre RICHTUNG mit, statt sie zu behaupten.** Kippt ein Verhältnis, kippt der
+Satz. Der Anlass: Im Katalog stand als Beispiel „beim Solarstrom liegt der Osten vorn, bei
+Balkonkraftwerken umgekehrt" — ausgedacht, und beide Hälften falsch. Gemessen ist der Kontrast
+Stadt gegen Land und stärker als der erfundene. **Kein Beispielsatz gilt, bevor er einmal gegen die
+Daten lief.**
+
+**Die Karte hat STUFEN, keinen Maßstab** (`components/social/SocialKarte.tsx`). Eine 1080er Karte
+auf 240 Pixel herunterzurechnen macht die Quellenzeile fünf Pixel groß. Die kleine Stufe lässt
+deshalb weg (kein Untertitel, keine Fußzeile, eine Zahl statt zwei) und setzt ihre Schriftgrößen
+absolut. Wer eine dritte Größe braucht, ergänzt eine Stufe — er skaliert nicht. Die Quellenangabe
+fällt nur dort weg, wo sie nicht geschuldet ist: Als Seiteninhalt nennt die Seite ihre Quellen
+ohnehin, als Bild ist die Nennung Lizenzpflicht.
+
+**Die Freigabe vor dem Versand hängt am INHALT, nicht am Post** (`lib/social-pruefung-kern.ts`).
+Zwei Prüfungen je Beitrag, und ein Fingerabdruck über den normalisierten Text macht sichtbar, wenn
+nach der Prüfung umformuliert wurde. Reine Formatierung geht durch — eine Sperre, die an einem
+Zeilenumbruch anschlägt, wird zur Schikane und irgendwann umgangen. **Offene Lücke:** Der Abdruck
+deckt bisher nur den Text; ändert jemand Kartentyp oder Serie, bleibt die Freigabe gültig, obwohl
+das Bild ein anderes ist.
+
+**Der Zugangsschlüssel läuft alle zwei Monate ab** und lässt sich nur durch einen Browser-Login des
+Betreibers erneuern. Der Gesundheitscheck warnt gestaffelt (14/7/3/1/0 Tage) und macht den Lauf
+dabei bewusst NICHT rot: Rot startet den Autofix, der hier nichts ausrichten könnte, und gewöhnt
+uns ab, Rot ernst zu nehmen. Die Staffelung ist nötig, weil der Check alle drei Stunden läuft —
+täglich zu warnen wären über hundert Mails in zwei Wochen.
+
+**Kein externer Link im Beitrag.** Er drückt die Verbreitung; der Link gehört in den ersten
+Kommentar, den dieselbe Berechtigung mitsendet. Die Erwähnung der Unternehmensseite bleibt dagegen
+innerhalb von LinkedIn und kostet nichts — sie greift nur, wo der Seitenname wörtlich im Text
+steht, deshalb trägt ihn die Quellenzeile.
+
+**Gemessen und nicht zu wiederholen:** Die Story-Themen haben kein Suchvolumen („Balkonkraftwerk
+Stadt Land", „wo stehen die meisten": null), die BESTANDSfragen dagegen rund 240 Suchen im Monat
+bei geringer Konkurrenz. Verborgener Text im HTML wird indexiert — Googles Spam-Richtlinie nennt
+Akkordeons ausdrücklich als zulässig; verloren geht nur, was erst per Klick NACHGELADEN wird.
+Adress-Anker gelten nicht als eigene Adressen.
+
+Tabellen: `social_konten`, `social_pruefungen`, `social_vorlagen`, angelegt über
+`/api/social/setup`. Alle drei mit RLS und ohne Policy — sie halten Zugangsschlüssel und sind
+ausschließlich über den Service-Key erreichbar.
+
 ## Kommunen-Outreach (interner Bereich)
 
 Widget-Distribution an ~11.000 Gemeinden. Tabelle `kommunen_kontakt` (Supabase, RLS **nur service_role** — interne Daten, bewusste Abweichung vom Atlas-Muster), befüllt von `scripts/kommunen-kontakt-refresh.ts` (Phasen `--setup`, `--wikidata`, `--forms`/`--probe`, `--wahl`, `--rang`, `--stats`; DB-schonend). Cockpit `/admin/kommunen` mit Anschreiben-Generator (**Template statt LLM**, Einheiten nur aus `atlas-format`). **Kein Auto-Versand — der Absende-Klick bleibt beim Menschen.** Rechtsrahmen: Legal-Checkliste #6.
