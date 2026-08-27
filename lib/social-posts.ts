@@ -87,6 +87,8 @@ export type SocialKennzahlen = {
     name: string;
     balkonJeTausend: number;
     wpProKopf: number;
+    /** Private Dachleistung des Landes. Für den Anteil am Landesbestand. */
+    privatDachKwp: number;
     freiflaecheAnteil: number;
     solarKwp: number;
     wachstumFuenfJahre: number;
@@ -149,13 +151,17 @@ export type PostBild = {
    * "donut" ist die Ringfassung für ANTEILE, also für Werte mit einem Ganzen
    * (siehe `ganzes`). Dort bedeutet der ungefüllte Rest wirklich etwas.
    *
+   * "umriss" füllt den Umriss eines Bundeslands anteilig — nur für ANTEILE,
+   * also mit einem Ganzen. Die Form selbst behauptet ein Gefäß, das sich füllt;
+   * ohne Ganzes wäre das eine Aussage über einen Rest, den es nicht gibt.
+   *
    * "saeule" ist der Vergleich für genau zwei Werte OHNE Ganzes: eine Säule, in
    * der der kleinere Wert als Sockel steckt und der größere ihn überragt. Der
    * Unterschied ist dann die überragende Fläche selbst — man muss keine zwei
    * Längen nebeneinander abschätzen und nichts über eine Grundmenge annehmen,
    * die es nicht gibt.
    */
-  art: "vergleich" | "kennzahl" | "donut" | "saeule";
+  art: "vergleich" | "kennzahl" | "donut" | "saeule" | "umriss";
   /** Die Kernaussage, im Bild als Titel gesetzt — nicht die neutrale Achsenbeschriftung. */
   aussage: string;
   /** Was gemessen wurde. Steht klein unter der Aussage. */
@@ -529,7 +535,12 @@ export function postFreiflaeche(k: SocialKennzahlen): SocialPost {
     text,
     bild: {
       stil: KARTEN_STIL_STANDARD,
-      art: "donut",
+      // Gefüllte Landesumrisse statt Ringen: Der Beitrag vergleicht zwei ORTE,
+      // und die Form eines Landes sagt ohne ein Wort, welcher gemeint ist. Ein
+      // Anteil lässt sich als Füllstand lesen, weil es hier wirklich ein Ganzes
+      // gibt — bei einem Verhältnis ohne Ganzes wäre dieselbe Form eine
+      // Behauptung über einen Rest.
+      art: "umriss",
       // Hier trägt ausnahmsweise die gemessene Größe die Überschrift (Betreiber,
       // 27.08.2026): Das Bild zeigt zwei Anteile am selben Ganzen, und der
       // Sachtitel sagt in fünf Wörtern, was die Ringe sind. Die Deutung —
@@ -820,6 +831,67 @@ export function postAnomalie(k: SocialKennzahlen): SocialPost {
 }
 
 /**
+ * Post 13 — Wo der Strom vom eigenen Dach kommt.
+ *
+ * Gegenstück zur Flächenfrage, aus derselben Aufteilung von der anderen Seite
+ * gelesen: Wo wenig auf Freiflächen steht, steht viel auf privaten Dächern —
+ * und die Länder, die dabei vorn liegen, sind nicht dieselben.
+ */
+export function postPrivatdachAnteil(k: SocialKennzahlen): SocialPost {
+  // Stadtstaaten haben praktisch keine Freifläche und stünden hier zwangsläufig
+  // oben — verglichen werden deshalb Flächenländer, wie schon bei der
+  // Freiflächen-Story.
+  const stadtstaaten = ["Berlin", "Hamburg", "Bremen"];
+  const flaechen = k.laender
+    .filter((l) => !stadtstaaten.includes(l.name) && l.solarKwp > 0)
+    .map((l) => ({ ...l, privatAnteil: (l.privatDachKwp / l.solarKwp) * 100 }))
+    .sort((a, b) => b.privatAnteil - a.privatAnteil);
+  const oben = flaechen[0];
+  const unten = flaechen[flaechen.length - 1];
+
+  const text = [
+    `In ${oben.name} stehen ${de(oben.privatAnteil, 0)} Prozent der Solarleistung auf privaten Dächern. In ${unten.name} sind es ${de(unten.privatAnteil, 0)} Prozent.`,
+    ``,
+    `Das ist dieselbe Aufteilung wie bei der Freiflächen-Frage, nur von der anderen Seite gelesen — und die Reihenfolge ist eine andere. Ein Land kann wenig Freifläche haben und trotzdem wenig Privatdach, wenn das Gewerbe dazwischenliegt.`,
+    ``,
+    `Für die Debatte über Flächen heißt das: Wer „Dach statt Feld" fordert, meint in den meisten Ländern zuerst Hallendächer, nicht Einfamilienhäuser. Die private Fläche ist überall die kleinste der drei.`,
+    ``,
+    `Stadtstaaten sind hier ausgenommen: Sie haben kaum Freifläche und stünden zwangsläufig oben, ohne dass das etwas über die Dächer sagt.`,
+    ``,
+    quellenzeile(k.standIso, true),
+  ].join("\n");
+
+  return {
+    id: "g14-privatdach-anteil",
+    titel: "Wo der Strom vom eigenen Dach kommt",
+    kategorie: "g14",
+    kanal: ["linkedin"],
+    text,
+    bild: {
+      stil: KARTEN_STIL_STANDARD,
+      art: "umriss",
+      aussage: `Anteil privater Dächer an der Solarleistung`,
+      gemessen: ``,
+      ganzes: 100,
+      einheitAmWert: true,
+      serien: [
+        {
+          label: oben.name,
+          umriss: oben.name,
+          wert: oben.privatAnteil,
+          einheit: "%",
+          stellen: 0,
+          hervorgehoben: true,
+        },
+        { label: unten.name, umriss: unten.name, wert: unten.privatAnteil, einheit: "%", stellen: 0 },
+      ],
+      quelle: quellenzeile(k.standIso, false),
+    },
+    belege: flaechen.map((l) => `${l.name} ${de(l.privatAnteil, 1)} % privat (${fmtPvLeistung(l.solarKwp)} gesamt)`),
+  };
+}
+
+/**
  * Post 11 — Was in kommunalen Förderprogrammen fehlt.
  *
  * Ohne einen einzigen Ortsnamen. Diese Familie hilft, sie bewertet nicht: Eine
@@ -1090,6 +1162,7 @@ export const ALLE_POSTS = [
   postAusland,
   postFoerderLuecken,
   postNurBalkon,
+  postPrivatdachAnteil,
 ] as const;
 
 /**

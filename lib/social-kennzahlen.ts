@@ -242,6 +242,7 @@ async function rechne(): Promise<SocialKennzahlen> {
         name: namen.get(ags) ?? ags,
         balkonJeTausend: e.ew ? (e.balkon / e.ew) * 1000 : 0,
         wpProKopf: e.ew ? (e.pv * 1000) / e.ew : 0,
+        privatDachKwp: e.pv,
         freiflaecheAnteil: e.solar ? (e.frei / e.solar) * 100 : 0,
         solarKwp: e.solar,
         wachstumFuenfJahre: e.solar5 ? e.solar / e.solar5 : 0,
@@ -259,7 +260,7 @@ async function rechne(): Promise<SocialKennzahlen> {
  * aber ein Fehler in der Haltbarkeit. Wer ein Feld ergänzt oder entfernt, zählt
  * hier hoch.
  */
-const FORM_VERSION = "v3";
+const FORM_VERSION = "v4";
 
 export const socialKennzahlen = unstable_cache(rechne, ["social-kennzahlen", FORM_VERSION], {
   revalidate: 86_400,

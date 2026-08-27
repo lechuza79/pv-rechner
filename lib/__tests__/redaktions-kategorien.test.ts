@@ -42,12 +42,12 @@ const basis: SocialKennzahlen = {
     mindestEinwohner: 5_000,
   },
   laender: [
-    { name: "Niedersachsen", balkonJeTausend: 23.1, wpProKopf: 505, freiflaecheAnteil: 17.4, solarKwp: 11_300_000, wachstumFuenfJahre: 2.23 },
-    { name: "Brandenburg", balkonJeTausend: 20.5, wpProKopf: 377, freiflaecheAnteil: 70.3, solarKwp: 9_800_000, wachstumFuenfJahre: 2.05 },
-    { name: "Nordrhein-Westfalen", balkonJeTausend: 16.1, wpProKopf: 378, freiflaecheAnteil: 9.1, solarKwp: 15_500_000, wachstumFuenfJahre: 2.33 },
-    { name: "Berlin", balkonJeTausend: 7.1, wpProKopf: 72, freiflaecheAnteil: 0.4, solarKwp: 500_000, wachstumFuenfJahre: 3.48 },
-    { name: "Hamburg", balkonJeTausend: 6.1, wpProKopf: 84, freiflaecheAnteil: 0.4, solarKwp: 300_000, wachstumFuenfJahre: 4.38 },
-    { name: "Bremen", balkonJeTausend: 5.4, wpProKopf: 61, freiflaecheAnteil: 0.2, solarKwp: 200_000, wachstumFuenfJahre: 3.9 },
+    { name: "Niedersachsen", balkonJeTausend: 23.1, wpProKopf: 505, privatDachKwp: 4_000_000, freiflaecheAnteil: 17.4, solarKwp: 11_300_000, wachstumFuenfJahre: 2.23 },
+    { name: "Brandenburg", balkonJeTausend: 20.5, wpProKopf: 377, privatDachKwp: 950_000, freiflaecheAnteil: 70.3, solarKwp: 9_800_000, wachstumFuenfJahre: 2.05 },
+    { name: "Nordrhein-Westfalen", balkonJeTausend: 16.1, wpProKopf: 378, privatDachKwp: 6_800_000, freiflaecheAnteil: 9.1, solarKwp: 15_500_000, wachstumFuenfJahre: 2.33 },
+    { name: "Berlin", balkonJeTausend: 7.1, wpProKopf: 72, privatDachKwp: 260_000, freiflaecheAnteil: 0.4, solarKwp: 500_000, wachstumFuenfJahre: 3.48 },
+    { name: "Hamburg", balkonJeTausend: 6.1, wpProKopf: 84, privatDachKwp: 150_000, freiflaecheAnteil: 0.4, solarKwp: 300_000, wachstumFuenfJahre: 4.38 },
+    { name: "Bremen", balkonJeTausend: 5.4, wpProKopf: 61, privatDachKwp: 110_000, freiflaecheAnteil: 0.2, solarKwp: 200_000, wachstumFuenfJahre: 3.9 },
   ],
 };
 
@@ -132,6 +132,34 @@ describe("Kategorien der Redaktionsansicht", () => {
   });
 });
 
+describe("Die Kennung eines Beitrags", () => {
+  // Sie ist der einzige Name, der zwischen Ansicht, Ablage und Prüfung derselbe
+  // ist. Zwei Beiträge mit derselben Kennung wären von außen unsichtbar: Der
+  // gespeicherte Text des einen erschiene am anderen, und eine Freigabe für den
+  // einen ließe den anderen durch. Bei einer Handvoll Beiträgen passiert das
+  // nicht, bei hunderten schon.
+  it("gibt es kein zweites Mal", () => {
+    const ids = posts.map((p) => p.id);
+    const doppelte = ids.filter((id, i) => ids.indexOf(id) !== i);
+    expect(doppelte, `doppelte Kennungen: ${doppelte.join(", ")}`).toEqual([]);
+  });
+
+  it("besteht aus Kleinbuchstaben, Ziffern und Bindestrichen", () => {
+    // Sie steht in Adressen, in JSON und in einer Datenbankspalte. Ein
+    // Leerzeichen oder ein Umlaut darin fällt erst dort auf, wo er kodiert
+    // werden muss — also spät.
+    for (const p of posts) expect(p.id, p.id).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
+  });
+
+  it("ist lang genug, um bei hunderten Beiträgen noch etwas zu sagen", () => {
+    // Der Einwand des Betreibers: Bei hunderten Posts trägt ein sprechender
+    // Name nicht mehr allein. Was trägt, ist ein Name, der die FAMILIE nennt —
+    // dann steht die Kennung in derselben Ordnung wie die Ansicht, und zwei
+    // Beiträge derselben Familie stehen im Verzeichnis nebeneinander.
+    for (const p of posts) expect(p.id.length, p.id).toBeGreaterThan(8);
+  });
+});
+
 describe("Bildform und Einheit", () => {
   it("Ringpaar und Säule tragen genau zwei Werte", () => {
     // Beide Formen zeigen ein Verhältnis zwischen zweien. Bei drei Werten wäre
@@ -139,6 +167,19 @@ describe("Bildform und Einheit", () => {
     for (const p of posts) {
       if (p.bild?.art === "donut" || p.bild?.art === "saeule") {
         expect(p.bild.serien.length, `${p.id}: ${p.bild.art} mit ${p.bild.serien.length} Werten`).toBe(2);
+      }
+    }
+  });
+
+  it("gefüllte Umrisse nur für Anteile, und jede Serie hat ihren Umriss", () => {
+    // Die Form behauptet ein Gefäß, das sich füllt. Ohne Ganzes wäre das eine
+    // Aussage über einen Rest, den es nicht gibt; ohne Umriss bliebe eine leere
+    // Fläche, ohne dass etwas fehlschlägt.
+    for (const p of posts) {
+      if (p.bild?.art !== "umriss") continue;
+      expect(p.bild.ganzes, `${p.id}: gefüllter Umriss ohne Ganzes`).toBeGreaterThan(0);
+      for (const s of p.bild.serien) {
+        expect(BUNDESLAND_UMRISS[s.umriss ?? ""], `${p.id}: ${s.label} ohne Umriss`).toBeTruthy();
       }
     }
   });

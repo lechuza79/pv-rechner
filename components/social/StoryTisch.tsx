@@ -15,6 +15,7 @@ const BILDFORM: Record<PostBild["art"], string> = {
   kennzahl: "Einzelkennzahl",
   donut: "Ringpaar",
   saeule: "Säule",
+  umriss: "Gefüllte Umrisse",
 };
 
 // Eine Story am Redaktionstisch: so, wie sie im Feed steht, plus die drei

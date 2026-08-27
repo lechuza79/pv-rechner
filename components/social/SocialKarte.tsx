@@ -69,6 +69,7 @@ export function SocialKarte({
   // auf die Balken zurück — zwei Ringe auf 240 Pixeln wären zwei graue Kringel.
   const donut = bild.art === "donut" && !klein && bild.serien.length === 2;
   const saeule = bild.art === "saeule" && !klein && bild.serien.length === 2;
+  const umriss = bild.art === "umriss" && !klein;
   // Die Einheit steht an der Zahl, außer der Untertitel trägt sie schon.
   const zeigeEinheit = bild.einheitAmWert !== false;
   const g = GROESSEN[stufe];
@@ -130,6 +131,8 @@ export function SocialKarte({
         <DonutTeil bild={bild} max={max} skala={skala} />
       ) : saeule ? (
         <SaeulenTeil bild={bild} skala={skala} />
+      ) : umriss ? (
+        <UmrissTeil bild={bild} skala={skala} />
       ) : (
       <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-evenly" }}>
         {serien.map((s) => {
@@ -639,6 +642,101 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
         >
           {block(klein, false)}
         </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Bundesländer als anteilig gefüllte Umrisse.
+ *
+ * Die Form behauptet ein Gefäß, das sich füllt — deshalb NUR für Anteile, und
+ * gefüllt wird gegen `ganzes`, nicht gegen den größeren der beiden Werte. Am
+ * Maximum normiert wäre der Spitzenreiter immer randvoll, egal ob er bei 70 oder
+ * bei 7 Prozent steht, und das Bild sagte etwas anderes als die Zahl darunter.
+ *
+ * Von UNTEN nach oben: Die Leserichtung eines Füllstands ist die eines
+ * Behälters. Von oben herab gefüllt liest sich dieselbe Fläche als Rest.
+ */
+function UmrissTeil({ bild, skala }: { bild: PostBild; skala: number }) {
+  const grund = bild.ganzes ?? 100;
+  const zeigeEinheit = bild.einheitAmWert !== false;
+  const SEITE = BUNDESLAND_UMRISS_SEITE;
+  const GROESSE = bild.serien.length > 2 ? 260 : 340;
+
+  return (
+    <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ display: "flex", gap: 72 * skala, alignItems: "flex-start", justifyContent: "center" }}>
+        {bild.serien.map((s) => {
+          const pfad = s.umriss ? BUNDESLAND_UMRISS[s.umriss] : undefined;
+          const anteil = Math.max(0, Math.min(Math.abs(s.wert) / grund, 1));
+          const farbe = s.hervorgehoben ? v("--color-accent") : v("--color-text-primary");
+          // Die Kennung muss je Karte eindeutig sein: Zwei Umrisse mit derselben
+          // Schnittmaske teilen sich sonst die erste — und die zweite Fläche
+          // trüge die Form der ersten, ohne dass etwas fehlschlägt.
+          const maske = `umriss-${s.umriss ?? s.label}`.replace(/[^a-zA-Z0-9-]/g, "");
+          return (
+            <div key={s.label} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+              {pfad ? (
+                <svg
+                  viewBox={`0 0 ${SEITE} ${SEITE}`}
+                  width={GROESSE * skala}
+                  height={GROESSE * skala}
+                  role="presentation"
+                  style={{ display: "block" }}
+                >
+                  <defs>
+                    <clipPath id={maske}>
+                      <path d={pfad} />
+                    </clipPath>
+                  </defs>
+                  {/* Der ungefüllte Teil bleibt sichtbar — ohne ihn stünde da
+                      eine abgeschnittene Form, die man nicht mehr erkennt. */}
+                  <path d={pfad} fill={v("--color-text-primary")} fillOpacity={0.12} />
+                  <g clipPath={`url(#${maske})`}>
+                    <rect x={0} y={SEITE * (1 - anteil)} width={SEITE} height={SEITE * anteil} fill={farbe} />
+                  </g>
+                </svg>
+              ) : (
+                <div style={{ width: GROESSE * skala, height: GROESSE * skala }} />
+              )}
+
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "baseline",
+                  gap: 10 * skala,
+                  marginTop: 24 * skala,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 88 * skala,
+                    fontFamily: v("--font-mono"),
+                    fontWeight: 700,
+                    lineHeight: 1,
+                    color: farbe,
+                  }}
+                >
+                  {s.wert.toLocaleString("de-DE", {
+                    minimumFractionDigits: s.stellen ?? 0,
+                    maximumFractionDigits: s.stellen ?? 0,
+                  })}
+                </span>
+                {zeigeEinheit && (
+                  <span style={{ fontSize: 30 * skala, color: v("--color-text-muted") }}>{s.einheit}</span>
+                )}
+              </div>
+              <div style={{ fontSize: 32 * skala, color: v("--color-text-secondary"), marginTop: 6 * skala }}>
+                {s.label}
+              </div>
+              {s.zusatz && (
+                <div style={{ fontSize: 26 * skala, color: v("--color-text-muted") }}>{s.zusatz}</div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
