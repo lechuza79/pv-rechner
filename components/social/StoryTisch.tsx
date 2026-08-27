@@ -130,19 +130,8 @@ export function StoryTisch({
             {post.titel}
           </h3>
         )}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: space.sm,
-            flexWrap: "wrap",
-            marginTop: space.xs,
-          }}
-        >
-          <Kennung id={post.id} />
-          <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
-            {post.kanal.join(" · ")} · {BILDFORM[post.bild?.art ?? "vergleich"]} · {text.length} Zeichen
-          </span>
+        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: space.xs }}>
+          {post.kanal.join(" · ")} · {BILDFORM[post.bild?.art ?? "vergleich"]} · {text.length} Zeichen
         </div>
 
         {/* Farbschema: Eigenschaft der Karte, nicht der Ansicht. Wird sofort
@@ -217,6 +206,7 @@ export function StoryTisch({
               Noch nicht auf Vorlagen umgestellt — Text hier nur lesbar.
             </span>
           )}
+          <Kennung id={post.id} />
         </div>
 
         {offen && post.vorlage && post.platzhalter && (

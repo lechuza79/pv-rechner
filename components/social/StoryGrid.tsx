@@ -73,7 +73,6 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
                 {kategorie.name}
               </Link>
               <div style={{ fontSize: v("--font-size-body"), fontWeight: 600, lineHeight: 1.3 }}>{post.titel}</div>
-              <Kennung id={post.id} />
 
               {/* Die Karte im Raster ist dieselbe Vorschau, nur schmaler. Ein
                   eigenes Kachelbild wäre eine zweite Darstellung derselben
@@ -97,6 +96,7 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
                 <Link href={`/admin/redaktion?k=${kategorie.schluessel}`} style={knopf}>
                   Zur Kategorie
                 </Link>
+                <Kennung id={post.id} />
               </div>
             </div>
           );

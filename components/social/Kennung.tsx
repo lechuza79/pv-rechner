@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { v, pad } from "../../lib/theme";
+import { IconCheck, IconCopy } from "../Icons";
+import { iconSizes, v, pad } from "../../lib/theme";
 
 // Die Kennung eines Beitrags, zum Kopieren.
 //
@@ -13,6 +14,13 @@ import { v, pad } from "../../lib/theme";
 //
 // Kopieren statt Markieren: Ein Wort in Monospace lässt sich zwar auswählen,
 // aber ein Doppelklick greift bei Bindestrichen nur die Silbe.
+//
+// Als ZEICHEN, nicht als Text: In der Kachel stand die Kennung ausgeschrieben —
+// bei einer Handvoll Beiträgen unauffällig, bei hunderten eine zweite
+// Titelzeile, die niemand liest und die jede Kachel höher macht. Sie steht
+// deshalb unten bei den Aktionen; wer sie braucht, holt sie sich, und wer sie
+// nicht braucht, sieht sie nicht. Lesbar bleibt sie über den Tooltip und für
+// Screenreader über die Beschriftung.
 
 export function Kennung({ id }: { id: string }) {
   const [kopiert, setKopiert] = useState(false);
@@ -32,20 +40,21 @@ export function Kennung({ id }: { id: string }) {
     <button
       type="button"
       onClick={kopieren}
-      title="Kennung kopieren"
+      title={kopiert ? "kopiert" : `Kennung kopieren: ${id}`}
+      aria-label={`Kennung kopieren: ${id}`}
       style={{
-        alignSelf: "flex-start",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
         padding: pad("xs", "sm"),
         borderRadius: v("--radius-sm"),
-        border: `1px solid ${v("--color-border-muted")}`,
-        background: v("--color-bg-muted"),
-        color: kopiert ? v("--color-positive-text") : v("--color-text-muted"),
-        fontFamily: v("--font-mono"),
-        fontSize: v("--font-size-caption"),
+        border: `1px solid ${v("--color-border")}`,
+        background: "transparent",
+        color: kopiert ? v("--color-positive-text") : v("--color-text-secondary"),
         cursor: "pointer",
       }}
     >
-      {kopiert ? "kopiert" : id}
+      {kopiert ? <IconCheck size={iconSizes.md} /> : <IconCopy size={iconSizes.md} />}
     </button>
   );
 }
