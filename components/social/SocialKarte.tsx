@@ -1,6 +1,6 @@
 import Logo from "../Logo";
 import { v, space } from "../../lib/theme";
-import { kartenTokens } from "../../lib/social-karten-stil";
+import { kartenTokens, serienFarben } from "../../lib/social-karten-stil";
 import { BUNDESLAND_UMRISS, BUNDESLAND_UMRISS_SEITE } from "../../lib/bundesland-umrisse";
 import type { BildSerie, PostBild } from "../../lib/social-posts";
 
@@ -237,7 +237,17 @@ export function SocialKarte({
  * blieb er in der Säule stumm liegen: Das Feld war gesetzt, gezeichnet wurde
  * nichts, und auffallen konnte das nur dem, der es vermisst.
  */
-function UmrissZeichen({ name, skala, groesse }: { name?: string; skala: number; groesse: number }) {
+function UmrissZeichen({
+  name,
+  skala,
+  groesse,
+  farbe,
+}: {
+  name?: string;
+  skala: number;
+  groesse: number;
+  farbe: string;
+}) {
   const pfad = name ? BUNDESLAND_UMRISS[name] : undefined;
   if (!pfad) return null;
   return (
@@ -255,7 +265,7 @@ function UmrissZeichen({ name, skala, groesse }: { name?: string; skala: number;
         pointerEvents: "none",
       }}
     >
-      <path d={pfad} fill={v("--color-text-primary")} />
+      <path d={pfad} fill={farbe} />
     </svg>
   );
 }
@@ -319,7 +329,8 @@ function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: n
     { r: 152, breite: 60 },
   ];
 
-  const farbe = (s: BildSerie) => (s.hervorgehoben ? v("--color-accent") : v("--color-text-primary"));
+  const toene = serienFarben(bild.stil);
+  const farbe = (s: BildSerie) => (s.hervorgehoben ? toene.hervorgehoben : toene.gedaempft);
 
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", gap: 56 * skala }}>
@@ -343,7 +354,7 @@ function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: n
                   cy={SEITE / 2}
                   r={r}
                   fill="none"
-                  stroke={v("--color-text-primary")}
+                  stroke={toene.gedaempft}
                   // Schwach halten. Die Spur ist die Referenz, nicht der Wert —
                   // bei einem kleinen Anteil ist sie fast der ganze Ring, und zu
                   // kräftig gesetzt liest sich der KLEINERE Wert als große
@@ -389,7 +400,7 @@ function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: n
       <div style={{ display: "flex", gap: 96 * skala, justifyContent: "center" }}>
         {bild.serien.map((s) => (
           <div key={s.label} style={{ position: "relative" }}>
-            <UmrissZeichen name={s.umriss} skala={skala} groesse={250} />
+            <UmrissZeichen name={s.umriss} skala={skala} groesse={250} farbe={toene.gedaempft} />
             {/* Die Farbe trägt der Punkt, nicht der Text: Zwei eingefärbte Zahlen
                 nebeneinander lesen sich als Wertung, und auf dem blauen
                 Farbschema sind sie ohnehin kaum zu unterscheiden. */}
@@ -469,6 +480,7 @@ function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: n
 function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
   const [gross, klein] = [...bild.serien].sort((a, b) => Math.abs(b.wert) - Math.abs(a.wert));
   const zeigeEinheit = bild.einheitAmWert !== false;
+  const toene = serienFarben(bild.stil);
 
   // Die Maße folgen den VERHÄLTNISSEN der Vorlage, nicht ihren Pixeln: Sie ist
   // bei knapp halber Kartenbreite gezeichnet, und ihre Zahlen eins zu eins
@@ -500,7 +512,7 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
 
   const block = (s: BildSerie, gruppe: boolean) => (
     <div style={{ position: "relative" }}>
-      <UmrissZeichen name={s.umriss} skala={skala} groesse={gruppe ? 300 : 220} />
+      <UmrissZeichen name={s.umriss} skala={skala} groesse={gruppe ? 300 : 220} farbe={toene.gedaempft} />
       <div style={{ fontSize: 30 * skala, color: v("--color-text-muted"), lineHeight: 1.25 }}>
         {s.zusatz ?? s.label}
       </div>
@@ -578,7 +590,7 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
             bottom: GRUNDLINIE,
             width: BREITE * skala,
             height: HOEHE * skala,
-            background: v("--color-accent"),
+            background: toene.hervorgehoben,
             borderRadius: `${ecke}px ${ecke}px 0 0`,
           }}
         />
@@ -592,7 +604,7 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
             bottom: GRUNDLINIE,
             width: BREITE * skala,
             height: sockel * skala,
-            background: v("--color-text-primary"),
+            background: toene.gedaempft,
           }}
         />
         {/* Der Ausleger ist ein eigener Körper daneben, deshalb trennt ihn eine
@@ -605,8 +617,8 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
             bottom: GRUNDLINIE,
             width: AUSLEGER * skala,
             height: sockel * skala,
-            background: v("--color-text-primary"),
-            opacity: 0.18,
+            background: toene.gedaempft,
+            opacity: 0.4,
             borderLeft: `${Math.max(2, 4 * skala)}px solid ${v("--color-bg")}`,
             boxSizing: "border-box",
             borderRadius: `0 ${ecke}px 0 0`,
@@ -665,6 +677,7 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
 function UmrissTeil({ bild, skala }: { bild: PostBild; skala: number }) {
   const grund = bild.ganzes ?? 100;
   const zeigeEinheit = bild.einheitAmWert !== false;
+  const toene = serienFarben(bild.stil);
   const SEITE = BUNDESLAND_UMRISS_SEITE;
   const GROESSE = bild.serien.length > 2 ? 260 : 340;
 
@@ -674,7 +687,7 @@ function UmrissTeil({ bild, skala }: { bild: PostBild; skala: number }) {
         {bild.serien.map((s) => {
           const pfad = s.umriss ? BUNDESLAND_UMRISS[s.umriss] : undefined;
           const anteil = Math.max(0, Math.min(Math.abs(s.wert) / grund, 1));
-          const farbe = s.hervorgehoben ? v("--color-accent") : v("--color-text-primary");
+          const farbe = s.hervorgehoben ? toene.hervorgehoben : toene.gedaempft;
           // Die Kennung muss je Karte eindeutig sein: Zwei Umrisse mit derselben
           // Schnittmaske teilen sich sonst die erste — und die zweite Fläche
           // trüge die Form der ersten, ohne dass etwas fehlschlägt.
@@ -696,7 +709,7 @@ function UmrissTeil({ bild, skala }: { bild: PostBild; skala: number }) {
                   </defs>
                   {/* Der ungefüllte Teil bleibt sichtbar — ohne ihn stünde da
                       eine abgeschnittene Form, die man nicht mehr erkennt. */}
-                  <path d={pfad} fill={v("--color-text-primary")} fillOpacity={0.16} />
+                  <path d={pfad} fill={toene.gedaempft} fillOpacity={0.3} />
                   <g clipPath={`url(#${maske})`}>
                     <rect x={0} y={SEITE * (1 - anteil)} width={SEITE} height={SEITE * anteil} fill={farbe} />
                   </g>

@@ -59,11 +59,11 @@ const GRUNDLAGE = stageDefaults(STAGE_COUNT - 1);
  * der gedämpfte bekommt ein klares Hellblau — vier Stufen, die auseinandergehen:
  * Grund, Spur, gedämpfte Füllung, hervorgehobene Füllung.
  *
- * Der gedämpfte Ton lag zwischendurch bei fast Weiß, weil „heller" wörtlich
- * genommen wurde. Damit war er von der hervorgehobenen Serie nicht mehr zu
- * unterscheiden, und die Betonung stand auf keiner Zahl mehr. Er erreicht als
- * Text 3,4:1 und gilt nur für die groß gesetzten Werte (WCAG verlangt dort
- * 3:1); wer ihn verkleinert, muss ihn anheben.
+ * Text und FLÄCHE laufen dabei auseinander: Überschrift und Werte stehen in
+ * vollem Weiß, die gedämpfte Serienfläche in einem klaren Hellblau. Solange
+ * beides an `--color-text-primary` hing, konnte man nur eines von beidem haben —
+ * heller Text hieß heller Ring und damit keine Unterscheidung mehr, dunkler Ring
+ * hieß matter Text. Die Serienfarben stehen deshalb in `serienFarben`.
  */
 const HIGHLIGHT: Partial<Record<TokenName, string>> = {
   "--color-bg": GRUNDLAGE["--color-accent"],
@@ -78,7 +78,7 @@ const HIGHLIGHT: Partial<Record<TokenName, string>> = {
   // Die Töne sind die ausgerechneten Mischungen auf dem blauen Grund, eine Spur
   // heller gesetzt: Der abgesetzte Ring soll sich vom Grund lösen, nicht mit ihm
   // verschwimmen.
-  "--color-text-primary": "#B8D2FC",
+  "--color-text-primary": "#FFFFFF",
   // Reiner TEXT darf durchscheinen — er überlappt sich nicht.
   "--color-text-secondary": "rgba(255,255,255,0.94)",
   "--color-text-muted": "rgba(255,255,255,0.92)",
@@ -91,6 +91,21 @@ const HIGHLIGHT: Partial<Record<TokenName, string>> = {
   "--color-brand": "#FFFFFF",
   "--color-brand-deep": "rgba(255,255,255,0.50)",
 };
+
+/**
+ * Die beiden Serienfarben eines Stils — hervorgehoben und gedämpft.
+ *
+ * Getrennt von den Textfarben, weil die beiden verschiedene Anforderungen haben:
+ * Ein Wert soll lesbar sein, eine Fläche soll sich von der Nachbarfläche
+ * abheben. Solange die gedämpfte Serie an `--color-text-primary` hing, zog jede
+ * Änderung an der einen die andere mit — und man konnte immer nur eines von
+ * beidem richtig haben.
+ */
+export function serienFarben(stil: KartenStil): { hervorgehoben: string; gedaempft: string } {
+  if (stil === "highlight") return { hervorgehoben: "#FFFFFF", gedaempft: "#7BA8F5" };
+  const t = kartenTokens(stil);
+  return { hervorgehoben: t["--color-accent"], gedaempft: t["--color-text-primary"] };
+}
 
 /** Dunkel ist die Nachtstufe des Hauses, keine zweite dunkle Palette. */
 const DUNKEL = stageDefaults(0);
