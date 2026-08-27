@@ -10,6 +10,7 @@ import {
   type ArtikelVorhaben,
 } from "../../../../../lib/artikelplan";
 import { v, space, pad } from "../../../../../lib/theme";
+import { NeuBewerten } from "../../../../../components/redaktion/NeuBewerten";
 
 // Der Artikelteil der Redaktion — Schwester der Social-Ansicht, aber eine
 // eigene Seite, weil die Achsen andere sind: ein Post hat einen Wochentag und
@@ -168,6 +169,8 @@ export default async function RedaktionArtikel() {
                 geplante Adresse: {vh.slug}
               </p>
             )}
+
+            <NeuBewerten thema={vh.thema} />
           </section>
         ))}
       </div>
@@ -211,6 +214,11 @@ export default async function RedaktionArtikel() {
             <p style={{ color: v("--color-text-secondary"), maxWidth: 720, marginBottom: space.xs }}>
               {vh.verworfenWeil}
             </p>
+
+            {/* Gerade hier ist der Knopf der Punkt: Ein Thema, das an seiner
+                Schwierigkeit gescheitert ist, kann in einem halben Jahr anders
+                dastehen — und das merkt sonst niemand. */}
+            <NeuBewerten thema={vh.thema} />
           </section>
         ))}
       </div>

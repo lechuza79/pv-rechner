@@ -49,12 +49,25 @@ export default function InternalShell({
       title: "Versorger",
       links: [{ href: "/admin/versorger", label: "Stadtwerke" }],
     });
+    // Zwei Beitragsarten unter einem Dach. Sie teilen sich die Redaktion, aber
+    // sonst wenig: Ein Post hat einen Wochentag und eine Bildform, ein Artikel
+    // eine Suchfrage und eine Indexierung. Deshalb getrennte Gruppen statt einer
+    // gemeinsamen Liste, in der man erst am Seitentitel merkt, wo man ist.
     sections.push({
       title: "Redaktion",
       links: [
-        { href: "/admin/redaktion", label: "Entwicklung", exact: true },
-        { href: "/admin/redaktion/planung", label: "Planung" },
-        { href: "/admin/redaktion/auswertung", label: "Auswertung" },
+        {
+          label: "Social Media",
+          children: [
+            { href: "/admin/redaktion", label: "Entwicklung", exact: true },
+            { href: "/admin/redaktion/planung", label: "Planung" },
+            { href: "/admin/redaktion/auswertung", label: "Auswertung" },
+          ],
+        },
+        {
+          label: "Blog",
+          children: [{ href: "/admin/redaktion/artikel", label: "Artikel" }],
+        },
       ],
     });
     sections.push({

@@ -164,7 +164,7 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
       gemessenAm: "2026-08-27",
     },
     begruendung:
-      "Klein, billig, und trifft die Positionierung im Kern: Wir sind die Seite, die auch " +
+      "Klein, billig, und trifft die Positionierung im Kern: Wir sind die Seite, die " +
       "auch einmal abrät. Jeder andere Treffer auf dieser Anfrage will am Ende doch verkaufen.",
   },
   {
@@ -246,7 +246,8 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
   },
   {
     thema: "Photovoltaik-Versicherung",
-    zustand: "verworfen",
+    slug: "/ratgeber/photovoltaik-versicherung",
+    zustand: "geplant",
     messung: {
       begriff: "photovoltaik versicherung",
       volumen: 880,
@@ -254,10 +255,18 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
       gemessenAm: "2026-08-27",
       nebenbegriffe: [{ begriff: "solaranlage versichern", volumen: 720, schwierigkeit: 15 }],
     },
-    begruendung: "Zusammen 1.600 Suchen bei niedriger Schwierigkeit — verlockend und falsch.",
-    verworfenWeil:
-      "Es gibt nichts zu rechnen. Eine Seite ohne Werkzeug ist bei uns ein Fremdkörper, und " +
-      "Versicherungsvergleiche wären ein Vermittlungsgeschäft, das wir nicht führen.",
+    begruendung:
+      "Zusammen 1.600 Suchen bei sehr niedriger Schwierigkeit, und die Frage gehört sachlich " +
+      "zur Anlage: Wer 15.000 Euro aufs Dach legt, will wissen, was passiert, wenn Hagel " +
+      "kommt. Der Betreiber hat das Thema am 27.08.2026 aufgenommen — als Ratgeber mit " +
+      "Vermittlungsanteil, nicht als reine Textseite.",
+    voraussetzung:
+      "BLOCKER vor dem Livegang: Eine bezahlte Empfehlung ist Werbung, und auf der Startseite " +
+      "steht „Keine Werbung“ — über die Vertrauensleiste als Werbeaussage auf jeder Seite. " +
+      "Entweder wird die Zusage präzisiert oder der Ratgeber bleibt ohne bezahlte Empfehlung. " +
+      "Dazu die Kennzeichnungspflicht für bezahlte Empfehlungen und die Frage, ob eine " +
+      "Versicherungsempfehlung eine erlaubnispflichtige Vermittlung ist. Beides gehört vor " +
+      "die erste Zeile geklärt, nicht danach.",
   },
   {
     thema: "Photovoltaik und Steuer",
@@ -279,7 +288,8 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
   },
   {
     thema: "Wechselrichter",
-    zustand: "verworfen",
+    slug: "/ratgeber/wechselrichter",
+    zustand: "geplant",
     messung: {
       begriff: "wechselrichter photovoltaik",
       volumen: 1300,
@@ -287,11 +297,15 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
       gemessenAm: "2026-08-27",
     },
     begruendung:
-      "Hohes Volumen bei praktisch unbesetztem Umfeld — und das Gerät kommt in unserer " +
-      "Rechnung ohnehin vor (der 800-Watt-Deckel beim Balkonkraftwerk).",
-    verworfenWeil:
-      "Kaufabsicht. Wer danach sucht, will ein Gerät vergleichen und kaufen — wir verkaufen " +
-      "nichts und hätten der Frage nichts hinzuzufügen.",
+      "Hohes Volumen bei praktisch unbesetztem Umfeld — und das Gerät steckt in unserer " +
+      "Rechnung ohnehin: Der 800-Watt-Deckel beim Balkonkraftwerk ist eine " +
+      "Wechselrichtergrenze, und die Drosselung wird im Ergebnis sichtbar gemacht. Wir " +
+      "können also erklären, was die Größe für den Ertrag bedeutet, statt Geräte " +
+      "aufzuzählen. Vom Betreiber am 27.08.2026 aufgenommen.",
+    voraussetzung:
+      "Die Suchabsicht ist Kauf, unsere Antwort ist Auslegung. Die Seite muss die Frage " +
+      "beantworten, die hinter dem Kauf steht (welche Größe passt zu meiner Anlage, was " +
+      "kostet mich eine Drosselung), sonst steht sie zwischen den Händlern und verliert.",
   },
   {
     thema: "Stadtseiten nach Wettbewerber-Muster",
