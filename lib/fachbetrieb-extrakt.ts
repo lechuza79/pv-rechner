@@ -386,7 +386,16 @@ export const KEIN_BETRIEB: { grund: string; muster: RegExp }[] = [
   },
   {
     grund: "Presse/Verlag",
-    muster: /\b(Zeitungsverlag|Chefredakt|Nachrichten aus|Redaktionsleitung)\b/,
+    muster:
+      /\b(Zeitungsverlag|Chefredakt|Nachrichten aus|Redaktionsleitung|Anzeigenblatt|Verlagsleitung|Verantwortlich im Sinne des Presserechts)\b/,
+  },
+  {
+    // Nachgetragen, nachdem die Streuungsmessung sie durchgelassen hatte: Ein
+    // Lead-Vermittler wirbt regional wie ein Betrieb und erscheint deshalb in
+    // wenigen Kreisen. Erkennbar ist er nicht an der Streuung, sondern daran,
+    // dass er das Vermitteln selbst benennt („Leads Navigator GmbH").
+    grund: "Lead-Vermittlung",
+    muster: /\b(Leads?[- ]?(Navigator|Generierung|Vermittlung)|Auftragsvermittlung|Anfragen vermitteln|Wir vermitteln Ihnen)\b/i,
   },
 ];
 

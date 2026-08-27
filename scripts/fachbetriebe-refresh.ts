@@ -16,7 +16,7 @@
  *   npm run fachbetriebe -- --setup                    Tabellen anlegen (idempotent)
  *   npm run fachbetriebe -- --suche --dry              was gefragt würde, ohne Geld
  *   npm run fachbetriebe -- --suche --limit 50         Ortssuche je Landkreis
- *   npm run fachbetriebe -- --art                      Portale von Betrieben trennen (gemessen)
+ *   npm run fachbetriebe -- --art                      regional / überregional trennen (gemessen)
  *   npm run fachbetriebe -- --profil --limit 100       Impressum + Startseite lesen
  *   npm run fachbetriebe -- --ags                      Adresse → amtlicher Gemeindeschlüssel
  *   npm run fachbetriebe -- --stats                    was drin ist
@@ -61,11 +61,17 @@
  *    Auswertung daraus. Wer später anders bewerten will, bewertet die Belege neu
  *    und braucht keinen zweiten Crawl. „Vermutlich Meisterbetrieb" gibt es nicht.
  *
- * 3. DIE EINORDNUNG IST GEMESSEN, NICHT GEPFLEGT. Ob eine Domain ein Betrieb
- *    oder ein Portal ist, entscheidet ihre Streuung: Ein Fachbetrieb erscheint
- *    in ein bis drei Landkreisen, ein Vergleichsportal in dreißig. Eine
- *    gepflegte Sperrliste wäre dasselbe Wettrennen wie beim Förder-Crawl — sie
- *    veraltet, sobald ein neues Portal aufmacht. Die Streuung veraltet nie.
+ * 3. DIE EINORDNUNG IST GEMESSEN, NICHT GEPFLEGT. Ob eine Domain regional
+ *    arbeitet, entscheidet ihre Streuung: Ein Fachbetrieb erscheint in ein bis
+ *    drei Landkreisen, ein Vergleichsportal in dreihundert. Eine gepflegte
+ *    Sperrliste wäre dasselbe Wettrennen wie beim Förder-Crawl — sie veraltet,
+ *    sobald ein neues Portal aufmacht. Die Streuung veraltet nie.
+ *
+ *    Die Klasse heißt „ueberregional" und NICHT „portal": Gemessen wurden 61
+ *    Domains über der Schwelle, darunter neben my-hammer und den Gelben Seiten
+ *    auch Enpal und Zolar — bundesweite ANBIETER, keine Verzeichnisse. Beide
+ *    gehören aus der Liste heraus, aber sie „Portal" zu nennen wäre eine
+ *    Beschriftung, die etwas anderes behauptet als die Zahl darunter.
  */
 
 import { resolve } from "node:path";
@@ -151,6 +157,25 @@ async function alleZeilen<T>(
  * seltener, nicht unmöglich, und verdeckt ihn dann. Bei gleicher Sortierung in
  * jedem Stapel kann es ihn gar nicht mehr geben.
  */
+/**
+ * Zeichen entfernen, die Postgres in einem Textfeld nicht annimmt.
+ *
+ * Ein Nullbyte im Text lässt den ganzen Stapel scheitern —
+ * „unsupported Unicode escape sequence", und zwar erst beim Schreiben, nicht
+ * beim Lesen. Real passiert am 27.08.2026 im letzten Stapel eines Laufs über
+ * 4.792 Websites: 4.019 Belege waren geschrieben, der Rest fiel aus. Wer
+ * fremdes HTML in eine Datenbank schreibt, trifft das früher oder später — es
+ * genügt EINE Seite mit einem kaputten Zeichen unter tausenden.
+ */
+function ohneSteuerzeichen<T>(wert: T): T {
+  if (typeof wert === "string") {
+    // eslint-disable-next-line no-control-regex
+    return wert.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, " ") as unknown as T;
+  }
+  if (Array.isArray(wert)) return wert.map(ohneSteuerzeichen) as unknown as T;
+  return wert;
+}
+
 async function upsertGestueckelt(
   sb: SupabaseLike,
   tabelle: string,
@@ -158,9 +183,13 @@ async function upsertGestueckelt(
   onConflict: string,
 ): Promise<void> {
   const schluessel = onConflict.split(",")[0].trim();
-  const sortiert = [...zeilen].sort((a, b) =>
-    String(a[schluessel] ?? "").localeCompare(String(b[schluessel] ?? "")),
-  );
+  const sortiert = [...zeilen]
+    .map((z) => {
+      const rein: Record<string, unknown> = {};
+      for (const [k, v] of Object.entries(z)) rein[k] = ohneSteuerzeichen(v);
+      return rein;
+    })
+    .sort((a, b) => String(a[schluessel] ?? "").localeCompare(String(b[schluessel] ?? "")));
   for (let i = 0; i < sortiert.length; i += 500) {
     const { error } = await sb
       .from(tabelle)
@@ -530,16 +559,25 @@ async function einordnen(dry: boolean): Promise<void> {
 
   for (const [domain, kreise] of kreiseJeDomain) {
     const n = kreise.size;
-    const istPortal = n >= schwelle;
-    if (istPortal) portale++;
+    const weitVerbreitet = n >= schwelle;
+    if (weitVerbreitet) portale++;
     else betriebe++;
     zeilen.push({
       domain,
-      // „betrieb" heißt hier: nach der Streuung KEIN Portal. Ob wirklich ein
+      // „überregional" und NICHT „portal" — die Zahl misst die Streuung, nicht
+      // das Geschäftsmodell. Der erste Lauf schrieb „portal", und unter den 61
+      // Treffern standen neben my-hammer und den Gelben Seiten auch Enpal und
+      // Zolar: bundesweite ANBIETER, keine Verzeichnisse. Beide gehören aus der
+      // Liste heraus — ein bundesweiter Konzern ist kein regionaler Verteiler,
+      // sondern der Wettbewerber, gegen den wir positioniert sind —, aber sie
+      // „Portal" zu nennen wäre eine Beschriftung, die etwas anderes behauptet
+      // als die Messung darunter (CLAUDE.md, „Sagt die Beschriftung dasselbe,
+      // was die Zahl misst?").
+      art: weitVerbreitet ? "ueberregional" : "betrieb",
+      // „betrieb" heißt hier nur: nach der Streuung regional. Ob wirklich ein
       // PV-Fachbetrieb dahintersteht, entscheidet erst die Profil-Phase am
       // Impressum — die kann auf 'kein-betrieb' zurückstufen.
-      art: istPortal ? "portal" : "betrieb",
-      art_grund: istPortal
+      art_grund: weitVerbreitet
         ? `in ${n} von ${kreiseGelaufen} abgefragten Kreisen (Schwelle ${schwelle})`
         : `in ${n} Kreis${n === 1 ? "" : "en"} gesehen`,
       kreise_gesehen: n,
@@ -549,15 +587,15 @@ async function einordnen(dry: boolean): Promise<void> {
 
   log(
     `${kreiseGelaufen} Kreise abgefragt · Schwelle ${schwelle} Kreise\n` +
-      `  ${betriebe.toLocaleString()} als Betrieb eingeordnet · ${portale} als Portal`,
+      `  ${betriebe.toLocaleString()} regional · ${portale} überregional (Portale und bundesweite Anbieter)`,
   );
 
   if (dry) {
     const top = zeilen
-      .filter((z) => z.art === "portal")
+      .filter((z) => z.art === "ueberregional")
       .sort((a, b) => (b.kreise_gesehen as number) - (a.kreise_gesehen as number))
       .slice(0, 25);
-    for (const z of top) log(`  Portal: ${z.domain} — ${z.art_grund}`);
+    for (const z of top) log(`  überregional: ${z.domain} — ${z.art_grund}`);
     log("--dry: nichts geschrieben", "ok");
     return;
   }
@@ -608,9 +646,9 @@ async function profil(limit: number, dry: boolean, refetch: boolean): Promise<vo
     art_grund: string | null;
     profil_at: string | null;
   }>(sb, "fachbetriebe", "domain, art, art_grund, profil_at");
-  // Portale gar nicht erst anfassen — wir wollen ihre Impressen nicht.
+  // Überregionale gar nicht erst anfassen — wir wollen ihre Impressen nicht.
   const offen = alle
-    .filter((r) => r.art !== "portal" && (refetch || !r.profil_at))
+    .filter((r) => r.art !== "ueberregional" && (refetch || !r.profil_at))
     .sort((a, b) => a.domain.localeCompare(b.domain))
     .slice(0, limit);
 
@@ -626,8 +664,29 @@ async function profil(limit: number, dry: boolean, refetch: boolean): Promise<vo
   let ohneStart = 0;
   let ohneImpressum = 0;
   let fertig = 0;
+  let gespeichert = 0;
 
-  await pool(offen, 6, async (r) => {
+  // ZWISCHENSTÄNDE ABLEGEN, statt erst am Schluss zu schreiben.
+  //
+  // Der Lauf berührt tausende fremde Hosts und braucht dafür gut eine halbe
+  // Stunde. Erst am Ende zu schreiben hieße: Ein Abbruch in Minute 29 wirft die
+  // gesamte Arbeit weg — dieselbe Falle, an der die Ortssuche schon einmal nach
+  // 375 von 735 Abrufen hing. Alle 250 Profile werden deshalb weggeschrieben,
+  // und weil `profil_at` das Gedächtnis ist, setzt ein neuer Lauf danach
+  // lückenlos fort.
+  const wegschreiben = async (alles: boolean) => {
+    if (!alles && zeilen.length < 250) return;
+    const z = zeilen.splice(0, zeilen.length);
+    const b = belege.splice(0, belege.length);
+    if (z.length) await upsertGestueckelt(sb, "fachbetriebe", z, "domain");
+    if (b.length) await upsertGestueckelt(sb, "fachbetrieb_belege", b, "domain,merkmal,wert,fundstelle");
+    gespeichert += z.length;
+  };
+
+  // Zehn parallel, aber jeder FREMDE Host wird dabei nur ein einziges Mal
+  // angefasst (Startseite + Impressum): Die Last verteilt sich auf tausende
+  // Betriebe, keiner bekommt mehr als zwei Abrufe.
+  await pool(offen, 10, async (r) => {
     const start =
       (await holeText(`https://${r.domain}/`)) ?? (await holeText(`http://${r.domain}/`));
     fertig++;
@@ -676,20 +735,20 @@ async function profil(limit: number, dry: boolean, refetch: boolean): Promise<vo
         gefunden_am: heute(),
       });
     }
+    await wegschreiben(false);
   });
 
-  await upsertGestueckelt(sb, "fachbetriebe", zeilen, "domain");
-  if (belege.length) {
-    await upsertGestueckelt(sb, "fachbetrieb_belege", belege, "domain,merkmal,wert,fundstelle");
-  }
+  await wegschreiben(true);
 
-  const mit = (f: string) => zeilen.filter((z) => z[f] !== null && z[f] !== undefined).length;
+  // Gezählt wird MITGEFÜHRT, nicht aus `zeilen` — das Wegschreiben leert den
+  // Stapel, und eine Auszählung darüber meldete nach dem Umbau glatt Null.
+  // Dieselbe Fehlerklasse wie „die Beschriftung sagt etwas anderes, als die
+  // Zahl misst"; die Quoten je Merkmal stehen ohnehin in --stats, das die
+  // Datenbank liest statt den Lauf.
   log(
-    `${zeilen.length} Profile · ${ohneStart} Startseite unerreichbar · ${ohneImpressum} ohne Impressum\n` +
-      `  Anschrift ${mit("plz")} · Handelsregister ${mit("hr_nummer")} · ` +
-      `Meisterbetrieb ${mit("meisterbetrieb")} · Gründungsjahr ${mit("gruendungsjahr")} · ` +
-      `Bewertung ${mit("bewertung_wert")}\n` +
-      `  ${belege.length} Belege abgelegt`,
+    `${gespeichert} Profile gespeichert · ${ohneStart} Startseite unerreichbar · ` +
+      `${ohneImpressum} ohne erreichbares Impressum\n` +
+      `  Quoten je Merkmal: npm run fachbetriebe -- --stats`,
     "ok",
   );
 }
@@ -937,7 +996,7 @@ async function main(): Promise<void> {
         "  --setup                          Tabellen anlegen (idempotent)\n" +
         "  --suche [--limit N] [--deckel X] [--bl 09] [--dry]\n" +
         "                                   Ortssuche je Landkreis (0,002 $ je Abruf)\n" +
-        "  --art [--dry]                    Betrieb oder Portal — gemessen an der Streuung\n" +
+        "  --art [--dry]                    regional oder überregional — gemessen an der Streuung\n" +
         "  --profil [--limit N] [--refetch] [--dry]\n" +
         "                                   Startseite + Impressum lesen\n" +
         "  --ags [--dry]                    Anschrift → amtlicher Gemeindeschlüssel\n" +

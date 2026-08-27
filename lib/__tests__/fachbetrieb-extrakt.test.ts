@@ -286,6 +286,21 @@ describe("Einordnung: „nichts gefunden“ ist nicht „ist keiner“", () => {
     expect(p.meisterbetrieb).toBe(true);
   });
 
+  it("erkennt einen Lead-Vermittler, den die Streuung durchlässt", () => {
+    // Nachgetragen: Ein Lead-Vermittler wirbt regional wie ein Betrieb und
+    // erscheint deshalb in wenigen Kreisen — die Streuungsmessung sieht ihn
+    // nicht. Gefunden wurde er in der Stichprobe der fertigen Erhebung
+    // („Leads Navigator GmbH" hinter photovoltaik-firma.de).
+    const p = profilAus(
+      "photovoltaik-firma.de",
+      seite("<p>Photovoltaik für Ihr Dach</p><p>Betreiber: Leads Navigator GmbH</p>"),
+      null,
+      JETZT,
+    );
+    expect(p.art).toBe("kein-betrieb");
+    expect(p.art_grund).toContain("Lead");
+  });
+
   it("kennt zu jedem Rückstufungs-Muster einen Grund", () => {
     for (const k of KEIN_BETRIEB) {
       expect(k.grund.length).toBeGreaterThan(3);
