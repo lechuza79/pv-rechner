@@ -47,7 +47,8 @@ export function StoryTisch({
   const [form, setForm] = useState<PostBild["art"] | null>(post.bild?.art ?? null);
   const [entwurf, setEntwurf] = useState(post.vorlage ?? "");
   const [offen, setOffen] = useState(false);
-  const [stilStatus, setStilStatus] = useState<string | null>(null);
+  const [status, setStatus] = useState<string | null>(null);
+  const [laeuft, setLaeuft] = useState(false);
 
   const werte = Object.fromEntries((post.platzhalter ?? []).map((p) => [p.name, p.wert]));
   // Bearbeitbare Posts zeigen den Entwurf, die übrigen ihren eingebauten Text.
@@ -56,48 +57,56 @@ export function StoryTisch({
   const formen = post.bild ? moeglicheFormen(post.bild) : [];
   const stand = urteil({ text, bild }, pruefungen);
 
+  const geaendert =
+    stil !== (post.bild?.stil ?? KARTEN_STIL_STANDARD) ||
+    form !== (post.bild?.art ?? null) ||
+    (!!post.vorlage && entwurf !== post.vorlage);
+
   /**
-   * Farbschema wählen — und bei einem Fehlschlag ZURÜCKNEHMEN.
+   * Alles auf einmal ablegen — Text, Farbschema, Bildform.
    *
-   * Die Vorschau darf nichts zeigen, was nicht gespeichert ist. Sonst steht die
-   * Karte auf Blau, die Ablage auf Hell, und beim Veröffentlichen ginge ein
-   * anderes Bild raus als das eben abgenommene — dieselbe Lücke, die der Umbau
-   * gerade schließt, nur eine Etage höher. Beim Ausprobieren aufgefallen: Die
-   * Meldung stand da, die Karte war trotzdem blau.
+   * Vorher schrieb jeder Klick sofort. Das war bequem und falsch: Man konnte
+   * nichts ausprobieren, ohne es zu speichern, und jede Zwischenstufe entwertete
+   * die Freigabe. Jetzt ist der Tisch ein Entwurf, bis jemand ihn ablegt.
+   *
+   * Der Preis ist die vergessene Änderung, deshalb sagt der Knopf sichtbar an,
+   * dass etwas offen ist.
    */
-  async function speichere(feld: "stil" | "form", wert: string, zurueck: () => void) {
-    setStilStatus(null);
+  async function speichern() {
+    setLaeuft(true);
+    setStatus(null);
     try {
       const res = await fetch("/api/social/fassung", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ postId: post.id, [feld]: wert }),
+        body: JSON.stringify({
+          postId: post.id,
+          // Nur mitschicken, was es gibt: Ein Post ohne Vorlage hat keinen
+          // bearbeitbaren Text, und ein leeres Feld würde ihn zurücksetzen.
+          ...(post.vorlage ? { vorlage: entwurf } : {}),
+          stil,
+          ...(form ? { form } : {}),
+        }),
       });
+      const j = (await res.json().catch(() => ({}))) as { error?: string; ungenutzt?: string[] };
       if (!res.ok) {
-        const j = (await res.json().catch(() => ({}))) as { error?: string };
-        zurueck();
-        setStilStatus(
+        setStatus(
           res.status === 401
-            ? "Nicht gespeichert — die Anmeldung ist abgelaufen. Neu anmelden und noch einmal wählen."
+            ? "Nicht gespeichert — die Anmeldung ist abgelaufen."
             : `Nicht gespeichert: ${j.error ?? res.status}`,
+        );
+      } else {
+        setStatus(
+          j.ungenutzt?.length
+            ? `Gespeichert. Nicht mehr im Text: ${j.ungenutzt.map((x) => `{${x}}`).join(", ")}`
+            : "Gespeichert. Die Prüfung muss neu erteilt werden.",
         );
       }
     } catch (e) {
-      zurueck();
-      setStilStatus(`Nicht gespeichert: ${(e as Error).message}`);
+      setStatus(`Nicht gespeichert: ${(e as Error).message}`);
+    } finally {
+      setLaeuft(false);
     }
-  }
-
-  function stilWaehlen(neu: KartenStil) {
-    const vorher = stil;
-    setStil(neu);
-    void speichere("stil", neu, () => setStil(vorher));
-  }
-
-  function formWaehlen(neu: PostBild["art"]) {
-    const vorher = form;
-    setForm(neu);
-    void speichere("form", neu, () => setForm(vorher));
   }
 
   return (
@@ -159,7 +168,7 @@ export function StoryTisch({
                     key={f}
                     type="button"
                     aria-pressed={aktiv}
-                    onClick={() => formWaehlen(f)}
+                    onClick={() => setForm(f)}
                     style={{
                       padding: pad("xs", "md"),
                       borderRadius: v("--radius-sm"),
@@ -192,7 +201,7 @@ export function StoryTisch({
                   key={s}
                   type="button"
                   aria-pressed={aktiv}
-                  onClick={() => stilWaehlen(s)}
+                  onClick={() => setStil(s)}
                   style={{
                     padding: pad("xs", "md"),
                     borderRadius: v("--radius-sm"),
@@ -207,9 +216,6 @@ export function StoryTisch({
                 </button>
               );
             })}
-            {stilStatus && (
-              <span style={{ fontSize: v("--font-size-caption"), color: v("--color-negative") }}>{stilStatus}</span>
-            )}
           </div>
         </div>
 
@@ -228,6 +234,26 @@ export function StoryTisch({
         </div>
 
         <div style={{ display: "flex", gap: space.sm, marginTop: space.md, alignItems: "center", flexWrap: "wrap" }}>
+          <button
+            type="button"
+            disabled={laeuft || !geaendert}
+            onClick={speichern}
+            style={{
+              padding: pad("xs", "lg"),
+              borderRadius: v("--radius-sm"),
+              border: "none",
+              background: geaendert ? v("--color-accent") : v("--color-border"),
+              color: geaendert ? v("--color-text-on-accent") : v("--color-text-muted"),
+              cursor: geaendert ? "pointer" : "default",
+              fontSize: v("--font-size-small"),
+              fontWeight: 600,
+            }}
+          >
+            {laeuft ? "…" : geaendert ? "Speichern" : "Gespeichert"}
+          </button>
+          {status && (
+            <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>{status}</span>
+          )}
           {post.vorlage ? (
             <button
               type="button"
@@ -257,7 +283,6 @@ export function StoryTisch({
           <div style={{ marginTop: space.lg }}>
             <VorlagenEditor
               postId={post.id}
-              vorlage={post.vorlage}
               entwurf={entwurf}
               onEntwurf={setEntwurf}
               platzhalter={post.platzhalter}

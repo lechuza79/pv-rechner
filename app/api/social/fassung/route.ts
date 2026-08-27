@@ -68,6 +68,7 @@ export async function POST(req: NextRequest) {
     await speichereFassung(body.postId, {
       vorlage: body.vorlage,
       ...(istKartenStil(body.stil) ? { stil: body.stil } : {}),
+      ...(body.form && body.form in BILDFORM_NAME ? { form: body.form as PostBild["art"] } : {}),
     });
     // Ungenutzte Werte sind kein Fehler, aber einen Hinweis wert: Wer eine Zahl
     // aus dem Text nimmt, verliert sie stillschweigend.

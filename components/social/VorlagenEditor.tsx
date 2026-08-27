@@ -22,14 +22,11 @@ import type { PlatzhalterInfo } from "../../lib/social-vorlage";
 
 export function VorlagenEditor({
   postId,
-  vorlage,
   entwurf,
   onEntwurf,
   platzhalter,
 }: {
   postId: string;
-  /** Die gespeicherte Fassung — Bezugspunkt für „geändert" und „zurücksetzen". */
-  vorlage: string;
   /** Was gerade im Feld steht. Liegt oben, damit die Vorschau mitläuft. */
   entwurf: string;
   onEntwurf: (wert: string) => void;
@@ -40,29 +37,24 @@ export function VorlagenEditor({
 
   const werte = Object.fromEntries(platzhalter.map((p) => [p.name, p.wert]));
   const unbekannt = platzhalterIn(entwurf).filter((p) => !(p in werte));
-  const geaendert = entwurf !== vorlage;
 
-  async function speichern(zuruecksetzen = false) {
+  /**
+   * Nur das Zurücksetzen liegt noch hier. GESPEICHERT wird am Tisch, in einem
+   * Zug mit Farbschema und Bildform: Zwei Speichern-Knöpfe für einen Beitrag
+   * hätten zwei Zustände von „gespeichert" bedeutet, und der eine hätte den
+   * anderen nicht gekannt.
+   */
+  async function zuruecksetzen() {
     setLaeuft(true);
     setStatus(null);
     try {
       const res = await fetch("/api/social/fassung", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(zuruecksetzen ? { postId, zuruecksetzen: true } : { postId, vorlage: entwurf }),
+        body: JSON.stringify({ postId, zuruecksetzen: true }),
       });
-      const j = (await res.json()) as { error?: string; ungenutzt?: string[] };
-      if (!res.ok) {
-        setStatus(j.error ?? "Fehlgeschlagen");
-      } else {
-        setStatus(
-          zuruecksetzen
-            ? "Zurückgesetzt. Seite neu laden."
-            : j.ungenutzt?.length
-              ? `Gespeichert. Nicht mehr im Text: ${j.ungenutzt.map((p) => `{${p}}`).join(", ")}`
-              : "Gespeichert. Die Prüfung muss neu erteilt werden.",
-        );
-      }
+      const j = (await res.json()) as { error?: string };
+      setStatus(res.ok ? "Zurückgesetzt. Seite neu laden." : (j.error ?? "Fehlgeschlagen"));
     } catch (e) {
       setStatus((e as Error).message);
     } finally {
@@ -110,24 +102,8 @@ export function VorlagenEditor({
         <div style={{ display: "flex", gap: space.sm, marginTop: space.sm, alignItems: "center", flexWrap: "wrap" }}>
           <button
             type="button"
-            disabled={laeuft || !geaendert || unbekannt.length > 0}
-            onClick={() => speichern(false)}
-            style={{
-              padding: pad("sm", "lg"),
-              borderRadius: v("--radius-sm"),
-              border: "none",
-              background: geaendert && !unbekannt.length ? v("--color-accent") : v("--color-border"),
-              color: geaendert && !unbekannt.length ? v("--color-text-on-accent") : v("--color-text-muted"),
-              cursor: geaendert && !unbekannt.length ? "pointer" : "default",
-              fontSize: v("--font-size-small"),
-            }}
-          >
-            {laeuft ? "…" : "Speichern"}
-          </button>
-          <button
-            type="button"
             disabled={laeuft}
-            onClick={() => speichern(true)}
+            onClick={zuruecksetzen}
             style={{
               padding: pad("sm", "lg"),
               borderRadius: v("--radius-sm"),
