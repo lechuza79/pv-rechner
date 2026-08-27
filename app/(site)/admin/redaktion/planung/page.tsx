@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { isAdminSession } from "../../../../../lib/admin-guard";
 import { socialKennzahlen } from "../../../../../lib/social-kennzahlen";
 import { baueAllePosts } from "../../../../../lib/social-posts";
-import { PUFFER_VOR_START, REGELN, SLOTS } from "../../../../../lib/redaktionsplan";
+import { FAMILIEN, PUFFER_VOR_START, REGELN, SLOTS } from "../../../../../lib/redaktionsplan";
 import { v, space, pad } from "../../../../../lib/theme";
 
 // Planung: Was steht bereit, was fehlt, und welche Regeln gelten vor jedem Post.
@@ -18,6 +18,13 @@ export const metadata = {
 };
 
 export const dynamic = "force-dynamic";
+
+const ZUSTAND_TEXT: Record<string, string> = {
+  gebaut: "gebaut",
+  "daten-da": "Daten da",
+  "fehlt-daten": "Daten fehlen",
+  spaeter: "später",
+};
 
 export default async function RedaktionPlanung() {
   if (!(await isAdminSession())) redirect("/login?next=/admin/redaktion/planung");
@@ -53,6 +60,47 @@ export default async function RedaktionPlanung() {
             ? `Es fehlen noch ${fehlend}. Ohne Puffer bricht die Kadenz beim ersten vollen Arbeitstag — und genau dann fällt es auf.`
             : "Der Puffer steht. Der erste Post kann raus."}
         </p>
+      </section>
+
+      {/* Dieselbe Liste, die in der Entwicklung die Kategorien bildet — hier mit
+          dem Blick der Planung: was davon sich heute bauen ließe und was auf
+          Daten wartet. Zwei Listen wären zwei Ordnungen für dieselbe Sache. */}
+      <section style={{ marginBottom: space.xxxl }}>
+        <h2 style={{ fontSize: v("--font-size-h3") }}>Der Vorrat an Themen</h2>
+        <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginTop: 0 }}>
+          {FAMILIEN.length} Geschichten-Familien — dieselbe Liste, die in der Entwicklung die
+          Kategorien bildet. Was hier als „Daten da" steht, lässt sich ohne neuen Datenbestand
+          bauen.
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: space.xs }}>
+          {FAMILIEN.map((f) => (
+            <div
+              key={f.kuerzel}
+              style={{
+                background: v("--color-bg-muted"),
+                borderRadius: v("--radius-sm"),
+                padding: pad("sm", "md"),
+                opacity: f.zustand === "spaeter" ? 0.6 : 1,
+              }}
+            >
+              <div style={{ display: "flex", gap: space.sm, alignItems: "baseline" }}>
+                <span style={{ fontSize: v("--font-size-body"), flex: 1 }}>{f.name}</span>
+                <span
+                  style={{
+                    fontSize: v("--font-size-caption"),
+                    color: f.zustand === "gebaut" ? v("--color-positive-text") : v("--color-text-muted"),
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {ZUSTAND_TEXT[f.zustand]}
+                </span>
+              </div>
+              {f.hinweis && (
+                <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>{f.hinweis}</div>
+              )}
+            </div>
+          ))}
+        </div>
       </section>
 
       <section style={{ marginBottom: space.xxxl }}>

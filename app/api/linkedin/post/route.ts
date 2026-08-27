@@ -1,19 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { istAdminOderCron } from "../../../../lib/admin-guard";
 import { ladeBildHoch, posteText } from "../../../../lib/linkedin";
-import { pruefungGueltig } from "../../../../lib/social-pruefung";
+import { pruefungGueltig, fassungsAbdruck } from "../../../../lib/social-pruefung";
+import { socialKennzahlen } from "../../../../lib/social-kennzahlen";
+import { baueAllePosts } from "../../../../lib/social-posts";
+import { ladeFassungen } from "../../../../lib/social-vorlagen-db";
 
 // Veröffentlichung eines Beitrags mit Bild.
 //
-// Der Weg ist bewusst so: Das Bild wird im Browser aus der Karte aufgenommen,
-// die dort ohnehin steht, und hier hochgereicht. Ein zweiter Renderweg auf dem
-// Server hieße, dass das veröffentlichte Bild ein anderes ist als das
-// abgenommene — und genau diese Sorte Unterschied merkt niemand, bis er im Feed
-// steht.
+// Das Bild wird im Browser aus der Karte aufgenommen, die dort ohnehin steht,
+// und hier hochgereicht. Ein zweiter Renderweg auf dem Server hieße, dass das
+// veröffentlichte Bild ein anderes ist als das abgenommene — und genau diese
+// Sorte Unterschied merkt niemand, bis er im Feed steht.
 //
-// Ohne bestandene Prüfung geht nichts raus. Die Prüfung liegt am Post und wird
-// hier noch einmal befragt, nicht nur in der Oberfläche: Eine Sperre, die nur
-// der Knopf kennt, ist keine.
+// DER TEXT KOMMT NICHT VOM BROWSER. Er wird hier neu gebaut, aus denselben
+// Kennzahlen und derselben gespeicherten Fassung wie in der Ansicht. Sonst wäre
+// die Prüfung nur so gut wie das, was der Aufrufer behauptet: Wer den geprüften
+// Text schickt und ein anderes Bild aufnimmt, käme durch.
+//
+// Das Bild lässt sich so nicht absichern — es entsteht im Browser. Absicherbar
+// ist der Abgleich: Der Aufrufer schickt den Abdruck der Fassung, die er
+// aufgenommen hat, und wir halten ihn gegen unseren eigenen. Weicht er ab, hat
+// der Browser einen alten Stand, und wir senden nicht.
 
 export const dynamic = "force-dynamic";
 
@@ -28,17 +36,36 @@ export async function POST(req: NextRequest) {
 
   const body = (await req.json().catch(() => ({}))) as {
     postId?: string;
-    text?: string;
+    /** Abdruck der Fassung, die der Browser aufgenommen hat. */
+    fassung?: string;
     bildBase64?: string;
     bildAlt?: string;
     ersterKommentar?: string;
   };
 
-  const text = (body.text ?? "").trim();
-  if (!text) return NextResponse.json({ error: "Kein Text übergeben" }, { status: 400 });
   if (!body.postId) return NextResponse.json({ error: "Keine Post-Kennung übergeben" }, { status: 400 });
 
-  const pruefung = await pruefungGueltig(body.postId, text);
+  let post;
+  try {
+    post = baueAllePosts(await socialKennzahlen(), await ladeFassungen()).find((p) => p.id === body.postId);
+  } catch (err) {
+    return NextResponse.json({ error: `Zahlen nicht abrufbar: ${(err as Error).message}` }, { status: 503 });
+  }
+  if (!post) return NextResponse.json({ error: "Unbekannte Post-Kennung" }, { status: 404 });
+
+  const fassung = { text: post.text, bild: post.bild };
+  const abdruck = fassungsAbdruck(fassung);
+  if (body.fassung && body.fassung !== abdruck) {
+    return NextResponse.json(
+      {
+        error:
+          "Der Browser zeigt einen anderen Stand als die Ablage — vermutlich hat sich der Datenstand bewegt. Seite neu laden und noch einmal ansehen.",
+      },
+      { status: 409 },
+    );
+  }
+
+  const pruefung = await pruefungGueltig(post.id, fassung);
   if (!pruefung.ok) {
     return NextResponse.json({ error: pruefung.grund }, { status: 409 });
   }
@@ -58,7 +85,7 @@ export async function POST(req: NextRequest) {
       bildUrn = await ladeBildHoch(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength));
     }
 
-    const ergebnis = await posteText(text, {
+    const ergebnis = await posteText(post.text, {
       bildUrn,
       bildAlt: body.bildAlt,
       ersterKommentar: body.ersterKommentar,
