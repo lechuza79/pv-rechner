@@ -1,3 +1,4 @@
+import Logo from "../Logo";
 import { v, space } from "../../lib/theme";
 import type { PostBild } from "../../lib/social-posts";
 
@@ -18,46 +19,102 @@ import type { PostBild } from "../../lib/social-posts";
 const BREITE = 1080;
 const HOEHE = 1350; // 4:5
 
-export function SocialKarte({ bild, skala = 1 }: { bild: PostBild; skala?: number }) {
+/**
+ * Schriftgrößen je Stufe — ABSOLUT, nicht skaliert.
+ *
+ * Das ist der eigentliche Mechanismus. Die volle Karte ist 1080 breit und
+ * rechnet ihre Größen mit dem Maßstab hoch; eine Teaser-Karte von 240 Pixeln
+ * bekäme daraus 13-Pixel-Überschriften und 5-Pixel-Beschriftungen. Die kleine
+ * Stufe setzt ihre Größen deshalb selbst und bleibt damit lesbar, statt eine
+ * verkleinerte Fassung derselben Anordnung zu sein.
+ *
+ * Auch das Seitenverhältnis gilt nur oben: Ein Teaser braucht keine 4:5-Fläche,
+ * er hört auf, wo sein Inhalt endet.
+ */
+const GROESSEN = {
+  voll: { aussage: 58, untertitel: 30, wert: 96, einheit: 30, label: 30, balken: 30, polster: 72 },
+  teaser: { aussage: 17, untertitel: 0, wert: 40, einheit: 14, label: 13, balken: 10, polster: 16 },
+} as const;
+
+/**
+ * Größenstufen. Der Unterschied ist NICHT der Maßstab.
+ *
+ * Eine 1080er Karte auf 240 Pixel herunterzurechnen macht die Quellenzeile
+ * fünf Pixel groß — lesbar ist sie damit nirgends, sie kostet nur Platz. Eine
+ * kleine Fassung lässt deshalb weg, statt zu schrumpfen: In der Teaser-Stufe
+ * bleiben die Aussage und die eine Zahl, auf die es ankommt.
+ *
+ * Die Quellenangabe fällt nur dort weg, wo sie nicht gebraucht wird: Im Teaser
+ * ist die Karte Seiteninhalt, und die Seite nennt ihre Quellen ohnehin. Sobald
+ * daraus ein Bild wird, das die Seite verlässt, gilt wieder die volle Stufe —
+ * dort ist die Nennung Lizenzpflicht.
+ */
+export type KartenStufe = "voll" | "teaser";
+
+export function SocialKarte({
+  bild,
+  skala = 1,
+  stufe = "voll",
+}: {
+  bild: PostBild;
+  skala?: number;
+  stufe?: KartenStufe;
+}) {
   const max = Math.max(...bild.serien.map((s) => Math.abs(s.wert)), 1);
   const kennzahl = bild.art === "kennzahl";
+  const klein = stufe === "teaser";
+  const g = GROESSEN[stufe];
+  // In der kleinen Stufe zählen die Größen absolut, oben werden sie mit dem
+  // Maßstab hochgerechnet.
+  const px = (wert: number) => (klein ? wert : wert * skala);
+  // Im Teaser trägt nur die hervorgehobene Zahl; die Vergleichszahl daneben
+  // wäre auf dieser Fläche zwei unlesbare Zeilen.
+  const serien = klein ? bild.serien.filter((s) => s.hervorgehoben).slice(0, 1) : bild.serien;
 
   return (
     <div
       data-social-karte
       style={{
         width: BREITE * skala,
-        height: HOEHE * skala,
+        // Der Teaser hört auf, wo sein Inhalt endet — eine erzwungene
+        // 4:5-Fläche wäre hier zur Hälfte leer.
+        height: klein ? undefined : HOEHE * skala,
         background: v("--color-bg"),
         color: v("--color-text-primary"),
         display: "flex",
         flexDirection: "column",
-        padding: `${72 * skala}px ${64 * skala}px`,
+        padding: klein ? g.polster : `${72 * skala}px ${64 * skala}px`,
         boxSizing: "border-box",
         fontFamily: v("--font-text"),
-        borderRadius: v("--radius-lg"),
         overflow: "hidden",
       }}
     >
       {/* Die Aussage, nicht die Achsenbeschriftung. Ein Bild ohne Aussage ist
-          im Feed eine Zahlentafel, die niemand entziffert. */}
+          im Feed eine Zahlentafel, die niemand entziffert.
+          Im Teaser ist es umgekehrt: Dort steht die Aussage als Text unter der
+          Karte, und das Bild zeigt nur die Zahlen. Zweimal derselbe Satz auf
+          240 Pixeln wäre die Hälfte der Fläche für nichts. */}
+      {!klein && (
       <div
         style={{
-          fontSize: 58 * skala,
-          lineHeight: 1.15,
+          fontSize: px(g.aussage),
+          lineHeight: 1.2,
           fontWeight: 700,
           letterSpacing: "-0.02em",
-          marginBottom: 20 * skala,
+          marginBottom: px(klein ? 12 : 20),
         }}
       >
         {bild.aussage}
       </div>
-      <div style={{ fontSize: 30 * skala, color: v("--color-text-muted"), marginBottom: 64 * skala }}>
-        {bild.gemessen}
-      </div>
+      )}
+      {!klein && (
+        <div style={{ fontSize: px(g.untertitel), color: v("--color-text-muted"), marginBottom: px(64) }}>
+          {bild.gemessen}
+        </div>
+      )}
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-evenly" }}>
-        {bild.serien.map((s) => {
+        {serien.map((s) => {
           const anteil = Math.abs(s.wert) / max;
           return (
             <div key={s.label}>
@@ -65,8 +122,8 @@ export function SocialKarte({ bild, skala = 1 }: { bild: PostBild; skala?: numbe
                 style={{
                   display: "flex",
                   alignItems: "baseline",
-                  gap: space.md * skala,
-                  marginBottom: 14 * skala,
+                  gap: klein ? 4 : space.md * skala,
+                  marginBottom: px(klein ? 6 : 14),
                   // Zahl und Einheit gehören in eine Zeile: bricht die Einheit
                   // um, liest sie sich so groß wie der Wert.
                   whiteSpace: "nowrap",
@@ -74,7 +131,7 @@ export function SocialKarte({ bild, skala = 1 }: { bild: PostBild; skala?: numbe
               >
                 <span
                   style={{
-                    fontSize: (kennzahl ? 190 : 96) * skala,
+                    fontSize: klein ? g.wert : (kennzahl ? 190 : 96) * skala,
                     fontWeight: 700,
                     lineHeight: 1,
                     color: s.hervorgehoben ? v("--color-accent") : v("--color-text-primary"),
@@ -82,24 +139,24 @@ export function SocialKarte({ bild, skala = 1 }: { bild: PostBild; skala?: numbe
                 >
                   {s.wert.toLocaleString("de-DE", { minimumFractionDigits: s.stellen ?? 0, maximumFractionDigits: s.stellen ?? 0 })}
                 </span>
-                <span style={{ fontSize: (kennzahl ? 44 : 30) * skala, color: v("--color-text-muted") }}>{s.einheit}</span>
+                <span style={{ fontSize: klein ? g.einheit : (kennzahl ? 44 : 30) * skala, color: v("--color-text-muted") }}>{s.einheit}</span>
               </div>
               {/* Bei einer einzelnen Kennzahl gibt es nichts zu vergleichen —
                   ein Balken über die volle Breite wäre reine Dekoration. */}
               {!kennzahl && (
                 <div
                   style={{
-                    height: 30 * skala,
+                    height: px(g.balken),
                     width: `${Math.max(anteil * 100, 4)}%`,
                     background: s.hervorgehoben ? v("--color-accent") : v("--color-border"),
                     borderRadius: v("--radius-sm"),
-                    marginBottom: 14 * skala,
+                    marginBottom: px(klein ? 6 : 14),
                   }}
                 />
               )}
               <div
                 style={{
-                  fontSize: (kennzahl ? 36 : 30) * skala,
+                  fontSize: klein ? g.label : (kennzahl ? 36 : 30) * skala,
                   color: v("--color-text-secondary"),
                   lineHeight: 1.35,
                   maxWidth: kennzahl ? "90%" : undefined,
@@ -112,6 +169,7 @@ export function SocialKarte({ bild, skala = 1 }: { bild: PostBild; skala?: numbe
         })}
       </div>
 
+      {!klein && (
       <div
         style={{
           marginTop: 48 * skala,
@@ -126,10 +184,15 @@ export function SocialKarte({ bild, skala = 1 }: { bild: PostBild; skala?: numbe
         <div style={{ fontSize: 24 * skala, color: v("--color-text-muted"), lineHeight: 1.35, maxWidth: "72%" }}>
           {bild.quelle}
         </div>
-        {/* Im Bild lädt die Marke ein, statt sich zu nennen — einen Knopf gibt
-            es hier nicht mehr, der ihn ersetzen könnte. */}
-        <div style={{ fontSize: 26 * skala, fontWeight: 600, whiteSpace: "nowrap" }}>solar-check.io</div>
+        {/* Die Marke als Logo, nicht als getippter Name: Im geteilten Bild ist
+            sie das Einzige, was die Herkunft zeigt — einen Knopf, der darauf
+            führt, gibt es hier nicht mehr. Das Logo führt seine Farben als
+            Token, folgt also demselben Farbschema wie die Karte. */}
+        <div style={{ flexShrink: 0 }}>
+          <Logo width={200 * skala} />
+        </div>
       </div>
+      )}
     </div>
   );
 }

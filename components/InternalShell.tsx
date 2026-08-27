@@ -50,6 +50,14 @@ export default function InternalShell({
       links: [{ href: "/admin/versorger", label: "Stadtwerke" }],
     });
     sections.push({
+      title: "Redaktion",
+      links: [
+        { href: "/admin/redaktion", label: "Entwicklung", exact: true },
+        { href: "/admin/redaktion/planung", label: "Planung" },
+        { href: "/admin/redaktion/auswertung", label: "Auswertung" },
+      ],
+    });
+    sections.push({
       title: "System",
       links: [
         { href: "/admin", label: "Übersicht", exact: true },

@@ -27,8 +27,13 @@ type AwardZeile = {
   balkon_count: number | null;
   balkon_count_ly: number | null;
   privat_dach_kwp: string | number | null;
+  privat_dach_count: number | null;
+  gewerbe_dach_kwp: string | number | null;
+  freiflaeche_kwp: string | number | null;
+  batterie_privat_count: number | null;
   solar_kwp: string | number | null;
   solar_kwp_ly: string | number | null;
+  solar_kwp_l5: string | number | null;
 };
 
 const zahl = (v: string | number | null | undefined) => (v == null ? 0 : Number(v) || 0);
@@ -40,7 +45,9 @@ const zahl = (v: string | number | null | undefined) => (v == null ? 0 : Number(
  */
 async function ladeGemeinden(): Promise<AwardZeile[]> {
   if (!supabase) throw new Error("Datenbank nicht konfiguriert");
-  const spalten = "region_id,population,balkon_count,balkon_count_ly,privat_dach_kwp,solar_kwp,solar_kwp_ly";
+  const spalten =
+    "region_id,population,balkon_count,balkon_count_ly,privat_dach_kwp,privat_dach_count," +
+    "gewerbe_dach_kwp,freiflaeche_kwp,batterie_privat_count,solar_kwp,solar_kwp_ly,solar_kwp_l5";
   const alle: AwardZeile[] = [];
   const schritt = 1000;
   for (let von = 0; ; von += schritt) {
@@ -94,15 +101,29 @@ async function rechne(): Promise<SocialKennzahlen> {
   const stadt = gem.filter((r) => r.population >= STADT_AB);
   const land = gem.filter((r) => r.population < LAND_UNTER);
 
-  const proLand = new Map<string, { ew: number; balkon: number; pv: number }>();
+  const proLand = new Map<
+    string,
+    { ew: number; balkon: number; pv: number; frei: number; solar: number; solar5: number }
+  >();
   for (const r of gem) {
     const k = r.region_id.slice(0, 2);
-    const e = proLand.get(k) ?? { ew: 0, balkon: 0, pv: 0 };
+    const e = proLand.get(k) ?? { ew: 0, balkon: 0, pv: 0, frei: 0, solar: 0, solar5: 0 };
     e.ew += r.population;
     e.balkon += r.balkon_count ?? 0;
     e.pv += zahl(r.privat_dach_kwp);
+    e.frei += zahl(r.freiflaeche_kwp);
+    e.solar += zahl(r.solar_kwp);
+    e.solar5 += zahl(r.solar_kwp_l5);
     proLand.set(k, e);
   }
+
+  const summe = (f: (r: AwardZeile) => number) => gem.reduce((s, r) => s + f(r), 0);
+  const solarGesamt = summe((r) => zahl(r.solar_kwp));
+  // „Mehr Kilowatt als Einwohner" nur ab einer Grundmenge: In einem Weiler mit
+  // 80 Einwohnern und einem Solarpark ist die Aussage eine Eigenschaft des
+  // Nenners, nicht des Orts.
+  const MIN_EW = 500;
+  const bewertbar = gem.filter((r) => r.population >= MIN_EW);
 
   return {
     standIso,
@@ -120,11 +141,25 @@ async function rechne(): Promise<SocialKennzahlen> {
       solarKwpJetzt: gem.reduce((s, r) => s + zahl(r.solar_kwp), 0),
       solarKwpVorJahr: gem.reduce((s, r) => s + zahl(r.solar_kwp_ly), 0),
     },
+    segmente: {
+      privatDachKwp: summe((r) => zahl(r.privat_dach_kwp)),
+      gewerbeDachKwp: summe((r) => zahl(r.gewerbe_dach_kwp)),
+      freiflaecheKwp: summe((r) => zahl(r.freiflaeche_kwp)),
+      solarGesamtKwp: solarGesamt,
+    },
+    ueberEinwohner: {
+      mindestEinwohner: MIN_EW,
+      betrachtet: bewertbar.length,
+      darueber: bewertbar.filter((r) => zahl(r.solar_kwp) > r.population).length,
+    },
     laender: [...proLand.entries()]
       .map(([ags, e]) => ({
         name: namen.get(ags) ?? ags,
         balkonJeTausend: e.ew ? (e.balkon / e.ew) * 1000 : 0,
         wpProKopf: e.ew ? (e.pv * 1000) / e.ew : 0,
+        freiflaecheAnteil: e.solar ? (e.frei / e.solar) * 100 : 0,
+        solarKwp: e.solar,
+        wachstumFuenfJahre: e.solar5 ? e.solar / e.solar5 : 0,
       }))
       .sort((a, b) => b.balkonJeTausend - a.balkonJeTausend),
   };

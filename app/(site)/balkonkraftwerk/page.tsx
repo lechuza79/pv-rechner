@@ -161,6 +161,7 @@ const SCHRITTE: { titel: string; text: string; link?: string; href?: string }[] 
 export const revalidate = 3600;
 
 export default async function BalkonkraftwerkHub() {
+
   // Referenzfall wie im Rechner-FAQ: Zwei-Personen-Haushalt, Standard-Set,
   // senkrecht am Südbalkon, deutscher Durchschnittsertrag. Live gerechnet —
   // kein getippter Euro-Betrag, sonst driftet die Seite vom Rechner weg.

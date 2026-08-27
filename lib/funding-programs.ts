@@ -195,6 +195,26 @@ export interface FundingProgram {
   speicherTiers?: { upTo: number; amount: number }[];
   /** Minimum storage kWh below which no storage funding is paid. */
   speicherMin?: number;
+  /**
+   * Mindestleistung der Dachanlage in kWp — darunter zahlt das Programm für den
+   * PV-Teil nichts.
+   *
+   * WARUM ES DAS GIBT (27.08.2026): Die Untergrenze ist eine der verbreitetsten
+   * Bedingungen kommunaler Programme und war als einzige verbreitete NICHT
+   * ausdrückbar — die Obergrenze steckt in `pvTiers`, die Speicher-Untergrenze in
+   * `speicherMin`, für die Anlage selbst gab es nichts. Sie stand deshalb im
+   * Bedingungstext und fehlte in der Rechnung: Nidda schreibt „Die Anlage muss
+   * mindestens 4 kWp leisten — kleinere Dachanlagen werden nicht gefördert", und
+   * derselbe Katalogeintrag zog bei 3 kWp 300 € ab. Genau die Fehlerklasse, in
+   * der die Beschriftung etwas anderes sagt als die Zahl daneben misst.
+   *
+   * Wirkt NUR auf den PV-Teil. Dass eine Untergrenze für die Anlage auch den
+   * Speicherzuschuss ausschließt, ist naheliegend, steht aber in keiner der drei
+   * geprüften Richtlinien — es zu unterstellen wäre eine Verschärfung ohne
+   * Fundstelle (Wächter-Gate Regel 8). Wo Anlage und Speicher aus EINEM Satz
+   * kommen (Mühlhausen), greift die Grenze ohnehin für beides.
+   */
+  pvMin?: number;
 
   // ── Technik ──────────────────────────────────────────────────────────────────
   /**
@@ -663,7 +683,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Rückwirkungen aber der antragstellenden Person zu.
     combinableWith: BUND,
     foerdert: ["pv", "balkon"],
-    pvPerKwp: 100, pvCap: 1000,
+    pvPerKwp: 100, pvCap: 1000, pvMin: 4,
     speicherPerKwh: 50, speicherCap: 500,
     balkonPercentOfCost: 0.5, balkonCap: 200,
   },
@@ -678,8 +698,19 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { label: "PV-Anlage", value: "1.500–2.500 € (nach kWp)" },
       { label: "Batteriespeicher", value: "500–1.300 € (nach kWh)" },
     ],
-    conditions: ["Solange Mittel reichen (Budget 8 Mio. € 2026)", "Speicher ab 3 kWh"],
+    conditions: [
+      "Solange Mittel reichen (Budget 8 Mio. € 2026)",
+      "Speicher ab 3 kWh",
+      "Die Dachanlage muss mindestens 2 kWp leisten — die unterste Förderstufe beginnt dort",
+      "Nur Bestandsgebäude: die Baufertigstellung liegt bei Antragstellung mindestens fünf Jahre zurück",
+    ],
     combinableWith: BUND,
+    // Untergrenze am 27.08.2026 auf der Programmseite selbst gelesen
+    // (stadt-koeln.de/leben-in-koeln/klima-umwelt-tiere/klima/photovoltaik-klimafreundliches-wohnen):
+    // Die Staffel beginnt bei „Von 2 kWp bis 5 kWp 1.500 Euro". Darunter nennt die
+    // Stadt keinen Satz. Die Sammelseite, auf die unser Eintrag zeigt, führt die
+    // Beträge gar nicht — dort stehen unter DEMSELBEN Namen die 2024 ausgelaufenen
+    // Vorgängerprogramme, was einen Abruf beinahe zu „Programm tot" gelesen hätte.
     pvTiers: [
       { upTo: 5, amount: 1500 },
       { upTo: 9, amount: 2000 },
@@ -692,6 +723,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { upTo: 999, amount: 1300 },
     ],
     speicherMin: 3,
+    pvMin: 2,
   },
   "duesseldorf-klimafreundlich": {
     id: "duesseldorf-klimafreundlich", name: "Klimafreundliches Wohnen und Arbeiten",
@@ -1198,6 +1230,10 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Nur Stromkunden der Stadtwerke Schwerin, Eigentümer der Immobilie",
       "Kontingent: max. 10 Anlagen pro Jahr — kann unterjährig erschöpft sein",
+      // Die Frist stand bis 27.08.2026 nicht im Eintrag, obwohl die Stadtwerke sie
+      // wörtlich nennen. Dieselbe Klasse wie Potsdam am 25.08.: ein Programm, das
+      // an einem Datum endet, ohne das Datum gezeigt.
+      "Antragsfrist 31.12.2026; ist das Kontingent vorher erreicht, endet das Programm früher",
       "Kundenbindung — daher nicht pauschal eingerechnet",
     ],
     combinableWith: BUND,
@@ -1718,6 +1754,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Antragsberechtigt sind natürliche Personen",
       "Die Dachanlage wird nur zusammen mit einem Stromspeicher gefördert",
+      "Die Dachanlage muss mindestens 5 kWp leisten — die unterste Stufe beginnt dort",
       "Anlagen, die vor dem 1. Mai 2022 in Betrieb gingen, sind ausgeschlossen",
       "Der Fördertopf umfasst insgesamt 50.000 €",
     ],
@@ -1726,7 +1763,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Die Dach-Staffel gilt NUR mit Speicher — das ist im Modell nicht als
     // Bedingung ausdrückbar. `speicherMin: 1` erzwingt sie über die einzige
     // Größe, die der Rechner kennt: Ohne Speicher greift keine Stufe.
+    // Die Staffel beginnt „ab 5 kWp bis einschl. 10 kWp" — am 27.08.2026 auf der
+    // Gemeindeseite gelesen. Ohne `pvMin` zahlte die unterste Stufe auch bei
+    // 3 kWp, wo die Gemeinde nichts zahlt.
     pvTiers: [{ upTo: 10, amount: 1000 }, { upTo: 20, amount: 1250 }, { upTo: 30, amount: 1500 }],
+    pvMin: 5,
     speicherMin: 1,
     balkonTiers: [{ upTo: 680, amount: 100 }, { upTo: 1020, amount: 150 }, { upTo: 999999, amount: 200 }],
   },
@@ -3657,7 +3698,14 @@ export function fundingAmount(
   const computable = !!(f.percentOfCost || f.pvPerKwp || f.pvTiers || f.speicherPerKwh || f.speicherTiers);
   if (!computable) return { total: 0, computable: false, active };
 
+  // Unter der Mindestleistung zahlt das Programm für die Anlage nichts. Das
+  // Programm bleibt `computable` — der Betrag ist bekannt, er ist null. „Lässt
+  // sich nicht berechnen" wäre eine andere Aussage und stünde als solche auf der
+  // Karte (dieselbe Unterscheidung wie bei der Kumulierungsgrenze im WP-Rechner).
+  const unterMindestleistung = f.pvMin !== undefined && anlage.kwp < f.pvMin;
+
   if (f.percentOfCost) {
+    if (unterMindestleistung) return { total: 0, computable: true, active };
     // Prozentsatz MIT Deckel — ergänzt 18.08.2026. Vorher rechnete dieser Zweig
     // ungedeckelt und kehrte sofort zurück; „20 % der Kosten, höchstens 300 €"
     // war damit nicht ausdrückbar, und solche Programme mussten ohne
@@ -3668,7 +3716,9 @@ export function fundingAmount(
     return { total: anteil(anlage.kosten, f.percentOfCost, f.pvCap), computable: true, active };
   }
   let pv = 0;
-  if (f.pvPerKwp) {
+  if (unterMindestleistung) {
+    pv = 0;
+  } else if (f.pvPerKwp) {
     pv = (f.pvSockel ?? 0) + anlage.kwp * f.pvPerKwp;
     if (f.pvCap) pv = Math.min(pv, f.pvCap);
   } else if (f.pvTiers) {

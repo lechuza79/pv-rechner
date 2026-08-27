@@ -12,6 +12,7 @@
 // lib/social-kennzahlen.ts (server-only) und werden hereingereicht.
 
 import { fmtPvLeistung } from "./atlas-format";
+import { fuelle, type PlatzhalterInfo } from "./social-vorlage";
 
 /** Zahlenbasis eines Posts. Kommt aus der Datenbank, wird hereingereicht. */
 export type SocialKennzahlen = {
@@ -33,7 +34,25 @@ export type SocialKennzahlen = {
     solarKwpJetzt: number;
     solarKwpVorJahr: number;
   };
-  laender: { name: string; balkonJeTausend: number; wpProKopf: number }[];
+  segmente: {
+    privatDachKwp: number;
+    gewerbeDachKwp: number;
+    freiflaecheKwp: number;
+    solarGesamtKwp: number;
+  };
+  ueberEinwohner: {
+    mindestEinwohner: number;
+    betrachtet: number;
+    darueber: number;
+  };
+  laender: {
+    name: string;
+    balkonJeTausend: number;
+    wpProKopf: number;
+    freiflaecheAnteil: number;
+    solarKwp: number;
+    wachstumFuenfJahre: number;
+  }[];
 };
 
 export type BildSerie = {
@@ -71,6 +90,22 @@ export type PostBild = {
   quelle: string;
 };
 
+/**
+ * Dieselbe Erkenntnis für die eigene Seite.
+ *
+ * NICHT derselbe Text: Der Beitrag ist in der ersten Person geschrieben und auf
+ * den Feed zugeschnitten („Ich finde die zweite Zahl aussagekräftiger"). Auf
+ * einer Ratgeberseite wäre das die falsche Stimme. Gemeinsam ist beiden nur die
+ * Berechnung — und genau darum geht es: Post und Seite können nicht
+ * auseinanderlaufen, weil die Zahlen aus derselben Funktion kommen.
+ */
+export type OnsiteFassung = {
+  /** Anker in der Adresse, damit ein Beitrag direkt hierher verlinken kann. */
+  anker: string;
+  ueberschrift: string;
+  absaetze: string[];
+};
+
 export type SocialPost = {
   id: string;
   /** Interne Bezeichnung für die Vorschau, nicht Teil des Beitrags. */
@@ -80,15 +115,51 @@ export type SocialPost = {
   bild: PostBild | null;
   /** Was ein Prüfer nachrechnen können muss. Erscheint nur in der Vorschau. */
   belege: string[];
+  /** Fassung für die eigene Seite. Fehlt, solange es keine passende Seite gibt. */
+  onsite?: OnsiteFassung;
+  /**
+   * Der Text als bearbeitbare Vorlage mit Platzhaltern, plus die Werte dazu.
+   *
+   * Damit kann im Redaktionstisch frei formuliert werden, ohne dass eine Zahl
+   * anfassbar wäre. Fehlt beides, ist der Post noch nicht auf Vorlagen
+   * umgestellt und dort nur lesbar.
+   */
+  vorlage?: string;
+  platzhalter?: PlatzhalterInfo[];
 };
+
+/**
+ * Ab wie vielen Zeichen der Feed den Beitrag hinter „mehr anzeigen" versteckt.
+ *
+ * Näherungswert für LinkedIn auf dem Desktop — die genaue Grenze hängt an der
+ * Zeilenzahl und damit an der Fensterbreite, ist also nicht als Zahl zu haben.
+ * Sie steht hier trotzdem, weil eine ungefähre Grenze in der Vorschau mehr wert
+ * ist als gar keine: Die Aussage muss davor stehen, alles danach liest nur, wer
+ * schon interessiert ist.
+ */
+export const FEED_ABSCHNITT_ZEICHEN = 210;
 
 const de = (n: number, stellen = 0) =>
   n.toLocaleString("de-DE", { minimumFractionDigits: stellen, maximumFractionDigits: stellen });
 
-function quellenzeile(standIso: string): string {
+/**
+ * Der Markenname steht hier, weil die Erwähnung der Unternehmensseite ihn im
+ * Text finden muss — eine Erwähnung entsteht nur, wo der Name wörtlich
+ * vorkommt. Die Quellenzeile ist dafür die natürliche Stelle: Sie sagt ohnehin,
+ * wer gerechnet hat.
+ */
+const MARKE = "Solar Check";
+
+/**
+ * Zwei Fassungen derselben Angabe, und der Unterschied ist der Markenname:
+ * Im TEXT muss er stehen, damit die Erwähnung der Unternehmensseite ihn findet.
+ * Im BILD steht daneben das Logo — dort wäre der Name ein zweites Mal dasselbe.
+ */
+function quellenzeile(standIso: string, mitMarke: boolean): string {
   const d = new Date(standIso);
   const datum = d.toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" });
-  return `Marktstammdatenregister (Bundesnetzagentur), Stand ${datum}. Eigene Berechnung.`;
+  const basis = `Marktstammdatenregister (Bundesnetzagentur), Stand ${datum}. Eigene Berechnung`;
+  return mitMarke ? `${basis}, ${MARKE}.` : `${basis}.`;
 }
 
 /**
@@ -100,31 +171,65 @@ function quellenzeile(standIso: string): string {
  * Post die Richtung mit, statt sie zu behaupten: Kippt das Verhältnis eines
  * Tages, kippt der Satz mit.
  */
-export function postStadtLand(k: SocialKennzahlen): SocialPost {
+export function postStadtLand(k: SocialKennzahlen, eigeneVorlage?: string): SocialPost {
   const s = k.stadtLand;
   const faktor = s.landJeTausend / s.stadtJeTausend;
   const staerker = faktor >= 1;
   const sortiert = [...k.laender].sort((a, b) => b.balkonJeTausend - a.balkonJeTausend);
-  const spitze = sortiert[0];
-  const schluss = sortiert[sortiert.length - 1];
-  const zweitLetzter = sortiert[sortiert.length - 2];
+  // Stadtstaaten namentlich, nicht als „die letzten der Liste". Der Satz hieß
+  // zuerst „bei den Stadtstaaten … Hamburg, Berlin. Niedersachsen kommt auf …"
+  // und machte Niedersachsen damit zum Stadtstaat — die Aussage stimmte nur,
+  // solange die Sortierung zufällig passte.
+  const stadtstaatNamen = ["Berlin", "Hamburg", "Bremen"];
+  const stadtstaaten = sortiert.filter((l) => stadtstaatNamen.includes(l.name));
+  const flaechenlaender = sortiert.filter((l) => !stadtstaatNamen.includes(l.name));
+  const spitze = flaechenlaender[0] ?? sortiert[0];
 
-  const text = [
-    `Das Balkonkraftwerk gilt als Lösung für Mieter in der Stadt. Kleine Wohnung, kein eigenes Dach, 800 Watt am Geländer.`,
+  // Werte einmal benannt, danach nur noch über Platzhalter angesprochen. Das
+  // ist die Bedingung dafür, dass im Redaktionstisch frei formuliert werden
+  // kann, ohne dass jemand eine Zahl überschreibt.
+  const platzhalter: PlatzhalterInfo[] = [
+    { name: "stadtAnzahl", wert: de(s.stadtAnzahl), erklaerung: "Zahl der Städte über der Schwelle" },
+    { name: "stadtSchwelle", wert: `${de(s.stadtAb / 1000)}.000`, erklaerung: "Einwohnerschwelle Stadt" },
+    { name: "stadtQuote", wert: de(s.stadtJeTausend, 1), erklaerung: "Geräte je 1.000 Einwohner, Städte" },
+    { name: "landAnzahl", wert: de(Math.round(s.landAnzahl / 1000)), erklaerung: "Gemeinden unter der Schwelle, in Tausend" },
+    { name: "landSchwelle", wert: `${de(s.landUnter / 1000)}.000`, erklaerung: "Einwohnerschwelle Gemeinde" },
+    { name: "landQuote", wert: de(s.landJeTausend, 1), erklaerung: "Geräte je 1.000 Einwohner, Gemeinden" },
+    { name: "faktor", wert: de(faktor, 1), erklaerung: "Verhältnis Land zu Stadt" },
+    {
+      name: "stadtstaaten",
+      wert: stadtstaaten.map((l) => `${l.name} ${de(l.balkonJeTausend, 1)}`).join(", "),
+      erklaerung: "Stadtstaaten mit ihrer Quote",
+    },
+    { name: "spitzenland", wert: spitze.name, erklaerung: "stärkstes Flächenland" },
+    { name: "spitzenwert", wert: de(spitze.balkonJeTausend, 1), erklaerung: "dessen Quote" },
+    { name: "quelle", wert: quellenzeile(k.standIso, true), erklaerung: "Quellenzeile mit Datenstand" },
+  ];
+
+  // Die ersten zwei Zeilen sind alles, was der Feed vor „mehr anzeigen" zeigt.
+  // Hier stand zuerst die Prämisse und die Pointe kam danach — im
+  // Redaktionstisch sofort sichtbar geworden, sobald die Vorschau die richtige
+  // Reihenfolge hatte. Jetzt: Widerspruch zuerst, Herleitung danach.
+  const standardVorlage = [
+    `In deutschen Großstädten stehen nur halb so viele Balkonkraftwerke wie in kleinen Gemeinden. Bei einem Gerät, das als Lösung für Mieter in der Stadt gilt.`,
     ``,
-    `Die Anmeldedaten sagen etwas anderes.`,
+    `Die Anmeldedaten: In den {stadtAnzahl} deutschen Städten über {stadtSchwelle} Einwohnern kommen {stadtQuote} Steckersolargeräte auf 1.000 Einwohner. In den gut {landAnzahl}.000 Gemeinden unter {landSchwelle} Einwohnern sind es {landQuote}. Also ${staerker ? `{faktor}-mal so viele` : `weniger`} — und zwar dort, wo die meisten Leute ohnehin ein eigenes Dach hätten.`,
     ``,
-    `In den ${de(s.stadtAnzahl)} deutschen Städten über ${de(s.stadtAb / 1000)}.000 Einwohnern kommen ${de(s.stadtJeTausend, 1)} Steckersolargeräte auf 1.000 Einwohner. In den gut ${de(Math.round(s.landAnzahl / 1000))}.000 Gemeinden unter ${de(s.landUnter / 1000)}.000 Einwohnern sind es ${de(s.landJeTausend, 1)}. Also ${staerker ? `${de(faktor, 1)}-mal so viele` : `weniger`} — und zwar dort, wo die meisten Leute ohnehin ein eigenes Dach hätten.`,
-    ``,
-    `Bei den Stadtstaaten wird es noch deutlicher: ${schluss.name} ${de(schluss.balkonJeTausend, 1)}, ${zweitLetzter.name} ${de(zweitLetzter.balkonJeTausend, 1)}. ${spitze.name} kommt auf ${de(spitze.balkonJeTausend, 1)}.`,
+    `Am deutlichsten in den Stadtstaaten: {stadtstaaten}. Unter den Flächenländern führt {spitzenland} mit {spitzenwert}.`,
     ``,
     `Warum das plausibel ist, wenn man kurz nachdenkt: Ein Balkonkraftwerk braucht keine Baugenehmigung und keinen Handwerker, aber es braucht jemanden, der es aufstellt und anmeldet. Im Reihenhaus mit Garten ist beides einfacher als im vierten Stock einer Mietwohnung, deren Balkon nach Norden zeigt.`,
     ``,
-    quellenzeile(k.standIso),
+    `{quelle}`,
   ].join("\n");
+
+  const werte = Object.fromEntries(platzhalter.map((p) => [p.name, p.wert]));
+  const vorlage = eigeneVorlage ?? standardVorlage;
+  const text = fuelle(vorlage, werte);
 
   return {
     id: "stadt-land-balkon",
+    vorlage,
+    platzhalter,
     titel: "Das Balkonkraftwerk ist kein Stadtthema",
     kanal: ["linkedin", "instagram"],
     text,
@@ -149,13 +254,22 @@ export function postStadtLand(k: SocialKennzahlen): SocialPost {
           hervorgehoben: true,
         },
       ],
-      quelle: quellenzeile(k.standIso),
+      quelle: quellenzeile(k.standIso, false),
+    },
+    onsite: {
+      anker: "stadt-land",
+      ueberschrift: "Balkonkraftwerke stehen häufiger auf dem Land als in der Stadt",
+      absaetze: [
+        `Steckersolargeräte gelten als Lösung für Mieter in der Stadt. Die Anmeldungen im Marktstammdatenregister zeigen das Gegenteil: In den ${de(s.stadtAnzahl)} deutschen Städten über ${de(s.stadtAb / 1000)}.000 Einwohnern kommen ${de(s.stadtJeTausend, 1)} Geräte auf 1.000 Einwohner, in den Gemeinden unter ${de(s.landUnter / 1000)}.000 sind es ${de(s.landJeTausend, 1)}.`,
+        `Am deutlichsten ist der Abstand in den Stadtstaaten: ${stadtstaaten.map((l) => `${l.name} ${de(l.balkonJeTausend, 1)}`).join(", ")}. Unter den Flächenländern führt ${spitze.name} mit ${de(spitze.balkonJeTausend, 1)}.`,
+        `Der Grund liegt vermutlich nicht am Gerät, sondern an der Aufstellung: Ein Balkonkraftwerk braucht keine Genehmigung und keinen Handwerker, aber jemanden, der es anbringt und anmeldet. Auf einer Terrasse oder im Garten ist das einfacher als an einem Mietbalkon, der nach Norden zeigt.`,
+      ],
     },
     belege: [
       `Städte ab ${de(s.stadtAb)} Einwohnern: ${de(s.stadtAnzahl)} Gemeinden, ${de(s.stadtJeTausend, 1)} je 1.000 Einwohner`,
       `Gemeinden unter ${de(s.landUnter)}: ${de(s.landAnzahl)}, ${de(s.landJeTausend, 1)} je 1.000 Einwohner`,
       `Faktor ${de(faktor, 2)}`,
-      `Spitze ${spitze.name} ${de(spitze.balkonJeTausend, 1)} · Schlusslicht ${schluss.name} ${de(schluss.balkonJeTausend, 1)}`,
+      `Stärkstes Flächenland ${spitze.name} ${de(spitze.balkonJeTausend, 1)} · Stadtstaaten ${stadtstaaten.map((l) => `${l.name} ${de(l.balkonJeTausend, 1)}`).join(", ")}`,
     ],
   };
 }
@@ -174,16 +288,17 @@ export function postWachstum(k: SocialKennzahlen): SocialPost {
   const zuwachs = w.balkonJetzt - w.balkonVorJahr;
   const gwp = (n: number) => de(n / 1_000_000, 0);
 
+  // Aussage in die ersten zwei Zeilen, siehe postStadtLand.
   const text = [
-    `Deutschlands Solarleistung ist in den letzten zwölf Monaten um ${de(solarProzent, 0)} Prozent gewachsen. Auf jetzt ${gwp(w.solarKwpJetzt)} Gigawatt.`,
+    `Balkonkraftwerke wachsen ${de(balkonProzent / solarProzent, 1)}-mal so schnell wie Deutschlands Solarleistung insgesamt. ${de(Math.round(zuwachs / 1000))}.000 neue in zwölf Monaten.`,
     ``,
-    `Die Zahl der Balkonkraftwerke im selben Zeitraum: plus ${de(balkonProzent, 0)} Prozent. Von ${de(w.balkonVorJahr / 1_000_000, 2)} auf ${de(w.balkonJetzt / 1_000_000, 2)} Millionen.`,
+    `Die Solarleistung ist im selben Zeitraum um ${de(solarProzent, 0)} Prozent gewachsen, auf ${gwp(w.solarKwpJetzt)} Gigawatt. Die Zahl der Balkonkraftwerke um ${de(balkonProzent, 0)} Prozent, von ${de(w.balkonVorJahr / 1_000_000, 2)} auf ${de(w.balkonJetzt / 1_000_000, 2)} Millionen.`,
     ``,
-    `Leistungsmäßig ist das eine Randnotiz. Aber als Zahl der Menschen, die zum ersten Mal selbst Strom erzeugen, ist es die interessantere Größe: ${de(Math.round(zuwachs / 1000))}.000 Haushalte in einem Jahr, ohne Handwerker, ohne Kredit, ohne Genehmigung.`,
+    `Leistungsmäßig ist das eine Randnotiz. Aber als Zahl der Menschen, die zum ersten Mal selbst Strom erzeugen, ist es die interessantere Größe: so viele Haushalte in einem Jahr, ohne Handwerker, ohne Kredit, ohne Genehmigung.`,
     ``,
     `Ich finde die zweite Zahl aussagekräftiger als die erste, auch wenn sie in keiner Ausbaustatistik auftaucht.`,
     ``,
-    quellenzeile(k.standIso),
+    quellenzeile(k.standIso, true),
   ].join("\n");
 
   return {
@@ -206,7 +321,15 @@ export function postWachstum(k: SocialKennzahlen): SocialPost {
           hervorgehoben: true,
         },
       ],
-      quelle: quellenzeile(k.standIso),
+      quelle: quellenzeile(k.standIso, false),
+    },
+    onsite: {
+      anker: "balkon-wachstum",
+      ueberschrift: "Balkonkraftwerke wachsen schneller als die Solarleistung insgesamt",
+      absaetze: [
+        `Deutschlands installierte Solarleistung ist in zwölf Monaten um ${de(solarProzent, 0)} Prozent gewachsen, auf ${gwp(w.solarKwpJetzt)} Gigawatt. Die Zahl der angemeldeten Steckersolargeräte im selben Zeitraum um ${de(balkonProzent, 0)} Prozent, von ${de(w.balkonVorJahr / 1_000_000, 2)} auf ${de(w.balkonJetzt / 1_000_000, 2)} Millionen.`,
+        `An der Leistung gemessen ist das eine Randnotiz: Ein Balkonkraftwerk bringt einen Bruchteil dessen, was eine Dachanlage liefert. Als Zahl der Haushalte, die zum ersten Mal eigenen Strom erzeugen, ist es die größere Bewegung — ${de(Math.round(zuwachs / 1000))}.000 in einem Jahr, ohne Handwerker, ohne Kredit und ohne Genehmigung.`,
+      ],
     },
     belege: [
       `Solar ${fmtPvLeistung(w.solarKwpJetzt)} gegen ${fmtPvLeistung(w.solarKwpVorJahr)} (+${de(solarProzent, 1)} %)`,
@@ -215,8 +338,211 @@ export function postWachstum(k: SocialKennzahlen): SocialPost {
   };
 }
 
-export const ALLE_POSTS = [postStadtLand, postWachstum] as const;
+/**
+ * Post 3 — Der Osten baut auf Feldern, der Westen auf Dächern.
+ *
+ * Der schärfste geografische Kontrast im Bestand, und einer mit einer Ursache,
+ * die man nennen kann: verfügbare Fläche. Die Reihenfolge wird gerechnet, nicht
+ * behauptet — kippt sie, kippt der Satz mit.
+ */
+export function postFreiflaeche(k: SocialKennzahlen): SocialPost {
+  const sortiert = [...k.laender].sort((a, b) => b.freiflaecheAnteil - a.freiflaecheAnteil);
+  const oben = sortiert[0];
+  // Stadtstaaten haben praktisch keine Freifläche und wären ein unfairer
+  // Gegenpol — verglichen wird das schwächste FLÄCHENLAND.
+  const stadtstaaten = ["Berlin", "Hamburg", "Bremen"];
+  const flaechen = sortiert.filter((l) => !stadtstaaten.includes(l.name));
+  const unten = flaechen[flaechen.length - 1];
 
-export function baueAllePosts(k: SocialKennzahlen): SocialPost[] {
-  return ALLE_POSTS.map((f) => f(k));
+  const text = [
+    `${oben.name} hat ${de(oben.freiflaecheAnteil, 0)} Prozent seiner Solarleistung auf Freiflächen stehen. ${unten.name} ${de(unten.freiflaecheAnteil, 0)} Prozent. Beide bauen Solar aus, aber an völlig verschiedenen Orten.`,
+    ``,
+    `Die Spanne über alle Flächenländer reicht von ${de(unten.freiflaecheAnteil, 0)} bis ${de(oben.freiflaecheAnteil, 0)} Prozent. In den Stadtstaaten liegt der Anteil unter einem Prozent — dort gibt es schlicht keine Flächen.`,
+    ``,
+    `Das ist keine Frage der Förderung und auch keine der Einstellung, sondern eine der verfügbaren Fläche. Wo Ackerland günstig und Siedlungsdichte niedrig ist, entstehen Solarparks. Wo beides umgekehrt ist, bleibt das Dach.`,
+    ``,
+    `Für die Debatte über Flächenverbrauch heißt das: Sie wird in wenigen Bundesländern geführt und betrifft die anderen kaum.`,
+    ``,
+    quellenzeile(k.standIso, true),
+  ].join("\n");
+
+  return {
+    id: "freiflaeche-ost-west",
+    titel: "Der Osten baut auf Feldern, der Westen auf Dächern",
+    kanal: ["linkedin"],
+    text,
+    bild: {
+      art: "vergleich",
+      aussage: `Wo die Solarleistung steht, entscheidet die Fläche`,
+      gemessen: `Anteil Freiflächen an der Solarleistung`,
+      serien: [
+        { label: oben.name, wert: oben.freiflaecheAnteil, einheit: "%", stellen: 0, hervorgehoben: true },
+        { label: unten.name, wert: unten.freiflaecheAnteil, einheit: "%", stellen: 0 },
+      ],
+      quelle: quellenzeile(k.standIso, false),
+    },
+    belege: [
+      `Spitze ${oben.name} ${de(oben.freiflaecheAnteil, 1)} % (${fmtPvLeistung(oben.solarKwp)})`,
+      `Schwächstes Flächenland ${unten.name} ${de(unten.freiflaecheAnteil, 1)} % (${fmtPvLeistung(unten.solarKwp)})`,
+      `Stadtstaaten ausgenommen: ${stadtstaaten.join(", ")}`,
+    ],
+  };
+}
+
+/**
+ * Post 4 — Die Energiewende liegt nicht auf Privatdächern.
+ *
+ * Widerspricht dem verbreiteten Bild und braucht dafür keinen Ortsnamen, also
+ * auch kein Kränkungsrisiko.
+ */
+export function postSegmente(k: SocialKennzahlen): SocialPost {
+  const s = k.segmente;
+  const anteil = (v: number) => (s.solarGesamtKwp ? (v / s.solarGesamtKwp) * 100 : 0);
+  const privat = anteil(s.privatDachKwp);
+  const gewerbe = anteil(s.gewerbeDachKwp);
+  const frei = anteil(s.freiflaecheKwp);
+
+  const text = [
+    `Auf privaten Dächern liegen ${de(privat, 0)} Prozent der deutschen Solarleistung. Gewerbedächer und Freiflächen tragen zusammen den Rest.`,
+    ``,
+    `Die genaue Aufteilung: privates Dach ${de(privat, 1)} Prozent, Gewerbe ${de(gewerbe, 1)}, Freifläche ${de(frei, 1)}. Zusammen ${fmtPvLeistung(s.solarGesamtKwp)}.`,
+    ``,
+    `Das Bild von der Energiewende auf dem Einfamilienhausdach stimmt also nur für gut ein Viertel. Der größere Teil entsteht dort, wo jemand gewerblich rechnet — auf Hallendächern und auf Feldern.`,
+    ``,
+    `Was das für die eigene Anlage bedeutet: nichts. Sie rechnet sich unabhängig davon, wie groß ihr Anteil an der Gesamtstatistik ist. Für die Debatte darüber, wo Solar hingehört, ist es aber der Ausgangspunkt.`,
+    ``,
+    quellenzeile(k.standIso, true),
+  ].join("\n");
+
+  return {
+    id: "segmente-anteile",
+    titel: "Die Energiewende liegt nicht auf Privatdächern",
+    kanal: ["linkedin", "instagram"],
+    text,
+    bild: {
+      art: "vergleich",
+      aussage: `Nur gut ein Viertel der Solarleistung liegt auf privaten Dächern`,
+      gemessen: `Anteil an der installierten Solarleistung`,
+      serien: [
+        { label: "Freifläche", wert: frei, einheit: "%", stellen: 0 },
+        { label: "Gewerbedach", wert: gewerbe, einheit: "%", stellen: 0 },
+        { label: "Privates Dach", wert: privat, einheit: "%", stellen: 0, hervorgehoben: true },
+      ],
+      quelle: quellenzeile(k.standIso, false),
+    },
+    belege: [
+      `Gesamt ${fmtPvLeistung(s.solarGesamtKwp)}`,
+      `privat ${fmtPvLeistung(s.privatDachKwp)} · Gewerbe ${fmtPvLeistung(s.gewerbeDachKwp)} · Freifläche ${fmtPvLeistung(s.freiflaecheKwp)}`,
+    ],
+  };
+}
+
+/**
+ * Post 5 — Die Städte holen auf.
+ *
+ * Gegenstück zur Stadt-Land-Geschichte: Beim Bestand liegen die Städte hinten,
+ * beim Wachstum vorn. Beide Aussagen stimmen und widersprechen einander nicht —
+ * wer wenig hat, wächst schneller.
+ */
+export function postAufholjagd(k: SocialKennzahlen): SocialPost {
+  const sortiert = [...k.laender].filter((l) => l.wachstumFuenfJahre > 0).sort((a, b) => b.wachstumFuenfJahre - a.wachstumFuenfJahre);
+  const oben = sortiert[0];
+  const unten = sortiert[sortiert.length - 1];
+
+  const text = [
+    `${oben.name} hat seine Solarleistung in fünf Jahren mehr als ${de(Math.floor(oben.wachstumFuenfJahre), 0)}-mal so groß gemacht. ${unten.name} kam auf das ${de(unten.wachstumFuenfJahre, 1)}-fache.`,
+    ``,
+    `Das klingt nach einer Überraschung, ist aber die Regel: Wer wenig hatte, wächst schneller. Die Stadtstaaten führen diese Liste an, weil sie von einem sehr niedrigen Stand kommen — an installierter Leistung je Einwohner liegen sie weiter hinten.`,
+    ``,
+    `Beide Zahlen stimmen gleichzeitig, und sie beantworten verschiedene Fragen. Wer wissen will, wo viel Solar steht, schaut auf den Bestand. Wer wissen will, wo sich gerade etwas bewegt, auf das Wachstum.`,
+    ``,
+    quellenzeile(k.standIso, true),
+  ].join("\n");
+
+  return {
+    id: "aufholjagd-fuenf-jahre",
+    titel: "Die Städte holen auf",
+    kanal: ["linkedin"],
+    text,
+    bild: {
+      art: "vergleich",
+      aussage: `Wer wenig hatte, wächst am schnellsten`,
+      gemessen: `Solarleistung heute im Verhältnis zu vor fünf Jahren`,
+      serien: [
+        { label: oben.name, wert: oben.wachstumFuenfJahre, einheit: "fach", stellen: 1, hervorgehoben: true },
+        { label: unten.name, wert: unten.wachstumFuenfJahre, einheit: "fach", stellen: 1 },
+      ],
+      quelle: quellenzeile(k.standIso, false),
+    },
+    belege: sortiert.map((l) => `${l.name} ${de(l.wachstumFuenfJahre, 2)}x`),
+  };
+}
+
+/**
+ * Post 6 — Zwei von drei Gemeinden haben mehr Kilowatt als Einwohner.
+ *
+ * Eine Bundeszahl mit anschaulicher Größenordnung. Die Mindest-Einwohnerzahl
+ * steht im Text: Ohne sie wäre die Aussage eine Eigenschaft des Nenners.
+ */
+export function postUeberEinwohner(k: SocialKennzahlen): SocialPost {
+  const u = k.ueberEinwohner;
+  const anteil = u.betrachtet ? (u.darueber / u.betrachtet) * 100 : 0;
+
+  const text = [
+    `In ${de(u.darueber, 0)} von ${de(u.betrachtet, 0)} deutschen Gemeinden steht mehr Solarleistung, als der Ort Einwohner hat. Also mehr als ein Kilowatt je Kopf.`,
+    ``,
+    `Das sind ${de(anteil, 0)} Prozent aller Gemeinden ab ${de(u.mindestEinwohner, 0)} Einwohnern. Kleinere sind ausgenommen: Dort entscheidet ein einzelner Solarpark über die Zahl, und dann sagt sie mehr über den Nenner als über den Ort.`,
+    ``,
+    `Ein Kilowatt je Einwohner klingt nach wenig und ist es nicht. Es erzeugt im Jahr grob so viel Strom, wie ein Ein-Personen-Haushalt verbraucht — für jeden Einwohner, vom Säugling bis zum Rentner.`,
+    ``,
+    quellenzeile(k.standIso, true),
+  ].join("\n");
+
+  return {
+    id: "mehr-kwp-als-einwohner",
+    titel: "Zwei von drei Gemeinden haben mehr Kilowatt als Einwohner",
+    kanal: ["linkedin", "instagram"],
+    text,
+    bild: {
+      art: "kennzahl",
+      aussage: `In den meisten Gemeinden steht mehr Solarleistung als Einwohner`,
+      gemessen: `Gemeinden ab ${de(u.mindestEinwohner, 0)} Einwohnern`,
+      serien: [
+        {
+          label: `von ${de(u.betrachtet, 0)} Gemeinden haben mehr als ein Kilowatt Solarleistung je Einwohner`,
+          wert: u.darueber,
+          einheit: "",
+          hervorgehoben: true,
+        },
+      ],
+      quelle: quellenzeile(k.standIso, false),
+    },
+    belege: [
+      `${de(u.darueber, 0)} von ${de(u.betrachtet, 0)} (${de(anteil, 1)} %)`,
+      `Untergrenze ${de(u.mindestEinwohner, 0)} Einwohner`,
+    ],
+  };
+}
+
+export const ALLE_POSTS = [
+  postStadtLand,
+  postWachstum,
+  postFreiflaeche,
+  postSegmente,
+  postAufholjagd,
+  postUeberEinwohner,
+] as const;
+
+/**
+ * Alle Posts, mit optional bearbeiteten Vorlagen.
+ *
+ * Nur Posts, die auf Vorlagen umgestellt sind, nehmen eine eigene an. Die
+ * übrigen liefern ihren eingebauten Text — sie sind im Redaktionstisch dann
+ * lesbar, aber nicht bearbeitbar, und das steht dort auch so.
+ */
+export function baueAllePosts(k: SocialKennzahlen, vorlagen: Record<string, string> = {}): SocialPost[] {
+  return ALLE_POSTS.map((f) => {
+    const roh = f(k);
+    return f.length > 1 ? (f as (k: SocialKennzahlen, v?: string) => SocialPost)(k, vorlagen[roh.id]) : roh;
+  });
 }
