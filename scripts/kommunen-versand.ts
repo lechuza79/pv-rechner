@@ -41,7 +41,7 @@ import {
   adresseAus,
   PAUSE_MS,
   MAX_JE_LAUF,
-  ZUSTELLPROBE,
+  zustellprobeAdressen,
 } from "../lib/outreach-mail";
 import { versandfenster } from "../lib/schulferien";
 import { SCHUEBE, AKTUELLER_SCHUB } from "../lib/kommunen-testballon";
@@ -476,8 +476,9 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
   //
   // Sie zählt NICHT gegen das Tagespensum: Sie geht an uns selbst, nicht an eine
   // Gemeinde, und eine Bremse, die sich selbst mitzählt, verschiebt die Messung.
-  if (ZUSTELLPROBE.length && letzterBrief) {
-    for (const an of ZUSTELLPROBE) {
+  const probeAdressen = zustellprobeAdressen();
+  if (probeAdressen.length && letzterBrief) {
+    for (const an of probeAdressen) {
       try {
         await transport.sendMail({
           from: konfig.from,
@@ -495,7 +496,7 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
         log(`Zustellungsprobe an ${an} fehlgeschlagen: ${(e as Error).message}`, "warn");
       }
     }
-  } else if (!ZUSTELLPROBE.length) {
+  } else if (!probeAdressen.length) {
     // Eine fehlende Messung wird GEMELDET, nicht verschwiegen. Sonst liest sich
     // ein stiller Lauf wie ein geprüfter.
     log("Keine Zustellungsprobe gesetzt — ohne sie merken wir eine Einsortierung in den Spam-Ordner nicht.", "warn");

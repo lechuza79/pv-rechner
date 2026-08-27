@@ -386,8 +386,17 @@ export const MAX_JE_LAUF = 40;
  * beschädigt ist.
  *
  * Leer = keine Probe. Der Versand läuft dann trotzdem, meldet die Lücke aber.
+ *
+ * FUNKTION, NICHT KONSTANTE — und das ist kein Stilfrage. Eine Konstante wird
+ * beim Laden des Moduls ausgewertet, die Datei mit den Zugangsdaten liest das
+ * Versandskript aber erst beim Start seiner Hauptfunktion. Die Liste wäre also
+ * ausnahmslos leer gewesen, und der Lauf hätte brav „keine Zustellungsprobe
+ * gesetzt" gemeldet — eine Messung, die sich selbst abschaltet und dabei
+ * ordentlich aussieht.
  */
-export const ZUSTELLPROBE = (process.env.OUTREACH_PROBE_ADRESSEN ?? "")
-  .split(",")
-  .map((a) => a.trim())
-  .filter(Boolean);
+export function zustellprobeAdressen(): string[] {
+  return (process.env.OUTREACH_PROBE_ADRESSEN ?? "")
+    .split(",")
+    .map((a) => a.trim())
+    .filter(Boolean);
+}
