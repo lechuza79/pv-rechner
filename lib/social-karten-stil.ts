@@ -57,21 +57,31 @@ const GRUNDLAGE = stageDefaults(STAGE_COUNT - 1);
  * Die Rollen drehen sich um: Auf blauem Grund sticht WEISS hervor, nicht ein
  * helleres Blau. Der hervorgehobene Wert (`--color-accent`) wird deshalb weiß,
  * der gewöhnliche gedämpft — sonst steht die Betonung auf der falschen Zahl,
- * und das fällt an einer einzelnen Karte niemandem auf. Die 80 % Deckkraft dort
- * ergeben 3,9:1 und gelten NUR, weil dieser Wert 96 px groß gesetzt ist (WCAG
- * verlangt für Großtext 3:1). Wer ihn verkleinert, muss den Wert anheben.
+ * und das fällt an einer einzelnen Karte niemandem auf. Der gedämpfte Ton
+ * erreicht 4,3:1 und gilt für Großtext ohnehin (WCAG verlangt dort 3:1); wer
+ * ihn verkleinert, muss ihn anheben.
  */
 const HIGHLIGHT: Partial<Record<TokenName, string>> = {
   "--color-bg": GRUNDLAGE["--color-accent"],
   "--color-bg-muted": GRUNDLAGE["--color-accent"],
   "--color-bg-accent": GRUNDLAGE["--color-accent"],
-  "--color-text-primary": "rgba(255,255,255,0.80)",
+  // FLÄCHENFARBEN IM VOLLTON, nicht durchscheinend — das ist der Unterschied
+  // zwischen sauber und schmutzig. Ein Bogen mit runder Kappe überlappt sich an
+  // seinem Ende selbst; bei einer durchscheinenden Farbe addiert sich die
+  // Deckkraft genau dort, und das Ende trägt einen hellen Klecks. Im Bild sieht
+  // das nach einem Fehler aus und ist einer.
+  //
+  // Die Töne sind die ausgerechneten Mischungen auf dem blauen Grund, eine Spur
+  // heller gesetzt: Der abgesetzte Ring soll sich vom Grund lösen, nicht mit ihm
+  // verschwimmen.
+  "--color-text-primary": "#DCE8FD",
+  // Reiner TEXT darf durchscheinen — er überlappt sich nicht.
   "--color-text-secondary": "rgba(255,255,255,0.94)",
   "--color-text-muted": "rgba(255,255,255,0.92)",
   "--color-text-faint": "rgba(255,255,255,0.80)",
   "--color-accent": "#FFFFFF",
-  "--color-border": "rgba(255,255,255,0.35)",
-  "--color-border-muted": "rgba(255,255,255,0.25)",
+  "--color-border": "#659BF1",
+  "--color-border-muted": "#4E8CEF",
   // Das Logo führt seine beiden Blautöne als Token. Auf blauem Grund verschwände
   // die Marke sonst in der Fläche.
   "--color-brand": "#FFFFFF",
