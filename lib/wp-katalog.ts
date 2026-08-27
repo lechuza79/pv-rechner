@@ -54,7 +54,29 @@ export interface WpGeraet {
    */
   herkunft: "ausgeschrieben" | "typenschluessel";
   bauart: WpBauart;
+  /**
+   * Gesamtpreis in Euro, inklusive Umsatzsteuer.
+   *
+   * Am 27.08.2026 am Shop gegengeprüft: Der Datenstrom liefert brutto (Haier
+   * HPM14-Nd2, 4.598,00 € — die Produktseite schreibt "inkl. 19% MwSt.").
+   * Hätte er netto geliefert, wäre jede Zahl in jeder Kachel um 19 % zu
+   * niedrig gewesen, ohne dass es irgendwo aufgefallen wäre.
+   */
   preisEur: number;
+  /**
+   * Versandkosten in Euro. Getrennt geführt, weil sie eine eigene Pflichtangabe
+   * sind (§ 5b Abs. 1 Nr. 3 UWG) und NICHT immer null: In der
+   * Wärmepumpen-Kategorie tragen
+   * 21 von 2.413 Artikeln 5,90 €. Pauschal "versandkostenfrei" hinzuschreiben
+   * wäre für diese 21 eine Falschangabe — die Sorte Fehler, die niemandem
+   * auffällt und trotzdem eine Preisangabe unrichtig macht.
+   *
+   * `null` heißt "der Händler nennt sie nicht" und ist NICHT dasselbe wie 0.
+   * Bewusst null und nicht NaN: Über die Schnittstelle geht der Wert durch
+   * JSON, und dort wird aus NaN stillschweigend null — der Typ hätte `number`
+   * behauptet, angekommen wäre etwas anderes.
+   */
+  versandEur: number | null;
   /** Affiliate-Link des Netzwerks — nie die Händler-Adresse direkt verlinken. */
   link: string;
   bildUrl: string | null;
@@ -112,6 +134,34 @@ export function geraetLeistungTeile(kw: number): Messwert {
 /** Gerätepreis, immer auf ganze Euro. Cent neben einem Kaufknopf sind Lärm. */
 export function geraetPreisTeile(euro: number): Messwert {
   return { value: Math.round(euro).toLocaleString("de-DE"), unit: "€" };
+}
+
+/**
+ * Die Pflichtangaben neben dem Preis — EINE Quelle, nie am Anzeigeort getippt.
+ *
+ * § 5b Abs. 1 Nr. 3 UWG macht Gesamtpreis und Lieferkosten zur wesentlichen
+ * Information, sobald Waren unter Hinweis auf Merkmale und Preis so dargestellt
+ * werden, dass ein Verbraucher das Geschäft abschließen kann. Genau das tun die
+ * Kacheln: Leistung, Kältemittel, Preis, ein Knopf in den Shop.
+ *
+ * NICHT die Preisangabenverordnung — eine erste Fassung stützte sich darauf und
+ * lag falsch. Beide Alternativen des § 3 Abs. 1 PAngV setzen die
+ * Anbietereigenschaft voraus ("als Anbieter von Waren ... wirbt"), § 6 Abs. 1
+ * sogar ein Angebot "zum Abschluss eines Fernabsatzvertrages". Anbieter ist der
+ * Händler. Am 27.08.2026 im Volltext gelesen, Belege in `lib/rechtsbelege.ts`.
+ *
+ * Der Nullsteuersatz für Photovoltaik greift hier nicht: § 12 Abs. 3 UStG nennt
+ * Solarmodule, Speicher und Wechselrichter, keine Wärmepumpen.
+ */
+export function preisZusatz(g: WpGeraet): string {
+  const mwst = "inkl. MwSt.";
+  if (g.versandEur === null || !Number.isFinite(g.versandEur)) return mwst;
+  if (g.versandEur <= 0) return `${mwst}, versandkostenfrei`;
+  const v = g.versandEur.toLocaleString("de-DE", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  return `${mwst}, zzgl. ${v} € Versand`;
 }
 
 /**
@@ -313,6 +363,7 @@ export interface FeedZeile {
   product_name: string;
   brand_name: string;
   search_price: string;
+  delivery_cost?: string;
   aw_deep_link: string;
   merchant_image_url: string;
   in_stock: string;
@@ -462,6 +513,9 @@ export function geraetAusZeile(z: FeedZeile): WpGeraet | null {
   const preis = Number.parseFloat(z.search_price);
   if (!Number.isFinite(preis) || preis < MINDESTPREIS_EUR) return null;
 
+  const versandRoh = Number.parseFloat(z.delivery_cost ?? "");
+  const versand = Number.isFinite(versandRoh) ? versandRoh : null;
+
   const marke = (z.brand_name || "").toUpperCase();
   const ausgeschrieben = leistungAusName(name);
   const leistungKw = ausgeschrieben ?? leistungAusTyp(name, marke);
@@ -478,6 +532,9 @@ export function geraetAusZeile(z: FeedZeile): WpGeraet | null {
     herkunft: ausgeschrieben !== null ? "ausgeschrieben" : "typenschluessel",
     bauart: bauartAus(name, pfad),
     preisEur: preis,
+    // Fehlt die Angabe, gilt sie als unbekannt und wird als solche angezeigt —
+    // nicht als null. Eine geratene Null ist hier eine Preisangabe.
+    versandEur: versand,
     link: z.aw_deep_link,
     bildUrl: z.merchant_image_url || null,
     lieferbar: z.in_stock === "1",

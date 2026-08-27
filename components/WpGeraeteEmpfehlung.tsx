@@ -9,6 +9,7 @@ import ContactPerson from "./ContactPerson";
 import {
   geraetLeistungTeile,
   geraetPreisTeile,
+  preisZusatz,
   leistungAnzeigbar,
   type WpGeraet,
 } from "../lib/wp-katalog";
@@ -238,6 +239,15 @@ function Karte({ e, rang, fall }: { e: Empfehlung; rang: number; fall: Props }) 
         </span>
       </div>
 
+      {/* Pflichtangaben zum Preis (§ 5b Abs. 1 Nr. 3 UWG): Gesamtpreis und
+          Lieferkosten sind wesentliche Informationen, sobald Merkmale und Preis
+          so zusammenstehen, dass jemand kaufen kann. Der Wortlaut kommt aus
+          `preisZusatz` — an der Kachel getippt stünde er beim nächsten Gerät
+          mit Versandkosten falsch da. */}
+      <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: -4 }}>
+        {preisZusatz(g)}
+      </div>
+
       {werte.length > 0 && (
         <dl
           style={{
@@ -404,6 +414,23 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
 
   const fall = { auslegungKw, vorlaufC, wpType };
   const alternativ = antwort?.alternativ ?? [];
+  /**
+   * Wann wir die Preise geholt haben.
+   *
+   * Ein Preis ohne Erhebungszeitpunkt behauptet Aktualität, die wir nicht
+   * zusagen können: Der Datenstrom wird einmal täglich abgerufen, der Händler
+   * ändert seine Preise, wann er will. Der BGH verlangt bei Preisvergleichs-
+   * Darstellungen genau diesen Hinweis, wenn der angezeigte Preis nicht der
+   * aktuelle sein muss (I ZR 140/07). Der Zusatz "es gilt der Preis im Shop"
+   * sagt zusätzlich, welcher der beiden im Zweifel zählt.
+   */
+  const preisStand = antwort?.abgerufenIso
+    ? new Date(antwort.abgerufenIso).toLocaleDateString("de-DE", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      })
+    : null;
   const nurEinzelgeraete = treffer.every((e) => e.geraet.umfang === "geraet");
 
   return (
@@ -452,6 +479,7 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
           <strong style={{ color: v("--color-text-primary") }}>Anzeige</strong> — Die Geräte kommen
           aus dem Sortiment von Heizungsdiscount24, sind also kein Marktüberblick. Über die Links
           erhalten wir eine Provision, wenn du dort kaufst; für dich ändert sich am Preis nichts.
+          {preisStand ? ` Preise vom ${preisStand}; es gilt der Preis im Shop.` : null}
         </p>
         {/* Das Versprechen steht NEBEN der Kennzeichnung, nicht statt ihrer.
 

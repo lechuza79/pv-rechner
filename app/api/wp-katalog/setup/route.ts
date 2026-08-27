@@ -35,6 +35,11 @@ export async function GET(req: NextRequest) {
         herkunft      text NOT NULL,
         bauart        text NOT NULL,
         preis_eur     numeric(10,2) NOT NULL,
+        -- Versandkosten sind eine eigene Pflichtangabe (§ 5b Abs. 1 Nr. 3 UWG)
+        -- und nicht
+        -- immer null. NULL heißt hier "der Händler nennt sie nicht" — das wird
+        -- angezeigt, nicht zu einer Null gerundet.
+        versand_eur   numeric(10,2),
         link          text NOT NULL,
         bild_url      text,
         lieferbar     boolean NOT NULL DEFAULT true,
@@ -52,6 +57,7 @@ export async function GET(req: NextRequest) {
 
       -- Nachträglich, damit ein bestehender Bestand die Spalte bekommt.
       ALTER TABLE ${WP_KATALOG_TABELLE} ADD COLUMN IF NOT EXISTS umfang text NOT NULL DEFAULT 'geraet';
+      ALTER TABLE ${WP_KATALOG_TABELLE} ADD COLUMN IF NOT EXISTS versand_eur numeric(10,2);
 
       ALTER TABLE ${WP_KATALOG_TABELLE} ENABLE ROW LEVEL SECURITY;
 

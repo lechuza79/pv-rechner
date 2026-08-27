@@ -38,6 +38,7 @@ interface Zeile {
   herkunft: string;
   bauart: string;
   preis_eur: number;
+  versand_eur: number | null;
   link: string;
   bild_url: string | null;
   lieferbar: boolean;
@@ -57,6 +58,8 @@ function ausZeile(z: Zeile): WpGeraet {
     herkunft: z.herkunft === "ausgeschrieben" ? "ausgeschrieben" : "typenschluessel",
     bauart: z.bauart as WpGeraet["bauart"],
     preisEur: Number(z.preis_eur),
+    // NULL bleibt null, nicht 0: „unbekannt“ und „kostenlos“ sind zwei Aussagen.
+    versandEur: z.versand_eur === null ? null : Number(z.versand_eur),
     link: z.link,
     bildUrl: z.bild_url,
     lieferbar: z.lieferbar,
@@ -88,7 +91,7 @@ export async function ladeKatalog(bauart: "luft-wasser" | "sole-wasser"): Promis
     supabase
       .from(WP_KATALOG_TABELLE)
       .select(
-        "id,name,marke,leistung_kw,herkunft,bauart,preis_eur,link,bild_url,lieferbar,vorlauf_max_c,kaeltemittel,aufbau,umfang,abgerufen_am",
+        "id,name,marke,leistung_kw,herkunft,bauart,preis_eur,versand_eur,link,bild_url,lieferbar,vorlauf_max_c,kaeltemittel,aufbau,umfang,abgerufen_am",
       )
       .eq("bauart", bauart)
       .eq("lieferbar", true),

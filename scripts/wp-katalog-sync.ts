@@ -174,6 +174,7 @@ async function schreibe(geraete: WpGeraet[], abgerufenIso: string): Promise<void
     herkunft: g.herkunft,
     bauart: g.bauart,
     preis_eur: g.preisEur,
+    versand_eur: g.versandEur,
     link: g.link,
     bild_url: g.bildUrl,
     lieferbar: g.lieferbar,

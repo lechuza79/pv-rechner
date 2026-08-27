@@ -10,6 +10,7 @@ const geraet = (ueber: Partial<WpGeraet> = {}): WpGeraet => ({
   herkunft: "ausgeschrieben",
   bauart: "luft-wasser",
   preisEur: 9000,
+  versandEur: 0,
   link: "https://www.awin1.com/x",
   bildUrl: null,
   lieferbar: true,
