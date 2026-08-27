@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { isAdminSession } from "../../../../lib/admin-guard";
 import { socialKennzahlen } from "../../../../lib/social-kennzahlen";
-import { baueAllePosts, type SocialPost } from "../../../../lib/social-posts";
+import { baueAllePosts, templateVon, type SocialPost } from "../../../../lib/social-posts";
 import { KATEGORIEN, kategorieAusAdresse } from "../../../../lib/redaktions-kategorien";
 import { BEREICHE } from "../../../../lib/redaktionsplan";
 import { KategorieNav } from "../../../../components/social/KategorieNav";
@@ -46,12 +46,10 @@ export default async function RedaktionEntwicklung({
   const kat = kategorieAusAdresse(gewaehlt);
 
   let posts: SocialPost[] | undefined;
-  let fassungen: Record<string, unknown> = {};
   let fehler: string | null = null;
   try {
-    const [kennzahlen, geladen] = await Promise.all([socialKennzahlen(), ladeFassungen()]);
-    fassungen = geladen;
-    posts = baueAllePosts(kennzahlen, geladen);
+    const [kennzahlen, fassungen] = await Promise.all([socialKennzahlen(), ladeFassungen()]);
+    posts = baueAllePosts(kennzahlen, fassungen);
   } catch (e) {
     fehler = (e as Error).message;
   }
@@ -114,7 +112,8 @@ export default async function RedaktionEntwicklung({
               post: p,
               pruefungen: pruefungen[p.id] ?? [],
               kategorie: { name: k.name, schluessel: k.schluessel },
-              bearbeitet: p.gestaltet === true || p.id in fassungen,
+              // Gestaltet heißt: Der Beitrag verwendet ein abgenommenes Template.
+              bearbeitet: !!p.bild && !!templateVon(p.bild),
             };
           })}
         />

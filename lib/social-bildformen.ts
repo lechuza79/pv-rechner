@@ -10,6 +10,7 @@
 // wählbar ist, wählt irgendwann jemand, und dann steht im Bild eine Aussage, die
 // die Zahlen nicht hergeben.
 
+import type { KartenStil } from "./social-karten-stil";
 import type { PostBild } from "./social-posts";
 
 export type Bildform = {
@@ -76,4 +77,30 @@ export function bildform(art: PostBild["art"]): Bildform {
 /** Welche Formen für dieses Bild tragen — in der Reihenfolge des Registers. */
 export function moeglicheFormen(bild: PostBild): PostBild["art"][] {
   return BILDFORMEN.filter((f) => f.passt(bild)).map((f) => f.art);
+}
+
+/**
+ * Die ABGENOMMENEN Templates: Bildform × Farbschema.
+ *
+ * Das ist die Design-Einheit, an der beliebig viele Beiträge hängen können — und
+ * der Grund, warum „gestaltet" kein Häkchen am einzelnen Post ist. Wer ein
+ * abgenommenes Template verwendet, hat ein abgenommenes Design; wer eine
+ * Kombination benutzt, die noch niemand durchgesehen hat, eben nicht.
+ *
+ * Ein handgesetztes Flag am Post wäre hier die schlechtere Wahl: Es müsste
+ * jemand pflegen, es steht irgendwann auf „fertig" an einer Story, die niemand
+ * angesehen hat, und es sagt nichts darüber, WELCHES Design gemeint ist.
+ */
+export type Template = { art: PostBild["art"]; stil: KartenStil; name: string };
+
+export const TEMPLATES: Template[] = [
+  { art: "saeule", stil: "hell", name: "Säule hell" },
+  { art: "donut", stil: "highlight", name: "Ringpaar Highlight" },
+  { art: "donut", stil: "hell", name: "Ringpaar hell" },
+  { art: "umriss", stil: "hell", name: "Gefüllte Umrisse hell" },
+];
+
+/** Das abgenommene Template dieses Bildes — oder nichts. */
+export function templateVon(bild: PostBild): Template | undefined {
+  return TEMPLATES.find((t) => t.art === bild.art && t.stil === bild.stil);
 }

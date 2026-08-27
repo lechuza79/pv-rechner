@@ -9,7 +9,7 @@ import { Kennung } from "./Kennung";
 import { v, space, pad } from "../../lib/theme";
 import type { Pruefung } from "../../lib/social-pruefung-kern";
 import { urteil } from "../../lib/social-pruefung-kern";
-import { BILDFORM_NAME, type SocialPost } from "../../lib/social-posts";
+import { BILDFORM_NAME, templateVon, type SocialPost } from "../../lib/social-posts";
 import { KARTEN_STIL_NAME } from "../../lib/social-karten-stil";
 
 // Alle Beiträge als Raster — der Einstieg in die Entwicklung.
@@ -131,7 +131,8 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
                   aussieht — und das ist die Frage, die beim Gestalten zählt. */}
               {post.bild && (
                 <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
-                  {BILDFORM_NAME[post.bild.art]} · {KARTEN_STIL_NAME[post.bild.stil]}
+                  {templateVon(post.bild)?.name ??
+                    `${BILDFORM_NAME[post.bild.art]} · ${KARTEN_STIL_NAME[post.bild.stil]} — kein abgenommenes Template`}
                 </div>
               )}
 

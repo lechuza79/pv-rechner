@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { KATEGORIEN, kategorie, kategorieAusAdresse } from "../redaktions-kategorien";
 import { FAMILIEN } from "../redaktionsplan";
 import { KARTEN_STILE, KARTEN_STIL_STANDARD, kartenTokens, istKartenStil } from "../social-karten-stil";
-import { BILDFORMEN, BILDFORM_NAME, baueAllePosts, kurzEinwohner, moeglicheFormen, type SocialKennzahlen } from "../social-posts";
+import { BILDFORMEN, BILDFORM_NAME, TEMPLATES, baueAllePosts, kurzEinwohner, moeglicheFormen, templateVon, type SocialKennzahlen } from "../social-posts";
 import { BUNDESLAND_UMRISS } from "../bundesland-umrisse";
 
 // Die beiden Ausfälle, die diese Ansicht haben kann, sind von außen unsichtbar:
@@ -322,6 +322,32 @@ describe("Das Formen-Register", () => {
     // bliebe auf ihrer eingebauten Form stehen, ohne dass etwas fehlschlägt.
     const arten = new Set(posts.map((p) => p.bild?.art).filter(Boolean));
     for (const a of arten) expect(BILDFORMEN.some((f) => f.art === a), String(a)).toBe(true);
+  });
+});
+
+describe("Templates", () => {
+  it("jedes Template ist eine mögliche Kombination", () => {
+    // Ein Template, dessen Bildform es nicht gibt oder dessen Farbschema nicht
+    // existiert, wäre nie erreichbar — und alle Beiträge, die es benutzen
+    // sollten, stünden stillschweigend als ungestaltet da.
+    for (const t of TEMPLATES) {
+      expect(BILDFORMEN.some((f) => f.art === t.art), t.name).toBe(true);
+      expect(KARTEN_STILE, t.name).toContain(t.stil);
+      expect(t.name.length, t.art).toBeGreaterThan(5);
+    }
+  });
+
+  it("gestaltet heißt: verwendet ein abgenommenes Template", () => {
+    // Kein Häkchen am Post. Ein handgesetzter Zustand müsste gepflegt werden,
+    // stünde irgendwann auf „fertig" an einer Story, die niemand angesehen hat,
+    // und sagte nichts darüber, WELCHES Design gemeint ist.
+    for (const p of posts) {
+      if (!p.bild) continue;
+      const t = templateVon(p.bild);
+      if (!t) continue;
+      expect(t.art).toBe(p.bild.art);
+      expect(t.stil).toBe(p.bild.stil);
+    }
   });
 });
 
