@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { STAGE_COUNT, space, stageDefaults } from "../../lib/theme";
+import { space } from "../../lib/theme";
 import { SocialKarte } from "./SocialKarte";
 import type { PostBild } from "../../lib/social-posts";
 
@@ -52,11 +52,10 @@ function mitErwaehnungDarstellen(text: string) {
   );
 }
 
-// Die Karte dagegen ist unser Produkt — sie wird aber IMMER auf der hellsten
-// Tagesstufe aufgenommen (dieselbe Regel wie beim Bild-Export). Sie hier der
-// aktuellen Stufe folgen zu lassen hieße, eine Fassung zu beurteilen, die nie
-// als Bild entsteht.
-const HELLSTE_STUFE = stageDefaults(STAGE_COUNT - 1) as Record<string, string>;
+// Die Karte dagegen ist unser Produkt, und sie bringt ihr Farbschema selbst mit
+// (lib/social-karten-stil): die hellste Tagesstufe als Grundlage, darüber der
+// gewählte Stil. Die Vorschau setzt dazu nichts — täte sie es, beurteilte man
+// hier eine Fassung, die beim Aufnehmen so nicht entsteht.
 
 export function FeedVorschau({
   bild,
@@ -139,11 +138,7 @@ export function FeedVorschau({
         </button>
       </div>
 
-      {/* Eigene Token-Hülle: Die Karte steht auf der hellsten Stufe, unabhängig
-          davon, welche Tagesstufe die umgebende Seite gerade zeigt. */}
-      <div style={HELLSTE_STUFE as React.CSSProperties}>
-        <SocialKarte bild={bild} skala={skala} />
-      </div>
+      <SocialKarte bild={bild} skala={skala} />
     </div>
   );
 }
