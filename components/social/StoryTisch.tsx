@@ -30,7 +30,19 @@ const BILDFORM: Record<PostBild["art"], string> = {
 // die Eigenschaft, die vorher fehlte — der Abdruck hing nur am Text, also blieb
 // eine Freigabe bestehen, während das Bild ein anderes wurde.
 
-export function StoryTisch({ post, pruefungen }: { post: SocialPost; pruefungen: Pruefung[] }) {
+export function StoryTisch({
+  post,
+  pruefungen,
+  kategorieHinweis,
+}: {
+  post: SocialPost;
+  pruefungen: Pruefung[];
+  /**
+   * Woher die Story kommt, mit Link dorthin. Nur in der ungefilterten Ansicht:
+   * Innerhalb einer Kategorie stünde an jeder Karte dasselbe.
+   */
+  kategorieHinweis?: { name: string; href: string };
+}) {
   const [stil, setStil] = useState<KartenStil>(post.bild?.stil ?? KARTEN_STIL_STANDARD);
   const [entwurf, setEntwurf] = useState(post.vorlage ?? "");
   const [offen, setOffen] = useState(false);
@@ -92,7 +104,23 @@ export function StoryTisch({ post, pruefungen }: { post: SocialPost; pruefungen:
       </div>
 
       <div style={{ flex: "1 1 440px", minWidth: 340 }}>
-        <h3 style={{ fontSize: v("--font-size-h3"), margin: 0 }}>{post.titel}</h3>
+        {kategorieHinweis && (
+          <a
+            href={kategorieHinweis.href}
+            style={{
+              fontSize: v("--font-size-caption"),
+              textTransform: "uppercase",
+              letterSpacing: "0.06em",
+              color: v("--color-accent"),
+              textDecoration: "none",
+            }}
+          >
+            {kategorieHinweis.name}
+          </a>
+        )}
+        <h3 style={{ fontSize: v("--font-size-h3"), margin: 0, marginTop: kategorieHinweis ? space.xs : 0 }}>
+          {post.titel}
+        </h3>
         <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: space.xs }}>
           {post.kanal.join(" · ")} · {BILDFORM[post.bild?.art ?? "vergleich"]} · {text.length} Zeichen
         </div>
