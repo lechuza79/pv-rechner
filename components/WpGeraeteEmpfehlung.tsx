@@ -5,6 +5,7 @@ import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
 import { v, space, pad } from "../lib/theme";
 import { IconExternal, IconCheck } from "./Icons";
+import ContactPerson from "./ContactPerson";
 import {
   geraetLeistungTeile,
   geraetPreisTeile,
@@ -438,13 +439,30 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
           eine wesentliche Information ist (I ZR 55/16). Unser Fall ist enger —
           ein einziger Händler. Ohne den Satz lesen sich Überschrift und
           „ausgewählt aus N Geräten" als Marktüberblick. */}
-      <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: v("--color-text-secondary") }}>
-        <strong style={{ color: v("--color-text-primary") }}>Anzeige</strong> — Die Geräte kommen
-        aus dem Sortiment von Heizungsdiscount24, sind also kein Marktüberblick. Über die Links
-        erhalten wir eine Provision, wenn du dort kaufst; für dich ändert sich am Preis nichts.
-        Ausgewählt wird nach der Passung zu deiner Anlage, sortiert nach dem Preis für dich —
-        nicht nach unserer Provision.
-      </p>
+      <div
+        style={{
+          border: `1px solid ${v("--color-border")}`,
+          borderRadius: v("--radius-md"),
+          padding: pad("md", "md"),
+          display: "grid",
+          gap: space.sm,
+        }}
+      >
+        <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: v("--color-text-secondary") }}>
+          <strong style={{ color: v("--color-text-primary") }}>Anzeige</strong> — Die Geräte kommen
+          aus dem Sortiment von Heizungsdiscount24, sind also kein Marktüberblick. Über die Links
+          erhalten wir eine Provision, wenn du dort kaufst; für dich ändert sich am Preis nichts.
+        </p>
+        {/* Das Versprechen steht NEBEN der Kennzeichnung, nicht statt ihrer.
+
+            Ein Gesicht und ein Satz in der ersten Person sind kein Ersatz für
+            die Offenlegung — sie sind die Antwort auf die Frage, die sie
+            aufwirft: Wenn ihr mitverdient, wonach wählt ihr dann aus? Der Satz
+            benennt genau das und ist im Code nachprüfbar: `empfehlungenFuer`
+            sortiert nach `preisEur`, die Provision kommt in der Auswahl nicht
+            vor. Eine Zusage, die der Code nicht hält, wäre schlimmer als keine. */}
+        <ContactPerson note="Mein Versprechen: Wir empfehlen, was zu deinem Fall passt — sortiert nach dem Preis für dich, nie nach unserer Provision." />
+      </div>
 
       {/* Warum hier nur Einzelgeräte stehen, gehört gesagt.
 
