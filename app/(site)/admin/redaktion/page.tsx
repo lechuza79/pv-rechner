@@ -6,8 +6,10 @@ import { KATEGORIEN, kategorieAusAdresse } from "../../../../lib/redaktions-kate
 import { BEREICHE } from "../../../../lib/redaktionsplan";
 import { KategorieNav } from "../../../../components/social/KategorieNav";
 import { ladeFassungen } from "../../../../lib/social-vorlagen-db";
-import { ladePruefungen } from "../../../../lib/social-pruefung";
+import { ladeAllePruefungen } from "../../../../lib/social-pruefung";
 import { StoryTisch } from "../../../../components/social/StoryTisch";
+import { StoryGrid } from "../../../../components/social/StoryGrid";
+import { kategorie } from "../../../../lib/redaktions-kategorien";
 import { v, space, pad } from "../../../../lib/theme";
 
 // Das Design-Werkzeug: Kategorien oben, darunter ihre Beschreibung und ihre
@@ -37,7 +39,11 @@ export default async function RedaktionEntwicklung({
 }) {
   if (!(await isAdminSession())) redirect("/login?next=/admin/redaktion");
 
-  const kat = kategorieAusAdresse((await searchParams).k);
+  const gewaehlt = (await searchParams).k;
+  // Ohne Kategorie in der Adresse: das Raster über alles. Das ist der Einstieg —
+  // erst sehen, was es gibt, dann in eine Kategorie gehen, um daran zu arbeiten.
+  const uebersicht = !gewaehlt;
+  const kat = kategorieAusAdresse(gewaehlt);
 
   let posts: SocialPost[] | undefined;
   let fehler: string | null = null;
@@ -48,12 +54,11 @@ export default async function RedaktionEntwicklung({
     fehler = (e as Error).message;
   }
 
-  const dieser = posts?.filter((p) => p.kategorie === kat.schluessel) ?? [];
-  // Die Prüfungen kommen je Story mit: Das Urteil rechnet der Tisch selbst, weil
-  // es sich mit jeder Änderung dort bewegen muss.
-  const pruefungen = Object.fromEntries(
-    await Promise.all(dieser.map(async (p) => [p.id, await ladePruefungen(p.id)] as const)),
-  );
+  const dieser = uebersicht ? (posts ?? []) : (posts?.filter((p) => p.kategorie === kat.schluessel) ?? []);
+  // Die Prüfungen kommen je Story mit: Das Urteil rechnet die Oberfläche selbst,
+  // weil es sich mit jeder Änderung dort bewegen muss. Eine Abfrage für alle
+  // statt einer je Story — die Tabelle ist klein, die Roundtrips sind es nicht.
+  const pruefungen = await ladeAllePruefungen();
 
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto" }}>
@@ -73,7 +78,9 @@ export default async function RedaktionEntwicklung({
       {/* Keine Überschrift: Die Leiste darüber sagt bereits, wo man ist, und der
           Name stünde zweimal untereinander. */}
       <p style={{ color: v("--color-text-secondary"), maxWidth: 760, marginTop: 0, marginBottom: space.huge }}>
-        {kat.beschreibung}
+        {uebersicht
+          ? `Alle ${dieser.length} fertigen Beiträge. Bearbeiten öffnet denselben Tisch wie in der Kategorie; dort steht eine Story zwischen ihren Geschwistern.`
+          : kat.beschreibung}
       </p>
 
       {fehler && (
@@ -96,11 +103,24 @@ export default async function RedaktionEntwicklung({
         </p>
       )}
 
-      <div style={{ display: "flex", flexDirection: "column", gap: space.huge * 1.5 }}>
-        {dieser.map((p) => (
-          <StoryTisch key={p.id} post={p} pruefungen={pruefungen[p.id] ?? []} />
-        ))}
-      </div>
+      {uebersicht ? (
+        <StoryGrid
+          eintraege={dieser.map((p) => {
+            const k = kategorie(p.kategorie);
+            return {
+              post: p,
+              pruefungen: pruefungen[p.id] ?? [],
+              kategorie: { name: k.name, schluessel: k.schluessel },
+            };
+          })}
+        />
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: space.huge * 1.5 }}>
+          {dieser.map((p) => (
+            <StoryTisch key={p.id} post={p} pruefungen={pruefungen[p.id] ?? []} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

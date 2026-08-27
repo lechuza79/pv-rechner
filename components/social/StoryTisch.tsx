@@ -34,9 +34,15 @@ export function StoryTisch({
   post,
   pruefungen,
   kategorieHinweis,
+  ohneTitel,
 }: {
   post: SocialPost;
   pruefungen: Pruefung[];
+  /**
+   * Überschrift weglassen — für den Tisch im Fenster, dessen Kopfzeile den
+   * Titel schon trägt. Sonst stünde er zweimal untereinander.
+   */
+  ohneTitel?: boolean;
   /**
    * Woher die Story kommt, mit Link dorthin. Nur in der ungefilterten Ansicht:
    * Innerhalb einer Kategorie stünde an jeder Karte dasselbe.
@@ -118,9 +124,11 @@ export function StoryTisch({
             {kategorieHinweis.name}
           </a>
         )}
-        <h3 style={{ fontSize: v("--font-size-h3"), margin: 0, marginTop: kategorieHinweis ? space.xs : 0 }}>
-          {post.titel}
-        </h3>
+        {!ohneTitel && (
+          <h3 style={{ fontSize: v("--font-size-h3"), margin: 0, marginTop: kategorieHinweis ? space.xs : 0 }}>
+            {post.titel}
+          </h3>
+        )}
         <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: space.xs }}>
           {post.kanal.join(" · ")} · {BILDFORM[post.bild?.art ?? "vergleich"]} · {text.length} Zeichen
         </div>
