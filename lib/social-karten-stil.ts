@@ -43,33 +43,39 @@ export function istKartenStil(wert: unknown): wert is KartenStil {
 const GRUNDLAGE = stageDefaults(STAGE_COUNT - 1);
 
 /**
- * Highlight: blauer statt weißer Grund.
+ * Highlight: der Akzent-Blauton der Marke als Grund (Vorgabe des Betreibers,
+ * 27.08.2026) — derselbe, den ein primärer Knopf trägt. Er wird deshalb NICHT
+ * hier getippt, sondern aus der Grundlage gezogen: Wechselt die Marke ihren
+ * Akzent, wechselt diese Karte mit.
  *
- * Der Blauton ist NICHT `--color-accent` (#1365EA), obwohl das der naheliegende
- * wäre — auf ihm kommt gedämpftes Weiß nur auf 3,9:1 und die Beschriftung unter
- * den Balken wäre nicht mehr lesbar. Gerechnet nach WCAG 2.1 gegen den tieferen
- * Markenblauton: gedämpftes Weiß 6,0:1, volles Weiß 10,1:1.
+ * Der Preis, den man kennen muss: Auf diesem Blau gibt es fast keine
+ * Farbabstufung mehr. Gerechnet nach WCAG 2.1 gegen #1365EA erreicht selbst
+ * volles Weiß nur 5,2:1 — für lesbaren Kleintext bleiben nur Weißtöne ab etwa
+ * 92 % Deckkraft. Die Hierarchie trägt deshalb über Größe und Gewicht, wie in
+ * dieser Karte ohnehin (96 px Wert gegen 30 px Beschriftung).
  *
- * Die Rollen drehen sich dabei um: Auf blauem Grund sticht WEISS hervor, nicht
- * ein helleres Blau. Der hervorgehobene Wert (`--color-accent`) wird deshalb
- * weiß, der gewöhnliche Wert gedämpft — sonst steht die Betonung auf der
- * falschen Zahl, und das fällt an einer Karte niemandem auf.
+ * Die Rollen drehen sich um: Auf blauem Grund sticht WEISS hervor, nicht ein
+ * helleres Blau. Der hervorgehobene Wert (`--color-accent`) wird deshalb weiß,
+ * der gewöhnliche gedämpft — sonst steht die Betonung auf der falschen Zahl,
+ * und das fällt an einer einzelnen Karte niemandem auf. Die 80 % Deckkraft dort
+ * ergeben 3,9:1 und gelten NUR, weil dieser Wert 96 px groß gesetzt ist (WCAG
+ * verlangt für Großtext 3:1). Wer ihn verkleinert, muss den Wert anheben.
  */
 const HIGHLIGHT: Partial<Record<TokenName, string>> = {
-  "--color-bg": "#073C93",
-  "--color-bg-muted": "#0B4CB4",
-  "--color-bg-accent": "#0B4CB4",
-  "--color-text-primary": "rgba(255,255,255,0.78)",
-  "--color-text-secondary": "rgba(255,255,255,0.88)",
-  "--color-text-muted": "rgba(255,255,255,0.72)",
-  "--color-text-faint": "rgba(255,255,255,0.62)",
+  "--color-bg": GRUNDLAGE["--color-accent"],
+  "--color-bg-muted": GRUNDLAGE["--color-accent"],
+  "--color-bg-accent": GRUNDLAGE["--color-accent"],
+  "--color-text-primary": "rgba(255,255,255,0.80)",
+  "--color-text-secondary": "rgba(255,255,255,0.94)",
+  "--color-text-muted": "rgba(255,255,255,0.92)",
+  "--color-text-faint": "rgba(255,255,255,0.80)",
   "--color-accent": "#FFFFFF",
-  "--color-border": "rgba(255,255,255,0.30)",
-  "--color-border-muted": "rgba(255,255,255,0.20)",
+  "--color-border": "rgba(255,255,255,0.35)",
+  "--color-border-muted": "rgba(255,255,255,0.25)",
   // Das Logo führt seine beiden Blautöne als Token. Auf blauem Grund verschwände
   // die Marke sonst in der Fläche.
   "--color-brand": "#FFFFFF",
-  "--color-brand-deep": "rgba(255,255,255,0.45)",
+  "--color-brand-deep": "rgba(255,255,255,0.50)",
 };
 
 /** Dunkel ist die Nachtstufe des Hauses, keine zweite dunkle Palette. */
