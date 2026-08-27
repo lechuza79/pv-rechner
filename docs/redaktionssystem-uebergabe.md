@@ -281,6 +281,16 @@ Zahl steht als eigene Spalte in der Gemeinde-Auswertung. Nachgemessen: 36,203 + 
 genau die Sorte Fehler, gegen die dieses Modul gebaut ist. Aufgefallen ist es einer parallelen
 Sitzung, nicht mir.
 
+**Dass die Rechnung aufgeht, ist eine Eigenschaft der QUELLE — und die wird jetzt nachgehalten.**
+Die vier Teile ergeben das Ganze nur, solange die Erfassung jede Anlage in genau ein Segment legt.
+Kommt eines dazu oder wird eines doppelt gezählt, stimmt das Bild nicht mehr, und im Code wird
+nichts rot. Die Bildform fiele zwar von selbst weg (die Teile schöpfen das Ganze nicht mehr aus) —
+aber **still**, und ein Beitrag, der seine Darstellung verliert, fällt niemandem auf. Die
+Plausibilitätsprüfung des Datenlaufs hält die Summe deshalb gegen die Gesamtleistung und wird rot;
+sie läuft ohnehin nach jedem Einlesen. Toleranz ein Promille — das kleinste echte Segment trägt
+1,2 Prozent und liegt gut zehnfach darüber. Gegenprobe gemacht: Ein weggelassenes Segment meldet
+1,23 Prozent Abweichung.
+
 **Zwei Fehler im Bestand, gefunden beim Ansehen der Bilder:**
 
 - **Anteile ohne Bezugsgröße.** Die drei Solarsegmente sind Prozentwerte, trugen aber kein `ganzes` —
