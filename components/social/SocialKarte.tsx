@@ -344,7 +344,10 @@ function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: n
                   r={r}
                   fill="none"
                   stroke={v("--color-text-primary")}
-                  strokeOpacity={0.12}
+                  // Die Spur muss sich vom Grund lösen, sonst sieht man nicht,
+                  // wo der Ring aufhört — und ohne diese Kante ist ein Anteil
+                  // nicht ablesbar, sondern nur ein Bogen.
+                  strokeOpacity={0.24}
                   strokeWidth={breite}
                 />
                 {anteil >= 1 ? (
@@ -692,7 +695,7 @@ function UmrissTeil({ bild, skala }: { bild: PostBild; skala: number }) {
                   </defs>
                   {/* Der ungefüllte Teil bleibt sichtbar — ohne ihn stünde da
                       eine abgeschnittene Form, die man nicht mehr erkennt. */}
-                  <path d={pfad} fill={v("--color-text-primary")} fillOpacity={0.12} />
+                  <path d={pfad} fill={v("--color-text-primary")} fillOpacity={0.24} />
                   <g clipPath={`url(#${maske})`}>
                     <rect x={0} y={SEITE * (1 - anteil)} width={SEITE} height={SEITE * anteil} fill={farbe} />
                   </g>
