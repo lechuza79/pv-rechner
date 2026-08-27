@@ -333,7 +333,7 @@ export function postStadtLand(k: SocialKennzahlen, eigeneVorlage?: string): Soci
     vorlage,
     platzhalter,
     titel: "Das Balkonkraftwerk ist kein Stadtthema",
-    kategorie: "kontrast",
+    kategorie: "g13",
     kanal: ["linkedin", "instagram"],
     text,
     bild: {
@@ -417,7 +417,7 @@ export function postWachstum(k: SocialKennzahlen): SocialPost {
   return {
     id: "wachstum-balkon-solar",
     titel: "Wo der Zubau wirklich stattfindet",
-    kategorie: "bewegung",
+    kategorie: "g13",
     kanal: ["linkedin", "instagram"],
     text,
     bild: {
@@ -484,7 +484,7 @@ export function postFreiflaeche(k: SocialKennzahlen): SocialPost {
   return {
     id: "freiflaeche-ost-west",
     titel: "Der Osten baut auf Feldern, der Westen auf Dächern",
-    kategorie: "kontrast",
+    kategorie: "g14",
     kanal: ["linkedin"],
     text,
     bild: {
@@ -547,7 +547,7 @@ export function postSegmente(k: SocialKennzahlen): SocialPost {
   return {
     id: "segmente-anteile",
     titel: "Die Energiewende liegt nicht auf Privatdächern",
-    kategorie: "aufteilung",
+    kategorie: "g7",
     kanal: ["linkedin", "instagram"],
     text,
     bild: {
@@ -594,7 +594,7 @@ export function postAufholjagd(k: SocialKennzahlen): SocialPost {
   return {
     id: "aufholjagd-fuenf-jahre",
     titel: "Die Städte holen auf",
-    kategorie: "bewegung",
+    kategorie: "g3",
     kanal: ["linkedin"],
     text,
     bild: {
@@ -638,7 +638,7 @@ export function postUeberEinwohner(k: SocialKennzahlen): SocialPost {
   return {
     id: "mehr-kwp-als-einwohner",
     titel: "Zwei von drei Gemeinden haben mehr Kilowatt als Einwohner",
-    kategorie: "groessenordnung",
+    kategorie: "g3",
     kanal: ["linkedin", "instagram"],
     text,
     bild: {

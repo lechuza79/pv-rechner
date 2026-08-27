@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { KATEGORIEN, kategorie, kategorieAusAdresse } from "../redaktions-kategorien";
+import { FAMILIEN } from "../redaktionsplan";
 import { KARTEN_STILE, KARTEN_STIL_STANDARD, kartenTokens, istKartenStil } from "../social-karten-stil";
 import { baueAllePosts, kurzEinwohner, type SocialKennzahlen } from "../social-posts";
 import { BUNDESLAND_UMRISS } from "../bundesland-umrisse";
@@ -48,6 +49,25 @@ describe("Kategorien der Redaktionsansicht", () => {
     const schluessel = KATEGORIEN.map((k) => k.schluessel);
     for (const p of posts) {
       expect(schluessel, `${p.id} hat eine unbekannte Kategorie`).toContain(p.kategorie);
+    }
+  });
+
+  it("die Kategorien SIND die Familien, keine zweite Liste", () => {
+    // Ein erster Anlauf führte eine eigene Ordnung nach Aussageform neben den
+    // beschlossenen Familien. Zwei Listen für dieselbe Sache driften, und die
+    // erfundene stand in der Ansicht, während die beschlossene in der Planung
+    // lag — wer eine Kategorie ändern wollte, hätte raten müssen, welche gilt.
+    expect(KATEGORIEN).toBe(FAMILIEN);
+    expect(new Set(KATEGORIEN.map((k) => k.schluessel)).size).toBe(KATEGORIEN.length);
+  });
+
+  it("der Zustand gebaut stimmt mit den Stories überein", () => {
+    // Der Zustand ist handgepflegt, die Stories sind es nicht. Ohne diesen
+    // Abgleich stünde in der Planung irgendwann „gebaut" an einer Familie, unter
+    // der nichts liegt — und umgekehrt eine fertige Story unter „Daten fehlen".
+    for (const k of KATEGORIEN) {
+      const hatStories = posts.some((p) => p.kategorie === k.schluessel);
+      expect(k.zustand === "gebaut", `${k.kuerzel} (${k.zustand}): Stories ${hatStories}`).toBe(hatStories);
     }
   });
 

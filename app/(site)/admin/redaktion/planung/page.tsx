@@ -62,16 +62,15 @@ export default async function RedaktionPlanung() {
         </p>
       </section>
 
-      {/* Die neunzehn Familien stehen HIER und nicht mehr im Design-Werkzeug.
-          Sie sind Themen und schneiden quer zu den Kategorien dort:
-          Balkonkraftwerke liefern sowohl einen Kontrast als auch eine Bewegung.
-          Eine Zuordnung Familie → Kategorie wäre in beiden Richtungen falsch —
-          und die Frage „was gibt es noch" ist ohnehin eine der Planung. */}
+      {/* Dieselbe Liste, die in der Entwicklung die Kategorien bildet — hier mit
+          dem Blick der Planung: was davon sich heute bauen ließe und was auf
+          Daten wartet. Zwei Listen wären zwei Ordnungen für dieselbe Sache. */}
       <section style={{ marginBottom: space.xxxl }}>
         <h2 style={{ fontSize: v("--font-size-h3") }}>Der Vorrat an Themen</h2>
         <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginTop: 0 }}>
-          Neunzehn Geschichten-Familien. Was hier als „Daten da" steht, lässt sich ohne neuen
-          Datenbestand bauen.
+          {FAMILIEN.length} Geschichten-Familien — dieselbe Liste, die in der Entwicklung die
+          Kategorien bildet. Was hier als „Daten da" steht, lässt sich ohne neuen Datenbestand
+          bauen.
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: space.xs }}>
           {FAMILIEN.map((f) => (
