@@ -7,7 +7,8 @@ import { VorlagenEditor } from "./VorlagenEditor";
 import { Kennung } from "./Kennung";
 import { fuelle } from "../../lib/social-vorlage";
 import { KARTEN_STILE, KARTEN_STIL_NAME, KARTEN_STIL_STANDARD, type KartenStil } from "../../lib/social-karten-stil";
-import { urteil, type Pruefung } from "../../lib/social-pruefung-kern";
+import { fassungsAbdruck, type Pruefung } from "../../lib/social-pruefung-kern";
+import { Freigabe } from "./Freigabe";
 import { BILDFORM_NAME, moeglicheFormen, templateVon, type PostBild, type SocialPost } from "../../lib/social-posts";
 
 // Eine Story am Redaktionstisch: so, wie sie im Feed steht, plus die drei
@@ -29,9 +30,19 @@ export function StoryTisch({
   pruefungen,
   kategorieHinweis,
   ohneTitel,
+  onPruefung,
 }: {
   post: SocialPost;
   pruefungen: Pruefung[];
+  /**
+   * Meldung nach oben, wenn hier eine Prüfung erteilt wurde.
+   *
+   * Nur für Ansichten, die den Prüfstand NOCH EINMAL anzeigen — das Raster tut
+   * das an jeder Kachel. Ohne diese Meldung stünde dort weiter „offen", während
+   * das Fenster darüber „freigegeben" sagt: zwei Aussagen über dieselbe Sache
+   * auf einem Bildschirm.
+   */
+  onPruefung?: (postId: string, p: Pruefung) => void;
   /**
    * Überschrift weglassen — für den Tisch im Fenster, dessen Kopfzeile den
    * Titel schon trägt. Sonst stünde er zweimal untereinander.
@@ -49,18 +60,36 @@ export function StoryTisch({
   const [offen, setOffen] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [laeuft, setLaeuft] = useState(false);
+  // Erteilte Prüfungen wandern in den Zustand, damit das Urteil im selben Moment
+  // umspringt wie beim Umfärben. Ohne das müsste man die Seite neu laden, um zu
+  // sehen, dass die eigene Freigabe angekommen ist.
+  const [gepruefte, setGepruefte] = useState<Pruefung[]>(pruefungen);
+  /**
+   * Was zuletzt wirklich in der Ablage landete.
+   *
+   * Braucht es, weil die Eigenschaften von oben nach dem Speichern noch den
+   * alten Stand tragen — die Serverseite rendert nicht neu. Ohne diesen Merker
+   * bliebe „Speichern" nach dem Speichern aktiv und, viel schlimmer, die
+   * Freigabe dauerhaft gesperrt: Sie hängt an genau dieser Frage.
+   */
+  const [gespeichert, setGespeichert] = useState({
+    stil: post.bild?.stil ?? KARTEN_STIL_STANDARD,
+    form: post.bild?.art ?? null,
+    vorlage: post.vorlage ?? "",
+  });
 
   const werte = Object.fromEntries((post.platzhalter ?? []).map((p) => [p.name, p.wert]));
   // Bearbeitbare Posts zeigen den Entwurf, die übrigen ihren eingebauten Text.
   const text = post.vorlage ? fuelle(entwurf, werte) : post.text;
   const bild = post.bild ? { ...post.bild, stil, ...(form ? { art: form } : {}) } : null;
   const formen = post.bild ? moeglicheFormen(post.bild) : [];
-  const stand = urteil({ text, bild }, pruefungen);
+  const fassung = { text, bild };
+  const abdruck = fassungsAbdruck(fassung);
 
   const geaendert =
-    stil !== (post.bild?.stil ?? KARTEN_STIL_STANDARD) ||
-    form !== (post.bild?.art ?? null) ||
-    (!!post.vorlage && entwurf !== post.vorlage);
+    stil !== gespeichert.stil ||
+    form !== gespeichert.form ||
+    (!!post.vorlage && entwurf !== gespeichert.vorlage);
 
   /**
    * Alles auf einmal ablegen — Text, Farbschema, Bildform.
@@ -96,6 +125,9 @@ export function StoryTisch({
             : `Nicht gespeichert: ${j.error ?? res.status}`,
         );
       } else {
+        // Erst jetzt gilt der Entwurf als abgelegt — und erst jetzt darf er
+        // freigegeben werden.
+        setGespeichert({ stil, form, vorlage: entwurf });
         setStatus(
           j.ungenutzt?.length
             ? `Gespeichert. Nicht mehr im Text: ${j.ungenutzt.map((x) => `{${x}}`).join(", ")}`
@@ -219,19 +251,30 @@ export function StoryTisch({
           </div>
         </div>
 
-        {/* Freigabe: hängt an Text UND Bild. */}
-        <div
-          style={{
-            marginTop: space.lg,
-            padding: pad("sm", "md"),
-            borderRadius: v("--radius-sm"),
-            background: v("--color-bg-muted"),
-            fontSize: v("--font-size-small"),
-            color: stand.ok ? v("--color-positive-text") : v("--color-text-secondary"),
+        {/* Freigabe: hängt an Text UND Bild, und wird hier auch erteilt.
+            Ungespeichertes lässt sich nicht freigeben — die Senderoute baut den
+            Text später aus der Ablage neu, ein Entwurf im Browser käme dort gar
+            nicht an. */}
+        <Freigabe
+          postId={post.id}
+          fassung={fassung}
+          abdruck={abdruck}
+          pruefungen={gepruefte}
+          onErteilt={(p) => {
+            setGepruefte((alte) => [
+              // Dieselbe Fassung, dieselbe Art: der neue Befund ersetzt den
+              // alten — genauso wie in der Ablage, die darauf einen Schlüssel hat.
+              ...alte.filter((a) => !(a.art === p.art && a.fassung_fingerabdruck === p.fassung_fingerabdruck)),
+              p,
+            ]);
+            onPruefung?.(post.id, p);
           }}
-        >
-          {stand.ok ? "Freigegeben — Text und Bild geprüft." : stand.grund}
-        </div>
+          gesperrt={
+            geaendert
+              ? "Erst speichern, dann freigeben: Eine Prüfung gilt der Fassung in der Ablage, nicht dem Entwurf auf dem Bildschirm."
+              : undefined
+          }
+        />
 
         <div style={{ display: "flex", gap: space.sm, marginTop: space.md, alignItems: "center", flexWrap: "wrap" }}>
           <button

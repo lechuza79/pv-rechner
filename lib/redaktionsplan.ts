@@ -4,6 +4,8 @@
 // selbst ist bewusst kurz — er hält fest, was entschieden ist, und benennt, was
 // noch nicht entschieden ist, statt eine Vollständigkeit vorzutäuschen.
 
+import type { PruefArt } from "./social-pruefung-kern";
+
 export type Wochentag = "Mo" | "Di" | "Mi" | "Do" | "Fr";
 
 export type Slot = {
@@ -307,46 +309,91 @@ export const FAMILIEN: Familie[] = [
   },
 ];
 
-export type Regel = { regel: string; grund: string };
+export type Regel = {
+  regel: string;
+  grund: string;
+  /**
+   * Welche der beiden Prüfungen diese Regel abdeckt.
+   *
+   * Ohne die Zuordnung wäre die Liste beim Erteilen einer Freigabe eine
+   * Sammelaufforderung: Wer die Zahlen nachrechnet, bekäme die Namensnennung
+   * mit vorgelegt und hakte sie nebenbei ab. Die Regel gegen den Superlativ
+   * gehört deshalb bewusst zur ZAHLENprüfung — er entsteht im Nenner, nicht im
+   * Wortlaut, und wird nur beim Nachrechnen der Grundmenge gefunden.
+   */
+  gilt: PruefArt;
+};
 
 /**
  * Was vor jedem Post geprüft wird. Steht hier und nicht nur im Konzept, weil
- * eine Regel, die man nachlesen muss, im Zweifel nicht nachgelesen wird.
+ * eine Regel, die man nachlesen muss, im Zweifel nicht nachgelesen wird — und
+ * seit dem Freigabe-Umbau steht sie deshalb auch dort, wo unterschrieben wird,
+ * statt nur auf der Planungsseite.
  */
 export const REGELN: Regel[] = [
   {
     regel: "Lob mit Namen, Kritik ohne Namen.",
     grund:
       "Kommunen reden untereinander. Eine vorgeführte Gemeinde beendet den Outreach in ihrer ganzen Region, ohne dass es jemand sagt.",
+    gilt: "recht",
   },
   {
     regel: "Keine Gemeinde nennen, die im selben Zeitraum ein Anschreiben bekommt.",
     grund: "Sonst liest sich der Post als Druckmittel und der Brief als Drohung.",
+    gilt: "recht",
   },
   {
     regel: "Genannte Gemeinden drei bis fünf Tage vorher informieren.",
     grund: "Wer vorgewarnt wurde, teilt. Wer überrascht wurde, dementiert.",
+    gilt: "recht",
   },
   {
     regel: 'Sprachregel: "in [Ort] stehen \u2026", nie "[Ort] hat geschafft/vers\u00e4umt".',
     grund:
       "Private Dächer sind nicht die Leistung einer Verwaltung. Daran hängt sich ein Bürgermeister auch beim Lob auf.",
+    gilt: "recht",
   },
   {
     regel: "Kein Superlativ auf kleiner Grundmenge.",
     grund:
       'Sechzehn Einwohner, ein Balkonkraftwerk, "Platz 1 von 150" — der Superlativ entsteht dann vollständig im Nenner.',
+    gilt: "zahlen",
+  },
+  {
+    regel: "Text und Bild nennen dieselbe Zahl, in derselben Rundung.",
+    grund:
+      'Schon einmal so gebaut: Der Text sagte "8 Prozent", das Bild zeigte "8,1" — aus derselben Zahl. Sichtbar wurde es erst am gerenderten Bild, kein Test hat es gefunden.',
+    gilt: "zahlen",
+  },
+  {
+    regel: "Jede Zahl trägt ihre Einheit und ihren Nenner.",
+    grund:
+      "Eine Registerspalte zählte Speichergeräte, nicht Anlagen mit Speicher — als Anteil beschriftet kam ein Bundesland auf 98 Prozent und der Bund auf 67. Beides las sich plausibel und war falsch.",
+    gilt: "zahlen",
   },
   {
     regel: "Kein Link im Beitrag.",
     grund: "Ein Link drückt die Verbreitung. Jeder Post muss ohne Klick vollständig sein.",
+    gilt: "recht",
   },
   {
     regel: "Quellenangabe im Bild, nicht nur im Text.",
     grund: "Beim Weiterteilen reist der Beitragstext nicht mit, das Bild schon.",
+    gilt: "recht",
   },
   {
     regel: "Keine Ortsseite verlinken, die im Releaseplan noch nicht live ist.",
     grund: "Ein Post darf keine Seite ins Schaufenster stellen, die dafür nicht freigegeben ist.",
+    gilt: "recht",
   },
 ];
+
+/**
+ * Die Regeln, die zu einer Prüfung gehören.
+ *
+ * Wird beim Erteilen der Freigabe als Prüfliste gezeigt. Eine Prüfart ohne eine
+ * einzige Regel wäre ein leeres Formular — dagegen steht ein Test.
+ */
+export function regelnFuer(art: PruefArt): Regel[] {
+  return REGELN.filter((r) => r.gilt === art);
+}

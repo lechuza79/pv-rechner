@@ -7,7 +7,7 @@ import { BEREICHE } from "../../../../lib/redaktionsplan";
 import { KategorieNav } from "../../../../components/social/KategorieNav";
 import { ladeFassungen } from "../../../../lib/social-vorlagen-db";
 import { ladeAllePruefungen } from "../../../../lib/social-pruefung";
-import { StoryTisch } from "../../../../components/social/StoryTisch";
+import { StoryListe } from "../../../../components/social/StoryListe";
 import { StoryGrid } from "../../../../components/social/StoryGrid";
 import { kategorie } from "../../../../lib/redaktions-kategorien";
 import { v, space, pad } from "../../../../lib/theme";
@@ -118,11 +118,7 @@ export default async function RedaktionEntwicklung({
           })}
         />
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: space.huge * 1.5 }}>
-          {dieser.map((p) => (
-            <StoryTisch key={p.id} post={p} pruefungen={pruefungen[p.id] ?? []} />
-          ))}
-        </div>
+        <StoryListe eintraege={dieser.map((p) => ({ post: p, pruefungen: pruefungen[p.id] ?? [] }))} />
       )}
     </div>
   );
