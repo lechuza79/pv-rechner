@@ -390,7 +390,7 @@ export function postStadtLand(k: SocialKennzahlen, eigeneVorlage?: string): Soci
   const text = fuelle(vorlage, werte);
 
   return {
-    id: "stadt-land-balkon",
+    id: "g13-stadt-land-balkon",
     vorlage,
     platzhalter,
     titel: "Das Balkonkraftwerk ist kein Stadtthema",
@@ -476,7 +476,7 @@ export function postWachstum(k: SocialKennzahlen): SocialPost {
   ].join("\n");
 
   return {
-    id: "wachstum-balkon-solar",
+    id: "g13-wachstum-balkon-solar",
     titel: "Wo der Zubau wirklich stattfindet",
     kategorie: "g13",
     kanal: ["linkedin", "instagram"],
@@ -543,7 +543,7 @@ export function postFreiflaeche(k: SocialKennzahlen): SocialPost {
   ].join("\n");
 
   return {
-    id: "freiflaeche-ost-west",
+    id: "g14-freiflaeche-ost-west",
     titel: "Der Osten baut auf Feldern, der Westen auf Dächern",
     kategorie: "g14",
     kanal: ["linkedin"],
@@ -610,7 +610,7 @@ export function postSegmente(k: SocialKennzahlen): SocialPost {
   ].join("\n");
 
   return {
-    id: "segmente-anteile",
+    id: "g7-segmente-anteile",
     titel: "Die Energiewende liegt nicht auf Privatdächern",
     kategorie: "g7",
     kanal: ["linkedin", "instagram"],
@@ -701,7 +701,7 @@ export function postUeberEinwohner(k: SocialKennzahlen): SocialPost {
   ].join("\n");
 
   return {
-    id: "mehr-kwp-als-einwohner",
+    id: "g3-mehr-kwp-als-einwohner",
     titel: "Zwei von drei Gemeinden haben mehr Kilowatt als Einwohner",
     kategorie: "g3",
     kanal: ["linkedin", "instagram"],
@@ -751,7 +751,7 @@ export function postKohorte(k: SocialKennzahlen): SocialPost {
   ].join("\n");
 
   return {
-    id: "kohorte-typische-anlage",
+    id: "g16-kohorte-typische-anlage",
     titel: "Wie die typische private Anlage aussieht",
     kategorie: "g16",
     kanal: ["linkedin", "instagram"],
@@ -806,7 +806,7 @@ export function postAnomalie(k: SocialKennzahlen): SocialPost {
   ].join("\n");
 
   return {
-    id: "anomalie-balkon-ort",
+    id: "g10-anomalie-balkon-ort",
     titel: "Die Anomalie als offene Frage",
     kategorie: "g10",
     kanal: ["linkedin"],
@@ -1000,7 +1000,7 @@ export function postFoerderLuecken(k: SocialKennzahlen): SocialPost {
   ].join("\n");
 
   return {
-    id: "foerder-luecken",
+    id: "g12-foerder-luecken",
     titel: "Was in Förderprogrammen fehlt",
     kategorie: "g12",
     kanal: ["linkedin"],
@@ -1050,7 +1050,7 @@ export function postNurBalkon(k: SocialKennzahlen): SocialPost {
   ].join("\n");
 
   return {
-    id: "nur-balkon-foerderung",
+    id: "g5-nur-balkon-foerderung",
     titel: "Kommunen, die nur noch Steckersolar fördern",
     kategorie: "g5",
     kanal: ["linkedin"],
@@ -1125,7 +1125,7 @@ export function postAusland(_k: SocialKennzahlen): SocialPost {
   ].join("\n");
 
   return {
-    id: "ausland-pro-kopf",
+    id: "g8-ausland-pro-kopf",
     titel: "Das Ausland, pro Kopf gerechnet",
     kategorie: "g8",
     kanal: ["linkedin"],
@@ -1197,7 +1197,7 @@ export function postDegression(k: SocialKennzahlen, _vorlage?: string, heuteIso?
   ].join("\n");
 
   return {
-    id: "degression-stichtag",
+    id: "g6-degression-stichtag",
     titel: "Der nächste Degressionstermin",
     kategorie: "g6",
     kanal: ["linkedin"],

@@ -114,13 +114,13 @@ describe("Kategorien der Redaktionsansicht", () => {
   });
 
   it("eine gespeicherte Wahl schlägt die Vorgabe — Unbekanntes nicht", () => {
-    const [gewaehlt] = baueAllePosts(basis, { "stadt-land-balkon": { stil: "highlight" } });
+    const [gewaehlt] = baueAllePosts(basis, { "g13-stadt-land-balkon": { stil: "highlight" } });
     expect(gewaehlt.bild?.stil).toBe("highlight");
 
     // Ein Stil, den wir nicht mehr kennen, ist ein Fund für den Code und kein
     // Grund für eine ungefärbte Karte.
     const [zurueck] = baueAllePosts(basis, {
-      "stadt-land-balkon": { stil: "neonpink" as never },
+      "g13-stadt-land-balkon": { stil: "neonpink" as never },
     });
     expect(zurueck.bild?.stil).toBe(KARTEN_STIL_STANDARD);
   });
@@ -224,10 +224,10 @@ describe("Bildform und Einheit", () => {
     // Ändern sich die Daten — eine dritte Serie, ein weggefallenes Ganzes —,
     // fällt die Story auf ihre eingebaute Form zurück, statt eine Aussage zu
     // zeigen, die das Bild nicht mehr hergibt.
-    const [passend] = baueAllePosts(basis, { "stadt-land-balkon": { form: "kennzahl" } });
+    const [passend] = baueAllePosts(basis, { "g13-stadt-land-balkon": { form: "kennzahl" } });
     expect(passend.bild?.art).toBe("kennzahl");
 
-    const [unpassend] = baueAllePosts(basis, { "stadt-land-balkon": { form: "umriss" } });
+    const [unpassend] = baueAllePosts(basis, { "g13-stadt-land-balkon": { form: "umriss" } });
     expect(unpassend.bild?.art).toBe("saeule");
   });
 
@@ -235,7 +235,7 @@ describe("Bildform und Einheit", () => {
     // „2,3-mal so viele" im Text und „+130 %" im Bild sind dieselbe Zahl in zwei
     // Ausdrucksformen. Der Leser müsste umrechnen, um zu sehen, dass sie sich
     // nicht widersprechen — dieselbe Fehlerklasse wie eine abweichende Rundung.
-    const stadtLand = posts.find((p) => p.id === "stadt-land-balkon")!;
+    const stadtLand = posts.find((p) => p.id === "g13-stadt-land-balkon")!;
     const delta = stadtLand.bild!.serien.find((s) => s.delta)!.delta!;
     const zahl = delta.replace(/[^0-9,]/g, "");
     expect(stadtLand.text, `Text nennt „${zahl}" nicht`).toContain(zahl);
@@ -245,7 +245,7 @@ describe("Bildform und Einheit", () => {
     // Ein voller Ring für 70 Prozent behauptet 100. Wo es ein Ganzes gibt, muss
     // es am Bild stehen — und kein Wert darf darüber liegen, sonst wird der Ring
     // stillschweigend gekappt und zeigt eine andere Zahl als die Kachel.
-    const freiflaeche = posts.find((p) => p.id === "freiflaeche-ost-west")!;
+    const freiflaeche = posts.find((p) => p.id === "g14-freiflaeche-ost-west")!;
     expect(freiflaeche.bild?.ganzes).toBe(100);
     for (const p of posts) {
       const ganzes = p.bild?.ganzes;
@@ -279,7 +279,7 @@ describe("Bildform und Einheit", () => {
     expect(kurzEinwohner(1_200_000)).toBe("1,2 Mio.");
     // Im Beitragstext bleibt die ausgeschriebene Zahl: „100k" liest sich in
     // einem Satz wie ein Tippfehler.
-    const stadtLand = posts.find((p) => p.id === "stadt-land-balkon")!;
+    const stadtLand = posts.find((p) => p.id === "g13-stadt-land-balkon")!;
     expect(stadtLand.text).toContain("100.000");
     expect(stadtLand.bild!.serien[0].zusatz).toContain("100k");
   });
