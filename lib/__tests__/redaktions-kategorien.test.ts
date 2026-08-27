@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { KATEGORIEN, kategorie, kategorieAusAdresse } from "../redaktions-kategorien";
 import { KARTEN_STILE, KARTEN_STIL_STANDARD, kartenTokens, istKartenStil } from "../social-karten-stil";
 import { baueAllePosts, kurzEinwohner, type SocialKennzahlen } from "../social-posts";
+import { BUNDESLAND_UMRISS } from "../bundesland-umrisse";
 
 // Die beiden Ausfälle, die diese Ansicht haben kann, sind von außen unsichtbar:
 // ein Reiter ohne Stories (ein Versprechen ohne Inhalt) und eine Story ohne
@@ -95,14 +96,40 @@ describe("Kategorien der Redaktionsansicht", () => {
 });
 
 describe("Bildform und Einheit", () => {
-  it("die Ringfassung trägt genau zwei Werte", () => {
-    // Zwei konzentrische Ringe zeigen ein Verhältnis. Bei drei Werten wäre der
-    // dritte nirgends, ohne dass etwas fehlschlägt.
+  it("Ringpaar und Säule tragen genau zwei Werte", () => {
+    // Beide Formen zeigen ein Verhältnis zwischen zweien. Bei drei Werten wäre
+    // der dritte nirgends, ohne dass etwas fehlschlägt.
     for (const p of posts) {
-      if (p.bild?.art === "donut") {
-        expect(p.bild.serien.length, `${p.id} als Ringpaar mit ${p.bild.serien.length} Werten`).toBe(2);
+      if (p.bild?.art === "donut" || p.bild?.art === "saeule") {
+        expect(p.bild.serien.length, `${p.id}: ${p.bild.art} mit ${p.bild.serien.length} Werten`).toBe(2);
       }
     }
+  });
+
+  it("Ringe nur für Anteile, Säulen nur ohne Ganzes", () => {
+    // Die Regel, um die es geht: Ein Ring bildet einen Anteil an einem Ganzen
+    // ab — ohne Ganzes behauptet der leere Rest etwas, das es nicht gibt. Eine
+    // Säule zeigt ein Verhältnis zwischen zwei Werten und braucht kein Ganzes;
+    // mit einem wäre der Sockel plötzlich ein Anteil und die Höhe eine andere
+    // Aussage.
+    for (const p of posts) {
+      if (p.bild?.art === "donut") {
+        expect(p.bild.ganzes, `${p.id}: Ringpaar ohne Ganzes`).toBeGreaterThan(0);
+      }
+      if (p.bild?.art === "saeule") {
+        expect(p.bild.ganzes, `${p.id}: Säule mit Ganzem`).toBeUndefined();
+      }
+    }
+  });
+
+  it("ein Abstandswert steht in derselben Form wie im Beitragstext", () => {
+    // „2,3-mal so viele" im Text und „+130 %" im Bild sind dieselbe Zahl in zwei
+    // Ausdrucksformen. Der Leser müsste umrechnen, um zu sehen, dass sie sich
+    // nicht widersprechen — dieselbe Fehlerklasse wie eine abweichende Rundung.
+    const stadtLand = posts.find((p) => p.id === "stadt-land-balkon")!;
+    const delta = stadtLand.bild!.serien.find((s) => s.delta)!.delta!;
+    const zahl = delta.replace(/[^0-9,]/g, "");
+    expect(stadtLand.text, `Text nennt „${zahl}" nicht`).toContain(zahl);
   });
 
   it("Anteile werden am Ganzen normiert, nicht am größeren Wert", () => {
@@ -144,6 +171,31 @@ describe("Bildform und Einheit", () => {
     const stadtLand = posts.find((p) => p.id === "stadt-land-balkon")!;
     expect(stadtLand.text).toContain("100.000");
     expect(stadtLand.bild!.serien[0].zusatz).toContain("100k");
+  });
+});
+
+describe("Bundesland-Umrisse", () => {
+  it("jeder gesetzte Umriss existiert wirklich", () => {
+    // Der Name kommt aus der Datenbank, der Umriss aus dem Melderegister-Geodatensatz.
+    // Weicht die Schreibweise um ein Zeichen ab, fehlt der Umriss stumm — die
+    // Karte sieht dann normal aus, nur leer.
+    for (const p of posts) {
+      for (const s of p.bild?.serien ?? []) {
+        if (!s.umriss) continue;
+        expect(BUNDESLAND_UMRISS[s.umriss], `${p.id}: kein Umriss für „${s.umriss}"`).toBeTruthy();
+      }
+    }
+  });
+
+  it("kennt alle sechzehn Länder und hält sie klein", () => {
+    const namen = Object.keys(BUNDESLAND_UMRISS);
+    expect(namen.length).toBe(16);
+    for (const n of namen) {
+      expect(BUNDESLAND_UMRISS[n].startsWith("M"), `${n} ohne Pfad`).toBe(true);
+      // Grob genug fürs Hintergrundzeichen, fein genug zum Wiedererkennen. Wer
+      // die Toleranz im Erzeuger ändert, sieht hier, wohin es kippt.
+      expect(BUNDESLAND_UMRISS[n].length, `${n} zu ausführlich für ein Hintergrundzeichen`).toBeLessThan(6000);
+    }
   });
 });
 

@@ -68,6 +68,25 @@ export type BildSerie = {
    * Bedingung und sucht die Gruppe.
    */
   zusatz?: string;
+  /**
+   * Bundesland, dessen Umriss schwach hinter dem Wert steht.
+   *
+   * Ausdrücklich gesetzt und nicht aus dem Label erraten: Ein Land, das zufällig
+   * so heißt wie die Gruppe, bekäme sonst einen Umriss, und ein Land, dessen
+   * Schreibweise sich um ein Zeichen unterscheidet, keinen — beides ohne dass
+   * etwas fehlschlägt. Ein Test hält die Namen gegen die Umriss-Tabelle.
+   */
+  umriss?: string;
+  /**
+   * Der Abstand zum anderen Wert, als fertiger Text.
+   *
+   * Vom Post gesetzt, nicht in der Karte gerechnet: Er muss zur FORMULIERUNG im
+   * Beitrag passen. „2,3-mal so viele" im Text und „+130 %" im Bild sind
+   * dieselbe Zahl in zwei Ausdrucksformen — der Leser müsste umrechnen, um zu
+   * sehen, dass sie sich nicht widersprechen. Dieselbe Regel wie bei den
+   * Nachkommastellen.
+   */
+  delta?: string;
   wert: number;
   einheit: string;
   /** Nachkommastellen im Bild. MUSS zur Rundung im Text passen — sonst zeigt das
@@ -91,13 +110,16 @@ export type PostBild = {
    * 1,45 Millionen sind zwei fast gleich lange Balken, obwohl dazwischen ein
    * Fünftel Wachstum liegt. Am gerenderten Bild aufgefallen, nicht am Code.
    *
-   * "donut" ist die Ringfassung des Vergleichs für GENAU ZWEI Werte: zwei
-   * Ringe übereinander, der größere Wert außen und voll, der kleinere anteilig
-   * dazu. Bewusst am Größeren normiert und nicht an einer Summe — zwischen
-   * „9,9 je 1.000 Einwohner" und „22,8" gibt es kein Ganzes, und ein Ring, der
-   * zu einer Summe fehlt, behauptete einen Rest, den es nicht gibt.
+   * "donut" ist die Ringfassung für ANTEILE, also für Werte mit einem Ganzen
+   * (siehe `ganzes`). Dort bedeutet der ungefüllte Rest wirklich etwas.
+   *
+   * "saeule" ist der Vergleich für genau zwei Werte OHNE Ganzes: eine Säule, in
+   * der der kleinere Wert als Sockel steckt und der größere ihn überragt. Der
+   * Unterschied ist dann die überragende Fläche selbst — man muss keine zwei
+   * Längen nebeneinander abschätzen und nichts über eine Grundmenge annehmen,
+   * die es nicht gibt.
    */
-  art: "vergleich" | "kennzahl" | "donut";
+  art: "vergleich" | "kennzahl" | "donut" | "saeule";
   /** Die Kernaussage, im Bild als Titel gesetzt — nicht die neutrale Achsenbeschriftung. */
   aussage: string;
   /** Was gemessen wurde. Steht klein unter der Aussage. */
@@ -315,7 +337,7 @@ export function postStadtLand(k: SocialKennzahlen, eigeneVorlage?: string): Soci
     text,
     bild: {
       stil: KARTEN_STIL_STANDARD,
-      art: "donut",
+      art: "saeule",
       aussage: staerker
         ? `Balkonkraftwerke stehen auf dem Land, nicht in der Stadt`
         : `Balkonkraftwerke stehen in der Stadt, nicht auf dem Land`,
@@ -338,6 +360,9 @@ export function postStadtLand(k: SocialKennzahlen, eigeneVorlage?: string): Soci
           einheit: "je 1.000 Ew.",
           stellen: 1,
           hervorgehoben: true,
+          // Derselbe Faktor, den der Beitragstext nennt, in derselben
+          // Ausdrucksform. Kippt das Verhältnis, kippt er mit.
+          delta: `${de(faktor, 1)}×`,
         },
       ],
       quelle: quellenzeile(k.standIso, false),
@@ -473,8 +498,8 @@ export function postFreiflaeche(k: SocialKennzahlen): SocialPost {
       // sondern eine andere Zahl.
       einheitAmWert: true,
       serien: [
-        { label: oben.name, wert: oben.freiflaecheAnteil, einheit: "%", stellen: 0, hervorgehoben: true },
-        { label: unten.name, wert: unten.freiflaecheAnteil, einheit: "%", stellen: 0 },
+        { label: oben.name, umriss: oben.name, wert: oben.freiflaecheAnteil, einheit: "%", stellen: 0, hervorgehoben: true },
+        { label: unten.name, umriss: unten.name, wert: unten.freiflaecheAnteil, einheit: "%", stellen: 0 },
       ],
       quelle: quellenzeile(k.standIso, false),
     },
@@ -566,13 +591,15 @@ export function postAufholjagd(k: SocialKennzahlen): SocialPost {
     text,
     bild: {
       stil: KARTEN_STIL_STANDARD,
-      art: "donut",
+      art: "saeule",
       aussage: `Wer wenig hatte, wächst am schnellsten`,
       gemessen: `Solarleistung heute im Verhältnis zu vor fünf Jahren`,
       einheitAmWert: false,
+      // Kein Abstandswert: Die Werte SIND schon Faktoren. „2,6-mal so viel
+      // Wachstum" ist ein Faktor eines Faktors und sagt niemandem etwas.
       serien: [
-        { label: oben.name, wert: oben.wachstumFuenfJahre, einheit: "fach", stellen: 1, hervorgehoben: true },
-        { label: unten.name, wert: unten.wachstumFuenfJahre, einheit: "fach", stellen: 1 },
+        { label: oben.name, umriss: oben.name, wert: oben.wachstumFuenfJahre, einheit: "fach", stellen: 1, hervorgehoben: true },
+        { label: unten.name, umriss: unten.name, wert: unten.wachstumFuenfJahre, einheit: "fach", stellen: 1 },
       ],
       quelle: quellenzeile(k.standIso, false),
     },

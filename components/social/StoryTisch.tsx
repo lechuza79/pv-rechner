@@ -13,6 +13,7 @@ const BILDFORM: Record<PostBild["art"], string> = {
   vergleich: "Balken",
   kennzahl: "Einzelkennzahl",
   donut: "Ringpaar",
+  saeule: "Säule",
 };
 
 // Eine Story am Redaktionstisch: so, wie sie im Feed steht, plus die drei

@@ -1,6 +1,7 @@
 import Logo from "../Logo";
 import { v, space } from "../../lib/theme";
 import { kartenTokens } from "../../lib/social-karten-stil";
+import { BUNDESLAND_UMRISS, BUNDESLAND_UMRISS_SEITE } from "../../lib/bundesland-umrisse";
 import type { BildSerie, PostBild } from "../../lib/social-posts";
 
 // Das Bildformat für den Feed. Hochkant (4:5), höchstens drei Serien,
@@ -67,6 +68,7 @@ export function SocialKarte({
   // Die Ringfassung braucht Fläche und genau zwei Werte. Im Teaser fällt sie
   // auf die Balken zurück — zwei Ringe auf 240 Pixeln wären zwei graue Kringel.
   const donut = bild.art === "donut" && !klein && bild.serien.length === 2;
+  const saeule = bild.art === "saeule" && !klein && bild.serien.length === 2;
   // Die Einheit steht an der Zahl, außer der Untertitel trägt sie schon.
   const zeigeEinheit = bild.einheitAmWert !== false;
   const g = GROESSEN[stufe];
@@ -126,6 +128,8 @@ export function SocialKarte({
 
       {donut ? (
         <DonutTeil bild={bild} max={max} skala={skala} />
+      ) : saeule ? (
+        <SaeulenTeil bild={bild} skala={skala} />
       ) : (
       <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-evenly" }}>
         {serien.map((s) => {
@@ -233,21 +237,29 @@ export function SocialKarte({
  * kleinen Werten nur ein Bogenfragment und wüsste nicht, woran es gemessen ist.
  */
 /**
- * Sichtbare Bogenlänge bei runden Enden.
+ * Der Bogen beginnt gerade und endet rund.
  *
- * Eine runde Kappe ragt an jedem Ende um die halbe Strichbreite über den Bogen
- * hinaus. Ungekürzt wäre ein 9-Prozent-Bogen auf diesem Ring fast doppelt so
- * lang, wie er sein darf — der Ring zeigte dann eine andere Zahl als die Kachel
- * darunter. Deshalb wird um eine volle Strichbreite gekürzt und bei null
- * abgefangen: Ein sehr kleiner Wert wird zum Punkt, nicht zu einem negativen
- * Strich.
+ * `strokeLinecap` kennt diese Unterscheidung nicht — es gilt für beide Enden.
+ * Der Bogen wird deshalb mit geraden Enden gezeichnet und bekommt am Ende einen
+ * Kreis aufgesetzt. Zwölf Uhr bleibt damit eine klare Kante, an der alle Ringe
+ * gemeinsam starten; nur der Verlauf hört weich auf.
  *
- * Ein VOLLER Ring wird nicht gekürzt und behält gerade Enden — dort gibt es
- * keine zwei Enden, sie stoßen aneinander.
+ * Gekürzt wird um die halbe Strichbreite, weil genau so weit die aufgesetzte
+ * Kappe übersteht. Ohne diese Kürzung zeigte der Ring eine andere Zahl als die
+ * Kachel darunter — bei kleinen Anteilen deutlich.
  */
-function bogen(umfang: number, anteil: number, breite: number): number {
-  if (anteil >= 1) return umfang;
-  return Math.max(0, umfang * anteil - breite);
+function bogenEnde(r: number, anteil: number, breite: number, mitte: number) {
+  const umfang = 2 * Math.PI * r;
+  const kappe = breite / 2;
+  // Der Winkel, an dem der gezeichnete Bogen aufhört: das Ziel minus dem Stück,
+  // das die Kappe selbst ausfüllt.
+  const bis = Math.max(0, umfang * anteil - kappe);
+  const winkel = (bis / umfang) * 2 * Math.PI - Math.PI / 2;
+  return {
+    laenge: bis,
+    x: mitte + r * Math.cos(winkel),
+    y: mitte + r * Math.sin(winkel),
+  };
 }
 
 function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: number }) {
@@ -279,6 +291,7 @@ function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: n
             const { r, breite } = RINGE[i];
             const umfang = 2 * Math.PI * r;
             const anteil = Math.min(Math.abs(s.wert) / grund, 1);
+            const ende = bogenEnde(r, anteil, breite, SEITE / 2);
             return (
               <g key={s.label}>
                 <circle
@@ -290,16 +303,30 @@ function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: n
                   strokeOpacity={0.12}
                   strokeWidth={breite}
                 />
-                <circle
-                  cx={SEITE / 2}
-                  cy={SEITE / 2}
-                  r={r}
-                  fill="none"
-                  stroke={farbe(s)}
-                  strokeWidth={breite}
-                  strokeDasharray={`${bogen(umfang, anteil, breite)} ${umfang}`}
-                  strokeLinecap={anteil >= 1 ? "butt" : "round"}
-                />
+                {anteil >= 1 ? (
+                  <circle
+                    cx={SEITE / 2}
+                    cy={SEITE / 2}
+                    r={r}
+                    fill="none"
+                    stroke={farbe(s)}
+                    strokeWidth={breite}
+                  />
+                ) : (
+                  <>
+                    <circle
+                      cx={SEITE / 2}
+                      cy={SEITE / 2}
+                      r={r}
+                      fill="none"
+                      stroke={farbe(s)}
+                      strokeWidth={breite}
+                      strokeDasharray={`${ende.laenge} ${umfang}`}
+                      strokeLinecap="butt"
+                    />
+                    <circle cx={ende.x} cy={ende.y} r={breite / 2} fill={farbe(s)} />
+                  </>
+                )}
               </g>
             );
           })}
@@ -310,7 +337,24 @@ function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: n
           Reihenfolge: Wer die Karte quer liest, soll die Farbe wiederfinden. */}
       <div style={{ display: "flex", gap: 40 * skala }}>
         {bild.serien.map((s) => (
-          <div key={s.label} style={{ flex: 1, minWidth: 0 }}>
+          <div key={s.label} style={{ flex: 1, minWidth: 0, position: "relative" }}>
+            {/* Der Umriss des Landes, schwach hinter dem Wert. Er ordnet zu, ohne
+                zu erklären — auf einem Bild, das ohne Bildunterschrift durch
+                fremde Feeds reist, ist die Form das Einzige, was ohne Lesen
+                ankommt. Er sitzt hinter der ZAHL, nicht neben der Bezeichnung:
+                Die Zahl ist groß und dunkel und steht klar davor, ein Ländername
+                in Fließtextgröße nicht. */}
+            {s.umriss && BUNDESLAND_UMRISS[s.umriss] && (
+              <svg
+                viewBox={`0 0 ${BUNDESLAND_UMRISS_SEITE} ${BUNDESLAND_UMRISS_SEITE}`}
+                width={132 * skala}
+                height={132 * skala}
+                aria-hidden="true"
+                style={{ position: "absolute", right: 0, bottom: 0, opacity: 0.1, pointerEvents: "none" }}
+              >
+                <path d={BUNDESLAND_UMRISS[s.umriss]} fill={v("--color-text-primary")} />
+              </svg>
+            )}
             {/* Die Farbe trägt der Punkt, nicht der Text: Zwei eingefärbte Zahlen
                 nebeneinander lesen sich als Wertung, und auf dem blauen
                 Farbschema sind sie ohnehin kaum zu unterscheiden. */}
@@ -362,6 +406,146 @@ function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: n
             </div>
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Zwei Werte als EINE Säule: der kleinere steckt als Sockel darin, der größere
+ * überragt ihn.
+ *
+ * Für Zahlen ohne ein Ganzes — „9,9 gegen 22,8 Steckersolargeräte je 1.000
+ * Einwohner". Zwei getrennte Balken zwingen zum Abschätzen zweier Längen, ein
+ * Ring behauptete einen Rest, den es nicht gibt. Hier IST der Unterschied die
+ * überragende Fläche, und man liest ihn, ohne etwas anzunehmen.
+ *
+ * Die Beschriftungen sitzen auf der Höhe ihres Segments: oben am Kopf der Säule
+ * der größere Wert, an der Sockelkante der kleinere. Eine Legende bräuchte es
+ * dann nicht mehr — die Zuordnung ist die Position.
+ */
+function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
+  const [gross, klein] = [...bild.serien].sort((a, b) => Math.abs(b.wert) - Math.abs(a.wert));
+  const zeigeEinheit = bild.einheitAmWert !== false;
+
+  // Die Säule füllt den Mittelteil der Karte. Kleiner gesetzt schwimmt sie in
+  // der Fläche, und der Höhenunterschied — die ganze Aussage — wird zur
+  // Fußnote.
+  const HOEHE = 640;
+  const BREITE = 170;
+  // Der Ausleger neben dem Sockel trägt dessen Höhe nach rechts, damit die
+  // Kante auch dort ablesbar ist, wo die Beschriftung steht.
+  const AUSLEGER = 50;
+  const sockel = Math.max(0, Math.min(Math.abs(klein.wert) / Math.abs(gross.wert), 1)) * HOEHE;
+  const ecke = 14 * skala;
+
+  const wert = (s: BildSerie) =>
+    s.wert.toLocaleString("de-DE", {
+      minimumFractionDigits: s.stellen ?? 0,
+      maximumFractionDigits: s.stellen ?? 0,
+    });
+
+  const block = (s: BildSerie, gruppe: boolean) => (
+    <>
+      <div style={{ fontSize: 27 * skala, color: v("--color-text-muted"), lineHeight: 1.3 }}>
+        {s.zusatz ?? s.label}
+      </div>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 12 * skala, whiteSpace: "nowrap" }}>
+        <span
+          style={{
+            fontSize: (gruppe ? 84 : 56) * skala,
+            fontWeight: 700,
+            lineHeight: 1.1,
+            color: v("--color-text-primary"),
+          }}
+        >
+          {wert(s)}
+        </span>
+        {zeigeEinheit && <span style={{ fontSize: 28 * skala, color: v("--color-text-muted") }}>{s.einheit}</span>}
+      </div>
+      {s.delta && (
+        <div style={{ fontSize: 30 * skala, fontWeight: 700, color: v("--color-accent") }}>{s.delta}</div>
+      )}
+    </>
+  );
+
+  return (
+    <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
+      <div style={{ position: "relative", height: HOEHE * skala, width: "100%" }}>
+        {/* Grundlinie: Ohne sie schwebt die Säule, und eine schwebende Säule
+            lässt sich in der Höhe nicht vergleichen. */}
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            bottom: 0,
+            width: (BREITE + AUSLEGER + 40) * skala,
+            height: Math.max(1, 2 * skala),
+            background: v("--color-border"),
+          }}
+        />
+
+        {/* Die volle Säule ist der größere Wert. */}
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            bottom: Math.max(1, 2 * skala),
+            width: BREITE * skala,
+            height: HOEHE * skala,
+            background: v("--color-accent"),
+            borderRadius: `${ecke}px ${ecke}px 0 0`,
+          }}
+        />
+        {/* Der Sockel ist der kleinere. Die helle Fuge darüber trennt die beiden
+            Flächen, ohne eine dritte Farbe einzuführen. */}
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            bottom: Math.max(1, 2 * skala),
+            width: BREITE * skala,
+            height: sockel * skala,
+            background: v("--color-text-primary"),
+            borderTop: `${Math.max(1, 3 * skala)}px solid ${v("--color-bg")}`,
+            boxSizing: "border-box",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: BREITE * skala,
+            bottom: Math.max(1, 2 * skala),
+            width: AUSLEGER * skala,
+            height: sockel * skala,
+            background: v("--color-text-primary"),
+            opacity: 0.3,
+            borderRadius: `0 ${ecke}px 0 0`,
+          }}
+        />
+
+        {/* Beschriftungen auf Segmenthöhe. */}
+        <div
+          style={{
+            position: "absolute",
+            left: (BREITE + AUSLEGER + 40) * skala,
+            top: 0,
+            right: 0,
+          }}
+        >
+          {block(gross, true)}
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            left: (BREITE + AUSLEGER + 40) * skala,
+            bottom: 0,
+            right: 0,
+            height: sockel * skala,
+          }}
+        >
+          {block(klein, false)}
+        </div>
       </div>
     </div>
   );
