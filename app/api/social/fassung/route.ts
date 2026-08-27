@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { istAdminOderCron } from "../../../../lib/admin-guard";
 import { ladeFassungen, setzeVorlageZurueck, speichereFassung } from "../../../../lib/social-vorlagen-db";
 import { socialKennzahlen } from "../../../../lib/social-kennzahlen";
-import { baueAllePosts } from "../../../../lib/social-posts";
+import { BILDFORM_NAME, baueAllePosts, type PostBild } from "../../../../lib/social-posts";
 import { istKartenStil } from "../../../../lib/social-karten-stil";
 import { pruefeVorlage } from "../../../../lib/social-vorlage";
 
-// Die redaktionelle Fassung einer Story speichern: Text, Farbschema oder beides.
+// Die redaktionelle Fassung einer Story speichern: Text, Farbschema, Bildform.
 //
 // Eine Route für beides, weil es eine Zeile in der Ablage ist und weil beides
 // dieselbe Folge hat: Die Freigabe verfällt. Zwei Routen hätten diese Folge
@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
     postId?: string;
     vorlage?: string | null;
     stil?: string;
+    form?: string;
     zuruecksetzen?: boolean;
   };
   if (!body.postId) return NextResponse.json({ error: "Keine Post-Kennung" }, { status: 400 });
@@ -36,12 +37,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, zurueckgesetzt: true });
     }
 
-    // Nur das Farbschema: kein Text zu prüfen, kein Kennzahlen-Abruf nötig.
+    // Nur Farbschema oder Bildform: kein Text zu prüfen, kein Kennzahlen-Abruf.
     if (body.vorlage == null) {
-      if (!istKartenStil(body.stil)) {
-        return NextResponse.json({ error: "Unbekanntes Farbschema" }, { status: 400 });
+      const stil = istKartenStil(body.stil) ? body.stil : undefined;
+      const form = body.form && body.form in BILDFORM_NAME ? (body.form as PostBild["art"]) : undefined;
+      if (!stil && !form) {
+        return NextResponse.json({ error: "Weder Farbschema noch Bildform erkannt" }, { status: 400 });
       }
-      await speichereFassung(body.postId, { stil: body.stil });
+      // Ob die Form für DIESES Bild trägt, entscheidet `baueAllePosts` beim
+      // Lesen — dort liegen die Zahlen. Eine Form, die morgen nicht mehr passt,
+      // fällt dann zurück, statt hier für immer festgeschrieben zu sein.
+      await speichereFassung(body.postId, { ...(stil ? { stil } : {}), ...(form ? { form } : {}) });
       return NextResponse.json({ ok: true });
     }
 

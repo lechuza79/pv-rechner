@@ -95,6 +95,42 @@ export type SocialKennzahlen = {
   }[];
 };
 
+/**
+ * Welche Bildformen für ein Bild überhaupt tragen.
+ *
+ * Nicht jede Form passt zu jeder Aussage, und die Regeln stehen ohnehin schon
+ * verstreut in Tests und Kommentaren — hier an einer Stelle, damit der
+ * Umschalter im Redaktionstisch gar nicht erst anbietet, was hinterher eine
+ * falsche Aussage wäre. Wer eine Form wählen kann, die nicht trägt, wählt sie
+ * irgendwann.
+ */
+export function moeglicheFormen(bild: PostBild): PostBild["art"][] {
+  const zwei = bild.serien.length === 2;
+  const ganzes = bild.ganzes != null;
+  const umrisse = bild.serien.every((s) => !!s.umriss);
+  return [
+    // Balken und Einzelzahl gehen immer: Der eine vergleicht Längen, die andere
+    // zeigt die hervorgehobene Zahl groß.
+    "vergleich",
+    "kennzahl",
+    // Ring und gefüllter Umriss bilden einen ANTEIL ab — ohne Ganzes behauptet
+    // die leere Fläche einen Rest, den es nicht gibt.
+    ...(zwei && ganzes ? (["donut"] as const) : []),
+    ...(ganzes && umrisse ? (["umriss"] as const) : []),
+    // Die Säule zeigt ein Verhältnis zwischen zwei Werten. Mit einem Ganzen wäre
+    // ihr Sockel plötzlich ein Anteil und die Höhe eine andere Aussage.
+    ...(zwei && !ganzes ? (["saeule"] as const) : []),
+  ];
+}
+
+export const BILDFORM_NAME: Record<PostBild["art"], string> = {
+  vergleich: "Balken",
+  kennzahl: "Einzelkennzahl",
+  donut: "Ringpaar",
+  saeule: "Säule",
+  umriss: "Gefüllte Umrisse",
+};
+
 export type BildSerie = {
   /** Die Gruppe selbst, groß gesetzt: „Städte", ein Ländername. */
   label: string;
@@ -1170,7 +1206,7 @@ export const ALLE_POSTS = [
  * das gewählte Farbschema. Beides zusammen ist die FASSUNG einer Story — und
  * beides zusammen prüft die Freigabe.
  */
-export type GespeicherteFassung = { vorlage?: string; stil?: KartenStil };
+export type GespeicherteFassung = { vorlage?: string; stil?: KartenStil; form?: PostBild["art"] };
 
 /**
  * Alle Posts, mit optional bearbeiteten Fassungen.
@@ -1200,6 +1236,13 @@ export function baueAllePosts(
     // ein Fund für den Code, kein Grund für ein kaputtes Bild.
     if (post.bild && istKartenStil(fassung?.stil)) {
       post.bild = { ...post.bild, stil: fassung!.stil! };
+    }
+    // Eine gewählte Bildform gilt nur, wenn sie für dieses Bild überhaupt trägt.
+    // Ändern sich die Daten so, dass sie es nicht mehr tut — eine dritte Serie,
+    // ein weggefallenes Ganzes —, fällt die Story auf ihre eingebaute Form
+    // zurück, statt eine Aussage zu zeigen, die das Bild nicht hergibt.
+    if (post.bild && fassung?.form && moeglicheFormen(post.bild).includes(fassung.form)) {
+      post.bild = { ...post.bild, art: fassung.form };
     }
     return post;
   });

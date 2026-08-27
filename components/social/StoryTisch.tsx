@@ -8,15 +8,7 @@ import { Kennung } from "./Kennung";
 import { fuelle } from "../../lib/social-vorlage";
 import { KARTEN_STILE, KARTEN_STIL_NAME, KARTEN_STIL_STANDARD, type KartenStil } from "../../lib/social-karten-stil";
 import { urteil, type Pruefung } from "../../lib/social-pruefung-kern";
-import type { PostBild, SocialPost } from "../../lib/social-posts";
-
-const BILDFORM: Record<PostBild["art"], string> = {
-  vergleich: "Balken",
-  kennzahl: "Einzelkennzahl",
-  donut: "Ringpaar",
-  saeule: "Säule",
-  umriss: "Gefüllte Umrisse",
-};
+import { BILDFORM_NAME, moeglicheFormen, type PostBild, type SocialPost } from "../../lib/social-posts";
 
 // Eine Story am Redaktionstisch: so, wie sie im Feed steht, plus die drei
 // Stellschrauben — Farbschema, Formulierung, Freigabe.
@@ -52,6 +44,7 @@ export function StoryTisch({
   kategorieHinweis?: { name: string; href: string };
 }) {
   const [stil, setStil] = useState<KartenStil>(post.bild?.stil ?? KARTEN_STIL_STANDARD);
+  const [form, setForm] = useState<PostBild["art"] | null>(post.bild?.art ?? null);
   const [entwurf, setEntwurf] = useState(post.vorlage ?? "");
   const [offen, setOffen] = useState(false);
   const [stilStatus, setStilStatus] = useState<string | null>(null);
@@ -59,7 +52,8 @@ export function StoryTisch({
   const werte = Object.fromEntries((post.platzhalter ?? []).map((p) => [p.name, p.wert]));
   // Bearbeitbare Posts zeigen den Entwurf, die übrigen ihren eingebauten Text.
   const text = post.vorlage ? fuelle(entwurf, werte) : post.text;
-  const bild = post.bild ? { ...post.bild, stil } : null;
+  const bild = post.bild ? { ...post.bild, stil, ...(form ? { art: form } : {}) } : null;
+  const formen = post.bild ? moeglicheFormen(post.bild) : [];
   const stand = urteil({ text, bild }, pruefungen);
 
   /**
@@ -71,19 +65,17 @@ export function StoryTisch({
    * gerade schließt, nur eine Etage höher. Beim Ausprobieren aufgefallen: Die
    * Meldung stand da, die Karte war trotzdem blau.
    */
-  async function stilWaehlen(neu: KartenStil) {
-    const vorher = stil;
-    setStil(neu);
+  async function speichere(feld: "stil" | "form", wert: string, zurueck: () => void) {
     setStilStatus(null);
     try {
       const res = await fetch("/api/social/fassung", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ postId: post.id, stil: neu }),
+        body: JSON.stringify({ postId: post.id, [feld]: wert }),
       });
       if (!res.ok) {
         const j = (await res.json().catch(() => ({}))) as { error?: string };
-        setStil(vorher);
+        zurueck();
         setStilStatus(
           res.status === 401
             ? "Nicht gespeichert — die Anmeldung ist abgelaufen. Neu anmelden und noch einmal wählen."
@@ -91,9 +83,21 @@ export function StoryTisch({
         );
       }
     } catch (e) {
-      setStil(vorher);
+      zurueck();
       setStilStatus(`Nicht gespeichert: ${(e as Error).message}`);
     }
+  }
+
+  function stilWaehlen(neu: KartenStil) {
+    const vorher = stil;
+    setStil(neu);
+    void speichere("stil", neu, () => setStil(vorher));
+  }
+
+  function formWaehlen(neu: PostBild["art"]) {
+    const vorher = form;
+    setForm(neu);
+    void speichere("form", neu, () => setForm(vorher));
   }
 
   return (
@@ -132,8 +136,43 @@ export function StoryTisch({
           </h3>
         )}
         <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: space.xs }}>
-          {post.kanal.join(" · ")} · {BILDFORM[post.bild?.art ?? "vergleich"]} · {text.length} Zeichen
+          {post.kanal.join(" · ")} · {text.length} Zeichen
         </div>
+
+        {/* Bildform: dieselbe Aussage in einer anderen Darstellung. Angeboten
+            wird nur, was für DIESE Zahlen trägt — eine Form, die man wählen
+            kann, wählt irgendwann jemand. */}
+        {formen.length > 1 && (
+          <div style={{ marginTop: space.lg }}>
+            <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginBottom: space.xs }}>
+              Bildform
+            </div>
+            <div style={{ display: "flex", gap: space.xs, flexWrap: "wrap" }}>
+              {formen.map((f) => {
+                const aktiv = f === (form ?? post.bild?.art);
+                return (
+                  <button
+                    key={f}
+                    type="button"
+                    aria-pressed={aktiv}
+                    onClick={() => formWaehlen(f)}
+                    style={{
+                      padding: pad("xs", "md"),
+                      borderRadius: v("--radius-sm"),
+                      border: `1px solid ${aktiv ? v("--color-accent") : v("--color-border")}`,
+                      background: aktiv ? v("--color-accent-dim") : "transparent",
+                      color: aktiv ? v("--color-accent") : v("--color-text-secondary"),
+                      cursor: "pointer",
+                      fontSize: v("--font-size-small"),
+                    }}
+                  >
+                    {BILDFORM_NAME[f]}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Farbschema: Eigenschaft der Karte, nicht der Ansicht. Wird sofort
             gespeichert und wandert damit ins veröffentlichte Bild mit. */}

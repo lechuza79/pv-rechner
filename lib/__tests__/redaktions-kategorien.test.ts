@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { KATEGORIEN, kategorie, kategorieAusAdresse } from "../redaktions-kategorien";
 import { FAMILIEN } from "../redaktionsplan";
 import { KARTEN_STILE, KARTEN_STIL_STANDARD, kartenTokens, istKartenStil } from "../social-karten-stil";
-import { baueAllePosts, kurzEinwohner, type SocialKennzahlen } from "../social-posts";
+import { baueAllePosts, kurzEinwohner, moeglicheFormen, type SocialKennzahlen } from "../social-posts";
 import { BUNDESLAND_UMRISS } from "../bundesland-umrisse";
 
 // Die beiden Ausfälle, die diese Ansicht haben kann, sind von außen unsichtbar:
@@ -198,6 +198,37 @@ describe("Bildform und Einheit", () => {
         expect(p.bild.ganzes, `${p.id}: Säule mit Ganzem`).toBeUndefined();
       }
     }
+  });
+
+  it("angeboten wird nur, was für diese Zahlen trägt", () => {
+    // Der Umschalter im Redaktionstisch nimmt genau diese Liste. Eine Form, die
+    // wählbar ist, wählt irgendwann jemand — und dann steht eine Aussage im
+    // Bild, die die Zahlen nicht hergeben.
+    for (const p of posts) {
+      if (!p.bild) continue;
+      const formen = moeglicheFormen(p.bild);
+      // Die eingebaute Form muss dabei sein, sonst wäre die Story selbst ein
+      // Fall, den der Umschalter verbietet.
+      expect(formen, `${p.id}: eigene Form nicht in der Liste`).toContain(p.bild.art);
+      const zwei = p.bild.serien.length === 2;
+      const ganzes = p.bild.ganzes != null;
+      expect(formen.includes("donut"), `${p.id}: Ringpaar`).toBe(zwei && ganzes);
+      expect(formen.includes("saeule"), `${p.id}: Säule`).toBe(zwei && !ganzes);
+      expect(formen.includes("umriss"), `${p.id}: Umrisse`).toBe(
+        ganzes && p.bild.serien.every((s) => !!s.umriss),
+      );
+    }
+  });
+
+  it("eine gespeicherte Form gilt nur, solange sie trägt", () => {
+    // Ändern sich die Daten — eine dritte Serie, ein weggefallenes Ganzes —,
+    // fällt die Story auf ihre eingebaute Form zurück, statt eine Aussage zu
+    // zeigen, die das Bild nicht mehr hergibt.
+    const [passend] = baueAllePosts(basis, { "stadt-land-balkon": { form: "kennzahl" } });
+    expect(passend.bild?.art).toBe("kennzahl");
+
+    const [unpassend] = baueAllePosts(basis, { "stadt-land-balkon": { form: "umriss" } });
+    expect(unpassend.bild?.art).toBe("saeule");
   });
 
   it("ein Abstandswert steht in derselben Form wie im Beitragstext", () => {

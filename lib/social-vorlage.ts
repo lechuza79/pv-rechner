@@ -66,6 +66,7 @@ export const SOCIAL_VORLAGEN_DDL = `
     geaendert_am timestamptz NOT NULL DEFAULT now()
   );
   ALTER TABLE social_vorlagen ADD COLUMN IF NOT EXISTS stil text;
+  ALTER TABLE social_vorlagen ADD COLUMN IF NOT EXISTS form text;
   ALTER TABLE social_vorlagen ALTER COLUMN vorlage DROP NOT NULL;
   ALTER TABLE social_vorlagen ENABLE ROW LEVEL SECURITY;
   REVOKE ALL ON social_vorlagen FROM PUBLIC;
