@@ -102,7 +102,7 @@ const HIGHLIGHT: Partial<Record<TokenName, string>> = {
  * beidem richtig haben.
  */
 export function serienFarben(stil: KartenStil): { hervorgehoben: string; gedaempft: string } {
-  if (stil === "highlight") return { hervorgehoben: "#FFFFFF", gedaempft: "#7BA8F5" };
+  if (stil === "highlight") return { hervorgehoben: "#FFFFFF", gedaempft: "#96BCF8" };
   const t = kartenTokens(stil);
   return { hervorgehoben: t["--color-accent"], gedaempft: t["--color-text-primary"] };
 }
