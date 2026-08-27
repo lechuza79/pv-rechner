@@ -148,9 +148,9 @@ Das Skript verweigert von sich aus:
 - über einen Anbieter, der nicht im SPF-Eintrag steht, oder mit einem Absender,
   der nicht das angemeldete Konto ist,
 - ohne Pflichtangaben im Text (Klarname, Impressum, Art. 14),
-- über 40 Mails **am Tag** (nicht je Lauf — es zählt, was heute schon in der
+- über 50 Mails **am Tag** (nicht je Lauf — es zählt, was heute schon in der
   Datenbank steht). **Die Zahl ist eine Stufe, kein Endzustand:** Sie stand bis
-  zum 26.08.2026 auf 25, weil das Briefing es so vorgab; dessen Quelle waren
+  zum 26.08.2026 auf 25, dann kurz auf 40, weil das Briefing es so vorgab; dessen Quelle waren
   Ratgeber von Anbietern, die Aufwärm-Dienste verkaufen. Gemessen sprach nichts
   dafür — 79 Mails, kein Bounce, alle Echtheitsprüfungen bestanden. Vor der
   nächsten Anhebung müssen drei Läufe mit sauberer Zustellungsprobe vorliegen.

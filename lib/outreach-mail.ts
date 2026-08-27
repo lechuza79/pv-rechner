@@ -372,7 +372,12 @@ export const PAUSE_MS = 90_000;
  * Bounces zeigen sich erst, wenn es längst zu spät ist, die Einsortierung in den
  * Spam-Ordner dagegen sofort.
  */
-export const MAX_JE_LAUF = 40;
+export const MAX_JE_LAUF = 50;
+// 50 statt 40 am 26.08.2026, damit der Schub Niedersachsen/Bremen (48 Gemeinden)
+// an einem Tag durchgeht statt an zwei. Der Sprung ist damit 20 → 48 in einem
+// Schritt; die Messung deckt bisher 20 ab. Was ihn trotzdem trägt, ist der
+// Befund aus sechs Läufen — kein Bounce, bestandene Echtheitsprüfungen — und die
+// Zustellungsprobe, die ab jetzt mitläuft und den leisen Fehler zeigen würde.
 
 /**
  * Empfänger der Zustellungsprobe: je Versandlauf eine zusätzliche Mail an ein
