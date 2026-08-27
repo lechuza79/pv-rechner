@@ -193,26 +193,36 @@ Abrufen kamen nicht durch). 4.853 Domains gefunden, davon nach Streuung und Impr
 
 | Klasse | Zahl | was das heißt |
 |---|---|---|
-| **betrieb** | **3.118** | regional, mit Website, mit PV-Angebot |
-| unklar | 913 | kein PV-Wort im ausgelieferten HTML — meist Verzeichnisse, die ihren Inhalt per Skript nachladen |
-| kein-betrieb | 760 | Kommunen (280 der Stichprobe), Vereine/Genossenschaften (57), Presse (38), Portale (25) |
+| **betrieb** | **3.098** | regional, mit Website, mit PV-Angebot |
+| unklar | 908 | kein PV-Wort im ausgelieferten HTML — meist Verzeichnisse, die ihren Inhalt per Skript nachladen |
+| kein-betrieb | 786 | Kommunen (280 der Stichprobe), Vereine/Genossenschaften (57), Presse (38), Portale (25) |
 | ueberregional | 61 | Portale und bundesweite Anbieter |
 
-**Trust-Signale der 3.118 Betriebe:** Anschrift 85 % · Handelsregisternummer 58 % ·
-E-Mail 84 % · **amtlicher Gemeindeschlüssel 98 % der Betriebe mit Anschrift** ·
-Meisterbetrieb 21 % · Handwerkskammer 14 % · Zertifikat 12 % · Gründungsjahr 8 % ·
-Bewertung (Selbstauskunft) 1 % · Innung 1 % · Installateurverzeichnis 1 %.
+Dazu **14.026 Belege** — jeder mit Fundstelle, Textstelle und Datum.
+
+**Trust-Signale der 3.098 Betriebe:** Anschrift 85 % · **amtlicher Gemeindeschlüssel
+84 %** · E-Mail 85 % · Handelsregisternummer 58 % · Meisterbetrieb 21 % ·
+Handwerkskammer 14 % · Zertifikat 12 % · Gründungsjahr 8 % · Bewertung (Selbstauskunft)
+1 % · Innung 1 % · Installateurverzeichnis 1 %.
 
 Die niedrigen Quoten unten sind **kein Erfassungsfehler, sondern die Realität**: Diese
 Angaben stehen auf den meisten Websites schlicht nicht. Ein loseres Muster brächte höhere
 Quoten und falsche Werte — genau das war der erste Lauf.
 
-**Gemessene Restunschärfe der Klasse „betrieb": rund 1 %** (31 von 3.118 tragen ein Wort,
-das auf Vermittlung, Verzeichnis, Presse oder Finanzdienstleistung deutet; davon sind bei
-Durchsicht etwa die Hälfte echte Fehleinordnungen). Zwei Muster sind daraufhin ergänzt
-worden — Lead-Vermittlung und erweiterte Presse-Erkennung. **Der Rest bleibt stehen und
-wird hier genannt statt weggepoliert:** Die Belege liegen vor, wer schärfer filtern will,
-filtert die Belege neu.
+**Abdeckung: alle 16 Bundesländer, 391 der 400 Kreise mit mindestens einem Betrieb.**
+Die Verteilung folgt der Wirtschaftskraft, wie zu erwarten — Bayern 531, Nordrhein-
+Westfalen 525, Baden-Württemberg 341, Niedersachsen 308, am unteren Ende die Stadtstaaten
+(Hamburg 16, Bremen 20) und das Saarland (29). Die neun Kreise ohne Eintrag heißen
+**nicht**, dass es dort keine Betriebe gibt: Dort hatte keiner der gefundenen eine
+auslesbare Anschrift, oder die Postleitzahl blieb mehrdeutig.
+
+**Gemessene Restunschärfe der Klasse „betrieb": rund 1 %** (31 von 3.118 vor der
+Nachbesserung trugen ein Wort, das auf Vermittlung, Verzeichnis, Presse oder
+Finanzdienstleistung deutet; bei Durchsicht war etwa die Hälfte davon eine echte
+Fehleinordnung). Zwei Muster sind daraufhin ergänzt worden — Lead-Vermittlung und
+erweiterte Presse-Erkennung —, sie haben beim Nachlauf 20 Domains zurückgestuft. **Der
+Rest bleibt stehen und wird hier genannt statt weggepoliert:** Die Belege liegen vor, wer
+schärfer filtern will, filtert die Belege neu statt neu zu crawlen.
 
 **Die Streuungsverteilung bestätigt die Bauweise:** 2.105 Betriebe erscheinen in genau
 einem Kreis, 774 in zwei bis vier, 170 in fünf bis neun, nur 69 in zehn bis neunzehn.
