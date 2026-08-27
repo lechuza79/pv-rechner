@@ -541,12 +541,11 @@ export function postFreiflaeche(k: SocialKennzahlen): SocialPost {
     text,
     bild: {
       stil: KARTEN_STIL_STANDARD,
-      // Gefüllte Landesumrisse statt Ringen: Der Beitrag vergleicht zwei ORTE,
-      // und die Form eines Landes sagt ohne ein Wort, welcher gemeint ist. Ein
-      // Anteil lässt sich als Füllstand lesen, weil es hier wirklich ein Ganzes
-      // gibt — bei einem Verhältnis ohne Ganzes wäre dieselbe Form eine
-      // Behauptung über einen Rest.
-      art: "umriss",
+      // Das Ringpaar bleibt die eingebaute Form — es war die abgenommene. Die
+      // gefüllten Landesumrisse sind eine VARIANTE und über den Umschalter
+      // erreichbar: Was einmal abgenommen wurde, wird nicht durch eine neue Idee
+      // ersetzt, sondern bekommt sie danebengestellt.
+      art: "donut",
       // Hier trägt ausnahmsweise die gemessene Größe die Überschrift (Betreiber,
       // 27.08.2026): Das Bild zeigt zwei Anteile am selben Ganzen, und der
       // Sachtitel sagt in fünf Wörtern, was die Ringe sind. Die Deutung —
