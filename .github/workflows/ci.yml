@@ -101,7 +101,7 @@ jobs:
       # Zahl anfasst. Wird sie trotzdem knapp, ist das ein Befund — dann messen,
       # was gewachsen ist, statt das Limit anzuheben.
       - name: E2E smoke tests (Playwright)
-        timeout-minutes: 16
+        timeout-minutes: 1
         run: npm run test:e2e
         env:
           # Der Browser-seitige Client braucht nur irgendeine gültige Form —
@@ -164,6 +164,7 @@ jobs:
   # bei hunderten Aufrufen geht er dabei in die Knie — der Lauf bricht dann mit
   # „nicht erreichbar" ab, was wie ein Testfehler aussieht, aber keiner ist.
   flows:
+    if: false # GEGENPROBE, nicht mergen
     name: Flow-Läufer (jede Option, jeder Zweig)
     runs-on: ubuntu-latest
     timeout-minutes: 35
