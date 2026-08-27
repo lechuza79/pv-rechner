@@ -9,8 +9,14 @@
 // Woche verschieden aussehen, und ein Vorgabewert an dieser Stelle hätte
 // verlangt, jede Abweichung als solche auszuweisen.
 //
-// Ebenso wenig die Bildform (Ringpaar, Balken oder Einzelzahl). Die entscheidet
-// sich an den Zahlen, nicht am Thema — 1,20
+// Die Reihenfolge folgt den drei Wochenplätzen des Redaktionsplans: erst die
+// Formen, die den Substanz-Platz tragen (Kontrast bis Mythos), dann der
+// operative (Frist), dann die leichten (Funktion, Methode). Vier von acht waren
+// zuerst nur Substanz — die Kadenz von drei Beiträgen pro Woche ließ sich damit
+// gar nicht füllen.
+//
+// Ebenso wenig steht hier die Bildform (Ringpaar, Säule, Balken, Einzelzahl).
+// Die entscheidet sich an den Zahlen, nicht am Thema — 1,20
 // gegen 1,45 Millionen sind zwei fast gleich lange Balken über ein Fünftel
 // Wachstum, und derselbe Beitrag braucht dann die Einzelkennzahl, obwohl er
 // eindeutig von Bewegung handelt. Eine Kategorie, die die Form vorschreibt,
@@ -22,7 +28,15 @@
 // Familie → Kategorie wäre in beiden Richtungen falsch; der Vorrat steht deshalb
 // in der Planung (lib/redaktionsplan.ts).
 
-export type KategorieSchluessel = "kontrast" | "bewegung" | "aufteilung" | "groessenordnung" | "funktion";
+export type KategorieSchluessel =
+  | "kontrast"
+  | "bewegung"
+  | "aufteilung"
+  | "groessenordnung"
+  | "mythos"
+  | "frist"
+  | "funktion"
+  | "methode";
 
 export type Kategorie = {
   schluessel: KategorieSchluessel;
@@ -57,6 +71,20 @@ export const KATEGORIEN: Kategorie[] = [
       "Wie sich ein Ganzes verteilt. Jeder Anteil braucht seinen Nenner sichtbar — sonst ist der größte Balken eine Aussage über eine Grundmenge, die niemand kennt.",
   },
   {
+    schluessel: "mythos",
+    kurz: "Mythos",
+    name: "Mythos gegen Messung",
+    beschreibung:
+      "Eine verbreitete Annahme, neben die gemessene Zahl gestellt. Formal ein Kontrast, inhaltlich etwas anderes: Verglichen werden nicht zwei Gruppen, sondern eine Erwartung und ein Befund — und die Erwartung muss wirklich verbreitet sein, sonst widerlegt der Beitrag einen Popanz.",
+  },
+  {
+    schluessel: "frist",
+    kurz: "Frist",
+    name: "Stichtag und Frist",
+    beschreibung:
+      "Was sich zu einem Datum ändert und was man davor tun muss. Der operative Platz der Woche. Trägt nur mit einer Fundstelle und einem Verfahrensstand — ein Entwurf, der als geltendes Recht gelesen wird, ist die teuerste Auskunft, die wir geben können.",
+  },
+  {
     schluessel: "funktion",
     kurz: "Funktion",
     name: "Funktion erklärt",
@@ -69,6 +97,13 @@ export const KATEGORIEN: Kategorie[] = [
     name: "Größenordnung",
     beschreibung:
       "Eine Zahl, die man sich nicht vorstellen kann, mit einem Maßstab daneben. Ohne den Maßstab ist es eine Zahlentafel; mit einer zu kleinen Grundmenge ein Superlativ, der vollständig im Nenner entsteht.",
+  },
+  {
+    schluessel: "methode",
+    kurz: "Methode",
+    name: "Wie wir rechnen",
+    beschreibung:
+      "Womit wir rechnen, wo unsere Zahlen enden und was wir falsch hatten. Der leichte Platz der Woche, und der einzige, der ohne Diagramm auskommt. Ein eingestandener eigener Fehler wirkt hier stärker als jede Kennzahl — aber nur, wenn danebensteht, was wir daraufhin geändert haben.",
   },
 ];
 

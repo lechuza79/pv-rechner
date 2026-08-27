@@ -526,7 +526,10 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
             fontFamily: v("--font-mono"),
             fontWeight: 700,
             color: v("--color-accent"),
-            marginTop: 6 * skala,
+            // Dicht an die Zahl: Der Abstand gehört zwischen die beiden
+            // Beschriftungsblöcke, nicht zwischen einen Wert und seine
+            // Ergänzung — die beiden sind eine Aussage.
+            marginTop: -4 * skala,
           }}
         >
           {s.delta}

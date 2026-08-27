@@ -297,6 +297,7 @@ export function postStadtLand(k: SocialKennzahlen, eigeneVorlage?: string): Soci
     { name: "landSchwelle", wert: `${de(s.landUnter / 1000)}.000`, erklaerung: "Einwohnerschwelle Gemeinde" },
     { name: "landQuote", wert: de(s.landJeTausend, 1), erklaerung: "Geräte je 1.000 Einwohner, Gemeinden" },
     { name: "faktor", wert: de(faktor, 1), erklaerung: "Verhältnis Land zu Stadt" },
+    { name: "mehr", wert: de((faktor - 1) * 100, 0), erklaerung: "Vorsprung Land gegenüber Stadt in Prozent" },
     {
       name: "stadtstaaten",
       wert: stadtstaaten.map((l) => `${l.name} ${de(l.balkonJeTausend, 1)}`).join(", "),
@@ -314,7 +315,7 @@ export function postStadtLand(k: SocialKennzahlen, eigeneVorlage?: string): Soci
   const standardVorlage = [
     `In deutschen Großstädten stehen nur halb so viele Balkonkraftwerke wie in kleinen Gemeinden. Bei einem Gerät, das als Lösung für Mieter in der Stadt gilt.`,
     ``,
-    `Die Anmeldedaten: In den {stadtAnzahl} deutschen Städten über {stadtSchwelle} Einwohnern kommen {stadtQuote} Steckersolargeräte auf 1.000 Einwohner. In den gut {landAnzahl}.000 Gemeinden unter {landSchwelle} Einwohnern sind es {landQuote}. Also ${staerker ? `{faktor}-mal so viele` : `weniger`} — und zwar dort, wo die meisten Leute ohnehin ein eigenes Dach hätten.`,
+    `Die Anmeldedaten: In den {stadtAnzahl} deutschen Städten über {stadtSchwelle} Einwohnern kommen {stadtQuote} Steckersolargeräte auf 1.000 Einwohner. In den gut {landAnzahl}.000 Gemeinden unter {landSchwelle} Einwohnern sind es {landQuote}. Also ${staerker ? `{mehr} Prozent mehr` : `weniger`} — und zwar dort, wo die meisten Leute ohnehin ein eigenes Dach hätten.`,
     ``,
     `Am deutlichsten in den Stadtstaaten: {stadtstaaten}. Unter den Flächenländern führt {spitzenland} mit {spitzenwert}.`,
     ``,
@@ -360,9 +361,10 @@ export function postStadtLand(k: SocialKennzahlen, eigeneVorlage?: string): Soci
           einheit: "je 1.000 Ew.",
           stellen: 1,
           hervorgehoben: true,
-          // Derselbe Faktor, den der Beitragstext nennt, in derselben
-          // Ausdrucksform. Kippt das Verhältnis, kippt er mit.
-          delta: `${de(faktor, 1)}×`,
+          // Dieselbe Zahl in derselben Ausdrucksform wie im Beitragstext.
+          // Stünde hier der Faktor und dort Prozent, müsste der Leser
+          // umrechnen, um zu sehen, dass sich Bild und Text nicht widersprechen.
+          delta: `+${de((faktor - 1) * 100, 0)} %`,
         },
       ],
       quelle: quellenzeile(k.standIso, false),
