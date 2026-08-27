@@ -158,7 +158,7 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
                 <Link href={`/admin/redaktion?k=${kategorie.schluessel}`} style={knopf}>
                   Zur Kategorie
                 </Link>
-                <Kennung id={post.id} />
+                <Kennung id={post.id} template={post.bild ? templateVon(post.bild)?.name : undefined} />
               </div>
             </div>
           );

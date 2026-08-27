@@ -8,7 +8,7 @@ import { Kennung } from "./Kennung";
 import { fuelle } from "../../lib/social-vorlage";
 import { KARTEN_STILE, KARTEN_STIL_NAME, KARTEN_STIL_STANDARD, type KartenStil } from "../../lib/social-karten-stil";
 import { urteil, type Pruefung } from "../../lib/social-pruefung-kern";
-import { BILDFORM_NAME, moeglicheFormen, type PostBild, type SocialPost } from "../../lib/social-posts";
+import { BILDFORM_NAME, moeglicheFormen, templateVon, type PostBild, type SocialPost } from "../../lib/social-posts";
 
 // Eine Story am Redaktionstisch: so, wie sie im Feed steht, plus die drei
 // Stellschrauben — Farbschema, Formulierung, Freigabe.
@@ -136,6 +136,10 @@ export function StoryTisch({
           </h3>
         )}
         <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: space.xs }}>
+          {/* Das Template zuerst: Beim Gestalten ist das die Identität des
+              Beitrags, nicht der Kanal. Trägt er eine Kombination, die niemand
+              durchgesehen hat, steht das hier statt eines Namens. */}
+          {bild ? (templateVon(bild)?.name ?? "kein abgenommenes Template") : "ohne Bild"} ·{" "}
           {post.kanal.join(" · ")} · {text.length} Zeichen
         </div>
 
@@ -246,7 +250,7 @@ export function StoryTisch({
               Noch nicht auf Vorlagen umgestellt — Text hier nur lesbar.
             </span>
           )}
-          <Kennung id={post.id} />
+          <Kennung id={post.id} template={bild ? templateVon(bild)?.name : undefined} />
         </div>
 
         {offen && post.vorlage && post.platzhalter && (

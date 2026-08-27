@@ -12,6 +12,12 @@ import { iconSizes, v, pad } from "../../lib/theme";
 // „die dritte Kachel von oben" hängt an der Sortierung und stimmt beim nächsten
 // Aufruf nicht mehr.
 //
+// Kopiert wird Kennung UND Template — „g14-freiflaeche-ost-west (Ringpaar
+// Highlight)". Die Kennung allein sagt, WELCHE Story gemeint ist, aber nicht,
+// welches Design sie gerade trägt; und beim Schleifen ist genau das die Frage.
+// Ins ID-Feld selbst kann das Template nicht: Es ist umschaltbar, und eine
+// Kennung, die sich beim Umfärben ändert, verliert ihre gespeicherte Fassung.
+//
 // Kopieren statt Markieren: Ein Wort in Monospace lässt sich zwar auswählen,
 // aber ein Doppelklick greift bei Bindestrichen nur die Silbe.
 //
@@ -22,12 +28,12 @@ import { iconSizes, v, pad } from "../../lib/theme";
 // nicht braucht, sieht sie nicht. Lesbar bleibt sie über den Tooltip und für
 // Screenreader über die Beschriftung.
 
-export function Kennung({ id }: { id: string }) {
+export function Kennung({ id, template }: { id: string; template?: string }) {
   const [kopiert, setKopiert] = useState(false);
 
   async function kopieren() {
     try {
-      await navigator.clipboard.writeText(id);
+      await navigator.clipboard.writeText(template ? `${id} (${template})` : id);
       setKopiert(true);
       window.setTimeout(() => setKopiert(false), 1500);
     } catch {
@@ -40,8 +46,8 @@ export function Kennung({ id }: { id: string }) {
     <button
       type="button"
       onClick={kopieren}
-      title={kopiert ? "kopiert" : `Kennung kopieren: ${id}`}
-      aria-label={`Kennung kopieren: ${id}`}
+      title={kopiert ? "kopiert" : `Kennung kopieren: ${id}${template ? ` (${template})` : ""}`}
+      aria-label={`Kennung kopieren: ${id}${template ? ` (${template})` : ""}`}
       style={{
         display: "inline-flex",
         alignItems: "center",
