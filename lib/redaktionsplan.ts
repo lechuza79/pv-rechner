@@ -149,7 +149,7 @@ export const FAMILIEN: Familie[] = [
     name: "Die Förderung: Wochenbewegung",
     beschreibung:
       "Was sich diese Woche in den kommunalen Programmen bewegt hat, und wo eine Lücke klafft. Täglich gepflegt und damit exklusiv; die Schranke ist die Namensnennung — geholfen wird, nicht bewertet.",
-    zustand: "daten-da",
+    zustand: "gebaut",
   },
   {
     schluessel: "g6",
@@ -179,7 +179,7 @@ export const FAMILIEN: Familie[] = [
     name: "Das Ausland",
     beschreibung:
       "Deutschland neben andere Länder gestellt, pro Kopf statt absolut. Die Reihen stammen aus einer fremden Quelle mit eigener Jahresachse — was sie nicht mehr hergibt, wächst nicht mit.",
-    zustand: "daten-da",
+    zustand: "gebaut",
   },
   {
     schluessel: "g9",
@@ -220,7 +220,7 @@ export const FAMILIEN: Familie[] = [
     name: "Kommunen-Service ohne Ranking",
     beschreibung:
       "Was in kommunalen Förderprogrammen typischerweise fehlt und sie für Bürger unbrauchbar macht. Ohne einen einzigen Ortsnamen — diese Familie hilft, sie bewertet nicht.",
-    zustand: "daten-da",
+    zustand: "gebaut",
   },
   {
     schluessel: "g13",

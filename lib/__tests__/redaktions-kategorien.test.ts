@@ -32,6 +32,7 @@ const basis: SocialKennzahlen = {
     solarGesamtKwp: 127_100_000,
   },
   ueberEinwohner: { mindestEinwohner: 500, betrachtet: 10_000, darueber: 6_848 },
+  foerderung: { programme: 108, gemeinden: 97, nurBalkon: 12, ohneHoechstbetrag: 61, mitAntragVorher: 74 },
   kohorte: { privatAnlagen: 3_120_000, mittlereKwp: 9.4, mitSpeicher: 1_180_000, speicherQuote: 37.8 },
   anomalie: {
     ort: "Beispielstadt",

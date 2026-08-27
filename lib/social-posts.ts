@@ -14,6 +14,7 @@
 import { fmtPvLeistung } from "./atlas-format";
 import { feedInRatesFor, naechsteDegressionIso } from "./feedin-config";
 import { eegVerfahrenSatz } from "./eeg-reform-config";
+import { PERCAPITA_SERIES, YEARS_PERCAPITA } from "./country-comparison-percapita";
 import type { KategorieSchluessel } from "./redaktions-kategorien";
 import { KARTEN_STIL_STANDARD, istKartenStil, type KartenStil } from "./social-karten-stil";
 import { fuelle, type PlatzhalterInfo } from "./social-vorlage";
@@ -67,6 +68,20 @@ export type SocialKennzahlen = {
     jeTausend: number;
     bundesJeTausend: number;
     mindestEinwohner: number;
+  };
+  /**
+   * Der Förderkatalog, verdichtet.
+   *
+   * Nur Programme, die aktuell zählen (`fundingZaehlt`) — ein abgelaufener
+   * Beleg macht aus einer Auskunft eine Behauptung, und in einem Beitrag ist
+   * das genauso teuer wie im Rechner.
+   */
+  foerderung: {
+    programme: number;
+    gemeinden: number;
+    nurBalkon: number;
+    ohneHoechstbetrag: number;
+    mitAntragVorher: number;
   };
   laender: {
     name: string;
@@ -805,6 +820,195 @@ export function postAnomalie(k: SocialKennzahlen): SocialPost {
 }
 
 /**
+ * Post 11 — Was in kommunalen Förderprogrammen fehlt.
+ *
+ * Ohne einen einzigen Ortsnamen. Diese Familie hilft, sie bewertet nicht: Eine
+ * vorgeführte Gemeinde beendet den Outreach in ihrer ganzen Region, ohne dass
+ * es jemand sagt — und die Programme sind ohnehin nicht die Leistung einer
+ * einzelnen Verwaltung, sondern das Muster.
+ */
+export function postFoerderLuecken(k: SocialKennzahlen): SocialPost {
+  const f = k.foerderung;
+  // „AUFFINDBAR", nicht „genannt": Gemessen wird unser Katalogfeld, nicht die
+  // Amtsseite. Ein Programm, dessen Höchstbetrag irgendwo im Satzungstext
+  // steht, den wir nicht erfasst haben, wäre sonst als Versäumnis der Gemeinde
+  // ausgewiesen — dieselbe Fehlerklasse wie eine Beschriftung, die etwas
+  // anderes sagt als die Zahl darunter misst. Und für die Aussage der Familie
+  // ist die Auffindbarkeit ohnehin der Punkt.
+  const anteilOhne = f.programme ? (f.ohneHoechstbetrag / f.programme) * 100 : 0;
+  const anteilAntrag = f.programme ? (f.mitAntragVorher / f.programme) * 100 : 0;
+
+  const text = [
+    `Bei ${de(f.ohneHoechstbetrag)} von ${de(f.programme)} kommunalen Förderprogrammen haben wir keinen Höchstbetrag gefunden. Wer wissen will, wie viel er bekommt, muss anrufen.`,
+    ``,
+    `Wir pflegen den Katalog täglich und sehen dabei dasselbe Muster: Bei ${de(anteilOhne, 0)} Prozent ist keine Obergrenze auffindbar, ${de(anteilAntrag, 0)} Prozent verlangen den Antrag vor der Beauftragung — die teuerste Bedingung überhaupt, weil sie den Zuschuss nachträglich unmöglich macht und selten prominent steht.`,
+    ``,
+    `Keine Namen hier: Das ist kein Versäumnis einzelner Verwaltungen, sondern ein Muster. Drei Dinge würden es abstellen — ein genannter Höchstbetrag, ein verlinktes Formular und der Satz „Antrag vor Auftragsvergabe" als Erstes statt im Kleingedruckten.`,
+    ``,
+    `Wer sein Programm daraufhin ansehen will: Wir schauen kostenlos drauf und sagen, was fehlt.`,
+    ``,
+    quellenzeile(k.standIso, true),
+  ].join("\n");
+
+  return {
+    id: "foerder-luecken",
+    titel: "Was in Förderprogrammen fehlt",
+    kategorie: "g12",
+    kanal: ["linkedin"],
+    text,
+    bild: {
+      stil: KARTEN_STIL_STANDARD,
+      art: "donut",
+      aussage: `Bei den meisten Programmen ist kein Höchstbetrag auffindbar`,
+      gemessen: `Anteil der kommunalen Programme im Katalog`,
+      ganzes: 100,
+      einheitAmWert: true,
+      serien: [
+        { label: "kein Höchstbetrag auffindbar", wert: anteilOhne, einheit: "%", stellen: 0, hervorgehoben: true },
+        { label: "Antrag vor Beauftragung", wert: anteilAntrag, einheit: "%", stellen: 0 },
+      ],
+      quelle: quellenzeile(k.standIso, false),
+    },
+    belege: [
+      `${de(f.programme)} zählende Programme in ${de(f.gemeinden)} Gemeinden`,
+      `kein Höchstbetrag im Katalog ${de(f.ohneHoechstbetrag)} (${de(anteilOhne, 1)} %)`,
+      `Antrag vor Beauftragung ${de(f.mitAntragVorher)} (${de(anteilAntrag, 1)} %)`,
+    ],
+  };
+}
+
+/**
+ * Post 12 — Kommunen, die nur noch Steckersolar fördern.
+ *
+ * Der Befund selbst ist die Geschichte: Ein Programm, das die Dachanlage
+ * streicht und das Balkonkraftwerk behält, ist eine Entscheidung über
+ * Reichweite je Euro — und sie fällt gerade in Serie.
+ */
+export function postNurBalkon(k: SocialKennzahlen): SocialPost {
+  const f = k.foerderung;
+  const anteil = f.programme ? (f.nurBalkon / f.programme) * 100 : 0;
+
+  const text = [
+    `${de(f.nurBalkon)} von ${de(f.programme)} kommunalen Förderprogrammen fördern nur noch Balkonkraftwerke — keine Dachanlagen mehr.`,
+    ``,
+    `Das sind ${de(anteil, 0)} Prozent des Katalogs, den wir täglich pflegen. München ist der bekannteste Fall: seit Ende 2024 nur noch Steckersolar.`,
+    ``,
+    `Die Rechnung dahinter ist nachvollziehbar. Ein Zuschuss von ein paar hundert Euro bewegt bei einer Dachanlage für 15.000 Euro wenig; beim Balkonkraftwerk für 500 Euro ist er ein Drittel des Preises. Wer Haushalte erreichen will, die sonst nichts machen, bekommt hier mehr Bewegung je Euro.`,
+    ``,
+    `Ob das die richtige Entscheidung ist, hängt am Ziel — Leistung oder Zahl der Beteiligten. Beides ist vertretbar, aber es sind zwei verschiedene Ziele.`,
+    ``,
+    quellenzeile(k.standIso, true),
+  ].join("\n");
+
+  return {
+    id: "nur-balkon-foerderung",
+    titel: "Kommunen, die nur noch Steckersolar fördern",
+    kategorie: "g5",
+    kanal: ["linkedin"],
+    text,
+    bild: {
+      stil: KARTEN_STIL_STANDARD,
+      art: "kennzahl",
+      aussage: `Jedes ${de(anteil ? 100 / anteil : 0, 0)}-te Programm fördert nur noch Balkonkraftwerke`,
+      gemessen: `Kommunale Förderprogramme im Katalog`,
+      serien: [
+        {
+          label: `von ${de(f.programme)} Programmen fördern keine Dachanlagen mehr`,
+          wert: f.nurBalkon,
+          einheit: "",
+          hervorgehoben: true,
+        },
+      ],
+      quelle: quellenzeile(k.standIso, false),
+    },
+    belege: [
+      `${de(f.nurBalkon)} von ${de(f.programme)} Programmen (${de(anteil, 1)} %)`,
+      `Grundmenge: Programme, die aktuell zählen (aktiv und belegt)`,
+    ],
+  };
+}
+
+/**
+ * Die Quellenzeile für Zahlen, die NICHT aus dem Anlagenregister kommen.
+ *
+ * Getrennt und nicht als Parameter der anderen: Wer eine fremde Quelle als
+ * Marktstammdatenregister ausweist, macht eine falsche Lizenzangabe — und zwar
+ * genau auf der Fläche, die weitergeteilt wird. Der Änderungshinweis ist bei
+ * CC BY Pflicht, wo wir wirklich verändern; hier mitteln wir über Jahre und
+ * Länder, also gehört er dazu.
+ */
+function quellenzeileEmber(mitMarke: boolean): string {
+  const bis = YEARS_PERCAPITA[YEARS_PERCAPITA.length - 1];
+  const basis = `Ember, CC BY 4.0, Daten verändert. Stand ${bis}. Eigene Berechnung`;
+  return mitMarke ? `${basis}, ${MARKE}.` : `${basis}.`;
+}
+
+/**
+ * Post 10 — Das Ausland, pro Kopf statt absolut.
+ *
+ * Absolut ist Deutschland weit vorn und die Aussage wertlos: Ein großes Land
+ * erzeugt mehr. Je Einwohner steht es woanders, und das ist die Zahl, die
+ * vergleichbar ist.
+ *
+ * Die Reihe hat eine EIGENE Jahresachse und endet ein Jahr früher als die
+ * übrigen Länderreihen — Ember hat die Einwohnerzahl aus dem Jahresdatensatz
+ * genommen. Das Jahr steht deshalb im Text, statt „heute" zu behaupten.
+ */
+// Diese Story braucht die Registerzahlen nicht — sie steht auf einer eigenen
+// Quelle. Der Parameter bleibt der Einheitlichkeit halber in der Signatur.
+export function postAusland(_k: SocialKennzahlen): SocialPost {
+  const jahr = YEARS_PERCAPITA[YEARS_PERCAPITA.length - 1];
+  const letzter = (r: (typeof PERCAPITA_SERIES)[number]) => r.values[r.values.length - 1] ?? 0;
+  const rang = [...PERCAPITA_SERIES].sort((a, b) => letzter(b) - letzter(a));
+  const de_ = rang.find((r) => r.key === "Deutschland") ?? rang[0];
+  const platz = rang.indexOf(de_) + 1;
+  const spitze = rang[0];
+  const vorsprung = letzter(de_) ? letzter(spitze) / letzter(de_) : 0;
+
+  const text = [
+    `Deutschland erzeugte ${de(letzter(de_))} Kilowattstunden Wind- und Solarstrom je Einwohner. ${spitze.label} kam auf ${de(letzter(spitze))} — das ${de(vorsprung, 1)}-fache.`,
+    ``,
+    `Platz ${de(platz)} von ${de(rang.length)} verglichenen Ländern, Stand ${de(jahr)}. Absolut liegt Deutschland weit vorn, aber das sagt vor allem etwas über die Größe des Landes. Je Einwohner ist die Zahl vergleichbar — und da ist noch Luft.`,
+    ``,
+    `Der Abstand nach oben ist kein Naturgesetz: ${spitze.label} hat weder mehr Sonne noch mehr Fläche je Kopf. Was dort anders läuft, ist eine eigene Diskussion — die Zahl selbst ist erst einmal nur ein Maßstab.`,
+    ``,
+    quellenzeileEmber(true),
+  ].join("\n");
+
+  return {
+    id: "ausland-pro-kopf",
+    titel: "Das Ausland, pro Kopf gerechnet",
+    kategorie: "g8",
+    kanal: ["linkedin"],
+    text,
+    bild: {
+      stil: KARTEN_STIL_STANDARD,
+      art: "saeule",
+      aussage: `${spitze.label} erzeugt je Einwohner das ${de(vorsprung, 1)}-fache`,
+      gemessen: `Wind- und Solarstrom je Einwohner, ${de(jahr)}`,
+      einheitAmWert: false,
+      serien: [
+        {
+          label: spitze.label,
+          wert: letzter(spitze),
+          einheit: "kWh je Ew.",
+          hervorgehoben: true,
+          delta: `+${de((vorsprung - 1) * 100, 0)} %`,
+        },
+        {
+          label: de_.label,
+          zusatz: `Platz ${de(platz)} von ${de(rang.length)}`,
+          wert: letzter(de_),
+          einheit: "kWh je Ew.",
+        },
+      ],
+      quelle: quellenzeileEmber(false),
+    },
+    belege: rang.map((r, i) => `${i + 1}. ${r.label} ${de(letzter(r))} kWh je Einwohner`),
+  };
+}
+
+/**
  * Post 9 — Der Degressionstermin.
  *
  * Der planbare Teil des Redaktionsplans: Die Absenkung steht im Gesetz, sie
@@ -883,6 +1087,9 @@ export const ALLE_POSTS = [
   postKohorte,
   postAnomalie,
   postDegression,
+  postAusland,
+  postFoerderLuecken,
+  postNurBalkon,
 ] as const;
 
 /**

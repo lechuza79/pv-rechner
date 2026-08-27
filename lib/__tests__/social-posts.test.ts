@@ -39,6 +39,7 @@ const basis: SocialKennzahlen = {
     solarGesamtKwp: 127_100_000,
   },
   ueberEinwohner: { mindestEinwohner: 500, betrachtet: 10_000, darueber: 6_848 },
+  foerderung: { programme: 108, gemeinden: 97, nurBalkon: 12, ohneHoechstbetrag: 61, mitAntragVorher: 74 },
   kohorte: { privatAnlagen: 3_120_000, mittlereKwp: 9.4, mitSpeicher: 1_180_000, speicherQuote: 37.8 },
   anomalie: {
     ort: "Beispielstadt",
@@ -117,18 +118,32 @@ describe("Wachstums-Post", () => {
 
 describe("Alle Posts", () => {
   it("tragen die Quellenangabe im Text UND im Bild", () => {
-    // Beim Weiterteilen reist der Beitragstext nicht mit, das Bild schon. Die
-    // Lizenz des Anlagenregisters verlangt die Namensnennung — sie muss deshalb
-    // an beiden Stellen stehen, nicht an einer.
+    // Beim Weiterteilen reist der Beitragstext nicht mit, das Bild schon. Beide
+    // Lizenzen, unter denen wir arbeiten, verlangen die Namensnennung — sie muss
+    // deshalb an beiden Stellen stehen, nicht an einer.
+    //
+    // Geprüft wird auf eine BENANNTE Quelle, nicht auf das Anlagenregister: Seit
+    // eine Story auf Ember steht, wäre die engere Fassung entweder rot oder
+    // hätte zu einer falschen Lizenzangabe eingeladen — und eine falsche steht
+    // dann auf genau der Fläche, die weitergeteilt wird.
+    const quellen = /Marktstammdatenregister|Ember/;
     for (const p of baueAllePosts(basis)) {
-      expect(p.text).toMatch(/Marktstammdatenregister/);
-      expect(p.bild?.quelle).toMatch(/Marktstammdatenregister/);
-      expect(p.bild?.quelle).toMatch(/Eigene Berechnung/);
+      expect(p.text, p.id).toMatch(quellen);
+      expect(p.bild?.quelle, p.id).toMatch(quellen);
+      expect(p.bild?.quelle, p.id).toMatch(/Eigene Berechnung/);
+      // Eine Quelle ohne ihre Lizenz ist keine Quellenangabe.
+      expect(p.bild?.quelle, p.id).toMatch(/dl-de\/by-2-0|CC BY 4\.0|Bundesnetzagentur/);
       // Der Markenname muss wörtlich im Text stehen, sonst findet die
       // Erwähnung der Unternehmensseite ihn nicht und der Verweis entfällt
       // stillschweigend.
-      expect(p.text).toContain("Solar Check");
-      expect(p.text).toMatch(/5\. August 2026/);
+      expect(p.text, p.id).toContain("Solar Check");
+    }
+  });
+
+  it("nennen den Datenstand, wo sie aus dem Anlagenregister rechnen", () => {
+    for (const p of baueAllePosts(basis)) {
+      if (!/Marktstammdatenregister/.test(p.text)) continue;
+      expect(p.text, p.id).toMatch(/5\. August 2026/);
     }
   });
 

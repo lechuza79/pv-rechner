@@ -13,6 +13,8 @@ import "server-only";
 
 import { unstable_cache } from "next/cache";
 import { supabase } from "./supabase-server";
+import { getFundingPrograms } from "./funding-data";
+import { bedingungText, fundingZaehlt } from "./funding-programs";
 import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
 import type { SocialKennzahlen } from "./social-posts";
 
@@ -96,8 +98,48 @@ async function ladeStand(): Promise<string> {
   return (data as { imported_at?: string } | null)?.imported_at ?? new Date().toISOString();
 }
 
+/**
+ * Der Förderkatalog, verdichtet.
+ *
+ * Gezählt wird nur, was AKTUELL ZÄHLT — dieselbe Entscheidung wie im Rechner
+ * (`fundingZaehlt`). Ein Programm mit abgelaufenem Beleg zieht dort kein Geld
+ * ab, und in einem Beitrag darf es genauso wenig eine Zahl tragen: Eine
+ * Auskunft, die wir gerade nicht bestätigen können, ist eine Behauptung.
+ */
+async function rechneFoerderung(): Promise<SocialKennzahlen["foerderung"]> {
+  const alle = await getFundingPrograms();
+  // Nur KOMMUNALE Programme: Die Beiträge sprechen von dem, was Gemeinden tun.
+  // Bund und Länder mitzuzählen verschöbe jede Quote, und die KfW hat weder eine
+  // Gemeinde noch dasselbe Muster.
+  const zaehlend = alle.filter((p) => p.level === "kommune" && fundingZaehlt(p));
+  // Ohne Angabe gilt `["pv"]` — der Katalog war lange ein reiner PV-Katalog,
+  // und ein Programm ohne Angabe ist eines, das noch niemand daraufhin gelesen
+  // hat. Als „nur Balkon" zählt deshalb nur, wo es ausdrücklich so steht.
+  const nurBalkon = zaehlend.filter((p) => p.foerdert?.length === 1 && p.foerdert[0] === "balkon");
+  // `capped` wäre das falsche Feld: Es heißt „Budget gedeckelt, wer zuerst
+  // kommt" und sagt nichts über den Höchstbetrag je Antrag. Genannt ist der
+  // entweder als lesbarer Satz oder als struktureller Deckel.
+  const hoechstbetrag = (p: (typeof zaehlend)[number]) =>
+    !!p.maxFoerderung || p.pvCap != null || p.speicherCap != null;
+  const antragVorher = (p: (typeof zaehlend)[number]) =>
+    p.conditions.some((c) => /vor (dem )?(vorhabenbeginn|beginn|auftrag|beauftragung|kauf|bestellung)/i.test(bedingungText(c)));
+
+  return {
+    programme: zaehlend.length,
+    gemeinden: new Set(zaehlend.map((p) => p.agsCode ?? p.region)).size,
+    nurBalkon: nurBalkon.length,
+    ohneHoechstbetrag: zaehlend.filter((p) => !hoechstbetrag(p)).length,
+    mitAntragVorher: zaehlend.filter(antragVorher).length,
+  };
+}
+
 async function rechne(): Promise<SocialKennzahlen> {
-  const [zeilen, namen, standIso] = await Promise.all([ladeGemeinden(), ladeNamen(), ladeStand()]);
+  const [zeilen, namen, standIso, foerderung] = await Promise.all([
+    ladeGemeinden(),
+    ladeNamen(),
+    ladeStand(),
+    rechneFoerderung(),
+  ]);
 
   // Nur bewohnte Gemeinden mit achtstelligem Schlüssel. Kreis- und
   // Landeszeilen stünden sonst zusätzlich im Nenner und verdoppelten Einwohner.
@@ -194,6 +236,7 @@ async function rechne(): Promise<SocialKennzahlen> {
       bundesJeTausend: bundesEw ? (bundesBalkon / bundesEw) * 1000 : 0,
       mindestEinwohner: ANOMALIE_MIN_EW,
     },
+    foerderung,
     laender: [...proLand.entries()]
       .map(([ags, e]) => ({
         name: namen.get(ags) ?? ags,
@@ -216,7 +259,7 @@ async function rechne(): Promise<SocialKennzahlen> {
  * aber ein Fehler in der Haltbarkeit. Wer ein Feld ergänzt oder entfernt, zählt
  * hier hoch.
  */
-const FORM_VERSION = "v2";
+const FORM_VERSION = "v3";
 
 export const socialKennzahlen = unstable_cache(rechne, ["social-kennzahlen", FORM_VERSION], {
   revalidate: 86_400,
