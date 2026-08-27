@@ -1,6 +1,7 @@
 import Logo from "../Logo";
 import { v, space } from "../../lib/theme";
 import { kartenTokens, serienFarben } from "../../lib/social-karten-stil";
+import { aufteilungsStellen, ranglistenStellen, restVon } from "../../lib/social-bildformen";
 import { BUNDESLAND_UMRISS, BUNDESLAND_UMRISS_SEITE } from "../../lib/bundesland-umrisse";
 import type { BildSerie, PostBild } from "../../lib/social-posts";
 
@@ -53,6 +54,25 @@ const GROESSEN = {
  */
 export type KartenStufe = "voll" | "teaser";
 
+/**
+ * Wie lang ein Wert als Balken wird — die Normierungsregel an EINER Stelle.
+ *
+ * Wo es ein `ganzes` gibt, wird daran gemessen und nicht am größten der
+ * gezeigten Werte. Das war im Bestand falsch: Die drei Solarsegmente sind
+ * Anteile, trugen aber kein Ganzes — das private Dach mit 28 Prozent bekam
+ * dadurch 81 Prozent der Länge, weil die Freifläche mit 35 die volle bekam. Die
+ * Überschrift sagte „nur gut ein Viertel", der Balken zeigte vier Fünftel.
+ *
+ * Gemessen wird IMMER ab null. Reihen mit einem anderen Bezugspunkt (`nullpunkt`,
+ * etwa Wachstumsfaktoren ab 1) bekommen deshalb gar keine Balkenform — die
+ * Begründung steht am Feld.
+ */
+function laenge(wert: number, bild: PostBild, max: number): number {
+  const oben = bild.ganzes ?? max;
+  if (oben <= 0) return 0;
+  return Math.max(0, Math.min(Math.abs(wert) / oben, 1));
+}
+
 export function SocialKarte({
   bild,
   skala = 1,
@@ -70,6 +90,13 @@ export function SocialKarte({
   const donut = bild.art === "donut" && !klein && bild.serien.length === 2;
   const saeule = bild.art === "saeule" && !klein && bild.serien.length === 2;
   const umriss = bild.art === "umriss" && !klein;
+  // Die drei neuen Formen brauchen alle Fläche und fallen im Teaser auf die
+  // Balken zurück — dieselbe Entscheidung wie beim Ringpaar: Sechzehn Zeilen,
+  // vier Segmente oder fünfundzwanzig Jahrgänge auf 240 Pixeln sind ein Muster,
+  // keine Aussage.
+  const rangliste = bild.art === "rangliste" && !klein && (bild.reihe?.length ?? 0) >= 3;
+  const aufteilung = bild.art === "aufteilung" && !klein && bild.serien.length >= 3;
+  const verlauf = bild.art === "verlauf" && !klein && (bild.achse?.length ?? 0) >= 3;
   // Die Einheit steht an der Zahl, außer der Untertitel trägt sie schon.
   const zeigeEinheit = bild.einheitAmWert !== false;
   const g = GROESSEN[stufe];
@@ -133,10 +160,16 @@ export function SocialKarte({
         <SaeulenTeil bild={bild} skala={skala} />
       ) : umriss ? (
         <UmrissTeil bild={bild} skala={skala} />
+      ) : rangliste ? (
+        <RanglistenTeil bild={bild} skala={skala} />
+      ) : aufteilung ? (
+        <AufteilungsTeil bild={bild} skala={skala} />
+      ) : verlauf ? (
+        <VerlaufsTeil bild={bild} skala={skala} />
       ) : (
       <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-evenly" }}>
         {serien.map((s) => {
-          const anteil = Math.abs(s.wert) / max;
+          const anteil = laenge(s.wert, bild, max);
           return (
             <div key={s.label}>
               <div
@@ -172,7 +205,7 @@ export function SocialKarte({
                 <div
                   style={{
                     height: px(g.balken),
-                    width: `${Math.max(anteil * 100, 4)}%`,
+                    width: `${Math.max(anteil * 100, 2)}%`,
                     background: s.hervorgehoben ? v("--color-accent") : v("--color-border"),
                     borderRadius: v("--radius-sm"),
                     marginBottom: px(klein ? 6 : 14),
@@ -755,6 +788,439 @@ function UmrissTeil({ bild, skala }: { bild: PostBild; skala: number }) {
           );
         })}
       </div>
+    </div>
+  );
+}
+
+/**
+ * Die ganze Ordnung als Balkenreihe.
+ *
+ * Wofür sie da ist: Zwei Werte sagen, WIE WEIT der Erste vom Letzten entfernt
+ * ist. Die Reihe sagt zusätzlich, ob dazwischen ein Gefälle liegt oder ein
+ * Bruch — beim Freiflächenanteil stehen neun Länder über dreißig Prozent und
+ * vier unter zwanzig, und diese Zweiteilung ist die eigentliche Geschichte.
+ *
+ * Normiert wird über `laenge`, also bei Anteilen am Ganzen und bei Faktoren ab
+ * ihrem Nullpunkt. Ohne das zeigte die Reihe eine Ordnung, die stimmt, mit
+ * Abständen, die nicht stimmen — und Abstände sind hier der ganze Zweck.
+ *
+ * Der Wert steht RECHTS in einer eigenen Spur, nicht am Balkenende: Wandernde
+ * Zahlen zwingen den Blick auf einen Zickzackweg, und bei kurzen Balken säße die
+ * Zahl über dem Balken des Nachbarn.
+ */
+function RanglistenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
+  const roh = bild.reihe ?? [];
+  const toene = serienFarben(bild.stil);
+  const zeigeEinheit = bild.einheitAmWert !== false;
+  // Die Zeilenhöhe folgt der Zahl der Einträge, nicht umgekehrt: Sechzehn Länder
+  // müssen genauso auf die Karte wie sechs, ohne dass jemand nachrechnet.
+  const eng = roh.length > 12;
+  const schrift = eng ? 30 : 36;
+  const balken = eng ? 22 : 30;
+
+  /**
+   * Der Balken zeigt die ANGEZEIGTE Zahl, nicht den Rohwert.
+   *
+   * Am Bild aufgefallen und sonst nirgends: Schleswig-Holstein (50,2) und
+   * Sachsen (50,0) standen beide mit „50 %" da — mit sichtbar verschieden langen
+   * Balken. Zwei gleiche Zahlen mit ungleichen Balken lesen sich als Fehler in
+   * der Grafik, und im Zweifel glaubt man dem Balken. Bei zwei Werten kommt der
+   * Fall nicht vor, bei sechzehn dreimal.
+   */
+  const stellen = ranglistenStellen(bild);
+  const reihe = roh.map((s) => ({ ...s, wert: Number(s.wert.toFixed(stellen)), stellen }));
+  const max = Math.max(...reihe.map((s) => Math.abs(s.wert)), 1);
+
+  return (
+    <div
+      style={{
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        gap: (eng ? 14 : 22) * skala,
+      }}
+    >
+      {reihe.map((s) => {
+        const anteil = laenge(s.wert, bild, max);
+        const farbe = s.hervorgehoben ? toene.hervorgehoben : toene.gedaempft;
+        return (
+          <div key={s.label} style={{ display: "flex", alignItems: "center", gap: 20 * skala }}>
+            <div
+              style={{
+                // Breit genug für den längsten Namen im Bestand: Bei 30 px
+                // braucht „Mecklenburg-Vorpommern" 348 Pixel und stand mit 290
+                // als „Mecklenburg-Vorpo…" im Bild. Ein abgeschnittener
+                // Ländername in einem Bild, das ohne Bildunterschrift durch
+                // fremde Feeds reist, ist dieselbe Fehlerklasse wie ein
+                // abgeschnittener Quellenvermerk. Der Zuschlag deckt die
+                // Fettschrift der hervorgehobenen Zeile ab.
+                width: 380 * skala,
+                flex: "0 0 auto",
+                fontSize: schrift * skala,
+                lineHeight: 1.15,
+                color: s.hervorgehoben ? v("--color-text-primary") : v("--color-text-secondary"),
+                fontWeight: s.hervorgehoben ? 700 : 400,
+                // Ein Ländername, der umbricht, verschiebt seine eigene Zeile
+                // gegen die Nachbarn — dann liest sich die Reihe nicht mehr als
+                // Raster.
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {s.label}
+            </div>
+            {/* Die Spur unter dem Balken ist die Referenz: Ohne sie sieht man bei
+                kleinen Werten nur ein Stück Farbe und weiß nicht, woran es
+                gemessen ist — dieselbe Überlegung wie beim Ring. */}
+            <div
+              style={{
+                flex: 1,
+                height: balken * skala,
+                background: toene.gedaempft,
+                opacity: 1,
+                position: "relative",
+                borderRadius: v("--radius-sm"),
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: v("--color-bg"),
+                  // Die Spur bleibt schwach — sie ist der Rahmen, nicht der Wert.
+                  opacity: 0.86,
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  // Ein Wert nahe null bekommt einen sichtbaren Rest, sonst sieht
+                  // die Zeile aus, als fehlte die Angabe. Zwei Prozent sind bei
+                  // dieser Breite gut ein Dutzend Pixel — sichtbar, aber zu klein,
+                  // um eine Größe vorzutäuschen.
+                  width: `${Math.max(anteil * 100, 2)}%`,
+                  background: farbe,
+                  borderRadius: v("--radius-sm"),
+                }}
+              />
+            </div>
+            <div
+              style={{
+                width: 130 * skala,
+                flex: "0 0 auto",
+                textAlign: "right",
+                whiteSpace: "nowrap",
+                fontSize: schrift * skala,
+                fontFamily: v("--font-mono"),
+                fontWeight: s.hervorgehoben ? 700 : 400,
+                color: s.hervorgehoben ? v("--color-text-primary") : v("--color-text-secondary"),
+              }}
+            >
+              {s.wert.toLocaleString("de-DE", {
+                minimumFractionDigits: s.stellen ?? 0,
+                maximumFractionDigits: s.stellen ?? 0,
+              })}
+              {zeigeEinheit && (
+                <span style={{ fontSize: schrift * 0.7 * skala, color: v("--color-text-muted") }}>
+                  {" "}
+                  {s.einheit}
+                </span>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/**
+ * Drei und mehr Teile eines Ganzen als EIN durchgehender Balken.
+ *
+ * Der Unterschied zur Balkenreihe ist die Aussage, nicht die Darstellung: Dort
+ * stehen Werte nebeneinander, hier bilden sie zusammen etwas. Deshalb liegen sie
+ * in einem Körper und nicht in vier — eine Reihe getrennter Balken lässt offen,
+ * ob sie sich ergänzen.
+ *
+ * Der Rest zum Ganzen wird MITGEZEICHNET und benannt. Die drei Solarsegmente
+ * ergeben 98,8 Prozent; die fehlenden 1,2 sind Steckersolar. Als Lücke gelassen
+ * wäre der Balken zu kurz und niemand wüsste warum — als namenloses Segment wäre
+ * es schlimmer.
+ */
+function AufteilungsTeil({ bild, skala }: { bild: PostBild; skala: number }) {
+  const ganzes = bild.ganzes ?? 100;
+  const toene = serienFarben(bild.stil);
+  const zeigeEinheit = bild.einheitAmWert !== false;
+  const rest = restVon(bild);
+  // Der Rest zählt als Teil mit, sobald er nennenswert ist. Die Schwelle liegt
+  // bei einem halben Prozent des Ganzen: Darunter ist er Rundung, darüber eine
+  // eigene Größe.
+  const zeigeRest = rest > ganzes * 0.005 && !!bild.restLabel;
+  // Alle Teile in DERSELBEN Genauigkeit, und zwar in einer, in der sie sich zum
+  // Ganzen addieren — sonst steht in der Legende eine Summe, die der Balken
+  // daneben widerlegt.
+  const stellen = aufteilungsStellen(bild);
+
+  const teile = [
+    ...bild.serien.map((s) => ({ serie: { ...s, stellen }, anteil: Math.abs(s.wert) / ganzes, istRest: false })),
+    ...(zeigeRest
+      ? [
+          {
+            serie: {
+              label: bild.restLabel!,
+              wert: rest,
+              einheit: bild.serien[0]?.einheit ?? "",
+              stellen,
+            } as BildSerie,
+            anteil: rest / ganzes,
+            istRest: true,
+          },
+        ]
+      : []),
+  ];
+
+  /**
+   * Vier Teile, zwei Farben — und das JEDE Segment seinen Namen trägt, ist die
+   * Auflösung dieses Widerspruchs.
+   *
+   * Erste Fassung: Balken oben, Legende darunter, die Teile über absteigende
+   * Deckkraft unterschieden. Im hellen Schema sah das gut aus (schwarz →
+   * mittelgrau → hellgrau) und war im Highlight kaputt: Auf blauem Grund wird
+   * aus einer durchscheinenden Fläche wieder Blau, Freifläche und Gewerbedach
+   * standen als zwei fast gleiche Töne nebeneinander, und der Rest verschwand
+   * ganz. Die Regel des Farbschemas sagt genau das — im Highlight sind Flächen
+   * Vollton, nie durchscheinend.
+   *
+   * Eine dritte Serienfarbe wäre die andere Möglichkeit gewesen und die
+   * schlechtere: Kategorienfarben behaupten eine Bedeutung, die es hier nicht
+   * gibt — die Segmente stehen in keiner Ordnung zueinander außer ihrer Größe.
+   *
+   * Ein Segment, das seinen Namen trägt, braucht die Farbe zur Unterscheidung
+   * gar nicht. Damit fällt auch die Legende weg, und mit ihr die Zuordnung über
+   * Farbpunkte, die im Highlight ohnehin nicht funktioniert hätte.
+   */
+  const farbeVon = (t: (typeof teile)[number]) =>
+    t.serie.hervorgehoben ? toene.hervorgehoben : toene.gedaempft;
+  // Auf der hervorgehobenen Fläche steht der Grund, auf den gedämpften der
+  // Kartengrund: Beide Serientöne sind kräftig, ein Text in Textfarbe darauf
+  // wäre in beiden Schemata schwer lesbar.
+  const textAuf = () => v("--color-bg");
+  // Unter diesem Anteil passt keine Beschriftung mehr hinein. Gemessen am
+  // schmalsten benannten Fall im Bestand: „Privates Dach" mit 28,5 Prozent
+  // braucht rund ein Fünftel der Breite.
+  const PASST_AB = 0.14;
+
+  return (
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", gap: 64 * skala }}>
+      {/* Ein hoher Balken, damit die Beschriftung darin Platz hat. */}
+      <div
+        style={{
+          display: "flex",
+          width: "100%",
+          height: 300 * skala,
+          borderRadius: v("--radius-md"),
+          overflow: "hidden",
+        }}
+      >
+        {teile.map((t, i) => {
+          const passt = t.anteil >= PASST_AB;
+          return (
+            <div
+              key={t.serie.label}
+              style={{
+                width: `${t.anteil * 100}%`,
+                background: farbeVon(t),
+                // Eine Fuge zwischen den Segmenten, aber keine zwischen Segment und
+                // Kartenrand: Der Balken ist EIN Körper, die Fugen trennen seine
+                // Teile.
+                borderLeft: i > 0 ? `${Math.max(2, 5 * skala)}px solid ${v("--color-bg")}` : undefined,
+                boxSizing: "border-box",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "flex-end",
+                padding: `${20 * skala}px ${22 * skala}px`,
+                color: textAuf(),
+                overflow: "hidden",
+              }}
+            >
+              {passt && (
+                <>
+                  <span
+                    style={{
+                      fontSize: 52 * skala,
+                      fontFamily: v("--font-mono"),
+                      fontWeight: 700,
+                      lineHeight: 1,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {t.serie.wert.toLocaleString("de-DE", {
+                      minimumFractionDigits: t.serie.stellen ?? 0,
+                      maximumFractionDigits: t.serie.stellen ?? 0,
+                    })}
+                    {zeigeEinheit && <span style={{ fontSize: 32 * skala }}> {t.serie.einheit}</span>}
+                  </span>
+                  <span style={{ fontSize: 32 * skala, lineHeight: 1.2, marginTop: 8 * skala }}>
+                    {t.serie.label}
+                  </span>
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Was nicht ins Segment passt, steht darunter — mit seiner Position im
+          Balken benannt, nicht mit einem Farbpunkt: Die Farbe unterscheidet die
+          gedämpften Teile nicht, und ein Punkt, der keine Zuordnung leistet,
+          behauptet eine. */}
+      {teile.some((t) => t.anteil < PASST_AB) && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 * skala }}>
+          {teile
+            .filter((t) => t.anteil < PASST_AB)
+            .map((t) => (
+              <div
+                key={t.serie.label}
+                style={{
+                  fontSize: 32 * skala,
+                  color: v("--color-text-muted"),
+                  lineHeight: 1.3,
+                }}
+              >
+                Rechts im Balken:{" "}
+                {t.serie.wert.toLocaleString("de-DE", {
+                  minimumFractionDigits: t.serie.stellen ?? 0,
+                  maximumFractionDigits: t.serie.stellen ?? 0,
+                })}
+                {zeigeEinheit ? ` ${t.serie.einheit}` : ""} {t.serie.label}
+              </div>
+            ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Werte über die Zeit als Linien.
+ *
+ * Wofür: Zwei Stichtage sagen, wie groß ein Abstand IST. Ob er wächst oder
+ * schrumpft, sagen sie nicht — und genau das behauptet ein Beitrag, der von
+ * Aufholen oder Zurückfallen spricht. Beim Pro-Kopf-Vergleich liegt darin die
+ * Pointe: Deutschland steht seit 2021 fast still, während der Spitzenreiter
+ * weiterzieht.
+ *
+ * Beschriftet wird AM ENDE DER LINIE, nicht in einer Legende. Ein Bild hat kein
+ * Hover; eine Legende zwingt zum Abgleich zweier Farben, das Ende der Linie
+ * nicht. Zwei y-Stufen stehen im Bild, weil die Größenordnung sonst fehlt —
+ * dieselbe Regel wie bei den Export-Charts.
+ */
+function VerlaufsTeil({ bild, skala }: { bild: PostBild; skala: number }) {
+  const achse = bild.achse ?? [];
+  const toene = serienFarben(bild.stil);
+  const alle = bild.serien.flatMap((s) => s.verlauf ?? []);
+  // Von NULL aus, nicht vom kleinsten Wert: Eine Kurve, deren Grundlinie
+  // irgendwo in der Luft hängt, übertreibt jede Bewegung — bei einer Erzeugung
+  // je Kopf gibt es außerdem einen echten Nullpunkt, und der gehört ins Bild.
+  const max = Math.max(...alle, 1);
+  // Auf eine glatte Stufe aufrunden, damit die Achsenbeschriftung eine runde
+  // Zahl trägt statt des zufälligen Maximums eines Jahrgangs.
+  const stufe = Math.pow(10, Math.floor(Math.log10(max)));
+  const obenWert = Math.ceil(max / (stufe / 2)) * (stufe / 2);
+
+  const B = 950;
+  const H = 700;
+  const LINKS = 150;
+  /**
+   * Platz rechts für die Beschriftung am Linienende — mit Zuschlag, nicht auf
+   * Kante.
+   *
+   * Gemessen: „Deutschland" endet bei 30 px Schrift auf x = 926 von 950, also
+   * mit 24 Pixeln Reserve. Genau in dieser Größenordnung ist im Projekt schon
+   * einmal eine Kurvenbeschriftung im aufgenommenen Bild als „Erneuerba"
+   * geendet: Die Bildaufnahme setzt Text breiter als die Messung auf der Seite.
+   * Die Regel dafür lautet ein Viertel Zuschlag auf den gemessenen Bedarf.
+   */
+  const RECHTS = 260;
+
+  const x = (i: number) => LINKS + ((B - LINKS - RECHTS) * i) / Math.max(1, achse.length - 1);
+  const y = (w: number) => H - 40 - ((H - 80) * w) / obenWert;
+
+  const marken = [obenWert, obenWert / 2];
+
+  return (
+    <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <svg viewBox={`0 0 ${B} ${H}`} width={B * skala} height={H * skala} role="presentation" style={{ display: "block" }}>
+        {marken.map((m) => (
+          <g key={m}>
+            <line
+              x1={LINKS}
+              x2={B - RECHTS}
+              y1={y(m)}
+              y2={y(m)}
+              stroke={toene.gedaempft}
+              strokeOpacity={0.25}
+              strokeWidth={2}
+            />
+            <text
+              x={LINKS - 16}
+              y={y(m) + 10}
+              textAnchor="end"
+              fontSize={28}
+              fill="currentColor"
+              opacity={0.6}
+              fontFamily="var(--font-mono)"
+            >
+              {m.toLocaleString("de-DE")}
+            </text>
+          </g>
+        ))}
+        {/* Grundlinie bei null: Sie sagt, wovon die Kurven aufsteigen. */}
+        <line x1={LINKS} x2={B - RECHTS} y1={y(0)} y2={y(0)} stroke={toene.gedaempft} strokeOpacity={0.5} strokeWidth={2} />
+        <text x={LINKS - 16} y={y(0) + 10} textAnchor="end" fontSize={28} fill="currentColor" opacity={0.6} fontFamily="var(--font-mono)">
+          0
+        </text>
+
+        {/* Nur erstes und letztes Jahr: Fünfundzwanzig Jahreszahlen unter einer
+            Kurve sind ein Band, keine Achse. */}
+        <text x={LINKS} y={H - 4} textAnchor="start" fontSize={28} fill="currentColor" opacity={0.6} fontFamily="var(--font-mono)">
+          {achse[0]}
+        </text>
+        <text x={B - RECHTS} y={H - 4} textAnchor="end" fontSize={28} fill="currentColor" opacity={0.6} fontFamily="var(--font-mono)">
+          {achse[achse.length - 1]}
+        </text>
+
+        {bild.serien.map((s) => {
+          const werte = s.verlauf ?? [];
+          if (werte.length !== achse.length) return null;
+          const farbe = s.hervorgehoben ? toene.hervorgehoben : toene.gedaempft;
+          const d = werte.map((w, i) => `${i === 0 ? "M" : "L"} ${x(i)} ${y(w)}`).join(" ");
+          const letzterWert = werte[werte.length - 1];
+          return (
+            <g key={s.label}>
+              <path d={d} fill="none" stroke={farbe} strokeWidth={s.hervorgehoben ? 8 : 6} strokeLinejoin="round" strokeLinecap="round" />
+              {/* Ein Punkt am Ende: Er bindet die Beschriftung an ihre Linie,
+                  auch wenn zwei Enden dicht beieinanderliegen. */}
+              <circle cx={x(werte.length - 1)} cy={y(letzterWert)} r={10} fill={farbe} />
+              <text
+                x={x(werte.length - 1) + 22}
+                y={y(letzterWert) + 10}
+                fontSize={30}
+                fontWeight={s.hervorgehoben ? 700 : 400}
+                fill={farbe}
+              >
+                {s.label}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
     </div>
   );
 }

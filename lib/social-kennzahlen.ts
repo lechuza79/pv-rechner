@@ -133,7 +133,16 @@ async function rechneFoerderung(): Promise<SocialKennzahlen["foerderung"]> {
   };
 }
 
-async function rechne(): Promise<SocialKennzahlen> {
+/**
+ * Die Rechnung selbst, ohne Zwischenspeicher.
+ *
+ * Exportiert, damit die Werkbank (`npm run social:zahlen`) dieselbe Rechnung
+ * fahren kann wie die Ansicht. Eine zweite Abfrage daneben zu bauen wäre die
+ * Fehlerklasse, gegen die dieses ganze Modul gebaut ist: Wer Bildformen an
+ * eigens beschafften Zahlen beurteilt, beurteilt eine andere Verteilung als die,
+ * die später im Beitrag steht.
+ */
+export async function rechne(): Promise<SocialKennzahlen> {
   const [zeilen, namen, standIso, foerderung] = await Promise.all([
     ladeGemeinden(),
     ladeNamen(),

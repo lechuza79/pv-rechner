@@ -183,10 +183,11 @@ Erteilen gehört zur Kette „planen → senden", die der Betreiber als nächste
 ## Das Template-System (27.08.2026)
 
 **Ein Template ist Bildform × Farbschema**, und beliebig viele Beiträge hängen daran — „Säule
-hell", „Ringpaar Highlight", „Gefüllte Umrisse hell". Vier sind abgenommen. Fünf Bildformen gibt es
-(Balken, Einzelkennzahl, Ringpaar, Säule, gefüllte Umrisse), jede mit ihrer Regel an einer Stelle:
-Wofür sie taugt, und unter welcher Bedingung sie TRÄGT. Der Umschalter im Redaktionstisch liest
-diese Regel und bietet nur an, was für die Zahlen des Beitrags passt.
+hell", „Ringpaar Highlight", „Gefüllte Umrisse hell". Vier sind abgenommen. Acht Bildformen gibt es
+(Balken, Einzelkennzahl, Ringpaar, Säule, gefüllte Umrisse, Rangliste, Aufteilung, Verlauf), jede
+mit ihrer Regel an einer Stelle: Wofür sie taugt, und unter welcher Bedingung sie TRÄGT. Der
+Umschalter im Redaktionstisch liest diese Regel und bietet nur an, was für die Zahlen des Beitrags
+passt. Die drei zuletzt dazugekommenen sind noch kein Template — siehe unten.
 
 **Die Regel, an der alles hängt: Ring und gefüllter Umriss brauchen ein GANZES, die Säule das
 Fehlen eines.** Ein Ring bildet einen Anteil ab; ohne Ganzes behauptet der leere Rest etwas, das es
@@ -212,6 +213,93 @@ nicht.
 Ordnung sortiert wie die Ansicht. Template und Farbschema können NICHT hinein — sie sind
 umschaltbar, und eine Kennung, die sich beim Umfärben ändert, verliert ihre gespeicherte Fassung.
 Der Kopier-Knopf liefert deshalb beides nebeneinander: Kennung plus Template.
+
+## Drei neue Bildformen (27.08.2026, abends)
+
+**Acht Formen statt fünf: dazu Rangliste, Aufteilung, Verlauf.** Keine davon ist ein
+abgenommenes Template — sie sind über den Umschalter erreichbar, die Abnahme steht aus.
+
+**Geprüft wurde am BESTAND, nicht an der Idee** — das war die Vorgabe, und sie hat zwei der drei
+Formen zurechtgestutzt. Ergebnis der Messung (`npm run social:zahlen`, dann `npm run social:formen`):
+
+- **Rangliste** trägt zwei Beiträge (Freiflächenanteil, Privatdach-Anteil) und weist zwei ab.
+- **Aufteilung** trägt einen (die drei Solarsegmente) und weist einen ab.
+- **Verlauf** trägt einen (Pro-Kopf-Vergleich mit dem Ausland) — die einzige Story mit einer echten
+  Zeitreihe dahinter. Die Registerzahlen kennen nur Stichtage.
+
+**Die Reihe ist keine zweite Liste** (`PostBild.reihe`). Die Serien sind die zwei Werte, die der
+Beitragstext nennt; die Reihe ist die Menge, aus der sie stammen. Ein Test verlangt, dass jede Serie
+darin vorkommt — mit demselben Wert. Ohne diese Bindung wären es zwei Listen, die beim nächsten
+Datenstand auseinanderlaufen.
+
+**Zwei Bedingungen, die am Bild entstanden sind und ohne Bild nicht gefunden worden wären:**
+
+- **Eine Rangliste braucht ABSTAND.** „Ein Balkenpaar taugt nur, wenn die Längen auseinandergehen"
+  gilt bei sechzehn Werten genauso — nur sieht man den Verstoß dort nicht: Zwei fast gleich lange
+  Balken fallen auf, sechzehn liest man als Liste und hält sie für eine Aussage. Gemessen (kleinster
+  Wert als Anteil des größten): Freifläche 1 %, Privatdach 18 %, Wachstum 22 %, Balkonquote 26 %,
+  Heimspeicher 58 %. Die Schwelle steht bei 40 % und trennt den Speicher-Fall ab.
+- **Eine Reihe, die nicht bei null beginnt, ist keine Länge** (`PostBild.nullpunkt`). Ein
+  Wachstumsfaktor startet bei 1. Beide Zeichenweisen ausprobiert und beide sind falsch: ab 1
+  gezeichnet füllt Thüringen (1,75) 22 Prozent von Hamburg (4,38) — richtig als Zuwachs, aber wer
+  die beiden Zahlen ins Verhältnis setzt, kommt auf 40 und liest im Balken einen Fehler. Ab 0
+  gezeichnet stimmt die Länge mit den Zahlen und verzerrt die Aussage. Deshalb gar keine Balkenform
+  für solche Reihen. **Die Säule hat dasselbe Problem und wurde nicht angefasst** — sie ist
+  abgenommen; siehe offene Punkte.
+
+**Die Rundung ist eine Eigenschaft der REIHE, nicht der einzelnen Zahl.** Zwei Fälle, beide nur im
+Bild sichtbar: Berlin und Hamburg standen als „0 %" da (tatsächlich 0,4) neben einem Balken, der
+sichtbar nicht null war; und Schleswig-Holstein (50,2) stand neben Sachsen (50,0) mit derselben Zahl
+bei verschieden langen Balken. `ranglistenStellen` erhöht deshalb um eine Stelle, wenn ein Wert auf
+null fiele oder zwei Ränge ununterscheidbar würden. **Der Balken zeigt die ANGEZEIGTE Zahl**, nicht
+den Rohwert — sonst widerspricht die Grafik der Beschriftung, und im Zweifel glaubt man der Grafik.
+
+**Eine Aufteilung muss aufgehen.** Als ganze Prozente standen in der Legende 35 + 35 + 28 + 1 = 99
+neben einem vollen Balken. `aufteilungsStellen` wählt die Genauigkeit so, dass die gezeigten Teile
+das Ganze ergeben. Und der Rest zum Ganzen wird **mitgezeichnet und benannt** (`restLabel`) — bei
+den Solarsegmenten sind es 1,2 Prozent, im Wesentlichen Steckersolar. Ohne Namen wäre er eine Lücke,
+über die das Bild nichts sagt.
+
+**Zwei überlappende Anteile sind keine Aufteilung.** Bei den Förderlücken sind es 21 und 20 Prozent
+derselben Programmmenge — ein Programm kann beides haben. Gestapelt behauptete das Bild, sie
+ergänzten sich. `schoepftAus` weist das ab.
+
+**Die Aufteilung beschriftet IM Segment, nicht in einer Legende — wegen des Highlight-Schemas.**
+Erste Fassung: Balken oben, Legende darunter, Teile über absteigende Deckkraft unterschieden. Im
+hellen Schema sah das gut aus und war im Highlight kaputt: Auf blauem Grund wird aus einer
+durchscheinenden Fläche wieder Blau, zwei Segmente standen als fast gleiche Töne nebeneinander, der
+Rest verschwand. Die Regel des Farbschemas sagt genau das — im Highlight sind Flächen Vollton. Ein
+Segment, das seinen Namen trägt, braucht die Farbe zur Unterscheidung nicht, und damit fällt die
+Legende weg.
+
+**Zwei Fehler im Bestand, gefunden beim Ansehen der Bilder:**
+
+- **Anteile ohne Bezugsgröße.** Die drei Solarsegmente sind Prozentwerte, trugen aber kein `ganzes` —
+  der Balken normierte am größten der drei. Das private Dach mit 28,5 Prozent bekam vier Fünftel der
+  Länge, während die Überschrift daneben „nur gut ein Viertel" sagte. Ein Test verlangt jetzt: Wo
+  Prozentwerte stehen, steht ihre Bezugsgröße am Bild.
+- **Eine Jahreszahl mit Tausenderpunkt.** „Wind- und Solarstrom je Einwohner, 2.024" im Bild und
+  „Stand 2.024" im Text — durch die Zahlenformatierung geschickt, die für Mengen gedacht ist.
+
+**Ein Superlativ, den niemand gerechnet hatte.** Der Speicher-Beitrag sagte, das 1,7-fache sei „der
+größte Unterschied zwischen den Ländern, den wir im Bestand finden. Größer als beim Zubau, größer
+als bei der Anlagengröße". Nachgemessen ist es der **kleinste**: Freiflächenanteil 188-fach, Leistung
+je Kopf 9-fach, Balkonquote 3,8-fach, Wachstum 2,5-fach. Der Satz vergleicht die Spannen jetzt
+selbst und kippt mit ihnen. Dieselbe Klasse wie das erfundene Ost-West-Gefälle im Katalog, nur eine
+Ebene tiefer versteckt — **jede vergleichende Aussage über die Länder gehört gerechnet.**
+
+**Die Werkbank ist das Werkzeug dafür** (`npm run social:zahlen`, dann `npm run social:formen`).
+Sie rendert jede Bildform an jedem Beitrag, der sie trägt, **an echten Zahlen und mit dem
+Beitragstext daneben** — an gleichmäßig verteilten Testwerten nimmt sich jede Form gut aus, und ein
+Bild ohne seinen Text ist nur die halbe Beurteilung. Ohne Filter im Maßstab der Redaktionsvorschau,
+mit `FORM=` oder `POST=` in voller Kartengröße, mit `STIL=highlight` im blauen Schema. Die Ausgabe
+landet in `public/` und ist von der Versionierung ausgenommen.
+
+**Was der Testlauf NICHT konnte, bis er nachgeschärft wurde:** Die Enge-Schwelle war zunächst gegen
+sich selbst geprüft (`reihenEnge(...) < RANGLISTE_MAX_ENGE`) — auf 0,99 hochgesetzt blieb alles
+grün. Und die Testdaten trugen für alle Länder denselben Speicherwert, also gab es gar keine
+Verteilung zu prüfen. Beides behoben, beide Gegenproben laufen. **Wer hier eine Schwelle ändert,
+macht den Test einmal absichtlich kaputt und sieht nach, ob er rot wird.**
 
 ## Was diese Runde an Zahlen gefunden hat
 
@@ -246,3 +334,28 @@ Gesundheitscheck warnt gestaffelt vorher.
 
 **Tabellen:** `social_konten`, `social_pruefungen`, `social_vorlagen` — angelegt über
 `/api/social/setup` (Admin-Session oder Cron-Schlüssel).
+
+**`server-only` liegt als Entwicklungs-Abhängigkeit im Projekt.** Next löst den Import selbst auf,
+außerhalb des Bundlers gibt es ihn nicht — die Werkbank braucht ihn deshalb, und `npm run
+social:zahlen` läuft mit `--conditions react-server`, damit der leere Einstiegspunkt greift statt
+des werfenden.
+
+## Offen für die nächste Runde
+
+**Die Säule rechnet ihren Sockel ohne Nullpunkt.** Beim Fünf-Jahres-Wachstum steckt Thüringen
+(1,75-fach) als Sockel in Hamburg (4,38-fach) und füllt 40 Prozent der Höhe — als Verhältnis der
+Faktoren richtig, als Bild über den Zuwachs (75 gegen 338 Prozent) irreführend. Dasselbe Problem,
+wegen dem die Rangliste solche Reihen ablehnt. **Nicht angefasst, weil „Säule hell" ein abgenommenes
+Template ist** und die Änderung an einer Karte sichtbar wäre, die der Betreiber schon freigegeben
+hat. Gehört ihm vorgelegt, nicht still repariert.
+
+**Bild und Text runden beim Freiflächen-Beitrag verschieden.** Der Text sagt „70 Prozent" und
+„9 Prozent", die Rangliste zeigt 70,3 und 9,1 — sie MUSS die Stelle zeigen, sonst stünden Berlin und
+Hamburg als „0 %" da. In den anderen Formen desselben Beitrags steht weiter 70. Zwei Auswege: den
+Text auf eine Nachkommastelle bringen (dann überall gleich, liest sich im Fließtext technischer) oder
+es so lassen (eine Tabellenzeile ist keine Kernaussage). Betreiber-Entscheidung, weil sie die
+Formulierung betrifft.
+
+**Die drei neuen Formen sind keine Templates.** Sie stehen im Umschalter, aber `TEMPLATES` kennt sie
+nicht — „gestaltet" bleibt an den vier abgenommenen hängen. Das ist Absicht: Abnahme ist keine
+Sache, die eine Sitzung sich selbst erteilt.

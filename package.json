@@ -43,6 +43,8 @@
     "release:plan": "tsx scripts/release-plan.ts",
     "release:messen": "tsx scripts/release-messen.ts",
     "kommunen:veroeffentlicht": "tsx scripts/kommunen-veroeffentlicht.ts",
+    "social:zahlen": "tsx --conditions react-server --env-file=.env.local scripts/social-zahlen.ts",
+    "social:formen": "tsx --tsconfig scripts/tsconfig.werkbank.json scripts/social-formen-werkbank.tsx",
     "claude-md:verify": "tsx scripts/claude-md-verify.ts",
     "kommunen:stand": "tsx scripts/kommunen-stand.ts",
     "kommunen:vorflug": "tsx scripts/kommunen-vorflug.ts"
@@ -85,6 +87,7 @@
     "imapflow": "^1.7.1",
     "nodemailer": "^9.0.5",
     "sax": "^1.6.0",
+    "server-only": "^0.0.1",
     "tsx": "^4.21.0",
     "typescript": "5.9.3",
     "unzipper": "^0.12.3",

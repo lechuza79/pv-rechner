@@ -147,6 +147,15 @@ export type BildSerie = {
    *  genau der Fläche, die weitergeteilt wird. Im Bild aufgefallen, nicht im Test. */
   stellen?: number;
   hervorgehoben?: boolean;
+  /**
+   * Derselbe Wert über die Zeit, ein Eintrag je Stelle der Zeitachse
+   * (`PostBild.achse`). Nur für die Verlaufsform.
+   *
+   * Der letzte Eintrag MUSS `wert` sein — sonst zeigt die Kurve etwas anderes
+   * als die Zahl daneben, und das ist die Fehlerklasse, gegen die dieses Modul
+   * gebaut ist. Ein Test hält beide aneinander.
+   */
+  verlauf?: number[];
 };
 
 /**
@@ -176,7 +185,7 @@ export type PostBild = {
    * Längen nebeneinander abschätzen und nichts über eine Grundmenge annehmen,
    * die es nicht gibt.
    */
-  art: "vergleich" | "kennzahl" | "donut" | "saeule" | "umriss";
+  art: "vergleich" | "kennzahl" | "donut" | "saeule" | "umriss" | "rangliste" | "aufteilung" | "verlauf";
   /** Die Kernaussage, im Bild als Titel gesetzt — nicht die neutrale Achsenbeschriftung. */
   aussage: string;
   /** Was gemessen wurde. Steht klein unter der Aussage. */
@@ -197,6 +206,52 @@ export type PostBild = {
    * nichts bedeutet.
    */
   ganzes?: number;
+  /**
+   * Der Wert, an dem eine Länge NULL wäre — falls das nicht die Null ist.
+   *
+   * Ein Wachstumsfaktor beginnt bei 1: „1,0-fach" heißt unverändert. Solche
+   * Größen lassen sich NICHT als Balken zeigen, und das Feld ist deshalb kein
+   * Rechenparameter, sondern ein Ausschluss.
+   *
+   * Warum kein Rechenparameter — am Bild entschieden, beide Fassungen gesehen:
+   * Zeichnet man die Länge ab 1, füllt Thüringen (1,75) 22 Prozent der Länge von
+   * Hamburg (4,38). Das ist als Aussage über den ZUWACHS richtig (75 gegen 338
+   * Prozent), steht aber neben der Zahl 1,75 — und wer die beiden Zahlen ins
+   * Verhältnis setzt, kommt auf 40 Prozent und liest im Balken einen Fehler.
+   * Zeichnet man ab 0, stimmt die Länge mit den Zahlen überein und verzerrt die
+   * Aussage: Ein Land ganz ohne Zuwachs bekäme fast ein Viertel der Länge.
+   *
+   * Beides ist falsch, und die Beschriftung entscheidet: Eine Zahl, die ab null
+   * zählt, gehört nicht an einen Balken, der es nicht tut. Formen, die Werte als
+   * Länge NEBEN ihrer Zahl zeigen, weisen solche Reihen deshalb ab.
+   */
+  nullpunkt?: number;
+  /**
+   * Die vollständige geordnete Grundgesamtheit, aus der die Serien stammen.
+   *
+   * KEINE zweite Wahrheit neben `serien`: Die Serien sind die zwei bis drei
+   * Werte, die der Beitragstext nennt, die Reihe ist die Liste, aus der sie
+   * herausgegriffen wurden. Ein Test verlangt, dass jede Serie in der Reihe
+   * vorkommt — mit demselben Wert. Ohne diese Bindung wären es zwei Listen, die
+   * beim nächsten Datenstand auseinanderlaufen.
+   *
+   * Ausschließlich für die Rangliste. Die übrigen Formen zeigen weiter die
+   * Serien, damit ein Umschalten die Aussage nicht wechselt.
+   */
+  reihe?: BildSerie[];
+  /**
+   * Die Zeitachse für die Verlaufsform — ein Eintrag je Wert in `BildSerie.verlauf`.
+   */
+  achse?: number[];
+  /**
+   * Wie der Teil heißt, der bei einer Aufteilung zum Ganzen fehlt.
+   *
+   * Pflicht, sobald die Serien das Ganze nicht ausschöpfen. Ein namenloser Rest
+   * im Bild ist die Fehlerklasse „Weggelassenes sichtbar erklären": Bei den drei
+   * Solarsegmenten fehlen 1,2 Prozent zu hundert, und das ist im Wesentlichen
+   * Steckersolar — eine Angabe, keine Lücke.
+   */
+  restLabel?: string;
   /**
    * Steht die Einheit an der Zahl?
    *
@@ -288,6 +343,17 @@ const fmtCtText = (n: number) => `${n.toLocaleString("de-DE", { minimumFractionD
 
 const de = (n: number, stellen = 0) =>
   n.toLocaleString("de-DE", { minimumFractionDigits: stellen, maximumFractionDigits: stellen });
+
+/**
+ * Eine Jahreszahl. Ohne Tausenderpunkt — und deshalb eine eigene Funktion.
+ *
+ * Durch `de()` geschickt wird aus 2024 die Zeichenfolge „2.024". Das stand so im
+ * Untertitel des Bildes („Wind- und Solarstrom je Einwohner, 2.024") und im
+ * Beitragstext („Stand 2.024"), und aufgefallen ist es erst beim Ansehen des
+ * gerenderten Bildes. Eine Jahreszahl ist keine Menge; sie zählt nicht, sie
+ * benennt.
+ */
+const jahrText = (j: number) => String(j);
 
 /**
  * Einwohnerzahl gekürzt: 100.000 → „100k".
@@ -574,6 +640,19 @@ export function postFreiflaeche(k: SocialKennzahlen): SocialPost {
         { label: oben.name, umriss: oben.name, wert: oben.freiflaecheAnteil, einheit: "%", stellen: 0, hervorgehoben: true },
         { label: unten.name, umriss: unten.name, wert: unten.freiflaecheAnteil, einheit: "%", stellen: 0 },
       ],
+      // Die vollständige Ordnung, aus der die beiden Serien stammen. Sie steht
+      // hier und nicht nur in den Belegen, damit die Rangliste sie zeigen kann —
+      // und weil der Beitrag ausdrücklich von der SPANNE spricht („von 9 bis 70
+      // Prozent"), die man an zwei Werten nicht sieht. Die Stadtstaaten sind
+      // dabei: In der vollen Reihe sind ihre 0,4 Prozent eine Aussage, während
+      // sie als einzelner Gegenpol unfair wären.
+      reihe: sortiert.map((l) => ({
+        label: l.name,
+        wert: l.freiflaecheAnteil,
+        einheit: "%",
+        stellen: 0,
+        hervorgehoben: l.name === oben.name,
+      })),
       quelle: quellenzeile(k.standIso, false),
     },
     belege: [
@@ -596,11 +675,16 @@ export function postSegmente(k: SocialKennzahlen): SocialPost {
   const privat = anteil(s.privatDachKwp);
   const gewerbe = anteil(s.gewerbeDachKwp);
   const frei = anteil(s.freiflaecheKwp);
+  // Was übrig bleibt, ist keine Rundungslücke, sondern eine eigene Größe: gut ein
+  // Prozent der Solarleistung steht weder auf einem Privatdach noch auf einem
+  // Gewerbedach noch auf einem Feld — im Wesentlichen Steckersolar. Gerechnet
+  // statt gesetzt, damit die vier Teile das Ganze wirklich ausschöpfen.
+  const rest = Math.max(0, 100 - privat - gewerbe - frei);
 
   const text = [
     `Auf privaten Dächern liegen ${de(privat, 0)} Prozent der deutschen Solarleistung. Gewerbedächer und Freiflächen tragen zusammen den Rest.`,
     ``,
-    `Die genaue Aufteilung: privates Dach ${de(privat, 1)} Prozent, Gewerbe ${de(gewerbe, 1)}, Freifläche ${de(frei, 1)}. Zusammen ${fmtPvLeistung(s.solarGesamtKwp)}.`,
+    `Die genaue Aufteilung: privates Dach ${de(privat, 1)} Prozent, Gewerbe ${de(gewerbe, 1)}, Freifläche ${de(frei, 1)}. Die fehlenden ${de(rest, 1)} Prozent sind vor allem Steckersolar, das keiner der drei Gruppen zugeordnet ist. Insgesamt ${fmtPvLeistung(s.solarGesamtKwp)}.`,
     ``,
     `Das Bild von der Energiewende auf dem Einfamilienhausdach stimmt also nur für gut ein Viertel. Der größere Teil entsteht dort, wo jemand gewerblich rechnet — auf Hallendächern und auf Feldern.`,
     ``,
@@ -620,16 +704,31 @@ export function postSegmente(k: SocialKennzahlen): SocialPost {
       art: "vergleich",
       aussage: `Nur gut ein Viertel der Solarleistung liegt auf privaten Dächern`,
       gemessen: `Anteil an der installierten Solarleistung`,
+      // Drei Anteile am selben Ganzen, die sich ergänzen — deshalb gehört das
+      // Ganze ans Bild. Ohne es normierte der Balken am größten der drei Werte:
+      // Das private Dach mit 28 Prozent bekäme 81 Prozent der Länge, weil die
+      // Freifläche mit 35 die volle bekäme. Das Bild sagte dann „vier Fünftel",
+      // wo die Überschrift „ein Viertel" sagt.
+      ganzes: 100,
+      // Der Rest ist benannt, nicht bloß vorhanden. Ohne Namen stünde im
+      // gestapelten Balken eine Lücke, über die das Bild nichts aussagt.
+      restLabel: "Steckersolar und Sonstiges",
+      // Eine Nachkommastelle, nicht null: Als ganze Prozente stehen dort 35, 35,
+      // 28 und 1 — zusammen 99, während der Balken daneben voll ist. Eine
+      // Aufteilung, deren Teile nicht aufgehen, widerlegt sich selbst. Der
+      // Beitragstext nennt dieselben Werte („privates Dach 28,5 Prozent"), Bild
+      // und Text runden also gleich.
       serien: [
-        { label: "Freifläche", wert: frei, einheit: "%", stellen: 0 },
-        { label: "Gewerbedach", wert: gewerbe, einheit: "%", stellen: 0 },
-        { label: "Privates Dach", wert: privat, einheit: "%", stellen: 0, hervorgehoben: true },
+        { label: "Freifläche", wert: frei, einheit: "%", stellen: 1 },
+        { label: "Gewerbedach", wert: gewerbe, einheit: "%", stellen: 1 },
+        { label: "Privates Dach", wert: privat, einheit: "%", stellen: 1, hervorgehoben: true },
       ],
       quelle: quellenzeile(k.standIso, false),
     },
     belege: [
       `Gesamt ${fmtPvLeistung(s.solarGesamtKwp)}`,
       `privat ${fmtPvLeistung(s.privatDachKwp)} · Gewerbe ${fmtPvLeistung(s.gewerbeDachKwp)} · Freifläche ${fmtPvLeistung(s.freiflaecheKwp)}`,
+      `Nicht zugeordnet ${de(rest, 1)} % — vor allem Steckersolar`,
     ],
   };
 }
@@ -668,12 +767,24 @@ export function postAufholjagd(k: SocialKennzahlen): SocialPost {
       aussage: `Wer wenig hatte, wächst am schnellsten`,
       gemessen: `Solarleistung heute im Verhältnis zu vor fünf Jahren`,
       einheitAmWert: false,
+      // Ein Faktor beginnt bei 1, nicht bei 0: „1,0-fach" heißt unverändert, also
+      // Länge null. Gegen null gezeichnet füllte Thüringen mit 1,75 vierzig
+      // Prozent der Länge, obwohl es um 75 Prozent gewachsen ist und Hamburg um
+      // 338 — das Bild zeigte ein Drittel, wo ein Fünftel steht.
+      nullpunkt: 1,
       // Kein Abstandswert: Die Werte SIND schon Faktoren. „2,6-mal so viel
       // Wachstum" ist ein Faktor eines Faktors und sagt niemandem etwas.
       serien: [
         { label: oben.name, umriss: oben.name, wert: oben.wachstumFuenfJahre, einheit: "fach", stellen: 1, hervorgehoben: true },
         { label: unten.name, umriss: unten.name, wert: unten.wachstumFuenfJahre, einheit: "fach", stellen: 1 },
       ],
+      reihe: sortiert.map((l) => ({
+        label: l.name,
+        wert: l.wachstumFuenfJahre,
+        einheit: "fach",
+        stellen: 1,
+        hervorgehoben: l.name === oben.name,
+      })),
       quelle: quellenzeile(k.standIso, false),
     },
     belege: sortiert.map((l) => `${l.name} ${de(l.wachstumFuenfJahre, 2)}x`),
@@ -848,20 +959,53 @@ export function postAnomalie(k: SocialKennzahlen): SocialPost {
 /**
  * Post 14 — Wo der Speicher Standard ist.
  *
- * Dieselbe Form wie die Flächenfrage, andere Zahl: Der Speicher ist die
- * Entscheidung, die je Land am weitesten auseinandergeht — und sie sagt mehr
- * über Beratung und Handwerk vor Ort als über Sonne.
+ * Dieselbe Form wie die Flächenfrage, andere Zahl: Der Speicher ist eine
+ * Entscheidung, die je Land verschieden ausfällt — und sie sagt mehr über
+ * Beratung und Handwerk vor Ort als über Sonne.
+ *
+ * Der Beitrag behauptete zwei Ausgaben lang, das sei „der größte Unterschied
+ * zwischen den Ländern, den wir im Bestand finden. Größer als beim Zubau,
+ * größer als bei der Anlagengröße". Nachgemessen ist es der KLEINSTE: 1,7-fach,
+ * gegen 188-fach beim Freiflächenanteil, 9-fach bei der Leistung je Kopf,
+ * 3,8-fach bei der Balkonquote und 2,5-fach beim Fünf-Jahres-Wachstum. Ein
+ * Superlativ, den niemand gerechnet hat — dieselbe Klasse wie das erfundene
+ * Ost-West-Gefälle im Katalog, nur eine Ebene tiefer versteckt.
+ *
+ * Der Satz vergleicht die Spannen deshalb jetzt selbst. Kippt das Verhältnis,
+ * kippt er mit.
  */
 export function postSpeicherJeLand(k: SocialKennzahlen): SocialPost {
   const sortiert = [...k.laender].filter((l) => l.speicherJe100 > 0).sort((a, b) => b.speicherJe100 - a.speicherJe100);
   const oben = sortiert[0];
   const unten = sortiert[sortiert.length - 1];
   const faktor = unten.speicherJe100 ? oben.speicherJe100 / unten.speicherJe100 : 0;
+  // Die Spanne jeder anderen Länderreihe, die wir führen — als Vergleichsmaßstab
+  // für den Satz unten. Gerechnet, nicht erinnert.
+  const spanne = (werte: number[]) => {
+    const gute = werte.filter((w) => w > 0);
+    return gute.length > 1 ? Math.max(...gute) / Math.min(...gute) : 0;
+  };
+  // Die Namen tragen ihre Präposition selbst („beim", „bei der") — zusammen-
+  // gesetzt aus einem festen „bei" plus Name käme „bei dem Anteil" heraus.
+  const andere = (
+    [
+      ["beim Anteil an Freiflächen", spanne(k.laender.map((l) => l.freiflaecheAnteil))],
+      ["bei der Leistung je Einwohner", spanne(k.laender.map((l) => l.wpProKopf))],
+      ["bei der Zahl der Balkonkraftwerke", spanne(k.laender.map((l) => l.balkonJeTausend))],
+      ["beim Wachstum der letzten fünf Jahre", spanne(k.laender.map((l) => l.wachstumFuenfJahre))],
+    ] as [string, number][]
+  ).filter(([, s]) => s > 0);
+  const groesser = andere.filter(([, s]) => s > faktor).sort((a, b) => b[1] - a[1]);
+  // Der Satz folgt der Messung: Ist die Speicher-Spanne die weiteste, sagt er
+  // das; ist sie es nicht, nennt er die Reihe, die weiter auseinandergeht.
+  const einordnung = groesser.length
+    ? `Das ${de(faktor, 1)}-fache — und das ist, gemessen an allem anderen, wenig: ${groesser[0][0][0].toUpperCase()}${groesser[0][0].slice(1)} liegen die Länder um das ${de(groesser[0][1], 0)}-fache auseinander. Beim Speicher entscheiden sich überall ähnlich viele dafür, nur eben nicht gleich viele.`
+    : `Das ${de(faktor, 1)}-fache — die weiteste Spanne zwischen den Ländern, die wir im Bestand finden.`;
 
   const text = [
     `In ${oben.name} kommen auf 100 private Dachanlagen ${de(oben.speicherJe100, 0)} angemeldete Heimspeicher. In ${unten.name} sind es ${de(unten.speicherJe100, 0)}.`,
     ``,
-    `Das ${de(faktor, 1)}-fache — der größte Unterschied zwischen den Ländern, den wir im Bestand finden. Größer als beim Zubau, größer als bei der Anlagengröße.`,
+    einordnung,
     ``,
     `Wichtig für die Einordnung: Das ist keine Quote „so viele Anlagen haben einen Speicher". Das Register führt Speicher als eigene Einheiten — ein Haushalt kann mehrere anmelden, und ein Balkonspeicher hat gar keine Dachanlage. Gerade in den Stadtstaaten hebt das die Zahl.`,
     ``,
@@ -898,6 +1042,19 @@ export function postSpeicherJeLand(k: SocialKennzahlen): SocialPost {
         },
         { label: unten.name, umriss: unten.name, wert: unten.speicherJe100, einheit: "je 100", stellen: 0 },
       ],
+      // Die Reihe steht hier, obwohl die Rangliste sie NICHT anbieten wird — und
+      // genau das ist ihr Zweck: Die Länder liegen mit 57 bis 98 zu eng
+      // beieinander (kleinster Wert 58 Prozent des größten), sechzehn Balken
+      // sähen fast gleich lang aus. Die Bedingung im Formen-Register weist das
+      // ab; ohne die Daten hier wäre nur nicht zu unterscheiden, ob sie greift
+      // oder ob jemand die Reihe vergessen hat.
+      reihe: sortiert.map((l) => ({
+        label: l.name,
+        wert: l.speicherJe100,
+        einheit: "je 100",
+        stellen: 0,
+        hervorgehoben: l.name === oben.name,
+      })),
       quelle: quellenzeile(k.standIso, false),
     },
     belege: [
@@ -962,6 +1119,17 @@ export function postPrivatdachAnteil(k: SocialKennzahlen): SocialPost {
         },
         { label: unten.name, umriss: unten.name, wert: unten.privatAnteil, einheit: "%", stellen: 0 },
       ],
+      // Nur die Flächenländer, wie schon bei den Serien: Die Stadtstaaten stünden
+      // hier zwangsläufig oben, ohne dass das etwas über ihre Dächer sagt. Eine
+      // Rangliste mit ihnen darin behauptete eine Ordnung, die der Beitragstext
+      // zwei Absätze weiter ausdrücklich verwirft.
+      reihe: flaechen.map((l) => ({
+        label: l.name,
+        wert: l.privatAnteil,
+        einheit: "%",
+        stellen: 0,
+        hervorgehoben: l.name === oben.name,
+      })),
       quelle: quellenzeile(k.standIso, false),
     },
     belege: flaechen.map((l) => `${l.name} ${de(l.privatAnteil, 1)} % privat (${fmtPvLeistung(l.solarKwp)} gesamt)`),
@@ -1117,7 +1285,7 @@ export function postAusland(_k: SocialKennzahlen): SocialPost {
   const text = [
     `Deutschland erzeugte ${de(letzter(de_))} Kilowattstunden Wind- und Solarstrom je Einwohner. ${spitze.label} kam auf ${de(letzter(spitze))} — das ${de(vorsprung, 1)}-fache.`,
     ``,
-    `Platz ${de(platz)} von ${de(rang.length)} verglichenen Ländern, Stand ${de(jahr)}. Absolut liegt Deutschland weit vorn, aber das sagt vor allem etwas über die Größe des Landes. Je Einwohner ist die Zahl vergleichbar — und da ist noch Luft.`,
+    `Platz ${de(platz)} von ${de(rang.length)} verglichenen Ländern, Stand ${jahrText(jahr)}. Absolut liegt Deutschland weit vorn, aber das sagt vor allem etwas über die Größe des Landes. Je Einwohner ist die Zahl vergleichbar — und da ist noch Luft.`,
     ``,
     `Der Abstand nach oben ist kein Naturgesetz: ${spitze.label} hat weder mehr Sonne noch mehr Fläche je Kopf. Was dort anders läuft, ist eine eigene Diskussion — die Zahl selbst ist erst einmal nur ein Maßstab.`,
     ``,
@@ -1134,8 +1302,18 @@ export function postAusland(_k: SocialKennzahlen): SocialPost {
       stil: KARTEN_STIL_STANDARD,
       art: "saeule",
       aussage: `${spitze.label} erzeugt je Einwohner das ${de(vorsprung, 1)}-fache`,
-      gemessen: `Wind- und Solarstrom je Einwohner, ${de(jahr)}`,
+      // Die Einheit gehört in den Untertitel, weil sie nicht an der Zahl steht:
+      // „je Einwohner" ist der Nenner, nicht die Einheit — ohne „Kilowattstunden"
+      // steht an der Achse eine Zahl, von der niemand weiß, ob sie kWh oder MWh
+      // meint.
+      gemessen: `Kilowattstunden Wind- und Solarstrom je Einwohner, ${jahrText(jahr)}`,
       einheitAmWert: false,
+      // Die einzige Story mit einer echten Zeitreihe hinter der Zahl: 25
+      // Jahrgänge je Land. Als zwei Stichtage sagt sie, WIE GROSS der Abstand
+      // ist; als Verlauf zusätzlich, ob er wächst — und das ist die Aussage des
+      // Beitrags („kein Naturgesetz"). Die Achse gehört ans Bild, weil sie für
+      // alle Serien dieselbe ist.
+      achse: YEARS_PERCAPITA,
       serien: [
         {
           label: spitze.label,
@@ -1143,12 +1321,14 @@ export function postAusland(_k: SocialKennzahlen): SocialPost {
           einheit: "kWh je Ew.",
           hervorgehoben: true,
           delta: `+${de((vorsprung - 1) * 100, 0)} %`,
+          verlauf: spitze.values,
         },
         {
           label: de_.label,
           zusatz: `Platz ${de(platz)} von ${de(rang.length)}`,
           wert: letzter(de_),
           einheit: "kWh je Ew.",
+          verlauf: de_.values,
         },
       ],
       quelle: quellenzeileEmber(false),

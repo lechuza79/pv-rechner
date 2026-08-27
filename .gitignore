@@ -26,3 +26,6 @@ scripts/mastr-bnetza-schema.json
 # Signed legal documents (contracts, DPAs) — never commit
 docs/legal/
 scratch/
+
+# Werkbank-Ausgabe, nie committen
+public/formen-werkbank.html
