@@ -35,12 +35,12 @@ Abbruch-Treppe im Dashboard: Seitenaufrufe `/photovoltaik-rechner` (Pages) →
 ### Herkunft aus dem Kommunen-Outreach
 | Event | Auslöser |
 |---|---|
-| `brief_aufruf` | Seitenaufruf mit der Herkunftskennung der Outreach-Briefe |
+| `brief_aufruf_direkt` | Aufruf mit Herkunftskennung, ohne Verweis — jemand hat in der Mail selbst geklickt |
+| `brief_aufruf_verweis` | Aufruf mit Herkunftskennung, mit Verweis — die Gemeinde hat unsere Meldung veröffentlicht |
 
-Trägt eine Eigenschaft `weg`: `direkt` (jemand hat in der Mail selbst geklickt —
-ein Mail-Klick kommt ohne Verweis an) oder `verweis` (die Gemeinde hat unsere
-Meldung veröffentlicht, jemand kam über ihre Website). WELCHE Gemeinde das war,
-steht in der gewöhnlichen Verweis-Liste und wird hier bewusst nicht wiederholt.
+Zwei Namen statt einer Eigenschaft, weil Ereignisse hier keine Eigenschaften
+tragen (siehe unten). WELCHE Gemeinde veröffentlicht hat, steht in der
+gewöhnlichen Verweis-Liste und wird bewusst nicht ins Ereignis wiederholt.
 
 Warum als eigenes Ereignis und nicht über Vercels Kampagnen-Auswertung: Die ist
 ein Zusatzpaket (10 $/Monat auf Pro, Stand 27.08.2026), ohne das Vercel Seiten
@@ -53,37 +53,39 @@ Rechtslage und die Grenze zu unzulässigen Ausprägungen: `lib/brief-herkunft.ts
 | `empfehlung_ergebnis` | `app/(site)/pv-bedarf-berechnen/empfehlung.tsx` |
 | `waermepumpe_ergebnis` | `app/(site)/waermepumpe-rechner/waermepumpe.tsx` |
 | `klima_ergebnis` | `app/(site)/klimaanlage-stromkosten/klimaanlage.tsx` |
+| `balkon_ergebnis` | `app/(site)/balkonkraftwerk/rechner/balkon.tsx` |
 
-## Event-Eigenschaften (Anfrageprofil)
+## Ereignisse tragen keine Eigenschaften — BLOCKER
 
-`pv_ergebnis` trägt aktuell **2 Eigenschaften** (anonym, kategorisiert):
+`trackEvent` nimmt nur einen Namen entgegen. Das ist keine Sparsamkeit, sondern
+die Grenze, an der die **Einwilligungsfreiheit der ganzen Messung** hängt.
 
-| Eigenschaft | Werte |
-|---|---|
-| `anlage` | `5 kWp` / `8 kWp` / `10 kWp` / `15 kWp` / `custom` |
-| `speicher` | `kein` / `5 kWh` / `10 kWh` / `15 kWh` |
+Die Messung läuft ohne Zustimmungsfenster. Tragfähig ist das nur, solange sie
+eine ZÄHLUNG ist und keine Analyse. Die Datenschutzkonferenz zieht die Linie
+genau hier: Sie nennt als Kipppunkt ausdrücklich „benutzerdefinierte Variablen"
+und „Informationen über Besuchende" (Orientierungshilfe für Anbieter:innen
+digitaler Dienste, 20.11.2024, Rn. 88) und stellt in Rn. 89 klar, dass eine
+einmal bejahte enge Einordnung verfällt, sobald „ein weiteres
+Auswertungsergebnis hinzukommt".
 
-**Warum nur 2:** Vercel Web Analytics erlaubt im Pro-Basistarif nur 2
-Eigenschaften pro Event.
+**Bis zum 27.08.2026 trug `pv_ergebnis` Anlagen- und Speichergröße**, und an
+dieser Stelle stand ein ausgearbeiteter Plan, das auf fünf weitere Dimensionen
+auszubauen (Haushaltsgröße, Nutzungsprofil, Wärmepumpe, E-Auto, Klimaanlage) —
+samt der Feststellung, die Datenschutzerklärung sei „bereits offen formuliert"
+und decke die Erweiterung ab. Genau dieser Ausbau hätte die Messung
+einwilligungspflichtig gemacht. Der Plan ist damit erledigt, nicht verschoben.
 
-## Aufgeschoben: volles Anfrageprofil (braucht „Web Analytics Plus", +10 €/Mon)
+**Was das kostet und was nicht:** Die Frage „welche Anlagengrößen rechnen die
+Leute" ist nicht mehr beantwortbar. Der Trichter bleibt vollständig — welcher
+Schritt erreicht und wo abgebrochen wird, ist die Auswertung, für die es die
+Messung gibt, und sie kommt ohne jede Angabe über den Nutzer aus.
 
-Das Plus-Add-on hebt das Limit auf **8 Eigenschaften pro Event** und schaltet
-kombiniertes Filtern frei („zeig nur Ergebnisse mit 15 kWp → welche
-Haushaltsgröße"). Dann `pv_ergebnis` um diese 5 Dimensionen erweitern (alle
-kategorisiert, nicht-personenbezogen):
+**Wer eine Unterscheidung braucht, gibt ihr einen eigenen Ereignisnamen**
+(Muster: `brief_aufruf_direkt` / `brief_aufruf_verweis`). Der Name darf sagen,
+WAS passiert ist, nie mit welchen Werten — `pv_ergebnis_10kwp` wäre die
+Eigenschaft durch die Hintertür und wird vom Test abgewiesen.
 
-| Eigenschaft | Quelle in `rechner.tsx` | Werte |
-|---|---|---|
-| `personen` | `personen` | `1` / `2` / `3-4` / `5+` |
-| `nutzung` | `nutzung` | Nutzungsprofil (weg / teils zuhause / home / immer) |
-| `waermepumpe` | `wp` | `nein` / `geplant` / `vorhanden` |
-| `eauto` | `ea` | `nein` / `geplant` / `vorhanden` |
-| `klima` | `klima` | `nein` / `geplant` / `vorhanden` |
-
-Verbrauchswerte (kWh) nicht als Rohzahl senden, sondern gebucketed (sonst zu
-hohe Kardinalität, im Dashboard unlesbar). Personen/Nutzung decken das Profil
-bereits ab.
-
-Beim Aktivieren: Datenschutz Abschnitt 5 ist bereits offen formuliert
-(„einzelne gewählte Eckdaten der Berechnung") und deckt die Erweiterung ab.
+Erzwungen von `lib/__tests__/analytics-ereignisse.test.ts` (Signatur, kein
+Aufruf am Wrapper vorbei, keine Zahlen im Namen, Katalog vollständig) und
+`lib/__tests__/analytics-ohne-query.test.ts` (der Abfrageteil der Adresse, in
+dem die Postleitzahl steht, erreicht die Messung nicht).

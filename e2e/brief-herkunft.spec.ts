@@ -36,11 +36,15 @@ test.describe("Herkunftskennung der Outreach-Briefe", () => {
     await page.goto(`/photovoltaik-rechner?${KENNUNG}`);
     // Das Warten ist der Punkt des Tests: Der Melder darf ruhig später dran
     // sein als der Seitenaufbau — er darf nur nicht verlorengehen.
+    // Ohne Verweis: Der Testlauf ruft die Adresse direkt auf, also muss der
+    // „direkt"-Fall kommen. Die beiden Namen statt einer Eigenschaft sind kein
+    // Stilentscheid — Ereignisse tragen im Projekt keine Eigenschaften mehr,
+    // daran hängt die Einwilligungsfreiheit der Messung (lib/analytics.ts).
     await expect
-      .poll(() => gesehen.some((t) => t.includes("brief_aufruf")), {
+      .poll(() => gesehen.some((t) => t.includes("brief_aufruf_direkt")), {
         timeout: 15_000,
         message:
-          "Ereignis 'brief_aufruf' kam nie an — vermutlich feuert der Melder wieder, bevor die Messung bereit ist",
+          "Ereignis 'brief_aufruf_direkt' kam nie an — vermutlich feuert der Melder wieder, bevor die Messung bereit ist",
       })
       .toBe(true);
   });

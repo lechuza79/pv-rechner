@@ -60,8 +60,13 @@ export function HerkunftsMelder() {
     // und weiter zu warten hieße, einen Zeitgeber für immer laufen zu lassen.
     const bereit = () =>
       typeof (window as { va?: unknown }).va === "function";
+    // ZWEI NAMEN STATT EINER EIGENSCHAFT: Ereignisse tragen im Projekt keine
+    // Eigenschaften mehr — daran hängt die Einwilligungsfreiheit der Messung
+    // (Begründung in `lib/analytics.ts`). „direkt" heißt: ohne Verweis, also
+    // in der Mail selbst geklickt. „verweis" heißt: die Gemeinde hat unsere
+    // Meldung veröffentlicht und jemand kam über ihre Website.
     const melde = () =>
-      trackEvent("brief_aufruf", { weg: document.referrer ? "verweis" : "direkt" });
+      trackEvent(document.referrer ? "brief_aufruf_verweis" : "brief_aufruf_direkt");
 
     if (bereit()) {
       melde();

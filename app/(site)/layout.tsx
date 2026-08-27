@@ -7,7 +7,7 @@ import { jsonLdHtml } from "../../lib/json-ld";
 import { GlossaryProvider } from "../../components/GlossaryTerm";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { Analytics } from "@vercel/analytics/next";
+import { WebAnalytics } from "../../components/WebAnalytics";
 import { HerkunftsMelder } from "../../components/HerkunftsMelder";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
@@ -166,21 +166,25 @@ export default async function RootLayout({
           {children}
           <div style={{ padding: "0 16px" }}><Footer /></div>
         </GlossaryProvider>
-        {/* Cookieless Web Analytics (aggregiert, keine personenbezogenen
-            Daten, kein Consent-Banner). Nur im (site)-Layout, nicht in den
+        {/* Reichweitenmessung ohne Cookies. Nur im (site)-Layout, nicht in den
             Embed-Widgets. Siehe /datenschutz.
 
-            ACHTUNG bei der Begründung: „§ 25 TDDDG greift nicht, da nichts auf
-            dem Gerät gespeichert wird" stand hier bis 27.08.2026 und ist unter
-            den EDSA-Leitlinien 2/2023 (Fassung 2.0) Rn. 33, 50 f. nicht
-            haltbar — ausgeliefertes JavaScript, das den Browser anweist,
-            Angaben zu senden, ist dort ausdrücklich ein „gaining of access".
-            Der Satz ist auch deshalb gefährlich, weil er Gestaltungen mitdecken
-            würde, die wirklich kippen. Die tragfähige Linie steht ausgeschrieben
-            in `lib/brief-herkunft.ts`. Ob der Abschnitt der
-            Datenschutzerklärung selbst nachgezogen werden muss, ist ein
-            offener Befund an den Betreiber, keine Nebenbei-Änderung. */}
-        <Analytics />
+            IMMER über `WebAnalytics`, NIE `<Analytics />` direkt: Der Baustein
+            wirft den Abfrageteil der Adresse weg, in dem die Postleitzahl des
+            Nutzers steht. Begründung dort, Test in
+            `lib/__tests__/analytics-ohne-query.test.ts`.
+
+            ACHTUNG bei der rechtlichen Begründung: „§ 25 TDDDG greift nicht, da
+            nichts auf dem Gerät gespeichert wird" stand hier bis 27.08.2026 und
+            ist nicht haltbar — ausgeliefertes JavaScript, das den Browser
+            anweist, Angaben zu senden, ist nach den EDSA-Leitlinien 2/2023
+            (Fassung 2.0) Rn. 33, 39, 53 ausdrücklich ein „gaining of access".
+            Tragend ist nicht, dass die Vorschrift nicht greift, sondern dass
+            ihre Ausnahme greift (§ 25 Abs. 2 Nr. 2): kein Werbegeschäft, kein
+            Verkauf von Kontakten, keine seitenübergreifende Verfolgung,
+            interne Verweisquellen werden verworfen, die Kennung lebt 24
+            Stunden. Ausgeschrieben in /datenschutz, Abschnitt 5. */}
+        <WebAnalytics />
         {/* Zählt Aufrufe aus den Outreach-Briefen — eigenes Ereignis statt des
             kostenpflichtigen Kampagnen-Zusatzpakets. */}
         <HerkunftsMelder />

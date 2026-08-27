@@ -648,20 +648,23 @@ export default function PVRechner({
   // Funnel-Events: feuern nur beim Vorwärtsgehen im direkten Rechner-Flow
   // (Share-/Empfehlungs-Aufrufe landen per URL direkt auf dem Ergebnis und
   // laufen nicht durch next()). So bildet die Event-Treppe echte Abbrüche ab.
-  const FUNNEL_EVENTS = ["", "pv_schritt_speicher", "pv_schritt_haushalt", "pv_schritt_verbraucher"];
+  // Der leere Eintrag steht für Schritt 0, der kein eigenes Ereignis hat.
+  const FUNNEL_EVENTS = [
+    null,
+    "pv_schritt_speicher",
+    "pv_schritt_haushalt",
+    "pv_schritt_verbraucher",
+  ] as const;
   const next = () => {
     if (step >= STEPS.length) return;
     const target = step + 1;
     if (target === STEPS.length) {
-      // Ergebnis erreicht: anonymes Anfrageprofil mitgeben. Vercel Web
-      // Analytics erlaubt im aktuellen Tarif nur 2 Eigenschaften pro Event
-      // (Anlagengröße + Speicher). Die restlichen Profil-Dimensionen
-      // (Personen, Nutzung, WP, E-Auto, Klima) brauchen das Plus-Add-on
-      // (8 Eigenschaften) — dokumentiert in docs/analytics-events.md.
-      trackEvent("pv_ergebnis", {
-        anlage: anlage === 4 ? "custom" : `${kwp} kWp`,
-        speicher: spKwh > 0 ? `${spKwh} kWh` : "kein",
-      });
+      // Ergebnis erreicht — als reine Zählung. Bis 27.08.2026 gingen hier
+      // Anlagen- und Speichergröße als Ereignis-Eigenschaften mit; das war die
+      // einzige Auswertung, die etwas über den NUTZER sagte statt über die
+      // Seite, und genau der Posten, an dem die Einwilligungsfreiheit der
+      // Messung gekippt wäre (Begründung in `lib/analytics.ts`).
+      trackEvent("pv_ergebnis");
     } else if (FUNNEL_EVENTS[target]) {
       trackEvent(FUNNEL_EVENTS[target]);
     }

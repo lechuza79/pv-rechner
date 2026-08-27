@@ -190,26 +190,37 @@ export default function DatenschutzPage() {
         <p style={S.p}>
           Um zu verstehen, wie unsere Website genutzt wird — etwa welche Seiten
           aufgerufen werden und über welche Kanäle Besucher zu uns kommen —
-          setzen wir Vercel Web Analytics ein, einen Dienst der Vercel Inc. Die
-          Erfassung erfolgt bewusst cookiefrei: Es werden keine Cookies gesetzt
-          und nichts auf deinem Gerät gespeichert. Ausgelesen wird allein ein
-          technisches Merkmal, an dem das Messskript automatisierte Zugriffe
-          erkennt, um die Messung dann zu unterlassen; dieser Wert wird nicht
-          übertragen. Angaben wie Gerätetyp oder ungefähre Herkunftsregion
-          leitet der Dienst aus dem ab, was dein Browser bei jedem Seitenaufruf
-          ohnehin mitsendet — nicht aus einer Abfrage deines Geräts.
-          Erhoben werden anonyme, aggregierte Daten: die aufgerufene Seite, die
-          ungefähre Herkunftsregion, der Gerätetyp und die Verweis-Quelle.
-          Dazu zählen wir anonyme Nutzungsereignisse — etwa
-          dass ein Berechnungsschritt erreicht, eine Berechnung abgeschlossen oder
-          ein Ergebnis geteilt wurde. In aggregierter, anonymer Form erfassen wir
-          dabei einzelne gewählte Eckdaten der Berechnung (zum Beispiel die
-          Anlagen- oder Speichergröße), um typische Nutzungsprofile zu verstehen.
-          Diese Ereignisse enthalten keine personenbezogenen Daten, keine
-          Freitext-Eingaben und keinen Bezug zu deiner Person. Es findet kein
-          geräteübergreifendes Tracking statt, es werden keine Nutzerprofile
-          einzelner Personen gebildet und einzelne Besucher werden nicht
-          wiedererkannt.
+          setzen wir Vercel Web Analytics ein, einen Dienst der Vercel Inc.
+          Cookies werden dabei nicht gesetzt. Ein kleines Messskript läuft in
+          deinem Browser und wird dort für eine Weile zwischengespeichert; es
+          liest die Adresse der Seite, auf der du gerade bist, und die Seite,
+          von der du gekommen bist, und übermittelt beides. Kamst du von einer
+          anderen Seite unserer eigenen Website, wird diese Angabe verworfen.
+          <strong> Die Adresse übermitteln wir ohne den Teil hinter dem
+          Fragezeichen</strong> — deine Postleitzahl und alles andere, was du
+          eingibst, erreichen die Messung deshalb nicht. Außerdem prüft das
+          Skript an einem technischen Merkmal deines Browsers, ob der Aufruf
+          automatisiert ist, und misst dann gar nicht; dieser Wert wird nicht
+          übertragen. Gerätetyp, Betriebssystem, Browser und ungefährer Ort
+          (bis zur Stadt) werden aus dem abgeleitet, was dein Browser bei jedem
+          Seitenaufruf ohnehin mitsendet — nicht aus einer Abfrage deines
+          Geräts.
+        </p>
+        <p style={S.p}>
+          Dazu zählen wir Nutzungsereignisse: dass ein Berechnungsschritt
+          erreicht, eine Berechnung abgeschlossen oder ein Ergebnis geteilt
+          wurde. Das sind reine Zähler — sie tragen <strong>keine
+          Begleitangaben</strong>, also weder deine Eingaben noch Eckdaten
+          deiner Berechnung, keine Freitexte und keinen Bezug zu deiner Person.
+        </p>
+        <p style={S.p}>
+          Aufrufe desselben Besuchs fasst der Dienst über eine kurzlebige
+          Kennung zusammen, die aus der eingehenden Anfrage berechnet und nach
+          24 Stunden verworfen wird — anders ließen sich Besuche nicht von
+          Seitenaufrufen unterscheiden. Darüber hinaus wirst du nicht
+          wiedererkannt: kein geräteübergreifendes Tracking, keine dauerhafte
+          Kennung, keine Verfolgung über andere Websites hinweg und keine
+          Profile einzelner Personen. Was wir am Ende auswerten, sind Summen.
         </p>
         <p style={S.p}>
           In Links, die wir selbst verschicken — etwa in Anschreiben an
@@ -226,13 +237,19 @@ export default function DatenschutzPage() {
           jederzeit widersprechen (Abschnitt 12).
         </p>
         <p style={S.p}>
-          Da hierbei keine Informationen auf deinem Gerät gespeichert oder
-          abgerufen werden, ist dafür keine Einwilligung nach § 25 TDDDG
-          erforderlich und es wird kein Cookie-Banner benötigt. Rechtsgrundlage
-          für die Verarbeitung ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes
-          Interesse an einer datensparsamen Reichweitenmessung zur Verbesserung
-          unseres Angebots). Der Erhebung kannst du jederzeit widersprechen
-          (Abschnitt 12). Weitere Informationen:{" "}
+          Damit das Messskript laufen kann, wird kurzzeitig etwas auf deinem
+          Gerät abgelegt und von dort gelesen. Eine Einwilligung ist dafür
+          trotzdem nicht nötig, weil die Messung auf das beschränkt bleibt, was
+          zum Betrieb dieses Angebots nötig ist (§ 25 Abs. 2 Nr. 2 TDDDG): Wir
+          verkaufen keine Werbung und keine Kontaktdaten, wir verfolgen dich
+          nicht über andere Websites hinweg, die Ereignisse sind bloße Zähler
+          ohne Begleitangaben, und die Kennung, die einen Besuch zusammenfasst,
+          lebt einen Tag. Ein Cookie-Banner wird daher nicht benötigt.
+          Rechtsgrundlage für die Verarbeitung der dabei anfallenden Daten ist
+          Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer
+          datensparsamen Reichweitenmessung zur Verbesserung unseres Angebots).
+          Der Erhebung kannst du jederzeit widersprechen (Abschnitt 12).
+          Weitere Informationen:{" "}
           <a
             href="https://vercel.com/docs/analytics/privacy-policy"
             target="_blank"
