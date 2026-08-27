@@ -887,7 +887,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             )}
             {loginError && <div style={{ fontSize: 12, color: v('--color-negative'), marginTop: 8 }}>{loginError}</div>}
             <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, textAlign: "center" }}>
-              Passwordless per Magic Link · Keine Werbung
+              Passwordless per Magic Link · Keine Werbe-E-Mails
             </div>
           </div>
         )}
@@ -1586,7 +1586,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             }}><span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><IconRefresh size={iconSizes.md} /> Neu berechnen</span></button>
 
             <div style={{ textAlign: "center", fontSize: 11, color: v('--color-text-faint'), padding: "20px 0 8px", lineHeight: 1.6 }}>
-              Keine Lead-Erfassung · Keine Werbung<br />
+              Keine Lead-Erfassung · Keine Werbebanner<br />
               Alle Angaben ohne Gewähr · Keine Steuer- oder Anlageberatung
             </div>
           </div>
