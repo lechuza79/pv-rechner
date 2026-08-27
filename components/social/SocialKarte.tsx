@@ -120,7 +120,7 @@ export function SocialKarte({
         {bild.aussage}
       </div>
       )}
-      {!klein && (
+      {!klein && bild.gemessen && (
         <div style={{ fontSize: px(g.untertitel), color: v("--color-text-muted"), marginBottom: px(64) }}>
           {bild.gemessen}
         </div>
@@ -221,27 +221,36 @@ export function SocialKarte({
 }
 
 /**
- * Der Umriss eines Bundeslands, schwach hinter dem Wert.
+ * Der Umriss eines Bundeslands, linksbündig HINTER dem Wert.
  *
  * Er ordnet zu, ohne zu erklären — auf einem Bild, das ohne Bildunterschrift
  * durch fremde Feeds reist, ist die Form das Einzige, was ohne Lesen ankommt.
- * Er sitzt hinter der ZAHL, nicht neben der Bezeichnung: Die Zahl ist groß und
- * dunkel und steht klar davor, ein Ländername in Fließtextgröße nicht.
+ *
+ * Er liegt hinter dem ganzen Block und darf die Bezeichnung überlagern
+ * (Betreiber, 27.08.2026) — bei dieser Deckkraft bleibt der Text lesbar, und ein
+ * Zeichen, das man an der Form erkennen soll, braucht Fläche.
  *
  * Ein eigenes Bauteil, weil ihn beide Bildformen tragen. Als Kopie im Ringteil
  * blieb er in der Säule stumm liegen: Das Feld war gesetzt, gezeichnet wurde
  * nichts, und auffallen konnte das nur dem, der es vermisst.
  */
-function UmrissZeichen({ name, skala }: { name?: string; skala: number }) {
+function UmrissZeichen({ name, skala, groesse }: { name?: string; skala: number; groesse: number }) {
   const pfad = name ? BUNDESLAND_UMRISS[name] : undefined;
   if (!pfad) return null;
   return (
     <svg
       viewBox={`0 0 ${BUNDESLAND_UMRISS_SEITE} ${BUNDESLAND_UMRISS_SEITE}`}
-      width={132 * skala}
-      height={132 * skala}
+      width={groesse * skala}
+      height={groesse * skala}
       aria-hidden="true"
-      style={{ position: "absolute", right: 0, bottom: 0, opacity: 0.1, pointerEvents: "none" }}
+      style={{
+        position: "absolute",
+        left: 0,
+        top: "50%",
+        transform: "translateY(-50%)",
+        opacity: 0.14,
+        pointerEvents: "none",
+      }}
     >
       <path d={pfad} fill={v("--color-text-primary")} />
     </svg>
@@ -282,7 +291,11 @@ function bogenEnde(r: number, anteil: number, breite: number, mitte: number) {
   // Der Winkel, an dem der gezeichnete Bogen aufhört: das Ziel minus dem Stück,
   // das die Kappe selbst ausfüllt.
   const bis = Math.max(0, umfang * anteil - kappe);
-  const winkel = (bis / umfang) * 2 * Math.PI - Math.PI / 2;
+  // OHNE die Drehung auf zwölf Uhr: Die umgebende Gruppe dreht bereits. Mit ihr
+  // hier ein zweites Mal saß die Kappe eine Vierteldrehung neben ihrem Bogen —
+  // im Bild ein dunkler Fleck irgendwo auf dem Ring, der wie ein Datenpunkt
+  // aussah und keiner war.
+  const winkel = (bis / umfang) * 2 * Math.PI;
   return {
     laenge: bis,
     x: mitte + r * Math.cos(winkel),
@@ -366,7 +379,7 @@ function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: n
       <div style={{ display: "flex", gap: 40 * skala }}>
         {bild.serien.map((s) => (
           <div key={s.label} style={{ flex: 1, minWidth: 0, position: "relative" }}>
-            <UmrissZeichen name={s.umriss} skala={skala} />
+            <UmrissZeichen name={s.umriss} skala={skala} groesse={250} />
             {/* Die Farbe trägt der Punkt, nicht der Text: Zwei eingefärbte Zahlen
                 nebeneinander lesen sich als Wertung, und auf dem blauen
                 Farbschema sind sie ohnehin kaum zu unterscheiden. */}
@@ -390,7 +403,6 @@ function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: n
                   fontSize: 27 * skala,
                   color: v("--color-text-muted"),
                   lineHeight: 1.3,
-                  marginLeft: 40 * skala,
                 }}
               >
                 {s.zusatz}
@@ -398,15 +410,23 @@ function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: n
             )}
             <div
               style={{
+                position: "relative",
                 display: "flex",
                 alignItems: "baseline",
                 gap: 12 * skala,
                 marginTop: 16 * skala,
-                marginLeft: 40 * skala,
                 whiteSpace: "nowrap",
               }}
             >
-              <span style={{ fontSize: 84 * skala, fontWeight: 700, lineHeight: 1, color: v("--color-text-primary") }}>
+              <span
+                style={{
+                  fontSize: 84 * skala,
+                  fontFamily: v("--font-mono"),
+                  fontWeight: 700,
+                  lineHeight: 1,
+                  color: v("--color-text-primary"),
+                }}
+              >
                 {s.wert.toLocaleString("de-DE", {
                   minimumFractionDigits: s.stellen ?? 0,
                   maximumFractionDigits: s.stellen ?? 0,
@@ -444,18 +464,19 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
   // bei knapp halber Kartenbreite gezeichnet, und ihre Zahlen eins zu eins
   // übernommen ergäben ein Element, das in dieser Fläche verloren geht.
   //
-  // Das Verhältnis von Breite zu Höhe ist dabei das Entscheidende. Eine erste
-  // Fassung war fast doppelt so schlank wie die Vorlage — dieselbe Rechnung,
-  // dasselbe Segmentverhältnis, und trotzdem wirkte sie wie ein Diagrammrest
-  // statt wie ein Körper, an dem man Höhe abliest.
-  const BREITE = 280;
-  const HOEHE = Math.round(BREITE * 2.22);
+  // Die Höhe trägt die Aussage, die Breite trägt nichts — ein breiter Balken
+  // sagt nicht mehr als ein schmaler, er nimmt nur Platz, den die Zahlen
+  // brauchen.
+  const BREITE = 220;
+  const HOEHE = 620;
   // Der Ausleger neben dem Sockel trägt dessen Höhe nach rechts, damit die
   // Kante auch dort ablesbar ist, wo die Beschriftung steht.
   const AUSLEGER = Math.round(BREITE * 0.31);
-  const ABSTAND = Math.round(BREITE * 0.3);
+  const ABSTAND = Math.round(BREITE * 0.36);
+  const TEXTBREITE = 400;
+  const GRUNDLINIE = Math.max(2, 4 * skala);
   const sockel = Math.max(0, Math.min(Math.abs(klein.wert) / Math.abs(gross.wert), 1)) * HOEHE;
-  const ecke = Math.round(BREITE * 0.09) * skala;
+  const ecke = Math.round(BREITE * 0.1) * skala;
 
   const wert = (s: BildSerie) =>
     s.wert.toLocaleString("de-DE", {
@@ -465,18 +486,24 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
 
   const block = (s: BildSerie, gruppe: boolean) => (
     <div style={{ position: "relative" }}>
-      <UmrissZeichen name={s.umriss} skala={skala} />
-      <div style={{ fontSize: 30 * skala, color: v("--color-text-muted"), lineHeight: 1.3 }}>
+      <UmrissZeichen name={s.umriss} skala={skala} groesse={gruppe ? 300 : 220} />
+      <div style={{ fontSize: 38 * skala, color: v("--color-text-muted"), lineHeight: 1.25 }}>
         {s.zusatz ?? s.label}
       </div>
-      <div style={{ display: "flex", alignItems: "baseline", gap: 12 * skala, whiteSpace: "nowrap" }}>
+      <div
+        style={{
+          position: "relative",
+          display: "flex",
+          alignItems: "baseline",
+          gap: 12 * skala,
+          whiteSpace: "nowrap",
+        }}
+      >
         <span
           style={{
-            fontSize: (gruppe ? 88 : 60) * skala,
-            // Halbfett statt fett: In der Vorlage stehen die Werte im mittleren
-            // Schnitt, und daneben wirkt die volle Fettung wie ein Ausrufezeichen
-            // an einer Zahl, die für sich spricht.
-            fontWeight: 600,
+            fontSize: (gruppe ? 96 : 64) * skala,
+            fontFamily: v("--font-mono"),
+            fontWeight: 700,
             lineHeight: 1.1,
             color: v("--color-text-primary"),
           }}
@@ -486,7 +513,15 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
         {zeigeEinheit && <span style={{ fontSize: 28 * skala, color: v("--color-text-muted") }}>{s.einheit}</span>}
       </div>
       {s.delta && (
-        <div style={{ fontSize: 32 * skala, fontWeight: 600, color: v("--color-accent"), marginTop: 4 * skala }}>
+        <div
+          style={{
+            fontSize: 44 * skala,
+            fontFamily: v("--font-mono"),
+            fontWeight: 700,
+            color: v("--color-accent"),
+            marginTop: 6 * skala,
+          }}
+        >
           {s.delta}
         </div>
       )}
@@ -494,8 +529,17 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
   );
 
   return (
-    <div style={{ flex: 1, display: "flex", alignItems: "center" }}>
-      <div style={{ position: "relative", height: HOEHE * skala, width: "100%" }}>
+    <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      {/* Feste Gesamtbreite, damit die Gruppe mittig steht: Die Blöcke liegen
+          absolut auf der Säulenhöhe, eine Breite „nach Inhalt" gibt es hier
+          nicht. */}
+      <div
+        style={{
+          position: "relative",
+          height: (HOEHE + GRUNDLINIE / skala) * skala,
+          width: (BREITE + AUSLEGER + ABSTAND + TEXTBREITE) * skala,
+        }}
+      >
         {/* Grundlinie: Ohne sie schwebt die Säule, und eine schwebende Säule
             lässt sich in der Höhe nicht vergleichen. */}
         <div
@@ -504,7 +548,7 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
             left: 0,
             bottom: 0,
             width: (BREITE + AUSLEGER + ABSTAND / 2) * skala,
-            height: Math.max(1, 2 * skala),
+            height: GRUNDLINIE,
             background: v("--color-border"),
           }}
         />
@@ -514,36 +558,40 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
           style={{
             position: "absolute",
             left: 0,
-            bottom: Math.max(1, 2 * skala),
+            bottom: GRUNDLINIE,
             width: BREITE * skala,
             height: HOEHE * skala,
             background: v("--color-accent"),
             borderRadius: `${ecke}px ${ecke}px 0 0`,
           }}
         />
-        {/* Der Sockel ist der kleinere. Die helle Fuge darüber trennt die beiden
-            Flächen, ohne eine dritte Farbe einzuführen. */}
+        {/* Der Sockel ist der kleinere Wert. Keine Fuge zwischen ihm und dem
+            oberen Teil: Die beiden Flächen sind EINE Säule, und eine Trennlinie
+            quer hindurch machte daraus zwei gestapelte Kästen. */}
         <div
           style={{
             position: "absolute",
             left: 0,
-            bottom: Math.max(1, 2 * skala),
+            bottom: GRUNDLINIE,
             width: BREITE * skala,
             height: sockel * skala,
             background: v("--color-text-primary"),
-            borderTop: `${Math.max(1, 3 * skala)}px solid ${v("--color-bg")}`,
-            boxSizing: "border-box",
           }}
         />
+        {/* Der Ausleger ist ein eigener Körper daneben, deshalb trennt ihn eine
+            senkrechte Fuge — sonst wächst er der Säule an und ihre Breite sieht
+            aus, als spränge sie am Sockel. */}
         <div
           style={{
             position: "absolute",
             left: BREITE * skala,
-            bottom: Math.max(1, 2 * skala),
+            bottom: GRUNDLINIE,
             width: AUSLEGER * skala,
             height: sockel * skala,
             background: v("--color-text-primary"),
-            opacity: 0.3,
+            opacity: 0.18,
+            borderLeft: `${Math.max(2, 4 * skala)}px solid ${v("--color-bg")}`,
+            boxSizing: "border-box",
             borderRadius: `0 ${ecke}px 0 0`,
           }}
         />
@@ -554,7 +602,7 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
             position: "absolute",
             left: (BREITE + AUSLEGER + ABSTAND) * skala,
             top: 0,
-            right: 0,
+            width: TEXTBREITE * skala,
           }}
         >
           {block(gross, true)}
@@ -564,7 +612,7 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
             position: "absolute",
             left: (BREITE + AUSLEGER + ABSTAND) * skala,
             bottom: 0,
-            right: 0,
+            width: TEXTBREITE * skala,
             height: sockel * skala,
           }}
         >

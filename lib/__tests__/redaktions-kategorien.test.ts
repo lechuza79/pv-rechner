@@ -153,6 +153,8 @@ describe("Bildform und Einheit", () => {
     // Fehler, den dieses Projekt machen kann.
     for (const p of posts) {
       if (p.bild?.einheitAmWert === false) {
+        // Nur DANN ist der Untertitel Pflicht: Er ist die einzige Stelle, an der
+        // die Einheit dann noch steht. Wo sie an der Zahl bleibt, darf er fehlen.
         expect(p.bild.gemessen.trim().length, `${p.id} ohne Untertitel`).toBeGreaterThan(10);
         const einheiten = new Set(p.bild.serien.map((s) => s.einheit));
         expect(einheiten.size, `${p.id}: verschiedene Einheiten, ein gemeinsamer Untertitel`).toBe(1);

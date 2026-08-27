@@ -488,8 +488,14 @@ export function postFreiflaeche(k: SocialKennzahlen): SocialPost {
     bild: {
       stil: KARTEN_STIL_STANDARD,
       art: "donut",
-      aussage: `Wo die Solarleistung steht, entscheidet die Fläche`,
-      gemessen: `Anteil Freiflächen an der Solarleistung`,
+      // Hier trägt ausnahmsweise die gemessene Größe die Überschrift (Betreiber,
+      // 27.08.2026): Das Bild zeigt zwei Anteile am selben Ganzen, und der
+      // Sachtitel sagt in fünf Wörtern, was die Ringe sind. Die Deutung —
+      // Fläche entscheidet, nicht Förderung — steht im Beitragstext, wo Platz
+      // dafür ist. Das bleibt die Ausnahme: Ein Bild, dessen Überschrift nur die
+      // Achse benennt, ist im Feed eine Zahlentafel.
+      aussage: `Anteil Freiflächen an der Solarleistung`,
+      gemessen: ``,
       // Anteile beziehen sich auf ein Ganzes, also wird daran normiert und nicht
       // am größeren der beiden Werte: Ein voller Ring für 70 Prozent behauptete
       // 100. Der leere Rest im Ring ist hier die Leistung, die auf Dächern steht.
