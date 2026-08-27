@@ -1,7 +1,7 @@
 import Logo from "../Logo";
 import { v, space } from "../../lib/theme";
 import { kartenTokens } from "../../lib/social-karten-stil";
-import type { PostBild } from "../../lib/social-posts";
+import type { BildSerie, PostBild } from "../../lib/social-posts";
 
 // Das Bildformat für den Feed. Hochkant (4:5), höchstens drei Serien,
 // Beschriftungen direkt an den Balken.
@@ -64,6 +64,11 @@ export function SocialKarte({
   const max = Math.max(...bild.serien.map((s) => Math.abs(s.wert)), 1);
   const kennzahl = bild.art === "kennzahl";
   const klein = stufe === "teaser";
+  // Die Ringfassung braucht Fläche und genau zwei Werte. Im Teaser fällt sie
+  // auf die Balken zurück — zwei Ringe auf 240 Pixeln wären zwei graue Kringel.
+  const donut = bild.art === "donut" && !klein && bild.serien.length === 2;
+  // Die Einheit steht an der Zahl, außer der Untertitel trägt sie schon.
+  const zeigeEinheit = bild.einheitAmWert !== false;
   const g = GROESSEN[stufe];
   // In der kleinen Stufe zählen die Größen absolut, oben werden sie mit dem
   // Maßstab hochgerechnet.
@@ -119,6 +124,9 @@ export function SocialKarte({
         </div>
       )}
 
+      {donut ? (
+        <DonutTeil bild={bild} max={max} skala={skala} />
+      ) : (
       <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-evenly" }}>
         {serien.map((s) => {
           const anteil = Math.abs(s.wert) / max;
@@ -145,7 +153,11 @@ export function SocialKarte({
                 >
                   {s.wert.toLocaleString("de-DE", { minimumFractionDigits: s.stellen ?? 0, maximumFractionDigits: s.stellen ?? 0 })}
                 </span>
-                <span style={{ fontSize: klein ? g.einheit : (kennzahl ? 44 : 30) * skala, color: v("--color-text-muted") }}>{s.einheit}</span>
+                {zeigeEinheit && (
+                  <span style={{ fontSize: klein ? g.einheit : (kennzahl ? 44 : 30) * skala, color: v("--color-text-muted") }}>
+                    {s.einheit}
+                  </span>
+                )}
               </div>
               {/* Bei einer einzelnen Kennzahl gibt es nichts zu vergleichen —
                   ein Balken über die volle Breite wäre reine Dekoration. */}
@@ -174,6 +186,7 @@ export function SocialKarte({
           );
         })}
       </div>
+      )}
 
       {!klein && (
       <div
@@ -199,6 +212,111 @@ export function SocialKarte({
         </div>
       </div>
       )}
+    </div>
+  );
+}
+
+/**
+ * Zwei Werte als konzentrische Ringe, darunter zwei Kacheln mit Legendenpunkt.
+ *
+ * Normiert wird am GRÖSSEREN der beiden Werte, nicht an ihrer Summe: Zwischen
+ * „9,9 Geräte je 1.000 Einwohner" und „22,8" gibt es kein Ganzes, das sich
+ * aufteilen ließe. Der größere Wert füllt seinen Ring ganz, der kleinere
+ * anteilig dazu — was man abliest, ist das Verhältnis, nicht ein Anteil an einer
+ * erfundenen Summe.
+ *
+ * Der größere Wert liegt AUSSEN. Andersherum wäre der innere Ring voll und der
+ * äußere angebrochen, und das liest sich wie ein Fehler.
+ *
+ * Die schwache Spur unter jedem Ring ist die Referenz „so weit reicht der
+ * größere" — ohne sie sähe man bei kleinen Werten nur ein Bogenfragment und
+ * wüsste nicht, woran es gemessen ist.
+ */
+function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: number }) {
+  const sortiert = [...bild.serien].sort((a, b) => Math.abs(b.wert) - Math.abs(a.wert));
+  const zeigeEinheit = bild.einheitAmWert !== false;
+
+  const SEITE = 560;
+  const RINGE = [
+    { r: 232, breite: 60 },
+    { r: 152, breite: 60 },
+  ];
+
+  const farbe = (s: BildSerie) => (s.hervorgehoben ? v("--color-accent") : v("--color-text-primary"));
+
+  return (
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", gap: 56 * skala }}>
+      <svg
+        viewBox={`0 0 ${SEITE} ${SEITE}`}
+        width={SEITE * skala}
+        height={SEITE * skala}
+        style={{ alignSelf: "center", display: "block" }}
+        role="presentation"
+      >
+        <g transform={`rotate(-90 ${SEITE / 2} ${SEITE / 2})`}>
+          {sortiert.map((s, i) => {
+            const { r, breite } = RINGE[i];
+            const umfang = 2 * Math.PI * r;
+            const anteil = Math.min(Math.abs(s.wert) / max, 1);
+            return (
+              <g key={s.label}>
+                <circle
+                  cx={SEITE / 2}
+                  cy={SEITE / 2}
+                  r={r}
+                  fill="none"
+                  stroke={v("--color-text-primary")}
+                  strokeOpacity={0.12}
+                  strokeWidth={breite}
+                />
+                <circle
+                  cx={SEITE / 2}
+                  cy={SEITE / 2}
+                  r={r}
+                  fill="none"
+                  stroke={farbe(s)}
+                  strokeWidth={breite}
+                  strokeDasharray={`${umfang * anteil} ${umfang}`}
+                  strokeLinecap="butt"
+                />
+              </g>
+            );
+          })}
+        </g>
+      </svg>
+
+      {/* Die Zuordnung Ring → Wert läuft über den Punkt, nicht über die
+          Reihenfolge: Wer die Karte quer liest, soll die Farbe wiederfinden. */}
+      <div style={{ display: "flex", gap: 40 * skala }}>
+        {bild.serien.map((s) => (
+          <div key={s.label} style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 16 * skala, whiteSpace: "nowrap" }}>
+              <span
+                style={{
+                  width: 26 * skala,
+                  height: 26 * skala,
+                  borderRadius: "50%",
+                  background: farbe(s),
+                  flex: "0 0 auto",
+                }}
+              />
+              <span style={{ fontSize: 84 * skala, fontWeight: 700, lineHeight: 1, color: farbe(s) }}>
+                {s.wert.toLocaleString("de-DE", {
+                  minimumFractionDigits: s.stellen ?? 0,
+                  maximumFractionDigits: s.stellen ?? 0,
+                })}
+              </span>
+              {zeigeEinheit && (
+                <span style={{ fontSize: 28 * skala, color: v("--color-text-muted") }}>{s.einheit}</span>
+              )}
+            </div>
+            <div style={{ fontSize: 38 * skala, marginTop: 14 * skala, lineHeight: 1.2 }}>{s.label}</div>
+            {s.zusatz && (
+              <div style={{ fontSize: 27 * skala, color: v("--color-text-muted"), lineHeight: 1.3 }}>{s.zusatz}</div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

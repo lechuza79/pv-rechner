@@ -4,7 +4,6 @@ import { isAdminSession } from "../../../../lib/admin-guard";
 import { socialKennzahlen } from "../../../../lib/social-kennzahlen";
 import { baueAllePosts, type SocialPost } from "../../../../lib/social-posts";
 import { KATEGORIEN, kategorieAusAdresse } from "../../../../lib/redaktions-kategorien";
-import { KARTEN_STIL_NAME } from "../../../../lib/social-karten-stil";
 import { ladeFassungen } from "../../../../lib/social-vorlagen-db";
 import { ladePruefungen } from "../../../../lib/social-pruefung";
 import { StoryTisch } from "../../../../components/social/StoryTisch";
@@ -13,9 +12,9 @@ import { v, space, pad } from "../../../../lib/theme";
 // Das Design-Werkzeug: Kategorien oben, darunter ihre Beschreibung und ihre
 // Stories.
 //
-// Eine Kategorie ist eine AUSSAGEFORM und damit die Einheit, für die ein Design
-// gilt (lib/redaktions-kategorien.ts). Die Stories einer Kategorie sollen wie
-// Geschwister aussehen; wo eine ausschert, sagt der Tisch das dazu.
+// Eine Kategorie ist eine AUSSAGEFORM (lib/redaktions-kategorien.ts), keine
+// Ablagestruktur — sie sagt, was ein Beitrag dieser Art behauptet und woran er
+// scheitert. Das Farbschema gehört dagegen an den einzelnen Post.
 //
 // Jede Story steht so, wie sie im Feed steht: Text zuerst, nach zwei Zeilen
 // gekappt, Bild darunter. Bild und Text tragen gemeinsam — deshalb wird beides
@@ -91,17 +90,10 @@ export default async function RedaktionEntwicklung({
         })}
       </nav>
 
-      <h1 style={{ fontSize: v("--font-size-h1"), marginBottom: space.sm }}>{kat.name}</h1>
-      <p style={{ color: v("--color-text-secondary"), maxWidth: 760, marginTop: 0 }}>{kat.beschreibung}</p>
-      <p
-        style={{
-          fontSize: v("--font-size-small"),
-          color: v("--color-text-muted"),
-          marginTop: space.md,
-          marginBottom: space.huge,
-        }}
-      >
-        Design dieser Kategorie: {KARTEN_STIL_NAME[kat.stil]}.
+      {/* Keine Überschrift: Die Leiste darüber sagt bereits, wo man ist, und der
+          Name stünde zweimal untereinander. */}
+      <p style={{ color: v("--color-text-secondary"), maxWidth: 760, marginTop: 0, marginBottom: space.huge }}>
+        {kat.beschreibung}
       </p>
 
       {fehler && (
@@ -112,7 +104,7 @@ export default async function RedaktionEntwicklung({
 
       <div style={{ display: "flex", flexDirection: "column", gap: space.huge * 1.5 }}>
         {dieser.map((p) => (
-          <StoryTisch key={p.id} post={p} pruefungen={pruefungen[p.id] ?? []} kategorieStil={kat.stil} />
+          <StoryTisch key={p.id} post={p} pruefungen={pruefungen[p.id] ?? []} />
         ))}
       </div>
     </div>

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { KATEGORIEN, kategorie, kategorieAusAdresse } from "../redaktions-kategorien";
-import { KARTEN_STILE, kartenTokens, istKartenStil } from "../social-karten-stil";
-import { baueAllePosts, type SocialKennzahlen } from "../social-posts";
+import { KARTEN_STILE, KARTEN_STIL_STANDARD, kartenTokens, istKartenStil } from "../social-karten-stil";
+import { baueAllePosts, kurzEinwohner, type SocialKennzahlen } from "../social-posts";
 
 // Die beiden Ausfälle, die diese Ansicht haben kann, sind von außen unsichtbar:
 // ein Reiter ohne Stories (ein Versprechen ohne Inhalt) und eine Story ohne
@@ -63,15 +63,15 @@ describe("Kategorien der Redaktionsansicht", () => {
     for (const k of KATEGORIEN) {
       expect(k.beschreibung.length, `${k.schluessel} ohne Beschreibung`).toBeGreaterThan(80);
       expect(k.kurz.length, `${k.schluessel}: Nav-Beschriftung zu lang für eine Zeile`).toBeLessThanOrEqual(16);
-      expect(KARTEN_STILE).toContain(k.stil);
     }
   });
 
-  it("eine Story ohne eigene Wahl trägt das Design ihrer Kategorie", () => {
-    // Sonst wäre der Vorgabe-Stil eine Behauptung: Man sähe der Karte nicht an,
-    // ob sie dem Kategorie-Design folgt oder zufällig genauso aussieht.
+  it("das Farbschema hängt am Post, nicht an der Kategorie", () => {
+    // Zwei Beiträge derselben Kategorie dürfen verschieden aussehen. Stünde hier
+    // eine Vorgabe, müsste jede Abweichung als solche ausgewiesen werden.
+    expect(KATEGORIEN.every((k) => !("stil" in k))).toBe(true);
     for (const p of posts) {
-      expect(p.bild?.stil, `${p.id} folgt seiner Kategorie nicht`).toBe(kategorie(p.kategorie).stil);
+      expect(KARTEN_STILE, `${p.id} ohne gültiges Farbschema`).toContain(p.bild?.stil);
     }
   });
 
@@ -84,13 +84,51 @@ describe("Kategorien der Redaktionsansicht", () => {
     const [zurueck] = baueAllePosts(basis, {
       "stadt-land-balkon": { stil: "neonpink" as never },
     });
-    expect(zurueck.bild?.stil).toBe(kategorie("kontrast").stil);
+    expect(zurueck.bild?.stil).toBe(KARTEN_STIL_STANDARD);
   });
 
   it("ein alter Adressteil führt auf die erste Kategorie, ein falscher Code-Schlüssel wirft", () => {
     expect(kategorieAusAdresse("gibtsnicht").schluessel).toBe(KATEGORIEN[0].schluessel);
     expect(kategorieAusAdresse(undefined).schluessel).toBe(KATEGORIEN[0].schluessel);
     expect(() => kategorie("gibtsnicht" as never)).toThrow();
+  });
+});
+
+describe("Bildform und Einheit", () => {
+  it("die Ringfassung trägt genau zwei Werte", () => {
+    // Zwei konzentrische Ringe zeigen ein Verhältnis. Bei drei Werten wäre der
+    // dritte nirgends, ohne dass etwas fehlschlägt.
+    for (const p of posts) {
+      if (p.bild?.art === "donut") {
+        expect(p.bild.serien.length, `${p.id} als Ringpaar mit ${p.bild.serien.length} Werten`).toBe(2);
+      }
+    }
+  });
+
+  it("wo die Einheit nicht an der Zahl steht, nennt der Untertitel sie", () => {
+    // Der eigentliche Punkt: „ohne Einheit an der Zahl" darf nie „ohne Einheit
+    // im Bild" bedeuten. Eine Einheit, die still verschwindet, ist der teuerste
+    // Fehler, den dieses Projekt machen kann.
+    for (const p of posts) {
+      if (p.bild?.einheitAmWert === false) {
+        expect(p.bild.gemessen.trim().length, `${p.id} ohne Untertitel`).toBeGreaterThan(10);
+        const einheiten = new Set(p.bild.serien.map((s) => s.einheit));
+        expect(einheiten.size, `${p.id}: verschiedene Einheiten, ein gemeinsamer Untertitel`).toBe(1);
+      }
+    }
+  });
+
+  it("kürzt Einwohnerzahlen fürs Bild, nicht für den Text", () => {
+    expect(kurzEinwohner(100_000)).toBe("100k");
+    expect(kurzEinwohner(20_000)).toBe("20k");
+    expect(kurzEinwohner(2_500)).toBe("2,5k");
+    expect(kurzEinwohner(500)).toBe("500");
+    expect(kurzEinwohner(1_200_000)).toBe("1,2 Mio.");
+    // Im Beitragstext bleibt die ausgeschriebene Zahl: „100k" liest sich in
+    // einem Satz wie ein Tippfehler.
+    const stadtLand = posts.find((p) => p.id === "stadt-land-balkon")!;
+    expect(stadtLand.text).toContain("100.000");
+    expect(stadtLand.bild!.serien[0].zusatz).toContain("100k");
   });
 });
 

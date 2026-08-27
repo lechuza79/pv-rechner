@@ -12,8 +12,8 @@
 // lib/social-kennzahlen.ts (server-only) und werden hereingereicht.
 
 import { fmtPvLeistung } from "./atlas-format";
-import { kategorie, type KategorieSchluessel } from "./redaktions-kategorien";
-import { istKartenStil, type KartenStil } from "./social-karten-stil";
+import type { KategorieSchluessel } from "./redaktions-kategorien";
+import { KARTEN_STIL_STANDARD, istKartenStil, type KartenStil } from "./social-karten-stil";
 import { fuelle, type PlatzhalterInfo } from "./social-vorlage";
 
 /** Zahlenbasis eines Posts. Kommt aus der Datenbank, wird hereingereicht. */
@@ -58,7 +58,16 @@ export type SocialKennzahlen = {
 };
 
 export type BildSerie = {
+  /** Die Gruppe selbst, groß gesetzt: „Städte", ein Ländername. */
   label: string;
+  /**
+   * Die Eingrenzung darunter, klein: „über 100k Einwohner".
+   *
+   * Getrennt vom Label, weil beides zusammen in einer Zeile die Kachel sprengt
+   * und die Gruppe im Nebensatz verschwinden lässt — man liest dann die
+   * Bedingung und sucht die Gruppe.
+   */
+  zusatz?: string;
   wert: number;
   einheit: string;
   /** Nachkommastellen im Bild. MUSS zur Rundung im Text passen — sonst zeigt das
@@ -81,8 +90,14 @@ export type PostBild = {
    * Kontextzeile, für Fälle, in denen ein Balkenpaar nichts zeigt: 1,20 gegen
    * 1,45 Millionen sind zwei fast gleich lange Balken, obwohl dazwischen ein
    * Fünftel Wachstum liegt. Am gerenderten Bild aufgefallen, nicht am Code.
+   *
+   * "donut" ist die Ringfassung des Vergleichs für GENAU ZWEI Werte: zwei
+   * Ringe übereinander, der größere Wert außen und voll, der kleinere anteilig
+   * dazu. Bewusst am Größeren normiert und nicht an einer Summe — zwischen
+   * „9,9 je 1.000 Einwohner" und „22,8" gibt es kein Ganzes, und ein Ring, der
+   * zu einer Summe fehlt, behauptete einen Rest, den es nicht gibt.
    */
-  art: "vergleich" | "kennzahl";
+  art: "vergleich" | "kennzahl" | "donut";
   /** Die Kernaussage, im Bild als Titel gesetzt — nicht die neutrale Achsenbeschriftung. */
   aussage: string;
   /** Was gemessen wurde. Steht klein unter der Aussage. */
@@ -91,6 +106,19 @@ export type PostBild = {
   /** Pflicht: Lizenz der Quelle. Reist im Bild mit, weil der Beitragstext das nicht tut. */
   quelle: string;
   /**
+   * Steht die Einheit an der Zahl?
+   *
+   * Aus, wo der Untertitel sie ohnehin trägt („Angemeldete Steckersolargeräte je
+   * 1.000 Einwohner") — dann stünde sie zweimal im selben Bild. An bleibt sie,
+   * wo das Zeichen die Zahl erst deutet: „70" ohne Prozentzeichen ist keine
+   * gekürzte Angabe, sondern eine andere.
+   *
+   * Aus heißt NICHT „ohne Einheit": Ein Test verlangt dann einen Untertitel, der
+   * sie nennt. Sonst verschwindet sie still aus dem Bild, und das ist die
+   * teuerste Sorte Fehler in diesem Projekt.
+   */
+  einheitAmWert?: boolean;
+  /**
    * Farbschema der Karte.
    *
    * Steht am BILD und nicht an der Ansicht: Sonst zeigte das Werkzeug beim
@@ -98,8 +126,9 @@ export type PostBild = {
    * hier steht, geht es von selbst in den Fingerabdruck der Prüfung ein — wer
    * nach der Freigabe umfärbt, verliert sie.
    *
-   * Wird von `baueAllePosts` gesetzt: gespeicherte Wahl, sonst die Vorgabe der
-   * Kategorie.
+   * Wird von `baueAllePosts` gesetzt: die gespeicherte Wahl, sonst der Standard.
+   * Eine Entscheidung je Post, nicht je Kategorie — zwei Beiträge derselben
+   * Kategorie dürfen in einer Woche verschieden aussehen.
    */
   stil: KartenStil;
 };
@@ -163,6 +192,21 @@ export const FEED_ABSCHNITT_ZEICHEN = 210;
 
 const de = (n: number, stellen = 0) =>
   n.toLocaleString("de-DE", { minimumFractionDigits: stellen, maximumFractionDigits: stellen });
+
+/**
+ * Einwohnerzahl gekürzt: 100.000 → „100k".
+ *
+ * Nur für die kleine Zeile unter einer Gruppe im Bild, wo „über 100.000
+ * Einwohner" die Kachel sprengt. Im Beitragstext bleibt die ausgeschriebene
+ * Zahl — dort ist Platz, und „100k" liest sich in einem Satz wie ein Tippfehler.
+ * Eine Funktion und keine getippte Kurzform, damit die Schwelle im Text und die
+ * im Bild dieselbe Zahl bleiben.
+ */
+export function kurzEinwohner(n: number): string {
+  if (n >= 1_000_000) return `${de(n / 1_000_000, n % 1_000_000 ? 1 : 0)} Mio.`;
+  if (n >= 1_000) return `${de(n / 1_000, n % 1_000 ? 1 : 0)}k`;
+  return de(n);
+}
 
 /**
  * Der Markenname steht hier, weil die Erwähnung der Unternehmensseite ihn im
@@ -257,21 +301,26 @@ export function postStadtLand(k: SocialKennzahlen, eigeneVorlage?: string): Soci
     kanal: ["linkedin", "instagram"],
     text,
     bild: {
-      stil: kategorie("kontrast").stil,
-      art: "vergleich",
+      stil: KARTEN_STIL_STANDARD,
+      art: "donut",
       aussage: staerker
         ? `Balkonkraftwerke stehen auf dem Land, nicht in der Stadt`
         : `Balkonkraftwerke stehen in der Stadt, nicht auf dem Land`,
+      // Der Untertitel trägt die Einheit für beide Werte, deshalb steht sie
+      // nicht noch einmal an den Zahlen.
       gemessen: `Angemeldete Steckersolargeräte je 1.000 Einwohner`,
+      einheitAmWert: false,
       serien: [
         {
-          label: `Städte über ${de(s.stadtAb / 1000)}.000 Einwohner`,
+          label: "Städte",
+          zusatz: `über ${kurzEinwohner(s.stadtAb)} Einwohner`,
           wert: s.stadtJeTausend,
           einheit: "je 1.000 Ew.",
           stellen: 1,
         },
         {
-          label: `Gemeinden unter ${de(s.landUnter / 1000)}.000 Einwohner`,
+          label: "Gemeinden",
+          zusatz: `unter ${kurzEinwohner(s.landUnter)} Einwohner`,
           wert: s.landJeTausend,
           einheit: "je 1.000 Ew.",
           stellen: 1,
@@ -332,7 +381,7 @@ export function postWachstum(k: SocialKennzahlen): SocialPost {
     kanal: ["linkedin", "instagram"],
     text,
     bild: {
-      stil: kategorie("bewegung").stil,
+      stil: KARTEN_STIL_STANDARD,
       art: "kennzahl",
       aussage: `Balkonkraftwerke wachsen ${de(balkonProzent / solarProzent, 1)}-mal so schnell wie die Solarleistung`,
       gemessen: `Veränderung in zwölf Monaten`,
@@ -399,10 +448,13 @@ export function postFreiflaeche(k: SocialKennzahlen): SocialPost {
     kanal: ["linkedin"],
     text,
     bild: {
-      stil: kategorie("kontrast").stil,
-      art: "vergleich",
+      stil: KARTEN_STIL_STANDARD,
+      art: "donut",
       aussage: `Wo die Solarleistung steht, entscheidet die Fläche`,
       gemessen: `Anteil Freiflächen an der Solarleistung`,
+      // Das Prozentzeichen bleibt: „70" ohne es ist keine gekürzte Angabe,
+      // sondern eine andere Zahl.
+      einheitAmWert: true,
       serien: [
         { label: oben.name, wert: oben.freiflaecheAnteil, einheit: "%", stellen: 0, hervorgehoben: true },
         { label: unten.name, wert: unten.freiflaecheAnteil, einheit: "%", stellen: 0 },
@@ -449,7 +501,7 @@ export function postSegmente(k: SocialKennzahlen): SocialPost {
     kanal: ["linkedin", "instagram"],
     text,
     bild: {
-      stil: kategorie("aufteilung").stil,
+      stil: KARTEN_STIL_STANDARD,
       art: "vergleich",
       aussage: `Nur gut ein Viertel der Solarleistung liegt auf privaten Dächern`,
       gemessen: `Anteil an der installierten Solarleistung`,
@@ -496,10 +548,11 @@ export function postAufholjagd(k: SocialKennzahlen): SocialPost {
     kanal: ["linkedin"],
     text,
     bild: {
-      stil: kategorie("bewegung").stil,
-      art: "vergleich",
+      stil: KARTEN_STIL_STANDARD,
+      art: "donut",
       aussage: `Wer wenig hatte, wächst am schnellsten`,
       gemessen: `Solarleistung heute im Verhältnis zu vor fünf Jahren`,
+      einheitAmWert: false,
       serien: [
         { label: oben.name, wert: oben.wachstumFuenfJahre, einheit: "fach", stellen: 1, hervorgehoben: true },
         { label: unten.name, wert: unten.wachstumFuenfJahre, einheit: "fach", stellen: 1 },
@@ -537,7 +590,7 @@ export function postUeberEinwohner(k: SocialKennzahlen): SocialPost {
     kanal: ["linkedin", "instagram"],
     text,
     bild: {
-      stil: kategorie("groessenordnung").stil,
+      stil: KARTEN_STIL_STANDARD,
       art: "kennzahl",
       aussage: `In den meisten Gemeinden steht mehr Solarleistung als Einwohner`,
       gemessen: `Gemeinden ab ${de(u.mindestEinwohner, 0)} Einwohnern`,
@@ -588,9 +641,9 @@ export function baueAllePosts(k: SocialKennzahlen, fassungen: Record<string, Ges
     const fassung = fassungen[roh.id];
     const post =
       f.length > 1 ? (f as (k: SocialKennzahlen, v?: string) => SocialPost)(k, fassung?.vorlage) : roh;
-    // Ein unbekannter Stil aus der Ablage fällt auf die Vorgabe der Kategorie
-    // zurück, statt die Karte ungefärbt zu lassen: Ein Wert, den wir nicht mehr
-    // kennen, ist ein Fund für den Code, kein Grund für ein kaputtes Bild.
+    // Ein unbekannter Stil aus der Ablage fällt auf den Standard zurück, statt
+    // die Karte ungefärbt zu lassen: Ein Wert, den wir nicht mehr kennen, ist
+    // ein Fund für den Code, kein Grund für ein kaputtes Bild.
     if (post.bild && istKartenStil(fassung?.stil)) {
       post.bild = { ...post.bild, stil: fassung!.stil! };
     }

@@ -5,9 +5,15 @@ import { v, space, pad } from "../../lib/theme";
 import { FeedVorschau } from "./FeedVorschau";
 import { VorlagenEditor } from "./VorlagenEditor";
 import { fuelle } from "../../lib/social-vorlage";
-import { KARTEN_STILE, KARTEN_STIL_NAME, type KartenStil } from "../../lib/social-karten-stil";
+import { KARTEN_STILE, KARTEN_STIL_NAME, KARTEN_STIL_STANDARD, type KartenStil } from "../../lib/social-karten-stil";
 import { urteil, type Pruefung } from "../../lib/social-pruefung-kern";
-import type { SocialPost } from "../../lib/social-posts";
+import type { PostBild, SocialPost } from "../../lib/social-posts";
+
+const BILDFORM: Record<PostBild["art"], string> = {
+  vergleich: "Balken",
+  kennzahl: "Einzelkennzahl",
+  donut: "Ringpaar",
+};
 
 // Eine Story am Redaktionstisch: so, wie sie im Feed steht, plus die drei
 // Stellschrauben — Farbschema, Formulierung, Freigabe.
@@ -23,17 +29,8 @@ import type { SocialPost } from "../../lib/social-posts";
 // die Eigenschaft, die vorher fehlte — der Abdruck hing nur am Text, also blieb
 // eine Freigabe bestehen, während das Bild ein anderes wurde.
 
-export function StoryTisch({
-  post,
-  pruefungen,
-  kategorieStil,
-}: {
-  post: SocialPost;
-  pruefungen: Pruefung[];
-  /** Vorgabe der Kategorie — Abweichungen werden benannt. */
-  kategorieStil: KartenStil;
-}) {
-  const [stil, setStil] = useState<KartenStil>(post.bild?.stil ?? kategorieStil);
+export function StoryTisch({ post, pruefungen }: { post: SocialPost; pruefungen: Pruefung[] }) {
+  const [stil, setStil] = useState<KartenStil>(post.bild?.stil ?? KARTEN_STIL_STANDARD);
   const [entwurf, setEntwurf] = useState(post.vorlage ?? "");
   const [offen, setOffen] = useState(false);
   const [stilStatus, setStilStatus] = useState<string | null>(null);
@@ -96,8 +93,7 @@ export function StoryTisch({
       <div style={{ flex: "1 1 440px", minWidth: 340 }}>
         <h3 style={{ fontSize: v("--font-size-h3"), margin: 0 }}>{post.titel}</h3>
         <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: space.xs }}>
-          {post.kanal.join(" · ")} · {post.bild?.art === "kennzahl" ? "Einzelkennzahl" : "Vergleich"} ·{" "}
-          {text.length} Zeichen
+          {post.kanal.join(" · ")} · {BILDFORM[post.bild?.art ?? "vergleich"]} · {text.length} Zeichen
         </div>
 
         {/* Farbschema: Eigenschaft der Karte, nicht der Ansicht. Wird sofort
@@ -129,11 +125,6 @@ export function StoryTisch({
                 </button>
               );
             })}
-            {stil !== kategorieStil && (
-              <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
-                weicht von der Kategorie ab ({KARTEN_STIL_NAME[kategorieStil]})
-              </span>
-            )}
             {stilStatus && (
               <span style={{ fontSize: v("--font-size-caption"), color: v("--color-negative") }}>{stilStatus}</span>
             )}
