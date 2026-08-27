@@ -63,10 +63,22 @@ test.describe("Werbekennzeichnung der Geräteempfehlung", () => {
     expect(text).toMatch(/besteht ein Widerrufsrecht/);
     expect(text).not.toMatch(/\d+\s*Tage\s*Widerruf/i);
 
-    // Provision offengelegt, Preisstand genannt.
-    expect(text).toMatch(/erhalten wir eine Provision/);
-    expect(text).toMatch(/Preise vom \d{2}\.\d{2}\.\d{4}/);
-    expect(text).toMatch(/es gilt der Preis im Shop/);
+    // Provision offengelegt, Preisstand am Preis.
+    expect(text).toMatch(/Wir erhalten eine Provision/);
+    expect(text).toMatch(/Preis vom \d{2}\.\d{2}\.\d{4}/);
+
+    // Der Kennzeichnungs-Absatz selbst bleibt kurz: Kennzeichnung, ein
+    // Händler, Provision. Anschrift und Widerruf stehen unter den Kacheln,
+    // der Preisstand an der Kachel. Eine frühere Fassung hatte alles in
+    // einem Absatz — 70 Wörter, die niemand liest.
+    const absatz = await page.locator("p", { hasText: /^Anzeige —/ }).first().innerText();
+    expect(absatz).toMatch(/Sortiment eines einzelnen Händlers/);
+    expect(absatz).not.toMatch(/Stolzenmorgen/);
+    expect(absatz).not.toMatch(/Widerrufsrecht/);
+    expect(
+      absatz.split(/\s+/).length,
+      "Der Anzeigen-Absatz soll kurz bleiben",
+    ).toBeLessThan(45);
 
     // Und die Reihenfolge: Kennzeichnung oben, Preis darunter.
     const kennzeichnungY = await obereKante(page, "text=/^Anzeige —/");

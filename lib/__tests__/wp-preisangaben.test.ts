@@ -123,16 +123,19 @@ describe("Pflichtangaben zum Preis", () => {
     expect(ausgeliefert).not.toMatch(/>\s*versandkostenfrei/i);
   });
 
-  it("nennt den Erhebungszeitpunkt der Preise", () => {
+  it("stellt den Erhebungszeitpunkt AN den Preis", () => {
     // Ein Preis ohne Datum behauptet Aktualität, die ein täglich abgerufener
     // Datenstrom nicht zusagen kann (BGH I ZR 123/08, Espressomaschine,
     // Leitsatz 1 — NICHT I ZR 140/07, das ist "Versandkosten bei Froogle").
-    const kachel = fs.readFileSync(
-      path.resolve(__dirname, "..", "..", "components", "WpGeraeteEmpfehlung.tsx"),
-      "utf-8",
-    );
-    expect(kachel).toMatch(/Preise vom \$\{preisStand\}/);
-    expect(kachel).toMatch(/es gilt der Preis im Shop/);
+    //
+    // Und zwar an den PREIS, nicht in einen Block darüber: Das Datum korrigiert
+    // die Fehlvorstellung "das ist der aktuelle Preis", und Leitsatz 2 derselben
+    // Entscheidung verwarf einen Vorbehalt an anderer Stelle ausdrücklich als
+    // untauglich, die Irreführung auszuräumen.
+    const t = fs.readFileSync(KACHEL_DATEI, "utf-8");
+    expect(t).toMatch(/Preis vom \$\{preisStand\}/);
+    // Direkt hinter den Pflichtangaben zum Preis, nicht irgendwo sonst.
+    expect(t).toMatch(/preisZusatz\(g\)[\s\S]{0,120}Preis vom/);
   });
 
   it("nennt den Preisstand konkret, nicht als Haftungsformel", () => {
@@ -149,7 +152,26 @@ describe("Pflichtangaben zum Preis", () => {
     // unten verwendet — die Reihenfolge im Code sagt nichts über die Anzeige.
     const ausgeliefert = ausgelieferterText(KACHEL_DATEI);
     expect(ausgeliefert).not.toMatch(/ohne Gewähr/);
-    expect(ausgeliefert).toMatch(/es gilt der Preis im Shop/);
+  });
+
+  it("hält den Anzeigen-Block kurz — drei Stellen, nicht ein Absatz", () => {
+    // Eine frühere Fassung packte alle fünf Pflichtangaben in einen Fließtext
+    // über den Kacheln: 70 Wörter, die niemand liest. Der Ausweg ist NICHT das
+    // Auslagern hinter einen Aufklapper — § 5a Abs. 3 UWG greift auf einer
+    // scrollbaren Seite nicht, der EuGH nennt die eigene Entscheidung über die
+    // Raumaufteilung für die Beurteilung ausdrücklich "irrelevant" (C-430/17,
+    // Walbusch, Rn. 39). Der Ausweg ist Zerlegen.
+    const ausgeliefert = ausgelieferterText(KACHEL_DATEI);
+
+    // Oben: Kennzeichnung, ein Händler, Provision — mehr nicht.
+    expect(ausgeliefert).toMatch(/Sortiment eines einzelnen Händlers/);
+    expect(ausgeliefert).toMatch(/kein Marktüberblick/);
+    // Die Anschrift steht NICHT mehr im Kennzeichnungs-Absatz …
+    expect(ausgeliefert).not.toMatch(/Anzeige<\/strong>[\s\S]{0,400}haendlerAnschrift/);
+    // … sondern unter den Kacheln, zusammen mit dem Widerrufsrecht.
+    expect(ausgeliefert).toMatch(
+      /Verkäufer: \{haendlerAnschrift\(\)\}\.\s*Beim Kauf dort besteht ein Widerrufsrecht/,
+    );
   });
 
   it("führt die Versandkosten von der Datenbank bis in die Kachel durch", () => {

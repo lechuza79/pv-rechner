@@ -140,7 +140,35 @@ function unsicherheit(befunde: Befund[]): string | null {
   return null;
 }
 
-function Karte({ e, rang, fall }: { e: Empfehlung; rang: number; fall: Props }) {
+/**
+ * Der Erhebungstag der Preise, als deutsches Datum.
+ *
+ * Steht an EINER Stelle, weil ihn seit dem 27.08.2026 zwei Orte brauchen: die
+ * Kachel (dort korrigiert das Datum die Fehlvorstellung "das ist der aktuelle
+ * Preis") und — falls er dort einmal fehlt — der Block darüber. Zweimal
+ * getippt liefen die beiden beim ersten Formatwechsel auseinander.
+ */
+function preisStandText(abgerufenIso: string | null | undefined): string | null {
+  if (!abgerufenIso) return null;
+  return new Date(abgerufenIso).toLocaleDateString("de-DE", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+}
+
+function Karte({
+  e,
+  rang,
+  fall,
+  preisStand,
+}: {
+  e: Empfehlung;
+  rang: number;
+  fall: Props;
+  /** Erhebungstag der Preise — gehört an den Preis, nicht in den Block darüber. */
+  preisStand: string | null;
+}) {
   const g = e.geraet;
   const werte = kennwerte(g);
   const satz = passungsSatz(e.befunde, fall);
@@ -278,6 +306,7 @@ function Karte({ e, rang, fall }: { e: Empfehlung; rang: number; fall: Props }) 
           mit Versandkosten falsch da. */}
       <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: -4 }}>
         {preisZusatz(g)}
+        {preisStand ? ` · Preis vom ${preisStand}` : null}
       </div>
 
       {werte.length > 0 && (
@@ -481,18 +510,34 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
    * Adressat dort war der werbende Händler, nicht das Portal — unser Hinweis
    * ist insoweit vorsorglich, nicht geschuldet.
    */
-  const preisStand = antwort?.abgerufenIso
-    ? new Date(antwort.abgerufenIso).toLocaleDateString("de-DE", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      })
-    : null;
+  const preisStand = preisStandText(antwort?.abgerufenIso);
   const nurEinzelgeraete = treffer.every((e) => e.geraet.umfang === "geraet");
 
   return (
     <div style={{ display: "grid", gap: space.md }}>
       {/* Werbekennzeichnung — Stelle und Wortlaut sind geprüft, nicht gewählt.
+
+          DREI STELLEN, NICHT EIN ABSATZ. Eine frühere Fassung packte alle fünf
+          Pflichtangaben in einen Fließtext über den Kacheln — 70 Wörter, die
+          niemand liest, und der Betreiber hielt sie zu Recht für praxisfern
+          ("das würde jeden affiliate shop zerschießen"). Die dritte
+          Rechtsprüfung (27.08.2026) hat ihm recht gegeben und zugleich den
+          naheliegenden Ausweg verworfen: Auslagern hinter einen Aufklapper geht
+          NICHT, weil § 5a Abs. 3 UWG auf einer scrollbaren Seite gar nicht
+          greift — der EuGH hat entschieden, dass die eigene Entscheidung über
+          die Raumaufteilung für die Beurteilung "irrelevant" ist (C-430/17,
+          Walbusch, Rn. 39). Der Weg ist ZERLEGEN: jede Angabe dorthin, wo sie
+          hingehört. Sichtbar bleiben dadurch rund 55 Wörter statt 70.
+
+          Hier oben: Kennzeichnung, Herkunft aus einem Sortiment, Provision.
+          An der Kachel: Preis, Steuer, Versand, Preisstand.
+          Unter den Kacheln: Verkäufer mit Anschrift und Widerrufsrecht.
+
+          Der PREISSTAND wandert damit von hier an den Preis — und das ist kein
+          Layout-Detail: Das Datum korrigiert die Fehlvorstellung "das ist der
+          aktuelle Preis", und der BGH hat für einen Vorbehalt an anderer Stelle
+          ausdrücklich entschieden, dass er die Irreführung nicht ausräumt
+          (I ZR 123/08, Espressomaschine, Leitsatz 2).
 
           ÜBER den Kacheln, nicht darunter: Die Aufsicht verlangt Erkennbarkeit
           „ohne Scrollen", die Rechtsprechung „auf den ersten Blick". Der Hinweis
@@ -533,12 +578,9 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
         }}
       >
         <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: v("--color-text-secondary") }}>
-          <strong style={{ color: v("--color-text-primary") }}>Anzeige</strong> — Die Geräte kommen
-          aus dem Sortiment der {haendlerAnschrift()}, sind also kein Marktüberblick. Gekauft wird
-          dort, nicht bei uns; bei einer Bestellung im Shop besteht ein Widerrufsrecht. Über die
-          Links erhalten wir eine Provision, wenn du dort kaufst; für dich ändert sich am Preis
-          nichts.
-          {preisStand ? ` Preise vom ${preisStand}; es gilt der Preis im Shop.` : null}
+          <strong style={{ color: v("--color-text-primary") }}>Anzeige</strong> — Diese Geräte
+          stammen aus dem Sortiment eines einzelnen Händlers, sind also kein Marktüberblick. Wir
+          erhalten eine Provision, wenn du dort kaufst; für dich ändert sich am Preis nichts.
         </p>
         {/* Das Versprechen steht NEBEN der Kennzeichnung, nicht statt ihrer.
 
@@ -598,7 +640,7 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
         >
           {treffer.map((e, i) => (
             <li key={e.geraet.id} className="wp-geraete-kachel" style={{ minWidth: 0 }}>
-              <Karte e={e} rang={i} fall={fall} />
+              <Karte e={e} rang={i} fall={fall} preisStand={preisStand} />
             </li>
           ))}
         </ul>
@@ -623,7 +665,7 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
           >
             {alternativ.map((e) => (
               <li key={e.geraet.id} className="wp-geraete-kachel" style={{ minWidth: 0 }}>
-                <Karte e={e} rang={-1} fall={fall} />
+                <Karte e={e} rang={-1} fall={fall} preisStand={preisStand} />
               </li>
             ))}
           </ul>
@@ -663,6 +705,31 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
           Die Reihenfolge Schritt für Schritt
         </Link>
       </div>
+
+      {/* Verkäufer und Widerrufsrecht — einmal für alle Kacheln, weil es EIN
+          Händler ist.
+
+          Beides sind Pflichtangaben bei einer Aufforderung zum Kauf
+          (§ 5b Abs. 1 Nr. 2 und Nr. 5 UWG) und beide stehen bewusst SICHTBAR,
+          obwohl die Auslagerung hinter einen Aufklapper vertretbar wäre: Sie
+          kosten zusammen zwei Zeilen, und der Streitpunkt, den man sich damit
+          einhandelt, ist ungeklärt. Dazu ein praktischer Grund, der keine Norm
+          ist und trotzdem entscheidet — wer Portale prüft, sucht mit einem
+          Crawler nach einer Anschrift und dem Wort "Widerruf" im ausgelieferten
+          HTML. Ein Aufklapper, dessen Inhalt zwar im Dokument steht, aber nicht
+          sichtbar ist, sieht für den Prüfer aus wie eine Lücke.
+
+          "Beim Kauf dort besteht ein Widerrufsrecht" ist bewusst OHNE Frist:
+          Verlangt ist nur die Information über das BESTEHEN, nicht über
+          Bedingungen und Verfahren. Eine Frist wäre zudem eine Aussage über die
+          Vertragsbedingungen eines Dritten, die wir nicht beherrschen.
+          Am 27.08.2026 an der Widerrufsbelehrung des Shops geprüft: Sie gilt
+          uneingeschränkt für Verbraucher, kein Ausschluss für Sonderanfertigung
+          oder Montageleistung — und der Shop belehrt im eigenen Namen, ist also
+          selbst Vertragspartner und kein Marktplatz für Dritte. */}
+      <p style={{ margin: 0, fontSize: 11, lineHeight: 1.5, color: v("--color-text-muted") }}>
+        Verkäufer: {haendlerAnschrift()}. Beim Kauf dort besteht ein Widerrufsrecht.
+      </p>
 
       <p style={{ margin: 0, fontSize: 11, lineHeight: 1.5, color: v("--color-text-muted") }}>
         Angegeben ist der Gerätepreis des Händlers, nicht der Preis der fertigen Anlage —
