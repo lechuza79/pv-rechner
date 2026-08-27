@@ -26,6 +26,44 @@ export type FundingLevel = "bund" | "land" | "landkreis" | "kommune";
  */
 export type FundingTechnik = "pv" | "balkon" | "waermepumpe";
 
+/**
+ * Eine Förderbedingung — als blanker Satz oder auf eine Technik eingegrenzt.
+ *
+ * Die Textform bleibt der Normalfall, damit 85 Programme mit genau einer
+ * Technik unverändert bleiben. Siehe die Begründung an `conditions`.
+ */
+export type FundingCondition = string | { text: string; nur: FundingTechnik[] };
+
+/** Der Wortlaut einer Bedingung, gleich in welcher Form sie notiert ist. */
+export function bedingungText(c: FundingCondition): string {
+  return typeof c === "string" ? c : c.text;
+}
+
+/**
+ * Die Bedingungen, die für DIESE Technik gelten.
+ *
+ * Ohne Technik-Angabe kommt alles zurück — der Fall der Übersichtsseiten, die
+ * ein Programm als Ganzes zeigen. Mit Angabe fallen die Bedingungen weg, die
+ * ausdrücklich für eine andere Technik notiert sind; ein blanker Satz bleibt
+ * immer drin, weil er für alle gilt.
+ */
+export function bedingungenFuer(
+  conditions: FundingCondition[],
+  technik?: FundingTechnik,
+): string[] {
+  return conditions
+    .filter((c) => !technik || typeof c === "string" || c.nur.includes(technik))
+    .map(bedingungText);
+}
+
+/**
+ * Die Fördersätze, die für DIESE Technik gelten — dieselbe Regel wie bei den
+ * Bedingungen.
+ */
+export function saetzeFuer<T extends { nur?: FundingTechnik[] }>(rates: T[], technik?: FundingTechnik): T[] {
+  return rates.filter((r) => !technik || !r.nur || r.nur.includes(technik));
+}
+
 /** Beschriftung der Technik — eine Quelle, damit Rechner und Seiten gleich sprechen. */
 export const FUNDING_TECHNIK_LABEL: Record<FundingTechnik, string> = {
   pv: "Photovoltaik", balkon: "Balkonkraftwerk", waermepumpe: "Wärmepumpe",
@@ -97,8 +135,28 @@ export interface FundingProgram {
   coveredCosts: string;
   /** Optional overall cap, e.g. "max. 50.000 €". */
   maxFoerderung?: string;
-  rates: { label: string; value: string }[];
-  conditions: string[];
+  /**
+   * Fördersätze. `nur` grenzt eine Zeile auf eine Technik ein — gebraucht, wo
+   * ein Programm Dach und Balkon zugleich fördert und die Karte beides nach
+   * Reitern trennt.
+   */
+  rates: { label: string; value: string; nur?: FundingTechnik[] }[];
+  /**
+   * Bedingungen. Ein blanker String gilt für ALLE Techniken des Programms —
+   * das ist der Normalfall (Antragsfrist, Haltedauer, kein Rechtsanspruch).
+   *
+   * Die Objektform grenzt auf eine Technik ein und ist die Ausnahme
+   * (26.08.2026). Anlass: Niddas Karte zeigte neun Bedingungen in einer Liste,
+   * darunter „mindestens 4 kWp" (gilt nicht fürs Balkonkraftwerk) und
+   * „höchstens zwei Module" (gilt nicht fürs Dach). Wer sein Balkonkraftwerk
+   * plante, las eine Mindestgröße, die ihn ausschloss, obwohl sie ihn nicht
+   * betrifft — eine Bedingung am falschen Ort ist eine falsche Auskunft.
+   *
+   * Bewusst KEIN Pflichtfeld: 85 der 110 Programme fördern genau eine Technik,
+   * dort wäre die Angabe reine Zeremonie. Nur wo mehrere Techniken
+   * zusammenkommen, lohnt die Unterscheidung.
+   */
+  conditions: FundingCondition[];
   /** Ids of other programs this one can be combined with (rendered as links). */
   combinableWith: string[];
   // Structured rates so example calculations can show a concrete amount.
@@ -137,6 +195,26 @@ export interface FundingProgram {
   speicherTiers?: { upTo: number; amount: number }[];
   /** Minimum storage kWh below which no storage funding is paid. */
   speicherMin?: number;
+  /**
+   * Mindestleistung der Dachanlage in kWp — darunter zahlt das Programm für den
+   * PV-Teil nichts.
+   *
+   * WARUM ES DAS GIBT (27.08.2026): Die Untergrenze ist eine der verbreitetsten
+   * Bedingungen kommunaler Programme und war als einzige verbreitete NICHT
+   * ausdrückbar — die Obergrenze steckt in `pvTiers`, die Speicher-Untergrenze in
+   * `speicherMin`, für die Anlage selbst gab es nichts. Sie stand deshalb im
+   * Bedingungstext und fehlte in der Rechnung: Nidda schreibt „Die Anlage muss
+   * mindestens 4 kWp leisten — kleinere Dachanlagen werden nicht gefördert", und
+   * derselbe Katalogeintrag zog bei 3 kWp 300 € ab. Genau die Fehlerklasse, in
+   * der die Beschriftung etwas anderes sagt als die Zahl daneben misst.
+   *
+   * Wirkt NUR auf den PV-Teil. Dass eine Untergrenze für die Anlage auch den
+   * Speicherzuschuss ausschließt, ist naheliegend, steht aber in keiner der drei
+   * geprüften Richtlinien — es zu unterstellen wäre eine Verschärfung ohne
+   * Fundstelle (Wächter-Gate Regel 8). Wo Anlage und Speicher aus EINEM Satz
+   * kommen (Mühlhausen), greift die Grenze ohnehin für beides.
+   */
+  pvMin?: number;
 
   // ── Technik ──────────────────────────────────────────────────────────────────
   /**
@@ -534,7 +612,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     pvPerKwp: 300, speicherPerKwh: 300, pvCap: 6000, speicherCap: 3000,
   },
   "nidda-solar": {
-    id: "nidda-solar", name: "Förderprogramm Photovoltaik, Stromspeicher und Mini-PV",
+    // „Balkonkraftwerk" statt des amtlichen „Mini-PV" (26.08.2026): Die Stadt
+    // nennt es in ihrer Richtlinie „Mini-PV-Anlagen (auch Balkon-Module oder
+    // Stecker-PV genannt)" — wir nehmen das Wort, das Menschen benutzen und in
+    // die Suche tippen, und halten es überall gleich.
+    id: "nidda-solar", name: "Förderprogramm Photovoltaik, Stromspeicher und Balkonkraftwerke",
     traeger: "Stadt Nidda", level: "kommune", region: "Nidda", bundesland: "Hessen", agsCode: "06440016",
     // Aufgenommen am 26.08.2026, nachdem die Klimaschutz-Beauftragte der Stadt
     // uns die Seite selbst geschickt hat — auf eine Outreach-Mail hin, in der es
@@ -565,32 +647,43 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Nur privat: „ausschließlich Privatpersonen mit Wohneigentum in Nidda"
     // (PV-Richtlinie Nr. 1), bei Mini-PV „Privatpersonen mit Hauptwohnsitz".
     eligibility: ["privat"],
-    coveredCosts: "Zuschuss je kWp und je kWh Speicher; Mini-PV anteilig",
-    maxFoerderung: "max. 1.500 € (Anlage + Speicher), Mini-PV max. 200 €",
+    coveredCosts: "Zuschuss je kWp und je kWh Speicher; Balkonkraftwerk anteilig",
+    // Gilt der Dachanlage; das Balkonkraftwerk hat seinen Deckel in seiner
+    // eigenen Zeile und braucht ihn hier nicht ein zweites Mal.
+    maxFoerderung: "max. 1.500 € (Dachanlage + Speicher)",
+    // JE TECHNIK GETRENNT (26.08.2026). Vorher stand alles in einer Liste, und
+    // die widersprach sich für den Leser: „mindestens 4 kWp" neben „höchstens
+    // zwei Module" — die erste Bedingung schließt jedes Balkonkraftwerk aus,
+    // die zweite jede Dachanlage. Wer sein Balkonkraftwerk plante, las eine
+    // Mindestgröße, die ihn gar nicht betrifft, und rechnete sich heraus.
     rates: [
-      { label: "PV-Anlage (Dach/Fassade)", value: "100 €/kWp, max. 1.000 €" },
-      { label: "Stromspeicher", value: "50 €/kWh, max. 500 €" },
-      { label: "Mini-PV / Balkonkraftwerk", value: "50 % der Kosten, max. 200 €" },
+      { label: "Dachanlage (auch Fassade)", value: "100 €/kWp, max. 1.000 €", nur: ["pv"] },
+      { label: "Stromspeicher", value: "50 €/kWh, max. 500 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "50 % der Kosten, max. 200 €", nur: ["balkon"] },
     ],
     conditions: [
-      "Die Anlage muss mindestens 4 kWp leisten — kleinere Dachanlagen werden nicht gefördert",
+      // Gilt für beide Techniken
       "Der Antrag wird erst NACH Inbetriebnahme gestellt, und zwar binnen vier Wochen",
       "Die Anlage muss im Marktstammdatenregister registriert sein",
-      "Kein Ersatzneukauf und keine Erweiterung einer bestehenden Anlage",
-      "Je Wohngebäude eine Anlage im Förderzeitraum; Anlage und Speicher zusammen zählen als eine",
-      "Mini-PV: höchstens zwei Module je Haushalt, höchstens 800 W Einspeisung",
       "Haltedauer zehn Jahre, sonst wird der Zuschuss zurückgefordert",
       "Freiwillige Leistung ohne Rechtsanspruch, nur solange Mittel vorhanden sind",
       "Nicht gefördert: Eigenleistung, gebrauchte Teile, Anlagen aus einer gesetzlichen Pflicht (etwa nach dem Gebäudeenergiegesetz)",
       "Antrag und Nachweise nur digital über das Online-Formular der Stadt",
-      "Für die Dachanlage braucht es Wohneigentum in Nidda; beim Balkonkraftwerk genügt der Hauptwohnsitz, Mieter sind dort ausdrücklich dabei",
+      // Nur Dachanlage
+      { text: "Die Anlage muss mindestens 4 kWp leisten — kleinere Dachanlagen werden nicht gefördert", nur: ["pv"] as FundingTechnik[] },
+      { text: "Kein Ersatzneukauf und keine Erweiterung einer bestehenden Anlage", nur: ["pv"] as FundingTechnik[] },
+      { text: "Je Wohngebäude eine Anlage im Förderzeitraum; Anlage und Speicher zusammen zählen als eine", nur: ["pv"] as FundingTechnik[] },
+      { text: "Wohneigentum in Nidda ist Voraussetzung", nur: ["pv"] as FundingTechnik[] },
+      // Nur Balkonkraftwerk
+      { text: "Höchstens zwei Module je Haushalt, höchstens 800 W Einspeisung", nur: ["balkon"] as FundingTechnik[] },
+      { text: "Hauptwohnsitz in Nidda genügt — Mieterinnen und Mieter sind ausdrücklich antragsberechtigt", nur: ["balkon"] as FundingTechnik[] },
     ],
     // Die Richtlinie erlaubt die Kombination ausdrücklich („Der Zuschuss ist mit
     // Angeboten oder anderen Förderungen kombinierbar"), schiebt die Prüfung auf
     // Rückwirkungen aber der antragstellenden Person zu.
     combinableWith: BUND,
     foerdert: ["pv", "balkon"],
-    pvPerKwp: 100, pvCap: 1000,
+    pvPerKwp: 100, pvCap: 1000, pvMin: 4,
     speicherPerKwh: 50, speicherCap: 500,
     balkonPercentOfCost: 0.5, balkonCap: 200,
   },
@@ -605,8 +698,19 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { label: "PV-Anlage", value: "1.500–2.500 € (nach kWp)" },
       { label: "Batteriespeicher", value: "500–1.300 € (nach kWh)" },
     ],
-    conditions: ["Solange Mittel reichen (Budget 8 Mio. € 2026)", "Speicher ab 3 kWh"],
+    conditions: [
+      "Solange Mittel reichen (Budget 8 Mio. € 2026)",
+      "Speicher ab 3 kWh",
+      "Die Dachanlage muss mindestens 2 kWp leisten — die unterste Förderstufe beginnt dort",
+      "Nur Bestandsgebäude: die Baufertigstellung liegt bei Antragstellung mindestens fünf Jahre zurück",
+    ],
     combinableWith: BUND,
+    // Untergrenze am 27.08.2026 auf der Programmseite selbst gelesen
+    // (stadt-koeln.de/leben-in-koeln/klima-umwelt-tiere/klima/photovoltaik-klimafreundliches-wohnen):
+    // Die Staffel beginnt bei „Von 2 kWp bis 5 kWp 1.500 Euro". Darunter nennt die
+    // Stadt keinen Satz. Die Sammelseite, auf die unser Eintrag zeigt, führt die
+    // Beträge gar nicht — dort stehen unter DEMSELBEN Namen die 2024 ausgelaufenen
+    // Vorgängerprogramme, was einen Abruf beinahe zu „Programm tot" gelesen hätte.
     pvTiers: [
       { upTo: 5, amount: 1500 },
       { upTo: 9, amount: 2000 },
@@ -619,6 +723,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { upTo: 999, amount: 1300 },
     ],
     speicherMin: 3,
+    pvMin: 2,
   },
   "duesseldorf-klimafreundlich": {
     id: "duesseldorf-klimafreundlich", name: "Klimafreundliches Wohnen und Arbeiten",
@@ -744,10 +849,10 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     rates: [
       { label: "Dach-PV (Vollbelegung)", value: "150 €/kWp, max. 1.500 €" },
       { label: "Bonus Gründach/Fassade/Denkmal", value: "+150 €/kWp, max. 1.500 €" },
-      { label: "Balkonmodul (Mieter)", value: "150 € (mit Freiburg-Pass 300 €)" },
+      { label: "Balkonkraftwerk (Mieter)", value: "150 € (mit Freiburg-Pass 300 €)" },
     ],
     conditions: [
-      "Mittel für 2026 vollständig ausgeschöpft: seit dem 14.07.2026 keine neuen Anträge — auch nicht für Balkonmodule; nach Angaben der Stadt wieder ab 1. Januar 2027",
+      "Mittel für 2026 vollständig ausgeschöpft: seit dem 14.07.2026 keine neuen Anträge — auch nicht für Balkonkraftwerke; nach Angaben der Stadt wieder ab 1. Januar 2027",
       "Bereits eingegangene Anträge werden weiter bearbeitet",
       "Gefördert nur der Anlagenteil über der gesetzlichen Solarpflicht-Mindestgröße",
       "Antrag bis 6 Monate nach Inbetriebnahme; Ausführung durch Fachbetrieb",
@@ -962,8 +1067,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     rates: [
       { label: "PV (Dach oder Fassade)", value: "200 €/kWp, max. 1.200 € je Objekt" },
       { label: "Batteriespeicher (ab 5 kWh nutzbar)", value: "1.000 € pauschal je Objekt" },
-      { label: "Steckersolar (Wechselrichter bis 0,8 kW, Module bis 2,0 kW)", value: "250 € pauschal" },
-      { label: "Speicher für Steckersolar (ab 3 kWh)", value: "500 € pauschal" },
+      { label: "Balkonkraftwerk (Wechselrichter bis 0,8 kW, Module bis 2,0 kW)", value: "250 € pauschal" },
+      { label: "Speicher für Balkonkraftwerk (ab 3 kWh)", value: "500 € pauschal" },
     ],
     conditions: [
       "Anträge sind nur noch bis zum 31. Oktober 2026 möglich; die Bearbeitung ruht bis zum 16. September 2026 und läuft danach in der Reihenfolge des E-Mail-Eingangs",
@@ -1082,14 +1187,14 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     stand: "August 2026",
     status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Zuschuss für Batteriespeicher, Balkonsolar und Wallbox — nicht die Dach-PV selbst (Topf 2026 leer)",
+    coveredCosts: "Zuschuss für Batteriespeicher, Balkonkraftwerk und Wallbox — nicht die Dach-PV selbst (Topf 2026 leer)",
     rates: [
       { label: "Batteriespeicher", value: "20 %, max. 750 €" },
-      { label: "Balkonsolar", value: "50 %, max. 100 €" },
+      { label: "Balkonkraftwerk", value: "50 %, max. 100 €" },
     ],
     conditions: [
       "Der Fördertopf 2026 ist ausgeschöpft; die Stadt bittet ausdrücklich darum, keine Anträge mehr zu stellen",
-      "Reine Dach-PV wird nicht bezuschusst — nur Speicher, Balkonsolar, Wallbox",
+      "Reine Dach-PV wird nicht bezuschusst — nur Speicher, Balkonkraftwerk, Wallbox",
       "Installation durch Fachbetrieb; Antrag online (Windhundverfahren)",
     ],
     combinableWith: BUND,
@@ -1125,6 +1230,10 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Nur Stromkunden der Stadtwerke Schwerin, Eigentümer der Immobilie",
       "Kontingent: max. 10 Anlagen pro Jahr — kann unterjährig erschöpft sein",
+      // Die Frist stand bis 27.08.2026 nicht im Eintrag, obwohl die Stadtwerke sie
+      // wörtlich nennen. Dieselbe Klasse wie Potsdam am 25.08.: ein Programm, das
+      // an einem Datum endet, ohne das Datum gezeigt.
+      "Antragsfrist 31.12.2026; ist das Kontingent vorher erreicht, endet das Programm früher",
       "Kundenbindung — daher nicht pauschal eingerechnet",
     ],
     combinableWith: BUND,
@@ -1250,10 +1359,10 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     maxFoerderung: "max. 1.700 € je Gebäude",
     rates: [
       { label: "PV-Dachanlage", value: "500 € für die ersten 7 kWp, danach 150 € je weiterem kWp" },
-      { label: "Balkonmodul", value: "200 € pauschal, auch für Mieter" },
+      { label: "Balkonkraftwerk", value: "200 € pauschal, auch für Mieter" },
     ],
     conditions: [
-      "Nur für selbstgenutztes Eigentum; Balkonmodule auch für Mieter",
+      "Nur für selbstgenutztes Eigentum; Balkonkraftwerke auch für Mieter",
       "Die Anlage darf bei Antragstellung weder beauftragt noch erworben oder installiert sein",
       "Fördertopf von 50.000 €",
       "Mit anderen Förderungen kombinierbar",
@@ -1347,7 +1456,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     rates: [
       { label: "PV-Anlage", value: "700 € (<6 kWp) / 1.000 € (6–12 kWp) / 1.500 € (ab 12 kWp)" },
       { label: "Batteriespeicher (ab 3 kWh)", value: "+500 €" },
-      { label: "Steckerfertige PV (Balkonkraftwerk)", value: "200 €" },
+      { label: "Balkonkraftwerk", value: "200 €" },
     ],
     conditions: [
       "Antrag nur im jährlichen Fenster — 2026 vom 14.05. bis 14.06., aktuell geschlossen",
@@ -1493,8 +1602,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://www.ennepetal.de/umwelt-klima/klimaschutz-klimaanpassung/klimafoerderprogramme/",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Pauschale je Haushalt für ein fabrikneues Steckersolargerät",
-    rates: [{ label: "Steckersolargerät", value: "100 € je Haushalt" }],
+    coveredCosts: "Pauschale je Haushalt für ein fabrikneues Balkonkraftwerk",
+    rates: [{ label: "Balkonkraftwerk", value: "100 € je Haushalt" }],
     conditions: [
       "Das Gerät muss fabrikneu sein",
       "Je Haushalt wird ein Gerät gefördert",
@@ -1587,10 +1696,10 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://www.holzgerlingen.de/de/verwaltung-politik/wohnen-bauen/foerderprogramme.php",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Anteil der Kosten steckerfertiger PV-Anlagen",
+    coveredCosts: "Anteil der Kosten eines Balkonkraftwerks",
     maxFoerderung: "max. 200 € (mit Familien- und Sozialpass max. 500 €)",
     rates: [
-      { label: "Steckerfertige PV-Anlage", value: "30 % der Kosten, max. 200 €" },
+      { label: "Balkonkraftwerk", value: "30 % der Kosten, max. 200 €" },
       { label: "mit Familien- und Sozialpass", value: "75 % der Kosten, max. 500 €" },
     ],
     conditions: [
@@ -1645,6 +1754,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Antragsberechtigt sind natürliche Personen",
       "Die Dachanlage wird nur zusammen mit einem Stromspeicher gefördert",
+      "Die Dachanlage muss mindestens 5 kWp leisten — die unterste Stufe beginnt dort",
       "Anlagen, die vor dem 1. Mai 2022 in Betrieb gingen, sind ausgeschlossen",
       "Der Fördertopf umfasst insgesamt 50.000 €",
     ],
@@ -1653,7 +1763,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Die Dach-Staffel gilt NUR mit Speicher — das ist im Modell nicht als
     // Bedingung ausdrückbar. `speicherMin: 1` erzwingt sie über die einzige
     // Größe, die der Rechner kennt: Ohne Speicher greift keine Stufe.
+    // Die Staffel beginnt „ab 5 kWp bis einschl. 10 kWp" — am 27.08.2026 auf der
+    // Gemeindeseite gelesen. Ohne `pvMin` zahlte die unterste Stufe auch bei
+    // 3 kWp, wo die Gemeinde nichts zahlt.
     pvTiers: [{ upTo: 10, amount: 1000 }, { upTo: 20, amount: 1250 }, { upTo: 30, amount: 1500 }],
+    pvMin: 5,
     speicherMin: 1,
     balkonTiers: [{ upTo: 680, amount: 100 }, { upTo: 1020, amount: 150 }, { upTo: 999999, amount: 200 }],
   },
@@ -1698,11 +1812,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://www.maintal.de/klima-f%C3%B6rderrichtlinie",
     stand: "August 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Pauschalen für Wärmepumpe und Mini-PV, dazu Dämmung und Fenster — Mittel derzeit aufgebraucht",
+    coveredCosts: "Pauschalen für Wärmepumpe und Balkonkraftwerk, dazu Dämmung und Fenster — Mittel derzeit aufgebraucht",
     rates: [
       { label: "Wärmepumpe", value: "2.000 € je Anlage" },
       { label: "Biomasseheizung", value: "1.000 € je Anlage" },
-      { label: "Mini-Photovoltaik", value: "50 % des Kaufpreises, max. 150 € je Modul" },
+      { label: "Balkonkraftwerk", value: "50 % des Kaufpreises, max. 150 € je Modul" },
     ],
     conditions: [
       "Die Antragstellung ist derzeit nicht möglich, weil die bewilligten Maßnahmen die Mittel ausschöpfen",
@@ -1783,7 +1897,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     coveredCosts: "Anteil an Anschaffung, Montage und Inbetriebnahme — Balkonkraftwerk und Dachanlage getrennt",
     maxFoerderung: "max. 1.000 € für die Dachanlage, max. 200 € fürs Balkonkraftwerk",
     rates: [
-      { label: "Steckerfertiges Balkonkraftwerk", value: "20 % der Anschaffungskosten, max. 200 € brutto" },
+      { label: "Balkonkraftwerk", value: "20 % der Anschaffungskosten, max. 200 € brutto" },
       { label: "Genehmigungspflichtige Anlage bis 30 kWp", value: "10 % der Anschaffungskosten, max. 1.000 € brutto" },
     ],
     conditions: [
@@ -1809,9 +1923,9 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://www.leimen.de/leben-wohnen/klimaschutz-und-umwelt/klimaschutzfoerderungen",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Anteil der Gesamtkosten einer Stecker-Solaranlage",
+    coveredCosts: "Anteil der Gesamtkosten einer Balkonkraftwerk",
     maxFoerderung: "max. 120 € je Antrag",
-    rates: [{ label: "Stecker-Solaranlage", value: "15 % der Gesamtkosten, max. 120 €" }],
+    rates: [{ label: "Balkonkraftwerk", value: "15 % der Gesamtkosten, max. 120 €" }],
     conditions: [
       "Gefördert wird nur ein Kauf innerhalb des Förderzeitraums 2026",
       "Nach Angabe der Stadt sind ausreichend Fördermittel vorhanden",
@@ -1831,10 +1945,10 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://www.sandhausen.de/de/Wirtschaft-Bauen/(Um)Bauen/Foerderprogramme",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Anteil an Anschaffung und Einbau — Steckersolar gedeckelt, Dachanlage ohne genannte Obergrenze",
-    maxFoerderung: "max. 200 € für Steckersolar",
+    coveredCosts: "Anteil an Anschaffung und Einbau — Balkonkraftwerk gedeckelt, Dachanlage ohne genannte Obergrenze",
+    maxFoerderung: "max. 200 € für Balkonkraftwerk",
     rates: [
-      { label: "Steckersolar", value: "50 % von Anschaffung und Einbau, max. 200 €" },
+      { label: "Balkonkraftwerk", value: "50 % von Anschaffung und Einbau, max. 200 €" },
       { label: "Photovoltaik mit Speicher", value: "bis 50 % des Anschaffungspreises" },
     ],
     conditions: [
@@ -1857,11 +1971,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://www.stadt-helmstedt.de/wirtschaft-bauen/klimaschutz-und-umwelt/foerderrichtlinie-fuer-umwelt-und-klimaschutzmassnahmen.html",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Zuschuss für Balkonsolar, dazu Dachbegrünung und Regenwasser — keine Dach-PV, kein Speicher",
-    maxFoerderung: "max. 100 € je Balkonsolaranlage",
-    rates: [{ label: "Balkonsolaranlage", value: "max. 100 € je Anlage" }],
+    coveredCosts: "Zuschuss für Balkonkraftwerk, dazu Dachbegrünung und Regenwasser — keine Dach-PV, kein Speicher",
+    maxFoerderung: "max. 100 € je Balkonkraftwerk",
+    rates: [{ label: "Balkonkraftwerk", value: "max. 100 € je Anlage" }],
     conditions: [
-      "Für Balkonsolar stehen höchstens 20 % der jährlichen Gesamtfördersumme bereit",
+      "Für Balkonkraftwerke stehen höchstens 20 % der jährlichen Gesamtfördersumme bereit",
       "Für das laufende Haushaltsjahr sind insgesamt 40.000 € eingeplant",
       "Dach-Photovoltaik und Batteriespeicher sind nicht Teil des Programms",
     ],
@@ -1883,8 +1997,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://www.nottuln.de/leben-in-nottuln/klimaschutz-energie-umwelt/foerderprogramm-klimaschutz",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Zuschuss für Steckersolargeräte aus einem gedeckelten Jahrestopf",
-    rates: [{ label: "Steckersolargerät", value: "Betrag nur in der Richtlinie, Jahrestopf 4.000 €" }],
+    coveredCosts: "Zuschuss für Balkonkraftwerke aus einem gedeckelten Jahrestopf",
+    rates: [{ label: "Balkonkraftwerk", value: "Betrag nur in der Richtlinie, Jahrestopf 4.000 €" }],
     conditions: [
       "Gefördert werden Geräte, die seit dem 1. Januar des laufenden Jahres gekauft wurden",
       "Vollständige Anträge werden nach Eingangsdatum bearbeitet, bis der Topf leer ist",
@@ -1909,7 +2023,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     maxFoerderung: "max. 1.500 € für die Dachanlage",
     rates: [
       { label: "Photovoltaik", value: "150 € je kWp, höchstens 1.500 €" },
-      { label: "Steckersolar", value: "100 € je Anlage" },
+      { label: "Balkonkraftwerk", value: "100 € je Anlage" },
     ],
     conditions: [
       "Für die Dachanlage ist der Antrag vor der Auftragsvergabe zu stellen",
@@ -1933,9 +2047,9 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://www.nittenau.de/rathaus-service/buergerservice/foerderprogramme",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Anteil der Anschaffungskosten einer Stecker-Solaranlage",
+    coveredCosts: "Anteil der Anschaffungskosten einer Balkonkraftwerk",
     maxFoerderung: "max. 100 € je Antrag",
-    rates: [{ label: "Stecker-Solaranlage", value: "10 % der Anschaffungskosten, max. 100 €" }],
+    rates: [{ label: "Balkonkraftwerk", value: "10 % der Anschaffungskosten, max. 100 €" }],
     conditions: [
       "Antragsberechtigt sind natürliche Personen und örtliche eingetragene Vereine",
       "Dem Antrag sind Rechnung und ein Foto der installierten Anlage beizulegen",
@@ -2008,9 +2122,9 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://www.forstinning.de/wirtschaft-und-energie/energie/foerderrichtlinie-der-gemeinde-forstinning",
     stand: "August 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Balkonmodule, Dachanlagen und Batteriespeicher — Jahrestopf aufgebraucht",
+    coveredCosts: "Balkonkraftwerke, Dachanlagen und Batteriespeicher — Jahrestopf aufgebraucht",
     maxFoerderung: "max. 1.500 € je Antragsteller in drei Jahren",
-    rates: [{ label: "Stecker-PV, Dach-PV und Speicher", value: "zusammen max. 1.500 € in drei Jahren" }],
+    rates: [{ label: "Balkonkraftwerk, Dach-PV und Speicher", value: "zusammen max. 1.500 € in drei Jahren" }],
     conditions: [
       "Die Fördersumme von 40.000 € für das laufende Jahr ist ausgeschöpft",
       "Gefördert werden Stecker-Photovoltaik, Dachanlagen und Batteriespeicher",
@@ -2051,8 +2165,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://gemeinde.bad-rothenfelde.de/nachricht/1910.html",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Zuschuss für Stecker-Solar-Geräte, daneben Dachbegrünung",
-    rates: [{ label: "Stecker-Solar-Gerät", value: "Betrag nur in der Richtlinie, Jahrestopf 5.000 €" }],
+    coveredCosts: "Zuschuss für Balkonkraftwerke, daneben Dachbegrünung",
+    rates: [{ label: "Balkonkraftwerk", value: "Betrag nur in der Richtlinie, Jahrestopf 5.000 €" }],
     conditions: [
       "Antragsberechtigt sind Eigentümerinnen und Eigentümer sowie Mieterinnen und Mieter",
       "Mieter brauchen das Einverständnis des Eigentümers oder der Eigentümergemeinschaft",
@@ -2086,8 +2200,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // es rechnet nicht.
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Zuschuss für Steckersolargeräte — ausdrücklich für Mieter gedacht",
-    rates: [{ label: "Steckersolargerät", value: "50 € je Anlage" }],
+    coveredCosts: "Zuschuss für Balkonkraftwerke — ausdrücklich für Mieter gedacht",
+    rates: [{ label: "Balkonkraftwerk", value: "50 € je Anlage" }],
     conditions: [
       "Nur Mieterinnen und Mieter, die die Wohnung selbst bewohnen und dort mit Hauptwohnsitz gemeldet sind",
       "Gefördert werden Geräte bis 2.000 W Modulleistung und 800 W Wechselrichterleistung",
@@ -2133,9 +2247,9 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://www.rodgau.de/de/leben/stadtplanung-umwelt-mobiltaet/umwelt/foerderung-von-balkon-solaranlagen/",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Anteil des Rechnungsbetrags einer Balkon-Solaranlage",
+    coveredCosts: "Anteil des Rechnungsbetrags einer Balkonkraftwerk",
     maxFoerderung: "max. 200 € je Anlage",
-    rates: [{ label: "Balkon-Solaranlage", value: "25 % des Rechnungsbetrags, max. 200 €" }],
+    rates: [{ label: "Balkonkraftwerk", value: "25 % des Rechnungsbetrags, max. 200 €" }],
     conditions: [
       "Die Antragsfrist ist der 31. Dezember des jeweiligen Förderjahres",
       "Mietende sollten sich eine schriftliche Einverständniserklärung der Vermieterseite geben lassen",
@@ -2373,7 +2487,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     maxFoerderung: "max. 400 € für die Dachanlage",
     rates: [
       { label: "Dach-Photovoltaik", value: "50 € je kWp, max. 400 €" },
-      { label: "Mini-Balkon-Photovoltaik", value: "50 € pauschal" },
+      { label: "Balkonkraftwerk", value: "50 € pauschal" },
     ],
     conditions: [
       "Maßgeblich ist der Tag der Auftragserteilung; er darf nicht vor dem 1. April 2022 liegen",
@@ -2419,7 +2533,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     coveredCosts: "Anteil der Kosten für Balkonkraftwerk und Dachanlage, dazu Pauschalen für Wärmepumpen",
     maxFoerderung: "max. 2.000 € für die Dachanlage, 250 € fürs Balkonkraftwerk",
     rates: [
-      { label: "Mini-PV-Anlage (Balkonkraftwerk)", value: "25 % der förderfähigen Kosten, max. 250 €" },
+      { label: "Balkonkraftwerk", value: "25 % der förderfähigen Kosten, max. 250 €" },
       { label: "PV-Anlage auf Dach oder Fassade", value: "10 % der förderfähigen Kosten, max. 2.000 €" },
       { label: "Wärmepumpe (Grundwasser oder Erdwärme)", value: "800 € je Anlage" },
       { label: "Wärmepumpe (Luft-Wasser)", value: "600 € je Anlage" },
@@ -2473,7 +2587,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     eligibility: ["privat"],
     coveredCosts: "Anteil der Gesamtkosten inklusive Befestigungsmaterial",
     maxFoerderung: "max. 200 €",
-    rates: [{ label: "Steckerfertige PV-Anlage", value: "50 % der förderfähigen Gesamtkosten, max. 200 €" }],
+    rates: [{ label: "Balkonkraftwerk", value: "50 % der förderfähigen Gesamtkosten, max. 200 €" }],
     conditions: [
       "Der Antrag muss vor dem Kauf gestellt werden; erst nach Bewilligung ist der Kauf förderfähig",
       "Antragsberechtigt sind Eigentümer, Eigentümergemeinschaften, Erbbauberechtigte und Mieter für die selbst bewohnte Wohnung",
@@ -2517,7 +2631,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     eligibility: ["privat"],
     coveredCosts: "Pauschale je Modul, höchstens zwei Module je Wohneinheit",
     maxFoerderung: "max. 100 € je Wohneinheit",
-    rates: [{ label: "Steckerfertige PV-Anlage", value: "50 € je Modul, höchstens zwei Module" }],
+    rates: [{ label: "Balkonkraftwerk", value: "50 € je Modul, höchstens zwei Module" }],
     conditions: [
       "Je Wohneinheit mit abgeschlossenem Stromkreis werden höchstens zwei Module gefördert",
       "Dem Antrag sind die Originalrechnung und die Anmeldung im Marktstammdatenregister beizulegen",
@@ -2588,7 +2702,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Hoher Anteil der Gesamtkosten — aber nur für einen einkommensbeschränkten Personenkreis",
-    rates: [{ label: "Balkon-PV (nur bei Einkommensgrenze)", value: "60 % der Gesamtkosten" }],
+    rates: [{ label: "Balkonkraftwerk (nur bei Einkommensgrenze)", value: "60 % der Gesamtkosten" }],
     conditions: [
       "Antragsberechtigt sind nur Haushalte unterhalb einer Einkommensgrenze: Alleinerziehende unter 50.000 €, Familien mit einem Kind unter 60.000 €, mit zwei Kindern unter 70.000 € Bruttojahreseinkommen",
       "Ebenfalls berechtigt sind Empfänger von Bürgergeld, Sozialhilfe, Wohngeld oder Kinderzuschlag",
@@ -2616,8 +2730,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     coveredCosts: "Pauschale je Anlage, gestaffelt nach Leistung",
     maxFoerderung: "max. 100 € je Wohnung",
     rates: [
-      { label: "Stecker-Solaranlage 300 bis 450 W", value: "50 € einmalig" },
-      { label: "Stecker-Solaranlage über 450 bis 800 W", value: "100 € einmalig" },
+      { label: "Balkonkraftwerk 300 bis 450 W", value: "50 € einmalig" },
+      { label: "Balkonkraftwerk über 450 bis 800 W", value: "100 € einmalig" },
     ],
     conditions: [
       "Antragsberechtigt sind Eigentümer, Vermieter und ausdrücklich auch Mieter im Gemeindegebiet",
@@ -2638,10 +2752,10 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://www.putzbrunn.de/klimaschutz/zuschuesse",
     stand: "August 2026", status: "pausiert", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Pauschale fürs Steckersolar, Anteile für Speicher, Brauchwasser-Wärmepumpe und Split-Gerät",
+    coveredCosts: "Pauschale fürs Balkonkraftwerk, Anteile für Speicher, Brauchwasser-Wärmepumpe und Split-Gerät",
     maxFoerderung: "max. 4.000 € je Jahr und 10.000 € in drei Jahren",
     rates: [
-      { label: "Stecker-PV-Anlage", value: "100 €, mit Batteriespeicher zusätzlich 100 €" },
+      { label: "Balkonkraftwerk", value: "100 €, mit Batteriespeicher zusätzlich 100 €" },
       { label: "Batteriespeicher (Erstinstallation)", value: "15 % der Investitionskosten, max. 1.000 €" },
       { label: "Brauchwasserwärmepumpe", value: "20 % der Kosten, max. 500 €" },
       { label: "Split-Klimagerät", value: "10 % der Kosten, max. 400 €" },
@@ -2711,7 +2825,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Satz als Begrenzung auf einen Zuschuss je Wohnung, die der Träger so
     // nirgends ausspricht. Betrag und Kontingent (20 Anträge je Jahr) am selben
     // Tag zellgleich bestätigt.
-    rates: [{ label: "Balkon-Solaranlage", value: "100 € pauschal je Anlage" }],
+    rates: [{ label: "Balkonkraftwerk", value: "100 € pauschal je Anlage" }],
     conditions: [
       "Antragsberechtigt sind Vermieter, Mieter und Eigentümer einer Wohneinheit in Gailingen",
       "Der Antrag wird nach dem Kauf gestellt; Rechnung und Foto der montierten Anlage sind beizulegen",
@@ -2732,7 +2846,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     eligibility: ["privat"],
     coveredCosts: "Betrag je Modul, gedeckelt je Anlage",
     maxFoerderung: "max. 100 € je Anlage",
-    rates: [{ label: "Balkonsolarkraftwerk", value: "50 € je Modul, höchstens 100 € je Anlage" }],
+    rates: [{ label: "Balkonkraftwerk", value: "50 € je Modul, höchstens 100 € je Anlage" }],
     conditions: [
       "Antragsberechtigt sind Mieter und Eigentümer von Wohnungen in Hattenhofen",
       "Der Antrag wird nach Kauf und Installation gestellt, mit Rechnung und Foto",
@@ -2753,7 +2867,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     eligibility: ["privat"],
     coveredCosts: "Pauschale je Anlage — Kontingent von zehn Zuschüssen",
     maxFoerderung: "150 € je Anlage",
-    rates: [{ label: "Stecker-Solaranlage", value: "150 € je Anlage" }],
+    rates: [{ label: "Balkonkraftwerk", value: "150 € je Anlage" }],
     conditions: [
       "Antragsberechtigt sind Vermieter, Mieter und Eigentümer im Gemeindegebiet; Mieter brauchen die Einbauerlaubnis",
       "Das Kaufdatum muss im laufenden Jahr liegen; der Antrag folgt nach der Installation",
@@ -2780,8 +2894,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     coveredCosts: "Pauschale je Anlage, gestaffelt nach Leistung",
     maxFoerderung: "max. 100 € je Anlage",
     rates: [
-      { label: "Mini-PV-Anlage unter 600 W", value: "50 € einmalig" },
-      { label: "Mini-PV-Anlage ab 600 W", value: "100 € einmalig" },
+      { label: "Balkonkraftwerk unter 600 W", value: "50 € einmalig" },
+      { label: "Balkonkraftwerk ab 600 W", value: "100 € einmalig" },
     ],
     conditions: [
       "Der Antrag muss vor dem Kauf gestellt werden; begonnene Maßnahmen sind ausgeschlossen",
@@ -2802,7 +2916,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     eligibility: ["privat"],
     coveredCosts: "Einmaliger Förderbetrag je Privathaushalt",
     maxFoerderung: "150 € je Haushalt",
-    rates: [{ label: "Stecker-Solargerät bis 800 W", value: "150 € einmalig" }],
+    rates: [{ label: "Balkonkraftwerk bis 800 W", value: "150 € einmalig" }],
     conditions: [
       "Antragsberechtigt sind Menschen, die in Walddorfhäslach zur Miete oder im Eigentum wohnen",
       "Das Gerät muss auf Walddorfhäslacher Gemarkung betrieben werden",
@@ -2952,9 +3066,9 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://www.altdorf-boeblingen.de/de/wirtschaft-bauen/foerderprogramm-solare-energienutzung-balkonkraftwerke/index.php",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Anteil an Kauf und Installation eines steckerfertigen Solargeräts",
+    coveredCosts: "Anteil an Kauf und Installation eines Balkonkraftwerks",
     maxFoerderung: "max. 200 € je Haushalt",
-    rates: [{ label: "Steckerfertige PV-Anlage", value: "30 % der Investitionskosten, max. 200 €" }],
+    rates: [{ label: "Balkonkraftwerk", value: "30 % der Investitionskosten, max. 200 €" }],
     conditions: [
       "Der Antrag kann vor dem Kauf gestellt werden oder danach, dann spätestens drei Monate nach dem Rechnungsdatum",
       "Je Haushalt wird ein Antrag gefördert",
@@ -2984,9 +3098,9 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://www.steffenberg.de/rathaus-politik-buergerservice/buergerservice/foerderung-von-balkonkraftwerken.html",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Anteil an den Anschaffungskosten einer Mini-PV-Anlage inklusive Installation",
+    coveredCosts: "Anteil an den Anschaffungskosten einer Balkonkraftwerk inklusive Installation",
     maxFoerderung: "max. 150 € je Anlage",
-    rates: [{ label: "Mini-PV-Anlage", value: "20 % der Anschaffungskosten, max. 150 €" }],
+    rates: [{ label: "Balkonkraftwerk", value: "20 % der Anschaffungskosten, max. 150 €" }],
     conditions: [
       "Der Antrag wird spätestens drei Monate nach dem Erwerb gestellt, die Anlage muss dann betriebsbereit installiert sein",
       "Gefördert werden nur Bestandsgebäude; Neubauten sind ausgeschlossen",
@@ -3011,9 +3125,9 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "http://www.tegernheim.de/bauen-und-gewerbe/gemeindliche-foerderungen/",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Anteil an den Kosten eines Stecker-PV-Geräts",
+    coveredCosts: "Anteil an den Kosten eines Balkonkraftwerks",
     maxFoerderung: "max. 150 € je Wohnung",
-    rates: [{ label: "Stecker-PV-Gerät", value: "10 % der förderfähigen Kosten, max. 150 € je Wohnung" }],
+    rates: [{ label: "Balkonkraftwerk", value: "10 % der förderfähigen Kosten, max. 150 € je Wohnung" }],
     conditions: [
       "Geräte, die vor dem Inkrafttreten der Richtlinie am 17. November 2022 angeschafft wurden, werden nicht gefördert",
       "Je Antragstellerin oder Antragsteller werden im Jahr höchstens 150 € bewilligt",
@@ -3584,7 +3698,14 @@ export function fundingAmount(
   const computable = !!(f.percentOfCost || f.pvPerKwp || f.pvTiers || f.speicherPerKwh || f.speicherTiers);
   if (!computable) return { total: 0, computable: false, active };
 
+  // Unter der Mindestleistung zahlt das Programm für die Anlage nichts. Das
+  // Programm bleibt `computable` — der Betrag ist bekannt, er ist null. „Lässt
+  // sich nicht berechnen" wäre eine andere Aussage und stünde als solche auf der
+  // Karte (dieselbe Unterscheidung wie bei der Kumulierungsgrenze im WP-Rechner).
+  const unterMindestleistung = f.pvMin !== undefined && anlage.kwp < f.pvMin;
+
   if (f.percentOfCost) {
+    if (unterMindestleistung) return { total: 0, computable: true, active };
     // Prozentsatz MIT Deckel — ergänzt 18.08.2026. Vorher rechnete dieser Zweig
     // ungedeckelt und kehrte sofort zurück; „20 % der Kosten, höchstens 300 €"
     // war damit nicht ausdrückbar, und solche Programme mussten ohne
@@ -3595,7 +3716,9 @@ export function fundingAmount(
     return { total: anteil(anlage.kosten, f.percentOfCost, f.pvCap), computable: true, active };
   }
   let pv = 0;
-  if (f.pvPerKwp) {
+  if (unterMindestleistung) {
+    pv = 0;
+  } else if (f.pvPerKwp) {
     pv = (f.pvSockel ?? 0) + anlage.kwp * f.pvPerKwp;
     if (f.pvCap) pv = Math.min(pv, f.pvCap);
   } else if (f.pvTiers) {

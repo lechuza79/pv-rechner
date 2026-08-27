@@ -26,6 +26,18 @@ export async function getFundingPrograms(): Promise<FundingProgram[]> {
   if (cache && Date.now() - cache.ts < TTL) return cache.data;
 
   const seed = Object.values(FUNDING_PROGRAMS);
+  // Entwicklungs-Schalter: den Code-Seed erzwingen, obwohl eine Datenbank da ist.
+  //
+  // Gebraucht für die Abnahme im Browser. Die Stadtseiten lesen die Programme
+  // aus der Datenbank; eine Änderung am Katalog im Code ist dort erst nach dem
+  // Deploy UND dem Abgleich zu sehen — und der Abgleich darf nicht vorher
+  // laufen, weil die Produktion dann neue Datenstrukturen mit altem Code
+  // rendern würde. Ohne diesen Schalter bliebe nur ein Server ohne Datenbank,
+  // und dem fehlen dann Anlagenbestand und Beispielrechnungen.
+  //
+  // Wirkt NUR außerhalb der Produktion — in der Produktion ist die Datenbank
+  // die Wahrheit, und ein Schalter, der das umkehren kann, wäre eine zweite.
+  if (process.env.NODE_ENV !== "production" && process.env.FOERDER_AUS_CODE === "1") return seed;
   if (!supabase) return seed;
   if (Date.now() < fehlerBis) return seed;
 
