@@ -46,10 +46,12 @@ export default async function RedaktionEntwicklung({
   const kat = kategorieAusAdresse(gewaehlt);
 
   let posts: SocialPost[] | undefined;
+  let fassungen: Record<string, unknown> = {};
   let fehler: string | null = null;
   try {
-    const [kennzahlen, fassungen] = await Promise.all([socialKennzahlen(), ladeFassungen()]);
-    posts = baueAllePosts(kennzahlen, fassungen);
+    const [kennzahlen, geladen] = await Promise.all([socialKennzahlen(), ladeFassungen()]);
+    fassungen = geladen;
+    posts = baueAllePosts(kennzahlen, geladen);
   } catch (e) {
     fehler = (e as Error).message;
   }
@@ -111,6 +113,7 @@ export default async function RedaktionEntwicklung({
               post: p,
               pruefungen: pruefungen[p.id] ?? [],
               kategorie: { name: k.name, schluessel: k.schluessel },
+              bearbeitet: p.id in fassungen,
             };
           })}
         />

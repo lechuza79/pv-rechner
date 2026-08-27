@@ -156,17 +156,30 @@ async function rechne(): Promise<SocialKennzahlen> {
 
   const proLand = new Map<
     string,
-    { ew: number; balkon: number; pv: number; frei: number; solar: number; solar5: number }
+    {
+      ew: number;
+      balkon: number;
+      pv: number;
+      frei: number;
+      solar: number;
+      solar5: number;
+      anlagen: number;
+      speicher: number;
+    }
   >();
   for (const r of gem) {
     const k = r.region_id.slice(0, 2);
-    const e = proLand.get(k) ?? { ew: 0, balkon: 0, pv: 0, frei: 0, solar: 0, solar5: 0 };
+    const e = proLand.get(k) ?? {
+      ew: 0, balkon: 0, pv: 0, frei: 0, solar: 0, solar5: 0, anlagen: 0, speicher: 0,
+    };
     e.ew += r.population;
     e.balkon += r.balkon_count ?? 0;
     e.pv += zahl(r.privat_dach_kwp);
     e.frei += zahl(r.freiflaeche_kwp);
     e.solar += zahl(r.solar_kwp);
     e.solar5 += zahl(r.solar_kwp_l5);
+    e.anlagen += r.privat_dach_count ?? 0;
+    e.speicher += r.batterie_privat_count ?? 0;
     proLand.set(k, e);
   }
 
@@ -243,6 +256,7 @@ async function rechne(): Promise<SocialKennzahlen> {
         balkonJeTausend: e.ew ? (e.balkon / e.ew) * 1000 : 0,
         wpProKopf: e.ew ? (e.pv * 1000) / e.ew : 0,
         privatDachKwp: e.pv,
+        speicherQuote: e.anlagen ? (e.speicher / e.anlagen) * 100 : 0,
         freiflaecheAnteil: e.solar ? (e.frei / e.solar) * 100 : 0,
         solarKwp: e.solar,
         wachstumFuenfJahre: e.solar5 ? e.solar / e.solar5 : 0,
@@ -260,7 +274,7 @@ async function rechne(): Promise<SocialKennzahlen> {
  * aber ein Fehler in der Haltbarkeit. Wer ein Feld ergänzt oder entfernt, zählt
  * hier hoch.
  */
-const FORM_VERSION = "v4";
+const FORM_VERSION = "v5";
 
 export const socialKennzahlen = unstable_cache(rechne, ["social-kennzahlen", FORM_VERSION], {
   revalidate: 86_400,

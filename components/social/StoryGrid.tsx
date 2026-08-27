@@ -27,11 +27,30 @@ export type GridEintrag = {
   post: SocialPost;
   pruefungen: Pruefung[];
   kategorie: { name: string; schluessel: string };
+  /**
+   * Hat jemand an dieser Story etwas eingestellt — Text, Farbschema oder
+   * Bildform? Gemessen am Vorhandensein einer gespeicherten Fassung, nicht an
+   * einem Häkchen: Ein Zustand, den jemand von Hand setzen muss, steht
+   * irgendwann auf „fertig" an einer Story, die niemand angefasst hat.
+   */
+  bearbeitet: boolean;
 };
+
+type Sicht = "alle" | "bearbeitet" | "roh";
+
+const SICHTEN: { wert: Sicht; text: string }[] = [
+  { wert: "alle", text: "Alle" },
+  { wert: "bearbeitet", text: "Gestaltet" },
+  { wert: "roh", text: "Roh" },
+];
 
 export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
   const [offen, setOffen] = useState<string | null>(null);
+  const [sicht, setSicht] = useState<Sicht>("alle");
   const aktiv = eintraege.find((e) => e.post.id === offen);
+  const gezeigt = eintraege.filter(
+    (e) => sicht === "alle" || (sicht === "bearbeitet" ? e.bearbeitet : !e.bearbeitet),
+  );
 
   const knopf = {
     padding: pad("xs", "md"),
@@ -46,6 +65,36 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
 
   return (
     <>
+      {/* Der Filter steht ÜBER dem Raster, nicht in der Kategorie-Leiste: Er
+          sortiert nicht nach Thema, sondern nach Arbeitsstand. */}
+      <div style={{ display: "flex", gap: space.xs, marginBottom: space.xl, flexWrap: "wrap" }}>
+        {SICHTEN.map((s) => {
+          const an = s.wert === sicht;
+          const zahl = eintraege.filter(
+            (e) => s.wert === "alle" || (s.wert === "bearbeitet" ? e.bearbeitet : !e.bearbeitet),
+          ).length;
+          return (
+            <button
+              key={s.wert}
+              type="button"
+              aria-pressed={an}
+              onClick={() => setSicht(s.wert)}
+              style={{
+                padding: pad("xs", "md"),
+                borderRadius: v("--radius-sm"),
+                border: `1px solid ${an ? v("--color-accent") : v("--color-border")}`,
+                background: an ? v("--color-accent-dim") : "transparent",
+                color: an ? v("--color-accent") : v("--color-text-secondary"),
+                cursor: "pointer",
+                fontSize: v("--font-size-small"),
+              }}
+            >
+              {s.text} <span style={{ color: v("--color-text-muted") }}>{zahl}</span>
+            </button>
+          );
+        })}
+      </div>
+
       <div
         style={{
           display: "grid",
@@ -56,7 +105,7 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
           gap: space.xxl,
         }}
       >
-        {eintraege.map(({ post, pruefungen, kategorie }) => {
+        {gezeigt.map(({ post, pruefungen, kategorie }) => {
           const stand = urteil({ text: post.text, bild: post.bild }, pruefungen);
           return (
             <div key={post.id} style={{ display: "flex", flexDirection: "column", gap: space.sm }}>

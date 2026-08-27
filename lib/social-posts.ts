@@ -17,7 +17,11 @@ import { eegVerfahrenSatz } from "./eeg-reform-config";
 import { PERCAPITA_SERIES, YEARS_PERCAPITA } from "./country-comparison-percapita";
 import type { KategorieSchluessel } from "./redaktions-kategorien";
 import { KARTEN_STIL_STANDARD, istKartenStil, type KartenStil } from "./social-karten-stil";
+import { moeglicheFormen as formenFuer } from "./social-bildformen";
 import { fuelle, type PlatzhalterInfo } from "./social-vorlage";
+// Das Formen-Register liegt in einem eigenen Modul, importiert aber den Bildtyp
+// von hier. Re-exportiert, damit Aufrufer nicht zwei Module kennen müssen.
+export { BILDFORMEN, BILDFORM_NAME, bildform, moeglicheFormen } from "./social-bildformen";
 
 /** Zahlenbasis eines Posts. Kommt aus der Datenbank, wird hereingereicht. */
 export type SocialKennzahlen = {
@@ -89,46 +93,12 @@ export type SocialKennzahlen = {
     wpProKopf: number;
     /** Private Dachleistung des Landes. Für den Anteil am Landesbestand. */
     privatDachKwp: number;
+    /** Anteil der privaten Dachanlagen mit Batterie, in Prozent. */
+    speicherQuote: number;
     freiflaecheAnteil: number;
     solarKwp: number;
     wachstumFuenfJahre: number;
   }[];
-};
-
-/**
- * Welche Bildformen für ein Bild überhaupt tragen.
- *
- * Nicht jede Form passt zu jeder Aussage, und die Regeln stehen ohnehin schon
- * verstreut in Tests und Kommentaren — hier an einer Stelle, damit der
- * Umschalter im Redaktionstisch gar nicht erst anbietet, was hinterher eine
- * falsche Aussage wäre. Wer eine Form wählen kann, die nicht trägt, wählt sie
- * irgendwann.
- */
-export function moeglicheFormen(bild: PostBild): PostBild["art"][] {
-  const zwei = bild.serien.length === 2;
-  const ganzes = bild.ganzes != null;
-  const umrisse = bild.serien.every((s) => !!s.umriss);
-  return [
-    // Balken und Einzelzahl gehen immer: Der eine vergleicht Längen, die andere
-    // zeigt die hervorgehobene Zahl groß.
-    "vergleich",
-    "kennzahl",
-    // Ring und gefüllter Umriss bilden einen ANTEIL ab — ohne Ganzes behauptet
-    // die leere Fläche einen Rest, den es nicht gibt.
-    ...(zwei && ganzes ? (["donut"] as const) : []),
-    ...(ganzes && umrisse ? (["umriss"] as const) : []),
-    // Die Säule zeigt ein Verhältnis zwischen zwei Werten. Mit einem Ganzen wäre
-    // ihr Sockel plötzlich ein Anteil und die Höhe eine andere Aussage.
-    ...(zwei && !ganzes ? (["saeule"] as const) : []),
-  ];
-}
-
-export const BILDFORM_NAME: Record<PostBild["art"], string> = {
-  vergleich: "Balken",
-  kennzahl: "Einzelkennzahl",
-  donut: "Ringpaar",
-  saeule: "Säule",
-  umriss: "Gefüllte Umrisse",
 };
 
 export type BildSerie = {
@@ -867,6 +837,53 @@ export function postAnomalie(k: SocialKennzahlen): SocialPost {
 }
 
 /**
+ * Post 14 — Wo der Speicher Standard ist.
+ *
+ * Dieselbe Form wie die Flächenfrage, andere Zahl: Der Speicher ist die
+ * Entscheidung, die je Land am weitesten auseinandergeht — und sie sagt mehr
+ * über Beratung und Handwerk vor Ort als über Sonne.
+ */
+export function postSpeicherJeLand(k: SocialKennzahlen): SocialPost {
+  const sortiert = [...k.laender].filter((l) => l.speicherQuote > 0).sort((a, b) => b.speicherQuote - a.speicherQuote);
+  const oben = sortiert[0];
+  const unten = sortiert[sortiert.length - 1];
+
+  const text = [
+    `In ${oben.name} hat jede ${de(oben.speicherQuote ? 100 / oben.speicherQuote : 0, 1)}-te private Dachanlage einen Speicher. In ${unten.name} jede ${de(unten.speicherQuote ? 100 / unten.speicherQuote : 0, 1)}-te.`,
+    ``,
+    `${de(oben.speicherQuote, 0)} Prozent gegen ${de(unten.speicherQuote, 0)} Prozent — der größte Unterschied zwischen den Ländern, den wir im Bestand finden. Größer als beim Zubau, größer als bei der Anlagengröße.`,
+    ``,
+    `Die Sonne erklärt das nicht: Beide Länder liegen beim Standort-Ertrag nah beieinander. Was sich unterscheidet, ist eher, was vor Ort angeboten und beraten wird — ein Speicher wird verkauft, nicht gesucht.`,
+    ``,
+    `Für Handwerk und Vertrieb ist das die interessantere Zahl als jeder Zubau-Wert: Sie sagt, wo ein Angebot noch nicht angekommen ist.`,
+    ``,
+    quellenzeile(k.standIso, true),
+  ].join("\n");
+
+  return {
+    id: "g16-speicher-je-land",
+    titel: "Wo der Speicher Standard ist",
+    kategorie: "g16",
+    kanal: ["linkedin"],
+    text,
+    bild: {
+      stil: KARTEN_STIL_STANDARD,
+      art: "umriss",
+      aussage: `Anteil privater Dachanlagen mit Speicher`,
+      gemessen: ``,
+      ganzes: 100,
+      einheitAmWert: true,
+      serien: [
+        { label: oben.name, umriss: oben.name, wert: oben.speicherQuote, einheit: "%", stellen: 0, hervorgehoben: true },
+        { label: unten.name, umriss: unten.name, wert: unten.speicherQuote, einheit: "%", stellen: 0 },
+      ],
+      quelle: quellenzeile(k.standIso, false),
+    },
+    belege: sortiert.map((l) => `${l.name} ${de(l.speicherQuote, 1)} % mit Speicher`),
+  };
+}
+
+/**
  * Post 13 — Wo der Strom vom eigenen Dach kommt.
  *
  * Gegenstück zur Flächenfrage, aus derselben Aufteilung von der anderen Seite
@@ -1199,6 +1216,7 @@ export const ALLE_POSTS = [
   postFoerderLuecken,
   postNurBalkon,
   postPrivatdachAnteil,
+  postSpeicherJeLand,
 ] as const;
 
 /**
@@ -1241,7 +1259,7 @@ export function baueAllePosts(
     // Ändern sich die Daten so, dass sie es nicht mehr tut — eine dritte Serie,
     // ein weggefallenes Ganzes —, fällt die Story auf ihre eingebaute Form
     // zurück, statt eine Aussage zu zeigen, die das Bild nicht hergibt.
-    if (post.bild && fassung?.form && moeglicheFormen(post.bild).includes(fassung.form)) {
+    if (post.bild && fassung?.form && formenFuer(post.bild).includes(fassung.form)) {
       post.bild = { ...post.bild, art: fassung.form };
     }
     return post;
