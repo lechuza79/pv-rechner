@@ -32,10 +32,14 @@ const basis: SocialKennzahlen = {
     solarKwpJetzt: 127_100_000,
     solarKwpVorJahr: 117_600_000,
   },
+  // Die vier Segmente ergeben die Gesamtleistung — so wie im echten Bestand
+  // gemessen (36,203 + 44,544 + 44,808 + 1,560 = 127,115 GWp, kein Rest). Wer
+  // hier eine Lücke lässt, prüft eine Aufteilung, die es nicht gibt.
   segmente: {
     privatDachKwp: 36_200_000,
     gewerbeDachKwp: 44_500_000,
     freiflaecheKwp: 44_900_000,
+    steckersolarKwp: 1_500_000,
     solarGesamtKwp: 127_100_000,
   },
   ueberEinwohner: { mindestEinwohner: 500, betrachtet: 10_000, darueber: 6_848 },
@@ -367,6 +371,31 @@ describe("Bildform und Einheit", () => {
       const gezeigt = teile.reduce((s, w) => s + Number(w.toFixed(stellen)), 0);
       expect(gezeigt, `${p.id}: gezeigte Teile ergeben nicht das Ganze`).toBeCloseTo(bild.ganzes!, 1);
     }
+  });
+
+  it("eine Lücke im Ganzen braucht einen Namen", () => {
+    // Kein Beitrag hat heute eine Lücke — die vier Solarsegmente ergeben die
+    // Gesamtleistung exakt. Die Bedingung wird trotzdem geprüft, und zwar an
+    // konstruierten Daten: Ein Sicherheitsnetz, das nie ausgelöst wird, ist von
+    // einem kaputten nicht zu unterscheiden.
+    const mitLuecke = (restLabel?: string): PostBild => ({
+      art: "aufteilung",
+      aussage: "",
+      gemessen: "",
+      quelle: "",
+      stil: "hell",
+      ganzes: 100,
+      restLabel,
+      serien: [
+        { label: "A", wert: 50, einheit: "%", stellen: 0 },
+        { label: "B", wert: 25, einheit: "%", stellen: 0 },
+        { label: "C", wert: 15, einheit: "%", stellen: 0 },
+      ],
+    });
+    expect(moeglicheFormen(mitLuecke(undefined)), "namenlose Lücke").not.toContain("aufteilung");
+    expect(moeglicheFormen(mitLuecke("Sonstiges")), "benannte Lücke").toContain("aufteilung");
+    // Und der Rest wird richtig gerechnet, nicht nur als vorhanden erkannt.
+    expect(restVon(mitLuecke("Sonstiges"))).toBeCloseTo(10, 6);
   });
 
   it("zwei überlappende Anteile sind keine Aufteilung", () => {

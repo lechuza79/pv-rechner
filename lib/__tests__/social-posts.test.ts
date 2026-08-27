@@ -36,6 +36,7 @@ const basis: SocialKennzahlen = {
     privatDachKwp: 36_200_000,
     gewerbeDachKwp: 44_500_000,
     freiflaecheKwp: 44_900_000,
+    steckersolarKwp: 1_500_000,
     solarGesamtKwp: 127_100_000,
   },
   ueberEinwohner: { mindestEinwohner: 500, betrachtet: 10_000, darueber: 6_848 },

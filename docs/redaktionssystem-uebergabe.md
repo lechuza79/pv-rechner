@@ -272,6 +272,15 @@ Rest verschwand. Die Regel des Farbschemas sagt genau das — im Highlight sind 
 Segment, das seinen Namen trägt, braucht die Farbe zur Unterscheidung nicht, und damit fällt die
 Legende weg.
 
+**Steckersolar ist der VIERTE Teil der Solarleistung, nicht ein Rest.** Zuerst als Differenz
+gerechnet und mit „vor allem Steckersolar" beschriftet — eine Überschlagsrechnung, keine Messung.
+Das Register führt jede Solaranlage in genau einem Segment, und Steckersolar ist eines davon; die
+Zahl steht als eigene Spalte in der Gemeinde-Auswertung. Nachgemessen: 36,203 + 44,544 + 44,808 +
+1,560 = 127,115 GWp, unerklärter Rest exakt null. Die Aufteilung zeigt jetzt vier gemessene Teile.
+**Die Vermutung war richtig und trotzdem falsch am Platz** — eine ungeprüfte Sachaussage im Bild ist
+genau die Sorte Fehler, gegen die dieses Modul gebaut ist. Aufgefallen ist es einer parallelen
+Sitzung, nicht mir.
+
 **Zwei Fehler im Bestand, gefunden beim Ansehen der Bilder:**
 
 - **Anteile ohne Bezugsgröße.** Die drei Solarsegmente sind Prozentwerte, trugen aber kein `ganzes` —

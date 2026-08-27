@@ -47,6 +47,23 @@ export type SocialKennzahlen = {
     privatDachKwp: number;
     gewerbeDachKwp: number;
     freiflaecheKwp: number;
+    /**
+     * Steckersolar — der VIERTE Teil der Solarleistung, gemessen und nicht als
+     * Differenz gerechnet.
+     *
+     * Das Register führt jede Solaranlage in genau einem Segment, und
+     * Steckersolar ist eines davon; die drei Dach- und Flächensegmente ergeben
+     * deshalb nicht das Ganze. Nachgemessen am 27.08.2026: Privatdach 36,203 +
+     * Gewerbe 44,544 + Freifläche 44,808 + Steckersolar 1,560 = 127,115 GWp,
+     * unerklärter Rest exakt null.
+     *
+     * Warum als eigenes Feld und nicht als „was übrig bleibt": Eine Restgröße
+     * sagt nur, dass etwas fehlt — nicht was. Der Beitrag behauptete auf einer
+     * Überschlagsrechnung, es sei „vor allem Steckersolar"; das war richtig, aber
+     * ungeprüft, und eine ungeprüfte Sachaussage in einem Bild ist genau die
+     * Sorte Fehler, gegen die dieses Modul gebaut ist.
+     */
+    steckersolarKwp: number;
     solarGesamtKwp: number;
   };
   ueberEinwohner: {
@@ -675,16 +692,15 @@ export function postSegmente(k: SocialKennzahlen): SocialPost {
   const privat = anteil(s.privatDachKwp);
   const gewerbe = anteil(s.gewerbeDachKwp);
   const frei = anteil(s.freiflaecheKwp);
-  // Was übrig bleibt, ist keine Rundungslücke, sondern eine eigene Größe: gut ein
-  // Prozent der Solarleistung steht weder auf einem Privatdach noch auf einem
-  // Gewerbedach noch auf einem Feld — im Wesentlichen Steckersolar. Gerechnet
-  // statt gesetzt, damit die vier Teile das Ganze wirklich ausschöpfen.
-  const rest = Math.max(0, 100 - privat - gewerbe - frei);
+  // Steckersolar ist der VIERTE Teil, nicht der Rest: Das Register führt es als
+  // eigenes Segment, und der Wert kommt aus dieser Spalte statt aus einer
+  // Differenz. Nachgemessen ergeben die vier Segmente die Solarleistung exakt.
+  const stecker = anteil(s.steckersolarKwp);
 
   const text = [
     `Auf privaten Dächern liegen ${de(privat, 0)} Prozent der deutschen Solarleistung. Gewerbedächer und Freiflächen tragen zusammen den Rest.`,
     ``,
-    `Die genaue Aufteilung: privates Dach ${de(privat, 1)} Prozent, Gewerbe ${de(gewerbe, 1)}, Freifläche ${de(frei, 1)}. Die fehlenden ${de(rest, 1)} Prozent sind vor allem Steckersolar, das keiner der drei Gruppen zugeordnet ist. Insgesamt ${fmtPvLeistung(s.solarGesamtKwp)}.`,
+    `Die genaue Aufteilung: privates Dach ${de(privat, 1)} Prozent, Gewerbe ${de(gewerbe, 1)}, Freifläche ${de(frei, 1)}, Steckersolar ${de(stecker, 1)}. Insgesamt ${fmtPvLeistung(s.solarGesamtKwp)}.`,
     ``,
     `Das Bild von der Energiewende auf dem Einfamilienhausdach stimmt also nur für gut ein Viertel. Der größere Teil entsteht dort, wo jemand gewerblich rechnet — auf Hallendächern und auf Feldern.`,
     ``,
@@ -710,25 +726,27 @@ export function postSegmente(k: SocialKennzahlen): SocialPost {
       // Freifläche mit 35 die volle bekäme. Das Bild sagte dann „vier Fünftel",
       // wo die Überschrift „ein Viertel" sagt.
       ganzes: 100,
-      // Der Rest ist benannt, nicht bloß vorhanden. Ohne Namen stünde im
-      // gestapelten Balken eine Lücke, über die das Bild nichts aussagt.
-      restLabel: "Steckersolar und Sonstiges",
       // Eine Nachkommastelle, nicht null: Als ganze Prozente stehen dort 35, 35,
       // 28 und 1 — zusammen 99, während der Balken daneben voll ist. Eine
       // Aufteilung, deren Teile nicht aufgehen, widerlegt sich selbst. Der
       // Beitragstext nennt dieselben Werte („privates Dach 28,5 Prozent"), Bild
       // und Text runden also gleich.
+      //
+      // Vier Serien statt drei plus Restgröße: Steckersolar ist ein eigenes
+      // Segment des Registers, kein Überbleibsel. Als Rest gezeigt behauptete das
+      // Bild, dort stehe etwas Ungeklärtes.
       serien: [
         { label: "Freifläche", wert: frei, einheit: "%", stellen: 1 },
         { label: "Gewerbedach", wert: gewerbe, einheit: "%", stellen: 1 },
         { label: "Privates Dach", wert: privat, einheit: "%", stellen: 1, hervorgehoben: true },
+        { label: "Steckersolar", wert: stecker, einheit: "%", stellen: 1 },
       ],
       quelle: quellenzeile(k.standIso, false),
     },
     belege: [
       `Gesamt ${fmtPvLeistung(s.solarGesamtKwp)}`,
-      `privat ${fmtPvLeistung(s.privatDachKwp)} · Gewerbe ${fmtPvLeistung(s.gewerbeDachKwp)} · Freifläche ${fmtPvLeistung(s.freiflaecheKwp)}`,
-      `Nicht zugeordnet ${de(rest, 1)} % — vor allem Steckersolar`,
+      `privat ${fmtPvLeistung(s.privatDachKwp)} · Gewerbe ${fmtPvLeistung(s.gewerbeDachKwp)} · Freifläche ${fmtPvLeistung(s.freiflaecheKwp)} · Steckersolar ${fmtPvLeistung(s.steckersolarKwp)}`,
+      `Die vier Segmente ergeben die Gesamtleistung — das Register führt jede Anlage in genau einem`,
     ],
   };
 }

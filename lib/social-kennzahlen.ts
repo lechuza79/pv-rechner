@@ -32,6 +32,7 @@ type AwardZeile = {
   privat_dach_count: number | null;
   gewerbe_dach_kwp: string | number | null;
   freiflaeche_kwp: string | number | null;
+  balkon_kwp: string | number | null;
   batterie_privat_count: number | null;
   solar_kwp: string | number | null;
   solar_kwp_ly: string | number | null;
@@ -49,7 +50,7 @@ async function ladeGemeinden(): Promise<AwardZeile[]> {
   if (!supabase) throw new Error("Datenbank nicht konfiguriert");
   const spalten =
     "region_id,population,balkon_count,balkon_count_ly,privat_dach_kwp,privat_dach_count," +
-    "gewerbe_dach_kwp,freiflaeche_kwp,batterie_privat_count,solar_kwp,solar_kwp_ly,solar_kwp_l5";
+    "gewerbe_dach_kwp,freiflaeche_kwp,balkon_kwp,batterie_privat_count,solar_kwp,solar_kwp_ly,solar_kwp_l5";
   const alle: AwardZeile[] = [];
   const schritt = 1000;
   for (let von = 0; ; von += schritt) {
@@ -242,6 +243,9 @@ export async function rechne(): Promise<SocialKennzahlen> {
       privatDachKwp: summe((r) => zahl(r.privat_dach_kwp)),
       gewerbeDachKwp: summe((r) => zahl(r.gewerbe_dach_kwp)),
       freiflaecheKwp: summe((r) => zahl(r.freiflaeche_kwp)),
+      // Der vierte Teil, gemessen statt als Differenz gerechnet — die
+      // Begründung steht am Feld in lib/social-posts.
+      steckersolarKwp: summe((r) => zahl(r.balkon_kwp)),
       solarGesamtKwp: solarGesamt,
     },
     ueberEinwohner: {
@@ -287,7 +291,7 @@ export async function rechne(): Promise<SocialKennzahlen> {
  * aber ein Fehler in der Haltbarkeit. Wer ein Feld ergänzt oder entfernt, zählt
  * hier hoch.
  */
-const FORM_VERSION = "v6";
+const FORM_VERSION = "v7";
 
 export const socialKennzahlen = unstable_cache(rechne, ["social-kennzahlen", FORM_VERSION], {
   revalidate: 86_400,
