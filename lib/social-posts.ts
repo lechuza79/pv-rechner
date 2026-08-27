@@ -12,6 +12,8 @@
 // lib/social-kennzahlen.ts (server-only) und werden hereingereicht.
 
 import { fmtPvLeistung } from "./atlas-format";
+import { feedInRatesFor, naechsteDegressionIso } from "./feedin-config";
+import { eegVerfahrenSatz } from "./eeg-reform-config";
 import type { KategorieSchluessel } from "./redaktions-kategorien";
 import { KARTEN_STIL_STANDARD, istKartenStil, type KartenStil } from "./social-karten-stil";
 import { fuelle, type PlatzhalterInfo } from "./social-vorlage";
@@ -46,6 +48,25 @@ export type SocialKennzahlen = {
     mindestEinwohner: number;
     betrachtet: number;
     darueber: number;
+  };
+  /** Die typische private Dachanlage und ihr Speicher. */
+  kohorte: {
+    privatAnlagen: number;
+    mittlereKwp: number;
+    mitSpeicher: number;
+    speicherQuote: number;
+  };
+  /**
+   * Der stärkste POSITIVE Ausschlag bei Balkonkraftwerken, über einer
+   * Mindestgröße. Nur positiv: Ein negativer Ausschlag wäre eine Bloßstellung,
+   * und die beendet den Outreach in einer ganzen Region.
+   */
+  anomalie: {
+    ort: string;
+    einwohner: number;
+    jeTausend: number;
+    bundesJeTausend: number;
+    mindestEinwohner: number;
   };
   laender: {
     name: string;
@@ -224,6 +245,10 @@ export type SocialPost = {
  * schon interessiert ist.
  */
 export const FEED_ABSCHNITT_ZEICHEN = 210;
+
+/** Cent-Betrag im Fließtext. Eigene Funktion, damit „ct" nicht an zwei Stellen
+ *  an eine Zahl geklebt wird — dieselbe Regel wie bei den Atlas-Einheiten. */
+const fmtCtText = (n: number) => `${n.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} Cent`;
 
 const de = (n: number, stellen = 0) =>
   n.toLocaleString("de-DE", { minimumFractionDigits: stellen, maximumFractionDigits: stellen });
@@ -663,6 +688,191 @@ export function postUeberEinwohner(k: SocialKennzahlen): SocialPost {
   };
 }
 
+/**
+ * Post 7 — Die Kohorte: wie die typische private Anlage aussieht.
+ *
+ * Ohne Ortsbezug und damit ohne Kränkungsrisiko — eine der wenigen Familien
+ * ganz ohne Schranke. Die Speicherquote ist die Zahl, die überrascht: Sie liegt
+ * über dem, was die meisten schätzen.
+ */
+export function postKohorte(k: SocialKennzahlen): SocialPost {
+  const c = k.kohorte;
+  const jede = c.speicherQuote > 0 ? 100 / c.speicherQuote : 0;
+
+  const text = [
+    `Die typische private Dachanlage in Deutschland ist ${de(c.mittlereKwp, 1)} Kilowatt groß. Jede ${de(jede, 1)}-te hat einen Speicher.`,
+    ``,
+    `Gerechnet über alle ${de(Math.round(c.privatAnlagen / 1000))}.000 privaten Dachanlagen im Anlagenregister. ${de(Math.round(c.mitSpeicher / 1000))}.000 davon sind mit einer Batterie angemeldet, das sind ${de(c.speicherQuote, 0)} Prozent.`,
+    ``,
+    `Beide Zahlen sind Durchschnitte über alle Jahrgänge und sagen deshalb wenig über das, was heute gebaut wird — eine Anlage von 2012 zieht den Schnitt nach unten, bei der Größe wie beim Speicher. Wer wissen will, wohin es geht, muss nach Jahrgängen trennen. Das ist die nächste Ausbaustufe.`,
+    ``,
+    `Für die eigene Planung ist der Schnitt trotzdem der bessere Anker als das, was in Foren steht: Er ist gemessen, nicht erinnert.`,
+    ``,
+    quellenzeile(k.standIso, true),
+  ].join("\n");
+
+  return {
+    id: "kohorte-typische-anlage",
+    titel: "Wie die typische private Anlage aussieht",
+    kategorie: "g16",
+    kanal: ["linkedin", "instagram"],
+    text,
+    bild: {
+      stil: KARTEN_STIL_STANDARD,
+      art: "kennzahl",
+      aussage: `Jede ${de(jede, 1)}-te private Dachanlage hat einen Speicher`,
+      gemessen: `Alle privaten Dachanlagen im Anlagenregister`,
+      serien: [
+        {
+          label: `von ${de(Math.round(c.privatAnlagen / 1000))}.000 privaten Dachanlagen sind mit Batterie angemeldet`,
+          wert: Math.round(c.mitSpeicher / 1000),
+          einheit: "Tausend",
+          hervorgehoben: true,
+        },
+      ],
+      quelle: quellenzeile(k.standIso, false),
+    },
+    belege: [
+      `${de(c.privatAnlagen)} private Dachanlagen, davon ${de(c.mitSpeicher)} mit Speicher (${de(c.speicherQuote, 1)} %)`,
+      `Mittlere Größe ${de(c.mittlereKwp, 2)} kWp`,
+    ],
+  };
+}
+
+/**
+ * Post 8 — Die Anomalie als offene Frage.
+ *
+ * Der stärkste Kommentar-Motor des Katalogs, und der mit den schärfsten
+ * Schranken: nur ein POSITIVER Ausschlag (ein negativer wäre eine
+ * Bloßstellung), nur über einer Mindestgröße (sonst entsteht der Superlativ
+ * vollständig im Nenner), und die Frage bleibt offen — wir kennen die Ursache
+ * nicht und behaupten sie deshalb nicht.
+ */
+export function postAnomalie(k: SocialKennzahlen): SocialPost {
+  const a = k.anomalie;
+  const faktor = a.bundesJeTausend ? a.jeTausend / a.bundesJeTausend : 0;
+
+  const text = [
+    `In ${a.ort} stehen ${de(a.jeTausend, 1)} Balkonkraftwerke je 1.000 Einwohner. Bundesweit sind es ${de(a.bundesJeTausend, 1)}. Weiß jemand, was da los ist?`,
+    ``,
+    `Der Ort hat ${de(a.einwohner)} Einwohner, liegt also weit über der Schwelle, ab der so eine Quote aus einer Handvoll Geräten entstehen kann. Es ist das ${de(faktor, 1)}-fache des Bundesschnitts.`,
+    ``,
+    `Wir sehen im Anlagenregister nur die Anmeldungen, nicht ihren Grund. Denkbar wäre vieles: ein kommunales Programm, eine Aktion eines Vereins, ein Bericht in der Lokalzeitung, ein einzelner Händler vor Ort.`,
+    ``,
+    `Falls jemand die Antwort kennt: Sie interessiert uns, und sie wird der nächste Beitrag.`,
+    ``,
+    quellenzeile(k.standIso, true),
+  ].join("\n");
+
+  return {
+    id: "anomalie-balkon-ort",
+    titel: "Die Anomalie als offene Frage",
+    kategorie: "g10",
+    kanal: ["linkedin"],
+    text,
+    bild: {
+      stil: KARTEN_STIL_STANDARD,
+      art: "saeule",
+      aussage: `${a.ort} hat das ${de(faktor, 1)}-fache des Bundesschnitts`,
+      gemessen: `Angemeldete Steckersolargeräte je 1.000 Einwohner`,
+      einheitAmWert: false,
+      serien: [
+        {
+          label: a.ort,
+          zusatz: `${kurzEinwohner(a.einwohner)} Einwohner`,
+          wert: a.jeTausend,
+          einheit: "je 1.000 Ew.",
+          stellen: 1,
+          hervorgehoben: true,
+          delta: `+${de((faktor - 1) * 100, 0)} %`,
+        },
+        {
+          label: "Deutschland",
+          zusatz: "alle Gemeinden",
+          wert: a.bundesJeTausend,
+          einheit: "je 1.000 Ew.",
+          stellen: 1,
+        },
+      ],
+      quelle: quellenzeile(k.standIso, false),
+    },
+    belege: [
+      `${a.ort}: ${de(a.jeTausend, 2)} je 1.000 Einwohner bei ${de(a.einwohner)} Einwohnern`,
+      `Bundesschnitt ${de(a.bundesJeTausend, 2)} je 1.000 Einwohner`,
+      `Mindestgröße für die Auswahl: ${de(a.mindestEinwohner)} Einwohner`,
+    ],
+  };
+}
+
+/**
+ * Post 9 — Der Degressionstermin.
+ *
+ * Der planbare Teil des Redaktionsplans: Die Absenkung steht im Gesetz, sie
+ * passiert am 1. Februar und am 1. August, und das lässt sich Wochen vorher
+ * schreiben.
+ *
+ * Der Post nennt den TERMIN und die Regel, nicht den künftigen Satz. Der stünde
+ * erst mit der nächsten Periode in der Config; ihn hier aus der Regel
+ * abzuleiten wäre eine zweite Rechnung neben der einen Quelle — genau die Sorte
+ * Nebenrechnung, die irgendwann von ihr abweicht.
+ *
+ * Und er trägt den Vorbehalt der laufenden Reform, aus derselben einen Quelle
+ * wie alle anderen Oberflächen: Ein Beitrag, der eine Fortschreibung als sicher
+ * darstellt, während ein Gesetzentwurf sie gerade abschaffen will, ist die
+ * teuerste Auskunft, die wir geben können.
+ */
+export function postDegression(k: SocialKennzahlen, _vorlage?: string, heuteIso?: string): SocialPost {
+  const heute = heuteIso ?? k.standIso.slice(0, 10);
+  const satz = feedInRatesFor(new Date(heute));
+  const termin = naechsteDegressionIso(heute);
+  const terminText = new Date(termin).toLocaleDateString("de-DE", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+  const text = [
+    `Am ${terminText} sinkt die Einspeisevergütung wieder um ein Prozent. Wer vorher ans Netz geht, behält den höheren Satz — zwanzig Jahre lang.`,
+    ``,
+    `Heute sind es ${fmtCtText(satz.teilUnder10)} je eingespeister Kilowattstunde für eine Anlage bis ${de(satz.thresholdKwp)} Kilowatt mit Eigenverbrauch. Die Absenkung ist kein Beschluss, der jedes Mal neu fällt, sondern steht als feste Regel im Gesetz: ein Prozent zum 1. Februar und zum 1. August (§ 49 EEG).`,
+    ``,
+    `Maßgeblich ist der Tag der Inbetriebnahme, nicht der Tag der Bestellung. Wer im Januar unterschreibt und im März angeschlossen wird, bekommt den niedrigeren Satz.`,
+    ``,
+    `Ein Vorbehalt, der dazugehört: ${eegVerfahrenSatz({ kurz: true })}. Er würde die Vergütung für neue Anlagen grundlegend umstellen. Solange er nicht beschlossen ist, gilt die Regel oben.`,
+    ``,
+    quellenzeile(k.standIso, true),
+  ].join("\n");
+
+  return {
+    id: "degression-stichtag",
+    titel: "Der nächste Degressionstermin",
+    kategorie: "g6",
+    kanal: ["linkedin"],
+    text,
+    bild: {
+      stil: KARTEN_STIL_STANDARD,
+      art: "kennzahl",
+      aussage: `Am ${terminText} sinkt die Einspeisevergütung um ein Prozent`,
+      gemessen: `Teileinspeisung, Anlage bis ${de(satz.thresholdKwp)} kW, heute`,
+      serien: [
+        {
+          label: `Cent je eingespeister Kilowattstunde — für zwanzig Jahre festgeschrieben`,
+          wert: satz.teilUnder10,
+          einheit: "ct",
+          stellen: 2,
+          hervorgehoben: true,
+        },
+      ],
+      quelle: quellenzeile(k.standIso, false),
+    },
+    belege: [
+      `Satz gültig ab ${satz.validFrom}: Teileinspeisung ${de(satz.teilUnder10, 2)} ct (≤ ${de(satz.thresholdKwp)} kWp)`,
+      `Nächster Stichtag ${termin} (§ 49 EEG, 1 % je Halbjahr zum 1.2. und 1.8.)`,
+      `Reform-Vorbehalt: ${eegVerfahrenSatz({ kurz: true })}`,
+    ],
+  };
+}
+
 export const ALLE_POSTS = [
   postStadtLand,
   postWachstum,
@@ -670,6 +880,9 @@ export const ALLE_POSTS = [
   postSegmente,
   postAufholjagd,
   postUeberEinwohner,
+  postKohorte,
+  postAnomalie,
+  postDegression,
 ] as const;
 
 /**
@@ -687,12 +900,21 @@ export type GespeicherteFassung = { vorlage?: string; stil?: KartenStil };
  * aber nicht bearbeitbar, und das steht dort auch so. Das Farbschema dagegen
  * lässt sich an jeder Story stellen; es hängt nicht am Text.
  */
-export function baueAllePosts(k: SocialKennzahlen, fassungen: Record<string, GespeicherteFassung> = {}): SocialPost[] {
+export function baueAllePosts(
+  k: SocialKennzahlen,
+  fassungen: Record<string, GespeicherteFassung> = {},
+  // Der Tag wird HEREINGEREICHT, nie aus der Uhr einer Rechenfunktion gezogen —
+  // sonst lässt sich ein Stichtags-Beitrag nicht gegen einen Stichtag prüfen.
+  // Nur dieser Rand darf die Uhr lesen.
+  heuteIso: string = new Date().toISOString().slice(0, 10),
+): SocialPost[] {
   return ALLE_POSTS.map((f) => {
-    const roh = f(k);
+    const roh = f(k, undefined, heuteIso);
     const fassung = fassungen[roh.id];
     const post =
-      f.length > 1 ? (f as (k: SocialKennzahlen, v?: string) => SocialPost)(k, fassung?.vorlage) : roh;
+      f.length > 1
+        ? (f as (k: SocialKennzahlen, v?: string, h?: string) => SocialPost)(k, fassung?.vorlage, heuteIso)
+        : roh;
     // Ein unbekannter Stil aus der Ablage fällt auf den Standard zurück, statt
     // die Karte ungefärbt zu lassen: Ein Wert, den wir nicht mehr kennen, ist
     // ein Fund für den Code, kein Grund für ein kaputtes Bild.

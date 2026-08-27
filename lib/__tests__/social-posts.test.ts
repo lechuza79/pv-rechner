@@ -39,6 +39,14 @@ const basis: SocialKennzahlen = {
     solarGesamtKwp: 127_100_000,
   },
   ueberEinwohner: { mindestEinwohner: 500, betrachtet: 10_000, darueber: 6_848 },
+  kohorte: { privatAnlagen: 3_120_000, mittlereKwp: 9.4, mitSpeicher: 1_180_000, speicherQuote: 37.8 },
+  anomalie: {
+    ort: "Beispielstadt",
+    einwohner: 24_500,
+    jeTausend: 61.2,
+    bundesJeTausend: 17.3,
+    mindestEinwohner: 5_000,
+  },
   laender: [
     { name: "Niedersachsen", balkonJeTausend: 23.1, wpProKopf: 505, freiflaecheAnteil: 17.4, solarKwp: 11_300_000, wachstumFuenfJahre: 2.23 },
     { name: "Rheinland-Pfalz", balkonJeTausend: 21.7, wpProKopf: 558, freiflaecheAnteil: 32.9, solarKwp: 6_500_000, wachstumFuenfJahre: 2.32 },

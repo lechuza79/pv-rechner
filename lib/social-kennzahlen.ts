@@ -64,6 +64,17 @@ async function ladeGemeinden(): Promise<AwardZeile[]> {
   return alle;
 }
 
+/** Der Name EINER Gemeinde. Eine Zeile, kein zweiter Volldurchlauf. */
+async function ladeGemeindeName(regionId: string): Promise<string> {
+  if (!supabase) throw new Error("Datenbank nicht konfiguriert");
+  const { data } = await withDbTimeout(
+    supabase.from("mastr_regions").select("name").eq("region_id", regionId).maybeSingle(),
+    "social-kennzahlen: gemeindename",
+    DB_SOFT_READ_TIMEOUT_MS,
+  );
+  return (data as { name?: string } | null)?.name ?? regionId;
+}
+
 async function ladeNamen(): Promise<Map<string, string>> {
   if (!supabase) throw new Error("Datenbank nicht konfiguriert");
   const { data, error } = await withDbTimeout(
@@ -125,6 +136,24 @@ async function rechne(): Promise<SocialKennzahlen> {
   const MIN_EW = 500;
   const bewertbar = gem.filter((r) => r.population >= MIN_EW);
 
+  const privatAnlagen = summe((r) => r.privat_dach_count ?? 0);
+  const mitSpeicher = summe((r) => r.batterie_privat_count ?? 0);
+
+  // Der Ausreißer: höchste Balkon-Quote über einer Mindestgröße. Die Schwelle
+  // liegt deutlich höher als die der Bundeszahl oben — bei einem Dorf mit
+  // wenigen hundert Einwohnern entsteht ein Spitzenwert aus einer Handvoll
+  // Geräten, und der Superlativ säße vollständig im Nenner.
+  const ANOMALIE_MIN_EW = 5_000;
+  const kandidaten = gem.filter((r) => r.population >= ANOMALIE_MIN_EW);
+  const spitze = kandidaten.reduce(
+    (best, r) =>
+      (r.balkon_count ?? 0) / r.population > (best.balkon_count ?? 0) / best.population ? r : best,
+    kandidaten[0] ?? gem[0],
+  );
+  const bundesBalkon = gem.reduce((s, r) => s + (r.balkon_count ?? 0), 0);
+  const bundesEw = gem.reduce((s, r) => s + r.population, 0);
+  const spitzeName = await ladeGemeindeName(spitze.region_id);
+
   return {
     standIso,
     stadtLand: {
@@ -152,6 +181,19 @@ async function rechne(): Promise<SocialKennzahlen> {
       betrachtet: bewertbar.length,
       darueber: bewertbar.filter((r) => zahl(r.solar_kwp) > r.population).length,
     },
+    kohorte: {
+      privatAnlagen,
+      mittlereKwp: privatAnlagen ? summe((r) => zahl(r.privat_dach_kwp)) / privatAnlagen : 0,
+      mitSpeicher,
+      speicherQuote: privatAnlagen ? (mitSpeicher / privatAnlagen) * 100 : 0,
+    },
+    anomalie: {
+      ort: spitzeName,
+      einwohner: spitze.population,
+      jeTausend: ((spitze.balkon_count ?? 0) / spitze.population) * 1000,
+      bundesJeTausend: bundesEw ? (bundesBalkon / bundesEw) * 1000 : 0,
+      mindestEinwohner: ANOMALIE_MIN_EW,
+    },
     laender: [...proLand.entries()]
       .map(([ags, e]) => ({
         name: namen.get(ags) ?? ags,
@@ -165,7 +207,18 @@ async function rechne(): Promise<SocialKennzahlen> {
   };
 }
 
-export const socialKennzahlen = unstable_cache(rechne, ["social-kennzahlen"], {
+/**
+ * Der Schlüssel trägt eine FORM-Version.
+ *
+ * Der Cache hält einen Tag. Kommt eine neue Kennzahl dazu, liefert er nach dem
+ * Deploy weiter das alte Objekt — ohne das neue Feld, und die Post-Funktion, die
+ * es liest, wirft. Von außen sieht das aus wie ein Fehler im neuen Code, ist
+ * aber ein Fehler in der Haltbarkeit. Wer ein Feld ergänzt oder entfernt, zählt
+ * hier hoch.
+ */
+const FORM_VERSION = "v2";
+
+export const socialKennzahlen = unstable_cache(rechne, ["social-kennzahlen", FORM_VERSION], {
   revalidate: 86_400,
   tags: ["social-kennzahlen"],
 });

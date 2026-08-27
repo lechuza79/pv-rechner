@@ -131,7 +131,7 @@ export const FAMILIEN: Familie[] = [
     name: "Wendepunkte: Schwellen und Stichtage",
     beschreibung:
       "Was sich zu einem Datum ändert und was man davor tun muss. Der planbare Teil des Redaktionsplans — und der gefährlichste: Ein Entwurf, der als geltendes Recht gelesen wird, ist die teuerste Auskunft, die wir geben können.",
-    zustand: "daten-da",
+    zustand: "gebaut",
   },
   {
     schluessel: "g7",
@@ -167,7 +167,7 @@ export const FAMILIEN: Familie[] = [
     name: "Die Anomalie als offene Frage",
     beschreibung:
       "Ein Ort, der aus der Reihe fällt, ohne dass wir die Ursache kennen — und genau so gefragt. Stärkster Kommentar-Motor des Katalogs, aber nur bei positivem Ausschlag: Ein negativer wäre eine Bloßstellung.",
-    zustand: "daten-da",
+    zustand: "gebaut",
     hinweis: "Stärkster Kommentar-Motor",
   },
   {
@@ -224,7 +224,7 @@ export const FAMILIEN: Familie[] = [
     name: "Die Kohorte",
     beschreibung:
       "Wie sich die typische Anlage über die Jahrgänge verändert hat — Größe, Speicher, Ausrichtung. Ohne Ortsbezug und damit ohne Kränkungsrisiko, eine der wenigen Familien ganz ohne Schranke.",
-    zustand: "daten-da",
+    zustand: "gebaut",
   },
   {
     schluessel: "g17",
