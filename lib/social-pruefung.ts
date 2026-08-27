@@ -15,6 +15,23 @@ export async function ladePruefungen(postId: string): Promise<Pruefung[]> {
   return data as Pruefung[];
 }
 
+/**
+ * Alle Prüfungen auf einmal — für die Übersicht.
+ *
+ * Eine Abfrage statt einer je Story: Die Tabelle hält zwei Zeilen pro geprüfter
+ * Fassung, das ist auch bei hundert Beiträgen nichts. Elf einzelne Abfragen
+ * nacheinander wären dagegen elf Roundtrips für eine Seite, die nur eine Liste
+ * zeigt.
+ */
+export async function ladeAllePruefungen(): Promise<Record<string, Pruefung[]>> {
+  if (!supabase) return {};
+  const { data, error } = await supabase.from("social_pruefungen").select("*");
+  if (error || !data) return {};
+  const nach: Record<string, Pruefung[]> = {};
+  for (const p of data as Pruefung[]) (nach[p.post_id] ??= []).push(p);
+  return nach;
+}
+
 export async function speicherePruefung(p: Omit<Pruefung, "geprueft_am">): Promise<void> {
   if (!supabase) throw new Error("Datenbank nicht konfiguriert");
   const { error } = await supabase

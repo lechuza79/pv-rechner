@@ -53,6 +53,7 @@ export default function InternalShell({
       title: "Redaktion",
       links: [
         { href: "/admin/redaktion", label: "Entwicklung", exact: true },
+        { href: "/admin/redaktion/uebersicht", label: "Übersicht" },
         { href: "/admin/redaktion/planung", label: "Planung" },
         { href: "/admin/redaktion/auswertung", label: "Auswertung" },
       ],
