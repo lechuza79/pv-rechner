@@ -61,10 +61,9 @@ export default async function RedaktionEntwicklung() {
         </p>
       )}
 
-      <div style={{ display: "flex", gap: space.huge, alignItems: "flex-start", flexWrap: "wrap" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: space.huge, flex: "0 0 auto" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: space.huge * 1.5 }}>
           {posts?.map((p) => (
-            <section key={p.id}>
+            <section key={p.id} style={{ borderTop: `1px solid ${v("--color-border-muted")}`, paddingTop: space.xxl }}>
               <div
                 style={{
                   display: "flex",
@@ -82,15 +81,22 @@ export default async function RedaktionEntwicklung() {
                 </span>
               </div>
 
-              <FeedVorschau bild={p.bild!} text={p.text} breite={500} />
-
-              {p.vorlage && p.platzhalter ? (
-                <VorlagenEditor postId={p.id} vorlage={p.vorlage} platzhalter={p.platzhalter} />
-              ) : (
-                <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: space.sm }}>
-                  Noch nicht auf Vorlagen umgestellt — hier nur lesbar.
-                </p>
-              )}
+              {/* Vorschau links, Bearbeitung rechts: Wer eine Formulierung
+                  ändert, will die Wirkung sehen, ohne zu scrollen. */}
+              <div style={{ display: "flex", gap: space.xxxl, alignItems: "flex-start", flexWrap: "wrap" }}>
+                <div style={{ flex: "0 0 auto" }}>
+                  <FeedVorschau bild={p.bild!} text={p.text} breite={440} />
+                </div>
+                <div style={{ flex: "1 1 460px", minWidth: 340 }}>
+                  {p.vorlage && p.platzhalter ? (
+                    <VorlagenEditor postId={p.id} vorlage={p.vorlage} platzhalter={p.platzhalter} />
+                  ) : (
+                    <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
+                      Noch nicht auf Vorlagen umgestellt — hier nur lesbar.
+                    </p>
+                  )}
+                </div>
+              </div>
 
               <details style={{ marginTop: space.md, maxWidth: 500 }}>
                 <summary
@@ -115,9 +121,8 @@ export default async function RedaktionEntwicklung() {
               </details>
             </section>
           ))}
-        </div>
 
-        <aside style={{ flex: "1 1 300px", minWidth: 280, maxWidth: 420 }}>
+        <aside style={{ maxWidth: 700 }}>
           <h2 style={{ fontSize: v("--font-size-h3"), marginTop: 0 }}>Der Vorrat</h2>
           <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginTop: 0 }}>
             Neunzehn Geschichten-Familien. Was hier als „Daten da" steht, lässt sich ohne neuen

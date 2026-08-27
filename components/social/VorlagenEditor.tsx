@@ -62,8 +62,8 @@ export function VorlagenEditor({
 
   return (
     <div style={{ marginTop: space.lg }}>
-      <div style={{ display: "flex", gap: space.xl, flexWrap: "wrap", alignItems: "flex-start" }}>
-        <div style={{ flex: "1 1 420px", minWidth: 300 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: space.md }}>
+        <div>
           <label
             style={{
               display: "block",
@@ -77,7 +77,7 @@ export function VorlagenEditor({
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            rows={14}
+            rows={12}
             style={{
               width: "100%",
               fontFamily: v("--font-mono"),
@@ -137,7 +137,7 @@ export function VorlagenEditor({
           </div>
         </div>
 
-        <div style={{ flex: "1 1 320px", minWidth: 280 }}>
+        <div>
           <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginBottom: space.xs }}>
             So wird es gefüllt
           </div>
