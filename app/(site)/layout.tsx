@@ -8,6 +8,7 @@ import { GlossaryProvider } from "../../components/GlossaryTerm";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { Analytics } from "@vercel/analytics/next";
+import { HerkunftsMelder } from "../../components/HerkunftsMelder";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
@@ -166,10 +167,23 @@ export default async function RootLayout({
           <div style={{ padding: "0 16px" }}><Footer /></div>
         </GlossaryProvider>
         {/* Cookieless Web Analytics (aggregiert, keine personenbezogenen
-            Daten, kein Consent-Banner nötig — §25 TDDDG greift nicht, da
-            nichts auf dem Gerät gespeichert wird). Nur im (site)-Layout,
-            nicht in den Embed-Widgets. Siehe /datenschutz. */}
+            Daten, kein Consent-Banner). Nur im (site)-Layout, nicht in den
+            Embed-Widgets. Siehe /datenschutz.
+
+            ACHTUNG bei der Begründung: „§ 25 TDDDG greift nicht, da nichts auf
+            dem Gerät gespeichert wird" stand hier bis 27.08.2026 und ist unter
+            den EDSA-Leitlinien 2/2023 (Fassung 2.0) Rn. 33, 50 f. nicht
+            haltbar — ausgeliefertes JavaScript, das den Browser anweist,
+            Angaben zu senden, ist dort ausdrücklich ein „gaining of access".
+            Der Satz ist auch deshalb gefährlich, weil er Gestaltungen mitdecken
+            würde, die wirklich kippen. Die tragfähige Linie steht ausgeschrieben
+            in `lib/brief-herkunft.ts`. Ob der Abschnitt der
+            Datenschutzerklärung selbst nachgezogen werden muss, ist ein
+            offener Befund an den Betreiber, keine Nebenbei-Änderung. */}
         <Analytics />
+        {/* Zählt Aufrufe aus den Outreach-Briefen — eigenes Ereignis statt des
+            kostenpflichtigen Kampagnen-Zusatzpakets. */}
+        <HerkunftsMelder />
       </body>
     </html>
   );

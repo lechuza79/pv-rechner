@@ -32,6 +32,21 @@ Abbruch-Treppe im Dashboard: Seitenaufrufe `/photovoltaik-rechner` (Pages) →
 | `pv_gespeichert` | Berechnung im Konto gespeichert (nach erfolgreichem Save) |
 | `pv_methodik` | „Methodik"-Link aus dem Ergebnis geöffnet |
 
+### Herkunft aus dem Kommunen-Outreach
+| Event | Auslöser |
+|---|---|
+| `brief_aufruf` | Seitenaufruf mit der Herkunftskennung der Outreach-Briefe |
+
+Trägt eine Eigenschaft `weg`: `direkt` (jemand hat in der Mail selbst geklickt —
+ein Mail-Klick kommt ohne Verweis an) oder `verweis` (die Gemeinde hat unsere
+Meldung veröffentlicht, jemand kam über ihre Website). WELCHE Gemeinde das war,
+steht in der gewöhnlichen Verweis-Liste und wird hier bewusst nicht wiederholt.
+
+Warum als eigenes Ereignis und nicht über Vercels Kampagnen-Auswertung: Die ist
+ein Zusatzpaket (10 $/Monat auf Pro, Stand 27.08.2026), ohne das Vercel Seiten
+ohne Abfrageteil zusammenfasst — der Parameter liefe ins Leere. Kennung,
+Rechtslage und die Grenze zu unzulässigen Ausprägungen: `lib/brief-herkunft.ts`.
+
 ### Andere Rechner (nur „Ergebnis erreicht")
 | Event | Datei |
 |---|---|

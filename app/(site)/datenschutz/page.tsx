@@ -212,6 +212,20 @@ export default function DatenschutzPage() {
           wiedererkannt.
         </p>
         <p style={S.p}>
+          In Links, die wir selbst verschicken — etwa in Anschreiben an
+          Kommunalverwaltungen —, steht ein fester Zusatz an der Adresse, an dem
+          wir erkennen, dass ein Aufruf aus einer solchen Aktion stammt. Dieser
+          Zusatz ist in jedem dieser Links derselbe und enthält keine Angabe zum
+          Empfänger. Weil die verlinkte Seite jeweils einen bestimmten Ort
+          betrifft, lässt sich daraus allerdings ablesen, aus welcher Gemeinde
+          eine unserer Seiten geöffnet wurde — das ist eine Aussage über eine
+          Verwaltung, nicht über eine einzelne Person, und sie ergäbe sich aus
+          der verlinkten Adresse auch ohne diesen Zusatz. Rechtsgrundlage ist
+          Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse daran, den Erfolg
+          der eigenen Ansprache beurteilen zu können). Der Erhebung kannst du
+          jederzeit widersprechen (Abschnitt 12).
+        </p>
+        <p style={S.p}>
           Da hierbei keine Informationen auf deinem Gerät gespeichert oder
           abgerufen werden, ist dafür keine Einwilligung nach § 25 TDDDG
           erforderlich und es wird kein Cookie-Banner benötigt. Rechtsgrundlage
