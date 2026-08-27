@@ -376,9 +376,12 @@ function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: n
 
       {/* Die Zuordnung Ring → Wert läuft über den Punkt, nicht über die
           Reihenfolge: Wer die Karte quer liest, soll die Farbe wiederfinden. */}
-      <div style={{ display: "flex", gap: 40 * skala }}>
+      {/* Zentriert mit Lücke statt über die volle Breite gestreckt: Zwei Kacheln
+          an den Außenkanten lesen sich als Gegensatz-Paar, das sie nicht sind —
+          sie gehören beide zum Ring darüber. */}
+      <div style={{ display: "flex", gap: 96 * skala, justifyContent: "center" }}>
         {bild.serien.map((s) => (
-          <div key={s.label} style={{ flex: 1, minWidth: 0, position: "relative" }}>
+          <div key={s.label} style={{ position: "relative" }}>
             <UmrissZeichen name={s.umriss} skala={skala} groesse={250} />
             {/* Die Farbe trägt der Punkt, nicht der Text: Zwei eingefärbte Zahlen
                 nebeneinander lesen sich als Wertung, und auf dem blauen
@@ -467,12 +470,16 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
   // Die Höhe trägt die Aussage, die Breite trägt nichts — ein breiter Balken
   // sagt nicht mehr als ein schmaler, er nimmt nur Platz, den die Zahlen
   // brauchen.
-  const BREITE = 220;
+  const BREITE = 170;
   const HOEHE = 620;
   // Der Ausleger neben dem Sockel trägt dessen Höhe nach rechts, damit die
   // Kante auch dort ablesbar ist, wo die Beschriftung steht.
   const AUSLEGER = Math.round(BREITE * 0.31);
-  const ABSTAND = Math.round(BREITE * 0.36);
+  const ABSTAND = Math.round(BREITE * 0.42);
+  // Die Grundlinie ragt über die Säule hinaus, links wie rechts: Endete sie an
+  // ihrer Kante, wäre sie ein Sockel der Säule statt der Boden, auf dem sie
+  // steht — und eine Höhe liest man gegen einen Boden ab.
+  const UEBERSTAND = Math.round(BREITE * 0.2);
   const TEXTBREITE = 400;
   const GRUNDLINIE = Math.max(2, 4 * skala);
   const sockel = Math.max(0, Math.min(Math.abs(klein.wert) / Math.abs(gross.wert), 1)) * HOEHE;
@@ -487,7 +494,7 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
   const block = (s: BildSerie, gruppe: boolean) => (
     <div style={{ position: "relative" }}>
       <UmrissZeichen name={s.umriss} skala={skala} groesse={gruppe ? 300 : 220} />
-      <div style={{ fontSize: 38 * skala, color: v("--color-text-muted"), lineHeight: 1.25 }}>
+      <div style={{ fontSize: 30 * skala, color: v("--color-text-muted"), lineHeight: 1.25 }}>
         {s.zusatz ?? s.label}
       </div>
       <div
@@ -545,9 +552,9 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
         <div
           style={{
             position: "absolute",
-            left: 0,
+            left: -UEBERSTAND * skala,
             bottom: 0,
-            width: (BREITE + AUSLEGER + ABSTAND / 2) * skala,
+            width: (BREITE + AUSLEGER + 2 * UEBERSTAND) * skala,
             height: GRUNDLINIE,
             background: v("--color-border"),
           }}
@@ -597,12 +604,20 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
         />
 
         {/* Beschriftungen auf Segmenthöhe. */}
+        {/* Mittig im jeweiligen Abschnitt statt an dessen Oberkante: Die
+            Beschriftung gehört zur Fläche, nicht zu ihrer Kante — oben bündig
+            gesetzt zog sie den Blick auf die Trennstelle, die keine Aussage
+            trägt. */}
         <div
           style={{
             position: "absolute",
             left: (BREITE + AUSLEGER + ABSTAND) * skala,
             top: 0,
             width: TEXTBREITE * skala,
+            height: (HOEHE - sockel) * skala,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
           }}
         >
           {block(gross, true)}
@@ -611,9 +626,12 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
           style={{
             position: "absolute",
             left: (BREITE + AUSLEGER + ABSTAND) * skala,
-            bottom: 0,
+            bottom: GRUNDLINIE,
             width: TEXTBREITE * skala,
             height: sockel * skala,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
           }}
         >
           {block(klein, false)}

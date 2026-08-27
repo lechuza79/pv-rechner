@@ -22,7 +22,7 @@
 // Familie → Kategorie wäre in beiden Richtungen falsch; der Vorrat steht deshalb
 // in der Planung (lib/redaktionsplan.ts).
 
-export type KategorieSchluessel = "kontrast" | "bewegung" | "aufteilung" | "groessenordnung";
+export type KategorieSchluessel = "kontrast" | "bewegung" | "aufteilung" | "groessenordnung" | "funktion";
 
 export type Kategorie = {
   schluessel: KategorieSchluessel;
@@ -55,6 +55,13 @@ export const KATEGORIEN: Kategorie[] = [
     name: "Aufteilung",
     beschreibung:
       "Wie sich ein Ganzes verteilt. Jeder Anteil braucht seinen Nenner sichtbar — sonst ist der größte Balken eine Aussage über eine Grundmenge, die niemand kennt.",
+  },
+  {
+    schluessel: "funktion",
+    kurz: "Funktion",
+    name: "Funktion erklärt",
+    beschreibung:
+      "Was eines unserer Werkzeuge kann, an einem echten Fall gezeigt. Trägt nur, wenn der Beitrag eine Frage beantwortet, die jemand ohnehin hat — eine Funktion vorzuführen, nach der niemand gefragt hat, ist Werbung und wird auch so gelesen.",
   },
   {
     schluessel: "groessenordnung",

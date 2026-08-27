@@ -102,6 +102,20 @@ export default async function RedaktionEntwicklung({
         </p>
       )}
 
+      {!fehler && dieser.length === 0 && (
+        <p
+          style={{
+            padding: pad("xxl", "xxl"),
+            background: v("--color-bg-muted"),
+            borderRadius: v("--radius-md"),
+            color: v("--color-text-muted"),
+            maxWidth: 760,
+          }}
+        >
+          Noch keine Story in dieser Kategorie — der Platz ist benannt, gebaut ist hier nichts.
+        </p>
+      )}
+
       <div style={{ display: "flex", flexDirection: "column", gap: space.huge * 1.5 }}>
         {dieser.map((p) => (
           <StoryTisch key={p.id} post={p} pruefungen={pruefungen[p.id] ?? []} />

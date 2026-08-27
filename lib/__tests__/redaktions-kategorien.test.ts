@@ -51,12 +51,20 @@ describe("Kategorien der Redaktionsansicht", () => {
     }
   });
 
-  it("kein Reiter ohne Stories", () => {
-    // Eine Kategorie entsteht mit ihrer ersten Story. Ein leerer Reiter zeigt
-    // eine Beschreibung und darunter nichts — das sieht nach einem Fehler aus
-    // und ist als Zusage schlechter als gar kein Reiter.
-    for (const k of KATEGORIEN) {
-      expect(posts.filter((p) => p.kategorie === k.schluessel).length, `${k.schluessel} ist leer`).toBeGreaterThan(0);
+  it("eine leere Kategorie ist ein Platz, kein Fehler", () => {
+    // Die Regel hieß zuerst „kein Reiter ohne Stories" — richtig, solange die
+    // Ansicht den Bestand zeigt. Sie ist aber auch ein Raster für das, was noch
+    // kommt (Betreiber, 27.08.2026), und dann ist ein benannter leerer Platz
+    // etwas anderes als ein leeres Versprechen: Er muss sagen, was dort hin
+    // gehört, und die Ansicht muss den Zustand behandeln statt eine Überschrift
+    // über nichts zu setzen.
+    const leere = KATEGORIEN.filter((k) => !posts.some((p) => p.kategorie === k.schluessel));
+    for (const k of leere) {
+      expect(k.beschreibung.length, `${k.schluessel} ist leer und erklärt sich nicht`).toBeGreaterThan(80);
+    }
+    // Die Gegenrichtung bleibt scharf: Eine Story ohne Reiter stünde nirgends.
+    for (const p of posts) {
+      expect(KATEGORIEN.map((k) => k.schluessel)).toContain(p.kategorie);
     }
   });
 

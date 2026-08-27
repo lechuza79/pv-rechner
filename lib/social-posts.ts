@@ -348,14 +348,14 @@ export function postStadtLand(k: SocialKennzahlen, eigeneVorlage?: string): Soci
       serien: [
         {
           label: "Städte",
-          zusatz: `über ${kurzEinwohner(s.stadtAb)} Einwohner`,
+          zusatz: `Über ${kurzEinwohner(s.stadtAb)} Einwohner`,
           wert: s.stadtJeTausend,
           einheit: "je 1.000 Ew.",
           stellen: 1,
         },
         {
           label: "Gemeinden",
-          zusatz: `unter ${kurzEinwohner(s.landUnter)} Einwohner`,
+          zusatz: `Unter ${kurzEinwohner(s.landUnter)} Einwohner`,
           wert: s.landJeTausend,
           einheit: "je 1.000 Ew.",
           stellen: 1,
