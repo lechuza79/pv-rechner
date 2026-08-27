@@ -95,6 +95,21 @@ jobs:
       # Reisst der SCHRITT sein eigenes, endet er „failure": rot, und der Rest
       # des Jobs laeuft weiter. Dieselbe Bauform wie in foerder-watch.yml.
       #
+      # AM LEBENDEN SYSTEM NACHGESTELLT (27.08.2026, Lauf 33058891211 auf einem
+      # Wegwerf-Zweig mit absichtlich gesetztem 1-Minuten-Limit) — drei Befunde:
+      #  · Der Schritt endete `failure`, der Job wurde NICHT abgebrochen.
+      #  · Das Protokoll nennt die Ursache im Klartext: „The action 'E2E smoke
+      #    tests (Playwright)' has timed out after 1 minutes."
+      #  · Der Upload-Schritt danach lief noch (`success`).
+      #
+      # Und der eigentliche Mechanismus, gegen die Vermutung gemessen: Bei einem
+      # Abbruch verschwindet das Protokoll NICHT — unser abgebrochener Lauf
+      # 32946344841 ist mit 1.053 Zeilen vollstaendig da. Was verschwindet, ist
+      # seine GLIEDERUNG: Dort tragen alle 1.053 Zeilen „UNKNOWN STEP", im roten
+      # Lauf trägt jede der 617 ihren Schrittnamen. Bei einem Abbruch laesst sich
+      # also nicht mehr sagen, welcher Schritt welche Zeile geschrieben hat —
+      # genau die Auskunft, die man bei der Fehlersuche braucht.
+      #
       # 16 Minuten = gemessenes Maximum (12,5 min ueber 31 gruene Laeufe,
       # 27.08.2026) plus knapp ein Drittel. Nicht auf Kante: Der Linux-Runner
       # streut, und ein Test mehr soll hier hineinpassen, ohne dass jemand die
