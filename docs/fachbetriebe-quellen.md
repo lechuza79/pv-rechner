@@ -193,17 +193,22 @@ Abrufen kamen nicht durch). 4.853 Domains gefunden, davon nach Streuung und Impr
 
 | Klasse | Zahl | was das heißt |
 |---|---|---|
-| **betrieb** | **3.098** | regional, mit Website, mit PV-Angebot |
-| unklar | 908 | kein PV-Wort im ausgelieferten HTML — meist Verzeichnisse, die ihren Inhalt per Skript nachladen |
-| kein-betrieb | 786 | Kommunen (280 der Stichprobe), Vereine/Genossenschaften (57), Presse (38), Portale (25) |
+| **betrieb** | **3.119** | regional, mit Website, mit PV-Angebot |
+| unklar | 764 | zweimal geprüft, kein PV-Angebot gefunden — überwiegend Elektrobetriebe ohne PV-Geschäft und geparkte Domains |
+| kein-betrieb | 909 | Kommunen, Solarkataster, Vereine/Genossenschaften, Presse, Portale |
 | ueberregional | 61 | Portale und bundesweite Anbieter |
 
-Dazu **14.026 Belege** — jeder mit Fundstelle, Textstelle und Datum.
+Dazu **14.965 Belege** — jeder mit Fundstelle, Textstelle und Datum.
 
-**Trust-Signale der 3.098 Betriebe:** Anschrift 85 % · **amtlicher Gemeindeschlüssel
-84 %** · E-Mail 85 % · Handelsregisternummer 58 % · Meisterbetrieb 21 % ·
-Handwerkskammer 14 % · Zertifikat 12 % · Gründungsjahr 8 % · Bewertung (Selbstauskunft)
-1 % · Innung 1 % · Installateurverzeichnis 1 %.
+**Erreichbarkeit der 3.119 Betriebe: 90 %** — E-Mail 83 %, Telefon 74 %, Kontaktformular
+8 %. Die Zusammenfassung steht neben den Einzelwerten, nicht an ihrer Stelle: Ein Formular
+ist ein Kontaktweg, aber kein Postfach, und wer später schreiben will, braucht den
+Unterschied.
+
+**Trust-Signale:** Anschrift 84 % · **amtlicher Gemeindeschlüssel 83 %** ·
+Handelsregisternummer 57 % · Meisterbetrieb 21 % · Handwerkskammer 14 % · Zertifikat 12 % ·
+Gründungsjahr 8 % · Bewertung (Selbstauskunft) 1 % · Innung 1 % ·
+Installateurverzeichnis 1 %.
 
 Die niedrigen Quoten unten sind **kein Erfassungsfehler, sondern die Realität**: Diese
 Angaben stehen auf den meisten Websites schlicht nicht. Ein loseres Muster brächte höhere
@@ -228,10 +233,99 @@ schärfer filtern will, filtert die Belege neu statt neu zu crawlen.
 einem Kreis, 774 in zwei bis vier, 170 in fünf bis neun, nur 69 in zehn bis neunzehn.
 Genau die Verteilung, die eine Schwelle bei 20 unkritisch macht.
 
-**Der Gemeindeschlüssel geht gegen das Melderegister auf: null Abweichungen** bei 3.899
+**Der Gemeindeschlüssel geht gegen das Melderegister auf: null Abweichungen** bei 3.843
 Zuordnungen. 50 blieben offen, weil die Postleitzahl mehrere Gemeinden abdeckt und der
 Ortsname aus dem Impressum zu keiner passte — dort steht **kein** Schlüssel, lieber keine
 Zuordnung als die falsche Gemeinde.
+
+## Nachtrag 28.08.2026: Kontaktwege, Restklasse, Ansicht
+
+### Die Kontaktseite schließt die Lücke — nicht das Impressum
+
+473 der Betriebe hatten keine auslesbare E-Mail-Adresse, 233 gar keinen Kontaktweg. Der
+Grund ist selten, dass es keinen gibt: Er steht auf der **Kontaktseite**, und dort oft als
+Formular statt als Adresse. Die Durchgänge über die Kontaktseiten brachten **rund 200 neue
+E-Mail-Adressen und 653 Kontaktformulare** — am Ende sind **90 % der Betriebe
+erreichbar**.
+
+**Ein Formular IST ein Kontaktweg** und wird als solcher gezählt — bei den Gemeinden war
+genau das der Regelfall, und ein Betrieb, der bewusst keine Adresse zeigt, ist deshalb
+nicht unerreichbar.
+
+### Ein Denkfehler, den erst das Gegenlesen zeigte
+
+Der erste Anlauf prüfte das GEWERK auf der Kontaktseite — und löste damit fast nichts auf.
+Dort steht das Angebot naturgemäß nicht; offensichtliche Elektrobetriebe blieben auf
+„unklar". Richtig ist die **Navigation der Startseite**: Sie ist statisch im HTML, auch
+wenn der Inhalt per Skript nachlädt. Ein Betrieb, dessen Startseite uns leer erscheint,
+hat „Photovoltaik" trotzdem im Menü.
+
+### Die Restklasse enthält kaum verborgene Betriebe — auch das ein Befund
+
+Von den unklaren Domains wurden **64 doch zu Betrieben**, 32 als Nicht-Betrieb erkannt
+(überwiegend kommunale Solarkataster), und **722 zweimal geprüft ohne Photovoltaik-
+Angebot**. Die Stichprobe erklärt, warum: Dahinter stecken Elektrobetriebe **ohne**
+PV-Geschäft und geparkte Domains, nicht verborgene Fachbetriebe.
+
+Diese 722 behalten die Klasse „unklar" — ein Angebot kann auf einer Unterseite stehen,
+die wir nicht gelesen haben —, aber ihr Grund sagt jetzt, dass zweimal nachgesehen wurde.
+**„Nichts gefunden" und „noch nicht angesehen" müssen unterscheidbar bleiben**, sonst
+prüft die nächste Sitzung dieselben 722 noch einmal.
+
+### Der Firmenname war der dritte Fehlgriff, und er fiel erst in der Liste auf
+
+In der Datenbank sahen die Namen unauffällig aus. Untereinander in einer Ansicht standen
+dann: „Impressum - 3E-Elektrotechnik GmbH", „Home | ABEL ReTec", „Kontakt Wagner GmbH",
+„Name 3NERGY GmbH Adresse Am Pönitzer Dreieck 1" — und einmal bloß „GmbH & Co. KG" ganz
+ohne Namen. Herkunft: die Überschrift des Impressums oder der Seitentitel als Rückfall.
+
+In einem Anschreiben wäre jeder davon peinlich, und genau dafür wird der Name irgendwann
+gebraucht. Die Reinigung ist deshalb streng: **Was nach dem Putzen nur noch aus einer
+Rechtsform besteht, wird verworfen — lieber kein Name als ein falscher.**
+
+**Merksatz, jetzt zum dritten Mal bestätigt:** Eine Spalte prüft man nicht in der
+Datenbank, sondern dort, wo sie später gelesen wird. Erst die Liste macht sichtbar, was
+einzeln plausibel aussieht.
+
+### Wer mehr gesehen hat, gewinnt — und das ist nicht der spätere Lauf
+
+Die schwerste Falle dieser Runde, und sie war nur durch Nachzählen zu finden: Ein
+Wiederholungslauf der Profil-Phase **nahm die Erkenntnisse der Kontakt-Phase zurück**. Aus
+758 Domains mit dem Vermerk „zweimal geprüft, kein Photovoltaik" wurden wieder 27, und die
+55 Betriebe, die erst die Navigation verraten hatte, standen wieder auf „unklar".
+
+Die Ursache ist allgemein: **Zwei Läufe schreiben dasselbe Feld, und der spätere gewinnt —
+auch wenn er weniger gesehen hat.** Die Profil-Phase kennt Startseite und Impressum, die
+Kontakt-Phase zusätzlich Navigation und Kontaktseite.
+
+Von außen ist der Schaden unsichtbar: Die Zahlen bleiben plausibel, nur die gründlichere
+Prüfung ist weg — und dieselben Seiten würden beim nächsten Lauf ein drittes Mal
+abgerufen. Die Regel lautet jetzt: Ein erkanntes Nicht-Betrieb-Muster ist ein **Befund**
+und gilt immer; die bloße Rückstufung auf „unklar" gilt nur, solange die gründlichere
+Prüfung noch nicht gelaufen ist. Festgehalten als Entscheidungstabelle in
+`lib/__tests__/fachbetrieb-stand.test.ts`.
+
+### Zwei Fallen beim Schreiben, beide gemessen
+
+Ein einzelnes kaputtes Prozentzeichen in einem fremden Link ließ `decodeURIComponent`
+werfen und riss einen Lauf nach 450 von 1.254 Domains ab. Und ein Nullbyte aus einer
+Website ließ den ganzen Schreibblock scheitern. Beides ist jetzt abgefangen — wer fremdes
+HTML verarbeitet, trifft solche Fälle zwangsläufig; es genügt EINE Seite unter tausenden.
+
+### Die Ansicht
+
+`/admin/fachbetriebe` — Filter nach Bundesland, Art, Arbeitsstand, Erreichbarkeit und
+Meisterbetrieb, Details beim Aufklappen, Arbeitsstand und Notiz pro Betrieb.
+
+**Sie kann bewusst wenig.** Es gibt keinen Versand, kein Anschreiben, keine Auswahlliste.
+Die Arbeitsstände heißen „offen · vorgemerkt · angesehen · ungeeignet" — ein Zustand wie
+„angeschrieben" würde einen Apparat behaupten, den es nicht gibt; ein Test verbietet
+solche Namen.
+
+**Die Zahl neben jedem Betrieb (`3/8`) zählt belegte Merkmale, nicht Qualität.** Ein
+Meisterbetrieb, der seinen Titel nicht auf die Website schreibt, bekommt weniger Punkte
+als einer, der es tut — die Zahl misst unseren Datenstand, nicht den Betrieb. Deshalb
+heißt sie so und steht neben den einzelnen Merkmalen, nicht an ihrer Stelle.
 
 ## Was diese Erhebung ausdrücklich NICHT ist
 

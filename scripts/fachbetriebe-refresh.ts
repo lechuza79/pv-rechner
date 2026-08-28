@@ -18,6 +18,7 @@
  *   npm run fachbetriebe -- --suche --limit 50         Ortssuche je Landkreis
  *   npm run fachbetriebe -- --art                      regional / überregional trennen (gemessen)
  *   npm run fachbetriebe -- --profil --limit 100       Impressum + Startseite lesen
+ *   npm run fachbetriebe -- --kontakt                  Kontaktseite: Kontaktweg + Restklasse
  *   npm run fachbetriebe -- --ags                      Adresse → amtlicher Gemeindeschlüssel
  *   npm run fachbetriebe -- --stats                    was drin ist
  *
@@ -77,14 +78,21 @@
 import { resolve } from "node:path";
 import { readFileSync, existsSync } from "node:fs";
 import {
+  FELDER,
   FRAGEN,
+  KEIN_BETRIEB,
   type Kreis,
+  besteMail,
   hostVon,
   impressumUrl,
+  istKartenanwendung,
   istPlattform,
+  kontaktUrl,
+  navigationsText,
   normOrt,
   portalSchwelle,
   profilAus,
+  sichtbarerText,
 } from "../lib/fachbetrieb-extrakt";
 
 // ─── Grundlagen ──────────────────────────────────────────────────────────────
@@ -293,6 +301,22 @@ async function setup(): Promise<void> {
       fehler text,
       PRIMARY KEY (kreis_id, frage)
     );
+
+    -- Kontaktweg über die Kontaktseite (Phase --kontakt). Ein Formular IST ein
+    -- Kontaktweg, auch ohne Adresse dahinter — bei den Gemeinden war genau das
+    -- der Regelfall.
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS kontakt_url text;
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS kontakt_formular boolean;
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS kontakt_at timestamptz;
+
+    -- ARBEITSSTAND — gehört dem Menschen, nicht dem Erhebungslauf.
+    -- Dieselbe Trennung wie bei den Gemeinden: Kein Lauf dieses Skripts fasst
+    -- diese Spalten je an, sonst überschreibt der nächste Abgleich eine
+    -- Entscheidung, die jemand getroffen hat.
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS stand text NOT NULL DEFAULT 'offen';
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS notiz text;
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS stand_at timestamptz;
+    CREATE INDEX IF NOT EXISTS idx_fb_stand ON fachbetriebe (stand);
 
     ALTER TABLE fachbetriebe ENABLE ROW LEVEL SECURITY;
     ALTER TABLE fachbetrieb_belege ENABLE ROW LEVEL SECURITY;
@@ -645,7 +669,8 @@ async function profil(limit: number, dry: boolean, refetch: boolean): Promise<vo
     art: string;
     art_grund: string | null;
     profil_at: string | null;
-  }>(sb, "fachbetriebe", "domain, art, art_grund, profil_at");
+    kontakt_at: string | null;
+  }>(sb, "fachbetriebe", "domain, art, art_grund, profil_at, kontakt_at");
   // Überregionale gar nicht erst anfassen — wir wollen ihre Impressen nicht.
   const offen = alle
     .filter((r) => r.art !== "ueberregional" && (refetch || !r.profil_at))
@@ -722,8 +747,23 @@ async function profil(limit: number, dry: boolean, refetch: boolean): Promise<vo
       // Spaltenmenge über alle Objekte des Stapels und füllt fehlende Felder
       // mit NULL. Ein weggelassenes Feld wird also gelöscht, nicht übersprungen
       // (gemessen am 27.08.2026: „null value in column art violates not-null").
-      art: p.art ?? r.art,
-      art_grund: p.art ? p.art_grund : r.art_grund,
+      // WER MEHR GESEHEN HAT, GEWINNT — und das ist nicht der spätere Lauf.
+      //
+      // Diese Phase kennt Startseite und Impressum; die Kontakt-Phase kennt
+      // zusätzlich Navigation und Kontaktseite. Ihr Urteil ist deshalb besser
+      // begründet, und ein späterer Profil-Lauf darf es nicht zurücknehmen.
+      // Gemessen am 28.08.2026: Ein Wiederholungslauf machte aus 758 Domains
+      // mit dem Vermerk „zweimal geprüft, kein Photovoltaik" wieder 27 —
+      // dieselben Seiten wären beim nächsten Mal noch einmal abgerufen worden,
+      // und die 55 Betriebe, die erst die Navigation verraten hatte, standen
+      // wieder auf „unklar".
+      //
+      // Ein erkanntes Nicht-Betrieb-Muster ist ein BEFUND und gilt immer; die
+      // bloße Rückstufung auf „unklar" („kein PV-Wort gefunden") gilt nur, wenn
+      // die gründlichere Prüfung noch gar nicht gelaufen ist.
+      art: p.art === "kein-betrieb" || !r.kontakt_at ? (p.art ?? r.art) : r.art,
+      art_grund:
+        p.art === "kein-betrieb" || (!r.kontakt_at && p.art) ? p.art_grund : r.art_grund,
     });
     for (const b of bl) {
       belege.push({
@@ -749,6 +789,211 @@ async function profil(limit: number, dry: boolean, refetch: boolean): Promise<vo
     `${gespeichert} Profile gespeichert · ${ohneStart} Startseite unerreichbar · ` +
       `${ohneImpressum} ohne erreichbares Impressum\n` +
       `  Quoten je Merkmal: npm run fachbetriebe -- --stats`,
+    "ok",
+  );
+}
+
+// ─── Phase: Kontaktweg schließen ─────────────────────────────────────────────
+
+/**
+ * Für Betriebe ohne Kontaktweg die KONTAKTSEITE lesen — und dabei die
+ * Restklasse mit auflösen.
+ *
+ * Zwei Befunde vom 28.08.2026, die derselbe Durchgang bedient:
+ *
+ * 1. 473 der 3.098 Betriebe hatten keine auslesbare E-Mail, 233 gar keinen
+ *    Kontaktweg. Der Grund ist selten, dass es keinen gibt — er steht nur
+ *    woanders: auf der Kontaktseite statt im Impressum, oft als Formular.
+ *
+ * 2. 908 Domains standen auf „unklar", weil ihre Startseite kein
+ *    Photovoltaik-Wort im ausgelieferten HTML trug. Der größte Teil davon sind
+ *    kommunale Solarkataster (Karte per Skript nachgeladen) und Verzeichnisse;
+ *    dazwischen sitzen aber echte Betriebe mit träger Startseite. Die
+ *    Kontaktseite ist bei denen fast immer statisch und verrät beides: den
+ *    Kontaktweg UND das Gewerk.
+ *
+ * Die Phase ist deshalb bewusst nicht „nur Kontakte": Sie stuft auch ein, was
+ * die Startseite nicht hergab — in beide Richtungen.
+ */
+async function kontakt(limit: number, dry: boolean, refetch: boolean): Promise<void> {
+  const sb = await makeClient();
+  const alle = await alleZeilen<{
+    domain: string;
+    art: string;
+    art_grund: string | null;
+    email: string | null;
+    telefon: string | null;
+    kontakt_url: string | null;
+    profil_fehler: string | null;
+    geschaeftsfelder: string[] | null;
+  }>(
+    sb,
+    "fachbetriebe",
+    "domain, art, art_grund, email, telefon, kontakt_url, profil_fehler, geschaeftsfelder",
+  );
+
+  // Wen dieser Lauf anfasst: Betriebe ohne Kontaktweg, plus die ganze
+  // Restklasse. Wer eine tote Startseite hat, bleibt außen vor — dort ist auch
+  // keine Kontaktseite zu holen.
+  const offen = alle
+    .filter((r) => !r.profil_fehler)
+    .filter((r) => {
+      if (r.art === "ueberregional" || r.art === "kein-betrieb") return false;
+      if (!refetch && r.kontakt_url) return false;
+      return r.art === "unklar" || !r.email;
+    })
+    .sort((a, b) => a.domain.localeCompare(b.domain))
+    .slice(0, limit);
+
+  const zuKlaeren = offen.filter((r) => r.art === "unklar").length;
+  log(
+    `${offen.length} Domains in diesem Lauf — ${offen.length - zuKlaeren} Betriebe ohne ` +
+      `Kontaktweg, ${zuKlaeren} noch einzuordnen`,
+  );
+  if (dry) {
+    for (const o of offen.slice(0, 15)) log(`  ${o.art.padEnd(8)} ${o.domain}`);
+    log("--dry: nichts abgerufen", "ok");
+    return;
+  }
+
+  const zeilen: Record<string, unknown>[] = [];
+  const belege: Record<string, unknown>[] = [];
+  let gespeichert = 0;
+  let fertig = 0;
+  let neueMail = 0;
+  let neuesFormular = 0;
+  let alsBetrieb = 0;
+  let alsKeinBetrieb = 0;
+  let geprueftOhnePv = 0;
+
+  const wegschreiben = async (alles: boolean) => {
+    if (!alles && zeilen.length < 250) return;
+    const z = zeilen.splice(0, zeilen.length);
+    const b = belege.splice(0, belege.length);
+    if (z.length) await upsertGestueckelt(sb, "fachbetriebe", z, "domain");
+    if (b.length)
+      await upsertGestueckelt(sb, "fachbetrieb_belege", b, "domain,merkmal,wert,fundstelle");
+    gespeichert += z.length;
+  };
+
+  await pool(offen, 10, async (r) => {
+    fertig++;
+    if (fertig % 50 === 0) log(`  ${fertig}/${offen.length}`);
+
+    // Kartenanwendungen brauchen keinen Abruf — der Name genügt, und ihre
+    // Startseite gibt ohnehin nichts her.
+    if (r.art === "unklar" && istKartenanwendung(r.domain)) {
+      alsKeinBetrieb++;
+      zeilen.push({
+        domain: r.domain,
+        art: "kein-betrieb",
+        art_grund: "Solarkataster/Geoportal (am Namen erkannt)",
+        updated_at: new Date().toISOString(),
+      });
+      await wegschreiben(false);
+      return;
+    }
+
+    const start =
+      (await holeText(`https://${r.domain}/`)) ?? (await holeText(`http://${r.domain}/`));
+    if (!start) return;
+
+    const kUrl = kontaktUrl(start.html, start.url);
+    const kSeite = kUrl ? await holeText(kUrl) : null;
+    const text = kSeite ? sichtbarerText(kSeite.html) : "";
+    const quelle = kSeite?.url ?? start.url;
+
+    const zeile: Record<string, unknown> = {
+      domain: r.domain,
+      art: r.art,
+      art_grund: r.art_grund,
+      kontakt_url: kUrl,
+      kontakt_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+
+    if (kSeite) {
+      const kandidaten = [
+        ...Array.from(text.matchAll(/[\w.+-]+@[\w-]+\.[\w.-]{2,}/g), (m) => m[0]),
+        ...Array.from(
+          kSeite.html.matchAll(/mailto:([\w.+-]+@[\w-]+\.[\w.-]{2,})/g),
+          (m) => m[1],
+        ),
+      ];
+      const mail = besteMail(kandidaten, r.domain);
+      if (mail && !r.email) {
+        zeile.email = mail;
+        neueMail++;
+        belege.push({
+          domain: r.domain,
+          merkmal: "email",
+          wert: mail,
+          fundstelle: quelle.slice(0, 500),
+          textstelle: "auf der Kontaktseite",
+          gefunden_am: heute(),
+        });
+      }
+      if (!r.telefon) {
+        const tel = text.match(/(?:Tel(?:efon)?\.?|Fon)[:\s]*(\+?[\d\s()/.\-]{7,24})/i);
+        if (tel) zeile.telefon = tel[1].replace(/\s+/g, " ").trim();
+      }
+      // Ein Formular ist ein Kontaktweg, auch ohne Adresse dahinter — genau
+      // dieser Fall ist bei den Gemeinden der Regelfall gewesen.
+      if (/<form[\s>]/i.test(kSeite.html)) {
+        zeile.kontakt_formular = true;
+        neuesFormular++;
+      }
+    }
+
+    // Einordnung nachziehen, wo die Startseite nichts hergab.
+    //
+    // Gelesen wird jetzt die NAVIGATION der Startseite mit — sie ist statisch,
+    // auch wenn der Inhalt per Skript kommt. Der erste Anlauf prüfte das Gewerk
+    // nur auf der Kontaktseite und löste damit fast nichts auf: Dort steht das
+    // Angebot naturgemäß nicht, und offensichtliche Elektrobetriebe blieben
+    // deshalb auf „unklar".
+    if (r.art === "unklar") {
+      const nav = navigationsText(start.html);
+      const gesamt = sichtbarerText(start.html) + "\n" + nav + "\n" + text;
+      const treffer = KEIN_BETRIEB.find((k) => k.muster.test(gesamt));
+      const pv = FELDER.find((f) => f.name === "photovoltaik");
+      if (treffer) {
+        zeile.art = "kein-betrieb";
+        zeile.art_grund = `${treffer.grund} (beim zweiten Blick erkannt)`;
+        alsKeinBetrieb++;
+      } else if (pv && pv.muster.test(gesamt)) {
+        zeile.art = "betrieb";
+        // Woran es lag, gehört an den Befund: Die Navigation ist der häufigere
+        // Fall und sagt etwas anderes aus als ein Fund im Fließtext.
+        zeile.art_grund = pv.muster.test(nav)
+          ? "Photovoltaik in der Navigation gefunden (Startseite lädt per Skript)"
+          : "Photovoltaik erst beim zweiten Blick gefunden";
+        alsBetrieb++;
+      } else {
+        // GEPRÜFT und trotzdem kein Photovoltaik — das ist etwas anderes als
+        // „noch nicht angesehen", und die nächste Sitzung muss den Unterschied
+        // erkennen können. Stichprobe vom 28.08.2026: Hinter dieser Klasse
+        // stecken überwiegend Elektrobetriebe OHNE PV-Geschäft und geparkte
+        // Domains, nicht verborgene Fachbetriebe. Die Klasse bleibt „unklar",
+        // weil ein Angebot auch auf einer Unterseite stehen kann, die wir nicht
+        // gelesen haben — aber der Grund sagt jetzt, dass zweimal nachgesehen
+        // wurde.
+        zeile.art_grund =
+          "zweimal geprüft (Startseite, Navigation, Kontaktseite) — kein Photovoltaik-Angebot";
+        geprueftOhnePv++;
+      }
+    }
+
+    zeilen.push(zeile);
+    await wegschreiben(false);
+  });
+
+  await wegschreiben(true);
+  log(
+    `${gespeichert} Zeilen gespeichert\n` +
+      `  neue E-Mail-Adresse ${neueMail} · Kontaktformular ${neuesFormular}\n` +
+      `  Restklasse: ${alsBetrieb} als Betrieb · ${alsKeinBetrieb} als kein Betrieb · ` +
+      `${geprueftOhnePv} zweimal geprüft ohne Photovoltaik-Angebot`,
     "ok",
   );
 }
@@ -877,12 +1122,14 @@ async function stats(): Promise<void> {
     zertifikate: string[] | null;
     bewertung_wert: number | null;
     email: string | null;
+    telefon: string | null;
+    kontakt_formular: boolean | null;
     profil_at: string | null;
     profil_fehler: string | null;
   }>(
     sb,
     "fachbetriebe",
-    "domain, art, kreis_id, region_id, plz, hr_nummer, gruendungsjahr, meisterbetrieb, innung, handwerkskammer, installateurverzeichnis, zertifikate, bewertung_wert, email, profil_at, profil_fehler",
+    "domain, art, kreis_id, region_id, plz, hr_nummer, gruendungsjahr, meisterbetrieb, innung, handwerkskammer, installateurverzeichnis, zertifikate, bewertung_wert, email, telefon, kontakt_formular, profil_at, profil_fehler",
   );
   const laeufe = await alleZeilen<{ kreis_id: string; frage: string; treffer: number; fehler: string | null }>(
     sb,
@@ -954,6 +1201,16 @@ async function stats(): Promise<void> {
   log(`  Zertifikat                ${quote(zaehl((r) => r.zertifikate && r.zertifikate.length))}`);
   log(`  Bewertung (Selbstauskunft) ${quote(zaehl((r) => r.bewertung_wert))}`);
   log(`  E-Mail                    ${quote(zaehl((r) => r.email))}`);
+  log(`  Telefon                   ${quote(zaehl((r) => r.telefon))}`);
+  log(`  Kontaktformular           ${quote(zaehl((r) => r.kontakt_formular))}`);
+  // Die Zusammenfassung steht NEBEN den Einzelwerten, nicht an ihrer Stelle:
+  // Ein Formular ist ein Kontaktweg, aber kein Postfach — wer später schreiben
+  // will, braucht den Unterschied.
+  log(
+    `  erreichbar (irgendwie)    ${quote(
+      zaehl((r) => r.email || r.telefon || r.kontakt_formular),
+    )}`,
+  );
   const kaputt = betriebe.filter((r) => r.profil_fehler).length;
   if (kaputt) log(`  Startseite unerreichbar   ${kaputt.toLocaleString()}`);
 
@@ -986,6 +1243,7 @@ async function main(): Promise<void> {
     suche: argv.includes("--suche"),
     art: argv.includes("--art"),
     profil: argv.includes("--profil"),
+    kontakt: argv.includes("--kontakt"),
     ags: argv.includes("--ags"),
     stats: argv.includes("--stats"),
   };
@@ -999,6 +1257,9 @@ async function main(): Promise<void> {
         "  --art [--dry]                    regional oder überregional — gemessen an der Streuung\n" +
         "  --profil [--limit N] [--refetch] [--dry]\n" +
         "                                   Startseite + Impressum lesen\n" +
+        "  --kontakt [--limit N] [--refetch] [--dry]\n" +
+        "                                   Kontaktseite lesen: Kontaktweg schließen,\n" +
+        "                                   Restklasse einordnen\n" +
         "  --ags [--dry]                    Anschrift → amtlicher Gemeindeschlüssel\n" +
         "  --stats                          Bestand, Abdeckung, Trust-Signale",
       "err",
@@ -1018,6 +1279,7 @@ async function main(): Promise<void> {
   }
   if (phasen.art) await einordnen(dry);
   if (phasen.profil) await profil(zahlArg("limit", 100), dry, argv.includes("--refetch"));
+  if (phasen.kontakt) await kontakt(zahlArg("limit", 200), dry, argv.includes("--refetch"));
   if (phasen.ags) await ags(dry);
   if (phasen.stats) await stats();
   log("Fertig", "ok");

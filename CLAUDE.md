@@ -1145,9 +1145,47 @@ aus der Wortmitte („DORFMANAGEMENT" → AG), Gründungsjahr aus einem beliebig
 sind in `lib/__tests__/fachbetrieb-extrakt.test.ts` festgenagelt; **ein Muster
 aufzuweichen, damit mehr Treffer entstehen, ist genau der Weg, auf dem sie zurückkommen.**
 
+**Ein Formular IST ein Kontaktweg.** 473 Betriebe hatten keine auslesbare E-Mail, 233 gar
+keinen Weg — der stand meist auf der **Kontaktseite**, oft als Formular statt als Adresse
+(135 neue Adressen, 699 Formulare). Dieselbe Systematik wie bei den Gemeinden. **Das
+GEWERK prüft man dort aber NICHT**: Auf einer Kontaktseite steht das Angebot nicht, und
+der erste Anlauf löste damit fast nichts auf. Dafür ist die **Navigation der Startseite**
+zuständig — sie steht statisch im HTML, auch wenn der Inhalt per Skript nachlädt.
+
+**„Nichts gefunden" und „noch nicht angesehen" müssen unterscheidbar bleiben.** Von 908
+unklaren Domains wurden 55 doch Betriebe, 74 Nicht-Betriebe (überwiegend kommunale
+Solarkataster) und **758 zweimal geprüft ohne PV-Angebot** — dahinter stecken
+Elektrobetriebe ohne PV-Geschäft und geparkte Domains, keine verborgenen Fachbetriebe.
+Sie behalten „unklar" (ein Angebot kann auf einer ungelesenen Unterseite stehen), aber ihr
+Grund sagt, dass zweimal nachgesehen wurde. Ohne diesen Unterschied prüft die nächste
+Sitzung dieselben 758 noch einmal.
+
+**Eine Spalte prüft man dort, wo sie später gelesen wird — nicht in der Datenbank.** Die
+Firmennamen sahen einzeln unauffällig aus; untereinander in der Ansicht standen dann
+„Impressum - 3E-Elektrotechnik GmbH", „Home | ABEL ReTec" und einmal bloß „GmbH & Co. KG"
+ohne Namen. In einem Anschreiben wäre jeder davon peinlich. `firmennameSaeubern` ist
+deshalb streng: Was nach dem Putzen nur noch aus einer Rechtsform besteht, wird verworfen.
+
+**Die Ansicht (`/admin/fachbetriebe`) kann bewusst wenig.** Filter, Details, Arbeitsstand,
+Notiz — kein Versand, kein Anschreiben, keine Auswahlliste. Die Stände heißen „offen ·
+vorgemerkt · angesehen · ungeeignet"; ein Zustand wie „angeschrieben" würde einen Apparat
+behaupten, den es nicht gibt, und `lib/__tests__/fachbetrieb-stand.test.ts` verbietet
+solche Namen. **Die Zahl `3/8` zählt belegte Merkmale, nicht Qualität** — ein
+Meisterbetrieb, der seinen Titel nicht auf die Website schreibt, bekommt weniger Punkte
+als einer, der es tut; gemessen wird unser Datenstand, nicht der Betrieb.
+
 **Nicht mit dem Versorger-Modul vermischen** (937 Stadtwerke, `docs/versorger-uebergabe.md`).
 Fachbetriebe sind Handwerk, Versorger sind Energieversorger — andere Käufer, andere
 Budgets, anderer Rechtsrahmen.
+
+**Das Angebots-Feature am Ende des Rechners ist NICHT beauftragt** und hat eine eigene
+Merkliste: `docs/solarteur-widget-offene-fragen.md`. Kern daraus: Der Nutzer sieht erst
+sein Ergebnis und stellt DANACH selbst eine Anfrage — diese Reihenfolge ist die Trennlinie
+zum gesamten Wettbewerb und darf nie umgedreht werden. Vor dem ersten Kontakt muss die
+Zusage „keine Lead-Erfassung · kein Vertriebskontakt" umformuliert werden (Betreiber,
+28.08.2026: zusammen mit den ersten Kontakten, nicht vorher auf Verdacht). Zwei Fragen
+bleiben beim Betreiber: ob Geld je Anfrage fließt, und ob der Betrieb den Kontakt behalten
+darf, wenn nichts daraus wird.
 
 ## Archiv & Lehren
 

@@ -19,6 +19,7 @@ import {
   FRAGEN,
   KEIN_BETRIEB,
   besteMail,
+  firmennameSaeubern,
   gruendungsjahrAus,
   handwerkskammerAus,
   impressumUrl,
@@ -54,6 +55,50 @@ describe("Rechtsform: Wortgrenzen, sonst liest der Extraktor Unsinn", () => {
   it("nimmt die spezifischste Form, nicht die erste passende", () => {
     // Ohne die Reihenfolge in RECHTSFORMEN gewänne „GmbH“ gegen „GmbH & Co. KG“.
     expect(rechtsformVon("Hansen GmbH & Co KG")).toBe("GmbH & Co. KG");
+  });
+});
+
+describe("Firmenname: was die Seite dazugeschrieben hat, gehört nicht dazu", () => {
+  // Alle Fälle real, gefunden erst, als die Namen in einer Liste untereinander
+  // standen — in der Datenbank fielen sie nicht auf. In einem Anschreiben wäre
+  // jeder davon peinlich.
+  it("entfernt Seitenbezeichnungen am Anfang", () => {
+    expect(firmennameSaeubern("Impressum - 3E-Elektrotechnik GmbH")).toBe(
+      "3E-Elektrotechnik GmbH",
+    );
+    expect(firmennameSaeubern("Kontakt Wagner GmbH")).toBe("Wagner GmbH");
+    expect(firmennameSaeubern("Impressum und Kontaktdaten A9 Solar GmbH")).toBe("A9 Solar GmbH");
+  });
+
+  it("nimmt aus einem Seitentitel den Teil mit der Rechtsform", () => {
+    expect(firmennameSaeubern("Home | ABEL ReTec GmbH")).toBe("ABEL ReTec GmbH");
+    expect(
+      firmennameSaeubern("Solaranlage kaufen vom regionalen PV-Anbieter | GETEC GmbH"),
+    ).toBe("GETEC GmbH");
+  });
+
+  it("schneidet nachlaufende Feldbeschriftungen ab", () => {
+    expect(firmennameSaeubern("Name 3NERGY GmbH Adresse Am Pönitzer Dreieck 1")).toBe(
+      "3NERGY GmbH",
+    );
+  });
+
+  it("verwirft eine Rechtsform ohne Namen — lieber kein Name als ein falscher", () => {
+    expect(firmennameSaeubern("GmbH & Co. KG")).toBeNull();
+    expect(firmennameSaeubern("GmbH")).toBeNull();
+    expect(firmennameSaeubern("")).toBeNull();
+  });
+
+  it("lässt einen sauberen Namen unangetastet", () => {
+    expect(firmennameSaeubern("Muster Solar GmbH")).toBe("Muster Solar GmbH");
+    expect(firmennameSaeubern("Elektro Klaas GmbH")).toBe("Elektro Klaas GmbH");
+  });
+
+  it("frisst kein echtes Namenswort, das zufällig so anfängt", () => {
+    // „Homann" beginnt mit „Home", darf aber nicht gekürzt werden — deshalb
+    // steht in der Regel eine Wortgrenze.
+    expect(firmennameSaeubern("Homann Solarbau GmbH")).toBe("Homann Solarbau GmbH");
+    expect(firmennameSaeubern("Namensbau GmbH")).toBe("Namensbau GmbH");
   });
 });
 

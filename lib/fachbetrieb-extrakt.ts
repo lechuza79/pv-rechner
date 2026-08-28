@@ -184,6 +184,61 @@ export function impressumUrl(html: string, basis: string): string | null {
   return treffer[0]?.url ?? null;
 }
 
+/**
+ * Die Kontaktseite — der zweite Weg zu einem Kontakt, wenn das Impressum keinen hergibt.
+ *
+ * Gemessen am 28.08.2026: 473 der 3.098 Betriebe hatten keine auslesbare
+ * E-Mail-Adresse, 233 gar keinen Kontaktweg. Der Grund ist selten, dass es
+ * keinen gibt — er steht nur woanders: hinter einem Formular auf der
+ * Kontaktseite, oder als Bild gegen Spam-Sammler. Dieselbe Systematik wie bei
+ * den Gemeinden, wo die Kontaktseite den Rollen-Postfächern nachgeht.
+ */
+export function kontaktUrl(html: string, basis: string): string | null {
+  const treffer: { url: string; punkte: number }[] = [];
+  const re = /<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+  let m: RegExpExecArray | null;
+  const basisHost = (() => {
+    try {
+      return new URL(basis).host.replace(/^www\./, "");
+    } catch {
+      return "";
+    }
+  })();
+  while ((m = re.exec(html))) {
+    const href = entities(m[1]);
+    const text = entities(m[2].replace(/<[^>]+>/g, " "))
+      .trim()
+      .toLowerCase();
+    if (/^(mailto:|tel:|javascript:|#)/i.test(href)) continue;
+    const h = href.toLowerCase();
+    let p = 0;
+    if (/kontakt[-_/]?formular|anfrage/.test(h)) p = 100;
+    else if (/kontaktformular|anfrage stellen|jetzt anfragen/.test(text)) p = 95;
+    else if (/[-_/]kontakt(\b|[-_/.])/.test(h) || /^kontakt$/.test(text)) p = 80;
+    else if (/\bkontakt\b/.test(text)) p = 60;
+    else if (/beratung|angebot anfordern|schreiben sie uns/.test(text)) p = 40;
+    if (!p) continue;
+    let abs: string;
+    try {
+      abs = new URL(href, basis).toString();
+    } catch {
+      continue;
+    }
+    // Ein Kontaktlink auf eine FREMDE Domain ist meist ein Portal-Formular,
+    // nicht der Betrieb selbst — deshalb abgewertet, nicht verworfen: Manche
+    // kleinen Betriebe hängen wirklich an einem fremden Formulardienst.
+    let host = "";
+    try {
+      host = new URL(abs).host.replace(/^www\./, "");
+    } catch {
+      continue;
+    }
+    treffer.push({ url: abs, punkte: host === basisHost ? p : p - 40 });
+  }
+  treffer.sort((a, b) => b.punkte - a.punkte);
+  return treffer[0] && treffer[0].punkte >= 40 ? treffer[0].url : null;
+}
+
 // ─── Rechtsform ──────────────────────────────────────────────────────────────
 
 /**
@@ -216,6 +271,55 @@ export function rechtsformVon(name: string): string | null {
     if (rf.muster.test(name)) return rf.name;
   }
   return null;
+}
+
+/**
+ * Den Firmennamen von dem befreien, was die SEITE dazugeschrieben hat.
+ *
+ * Gefunden am 28.08.2026, als die Namen zum ersten Mal in einer Liste
+ * untereinander standen — in der Datenbank waren sie nicht aufgefallen:
+ * „Impressum - 3E-Elektrotechnik GmbH", „Home | ABEL ReTec", „Kontakt Wagner
+ * GmbH", „Name 3NERGY GmbH Adresse Am Pönitzer Dreieck 1", und einmal bloß
+ * „GmbH & Co. KG" ganz ohne Namen. Herkunft: die Überschrift des Impressums
+ * oder der Seitentitel als Rückfall.
+ *
+ * In einem Anschreiben wäre jeder dieser Namen peinlich — und genau dafür wird
+ * er irgendwann gebraucht. Deshalb lieber KEIN Name als ein falscher: Was nach
+ * dem Putzen nur noch aus einer Rechtsform besteht, wird verworfen.
+ */
+export function firmennameSaeubern(roh: string | null): string | null {
+  if (!roh) return null;
+  let s = roh.replace(/\s+/g, " ").trim();
+
+  // Ein Seitentitel trennt mit | oder – vom Markennamen. Der längste Teil mit
+  // einer Rechtsform gewinnt; gibt es keinen, der erste Teil.
+  if (/[|·]/.test(s)) {
+    const teile = s.split(/[|·]/).map((t) => t.trim()).filter(Boolean);
+    s = teile.find((t) => rechtsformVon(t)) ?? teile[0] ?? s;
+  }
+
+  // Führende Seitenbezeichnungen und Feldbeschriftungen.
+  s = s.replace(
+    /^(Impressum|Kontakt|Startseite|Home|Anbieterkennzeichnung|Angaben gem[äa][ßss][^:]*|Name|Firma|Anbieter|Betreiber|Verantwortlich)\b[\s:–—-]*/i,
+    "",
+  );
+  s = s.replace(/^(und Kontaktdaten|von)\s+/i, "");
+
+  // Nachlaufende Feldbeschriftungen: „… GmbH Adresse Am Pönitzer Dreieck 1".
+  s = s.replace(
+    /\s+(Adresse|Anschrift|Sitz|Telefon|E-?Mail|Vertreten durch|Geschäftsführ\w*|Registergericht|USt).*$/i,
+    "",
+  );
+  s = s.replace(/\s*[–—-]\s*(Impressum|Kontakt|Startseite|Home)\s*$/i, "");
+  s = s.trim().replace(/^[–—:,-]+\s*/, "").trim();
+
+  if (s.length < 2 || s.length > 120) return null;
+  // Eine Rechtsform allein ist kein Name — „GmbH & Co. KG" stand so in der Liste.
+  const ohneRechtsform = RECHTSFORMEN.reduce((t, rf) => t.replace(rf.muster, " "), s)
+    .replace(/[\s&.,-]+/g, "")
+    .trim();
+  if (ohneRechtsform.length < 2) return null;
+  return s;
 }
 
 // ─── E-Mail ──────────────────────────────────────────────────────────────────
@@ -397,7 +501,70 @@ export const KEIN_BETRIEB: { grund: string; muster: RegExp }[] = [
     grund: "Lead-Vermittlung",
     muster: /\b(Leads?[- ]?(Navigator|Generierung|Vermittlung)|Auftragsvermittlung|Anfragen vermitteln|Wir vermitteln Ihnen)\b/i,
   },
+  {
+    // Der größte Einzelposten der Restklasse: kommunale Solarkataster. Sie laden
+    // ihre Karte per Skript, liefern deshalb kein Photovoltaik-Wort im HTML und
+    // landeten alle auf „unklar". Es sind Auskunftsangebote von Landkreisen und
+    // Städten — nie ein Fachbetrieb, aber auch kein Fehler der Suche: Auf
+    // „Photovoltaik <Landkreis>" gehören sie zu Recht nach oben.
+    grund: "Solarkataster/Geoportal",
+    muster:
+      /\b(Solarkataster|Solarpotenzialkataster|Solardachkataster|Energieatlas|Geoportal|Solarpotenzial(analyse|karte))\b/i,
+  },
 ];
+
+/**
+ * Erkennt eine Kartenanwendung auch dann, wenn sie es nur im Namen sagt.
+ *
+ * Die Startseiten dieser Anwendungen enthalten oft NICHTS außer einem
+ * Skript-Container — dort greift kein Textmuster. Der Domainname sagt es
+ * trotzdem eindeutig genug: „solarkataster-muenster.de" ist kein Betrieb.
+ * Bewusst eng auf zusammengesetzte Wörter, damit ein Betrieb namens
+ * „solar-mueller.de" nicht hineinfällt.
+ */
+/**
+ * Was die NAVIGATION einer Seite verrät — Adressen und Beschriftungen der Links.
+ *
+ * Der entscheidende Unterschied zum sichtbaren Text: Die Navigation ist fast
+ * immer statisch im HTML, auch wenn der Inhalt per Skript nachgeladen wird. Ein
+ * Elektrobetrieb, dessen Startseite uns leer erscheint, hat „Photovoltaik"
+ * trotzdem im Menü stehen — oder wenigstens einen Menüpunkt, der dorthin führt.
+ *
+ * Gemessen am 28.08.2026: Der erste Anlauf prüfte das Gewerk auf der
+ * KONTAKTSEITE und löste damit fast nichts auf — dort steht das Angebot
+ * naturgemäß nicht. Offensichtliche Elektrobetriebe blieben auf „unklar".
+ */
+export function navigationsText(html: string): string {
+  const teile: string[] = [];
+  const re = /<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(html))) {
+    const href = entities(m[1]);
+    // Adressen werden entschlüsselt, damit „/photovoltaik-l%C3%B6sungen" als
+    // Wort lesbar wird — aber ein einzelnes kaputtes Prozentzeichen in einem
+    // fremden Link wirft, und das riss am 28.08.2026 einen Lauf nach 450 von
+    // 1.254 Domains ab. Im Zweifel die rohe Adresse nehmen.
+    try {
+      teile.push(decodeURIComponent(href));
+    } catch {
+      teile.push(href);
+    }
+    teile.push(entities(m[2].replace(/<[^>]+>/g, " ")).trim());
+  }
+  const titel = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+  if (titel) teile.push(entities(titel[1]));
+  const beschr = html.match(
+    /<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["']/i,
+  );
+  if (beschr) teile.push(entities(beschr[1]));
+  return teile.join(" \n ").replace(/[ \t]+/g, " ");
+}
+
+export function istKartenanwendung(domain: string): boolean {
+  return /(^|[.-])(solar|photovoltaik|pv)[-_]?(kataster|potenzial|potential|atlas)([.-]|$)|(^|[.-])geoportal|(^|[.-])energieatlas/i.test(
+    domain,
+  );
+}
 
 // ─── Ortsname normalisieren (für die PLZ-Zuordnung) ──────────────────────────
 
@@ -511,15 +678,19 @@ export function profilAus(domain: string, start: Seite, imp: Seite | null, jetzt
   for (const zeile of t.split("\n").slice(0, 60)) {
     const rf = rechtsformVon(zeile);
     if (rf && zeile.length < 90) {
-      p.firmenname = zeile.replace(/^(Firma|Anbieter|Betreiber)[:\s]+/i, "").trim();
+      const name = firmennameSaeubern(zeile);
+      if (!name) continue;
+      p.firmenname = name;
       p.rechtsform = rf;
-      add("firmenname", p.firmenname, q, t, t.indexOf(zeile));
+      add("firmenname", name, q, t, t.indexOf(zeile));
       break;
     }
   }
   if (!p.firmenname) {
+    // Rückfall auf den Seitentitel — der trägt fast immer Beiwerk („Home |“,
+    // „Impressum -“), deshalb durch dieselbe Reinigung.
     const ti = start.html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-    if (ti) p.firmenname = entities(ti[1]).replace(/\s+/g, " ").trim().slice(0, 120) || null;
+    if (ti) p.firmenname = firmennameSaeubern(entities(ti[1]));
   }
 
   const hr = t.match(/\bHR([AB])\s*[:\-]?\s*(\d{1,7})\b/);
