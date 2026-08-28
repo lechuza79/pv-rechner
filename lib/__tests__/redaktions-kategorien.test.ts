@@ -10,6 +10,8 @@ import {
   ranglistenStellen,
   reihenEnge,
   restVon,
+  variante,
+  variantenKennung,
   verschwindet,
 } from "../social-bildformen";
 import { BUNDESLAND_UMRISS } from "../bundesland-umrisse";
@@ -630,6 +632,37 @@ describe("Das Formen-Register", () => {
     // bliebe auf ihrer eingebauten Form stehen, ohne dass etwas fehlschlägt.
     const arten = new Set(posts.map((p) => p.bild?.art).filter(Boolean));
     for (const a of arten) expect(BILDFORMEN.some((f) => f.art === a), String(a)).toBe(true);
+  });
+});
+
+describe("Die Kennung einer Variante", () => {
+  // Sie ist der Name, unter dem über eine Variante geredet wird — „arbeite an
+  // ringpaar-dunkel". Für jede Kombination, nicht nur für die abgenommenen:
+  // Sonst hat gerade das, woran gearbeitet wird, keinen Namen.
+  it("gibt es für jede Kombination und jede nur einmal", () => {
+    const alle = BILDFORMEN.flatMap((f) => KARTEN_STILE.map((s) => variantenKennung(f.art, s)));
+    expect(alle.length).toBe(BILDFORMEN.length * KARTEN_STILE.length);
+    expect(new Set(alle).size, `doppelte Kennung: ${alle.join(", ")}`).toBe(alle.length);
+    for (const k of alle) expect(k, k).toMatch(/^[a-z]+(-[a-z]+)*$/);
+  });
+
+  it("führt zurück auf ihre Variante — und Unbekanntes auf nichts", () => {
+    for (const f of BILDFORMEN) {
+      for (const s of KARTEN_STILE) {
+        expect(variante(variantenKennung(f.art, s))).toEqual({ art: f.art, stil: s });
+      }
+    }
+    expect(variante("gibtsnicht-hell")).toBeUndefined();
+    expect(variante("rangliste-neonpink")).toBeUndefined();
+  });
+
+  it("hängt NICHT am Anzeigenamen", () => {
+    // Würde die Kennung aus dem Namen abgeleitet, wanderte sie bei jeder
+    // Umbenennung mit — und ein Verweis von gestern zeigte ins Leere oder,
+    // schlimmer, auf etwas anderes. Zwei Formen, deren technische Bezeichnung
+    // nicht ihr Anzeigename ist, halten das fest.
+    expect(variantenKennung("vergleich", "hell")).toBe("balken-hell");
+    expect(variantenKennung("donut", "highlight")).toBe("ringpaar-highlight");
   });
 });
 

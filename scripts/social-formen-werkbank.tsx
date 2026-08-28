@@ -30,7 +30,7 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { SocialKarte } from "../components/social/SocialKarte";
 import { baueAllePosts, moeglicheFormen, type PostBild, type SocialKennzahlen, type SocialPost } from "../lib/social-posts";
-import { BILDFORMEN, TEMPLATES, kollidiert, verschwindet } from "../lib/social-bildformen";
+import { BILDFORMEN, TEMPLATES, kollidiert, variantenKennung, verschwindet } from "../lib/social-bildformen";
 import { KARTEN_STILE, KARTEN_STIL_NAME } from "../lib/social-karten-stil";
 import { getCssVariables, globalStyles } from "../lib/theme";
 
@@ -108,9 +108,14 @@ for (const form of BILDFORMEN) {
     const bild = { ...post.bild!, art: form.art, stil };
     const abgenommen = TEMPLATES.some((t) => t.art === form.art && t.stil === stil);
     gezeigt++;
+    // Die Kennung steht an JEDER Variante, nicht nur an den abgenommenen: Man
+    // muss über eine Variante reden können, bevor sie einen Template-Namen hat —
+    // sonst hat gerade das, woran gearbeitet wird, keinen Namen.
+    const kennung = variantenKennung(form.art, stil);
     return `<figure class="karte">
       <figcaption>
         <b>${KARTEN_STIL_NAME[stil]}</b>
+        <code class="id" title="Klicken zum Kopieren">${kennung}</code>
         ${abgenommen ? '<span class="marke ok">abgenommen</span>' : '<span class="marke">noch nicht abgenommen</span>'}
       </figcaption>
       <div class="buehne">${renderToStaticMarkup(<SocialKarte bild={bild} skala={SKALA} />)}</div>
@@ -147,6 +152,9 @@ h2 { font-size: 19px; margin: 0 0 4px; }
 figcaption { font-size: 12px; margin-bottom: 6px; display: flex; gap: 6px; align-items: center; }
 .marke { font-size: 10px; background: #ddd; padding: 1px 6px; border-radius: 8px; font-weight: 400; }
 .marke.ok { background: #1365EA; color: #fff; }
+.id { font-family: ui-monospace, monospace; font-size: 11px; background: #e6e9ee; padding: 1px 6px;
+      border-radius: 4px; cursor: pointer; user-select: all; }
+.id.kopiert { background: #1365EA; color: #fff; }
 [data-social-karte] { box-shadow: 0 1px 6px rgba(0,0,0,0.16); }
 
 /* Die Bühne: Sie zeigt die 1080er Karte verkleinert, ohne sie kleiner zu
@@ -178,6 +186,18 @@ abgenommen wird. Datenstand ${kennzahlen.standIso.slice(0, 10)}, ${gezeigt} Kart
 Die Beiträge kommen nur als Füllung vor: An gleichmäßigen Testwerten nimmt sich jede Form gut aus,
 also stehen hier echte Zahlen.</p>
 ${bloecke.join("\n")}
+<script>
+// Klick auf eine Kennung kopiert sie. Ein Name, den man abtippen muss, wird
+// abgetippt — und dann steht ein Tippfehler in der Anweisung.
+document.addEventListener("click", (e) => {
+  const el = e.target.closest(".id");
+  if (!el) return;
+  navigator.clipboard.writeText(el.textContent).then(() => {
+    el.classList.add("kopiert");
+    setTimeout(() => el.classList.remove("kopiert"), 900);
+  });
+});
+</script>
 </body></html>`;
 
 writeFileSync(ziel, html);

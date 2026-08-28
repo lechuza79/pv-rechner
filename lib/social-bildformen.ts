@@ -16,6 +16,22 @@ import type { PostBild } from "./social-posts";
 export type Bildform = {
   art: PostBild["art"];
   name: string;
+  /**
+   * Der Name, unter dem man diese Form ansprechen kann — zusammen mit dem
+   * Farbschema die Kennung einer Variante („rangliste-highlight").
+   *
+   * AUSDRÜCKLICH GEFÜHRT und nicht aus `name` abgeleitet: Sonst wandert die
+   * Kennung mit jeder Umbenennung, und ein Verweis von gestern zeigt ins Leere
+   * oder — schlimmer — auf etwas anderes. Dieselbe Überlegung wie bei der
+   * Kennung eines Beitrags, in die Template und Farbschema deshalb NICHT
+   * hineindürfen.
+   *
+   * Sie weicht bewusst von `art` ab, wo die technische Bezeichnung nicht das
+   * ist, was auf dem Bild steht: „vergleich" heißt in der Ansicht „Balken",
+   * „donut" heißt „Ringpaar". Eine Kennung, die man tippt, muss zu dem passen,
+   * was man sieht.
+   */
+  kennung: string;
   /** Ein Satz: wofür die Form gedacht ist und woran sie scheitert. */
   wofuer: string;
   /** Trägt die Form für dieses Bild? */
@@ -189,6 +205,7 @@ export const BILDFORMEN: Bildform[] = [
   {
     art: "vergleich",
     name: "Balken",
+    kennung: "balken",
     wofuer:
       "Zwei bis drei Werte als Längen nebeneinander. Trägt nur, wenn die Längen wirklich auseinandergehen — zwei fast gleich lange Balken zeigen nichts — und wenn die Werte ab null zählen.",
     passt: (b) => abNull(b),
@@ -196,6 +213,7 @@ export const BILDFORMEN: Bildform[] = [
   {
     art: "kennzahl",
     name: "Einzelkennzahl",
+    kennung: "einzelkennzahl",
     wofuer:
       "Eine Zahl groß, mit einer Kontextzeile darunter. Für Fälle, in denen ein Vergleich nichts zeigt, weil die Werte zu nah beieinanderliegen.",
     passt: () => true,
@@ -203,6 +221,7 @@ export const BILDFORMEN: Bildform[] = [
   {
     art: "donut",
     name: "Ringpaar",
+    kennung: "ringpaar",
     wofuer:
       "Zwei ANTEILE als konzentrische Ringe. Nur mit einem Ganzen: Ohne eines behauptet der leere Rest etwas, das es nicht gibt.",
     passt: (b) => zwei(b) && hatGanzes(b),
@@ -210,6 +229,7 @@ export const BILDFORMEN: Bildform[] = [
   {
     art: "umriss",
     name: "Gefüllte Umrisse",
+    kennung: "umrisse",
     wofuer:
       "Landesumrisse, anteilig von unten gefüllt. Braucht ein Ganzes und einen Umriss je Wert — die Form behauptet ein Gefäß, das sich füllt.",
     passt: (b) => hatGanzes(b) && alleMitUmriss(b),
@@ -217,6 +237,7 @@ export const BILDFORMEN: Bildform[] = [
   {
     art: "saeule",
     name: "Säule",
+    kennung: "saeule",
     wofuer:
       "Zwei Werte als EINE Säule, der kleinere als Sockel darin. Für Verhältnisse OHNE Ganzes — der Unterschied ist die überragende Fläche selbst.",
     passt: (b) => zwei(b) && !hatGanzes(b),
@@ -224,6 +245,7 @@ export const BILDFORMEN: Bildform[] = [
   {
     art: "rangliste",
     name: "Rangliste",
+    kennung: "rangliste",
     wofuer:
       "Die ganze Ordnung als Balkenreihe, statt nur der ersten und letzten. Braucht die vollständige Reihe, Werte ab null und genug Abstand zwischen ihnen — sechzehn fast gleich lange Balken lesen sich als Aussage und sind keine.",
     passt: (b) => (b.reihe?.length ?? 0) >= 3 && abNull(b) && reihenEnge(b) < RANGLISTE_MAX_ENGE,
@@ -231,6 +253,7 @@ export const BILDFORMEN: Bildform[] = [
   {
     art: "aufteilung",
     name: "Aufteilung",
+    kennung: "aufteilung",
     wofuer:
       "Drei und mehr Teile eines Ganzen als ein durchgehender Balken. Nur wenn die Teile das Ganze wirklich ausschöpfen — zwei Anteile derselben Menge, die einander überlappen, ergänzen sich nicht und dürfen nicht gestapelt werden.",
     passt: (b) => b.serien.length >= 3 && schoepftAus(b),
@@ -238,6 +261,7 @@ export const BILDFORMEN: Bildform[] = [
   {
     art: "verlauf",
     name: "Verlauf",
+    kennung: "verlauf",
     wofuer:
       "Werte über die Zeit als Linien. Für Aussagen über eine Entwicklung — ob ein Abstand wächst oder schrumpft, sieht man an zwei Stichtagen nicht. Braucht eine Zeitachse und je Serie einen Wert dazu.",
     passt: (b) =>
@@ -250,6 +274,29 @@ export const BILDFORMEN: Bildform[] = [
 export const BILDFORM_NAME: Record<PostBild["art"], string> = Object.fromEntries(
   BILDFORMEN.map((f) => [f.art, f.name]),
 ) as Record<PostBild["art"], string>;
+
+/**
+ * Die Kennung einer VARIANTE: Bildform × Farbschema, etwa „rangliste-highlight".
+ *
+ * Sie ist der Name, unter dem eine Variante angesprochen wird — „arbeite an
+ * ringpaar-dunkel". Anders als der Template-Name gibt es sie für jede
+ * Kombination, nicht nur für die abgenommenen: Man muss über eine Variante reden
+ * können, BEVOR sie abgenommen ist, sonst hat gerade das, woran gearbeitet wird,
+ * keinen Namen.
+ */
+export function variantenKennung(art: PostBild["art"], stil: KartenStil): string {
+  return `${bildform(art).kennung}-${stil}`;
+}
+
+/** Die Variante zu einer Kennung — oder nichts, wenn es sie nicht gibt. */
+export function variante(kennung: string): { art: PostBild["art"]; stil: KartenStil } | undefined {
+  for (const f of BILDFORMEN) {
+    for (const stil of ["hell", "dunkel", "highlight"] as KartenStil[]) {
+      if (variantenKennung(f.art, stil) === kennung) return { art: f.art, stil };
+    }
+  }
+  return undefined;
+}
 
 export function bildform(art: PostBild["art"]): Bildform {
   const f = BILDFORMEN.find((x) => x.art === art);
