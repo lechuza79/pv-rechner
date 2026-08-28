@@ -289,7 +289,16 @@ export function rechtsformVon(name: string): string | null {
  */
 export function firmennameSaeubern(roh: string | null): string | null {
   if (!roh) return null;
-  let s = roh.replace(/\s+/g, " ").trim();
+  // UNSICHTBARE ZEICHEN ZUERST. Baukästen wie Wix und Webflow setzen
+  // Null-Breiten-Leerzeichen und Verbinder in Überschriften; im Namen sieht man
+  // sie nicht, aber sie sortieren ihn an den Anfang der Liste und stünden in
+  // einem Anschreiben vor dem Firmennamen. Gefunden am 28.08.2026, als die
+  // Sortierung nach Name plötzlich fünf Betriebe ganz oben zeigte, deren Namen
+  // scheinbar mit einem Leerzeichen begannen.
+  let s = roh
+    .replace(/[\u200B-\u200D\uFEFF\u2060\u00AD]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
 
   // Ein Seitentitel trennt mit | oder – vom Markennamen. Der längste Teil mit
   // einer Rechtsform gewinnt; gibt es keinen, der erste Teil.

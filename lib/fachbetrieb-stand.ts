@@ -39,19 +39,59 @@ export interface MerkmalTraeger {
   gruendungsjahr: number | null;
   hr_nummer: string | null;
   bewertung_wert: number | null;
+  bewertung_anzahl?: number | null;
 }
 
+/**
+ * Die acht Merkmale — EINE Liste, aus der sowohl die Zahl als auch die
+ * Aufzählung entsteht.
+ *
+ * Ohne diese Quelle stünde die Acht an einer Stelle und die Aufzählung an einer
+ * anderen; wer ein Merkmal ergänzt, hätte dann eine Liste mit neun Einträgen
+ * neben einer Zahl aus acht — und das fiele niemandem auf, weil beide für sich
+ * plausibel aussehen. `wert` liefert zugleich, was im aufgeklappten Bereich
+ * hinter dem Häkchen steht.
+ */
+export const MERKMALE: {
+  name: string;
+  text: string;
+  wert: (r: MerkmalTraeger) => string | null;
+}[] = [
+  { name: "meisterbetrieb", text: "Meisterbetrieb", wert: (r) => (r.meisterbetrieb ? "Meisterbetrieb" : null) },
+  { name: "handwerkskammer", text: "Handwerkskammer", wert: (r) => r.handwerkskammer },
+  { name: "innung", text: "Innung", wert: (r) => r.innung },
+  {
+    name: "installateurverzeichnis",
+    text: "Installateurverzeichnis",
+    wert: (r) => (r.installateurverzeichnis ? "beim Netzbetreiber eingetragen" : null),
+  },
+  {
+    name: "zertifikat",
+    text: "Zertifikat",
+    wert: (r) => (r.zertifikate && r.zertifikate.length ? r.zertifikate.join(", ") : null),
+  },
+  {
+    name: "gruendungsjahr",
+    text: "Gründungsjahr",
+    wert: (r) => (r.gruendungsjahr ? `gegründet ${r.gruendungsjahr}` : null),
+  },
+  { name: "hr_nummer", text: "Handelsregister", wert: (r) => r.hr_nummer },
+  {
+    name: "bewertung",
+    text: "Bewertung",
+    // Die Herkunft steht AN der Zahl: eine Selbstauskunft der Website, keine
+    // Google-Bewertung. Ohne den Zusatz liest sie sich wie eine erhobene.
+    wert: (r) =>
+      r.bewertung_wert
+        ? `${r.bewertung_wert.toLocaleString("de-DE")} von 5` +
+          (r.bewertung_anzahl ? ` aus ${r.bewertung_anzahl} Bewertungen` : "") +
+          " (Angabe der Website)"
+        : null,
+  },
+];
+
 export function belegteMerkmale(r: MerkmalTraeger): number {
-  let n = 0;
-  if (r.meisterbetrieb) n++;
-  if (r.handwerkskammer) n++;
-  if (r.innung) n++;
-  if (r.installateurverzeichnis) n++;
-  if (r.zertifikate && r.zertifikate.length) n++;
-  if (r.gruendungsjahr) n++;
-  if (r.hr_nummer) n++;
-  if (r.bewertung_wert) n++;
-  return n;
+  return MERKMALE.filter((m) => m.wert(r)).length;
 }
 
 /** Gibt es überhaupt einen Weg, diesen Betrieb zu erreichen? */

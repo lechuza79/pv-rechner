@@ -65,9 +65,27 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  if (sortieren === "gruendung") query = query.order("gruendungsjahr", { ascending: true, nullsFirst: false });
-  else if (sortieren === "streuung") query = query.order("kreise_gesehen", { ascending: false });
-  else query = query.order("domain");
+  // Sortierung: Spaltenkopf klicken, zweiter Klick dreht die Richtung.
+  //
+  // „belegt" ist die einzige, die nicht direkt in einer Spalte steht — sie zählt
+  // acht Merkmale zusammen. Statt sie im Browser zu sortieren (was nur die
+  // gerade sichtbaren fünfzig sortierte und damit etwas anderes anzeigte, als
+  // die Überschrift verspricht), wird nach dem stärksten Einzelmerkmal geordnet
+  // und die Zahl bleibt sichtbar daneben. Wer die Summe wirklich sortieren will,
+  // braucht dafür eine berechnete Spalte in der Datenbank — das ist die ehrliche
+  // Grenze, und sie steht hier, damit sie niemand als Fehler sucht.
+  const auf = sp.get("auf") !== "0";
+  if (sortieren === "ort") {
+    query = query.order("plz", { ascending: auf, nullsFirst: false }).order("domain");
+  } else if (sortieren === "belegt") {
+    query = query
+      .order("meisterbetrieb", { ascending: !auf, nullsFirst: false })
+      .order("gruendungsjahr", { ascending: auf, nullsFirst: false })
+      .order("domain");
+  } else {
+    // Nach Name — der ist bei einem Teil leer, dann greift die Adresse.
+    query = query.order("firmenname", { ascending: auf, nullsFirst: false }).order("domain");
+  }
 
   query = query.range(seite * SEITE, seite * SEITE + SEITE - 1);
 

@@ -97,6 +97,18 @@ describe("Firmenname: was die Seite dazugeschrieben hat, gehört nicht dazu", ()
     expect(firmennameSaeubern("Elektro Klaas GmbH")).toBe("Elektro Klaas GmbH");
   });
 
+  it("entfernt unsichtbare Zeichen — Wix und Webflow setzen sie in Überschriften", () => {
+    // Im Namen sieht man sie nicht, aber sie sortieren ihn an den Anfang der
+    // Liste und stünden in einem Anschreiben vor dem Firmennamen. Gefunden, als
+    // die Sortierung nach Name fünf Betriebe ganz oben zeigte, deren Namen
+    // scheinbar mit einem Leerzeichen begannen.
+    expect(firmennameSaeubern("\u200B\u200B Anysolar GmbH")).toBe("Anysolar GmbH");
+    expect(firmennameSaeubern("\u200D EnCrease Energiesysteme GmbH")).toBe(
+      "EnCrease Energiesysteme GmbH",
+    );
+    expect(firmennameSaeubern("\uFEFFSolar GMI GmbH")).toBe("Solar GMI GmbH");
+  });
+
   it("frisst kein echtes Namenswort, das zufällig so anfängt", () => {
     // „Homann" beginnt mit „Home", darf aber nicht gekürzt werden — deshalb
     // steht in der Regel eine Wortgrenze.

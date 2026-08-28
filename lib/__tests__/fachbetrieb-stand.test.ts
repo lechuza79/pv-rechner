@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { STAENDE, belegteMerkmale, hatKontaktweg, istStand } from "../fachbetrieb-stand";
+import { MERKMALE, STAENDE, belegteMerkmale, hatKontaktweg, istStand } from "../fachbetrieb-stand";
 
 const leer = {
   meisterbetrieb: null,
@@ -29,6 +29,45 @@ describe("Arbeitsstand", () => {
 
   it("gibt jedem Zustand einen erklärenden Hinweis", () => {
     for (const s of STAENDE) expect(s.hinweis.length).toBeGreaterThan(5);
+  });
+});
+
+describe("Die acht Merkmale kommen aus EINER Liste", () => {
+  it("hält Zahl und Aufzählung zusammen", () => {
+    // Ohne die gemeinsame Quelle stünde die Acht an einer Stelle und die
+    // Aufzählung an einer anderen. Wer ein Merkmal ergänzt, hätte dann neun
+    // Einträge neben einer Zahl aus acht — und das fiele niemandem auf, weil
+    // beide für sich plausibel aussehen.
+    expect(MERKMALE).toHaveLength(8);
+    expect(belegteMerkmale({ ...leer })).toBe(0);
+    const alleBelegt = {
+      meisterbetrieb: true,
+      handwerkskammer: "Handwerkskammer Lübeck",
+      innung: "Elektro-Innung",
+      installateurverzeichnis: true,
+      zertifikate: ["E-CHECK"],
+      gruendungsjahr: 1992,
+      hr_nummer: "HRB 1",
+      bewertung_wert: 4.5,
+      bewertung_anzahl: 20,
+    };
+    expect(belegteMerkmale(alleBelegt)).toBe(MERKMALE.length);
+  });
+
+  it("jedes Merkmal hat einen Namen für die Anzeige", () => {
+    for (const m of MERKMALE) {
+      expect(m.text.length).toBeGreaterThan(2);
+      expect(m.name).toMatch(/^[a-z_]+$/);
+    }
+  });
+
+  it("nennt bei der Bewertung IMMER die Herkunft", () => {
+    // Ohne den Zusatz liest sie sich wie eine von uns erhobene Bewertung. Sie
+    // ist eine Selbstauskunft der Website — auch wenn der Betrieb dort seine
+    // Google-Sterne wiedergibt.
+    const m = MERKMALE.find((x) => x.name === "bewertung");
+    const text = m?.wert({ ...leer, bewertung_wert: 4.5, bewertung_anzahl: 20 });
+    expect(text).toContain("Angabe der Website");
   });
 });
 
