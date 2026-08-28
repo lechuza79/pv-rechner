@@ -55,7 +55,21 @@ export async function POST(req: NextRequest) {
 
   const fassung = { text: post.text, bild: post.bild };
   const abdruck = fassungsAbdruck(fassung);
-  if (body.fassung && body.fassung !== abdruck) {
+  // PFLICHT, nicht optional. Vorher stand hier `if (body.fassung && …)` — wer
+  // das Feld wegließ, übersprang die Prüfung ersatzlos. Damit war folgender
+  // Weg offen: Ein Tab steht auf altem Datenstand und hat das Bild dazu
+  // aufgenommen; in einem zweiten wird nach einer Datenbewegung neu geprüft und
+  // freigegeben. Der erste sendet ohne Abdruck — veröffentlicht wird der neue
+  // Text mit dem alten Bild, beide Prüfungen grün. Genau die Fehlerklasse, die
+  // dieses Projekt als schwerste führt: eine Aussage, die nicht zur Zahl
+  // daneben passt. Gefunden von einem adversarialen Prüfer.
+  if (!body.fassung) {
+    return NextResponse.json(
+      { error: "Kein Fassungs-Abdruck übergeben — ohne ihn ist nicht belegbar, was aufgenommen wurde." },
+      { status: 400 },
+    );
+  }
+  if (body.fassung !== abdruck) {
     return NextResponse.json(
       {
         error:

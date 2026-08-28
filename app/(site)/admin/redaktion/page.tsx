@@ -6,7 +6,7 @@ import { KATEGORIEN, kategorieAusAdresse } from "../../../../lib/redaktions-kate
 import { BEREICHE } from "../../../../lib/redaktionsplan";
 import { KategorieNav } from "../../../../components/social/KategorieNav";
 import { ladeFassungen } from "../../../../lib/social-vorlagen-db";
-import { ladeAllePruefungen } from "../../../../lib/social-pruefung";
+import { fassungsAbdruck, ladeAllePruefungen } from "../../../../lib/social-pruefung";
 import { StoryListe } from "../../../../components/social/StoryListe";
 import { StoryGrid } from "../../../../components/social/StoryGrid";
 import { kategorie } from "../../../../lib/redaktions-kategorien";
@@ -111,6 +111,9 @@ export default async function RedaktionEntwicklung({
             return {
               post: p,
               pruefungen: pruefungen[p.id] ?? [],
+              // Der Abdruck wird HIER gerechnet, auf dem Server. Der Browser
+              // bekommt ihn fertig — er soll nicht hashen können müssen.
+              abdruck: fassungsAbdruck({ text: p.text, bild: p.bild }),
               kategorie: { name: k.name, schluessel: k.schluessel },
               // Gestaltet heißt: Der Beitrag verwendet ein abgenommenes Template.
               bearbeitet: !!p.bild && !!templateVon(p.bild),
@@ -118,7 +121,13 @@ export default async function RedaktionEntwicklung({
           })}
         />
       ) : (
-        <StoryListe eintraege={dieser.map((p) => ({ post: p, pruefungen: pruefungen[p.id] ?? [] }))} />
+        <StoryListe
+          eintraege={dieser.map((p) => ({
+            post: p,
+            pruefungen: pruefungen[p.id] ?? [],
+            abdruck: fassungsAbdruck({ text: p.text, bild: p.bild }),
+          }))}
+        />
       )}
     </div>
   );

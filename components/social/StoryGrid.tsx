@@ -27,6 +27,8 @@ import { KARTEN_STIL_NAME } from "../../lib/social-karten-stil";
 export type GridEintrag = {
   post: SocialPost;
   pruefungen: Pruefung[];
+  /** Abdruck der abgelegten Fassung, serverseitig gerechnet. */
+  abdruck: string;
   kategorie: { name: string; schluessel: string };
   /**
    * Ist das Design dieser Story durchgesehen — im Code abgenommen ODER im
@@ -130,8 +132,8 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
           gap: space.xxl,
         }}
       >
-        {gezeigt.map(({ post, pruefungen, kategorie }) => {
-          const stand = urteil({ text: post.text, bild: post.bild }, pruefungen);
+        {gezeigt.map(({ post, pruefungen, kategorie, abdruck }) => {
+          const stand = urteil(abdruck, pruefungen);
           return (
             <div key={post.id} style={{ display: "flex", flexDirection: "column", gap: space.sm }}>
               <Link
@@ -202,6 +204,7 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
             key={aktiv.post.id}
             post={aktiv.post}
             pruefungen={aktiv.pruefungen}
+            abdruck={aktiv.abdruck}
             ohneTitel
             onPruefung={(postId, p) =>
               setDazu((alt) => ({

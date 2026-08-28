@@ -9,7 +9,6 @@ import {
   pruefBeschreibung,
   pruefeBefund,
   urteil,
-  type Fassung,
   type PruefArt,
   type Pruefung,
 } from "../../lib/social-pruefung-kern";
@@ -38,17 +37,29 @@ import { regelnFuer } from "../../lib/redaktionsplan";
 
 export function Freigabe({
   postId,
-  fassung,
   abdruck,
+  gilt,
   pruefungen,
   onErteilt,
   gesperrt,
 }: {
   postId: string;
-  /** Was gerade auf dem Bildschirm steht — Grundlage des Urteils. */
-  fassung: Fassung;
-  /** Abdruck derselben Fassung, wie ihn der Server nachrechnen können muss. */
+  /**
+   * Abdruck der ABGELEGTEN Fassung, vom Server gerechnet.
+   *
+   * Wird beim Erteilen mitgeschickt und dort gegen den serverseitig neu
+   * gerechneten gehalten. Der Browser hasht nichts mehr selbst — eine
+   * Prüfsumme, die an zwei Orten laufen muss, ist nur so stark wie der
+   * schwächere Ort, und der war hier eine 32-Bit-Funktion von Hand.
+   */
   abdruck: string;
+  /**
+   * Steht auf dem Bildschirm noch die abgelegte Fassung?
+   *
+   * Ist sie es nicht, gehört das Urteil zu keinem Abdruck, den es gibt. Dann
+   * wird weder gezeigt noch erteilt — ohne dafür im Browser rechnen zu müssen.
+   */
+  gilt: boolean;
   pruefungen: Pruefung[];
   onErteilt: (p: Pruefung) => void;
   /** Grund, warum gerade nicht freigegeben werden darf. Leer = frei. */
@@ -59,11 +70,15 @@ export function Freigabe({
   const [status, setStatus] = useState<string | null>(null);
   const [laeuft, setLaeuft] = useState(false);
 
-  const stand = urteil(fassung, pruefungen);
+  // Gilt der Bildschirm nicht der abgelegten Fassung, gibt es keinen Abdruck,
+  // gegen den geurteilt werden könnte — dann zählt nichts als vorliegend.
+  const stand = gilt
+    ? urteil(abdruck, pruefungen)
+    : ({ ok: false, grund: "Ungespeicherte Änderung — die Freigabe gilt der abgelegten Fassung." } as const);
 
   /** Was für DIESE Fassung vorliegt — nicht, was je vorlag. */
   const fuerDieseFassung = (art: PruefArt) =>
-    pruefungen.find((p) => p.art === art && p.fassung_fingerabdruck === abdruck);
+    gilt ? pruefungen.find((p) => p.art === art && p.fassung_fingerabdruck === abdruck) : undefined;
   const fuerAeltere = (art: PruefArt) =>
     pruefungen.some((p) => p.art === art && p.fassung_fingerabdruck !== abdruck);
 

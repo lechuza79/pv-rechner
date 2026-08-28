@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAdminSession } from "../../../../lib/admin-guard";
-import { speicherePruefung } from "../../../../lib/social-pruefung";
-import {
-  fassungsAbdruck,
-  istPruefArt,
-  pruefeBefund,
-} from "../../../../lib/social-pruefung-kern";
+import { fassungsAbdruck, speicherePruefung } from "../../../../lib/social-pruefung";
+import { istPruefArt, pruefeBefund } from "../../../../lib/social-pruefung-kern";
 import { socialKennzahlen } from "../../../../lib/social-kennzahlen";
 import { baueAllePosts } from "../../../../lib/social-posts";
 import { ladeFassungen } from "../../../../lib/social-vorlagen-db";

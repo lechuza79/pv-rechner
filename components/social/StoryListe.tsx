@@ -15,11 +15,15 @@ import type { SocialPost } from "../../lib/social-posts";
 // Browser-Komponente je setzt. Die Grenze steht damit an einer Stelle, an der
 // man sie sieht, statt als Warnung in der Werkzeugleiste.
 
-export function StoryListe({ eintraege }: { eintraege: { post: SocialPost; pruefungen: Pruefung[] }[] }) {
+export function StoryListe({
+  eintraege,
+}: {
+  eintraege: { post: SocialPost; pruefungen: Pruefung[]; abdruck: string }[];
+}) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: space.huge * 1.5 }}>
-      {eintraege.map(({ post, pruefungen }) => (
-        <StoryTisch key={post.id} post={post} pruefungen={pruefungen} />
+      {eintraege.map(({ post, pruefungen, abdruck }) => (
+        <StoryTisch key={post.id} post={post} pruefungen={pruefungen} abdruck={abdruck} />
       ))}
     </div>
   );

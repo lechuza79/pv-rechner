@@ -176,14 +176,29 @@ function stabil(wert: unknown): string {
   return String(wert);
 }
 
-function fnv1a(text: string): string {
-  let h = 0x811c9dc5;
-  for (let i = 0; i < text.length; i++) {
-    h ^= text.charCodeAt(i);
-    h = Math.imul(h, 0x01000193) >>> 0;
-  }
-  return h.toString(16).padStart(8, "0");
-}
+/**
+ * HIER WIRD NICHT MEHR GEHASHT — das tut serverseitig `lib/social-pruefung.ts`.
+ *
+ * Vorher stand an dieser Stelle eine FNV-1a-Prüfsumme mit 32 Bit plus
+ * Textlänge. Sie musste im Browser laufen, deshalb war sie handgeschrieben —
+ * und sie ist eine Streuspeicher-Funktion aus dem Lehrbuch, nicht
+ * kollisionsfest. Zu einem freigegebenen Text ließ sich in Sekunden ein anderer
+ * bauen, der denselben Abdruck ergibt und damit dessen Freigabe erbt. Weil der
+ * Text über die Fassungs-Route frei setzbar ist und diese den Cron-Schlüssel
+ * akzeptiert, war das kein Gedankenspiel: Der ganze Entwurf hing an „gleicher
+ * Abdruck heißt gleiche Fassung", und genau das war nicht wahr. Gefunden von
+ * einem adversarialen Prüfer mit dem Auftrag, das Tor zu widerlegen.
+ *
+ * Die Lösung ist nicht ein stärkerer Hash IM BROWSER, sondern gar keiner. Der
+ * Browser braucht ihn nicht: Er muss nur wissen, ob sein Entwurf noch dem
+ * abgelegten Stand entspricht — und das weiß er, weil er die Änderung selbst
+ * gemacht hat. Den Abdruck des abgelegten Standes reicht der Server herunter.
+ * Damit gibt es genau EINE Stelle, die ihn rechnet, und sie darf ein echtes
+ * Verfahren benutzen.
+ *
+ * Was hier bleibt, ist die KANONISCHE FASSUNG — die Zeichenkette, über die
+ * gehasht wird. Sie ist rein und gehört zur Aussage, nicht zur Kryptografie.
+ */
 
 /**
  * Fingerabdruck der Fassung: Text UND Bild.
@@ -201,10 +216,10 @@ function fnv1a(text: string): string {
  * Werte im Bild, und die Freigabe verfällt. Das ist beabsichtigt — die
  * Zahlenprüfung galt genau diesen Zahlen.
  */
-export function fassungsAbdruck(fassung: Fassung): string {
+export function fassungsText(fassung: Fassung): string {
   const text = fassung.text.replace(/\s+/g, " ").trim().toLowerCase();
   const bild = fassung.bild ? stabil(fassung.bild) : "∅";
-  return fnv1a(text + " " + bild) + ":" + text.length;
+  return text + " " + bild;
 }
 
 export type PruefUrteil = { ok: true } | { ok: false; grund: string };
@@ -213,8 +228,7 @@ export type PruefUrteil = { ok: true } | { ok: false; grund: string };
  * Darf diese Fassung raus? Beide Prüfungen müssen für GENAU diesen Text und
  * dieses Bild vorliegen und bestanden sein.
  */
-export function urteil(fassung: Fassung, vorhandene: Pruefung[]): PruefUrteil {
-  const abdruck = fassungsAbdruck(fassung);
+export function urteil(abdruck: string, vorhandene: Pruefung[]): PruefUrteil {
   const passend = vorhandene.filter((p) => p.fassung_fingerabdruck === abdruck);
 
   const fehlend = NOETIGE_PRUEFUNGEN.filter((art) => !passend.some((p) => p.art === art));

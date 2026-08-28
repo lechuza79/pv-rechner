@@ -7,7 +7,7 @@ import { VorlagenEditor } from "./VorlagenEditor";
 import { Kennung } from "./Kennung";
 import { fuelle } from "../../lib/social-vorlage";
 import { KARTEN_STILE, KARTEN_STIL_NAME, KARTEN_STIL_STANDARD, type KartenStil } from "../../lib/social-karten-stil";
-import { fassungsAbdruck, type Pruefung } from "../../lib/social-pruefung-kern";
+import type { Pruefung } from "../../lib/social-pruefung-kern";
 import { Freigabe } from "./Freigabe";
 import { BILDFORM_NAME, moeglicheFormen, templateVon, type PostBild, type SocialPost } from "../../lib/social-posts";
 
@@ -28,12 +28,23 @@ import { BILDFORM_NAME, moeglicheFormen, templateVon, type PostBild, type Social
 export function StoryTisch({
   post,
   pruefungen,
+  abdruck,
   kategorieHinweis,
   ohneTitel,
   onPruefung,
 }: {
   post: SocialPost;
   pruefungen: Pruefung[];
+  /**
+   * Der Fingerabdruck der ABGELEGTEN Fassung, vom Server gerechnet.
+   *
+   * Der Browser rechnet ihn nicht mehr selbst: Die frühere Fassung nahm dafür
+   * eine 32-Bit-Prüfsumme, weil sie hier laufen musste — und die war
+   * nachbaubar. Jetzt gibt es eine Stelle, die hasht, und sie sitzt auf dem
+   * Server. Ob der ENTWURF davon abweicht, weiß diese Komponente ohnehin: Sie
+   * hat die Änderung selbst gemacht.
+   */
+  abdruck: string;
   /**
    * Meldung nach oben, wenn hier eine Prüfung erteilt wurde.
    *
@@ -83,9 +94,6 @@ export function StoryTisch({
   const text = post.vorlage ? fuelle(entwurf, werte) : post.text;
   const bild = post.bild ? { ...post.bild, stil, ...(form ? { art: form } : {}) } : null;
   const formen = post.bild ? moeglicheFormen(post.bild) : [];
-  const fassung = { text, bild };
-  const abdruck = fassungsAbdruck(fassung);
-
   const geaendert =
     stil !== gespeichert.stil ||
     form !== gespeichert.form ||
@@ -257,8 +265,13 @@ export function StoryTisch({
             nicht an. */}
         <Freigabe
           postId={post.id}
-          fassung={fassung}
           abdruck={abdruck}
+          /* Ein ungespeicherter Entwurf gehört zu KEINER abgelegten Fassung.
+             Die Freigabe rechnet ihr Urteil deshalb gegen einen Abdruck, den es
+             nicht gibt — das ist genau richtig und ohne Hash im Browser zu
+             haben: Was auf dem Bildschirm steht, ist dann nachweislich nicht
+             das, wofür je jemand geradegestanden hat. */
+          gilt={!geaendert}
           pruefungen={gepruefte}
           onErteilt={(p) => {
             setGepruefte((alte) => [

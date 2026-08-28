@@ -10,6 +10,7 @@ import {
   pruefeBefund,
 } from "../social-pruefung-kern";
 import { REGELN, regelnFuer } from "../redaktionsplan";
+import { fassungsAbdruck } from "../social-abdruck";
 
 /**
  * Die Freigabe wird ERTEILT — und daran hängt alles Weitere.
@@ -144,6 +145,66 @@ describe("Die Route, die eine Freigabe entgegennimmt", () => {
   it("nimmt kein stillschweigendes Bestanden an", () => {
     // Ein Standardwert für das Urteil hieße: Wer das Feld vergisst, gibt frei.
     expect(quelle).toMatch(/typeof body\.bestanden !== "boolean"/);
+  });
+});
+
+describe("Der Anker: der Fingerabdruck", () => {
+  // Das ganze Tor hängt an einem Satz: „gleicher Abdruck heißt gleiche Fassung".
+  // Er war FALSCH, bis zum 28.08.2026. Der Abdruck war eine handgeschriebene
+  // FNV-1a-Prüfsumme mit 32 Bit plus Textlänge — eine Streuspeicher-Funktion,
+  // gebaut zum schnellen Verteilen, nicht zum Binden. Zu einem freigegebenen
+  // Text ließ sich in Sekunden ein anderer bauen, der denselben Abdruck ergibt,
+  // und der erbte dessen Freigabe. Gefunden von einem adversarialen Prüfer mit
+  // dem Auftrag, das Tor zu widerlegen.
+  //
+  // Diese Tests nageln die Behebung fest — und zwar an der EIGENSCHAFT, nicht
+  // am Verfahrensnamen: Ein späterer Wechsel auf etwas anderes Starkes soll
+  // durchgehen, ein Rückfall auf etwas Schwaches nicht.
+
+  it("rechnet den Abdruck NUR serverseitig", () => {
+    // Eine Prüfsumme, die an zwei Orten laufen muss, ist nur so stark wie der
+    // schwächere Ort — deshalb hasht der reine Kern nicht mehr. Wer das
+    // zurückbaut, macht die Funktion wieder browsertauglich und damit schwach.
+    const kern = readFileSync(resolve(__dirname, "../social-pruefung-kern.ts"), "utf-8");
+    expect(ohneKommentare(kern)).not.toMatch(/fassungsAbdruck\s*\(/);
+    const abdruckModul = ohneKommentare(readFileSync(resolve(__dirname, "../social-abdruck.ts"), "utf-8"));
+    expect(abdruckModul).toMatch(/createHash\(/);
+  });
+
+  it("liefert einen Abdruck, der nicht von Hand nachgebaut werden kann", () => {
+    const a = fassungsAbdruck({ text: "Ein Beitrag", bild: null });
+    // Länge und Zeichenvorrat eines echten Verfahrens. Die alte Fassung lieferte
+    // acht Hex-Zeichen plus ":" plus Länge — an dieser Form scheitert sie.
+    expect(a).toMatch(/^[0-9a-f]{64}$/);
+  });
+
+  it("trennt Fassungen, die sich nur in einer Kleinigkeit unterscheiden", () => {
+    const eins = fassungsAbdruck({ text: "Ein Beitrag", bild: null });
+    const zwei = fassungsAbdruck({ text: "Ein Beitrag!", bild: null });
+    expect(eins).not.toBe(zwei);
+  });
+
+  it("hält reine Formatierung weiterhin für dieselbe Fassung", () => {
+    // Die Verschärfung darf die alte Eigenschaft nicht mitnehmen: Ein
+    // zusätzlicher Umbruch ist keine inhaltliche Änderung, und eine Sperre, die
+    // daran anschlägt, wird umgangen.
+    expect(fassungsAbdruck({ text: "Ein  Beitrag\n", bild: null })).toBe(
+      fassungsAbdruck({ text: "Ein Beitrag", bild: null }),
+    );
+  });
+});
+
+describe("Der Sendeweg verlangt den Abdruck", () => {
+  const SENDEN = ohneKommentare(
+    readFileSync(resolve(__dirname, "../../app/api/linkedin/post/route.ts"), "utf-8"),
+  );
+
+  it("weist eine Sendung ohne Abdruck ab", () => {
+    // Vorher war das Feld optional: Wer es wegließ, übersprang die Prüfung
+    // ersatzlos. Damit ließ sich ein neuer Text mit einem alten Bild
+    // veröffentlichen — die schwerste Fehlerklasse dieses Projekts.
+    expect(SENDEN).toMatch(/if \(!body\.fassung\)/);
+    expect(SENDEN).not.toMatch(/body\.fassung && body\.fassung !== abdruck/);
   });
 });
 
