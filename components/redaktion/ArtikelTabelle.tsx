@@ -3,6 +3,7 @@
 import { v, space } from "../../lib/theme";
 import { DatenTabelle, type Spalte } from "../admin/DatenTabelle";
 import { NeuBewerten } from "./NeuBewerten";
+import { ErfolgMessen } from "./ErfolgMessen";
 import type { ArtikelVorhaben } from "../../lib/artikelplan";
 
 // Die Warteschlange als Tabelle: harte Zahlen in Spalten, der Text dahinter
@@ -90,11 +91,16 @@ function Detail({
 
       {vorhaben.slug && (
         <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
-          geplante Adresse: {vorhaben.slug}
+          {vorhaben.zustand === "live" ? "Adresse" : "geplante Adresse"}: {vorhaben.slug}
         </p>
       )}
 
       <NeuBewerten thema={vorhaben.thema} />
+
+      {/* Nur bei einer veröffentlichten Seite: Was ist aus der Vorhersage
+          geworden? Bei allem anderen gäbe es nichts zu messen — und ein Knopf,
+          der immer null liefert, wird nicht mehr gedrückt. */}
+      {vorhaben.zustand === "live" && <ErfolgMessen thema={vorhaben.thema} />}
     </div>
   );
 }

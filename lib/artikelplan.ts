@@ -206,6 +206,134 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
       "neuer Artikel.",
   },
 
+  // ─── Live ────────────────────────────────────────────────────────────────
+  // Der Bestand gehört in denselben Plan wie das Geplante, sonst lässt sich die
+  // Vorhersage nie gegen das Ergebnis halten. Die Zielbegriffe sind am
+  // 28.08.2026 nachträglich gemessen — die Seiten sind älter als der Plan,
+  // ihre Begriffe waren nie festgehalten.
+
+  {
+    thema: "Balkonkraftwerk anmelden",
+    slug: "/balkonkraftwerk/ratgeber/anmelden",
+    zustand: "live",
+    messung: {
+      begriff: "balkonkraftwerk anmelden",
+      volumen: 27100,
+      schwierigkeit: 17,
+      gemessenAm: "2026-08-28",
+    },
+    begruendung:
+      "Mit Abstand der größte Begriff im ganzen Plan. Die Anmeldung ist eine echte Hürde, " +
+      "und die Seite beschreibt, was zu tun ist und woran es hakt — bewusst ohne Knopfnamen, " +
+      "weil die Behörde ihr Formular laufend ändert.",
+  },
+  {
+    thema: "Wärmepumpen-Förderung",
+    slug: "/ratgeber/waermepumpe-foerderung",
+    zustand: "live",
+    messung: {
+      begriff: "wärmepumpe förderung",
+      volumen: 33100,
+      schwierigkeit: 37,
+      gemessenAm: "2026-08-28",
+      nebenbegriffe: [{ begriff: "wärmepumpe förderung 2026", volumen: 9900, schwierigkeit: 28 }],
+    },
+    begruendung:
+      "Das größte Volumen überhaupt, aber auch die härteste Konkurrenz im Plan. Die Seite " +
+      "trägt die Antragsreihenfolge, die teuerste Auskunft des Förderbereichs.",
+  },
+  {
+    thema: "Einspeisevergütung-Tabelle",
+    slug: "/einspeiseverguetung-tabelle",
+    zustand: "live",
+    messung: {
+      begriff: "einspeisevergütung tabelle",
+      volumen: 1600,
+      schwierigkeit: 30,
+      gemessenAm: "2026-08-28",
+    },
+    begruendung:
+      "Nachschlagewerk aus dem eigenen Datenbestand: aktuelle Sätze, Halbjahres-Perioden, " +
+      "Monatsmatrix bis 2012 und Jahreswerte davor — kein Wert handgetippt.",
+  },
+  {
+    thema: "Photovoltaik-Neigungswinkel",
+    slug: "/photovoltaik-neigungswinkel",
+    zustand: "live",
+    messung: {
+      begriff: "photovoltaik neigungswinkel tabelle",
+      volumen: 1000,
+      schwierigkeit: 4,
+      gemessenAm: "2026-08-28",
+      nebenbegriffe: [{ begriff: "photovoltaik neigungswinkel", volumen: 40, schwierigkeit: 2 }],
+    },
+    begruendung:
+      "Ertragstabelle Neigung mal Ausrichtung aus einem dokumentierten Referenzabruf. Die " +
+      "Solargeometrie ändert sich nicht, die Seite braucht deshalb keinen Wächter.",
+  },
+  {
+    thema: "Gasheizung oder Wärmepumpe",
+    slug: "/ratgeber/gasheizung-oder-waermepumpe",
+    zustand: "live",
+    messung: {
+      begriff: "gasheizung oder wärmepumpe",
+      volumen: 880,
+      schwierigkeit: 0,
+      gemessenAm: "2026-08-28",
+    },
+    begruendung:
+      "Schwierigkeit 0 bei 880 Suchen — und der einzige Verweis, den wir uns bisher verdient " +
+      "haben, zeigt auf genau diese Seite (aus einem Wärmepumpen-Forum).",
+  },
+  {
+    thema: "Balkonkraftwerk mit Speicher",
+    slug: "/balkonkraftwerk/ratgeber/mit-speicher",
+    zustand: "live",
+    messung: {
+      begriff: "lohnt sich ein balkonkraftwerk mit speicher",
+      volumen: 720,
+      schwierigkeit: 6,
+      gemessenAm: "2026-08-28",
+      nebenbegriffe: [
+        { begriff: "balkonkraftwerk speicher test", volumen: 880, schwierigkeit: 0 },
+        { begriff: "balkonkraftwerk speicher sinnvoll", volumen: 110, schwierigkeit: 0 },
+      ],
+    },
+    begruendung:
+      "Zielt bewusst auf die Fragen mit echter Absicht, nicht auf den 135.000er-Begriff " +
+      "„balkonkraftwerk mit speicher“ — dort stehen Shops und Produktkarussells, da kann ein " +
+      "Ratgeber nicht ranken. Zwei Tabellen der Seite entstehen zur Laufzeit aus der Rechnung.",
+  },
+  {
+    thema: "Lohnt sich PV mit Speicher",
+    slug: "/ratgeber/lohnt-sich-pv-mit-speicher",
+    zustand: "live",
+    messung: {
+      begriff: "lohnt sich photovoltaik mit speicher",
+      volumen: 110,
+      schwierigkeit: 8,
+      gemessenAm: "2026-08-28",
+    },
+    begruendung:
+      "Der ehrliche Realitätscheck mit live gerechneter Beispielrechnung auf Basis aktueller " +
+      "Marktpreise — driftet deshalb nie vom Rechner weg.",
+  },
+  {
+    thema: "Lohnt sich PV ohne Einspeisevergütung",
+    slug: "/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung",
+    zustand: "live",
+    messung: {
+      begriff: "photovoltaik ohne einspeisevergütung",
+      volumen: 10,
+      schwierigkeit: 0,
+      gemessenAm: "2026-08-28",
+    },
+    begruendung:
+      "Kaum Volumen — die Seite ist trotzdem richtig, weil sie die Frage vorwegnimmt, die " +
+      "mit der Reform 2027 auf viele zukommt. Ein Beleg dafür, dass nicht jede Seite über " +
+      "Suchvolumen begründet sein muss.",
+  },
+
   // ─── Gemessen und bewusst verworfen ──────────────────────────────────────
   // Diese Einträge sind der eigentliche Grund für diese Datei. Sie verhindern,
   // dass ein hohes Suchvolumen in ein paar Monaten dieselbe Diskussion neu
@@ -329,6 +457,15 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
 /** Vorhaben, an denen gearbeitet werden kann — in der Reihenfolge des Plans. */
 export function offeneVorhaben(): ArtikelVorhaben[] {
   return ARTIKELPLAN.filter((v) => v.zustand === "geplant" || v.zustand === "in-arbeit");
+}
+
+/**
+ * Veröffentlichte Artikel. Sie stehen im selben Plan wie das Geplante, weil
+ * sich sonst nie prüfen lässt, ob eine Vorhersage getaugt hat — genau dafür
+ * trägt ihre Zeile die Erfolgsmessung.
+ */
+export function liveVorhaben(): ArtikelVorhaben[] {
+  return ARTIKELPLAN.filter((v) => v.zustand === "live");
 }
 
 /** Was gemessen und abgelehnt wurde. Nicht löschen — das ist der Gedächtnisteil. */

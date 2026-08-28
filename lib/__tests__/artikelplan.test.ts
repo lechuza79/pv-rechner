@@ -6,6 +6,7 @@ import {
   volumenGesamt,
   istLive,
   aeltesteMessung,
+  liveVorhaben,
   ZUSTAND_LABEL,
   type ArtikelVorhaben,
 } from "../artikelplan";
@@ -93,6 +94,15 @@ describe("Artikelplan", () => {
     for (const v of verworfeneVorhaben()) {
       expect(v.slug, `${v.thema}: verworfen, trägt aber eine Adresse`).toBeUndefined();
     }
+  });
+
+  // Der Plan taugt nur als Rückkanal, wenn er den Bestand kennt. Fehlt ein
+  // veröffentlichter Ratgeber, gibt es für ihn auch keine Erfolgsmessung — und
+  // die Vorhersage, die ihn begründet hat, bleibt für immer ungeprüft.
+  it("jeder veröffentlichte Ratgeber steht im Plan", () => {
+    const imPlan = new Set(liveVorhaben().map((v) => v.slug));
+    const fehlend = RATGEBER.filter((r) => !imPlan.has(r.slug)).map((r) => r.slug);
+    expect(fehlend, `Ratgeber ohne Eintrag im Artikelplan: ${fehlend.join(", ")}`).toEqual([]);
   });
 
   it("keine doppelten Themen und keine doppelten Adressen", () => {

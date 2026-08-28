@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { isAdminSession } from "../../../../../lib/admin-guard";
 import {
   offeneVorhaben,
+  liveVorhaben,
   verworfeneVorhaben,
   volumenGesamt,
   aeltesteMessung,
@@ -38,6 +39,7 @@ export default async function RedaktionArtikel() {
   if (!(await isAdminSession())) redirect("/login?next=/admin/redaktion/artikel");
 
   const offen = offeneVorhaben();
+  const live = liveVorhaben();
   const verworfen = verworfeneVorhaben();
 
   return (
@@ -58,6 +60,18 @@ export default async function RedaktionArtikel() {
           volumen={volumenKarte(offen)}
           zustandLabel={ZUSTAND_LABEL}
         />
+      </div>
+
+      <h2 style={{ fontSize: v("--font-size-h2"), marginBottom: space.sm }}>
+        Veröffentlicht ({live.length})
+      </h2>
+      <p style={{ color: v("--color-text-secondary"), marginBottom: space.md, maxWidth: 760 }}>
+        Hier steht die Rückseite der Vorhersage. Zeile aufklappen und „Was ist daraus geworden?“
+        holt die echten Einblendungen und Klicks der Seite — nur so lässt sich prüfen, ob die
+        Schätzung getaugt hat.
+      </p>
+      <div style={{ marginBottom: space.huge }}>
+        <ArtikelTabelle vorhaben={live} volumen={volumenKarte(live)} zustandLabel={ZUSTAND_LABEL} />
       </div>
 
       <h2 style={{ fontSize: v("--font-size-h2"), marginBottom: space.sm }}>
