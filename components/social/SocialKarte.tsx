@@ -220,13 +220,43 @@ export function SocialKarte({
               {!kennzahl && (
                 <div
                   style={{
+                    position: "relative",
                     height: px(g.balken),
-                    width: `${Math.max(anteil * 100, 2)}%`,
-                    background: s.hervorgehoben ? v("--color-accent") : v("--color-border"),
-                    borderRadius: v("--radius-sm"),
                     marginBottom: px(klein ? 6 : 14),
                   }}
-                />
+                >
+                  {/* Die Spur über die volle Breite — aber NUR, wo es ein Ganzes
+                      gibt.
+                      Mit Ganzem ist sie die Referenz: Der größte der drei
+                      Solaranteile füllt 35 Prozent, und ohne Spur bleiben zwei
+                      Drittel der Zeile leer, ohne dass etwas sagt warum — der
+                      Balken sieht dann einfach zu kurz aus.
+                      Ohne Ganzes wäre sie eine Lüge: Dort ist am größten Wert
+                      normiert, der füllt die Spur ohnehin ganz aus, und die
+                      Spur behauptete eine Obergrenze, die es nicht gibt. */}
+                  {bild.ganzes != null && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        background: v("--color-text-primary"),
+                        opacity: SPUR_DECKKRAFT,
+                        borderRadius: v("--radius-sm"),
+                      }}
+                    />
+                  )}
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: `${Math.max(anteil * 100, 2)}%`,
+                      background: s.hervorgehoben ? v("--color-accent") : v("--color-border"),
+                      borderRadius: v("--radius-sm"),
+                    }}
+                  />
+                </div>
               )}
               <div
                 style={{

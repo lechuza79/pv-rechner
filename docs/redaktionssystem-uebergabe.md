@@ -323,12 +323,35 @@ je Kopf 9-fach, Balkonquote 3,8-fach, Wachstum 2,5-fach. Der Satz vergleicht die
 selbst und kippt mit ihnen. Dieselbe Klasse wie das erfundene Ost-West-Gefälle im Katalog, nur eine
 Ebene tiefer versteckt — **jede vergleichende Aussage über die Länder gehört gerechnet.**
 
-**Die Werkbank ist das Werkzeug dafür** (`npm run social:zahlen`, dann `npm run social:formen`).
-Sie rendert jede Bildform an jedem Beitrag, der sie trägt, **an echten Zahlen und mit dem
-Beitragstext daneben** — an gleichmäßig verteilten Testwerten nimmt sich jede Form gut aus, und ein
-Bild ohne seinen Text ist nur die halbe Beurteilung. Ohne Filter im Maßstab der Redaktionsvorschau,
-mit `FORM=` oder `POST=` in voller Kartengröße, mit `STIL=highlight` im blauen Schema. Die Ausgabe
-landet in `public/` und ist von der Versionierung ausgenommen.
+## Die Templates sind ein Bereich der Redaktion (28.08.2026)
+
+**Unter „Redaktion → Templates", nicht als lose Datei daneben** (Betreiber: „wieso sind die
+eigentlich wieder irgendwo im Äther?"). Zwei Ansichten, und die Trennung ist der Arbeitszustand:
+**Bibliothek** zeigt, was abgenommen ist — die Referenz, an der sich das nächste Design misst.
+**Neu entwickeln** zeigt die Formen ohne abgenommene Variante, darunter die Beiträge, die eine
+ungeprüfte Kombination verwenden. Das ist der Arbeitsvorrat, nicht der Bestand.
+
+**Je Form eine Zeile, darin die drei Farbvarianten** — das ist die Einheit, die abgenommen wird, und
+die Ansicht, in der man sieht, ob ein Design in allen drei Schemata trägt. Genau dort saßen die
+Fehler der letzten Runden, beide nur im Highlight sichtbar.
+
+**Jede Variante trägt eine Kennung** (`ringpaar-dunkel`), auch die nicht abgenommenen: Man muss über
+eine Variante reden können, bevor sie einen Template-Namen hat — sonst hat gerade das, woran
+gearbeitet wird, keinen Namen. Sie hängt NICHT am Anzeigenamen, sonst wanderte sie beim Umbenennen
+mit und ein Verweis von gestern zeigte auf etwas anderes.
+
+**Die Karte wird immer in Ausgabegröße gerendert und nur für die Anzeige verkleinert.** Nicht
+kleiner gerechnet: Dann bricht der Text an anderen Stellen um als im ausgelieferten Bild — der
+Lizenzvermerk brach so mitten im Kürzel, im echten Bild sauber dahinter. Wer eine verkleinert
+gerechnete Karte beurteilt, beurteilt eine, die es nicht gibt.
+
+**Die Kommandozeilen-Fassung bleibt** (`npm run social:zahlen`, dann `npm run social:formen`) und
+rendert **dieselbe Komponente** — sie ist der Weg, ein Design ohne Anmeldung anzusehen, und der
+einzige Ort, an dem die Rundungsprüfung gegen die echten Zahlen läuft. Zwei Fassungen derselben
+Ansicht würden driften. `FORM=` zeigt eine Form größer und schreibt in eine EIGENE Datei — sonst
+überschreibt die gefilterte Ansicht die Übersicht, was zweimal passiert ist. Die Ausgabe landet in
+`public/` und ist von der Versionierung ausgenommen. Sie steht fest auf der hellsten Tagesstufe,
+sonst erbt sie die Uhrzeit und wird abends unlesbar.
 
 **Was der Testlauf NICHT konnte, bis er nachgeschärft wurde:** Die Enge-Schwelle war zunächst gegen
 sich selbst geprüft (`reihenEnge(...) < RANGLISTE_MAX_ENGE`) — auf 0,99 hochgesetzt blieb alles
