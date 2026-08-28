@@ -35,8 +35,15 @@ import { KARTEN_STILE, KARTEN_STIL_NAME } from "../lib/social-karten-stil";
 import { getCssVariables, globalStyles } from "../lib/theme";
 
 const quelle = process.argv[2] ?? "/tmp/social-kennzahlen.json";
-const ziel = process.argv[3] ?? "/tmp/social-formen.html";
 const nurForm = process.env.FORM;
+// Eine gefilterte Ansicht schreibt in eine EIGENE Datei.
+//
+// Sonst überschreibt sie die Übersicht, und die steht danach nur noch auf einer
+// Form — genau das ist mir zweimal passiert, und beim zweiten Mal hat es der
+// Betreiber gefunden, nicht ich. Eine Nebenwirkung, die man erst am nächsten
+// Aufruf bemerkt, ist eine, die man immer wieder hat.
+const basisZiel = process.argv[3] ?? "/tmp/social-formen.html";
+const ziel = nurForm ? basisZiel.replace(/\.html$/, `-${nurForm}.html`) : basisZiel;
 
 const kennzahlen = JSON.parse(readFileSync(quelle, "utf8")) as SocialKennzahlen;
 const posts = baueAllePosts(kennzahlen);

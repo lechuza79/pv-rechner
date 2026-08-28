@@ -29,3 +29,4 @@ scratch/
 
 # Werkbank-Ausgabe, nie committen
 public/formen-werkbank.html
+public/formen-werkbank-*.html
