@@ -19,12 +19,25 @@ import type { SocialPost } from "../../lib/social-posts";
 export function StoryListe({
   eintraege,
 }: {
-  eintraege: { post: SocialPost; pruefungen: Pruefung[]; abdruck: string; befunde: MechanikBefund[] }[];
+  eintraege: {
+    post: SocialPost;
+    pruefungen: Pruefung[];
+    abdruck: string;
+    befunde: MechanikBefund[];
+    gesendetAm: string | null;
+  }[];
 }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: space.huge * 1.5 }}>
-      {eintraege.map(({ post, pruefungen, abdruck, befunde }) => (
-        <StoryTisch key={post.id} post={post} pruefungen={pruefungen} abdruck={abdruck} befunde={befunde} />
+      {eintraege.map(({ post, pruefungen, abdruck, befunde, gesendetAm }) => (
+        <StoryTisch
+          key={post.id}
+          post={post}
+          pruefungen={pruefungen}
+          abdruck={abdruck}
+          befunde={befunde}
+          gesendetAm={gesendetAm}
+        />
       ))}
     </div>
   );

@@ -6,6 +6,7 @@ import { socialKennzahlen } from "../../../../lib/social-kennzahlen";
 import { baueAllePosts } from "../../../../lib/social-posts";
 import { ladeFassungen } from "../../../../lib/social-vorlagen-db";
 import { pruefeMechanisch, sperren } from "../../../../lib/social-mechanik";
+import { schonGesendet, schreibeVersand } from "../../../../lib/social-versand-log";
 
 // Veröffentlichung eines Beitrags mit Bild.
 //
@@ -106,6 +107,21 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: pruefung.grund }, { status: 409 });
   }
 
+  // DOPPELVERSAND. Bricht die Verbindung nach dem Aufruf bei LinkedIn ab und
+  // jemand wiederholt, standen bisher zwei identische Beiträge im Feed — nichts
+  // verhinderte das. Die Sperre hängt an der FASSUNG, nicht am Beitrag: Nach
+  // einer echten Überarbeitung darf er wieder laufen, unverändert nie.
+  const bereits = await schonGesendet(post.id, abdruck);
+  if (bereits) {
+    return NextResponse.json(
+      {
+        error: `Diese Fassung ging bereits am ${new Date(bereits.gesendet_am).toLocaleString("de-DE")} raus.`,
+        extern: bereits.extern_id,
+      },
+      { status: 409 },
+    );
+  }
+
   try {
     let bildUrn: string | undefined;
     if (body.bildBase64) {
@@ -126,7 +142,32 @@ export async function POST(req: NextRequest) {
       bildAlt: body.bildAlt,
       ersterKommentar: body.ersterKommentar,
     });
-    return NextResponse.json({ ok: true, ...ergebnis });
+
+    // SOFORT NACH dem Aufruf protokollieren, vor der Antwort. Scheitert das
+    // Schreiben, ist der Beitrag trotzdem draußen — dann muss der Fehler laut
+    // sein, damit niemand ein zweites Mal sendet. Deshalb wird er in die
+    // Antwort gehoben statt geschluckt.
+    let protokollFehler: string | null = null;
+    try {
+      await schreibeVersand({
+        post_id: post.id,
+        fassung_fingerabdruck: abdruck,
+        extern_id: (ergebnis as { id?: string }).id ?? null,
+        kanal: "linkedin",
+      });
+    } catch (err) {
+      protokollFehler = (err as Error).message;
+    }
+
+    return NextResponse.json({
+      ok: true,
+      ...ergebnis,
+      ...(protokollFehler
+        ? {
+            warnung: `Der Beitrag ist DRAUSSEN, aber das Versandprotokoll konnte nicht geschrieben werden (${protokollFehler}). Nicht erneut senden — die Doppelversand-Sperre greift jetzt nicht.`,
+          }
+        : {}),
+    });
   } catch (err) {
     return NextResponse.json({ error: (err as Error).message }, { status: 500 });
   }

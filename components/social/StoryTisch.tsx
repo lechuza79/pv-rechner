@@ -1,15 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { v, space, pad } from "../../lib/theme";
 import { FeedVorschau } from "./FeedVorschau";
 import { VorlagenEditor } from "./VorlagenEditor";
 import { Kennung } from "./Kennung";
 import { fuelle } from "../../lib/social-vorlage";
 import { KARTEN_STILE, KARTEN_STIL_NAME, KARTEN_STIL_STANDARD, type KartenStil } from "../../lib/social-karten-stil";
-import type { Pruefung } from "../../lib/social-pruefung-kern";
+import { urteil, type Pruefung } from "../../lib/social-pruefung-kern";
 import type { Befund as MechanikBefund } from "../../lib/social-mechanik";
 import { Freigabe } from "./Freigabe";
+import { SendenKnopf } from "./SendenKnopf";
 import { BILDFORM_NAME, moeglicheFormen, templateVon, type PostBild, type SocialPost } from "../../lib/social-posts";
 
 // Eine Story am Redaktionstisch: so, wie sie im Feed steht, plus die drei
@@ -30,6 +31,7 @@ export function StoryTisch({
   post,
   pruefungen,
   befunde,
+  gesendetAm,
   abdruck,
   kategorieHinweis,
   ohneTitel,
@@ -39,6 +41,8 @@ export function StoryTisch({
   pruefungen: Pruefung[];
   /** Was die mechanische Pruefung an dieser Fassung festgestellt hat. */
   befunde: MechanikBefund[];
+  /** Ging genau DIESE Fassung schon einmal raus? */
+  gesendetAm?: string | null;
   /**
    * Der Fingerabdruck der ABGELEGTEN Fassung, vom Server gerechnet.
    *
@@ -79,6 +83,9 @@ export function StoryTisch({
   // umspringt wie beim Umfärben. Ohne das müsste man die Seite neu laden, um zu
   // sehen, dass die eigene Freigabe angekommen ist.
   const [gepruefte, setGepruefte] = useState<Pruefung[]>(pruefungen);
+  // Die Karte, die beim Senden aufgenommen wird — dieselbe, die auf dem
+  // Bildschirm steht. Ein zweiter Renderweg wäre ein anderes Bild.
+  const karte = useRef<HTMLDivElement | null>(null);
   /**
    * Was zuletzt wirklich in der Ablage landete.
    *
@@ -102,6 +109,9 @@ export function StoryTisch({
     stil !== gespeichert.stil ||
     form !== gespeichert.form ||
     (!!post.vorlage && entwurf !== gespeichert.vorlage);
+  // Dasselbe Urteil, das die Freigabe-Karte zeigt — hier für den Sende-Knopf.
+  // Es wird nicht zweimal gerechnet, sondern einmal und zweimal gelesen.
+  const urteilOk = !geaendert && urteil(abdruck, gepruefte).ok;
 
   /**
    * Alles auf einmal ablegen — Text, Farbschema, Bildform.
@@ -164,7 +174,7 @@ export function StoryTisch({
         flexWrap: "wrap",
       }}
     >
-      <div style={{ flex: "0 0 auto" }}>
+      <div style={{ flex: "0 0 auto" }} ref={karte}>
         <FeedVorschau bild={bild!} text={text} breite={440} />
       </div>
 
@@ -291,6 +301,28 @@ export function StoryTisch({
             geaendert
               ? "Erst speichern, dann freigeben: Eine Prüfung gilt der Fassung in der Ablage, nicht dem Entwurf auf dem Bildschirm."
               : undefined
+          }
+        />
+
+        {/* Der Auslöser. Er beurteilt nichts — er löst aus, was die Sperren
+            ohnehin freigegeben haben. Die Begründung, warum er gerade nicht
+            geht, steht daneben, statt dass er nur grau ist: Ein toter Knopf
+            ohne Grund schickt jemanden dreimal um den Block. */}
+        <SendenKnopf
+          postId={post.id}
+          abdruck={abdruck}
+          bildAlt={bild ? `${bild.aussage}. ${bild.gemessen}.` : ""}
+          kartenRef={karte}
+          gesperrtWeil={
+            geaendert
+              ? "Erst speichern."
+              : gesendetAm
+                ? `Diese Fassung ging bereits am ${new Date(gesendetAm).toLocaleDateString("de-DE")} raus.`
+                : befunde.some((b) => b.schwere === "sperre")
+                  ? "Die mechanische Prüfung sperrt — siehe oben."
+                  : !urteilOk
+                    ? "Es fehlt eine Freigabe."
+                    : undefined
           }
         />
 

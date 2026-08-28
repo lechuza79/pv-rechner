@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { isAdminSession } from "../../../../../lib/admin-guard";
 import { ladeKonto } from "../../../../../lib/social-konten";
 import { ablaufBefund } from "../../../../../lib/social-ablauf";
+import { ladeVersand } from "../../../../../lib/social-versand-log";
 import { v, space, pad } from "../../../../../lib/theme";
 
 // Auswertung: Was ist rausgegangen, und was können wir darüber überhaupt wissen.
@@ -24,6 +25,7 @@ export default async function RedaktionAuswertung() {
   if (!(await isAdminSession())) redirect("/login?next=/admin/redaktion/auswertung");
 
   const konto = await ladeKonto("linkedin");
+  const versand = await ladeVersand();
   const befund = konto ? ablaufBefund(konto, new Date()) : null;
 
   const karte = {
@@ -57,10 +59,56 @@ export default async function RedaktionAuswertung() {
 
       <section style={{ ...karte, marginBottom: space.xxxl }}>
         <h2 style={{ fontSize: v("--font-size-h3"), marginTop: 0 }}>Veröffentlichte Beiträge</h2>
-        <p style={{ margin: 0, fontSize: v("--font-size-body"), color: v("--color-text-secondary") }}>
-          Noch keine Ablage. Sie entsteht mit dem ersten Post, der über den Redaktionstisch rausgeht
-          — vorher wäre eine leere Tabelle nur eine Behauptung über eine Funktion, die es nicht gibt.
-        </p>
+        {versand.length === 0 ? (
+          <p style={{ margin: 0, fontSize: v("--font-size-body"), color: v("--color-text-secondary") }}>
+            Noch nichts rausgegangen. Die Ablage entsteht mit dem ersten Beitrag, der über den
+            Redaktionstisch gesendet wird.
+          </p>
+        ) : (
+          <>
+            {/* Nur ANHÄNGEN, nie ändern: Eine Zeile ist die Aussage „das ging an
+                dem Tag mit diesem Abdruck raus". Sie zu überschreiben hieße, die
+                Vergangenheit zu bearbeiten — dieselbe Regel wie beim
+                Förder-Verlauf, wo gelöscht ebenfalls nie wird.
+
+                Der ABDRUCK steht mit dabei, verkürzt. Ohne ihn wäre nicht
+                rekonstruierbar, WELCHE Fassung raus ist, und der Prüfbefund
+                dazu wäre kein Beweismittel, sondern der jeweils letzte Zustand. */}
+            <div style={{ display: "flex", flexDirection: "column", gap: space.sm }}>
+              {versand.map((x) => (
+                <div
+                  key={`${x.post_id}-${x.gesendet_am}`}
+                  style={{
+                    display: "flex",
+                    gap: space.md,
+                    alignItems: "baseline",
+                    flexWrap: "wrap",
+                    fontSize: v("--font-size-small"),
+                  }}
+                >
+                  <span style={{ color: v("--color-text-muted"), minWidth: 130 }}>
+                    {new Date(x.gesendet_am).toLocaleString("de-DE")}
+                  </span>
+                  <span style={{ flex: "1 1 auto" }}>{x.post_id}</span>
+                  <span style={{ color: v("--color-text-muted"), fontFamily: "monospace" }}>
+                    {x.fassung_fingerabdruck.slice(0, 12)}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <p
+              style={{
+                fontSize: v("--font-size-caption"),
+                color: v("--color-text-muted"),
+                marginBottom: 0,
+                marginTop: space.md,
+              }}
+            >
+              {versand.length} Sendung{versand.length === 1 ? "" : "en"}. Der Abdruck sagt, welche
+              Fassung rausging — dieselbe Fassung ein zweites Mal weist der Sendeweg ab.
+            </p>
+          </>
+        )}
       </section>
 
       <section style={karte}>

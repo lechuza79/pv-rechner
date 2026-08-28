@@ -32,6 +32,8 @@ export type GridEintrag = {
   abdruck: string;
   /** Was die mechanische Pruefung festgestellt hat. */
   befunde: MechanikBefund[];
+  /** Ging genau DIESE Fassung schon raus? */
+  gesendetAm: string | null;
   kategorie: { name: string; schluessel: string };
   /**
    * Ist das Design dieser Story durchgesehen — im Code abgenommen ODER im
@@ -209,6 +211,7 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
             pruefungen={aktiv.pruefungen}
             abdruck={aktiv.abdruck}
             befunde={aktiv.befunde}
+            gesendetAm={aktiv.gesendetAm}
             ohneTitel
             onPruefung={(postId, p) =>
               setDazu((alt) => ({

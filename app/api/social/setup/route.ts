@@ -4,6 +4,7 @@ import { istAdminOderCron } from "../../../../lib/admin-guard";
 import { SOCIAL_KONTEN_DDL } from "../../../../lib/social-konten";
 import { SOCIAL_PRUEFUNG_DDL } from "../../../../lib/social-pruefung-kern";
 import { SOCIAL_VORLAGEN_DDL } from "../../../../lib/social-vorlage";
+import { SOCIAL_VERSAND_DDL } from "../../../../lib/social-versand-log";
 
 // Einmalige Einrichtung der Konten-Ablage, mehrfach aufrufbar. RLS ist an und es
 // gibt keine Policy — die Tabelle hält Zugangsschlüssel und ist damit
@@ -22,9 +23,9 @@ export async function GET(req: NextRequest) {
   if (!supabase) {
     return NextResponse.json({ error: "Database not configured" }, { status: 500 });
   }
-  const { error } = await supabase.rpc("exec_sql", { sql: SOCIAL_KONTEN_DDL + SOCIAL_PRUEFUNG_DDL + SOCIAL_VORLAGEN_DDL });
+  const { error } = await supabase.rpc("exec_sql", { sql: SOCIAL_KONTEN_DDL + SOCIAL_PRUEFUNG_DDL + SOCIAL_VORLAGEN_DDL + SOCIAL_VERSAND_DDL });
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-  return NextResponse.json({ ok: true, tables: ["social_konten", "social_pruefungen", "social_vorlagen"] });
+  return NextResponse.json({ ok: true, tables: ["social_konten", "social_pruefungen", "social_vorlagen", "social_versand"] });
 }

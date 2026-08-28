@@ -8,6 +8,7 @@ import { KategorieNav } from "../../../../components/social/KategorieNav";
 import { ladeFassungen } from "../../../../lib/social-vorlagen-db";
 import { fassungsAbdruck, ladeAllePruefungen } from "../../../../lib/social-pruefung";
 import { pruefeMechanisch } from "../../../../lib/social-mechanik";
+import { ladeVersand } from "../../../../lib/social-versand-log";
 import { StoryListe } from "../../../../components/social/StoryListe";
 import { StoryGrid } from "../../../../components/social/StoryGrid";
 import { kategorie } from "../../../../lib/redaktions-kategorien";
@@ -71,6 +72,11 @@ export default async function RedaktionEntwicklung({
   // weil es sich mit jeder Änderung dort bewegen muss. Eine Abfrage für alle
   // statt einer je Story — die Tabelle ist klein, die Roundtrips sind es nicht.
   const pruefungen = await ladeAllePruefungen();
+  // Das Versandprotokoll: Welche FASSUNG ging schon raus. Am Beitrag zu hängen
+  // wäre falsch — nach einer echten Überarbeitung darf er wieder laufen.
+  const versand = await ladeVersand();
+  const gesendetAm = (postId: string, abdruck: string) =>
+    versand.find((x) => x.post_id === postId && x.fassung_fingerabdruck === abdruck)?.gesendet_am ?? null;
 
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto" }}>
@@ -127,6 +133,7 @@ export default async function RedaktionEntwicklung({
               // bekommt ihn fertig — er soll nicht hashen können müssen.
               abdruck: fassungsAbdruck({ text: p.text, bild: p.bild }),
               befunde: befundeJePost.get(p.id) ?? [],
+              gesendetAm: gesendetAm(p.id, fassungsAbdruck({ text: p.text, bild: p.bild })),
               kategorie: { name: k.name, schluessel: k.schluessel },
               // Gestaltet heißt: Der Beitrag verwendet ein abgenommenes Template.
               bearbeitet: !!p.bild && !!templateVon(p.bild),
@@ -140,6 +147,7 @@ export default async function RedaktionEntwicklung({
             pruefungen: pruefungen[p.id] ?? [],
             abdruck: fassungsAbdruck({ text: p.text, bild: p.bild }),
             befunde: befundeJePost.get(p.id) ?? [],
+            gesendetAm: gesendetAm(p.id, fassungsAbdruck({ text: p.text, bild: p.bild })),
           }))}
         />
       )}
