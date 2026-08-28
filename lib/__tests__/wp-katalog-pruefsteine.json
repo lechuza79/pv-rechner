@@ -1,0 +1,211 @@
+{
+ "pruefsteine": [
+  {
+   "name": "Buderus WSW186i-6 TP50, Logatherm modulierende Sole-Wasser-Wärmepumpe, 5,84 kW",
+   "marke": "BUDERUS",
+   "leistungKw": 5.84
+  },
+  {
+   "name": "Buderus WSW186i-16 TP50, Logatherm modulierende Sole-Wasser-Wärmepumpe, 15,53 kW",
+   "marke": "BUDERUS",
+   "leistungKw": 15.53
+  },
+  {
+   "name": "Buderus WSW186i-12 TP50, Logatherm modulierende Sole-Wasser-Wärmepumpe, 12,53 kW",
+   "marke": "BUDERUS",
+   "leistungKw": 12.53
+  },
+  {
+   "name": "Buderus WSW186i-8 TP50, Logatherm modulierende Sole-Wasser-Wärmepumpe, 7,76 kW",
+   "marke": "BUDERUS",
+   "leistungKw": 7.76
+  },
+  {
+   "name": "Vaillant aroTHERM Split plus VWL 35/8.2 AS S2 Luft-Wasser-Wärmepumpe, 3 kW",
+   "marke": "VAILLANT",
+   "leistungKw": 3.0
+  },
+  {
+   "name": "Vaillant aroTHERM Split plus VWL 55/8.2 AS S2 Luft-Wasser-Wärmepumpe, 5 kW",
+   "marke": "VAILLANT",
+   "leistungKw": 5.0
+  },
+  {
+   "name": "Vaillant aroTHERM Split plus VWL 75/8.2 AS S2 Luft-Wasser-Wärmepumpe, 7 kW",
+   "marke": "VAILLANT",
+   "leistungKw": 7.0
+  },
+  {
+   "name": "Vaillant aroTHERM plus VWL 105/8.1 A Luft-Wasser-Wärmepumpe 10 kW, Monoblock, 400 V",
+   "marke": "VAILLANT",
+   "leistungKw": 10.0
+  },
+  {
+   "name": "Vaillant aroTHERM plus VWL 125/8.1 A Luft-Wasser-Wärmepumpe 12 kW, Monoblock, 400 V",
+   "marke": "VAILLANT",
+   "leistungKw": 12.0
+  },
+  {
+   "name": "Buderus Sole-Wasser-Wärmepumpe 8kW, 180L Speicher, Logatherm WSW186i-8 T180, MX400, weiß",
+   "marke": "BUDERUS",
+   "leistungKw": 8.0
+  },
+  {
+   "name": "Buderus Sole-Wasser-Wärmepumpe 6kW, Logatherm WSW186i-6, MX400 Modul, weiß",
+   "marke": "BUDERUS",
+   "leistungKw": 6.0
+  },
+  {
+   "name": "Buderus Sole-Wasser-Wärmepumpe 16kW, 180L Speicher, Logatherm WSW186i-16 T180, MX400, weiß",
+   "marke": "BUDERUS",
+   "leistungKw": 16.0
+  },
+  {
+   "name": "Buderus Sole-Wasser-Wärmepumpe 12kW, 180L Speicher, Logatherm WSW186i-12 T180, MX400, weiß",
+   "marke": "BUDERUS",
+   "leistungKw": 12.0
+  },
+  {
+   "name": "Vaillant aroTHERM pro VWL 55/7.1 A, Monoblock-Luft-Wasser-Wärmepumpe, R290, 230 V, 4,84 kW",
+   "marke": "VAILLANT",
+   "leistungKw": 4.84
+  },
+  {
+   "name": "Vaillant aroTHERM pro VWL 75/7.1 A, Monoblock-Luft-Wasser-Wärmepumpe, R290, 230 V, 6,37 kW",
+   "marke": "VAILLANT",
+   "leistungKw": 6.37
+  },
+  {
+   "name": "Vaillant aroTHERM pro VWL 115/7.1 A, Monoblock-Luft-Wasser-Wärmepumpe, R290, 400 V, 11,12 kW",
+   "marke": "VAILLANT",
+   "leistungKw": 11.12
+  },
+  {
+   "name": "Vaillant aroTHERM perform VWL 205/8.1 A S2 Q, Monoblock-Luft-Wasser-Wärmepumpe, Außeneinheit, R290, 400 V, 20 kW",
+   "marke": "VAILLANT",
+   "leistungKw": 20.0
+  }
+ ],
+ "feedzeilen": [
+  {
+   "aw_product_id": "42887481318",
+   "product_name": "Vaillant aroTHERM Split VWL 125/5 AS, uniTOWER VWL 128/5 IS, Heizungswärmepumpe",
+   "brand_name": "VAILLANT",
+   "search_price": "9689.00",
+   "aw_deep_link": "https://www.awin1.com/pclick.php?p=42887481318&a=3047037&m=1",
+   "merchant_image_url": "https://www.heizungsdiscount24.de/shop/images/products/main/",
+   "in_stock": "1",
+   "merchant_product_category_path": "Wärmepumpen > Vaillant > aroTHERM Split > VWL 125/5 AS"
+  },
+  {
+   "aw_product_id": "42887481319",
+   "product_name": "Vaillant aroTHERM Split VWL 125/5 AS, VWL 127/5 IS, Heizungswärmepumpe",
+   "brand_name": "VAILLANT",
+   "search_price": "7609.00",
+   "aw_deep_link": "https://www.awin1.com/pclick.php?p=42887481319&a=3047037&m=1",
+   "merchant_image_url": "https://www.heizungsdiscount24.de/shop/images/products/main/",
+   "in_stock": "1",
+   "merchant_product_category_path": "Wärmepumpen > Vaillant > aroTHERM Split > VWL 125/5 AS"
+  },
+  {
+   "aw_product_id": "42887481323",
+   "product_name": "Vaillant aroTHERM Split VWL 55/5 AS, VWL 57/5 IS, Heizungswärmepumpe",
+   "brand_name": "VAILLANT",
+   "search_price": "4849.00",
+   "aw_deep_link": "https://www.awin1.com/pclick.php?p=42887481323&a=3047037&m=1",
+   "merchant_image_url": "https://www.heizungsdiscount24.de/shop/images/products/main/",
+   "in_stock": "1",
+   "merchant_product_category_path": "Wärmepumpen > Vaillant > aroTHERM Split > VWL 55/5 AS"
+  },
+  {
+   "aw_product_id": "42887481324",
+   "product_name": "Vaillant aroTHERM Split VWL 75/5 AS, uniTOWER VWL 78/5 IS, Heizungswärmepumpe",
+   "brand_name": "VAILLANT",
+   "search_price": "8039.00",
+   "aw_deep_link": "https://www.awin1.com/pclick.php?p=42887481324&a=3047037&m=1",
+   "merchant_image_url": "https://www.heizungsdiscount24.de/shop/images/products/main/",
+   "in_stock": "1",
+   "merchant_product_category_path": "Wärmepumpen > Vaillant > aroTHERM Split > VWL 75/5 AS"
+  },
+  {
+   "aw_product_id": "42887481325",
+   "product_name": "Vaillant aroTHERM Split VWL 75/5 AS, VWL 77/5 IS, Heizungswärmepumpe",
+   "brand_name": "VAILLANT",
+   "search_price": "5689.00",
+   "aw_deep_link": "https://www.awin1.com/pclick.php?p=42887481325&a=3047037&m=1",
+   "merchant_image_url": "https://www.heizungsdiscount24.de/shop/images/products/main/",
+   "in_stock": "1",
+   "merchant_product_category_path": "Wärmepumpen > Vaillant > aroTHERM Split > VWL 75/5 AS"
+  },
+  {
+   "aw_product_id": "42887481329",
+   "product_name": "Viessmann Vitocal 200-A Luft/Wasser-Wärmepumpe, 12,4 kW, Typ AWCI-AC 201.A10",
+   "brand_name": "Viessmann",
+   "search_price": "11769.00",
+   "aw_deep_link": "https://www.awin1.com/pclick.php?p=42887481329&a=3047037&m=1",
+   "merchant_image_url": "https://www.heizungsdiscount24.de/shop/images/products/main/",
+   "in_stock": "1",
+   "merchant_product_category_path": "Wärmepumpen > Viessmann > Vitocal 200-A"
+  },
+  {
+   "aw_product_id": "42887481359",
+   "product_name": "Viessmann Vitocal 222-S Luft/Wasser-Wärmepumpe, 12,6 kW, AWBT-E-AC 221.C10 400",
+   "brand_name": "Viessmann",
+   "search_price": "12509.00",
+   "aw_deep_link": "https://www.awin1.com/pclick.php?p=42887481359&a=3047037&m=1",
+   "merchant_image_url": "https://www.heizungsdiscount24.de/shop/images/products/main/",
+   "in_stock": "1",
+   "merchant_product_category_path": "Wärmepumpen > Viessmann > Vitocal 222-S"
+  },
+  {
+   "aw_product_id": "42887481360",
+   "product_name": "Viessmann Vitocal 222-S Luft/Wasser-Wärmepumpe, 13,7 kW, AWBT-E-AC 221.C13 400",
+   "brand_name": "Viessmann",
+   "search_price": "13359.00",
+   "aw_deep_link": "https://www.awin1.com/pclick.php?p=42887481360&a=3047037&m=1",
+   "merchant_image_url": "https://www.heizungsdiscount24.de/shop/images/products/main/",
+   "in_stock": "1",
+   "merchant_product_category_path": "Wärmepumpen > Viessmann > Vitocal 222-S"
+  },
+  {
+   "aw_product_id": "42887481361",
+   "product_name": "Viessmann Vitocal 222-S Luft/Wasser-Wärmepumpe, 14,7 kW, AWBT-E-AC 221.C16 400",
+   "brand_name": "Viessmann",
+   "search_price": "14289.00",
+   "aw_deep_link": "https://www.awin1.com/pclick.php?p=42887481361&a=3047037&m=1",
+   "merchant_image_url": "https://www.heizungsdiscount24.de/shop/images/products/main/",
+   "in_stock": "1",
+   "merchant_product_category_path": "Wärmepumpen > Viessmann > Vitocal 222-S"
+  },
+  {
+   "aw_product_id": "42887481362",
+   "product_name": "Viessmann Vitocal 222-S Luft/Wasser-Wärmepumpe, 12,6 kW, AWBT-M-E-AC 221.C10 230",
+   "brand_name": "Viessmann",
+   "search_price": "10179.00",
+   "aw_deep_link": "https://www.awin1.com/pclick.php?p=42887481362&a=3047037&m=1",
+   "merchant_image_url": "https://www.heizungsdiscount24.de/shop/images/products/main/",
+   "in_stock": "1",
+   "merchant_product_category_path": "Wärmepumpen > Viessmann > Vitocal 222-S"
+  },
+  {
+   "aw_product_id": "42887482677",
+   "product_name": "Vaillant versoTHERM plus VWL 37/5, Luft-/Wasser-Wärmepumpe",
+   "brand_name": "VAILLANT",
+   "search_price": "8219.00",
+   "aw_deep_link": "https://www.awin1.com/pclick.php?p=42887482677&a=3047037&m=1",
+   "merchant_image_url": "https://www.heizungsdiscount24.de/shop/images/products/main/",
+   "in_stock": "1",
+   "merchant_product_category_path": "Wärmepumpen > Vaillant > versoTHERM plus > VWL 37/5"
+  },
+  {
+   "aw_product_id": "42887482680",
+   "product_name": "Vaillant recoCOMPACT exclusive VWL 39/5, Luft-/Wasser-Wärmepumpe",
+   "brand_name": "VAILLANT",
+   "search_price": "12709.00",
+   "aw_deep_link": "https://www.awin1.com/pclick.php?p=42887482680&a=3047037&m=1",
+   "merchant_image_url": "https://www.heizungsdiscount24.de/shop/images/products/main/",
+   "in_stock": "1",
+   "merchant_product_category_path": "Wärmepumpen > Vaillant > recoCOMPACT exclusive > VWL 39/5"
+  }
+ ]
+}

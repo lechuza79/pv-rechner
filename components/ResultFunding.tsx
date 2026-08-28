@@ -118,7 +118,21 @@ export default function ResultFunding({
 
   // Eine Karte, ein Rahmen, eine Überschrift — der Kopf-Inhalt sitzt in jedem
   // Zustand an derselben Stelle, damit das Feld beim Auflösen nicht springt.
-  const Karte = ({ children, akzent = false }: { children?: React.ReactNode; akzent?: boolean }) => (
+  //
+  // ACHTUNG, hier steckte ein Fehler mit großer Reichweite (gefunden 26.08.2026):
+  // Das hier war eine KOMPONENTE, die innerhalb der Render-Funktion definiert
+  // wurde und als `<Karte>…</Karte>` gerendert wurde. Bei jedem Render entsteht
+  // dabei ein neuer Komponententyp; React erkennt ihn nicht wieder und baut den
+  // gesamten Teilbaum neu auf — samt Eingabefeld. Wirkung: Nach JEDER getippten
+  // Ziffer verlor das Postleitzahl-Feld den Fokus, die zweite Ziffer landete im
+  // Nichts. Der Fördercheck war damit praktisch nicht bedienbar, und zwar in
+  // ALLEN drei Rechnern, die diese Karte benutzen.
+  //
+  // Deshalb eine schlichte Funktion, die JSX zurückgibt, und ein Aufruf
+  // `karte(...)` statt `<Karte>…</Karte>`. Damit gibt es keinen Komponententyp,
+  // der sich ändern könnte — der DOM-Knoten bleibt über Renders derselbe.
+  // Wer das je wieder in eine Komponente umschreibt, bringt den Fehler zurück.
+  const karte = (children?: React.ReactNode, akzent = false) => (
     <div style={akzent ? { ...card, borderColor: v("--color-positive") } : card}>
       {heading}
       {kopf ? <div style={{ marginBottom: 14 }}>{kopf}</div> : null}
@@ -127,13 +141,13 @@ export default function ResultFunding({
   );
 
   if (loading && !chosenAgs) {
-    return <Karte><div style={{ fontSize: 12, color: v("--color-text-muted") }}>Förderprogramme werden geprüft …</div></Karte>;
+    return karte(<div style={{ fontSize: 12, color: v("--color-text-muted") }}>Förderprogramme werden geprüft …</div>);
   }
 
   // Ambiguous PLZ: ask which municipality the user lives in before computing.
   if (!chosenAgs && candidates && candidates.length > 1) {
-    return (
-      <Karte>
+    return karte(
+      <>
         <div style={{ fontSize: 12, color: v("--color-text-secondary"), marginBottom: 10 }}>
           Diese PLZ deckt mehrere Orte ab — wo wohnst du?
         </div>
@@ -148,11 +162,11 @@ export default function ResultFunding({
             </button>
           ))}
         </div>
-      </Karte>
+      </>,
     );
   }
 
-  if (!chosenAgs) return kopf ? <Karte /> : null;
+  if (!chosenAgs) return kopf ? karte() : null;
 
   // Location label = most specific matched non-bund program, else fall back to
   // the picked candidate's place name.
@@ -165,8 +179,8 @@ export default function ResultFunding({
   const hasGrant = applied.length > 0;
   const effektiv = Math.max(0, brutto - (enabled ? total : 0));
 
-  return (
-    <Karte akzent={hasGrant}>
+  return karte(
+    <>
       {hasGrant ? (
         <>
           <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", marginBottom: enabled ? 12 : 0 }}>
@@ -248,6 +262,7 @@ export default function ResultFunding({
       </Link>
 
       <FundingProgramModal program={modalProgram} onClose={() => setModalProgram(null)} />
-    </Karte>
+    </>,
+    hasGrant,
   );
 }

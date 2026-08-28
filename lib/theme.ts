@@ -567,6 +567,35 @@ export const globalStyles = `
   }
   .tool-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media (max-width:720px){.tool-cards-grid{grid-template-columns:1fr}}
+  /* Geräteempfehlung: Seitenspalte ab Tablet-Breite, darunter Wischleiste.
+
+     Die Rechner laufen in einer 480px-Spalte (--page-max-width). Das Ergebnis
+     bricht ab 1024px aus dieser Begrenzung aus und legt rechts eine 300er-Spalte
+     daneben; der negative Außenabstand zentriert den breiteren Block über der
+     schmalen Spalte, statt ihn nach rechts wandern zu lassen. Unterhalb bleibt
+     alles wie bisher — die Regel greift schlicht nicht.
+
+     WARUM 1024 UND NICHT DER KOPFZEILEN-PUNKT (1080): Das sind zwei verschiedene
+     Fragen. Dort geht es darum, ab wann die Navigationsleiste in eine Zeile
+     passt; hier darum, ab wann 480 + 24 + 300 = 804 px plus Ränder auf den
+     Schirm passen. Denselben Wert zu nehmen wäre eine Scheingemeinsamkeit.
+
+     Die Spalte scrollt mit (sticky), aber nur bis zur eigenen Höhe: Bei einer
+     Liste, die höher ist als das Fenster, wäre ein festes Mitlaufen ein Käfig —
+     man käme an die unterste Kachel nicht heran. */
+  .wp-ergebnis{display:block}
+  .wp-geraete-spalte{margin-top:16px}
+  /* Schmal: Kacheln nebeneinander im Sichtfenster, eine gut sichtbar plus ein
+     angeschnittener Rand der nächsten — das ist der Hinweis, dass es weitergeht.
+     Ohne den Anschnitt wischt niemand. */
+  .wp-geraete-kachel{flex:0 0 82%}
+  @media (min-width:1024px){
+    .wp-ergebnis{display:grid;grid-template-columns:minmax(0,480px) 300px;gap:24px;align-items:start;width:804px;margin-left:-162px}
+    .wp-geraete-spalte{margin-top:0;position:sticky;top:24px}
+    /* In der Spalte gestapelt statt nebeneinander. */
+    .wp-geraete-reihe{flex-direction:column}
+    .wp-geraete-kachel{flex:1 1 auto}
+  }
   /* Kopfzeile: Welche Navigation sichtbar ist, entscheidet die Medienabfrage —
      NICHT der Zustand der Komponente. Das isDesktop-Flag in Header.tsx startet
      vor der Hydratation auf wahr; der Server lieferte damit auf jedem

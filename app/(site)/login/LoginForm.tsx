@@ -49,7 +49,7 @@ export default function LoginForm({ next = "/dashboard" }: { next?: string }) {
       <div style={{ maxWidth: 420, margin: "0 auto" }}>
         <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 6 }}>Anmelden</h1>
         <p style={{ fontSize: 14, color: v("--color-text-muted"), marginBottom: 20, lineHeight: 1.5 }}>
-          Passwortlos per Magic Link: E-Mail eingeben, du bekommst einen Anmeldelink. Kein Passwort, keine Werbung.
+          Passwortlos per Magic Link: E-Mail eingeben, du bekommst einen Anmeldelink. Kein Passwort, keine Werbe-E-Mails.
         </p>
 
         {authState.status === "authed" ? (

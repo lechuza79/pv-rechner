@@ -91,6 +91,41 @@ export const VORBEHALT_WOERTER = [
  * steht für einen Originaltext, den ein Prüfer an diesem Tag selbst gelesen hat.
  */
 export const RECHTSBELEGE: Rechtsbeleg[] = [
+  // ── Preisangaben in den Geräteempfehlungen ────────────────────────────────
+  //
+  // Am 27.08.2026 im Volltext gelesen — und die Lesung hat die eigene Annahme
+  // widerlegt: Zuerst stand hier die Preisangabenverordnung als Grundlage. Sie
+  // trifft uns NICHT. § 3 Abs. 1 PAngV verpflichtet, wer Waren "anbietet" oder
+  // "als Anbieter von Waren ... unter Angabe von Preisen wirbt" — die zweite
+  // Alternative gilt ebenfalls nur dem Anbieter, und § 6 Abs. 1 setzt sogar
+  // ausdrücklich ein Angebot "zum Abschluss eines Fernabsatzvertrages" voraus.
+  // Anbieter der Wärmepumpe ist der Händler, nicht wir.
+  //
+  // Was greift, ist das Lauterkeitsrecht: § 5b Abs. 1 Nr. 3 UWG macht
+  // Gesamtpreis und Lieferkosten zur wesentlichen Information, sobald Waren
+  // unter Hinweis auf Merkmale und Preis so dargestellt werden, dass ein
+  // Verbraucher das Geschäft abschließen kann. Genau das tun die Kacheln:
+  // Leistung, Kältemittel, Preis, ein Knopf zum Shop.
+  //
+  // Die Angaben sind dieselben — die Fundstelle ist eine andere. Das ist kein
+  // Formalismus: Eine Begründung, die auf die falsche Norm zeigt, hält der
+  // ersten Nachfrage nicht stand und lässt die richtige ungeprüft.
+  //
+  // Die Verordnung bekommt KEINEN eigenen Eintrag: Das Register führt, was ein
+  // Nutzer liest, und sie steht in keinem sichtbaren Text mehr. Die widerlegte
+  // Zuordnung ist hier festgehalten, nicht als Beleg getarnt.
+  {
+    norm: "UWG §5b",
+    gesetz: "Gesetz gegen den unlauteren Wettbewerb",
+    traegt:
+      "Gesamtpreis und Lieferkosten neben jedem Gerät in der Empfehlung. " +
+      "Absatz 2 (Offenlegung der Ranking-Parameter) greift NICHT: Er setzt Waren " +
+      "\"von verschiedenen Unternehmern\" voraus, wir zeigen einen Händler.",
+    fundstelle: "§ 5b Abs. 1 Nr. 3, Abs. 2 Satz 1",
+    quelle: "gesetze-im-internet.de/uwg_2004/__5b.html",
+    geprueftIso: "2026-08-27",
+    zustand: "gesetz",
+  },
   // ── Umsatzsteuer ──────────────────────────────────────────────────────────
   {
     norm: "UStG §12",
