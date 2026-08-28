@@ -15,6 +15,7 @@ import {
   verschwindet,
 } from "../social-bildformen";
 import { BUNDESLAND_UMRISS } from "../bundesland-umrisse";
+import { umrissBox } from "../bundesland-umriss-box";
 
 // Die beiden Ausfälle, die diese Ansicht haben kann, sind von außen unsichtbar:
 // ein Reiter ohne Stories (ein Versprechen ohne Inhalt) und eine Story ohne
@@ -632,6 +633,45 @@ describe("Das Formen-Register", () => {
     // bliebe auf ihrer eingebauten Form stehen, ohne dass etwas fehlschlägt.
     const arten = new Set(posts.map((p) => p.bild?.art).filter(Boolean));
     for (const a of arten) expect(BILDFORMEN.some((f) => f.art === a), String(a)).toBe(true);
+  });
+});
+
+describe("Gefüllte Umrisse", () => {
+  it("kennen die Grenzen jeder Landform", () => {
+    // Ohne sie füllte die Form von der Unterkante ihres QUADRATS aus. Die
+    // Umrisse sind aber seitenverhältnistreu eingepasst: Mecklenburg-Vorpommern
+    // sitzt zwischen 15 und 85, Sachsen zwischen 12 und 88. Eine Füllung von 8
+    // Prozent lag damit vollständig unterhalb der Landform — im Bild war nichts
+    // zu sehen, während die Zahl daneben einen Wert behauptete.
+    for (const [name, pfad] of Object.entries(BUNDESLAND_UMRISS)) {
+      const b = umrissBox(pfad);
+      expect(b.breite, `${name}: keine Breite`).toBeGreaterThan(0);
+      expect(b.hoehe, `${name}: keine Höhe`).toBeGreaterThan(0);
+      // Die Form liegt im Quadrat, sonst stimmt der Ausschnitt nicht.
+      expect(b.x0).toBeGreaterThanOrEqual(0);
+      expect(b.y0).toBeGreaterThanOrEqual(0);
+      expect(b.x0 + b.breite).toBeLessThanOrEqual(100);
+      expect(b.y0 + b.hoehe).toBeLessThanOrEqual(100);
+      // Eine der beiden Achsen füllt das Quadrat aus — so passt der Erzeuger
+      // jedes Land ein. Wäre es keine, säße die Form irgendwo darin und die
+      // Vereinfachung hätte sie verkleinert.
+      expect(
+        Math.max(b.breite, b.hoehe),
+        `${name}: füllt keine Achse aus (${b.breite}×${b.hoehe})`,
+      ).toBeCloseTo(100, 0);
+    }
+  });
+
+  it("misst den flachen Fall so, dass ein kleiner Anteil sichtbar bleibt", () => {
+    // Der konkrete Fall, an dem es aufgefallen ist. Gerechnet gegen das Quadrat
+    // läge die Füllung bei 8 Prozent zwischen 92 und 100 — die Form endet bei
+    // 85, es wäre nichts zu sehen. Gegen die Form gerechnet liegt sie innerhalb.
+    const b = umrissBox(BUNDESLAND_UMRISS["Mecklenburg-Vorpommern"]);
+    expect(b.y0 + b.hoehe, "Form endet über dem Quadratboden").toBeLessThan(100);
+    const anteil = 0.081;
+    const oberkanteDerFuellung = b.y0 + b.hoehe * (1 - anteil);
+    expect(oberkanteDerFuellung, "Füllung beginnt innerhalb der Form").toBeLessThan(b.y0 + b.hoehe);
+    expect(oberkanteDerFuellung, "und nicht darunter").toBeGreaterThan(b.y0);
   });
 });
 

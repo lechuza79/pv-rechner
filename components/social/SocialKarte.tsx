@@ -3,6 +3,7 @@ import { v, space } from "../../lib/theme";
 import { kartenTokens, serienFarben } from "../../lib/social-karten-stil";
 import { aufteilungsStellen, ranglistenStellen, restVon } from "../../lib/social-bildformen";
 import { BUNDESLAND_UMRISS, BUNDESLAND_UMRISS_SEITE } from "../../lib/bundesland-umrisse";
+import { umrissBox } from "../../lib/bundesland-umriss-box";
 import type { BildSerie, PostBild } from "../../lib/social-posts";
 
 // Das Bildformat für den Feed. Hochkant (4:5), höchstens drei Serien,
@@ -21,6 +22,21 @@ import type { BildSerie, PostBild } from "../../lib/social-posts";
 
 const BREITE = 1080;
 const HOEHE = 1350; // 4:5
+
+/**
+ * Wie schwach die Referenzfläche steht — die Spur unter einem Ring, der
+ * ungefüllte Teil eines Umrisses, die Bahn hinter einem Ranglisten-Balken.
+ *
+ * Eine Zahl für alle drei, weil es in allen drei dieselbe Sache ist: nicht der
+ * Wert, sondern das, woran er gemessen wird. Standen sie einzeln, sah dieselbe
+ * Referenz je nach Bildform anders aus — der Umriss trug 0,3, der Ring 0,14
+ * (Betreiber, 28.08.2026).
+ *
+ * Schwach halten ist die eigentliche Regel: Bei einem kleinen Anteil ist die
+ * Referenz fast die ganze Fläche, und zu kräftig gesetzt liest sich der KLEINE
+ * Wert als große Fläche — genau umgekehrt zur Aussage.
+ */
+const SPUR_DECKKRAFT = 0.14;
 
 /**
  * Schriftgrößen je Stufe — ABSOLUT, nicht skaliert.
@@ -392,7 +408,7 @@ function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: n
                   // bei einem kleinen Anteil ist sie fast der ganze Ring, und zu
                   // kräftig gesetzt liest sich der KLEINERE Wert als große
                   // Fläche. Genau umgekehrt zur Aussage.
-                  strokeOpacity={0.14}
+                  strokeOpacity={SPUR_DECKKRAFT}
                   strokeWidth={breite}
                 />
                 {anteil >= 1 ? (
@@ -711,11 +727,14 @@ function UmrissTeil({ bild, skala }: { bild: PostBild; skala: number }) {
   const grund = bild.ganzes ?? 100;
   const zeigeEinheit = bild.einheitAmWert !== false;
   const toene = serienFarben(bild.stil);
-  const SEITE = BUNDESLAND_UMRISS_SEITE;
   const GROESSE = bild.serien.length > 2 ? 260 : 340;
 
   return (
     <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      {/* Die Formen stehen auf EINER Grundlinie, weil sie ein Balkendiagramm
+          ersetzen (Betreiber, 28.08.2026). Zentriert im Quadrat stünden sie auf
+          verschiedenen Höhen, und dann vergleicht man Füllstände über einer
+          Linie, die es nicht gibt. */}
       <div style={{ display: "flex", gap: 72 * skala, alignItems: "flex-start", justifyContent: "center" }}>
         {bild.serien.map((s) => {
           const pfad = s.umriss ? BUNDESLAND_UMRISS[s.umriss] : undefined;
@@ -725,11 +744,20 @@ function UmrissTeil({ bild, skala }: { bild: PostBild; skala: number }) {
           // Schnittmaske teilen sich sonst die erste — und die zweite Fläche
           // trüge die Form der ersten, ohne dass etwas fehlschlägt.
           const maske = `umriss-${s.umriss ?? s.label}`.replace(/[^a-zA-Z0-9-]/g, "");
+          // Der Ausschnitt ist die FORM, nicht ihr Quadrat: Mecklenburg-Vorpommern
+          // sitzt darin nur zwischen 15 und 85, und eine Füllung von 8 Prozent lag
+          // damit vollständig unterhalb der Landform — im Bild war nichts zu
+          // sehen, während die Zahl daneben einen Wert behauptete.
+          const box = pfad ? umrissBox(pfad) : { x0: 0, y0: 0, breite: 100, hoehe: 100 };
           return (
             <div key={s.label} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
               {pfad ? (
                 <svg
-                  viewBox={`0 0 ${SEITE} ${SEITE}`}
+                  viewBox={`${box.x0} ${box.y0} ${box.breite} ${box.hoehe}`}
+                  // Unten bündig: Das ist die gemeinsame Grundlinie. Ohne sie
+                  // schwebt eine flache Form über der Zeile, und ihr Füllstand
+                  // lässt sich mit dem der Nachbarform nicht vergleichen.
+                  preserveAspectRatio="xMidYMax meet"
                   width={GROESSE * skala}
                   height={GROESSE * skala}
                   role="presentation"
@@ -741,10 +769,19 @@ function UmrissTeil({ bild, skala }: { bild: PostBild; skala: number }) {
                     </clipPath>
                   </defs>
                   {/* Der ungefüllte Teil bleibt sichtbar — ohne ihn stünde da
-                      eine abgeschnittene Form, die man nicht mehr erkennt. */}
-                  <path d={pfad} fill={toene.gedaempft} fillOpacity={0.3} />
+                      eine abgeschnittene Form, die man nicht mehr erkennt.
+                      Dieselbe Deckkraft wie die Spur unter einem Ring: Beide sind
+                      die Referenz, gegen die gemessen wird, und sie sollen in
+                      allen Formen gleich aussehen (Betreiber, 28.08.2026). */}
+                  <path d={pfad} fill={toene.gedaempft} fillOpacity={SPUR_DECKKRAFT} />
                   <g clipPath={`url(#${maske})`}>
-                    <rect x={0} y={SEITE * (1 - anteil)} width={SEITE} height={SEITE * anteil} fill={farbe} />
+                    <rect
+                      x={box.x0}
+                      y={box.y0 + box.hoehe * (1 - anteil)}
+                      width={box.breite}
+                      height={box.hoehe * anteil}
+                      fill={farbe}
+                    />
                   </g>
                 </svg>
               ) : (
