@@ -12,6 +12,7 @@
 // lib/social-kennzahlen.ts (server-only) und werden hereingereicht.
 
 import { fmtPvLeistung } from "./atlas-format";
+import { DATA_SOURCES, sourceLabel } from "./data-sources";
 import { feedInRatesFor, naechsteDegressionIso } from "./feedin-config";
 import { eegVerfahrenSatz } from "./eeg-reform-config";
 import { PERCAPITA_SERIES, YEARS_PERCAPITA } from "./country-comparison-percapita";
@@ -403,7 +404,21 @@ const MARKE = "Solar Check";
 function quellenzeile(standIso: string, mitMarke: boolean): string {
   const d = new Date(standIso);
   const datum = d.toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" });
-  const basis = `Marktstammdatenregister (Bundesnetzagentur), Stand ${datum}. Eigene Berechnung`;
+  // AUS DEM REGISTER, nicht getippt: Der Name stand hier zusammen mit dem
+  // Datenstand als eine Zeichenkette, und dabei fiel die Lizenz weg —
+  // „Marktstammdatenregister (Bundesnetzagentur), Stand …, Eigene Berechnung"
+  // ohne „dl-de/by-2-0". Das Register führt sie, `sourceLabel` setzt sie samt
+  // Änderungshinweis, und beide sind Pflichtbestandteile: Der Vermerk steht im
+  // BILD, also in dem Teil, der beim Weiterteilen mitreist und für den die
+  // Lizenzpflicht überhaupt der Grund war.
+  //
+  // Dieselbe Fehlerklasse hat das Projekt bei den drei CC-BY-Quellen schon
+  // bezahlt (fehlender Lizenzverweis) und ein zweites Mal in der Quellenkante,
+  // die sich ihre Kurzform selbst zusammenbaute. Gefunden hat es hier eine
+  // parallele Sitzung, kein Test — der prüfte auf „dl-de/by-2-0 ODER CC BY 4.0
+  // ODER Bundesnetzagentur" und ließ den Behördennamen als Ersatz für eine
+  // Lizenz durchgehen.
+  const basis = `${sourceLabel(DATA_SOURCES.mastr)}, Stand ${datum}. Eigene Berechnung`;
   return mitMarke ? `${basis}, ${MARKE}.` : `${basis}.`;
 }
 
@@ -1274,7 +1289,11 @@ export function postNurBalkon(k: SocialKennzahlen): SocialPost {
  */
 function quellenzeileEmber(mitMarke: boolean): string {
   const bis = YEARS_PERCAPITA[YEARS_PERCAPITA.length - 1];
-  const basis = `Ember, CC BY 4.0, Daten verändert. Stand ${bis}. Eigene Berechnung`;
+  // Auch dieser Zweig war getippt, und auch er wich ab: „Daten verändert" gegen
+  // den Änderungshinweis, den das Register für Ember führt. Er war nur
+  // vollständiger als der andere, nicht richtiger — welche Fassung stimmte,
+  // hing daran, wer die Zeile gerade schrieb.
+  const basis = `${sourceLabel(DATA_SOURCES.ember)}. Stand ${jahrText(bis)}. Eigene Berechnung`;
   return mitMarke ? `${basis}, ${MARKE}.` : `${basis}.`;
 }
 

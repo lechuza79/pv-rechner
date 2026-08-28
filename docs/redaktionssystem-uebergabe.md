@@ -336,6 +336,18 @@ grün. Und die Testdaten trugen für alle Länder denselben Speicherwert, also g
 Verteilung zu prüfen. Beides behoben, beide Gegenproben laufen. **Wer hier eine Schwelle ändert,
 macht den Test einmal absichtlich kaputt und sieht nach, ob er rot wird.**
 
+**Der Quellenvermerk kommt aus dem Quellenregister, nicht aus der Tastatur.** Beide Zeilen waren
+getippt, und sie wichen **verschieden** ab: Die Anlagenregister-Fassung ließ die Lizenz ganz weg
+(„Marktstammdatenregister (Bundesnetzagentur), Stand …" ohne „dl-de/by-2-0"), die Ember-Fassung
+schrieb einen anderen Änderungshinweis als das Register. Welche stimmte, hing daran, wer die Zeile
+gerade schrieb. Der Vermerk steht im **Bild** — also in dem Teil, der beim Weiterteilen mitreist und
+für den die Lizenzpflicht überhaupt der Grund war.
+
+**Der Test hatte die Lücke selbst offen gelassen:** Er verlangte „dl-de/by-2-0 ODER CC BY 4.0 ODER
+Bundesnetzagentur" und nahm damit den Behördennamen als Ersatz für eine Lizenz. Zwei Prüfungen jetzt:
+eine Lizenz ohne Ersatzbedingung, und der Vermerk muss mit einem Registereintrag beginnen. Gefunden
+hat es eine parallele Sitzung, kein Test.
+
 ## Was diese Runde an Zahlen gefunden hat
 
 **Eine Registerspalte zählt SPEICHERGERÄTE, nicht Anlagen mit Speicher.** Als Anteil beschriftet
