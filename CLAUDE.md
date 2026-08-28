@@ -1166,6 +1166,25 @@ Firmennamen sahen einzeln unauffällig aus; untereinander in der Ansicht standen
 ohne Namen. In einem Anschreiben wäre jeder davon peinlich. `firmennameSaeubern` ist
 deshalb streng: Was nach dem Putzen nur noch aus einer Rechtsform besteht, wird verworfen.
 
+**Das GEWERK ist eine eigene Größe, nicht das Geschäftsfeld.** Die Geschäftsfelder sagen,
+WAS angeboten wird (Photovoltaik, Speicher, Wallbox), das Gewerk sagt, WER es anbietet —
+ein Elektrobetrieb, ein Dachdecker und ein reiner Solarteur bauen dieselbe Anlage und sind
+drei verschiedene Gesprächspartner. Angelegt 28.08.2026 auf Vorgabe des Betreibers, weil
+der Bereich um Heizungsbauer und weitere Gewerke wachsen soll; mehrere je Betrieb sind der
+Normalfall (67 % tragen mindestens eines, 40 von 3.117 vier oder mehr — echte
+Komplettanbieter).
+
+**Bewertungen gehen NUR über die strukturierten Daten der eigenen Website**
+(`AggregateRating` nach schema.org). Das hebt die Quote von 42 auf 156 Betriebe (5 %) und
+bleibt trotzdem eine Minderheit — mehr gibt kein zulässiger Weg her, Google ist gesperrt.
+Die Herkunft heißt immer „eigene Website", auch wenn der Betrieb dort seine Google-Sterne
+wiedergibt: Wir haben die Zahl von ihm, nicht von Google.
+
+**Adressen werden GELESEN, nicht geraten — dreimal dieselbe Lehre.** Impressum, Kontaktseite
+und Favicon liegen alle unter frei gewählten Pfaden; `/impressum` traf in zwei von drei
+Fällen daneben, `/favicon.ico` bei einem Drittel. Wer rät, hält „nicht gefunden" für „gibt
+es nicht".
+
 **Die Ansicht (`/admin/fachbetriebe`) kann bewusst wenig.** Filter, Details, Arbeitsstand,
 Notiz — kein Versand, kein Anschreiben, keine Auswahlliste. Die Stände heißen „offen ·
 vorgemerkt · angesehen · ungeeignet"; ein Zustand wie „angeschrieben" würde einen Apparat

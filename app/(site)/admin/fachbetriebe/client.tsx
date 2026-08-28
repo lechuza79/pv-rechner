@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { v, space, pad } from "../../../../lib/theme";
 import { BUNDESLAENDER } from "../../../../lib/mastr-regions";
+import { GEWERKE } from "../../../../lib/fachbetrieb-extrakt";
 import { STAENDE, belegteMerkmale, hatKontaktweg } from "../../../../lib/fachbetrieb-stand";
 
 // Ansicht der erhobenen PV-Fachbetriebe.
@@ -15,7 +16,9 @@ import { STAENDE, belegteMerkmale, hatKontaktweg } from "../../../../lib/fachbet
 // bewusst nicht gibt (docs/solarteur-widget-offene-fragen.md).
 //
 // Tabelle statt Karten: Bei über dreitausend Betrieben ist Vergleichen die
-// Hauptarbeit, und dafür müssen gleiche Angaben untereinander stehen.
+// Hauptarbeit, und dafür müssen gleiche Angaben untereinander stehen. Die
+// Kopfzeile benennt jede Spalte, weil eine Zahl wie „3/8" ohne Beschriftung eine
+// Behauptung ist.
 
 type Zeile = {
   domain: string;
@@ -28,11 +31,16 @@ type Zeile = {
   ort: string | null;
   region_id: string | null;
   kreis_id: string | null;
+  kreis_name: string | null;
+  kreis_art: string | null;
+  bundesland: string | null;
+  bundesland_kurz: string | null;
   email: string | null;
   telefon: string | null;
   kontakt_url: string | null;
   kontakt_formular: boolean | null;
   impressum_url: string | null;
+  favicon_url: string | null;
   meisterbetrieb: boolean | null;
   innung: string | null;
   handwerkskammer: string | null;
@@ -43,6 +51,7 @@ type Zeile = {
   bewertung_anzahl: number | null;
   bewertung_quelle: string | null;
   geschaeftsfelder: string[] | null;
+  gewerke: string[] | null;
   art: string;
   art_grund: string | null;
   kreise_gesehen: number;
@@ -62,6 +71,33 @@ const FELD_TEXT: Record<string, string> = {
   balkonkraftwerk: "Balkonkraftwerk",
 };
 
+const GEWERK_TEXT: Record<string, string> = Object.fromEntries(
+  GEWERKE.map((g) => [g.name, g.text]),
+);
+
+/** Die Spalten der Kopfzeile. `hilfe` erscheint als „?" mit Erklärung — nur da,
+ *  wo die Überschrift allein die Zahl nicht erklärt. */
+const SPALTEN: { text: string; breite: string; hilfe?: string; rechts?: boolean }[] = [
+  { text: "Betrieb", breite: "1 1 260px" },
+  { text: "Ort", breite: "0 1 180px" },
+  { text: "Landkreis", breite: "0 1 160px" },
+  { text: "Gewerk", breite: "0 1 150px", hilfe: "Welches Handwerk der Betrieb nach eigenen Angaben ausübt — aus Firmenname, Menü und Impressum. Mehrere sind bei Komplettanbietern normal; gemessen tragen zwei Drittel mindestens eines, 40 von 3.117 vier oder mehr. Fehlt die Angabe, sagt die Website es nirgends." },
+  { text: "Merkmale", breite: "0 0 auto" },
+  {
+    text: "belegt",
+    breite: "0 0 44px",
+    rechts: true,
+    hilfe:
+      "Wie viele der acht Vertrauensmerkmale wir belegen können — eine Auskunft über unseren Datenstand, keine Bewertung des Betriebs. Wer seinen Meistertitel nicht auf die Website schreibt, bekommt hier weniger Punkte als einer, der es tut.",
+  },
+  {
+    text: "Kontakt",
+    breite: "0 0 92px",
+    hilfe: "Erreichbar heißt: E-Mail, Telefon oder Kontaktformular. Ein Formular ist ein Weg, aber kein Postfach.",
+  },
+  { text: "Stand", breite: "0 0 84px" },
+];
+
 export default function FachbetriebeAnsicht() {
   const [zeilen, setZeilen] = useState<Zeile[]>([]);
   const [gesamt, setGesamt] = useState(0);
@@ -69,10 +105,12 @@ export default function FachbetriebeAnsicht() {
   const [laedt, setLaedt] = useState(true);
   const [fehler, setFehler] = useState<string | null>(null);
   const [offen, setOffen] = useState<string | null>(null);
+  const [hilfeZu, setHilfeZu] = useState<string | null>(null);
 
   const [bl, setBl] = useState("");
   const [stand, setStand] = useState("");
   const [art, setArt] = useState("betrieb");
+  const [gewerk, setGewerk] = useState("");
   const [suche, setSuche] = useState("");
   const [nurKontakt, setNurKontakt] = useState(false);
   const [nurMeister, setNurMeister] = useState(false);
@@ -85,6 +123,7 @@ export default function FachbetriebeAnsicht() {
     if (bl) p.set("bl", bl);
     if (stand) p.set("stand", stand);
     if (art) p.set("art", art);
+    if (gewerk) p.set("gewerk", gewerk);
     if (suche) p.set("q", suche);
     if (nurKontakt) p.set("kontakt", "1");
     if (nurMeister) p.set("meister", "1");
@@ -101,7 +140,7 @@ export default function FachbetriebeAnsicht() {
     } finally {
       setLaedt(false);
     }
-  }, [bl, stand, art, suche, nurKontakt, nurMeister, sortierung, seite]);
+  }, [bl, stand, art, gewerk, suche, nurKontakt, nurMeister, sortierung, seite]);
 
   useEffect(() => {
     void laden();
@@ -109,10 +148,12 @@ export default function FachbetriebeAnsicht() {
 
   // Jede Filteränderung setzt auf die erste Seite zurück. Ohne das steht man
   // nach dem Filtern auf Seite 12 einer Liste mit vier Treffern und sieht nichts.
-  const filterSetzen = <T,>(f: (x: T) => void) => (x: T) => {
-    setSeite(0);
-    f(x);
-  };
+  const filterSetzen =
+    <T,>(f: (x: T) => void) =>
+    (x: T) => {
+      setSeite(0);
+      f(x);
+    };
 
   async function aendern(domain: string, feld: { stand?: string; notiz?: string | null }) {
     const r = await fetch("/api/admin/fachbetriebe", {
@@ -131,9 +172,16 @@ export default function FachbetriebeAnsicht() {
   const seiten = Math.ceil(gesamt / 50);
 
   return (
-    <div style={{ maxWidth: 1240, margin: "0 auto", paddingBottom: space.xxl }}>
-      <h1 style={{ fontSize: 24, marginBottom: space.xs }}>PV-Fachbetriebe</h1>
-      <p style={{ color: v("--color-text-muted"), marginBottom: space.lg, maxWidth: 720 }}>
+    <div style={{ maxWidth: 1320, margin: "0 auto", paddingBottom: space.xxl }}>
+      <h1 style={{ fontSize: v("--font-size-h1"), marginBottom: space.xs }}>PV-Fachbetriebe</h1>
+      <p
+        style={{
+          color: v("--color-text-muted"),
+          marginBottom: space.lg,
+          maxWidth: 720,
+          fontSize: v("--font-size-body"),
+        }}
+      >
         Erhoben über die Ortssuche in allen 400 Landkreisen, angereichert aus Impressum,
         Startseite und Kontaktseite. Jedes Merkmal hat einen Beleg mit Fundstelle. Es gibt
         keinen Versandweg — die Ansicht dient dem Ansehen und Vormerken.
@@ -156,16 +204,9 @@ export default function FachbetriebeAnsicht() {
           value={suche}
           onChange={(e) => filterSetzen(setSuche)(e.target.value)}
           placeholder="Name, Ort oder Adresse"
-          style={{
-            padding: pad("xs", "sm"),
-            borderRadius: v("--radius-sm"),
-            border: `1px solid ${v("--color-border")}`,
-            background: v("--color-bg"),
-            color: v("--color-text-primary"),
-            minWidth: 220,
-          }}
+          style={{ ...eingabeStil, minWidth: 200 }}
         />
-        <select value={bl} onChange={(e) => filterSetzen(setBl)(e.target.value)} style={wahlStil}>
+        <select value={bl} onChange={(e) => filterSetzen(setBl)(e.target.value)} style={eingabeStil}>
           <option value="">alle Bundesländer</option>
           {BUNDESLAENDER.map((b) => (
             <option key={b.ags} value={b.ags}>
@@ -173,7 +214,23 @@ export default function FachbetriebeAnsicht() {
             </option>
           ))}
         </select>
-        <select value={art} onChange={(e) => filterSetzen(setArt)(e.target.value)} style={wahlStil}>
+        <select
+          value={gewerk}
+          onChange={(e) => filterSetzen(setGewerk)(e.target.value)}
+          style={eingabeStil}
+        >
+          <option value="">jedes Gewerk</option>
+          {GEWERKE.map((g) => (
+            <option key={g.name} value={g.name}>
+              {g.text}
+            </option>
+          ))}
+        </select>
+        <select
+          value={art}
+          onChange={(e) => filterSetzen(setArt)(e.target.value)}
+          style={eingabeStil}
+        >
           <option value="betrieb">Betriebe</option>
           <option value="unklar">unklar</option>
           <option value="kein-betrieb">kein Betrieb</option>
@@ -183,7 +240,7 @@ export default function FachbetriebeAnsicht() {
         <select
           value={stand}
           onChange={(e) => filterSetzen(setStand)(e.target.value)}
-          style={wahlStil}
+          style={eingabeStil}
         >
           <option value="">jeder Arbeitsstand</option>
           {STAENDE.map((s) => (
@@ -195,7 +252,7 @@ export default function FachbetriebeAnsicht() {
         <select
           value={sortierung}
           onChange={(e) => filterSetzen(setSortierung)(e.target.value)}
-          style={wahlStil}
+          style={eingabeStil}
         >
           <option value="">nach Adresse</option>
           <option value="gruendung">ältester Betrieb zuerst</option>
@@ -219,7 +276,13 @@ export default function FachbetriebeAnsicht() {
         </label>
       </div>
 
-      <p style={{ color: v("--color-text-muted"), marginBottom: space.sm }}>
+      <p
+        style={{
+          color: v("--color-text-muted"),
+          marginBottom: space.sm,
+          fontSize: v("--font-size-small"),
+        }}
+      >
         {laedt ? "lädt …" : `${gesamt.toLocaleString("de-DE")} Treffer`}
         {seiten > 1 && !laedt ? ` · Seite ${seite + 1} von ${seiten}` : ""}
       </p>
@@ -227,8 +290,67 @@ export default function FachbetriebeAnsicht() {
         <p style={{ color: v("--color-negative"), marginBottom: space.sm }}>{fehler}</p>
       )}
 
+      {/* ── Kopfzeile ──────────────────────────────────────────────────── */}
+      <div
+        style={{
+          display: "flex",
+          gap: space.sm,
+          alignItems: "center",
+          padding: pad("xs", "md"),
+          fontSize: v("--font-size-caption"),
+          textTransform: "uppercase",
+          letterSpacing: "0.04em",
+          color: v("--color-text-secondary"),
+          fontWeight: 700,
+        }}
+      >
+        {/* Platzhalter in der Breite des Logos, damit die Spalten fluchten. */}
+        <span style={{ flex: "0 0 20px" }} aria-hidden />
+        {SPALTEN.map((s) => (
+          <span
+            key={s.text}
+            style={{
+              flex: s.breite,
+              minWidth: 0,
+              textAlign: s.rechts ? "right" : "left",
+              display: "flex",
+              alignItems: "center",
+              gap: 4,
+              justifyContent: s.rechts ? "flex-end" : "flex-start",
+            }}
+          >
+            {s.text}
+            {s.hilfe && (
+              <button
+                type="button"
+                onClick={() => setHilfeZu(hilfeZu === s.text ? null : s.text)}
+                aria-expanded={hilfeZu === s.text}
+                aria-label={`Was bedeutet „${s.text}"?`}
+                style={hilfeKnopfStil}
+              >
+                ?
+              </button>
+            )}
+          </span>
+        ))}
+      </div>
+      {hilfeZu && (
+        <p
+          style={{
+            margin: `0 0 ${space.xs}px`,
+            padding: pad("xs", "md"),
+            background: v("--color-bg-accent"),
+            borderRadius: v("--radius-sm"),
+            fontSize: v("--font-size-small"),
+            color: v("--color-text-secondary"),
+          }}
+        >
+          <strong>{hilfeZu}:</strong> {SPALTEN.find((s) => s.text === hilfeZu)?.hilfe}
+        </p>
+      )}
+
       {/* ── Liste ──────────────────────────────────────────────────────── */}
-      <div style={{ display: "grid", gap: space.xs }}>
+      <div style={{ display: "grid", gap: space.xxs }}>
         {zeilen.map((z) => {
           const auf = offen === z.domain;
           const merkmale = belegteMerkmale(z);
@@ -249,43 +371,111 @@ export default function FachbetriebeAnsicht() {
                   width: "100%",
                   display: "flex",
                   gap: space.sm,
-                  alignItems: "baseline",
+                  alignItems: "center",
                   padding: pad("sm", "md"),
                   background: "none",
                   border: "none",
                   color: v("--color-text-primary"),
                   textAlign: "left",
                   cursor: "pointer",
+                  fontSize: v("--font-size-small"),
+                  fontFamily: "inherit",
                 }}
               >
-                <span style={{ fontWeight: 600, flex: "1 1 300px", minWidth: 0 }}>
+                {/* Das Logo ist das Favicon der eigenen Seite — die Adresse wird
+                    beim Erheben AUS DEM HTML gelesen, nicht geraten: „/favicon.ico"
+                    ist nur eine von mehreren Konventionen, und wer sie rät,
+                    bekommt bei vielen nichts und hält das für „hat kein Logo".
+                    Geladen ohne Herkunftsangabe, damit der Abruf dem Betrieb
+                    nicht verrät, woher er kommt. Fehlt es, bleibt der Platz leer
+                    statt ein Ersatzbild zu zeigen, das eine Marke behauptete. */}
+                <img
+                  src={z.favicon_url ?? `https://${z.domain}/favicon.ico`}
+                  alt=""
+                  width={16}
+                  height={16}
+                  referrerPolicy="no-referrer"
+                  loading="lazy"
+                  onError={(e) => {
+                    e.currentTarget.style.visibility = "hidden";
+                  }}
+                  style={{ flex: "0 0 20px", width: 16, height: 16, objectFit: "contain" }}
+                />
+                <span
+                  style={{
+                    flex: "1 1 260px",
+                    minWidth: 0,
+                    fontWeight: 600,
+                    fontSize: v("--font-size-body"),
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
                   {z.firmenname ?? z.domain}
                 </span>
-                <span style={{ color: v("--color-text-muted"), flex: "0 1 200px", minWidth: 0 }}>
-                  {z.plz && z.ort ? `${z.plz} ${z.ort}` : "— keine Anschrift"}
+                <span style={{ ...spaltenStil, flex: "0 1 180px" }}>
+                  {z.plz && z.ort ? `${z.plz} ${z.ort}` : "—"}
                 </span>
-                <span style={{ flex: "0 0 auto", display: "flex", gap: space.xs }}>
+                {/* Landkreis groß, Bundesland klein darunter — eine Spalte, zwei
+                    Ebenen: Der Kreis ist die Arbeitsgröße, das Land die
+                    Einordnung. */}
+                <span style={{ flex: "0 1 160px", minWidth: 0, lineHeight: 1.25 }}>
+                  <span
+                    style={{
+                      display: "block",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {z.kreis_name ?? "—"}
+                  </span>
+                  {z.bundesland_kurz && (
+                    <span
+                      style={{
+                        display: "block",
+                        fontSize: v("--font-size-caption"),
+                        color: v("--color-text-muted"),
+                      }}
+                    >
+                      {z.bundesland_kurz}
+                    </span>
+                  )}
+                </span>
+                <span style={{ ...spaltenStil, flex: "0 1 150px" }}>
+                  {(z.gewerke ?? []).map((g) => GEWERK_TEXT[g] ?? g).join(", ") || "—"}
+                </span>
+                <span style={{ flex: "0 0 auto", display: "flex", gap: space.xxs }}>
                   {z.meisterbetrieb && <Marke text="Meister" />}
                   {z.handwerkskammer && <Marke text="Kammer" />}
                   {z.installateurverzeichnis && <Marke text="Installateur" />}
+                  {z.bewertung_wert && (
+                    <Marke text={`${z.bewertung_wert.toLocaleString("de-DE")} ★`} />
+                  )}
                   {z.gruendungsjahr && <Marke text={`seit ${z.gruendungsjahr}`} />}
                 </span>
                 <span
-                  style={{ color: v("--color-text-muted"), flex: "0 0 auto", fontSize: 13 }}
-                  title="belegte Vertrauensmerkmale — eine Auskunft über unseren Datenstand, keine Bewertung des Betriebs"
+                  style={{
+                    flex: "0 0 44px",
+                    textAlign: "right",
+                    color: v("--color-text-muted"),
+                    fontVariantNumeric: "tabular-nums",
+                  }}
                 >
                   {merkmale}/8
                 </span>
                 <span
                   style={{
-                    flex: "0 0 auto",
-                    fontSize: 13,
+                    flex: "0 0 92px",
                     color: hatKontaktweg(z) ? v("--color-positive") : v("--color-text-muted"),
                   }}
                 >
                   {hatKontaktweg(z) ? "erreichbar" : "kein Kontakt"}
                 </span>
-                {z.stand !== "offen" && <Marke text={z.stand} />}
+                <span style={{ flex: "0 0 84px", color: v("--color-text-muted") }}>
+                  {z.stand === "offen" ? "" : z.stand}
+                </span>
               </button>
 
               {auf && (
@@ -295,14 +485,18 @@ export default function FachbetriebeAnsicht() {
                     borderTop: `1px solid ${v("--color-border")}`,
                     display: "grid",
                     gap: space.sm,
+                    fontSize: v("--font-size-small"),
                   }}
                 >
                   <div style={{ display: "flex", flexWrap: "wrap", gap: space.lg }}>
                     <Feld titel="Adresse">
                       {z.strasse ? `${z.strasse}, ` : ""}
                       {z.plz} {z.ort}
+                      {z.kreis_name ? ` · ${z.kreis_art} ${z.kreis_name}, ${z.bundesland}` : ""}
                       {z.rechtsform ? ` · ${z.rechtsform}` : ""}
-                      {z.hr_nummer ? ` · ${z.hr_nummer}${z.hr_gericht ? ` (${z.hr_gericht})` : ""}` : ""}
+                      {z.hr_nummer
+                        ? ` · ${z.hr_nummer}${z.hr_gericht ? ` (${z.hr_gericht})` : ""}`
+                        : ""}
                     </Feld>
                     <Feld titel="Kontakt">
                       {z.email ?? "keine Adresse"}
@@ -323,9 +517,9 @@ export default function FachbetriebeAnsicht() {
                         ...(z.zertifikate ?? []),
                         z.gruendungsjahr ? `gegründet ${z.gruendungsjahr}` : null,
                         // Die Herkunft steht AN der Zahl, nicht darunter: Das ist
-                        // eine Selbstauskunft der Website, keine erhobene Bewertung.
+                        // eine Selbstauskunft der Website, keine Google-Bewertung.
                         z.bewertung_wert
-                          ? `${z.bewertung_wert} von 5 aus ${z.bewertung_anzahl} Bewertungen (Angabe der Website)`
+                          ? `${z.bewertung_wert.toLocaleString("de-DE")} von 5 aus ${z.bewertung_anzahl} Bewertungen (Angabe der Website)`
                           : null,
                       ]
                         .filter(Boolean)
@@ -343,7 +537,12 @@ export default function FachbetriebeAnsicht() {
                   </Feld>
 
                   <div style={{ display: "flex", gap: space.md, flexWrap: "wrap" }}>
-                    <a href={`https://${z.domain}`} target="_blank" rel="noreferrer" style={linkStil}>
+                    <a
+                      href={`https://${z.domain}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={linkStil}
+                    >
                       Website öffnen
                     </a>
                     {z.impressum_url && (
@@ -358,7 +557,14 @@ export default function FachbetriebeAnsicht() {
                     )}
                   </div>
 
-                  <div style={{ display: "flex", gap: space.sm, flexWrap: "wrap", alignItems: "center" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: space.sm,
+                      flexWrap: "wrap",
+                      alignItems: "center",
+                    }}
+                  >
                     {STAENDE.map((s) => (
                       <button
                         key={s.wert}
@@ -372,9 +578,13 @@ export default function FachbetriebeAnsicht() {
                             z.stand === s.wert ? v("--color-accent") : v("--color-border")
                           }`,
                           background: z.stand === s.wert ? v("--color-accent") : "transparent",
-                          color: z.stand === s.wert ? v("--color-text-on-accent") : v("--color-text-primary"),
+                          color:
+                            z.stand === s.wert
+                              ? v("--color-text-on-accent")
+                              : v("--color-text-primary"),
                           cursor: "pointer",
-                          fontSize: 13,
+                          fontSize: v("--font-size-small"),
+                          fontFamily: "inherit",
                         }}
                       >
                         {s.text}
@@ -391,16 +601,7 @@ export default function FachbetriebeAnsicht() {
                     }}
                     placeholder="Notiz — was ist mit diesem Betrieb besprochen oder aufgefallen?"
                     rows={2}
-                    style={{
-                      width: "100%",
-                      padding: pad("xs", "sm"),
-                      borderRadius: v("--radius-sm"),
-                      border: `1px solid ${v("--color-border")}`,
-                      background: v("--color-bg"),
-                      color: v("--color-text-primary"),
-                      fontFamily: "inherit",
-                      resize: "vertical",
-                    }}
+                    style={{ ...eingabeStil, width: "100%", resize: "vertical" }}
                   />
                 </div>
               )}
@@ -413,11 +614,19 @@ export default function FachbetriebeAnsicht() {
       </div>
 
       {seiten > 1 && (
-        <div style={{ display: "flex", gap: space.sm, marginTop: space.lg, alignItems: "center" }}>
-          <button onClick={() => setSeite((s) => Math.max(0, s - 1))} disabled={seite === 0} style={blaetterStil}>
+        <div
+          style={{ display: "flex", gap: space.sm, marginTop: space.lg, alignItems: "center" }}
+        >
+          <button
+            onClick={() => setSeite((s) => Math.max(0, s - 1))}
+            disabled={seite === 0}
+            style={blaetterStil}
+          >
             zurück
           </button>
-          <span style={{ color: v("--color-text-muted") }}>
+          <span
+            style={{ color: v("--color-text-muted"), fontSize: v("--font-size-small") }}
+          >
             {seite + 1} / {seiten}
           </span>
           <button
@@ -437,7 +646,7 @@ function Marke({ text }: { text: string }) {
   return (
     <span
       style={{
-        fontSize: 12,
+        fontSize: v("--font-size-caption"),
         padding: pad("xxs", "xs"),
         borderRadius: v("--radius-sm"),
         background: v("--color-bg"),
@@ -453,18 +662,37 @@ function Marke({ text }: { text: string }) {
 function Feld({ titel, children }: { titel: string; children: React.ReactNode }) {
   return (
     <div style={{ minWidth: 240, flex: "1 1 300px" }}>
-      <div style={{ fontSize: 12, color: v("--color-text-muted"), marginBottom: 2 }}>{titel}</div>
-      <div style={{ fontSize: 14 }}>{children}</div>
+      <div
+        style={{
+          fontSize: v("--font-size-caption"),
+          color: v("--color-text-muted"),
+          marginBottom: 2,
+        }}
+      >
+        {titel}
+      </div>
+      <div style={{ fontSize: v("--font-size-small") }}>{children}</div>
     </div>
   );
 }
 
-const wahlStil: React.CSSProperties = {
+const spaltenStil: React.CSSProperties = {
+  minWidth: 0,
+  color: v("--color-text-muted"),
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+  textAlign: "left",
+};
+
+const eingabeStil: React.CSSProperties = {
   padding: pad("xs", "sm"),
   borderRadius: v("--radius-sm"),
   border: `1px solid ${v("--color-border")}`,
   background: v("--color-bg"),
   color: v("--color-text-primary"),
+  fontSize: v("--font-size-small"),
+  fontFamily: "inherit",
 };
 
 const hakenStil: React.CSSProperties = {
@@ -472,13 +700,30 @@ const hakenStil: React.CSSProperties = {
   alignItems: "center",
   gap: space.xxs,
   color: v("--color-text-primary"),
-  fontSize: 14,
+  fontSize: v("--font-size-small"),
   cursor: "pointer",
+};
+
+const hilfeKnopfStil: React.CSSProperties = {
+  width: 14,
+  height: 14,
+  borderRadius: "50%",
+  border: `1px solid ${v("--color-border")}`,
+  background: "transparent",
+  color: v("--color-text-muted"),
+  fontSize: 10,
+  lineHeight: 1,
+  cursor: "pointer",
+  padding: 0,
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  flex: "0 0 auto",
 };
 
 const linkStil: React.CSSProperties = {
   color: v("--color-accent"),
-  fontSize: 14,
+  fontSize: v("--font-size-small"),
 };
 
 const blaetterStil: React.CSSProperties = {
@@ -488,4 +733,6 @@ const blaetterStil: React.CSSProperties = {
   background: "transparent",
   color: v("--color-text-primary"),
   cursor: "pointer",
+  fontSize: v("--font-size-small"),
+  fontFamily: "inherit",
 };

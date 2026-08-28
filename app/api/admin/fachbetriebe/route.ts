@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabase as serviceDb } from "../../../../lib/supabase-server";
 import { isAdminSession } from "../../../../lib/admin-guard";
 import { istStand } from "../../../../lib/fachbetrieb-stand";
+import { kreisAuskunft } from "../../../../lib/kreis-namen";
 
 // Ansicht für die erhobenen PV-Fachbetriebe. Liest `fachbetriebe` (interne
 // Tabelle ohne öffentlichen Lesezugriff) über den Service-Client — deshalb nie
@@ -18,10 +19,10 @@ const SEITE = 50;
 
 const SPALTEN =
   "domain, firmenname, rechtsform, hr_nummer, hr_gericht, strasse, plz, ort, region_id, kreis_id, " +
-  "email, telefon, kontakt_url, kontakt_formular, impressum_url, " +
+  "email, telefon, kontakt_url, kontakt_formular, impressum_url, favicon_url, " +
   "meisterbetrieb, innung, handwerkskammer, installateurverzeichnis, zertifikate, " +
   "gruendungsjahr, bewertung_wert, bewertung_anzahl, bewertung_quelle, " +
-  "geschaeftsfelder, art, art_grund, kreise_gesehen, stand, notiz, stand_at, profil_fehler";
+  "geschaeftsfelder, gewerke, art, art_grund, kreise_gesehen, stand, notiz, stand_at, profil_fehler";
 
 export async function GET(req: NextRequest) {
   if (!(await isAdminSession()))
@@ -32,6 +33,7 @@ export async function GET(req: NextRequest) {
   const bl = sp.get("bl") ?? "";
   const stand = sp.get("stand") ?? "";
   const art = sp.get("art") ?? "betrieb";
+  const gewerk = sp.get("gewerk") ?? "";
   const q = (sp.get("q") ?? "").trim();
   const nurKontakt = sp.get("kontakt") === "1";
   const nurMeister = sp.get("meister") === "1";
@@ -47,6 +49,9 @@ export async function GET(req: NextRequest) {
   // (Neustadt gibt es ein Dutzend Mal), Schlüssel nicht.
   if (bl) query = query.like("kreis_id", `${bl}%`);
   if (nurMeister) query = query.eq("meisterbetrieb", true);
+  // Ein Betrieb kann mehrere Gewerke tragen — „Elektro und Sanitär" ist im
+  // Handwerk der Normalfall. Deshalb „enthält", nicht „ist gleich".
+  if (gewerk) query = query.contains("gewerke", [gewerk]);
   if (nurKontakt) {
     // Erreichbar heißt: E-Mail ODER Telefon ODER Formular. Ein Betrieb, der nur
     // ein Formular hat, ist erreichbar — bei den Gemeinden war genau das der
@@ -68,7 +73,15 @@ export async function GET(req: NextRequest) {
 
   const { data, error, count } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ zeilen: data ?? [], gesamt: count ?? 0, seite, proSeite: SEITE });
+  // Kreisname und Bundesland werden HIER aufgelöst, nicht im Browser: Die
+  // amtliche Kreisliste hängt an der Geometriedatei mit allen 400 Umrissen —
+  // im Bundle wären das 173 kB für zwei Textfelder je Zeile.
+  const zeilen = (data ?? []).map((z) => {
+    const r = z as unknown as Record<string, unknown>;
+    const k = kreisAuskunft((r.kreis_id as string | null) ?? null);
+    return { ...r, kreis_name: k?.name ?? null, bundesland_kurz: k?.bundeslandKurz ?? null, kreis_art: k?.art ?? null, bundesland: k?.bundesland ?? null };
+  });
+  return NextResponse.json({ zeilen, gesamt: count ?? 0, seite, proSeite: SEITE });
 }
 
 export async function PATCH(req: NextRequest) {

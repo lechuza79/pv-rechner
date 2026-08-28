@@ -455,6 +455,63 @@ export const ZERTIFIKATE: { name: string; muster: RegExp }[] = [
   { name: "Fachbetrieb nach WHG", muster: /Fachbetrieb nach\s*§?\s*(19l|62)?\s*WHG/i },
 ];
 
+/**
+ * Das GEWERK — was für ein Handwerksbetrieb das ist.
+ *
+ * Zu unterscheiden von den Geschäftsfeldern darunter: Die sagen, WAS angeboten
+ * wird (Photovoltaik, Speicher, Wallbox), das Gewerk sagt, WER es anbietet. Ein
+ * Elektrobetrieb, ein Dachdecker und ein reiner Solarteur bauen dieselbe Anlage
+ * und sind drei verschiedene Gesprächspartner.
+ *
+ * Angelegt am 28.08.2026 auf Vorgabe des Betreibers, weil die Erhebung später um
+ * Heizungsbauer und weitere Gewerke wachsen soll. Ein Betrieb kann MEHRERE
+ * tragen — „Elektro und Sanitär" ist im Handwerk der Normalfall, und die
+ * Alternative wäre, sich für eines zu entscheiden und das andere zu verlieren.
+ *
+ * Die Muster greifen auf Firmenname, Navigation und Impressum. Sie sind bewusst
+ * eng: Ein Betrieb, dessen Gewerk nirgends steht, bekommt KEINES — die leere
+ * Liste ist eine ehrliche Auskunft, eine geratene Einordnung wäre es nicht.
+ */
+export const GEWERKE: { name: string; text: string; muster: RegExp }[] = [
+  {
+    name: "solarteur",
+    text: "Solarteur",
+    muster: /\b(Solarteur|Solarfachbetrieb|Solartechnik|PV-Fachbetrieb|Photovoltaikbetrieb)\b/i,
+  },
+  {
+    name: "elektro",
+    text: "Elektrobetrieb",
+    // „Elektro" ALLEIN muss mit — „Elektro Klaas GmbH" ist die häufigste
+    // Schreibweise im Handwerk, und die erste Fassung verlangte ein Suffix und
+    // fand sie deshalb nicht. Die Wortgrenze dahinter hält „Elektroauto" und
+    // „Elektromobilität" heraus, die auf jeder zweiten Solarteur-Seite stehen
+    // und kein Gewerk sind.
+    muster: /\bElektro\b|\bElektro(technik|installation|meister|betrieb|anlagen|handwerk)\b|\bElektriker\b|\bE-Handwerk\b/i,
+  },
+  {
+    name: "heizung_sanitaer",
+    text: "Heizung/Sanitär",
+    muster: /\b(Heizungsbau|Sanit[äa]r|SHK|Heizung und Sanit[äa]r|Installateur und Heizungsbauer|Haustechnik)\b/i,
+  },
+  {
+    name: "dachdecker",
+    text: "Dachdecker",
+    // „Dachdeckerei" ist die gebräuchlichste Form und fiel durch, solange das
+    // Muster nur auf „Dachdecker" mit Wortgrenze prüfte.
+    muster: /\bDachdecker(ei|meister|betrieb)?\b|\bDachbau\b|\bBedachung(en)?\b/i,
+  },
+  {
+    name: "zimmerei",
+    text: "Zimmerei",
+    muster: /\b(Zimmerei|Zimmerer|Holzbau|Dachstuhl)\b/i,
+  },
+  {
+    name: "energieberatung",
+    text: "Energieberatung",
+    muster: /\b(Energieberat|Energieeffizienz-?Experte|Geb[äa]udeenergieberat)/i,
+  },
+];
+
 export const FELDER: { name: string; muster: RegExp }[] = [
   { name: "photovoltaik", muster: /\b(photovoltaik|solaranlage|pv-anlage|solarstrom)\b/i },
   { name: "speicher", muster: /\b(stromspeicher|batteriespeicher|speicherl[öo]sung)\b/i },
@@ -560,6 +617,39 @@ export function navigationsText(html: string): string {
   return teile.join(" \n ").replace(/[ \t]+/g, " ");
 }
 
+/**
+ * Die Adresse des Favicons — GELESEN, nicht geraten.
+ *
+ * Dieselbe Lehre wie beim Impressum: `/favicon.ico` ist nur eine von mehreren
+ * Konventionen. Gemessen an 120 Betrieben (28.08.2026) tragen 110 ein Icon im
+ * HTML — aber viele unter einem eigenen Pfad, als PNG oder SVG, oft mit
+ * Zeitstempel im Namen. Wer den Standardpfad rät, bekommt bei einem großen Teil
+ * nichts und hält das für „hat kein Logo".
+ */
+export function faviconUrl(html: string, basis: string): string | null {
+  const kandidaten: { url: string; punkte: number }[] = [];
+  for (const m of html.matchAll(/<link\b([^>]*)>/gi)) {
+    const attr = m[1];
+    const rel = attr.match(/rel=["']([^"']+)["']/i)?.[1]?.toLowerCase() ?? "";
+    if (!/\bicon\b/.test(rel)) continue;
+    const href = attr.match(/href=["']([^"']+)["']/i)?.[1];
+    if (!href) continue;
+    // Ein großes Icon ist schärfer; „apple-touch-icon" ist meist das größte.
+    let p = 50;
+    if (/apple-touch-icon/.test(rel)) p = 80;
+    else if (/\bshortcut\b/.test(rel)) p = 60;
+    const groesse = attr.match(/sizes=["'](\d+)x/i)?.[1];
+    if (groesse) p += Math.min(30, Number(groesse) / 8);
+    try {
+      kandidaten.push({ url: new URL(entities(href), basis).toString(), punkte: p });
+    } catch {
+      /* unbrauchbare Adresse */
+    }
+  }
+  kandidaten.sort((a, b) => b.punkte - a.punkte);
+  return kandidaten[0]?.url ?? null;
+}
+
 export function istKartenanwendung(domain: string): boolean {
   return /(^|[.-])(solar|photovoltaik|pv)[-_]?(kataster|potenzial|potential|atlas)([.-]|$)|(^|[.-])geoportal|(^|[.-])energieatlas/i.test(
     domain,
@@ -567,6 +657,58 @@ export function istKartenanwendung(domain: string): boolean {
 }
 
 // ─── Ortsname normalisieren (für die PLZ-Zuordnung) ──────────────────────────
+
+/**
+ * Eine Bewertung aus den STRUKTURIERTEN DATEN der eigenen Website.
+ *
+ * Der einzige zulässige Weg, die Bewertungsquote zu erhöhen. Google selbst
+ * bleibt gesperrt (Maps Platform Terms 3.2.3), aber viele Betriebe tragen ihre
+ * Bewertung als `AggregateRating` nach schema.org in ihr eigenes HTML — als
+ * JSON-LD oder als Microdata. Das ist eine Selbstauskunft auf einer öffentlichen
+ * Seite, genau wie eine Zahl im Fließtext, nur maschinenlesbar.
+ *
+ * GEMESSEN an 120 Betrieben (28.08.2026): 6 mit JSON-LD, 3 mit Microdata, also
+ * rund 7,5 %. Das verdreifacht die bisherige Quote und bleibt trotzdem eine
+ * Minderheit — die Erwartung „jeder Betrieb bekommt Sterne" erfüllt kein
+ * zulässiger Weg.
+ *
+ * Die Herkunft wird MITGEFÜHRT und nicht verwischt: Was der Betrieb selbst
+ * ausweist, heißt „eigene Website", nie „Google-Bewertung" — auch dann nicht,
+ * wenn er seine Google-Sterne dort wiedergibt. Wir haben die Zahl von ihm, nicht
+ * von Google.
+ */
+export function bewertungAusDaten(
+  html: string,
+): { wert: number; anzahl: number } | null {
+  const kandidaten: { wert: number; anzahl: number }[] = [];
+
+  // JSON-LD: "ratingValue": 4.8, "reviewCount": 37 (oder ratingCount).
+  for (const block of html.matchAll(
+    /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi,
+  )) {
+    const roh = block[1];
+    const w = roh.match(/"ratingValue"\s*:\s*"?([\d.,]+)"?/i);
+    const n = roh.match(/"(?:reviewCount|ratingCount)"\s*:\s*"?(\d+)"?/i);
+    if (w && n) {
+      kandidaten.push({ wert: Number(w[1].replace(",", ".")), anzahl: Number(n[1]) });
+    }
+  }
+
+  // Microdata: itemprop="ratingValue" content="4.8"
+  const mw = html.match(/itemprop=["']ratingValue["'][^>]*content=["']([\d.,]+)["']/i);
+  const mn = html.match(/itemprop=["'](?:reviewCount|ratingCount)["'][^>]*content=["'](\d+)["']/i);
+  if (mw && mn) {
+    kandidaten.push({ wert: Number(mw[1].replace(",", ".")), anzahl: Number(mn[1]) });
+  }
+
+  // Nur plausible Werte: eine Fünferskala und mindestens eine Bewertung.
+  // Ein `ratingValue` von 100 stammt aus einer Prozentskala und ließe sich nicht
+  // mit den übrigen vergleichen.
+  const gueltig = kandidaten.filter(
+    (k) => k.wert >= 1 && k.wert <= 5 && k.anzahl >= 1 && k.anzahl < 100000,
+  );
+  return gueltig[0] ?? null;
+}
 
 export function normOrt(s: string): string {
   return s
@@ -598,6 +740,7 @@ export interface Profil {
   plz: string | null;
   ort: string | null;
   impressum_url: string | null;
+  favicon_url: string | null;
   telefon: string | null;
   email: string | null;
   gruendungsjahr: number | null;
@@ -610,6 +753,7 @@ export interface Profil {
   bewertung_anzahl: number | null;
   bewertung_quelle: string | null;
   geschaeftsfelder: string[] | null;
+  gewerke: string[] | null;
   art: string | null;
   art_grund: string | null;
   belege: Beleg[];
@@ -650,6 +794,7 @@ export function profilAus(domain: string, start: Seite, imp: Seite | null, jetzt
     plz: null,
     ort: null,
     impressum_url: imp?.url ?? null,
+    favicon_url: null,
     telefon: null,
     email: null,
     gruendungsjahr: null,
@@ -662,6 +807,7 @@ export function profilAus(domain: string, start: Seite, imp: Seite | null, jetzt
     bewertung_anzahl: null,
     bewertung_quelle: null,
     geschaeftsfelder: null,
+    gewerke: null,
     art: null,
     art_grund: null,
     belege,
@@ -816,8 +962,42 @@ export function profilAus(domain: string, start: Seite, imp: Seite | null, jetzt
     }
   }
 
+  p.favicon_url = faviconUrl(start.html, start.url);
+
   const felder = FELDER.filter((f) => f.muster.test(startText)).map((f) => f.name);
   p.geschaeftsfelder = felder.length ? felder : null;
+
+  // Das GEWERK steht selten im Fließtext der Startseite, sehr oft aber im
+  // Firmennamen („Elektro Klaas GmbH") und in der Navigation. Deshalb wird
+  // beides gelesen, dazu das Impressum — dort steht bei zulassungspflichtigen
+  // Handwerken die Berufsbezeichnung.
+  const gewerkQuelle = [p.firmenname ?? "", navigationsText(start.html), startText, impText].join(
+    "\n",
+  );
+
+  // Bewertung aus den strukturierten Daten — nachgezogen, falls im Fließtext
+  // keine stand. Beides ist Selbstauskunft der Website; die strukturierte Form
+  // ist nur die verlässlichere.
+  if (p.bewertung_wert === null) {
+    const b = bewertungAusDaten(start.html) ?? (imp ? bewertungAusDaten(imp.html) : null);
+    if (b) {
+      p.bewertung_wert = b.wert;
+      p.bewertung_anzahl = b.anzahl;
+      p.bewertung_quelle = "eigene-website";
+      belege.push({
+        merkmal: "bewertung",
+        wert: `${b.wert} / ${b.anzahl}`,
+        fundstelle: start.url,
+        textstelle: "als strukturierte Daten (schema.org) im HTML der eigenen Seite",
+      });
+    }
+  }
+  const gewerke = GEWERKE.filter((g) => g.muster.test(gewerkQuelle));
+  p.gewerke = gewerke.length ? gewerke.map((g) => g.name) : null;
+  for (const g of gewerke) {
+    const m = gewerkQuelle.match(g.muster);
+    if (m) add("gewerk", g.name, start.url, gewerkQuelle, m.index ?? 0);
+  }
 
   // ── Rückstufung: zwei Stufen, und der Unterschied ist der Punkt ──────────
   //

@@ -313,6 +313,15 @@ async function setup(): Promise<void> {
     -- Dieselbe Trennung wie bei den Gemeinden: Kein Lauf dieses Skripts fasst
     -- diese Spalten je an, sonst überschreibt der nächste Abgleich eine
     -- Entscheidung, die jemand getroffen hat.
+    -- Das GEWERK: was für ein Handwerksbetrieb das ist (Solarteur, Elektro,
+    -- Heizung/Sanitär, Dachdecker …). Zu unterscheiden von geschaeftsfelder —
+    -- die sagen, WAS angeboten wird, das Gewerk sagt, WER es anbietet. Mehrere
+    -- sind der Normalfall („Elektro und Sanitär"). Angelegt, weil die Erhebung
+    -- später um weitere Gewerke wachsen soll.
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS gewerke text[];
+    -- Die Adresse des Favicons, GELESEN statt geraten (siehe faviconUrl).
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS favicon_url text;
+
     ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS stand text NOT NULL DEFAULT 'offen';
     ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS notiz text;
     ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS stand_at timestamptz;
@@ -1120,6 +1129,7 @@ async function stats(): Promise<void> {
     handwerkskammer: string | null;
     installateurverzeichnis: boolean | null;
     zertifikate: string[] | null;
+    gewerke: string[] | null;
     bewertung_wert: number | null;
     email: string | null;
     telefon: string | null;
@@ -1129,7 +1139,7 @@ async function stats(): Promise<void> {
   }>(
     sb,
     "fachbetriebe",
-    "domain, art, kreis_id, region_id, plz, hr_nummer, gruendungsjahr, meisterbetrieb, innung, handwerkskammer, installateurverzeichnis, zertifikate, bewertung_wert, email, telefon, kontakt_formular, profil_at, profil_fehler",
+    "domain, art, kreis_id, region_id, plz, hr_nummer, gruendungsjahr, meisterbetrieb, innung, handwerkskammer, installateurverzeichnis, zertifikate, gewerke, bewertung_wert, email, telefon, kontakt_formular, profil_at, profil_fehler",
   );
   const laeufe = await alleZeilen<{ kreis_id: string; frage: string; treffer: number; fehler: string | null }>(
     sb,
@@ -1199,6 +1209,7 @@ async function stats(): Promise<void> {
   log(`  Handwerkskammer           ${quote(zaehl((r) => r.handwerkskammer))}`);
   log(`  Installateurverzeichnis   ${quote(zaehl((r) => r.installateurverzeichnis))}`);
   log(`  Zertifikat                ${quote(zaehl((r) => r.zertifikate && r.zertifikate.length))}`);
+  log(`  Gewerk erkannt            ${quote(zaehl((r) => r.gewerke && r.gewerke.length))}`);
   log(`  Bewertung (Selbstauskunft) ${quote(zaehl((r) => r.bewertung_wert))}`);
   log(`  E-Mail                    ${quote(zaehl((r) => r.email))}`);
   log(`  Telefon                   ${quote(zaehl((r) => r.telefon))}`);

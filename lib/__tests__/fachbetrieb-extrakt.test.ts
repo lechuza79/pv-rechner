@@ -17,8 +17,11 @@
 import { describe, it, expect } from "vitest";
 import {
   FRAGEN,
+  GEWERKE,
   KEIN_BETRIEB,
   besteMail,
+  bewertungAusDaten,
+  faviconUrl,
   firmennameSaeubern,
   gruendungsjahrAus,
   handwerkskammerAus,
@@ -99,6 +102,100 @@ describe("Firmenname: was die Seite dazugeschrieben hat, gehört nicht dazu", ()
     // steht in der Regel eine Wortgrenze.
     expect(firmennameSaeubern("Homann Solarbau GmbH")).toBe("Homann Solarbau GmbH");
     expect(firmennameSaeubern("Namensbau GmbH")).toBe("Namensbau GmbH");
+  });
+});
+
+describe("Gewerk: WER es anbietet, nicht WAS angeboten wird", () => {
+  const finde = (t: string) => GEWERKE.filter((g) => g.muster.test(t)).map((g) => g.name);
+
+  it("erkennt die üblichen Gewerke", () => {
+    expect(finde("Elektro Klaas GmbH")).toContain("elektro");
+    expect(finde("Ihr Solarteur in Bautzen")).toContain("solarteur");
+    expect(finde("Meier Heizungsbau und Sanitär")).toContain("heizung_sanitaer");
+    expect(finde("Dachdeckerei Schmidt")).toContain("dachdecker");
+  });
+
+  it("lässt einen Betrieb MEHRERE tragen — im Handwerk der Normalfall", () => {
+    // Sich für eines zu entscheiden hieße, das andere zu verlieren.
+    const g = finde("Elektro und Sanitär Wagner — Heizungsbau seit 1970");
+    expect(g).toContain("elektro");
+    expect(g).toContain("heizung_sanitaer");
+  });
+
+  it("vergibt KEINES, wenn nirgends eines steht", () => {
+    // Die leere Liste ist eine ehrliche Auskunft, eine geratene Einordnung nicht.
+    expect(finde("Sonnenkraft für Ihr Zuhause")).toEqual([]);
+  });
+
+  it("trennt das Elektroauto vom Elektrohandwerk", () => {
+    // Steht auf jeder zweiten Solarteur-Seite und ist kein Gewerk. Umgekehrt
+    // muss Elektro allein greifen — „Elektro Klaas GmbH" ist die häufigste
+    // Schreibweise, und die erste Fassung des Musters verlangte ein Suffix.
+    expect(finde("Wallbox für Ihr Elektroauto und Elektromobilität")).toEqual([]);
+    expect(finde("Elektro Klaas GmbH")).toContain("elektro");
+  });
+
+  it("hält Gewerk und Geschäftsfeld auseinander", () => {
+    // „Photovoltaik" ist ein Angebot, kein Gewerk — sonst wäre jeder Betrieb
+    // in der Erhebung automatisch Solarteur, und die Spalte sagte nichts mehr.
+    expect(finde("Wir bauen Photovoltaik und Speicher")).toEqual([]);
+  });
+});
+
+describe("Favicon: gelesen, nicht geraten", () => {
+  it("nimmt die Adresse aus dem HTML", () => {
+    // Dieselbe Lehre wie beim Impressum: „/favicon.ico" ist nur eine von
+    // mehreren Konventionen, und wer sie rät, bekommt bei vielen nichts.
+    const html = '<link rel="icon" href="/wp-content/uploads/logo.png?v=3">';
+    expect(faviconUrl(html, "https://beispiel.de/")).toBe(
+      "https://beispiel.de/wp-content/uploads/logo.png?v=3",
+    );
+  });
+
+  it("bevorzugt das größere Icon", () => {
+    const html =
+      '<link rel="icon" sizes="16x16" href="/klein.png">' +
+      '<link rel="apple-touch-icon" href="/gross.png">';
+    expect(faviconUrl(html, "https://beispiel.de/")).toBe("https://beispiel.de/gross.png");
+  });
+
+  it("ignoriert Links, die kein Icon sind", () => {
+    expect(faviconUrl('<link rel="stylesheet" href="/a.css">', "https://b.de/")).toBeNull();
+  });
+
+  it("liefert null, wenn keins da ist — dann bleibt der Platz leer", () => {
+    // Ein Ersatzbild würde eine Marke behaupten, die es nicht gibt.
+    expect(faviconUrl("<p>Willkommen</p>", "https://b.de/")).toBeNull();
+  });
+});
+
+describe("Bewertung aus strukturierten Daten — die eigene Seite, nie Google", () => {
+  it("liest AggregateRating aus JSON-LD", () => {
+    const html = `<script type="application/ld+json">
+      {"@type":"LocalBusiness","aggregateRating":{"@type":"AggregateRating","ratingValue":"4.8","reviewCount":"37"}}
+    </script>`;
+    expect(bewertungAusDaten(html)).toEqual({ wert: 4.8, anzahl: 37 });
+  });
+
+  it("liest sie auch als Microdata", () => {
+    const html =
+      '<span itemprop="ratingValue" content="4.6"></span><span itemprop="reviewCount" content="12"></span>';
+    expect(bewertungAusDaten(html)).toEqual({ wert: 4.6, anzahl: 12 });
+  });
+
+  it("verwirft eine Prozentskala — sie ließe sich mit den übrigen nicht vergleichen", () => {
+    const html = `<script type="application/ld+json">
+      {"aggregateRating":{"ratingValue":"98","reviewCount":"5"}}</script>`;
+    expect(bewertungAusDaten(html)).toBeNull();
+  });
+
+  it("verlangt beide Zahlen — ein Schnitt ohne Anzahl ist wertlos", () => {
+    const html = `<script type="application/ld+json">{"ratingValue":"4.9"}</script>`;
+    expect(bewertungAusDaten(html)).toBeNull();
+  });
+
+  it("liefert null, wenn nichts da ist", () => {
+    expect(bewertungAusDaten("<p>Willkommen</p>")).toBeNull();
   });
 });
 

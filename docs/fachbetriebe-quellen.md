@@ -200,8 +200,7 @@ Abrufen kamen nicht durch). 4.853 Domains gefunden, davon nach Streuung und Impr
 
 Dazu **14.965 Belege** — jeder mit Fundstelle, Textstelle und Datum.
 
-**Erreichbarkeit der 3.119 Betriebe: 90 %** — E-Mail 83 %, Telefon 74 %, Kontaktformular
-8 %. Die Zusammenfassung steht neben den Einzelwerten, nicht an ihrer Stelle: Ein Formular
+**Erreichbarkeit der Betriebe: 94 %** — E-Mail 85 %, Telefon 83 %, Kontaktformular 8 %. Die Zusammenfassung steht neben den Einzelwerten, nicht an ihrer Stelle: Ein Formular
 ist ein Kontaktweg, aber kein Postfach, und wer später schreiben will, braucht den
 Unterschied.
 
@@ -312,10 +311,64 @@ werfen und riss einen Lauf nach 450 von 1.254 Domains ab. Und ein Nullbyte aus e
 Website ließ den ganzen Schreibblock scheitern. Beides ist jetzt abgefangen — wer fremdes
 HTML verarbeitet, trifft solche Fälle zwangsläufig; es genügt EINE Seite unter tausenden.
 
+### Das Gewerk — und warum es eine eigene Spalte ist
+
+Auf Vorgabe des Betreibers (28.08.2026), weil die Erhebung später um Heizungsbauer und
+weitere Gewerke wachsen soll. **Zu unterscheiden von den Geschäftsfeldern:** Die sagen,
+WAS angeboten wird (Photovoltaik, Speicher, Wallbox), das Gewerk sagt, WER es anbietet.
+Ein Elektrobetrieb, ein Dachdecker und ein reiner Solarteur bauen dieselbe Anlage und sind
+drei verschiedene Gesprächspartner.
+
+Gelesen aus Firmenname, Navigation und Impressum. **Gemessen: 67 % tragen mindestens
+eines** — Elektro 1.454, Heizung/Sanitär 513, Solarteur 494, Energieberatung 327,
+Dachdecker 241, Zimmerei 98. Mehrere sind erlaubt und der Normalfall im Handwerk; die
+Verteilung ist gesund (1.285 mit einem, 608 mit zwei, 153 mit drei, 40 mit vier oder
+mehr — und die vierzig sind echte Komplettanbieter, kein Fehlgriff).
+
+Zwei Muster mussten nachgebessert werden, beide vom Test gefunden: **„Elektro" allein**
+(die häufigste Schreibweise im Handwerk — die erste Fassung verlangte ein Suffix und fand
+„Elektro Klaas GmbH" nicht) und **„Dachdeckerei"**. Gegenprobe im Test: „Elektroauto" und
+„Elektromobilität" stehen auf jeder zweiten Solarteur-Seite und sind kein Gewerk.
+
+### Bewertungen: verdreifacht, und trotzdem eine Minderheit
+
+Google bleibt gesperrt. Der zulässige Weg sind die **strukturierten Daten der eigenen
+Website** — `AggregateRating` nach schema.org, als JSON-LD oder Microdata. Das ist eine
+Selbstauskunft auf einer öffentlichen Seite, genau wie eine Zahl im Fließtext, nur
+maschinenlesbar.
+
+**Vorab gemessen an 120 Betrieben:** 6 mit JSON-LD, 3 mit Microdata. Über den ganzen
+Bestand hebt das die Quote von 42 auf **156 Betriebe (5 %)**. Die Erwartung „jeder Betrieb
+bekommt Sterne" erfüllt kein zulässiger Weg — das ist die ehrliche Antwort auf die Frage,
+ob sich Bewertungen ergänzen lassen.
+
+Die Herkunft wird mitgeführt und nie verwischt: Was der Betrieb selbst ausweist, heißt
+„eigene Website" — auch dann, wenn er dort seine Google-Sterne wiedergibt. Wir haben die
+Zahl von ihm, nicht von Google.
+
+### Das Logo
+
+Das Favicon der eigenen Seite, **Adresse aus dem HTML gelesen statt geraten**. Dieselbe
+Lehre wie beim Impressum: `/favicon.ico` ist nur eine von mehreren Konventionen, viele
+liegen unter eigenem Pfad, als PNG oder SVG, oft mit Zeitstempel im Namen. Gemessen: 2.796
+von 3.117 Betrieben (90 %) haben eines. Geladen ohne Herkunftsangabe, damit der Abruf dem
+Betrieb nicht verrät, woher er kommt; fehlt es, bleibt der Platz leer — ein Ersatzbild
+würde eine Marke behaupten, die es nicht gibt.
+
 ### Die Ansicht
 
-`/admin/fachbetriebe` — Filter nach Bundesland, Art, Arbeitsstand, Erreichbarkeit und
-Meisterbetrieb, Details beim Aufklappen, Arbeitsstand und Notiz pro Betrieb.
+`/admin/fachbetriebe`, eigener Bereich in der Seitenleiste (nicht unter „Versorger" —
+Handwerksbetriebe sind eine andere Zielgruppe mit anderem Rechtsrahmen, und der Bereich
+wächst um weitere Gewerke).
+
+Eine Tabelle mit Kopfzeile: Logo, Betrieb, Ort, Landkreis (groß) mit Bundesland (klein),
+Gewerk, Merkmale, belegte Zahl, Erreichbarkeit, Arbeitsstand. Filter nach Bundesland,
+Gewerk, Art, Arbeitsstand, Erreichbarkeit und Meisterbetrieb. Details beim Aufklappen,
+Arbeitsstand und Notiz pro Betrieb.
+
+**Die Kopfzeile erklärt sich selbst, wo eine Zahl es nicht tut** — „belegt", „Gewerk" und
+„Kontakt" tragen ein „?" mit einer Erklärung. Eine Zahl wie „3/8" ohne Beschriftung ist
+eine Behauptung.
 
 **Sie kann bewusst wenig.** Es gibt keinen Versand, kein Anschreiben, keine Auswahlliste.
 Die Arbeitsstände heißen „offen · vorgemerkt · angesehen · ungeeignet" — ein Zustand wie
