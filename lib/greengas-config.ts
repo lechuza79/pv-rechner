@@ -332,7 +332,23 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // steht in keinem Gesetz. Ein Quotengesetz gibt es weiterhin nicht.
   //
   // Bioheizöl, siebte Gegensuche, unverändert ohne Preisreihe.
-  geprueftRechtIso: "2026-08-26",
+  //
+  // 28.08.2026 am amtlichen Infoportal (gmodg.bund.de, Meldungen) nachgesehen,
+  // unverändert: Die jüngste Meldung datiert weiter auf den 29.07.2026 (erste
+  // Bestimmungen in Kraft), § 42a wird weiter allein als Ankündigung geführt
+  // („bis zum 01.12.2026 ein Gesetz … ab dem Jahr 2045 vollständig auf
+  // klimaneutrale Brennstoffe"), und die Stufen der Bio-Treppe stehen dort
+  // unverändert bei 2029: 10 %, 2030: 15 %, 2035: 30 %, 2040: 60 % — zellgleich
+  // mit `quoteStops`. Ein Quotengesetz gibt es nicht.
+  //
+  // Bioheizöl, ACHTE Gegensuche, ohne Preisreihe — und der neue Treffer taugt
+  // ausdrücklich nicht: Ein Marktdienst beziffert die Erlöse „aus dem
+  // Inverkehrbringen von 100 Litern HVO" auf rund 114 €/100 l. Das ist der
+  // Quotenerlös des Inverkehrbringers, also der Wert eines Zertifikats — nicht
+  // der Preis, den ein Haushalt für Bioheizöl zahlt. Wer ihn als Preisreihe
+  // nähme, setzte in den Rechner eine Zahl aus dem falschen Markt. Destatis
+  // führt weiterhin leichtes Heizöl ohne Bio-Heizöl-Zeile.
+  geprueftRechtIso: "2026-08-28",
   reviewBy: "2027-07-25",
 };
 

@@ -3181,7 +3181,18 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
     foerdert: ["pv"],
-    percentOfCost: 0.1, pvCap: 1000,
+    percentOfCost: 0.1, pvCap: 1000, pvMin: 2.001,
+    // Die Untergrenze ist AUSSCHLIESSEND, und deshalb steht dort nicht 2:
+    // Die Gemeinde fördert Besitzer, „die auf ihrem Dach eine PV-Anlage mit mehr
+    // als 2000 Wp Leistung errichten möchten" (lohfelden.de, am 28.08.2026
+    // wörtlich gelesen). „Mehr als 2000 Wp" heißt, dass genau 2.000 Wp gerade
+    // NICHT gefördert werden — die kleinste Anlage, die zählt, hat 2.001 Wp, und
+    // das ist keine erfundene Genauigkeit, sondern der Wortlaut. `pvMin` kennt
+    // nur einschließende Grenzen (`kwp < pvMin` fällt heraus); mit 2 bekäme die
+    // 2,0-kWp-Anlage bis zu 1.000 €, die die Richtlinie ausschließt. Wer das
+    // hier auf 2 „glättet", baut genau den Fehler wieder ein, gegen den `pvMin`
+    // eingeführt wurde — ein Test hält beide Seiten fest.
+    //
     // Anlage UND Speicher teilen sich einen Deckel von 1.000 € — deshalb
     // ausdrücklich KEIN eigener `speicherPerKwh`/`speicherCap`. Beides zu
     // setzen würde den Zuschuss verdoppeln, den die Gemeinde in Wahrheit ein

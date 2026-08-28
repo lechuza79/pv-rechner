@@ -220,7 +220,21 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // „Bundestag und Bundesrat beraten ab September" kursiert, ist eine
   // Ankündigung, kein Verfahrensschritt — der Zustand bleibt
   // „Regierungsentwurf".
-  geprueftIso: "2026-08-26",
+  //
+  // 28.08.2026 nachgesehen, unverändert, wieder beide Kammern einzeln:
+  // bundesrat.de führt unter 470/26 weiterhin ausschließlich die
+  // „BReg 470/26 Grunddrucksache", keine Beschlussdrucksache; die
+  // Tagesordnungsseite des Bundestages nennt weder „Erneuerbare" noch
+  // „Brennstoff", ruft also weder diesen Entwurf noch die BEHG-Novelle auf. Auf
+  // bundesregierung.de ist der Kabinettsbeschluss vom 29.07.2026 unverändert der
+  // letzte Verfahrensschritt, den eine amtliche Stelle nennt.
+  //
+  // EINE SUCHFALLE, damit sie nicht wiederkommt: Eine Verbände-Mitteilung mit
+  // dem Titel „Erste Lesung der EEG-Novelle" steht weit oben in den
+  // Suchtreffern und stammt vom 30.10.2020 — sie betrifft das EEG 2021. Ein
+  // Treffer, der die richtige Sache benennt, ist noch kein Treffer aus der
+  // richtigen Zeit; das Datum gehört zu jeder Fundstelle.
+  geprueftIso: "2026-08-28",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.
