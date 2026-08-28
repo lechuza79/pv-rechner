@@ -41,11 +41,21 @@ const nurForm = process.env.FORM;
 const kennzahlen = JSON.parse(readFileSync(quelle, "utf8")) as SocialKennzahlen;
 const posts = baueAllePosts(kennzahlen);
 
-// Ungefiltert alle drei Varianten nebeneinander, also ein Drittel Breite je
-// Karte. Auf eine Form gefiltert die volle Größe — die Fehler, um die es geht
-// (eine Beschriftung, die umbricht, eine Zahl neben ihrem Balken), sieht man
-// verkleinert nicht.
-const SKALA = nurForm ? 1 : 0.3;
+/**
+ * Die Karte wird IMMER in Ausgabegröße gerendert (1080 breit) und erst für die
+ * Anzeige verkleinert — per Transform, nicht über einen kleineren Maßstab.
+ *
+ * Der Unterschied ist nicht kosmetisch: Mit kleinerem Maßstab gerendert bricht
+ * der Text an anderen Stellen um als im ausgelieferten Bild. Genau das ist mir
+ * hier passiert — der Lizenzvermerk brach in der verkleinerten Fassung mitten im
+ * Kürzel („dl-/by-2-0"), im echten Bild dagegen sauber dahinter. Wer eine
+ * verkleinert gerechnete Karte beurteilt, beurteilt eine, die es nicht gibt.
+ *
+ * Die Anzeigebreite hat deshalb ein Maximum und skaliert mit dem Fenster
+ * (Betreiber, 28.08.2026); die Karte selbst bleibt bei der Größe, die LinkedIn
+ * bekommt.
+ */
+const SKALA = 1;
 
 /**
  * Welcher Beitrag füllt diese Form?
@@ -103,7 +113,7 @@ for (const form of BILDFORMEN) {
         <b>${KARTEN_STIL_NAME[stil]}</b>
         ${abgenommen ? '<span class="marke ok">abgenommen</span>' : '<span class="marke">noch nicht abgenommen</span>'}
       </figcaption>
-      ${renderToStaticMarkup(<SocialKarte bild={bild} skala={SKALA} />)}
+      <div class="buehne">${renderToStaticMarkup(<SocialKarte bild={bild} skala={SKALA} />)}</div>
     </figure>`;
   }).join("");
 
@@ -138,7 +148,30 @@ figcaption { font-size: 12px; margin-bottom: 6px; display: flex; gap: 6px; align
 .marke { font-size: 10px; background: #ddd; padding: 1px 6px; border-radius: 8px; font-weight: 400; }
 .marke.ok { background: #1365EA; color: #fff; }
 [data-social-karte] { box-shadow: 0 1px 6px rgba(0,0,0,0.16); }
-</style></head><body>
+
+/* Die Bühne: Sie zeigt die 1080er Karte verkleinert, ohne sie kleiner zu
+   rechnen. Die Breite folgt dem Fenster und hat ein Maximum — drei Varianten
+   sollen nebeneinander passen, ohne dass eine davon größer wird als nötig. */
+:root { --zoom: 0.30; }
+.buehne {
+  width: calc(1080px * var(--zoom));
+  height: calc(1350px * var(--zoom));
+  overflow: hidden;
+}
+.buehne > [data-social-karte] {
+  transform: scale(var(--zoom));
+  transform-origin: top left;
+  /* Der Schatten wird mitskaliert und verschwände fast — deshalb hier neu. */
+  box-shadow: none;
+}
+.buehne { box-shadow: 0 1px 6px rgba(0,0,0,0.16); border-radius: 4px; }
+@media (min-width: 1240px) { :root { --zoom: 0.34; } }
+@media (min-width: 1500px) { :root { --zoom: 0.40; } }
+/* Auf eine Form gefiltert steht nur eine Zeile auf der Seite — dann darf sie
+   den Platz nehmen, den drei Karten sonst teilen. */
+body.eine-form { --zoom: 0.42; }
+@media (min-width: 1500px) { body.eine-form { --zoom: 0.52; } }
+</style></head><body class="${nurForm ? "eine-form" : ""}">
 <h1>Templates — Werkbank</h1>
 <p class="hinweis">Je Bildform eine Zeile, darin die drei Farbvarianten — das ist die Einheit, die
 abgenommen wird. Datenstand ${kennzahlen.standIso.slice(0, 10)}, ${gezeigt} Karten.
