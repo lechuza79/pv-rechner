@@ -130,6 +130,11 @@ export function entities(s: string): string {
     .replace(/&Ouml;/g, "Ö")
     .replace(/&Uuml;/g, "Ü")
     .replace(/&szlig;/g, "ß")
+    .replace(/&ndash;/g, "–")
+    .replace(/&mdash;/g, "—")
+    .replace(/&hellip;/g, "…")
+    .replace(/&middot;/g, "·")
+    .replace(/&bull;/g, "•")
     .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
     .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCharCode(parseInt(n, 16)));
 }
@@ -287,48 +292,138 @@ export function rechtsformVon(name: string): string | null {
  * er irgendwann gebraucht. Deshalb lieber KEIN Name als ein falscher: Was nach
  * dem Putzen nur noch aus einer Rechtsform besteht, wird verworfen.
  */
+/** Wörter, die in einem Firmennamen nichts verloren haben. */
+const SEITENWORT =
+  /^(Impressum|Kontakt|Startseite|Home|Anbieterkennzeichnung|Datenschutz(erkl[äa]rung)?|AGB|Angaben gem[äa][ßss][^:]*|Name|Firma|Anbieter|Betreiber|Verantwortlich|und Kontaktdaten|von|Showroom)\b/i;
+
+/**
+ * Sieht dieser Textabschnitt aus wie ein Firmenname — oder wie ein Werbespruch?
+ *
+ * Ein Seitentitel ist fast nie der Firmenname. „Photovoltaik und Elektrotechnik
+ * — Mac Metzler Energietechnik GmbH" hat den Namen hinten, „Solaranlagen Bayern
+ * — Sie kontaktieren uns und wir erledigen alles!" hat gar keinen. Beides sah
+ * nach dem ersten Putzen gleich aus.
+ */
+function wirktWieName(t: string): boolean {
+  if (t.length < 2 || t.length > 60) return false;
+  if (SEITENWORT.test(t)) return false;
+  // Ein Satz ist kein Name: Ausrufe- und Fragezeichen, Werbeformeln,
+  // Aufzählungen mit mehreren Kommas.
+  if (/[!?]/.test(t)) return false;
+  if (
+    /\b(kaufen|g[üu]nstig|jetzt|sichern|erledigen|kontaktieren|Ihr Partner|Ihr Spezialist|vom Fachmann|in Ihrer N[äa]he|Tagespreis|Sofortbonus|Zum Inhalt springen)\b/i.test(
+      t,
+    )
+  )
+    return false;
+  if ((t.match(/,/g) ?? []).length >= 2) return false;
+  // Mindestens ein großgeschriebenes Wort — ein Name hat eines.
+  return /[A-ZÄÖÜ]/.test(t);
+}
+
+/**
+ * Den Firmennamen von dem befreien, was die SEITE dazugeschrieben hat.
+ *
+ * MESSUNG, die diesen Umbau ausgelöst hat (28.08.2026): 633 von 3.115 Namen —
+ * 20 % — trugen Müll. Nicht als Ausreißer, sondern in fünf klaren Klassen:
+ * „& Datenschutz - SED-Solar GmbH" (die Impressum-Überschrift lautet „Impressum
+ * & Datenschutz", das erste Wort war entfernt, der Rest blieb stehen),
+ * „Elektro-Klaas GmbH: Impressum" (nachgestellt), „Photovoltaik und
+ * Elektrotechnik - Mac Metzler Energietechnik GmbH" (Seitentitel mit dem Namen
+ * HINTEN), „&ndash; AURORASOL GmbH" (unaufgelöste HTML-Entität) und reine
+ * Werbesprüche ohne jeden Namen.
+ *
+ * Der Grundfehler war, den Seitentitel als Rückfall oberflächlich zu putzen.
+ * Ein Seitentitel ist fast nie der Firmenname. Deshalb jetzt:
+ *
+ *  1. an ALLEN üblichen Trennern zerlegen, nicht nur an | und ·
+ *  2. der Teil MIT Rechtsform gewinnt, egal an welcher Stelle er steht
+ *  3. ohne Rechtsform nur, was wie ein Name aussieht und nicht wie ein Satz
+ *  4. sonst KEIN Name — die Liste zeigt dann die Adresse, und die stimmt immer
+ *
+ * Lieber kein Name als ein falscher: In einem Anschreiben wäre jeder dieser
+ * Fälle peinlich, und genau dafür wird der Name irgendwann gebraucht.
+ */
 export function firmennameSaeubern(roh: string | null): string | null {
   if (!roh) return null;
-  // UNSICHTBARE ZEICHEN ZUERST. Baukästen wie Wix und Webflow setzen
-  // Null-Breiten-Leerzeichen und Verbinder in Überschriften; im Namen sieht man
-  // sie nicht, aber sie sortieren ihn an den Anfang der Liste und stünden in
-  // einem Anschreiben vor dem Firmennamen. Gefunden am 28.08.2026, als die
-  // Sortierung nach Name plötzlich fünf Betriebe ganz oben zeigte, deren Namen
-  // scheinbar mit einem Leerzeichen begannen.
-  let s = roh
-    .replace(/[\u200B-\u200D\uFEFF\u2060\u00AD]/g, "")
+
+  // Entitäten ZUERST — „&ndash; AURORASOL GmbH" kam sonst mit dem Rohtext an.
+  // Dann die unsichtbaren Zeichen: Baukästen wie Wix und Webflow setzen
+  // Null-Breiten-Verbinder in Überschriften; im Namen sieht man sie nicht, aber
+  // sie sortieren ihn an den Anfang der Liste.
+  let s = entities(roh)
+    .replace(/[​-‍﻿⁠­]/g, "")
+    // Emojis und Schmuckzeichen — „KB Solartec GmbH ☀️ Impressum ❤️".
+    .replace(/[←-⯿☀-➿️\u{1F000}-\u{1FAFF}]/gu, " ")
     .replace(/\s+/g, " ")
     .trim();
 
-  // Ein Seitentitel trennt mit | oder – vom Markennamen. Der längste Teil mit
-  // einer Rechtsform gewinnt; gibt es keinen, der erste Teil.
-  if (/[|·]/.test(s)) {
-    const teile = s.split(/[|·]/).map((t) => t.trim()).filter(Boolean);
-    s = teile.find((t) => rechtsformVon(t)) ?? teile[0] ?? s;
+  // Nachlaufende Feldbeschriftungen aus dem Impressum abschneiden.
+  s = s.replace(
+    /\s+(Adresse|Anschrift|Sitz|Telefon|E-?Mail|Vertreten durch|Gesch[äa]ftsf[üu]hr\w*|Registergericht|USt|Zum Inhalt springen)\b.*$/i,
+    "",
+  );
+
+  // Führende und nachlaufende Trenner weg, BEVOR zerlegt wird — ein Titel wie
+  // „| EK Fuchs Solar- & Elektrotechnik" ergibt sonst nur einen Teil, wird
+  // deshalb nicht zerlegt und behält den Strich.
+  s = s.replace(/^[\s|·•–—:,;&+-]+/, "").replace(/[\s|·•–—:,;-]+$/, "");
+
+  // An den üblichen Trennern zerlegen. Der Teil MIT Rechtsform gewinnt — gleich,
+  // ob er vorn oder hinten steht.
+  //
+  // AB DREI TEILEN WIRD NICHT ZERLEGT. Dann sind die Striche keine
+  // Seitentitel-Trenner, sondern eine Aufzählung IM Namen — und ein Schnitt
+  // trifft mitten hinein. Gemessen: „Uwe Schmidt Elektroinstallation Gas |
+  // Wasser | Sanitär GmbH - Elektromeisterbetrieb Berlin" wurde zu „Sanitär
+  // GmbH". Das sah in der Liste aus wie ein Firmenname und war keiner. Bleibt
+  // der ganze Ausdruck übrig und ist er zu lang, gibt es lieber gar keinen
+  // Namen — die Liste zeigt dann die Adresse, und die stimmt.
+  const teile = s
+    .split(/\s*[|·•]\s*|\s+[–—]\s+|\s+-\s+|\s*:\s+/)
+    .map((t) => t.trim())
+    .filter(Boolean);
+  if (teile.length === 2 || teile.length === 3) {
+    const mitForm = teile.filter((t) => rechtsformVon(t));
+    // Bei mehreren mit Rechtsform der KÜRZESTE: Der lange trägt meist noch
+    // einen Zusatz („X GmbH aus Musterstadt seit 1990").
+    s =
+      mitForm.length > 0
+        ? mitForm.sort((a, b) => a.length - b.length)[0]
+        : (teile.find(wirktWieName) ?? "");
   }
 
-  // Führende Seitenbezeichnungen und Feldbeschriftungen.
-  s = s.replace(
-    /^(Impressum|Kontakt|Startseite|Home|Anbieterkennzeichnung|Angaben gem[äa][ßss][^:]*|Name|Firma|Anbieter|Betreiber|Verantwortlich)\b[\s:–—-]*/i,
+  // Führende Seitenwörter — auch der Rest einer zerlegten Überschrift
+  // („Impressum & Datenschutz" → „& Datenschutz").
+  for (let i = 0; i < 3; i++) {
+    const vorher = s;
+    s = s
+      .replace(/^[&+·\-–—:,;]+\s*/, "")
+      .replace(SEITENWORT, "")
+      .trim();
+    if (s === vorher) break;
+  }
+  // Seitenwörter am ENDE — „KB Solartec GmbH Impressum Solaranlage nachhaltig".
+  // ERST hier, nach der Zerlegung: Vorher angewandt fraß die Regel bei
+  // „& Datenschutz - SED-Solar GmbH" den Namen gleich mit, weil sie beim ersten
+  // Seitenwort ansetzt und alles dahinter wegwirft.
+  const gekuerzt = s.replace(
+    /\s+(Impressum|Datenschutz\w*|AGB|Startseite|Home)\b.*$/i,
     "",
   );
-  s = s.replace(/^(und Kontaktdaten|von)\s+/i, "");
+  if (gekuerzt.trim().length >= 2) s = gekuerzt;
+  s = s.replace(/\s*[–—:,-]+\s*$/, "").trim();
 
-  // Nachlaufende Feldbeschriftungen: „… GmbH Adresse Am Pönitzer Dreieck 1".
-  s = s.replace(
-    /\s+(Adresse|Anschrift|Sitz|Telefon|E-?Mail|Vertreten durch|Geschäftsführ\w*|Registergericht|USt).*$/i,
-    "",
-  );
-  s = s.replace(/\s*[–—-]\s*(Impressum|Kontakt|Startseite|Home)\s*$/i, "");
-  s = s.trim().replace(/^[–—:,-]+\s*/, "").trim();
-
-  if (s.length < 2 || s.length > 120) return null;
-  // Eine Rechtsform allein ist kein Name — „GmbH & Co. KG" stand so in der Liste.
+  if (!s) return null;
+  // Ohne Rechtsform gelten die strengeren Namensregeln; mit Rechtsform reicht,
+  // dass neben ihr überhaupt etwas steht.
+  if (!rechtsformVon(s)) return wirktWieName(s) ? s : null;
+  if (s.length > 80) return null;
   const ohneRechtsform = RECHTSFORMEN.reduce((t, rf) => t.replace(rf.muster, " "), s)
     .replace(/[\s&.,-]+/g, "")
     .trim();
-  if (ohneRechtsform.length < 2) return null;
-  return s;
+  // Eine Rechtsform allein ist kein Name — „GmbH & Co. KG" stand so in der Liste.
+  return ohneRechtsform.length >= 2 ? s : null;
 }
 
 // ─── E-Mail ──────────────────────────────────────────────────────────────────

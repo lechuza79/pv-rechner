@@ -1160,6 +1160,13 @@ Sie behalten „unklar" (ein Angebot kann auf einer ungelesenen Unterseite stehe
 Grund sagt, dass zweimal nachgesehen wurde. Ohne diesen Unterschied prüft die nächste
 Sitzung dieselben 758 noch einmal.
 
+**Nach einem Fix an einem Extraktor läuft die Messung NOCH EINMAL.** Ein Fix öffnet
+leicht eine neue Fehlerklasse, und die sieht genauso plausibel aus wie die alte: Die
+Zerlegung von Seitentiteln senkte die kaputten Namen von 20 % auf 1,4 % — und schnitt
+dabei „Uwe Schmidt Elektroinstallation Gas | Wasser | Sanitär GmbH" zu „Sanitär GmbH"
+zusammen, weil die Striche dort eine Aufzählung IM Namen sind und kein Titel-Trenner.
+Sichtbar wurde das nur, weil dieselbe Auszählung ein zweites Mal lief.
+
 **Eine Spalte prüft man dort, wo sie später gelesen wird — nicht in der Datenbank.** Die
 Firmennamen sahen einzeln unauffällig aus; untereinander in der Ansicht standen dann
 „Impressum - 3E-Elektrotechnik GmbH", „Home | ABEL ReTec" und einmal bloß „GmbH & Co. KG"

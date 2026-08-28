@@ -514,14 +514,15 @@ export default function FachbetriebeAnsicht() {
                   {(z.gewerke ?? []).map((g) => GEWERK_TEXT[g] ?? g).join(", ") || "—"}
                 </span>
 
-                <span style={{ flex: "0 0 210px", display: "flex", gap: space.xxs, overflow: "hidden" }}>
-                  {z.meisterbetrieb && <Marke text="Meister" />}
-                  {z.handwerkskammer && <Marke text="Kammer" />}
-                  {z.installateurverzeichnis && <Marke text="Installateur" />}
-                  {z.bewertung_wert && (
-                    <Marke text={`${z.bewertung_wert.toLocaleString("de-DE")} ★`} />
-                  )}
-                  {z.gruendungsjahr && <Marke text={`seit ${z.gruendungsjahr}`} />}
+                {/* Immer dieselbe Reihenfolge — die aus der Merkmalsliste, nicht
+                    die des Fundes. Wechselnde Reihenfolge macht das Überfliegen
+                    einer Liste unmöglich: Man sucht dann in jeder Zeile neu. */}
+                <span
+                  style={{ flex: "0 0 210px", display: "flex", gap: space.xxs, overflow: "hidden" }}
+                >
+                  {MERKMALE.filter((m) => m.kurz && m.wert(z)).map((m) => (
+                    <Marke key={m.name} text={m.kurz!(z)} />
+                  ))}
                 </span>
 
                 <span
@@ -558,23 +559,34 @@ export default function FachbetriebeAnsicht() {
                     fontSize: v("--font-size-small"),
                   }}
                 >
+                  {/* Abschnitte durch feine Linien getrennt: Stammdaten,
+                      Merkmale, Einordnung, Arbeit. Ohne sie steht alles als ein
+                      Block, und man sucht die Grenze zwischen „was wir wissen"
+                      und „was wir daraus schließen". */}
                   <div style={{ display: "flex", flexWrap: "wrap", gap: space.lg }}>
                     <Feld titel="Adresse">
-                      {z.strasse ? `${z.strasse}, ` : ""}
-                      {z.plz} {z.ort}
-                      {z.kreis_name ? ` · ${z.kreis_art} ${z.kreis_name}, ${z.bundesland}` : ""}
-                      {z.rechtsform ? ` · ${z.rechtsform}` : ""}
+                      {/* Zusammengesetzt aus dem, was DA ist. Vorher standen die
+                          Trennzeichen fest im Text, und bei einem Betrieb ohne
+                          Anschrift blieb „· GmbH" stehen — eine Zeile, die
+                          aussieht, als fehle ein Stück, statt zu sagen, dass
+                          nichts da ist. */}
+                      {teileZeile([
+                        [z.strasse, z.plz && z.ort ? `${z.plz} ${z.ort}` : null]
+                          .filter(Boolean)
+                          .join(", ") || null,
+                        z.kreis_name ? `${z.kreis_art} ${z.kreis_name}, ${z.bundesland}` : null,
+                        z.rechtsform,
+                      ])}
                     </Feld>
                     <Feld titel="Kontakt">
-                      {z.email ?? "keine Adresse"}
-                      {z.telefon ? ` · ${z.telefon}` : ""}
-                      {z.kontakt_formular ? " · Formular" : ""}
+                      {teileZeile([z.email, z.telefon, z.kontakt_formular ? "Formular" : null])}
                     </Feld>
                     <Feld titel="Angebot">
-                      {(z.geschaeftsfelder ?? []).map((f) => FELD_TEXT[f] ?? f).join(" · ") || "—"}
+                      {teileZeile((z.geschaeftsfelder ?? []).map((f) => FELD_TEXT[f] ?? f))}
                     </Feld>
                   </div>
 
+                  <div style={trennerStil} />
                   <Feld titel={`Merkmale — ${merkmale} von ${MERKMALE.length} belegt`}>
                     {/* Alle acht untereinander, belegte mit Häkchen. So sieht man
                         ohne Umweg, WAS die Acht überhaupt sind — und was bei
@@ -618,6 +630,7 @@ export default function FachbetriebeAnsicht() {
                     </ul>
                   </Feld>
 
+                  <div style={trennerStil} />
                   <Feld titel="Einordnung">
                     {z.art}
                     {/* Der Grund nennt die Streuung meist schon („in 5 Kreisen
@@ -649,6 +662,7 @@ export default function FachbetriebeAnsicht() {
                     )}
                   </div>
 
+                  <div style={trennerStil} />
                   <div
                     style={{
                       display: "flex",
@@ -730,6 +744,12 @@ export default function FachbetriebeAnsicht() {
   );
 }
 
+/** Vorhandenes mit „·" verbinden — fehlt alles, steht ein Gedankenstrich. */
+function teileZeile(teile: (string | null | undefined)[]): string {
+  const da = teile.filter((t): t is string => Boolean(t && t.trim()));
+  return da.length ? da.join(" · ") : "—";
+}
+
 function Marke({ text }: { text: string }) {
   return (
     <span
@@ -763,6 +783,11 @@ function Feld({ titel, children }: { titel: string; children: React.ReactNode })
     </div>
   );
 }
+
+const trennerStil: React.CSSProperties = {
+  borderTop: `1px solid ${v("--color-border-muted")}`,
+  margin: `${space.xxs}px 0`,
+};
 
 const einzeilig: React.CSSProperties = {
   display: "block",

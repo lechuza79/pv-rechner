@@ -55,15 +55,34 @@ export interface MerkmalTraeger {
 export const MERKMALE: {
   name: string;
   text: string;
+  /** Ausführlich — für die Aufzählung im aufgeklappten Bereich. */
   wert: (r: MerkmalTraeger) => string | null;
+  /**
+   * Kurzform für die Kennzeichnung in der Zeile. Nicht jedes Merkmal bekommt
+   * eine: Fünf Kennzeichnungen nebeneinander sind keine Auskunft mehr, sondern
+   * Muster. Die Reihenfolge ist die dieser Liste — sie wechselt nie, sonst
+   * sucht man beim Überfliegen in jeder Zeile neu.
+   */
+  kurz?: (r: MerkmalTraeger) => string;
 }[] = [
-  { name: "meisterbetrieb", text: "Meisterbetrieb", wert: (r) => (r.meisterbetrieb ? "Meisterbetrieb" : null) },
-  { name: "handwerkskammer", text: "Handwerkskammer", wert: (r) => r.handwerkskammer },
+  {
+    name: "meisterbetrieb",
+    text: "Meisterbetrieb",
+    wert: (r) => (r.meisterbetrieb ? "Meisterbetrieb" : null),
+    kurz: () => "Meister",
+  },
+  {
+    name: "handwerkskammer",
+    text: "Handwerkskammer",
+    wert: (r) => r.handwerkskammer,
+    kurz: () => "Kammer",
+  },
   { name: "innung", text: "Innung", wert: (r) => r.innung },
   {
     name: "installateurverzeichnis",
     text: "Installateurverzeichnis",
     wert: (r) => (r.installateurverzeichnis ? "beim Netzbetreiber eingetragen" : null),
+    kurz: () => "Installateur",
   },
   {
     name: "zertifikat",
@@ -74,6 +93,7 @@ export const MERKMALE: {
     name: "gruendungsjahr",
     text: "Gründungsjahr",
     wert: (r) => (r.gruendungsjahr ? `gegründet ${r.gruendungsjahr}` : null),
+    kurz: (r) => `seit ${r.gruendungsjahr}`,
   },
   { name: "hr_nummer", text: "Handelsregister", wert: (r) => r.hr_nummer },
   {
@@ -87,6 +107,7 @@ export const MERKMALE: {
           (r.bewertung_anzahl ? ` aus ${r.bewertung_anzahl} Bewertungen` : "") +
           " (Angabe der Website)"
         : null,
+    kurz: (r) => `${r.bewertung_wert?.toLocaleString("de-DE")} ★`,
   },
 ];
 

@@ -271,6 +271,37 @@ die wir nicht gelesen haben —, aber ihr Grund sagt jetzt, dass zweimal nachges
 **„Nichts gefunden" und „noch nicht angesehen" müssen unterscheidbar bleiben**, sonst
 prüft die nächste Sitzung dieselben 722 noch einmal.
 
+### Der Firmenname: zwanzig Prozent kaputt, und die Quote zeigte es nicht
+
+**Nachtrag 28.08.2026, ausgelöst vom Betreiber.** Er sah eine einzelne Karte —
+„& Datenschutz – SED-Solar GmbH" — und sagte, die Firmenbezeichnungen seien unbrauchbar.
+Die Auszählung über den ganzen Bestand gab ihm recht und zeigte mehr, als sein Beispiel
+ahnen ließ: **633 von 3.115 Namen — 20 % — trugen Müll**, in fünf klaren Klassen.
+
+| Klasse | Beispiel | Ursache |
+|---|---|---|
+| Rest einer zerlegten Überschrift | „& Datenschutz - SED-Solar GmbH" | Die Impressum-Überschrift lautet „Impressum & Datenschutz"; das erste Wort war entfernt, der Rest blieb |
+| nachgestelltes Seitenwort | „Elektro-Klaas GmbH: Impressum" | nur führende Wörter wurden geputzt |
+| unaufgelöste HTML-Entität | „&ndash; AURORASOL GmbH" | `&ndash;` fehlte in der Entitätenliste |
+| Name HINTEN im Seitentitel | „Photovoltaik und Elektrotechnik - Mac Metzler Energietechnik GmbH" | die Zerlegung nahm den ersten Teil |
+| reiner Werbespruch | „Solarprodukte zu den besten Tagespreisen kaufen" | der Seitentitel als Rückfall, ungeprüft |
+
+**Der Grundfehler war, den Seitentitel als Rückfall oberflächlich zu putzen. Ein
+Seitentitel ist fast nie der Firmenname.** Die neue Regel: an allen Trennern zerlegen, der
+Teil MIT Rechtsform gewinnt (gleich an welcher Stelle), ohne Rechtsform gilt nur, was wie
+ein Name aussieht und nicht wie ein Satz — sonst gar kein Name, dann zeigt die Liste die
+Adresse.
+
+**Ergebnis: von 20,3 % auf 1,4 %.** Alle 18 gemessenen Fälle sind als Test festgenagelt.
+
+**Und der Fix erzeugte prompt einen neuen Fehler** — sichtbar nur, weil dieselbe Auszählung
+noch einmal lief: Aus „Uwe Schmidt Elektroinstallation Gas | Wasser | Sanitär GmbH -
+Elektromeisterbetrieb Berlin" wurde **„Sanitär GmbH"**. Dort sind die Striche eine
+Aufzählung IM Namen, kein Titel-Trenner, und der Schnitt traf mitten hinein. Ab vier Teilen
+wird deshalb nicht mehr zerlegt. **Merksatz: Nach einem Fix an einem Extraktor läuft die
+Messung noch einmal — ein Fix kann eine neue Fehlerklasse öffnen, und die sieht genauso
+plausibel aus wie die alte.**
+
 ### Der Firmenname war der dritte Fehlgriff, und er fiel erst in der Liste auf
 
 In der Datenbank sahen die Namen unauffällig aus. Untereinander in einer Ansicht standen

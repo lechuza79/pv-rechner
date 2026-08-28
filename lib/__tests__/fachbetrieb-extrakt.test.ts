@@ -62,46 +62,75 @@ describe("Rechtsform: Wortgrenzen, sonst liest der Extraktor Unsinn", () => {
 });
 
 describe("Firmenname: was die Seite dazugeschrieben hat, gehört nicht dazu", () => {
-  // Alle Fälle real, gefunden erst, als die Namen in einer Liste untereinander
-  // standen — in der Datenbank fielen sie nicht auf. In einem Anschreiben wäre
-  // jeder davon peinlich.
-  it("entfernt Seitenbezeichnungen am Anfang", () => {
-    expect(firmennameSaeubern("Impressum - 3E-Elektrotechnik GmbH")).toBe(
-      "3E-Elektrotechnik GmbH",
+  // ALLE Fälle hier sind ECHT und stammen aus einer Auszählung über den fertigen
+  // Bestand (28.08.2026): 633 von 3.115 Namen — 20 % — trugen Müll, in fünf
+  // klaren Klassen. Der Betreiber hat es an einer Karte gesehen, bevor eine
+  // Quote es gezeigt hätte: „die firmenbezeichnungen sind crap".
+  //
+  // Der Grundfehler war, den Seitentitel als Rückfall oberflächlich zu putzen.
+  // Ein Seitentitel ist fast nie der Firmenname.
+
+  it("entfernt den Rest einer zerlegten Impressum-Überschrift", () => {
+    // „Impressum & Datenschutz – X GmbH": Das erste Wort war entfernt, das
+    // zweite blieb stehen und stand danach als Firmenname in der Liste.
+    expect(firmennameSaeubern("& Datenschutz - SED-Solar GmbH")).toBe("SED-Solar GmbH");
+    expect(firmennameSaeubern("& Datenschutz - Georg Huber Elektroanlagen GmbH")).toBe(
+      "Georg Huber Elektroanlagen GmbH",
     );
-    expect(firmennameSaeubern("Kontakt Wagner GmbH")).toBe("Wagner GmbH");
-    expect(firmennameSaeubern("Impressum und Kontaktdaten A9 Solar GmbH")).toBe("A9 Solar GmbH");
+    expect(firmennameSaeubern("& Showroom - EvoSell GmbH")).toBe("EvoSell GmbH");
   });
 
-  it("nimmt aus einem Seitentitel den Teil mit der Rechtsform", () => {
-    expect(firmennameSaeubern("Home | ABEL ReTec GmbH")).toBe("ABEL ReTec GmbH");
+  it("löst HTML-Entitäten auf, bevor irgendetwas anderes passiert", () => {
+    expect(firmennameSaeubern("&ndash; AURORASOL GmbH")).toBe("AURORASOL GmbH");
+  });
+
+  it("wirft Emojis und nachgestellte Seitenwörter weg", () => {
+    expect(firmennameSaeubern("KB Solartec GmbH ☀️ Impressum ❤️ Solaranlage nachhaltig")).toBe(
+      "KB Solartec GmbH",
+    );
+    expect(firmennameSaeubern("Elektro-Klaas GmbH: Impressum")).toBe("Elektro-Klaas GmbH");
     expect(
-      firmennameSaeubern("Solaranlage kaufen vom regionalen PV-Anbieter | GETEC GmbH"),
-    ).toBe("GETEC GmbH");
+      firmennameSaeubern("Sachsensolar GmbH Zum Inhalt springen ➤ Jetzt 1000 € Sofortbonus sichern"),
+    ).toBe("Sachsensolar GmbH");
+  });
+
+  it("findet den Namen auch HINTEN im Seitentitel", () => {
+    // Die erste Fassung nahm bei mehreren Teilen den ersten — und der ist im
+    // Seitentitel meist das Schlagwort, nicht der Betrieb.
+    expect(
+      firmennameSaeubern("Photovoltaik und Elektrotechnik - Mac Metzler Energietechnik GmbH"),
+    ).toBe("Mac Metzler Energietechnik GmbH");
+    expect(firmennameSaeubern("Home | ABEL ReTec GmbH")).toBe("ABEL ReTec GmbH");
+    expect(firmennameSaeubern("Impressum - 3E-Elektrotechnik GmbH")).toBe("3E-Elektrotechnik GmbH");
+  });
+
+  it("nimmt aus einem Titel ohne Rechtsform den Namensteil, nicht den Werbeteil", () => {
+    expect(
+      firmennameSaeubern("Jendrian Haustechnik - Bad, Heizungsbau, Klima und Wasser aus Wesel"),
+    ).toBe("Jendrian Haustechnik");
+    expect(
+      firmennameSaeubern("Solaranlagen Bayern - Sie kontaktieren uns und wir erledigen alles!"),
+    ).toBe("Solaranlagen Bayern");
+  });
+
+  it("verwirft, was gar kein Name ist — lieber keiner als ein falscher", () => {
+    // Ohne Namen zeigt die Liste die Adresse, und die stimmt immer.
+    expect(firmennameSaeubern("Solarprodukte zu den besten Tagespreisen kaufen")).toBeNull();
+    expect(firmennameSaeubern("GmbH & Co. KG")).toBeNull();
+    expect(firmennameSaeubern("GmbH")).toBeNull();
+    expect(firmennameSaeubern("")).toBeNull();
   });
 
   it("schneidet nachlaufende Feldbeschriftungen ab", () => {
     expect(firmennameSaeubern("Name 3NERGY GmbH Adresse Am Pönitzer Dreieck 1")).toBe(
       "3NERGY GmbH",
     );
-  });
-
-  it("verwirft eine Rechtsform ohne Namen — lieber kein Name als ein falscher", () => {
-    expect(firmennameSaeubern("GmbH & Co. KG")).toBeNull();
-    expect(firmennameSaeubern("GmbH")).toBeNull();
-    expect(firmennameSaeubern("")).toBeNull();
-  });
-
-  it("lässt einen sauberen Namen unangetastet", () => {
-    expect(firmennameSaeubern("Muster Solar GmbH")).toBe("Muster Solar GmbH");
-    expect(firmennameSaeubern("Elektro Klaas GmbH")).toBe("Elektro Klaas GmbH");
+    expect(firmennameSaeubern("Impressum und Kontaktdaten A9 Solar GmbH")).toBe("A9 Solar GmbH");
   });
 
   it("entfernt unsichtbare Zeichen — Wix und Webflow setzen sie in Überschriften", () => {
     // Im Namen sieht man sie nicht, aber sie sortieren ihn an den Anfang der
-    // Liste und stünden in einem Anschreiben vor dem Firmennamen. Gefunden, als
-    // die Sortierung nach Name fünf Betriebe ganz oben zeigte, deren Namen
-    // scheinbar mit einem Leerzeichen begannen.
+    // Liste und stünden in einem Anschreiben vor dem Firmennamen.
     expect(firmennameSaeubern("\u200B\u200B Anysolar GmbH")).toBe("Anysolar GmbH");
     expect(firmennameSaeubern("\u200D EnCrease Energiesysteme GmbH")).toBe(
       "EnCrease Energiesysteme GmbH",
@@ -109,11 +138,35 @@ describe("Firmenname: was die Seite dazugeschrieben hat, gehört nicht dazu", ()
     expect(firmennameSaeubern("\uFEFFSolar GMI GmbH")).toBe("Solar GMI GmbH");
   });
 
-  it("frisst kein echtes Namenswort, das zufällig so anfängt", () => {
-    // „Homann" beginnt mit „Home", darf aber nicht gekürzt werden — deshalb
-    // steht in der Regel eine Wortgrenze.
+  it("zerschneidet KEINE Aufzählung im Namen — ab vier Teilen wird nicht getrennt", () => {
+    // Der Fix für die Seitentitel erzeugte prompt einen neuen Fehler: Aus
+    // „Uwe Schmidt Elektroinstallation Gas | Wasser | Sanitär GmbH -
+    // Elektromeisterbetrieb Berlin" wurde „Sanitär GmbH". Das sah in der Liste
+    // aus wie ein Firmenname und war mitten aus einem herausgeschnitten. Ab
+    // vier Teilen sind die Striche eine Aufzählung, kein Titel-Trenner.
+    expect(
+      firmennameSaeubern(
+        "Uwe Schmidt Elektroinstallation Gas | Wasser | Sanitär GmbH - Elektromeisterbetrieb Berlin",
+      ),
+    ).not.toBe("Sanitär GmbH");
+  });
+
+  it("entfernt einen führenden Trenner", () => {
+    // „| EK Fuchs Solar- & Elektrotechnik" ergab nur einen Teil, wurde deshalb
+    // nicht zerlegt — und behielt den Strich.
+    expect(firmennameSaeubern("| EK Fuchs Solar- & Elektrotechnik")).toBe(
+      "EK Fuchs Solar- & Elektrotechnik",
+    );
+  });
+
+  it("lässt einen sauberen Namen unangetastet", () => {
+    expect(firmennameSaeubern("Muster Solar GmbH")).toBe("Muster Solar GmbH");
+    expect(firmennameSaeubern("Elektro Klaas GmbH")).toBe("Elektro Klaas GmbH");
     expect(firmennameSaeubern("Homann Solarbau GmbH")).toBe("Homann Solarbau GmbH");
-    expect(firmennameSaeubern("Namensbau GmbH")).toBe("Namensbau GmbH");
+    // Ein langer, echter Name bleibt — die Längengrenze darf ihn nicht fressen.
+    expect(firmennameSaeubern("Energie- & Elektrotechnik Hohenzollern UG (haftungsbeschränkt)")).toBe(
+      "Energie- & Elektrotechnik Hohenzollern UG (haftungsbeschränkt)",
+    );
   });
 });
 
