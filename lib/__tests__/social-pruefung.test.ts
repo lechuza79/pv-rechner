@@ -25,7 +25,7 @@ const BILD: PostBild = {
 
 const fassung = (text = TEXT, bild: PostBild | null = BILD): Fassung => ({ text, bild });
 
-const p = (art: "zahlen" | "recht", f: Fassung, bestanden = true, befund = ""): Pruefung => ({
+const p = (art: "zahlen" | "recht" | "gegenpruefung", f: Fassung, bestanden = true, befund = ""): Pruefung => ({
   post_id: "test",
   fassung_fingerabdruck: fassungsText(f),
   art,
@@ -34,14 +34,14 @@ const p = (art: "zahlen" | "recht", f: Fassung, bestanden = true, befund = ""): 
   geprueft_am: "2026-08-26T10:00:00.000Z",
 });
 
-const beide = (f: Fassung) => [p("zahlen", f), p("recht", f)];
+const beide = (f: Fassung) => [p("zahlen", f), p("recht", f), p("gegenpruefung", f)];
 
 describe("Freigabe vor der Veröffentlichung", () => {
   it("verlangt beide Prüfungen", () => {
     expect(urteil(fassungsText(fassung()), [])).toMatchObject({ ok: false });
     expect(urteil(fassungsText(fassung()), [p("zahlen", fassung())])).toMatchObject({ ok: false });
     expect(urteil(fassungsText(fassung()), beide(fassung()))).toEqual({ ok: true });
-    expect(NOETIGE_PRUEFUNGEN).toEqual(["zahlen", "recht"]);
+    expect(NOETIGE_PRUEFUNGEN).toEqual(["zahlen", "recht", "gegenpruefung"]);
   });
 
   it("verfällt, sobald der Text sich ändert", () => {
@@ -66,7 +66,7 @@ describe("Freigabe vor der Veröffentlichung", () => {
   });
 
   it("hält eine nicht bestandene Prüfung zurück und nennt den Befund", () => {
-    const u = urteil(fassungsText(fassung()), [p("zahlen", fassung()), p("recht", fassung(), false, "Werbeaussage ohne Beleg")]);
+    const u = urteil(fassungsText(fassung()), [p("zahlen", fassung()), p("gegenpruefung", fassung()), p("recht", fassung(), false, "Werbeaussage ohne Beleg")]);
     expect(u.ok).toBe(false);
     if (!u.ok) expect(u.grund).toContain("Werbeaussage ohne Beleg");
   });

@@ -79,9 +79,14 @@ describe("Jede Prüfart hat ihre Frage und ihre Prüfliste", () => {
     for (const b of PRUEF_BESCHREIBUNG) expect(NOETIGE_PRUEFUNGEN).toContain(b.art);
   });
 
-  it("gibt jeder Prüfart mindestens eine Regel", () => {
+  it("gibt jeder Prüfart mit Prüfliste mindestens eine Regel", () => {
     // Ein Formular ohne Prüfliste ist eine Aufforderung ohne Gegenstand.
-    for (const art of NOETIGE_PRUEFUNGEN) {
+    //
+    // Die Gegenprüfung ist ausgenommen, und zwar begründet: Sie ist kein
+    // Formular, das jemand abhakt, sondern das Ergebnis eines Laufs mit dem
+    // Auftrag zu widerlegen. Eine Prüfliste dafür wäre das Gegenteil ihres
+    // Zwecks — sie soll finden, woran niemand gedacht hat.
+    for (const art of NOETIGE_PRUEFUNGEN.filter((a) => a !== "gegenpruefung")) {
       expect(regelnFuer(art).length, `Die Prüfart "${art}" hat keine einzige Regel`).toBeGreaterThan(0);
     }
   });
@@ -94,6 +99,8 @@ describe("Jede Prüfart hat ihre Frage und ihre Prüfliste", () => {
       expect(istPruefArt(r.gilt), `Die Regel "${r.regel}" gilt keiner bekannten Prüfung`).toBe(true);
     }
     expect(REGELN.length).toBe(NOETIGE_PRUEFUNGEN.reduce((n, a) => n + regelnFuer(a).length, 0));
+    // Die Gegenprüfung trägt bewusst keine Regel — siehe oben.
+    expect(regelnFuer("gegenpruefung")).toEqual([]);
   });
 
   it("hält den Superlativ bei den ZAHLEN", () => {

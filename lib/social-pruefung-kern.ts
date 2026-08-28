@@ -17,7 +17,7 @@
 
 import type { PostBild } from "./social-posts";
 
-export type PruefArt = "zahlen" | "recht";
+export type PruefArt = "zahlen" | "recht" | "gegenpruefung";
 
 export type Pruefung = {
   post_id: string;
@@ -44,7 +44,7 @@ export const SOCIAL_PRUEFUNG_DDL = `
   CREATE TABLE IF NOT EXISTS social_pruefungen (
     post_id text NOT NULL,
     fassung_fingerabdruck text NOT NULL,
-    art text NOT NULL CHECK (art IN ('zahlen', 'recht')),
+    art text NOT NULL CHECK (art IN ('zahlen', 'recht', 'gegenpruefung')),
     bestanden boolean NOT NULL,
     befund text NOT NULL DEFAULT '',
     geprueft_am timestamptz NOT NULL DEFAULT now(),
@@ -62,14 +62,40 @@ export const SOCIAL_PRUEFUNG_DDL = `
       ALTER TABLE social_pruefungen RENAME COLUMN text_fingerabdruck TO fassung_fingerabdruck;
     END IF;
   END $$;
+  -- Die dritte Prüfart kam später dazu. Die Bedingung wird ersetzt statt
+  -- ergänzt, damit die Einrichtung mehrfach aufrufbar bleibt.
+  ALTER TABLE social_pruefungen DROP CONSTRAINT IF EXISTS social_pruefungen_art_check;
+  ALTER TABLE social_pruefungen ADD CONSTRAINT social_pruefungen_art_check
+    CHECK (art IN ('zahlen', 'recht', 'gegenpruefung'));
   ALTER TABLE social_pruefungen ENABLE ROW LEVEL SECURITY;
   REVOKE ALL ON social_pruefungen FROM PUBLIC;
   REVOKE ALL ON social_pruefungen FROM anon;
   REVOKE ALL ON social_pruefungen FROM authenticated;
 `;
 
-/** Beide Prüfungen müssen vorliegen. Eine reicht nicht. */
-export const NOETIGE_PRUEFUNGEN: PruefArt[] = ["zahlen", "recht"];
+/**
+ * Alle drei müssen vorliegen. Zwei reichen nicht.
+ *
+ * Die dritte, die GEGENPRÜFUNG, ist der Teil, den kein Mensch und keine Regel
+ * leisten kann: Ob eine Aussage über die Welt stimmt. Die Mechanik stellt
+ * Widersprüche IM SYSTEM fest — dass Text und Bild dieselbe Zahl nennen, dass
+ * eine Einheit dasteht, dass ein Richtungswort zur Zahl passt. Sie kann nicht
+ * feststellen, dass eine in sich stimmige Aussage trotzdem geraten ist.
+ *
+ * Genau dieser Fall ist an einem Tag zweimal eingetreten: Ein Beitrag
+ * behauptete, ein fehlender Anteil sei „vor allem Steckersolar" — eine
+ * Überschlagsrechnung, in sich schlüssig, als Sachaussage im Bild. Und ein
+ * Katalogbeispiel behauptete ein Ost-West-Gefälle, das es nicht gibt. Beide
+ * hätten jede mechanische Regel bestanden.
+ *
+ * Deshalb ein eigener Prüfstand mit eigenem Auftrag: WIDERLEGEN, nicht
+ * bestätigen. Gemessen an den Rechtsbefunden dieses Projekts überlebt knapp ein
+ * Fünftel die Gegenprüfung nicht, und bei einem Teil davon hätte die
+ * „Korrektur" Richtiges durch Falsches ersetzt — der Gegenprüfer greift deshalb
+ * ausdrücklich auch die Bestätigungen an und darf sagen, dass ein Befund
+ * übertrieben ist.
+ */
+export const NOETIGE_PRUEFUNGEN: PruefArt[] = ["zahlen", "recht", "gegenpruefung"];
 
 /**
  * Was die beiden Prüfungen behaupten — und was sie ausdrücklich NICHT abdecken.
@@ -106,6 +132,14 @@ export const PRUEF_BESCHREIBUNG: PruefBeschreibung[] = [
     frage:
       "Hält der Beitrag die Regeln des Redaktionsplans ein — Namensnennung, Sprachregel, Quellenangabe im Bild, kein Link im Text?",
     nichtGeprueft: "Ob die Zahlen stimmen — das ist die Zahlenprüfung.",
+  },
+  {
+    art: "gegenpruefung",
+    name: "Gegenprüfung",
+    frage:
+      "Hat ein unabhängiger Lauf mit dem Auftrag, diesen Beitrag zu WIDERLEGEN, jede Aussage gegen die Quelle gehalten — und ist keine davon eine Plausibilität, die als Messung dasteht?",
+    nichtGeprueft:
+      "Aussehen und Wirkung. Und alles, was schon die Mechanik entscheidet — die läuft ohnehin und sperrt selbst.",
   },
 ];
 
