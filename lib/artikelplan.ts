@@ -261,12 +261,12 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
       "kommt. Der Betreiber hat das Thema am 27.08.2026 aufgenommen — als Ratgeber mit " +
       "Vermittlungsanteil, nicht als reine Textseite.",
     voraussetzung:
-      "BLOCKER vor dem Livegang: Eine bezahlte Empfehlung ist Werbung, und auf der Startseite " +
-      "steht „Keine Werbung“ — über die Vertrauensleiste als Werbeaussage auf jeder Seite. " +
-      "Entweder wird die Zusage präzisiert oder der Ratgeber bleibt ohne bezahlte Empfehlung. " +
-      "Dazu die Kennzeichnungspflicht für bezahlte Empfehlungen und die Frage, ob eine " +
-      "Versicherungsempfehlung eine erlaubnispflichtige Vermittlung ist. Beides gehört vor " +
-      "die erste Zeile geklärt, nicht danach.",
+      "Vor dem Livegang: Die Zusage „Keine Werbung“ wird präzisiert — der Betreiber hat am " +
+      "27.08.2026 entschieden, dass wir empfehlen dürfen, was dem Ratsuchenden nützt. Sie " +
+      "steht über die Vertrauensleiste auf jeder Seite und muss deshalb an einer Stelle " +
+      "geändert werden, bevor die erste bezahlte Empfehlung online geht. Offen bleiben zwei " +
+      "Fachfragen: die Kennzeichnung bezahlter Empfehlungen und ob eine Versicherungs" +
+      "empfehlung schon erlaubnispflichtige Vermittlung ist.",
   },
   {
     thema: "Photovoltaik und Steuer",
