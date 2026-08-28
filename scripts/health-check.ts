@@ -33,6 +33,7 @@ import { DB_READ_TIMEOUT_MS } from "../lib/db-timeout";
 import { PRUEFSTAND, faelligkeiten } from "../lib/pruefstand";
 import { RELEASE_PLAN, planMeldungen } from "../lib/release-plan";
 import { sollWarnen, warnstufe } from "../lib/social-ablauf";
+import { paramsToRow } from "../lib/types";
 
 // In der GitHub-Action kommen die Zugangsdaten aus den Repo-Secrets. Lokal
 // standen sie nicht zur Verfügung — der Check fiel dann still auf die feste
@@ -495,6 +496,129 @@ export function mastrAlterTage(importedAt: string, heute: Date): number {
 }
 
 export type MastrFrische = { importedAt: string; alterTage: number; urteil: "gruen" | "gelb" | "rot" };
+
+// ─── Schreibt der Code Felder, die die Tabelle gar nicht hat? ────────────────
+//
+// WARUM ES DAS GIBT (28.08.2026): Das Speichern einer Berechnung war FÜNF
+// MONATE kaputt, ohne dass irgendetwas angeschlagen hätte. Am 28.03.2026 kam im
+// Code ein neues Feld dazu (`einspeisung_modus`), die Tabelle bekam es nie —
+// jeder Speicherversuch endete mit HTTP 500. Kein Typfehler (die Grenze zur
+// Datenbank behauptet die Form, sie prüft sie nicht), kein roter Test (Tests
+// kennen die echte Tabelle nicht), keine kaputte Seite (nur der eine Knopf).
+// Und die Nutzung ist zu gering, als dass es an einer Fehlerquote auffiele:
+// drei Aufrufe in sieben Tagen.
+//
+// Dieselbe Klasse wie `datenFormVerstanden` beim Förderkatalog, nur in der
+// anderen Richtung: dort läuft die DATENFORM dem Code davon, hier der CODE der
+// Tabelle. Beide sind von außen unsichtbar und brauchen deshalb eine Messung
+// statt eines Merksatzes.
+//
+// Zwei Befunde, beide real eingetreten:
+//   fehlend       — der Code schreibt ein Feld, das es in der Tabelle nicht gibt
+//   nullKollision — der Code schreibt dort NULL, wo die Tabelle einen Wert
+//                   verlangt. DAS war der zweite Blocker desselben Tages
+//                   (`o_einsp`, „kein eigener Einspeisesatz gesetzt") und der
+//                   teurere: Er wäre erst NACH der Reparatur des ersten
+//                   sichtbar geworden, also beim nächsten Lauf noch einmal.
+//
+// Reine Funktion mit hereingereichten Listen — sie soll ohne Netz prüfbar sein.
+export function spaltenAbgleich(
+  geschrieben: Record<string, unknown>,
+  vorhandeneSpalten: readonly string[],
+  pflichtSpalten: readonly string[],
+): { fehlend: string[]; nullKollision: string[] } {
+  const vorhanden = new Set(vorhandeneSpalten);
+  const pflicht = new Set(pflichtSpalten);
+  const fehlend: string[] = [];
+  const nullKollision: string[] = [];
+
+  for (const [feld, wert] of Object.entries(geschrieben)) {
+    if (!vorhanden.has(feld)) {
+      fehlend.push(feld);
+      continue; // Was fehlt, kann nicht zusätzlich kollidieren — sonst zweimal gemeldet.
+    }
+    if ((wert === null || wert === undefined) && pflicht.has(feld)) nullKollision.push(feld);
+  }
+
+  return { fehlend, nullKollision };
+}
+
+export type SpaltenBefund = { tabelle: string; fehlend: string[]; nullKollision: string[] };
+
+/**
+ * Holt die echten Spalten der Berechnungs-Tabelle und hält die Feldliste
+ * dagegen, die der Code beim Speichern schreibt.
+ *
+ * Die Feldliste kommt aus `paramsToRow` — also aus der Umwandlung, die der
+ * Code selbst benutzt, nicht aus einer zweiten Aufzählung, die beim nächsten
+ * Feld vergessen würde. Belegt wird sie mit dem UNGÜNSTIGSTEN Fall: alles
+ * Optionale auf null, weil genau dort die zweite Fehlerklasse sitzt.
+ *
+ * Gibt `null` zurück, wenn die Datenbank nicht erreichbar ist — ein
+ * gescheiterter Abruf ist KEIN Befund über die Spalten (dieselbe Trennung wie
+ * bei der MaStR-Frische darüber).
+ */
+async function messeSpaltenAbgleich(): Promise<SpaltenBefund | null> {
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!url || !key) return null;
+  try {
+    // PostgREST beschreibt sich selbst: Spaltenliste plus die Pflichtfelder.
+    const r = await fetch(`${url}/rest/v1/`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+      signal: AbortSignal.timeout(20000),
+    });
+    if (!r.ok) return null;
+    const spec = (await r.json()) as {
+      definitions?: Record<string, { properties?: Record<string, unknown>; required?: string[] }>;
+    };
+    const def = spec.definitions?.calculations;
+    if (!def?.properties) return null;
+
+    const zeile = paramsToRow(
+      {
+        anlage: 1,
+        customKwp: 10,
+        speicher: 1,
+        personen: 1,
+        nutzung: 1,
+        wp: "nein",
+        ea: "nein",
+        eaKm: 15000,
+        // Der ungünstigste Fall: alles, was der Nutzer NICHT selbst gesetzt hat.
+        oKosten: null,
+        oEv: null,
+        oStrom: 0.34,
+        oEinsp: null,
+        einspeisungModus: "teil",
+        oErtrag: 950,
+        plz: "",
+        fuelType: "gas",
+        flowType: "manual",
+        haustyp: null,
+        dachart: null,
+        budgetLimit: null,
+      },
+      { kwp: 10, amortisationJahre: null, rendite25j: null },
+    );
+    // Die Route setzt zusätzlich diese drei; sie stehen nicht in paramsToRow.
+    const geschrieben: Record<string, unknown> = {
+      ...zeile,
+      user_id: "x",
+      name: "Meine Berechnung",
+      description: null,
+    };
+
+    const { fehlend, nullKollision } = spaltenAbgleich(
+      geschrieben,
+      Object.keys(def.properties),
+      def.required ?? [],
+    );
+    return { tabelle: "calculations", fehlend, nullKollision };
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Liest den Datenstand der MaStR-Auswertung.
@@ -1110,6 +1234,35 @@ async function main() {
     // Kein Urteil über die Frische, sondern über den Abruf. Beides zu vermengen
     // hieße, eine Beobachtung zu behaupten, die es nicht gab.
     warnings.push("MaStR-Datenstand nicht abrufbar — keine Aussage über die Frische der Atlas-Zahlen.");
+  }
+
+  // ── Schreibt der Code in Spalten, die es gibt? ────────────────────────────
+  const spalten = await messeSpaltenAbgleich();
+  if (spalten) {
+    const summe = spalten.fehlend.length + spalten.nullKollision.length;
+    lines.push(
+      summe === 0
+        ? `Gespeicherte Berechnungen: Code und Tabelle passen zusammen.`
+        : `Gespeicherte Berechnungen: ${summe} Abweichung(en) zwischen Code und Tabelle.`,
+    );
+    if (spalten.fehlend.length) {
+      forClaude.push(
+        `Beim Speichern einer Berechnung schreibt der Code ${spalten.fehlend.length === 1 ? "ein Feld" : "Felder"}, ` +
+          `die es in der Tabelle nicht gibt: ${spalten.fehlend.join(", ")}. Damit scheitert JEDER Speicherversuch ` +
+          `mit HTTP 500 — und zwar unsichtbar: kein Typfehler, kein roter Test, keine kaputte Seite, und bei drei ` +
+          `Aufrufen die Woche fällt es auch an keiner Fehlerquote auf. Genau so blieb es von 03/2026 bis 08/2026 ` +
+          `liegen. Zu tun: Spalte über /api/calculations/setup nachziehen (die Route trägt die Migration).`,
+      );
+    }
+    if (spalten.nullKollision.length) {
+      forClaude.push(
+        `Beim Speichern einer Berechnung schreibt der Code NULL in Spalten, die einen Wert verlangen: ` +
+          `${spalten.nullKollision.join(", ")}. Betroffen ist der Normalfall — der Nutzer hat dort nichts ` +
+          `eigenes gesetzt. Auch das endet in HTTP 500 und ist von außen unsichtbar. Entweder darf die Spalte ` +
+          `leer sein (dann Nullbarkeit nachziehen, /api/calculations/setup) oder der Code muss einen Wert ` +
+          `liefern — was von beidem stimmt, entscheidet die Bedeutung des Feldes, nicht die Bequemlichkeit.`,
+      );
+    }
   }
 
   // ── Ablauf der Social-Zugänge ─────────────────────────────────────────────
