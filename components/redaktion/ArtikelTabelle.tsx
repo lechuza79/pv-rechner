@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { v, space, pad } from "../../lib/theme";
+import { v, space } from "../../lib/theme";
+import { DatenTabelle, type Spalte } from "../admin/DatenTabelle";
 import { NeuBewerten } from "./NeuBewerten";
 import type { ArtikelVorhaben } from "../../lib/artikelplan";
 
@@ -14,59 +14,8 @@ import type { ArtikelVorhaben } from "../../lib/artikelplan";
 // Absatz unter ihren Zahlen; man musste scrollen, um zwei Vorhaben nebeneinander
 // zu halten, und genau das ist die einzige Bewegung, die diese Seite braucht.
 //
-// Die Begründung verschwindet dabei nicht, sie rückt eine Ebene tiefer: Sie
-// entscheidet die Frage „lohnt sich das“ nicht, sie beantwortet „warum steht
-// das hier“ — und die stellt man einmal je Zeile, nicht bei jedem Blick.
-
-interface Spalte {
-  kopf: string;
-  /** Rechtsbündig für Zahlen, damit Größenordnungen untereinander lesbar sind. */
-  rechts?: boolean;
-}
-
-const SPALTEN_OFFEN: Spalte[] = [
-  { kopf: "" },
-  { kopf: "Thema" },
-  { kopf: "Suchbegriff" },
-  { kopf: "Suchen/Mo", rechts: true },
-  { kopf: "Schwierigkeit", rechts: true },
-  { kopf: "gemessen" },
-  { kopf: "Stand" },
-];
-
-const SPALTEN_VERWORFEN: Spalte[] = [
-  { kopf: "" },
-  { kopf: "Thema" },
-  { kopf: "Suchbegriff" },
-  { kopf: "Suchen/Mo", rechts: true },
-  { kopf: "Schwierigkeit", rechts: true },
-  { kopf: "gemessen" },
-];
-
-function Kopf({ spalten }: { spalten: Spalte[] }) {
-  return (
-    <thead>
-      <tr>
-        {spalten.map((s, i) => (
-          <th
-            key={i}
-            style={{
-              textAlign: s.rechts ? "right" : "left",
-              fontWeight: 400,
-              fontSize: v("--font-size-caption"),
-              color: v("--color-text-muted"),
-              padding: pad("xs", "sm"),
-              borderBottom: `1px solid ${v("--color-border-muted")}`,
-              whiteSpace: "nowrap",
-            }}
-          >
-            {s.kopf}
-          </th>
-        ))}
-      </tr>
-    </thead>
-  );
-}
+// Aussehen, Sortierung und Aufklappen kommen aus der gemeinsamen Admin-Tabelle.
+// Diese Datei sagt nur noch, WELCHE Spalten es gibt und was in ihnen steht.
 
 const ZUSTAND_FARBE = {
   geplant: "--color-text-muted",
@@ -75,134 +24,78 @@ const ZUSTAND_FARBE = {
   verworfen: "--color-text-muted",
 } as const;
 
-function zelle(rechts?: boolean): React.CSSProperties {
-  return {
-    padding: pad("sm", "sm"),
-    textAlign: rechts ? "right" : "left",
-    verticalAlign: "top",
-    borderBottom: `1px solid ${v("--color-border-muted")}`,
-    whiteSpace: "nowrap",
-  };
-}
-
-interface ZeileProps {
+function Detail({
+  vorhaben,
+  verworfen,
+}: {
   vorhaben: ArtikelVorhaben;
-  volumen: number;
-  zustandLabel: string;
-  spaltenZahl: number;
   verworfen?: boolean;
-}
-
-function Zeile({ vorhaben, volumen, zustandLabel, spaltenZahl, verworfen }: ZeileProps) {
-  const [offen, setOffen] = useState(false);
+}) {
   const m = vorhaben.messung;
-
   return (
-    <>
-      <tr
-        onClick={() => setOffen((o) => !o)}
-        style={{ cursor: "pointer" }}
-        aria-expanded={offen}
-      >
-        <td style={{ ...zelle(), color: v("--color-text-muted"), width: 20 }}>
-          <span
-            aria-hidden
-            style={{
-              display: "inline-block",
-              transform: offen ? "rotate(90deg)" : "none",
-              transition: "transform 120ms",
-            }}
-          >
-            ›
-          </span>
-        </td>
-        <td style={{ ...zelle(), whiteSpace: "normal", maxWidth: 320 }}>{vorhaben.thema}</td>
-        <td style={{ ...zelle(), color: v("--color-text-secondary") }}>{m.begriff}</td>
-        <td style={{ ...zelle(true), fontVariantNumeric: "tabular-nums" }}>
-          {volumen.toLocaleString("de-DE")}
-        </td>
-        <td style={{ ...zelle(true), fontVariantNumeric: "tabular-nums" }}>{m.schwierigkeit}</td>
-        <td style={{ ...zelle(), color: v("--color-text-muted") }}>
-          {new Date(m.gemessenAm).toLocaleDateString("de-DE")}
-        </td>
-        {!verworfen && (
-          <td style={{ ...zelle(), color: v(ZUSTAND_FARBE[vorhaben.zustand]) }}>{zustandLabel}</td>
-        )}
-      </tr>
+    <div>
+      <p style={{ color: v("--color-text-secondary"), maxWidth: 720, marginBottom: space.md }}>
+        {verworfen ? vorhaben.verworfenWeil : vorhaben.begruendung}
+      </p>
 
-      {offen && (
-        <tr>
-          <td />
-          <td
-            colSpan={spaltenZahl - 1}
-            style={{
-              padding: pad("md", "sm"),
-              borderBottom: `1px solid ${v("--color-border-muted")}`,
-              whiteSpace: "normal",
-            }}
-          >
-            <p style={{ color: v("--color-text-secondary"), maxWidth: 720, marginBottom: space.md }}>
-              {verworfen ? vorhaben.verworfenWeil : vorhaben.begruendung}
-            </p>
-
-            {verworfen && (
-              <p
-                style={{
-                  fontSize: v("--font-size-small"),
-                  color: v("--color-text-muted"),
-                  maxWidth: 720,
-                  marginBottom: space.md,
-                }}
-              >
-                Ursprünglich dafür sprach: {vorhaben.begruendung}
-              </p>
-            )}
-
-            {vorhaben.voraussetzung && (
-              <p
-                style={{
-                  fontSize: v("--font-size-small"),
-                  color: v("--color-text-secondary"),
-                  borderLeft: `2px solid ${v("--color-border-muted")}`,
-                  paddingLeft: space.md,
-                  maxWidth: 720,
-                  marginBottom: space.md,
-                }}
-              >
-                <strong style={{ fontWeight: 600 }}>Vorher nötig: </strong>
-                {vorhaben.voraussetzung}
-              </p>
-            )}
-
-            {m.nebenbegriffe && m.nebenbegriffe.length > 0 && (
-              <p
-                style={{
-                  fontSize: v("--font-size-caption"),
-                  color: v("--color-text-muted"),
-                  marginBottom: space.sm,
-                }}
-              >
-                bedient mit:{" "}
-                {m.nebenbegriffe
-                  .map(
-                    (n) =>
-                      `${n.begriff} (${n.volumen.toLocaleString("de-DE")}/Mo, Schwierigkeit ${n.schwierigkeit})`,
-                  )
-                  .join(" · ")}
-              </p>
-            )}
-
-            {vorhaben.slug && (
-              <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
-                geplante Adresse: {vorhaben.slug}
-              </p>
-            )}
-
-            <NeuBewerten thema={vorhaben.thema} />
-          </td>
-        </tr>
+      {/* Bei einem verworfenen Thema gehört BEIDES in die Zeile: der Einwand und
+          das, was ursprünglich dafür sprach. Ohne den zweiten Teil startet eine
+          spätere Neubewertung beim Einwand statt bei der Sache. */}
+      {verworfen && (
+        <p
+          style={{
+            fontSize: v("--font-size-small"),
+            color: v("--color-text-muted"),
+            maxWidth: 720,
+            marginBottom: space.md,
+          }}
+        >
+          Ursprünglich dafür sprach: {vorhaben.begruendung}
+        </p>
       )}
-    </>
+
+      {vorhaben.voraussetzung && (
+        <p
+          style={{
+            fontSize: v("--font-size-small"),
+            color: v("--color-text-secondary"),
+            borderLeft: `2px solid ${v("--color-border-muted")}`,
+            paddingLeft: space.md,
+            maxWidth: 720,
+            marginBottom: space.md,
+          }}
+        >
+          <strong style={{ fontWeight: 600 }}>Vorher nötig: </strong>
+          {vorhaben.voraussetzung}
+        </p>
+      )}
+
+      {m.nebenbegriffe && m.nebenbegriffe.length > 0 && (
+        <p
+          style={{
+            fontSize: v("--font-size-caption"),
+            color: v("--color-text-muted"),
+            marginBottom: space.sm,
+          }}
+        >
+          bedient mit:{" "}
+          {m.nebenbegriffe
+            .map(
+              (n) =>
+                `${n.begriff} (${n.volumen.toLocaleString("de-DE")}/Mo, Schwierigkeit ${n.schwierigkeit})`,
+            )
+            .join(" · ")}
+        </p>
+      )}
+
+      {vorhaben.slug && (
+        <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
+          geplante Adresse: {vorhaben.slug}
+        </p>
+      )}
+
+      <NeuBewerten thema={vorhaben.thema} />
+    </div>
   );
 }
 
@@ -218,26 +111,76 @@ export function ArtikelTabelle({
   zustandLabel: Record<string, string>;
   verworfen?: boolean;
 }) {
-  const spalten = verworfen ? SPALTEN_VERWORFEN : SPALTEN_OFFEN;
+  const vol = (vh: ArtikelVorhaben) => volumen[vh.thema] ?? vh.messung.volumen;
+
+  const spalten: Spalte<ArtikelVorhaben>[] = [
+    {
+      key: "thema",
+      kopf: "Thema",
+      zelle: (vh) => vh.thema,
+      sortWert: (vh) => vh.thema,
+      umbruch: true,
+    },
+    {
+      key: "begriff",
+      kopf: "Suchbegriff",
+      zelle: (vh) => (
+        <span style={{ color: v("--color-text-secondary") }}>{vh.messung.begriff}</span>
+      ),
+      sortWert: (vh) => vh.messung.begriff,
+    },
+    {
+      key: "volumen",
+      kopf: "Suchen/Mo",
+      zelle: (vh) => vol(vh).toLocaleString("de-DE"),
+      sortWert: vol,
+      rechts: true,
+    },
+    {
+      key: "schwierigkeit",
+      kopf: "Schwierigkeit",
+      zelle: (vh) => vh.messung.schwierigkeit,
+      sortWert: (vh) => vh.messung.schwierigkeit,
+      rechts: true,
+    },
+    {
+      key: "gemessen",
+      kopf: "gemessen",
+      zelle: (vh) => (
+        <span style={{ color: v("--color-text-muted") }}>
+          {new Date(vh.messung.gemessenAm).toLocaleDateString("de-DE")}
+        </span>
+      ),
+      // Sortiert wird über das ISO-Datum, nicht über die angezeigte Form —
+      // „7.8.2026" stünde sonst hinter „27.8.2026".
+      sortWert: (vh) => vh.messung.gemessenAm,
+    },
+  ];
+
+  if (!verworfen) {
+    spalten.push({
+      key: "zustand",
+      kopf: "Stand",
+      zelle: (vh) => (
+        <span style={{ color: v(ZUSTAND_FARBE[vh.zustand]) }}>
+          {zustandLabel[vh.zustand] ?? vh.zustand}
+        </span>
+      ),
+      sortWert: (vh) => vh.zustand,
+    });
+  }
+
   return (
-    // Breite Tabellen scrollen in ihrem eigenen Kasten, damit die Seite nicht
-    // seitlich läuft.
-    <div style={{ overflowX: "auto" }}>
-      <table style={{ borderCollapse: "collapse", width: "100%", fontSize: v("--font-size-small") }}>
-        <Kopf spalten={spalten} />
-        <tbody>
-          {vorhaben.map((vh) => (
-            <Zeile
-              key={vh.thema}
-              vorhaben={vh}
-              volumen={volumen[vh.thema] ?? vh.messung.volumen}
-              zustandLabel={zustandLabel[vh.zustand] ?? vh.zustand}
-              spaltenZahl={spalten.length}
-              verworfen={verworfen}
-            />
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <DatenTabelle
+      zeilen={vorhaben}
+      spalten={spalten}
+      schluessel={(vh) => vh.thema}
+      detail={(vh) => <Detail vorhaben={vh} verworfen={verworfen} />}
+      // Größtes Volumen zuerst: Die Seite wird gelesen, um zu entscheiden, was
+      // als Nächstes drankommt.
+      startSortierung={{ key: "volumen", richtung: "ab" }}
+      leerText={verworfen ? "Nichts verworfen." : "Keine Vorhaben."}
+      minBreite={860}
+    />
   );
 }
