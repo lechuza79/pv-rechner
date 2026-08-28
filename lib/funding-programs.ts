@@ -1134,8 +1134,18 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "schweinfurt-pv": {
     id: "schweinfurt-pv", name: "Förderprogramm Photovoltaik & Batteriespeicher",
     traeger: "Stadt Schweinfurt", level: "kommune", region: "Schweinfurt", bundesland: "Bayern", agsCode: "09662",
-    url: "https://www.schweinfurt.de/leben-freizeit/umwelt/klimaschutzkonzept/6002.Foerderprogramme.html",
-    stand: "Juli 2026", status: "eingestellt", capped: true, verified: true,
+    // TOTE ADRESSE ERSETZT (28.08.2026). Die alte Förderseite antwortet mit 404
+    // — das war im Eintrag als Befund vermerkt, stand aber weiter als `url` und
+    // damit als Ziel des Links auf der Karte: Wer nachlesen wollte, landete im
+    // Nichts. Jetzt die Klimaschutzseite der Stadt, die heute wirklich
+    // antwortet; sie führt Solarkataster und Klimaschutzkonzept und nennt kein
+    // eigenes Förderprogramm mehr — deckungsgleich mit `eingestellt`.
+    // Auch das Online-Antragsformular, das in Suchtreffern noch als
+    // „Förderantrag Photovoltaik und Batteriespeicher" auftaucht, antwortet mit
+    // 404: ein Verzeichniseintrag, der das Programm überlebt hat, kein Beleg
+    // dafür, dass es wieder läuft.
+    url: "https://www.schweinfurt.de/umweltverkehr/umwelt--natur/klimaschutz",
+    stand: "August 2026", status: "eingestellt", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Zuschuss je kWp + je kWh Speicher (neu angeschaffte Anlage)",
     rates: [
@@ -1145,7 +1155,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Neu angeschaffte Anlage; Kauf/Auftrag nach dem 03.05.2022",
       "Speicher nur aus eigener PV gespeist; zweistufiger Antrag",
-      "Städtische Förderseite steht auf Haushaltsjahr 2024 und ist offline (404); mehrere Quellen (2025/2026) melden kein eigenes kommunales Programm mehr — gilt als eingestellt",
+      "Die eigene Förderseite der Stadt ist abgeschaltet; die Klimaschutzseite nennt kein kommunales Förderprogramm mehr — gilt als eingestellt",
     ],
     combinableWith: BUND,
     pvPerKwp: 100, pvCap: 1000,
