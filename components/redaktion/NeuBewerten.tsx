@@ -70,14 +70,14 @@ export function NeuBewerten({ thema }: { thema: string }) {
   }
 
   return (
-    <div style={{ marginTop: space.md }}>
+    <div style={{ marginTop: 0 }}>
       <button
         type="button"
         onClick={messen}
         disabled={laeuft}
         style={{
           font: "inherit",
-          fontSize: v("--font-size-small"),
+          fontSize: 13,
           color: laeuft ? v("--color-text-muted") : v("--color-accent"),
           background: "none",
           border: `1px solid ${v("--color-border-muted")}`,
@@ -90,13 +90,13 @@ export function NeuBewerten({ thema }: { thema: string }) {
       </button>
 
       {fehler && (
-        <p style={{ fontSize: v("--font-size-small"), color: v("--color-negative"), marginTop: space.sm }}>
+        <p style={{ fontSize: 13, color: v("--color-negative"), marginTop: space.sm }}>
           {fehler}
         </p>
       )}
 
       {ergebnis && (
-        <div style={{ marginTop: space.md, fontSize: v("--font-size-small") }}>
+        <div style={{ marginTop: space.md, fontSize: 13 }}>
           <p style={{ color: v("--color-text-muted"), marginBottom: space.sm }}>
             gespeichert vom {new Date(ergebnis.gespeichertAm).toLocaleDateString("de-DE")} · gerade
             gemessen am {new Date(ergebnis.gemessenAm).toLocaleDateString("de-DE")}

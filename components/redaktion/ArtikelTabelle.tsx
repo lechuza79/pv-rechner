@@ -2,6 +2,7 @@
 
 import { v, space } from "../../lib/theme";
 import { DatenTabelle, type Spalte } from "../admin/DatenTabelle";
+import { DetailAbschnitt } from "../admin/DetailAbschnitt";
 import { NeuBewerten } from "./NeuBewerten";
 import { ErfolgMessen } from "./ErfolgMessen";
 import type { ArtikelVorhaben } from "../../lib/artikelplan";
@@ -33,74 +34,60 @@ function Detail({
   verworfen?: boolean;
 }) {
   const m = vorhaben.messung;
+  const istVerworfen = vorhaben.zustand === "verworfen";
+  void verworfen;
+
   return (
-    <div>
-      <p style={{ color: v("--color-text-secondary"), maxWidth: 720, marginBottom: space.md }}>
-        {verworfen ? vorhaben.verworfenWeil : vorhaben.begruendung}
-      </p>
+    <div style={{ paddingBottom: space.sm }}>
+      <DetailAbschnitt titel={istVerworfen ? "Warum verworfen" : "Warum dieses Thema"} erster>
+        <p style={{ margin: 0 }}>
+          {istVerworfen ? vorhaben.verworfenWeil : vorhaben.begruendung}
+        </p>
+      </DetailAbschnitt>
 
       {/* Bei einem verworfenen Thema gehört BEIDES in die Zeile: der Einwand und
           das, was ursprünglich dafür sprach. Ohne den zweiten Teil startet eine
           spätere Neubewertung beim Einwand statt bei der Sache. */}
-      {verworfen && (
-        <p
-          style={{
-            fontSize: v("--font-size-small"),
-            color: v("--color-text-muted"),
-            maxWidth: 720,
-            marginBottom: space.md,
-          }}
-        >
-          Ursprünglich dafür sprach: {vorhaben.begruendung}
-        </p>
+      {istVerworfen && (
+        <DetailAbschnitt titel="Was dafür sprach">
+          <p style={{ margin: 0 }}>{vorhaben.begruendung}</p>
+        </DetailAbschnitt>
       )}
 
       {vorhaben.voraussetzung && (
-        <p
-          style={{
-            fontSize: v("--font-size-small"),
-            color: v("--color-text-secondary"),
-            borderLeft: `2px solid ${v("--color-border-muted")}`,
-            paddingLeft: space.md,
-            maxWidth: 720,
-            marginBottom: space.md,
-          }}
-        >
-          <strong style={{ fontWeight: 600 }}>Vorher nötig: </strong>
-          {vorhaben.voraussetzung}
-        </p>
+        <DetailAbschnitt titel="Vorher nötig">
+          <p style={{ margin: 0 }}>{vorhaben.voraussetzung}</p>
+        </DetailAbschnitt>
       )}
 
       {m.nebenbegriffe && m.nebenbegriffe.length > 0 && (
-        <p
-          style={{
-            fontSize: v("--font-size-caption"),
-            color: v("--color-text-muted"),
-            marginBottom: space.sm,
-          }}
-        >
-          bedient mit:{" "}
-          {m.nebenbegriffe
-            .map(
-              (n) =>
-                `${n.begriff} (${n.volumen.toLocaleString("de-DE")}/Mo, Schwierigkeit ${n.schwierigkeit})`,
-            )
-            .join(" · ")}
-        </p>
+        <DetailAbschnitt titel="Mitbediente Begriffe">
+          <ul style={{ margin: 0, paddingLeft: space.lg }}>
+            {m.nebenbegriffe.map((n) => (
+              <li key={n.begriff}>
+                {n.begriff} — {n.volumen.toLocaleString("de-DE")}/Mo, Schwierigkeit{" "}
+                {n.schwierigkeit}
+              </li>
+            ))}
+          </ul>
+        </DetailAbschnitt>
       )}
 
       {vorhaben.slug && (
-        <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
-          {vorhaben.zustand === "live" ? "Adresse" : "geplante Adresse"}: {vorhaben.slug}
-        </p>
+        <DetailAbschnitt titel={vorhaben.zustand === "live" ? "Adresse" : "Geplante Adresse"}>
+          <p style={{ margin: 0 }}>{vorhaben.slug}</p>
+        </DetailAbschnitt>
       )}
 
-      <NeuBewerten thema={vorhaben.thema} />
-
-      {/* Nur bei einer veröffentlichten Seite: Was ist aus der Vorhersage
-          geworden? Bei allem anderen gäbe es nichts zu messen — und ein Knopf,
-          der immer null liefert, wird nicht mehr gedrückt. */}
-      {vorhaben.zustand === "live" && <ErfolgMessen thema={vorhaben.thema} />}
+      <DetailAbschnitt titel="Nachmessen">
+        <div style={{ display: "flex", gap: space.md, flexWrap: "wrap", alignItems: "flex-start" }}>
+          <NeuBewerten thema={vorhaben.thema} />
+          {/* Nur bei einer veröffentlichten Seite: Was ist aus der Vorhersage
+              geworden? Bei allem anderen gäbe es nichts zu messen — und ein
+              Knopf, der immer null liefert, wird nicht mehr gedrückt. */}
+          {vorhaben.zustand === "live" && <ErfolgMessen thema={vorhaben.thema} />}
+        </div>
+      </DetailAbschnitt>
     </div>
   );
 }
@@ -163,7 +150,7 @@ export function ArtikelTabelle({
     },
   ];
 
-  if (!verworfen) {
+  {
     spalten.push({
       key: "zustand",
       kopf: "Stand",
@@ -184,7 +171,7 @@ export function ArtikelTabelle({
       detail={(vh) => <Detail vorhaben={vh} verworfen={verworfen} />}
       // Größtes Volumen zuerst: Die Seite wird gelesen, um zu entscheiden, was
       // als Nächstes drankommt.
-      startSortierung={{ key: "volumen", richtung: "ab" }}
+      startSortierung={[{ key: "volumen", richtung: "ab" }]}
       leerText={verworfen ? "Nichts verworfen." : "Keine Vorhaben."}
       minBreite={860}
     />

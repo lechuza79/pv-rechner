@@ -2,6 +2,7 @@
 
 import { Fragment, useMemo, useState } from "react";
 import { v, pad, space } from "../../lib/theme";
+import { SortPfeil } from "../SortPfeil";
 
 // Die Tabelle des internen Bereichs — eine Quelle für Aussehen, Sortierung und
 // aufklappbare Zeilen.
@@ -21,6 +22,12 @@ import { v, pad, space } from "../../lib/theme";
 // NICHT umgestellt sind die beiden Bestandstabellen. Das ist Absicht: Jede
 // Rundung ist eine sichtbare Änderung und gehört einzeln abgenommen — dieselbe
 // Regel wie bei der Abstands-Skala. Wer eine davon anfasst, zieht sie hierher.
+//
+// MEHRFACHSORTIERUNG (28.08.2026): Klick setzt die Spalte als einzige
+// Sortierung, erneuter Klick dreht die Richtung, Umschalt-Klick hängt eine
+// weitere Spalte an. Die Rangfolge steht als kleine Ziffer am Pfeil — ohne sie
+// ist eine zweistufige Sortierung nicht von einer einstufigen zu unterscheiden,
+// und niemand versteht, warum die Zeilen so liegen, wie sie liegen.
 
 export interface Spalte<T> {
   /** Stabiler Schlüssel, auch der Sortier-Schlüssel. */
@@ -57,6 +64,10 @@ export const tdStyle: React.CSSProperties = {
 };
 
 type Richtung = "auf" | "ab";
+export interface SortStufe {
+  key: string;
+  richtung: Richtung;
+}
 
 /**
  * Vergleich für die Sortierung. Zahlen numerisch, Text nach deutschen Regeln
@@ -82,28 +93,47 @@ export function DatenTabelle<T>({
   schluessel: (zeile: T) => string;
   /** Inhalt der aufgeklappten Zeile. Fehlt er, ist die Tabelle nicht aufklappbar. */
   detail?: (zeile: T) => React.ReactNode;
-  startSortierung?: { key: string; richtung: Richtung };
+  startSortierung?: SortStufe[];
   leerText?: string;
   minBreite?: number;
 }) {
-  const [sortierung, setSortierung] = useState<{ key: string; richtung: Richtung } | null>(
-    startSortierung ?? null,
-  );
+  const [sortierung, setSortierung] = useState<SortStufe[]>(startSortierung ?? []);
   const [offen, setOffen] = useState<Set<string>>(new Set());
 
   const sortiert = useMemo(() => {
-    if (!sortierung) return zeilen;
-    const spalte = spalten.find((s) => s.key === sortierung.key);
-    if (!spalte?.sortWert) return zeilen;
-    const faktor = sortierung.richtung === "auf" ? 1 : -1;
+    if (sortierung.length === 0) return zeilen;
+    const stufen = sortierung
+      .map((s) => ({ stufe: s, spalte: spalten.find((sp) => sp.key === s.key) }))
+      .filter((x): x is { stufe: SortStufe; spalte: Spalte<T> } => !!x.spalte?.sortWert);
+    if (stufen.length === 0) return zeilen;
     // Kopie, damit die übergebene Liste unangetastet bleibt.
-    return [...zeilen].sort((a, b) => faktor * vergleiche(spalte.sortWert!(a), spalte.sortWert!(b)));
+    return [...zeilen].sort((a, b) => {
+      for (const { stufe, spalte } of stufen) {
+        const d = vergleiche(spalte.sortWert!(a), spalte.sortWert!(b));
+        if (d !== 0) return stufe.richtung === "auf" ? d : -d;
+      }
+      return 0;
+    });
   }, [zeilen, spalten, sortierung]);
 
-  function sortieren(key: string) {
-    setSortierung((s) =>
-      s?.key === key ? { key, richtung: s.richtung === "auf" ? "ab" : "auf" } : { key, richtung: "auf" },
-    );
+  function sortieren(key: string, dazu: boolean) {
+    setSortierung((alt) => {
+      const treffer = alt.find((s) => s.key === key);
+      // Umschalt-Klick: Spalte anhängen oder ihre Richtung drehen, die übrigen
+      // Stufen bleiben stehen.
+      if (dazu) {
+        if (!treffer) return [...alt, { key, richtung: "auf" }];
+        return alt.map((s) =>
+          s.key === key ? { key, richtung: s.richtung === "auf" ? "ab" : "auf" } : s,
+        );
+      }
+      // Normaler Klick: nur diese Spalte. War sie schon die einzige, dreht die
+      // Richtung — sonst wäre ein zweiter Klick wirkungslos.
+      if (treffer && alt.length === 1) {
+        return [{ key, richtung: treffer.richtung === "auf" ? "ab" : "auf" }];
+      }
+      return [{ key, richtung: "auf" }];
+    });
   }
 
   function umschalten(k: string) {
@@ -130,7 +160,8 @@ export function DatenTabelle<T>({
           <tr>
             {detail && <th style={{ ...thStyle, width: 24 }} aria-hidden />}
             {spalten.map((s) => {
-              const aktiv = sortierung?.key === s.key;
+              const stufe = sortierung.find((x) => x.key === s.key);
+              const rang = sortierung.findIndex((x) => x.key === s.key);
               const sortierbar = !!s.sortWert;
               return (
                 <th
@@ -140,17 +171,26 @@ export function DatenTabelle<T>({
                     textAlign: s.rechts ? "right" : "left",
                     cursor: sortierbar ? "pointer" : "default",
                     userSelect: "none",
-                    color: aktiv ? v("--color-text-secondary") : thStyle.color,
+                    color: stufe ? v("--color-text-secondary") : thStyle.color,
                   }}
-                  onClick={sortierbar ? () => sortieren(s.key) : undefined}
-                  aria-sort={
-                    aktiv ? (sortierung!.richtung === "auf" ? "ascending" : "descending") : undefined
-                  }
+                  onClick={sortierbar ? (e) => sortieren(s.key, e.shiftKey) : undefined}
+                  title={sortierbar ? "Klick sortiert · Umschalt-Klick sortiert zusätzlich" : undefined}
+                  aria-sort={stufe ? (stufe.richtung === "auf" ? "ascending" : "descending") : undefined}
                 >
                   {s.kopf}
-                  {sortierbar && (
-                    <span aria-hidden style={{ marginLeft: 4, opacity: aktiv ? 1 : 0.35 }}>
-                      {aktiv ? (sortierung!.richtung === "auf" ? "▲" : "▼") : "▲"}
+                  {sortierbar && <SortPfeil an={!!stufe} auf={stufe?.richtung === "auf"} />}
+                  {/* Die Ziffer erscheint erst ab der zweiten Stufe: Bei einer
+                      einzigen Sortierung wäre eine „1“ nur Lärm. */}
+                  {stufe && sortierung.length > 1 && (
+                    <span
+                      style={{
+                        fontSize: 9,
+                        marginLeft: 1,
+                        verticalAlign: "super",
+                        color: v("--color-text-muted"),
+                      }}
+                    >
+                      {rang + 1}
                     </span>
                   )}
                 </th>

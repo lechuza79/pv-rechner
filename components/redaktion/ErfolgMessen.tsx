@@ -108,14 +108,14 @@ export function ErfolgMessen({ thema }: { thema: string }) {
   const satz = ergebnis?.eingerichtet ? deutung(ergebnis) : null;
 
   return (
-    <div style={{ marginTop: space.md }}>
+    <div style={{ marginTop: 0 }}>
       <button
         type="button"
         onClick={messen}
         disabled={laeuft}
         style={{
           font: "inherit",
-          fontSize: v("--font-size-small"),
+          fontSize: 13,
           color: laeuft ? v("--color-text-muted") : v("--color-accent"),
           background: "none",
           border: `1px solid ${v("--color-border-muted")}`,
@@ -130,7 +130,7 @@ export function ErfolgMessen({ thema }: { thema: string }) {
       {fehler && (
         <p
           style={{
-            fontSize: v("--font-size-small"),
+            fontSize: 13,
             color: v("--color-negative"),
             marginTop: space.sm,
           }}
@@ -142,7 +142,7 @@ export function ErfolgMessen({ thema }: { thema: string }) {
       {ergebnis && !ergebnis.eingerichtet && (
         <p
           style={{
-            fontSize: v("--font-size-small"),
+            fontSize: 13,
             color: v("--color-text-muted"),
             marginTop: space.sm,
             maxWidth: 620,
@@ -153,7 +153,7 @@ export function ErfolgMessen({ thema }: { thema: string }) {
       )}
 
       {ergebnis?.eingerichtet && (
-        <div style={{ marginTop: space.md, fontSize: v("--font-size-small") }}>
+        <div style={{ marginTop: space.md, fontSize: 13 }}>
           <div style={{ display: "flex", gap: space.xxl, flexWrap: "wrap", marginBottom: space.sm }}>
             <div>
               <div style={{ fontSize: v("--font-size-h3"), lineHeight: 1.1 }}>
