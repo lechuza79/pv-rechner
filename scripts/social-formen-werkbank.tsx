@@ -21,7 +21,7 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { SocialKarte } from "../components/social/SocialKarte";
 import { baueAllePosts, moeglicheFormen, templateVon, type SocialKennzahlen } from "../lib/social-posts";
-import { BILDFORM_NAME } from "../lib/social-bildformen";
+import { BILDFORM_NAME, kollidiert, verschwindet } from "../lib/social-bildformen";
 import { KARTEN_STILE, type KartenStil } from "../lib/social-karten-stil";
 import { getCssVariables, globalStyles } from "../lib/theme";
 
@@ -55,10 +55,32 @@ const gefiltert = !!(nurForm || nurPost);
 const SKALA = gefiltert ? 1 : 440 / 1080;
 
 const bloecke: string[] = [];
+const befunde: string[] = [];
 let gezeigt = 0;
 
 for (const post of posts) {
   if (!post.bild) continue;
+
+  // Die Rundungsprüfung läuft an den ECHTEN Zahlen, und das ist der Punkt: Ein
+  // Test mit festen Testwerten kann eine datenabhängige Eigenschaft nicht
+  // garantieren. Ob zwei Anteile bei diesem Datenstand auf dieselbe Zahl fallen,
+  // entscheidet der Datenstand — nicht der Code. Gemeldet und nicht behoben:
+  // Welche Rundung eine Aussage braucht, ist eine redaktionelle Entscheidung.
+  const serien = post.bild.serien;
+  if (serien.length >= 2) {
+    const stellen = serien[0].stellen ?? 0;
+    const werte = serien.map((s) => s.wert);
+    if (kollidiert(werte, stellen)) {
+      befunde.push(
+        `${post.id}: zwei Serien zeigen dieselbe Zahl für verschiedene Werte — ` +
+          werte.map((w, i) => `${serien[i].label} ${w.toFixed(stellen)}`).join(", "),
+      );
+    }
+    if (verschwindet(werte, stellen)) {
+      befunde.push(`${post.id}: ein Wert steht als Null da, obwohl er keine ist`);
+    }
+  }
+
   if (nurPost && post.id !== nurPost) continue;
   const formen = moeglicheFormen(post.bild).filter((f) => !nurForm || f === nurForm);
   if (formen.length === 0) continue;
@@ -127,3 +149,14 @@ ${bloecke.join("\n")}
 
 writeFileSync(ziel, html);
 console.log(`${gezeigt} Karten in ${ziel} (Farbschema ${stilWahl})`);
+
+if (befunde.length) {
+  console.log(`\nRundung an den echten Zahlen — ${befunde.length} Befund(e):`);
+  for (const b of befunde) console.log(`  - ${b}`);
+  console.log(
+    "\nEine Rundung, die zwei verschiedene Werte gleich aussehen lässt, ist im Bild ein Fehler:",
+  );
+  console.log("Der Balken zeigt den Unterschied, die Zahl daneben verneint ihn.");
+} else {
+  console.log("Rundung an den echten Zahlen: keine Kollision, keine verschwundene Zahl.");
+}

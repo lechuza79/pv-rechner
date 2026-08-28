@@ -68,6 +68,34 @@ export function reihenEnge(b: PostBild): number {
 }
 
 /**
+ * Zeigen zwei VERSCHIEDENE Werte dieselbe Zahl, wenn man so rundet?
+ *
+ * Die Regel gilt in jedem Bild mit mehr als einem Wert, nicht nur in einer
+ * Reihe: Zwei Balken verschiedener Länge mit derselben Zahl daneben lesen sich
+ * als Fehler in der Grafik, und im Zweifel glaubt man dem Balken. Vorkommen im
+ * Bestand: Gewerbedach 35,04 und Freifläche 35,25 standen als zweimal „35",
+ * Schleswig-Holstein 50,2 und Sachsen 50,0 als zweimal „50".
+ *
+ * Ausdrücklich nur bei VERSCHIEDENEN Werten. Zwei Länder, die wirklich gleich
+ * stehen, dürfen dieselbe Zahl tragen — das ist dann keine verlorene
+ * Unterscheidung, sondern die Auskunft.
+ */
+export function kollidiert(werte: number[], stellen: number): boolean {
+  const gezeigt = werte.map((w) => Math.abs(w).toFixed(stellen));
+  for (let i = 0; i < werte.length; i++) {
+    for (let j = i + 1; j < werte.length; j++) {
+      if (Math.abs(werte[i]) !== Math.abs(werte[j]) && gezeigt[i] === gezeigt[j]) return true;
+    }
+  }
+  return false;
+}
+
+/** Fällt ein Wert, der nicht null ist, bei dieser Rundung auf null? */
+export function verschwindet(werte: number[], stellen: number): boolean {
+  return werte.some((w) => Math.abs(w) > 0 && Number(Math.abs(w).toFixed(stellen)) === 0);
+}
+
+/**
  * Mit wie vielen Nachkommastellen eine Rangliste ihre Werte zeigt.
  *
  * Bei zwei Werten genügt die Angabe an der Serie. Bei sechzehn nicht mehr, und
@@ -90,14 +118,7 @@ export function ranglistenStellen(b: PostBild): number {
   const basis = b.serien[0]?.stellen ?? 0;
   const werte = (b.reihe ?? []).map((s) => Math.abs(s.wert));
   if (werte.length === 0) return basis;
-  const gezeigt = (stellen: number) => werte.map((w) => w.toFixed(stellen));
-  const nullObwohlNicht = (stellen: number) =>
-    werte.some((w, i) => w > 0 && Number(gezeigt(stellen)[i]) === 0);
-  const nichtUnterscheidbar = (stellen: number) => {
-    const g = gezeigt(stellen);
-    return werte.some((w, i) => i > 0 && w !== werte[i - 1] && g[i] === g[i - 1]);
-  };
-  return nullObwohlNicht(basis) || nichtUnterscheidbar(basis) ? basis + 1 : basis;
+  return verschwindet(werte, basis) || kollidiert(werte, basis) ? basis + 1 : basis;
 }
 
 /**
@@ -119,10 +140,18 @@ export function aufteilungsStellen(b: PostBild): number {
     const summe = teile.reduce((s, w) => s + Number(w.toFixed(stellen)), 0);
     return Math.abs(summe - ganzes) < Math.pow(10, -stellen) / 2;
   };
-  if (gehtAuf(basis)) return basis;
-  if (gehtAuf(basis + 1)) return basis + 1;
-  // Geht es auch dann nicht auf, liegt es nicht an der Rundung — dann sind die
-  // Teile schlicht keine Aufteilung, und `schoepftAus` weist die Form ab.
+  // Zwei Bedingungen, und die zweite hätte gefehlt: Eine Aufteilung, deren Teile
+  // sich zwar zum Ganzen addieren, in der aber zwei verschieden große Segmente
+  // dieselbe Zahl tragen, ist genauso kaputt — 50,1 und 49,9 ergeben als „50"
+  // und „50" hundert und behaupten zwei gleiche Hälften. Aufgefallen ist die
+  // Lücke einer parallelen Sitzung an genau diesem Beitrag, eine Fassung bevor
+  // ich sie zufällig mit der Nachkommastelle geschlossen hatte.
+  const taugt = (stellen: number) =>
+    gehtAuf(stellen) && !kollidiert(teile, stellen) && !verschwindet(teile, stellen);
+  if (taugt(basis)) return basis;
+  // Geht es auch mit einer Stelle mehr nicht auf, liegt es nicht an der Rundung —
+  // dann sind die Teile schlicht keine Aufteilung, und `schoepftAus` weist die
+  // Form ab.
   return basis + 1;
 }
 

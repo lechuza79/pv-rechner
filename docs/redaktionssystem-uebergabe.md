@@ -254,6 +254,22 @@ bei verschieden langen Balken. `ranglistenStellen` erhöht deshalb um eine Stell
 null fiele oder zwei Ränge ununterscheidbar würden. **Der Balken zeigt die ANGEZEIGTE Zahl**, nicht
 den Rohwert — sonst widerspricht die Grafik der Beschriftung, und im Zweifel glaubt man der Grafik.
 
+**Zwei verschiedene Werte dürfen in KEINEM Bild dieselbe Zahl tragen.** Ich hatte diese Regel
+zweimal gebaut — einmal für die Rangliste, einmal unvollständig für die Aufteilung — und für die
+übrigen Formen gar nicht. Eine parallele Sitzung hat den offenen Fall gemessen: Im Balken des
+Aufteilungs-Beitrags standen Gewerbedach (35,04) und Freifläche (35,25) als zweimal „35", während
+der Text daneben beide unterschied. Zwei Balken verschiedener Länge mit derselben Zahl lesen sich
+als Fehler in der Grafik, und im Zweifel glaubt man dem Balken. Ausdrücklich nur bei
+**verschiedenen** Werten — zwei Länder, die wirklich gleich stehen, dürfen dieselbe Zahl tragen.
+
+**Und die Grenze dazu, weil sie zählt:** Ob zwei Werte bei einem Datenstand auf dieselbe Zahl
+fallen, entscheidet der Datenstand, nicht der Code. Ein Test mit festen Testwerten kann das nicht
+garantieren — er hält nur die Mechanik fest. Die Werkbank prüft es deshalb an den **echten** Zahlen
+und meldet; gemeldet und nicht behoben, weil die nötige Rundung eine redaktionelle Entscheidung ist.
+Einen Lauf, der bei jedem neuen Datenstand von selbst meldet, gibt es dafür **nicht** — die
+Freigabe-Sitzung nimmt den Abgleich in ihre Prüfkette vor dem Senden auf, und dort zählt er. Die
+beiden Prüffunktionen sind exportiert, damit niemand sie nachbaut.
+
 **Eine Aufteilung muss aufgehen.** Als ganze Prozente standen in der Legende 35 + 35 + 28 + 1 = 99
 neben einem vollen Balken. `aufteilungsStellen` wählt die Genauigkeit so, dass die gezeigten Teile
 das Ganze ergeben. Und der Rest zum Ganzen wird **mitgezeichnet und benannt** (`restLabel`) — bei

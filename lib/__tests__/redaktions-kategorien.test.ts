@@ -6,9 +6,11 @@ import { BILDFORMEN, BILDFORM_NAME, TEMPLATES, baueAllePosts, kurzEinwohner, moe
 import {
   RANGLISTE_MAX_ENGE,
   aufteilungsStellen,
+  kollidiert,
   ranglistenStellen,
   reihenEnge,
   restVon,
+  verschwindet,
 } from "../social-bildformen";
 import { BUNDESLAND_UMRISS } from "../bundesland-umrisse";
 
@@ -321,6 +323,34 @@ describe("Bildform und Einheit", () => {
       const werte = reihe.map((r) => Math.abs(r.wert));
       const sortiert = [...werte].sort((a, b) => b - a);
       expect(werte, `${p.id}: Reihe nicht sortiert`).toEqual(sortiert);
+    }
+  });
+
+  it("in KEINEM Bild tragen zwei verschiedene Werte dieselbe Zahl", () => {
+    // Die allgemeine Fassung der Regel, und sie fehlte: Ich hatte sie zweimal
+    // gebaut — einmal für die Rangliste, einmal (unvollständig) für die
+    // Aufteilung — und für die übrigen Formen gar nicht. Eine parallele Sitzung
+    // hat den Fall im Balken des Aufteilungs-Beitrags gemessen: Gewerbedach
+    // 35,04 und Freifläche 35,25 standen als zweimal „35".
+    //
+    // Zwei Balken verschiedener Länge mit derselben Zahl daneben lesen sich als
+    // Fehler in der Grafik, und im Zweifel glaubt man dem Balken. Ausdrücklich
+    // nur bei VERSCHIEDENEN Werten: Zwei Länder, die wirklich gleich stehen,
+    // dürfen dieselbe Zahl tragen — das ist dann die Auskunft, kein Verlust.
+    for (const p of posts) {
+      const bild = p.bild;
+      if (!bild || bild.serien.length < 2) continue;
+      const stellen = bild.serien[0].stellen ?? 0;
+      const werte = bild.serien.map((s) => s.wert);
+      expect(
+        kollidiert(werte, stellen),
+        `${p.id}: zwei Serien zeigen dieselbe Zahl für verschiedene Werte ` +
+          `(${werte.map((w) => w.toFixed(stellen)).join(", ")})`,
+      ).toBe(false);
+      expect(
+        verschwindet(werte, stellen),
+        `${p.id}: ein Wert steht als Null da, obwohl er keine ist`,
+      ).toBe(false);
     }
   });
 
