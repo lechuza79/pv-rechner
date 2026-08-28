@@ -3,6 +3,7 @@
 import { StoryTisch } from "./StoryTisch";
 import { space } from "../../lib/theme";
 import type { Pruefung } from "../../lib/social-pruefung-kern";
+import type { Befund as MechanikBefund } from "../../lib/social-mechanik";
 import type { SocialPost } from "../../lib/social-posts";
 
 // Die Stories einer Kategorie untereinander.
@@ -18,12 +19,12 @@ import type { SocialPost } from "../../lib/social-posts";
 export function StoryListe({
   eintraege,
 }: {
-  eintraege: { post: SocialPost; pruefungen: Pruefung[]; abdruck: string }[];
+  eintraege: { post: SocialPost; pruefungen: Pruefung[]; abdruck: string; befunde: MechanikBefund[] }[];
 }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: space.huge * 1.5 }}>
-      {eintraege.map(({ post, pruefungen, abdruck }) => (
-        <StoryTisch key={post.id} post={post} pruefungen={pruefungen} abdruck={abdruck} />
+      {eintraege.map(({ post, pruefungen, abdruck, befunde }) => (
+        <StoryTisch key={post.id} post={post} pruefungen={pruefungen} abdruck={abdruck} befunde={befunde} />
       ))}
     </div>
   );

@@ -8,6 +8,7 @@ import { StoryTisch } from "./StoryTisch";
 import { Kennung } from "./Kennung";
 import { v, space, pad } from "../../lib/theme";
 import type { Pruefung } from "../../lib/social-pruefung-kern";
+import type { Befund as MechanikBefund } from "../../lib/social-mechanik";
 import { urteil } from "../../lib/social-pruefung-kern";
 import { BILDFORM_NAME, templateVon, type SocialPost } from "../../lib/social-posts";
 import { KARTEN_STIL_NAME } from "../../lib/social-karten-stil";
@@ -29,6 +30,8 @@ export type GridEintrag = {
   pruefungen: Pruefung[];
   /** Abdruck der abgelegten Fassung, serverseitig gerechnet. */
   abdruck: string;
+  /** Was die mechanische Pruefung festgestellt hat. */
+  befunde: MechanikBefund[];
   kategorie: { name: string; schluessel: string };
   /**
    * Ist das Design dieser Story durchgesehen — im Code abgenommen ODER im
@@ -205,6 +208,7 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
             post={aktiv.post}
             pruefungen={aktiv.pruefungen}
             abdruck={aktiv.abdruck}
+            befunde={aktiv.befunde}
             ohneTitel
             onPruefung={(postId, p) =>
               setDazu((alt) => ({

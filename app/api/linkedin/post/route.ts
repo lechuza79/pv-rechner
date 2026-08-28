@@ -5,6 +5,7 @@ import { pruefungGueltig, fassungsAbdruck } from "../../../../lib/social-pruefun
 import { socialKennzahlen } from "../../../../lib/social-kennzahlen";
 import { baueAllePosts } from "../../../../lib/social-posts";
 import { ladeFassungen } from "../../../../lib/social-vorlagen-db";
+import { pruefeMechanisch, sperren } from "../../../../lib/social-mechanik";
 
 // Veröffentlichung eines Beitrags mit Bild.
 //
@@ -46,8 +47,10 @@ export async function POST(req: NextRequest) {
   if (!body.postId) return NextResponse.json({ error: "Keine Post-Kennung übergeben" }, { status: 400 });
 
   let post;
+  let kennzahlen;
   try {
-    post = baueAllePosts(await socialKennzahlen(), await ladeFassungen()).find((p) => p.id === body.postId);
+    kennzahlen = await socialKennzahlen();
+    post = baueAllePosts(kennzahlen, await ladeFassungen()).find((p) => p.id === body.postId);
   } catch (err) {
     return NextResponse.json({ error: `Zahlen nicht abrufbar: ${(err as Error).message}` }, { status: 503 });
   }
@@ -75,6 +78,25 @@ export async function POST(req: NextRequest) {
         error:
           "Der Browser zeigt einen anderen Stand als die Ablage — vermutlich hat sich der Datenstand bewegt. Seite neu laden und noch einmal ansehen.",
       },
+      { status: 409 },
+    );
+  }
+
+  // DIE MECHANIK SPERRT HIER, nicht erst in der Oberfläche.
+  //
+  // Sie läuft gegen die Fassung, die WIRKLICH rausgeht, und gegen den
+  // Datenstand von jetzt — nicht gegen eine Werkbank, die jemand starten muss.
+  // Genau das war der Unterschied, an dem die bisherige Prüfung hing: Eine
+  // Regel, die nur läuft, wenn sie jemand aufruft, ist keine Sperre.
+  //
+  // Sie steht VOR der Freigabeprüfung: Ein Beitrag mit einem mechanischen
+  // Widerspruch soll das erfahren, auch wenn er noch gar keine Freigabe hat —
+  // sonst schickt man erst jemanden zum Prüfen und erfährt danach, dass die
+  // Zahlen sich widersprechen.
+  const mechanik = sperren(pruefeMechanisch(post, kennzahlen));
+  if (mechanik.length) {
+    return NextResponse.json(
+      { error: `Mechanische Prüfung: ${mechanik.map((b) => b.text).join(" · ")}` },
       { status: 409 },
     );
   }

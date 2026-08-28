@@ -13,6 +13,7 @@ import {
   type Pruefung,
 } from "../../lib/social-pruefung-kern";
 import { regelnFuer } from "../../lib/redaktionsplan";
+import type { Befund as MechanikBefund } from "../../lib/social-mechanik";
 
 // Die Freigabe erteilen — die Stelle, an der ein Mensch für eine konkrete
 // Fassung geradesteht.
@@ -39,6 +40,7 @@ export function Freigabe({
   postId,
   abdruck,
   gilt,
+  befunde,
   pruefungen,
   onErteilt,
   gesperrt,
@@ -60,6 +62,14 @@ export function Freigabe({
    * wird weder gezeigt noch erteilt — ohne dafür im Browser rechnen zu müssen.
    */
   gilt: boolean;
+  /**
+   * Was die Maschine an dieser Fassung festgestellt hat.
+   *
+   * Serverseitig gerechnet und bei jedem Aufruf frisch — nicht auf Knopfdruck.
+   * Sperren verhindern den Versand; Hinweise sind Urteile über die Welt und
+   * bleiben bei dem, der sie beurteilen kann.
+   */
+  befunde: MechanikBefund[];
   pruefungen: Pruefung[];
   onErteilt: (p: Pruefung) => void;
   /** Grund, warum gerade nicht freigegeben werden darf. Leer = frei. */
@@ -153,6 +163,39 @@ export function Freigabe({
         {stand.ok ? <IconCheck size={14} /> : <IconLock size={14} />}
         <span>{stand.ok ? "Freigegeben — Text und Bild geprüft." : stand.grund}</span>
       </div>
+
+      {/* Was die MASCHINE festgestellt hat — vor allem Menschlichen.
+          Eine Sperre verhindert den Versand, unabhängig von jeder Freigabe:
+          Es hat keinen Sinn, jemanden auf einen Beitrag zu schicken, dessen
+          Zahlen sich schon untereinander widersprechen. */}
+      {befunde.filter((b) => b.schwere === "sperre").map((b, i) => (
+        <div
+          key={`sperre-${i}`}
+          style={{
+            fontSize: v("--font-size-small"),
+            color: v("--color-negative"),
+            marginBottom: space.xs,
+            display: "flex",
+            gap: space.xs,
+            alignItems: "flex-start",
+          }}
+        >
+          <IconClose size={14} style={{ flex: "0 0 auto", marginTop: 2 }} />
+          <span>{b.text}</span>
+        </div>
+      ))}
+      {befunde.filter((b) => b.schwere === "hinweis").map((b, i) => (
+        <div
+          key={`hinweis-${i}`}
+          style={{
+            fontSize: v("--font-size-caption"),
+            color: v("--color-text-muted"),
+            marginBottom: space.xxs,
+          }}
+        >
+          {b.text}
+        </div>
+      ))}
 
       {gesperrt ? (
         <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), margin: 0 }}>{gesperrt}</p>

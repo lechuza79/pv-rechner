@@ -7,6 +7,7 @@ import { BEREICHE } from "../../../../lib/redaktionsplan";
 import { KategorieNav } from "../../../../components/social/KategorieNav";
 import { ladeFassungen } from "../../../../lib/social-vorlagen-db";
 import { fassungsAbdruck, ladeAllePruefungen } from "../../../../lib/social-pruefung";
+import { pruefeMechanisch } from "../../../../lib/social-mechanik";
 import { StoryListe } from "../../../../components/social/StoryListe";
 import { StoryGrid } from "../../../../components/social/StoryGrid";
 import { kategorie } from "../../../../lib/redaktions-kategorien";
@@ -46,12 +47,23 @@ export default async function RedaktionEntwicklung({
   const kat = kategorieAusAdresse(gewaehlt);
 
   let posts: SocialPost[] | undefined;
+  let kennzahlen: Awaited<ReturnType<typeof socialKennzahlen>> | undefined;
   let fehler: string | null = null;
   try {
-    const [kennzahlen, fassungen] = await Promise.all([socialKennzahlen(), ladeFassungen()]);
-    posts = baueAllePosts(kennzahlen, fassungen);
+    const [k, fassungen] = await Promise.all([socialKennzahlen(), ladeFassungen()]);
+    kennzahlen = k;
+    posts = baueAllePosts(k, fassungen);
   } catch (e) {
     fehler = (e as Error).message;
+  }
+
+  // Die mechanische Prüfung läuft SERVERSEITIG und bei jedem Aufruf, nicht auf
+  // Knopfdruck. Sie ist billig (reine Rechnung, keine Datenbank) und soll dort
+  // stehen, wo gearbeitet wird — ein Befund, den man erst beim Senden erfährt,
+  // kommt zwei Schritte zu spät.
+  const befundeJePost = new Map<string, ReturnType<typeof pruefeMechanisch>>();
+  if (posts && kennzahlen) {
+    for (const p of posts) befundeJePost.set(p.id, pruefeMechanisch(p, kennzahlen));
   }
 
   const dieser = uebersicht ? (posts ?? []) : (posts?.filter((p) => p.kategorie === kat.schluessel) ?? []);
@@ -114,6 +126,7 @@ export default async function RedaktionEntwicklung({
               // Der Abdruck wird HIER gerechnet, auf dem Server. Der Browser
               // bekommt ihn fertig — er soll nicht hashen können müssen.
               abdruck: fassungsAbdruck({ text: p.text, bild: p.bild }),
+              befunde: befundeJePost.get(p.id) ?? [],
               kategorie: { name: k.name, schluessel: k.schluessel },
               // Gestaltet heißt: Der Beitrag verwendet ein abgenommenes Template.
               bearbeitet: !!p.bild && !!templateVon(p.bild),
@@ -126,6 +139,7 @@ export default async function RedaktionEntwicklung({
             post: p,
             pruefungen: pruefungen[p.id] ?? [],
             abdruck: fassungsAbdruck({ text: p.text, bild: p.bild }),
+            befunde: befundeJePost.get(p.id) ?? [],
           }))}
         />
       )}

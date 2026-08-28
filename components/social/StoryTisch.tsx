@@ -8,6 +8,7 @@ import { Kennung } from "./Kennung";
 import { fuelle } from "../../lib/social-vorlage";
 import { KARTEN_STILE, KARTEN_STIL_NAME, KARTEN_STIL_STANDARD, type KartenStil } from "../../lib/social-karten-stil";
 import type { Pruefung } from "../../lib/social-pruefung-kern";
+import type { Befund as MechanikBefund } from "../../lib/social-mechanik";
 import { Freigabe } from "./Freigabe";
 import { BILDFORM_NAME, moeglicheFormen, templateVon, type PostBild, type SocialPost } from "../../lib/social-posts";
 
@@ -28,6 +29,7 @@ import { BILDFORM_NAME, moeglicheFormen, templateVon, type PostBild, type Social
 export function StoryTisch({
   post,
   pruefungen,
+  befunde,
   abdruck,
   kategorieHinweis,
   ohneTitel,
@@ -35,6 +37,8 @@ export function StoryTisch({
 }: {
   post: SocialPost;
   pruefungen: Pruefung[];
+  /** Was die mechanische Pruefung an dieser Fassung festgestellt hat. */
+  befunde: MechanikBefund[];
   /**
    * Der Fingerabdruck der ABGELEGTEN Fassung, vom Server gerechnet.
    *
@@ -266,6 +270,7 @@ export function StoryTisch({
         <Freigabe
           postId={post.id}
           abdruck={abdruck}
+          befunde={befunde}
           /* Ein ungespeicherter Entwurf gehört zu KEINER abgelegten Fassung.
              Die Freigabe rechnet ihr Urteil deshalb gegen einen Abdruck, den es
              nicht gibt — das ist genau richtig und ohne Hash im Browser zu
