@@ -174,7 +174,56 @@ export function Wochenplan({
                   {monat}
                 </div>
               )}
-              <div style={raster}>
+              {/* DIE KOPFZEILE DER WOCHE: Tagesdaten und Ereignisse in EINER
+                  Zeile über den Tagen. Vorher stand die Zahl in der Zelle und
+                  das Ereignisband darunter — dann trägt jede Zelle oben eine
+                  Zahl, die vom Inhalt wegrückt, und das Band schwebt zwischen
+                  zwei Wochen, ohne zu einer zu gehören. Jetzt gehört beides in
+                  denselben Streifen, und die Zellen darunter tragen nur noch
+                  Inhalt. */}
+              <div style={{ ...raster, alignItems: "end", marginBottom: space.xxs }}>
+                {TAGE.map((_tag, i) => {
+                  const iso = tagInWoche(w.beginnIso, i);
+                  const heute = iso === heuteIso;
+                  return (
+                    <div key={`kopf-${iso}`} style={{ gridColumn: i + 1, gridRow: 1, minWidth: 0 }}>
+                      <span
+                        style={
+                          heute
+                            ? {
+                                display: "inline-flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                width: 22,
+                                height: 22,
+                                borderRadius: 999,
+                                background: v("--color-accent"),
+                                color: v("--color-text-on-accent"),
+                                fontSize: v("--font-size-caption"),
+                                fontWeight: 700,
+                              }
+                            : {
+                                fontSize: v("--font-size-caption"),
+                                color: WOCHENENDE.has(i) ? v("--color-text-faint") : v("--color-text-muted"),
+                                paddingLeft: 2,
+                              }
+                        }
+                        aria-current={heute ? "date" : undefined}
+                      >
+                        {tagZahl(iso)}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <FreiBaender
+                baender={freiBaender(w.beginnIso)}
+                raster={raster}
+                onDetail={(b: FreiBand) => setFerienTag(b.tagIso)}
+              />
+
+              <div style={{ ...raster, marginTop: space.xxs }}>
                 {TAGE.map((_tag, i) => {
                   const iso = tagInWoche(w.beginnIso, i);
                   const platz = w.plaetze.find((p) => p.iso === iso);
@@ -206,7 +255,7 @@ export function Wochenplan({
                           : undefined
                       }
                       style={{
-                        minHeight: 80,
+                        minHeight: 104,
                         borderRadius: v("--radius-sm"),
                         border: `1px solid ${heute ? v("--color-accent") : v("--color-border-muted")}`,
                         borderStyle: platz ? "solid" : "dashed",
@@ -217,47 +266,20 @@ export function Wochenplan({
                         position: "relative",
                       }}
                     >
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "baseline",
-                          gap: space.xs,
-                        }}
-                      >
-                        {/* Heute: die Zahl im blauen Kreis. Das Wort „heute"
-                            daneben wäre dieselbe Aussage ein zweites Mal, und
-                            in einer Zelle dieser Größe kostet das eine Zeile. */}
-                        <span
-                          style={
-                            heute
-                              ? {
-                                  display: "inline-flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  width: 22,
-                                  height: 22,
-                                  borderRadius: 999,
-                                  background: v("--color-accent"),
-                                  color: v("--color-text-on-accent"),
-                                  fontSize: v("--font-size-caption"),
-                                  fontWeight: 700,
-                                }
-                              : { fontSize: v("--font-size-caption"), color: v("--color-text-muted") }
-                          }
-                          aria-current={heute ? "date" : undefined}
+                      {/* Der Hinweis erscheint erst beim Überfahren: Ein „+"
+                          an jedem freien Tag wäre eine Reihe von Knöpfen, die
+                          nur Fläche kostet. */}
+                      {angefasst && planbar && (
+                        <div
+                          style={{
+                            fontSize: v("--font-size-caption"),
+                            color: v("--color-accent"),
+                            textAlign: "right",
+                          }}
                         >
-                          {tagZahl(iso)}
-                        </span>
-                        {/* Der Hinweis erscheint erst beim Überfahren: Ein „+"
-                            an jedem freien Tag wäre eine Reihe von Knöpfen, die
-                            nur Fläche kostet. */}
-                        {!heute && angefasst && planbar && (
-                          <span style={{ fontSize: v("--font-size-caption"), color: v("--color-accent") }}>
-                            {platz && platz.zustand === "geplant" ? "ändern" : "belegen"}
-                          </span>
-                        )}
-                      </div>
+                          {platz && platz.zustand === "geplant" ? "ändern" : "belegen"}
+                        </div>
+                      )}
 
                       {pille && (
                         <div style={{ marginTop: space.xxs, display: "flex" }}>
@@ -285,15 +307,6 @@ export function Wochenplan({
                   );
                 })}
               </div>
-
-              {/* Ferien und Feiertage als eigene Spur UNTER den Tagen. Als
-                  Eintrag je Zelle sähe ein zweiwöchiger Zeitraum aus wie
-                  vierzehn Ereignisse; das Band zeigt die Strecke. */}
-              <FreiBaender
-                baender={freiBaender(w.beginnIso)}
-                raster={raster}
-                onDetail={(b: FreiBand) => setFerienTag(tagInWoche(w.beginnIso, b.vonIndex))}
-              />
             </div>
           );
         })}

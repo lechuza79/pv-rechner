@@ -96,6 +96,8 @@ export function tagesHinweis(b: Tagesbefund): string | null {
 export type FreiBand = {
   /** Spaltenindex in der Woche, 0 = Montag. */
   vonIndex: number;
+  /** Der erste Tag des Bandes als Datum — für Hinweis und Detailfenster. */
+  tagIso: string;
   bisIndex: number;
   /** Fängt der Zeitraum hier wirklich an — oder läuft er aus der Vorwoche? */
   echterBeginn: boolean;
@@ -133,6 +135,7 @@ export function freiBaender(montagIso: string): FreiBand[] {
     const regional = !t.befund.feiertagUeberall && t.befund.feiertagRegional;
     baender.push({
       vonIndex: i,
+      tagIso: t.iso,
       bisIndex: i,
       echterBeginn: true,
       echtesEnde: true,
@@ -153,6 +156,7 @@ export function freiBaender(montagIso: string): FreiBand[] {
       const laender = Math.max(...tage.slice(start, i).map((t) => t.befund.ferienLaender));
       baender.push({
         vonIndex: start,
+        tagIso: tage[start].iso,
         bisIndex: ende,
         // Läuft der Zeitraum schon am Sonntag davor bzw. am Montag danach? Dann
         // ist der Rand hier kein Anfang, sondern eine Schnittkante.
