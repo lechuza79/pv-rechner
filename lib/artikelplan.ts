@@ -89,6 +89,17 @@ export interface ArtikelVorhaben {
   verworfenWeil?: string;
   /** Was gebaut sein muss, bevor der Artikel gehen kann. */
   voraussetzung?: string;
+  /**
+   * Tag des Livegangs (YYYY-MM-DD). Nur bei veröffentlichten Artikeln.
+   *
+   * Aus der Versionsgeschichte erhoben, der Umbenennung folgend — ein späterer
+   * Umzug unter einen neuen Pfad ist kein Geburtsdatum. Es steht hier und nicht
+   * in der Ratgeber-Liste, weil dort das Feld für die letzte inhaltliche
+   * Änderung liegt: Beides in einem Feld führte dazu, dass ein überarbeiteter
+   * Artikel wie ein neuer aussähe — und genau die Unterscheidung braucht man,
+   * um zu beurteilen, ob eine Seite überhaupt Zeit hatte, sich zu setzen.
+   */
+  seit?: string;
 }
 
 /**
@@ -216,6 +227,7 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
     thema: "Balkonkraftwerk anmelden",
     slug: "/balkonkraftwerk/ratgeber/anmelden",
     zustand: "live",
+    seit: "2026-08-17",
     messung: {
       begriff: "balkonkraftwerk anmelden",
       volumen: 27100,
@@ -231,6 +243,7 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
     thema: "Wärmepumpen-Förderung",
     slug: "/ratgeber/waermepumpe-foerderung",
     zustand: "live",
+    seit: "2026-07-24",
     messung: {
       begriff: "wärmepumpe förderung",
       volumen: 33100,
@@ -246,6 +259,7 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
     thema: "Einspeisevergütung-Tabelle",
     slug: "/einspeiseverguetung-tabelle",
     zustand: "live",
+    seit: "2026-08-04",
     messung: {
       begriff: "einspeisevergütung tabelle",
       volumen: 1600,
@@ -260,6 +274,7 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
     thema: "Photovoltaik-Neigungswinkel",
     slug: "/photovoltaik-neigungswinkel",
     zustand: "live",
+    seit: "2026-08-04",
     messung: {
       begriff: "photovoltaik neigungswinkel tabelle",
       volumen: 1000,
@@ -275,6 +290,7 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
     thema: "Gasheizung oder Wärmepumpe",
     slug: "/ratgeber/gasheizung-oder-waermepumpe",
     zustand: "live",
+    seit: "2026-07-25",
     messung: {
       begriff: "gasheizung oder wärmepumpe",
       volumen: 880,
@@ -289,6 +305,7 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
     thema: "Balkonkraftwerk mit Speicher",
     slug: "/balkonkraftwerk/ratgeber/mit-speicher",
     zustand: "live",
+    seit: "2026-08-19",
     messung: {
       begriff: "lohnt sich ein balkonkraftwerk mit speicher",
       volumen: 720,
@@ -308,6 +325,7 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
     thema: "Lohnt sich PV mit Speicher",
     slug: "/ratgeber/lohnt-sich-pv-mit-speicher",
     zustand: "live",
+    seit: "2026-07-19",
     messung: {
       begriff: "lohnt sich photovoltaik mit speicher",
       volumen: 110,
@@ -322,6 +340,7 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
     thema: "Lohnt sich PV ohne Einspeisevergütung",
     slug: "/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung",
     zustand: "live",
+    seit: "2026-07-19",
     messung: {
       begriff: "photovoltaik ohne einspeisevergütung",
       volumen: 10,
@@ -481,6 +500,17 @@ export function verworfeneVorhaben(): ArtikelVorhaben[] {
  */
 export function volumenGesamt(v: ArtikelVorhaben): number {
   return v.messung.volumen + (v.messung.nebenbegriffe ?? []).reduce((s, n) => s + n.volumen, 0);
+}
+
+/**
+ * Tag der letzten inhaltlichen Änderung — aus der Ratgeber-Liste, wo er ohnehin
+ * gepflegt wird, weil er in die Sitemap geht. Bewusst NICHT im Plan gedoppelt:
+ * Zwei Stellen für dasselbe Datum laufen auseinander, und dann entscheidet der
+ * Zufall, welches in der Ansicht steht.
+ */
+export function geaendertAm(v: ArtikelVorhaben): string | null {
+  if (!v.slug) return null;
+  return RATGEBER.find((r) => r.slug === v.slug)?.updated ?? null;
 }
 
 /** Ist der geplante Slug schon als Ratgeber live? */

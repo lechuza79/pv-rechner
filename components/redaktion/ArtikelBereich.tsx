@@ -80,6 +80,7 @@ export function ArtikelBereich({
         volumen={volumen}
         zustandLabel={zustandLabel}
         verworfen={nurVerworfen}
+        mitDaten={aktiv === "live"}
       />
     </div>
   );

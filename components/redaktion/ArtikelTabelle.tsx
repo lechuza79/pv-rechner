@@ -5,7 +5,7 @@ import { DatenTabelle, type Spalte } from "../admin/DatenTabelle";
 import { DetailAbschnitt } from "../admin/DetailAbschnitt";
 import { NeuBewerten } from "./NeuBewerten";
 import { ErfolgMessen } from "./ErfolgMessen";
-import type { ArtikelVorhaben } from "../../lib/artikelplan";
+import { geaendertAm, type ArtikelVorhaben } from "../../lib/artikelplan";
 
 // Die Warteschlange als Tabelle: harte Zahlen in Spalten, der Text dahinter
 // ausklappbar.
@@ -97,12 +97,20 @@ export function ArtikelTabelle({
   volumen,
   zustandLabel,
   verworfen,
+  mitDaten,
 }: {
   vorhaben: ArtikelVorhaben[];
   /** Vorberechnet auf dem Server, damit die Tabelle keine Rechenlogik trägt. */
   volumen: Record<string, number>;
   zustandLabel: Record<string, string>;
   verworfen?: boolean;
+  /**
+   * Veröffentlichungs- und Änderungstag als eigene Spalten. Nur in der Ansicht
+   * der Veröffentlichten sinnvoll: In der gemischten Liste wären sie bei zwei
+   * Dritteln der Zeilen leer, und eine Spalte, die meist nichts enthält, macht
+   * die Tabelle breiter ohne sie besser zu machen.
+   */
+  mitDaten?: boolean;
 }) {
   const vol = (vh: ArtikelVorhaben) => volumen[vh.thema] ?? vh.messung.volumen;
 
@@ -150,6 +158,41 @@ export function ArtikelTabelle({
     },
   ];
 
+  if (mitDaten) {
+    spalten.push(
+      {
+        key: "seit",
+        kopf: "live seit",
+        zelle: (vh) =>
+          vh.seit ? (
+            <span style={{ color: v("--color-text-muted") }}>
+              {new Date(vh.seit).toLocaleDateString("de-DE")}
+            </span>
+          ) : (
+            "—"
+          ),
+        // Ohne Datum ans Ende, egal in welche Richtung sortiert wird: Ein
+        // fehlender Wert ist keine Aussage und gehört nicht an die Spitze.
+        sortWert: (vh) => vh.seit ?? "9999-99-99",
+      },
+      {
+        key: "geaendert",
+        kopf: "geändert",
+        zelle: (vh) => {
+          const g = geaendertAm(vh);
+          return g ? (
+            <span style={{ color: v("--color-text-muted") }}>
+              {new Date(g).toLocaleDateString("de-DE")}
+            </span>
+          ) : (
+            "—"
+          );
+        },
+        sortWert: (vh) => geaendertAm(vh) ?? "9999-99-99",
+      },
+    );
+  }
+
   {
     spalten.push({
       key: "zustand",
@@ -173,7 +216,7 @@ export function ArtikelTabelle({
       // als Nächstes drankommt.
       startSortierung={[{ key: "volumen", richtung: "ab" }]}
       leerText={verworfen ? "Nichts verworfen." : "Keine Vorhaben."}
-      minBreite={860}
+      minBreite={mitDaten ? 1040 : 860}
     />
   );
 }

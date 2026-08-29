@@ -7,6 +7,7 @@ import {
   istLive,
   aeltesteMessung,
   liveVorhaben,
+  geaendertAm,
   ZUSTAND_LABEL,
   type ArtikelVorhaben,
 } from "../artikelplan";
@@ -103,6 +104,38 @@ describe("Artikelplan", () => {
     const imPlan = new Set(liveVorhaben().map((v) => v.slug));
     const fehlend = RATGEBER.filter((r) => !imPlan.has(r.slug)).map((r) => r.slug);
     expect(fehlend, `Ratgeber ohne Eintrag im Artikelplan: ${fehlend.join(", ")}`).toEqual([]);
+  });
+
+  // Ohne Livegang-Datum lässt sich eine Leistung nicht einordnen: Eine Seite,
+  // die seit zehn Tagen online ist, darf noch nichts erreicht haben.
+  it("jeder veröffentlichte Artikel nennt seinen Livegang", () => {
+    for (const v of liveVorhaben()) {
+      expect(v.seit, `${v.thema}: kein Livegang-Datum`).toMatch(ISO);
+      expect(
+        v.seit!.localeCompare(new Date().toISOString().slice(0, 10)),
+        `${v.thema}: Livegang in der Zukunft`,
+      ).toBeLessThanOrEqual(0);
+    }
+  });
+
+  it("nur veröffentlichte Artikel tragen ein Livegang-Datum", () => {
+    for (const v of ARTIKELPLAN) {
+      if (v.zustand !== "live") {
+        expect(v.seit, `${v.thema}: Livegang trotz Zustand ${v.zustand}`).toBeUndefined();
+      }
+    }
+  });
+
+  it("das Änderungsdatum kommt aus der Ratgeber-Liste, nicht aus einer zweiten Quelle", () => {
+    for (const v of liveVorhaben()) {
+      const g = geaendertAm(v);
+      expect(g, `${v.thema}: kein Änderungsdatum`).toMatch(ISO);
+      // Eine Seite kann nicht vor ihrem Livegang geändert worden sein.
+      expect(
+        v.seit!.localeCompare(g!),
+        `${v.thema}: geändert (${g}) liegt vor dem Livegang (${v.seit})`,
+      ).toBeLessThanOrEqual(0);
+    }
   });
 
   it("keine doppelten Themen und keine doppelten Adressen", () => {
