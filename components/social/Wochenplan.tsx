@@ -212,13 +212,13 @@ export function Wochenplan({
                         </div>
                       )}
 
-                      {/* Ratgeber-Änderungen. AUSDRÜCKLICH NICHT „ging live":
-                          Die Registry führt nur den letzten inhaltlichen
-                          Eingriff, ein Veröffentlichungsdatum gibt es dort
-                          nicht. Es so zu nennen wäre eine erfundene Angabe. */}
+                      {/* Ratgeber-Ereignisse. Erschienen und überarbeitet sind
+                          zwei verschiedene Tatsachen und werden auch so
+                          beschriftet — ein neuer Ratgeber ist ein anderer
+                          Anlass als ein überarbeiteter. */}
                       {artikel.map((a) => (
                         <div
-                          key={a.slug}
+                          key={`${a.slug}-${a.anlass}`}
                           style={{
                             fontSize: v("--font-size-caption"),
                             color: v("--color-text-muted"),
@@ -228,7 +228,7 @@ export function Wochenplan({
                             lineHeight: 1.3,
                           }}
                         >
-                          Ratgeber überarbeitet: {a.titel}
+                          {a.anlass === "live" ? "Ratgeber erschienen" : "Ratgeber überarbeitet"}: {a.titel}
                         </div>
                       ))}
                     </div>

@@ -31,6 +31,7 @@
     "waechter:gesundheit": "tsx scripts/waechter-gesundheit.ts",
     "sessions": "tsx scripts/sessions.ts",
     "geo:umrisse": "tsx scripts/bundesland-umrisse.ts",
+    "ratgeber:livedatum": "tsx scripts/ratgeber-livedatum.ts",
     "laender:sync": "tsx scripts/ember-laender-sync.ts",
     "foerder:serp": "tsx scripts/funding-serp-test.ts",
     "foerder:verlauf-bereinigen": "tsx scripts/funding-history-bereinigen.ts",

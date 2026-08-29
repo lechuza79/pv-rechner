@@ -172,7 +172,7 @@ describe("Ratgeber im Kalender", () => {
     const k = baueKalender([], [], HEUTE, {
       wochenZurueck: 0,
       wochenVoraus: 0,
-      artikel: [{ iso: "2026-09-02", slug: "/ratgeber/x", titel: "Ein Ratgeber" }],
+      artikel: [{ iso: "2026-09-02", slug: "/ratgeber/x", titel: "Ein Ratgeber", anlass: "live" }],
     });
     expect(k[0].artikel).toHaveLength(1);
     // Der 2.9. ist ein Mittwoch — dort liegt kein Platz.
@@ -183,7 +183,7 @@ describe("Ratgeber im Kalender", () => {
     const k = baueKalender([], [], HEUTE, {
       wochenZurueck: 0,
       wochenVoraus: 1,
-      artikel: [{ iso: "2026-09-09", slug: "/ratgeber/y", titel: "Nächste Woche" }],
+      artikel: [{ iso: "2026-09-09", slug: "/ratgeber/y", titel: "Nächste Woche", anlass: "ueberarbeitet" }],
     });
     expect(k[0].artikel).toHaveLength(0);
     expect(k[1].artikel).toHaveLength(1);

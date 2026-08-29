@@ -63,19 +63,29 @@ export type KalenderPlatz = {
 );
 
 /**
- * Ein Ratgeber, der an diesem Tag zuletzt inhaltlich geändert wurde.
+ * Ein Ratgeber-Ereignis an diesem Tag: erschienen oder überarbeitet.
  *
- * AUSDRÜCKLICH NICHT „ging live". Die Ratgeber-Registry führt genau ein Datum,
- * und das ist der letzte inhaltliche Eingriff — ein Veröffentlichungsdatum gibt
- * es in den Daten nicht. Es hier so zu nennen wäre eine erfundene Angabe, also
- * genau die Fehlerklasse, gegen die dieses Projekt sonst antritt. Wer „wann ging
- * das live" wirklich wissen will, muss es ab jetzt mitschreiben; die
- * Vergangenheit bleibt unbekannt.
+ * BEIDES SIND TATSACHEN, und sie werden auseinandergehalten. Als der Kalender
+ * gebaut wurde, führte die Registry nur EIN Datum — den letzten inhaltlichen
+ * Eingriff —, und es als Erscheinungsdatum auszugeben wäre eine erfundene Angabe
+ * gewesen. Deshalb trägt jeder Ratgeber jetzt beide Daten; der Bestand wurde
+ * einmalig aus der Historie der Hauptlinie nachgetragen.
  *
- * Trotzdem nützlich, und dafür wollte der Betreiber es: Ein frisch überarbeiteter
- * Ratgeber ist der beste Anlass, ihn auf Social zu featuren.
+ * Wofür der Betreiber es wollte: Ein frisch erschienener oder überarbeiteter
+ * Ratgeber ist der beste Anlass, ihn auf Social aufzugreifen.
  */
-export type ArtikelMarke = { iso: string; slug: string; titel: string };
+export type ArtikelMarke = {
+  iso: string;
+  slug: string;
+  titel: string;
+  /**
+   * „live" = an diesem Tag erschienen, „ueberarbeitet" = zuletzt inhaltlich
+   * angefasst. Zwei verschiedene Tatsachen, und die Beschriftung muss sie
+   * auseinanderhalten: Ein überarbeiteter Ratgeber ist ein Anlass, ein neu
+   * erschienener ein anderer.
+   */
+  anlass: "live" | "ueberarbeitet";
+};
 
 export type KalenderWoche = {
   /** Montag dieser Woche, ISO. */

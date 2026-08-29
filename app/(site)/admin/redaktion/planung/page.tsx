@@ -98,9 +98,16 @@ export default async function RedaktionPlanung() {
       heuteIso,
       {
         zuweisungen,
-        // Ratgeber-Änderungen als Marken im Kalender. Der Anlass war der Wunsch,
-        // einen frisch überarbeiteten Ratgeber auf Social aufzugreifen.
-        artikel: RATGEBER.map((r) => ({ iso: r.updated, slug: r.slug, titel: r.title })),
+        // Beide Ereignisse je Ratgeber. „Erschienen" und „überarbeitet" am
+        // selben Tag ergäbe zwei identische Zeilen — dann zählt das Erscheinen.
+        artikel: RATGEBER.flatMap((r) =>
+          r.live === r.updated
+            ? [{ iso: r.live, slug: r.slug, titel: r.title, anlass: "live" as const }]
+            : [
+                { iso: r.live, slug: r.slug, titel: r.title, anlass: "live" as const },
+                { iso: r.updated, slug: r.slug, titel: r.title, anlass: "ueberarbeitet" as const },
+              ],
+        ),
       },
     );
     gedeckt = deckung(wochen, heuteIso);
