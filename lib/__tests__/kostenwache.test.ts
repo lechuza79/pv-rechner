@@ -59,6 +59,7 @@ describe("Antwort der Plattform lesen", () => {
     expect(b!.summe).toBe(5739);
     expect(b!.gezeigt).toBe(5);
     expect(b!.verschiedene).toBe(6);
+    expect(b!.kleinste).toBe(1);
   });
 
   it("zählt Kopf- und Trennzeile nicht mit", () => {
@@ -82,9 +83,11 @@ describe("Antwort der Plattform lesen", () => {
 
   it("rechnet aus, wie weit die Summe höchstens danebenliegt", () => {
     // Eine Gruppe fehlt, die kleinste gezeigte hatte den Wert 1 → höchstens 1.
-    expect(fehlbetragObergrenze(leseGruppen(echt)!, 1)).toBe(1);
-    // Und ohne fehlende Gruppen ist die Lücke null, egal wie klein die kleinste ist.
-    expect(fehlbetragObergrenze({ summe: 10, gezeigt: 3, verschiedene: 3 }, 99)).toBe(0);
+    expect(fehlbetragObergrenze(leseGruppen(echt)!)).toBe(1);
+    // Und ohne fehlende Gruppen ist die Lücke null, egal wie groß die kleinste ist.
+    expect(fehlbetragObergrenze({ summe: 10, gezeigt: 3, verschiedene: 3, kleinste: 99 })).toBe(0);
+    // Zehn fehlende Gruppen, kleinste gezeigte 50 → höchstens 500 zu wenig.
+    expect(fehlbetragObergrenze({ summe: 9000, gezeigt: 25, verschiedene: 35, kleinste: 50 })).toBe(500);
   });
 });
 

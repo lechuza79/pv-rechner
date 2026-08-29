@@ -36,12 +36,14 @@ import { sollWarnen, warnstufe } from "../lib/social-ablauf";
 import { paramsToRow } from "../lib/types";
 import {
   BASIS_TAGE,
+  FEHLBETRAG_MELDEN_AB_ANTEIL,
   KOSTEN_PROJEKTE,
   KOSTEN_TEAM_ID,
   KOSTENWACHE_ZUGANG,
   PROTOKOLL_AUFBEWAHRUNG_TAGE,
   SPRUNG_FAKTOR,
   beurteileKostenTag,
+  fehlbetragObergrenze,
   groesstesVielfaches,
   leseGruppen,
   menge,
@@ -952,6 +954,20 @@ export async function messeKosten(jetzt: Date): Promise<KostenBefund> {
             `aufbewahrt; „nichts gefunden“ heißt fast immer „zu spät gefragt“, nicht „kein Verkehr“).`,
         );
         continue;
+      }
+
+      // Die Antwort listet nur die größten Gruppen auf. Fehlt etwas, ist es
+      // höchstens so groß wie die kleinste gezeigte Gruppe — das wird
+      // AUSGERECHNET statt behauptet. Bei der Gruppierung nach Statuscode sind
+      // es eine Handvoll Gruppen und die Lücke rechnerisch belanglos; wächst sie
+      // eines Tages, soll das auffallen und nicht in die Vergleichszahl wandern.
+      const luecke = fehlbetragObergrenze(last);
+      if (luecke > last.summe * FEHLBETRAG_MELDEN_AB_ANTEIL) {
+        b.warnungen.push(
+          `Kostenwache ${p.name}: Die Antwort für den ${tag} hat nur ${last.gezeigt} von ${last.verschiedene} ` +
+            `Gruppen aufgelistet; die Zahl der Aufbauten kann um bis zu ${menge(luecke)} zu niedrig sein. ` +
+            `Der Wert wird trotzdem abgelegt — er ist dann eine Untergrenze, keine Summe.`,
+        );
       }
 
       const geschrieben = await kostenSchreiben({

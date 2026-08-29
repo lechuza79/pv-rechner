@@ -151,6 +151,8 @@ export interface Gruppenbefund {
   gezeigt: number;
   /** Wie viele es insgesamt gibt (aus der Antwort). */
   verschiedene: number;
+  /** Der kleinste aufgelistete Gruppenwert — die Obergrenze für jede fehlende Gruppe. */
+  kleinste: number;
 }
 
 /**
@@ -168,9 +170,10 @@ export function leseGruppen(text: string): Gruppenbefund | null {
   const zeilen = [...text.matchAll(/^\|\s*([^|]+?)\s*\|\s*(\d+)\s*\|\s*$/gm)];
   const gesamt = text.match(/\*\s*(\d[\d.,]*)\s+distinct values total/i);
   if (!zeilen.length && !gesamt) return null;
-  const summe = zeilen.reduce((s, m) => s + Number(m[2]), 0);
+  const werte = zeilen.map((m) => Number(m[2]));
+  const summe = werte.reduce((a, b) => a + b, 0);
   const verschiedene = gesamt ? Number(gesamt[1].replace(/[.,]/g, "")) : zeilen.length;
-  return { summe, gezeigt: zeilen.length, verschiedene };
+  return { summe, gezeigt: zeilen.length, verschiedene, kleinste: werte.length ? Math.min(...werte) : 0 };
 }
 
 /**
@@ -184,9 +187,18 @@ export function leseGruppen(text: string): Gruppenbefund | null {
  * sie eines Tages, soll das auffallen und nicht stillschweigend in die
  * Vergleichszahl wandern.
  */
-export function fehlbetragObergrenze(b: Gruppenbefund, kleinsteGezeigt: number): number {
-  return Math.max(0, b.verschiedene - b.gezeigt) * kleinsteGezeigt;
+export function fehlbetragObergrenze(b: Gruppenbefund): number {
+  return Math.max(0, b.verschiedene - b.gezeigt) * b.kleinste;
 }
+
+/**
+ * Ab welchem Anteil die Lücke die Zahl unbrauchbar macht. Ein Prozent ist
+ * bewusst großzügig: Die Schwelle liegt beim 2,5-fachen, ein Prozent Schwund
+ * bewegt daran nichts. Es geht darum, den Tag zu erkennen, an dem die Antwort
+ * plötzlich nur noch einen Bruchteil zeigt — nicht darum, auf die letzte
+ * Anfrage genau zu sein.
+ */
+export const FEHLBETRAG_MELDEN_AB_ANTEIL = 0.01;
 
 // ─── Schwelle ────────────────────────────────────────────────────────────────
 
