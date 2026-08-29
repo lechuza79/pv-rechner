@@ -27,7 +27,7 @@ import {
 // Umgebungsvariablen (beide auf Vercel, nur Production):
 //   VERCEL_BUDGET_WEBHOOK_SECRET  Prüfsumme, die Vercel beim Speichern des
 //                                 Webhooks einmalig anzeigt
-//   VERCEL_PAUSE_TOKEN            Zugriffstoken mit Schreibrecht auf Projekte
+//   VERCEL_TOKEN                  Zugriffstoken mit Schreibrecht auf Projekte
 //
 // Fehlt eine davon, greift die Bremse NICHT — und genau das wird gemeldet
 // (siehe unten). Ein Sicherheitsnetz, das still nicht hält, ist schlimmer als
@@ -144,7 +144,7 @@ export async function POST(req: Request) {
   }
 
   const schalten = e.aktion === "pausieren" ? "pause" : "unpause";
-  const ergebnis = await schalteFilmprojekt(schalten, process.env.VERCEL_PAUSE_TOKEN);
+  const ergebnis = await schalteFilmprojekt(schalten, process.env.VERCEL_TOKEN);
   console.log(`[Ausgabenbremse] ${schalten} ${PAUSE_ZIEL}: ${schalttext(ergebnis)}`);
 
   if (e.aktion === "pausieren") {

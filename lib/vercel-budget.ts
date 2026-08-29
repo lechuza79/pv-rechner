@@ -194,7 +194,7 @@ export async function schalteFilmprojekt(
   holen: typeof fetch = fetch,
 ): Promise<SchaltErgebnis> {
   if (!token) {
-    return { ok: false, status: "kein Token", detail: "VERCEL_PAUSE_TOKEN ist nicht gesetzt" };
+    return { ok: false, status: "kein Token", detail: "VERCEL_TOKEN ist nicht gesetzt" };
   }
   try {
     const res = await holen(projektSchalterUrl(aktion), {
