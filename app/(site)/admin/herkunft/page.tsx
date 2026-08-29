@@ -1,0 +1,181 @@
+import { seitenaufrufeSeit, nachHerkunft, nachSeite } from "../../../../lib/seiten-herkunft";
+import { DIREKT, INTERN } from "../../../../lib/seiten-herkunft-core";
+import { v, space } from "../../../../lib/theme";
+
+export const metadata = {
+  title: "Herkunft – Solar Check Admin",
+  robots: { index: false, follow: false },
+};
+
+// Woher kommen die Leute? Der Guard sitzt im Admin-Layout.
+//
+// Die Seite beantwortet die Frage, an der die browserseitige Messung scheitert:
+// Sie erfährt die Herkunft nur beim allerersten Aufruf eines Besuchs — alles
+// danach sieht dort aus wie ein Direkteinstieg. Im Messzeitraum standen so 980
+// Aufrufe ohne jede Erklärung da.
+//
+// Gezählt wird am Server, aus dem Anfrage-Kopf, ohne Kennung und ohne Uhrzeit.
+// Was das darf und wo die Grenze liegt: `lib/seiten-herkunft-core.ts`.
+export const dynamic = "force-dynamic";
+
+const TAGE = 90;
+
+function vorTagen(n: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() - n);
+  return d.toISOString().slice(0, 10);
+}
+
+/** Beschriftung für die beiden eigenen Werte; fremde Domains stehen für sich. */
+function herkunftLabel(h: string): string {
+  if (h === DIREKT) return "Direkt aufgerufen";
+  if (h === INTERN) return "Weiterklick bei uns";
+  return h;
+}
+
+export default async function HerkunftPage() {
+  const zeilen = await seitenaufrufeSeit(vorTagen(TAGE));
+  const herkuenfte = nachHerkunft(zeilen);
+  const seiten = nachSeite(zeilen).slice(0, 40);
+
+  const gesamt = herkuenfte.reduce((s, h) => s + h.aufrufe, 0);
+  const vonAussen = herkuenfte
+    .filter((h) => h.herkunft !== DIREKT && h.herkunft !== INTERN)
+    .reduce((s, h) => s + h.aufrufe, 0);
+
+  const zellStil: React.CSSProperties = {
+    padding: `${space.sm}px ${space.md}px`,
+    borderBottom: `1px solid ${v("--color-border")}`,
+    fontSize: 13,
+    verticalAlign: "top",
+  };
+  const zahlStil: React.CSSProperties = {
+    ...zellStil,
+    fontFamily: v("--font-mono"),
+    whiteSpace: "nowrap",
+    textAlign: "right",
+  };
+
+  return (
+    <div style={{ fontFamily: v("--font-text"), color: v("--color-text-primary"), maxWidth: 860 }}>
+      <div style={{ marginBottom: space.xl }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-accent"), letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: space.xs }}>Admin</div>
+        <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: space.xs }}>Herkunft</h1>
+        <p style={{ fontSize: 13, color: v("--color-text-muted"), lineHeight: 1.5 }}>
+          Woher die Aufrufe unserer eigenen Seiten kommen — die letzten {TAGE} Tage.
+          Gezählt werden <strong>Aufrufe, keine Besucher</strong>: Gespeichert sind nur
+          Kalendertag, Seite und verweisende Domain. Keine Kennung, keine Uhrzeit,
+          kein Abfrageteil der Adresse — damit ist keine Zeile einem Menschen
+          zuzuordnen, auch nicht rückwirkend. Aufrufe, die sich selbst als Maschine
+          ausweisen, zählen nicht mit.
+        </p>
+      </div>
+
+      {zeilen.length === 0 ? (
+        <p style={{ fontSize: 13, color: v("--color-text-muted"), lineHeight: 1.6 }}>
+          Noch nichts gezählt. Solange die Zählung neu ist, ist dieser Stand nicht
+          von „sie läuft nicht" zu unterscheiden — eine beliebige Seite aufrufen und
+          hier neu laden, dann muss unter „Direkt aufgerufen" mindestens eine Zeile
+          stehen.
+        </p>
+      ) : (
+        <>
+          <div style={{ display: "flex", gap: space.xl, marginBottom: space.xl, flexWrap: "wrap" }}>
+            <div>
+              <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono") }}>
+                {gesamt.toLocaleString("de-DE")}
+              </div>
+              <div style={{ fontSize: 12, color: v("--color-text-muted") }}>Aufrufe gesamt</div>
+            </div>
+            <div>
+              <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono") }}>
+                {vonAussen.toLocaleString("de-DE")}
+              </div>
+              <div style={{ fontSize: 12, color: v("--color-text-muted") }}>davon von fremden Seiten</div>
+            </div>
+          </div>
+
+          <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: space.sm }}>Woher</h2>
+          {/* Eigener Scrollbereich je Tabelle: Auf schmalen Schirmen quetscht
+              die Seiten-Spalte den Pfad sonst in Einzelbuchstaben. Die SEITE
+              darf dabei nie seitlich scrollen, nur die Tabelle in sich. */}
+          <div style={{ overflowX: "auto", marginBottom: space.xxl }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 300 }}>
+            <thead>
+              <tr style={{ textAlign: "left", fontSize: 12, color: v("--color-text-muted") }}>
+                <th style={{ ...zellStil, fontWeight: 600 }}>Herkunft</th>
+                <th style={{ ...zahlStil, fontWeight: 600 }}>Aufrufe</th>
+                <th style={{ ...zahlStil, fontWeight: 600 }}>Seiten</th>
+              </tr>
+            </thead>
+            <tbody>
+              {herkuenfte.map((h) => {
+                const eigen = h.herkunft === DIREKT || h.herkunft === INTERN;
+                return (
+                  <tr key={h.herkunft}>
+                    <td style={{ ...zellStil, fontWeight: 600, overflowWrap: "anywhere" }}>
+                      {eigen ? (
+                        <span style={{ color: v("--color-text-secondary") }}>{herkunftLabel(h.herkunft)}</span>
+                      ) : (
+                        <a
+                          href={`https://${h.herkunft}`}
+                          target="_blank"
+                          rel="noopener noreferrer nofollow"
+                          style={{ color: v("--color-accent"), textDecoration: "none" }}
+                        >
+                          {h.herkunft}
+                        </a>
+                      )}
+                    </td>
+                    <td style={zahlStil}>{h.aufrufe.toLocaleString("de-DE")}</td>
+                    <td style={{ ...zahlStil, color: v("--color-text-secondary") }}>{h.seiten.toLocaleString("de-DE")}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          </div>
+
+          <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: space.sm }}>Welche Seite</h2>
+          <p style={{ fontSize: 12, color: v("--color-text-muted"), marginBottom: space.sm, lineHeight: 1.5 }}>
+            Die 40 meistaufgerufenen. „Von außen" heißt: jemand kam von einer fremden
+            Seite hierher — das ist der Eintritt. „Weiterklick" ist Navigation
+            innerhalb unserer Seiten und dient als Gegenprobe: Stünde dort überall
+            null, wäre die Zählung kaputt.
+          </p>
+          <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 560 }}>
+            <thead>
+              <tr style={{ textAlign: "left", fontSize: 12, color: v("--color-text-muted") }}>
+                <th style={{ ...zellStil, fontWeight: 600 }}>Seite</th>
+                <th style={{ ...zahlStil, fontWeight: 600 }}>Gesamt</th>
+                <th style={{ ...zahlStil, fontWeight: 600 }}>Von außen</th>
+                <th style={{ ...zahlStil, fontWeight: 600 }}>Direkt</th>
+                <th style={{ ...zahlStil, fontWeight: 600 }}>Weiterklick</th>
+              </tr>
+            </thead>
+            <tbody>
+              {seiten.map((s) => (
+                <tr key={s.pfad}>
+                  <td style={{ ...zellStil, whiteSpace: "nowrap" }}>
+                    <a
+                      href={s.pfad}
+                      style={{ color: v("--color-accent"), textDecoration: "none" }}
+                    >
+                      {s.pfad}
+                    </a>
+                  </td>
+                  <td style={{ ...zahlStil, fontWeight: 700 }}>{s.aufrufe.toLocaleString("de-DE")}</td>
+                  <td style={zahlStil}>{s.vonAussen.toLocaleString("de-DE")}</td>
+                  <td style={zahlStil}>{s.direkt.toLocaleString("de-DE")}</td>
+                  <td style={{ ...zahlStil, color: v("--color-text-secondary") }}>{s.intern.toLocaleString("de-DE")}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
