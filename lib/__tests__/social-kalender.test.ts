@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { baueKalender, deckung, montagVon, type Gesendetes, type PlatzZuweisung } from "../social-kalender";
 import type { PlanEintrag } from "../social-plan";
 import type { SocialPost } from "../social-posts";
+import { freiBaender, tagesbefund } from "../social-kalendertage";
 
 /**
  * Die Wochenübersicht.
@@ -228,5 +229,38 @@ describe("Das Wochenende gehört dazu", () => {
     });
     const wochentage = k[0].plaetze.map((p) => p.tag);
     expect(wochentage).toEqual(["Di", "Do", "Fr"]);
+  });
+});
+
+describe("Ferienbänder", () => {
+  /**
+   * Ein Band, dessen Enden keinem Datum in der Wirklichkeit entsprechen.
+   *
+   * Gemessen im Browser: Das Band endete am 15.08.2026, obwohl an dem Tag noch
+   * acht Länder Ferien hatten und Berlin, Brandenburg und Mecklenburg-Vorpommern
+   * bis in die Folgewoche. Es endete dort, weil die ZAHL der Länder unter eine
+   * gegriffene Schwelle fiel — nicht weil die Ferien endeten. Ein Balken mit
+   * runden Ecken, der ein falsches Datum behauptet, ist schlimmer als keiner:
+   * Man liest ihn als Auskunft.
+   */
+  it("endet, wo die Ferien enden — nicht, wo eine Schwelle unterschritten wird", () => {
+    for (const montag of ["2026-08-10", "2026-08-17", "2026-08-24"]) {
+      const band = freiBaender(montag).find((b) => b.text.startsWith("Ferien"));
+      expect(band, `Woche ${montag} ohne Ferienband`).toBeTruthy();
+      for (let i = band!.vonIndex; i <= band!.bisIndex; i++) {
+        const d = new Date(`${montag}T12:00:00Z`);
+        d.setUTCDate(d.getUTCDate() + i);
+        expect(tagesbefund(d.toISOString().slice(0, 10)).ferienLaender).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it("nennt die Spanne, wenn sich die Zahl innerhalb des Bandes ändert", () => {
+    // Woche ab 10.08.2026: Montag dreizehn Länder, Sonntag sieben. Nur den
+    // Höchstwert zu nennen wäre eine Aussage über EINEN Tag, quer über sieben
+    // gemalt — dieselbe Fehlerklasse wie eine Beschriftung, die etwas anderes
+    // sagt als die Zahl darunter misst.
+    const band = freiBaender("2026-08-10").find((b) => b.text.startsWith("Ferien"));
+    expect(band!.text).toMatch(/Ferien in \d+–\d+ Ländern/);
   });
 });

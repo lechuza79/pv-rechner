@@ -7,7 +7,7 @@ import { v, space, pad, type TokenName } from "../../lib/theme";
 // sechste Verwendung baut, wählt eine Bedeutung und nicht eine Farbe, und die
 // Zuordnung bleibt an einer Stelle.
 
-export type PillTon = "gesendet" | "geplant" | "gescheitert" | "ruhig" | "leise";
+export type PillTon = "gesendet" | "geplant" | "gescheitert" | "ruhig" | "leise" | "ratgeber";
 
 const TON: Record<PillTon, { rand: TokenName; text: TokenName; flaeche?: TokenName }> = {
   gesendet: { rand: "--color-positive-text", text: "--color-positive-text" },
@@ -15,6 +15,7 @@ const TON: Record<PillTon, { rand: TokenName; text: TokenName; flaeche?: TokenNa
   gescheitert: { rand: "--color-negative", text: "--color-negative" },
   ruhig: { rand: "--color-border", text: "--color-text-secondary" },
   leise: { rand: "--color-border-muted", text: "--color-text-muted" },
+  ratgeber: { rand: "--color-positive-text", text: "--color-positive-text" },
 };
 
 export function Pill({
@@ -22,16 +23,21 @@ export function Pill({
   icon,
   children,
   titel,
+  href,
 }: {
   ton: PillTon;
   icon?: React.ReactNode;
   children: React.ReactNode;
   /** Vollständiger Text beim Überfahren — die Pille selbst kappt. */
   titel?: string;
+  /** Macht die Pille zum Link. Ohne href bleibt sie Text. */
+  href?: string;
 }) {
   const t = TON[ton];
+  const Aussen = (href ? "a" : "span") as "a" | "span";
   return (
-    <span
+    <Aussen
+      {...(href ? { href, target: "_blank", rel: "noreferrer" } : {})}
       title={titel}
       style={{
         display: "inline-flex",
@@ -45,6 +51,7 @@ export function Pill({
         color: v(t.text),
         fontSize: v("--font-size-caption"),
         lineHeight: 1.25,
+        textDecoration: "none",
       }}
     >
       {icon}
@@ -52,6 +59,6 @@ export function Pill({
           ist keine mehr — und in einer Kalenderzelle schiebt sie alles darunter
           weg. Der volle Text hängt am Überfahren. */}
       <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{children}</span>
-    </span>
+    </Aussen>
   );
 }

@@ -64,14 +64,22 @@ export function tagesbefund(iso: string): Tagesbefund {
 }
 
 /**
- * Der Satz, der im Kalender an einem Tag steht — oder nichts.
+ * Ab wie vielen Ländern ein Ferienband gezeigt wird.
  *
- * Schweigt bei wenigen Ferienländern: Irgendwo in Deutschland hat immer jemand
- * Ferien, und ein Hinweis, der an zweihundert Tagen im Jahr erscheint, wird
- * weggelesen. Die Schwelle ist gegriffen und darf deshalb NICHTS sperren — sie
- * steuert nur, ob ein Satz sichtbar wird.
+ * EINS — also immer, wenn irgendwo Ferien sind. Vorher standen hier acht, und
+ * das war ein Fehler, den man im Bild sofort sah: Das Band endete am 15. August,
+ * obwohl Berlin, Brandenburg und Mecklenburg-Vorpommern bis zum 22. Ferien
+ * hatten. Es endete nicht, weil die Ferien endeten, sondern weil die Zahl der
+ * Länder unter die gegriffene Schwelle fiel. Ein Balken, dessen Enden keinem
+ * Datum in der Wirklichkeit entsprechen, ist keine Auskunft, sondern eine
+ * Fehlinformation mit runden Ecken.
+ *
+ * Der Preis ist ein Band an vielen Tagen des Jahres. Das ist die Wahrheit:
+ * Irgendwo in Deutschland hat fast immer jemand Ferien. Wie viele es sind, sagt
+ * die Beschriftung — und die schwankt jetzt sichtbar, statt dass der Balken
+ * verschwindet.
  */
-export const FERIEN_AB_LAENDERN = 8;
+export const FERIEN_AB_LAENDERN = 1;
 
 export function tagesHinweis(b: Tagesbefund): string | null {
   if (!b.bekannt) return "Ferientermine für diesen Tag nicht erfasst";
@@ -153,7 +161,14 @@ export function freiBaender(montagIso: string): FreiBand[] {
     if (an && start < 0) start = i;
     if (!an && start >= 0) {
       const ende = i - 1;
-      const laender = Math.max(...tage.slice(start, i).map((t) => t.befund.ferienLaender));
+      // ZWEI ZAHLEN, wenn die Woche sich bewegt. Der Höchstwert allein wäre eine
+      // Aussage über EINEN Tag, quer über sieben gemalt: In der Woche ab dem
+      // 10.08.2026 sind es am Montag dreizehn Länder und am Sonntag sieben, und
+      // „Ferien in 13 Ländern" stimmt dann an fünf von sieben Tagen nicht.
+      const zahlen = tage.slice(start, i).map((t) => t.befund.ferienLaender);
+      const min = Math.min(...zahlen);
+      const max = Math.max(...zahlen);
+      const laender = min === max ? `${max}` : `${min}–${max}`;
       baender.push({
         vonIndex: start,
         tagIso: tage[start].iso,
@@ -163,7 +178,8 @@ export function freiBaender(montagIso: string): FreiBand[] {
         echterBeginn: !ferienAmRand(montagIso, -1),
         echtesEnde: !ferienAmRand(montagIso, 7),
         einTag: start === ende,
-        text: `Ferien in ${laender} Ländern`,
+        // Singular wird gebraucht, seit die Schwelle bei eins liegt.
+        text: `Ferien in ${laender} ${min === 1 && max === 1 ? "Land" : "Ländern"}`,
       });
       start = -1;
     }

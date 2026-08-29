@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { v, space, pad } from "../../lib/theme";
-import { IconCheck, IconClose, IconLinkedIn } from "../Icons";
+import { IconCheck, IconClose, IconLinkedIn, IconRefresh } from "../Icons";
 import { Pill, type PillTon } from "./Pill";
 import { PlatzModal, type PlatzWahl } from "./PlatzModal";
 import { deckung, type KalenderPlatz, type KalenderWoche } from "../../lib/social-kalender";
@@ -225,7 +225,11 @@ export function Wochenplan({
                   border: `1px solid ${v("--color-border-muted")}`,
                   borderRadius: v("--radius-md"),
                   padding: pad("md", "md"),
-                  background: v("--color-bg"),
+                  // DIE WOCHE IST LEICHT GETÖNT, damit die Tage darin überhaupt
+                  // etwas sein können. Zwischendurch war beides weiß — dann gibt
+                  // es keine Staffelung mehr, und die Fläche zerfällt in lauter
+                  // gleich laute Kästchen.
+                  background: v("--color-bg-muted"),
                 }}
               >
               <div style={{ ...raster, alignItems: "end", marginBottom: space.xxs }}>
@@ -311,25 +315,26 @@ export function Wochenplan({
                       style={{
                         minHeight: 104,
                         borderRadius: v("--radius-sm"),
-                        // Ein feiner Rahmen an JEDEM Tag. Er war zwischendurch
-                        // weg, weil sieben Rahmen je Woche zu laut waren — aber
-                        // ganz ohne verschwimmen die Tage zu einer Fläche, und
-                        // man sieht nicht mehr, wohin man klickt. Die Lösung ist
-                        // nicht keiner, sondern ein leiserer als der der Woche.
-                        border: `1px solid ${v("--color-border-muted")}`,
+                        // DREI STUFEN, und jede sagt etwas:
+                        //   grauer Grund  — ein Tag ohne Sendeplatz
+                        //   weiße Fläche  — hier wird gesendet
+                        //   blaue Kante   — und zwar noch, es liegt vor uns
+                        // Vergangene Plätze bleiben weiß, aber ohne die Kante:
+                        // Sie sind Protokoll, keine Aufgabe.
+                        border: `1px solid ${
+                          platz && planbar ? v("--color-accent") : v("--color-border-muted")
+                        }`,
                         // KEINE zweite Heute-Markierung: Die Zahl in der
                         // Kopfzeile trägt den blauen Kreis und steht über ihrer
                         // Spalte. Ein Ring um die Zelle sagte dasselbe noch
                         // einmal — und an einem Samstag, an dem ohnehin kein
                         // Platz liegt, umrahmt er eine leere Fläche.
                         padding: pad("xs", "sm"),
-                        // ALLE Tage weiß. Die getönte Fläche für Tage mit
-                        // Sendeplatz füllte den größten Teil der Wochenbox und
-                        // ließ die ganze Woche grau wirken — den Unterschied
-                        // tragen der Rahmen und die Pille, dafür braucht es
-                        // keine zweite Farbe. Getönt wird nur, was man gerade
-                        // anfasst.
-                        background: angefasst && planbar ? v("--color-bg-accent") : "transparent",
+                        background: angefasst && planbar
+                          ? v("--color-bg-accent")
+                          : platz
+                            ? v("--color-bg")
+                            : "transparent",
                         cursor: planbar ? "pointer" : "default",
                         opacity: !platz && !artikel.length ? 0.55 : 1,
                         position: "relative",
@@ -362,13 +367,21 @@ export function Wochenplan({
                           zwei verschiedene Tatsachen und werden auch so
                           beschriftet — ein neuer Ratgeber ist ein anderer
                           Anlass als ein überarbeiteter. */}
+                      {/* Der TITEL steht nicht in der Pille. In einer Zelle
+                          dieser Breite bleibt von ihm ohnehin nur ein
+                          abgeschnittener Anfang übrig — das Wort „Ratgeber"
+                          sagt, worum es geht, der volle Titel steht im Hinweis,
+                          und ein Klick führt zum Artikel. Das Kreisel-Zeichen
+                          unterscheidet die Überarbeitung vom Erscheinen. */}
                       {artikel.map((a) => (
                         <div key={`${a.slug}-${a.anlass}`} style={{ marginTop: space.xxs, display: "flex" }}>
                           <Pill
-                            ton="leise"
-                            titel={`${a.anlass === "live" ? "Ratgeber erschienen" : "Ratgeber überarbeitet"}: ${a.titel}`}
+                            ton="ratgeber"
+                            href={a.slug}
+                            icon={a.anlass === "ueberarbeitet" ? <IconRefresh size={11} /> : undefined}
+                            titel={`${a.anlass === "live" ? "Erschienen" : "Überarbeitet"}: ${a.titel}`}
                           >
-                            {a.anlass === "live" ? "neu" : "überarbeitet"}: {a.titel}
+                            Ratgeber
                           </Pill>
                         </div>
                       ))}
