@@ -1427,17 +1427,30 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Stadt Ludwigshafen am Rhein", level: "kommune", region: "Ludwigshafen am Rhein",
     bundesland: "Rheinland-Pfalz", agsCode: "07314",
     url: "https://ludwigshafen.de/standort-mit-zukunft/klima/foerderprogramme",
-    stand: "August 2026", status: "eingestellt", capped: true, verified: true,
+    stand: "August 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Beendet — gefördert wurden Balkonkraftwerke sowie Dach- und Fassadenbegrünung",
-    rates: [{ label: "Balkonkraftwerke", value: "Programm beendet" }],
+    coveredCosts: "Mittel seit Mitte März 2026 ausgeschöpft — gefördert wurden Balkonkraftwerke sowie Dach- und Fassadenbegrünung",
+    rates: [{ label: "Balkonkraftwerke", value: "zuletzt 200 € je Anlage — Mittel ausgeschöpft" }],
     conditions: [
-      "Die Stadt hat die Förderprogramme für Bürgerinnen und Bürger beendet",
-      "Gefördert wurden aus Landesmitteln (KIPKI) unter anderem private Balkonkraftwerke",
+      "Die Fördermittel sind seit Mitte März 2026 ausgeschöpft; neue Anträge sind nicht möglich",
+      "Ob und wann das Programm neu aufgelegt wird, sagt die Stadt nicht",
+      "Gefördert wurden aus Landesmitteln (KIPKI) 750 private Balkonkraftwerke mit je 200 €",
       "Eine Dach-Photovoltaikanlage wurde auch davor nicht bezuschusst",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
+    // Status von `eingestellt` auf `ausgeschoepft` korrigiert (30.08.2026, an
+    // der Amtsseite nachgelesen). Wir schrieben „Die Stadt hat die Förder-
+    // programme für Bürgerinnen und Bürger beendet" — das sagt die Stadt
+    // nirgends. Sie schreibt: „Die Fördermittel sind nun - Mitte März 2026 -
+    // ausgeschöpft. Das heißt, dass keine neuen Anträge mehr gestellt werden
+    // können." Eine Ankündigung, dass es dauerhaft vorbei ist, gibt es nicht.
+    // Der Unterschied ist kein Wortklauben: „beendet" heißt, es kommt nie
+    // wieder — „ausgeschöpft" heißt, im nächsten Haushaltsjahr vielleicht doch.
+    // Kein Geldeffekt (beide Zustände ziehen nichts ab), aber eine andere
+    // Auskunft an jeden, der überlegt, ob er warten soll. Der zuletzt gezahlte
+    // Satz (200 € je Anlage, 750 Anlagen) stand ebenfalls auf der Seite und
+    // fehlte bei uns ganz; er bleibt bewusst ohne strukturierten Rechenwert.
   },
   "waiblingen-klimaschutz": {
     id: "waiblingen-klimaschutz", name: "Städtisches Förderprogramm Klimaschutz",
@@ -2433,9 +2446,19 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Der Zuschuss stockt die Bundesförderung für effiziente Gebäude auf und steht nicht für sich",
       "Für Photovoltaik und Balkonkraftwerke bietet die Stadt keine eigene Förderung, sondern nur eine kostenlose Beratung",
+      "Die Maßnahme muss bis spätestens 31.12.2026 umgesetzt sein",
+      "Der Zuschuss steht unter dem Vorbehalt, dass der Gemeinderat die Mittel bereitstellt",
     ],
     combinableWith: BUND,
     foerdert: ["waermepumpe"],
+    // Die beiden letzten Bedingungen am 30.08.2026 an der Amtsseite ergänzt.
+    // Sie standen dort die ganze Zeit und fehlten bei uns: „Um den Zuschuss zu
+    // erhalten, muss die Maßnahme bis spätestens 31.12.2026 umgesetzt werden"
+    // und „unter dem Vorbehalt der Mittelbereitstellung durch den Gemeinderat".
+    // Die Frist ist die wichtigere von beiden — eine Wärmepumpe, die im Herbst
+    // beauftragt und im Frühjahr eingebaut wird, fällt damit heraus, und das
+    // steht in keinem Satz, den wir bisher gezeigt haben.
+    //
     // Der Höchstbetrag gilt Gebäudehülle UND Anlagentechnik zusammen, also
     // Dämmung und Wärmeerzeuger in einem Topf. Wieviel davon auf die Wärmepumpe
     // entfällt, hängt am übrigen Vorhaben — das kann der Rechner nicht wissen.
@@ -2710,11 +2733,27 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Der Antrag ist vor Beginn zu stellen; begonnen werden darf erst nach dem Zuwendungsbescheid",
       "Die Maßnahme darf nicht anderweitig mit öffentlichen Mitteln gefördert werden",
       "Anlagen im Neubau und bei ohnehin verpflichtender Dacherneuerung sind ausgeschlossen",
+      "Im Haushaltsjahr 2026 stehen 50.000 € für alle neun Fördertatbestände zusammen bereit",
     ],
-    combinableWith: BUND,
+    // `combinableWith: []` statt BUND (30.08.2026): Die Richtlinie 2026 schreibt
+    // in Nr. 1 wörtlich „Mit Ausnahme des Zuschusses zu Energieberatungen, dürfen
+    // die Fördermittel nicht mit Fördermitteln von anderen Stellen kumuliert
+    // werden." Der Text daneben sagte das schon, das strukturierte Feld
+    // behauptete das Gegenteil — dieselbe Fehlerklasse wie eine Beschriftung,
+    // die etwas anderes sagt als die Zahl. Dasselbe Muster wie bei Gaiberg.
+    combinableWith: [],
     // Kein Rechenwert: Der Topf ist leer. Der entscheidende Halbsatz „begrenzt
     // auf 50 % der Kosten" steht zudem NUR in der Richtlinie, nicht auf der
     // Seite — wer die Seite allein liest, hält es für eine reine Pauschale.
+    //
+    // Am 30.08.2026 an der Richtlinie 2026 („Richtlinie 2026 zur Förderung von
+    // Maßnahmen des Klimaschutzes", von der Programmseite verlinkt) im Volltext
+    // nachgelesen; alle übrigen Angaben zellgleich: Nr. 2.1 „Batteriespeicher-
+    // systeme in Verbindung mit einer Photovoltaikanlage … mit einmalig 500 Euro.
+    // Die Förderung ist auf 50 Prozent der förderfähigen Kosten … begrenzt",
+    // Mindestkapazität 2,5 kWh; Nr. 2.2 „Dach-Photovoltaikanlage ab einer
+    // Leistung von 3 kWp mit einmalig 500 Euro", ebenfalls 50 % gedeckelt;
+    // Nr. 1 „Pro Haushalt ist nur ein Fördertatbestand förderfähig."
   },
 
   "moormerland-balkonkraftwerke": {
