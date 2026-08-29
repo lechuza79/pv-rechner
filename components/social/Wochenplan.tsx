@@ -17,15 +17,24 @@ import type { KalenderPlatz, KalenderWoche } from "../../lib/social-kalender";
 // Arbeit als ein Raster aus Wochen und Tagen, und es widerspricht der
 // Projektregel, keine Bibliothek ohne konkreten Grund einzuführen.
 //
-// SAMSTAG UND SONNTAG FEHLEN ABSICHTLICH. Es wird an Werktagen veröffentlicht;
-// zwei dauerhaft leere Spalten wären ein Fünftel der Fläche für nichts.
+// SAMSTAG UND SONNTAG SIND DABEI, obwohl dort nie ein Sendeplatz liegt. Sie
+// fehlten zuerst, mit der Begründung „am Wochenende wird nicht veröffentlicht" —
+// und die stimmt für PLÄTZE, aber der Kalender trägt mehr als die. Gemessen:
+// Drei von zehn Ratgeber-Daten liegen auf einem Samstag oder Sonntag, waren also
+// unsichtbar. Und der Marker für „heute" verschwand an jedem Wochenende
+// vollständig, weil es keine Spalte gab, in die er gehört hätte.
+//
+// Eine Spalte wegzulassen, weil EINE Sorte Inhalt dort nie steht, wirft jede
+// andere Sorte mit weg — und zwar lautlos.
 //
 // DIE ZUSTÄNDE SIND NICHT ERFUNDEN, sondern kommen aus der Rechnung: gesendet
 // aus dem Versandprotokoll, geplant aus den Zuweisungen, bereit aus der
 // Warteschlange, verstrichen aus beidem. Diese Komponente ordnet zu und färbt;
 // entschieden wird woanders.
 
-const WERKTAGE = ["Mo", "Di", "Mi", "Do", "Fr"] as const;
+const TAGE = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"] as const;
+/** Am Wochenende liegt nie ein Sendeplatz — die Spalte tritt zurück. */
+const WOCHENENDE = new Set([5, 6]);
 
 /**
  * Wie ein Platz als Pille aussieht.
@@ -83,6 +92,20 @@ function monatVon(iso: string): string {
   });
 }
 
+/**
+ * Sieben gleich breite Spalten.
+ *
+ * `minmax(0, 1fr)` und nicht `1fr`: Eine Spalte mit `1fr` hat als Mindestbreite
+ * ihren Inhalt, und eine lange Pille zieht sie dann auf Kosten der Nachbarn
+ * breit. Im Bild sah das aus wie ein kaputtes Raster — der Montag doppelt so
+ * breit wie der Dienstag, je nachdem, welcher Ratgebertitel dort lag.
+ */
+const raster = {
+  display: "grid",
+  gridTemplateColumns: "repeat(7, minmax(0, 1fr))",
+  gap: space.xs,
+} as const;
+
 function tagInWoche(montagIso: string, index: number): string {
   const d = new Date(`${montagIso}T12:00:00Z`);
   d.setUTCDate(d.getUTCDate() + index);
@@ -108,13 +131,13 @@ export function Wochenplan({
 
   return (
     <div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: space.xs, marginBottom: space.xs }}>
-        {WERKTAGE.map((t) => (
+      <div style={{ ...raster, marginBottom: space.xs }}>
+        {TAGE.map((t, i) => (
           <div
             key={t}
             style={{
               fontSize: v("--font-size-caption"),
-              color: v("--color-text-muted"),
+              color: WOCHENENDE.has(i) ? v("--color-text-faint") : v("--color-text-muted"),
               textTransform: "uppercase",
               letterSpacing: "0.06em",
             }}
@@ -147,16 +170,17 @@ export function Wochenplan({
                   {monat}
                 </div>
               )}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: space.xs }}>
-                {WERKTAGE.map((_tag, i) => {
+              <div style={raster}>
+                {TAGE.map((_tag, i) => {
                   const iso = tagInWoche(w.beginnIso, i);
                   const platz = w.plaetze.find((p) => p.iso === iso);
                   const artikel = w.artikel.filter((a) => a.iso === iso);
                   const heute = iso === heuteIso;
                   const pille = platz ? platzPille(platz) : null;
                   // Vergangenes lässt sich nicht mehr planen — ein Platz in der
-                  // Vergangenheit ist eine Tatsache, keine Absicht.
-                  const planbar = iso >= heuteIso;
+                  // Vergangenheit ist eine Tatsache, keine Absicht. Und am
+                  // Wochenende gibt es keinen Platz, den man belegen könnte.
+                  const planbar = iso >= heuteIso && !WOCHENENDE.has(i);
                   const angefasst = ueber === iso;
 
                   return (

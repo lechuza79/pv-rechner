@@ -189,3 +189,44 @@ describe("Ratgeber im Kalender", () => {
     expect(k[1].artikel).toHaveLength(1);
   });
 });
+
+describe("Das Wochenende gehört dazu", () => {
+  /**
+   * GEMESSENER FEHLER (29.08.2026). Der Kalender zeigte zuerst nur Mo–Fr, mit der
+   * Begründung „am Wochenende wird nicht veröffentlicht". Das stimmt für
+   * SENDEPLÄTZE und war für alles andere falsch:
+   *
+   *   — Drei von zehn Ratgeber-Daten liegen auf einem Samstag oder Sonntag. Die
+   *     waren unsichtbar, ohne dass irgendwo etwas fehlte.
+   *   — Der Marker für „heute" verschwand an jedem Wochenende vollständig, weil
+   *     es keine Spalte gab, in die er gehört hätte. Genau so ist es dem
+   *     Betreiber aufgefallen: an einem Samstag.
+   *
+   * Eine Spalte wegzulassen, weil EINE Sorte Inhalt dort nie steht, wirft jede
+   * andere Sorte lautlos mit weg.
+   */
+
+  it("liefert Ratgeber-Ereignisse auch am Wochenende", () => {
+    // 2026-09-05 ist ein Samstag, 2026-09-06 ein Sonntag.
+    const k = baueKalender([], [], HEUTE, {
+      wochenZurueck: 0,
+      wochenVoraus: 0,
+      artikel: [
+        { iso: "2026-09-05", slug: "/ratgeber/sa", titel: "Samstag", anlass: "live" },
+        { iso: "2026-09-06", slug: "/ratgeber/so", titel: "Sonntag", anlass: "live" },
+      ],
+    });
+    expect(k[0].artikel.map((a) => a.slug)).toEqual(["/ratgeber/sa", "/ratgeber/so"]);
+  });
+
+  it("legt trotzdem keinen Sendeplatz aufs Wochenende", () => {
+    // Die Kadenz ist Di/Do/Fr. Das Wochenende ist im Kalender sichtbar, aber
+    // nicht belegbar — beides gleichzeitig ist der Punkt.
+    const k = baueKalender([frei("a"), frei("b"), frei("c")], [], HEUTE, {
+      wochenZurueck: 0,
+      wochenVoraus: 0,
+    });
+    const wochentage = k[0].plaetze.map((p) => p.tag);
+    expect(wochentage).toEqual(["Di", "Do", "Fr"]);
+  });
+});

@@ -152,7 +152,9 @@ export default async function RedaktionPlanung() {
           </InfoTooltip>
         </h2>
         <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), margin: 0 }}>
-          {fertig} von {PUFFER_VOR_START} fertig{fehlend > 0 ? `, ${fehlend} fehlen` : " — der Puffer steht"}.
+          {fehlend > 0
+            ? `${fertig} Beiträge fertig, ${fehlend} bis zum Puffer von ${PUFFER_VOR_START}.`
+            : `${fertig} Beiträge fertig — der Puffer von ${PUFFER_VOR_START} steht.`}
         </p>
       </section>
 
