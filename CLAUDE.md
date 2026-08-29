@@ -1327,6 +1327,16 @@ solche Namen. **Die Zahl `3/8` zählt belegte Merkmale, nicht Qualität** — ei
 Meisterbetrieb, der seinen Titel nicht auf die Website schreibt, bekommt weniger Punkte
 als einer, der es tut; gemessen wird unser Datenstand, nicht der Betrieb.
 
+**Bei Versorgern belegt die ERWÄHNUNG kein Angebot — BLOCKER (29.08.2026).** Ein Versorger
+hat eine Informationspflicht gegenüber seinen Kunden, ein Handwerksbetrieb nicht: Bei einem
+Solarteur IST die Erwähnung das Angebot, bei einem Stadtwerk ist sie oft nur Aufklärung.
+Sechs Balkon-Seiten von Vertrieben im Wortlaut gelesen — drei erklären bloß, was ein
+Balkonkraftwerk ist, einer schickt den Leser zum Netzbetreiber; verkauft haben zwei.
+Deshalb zählt ein Geschäftsfeld dort nur mit Verkaufssprache daneben, und die **Adresse
+allein zählt gar nicht** („/balkonkraftwerk" führt genauso oft auf eine Erklärseite).
+**Dieselbe Frage an zwei Bestände braucht nicht dieselbe Beweisschwelle** — die Mechanik zu
+teilen war richtig, die Schwelle mitzuteilen nicht.
+
 **Ein NETZBETRIEB ist kein Anbieter — BLOCKER (29.08.2026).** Die Versorger-Adressen
 stammen aus dem Anlagenregister und benennen überwiegend die Netzgesellschaft, nicht den
 Vertrieb: 225 der 937. Bei ihnen maß das Geschäftsfeld „erwähnt" statt „bietet an" — ein

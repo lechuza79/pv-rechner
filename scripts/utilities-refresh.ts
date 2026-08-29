@@ -36,7 +36,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 
 // dahintersteht — sie ein zweites Mal zu schreiben wäre ein Fehler, kein
 // Duplikat. Was NICHT geteilt wird, ist das Vokabular des Marktes: Versorger
 // haben andere Käufer, Budgets und Rechtsrahmen als Handwerksbetriebe.
-import { FELDER, adresseLesbar, angebotsSeiten, sichtbarerText } from "../lib/fachbetrieb-extrakt";
+import { FELDER, angebotsSeiten, sichtbarerText } from "../lib/fachbetrieb-extrakt";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -152,6 +152,9 @@ async function setup(): Promise<void> {
     -- nur die Frage ist dieselbe.
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS geschaeftsfelder text[];
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS angebot_geprueft_am timestamptz;
+    -- Netzbetrieb oder Vertrieb. Die Adressen stammen aus dem Anlagenregister und
+    -- benennen überwiegend die Netzgesellschaft; ein Netzbetrieb verkauft nichts.
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS ist_netzbetrieb boolean;
 
     -- Belege der gemessenen Zuordnung.
     ALTER TABLE utility_communes ADD COLUMN IF NOT EXISTS anlagen int;
@@ -1151,25 +1154,34 @@ async function laufAngebot(opts: { limit?: number; erneut: boolean; dry: boolean
     const nimm = (text: string, quelle: string) => {
       for (const f of FELDER) {
         if (!f.muster.test(text)) continue;
-        if (istNetz) {
-          // Nur die Zeilen ansehen, in denen der Begriff wirklich vorkommt —
-          // sonst genügt ein Preis irgendwo auf der Seite.
-          const nah = text
-            .split(/\n+/)
-            .filter((z) => f.muster.test(z))
-            .join(" ");
-          if (!VERKAUFSSPRACHE.test(nah)) continue;
-        }
+        // VERKAUFSSPRACHE WIRD BEI ALLEN VERSORGERN VERLANGT, nicht nur bei
+        // Netzgesellschaften (ausgeweitet am 29.08.2026 nach der Gegenprobe).
+        //
+        // Sechs Balkon-Seiten von VERTRIEBEN im Wortlaut gelesen: Schweinfurt,
+        // Werl und Neustadt ERKLÄREN, was ein Balkonkraftwerk ist — Neustadt
+        // schickt den Leser sogar ausdrücklich zum Netzbetreiber. Verkauft haben
+        // nur Ratingen (499-€-Set) und die ovag (Rabatt bei einem Partner).
+        //
+        // Der Grund ist strukturell und gilt für den ganzen Bestand: **Ein
+        // Versorger hat eine Informationspflicht gegenüber seinen Kunden, ein
+        // Handwerksbetrieb nicht.** Bei den Fachbetrieben IST die Erwähnung das
+        // Angebot; hier ist sie es nicht.
+        // Nur die Zeilen ansehen, in denen der Begriff wirklich vorkommt —
+        // sonst genügt ein Preis irgendwo auf der Seite.
+        const nah = text
+          .split(/\n+/)
+          .filter((z) => f.muster.test(z))
+          .join(" ");
+        if (!VERKAUFSSPRACHE.test(nah)) continue;
         gefunden.add(f.name);
       }
       void quelle;
     };
     nimm(sichtbarerText(start), basis);
-    // Eine Adresse, die das Wort trägt, ist der Beleg — null Abrufe. Bei einem
-    // Netzbetreiber aber nicht: „/balkonkraftwerk-anmelden" ist kein Angebot.
-    if (!istNetz)
-      for (const s of seiten)
-        for (const f of FELDER) if (f.muster.test(adresseLesbar(s))) gefunden.add(f.name);
+    // BEI VERSORGERN IST DIE ADRESSE KEIN BELEG — anders als bei Fachbetrieben.
+    // „/balkonkraftwerk" führt hier genauso oft auf eine reine Erklärseite wie
+    // auf ein Angebot; Werl und Neustadt haben genau das. Der Beleg muss aus dem
+    // Text kommen.
     for (const s of seiten.slice(0, 5)) {
       if (gefunden.size === FELDER.length) break;
       const h = await holeSeite(s);
@@ -1183,6 +1195,10 @@ async function laufAngebot(opts: { limit?: number; erneut: boolean; dry: boolean
       // Pflichtspalte: Ein Einfügen-oder-Aktualisieren ist im Kern ein INSERT.
       name: u.name,
       geschaeftsfelder: [...gefunden],
+      // Netzbetrieb oder Vertrieb — festgehalten, weil daran die offene Lücke
+      // hängt: Wo wir die Netzgesellschaft haben, fehlt die Vertriebsschwester,
+      // und die verkauft und montiert.
+      ist_netzbetrieb: istNetz,
       angebot_geprueft_am: new Date().toISOString(),
     });
     await wegschreiben(false);

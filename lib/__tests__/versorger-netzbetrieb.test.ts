@@ -23,16 +23,24 @@ import { resolve } from "node:path";
 
 const QUELLE = readFileSync(resolve(process.cwd(), "scripts", "utilities-refresh.ts"), "utf8");
 
-describe("Versorger: Netzbetrieb ist kein Anbieter", () => {
-  it("erkennt den Netzbetrieb und verlangt dort Verkaufssprache", () => {
-    expect(QUELLE).toMatch(/const NETZBETRIEB =/);
+describe("Versorger: die Erwähnung belegt kein Angebot", () => {
+  it("verlangt bei JEDEM Versorger Verkaufssprache neben dem Begriff", () => {
     expect(QUELLE).toMatch(/const VERKAUFSSPRACHE =/);
     expect(QUELLE).toMatch(/if \(!VERKAUFSSPRACHE\.test\(nah\)\) continue;/);
+    // Die Regel darf NICHT auf Netzgesellschaften eingeschränkt sein — sechs
+    // Balkon-Seiten von Vertrieben gelesen, drei erklären nur.
+    expect(QUELLE).not.toMatch(/if \(istNetz\) \{[\s\S]{0,200}VERKAUFSSPRACHE/);
   });
 
-  it("nimmt bei einem Netzbetrieb die Adresse NICHT als Beleg", () => {
-    // „/balkonkraftwerk-anmelden" trägt das Wort und ist kein Angebot.
-    expect(QUELLE).toMatch(/if \(!istNetz\)/);
+  it("nimmt bei Versorgern die Adresse NICHT als Beleg", () => {
+    // „/balkonkraftwerk" führt dort genauso oft auf eine reine Erklärseite.
+    expect(QUELLE).toMatch(/ADRESSE KEIN BELEG/);
+    expect(QUELLE).not.toMatch(/for \(const f of FELDER\) if \(f\.muster\.test\(adresseLesbar/);
+  });
+
+  it("hält die Netzbetrieb-Rolle fest, weil daran die offene Lücke hängt", () => {
+    expect(QUELLE).toMatch(/const NETZBETRIEB =/);
+    expect(QUELLE).toMatch(/ist_netzbetrieb: istNetz/);
   });
 
   it("benennt den Vorfall, damit die Regel nicht wieder ausgebaut wird", () => {

@@ -209,6 +209,29 @@ dürfte es nicht sein, das fänge „Vernetzung" und „Netzwerk" mit. **Dieselb
 beide Richtungen wie am selben Tag bei den Branchenwörtern der Fachbetriebe**, wo ein
 offenes „Solar*" den Firmennamen „Solarma" fraß.
 
+**GEGENPROBE AM 29.08.2026: Die Regel gilt für ALLE Versorger, nicht nur für
+Netzgesellschaften — und das war die Frage des Betreibers, nicht die Umsetzung.** Auf die
+Frage „soll ich die Vertriebsschwestern suchen?" kam die richtige Antwort: „kann ich nicht
+beurteilen. sollten wir erst doublechecken, ob das wirklich eine valide Strategie ist."
+
+Sechs Balkon-Seiten von VERTRIEBEN im Wortlaut gelesen: **Schweinfurt, Werl und Neustadt
+erklären, was ein Balkonkraftwerk ist** — Neustadt schickt den Leser sogar ausdrücklich zum
+Netzbetreiber. Verkauft haben nur zwei: Ratingen (499-€-Set) und die ovag (Rabatt bei einem
+Partner). Der Fehler war also nicht auf Netzgesellschaften beschränkt, nur dort besonders
+sichtbar.
+
+**Der Grund ist strukturell: Ein Versorger hat eine Informationspflicht gegenüber seinen
+Kunden, ein Handwerksbetrieb nicht.** Bei einem Solarteur IST die Erwähnung das Angebot;
+bei einem Stadtwerk ist sie oft nur Aufklärung. Deshalb verlangt die Erfassung bei jedem
+Versorger Verkaufssprache neben dem Begriff, und **die Adresse allein zählt bei Versorgern
+gar nicht mehr** — „/balkonkraftwerk" führt dort genauso oft auf eine Erklärseite wie auf
+ein Angebot.
+
+**Die Lehre über diesen Fall hinaus:** Dieselbe Frage an zwei Bestände braucht nicht
+dieselbe Beweisschwelle. Was bei der einen Zielgruppe ein Angebot belegt, belegt bei der
+anderen nur eine Pflicht. Die Mechanik zu teilen war richtig, die Schwelle mitzuteilen
+nicht.
+
 **Die eigentliche Lücke, die daraus folgt:** Wo wir den Netzbetrieb haben, fehlt der
 Vertrieb — und der verkauft und montiert. Die ovag Energie ist gar nicht im Bestand. Wer
 den Versorger-Bestand für Montage-Empfehlungen nutzen will, muss diese Schwestern erst
