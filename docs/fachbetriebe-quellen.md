@@ -40,10 +40,87 @@ Rechtlich ausgeschlossen, dreifach, aus den Google Maps Platform Terms of Servic
 - **3.2.3(d) No Re-Creating Google Products**, Ziffer (iii): die Nutzung „in a listings or
   directory service" — das ist wortwörtlich dieser Anwendungsfall.
 
-**Damit fällt Google nicht nur für Bewertungen aus, sondern als Quelle überhaupt.** Ein
-Umweg über einen Dritten, der Google seinerseits ausliest, ist keine Lösung, sondern eine
-neue Rechtsfrage (fremde Nutzungsbedingungen, Datenbankherstellerrecht Googles, § 3a UWG)
-— und die stellt sich gar nicht, solange ein sauberer Weg existiert.
+**Damit fällt Google als DIREKTE Quelle aus** — die Bedingungen binden jeden, der die
+Schnittstelle selbst nutzt.
+
+**KORREKTUR am 29.08.2026 (Gegenprüfer):** Der Satz „damit fällt Google als Quelle
+überhaupt aus" war zu weit, und die Verankerung war falsch. Die Maps-Bedingungen binden
+den **Kunden der Maps Platform**. Wer die Daten über einen Dritten bezieht, der
+Suchergebnisseiten ausliest, ist nicht Vertragspartei — für ihn ist 3.2.3(d)(iii) schlicht
+nicht anwendbar. Die Klausel als „wortwörtlich dieser Anwendungsfall" gegen einen
+Nichtkunden zu zitieren, belegt eine Aussage, die sie nicht trägt. **Für den Umweg gelten
+andere Normen, nicht diese** — siehe den folgenden Abschnitt.
+
+### 1b. Der Umweg über einen Datenlieferanten — geprüft am 29.08.2026, Ergebnis: intern ja, öffentlich nein
+
+Die frühere Fassung schob die Frage weg („eine neue Rechtsfrage, die sich nicht stellt,
+solange ein sauberer Weg existiert"). Das war bequem und als Begründung wertlos: Der
+saubere Weg deckt 5 % ab. Deshalb am 29.08.2026 durch zwei Legal-Judges geprüft, der
+zweite mit dem Auftrag, den ersten zu widerlegen — er hat es an fünf Stellen getan.
+Fundstellen: `docs/quellen/fachbetriebe/dataforseo-tos-2026-08-29.txt`.
+
+Gefragt war der engste denkbare Zuschnitt: **nur Bewertungsschnitt und Anzahl**, keine
+Rezensionstexte, keine Autorennamen. Kosten wären vernachlässigbar (0,0015 $ je Betrieb,
+rund 5 $ für den ganzen Bestand).
+
+**Öffentlich anzeigen: nein — und der tragende Grund ist NICHT Google.** Wer
+Verbraucherbewertungen zugänglich macht, muss nach **§ 5b Abs. 3 UWG** angeben, ob und wie
+er sicherstellt, dass sie von echten Kunden stammen; die Echtheit ohne angemessene
+Überprüfung zu behaupten, ist nach **Anhang Nr. 23b zu § 3 Abs. 3 UWG** per se unlauter.
+Wir können nichts überprüfen. **Der Unterschied zu allen anderen Strängen ist die
+Durchsetzung:** Hier sind Mitbewerber und Verbände nach § 8 Abs. 3 UWG anspruchsberechtigt
+— also Stellen, die tatsächlich abmahnen. Dazu kommt, dass der Lieferant **kein
+Nutzungsrecht einräumt** (die Bedingungen enthalten keine Lizenzklausel) und in 7.2 jedes
+Risiko auf uns abwälzt.
+
+**Der zuerst genannte Ablehnungsgrund trägt dagegen nicht** und ist hier festgehalten,
+damit ihn niemand wieder aufgreift: „Ein gespeicherter Wert veraltet und ist damit eine
+unwahre Tatsachenbehauptung (§ 824 BGB)". Ein datiert ausgewiesener Wert sagt etwas über
+den Stichtag, und das ist wahr; § 824 Abs. 2 nimmt zudem von der Haftung aus, wo der
+Empfänger ein berechtigtes Interesse hat. Wer § 824 für die Hürde hält, glaubt, ein
+„Stand: 08/2026" räume sie ab — und lässt die echte stehen.
+
+**Intern zur Priorisierung: vertretbar, aber nicht kostenlos.** Vier Punkte, die dabei
+gelten:
+- **Schon das Speichern ist Vervielfältigung** (§ 87b Abs. 1 S. 1 UrhG). „Wird ja nicht
+  angezeigt" ist keine urheberrechtliche Kategorie. Der Tatbestand ist auch intern
+  eröffnet; getragen wird die Zulässigkeit vom Amortisationsmaßstab des EuGH (C-762/19),
+  nicht von der Unsichtbarkeit.
+- **Ob Google überhaupt ein Datenbankherstellerrecht an den Bewertungen hat, ist offen.**
+  Der erste Gutachter hielt es für „sehr wahrscheinlich" — der Gegenprüfer hält dagegen,
+  dass die Bewertungen auf Googles eigener Plattform entstehen und der Durchschnitt von
+  Google errechnet wird. Nach EuGH C-203/02 ist das **Erzeugen**, nicht Beschaffen, und
+  gerade nicht geschützt. Keine Entscheidung dazu gefunden. Weniger Recht auf Googles
+  Seite heißt weniger Risiko auf unserer: **vorsichtshalber zu verschärfen ist selbst ein
+  Fehler.**
+- **Unsichtbarkeit ist datenschutzrechtlich ein Argument GEGEN die Verarbeitung**, nicht
+  dafür — ein öffentlicher Eintrag ist wahrnehmbar und widersprechbar, eine
+  Priorisierungsliste nicht.
+- Bei Kapitalgesellschaften ist es gar keine DSGVO-Frage (Art. 4 Nr. 1: natürliche
+  Person). Nur Einzelunternehmer und Namensfirmen sind betroffen.
+
+**Beide Gutachten sind sich einig, was ohnehin fehlt:** Die Datenschutzerklärung nennt die
+Fachbetriebs-Erhebung heute mit keinem Wort, und **Art. 14 Abs. 5 lit. b („unverhältnis-
+mäßiger Aufwand") trägt hier nicht** — 94 % der Betriebe haben einen Kontaktweg, und wer
+Kontaktdaten erhebt, UM Kontakt aufzunehmen, kann sich nicht darauf berufen, Kontakt sei
+zu aufwendig. Das gilt unabhängig von jedem Bewertungswert.
+
+**Der saubere Weg für ein späteres Produkt: der Betrieb gibt uns seine eigenen Daten.**
+Nach dem Digital Markets Act (Art. 6 Abs. 10) kann ein gewerblicher Nutzer vom Torwächter
+kostenlos Zugang zu den Daten verlangen, die im Zusammenhang mit seiner Nutzung entstehen —
+und sie einem Dritten zugänglich machen. Das löst Aktualität, Rechtsgrundlage und
+Zustimmung in einem und passt genau dazu, dass wir die Betriebe ohnehin ansprechen wollen.
+**Der Wortlaut ist am Amtsblatt gegenzulesen**, bevor jemand darauf baut — die
+Online-Fassung brach beim Abruf vorzeitig ab.
+
+**Ausdrücklich offen geblieben:** ob die Beschriftung „Google-Bewertung" markenrechtlich
+zulässig wäre (§ 23 MarkenG, nicht geprüft), und ob der Lieferant selbst rechtmäßig an die
+Daten kommt — das können wir nicht beurteilen, und seine Freistellungsklausel verlagert
+genau dieses Risiko auf uns.
+
+**Nicht zu übersehen:** An demselben Zugang hängen die Landkreis-Erhebung und der
+monatliche SEO-Wächter. Die Bedingungen erlauben die Kontosperre ohne Vorwarnung und ohne
+Erstattung.
 
 **Was stattdessen zulässig ist:** Zeigt ein Betrieb seine Bewertung selbst auf der
 eigenen Website — was viele tun, im Eichlauf etwa `eberhardt-solar.de` mit „4,5 aus 24

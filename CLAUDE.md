@@ -1102,10 +1102,28 @@ sagt, es sei „eine Frage an drei Betriebe, nicht an eine Datenbank"), und die
 Informationspflicht nach Art. 14 DSGVO — die Datenschutzerklärung nennt diese
 Verarbeitung heute **nicht**.
 
-**Google scheidet als Quelle aus, nicht nur für Bewertungen.** Maps Platform Terms
+**Bewertungen öffentlich zeigen scheitert am BEWERTUNGSRECHT, nicht an Google (geprüft
+29.08.2026, zwei Legal-Judges).** Wer Verbraucherbewertungen zugänglich macht, muss sagen,
+ob und wie er ihre Echtheit sicherstellt (§ 5b Abs. 3 UWG); sie ohne Überprüfung als echt
+auszugeben, ist per se unlauter (Anhang Nr. 23b zu § 3 Abs. 3 UWG). Wir können nichts
+überprüfen — und hier sind Mitbewerber und Verbände anspruchsberechtigt, also Stellen, die
+tatsächlich abmahnen. **Der zuerst genannte Grund „ein gespeicherter Wert veraltet und ist
+dann eine unwahre Tatsachenbehauptung (§ 824 BGB)" trägt NICHT** und darf nicht
+wiederverwendet werden: Ein datierter Wert sagt etwas über den Stichtag, und Absatz 2 nimmt
+aus, wo der Empfänger ein berechtigtes Interesse hat. Wer ihn für die Hürde hält, glaubt,
+ein „Stand: 08/2026" räume sie ab — und lässt die echte stehen. **Intern zur Priorisierung
+wäre der Bezug über einen Datenlieferanten vertretbar**, aber schon das Speichern ist
+Vervielfältigung (§ 87b Abs. 1 UrhG) — „wird ja nicht angezeigt" ist keine
+urheberrechtliche Kategorie. Herleitung, Gegenargumente und der DMA-Weg über den Betrieb
+selbst: `docs/fachbetriebe-quellen.md`, Abschnitt 1b.
+
+**Google scheidet als DIREKTE Quelle aus, nicht nur für Bewertungen.** Maps Platform Terms
 3.2.3(a)(iii) untersagt „copy and save business names, addresses, or user reviews", (b)
 das Zwischenspeichern über Kennnummern hinaus, (d)(iii) ausdrücklich die Nutzung „in a
-listings or directory service" — wortwörtlich dieser Fall. Volltext:
+listings or directory service" — wortwörtlich dieser Fall, **solange man die Schnittstelle
+selbst nutzt**. Die Klauseln binden den Kunden der Maps Platform; gegen einen Nichtkunden
+sind sie kein Beleg, und sie so zu zitieren belegt eine Aussage, die sie nicht trägt.
+Volltext:
 `docs/quellen/fachbetriebe/`. Eine Bewertung wird deshalb **nur** als Selbstauskunft der
 eigenen Website erfasst (`bewertung_quelle`), nie als „Google-Bewertung" beschriftet.
 
