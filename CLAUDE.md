@@ -1366,6 +1366,14 @@ Vertrieb, und der verkauft und montiert.
 Fachbetriebe sind Handwerk, Versorger sind Energieversorger — andere Käufer, andere
 Budgets, anderer Rechtsrahmen.
 
+**Der Erstkontakt ist die billigste Quelle für alles, was die Website nicht hergibt** —
+Meisterbrief, Balkonkraftwerk-Angebot, aktuelle Bewertung. Übergabe für die Konzept-Session
+(Anliegen, Rechtsrahmen, was die Kommunen-Mechanik schon kann und was fehlt):
+`docs/fachbetriebe-erstkontakt-uebergabe.md`. **Vor dem ersten Versand:** Die
+Datenschutzerklärung nennt diese Erhebung mit keinem Wort, und die Ausnahme
+„unverhältnismäßiger Aufwand" trägt hier nicht — wer Kontaktdaten erhebt, UM Kontakt
+aufzunehmen, kann Kontakt nicht als zu aufwendig ausgeben.
+
 **Das Angebots-Feature am Ende des Rechners ist NICHT beauftragt** und hat eine eigene
 Merkliste: `docs/solarteur-widget-offene-fragen.md`. Kern daraus: Der Nutzer sieht erst
 sein Ergebnis und stellt DANACH selbst eine Anfrage — diese Reihenfolge ist die Trennlinie
