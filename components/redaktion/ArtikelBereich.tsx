@@ -1,7 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { v, space } from "../../lib/theme";
 import { FilterLeiste } from "../admin/FilterLeiste";
+import { ThemaPruefen } from "./ThemaPruefen";
 import { ArtikelTabelle } from "./ArtikelTabelle";
 import type { ArtikelVorhaben } from "../../lib/artikelplan";
 
@@ -60,6 +62,24 @@ export function ArtikelBereich({
   return (
     <div>
       <FilterLeiste eintraege={eintraege} aktiv={aktiv} onWechsel={setAktiv} />
+
+      {/* Der Weg hinein: erst prüfen, dann aufnehmen. Er steht unter der Liste
+          und nicht darüber, weil man ihn seltener braucht als den Überblick —
+          aber auf derselben Seite, damit man die Zahlen eines Vorschlags neben
+          denen der vorhandenen Themen sieht. */}
+      <details style={{ marginBottom: space.xl }}>
+        <summary
+          style={{
+            cursor: "pointer",
+            color: v("--color-accent"),
+            fontSize: v("--font-size-body"),
+            marginBottom: space.md,
+          }}
+        >
+          Neues Thema prüfen
+        </summary>
+        <ThemaPruefen />
+      </details>
 
       <ArtikelTabelle
         vorhaben={gefiltert}

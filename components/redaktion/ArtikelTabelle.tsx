@@ -5,7 +5,7 @@ import { DatenTabelle, type Spalte } from "../admin/DatenTabelle";
 import { DetailAbschnitt } from "../admin/DetailAbschnitt";
 import { NeuBewerten } from "./NeuBewerten";
 import { ErfolgMessen } from "./ErfolgMessen";
-import { geaendertAm, type ArtikelVorhaben } from "../../lib/artikelplan";
+import { geaendertAm, ueberfaellig, type ArtikelVorhaben } from "../../lib/artikelplan";
 
 // Die Warteschlange als Tabelle: harte Zahlen in Spalten, der Text dahinter
 // ausklappbar.
@@ -157,6 +157,27 @@ export function ArtikelTabelle({
       sortWert: (vh) => vh.messung.gemessenAm,
     },
   ];
+
+  // Der Zieltermin gehört in die Warteschlange, nicht zu den Veröffentlichten:
+  // Dort ist er beantwortet. Überfällig wird rot — die einzige Farbe auf dieser
+  // Seite, die eine Handlung verlangt.
+  if (!mitDaten) {
+    spalten.push({
+      key: "ziel",
+      kopf: "Ziel",
+      zelle: (vh) => {
+        if (!vh.ziel) return <span style={{ color: v("--color-text-muted") }}>—</span>;
+        const spaet = ueberfaellig(vh);
+        return (
+          <span style={{ color: v(spaet ? "--color-negative" : "--color-text-muted") }}>
+            {new Date(vh.ziel).toLocaleDateString("de-DE")}
+          </span>
+        );
+      },
+      // Ohne Termin ans Ende — „irgendwann" ist keine Dringlichkeit.
+      sortWert: (vh) => vh.ziel ?? "9999-99-99",
+    });
+  }
 
   if (mitDaten) {
     spalten.push(

@@ -90,6 +90,16 @@ export interface ArtikelVorhaben {
   /** Was gebaut sein muss, bevor der Artikel gehen kann. */
   voraussetzung?: string;
   /**
+   * Bis wann der Artikel stehen soll (YYYY-MM-DD). Nur bei offenen Vorhaben.
+   *
+   * Ohne Termin ist die Warteschlange eine Wunschliste: sieben geplante Themen,
+   * und nichts sagt, wann welches dran ist. Der Termin ist bewusst KEINE
+   * Zusage nach außen und löst nichts aus — er macht nur sichtbar, was liegen
+   * bleibt. Ein Vorhaben ohne Termin ist erlaubt und heißt „irgendwann";
+   * genau das soll man den Zeilen ansehen können.
+   */
+  ziel?: string;
+  /**
    * Tag des Livegangs (YYYY-MM-DD). Nur bei veröffentlichten Artikeln.
    *
    * Aus der Versionsgeschichte erhoben, der Umbenennung folgend — ein späterer
@@ -111,6 +121,7 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
   {
     thema: "Nulleinspeisung — Photovoltaik ohne Einspeisung",
     slug: "/ratgeber/nulleinspeisung",
+    ziel: "2026-09-12",
     zustand: "geplant",
     messung: {
       begriff: "nulleinspeisung",
@@ -129,6 +140,7 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
   {
     thema: "Solarertrag nach Bundesland — wo die Sonne wirklich zahlt",
     slug: "/ratgeber/solarertrag-bundeslaender",
+    ziel: "2026-09-26",
     zustand: "geplant",
     messung: {
       begriff: "sonnenstunden deutschland",
@@ -148,6 +160,7 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
   {
     thema: "Solaranlage mieten oder kaufen",
     slug: "/ratgeber/solaranlage-mieten-oder-kaufen",
+    ziel: "2026-10-10",
     zustand: "geplant",
     messung: {
       begriff: "solaranlage mieten",
@@ -159,14 +172,24 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
       ],
     },
     begruendung:
-      "Höchster Wert je Besucher der ganzen Messung (Klickpreis 12,74 €) — dort wird Geld " +
-      "verdient, entsprechend einseitig ist das Umfeld. Miete gegen Kauf ist eine Rechenfrage, " +
-      "und ehrlich gerechnet fällt sie meist gegen die Miete aus. Genau die Aussage, die eine " +
-      "Seite mit Vermittlungsgeschäft nicht treffen kann.",
+      "Miete gegen Kauf ist eine Rechenfrage, und ehrlich gerechnet fällt sie meist gegen die " +
+      "Miete aus — genau die Aussage, die eine Seite mit Vermittlungsgeschäft nicht treffen kann.",
+    // KORREKTUR (29.08.2026): Hier stand „höchster Wert je Besucher der ganzen
+    // Messung (Klickpreis 12,74 €)". Das war falsch herum gelesen. Wir
+    // vermitteln nichts — für uns ist dieser Klick null Euro wert. Ein hoher
+    // Klickpreis sagt bei einer leadfreien Seite nur, dass dort zahlungskräftige
+    // Wettbewerber Geld einsetzen; er ist ein Warnsignal für die Erreichbarkeit
+    // und nie ein Argument FÜR ein Thema. Gefunden von einem SEO-Prüflauf.
+    voraussetzung:
+      "Vor der Arbeit die Erreichbarkeit an der Trefferliste prüfen: Steht dort auch nur ein " +
+      "Treffer ohne Verweisbasis, ist ein Platz frei. Stehen dort ausschließlich Vermittler mit " +
+      "Werbebudget, ist das Thema für uns in absehbarer Zeit unerreichbar — unabhängig von der " +
+      "Schwierigkeitszahl.",
   },
   {
     thema: "Wann sich Photovoltaik NICHT lohnt",
     slug: "/ratgeber/photovoltaik-lohnt-sich-nicht",
+    ziel: "2026-10-17",
     zustand: "geplant",
     messung: {
       begriff: "photovoltaik lohnt sich nicht",
@@ -181,6 +204,7 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
   {
     thema: "Solarpflicht je Bundesland",
     slug: "/ratgeber/solarpflicht",
+    ziel: "2026-12-05",
     zustand: "geplant",
     messung: {
       begriff: "solarpflicht",
@@ -201,6 +225,7 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
   {
     thema: "Anlagengröße: wie viel kWp brauche ich",
     slug: "/pv-bedarf-berechnen",
+    ziel: "2026-09-19",
     zustand: "in-arbeit",
     messung: {
       begriff: "wie viel kwp brauche ich",
@@ -394,6 +419,7 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
   {
     thema: "Photovoltaik-Versicherung",
     slug: "/ratgeber/photovoltaik-versicherung",
+    ziel: "2026-11-07",
     zustand: "geplant",
     messung: {
       begriff: "photovoltaik versicherung",
@@ -436,6 +462,7 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
   {
     thema: "Wechselrichter",
     slug: "/ratgeber/wechselrichter",
+    ziel: "2026-11-21",
     zustand: "geplant",
     messung: {
       begriff: "wechselrichter photovoltaik",
@@ -472,6 +499,17 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
       "Seitenfamilie auf denselben Ortsnamen würde nur die eigenen Positionen teilen.",
   },
 ];
+
+/**
+ * Ist der Zieltermin verstrichen, ohne dass der Artikel steht?
+ *
+ * „Heute" zählt noch nicht als überfällig — ein Termin ist bis zum Ende seines
+ * Tages eingehalten.
+ */
+export function ueberfaellig(v: ArtikelVorhaben, heute = new Date()): boolean {
+  if (!v.ziel || v.zustand === "live" || v.zustand === "verworfen") return false;
+  return v.ziel < heute.toISOString().slice(0, 10);
+}
 
 /** Vorhaben, an denen gearbeitet werden kann — in der Reihenfolge des Plans. */
 export function offeneVorhaben(): ArtikelVorhaben[] {
