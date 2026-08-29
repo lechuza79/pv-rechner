@@ -50,8 +50,18 @@ const ziel = nurForm ? basisZiel.replace(/\.html$/, `-${nurForm}.html`) : basisZ
 const kennzahlen = JSON.parse(readFileSync(quelle, "utf8")) as SocialKennzahlen;
 const posts = baueAllePosts(kennzahlen);
 
+// POST=<kennung> füllt JEDE Form mit demselben Beitrag — soweit sie ihn trägt.
+// Dasselbe Durchschalten wie auf der Seite, nur für die Kommandozeile: Ein
+// Design an einem einzigen Beitrag zu beurteilen heißt, es für den Referenzfall
+// abzunehmen und für die übrigen zu hoffen.
+const nurPost = process.env.POST;
+
 function fuellung(art: PostBild["art"]): SocialPost | undefined {
+  const gewuenscht = nurPost
+    ? posts.find((p) => p.id === nurPost && p.bild && moeglicheFormen(p.bild).includes(art))
+    : undefined;
   return (
+    gewuenscht ??
     posts.find((p) => p.bild?.art === art) ??
     posts.find((p) => p.bild && moeglicheFormen(p.bild).includes(art))
   );

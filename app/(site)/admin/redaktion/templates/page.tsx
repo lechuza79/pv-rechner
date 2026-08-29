@@ -49,11 +49,31 @@ function fuellung(posts: SocialPost[], art: PostBild["art"]): SocialPost | undef
 export default async function RedaktionTemplates({
   searchParams,
 }: {
-  searchParams: Promise<{ ansicht?: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   if (!(await isAdminSession())) redirect("/login?next=/admin/redaktion/templates");
 
-  const neu = (await searchParams).ansicht === "neu";
+  const params = await searchParams;
+  const neu = params.ansicht === "neu";
+  // Die Füllung wird JE FORM gewählt und steht in der Adresse: „welche Form mit
+  // welchem Beitrag" ist der Zustand, den man teilen und wiederfinden können
+  // muss („sieh dir rangliste-hell mit dem Speicher-Beitrag an"). Ein Zustand im
+  // Browser wäre nach dem Neuladen weg.
+  const gewaehlt = (art: string): string | undefined => {
+    const w = params[`f_${art}`];
+    return typeof w === "string" ? w : undefined;
+  };
+  const adresseMit = (art: string, postId: string): string => {
+    const q = new URLSearchParams();
+    if (neu) q.set("ansicht", "neu");
+    // Die Wahl der ANDEREN Formen bleibt stehen — sonst springt die halbe Seite
+    // zurück, sobald man eine Zeile umschaltet.
+    for (const [k, w] of Object.entries(params)) {
+      if (k.startsWith("f_") && k !== `f_${art}` && typeof w === "string") q.set(k, w);
+    }
+    q.set(`f_${art}`, postId);
+    return `/admin/redaktion/templates?${q.toString()}#${art}`;
+  };
 
   let posts: SocialPost[] = [];
   let fehler: string | null = null;
@@ -69,14 +89,26 @@ export default async function RedaktionTemplates({
   const abgenommeneArten = new Set(TEMPLATES.map((t) => t.art));
   const zeilen = (arten: PostBild["art"][]): GalerieZeile[] =>
     arten
-      .map((art) => {
+      .map((art): GalerieZeile | null => {
         const form = BILDFORMEN.find((f) => f.art === art)!;
-        const post = fuellung(posts, art);
+        // Wählbar ist NUR, was die Form wirklich trägt — dieselbe Bedingung wie
+        // im Umschalter des Redaktionstischs. Hier etwas anbieten, das dort
+        // verboten wäre, hieße ein Design an einem Fall abzunehmen, den es nie
+        // geben wird.
+        const traeger = posts.filter((p) => p.bild && moeglicheFormen(p.bild).includes(art));
+        const wunsch = traeger.find((p) => p.id === gewaehlt(art));
+        const post = wunsch ?? fuellung(posts, art);
         if (!post?.bild) return null;
         return {
           form,
           post,
-          traeger: posts.filter((p) => p.bild && moeglicheFormen(p.bild).includes(art)).length,
+          auswahl: traeger.map((p) => ({
+            id: p.id,
+            titel: p.titel,
+            href: adresseMit(art, p.id),
+            aktiv: p.id === post.id,
+          })),
+          traeger: traeger.length,
           gesamt: posts.length,
         };
       })

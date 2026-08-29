@@ -335,6 +335,19 @@ ungeprüfte Kombination verwenden. Das ist der Arbeitsvorrat, nicht der Bestand.
 die Ansicht, in der man sieht, ob ein Design in allen drei Schemata trägt. Genau dort saßen die
 Fehler der letzten Runden, beide nur im Highlight sichtbar.
 
+**Ein Design wird an MEHREREN Beiträgen beurteilt, nicht an einem.** Je Zeile lässt sich
+durchschalten, mit welchem Beitrag die Form gefüllt ist; angeboten wird nur, was sie wirklich trägt
+— dieselbe Bedingung wie im Umschalter des Redaktionstischs. Ohne das nimmt man ein Design für den
+Referenzfall ab und hofft für die übrigen, und genau diese Fehlerklasse hat das Projekt schon
+einmal bezahlt: Eine Ratgeber-Aussage galt am Standard-Set und kippte an der größeren
+Konfiguration. Die Formen scheitern an verschiedenen Beiträgen verschieden — ein langer Ländername
+sprengt die Namensspur, eine enge Verteilung macht sechzehn gleich lange Balken, ein winziger
+Anteil verschwindet.
+
+**Die Wahl steht in der Adresse, je Form einzeln.** „Welche Form mit welchem Beitrag" ist der
+Zustand, den man teilen und wiederfinden können muss; im Browser gehalten wäre er nach dem Neuladen
+weg. Das Umschalten einer Zeile lässt die übrigen stehen.
+
 **Jede Variante trägt eine Kennung** (`ringpaar-dunkel`), auch die nicht abgenommenen: Man muss über
 eine Variante reden können, bevor sie einen Template-Namen hat — sonst hat gerade das, woran
 gearbeitet wird, keinen Namen. Sie hängt NICHT am Anzeigenamen, sonst wanderte sie beim Umbenennen
