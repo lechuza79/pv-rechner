@@ -164,12 +164,118 @@ Das ist genau der Fall, vor dem CLAUDE.md warnt: *„ein ‚gilt nicht für X' b
 eigene Fundstelle — Verweisketten mitlesen."* Der Förder-Merksatz wäre hier ungeprüft
 übernommen worden und hätte danach als Rechtfertigung dagestanden.
 
-**Offene Entscheidung, keine Sackgasse.** Die Quelle ist fachlich die beste von allen. Ob
-wir sie nutzen, ist eine Rechtsfrage mit mehreren vertretbaren Antworten (hat die Kammer
-eine „wesentliche Investition" im Sinne des § 87b UrhG? greift § 87b Abs. 1 S. 2 bei
-wiederholter Entnahme unwesentlicher Teile? wie steht es mit Art. 14 DSGVO bei den
-Personennamen?). Sie gehört vor einer Nutzung durch zwei Legal-Judges, nicht in eine
-Vermutung. **Nicht gemessen und offen:** wie viele der 53 Kammern dieselbe Software
+**GEPRÜFT am 29.08.2026 durch zwei Legal-Judges, der zweite mit dem Auftrag, den ersten zu
+widerlegen. Ergebnis: intern zulässig, öffentlich später — und meine Bewertung oben war ZU
+STRENG.**
+
+**Die DNG-Argumentation oben ist hinfällig und darf nicht wiederverwendet werden.** Nicht
+weil sie zu streng war, sondern weil sie eine Stufe zu spät ansetzt: Beide Fassungen
+streiten über die Ausnahmen des § 2 Abs. 3 DNG, ohne zu prüfen, ob eine Handwerkskammer
+überhaupt „öffentliche Stelle" im Sinne des DNG ist. Das DNG hat dafür eine **eigene**
+Definition (§ 3 Nr. 1), und von deren drei Merkmalen für Nicht-Gebietskörperschaften sind
+zwei erkennbar nicht erfüllt (die Kammer finanziert sich nach § 113 Abs. 1 HwO aus
+Mitgliedsbeiträgen, ihre Vollversammlung wird gewählt); das dritte ist offen. **Der Schluss
+von „Körperschaft des öffentlichen Rechts" auf „öffentliche Stelle" ist genau die
+Verweiskette, die nicht mitgelesen wurde** — derselbe Fehlertyp wie beim Förder-Merksatz,
+nur in die andere Richtung.
+
+Dazu kommt: § 1 Abs. 2 DNG begründet ausdrücklich keinen Anspruch, § 13 verweist auf den
+Verwaltungsrechtsweg. Ob ein Privater sich in einem Zivilprozess auf das Verbot in § 2 Abs.
+5 berufen kann, ist ungeklärt — Rechtsprechung dazu wurde nicht gefunden. **Das DNG trägt
+die Entscheidung nicht, in keine Richtung.**
+
+**Was sie trägt, ist das Datenbankrecht selbst.** Nach EuGH C-203/02 (Rn. 89) verbietet
+§ 87b Abs. 1 S. 2 UrhG nur Handlungen, die durch ihre kumulative Wirkung die Datenbank oder
+einen wesentlichen Teil davon **wieder erstellen**. Rund 60 gezielte Abfragen je Kammer aus
+jeweils Zehntausenden Einträgen tun das nicht. Verstärkend nach C-762/19: Maßstab ist die
+Gefahr für die **Amortisation** der Investition — eine beitragsfinanzierte Kammer
+vermarktet ihr Werbeverzeichnis nicht, die Gefahr fehlt strukturell. Ob überhaupt ein
+Schutzrecht besteht, ist zusätzlich offen: In ein Verzeichnis, in das sich Mitglieder selbst
+eintragen, wird nichts „beschafft".
+
+**Daraus folgt die eine Bedingung, die wirklich trägt: ABGLEICHEN STATT ABERNTEN.** Nur
+gezielt nachschlagen, was wir schon haben; nie ganze Gewerke-Kategorien über alle Kammern
+durchgehen. Der Unterschied ist nicht der Zweck, sondern das Vorgehen — und er entscheidet
+die ganze Frage.
+
+Weitere Bedingungen, jede mit eigenem Grund:
+- **Nur das Gewerk holen, keine Kontaktdaten.** § 6 Abs. 2 S. 6 HwO nimmt elektronische
+  Kontaktdaten von der Übermittlung aus; das verbietet uns nichts, zeigt aber die Wertung.
+  Wir haben sie ohnehin zu 94 % aus dem eigenen Crawl.
+- **Bei jeder technischen Sperre abbrechen, nie umgehen.** BGH I ZR 224/12 sagt, dass
+  Geschäftsbedingungen allein keine Unlauterkeit begründen — nennt aber das Überwinden
+  einer technischen Schutzvorrichtung ausdrücklich als Gegenbeispiel.
+- **Datenschutz-Unterseite VOR dem ersten Lauf**, mit berechtigtem Interesse und
+  Widerspruchsrecht (Art. 14 Abs. 1/2, Art. 21 Abs. 2 DSGVO).
+- Die Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO, getragen von Erwägungsgrund 47 a. E.
+  (Direktwerbung) — **nicht** vom Hinweis im Eintragsformular einer einzelnen Kammer, den
+  der erste Judge anführte: Der Erwägungsgrund stellt auf die Erwartung gegenüber dem
+  **Verantwortlichen** ab, und das sind wir, nicht die Kammer.
+
+**Öffentlich anzeigen: nicht verboten, aber verschoben.** Ein datiert ausgewiesenes Merkmal
+(„eingetragenes Handwerk laut Kammer, abgerufen am …") ist über den Stichtag eine wahre
+Angabe; § 5 Abs. 2 Nr. 3 UWG ist damit beherrschbar. Die Auflage, die beide zunächst
+übersahen, ist eine andere: **§ 5b Abs. 2 UWG verlangt von jedem Verzeichnis, das
+Verbrauchern eine Suche über mehrere Anbieter bietet, die Hauptparameter des Rankings und
+ihre Gewichtung offenzulegen** — durchsetzbar von Mitbewerbern und Verbänden. Das gilt
+unabhängig davon, woher das Gewerk kommt, und gehört zum Verzeichnis-Produkt, nicht zu
+dieser Quelle.
+
+**Nicht einschlägig, obwohl es naheliegt:** § 5b Abs. 3 UWG und Anhang Nr. 23b betreffen
+ausschließlich **Verbraucherbewertungen**. Ein amtlicher Registereintrag ist keine
+Bewertung. Wer die Bewertungs-Argumentation aus Abschnitt 1b hierher überträgt, überträgt
+sie falsch.
+
+**Der sauberere Weg, mit ehrlichen Grenzen: § 6 Abs. 2 HwO — fragen statt abrufen.** Eine
+Einzelauskunft aus der Handwerksrolle ist jedem zu erteilen, der ein berechtigtes Interesse
+glaubhaft darlegt; S. 3 verneint für Firma, ausgeübtes Handwerk und Anschrift ausdrücklich
+ein schutzwürdiges Gegeninteresse. Das liefert das **amtliche** Merkmal statt der
+Selbstauskunft aus einem Werbeverzeichnis. Vier Grenzen, die der erste Judge nicht nannte:
+S. 4 gibt jedem Betrieb ein Widerspruchsrecht, S. 6 schließt elektronische Kontaktdaten
+aus, § 6 Abs. 1 erfasst **nur zulassungspflichtige** Handwerke (reine Solarteure ohne
+Eintrag in Anlage A stehen dort nicht — also gerade der Teil des Bestands, bei dem die Frage
+interessant wäre), und ob „berechtigtes Interesse" bei einem kommerziellen Anbieter trägt,
+entscheidet jede der 53 Kammern selbst. Das ist Außenkontakt und damit eine Entscheidung des
+Betreibers.
+
+**GEMESSEN am 29.08.2026 — und das Ergebnis erledigt die Frage praktisch, unabhängig von
+jeder Rechtslage: Die frei abrufbare Betriebsdatenbank enthält unsere Betriebe nicht.**
+Zwölf Betriebe aus Oberbayern gezielt über Firmenname und Postleitzahl gesucht, **einer**
+gefunden. Gegenprobe, damit der Befund kein Gerätefehler ist: Dieselbe Suchmaske liefert
+für „Elektro" im selben Umkreis 26 Treffer, und auch ohne jeden Filter findet sie die
+Vermissten nicht. Die Suche funktioniert — die Betriebe stehen dort schlicht nicht.
+
+Der Grund liegt in der Bauart der Quelle und war die ganze Zeit erkennbar: **Die
+Kammer-MITGLIEDSCHAFT ist Pflicht, der Eintrag in dieses Verzeichnis freiwillig.** Junge,
+vertriebsorientierte PV-Gesellschaften tragen sich nicht ein. Damit ist diese Quelle für
+unseren Bestand wertlos, so gut das amtliche Signal darin auch wäre (die Detailseite zeigt
+„Eingetragene Berufe: … Elektrotechniker …", dazu den Landkreis — fachlich genau das
+Richtige, nur eben für die falschen Betriebe).
+
+**Wer das amtliche Merkmal wirklich will, muss die HANDWERKSROLLE fragen, nicht das
+Werbeverzeichnis** (§ 6 Abs. 2 HwO, siehe oben). Die ist nicht freiwillig. Preis: 53
+Anträge, Ausgang je Kammer offen, und sie erfasst nur zulassungspflichtige Handwerke.
+
+**Der billigste Weg zum selben Ziel ist ein dritter:** Wir sprechen die Betriebe ohnehin
+an. Wer dabei sagt, dass er Elektromeister ist, ist die Quelle selbst — kein Abruf, keine
+Rechtsfrage, und die Angabe ist aktuell.
+
+**Zur Ausgangsannahme, gemessen an unseren eigenen Daten:** „Solarteure sind vermutlich
+Elektriker" stimmt zur Hälfte — von 494 als Solarteur eingeordneten Betrieben tragen 248
+(50 %) auch das Elektro-Gewerk, 176 (36 %) nur Solarteur. Das misst allerdings, was auf der
+Website steht, nicht die Handwerksrolle.
+
+**Gemessen, nicht vermutet:** Die robots.txt von München, Köln und Düsseldorf sind
+zeichengleich und sperren die Betriebssuche nicht; kein Impressum trug einen
+Nutzungsvorbehalt oder ein Scraping-Verbot. Damit ist nebenbei die offene Frage von oben
+beantwortet — identische Sperrlisten plus identisches Adress-Schema plus ein
+Kammer-Auftritt auf der Domain eines gemeinsamen Dienstleisters: die Kammern fahren
+dieselbe Plattform. Drei gemessen, nicht 53.
+
+**Die Vorfrage, die alles andere aussticht und kein Kammer-Thema ist:** Die
+Datenschutzerklärung nennt die Fachbetriebs-Erhebung heute mit keinem Wort. Solange das so
+ist, fehlt die Information nach Art. 14 DSGVO für **jede** Variante — auch für die
+Erhebung, die längst läuft. **Nicht gemessen und offen:** wie viele der 53 Kammern dieselbe Software
 fahren — ein erster Shell-Versuch war unbrauchbar (Zeichensatzfehler, und die Suche ist
 auf vielen Startseiten gar nicht verlinkt).
 

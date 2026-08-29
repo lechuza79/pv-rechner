@@ -190,7 +190,44 @@ function ohneSteuerzeichen<T>(wert: T): T {
   return wert;
 }
 
+/**
+ * EIN BATCH-UPSERT VEREINHEITLICHT DIE SPALTENMENGE — BLOCKER.
+ *
+ * PostgREST baut aus einem Batch EIN INSERT mit einer Spaltenliste. Trägt eine
+ * Zeile ein Feld und die anderen 499 nicht, bekommen diese 499 dort **NULL** —
+ * und überschreiben damit einen bestehenden Wert. Kein Fehler, keine Warnung,
+ * die Zeile sieht danach normal aus.
+ *
+ * REAL PASSIERT am 29.08.2026, obwohl der Fall im Projekt bereits dokumentiert
+ * war: Der Über-uns-Lauf setzte ein Trust-Signal nur dort in die Zeile, wo es
+ * sich geändert hatte — die vorsichtige Bauweise, wie man denkt. Ergebnis:
+ * Meisterbetrieb fiel von 676 auf 167, das Geschäftsfeld Photovoltaik von 2.913
+ * auf 135. Wiederhergestellt aus den Belegen; genau dafür gibt es sie.
+ *
+ * Deshalb prüft diese Funktion jetzt selbst: Tragen nicht alle Zeilen eines
+ * Batches dieselben Felder, wird nach Feldmenge gruppiert und je Gruppe
+ * geschrieben. Das ist langsamer und unfallfrei — die Alternative wäre eine
+ * Regel, an die sich jeder Aufrufer erinnern muss.
+ */
 async function upsertGestueckelt(
+  sb: SupabaseLike,
+  tabelle: string,
+  zeilen: Record<string, unknown>[],
+  onConflict: string,
+): Promise<void> {
+  const gruppen = new Map<string, Record<string, unknown>[]>();
+  for (const z of zeilen) {
+    const form = Object.keys(z).sort().join("|");
+    gruppen.set(form, [...(gruppen.get(form) ?? []), z]);
+  }
+  if (gruppen.size > 1) {
+    for (const g of gruppen.values()) await upsertGleichfoermig(sb, tabelle, g, onConflict);
+    return;
+  }
+  await upsertGleichfoermig(sb, tabelle, zeilen, onConflict);
+}
+
+async function upsertGleichfoermig(
   sb: SupabaseLike,
   tabelle: string,
   zeilen: Record<string, unknown>[],
@@ -1285,6 +1322,75 @@ async function ueberUns(limit: number, dry: boolean, refetch: boolean): Promise<
   );
 }
 
+/**
+ * Die Geschäftsfelder neu aus der Startseite lesen.
+ *
+ * Gebaut als Reparatur nach dem Batch-Upsert-Unfall vom 29.08.2026 (siehe
+ * `upsertGestueckelt`): Die Trust-Signale ließen sich aus den Belegen
+ * wiederherstellen, die Geschäftsfelder nicht — für sie legt kein Lauf einen
+ * Beleg an. Das ist die eigentliche Lehre des Vorfalls: **Was keinen Beleg hat,
+ * ist bei einem Schreibfehler unwiederbringlich.**
+ *
+ * Bleibt danach als eigene Phase stehen. Ein Betrieb nimmt Wärmepumpen oder
+ * Wallboxen ins Angebot, ohne dass sich sonst etwas ändert; dafür den ganzen
+ * Profil-Lauf zu fahren wäre zwei Abrufe je Betrieb statt einem.
+ */
+async function felder(limit: number, dry: boolean): Promise<void> {
+  const sb = await makeClient();
+  const alle = await alleZeilen<{
+    domain: string;
+    geschaeftsfelder: string[] | null;
+    profil_fehler: string | null;
+    art: string;
+  }>(sb, "fachbetriebe", "domain, geschaeftsfelder, profil_fehler, art");
+
+  const offen = alle
+    .filter((r) => r.art === "betrieb" && !r.profil_fehler)
+    .sort((a, b) => a.domain.localeCompare(b.domain))
+    .slice(0, limit);
+
+  log(`${offen.length} Betriebe — Geschäftsfelder aus der Startseite`);
+  if (dry) {
+    log("--dry: nichts abgerufen", "ok");
+    return;
+  }
+
+  const zeilen: Record<string, unknown>[] = [];
+  let fertig = 0,
+    gefunden = 0;
+  const wegschreiben = async (alles: boolean) => {
+    if (!alles && zeilen.length < 250) return;
+    const z = zeilen.splice(0, zeilen.length);
+    if (z.length) await upsertGestueckelt(sb, "fachbetriebe", z, "domain");
+  };
+
+  await pool(offen, 10, async (r) => {
+    fertig++;
+    if (fertig % 200 === 0) log(`  ${fertig}/${offen.length}`);
+    const start =
+      (await holeText(`https://${r.domain}/`)) ?? (await holeText(`http://${r.domain}/`));
+    if (!start) return;
+    // Navigation MIT lesen — sie steht statisch im HTML, auch wenn der Inhalt
+    // per Skript nachlädt. Dieselbe Lehre wie bei der Einordnung.
+    const text = sichtbarerText(start.html) + "\n" + navigationsText(start.html);
+    const gefundene = FELDER.filter((f) => f.muster.test(text)).map((f) => f.name);
+    if (!gefundene.length) return;
+    gefunden++;
+    // Vorhandenes NICHT verlieren: Was einmal gefunden wurde, bleibt — ein
+    // Betrieb, der seine Startseite umbaut, verliert sonst ein Angebot, das er
+    // weiter macht.
+    const zusammen = [...new Set([...(r.geschaeftsfelder ?? []), ...gefundene])];
+    zeilen.push({
+      domain: r.domain,
+      geschaeftsfelder: zusammen,
+      updated_at: new Date().toISOString(),
+    });
+    await wegschreiben(false);
+  });
+  await wegschreiben(true);
+  log(`${offen.length} geprüft, ${gefunden} mit erkennbaren Geschäftsfeldern`, "ok");
+}
+
 async function ags(dry: boolean): Promise<void> {
   const sb = await makeClient();
   const tabelle = JSON.parse(
@@ -1511,6 +1617,7 @@ async function main(): Promise<void> {
     profil: argv.includes("--profil"),
     kontakt: argv.includes("--kontakt"),
     ueberUns: argv.includes("--ueber-uns"),
+    felder: argv.includes("--felder"),
     ags: argv.includes("--ags"),
     namen: argv.includes("--namen-putzen"),
     stats: argv.includes("--stats"),
@@ -1528,6 +1635,7 @@ async function main(): Promise<void> {
         "  --kontakt [--limit N] [--refetch] [--dry]\n" +
         "                                   Kontaktseite lesen: Kontaktweg schließen,\n" +
         "                                   Restklasse einordnen\n" +
+        "  --felder [--limit N] [--dry]     Geschäftsfelder aus der Startseite nachlesen\n" +
         "  --ueber-uns [--limit N] [--refetch] [--dry]\n" +
         "                                   die Über-uns-Seite lesen: Trust-Signale nachlesen\n" +
         "  --ags [--dry]                    Anschrift → amtlicher Gemeindeschlüssel\n" +
@@ -1553,6 +1661,7 @@ async function main(): Promise<void> {
   if (phasen.profil) await profil(zahlArg("limit", 100), dry, argv.includes("--refetch"));
   if (phasen.kontakt) await kontakt(zahlArg("limit", 200), dry, argv.includes("--refetch"));
   if (phasen.ueberUns) await ueberUns(zahlArg("limit", 200), dry, argv.includes("--refetch"));
+  if (phasen.felder) await felder(zahlArg("limit", 200), dry);
   if (phasen.namen) await namenPutzen(dry);
   if (phasen.ags) await ags(dry);
   if (phasen.stats) await stats();

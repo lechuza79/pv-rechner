@@ -16,6 +16,7 @@
 
 import { describe, it, expect } from "vitest";
 import {
+  FELDER,
   FRAGEN,
   GEWERKE,
   KEIN_BETRIEB,
@@ -622,6 +623,36 @@ describe("Impressum-Adresse: nicht ratbar, sondern aus den Links gelesen", () =>
   it("ignoriert mailto und Anker", () => {
     expect(impressumUrl('<a href="mailto:a@b.de">Impressum</a>', "https://b.de/")).toBeNull();
     expect(impressumUrl('<a href="#impressum">Impressum</a>', "https://b.de/")).toBeNull();
+  });
+});
+
+describe("Balkonkraftwerk: ein Ding, viele Wörter", () => {
+  const muster = FELDER.find((f) => f.name === "balkonkraftwerk")!.muster;
+
+  it("kennt die verbreiteten Schreibweisen", () => {
+    // Ausgezählt am 29.08.2026: Von 24 Betrieben ohne dieses Merkmal boten ZWEI
+    // Balkonkraftwerke an — einer davon sichtbar auf der Startseite, weil das
+    // Muster nur „balkonkraftwerk" und „steckersolar" kannte.
+    for (const t of [
+      "Balkonkraftwerk",
+      "Balkon-Kraftwerk",
+      "Steckersolar",
+      "Stecker-Solargerät",
+      "Balkon-Solar",
+      "Balkonsolar",
+      "Balkon-PV",
+      "Mini-PV",
+      "steckerfertige PV-Anlagen",
+      "Balkonmodule",
+    ])
+      expect(muster.test(t), t).toBe(true);
+  });
+
+  it("greift nicht daneben — die Breite hat eine Grenze", () => {
+    // Dieselbe Gefahr wie bei den Gattungswörtern: Ein offenes Muster fängt
+    // mehr Treffer und mehr Unsinn.
+    for (const t of ["Balkone und Terrassen", "Kraftwerk Nord GmbH", "Balkongeländer"])
+      expect(muster.test(t), t).toBe(false);
   });
 });
 

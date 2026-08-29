@@ -1127,6 +1127,44 @@ Volltext:
 `docs/quellen/fachbetriebe/`. Eine Bewertung wird deshalb **nur** als Selbstauskunft der
 eigenen Website erfasst (`bewertung_quelle`), nie als „Google-Bewertung" beschriftet.
 
+**Ein Batch-Upsert vereinheitlicht die Spaltenmenge — BLOCKER, und der teuerste Unfall
+dieses Bereichs.** PostgREST baut aus einem Batch EIN Insert mit EINER Spaltenliste;
+trägt eine Zeile ein Feld und die anderen 499 nicht, bekommen diese 499 dort **NULL**
+und überschreiben den bestehenden Wert. Kein Fehler, keine Warnung. Real passiert am
+29.08.2026, obwohl der Fall im Projekt bereits dokumentiert war: Der Über-uns-Lauf
+setzte ein Trust-Signal nur dort in die Zeile, wo es sich geändert hatte — die
+vorsichtige Bauweise, wie man denkt. Meisterbetrieb fiel von 676 auf 167, das
+Geschäftsfeld Photovoltaik von 2.913 auf 135. **Die Absicherung sitzt jetzt in der
+Schreibfunktion** (ungleiche Feldmengen werden gruppiert und getrennt geschrieben), nicht
+in einer Regel für Aufrufer — eine Regel, an die sich jeder künftige Lauf erinnern muss,
+ist keine; dieser Lauf hätte sie gebraucht und nicht gehabt.
+`lib/__tests__/upsert-spaltenmenge.test.ts`, in beide Richtungen kaputtgemacht und rot
+gesehen.
+- **Die zweite Lehre wiegt schwerer als die erste: Was keinen Beleg hat, ist bei einem
+  Schreibfehler unwiederbringlich.** Die Trust-Signale kamen vollständig aus
+  `fachbetrieb_belege` zurück — genau dafür gibt es sie. Die Geschäftsfelder nicht, für
+  sie legt kein Lauf einen Beleg an; sie mussten neu abgerufen werden (`--felder`).
+
+**Die frei abrufbare Kammer-Betriebsdatenbank ist ERLEDIGT — nicht rechtlich, sondern
+praktisch (gemessen 29.08.2026).** Zwölf Betriebe gezielt gesucht, **einer** gefunden;
+Gegenprobe mit einem Gattungsbegriff im selben Umkreis: 26 Treffer, die Suche
+funktioniert also. Der Grund war die ganze Zeit erkennbar: **Die Mitgliedschaft ist
+Pflicht, der Eintrag in dieses Verzeichnis freiwillig.** Wer das amtliche Merkmal will,
+fragt die **Handwerksrolle** (§ 6 Abs. 2 HwO, 53 Anträge, nur zulassungspflichtige
+Handwerke) — oder, am billigsten, den Betrieb selbst beim ohnehin geplanten Erstkontakt.
+**Die Rechtsprüfung war trotzdem nicht umsonst**: Ihre Ergebnisse gelten für jede fremde
+Datenbank, die dieses Projekt je abgleicht.
+
+**Die Handwerkskammer ist GEPRÜFT, nicht mehr offen (29.08.2026, zwei Legal-Judges):
+intern zulässig, öffentlich später.** Tragend ist allein das Datenbankrecht, und die
+eine Bedingung, die wirklich zählt, heißt **abgleichen statt abernten**: gezielt
+nachschlagen, was wir schon haben, nie ganze Gewerke-Kategorien durchgehen (EuGH
+C-203/02 Rn. 89 verbietet nur, was die Datenbank wieder erstellt). **Die DNG-Begründung
+unten ist hinfällig** — beide Fassungen streiten über die Ausnahmen, ohne zu prüfen, ob
+die Kammer überhaupt „öffentliche Stelle" im Sinne des DNG ist; das Gesetz hat dafür
+eine eigene Definition. Herleitung, Bedingungen und der amtliche Weg über § 6 Abs. 2 HwO:
+`docs/fachbetriebe-quellen.md`.
+
 **Der Merksatz „öffentliche Stelle, also kein § 87b UrhG" trägt bei Handwerkskammern
 NICHT.** Sie sind zwar Körperschaften des öffentlichen Rechts (§ 90 Abs. 1 HwO), aber
 § 2 Abs. 5 DNG gilt nur im Anwendungsbereich des Gesetzes — und § 2 Abs. 3 Nr. 1 nimmt

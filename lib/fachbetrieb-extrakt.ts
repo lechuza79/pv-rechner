@@ -895,7 +895,15 @@ export const FELDER: { name: string; muster: RegExp }[] = [
   { name: "speicher", muster: /\b(stromspeicher|batteriespeicher|speicherl[öo]sung)\b/i },
   { name: "waermepumpe", muster: /\bw[äa]rmepumpe/i },
   { name: "wallbox", muster: /\b(wallbox|ladestation|ladeinfrastruktur)\b/i },
-  { name: "balkonkraftwerk", muster: /\b(balkonkraftwerk|steckersolar)\b/i },
+  // Die Schreibweisen ausgezählt am 29.08.2026: Von 24 Betrieben ohne dieses
+  // Merkmal boten ZWEI Balkonkraftwerke an, einer davon sichtbar auf der
+  // Startseite — das Muster kannte „Balkon-Solar" und die getrennten
+  // Schreibweisen nicht. Dieselbe Lehre wie beim Förderkatalog: Ein Ding, viele
+  // Wörter; wer nur zwei davon sucht, findet nur zwei.
+  {
+    name: "balkonkraftwerk",
+    muster: /\b(balkon-?kraftwerk\w*|stecker-?solar\w*|balkon-?(pv|solar|modul\w*|anlage\w*)|mini-?(pv|solar)\w*|steckerfertige\w*\s+(pv|solar|photovoltaik)\w*)\b/i,
+  },
 ];
 
 /**
