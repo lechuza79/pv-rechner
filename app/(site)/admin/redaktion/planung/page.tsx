@@ -125,7 +125,7 @@ export default async function RedaktionPlanung() {
   return (
     <div style={{ maxWidth: 900, margin: "0 auto" }}>
       {wochen.length > 0 && (
-        <section style={{ marginBottom: space.xxxl }}>
+        <section style={{ marginBottom: space.huge * 1.5 }}>
           <h2 style={{ fontSize: v("--font-size-h3"), display: "flex", alignItems: "center", gap: space.xs }}>
             Kalender
             <InfoTooltip ariaLabel="Wie dieser Kalender gefüllt wird" exportNote={false}>

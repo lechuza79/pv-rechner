@@ -6,7 +6,7 @@ import { IconCheck, IconClose, IconLinkedIn } from "../Icons";
 import { Pill, type PillTon } from "./Pill";
 import { PlatzModal, type PlatzWahl } from "./PlatzModal";
 import type { KalenderPlatz, KalenderWoche } from "../../lib/social-kalender";
-import { ferienJeLand, freiBaender, type FreiBand } from "../../lib/social-kalendertage";
+import { ferienJeLand, freiBaender, tagesbefund, type FreiBand } from "../../lib/social-kalendertage";
 import { FreiBaender } from "./FreiBaender";
 import { FerienModal, type FerienZeile } from "./FerienModal";
 
@@ -192,13 +192,20 @@ export function Wochenplan({
                   border: `1px solid ${v("--color-border-muted")}`,
                   borderRadius: v("--radius-md"),
                   padding: pad("md", "md"),
-                  background: v("--color-bg-muted"),
+                  background: v("--color-bg"),
                 }}
               >
               <div style={{ ...raster, alignItems: "end", marginBottom: space.xxs }}>
                 {TAGE.map((_tag, i) => {
                   const iso = tagInWoche(w.beginnIso, i);
                   const heute = iso === heuteIso;
+                  // FETT, WO NICHT GEARBEITET WIRD: Wochenende und Feiertag.
+                  // Das ist dieselbe Aussage wie das Ferienband darunter, nur
+                  // auf Tagesebene — und sie steht am Datum, weil man beim
+                  // Planen auf die Zahl schaut, nicht auf das Band.
+                  const b = tagesbefund(iso);
+                  const feiertag = !!(b.feiertagUeberall ?? b.feiertagRegional);
+                  const frei = WOCHENENDE.has(i) || feiertag;
                   return (
                     <div key={`kopf-${iso}`} style={{ gridColumn: i + 1, gridRow: 1, minWidth: 0 }}>
                       <span
@@ -218,7 +225,8 @@ export function Wochenplan({
                               }
                             : {
                                 fontSize: v("--font-size-caption"),
-                                color: WOCHENENDE.has(i) ? v("--color-text-faint") : v("--color-text-muted"),
+                                fontWeight: frei ? 700 : 400,
+                                color: frei ? v("--color-text-secondary") : v("--color-text-muted"),
                                 paddingLeft: 2,
                               }
                         }
@@ -280,10 +288,14 @@ export function Wochenplan({
                         // einmal — und an einem Samstag, an dem ohnehin kein
                         // Platz liegt, umrahmt er eine leere Fläche.
                         padding: pad("xs", "sm"),
+                        // Auf weißem Grund ist die Fläche umgekehrt: Ein Tag
+                        // MIT Sendeplatz hebt sich als leicht getönte Fläche ab,
+                        // ein Tag ohne bleibt weiß. Vorher war es andersherum,
+                        // weil die Woche selbst getönt war.
                         background: platz
                           ? angefasst && planbar
                             ? v("--color-bg-accent")
-                            : v("--color-bg")
+                            : v("--color-bg-muted")
                           : "transparent",
                         cursor: planbar ? "pointer" : "default",
                         opacity: !platz && !artikel.length ? 0.55 : 1,
