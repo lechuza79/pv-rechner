@@ -128,6 +128,40 @@ Bewertungen" —, ist das eine Selbstauskunft auf einer öffentlichen Seite. Sie
 deshalb mit `bewertung_quelle = 'eigene-website'` erfasst und **nie** als
 „Google-Bewertung" beschriftet. Wir lesen die Seite des Betriebs, nicht Google.
 
+### 1c. Eine eigene Suchfrage nach Balkonkraftwerken — gebaut, gemessen, VERWORFEN (29.08.2026)
+
+Die Idee lag nahe: Die zwei laufenden Fragen („Photovoltaik Fachbetrieb <Ort>",
+„Solarteur <Ort>") finden den Dach-Fachbetrieb; wer NUR Balkonkraftwerke montiert, müsste
+ihnen entgehen. Eine dritte Frage kostet 400 Abrufe, also 0,80 $.
+
+**Zwei unabhängige Messungen, beide negativ:**
+
+- **Keine neuen Betriebe.** „Balkonkraftwerk Installation <Ort>" über 8 Kreise in
+  Schleswig-Holstein: 124 Domains, davon **null** noch nicht im Bestand. Zur Gegenprobe
+  8 bayerische Kreise: 131 Domains, ebenfalls **null**.
+- **Kein brauchbares Merkmal.** Naheliegender zweiter Nutzen wäre gewesen, die
+  Treffer-Zugehörigkeit selbst als Signal zu nehmen — 59 der Treffer waren Betriebe, aber
+  nur 14 nannten Balkonkraftwerke auf ihrer Seite. Von 15 der übrigen von Hand geprüft
+  boten **2** wirklich welche an. Dieselbe Falle wie beim Förder-Screener: **Die
+  Suchmaschine liest nicht, sie sortiert thematisch vor** — sie zeigt auf diese Frage
+  einfach die PV-Betriebe der Region.
+
+**Der Grund für beides ist derselbe und die eigentliche Erkenntnis: Es gibt kaum reine
+Balkonkraftwerk-Montagebetriebe.** Das Geschäft machen dieselben PV-Betriebe nebenbei, die
+die zwei vorhandenen Fragen ohnehin finden — oder gar niemand. Wer das Merkmal will, liest
+es aus deren Seiten; dort steht es, und das Muster dafür wurde am selben Tag verbreitert
+(9 % → 14 %, 424 Betriebe).
+
+**Wer die Frage wieder vorschlägt, braucht einen neuen Grund, nicht die alte Idee.** Die
+Messdaten des Probelaufs wurden entfernt, damit die verworfene Frage nicht als Datenbestand
+weiterlebt.
+
+**Offen und NICHT gemessen:** Balkonkraftwerke bei Stadtwerken und Energieversorgern. Das
+ist ein realer Fall — der Förderkatalog kennt Kommunen, deren Versorger selbst Sets
+anbietet. Es gehört aber ins **Versorger-Modul** (937 Stadtwerke,
+`docs/versorger-uebergabe.md`), nicht in diese Tabelle: andere Käufer, andere Budgets,
+anderer Rechtsrahmen. Ein Versorger, der Balkonkraftwerke verkauft, ist kein Handwerksbetrieb.
+
 ### 2. Handwerkskammer-Betriebsdatenbanken — fachlich stark, rechtlich offen
 
 **Gemessen (HWK für München und Oberbayern, Suchbegriff „Photovoltaik", PLZ 80331,

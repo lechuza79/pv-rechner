@@ -577,15 +577,22 @@ describe("Ortsname der Suchanfrage", () => {
     );
   });
 
-  it("stellt zwei verschiedene Fragen je Kreis", () => {
+  it("stellt mehrere VERSCHIEDENE Fragen je Kreis", () => {
     // Ein Begriff allein verlöre das Elektrohandwerk, das PV mitmacht, ohne es
-    // im Namen zu führen.
+    // im Namen zu führen. Eine dritte Frage nach Balkonkraftwerken wurde
+    // gemessen und verworfen — siehe die Begründung an FRAGEN.
     const k = { id: "06631", name: "Fulda", kind: "Landkreis", bl: "06" };
     const fragen = FRAGEN.map((f) => f.vorlage(k));
-    expect(fragen).toHaveLength(2);
-    expect(new Set(fragen).size).toBe(2);
+    expect(fragen.length).toBeGreaterThanOrEqual(2);
+    // Doppelte Fragen kosten Geld und bringen dieselben Treffer.
+    expect(new Set(fragen).size).toBe(fragen.length);
     expect(fragen.some((f) => /Photovoltaik/i.test(f))).toBe(true);
     expect(fragen.some((f) => /Solarteur/i.test(f))).toBe(true);
+    // KEINE Balkon-Frage: gebaut, gemessen, entfernt — sie fand 0 neue Betriebe
+    // in 16 Kreisen und war als Merkmal in 13 von 15 Fällen falsch.
+    expect(fragen.some((f) => /Balkonkraftwerk/i.test(f))).toBe(false);
+    // Jede Frage nennt den Ort — sonst liefert die Suche bundesweite Ergebnisse.
+    for (const f of fragen) expect(f).toMatch(/Fulda/);
   });
 });
 

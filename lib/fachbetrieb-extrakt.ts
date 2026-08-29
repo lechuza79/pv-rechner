@@ -48,6 +48,24 @@ export function ortsname(k: Kreis): string {
 export const FRAGEN = [
   { name: "photovoltaik", vorlage: (k: Kreis) => `Photovoltaik Fachbetrieb ${ortsname(k)}` },
   { name: "solarteur", vorlage: (k: Kreis) => `Solarteur ${ortsname(k)}` },
+  // EINE DRITTE FRAGE NACH BALKONKRAFTWERKEN WURDE GEBAUT, GEMESSEN UND WIEDER
+  // ENTFERNT (29.08.2026). Sie bringt nichts — zweimal unabhängig gemessen:
+  //
+  // - **Keine neuen Betriebe.** „Balkonkraftwerk Installation <Ort>" über 8
+  //   Kreise in Schleswig-Holstein: 124 Domains, davon **0** noch nicht im
+  //   Bestand. Über 8 bayerische Kreise: 131 Domains, ebenfalls **0**.
+  // - **Kein brauchbares Merkmal.** Von 15 Betrieben, die auf diese Frage in
+  //   den Ergebnissen standen, ohne dass ihre Seite Balkonkraftwerke nennt,
+  //   boten **2** wirklich welche an. Dieselbe Falle wie beim Förder-Screener:
+  //   Die Suchmaschine liest nicht, sie sortiert thematisch vor.
+  //
+  // Der Grund für beides ist derselbe: **Es gibt kaum reine
+  // Balkonkraftwerk-Montagebetriebe.** Das Geschäft machen dieselben
+  // PV-Betriebe nebenbei, die die zwei Fragen oben ohnehin finden. Wer das
+  // Merkmal will, liest es aus deren Seiten (dort steht es) — eine eigene
+  // Suchfrage kostet 400 Abrufe und liefert dieselbe Trefferliste.
+  //
+  // Wer sie wieder vorschlägt, braucht einen neuen Grund, nicht die alte Idee.
 ] as const;
 
 /**
