@@ -274,6 +274,14 @@ export function IconTwitter({ size = 16, color = "currentColor", style }: IconPr
   );
 }
 
+export function IconLinkedIn({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M13.633 0H2.363C1.633 0 1 .55 1 1.273v11.361C1 13.36 1.633 14 2.363 14h11.265C14.36 14 15 13.358 15 12.634V1.273C15.005.55 14.36 0 13.633 0ZM5.153 11.716H3.18V6.05h1.973v5.666ZM4.235 5.12h-.014c-.634 0-1.045-.463-1.045-1.043 0-.59.421-1.04 1.069-1.04.647 0 1.044.448 1.058 1.04 0 .58-.411 1.043-1.068 1.043Zm8.03 6.596h-1.973V8.63c0-.744-.266-1.252-.928-1.252-.506 0-.806.342-.94.674-.05.119-.063.283-.063.449v3.215H6.388s.026-5.216 0-5.756h1.973v.815c.262-.405.731-.983 1.777-.983 1.297 0 2.269.849 2.269 2.673v3.251h-.142Z" fill={color} />
+    </svg>
+  );
+}
+
 export function IconCar({ size = 16, color = "currentColor", style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>

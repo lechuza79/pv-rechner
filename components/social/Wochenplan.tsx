@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { v, space, pad, type TokenName } from "../../lib/theme";
+import { v, space, pad } from "../../lib/theme";
+import { IconCheck, IconClose, IconLinkedIn } from "../Icons";
+import { Pill, type PillTon } from "./Pill";
 import { PlatzModal, type PlatzWahl } from "./PlatzModal";
-import type { KalenderWoche } from "../../lib/social-kalender";
+import type { KalenderPlatz, KalenderWoche } from "../../lib/social-kalender";
 
 // Der Redaktionskalender: Wochen als Zeilen, Werktage als Spalten.
 //
@@ -25,14 +27,49 @@ import type { KalenderWoche } from "../../lib/social-kalender";
 
 const WERKTAGE = ["Mo", "Di", "Mi", "Do", "Fr"] as const;
 
-const FARBE: Record<string, { rand: TokenName; text: TokenName }> = {
-  gesendet: { rand: "--color-positive-text", text: "--color-positive-text" },
-  geplant: { rand: "--color-accent", text: "--color-accent" },
-  verstrichen: { rand: "--color-negative", text: "--color-negative" },
-  bereit: { rand: "--color-border", text: "--color-text-secondary" },
-  leer: { rand: "--color-border", text: "--color-text-muted" },
-  "vergangen-leer": { rand: "--color-border-muted", text: "--color-text-faint" },
-};
+/**
+ * Wie ein Platz als Pille aussieht.
+ *
+ * Das Häkchen und das Kreuz stehen NUR dort, wo die Frage „ging es raus"
+ * beantwortet ist: gesendet oder verstrichen. Ein geplanter Platz in der Zukunft
+ * bekommt keins — er hat die Frage noch nicht, und ein Kreuz an einem Tag, der
+ * noch kommt, läse sich als Fehlschlag.
+ */
+function platzPille(p: KalenderPlatz): { ton: PillTon; icon: React.ReactNode; text: string } | null {
+  const linkedin = <IconLinkedIn size={11} />;
+  switch (p.zustand) {
+    case "gesendet":
+      return {
+        ton: "gesendet",
+        icon: (
+          <>
+            {linkedin}
+            <IconCheck size={11} />
+          </>
+        ),
+        text: p.titel,
+      };
+    case "verstrichen":
+      return {
+        ton: "gescheitert",
+        icon: (
+          <>
+            {linkedin}
+            <IconClose size={11} />
+          </>
+        ),
+        text: p.zuweisung.titel ?? "geplant",
+      };
+    case "geplant":
+      return { ton: "geplant", icon: linkedin, text: p.zuweisung.titel ?? "geplant" };
+    case "bereit":
+      return { ton: "ruhig", icon: linkedin, text: p.post.titel };
+    case "leer":
+      return { ton: "leise", icon: linkedin, text: "offen" };
+    default:
+      return null;
+  }
+}
 
 function tagZahl(iso: string): string {
   return new Date(`${iso}T12:00:00Z`).toLocaleDateString("de-DE", { day: "numeric", timeZone: "UTC" });
@@ -116,7 +153,7 @@ export function Wochenplan({
                   const platz = w.plaetze.find((p) => p.iso === iso);
                   const artikel = w.artikel.filter((a) => a.iso === iso);
                   const heute = iso === heuteIso;
-                  const f = platz ? FARBE[platz.zustand] : null;
+                  const pille = platz ? platzPille(platz) : null;
                   // Vergangenes lässt sich nicht mehr planen — ein Platz in der
                   // Vergangenheit ist eine Tatsache, keine Absicht.
                   const planbar = iso >= heuteIso;
@@ -143,9 +180,7 @@ export function Wochenplan({
                       style={{
                         minHeight: 80,
                         borderRadius: v("--radius-sm"),
-                        border: `${heute ? 2 : 1}px solid ${
-                          heute ? v("--color-accent") : f ? v(f.rand) : v("--color-border-muted")
-                        }`,
+                        border: `1px solid ${heute ? v("--color-accent") : v("--color-border-muted")}`,
                         borderStyle: platz ? "solid" : "dashed",
                         padding: pad("xs", "sm"),
                         background: angefasst && planbar ? v("--color-bg-muted") : "transparent",
@@ -162,28 +197,30 @@ export function Wochenplan({
                           gap: space.xs,
                         }}
                       >
+                        {/* Heute: die Zahl im blauen Kreis. Das Wort „heute"
+                            daneben wäre dieselbe Aussage ein zweites Mal, und
+                            in einer Zelle dieser Größe kostet das eine Zeile. */}
                         <span
-                          style={{
-                            fontSize: v("--font-size-caption"),
-                            color: heute ? v("--color-accent") : v("--color-text-muted"),
-                            fontWeight: heute ? 700 : 400,
-                          }}
+                          style={
+                            heute
+                              ? {
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  width: 22,
+                                  height: 22,
+                                  borderRadius: 999,
+                                  background: v("--color-accent"),
+                                  color: v("--color-text-on-accent"),
+                                  fontSize: v("--font-size-caption"),
+                                  fontWeight: 700,
+                                }
+                              : { fontSize: v("--font-size-caption"), color: v("--color-text-muted") }
+                          }
+                          aria-current={heute ? "date" : undefined}
                         >
                           {tagZahl(iso)}
                         </span>
-                        {heute && (
-                          <span
-                            style={{
-                              fontSize: v("--font-size-caption"),
-                              color: v("--color-accent"),
-                              fontWeight: 700,
-                              textTransform: "uppercase",
-                              letterSpacing: "0.06em",
-                            }}
-                          >
-                            heute
-                          </span>
-                        )}
                         {/* Der Hinweis erscheint erst beim Überfahren: Ein „+"
                             an jedem freien Tag wäre eine Reihe von Knöpfen, die
                             nur Fläche kostet. */}
@@ -194,21 +231,11 @@ export function Wochenplan({
                         )}
                       </div>
 
-                      {platz && f && (
-                        <div
-                          style={{
-                            fontSize: v("--font-size-caption"),
-                            color: v(f.text),
-                            marginTop: space.xxs,
-                            lineHeight: 1.3,
-                          }}
-                        >
-                          {platz.zustand === "gesendet" && `✓ ${platz.titel}`}
-                          {platz.zustand === "geplant" && platz.zuweisung.titel}
-                          {platz.zustand === "verstrichen" && `${platz.zuweisung.titel} — nicht gesendet`}
-                          {platz.zustand === "bereit" && platz.post.titel}
-                          {platz.zustand === "leer" && "offen"}
-                          {platz.zustand === "vergangen-leer" && "—"}
+                      {pille && (
+                        <div style={{ marginTop: space.xxs, display: "flex" }}>
+                          <Pill ton={pille.ton} icon={pille.icon} titel={pille.text}>
+                            {pille.text}
+                          </Pill>
                         </div>
                       )}
 
@@ -217,18 +244,13 @@ export function Wochenplan({
                           beschriftet — ein neuer Ratgeber ist ein anderer
                           Anlass als ein überarbeiteter. */}
                       {artikel.map((a) => (
-                        <div
-                          key={`${a.slug}-${a.anlass}`}
-                          style={{
-                            fontSize: v("--font-size-caption"),
-                            color: v("--color-text-muted"),
-                            marginTop: space.xxs,
-                            borderTop: `1px dotted ${v("--color-border-muted")}`,
-                            paddingTop: space.xxs,
-                            lineHeight: 1.3,
-                          }}
-                        >
-                          {a.anlass === "live" ? "Ratgeber erschienen" : "Ratgeber überarbeitet"}: {a.titel}
+                        <div key={`${a.slug}-${a.anlass}`} style={{ marginTop: space.xxs, display: "flex" }}>
+                          <Pill
+                            ton="leise"
+                            titel={`${a.anlass === "live" ? "Ratgeber erschienen" : "Ratgeber überarbeitet"}: ${a.titel}`}
+                          >
+                            {a.anlass === "live" ? "neu" : "überarbeitet"}: {a.titel}
+                          </Pill>
                         </div>
                       ))}
                     </div>
