@@ -179,6 +179,43 @@ function ferienAmRand(montagIso: string, versatz: number): boolean {
   return b.bekannt && b.ferienLaender >= FERIEN_AB_LAENDERN;
 }
 
+/**
+ * Welche Länder an diesem Tag einen Feiertag haben, und wie man das sagt.
+ *
+ * DREI FORMEN, weil eine Zahl allein die falsche Auskunft ist: „in 2 Ländern"
+ * beantwortet nicht, ob man selbst dazugehört. Bei wenigen Ländern werden sie
+ * aufgezählt; sind es fast alle, ist die Ausnahme die Information („alle außer
+ * Bayern und Saarland"). Die Grenze ist keine gegriffene Zahl, sondern die
+ * kürzere der beiden Listen — wer weniger aufzählen muss, sagt mehr.
+ */
+export function feiertagSatz(iso: string): string | null {
+  const bundesweit = FEIERTAGE["*"]?.find((f) => f.tag === iso);
+  if (bundesweit) return `${bundesweit.name} — bundesweit`;
+
+  let name: string | null = null;
+  const mit: string[] = [];
+  for (const [land, liste] of Object.entries(FEIERTAGE)) {
+    if (land === "*") continue;
+    const treffer = liste.find((f) => f.tag === iso);
+    if (!treffer) continue;
+    name ??= treffer.name;
+    if (treffer.name === name) mit.push(LAND_NAME[land] ?? land);
+  }
+  if (!name) return null;
+
+  const ohne = LAENDER.filter((l) => !mit.includes(LAND_NAME[l] ?? l)).map((l) => LAND_NAME[l] ?? l);
+  return ohne.length < mit.length
+    ? `${name} — in allen Ländern außer ${aufzaehlung(ohne)}`
+    : `${name} — in ${aufzaehlung(mit)}`;
+}
+
+/** „A, B und C" — die letzte Trennung ist ein „und", keine Kommaliste. */
+function aufzaehlung(namen: string[]): string {
+  if (namen.length === 0) return "keinem Land";
+  if (namen.length === 1) return namen[0];
+  return `${namen.slice(0, -1).join(", ")} und ${namen[namen.length - 1]}`;
+}
+
 /** Ferienlage aller sechzehn Länder an einem Tag — für das Detailfenster. */
 export function ferienJeLand(iso: string): { land: string; name: string; von: string; bis: string }[] {
   return LAENDER.flatMap((l) => {

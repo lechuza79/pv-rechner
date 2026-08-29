@@ -278,10 +278,12 @@ export function Wochenplan({
                       style={{
                         minHeight: 104,
                         borderRadius: v("--radius-sm"),
-                        // Kein eigener Rahmen: Die Woche trägt ihn. Ein Tag ohne
-                        // Sendeplatz bleibt trotzdem unterscheidbar — er ist
-                        // blasser, nicht gestrichelt umrandet.
-                        border: "none",
+                        // Ein feiner Rahmen an JEDEM Tag. Er war zwischendurch
+                        // weg, weil sieben Rahmen je Woche zu laut waren — aber
+                        // ganz ohne verschwimmen die Tage zu einer Fläche, und
+                        // man sieht nicht mehr, wohin man klickt. Die Lösung ist
+                        // nicht keiner, sondern ein leiserer als der der Woche.
+                        border: `1px solid ${v("--color-border-muted")}`,
                         // KEINE zweite Heute-Markierung: Die Zahl in der
                         // Kopfzeile trägt den blauen Kreis und steht über ihrer
                         // Spalte. Ein Ring um die Zelle sagte dasselbe noch
