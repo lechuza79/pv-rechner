@@ -6,10 +6,14 @@ import { FAMILIEN, PUFFER_VOR_START, REGELN, SLOTS } from "../../../../../lib/re
 import { fassungsAbdruck, ladeAllePruefungen } from "../../../../../lib/social-pruefung";
 import { pruefeMechanisch } from "../../../../../lib/social-mechanik";
 import { ladeVersand } from "../../../../../lib/social-versand-log";
+import { ladePlaetze } from "../../../../../lib/social-plaetze";
+import { RATGEBER } from "../../../../../lib/ratgeber";
+import { sendbar } from "../../../../../lib/social-plan";
 import { ladeFassungen } from "../../../../../lib/social-vorlagen-db";
 import { planen } from "../../../../../lib/social-plan";
 import { baueKalender, deckung } from "../../../../../lib/social-kalender";
 import { Wochenplan } from "../../../../../components/social/Wochenplan";
+import type { PlatzWahl } from "../../../../../components/social/PlatzModal";
 import InfoTooltip from "../../../../../components/InfoTooltip";
 import { v, space, pad } from "../../../../../lib/theme";
 
@@ -45,6 +49,7 @@ export default async function RedaktionPlanung() {
   let fertig = 0;
   let wochen: ReturnType<typeof baueKalender> = [];
   let gedeckt = { belegt: 0, offen: 0 };
+  let wahl: PlatzWahl = { posts: [], familien: [], ratgeber: [] };
   try {
     const kennzahlen = await socialKennzahlen();
     const posts = baueAllePosts(kennzahlen, await ladeFassungen());
@@ -70,6 +75,19 @@ export default async function RedaktionPlanung() {
       },
     );
 
+    const zuweisungen = await ladePlaetze();
+    const sendbare = new Set(sendbar(plan).map((e) => e.post.id));
+    wahl = {
+      posts: posts.map((p) => ({ id: p.id, titel: p.titel, sendbar: sendbare.has(p.id) })),
+      familien: FAMILIEN.map((f) => ({
+        schluessel: f.schluessel,
+        name: f.name,
+        zustand: f.zustand,
+        bereich: f.bereich,
+      })),
+      ratgeber: RATGEBER.map((r) => ({ slug: r.slug, titel: r.title })),
+    };
+
     wochen = baueKalender(
       plan,
       versand.map((x) => ({
@@ -78,6 +96,12 @@ export default async function RedaktionPlanung() {
         gesendetAmIso: x.gesendet_am.slice(0, 10),
       })),
       heuteIso,
+      {
+        zuweisungen,
+        // Ratgeber-Änderungen als Marken im Kalender. Der Anlass war der Wunsch,
+        // einen frisch überarbeiteten Ratgeber auf Social aufzugreifen.
+        artikel: RATGEBER.map((r) => ({ iso: r.updated, slug: r.slug, titel: r.title })),
+      },
     );
     gedeckt = deckung(wochen, heuteIso);
   } catch {
@@ -108,7 +132,7 @@ export default async function RedaktionPlanung() {
                 : `alle ${gedeckt.belegt} gedeckt`}
             </span>
           </h2>
-          <Wochenplan wochen={wochen} heuteIso={heuteIso} />
+          <Wochenplan wochen={wochen} heuteIso={heuteIso} wahl={wahl} />
         </section>
       )}
 

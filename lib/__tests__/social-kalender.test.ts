@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { baueKalender, deckung, montagVon, type Gesendetes } from "../social-kalender";
+import { baueKalender, deckung, montagVon, type Gesendetes, type PlatzZuweisung } from "../social-kalender";
 import type { PlanEintrag } from "../social-plan";
 import type { SocialPost } from "../social-posts";
 
@@ -94,5 +94,98 @@ describe("Die Deckung", () => {
     expect(d.belegt).toBe(1);
     // Diese Woche hat drei Plätze, einer liegt vor heute.
     expect(d.belegt + d.offen).toBe(k.flatMap((w) => w.plaetze).filter((p) => p.iso >= HEUTE).length);
+  });
+});
+
+describe("Zugewiesene Plätze", () => {
+  const zuweisung = (datum: string, ueber: Partial<PlatzZuweisung> = {}): PlatzZuweisung => ({
+    datum,
+    art: "post",
+    post_id: "a",
+    familie: null,
+    kategorie: null,
+    titel: "Ein Beitrag",
+    ...ueber,
+  });
+
+  it("schlägt den Vorschlag aus der Warteschlange", () => {
+    // Eine Zuweisung ist eine Entscheidung, der Vorschlag nur eine Reihenfolge.
+    const k = baueKalender([frei("b")], [], HEUTE, {
+      wochenZurueck: 0,
+      wochenVoraus: 0,
+      zuweisungen: [zuweisung("2026-09-03")],
+    });
+    const platz = k[0].plaetze.find((p) => p.iso === "2026-09-03");
+    expect(platz?.zustand).toBe("geplant");
+  });
+
+  it("zeigt einen VERSTRICHENEN Plan, statt ihn verschwinden zu lassen", () => {
+    // Das ist die Antwort auf den alten Einwand gegen Kalender: Ein Termin, den
+    // niemand eingehalten hat, wird ausgewiesen. Ein Plan, dessen Verstreichen
+    // man sieht, ist etwas anderes als einer, der es verschweigt.
+    const k = baueKalender([], [], HEUTE, {
+      wochenZurueck: 1,
+      wochenVoraus: 0,
+      zuweisungen: [zuweisung("2026-08-27")],
+    });
+    const platz = k.flatMap((w) => w.plaetze).find((p) => p.iso === "2026-08-27");
+    expect(platz?.zustand).toBe("verstrichen");
+  });
+
+  it("stellt einen zugewiesenen Beitrag nicht zusätzlich als Vorschlag auf", () => {
+    // Sonst stünde derselbe Beitrag zweimal im Kalender.
+    const k = baueKalender([frei("a")], [], HEUTE, {
+      wochenZurueck: 0,
+      wochenVoraus: 1,
+      zuweisungen: [zuweisung("2026-09-03", { post_id: "a" })],
+    });
+    const alle = k.flatMap((w) => w.plaetze);
+    expect(alle.filter((p) => p.zustand === "bereit")).toHaveLength(0);
+    expect(alle.filter((p) => p.zustand === "geplant")).toHaveLength(1);
+  });
+
+  it("lässt sich auch ohne fertigen Beitrag belegen", () => {
+    // Eine Datengeschichte oder ein individuelles Thema zeigt auf keinen Post —
+    // der wird an dem Tag erst gebaut.
+    const k = baueKalender([], [], HEUTE, {
+      wochenZurueck: 0,
+      wochenVoraus: 0,
+      zuweisungen: [zuweisung("2026-09-03", { art: "individuell", post_id: null, titel: "Featurevorstellung" })],
+    });
+    const platz = k[0].plaetze.find((p) => p.iso === "2026-09-03");
+    expect(platz && "zuweisung" in platz && platz.zuweisung.titel).toBe("Featurevorstellung");
+  });
+
+  it("zählt einen geplanten Platz als gedeckt", () => {
+    const k = baueKalender([], [], HEUTE, {
+      wochenZurueck: 0,
+      wochenVoraus: 0,
+      zuweisungen: [zuweisung("2026-09-03")],
+    });
+    expect(deckung(k, HEUTE).belegt).toBe(1);
+  });
+});
+
+describe("Ratgeber im Kalender", () => {
+  it("hängt an der WOCHE, nicht am Platz", () => {
+    // Ratgeber liegen an beliebigen Wochentagen, auch an solchen ohne Platz.
+    const k = baueKalender([], [], HEUTE, {
+      wochenZurueck: 0,
+      wochenVoraus: 0,
+      artikel: [{ iso: "2026-09-02", slug: "/ratgeber/x", titel: "Ein Ratgeber" }],
+    });
+    expect(k[0].artikel).toHaveLength(1);
+    // Der 2.9. ist ein Mittwoch — dort liegt kein Platz.
+    expect(k[0].plaetze.some((p) => p.iso === "2026-09-02")).toBe(false);
+  });
+
+  it("nimmt nur Artikel der eigenen Woche", () => {
+    const k = baueKalender([], [], HEUTE, {
+      wochenZurueck: 0,
+      wochenVoraus: 1,
+      artikel: [{ iso: "2026-09-09", slug: "/ratgeber/y", titel: "Nächste Woche" }],
+    });
+    expect(k[0].artikel).toHaveLength(0);
+    expect(k[1].artikel).toHaveLength(1);
   });
 });

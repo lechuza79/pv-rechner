@@ -23,6 +23,18 @@ import { SLOTS, type Wochentag } from "./redaktionsplan";
 import type { PlanEintrag } from "./social-plan";
 import type { SocialPost } from "./social-posts";
 
+/** Was für einen Tag geplant ist — die reine Form, ohne Datenbank. */
+export type PlatzZuweisung = {
+  datum: string;
+  art: "post" | "datenstory" | "individuell" | "artikel";
+  /** Bei „artikel": die Adresse des Ratgebers. */
+  slug?: string | null;
+  post_id: string | null;
+  familie: string | null;
+  kategorie: string | null;
+  titel: string | null;
+};
+
 /** Ein Platz in einer Woche — vergangen oder kommend. */
 export type KalenderPlatz = {
   /** Kalendertag dieses Platzes, ISO. */
@@ -33,10 +45,37 @@ export type KalenderPlatz = {
   beschreibung: string;
 } & (
   | { zustand: "gesendet"; postId: string; titel: string }
+  /** Von Hand belegt — schlägt jeden Vorschlag. */
+  | { zustand: "geplant"; zuweisung: PlatzZuweisung; post?: SocialPost }
+  /**
+   * Der Tag ist verstrichen, das Geplante ging nicht raus.
+   *
+   * Das ist der Zustand, den der alte Einwand gegen Kalender meint: eine Zusage,
+   * die niemand eingehalten hat. Er wird ausgewiesen statt verschwiegen — ein
+   * Plan, dessen Verstreichen man sieht, ist etwas anderes als einer, der es
+   * für sich behält.
+   */
+  | { zustand: "verstrichen"; zuweisung: PlatzZuweisung }
+  /** Kein Plan, aber Vorrat da — ein Vorschlag, keine Zusage. */
   | { zustand: "bereit"; post: SocialPost }
   | { zustand: "leer"; grund: string }
   | { zustand: "vergangen-leer" }
 );
+
+/**
+ * Ein Ratgeber, der an diesem Tag zuletzt inhaltlich geändert wurde.
+ *
+ * AUSDRÜCKLICH NICHT „ging live". Die Ratgeber-Registry führt genau ein Datum,
+ * und das ist der letzte inhaltliche Eingriff — ein Veröffentlichungsdatum gibt
+ * es in den Daten nicht. Es hier so zu nennen wäre eine erfundene Angabe, also
+ * genau die Fehlerklasse, gegen die dieses Projekt sonst antritt. Wer „wann ging
+ * das live" wirklich wissen will, muss es ab jetzt mitschreiben; die
+ * Vergangenheit bleibt unbekannt.
+ *
+ * Trotzdem nützlich, und dafür wollte der Betreiber es: Ein frisch überarbeiteter
+ * Ratgeber ist der beste Anlass, ihn auf Social zu featuren.
+ */
+export type ArtikelMarke = { iso: string; slug: string; titel: string };
 
 export type KalenderWoche = {
   /** Montag dieser Woche, ISO. */
@@ -44,6 +83,8 @@ export type KalenderWoche = {
   /** Beschriftung: „diese Woche", „nächste Woche", sonst das Datum. */
   name: string;
   plaetze: KalenderPlatz[];
+  /** Ratgeber-Änderungen in dieser Woche — an JEDEM Wochentag, nicht nur an Plätzen. */
+  artikel: ArtikelMarke[];
 };
 
 const WOCHENTAG_INDEX: Record<Wochentag, number> = { Mo: 1, Di: 2, Mi: 3, Do: 4, Fr: 5 };
@@ -96,10 +137,23 @@ export function baueKalender(
   plan: PlanEintrag[],
   gesendet: Gesendetes[],
   heuteIso: string,
-  { wochenZurueck = 2, wochenVoraus = 2 }: { wochenZurueck?: number; wochenVoraus?: number } = {},
+  {
+    wochenZurueck = 2,
+    wochenVoraus = 2,
+    zuweisungen = [],
+    artikel = [],
+  }: {
+    wochenZurueck?: number;
+    wochenVoraus?: number;
+    zuweisungen?: PlatzZuweisung[];
+    artikel?: ArtikelMarke[];
+  } = {},
 ): KalenderWoche[] {
   const heuteMontag = montagVon(heuteIso);
-  const vorrat = plan.filter((e) => e.hindernisse.length === 0);
+  // Was schon einem Tag zugewiesen ist, taucht nicht noch einmal als Vorschlag
+  // auf — sonst stünde derselbe Beitrag zweimal im Kalender.
+  const belegtePosts = new Set(zuweisungen.map((z) => z.post_id).filter(Boolean));
+  const vorrat = plan.filter((e) => e.hindernisse.length === 0 && !belegtePosts.has(e.post.id));
   // Was nicht raus darf, mit dem häufigsten Hindernis — das füllt die Lücken mit
   // einer Aufgabe statt mit einem Achselzucken.
   const blockiert = plan.filter((e) => e.hindernisse.length > 0);
@@ -117,6 +171,15 @@ export function baueKalender(
 
       const raus = gesendet.find((g) => g.gesendetAmIso === iso);
       if (raus) return { ...kopf, zustand: "gesendet", postId: raus.postId, titel: raus.titel };
+
+      // Eine Zuweisung schlägt jeden Vorschlag: Sie ist eine Entscheidung, der
+      // Vorschlag nur die Reihenfolge der Warteschlange.
+      const zugewiesen = zuweisungen.find((z) => z.datum === iso);
+      if (zugewiesen) {
+        if (iso < heuteIso) return { ...kopf, zustand: "verstrichen", zuweisung: zugewiesen };
+        const belegt = plan.find((e) => e.post.id === zugewiesen.post_id)?.post;
+        return { ...kopf, zustand: "geplant", zuweisung: zugewiesen, ...(belegt ? { post: belegt } : {}) };
+      }
 
       // Vergangene Plätze werden NICHT aus dem Vorrat gefüllt. Ein leerer Tag
       // in der Vergangenheit ist eine Tatsache, kein Vorschlag — ihn nachträglich
@@ -137,7 +200,18 @@ export function baueKalender(
       };
     });
 
-    wochen.push({ beginnIso, name: wochenName(beginnIso, heuteMontag), plaetze });
+    // Ratgeber liegen an beliebigen Wochentagen, auch an solchen ohne Platz.
+    // Deshalb hängen sie an der WOCHE, nicht am Platz.
+    const endeIso = alsIso(
+      (() => {
+        const d = ausIso(beginnIso);
+        d.setUTCDate(d.getUTCDate() + 6);
+        return d;
+      })(),
+    );
+    const wochenArtikel = artikel.filter((a) => a.iso >= beginnIso && a.iso <= endeIso);
+
+    wochen.push({ beginnIso, name: wochenName(beginnIso, heuteMontag), plaetze, artikel: wochenArtikel });
   }
   return wochen;
 }
@@ -164,7 +238,7 @@ export function deckung(wochen: KalenderWoche[], heuteIso: string): { belegt: nu
   for (const w of wochen) {
     for (const p of w.plaetze) {
       if (p.iso < heuteIso) continue;
-      if (p.zustand === "bereit") belegt++;
+      if (p.zustand === "bereit" || p.zustand === "geplant") belegt++;
       else if (p.zustand === "leer") offen++;
     }
   }
