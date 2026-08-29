@@ -16,15 +16,30 @@ export type Slot = {
 };
 
 /**
- * Drei Posts pro Woche.
+ * Drei Posts pro Woche, dienstags, donnerstags und freitags.
  *
- * Nicht mehr, weil eine Einzelperson ohne Redaktion bei täglicher Kadenz in
- * Woche vier abbricht — und ein Account, der sichtbar aufgehört hat, wirkt
- * schlechter als einer, der nie angefangen hat. Nicht weniger, weil unter drei
- * Beiträgen keine Erwartung entsteht.
+ * ALLES DARAN IST EINE ANNAHME, und das steht hier, weil es vorher wie eine
+ * Erkenntnis dastand. Die frühere Fassung behauptete, eine Einzelperson breche
+ * bei täglicher Kadenz in Woche vier ab, unter drei Beiträgen entstehe keine
+ * Erwartung, und Dienstag und Donnerstag seien im deutschen Fach-Feed die
+ * stärksten Tage. Keine dieser Aussagen trug eine Quelle — und nach der Regel
+ * dieses Projekts gilt eine Angabe im Code als unbelegt, bis jemand sie geprüft
+ * hat.
  *
- * Dienstag und Donnerstag sind im deutschen Fach-Feed die stärksten Tage;
- * Montag geht in der Inbox-Abarbeitung unter.
+ * WARUM SIE TROTZDEM STEHENBLEIBT: Sie ist plausibel, sie kostet im Irrtum
+ * wenig (ein Platz wird verschoben), und sie ist derzeit gar nicht prüfbar.
+ * Veröffentlicht wurde noch nichts, also gibt es keine eigenen Daten. Und die
+ * Reichweitenzahlen liegen bei LinkedIn hinter einer Berechtigung, die wir nicht
+ * haben — messbar wird für uns nur, was danach auf unseren eigenen Seiten
+ * passiert.
+ *
+ * WOMIT SIE PRÜFBAR WIRD: Das Versandprotokoll hält Tag und Fassung fest. Sobald
+ * genug Beiträge draußen sind, lässt sich der Sendetag gegen die Zugriffe auf
+ * die verlinkten Seiten halten. Vorher ist jede Diskussion darüber eine über
+ * fremde Faustregeln, und die widersprechen einander je nach Branche.
+ *
+ * Ein Prüflauf würde daran nichts ändern: Er kann eine Annahme als Annahme
+ * benennen — das steht jetzt hier —, aber nicht messen, was niemand gemessen hat.
  */
 export const SLOTS: Slot[] = [
   {

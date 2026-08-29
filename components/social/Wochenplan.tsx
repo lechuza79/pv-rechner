@@ -6,6 +6,7 @@ import { IconCheck, IconClose, IconLinkedIn } from "../Icons";
 import { Pill, type PillTon } from "./Pill";
 import { PlatzModal, type PlatzWahl } from "./PlatzModal";
 import type { KalenderPlatz, KalenderWoche } from "../../lib/social-kalender";
+import { tagesHinweis, tagesbefund } from "../../lib/social-kalendertage";
 
 // Der Redaktionskalender: Wochen als Zeilen, Werktage als Spalten.
 //
@@ -177,6 +178,11 @@ export function Wochenplan({
                   const artikel = w.artikel.filter((a) => a.iso === iso);
                   const heute = iso === heuteIso;
                   const pille = platz ? platzPille(platz) : null;
+                  // Feiertag und Ferienlage als AUSKUNFT, nicht als Sperre. Ein
+                  // Beitrag im Feed erreicht in den Ferien nur ein etwas anderes
+                  // Publikum — ihn zu blockieren wäre eine Sperre ohne Schaden
+                  // dahinter, und sie erzeugte wieder verstrichene Pläne.
+                  const hinweis = tagesHinweis(tagesbefund(iso));
                   // Vergangenes lässt sich nicht mehr planen — ein Platz in der
                   // Vergangenheit ist eine Tatsache, keine Absicht. Und am
                   // Wochenende gibt es keinen Platz, den man belegen könnte.
@@ -209,7 +215,7 @@ export function Wochenplan({
                         padding: pad("xs", "sm"),
                         background: angefasst && planbar ? v("--color-bg-muted") : "transparent",
                         cursor: planbar ? "pointer" : "default",
-                        opacity: !platz && !artikel.length ? 0.55 : 1,
+                        opacity: !platz && !artikel.length && !hinweis ? 0.55 : 1,
                         position: "relative",
                       }}
                     >
@@ -267,6 +273,23 @@ export function Wochenplan({
                           zwei verschiedene Tatsachen und werden auch so
                           beschriftet — ein neuer Ratgeber ist ein anderer
                           Anlass als ein überarbeiteter. */}
+                      {hinweis && (
+                        <div
+                          style={{
+                            fontSize: v("--font-size-caption"),
+                            color: v("--color-text-faint"),
+                            marginTop: space.xxs,
+                            lineHeight: 1.25,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                          title={hinweis}
+                        >
+                          {hinweis}
+                        </div>
+                      )}
+
                       {artikel.map((a) => (
                         <div key={`${a.slug}-${a.anlass}`} style={{ marginTop: space.xxs, display: "flex" }}>
                           <Pill
