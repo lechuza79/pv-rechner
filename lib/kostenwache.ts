@@ -34,6 +34,8 @@
 // einem wachsenden Projekt nach zwei Monaten falsch und würde beim kleinen
 // Projekt nie und beim großen dauernd anschlagen.
 
+import { FILMPROJEKT_ID, SOLAR_CHECK_PROJEKT_ID, VERCEL_TEAM_ID } from "./vercel-budget";
+
 /** Ein Projekt, dessen Mengen beobachtet werden. */
 export interface KostenProjekt {
   /** Kurzschlüssel in der Ablage — kurz, stabil, nicht die Vercel-Kennung. */
@@ -44,11 +46,17 @@ export interface KostenProjekt {
   projectId: string;
 }
 
-export const KOSTEN_TEAM_ID = "team_BaBCnU1MNXhDN7CQFJutbrFm";
+// Team- und Projektkennungen kommen aus der Ausgabenbremse (lib/vercel-budget.ts)
+// und werden hier NICHT ein zweites Mal getippt. Beide Bausteine arbeiten an
+// derselben Rechnung und müssten sonst getrennt gepflegt werden — und eine
+// achtstellige Kennung ist eine Zahl ohne Aussehen: Vertippt man sich, zeigt sie
+// auf ein anderes Projekt, ohne dass ein Test, ein Typfehler oder eine kaputte
+// Seite das bemerkt. Dieselbe Falle wie beim Gemeindeschlüssel im Förderbereich.
+export const KOSTEN_TEAM_ID = VERCEL_TEAM_ID;
 
 export const KOSTEN_PROJEKTE: KostenProjekt[] = [
-  { schluessel: "solar-check", name: "solar-check.io", projectId: "prj_O8t2QRE8Ky0qNdPlvwy0k8vI12QJ" },
-  { schluessel: "film", name: "Filmprojekt", projectId: "prj_oMbzrEAkt0afZulCaQOxpX9QTzGh" },
+  { schluessel: "solar-check", name: "solar-check.io", projectId: SOLAR_CHECK_PROJEKT_ID },
+  { schluessel: "film", name: "Filmprojekt", projectId: FILMPROJEKT_ID },
 ];
 
 /**
