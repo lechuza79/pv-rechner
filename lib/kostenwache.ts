@@ -87,6 +87,21 @@ export const KOSTENWACHE_ZUGANG = {
  */
 export const PROTOKOLL_AUFBEWAHRUNG_TAGE = 1;
 
+/**
+ * Die Aufbewahrung läuft GLEITEND ab, nicht am Tagesende: Je später am Tag man
+ * den Vortag abfragt, desto mehr fehlt an seinem Anfang. Gemessen am 29.08.2026
+ * am selben Tag: 5.738 Aufbauten um 07:00 Uhr, 5.661 um 07:45 — rund 1,3 %
+ * Schwund je Stunde.
+ *
+ * Für den Sprung-Vergleich ist das belanglos (die Schwelle liegt beim
+ * 2,5-fachen, der Schwund bewegt sich im niedrigen einstelligen Prozentbereich),
+ * und weil der Gesundheitscheck den Tag beim ERSTEN Lauf nach Mitternacht
+ * erfasst, ist er über alle Tage hinweg ähnlich groß. Es steht hier, damit
+ * niemand später einer Abweichung nachjagt, die keine ist — und damit klar ist,
+ * dass ein Tageswert eine UNTERGRENZE ist, keine amtliche Summe.
+ */
+export const SCHWUND_JE_STUNDE_ANTEIL = 0.013;
+
 // ─── Ablage ──────────────────────────────────────────────────────────────────
 
 export const KOSTENWACHE_DDL = `
