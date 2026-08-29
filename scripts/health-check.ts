@@ -750,15 +750,26 @@ function vercelToken(): string | null {
 }
 
 /**
- * Fragt die Laufzeitprotokolle nach Gruppen ab und gibt die Antwort als Text
- * zurück. `null` heißt: nicht abrufbar — ausdrücklich NICHT „nichts los".
+ * Fragt die Laufzeitprotokolle nach Gruppen ab.
+ *
+ * Der Ausgang wird BENANNT, nicht auf „null" zusammengeworfen. Drei Fälle sehen
+ * an der Aufrufstelle sonst gleich aus und verlangen völlig Verschiedenes:
+ * ein abgewiesener Zugang (der Betreiber muss ein Geheimnis anlegen oder
+ * erneuern), ein leerer Tag (zu spät gefragt, die Protokolle halten einen Tag)
+ * und ein Netzfehler. „Kennzahl ist nicht Zustand" — dieselbe Trennung wie beim
+ * Förder-Wächter zwischen „hat sich geändert" und „Abruf kam nicht durch".
  */
+type ProtokollAusgang =
+  | { art: "ok"; text: string }
+  | { art: "kein-zugang"; status: number }
+  | { art: "nicht-abrufbar" };
+
 async function protokollGruppen(
   token: string,
   projectId: string,
   tag: string,
   gruppe: "statusCode" | "requestPath",
-): Promise<string | null> {
+): Promise<ProtokollAusgang> {
   try {
     const res = await fetch("https://mcp.vercel.com", {
       method: "POST",
@@ -785,20 +796,21 @@ async function protokollGruppen(
       }),
       signal: AbortSignal.timeout(60000),
     });
-    if (!res.ok) return null;
+    if (res.status === 401 || res.status === 403) return { art: "kein-zugang", status: res.status };
+    if (!res.ok) return { art: "nicht-abrufbar" };
     const roh = await res.text();
     // Die Antwort kommt als Ereignisstrom; die Nutzlast steht in der data-Zeile.
     const zeile = roh.match(/^data: (.*)$/m);
-    if (!zeile) return null;
+    if (!zeile) return { art: "nicht-abrufbar" };
     const nutzlast = JSON.parse(zeile[1]) as {
       result?: { content?: { text?: string }[]; isError?: boolean };
       error?: unknown;
     };
-    if (nutzlast.error || nutzlast.result?.isError) return null;
+    if (nutzlast.error || nutzlast.result?.isError) return { art: "nicht-abrufbar" };
     const text = (nutzlast.result?.content ?? []).map((c) => c.text ?? "").join("\n");
-    return text || null;
+    return text ? { art: "ok", text } : { art: "nicht-abrufbar" };
   } catch {
-    return null;
+    return { art: "nicht-abrufbar" };
   }
 }
 
@@ -914,12 +926,24 @@ export async function messeKosten(jetzt: Date): Promise<KostenBefund> {
     // Erst messen, wenn der Tag noch fehlt. Zweimal am Tag dieselbe Abfrage
     // liefert dasselbe und belastet die Plattform ohne Erkenntnis.
     if (!heute) {
-      const [statusText, pfadText] = await Promise.all([
+      const [statusAusgang, pfadAusgang] = await Promise.all([
         protokollGruppen(token, p.projectId, tag, "statusCode"),
         protokollGruppen(token, p.projectId, tag, "requestPath"),
       ]);
-      const last = statusText ? leseGruppen(statusText) : null;
-      const flaeche = pfadText ? leseGruppen(pfadText) : null;
+
+      const abgewiesen = [statusAusgang, pfadAusgang].find((a) => a.art === "kein-zugang");
+      if (abgewiesen && abgewiesen.art === "kein-zugang") {
+        b.warnungen.push(
+          `Kostenwache ${p.name}: Der Zugang zur Plattform wurde abgewiesen (HTTP ${abgewiesen.status}). ` +
+            `Das ist kein leerer Tag, sondern ein ungültiges oder abgelaufenes Geheimnis — VERCEL_TOKEN in den ` +
+            `Repo-Geheimnissen prüfen. Solange das steht, sammelt die Wache nichts, und jeder Tag ist danach ` +
+            `unwiederbringlich weg (die Protokolle werden nur ${PROTOKOLL_AUFBEWAHRUNG_TAGE} Tag aufbewahrt).`,
+        );
+        continue;
+      }
+
+      const last = statusAusgang.art === "ok" ? leseGruppen(statusAusgang.text) : null;
+      const flaeche = pfadAusgang.art === "ok" ? leseGruppen(pfadAusgang.text) : null;
 
       if (!last || !flaeche) {
         b.warnungen.push(
