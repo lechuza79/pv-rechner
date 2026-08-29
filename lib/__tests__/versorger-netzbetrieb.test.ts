@@ -24,12 +24,17 @@ import { resolve } from "node:path";
 const QUELLE = readFileSync(resolve(process.cwd(), "scripts", "utilities-refresh.ts"), "utf8");
 
 describe("Versorger: die Erwähnung belegt kein Angebot", () => {
-  it("verlangt bei JEDEM Versorger Verkaufssprache neben dem Begriff", () => {
-    expect(QUELLE).toMatch(/const VERKAUFSSPRACHE =/);
-    expect(QUELLE).toMatch(/if \(!VERKAUFSSPRACHE\.test\(nah\)\) continue;/);
-    // Die Regel darf NICHT auf Netzgesellschaften eingeschränkt sein — sechs
-    // Balkon-Seiten von Vertrieben gelesen, drei erklären nur.
-    expect(QUELLE).not.toMatch(/if \(istNetz\) \{[\s\S]{0,200}VERKAUFSSPRACHE/);
+  it("beschriftet die Spalte als nennt, nicht als bietet-an", () => {
+    // Vier Messversuche am 29.08.2026, keiner zuverlässig. Die ehrliche
+    // Beschriftung ist das Ergebnis — ein fünftes Muster hätte dieselbe Quote
+    // mit mehr Selbstvertrauen geliefert.
+    expect(QUELLE).toMatch(/NICHT ZUVERLÄSSIG MESSEN/);
+    expect(QUELLE).toMatch(/Von sechs von Hand gelesenen/);
+  });
+
+  it("hält die drei gescheiterten Messversuche fest, damit sie nicht wiederkommen", () => {
+    expect(QUELLE).toMatch(/BEISPIELRECHNUNG/);
+    expect(QUELLE).toMatch(/30 von 910/);
   });
 
   it("nimmt bei Versorgern die Adresse NICHT als Beleg", () => {
@@ -53,8 +58,6 @@ describe("Die Muster treffen, was sie sollen", () => {
   // Nachgebaut, weil ein Wächter, der nur Text prüft, nichts über das Verhalten
   // aussagt. Beide Richtungen absichtlich kaputtgemacht und rot gesehen.
   const NETZBETRIEB = /\w*netz(e|es|en)?\b|netzgesellschaft|verteilnetz/i;
-  const VERKAUFSSPRACHE =
-    /\b(kaufen|bestellen|shop|angebot anfordern|komplettset|rabatt|jetzt sichern|bei uns erh[äa]ltlich|unser angebot|preis(e|liste)?|ab \d|\d+\s*€)\b/i;
 
   it("erkennt echte Netzgesellschaften", () => {
     for (const n of [
@@ -82,11 +85,5 @@ describe("Die Muster treffen, was sie sollen", () => {
     expect(NETZBETRIEB.test("Netzwerk Energie eG")).toBe(false);
   });
 
-  it("unterscheidet Verkauf von Anmeldung", () => {
-    expect(VERKAUFSSPRACHE.test("Balkonkraftwerk-Komplettset mit 10 % Rabatt")).toBe(true);
-    expect(VERKAUFSSPRACHE.test("Mini-PV-Anlage für 499,00 € bei uns erhältlich")).toBe(true);
-    expect(VERKAUFSSPRACHE.test("Balkonkraftwerk anmelden")).toBe(false);
-    expect(VERKAUFSSPRACHE.test("Zur Anmeldung steckfertiger Anlagen (Balkonkraftwerk)")).toBe(false);
-    expect(VERKAUFSSPRACHE.test("Balkonkraftwerk registrieren - Hauseigentümer")).toBe(false);
-  });
+
 });

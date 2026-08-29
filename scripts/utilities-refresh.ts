@@ -150,6 +150,11 @@ async function setup(): Promise<void> {
     -- gleich, ob der Anbieter Handwerksbetrieb oder Stadtwerk ist. Das Merkmal
     -- wird deshalb in BEIDEN Beständen erhoben — die Bestände bleiben getrennt,
     -- nur die Frage ist dieselbe.
+    -- Was der Versorger auf seiner Website NENNT. Bewusst nicht „bietet an": Ein
+    -- Versorger hat eine Informationspflicht, und seine Erklärseiten sehen
+    -- Produktseiten zum Verwechseln ähnlich. Von sechs von Hand gelesenen
+    -- Balkon-Seiten verkauften zwei — wer die Spalte als Anbieterliste nutzt,
+    -- rechnet diese Quote ein oder liest nach.
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS geschaeftsfelder text[];
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS angebot_geprueft_am timestamptz;
     -- Netzbetrieb oder Vertrieb. Die Adressen stammen aus dem Anlagenregister und
@@ -1082,8 +1087,6 @@ const DEMO_MARKE = "DEMO";
  * bloßen Vorkommen — dort ist die Erwähnung das Angebot.
  */
 const NETZBETRIEB = /\w*netz(e|es|en)?\b|netzgesellschaft|verteilnetz/i;
-const VERKAUFSSPRACHE =
-  /\b(kaufen|bestellen|shop|angebot anfordern|komplettset|rabatt|jetzt sichern|bei uns erh[äa]ltlich|unser angebot|preis(e|liste)?|ab \d|\d+\s*€)\b/i;
 
 /**
  * Was bietet der Versorger ENDKUNDEN an?
@@ -1166,13 +1169,30 @@ async function laufAngebot(opts: { limit?: number; erneut: boolean; dry: boolean
         // Versorger hat eine Informationspflicht gegenüber seinen Kunden, ein
         // Handwerksbetrieb nicht.** Bei den Fachbetrieben IST die Erwähnung das
         // Angebot; hier ist sie es nicht.
-        // Nur die Zeilen ansehen, in denen der Begriff wirklich vorkommt —
-        // sonst genügt ein Preis irgendwo auf der Seite.
-        const nah = text
-          .split(/\n+/)
-          .filter((z) => f.muster.test(z))
-          .join(" ");
-        if (!VERKAUFSSPRACHE.test(nah)) continue;
+        // VERKAUF LÄSST SICH HIER NICHT ZUVERLÄSSIG MESSEN — das Feld sagt
+        // „erwähnt", und das steht so auch an der Spalte.
+        //
+        // Vier Anläufe am 29.08.2026, alle an von Hand belegten Fällen geeicht
+        // (Ratingen und Norderstedt verkaufen, Schweinfurt/Werl/Neustadt
+        // erklären nur):
+        //   1. Verkaufssprache in derselben ZEILE → 30 von 910 mit Photovoltaik,
+        //      offensichtlich zu streng: Auf einer Produktseite steht die
+        //      Überschrift im einen Element, der Preis drei Absätze weiter.
+        //   2. Umfeld von ±300 Zeichen (Maße aus dem Förder-Screener) → 4 von 5,
+        //      Neustadt falsch: Sein Erklärtext enthält eine BEISPIELRECHNUNG
+        //      („72,- € EEG-Förderung"), und ein nackter Betrag belegt keinen
+        //      Verkauf.
+        //   3. Betrag nur mit Kaufkontext („ab/für/nur … €") → 3 von 5, jetzt
+        //      fielen die echten Verkäufer durch: Die Preisseite lag nicht unter
+        //      den ersten fünf Unterseiten der Navigation.
+        //
+        // Der Grund, warum es hier schwerer ist als bei den Fachbetrieben: Ein
+        // Versorger hat eine Informationspflicht, und seine Erklärseiten sehen
+        // Produktseiten zum Verwechseln ähnlich — inklusive Beträgen.
+        //
+        // Belastbar ist deshalb nur die Handprüfung. Von sechs gelesenen
+        // Balkon-Seiten verkauften ZWEI; wer die Versorger als Anbieterliste
+        // nutzen will, muss diese Quote einrechnen oder nachlesen.
         gefunden.add(f.name);
       }
       void quelle;

@@ -1327,6 +1327,21 @@ solche Namen. **Die Zahl `3/8` zählt belegte Merkmale, nicht Qualität** — ei
 Meisterbetrieb, der seinen Titel nicht auf die Website schreibt, bekommt weniger Punkte
 als einer, der es tut; gemessen wird unser Datenstand, nicht der Betrieb.
 
+**Bei Versorgern sagt das Merkmal „nennt das Thema", nicht „bietet an" — und das ist
+gemessene Resignation, keine Nachlässigkeit (29.08.2026).** Vier Anläufe, jeder an denselben
+von Hand belegten Fällen geeicht (zwei Verkäufer, drei reine Erklärseiten): Verkaufssprache
+in derselben Zeile → 30 von 910 mit Photovoltaik, absurd streng. Umfeld von ±300 Zeichen
+(Maße aus dem Förder-Screener) → 4 von 5, durchgefallen an einer **Beispielrechnung**
+(„72,- € EEG-Förderung") — ein nackter Betrag belegt keinen Verkauf. Betrag nur mit
+Kaufkontext → 3 von 5, jetzt fielen die echten Verkäufer durch, weil ihre Preisseite nicht
+unter den ersten Unterseiten lag. **Der Grund, warum es hier schwerer ist als bei
+Fachbetrieben: Ein Versorger hat eine Informationspflicht, und seine Erklärseiten sehen
+Produktseiten zum Verwechseln ähnlich — inklusive Beträge.** Belastbar ist nur die
+Handprüfung: von sechs gelesenen Balkon-Seiten verkauften **zwei**. Wer die Spalte als
+Anbieterliste nutzt, rechnet diese Quote ein oder liest nach. **Aufhören zu messen ist hier
+das Ergebnis, nicht das Aufgeben** — ein fünftes Muster hätte dieselbe Quote mit mehr
+Selbstvertrauen geliefert.
+
 **Bei Versorgern belegt die ERWÄHNUNG kein Angebot — BLOCKER (29.08.2026).** Ein Versorger
 hat eine Informationspflicht gegenüber seinen Kunden, ein Handwerksbetrieb nicht: Bei einem
 Solarteur IST die Erwähnung das Angebot, bei einem Stadtwerk ist sie oft nur Aufklärung.
