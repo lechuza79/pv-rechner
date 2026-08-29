@@ -17,6 +17,8 @@
 import { describe, it, expect } from "vitest";
 import {
   FELDER,
+  adresseLesbar,
+  angebotsSeiten,
   FRAGEN,
   GEWERKE,
   KEIN_BETRIEB,
@@ -660,6 +662,54 @@ describe("Balkonkraftwerk: ein Ding, viele Wörter", () => {
     // mehr Treffer und mehr Unsinn.
     for (const t of ["Balkone und Terrassen", "Kraftwerk Nord GmbH", "Balkongeländer"])
       expect(muster.test(t), t).toBe(false);
+  });
+});
+
+describe("Adresse lesbar machen, ohne zu werfen", () => {
+  it("entschlüsselt Umlaute in Adressen", () => {
+    expect(adresseLesbar("/photovoltaik-l%C3%B6sungen")).toBe("/photovoltaik-lösungen");
+  });
+
+  it("gibt eine KAPUTTE Adresse unverändert zurück, statt zu werfen", () => {
+    // Zwei Läufe abgerissen: am 28.08.2026 nach 450 von 1.254 Domains, am
+    // 29.08.2026 nach 2.400 von 2.850. Beim zweiten Mal existierte die
+    // Absicherung bereits — als try/catch an der einen Stelle, an der es
+    // passiert war. Zwei neue Aufrufer bekamen sie nicht mit. Eine
+    // Vorsichtsmaßnahme, an die sich jeder Aufrufer erinnern muss, ist keine.
+    expect(adresseLesbar("/kaputt%")).toBe("/kaputt%");
+    expect(adresseLesbar("/balkon%zz")).toBe("/balkon%zz");
+  });
+});
+
+describe("Angebots-Unterseiten: die Navigation ist die bessere Sitemap", () => {
+  it("stellt eine Adresse, die das gesuchte Wort selbst trägt, nach vorn", () => {
+    // Der billigste Treffer überhaupt: null Abrufe, der Beleg steht in der
+    // Adresse. Deshalb muss er den ersten Rang bekommen.
+    const html =
+      '<a href="/leistungen">Leistungen</a><a href="/balkonkraftwerk">Mehr</a>' +
+      '<a href="/photovoltaik">PV</a>';
+    expect(angebotsSeiten(html, "https://b.de/")[0]).toBe("https://b.de/balkonkraftwerk");
+  });
+
+  it("erkennt Angebotsseiten am Pfad UND am Linktext", () => {
+    expect(angebotsSeiten('<a href="/x9">Leistungen</a>', "https://b.de/")).toContain(
+      "https://b.de/x9",
+    );
+    expect(angebotsSeiten('<a href="/unsere-leistungen/">Mehr</a>', "https://b.de/")).toContain(
+      "https://b.de/unsere-leistungen/",
+    );
+  });
+
+  it("verwirft fremde Domains, Anker und Telefonlinks", () => {
+    expect(angebotsSeiten('<a href="https://fremd.de/leistungen">x</a>', "https://b.de/")).toEqual([]);
+    expect(angebotsSeiten('<a href="#leistungen">x</a>', "https://b.de/")).toEqual([]);
+    expect(angebotsSeiten('<a href="tel:0123">Leistungen</a>', "https://b.de/")).toEqual([]);
+  });
+
+  it("führt dieselbe Adresse nur einmal, auch mit verschiedenen Ankern", () => {
+    // Sonst wird dieselbe Seite mehrfach abgerufen — fremde Last ohne Ertrag.
+    const html = '<a href="/leistungen#pv">A</a><a href="/leistungen#wp">B</a>';
+    expect(angebotsSeiten(html, "https://b.de/")).toEqual(["https://b.de/leistungen"]);
   });
 });
 

@@ -263,6 +263,83 @@ export function kontaktUrl(html: string, basis: string): string | null {
 }
 
 /**
+ * Eine Adresse als lesbares Wort — ohne zu werfen.
+ *
+ * „/photovoltaik-l%C3%B6sungen" soll als „lösungen" durchsuchbar sein. Aber ein
+ * einzelnes kaputtes Prozentzeichen in einem fremden Link lässt die
+ * Entschlüsselung werfen, und das hat zwei Läufe abgerissen: am 28.08.2026 nach
+ * 450 von 1.254 Domains, am 29.08.2026 nach 2.400 von 2.850.
+ *
+ * **Beim zweiten Mal existierte die Absicherung bereits** — als try/catch an der
+ * einen Stelle, an der es passiert war. Zwei neue Aufrufer haben sie nicht
+ * mitbekommen. Genau deshalb steht sie jetzt in einer Funktion: Eine
+ * Vorsichtsmaßnahme, an die sich jeder Aufrufer erinnern muss, ist keine.
+ */
+export function adresseLesbar(href: string): string {
+  try {
+    return decodeURIComponent(href);
+  } catch {
+    return href;
+  }
+}
+
+/**
+ * Die Unterseiten, auf denen das ANGEBOT steht.
+ *
+ * Gemessen am 29.08.2026 an 20 Betrieben ohne Balkon-Merkmal: Über die
+ * Navigation gefunden bei 3, für 4,3 Abrufe je Betrieb.
+ *
+ * **Die Sitemap wurde als Alternative gebaut und VERWORFEN** — sie ist bei 17
+ * von 20 lesbar und trotzdem schlechter: 1 Treffer für 6,2 Abrufe. Der Grund
+ * ist ihre Vollständigkeit. Sie listet Blogartikel, Referenzen und Rechtstexte
+ * gleichrangig neben den Leistungsseiten; wer daraus die richtigen acht
+ * auswählen will, hat dasselbe Problem wie vorher, nur mit mehr Rauschen. Die
+ * Navigation ist bereits die Auswahl, die der Betrieb selbst getroffen hat.
+ * (Im Förderbereich lag es umgekehrt: Kommunalseiten sind zu groß für die
+ * Navigation, deshalb läuft dort die Volltextsuche der Website nach.)
+ *
+ * **Eine Adresse, die das Wort selbst trägt, ist bereits der Beleg** — das
+ * kostet null Abrufe und ist der billigste Treffer überhaupt.
+ */
+export function angebotsSeiten(html: string, basis: string): string[] {
+  const out = new Map<string, number>();
+  let basisHost: string;
+  try {
+    basisHost = new URL(basis).host.replace(/^www\./, "");
+  } catch {
+    return [];
+  }
+  for (const m of html.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)) {
+    const href = entities(m[1]);
+    const h = href.toLowerCase();
+    const t = entities(m[2].replace(/<[^>]+>/g, " "))
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+    if (/^(mailto:|tel:|javascript:|#)/.test(h)) continue;
+    let p = 0;
+    // Trägt die Adresse das gesuchte Wort, muss nichts mehr gelesen werden —
+    // deshalb ganz vorn.
+    if (/balkon|stecker-?solar|mini-?pv/.test(h)) p = 100;
+    else if (/[-_/](leistung|produkt|angebot|service)\w*/.test(h)) p = 80;
+    else if (/^(leistungen|produkte|angebot|unser angebot|services?)$/.test(t)) p = 75;
+    else if (/[-_/](photovoltaik|solar|solaranlage)\w*/.test(h)) p = 60;
+    else if (/photovoltaik|solaranlage|balkonkraftwerk/.test(t)) p = 55;
+    else if (/[-_/]privat(kunden)?\b/.test(h)) p = 40;
+    if (!p) continue;
+    let abs: string;
+    try {
+      abs = new URL(href, basis).toString().split("#")[0];
+      if (new URL(abs).host.replace(/^www\./, "") !== basisHost) continue;
+    } catch {
+      continue;
+    }
+    if ((out.get(abs) ?? 0) < p) out.set(abs, p);
+  }
+  return [...out.entries()].sort((a, b) => b[1] - a[1]).map(([u]) => u);
+}
+
+/**
  * Die „Über uns"-Seite — dort wohnt die Firmengeschichte.
  *
  * Gemessen am 29.08.2026 über den ganzen Bestand: Meisterbetrieb steht bei 22 %,
@@ -1001,15 +1078,7 @@ export function navigationsText(html: string): string {
   let m: RegExpExecArray | null;
   while ((m = re.exec(html))) {
     const href = entities(m[1]);
-    // Adressen werden entschlüsselt, damit „/photovoltaik-l%C3%B6sungen" als
-    // Wort lesbar wird — aber ein einzelnes kaputtes Prozentzeichen in einem
-    // fremden Link wirft, und das riss am 28.08.2026 einen Lauf nach 450 von
-    // 1.254 Domains ab. Im Zweifel die rohe Adresse nehmen.
-    try {
-      teile.push(decodeURIComponent(href));
-    } catch {
-      teile.push(href);
-    }
+    teile.push(adresseLesbar(href));
     teile.push(entities(m[2].replace(/<[^>]+>/g, " ")).trim());
   }
   const titel = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);

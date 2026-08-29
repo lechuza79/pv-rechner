@@ -1216,6 +1216,36 @@ Sie behalten „unklar" (ein Angebot kann auf einer ungelesenen Unterseite stehe
 Grund sagt, dass zweimal nachgesehen wurde. Ohne diesen Unterschied prüft die nächste
 Sitzung dieselben 758 noch einmal.
 
+**Die Angebots-Unterseiten schlagen die Sitemap — gemessen, nicht vermutet (29.08.2026).**
+An denselben 20 Betrieben: über die Navigation 3 Treffer für 4,3 Abrufe, über die Sitemap
+1 Treffer für 6,2. Sie ist bei 17 von 20 lesbar, und genau ihre **Vollständigkeit** ist
+das Problem — sie listet Blogartikel und Rechtstexte gleichrangig neben den
+Leistungsseiten. **Die Navigation ist bereits die Auswahl, die der Betrieb selbst
+getroffen hat.** Im Förderbereich liegt es umgekehrt (dort fand der Crawl nur 13 %, die
+Volltextsuche musste nachhelfen); der Unterschied ist die Größe: Eine Kommunalseite hat
+Tausende Seiten, eine Firmenseite dreißig. **Eine Adresse, die das gesuchte Wort selbst
+trägt, ist bereits der Beleg** — null Abrufe. Ergebnis über beide Bestände: Balkonkraftwerk
+von 8 % auf 19 % bei den Fachbetrieben, Speicher von 44 auf 61 %, Wärmepumpe von 45 auf 55 %.
+
+**Das ANGEBOT wird in beiden Beständen erhoben, die Bestände bleiben getrennt**
+(Betreiber-Vorgabe 29.08.2026: „Nutzer suchen explizit nach Hilfe bei der Montage. Dazu
+können wir passende Betriebe listen — egal ob Versorger oder nicht"). Geteilt sind die
+Suchmuster und die Seitenauswahl — sie ein zweites Mal zu schreiben wäre ein Fehler, kein
+Duplikat. Getrennt bleibt die Einordnung: Ein Stadtwerk, das Balkonkraftwerke verkauft, ist
+kein Handwerksbetrieb. **Bei Balkonkraftwerken liegen die Versorger anteilig VORN** (200
+von 937 = 21 %, gegen 19 % der Fachbetriebe), bei Photovoltaik weit zurück (44 % gegen
+96 %). Wer dort nur Handwerk listet, lässt ein Viertel der Anbieter weg.
+
+**`decodeURIComponent` wirft bei kaputten Adressen — nie ungeschützt aufrufen.** Zweimal
+einen Erhebungslauf abgerissen: am 28.08. nach 450 von 1.254 Domains, am 29.08. nach 2.400
+von 2.850. **Beim zweiten Mal existierte die Absicherung bereits** — als try/catch an genau
+der Stelle, an der es beim ersten Mal passiert war; zwei neue Aufrufer bekamen sie nicht
+mit. Sie steht jetzt in einer Funktion, und
+`lib/__tests__/adress-dekodierung-waechter.test.ts` verbietet den direkten Aufruf überall
+sonst. **Der Wächter prüft beide Richtungen** — auch, ob die erlaubten Schutzfunktionen
+wirklich abfangen; einer, der nur Aufrufstellen zählt, ließe eine Schutzfunktion durch, die
+gar nichts schützt.
+
 **Ein Prüfmuster findet nur, wonach es sucht — irgendwann muss man alles lesen.** Nach dem
 ersten Namens-Umbau meldete die Musterprüfung 0,3 % verdächtige Namen, und der Betreiber
 sagte trotzdem: „es müssen alle korrekt sein." Die vollständige Durchsicht — alle Namen

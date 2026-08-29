@@ -81,6 +81,8 @@ import { resolve } from "node:path";
 import { readFileSync, existsSync } from "node:fs";
 import {
   FELDER,
+  adresseLesbar,
+  angebotsSeiten,
   FRAGEN,
   KEIN_BETRIEB,
   type Kreis,
@@ -357,6 +359,11 @@ async function setup(): Promise<void> {
     -- gefunden haben oder gar nicht dort waren.
     ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS ueber_uns_url text;
     ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS ueber_uns_at timestamptz;
+
+    -- Die Angebots-Unterseiten (Phase --unterseiten). Eigener Zeitstempel, damit
+    -- „angesehen und nichts gefunden" von „noch nicht dort gewesen" unterscheidbar
+    -- bleibt.
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS unterseiten_at timestamptz;
 
     -- ARBEITSSTAND — gehört dem Menschen, nicht dem Erhebungslauf.
     -- Dieselbe Trennung wie bei den Gemeinden: Kein Lauf dieses Skripts fasst
@@ -1391,6 +1398,109 @@ async function felder(limit: number, dry: boolean): Promise<void> {
   log(`${offen.length} geprüft, ${gefunden} mit erkennbaren Geschäftsfeldern`, "ok");
 }
 
+/**
+ * Die ANGEBOTS-Unterseiten lesen — für Geschäftsfelder, die auf der Startseite
+ * nicht stehen.
+ *
+ * Der Anlass ist das Balkonkraftwerk: Der Nutzer sucht Hilfe bei der Montage,
+ * und wer sie anbietet, schreibt es auf seine Leistungsseite, nicht immer auf
+ * die Startseite. Gemessen an 20 Betrieben ohne dieses Merkmal: 3 bieten es
+ * trotzdem an (15 %), gefunden für 4,3 Abrufe je Betrieb.
+ *
+ * Gelesen werden ALLE Geschäftsfelder, nicht nur das eine — wer schon abruft,
+ * liest alles. Und **vorhandene Felder gehen nie verloren**: Ein Betrieb, der
+ * seine Seite umbaut, verlöre sonst ein Angebot, das er weiter macht.
+ */
+async function unterseiten(limit: number, dry: boolean, refetch: boolean): Promise<void> {
+  const sb = await makeClient();
+  const alle = await alleZeilen<{
+    domain: string;
+    geschaeftsfelder: string[] | null;
+    profil_fehler: string | null;
+    unterseiten_at: string | null;
+    art: string;
+  }>(sb, "fachbetriebe", "domain, geschaeftsfelder, profil_fehler, unterseiten_at, art");
+
+  // Wen der Lauf anfasst: Betriebe, denen mindestens ein Geschäftsfeld fehlt.
+  // Wer alle fünf trägt, hat dort nichts mehr zu holen.
+  const offen = alle
+    .filter((r) => r.art === "betrieb" && !r.profil_fehler)
+    .filter((r) => refetch || !r.unterseiten_at)
+    .filter((r) => (r.geschaeftsfelder ?? []).length < FELDER.length)
+    .sort((a, b) => a.domain.localeCompare(b.domain))
+    .slice(0, limit);
+
+  log(`${offen.length} Betriebe — Angebots-Unterseiten lesen`);
+  if (dry) {
+    log("--dry: nichts abgerufen", "ok");
+    return;
+  }
+
+  const zeilen: Record<string, unknown>[] = [];
+  let fertig = 0,
+    neu = 0,
+    neuBalkon = 0,
+    ausAdresse = 0;
+  const wegschreiben = async (alles: boolean) => {
+    if (!alles && zeilen.length < 200) return;
+    const z = zeilen.splice(0, zeilen.length);
+    if (z.length) await upsertGestueckelt(sb, "fachbetriebe", z, "domain");
+  };
+
+  await pool(offen, 8, async (r) => {
+    fertig++;
+    if (fertig % 100 === 0) log(`  ${fertig}/${offen.length}`);
+    const start =
+      (await holeText(`https://${r.domain}/`)) ?? (await holeText(`http://${r.domain}/`));
+    if (!start) return;
+
+    const vorhanden = new Set(r.geschaeftsfelder ?? []);
+    const gefunden = new Set(vorhanden);
+    const seiten = angebotsSeiten(start.html, start.url);
+
+    // Eine Adresse, die das Wort selbst trägt, ist der Beleg — null Abrufe.
+    for (const u of seiten)
+      for (const f of FELDER) if (f.muster.test(adresseLesbar(u))) gefunden.add(f.name);
+    if (gefunden.size > vorhanden.size) ausAdresse++;
+
+    // Höchstens sechs Unterseiten: Der Eichlauf fand jeden Treffer in den
+    // ersten Rängen; mehr abzurufen kostet fremde Last ohne Ertrag.
+    for (const u of seiten.slice(0, 6)) {
+      if (gefunden.size === FELDER.length) break;
+      const s = await holeText(u);
+      if (!s) continue;
+      const text = sichtbarerText(s.html);
+      for (const f of FELDER) if (f.muster.test(text)) gefunden.add(f.name);
+    }
+
+    if (gefunden.size === vorhanden.size) {
+      zeilen.push({
+        domain: r.domain,
+        unterseiten_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      });
+      await wegschreiben(false);
+      return;
+    }
+    neu++;
+    if (!vorhanden.has("balkonkraftwerk") && gefunden.has("balkonkraftwerk")) neuBalkon++;
+    zeilen.push({
+      domain: r.domain,
+      geschaeftsfelder: [...gefunden],
+      unterseiten_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    });
+    await wegschreiben(false);
+  });
+
+  await wegschreiben(true);
+  log(
+    `${offen.length} geprüft, ${neu} mit neuen Geschäftsfeldern (davon ${ausAdresse} schon an der ` +
+      `Adresse erkannt, ohne Abruf) — Balkonkraftwerk +${neuBalkon}`,
+    "ok",
+  );
+}
+
 async function ags(dry: boolean): Promise<void> {
   const sb = await makeClient();
   const tabelle = JSON.parse(
@@ -1618,6 +1728,7 @@ async function main(): Promise<void> {
     kontakt: argv.includes("--kontakt"),
     ueberUns: argv.includes("--ueber-uns"),
     felder: argv.includes("--felder"),
+    unterseiten: argv.includes("--unterseiten"),
     ags: argv.includes("--ags"),
     namen: argv.includes("--namen-putzen"),
     stats: argv.includes("--stats"),
@@ -1636,6 +1747,9 @@ async function main(): Promise<void> {
         "                                   Kontaktseite lesen: Kontaktweg schließen,\n" +
         "                                   Restklasse einordnen\n" +
         "  --felder [--limit N] [--dry]     Geschäftsfelder aus der Startseite nachlesen\n" +
+        "  --unterseiten [--limit N] [--refetch] [--dry]\n" +
+        "                                   Angebots-Unterseiten lesen: Geschäftsfelder,\n" +
+        "                                   die auf der Startseite nicht stehen\n" +
         "  --ueber-uns [--limit N] [--refetch] [--dry]\n" +
         "                                   die Über-uns-Seite lesen: Trust-Signale nachlesen\n" +
         "  --ags [--dry]                    Anschrift → amtlicher Gemeindeschlüssel\n" +
@@ -1662,6 +1776,8 @@ async function main(): Promise<void> {
   if (phasen.kontakt) await kontakt(zahlArg("limit", 200), dry, argv.includes("--refetch"));
   if (phasen.ueberUns) await ueberUns(zahlArg("limit", 200), dry, argv.includes("--refetch"));
   if (phasen.felder) await felder(zahlArg("limit", 200), dry);
+  if (phasen.unterseiten)
+    await unterseiten(zahlArg("limit", 200), dry, argv.includes("--refetch"));
   if (phasen.namen) await namenPutzen(dry);
   if (phasen.ags) await ags(dry);
   if (phasen.stats) await stats();

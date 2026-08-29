@@ -31,6 +31,13 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 
+// GETEILTE MECHANIK, GETRENNTE BESTÄNDE. Die Muster für Geschäftsfelder und die
+// Auswahl der Angebots-Unterseiten sind dieselbe Frage an eine Website, egal wer
+// dahintersteht — sie ein zweites Mal zu schreiben wäre ein Fehler, kein
+// Duplikat. Was NICHT geteilt wird, ist das Vokabular des Marktes: Versorger
+// haben andere Käufer, Budgets und Rechtsrahmen als Handwerksbetriebe.
+import { FELDER, adresseLesbar, angebotsSeiten, sichtbarerText } from "../lib/fachbetrieb-extrakt";
+
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
 function log(msg: string, level: "info" | "ok" | "err" = "info"): void {
@@ -137,6 +144,14 @@ async function setup(): Promise<void> {
     -- Ergebnis der systematischen Gebiets-Pruefung (gruen/gelb/rot + Befunde).
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS pruefung_ampel text;
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS pruefung jsonb;
+
+    -- Was der Versorger ENDKUNDEN anbietet (Phase --angebot). Betreiber-Vorgabe
+    -- 29.08.2026: Wer Hilfe bei der Balkonkraftwerk-Montage sucht, dem ist
+    -- gleich, ob der Anbieter Handwerksbetrieb oder Stadtwerk ist. Das Merkmal
+    -- wird deshalb in BEIDEN Beständen erhoben — die Bestände bleiben getrennt,
+    -- nur die Frage ist dieselbe.
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS geschaeftsfelder text[];
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS angebot_geprueft_am timestamptz;
 
     -- Belege der gemessenen Zuordnung.
     ALTER TABLE utility_communes ADD COLUMN IF NOT EXISTS anlagen int;
@@ -1037,6 +1052,97 @@ const DEMO_MARKE = "DEMO";
  *
  * Vor der echten Erfassung mit --clear-demo entfernen.
  */
+/**
+ * Was bietet der Versorger ENDKUNDEN an?
+ *
+ * Betreiber-Vorgabe vom 29.08.2026: „Nutzer suchen explizit nach Hilfe bei der
+ * Montage. Dazu können wir passende Betriebe listen — egal ob Versorger oder
+ * nicht." Das Merkmal wird deshalb in beiden Beständen erhoben.
+ *
+ * **Die Bestände bleiben getrennt.** Geteilt ist die Mechanik (Muster,
+ * Seitenauswahl), nicht die Einordnung: Ein Stadtwerk, das Balkonkraftwerke
+ * verkauft, ist kein Handwerksbetrieb und gehört nicht in dessen Tabelle.
+ *
+ * Der Weg ist derselbe wie dort und aus demselben Grund gewählt: Startseite,
+ * dann die Unterseiten, die nach Angebot klingen. Die Sitemap wurde am selben
+ * Tag gemessen und verworfen — sie ist vollständiger und dadurch schlechter.
+ */
+async function laufAngebot(opts: { limit?: number; erneut: boolean; dry: boolean }): Promise<void> {
+  const supabase = await makeClient();
+  const alle = (await alleZeilen(
+    supabase,
+    "utilities",
+    "id, name, website, geschaeftsfelder, angebot_geprueft_am",
+  )) as {
+    id: string;
+    name: string;
+    website: string | null;
+    geschaeftsfelder: string[] | null;
+    angebot_geprueft_am: string | null;
+  }[];
+
+  const offen = alle
+    .filter((u) => u.website)
+    .filter((u) => opts.erneut || !u.angebot_geprueft_am)
+    .slice(0, opts.limit ?? 200);
+
+  log(`${offen.length} Versorger mit Website — Angebot lesen`);
+  if (opts.dry) {
+    for (const u of offen.slice(0, 10)) log(`  ${u.name}`);
+    log("--dry: nichts abgerufen", "ok");
+    return;
+  }
+
+  const zeilen: Record<string, unknown>[] = [];
+  let fertig = 0,
+    mitFeld = 0,
+    mitBalkon = 0;
+
+  const wegschreiben = async (alles: boolean) => {
+    if (!alles && zeilen.length < 100) return;
+    const z = zeilen.splice(0, zeilen.length);
+    if (!z.length) return;
+    const { error } = await supabase.from("utilities").upsert(z, { onConflict: "id" });
+    if (error) throw new Error(`utilities schreiben: ${error.message}`);
+  };
+
+  for (const u of offen) {
+    fertig++;
+    if (fertig % 50 === 0) log(`  ${fertig}/${offen.length}`);
+    const basis = u.website!.startsWith("http") ? u.website! : `https://${u.website}`;
+    const start = await holeSeite(basis);
+    if (!start) continue;
+
+    const gefunden = new Set(u.geschaeftsfelder ?? []);
+    const seiten = angebotsSeiten(start, basis);
+    for (const f of FELDER) if (f.muster.test(sichtbarerText(start))) gefunden.add(f.name);
+    // Eine Adresse, die das Wort trägt, ist der Beleg — null Abrufe.
+    for (const s of seiten)
+      for (const f of FELDER) if (f.muster.test(adresseLesbar(s))) gefunden.add(f.name);
+    for (const s of seiten.slice(0, 5)) {
+      if (gefunden.size === FELDER.length) break;
+      const h = await holeSeite(s);
+      if (h) for (const f of FELDER) if (f.muster.test(sichtbarerText(h))) gefunden.add(f.name);
+    }
+
+    if (gefunden.size) mitFeld++;
+    if (gefunden.has("balkonkraftwerk")) mitBalkon++;
+    zeilen.push({
+      id: u.id,
+      // Pflichtspalte: Ein Einfügen-oder-Aktualisieren ist im Kern ein INSERT.
+      name: u.name,
+      geschaeftsfelder: [...gefunden],
+      angebot_geprueft_am: new Date().toISOString(),
+    });
+    await wegschreiben(false);
+  }
+  await wegschreiben(true);
+  log(
+    `${offen.length} geprüft, ${mitFeld} mit erkennbarem Angebot — Balkonkraftwerk: ${mitBalkon}`,
+    "ok",
+  );
+}
+
 async function seedDemo(): Promise<void> {
   const supabase = await makeClient();
 
@@ -1178,12 +1284,13 @@ async function main(): Promise<void> {
   const doProfil = argv.includes("--profil");
   const doPruefen = argv.includes("--pruefen");
   const doWebPruefen = argv.includes("--pruefen-web");
+  const doAngebot = argv.includes("--angebot");
   const doStats = argv.includes("--stats");
   const doSeed = argv.includes("--seed-demo");
   const doClear = argv.includes("--clear-demo");
   const dry = argv.includes("--dry");
 
-  if (!doSetup && !doImport && !doProfil && !doPruefen && !doWebPruefen && !doStats && !doSeed && !doClear) {
+  if (!doSetup && !doImport && !doProfil && !doPruefen && !doWebPruefen && !doStats && !doSeed && !doClear && !doAngebot) {
     log(
       "Nichts zu tun. Flags:\n" +
         "  --setup       Tabellen anlegen/erweitern (idempotent)\n" +
@@ -1191,6 +1298,7 @@ async function main(): Promise<void> {
         "  --profil      Websites abklopfen: Ansprechpartner + Themen\n" +
         "  --pruefen     Gebiete systematisch pruefen (Sitz, Name, Streuung, Dominanz)\n" +
         "  --pruefen-web Unsichere Gebiete gegen die eigene Website des Versorgers pruefen\n" +
+        "  --angebot     Was der Versorger Endkunden anbietet (Balkonkraftwerk, PV, Waermepumpe)\n" +
         "  --stats       Bestand + Deckung melden\n" +
         "  --seed-demo   12 Beispieldatensätze (Namen Platzhalter, Zahlen echt)\n" +
         "  --clear-demo  Beispieldatensätze wieder entfernen\n" +
@@ -1208,6 +1316,14 @@ async function main(): Promise<void> {
   if (doProfil) {
     const limitArg = argv.find((a) => a.startsWith("--limit="));
     await laufProfil({
+      limit: limitArg ? parseInt(limitArg.slice(8), 10) : undefined,
+      erneut: argv.includes("--refetch"),
+      dry,
+    });
+  }
+  if (doAngebot) {
+    const limitArg = argv.find((a) => a.startsWith("--limit="));
+    await laufAngebot({
       limit: limitArg ? parseInt(limitArg.slice(8), 10) : undefined,
       erneut: argv.includes("--refetch"),
       dry,
