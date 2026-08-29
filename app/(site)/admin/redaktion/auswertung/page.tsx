@@ -3,6 +3,7 @@ import { isAdminSession } from "../../../../../lib/admin-guard";
 import { ladeKonto } from "../../../../../lib/social-konten";
 import { ablaufBefund } from "../../../../../lib/social-ablauf";
 import { ladeVersand } from "../../../../../lib/social-versand-log";
+import InfoTooltip from "../../../../../components/InfoTooltip";
 import { v, space, pad } from "../../../../../lib/theme";
 
 // Auswertung: Was ist rausgegangen, und was können wir darüber überhaupt wissen.
@@ -36,11 +37,6 @@ export default async function RedaktionAuswertung() {
 
   return (
     <div style={{ maxWidth: 900, margin: "0 auto" }}>
-      <h1 style={{ fontSize: v("--font-size-h1"), marginBottom: space.sm }}>Auswertung</h1>
-      <p style={{ color: v("--color-text-secondary"), marginBottom: space.huge, maxWidth: 720 }}>
-        Was rausgegangen ist, und wo unsere Messung endet.
-      </p>
-
       <section style={{ ...karte, marginBottom: space.xxxl }}>
         <h2 style={{ fontSize: v("--font-size-h3"), marginTop: 0 }}>Zugang</h2>
         {konto && befund ? (
@@ -112,17 +108,18 @@ export default async function RedaktionAuswertung() {
       </section>
 
       <section style={karte}>
-        <h2 style={{ fontSize: v("--font-size-h3"), marginTop: 0 }}>Was wir nicht messen können</h2>
-        <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), marginTop: 0 }}>
-          Aufrufe, Reaktionen und Kommentare liegen bei LinkedIn. Die Leseberechtigung dafür ist dort
-          beschränkt und nur für geprüfte Anwendungen zu haben; unsere Verbindung darf
-          veröffentlichen, aber nicht zurücklesen. Diese Zahlen stehen also in der LinkedIn-App und
-          nirgends hier.
-        </p>
-        <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), marginBottom: 0 }}>
-          Was wir stattdessen messen können, ist die Wirkung auf unserer Seite: Zugriffe auf die
-          verlinkten Seiten und woher sie kommen. Das ist die ehrlichere Zahl — sie sagt, ob jemand
-          nach dem Lesen etwas getan hat, statt nur, dass etwas an ihm vorbeigescrollt ist.
+        <h2 style={{ fontSize: v("--font-size-h3"), marginTop: 0, display: "flex", alignItems: "center", gap: space.xs }}>
+          Nicht messbar
+          <InfoTooltip ariaLabel="Warum Reichweitenzahlen fehlen" exportNote={false}>
+            Aufrufe, Reaktionen und Kommentare liegen bei LinkedIn. Die Leseberechtigung dafür ist
+            dort beschränkt und nur für geprüfte Anwendungen zu haben; unsere Verbindung darf
+            veröffentlichen, aber nicht zurücklesen. Messbar ist stattdessen die Wirkung auf
+            unserer Seite — die ehrlichere Zahl, weil sie sagt, ob jemand nach dem Lesen etwas
+            getan hat.
+          </InfoTooltip>
+        </h2>
+        <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), margin: 0 }}>
+          Reichweite steht in der LinkedIn-App, nicht hier.
         </p>
       </section>
     </div>

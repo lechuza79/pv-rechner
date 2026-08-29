@@ -1,12 +1,26 @@
 import { v, space, pad, type TokenName } from "../../lib/theme";
+import InfoTooltip from "../InfoTooltip";
 import type { KalenderWoche } from "../../lib/social-kalender";
 
-// Die Wochenübersicht.
+// Der Redaktionskalender: Wochen als Zeilen, Werktage als Spalten.
 //
-// Server-Komponente ohne Zustand: Sie zeigt, was ohnehin berechnet ist. Ein
-// Kalender zum Hineinziehen wäre etwas anderes — er bräuchte gespeicherte
-// Termine, und genau die hat dieses Projekt bewusst nicht (siehe
-// lib/social-kalender.ts).
+// KEINE FERTIGE BIBLIOTHEK, und das ist eine Entscheidung mit Begründung. Die
+// üblichen Kalender-Pakete lösen die Probleme, die wir NICHT haben — Ziehen und
+// Ablegen, Wiederholungsregeln, Zeitzonen, Ganztags- gegen Stundentermine — und
+// bringen jeweils ein eigenes Stylesheet und eine eigene Datumsbibliothek mit,
+// die man anschließend auf die Farbtoken dieses Projekts umbiegt. Das ist mehr
+// Arbeit als ein Raster aus Wochen und Tagen, und es widerspricht der
+// Projektregel, keine Bibliothek ohne konkreten Grund einzuführen.
+//
+// SAMSTAG UND SONNTAG FEHLEN ABSICHTLICH. Es wird an Werktagen veröffentlicht;
+// zwei dauerhaft leere Spalten wären ein Fünftel der Fläche für nichts.
+//
+// Server-Komponente ohne Zustand. Ein Kalender zum Hineinziehen wäre etwas
+// anderes — er bräuchte gespeicherte Termine, und die hat dieses Projekt
+// bewusst nicht: Ein Datum je Beitrag ist eine Zusage, die niemand einhält,
+// sobald eine Woche voll wird.
+
+const WERKTAGE = ["Mo", "Di", "Mi", "Do", "Fr"] as const;
 
 const FARBE: Record<string, { rand: TokenName; text: TokenName }> = {
   gesendet: { rand: "--color-positive-text", text: "--color-positive-text" },
@@ -15,68 +29,135 @@ const FARBE: Record<string, { rand: TokenName; text: TokenName }> = {
   "vergangen-leer": { rand: "--color-border-muted", text: "--color-text-faint" },
 };
 
+function tagZahl(iso: string): string {
+  return new Date(`${iso}T12:00:00Z`).toLocaleDateString("de-DE", { day: "numeric", timeZone: "UTC" });
+}
+
+function monatVon(iso: string): string {
+  return new Date(`${iso}T12:00:00Z`).toLocaleDateString("de-DE", {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+/** Der ISO-Tag der Spalte, auch wenn dort kein Platz liegt. */
+function tagInWoche(montagIso: string, index: number): string {
+  const d = new Date(`${montagIso}T12:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + index);
+  return d.toISOString().slice(0, 10);
+}
+
 export function Wochenplan({ wochen, heuteIso }: { wochen: KalenderWoche[]; heuteIso: string }) {
+  let letzterMonat = "";
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: space.xl }}>
-      {wochen.map((w) => (
-        <div key={w.beginnIso}>
+    <div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(5, 1fr)",
+          gap: space.xs,
+          marginBottom: space.xs,
+        }}
+      >
+        {WERKTAGE.map((t) => (
           <div
+            key={t}
             style={{
-              fontSize: v("--font-size-small"),
-              fontWeight: 600,
-              marginBottom: space.sm,
-              color: w.name === "Diese Woche" ? v("--color-accent") : v("--color-text-secondary"),
+              fontSize: v("--font-size-caption"),
+              color: v("--color-text-muted"),
+              textTransform: "uppercase",
+              letterSpacing: "0.06em",
             }}
           >
-            {w.name}
+            {t}
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: space.sm }}>
-            {w.plaetze.map((p) => {
-              const f = FARBE[p.zustand];
-              const heute = p.iso === heuteIso;
-              return (
+        ))}
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: space.xs }}>
+        {wochen.map((w) => {
+          // Der Monatsname steht in der Zeile, in der er WECHSELT — nicht über
+          // jeder Woche. Ein Kalender, der zwölfmal „September" sagt, sagt es
+          // elfmal zu oft.
+          const monat = monatVon(w.beginnIso);
+          const zeigeMonat = monat !== letzterMonat;
+          letzterMonat = monat;
+
+          return (
+            <div key={w.beginnIso}>
+              {zeigeMonat && (
                 <div
-                  key={p.iso}
                   style={{
-                    border: `1px solid ${v(f.rand)}`,
-                    borderRadius: v("--radius-sm"),
-                    padding: pad("sm", "md"),
-                    background: heute ? v("--color-bg-muted") : "transparent",
-                    opacity: p.zustand === "vergangen-leer" ? 0.55 : 1,
+                    fontSize: v("--font-size-caption"),
+                    color: v("--color-text-secondary"),
+                    fontWeight: 600,
+                    margin: `${space.md}px 0 ${space.xs}px`,
                   }}
                 >
-                  <div
-                    style={{
-                      fontSize: v("--font-size-caption"),
-                      color: v("--color-text-muted"),
-                      display: "flex",
-                      justifyContent: "space-between",
-                      gap: space.xs,
-                    }}
-                  >
-                    <span>
-                      {p.tag} · {p.art}
-                    </span>
-                    <span>
-                      {new Date(`${p.iso}T12:00:00Z`).toLocaleDateString("de-DE", {
-                        day: "numeric",
-                        month: "numeric",
-                        timeZone: "UTC",
-                      })}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: v("--font-size-small"), color: v(f.text), marginTop: space.xxs }}>
-                    {p.zustand === "gesendet" && `✓ ${p.titel}`}
-                    {p.zustand === "bereit" && p.post.titel}
-                    {p.zustand === "leer" && p.grund}
-                    {p.zustand === "vergangen-leer" && "nichts gesendet"}
-                  </div>
+                  {monat}
                 </div>
-              );
-            })}
-          </div>
-        </div>
-      ))}
+              )}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: space.xs }}>
+                {WERKTAGE.map((_tag, i) => {
+                  const iso = tagInWoche(w.beginnIso, i);
+                  const platz = w.plaetze.find((p) => p.iso === iso);
+                  const heute = iso === heuteIso;
+                  const f = platz ? FARBE[platz.zustand] : null;
+
+                  return (
+                    <div
+                      key={iso}
+                      style={{
+                        minHeight: 74,
+                        borderRadius: v("--radius-sm"),
+                        border: `1px solid ${f ? v(f.rand) : v("--color-border-muted")}`,
+                        borderStyle: platz ? "solid" : "dashed",
+                        padding: pad("xs", "sm"),
+                        background: heute ? v("--color-accent-dim") : "transparent",
+                        opacity: !platz || platz.zustand === "vergangen-leer" ? 0.5 : 1,
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: v("--font-size-caption"),
+                          color: heute ? v("--color-accent") : v("--color-text-muted"),
+                          fontWeight: heute ? 700 : 400,
+                        }}
+                      >
+                        {tagZahl(iso)}
+                      </div>
+                      {platz && (
+                        <div
+                          style={{
+                            fontSize: v("--font-size-caption"),
+                            color: v(f!.text),
+                            marginTop: space.xxs,
+                            lineHeight: 1.3,
+                          }}
+                        >
+                          {platz.zustand === "gesendet" && `✓ ${platz.titel}`}
+                          {platz.zustand === "bereit" && platz.post.titel}
+                          {platz.zustand === "leer" && (
+                            <>
+                              offen{" "}
+                              <InfoTooltip ariaLabel="Warum dieser Platz offen ist" size={12} exportNote={false}>
+                                {platz.grund}
+                              </InfoTooltip>
+                            </>
+                          )}
+                          {platz.zustand === "vergangen-leer" && "—"}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

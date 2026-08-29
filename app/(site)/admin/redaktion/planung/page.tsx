@@ -10,6 +10,7 @@ import { ladeFassungen } from "../../../../../lib/social-vorlagen-db";
 import { planen } from "../../../../../lib/social-plan";
 import { baueKalender, deckung } from "../../../../../lib/social-kalender";
 import { Wochenplan } from "../../../../../components/social/Wochenplan";
+import InfoTooltip from "../../../../../components/InfoTooltip";
 import { v, space, pad } from "../../../../../lib/theme";
 
 // Planung: Was steht bereit, was fehlt, und welche Regeln gelten vor jedem Post.
@@ -92,35 +93,35 @@ export default async function RedaktionPlanung() {
 
   return (
     <div style={{ maxWidth: 900, margin: "0 auto" }}>
-      <h1 style={{ fontSize: v("--font-size-h1"), marginBottom: space.sm }}>Planung</h1>
-      <p style={{ color: v("--color-text-secondary"), marginBottom: space.huge, maxWidth: 720 }}>
-        Kadenz, Vorrat und die Regeln vor jeder Veröffentlichung. Bewusst kein Kalender mit festen
-        Daten — ein Plan, dessen Termine reihenweise verstreichen, wird nach dem dritten Mal nicht
-        mehr gelesen.
-      </p>
-
       {wochen.length > 0 && (
         <section style={{ marginBottom: space.xxxl }}>
-          <h2 style={{ fontSize: v("--font-size-h3") }}>Die Wochen</h2>
-          <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginTop: 0 }}>
-            Kein zugesagter Termin, sondern der Vorrat auf die Plätze gelegt: Vergangenes kommt aus
-            dem Versandprotokoll, Kommendes aus der Warteschlange. Verschiebt sich etwas, verschiebt
-            sich die Anzeige mit — verstreichen kann hier nichts.{" "}
-            {gedeckt.offen > 0
-              ? `${gedeckt.belegt} der nächsten Plätze sind gedeckt, ${gedeckt.offen} nicht.`
-              : `Alle ${gedeckt.belegt} kommenden Plätze sind gedeckt.`}
-          </p>
+          <h2 style={{ fontSize: v("--font-size-h3"), display: "flex", alignItems: "center", gap: space.xs }}>
+            Kalender
+            <InfoTooltip ariaLabel="Wie dieser Kalender gefüllt wird" exportNote={false}>
+              Kein zugesagter Termin, sondern der Vorrat auf die Plätze gelegt: Vergangenes kommt aus
+              dem Versandprotokoll, Kommendes aus der Warteschlange. Verschiebt sich etwas,
+              verschiebt sich die Anzeige mit — verstreichen kann hier nichts.
+            </InfoTooltip>
+            <span style={{ fontSize: v("--font-size-small"), fontWeight: 400, color: v("--color-text-muted") }}>
+              {gedeckt.offen > 0
+                ? `${gedeckt.belegt} gedeckt, ${gedeckt.offen} offen`
+                : `alle ${gedeckt.belegt} gedeckt`}
+            </span>
+          </h2>
           <Wochenplan wochen={wochen} heuteIso={heuteIso} />
         </section>
       )}
 
       <section style={{ ...karte, marginBottom: space.xxxl }}>
-        <h2 style={{ fontSize: v("--font-size-h3"), marginTop: 0 }}>Vorrat</h2>
+        <h2 style={{ fontSize: v("--font-size-h3"), marginTop: 0, display: "flex", alignItems: "center", gap: space.xs }}>
+          Vorrat
+          <InfoTooltip ariaLabel="Wozu der Puffer" exportNote={false}>
+            Ohne Puffer bricht die Kadenz beim ersten vollen Arbeitstag — und genau dann fällt es
+            auf.
+          </InfoTooltip>
+        </h2>
         <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), margin: 0 }}>
-          {fertig} von {PUFFER_VOR_START} Posts fertig.{" "}
-          {fehlend > 0
-            ? `Es fehlen noch ${fehlend}. Ohne Puffer bricht die Kadenz beim ersten vollen Arbeitstag — und genau dann fällt es auf.`
-            : "Der Puffer steht. Der erste Post kann raus."}
+          {fertig} von {PUFFER_VOR_START} fertig{fehlend > 0 ? `, ${fehlend} fehlen` : " — der Puffer steht"}.
         </p>
       </section>
 
@@ -128,12 +129,17 @@ export default async function RedaktionPlanung() {
           dem Blick der Planung: was davon sich heute bauen ließe und was auf
           Daten wartet. Zwei Listen wären zwei Ordnungen für dieselbe Sache. */}
       <section style={{ marginBottom: space.xxxl }}>
-        <h2 style={{ fontSize: v("--font-size-h3") }}>Der Vorrat an Themen</h2>
-        <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginTop: 0 }}>
-          {FAMILIEN.length} Geschichten-Familien — dieselbe Liste, die in der Entwicklung die
-          Kategorien bildet. Was hier als „Daten da" steht, lässt sich ohne neuen Datenbestand
-          bauen.
-        </p>
+        <h2 style={{ fontSize: v("--font-size-h3"), display: "flex", alignItems: "center", gap: space.xs }}>
+          Themen
+          <InfoTooltip ariaLabel="Woher diese Liste kommt" exportNote={false}>
+            Dieselbe Liste, die in der Entwicklung die Kategorien bildet. Was als „Daten da" steht,
+            lässt sich ohne neuen Datenbestand bauen.
+          </InfoTooltip>
+          <span style={{ fontSize: v("--font-size-small"), fontWeight: 400, color: v("--color-text-muted") }}>
+            {FAMILIEN.length}
+          </span>
+        </h2>
+
         <div style={{ display: "flex", flexDirection: "column", gap: space.xs }}>
           {FAMILIEN.map((f) => (
             <div
@@ -166,7 +172,7 @@ export default async function RedaktionPlanung() {
       </section>
 
       <section style={{ marginBottom: space.xxxl }}>
-        <h2 style={{ fontSize: v("--font-size-h3") }}>Drei Plätze pro Woche</h2>
+        <h2 style={{ fontSize: v("--font-size-h3") }}>Plätze</h2>
         <div style={{ display: "flex", flexDirection: "column", gap: space.md }}>
           {SLOTS.map((s) => (
             <div key={s.tag} style={{ ...karte, display: "flex", gap: space.lg, alignItems: "baseline" }}>
@@ -175,15 +181,17 @@ export default async function RedaktionPlanung() {
             </div>
           ))}
         </div>
-        <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginTop: space.md }}>
-          Wichtiger als ein vierter Post: täglich eine halbe Stunde in fremden Kommentarspalten. Bei
-          einem Account ohne bestehende Reichweite ist das in den ersten Monaten der eigentliche
-          Hebel.
-        </p>
+
       </section>
 
       <section>
-        <h2 style={{ fontSize: v("--font-size-h3") }}>Vor jedem Post</h2>
+        <h2 style={{ fontSize: v("--font-size-h3"), display: "flex", alignItems: "center", gap: space.xs }}>
+          Regeln
+          <InfoTooltip ariaLabel="Wo diese Regeln wirken" exportNote={false}>
+            Jede Regel gehört zu einer der Prüfungen und erscheint dort als Prüfliste, wenn eine
+            Freigabe erteilt wird.
+          </InfoTooltip>
+        </h2>
         <div style={{ display: "flex", flexDirection: "column", gap: space.md }}>
           {REGELN.map((r) => (
             <div key={r.regel} style={karte}>
