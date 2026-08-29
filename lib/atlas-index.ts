@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { releaseFreigegeben } from "./release-plan";
 
 // Gestufte Index-Freischaltung des Solar-Atlas (Plan: docs/atlas-index-wellen.md).
 // Solange eine Ebene hier nicht freigeschaltet ist, bleibt sie noindex (Pilot) und
@@ -150,10 +151,47 @@ export function atlasLevelReleased(level: AtlasLevel): boolean {
   return RELEASED[level];
 }
 
-/** Ist eine konkrete Atlas-Seite indexierbar? Für Gemeinden zählt zusätzlich die
- *  Anlagen-Schwelle. */
-export function atlasIsIndexable(level: AtlasLevel, anlagen?: number): boolean {
-  if (!RELEASED[level]) return false;
+/**
+ * Ein EINZELNER Ort kann freigegeben sein, auch wenn seine Ebene gesperrt ist.
+ *
+ * WOZU (29.08.2026): Die Stadt Heringen (Werra) hat nach unserer Outreach-Mail
+ * eine eigene Meldung veröffentlicht und darin unsere Gemeindeseite verlinkt —
+ * der erste redaktionelle Verweis, den dieses Projekt je bekommen hat. Die Seite
+ * stand dabei auf `noindex, nofollow`. Das `nofollow` ist der teure Teil: Es
+ * hindert die Empfehlung daran, in die Seiten weiterzufließen, für die sie
+ * gedacht war, und macht damit genau den Ertrag zunichte, den der Outreach
+ * erzeugt. Eine Seite zu sperren, auf die eine Gemeinde öffentlich verweist, ist
+ * der einzige Zustand, der sich nicht begründen lässt.
+ *
+ * WARUM NICHT DIE GANZE EBENE: Die Messung vom 18./29.08.2026 gilt unverändert —
+ * unterhalb der Mittelstadt gibt es keine Nachfrage, und ein Wettbewerber mit
+ * 5.230 indexierten Ortsseiten holt daraus neun Platzierungen, keine auf Seite 1.
+ * `RELEASED.gemeinde` bleibt deshalb `false`.
+ *
+ * WARUM NICHT AUTOMATISCH aus der Rückläufer-Datenbank: Das wäre die Automatik,
+ * gegen die der Releaseplan gebaut wurde — eine Seite ginge live, weil ein
+ * Datenbankfeld kippt, ohne dass jemand hingesehen hat. Der Eintrag bleibt eine
+ * Entscheidung im Plan; `npm run kommunen:veroeffentlicht` meldet die Kandidaten.
+ *
+ * Dieselbe Bauform wie der Nidda-Fall bei den Förderseiten: ZWECK IST DER BELEG,
+ * NICHT DIE SICHTBARKEIT. Wer daraus ableitet, Ortsseiten ließen sich wieder
+ * pauschal freischalten, hat die Begründung nicht gelesen.
+ */
+export function atlasOrtEinzelfreigabe(ags: string, heute: Date = new Date()): boolean {
+  return releaseFreigegeben("atlas-gemeinde", ags, heute);
+}
+
+/**
+ * Ist eine konkrete Atlas-Seite indexierbar?
+ *
+ * Für Gemeinden gilt zusätzlich die Anlagen-Schwelle — und zwar AUCH bei
+ * Einzelfreigabe: Ein Ort ohne nennenswerten Bestand hätte auch mit Verweis
+ * keinen Eigenwert, und eine dünne Seite zu indexieren, weil jemand auf sie
+ * zeigt, wäre das Doorway-Risiko mit zusätzlichem Publikum.
+ */
+export function atlasIsIndexable(level: AtlasLevel, anlagen?: number, ags?: string): boolean {
+  const frei = RELEASED[level] || (level === "gemeinde" && !!ags && atlasOrtEinzelfreigabe(ags));
+  if (!frei) return false;
   if (level === "gemeinde") return (anlagen ?? 0) >= GEMEINDE_MIN_ANLAGEN;
   return true;
 }

@@ -9,7 +9,12 @@ import { IconArrowRight } from "../../../../../../components/Icons";
 import { v, space, pad } from "../../../../../../lib/theme";
 import { pageMetadata } from "../../../../../../lib/seo";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../../../lib/json-ld";
-import { atlasIsIndexable, atlasLevelReleased, atlasRobots } from "../../../../../../lib/atlas-index";
+import {
+  atlasIsIndexable,
+  atlasLevelReleased,
+  atlasOrtEinzelfreigabe,
+  atlasRobots,
+} from "../../../../../../lib/atlas-index";
 import ZubauChart from "../../../../../../components/atlas/ZubauChart";
 import GemeindeHero, { type KpiOwnerData } from "../../../../../../components/atlas/GemeindeHero";
 import GemeindePeerTiles from "../../../../../../components/atlas/GemeindePeerTiles";
@@ -123,11 +128,16 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
     : kreisfrei
       ? "Bundesland"
       : "Landkreis";
-  // Anlagenzahl (für die Thin-Schwelle) nur laden, wenn die Gemeinde-Ebene
-  // überhaupt freigeschaltet ist — sonst ist die Seite ohnehin noindex.
-  const anlagen = atlasLevelReleased("gemeinde")
-    ? (await getRegionAtlasData(region.region_id)).solar.total_count
-    : 0;
+  // Anlagenzahl (für die Thin-Schwelle) nur laden, wenn die Seite überhaupt
+  // indexierbar werden kann — sonst ist sie ohnehin noindex und der Abruf wäre
+  // reine Last. Neben der Ebene zählt dabei die Einzelfreigabe: Ein Ort, der uns
+  // nach dem Outreach öffentlich verlinkt, ist freigegeben, obwohl die Ebene es
+  // nicht ist (Begründung an `atlasOrtEinzelfreigabe`).
+  const einzeln = atlasOrtEinzelfreigabe(region.region_id);
+  const anlagen =
+    atlasLevelReleased("gemeinde") || einzeln
+      ? (await getRegionAtlasData(region.region_id)).solar.total_count
+      : 0;
   return {
     ...pageMetadata({
       // Führendes Wort + Ortsname — das Muster, mit dem diese Seitengattung
@@ -149,7 +159,7 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
       description: `Photovoltaik in ${region.name}: Anlagenzahl, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister — je Einwohner und im Vergleich zum ${bezugsebene}.`,
       path: `/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`,
     }),
-    robots: atlasRobots(atlasIsIndexable("gemeinde", anlagen)),
+    robots: atlasRobots(atlasIsIndexable("gemeinde", anlagen, region.region_id)),
   };
 }
 

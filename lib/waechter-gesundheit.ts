@@ -77,6 +77,7 @@ export interface Gesundheit {
   problem: string | null;
   marktpreiseStand: string | null;
   foerderPruefungStand: string | null;
+  kostenwacheStand: string | null;
 }
 
 type ReportZeile = {
@@ -141,6 +142,23 @@ async function foerderPruefungStand(): Promise<string | null> {
   return data?.[0]?.last_verified ?? null;
 }
 
+/**
+ * Jüngster abgelegter Tageswert der Kostenwache — ihr Lebenszeichen.
+ *
+ * Bewusst über alle Projekte hinweg das jüngste Datum: Die Frage hier ist „läuft
+ * die Erfassung noch", nicht „ist jedes Projekt erfasst". Fällt ein einzelnes
+ * Projekt aus, meldet das der Gesundheitscheck selbst, mit Namen.
+ */
+async function kostenwacheStand(): Promise<string | null> {
+  if (!supabase) return null;
+  const { data } = await supabase
+    .from("kosten_tageswerte")
+    .select("tag")
+    .order("tag", { ascending: false })
+    .limit(1);
+  return data?.[0]?.tag ?? null;
+}
+
 function pruefzeilen(job: WaechterJob, heuteIso: string, offen: ReturnType<typeof faelligkeiten>): PruefZeile[] {
   return pruefEintraege(job).map((e: PruefEintrag) => ({
     was: e.was,
@@ -175,9 +193,10 @@ export async function gesundheit(heuteIso: string): Promise<Gesundheit> {
     }
   }
 
-  const [preise, foerder] = await Promise.all([
+  const [preise, foerder, kosten] = await Promise.all([
     marktpreiseStand().catch(() => null),
     foerderPruefungStand().catch(() => null),
+    kostenwacheStand().catch(() => null),
   ]);
 
   const zeilen: Zeile[] = WAECHTER.map((job) => {
@@ -195,7 +214,14 @@ export async function gesundheit(heuteIso: string): Promise<Gesundheit> {
     const beobachtung: Beobachtung = {
       letzteMeldung: letzte?.created_at ?? null,
       pruefdatum,
-      datenbankStand: job.dbQuelle === "marktpreise" ? preise : job.dbQuelle === "foerderkatalog" ? foerder : null,
+      datenbankStand:
+        job.dbQuelle === "marktpreise"
+          ? preise
+          : job.dbQuelle === "foerderkatalog"
+            ? foerder
+            : job.dbQuelle === "kostenwache"
+              ? kosten
+              : null,
       ablageLesbar,
     };
 
@@ -226,5 +252,6 @@ export async function gesundheit(heuteIso: string): Promise<Gesundheit> {
     problem,
     marktpreiseStand: preise,
     foerderPruefungStand: foerder,
+    kostenwacheStand: kosten,
   };
 }

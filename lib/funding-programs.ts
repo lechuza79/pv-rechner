@@ -1016,11 +1016,28 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     status: "eingestellt", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Dach-PV seit Dez. 2024 nicht mehr förderfähig — nur noch Balkonkraftwerke",
-    rates: [{ label: "Balkonkraftwerk", value: "0,40 €/Wp, max. 320 € (mit München-Pass 0,50 €/Wp, max. 400 €)" }],
+    rates: [{ label: "Balkonkraftwerk", value: "0,40 €/Wp bis 800 Wp je Wohneinheit, höchstens 50 % der Kosten (mit München-Pass 95 % der förderfähigen Kosten)" }],
     conditions: [
       "Für Dach-Photovoltaik seit dem 18.12.2024 keine neuen Anträge mehr möglich",
       "nur noch Stecker-Solargeräte (Balkonkraftwerke) werden gefördert",
+      "Der Antrag ist vor Bestellung oder Kauf zu stellen; eine Rechnung vor der Antragstellung führt zur Ablehnung",
     ],
+    // Am 29.08.2026 an der Amtsseite des Balkon-Bausteins nachgelesen
+    // (stadt.muenchen.de/service/info/sachgebiet-forderprogramm-klimaneutrale-
+    // gebaude/10414151/), Wortlaut: „Der Fördersatz beträgt 0,40 Euro je Wp, bis
+    // 800 Wp je Wohneinheit, jedoch maximal 50 Prozent der Kosten. Für
+    // München-Pass Inhaber*innen beträgt der Fördersatz 95 % der förderfähigen
+    // Investitionskosten."
+    //
+    // Zwei eigene Angaben waren falsch, beide ohne Wirkung aufs Geld (der
+    // Eintrag steht auf `eingestellt`, es wird nichts abgezogen), beide trotzdem
+    // eine falsche Auskunft:
+    //  * Der 50-%-Deckel auf die Kosten fehlte ganz. Bei einem 800-W-Set für
+    //    400 € sind es 200 €, nicht 320 €.
+    //  * „mit München-Pass 0,50 €/Wp, max. 400 €" steht so nirgends — der
+    //    München-Pass-Satz ist ein PROZENTSATZ auf die Kosten (95 %), keine
+    //    Zahl je Wp. Woher die 0,50/400 stammen, ist nicht mehr feststellbar;
+    //    sie sind ersatzlos raus, statt sie umzurechnen.
     combinableWith: BUND,
     foerdert: ["balkon"],
   },
@@ -1167,14 +1184,20 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://bauen.osnabrueck.de/de/sanieren-modernisieren/osnabrueck-saniert/",
     stand: "Juni 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Zuschuss für den Anlagenteil über 8 kWp (oder 30 % der Kosten)",
+    coveredCosts: "Zuschuss für den Anlagenteil über 8 kWp, gedeckelt bei 30 % der Netto-Kosten",
     maxFoerderung: "max. 20.000 € je Sanierungsobjekt",
     rates: [
-      { label: "PV-Anlage", value: "400 €/kWp für Leistung über 8 kWp, oder 30 % der Kosten" },
+      { label: "PV-Anlage", value: "400 €/kWp für Leistung über 8 kWp — höchstens 30 % der förderfähigen Netto-Kosten" },
     ],
     conditions: [
       "Antrag vor Auftragsvergabe; Windhundverfahren, kein Rechtsanspruch",
       "Gefördert wird nur der kWp-Anteil oberhalb von 8 kWp",
+      // Am 29.08.2026 am Richtlinien-Volltext (Stand Juni 2025) nachgelesen: Die
+      // beiden Zahlen sind KEINE Wahlmöglichkeit. Die Richtlinie schreibt über
+      // die Tabelle „Die Zuschusshöhe wird nach zwei Kriterien berechnet. Der
+      // kleinere Wert gibt den Ausschlag." Unser „oder" las sich wie ein
+      // Wahlrecht — und wer eine Wahl liest, nimmt den größeren Betrag an.
+      "Von beiden Werten gilt der kleinere",
       // Ergänzt 16.08.2026 aus der Förderrichtlinie (Stand Mai 2025, Abschnitt B):
       // In Niedersachsen gilt eine PV-Pflicht nach § 32a NBauO. Wer sie erfüllt,
       // bekommt für diesen Teil nichts — ohne den Hinweis rechnet sich jemand
@@ -1327,6 +1350,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Vergabe nach Eingang der Anträge (Windhundprinzip)",
       "Haushaltsmittel auf 20.000 € pro Jahr begrenzt",
       "Vorerst befristet bis zum 31.12.2026, vorbehaltlich der Haushaltslage",
+      "Contracting, Leasing und Pacht sind ausdrücklich nicht förderfähig",
     ],
     combinableWith: BUND,
     pvPerKwp: 100, pvCap: 1000, speicherPerKwh: 200, speicherCap: 1000,
@@ -1637,7 +1661,9 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Antragsberechtigt sind Privatpersonen mit Erstwohnsitz in Wittlich",
       "Mieter können ebenfalls einen Antrag stellen",
       "Der Antrag wird nach Installation und Registrierung gestellt",
-      "Gefördert wird höchstens ein Balkonkraftwerk je Person",
+      "Gefördert wird höchstens ein Balkonkraftwerk je Haushalt",
+      "Die Anlage muss ab dem 01.01.2024 neu angeschafft worden sein; der Wechselrichter darf höchstens 800 W leisten",
+      "Die Anlage ist fünf Jahre lang zu betreiben",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
@@ -1792,16 +1818,25 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     coveredCosts: "Zurzeit keine kommunale Förderung — die früheren Programme sind ausgelaufen",
     rates: [{ label: "Alle Bausteine", value: "derzeit nicht aufgelegt" }],
     conditions: [
-      "Die Gemeinde hat für das laufende Jahr keine Förderprogramme vorgesehen",
-      "Gefördert wurden bis 2023 Stecker-Solar-Anlagen mit 50 % des Kaufpreises, höchstens 200 €",
-      "Ebenfalls bis 2023 gefördert: Erdwärmesonden mit 15 € je Bohrmeter, höchstens 1.500 €",
-      "Alle genannten Töpfe wurden vollständig ausgeschöpft",
+      "Die Gemeinde hat zuletzt für 2025 mitgeteilt, dass keine Förderprogramme vorgesehen sind; für 2026 steht nichts Neues auf der Seite",
+      "Zuletzt gefördert wurden 2024 Stecker-Solar-Anlagen bis 600 W mit 50 % des Kaufpreises, höchstens 200 € je Anlage und eine Anlage je Wohneinheit",
+      "Ebenfalls gefördert: Erdwärmesonden mit 15 € je Bohrmeter, höchstens 1.500 € je Grundstück",
+      "Der Topf 2024 war am 16.09.2024 ausgeschöpft, also nach vier Wochen",
     ],
     combinableWith: BUND,
     // Der Eintrag bleibt sichtbar, statt zu fehlen: Wer in Senden nach
     // Förderung sucht, findet eine ausführliche Programmseite und soll lesen,
     // dass davon derzeit nichts mehr zu holen ist. Dieselbe Überlegung wie bei
     // Münster. Ohne strukturierten Satz wird nichts abgezogen.
+    //
+    // Am 29.08.2026 an der Amtsseite nachgelesen und dabei ZWEI eigene Angaben
+    // korrigiert, beide ohne Wirkung aufs Geld, beide trotzdem falsch:
+    // „bis 2023" — die Gemeinde förderte Stecker-Solar zuletzt 2024 („Schon am
+    // 16.09.2024 war das Budget für die kommunalen Förderprogramme 2024
+    // ausgeschöpft"), und „für das laufende Jahr" — die Seite sagt wörtlich
+    // „Aktuell (2025) sind keine gemeindlichen Förderprogramme vorgesehen" und
+    // trägt zu 2026 gar nichts. Ein Satz, der ein Jahr behauptet, das die Quelle
+    // nicht nennt, ist derselbe Fehler wie ein erfundenes Prüfdatum.
     foerdert: ["pv", "balkon", "waermepumpe"],
   },
 
@@ -2257,7 +2292,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://www.rodgau.de/de/leben/stadtplanung-umwelt-mobiltaet/umwelt/foerderung-von-balkon-solaranlagen/",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Anteil des Rechnungsbetrags einer Balkonkraftwerk",
+    coveredCosts: "Anteil des Rechnungsbetrags eines Balkonkraftwerks",
     maxFoerderung: "max. 200 € je Anlage",
     rates: [{ label: "Balkonkraftwerk", value: "25 % des Rechnungsbetrags, max. 200 €" }],
     conditions: [
@@ -2714,11 +2749,12 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     coveredCosts: "Hoher Anteil der Gesamtkosten — aber nur für einen einkommensbeschränkten Personenkreis",
     rates: [{ label: "Balkonkraftwerk (nur bei Einkommensgrenze)", value: "60 % der Gesamtkosten" }],
     conditions: [
-      "Antragsberechtigt sind nur Haushalte unterhalb einer Einkommensgrenze: Alleinerziehende unter 50.000 €, Familien mit einem Kind unter 60.000 €, mit zwei Kindern unter 70.000 € Bruttojahreseinkommen",
-      "Ebenfalls berechtigt sind Empfänger von Bürgergeld, Sozialhilfe, Wohngeld oder Kinderzuschlag",
+      "Antragsberechtigt sind nur Haushalte mit kindergeldberechtigten Kindern unterhalb einer Einkommensgrenze: Alleinerziehende mit mindestens einem Kind unter 50.000 €, Familien mit mindestens einem Kind unter 60.000 €, mit mindestens zwei Kindern unter 70.000 € Bruttojahreseinkommen",
+      "Ebenfalls berechtigt sind Empfänger von Bürgergeld, Sozialhilfe, Grundsicherung, Wohngeld oder Kinderzuschlag",
       "Der Antrag ist vor dem Kauf zu stellen; nur der Bewilligungsbescheid begründet einen Anspruch",
       "Mietende brauchen das Einverständnis der Vermieterseite oder der Eigentümergemeinschaft",
-      "Alternativ zahlt die Stadt 60 % direkt an den Händler, der Haushalt trägt 40 %",
+      "Je Haushalt ist nur ein Antrag möglich; Eigenbauten und überwiegend gebrauchte Anlagen sind ausgeschlossen",
+      "Alternativ zahlt die Stadt 60 % direkt an einen ihrer beiden Kooperationspartner, der Haushalt trägt 40 % — bei jedem anderen Händler wird der Zuschuss nachträglich ausgezahlt",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
@@ -2728,6 +2764,21 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // große Mehrheit schlicht falsch. Dieselbe Zurückhaltung wie beim
     // München-Pass, der Tübinger KreisBonusCard und dem Holzgerlinger
     // Familien- und Sozialpass — nur wiegt sie hier am schwersten.
+    //
+    // Am 29.08.2026 am Richtlinien-Volltext nachgelesen (Richtlinie 2023, in
+    // Kraft seit 04.09.2023; Antrags- und Auszahlungsformulare tragen 2026, das
+    // Programm läuft also). Satz und Grenzen sind zellgleich, DREI eigene
+    // Formulierungen waren es nicht — jede für sich ohne Wirkung aufs Geld, weil
+    // hier ohnehin nichts gerechnet wird, und jede trotzdem eine falsche
+    // Auskunft an den, der sie liest:
+    //  * „Alleinerziehende unter 50.000 €" ließ das Kind weg. Die Richtlinie
+    //    verlangt „mit einem oder mehreren kindergeldberechtigten Kindern" —
+    //    ein Single ohne Kind las sich als berechtigt.
+    //  * „mit einem Kind" / „mit zwei Kindern" ließ das „mindestens" weg und
+    //    verengte damit in die Gegenrichtung: Eine Familie mit drei Kindern fällt
+    //    unter die 70.000er-Grenze, nach unserem Satz gar nicht.
+    //  * Die Direktzahlung gilt nur bei zwei namentlich genannten
+    //    Kooperationspartnern, nicht bei „dem Händler".
   },
 
   "reichelsheim-steckersolar": {
