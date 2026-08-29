@@ -694,6 +694,17 @@ Vollständige Vorfallsberichte: `docs/lehren/atlas-performance-2026-07.md`.
 3. **Middleware-Matcher** auf `/dashboard`, `/admin`, `/api/calculations`, `/auth/callback` beschränkt — öffentliche Seiten bleiben statisch.
 4. **CDN-Cache-Header** auf `/api/weather` (s-maxage=900) und `/api/pvgis` (s-maxage=2592000).
 
+### Die Ausgabenbremse pausiert EIN Projekt, nicht das Team — BLOCKER
+
+Vercels eingebaute Notbremse („Pause deployments when the limit is reached") kennt nur einen Schalter für das **ganze Team**. Sie nähme mit dem Filmprojekt (`life-is-a-binge`) auch solar-check.io offline — also ausgerechnet die Seite, die Geld verdienen soll, wegen Kosten, die woanders entstehen. **Der Betreiber hat deshalb entschieden: Pauschal-Abschaltung bleibt AUS**, das Ausgabenlimit steht auf 150 $, und die Bremse wird gezielt gebaut: `app/api/vercel/budget/route.ts` nimmt Vercels Ausgaben-Webhook entgegen, die Entscheidungen liegen in `lib/vercel-budget.ts`.
+
+- **Der Empfänger wohnt in DIESEM Repo, nicht im Filmprojekt.** Er soll das Filmprojekt pausieren; läge er dort, nähme er sich mit dem Pausieren selbst offline und könnte am Ende des Abrechnungszeitraums nicht mehr entpausen — ein Sicherheitsnetz, das genau in dem Moment reißt, in dem es gehalten hat.
+- **Pausiert wird NUR bei 100 %**, die Meldungen bei 50 und 75 % sind Vorwarnung und landen stumm in der Ablage. Am Ende des Abrechnungszeitraums (`type: "endOfBillingCycle"`) wird wieder entpaust. Die Grenze ist `>= 100` und nicht `=== 100`: Führt Vercel je eine höhere Schwelle ein, ist Abschalten die sichere Richtung.
+- **Die Projekt-Kennung ist eine Konstante im Code, KEINE Umgebungsvariable.** Eine Variable ist im Diff unsichtbar und im Dashboard mit einem Tippfehler gesetzt — sie stünde zwischen einer Kostenmeldung und der Abschaltung des falschen Projekts. `zielGeprueft()` wirft beim Laden des Moduls, wenn dort je die Kennung von solar-check.io steht; `lib/__tests__/vercel-budget.test.ts` nagelt beides fest.
+- **Ohne Signatur wird abgewiesen, und ein fehlendes Geheimnis wird NICHT durchgewunken.** Die Adresse ist öffentlich erreichbar; die bequeme Variante („ohne Geheimnis keine Prüfung") verwandelt einen vergessenen Eintrag im Dashboard in einen offenen Abschalt-Knopf für jeden, der die Adresse kennt. Geprüft wird HMAC-SHA1 über den **rohen** Anfragetext (`x-vercel-signature`) — wer erst JSON parst und wieder zusammensetzt, prüft eine andere Zeichenkette als die, die Vercel signiert hat.
+- **Zwei Umgebungsvariablen auf Vercel, nur Production:** `VERCEL_BUDGET_WEBHOOK_SECRET` (die Prüfsumme, die Vercel beim Speichern des Webhooks einmalig anzeigt) und `VERCEL_PAUSE_TOKEN` (Zugriffstoken mit Schreibrecht auf Projekte). **Fehlt oder verfällt eine davon, greift die Bremse nicht** — deshalb meldet der Fehlschlag als Entscheidung an den Betreiber, statt still zu scheitern. Ein Sicherheitsnetz, das lautlos nicht hält, ist schlimmer als keins.
+- **Die Ausgaben-EINSTELLUNG selbst wird nicht per Schnittstelle geändert** — sie gibt nur Lesezugriff her (vier Schreibwege am 11.08.2026 erfolglos probiert). Nicht erneut daran versuchen; Betrag und Webhook-Adresse trägt der Betreiber im Dashboard ein.
+
 **Bei Kostenanalyse:** im Vercel-Usage-Dashboard immer nach Projekt filtern (`projectId`-URL-Parameter), sonst siehst du Org-Gesamtzahlen und fixst das falsche Projekt. Details: `docs/lehren/vercel-build-und-kosten.md`.
 
 ## Wächter-Gate — BLOCKER für alle Wächter
