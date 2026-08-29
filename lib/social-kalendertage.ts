@@ -112,8 +112,17 @@ export type FreiBand = {
   echtesEnde: boolean;
   /** Was das Band benennt. */
   text: string;
-  /** Ein Tag = Punkt, mehrere = Balken. */
-  einTag: boolean;
+  /**
+   * WAS für ein Zeitraum das ist — und daran hängt die Darstellung.
+   *
+   * Vorher entschied die BREITE in dieser Woche: ein Tag = Punkt, mehrere =
+   * Balken. Das war die falsche Frage. Am 14.09.2026 lag der letzte Tag der
+   * bayerischen Sommerferien allein am Montag; daraus wurde ein Punkt, der wie
+   * ein Feiertag aussah — sechs Wochen Ferien, dargestellt als Ereignis ohne
+   * Dauer. Ein Ferienzeitraum hat immer Ausdehnung; dass davon nur ein Tag ins
+   * Sichtfeld ragt, ändert daran nichts. Ein Feiertag dagegen HAT keine Dauer.
+   */
+  art: "feiertag" | "ferien";
 };
 
 /**
@@ -147,7 +156,7 @@ export function freiBaender(montagIso: string): FreiBand[] {
       bisIndex: i,
       echterBeginn: true,
       echtesEnde: true,
-      einTag: true,
+      art: "feiertag",
       text: regional
         ? `${name} (${regional.laender} ${regional.laender === 1 ? "Land" : "Länder"})`
         : `${name} (bundesweit)`,
@@ -177,7 +186,7 @@ export function freiBaender(montagIso: string): FreiBand[] {
         // ist der Rand hier kein Anfang, sondern eine Schnittkante.
         echterBeginn: !ferienAmRand(montagIso, -1),
         echtesEnde: !ferienAmRand(montagIso, 7),
-        einTag: start === ende,
+        art: "ferien",
         // Singular wird gebraucht, seit die Schwelle bei eins liegt.
         text: `Ferien in ${laender} ${min === 1 && max === 1 ? "Land" : "Ländern"}`,
       });

@@ -18,6 +18,10 @@ import { feiertagInfo, ferienJeLand, type FreiBand } from "../../lib/social-kale
 // beginnt; eine eigene Breitenrechnung wäre eine zweite Wahrheit, die beim
 // nächsten Umbau danebenläuft.
 //
+// PUNKT ODER BALKEN entscheidet die ART, nicht die Breite. Ferien sind immer
+// ein Balken — auch wenn nur ihr letzter Tag in diese Woche ragt. Vorher zählte
+// die Breite, und der letzte Ferientag stand als Punkt da wie ein Feiertag.
+//
 // DIE ECKEN SAGEN ETWAS: rund dort, wo der Zeitraum wirklich anfängt oder
 // aufhört, gerade dort, wo er über den Wochenrand weiterläuft. Ein Band, das an
 // beiden Enden rund ist, obwohl die Ferien noch zwei Wochen gehen, behauptet ein
@@ -43,7 +47,9 @@ export function FreiBaender({ baender, raster, onDetail }: {
   // Strecken zuerst, Punkte danach: Die Reihenfolge im Baum entscheidet, was
   // oben liegt. Der Punkt gehört auf das Band, weil der Feiertag im
   // Ferienzeitraum liegt und nicht daneben.
-  const sortiert = [...baender].sort((a, b) => Number(a.einTag) - Number(b.einTag));
+  const sortiert = [...baender].sort(
+    (a, b) => Number(a.art === "feiertag") - Number(b.art === "feiertag"),
+  );
 
   return (
     <div style={{ ...raster, minHeight: 20, alignItems: "center" }}>
@@ -56,9 +62,9 @@ export function FreiBaender({ baender, raster, onDetail }: {
             gridRow: 1,
             display: "flex",
             alignItems: "center",
-            justifyContent: b.einTag ? "center" : "stretch",
+            justifyContent: b.art === "feiertag" ? "center" : "stretch",
             minWidth: 0,
-            zIndex: b.einTag ? 1 : 0,
+            zIndex: b.art === "feiertag" ? 1 : 0,
             cursor: "pointer",
           }}
         >
@@ -68,8 +74,8 @@ export function FreiBaender({ baender, raster, onDetail }: {
             // Der Titel trägt den NAMEN, der Rumpf sagt, wo er gilt. Beim Balken
             // steht der Name schon im Balken; dort ist der Titel der Zeitraum
             // und der Rumpf die Länderliste.
-            title={b.einTag ? (feiertagInfo(b.tagIso)?.name ?? "Feiertag") : b.text}
-            trigger={b.einTag ? <Punkt /> : <Balken band={b} />}
+            title={b.art === "feiertag" ? (feiertagInfo(b.tagIso)?.name ?? "Feiertag") : b.text}
+            trigger={b.art === "feiertag" ? <Punkt /> : <Balken band={b} />}
           >
             <Inhalt band={b} />
           </InfoTooltip>
@@ -145,7 +151,7 @@ function Balken({ band }: { band: FreiBand }) {
  * halben Kalender zu.
  */
 function Inhalt({ band }: { band: FreiBand }) {
-  if (band.einTag) {
+  if (band.art === "feiertag") {
     return <>{feiertagInfo(band.tagIso)?.wo ?? "Gesetzlicher Feiertag"}</>;
   }
   const zeilen = ferienJeLand(band.tagIso).slice(0, 5);

@@ -255,6 +255,22 @@ describe("Ferienbänder", () => {
     }
   });
 
+  it("bleibt ein Band, auch wenn nur der letzte Ferientag in die Woche ragt", () => {
+    // 14.09.2026 ist der letzte Tag der bayerischen Sommerferien und liegt als
+    // einziger Ferientag in seiner Woche. Vorher entschied die BREITE über die
+    // Darstellung — daraus wurde ein Punkt, der wie ein Feiertag aussah: sechs
+    // Wochen Ferien als Ereignis ohne Dauer. Ein Feiertag hat keine Dauer, ein
+    // Ferienzeitraum immer; dass nur ein Tag ins Sichtfeld ragt, ändert daran
+    // nichts.
+    const band = freiBaender("2026-09-14").find((b) => b.text.startsWith("Ferien"));
+    expect(band!.vonIndex).toBe(band!.bisIndex);
+    expect(band!.art).toBe("ferien");
+    // Und die Enden sagen die Wahrheit: Der Zeitraum läuft aus der Vorwoche
+    // herein und hört hier wirklich auf.
+    expect(band!.echterBeginn).toBe(false);
+    expect(band!.echtesEnde).toBe(true);
+  });
+
   it("nennt die Spanne, wenn sich die Zahl innerhalb des Bandes ändert", () => {
     // Woche ab 10.08.2026: Montag dreizehn Länder, Sonntag sieben. Nur den
     // Höchstwert zu nennen wäre eine Aussage über EINEN Tag, quer über sieben
