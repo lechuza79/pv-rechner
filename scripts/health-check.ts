@@ -987,8 +987,11 @@ export async function messeKosten(jetzt: Date): Promise<KostenBefund> {
       bestand.unshift(heute);
     }
 
+    // Number() auch hier: Große Ganzzahlen können aus der Datenbank als
+    // Zeichenkette ankommen, und dann verglichen sich zwei Strings — der Sprung
+    // fiele stumm aus, ohne Fehler und ohne dass es jemandem auffiele.
     const urteil = beurteileKostenTag(
-      { tag: heute.tag, aufbauten: heute.aufbauten, adressen: heute.adressen },
+      { tag: heute.tag, aufbauten: Number(heute.aufbauten), adressen: Number(heute.adressen) },
       bestand.map((z) => ({ tag: z.tag, aufbauten: Number(z.aufbauten), adressen: Number(z.adressen) })),
     );
 
