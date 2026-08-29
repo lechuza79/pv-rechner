@@ -3,6 +3,7 @@ import { liveCities, archivedCities, slugify, publishedBundeslaender, fundingFor
 import { landProgramBundeslaender } from "../lib/funding-programs";
 import { getFundingPrograms } from "../lib/funding-data";
 import { atlasLevelReleased } from "../lib/atlas-index";
+import { freigegebeneOrte } from "../lib/release-plan";
 import { BUNDESLAENDER } from "../lib/mastr-regions";
 import { RATGEBER } from "../lib/ratgeber";
 import { standLastModIso } from "../lib/stand";
@@ -128,6 +129,35 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       for (const p of await getKreisPfade()) {
         atlasPages.push({
           url: `${BASE_URL}/solar-atlas/${p.bundesland}/${p.kreis}`,
+          lastModified: mastrStand,
+          changeFrequency: "monthly",
+          priority: 0.5,
+        });
+      }
+    } catch {
+      // bewusst still: siehe Kommentar oben
+    }
+  }
+
+  // Einzeln freigegebene Gemeinden. Die EBENE bleibt gesperrt (dort gibt es keine
+  // Nachfrage); freigegeben sind nur Orte, die uns nach dem Outreach öffentlich
+  // verlinkt haben — Begründung an `atlasOrtEinzelfreigabe` in lib/atlas-index.
+  // Eine indexierbare Seite, die in keiner Sitemap steht, wäre nur halb
+  // freigegeben: Google fände sie über den externen Verweis, aber ohne unser
+  // eigenes Signal, dass wir sie für vollwertig halten.
+  //
+  // Der Slug-Pfad kommt wie bei den Kreisen aus der Datenbank, nicht aus einer
+  // Liste im Code — er ist dieselbe Quelle, aus der die Seite selbst aufgelöst
+  // wird. Fällt die Abfrage aus, fehlt der Eintrag, statt den Build zu kippen.
+  const einzelOrte = freigegebeneOrte("atlas-gemeinde").filter((ags) => ags.length === 8);
+  if (einzelOrte.length && !atlasLevelReleased("gemeinde")) {
+    try {
+      const { getGemeindePfad } = await import("../lib/atlas");
+      for (const ags of einzelOrte) {
+        const p = await getGemeindePfad(ags);
+        if (!p) continue;
+        atlasPages.push({
+          url: `${BASE_URL}/solar-atlas/${p.bundesland}/${p.kreis}/${p.gemeinde}`,
           lastModified: mastrStand,
           changeFrequency: "monthly",
           priority: 0.5,
