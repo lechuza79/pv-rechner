@@ -34,6 +34,19 @@ import { PRUEFSTAND, faelligkeiten } from "../lib/pruefstand";
 import { RELEASE_PLAN, planMeldungen } from "../lib/release-plan";
 import { sollWarnen, warnstufe } from "../lib/social-ablauf";
 import { paramsToRow } from "../lib/types";
+import {
+  BASIS_TAGE,
+  KOSTEN_PROJEKTE,
+  KOSTEN_TEAM_ID,
+  KOSTENWACHE_ZUGANG,
+  PROTOKOLL_AUFBEWAHRUNG_TAGE,
+  SPRUNG_FAKTOR,
+  beurteileKostenTag,
+  groesstesVielfaches,
+  leseGruppen,
+  menge,
+  zuBeurteilenderTag,
+} from "../lib/kostenwache";
 
 // In der GitHub-Action kommen die Zugangsdaten aus den Repo-Secrets. Lokal
 // standen sie nicht zur Verfügung — der Check fiel dann still auf die feste
@@ -704,6 +717,285 @@ async function messeSocialAblauf(): Promise<SocialAblauf[]> {
   }
 }
 
+// ─── Kostenwache: Mengen je Projekt ──────────────────────────────────────────
+//
+// Sie hängt hier und nicht an einem geplanten Auftrag auf dem Rechner des
+// Betreibers: Die laufen nur, wenn seine App offen ist, und genau daran ist im
+// August schon einmal eine Woche Überwachung ausgefallen, ohne dass es jemand
+// bemerkt hat. Diese Action läuft in GitHubs Rechenzentrum.
+//
+// Der Vergleich braucht einen VOLLEN Tag, der Check läuft alle drei Stunden.
+// Beurteilt wird deshalb immer nur der letzte vollständige Tag, und die Zeile
+// dieses Tages merkt sich, dass gemeldet wurde (`gemeldet_am`). Sonst stünde
+// derselbe Alarm achtmal am Tag im Protokoll, und nach zwei Tagen liest ihn
+// niemand mehr.
+
+/** Token für die Plattform. In der Action aus dem Repo-Geheimnis; lokal
+ *  ersatzweise aus der Anmeldung des Kommandozeilen-Werkzeugs, damit ein Lauf
+ *  auf dem eigenen Rechner dasselbe misst wie der in der Action. Der Wert wird
+ *  nirgends ausgegeben. */
+function vercelToken(): string | null {
+  if (process.env.VERCEL_TOKEN) return process.env.VERCEL_TOKEN;
+  const pfad = resolve(
+    process.env.HOME ?? "",
+    "Library/Application Support/com.vercel.cli/auth.json",
+  );
+  if (!existsSync(pfad)) return null;
+  try {
+    const t = (JSON.parse(readFileSync(pfad, "utf8")) as { token?: string }).token;
+    return typeof t === "string" && t ? t : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Fragt die Laufzeitprotokolle nach Gruppen ab und gibt die Antwort als Text
+ * zurück. `null` heißt: nicht abrufbar — ausdrücklich NICHT „nichts los".
+ */
+async function protokollGruppen(
+  token: string,
+  projectId: string,
+  tag: string,
+  gruppe: "statusCode" | "requestPath",
+): Promise<string | null> {
+  try {
+    const res = await fetch("https://mcp.vercel.com", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "content-type": "application/json",
+        accept: "application/json, text/event-stream",
+      },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        id: 1,
+        method: "tools/call",
+        params: {
+          name: "get_runtime_logs",
+          arguments: {
+            projectId,
+            teamId: KOSTEN_TEAM_ID,
+            environment: "production",
+            since: `${tag}T00:00:00.000Z`,
+            until: `${tag}T23:59:59.999Z`,
+            group_by: gruppe,
+          },
+        },
+      }),
+      signal: AbortSignal.timeout(60000),
+    });
+    if (!res.ok) return null;
+    const roh = await res.text();
+    // Die Antwort kommt als Ereignisstrom; die Nutzlast steht in der data-Zeile.
+    const zeile = roh.match(/^data: (.*)$/m);
+    if (!zeile) return null;
+    const nutzlast = JSON.parse(zeile[1]) as {
+      result?: { content?: { text?: string }[]; isError?: boolean };
+      error?: unknown;
+    };
+    if (nutzlast.error || nutzlast.result?.isError) return null;
+    const text = (nutzlast.result?.content ?? []).map((c) => c.text ?? "").join("\n");
+    return text || null;
+  } catch {
+    return null;
+  }
+}
+
+type KostenZeile = {
+  projekt: string;
+  tag: string;
+  aufbauten: number;
+  adressen: number;
+  gemeldet_am: string | null;
+};
+
+function supabaseZugang(): { url: string; key: string } | null {
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  return url && key ? { url, key } : null;
+}
+
+async function kostenZeilen(projekt: string, bisTag: string): Promise<KostenZeile[] | null> {
+  const z = supabaseZugang();
+  if (!z) return null;
+  try {
+    const r = await fetch(
+      `${z.url}/rest/v1/kosten_tageswerte?select=projekt,tag,aufbauten,adressen,gemeldet_am` +
+        `&projekt=eq.${encodeURIComponent(projekt)}&tag=lte.${bisTag}&order=tag.desc&limit=${BASIS_TAGE + 1}`,
+      { headers: { apikey: z.key, Authorization: `Bearer ${z.key}` }, signal: AbortSignal.timeout(20000) },
+    );
+    if (!r.ok) return null;
+    return (await r.json()) as KostenZeile[];
+  } catch {
+    return null;
+  }
+}
+
+async function kostenSchreiben(zeile: Record<string, unknown>): Promise<boolean> {
+  const z = supabaseZugang();
+  if (!z) return false;
+  try {
+    const r = await fetch(`${z.url}/rest/v1/kosten_tageswerte`, {
+      method: "POST",
+      headers: {
+        apikey: z.key,
+        Authorization: `Bearer ${z.key}`,
+        "Content-Type": "application/json",
+        Prefer: "resolution=merge-duplicates,return=minimal",
+      },
+      body: JSON.stringify(zeile),
+      signal: AbortSignal.timeout(20000),
+    });
+    return r.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function kostenGemeldet(projekt: string, tag: string): Promise<void> {
+  const z = supabaseZugang();
+  if (!z) return;
+  await fetch(
+    `${z.url}/rest/v1/kosten_tageswerte?projekt=eq.${encodeURIComponent(projekt)}&tag=eq.${tag}`,
+    {
+      method: "PATCH",
+      headers: {
+        apikey: z.key,
+        Authorization: `Bearer ${z.key}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify({ gemeldet_am: new Date().toISOString() }),
+      signal: AbortSignal.timeout(20000),
+    },
+  ).catch(() => {});
+}
+
+export type KostenBefund = {
+  zeilen: string[];
+  fuerClaude: string[];
+  warnungen: string[];
+};
+
+/**
+ * Misst, legt ab, urteilt. Der Stichtag wird hereingereicht, damit ein Test
+ * denselben Tag beurteilen kann, ohne von einer Uhr abzuhängen.
+ */
+export async function messeKosten(jetzt: Date): Promise<KostenBefund> {
+  const b: KostenBefund = { zeilen: [], fuerClaude: [], warnungen: [] };
+  const token = vercelToken();
+  const tag = zuBeurteilenderTag(jetzt);
+
+  if (!token) {
+    b.warnungen.push(
+      "Kostenwache: kein Zugang zur Plattform (VERCEL_TOKEN fehlt) — die Tagesmengen wurden weder erfasst " +
+        "noch beurteilt. Kein Urteil heißt hier nicht „in Ordnung“: Die Protokolle werden nur einen Tag " +
+        "aufbewahrt, ein verpasster Tag ist für immer verpasst.",
+    );
+    return b;
+  }
+  if (!supabaseZugang()) {
+    b.warnungen.push(
+      "Kostenwache: keine Datenbank erreichbar — ohne Ablage gibt es kein Vergleichsniveau und damit kein Urteil.",
+    );
+    return b;
+  }
+
+  for (const p of KOSTEN_PROJEKTE) {
+    const bestand = await kostenZeilen(p.schluessel, tag);
+    if (bestand === null) {
+      b.warnungen.push(`Kostenwache ${p.name}: Ablage nicht lesbar — kein Urteil über diesen Tag.`);
+      continue;
+    }
+
+    let heute = bestand.find((z) => z.tag === tag) ?? null;
+
+    // Erst messen, wenn der Tag noch fehlt. Zweimal am Tag dieselbe Abfrage
+    // liefert dasselbe und belastet die Plattform ohne Erkenntnis.
+    if (!heute) {
+      const [statusText, pfadText] = await Promise.all([
+        protokollGruppen(token, p.projectId, tag, "statusCode"),
+        protokollGruppen(token, p.projectId, tag, "requestPath"),
+      ]);
+      const last = statusText ? leseGruppen(statusText) : null;
+      const flaeche = pfadText ? leseGruppen(pfadText) : null;
+
+      if (!last || !flaeche) {
+        b.warnungen.push(
+          `Kostenwache ${p.name}: Der ${tag} war nicht abrufbar — kein Wert abgelegt. ` +
+            `Eine Null wäre hier eine Falschaussage (die Protokolle werden nur ${PROTOKOLL_AUFBEWAHRUNG_TAGE} Tag ` +
+            `aufbewahrt; „nichts gefunden“ heißt fast immer „zu spät gefragt“, nicht „kein Verkehr“).`,
+        );
+        continue;
+      }
+
+      const geschrieben = await kostenSchreiben({
+        projekt: p.schluessel,
+        tag,
+        aufbauten: last.summe,
+        adressen: flaeche.verschiedene,
+        quelle: KOSTENWACHE_ZUGANG.quelle,
+        gruppen_gezeigt: last.gezeigt,
+        gruppen_gesamt: last.verschiedene,
+      });
+      if (!geschrieben) {
+        b.warnungen.push(`Kostenwache ${p.name}: Tageswert für ${tag} konnte nicht abgelegt werden.`);
+        continue;
+      }
+      heute = { projekt: p.schluessel, tag, aufbauten: last.summe, adressen: flaeche.verschiedene, gemeldet_am: null };
+      bestand.unshift(heute);
+    }
+
+    const urteil = beurteileKostenTag(
+      { tag: heute.tag, aufbauten: heute.aufbauten, adressen: heute.adressen },
+      bestand.map((z) => ({ tag: z.tag, aufbauten: Number(z.aufbauten), adressen: Number(z.adressen) })),
+    );
+
+    if (urteil.art === "kein-urteil") {
+      // Ausdrücklich als offener Zustand ausgewiesen, nicht als grün.
+      b.zeilen.push(`Kostenwache ${p.name} (${tag}): ${menge(Number(heute.aufbauten))} Aufbauten, ` +
+        `${menge(Number(heute.adressen))} verschiedene Adressen — noch kein Urteil möglich (${urteil.grund})`);
+      continue;
+    }
+
+    const reihe = bestand.map((z) => ({
+      tag: z.tag,
+      aufbauten: Number(z.aufbauten),
+      adressen: Number(z.adressen),
+    }));
+    const maxLast = groesstesVielfaches(reihe, "aufbauten");
+    const maxFlaeche = groesstesVielfaches(reihe, "adressen");
+    const teil = urteil.groessen
+      .map((g) => `${g.groesse === "aufbauten" ? "Aufbauten" : "Adressen"} ${menge(g.wert)} ` +
+        `(Niveau ${menge(Math.round(g.basis))}, ${g.vielfaches === null ? "—" : `${g.vielfaches.toFixed(2)}×`})`)
+      .join(" · ");
+    b.zeilen.push(
+      `Kostenwache ${p.name} (${tag}): ${teil}; Schwelle ${SPRUNG_FAKTOR}× — ` +
+        `größtes bisher abgelegtes Vielfaches: Last ${maxLast ?? "—"}×, Fläche ${maxFlaeche ?? "—"}×`,
+    );
+
+    if (urteil.art === "sprung") {
+      if (heute.gemeldet_am) continue; // schon gemeldet, nicht achtmal am Tag
+      const details = urteil.groessen
+        .filter((g) => g.gesprungen)
+        .map((g) => `${g.name} liegt bei ${menge(g.wert)} statt der üblichen ${menge(Math.round(g.basis))} ` +
+          `(${g.vielfaches?.toFixed(2)}-faches des Niveaus der Vortage)`)
+        .join("; ");
+      b.fuerClaude.push(
+        `Kostensprung bei ${p.name} am ${tag}: ${details}. ${urteil.satz} ` +
+          `Gemessen sind Mengen, nicht Euro — aber genau diese Mengen treiben den größten Rechnungsposten. ` +
+          `Die Schwelle liegt beim ${SPRUNG_FAKTOR}-fachen des Medians der bis zu ${BASIS_TAGE} Vortage. ` +
+          `Nachsehen: welche Adressen dazugekommen sind, wer sie aufruft (Bot-Kennung, Netzbetreiber), ` +
+          `und ob sie aus dem CDN kommen. Die Schwelle NICHT hochsetzen, damit der Befund verschwindet.`,
+      );
+      await kostenGemeldet(p.schluessel, tag);
+    }
+  }
+
+  return b;
+}
+
 function verdict(seconds: number, limits: { warn: number; fail: number }): "gruen" | "gelb" | "rot" {
   if (seconds >= limits.fail) return "rot";
   if (seconds >= limits.warn) return "gelb";
@@ -1278,6 +1570,16 @@ async function main() {
           `als Admin) setzt die Frist zurück — das dauert zwei Klicks und kann nur jemand mit deinem Konto.`,
     );
   }
+
+  // ── Kostenwache ───────────────────────────────────────────────────────────
+  // Weder Statuscode noch Antwortzeit noch Cache-Treffer beantworten die Frage,
+  // ob die Mengen gerade davonlaufen. Der größte Rechnungsposten hat sich im
+  // August verdreifacht und stand tagelang sichtbar da, ohne dass etwas
+  // angeschlagen hätte — es gab schlicht niemanden, der hinsah.
+  const kosten = await messeKosten(new Date());
+  lines.push(...kosten.zeilen);
+  forClaude.push(...kosten.fuerClaude);
+  warnings.push(...kosten.warnungen);
 
   // ── Cache-Wirksamkeit ─────────────────────────────────────────────────────
   // Kein Zeitmaß, sondern eine Ja/Nein-Frage: Kommt die Seite beim zweiten
