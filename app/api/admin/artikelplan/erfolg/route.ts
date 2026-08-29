@@ -6,6 +6,11 @@ import {
   querySearchAnalyticsByPage,
   querySearchAnalyticsByQuery,
 } from "../../../../../lib/gsc-search-analytics";
+import {
+  analyticsKonfiguriert,
+  aufrufeFuerSeite,
+  herkunftFuerSeite,
+} from "../../../../../lib/vercel-analytics";
 
 // Was eine veröffentlichte Seite WIRKLICH bringt — gegen das, was der Plan
 // vorhergesagt hat.
@@ -53,14 +58,6 @@ export async function GET(req: Request) {
   if (!vorhaben.slug) {
     return NextResponse.json({ fehler: "Das Vorhaben hat keine Adresse." }, { status: 400 });
   }
-  if (!gscConfigured()) {
-    return NextResponse.json({
-      eingerichtet: false,
-      hinweis:
-        "Die Search-Console-Zugangsdaten liegen nur auf der Produktion — lokal gibt es hier nichts zu messen.",
-    });
-  }
-
   // Die Search Console hinkt zwei bis drei Tage nach; ein Fenster bis heute
   // wäre am rechten Rand systematisch zu niedrig.
   const ende = new Date(Date.now() - 3 * 86400_000);
@@ -74,25 +71,54 @@ export async function GET(req: Request) {
   // hätte für jeden einzelnen Ratgeber „null Einblendungen“ gemeldet, während
   // einer davon in 28 Tagen 147 hatte. Der Filter war dabei in Ordnung; die
   // Gegenprobe an einer Seite mit sichtbaren Anfragen lieferte 162.
+  // DIE QUELLEN SIND UNABHÄNGIG VONEINANDER — das war zuerst falsch gebaut:
+  // Fehlte der Search-Console-Zugang, brach die Route ab und lieferte auch die
+  // Besucherzahlen nicht, obwohl deren Zugang stand. Lokal ist genau das der
+  // Normalfall (die Suchdaten liegen nur auf der Produktion), und der Fehler
+  // wäre erst dort aufgefallen, wo beide gehen und man ihn nicht mehr sieht.
   const seite = `${BASE}${vorhaben.slug}`;
   let seitenZeile: { impressions: number; clicks: number; position: number } | null = null;
   let zeilen: { query: string; impressions: number; clicks: number; position: number }[] = [];
-  try {
-    const seiten = await querySearchAnalyticsByPage({
-      startDate: ymd(start),
-      endDate: ymd(ende),
-      urlPrefixFilter: [vorhaben.slug],
-    });
-    seitenZeile = seiten.find((p) => p.url === seite) ?? null;
-    // Die Anfragen sind Beiwerk: Sie sagen, WONACH gesucht wurde, wenn Google
-    // es ausweist. Ihr Fehlen ist selbst eine Auskunft und kein Fehler.
-    zeilen = await querySearchAnalyticsByQuery({
-      startDate: ymd(start),
-      endDate: ymd(ende),
-      pageUrl: seite,
-    });
-  } catch (e) {
-    return NextResponse.json({ fehler: (e as Error).message }, { status: 502 });
+  let sucheFehler: string | null = null;
+  if (gscConfigured()) {
+    try {
+      const seiten = await querySearchAnalyticsByPage({
+        startDate: ymd(start),
+        endDate: ymd(ende),
+        urlPrefixFilter: [vorhaben.slug],
+      });
+      seitenZeile = seiten.find((p) => p.url === seite) ?? null;
+      // Die Anfragen sind Beiwerk: Sie sagen, WONACH gesucht wurde, wenn Google
+      // es ausweist. Ihr Fehlen ist selbst eine Auskunft und kein Fehler.
+      zeilen = await querySearchAnalyticsByQuery({
+        startDate: ymd(start),
+        endDate: ymd(ende),
+        pageUrl: seite,
+      });
+    } catch (e) {
+      sucheFehler = (e as Error).message;
+    }
+  }
+
+  // DIE DRITTE QUELLE: Die Search Console zählt Klicks in der Trefferliste, die
+  // Besuchsmessung zählt, wer wirklich ankommt — und woher. Beides nebeneinander
+  // beantwortet erst die Frage, die den Artikel rechtfertigt: Erreicht die Seite
+  // jemanden, und kommt der über die Suche oder über etwas ganz anderes?
+  // Fehlt der Zugang, wird das gemeldet statt mit Nullen gefüllt.
+  let besuch: { aufrufe: number; besucher: number } | null = null;
+  let herkunft: { herkunft: string | null; aufrufe: number }[] = [];
+  if (analyticsKonfiguriert()) {
+    try {
+      besuch = await aufrufeFuerSeite(vorhaben.slug, start, ende);
+      herkunft = (await herkunftFuerSeite(vorhaben.slug, start, ende, 8)).map((h) => ({
+        herkunft: h.herkunft,
+        aufrufe: h.aufrufe,
+      }));
+    } catch {
+      // Ein Ausfall dieser Quelle darf die Messung nicht kippen — die
+      // Suchdaten stehen unabhängig davon.
+      besuch = null;
+    }
   }
 
   const einblendungen = seitenZeile?.impressions ?? 0;
@@ -105,7 +131,10 @@ export async function GET(req: Request) {
     (vorhaben.messung.nebenbegriffe ?? []).reduce((s, n) => s + n.volumen, 0);
 
   return NextResponse.json({
-    eingerichtet: true,
+    // Je Quelle einzeln, damit die Anzeige sagen kann, WAS fehlt — „nicht
+    // eingerichtet" über allem wäre bei einer von zwei Quellen falsch.
+    sucheGemessen: gscConfigured() && !sucheFehler,
+    sucheFehler,
     thema: vorhaben.thema,
     slug: vorhaben.slug,
     zeitraum: { start: ymd(start), ende: ymd(ende), tage: TAGE },
@@ -121,6 +150,9 @@ export async function GET(req: Request) {
     // ins Dunkle. Dieselbe Kennzahl, die der SEO-Wächter für Seitenfamilien
     // fordert, hier je Artikel.
     anteilSichtbar: einblendungen > 0 ? sichtbareEinblendungen / einblendungen : null,
+    besuchGemessen: analyticsKonfiguriert(),
+    besuch,
+    herkunft,
     anfragen: zeilen
       .sort((a, b) => b.impressions - a.impressions)
       .slice(0, 10)

@@ -24,14 +24,18 @@ interface Anfrage {
 }
 
 interface Ergebnis {
-  eingerichtet: boolean;
-  hinweis?: string;
+  /** Je Quelle einzeln — eine kann fehlen, während die andere liefert. */
+  sucheGemessen?: boolean;
+  sucheFehler?: string | null;
   zeitraum?: { start: string; ende: string; tage: number };
   vorhergesagtesVolumen?: number;
   einblendungen?: number;
   klicks?: number;
   position?: number | null;
   anteilSichtbar?: number | null;
+  besuchGemessen?: boolean;
+  besuch?: { aufrufe: number; besucher: number } | null;
+  herkunft?: { herkunft: string | null; aufrufe: number }[];
   anfragen?: Anfrage[];
 }
 
@@ -105,7 +109,7 @@ export function ErfolgMessen({ thema }: { thema: string }) {
     }
   }
 
-  const satz = ergebnis?.eingerichtet ? deutung(ergebnis) : null;
+  const satz = ergebnis?.sucheGemessen ? deutung(ergebnis) : null;
 
   return (
     <div style={{ marginTop: 0 }}>
@@ -139,20 +143,7 @@ export function ErfolgMessen({ thema }: { thema: string }) {
         </p>
       )}
 
-      {ergebnis && !ergebnis.eingerichtet && (
-        <p
-          style={{
-            fontSize: 13,
-            color: v("--color-text-muted"),
-            marginTop: space.sm,
-            maxWidth: 620,
-          }}
-        >
-          {ergebnis.hinweis}
-        </p>
-      )}
-
-      {ergebnis?.eingerichtet && (
+      {ergebnis && (
         <div style={{ marginTop: space.md, fontSize: 13 }}>
           <div style={{ display: "flex", gap: space.xxl, flexWrap: "wrap", marginBottom: space.sm }}>
             <div>
@@ -161,22 +152,40 @@ export function ErfolgMessen({ thema }: { thema: string }) {
               </div>
               <div style={{ color: v("--color-text-muted") }}>vorhergesagt (Suchen/Mo)</div>
             </div>
-            <div>
-              <div style={{ fontSize: v("--font-size-h3"), lineHeight: 1.1 }}>
-                {n(ergebnis.einblendungen)}
+            {ergebnis.sucheGemessen && (
+              <>
+                <div>
+                  <div style={{ fontSize: v("--font-size-h3"), lineHeight: 1.1 }}>
+                    {n(ergebnis.einblendungen)}
+                  </div>
+                  <div style={{ color: v("--color-text-muted") }}>Einblendungen</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: v("--font-size-h3"), lineHeight: 1.1 }}>
+                    {n(ergebnis.klicks)}
+                  </div>
+                  <div style={{ color: v("--color-text-muted") }}>Klicks</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: v("--font-size-h3"), lineHeight: 1.1 }}>
+                    {n(ergebnis.position, 1)}
+                  </div>
+                  <div style={{ color: v("--color-text-muted") }}>mittlere Position</div>
+                </div>
+              </>
+            )}
+            {/* Die Besucherzahl steht bewusst NEBEN den Klicks und nicht statt
+                ihrer: Klicks zählt die Suchmaschine in ihrer Trefferliste,
+                Besucher zählt unsere eigene Messung beim Ankommen. Gehen die
+                beiden auseinander, ist das selbst die Auskunft. */}
+            {ergebnis.besuch && (
+              <div>
+                <div style={{ fontSize: v("--font-size-h3"), lineHeight: 1.1 }}>
+                  {n(ergebnis.besuch.besucher)}
+                </div>
+                <div style={{ color: v("--color-text-muted") }}>Besucher gesamt</div>
               </div>
-              <div style={{ color: v("--color-text-muted") }}>Einblendungen</div>
-            </div>
-            <div>
-              <div style={{ fontSize: v("--font-size-h3"), lineHeight: 1.1 }}>{n(ergebnis.klicks)}</div>
-              <div style={{ color: v("--color-text-muted") }}>Klicks</div>
-            </div>
-            <div>
-              <div style={{ fontSize: v("--font-size-h3"), lineHeight: 1.1 }}>
-                {n(ergebnis.position, 1)}
-              </div>
-              <div style={{ color: v("--color-text-muted") }}>mittlere Position</div>
-            </div>
+            )}
           </div>
 
           {satz && (
@@ -190,6 +199,29 @@ export function ErfolgMessen({ thema }: { thema: string }) {
               {ergebnis.zeitraum.tage} Tage bis{" "}
               {new Date(ergebnis.zeitraum.ende).toLocaleDateString("de-DE")} · das Volumen ist ein
               Monatswert, die Zahlen daneben sind gemessen
+            </p>
+          )}
+
+          {/* Fehlt eine Quelle, wird SIE benannt — nicht die Messung insgesamt.
+              Sonst sieht ein Ergebnis aus einer Quelle aus wie ein Ausfall. */}
+          {!ergebnis.sucheGemessen && (
+            <p style={{ color: v("--color-text-muted"), marginBottom: space.sm }}>
+              Suchdaten fehlen{ergebnis.sucheFehler ? `: ${ergebnis.sucheFehler}` : " — der Zugang zur Search Console liegt nur auf der Produktion."}
+            </p>
+          )}
+          {ergebnis.besuchGemessen === false && (
+            <p style={{ color: v("--color-text-muted"), marginBottom: space.sm }}>
+              Besucherzahlen fehlen — der Zugang zur eigenen Besuchsmessung ist in dieser Umgebung
+              nicht hinterlegt.
+            </p>
+          )}
+
+          {ergebnis.herkunft && ergebnis.herkunft.length > 0 && (
+            <p style={{ color: v("--color-text-secondary"), marginBottom: space.sm }}>
+              Woher sie kamen:{" "}
+              {ergebnis.herkunft
+                .map((h) => `${h.herkunft ?? "ohne Herkunftsangabe"} ${h.aufrufe}`)
+                .join(" · ")}
             </p>
           )}
 
