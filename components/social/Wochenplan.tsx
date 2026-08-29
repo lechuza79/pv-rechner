@@ -181,6 +181,20 @@ export function Wochenplan({
                   zwei Wochen, ohne zu einer zu gehören. Jetzt gehört beides in
                   denselben Streifen, und die Zellen darunter tragen nur noch
                   Inhalt. */}
+              {/* DIE WOCHE IST EINE BOX. Vorher trug jede Tageszelle ihren
+                  eigenen Rahmen, und die Woche entstand nur dadurch, dass
+                  sieben Rahmen nebeneinander lagen — bei fünf Wochen
+                  untereinander sind das fünfunddreißig Kanten, die alle gleich
+                  laut sind. Jetzt trägt die Woche den Rahmen und die Tage sind
+                  Flächen darin: eine Kante je Woche statt sieben. */}
+              <div
+                style={{
+                  border: `1px solid ${v("--color-border-muted")}`,
+                  borderRadius: v("--radius-md"),
+                  padding: pad("md", "md"),
+                  background: v("--color-bg-muted"),
+                }}
+              >
               <div style={{ ...raster, alignItems: "end", marginBottom: space.xxs }}>
                 {TAGE.map((_tag, i) => {
                   const iso = tagInWoche(w.beginnIso, i);
@@ -228,7 +242,6 @@ export function Wochenplan({
                   const iso = tagInWoche(w.beginnIso, i);
                   const platz = w.plaetze.find((p) => p.iso === iso);
                   const artikel = w.artikel.filter((a) => a.iso === iso);
-                  const heute = iso === heuteIso;
                   const pille = platz ? platzPille(platz) : null;
                   // Vergangenes lässt sich nicht mehr planen — ein Platz in der
                   // Vergangenheit ist eine Tatsache, keine Absicht. Und am
@@ -257,10 +270,21 @@ export function Wochenplan({
                       style={{
                         minHeight: 104,
                         borderRadius: v("--radius-sm"),
-                        border: `1px solid ${heute ? v("--color-accent") : v("--color-border-muted")}`,
-                        borderStyle: platz ? "solid" : "dashed",
+                        // Kein eigener Rahmen: Die Woche trägt ihn. Ein Tag ohne
+                        // Sendeplatz bleibt trotzdem unterscheidbar — er ist
+                        // blasser, nicht gestrichelt umrandet.
+                        border: "none",
+                        // KEINE zweite Heute-Markierung: Die Zahl in der
+                        // Kopfzeile trägt den blauen Kreis und steht über ihrer
+                        // Spalte. Ein Ring um die Zelle sagte dasselbe noch
+                        // einmal — und an einem Samstag, an dem ohnehin kein
+                        // Platz liegt, umrahmt er eine leere Fläche.
                         padding: pad("xs", "sm"),
-                        background: angefasst && planbar ? v("--color-bg-muted") : "transparent",
+                        background: platz
+                          ? angefasst && planbar
+                            ? v("--color-bg-accent")
+                            : v("--color-bg")
+                          : "transparent",
                         cursor: planbar ? "pointer" : "default",
                         opacity: !platz && !artikel.length ? 0.55 : 1,
                         position: "relative",
@@ -306,6 +330,7 @@ export function Wochenplan({
                     </div>
                   );
                 })}
+              </div>
               </div>
             </div>
           );
