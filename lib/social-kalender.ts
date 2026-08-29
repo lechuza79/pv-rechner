@@ -1,0 +1,172 @@
+// Die Wochenübersicht: was rausging, was ansteht, was fehlt.
+//
+// ABGELEITET, NICHT GEPFLEGT — und darin liegt der ganze Unterschied zu dem
+// Kalender, den die Planungsansicht seit ihrem Bau ablehnt. Ihr Einwand war:
+// „Ein Datum je Post ist eine Zusage, die niemand einhält, sobald eine Woche
+// voll ist, und ein Plan, dessen Termine reihenweise verstreichen, wird nach dem
+// dritten Mal nicht mehr gelesen."
+//
+// Der Einwand trifft ZUGESAGTE Termine. Diese Übersicht sagt nichts zu: Die
+// Vergangenheit kommt aus dem Versandprotokoll und ist damit Tatsache, die
+// Zukunft wird aus der Warteschlange gefüllt und ist damit eine Aussage über den
+// VORRAT, nicht über einen Beitrag. Verschiebt sich etwas, verschiebt sich die
+// Anzeige mit — sie kann gar nicht verstreichen.
+//
+// Was sie dafür kann, und weswegen der Betreiber sie wollte: Sie zeigt, ob die
+// kommende Woche gedeckt ist, und macht aus einer Lücke eine Aufgabe.
+//
+// KEINE UHR IN DIESEM MODUL. Der Tag wird hereingereicht — sonst ließe sich die
+// Übersicht nicht gegen einen Stichtag prüfen, und das ist im Projekt schon
+// einmal teuer geworden.
+
+import { SLOTS, type Wochentag } from "./redaktionsplan";
+import type { PlanEintrag } from "./social-plan";
+import type { SocialPost } from "./social-posts";
+
+/** Ein Platz in einer Woche — vergangen oder kommend. */
+export type KalenderPlatz = {
+  /** Kalendertag dieses Platzes, ISO. */
+  iso: string;
+  tag: Wochentag;
+  /** Wofür der Platz gedacht ist (Substanz, operativ, leicht). */
+  art: string;
+  beschreibung: string;
+} & (
+  | { zustand: "gesendet"; postId: string; titel: string }
+  | { zustand: "bereit"; post: SocialPost }
+  | { zustand: "leer"; grund: string }
+  | { zustand: "vergangen-leer" }
+);
+
+export type KalenderWoche = {
+  /** Montag dieser Woche, ISO. */
+  beginnIso: string;
+  /** Beschriftung: „diese Woche", „nächste Woche", sonst das Datum. */
+  name: string;
+  plaetze: KalenderPlatz[];
+};
+
+const WOCHENTAG_INDEX: Record<Wochentag, number> = { Mo: 1, Di: 2, Mi: 3, Do: 4, Fr: 5 };
+
+function ausIso(iso: string): Date {
+  // Über UTC-Mittag, nicht über Mitternacht: Bei lokalen Mitternachtsdaten
+  // verschiebt der Sommerzeit-Wechsel den Tag um eins, und das fällt einmal im
+  // Jahr niemandem auf. Dieselbe Falle wie bei der Balkon-Anmeldefrist.
+  return new Date(`${iso}T12:00:00Z`);
+}
+
+function alsIso(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}
+
+/** Der Montag der Woche, in der dieser Tag liegt. */
+export function montagVon(iso: string): string {
+  const d = ausIso(iso);
+  const wochentag = d.getUTCDay() === 0 ? 7 : d.getUTCDay();
+  d.setUTCDate(d.getUTCDate() - (wochentag - 1));
+  return alsIso(d);
+}
+
+function tagInWoche(montagIso: string, tag: Wochentag): string {
+  const d = ausIso(montagIso);
+  d.setUTCDate(d.getUTCDate() + (WOCHENTAG_INDEX[tag] - 1));
+  return alsIso(d);
+}
+
+function wochenName(montagIso: string, heuteMontagIso: string): string {
+  if (montagIso === heuteMontagIso) return "Diese Woche";
+  const diff =
+    (ausIso(montagIso).getTime() - ausIso(heuteMontagIso).getTime()) / (7 * 24 * 60 * 60 * 1000);
+  if (diff === 1) return "Nächste Woche";
+  if (diff === -1) return "Letzte Woche";
+  return `Woche ab ${ausIso(montagIso).toLocaleDateString("de-DE", { day: "numeric", month: "long", timeZone: "UTC" })}`;
+}
+
+export type Gesendetes = { postId: string; titel: string; gesendetAmIso: string };
+
+/**
+ * Die Übersicht über mehrere Wochen.
+ *
+ * Vergangene Plätze bekommen, was an dem Tag wirklich rausging. Kommende Plätze
+ * bekommen der Reihe nach die Beiträge, die raus DÜRFEN — jeder nur einmal.
+ * Reicht der Vorrat nicht, bleibt der Platz leer und trägt den Grund; das ist
+ * die eigentliche Auskunft dieser Ansicht.
+ */
+export function baueKalender(
+  plan: PlanEintrag[],
+  gesendet: Gesendetes[],
+  heuteIso: string,
+  { wochenZurueck = 2, wochenVoraus = 2 }: { wochenZurueck?: number; wochenVoraus?: number } = {},
+): KalenderWoche[] {
+  const heuteMontag = montagVon(heuteIso);
+  const vorrat = plan.filter((e) => e.hindernisse.length === 0);
+  // Was nicht raus darf, mit dem häufigsten Hindernis — das füllt die Lücken mit
+  // einer Aufgabe statt mit einem Achselzucken.
+  const blockiert = plan.filter((e) => e.hindernisse.length > 0);
+  let naechster = 0;
+
+  const wochen: KalenderWoche[] = [];
+  for (let w = -wochenZurueck; w <= wochenVoraus; w++) {
+    const montag = ausIso(heuteMontag);
+    montag.setUTCDate(montag.getUTCDate() + w * 7);
+    const beginnIso = alsIso(montag);
+
+    const plaetze: KalenderPlatz[] = SLOTS.map((slot) => {
+      const iso = tagInWoche(beginnIso, slot.tag);
+      const kopf = { iso, tag: slot.tag, art: slot.art, beschreibung: slot.beschreibung };
+
+      const raus = gesendet.find((g) => g.gesendetAmIso === iso);
+      if (raus) return { ...kopf, zustand: "gesendet", postId: raus.postId, titel: raus.titel };
+
+      // Vergangene Plätze werden NICHT aus dem Vorrat gefüllt. Ein leerer Tag
+      // in der Vergangenheit ist eine Tatsache, kein Vorschlag — ihn nachträglich
+      // zu belegen wäre eine Behauptung über etwas, das nicht passiert ist.
+      if (iso < heuteIso) return { ...kopf, zustand: "vergangen-leer" };
+
+      const kandidat = vorrat[naechster];
+      if (kandidat) {
+        naechster++;
+        return { ...kopf, zustand: "bereit", post: kandidat.post };
+      }
+      return {
+        ...kopf,
+        zustand: "leer",
+        grund: blockiert.length
+          ? `Kein freigegebener Beitrag übrig. ${blockiert.length} warten auf: ${haeufigstesHindernis(blockiert)}`
+          : "Kein Beitrag mehr im Vorrat.",
+      };
+    });
+
+    wochen.push({ beginnIso, name: wochenName(beginnIso, heuteMontag), plaetze });
+  }
+  return wochen;
+}
+
+function haeufigstesHindernis(blockiert: PlanEintrag[]): string {
+  const zaehler = new Map<string, number>();
+  for (const e of blockiert) {
+    for (const h of e.hindernisse) zaehler.set(h.art, (zaehler.get(h.art) ?? 0) + 1);
+  }
+  const sortiert = [...zaehler.entries()].sort((a, b) => b[1] - a[1]);
+  const name: Record<string, string> = {
+    mechanik: "mechanische Sperren",
+    freigabe: "fehlende Freigaben",
+    "schon-gesendet": "bereits gesendet",
+    "ort-kollision": "Anschreiben-Kollision",
+  };
+  return sortiert.map(([art, n]) => `${name[art] ?? art} (${n})`).join(", ");
+}
+
+/** Wie viele der kommenden Plätze gedeckt sind — die Zahl, die der Betreiber sucht. */
+export function deckung(wochen: KalenderWoche[], heuteIso: string): { belegt: number; offen: number } {
+  let belegt = 0;
+  let offen = 0;
+  for (const w of wochen) {
+    for (const p of w.plaetze) {
+      if (p.iso < heuteIso) continue;
+      if (p.zustand === "bereit") belegt++;
+      else if (p.zustand === "leer") offen++;
+    }
+  }
+  return { belegt, offen };
+}

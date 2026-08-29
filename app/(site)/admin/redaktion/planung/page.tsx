@@ -3,6 +3,13 @@ import { isAdminSession } from "../../../../../lib/admin-guard";
 import { socialKennzahlen } from "../../../../../lib/social-kennzahlen";
 import { baueAllePosts } from "../../../../../lib/social-posts";
 import { FAMILIEN, PUFFER_VOR_START, REGELN, SLOTS } from "../../../../../lib/redaktionsplan";
+import { fassungsAbdruck, ladeAllePruefungen } from "../../../../../lib/social-pruefung";
+import { pruefeMechanisch } from "../../../../../lib/social-mechanik";
+import { ladeVersand } from "../../../../../lib/social-versand-log";
+import { ladeFassungen } from "../../../../../lib/social-vorlagen-db";
+import { planen } from "../../../../../lib/social-plan";
+import { baueKalender, deckung } from "../../../../../lib/social-kalender";
+import { Wochenplan } from "../../../../../components/social/Wochenplan";
 import { v, space, pad } from "../../../../../lib/theme";
 
 // Planung: Was steht bereit, was fehlt, und welche Regeln gelten vor jedem Post.
@@ -29,9 +36,49 @@ const ZUSTAND_TEXT: Record<string, string> = {
 export default async function RedaktionPlanung() {
   if (!(await isAdminSession())) redirect("/login?next=/admin/redaktion/planung");
 
+  // Der Tag wird EINMAL gelesen und überall hineingereicht — die Rechenmodule
+  // haben bewusst keine Uhr, sonst ließe sich die Übersicht nicht gegen einen
+  // Stichtag prüfen.
+  const heuteIso = new Date().toISOString().slice(0, 10);
+
   let fertig = 0;
+  let wochen: ReturnType<typeof baueKalender> = [];
+  let gedeckt = { belegt: 0, offen: 0 };
   try {
-    fertig = baueAllePosts(await socialKennzahlen()).length;
+    const kennzahlen = await socialKennzahlen();
+    const posts = baueAllePosts(kennzahlen, await ladeFassungen());
+    fertig = posts.length;
+
+    const pruefungen = await ladeAllePruefungen();
+    const versand = await ladeVersand();
+    const plan = planen(
+      posts.map((p) => ({
+        post: p,
+        abdruck: fassungsAbdruck({ text: p.text, bild: p.bild }),
+        pruefungen: pruefungen[p.id] ?? [],
+        befunde: pruefeMechanisch(p, kennzahlen),
+      })),
+      {
+        gesendet: (id, abdruck) =>
+          versand.some((x) => x.post_id === id && x.fassung_fingerabdruck === abdruck),
+        // Noch nicht verdrahtet: Welche Gemeinden gerade ein Anschreiben
+        // bekommen, steht in der Outreach-Ablage. Solange die Liste leer ist,
+        // greift die Regel nicht — das ist sichtbar hier und nicht stillschweigend
+        // im Rechenkern versteckt.
+        orteMitAnschreiben: [],
+      },
+    );
+
+    wochen = baueKalender(
+      plan,
+      versand.map((x) => ({
+        postId: x.post_id,
+        titel: posts.find((p) => p.id === x.post_id)?.titel ?? x.post_id,
+        gesendetAmIso: x.gesendet_am.slice(0, 10),
+      })),
+      heuteIso,
+    );
+    gedeckt = deckung(wochen, heuteIso);
   } catch {
     fertig = 0;
   }
@@ -51,6 +98,21 @@ export default async function RedaktionPlanung() {
         Daten — ein Plan, dessen Termine reihenweise verstreichen, wird nach dem dritten Mal nicht
         mehr gelesen.
       </p>
+
+      {wochen.length > 0 && (
+        <section style={{ marginBottom: space.xxxl }}>
+          <h2 style={{ fontSize: v("--font-size-h3") }}>Die Wochen</h2>
+          <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginTop: 0 }}>
+            Kein zugesagter Termin, sondern der Vorrat auf die Plätze gelegt: Vergangenes kommt aus
+            dem Versandprotokoll, Kommendes aus der Warteschlange. Verschiebt sich etwas, verschiebt
+            sich die Anzeige mit — verstreichen kann hier nichts.{" "}
+            {gedeckt.offen > 0
+              ? `${gedeckt.belegt} der nächsten Plätze sind gedeckt, ${gedeckt.offen} nicht.`
+              : `Alle ${gedeckt.belegt} kommenden Plätze sind gedeckt.`}
+          </p>
+          <Wochenplan wochen={wochen} heuteIso={heuteIso} />
+        </section>
+      )}
 
       <section style={{ ...karte, marginBottom: space.xxxl }}>
         <h2 style={{ fontSize: v("--font-size-h3"), marginTop: 0 }}>Vorrat</h2>
