@@ -20,6 +20,7 @@
  *   npm run fachbetriebe -- --profil --limit 100       Impressum + Startseite lesen
  *   npm run fachbetriebe -- --kontakt                  Kontaktseite: Kontaktweg + Restklasse
  *   npm run fachbetriebe -- --ags                      Adresse → amtlicher Gemeindeschlüssel
+ *   npm run fachbetriebe -- --ueber-uns               Über-uns-Seite lesen
  *   npm run fachbetriebe -- --namen-putzen             Namen nachputzen, ohne Netz
  *   npm run fachbetriebe -- --stats                    was drin ist
  *
@@ -93,8 +94,11 @@ import {
   navigationsText,
   normOrt,
   portalSchwelle,
+  type Profil,
   profilAus,
   sichtbarerText,
+  trustSignaleAus,
+  ueberUnsUrl,
 } from "../lib/fachbetrieb-extrakt";
 
 // ─── Grundlagen ──────────────────────────────────────────────────────────────
@@ -310,6 +314,12 @@ async function setup(): Promise<void> {
     ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS kontakt_url text;
     ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS kontakt_formular boolean;
     ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS kontakt_at timestamptz;
+
+    -- Die "Über uns"-Seite (Phase --ueber-uns). Getrennt vom Kontakt-Zeitstempel,
+    -- weil sonst nicht unterscheidbar ist, ob wir sie angesehen und nichts
+    -- gefunden haben oder gar nicht dort waren.
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS ueber_uns_url text;
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS ueber_uns_at timestamptz;
 
     -- ARBEITSSTAND — gehört dem Menschen, nicht dem Erhebungslauf.
     -- Dieselbe Trennung wie bei den Gemeinden: Kein Lauf dieses Skripts fasst
@@ -1087,6 +1097,194 @@ async function namenPutzen(dry: boolean): Promise<void> {
   log("Namen nachgeputzt", "ok");
 }
 
+/**
+ * Die „Über uns"-Seite lesen — die dritte Quelle für Trust-Signale.
+ *
+ * ERWARTUNG VORHER GEEICHT, und die Eichung hat die Vermutung halb widerlegt
+ * (29.08.2026, zweimal 30 Betriebe): Von 21 erreichbaren Seiten brachten ZWEI
+ * einen Meisterbetrieb, eine ein Gründungsjahr, KEINE eine Handwerkskammer.
+ * Hochgerechnet rund 160 zusätzliche Meisterbetriebe — 22 % würden 27 %. Das ist
+ * eine Nachlese, kein Hebel.
+ *
+ * Der Grund dahinter ist die eigentliche Erkenntnis und gilt über diesen Lauf
+ * hinaus: **Wer Meisterbetrieb ist, schreibt es auf die Startseite.** Wer es
+ * dort nicht schreibt, schreibt es meist gar nicht. Unsere Quote misst also
+ * nicht, wie viele Meisterbetriebe im Bestand sind — im zulassungspflichtigen
+ * Elektrohandwerk sind es nahezu alle —, sondern wie viele es erwähnen. Über die
+ * Website ist diese Grenze nicht zu überwinden; dafür bräuchte es eine amtliche
+ * Quelle.
+ *
+ * Der Lauf läuft trotzdem: Er kostet kein Geld, und die Balkonkraftwerk-Treffer
+ * nimmt er mit — die Eichung fand sie bei einem von 21.
+ */
+async function ueberUns(limit: number, dry: boolean, refetch: boolean): Promise<void> {
+  const sb = await makeClient();
+  const alle = await alleZeilen<{
+    domain: string;
+    meisterbetrieb: boolean | null;
+    gruendungsjahr: number | null;
+    innung: string | null;
+    handwerkskammer: string | null;
+    installateurverzeichnis: boolean | null;
+    zertifikate: string[] | null;
+    bewertung_wert: number | null;
+    geschaeftsfelder: string[] | null;
+    profil_fehler: string | null;
+    ueber_uns_at: string | null;
+    art: string;
+  }>(
+    sb,
+    "fachbetriebe",
+    "domain, meisterbetrieb, gruendungsjahr, innung, handwerkskammer, installateurverzeichnis," +
+      " zertifikate, bewertung_wert, geschaeftsfelder, profil_fehler, ueber_uns_at, art",
+  );
+
+  // Wen dieser Lauf anfasst: Betriebe, denen mindestens ein Signal fehlt. Wer
+  // alle acht trägt, hat dort nichts mehr zu holen — ein Abruf ohne möglichen
+  // Befund ist verschwendete Zeit und fremde Last.
+  const offen = alle
+    .filter((r) => r.art === "betrieb" && !r.profil_fehler)
+    .filter((r) => refetch || !r.ueber_uns_at)
+    .filter(
+      (r) =>
+        r.meisterbetrieb === null ||
+        r.gruendungsjahr === null ||
+        !r.innung ||
+        !r.handwerkskammer ||
+        r.installateurverzeichnis === null ||
+        !r.zertifikate?.length ||
+        r.bewertung_wert === null ||
+        !(r.geschaeftsfelder ?? []).includes("balkonkraftwerk"),
+    )
+    .sort((a, b) => a.domain.localeCompare(b.domain))
+    .slice(0, limit);
+
+  log(`${offen.length} Betriebe in diesem Lauf (von ${alle.length} im Bestand)`);
+  if (dry) {
+    for (const o of offen.slice(0, 15)) log(`  ${o.domain}`);
+    log("--dry: nichts abgerufen", "ok");
+    return;
+  }
+
+  const zeilen: Record<string, unknown>[] = [];
+  const belege: Record<string, unknown>[] = [];
+  let fertig = 0,
+    mitSeite = 0,
+    neuMeister = 0,
+    neuJahr = 0,
+    neuHwk = 0,
+    neuZert = 0,
+    neuBalkon = 0;
+
+  const wegschreiben = async (alles: boolean) => {
+    if (!alles && zeilen.length < 250) return;
+    const z = zeilen.splice(0, zeilen.length);
+    const b = belege.splice(0, belege.length);
+    if (z.length) await upsertGestueckelt(sb, "fachbetriebe", z, "domain");
+    if (b.length)
+      await upsertGestueckelt(sb, "fachbetrieb_belege", b, "domain,merkmal,wert,fundstelle");
+  };
+
+  const jetzt = new Date().getFullYear();
+
+  await pool(offen, 10, async (r) => {
+    fertig++;
+    if (fertig % 100 === 0) log(`  ${fertig}/${offen.length}`);
+
+    const start =
+      (await holeText(`https://${r.domain}/`)) ?? (await holeText(`http://${r.domain}/`));
+    if (!start) return;
+    const url = ueberUnsUrl(start.html, start.url);
+    const seite = url ? await holeText(url) : null;
+
+    const zeile: Record<string, unknown> = {
+      domain: r.domain,
+      ueber_uns_url: url,
+      ueber_uns_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+
+    if (seite) {
+      mitSeite++;
+      const text = sichtbarerText(seite.html);
+      // Dieselbe Prüfung wie im Profil-Lauf, nicht eine zweite Fassung davon.
+      // Sie setzt nur, was noch fehlt — ein Fund auf der Startseite behält
+      // deshalb den Vorrang.
+      const p: Partial<Profil> = {
+        meisterbetrieb: r.meisterbetrieb,
+        gruendungsjahr: r.gruendungsjahr,
+        innung: r.innung,
+        handwerkskammer: r.handwerkskammer,
+        installateurverzeichnis: r.installateurverzeichnis,
+        zertifikate: r.zertifikate,
+        bewertung_wert: r.bewertung_wert,
+      };
+      trustSignaleAus(
+        text,
+        seite.url,
+        p as Profil,
+        (merkmal, wert, quelle, txt, idx) => {
+          belege.push({
+            domain: r.domain,
+            merkmal,
+            wert: wert.slice(0, 200),
+            fundstelle: quelle.slice(0, 500),
+            textstelle: txt.slice(Math.max(0, idx - 80), idx + 120).replace(/\s+/g, " "),
+            gefunden_am: heute(),
+          });
+        },
+        jetzt,
+      );
+      if (p.meisterbetrieb !== r.meisterbetrieb) {
+        zeile.meisterbetrieb = p.meisterbetrieb;
+        neuMeister++;
+      }
+      if (p.gruendungsjahr !== r.gruendungsjahr) {
+        zeile.gruendungsjahr = p.gruendungsjahr;
+        neuJahr++;
+      }
+      if (p.innung !== r.innung) zeile.innung = p.innung;
+      if (p.handwerkskammer !== r.handwerkskammer) {
+        zeile.handwerkskammer = p.handwerkskammer;
+        neuHwk++;
+      }
+      if (p.installateurverzeichnis !== r.installateurverzeichnis)
+        zeile.installateurverzeichnis = p.installateurverzeichnis;
+      if ((p.zertifikate?.length ?? 0) !== (r.zertifikate?.length ?? 0)) {
+        zeile.zertifikate = p.zertifikate;
+        neuZert++;
+      }
+      if (p.bewertung_wert !== r.bewertung_wert) {
+        zeile.bewertung_wert = p.bewertung_wert;
+        zeile.bewertung_anzahl = p.bewertung_anzahl;
+        zeile.bewertung_quelle = p.bewertung_quelle;
+      }
+
+      // Geschäftsfelder nachtragen — ein Elektriker, der nebenbei
+      // Balkonkraftwerke montiert, schreibt das nicht immer auf die Startseite.
+      const felder = new Set(r.geschaeftsfelder ?? []);
+      const vorher = felder.size;
+      for (const f of FELDER) if (f.muster.test(text)) felder.add(f.name);
+      if (felder.size > vorher) {
+        zeile.geschaeftsfelder = [...felder];
+        if (!(r.geschaeftsfelder ?? []).includes("balkonkraftwerk") && felder.has("balkonkraftwerk"))
+          neuBalkon++;
+      }
+    }
+
+    zeilen.push(zeile);
+    await wegschreiben(false);
+  });
+
+  await wegschreiben(true);
+  log(
+    `${offen.length} geprüft, ${mitSeite} mit erreichbarer Über-uns-Seite — ` +
+      `Meisterbetrieb +${neuMeister}, Gründungsjahr +${neuJahr}, Handwerkskammer +${neuHwk}, ` +
+      `Zertifikate +${neuZert}, Balkonkraftwerk +${neuBalkon}`,
+    "ok",
+  );
+}
+
 async function ags(dry: boolean): Promise<void> {
   const sb = await makeClient();
   const tabelle = JSON.parse(
@@ -1312,6 +1510,7 @@ async function main(): Promise<void> {
     art: argv.includes("--art"),
     profil: argv.includes("--profil"),
     kontakt: argv.includes("--kontakt"),
+    ueberUns: argv.includes("--ueber-uns"),
     ags: argv.includes("--ags"),
     namen: argv.includes("--namen-putzen"),
     stats: argv.includes("--stats"),
@@ -1329,6 +1528,8 @@ async function main(): Promise<void> {
         "  --kontakt [--limit N] [--refetch] [--dry]\n" +
         "                                   Kontaktseite lesen: Kontaktweg schließen,\n" +
         "                                   Restklasse einordnen\n" +
+        "  --ueber-uns [--limit N] [--refetch] [--dry]\n" +
+        "                                   die Über-uns-Seite lesen: Trust-Signale nachlesen\n" +
         "  --ags [--dry]                    Anschrift → amtlicher Gemeindeschlüssel\n" +
         "  --namen-putzen [--dry]           die gespeicherten Firmennamen nachputzen,\n" +
         "                                   ohne die Seiten neu zu holen\n" +
@@ -1351,6 +1552,7 @@ async function main(): Promise<void> {
   if (phasen.art) await einordnen(dry);
   if (phasen.profil) await profil(zahlArg("limit", 100), dry, argv.includes("--refetch"));
   if (phasen.kontakt) await kontakt(zahlArg("limit", 200), dry, argv.includes("--refetch"));
+  if (phasen.ueberUns) await ueberUns(zahlArg("limit", 200), dry, argv.includes("--refetch"));
   if (phasen.namen) await namenPutzen(dry);
   if (phasen.ags) await ags(dry);
   if (phasen.stats) await stats();

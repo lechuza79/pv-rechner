@@ -34,6 +34,7 @@ import {
   profilAus,
   rechtsformVon,
   sichtbarerText,
+  ueberUnsUrl,
 } from "../fachbetrieb-extrakt";
 
 const JETZT = 2026;
@@ -621,6 +622,43 @@ describe("Impressum-Adresse: nicht ratbar, sondern aus den Links gelesen", () =>
   it("ignoriert mailto und Anker", () => {
     expect(impressumUrl('<a href="mailto:a@b.de">Impressum</a>', "https://b.de/")).toBeNull();
     expect(impressumUrl('<a href="#impressum">Impressum</a>', "https://b.de/")).toBeNull();
+  });
+});
+
+describe("Über-uns-Seite: dieselbe Lehre wie beim Impressum", () => {
+  it("erkennt die verbreiteten Schreibweisen", () => {
+    // Gemessen im Eichlauf vom 29.08.2026: Die Seite heißt „ueber-uns",
+    // „uber-uns", „wir-ueber-uns", „unternehmen", „unternehmenshistorie" oder
+    // trägt den Firmennamen im Pfad. Geraten hätte man keine davon.
+    for (const href of [
+      "/ueber-uns/",
+      "/uber-uns/",
+      "/wir-ueber-uns/",
+      "/unternehmen",
+      "/unternehmenshistorie/",
+    ])
+      expect(ueberUnsUrl(`<a href="${href}">Mehr</a>`, "https://b.de/")).toBe(
+        new URL(href, "https://b.de/").toString(),
+      );
+  });
+
+  it("nimmt den Link am Text, wenn der Pfad nichts hergibt", () => {
+    expect(ueberUnsUrl('<a href="/x7">Über uns</a>', "https://b.de/")).toBe("https://b.de/x7");
+  });
+
+  it("bevorzugt die Über-uns-Seite vor einer Team-Seite", () => {
+    const html = '<a href="/team">Team</a><a href="/ueber-uns">Über uns</a>';
+    expect(ueberUnsUrl(html, "https://b.de/")).toBe("https://b.de/ueber-uns");
+  });
+
+  it("verwirft fremde Domains — anders als beim Kontaktformular", () => {
+    // Ein Kontaktformular darf bei einem fremden Dienst liegen; die Geschichte
+    // DIESES Betriebs steht nie auf einer fremden Domain.
+    expect(ueberUnsUrl('<a href="https://fremd.de/ueber-uns">Über uns</a>', "https://b.de/")).toBeNull();
+  });
+
+  it("ignoriert mailto und Anker", () => {
+    expect(ueberUnsUrl('<a href="#ueber-uns">Über uns</a>', "https://b.de/")).toBeNull();
   });
 });
 

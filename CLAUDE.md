@@ -1232,6 +1232,20 @@ bleibt trotzdem eine Minderheit — mehr gibt kein zulässiger Weg her, Google i
 Die Herkunft heißt immer „eigene Website", auch wenn der Betrieb dort seine Google-Sterne
 wiedergibt: Wir haben die Zahl von ihm, nicht von Google.
 
+**Ein Trust-Signal misst, ob der Betrieb es HINSCHREIBT — nicht, ob er es hat.** Vor
+dem Über-uns-Lauf zweimal an 30 Betrieben geeicht (29.08.2026), und die Eichung hat
+die Erwartung widerlegt: Von 21 erreichbaren „Über uns"-Seiten brachten **zwei**
+einen Meisterbetrieb, eine ein Gründungsjahr, **keine** eine Handwerkskammer.
+Hochgerechnet 22 % → 27 %, also eine Nachlese statt des vermuteten Hebels. Der
+Grund gilt über diesen Lauf hinaus: **Wer Meisterbetrieb ist, schreibt es auf die
+Startseite; wer es dort nicht schreibt, schreibt es nirgends.** Im
+zulassungspflichtigen Elektrohandwerk sind fast alle Meisterbetriebe — unsere Quote
+misst die Erwähnung, nicht den Bestand. Über die Website ist diese Grenze nicht zu
+überwinden; dafür braucht es eine amtliche Quelle (Handwerkskammer, Rechtslage
+geprüft — siehe `docs/fachbetriebe-quellen.md`). **Und genau dafür ist das Eichen
+da:** ohne es wären 6.000 Abrufe für einen Ertrag gelaufen, den niemand
+nachgemessen hätte.
+
 **Adressen werden GELESEN, nicht geraten — dreimal dieselbe Lehre.** Impressum, Kontaktseite
 und Favicon liegen alle unter frei gewählten Pfaden; `/impressum` traf in zwei von drei
 Fällen daneben, `/favicon.ico` bei einem Drittel. Wer rät, hält „nicht gefunden" für „gibt

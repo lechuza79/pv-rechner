@@ -244,6 +244,77 @@ export function kontaktUrl(html: string, basis: string): string | null {
   return treffer[0] && treffer[0].punkte >= 40 ? treffer[0].url : null;
 }
 
+/**
+ * Die „Über uns"-Seite — dort wohnt die Firmengeschichte.
+ *
+ * Gemessen am 29.08.2026 über den ganzen Bestand: Meisterbetrieb steht bei 22 %,
+ * Zertifikate bei 12 %, Gründungsjahr bei 8 %, Innung bei 1 %. Startseite und
+ * Impressum werden längst BEIDE gelesen — was fehlt, ist die Unterseite, auf der
+ * ein Betrieb über sich selbst schreibt. Dieselbe Systematik wie beim
+ * Kontaktweg, der auf der Kontaktseite stand, und beim Gewerk, das in der
+ * Navigation steht: Wer nur die offensichtliche Seite holt, hält „nicht
+ * gefunden" für „gibt es nicht".
+ *
+ * Die Adresse ist so wenig ratbar wie die des Impressums — sie heißt „ueber-uns",
+ * „wir-ueber-uns", „unternehmen", „philosophie", „team", „historie" oder trägt
+ * den Betriebsnamen. Deshalb aus den Links gelesen, nicht geraten.
+ */
+export function ueberUnsUrl(html: string, basis: string): string | null {
+  const treffer: { url: string; punkte: number }[] = [];
+  const re = /<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+  let m: RegExpExecArray | null;
+  const basisHost = (() => {
+    try {
+      return new URL(basis).host.replace(/^www\./, "");
+    } catch {
+      return "";
+    }
+  })();
+  while ((m = re.exec(html))) {
+    const href = entities(m[1]);
+    const text = entities(m[2].replace(/<[^>]+>/g, " "))
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+    if (/^(mailto:|tel:|javascript:|#)/i.test(href)) continue;
+    const h = href.toLowerCase();
+    let p = 0;
+    if (/(ueber|über|uber)[-_]?uns|about[-_]?us|wir[-_]?ueber/.test(h)) p = 100;
+    else if (/^(über|ueber) uns$|^wir über uns$|^about us$/.test(text)) p = 95;
+    // Die Zusammensetzungen ausgeschrieben statt „unternehmen\w*": Ein offenes
+    // Muster fräße auch „unternehmensberatung" und „unternehmerverband". Real
+    // vorgekommen ist „/unternehmenshistorie/" — ohne diese Formen fiel es durch,
+    // weil nach „unternehmen" keine Wortgrenze steht.
+    else if (
+      /[-_/](unternehmen(s?(geschichte|historie|profil|leitbild))?|philosophie|leitbild|historie|firmengeschichte)(\b|[-_/.])/.test(
+        h,
+      )
+    )
+      p = 80;
+    else if (/^(unternehmen|philosophie|leitbild|historie|geschichte|firmengeschichte)$/.test(text)) p = 75;
+    else if (/[-_/](team|betrieb|profil)(\b|[-_/.])/.test(h)) p = 60;
+    else if (/^(unser team|das team|team|unser betrieb|ihr fachbetrieb)$/.test(text)) p = 55;
+    else if (/(zertifikat|qualifikation|auszeichnung|meisterbetrieb)/.test(h + " " + text)) p = 50;
+    if (!p) continue;
+    let abs: string;
+    try {
+      abs = new URL(href, basis).toString();
+    } catch {
+      continue;
+    }
+    // Eine fremde Domain trägt nicht die Geschichte DIESES Betriebs — anders als
+    // beim Kontaktformular gibt es hier keinen legitimen Fall dafür.
+    try {
+      if (new URL(abs).host.replace(/^www\./, "") !== basisHost) continue;
+    } catch {
+      continue;
+    }
+    treffer.push({ url: abs, punkte: p });
+  }
+  treffer.sort((a, b) => b.punkte - a.punkte);
+  return treffer[0]?.url ?? null;
+}
+
 // ─── Rechtsform ──────────────────────────────────────────────────────────────
 
 /**
@@ -1036,6 +1107,103 @@ export interface Beleg {
   textstelle: string | null;
 }
 
+/**
+ * Die Trust-Signale aus EINEM Text ziehen — Meisterbetrieb, Gründungsjahr,
+ * Innung, Handwerkskammer, Installateurverzeichnis, Zertifikate, Bewertung.
+ *
+ * Herausgezogen am 29.08.2026, als die „Über uns"-Seite als dritte Quelle
+ * dazukam. Eine zweite Kopie dieser Prüfungen wäre ein Fehler, kein Duplikat:
+ * Wer ein Zertifikat ergänzt, ergänzt es sonst nur an einer Stelle, und die
+ * andere Seite findet es nie — von außen unsichtbar, weil beide Läufe weiter
+ * plausible Ergebnisse liefern.
+ *
+ * Setzt nur, was noch nicht gesetzt ist. Die Reihenfolge der Aufrufer entscheidet
+ * damit über den Vorrang: Startseite vor Impressum vor Über-uns.
+ */
+export function trustSignaleAus(
+  text: string,
+  quelle: string,
+  p: Profil,
+  add: (merkmal: string, wert: string, quelle: string, text: string, idx: number) => void,
+  jetzt: number,
+): void {
+
+    const meister = text.match(
+      /\b(Meisterbetrieb|Elektromeisterbetrieb|Elektromeister|Meisterbrief|Innungsbetrieb)\b/i,
+    );
+    if (meister && p.meisterbetrieb === null) {
+      p.meisterbetrieb = true;
+      add("meisterbetrieb", meister[1], quelle, text, meister.index ?? 0);
+    }
+
+    if (p.gruendungsjahr === null) {
+      const g = gruendungsjahrAus(text, jetzt);
+      if (g) {
+        p.gruendungsjahr = g.jahr;
+        add("gruendungsjahr", String(g.jahr), quelle, text, g.index);
+      }
+    }
+
+    const innung = text.match(
+      /\b(?:Mitglied der\s+)?(Elektro-?Innung|Innung f[üu]r [A-ZÄÖÜ][\wäöüß\- ]{3,40}|Innung des [A-ZÄÖÜ][\wäöüß\- ]{3,40})/,
+    );
+    if (innung && !p.innung) {
+      p.innung = innung[1].trim();
+      add("innung", p.innung, quelle, text, innung.index ?? 0);
+    }
+
+    if (!p.handwerkskammer) {
+      const h = handwerkskammerAus(text);
+      if (h) {
+        p.handwerkskammer = h.name;
+        add("handwerkskammer", h.name, quelle, text, h.index);
+      }
+    }
+
+    const iv = text.match(
+      /\b(Installateurverzeichnis|eingetragener?\s+Installateur|Installateurausweis|beim Netzbetreiber eingetragen)\b/i,
+    );
+    if (iv && p.installateurverzeichnis === null) {
+      p.installateurverzeichnis = true;
+      add("installateurverzeichnis", iv[1], quelle, text, iv.index ?? 0);
+    }
+
+    for (const z of ZERTIFIKATE) {
+      const m = text.match(z.muster);
+      if (!m) continue;
+      if (!p.zertifikate) p.zertifikate = [];
+      if (!p.zertifikate.includes(z.name)) {
+        p.zertifikate.push(z.name);
+        add("zertifikat", z.name, quelle, text, m.index ?? 0);
+      }
+    }
+
+    // Bewertung NUR als Selbstauskunft dieser Website — nie aus Google geholt.
+    // Google Maps Platform Terms 3.2.3(a)(iii) untersagt das Speichern von
+    // Reviews, (d)(iii) die Nutzung in einem Verzeichnisdienst.
+    if (p.bewertung_wert === null) {
+      const b =
+        text.match(
+          /(\d[,.]\d)\s*(?:von\s*5|\/\s*5|Sterne)[^\n]{0,80}?(\d{1,5})\s*(?:Bewertungen|Rezensionen)/i,
+        ) ??
+        text.match(
+          /(\d{1,5})\s*(?:Bewertungen|Rezensionen)[^\n]{0,80}?(\d[,.]\d)\s*(?:von\s*5|\/\s*5|Sterne)/i,
+        );
+      if (b) {
+        const a = Number(b[1].replace(",", "."));
+        const c = Number(b[2].replace(",", "."));
+        const wert = a <= 5 ? a : c;
+        const anzahl = a <= 5 ? c : a;
+        if (wert >= 1 && wert <= 5 && anzahl >= 1) {
+          p.bewertung_wert = wert;
+          p.bewertung_anzahl = Math.round(anzahl);
+          p.bewertung_quelle = "eigene-website";
+          add("bewertung", `${wert} / ${Math.round(anzahl)}`, quelle, text, b.index ?? 0);
+        }
+      }
+    }
+}
+
 export interface Profil {
   domain: string;
   firmenname: string | null;
@@ -1218,82 +1386,7 @@ export function profilAus(domain: string, start: Seite, imp: Seite | null, jetzt
     ...(imp ? [{ text: impText, quelle: imp.url }] : []),
   ];
 
-  for (const { text, quelle } of beide) {
-    const meister = text.match(
-      /\b(Meisterbetrieb|Elektromeisterbetrieb|Elektromeister|Meisterbrief|Innungsbetrieb)\b/i,
-    );
-    if (meister && p.meisterbetrieb === null) {
-      p.meisterbetrieb = true;
-      add("meisterbetrieb", meister[1], quelle, text, meister.index ?? 0);
-    }
-
-    if (p.gruendungsjahr === null) {
-      const g = gruendungsjahrAus(text, jetzt);
-      if (g) {
-        p.gruendungsjahr = g.jahr;
-        add("gruendungsjahr", String(g.jahr), quelle, text, g.index);
-      }
-    }
-
-    const innung = text.match(
-      /\b(?:Mitglied der\s+)?(Elektro-?Innung|Innung f[üu]r [A-ZÄÖÜ][\wäöüß\- ]{3,40}|Innung des [A-ZÄÖÜ][\wäöüß\- ]{3,40})/,
-    );
-    if (innung && !p.innung) {
-      p.innung = innung[1].trim();
-      add("innung", p.innung, quelle, text, innung.index ?? 0);
-    }
-
-    if (!p.handwerkskammer) {
-      const h = handwerkskammerAus(text);
-      if (h) {
-        p.handwerkskammer = h.name;
-        add("handwerkskammer", h.name, quelle, text, h.index);
-      }
-    }
-
-    const iv = text.match(
-      /\b(Installateurverzeichnis|eingetragener?\s+Installateur|Installateurausweis|beim Netzbetreiber eingetragen)\b/i,
-    );
-    if (iv && p.installateurverzeichnis === null) {
-      p.installateurverzeichnis = true;
-      add("installateurverzeichnis", iv[1], quelle, text, iv.index ?? 0);
-    }
-
-    for (const z of ZERTIFIKATE) {
-      const m = text.match(z.muster);
-      if (!m) continue;
-      if (!p.zertifikate) p.zertifikate = [];
-      if (!p.zertifikate.includes(z.name)) {
-        p.zertifikate.push(z.name);
-        add("zertifikat", z.name, quelle, text, m.index ?? 0);
-      }
-    }
-
-    // Bewertung NUR als Selbstauskunft dieser Website — nie aus Google geholt.
-    // Google Maps Platform Terms 3.2.3(a)(iii) untersagt das Speichern von
-    // Reviews, (d)(iii) die Nutzung in einem Verzeichnisdienst.
-    if (p.bewertung_wert === null) {
-      const b =
-        text.match(
-          /(\d[,.]\d)\s*(?:von\s*5|\/\s*5|Sterne)[^\n]{0,80}?(\d{1,5})\s*(?:Bewertungen|Rezensionen)/i,
-        ) ??
-        text.match(
-          /(\d{1,5})\s*(?:Bewertungen|Rezensionen)[^\n]{0,80}?(\d[,.]\d)\s*(?:von\s*5|\/\s*5|Sterne)/i,
-        );
-      if (b) {
-        const a = Number(b[1].replace(",", "."));
-        const c = Number(b[2].replace(",", "."));
-        const wert = a <= 5 ? a : c;
-        const anzahl = a <= 5 ? c : a;
-        if (wert >= 1 && wert <= 5 && anzahl >= 1) {
-          p.bewertung_wert = wert;
-          p.bewertung_anzahl = Math.round(anzahl);
-          p.bewertung_quelle = "eigene-website";
-          add("bewertung", `${wert} / ${Math.round(anzahl)}`, quelle, text, b.index ?? 0);
-        }
-      }
-    }
-  }
+  for (const { text, quelle } of beide) trustSignaleAus(text, quelle, p, add, jetzt);
 
   p.favicon_url = faviconUrl(start.html, start.url);
 
