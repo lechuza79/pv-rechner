@@ -162,6 +162,41 @@ anbietet. Es gehört aber ins **Versorger-Modul** (937 Stadtwerke,
 `docs/versorger-uebergabe.md`), nicht in diese Tabelle: andere Käufer, andere Budgets,
 anderer Rechtsrahmen. Ein Versorger, der Balkonkraftwerke verkauft, ist kein Handwerksbetrieb.
 
+### 1d. Bonusprogramme von Versorgern — gemessen 29.08.2026, Ergebnis: es gibt sie praktisch nicht
+
+Die Frage lag nahe, weil Stadtwerke Balkonkraftwerke anteilig häufiger anbieten als
+Handwerksbetriebe (21 % gegen 19 %) und der Förderkatalog Kommunen kennt, deren Versorger
+selbst Sets verkauft.
+
+**Ergebnis: 30 Versorger mit Balkon-Angebot geprüft, KEIN einziger mit einem Zuschuss
+darauf.** Zwei hatten überhaupt ein Förder-Signal, beide für Wärmepumpen, und auch das
+waren Rabatte für Stromkunden, keine Förderung. Im gesamten Förderkatalog (110 Programme)
+stammen ganze zwei von Stadtwerken, beide für Photovoltaik.
+
+**Die Handprüfung erklärt, warum, und das ist der eigentliche Befund: Ein Versorger
+VERKAUFT Balkonkraftwerke, er fördert sie nicht.** Ratingen bietet ein 800-Watt-Set für
+499 € an (Lieferung 45 €), Neustadt erklärt auf seiner Balkon-Seite die
+Einspeisevergütung, Norderstedt nennt keinen Betrag. Das ist strukturell und nicht
+zufällig: Ein Versorger ist Verkäufer, keine Bewilligungsstelle. Die Förderung kommt von
+der Kommune — die zwei Ausnahmen im Katalog sind Ausnahmen.
+
+**Für den Zweck ändert das nichts**: Wer Hilfe bei der Montage sucht, ist bei einem
+Stadtwerk mit Komplettangebot gut aufgehoben. Es ist nur kein Fördertopf.
+
+**Bei Fachbetrieben ist die Frage strukturell erledigt, nicht bloß ungemessen:** Ein
+Handwerksbetrieb ist Förder-EMPFÄNGER, nicht Fördergeber. Was er hat, sind Rabattaktionen —
+Werbung, keine Förderung, und sie gehören nicht in denselben Topf.
+
+**Der erste Anlauf dieser Messung war wertlos und ist hier festgehalten, damit der Fehler
+nicht wiederkommt.** Ein selbstgebauter Absatz-Test meldete „12 von 25 Versorgern fördern
+Balkonkraftwerke". Alle sieben nachgelesenen Fundstellen waren **Navigationsmenüs** — die
+Wörter standen im selben Menü, nicht im selben Sachzusammenhang; hinter einem vermeintlichen
+Zuschuss stand der geförderte Glasfaserausbau. Ursache: **Es gibt zwei Textfunktionen
+gleichen Namens im Projekt.** Die des Förderbereichs wirft Menüs weg (dort dokumentiert als
+teuerstes Falsch-Positiv), die der Fachbetriebe behält sie mit Absicht, weil Anschriften und
+Angebote dort stehen. Wer zwei Begriffe „im selben Absatz" sucht, braucht die erste. Der
+Hinweis steht jetzt an beiden Funktionen.
+
 ### 2. Handwerkskammer-Betriebsdatenbanken — fachlich stark, rechtlich offen
 
 **Gemessen (HWK für München und Oberbayern, Suchbegriff „Photovoltaik", PLZ 80331,

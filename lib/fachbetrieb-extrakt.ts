@@ -160,6 +160,20 @@ export function entities(s: string): string {
 /**
  * Sichtbarer Text mit ERHALTENEN Zeilengrenzen.
  *
+ * ACHTUNG, ES GIBT EINE ZWEITE FUNKTION DIESES NAMENS im Förderbereich
+ * (`lib/funding-screen-erkennung.ts`), und sie verhält sich ANDERS: Sie wirft
+ * Navigation, Kopf- und Fußbereich weg, weil dort das teuerste Falsch-Positiv
+ * entstand — ein Menü listet auf jeder Unterseite alle Themen, und dann steht
+ * „Photovoltaik" wenige hundert Zeichen neben einem Zuschussbetrag, der zu etwas
+ * ganz anderem gehört.
+ *
+ * DIESE Fassung behält das Menü mit Absicht: Hier wird nach Angeboten und
+ * Anschriften gesucht, und die stehen oft genau dort. Wer mit dieser Fassung
+ * nach zwei Begriffen sucht, die im selben Absatz stehen sollen, misst Unsinn —
+ * am 29.08.2026 gemessen, als eine Stichprobe „48 % der Versorger fördern
+ * Balkonkraftwerke" meldete und alle sieben nachgelesenen Fundstellen
+ * Navigationsmenüs waren.
+ *
  * Der Unterschied zum üblichen Tag-Strippen ist nicht Kosmetik: Eine Anschrift
  * lebt von ihren Zeilen. „Musterweg 3" und „12345 Musterstadt" stehen im HTML in
  * getrennten Elementen; werden sie zu einer Zeile verschmolzen, findet kein
