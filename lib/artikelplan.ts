@@ -121,7 +121,7 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
   {
     thema: "Nulleinspeisung — Photovoltaik ohne Einspeisung",
     slug: "/ratgeber/nulleinspeisung",
-    ziel: "2026-09-12",
+    ziel: "2026-09-11",
     zustand: "geplant",
     messung: {
       begriff: "nulleinspeisung",
