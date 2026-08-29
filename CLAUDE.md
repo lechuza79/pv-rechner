@@ -1160,12 +1160,39 @@ Sie behalten „unklar" (ein Angebot kann auf einer ungelesenen Unterseite stehe
 Grund sagt, dass zweimal nachgesehen wurde. Ohne diesen Unterschied prüft die nächste
 Sitzung dieselben 758 noch einmal.
 
+**Ein Prüfmuster findet nur, wonach es sucht — irgendwann muss man alles lesen.** Nach dem
+ersten Namens-Umbau meldete die Musterprüfung 0,3 % verdächtige Namen, und der Betreiber
+sagte trotzdem: „es müssen alle korrekt sein." Die vollständige Durchsicht — alle Namen
+nach Länge sortiert, in Blöcken gelesen — fand danach **sechs** Klassen, die kein Muster
+gesucht hatte: Anschrift ohne Trennzeichen hinter der Rechtsform („Banik Haustechnik
+Schwabach GmbH O´Brien-Straße 2 91126 Schwabach"), Leistungsversprechen ganz ohne Namen
+(167 Stück), Impressum-Vorspann („Diese Webseite ist ein Angebot von …"), reine
+Leistungsaufzählungen, Menüpunkte als Name („Start" elfmal) und zwei unerkannte
+Trennzeichen (das freistehende „I" als Pipe-Ersatz, „ᐅ"). **Die Länge war der Schlüssel:**
+Jeder einzelne Name sah für sich plausibel aus, nur die Sortierung machte die Klassen
+sichtbar. Ergebnis 2.826 → 2.513 Namen; wo keiner bleibt, zeigt die Liste die Anschrift,
+und die stimmt immer.
+
+**Der Beleg muss den FUND tragen, nicht das geputzte Urteil — sonst ist jede Verbesserung
+einbahnig.** Der Namensbeleg speicherte das Ergebnis der Reinigung; damit putzt ein
+Nachlauf ein zweites Mal, was schon geputzt war, und ein Fehlgriff ist unwiederbringlich.
+Gemessen, als eine zu breite Werbesatz-Regel aus „Welt in Elbe-Elster e.V." ein „Welt"
+machte — der Rohfund stand nirgends mehr. Der Titel-Rückfall legte überdies **gar keinen**
+Beleg an, weshalb genau diese zwei Namen nicht wiederherstellbar waren. **Aber: vom Beleg
+auszugehen wäre der übernächste Fehler** — er ist nicht durchweg der bessere Fund (bei
+era-goslar.de steht dort „AG Solar", in der Tabelle das richtige „ERA-Goslar"). Der
+Nachputz putzt nach; die Quellenwahl bleibt im Profil-Lauf, wo sie gemessen wird.
+
 **Nach einem Fix an einem Extraktor läuft die Messung NOCH EINMAL.** Ein Fix öffnet
 leicht eine neue Fehlerklasse, und die sieht genauso plausibel aus wie die alte: Die
 Zerlegung von Seitentiteln senkte die kaputten Namen von 20 % auf 1,4 % — und schnitt
 dabei „Uwe Schmidt Elektroinstallation Gas | Wasser | Sanitär GmbH" zu „Sanitär GmbH"
 zusammen, weil die Striche dort eine Aufzählung IM Namen sind und kein Titel-Trenner.
-Sichtbar wurde das nur, weil dieselbe Auszählung ein zweites Mal lief.
+Sichtbar wurde das nur, weil dieselbe Auszählung ein zweites Mal lief. Zweiter belegter
+Fall: Die Werbesatz-Regel las „IM" in „IM Elektrotechnik Nord" als Verhältniswort, und
+`Solar\w*` fraß „Solarma" — der Bestand verlor daraufhin **mehr** Namen statt weniger (168
+statt 131), und das sah man nur an der Zahl. **Branchenwörter gehören eng gefasst, und
+durchgehende Großschreibung schützt:** „PV ELEKTRO" ist ein Firmenname, keine Aufzählung.
 
 **Eine Spalte prüft man dort, wo sie später gelesen wird — nicht in der Datenbank.** Die
 Firmennamen sahen einzeln unauffällig aus; untereinander in der Ansicht standen dann

@@ -260,7 +260,7 @@ export function kontaktUrl(html: string, basis: string): string | null {
 export const RECHTSFORMEN: { name: string; muster: RegExp }[] = [
   { name: "GmbH & Co. KG", muster: /\bGmbH\s*&\s*Co\.?\s*KG\b/ },
   { name: "gGmbH", muster: /\bgGmbH\b/ },
-  { name: "GmbH", muster: /\bGmbH\b/ },
+  { name: "GmbH", muster: /\bGmbH\b|\bGMBH\b/ },
   { name: "UG (haftungsbeschränkt)", muster: /\bUG\s*\(haftungsbeschr[äa]nkt\)/ },
   { name: "UG", muster: /\bUG\b/ },
   { name: "AG", muster: /\bAG\b/ },
@@ -269,6 +269,9 @@ export const RECHTSFORMEN: { name: string; muster: RegExp }[] = [
   { name: "GbR", muster: /\bGbR\b/i },
   { name: "eG", muster: /\beG\b|\be\.\s?G\./ },
   { name: "e.K.", muster: /\be\.\s?K(fm|fr)?\./ },
+  // Fehlte bis 29.08.2026 ganz. Folge: „Welt in Elbe-Elster e.V." galt als
+  // Text ohne Rechtsform, fiel unter die Werbesatz-Regel und wurde zu „Welt".
+  { name: "e.V.", muster: /\be\.\s?V\.|\beV\b/ },
 ];
 
 export function rechtsformVon(name: string): string | null {
@@ -292,6 +295,32 @@ export function rechtsformVon(name: string): string | null {
  * er irgendwann gebraucht. Deshalb lieber KEIN Name als ein falscher: Was nach
  * dem Putzen nur noch aus einer Rechtsform besteht, wird verworfen.
  */
+/**
+ * Zeilen, in denen eine FREMDE Firma steht — nicht der Betrieb.
+ *
+ * Der teuerste Fehlgriff dieser Erhebung, gefunden vom Betreiber an einer
+ * einzelnen Karte: „© Vaillant Deutschland GmbH & Co. KG" stand als Firmenname
+ * über einem Betrieb, der duo energy heißt. Der Satz im Impressum lautete
+ * „Diese Website wurde erstellt von mai multimedia — Bildrechte © Vaillant
+ * Deutschland GmbH & Co. KG". Adresse und E-Mail waren richtig, nur der Name
+ * gehörte jemand anderem.
+ *
+ * Ein Impressum nennt regelmäßig mehrere Firmen: den Anbieter ganz oben, dann
+ * Bildquellen, den Webdesigner, den Anbieter der Rechtstexte, den Hersteller.
+ * Wer die erste Zeile mit einer Rechtsform nimmt, erwischt irgendeine davon.
+ * In einem Anschreiben wäre das der schlimmste Fehler von allen — er benennt
+ * den falschen Betrieb.
+ */
+const FREMDE_FIRMA =
+  // ©, (c) und ähnliche Zeichen stehen AUSSERHALB der Wortgrenzen-Gruppe: Eine
+  // Wortgrenze vor „©" kann nie passen, weil © kein Wortzeichen ist. Das erste
+  // Muster prüfte genau so — und ließ jeden Urheberrechtsvermerk durch.
+  /©|\(c\)|\b(Bildrechte|Bildnachweis|Bildquelle|Fotos?|Grafiken?|erstellt von|umgesetzt von|realisiert (von|durch)|Webdesign|Programmierung|Gestaltung|Copyright|All Rights Reserved|Rechtstexte|Quelle|Hersteller|Lieferant|powered by|depositphotos|shutterstock|adobe ?stock|unsplash|pixabay)\b/i;
+
+/** Menüpunkte, die als ganzer Name auftauchten — nur als EINZIGES Wort geprüft. */
+const NAVIGATIONSWORT =
+  /^(Start|Startseite|Home|News|Aktuelles|Leistungen|Willkommen|Das|Die|Der|Smart|Menu|Men[üu]|Seite|Index|Login|Suche|Blog|Über|Ueber|Team|Service|Produkte|Referenzen|Kontakt|Impressum)$/i;
+
 /** Wörter, die in einem Firmennamen nichts verloren haben. */
 const SEITENWORT =
   /^(Impressum|Kontakt|Startseite|Home|Anbieterkennzeichnung|Datenschutz(erkl[äa]rung)?|AGB|Angaben gem[äa][ßss][^:]*|Name|Firma|Anbieter|Betreiber|Verantwortlich|und Kontaktdaten|von|Showroom)\b/i;
@@ -317,8 +346,103 @@ function wirktWieName(t: string): boolean {
   )
     return false;
   if ((t.match(/,/g) ?? []).length >= 2) return false;
+  if (istWerbesatz(t)) return false;
+  // NUR GATTUNGSWÖRTER HEISST: KEIN NAME.
+  //
+  // Die letzte Klasse der Durchsicht — reine Leistungsaufzählungen, die durch
+  // die Werbesatz-Regel schlüpfen, weil sie weder ein Verhältniswort noch ein
+  // Werbe-Adjektiv enthalten: „PV-Anlagen, Batteriespeicher und Wärmepumpen",
+  // „Elektroarbeiten, Badsanierung & Heizungsbau", „Photovoltaikanlage Beratung
+  // Installation". Ein Firmenname hat immer mindestens ein Wort, das im
+  // Branchenvokabular nicht vorkommt — den Namen eben.
+  //
+  // AUSNAHME VERSALIEN: „PV ELEKTRO" ist der Firmenname (und die Domain), nicht
+  // die Aufzählung „PV, Elektro". Wer seinen Namen in Großbuchstaben schreibt,
+  // schreibt keinen Fließtext — gemessener Fehlgriff dieser Regel.
+  const worte = t.split(/[\s/]+/).map((w) => w.replace(/^[&(]+|[.,;:&)-]+$/g, "")).filter(Boolean);
+  const versalien = worte.every((w) => w === w.toUpperCase());
+  if (!versalien && worte.length >= 1 && worte.every((w) => GATTUNGSWORT.test(w))) return false;
+  // MENÜPUNKTE, die als Name durchgingen: „Start" stand elfmal in der Liste,
+  // dazu „Das", „News", „Smart", „Home". Sie kommen aus dem Seitentitel, wenn
+  // die Seite dort nur ihren Menüpunkt führt. Auf GLEICHHEIT geprüft, nicht als
+  // Anfang — „Startec GmbH" gibt es.
+  if (worte.length === 1 && NAVIGATIONSWORT.test(worte[0])) return false;
   // Mindestens ein großgeschriebenes Wort — ein Name hat eines.
   return /[A-ZÄÖÜ]/.test(t);
+}
+
+/**
+ * Ein Leistungsversprechen ist kein Firmenname.
+ *
+ * Die zweite Klasse, die erst das Durchlesen ALLER Namen zutage förderte:
+ * „Experte für Photovoltaik, erneuerbare Energie & Solaranlagen",
+ * „Badrenovierung und Heizungsbau im Raum Cuxhaven & Otterndorf",
+ * „Hochwertige Photovoltaikanlagen für Hamburg und Umgebung". Jeder Satz für
+ * sich unauffällig, keiner nennt eine Firma — die Seite hat schlicht keinen
+ * Namen im Titel und im Impressum-Kopf.
+ *
+ * Erkannt wird die BAUFORM, nicht das Thema: ein Verhältniswort, das eine
+ * Leistung an einen Ort oder einen Zweck bindet, oder ein Werbe-Adjektiv. Beides
+ * kommt in Firmennamen praktisch nicht vor — und wo doch („Gesellschaft für
+ * Solartechnik mbH"), schützt die Rechtsform davor, siehe Aufrufstelle.
+ *
+ * Lieber kein Name als ein falscher: Ohne Namen zeigt die Liste die Anschrift,
+ * und die ist immer richtig.
+ */
+function istWerbesatz(t: string): boolean {
+  return t.split(/\s+/).some(istWerbewort);
+}
+
+/**
+ * Ein einzelnes Wort, an dem das Leistungsversprechen beginnt.
+ *
+ * DURCHGEHENDE GROSSSCHREIBUNG SCHÜTZT: „IM Elektrotechnik Nord" heißt wirklich
+ * so — „IM" sind die Initialen des Inhabers, kein Verhältniswort. Gemessen als
+ * Fehlgriff genau dieser Regel, sichtbar erst, weil dieselbe Auszählung nach
+ * dem Fix ein zweites Mal lief: Der Bestand verlor plötzlich MEHR Namen statt
+ * weniger.
+ */
+function istWerbewort(w: string): boolean {
+  const rein = w.replace(/[.,;:&()-]+$/, "");
+  if (rein.length <= 3 && rein === rein.toUpperCase() && /[A-ZÄÖÜ]/.test(rein)) return false;
+  return WERBE_BEGINN.test(rein) || WERBE_WORT.test(rein);
+}
+
+/** Wo ein Leistungsversprechen anfängt — dort endet der Name, wenn es einen gibt. */
+const WERBE_BEGINN =
+  /\b(f[üu]r|zur|zum|in|im|aus|vom|rund um|ist|sind|deine?[nmrs]?|Ihre?[nmrs]?|Dein|Experten?|Spezialist\w*|Fachpartner|Ansprechpartner|Anbieter|Berater\w*|Profi)\b/i;
+
+const WERBE_WORT =
+  /\b(hochwertig\w*|professionell\w*|zuverl[äa]ssig\w*|schl[üu]sselfertig\w*|kostenlos|Full[- ]?Service|kompetent\w*|erfahren\w*|individuell\w*|ma[ßss]geschneidert\w*|nachhaltig\w*|effizient\w*|komplett\w*|erschwinglich\w*|intelligent\w*|modern\w*|regional\w*)\b/i;
+
+/**
+ * Branchen- und Füllwörter — alles, was KEIN Eigenname ist.
+ *
+ * Gebraucht für genau eine Entscheidung: Steht vor dem Leistungsversprechen ein
+ * Firmenname, oder fängt der Satz gleich mit der Leistung an? „SEAC Group
+ * Experten für solare Freiflächenanlagen" trägt vorn einen Namen, „Solaranlagen
+ * für Schwerin und ganz Mecklenburg" nicht — und beide sahen bis hierher gleich
+ * aus.
+ */
+const GATTUNGSWORT =
+  /^(Photovoltaik(anlagen?|shop)?|PV(-?Anlagen?)?|Solar(anlagen?|technik|energie|module|strom|thermie|systeme|park)?|Elektro(technik|installationen?|arbeiten|anlagen?|fachbetrieb|meisterbetrieb)?|Elektriker|Heizung(en|sbau|stechnik)?|Sanit[äa]r(technik)?|Bad(sanierung|renovierung)?|W[äa]rmepumpen?|Energie(technik|beratung|systeme|l[öo]sungen|versorger|experten?|speicher)?|Strom(speicher)?|Dach(decker|sanierung|arbeiten)?|Balkonkraftwerke?|Anlagen?|Beratung|Service|Technik|L[öo]sungen?|Fachbetrieb(e)?|Meisterbetrieb(e)?|Meisterfachbetrieb|Partner|Zuhause|Haus(technik)?|Geb[äa]udetechnik|Gewerbe|Industrie|Privat(kunden)?|Region(al)?|Stadtwerke|Institut|Gruppe|Group|GmbH|Zimmerer|Zimmerei|Dachdecker(betrieb|meister)?|Schreinerei|Tischlerei|Klempner(ei)?|Installateur|Meister(betrieb|fachbetrieb)?|Handwerk(er)?|Bau|Montage(service|systeme)?|Holzbau|Bedachungen|Haustechnik|Klimatechnik|K[äa]ltetechnik|Solarteur(e)?|Energieberat(ung|er)|Energieexperten?|Netzbetreiber|Energieversorger|Dienstleister|Welt|Zukunft|Sonne(nenergie)?|Strom(speicher)?|W[äa]rme(pumpen?)?|Batteriespeicher|Speicher(systeme)?|Balkonkraftwerke?|Solarmodule|Zubeh[öo]r|Installation(en)?|Planung|Montage|Wartung|Elektroarbeiten|Badsanierung|Badrenovierung|Heizungsbau|Angebote?|Erneuerbare|Innovative|Klima(technik|anlagen?|schutz)?|Sicherheitstechnik|Solarthermie|Wallbox(en)?|E-?Mobilit[äa]t|Sanierung|D[äa]mmung|Fassade|Shop|Komplettl[öo]sungen|Energiel[öo]sungen|Anlage|hier|erhalten|mit|ohne|von|vom|neu|noch|mehr|gute|eine|einer|Alles|Wir|Sie|Ihnen|und|oder|&|,|-|und|&|die|der|das|Alles|Wir|Ihre?[nmrs]?|Das|Die|Der)$/i;
+
+/**
+ * Der Firmenname vor dem Leistungsversprechen — oder null.
+ *
+ * Gemessen an den 131 Sätzen, die sonst ganz entfielen: In gut einem Dutzend
+ * steht der Name vorn und nur der Rest ist Werbung. Alles wegzuwerfen wäre
+ * derselbe Fehler in der anderen Richtung.
+ */
+function nameVorWerbung(t: string): string | null {
+  const worte = t.split(/\s+/);
+  const i = worte.findIndex(istWerbewort);
+  if (i < 1) return null;
+  const vorn = worte.slice(0, i);
+  // Nur Gattungswörter davor heißt: Der Satz fängt gleich mit der Leistung an.
+  if (vorn.every((w) => GATTUNGSWORT.test(w.replace(/[.,;:&-]+$/, "")))) return null;
+  const name = vorn.join(" ").replace(/[\s.,;:&-]+$/, "");
+  return name.length >= 3 && /[A-ZÄÖÜ]/.test(name) ? name : null;
 }
 
 /**
@@ -358,6 +482,27 @@ export function firmennameSaeubern(roh: string | null): string | null {
     .replace(/\s+/g, " ")
     .trim();
 
+  // Was gar kein Name sein kann: HTML-Reste und alles, was einen
+  // Urheberrechtsvermerk trägt. Beide gemessen — „<p>© 2026 Avacon AG</p>"
+  // stand so in der Liste.
+  if (/<[^>]+>|&\w+;/.test(s)) return null;
+  if (FREMDE_FIRMA.test(s)) return null;
+
+  // VORSPANN-SÄTZE, die dem Namen vorangehen. Gefunden in der dritten Runde der
+  // vollständigen Durchsicht — ein Impressum leitet den Namen gern mit einem
+  // ganzen Satz ein: „Diese Webseite ist ein Angebot von Solartechnik Türpe
+  // GbR", „Erklärungen gemäß § 5 Grüne Strahlen Memmingen GmbH", „Anschrift
+  // (Firmensitz) Dachdeckerei Wilhelm GmbH".
+  s = s.replace(
+    /^(Diese (Webseite|Website|Seite) ist ein Angebot (von|der|des)|Erkl[äa]rungen gem[äa][ßss][^A-ZÄÖÜ]*|Angaben gem[äa][ßss][^A-ZÄÖÜ]*|Rechtliche Hinweise|Anschrift \(Firmensitz\)|Herausgeber|Willkommen bei|Herzlich willkommen bei)\s+/i,
+    "",
+  );
+  // Baustellen- und Wartungsmeldungen HINTER dem Namen — „Stockner Solar is
+  // under construction", „Photovoltaik Zentrum Bayern is under maintenance".
+  s = s.replace(/\s+is under (construction|maintenance)\b.*$/i, "");
+  // Werbe-Imperativ vor dem Namen — „Erleben Sie Elektro-Phase".
+  s = s.replace(/^(Erleben|Entdecken|Besuchen|Vertrauen) Sie\s+/i, "");
+
   // Nachlaufende Feldbeschriftungen aus dem Impressum abschneiden.
   s = s.replace(
     /\s+(Adresse|Anschrift|Sitz|Telefon|E-?Mail|Vertreten durch|Gesch[äa]ftsf[üu]hr\w*|Registergericht|USt|Zum Inhalt springen)\b.*$/i,
@@ -367,7 +512,10 @@ export function firmennameSaeubern(roh: string | null): string | null {
   // Führende und nachlaufende Trenner weg, BEVOR zerlegt wird — ein Titel wie
   // „| EK Fuchs Solar- & Elektrotechnik" ergibt sonst nur einen Teil, wird
   // deshalb nicht zerlegt und behält den Strich.
-  s = s.replace(/^[\s|·•–—:,;&+-]+/, "").replace(/[\s|·•–—:,;-]+$/, "");
+  // Auch Anführungszeichen und Pfeile: „» Palme Solar GmbH", „\"RNS-Energy GmbH\"".
+  s = s
+    .replace(/^[\s|·•–—:,;&+"'«»‹›→➤-]+/, "")
+    .replace(/[\s|·•–—:,;"'«»‹›-]+$/, "");
 
   // An den üblichen Trennern zerlegen. Der Teil MIT Rechtsform gewinnt — gleich,
   // ob er vorn oder hinten steht.
@@ -380,17 +528,35 @@ export function firmennameSaeubern(roh: string | null): string | null {
   // der ganze Ausdruck übrig und ist er zu lang, gibt es lieber gar keinen
   // Namen — die Liste zeigt dann die Adresse, und die stimmt.
   const teile = s
-    .split(/\s*[|·•]\s*|\s+[–—]\s+|\s+-\s+|\s*:\s+/)
+    // Das freistehende „I" ist in Seitentiteln ein Pipe-Ersatz, kein Buchstabe
+    // („Elektrotechnik Birkefeld I Elektromeisterbetrieb in Ellrich"). Ohne
+    // Punkt dahinter, damit eine Initiale („Elektro I. Müller") stehen bleibt.
+    .split(/\s*[|·•ᐅ➤]\s*|\s+I\s+(?!\.)|\s+[–—]\s+|\s+-\s+|\s*:\s+/)
     .map((t) => t.trim())
     .filter(Boolean);
-  if (teile.length === 2 || teile.length === 3) {
+  if (teile.length > 1) {
     const mitForm = teile.filter((t) => rechtsformVon(t));
-    // Bei mehreren mit Rechtsform der KÜRZESTE: Der lange trägt meist noch
-    // einen Zusatz („X GmbH aus Musterstadt seit 1990").
-    s =
+    const kandidat =
       mitForm.length > 0
         ? mitForm.sort((a, b) => a.length - b.length)[0]
         : (teile.find(wirktWieName) ?? "");
+    // EIN SCHNITT, DER FAST ALLES WEGNIMMT, IST VERDÄCHTIG.
+    //
+    // Die frühere Regel „ab vier Teilen nicht zerlegen" war eine Krücke und
+    // machte die Reinigung überdies NICHT IDEMPOTENT: Ein bereits geputzter
+    // Name hat einen Teil weniger, fällt beim zweiten Durchgang unter die
+    // Schwelle und wird dann doch zerlegt. Gemessen am 29.08.2026 beim
+    // Nachputzen des Bestands — aus „Uwe Schmidt Elektroinstallation Gas |
+    // Wasser | Sanitär GmbH" wurde erneut „Sanitär GmbH", und aus „Elektro -
+    // Blum Inh. Heiko Schmonsees - Bremerhaven" wurde „Elektro".
+    //
+    // Der Anteil misst dasselbe robuster und in einem Durchgang: Bleibt weniger
+    // als ein Viertel übrig, war der Strich kein Titel-Trenner, sondern Teil des
+    // Namens. Die Grenze ist an den gemessenen Fällen kalibriert — „Jendrian
+    // Haustechnik" aus einem Werbetitel behält 29 %, „Sanitär GmbH" aus einer
+    // Aufzählung nur 20 %.
+    const genugUebrig = kandidat.length >= Math.max(12, s.length * 0.25);
+    if (kandidat && genugUebrig) s = kandidat;
   }
 
   // Führende Seitenwörter — auch der Rest einer zerlegten Überschrift
@@ -400,6 +566,10 @@ export function firmennameSaeubern(roh: string | null): string | null {
     s = s
       .replace(/^[&+·\-–—:,;]+\s*/, "")
       .replace(SEITENWORT, "")
+      // Ein KLEIN geschriebener Artikel vorn ist der Rest eines Satzes
+      // („… der Klempau GmbH in Lübeck"), nie Teil des Namens. Groß
+      // geschrieben bleibt er stehen — „Die Solarbauer GmbH" gibt es wirklich.
+      .replace(/^(der|die|das|den|dem|des|ein|eine|einer)\s+/, "")
       .trim();
     if (s === vorher) break;
   }
@@ -414,10 +584,43 @@ export function firmennameSaeubern(roh: string | null): string | null {
   if (gekuerzt.trim().length >= 2) s = gekuerzt;
   s = s.replace(/\s*[–—:,-]+\s*$/, "").trim();
 
+  // NACH DER RECHTSFORM ENDET DER NAME.
+  //
+  // Die stärkste Einzelregel, gefunden beim Durchlesen der längsten Namen: Was
+  // hinter „GmbH" steht, ist Anschrift, Telefonnummer, Menü oder Ortszusatz —
+  // nie mehr der Name. Gemessene Beispiele: „Banik Haustechnik Schwabach GmbH
+  // O´Brien-Straße 2 91126 Schwabach Deutschland", „Rieger & Kraft Solar GmbH
+  // 09141 / 923 239 kontakt@…", „Soleno GmbH Soleno GmbH Leistungen Ratgeber
+  // Über uns Kontakt".
+  //
+  // Die Zusätze, die WIRKLICH zur Rechtsform gehören, bleiben: „& Co. KG",
+  // „(haftungsbeschränkt)", „mbH". Ohne sie würde aus „Muster GmbH & Co. KG"
+  // ein „Muster GmbH", und das ist eine andere Gesellschaft.
+  const rf = rechtsformVon(s);
+  if (rf) {
+    const treffer = RECHTSFORMEN.find((r) => r.name === rf)?.muster;
+    const m = treffer ? s.match(treffer) : null;
+    if (m && m.index !== undefined) {
+      const bis = m.index + m[0].length;
+      const rest = s.slice(bis);
+      // Erlaubte Fortsetzungen der Rechtsform selbst.
+      const fortsetzung = rest.match(
+        /^(\s*&\s*Co\.?\s*KG|\s*\(haftungsbeschr[äa]nkt\)|\s*mbH|\s*i\.\s?G\.)*/i,
+      );
+      const ende = bis + (fortsetzung?.[0].length ?? 0);
+      if (ende < s.length) s = s.slice(0, ende).trim().replace(/[,;·|-]+$/, "").trim();
+    }
+  }
+
   if (!s) return null;
   // Ohne Rechtsform gelten die strengeren Namensregeln; mit Rechtsform reicht,
   // dass neben ihr überhaupt etwas steht.
-  if (!rechtsformVon(s)) return wirktWieName(s) ? s : null;
+  if (!rechtsformVon(s)) {
+    if (wirktWieName(s)) return s;
+    // Letzter Versuch: Steht der Name vor dem Leistungsversprechen?
+    const vorn = nameVorWerbung(s);
+    return vorn && wirktWieName(vorn) ? vorn : null;
+  }
   if (s.length > 80) return null;
   const ohneRechtsform = RECHTSFORMEN.reduce((t, rf) => t.replace(rf.muster, " "), s)
     .replace(/[\s&.,-]+/g, "")
@@ -537,7 +740,7 @@ export function gruendungsjahrAus(
  * Impressum in der Zeile darunter stehen.
  */
 const HWK_STOPP =
-  /^(Berufsrechtlich|Zust[äa]ndig|Kammer|Aufsicht|Angaben|Gesetzliche|Regelungen|Berufsbezeichnung|Die |Der |Das |Weitere|Informationen|Verantwortlich|Mitglied)/;
+  /^(Berufsrechtlich|Zust[äa]ndig|Kammer|Aufsicht|Angaben|Gesetzliche|Regelungen|Berufsbezeichnung|Die |Der |Das |Weitere|Informationen|Verantwortlich|Mitglied|IHK|Industrie)/;
 
 export function handwerkskammerAus(text: string): { name: string; index: number } | null {
   const m = text.match(/Handwerkskammer\s+(?:f[üu]r\s+)?([A-ZÄÖÜ][A-Za-zÄÖÜäöüß.\-/ ]{2,40})/);
@@ -925,22 +1128,48 @@ export function profilAus(domain: string, start: Seite, imp: Seite | null, jetzt
   const q = imp?.url ?? start.url;
   const t = impText || startText;
 
-  for (const zeile of t.split("\n").slice(0, 60)) {
+  // Der Anbieter steht OBEN im Impressum. Weiter unten folgen Haftung,
+  // Bildrechte, Webdesign — und dort stehen fremde Firmen. 60 Zeilen weit zu
+  // suchen war der Grund, aus dem ein Bildrechte-Vermerk als Firmenname endete.
+  const impZeilen = t.split("\n");
+  for (let i = 0; i < Math.min(impZeilen.length, 25); i++) {
+    const zeile = impZeilen[i];
     const rf = rechtsformVon(zeile);
-    if (rf && zeile.length < 90) {
-      const name = firmennameSaeubern(zeile);
-      if (!name) continue;
-      p.firmenname = name;
-      p.rechtsform = rf;
-      add("firmenname", name, q, t, t.indexOf(zeile));
-      break;
-    }
+    if (!rf || zeile.length >= 90) continue;
+    // Die Zeile selbst UND ihre Nachbarn dürfen keine fremde Firma benennen:
+    // „Bildrechte" steht oft eine Zeile über dem Namen, nicht in derselben.
+    const umfeld = impZeilen.slice(Math.max(0, i - 1), i + 2).join(" ");
+    if (FREMDE_FIRMA.test(umfeld)) continue;
+    const name = firmennameSaeubern(zeile);
+    if (!name) continue;
+    p.firmenname = name;
+    p.rechtsform = rf;
+    // DER BELEG TRÄGT DIE ROHE ZEILE, NICHT DEN GEPUTZTEN NAMEN.
+    //
+    // Vorher stand hier das Ergebnis der Reinigung — also unser Urteil, nicht
+    // der Fund. Damit war jede Verbesserung der Reinigung einbahnig: Wer den
+    // Bestand nachputzt, putzt ein zweites Mal, was schon geputzt war, und ein
+    // Fehlgriff ist unwiederbringlich. Gemessen am 29.08.2026, als eine zu
+    // breite Werbesatz-Regel aus „Welt in Elbe-Elster e.V." ein „Welt" machte
+    // und der Rohfund nirgends mehr stand.
+    add("firmenname", zeile.trim(), q, t, t.indexOf(zeile));
+    break;
   }
   if (!p.firmenname) {
     // Rückfall auf den Seitentitel — der trägt fast immer Beiwerk („Home |“,
     // „Impressum -“), deshalb durch dieselbe Reinigung.
+    //
+    // MIT EIGENEM MERKMAL, damit ein Nachputz die Herkunft noch unterscheiden
+    // kann: Der Impressum-Fund schlägt den Titel-Fund, und das muss auch dann
+    // noch gelten, wenn beide nur als Beleg vorliegen. Der Titel bekam bis zum
+    // 29.08.2026 gar keinen Beleg — genau die zwei Namen, die der Fehlgriff
+    // oben verkürzt hatte, waren deshalb nicht wiederherstellbar.
     const ti = start.html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-    if (ti) p.firmenname = firmennameSaeubern(entities(ti[1]));
+    if (ti) {
+      const roh = entities(ti[1]).replace(/\s+/g, " ").trim();
+      p.firmenname = firmennameSaeubern(roh);
+      if (roh) add("firmenname-titel", roh, start.url, roh, 0);
+    }
   }
 
   const hr = t.match(/\bHR([AB])\s*[:\-]?\s*(\d{1,7})\b/);

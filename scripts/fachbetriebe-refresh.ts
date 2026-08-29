@@ -20,6 +20,7 @@
  *   npm run fachbetriebe -- --profil --limit 100       Impressum + Startseite lesen
  *   npm run fachbetriebe -- --kontakt                  Kontaktseite: Kontaktweg + Restklasse
  *   npm run fachbetriebe -- --ags                      Adresse → amtlicher Gemeindeschlüssel
+ *   npm run fachbetriebe -- --namen-putzen             Namen nachputzen, ohne Netz
  *   npm run fachbetriebe -- --stats                    was drin ist
  *
  * ─────────────────────────────────────────────────────────────────────────────
@@ -83,6 +84,7 @@ import {
   KEIN_BETRIEB,
   type Kreis,
   besteMail,
+  firmennameSaeubern,
   hostVon,
   impressumUrl,
   istKartenanwendung,
@@ -1030,6 +1032,61 @@ interface PlzEintrag {
  * der Ortsname aus dem Impressum; passt keiner, bleibt der Schlüssel LEER —
  * lieber keine Zuordnung als die falsche Gemeinde.
  */
+/**
+ * Die gespeicherten Firmennamen NACHPUTZEN — ohne die Seiten neu zu holen.
+ *
+ * Wenn die Reinigung besser wird, erreicht die Verbesserung nur die Betriebe,
+ * deren Seite beim nächsten Lauf ANTWORTET. Gemessen am 29.08.2026: 129 Seiten
+ * waren unerreichbar, und dort blieb der alte, kaputte Name stehen — sichtbar
+ * als „» Palme Solar GmbH" in einer Liste, in der sonst alles sauber war. Der
+ * Fehler sah aus wie ein Muster, das nicht greift, war aber ein Wert, den der
+ * Lauf gar nicht angefasst hatte.
+ *
+ * Diese Phase wendet die aktuelle Reinigung auf den Bestand an. Sie holt nichts
+ * und kostet nichts; wer ein Muster verbessert, lässt sie hinterher laufen.
+ *
+ * SIE PUTZT NACH, SIE WÄHLT KEINE QUELLE. Der Rohfund liegt zwar als Beleg vor
+ * (`merkmal = "firmenname"`), und es lag nahe, von dort auszugehen — dann würde
+ * ein Fehlgriff der Reinigung von selbst heilen. Nachgemessen am 29.08.2026 und
+ * VERWORFEN: Der Beleg ist nicht durchweg der bessere Fund. Bei era-goslar.de
+ * steht dort „AG Solar" (ein Textfetzen), in der Tabelle das richtige
+ * „ERA-Goslar". Über alle 852 Abweichungen hätte der Umbau eine Quellenwahl neu
+ * getroffen, die der Profil-Lauf bereits abgewogen hat — und einige richtige
+ * Namen dabei verloren.
+ *
+ * Wer die Quellenwahl ändern will, ändert sie im Profil-Lauf und misst sie dort.
+ */
+async function namenPutzen(dry: boolean): Promise<void> {
+  const sb = await makeClient();
+  const alle = await alleZeilen<{ domain: string; firmenname: string | null }>(
+    sb,
+    "fachbetriebe",
+    "domain, firmenname",
+  );
+  const zeilen: Record<string, unknown>[] = [];
+  for (const r of alle) {
+    const quelle = r.firmenname;
+    if (!quelle) continue;
+    const sauber = firmennameSaeubern(quelle);
+    if (sauber === r.firmenname) continue;
+    zeilen.push({ domain: r.domain, firmenname: sauber, updated_at: new Date().toISOString() });
+  }
+  const geleert = zeilen.filter((z) => z.firmenname === null).length;
+  log(
+    `${zeilen.length} Namen ändern sich (davon ${geleert} entfallen ganz — dort zeigt die Liste die Adresse)`,
+  );
+  for (const z of zeilen.slice(0, 12)) {
+    const alt = alle.find((a) => a.domain === z.domain)?.firmenname;
+    log(`  „${alt}" → ${z.firmenname ?? "—"}`);
+  }
+  if (dry) {
+    log("--dry: nichts geschrieben", "ok");
+    return;
+  }
+  await upsertGestueckelt(sb, "fachbetriebe", zeilen, "domain");
+  log("Namen nachgeputzt", "ok");
+}
+
 async function ags(dry: boolean): Promise<void> {
   const sb = await makeClient();
   const tabelle = JSON.parse(
@@ -1256,6 +1313,7 @@ async function main(): Promise<void> {
     profil: argv.includes("--profil"),
     kontakt: argv.includes("--kontakt"),
     ags: argv.includes("--ags"),
+    namen: argv.includes("--namen-putzen"),
     stats: argv.includes("--stats"),
   };
 
@@ -1272,6 +1330,8 @@ async function main(): Promise<void> {
         "                                   Kontaktseite lesen: Kontaktweg schließen,\n" +
         "                                   Restklasse einordnen\n" +
         "  --ags [--dry]                    Anschrift → amtlicher Gemeindeschlüssel\n" +
+        "  --namen-putzen [--dry]           die gespeicherten Firmennamen nachputzen,\n" +
+        "                                   ohne die Seiten neu zu holen\n" +
         "  --stats                          Bestand, Abdeckung, Trust-Signale",
       "err",
     );
@@ -1291,6 +1351,7 @@ async function main(): Promise<void> {
   if (phasen.art) await einordnen(dry);
   if (phasen.profil) await profil(zahlArg("limit", 100), dry, argv.includes("--refetch"));
   if (phasen.kontakt) await kontakt(zahlArg("limit", 200), dry, argv.includes("--refetch"));
+  if (phasen.namen) await namenPutzen(dry);
   if (phasen.ags) await ags(dry);
   if (phasen.stats) await stats();
   log("Fertig", "ok");
