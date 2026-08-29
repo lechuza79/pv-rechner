@@ -184,8 +184,7 @@ export function PlatzModal({
           {weg === "artikel" && (
             <>
               <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: 0 }}>
-                Ein Ratgeber, der auf Social aufgegriffen wird. Es entsteht dadurch kein Beitrag —
-                der wird an dem Tag noch gebaut.
+                Es entsteht dadurch kein Beitrag — der wird an dem Tag noch gebaut.
               </p>
               <Liste
                 eintraege={wahl.ratgeber.map((r) => ({ wert: r.slug, text: r.titel }))}

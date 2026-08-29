@@ -163,7 +163,7 @@ export function freiBaender(montagIso: string): FreiBand[] {
         echterBeginn: !ferienAmRand(montagIso, -1),
         echtesEnde: !ferienAmRand(montagIso, 7),
         einTag: start === ende,
-        text: `Ferien in ${laender} von 16 Ländern`,
+        text: `Ferien in ${laender} Ländern`,
       });
       start = -1;
     }
@@ -188,9 +188,9 @@ function ferienAmRand(montagIso: string, versatz: number): boolean {
  * Bayern und Saarland"). Die Grenze ist keine gegriffene Zahl, sondern die
  * kürzere der beiden Listen — wer weniger aufzählen muss, sagt mehr.
  */
-export function feiertagSatz(iso: string): string | null {
+export function feiertagInfo(iso: string): { name: string; wo: string } | null {
   const bundesweit = FEIERTAGE["*"]?.find((f) => f.tag === iso);
-  if (bundesweit) return `${bundesweit.name} — bundesweit`;
+  if (bundesweit) return { name: bundesweit.name, wo: "Bundesweit" };
 
   let name: string | null = null;
   const mit: string[] = [];
@@ -204,9 +204,10 @@ export function feiertagSatz(iso: string): string | null {
   if (!name) return null;
 
   const ohne = LAENDER.filter((l) => !mit.includes(LAND_NAME[l] ?? l)).map((l) => LAND_NAME[l] ?? l);
-  return ohne.length < mit.length
-    ? `${name} — in allen Ländern außer ${aufzaehlung(ohne)}`
-    : `${name} — in ${aufzaehlung(mit)}`;
+  return {
+    name,
+    wo: ohne.length < mit.length ? `In allen Ländern außer ${aufzaehlung(ohne)}` : `In ${aufzaehlung(mit)}`,
+  };
 }
 
 /** „A, B und C" — die letzte Trennung ist ein „und", keine Kommaliste. */

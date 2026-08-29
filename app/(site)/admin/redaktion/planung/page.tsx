@@ -11,7 +11,7 @@ import { RATGEBER } from "../../../../../lib/ratgeber";
 import { sendbar } from "../../../../../lib/social-plan";
 import { ladeFassungen } from "../../../../../lib/social-vorlagen-db";
 import { planen } from "../../../../../lib/social-plan";
-import { baueKalender, deckung } from "../../../../../lib/social-kalender";
+import { baueKalender } from "../../../../../lib/social-kalender";
 import { Wochenplan } from "../../../../../components/social/Wochenplan";
 import type { PlatzWahl } from "../../../../../components/social/PlatzModal";
 import InfoTooltip from "../../../../../components/InfoTooltip";
@@ -48,7 +48,6 @@ export default async function RedaktionPlanung() {
 
   let fertig = 0;
   let wochen: ReturnType<typeof baueKalender> = [];
-  let gedeckt = { belegt: 0, offen: 0 };
   let wahl: PlatzWahl = { posts: [], familien: [], ratgeber: [] };
   try {
     const kennzahlen = await socialKennzahlen();
@@ -97,6 +96,10 @@ export default async function RedaktionPlanung() {
       })),
       heuteIso,
       {
+        // Weiter, als zunächst gezeigt wird: Der Kalender klappt nach vorn auf,
+        // und die Rechnung ist rein — ein Nachladen je Woche wäre ein Netzweg
+        // für etwas, das ohnehin schon da ist.
+        wochenVoraus: 10,
         zuweisungen,
         // Beide Ereignisse je Ratgeber. „Erschienen" und „überarbeitet" am
         // selben Tag ergäbe zwei identische Zeilen — dann zählt das Erscheinen.
@@ -110,7 +113,6 @@ export default async function RedaktionPlanung() {
         ),
       },
     );
-    gedeckt = deckung(wochen, heuteIso);
   } catch {
     fertig = 0;
   }
@@ -133,11 +135,6 @@ export default async function RedaktionPlanung() {
               dem Versandprotokoll, Kommendes aus der Warteschlange. Verschiebt sich etwas,
               verschiebt sich die Anzeige mit — verstreichen kann hier nichts.
             </InfoTooltip>
-            <span style={{ fontSize: v("--font-size-small"), fontWeight: 400, color: v("--color-text-muted") }}>
-              {gedeckt.offen > 0
-                ? `${gedeckt.belegt} gedeckt, ${gedeckt.offen} offen`
-                : `alle ${gedeckt.belegt} gedeckt`}
-            </span>
           </h2>
           <div style={{ marginTop: space.xl }}>
             <Wochenplan wochen={wochen} heuteIso={heuteIso} wahl={wahl} />

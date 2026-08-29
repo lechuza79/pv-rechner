@@ -5,7 +5,7 @@ import { v, space, pad } from "../../lib/theme";
 import { IconCheck, IconClose, IconLinkedIn } from "../Icons";
 import { Pill, type PillTon } from "./Pill";
 import { PlatzModal, type PlatzWahl } from "./PlatzModal";
-import type { KalenderPlatz, KalenderWoche } from "../../lib/social-kalender";
+import { deckung, type KalenderPlatz, type KalenderWoche } from "../../lib/social-kalender";
 import { ferienJeLand, freiBaender, tagesbefund, type FreiBand } from "../../lib/social-kalendertage";
 import { FreiBaender } from "./FreiBaender";
 import { FerienModal, type FerienZeile } from "./FerienModal";
@@ -115,6 +115,16 @@ function tagInWoche(montagIso: string, index: number): string {
   return d.toISOString().slice(0, 10);
 }
 
+/**
+ * Wie viele Wochen im Voraus zunächst zu sehen sind.
+ *
+ * Der Server rechnet WEITER, als hier gezeigt wird — die Rechnung ist rein und
+ * kostet nichts, und ein Nachladen je Woche wäre ein Netzweg für etwas, das
+ * längst da ist. Sichtbar sind zwei Wochen, weil das die Frage beantwortet, mit
+ * der man die Seite aufmacht: Ist die kommende Woche gedeckt.
+ */
+const VORAUS_ANFANG = 2;
+
 export function Wochenplan({
   wochen,
   heuteIso,
@@ -127,7 +137,18 @@ export function Wochenplan({
   const [offenerTag, setOffenerTag] = useState<string | null>(null);
   const [ueber, setUeber] = useState<string | null>(null);
   const [ferienTag, setFerienTag] = useState<string | null>(null);
+  const [voraus, setVoraus] = useState(VORAUS_ANFANG);
   let letzterMonat = "";
+
+  // Vergangene Wochen bleiben vollständig stehen; nach vorn wird aufgeklappt.
+  const vergangen = wochen.filter((w) => w.plaetze.every((p) => p.iso < heuteIso)).length;
+  const gezeigteWochen = wochen.slice(0, vergangen + 1 + voraus);
+  const nochMehr = gezeigteWochen.length < wochen.length;
+
+  // Die Abdeckung zählt, WAS ZU SEHEN IST. Sie über alle gerechneten Wochen zu
+  // zählen hieße, eine Lücke in zwölf Wochen als offenen Punkt zu melden, den
+  // niemand sieht — und die Zahl spränge beim Aufklappen ohne erkennbaren Grund.
+  const gedeckt = deckung(gezeigteWochen, heuteIso);
 
   const belegteTage = new Set(
     wochen.flatMap((w) => w.plaetze.filter((p) => p.zustand === "geplant" || p.zustand === "verstrichen").map((p) => p.iso)),
@@ -135,6 +156,18 @@ export function Wochenplan({
 
   return (
     <div>
+      <div
+        style={{
+          fontSize: v("--font-size-small"),
+          color: v("--color-text-muted"),
+          marginBottom: space.sm,
+        }}
+      >
+        {gedeckt.offen > 0
+          ? `${gedeckt.belegt} gedeckt, ${gedeckt.offen} offen`
+          : `alle ${gedeckt.belegt} gedeckt`}
+      </div>
+
       <div style={{ ...raster, marginBottom: space.xs }}>
         {TAGE.map((t, i) => (
           <div
@@ -152,7 +185,7 @@ export function Wochenplan({
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: space.xs }}>
-        {wochen.map((w) => {
+        {gezeigteWochen.map((w) => {
           // Der Monatsname steht in der Zeile, in der er WECHSELT — nicht über
           // jeder Woche. Ein Kalender, der zwölfmal „September" sagt, sagt es
           // elfmal zu oft.
@@ -290,15 +323,13 @@ export function Wochenplan({
                         // einmal — und an einem Samstag, an dem ohnehin kein
                         // Platz liegt, umrahmt er eine leere Fläche.
                         padding: pad("xs", "sm"),
-                        // Auf weißem Grund ist die Fläche umgekehrt: Ein Tag
-                        // MIT Sendeplatz hebt sich als leicht getönte Fläche ab,
-                        // ein Tag ohne bleibt weiß. Vorher war es andersherum,
-                        // weil die Woche selbst getönt war.
-                        background: platz
-                          ? angefasst && planbar
-                            ? v("--color-bg-accent")
-                            : v("--color-bg-muted")
-                          : "transparent",
+                        // ALLE Tage weiß. Die getönte Fläche für Tage mit
+                        // Sendeplatz füllte den größten Teil der Wochenbox und
+                        // ließ die ganze Woche grau wirken — den Unterschied
+                        // tragen der Rahmen und die Pille, dafür braucht es
+                        // keine zweite Farbe. Getönt wird nur, was man gerade
+                        // anfasst.
+                        background: angefasst && planbar ? v("--color-bg-accent") : "transparent",
                         cursor: planbar ? "pointer" : "default",
                         opacity: !platz && !artikel.length ? 0.55 : 1,
                         position: "relative",
@@ -350,6 +381,25 @@ export function Wochenplan({
           );
         })}
       </div>
+
+      {nochMehr && (
+        <button
+          type="button"
+          onClick={() => setVoraus((n) => n + 1)}
+          style={{
+            marginTop: space.md,
+            padding: pad("xs", "lg"),
+            borderRadius: v("--radius-sm"),
+            border: `1px solid ${v("--color-border")}`,
+            background: "transparent",
+            color: v("--color-text-secondary"),
+            cursor: "pointer",
+            fontSize: v("--font-size-small"),
+          }}
+        >
+          Nächste Woche anzeigen
+        </button>
+      )}
 
       <FerienModal
         datum={ferienTag}

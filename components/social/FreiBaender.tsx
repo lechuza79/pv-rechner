@@ -2,7 +2,7 @@
 
 import { v, space, pad } from "../../lib/theme";
 import InfoTooltip from "../InfoTooltip";
-import { feiertagSatz, ferienJeLand, type FreiBand } from "../../lib/social-kalendertage";
+import { feiertagInfo, ferienJeLand, type FreiBand } from "../../lib/social-kalendertage";
 
 // Die Ereigniszeile einer Kalenderwoche: Ferien und Feiertage.
 //
@@ -65,11 +65,10 @@ export function FreiBaender({ baender, raster, onDetail }: {
           <InfoTooltip
             ariaLabel={b.text}
             exportNote={false}
-            // Beim Punkt trägt der SATZ darunter schon den Namen und die
-            // Länder — ein Titel darüber sagte dasselbe zweimal. Beim Balken
-            // steht der Name im Balken selbst, der Titel wiederholt ihn also
-            // ebenfalls nicht; dort sind es die Länder mit ihren Zeiträumen.
-            title={b.einTag ? undefined : b.text}
+            // Der Titel trägt den NAMEN, der Rumpf sagt, wo er gilt. Beim Balken
+            // steht der Name schon im Balken; dort ist der Titel der Zeitraum
+            // und der Rumpf die Länderliste.
+            title={b.einTag ? (feiertagInfo(b.tagIso)?.name ?? "Feiertag") : b.text}
             trigger={b.einTag ? <Punkt /> : <Balken band={b} />}
           >
             <Inhalt band={b} />
@@ -147,12 +146,7 @@ function Balken({ band }: { band: FreiBand }) {
  */
 function Inhalt({ band }: { band: FreiBand }) {
   if (band.einTag) {
-    return (
-      <>
-        {feiertagSatz(band.tagIso) ?? "Gesetzlicher Feiertag"}. Zum Öffnen klicken: Ferienlage aller
-        Länder an diesem Tag.
-      </>
-    );
+    return <>{feiertagInfo(band.tagIso)?.wo ?? "Gesetzlicher Feiertag"}</>;
   }
   const zeilen = ferienJeLand(band.tagIso).slice(0, 5);
   const rest = ferienJeLand(band.tagIso).length - zeilen.length;
@@ -168,7 +162,7 @@ function Inhalt({ band }: { band: FreiBand }) {
           </span>
         </span>
       ))}
-      {rest > 0 && <span style={{ color: v("--color-text-muted") }}>und {rest} weitere — klicken für alle</span>}
+      {rest > 0 && <span style={{ color: v("--color-text-muted") }}>und {rest} weitere</span>}
     </>
   );
 }

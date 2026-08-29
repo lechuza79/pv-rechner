@@ -66,7 +66,7 @@ export function FerienModal({
             </div>
           ))}
           <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), margin: 0 }}>
-            {zeilen.length} von 16 Ländern. Quelle: Kultusministerkonferenz.
+            {zeilen.length} Länder. Quelle: Kultusministerkonferenz.
           </p>
         </div>
       )}
