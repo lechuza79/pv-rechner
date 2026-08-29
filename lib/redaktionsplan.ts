@@ -18,28 +18,51 @@ export type Slot = {
 /**
  * Drei Posts pro Woche, dienstags, donnerstags und freitags.
  *
- * ALLES DARAN IST EINE ANNAHME, und das steht hier, weil es vorher wie eine
- * Erkenntnis dastand. Die frühere Fassung behauptete, eine Einzelperson breche
- * bei täglicher Kadenz in Woche vier ab, unter drei Beiträgen entstehe keine
- * Erwartung, und Dienstag und Donnerstag seien im deutschen Fach-Feed die
- * stärksten Tage. Keine dieser Aussagen trug eine Quelle — und nach der Regel
- * dieses Projekts gilt eine Angabe im Code als unbelegt, bis jemand sie geprüft
- * hat.
+ * DIE BEGRÜNDUNG DAFÜR WAR ERFUNDEN, und das steht hier, weil sie wie eine
+ * Erkenntnis dastand. Recherchiert am 29.08.2026 gegen Primärquellen; die drei
+ * Behauptungen der ersten Fassung im Einzelnen:
  *
- * WARUM SIE TROTZDEM STEHENBLEIBT: Sie ist plausibel, sie kostet im Irrtum
- * wenig (ein Platz wird verschoben), und sie ist derzeit gar nicht prüfbar.
- * Veröffentlicht wurde noch nichts, also gibt es keine eigenen Daten. Und die
- * Reichweitenzahlen liegen bei LinkedIn hinter einer Berechtigung, die wir nicht
- * haben — messbar wird für uns nur, was danach auf unseren eigenen Seiten
- * passiert.
+ * 1. „Eine Einzelperson bricht bei täglicher Kadenz in Woche vier ab."
+ *    NICHT BELEGBAR. Die Richtung ist plausibel, die Zahl vier hat keine
+ *    Grundlage. Die nächstgelegene harte Quelle zur Routinebildung (Lally u. a.
+ *    2010, European Journal of Social Psychology, 96 Teilnehmer) findet einen
+ *    Median von 66 Tagen bis zur Automatisierung, Spanne 18–254 Tage, und nur
+ *    48 % erreichten sie überhaupt — das spricht eher gegen „Woche vier".
  *
- * WOMIT SIE PRÜFBAR WIRD: Das Versandprotokoll hält Tag und Fassung fest. Sobald
- * genug Beiträge draußen sind, lässt sich der Sendetag gegen die Zugriffe auf
- * die verlinkten Seiten halten. Vorher ist jede Diskussion darüber eine über
- * fremde Faustregeln, und die widersprechen einander je nach Branche.
+ * 2. „Unter drei Beiträgen pro Woche entsteht keine Erwartung."
+ *    WIDERLEGT. LinkedIn selbst zieht die Linie bei EINMAL wöchentlich
+ *    („Companies that post weekly see a 2x lift in engagement", LinkedIn Pages
+ *    Best Practices). Das ist Marketingmaterial ohne offengelegte Methode, aber
+ *    es ist die Aussage des Plattformbetreibers, und sie nennt eine andere
+ *    Schwelle als drei.
  *
- * Ein Prüflauf würde daran nichts ändern: Er kann eine Annahme als Annahme
- * benennen — das steht jetzt hier —, aber nicht messen, was niemand gemessen hat.
+ * 3. „Dienstag und Donnerstag sind im deutschen Fach-Feed die stärksten Tage."
+ *    NICHT BELEGBAR — für keinen Wochentag. LinkedIns eigene technische
+ *    Veröffentlichungen zum Feed-Ranking führen als Kontextmerkmale die
+ *    TAGESZEIT und das Beitragsalter auf, den Wochentag nicht. Und LinkedIns
+ *    eigener Blogbeitrag zur besten Posting-Zeit zitiert drei Fremdstudien, die
+ *    einander widersprechen (Montag, Dienstag, Donnerstag/Freitag), und schließt
+ *    mit „there's no substitute for testing". Fünf Quellen, vier verschiedene
+ *    beste Tage. Für den deutschsprachigen Raum gibt es dazu gar keine Daten.
+ *
+ * WAS BELEGT BLEIBT: Werktag schlägt Wochenende. Sonst nichts.
+ *
+ * WARUM DIE TAGE TROTZDEM FESTSTEHEN: nicht wegen der Reichweite, sondern wegen
+ * der eigenen Planbarkeit. Ein fester Rhythmus macht den Vorrat planbar; welche
+ * drei Tage es sind, ist nach heutigem Wissensstand gleichgültig.
+ *
+ * NICHT MESSBAR, UND ZWAR NIE: welcher Wochentag besser trägt. Wir können
+ * LinkedIns Reichweitenzahlen nicht abrufen; messbar sind nur die Zugriffe auf
+ * unsere eigenen Seiten. Bei drei Beiträgen pro Woche bekommt jeder Wochentag
+ * rund 52 Beiträge im Jahr — für einen Unterschied von 10 %, der Größenordnung
+ * der Literatur, bräuchte es etwa 550 Beiträge je Tag, also rund zehn Jahre. Und
+ * das unterstellt noch, dass nur der Zufall streut; in Wahrheit streut das THEMA
+ * um ein Vielfaches mehr. Wer aus den ersten zwanzig Beiträgen einen „besten
+ * Tag" abliest, liest Rauschen.
+ *
+ * WAS SICH MESSEN LÄSST: die Frequenz, als Phasenvergleich über die
+ * Wochensumme — und, ohne jede Statistik, Soll gegen Ist: Wie viele geplante
+ * Beiträge sind wirklich rausgegangen. Daran hängt die Kadenz wirklich.
  */
 export const SLOTS: Slot[] = [
   {

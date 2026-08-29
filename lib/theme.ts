@@ -76,6 +76,14 @@ export const tokens = {
   // ─── Energy — Kernenergie ───────────────────────────────────────────────
   '--color-energy-nuclear': '#EF85F8',        // Light pink — Kernenergie erzeugt in DE (bis April 2023)
   '--color-energy-nuclear-import': '#EA00FF', // Magenta — Importierte Kernenergie
+  // ─── Redaktionskalender ───────────────────────────────────────────────────
+  // Ferien und Feiertage im Redaktionskalender. EIGENES Token, obwohl es im
+  // Haus schon zwei Pinktöne gibt: Die gehören der Kernenergie und sind in
+  // jedem Strommix-Chart mit dieser Bedeutung belegt. Eine Farbe für zwei
+  // Sachen zu benutzen ist dieselbe Sorte Fehler wie ein Wort für zwei
+  // Bedeutungen — und der Kalender liegt eine Seite neben den Charts.
+  '--color-kalender-frei': '#E85D9E',       // Pink — Ferien- und Feiertagsband
+  '--color-kalender-frei-dim': '#F9DDEC',   // Aufhellung für die Bandfläche
   // ─── Energy — Category summary colors ─────────────────────────────────────
   '--color-energy-cat-renewable': '#4CAF50', // Green — Erneuerbare (summary)
   '--color-energy-cat-fossil': '#8D6E63',    // Brown — Fossil (summary)

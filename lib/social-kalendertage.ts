@@ -84,3 +84,121 @@ export function tagesHinweis(b: Tagesbefund): string | null {
   if (b.ferienLaender >= FERIEN_AB_LAENDERN) return `Ferien in ${b.ferienLaender} Ländern`;
   return null;
 }
+
+/**
+ * Ein zusammenhängendes Band innerhalb EINER Woche.
+ *
+ * Bänder enden am Wochenrand, auch wenn die Ferien weiterlaufen — der Kalender
+ * setzt Wochen untereinander, und ein Band, das über den Zeilenrand hinausragen
+ * will, gibt es im Raster nicht. Dass es weitergeht, sagt das nächste Band in
+ * der nächsten Zeile.
+ */
+export type FreiBand = {
+  /** Spaltenindex in der Woche, 0 = Montag. */
+  vonIndex: number;
+  bisIndex: number;
+  /** Fängt der Zeitraum hier wirklich an — oder läuft er aus der Vorwoche? */
+  echterBeginn: boolean;
+  echtesEnde: boolean;
+  /** Was das Band benennt. */
+  text: string;
+  /** Ein Tag = Punkt, mehrere = Balken. */
+  einTag: boolean;
+};
+
+/**
+ * Die Bänder einer Woche.
+ *
+ * ZUSAMMENGEFASST, NICHT JE BUNDESLAND. Sechzehn Länder ergäben bis zu sechzehn
+ * Streifen übereinander und in einer Kalenderzeile Brei. Das Band sagt, DASS
+ * Ferien sind und wie viele Länder betroffen sind; welche, steht im Fenster
+ * dahinter.
+ */
+export function freiBaender(montagIso: string): FreiBand[] {
+  const tage = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(`${montagIso}T12:00:00Z`);
+    d.setUTCDate(d.getUTCDate() + i);
+    const iso = d.toISOString().slice(0, 10);
+    return { iso, befund: tagesbefund(iso) };
+  });
+
+  const baender: FreiBand[] = [];
+
+  // Feiertage sind EINZELNE Tage und bekommen jeder seinen eigenen Punkt —
+  // auch zwei aufeinanderfolgende (Weihnachten) sind zwei Feiertage mit zwei
+  // Namen, kein Zeitraum mit einem.
+  tage.forEach((t, i) => {
+    const name = t.befund.feiertagUeberall ?? t.befund.feiertagRegional?.name;
+    if (!name) return;
+    const regional = !t.befund.feiertagUeberall && t.befund.feiertagRegional;
+    baender.push({
+      vonIndex: i,
+      bisIndex: i,
+      echterBeginn: true,
+      echtesEnde: true,
+      einTag: true,
+      text: regional
+        ? `${name} (${regional.laender} ${regional.laender === 1 ? "Land" : "Länder"})`
+        : `${name} (bundesweit)`,
+    });
+  });
+
+  // Ferien: zusammenhängende Strecken, ab der Schwelle.
+  let start = -1;
+  for (let i = 0; i <= 7; i++) {
+    const an = i < 7 && tage[i].befund.bekannt && tage[i].befund.ferienLaender >= FERIEN_AB_LAENDERN;
+    if (an && start < 0) start = i;
+    if (!an && start >= 0) {
+      const ende = i - 1;
+      const laender = Math.max(...tage.slice(start, i).map((t) => t.befund.ferienLaender));
+      baender.push({
+        vonIndex: start,
+        bisIndex: ende,
+        // Läuft der Zeitraum schon am Sonntag davor bzw. am Montag danach? Dann
+        // ist der Rand hier kein Anfang, sondern eine Schnittkante.
+        echterBeginn: !ferienAmRand(montagIso, -1),
+        echtesEnde: !ferienAmRand(montagIso, 7),
+        einTag: start === ende,
+        text: `Ferien in ${laender} von 16 Ländern`,
+      });
+      start = -1;
+    }
+  }
+
+  return baender;
+}
+
+function ferienAmRand(montagIso: string, versatz: number): boolean {
+  const d = new Date(`${montagIso}T12:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + versatz);
+  const b = tagesbefund(d.toISOString().slice(0, 10));
+  return b.bekannt && b.ferienLaender >= FERIEN_AB_LAENDERN;
+}
+
+/** Ferienlage aller sechzehn Länder an einem Tag — für das Detailfenster. */
+export function ferienJeLand(iso: string): { land: string; name: string; von: string; bis: string }[] {
+  return LAENDER.flatMap((l) => {
+    const f = ferienAm(l, iso);
+    return f ? [{ land: LAND_NAME[l] ?? l, name: f.name, von: f.von, bis: f.bis }] : [];
+  });
+}
+
+/** Amtlicher Länderschlüssel → Name. Steht hier, weil ihn sonst niemand braucht. */
+const LAND_NAME: Record<string, string> = {
+  "01": "Schleswig-Holstein",
+  "02": "Hamburg",
+  "03": "Niedersachsen",
+  "04": "Bremen",
+  "05": "Nordrhein-Westfalen",
+  "06": "Hessen",
+  "07": "Rheinland-Pfalz",
+  "08": "Baden-Württemberg",
+  "09": "Bayern",
+  "10": "Saarland",
+  "11": "Berlin",
+  "12": "Brandenburg",
+  "13": "Mecklenburg-Vorpommern",
+  "14": "Sachsen",
+  "15": "Sachsen-Anhalt",
+  "16": "Thüringen",
+};
