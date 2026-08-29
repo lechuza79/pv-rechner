@@ -132,6 +132,57 @@ nicht eine der 6.310 Ortsseiten.
 
 ---
 
+## 4b. Zwei Gegeneinwände, beide nachgemessen (Parallelsitzung, 29.08.2026)
+
+### Einwand: „Vielleicht ist deren Domain einfach zu schwach"
+
+Der wichtige Einwand — er würde den ganzen Befund umdrehen: Dann hätte die Messung die Autorität
+der Domain gemessen und nicht die Nische.
+
+| Domain | verweisende Domains | Verweise gesamt | Autoritätswert |
+|---|---|---|---|
+| ema-energiewelt.de | **16** | 133 | **27** |
+| solarcheck-deutschland.de | 7 | 8 | 112 |
+| solar-check.io (wir) | 9 | 9 | **0** |
+
+**Der Einwand trägt nicht — und der Beleg steckte schon in den Daten:** Dieselbe Domain, dieselbe
+Autorität, rankt mit ihren Ratgebern und Werkzeugen auf Platz 8 und 9 bei 260 bis 480 Suchen im
+Monat. Wer mit einem Ratgeber auf Seite 1 steht, hat für Seite 1 offensichtlich genug Autorität.
+Dass die Ortsseiten derselben Domain gleichzeitig auf null stehen, ist damit kein Autoritäts-,
+sondern ein Nachfrage- und Absichtsproblem.
+
+Nebenbei: Sie haben **mehr** verweisende Domains als wir (16 gegen 9) und einen Autoritätswert von
+27 gegen unsere 0. Die Gegenüberstellung zu solarcheck-deutschland.de zeigt zugleich, dass die
+Anzahl wenig sagt — dort tragen 7 redaktionelle Verweise einen Wert von 112.
+
+### Einwand: „Der Aufbau der Ergebnisseite entscheidet mehr als die Position"
+
+Geprüft für die fünf Ortsanfragen mit messbarem Suchvolumen (wo keine Nachfrage ist, ändert der
+Seitenaufbau nichts):
+
+| Anfrage | KI-Antwort | lokales Kartenfeld | vor dem ersten organischen Treffer |
+|---|---|---|---|
+| photovoltaik berlin | nein | **ja** (12 Einträge) | Anbietervergleich + Kartenfeld |
+| photovoltaik nürnberg | nein | **ja** (12) | Kartenfeld + Anbietervergleich |
+| photovoltaik essen | nein | **ja** (12) | Kartenfeld + Anbietervergleich |
+| photovoltaik frechen | nein | **ja** (9) | Anbietervergleich + Kartenfeld |
+| solaranlagen berlin | nein | nein | nichts |
+
+**Das verschärft den Befund.** Bei vier von fünf Anfragen steht ein Kartenfeld mit Installateuren
+**vor** dem ersten organischen Treffer. Selbst ein organischer Platz 1 bekäme dort kaum Klicks —
+und die Absicht ist damit amtlich belegt: Wer „photovoltaik berlin" tippt, sucht einen Betrieb,
+keine Statistik. Eine Bestandsdatenseite kann diese Anfrage nicht gewinnen, weil sie die falsche
+Frage beantwortet.
+
+**KI-Antworten kommen bei Ortsanfragen nicht vor** — anders als bei den Ratgeber-Begriffen, wo sie
+laut Parallelmessung derselben Sitzung der Grund für ausbleibende Klicks trotz guter
+Schwierigkeitswerte sind. Bei Ortsanfragen ist das Kartenfeld das Äquivalent.
+
+Der einzige Ausreißer, „solaranlagen berlin" (480/Monat, kein Kartenfeld, keine KI-Antwort), ist
+ein einzelner Begriff und kein Muster — und er rechtfertigt keine 11.000 Seiten.
+
+---
+
 ## 5. Was daraus folgt
 
 **Für die Ortsseiten: nichts ändern.** Unsere Gemeindeseiten bleiben auf „nicht indexieren". Ein
@@ -144,11 +195,14 @@ aus einem fremden, größeren Feldversuch, den wir nicht bezahlen mussten.
 Nachweis gegenüber einer Pressestelle behalten sie ihren Zweck — dafür brauchen sie keine
 Index-Freigabe.
 
-**Offene Entscheidung des Betreibers — der Name.** „Solar-Check" läuft dort als Produktname,
-Navigationspunkt und eigene Seite, dazu „Ehrlich gerechnet" neben unserem „Ehrlich berechnet".
-Ohne eingetragene Marke ist die Lage nach erster Einschätzung schwach — der Begriff ist
-beschreibend. Ob das anwaltlich geprüft werden soll, ist eine Geldfrage und gehört dem Betreiber.
-**In diesem Dokument nicht rechtlich bewertet.**
+**Der Name: kein Handlungsbedarf — zurückgezogen.** Der erste Entwurf dieses Dokuments legte die
+Namenskollision „Solar-Check" als offene Entscheidung vor. **Das war voreilig.** Eine
+Parallelsitzung hat den Begriff am selben Tag gemessen: 110 Suchen im Monat, auf Seite 1 stehen
+sechs verschiedene Anbieter mit demselben Namen, dazu die Stadt Ludwigsburg und TÜV Rheinland;
+wir selbst stehen dort auf Platz 67. **Das ist ein Gattungsbegriff, keine Marke.** Ohne
+eingetragene Marke wäre die Lage ohnehin schwach; mit dieser Messung ist sie es doppelt. Dem
+Betreiber wurde die Frage trotzdem einmal genannt, weil sie ihm gehört — aber ohne Empfehlung zu
+handeln, und die Zahlen sprechen dagegen.
 
 **Erledigt sich nicht von selbst:** Die Domain erlaubt KI-Crawler ausdrücklich und sperrt
 SEO-Werkzeuge vom Atlas. Wer sie künftig beobachtet, sollte das im Kopf haben — ein
@@ -172,8 +226,17 @@ Zwei Wegwerf-Skripte, nach dem Lauf entfernt; die Rohdaten stecken in den Tabell
    (Limit 1.000, geliefert 477 — also vollständig, nicht abgeschnitten) und
    `domain_rank_overview`.
 
-Kosten: unter 0,20 $.
+5. **Nachtrag nach Einwänden einer Parallelsitzung:** Verweisprofile aller drei Domains
+   (`backlinks/summary`) und der Aufbau der Ergebnisseite für die fünf Anfragen mit Nachfrage
+   (Bausteine vor dem ersten organischen Treffer).
+
+Kosten: unter 0,30 $ inklusive Nachtrag.
 
 **Nicht gemessen:** ob deren Atlas alt genug für ein abschließendes Urteil ist. Der Einwand trägt
 aber nicht weit — die Aussage aus Abschnitt 3 (kein messbares Suchvolumen unterhalb der
-Mittelstadt) ist strukturell und hängt nicht am Alter der Seiten.
+Mittelstadt) ist strukturell und hängt nicht am Alter der Seiten, und der Aufbau der Ergebnisseite
+aus Abschnitt 4b erst recht nicht.
+
+**Ebenfalls nicht gemessen:** wie viele Klicks ein Kartenfeld den organischen Treffern konkret
+nimmt. Dass es sie nimmt, ist belegt (es steht davor); um wie viel, ist hier nicht erhoben und
+wird auch nicht behauptet.
