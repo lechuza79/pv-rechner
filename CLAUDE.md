@@ -1327,6 +1327,16 @@ solche Namen. **Die Zahl `3/8` zählt belegte Merkmale, nicht Qualität** — ei
 Meisterbetrieb, der seinen Titel nicht auf die Website schreibt, bekommt weniger Punkte
 als einer, der es tut; gemessen wird unser Datenstand, nicht der Betrieb.
 
+**Ein NETZBETRIEB ist kein Anbieter — BLOCKER (29.08.2026).** Die Versorger-Adressen
+stammen aus dem Anlagenregister und benennen überwiegend die Netzgesellschaft, nicht den
+Vertrieb: 225 der 937. Bei ihnen maß das Geschäftsfeld „erwähnt" statt „bietet an" — ein
+Netzbetreiber MUSS über Balkonkraftwerke schreiben (Anmeldepflicht), ohne eines zu
+verkaufen. Zwölf von Hand nachgelesen, **kein einziger verkauft**. Deshalb zählt dort nur,
+was neben Verkaufssprache steht; die Adresse allein nicht („/balkonkraftwerk-anmelden"
+trägt das Wort und ist kein Angebot). Aufgefallen ist es dem Betreiber an einem Link, nicht
+einer Quote. **Die Lücke dahinter ist offen:** Wo wir den Netzbetrieb haben, fehlt der
+Vertrieb, und der verkauft und montiert.
+
 **Nicht mit dem Versorger-Modul vermischen** (937 Stadtwerke, `docs/versorger-uebergabe.md`).
 Fachbetriebe sind Handwerk, Versorger sind Energieversorger — andere Käufer, andere
 Budgets, anderer Rechtsrahmen.

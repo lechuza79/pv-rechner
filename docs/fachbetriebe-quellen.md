@@ -183,6 +183,37 @@ der Kommune — die zwei Ausnahmen im Katalog sind Ausnahmen.
 **Für den Zweck ändert das nichts**: Wer Hilfe bei der Montage sucht, ist bei einem
 Stadtwerk mit Komplettangebot gut aufgehoben. Es ist nur kein Fördertopf.
 
+**DER ENTSCHEIDENDE FUND kam vom Betreiber, nicht aus der Messung: Wir erfassen den
+NETZBETRIEB statt des Vertriebs.** Er verwies auf das Balkonkraftwerk-Angebot der ovag —
+10 % Rabatt im Shop eines Partners, auf Wunsch mit Montage. Die Seite gehört zu `ovag.de`;
+erfasst hatten wir die **ovag Netz GmbH**. Das ist kein Einzelfall, sondern die Bauart der
+Quelle: Die Versorger-Adressen stammen aus dem Anlagenregister und benennen überwiegend den
+Netzbetrieb (steht so in `docs/versorger-uebergabe.md`). **225 der 937 Versorger sind
+Netzgesellschaften.**
+
+**Bei ihnen maß das Merkmal „erwähnt" statt „bietet an".** 68 trugen ein
+Balkonkraftwerk-Merkmal; zwölf von Hand nachgelesen: **kein einziger verkauft**. Sieben
+informieren über die Anmeldepflicht („Balkonkraftwerk anmelden", „Zur Anmeldung
+steckfertiger Anlagen"), der Rest nennt das Wort ohne Angebot. Das ist die Fehlerklasse,
+vor der CLAUDE.md an erster Stelle warnt — die Beschriftung sagt etwas anderes, als die
+Zahl misst. Behoben: Bei einem Netzbetrieb wird ein Geschäftsfeld nur gesetzt, wenn
+Verkaufssprache danebensteht; die Adresse allein zählt dort nicht („/balkonkraftwerk-
+anmelden" trägt das Wort und ist kein Angebot). Festgenagelt in
+`lib/__tests__/versorger-netzbetrieb.test.ts`.
+
+**Beim Bau der Regel wurde sie prompt selbst rot** — und das ist der zweite Teil der
+Lehre: „wesernetz Bremen" galt nicht als Netzbetrieb, weil das Muster „netz" am
+WORTANFANG verlangte. Zusammengeschriebene Gesellschaften (`wesernetz`, `enercity-netz`,
+`e-netz`) fielen alle durch, 209 statt 225. Jetzt prüft es „netz" am Wortende — offen
+dürfte es nicht sein, das fänge „Vernetzung" und „Netzwerk" mit. **Dieselbe Musterfalle in
+beide Richtungen wie am selben Tag bei den Branchenwörtern der Fachbetriebe**, wo ein
+offenes „Solar*" den Firmennamen „Solarma" fraß.
+
+**Die eigentliche Lücke, die daraus folgt:** Wo wir den Netzbetrieb haben, fehlt der
+Vertrieb — und der verkauft und montiert. Die ovag Energie ist gar nicht im Bestand. Wer
+den Versorger-Bestand für Montage-Empfehlungen nutzen will, muss diese Schwestern erst
+zuordnen; das ist offen und nicht gemessen.
+
 **Bei Fachbetrieben ist die Frage strukturell erledigt, nicht bloß ungemessen:** Ein
 Handwerksbetrieb ist Förder-EMPFÄNGER, nicht Fördergeber. Was er hat, sind Rabattaktionen —
 Werbung, keine Förderung, und sie gehören nicht in denselben Topf.

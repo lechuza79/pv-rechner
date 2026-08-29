@@ -1053,6 +1053,36 @@ const DEMO_MARKE = "DEMO";
  * Vor der echten Erfassung mit --clear-demo entfernen.
  */
 /**
+ * EIN NETZBETREIBER VERKAUFT NICHTS — er muss über die Anmeldung informieren.
+ *
+ * Gemessen am 29.08.2026: 209 der 937 Versorger sind am Namen als Netzbetrieb
+ * erkennbar, und 68 von ihnen trugen ein Balkonkraftwerk-Merkmal. Zwölf davon
+ * von Hand nachgelesen: **kein einziger verkauft**, sieben informieren über die
+ * Anmeldung („Balkonkraftwerk anmelden", „Zur Anmeldung steckfertiger Anlagen"),
+ * der Rest nennt das Wort ohne jedes Angebot.
+ *
+ * Das Merkmal maß dort also „erwähnt", nicht „bietet an" — und genau diese
+ * Verwechslung ist im Projekt schon einmal teuer geworden (die Beschriftung sagt
+ * etwas anderes, als die Zahl misst). Der Anlass war der Hinweis des Betreibers
+ * auf die ovag: Ihr Balkonkraftwerk-Angebot mit Montage steht beim VERTRIEB
+ * (ovag.de), erfasst hatten wir die ovag Netz GmbH.
+ *
+ * DAS MUSTER PRÜFT „netz" AM WORTENDE, nicht am Wortanfang: „wesernetz",
+ * „enercity-netz" und „e-netz" schreiben es zusammen, und mit einer Wortgrenze
+ * davor fällt jede dieser Gesellschaften durch — beim Schreiben des Tests
+ * gemessen. Offen („netz" irgendwo) darf es trotzdem nicht sein: Das fänge
+ * „Vernetzung" und „Netzwerk" mit, dieselbe Falle wie bei den Branchenwörtern
+ * der Fachbetriebe, wo ein offenes „Solar*" den Firmennamen „Solarma" fraß.
+ *
+ * Bei einem Netzbetreiber wird ein Geschäftsfeld deshalb nur gesetzt, wenn
+ * Verkaufssprache danebensteht. Für Vertriebe und Stadtwerke bleibt es beim
+ * bloßen Vorkommen — dort ist die Erwähnung das Angebot.
+ */
+const NETZBETRIEB = /\w*netz(e|es|en)?\b|netzgesellschaft|verteilnetz/i;
+const VERKAUFSSPRACHE =
+  /\b(kaufen|bestellen|shop|angebot anfordern|komplettset|rabatt|jetzt sichern|bei uns erh[äa]ltlich|unser angebot|preis(e|liste)?|ab \d|\d+\s*€)\b/i;
+
+/**
  * Was bietet der Versorger ENDKUNDEN an?
  *
  * Betreiber-Vorgabe vom 29.08.2026: „Nutzer suchen explizit nach Hilfe bei der
@@ -1115,14 +1145,35 @@ async function laufAngebot(opts: { limit?: number; erneut: boolean; dry: boolean
 
     const gefunden = new Set(u.geschaeftsfelder ?? []);
     const seiten = angebotsSeiten(start, basis);
-    for (const f of FELDER) if (f.muster.test(sichtbarerText(start))) gefunden.add(f.name);
-    // Eine Adresse, die das Wort trägt, ist der Beleg — null Abrufe.
-    for (const s of seiten)
-      for (const f of FELDER) if (f.muster.test(adresseLesbar(s))) gefunden.add(f.name);
+    // Ein Netzbetreiber MUSS über Balkonkraftwerke schreiben (Anmeldepflicht),
+    // ohne eines zu verkaufen. Bei ihm zählt nur, was neben Verkaufssprache steht.
+    const istNetz = NETZBETRIEB.test(`${u.name} ${basis}`);
+    const nimm = (text: string, quelle: string) => {
+      for (const f of FELDER) {
+        if (!f.muster.test(text)) continue;
+        if (istNetz) {
+          // Nur die Zeilen ansehen, in denen der Begriff wirklich vorkommt —
+          // sonst genügt ein Preis irgendwo auf der Seite.
+          const nah = text
+            .split(/\n+/)
+            .filter((z) => f.muster.test(z))
+            .join(" ");
+          if (!VERKAUFSSPRACHE.test(nah)) continue;
+        }
+        gefunden.add(f.name);
+      }
+      void quelle;
+    };
+    nimm(sichtbarerText(start), basis);
+    // Eine Adresse, die das Wort trägt, ist der Beleg — null Abrufe. Bei einem
+    // Netzbetreiber aber nicht: „/balkonkraftwerk-anmelden" ist kein Angebot.
+    if (!istNetz)
+      for (const s of seiten)
+        for (const f of FELDER) if (f.muster.test(adresseLesbar(s))) gefunden.add(f.name);
     for (const s of seiten.slice(0, 5)) {
       if (gefunden.size === FELDER.length) break;
       const h = await holeSeite(s);
-      if (h) for (const f of FELDER) if (f.muster.test(sichtbarerText(h))) gefunden.add(f.name);
+      if (h) nimm(sichtbarerText(h), s);
     }
 
     if (gefunden.size) mitFeld++;
