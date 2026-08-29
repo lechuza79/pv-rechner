@@ -51,7 +51,9 @@ export function DetailAbschnitt({
       >
         {titel}
       </h4>
-      <div style={{ fontSize: 13, color: v("--color-text-secondary"), maxWidth: 760 }}>
+      <div
+        style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), maxWidth: 760 }}
+      >
         {children}
       </div>
     </section>

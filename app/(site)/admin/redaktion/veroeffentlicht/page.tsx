@@ -32,32 +32,9 @@ export default async function RedaktionVeroeffentlicht() {
   const live = liveVorhaben();
   const volumen = Object.fromEntries(live.map((v) => [v.thema, volumenGesamt(v)]));
 
-  // Der jüngste Livegang entscheidet, wie ernst die Zahlen zu nehmen sind:
-  // Eine Seite, die seit zehn Tagen online ist, darf noch nichts erreicht haben.
-  const juengster = live
-    .map((a) => a.seit)
-    .filter(Boolean)
-    .sort()
-    .at(-1);
-  const tageJuengster = juengster
-    ? Math.round((Date.now() - new Date(juengster).getTime()) / 86400_000)
-    : null;
-
   return (
     <div style={{ maxWidth: 1180, margin: "0 auto" }}>
-      <h1 style={{ fontSize: v("--font-size-h1"), marginBottom: space.sm }}>Veröffentlicht</h1>
-      <p style={{ color: v("--color-text-secondary"), marginBottom: space.xl, maxWidth: 780 }}>
-        Was online ist und was daraus geworden ist. Zeile aufklappen und „Was ist daraus geworden?"
-        holt Einblendungen, Klicks und Besucher der Seite — nur so lässt sich prüfen, ob die
-        Schätzung getaugt hat, die den Artikel begründet hat.
-        {tageJuengster !== null && tageJuengster < 30 && (
-          <>
-            {" "}
-            Der jüngste Artikel ist erst {tageJuengster} Tage online; bei ihm sagen die Zahlen noch
-            wenig.
-          </>
-        )}
-      </p>
+      <h1 style={{ fontSize: v("--font-size-h1"), marginBottom: space.xl }}>Veröffentlicht</h1>
 
       <ArtikelTabelle
         vorhaben={live}

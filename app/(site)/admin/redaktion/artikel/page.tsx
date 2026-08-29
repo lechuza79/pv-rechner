@@ -3,7 +3,6 @@ import { isAdminSession } from "../../../../../lib/admin-guard";
 import {
   ARTIKELPLAN,
   volumenGesamt,
-  aeltesteMessung,
   ZUSTAND_LABEL,
 } from "../../../../../lib/artikelplan";
 import { v, space } from "../../../../../lib/theme";
@@ -31,13 +30,7 @@ export default async function RedaktionArtikel() {
 
   return (
     <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-      <h1 style={{ fontSize: v("--font-size-h1"), marginBottom: space.sm }}>Artikel</h1>
-      <p style={{ color: v("--color-text-secondary"), marginBottom: space.xl, maxWidth: 760 }}>
-        Was geschrieben wird, auf welche Suchfrage es zielt, was daraus geworden ist — und was
-        gemessen und trotzdem verworfen wurde. Zeile anklicken für die Begründung, Spaltenkopf zum
-        Sortieren, Umschalt-Klick sortiert zusätzlich. Älteste Messung im Plan:{" "}
-        {new Date(aeltesteMessung()).toLocaleDateString("de-DE")}.
-      </p>
+      <h1 style={{ fontSize: v("--font-size-h1"), marginBottom: space.xl }}>Artikel</h1>
 
       <ArtikelBereich
         vorhaben={ARTIKELPLAN}

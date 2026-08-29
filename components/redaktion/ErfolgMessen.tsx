@@ -119,7 +119,7 @@ export function ErfolgMessen({ thema }: { thema: string }) {
         disabled={laeuft}
         style={{
           font: "inherit",
-          fontSize: 13,
+          fontSize: v("--font-size-body"),
           color: laeuft ? v("--color-text-muted") : v("--color-accent"),
           background: "none",
           border: `1px solid ${v("--color-border-muted")}`,
@@ -134,7 +134,7 @@ export function ErfolgMessen({ thema }: { thema: string }) {
       {fehler && (
         <p
           style={{
-            fontSize: 13,
+            fontSize: v("--font-size-body"),
             color: v("--color-negative"),
             marginTop: space.sm,
           }}
@@ -144,7 +144,7 @@ export function ErfolgMessen({ thema }: { thema: string }) {
       )}
 
       {ergebnis && (
-        <div style={{ marginTop: space.md, fontSize: 13 }}>
+        <div style={{ marginTop: space.md, fontSize: v("--font-size-body") }}>
           <div style={{ display: "flex", gap: space.xxl, flexWrap: "wrap", marginBottom: space.sm }}>
             <div>
               <div style={{ fontSize: v("--font-size-h3"), lineHeight: 1.1 }}>

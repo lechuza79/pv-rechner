@@ -193,7 +193,11 @@ export function ArtikelTabelle({
     );
   }
 
-  {
+  // Die Stand-Spalte nur, wo es etwas zu unterscheiden gibt. In einer Liste, in
+  // der ohnehin alles denselben Zustand hat, wiederholt sie in jeder Zeile
+  // dasselbe Wort und kostet die Breite, die die Datumsspalten brauchen.
+  const gemischt = new Set(vorhaben.map((vh) => vh.zustand)).size > 1;
+  if (gemischt) {
     spalten.push({
       key: "zustand",
       kopf: "Stand",
@@ -216,7 +220,7 @@ export function ArtikelTabelle({
       // als Nächstes drankommt.
       startSortierung={[{ key: "volumen", richtung: "ab" }]}
       leerText={verworfen ? "Nichts verworfen." : "Keine Vorhaben."}
-      minBreite={mitDaten ? 1040 : 860}
+      minBreite={mitDaten ? 980 : 900}
     />
   );
 }

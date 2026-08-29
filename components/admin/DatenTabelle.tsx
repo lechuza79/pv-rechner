@@ -155,7 +155,19 @@ export function DatenTabelle<T>({
         borderRadius: v("--radius-md"),
       }}
     >
-      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: minBreite }}>
+      {/* Basis-Schriftgröße statt der 13 px, die aus den Bestandstabellen
+          übernommen waren. Die Tabelle ist hier der Inhalt der Seite und
+          nicht eine Beilage darunter — dann liest sie sich auch in der
+          Größe des Fließtexts. Die Kopfzeile bleibt klein und in
+          Versalien, sie ist Beschriftung. */}
+      <table
+        style={{
+          width: "100%",
+          borderCollapse: "collapse",
+          fontSize: v("--font-size-body"),
+          minWidth: minBreite,
+        }}
+      >
         <thead>
           <tr>
             {detail && <th style={{ ...thStyle, width: 24 }} aria-hidden />}

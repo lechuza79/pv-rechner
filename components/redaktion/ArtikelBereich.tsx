@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { v, space } from "../../lib/theme";
 import { FilterLeiste } from "../admin/FilterLeiste";
 import { ArtikelTabelle } from "./ArtikelTabelle";
 import type { ArtikelVorhaben } from "../../lib/artikelplan";
@@ -61,19 +60,6 @@ export function ArtikelBereich({
   return (
     <div>
       <FilterLeiste eintraege={eintraege} aktiv={aktiv} onWechsel={setAktiv} />
-
-      {nurVerworfen && (
-        <p style={{ color: v("--color-text-secondary"), marginBottom: space.md, maxWidth: 760 }}>
-          Nicht vergessen, sondern entschieden. Wer eines davon wieder aufmachen will, braucht einen
-          neuen Grund — nicht die alte Zahl.
-        </p>
-      )}
-      {aktiv === "live" && (
-        <p style={{ color: v("--color-text-secondary"), marginBottom: space.md, maxWidth: 760 }}>
-          Die Rückseite der Vorhersage: Zeile aufklappen und „Was ist daraus geworden?“ holt die
-          echten Einblendungen und Klicks der Seite.
-        </p>
-      )}
 
       <ArtikelTabelle
         vorhaben={gefiltert}
