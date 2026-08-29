@@ -66,7 +66,10 @@ export default function InternalShell({
         },
         {
           label: "Blog",
-          children: [{ href: "/admin/redaktion/artikel", label: "Artikel" }],
+          children: [
+            { href: "/admin/redaktion/artikel", label: "Artikel" },
+            { href: "/admin/redaktion/veroeffentlicht", label: "Veröffentlicht" },
+          ],
         },
       ],
     });
