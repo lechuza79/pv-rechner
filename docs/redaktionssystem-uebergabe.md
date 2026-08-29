@@ -349,9 +349,15 @@ gerechnete Karte beurteilt, beurteilt eine, die es nicht gibt.
 rendert **dieselbe Komponente** — sie ist der Weg, ein Design ohne Anmeldung anzusehen, und der
 einzige Ort, an dem die Rundungsprüfung gegen die echten Zahlen läuft. Zwei Fassungen derselben
 Ansicht würden driften. `FORM=` zeigt eine Form größer und schreibt in eine EIGENE Datei — sonst
-überschreibt die gefilterte Ansicht die Übersicht, was zweimal passiert ist. Die Ausgabe landet in
-`public/` und ist von der Versionierung ausgenommen. Sie steht fest auf der hellsten Tagesstufe,
-sonst erbt sie die Uhrzeit und wird abends unlesbar.
+überschreibt die gefilterte Ansicht die Übersicht, was zweimal passiert ist. Sie steht fest auf der
+hellsten Tagesstufe, sonst erbt sie die Uhrzeit und wird abends unlesbar.
+
+**Ihre Ausgabe gehört NICHT nach `public/` — BLOCKER.** Sie lag dort zwischenzeitlich, damit der
+Dev-Server sie ausliefert, und war damit über eine Adresse erreichbar, die kein Zugang schützt
+(Betreiber, 28.08.2026: „ohne Login brauchen wir nicht, was soll das? das ist eine Lücke"). Dass
+eine `.gitignore`-Zeile sie vom Deploy fernhielt, ist ein Geländer und keine Grenze: Ein
+`git add public/` hätte sie live gestellt, und niemand hätte es bemerkt. Das Skript weist ein Ziel
+in `public/` jetzt ab, statt sich auf eine Regel zu verlassen, an die jemand denken muss.
 
 **Was der Testlauf NICHT konnte, bis er nachgeschärft wurde:** Die Enge-Schwelle war zunächst gegen
 sich selbst geprüft (`reihenEnge(...) < RANGLISTE_MAX_ENGE`) — auf 0,99 hochgesetzt blieb alles

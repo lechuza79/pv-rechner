@@ -1,17 +1,23 @@
-// Die Template-Ansicht auf der Kommandozeile — dieselbe Galerie wie in der App.
+// Prüflauf für die Bildformen — und ein Vorschau-HTML AUSSERHALB des Projekts.
 //
-// Wozu es sie NEBEN der Seite gibt: Die Seite unter /admin/redaktion/templates
-// ist der Ort, an dem der Betreiber arbeitet, und sie steht hinter dem
-// Admin-Zugang. Diese Fassung rendert dieselbe Komponente ohne Anmeldung — sie
-// ist mein Weg, ein Design anzusehen, und der einzige Weg, es in einem Lauf
-// gegen die echten Zahlen zu prüfen.
+// Die Ansicht, an der gearbeitet wird, ist die Seite unter
+// /admin/redaktion/templates. Diese Fassung rendert dieselbe Komponente
+// (`TemplateGalerie`, keine zweite Fassung — zwei würden driften) und ist mein
+// Weg, ein Design anzusehen, ohne mich anmelden zu können.
 //
-// Es ist ausdrücklich KEINE zweite Ansicht: Beide rendern `TemplateGalerie`.
-// Zwei Fassungen würden driften, und dann sieht man beim Entwickeln etwas
-// anderes als in der App.
+// DIE AUSGABE LANDET NICHT IN `public/` — BLOCKER (Betreiber, 28.08.2026: „ohne
+// Login brauchen wir nicht, was soll das? das ist eine Lücke"). Sie tat es
+// zwischenzeitlich, damit der Dev-Server sie ausliefert, und war damit über eine
+// Adresse erreichbar, die kein Zugang schützt. Dass eine `.gitignore`-Zeile sie
+// vom Deploy fernhielt, ist ein Geländer und keine Grenze: Ein `git add public/`
+// hätte sie live gestellt, und niemand hätte es bemerkt.
+//
+// Sie liegt deshalb im Ablageordner der Sitzung. Zum Ansehen im Browser braucht
+// es einen eigenen Dateiserver auf einem eigenen Port — bewusst ein
+// Extra-Schritt statt eines dauerhaft offenen Wegs.
 //
 //   npm run social:zahlen      # echte Kennzahlen einmal ablegen
-//   npm run social:formen      # HTML bauen und im Browser öffnen
+//   npm run social:formen      # Prüflauf, Vorschau-HTML in den Ablageordner
 //
 // FORM=rangliste zeigt nur eine Form, größer, und schreibt in eine EIGENE Datei
 // — sonst überschriebe die gefilterte Ansicht die Übersicht.
@@ -28,7 +34,17 @@ import { STAGE_COUNT, getCssVariables, globalStyles, stageDefaults } from "../li
 
 const quelle = process.argv[2] ?? "/tmp/social-kennzahlen.json";
 const nurForm = process.env.FORM;
+// Ohne Angabe in den Ablageordner, NIE nach `public/` — die Begründung steht
+// oben. Ein übergebener Pfad wird zusätzlich zurückgewiesen, wenn er dorthin
+// zeigt: Wer den Weg einmal nimmt, nimmt ihn wieder.
 const basisZiel = process.argv[3] ?? "/tmp/social-formen.html";
+if (/(^|\/)public\//.test(basisZiel)) {
+  console.error(
+    `Ziel liegt in public/ und wäre damit ohne Zugang erreichbar: ${basisZiel}\n` +
+      `Die Vorschau gehört in den Ablageordner, nicht in ausgelieferte Dateien.`,
+  );
+  process.exit(1);
+}
 const ziel = nurForm ? basisZiel.replace(/\.html$/, `-${nurForm}.html`) : basisZiel;
 
 const kennzahlen = JSON.parse(readFileSync(quelle, "utf8")) as SocialKennzahlen;
