@@ -175,6 +175,32 @@ describe("Automatische Freigabe verlinkender Gemeinden", () => {
     // Eine indexierbare Seite, die in keiner Sitemap steht, ist halb freigegeben.
     expect(sitemap).toContain("verlinkendeGemeinden");
   });
+
+  it("hängt am VERSAND, nicht am Nachweis einer Veröffentlichung", () => {
+    // Der Unterschied ist am 29.08.2026 gemessen worden: Wallertheim verlinkte
+    // uns in seiner Dorf-App, und weder Verweis-Verzeichnis noch Herkunftsspalte
+    // wussten davon (der Link trägt `rel="noreferrer"`). Eine Freigabe, die auf
+    // den Nachweis wartet, wartet dort für immer.
+    const quelle = readFileSync(resolve(__dirname, "../atlas-outreach-freigabe.ts"), "utf8");
+    expect(quelle).toContain("contacted_at");
+    expect(quelle, "Der Status „veroeffentlicht“ darf nicht mehr die Bedingung sein").not.toMatch(
+      /eq\(\s*["']outreach_status["']\s*,\s*["']veroeffentlicht["']/,
+    );
+  });
+
+  it("nimmt Orte mit eigener Förderseite aus", () => {
+    // Sonst stünden zwei eigene Seiten auf denselben Ortsanfragen — und die
+    // Förderseite steht dort teils vorn.
+    const quelle = readFileSync(resolve(__dirname, "../atlas-outreach-freigabe.ts"), "utf8");
+    expect(quelle).toContain("ATLAS_CITIES");
+  });
+
+  it("schließt gesperrte Gemeinden aus", () => {
+    // Wer widersprochen hat, bekommt keine Seite freigeschaltet, auch wenn der
+    // Brief einmal raus war.
+    const quelle = readFileSync(resolve(__dirname, "../atlas-outreach-freigabe.ts"), "utf8");
+    expect(quelle).toContain("gesperrt");
+  });
 });
 
 describe("Der Plan bleibt in sich schlüssig", () => {
