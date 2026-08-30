@@ -47,7 +47,8 @@
     "claude-md:verify": "tsx scripts/claude-md-verify.ts",
     "kommunen:stand": "tsx scripts/kommunen-stand.ts",
     "kommunen:vorflug": "tsx scripts/kommunen-vorflug.ts",
-    "atlas:kreisfrei": "tsx scripts/atlas-kreisfrei-messen.ts"
+    "atlas:kreisfrei": "tsx scripts/atlas-kreisfrei-messen.ts",
+    "kommunen:verweise": "tsx scripts/kommunen-verweise-suchen.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",
