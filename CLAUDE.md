@@ -702,7 +702,10 @@ Vercels eingebaute Notbremse („Pause deployments when the limit is reached") k
 - **Pausiert wird NUR bei 100 %**, die Meldungen bei 50 und 75 % sind Vorwarnung und landen stumm in der Ablage. Am Ende des Abrechnungszeitraums (`type: "endOfBillingCycle"`) wird wieder entpaust. Die Grenze ist `>= 100` und nicht `=== 100`: Führt Vercel je eine höhere Schwelle ein, ist Abschalten die sichere Richtung.
 - **Die Projekt-Kennung ist eine Konstante im Code, KEINE Umgebungsvariable.** Eine Variable ist im Diff unsichtbar und im Dashboard mit einem Tippfehler gesetzt — sie stünde zwischen einer Kostenmeldung und der Abschaltung des falschen Projekts. `zielGeprueft()` wirft beim Laden des Moduls, wenn dort je die Kennung von solar-check.io steht; `lib/__tests__/vercel-budget.test.ts` nagelt beides fest.
 - **Ohne Signatur wird abgewiesen, und ein fehlendes Geheimnis wird NICHT durchgewunken.** Die Adresse ist öffentlich erreichbar; die bequeme Variante („ohne Geheimnis keine Prüfung") verwandelt einen vergessenen Eintrag im Dashboard in einen offenen Abschalt-Knopf für jeden, der die Adresse kennt. Geprüft wird HMAC-SHA1 über den **rohen** Anfragetext (`x-vercel-signature`) — wer erst JSON parst und wieder zusammensetzt, prüft eine andere Zeichenkette als die, die Vercel signiert hat.
-- **Zwei Umgebungsvariablen auf Vercel, nur Production:** `VERCEL_BUDGET_WEBHOOK_SECRET` (die Prüfsumme, die Vercel beim Speichern des Webhooks einmalig anzeigt) und `VERCEL_PAUSE_TOKEN` (Zugriffstoken mit Schreibrecht auf Projekte). **Fehlt oder verfällt eine davon, greift die Bremse nicht** — deshalb meldet der Fehlschlag als Entscheidung an den Betreiber, statt still zu scheitern. Ein Sicherheitsnetz, das lautlos nicht hält, ist schlimmer als keins.
+- **Zwei Umgebungsvariablen auf Vercel, nur Production:** `VERCEL_BUDGET_WEBHOOK_SECRET` (die Prüfsumme, die Vercel beim Speichern des Webhooks einmalig anzeigt) und `VERCEL_TOKEN` (Zugriffstoken mit Schreibrecht auf Projekte). **Fehlt oder verfällt eine davon, greift die Bremse nicht** — deshalb meldet der Fehlschlag als Entscheidung an den Betreiber, statt still zu scheitern. Ein Sicherheitsnetz, das lautlos nicht hält, ist schlimmer als keins.
+- **EIN Ding, EIN Name — und der Fehler ist von außen unsichtbar (29.08.2026).** Die Bremse las das Token zunächst unter einem eigenen Namen, während Kostenwache und Gesundheitscheck dasselbe Token als `VERCEL_TOKEN` lesen. Beide Namen kamen von uns; der Betreiber legte den einen an, und die Bremse stand ohne Token da — kein Fehler, kein roter Test, nur ein Sicherheitsnetz, das nicht hält. Wer eine Zugangsvariable einführt, sucht vorher, ob dasselbe Geheimnis im Repo schon einen Namen hat.
+- **Ausgabenlimit und Webhook lassen sich über die Schnittstelle SETZEN, die Verbrauchszahlen nicht** (gemessen 29.08.2026, gegen die frühere Notiz „gibt nur Lesezugriff her"): Ein Schreibaufruf auf die Budget-Liste mit `fixedBudget`, `type` und `pauseProjects` aktualisiert den vorhandenen Eintrag; wird `webhookUrl` mitgegeben, kommt das Webhook-Geheimnis **einmalig** in der Antwort zurück. `isActive` wird dabei abgelehnt. Der aktuelle Verbrauchsstand bleibt unerreichbar.
+- **Die 50-%-Meldung ist die Probe aufs Exempel.** Ruft Vercel gar nicht erst an (Webhook gelöscht, Adresse vertippt), merkt das niemand — es gibt kein Lebenszeichen für ein Ausbleiben. Kommt die erste Vorwarnung nie an, stimmt die Eintragung nicht.
 - **Die Ausgaben-EINSTELLUNG selbst wird nicht per Schnittstelle geändert** — sie gibt nur Lesezugriff her (vier Schreibwege am 11.08.2026 erfolglos probiert). Nicht erneut daran versuchen; Betrag und Webhook-Adresse trägt der Betreiber im Dashboard ein.
 
 **Bei Kostenanalyse:** im Vercel-Usage-Dashboard immer nach Projekt filtern (`projectId`-URL-Parameter), sonst siehst du Org-Gesamtzahlen und fixst das falsche Projekt. Details: `docs/lehren/vercel-build-und-kosten.md`.
@@ -1122,12 +1125,68 @@ sagt, es sei „eine Frage an drei Betriebe, nicht an eine Datenbank"), und die
 Informationspflicht nach Art. 14 DSGVO — die Datenschutzerklärung nennt diese
 Verarbeitung heute **nicht**.
 
-**Google scheidet als Quelle aus, nicht nur für Bewertungen.** Maps Platform Terms
+**Bewertungen öffentlich zeigen scheitert am BEWERTUNGSRECHT, nicht an Google (geprüft
+29.08.2026, zwei Legal-Judges).** Wer Verbraucherbewertungen zugänglich macht, muss sagen,
+ob und wie er ihre Echtheit sicherstellt (§ 5b Abs. 3 UWG); sie ohne Überprüfung als echt
+auszugeben, ist per se unlauter (Anhang Nr. 23b zu § 3 Abs. 3 UWG). Wir können nichts
+überprüfen — und hier sind Mitbewerber und Verbände anspruchsberechtigt, also Stellen, die
+tatsächlich abmahnen. **Der zuerst genannte Grund „ein gespeicherter Wert veraltet und ist
+dann eine unwahre Tatsachenbehauptung (§ 824 BGB)" trägt NICHT** und darf nicht
+wiederverwendet werden: Ein datierter Wert sagt etwas über den Stichtag, und Absatz 2 nimmt
+aus, wo der Empfänger ein berechtigtes Interesse hat. Wer ihn für die Hürde hält, glaubt,
+ein „Stand: 08/2026" räume sie ab — und lässt die echte stehen. **Intern zur Priorisierung
+wäre der Bezug über einen Datenlieferanten vertretbar**, aber schon das Speichern ist
+Vervielfältigung (§ 87b Abs. 1 UrhG) — „wird ja nicht angezeigt" ist keine
+urheberrechtliche Kategorie. Herleitung, Gegenargumente und der DMA-Weg über den Betrieb
+selbst: `docs/fachbetriebe-quellen.md`, Abschnitt 1b.
+
+**Google scheidet als DIREKTE Quelle aus, nicht nur für Bewertungen.** Maps Platform Terms
 3.2.3(a)(iii) untersagt „copy and save business names, addresses, or user reviews", (b)
 das Zwischenspeichern über Kennnummern hinaus, (d)(iii) ausdrücklich die Nutzung „in a
-listings or directory service" — wortwörtlich dieser Fall. Volltext:
+listings or directory service" — wortwörtlich dieser Fall, **solange man die Schnittstelle
+selbst nutzt**. Die Klauseln binden den Kunden der Maps Platform; gegen einen Nichtkunden
+sind sie kein Beleg, und sie so zu zitieren belegt eine Aussage, die sie nicht trägt.
+Volltext:
 `docs/quellen/fachbetriebe/`. Eine Bewertung wird deshalb **nur** als Selbstauskunft der
 eigenen Website erfasst (`bewertung_quelle`), nie als „Google-Bewertung" beschriftet.
+
+**Ein Batch-Upsert vereinheitlicht die Spaltenmenge — BLOCKER, und der teuerste Unfall
+dieses Bereichs.** PostgREST baut aus einem Batch EIN Insert mit EINER Spaltenliste;
+trägt eine Zeile ein Feld und die anderen 499 nicht, bekommen diese 499 dort **NULL**
+und überschreiben den bestehenden Wert. Kein Fehler, keine Warnung. Real passiert am
+29.08.2026, obwohl der Fall im Projekt bereits dokumentiert war: Der Über-uns-Lauf
+setzte ein Trust-Signal nur dort in die Zeile, wo es sich geändert hatte — die
+vorsichtige Bauweise, wie man denkt. Meisterbetrieb fiel von 676 auf 167, das
+Geschäftsfeld Photovoltaik von 2.913 auf 135. **Die Absicherung sitzt jetzt in der
+Schreibfunktion** (ungleiche Feldmengen werden gruppiert und getrennt geschrieben), nicht
+in einer Regel für Aufrufer — eine Regel, an die sich jeder künftige Lauf erinnern muss,
+ist keine; dieser Lauf hätte sie gebraucht und nicht gehabt.
+`lib/__tests__/upsert-spaltenmenge.test.ts`, in beide Richtungen kaputtgemacht und rot
+gesehen.
+- **Die zweite Lehre wiegt schwerer als die erste: Was keinen Beleg hat, ist bei einem
+  Schreibfehler unwiederbringlich.** Die Trust-Signale kamen vollständig aus
+  `fachbetrieb_belege` zurück — genau dafür gibt es sie. Die Geschäftsfelder nicht, für
+  sie legt kein Lauf einen Beleg an; sie mussten neu abgerufen werden (`--felder`).
+
+**Die frei abrufbare Kammer-Betriebsdatenbank ist ERLEDIGT — nicht rechtlich, sondern
+praktisch (gemessen 29.08.2026).** Zwölf Betriebe gezielt gesucht, **einer** gefunden;
+Gegenprobe mit einem Gattungsbegriff im selben Umkreis: 26 Treffer, die Suche
+funktioniert also. Der Grund war die ganze Zeit erkennbar: **Die Mitgliedschaft ist
+Pflicht, der Eintrag in dieses Verzeichnis freiwillig.** Wer das amtliche Merkmal will,
+fragt die **Handwerksrolle** (§ 6 Abs. 2 HwO, 53 Anträge, nur zulassungspflichtige
+Handwerke) — oder, am billigsten, den Betrieb selbst beim ohnehin geplanten Erstkontakt.
+**Die Rechtsprüfung war trotzdem nicht umsonst**: Ihre Ergebnisse gelten für jede fremde
+Datenbank, die dieses Projekt je abgleicht.
+
+**Die Handwerkskammer ist GEPRÜFT, nicht mehr offen (29.08.2026, zwei Legal-Judges):
+intern zulässig, öffentlich später.** Tragend ist allein das Datenbankrecht, und die
+eine Bedingung, die wirklich zählt, heißt **abgleichen statt abernten**: gezielt
+nachschlagen, was wir schon haben, nie ganze Gewerke-Kategorien durchgehen (EuGH
+C-203/02 Rn. 89 verbietet nur, was die Datenbank wieder erstellt). **Die DNG-Begründung
+unten ist hinfällig** — beide Fassungen streiten über die Ausnahmen, ohne zu prüfen, ob
+die Kammer überhaupt „öffentliche Stelle" im Sinne des DNG ist; das Gesetz hat dafür
+eine eigene Definition. Herleitung, Bedingungen und der amtliche Weg über § 6 Abs. 2 HwO:
+`docs/fachbetriebe-quellen.md`.
 
 **Der Merksatz „öffentliche Stelle, also kein § 87b UrhG" trägt bei Handwerkskammern
 NICHT.** Sie sind zwar Körperschaften des öffentlichen Rechts (§ 90 Abs. 1 HwO), aber
@@ -1165,9 +1224,187 @@ aus der Wortmitte („DORFMANAGEMENT" → AG), Gründungsjahr aus einem beliebig
 sind in `lib/__tests__/fachbetrieb-extrakt.test.ts` festgenagelt; **ein Muster
 aufzuweichen, damit mehr Treffer entstehen, ist genau der Weg, auf dem sie zurückkommen.**
 
+**Ein Formular IST ein Kontaktweg.** 473 Betriebe hatten keine auslesbare E-Mail, 233 gar
+keinen Weg — der stand meist auf der **Kontaktseite**, oft als Formular statt als Adresse
+(135 neue Adressen, 699 Formulare). Dieselbe Systematik wie bei den Gemeinden. **Das
+GEWERK prüft man dort aber NICHT**: Auf einer Kontaktseite steht das Angebot nicht, und
+der erste Anlauf löste damit fast nichts auf. Dafür ist die **Navigation der Startseite**
+zuständig — sie steht statisch im HTML, auch wenn der Inhalt per Skript nachlädt.
+
+**„Nichts gefunden" und „noch nicht angesehen" müssen unterscheidbar bleiben.** Von 908
+unklaren Domains wurden 55 doch Betriebe, 74 Nicht-Betriebe (überwiegend kommunale
+Solarkataster) und **758 zweimal geprüft ohne PV-Angebot** — dahinter stecken
+Elektrobetriebe ohne PV-Geschäft und geparkte Domains, keine verborgenen Fachbetriebe.
+Sie behalten „unklar" (ein Angebot kann auf einer ungelesenen Unterseite stehen), aber ihr
+Grund sagt, dass zweimal nachgesehen wurde. Ohne diesen Unterschied prüft die nächste
+Sitzung dieselben 758 noch einmal.
+
+**Die Angebots-Unterseiten schlagen die Sitemap — gemessen, nicht vermutet (29.08.2026).**
+An denselben 20 Betrieben: über die Navigation 3 Treffer für 4,3 Abrufe, über die Sitemap
+1 Treffer für 6,2. Sie ist bei 17 von 20 lesbar, und genau ihre **Vollständigkeit** ist
+das Problem — sie listet Blogartikel und Rechtstexte gleichrangig neben den
+Leistungsseiten. **Die Navigation ist bereits die Auswahl, die der Betrieb selbst
+getroffen hat.** Im Förderbereich liegt es umgekehrt (dort fand der Crawl nur 13 %, die
+Volltextsuche musste nachhelfen); der Unterschied ist die Größe: Eine Kommunalseite hat
+Tausende Seiten, eine Firmenseite dreißig. **Eine Adresse, die das gesuchte Wort selbst
+trägt, ist bereits der Beleg** — null Abrufe. Ergebnis über beide Bestände: Balkonkraftwerk
+von 8 % auf 19 % bei den Fachbetrieben, Speicher von 44 auf 61 %, Wärmepumpe von 45 auf 55 %.
+
+**Das ANGEBOT wird in beiden Beständen erhoben, die Bestände bleiben getrennt**
+(Betreiber-Vorgabe 29.08.2026: „Nutzer suchen explizit nach Hilfe bei der Montage. Dazu
+können wir passende Betriebe listen — egal ob Versorger oder nicht"). Geteilt sind die
+Suchmuster und die Seitenauswahl — sie ein zweites Mal zu schreiben wäre ein Fehler, kein
+Duplikat. Getrennt bleibt die Einordnung: Ein Stadtwerk, das Balkonkraftwerke verkauft, ist
+kein Handwerksbetrieb. **Bei Balkonkraftwerken liegen die Versorger anteilig VORN** (200
+von 937 = 21 %, gegen 19 % der Fachbetriebe), bei Photovoltaik weit zurück (44 % gegen
+96 %). Wer dort nur Handwerk listet, lässt ein Viertel der Anbieter weg.
+
+**`decodeURIComponent` wirft bei kaputten Adressen — nie ungeschützt aufrufen.** Zweimal
+einen Erhebungslauf abgerissen: am 28.08. nach 450 von 1.254 Domains, am 29.08. nach 2.400
+von 2.850. **Beim zweiten Mal existierte die Absicherung bereits** — als try/catch an genau
+der Stelle, an der es beim ersten Mal passiert war; zwei neue Aufrufer bekamen sie nicht
+mit. Sie steht jetzt in einer Funktion, und
+`lib/__tests__/adress-dekodierung-waechter.test.ts` verbietet den direkten Aufruf überall
+sonst. **Der Wächter prüft beide Richtungen** — auch, ob die erlaubten Schutzfunktionen
+wirklich abfangen; einer, der nur Aufrufstellen zählt, ließe eine Schutzfunktion durch, die
+gar nichts schützt.
+
+**Ein Prüfmuster findet nur, wonach es sucht — irgendwann muss man alles lesen.** Nach dem
+ersten Namens-Umbau meldete die Musterprüfung 0,3 % verdächtige Namen, und der Betreiber
+sagte trotzdem: „es müssen alle korrekt sein." Die vollständige Durchsicht — alle Namen
+nach Länge sortiert, in Blöcken gelesen — fand danach **sechs** Klassen, die kein Muster
+gesucht hatte: Anschrift ohne Trennzeichen hinter der Rechtsform („Banik Haustechnik
+Schwabach GmbH O´Brien-Straße 2 91126 Schwabach"), Leistungsversprechen ganz ohne Namen
+(167 Stück), Impressum-Vorspann („Diese Webseite ist ein Angebot von …"), reine
+Leistungsaufzählungen, Menüpunkte als Name („Start" elfmal) und zwei unerkannte
+Trennzeichen (das freistehende „I" als Pipe-Ersatz, „ᐅ"). **Die Länge war der Schlüssel:**
+Jeder einzelne Name sah für sich plausibel aus, nur die Sortierung machte die Klassen
+sichtbar. Ergebnis 2.826 → 2.513 Namen; wo keiner bleibt, zeigt die Liste die Anschrift,
+und die stimmt immer.
+
+**Der Beleg muss den FUND tragen, nicht das geputzte Urteil — sonst ist jede Verbesserung
+einbahnig.** Der Namensbeleg speicherte das Ergebnis der Reinigung; damit putzt ein
+Nachlauf ein zweites Mal, was schon geputzt war, und ein Fehlgriff ist unwiederbringlich.
+Gemessen, als eine zu breite Werbesatz-Regel aus „Welt in Elbe-Elster e.V." ein „Welt"
+machte — der Rohfund stand nirgends mehr. Der Titel-Rückfall legte überdies **gar keinen**
+Beleg an, weshalb genau diese zwei Namen nicht wiederherstellbar waren. **Aber: vom Beleg
+auszugehen wäre der übernächste Fehler** — er ist nicht durchweg der bessere Fund (bei
+era-goslar.de steht dort „AG Solar", in der Tabelle das richtige „ERA-Goslar"). Der
+Nachputz putzt nach; die Quellenwahl bleibt im Profil-Lauf, wo sie gemessen wird.
+
+**Nach einem Fix an einem Extraktor läuft die Messung NOCH EINMAL.** Ein Fix öffnet
+leicht eine neue Fehlerklasse, und die sieht genauso plausibel aus wie die alte: Die
+Zerlegung von Seitentiteln senkte die kaputten Namen von 20 % auf 1,4 % — und schnitt
+dabei „Uwe Schmidt Elektroinstallation Gas | Wasser | Sanitär GmbH" zu „Sanitär GmbH"
+zusammen, weil die Striche dort eine Aufzählung IM Namen sind und kein Titel-Trenner.
+Sichtbar wurde das nur, weil dieselbe Auszählung ein zweites Mal lief. Zweiter belegter
+Fall: Die Werbesatz-Regel las „IM" in „IM Elektrotechnik Nord" als Verhältniswort, und
+`Solar\w*` fraß „Solarma" — der Bestand verlor daraufhin **mehr** Namen statt weniger (168
+statt 131), und das sah man nur an der Zahl. **Branchenwörter gehören eng gefasst, und
+durchgehende Großschreibung schützt:** „PV ELEKTRO" ist ein Firmenname, keine Aufzählung.
+
+**Eine Spalte prüft man dort, wo sie später gelesen wird — nicht in der Datenbank.** Die
+Firmennamen sahen einzeln unauffällig aus; untereinander in der Ansicht standen dann
+„Impressum - 3E-Elektrotechnik GmbH", „Home | ABEL ReTec" und einmal bloß „GmbH & Co. KG"
+ohne Namen. In einem Anschreiben wäre jeder davon peinlich. `firmennameSaeubern` ist
+deshalb streng: Was nach dem Putzen nur noch aus einer Rechtsform besteht, wird verworfen.
+
+**Das GEWERK ist eine eigene Größe, nicht das Geschäftsfeld.** Die Geschäftsfelder sagen,
+WAS angeboten wird (Photovoltaik, Speicher, Wallbox), das Gewerk sagt, WER es anbietet —
+ein Elektrobetrieb, ein Dachdecker und ein reiner Solarteur bauen dieselbe Anlage und sind
+drei verschiedene Gesprächspartner. Angelegt 28.08.2026 auf Vorgabe des Betreibers, weil
+der Bereich um Heizungsbauer und weitere Gewerke wachsen soll; mehrere je Betrieb sind der
+Normalfall (67 % tragen mindestens eines, 40 von 3.117 vier oder mehr — echte
+Komplettanbieter).
+
+**Bewertungen gehen NUR über die strukturierten Daten der eigenen Website**
+(`AggregateRating` nach schema.org). Das hebt die Quote von 42 auf 156 Betriebe (5 %) und
+bleibt trotzdem eine Minderheit — mehr gibt kein zulässiger Weg her, Google ist gesperrt.
+Die Herkunft heißt immer „eigene Website", auch wenn der Betrieb dort seine Google-Sterne
+wiedergibt: Wir haben die Zahl von ihm, nicht von Google.
+
+**Ein Trust-Signal misst, ob der Betrieb es HINSCHREIBT — nicht, ob er es hat.** Vor
+dem Über-uns-Lauf zweimal an 30 Betrieben geeicht (29.08.2026), und die Eichung hat
+die Erwartung widerlegt: Von 21 erreichbaren „Über uns"-Seiten brachten **zwei**
+einen Meisterbetrieb, eine ein Gründungsjahr, **keine** eine Handwerkskammer.
+Hochgerechnet 22 % → 27 %, also eine Nachlese statt des vermuteten Hebels. Der
+Grund gilt über diesen Lauf hinaus: **Wer Meisterbetrieb ist, schreibt es auf die
+Startseite; wer es dort nicht schreibt, schreibt es nirgends.** Im
+zulassungspflichtigen Elektrohandwerk sind fast alle Meisterbetriebe — unsere Quote
+misst die Erwähnung, nicht den Bestand. Über die Website ist diese Grenze nicht zu
+überwinden; dafür braucht es eine amtliche Quelle (Handwerkskammer, Rechtslage
+geprüft — siehe `docs/fachbetriebe-quellen.md`). **Und genau dafür ist das Eichen
+da:** ohne es wären 6.000 Abrufe für einen Ertrag gelaufen, den niemand
+nachgemessen hätte.
+
+**Adressen werden GELESEN, nicht geraten — dreimal dieselbe Lehre.** Impressum, Kontaktseite
+und Favicon liegen alle unter frei gewählten Pfaden; `/impressum` traf in zwei von drei
+Fällen daneben, `/favicon.ico` bei einem Drittel. Wer rät, hält „nicht gefunden" für „gibt
+es nicht".
+
+**Die Ansicht (`/admin/fachbetriebe`) kann bewusst wenig.** Filter, Details, Arbeitsstand,
+Notiz — kein Versand, kein Anschreiben, keine Auswahlliste. Die Stände heißen „offen ·
+vorgemerkt · angesehen · ungeeignet"; ein Zustand wie „angeschrieben" würde einen Apparat
+behaupten, den es nicht gibt, und `lib/__tests__/fachbetrieb-stand.test.ts` verbietet
+solche Namen. **Die Zahl `3/8` zählt belegte Merkmale, nicht Qualität** — ein
+Meisterbetrieb, der seinen Titel nicht auf die Website schreibt, bekommt weniger Punkte
+als einer, der es tut; gemessen wird unser Datenstand, nicht der Betrieb.
+
+**Bei Versorgern sagt das Merkmal „nennt das Thema", nicht „bietet an" — und das ist
+gemessene Resignation, keine Nachlässigkeit (29.08.2026).** Vier Anläufe, jeder an denselben
+von Hand belegten Fällen geeicht (zwei Verkäufer, drei reine Erklärseiten): Verkaufssprache
+in derselben Zeile → 30 von 910 mit Photovoltaik, absurd streng. Umfeld von ±300 Zeichen
+(Maße aus dem Förder-Screener) → 4 von 5, durchgefallen an einer **Beispielrechnung**
+(„72,- € EEG-Förderung") — ein nackter Betrag belegt keinen Verkauf. Betrag nur mit
+Kaufkontext → 3 von 5, jetzt fielen die echten Verkäufer durch, weil ihre Preisseite nicht
+unter den ersten Unterseiten lag. **Der Grund, warum es hier schwerer ist als bei
+Fachbetrieben: Ein Versorger hat eine Informationspflicht, und seine Erklärseiten sehen
+Produktseiten zum Verwechseln ähnlich — inklusive Beträge.** Belastbar ist nur die
+Handprüfung: von sechs gelesenen Balkon-Seiten verkauften **zwei**. Wer die Spalte als
+Anbieterliste nutzt, rechnet diese Quote ein oder liest nach. **Aufhören zu messen ist hier
+das Ergebnis, nicht das Aufgeben** — ein fünftes Muster hätte dieselbe Quote mit mehr
+Selbstvertrauen geliefert.
+
+**Bei Versorgern belegt die ERWÄHNUNG kein Angebot — BLOCKER (29.08.2026).** Ein Versorger
+hat eine Informationspflicht gegenüber seinen Kunden, ein Handwerksbetrieb nicht: Bei einem
+Solarteur IST die Erwähnung das Angebot, bei einem Stadtwerk ist sie oft nur Aufklärung.
+Sechs Balkon-Seiten von Vertrieben im Wortlaut gelesen — drei erklären bloß, was ein
+Balkonkraftwerk ist, einer schickt den Leser zum Netzbetreiber; verkauft haben zwei.
+Deshalb zählt ein Geschäftsfeld dort nur mit Verkaufssprache daneben, und die **Adresse
+allein zählt gar nicht** („/balkonkraftwerk" führt genauso oft auf eine Erklärseite).
+**Dieselbe Frage an zwei Bestände braucht nicht dieselbe Beweisschwelle** — die Mechanik zu
+teilen war richtig, die Schwelle mitzuteilen nicht.
+
+**Ein NETZBETRIEB ist kein Anbieter — BLOCKER (29.08.2026).** Die Versorger-Adressen
+stammen aus dem Anlagenregister und benennen überwiegend die Netzgesellschaft, nicht den
+Vertrieb: 225 der 937. Bei ihnen maß das Geschäftsfeld „erwähnt" statt „bietet an" — ein
+Netzbetreiber MUSS über Balkonkraftwerke schreiben (Anmeldepflicht), ohne eines zu
+verkaufen. Zwölf von Hand nachgelesen, **kein einziger verkauft**. Deshalb zählt dort nur,
+was neben Verkaufssprache steht; die Adresse allein nicht („/balkonkraftwerk-anmelden"
+trägt das Wort und ist kein Angebot). Aufgefallen ist es dem Betreiber an einem Link, nicht
+einer Quote. **Die Lücke dahinter ist offen:** Wo wir den Netzbetrieb haben, fehlt der
+Vertrieb, und der verkauft und montiert.
+
 **Nicht mit dem Versorger-Modul vermischen** (937 Stadtwerke, `docs/versorger-uebergabe.md`).
 Fachbetriebe sind Handwerk, Versorger sind Energieversorger — andere Käufer, andere
 Budgets, anderer Rechtsrahmen.
+
+**Der Erstkontakt ist die billigste Quelle für alles, was die Website nicht hergibt** —
+Meisterbrief, Balkonkraftwerk-Angebot, aktuelle Bewertung. Übergabe für die Konzept-Session
+(Anliegen, Rechtsrahmen, was die Kommunen-Mechanik schon kann und was fehlt):
+`docs/fachbetriebe-erstkontakt-uebergabe.md`. **Vor dem ersten Versand:** Die
+Datenschutzerklärung nennt diese Erhebung mit keinem Wort, und die Ausnahme
+„unverhältnismäßiger Aufwand" trägt hier nicht — wer Kontaktdaten erhebt, UM Kontakt
+aufzunehmen, kann Kontakt nicht als zu aufwendig ausgeben.
+
+**Das Angebots-Feature am Ende des Rechners ist NICHT beauftragt** und hat eine eigene
+Merkliste: `docs/solarteur-widget-offene-fragen.md`. Kern daraus: Der Nutzer sieht erst
+sein Ergebnis und stellt DANACH selbst eine Anfrage — diese Reihenfolge ist die Trennlinie
+zum gesamten Wettbewerb und darf nie umgedreht werden. Vor dem ersten Kontakt muss die
+Zusage „keine Lead-Erfassung · kein Vertriebskontakt" umformuliert werden (Betreiber,
+28.08.2026: zusammen mit den ersten Kontakten, nicht vorher auf Verdacht). Zwei Fragen
+bleiben beim Betreiber: ob Geld je Anfrage fließt, und ob der Betrieb den Kontakt behalten
+darf, wenn nichts daraus wird.
 
 ## Archiv & Lehren
 

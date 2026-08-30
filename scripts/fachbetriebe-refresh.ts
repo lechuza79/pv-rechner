@@ -18,7 +18,10 @@
  *   npm run fachbetriebe -- --suche --limit 50         Ortssuche je Landkreis
  *   npm run fachbetriebe -- --art                      regional / überregional trennen (gemessen)
  *   npm run fachbetriebe -- --profil --limit 100       Impressum + Startseite lesen
+ *   npm run fachbetriebe -- --kontakt                  Kontaktseite: Kontaktweg + Restklasse
  *   npm run fachbetriebe -- --ags                      Adresse → amtlicher Gemeindeschlüssel
+ *   npm run fachbetriebe -- --ueber-uns               Über-uns-Seite lesen
+ *   npm run fachbetriebe -- --namen-putzen             Namen nachputzen, ohne Netz
  *   npm run fachbetriebe -- --stats                    was drin ist
  *
  * ─────────────────────────────────────────────────────────────────────────────
@@ -77,14 +80,27 @@
 import { resolve } from "node:path";
 import { readFileSync, existsSync } from "node:fs";
 import {
+  FELDER,
+  adresseLesbar,
+  angebotsSeiten,
   FRAGEN,
+  KEIN_BETRIEB,
   type Kreis,
+  besteMail,
+  firmennameSaeubern,
   hostVon,
   impressumUrl,
+  istKartenanwendung,
   istPlattform,
+  kontaktUrl,
+  navigationsText,
   normOrt,
   portalSchwelle,
+  type Profil,
   profilAus,
+  sichtbarerText,
+  trustSignaleAus,
+  ueberUnsUrl,
 } from "../lib/fachbetrieb-extrakt";
 
 // ─── Grundlagen ──────────────────────────────────────────────────────────────
@@ -176,7 +192,44 @@ function ohneSteuerzeichen<T>(wert: T): T {
   return wert;
 }
 
+/**
+ * EIN BATCH-UPSERT VEREINHEITLICHT DIE SPALTENMENGE — BLOCKER.
+ *
+ * PostgREST baut aus einem Batch EIN INSERT mit einer Spaltenliste. Trägt eine
+ * Zeile ein Feld und die anderen 499 nicht, bekommen diese 499 dort **NULL** —
+ * und überschreiben damit einen bestehenden Wert. Kein Fehler, keine Warnung,
+ * die Zeile sieht danach normal aus.
+ *
+ * REAL PASSIERT am 29.08.2026, obwohl der Fall im Projekt bereits dokumentiert
+ * war: Der Über-uns-Lauf setzte ein Trust-Signal nur dort in die Zeile, wo es
+ * sich geändert hatte — die vorsichtige Bauweise, wie man denkt. Ergebnis:
+ * Meisterbetrieb fiel von 676 auf 167, das Geschäftsfeld Photovoltaik von 2.913
+ * auf 135. Wiederhergestellt aus den Belegen; genau dafür gibt es sie.
+ *
+ * Deshalb prüft diese Funktion jetzt selbst: Tragen nicht alle Zeilen eines
+ * Batches dieselben Felder, wird nach Feldmenge gruppiert und je Gruppe
+ * geschrieben. Das ist langsamer und unfallfrei — die Alternative wäre eine
+ * Regel, an die sich jeder Aufrufer erinnern muss.
+ */
 async function upsertGestueckelt(
+  sb: SupabaseLike,
+  tabelle: string,
+  zeilen: Record<string, unknown>[],
+  onConflict: string,
+): Promise<void> {
+  const gruppen = new Map<string, Record<string, unknown>[]>();
+  for (const z of zeilen) {
+    const form = Object.keys(z).sort().join("|");
+    gruppen.set(form, [...(gruppen.get(form) ?? []), z]);
+  }
+  if (gruppen.size > 1) {
+    for (const g of gruppen.values()) await upsertGleichfoermig(sb, tabelle, g, onConflict);
+    return;
+  }
+  await upsertGleichfoermig(sb, tabelle, zeilen, onConflict);
+}
+
+async function upsertGleichfoermig(
   sb: SupabaseLike,
   tabelle: string,
   zeilen: Record<string, unknown>[],
@@ -293,6 +346,42 @@ async function setup(): Promise<void> {
       fehler text,
       PRIMARY KEY (kreis_id, frage)
     );
+
+    -- Kontaktweg über die Kontaktseite (Phase --kontakt). Ein Formular IST ein
+    -- Kontaktweg, auch ohne Adresse dahinter — bei den Gemeinden war genau das
+    -- der Regelfall.
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS kontakt_url text;
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS kontakt_formular boolean;
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS kontakt_at timestamptz;
+
+    -- Die "Über uns"-Seite (Phase --ueber-uns). Getrennt vom Kontakt-Zeitstempel,
+    -- weil sonst nicht unterscheidbar ist, ob wir sie angesehen und nichts
+    -- gefunden haben oder gar nicht dort waren.
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS ueber_uns_url text;
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS ueber_uns_at timestamptz;
+
+    -- Die Angebots-Unterseiten (Phase --unterseiten). Eigener Zeitstempel, damit
+    -- „angesehen und nichts gefunden" von „noch nicht dort gewesen" unterscheidbar
+    -- bleibt.
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS unterseiten_at timestamptz;
+
+    -- ARBEITSSTAND — gehört dem Menschen, nicht dem Erhebungslauf.
+    -- Dieselbe Trennung wie bei den Gemeinden: Kein Lauf dieses Skripts fasst
+    -- diese Spalten je an, sonst überschreibt der nächste Abgleich eine
+    -- Entscheidung, die jemand getroffen hat.
+    -- Das GEWERK: was für ein Handwerksbetrieb das ist (Solarteur, Elektro,
+    -- Heizung/Sanitär, Dachdecker …). Zu unterscheiden von geschaeftsfelder —
+    -- die sagen, WAS angeboten wird, das Gewerk sagt, WER es anbietet. Mehrere
+    -- sind der Normalfall („Elektro und Sanitär"). Angelegt, weil die Erhebung
+    -- später um weitere Gewerke wachsen soll.
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS gewerke text[];
+    -- Die Adresse des Favicons, GELESEN statt geraten (siehe faviconUrl).
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS favicon_url text;
+
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS stand text NOT NULL DEFAULT 'offen';
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS notiz text;
+    ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS stand_at timestamptz;
+    CREATE INDEX IF NOT EXISTS idx_fb_stand ON fachbetriebe (stand);
 
     ALTER TABLE fachbetriebe ENABLE ROW LEVEL SECURITY;
     ALTER TABLE fachbetrieb_belege ENABLE ROW LEVEL SECURITY;
@@ -645,7 +734,8 @@ async function profil(limit: number, dry: boolean, refetch: boolean): Promise<vo
     art: string;
     art_grund: string | null;
     profil_at: string | null;
-  }>(sb, "fachbetriebe", "domain, art, art_grund, profil_at");
+    kontakt_at: string | null;
+  }>(sb, "fachbetriebe", "domain, art, art_grund, profil_at, kontakt_at");
   // Überregionale gar nicht erst anfassen — wir wollen ihre Impressen nicht.
   const offen = alle
     .filter((r) => r.art !== "ueberregional" && (refetch || !r.profil_at))
@@ -722,8 +812,23 @@ async function profil(limit: number, dry: boolean, refetch: boolean): Promise<vo
       // Spaltenmenge über alle Objekte des Stapels und füllt fehlende Felder
       // mit NULL. Ein weggelassenes Feld wird also gelöscht, nicht übersprungen
       // (gemessen am 27.08.2026: „null value in column art violates not-null").
-      art: p.art ?? r.art,
-      art_grund: p.art ? p.art_grund : r.art_grund,
+      // WER MEHR GESEHEN HAT, GEWINNT — und das ist nicht der spätere Lauf.
+      //
+      // Diese Phase kennt Startseite und Impressum; die Kontakt-Phase kennt
+      // zusätzlich Navigation und Kontaktseite. Ihr Urteil ist deshalb besser
+      // begründet, und ein späterer Profil-Lauf darf es nicht zurücknehmen.
+      // Gemessen am 28.08.2026: Ein Wiederholungslauf machte aus 758 Domains
+      // mit dem Vermerk „zweimal geprüft, kein Photovoltaik" wieder 27 —
+      // dieselben Seiten wären beim nächsten Mal noch einmal abgerufen worden,
+      // und die 55 Betriebe, die erst die Navigation verraten hatte, standen
+      // wieder auf „unklar".
+      //
+      // Ein erkanntes Nicht-Betrieb-Muster ist ein BEFUND und gilt immer; die
+      // bloße Rückstufung auf „unklar" („kein PV-Wort gefunden") gilt nur, wenn
+      // die gründlichere Prüfung noch gar nicht gelaufen ist.
+      art: p.art === "kein-betrieb" || !r.kontakt_at ? (p.art ?? r.art) : r.art,
+      art_grund:
+        p.art === "kein-betrieb" || (!r.kontakt_at && p.art) ? p.art_grund : r.art_grund,
     });
     for (const b of bl) {
       belege.push({
@@ -753,6 +858,211 @@ async function profil(limit: number, dry: boolean, refetch: boolean): Promise<vo
   );
 }
 
+// ─── Phase: Kontaktweg schließen ─────────────────────────────────────────────
+
+/**
+ * Für Betriebe ohne Kontaktweg die KONTAKTSEITE lesen — und dabei die
+ * Restklasse mit auflösen.
+ *
+ * Zwei Befunde vom 28.08.2026, die derselbe Durchgang bedient:
+ *
+ * 1. 473 der 3.098 Betriebe hatten keine auslesbare E-Mail, 233 gar keinen
+ *    Kontaktweg. Der Grund ist selten, dass es keinen gibt — er steht nur
+ *    woanders: auf der Kontaktseite statt im Impressum, oft als Formular.
+ *
+ * 2. 908 Domains standen auf „unklar", weil ihre Startseite kein
+ *    Photovoltaik-Wort im ausgelieferten HTML trug. Der größte Teil davon sind
+ *    kommunale Solarkataster (Karte per Skript nachgeladen) und Verzeichnisse;
+ *    dazwischen sitzen aber echte Betriebe mit träger Startseite. Die
+ *    Kontaktseite ist bei denen fast immer statisch und verrät beides: den
+ *    Kontaktweg UND das Gewerk.
+ *
+ * Die Phase ist deshalb bewusst nicht „nur Kontakte": Sie stuft auch ein, was
+ * die Startseite nicht hergab — in beide Richtungen.
+ */
+async function kontakt(limit: number, dry: boolean, refetch: boolean): Promise<void> {
+  const sb = await makeClient();
+  const alle = await alleZeilen<{
+    domain: string;
+    art: string;
+    art_grund: string | null;
+    email: string | null;
+    telefon: string | null;
+    kontakt_url: string | null;
+    profil_fehler: string | null;
+    geschaeftsfelder: string[] | null;
+  }>(
+    sb,
+    "fachbetriebe",
+    "domain, art, art_grund, email, telefon, kontakt_url, profil_fehler, geschaeftsfelder",
+  );
+
+  // Wen dieser Lauf anfasst: Betriebe ohne Kontaktweg, plus die ganze
+  // Restklasse. Wer eine tote Startseite hat, bleibt außen vor — dort ist auch
+  // keine Kontaktseite zu holen.
+  const offen = alle
+    .filter((r) => !r.profil_fehler)
+    .filter((r) => {
+      if (r.art === "ueberregional" || r.art === "kein-betrieb") return false;
+      if (!refetch && r.kontakt_url) return false;
+      return r.art === "unklar" || !r.email;
+    })
+    .sort((a, b) => a.domain.localeCompare(b.domain))
+    .slice(0, limit);
+
+  const zuKlaeren = offen.filter((r) => r.art === "unklar").length;
+  log(
+    `${offen.length} Domains in diesem Lauf — ${offen.length - zuKlaeren} Betriebe ohne ` +
+      `Kontaktweg, ${zuKlaeren} noch einzuordnen`,
+  );
+  if (dry) {
+    for (const o of offen.slice(0, 15)) log(`  ${o.art.padEnd(8)} ${o.domain}`);
+    log("--dry: nichts abgerufen", "ok");
+    return;
+  }
+
+  const zeilen: Record<string, unknown>[] = [];
+  const belege: Record<string, unknown>[] = [];
+  let gespeichert = 0;
+  let fertig = 0;
+  let neueMail = 0;
+  let neuesFormular = 0;
+  let alsBetrieb = 0;
+  let alsKeinBetrieb = 0;
+  let geprueftOhnePv = 0;
+
+  const wegschreiben = async (alles: boolean) => {
+    if (!alles && zeilen.length < 250) return;
+    const z = zeilen.splice(0, zeilen.length);
+    const b = belege.splice(0, belege.length);
+    if (z.length) await upsertGestueckelt(sb, "fachbetriebe", z, "domain");
+    if (b.length)
+      await upsertGestueckelt(sb, "fachbetrieb_belege", b, "domain,merkmal,wert,fundstelle");
+    gespeichert += z.length;
+  };
+
+  await pool(offen, 10, async (r) => {
+    fertig++;
+    if (fertig % 50 === 0) log(`  ${fertig}/${offen.length}`);
+
+    // Kartenanwendungen brauchen keinen Abruf — der Name genügt, und ihre
+    // Startseite gibt ohnehin nichts her.
+    if (r.art === "unklar" && istKartenanwendung(r.domain)) {
+      alsKeinBetrieb++;
+      zeilen.push({
+        domain: r.domain,
+        art: "kein-betrieb",
+        art_grund: "Solarkataster/Geoportal (am Namen erkannt)",
+        updated_at: new Date().toISOString(),
+      });
+      await wegschreiben(false);
+      return;
+    }
+
+    const start =
+      (await holeText(`https://${r.domain}/`)) ?? (await holeText(`http://${r.domain}/`));
+    if (!start) return;
+
+    const kUrl = kontaktUrl(start.html, start.url);
+    const kSeite = kUrl ? await holeText(kUrl) : null;
+    const text = kSeite ? sichtbarerText(kSeite.html) : "";
+    const quelle = kSeite?.url ?? start.url;
+
+    const zeile: Record<string, unknown> = {
+      domain: r.domain,
+      art: r.art,
+      art_grund: r.art_grund,
+      kontakt_url: kUrl,
+      kontakt_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+
+    if (kSeite) {
+      const kandidaten = [
+        ...Array.from(text.matchAll(/[\w.+-]+@[\w-]+\.[\w.-]{2,}/g), (m) => m[0]),
+        ...Array.from(
+          kSeite.html.matchAll(/mailto:([\w.+-]+@[\w-]+\.[\w.-]{2,})/g),
+          (m) => m[1],
+        ),
+      ];
+      const mail = besteMail(kandidaten, r.domain);
+      if (mail && !r.email) {
+        zeile.email = mail;
+        neueMail++;
+        belege.push({
+          domain: r.domain,
+          merkmal: "email",
+          wert: mail,
+          fundstelle: quelle.slice(0, 500),
+          textstelle: "auf der Kontaktseite",
+          gefunden_am: heute(),
+        });
+      }
+      if (!r.telefon) {
+        const tel = text.match(/(?:Tel(?:efon)?\.?|Fon)[:\s]*(\+?[\d\s()/.\-]{7,24})/i);
+        if (tel) zeile.telefon = tel[1].replace(/\s+/g, " ").trim();
+      }
+      // Ein Formular ist ein Kontaktweg, auch ohne Adresse dahinter — genau
+      // dieser Fall ist bei den Gemeinden der Regelfall gewesen.
+      if (/<form[\s>]/i.test(kSeite.html)) {
+        zeile.kontakt_formular = true;
+        neuesFormular++;
+      }
+    }
+
+    // Einordnung nachziehen, wo die Startseite nichts hergab.
+    //
+    // Gelesen wird jetzt die NAVIGATION der Startseite mit — sie ist statisch,
+    // auch wenn der Inhalt per Skript kommt. Der erste Anlauf prüfte das Gewerk
+    // nur auf der Kontaktseite und löste damit fast nichts auf: Dort steht das
+    // Angebot naturgemäß nicht, und offensichtliche Elektrobetriebe blieben
+    // deshalb auf „unklar".
+    if (r.art === "unklar") {
+      const nav = navigationsText(start.html);
+      const gesamt = sichtbarerText(start.html) + "\n" + nav + "\n" + text;
+      const treffer = KEIN_BETRIEB.find((k) => k.muster.test(gesamt));
+      const pv = FELDER.find((f) => f.name === "photovoltaik");
+      if (treffer) {
+        zeile.art = "kein-betrieb";
+        zeile.art_grund = `${treffer.grund} (beim zweiten Blick erkannt)`;
+        alsKeinBetrieb++;
+      } else if (pv && pv.muster.test(gesamt)) {
+        zeile.art = "betrieb";
+        // Woran es lag, gehört an den Befund: Die Navigation ist der häufigere
+        // Fall und sagt etwas anderes aus als ein Fund im Fließtext.
+        zeile.art_grund = pv.muster.test(nav)
+          ? "Photovoltaik in der Navigation gefunden (Startseite lädt per Skript)"
+          : "Photovoltaik erst beim zweiten Blick gefunden";
+        alsBetrieb++;
+      } else {
+        // GEPRÜFT und trotzdem kein Photovoltaik — das ist etwas anderes als
+        // „noch nicht angesehen", und die nächste Sitzung muss den Unterschied
+        // erkennen können. Stichprobe vom 28.08.2026: Hinter dieser Klasse
+        // stecken überwiegend Elektrobetriebe OHNE PV-Geschäft und geparkte
+        // Domains, nicht verborgene Fachbetriebe. Die Klasse bleibt „unklar",
+        // weil ein Angebot auch auf einer Unterseite stehen kann, die wir nicht
+        // gelesen haben — aber der Grund sagt jetzt, dass zweimal nachgesehen
+        // wurde.
+        zeile.art_grund =
+          "zweimal geprüft (Startseite, Navigation, Kontaktseite) — kein Photovoltaik-Angebot";
+        geprueftOhnePv++;
+      }
+    }
+
+    zeilen.push(zeile);
+    await wegschreiben(false);
+  });
+
+  await wegschreiben(true);
+  log(
+    `${gespeichert} Zeilen gespeichert\n` +
+      `  neue E-Mail-Adresse ${neueMail} · Kontaktformular ${neuesFormular}\n` +
+      `  Restklasse: ${alsBetrieb} als Betrieb · ${alsKeinBetrieb} als kein Betrieb · ` +
+      `${geprueftOhnePv} zweimal geprüft ohne Photovoltaik-Angebot`,
+    "ok",
+  );
+}
+
 // ─── Phase: amtlicher Gemeindeschlüssel ──────────────────────────────────────
 
 interface PlzEintrag {
@@ -776,6 +1086,421 @@ interface PlzEintrag {
  * der Ortsname aus dem Impressum; passt keiner, bleibt der Schlüssel LEER —
  * lieber keine Zuordnung als die falsche Gemeinde.
  */
+/**
+ * Die gespeicherten Firmennamen NACHPUTZEN — ohne die Seiten neu zu holen.
+ *
+ * Wenn die Reinigung besser wird, erreicht die Verbesserung nur die Betriebe,
+ * deren Seite beim nächsten Lauf ANTWORTET. Gemessen am 29.08.2026: 129 Seiten
+ * waren unerreichbar, und dort blieb der alte, kaputte Name stehen — sichtbar
+ * als „» Palme Solar GmbH" in einer Liste, in der sonst alles sauber war. Der
+ * Fehler sah aus wie ein Muster, das nicht greift, war aber ein Wert, den der
+ * Lauf gar nicht angefasst hatte.
+ *
+ * Diese Phase wendet die aktuelle Reinigung auf den Bestand an. Sie holt nichts
+ * und kostet nichts; wer ein Muster verbessert, lässt sie hinterher laufen.
+ *
+ * SIE PUTZT NACH, SIE WÄHLT KEINE QUELLE. Der Rohfund liegt zwar als Beleg vor
+ * (`merkmal = "firmenname"`), und es lag nahe, von dort auszugehen — dann würde
+ * ein Fehlgriff der Reinigung von selbst heilen. Nachgemessen am 29.08.2026 und
+ * VERWORFEN: Der Beleg ist nicht durchweg der bessere Fund. Bei era-goslar.de
+ * steht dort „AG Solar" (ein Textfetzen), in der Tabelle das richtige
+ * „ERA-Goslar". Über alle 852 Abweichungen hätte der Umbau eine Quellenwahl neu
+ * getroffen, die der Profil-Lauf bereits abgewogen hat — und einige richtige
+ * Namen dabei verloren.
+ *
+ * Wer die Quellenwahl ändern will, ändert sie im Profil-Lauf und misst sie dort.
+ */
+async function namenPutzen(dry: boolean): Promise<void> {
+  const sb = await makeClient();
+  const alle = await alleZeilen<{ domain: string; firmenname: string | null }>(
+    sb,
+    "fachbetriebe",
+    "domain, firmenname",
+  );
+  const zeilen: Record<string, unknown>[] = [];
+  for (const r of alle) {
+    const quelle = r.firmenname;
+    if (!quelle) continue;
+    const sauber = firmennameSaeubern(quelle);
+    if (sauber === r.firmenname) continue;
+    zeilen.push({ domain: r.domain, firmenname: sauber, updated_at: new Date().toISOString() });
+  }
+  const geleert = zeilen.filter((z) => z.firmenname === null).length;
+  log(
+    `${zeilen.length} Namen ändern sich (davon ${geleert} entfallen ganz — dort zeigt die Liste die Adresse)`,
+  );
+  for (const z of zeilen.slice(0, 12)) {
+    const alt = alle.find((a) => a.domain === z.domain)?.firmenname;
+    log(`  „${alt}" → ${z.firmenname ?? "—"}`);
+  }
+  if (dry) {
+    log("--dry: nichts geschrieben", "ok");
+    return;
+  }
+  await upsertGestueckelt(sb, "fachbetriebe", zeilen, "domain");
+  log("Namen nachgeputzt", "ok");
+}
+
+/**
+ * Die „Über uns"-Seite lesen — die dritte Quelle für Trust-Signale.
+ *
+ * ERWARTUNG VORHER GEEICHT, und die Eichung hat die Vermutung halb widerlegt
+ * (29.08.2026, zweimal 30 Betriebe): Von 21 erreichbaren Seiten brachten ZWEI
+ * einen Meisterbetrieb, eine ein Gründungsjahr, KEINE eine Handwerkskammer.
+ * Hochgerechnet rund 160 zusätzliche Meisterbetriebe — 22 % würden 27 %. Das ist
+ * eine Nachlese, kein Hebel.
+ *
+ * Der Grund dahinter ist die eigentliche Erkenntnis und gilt über diesen Lauf
+ * hinaus: **Wer Meisterbetrieb ist, schreibt es auf die Startseite.** Wer es
+ * dort nicht schreibt, schreibt es meist gar nicht. Unsere Quote misst also
+ * nicht, wie viele Meisterbetriebe im Bestand sind — im zulassungspflichtigen
+ * Elektrohandwerk sind es nahezu alle —, sondern wie viele es erwähnen. Über die
+ * Website ist diese Grenze nicht zu überwinden; dafür bräuchte es eine amtliche
+ * Quelle.
+ *
+ * Der Lauf läuft trotzdem: Er kostet kein Geld, und die Balkonkraftwerk-Treffer
+ * nimmt er mit — die Eichung fand sie bei einem von 21.
+ */
+async function ueberUns(limit: number, dry: boolean, refetch: boolean): Promise<void> {
+  const sb = await makeClient();
+  const alle = await alleZeilen<{
+    domain: string;
+    meisterbetrieb: boolean | null;
+    gruendungsjahr: number | null;
+    innung: string | null;
+    handwerkskammer: string | null;
+    installateurverzeichnis: boolean | null;
+    zertifikate: string[] | null;
+    bewertung_wert: number | null;
+    geschaeftsfelder: string[] | null;
+    profil_fehler: string | null;
+    ueber_uns_at: string | null;
+    art: string;
+  }>(
+    sb,
+    "fachbetriebe",
+    "domain, meisterbetrieb, gruendungsjahr, innung, handwerkskammer, installateurverzeichnis," +
+      " zertifikate, bewertung_wert, geschaeftsfelder, profil_fehler, ueber_uns_at, art",
+  );
+
+  // Wen dieser Lauf anfasst: Betriebe, denen mindestens ein Signal fehlt. Wer
+  // alle acht trägt, hat dort nichts mehr zu holen — ein Abruf ohne möglichen
+  // Befund ist verschwendete Zeit und fremde Last.
+  const offen = alle
+    .filter((r) => r.art === "betrieb" && !r.profil_fehler)
+    .filter((r) => refetch || !r.ueber_uns_at)
+    .filter(
+      (r) =>
+        r.meisterbetrieb === null ||
+        r.gruendungsjahr === null ||
+        !r.innung ||
+        !r.handwerkskammer ||
+        r.installateurverzeichnis === null ||
+        !r.zertifikate?.length ||
+        r.bewertung_wert === null ||
+        !(r.geschaeftsfelder ?? []).includes("balkonkraftwerk"),
+    )
+    .sort((a, b) => a.domain.localeCompare(b.domain))
+    .slice(0, limit);
+
+  log(`${offen.length} Betriebe in diesem Lauf (von ${alle.length} im Bestand)`);
+  if (dry) {
+    for (const o of offen.slice(0, 15)) log(`  ${o.domain}`);
+    log("--dry: nichts abgerufen", "ok");
+    return;
+  }
+
+  const zeilen: Record<string, unknown>[] = [];
+  const belege: Record<string, unknown>[] = [];
+  let fertig = 0,
+    mitSeite = 0,
+    neuMeister = 0,
+    neuJahr = 0,
+    neuHwk = 0,
+    neuZert = 0,
+    neuBalkon = 0;
+
+  const wegschreiben = async (alles: boolean) => {
+    if (!alles && zeilen.length < 250) return;
+    const z = zeilen.splice(0, zeilen.length);
+    const b = belege.splice(0, belege.length);
+    if (z.length) await upsertGestueckelt(sb, "fachbetriebe", z, "domain");
+    if (b.length)
+      await upsertGestueckelt(sb, "fachbetrieb_belege", b, "domain,merkmal,wert,fundstelle");
+  };
+
+  const jetzt = new Date().getFullYear();
+
+  await pool(offen, 10, async (r) => {
+    fertig++;
+    if (fertig % 100 === 0) log(`  ${fertig}/${offen.length}`);
+
+    const start =
+      (await holeText(`https://${r.domain}/`)) ?? (await holeText(`http://${r.domain}/`));
+    if (!start) return;
+    const url = ueberUnsUrl(start.html, start.url);
+    const seite = url ? await holeText(url) : null;
+
+    const zeile: Record<string, unknown> = {
+      domain: r.domain,
+      ueber_uns_url: url,
+      ueber_uns_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+
+    if (seite) {
+      mitSeite++;
+      const text = sichtbarerText(seite.html);
+      // Dieselbe Prüfung wie im Profil-Lauf, nicht eine zweite Fassung davon.
+      // Sie setzt nur, was noch fehlt — ein Fund auf der Startseite behält
+      // deshalb den Vorrang.
+      const p: Partial<Profil> = {
+        meisterbetrieb: r.meisterbetrieb,
+        gruendungsjahr: r.gruendungsjahr,
+        innung: r.innung,
+        handwerkskammer: r.handwerkskammer,
+        installateurverzeichnis: r.installateurverzeichnis,
+        zertifikate: r.zertifikate,
+        bewertung_wert: r.bewertung_wert,
+      };
+      trustSignaleAus(
+        text,
+        seite.url,
+        p as Profil,
+        (merkmal, wert, quelle, txt, idx) => {
+          belege.push({
+            domain: r.domain,
+            merkmal,
+            wert: wert.slice(0, 200),
+            fundstelle: quelle.slice(0, 500),
+            textstelle: txt.slice(Math.max(0, idx - 80), idx + 120).replace(/\s+/g, " "),
+            gefunden_am: heute(),
+          });
+        },
+        jetzt,
+      );
+      if (p.meisterbetrieb !== r.meisterbetrieb) {
+        zeile.meisterbetrieb = p.meisterbetrieb;
+        neuMeister++;
+      }
+      if (p.gruendungsjahr !== r.gruendungsjahr) {
+        zeile.gruendungsjahr = p.gruendungsjahr;
+        neuJahr++;
+      }
+      if (p.innung !== r.innung) zeile.innung = p.innung;
+      if (p.handwerkskammer !== r.handwerkskammer) {
+        zeile.handwerkskammer = p.handwerkskammer;
+        neuHwk++;
+      }
+      if (p.installateurverzeichnis !== r.installateurverzeichnis)
+        zeile.installateurverzeichnis = p.installateurverzeichnis;
+      if ((p.zertifikate?.length ?? 0) !== (r.zertifikate?.length ?? 0)) {
+        zeile.zertifikate = p.zertifikate;
+        neuZert++;
+      }
+      if (p.bewertung_wert !== r.bewertung_wert) {
+        zeile.bewertung_wert = p.bewertung_wert;
+        zeile.bewertung_anzahl = p.bewertung_anzahl;
+        zeile.bewertung_quelle = p.bewertung_quelle;
+      }
+
+      // Geschäftsfelder nachtragen — ein Elektriker, der nebenbei
+      // Balkonkraftwerke montiert, schreibt das nicht immer auf die Startseite.
+      const felder = new Set(r.geschaeftsfelder ?? []);
+      const vorher = felder.size;
+      for (const f of FELDER) if (f.muster.test(text)) felder.add(f.name);
+      if (felder.size > vorher) {
+        zeile.geschaeftsfelder = [...felder];
+        if (!(r.geschaeftsfelder ?? []).includes("balkonkraftwerk") && felder.has("balkonkraftwerk"))
+          neuBalkon++;
+      }
+    }
+
+    zeilen.push(zeile);
+    await wegschreiben(false);
+  });
+
+  await wegschreiben(true);
+  log(
+    `${offen.length} geprüft, ${mitSeite} mit erreichbarer Über-uns-Seite — ` +
+      `Meisterbetrieb +${neuMeister}, Gründungsjahr +${neuJahr}, Handwerkskammer +${neuHwk}, ` +
+      `Zertifikate +${neuZert}, Balkonkraftwerk +${neuBalkon}`,
+    "ok",
+  );
+}
+
+/**
+ * Die Geschäftsfelder neu aus der Startseite lesen.
+ *
+ * Gebaut als Reparatur nach dem Batch-Upsert-Unfall vom 29.08.2026 (siehe
+ * `upsertGestueckelt`): Die Trust-Signale ließen sich aus den Belegen
+ * wiederherstellen, die Geschäftsfelder nicht — für sie legt kein Lauf einen
+ * Beleg an. Das ist die eigentliche Lehre des Vorfalls: **Was keinen Beleg hat,
+ * ist bei einem Schreibfehler unwiederbringlich.**
+ *
+ * Bleibt danach als eigene Phase stehen. Ein Betrieb nimmt Wärmepumpen oder
+ * Wallboxen ins Angebot, ohne dass sich sonst etwas ändert; dafür den ganzen
+ * Profil-Lauf zu fahren wäre zwei Abrufe je Betrieb statt einem.
+ */
+async function felder(limit: number, dry: boolean): Promise<void> {
+  const sb = await makeClient();
+  const alle = await alleZeilen<{
+    domain: string;
+    geschaeftsfelder: string[] | null;
+    profil_fehler: string | null;
+    art: string;
+  }>(sb, "fachbetriebe", "domain, geschaeftsfelder, profil_fehler, art");
+
+  const offen = alle
+    .filter((r) => r.art === "betrieb" && !r.profil_fehler)
+    .sort((a, b) => a.domain.localeCompare(b.domain))
+    .slice(0, limit);
+
+  log(`${offen.length} Betriebe — Geschäftsfelder aus der Startseite`);
+  if (dry) {
+    log("--dry: nichts abgerufen", "ok");
+    return;
+  }
+
+  const zeilen: Record<string, unknown>[] = [];
+  let fertig = 0,
+    gefunden = 0;
+  const wegschreiben = async (alles: boolean) => {
+    if (!alles && zeilen.length < 250) return;
+    const z = zeilen.splice(0, zeilen.length);
+    if (z.length) await upsertGestueckelt(sb, "fachbetriebe", z, "domain");
+  };
+
+  await pool(offen, 10, async (r) => {
+    fertig++;
+    if (fertig % 200 === 0) log(`  ${fertig}/${offen.length}`);
+    const start =
+      (await holeText(`https://${r.domain}/`)) ?? (await holeText(`http://${r.domain}/`));
+    if (!start) return;
+    // Navigation MIT lesen — sie steht statisch im HTML, auch wenn der Inhalt
+    // per Skript nachlädt. Dieselbe Lehre wie bei der Einordnung.
+    const text = sichtbarerText(start.html) + "\n" + navigationsText(start.html);
+    const gefundene = FELDER.filter((f) => f.muster.test(text)).map((f) => f.name);
+    if (!gefundene.length) return;
+    gefunden++;
+    // Vorhandenes NICHT verlieren: Was einmal gefunden wurde, bleibt — ein
+    // Betrieb, der seine Startseite umbaut, verliert sonst ein Angebot, das er
+    // weiter macht.
+    const zusammen = [...new Set([...(r.geschaeftsfelder ?? []), ...gefundene])];
+    zeilen.push({
+      domain: r.domain,
+      geschaeftsfelder: zusammen,
+      updated_at: new Date().toISOString(),
+    });
+    await wegschreiben(false);
+  });
+  await wegschreiben(true);
+  log(`${offen.length} geprüft, ${gefunden} mit erkennbaren Geschäftsfeldern`, "ok");
+}
+
+/**
+ * Die ANGEBOTS-Unterseiten lesen — für Geschäftsfelder, die auf der Startseite
+ * nicht stehen.
+ *
+ * Der Anlass ist das Balkonkraftwerk: Der Nutzer sucht Hilfe bei der Montage,
+ * und wer sie anbietet, schreibt es auf seine Leistungsseite, nicht immer auf
+ * die Startseite. Gemessen an 20 Betrieben ohne dieses Merkmal: 3 bieten es
+ * trotzdem an (15 %), gefunden für 4,3 Abrufe je Betrieb.
+ *
+ * Gelesen werden ALLE Geschäftsfelder, nicht nur das eine — wer schon abruft,
+ * liest alles. Und **vorhandene Felder gehen nie verloren**: Ein Betrieb, der
+ * seine Seite umbaut, verlöre sonst ein Angebot, das er weiter macht.
+ */
+async function unterseiten(limit: number, dry: boolean, refetch: boolean): Promise<void> {
+  const sb = await makeClient();
+  const alle = await alleZeilen<{
+    domain: string;
+    geschaeftsfelder: string[] | null;
+    profil_fehler: string | null;
+    unterseiten_at: string | null;
+    art: string;
+  }>(sb, "fachbetriebe", "domain, geschaeftsfelder, profil_fehler, unterseiten_at, art");
+
+  // Wen der Lauf anfasst: Betriebe, denen mindestens ein Geschäftsfeld fehlt.
+  // Wer alle fünf trägt, hat dort nichts mehr zu holen.
+  const offen = alle
+    .filter((r) => r.art === "betrieb" && !r.profil_fehler)
+    .filter((r) => refetch || !r.unterseiten_at)
+    .filter((r) => (r.geschaeftsfelder ?? []).length < FELDER.length)
+    .sort((a, b) => a.domain.localeCompare(b.domain))
+    .slice(0, limit);
+
+  log(`${offen.length} Betriebe — Angebots-Unterseiten lesen`);
+  if (dry) {
+    log("--dry: nichts abgerufen", "ok");
+    return;
+  }
+
+  const zeilen: Record<string, unknown>[] = [];
+  let fertig = 0,
+    neu = 0,
+    neuBalkon = 0,
+    ausAdresse = 0;
+  const wegschreiben = async (alles: boolean) => {
+    if (!alles && zeilen.length < 200) return;
+    const z = zeilen.splice(0, zeilen.length);
+    if (z.length) await upsertGestueckelt(sb, "fachbetriebe", z, "domain");
+  };
+
+  await pool(offen, 8, async (r) => {
+    fertig++;
+    if (fertig % 100 === 0) log(`  ${fertig}/${offen.length}`);
+    const start =
+      (await holeText(`https://${r.domain}/`)) ?? (await holeText(`http://${r.domain}/`));
+    if (!start) return;
+
+    const vorhanden = new Set(r.geschaeftsfelder ?? []);
+    const gefunden = new Set(vorhanden);
+    const seiten = angebotsSeiten(start.html, start.url);
+
+    // Eine Adresse, die das Wort selbst trägt, ist der Beleg — null Abrufe.
+    for (const u of seiten)
+      for (const f of FELDER) if (f.muster.test(adresseLesbar(u))) gefunden.add(f.name);
+    if (gefunden.size > vorhanden.size) ausAdresse++;
+
+    // Höchstens sechs Unterseiten: Der Eichlauf fand jeden Treffer in den
+    // ersten Rängen; mehr abzurufen kostet fremde Last ohne Ertrag.
+    for (const u of seiten.slice(0, 6)) {
+      if (gefunden.size === FELDER.length) break;
+      const s = await holeText(u);
+      if (!s) continue;
+      const text = sichtbarerText(s.html);
+      for (const f of FELDER) if (f.muster.test(text)) gefunden.add(f.name);
+    }
+
+    if (gefunden.size === vorhanden.size) {
+      zeilen.push({
+        domain: r.domain,
+        unterseiten_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      });
+      await wegschreiben(false);
+      return;
+    }
+    neu++;
+    if (!vorhanden.has("balkonkraftwerk") && gefunden.has("balkonkraftwerk")) neuBalkon++;
+    zeilen.push({
+      domain: r.domain,
+      geschaeftsfelder: [...gefunden],
+      unterseiten_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    });
+    await wegschreiben(false);
+  });
+
+  await wegschreiben(true);
+  log(
+    `${offen.length} geprüft, ${neu} mit neuen Geschäftsfeldern (davon ${ausAdresse} schon an der ` +
+      `Adresse erkannt, ohne Abruf) — Balkonkraftwerk +${neuBalkon}`,
+    "ok",
+  );
+}
+
 async function ags(dry: boolean): Promise<void> {
   const sb = await makeClient();
   const tabelle = JSON.parse(
@@ -875,14 +1600,17 @@ async function stats(): Promise<void> {
     handwerkskammer: string | null;
     installateurverzeichnis: boolean | null;
     zertifikate: string[] | null;
+    gewerke: string[] | null;
     bewertung_wert: number | null;
     email: string | null;
+    telefon: string | null;
+    kontakt_formular: boolean | null;
     profil_at: string | null;
     profil_fehler: string | null;
   }>(
     sb,
     "fachbetriebe",
-    "domain, art, kreis_id, region_id, plz, hr_nummer, gruendungsjahr, meisterbetrieb, innung, handwerkskammer, installateurverzeichnis, zertifikate, bewertung_wert, email, profil_at, profil_fehler",
+    "domain, art, kreis_id, region_id, plz, hr_nummer, gruendungsjahr, meisterbetrieb, innung, handwerkskammer, installateurverzeichnis, zertifikate, gewerke, bewertung_wert, email, telefon, kontakt_formular, profil_at, profil_fehler",
   );
   const laeufe = await alleZeilen<{ kreis_id: string; frage: string; treffer: number; fehler: string | null }>(
     sb,
@@ -952,8 +1680,19 @@ async function stats(): Promise<void> {
   log(`  Handwerkskammer           ${quote(zaehl((r) => r.handwerkskammer))}`);
   log(`  Installateurverzeichnis   ${quote(zaehl((r) => r.installateurverzeichnis))}`);
   log(`  Zertifikat                ${quote(zaehl((r) => r.zertifikate && r.zertifikate.length))}`);
+  log(`  Gewerk erkannt            ${quote(zaehl((r) => r.gewerke && r.gewerke.length))}`);
   log(`  Bewertung (Selbstauskunft) ${quote(zaehl((r) => r.bewertung_wert))}`);
   log(`  E-Mail                    ${quote(zaehl((r) => r.email))}`);
+  log(`  Telefon                   ${quote(zaehl((r) => r.telefon))}`);
+  log(`  Kontaktformular           ${quote(zaehl((r) => r.kontakt_formular))}`);
+  // Die Zusammenfassung steht NEBEN den Einzelwerten, nicht an ihrer Stelle:
+  // Ein Formular ist ein Kontaktweg, aber kein Postfach — wer später schreiben
+  // will, braucht den Unterschied.
+  log(
+    `  erreichbar (irgendwie)    ${quote(
+      zaehl((r) => r.email || r.telefon || r.kontakt_formular),
+    )}`,
+  );
   const kaputt = betriebe.filter((r) => r.profil_fehler).length;
   if (kaputt) log(`  Startseite unerreichbar   ${kaputt.toLocaleString()}`);
 
@@ -986,7 +1725,12 @@ async function main(): Promise<void> {
     suche: argv.includes("--suche"),
     art: argv.includes("--art"),
     profil: argv.includes("--profil"),
+    kontakt: argv.includes("--kontakt"),
+    ueberUns: argv.includes("--ueber-uns"),
+    felder: argv.includes("--felder"),
+    unterseiten: argv.includes("--unterseiten"),
     ags: argv.includes("--ags"),
+    namen: argv.includes("--namen-putzen"),
     stats: argv.includes("--stats"),
   };
 
@@ -999,7 +1743,18 @@ async function main(): Promise<void> {
         "  --art [--dry]                    regional oder überregional — gemessen an der Streuung\n" +
         "  --profil [--limit N] [--refetch] [--dry]\n" +
         "                                   Startseite + Impressum lesen\n" +
+        "  --kontakt [--limit N] [--refetch] [--dry]\n" +
+        "                                   Kontaktseite lesen: Kontaktweg schließen,\n" +
+        "                                   Restklasse einordnen\n" +
+        "  --felder [--limit N] [--dry]     Geschäftsfelder aus der Startseite nachlesen\n" +
+        "  --unterseiten [--limit N] [--refetch] [--dry]\n" +
+        "                                   Angebots-Unterseiten lesen: Geschäftsfelder,\n" +
+        "                                   die auf der Startseite nicht stehen\n" +
+        "  --ueber-uns [--limit N] [--refetch] [--dry]\n" +
+        "                                   die Über-uns-Seite lesen: Trust-Signale nachlesen\n" +
         "  --ags [--dry]                    Anschrift → amtlicher Gemeindeschlüssel\n" +
+        "  --namen-putzen [--dry]           die gespeicherten Firmennamen nachputzen,\n" +
+        "                                   ohne die Seiten neu zu holen\n" +
         "  --stats                          Bestand, Abdeckung, Trust-Signale",
       "err",
     );
@@ -1018,6 +1773,12 @@ async function main(): Promise<void> {
   }
   if (phasen.art) await einordnen(dry);
   if (phasen.profil) await profil(zahlArg("limit", 100), dry, argv.includes("--refetch"));
+  if (phasen.kontakt) await kontakt(zahlArg("limit", 200), dry, argv.includes("--refetch"));
+  if (phasen.ueberUns) await ueberUns(zahlArg("limit", 200), dry, argv.includes("--refetch"));
+  if (phasen.felder) await felder(zahlArg("limit", 200), dry);
+  if (phasen.unterseiten)
+    await unterseiten(zahlArg("limit", 200), dry, argv.includes("--refetch"));
+  if (phasen.namen) await namenPutzen(dry);
   if (phasen.ags) await ags(dry);
   if (phasen.stats) await stats();
   log("Fertig", "ok");

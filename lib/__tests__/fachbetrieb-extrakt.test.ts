@@ -16,9 +16,16 @@
 
 import { describe, it, expect } from "vitest";
 import {
+  FELDER,
+  adresseLesbar,
+  angebotsSeiten,
   FRAGEN,
+  GEWERKE,
   KEIN_BETRIEB,
   besteMail,
+  bewertungAusDaten,
+  faviconUrl,
+  firmennameSaeubern,
   gruendungsjahrAus,
   handwerkskammerAus,
   impressumUrl,
@@ -30,6 +37,7 @@ import {
   profilAus,
   rechtsformVon,
   sichtbarerText,
+  ueberUnsUrl,
 } from "../fachbetrieb-extrakt";
 
 const JETZT = 2026;
@@ -54,6 +62,389 @@ describe("Rechtsform: Wortgrenzen, sonst liest der Extraktor Unsinn", () => {
   it("nimmt die spezifischste Form, nicht die erste passende", () => {
     // Ohne die Reihenfolge in RECHTSFORMEN gewänne „GmbH“ gegen „GmbH & Co. KG“.
     expect(rechtsformVon("Hansen GmbH & Co KG")).toBe("GmbH & Co. KG");
+  });
+});
+
+describe("Firmenname: was die Seite dazugeschrieben hat, gehört nicht dazu", () => {
+  // ALLE Fälle hier sind ECHT und stammen aus einer Auszählung über den fertigen
+  // Bestand (28.08.2026): 633 von 3.115 Namen — 20 % — trugen Müll, in fünf
+  // klaren Klassen. Der Betreiber hat es an einer Karte gesehen, bevor eine
+  // Quote es gezeigt hätte: „die firmenbezeichnungen sind crap".
+  //
+  // Der Grundfehler war, den Seitentitel als Rückfall oberflächlich zu putzen.
+  // Ein Seitentitel ist fast nie der Firmenname.
+
+  it("entfernt den Rest einer zerlegten Impressum-Überschrift", () => {
+    // „Impressum & Datenschutz – X GmbH": Das erste Wort war entfernt, das
+    // zweite blieb stehen und stand danach als Firmenname in der Liste.
+    expect(firmennameSaeubern("& Datenschutz - SED-Solar GmbH")).toBe("SED-Solar GmbH");
+    expect(firmennameSaeubern("& Datenschutz - Georg Huber Elektroanlagen GmbH")).toBe(
+      "Georg Huber Elektroanlagen GmbH",
+    );
+    expect(firmennameSaeubern("& Showroom - EvoSell GmbH")).toBe("EvoSell GmbH");
+  });
+
+  it("löst HTML-Entitäten auf, bevor irgendetwas anderes passiert", () => {
+    expect(firmennameSaeubern("&ndash; AURORASOL GmbH")).toBe("AURORASOL GmbH");
+  });
+
+  it("wirft Emojis und nachgestellte Seitenwörter weg", () => {
+    expect(firmennameSaeubern("KB Solartec GmbH ☀️ Impressum ❤️ Solaranlage nachhaltig")).toBe(
+      "KB Solartec GmbH",
+    );
+    expect(firmennameSaeubern("Elektro-Klaas GmbH: Impressum")).toBe("Elektro-Klaas GmbH");
+    expect(
+      firmennameSaeubern("Sachsensolar GmbH Zum Inhalt springen ➤ Jetzt 1000 € Sofortbonus sichern"),
+    ).toBe("Sachsensolar GmbH");
+  });
+
+  it("findet den Namen auch HINTEN im Seitentitel", () => {
+    // Die erste Fassung nahm bei mehreren Teilen den ersten — und der ist im
+    // Seitentitel meist das Schlagwort, nicht der Betrieb.
+    expect(
+      firmennameSaeubern("Photovoltaik und Elektrotechnik - Mac Metzler Energietechnik GmbH"),
+    ).toBe("Mac Metzler Energietechnik GmbH");
+    expect(firmennameSaeubern("Home | ABEL ReTec GmbH")).toBe("ABEL ReTec GmbH");
+    expect(firmennameSaeubern("Impressum - 3E-Elektrotechnik GmbH")).toBe("3E-Elektrotechnik GmbH");
+  });
+
+  it("nimmt aus einem Titel ohne Rechtsform den Namensteil, nicht den Werbeteil", () => {
+    expect(
+      firmennameSaeubern("Jendrian Haustechnik - Bad, Heizungsbau, Klima und Wasser aus Wesel"),
+    ).toBe("Jendrian Haustechnik");
+    expect(
+      firmennameSaeubern("Solaranlagen Bayern - Sie kontaktieren uns und wir erledigen alles!"),
+    ).toBe("Solaranlagen Bayern");
+  });
+
+  it("verwirft, was gar kein Name ist — lieber keiner als ein falscher", () => {
+    // Ohne Namen zeigt die Liste die Adresse, und die stimmt immer.
+    expect(firmennameSaeubern("Solarprodukte zu den besten Tagespreisen kaufen")).toBeNull();
+    expect(firmennameSaeubern("GmbH & Co. KG")).toBeNull();
+    expect(firmennameSaeubern("GmbH")).toBeNull();
+    expect(firmennameSaeubern("")).toBeNull();
+  });
+
+  it("schneidet nachlaufende Feldbeschriftungen ab", () => {
+    expect(firmennameSaeubern("Name 3NERGY GmbH Adresse Am Pönitzer Dreieck 1")).toBe(
+      "3NERGY GmbH",
+    );
+    expect(firmennameSaeubern("Impressum und Kontaktdaten A9 Solar GmbH")).toBe("A9 Solar GmbH");
+  });
+
+  it("entfernt unsichtbare Zeichen — Wix und Webflow setzen sie in Überschriften", () => {
+    // Im Namen sieht man sie nicht, aber sie sortieren ihn an den Anfang der
+    // Liste und stünden in einem Anschreiben vor dem Firmennamen.
+    expect(firmennameSaeubern("\u200B\u200B Anysolar GmbH")).toBe("Anysolar GmbH");
+    expect(firmennameSaeubern("\u200D EnCrease Energiesysteme GmbH")).toBe(
+      "EnCrease Energiesysteme GmbH",
+    );
+    expect(firmennameSaeubern("\uFEFFSolar GMI GmbH")).toBe("Solar GMI GmbH");
+  });
+
+  it("zerschneidet KEINE Aufzählung im Namen — ab vier Teilen wird nicht getrennt", () => {
+    // Der Fix für die Seitentitel erzeugte prompt einen neuen Fehler: Aus
+    // „Uwe Schmidt Elektroinstallation Gas | Wasser | Sanitär GmbH -
+    // Elektromeisterbetrieb Berlin" wurde „Sanitär GmbH". Das sah in der Liste
+    // aus wie ein Firmenname und war mitten aus einem herausgeschnitten. Ab
+    // vier Teilen sind die Striche eine Aufzählung, kein Titel-Trenner.
+    expect(
+      firmennameSaeubern(
+        "Uwe Schmidt Elektroinstallation Gas | Wasser | Sanitär GmbH - Elektromeisterbetrieb Berlin",
+      ),
+    ).not.toBe("Sanitär GmbH");
+  });
+
+  it("entfernt einen führenden Trenner", () => {
+    // „| EK Fuchs Solar- & Elektrotechnik" ergab nur einen Teil, wurde deshalb
+    // nicht zerlegt — und behielt den Strich.
+    expect(firmennameSaeubern("| EK Fuchs Solar- & Elektrotechnik")).toBe(
+      "EK Fuchs Solar- & Elektrotechnik",
+    );
+  });
+
+  it("nimmt KEINE fremde Firma aus dem Impressum — der teuerste Fehlgriff", () => {
+    // „Diese Website wurde erstellt von mai multimedia — Bildrechte © Vaillant
+    // Deutschland GmbH & Co. KG" stand als Firmenname über einem Betrieb, der
+    // duo energy heißt. Adresse und E-Mail waren richtig, nur der Name gehörte
+    // jemand anderem — in einem Anschreiben der schlimmste Fehler von allen.
+    expect(firmennameSaeubern("© Vaillant Deutschland GmbH & Co. KG ( www.vaillant.de )")).toBeNull();
+    expect(firmennameSaeubern("© 2026 Zukunftssolar UG (haftungsbeschränkt)")).toBeNull();
+    expect(firmennameSaeubern("Copyright 2000-2022 janolaw AG. All Rights Reserved")).toBeNull();
+  });
+
+  it("verwirft HTML-Reste", () => {
+    expect(firmennameSaeubern('<p>© 2026 Avacon AG</p>" rte-source="aem"')).toBeNull();
+  });
+
+  it("entfernt führende Anführungszeichen und Pfeile", () => {
+    expect(firmennameSaeubern("» Palme Solar GmbH")).toBe("Palme Solar GmbH");
+    expect(firmennameSaeubern('"RNS-Energy GmbH"')).toBe("RNS-Energy GmbH");
+  });
+
+  it("schneidet die Anschrift hinter der Rechtsform ab", () => {
+    // Gefunden erst beim Durchlesen ALLER Namen nach Länge sortiert, nicht von
+    // einer Musterprüfung: Die Impressumszeile trägt Name und Anschrift ohne
+    // Trennzeichen dazwischen. Kein Muster schlug an, weil jeder einzelne Name
+    // für sich plausibel aussah — nur die Länge verriet sie.
+    expect(
+      firmennameSaeubern("Banik Haustechnik Schwabach GmbH O´Brien-Straße 2 91126 Schwabach Deutschland"),
+    ).toBe("Banik Haustechnik Schwabach GmbH");
+    expect(firmennameSaeubern("WATT's los GmbH, Waldstraße 10, 57223 Kreuztal, Deutschland")).toBe(
+      "WATT's los GmbH",
+    );
+    expect(firmennameSaeubern("Rieger & Kraft Solar GmbH 09141 / 923 239 kontakt@solar-rieger-kraft.de")).toBe(
+      "Rieger & Kraft Solar GmbH",
+    );
+    expect(firmennameSaeubern("Soleno GmbH Soleno GmbH Leistungen Ratgeber Über uns Kontakt")).toBe(
+      "Soleno GmbH",
+    );
+    expect(firmennameSaeubern("Dietmar Korn Haustechnik GmbH in Kamenz / Landkreis Bautzen / Sachsen")).toBe(
+      "Dietmar Korn Haustechnik GmbH",
+    );
+  });
+
+  it("behält die Zusätze, die zur Rechtsform selbst gehören", () => {
+    // „Muster GmbH & Co. KG" auf „Muster GmbH" zu kürzen benennt eine ANDERE
+    // Gesellschaft — die Kürzung hinter der Rechtsform darf hier nicht greifen.
+    expect(
+      firmennameSaeubern("Elektro- und Kommunikationstechnik Hans & Uwe Köhler GmbH & Co. KG"),
+    ).toBe("Elektro- und Kommunikationstechnik Hans & Uwe Köhler GmbH & Co. KG");
+    expect(firmennameSaeubern("Energie- & Elektrotechnik Hohenzollern UG (haftungsbeschränkt)")).toBe(
+      "Energie- & Elektrotechnik Hohenzollern UG (haftungsbeschränkt)",
+    );
+    expect(firmennameSaeubern("Solarfachbetrieb Solar Heisse GmbH & Co. KG, Landsberg am Lech")).toBe(
+      "Solarfachbetrieb Solar Heisse GmbH & Co. KG",
+    );
+  });
+
+  it("verwirft Leistungsversprechen ohne Firmennamen", () => {
+    // Die zweite Klasse aus der vollständigen Durchsicht: Die Seite nennt im
+    // Titel und im Impressum-Kopf gar keinen Namen, nur was sie anbietet. 167
+    // Fälle im Bestand, jeder für sich unauffällig.
+    expect(firmennameSaeubern("Experte für Photovoltaik, erneuerbare Energie & Solaranlagen")).toBeNull();
+    expect(firmennameSaeubern("Badrenovierung und Heizungsbau im Raum Cuxhaven & Otterndorf")).toBeNull();
+    expect(firmennameSaeubern("Hochwertige Photovoltaikanlagen für Hamburg und Umgebung")).toBeNull();
+    expect(firmennameSaeubern("Elektriker in Bielefeld")).toBeNull();
+    expect(firmennameSaeubern("Alles aus einer Hand")).toBeNull();
+  });
+
+  it("rettet den Namen, der VOR dem Leistungsversprechen steht", () => {
+    // Alles wegzuwerfen wäre derselbe Fehler in der anderen Richtung.
+    expect(firmennameSaeubern("SEAC Group Experten für solare Freiflächenanlagen")).toBe("SEAC Group");
+    expect(firmennameSaeubern("Kuhlmann Gebäudetechnik für Privat & Gewerbe, Wesermarsch")).toBe(
+      "Kuhlmann Gebäudetechnik",
+    );
+    expect(firmennameSaeubern("Novontech deine Beratung für Photovoltaik und Solarenergie")).toBe("Novontech");
+    expect(firmennameSaeubern("Sonnenkönig Spezialist für Solar- & Energiespar-Technik")).toBe("Sonnenkönig");
+  });
+
+  it("hält durchgehende Großschreibung für Initialen, nicht für ein Verhältniswort", () => {
+    // Gemessener Fehlgriff der Werbesatz-Regel, sichtbar NUR weil dieselbe
+    // Auszählung nach dem Fix ein zweites Mal lief: Der Bestand verlor plötzlich
+    // MEHR Namen (168 statt 131). „IM" sind die Initialen des Inhabers.
+    expect(firmennameSaeubern("IM Elektrotechnik Nord")).toBe("IM Elektrotechnik Nord");
+  });
+
+  it("liest das freistehende I als Trennstrich", () => {
+    expect(firmennameSaeubern("Elektrotechnik Birkefeld I Elektromeisterbetrieb in Ellrich")).toBe(
+      "Elektrotechnik Birkefeld",
+    );
+    // Eine Initiale mit Punkt bleibt Teil des Namens.
+    expect(firmennameSaeubern("Elektro I. Müller GmbH")).toBe("Elektro I. Müller GmbH");
+  });
+
+  it("schneidet den Vorspann ab, mit dem ein Impressum den Namen einleitet", () => {
+    expect(firmennameSaeubern("Diese Webseite ist ein Angebot von Solartechnik Türpe GbR")).toBe(
+      "Solartechnik Türpe GbR",
+    );
+    expect(firmennameSaeubern("Erklärungen gemäß § 5 Grüne Strahlen Memmingen GmbH")).toBe(
+      "Grüne Strahlen Memmingen GmbH",
+    );
+    expect(firmennameSaeubern("Anschrift (Firmensitz) Dachdeckerei Wilhelm GmbH")).toBe(
+      "Dachdeckerei Wilhelm GmbH",
+    );
+    expect(firmennameSaeubern("Willkommen bei Stockner Solar is under construction")).toBe(
+      "Stockner Solar",
+    );
+  });
+
+  it("verwirft reine Leistungsaufzählungen — kein Wort darin ist ein Name", () => {
+    expect(firmennameSaeubern("PV-Anlagen, Batteriespeicher und Wärmepumpen")).toBeNull();
+    expect(firmennameSaeubern("Elektroarbeiten, Badsanierung & Heizungsbau")).toBeNull();
+    expect(firmennameSaeubern("Photovoltaikanlage Beratung Installation")).toBeNull();
+    expect(firmennameSaeubern("Sanitär Heizung")).toBeNull();
+  });
+
+  it("hält Branchenwörter ENG — ein Name, der so anfängt, ist keine Gattung", () => {
+    // Gemessener Fehlgriff derselben Regel, gefunden im Trockenlauf: „Solar\\w*"
+    // fraß „Solarma", und „GMBH" in Versalien galt nicht als Rechtsform — der
+    // echte Betrieb „Solarma Montageservice GMBH" wäre ersatzlos entfallen.
+    expect(firmennameSaeubern("Solarma Montageservice GMBH")).toBe("Solarma Montageservice GMBH");
+    expect(firmennameSaeubern("Solarix Energie")).toBe("Solarix Energie");
+    expect(firmennameSaeubern("Elektrofix Nord")).toBe("Elektrofix Nord");
+    expect(firmennameSaeubern("PV-Anlagen Schmidt")).toBe("PV-Anlagen Schmidt");
+    expect(firmennameSaeubern("Hausch Heizungsbau & Badsanierung")).toBe(
+      "Hausch Heizungsbau & Badsanierung",
+    );
+    // Versalien sind ein Markenname, keine Aufzählung — „PV ELEKTRO" ist der
+    // Betrieb hinter pv-elektro.de.
+    expect(firmennameSaeubern("PV ELEKTRO")).toBe("PV ELEKTRO");
+    expect(firmennameSaeubern("SUNSTAR SOLARTECHNIK")).toBe("SUNSTAR SOLARTECHNIK");
+  });
+
+  it("verwirft einzelne Menüpunkte und Gattungswörter als Namen", () => {
+    // Am KURZEN Ende der Durchsicht sichtbar geworden — dort sehen die Fehler
+    // anders aus als bei den langen: „Start" stand elfmal in der Liste.
+    expect(firmennameSaeubern("Start")).toBeNull();
+    expect(firmennameSaeubern("Das")).toBeNull();
+    expect(firmennameSaeubern("Solar")).toBeNull();
+    // Aber ein echter kurzer Name bleibt.
+    expect(firmennameSaeubern("Solux")).toBe("Solux");
+    expect(firmennameSaeubern("SMA")).toBe("SMA");
+    expect(firmennameSaeubern("Startec GmbH")).toBe("Startec GmbH");
+    expect(firmennameSaeubern("Smart Energy Nord")).toBe("Smart Energy Nord");
+  });
+
+  it("ist IDEMPOTENT — zweimal geputzt ergibt dasselbe wie einmal", () => {
+    // Die schärfste Eigenschaft dieser Funktion, und sie fehlte: Ein schon
+    // geputzter Name hat einen Trenner weniger und fiel deshalb beim zweiten
+    // Durchgang unter eine Teilezahl-Schwelle — aus „Uwe Schmidt
+    // Elektroinstallation Gas | Wasser | Sanitär GmbH" wurde wieder „Sanitär
+    // GmbH", aus „Elektro - Blum Inh. Heiko Schmonsees - Bremerhaven" wurde
+    // „Elektro". Sichtbar wurde das erst beim Nachputzen des Bestands.
+    //
+    // Ohne diese Eigenschaft ist die Reinigung nicht wiederholbar — und
+    // wiederholt wird sie bei jedem Lauf.
+    const faelle = [
+      "Uwe Schmidt Elektroinstallation Gas | Wasser | Sanitär GmbH - Elektromeisterbetrieb Berlin",
+      "Elektro - Blum Inh. Heiko Schmonsees - Bremerhaven",
+      "Photovoltaik und Elektrotechnik - Mac Metzler Energietechnik GmbH",
+      "Jendrian Haustechnik - Bad, Heizungsbau, Klima und Wasser aus Wesel",
+      "Home | ABEL ReTec GmbH",
+      "& Datenschutz - SED-Solar GmbH",
+      "Muster Solar GmbH",
+      "Klemm Wasser + Wärme GmbH | Kaufbeuren | Heizung Service Bad",
+      "SolTer - Solar GmbH | Photovoltaik Dresden",
+    ];
+    for (const f of faelle) {
+      const einmal = firmennameSaeubern(f);
+      expect(firmennameSaeubern(einmal)).toBe(einmal);
+    }
+  });
+
+  it("schneidet nicht fast alles weg — ein Restanteil unter einem Viertel ist verdächtig", () => {
+    // „Elektro - Blum Inh. Heiko Schmonsees - Bremerhaven" wurde zu „Elektro".
+    expect(firmennameSaeubern("Elektro - Blum Inh. Heiko Schmonsees - Bremerhaven")).not.toBe(
+      "Elektro",
+    );
+    expect(
+      firmennameSaeubern("Uwe Schmidt Elektroinstallation Gas | Wasser | Sanitär GmbH"),
+    ).not.toBe("Sanitär GmbH");
+  });
+
+  it("lässt einen sauberen Namen unangetastet", () => {
+    expect(firmennameSaeubern("Muster Solar GmbH")).toBe("Muster Solar GmbH");
+    expect(firmennameSaeubern("Elektro Klaas GmbH")).toBe("Elektro Klaas GmbH");
+    expect(firmennameSaeubern("Homann Solarbau GmbH")).toBe("Homann Solarbau GmbH");
+    // Ein langer, echter Name bleibt — die Längengrenze darf ihn nicht fressen.
+    expect(firmennameSaeubern("Energie- & Elektrotechnik Hohenzollern UG (haftungsbeschränkt)")).toBe(
+      "Energie- & Elektrotechnik Hohenzollern UG (haftungsbeschränkt)",
+    );
+  });
+});
+
+describe("Gewerk: WER es anbietet, nicht WAS angeboten wird", () => {
+  const finde = (t: string) => GEWERKE.filter((g) => g.muster.test(t)).map((g) => g.name);
+
+  it("erkennt die üblichen Gewerke", () => {
+    expect(finde("Elektro Klaas GmbH")).toContain("elektro");
+    expect(finde("Ihr Solarteur in Bautzen")).toContain("solarteur");
+    expect(finde("Meier Heizungsbau und Sanitär")).toContain("heizung_sanitaer");
+    expect(finde("Dachdeckerei Schmidt")).toContain("dachdecker");
+  });
+
+  it("lässt einen Betrieb MEHRERE tragen — im Handwerk der Normalfall", () => {
+    // Sich für eines zu entscheiden hieße, das andere zu verlieren.
+    const g = finde("Elektro und Sanitär Wagner — Heizungsbau seit 1970");
+    expect(g).toContain("elektro");
+    expect(g).toContain("heizung_sanitaer");
+  });
+
+  it("vergibt KEINES, wenn nirgends eines steht", () => {
+    // Die leere Liste ist eine ehrliche Auskunft, eine geratene Einordnung nicht.
+    expect(finde("Sonnenkraft für Ihr Zuhause")).toEqual([]);
+  });
+
+  it("trennt das Elektroauto vom Elektrohandwerk", () => {
+    // Steht auf jeder zweiten Solarteur-Seite und ist kein Gewerk. Umgekehrt
+    // muss Elektro allein greifen — „Elektro Klaas GmbH" ist die häufigste
+    // Schreibweise, und die erste Fassung des Musters verlangte ein Suffix.
+    expect(finde("Wallbox für Ihr Elektroauto und Elektromobilität")).toEqual([]);
+    expect(finde("Elektro Klaas GmbH")).toContain("elektro");
+  });
+
+  it("hält Gewerk und Geschäftsfeld auseinander", () => {
+    // „Photovoltaik" ist ein Angebot, kein Gewerk — sonst wäre jeder Betrieb
+    // in der Erhebung automatisch Solarteur, und die Spalte sagte nichts mehr.
+    expect(finde("Wir bauen Photovoltaik und Speicher")).toEqual([]);
+  });
+});
+
+describe("Favicon: gelesen, nicht geraten", () => {
+  it("nimmt die Adresse aus dem HTML", () => {
+    // Dieselbe Lehre wie beim Impressum: „/favicon.ico" ist nur eine von
+    // mehreren Konventionen, und wer sie rät, bekommt bei vielen nichts.
+    const html = '<link rel="icon" href="/wp-content/uploads/logo.png?v=3">';
+    expect(faviconUrl(html, "https://beispiel.de/")).toBe(
+      "https://beispiel.de/wp-content/uploads/logo.png?v=3",
+    );
+  });
+
+  it("bevorzugt das größere Icon", () => {
+    const html =
+      '<link rel="icon" sizes="16x16" href="/klein.png">' +
+      '<link rel="apple-touch-icon" href="/gross.png">';
+    expect(faviconUrl(html, "https://beispiel.de/")).toBe("https://beispiel.de/gross.png");
+  });
+
+  it("ignoriert Links, die kein Icon sind", () => {
+    expect(faviconUrl('<link rel="stylesheet" href="/a.css">', "https://b.de/")).toBeNull();
+  });
+
+  it("liefert null, wenn keins da ist — dann bleibt der Platz leer", () => {
+    // Ein Ersatzbild würde eine Marke behaupten, die es nicht gibt.
+    expect(faviconUrl("<p>Willkommen</p>", "https://b.de/")).toBeNull();
+  });
+});
+
+describe("Bewertung aus strukturierten Daten — die eigene Seite, nie Google", () => {
+  it("liest AggregateRating aus JSON-LD", () => {
+    const html = `<script type="application/ld+json">
+      {"@type":"LocalBusiness","aggregateRating":{"@type":"AggregateRating","ratingValue":"4.8","reviewCount":"37"}}
+    </script>`;
+    expect(bewertungAusDaten(html)).toEqual({ wert: 4.8, anzahl: 37 });
+  });
+
+  it("liest sie auch als Microdata", () => {
+    const html =
+      '<span itemprop="ratingValue" content="4.6"></span><span itemprop="reviewCount" content="12"></span>';
+    expect(bewertungAusDaten(html)).toEqual({ wert: 4.6, anzahl: 12 });
+  });
+
+  it("verwirft eine Prozentskala — sie ließe sich mit den übrigen nicht vergleichen", () => {
+    const html = `<script type="application/ld+json">
+      {"aggregateRating":{"ratingValue":"98","reviewCount":"5"}}</script>`;
+    expect(bewertungAusDaten(html)).toBeNull();
+  });
+
+  it("verlangt beide Zahlen — ein Schnitt ohne Anzahl ist wertlos", () => {
+    const html = `<script type="application/ld+json">{"ratingValue":"4.9"}</script>`;
+    expect(bewertungAusDaten(html)).toBeNull();
+  });
+
+  it("liefert null, wenn nichts da ist", () => {
+    expect(bewertungAusDaten("<p>Willkommen</p>")).toBeNull();
   });
 });
 
@@ -137,6 +528,14 @@ describe("Handwerkskammer: ein Ortsname, keine Überschrift", () => {
     );
   });
 
+  it("hält die IHK von der Handwerkskammer fern — real vorgekommen", () => {
+    // „Zuständige Handwerkskammer IHK Ulm" ergab „Handwerkskammer IHK Ulm",
+    // eine Kammer, die es nicht gibt. Die Industrie- und Handelskammer ist
+    // gerade NICHT die Handwerkskammer und sagt als Merkmal etwas anderes aus.
+    expect(handwerkskammerAus("Zuständige Handwerkskammer IHK Ulm")).toBeNull();
+    expect(handwerkskammerAus("Handwerkskammer Industrie- und Handelskammer")).toBeNull();
+  });
+
   it("frisst NICHT die nächste Überschrift — real vorgekommen", () => {
     // So stand „Handwerkskammer Berufsrechtliche Regelungen“ in der Spalte.
     expect(handwerkskammerAus("Handwerkskammer\nBerufsrechtliche Regelungen")).toBeNull();
@@ -180,15 +579,22 @@ describe("Ortsname der Suchanfrage", () => {
     );
   });
 
-  it("stellt zwei verschiedene Fragen je Kreis", () => {
+  it("stellt mehrere VERSCHIEDENE Fragen je Kreis", () => {
     // Ein Begriff allein verlöre das Elektrohandwerk, das PV mitmacht, ohne es
-    // im Namen zu führen.
+    // im Namen zu führen. Eine dritte Frage nach Balkonkraftwerken wurde
+    // gemessen und verworfen — siehe die Begründung an FRAGEN.
     const k = { id: "06631", name: "Fulda", kind: "Landkreis", bl: "06" };
     const fragen = FRAGEN.map((f) => f.vorlage(k));
-    expect(fragen).toHaveLength(2);
-    expect(new Set(fragen).size).toBe(2);
+    expect(fragen.length).toBeGreaterThanOrEqual(2);
+    // Doppelte Fragen kosten Geld und bringen dieselben Treffer.
+    expect(new Set(fragen).size).toBe(fragen.length);
     expect(fragen.some((f) => /Photovoltaik/i.test(f))).toBe(true);
     expect(fragen.some((f) => /Solarteur/i.test(f))).toBe(true);
+    // KEINE Balkon-Frage: gebaut, gemessen, entfernt — sie fand 0 neue Betriebe
+    // in 16 Kreisen und war als Merkmal in 13 von 15 Fällen falsch.
+    expect(fragen.some((f) => /Balkonkraftwerk/i.test(f))).toBe(false);
+    // Jede Frage nennt den Ort — sonst liefert die Suche bundesweite Ergebnisse.
+    for (const f of fragen) expect(f).toMatch(/Fulda/);
   });
 });
 
@@ -226,6 +632,121 @@ describe("Impressum-Adresse: nicht ratbar, sondern aus den Links gelesen", () =>
   it("ignoriert mailto und Anker", () => {
     expect(impressumUrl('<a href="mailto:a@b.de">Impressum</a>', "https://b.de/")).toBeNull();
     expect(impressumUrl('<a href="#impressum">Impressum</a>', "https://b.de/")).toBeNull();
+  });
+});
+
+describe("Balkonkraftwerk: ein Ding, viele Wörter", () => {
+  const muster = FELDER.find((f) => f.name === "balkonkraftwerk")!.muster;
+
+  it("kennt die verbreiteten Schreibweisen", () => {
+    // Ausgezählt am 29.08.2026: Von 24 Betrieben ohne dieses Merkmal boten ZWEI
+    // Balkonkraftwerke an — einer davon sichtbar auf der Startseite, weil das
+    // Muster nur „balkonkraftwerk" und „steckersolar" kannte.
+    for (const t of [
+      "Balkonkraftwerk",
+      "Balkon-Kraftwerk",
+      "Steckersolar",
+      "Stecker-Solargerät",
+      "Balkon-Solar",
+      "Balkonsolar",
+      "Balkon-PV",
+      "Mini-PV",
+      "steckerfertige PV-Anlagen",
+      "Balkonmodule",
+    ])
+      expect(muster.test(t), t).toBe(true);
+  });
+
+  it("greift nicht daneben — die Breite hat eine Grenze", () => {
+    // Dieselbe Gefahr wie bei den Gattungswörtern: Ein offenes Muster fängt
+    // mehr Treffer und mehr Unsinn.
+    for (const t of ["Balkone und Terrassen", "Kraftwerk Nord GmbH", "Balkongeländer"])
+      expect(muster.test(t), t).toBe(false);
+  });
+});
+
+describe("Adresse lesbar machen, ohne zu werfen", () => {
+  it("entschlüsselt Umlaute in Adressen", () => {
+    expect(adresseLesbar("/photovoltaik-l%C3%B6sungen")).toBe("/photovoltaik-lösungen");
+  });
+
+  it("gibt eine KAPUTTE Adresse unverändert zurück, statt zu werfen", () => {
+    // Zwei Läufe abgerissen: am 28.08.2026 nach 450 von 1.254 Domains, am
+    // 29.08.2026 nach 2.400 von 2.850. Beim zweiten Mal existierte die
+    // Absicherung bereits — als try/catch an der einen Stelle, an der es
+    // passiert war. Zwei neue Aufrufer bekamen sie nicht mit. Eine
+    // Vorsichtsmaßnahme, an die sich jeder Aufrufer erinnern muss, ist keine.
+    expect(adresseLesbar("/kaputt%")).toBe("/kaputt%");
+    expect(adresseLesbar("/balkon%zz")).toBe("/balkon%zz");
+  });
+});
+
+describe("Angebots-Unterseiten: die Navigation ist die bessere Sitemap", () => {
+  it("stellt eine Adresse, die das gesuchte Wort selbst trägt, nach vorn", () => {
+    // Der billigste Treffer überhaupt: null Abrufe, der Beleg steht in der
+    // Adresse. Deshalb muss er den ersten Rang bekommen.
+    const html =
+      '<a href="/leistungen">Leistungen</a><a href="/balkonkraftwerk">Mehr</a>' +
+      '<a href="/photovoltaik">PV</a>';
+    expect(angebotsSeiten(html, "https://b.de/")[0]).toBe("https://b.de/balkonkraftwerk");
+  });
+
+  it("erkennt Angebotsseiten am Pfad UND am Linktext", () => {
+    expect(angebotsSeiten('<a href="/x9">Leistungen</a>', "https://b.de/")).toContain(
+      "https://b.de/x9",
+    );
+    expect(angebotsSeiten('<a href="/unsere-leistungen/">Mehr</a>', "https://b.de/")).toContain(
+      "https://b.de/unsere-leistungen/",
+    );
+  });
+
+  it("verwirft fremde Domains, Anker und Telefonlinks", () => {
+    expect(angebotsSeiten('<a href="https://fremd.de/leistungen">x</a>', "https://b.de/")).toEqual([]);
+    expect(angebotsSeiten('<a href="#leistungen">x</a>', "https://b.de/")).toEqual([]);
+    expect(angebotsSeiten('<a href="tel:0123">Leistungen</a>', "https://b.de/")).toEqual([]);
+  });
+
+  it("führt dieselbe Adresse nur einmal, auch mit verschiedenen Ankern", () => {
+    // Sonst wird dieselbe Seite mehrfach abgerufen — fremde Last ohne Ertrag.
+    const html = '<a href="/leistungen#pv">A</a><a href="/leistungen#wp">B</a>';
+    expect(angebotsSeiten(html, "https://b.de/")).toEqual(["https://b.de/leistungen"]);
+  });
+});
+
+describe("Über-uns-Seite: dieselbe Lehre wie beim Impressum", () => {
+  it("erkennt die verbreiteten Schreibweisen", () => {
+    // Gemessen im Eichlauf vom 29.08.2026: Die Seite heißt „ueber-uns",
+    // „uber-uns", „wir-ueber-uns", „unternehmen", „unternehmenshistorie" oder
+    // trägt den Firmennamen im Pfad. Geraten hätte man keine davon.
+    for (const href of [
+      "/ueber-uns/",
+      "/uber-uns/",
+      "/wir-ueber-uns/",
+      "/unternehmen",
+      "/unternehmenshistorie/",
+    ])
+      expect(ueberUnsUrl(`<a href="${href}">Mehr</a>`, "https://b.de/")).toBe(
+        new URL(href, "https://b.de/").toString(),
+      );
+  });
+
+  it("nimmt den Link am Text, wenn der Pfad nichts hergibt", () => {
+    expect(ueberUnsUrl('<a href="/x7">Über uns</a>', "https://b.de/")).toBe("https://b.de/x7");
+  });
+
+  it("bevorzugt die Über-uns-Seite vor einer Team-Seite", () => {
+    const html = '<a href="/team">Team</a><a href="/ueber-uns">Über uns</a>';
+    expect(ueberUnsUrl(html, "https://b.de/")).toBe("https://b.de/ueber-uns");
+  });
+
+  it("verwirft fremde Domains — anders als beim Kontaktformular", () => {
+    // Ein Kontaktformular darf bei einem fremden Dienst liegen; die Geschichte
+    // DIESES Betriebs steht nie auf einer fremden Domain.
+    expect(ueberUnsUrl('<a href="https://fremd.de/ueber-uns">Über uns</a>', "https://b.de/")).toBeNull();
+  });
+
+  it("ignoriert mailto und Anker", () => {
+    expect(ueberUnsUrl('<a href="#ueber-uns">Über uns</a>', "https://b.de/")).toBeNull();
   });
 });
 

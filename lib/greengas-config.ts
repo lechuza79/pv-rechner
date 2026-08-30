@@ -348,7 +348,23 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // der Preis, den ein Haushalt für Bioheizöl zahlt. Wer ihn als Preisreihe
   // nähme, setzte in den Rechner eine Zahl aus dem falschen Markt. Destatis
   // führt weiterhin leichtes Heizöl ohne Bio-Heizöl-Zeile.
-  geprueftRechtIso: "2026-08-28",
+  //
+  // 29.08.2026 an der amtlichen CHRONOLOGIE des Infoportals nachgesehen
+  // (gmodg.bund.de, GModG_Chronologie), unverändert: Die Zeitleiste endet mit
+  // dem 28.07.2026 (Verkündung im Bundesgesetzblatt Nr. 226) und dem
+  // 29.07.2026 (Inkrafttreten der Artikel 1, 5, 6 und 8). Danach steht dort
+  // KEIN Eintrag mehr — weder zum Quotengesetz nach § 42a noch zu einer
+  // Änderung der Bio-Treppe. Die Stufen bleiben 2029: 10 %, 2030: 15 %,
+  // 2035: 30 %, 2040: 60 %, zellgleich mit `quoteStops`.
+  //
+  // Bioheizöl, NEUNTE Gegensuche, weiter ohne Preisreihe — und wieder ein
+  // Treffer, der ausdrücklich nicht taugt: Mehrere Ratgeberseiten schreiben
+  // im August 2026 noch, ab Juli 2026 müsse beim Heizungstausch in Städten
+  // über 100.000 Einwohnern zu 65 % erneuerbar geheizt werden. Das ist die
+  // Regel des GEG 2024, die genau dieses Gesetz gestrichen hat (Art. 1 Nr. 32,
+  // §§ 71–73 GEG). Eine Sekundärquelle, die einen aufgehobenen Rechtsstand
+  // referiert, ist auch für ihre übrigen Angaben keine Quelle.
+  geprueftRechtIso: "2026-08-29",
   reviewBy: "2027-07-25",
 };
 

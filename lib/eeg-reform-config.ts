@@ -234,7 +234,18 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // Suchtreffern und stammt vom 30.10.2020 — sie betrifft das EEG 2021. Ein
   // Treffer, der die richtige Sache benennt, ist noch kein Treffer aus der
   // richtigen Zeit; das Datum gehört zu jeder Fundstelle.
-  geprueftIso: "2026-08-28",
+  //
+  // 29.08.2026 nachgesehen, unverändert — diesmal wieder über die beiden
+  // Sitzungskalender, weil sie die Frage abschließend beantworten statt sie
+  // wahrscheinlich zu machen: Der Sitzungskalender des Bundestages
+  // (bundestag.de/parlament/plenum/sitzungskalender) führt für August 2026
+  // ÜBERHAUPT KEINE Sitzungswoche; die erste nach der Sommerpause ist der
+  // 07.–11.09.2026. Der Bundesrat führt als letzte Plenarsitzung die 1067. am
+  // 10.07.2026 und als nächste den 25.09.2026 — zwischen dem Eingang der
+  // Drucksache 470/26 am 14.08.2026 und heute liegt also in beiden Kammern
+  // keine einzige Sitzung. Ein Beschluss KANN es nicht gegeben haben; der
+  // Zustand bleibt „Regierungsentwurf".
+  geprueftIso: "2026-08-29",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.
