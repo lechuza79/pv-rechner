@@ -1,8 +1,9 @@
 /**
  * Wer von den angeschriebenen Gemeinden verlinkt uns WIRKLICH?
  *
- *   npm run kommunen:verweise            echter Lauf
- *   npm run kommunen:verweise -- --trocken   nur zeigen, was gefragt würde
+ *   npm run kommunen:verweise                 nur ansehen
+ *   npm run kommunen:verweise -- --schreiben  Befunde in der Tabelle vermerken
+ *   npm run kommunen:verweise -- --trocken    nur zeigen, was gefragt würde
  *
  * WARUM ES DIESEN LAUF BRAUCHT — und warum das Verweis-Verzeichnis ihn nicht
  * ersetzt (gemessen 29.08.2026):
@@ -28,6 +29,9 @@ envLaden();
 import { createClient } from "@supabase/supabase-js";
 
 const trocken = process.argv.includes("--trocken");
+const schreiben = process.argv.includes("--schreiben");
+/** Der Tag wird EINMAL genommen und durchgereicht — kein zweiter Aufruf mitten im Lauf. */
+const heute = new Date().toISOString().slice(0, 10);
 const LOGIN = process.env.DATAFORSEO_LOGIN;
 const PASSWORT = process.env.DATAFORSEO_PASSWORD;
 const PREIS_JE_ABRUF = 0.002;
@@ -178,6 +182,46 @@ async function main() {
     for (const t of erwaehnt) console.log(`  ${t.name.padEnd(26)} ${t.url}`);
   }
   if (daneben.length) console.log(`\nFehlgriffe der Suchmaschine (aussortiert): ${daneben.length}`);
+
+  // BEFUNDE IN DIE TABELLE SCHREIBEN, sonst beginnt jeder Lauf bei null.
+  //
+  // Ohne das stand der wichtigste Fund dieses Laufs nur in einer Bildschirm-
+  // ausgabe: Wedemark hat unseren Text in zwei Meldungen übernommen und die
+  // Adresse weggelassen. Beim nächsten Lauf wäre er erneut „gefunden" worden,
+  // ohne dass jemand gemerkt hätte, dass er längst bekannt ist — dieselbe
+  // Fehlerklasse, die den Förder-Screening ohne Gedächtnis unbrauchbar machte.
+  //
+  // Geschrieben wird NUR die Notiz, nie der Status: Ob eine Gemeinde als
+  // „veröffentlicht" gilt, entscheidet der Veröffentlichungs-Lauf. Zwei
+  // Schreibwege auf dasselbe Feld wären die Doppelpflege, an der hier schon
+  // anderes gescheitert ist.
+  if (!schreiben) {
+    console.log(`\nNichts in die Tabelle geschrieben. Zum Nachtragen: --schreiben`);
+  } else {
+    let notiert = 0;
+    for (const t of [...echte, ...erwaehnt]) {
+      const { data: zeile } = await db
+        .from("kommunen_kontakt")
+        .select("notes")
+        .eq("region_id", t.ags)
+        .maybeSingle();
+      const alt = (zeile as { notes: string | null } | null)?.notes ?? "";
+      const notiz =
+        t.art === "link"
+          ? `[${heute}] verweis gefunden: ${t.url}`
+          : `[${heute}] text uebernommen OHNE link: ${t.url}`;
+      // Dieselbe Adresse nicht zweimal vermerken — der Lauf wiederholt sich.
+      if (alt.includes(t.url)) continue;
+      const { error: e } = await db
+        .from("kommunen_kontakt")
+        .update({ notes: alt ? `${alt}\n${notiz}` : notiz, updated_at: new Date().toISOString() })
+        .eq("region_id", t.ags)
+        .neq("outreach_status", "gesperrt");
+      if (e) throw new Error(`${t.name}: ${e.message}`);
+      notiert++;
+    }
+    console.log(`\n${notiert} ${notiert === 1 ? "Befund" : "Befunde"} in der Tabelle vermerkt`);
+  }
 
   if (fehlgeschlagen.length) {
     console.log(`\nABRUF KAM NICHT DURCH: ${fehlgeschlagen.length}`);
