@@ -14,7 +14,9 @@ import {
   atlasLevelReleased,
   atlasOrtEinzelfreigabe,
   atlasRobots,
+  GEMEINDE_MIN_ANLAGEN,
 } from "../../../../../../lib/atlas-index";
+import { verlinkendeGemeinden } from "../../../../../../lib/atlas-outreach-freigabe";
 import ZubauChart from "../../../../../../components/atlas/ZubauChart";
 import GemeindeHero, { type KpiOwnerData } from "../../../../../../components/atlas/GemeindeHero";
 import GemeindePeerTiles from "../../../../../../components/atlas/GemeindePeerTiles";
@@ -133,7 +135,12 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
   // reine Last. Neben der Ebene zählt dabei die Einzelfreigabe: Ein Ort, der uns
   // nach dem Outreach öffentlich verlinkt, ist freigegeben, obwohl die Ebene es
   // nicht ist (Begründung an `atlasOrtEinzelfreigabe`).
-  const einzeln = atlasOrtEinzelfreigabe(region.region_id);
+  // Zwei Wege zur Einzelfreigabe, und der zweite braucht keine Sitzung: Ein Ort
+  // aus dem Releaseplan (Entscheidung mit Nachweis) ODER ein Ort, der uns nach
+  // dem Outreach nachweislich öffentlich verlinkt hat (Tatsache, kein Ermessen —
+  // Begründung in lib/atlas-outreach-freigabe.ts).
+  const verlinker = await verlinkendeGemeinden();
+  const einzeln = atlasOrtEinzelfreigabe(region.region_id) || verlinker.includes(region.region_id);
   const anlagen =
     atlasLevelReleased("gemeinde") || einzeln
       ? (await getRegionAtlasData(region.region_id)).solar.total_count
@@ -159,7 +166,7 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
       description: `Photovoltaik in ${region.name}: Anlagenzahl, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister — je Einwohner und im Vergleich zum ${bezugsebene}.`,
       path: `/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`,
     }),
-    robots: atlasRobots(atlasIsIndexable("gemeinde", anlagen, region.region_id)),
+    robots: atlasRobots(einzeln ? anlagen >= GEMEINDE_MIN_ANLAGEN : atlasIsIndexable("gemeinde", anlagen)),
   };
 }
 

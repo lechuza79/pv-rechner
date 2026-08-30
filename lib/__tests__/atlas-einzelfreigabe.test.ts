@@ -1,4 +1,6 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import {
   atlasIsIndexable,
   atlasLevelReleased,
@@ -118,6 +120,60 @@ describe("Beleg-Schub: die Auflagen, die ihn vom Rollout trennen", () => {
     const sicht1: Schub = { ...basis, id: "s1", zweck: undefined };
     const sicht2: Schub = { ...basis, id: "s2", datum: "2026-08-31", orte: [NICHT_FREIGEGEBEN], zweck: undefined };
     expect(planBefunde([sicht1, sicht2]).map((b) => b.regel)).toContain("schuebe-zu-dicht");
+  });
+});
+
+/**
+ * Der zweite Weg zur Freigabe: ein Ort, der uns nach dem Outreach nachweislich
+ * verlinkt hat. Er läuft OHNE Sitzung, weil dabei nichts geschätzt wird.
+ *
+ * Prüfbar ist hier nur die Verdrahtung — ob die Datenbank die richtigen Orte
+ * liefert, entscheidet sich zur Laufzeit. Genau diese Verdrahtung ist aber die
+ * Stelle, die beim nächsten Umbau still verschwindet: Sie ist im Diff
+ * unauffällig, im Browser unsichtbar, und ihr Fehlen fällt erst auf, wenn wieder
+ * eine Gemeinde ins Leere verlinkt.
+ */
+describe("Automatische Freigabe verlinkender Gemeinden", () => {
+  const gemeindeSeite = readFileSync(
+    resolve(__dirname, "../../app/(site)/solar-atlas/[bundesland]/[kreis]/[gemeinde]/page.tsx"),
+    "utf8",
+  );
+  const sitemap = readFileSync(resolve(__dirname, "../../app/sitemap.ts"), "utf8");
+
+  /**
+   * Die Zeile, die den robots-Eintrag der FERTIGEN Seite setzt.
+   *
+   * Nicht die erste Fundstelle nehmen: Weiter oben steht der Abbruch für eine
+   * unbekannte Adresse (`atlasRobots(false)`), und der trägt den Zustand
+   * naturgemäß nicht. Die erste Fassung dieses Tests prüfte genau diese Zeile
+   * und war rot, obwohl der Code stimmte.
+   */
+  const echteRobotsZeile = () =>
+    gemeindeSeite
+      .split("\n")
+      .find((z) => z.includes("robots: atlasRobots") && !z.includes("atlasRobots(false)"));
+
+  it("ist in der Gemeindeseite verdrahtet", () => {
+    expect(gemeindeSeite).toContain("verlinkendeGemeinden");
+  });
+
+  it("wirkt auf die Index-Freigabe, nicht nur auf das Laden der Zahlen", () => {
+    // Die Zeile, die den robots-Eintrag setzt, muss den Einzelfreigabe-Zustand
+    // benutzen. Hinge sie allein an der Ebene, wäre der Mechanismus wirkungslos
+    // und trotzdem grün.
+    const robotsZeile = echteRobotsZeile();
+    expect(robotsZeile, "Zeile mit robots: atlasRobots nicht gefunden").toBeTruthy();
+    expect(robotsZeile).toContain("einzeln");
+  });
+
+  it("hält auch auf diesem Weg die Thin-Schwelle", () => {
+    const robotsZeile = echteRobotsZeile();
+    expect(robotsZeile).toContain("GEMEINDE_MIN_ANLAGEN");
+  });
+
+  it("nimmt die Orte in die Sitemap auf", () => {
+    // Eine indexierbare Seite, die in keiner Sitemap steht, ist halb freigegeben.
+    expect(sitemap).toContain("verlinkendeGemeinden");
   });
 });
 

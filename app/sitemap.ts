@@ -4,6 +4,7 @@ import { landProgramBundeslaender } from "../lib/funding-programs";
 import { getFundingPrograms } from "../lib/funding-data";
 import { atlasLevelReleased } from "../lib/atlas-index";
 import { freigegebeneOrte } from "../lib/release-plan";
+import { verlinkendeGemeinden } from "../lib/atlas-outreach-freigabe";
 import { BUNDESLAENDER } from "../lib/mastr-regions";
 import { RATGEBER } from "../lib/ratgeber";
 import { standLastModIso } from "../lib/stand";
@@ -149,7 +150,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Der Slug-Pfad kommt wie bei den Kreisen aus der Datenbank, nicht aus einer
   // Liste im Code — er ist dieselbe Quelle, aus der die Seite selbst aufgelöst
   // wird. Fällt die Abfrage aus, fehlt der Eintrag, statt den Build zu kippen.
-  const einzelOrte = freigegebeneOrte("atlas-gemeinde").filter((ags) => ags.length === 8);
+  // Zwei Quellen: der Releaseplan (Entscheidung mit Nachweis) und die Orte, die
+  // uns nach dem Outreach nachweislich verlinkt haben (Tatsache, kein Ermessen).
+  const ausPlan = freigegebeneOrte("atlas-gemeinde");
+  const ausOutreach = await verlinkendeGemeinden().catch(() => [] as string[]);
+  const einzelOrte = [...new Set([...ausPlan, ...ausOutreach])].filter((ags) => ags.length === 8);
   if (einzelOrte.length && !atlasLevelReleased("gemeinde")) {
     try {
       const { getGemeindePfad } = await import("../lib/atlas");
