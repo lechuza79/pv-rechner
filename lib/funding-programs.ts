@@ -1427,30 +1427,48 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Stadt Ludwigshafen am Rhein", level: "kommune", region: "Ludwigshafen am Rhein",
     bundesland: "Rheinland-Pfalz", agsCode: "07314",
     url: "https://ludwigshafen.de/standort-mit-zukunft/klima/foerderprogramme",
-    stand: "August 2026", status: "ausgeschoepft", capped: true, verified: true,
+    stand: "August 2026", status: "eingestellt", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Mittel seit Mitte März 2026 ausgeschöpft — gefördert wurden Balkonkraftwerke sowie Dach- und Fassadenbegrünung",
-    rates: [{ label: "Balkonkraftwerke", value: "zuletzt 200 € je Anlage — Mittel ausgeschöpft" }],
+    coveredCosts: "Die Stadt hat die Förderprogramme für Bürgerinnen und Bürger beendet, weil die Mittel Mitte März 2026 ausgeschöpft waren — gefördert wurden Balkonkraftwerke sowie Dach- und Fassadenbegrünung",
+    rates: [{ label: "Balkonkraftwerke", value: "zuletzt 200 € je Anlage — Programm beendet" }],
     conditions: [
-      "Die Fördermittel sind seit Mitte März 2026 ausgeschöpft; neue Anträge sind nicht möglich",
-      "Ob und wann das Programm neu aufgelegt wird, sagt die Stadt nicht",
+      "Die Stadt führt das Programm unter der Überschrift „Förderprogramme für Bürger*innen beendet“",
+      "Grund ist, dass die Fördermittel Mitte März 2026 ausgeschöpft waren; neue Anträge sind nicht möglich",
       "Gefördert wurden aus Landesmitteln (KIPKI) 750 private Balkonkraftwerke mit je 200 €",
+      "Bereits gestellte Anträge werden noch bearbeitet und beschieden",
       "Eine Dach-Photovoltaikanlage wurde auch davor nicht bezuschusst",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
-    // Status von `eingestellt` auf `ausgeschoepft` korrigiert (30.08.2026, an
-    // der Amtsseite nachgelesen). Wir schrieben „Die Stadt hat die Förder-
-    // programme für Bürgerinnen und Bürger beendet" — das sagt die Stadt
-    // nirgends. Sie schreibt: „Die Fördermittel sind nun - Mitte März 2026 -
-    // ausgeschöpft. Das heißt, dass keine neuen Anträge mehr gestellt werden
-    // können." Eine Ankündigung, dass es dauerhaft vorbei ist, gibt es nicht.
-    // Der Unterschied ist kein Wortklauben: „beendet" heißt, es kommt nie
-    // wieder — „ausgeschöpft" heißt, im nächsten Haushaltsjahr vielleicht doch.
-    // Kein Geldeffekt (beide Zustände ziehen nichts ab), aber eine andere
-    // Auskunft an jeden, der überlegt, ob er warten soll. Der zuletzt gezahlte
-    // Satz (200 € je Anlage, 750 Anlagen) stand ebenfalls auf der Seite und
-    // fehlte bei uns ganz; er bleibt bewusst ohne strukturierten Rechenwert.
+    // SELBSTKONTROLLE 30.08.2026 — der Auto-Fix vom 30.08.2026 ist hier
+    // teilweise zurückgenommen. Er stellte den Status von `eingestellt` auf
+    // `ausgeschoepft` um, und zwar mit der Begründung, die Stadt sage nirgends,
+    // dass das Programm beendet sei. Das ist falsch: Die Seite trägt als
+    // Überschrift wörtlich „Förderprogramme für Bürger*innen beendet" (Titel und
+    // H1, am 30.08.2026 im Rohtext gelesen, nicht über ein Zusammenfassungs-
+    // werkzeug). Der frühere Lauf hatte offenbar nur den Abschnitt „Fördermittel
+    // ausgeschöpft" gelesen und daraus geschlossen, die Überschrift gebe es
+    // nicht — genau der Fehlgriff, gegen den die Selbstkontrolle im Gate steht:
+    // eine richtige Angabe wurde durch eine andere ersetzt, weil die Quelle nur
+    // halb gelesen war.
+    //
+    // Beide Wörter stehen auf der Seite, und sie widersprechen einander nicht:
+    // Die Stadt beendet die Programme, WEIL das Geld alle ist. Der Status folgt
+    // deshalb wieder der Überschrift der Stadt (`eingestellt`), der Grund steht
+    // als eigene Bedingung daneben. Das ist die einzige Fassung, der nichts auf
+    // der Seite widerspricht — und die vorsichtige Richtung für jemanden, der
+    // überlegt, ob er auf eine neue Runde warten soll: Die ganze Seite steht im
+    // Rückblick („Was wurde gefördert?"), eine Ankündigung einer Neuauflage gibt
+    // es nicht.
+    //
+    // Kein Geldeffekt in keiner Richtung: `fundingZaehlt` verlangt
+    // `status === "aktiv"`, beide Zustände ziehen also nichts ab. Was der Lauf
+    // vom 30.08. an FAKTEN ergänzt hat, bleibt: 750 Anlagen à 200 € aus
+    // Landesmitteln (KIPKI), ausgeschöpft Mitte März 2026 — alles am
+    // 30.08.2026 an der Amtsseite noch einmal wörtlich bestätigt, dazu neu
+    // „Bereits gestellte Anträge werden bearbeitet und entsprechende Bescheide
+    // verschickt". Der zuletzt gezahlte Satz bleibt bewusst ohne strukturierten
+    // Rechenwert.
   },
   "waiblingen-klimaschutz": {
     id: "waiblingen-klimaschutz", name: "Städtisches Förderprogramm Klimaschutz",
@@ -2262,12 +2280,22 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     rates: [{ label: "Balkonkraftwerk", value: "50 € je Anlage" }],
     conditions: [
       "Nur Mieterinnen und Mieter, die die Wohnung selbst bewohnen und dort mit Hauptwohnsitz gemeldet sind",
+      "Gefördert werden nur Geräte, die ab dem 1. Mai 2026 gekauft wurden — ein früherer Kauf bekommt nichts",
       "Gefördert werden Geräte bis 2.000 W Modulleistung und 800 W Wechselrichterleistung",
+      "Die Anlage muss mindestens fünf Jahre betrieben werden",
       "Je Wohneinheit ist nur ein Antrag möglich; Antrag in Papierform mit Kaufbeleg",
       "Dach-Photovoltaik ist nicht Teil des Programms",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
+    // Zwei Bedingungen am 30.08.2026 aus der Förderrichtlinie selbst ergänzt
+    // (Stand 30.04.2026, Volltext des städtischen PDF gelesen — die
+    // Programmseite trägt weder Beträge noch Bedingungen, sie verlinkt nur die
+    // Richtlinie). § 3 Abs. 6: „Gefördert werden Anlagen, welche ab dem
+    // 01.05.2026 erworben werden." Das ist die teure der beiden — wer sein
+    // Gerät vorher gekauft hat, bekommt nichts, und dazu stand bei uns kein
+    // Wort. § 3 Abs. 7: „Die Anlage ist antragsgemäß mindestens 5 Jahre zu
+    // betreiben." Alles Übrige zellgleich bestätigt.
   },
 
   // ── Kommune – erste Funde der URL-Suche, 18.08.2026 ─────────────────────────
@@ -2500,7 +2528,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "feucht-klimaschutz", name: "Klimaschutz-Förderprogramme",
     traeger: "Markt Feucht", level: "kommune", region: "Feucht",
     bundesland: "Bayern", agsCode: "09574123",
-    url: "https://feucht.de/bauen-wirtschaft-umwelt/klimaschutz-foerderprogramme/foerderprogramme",
+    // Adresse am 30.08.2026 auf die Zielseite der Weiterleitung nachgezogen:
+    // Ohne „www." antwortet der Server mit 301. Der Fingerabdruck-Wächter
+    // meldete diese Seite dadurch als „unerreichbar/verändert", ohne dass sich
+    // am Inhalt etwas bewegt hätte.
+    url: "https://www.feucht.de/bauen-wirtschaft-umwelt/klimaschutz-foerderprogramme/foerderprogramme",
     stand: "August 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Zuschuss je kWp und gestaffelt nach Speichergröße — Jahresmittel aufgebraucht",
@@ -2514,9 +2546,21 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     conditions: [
       "Die Mittel für das laufende Jahr sind ausgeschöpft; Anträge sind derzeit nicht möglich",
-      "Balkonkraftwerke sind nicht Teil des Programms",
+      "Balkonkraftwerke sind nicht Teil dieses Programms — die Feuchter Gemeindewerke fördern sie nach Angabe der Gemeinde gesondert",
     ],
     combinableWith: BUND,
+    // Der Hinweis auf die Gemeindewerke steht wörtlich auf derselben Seite
+    // („Fördermöglichkeiten der Feuchter Gemeindewerke — Die fgw fördert unter
+    // anderem den Kauf von energieeffizienten Geräten und von
+    // Balkon-Solaranlagen.", am 30.08.2026 gelesen). Unser Satz
+    // „Balkonkraftwerke sind nicht Teil des Programms" war für sich richtig und
+    // als Auskunft trotzdem irreführend: Wer ihn liest, schließt daraus, dass es
+    // in Feucht überhaupt kein Balkon-Geld gibt — die Gemeinde selbst sagt das
+    // Gegenteil. Ein eigener Katalog-Eintrag für das fgw-Programm entsteht
+    // daraus NICHT im Vorbeigehen: Betrag und Bedingungen stehen beim
+    // Versorger, nicht hier, und ein Programm einzuschalten ist keine
+    // Selbstbedienung des Wächters.
+    //
     // Sätze und Staffel sind vollständig belegt und ließen sich sofort rechnen —
     // sie bleiben ohne Rechenwert, solange der Topf leer ist. Sobald der
     // Haushalt wieder öffnet, sind es 150 €/kWp (max. 1.000 €) und die

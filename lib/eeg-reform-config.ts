@@ -245,7 +245,19 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // Drucksache 470/26 am 14.08.2026 und heute liegt also in beiden Kammern
   // keine einzige Sitzung. Ein Beschluss KANN es nicht gegeben haben; der
   // Zustand bleibt „Regierungsentwurf".
-  geprueftIso: "2026-08-29",
+  //
+  // 30.08.2026 erneut an beiden Sitzungskalendern nachgesehen, unverändert.
+  // Der Bundestag führt für August 2026 weiterhin keine Sitzungswoche; die
+  // Jahresübersicht 2026 nennt als Sitzungswochen um die Sommerpause herum
+  // den 06.–10.07.2026 und dann erst den 07.–11.09.2026. Die Terminliste des
+  // Bundesrates führt als nächste Plenarsitzungen den 25.09., 16.10., 20.11.
+  // und 18.12.2026 — vor dem 25.09.2026 tagt er also nicht. Damit hat seit dem
+  // Eingang der Drucksache 470/26 am 14.08.2026 keine der beiden Kammern
+  // getagt, ein Beschluss ist ausgeschlossen. Die BR-Drucksache selbst trägt
+  // unverändert den Titel „Entwurf eines Gesetzes für einen planbaren,
+  // kosteneffizienten, netzverträglichen und marktorientierten Ausbau der
+  // erneuerbaren Energien im Stromsektor" als Grunddrucksache ohne Beschluss.
+  geprueftIso: "2026-08-30",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

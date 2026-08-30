@@ -364,7 +364,27 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // Regel des GEG 2024, die genau dieses Gesetz gestrichen hat (Art. 1 Nr. 32,
   // §§ 71–73 GEG). Eine Sekundärquelle, die einen aufgehobenen Rechtsstand
   // referiert, ist auch für ihre übrigen Angaben keine Quelle.
-  geprueftRechtIso: "2026-08-29",
+  //
+  // 30.08.2026 an der amtlichen Meldungsübersicht des Infoportals
+  // (gmodg.bund.de) nachgesehen, unverändert: Die jüngste Meldung ist weiterhin
+  // der 29.07.2026 („Die ersten Regelungen sind am 29. Juli 2026 in Kraft
+  // getreten"), danach steht dort nichts. Zusätzlich § 42a im geltenden
+  // Gesetzestext selbst gelesen: Er kündigt weiterhin nur ein „bis zum
+  // 1. Dezember 2026 durch die Bundesregierung vorzulegendes Gesetz" an, das
+  // Inverkehrbringer von Gas, Öl und Flüssiggas ab 2045 vollständig auf
+  // klimaneutrale Brennstoffe verpflichten soll — KEINE Quote, KEIN Startjahr,
+  // kein Prozentsatz. Das Quotengesetz gibt es also nach wie vor nicht.
+  //
+  // ZEHNTE Bioheizöl-Gegensuche, weiter ohne Preisreihe — und ein Treffer, der
+  // ausdrücklich NICHT verwendet werden darf: Mehrere Sekundärquellen schreiben
+  // im August 2026, die Grüngas-/Grünheizölquote starte 2028 mit einem Prozent.
+  // Im Gesetzestext steht davon nichts (siehe oben); es ist die Wiedergabe einer
+  // Ankündigung, nicht der Wortlaut einer Regelung. Wer die Zahl übernimmt,
+  // schreibt einen Entwurfswert als geltendes Recht (Gate-Regel 1). Die
+  // Preisseiten zu HVO betreffen durchweg den KRAFTSTOFF (HVO100 an der Zapf-
+  // säule), nicht Bioheizöl für die Gebäudeheizung — eine andere Ware mit
+  // anderer Besteuerung, also auch als Näherung unbrauchbar.
+  geprueftRechtIso: "2026-08-30",
   reviewBy: "2027-07-25",
 };
 
