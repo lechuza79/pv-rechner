@@ -32,6 +32,40 @@ import { HERKUNFT_PARAM, HERKUNFT_WERT } from "../../lib/brief-herkunft";
 type Zustand = "bereit" | "sendet" | "fertig" | { fehler: string };
 
 /**
+ * Was das Abo verspricht — JE ART verschieden, und das ist keine Kosmetik.
+ *
+ * Das Bestands-Abo hängt am Anlagenregister, und das kommt einmal im Monat.
+ * „Höchstens eine Mail im Monat" ist dort die ehrliche Obergrenze.
+ *
+ * Das Förder-Abo hängt an den Programmseiten der Gemeinden, und die prüfen wir
+ * TÄGLICH. Dieselbe Monatsgrenze wäre dort eine falsche Zusage in beide
+ * Richtungen: Sie verspricht Ruhe, wo es keine braucht, und sie hielte eine
+ * Meldung zurück, die eilt — ein Fördertopf ist nach wenigen Wochen leer, und
+ * wer davon zwei Wochen später hört, hat das Geld verpasst.
+ *
+ * Was NICHT versprochen wird, ist eine Rate: Gemessen am Verlauf (18.–26.08.2026)
+ * entfielen auf 110 Programme 24 echte Änderungen in neun Tagen — für einen
+ * EINZELNEN Ort ist das selten. Der Zeitraum ist zu kurz, um daraus eine Zahl
+ * zu machen, deshalb steht dort „selten" und keine.
+ */
+const TEXTE = {
+  gemeinde: {
+    intro:
+      "Ein neuer kommunaler Zuschuss, ein auslaufender Vergütungsjahrgang, der Zubau eines Jahres — höchstens eine Mail im Monat, und nur wenn es wirklich etwas zu berichten gibt.",
+    teaser: "Förderprogramm, Leistung u.\u00a0v.\u00a0m.",
+    hilfe:
+      "Wir schreiben, wenn sich hier etwas Nennenswertes tut: ein neuer kommunaler Zuschuss, ein Vergütungsjahrgang, der ausläuft, der Zubau eines Jahres. Höchstens eine Mail im Monat — und nur, wenn es wirklich etwas zu berichten gibt. Kein Spam, keine Werbung, kein Weitergeben der Adresse. Abmelden mit einem Klick am Fuß jeder Mail.",
+  },
+  foerderung: {
+    intro:
+      "Ein neues Förderprogramm, geänderte Konditionen, ein ausgeschöpfter Topf. Wir sehen die Programmseiten täglich durch und schreiben, sobald sich etwas ändert — für einen einzelnen Ort ist das selten.",
+    teaser: "Neue Zuschüsse, geänderte Konditionen",
+    hilfe:
+      "Wir sehen die Programmseiten der Gemeinden täglich durch. Ändert sich etwas — ein neues Programm, andere Konditionen, ein leerer Topf —, schreiben wir zeitnah; für einen einzelnen Ort passiert das selten. Der Zeitpunkt zählt hier: Kommunale Töpfe sind oft nach wenigen Wochen ausgeschöpft. Kein Spam, keine Werbung, kein Weitergeben der Adresse. Abmelden mit einem Klick am Fuß jeder Mail.",
+  },
+} as const;
+
+/**
  * Kam dieser Aufruf über ein Kommunen-Anschreiben?
  *
  * Liest denselben Parameter, den die Briefe an ihre Links hängen. Der Wert ist
@@ -94,6 +128,7 @@ export default function GemeindeAboBox({
     return () => window.removeEventListener(ABO_OEFFNEN, auf);
   }, []);
 
+  const texte = TEXTE[quelle];
   const sendet = zustand === "sendet";
   const fehler = typeof zustand === "object" ? zustand.fehler : null;
 
@@ -156,13 +191,9 @@ export default function GemeindeAboBox({
           <span className="gemeinde-abo-ort">{name}</span> abonnieren
         </button>
         <p style={S.ctaText}>
-          Förderprogramm, Leistung u.&nbsp;v.&nbsp;m.{" "}
+          {texte.teaser}{" "}
           <InfoTooltip title={`Meldungen zu ${name}`} ariaLabel="Was das Abo bedeutet" exportNote={false}>
-            Wir schreiben, wenn sich hier etwas Nennenswertes tut: ein neuer kommunaler
-            Zuschuss, ein Vergütungsjahrgang, der ausläuft, der Zubau eines Jahres.
-            Höchstens eine Mail im Monat — und nur, wenn es wirklich etwas zu berichten
-            gibt. Kein Spam, keine Werbung, kein Weitergeben der Adresse. Abmelden mit
-            einem Klick am Fuß jeder Mail.
+            {texte.hilfe}
           </InfoTooltip>
         </p>
       </div>
@@ -171,11 +202,7 @@ export default function GemeindeAboBox({
         open={offen}
         onClose={() => setOffen(false)}
         title={`Meldungen zu ${name}`}
-        intro={
-          zustand === "fertig"
-            ? undefined
-            : "Ein neuer kommunaler Zuschuss, ein auslaufender Vergütungsjahrgang, der Zubau eines Jahres — höchstens eine Mail im Monat, und nur wenn es wirklich etwas zu berichten gibt."
-        }
+        intro={zustand === "fertig" ? undefined : texte.intro}
         maxWidth={440}
       >
         {zustand === "fertig" ? (

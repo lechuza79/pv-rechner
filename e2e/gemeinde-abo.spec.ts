@@ -317,6 +317,23 @@ test.describe("Gemeinde-Abo", () => {
     await expect(fenster.getByText(/Ohne Auswahl bekommst du alles/)).toBeVisible();
   });
 
+  test("beide Abos versprechen eine andere Frequenz", async ({ page }) => {
+    // Das Bestands-Abo hängt am Anlagenregister (monatlich), das Förder-Abo an
+    // den Programmseiten (täglich geprüft). Dieselbe Monatsgrenze auf der
+    // Förderseite wäre eine falsche Zusage in beide Richtungen — und sie hielte
+    // eine Meldung zurück, die eilt: Ein kommunaler Topf ist nach wenigen
+    // Wochen leer.
+    await page.goto(ORT);
+    await page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first().click();
+    await expect(page.getByRole("dialog")).toContainText("höchstens eine Mail im Monat");
+
+    await page.goto("/photovoltaik-foerderung/hessen/nidda");
+    await page.getByRole("button", { name: /^Nidda abonnieren$/ }).first().click();
+    const foerder = page.getByRole("dialog");
+    await expect(foerder).toContainText("täglich");
+    await expect(foerder).not.toContainText("höchstens eine Mail im Monat");
+  });
+
   test("das Bestands-Abo fragt keine Technik", async ({ page }) => {
     await page.goto(ORT);
     await page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first().click();
