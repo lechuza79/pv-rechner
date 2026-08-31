@@ -13,13 +13,8 @@
 // verschweigt Kosten". Der Unterschied ist nicht Höflichkeit, sondern die Grenze
 // zwischen Verbraucherinformation und Herabsetzung eines Wettbewerbers.
 
-import {
-  ANGEBOTS_POSITIONEN,
-  GROESSEN_TOLERANZ,
-  SPEZ_KOSTEN,
-  SPEZ_KOSTEN_BAENDER,
-  type AngebotsPosition,
-} from "./angebot-check-config";
+import { type AngebotsPosition } from "./angebot-check-config";
+import { WAERMEPUMPE, type Gewerk } from "./angebot-gewerk";
 
 // ─── Was der Auslese-Schritt liefert ─────────────────────────────────────────
 
@@ -97,24 +92,24 @@ export type GroessenUrteil = "unbekannt" | "knapp" | "passend" | "reichlich" | "
 
 export interface GroessenBefund {
   urteil: GroessenUrteil;
-  /** Leistung laut Angebot in kW. */
+  /** Größe laut Angebot, in der Einheit des Gewerks. */
   angebotKw: number | null;
-  /** Unsere Auslegungsleistung in kW. */
+  /** Die Größe, die wir für dieses Gebäude rechnen. */
   erwartetKw: number;
   /** Abweichung als Anteil (0,25 = 25 % mehr als erwartet). */
   abweichung: number | null;
 }
 
-export function pruefeGroesse(angebot: AusgelesenesAngebot, gebaeude: GebaeudeBezug): GroessenBefund {
+export function pruefeGroesse(angebot: AusgelesenesAngebot, gebaeude: GebaeudeBezug, gewerk: Gewerk = WAERMEPUMPE): GroessenBefund {
   const erwartetKw = gebaeude.auslegungKw;
   if (angebot.leistungKw == null || angebot.leistungKw <= 0 || erwartetKw <= 0) {
     return { urteil: "unbekannt", angebotKw: angebot.leistungKw, erwartetKw, abweichung: null };
   }
   const abweichung = angebot.leistungKw / erwartetKw - 1;
   const urteil: GroessenUrteil =
-    abweichung < GROESSEN_TOLERANZ.knappAb ? "knapp"
-    : abweichung <= GROESSEN_TOLERANZ.passendBis ? "passend"
-    : abweichung <= GROESSEN_TOLERANZ.reichlichBis ? "reichlich"
+    abweichung < gewerk.toleranz.knappAb ? "knapp"
+    : abweichung <= gewerk.toleranz.passendBis ? "passend"
+    : abweichung <= gewerk.toleranz.reichlichBis ? "reichlich"
     : "deutlich-groesser";
   return { urteil, angebotKw: angebot.leistungKw, erwartetKw, abweichung };
 }
@@ -152,7 +147,7 @@ export interface VollstaendigkeitsBefund {
   gefordert: number;
 }
 
-export function pruefeVollstaendigkeit(angebot: AusgelesenesAngebot): VollstaendigkeitsBefund {
+export function pruefeVollstaendigkeit(angebot: AusgelesenesAngebot, gewerk: Gewerk = WAERMEPUMPE): VollstaendigkeitsBefund {
   // Eine Position gilt als abgedeckt, wenn sie als eigene Zeile auftaucht ODER
   // eine andere Position sie ausdrücklich einschließt. Ohne den zweiten Fall
   // meldeten wir jedem Pauschalangebot neun fehlende Positionen.
@@ -176,7 +171,7 @@ export function pruefeVollstaendigkeit(angebot: AusgelesenesAngebot): Vollstaend
   let ausgewiesen = 0;
   let gefordert = 0;
 
-  for (const pos of ANGEBOTS_POSITIONEN) {
+  for (const pos of gewerk.positionen) {
     if (pos.pflicht !== "je-nach-fall") gefordert++;
     if (mitPreis.has(pos.id)) {
       if (pos.pflicht !== "je-nach-fall") ausgewiesen++;
@@ -204,16 +199,21 @@ export interface PreisBefund {
   spezKostenEurProKw: number | null;
   /** Das leistungsabhängige Vergleichsband. */
   band: { von: number; bis: number; beschriftung: string } | null;
-  /** Median über alle ausgewerteten Angebote — als Zusatz, nie als Maßstab. */
-  medianAlle: number;
+  /**
+   * Median über alle ausgewerteten Angebote — als Zusatz, nie als Maßstab.
+   * `null`, wo es keine Auswertung echter Angebote gibt (Photovoltaik): Den
+   * Marktpreis stattdessen als Median auszugeben wäre eine andere Größe unter
+   * demselben Namen.
+   */
+  medianAlle: number | null;
 }
 
-export function pruefePreis(angebot: AusgelesenesAngebot): PreisBefund {
+export function pruefePreis(angebot: AusgelesenesAngebot, gewerk: Gewerk = WAERMEPUMPE): PreisBefund {
   const basis: PreisBefund = {
     urteil: "unbekannt",
     spezKostenEurProKw: null,
     band: null,
-    medianAlle: SPEZ_KOSTEN.median,
+    medianAlle: gewerk.medianAlle,
   };
   const { gesamtpreisEur, leistungKw } = angebot;
   if (gesamtpreisEur == null || leistungKw == null || leistungKw <= 0) return basis;
@@ -222,10 +222,10 @@ export function pruefePreis(angebot: AusgelesenesAngebot): PreisBefund {
   // Das Band richtet sich nach der Leistung LAUT ANGEBOT, nicht nach unserer
   // Auslegung: Verglichen wird der Preis der angebotenen Anlage mit den Preisen
   // gleich großer Anlagen. Ob die Größe stimmt, ist Urteil 1 und eine andere Frage.
-  const treffer = SPEZ_KOSTEN_BAENDER.find((b) => leistungKw <= b.bisKw) ?? SPEZ_KOSTEN_BAENDER[SPEZ_KOSTEN_BAENDER.length - 1];
+  const treffer = gewerk.baender.find((b) => leistungKw <= b.bisGroesse) ?? gewerk.baender[gewerk.baender.length - 1];
   const band = { von: treffer.von, bis: treffer.bis, beschriftung: treffer.beschriftung };
   const urteil: PreisUrteil = spez < band.von ? "darunter" : spez > band.bis ? "darueber" : "im-band";
-  return { urteil, spezKostenEurProKw: spez, band, medianAlle: SPEZ_KOSTEN.median };
+  return { urteil, spezKostenEurProKw: spez, band, medianAlle: gewerk.medianAlle };
 }
 
 // ─── Alles zusammen ──────────────────────────────────────────────────────────
@@ -252,6 +252,8 @@ export interface BelegteRueckfrage extends Rueckfrage {
 }
 
 export interface AngebotsBefund {
+  /** Woran gemessen wurde — gehört ins Ergebnis, nicht nur in die Rechnung. */
+  gewerk: Gewerk;
   groesse: GroessenBefund;
   vollstaendigkeit: VollstaendigkeitsBefund;
   preis: PreisBefund;
@@ -269,9 +271,9 @@ export interface AngebotsBefund {
  * in einer Rückfrage keine Zahl auftauchen, die niemand belegt hat, auch wenn
  * das Modell es versuchen würde.
  */
-function belege(fragen: Rueckfrage[]): BelegteRueckfrage[] {
+function belege(fragen: Rueckfrage[], gewerk: Gewerk): BelegteRueckfrage[] {
   return fragen.map((f) => {
-    const p = f.bezug ? ANGEBOTS_POSITIONEN.find((x) => x.id === f.bezug) : undefined;
+    const p = f.bezug ? gewerk.positionen.find((x) => x.id === f.bezug) : undefined;
     return {
       ...f,
       bezugName: p?.name ?? null,
@@ -282,12 +284,17 @@ function belege(fragen: Rueckfrage[]): BelegteRueckfrage[] {
   });
 }
 
-export function pruefeAngebot(angebot: AusgelesenesAngebot, gebaeude: GebaeudeBezug): AngebotsBefund {
+export function pruefeAngebot(
+  angebot: AusgelesenesAngebot,
+  gebaeude: GebaeudeBezug,
+  gewerk: Gewerk = WAERMEPUMPE,
+): AngebotsBefund {
   return {
-    groesse: pruefeGroesse(angebot, gebaeude),
-    vollstaendigkeit: pruefeVollstaendigkeit(angebot),
-    preis: pruefePreis(angebot),
-    rueckfragen: belege(angebot.rueckfragen),
+    gewerk,
+    groesse: pruefeGroesse(angebot, gebaeude, gewerk),
+    vollstaendigkeit: pruefeVollstaendigkeit(angebot, gewerk),
+    preis: pruefePreis(angebot, gewerk),
+    rueckfragen: belege(angebot.rueckfragen, gewerk),
     unsicher: angebot.unsicher,
   };
 }

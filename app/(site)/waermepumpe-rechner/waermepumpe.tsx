@@ -978,7 +978,7 @@ export default function Waermepumpe({
                   dass der Nutzer irgendetwas zusätzlich eingibt. */}
               <div style={{ marginTop: 18 }}>
                 <ResultSection title="Passt mein Angebot?" summary="noch keins geprüft">
-                  <AngebotCheck heizlastKw={result.heizlastKw} auslegungKw={result.auslegungKw} />
+                  <AngebotCheck heizlastKw={result.heizlastKw} auslegungKw={result.auslegungKw} gewerk="waermepumpe" einheit="kW" />
                 </ResultSection>
               </div>
 

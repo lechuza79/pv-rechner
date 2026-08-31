@@ -15,7 +15,7 @@
 // und keine feste Verdrahtung.
 
 import type { AusgelesenesAngebot } from "./angebot-check";
-import { ANGEBOTS_POSITIONEN } from "./angebot-check-config";
+import { WAERMEPUMPE, type Gewerk } from "./angebot-gewerk";
 
 /** Was der Meister zurückgibt, bevor irgendetwas bewertet wird. */
 export type LeseErgebnis =
@@ -38,15 +38,15 @@ export interface LeseDienst {
  * der Referenz kommt — sonst stünden die neun Kategorien ein zweites Mal getippt
  * da und liefen beim nächsten Jahrgang auseinander.
  */
-export function meisterAnweisung(): string {
-  const kategorien = ANGEBOTS_POSITIONEN.map((p) => `  - ${p.id}: ${p.name}`).join("\n");
-  return `Du bist ein erfahrener Heizungsbaumeister und liest ein Angebot für eine Wärmepumpe.
+export function meisterAnweisung(gewerk: Gewerk = WAERMEPUMPE): string {
+  const kategorien = gewerk.positionen.map((p) => `  - ${p.id}: ${p.name}`).join("\n");
+  return `Du bist ein ${gewerk.rolle} und liest ein Angebot für eine ${gewerk.name}.
 
 DEINE AUFGABE IST LESEN, NICHT BEWERTEN. Du sagst, was im Dokument steht. Ob der
 Preis angemessen und die Anlage richtig dimensioniert ist, entscheidet jemand
 anderes. Schreibe kein Urteil und keine Empfehlung.
 
-ERSTER SCHRITT: Ist das überhaupt ein Angebot für eine Heizung oder Wärmepumpe?
+ERSTER SCHRITT: Ist das überhaupt ein Angebot für dieses Gewerk (${gewerk.name})?
 Wenn nicht — eine Rechnung, ein Kontoauszug, ein Lohnzettel, ein Datenblatt ohne
 Preise, irgendetwas anderes — brich sofort ab und gib zurück:
 {"art":"kein-angebot","grund":"<ein Satz, was es stattdessen ist>"}
@@ -62,7 +62,7 @@ Sonst gib genau dieses JSON zurück, ohne Text davor oder danach:
   "angebot": {
     "geraet": "<Herstellerbezeichnung wörtlich, oder null>",
     "marke": "<Hersteller, oder null>",
-    "leistungKw": <Heizleistung in kW als Zahl, oder null>,
+    "leistungKw": <Anlagengröße in ${gewerk.einheit} als Zahl, oder null>,
     "gesamtpreisEur": <Gesamtpreis brutto in Euro als Zahl, oder null>,
     "positionen": [
       {
@@ -178,7 +178,7 @@ const textOderNull = (w: unknown): string | null =>
  * durchgereicht — sonst erfindet ein Modell eine zehnte Kategorie, und die
  * Vollständigkeitsprüfung zählt gegen eine Liste, die es nicht gibt.
  */
-export function leseErgebnisAus(roh: string): LeseErgebnis {
+export function leseErgebnisAus(roh: string, gewerk: Gewerk = WAERMEPUMPE): LeseErgebnis {
   const daten = jsonAusAntwort(roh) as Record<string, unknown>;
   const art = daten.art;
 
@@ -189,7 +189,7 @@ export function leseErgebnisAus(roh: string): LeseErgebnis {
     throw new Error("unerwartete Antwortform");
   }
 
-  const bekannt = new Set(ANGEBOTS_POSITIONEN.map((p) => p.id));
+  const bekannt = new Set(gewerk.positionen.map((p) => p.id));
   const a = daten.angebot as Record<string, unknown>;
   const rohPositionen = Array.isArray(a.positionen) ? a.positionen : [];
 
@@ -231,6 +231,7 @@ export function leseErgebnisAus(roh: string): LeseErgebnis {
 export async function leseAngebot(
   dienst: LeseDienst,
   dokument: { mediaType: string; base64: string },
+  gewerk: Gewerk = WAERMEPUMPE,
 ): Promise<LeseErgebnis> {
-  return leseErgebnisAus(await dienst(meisterAnweisung(), dokument));
+  return leseErgebnisAus(await dienst(meisterAnweisung(gewerk), dokument), gewerk);
 }

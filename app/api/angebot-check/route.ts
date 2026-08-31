@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { leseAngebot, type LeseDienst } from "../../../lib/angebot-auslesen";
 import { pruefeAngebot, geraetepreisVergleichbar } from "../../../lib/angebot-check";
 import { anthropicLeseDienst } from "../../../lib/angebot-lesedienst";
+import { gewerkVon, WAERMEPUMPE } from "../../../lib/angebot-gewerk";
+import { zuSammlungsZeile } from "../../../lib/angebot-sammlung";
+import { merkeBefund } from "../../../lib/angebot-sammlung-db";
 
 // ─── Ein hochgeladenes Wärmepumpen-Angebot prüfen ─────────────────────────────
 //
@@ -85,11 +88,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ fehler: "keine-einwilligung" }, { status: 400 });
   }
 
+  const gewerk = gewerkVon(String(form.get("gewerk") ?? "")) ?? WAERMEPUMPE;
+
+  // Ohne Gebäudewerte entfällt nur das Größen-Urteil; Vollständigkeit und Preis
+  // gehen trotzdem. Der eigenständige Flow kennt das Gebäude nicht immer.
   const heizlastKw = Number(form.get("heizlastKw"));
   const auslegungKw = Number(form.get("auslegungKw"));
-  if (!Number.isFinite(heizlastKw) || !Number.isFinite(auslegungKw) || auslegungKw <= 0) {
-    return NextResponse.json({ fehler: "kein-gebaeude" }, { status: 400 });
-  }
+  const gebaeude = Number.isFinite(auslegungKw) && auslegungKw > 0
+    ? { heizlastKw: Number.isFinite(heizlastKw) ? heizlastKw : auslegungKw, auslegungKw }
+    : { heizlastKw: 0, auslegungKw: 0 };
 
   const dienst = leseDienst();
   if (!dienst) {
@@ -100,7 +107,7 @@ export async function POST(req: Request) {
 
   let ergebnis;
   try {
-    ergebnis = await leseAngebot(dienst, { mediaType: datei.type, base64 });
+    ergebnis = await leseAngebot(dienst, { mediaType: datei.type, base64 }, gewerk);
   } catch {
     // Bewusst ohne Details nach außen: Die Fehlermeldung eines Lesedienstes kann
     // Teile des Dokuments enthalten.
@@ -111,9 +118,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ art: ergebnis.art, grund: ergebnis.grund });
   }
 
+  // Die Statistikzeile — ohne Dokument, ohne Namen, ohne Wortlaut, mit Region
+  // statt Postleitzahl und Monat statt Tag. Sie wird nebenbei abgelegt und darf
+  // den Nutzer nichts kosten: scheitert sie, bekommt er sein Ergebnis trotzdem.
+  const monat = new Date().toISOString().slice(0, 7);
+  const region = String(form.get("region") ?? "").slice(0, 2) || null;
+  void merkeBefund(zuSammlungsZeile(ergebnis.angebot, gewerk, monat, region));
+
   return NextResponse.json({
     art: "geprueft",
-    befund: pruefeAngebot(ergebnis.angebot, { heizlastKw, auslegungKw }),
+    befund: pruefeAngebot(ergebnis.angebot, gebaeude, gewerk),
     geraet: ergebnis.angebot.geraet,
     marke: ergebnis.angebot.marke,
     gesamtpreisEur: ergebnis.angebot.gesamtpreisEur,

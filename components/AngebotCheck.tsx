@@ -3,7 +3,6 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { v, space, pad } from "../lib/theme";
 import type { AngebotsBefund } from "../lib/angebot-check";
-import { ANGEBOT_REFERENZ_STAND, GESAMTKOSTEN, SPEZ_KOSTEN } from "../lib/angebot-check-config";
 
 // ─── „Passt mein Angebot?" ────────────────────────────────────────────────────
 //
@@ -25,10 +24,10 @@ type Zustand =
   | { art: "laeuft" }
   | { art: "fehler"; text: string }
   | { art: "abgelehnt"; grund: string }
-  | { art: "fertig"; befund: AngebotsBefund; geraet: string | null; gesamtpreisEur: number | null };
+  | { art: "fertig"; befund: AngebotsBefund; geraet: string | null; gesamtpreisEur: number | null; einheit: string };
 
 const euro = (n: number) => n.toLocaleString("de-DE", { maximumFractionDigits: 0 }) + " €";
-const proKw = (n: number) => Math.round(n).toLocaleString("de-DE") + " €/kW";
+const proEinheit = (n: number, einheit: string) => Math.round(n).toLocaleString("de-DE") + ` €/${einheit}`;
 const prozent = (n: number) => (n >= 0 ? "+" : "−") + Math.abs(Math.round(n * 100)) + " %";
 
 const FEHLERTEXT: Record<string, string> = {
@@ -52,7 +51,20 @@ function Kasten({ titel, ton, children }: { titel: string; ton: "gut" | "hinweis
   );
 }
 
-export default function AngebotCheck({ heizlastKw, auslegungKw }: { heizlastKw: number; auslegungKw: number }) {
+export default function AngebotCheck({
+  heizlastKw,
+  auslegungKw,
+  gewerk = "waermepumpe",
+  einheit = "kW",
+}: {
+  /** Norm-Heizlast bzw. gerechnete Anlagengröße. 0 = unbekannt, dann entfällt das Größen-Urteil. */
+  heizlastKw?: number;
+  auslegungKw?: number;
+  /** Welches Gewerk geprüft wird. */
+  gewerk?: string;
+  /** Einheit der Anlagengröße — für die Beschriftung. */
+  einheit?: string;
+}) {
   const [zustand, setZustand] = useState<Zustand>({ art: "leer" });
   // Die Einwilligung ist eine bewusste Handlung vor dem Hochladen, kein
   // vorgehaktes Kästchen: Das Dokument verlässt damit die EU, und der Nutzer
@@ -64,15 +76,16 @@ export default function AngebotCheck({ heizlastKw, auslegungKw }: { heizlastKw: 
     setZustand({ art: "laeuft" });
     const form = new FormData();
     form.set("datei", datei);
-    form.set("heizlastKw", String(heizlastKw));
-    form.set("auslegungKw", String(auslegungKw));
+    form.set("gewerk", gewerk);
+    if (heizlastKw) form.set("heizlastKw", String(heizlastKw));
+    if (auslegungKw) form.set("auslegungKw", String(auslegungKw));
     form.set("einwilligung", "ja");
     try {
       const antwort = await fetch("/api/angebot-check", { method: "POST", body: form });
       const daten = await antwort.json();
       if (daten.fehler) return setZustand({ art: "fehler", text: FEHLERTEXT[daten.fehler] ?? "Das hat nicht geklappt." });
       if (daten.art === "kein-angebot" || daten.art === "unlesbar") return setZustand({ art: "abgelehnt", grund: daten.grund });
-      setZustand({ art: "fertig", befund: daten.befund, geraet: daten.geraet, gesamtpreisEur: daten.gesamtpreisEur });
+      setZustand({ art: "fertig", befund: daten.befund, geraet: daten.geraet, gesamtpreisEur: daten.gesamtpreisEur, einheit });
     } catch {
       setZustand({ art: "fehler", text: "Die Verbindung ist abgebrochen." });
     }
@@ -83,8 +96,8 @@ export default function AngebotCheck({ heizlastKw, auslegungKw }: { heizlastKw: 
       <p style={{ fontSize: 14, lineHeight: 1.6, color: v("--color-text-secondary"), marginTop: 0 }}>
         Du hast schon ein Angebot? Lade es hoch. Wir halten es gegen die Heizlast, die wir für dein
         Gebäude gerechnet haben, gegen die Positionen, die ein vollständiges Angebot nennen sollte,
-        und gegen die Preise von {SPEZ_KOSTEN.anzahl} ausgewerteten Angeboten. <strong>Das Dokument
-        wird nicht gespeichert</strong> — es wird gelesen und ist danach weg.
+        und gegen die Preise vergleichbarer Anlagen. <strong>Das Dokument wird nicht
+        gespeichert</strong> — es wird gelesen und ist danach weg.
       </p>
 
       <input
@@ -145,7 +158,7 @@ export default function AngebotCheck({ heizlastKw, auslegungKw }: { heizlastKw: 
   );
 }
 
-function Befund({ befund, geraet, gesamtpreisEur }: { befund: AngebotsBefund; geraet: string | null; gesamtpreisEur: number | null }) {
+function Befund({ befund, geraet, gesamtpreisEur, einheit }: { befund: AngebotsBefund; geraet: string | null; gesamtpreisEur: number | null; einheit: string }) {
   const { groesse, vollstaendigkeit, preis, unsicher } = befund;
 
   return (
@@ -167,8 +180,8 @@ function Befund({ befund, geraet, gesamtpreisEur }: { befund: AngebotsBefund; ge
         ) : (
           <>
             Für dein Gebäude rechnen wir mit einer Heizlast von{" "}
-            {groesse.erwartetKw.toLocaleString("de-DE", { maximumFractionDigits: 1 })} kW Auslegungsleistung.
-            Angeboten sind {groesse.angebotKw!.toLocaleString("de-DE", { maximumFractionDigits: 1 })} kW
+            {groesse.erwartetKw.toLocaleString("de-DE", { maximumFractionDigits: 1 })} {einheit} Auslegungsleistung.
+            Angeboten sind {groesse.angebotKw!.toLocaleString("de-DE", { maximumFractionDigits: 1 })} {einheit}
             {groesse.abweichung != null && Math.abs(groesse.abweichung) >= 0.05 ? ` (${prozent(groesse.abweichung)})` : ""}.
             {" "}
             {groesse.urteil === "passend" && <>Das passt.</>}
@@ -238,16 +251,16 @@ function Befund({ befund, geraet, gesamtpreisEur }: { befund: AngebotsBefund; ge
           <>Ohne Gesamtpreis und Leistung lässt sich der Preis nicht einordnen.</>
         ) : (
           <>
-            Dein Angebot liegt bei {proKw(preis.spezKostenEurProKw!)}. Bei Anlagen von{" "}
+            Dein Angebot liegt bei {proEinheit(preis.spezKostenEurProKw!, einheit)}. Bei Anlagen von{" "}
             {preis.band!.beschriftung} liegen die meisten ausgewerteten Angebote zwischen{" "}
-            {euro(preis.band!.von)} und {euro(preis.band!.bis)} je Kilowatt.{" "}
+            {euro(preis.band!.von)} und {euro(preis.band!.bis)} je {einheit}.{" "}
             {preis.urteil === "im-band" && <>Damit liegst du im üblichen Bereich.</>}
             {preis.urteil === "darunter" && <>Damit liegst du darunter. Prüf gegen, ob wirklich alles enthalten ist — ein günstiges Angebot ist oft ein unvollständiges.</>}
             {preis.urteil === "darueber" && <>Damit liegst du darüber. Ein zweites Angebot lohnt sich.</>}
             <br /><br />
-            <em>Große Anlagen kosten je Kilowatt weniger als kleine, weil ein großer Teil der Kosten
-            gar nicht an der Leistung hängt. Deshalb vergleichen wir innerhalb deiner Größenklasse und
-            nicht gegen den Gesamtdurchschnitt von {proKw(SPEZ_KOSTEN.median)}.</em>
+            <em>Große Anlagen kosten je {einheit} weniger als kleine, weil ein großer Teil der Kosten
+            gar nicht an der Größe hängt. Deshalb vergleichen wir innerhalb deiner Größenklasse
+            {preis.medianAlle != null && <> und nicht gegen den Gesamtdurchschnitt von {proEinheit(preis.medianAlle, einheit)}</>}.</em>
           </>
         )}
       </Kasten>
@@ -291,10 +304,8 @@ function Befund({ befund, geraet, gesamtpreisEur }: { befund: AngebotsBefund; ge
       )}
 
       <p style={{ fontSize: 12, color: v("--color-text-muted"), marginTop: space.lg, lineHeight: 1.6 }}>
-        Vergleichsgruppe: {GESAMTKOSTEN.anzahl} Angebote für Ein- und Zweifamilienhäuser aus
-        Rheinland-Pfalz, eingereicht bei der Verbraucherzentrale.{" "}
-        {ANGEBOT_REFERENZ_STAND.quelleKurz}. Die Verbraucherzentrale weist selbst darauf hin, dass
-        sich diese Stichprobe nicht ohne Weiteres auf den Gesamtmarkt übertragen lässt. Diese Prüfung
+        Vergleichsgruppe: {befund.gewerk.vergleichsgruppe} ({befund.gewerk.stand.quelleKurz}).
+        Eine Stichprobe lässt sich nicht ohne Weiteres auf den Gesamtmarkt übertragen. Diese Prüfung
         ersetzt keine Beratung und beurteilt keinen Betrieb — sie liest ein Dokument. Ohne Gewähr.
       </p>
     </div>
