@@ -768,10 +768,26 @@ export const globalStyles = `
      Text zu wenig, deshalb ab 760px Fensterbreite gestapelt.
      Gezielt .gemeinde-auszeichnung, NICHT "letztes Kind": ohne Platzierung
      rendert sie gar nichts, und dann bekaeme der Text die schmale Spalte. */
+  /* Abo-Zeile unter der Ueberschrift: Knopf links, Erklaertext daneben.
+     "align-items:center" setzt den Text auf die Mitte des Knopfes — mit
+     flex-start saesse er an dessen Oberkante und die Zeile liefe optisch
+     auseinander. Der Abstand nach unten ist derselbe, den die Ueberschrift
+     nach oben haelt, damit der Block zwischen Titel und Einleitung gleich
+     viel Luft hat. */
+  .gemeinde-abo{display:flex;align-items:center;gap:12px;margin:0 0 24px;flex-wrap:wrap}
+  /* Auf schmalen Schirmen unter den Knopf. Nebeneinander bliebe fuer den Text
+     eine Spalte, in der jedes zweite Wort umbricht — und der Knopf soll die
+     volle Breite bekommen, damit er mit dem Daumen zu treffen ist. */
+  @media (max-width:520px){
+    .gemeinde-abo{gap:8px}
+    .gemeinde-abo > button{width:100%}
+  }
   .gemeinde-kopf{display:flex;gap:24px;align-items:flex-start;margin-bottom:24px}
-  /* Die Ueberschrift traegt ihren eigenen Abstand nach unten; oben muss sie
-     buendig mit dem Badge daneben starten. */
-  .gemeinde-kopf > *:first-child > h1{margin-top:0}
+  /* Die Ueberschrift stand bis 31.08.2026 IN der linken Spalte, also neben der
+     Auszeichnung — bei einem langen Ortsnamen brach sie dort um, waehrend
+     rechts Platz frei blieb. Sie steht jetzt darueber ueber die volle Breite;
+     die Regel, die ihren oberen Abstand hier zurueckgenommen hat, ist damit
+     gegenstandslos und entfernt. */
   .gemeinde-kopf > *:first-child{flex:1 1 0;min-width:0}
   .gemeinde-kopf > .gemeinde-auszeichnung{flex:0 0 252px;max-width:252px}
   @media (max-width:760px){

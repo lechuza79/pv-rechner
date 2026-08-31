@@ -23,7 +23,8 @@ import GemeindePeerTiles from "../../../../../../components/atlas/GemeindePeerTi
 import GemeindePlatzierungen from "../../../../../../components/atlas/GemeindePlatzierungen";
 import CollapsibleIntro from "../../../../../../components/atlas/CollapsibleIntro";
 import GemeindeEmbedBox from "../../../../../../components/atlas/GemeindeEmbedBox";
-import GemeindeAboBox from "../../../../../../components/atlas/GemeindeAboBox";
+import GemeindeAboBox, { ABO_OEFFNEN } from "../../../../../../components/atlas/GemeindeAboBox";
+import StickyCta from "../../../../../../components/StickyCta";
 import GemeindePotentialClient from "../../../../../../components/atlas/GemeindePotentialClient";
 import GemeindeErneuerbareWidget from "../../../../../../components/atlas/GemeindeErneuerbareWidget";
 import GemeindeSolarLive from "../../../../../../components/atlas/GemeindeSolarLive";
@@ -478,12 +479,20 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
           · monatlich aktualisiert
         </div>
 
-        {/* Überschrift UND Einleitung links, Auszeichnung rechts: Der Badge
-            beginnt damit auf Höhe der Überschrift statt erst neben dem
-            Fließtext. Auf schmalen Schirmen gestapelt (CSS: .gemeinde-kopf). */}
+        {/* ÜBERSCHRIFT ÜBER DIE VOLLE BREITE, Einleitung und Auszeichnung
+            darunter nebeneinander (Betreiber, 31.08.2026).
+            Vorher stand die Überschrift in der linken Spalte, also neben der
+            Auszeichnung — bei einem langen Ortsnamen brach sie dort auf zwei
+            Zeilen um, während rechts daneben Platz frei blieb. Über die volle
+            Breite bricht sie erst, wenn sie wirklich zu lang ist. */}
+        <h1 style={S.h1}>Solaranlagen in {region.name}</h1>
+
+        {/* Direkt unter der Überschrift und linksbündig zu ihr: Knopf, daneben
+            in derselben Zeile der Erklärtext. */}
+        <GemeindeAboBox name={region.name} ags={region.region_id} />
+
         <div className="gemeinde-kopf">
           <div style={{ minWidth: 0 }}>
-            <h1 style={S.h1}>Solaranlagen in {region.name}</h1>
             <CollapsibleIntro>
           {/*
             Der Einleitungstext kommt in Stücken, weil zwei davon auf eine
@@ -670,15 +679,6 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
           </div>
         )}
 
-        {/* Das Abo steht VOR dem Kommunen-Kasten und getrennt von ihm: Jener
-            beginnt mit „Sie arbeiten für die Gemeinde X?" und spricht eine
-            Verwaltung an, das Abo richtet sich an beide — Rathaus und
-            Bewohnerschaft. Zusammengelegt würde die Hälfte der Zielgruppe schon
-            in der Überschrift ausgeladen. */}
-        <div style={S.section}>
-          <GemeindeAboBox name={region.name} ags={region.region_id} />
-        </div>
-
         <div style={S.section}>
           <GemeindeEmbedBox
             name={region.name}
@@ -737,7 +737,22 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
           Gezählt werden nur Anlagen in Betrieb. Alle Angaben sind
           Näherungswerte ohne Anspruch auf Richtigkeit, Aktualität oder Vollständigkeit.
         </div>
+
+        {/* Merker für die klebende Aktionsleiste: Sobald er in Sicht kommt,
+            blendet sie sich aus und überdeckt die Rechtshinweise darüber nicht. */}
+        <div id="sc-cta-sentinel" />
       </div>
+
+      {/* Die Gemeindeseite ist lang, und beide Wege stehen weit oben: der
+          Rechner in der Potential-Karte, das Abo im Kopf. Die Leiste holt sie
+          zurück, sobald man daran vorbeigescrollt ist.
+          Der zweite Knopf trägt ein Ereignis statt einer Adresse — das Abo ist
+          ein Fenster, kein Ort; denselben Weg geht der Förder-Check auf den
+          Stadtseiten. */}
+      <StickyCta
+        primaer={{ href: "/photovoltaik-rechner", label: "Für dein Haus durchrechnen" }}
+        sekundaer={{ ereignis: ABO_OEFFNEN, label: "Abonnieren" }}
+      />
     </div>
   );
 }

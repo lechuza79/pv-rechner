@@ -1106,8 +1106,30 @@ Widget-Distribution an ~11.000 Gemeinden. Tabelle `kommunen_kontakt` (Supabase, 
 
 ## Gemeinde-Abo: „Bescheid bekommen, wenn sich hier etwas tut"
 
-Auf jeder Gemeindeseite im Solar-Atlas steht ein Anmeldefeld (`components/atlas/GemeindeAboBox.tsx`).
-Wer sich einträgt, bekommt eine Nachricht, wenn sich im Ort etwas Nennenswertes bewegt.
+Auf jeder Gemeindeseite im Solar-Atlas steht direkt unter der Überschrift ein Knopf
+„Abonnieren", daneben in derselben Zeile der Erklärtext; das Formular liegt im Fenster
+dahinter (`components/atlas/GemeindeAboBox.tsx`). Wer sich einträgt, bekommt eine
+Nachricht, wenn sich im Ort etwas Nennenswertes bewegt.
+
+**Das Formular steht NICHT auf der Seite** (Betreiber, 31.08.2026): Ein Eingabefeld mit
+Beschriftung, Knopf und Zusage-Zeile ist im Kopfbereich ein zweites Anliegen mitten im
+ersten und schiebt die Zahlen nach unten. Der Erklärtext steht **neben** dem Knopf, nicht
+darin — eine Beschriftung wie „Förderprogramm, Leistung u. v. m. abonnieren" macht ihn so
+breit, dass er die Überschrift erdrückt, und ein Knopf sagt ohnehin, was passiert, nicht
+warum man ihn drückt. Die Feinheiten (was kommt, wie oft, wie man wieder herauskommt)
+hängen am „?".
+
+**Die klebende Aktionsleiste am Seitenende öffnet dasselbe Fenster** — über ein
+Fenster-Ereignis (`ABO_OEFFNEN`), nicht über einen hochgezogenen Zustand: Den nach oben zu
+ziehen machte die halbe Gemeindeseite zur Client-Komponente. Denselben Weg geht der
+Förder-Check auf den Stadtseiten (`sekundaer.ereignis`).
+
+**Beide Wege sind im Browser festgenagelt** (`e2e/gemeinde-abo.spec.ts`), samt Layout:
+bündig zur Überschrift, Text auf der Mitte des Knopfes, auf 375 px gestapelt mit
+vollbreitem Knopf und ohne seitlichen Überlauf. Der Grund ist gemessen — im Prüf-Browser
+meldete die Seite „hydratisiert", und trotzdem öffnete keiner der beiden Knöpfe das
+Fenster; ohne diesen Test wäre das eine Zusage geblieben, die man erst bemerkt, wenn sich
+niemand anmeldet.
 Angelegt 31.08.2026, **vor dem nächsten Outreach-Schub** — der Brief soll das Abo als
 zweite, niedrigere Bitte anbieten können.
 
