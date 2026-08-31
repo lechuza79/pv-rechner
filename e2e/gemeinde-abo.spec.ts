@@ -32,7 +32,7 @@ test.describe("Gemeinde-Abo", () => {
     await expect(fenster.getByLabel("E-Mail-Adresse")).toBeVisible();
   });
 
-  test("der Erklärtext steht neben dem Knopf, nicht darin", async ({ page }) => {
+  test("der Erklärtext steht außerhalb des Knopfes", async ({ page }) => {
     await page.goto(ORT);
     // Betreiber-Vorgabe 31.08.2026: Eine Beschriftung wie „Förderprogramm,
     // Leistung u. v. m. abonnieren" macht den Knopf so breit, dass er die
@@ -61,9 +61,7 @@ test.describe("Gemeinde-Abo", () => {
     await expect(page.getByRole("dialog")).toContainText("Meldungen zu Höchberg");
   });
 
-  test("der Block steht rechts neben der Überschrift, Knopf und Text in einer Zeile", async ({
-    page,
-  }) => {
+  test("der Block steht rechts neben der Überschrift, Text unter dem Knopf", async ({ page }) => {
     await page.setViewportSize({ width: 1200, height: 900 });
     await page.goto(ORT);
 
@@ -79,9 +77,9 @@ test.describe("Gemeinde-Abo", () => {
     expect(kb.x).toBeGreaterThan(hb.x + hb.width - 1);
     expect(kb.y).toBeLessThan(hb.y + hb.height);
 
-    // Innerhalb des Blocks: Text rechts vom Knopf, auf dessen Mittellinie.
-    expect(tb.x).toBeGreaterThan(kb.x + kb.width - 1);
-    expect(Math.abs(kb.y + kb.height / 2 - (tb.y + tb.height / 2))).toBeLessThanOrEqual(2);
+    // Innerhalb des Blocks: Text UNTER dem Knopf, rechtsbündig zu ihm.
+    expect(tb.y).toBeGreaterThan(kb.y + kb.height - 1);
+    expect(Math.abs(tb.x + tb.width - (kb.x + kb.width))).toBeLessThanOrEqual(2);
 
     // Der Block bleibt im sichtbaren Bereich (zum Dokument-Überlauf siehe die
     // Begründung im Mobil-Test).
@@ -127,6 +125,35 @@ test.describe("Gemeinde-Abo", () => {
     const sichtbar = await page.evaluate(() => document.documentElement.clientWidth);
     expect(blockRechts).toBeGreaterThan(0);
     expect(blockRechts).toBeLessThanOrEqual(sichtbar);
+  });
+
+  test("ein sehr langer Ortsname wird gekürzt, die Handlung bleibt lesbar", async ({ page }) => {
+    // „Alt Zauche-Wußwerk/Stara Niwa-Wózwjerch" — 39 Zeichen, der längste
+    // Gemeindename im Bestand. Ohne Kürzung wäre entweder der Knopf breiter
+    // als die Seite oder „abonnieren" abgeschnitten.
+    await page.setViewportSize({ width: 375, height: 800 });
+    await page.goto("/solar-atlas/brandenburg/landkreis-dahme-spreewald/alt-zauche-wusswerk-stara-niwa-w-zwjerch");
+
+    const knopf = page.getByRole("button", { name: /abonnieren$/ }).first();
+    await expect(knopf).toBeVisible();
+
+    // Die Handlung steht vollständig da.
+    await expect(knopf).toContainText("abonnieren");
+
+    // Und der Knopf bleibt im Fenster.
+    const [rechts, sichtbar] = await page.evaluate(() => [
+      Math.round(document.querySelector(".gemeinde-abo")!.getBoundingClientRect().right),
+      document.documentElement.clientWidth,
+    ]);
+    expect(rechts).toBeLessThanOrEqual(sichtbar);
+
+    // Der Name ist wirklich beschnitten, nicht bloß klein: Der sichtbare
+    // Bereich ist schmaler als der Text, den er trägt.
+    const beschnitten = await page.evaluate(() => {
+      const o = document.querySelector(".gemeinde-abo-ort") as HTMLElement | null;
+      return o ? o.scrollWidth > o.clientWidth : false;
+    });
+    expect(beschnitten).toBe(true);
   });
 
   test("die Förderseite trägt dasselbe Abo", async ({ page }) => {

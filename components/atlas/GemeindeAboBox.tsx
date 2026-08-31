@@ -110,25 +110,26 @@ export default function GemeindeAboBox({
 
   return (
     <>
-      {/* Knopf links, Erklärtext in derselben Zeile daneben (Betreiber,
-          31.08.2026). Auf schmalen Schirmen bricht der Text unter den Knopf —
-          nebeneinander bliebe für ihn eine Spalte, in der jedes zweite Wort
-          umbricht. Die Ausrichtung steht im Stylesheet (.gemeinde-abo), weil
-          eine Medienabfrage sich inline nicht schreiben lässt. */}
+      {/* Knopf oben, Erklärtext darunter — beides rechtsbündig, damit der
+          Block neben der Überschrift als eine Einheit liest. */}
       <div className="gemeinde-abo">
         {/* DER ORTSNAME STEHT IM KNOPF, obwohl die Überschrift daneben ihn
             schon trägt (Betreiber, 31.08.2026). Der doppelte Name ist der
             kleinere Preis: In der klebenden Leiste am Seitenende ist die
             Überschrift weggescrollt, und dort steht der Knopf neben „Für dein
             Haus durchrechnen" — ein nacktes „Abonnieren" ließe dann offen,
-            was man abonniert. */}
+            was man abonniert.
+
+            Der Name steht in einem eigenen Element, damit er GEKÜRZT werden
+            kann und „abonnieren" stehen bleibt: Bei „Alt Zauche-Wußwerk/Stara
+            Niwa-Wózwjerch" (39 Zeichen) wäre sonst entweder der Knopf breiter
+            als die Seite oder die Handlung abgeschnitten. Gekürzt wird per
+            Stylesheet, nicht im Code — so wird genau so viel weggenommen, wie
+            der vorhandene Platz verlangt, statt nach einer geratenen
+            Zeichenzahl. */}
         <button type="button" onClick={() => setOffen(true)} style={S.knopfPrimaer}>
-          {name} abonnieren
+          <span className="gemeinde-abo-ort">{name}</span> abonnieren
         </button>
-        {/* Der Erklärtext steht NEBEN dem Knopf, nicht darin: Eine Beschriftung
-            wie „Förderprogramm, Leistung u. v. m. abonnieren" macht den Knopf so
-            breit, dass er die Überschrift darüber erdrückt — und ein Knopf sagt
-            ohnehin, was passiert, nicht warum man ihn drückt. */}
         <p style={S.ctaText}>
           Förderprogramm, Leistung u.&nbsp;v.&nbsp;m.{" "}
           <InfoTooltip title={`Meldungen zu ${name}`} ariaLabel="Was das Abo bedeutet" exportNote={false}>
@@ -222,7 +223,12 @@ const S: Record<string, React.CSSProperties> = {
   // Adresse — ein Link wäre ein Versprechen, das er nicht hält (Mittelklick,
   // „in neuem Tab öffnen").
   knopfPrimaer: {
-    display: "inline-block",
+    // Flex, damit der gekürzte Ortsname und das feste „abonnieren"
+    // nebeneinander bleiben und nur der Name schrumpft.
+    display: "inline-flex",
+    alignItems: "baseline",
+    gap: "0.3em",
+    maxWidth: "100%",
     padding: "10px 18px",
     fontSize: v("--font-size-body"),
     fontFamily: "inherit",
@@ -232,18 +238,14 @@ const S: Record<string, React.CSSProperties> = {
     border: "none",
     borderRadius: v("--radius-md"),
     cursor: "pointer",
-    // KEIN nowrap. Es stand hier, solange der Knopf „Abonnieren" hieß; mit dem
-    // Ortsnamen darin riss er auf 375 px 60 Pixel seitlichen Überlauf — auf
-    // JEDER Gemeindeseite, und bei „Neustadt an der Weinstraße" wäre es mehr.
-    // Ein Knopf, der bei Bedarf zweizeilig wird, ist besser als eine Seite, die
-    // sich seitlich schieben lässt.
-    maxWidth: "100%",
+    // Einzeilig — der Ortsname darin wird gekürzt statt umgebrochen.
+    whiteSpace: "nowrap",
   },
   // Kein eigener Außenabstand: Die Zeile setzt ihre Abstände im Stylesheet,
   // sonst addieren sich zwei Quellen und der Text sitzt nicht mehr auf der
   // Mitte des Knopfes.
   ctaText: {
-    margin: 0,
+    margin: `${space.xs}px 0 0`,
     fontSize: v("--font-size-small"),
     color: v("--color-text-muted"),
     lineHeight: 1.4,

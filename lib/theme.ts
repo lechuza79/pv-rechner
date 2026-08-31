@@ -776,7 +776,11 @@ export const globalStyles = `
      rund 300px fuer den Ortsnamen, und darunter wird jeder zweite dreizeilig. */
   .gemeinde-titelzeile{display:flex;align-items:baseline;justify-content:space-between;gap:24px;flex-wrap:wrap}
   .gemeinde-titelzeile > h1{flex:1 1 260px;min-width:0}
-  .gemeinde-titelzeile > .gemeinde-abo{flex:0 0 auto}
+  /* Der Block darf SCHRUMPFEN (0 1 statt 0 0) und braucht min-width:0.
+     Sonst behaelt er immer seine Inhaltsbreite, und die Kuerzung des
+     Ortsnamens im Knopf greift nie — sie kann nur wirken, wenn der Platz
+     wirklich enger wird. */
+  .gemeinde-titelzeile > .gemeinde-abo{flex:0 1 auto;min-width:0}
   @media (max-width:860px){
     /* Gestapelt nimmt der Abo-Block die volle Zeile UND darf schrumpfen.
        Mit dem "flex:0 0 auto" von oben behielt er seine Inhaltsbreite, der
@@ -788,22 +792,26 @@ export const globalStyles = `
     .gemeinde-titelzeile > .gemeinde-abo{flex:1 1 100%;min-width:0;max-width:100%}
   }
 
-  /* Abo-Block: Knopf links, Erklaertext daneben.
-     "align-items:center" setzt den Text auf die Mitte des Knopfes — mit
-     flex-start saesse er an dessen Oberkante und die Zeile liefe optisch
-     auseinander. Der Abstand nach unten ist derselbe, den die Ueberschrift
-     nach oben haelt, damit der Block zwischen Titel und Einleitung gleich
-     viel Luft hat. */
-  .gemeinde-abo{display:flex;align-items:center;gap:12px;margin:0 0 24px;flex-wrap:wrap}
-  /* Nebeneinander traegt der Block seinen Abstand aus der Titelzeile. */
+  /* Abo-Block: Knopf oben, Erklaertext darunter, beides rechtsbuendig.
+     Als Einheit rechts neben der Ueberschrift; gestapelt (schmale Schirme)
+     nimmt er die volle Zeile und richtet sich links aus wie alles andere. */
+  .gemeinde-abo{display:flex;flex-direction:column;align-items:flex-end;margin:0 0 24px}
   .gemeinde-titelzeile > .gemeinde-abo{margin-bottom:16px}
-  /* Auf schmalen Schirmen unter den Knopf. Nebeneinander bliebe fuer den Text
-     eine Spalte, in der jedes zweite Wort umbricht — und der Knopf soll die
-     volle Breite bekommen, damit er mit dem Daumen zu treffen ist. */
+  .gemeinde-abo > p{text-align:right}
+
+  /* Der Ortsname im Knopf wird gekuerzt, "abonnieren" bleibt stehen.
+     Ohne das waere bei "Alt Zauche-Wusswerk/Stara Niwa-Wozwjerch" (39 Zeichen)
+     entweder der Knopf breiter als die Seite oder die Handlung abgeschnitten.
+     min-width:0 ist noetig, damit ein Flex-Kind ueberhaupt unter seine
+     Inhaltsbreite schrumpfen darf — ohne das greift text-overflow nie. */
+  .gemeinde-abo-ort{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+
   @media (max-width:520px){
-    .gemeinde-abo{gap:8px}
+    .gemeinde-abo{align-items:stretch}
+    .gemeinde-abo > p{text-align:left}
     .gemeinde-abo > button{width:100%}
   }
+
   .gemeinde-kopf{display:flex;gap:24px;align-items:flex-start;margin-bottom:24px}
   /* Die Ueberschrift stand bis 31.08.2026 IN der linken Spalte, also neben der
      Auszeichnung — bei einem langen Ortsnamen brach sie dort um, waehrend
