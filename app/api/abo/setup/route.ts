@@ -57,6 +57,12 @@ export async function GET(req: NextRequest) {
       -- Nullable aus demselben Grund wie oben: Altzeilen tragen nichts, und der
       -- Leser deutet das als "alle".
       ALTER TABLE public.gemeinde_abos ADD COLUMN IF NOT EXISTS techniken text[];
+      -- Selbstauskunft: arbeitet die Person fuer die Stadt- oder
+      -- Gemeindeverwaltung? Steuert den TON einer Meldung, nie den Zugang zu
+      -- etwas. Nullable und ohne Vorgabewert aus demselben Grund wie oben:
+      -- Ein NOT NULL DEFAULT false haette ueber jede Altzeile "arbeitet nicht
+      -- dort" behauptet -- eine Aussage, die niemand erhoben hat.
+      ALTER TABLE public.gemeinde_abos ADD COLUMN IF NOT EXISTS aus_verwaltung boolean;
 
       -- EIN Abo je Ort und Adresse. Ohne diese Regel legt jeder erneute Klick
       -- auf "Anmelden" eine weitere Zeile an, und der Ort schickt später

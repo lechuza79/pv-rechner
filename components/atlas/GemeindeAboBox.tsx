@@ -33,28 +33,37 @@ type Zustand = "bereit" | "sendet" | "fertig" | { fehler: string };
 
 /**
  * Was das Abo verspricht — JE ART verschieden, und das ist keine Kosmetik.
+ * Das Bestands-Abo hängt am Anlagenregister, das Förder-Abo an den
+ * Programmseiten der Gemeinden. Verschiedene Anlässe, verschiedene Sätze.
  *
- * Das Bestands-Abo hängt am Anlagenregister, und das kommt einmal im Monat.
- * „Höchstens eine Mail im Monat" ist dort die ehrliche Obergrenze.
+ * KEINE ZAHL, NIRGENDS — weder „höchstens eine Mail im Monat" noch eine Rate
+ * (Betreiber, 31.08.2026: „wir haben bestimmt mal mehr ideen"). Eine
+ * Frequenzzusage ist eine Werbeaussage nach § 5 UWG, die JEDE künftige Meldung
+ * binden würde; sie später zu brechen ist teurer, als sie nie gegeben zu haben.
+ * Gemessen wäre sie ohnehin nicht: Der Förderverlauf (18.–26.08.2026) zeigt auf
+ * 110 Programme 24 echte Änderungen in neun Tagen — für einen EINZELNEN Ort
+ * selten, aber der Zeitraum trägt keine Zahl.
  *
- * Das Förder-Abo hängt an den Programmseiten der Gemeinden, und die prüfen wir
- * TÄGLICH. Dieselbe Monatsgrenze wäre dort eine falsche Zusage in beide
- * Richtungen: Sie verspricht Ruhe, wo es keine braucht, und sie hielte eine
- * Meldung zurück, die eilt — ein Fördertopf ist nach wenigen Wochen leer, und
- * wer davon zwei Wochen später hört, hat das Geld verpasst.
+ * Was stattdessen zugesagt wird, ist der ANLASS. Und die Aufzählung der
+ * Anlässe ist OFFEN, nicht abschließend (Betreiber, 31.08.2026): Ein „und
+ * sonst nicht" hinter drei Beispielen macht aus einer Illustration eine
+ * Selbstbeschränkung — der vierte Anlass, den wir noch nicht kennen, wäre
+ * damit ausgeschlossen. Die Schranke gegen zu viel Post steht deshalb nicht in
+ * dieser Liste, sondern in der Zusage über dem Absenden-Knopf und im
+ * Hilfetext: Es kommt nur etwas, wenn es etwas zu berichten gibt.
  *
- * Was NICHT versprochen wird, ist eine Rate: Gemessen am Verlauf (18.–26.08.2026)
- * entfielen auf 110 Programme 24 echte Änderungen in neun Tagen — für einen
- * EINZELNEN Ort ist das selten. Der Zeitraum ist zu kurz, um daraus eine Zahl
- * zu machen, deshalb steht dort „selten" und keine.
+ * NICHT „spannende Fakten" o. Ä.: Ob etwas spannend ist, entscheidet der
+ * Leser, nicht wir — und ein Newsletter-Wort in einem Rechner, der mit
+ * Nüchternheit wirbt, ist die falsche Stimme. „Das der Rede wert ist" sagt
+ * dasselbe und behauptet dabei nichts über die Wirkung.
  */
 const TEXTE = {
   gemeinde: {
     intro:
-      "Wir schreiben, wenn deine Gemeinde einen Zuschuss auflegt, wenn ein Vergütungsjahrgang ausläuft oder wenn die Zahlen fürs Jahr da sind. Höchstens eine Mail im Monat.",
+      "Wir schreiben, wenn deine Gemeinde einen Zuschuss auflegt, wenn ein Vergütungsjahrgang ausläuft, wenn die Zahlen fürs Jahr da sind — oder wenn wir sonst etwas über den Ort herausfinden, das der Rede wert ist.",
     teaser: "Förderprogramm, Leistung u.\u00a0v.\u00a0m.",
     hilfe:
-      "Höchstens eine Mail im Monat, und nur wenn es etwas zu berichten gibt. Abmelden mit einem Klick am Fuß jeder Mail. Deine Adresse geben wir nicht weiter.",
+      "Es kommt nur etwas, wenn es etwas zu berichten gibt. Abmelden mit einem Klick am Fuß jeder Mail. Deine Adresse geben wir nicht weiter.",
   },
   foerderung: {
     intro:
@@ -117,6 +126,23 @@ export default function GemeindeAboBox({
    * Antwort) — es ist der Ausgangszustand einer Ein/Aus-Angabe.
    */
   const [gewaehlt, setGewaehlt] = useState<AboTechnik[]>([...ABO_TECHNIKEN]);
+  /**
+   * Arbeitet die Person für die Verwaltung? NUR beim Bestands-Abo gefragt
+   * (Betreiber, 31.08.2026) — spiegelbildlich zur Technik-Frage, die es nur
+   * beim Förder-Abo gibt. Jede Gattung stellt genau eine Zusatzfrage.
+   *
+   * Der Grund liegt am Inhalt: Bestandszahlen sind für eine Verwaltung ein
+   * anderer Gegenstand als für einen Hausbesitzer — sie kann sie
+   * veröffentlichen, er kann sich daran messen. Die Förderprogramme des
+   * eigenen Orts kennt eine Verwaltung dagegen bereits; dort wäre die Frage
+   * eine Angabe ohne Verwendung, und eine solche zu erheben ist die
+   * Datensammlung, die wir überall sonst ablehnen.
+   *
+   * NICHT VORAUSGEWÄHLT, und das ist die einzig mögliche Richtung: Die weit
+   * überwiegende Mehrheit arbeitet nicht dort. Ein gesetzter Haken wäre eine
+   * Angabe, die wir dem Anmeldenden untergeschoben haben.
+   */
+  const [ausVerwaltung, setAusVerwaltung] = useState(false);
 
   const umschalten = (t: AboTechnik) =>
     setGewaehlt((alt) => (alt.includes(t) ? alt.filter((x) => x !== t) : [...alt, t]));
@@ -153,6 +179,10 @@ export default function GemeindeAboBox({
           ueberBrief: ueberBrief(),
           // Nur beim Förder-Abo eine Aussage; sonst der volle Satz.
           techniken: quelle === "foerderung" ? gewaehlt : ABO_TECHNIKEN,
+          // Nur das Bestands-Abo fragt danach; von der Förderseite kommt hier
+          // immer false, nicht der Zustand eines Kästchens, das dort gar nicht
+          // steht.
+          ausVerwaltung: quelle === "gemeinde" ? ausVerwaltung : false,
         }),
       });
       if (!antwort.ok) {
@@ -271,6 +301,31 @@ export default function GemeindeAboBox({
               </fieldset>
             )}
 
+            {/* EINE Selbstauskunft, kein Pflichtfeld und keine Hürde — und nur
+                hier, beim Bestands-Abo. Sie sagt nicht, WAS jemand bekommt
+                (das tut die Technik-Frage auf der Förderseite), sondern WIE es
+                formuliert wird. Der Erklärsatz nennt den Grund und verspricht
+                dabei keinen Inhalt: Was eine Verwaltung zusätzlich bekommt,
+                ist noch nicht gebaut, und eine Zusage darauf wäre eine
+                Werbeaussage ohne Deckung. */}
+            {quelle === "gemeinde" && (
+            <label style={S.rolle}>
+              <input
+                type="checkbox"
+                checked={ausVerwaltung}
+                onChange={(e) => setAusVerwaltung(e.target.checked)}
+                disabled={sendet}
+                style={S.box}
+              />
+              <span>
+                Ich arbeite für die Stadt- oder Gemeindeverwaltung
+                <span style={S.rolleGrund}>
+                  Dann formulieren wir die Meldung für euch, nicht für Hausbesitzer.
+                </span>
+              </span>
+            </label>
+            )}
+
             {fehler && (
               <p role="alert" style={S.fehler}>
                 {fehler}
@@ -373,6 +428,25 @@ const S: Record<string, React.CSSProperties> = {
     cursor: "pointer",
   },
   box: { width: 17, height: 17, accentColor: v("--color-accent"), cursor: "pointer" },
+  // Oben ausgerichtet, nicht mittig: Das Kästchen steht neben ZWEI Zeilen
+  // (Frage und Grund). Mittig gesetzt rutschte es in den Zwischenraum und
+  // sähe aus, als gehöre es zu keiner von beiden.
+  rolle: {
+    display: "flex",
+    alignItems: "flex-start",
+    gap: space.sm,
+    marginTop: space.lg,
+    fontSize: v("--font-size-body"),
+    color: v("--color-text-primary"),
+    lineHeight: 1.4,
+    cursor: "pointer",
+  },
+  rolleGrund: {
+    display: "block",
+    fontSize: v("--font-size-small"),
+    color: v("--color-text-muted"),
+    marginTop: 2,
+  },
   hinweis: {
     fontSize: v("--font-size-small"),
     color: v("--color-text-muted"),

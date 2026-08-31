@@ -657,6 +657,16 @@ export default function DatenschutzPage() {
           betreffen.
         </p>
         <p style={S.p}>
+          Trägst du dich auf einer Ortsseite im Solar-Atlas ein, kannst du
+          angeben, dass du{" "}
+          <strong>für die Stadt- oder Gemeindeverwaltung arbeitest</strong>. Die
+          Angabe ist freiwillig, wir prüfen sie nicht nach, und sie entscheidet
+          über nichts außer der Formulierung: Für eine Verwaltung ist dieselbe
+          Zahl eine andere Nachricht als für jemanden, der über eine eigene
+          Anlage nachdenkt. Lässt du das Feld leer, bekommst du die Meldung in
+          der allgemeinen Fassung.
+        </p>
+        <p style={S.p}>
           Die Anmeldung läuft im <strong>Bestätigungsverfahren</strong>: Nach dem
           Eintragen schicken wir eine E-Mail mit einem Bestätigungslink. Erst
           wenn du ihn anklickst, bekommst du Meldungen. Klickst du nicht, wird

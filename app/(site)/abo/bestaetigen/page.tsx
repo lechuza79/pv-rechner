@@ -68,9 +68,9 @@ export default async function Seite(props: { searchParams: Promise<{ t?: string 
       titel={ort ? `Angemeldet für ${ort}` : "Angemeldet"}
       saetze={[
         ort
-          ? `Wir schreiben dir, wenn ${ort} einen Zuschuss auflegt, wenn ein Vergütungsjahrgang ausläuft oder wenn die Zahlen fürs Jahr da sind.`
+          ? `Wir schreiben dir, wenn ${ort} einen Zuschuss auflegt, wenn ein Vergütungsjahrgang ausläuft, wenn die Zahlen fürs Jahr da sind — oder wenn wir sonst etwas über den Ort herausfinden, das der Rede wert ist.`
           : "Du bekommst jetzt eine Nachricht, wenn sich in deinem Ort etwas Nennenswertes tut.",
-        "Höchstens eine Mail im Monat, und nur wenn es etwas zu berichten gibt. Abmelden kannst du dich mit einem Klick am Fuß jeder Mail.",
+        "Es kommt nur etwas, wenn es etwas zu berichten gibt. Abmelden kannst du dich mit einem Klick am Fuß jeder Mail.",
       ]}
       ortHref={pfad ?? undefined}
       ortName={ort}

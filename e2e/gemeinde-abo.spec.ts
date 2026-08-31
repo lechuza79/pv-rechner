@@ -317,23 +317,63 @@ test.describe("Gemeinde-Abo", () => {
     await expect(fenster.getByText(/Ohne Auswahl bekommst du alles/)).toBeVisible();
   });
 
-  test("beide Abos versprechen eine andere Frequenz", async ({ page }) => {
-    // Das Bestands-Abo hängt am Anlagenregister (monatlich), das Förder-Abo an
-    // den Programmseiten (täglich geprüft). Dieselbe Monatsgrenze auf der
-    // Förderseite wäre eine falsche Zusage in beide Richtungen — und sie hielte
-    // eine Meldung zurück, die eilt: Ein kommunaler Topf ist nach wenigen
-    // Wochen leer.
+  test("kein Abo verspricht eine Frequenz", async ({ page }) => {
+    // KEINE ZAHL, auf keiner der beiden Seiten (Betreiber, 31.08.2026). Eine
+    // Frequenzzusage ist eine Werbeaussage nach § 5 UWG, die jede künftige
+    // Meldung binden würde — und sie stand hier zwei Fassungen lang, weil sie
+    // sich wie Rücksicht liest. Zugesagt wird der ANLASS, nicht der Takt.
+    //
+    // Auf ein MUSTER geprüft, nicht auf den Satz: Die verbotene Aussage kommt
+    // in vielen Schreibweisen zurück ("eine Mail im Monat", "monatlich eine
+    // Mail", "höchstens 12 Mails im Jahr"), und ein Test, der den Wortlaut
+    // vergleicht, ist gegen genau die Rückkehr blind.
+    // Gegengeprobt an zehn Sätzen, bevor er hier landete: Die erste Fassung
+    // ließ „monatlich eine Mail" durch, weil sie die beiden Wörter direkt
+    // nebeneinander erwartete. Ein Wächter, der die naheliegendste Umformung
+    // nicht sieht, ist keiner.
+    const verbotenerTakt =
+      /(mail|meldung|nachricht)\w*\s+(im|pro|je)\s+(monat|woche|jahr)|(monatlich|wöchentlich|jährlich)\w*(\s+\w+){0,2}\s+(mail|meldung|nachricht)/i;
+
     await page.goto(ORT);
     await page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first().click();
-    // Auf die AUSSAGE prüfen, nicht auf die Schreibweise: Der Satz beginnt jetzt
-    // mit dem Wort, also steht es groß.
-    await expect(page.getByRole("dialog")).toContainText(/höchstens eine Mail im Monat/i);
+    const bestand = page.getByRole("dialog");
+    await expect(bestand).toContainText(/Zuschuss/);
+    expect((await bestand.innerText()).match(verbotenerTakt)).toBeNull();
 
     await page.goto("/photovoltaik-foerderung/hessen/nidda");
     await page.getByRole("button", { name: /^Nidda abonnieren$/ }).first().click();
     const foerder = page.getByRole("dialog");
+    // Der Unterschied liegt jetzt im ANLASS, nicht im Takt: Die Förderseite
+    // nennt die tägliche Prüfung, die Bestandsseite nennt ihre drei Auslöser.
     await expect(foerder).toContainText("täglich");
-    await expect(foerder).not.toContainText(/höchstens eine Mail im Monat/i);
+    expect((await foerder.innerText()).match(verbotenerTakt)).toBeNull();
+  });
+
+  test("nach der Verwaltung fragt nur das Bestands-Abo", async ({ page }) => {
+    // SPIEGELBILDLICH zur Technik-Frage: Jede Gattung stellt genau eine
+    // Zusatzfrage. Bestandszahlen sind für eine Verwaltung ein anderer
+    // Gegenstand als für einen Hausbesitzer; die Förderprogramme des eigenen
+    // Orts kennt sie dagegen längst — dort wäre die Angabe eine ohne
+    // Verwendung, und eine solche zu erheben ist die Datensammlung, die dieses
+    // Projekt überall sonst ablehnt.
+    //
+    // Und NICHT vorausgewählt: Ein gesetzter Haken wäre eine Angabe, die wir
+    // dem Anmeldenden untergeschoben haben.
+    await page.goto(ORT);
+    await page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first().click();
+    const haken = page
+      .getByRole("dialog")
+      .getByRole("checkbox", { name: /Stadt- oder Gemeindeverwaltung/ });
+    await expect(haken).toBeVisible();
+    await expect(haken).not.toBeChecked();
+    await haken.check();
+    await expect(haken).toBeChecked();
+
+    await page.goto("/photovoltaik-foerderung/hessen/nidda");
+    await page.getByRole("button", { name: /^Nidda abonnieren$/ }).first().click();
+    await expect(
+      page.getByRole("dialog").getByRole("checkbox", { name: /Stadt- oder Gemeindeverwaltung/ }),
+    ).toHaveCount(0);
   });
 
   test("das Bestands-Abo fragt keine Technik", async ({ page }) => {

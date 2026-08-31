@@ -111,6 +111,11 @@ export async function POST(req: NextRequest) {
   // nichts abwählt, will alles wissen, und ein Abo ohne jede Technik bekäme nie
   // eine Mail.
   const technikenGewaehlt = techniken(payload.techniken);
+  // Selbstauskunft, streng auf `true` geprüft: Jeder andere Wert — auch ein
+  // wahrheitsfähiger String wie "ja" — gilt als nein. Sie steuert nur den Ton
+  // einer künftigen Meldung, nie einen Zugang, deshalb ist die vorsichtige
+  // Richtung hier kostenlos.
+  const ausVerwaltung = payload.ausVerwaltung === true;
 
   const ergebnis = await aboAnlegen({
     regionId,
@@ -119,6 +124,7 @@ export async function POST(req: NextRequest) {
     quelle,
     ueberBrief,
     technikenGewaehlt,
+    ausVerwaltung,
   });
 
   if (ergebnis.art === "keine-db") {

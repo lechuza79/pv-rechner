@@ -81,6 +81,20 @@ export type GemeindeAbo = {
    * Ausgangszustand.
    */
   technikenGewaehlt: AboTechnik[];
+  /**
+   * Arbeitet die Person für die Stadt- oder Gemeindeverwaltung?
+   *
+   * SELBSTAUSKUNFT, nicht geprüft und nicht prüfbar — und genau deshalb
+   * harmlos: Sie steuert den TON einer künftigen Meldung, nie den Zugang zu
+   * etwas. Wer sie falsch setzt, bekommt einen anders formulierten Text und
+   * sonst nichts.
+   *
+   * Der Grund, sie überhaupt zu erheben: Für eine Verwaltung ist dieselbe Zahl
+   * eine andere Nachricht als für einen Hausbesitzer — sie kann sie
+   * veröffentlichen, er kann danach handeln. Ohne die Angabe schreiben wir
+   * beiden dasselbe und treffen keinen von beiden.
+   */
+  ausVerwaltung: boolean;
   erstelltAm: string;
   bestaetigtAm: string | null;
   letzteMailAm: string | null;
@@ -94,6 +108,7 @@ type Zeile = {
   quelle: string | null;
   ueber_brief: boolean | null;
   techniken: string[] | null;
+  aus_verwaltung: boolean | null;
   erstellt_am: string;
   bestaetigt_am: string | null;
   letzte_mail_am: string | null;
@@ -113,13 +128,18 @@ function ausZeile(r: Zeile): GemeindeAbo {
     quelle: r.quelle === "foerderung" ? "foerderung" : "gemeinde",
     ueberBrief: r.ueber_brief === true,
     technikenGewaehlt: techniken(r.techniken),
+    // Fehlt die Angabe (Altzeile oder nicht angehakt), gilt "nein". Die
+    // vorsichtige Richtung: Wer nicht gesagt hat, dass er dort arbeitet,
+    // bekommt den Text für alle anderen.
+    ausVerwaltung: r.aus_verwaltung === true,
     erstelltAm: r.erstellt_am,
     bestaetigtAm: r.bestaetigt_am,
     letzteMailAm: r.letzte_mail_am,
   };
 }
 
-const SPALTEN = "id,region_id,email,status,quelle,ueber_brief,techniken,erstellt_am,bestaetigt_am,letzte_mail_am";
+const SPALTEN =
+  "id,region_id,email,status,quelle,ueber_brief,techniken,aus_verwaltung,erstellt_am,bestaetigt_am,letzte_mail_am";
 
 /**
  * Adresse vereinheitlichen, bevor sie irgendwo hingeschrieben wird.
@@ -179,6 +199,7 @@ export async function aboAnlegen(o: {
   quelle: AboQuelle;
   ueberBrief: boolean;
   technikenGewaehlt: AboTechnik[];
+  ausVerwaltung: boolean;
 }): Promise<AnlageErgebnis> {
   if (!supabase) return { art: "keine-db" };
   const email = normalisiereEmail(o.email);
@@ -212,6 +233,7 @@ export async function aboAnlegen(o: {
         quelle: o.quelle,
         ueber_brief: o.ueberBrief,
         techniken: o.technikenGewaehlt,
+        aus_verwaltung: o.ausVerwaltung,
       })
         .eq("id", abo.id)
         .select(SPALTEN)
@@ -234,6 +256,7 @@ export async function aboAnlegen(o: {
         quelle: o.quelle,
         ueber_brief: o.ueberBrief,
         techniken: o.technikenGewaehlt,
+        aus_verwaltung: o.ausVerwaltung,
       })
       .select(SPALTEN)
       .single(),
