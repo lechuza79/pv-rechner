@@ -29,7 +29,7 @@ import "server-only";
 // gefragt hat.
 
 import { leseSmtpKonfig } from "./outreach-mail";
-import { aboMailKopfzeilen, fehlendeAboPflichtangaben } from "./abo-mail";
+import { aboMailKopfzeilen, fehlendeAboPflichtangaben, type AboMailArt } from "./abo-mail";
 
 export type VersandErgebnis = { ok: true } | { ok: false; fehler: string };
 
@@ -48,6 +48,12 @@ export async function sendeAboMail(o: {
   html: string;
   text: string;
   abmeldeUrl?: string;
+  /**
+   * Welche Art Mail. Entscheidet, welche Pflichtangaben gelten — die
+   * Bestätigung trägt keinen Abmeldelink, und ohne diese Unterscheidung wies
+   * die Prüfung sie ab (siehe lib/abo-mail.ts).
+   */
+  art: AboMailArt;
 }): Promise<VersandErgebnis> {
   const befund = leseSmtpKonfig(process.env);
   if (!befund.ok) {
@@ -57,7 +63,7 @@ export async function sendeAboMail(o: {
   // Die Pflichtangaben werden am fertigen HTML geprüft, nicht an der Vorlage.
   // Eine Vorlage kann richtig sein und trotzdem falsch zusammengesetzt werden;
   // geprüft wird das, was hinausgeht.
-  const fehlend = fehlendeAboPflichtangaben(o.html);
+  const fehlend = fehlendeAboPflichtangaben(o.html, o.art);
   if (fehlend.length) {
     return { ok: false, fehler: `Pflichtangaben fehlen: ${fehlend.join(", ")}` };
   }

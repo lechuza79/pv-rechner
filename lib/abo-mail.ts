@@ -43,22 +43,41 @@ import type { Meldung } from "./gemeinde-meldungen";
 const SITE = "https://solar-check.io";
 
 /**
- * Pflichtangaben einer Abo-Mail.
+ * Was eine Abo-Mail tragen MUSS.
  *
  * EIGENE LISTE, nicht die des Anschreibens: Dort steht „Art. 14 DSGVO", und
  * genau die Angabe wäre hier falsch (siehe Punkt 2 oben). Der Versand prüft
- * dagegen, bevor irgendetwas hinausgeht — dieselbe Systematik wie beim
- * Anschreiben, nur mit dem richtigen Inhalt.
+ * dagegen, bevor irgendetwas hinausgeht.
+ *
+ * `nurMeldung` unterscheidet die beiden Arten — und die Unterscheidung ist
+ * nicht kosmetisch, sie war ein BLOCKER: Ohne sie verlangte die Prüfung auch
+ * von der Bestätigungsmail einen Abmeldelink, den diese bewusst nicht hat (es
+ * gibt noch nichts, wovon man sich abmelden könnte). Der Versand wies sie
+ * deshalb ab — es wäre NIE eine Bestätigungsmail hinausgegangen, und damit nie
+ * ein Abo zustande gekommen.
+ *
+ * Kein Test hat das gefangen: Sie prüfen die Vorlagen einzeln, und die
+ * Bestätigungsmail wurde nur darauf geprüft, dass sie KEINEN Abmeldelink hat.
+ * Aufgefallen ist es erst beim ersten echten Versand.
  */
-export const ABO_PFLICHTANGABEN: { was: string; pruefe: (text: string) => boolean }[] = [
-  { was: "Abmeldelink", pruefe: (t) => t.includes("/abo/abmelden") },
+export const ABO_PFLICHTANGABEN: {
+  was: string;
+  /** Nur für Meldungsmails — die Bestätigung trägt diese Angabe nicht. */
+  nurMeldung?: boolean;
+  pruefe: (text: string) => boolean;
+}[] = [
+  { was: "Abmeldelink", nurMeldung: true, pruefe: (t) => t.includes("/abo/abmelden") },
   { was: "Impressum-Link", pruefe: (t) => t.includes("solar-check.io/impressum") },
   { was: "Datenschutz-Link", pruefe: (t) => t.includes("solar-check.io/datenschutz") },
   { was: "Grund der Zusendung", pruefe: (t) => /Diese E-Mail bekommst du, weil/.test(t) },
 ];
 
-export function fehlendeAboPflichtangaben(html: string): string[] {
-  return ABO_PFLICHTANGABEN.filter((p) => !p.pruefe(html)).map((p) => p.was);
+export type AboMailArt = "bestaetigung" | "meldung";
+
+export function fehlendeAboPflichtangaben(html: string, art: AboMailArt = "meldung"): string[] {
+  return ABO_PFLICHTANGABEN.filter((p) => (art === "meldung" || !p.nurMeldung) && !p.pruefe(html)).map(
+    (p) => p.was,
+  );
 }
 
 // ─── Farben ──────────────────────────────────────────────────────────────────

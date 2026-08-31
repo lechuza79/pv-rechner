@@ -83,6 +83,12 @@ describe("Was die Datenschutzerklärung über das Abo zusagt", () => {
     expect(dse).toMatch(/über ein Anschreiben an die Gemeinde/);
   });
 
+  it("nennt die Technik-Auswahl des Förder-Abos", () => {
+    expect(dse).toMatch(/für welche Techniken du dich interessierst/);
+    // Und den Zweck: Sie dient der Auswahl der Meldungen, nicht der Auswertung.
+    expect(dse).toMatch(/keine Meldungen zu schicken, die dich nicht betreffen/);
+  });
+
   it("verspricht die Abmeldung mit einem Klick ohne Anmeldung", () => {
     expect(dse).toMatch(/jederzeit abmelden/);
     expect(dse).toMatch(/ohne Anmeldung/);

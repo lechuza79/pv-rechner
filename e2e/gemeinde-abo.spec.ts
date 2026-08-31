@@ -294,6 +294,37 @@ test.describe("Gemeinde-Abo", () => {
     expect(textSichtbar).toBe(true);
   });
 
+  test("das Förder-Abo fragt nach der Technik, das Bestands-Abo nicht", async ({ page }) => {
+    // Auf der Förderseite ist die Frage sinnvoll: Wen nur ein Balkonkraftwerk
+    // interessiert, den betrifft ein Dach-Zuschuss nicht. Auf der Atlas-Seite
+    // geht es um den Bestand des Orts — der kennt keine Technik-Wahl.
+    await page.goto("/photovoltaik-foerderung/hessen/nidda");
+    await page.getByRole("button", { name: /^Nidda abonnieren$/ }).first().click();
+
+    const fenster = page.getByRole("dialog");
+    await expect(fenster.getByText("Wofür interessierst du dich?")).toBeVisible();
+
+    // Alle drei sind der Ausgangszustand: Wer ein Förder-Abo abschließt, will
+    // erst einmal jedes Geld sehen, das für ihn gilt.
+    for (const l of ["Solaranlage aufs Dach", "Balkonkraftwerk", "Wärmepumpe"]) {
+      await expect(fenster.getByLabel(l)).toBeChecked();
+    }
+
+    // Abwählbar, und ganz ohne Auswahl sagt das Fenster, was dann gilt.
+    for (const l of ["Solaranlage aufs Dach", "Balkonkraftwerk", "Wärmepumpe"]) {
+      await fenster.getByLabel(l).uncheck();
+    }
+    await expect(fenster.getByText(/Ohne Auswahl bekommst du alles/)).toBeVisible();
+  });
+
+  test("das Bestands-Abo fragt keine Technik", async ({ page }) => {
+    await page.goto(ORT);
+    await page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first().click();
+    const fenster = page.getByRole("dialog");
+    await expect(fenster.getByLabel("E-Mail-Adresse")).toBeVisible();
+    await expect(fenster.getByText("Wofür interessierst du dich?")).toHaveCount(0);
+  });
+
   test("eine unbrauchbare Adresse kommt nicht durch", async ({ page }) => {
     await page.goto(ORT);
     await page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first().click();

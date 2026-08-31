@@ -48,6 +48,18 @@ describe("Bestätigungsmail", () => {
     expect(m.html).not.toContain("Art. 14");
   });
 
+  it("BESTEHT die Pflichtangaben-Prüfung — sie ist der Versandweg", () => {
+    // DER FALL, DER BEIM ERSTEN ECHTEN VERSAND AUFFIEL: Die Prüfung verlangte
+    // von JEDER Abo-Mail einen Abmeldelink, den die Bestätigung bewusst nicht
+    // hat. Der Versand wies sie damit ab — es wäre nie eine Bestätigungsmail
+    // hinausgegangen und nie ein Abo zustande gekommen.
+    //
+    // Die Tests darunter prüften nur die VORLAGE („kein Abmeldelink drin") und
+    // konnten den Widerspruch deshalb nicht sehen. Dieser hier prüft die
+    // Vorlage GEGEN die Schranke, an der sie im Betrieb scheitert.
+    expect(fehlendeAboPflichtangaben(m.html, "bestaetigung")).toEqual([]);
+  });
+
   it("hat KEINEN Abmeldelink", () => {
     // Es gibt noch nichts, wovon man sich abmelden könnte. Und eine
     // Abmelde-Kopfzeile auf einer transaktionalen Mail lässt Postfächer die
@@ -70,7 +82,7 @@ describe("Meldungsmail", () => {
   });
 
   it("trägt Abmeldelink, Impressum, Datenschutz und den Grund", () => {
-    expect(fehlendeAboPflichtangaben(m.html)).toEqual([]);
+    expect(fehlendeAboPflichtangaben(m.html, "meldung")).toEqual([]);
   });
 
   it("sagt, warum die Mail kam", () => {
@@ -129,6 +141,13 @@ describe("Kopfzeilen", () => {
 });
 
 describe("Pflichtangaben-Prüfung", () => {
+  it("verlangt den Abmeldelink NUR von der Meldung", () => {
+    // Die Bestätigung trägt ihn bewusst nicht; ihn dort zu fordern hielte den
+    // ganzen Anmeldeweg an.
+    expect(fehlendeAboPflichtangaben("<p>Hallo</p>", "bestaetigung")).not.toContain("Abmeldelink");
+    expect(fehlendeAboPflichtangaben("<p>Hallo</p>", "meldung")).toContain("Abmeldelink");
+  });
+
   it("meldet, was fehlt — statt es durchzulassen", () => {
     // Gegenprobe: Der Wächter muss anschlagen, wenn die Angaben fehlen. Ein
     // Prüfer, der bei leerem Text „alles da" sagt, ist schlimmer als keiner.

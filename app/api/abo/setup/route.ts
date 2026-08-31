@@ -53,6 +53,10 @@ export async function GET(req: NextRequest) {
       -- Herkunft behauptet, die niemand erhoben hat.
       ALTER TABLE public.gemeinde_abos ADD COLUMN IF NOT EXISTS quelle text;
       ALTER TABLE public.gemeinde_abos ADD COLUMN IF NOT EXISTS ueber_brief boolean;
+      -- Welche Techniken interessieren (nur beim Foerder-Abo gefragt).
+      -- Nullable aus demselben Grund wie oben: Altzeilen tragen nichts, und der
+      -- Leser deutet das als "alle".
+      ALTER TABLE public.gemeinde_abos ADD COLUMN IF NOT EXISTS techniken text[];
 
       -- EIN Abo je Ort und Adresse. Ohne diese Regel legt jeder erneute Klick
       -- auf "Anmelden" eine weitere Zeile an, und der Ort schickt später

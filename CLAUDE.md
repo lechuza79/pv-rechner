@@ -1197,6 +1197,24 @@ den falschen Fall** (`lib/abo-mail.ts`, `lib/abo-versand.ts`):
 Kontaktformular und Wächter-Alarme trägt — eine wachsende Verteilerliste dort träfe bei
 der ersten Beschwerdewelle dasselbe Konto, und dann kommen die Alarm-Mails nicht mehr an.
 
+**Das Förder-Abo fragt nach der Technik, das Bestands-Abo nicht** (`lib/abo-technik.ts`).
+Auf der Förderseite sind die drei Techniken des Katalogs abwählbar, alle drei als
+Ausgangszustand — wer ein Förder-Abo abschließt, will erst einmal jedes Geld sehen, das für
+ihn gilt, und abwählen ist leichter als anwählen. Die REICHWEITE wird bewusst **nicht**
+gefragt: Der Abonnent bekommt, was für ihn gilt (Ort, Kreis, Land, Bund) — „möchten Sie
+auch vom Landesprogramm hören?" ist eine Frage mit genau einer sinnvollen Antwort, und
+jeder Schritt im Anmeldefenster kostet Abbrüche. Die Konstanten liegen in einem eigenen
+Modul, weil beide Seiten der Grenze sie brauchen: Läge die Liste in der Ablage, zöge das
+Anmeldefenster deren Server-Sperre mit.
+
+**Die Pflichtangaben gelten JE MAILART — BLOCKER, beim ersten echten Versand aufgefallen.**
+Die Prüfung verlangte von jeder Abo-Mail einen Abmeldelink, den die Bestätigungsmail
+bewusst nicht hat (es gibt noch nichts, wovon man sich abmelden könnte). Der Versand wies
+sie damit ab: Es wäre **nie eine Bestätigungsmail hinausgegangen** und damit nie ein Abo
+zustande gekommen. Kein Test hat es gefangen — sie prüften die Vorlagen einzeln, und die
+Bestätigung wurde nur darauf geprüft, dass sie keinen Abmeldelink trägt. Die Vorlage muss
+gegen die Schranke geprüft werden, an der sie im Betrieb scheitert, nicht nur für sich.
+
 **Keine IP-Adresse, kein Zählpixel.** Der Einwilligungsnachweis sind die Zeitpunkte von
 Eintragung und Bestätigung plus das signierte Token. Das weicht bewusst von dem ab, was
 Anleitungen empfehlen, und **die Abwägung hat die Council-Prüfung mit zwei Legal-Judges

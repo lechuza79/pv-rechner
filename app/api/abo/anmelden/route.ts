@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { aboAnlegen, normalisiereEmail, siehtNachEmailAus, type AboQuelle } from "../../../../lib/gemeinde-abo";
+import { techniken } from "../../../../lib/abo-technik";
 import { bestaetigungsToken } from "../../../../lib/abo-token";
 import { aboBestaetigungsMail } from "../../../../lib/abo-mail";
 import { sendeAboMail } from "../../../../lib/abo-versand";
@@ -106,6 +107,10 @@ export async function POST(req: NextRequest) {
   // Freitext aus dem Browser landete sonst in der Datenbank.
   const quelle: AboQuelle = payload.quelle === "foerderung" ? "foerderung" : "gemeinde";
   const ueberBrief = payload.ueberBrief === true;
+  // Nur bekannte Techniken; alles andere fällt weg. Leer heißt „alle" — wer
+  // nichts abwählt, will alles wissen, und ein Abo ohne jede Technik bekäme nie
+  // eine Mail.
+  const technikenGewaehlt = techniken(payload.techniken);
 
   const ergebnis = await aboAnlegen({
     regionId,
@@ -113,6 +118,7 @@ export async function POST(req: NextRequest) {
     jetztIso: new Date(jetzt).toISOString(),
     quelle,
     ueberBrief,
+    technikenGewaehlt,
   });
 
   if (ergebnis.art === "keine-db") {
@@ -128,7 +134,13 @@ export async function POST(req: NextRequest) {
     bestaetigenUrl: `${basis}/abo/bestaetigen?t=${encodeURIComponent(token)}`,
   });
 
-  const versand = await sendeAboMail({ an: email, subject: mail.subject, html: mail.html, text: mail.text });
+  const versand = await sendeAboMail({
+    an: email,
+    subject: mail.subject,
+    html: mail.html,
+    text: mail.text,
+    art: "bestaetigung",
+  });
   if (!versand.ok) {
     // Der Eintrag steht schon, die Mail kam nicht raus. Nach außen bleibt es
     // beim freundlichen Hinweis — im Protokoll steht der Grund, denn das ist

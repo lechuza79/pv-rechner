@@ -6,6 +6,7 @@ import { trackEvent } from "../../lib/analytics";
 import InfoTooltip from "../InfoTooltip";
 import Modal, { ModalSticky } from "../Modal";
 import { IconGlocke } from "../Icons";
+import { ABO_TECHNIKEN, ABO_TECHNIK_LABEL, type AboTechnik } from "../../lib/abo-technik";
 import { HERKUNFT_PARAM, HERKUNFT_WERT } from "../../lib/brief-herkunft";
 
 // „Förderprogramm, Leistung und mehr abonnieren" — eine Zeile im Kopf der
@@ -71,6 +72,20 @@ export default function GemeindeAboBox({
   const [email, setEmail] = useState("");
   const [falle, setFalle] = useState("");
   const [zustand, setZustand] = useState<Zustand>("bereit");
+  /**
+   * Wofür interessiert sich der Anmeldende? NUR auf der Förderseite gefragt —
+   * auf der Atlas-Seite geht es um den Bestand des Orts, und der kennt keine
+   * Technik-Wahl.
+   *
+   * ALLE DREI VORAUSGEWÄHLT: Wer ein Förder-Abo abschließt, will erst einmal
+   * jedes Geld sehen, das für ihn gilt; abwählen ist leichter als anwählen.
+   * Das ist keine Vorauswahl im Sinne der Flow-Regel (die gilt Fragen mit einer
+   * Antwort) — es ist der Ausgangszustand einer Ein/Aus-Angabe.
+   */
+  const [gewaehlt, setGewaehlt] = useState<AboTechnik[]>([...ABO_TECHNIKEN]);
+
+  const umschalten = (t: AboTechnik) =>
+    setGewaehlt((alt) => (alt.includes(t) ? alt.filter((x) => x !== t) : [...alt, t]));
 
   // Die klebende Leiste am unteren Rand ruft dasselbe Fenster auf.
   useEffect(() => {
@@ -95,7 +110,15 @@ export default function GemeindeAboBox({
         // „über ein Anschreiben", nicht welche Gemeinde. Gelesen wird sie erst
         // beim Absenden, nicht beim Rendern: Sonst wäre die Komponente von der
         // Adresse abhängig und müsste bei jeder Navigation neu denken.
-        body: JSON.stringify({ ags, email, website: falle, quelle, ueberBrief: ueberBrief() }),
+        body: JSON.stringify({
+          ags,
+          email,
+          website: falle,
+          quelle,
+          ueberBrief: ueberBrief(),
+          // Nur beim Förder-Abo eine Aussage; sonst der volle Satz.
+          techniken: quelle === "foerderung" ? gewaehlt : ABO_TECHNIKEN,
+        }),
       });
       if (!antwort.ok) {
         const daten = (await antwort.json().catch(() => ({}))) as { error?: string };
@@ -197,6 +220,30 @@ export default function GemeindeAboBox({
               style={S.falle}
             />
 
+            {quelle === "foerderung" && (
+              <fieldset style={S.feld_gruppe}>
+                <legend style={S.legende}>Wofür interessierst du dich?</legend>
+                <div style={S.haken_reihe}>
+                  {ABO_TECHNIKEN.map((t) => (
+                    <label key={t} style={S.haken}>
+                      <input
+                        type="checkbox"
+                        checked={gewaehlt.includes(t)}
+                        onChange={() => umschalten(t)}
+                        style={S.box}
+                      />
+                      {ABO_TECHNIK_LABEL[t]}
+                    </label>
+                  ))}
+                </div>
+                {gewaehlt.length === 0 && (
+                  <p style={S.hinweis}>
+                    Ohne Auswahl bekommst du alles, was in {name} gefördert wird.
+                  </p>
+                )}
+              </fieldset>
+            )}
+
             {fehler && (
               <p role="alert" style={S.fehler}>
                 {fehler}
@@ -282,6 +329,28 @@ const S: Record<string, React.CSSProperties> = {
     cursor: "pointer",
   },
   falle: { position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 },
+  feld_gruppe: { border: "none", padding: 0, margin: `${space.lg}px 0 0` },
+  legende: {
+    padding: 0,
+    fontSize: v("--font-size-small"),
+    color: v("--color-text-muted"),
+    marginBottom: space.sm,
+  },
+  haken_reihe: { display: "flex", flexDirection: "column", gap: space.sm },
+  haken: {
+    display: "flex",
+    alignItems: "center",
+    gap: space.sm,
+    fontSize: v("--font-size-body"),
+    color: v("--color-text-primary"),
+    cursor: "pointer",
+  },
+  box: { width: 17, height: 17, accentColor: v("--color-accent"), cursor: "pointer" },
+  hinweis: {
+    fontSize: v("--font-size-small"),
+    color: v("--color-text-muted"),
+    margin: `${space.sm}px 0 0`,
+  },
   fehler: {
     fontSize: v("--font-size-small"),
     color: v("--color-negative"),

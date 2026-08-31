@@ -650,6 +650,13 @@ export default function DatenschutzPage() {
           dieselbe; sie unterscheidet keine Empfänger.
         </p>
         <p style={S.p}>
+          Meldest du dich auf einer Förderseite an, speichern wir zusätzlich,{" "}
+          <strong>für welche Techniken du dich interessierst</strong>
+          {" "}(Solaranlage, Balkonkraftwerk, Wärmepumpe). Wir nutzen die Angabe
+          ausschließlich, um dir keine Meldungen zu schicken, die dich nicht
+          betreffen.
+        </p>
+        <p style={S.p}>
           Die Anmeldung läuft im <strong>Bestätigungsverfahren</strong>: Nach dem
           Eintragen schicken wir eine E-Mail mit einem Bestätigungslink. Erst
           wenn du ihn anklickst, bekommst du Meldungen. Klickst du nicht, wird

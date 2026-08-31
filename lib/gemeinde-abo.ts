@@ -37,6 +37,9 @@ import "server-only";
 // die Absicht und kein Versehen — sie wird nie im Browser gelesen.
 
 import { supabase } from "./supabase-server";
+import { techniken, type AboTechnik } from "./abo-technik";
+
+export { ABO_TECHNIKEN, ABO_TECHNIK_LABEL, techniken, type AboTechnik } from "./abo-technik";
 import { DB_READ_TIMEOUT_MS, DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
 
 export type AboStatus = "ausstehend" | "bestaetigt" | "abgemeldet";
@@ -72,6 +75,12 @@ export type GemeindeAbo = {
    * sondern die Antwort auf „hat der Versand Abos gebracht".
    */
   ueberBrief: boolean;
+  /**
+   * Welche Techniken interessieren. Beim Bestands-Abo bedeutungslos und dort
+   * immer alle — die Spalte trägt dann keine Aussage, sondern nur den
+   * Ausgangszustand.
+   */
+  technikenGewaehlt: AboTechnik[];
   erstelltAm: string;
   bestaetigtAm: string | null;
   letzteMailAm: string | null;
@@ -84,6 +93,7 @@ type Zeile = {
   status: string;
   quelle: string | null;
   ueber_brief: boolean | null;
+  techniken: string[] | null;
   erstellt_am: string;
   bestaetigt_am: string | null;
   letzte_mail_am: string | null;
@@ -102,13 +112,14 @@ function ausZeile(r: Zeile): GemeindeAbo {
     // eine benannte Annahme.
     quelle: r.quelle === "foerderung" ? "foerderung" : "gemeinde",
     ueberBrief: r.ueber_brief === true,
+    technikenGewaehlt: techniken(r.techniken),
     erstelltAm: r.erstellt_am,
     bestaetigtAm: r.bestaetigt_am,
     letzteMailAm: r.letzte_mail_am,
   };
 }
 
-const SPALTEN = "id,region_id,email,status,quelle,ueber_brief,erstellt_am,bestaetigt_am,letzte_mail_am";
+const SPALTEN = "id,region_id,email,status,quelle,ueber_brief,techniken,erstellt_am,bestaetigt_am,letzte_mail_am";
 
 /**
  * Adresse vereinheitlichen, bevor sie irgendwo hingeschrieben wird.
@@ -167,6 +178,7 @@ export async function aboAnlegen(o: {
   jetztIso: string;
   quelle: AboQuelle;
   ueberBrief: boolean;
+  technikenGewaehlt: AboTechnik[];
 }): Promise<AnlageErgebnis> {
   if (!supabase) return { art: "keine-db" };
   const email = normalisiereEmail(o.email);
@@ -199,6 +211,7 @@ export async function aboAnlegen(o: {
         bestaetigt_am: null,
         quelle: o.quelle,
         ueber_brief: o.ueberBrief,
+        techniken: o.technikenGewaehlt,
       })
         .eq("id", abo.id)
         .select(SPALTEN)
@@ -220,6 +233,7 @@ export async function aboAnlegen(o: {
         erstellt_am: o.jetztIso,
         quelle: o.quelle,
         ueber_brief: o.ueberBrief,
+        techniken: o.technikenGewaehlt,
       })
       .select(SPALTEN)
       .single(),
