@@ -227,16 +227,29 @@ export const RELEASE_PLAN: Schub[] = [
     gattung: "foerder-stadt",
     datum: "2026-09-02",
     // ZURÜCKGENOMMEN am 19.08.2026, bevor eine Zeile Seite gebaut wurde — genau
-    // dafür gibt es die Vorlauf-Messung. Nach diesen Orten sucht praktisch
-    // niemand: 1 von 14 hat überhaupt ein messbares Suchvolumen (Roth, 10/Monat),
-    // zusammen 10/Monat für vierzehn Seiten. Das Messinstrument ist an bekannten
-    // Fällen gegengeprüft und liefert dort plausible Werte (Köln 70, München 40,
-    // Frankfurt 20, Würzburg 10) — die Null ist also echt und kein Fehlgriff.
+    // dafür gibt es die Vorlauf-Messung. Die Rücknahme bleibt richtig; ihre
+    // ursprüngliche Begründung war es NICHT und wurde am 29.08.2026 ersetzt.
+    //
+    // ÜBERHOLT: „1 von 14 Orten mit messbarem Suchvolumen, zusammen 10/Monat."
+    // Das liest eine Meldeschwelle als Nachfrage — der Dienst meldet unterhalb
+    // von 10 Suchen im Monat GAR NICHTS („null" heißt dort „keine Daten").
+    // Vierzehn Orte mit je bis zu neun Suchen wären zusammen bis zu 126 im
+    // Monat. Auch die Gegenprobe („Köln 70, München 40, also ist die Null echt")
+    // trägt nicht: Sie zeigt nur, dass das Muster bei großen Städten trifft.
+    //
+    // GEMESSEN AM 29.08.2026, und das trägt: Auf ALLEN sechs Stichproben
+    // („photovoltaik förderung <ort>" für Poing, Unterhaching, Gaimersheim,
+    // Lohfelden, Heddesheim, Roth) steht eine KI-Antwort ganz oben, und darunter
+    // belegt die GEMEINDE SELBST die vorderen Plätze — teils drei- bis viermal
+    // mit ihrer eigenen Amtsseite. Gegen die amtliche Seite einer Gemeinde auf
+    // deren eigenem Förderprogramm anzutreten ist aussichtslos, und die
+    // KI-Antwort nimmt den organischen Treffern ohnehin den Klick. Dieselbe
+    // Konstellation wie auf der Kreisebene.
     //
     // Der Wert dieser Programme liegt im RECHNER, wo die Postleitzahl zählt,
     // nicht in eigenen Seiten. Sie wirken dort unverändert weiter; hier entsteht
-    // nur keine Seite. Wer den Schub wieder aufmachen will, braucht eine neue
-    // Messung, die diese widerlegt — nicht ein gutes Gefühl.
+    // nur keine Seite. Wer den Schub wieder aufmachen will, muss den Aufbau der
+    // Ergebnisseite widerlegen — nicht ein Suchvolumen nachreichen.
     status: "zurueckgenommen",
     orte: [
       "03256036", // Wietzen (Niedersachsen)
@@ -264,9 +277,12 @@ export const RELEASE_PLAN: Schub[] = [
     nachweis: {
       gemessenAm: "2026-08-19",
       nachfrage:
-        "Nein. 1 von 14 Orten mit messbarem Suchvolumen (Roth, 10/Monat), zusammen 10/Monat. " +
-        "Gegenprobe an bekannten Fällen im selben Abruf: Köln 70, München 40, Frankfurt 20, " +
-        "Würzburg 10 — das Messmuster trifft also, die Null ist echt.",
+        "Nachfrage nicht messbar — und das ist NICHT der Grund (Korrektur 29.08.2026: der Dienst " +
+        "meldet unterhalb von 10 Suchen im Monat nichts, „null\" heißt dort „keine Daten\"). Der " +
+        "tragende Befund ist der Aufbau der Ergebnisseite, an sechs der vierzehn Orte geprüft: " +
+        "überall eine KI-Antwort an erster Stelle, darunter die Gemeinde selbst mit ihrer " +
+        "Amtsseite, teils drei- bis viermal. Gegen die amtliche Seite einer Gemeinde auf deren " +
+        "eigenem Förderprogramm ist kein Platz zu holen.",
       kannibalisierung:
         "Keine Anfrage, auf der beide Seitenfamilien gleichzeitig erscheinen — bei dieser " +
         "Nachfrage aber auch ohne Aussagekraft.",
