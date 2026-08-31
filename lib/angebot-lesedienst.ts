@@ -15,6 +15,60 @@
 // Übermittlung schon in einem Drittland landet, soll wenigstens feststehen, in
 // welchem — eine Aussage in der Datenschutzerklärung, die stimmt, statt „irgendwo".
 // Der Aufpreis dafür beträgt ein Zehntel.
+//
+// ─── Risikoprüfung der Übermittlung (Schrems II, EuGH C-311/18) ──────────────
+//
+// Sie steht HIER und nicht in einem eigenen Papier: Wer die Übermittlung
+// ändert — anderer Anbieter, andere Region, anderes Dokument —, fasst diese
+// Datei an. Ein Papier daneben veraltet beim ersten Mal, an dem jemand das
+// nicht liest. Geprüft am 28.08.2026, wieder vorzulegen am 28.08.2027 oder
+// früher, wenn sich Rechtslage oder Anbieter ändern.
+//
+// WAS ÜBERMITTELT WIRD: ein vom Nutzer selbst ausgewähltes Angebotsdokument.
+// Darin typischerweise sein Name und seine Anschrift sowie Firmenname, Anschrift
+// und Kalkulation des Handwerksbetriebs. Keine besonderen Kategorien nach
+// Art. 9, keine Zahlungs- oder Zugangsdaten. Den Umfang bestimmt der Nutzer.
+//
+// INSTRUMENT: Standardvertragsklauseln (Art. 46 Abs. 2 lit. c), Bestandteil des
+// Auftragsverarbeitungsvertrags. Daneben — nicht an ihrer Stelle — die
+// ausdrückliche Einwilligung je Vorgang (Art. 6 Abs. 1 lit. a, Art. 49 Abs. 1
+// lit. a); sie trägt den Einzelfall auch dann, wenn das Instrument nach Art. 46
+// in Zweifel geriete.
+//
+// KEIN ANGEMESSENHEITSBESCHLUSS: Der Anbieter ist im EU-U.S. Data Privacy
+// Framework nicht gelistet — am 27.08.2026 über einen Vollabzug des amtlichen
+// Registers geprüft (7.561 Einträge, Suche über Organisationsnamen UND erfasste
+// Einheiten, mit Gegenprobe an einem bekannten Teilnehmer). VOR DEM LIVEGANG
+// ERNEUT PRÜFEN — eine Zertifizierung kann jederzeit hinzukommen.
+//
+// ZUGRIFF ÖFFENTLICHER STELLEN: Ob ein Anbieter generativer Modelle unter
+// 50 U.S.C. § 1881a fällt, ist nicht geklärt; wir nehmen die für uns ungünstige
+// Annahme an, dass er es könnte. Erfassung auf dem Transportweg (Executive
+// Order 12333) begegnen wir mit durchgehender Verschlüsselung.
+//
+// WARUM DAS RESTRISIKO TRAGBAR IST — vier Umstände, die zusammen wirken:
+//   1. Die Anweisung untersagt dem Modell, Namen oder Anschriften in die
+//      Antwort aufzunehmen. Das mindert nicht die Übermittlung, aber alles
+//      danach.
+//   2. Wir legen nichts ab und führen nichts zusammen — es entsteht kein
+//      Bestand, den jemand abfragen könnte.
+//   3. Ein Heizungsangebot eines Privathaushalts ist für die genannten
+//      Befugnisse ohne Belang; sie zielen auf auslandsnachrichtendienstliche
+//      Erkenntnisse.
+//   4. Der Nutzer entscheidet je Vorgang und wird vorher über Empfänger, Land
+//      und das fehlende Angemessenheitsniveau unterrichtet.
+//
+// ERGÄNZENDE MASSNAHMEN: nur verschlüsselte Übertragung · Region festgelegt
+// statt „global" · vertraglicher Ausschluss der Trainingsnutzung · keine Ablage
+// und kein Protokoll des Inhalts · Fehlermeldungen des Dienstes gehen nicht nach
+// außen (sie können Teile des Dokuments enthalten) · serverseitige Prüfung der
+// Einwilligung.
+//
+// WAS DIESE PRÜFUNG NICHT ABDECKT: Sie gilt für das Auslesen OHNE Speicherung.
+// Sobald aus den Werten ein eigener Bestand entsteht, ändern sich Zweck,
+// Rechtsgrundlage und Speicherdauer — dann ist sie neu zu führen, und es kommen
+// eine Folgenabschätzung nach Art. 35 und die Informationspflichten gegenüber
+// dem Handwerksbetrieb nach Art. 14 hinzu.
 
 import Anthropic from "@anthropic-ai/sdk";
 import type { LeseDienst } from "./angebot-auslesen";
