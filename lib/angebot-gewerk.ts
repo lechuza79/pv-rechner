@@ -16,6 +16,7 @@
 import {
   ANGEBOT_REFERENZ_STAND,
   ANGEBOTS_POSITIONEN,
+  GESAMTKOSTEN,
   GROESSEN_TOLERANZ,
   SPEZ_KOSTEN,
   SPEZ_KOSTEN_BAENDER,
@@ -48,6 +49,13 @@ export interface Gewerk {
   baender: SpezBand[];
   /** Mittelwert über alle Vergleichsangebote, als Zusatz — nie als Maßstab. */
   medianAlle: number | null;
+  /**
+   * Spanne der GESAMTkosten vergleichbarer Angebote. Die Rückfallebene, wenn
+   * ein Angebot seine Leistung nicht nennt — was regelmäßig vorkommt, weil sie
+   * oft nur in der Typenbezeichnung steht. `null`, wo es keine solche Erhebung
+   * gibt.
+   */
+  gesamtkosten: { min: number; max: number; median: number; anzahl: number } | null;
   /** Toleranz bei der Größe. */
   toleranz: { knappAb: number; passendBis: number; reichlichBis: number };
   /** Was die Bänder sind, sichtbar für den Nutzer. */
@@ -69,6 +77,7 @@ export const WAERMEPUMPE: Gewerk = {
     beschriftung: b.beschriftung,
   })),
   medianAlle: SPEZ_KOSTEN.median,
+  gesamtkosten: { min: GESAMTKOSTEN.min, max: GESAMTKOSTEN.max, median: GESAMTKOSTEN.median, anzahl: GESAMTKOSTEN.anzahl },
   toleranz: GROESSEN_TOLERANZ,
   vergleichsgruppe: `${SPEZ_KOSTEN.anzahl} Angebote für Ein- und Zweifamilienhäuser aus Rheinland-Pfalz, eingereicht bei der Verbraucherzentrale`,
   stand: {
@@ -145,6 +154,9 @@ export const PHOTOVOLTAIK: Gewerk = {
   // nicht. Den Marktpreis als Median auszugeben wäre eine andere Größe unter
   // demselben Namen.
   medianAlle: null,
+  // Für Photovoltaik gibt es keine Erhebung von Gesamtkosten echter Angebote —
+  // eine Spanne wäre hier erfunden. Ohne Leistung entfällt das Preis-Urteil.
+  gesamtkosten: null,
   toleranz: GROESSEN_TOLERANZ,
   vergleichsgruppe: "unsere monatlich erhobenen Marktpreise für Anlagen dieser Größe — keine Auswertung echter Handwerkerangebote",
   stand: {

@@ -2,7 +2,8 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { v, space, pad } from "../lib/theme";
-import type { AngebotsBefund } from "../lib/angebot-check";
+import { pruefeGroesse, type AngebotsBefund } from "../lib/angebot-check";
+import { GEWERKE } from "../lib/angebot-gewerk";
 
 // ─── „Passt mein Angebot?" ────────────────────────────────────────────────────
 //
@@ -24,6 +25,21 @@ type Zustand =
   | { art: "laeuft" }
   | { art: "fehler"; text: string }
   | { art: "abgelehnt"; grund: string };
+
+/**
+ * Wie ein geprüftes Angebot in der Liste heißt.
+ *
+ * Die Gerätebezeichnung, wenn eine dasteht — daran erkennt der Nutzer sein
+ * eigenes Angebot wieder. „Angebot 1" ist nur die Rückfallebene; zwei Angebote
+ * mit derselben Nummer und ohne Namen sind für ihn nicht auseinanderzuhalten.
+ * Marke plus Anfang der Typenbezeichnung reicht und bleibt in einer Zeile.
+ */
+function beschriftung(g: Geprueft, i: number): string {
+  const roh = g.geraet?.trim();
+  if (!roh) return `Angebot ${i + 1}`;
+  const kurz = roh.length > 52 ? roh.slice(0, 52).replace(/[\s,;/-]+$/, "") + " …" : roh;
+  return `Angebot ${i + 1}: ${kurz}`;
+}
 
 /** Ein fertig geprüftes Angebot. Mehrere davon ergeben den Vergleich. */
 type Geprueft = {
@@ -114,6 +130,26 @@ export default function AngebotCheck({
   // sei nicht der Preis, sondern dass sich zwei Angebote nicht vergleichen
   // lassen. Genau das können wir auflösen, sobald zwei vorliegen.
   const [gepruefte, setGepruefte] = useState<Geprueft[]>([]);
+
+  /**
+   * Das Größen-Urteil wird beim ANZEIGEN gerechnet, nicht beim Prüfen.
+   *
+   * Im eigenständigen Weg kennen wir das Gebäude erst, nachdem der Nutzer es
+   * nachgetragen hat — also nach der Prüfung. Das Urteil dann eingefroren zu
+   * lassen hieße, ihn nach der Eingabe weiter „wissen wir nicht" lesen zu
+   * lassen. Die Rechnung ist rein und kostet nichts; das Dokument muss dafür
+   * nicht noch einmal gelesen werden.
+   */
+  function mitGroesse(befund: AngebotsBefund, aktuelleAuslegung?: number): AngebotsBefund {
+    if (!aktuelleAuslegung || befund.groesse.angebotKw == null) return befund;
+    const gw = GEWERKE[befund.gewerk.id] ?? befund.gewerk;
+    const neu = pruefeGroesse(
+      { geraet: null, marke: null, leistungKw: befund.groesse.angebotKw, gesamtpreisEur: null, positionen: [], rueckfragen: [], unsicher: [] },
+      { heizlastKw: heizlastKw ?? aktuelleAuslegung, auslegungKw: aktuelleAuslegung },
+      gw,
+    );
+    return { ...befund, groesse: neu };
+  }
   const [ueberZone, setUeberZone] = useState(false);
   const dateiFeld = useRef<HTMLInputElement>(null);
 
@@ -170,8 +206,8 @@ export default function AngebotCheck({
             danach weg.
           </>
         ) : (
-          <>Du kannst ein weiteres Angebot hochladen — ab dem zweiten stellen wir sie
-          nebeneinander.</>
+          <>Lade ein Vergleichsangebot hoch — ab dem zweiten stellen wir sie nebeneinander,
+          Position für Position.</>
         )}
       </p>
 
@@ -215,7 +251,11 @@ export default function AngebotCheck({
         }}
       >
         <strong style={{ color: v("--color-accent") }}>
-          {seiten.length === 0 ? "Seiten auswählen" : "Weitere Seite hinzufügen"}
+          {seiten.length > 0
+            ? "Weitere Seite hinzufügen"
+            : gepruefte.length > 0
+              ? "Vergleichsangebot hochladen"
+              : "Seiten auswählen"}
         </strong>
         <div style={{ marginTop: 4, fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
           oder hierher ziehen · PDF oder Foto · bis zwölf Seiten
@@ -293,10 +333,10 @@ export default function AngebotCheck({
 
       {gepruefte.map((g, i) => (
         <div key={i} style={{ marginTop: space.xl }}>
-          {gepruefte.length > 1 && (
-            <h3 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-text-primary"), margin: `0 0 ${space.sm}px` }}>Angebot {i + 1}</h3>
-          )}
-          <Befund {...g} einheit={einheit} />
+          <h3 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-text-primary"), margin: `0 0 ${space.sm}px` }}>
+            {beschriftung(g, i)}
+          </h3>
+          <Befund {...g} befund={mitGroesse(g.befund, auslegungKw)} einheit={einheit} />
         </div>
       ))}
 
@@ -515,10 +555,24 @@ function Befund({ befund, geraet, gesamtpreisEur, einheit }: { befund: AngebotsB
       {/* ── Preis ──────────────────────────────────────────────────────────── */}
       <Kasten
         titel="Wie liegt der Preis?"
-        ton={preis.urteil === "darueber" ? "hinweis" : preis.urteil === "unbekannt" ? "neutral" : "gut"}
+        ton={preis.urteil === "darueber" ? "hinweis" : preis.urteil === "unbekannt" || preis.urteil === "nur-gesamt" ? "neutral" : "gut"}
       >
         {preis.urteil === "unbekannt" ? (
-          <>Ohne Gesamtpreis und Leistung lässt sich der Preis nicht einordnen.</>
+          <>Im Angebot steht kein Gesamtpreis, den wir sicher lesen konnten.</>
+        ) : preis.urteil === "nur-gesamt" ? (
+          <>
+            Die Leistung der Anlage steht nicht im Angebot — deshalb können wir den Preis nicht je{" "}
+            {einheit} einordnen, wohl aber als Ganzes. Vergleichbare Angebote liegen zwischen{" "}
+            {euro(preis.gesamtLage!.min)} und {euro(preis.gesamtLage!.max)}, in der Mitte bei{" "}
+            {euro(preis.gesamtLage!.median)}. Deins liegt{" "}
+            {preis.gesamtLage!.anteil < 0.33 ? <>im unteren Drittel</>
+              : preis.gesamtLage!.anteil > 0.66 ? <>im oberen Drittel</>
+              : <>im mittleren Drittel</>} dieser Spanne.
+            <br /><br />
+            <em>Das ist die gröbere Auskunft: Ohne die Leistung wissen wir nicht, ob eine große
+            Anlage günstig oder eine kleine teuer ist. Frag nach der Heizleistung — sie steht oft
+            nur in der Typenbezeichnung.</em>
+          </>
         ) : (
           <>
             Dein Angebot liegt bei {proEinheit(preis.spezKostenEurProKw!, einheit)}. Bei Anlagen von{" "}

@@ -191,7 +191,12 @@ export function pruefeVollstaendigkeit(angebot: AusgelesenesAngebot, gewerk: Gew
 
 // ─── Urteil 3: Preis ─────────────────────────────────────────────────────────
 
-export type PreisUrteil = "unbekannt" | "darunter" | "im-band" | "darueber";
+/**
+ * `nur-gesamt` heißt: Die Leistung steht nicht im Angebot, der Gesamtpreis
+ * schon — dann wird gegen die Gesamtkosten vergleichbarer Anlagen eingeordnet
+ * statt gegen die Kosten je Einheit.
+ */
+export type PreisUrteil = "unbekannt" | "darunter" | "im-band" | "darueber" | "nur-gesamt";
 
 export interface PreisBefund {
   urteil: PreisUrteil;
@@ -199,6 +204,12 @@ export interface PreisBefund {
   spezKostenEurProKw: number | null;
   /** Das leistungsabhängige Vergleichsband. */
   band: { von: number; bis: number; beschriftung: string } | null;
+  /**
+   * Wo der Gesamtpreis in der Spanne der ausgewerteten Angebote liegt, als
+   * Anteil zwischen 0 (günstigstes) und 1 (teuerstes). Nur gefüllt, wenn die
+   * Leistung fehlt — sonst ist die Einordnung je Einheit die bessere.
+   */
+  gesamtLage: { anteil: number; min: number; max: number; median: number } | null;
   /**
    * Median über alle ausgewerteten Angebote — als Zusatz, nie als Maßstab.
    * `null`, wo es keine Auswertung echter Angebote gibt (Photovoltaik): Den
@@ -213,10 +224,23 @@ export function pruefePreis(angebot: AusgelesenesAngebot, gewerk: Gewerk = WAERM
     urteil: "unbekannt",
     spezKostenEurProKw: null,
     band: null,
+    gesamtLage: null,
     medianAlle: gewerk.medianAlle,
   };
   const { gesamtpreisEur, leistungKw } = angebot;
-  if (gesamtpreisEur == null || leistungKw == null || leistungKw <= 0) return basis;
+  if (gesamtpreisEur == null) return basis;
+
+  // Ohne Leistung ist die Einordnung je Einheit unmöglich — der Gesamtpreis
+  // steht aber da, und ihn wegzuwerfen hieße, dem Nutzer eine Auskunft
+  // vorzuenthalten, die wir haben. Ein Angebot nennt die Heizleistung
+  // regelmäßig nur in der Typenbezeichnung; das darf nicht das ganze
+  // Preis-Urteil kosten.
+  if (leistungKw == null || leistungKw <= 0) {
+    if (!gewerk.gesamtkosten) return basis;
+    const { min, max, median } = gewerk.gesamtkosten;
+    const anteil = Math.max(0, Math.min(1, (gesamtpreisEur - min) / (max - min)));
+    return { ...basis, urteil: "nur-gesamt", gesamtLage: { anteil, min, max, median } };
+  }
 
   const spez = gesamtpreisEur / leistungKw;
   // Das Band richtet sich nach der Leistung LAUT ANGEBOT, nicht nach unserer
@@ -225,7 +249,7 @@ export function pruefePreis(angebot: AusgelesenesAngebot, gewerk: Gewerk = WAERM
   const treffer = gewerk.baender.find((b) => leistungKw <= b.bisGroesse) ?? gewerk.baender[gewerk.baender.length - 1];
   const band = { von: treffer.von, bis: treffer.bis, beschriftung: treffer.beschriftung };
   const urteil: PreisUrteil = spez < band.von ? "darunter" : spez > band.bis ? "darueber" : "im-band";
-  return { urteil, spezKostenEurProKw: spez, band, medianAlle: gewerk.medianAlle };
+  return { urteil, spezKostenEurProKw: spez, band, gesamtLage: null, medianAlle: gewerk.medianAlle };
 }
 
 // ─── Alles zusammen ──────────────────────────────────────────────────────────

@@ -4,6 +4,7 @@ import {
   type AusgelesenesAngebot,
 } from "../angebot-check";
 import { GESAMTKOSTEN, SPEZ_KOSTEN, ANGEBOTS_POSITIONEN } from "../angebot-check-config";
+import { PHOTOVOLTAIK } from "../angebot-gewerk";
 
 function angebot(teil: Partial<AusgelesenesAngebot> = {}): AusgelesenesAngebot {
   return { geraet: null, marke: null, leistungKw: null, gesamtpreisEur: null, positionen: [], rueckfragen: [], unsicher: [], ...teil };
@@ -104,8 +105,24 @@ describe("Preis", () => {
     expect(b.urteil).toBe("im-band");
   });
 
-  it("sagt „unbekannt“ ohne Leistungsangabe", () => {
-    expect(pruefePreis(angebot({ gesamtpreisEur: 35000 })).urteil).toBe("unbekannt");
+  it("wirft den Gesamtpreis nicht weg, nur weil die Leistung fehlt", () => {
+    // Ein Angebot nennt die Heizleistung regelmäßig nur in der
+    // Typenbezeichnung. Das ganze Preis-Urteil daran scheitern zu lassen hieße,
+    // eine Auskunft zu verschweigen, die wir haben.
+    const b = pruefePreis(angebot({ gesamtpreisEur: 35000 }));
+    expect(b.urteil).toBe("nur-gesamt");
+    expect(b.gesamtLage!.median).toBe(34898);
+    expect(b.gesamtLage!.anteil).toBeGreaterThan(0.3);
+    expect(b.gesamtLage!.anteil).toBeLessThan(0.5);
+  });
+
+  it("sagt „unbekannt“, wenn auch der Gesamtpreis fehlt", () => {
+    expect(pruefePreis(angebot({ leistungKw: 10 })).urteil).toBe("unbekannt");
+  });
+
+  it("hält sich zurück, wo es keine Erhebung von Gesamtkosten gibt", () => {
+    // Für Photovoltaik gibt es keine Spanne echter Angebote — eine wäre erfunden.
+    expect(pruefePreis(angebot({ gesamtpreisEur: 20000 }), PHOTOVOLTAIK).urteil).toBe("unbekannt");
   });
 });
 
