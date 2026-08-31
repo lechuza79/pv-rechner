@@ -5,6 +5,7 @@ import { v, space } from "../../lib/theme";
 import { trackEvent } from "../../lib/analytics";
 import InfoTooltip from "../InfoTooltip";
 import Modal, { ModalSticky } from "../Modal";
+import { HERKUNFT_PARAM, HERKUNFT_WERT } from "../../lib/brief-herkunft";
 
 // „Förderprogramm, Leistung und mehr abonnieren" — eine Zeile im Kopf der
 // Gemeindeseite, das Formular erst im Fenster dahinter.
@@ -29,6 +30,22 @@ import Modal, { ModalSticky } from "../Modal";
 type Zustand = "bereit" | "sendet" | "fertig" | { fehler: string };
 
 /**
+ * Kam dieser Aufruf über ein Kommunen-Anschreiben?
+ *
+ * Liest denselben Parameter, den die Briefe an ihre Links hängen. Der Wert ist
+ * in jedem Brief identisch; er beantwortet „hat der Versand Abos gebracht",
+ * nicht „wer hat geklickt".
+ */
+function ueberBrief(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    return new URLSearchParams(window.location.search).get(HERKUNFT_PARAM) === HERKUNFT_WERT;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Ereignis, mit dem die klebende Aktionsleiste dasselbe Fenster öffnet.
  *
  * Über ein Fenster-Ereignis statt über einen hochgezogenen Zustand: Die Leiste
@@ -39,7 +56,16 @@ type Zustand = "bereit" | "sendet" | "fertig" | { fehler: string };
  */
 export const ABO_OEFFNEN = "abo:oeffnen";
 
-export default function GemeindeAboBox({ name, ags }: { name: string; ags: string }) {
+export default function GemeindeAboBox({
+  name,
+  ags,
+  quelle = "gemeinde",
+}: {
+  name: string;
+  ags: string;
+  /** Auf welcher Seitengattung steht der Knopf. Steuert nur die Auswertung. */
+  quelle?: "gemeinde" | "foerderung";
+}) {
   const [offen, setOffen] = useState(false);
   const [email, setEmail] = useState("");
   const [falle, setFalle] = useState("");
@@ -63,7 +89,12 @@ export default function GemeindeAboBox({ name, ags }: { name: string; ags: strin
       const antwort = await fetch("/api/abo/anmelden", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ags, email, website: falle }),
+        // Kam der Aufruf über ein Kommunen-Anschreiben? Die Kennung steht als
+        // Parameter in der Adresse und ist in JEDEM Brief dieselbe — sie sagt
+        // „über ein Anschreiben", nicht welche Gemeinde. Gelesen wird sie erst
+        // beim Absenden, nicht beim Rendern: Sonst wäre die Komponente von der
+        // Adresse abhängig und müsste bei jeder Navigation neu denken.
+        body: JSON.stringify({ ags, email, website: falle, quelle, ueberBrief: ueberBrief() }),
       });
       if (!antwort.ok) {
         const daten = (await antwort.json().catch(() => ({}))) as { error?: string };
@@ -85,8 +116,14 @@ export default function GemeindeAboBox({ name, ags }: { name: string; ags: strin
           umbricht. Die Ausrichtung steht im Stylesheet (.gemeinde-abo), weil
           eine Medienabfrage sich inline nicht schreiben lässt. */}
       <div className="gemeinde-abo">
+        {/* DER ORTSNAME STEHT IM KNOPF, obwohl die Überschrift daneben ihn
+            schon trägt (Betreiber, 31.08.2026). Der doppelte Name ist der
+            kleinere Preis: In der klebenden Leiste am Seitenende ist die
+            Überschrift weggescrollt, und dort steht der Knopf neben „Für dein
+            Haus durchrechnen" — ein nacktes „Abonnieren" ließe dann offen,
+            was man abonniert. */}
         <button type="button" onClick={() => setOffen(true)} style={S.knopfPrimaer}>
-          Abonnieren
+          {name} abonnieren
         </button>
         {/* Der Erklärtext steht NEBEN dem Knopf, nicht darin: Eine Beschriftung
             wie „Förderprogramm, Leistung u. v. m. abonnieren" macht den Knopf so
@@ -195,7 +232,12 @@ const S: Record<string, React.CSSProperties> = {
     border: "none",
     borderRadius: v("--radius-md"),
     cursor: "pointer",
-    whiteSpace: "nowrap",
+    // KEIN nowrap. Es stand hier, solange der Knopf „Abonnieren" hieß; mit dem
+    // Ortsnamen darin riss er auf 375 px 60 Pixel seitlichen Überlauf — auf
+    // JEDER Gemeindeseite, und bei „Neustadt an der Weinstraße" wäre es mehr.
+    // Ein Knopf, der bei Bedarf zweizeilig wird, ist besser als eine Seite, die
+    // sich seitlich schieben lässt.
+    maxWidth: "100%",
   },
   // Kein eigener Außenabstand: Die Zeile setzt ihre Abstände im Stylesheet,
   // sonst addieren sich zwei Quellen und der Text sitzt nicht mehr auf der

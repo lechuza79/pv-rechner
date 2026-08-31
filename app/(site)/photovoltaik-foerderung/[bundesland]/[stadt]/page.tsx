@@ -17,6 +17,7 @@ import FundingHistory from "../../../../../components/FundingHistory";
 import { FundingStatusBadge, ExampleCards, FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE } from "../../../../../components/FundingProgramParts";
 import FundingTechnikTabs from "../../../../../components/FundingTechnikTabs";
 import StickyCta from "../../../../../components/StickyCta";
+import GemeindeAboBox from "../../../../../components/atlas/GemeindeAboBox";
 import PvRechnerModal, { PV_RECHNER_HASH } from "../../../../../components/PvRechnerModal";
 import FoerderCheckStarter, { FOERDER_CHECK_OEFFNEN } from "../../../../../components/FoerderCheckStarter";
 import { buildFundingExamples } from "../../../../../lib/funding-examples";
@@ -294,6 +295,19 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
             falsch. Eine Zeile, die für 47 von 50 Namen stimmt, ist keine
             Lösung — als Angabe für sich genommen stimmt sie für alle. */}
         {city.kreis && <p style={S.ortszeile}>{city.kreis}</p>}
+
+        {/* Dasselbe Abo wie auf der Atlas-Seite zum Ort, mit derselben
+            Bedienung — aber vermerkt, dass es HIER abonniert wurde: Die beiden
+            Seitengattungen tragen denselben Ortsnamen und sprechen verschiedene
+            Leute an (dort der Bestand, hier das Geld). Ohne die Unterscheidung
+            liesse sich nach dem ersten Schub nicht sagen, welcher Einstieg
+            traegt.
+
+            Der Ortsschluessel kommt aus dem Verzeichnis und ist hier FUENF-
+            oder achtstellig — kreisfreie Staedte tragen fuenf. Die
+            Anmelde-Adresse nimmt beide Formen; die eigentliche Pruefung ist,
+            ob es den Ort im Register gibt. */}
+        <GemeindeAboBox name={city.name} ags={city.ags} quelle="foerderung" />
         {/* Introtext und Amtslink nebeneinander: Die Programmseite der Gemeinde
             ist die Quelle, aus der jede Zahl hier stammt, und der einzige Ort,
             an dem jemand den Antrag wirklich stellt. Sie stand bisher nur als

@@ -485,11 +485,12 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
             Auszeichnung — bei einem langen Ortsnamen brach sie dort auf zwei
             Zeilen um, während rechts daneben Platz frei blieb. Über die volle
             Breite bricht sie erst, wenn sie wirklich zu lang ist. */}
-        <h1 style={S.h1}>Solaranlagen in {region.name}</h1>
-
-        {/* Direkt unter der Überschrift und linksbündig zu ihr: Knopf, daneben
-            in derselben Zeile der Erklärtext. */}
-        <GemeindeAboBox name={region.name} ags={region.region_id} />
+        {/* Überschrift links, Abo-Block rechts daneben (Knopf + Erklärtext in
+            einer Zeile). Auf schmalen Schirmen gestapelt. */}
+        <div className="gemeinde-titelzeile">
+          <h1 style={S.h1}>Solaranlagen in {region.name}</h1>
+          <GemeindeAboBox name={region.name} ags={region.region_id} />
+        </div>
 
         <div className="gemeinde-kopf">
           <div style={{ minWidth: 0 }}>
@@ -751,7 +752,7 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
           Stadtseiten. */}
       <StickyCta
         primaer={{ href: "/photovoltaik-rechner", label: "Für dein Haus durchrechnen" }}
-        sekundaer={{ ereignis: ABO_OEFFNEN, label: "Abonnieren" }}
+        sekundaer={{ ereignis: ABO_OEFFNEN, label: `${region.name} abonnieren` }}
       />
     </div>
   );

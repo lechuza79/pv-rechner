@@ -41,11 +41,37 @@ import { DB_READ_TIMEOUT_MS, DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "./db
 
 export type AboStatus = "ausstehend" | "bestaetigt" | "abgemeldet";
 
+/**
+ * Wo hat sich jemand eingetragen?
+ *
+ * WOFÜR: Die beiden Seitengattungen tragen denselben Ortsnamen und sprechen
+ * verschiedene Leute an — die Atlas-Seite jemanden, der den Bestand ansieht,
+ * die Förderseite jemanden, der Geld sucht. Ohne diese Angabe lässt sich nach
+ * dem ersten Schub nicht sagen, welcher der beiden Einstiege überhaupt trägt,
+ * und die Entscheidung „bauen wir das aus" hinge an einem Gefühl.
+ *
+ * BEWUSST GROB: Nur die Gattung, nicht die Adresse. Die Adresse stünde für
+ * eine Auswertung, die niemand braucht, und sie ist über den Ort ohnehin
+ * bekannt.
+ */
+export type AboQuelle = "gemeinde" | "foerderung";
+
 export type GemeindeAbo = {
   id: string;
   regionId: string;
   email: string;
   status: AboStatus;
+  /** Auf welcher Seitengattung wurde angemeldet. */
+  quelle: AboQuelle;
+  /**
+   * Kam der Aufruf über ein Kommunen-Anschreiben?
+   *
+   * Die Kennung im Brief ist in JEDEM Brief dieselbe — sie sagt „über ein
+   * Anschreiben", nicht welche Gemeinde. Welcher Ort es war, steht ohnehin
+   * daneben. Damit ist das hier keine zusätzliche Auskunft über die Person,
+   * sondern die Antwort auf „hat der Versand Abos gebracht".
+   */
+  ueberBrief: boolean;
   erstelltAm: string;
   bestaetigtAm: string | null;
   letzteMailAm: string | null;
@@ -56,6 +82,8 @@ type Zeile = {
   region_id: string;
   email: string;
   status: string;
+  quelle: string | null;
+  ueber_brief: boolean | null;
   erstellt_am: string;
   bestaetigt_am: string | null;
   letzte_mail_am: string | null;
@@ -69,13 +97,18 @@ function ausZeile(r: Zeile): GemeindeAbo {
     status: (["ausstehend", "bestaetigt", "abgemeldet"] as const).includes(r.status as AboStatus)
       ? (r.status as AboStatus)
       : "abgemeldet",
+    // Unbekannte Herkunft gilt als Gemeindeseite — dort gab es das Abo zuerst,
+    // und die Altzeilen tragen nichts. Ein Rateweg wäre hier schlimmer als
+    // eine benannte Annahme.
+    quelle: r.quelle === "foerderung" ? "foerderung" : "gemeinde",
+    ueberBrief: r.ueber_brief === true,
     erstelltAm: r.erstellt_am,
     bestaetigtAm: r.bestaetigt_am,
     letzteMailAm: r.letzte_mail_am,
   };
 }
 
-const SPALTEN = "id,region_id,email,status,erstellt_am,bestaetigt_am,letzte_mail_am";
+const SPALTEN = "id,region_id,email,status,quelle,ueber_brief,erstellt_am,bestaetigt_am,letzte_mail_am";
 
 /**
  * Adresse vereinheitlichen, bevor sie irgendwo hingeschrieben wird.
@@ -132,6 +165,8 @@ export async function aboAnlegen(o: {
   regionId: string;
   email: string;
   jetztIso: string;
+  quelle: AboQuelle;
+  ueberBrief: boolean;
 }): Promise<AnlageErgebnis> {
   if (!supabase) return { art: "keine-db" };
   const email = normalisiereEmail(o.email);
@@ -155,7 +190,16 @@ export async function aboAnlegen(o: {
     const { data, error } = await withDbTimeout(
       supabase
         .from("gemeinde_abos")
-        .update({ status: "ausstehend", erstellt_am: o.jetztIso, bestaetigt_am: null })
+        // Die Herkunft wird beim Aufwecken NEU gesetzt: Wer sich ein zweites Mal
+      // einträgt, tut das dort, wo er gerade steht — die alte Angabe wäre ab
+      // diesem Moment falsch.
+      .update({
+        status: "ausstehend",
+        erstellt_am: o.jetztIso,
+        bestaetigt_am: null,
+        quelle: o.quelle,
+        ueber_brief: o.ueberBrief,
+      })
         .eq("id", abo.id)
         .select(SPALTEN)
         .single(),
@@ -169,7 +213,14 @@ export async function aboAnlegen(o: {
   const { data, error } = await withDbTimeout(
     supabase
       .from("gemeinde_abos")
-      .insert({ region_id: o.regionId, email, status: "ausstehend", erstellt_am: o.jetztIso })
+      .insert({
+        region_id: o.regionId,
+        email,
+        status: "ausstehend",
+        erstellt_am: o.jetztIso,
+        quelle: o.quelle,
+        ueber_brief: o.ueberBrief,
+      })
       .select(SPALTEN)
       .single(),
     "abo-anlegen",

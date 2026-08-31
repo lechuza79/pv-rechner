@@ -46,6 +46,14 @@ export async function GET(req: NextRequest) {
         letzte_mail_am timestamptz
       );
 
+      -- Herkunft der Anmeldung. Nachtraeglich ergaenzt, deshalb als ALTER und
+      -- nullable: Die Zeilen aus der ersten Fassung tragen nichts, und der
+      -- Leser deutet fehlende Angaben als Gemeindeseite (dort gab es das Abo
+      -- zuerst). Ein NOT NULL mit Vorgabewert haette ueber jede Altzeile eine
+      -- Herkunft behauptet, die niemand erhoben hat.
+      ALTER TABLE public.gemeinde_abos ADD COLUMN IF NOT EXISTS quelle text;
+      ALTER TABLE public.gemeinde_abos ADD COLUMN IF NOT EXISTS ueber_brief boolean;
+
       -- EIN Abo je Ort und Adresse. Ohne diese Regel legt jeder erneute Klick
       -- auf "Anmelden" eine weitere Zeile an, und der Ort schickt später
       -- mehrere gleiche Mails an dieselbe Adresse. Die Anwendung fängt das

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { aboAnlegen, normalisiereEmail, siehtNachEmailAus } from "../../../../lib/gemeinde-abo";
+import { aboAnlegen, normalisiereEmail, siehtNachEmailAus, type AboQuelle } from "../../../../lib/gemeinde-abo";
 import { bestaetigungsToken } from "../../../../lib/abo-token";
 import { aboBestaetigungsMail } from "../../../../lib/abo-mail";
 import { sendeAboMail } from "../../../../lib/abo-versand";
@@ -77,7 +77,16 @@ export async function POST(req: NextRequest) {
   const emailRoh = typeof payload.email === "string" ? payload.email : "";
   const email = normalisiereEmail(emailRoh);
 
-  if (!/^\d{8}$/.test(regionId)) {
+  // FÜNF ODER ACHT STELLEN, nicht nur acht — und das ist kein Aufweichen der
+  // Prüfung, sondern die Korrektur eines Fehlers: Das Ortsverzeichnis führt
+  // fünfstellige Schlüssel für kreisfreie Städte und Landkreise, achtstellige
+  // für kreisangehörige Gemeinden. Die Förderseiten tragen beide Formen. Mit
+  // der engeren Prüfung wäre die Anmeldung auf jeder kreisfreien Stadt stumm
+  // gescheitert — die Seite hätte funktioniert, nur der Knopf nicht.
+  //
+  // Die eigentliche Prüfung ist ohnehin die nächste: Ob es den Ort GIBT,
+  // beantwortet das Verzeichnis, nicht die Länge der Zahl.
+  if (!/^\d{5}$|^\d{8}$/.test(regionId)) {
     return NextResponse.json({ error: "Kein gültiger Gemeindeschlüssel." }, { status: 400 });
   }
   if (!siehtNachEmailAus(email)) {
@@ -92,7 +101,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Diesen Ort kennen wir nicht." }, { status: 400 });
   }
 
-  const ergebnis = await aboAnlegen({ regionId, email, jetztIso: new Date(jetzt).toISOString() });
+  // Herkunft: WO wurde angemeldet, und kam der Aufruf über ein Anschreiben.
+  // Beides kommt aus dem Aufruf, wird aber nicht ungeprüft übernommen — ein
+  // Freitext aus dem Browser landete sonst in der Datenbank.
+  const quelle: AboQuelle = payload.quelle === "foerderung" ? "foerderung" : "gemeinde";
+  const ueberBrief = payload.ueberBrief === true;
+
+  const ergebnis = await aboAnlegen({
+    regionId,
+    email,
+    jetztIso: new Date(jetzt).toISOString(),
+    quelle,
+    ueberBrief,
+  });
 
   if (ergebnis.art === "keine-db") {
     return NextResponse.json({ error: "Gerade nicht möglich. Bitte später erneut." }, { status: 503 });

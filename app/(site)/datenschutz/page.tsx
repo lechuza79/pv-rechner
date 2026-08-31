@@ -641,6 +641,15 @@ export default function DatenschutzPage() {
           nicht ab, und deine IP-Adresse speichern wir dabei nicht.
         </p>
         <p style={S.p}>
+          Außerdem vermerken wir, <strong>auf welcher Seite du dich eingetragen
+          hast</strong> — auf der Atlas-Seite zum Ort oder auf der Förderseite —
+          und ob du dabei <strong>über ein Anschreiben an die Gemeinde</strong>
+          gekommen bist. Beides sagt nichts über dich aus, sondern beantwortet
+          eine Frage über unsere eigene Arbeit: welcher Einstieg überhaupt
+          genutzt wird. Die Kennung in den Anschreiben ist in jedem Brief
+          dieselbe; sie unterscheidet keine Empfänger.
+        </p>
+        <p style={S.p}>
           Die Anmeldung läuft im <strong>Bestätigungsverfahren</strong>: Nach dem
           Eintragen schicken wir eine E-Mail mit einem Bestätigungslink. Erst
           wenn du ihn anklickst, bekommst du Meldungen. Klickst du nicht, wird

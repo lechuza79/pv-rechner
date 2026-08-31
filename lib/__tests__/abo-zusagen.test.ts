@@ -74,6 +74,15 @@ describe("Was die Datenschutzerklärung über das Abo zusagt", () => {
     expect(mail).not.toMatch(/<img/i);
   });
 
+  it("nennt die Herkunftsangabe, die wir am Abo speichern", () => {
+    // Seit 31.08.2026 merken wir uns, WO jemand sich eingetragen hat (Atlas-
+    // oder Förderseite) und ob der Aufruf über ein Anschreiben kam. Das sind
+    // zwei zusätzliche Angaben an einer E-Mail-Adresse — und was wir speichern,
+    // steht in der Erklärung, sonst ist sie unvollständig.
+    expect(dse).toMatch(/auf welcher Seite du dich eingetragen hast/);
+    expect(dse).toMatch(/über ein Anschreiben an die Gemeinde/);
+  });
+
   it("verspricht die Abmeldung mit einem Klick ohne Anmeldung", () => {
     expect(dse).toMatch(/jederzeit abmelden/);
     expect(dse).toMatch(/ohne Anmeldung/);

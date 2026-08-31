@@ -1106,10 +1106,28 @@ Widget-Distribution an ~11.000 Gemeinden. Tabelle `kommunen_kontakt` (Supabase, 
 
 ## Gemeinde-Abo: „Bescheid bekommen, wenn sich hier etwas tut"
 
-Auf jeder Gemeindeseite im Solar-Atlas steht direkt unter der Überschrift ein Knopf
-„Abonnieren", daneben in derselben Zeile der Erklärtext; das Formular liegt im Fenster
-dahinter (`components/atlas/GemeindeAboBox.tsx`). Wer sich einträgt, bekommt eine
-Nachricht, wenn sich im Ort etwas Nennenswertes bewegt.
+Auf jeder Gemeindeseite im Solar-Atlas UND auf jeder Förder-Stadtseite steht rechts neben
+der Überschrift ein Knopf „<Ort> abonnieren", daneben in derselben Zeile der Erklärtext;
+das Formular liegt im Fenster dahinter (`components/atlas/GemeindeAboBox.tsx`). Wer sich
+einträgt, bekommt eine Nachricht, wenn sich im Ort etwas Nennenswertes bewegt.
+
+**Der Ortsname steht im Knopf, obwohl die Überschrift daneben ihn schon trägt.** Der
+doppelte Name ist der kleinere Preis: In der klebenden Leiste am Seitenende ist die
+Überschrift weggescrollt, und dort steht der Knopf neben „Für dein Haus durchrechnen" —
+ein nacktes „Abonnieren" ließe offen, was man abonniert.
+
+**Die Herkunft wird mitgeschrieben** (`quelle`, `ueber_brief`): auf welcher Seitengattung
+angemeldet wurde und ob der Aufruf über ein Kommunen-Anschreiben kam. Beide Gattungen
+tragen denselben Ortsnamen und sprechen verschiedene Leute an — ohne die Unterscheidung
+ließe sich nach dem ersten Schub nicht sagen, welcher Einstieg trägt. Die Brief-Kennung ist
+in JEDEM Brief dieselbe; sie sagt „über ein Anschreiben", nicht welche Gemeinde. Beides
+steht in der Datenschutzerklärung (Abschnitt 16) und ist per Test daran gebunden.
+
+**Der Ortsschlüssel ist FÜNF- oder achtstellig — BLOCKER.** Die Förderseiten tragen für
+kreisfreie Städte fünf Stellen, für kreisangehörige Gemeinden acht. Die erste Fassung der
+Anmelde-Adresse verlangte genau acht; auf jeder kreisfreien Stadt wäre die Anmeldung stumm
+gescheitert — die Seite funktioniert, nur der Knopf nicht. Die tragende Prüfung ist nicht
+die Länge der Zahl, sondern ob es den Ort im Melderegister gibt.
 
 **Das Formular steht NICHT auf der Seite** (Betreiber, 31.08.2026): Ein Eingabefeld mit
 Beschriftung, Knopf und Zusage-Zeile ist im Kopfbereich ein zweites Anliegen mitten im

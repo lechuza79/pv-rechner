@@ -768,13 +768,35 @@ export const globalStyles = `
      Text zu wenig, deshalb ab 760px Fensterbreite gestapelt.
      Gezielt .gemeinde-auszeichnung, NICHT "letztes Kind": ohne Platzierung
      rendert sie gar nichts, und dann bekaeme der Text die schmale Spalte. */
-  /* Abo-Zeile unter der Ueberschrift: Knopf links, Erklaertext daneben.
+  /* Titelzeile: Ueberschrift links, Abo-Block rechts daneben.
+     Die Ueberschrift darf schrumpfen (min-width:0), der Abo-Block behaelt seine
+     Breite — sonst wuerde erst der Knopf gequetscht und dann sein Text
+     umbrochen, waehrend links Platz frei bleibt.
+     Ab 860px gestapelt: Bei 720px Inhaltsbreite bleiben neben dem Abo-Block
+     rund 300px fuer den Ortsnamen, und darunter wird jeder zweite dreizeilig. */
+  .gemeinde-titelzeile{display:flex;align-items:baseline;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  .gemeinde-titelzeile > h1{flex:1 1 260px;min-width:0}
+  .gemeinde-titelzeile > .gemeinde-abo{flex:0 0 auto}
+  @media (max-width:860px){
+    /* Gestapelt nimmt der Abo-Block die volle Zeile UND darf schrumpfen.
+       Mit dem "flex:0 0 auto" von oben behielt er seine Inhaltsbreite, der
+       Knopf darin richtete sich mit width:100% nach ihm — und der Block ragte
+       auf 375px 60 Pixel aus dem Fenster. Ein Block, der sich nach seinem
+       Inhalt richtet, waehrend sein Inhalt sich nach ihm richtet, hat keine
+       Breite, die das Fenster kennt. */
+    .gemeinde-titelzeile{gap:0}
+    .gemeinde-titelzeile > .gemeinde-abo{flex:1 1 100%;min-width:0;max-width:100%}
+  }
+
+  /* Abo-Block: Knopf links, Erklaertext daneben.
      "align-items:center" setzt den Text auf die Mitte des Knopfes — mit
      flex-start saesse er an dessen Oberkante und die Zeile liefe optisch
      auseinander. Der Abstand nach unten ist derselbe, den die Ueberschrift
      nach oben haelt, damit der Block zwischen Titel und Einleitung gleich
      viel Luft hat. */
   .gemeinde-abo{display:flex;align-items:center;gap:12px;margin:0 0 24px;flex-wrap:wrap}
+  /* Nebeneinander traegt der Block seinen Abstand aus der Titelzeile. */
+  .gemeinde-titelzeile > .gemeinde-abo{margin-bottom:16px}
   /* Auf schmalen Schirmen unter den Knopf. Nebeneinander bliebe fuer den Text
      eine Spalte, in der jedes zweite Wort umbricht — und der Knopf soll die
      volle Breite bekommen, damit er mit dem Daumen zu treffen ist. */
