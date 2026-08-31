@@ -177,22 +177,63 @@ test.describe("Gemeinde-Abo", () => {
     await expect(page.getByRole("dialog")).toContainText("Meldungen zu Nidda");
   });
 
+  test("der Kreis steht in der Krümelspur, nicht als eigene Zeile", async ({ page }) => {
+    await page.goto("/photovoltaik-foerderung/hessen/nidda");
+
+    // Ein Ortsname allein ist mehrdeutig (Mühlhausen, Senden). Der Kreis ordnet
+    // ein — als Klammerzusatz am Blatt der Spur, NICHT als eigene Station:
+    // eine zusätzliche Ebene behauptete eine Hierarchie, die die Adresse nicht
+    // hat (sie lautet /bundesland/ort).
+    const spur = page.getByRole("navigation", { name: "Brotkrümel" });
+    await expect(spur).toContainText("Nidda (Wetteraukreis)");
+
+    // Und nicht mehr als eigene Zeile zwischen Überschrift und Fließtext.
+    const h1 = page.getByRole("heading", { level: 1 });
+    const hb = await h1.boundingBox();
+    const kreisZeilen = await page.evaluate(() => {
+      const y = document.querySelector("h1")!.getBoundingClientRect().bottom;
+      return [...document.querySelectorAll("p")].filter(
+        (p) => p.textContent?.trim() === "Wetteraukreis" && p.getBoundingClientRect().top > y,
+      ).length;
+    });
+    expect(hb).not.toBeNull();
+    expect(kreisZeilen).toBe(0);
+  });
+
+  test("der Abo-Knopf trägt die Glocke", async ({ page }) => {
+    await page.goto(ORT);
+    const knopf = page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first();
+    // Das Zeichen sitzt IM Knopf, und der Knopf trägt die Klasse, an der der
+    // Schwing-Effekt hängt — der Effekt gehört an die Handlung, nicht ans
+    // Symbol (dasselbe Symbol steht anderswo nur beschreibend da).
+    await expect(knopf.locator("svg")).toHaveCount(1);
+    await expect(knopf).toHaveClass(/sc-glocke/);
+  });
+
   test("die Förderseite nennt ihren Stand über der Überschrift", async ({ page }) => {
     await page.goto("/photovoltaik-foerderung/hessen/nidda");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Nidda");
 
     // BEIDE Daten, nie eines von beiden: aus welchem Monat die Werte stammen
     // UND wann wir sie zuletzt bestätigt haben. Eines allein lässt offen, ob
     // die Beträge von gestern oder von vor einem Jahr sind.
-    const stand = page.getByText(/Werte von .*, zuletzt geprüft am/).first();
-    await expect(stand).toBeVisible();
-
-    // Über der Überschrift, nicht darunter.
-    const [sb, hb] = await Promise.all([
-      stand.boundingBox(),
-      page.getByRole("heading", { level: 1 }).boundingBox(),
-    ]);
-    if (!sb || !hb) throw new Error("Element ohne Ausdehnung");
-    expect(sb.y).toBeLessThan(hb.y);
+    //
+    // Über die Position gemessen statt über die Textsuche: Die Angabe steht
+    // zweimal auf der Seite (Kopfzeile und Programmkarte), und ein Selektor,
+    // der beide trifft, sagt nichts darüber, ob die OBERE existiert.
+    const befund = await page.evaluate(() => {
+      const h1 = document.querySelector("h1")!;
+      const muster = /Werte von .+, zuletzt geprüft am/;
+      const oben = [...document.querySelectorAll("div")].filter(
+        (e) =>
+          e.children.length === 0 &&
+          muster.test(e.textContent ?? "") &&
+          e.getBoundingClientRect().bottom <= h1.getBoundingClientRect().top + 1,
+      );
+      return { anzahl: oben.length, text: oben[0]?.textContent?.trim() ?? null };
+    });
+    expect(befund.anzahl).toBe(1);
+    expect(befund.text).toMatch(/Werte von .+, zuletzt geprüft am \d{2}\.\d{2}\.\d{4}/);
   });
 
   test("eine unbrauchbare Adresse kommt nicht durch", async ({ page }) => {

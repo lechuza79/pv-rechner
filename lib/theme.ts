@@ -775,7 +775,11 @@ export const globalStyles = `
      Ab 860px gestapelt: Bei 720px Inhaltsbreite bleiben neben dem Abo-Block
      rund 300px fuer den Ortsnamen, und darunter wird jeder zweite dreizeilig. */
   .gemeinde-titelzeile{display:flex;align-items:baseline;justify-content:space-between;gap:24px;flex-wrap:wrap}
-  .gemeinde-titelzeile > h1{flex:1 1 260px;min-width:0}
+  /* Die linke Spalte traegt Statuszeile UND Ueberschrift; sie darf wachsen
+     und schrumpfen. Frueher stand die Ueberschrift direkt in der Zeile — dann
+     begann der Abo-Block auf Hoehe der Statuszeile darueber. */
+  .gemeinde-titelzeile > *:first-child{flex:1 1 260px;min-width:0}
+  .gemeinde-titelzeile h1{margin-top:0}
   /* Der Block darf SCHRUMPFEN (0 1 statt 0 0) und braucht min-width:0.
      Sonst behaelt er immer seine Inhaltsbreite, und die Kuerzung des
      Ortsnamens im Knopf greift nie — sie kann nur wirken, wenn der Platz
@@ -805,6 +809,24 @@ export const globalStyles = `
      min-width:0 ist noetig, damit ein Flex-Kind ueberhaupt unter seine
      Inhaltsbreite schrumpfen darf — ohne das greift text-overflow nie. */
   .gemeinde-abo-ort{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+
+  /* Die Glocke im Abo-Knopf schwingt beim Ueberfahren einmal an.
+     Kurz und klein gehalten: Sie soll sagen "hier wird etwas angekuendigt",
+     nicht die Aufmerksamkeit vom Text daneben abziehen. Der Effekt haengt am
+     KNOPF, nicht am Symbol — dasselbe Symbol steht anderswo nur beschreibend
+     da, und was dort wackelt, sieht nach einem Fehler aus. */
+  @keyframes sc-glocke-schwingt{
+    0%,100%{transform:rotate(0)}
+    20%{transform:rotate(-11deg)}
+    40%{transform:rotate(8deg)}
+    60%{transform:rotate(-5deg)}
+    80%{transform:rotate(3deg)}
+  }
+  .sc-glocke svg{transform-origin:50% 15%}
+  .sc-glocke:hover svg,.sc-glocke:focus-visible svg{animation:sc-glocke-schwingt .55s ease-in-out}
+  @media (prefers-reduced-motion:reduce){
+    .sc-glocke:hover svg,.sc-glocke:focus-visible svg{animation:none}
+  }
 
   @media (max-width:520px){
     .gemeinde-abo{align-items:stretch}

@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import AtlasSkeleton from "../../../../../../components/atlas/AtlasSkeleton";
 import Breadcrumb from "../../../../../../components/Breadcrumb";
 import RegionSearch from "../../../../../../components/atlas/RegionSearch";
-import { IconArrowRight } from "../../../../../../components/Icons";
+import { IconArrowRight, IconGlocke } from "../../../../../../components/Icons";
 import { v, space, pad } from "../../../../../../lib/theme";
 import { pageMetadata } from "../../../../../../lib/seo";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../../../lib/json-ld";
@@ -471,24 +471,22 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
           NICHT — der rechtlich nötige Lizenz-Credit steht vollständig im
           Quellen-Fuß; oben zählt nur die Aktualität.
         */}
-        <div style={S.stand}>
-          Stand{" "}
-          <time dateTime={atlas.data_as_of} style={S.standDate}>
-            {standLabel(atlas.data_as_of)}
-          </time>{" "}
-          · monatlich aktualisiert
-        </div>
-
-        {/* ÜBERSCHRIFT ÜBER DIE VOLLE BREITE, Einleitung und Auszeichnung
-            darunter nebeneinander (Betreiber, 31.08.2026).
-            Vorher stand die Überschrift in der linken Spalte, also neben der
-            Auszeichnung — bei einem langen Ortsnamen brach sie dort auf zwei
-            Zeilen um, während rechts daneben Platz frei blieb. Über die volle
-            Breite bricht sie erst, wenn sie wirklich zu lang ist. */}
-        {/* Überschrift links, Abo-Block rechts daneben (Knopf + Erklärtext in
-            einer Zeile). Auf schmalen Schirmen gestapelt. */}
+        {/* Statuszeile und Überschrift links, Abo-Block rechts daneben.
+            Der Stand gehört MIT in die linke Spalte — über die ganze Zeile
+            gesetzt begänne der Abo-Block auf seiner Höhe, und die Kopfzeile
+            hätte zwei verschiedene Oberkanten. Auf schmalen Schirmen
+            gestapelt. */}
         <div className="gemeinde-titelzeile">
-          <h1 style={S.h1}>Solaranlagen in {region.name}</h1>
+          <div style={{ minWidth: 0 }}>
+            <div style={S.stand}>
+              Stand{" "}
+              <time dateTime={atlas.data_as_of} style={S.standDate}>
+                {standLabel(atlas.data_as_of)}
+              </time>{" "}
+              · monatlich aktualisiert
+            </div>
+            <h1 style={S.h1}>Solaranlagen in {region.name}</h1>
+          </div>
           <GemeindeAboBox name={region.name} ags={region.region_id} />
         </div>
 
@@ -752,7 +750,12 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
           Stadtseiten. */}
       <StickyCta
         primaer={{ href: "/photovoltaik-rechner", label: "Für dein Haus durchrechnen" }}
-        sekundaer={{ ereignis: ABO_OEFFNEN, label: `${region.name} abonnieren` }}
+        sekundaer={{
+          ereignis: ABO_OEFFNEN,
+          label: `${region.name} abonnieren`,
+          icon: <IconGlocke size={15} />,
+          klasse: "sc-glocke",
+        }}
       />
     </div>
   );

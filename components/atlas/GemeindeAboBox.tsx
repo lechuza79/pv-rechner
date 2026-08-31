@@ -5,6 +5,7 @@ import { v, space } from "../../lib/theme";
 import { trackEvent } from "../../lib/analytics";
 import InfoTooltip from "../InfoTooltip";
 import Modal, { ModalSticky } from "../Modal";
+import { IconGlocke } from "../Icons";
 import { HERKUNFT_PARAM, HERKUNFT_WERT } from "../../lib/brief-herkunft";
 
 // „Förderprogramm, Leistung und mehr abonnieren" — eine Zeile im Kopf der
@@ -127,7 +128,8 @@ export default function GemeindeAboBox({
             Stylesheet, nicht im Code — so wird genau so viel weggenommen, wie
             der vorhandene Platz verlangt, statt nach einer geratenen
             Zeichenzahl. */}
-        <button type="button" onClick={() => setOffen(true)} style={S.knopfPrimaer}>
+        <button type="button" onClick={() => setOffen(true)} className="sc-glocke" style={S.knopfPrimaer}>
+          <IconGlocke size={16} />
           <span className="gemeinde-abo-ort">{name}</span> abonnieren
         </button>
         <p style={S.ctaText}>

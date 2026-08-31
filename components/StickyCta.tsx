@@ -33,7 +33,22 @@ export default function StickyCta({
    * `ereignis` statt `href`, wo das Ziel kein Ort ist, sondern ein Fenster
    * (der Förder-Check öffnet sich, statt irgendwohin zu springen).
    */
-  sekundaer?: { href?: string; ereignis?: string; label: string; extern?: boolean };
+  sekundaer?: {
+    href?: string;
+    ereignis?: string;
+    label: string;
+    extern?: boolean;
+    /**
+     * Zeichen vor der Beschriftung.
+     *
+     * Als ReactNode statt als Name aus einer Liste: Der Baustein soll nicht
+     * wissen müssen, welche Symbole es gibt. Die Klasse für einen Effekt
+     * (`.sc-glocke`) reicht der Aufrufer über `klasse` mit.
+     */
+    icon?: React.ReactNode;
+    /** Zusätzliche Klasse am Knopf — für Effekte, die am Aufrufer hängen. */
+    klasse?: string;
+  };
 }) {
   const [hidden, setHidden] = useState(false);
   const [gescrollt, setGescrollt] = useState(false);
@@ -117,14 +132,20 @@ export default function StickyCta({
             <button
               type="button"
               onClick={() => window.dispatchEvent(new Event(sekundaer.ereignis!))}
+              className={sekundaer.klasse}
               style={{
                 ...base,
                 cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 6,
                 background: v("--color-bg"),
                 color: v("--color-accent"),
                 border: `1px solid ${v("--color-border-accent")}`,
               }}
             >
+              {sekundaer.icon}
               {sekundaer.label}
             </button>
           ) : (
