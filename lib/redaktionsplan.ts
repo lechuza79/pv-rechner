@@ -69,7 +69,7 @@ export const FAMILIEN: Familie[] = [
   { kuerzel: "G6", name: "Wendepunkte: Schwellen und Stichtage", zustand: "daten-da" },
   { kuerzel: "G7", name: "Mythos-Check", zustand: "daten-da" },
   { kuerzel: "G8", name: "Das Ausland", zustand: "daten-da" },
-  { kuerzel: "G9", name: "Der Preis", zustand: "daten-da" },
+  { kuerzel: "G9", name: "Der Preis", zustand: "daten-da", hinweis: "Seit 08/2026 zusätzlich die Kostenstruktur echter Wärmepumpen-Angebote — siehe G20" },
   { kuerzel: "G10", name: "Die Anomalie als offene Frage", zustand: "daten-da", hinweis: "Stärkster Kommentar-Motor" },
   { kuerzel: "G11", name: "Der eigene Fehler", zustand: "daten-da" },
   { kuerzel: "G12", name: "Kommunen-Service ohne Ranking", zustand: "daten-da" },
@@ -80,6 +80,25 @@ export const FAMILIEN: Familie[] = [
   { kuerzel: "G17", name: "Frag den Datensatz", zustand: "daten-da" },
   { kuerzel: "G18", name: "Der Bau selbst, aus UX-Sicht", zustand: "spaeter" },
   { kuerzel: "G19", name: "Wärmepumpen-Förderung je Landkreis", zustand: "fehlt-daten", hinweis: "Eigene Sitzung bringt es ins Produkt" },
+  {
+    kuerzel: "G20",
+    name: "Was in Angeboten fehlt",
+    zustand: "daten-da",
+    // Die stärkste Familie für Fachpublikum, und die einzige, deren Zahlen nicht
+    // aus einem Register stammen, sondern aus Dokumenten, die Verbraucher selbst
+    // in der Hand hatten. Beispiele mit Belegkraft: Der Umbau des Zählerschranks
+    // ist in 73 von 160 Angeboten ausdrücklich NICHT enthalten und kostet im
+    // Mittel 2.966 € nach. Nur jedes zweite Angebot weist Montage und Lohn
+    // überhaupt als eigenen Posten aus. Der reine Gerätepreis lässt sich in
+    // keinem Angebot sauber herauslösen — die Verbraucherzentrale sagt das
+    // selbst und fordert die Innungen auf, das zu ändern.
+    //
+    // ZWEI SCHRANKEN, die für diese Familie schärfer sind als sonst:
+    // Kein Betriebsname, keine Region, kein Zitat aus einem Angebot — auch nicht
+    // anonymisiert. Und die Vergleichsgruppe gehört ins Bild, nicht nur in den
+    // Text: 160 Angebote aus einem Bundesland sind kein deutscher Markt.
+    hinweis: "Kostenstruktur echter Angebote. Nie über einen Betrieb, immer über die Gattung",
+  },
 ];
 
 export type Regel = { regel: string; grund: string };

@@ -52,6 +52,33 @@ function Kasten({ titel, ton, children }: { titel: string; ton: "gut" | "hinweis
   );
 }
 
+function KopierKnopf({ text }: { text: string }) {
+  const [kopiert, setKopiert] = useState(false);
+  return (
+    <button
+      type="button"
+      onClick={async () => {
+        try {
+          await navigator.clipboard.writeText(text);
+          setKopiert(true);
+          setTimeout(() => setKopiert(false), 2500);
+        } catch {
+          // Kein Zugriff auf die Zwischenablage (älterer Browser, kein sicherer
+          // Kontext) — dann passiert nichts, statt eine Erfolgsmeldung zu zeigen,
+          // der nichts entspricht.
+        }
+      }}
+      style={{
+        marginTop: space.md, padding: pad("xs", "md"), borderRadius: v("--radius-md"),
+        border: `1px solid ${v("--color-accent")}`, background: "transparent",
+        color: v("--color-accent"), fontSize: 14, fontWeight: 600, cursor: "pointer",
+      }}
+    >
+      {kopiert ? "Kopiert" : "Fragen kopieren"}
+    </button>
+  );
+}
+
 export default function AngebotCheck({
   heizlastKw,
   auslegungKw,
@@ -215,6 +242,28 @@ export default function AngebotCheck({
   );
 }
 
+/**
+ * Die Rückfragen als fertiger Text zum Weitergeben.
+ *
+ * BEWUSST ZUM KOPIEREN, NICHT ZUM VERSENDEN. Eine Mail von uns an den Betrieb
+ * machte uns zum Absender in einem fremden Vertragsverhältnis — wir bräuchten
+ * seine Adresse (die der Meister absichtlich nicht zurückgibt), und der
+ * Handwerker bekäme Post von einer Seite, die sein Angebot gerade bewertet hat.
+ * Wer die Fragen stellen will, hat den Mailverlauf mit seinem Betrieb ohnehin
+ * offen.
+ *
+ * Die Zahlen der Referenz bleiben DRAUSSEN: Im Gespräch mit dem eigenen
+ * Handwerker ist „das fehlt in 32 % der Angebote" kein Argument, sondern eine
+ * Belehrung. Der Text stellt Fragen, er führt keinen Beweis.
+ */
+function alsText(befund: AngebotsBefund, geraet: string | null): string {
+  const kopf = geraet
+    ? `zu Ihrem Angebot über ${geraet} habe ich noch ein paar Fragen:`
+    : "zu Ihrem Angebot habe ich noch ein paar Fragen:";
+  const fragen = befund.rueckfragen.map((f, i) => `${i + 1}. ${f.text}`).join("\n\n");
+  return `Guten Tag,\n\n${kopf}\n\n${fragen}\n\nVielen Dank!`;
+}
+
 function Befund({ befund, geraet, gesamtpreisEur, einheit }: { befund: AngebotsBefund; geraet: string | null; gesamtpreisEur: number | null; einheit: string }) {
   const { groesse, vollstaendigkeit, preis, unsicher } = befund;
 
@@ -343,6 +392,8 @@ function Befund({ befund, geraet, gesamtpreisEur, einheit }: { befund: AngebotsB
               </li>
             ))}
           </ul>
+          <KopierKnopf text={alsText(befund, geraet)} />
+
           <p style={{ marginTop: space.md, marginBottom: 0 }}>
             Und eine Frage, die sich immer lohnt: <strong>ob du das Material selbst bestellen
             kannst.</strong> Viele Betriebe lassen das zu. Was das Gerät im Onlinehandel kostet,
