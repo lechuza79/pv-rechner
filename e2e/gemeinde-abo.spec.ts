@@ -236,6 +236,64 @@ test.describe("Gemeinde-Abo", () => {
     expect(befund.text).toMatch(/Werte von .+, zuletzt geprüft am \d{2}\.\d{2}\.\d{4}/);
   });
 
+  test("auf der Förderseite bleiben alle drei Wege in der Leiste", async ({ page }) => {
+    // Der Förder-Check musste NICHT weichen: Das Abo tritt als drittes
+    // Element auf, auf schmalen Schirmen nur als Glocke. Ein Symbol braucht
+    // die Breite nicht, die ein dritter Textknopf genommen hätte.
+    await page.setViewportSize({ width: 375, height: 800 });
+    await page.goto("/photovoltaik-foerderung/hessen/nidda");
+    await page.mouse.wheel(0, 1200);
+
+    // Gezielt IN der Leiste zählen: „Förder-Check starten" steht auch in der
+    // Förderkarte, und ein Selektor über die ganze Seite sagt nichts darüber,
+    // ob der Weg in der Leiste noch existiert.
+    const inDerLeiste = await page.evaluate(() => {
+      const symbol = document.querySelector(".sc-cta-dritte");
+      const reihe = symbol?.parentElement;
+      if (!reihe) return null;
+      return [...reihe.children].map((e) => (e.getAttribute("aria-label") ?? e.textContent ?? "").trim());
+    });
+    expect(inDerLeiste).not.toBeNull();
+    expect(inDerLeiste!.length).toBe(3);
+    expect(inDerLeiste![0]).toContain("Anlage durchrechnen");
+    expect(inDerLeiste![1]).toContain("Förder-Check");
+    expect(inDerLeiste![2]).toContain("Nidda abonnieren");
+
+    const abo = page.locator(".sc-cta-dritte");
+    await expect(abo).toBeVisible();
+
+    // Auf 375 px trägt der dritte Knopf nur das Symbol — die Beschriftung
+    // steht als Vorlese-Name, sonst wäre er namenlos.
+    const textSichtbar = await page.evaluate(() => {
+      const t = document.querySelector(".sc-cta-dritte-text");
+      return t ? getComputedStyle(t).display !== "none" : null;
+    });
+    expect(textSichtbar).toBe(false);
+
+    // Und nichts läuft über.
+    const ueberlauf = await page.evaluate(() => {
+      const reihe = document.querySelector(".sc-cta-dritte")!.parentElement!;
+      return Math.round(reihe.scrollWidth - reihe.clientWidth);
+    });
+    expect(ueberlauf).toBeLessThanOrEqual(0);
+
+    // Er öffnet dasselbe Fenster.
+    await abo.click();
+    await expect(page.getByRole("dialog")).toContainText("Meldungen zu Nidda");
+  });
+
+  test("auf breiten Schirmen trägt der dritte Weg seine Beschriftung", async ({ page }) => {
+    await page.setViewportSize({ width: 1200, height: 900 });
+    await page.goto("/photovoltaik-foerderung/hessen/nidda");
+    await page.mouse.wheel(0, 1200);
+
+    const textSichtbar = await page.evaluate(() => {
+      const t = document.querySelector(".sc-cta-dritte-text");
+      return t ? getComputedStyle(t).display !== "none" : null;
+    });
+    expect(textSichtbar).toBe(true);
+  });
+
   test("eine unbrauchbare Adresse kommt nicht durch", async ({ page }) => {
     await page.goto(ORT);
     await page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first().click();

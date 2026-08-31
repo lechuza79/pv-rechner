@@ -20,7 +20,7 @@ import StickyCta from "../../../../../components/StickyCta";
 import GemeindeAboBox, { ABO_OEFFNEN } from "../../../../../components/atlas/GemeindeAboBox";
 import { IconGlocke } from "../../../../../components/Icons";
 import PvRechnerModal, { PV_RECHNER_HASH } from "../../../../../components/PvRechnerModal";
-import FoerderCheckStarter from "../../../../../components/FoerderCheckStarter";
+import FoerderCheckStarter, { FOERDER_CHECK_OEFFNEN } from "../../../../../components/FoerderCheckStarter";
 import { buildFundingExamples } from "../../../../../lib/funding-examples";
 import { buildFundingFaq } from "../../../../../lib/funding-faq";
 import { getRegionAtlasData, type RegionAtlas } from "../../../../../lib/mastr-data";
@@ -657,18 +657,18 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
           /* Öffnet den Rechner im Fenster statt die Seite zu verlassen —
              derselbe Weg wie im Wärmepumpen-Ratgeber. */
           primaer={{ href: PV_RECHNER_HASH, label: "Anlage durchrechnen" }}
-          /* DAS ABO STATT DES FÖRDER-CHECKS (Betreiber, 31.08.2026).
-             Drei Knöpfe hat die Leiste nicht, und auf einem schmalen Schirm
-             wäre jeder davon zu schmal zum Treffen — es ist also eine Wahl.
-             Der Förder-Check rechnet die Förderung auf eine Anlagengröße um;
-             das tut der Rechner daneben auch, und die Seite ZEIGT die
-             Konditionen ohnehin. Das Abo ist der einzige Weg, der weiter oben
-             angeboten wird und ab hier sonst nirgends mehr auftaucht.
-             Der Check bleibt über seinen Knopf in der Förderkarte erreichbar. */
-          sekundaer={{
+          /* Der Förder-Check statt der Amtsseite: Er ist der zweite Weg, der
+             auf DIESER Seite weiterhilft — die Amtsseite führt hinaus und steht
+             ohnehin in der Herkunftszeile der Karte. */
+          sekundaer={{ ereignis: FOERDER_CHECK_OEFFNEN, label: "Förder-Check starten" }}
+          /* Das Abo als DRITTER Weg — auf schmalen Schirmen nur die Glocke
+             (Betreiber, 31.08.2026). So muss keiner der beiden anderen weichen:
+             Ein Symbol braucht die Breite nicht, die ein dritter Textknopf
+             genommen hätte. */
+          dritte={{
             ereignis: ABO_OEFFNEN,
             label: `${city.name} abonnieren`,
-            icon: <IconGlocke size={15} />,
+            icon: <IconGlocke size={16} />,
             klasse: "sc-glocke",
           }}
         />

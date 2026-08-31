@@ -774,7 +774,11 @@ export const globalStyles = `
      umbrochen, waehrend links Platz frei bleibt.
      Ab 860px gestapelt: Bei 720px Inhaltsbreite bleiben neben dem Abo-Block
      rund 300px fuer den Ortsnamen, und darunter wird jeder zweite dreizeilig. */
-  .gemeinde-titelzeile{display:flex;align-items:baseline;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  /* align-items:center, nicht baseline: Links stehen zwei Zeilen (Status und
+     Ueberschrift), rechts der Abo-Block — an der Schriftlinie ausgerichtet
+     haengt der Block dann an der Oberkante der Ueberschrift statt auf der
+     Mitte des Ganzen. */
+  .gemeinde-titelzeile{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:32px}
   /* Die linke Spalte traegt Statuszeile UND Ueberschrift; sie darf wachsen
      und schrumpfen. Frueher stand die Ueberschrift direkt in der Zeile — dann
      begann der Abo-Block auf Hoehe der Statuszeile darueber. */
@@ -800,7 +804,7 @@ export const globalStyles = `
      Als Einheit rechts neben der Ueberschrift; gestapelt (schmale Schirme)
      nimmt er die volle Zeile und richtet sich links aus wie alles andere. */
   .gemeinde-abo{display:flex;flex-direction:column;align-items:flex-end;margin:0 0 24px}
-  .gemeinde-titelzeile > .gemeinde-abo{margin-bottom:16px}
+  .gemeinde-titelzeile > .gemeinde-abo{margin-bottom:0}
   .gemeinde-abo > p{text-align:right}
 
   /* Der Ortsname im Knopf wird gekuerzt, "abonnieren" bleibt stehen.
@@ -822,6 +826,14 @@ export const globalStyles = `
     60%{transform:rotate(-5deg)}
     80%{transform:rotate(3deg)}
   }
+  /* Der dritte Weg in der klebenden Leiste ist auf schmalen Schirmen NUR das
+     Symbol. Drei gleichwertige Textknoepfe passen dort nicht — auf 375px
+     blieben je rund 110px, und darin steht keine lesbare Beschriftung mehr.
+     Ab 560px tritt die Beschriftung daneben. Der Knopf traegt sie immer als
+     aria-label, ist also nie namenlos. */
+  .sc-cta-dritte-text{display:none}
+  @media (min-width:560px){.sc-cta-dritte-text{display:inline}}
+
   .sc-glocke svg{transform-origin:50% 15%}
   .sc-glocke:hover svg,.sc-glocke:focus-visible svg{animation:sc-glocke-schwingt .55s ease-in-out}
   @media (prefers-reduced-motion:reduce){
