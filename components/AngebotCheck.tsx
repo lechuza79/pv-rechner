@@ -191,28 +191,14 @@ export default function AngebotCheck({
       {/* Honigtopf — für Menschen unsichtbar, für Ausfüll-Roboter nicht. */}
       <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden style={{ position: "absolute", left: -9999, width: 1, height: 1 }} />
 
-      {einwilligung || gepruefte.length > 0 ? null : (
-        <label style={{ display: "flex", gap: space.sm, alignItems: "flex-start", fontSize: 13, lineHeight: 1.6, marginBottom: space.md, color: v("--color-text-secondary"), cursor: "pointer" }}>
-          <input type="checkbox" checked={einwilligung} onChange={(e) => setEinwilligung(e.target.checked)} style={{ marginTop: 3, flexShrink: 0 }} />
-          <span>
-            Ich bin damit einverstanden, dass mein Angebot zum Auslesen an unseren Dienstleister
-            Anthropic in die USA übermittelt wird. Dort gilt kein dem europäischen gleichwertiges
-            Datenschutzniveau; abgesichert ist die Übermittlung durch Standardvertragsklauseln.
-            Das Dokument wird nicht gespeichert und nicht zum Training verwendet. Die Zustimmung
-            gilt für diesen einen Vorgang. Mehr dazu in der{" "}
-            <Link href="/datenschutz" style={{ color: v("--color-accent") }}>Datenschutzerklärung</Link>.
-          </span>
-        </label>
-      )}
-
       {/* Ablegefeld. Auf Mobilgeräten gibt es kein Ziehen — dort ist der ganze
           Kasten schlicht ein großer Knopf, und der Text nennt nur das Tippen. */}
       <div
-        onClick={() => einwilligung && dateiFeld.current?.click()}
-        onDragOver={(e) => { if (einwilligung) { e.preventDefault(); setUeberZone(true); } }}
+        onClick={() => dateiFeld.current?.click()}
+        onDragOver={(e) => { e.preventDefault(); setUeberZone(true); }}
+        onDragEnter={(e) => { e.preventDefault(); setUeberZone(true); }}
         onDragLeave={() => setUeberZone(false)}
         onDrop={(e) => {
-          if (!einwilligung) return;
           e.preventDefault();
           setUeberZone(false);
           seitenAufnehmen(Array.from(e.dataTransfer.files ?? []));
@@ -223,13 +209,12 @@ export default function AngebotCheck({
           background: ueberZone ? v("--color-accent-dim") : "transparent",
           padding: pad("lg", "md"),
           textAlign: "center",
-          cursor: einwilligung ? "pointer" : "not-allowed",
-          opacity: einwilligung ? 1 : 0.55,
+          cursor: "pointer",
           fontSize: 14,
           color: v("--color-text-secondary"),
         }}
       >
-        <strong style={{ color: einwilligung ? v("--color-accent") : v("--color-text-muted") }}>
+        <strong style={{ color: v("--color-accent") }}>
           {seiten.length === 0 ? "Seiten auswählen" : "Weitere Seite hinzufügen"}
         </strong>
         <div style={{ marginTop: 4, fontSize: 13, color: v("--color-text-muted") }}>
@@ -257,13 +242,30 @@ export default function AngebotCheck({
         </ul>
       )}
 
+      {/* Die Einwilligung steht direkt vor dem Absenden — nicht vor dem
+          Auswählen. Eine Datei auszuwählen überträgt nichts; sie liegt im
+          Browser. Erst der Knopf darunter schickt sie weg, und genau dort gehört
+          die Entscheidung hin. Vorher gesetzt, blockierte sie ein Feld, das
+          aussah, als sei es kaputt. */}
+      {seiten.length > 0 && (
+        <label style={{ display: "flex", gap: space.sm, alignItems: "flex-start", fontSize: 13, lineHeight: 1.6, margin: `${space.lg}px 0 ${space.md}px`, color: v("--color-text-secondary"), cursor: "pointer" }}>
+          <input type="checkbox" checked={einwilligung} onChange={(e) => setEinwilligung(e.target.checked)} style={{ marginTop: 3, flexShrink: 0 }} />
+          <span>
+            Ich bin damit einverstanden, dass mein Angebot zum Auslesen an unseren Dienstleister
+            Anthropic in die USA übermittelt wird. Dort gilt kein dem europäischen gleichwertiges
+            Datenschutzniveau; abgesichert ist die Übermittlung durch Standardvertragsklauseln.
+            Das Dokument wird nicht gespeichert und nicht zum Training verwendet. Mehr dazu in der{" "}
+            <Link href="/datenschutz" style={{ color: v("--color-accent") }}>Datenschutzerklärung</Link>.
+          </span>
+        </label>
+      )}
+
       {seiten.length > 0 && (
         <button
           type="button"
           onClick={pruefen}
           disabled={zustand.art === "laeuft" || !einwilligung}
           style={{
-            marginTop: space.md,
             padding: pad("sm", "lg"), borderRadius: v("--radius-md"), border: "none",
             background: einwilligung ? v("--color-accent") : v("--color-border"),
             color: einwilligung ? "#fff" : v("--color-text-muted"),
