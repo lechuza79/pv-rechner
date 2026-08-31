@@ -156,15 +156,43 @@ test.describe("Gemeinde-Abo", () => {
     expect(beschnitten).toBe(true);
   });
 
-  test("die Förderseite trägt dasselbe Abo", async ({ page }) => {
+  test("die Förderseite trägt dieselbe Kopfzeile", async ({ page }) => {
     // Beide Seitengattungen tragen denselben Ortsnamen und sprechen
     // verschiedene Leute an. Der Knopf ist derselbe Baustein; unterschiedlich
     // ist nur, was als Herkunft mitgeschrieben wird.
+    await page.setViewportSize({ width: 1200, height: 900 });
     await page.goto("/photovoltaik-foerderung/hessen/nidda");
+
+    const h1 = page.getByRole("heading", { level: 1 });
     const knopf = page.getByRole("button", { name: /^Nidda abonnieren$/ }).first();
-    await expect(knopf).toBeVisible();
+    const [hb, kb] = await Promise.all([h1.boundingBox(), knopf.boundingBox()]);
+    if (!hb || !kb) throw new Error("Element ohne Ausdehnung");
+
+    // Dieselbe Anordnung wie auf der Atlas-Seite: Knopf rechts neben der
+    // Überschrift, nicht darunter.
+    expect(kb.x).toBeGreaterThan(hb.x + hb.width - 1);
+    expect(kb.y).toBeLessThan(hb.y + hb.height);
+
     await knopf.click();
     await expect(page.getByRole("dialog")).toContainText("Meldungen zu Nidda");
+  });
+
+  test("die Förderseite nennt ihren Stand über der Überschrift", async ({ page }) => {
+    await page.goto("/photovoltaik-foerderung/hessen/nidda");
+
+    // BEIDE Daten, nie eines von beiden: aus welchem Monat die Werte stammen
+    // UND wann wir sie zuletzt bestätigt haben. Eines allein lässt offen, ob
+    // die Beträge von gestern oder von vor einem Jahr sind.
+    const stand = page.getByText(/Werte von .*, zuletzt geprüft am/).first();
+    await expect(stand).toBeVisible();
+
+    // Über der Überschrift, nicht darunter.
+    const [sb, hb] = await Promise.all([
+      stand.boundingBox(),
+      page.getByRole("heading", { level: 1 }).boundingBox(),
+    ]);
+    if (!sb || !hb) throw new Error("Element ohne Ausdehnung");
+    expect(sb.y).toBeLessThan(hb.y);
   });
 
   test("eine unbrauchbare Adresse kommt nicht durch", async ({ page }) => {

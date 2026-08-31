@@ -87,6 +87,13 @@ const S = {
   h1: { fontSize: "var(--font-size-h1)", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" } as React.CSSProperties,
   intro: { fontSize: "var(--font-size-body)", lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 22px" } as React.CSSProperties,
   ortszeile: { fontSize: "var(--font-size-small)", color: v("--color-text-muted"), margin: "0 0 14px" } as React.CSSProperties,
+  // Stand über der Überschrift — dieselbe Größe und Farbe wie auf der
+  // Atlas-Seite zum Ort, damit beide Kopfzeilen als dieselbe Sache lesen.
+  stand: {
+    fontSize: "var(--font-size-caption)",
+    color: v("--color-text-muted"),
+    marginBottom: 8,
+  } as React.CSSProperties,
   strong: { color: v("--color-text-primary"), fontWeight: 600 } as React.CSSProperties,
   metricsGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 10, marginBottom: 28 } as React.CSSProperties,
   metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: 14 } as React.CSSProperties,
@@ -266,6 +273,30 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
             stammt (Betreiber-Entscheidung 26.08.2026). Die Seite ist erreichbar,
             steht aber nicht im Suchindex; der Verweis von hier ist damit ein
             interner Weg zu mehr Zahlen, kein Ausgang. */}
+        {/* Stand ÜBER der Überschrift, wie auf der Atlas-Seite zum Ort: Er ordnet
+            die Seite zeitlich ein, bevor die erste Zahl kommt.
+
+            Die Angabe kommt aus DERSELBEN Funktion wie die Programmkarte weiter
+            unten — eine zweite, kürzere Formulierung wäre die bekannte
+            Drift-Falle. Sie nennt bewusst BEIDE Daten: aus welchem Monat die
+            Werte stammen UND wann wir sie zuletzt bestätigt haben. Eines von
+            beiden allein lässt offen, ob die Beträge von gestern oder von vor
+            einem Jahr sind.
+
+            Nur bei genau einem regionalen Programm — mehr kann diese Seite
+            per Ableitung nicht tragen, und ein gemeinsames Datum über mehreren
+            Ständen behauptete den schnellsten Takt für den langsamsten Wert. */}
+        {f && <div style={S.stand}>{fundingStandLabel(f)}</div>}
+
+        {/* Überschrift links, Abo-Block rechts daneben — dieselbe Mechanik wie
+            auf der Atlas-Seite zum Ort. Vermerkt wird, dass HIER abonniert
+            wurde: Beide Seitengattungen tragen denselben Ortsnamen und sprechen
+            verschiedene Leute an (dort der Bestand, hier das Geld).
+
+            Der Ortsschlüssel ist hier FÜNF- oder achtstellig — kreisfreie Städte
+            tragen fünf. Die Anmelde-Adresse nimmt beide Formen; die eigentliche
+            Prüfung ist, ob es den Ort im Melderegister gibt. */}
+        <div className="gemeinde-titelzeile">
         <h1 style={S.h1}>
           {f ? (
             <>
@@ -286,6 +317,8 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
             <>Photovoltaik in {city.name}</>
           )}
         </h1>
+          <GemeindeAboBox name={city.name} ags={city.ags} quelle="foerderung" />
+        </div>
         {/* Ein Ortsname allein ist mehrdeutig — Mühlhausen und Senden gibt es
             mehrfach in Deutschland. Der Kreis darunter sagt, welcher Ort hier
             gemeint ist, bevor die erste Zahl kommt.
@@ -296,18 +329,6 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
             Lösung — als Angabe für sich genommen stimmt sie für alle. */}
         {city.kreis && <p style={S.ortszeile}>{city.kreis}</p>}
 
-        {/* Dasselbe Abo wie auf der Atlas-Seite zum Ort, mit derselben
-            Bedienung — aber vermerkt, dass es HIER abonniert wurde: Die beiden
-            Seitengattungen tragen denselben Ortsnamen und sprechen verschiedene
-            Leute an (dort der Bestand, hier das Geld). Ohne die Unterscheidung
-            liesse sich nach dem ersten Schub nicht sagen, welcher Einstieg
-            traegt.
-
-            Der Ortsschluessel kommt aus dem Verzeichnis und ist hier FUENF-
-            oder achtstellig — kreisfreie Staedte tragen fuenf. Die
-            Anmelde-Adresse nimmt beide Formen; die eigentliche Pruefung ist,
-            ob es den Ort im Register gibt. */}
-        <GemeindeAboBox name={city.name} ags={city.ags} quelle="foerderung" />
         {/* Introtext und Amtslink nebeneinander: Die Programmseite der Gemeinde
             ist die Quelle, aus der jede Zahl hier stammt, und der einzige Ort,
             an dem jemand den Antrag wirklich stellt. Sie stand bisher nur als
