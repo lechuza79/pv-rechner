@@ -62,16 +62,23 @@ async function verlinkendeGemeindenUncached(): Promise<string[]> {
       .map((z) => z.region_id)
       .filter((id) => typeof id === "string" && id.length === 8);
 
-    // Orte mit eigener Förder-Stadtseite fallen raus (Begründung oben). Der
-    // Katalog liegt im Code, nicht in der Datenbank — deshalb hier und nicht in
-    // der Abfrage.
-    const { ATLAS_CITIES } = await import("./atlas-cities");
-    const { ortSchluessel } = await import("./release-plan");
-    const mitFoerderseite = new Set(ATLAS_CITIES.map((c) => ortSchluessel(c.ags)));
-    return angeschrieben.filter((id) => !mitFoerderseite.has(ortSchluessel(id)));
+    return angeschrieben;
   } catch {
     return [];
   }
+}
+
+/**
+ * Dieselbe Menge, aber ohne die Orte mit eigener Förder-Stadtseite — das sind
+ * die, die INDEXIERBAR werden. Die übrigen angeschriebenen Orte bleiben aus dem
+ * Index, geben ihre Empfehlung aber weiter (siehe `atlasRobots`).
+ */
+export async function indexierbareGemeinden(): Promise<string[]> {
+  const alle = await verlinkendeGemeinden();
+  const { ATLAS_CITIES } = await import("./atlas-cities");
+  const { ortSchluessel } = await import("./release-plan");
+  const mitFoerderseite = new Set(ATLAS_CITIES.map((c) => ortSchluessel(c.ags)));
+  return alle.filter((id) => !mitFoerderseite.has(ortSchluessel(id)));
 }
 
 /**

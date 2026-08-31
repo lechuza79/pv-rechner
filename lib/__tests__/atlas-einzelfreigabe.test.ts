@@ -5,6 +5,7 @@ import {
   atlasIsIndexable,
   atlasLevelReleased,
   atlasOrtEinzelfreigabe,
+  atlasRobots,
   GEMEINDE_MIN_ANLAGEN,
 } from "../atlas-index";
 import { freigegebeneOrte, planBefunde, RELEASE_PLAN, type Schub } from "../release-plan";
@@ -148,10 +149,15 @@ describe("Automatische Freigabe verlinkender Gemeinden", () => {
    * naturgemäß nicht. Die erste Fassung dieses Tests prüfte genau diese Zeile
    * und war rot, obwohl der Code stimmte.
    */
-  const echteRobotsZeile = () =>
-    gemeindeSeite
-      .split("\n")
-      .find((z) => z.includes("robots: atlasRobots") && !z.includes("atlasRobots(false)"));
+  const echteRobotsZeile = () => {
+    // Der Aufruf steht über mehrere Zeilen, seit er drei Zustände unterscheidet
+    // — deshalb ab der Fundstelle einen Block lesen statt einer Zeile. Der
+    // Abbruch für unbekannte Adressen weiter oben trägt den Zustand nicht und
+    // wird übersprungen.
+    const zeilen = gemeindeSeite.split("\n");
+    const i = zeilen.findIndex((z) => z.includes("robots: atlasRobots") && !z.includes("atlasRobots(false)"));
+    return i < 0 ? undefined : zeilen.slice(i, i + 5).join(" ");
+  };
 
   it("ist in der Gemeindeseite verdrahtet", () => {
     expect(gemeindeSeite).toContain("verlinkendeGemeinden");
@@ -188,11 +194,24 @@ describe("Automatische Freigabe verlinkender Gemeinden", () => {
     );
   });
 
-  it("nimmt Orte mit eigener Förderseite aus", () => {
+  it("nimmt Orte mit eigener Förderseite vom INDEX aus", () => {
     // Sonst stünden zwei eigene Seiten auf denselben Ortsanfragen — und die
     // Förderseite steht dort teils vorn.
     const quelle = readFileSync(resolve(__dirname, "../atlas-outreach-freigabe.ts"), "utf8");
     expect(quelle).toContain("ATLAS_CITIES");
+    expect(quelle).toContain("indexierbareGemeinden");
+  });
+
+  it("lässt die Empfehlung auch bei gesperrten Orten weiterfließen", () => {
+    // Der Fall, den der Betreiber am 29.08.2026 hinterfragt hat: Der Brief
+    // verlinkt auch die Seiten, die aus dem Index bleiben. Mit „nofollow" liefe
+    // die Empfehlung dort ins Leere — genau das Problem, dessentwegen der Umbau
+    // begann. Deshalb kennt der robots-Baustein drei Zustände, nicht zwei.
+    expect(atlasRobots(false, true)).toEqual({ index: false, follow: true });
+    expect(atlasRobots(false, false)).toEqual({ index: false, follow: false });
+    expect(atlasRobots(true)).toEqual({ index: true, follow: true });
+    // Und die Seite muss den mittleren Fall auch durchreichen.
+    expect(echteRobotsZeile()).toContain("verlinkt");
   });
 
   it("schließt gesperrte Gemeinden aus", () => {

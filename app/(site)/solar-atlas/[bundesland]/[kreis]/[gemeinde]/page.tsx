@@ -16,7 +16,7 @@ import {
   atlasRobots,
   GEMEINDE_MIN_ANLAGEN,
 } from "../../../../../../lib/atlas-index";
-import { verlinkendeGemeinden } from "../../../../../../lib/atlas-outreach-freigabe";
+import { verlinkendeGemeinden, indexierbareGemeinden } from "../../../../../../lib/atlas-outreach-freigabe";
 import ZubauChart from "../../../../../../components/atlas/ZubauChart";
 import GemeindeHero, { type KpiOwnerData } from "../../../../../../components/atlas/GemeindeHero";
 import GemeindePeerTiles from "../../../../../../components/atlas/GemeindePeerTiles";
@@ -130,17 +130,21 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
     : kreisfrei
       ? "Bundesland"
       : "Landkreis";
-  // Anlagenzahl (für die Thin-Schwelle) nur laden, wenn die Seite überhaupt
-  // indexierbar werden kann — sonst ist sie ohnehin noindex und der Abruf wäre
-  // reine Last. Neben der Ebene zählt dabei die Einzelfreigabe: Ein Ort, der uns
-  // nach dem Outreach öffentlich verlinkt, ist freigegeben, obwohl die Ebene es
-  // nicht ist (Begründung an `atlasOrtEinzelfreigabe`).
-  // Zwei Wege zur Einzelfreigabe, und der zweite braucht keine Sitzung: Ein Ort
-  // aus dem Releaseplan (Entscheidung mit Nachweis) ODER ein Ort, der uns nach
-  // dem Outreach nachweislich öffentlich verlinkt hat (Tatsache, kein Ermessen —
-  // Begründung in lib/atlas-outreach-freigabe.ts).
-  const verlinker = await verlinkendeGemeinden();
-  const einzeln = atlasOrtEinzelfreigabe(region.region_id) || verlinker.includes(region.region_id);
+  // DREI Zustände, nicht zwei (Begründung an `atlasRobots`):
+  //
+  //   angeschrieben, keine eigene Förderseite → indexierbar
+  //   angeschrieben, MIT Förderseite          → nicht indexierbar, Links folgen
+  //   nie angeschrieben                       → gesperrt
+  //
+  // Der mittlere Fall ist der, den der Betreiber am 29.08.2026 zu Recht
+  // hinterfragt hat: Der Brief verlinkt auch diese Seiten, und mit `nofollow`
+  // liefe die Empfehlung dort ins Leere — dasselbe Problem, dessentwegen der
+  // ganze Umbau begann. Aus dem Index bleiben sie trotzdem, weil sie sonst mit
+  // der eigenen Förderseite um dieselben Ortsanfragen konkurrieren.
+  const angeschrieben = await verlinkendeGemeinden();
+  const indexierbar = await indexierbareGemeinden();
+  const verlinkt = angeschrieben.includes(region.region_id);
+  const einzeln = atlasOrtEinzelfreigabe(region.region_id) || indexierbar.includes(region.region_id);
   const anlagen =
     atlasLevelReleased("gemeinde") || einzeln
       ? (await getRegionAtlasData(region.region_id)).solar.total_count
@@ -166,7 +170,10 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
       description: `Photovoltaik in ${region.name}: Anlagenzahl, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister — je Einwohner und im Vergleich zum ${bezugsebene}.`,
       path: `/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`,
     }),
-    robots: atlasRobots(einzeln ? anlagen >= GEMEINDE_MIN_ANLAGEN : atlasIsIndexable("gemeinde", anlagen)),
+    robots: atlasRobots(
+      einzeln ? anlagen >= GEMEINDE_MIN_ANLAGEN : atlasIsIndexable("gemeinde", anlagen),
+      verlinkt,
+    ),
   };
 }
 

@@ -196,8 +196,29 @@ export function atlasIsIndexable(level: AtlasLevel, anlagen?: number, ags?: stri
   return true;
 }
 
-/** robots-Feld für Next-Metadata: indexierbar → explizit index/follow (überschreibt
- *  den Pilot-Default), sonst noindex/nofollow. */
-export function atlasRobots(indexable: boolean): Metadata["robots"] {
-  return indexable ? { index: true, follow: true } : { index: false, follow: false };
+/**
+ * robots-Feld für Next-Metadata.
+ *
+ * DREI Zustände, nicht zwei — das war der Denkfehler bis zum 29.08.2026:
+ *
+ *   indexierbar            → index, follow
+ *   verlinkt, nicht indexierbar → noindex, FOLLOW
+ *   sonst                  → noindex, nofollow
+ *
+ * Der mittlere Fall sind Orte, an die ein Brief ging, deren Ortsseite aber
+ * bewusst aus dem Index bleibt, weil sie schon eine Förder-Stadtseite haben:
+ * Zwei eigene Seiten auf denselben Ortsanfragen kosten beide Positionen, und die
+ * Förderseite steht dort teils vorn. Der Brief verlinkt trotzdem auf die
+ * Ortsseite — und mit `nofollow` versickerte die Empfehlung dort, ohne dass
+ * irgendjemand etwas davon hätte. Genau dieser Verlust war heute früh bei
+ * Heringen der Anlass für den ganzen Umbau.
+ *
+ * `follow` löst beides: keine zweite Seite im Index, aber die Autorität fließt
+ * an Startseite und Rechner weiter. Die Sorge „follow öffnet den Crawl-Pfad zu
+ * 11.000 Gemeinden" trifft hier nicht — es geht um eine Handvoll Orte, deren
+ * Nachbarn gesperrt bleiben und die Kette damit sofort beenden.
+ */
+export function atlasRobots(indexable: boolean, verlinkt = false): Metadata["robots"] {
+  if (indexable) return { index: true, follow: true };
+  return { index: false, follow: verlinkt };
 }
