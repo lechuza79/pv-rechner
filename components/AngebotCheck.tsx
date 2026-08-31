@@ -52,8 +52,8 @@ function Kasten({ titel, ton, children }: { titel: string; ton: "gut" | "hinweis
   const farbe = ton === "gut" ? v("--color-positive") : ton === "hinweis" ? v("--color-negative") : v("--color-border");
   return (
     <div style={{ borderLeft: `3px solid ${farbe}`, paddingLeft: space.md, marginTop: space.lg }}>
-      <div style={{ fontWeight: 600, marginBottom: space.xs }}>{titel}</div>
-      <div style={{ fontSize: 14, lineHeight: 1.6, color: v("--color-text-secondary") }}>{children}</div>
+      <div style={{ fontWeight: 700, color: v("--color-text-primary"), marginBottom: space.xs }}>{titel}</div>
+      <div style={{ fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-muted") }}>{children}</div>
     </div>
   );
 }
@@ -77,7 +77,7 @@ function KopierKnopf({ text }: { text: string }) {
       style={{
         marginTop: space.md, padding: pad("xs", "md"), borderRadius: v("--radius-md"),
         border: `1px solid ${v("--color-accent")}`, background: "transparent",
-        color: v("--color-accent"), fontSize: 14, fontWeight: 600, cursor: "pointer",
+        color: v("--color-accent"), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
       }}
     >
       {kopiert ? "Kopiert" : "Fragen kopieren"}
@@ -154,7 +154,7 @@ export default function AngebotCheck({
 
   return (
     <div>
-      <p style={{ fontSize: 14, lineHeight: 1.6, color: v("--color-text-secondary"), marginTop: 0 }}>
+      <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-muted"), marginTop: 0 }}>
         {gepruefte.length === 0 ? (
           <>
             {kennenGebaeude ? (
@@ -210,20 +210,20 @@ export default function AngebotCheck({
           padding: pad("lg", "md"),
           textAlign: "center",
           cursor: "pointer",
-          fontSize: 14,
-          color: v("--color-text-secondary"),
+          fontSize: v("--font-size-body"),
+          color: v("--color-text-muted"),
         }}
       >
         <strong style={{ color: v("--color-accent") }}>
           {seiten.length === 0 ? "Seiten auswählen" : "Weitere Seite hinzufügen"}
         </strong>
-        <div style={{ marginTop: 4, fontSize: 13, color: v("--color-text-muted") }}>
+        <div style={{ marginTop: 4, fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
           oder hierher ziehen · PDF oder Foto · bis zwölf Seiten
         </div>
       </div>
 
       {seiten.length > 0 && (
-        <ul style={{ listStyle: "none", padding: 0, margin: `${space.md}px 0 0`, fontSize: 13 }}>
+        <ul style={{ listStyle: "none", padding: 0, margin: `${space.md}px 0 0`, fontSize: v("--font-size-small") }}>
           {seiten.map((s, i) => (
             <li key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: space.sm, padding: "4px 0", borderBottom: `1px solid ${v("--color-border")}` }}>
               <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: v("--color-text-secondary") }}>
@@ -233,7 +233,7 @@ export default function AngebotCheck({
                 type="button"
                 onClick={() => setSeiten((alt) => alt.filter((_, j) => j !== i))}
                 aria-label={`Seite ${i + 1} entfernen`}
-                style={{ border: "none", background: "none", cursor: "pointer", color: v("--color-text-muted"), fontSize: 16, lineHeight: 1, padding: 4 }}
+                style={{ border: "none", background: "none", cursor: "pointer", color: v("--color-text-muted"), fontSize: v("--font-size-h3"), lineHeight: 1, padding: 4 }}
               >
                 ×
               </button>
@@ -248,7 +248,7 @@ export default function AngebotCheck({
           die Entscheidung hin. Vorher gesetzt, blockierte sie ein Feld, das
           aussah, als sei es kaputt. */}
       {seiten.length > 0 && (
-        <label style={{ display: "flex", gap: space.sm, alignItems: "flex-start", fontSize: 13, lineHeight: 1.6, margin: `${space.lg}px 0 ${space.md}px`, color: v("--color-text-secondary"), cursor: "pointer" }}>
+        <label style={{ display: "flex", gap: space.sm, alignItems: "flex-start", fontSize: v("--font-size-small"), lineHeight: 1.6, margin: `${space.lg}px 0 ${space.md}px`, color: v("--color-text-muted"), cursor: "pointer" }}>
           <input type="checkbox" checked={einwilligung} onChange={(e) => setEinwilligung(e.target.checked)} style={{ marginTop: 3, flexShrink: 0 }} />
           <span>
             Ich bin damit einverstanden, dass mein Angebot zum Auslesen an unseren Dienstleister
@@ -268,8 +268,8 @@ export default function AngebotCheck({
           style={{
             padding: pad("sm", "lg"), borderRadius: v("--radius-md"), border: "none",
             background: einwilligung ? v("--color-accent") : v("--color-border"),
-            color: einwilligung ? "#fff" : v("--color-text-muted"),
-            fontSize: 15, fontWeight: 600,
+            color: einwilligung ? v("--color-text-on-accent") : v("--color-text-muted"),
+            fontSize: v("--font-size-body"), fontWeight: 600,
             cursor: einwilligung && zustand.art !== "laeuft" ? "pointer" : "not-allowed",
           }}
         >
@@ -280,11 +280,11 @@ export default function AngebotCheck({
       )}
 
       {zustand.art === "fehler" && (
-        <p style={{ fontSize: 14, color: v("--color-negative"), marginTop: space.md }}>{zustand.text}</p>
+        <p style={{ fontSize: v("--font-size-body"), color: v("--color-negative"), marginTop: space.md }}>{zustand.text}</p>
       )}
 
       {zustand.art === "abgelehnt" && (
-        <p style={{ fontSize: 14, color: v("--color-text-secondary"), marginTop: space.md }}>
+        <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-muted"), marginTop: space.md }}>
           Das sieht nicht nach einem Angebot für dieses Gewerk aus: {zustand.grund}
         </p>
       )}
@@ -294,7 +294,7 @@ export default function AngebotCheck({
       {gepruefte.map((g, i) => (
         <div key={i} style={{ marginTop: space.xl }}>
           {gepruefte.length > 1 && (
-            <h3 style={{ fontSize: 16, margin: `0 0 ${space.sm}px` }}>Angebot {i + 1}</h3>
+            <h3 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-text-primary"), margin: `0 0 ${space.sm}px` }}>Angebot {i + 1}</h3>
           )}
           <Befund {...g} einheit={einheit} />
         </div>
@@ -307,7 +307,7 @@ export default function AngebotCheck({
           style={{
             marginTop: space.xl, padding: pad("xs", "md"), borderRadius: v("--radius-md"),
             border: `1px solid ${v("--color-border")}`, background: "transparent",
-            color: v("--color-text-muted"), fontSize: 13, cursor: "pointer",
+            color: v("--color-text-muted"), fontSize: v("--font-size-small"), cursor: "pointer",
           }}
         >
           Von vorn anfangen
@@ -349,9 +349,9 @@ function Vergleich({ gepruefte, einheit }: { gepruefte: Geprueft[]; einheit: str
 
   return (
     <div style={{ marginTop: space.xl }}>
-      <h3 style={{ fontSize: 17, margin: `0 0 ${space.sm}px` }}>Die Angebote nebeneinander</h3>
+      <h3 style={{ fontSize: v("--font-size-h2"), fontWeight: 700, color: v("--color-text-primary"), margin: `0 0 ${space.sm}px` }}>Die Angebote nebeneinander</h3>
       <div style={{ overflowX: "auto" }}>
-        <table style={{ borderCollapse: "collapse", fontSize: 14, minWidth: 320, width: "100%" }}>
+        <table style={{ borderCollapse: "collapse", fontSize: v("--font-size-body"), color: v("--color-text-primary"), minWidth: 320, width: "100%" }}>
           <thead>
             <tr>
               <th style={{ textAlign: "left", padding: "6px 8px 6px 0", fontWeight: 600 }}></th>
@@ -397,7 +397,7 @@ function Vergleich({ gepruefte, einheit }: { gepruefte: Geprueft[]; einheit: str
           </tbody>
         </table>
       </div>
-      <p style={{ fontSize: 13, color: v("--color-text-muted"), lineHeight: 1.6, marginTop: space.md }}>
+      <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6, marginTop: space.md }}>
         „Im Paket" heißt: die Leistung ist enthalten, aber ohne eigenen Preis — dann lässt sich
         genau dieser Posten nicht vergleichen. Welches Angebot das bessere ist, sagen wir nicht;
         das hängt auch an Dingen, die in keinem der Dokumente stehen.
@@ -434,7 +434,7 @@ function Befund({ befund, geraet, gesamtpreisEur, einheit }: { befund: AngebotsB
   return (
     <div style={{ marginTop: space.lg }}>
       {geraet && (
-        <p style={{ fontSize: 14, color: v("--color-text-muted"), marginTop: 0 }}>
+        <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-muted"), marginTop: 0 }}>
           Gelesen: {geraet}{gesamtpreisEur != null ? ` · ${euro(gesamtpreisEur)}` : ""}
         </p>
       )}
@@ -575,7 +575,7 @@ function Befund({ befund, geraet, gesamtpreisEur, einheit }: { befund: AngebotsB
         </Kasten>
       )}
 
-      <p style={{ fontSize: 12, color: v("--color-text-muted"), marginTop: space.lg, lineHeight: 1.6 }}>
+      <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: space.lg, lineHeight: 1.6 }}>
         Vergleichsgruppe: {befund.gewerk.vergleichsgruppe} ({befund.gewerk.stand.quelleKurz}).
         Eine Stichprobe lässt sich nicht ohne Weiteres auf den Gesamtmarkt übertragen. Diese Prüfung
         ersetzt keine Beratung und beurteilt keinen Betrieb — sie liest ein Dokument. Ohne Gewähr.

@@ -29,10 +29,14 @@ export default function AngebotPruefenClient() {
 
   return (
     <div style={{ maxWidth: 480, margin: "0 auto" }}>
-      <h1 style={{ fontSize: 26, lineHeight: 1.25, marginTop: 0, marginBottom: space.sm }}>
+      <h1 style={{
+        fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em",
+        color: v("--color-text-primary"), lineHeight: 1.2,
+        marginTop: 0, marginBottom: space.sm,
+      }}>
         Angebot prüfen lassen
       </h1>
-      <p style={{ fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), marginTop: 0 }}>
+      <p style={{ fontSize: v("--font-size-lead"), lineHeight: 1.6, color: v("--color-text-muted"), marginTop: 0 }}>
         Du hast ein Angebot vom Handwerker und willst wissen, ob es passt. Lade es hoch — wir sagen
         dir, ob die Anlage zur Größe passt, ob die üblichen Positionen drinstehen und wie der Preis
         im Vergleich liegt. <strong>Ohne Anmeldung, ohne Weitergabe an Betriebe.</strong>
@@ -40,7 +44,10 @@ export default function AngebotPruefenClient() {
 
       {schritt === 0 && (
         <>
-          <h2 style={{ fontSize: 18, marginTop: space.xl, marginBottom: space.md }}>
+          <h2 style={{
+            fontSize: v("--font-size-h2"), fontWeight: 700, color: v("--color-text-primary"),
+            marginTop: space.xl, marginBottom: space.md,
+          }}>
             Worum geht es in deinem Angebot?
           </h2>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: space.sm }}>
