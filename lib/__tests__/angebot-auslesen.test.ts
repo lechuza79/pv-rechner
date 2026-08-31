@@ -120,6 +120,10 @@ describe("Anweisung an den Meister", () => {
     expect(text).toMatch(/NICHTS ZU FRAGEN IST EIN ERGEBNIS/);
   });
 
+  it("sagt dem Meister, dass mehrere Seiten ein Dokument sind", () => {
+    expect(text).toMatch(/MEHRERE SEITEN/);
+  });
+
   it("nennt die Kategorien aus der Referenz, nicht getippte", () => {
     expect(text).toContain("zaehlerschrank");
     expect(text).toContain("hydraulischer-abgleich");
@@ -128,13 +132,25 @@ describe("Anweisung an den Meister", () => {
 
 describe("Ein Angebot lesen lassen", () => {
   it("reicht Anweisung und Dokument an den Dienst durch", async () => {
-    let gesehen: { anweisung: string; mediaType: string } | null = null;
+    let gesehen: { anweisung: string; anzahl: number } | null = null;
     const r = await leseAngebot(async (anweisung, dok) => {
-      gesehen = { anweisung, mediaType: dok.mediaType };
+      gesehen = { anweisung, anzahl: dok.length };
       return gelesen({ leistungKw: 8 });
-    }, { mediaType: "application/pdf", base64: "AAA" });
-    expect(gesehen!.mediaType).toBe("application/pdf");
+    }, [{ mediaType: "application/pdf", base64: "AAA" }]);
+    expect(gesehen!.anzahl).toBe(1);
     expect(gesehen!.anweisung).toContain("Heizungsbaumeister");
     expect(r.art).toBe("gelesen");
+  });
+
+  it("reicht mehrere Seiten in EINEM Aufruf durch", async () => {
+    // Die teuersten Befunde stehen zwischen den Seiten: eine Position auf
+    // Seite 2, deren Einschränkung im Kleingedruckten auf Seite 4 steht.
+    let anzahl = 0;
+    await leseAngebot(async (_a, dok) => { anzahl = dok.length; return gelesen({}); }, [
+      { mediaType: "image/jpeg", base64: "A" },
+      { mediaType: "image/jpeg", base64: "B" },
+      { mediaType: "image/jpeg", base64: "C" },
+    ]);
+    expect(anzahl).toBe(3);
   });
 });

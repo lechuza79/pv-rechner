@@ -71,7 +71,7 @@
 // dem Handwerksbetrieb nach Art. 14 hinzu.
 
 import Anthropic from "@anthropic-ai/sdk";
-import type { LeseDienst } from "./angebot-auslesen";
+import type { Dokument, LeseDienst } from "./angebot-auslesen";
 
 /**
  * Das Modell für die Angebotsprüfung.
@@ -93,10 +93,12 @@ export function anthropicLeseDienst(): LeseDienst | null {
 
   const client = new Anthropic({ apiKey: schluessel });
 
-  return async (anweisung, dokument) => {
-    const inhalt = BILD_TYPEN.has(dokument.mediaType)
-      ? { type: "image" as const, source: { type: "base64" as const, media_type: dokument.mediaType as "image/png" | "image/jpeg" | "image/webp", data: dokument.base64 } }
-      : { type: "document" as const, source: { type: "base64" as const, media_type: "application/pdf" as const, data: dokument.base64 } };
+  const alsInhalt = (d: Dokument) =>
+    BILD_TYPEN.has(d.mediaType)
+      ? { type: "image" as const, source: { type: "base64" as const, media_type: d.mediaType as "image/png" | "image/jpeg" | "image/webp", data: d.base64 } }
+      : { type: "document" as const, source: { type: "base64" as const, media_type: "application/pdf" as const, data: d.base64 } };
+
+  return async (anweisung, dokumente) => {
 
     // Gestreamt, weil ein langes Angebot mit vielen Positionen sonst in die
     // Zeitgrenze der Verbindung läuft — nicht, weil jemand mitlesen soll.
@@ -107,7 +109,15 @@ export function anthropicLeseDienst(): LeseDienst | null {
         inference_geo: "us",
         thinking: { type: "adaptive" },
         system: anweisung,
-        messages: [{ role: "user", content: [inhalt, { type: "text", text: "Lies dieses Angebot." }] }],
+        messages: [{
+          role: "user",
+          content: [
+            ...dokumente.map(alsInhalt),
+            { type: "text", text: dokumente.length > 1
+              ? `Das sind ${dokumente.length} Seiten EINES Angebots. Lies sie zusammen.`
+              : "Lies dieses Angebot." },
+          ],
+        }],
       })
       .finalMessage();
 

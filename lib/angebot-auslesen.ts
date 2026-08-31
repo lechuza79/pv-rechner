@@ -27,8 +27,20 @@ export type LeseErgebnis =
  * Der Modellaufruf. Bekommt das Dokument und die Anweisung, gibt rohen Text
  * zurück. Bewusst so schmal, dass ein Anbieterwechsel diese eine Funktion trifft.
  */
+export interface Dokument {
+  mediaType: string;
+  base64: string;
+}
+
 export interface LeseDienst {
-  (anweisung: string, dokument: { mediaType: string; base64: string }): Promise<string>;
+  /**
+   * Bekommt ALLE Seiten auf einmal, nicht eine nach der anderen. Ein Angebot
+   * besteht regelmäßig aus vier bis acht abfotografierten Seiten, und die
+   * teuersten Befunde stehen zwischen ihnen: eine Position auf Seite 2, deren
+   * Einschränkung im Kleingedruckten auf Seite 4 steht. Wer Seite für Seite
+   * liest, findet sie nicht.
+   */
+  (anweisung: string, dokumente: Dokument[]): Promise<string>;
 }
 
 /**
@@ -45,6 +57,11 @@ export function meisterAnweisung(gewerk: Gewerk = WAERMEPUMPE): string {
 DEINE AUFGABE IST LESEN, NICHT BEWERTEN. Du sagst, was im Dokument steht. Ob der
 Preis angemessen und die Anlage richtig dimensioniert ist, entscheidet jemand
 anderes. Schreibe kein Urteil und keine Empfehlung.
+
+Du bekommst unter Umständen MEHRERE SEITEN — abfotografiert oder gescannt, in
+beliebiger Reihenfolge. Behandle sie als EIN Dokument: Positionen, Summen und
+Einschränkungen gehören zusammen, auch wenn sie auf verschiedenen Seiten stehen.
+Widersprechen sich zwei Seiten, gehört das in "unsicher".
 
 ERSTER SCHRITT: Ist das überhaupt ein Angebot für dieses Gewerk (${gewerk.name})?
 Wenn nicht — eine Rechnung, ein Kontoauszug, ein Lohnzettel, ein Datenblatt ohne
@@ -230,8 +247,8 @@ export function leseErgebnisAus(roh: string, gewerk: Gewerk = WAERMEPUMPE): Lese
 /** Ein Angebot lesen lassen. Der Dienst wird hereingereicht, nie hier gewählt. */
 export async function leseAngebot(
   dienst: LeseDienst,
-  dokument: { mediaType: string; base64: string },
+  dokumente: Dokument[],
   gewerk: Gewerk = WAERMEPUMPE,
 ): Promise<LeseErgebnis> {
-  return leseErgebnisAus(await dienst(meisterAnweisung(gewerk), dokument), gewerk);
+  return leseErgebnisAus(await dienst(meisterAnweisung(gewerk), dokumente), gewerk);
 }

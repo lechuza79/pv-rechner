@@ -30,7 +30,11 @@ import { merkeBefund } from "../../../lib/angebot-sammlung-db";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+// Ein abfotografiertes Angebot hat regelmäßig vier bis acht Seiten; zwölf ist
+// großzügig und begrenzt zugleich, was ein einzelner Aufruf kosten kann.
+const MAX_DATEIEN = 12;
 const MAX_BYTES = 12 * 1024 * 1024;
+const MAX_BYTES_GESAMT = 30 * 1024 * 1024;
 const ERLAUBTE_TYPEN = new Set(["application/pdf", "image/png", "image/jpeg", "image/webp"]);
 
 // Wie die Kontaktroute: einfache Zählung je Adresse im Arbeitsspeicher. Beim
@@ -76,10 +80,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ fehler: "keine-datei" }, { status: 400 });
   }
 
-  const datei = form.get("datei");
-  if (!(datei instanceof File)) return NextResponse.json({ fehler: "keine-datei" }, { status: 400 });
-  if (datei.size > MAX_BYTES) return NextResponse.json({ fehler: "zu-gross" }, { status: 413 });
-  if (!ERLAUBTE_TYPEN.has(datei.type)) return NextResponse.json({ fehler: "falscher-typ" }, { status: 415 });
+  const dateien = form.getAll("datei").filter((d): d is File => d instanceof File);
+  if (dateien.length === 0) return NextResponse.json({ fehler: "keine-datei" }, { status: 400 });
+  if (dateien.length > MAX_DATEIEN) return NextResponse.json({ fehler: "zu-viele-seiten" }, { status: 413 });
+  let summe = 0;
+  for (const d of dateien) {
+    if (d.size > MAX_BYTES) return NextResponse.json({ fehler: "zu-gross" }, { status: 413 });
+    if (!ERLAUBTE_TYPEN.has(d.type)) return NextResponse.json({ fehler: "falscher-typ" }, { status: 415 });
+    summe += d.size;
+  }
+  if (summe > MAX_BYTES_GESAMT) return NextResponse.json({ fehler: "zu-gross" }, { status: 413 });
 
   // Einwilligung ist Pflicht und wird SERVERSEITIG geprüft, nicht nur im
   // Browser. Ein Häkchen, das nur die Oberfläche kennt, ist keine Schranke —
@@ -103,11 +113,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ fehler: "nicht-eingerichtet" }, { status: 503 });
   }
 
-  const base64 = Buffer.from(await datei.arrayBuffer()).toString("base64");
+  const dokumente = await Promise.all(
+    dateien.map(async (d) => ({
+      mediaType: d.type,
+      base64: Buffer.from(await d.arrayBuffer()).toString("base64"),
+    })),
+  );
 
   let ergebnis;
   try {
-    ergebnis = await leseAngebot(dienst, { mediaType: datei.type, base64 }, gewerk);
+    ergebnis = await leseAngebot(dienst, dokumente, gewerk);
   } catch {
     // Bewusst ohne Details nach außen: Die Fehlermeldung eines Lesedienstes kann
     // Teile des Dokuments enthalten.

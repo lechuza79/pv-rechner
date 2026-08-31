@@ -34,7 +34,8 @@ const FEHLERTEXT: Record<string, string> = {
   "keine-einwilligung": "Ohne die Zustimmung können wir das Angebot nicht lesen.",
   "nicht-eingerichtet": "Die Prüfung ist noch nicht freigeschaltet.",
   "zu-viele-anfragen": "Zu viele Prüfungen in kurzer Zeit. Versuch es später noch einmal.",
-  "zu-gross": "Die Datei ist größer als 12 MB.",
+  "zu-gross": "Die Seiten sind zusammen zu groß (höchstens 30 MB).",
+  "zu-viele-seiten": "Höchstens zwölf Seiten auf einmal.",
   "falscher-typ": "Bitte ein PDF oder ein Bild hochladen.",
   "lesen-fehlgeschlagen": "Das Angebot ließ sich nicht auslesen.",
   "keine-datei": "Es kam keine Datei an.",
@@ -70,12 +71,18 @@ export default function AngebotCheck({
   // vorgehaktes Kästchen: Das Dokument verlässt damit die EU, und der Nutzer
   // muss das entschieden haben, bevor er die Datei auswählt.
   const [einwilligung, setEinwilligung] = useState(false);
+  // Ein Angebot ist selten eine Datei: vier bis acht abfotografierte Seiten sind
+  // der Normalfall. Sie werden gesammelt und zusammen abgeschickt — nicht Seite
+  // für Seite, sonst sieht der Meister die Einschränkung auf Seite 4 nicht, die
+  // zur Position auf Seite 2 gehört.
+  const [seiten, setSeiten] = useState<File[]>([]);
   const dateiFeld = useRef<HTMLInputElement>(null);
 
-  async function pruefen(datei: File) {
+  async function pruefen() {
+    if (seiten.length === 0) return;
     setZustand({ art: "laeuft" });
     const form = new FormData();
-    form.set("datei", datei);
+    for (const s of seiten) form.append("datei", s);
     form.set("gewerk", gewerk);
     if (heizlastKw) form.set("heizlastKw", String(heizlastKw));
     if (auslegungKw) form.set("auslegungKw", String(auslegungKw));
@@ -96,16 +103,24 @@ export default function AngebotCheck({
       <p style={{ fontSize: 14, lineHeight: 1.6, color: v("--color-text-secondary"), marginTop: 0 }}>
         Du hast schon ein Angebot? Lade es hoch. Wir halten es gegen die Heizlast, die wir für dein
         Gebäude gerechnet haben, gegen die Positionen, die ein vollständiges Angebot nennen sollte,
-        und gegen die Preise vergleichbarer Anlagen. <strong>Das Dokument wird nicht
-        gespeichert</strong> — es wird gelesen und ist danach weg.
+        und gegen die Preise vergleichbarer Anlagen. Mehrere Seiten kannst du zusammen auswählen —
+        abfotografiert reicht. <strong>Die Seiten werden nicht gespeichert</strong> — sie werden
+        gelesen und sind danach weg.
       </p>
 
       <input
         ref={dateiFeld}
         type="file"
         accept="application/pdf,image/png,image/jpeg,image/webp"
+        multiple
         style={{ display: "none" }}
-        onChange={(e) => { const f = e.target.files?.[0]; if (f) pruefen(f); }}
+        onChange={(e) => {
+          const neu = Array.from(e.target.files ?? []);
+          // Anhängen statt ersetzen: Wer die Seiten in zwei Griffen auswählt,
+          // soll nicht die erste Hälfte verlieren.
+          if (neu.length) setSeiten((alt) => [...alt, ...neu].slice(0, 12));
+          e.target.value = "";
+        }}
       />
       {/* Honigtopf — für Menschen unsichtbar, für Ausfüll-Roboter nicht. */}
       <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden style={{ position: "absolute", left: -9999, width: 1, height: 1 }} />
@@ -127,6 +142,27 @@ export default function AngebotCheck({
         </span>
       </label>
 
+      {seiten.length > 0 && (
+        <ul style={{ listStyle: "none", padding: 0, margin: `0 0 ${space.md}px`, fontSize: 13 }}>
+          {seiten.map((s, i) => (
+            <li key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: space.sm, padding: "4px 0", borderBottom: `1px solid ${v("--color-border")}` }}>
+              <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: v("--color-text-secondary") }}>
+                {i + 1}. {s.name}
+              </span>
+              <button
+                type="button"
+                onClick={() => setSeiten((alt) => alt.filter((_, j) => j !== i))}
+                aria-label={`Seite ${i + 1} entfernen`}
+                style={{ border: "none", background: "none", cursor: "pointer", color: v("--color-text-muted"), fontSize: 16, lineHeight: 1, padding: 4 }}
+              >
+                ×
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <div style={{ display: "flex", gap: space.sm, flexWrap: "wrap" }}>
       <button
         type="button"
         onClick={() => dateiFeld.current?.click()}
@@ -140,8 +176,29 @@ export default function AngebotCheck({
           cursor: einwilligung && zustand.art !== "laeuft" ? "pointer" : "not-allowed",
         }}
       >
-        {zustand.art === "laeuft" ? "Wird gelesen …" : "Angebot hochladen"}
+        {seiten.length === 0 ? "Seiten auswählen" : "Weitere Seite hinzufügen"}
       </button>
+
+      {seiten.length > 0 && (
+        <button
+          type="button"
+          onClick={pruefen}
+          disabled={zustand.art === "laeuft" || !einwilligung}
+          style={{
+            padding: pad("sm", "lg"), borderRadius: v("--radius-md"),
+            border: "none",
+            background: einwilligung ? v("--color-accent") : v("--color-border"),
+            color: einwilligung ? "#fff" : v("--color-text-muted"),
+            fontSize: 15, fontWeight: 600,
+            cursor: einwilligung && zustand.art !== "laeuft" ? "pointer" : "not-allowed",
+          }}
+        >
+          {zustand.art === "laeuft"
+            ? "Wird gelesen …"
+            : `${seiten.length} ${seiten.length === 1 ? "Seite" : "Seiten"} prüfen`}
+        </button>
+      )}
+      </div>
 
       {zustand.art === "fehler" && (
         <p style={{ fontSize: 14, color: v("--color-negative"), marginTop: space.md }}>{zustand.text}</p>
