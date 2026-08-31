@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { leseAngebot, type LeseDienst } from "../../../lib/angebot-auslesen";
 import { pruefeAngebot, geraetepreisVergleichbar } from "../../../lib/angebot-check";
+import { anthropicLeseDienst } from "../../../lib/angebot-lesedienst";
 
 // ─── Ein hochgeladenes Wärmepumpen-Angebot prüfen ─────────────────────────────
 //
@@ -15,13 +16,13 @@ import { pruefeAngebot, geraetepreisVergleichbar } from "../../../lib/angebot-ch
 // und der Betreiber will es, aber es ist eine eigene Entscheidung mit eigenen
 // Rechtstexten. Bis dahin: lesen, urteilen, vergessen.
 //
-// WOHIN DAS DOKUMENT GEHT: an den Lesedienst, und der ist heute nicht
-// eingerichtet. Anthropic bietet keine EU-Region an (nachgemessen 27.08.2026:
-// `inference_geo` kennt nur "us" und "global"), ein direkter Aufruf wäre also
-// eine Drittlandübermittlung mit Standardvertragsklauseln und eigener
-// Risikoprüfung. Die Alternative ist ein Claude über Amazon in Frankfurt oder
-// Google in Europa. Beides ist eine Vertragsentscheidung — deshalb antwortet die
-// Route sichtbar mit "nicht eingerichtet", statt still irgendwohin zu senden.
+// WOHIN DAS DOKUMENT GEHT: an einen Lesedienst in den Vereinigten Staaten
+// (Anthropic — eine europäische Region gibt es dort nicht, nachgemessen am
+// 27.08.2026). Deshalb zwei Schranken vor dem Absenden: die ausdrückliche
+// Einwilligung des Nutzers, hier serverseitig geprüft, und der
+// Auftragsverarbeitungsvertrag samt Standardvertragsklauseln. Fehlt der Zugang,
+// antwortet die Route sichtbar mit "nicht eingerichtet", statt still zu
+// scheitern.
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -49,9 +50,9 @@ function zuOft(ip: string): boolean {
   return zeiten.length > LIMIT_MAX;
 }
 
-/** Der Lesedienst — noch nicht verdrahtet, siehe Kopfkommentar. */
+/** Der Lesedienst. Fehlt der Zugang, antwortet die Route sichtbar statt still. */
 function leseDienst(): LeseDienst | null {
-  return null;
+  return anthropicLeseDienst();
 }
 
 export async function POST(req: Request) {
@@ -76,6 +77,13 @@ export async function POST(req: Request) {
   if (!(datei instanceof File)) return NextResponse.json({ fehler: "keine-datei" }, { status: 400 });
   if (datei.size > MAX_BYTES) return NextResponse.json({ fehler: "zu-gross" }, { status: 413 });
   if (!ERLAUBTE_TYPEN.has(datei.type)) return NextResponse.json({ fehler: "falscher-typ" }, { status: 415 });
+
+  // Einwilligung ist Pflicht und wird SERVERSEITIG geprüft, nicht nur im
+  // Browser. Ein Häkchen, das nur die Oberfläche kennt, ist keine Schranke —
+  // und hier hängt an ihm, ob ein fremdes Dokument in ein Drittland geht.
+  if (String(form.get("einwilligung") ?? "") !== "ja") {
+    return NextResponse.json({ fehler: "keine-einwilligung" }, { status: 400 });
+  }
 
   const heizlastKw = Number(form.get("heizlastKw"));
   const auslegungKw = Number(form.get("auslegungKw"));

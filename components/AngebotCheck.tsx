@@ -1,5 +1,6 @@
 "use client";
 import { useRef, useState } from "react";
+import Link from "next/link";
 import { v, space, pad } from "../lib/theme";
 import type { AngebotsBefund } from "../lib/angebot-check";
 import { ANGEBOT_REFERENZ_STAND, GESAMTKOSTEN, SPEZ_KOSTEN } from "../lib/angebot-check-config";
@@ -31,6 +32,7 @@ const proKw = (n: number) => Math.round(n).toLocaleString("de-DE") + " €/kW";
 const prozent = (n: number) => (n >= 0 ? "+" : "−") + Math.abs(Math.round(n * 100)) + " %";
 
 const FEHLERTEXT: Record<string, string> = {
+  "keine-einwilligung": "Ohne die Zustimmung können wir das Angebot nicht lesen.",
   "nicht-eingerichtet": "Die Prüfung ist noch nicht freigeschaltet.",
   "zu-viele-anfragen": "Zu viele Prüfungen in kurzer Zeit. Versuch es später noch einmal.",
   "zu-gross": "Die Datei ist größer als 12 MB.",
@@ -52,6 +54,10 @@ function Kasten({ titel, ton, children }: { titel: string; ton: "gut" | "hinweis
 
 export default function AngebotCheck({ heizlastKw, auslegungKw }: { heizlastKw: number; auslegungKw: number }) {
   const [zustand, setZustand] = useState<Zustand>({ art: "leer" });
+  // Die Einwilligung ist eine bewusste Handlung vor dem Hochladen, kein
+  // vorgehaktes Kästchen: Das Dokument verlässt damit die EU, und der Nutzer
+  // muss das entschieden haben, bevor er die Datei auswählt.
+  const [einwilligung, setEinwilligung] = useState(false);
   const dateiFeld = useRef<HTMLInputElement>(null);
 
   async function pruefen(datei: File) {
@@ -60,6 +66,7 @@ export default function AngebotCheck({ heizlastKw, auslegungKw }: { heizlastKw: 
     form.set("datei", datei);
     form.set("heizlastKw", String(heizlastKw));
     form.set("auslegungKw", String(auslegungKw));
+    form.set("einwilligung", "ja");
     try {
       const antwort = await fetch("/api/angebot-check", { method: "POST", body: form });
       const daten = await antwort.json();
@@ -90,14 +97,34 @@ export default function AngebotCheck({ heizlastKw, auslegungKw }: { heizlastKw: 
       {/* Honigtopf — für Menschen unsichtbar, für Ausfüll-Roboter nicht. */}
       <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden style={{ position: "absolute", left: -9999, width: 1, height: 1 }} />
 
+      <label style={{ display: "flex", gap: space.sm, alignItems: "flex-start", fontSize: 13, lineHeight: 1.6, marginBottom: space.md, color: v("--color-text-secondary"), cursor: "pointer" }}>
+        <input
+          type="checkbox"
+          checked={einwilligung}
+          onChange={(e) => setEinwilligung(e.target.checked)}
+          style={{ marginTop: 3, flexShrink: 0 }}
+        />
+        <span>
+          Ich bin damit einverstanden, dass mein Angebot zum Auslesen an unseren Dienstleister
+          Anthropic in die USA übermittelt wird. Dort gilt kein dem europäischen gleichwertiges
+          Datenschutzniveau; abgesichert ist die Übermittlung durch Standardvertragsklauseln.
+          Das Dokument wird nicht gespeichert und nicht zum Training verwendet. Die Zustimmung
+          gilt für diesen einen Vorgang. Mehr dazu in der{" "}
+          <Link href="/datenschutz" style={{ color: v("--color-accent") }}>Datenschutzerklärung</Link>.
+        </span>
+      </label>
+
       <button
         type="button"
         onClick={() => dateiFeld.current?.click()}
-        disabled={zustand.art === "laeuft"}
+        disabled={zustand.art === "laeuft" || !einwilligung}
         style={{
-          padding: pad("sm", "lg"), borderRadius: v("--radius-md"), cursor: "pointer",
-          border: `1px solid ${v("--color-accent")}`, background: "transparent",
-          color: v("--color-accent"), fontSize: 15, fontWeight: 600,
+          padding: pad("sm", "lg"), borderRadius: v("--radius-md"),
+          border: `1px solid ${einwilligung ? v("--color-accent") : v("--color-border")}`,
+          background: "transparent",
+          color: einwilligung ? v("--color-accent") : v("--color-text-muted"),
+          fontSize: 15, fontWeight: 600,
+          cursor: einwilligung && zustand.art !== "laeuft" ? "pointer" : "not-allowed",
         }}
       >
         {zustand.art === "laeuft" ? "Wird gelesen …" : "Angebot hochladen"}
