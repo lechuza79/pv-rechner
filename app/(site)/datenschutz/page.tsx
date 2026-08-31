@@ -684,8 +684,15 @@ export default function DatenschutzPage() {
         </p>
         <p style={S.p}>
           Die Meldungen enthalten <strong>keine Zählpixel</strong> und keine
-          Links, an denen wir ablesen könnten, wer sie geöffnet hat. Wir wissen
-          also nicht, ob und wann du eine Meldung liest.
+          Links, an denen wir ablesen könnten, wer sie geöffnet hat. Wir messen
+          also nicht, ob und wann du eine Meldung liest. Vollständig unsichtbar
+          ist ein Öffnen dennoch nicht: Die Mail zeigt oben unser Logo, und wie
+          jeder Bildabruf im Netz hinterlässt dieser eine Zeile im
+          Server-Protokoll (siehe Abschnitt 3). Sie enthält keine Kennung, die
+          dich von anderen Empfängern unterscheidet — zuordnen lässt sie sich
+          also nicht. Wer auch das vermeiden möchte, stellt sein Mailprogramm so
+          ein, dass es Bilder nicht automatisch lädt; die Meldung bleibt dann
+          vollständig lesbar.
         </p>
 
         {/* Nur ein Verweis, kein eigener Abschnitt: Die LinkedIn-Angaben

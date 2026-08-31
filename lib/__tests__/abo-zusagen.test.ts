@@ -69,9 +69,20 @@ describe("Was die Datenschutzerklärung über das Abo zusagt", () => {
   it("sagt zu, dass keine Zählpixel in den Mails stecken — und es steckt keiner drin", () => {
     expect(dse).toMatch(/<strong>keine Zählpixel<\/strong>/);
     const mail = lies("lib/abo-mail.ts");
-    // Kein Bild überhaupt: Ein Zählpixel ist ein <img>, und die Vorlage kommt
-    // ohne jedes Bild aus (die Wortmarke steht als Text).
-    expect(mail).not.toMatch(/<img/i);
+
+    // EIN ZÄHLPIXEL IST NICHT „EIN BILD", SONDERN EIN BILD MIT KENNUNG.
+    // Die erste Fassung verbot jedes <img> — das war einfach zu prüfen und
+    // eine Stufe zu grob: Mit dem Logo im Kopf wurde sie rot, obwohl sich an
+    // der Zusage nichts geändert hatte. Was die Zusage wirklich trägt: Keine
+    // Bildadresse darf etwas enthalten, das einen Empfänger unterscheidet.
+    const bilder = [...mail.matchAll(/<img\s[^>]*src="([^"]*)"/gi)].map((m) => m[1]);
+    expect(bilder.length).toBeGreaterThan(0); // sonst prüft der Test nichts
+    for (const src of bilder) {
+      // Keine eingesetzten Werte in der Adresse — ein Platzhalter wäre der Weg,
+      // auf dem eine Kennung hineinkäme.
+      expect(src.replace("${SITE}", "")).not.toMatch(/\$\{/);
+      expect(src).not.toMatch(/\?/); // kein Abfrageteil, in dem eine Kennung stünde
+    }
   });
 
   it("nennt die Herkunftsangabe, die wir am Abo speichern", () => {

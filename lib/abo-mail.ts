@@ -80,33 +80,52 @@ export function fehlendeAboPflichtangaben(html: string, art: AboMailArt = "meldu
   );
 }
 
-// ─── Farben ──────────────────────────────────────────────────────────────────
+// ─── Farben und Maße ────────────────────────────────────────────────────────
 //
-// Aus dem Theme, nie getippt (Projektregel: keine Design-Farbe als Hex-Literal).
-// Eine Mail hat kein CSS-Variablen-System, deshalb der Weg über `tokens[…]` —
-// derselbe wie beim OG-Bild und bei der Preis-Mail.
+// ALLES aus dem Theme, NICHTS getippt. Eine Mail hat kein
+// CSS-Variablen-System, deshalb der Weg über `tokens[…]` — derselbe wie beim
+// OG-Bild und bei der Preis-Mail. Eine erste Fassung hatte die Werte hier
+// hingeschrieben ("die Mail kennt das Theme ja nicht"), und das ist genau der
+// Fehler, gegen den die Regel steht: Ändert sich das Blau, ändert es sich
+// überall außer hier, und niemand merkt es.
 //
 // FEST HELL, unabhängig von der Tageszeit: Die Seite folgt der Sonne, eine Mail
 // liegt für immer im Postfach. Dieselbe Entscheidung wie beim Bild-Export, wo
-// die Aufnahme immer auf der hellsten Stufe entsteht.
+// die Aufnahme immer auf der hellsten Stufe entsteht. Genommen wird deshalb der
+// Grundsatz aus `tokens`, nie eine Tagesstufe.
 const C = {
-  text: "#3F3F3F",
-  leise: "#767676",
-  linie: "#E4E4E4",
-  karte: "#FFFFFF",
-  grund: "#F6F6F4",
+  text: tokens["--color-text-primary"],
+  fliess: tokens["--color-text-secondary"],
+  leise: tokens["--color-text-muted"],
+  linie: tokens["--color-border"],
+  karte: tokens["--color-bg"],
+  grund: tokens["--color-bg-muted"],
   akzent: tokens["--color-accent"],
+  aufAkzent: tokens["--color-text-on-accent"],
+  eckeKarte: tokens["--radius-lg"],
+  eckeKnopf: tokens["--radius-md"],
 };
+
+/**
+ * Die Schriftfamilie.
+ *
+ * Unsere Hausschrift wird NICHT geladen: Ein Postfach lädt keine Webfonts, und
+ * ein Verweis darauf kostet nur einen Abruf, der nichts bewirkt. Was bleibt,
+ * ist die Systemschrift-Kette — dieselbe, die das Theme als Rückfall führt.
+ */
+const SCHRIFT = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
 
 // ─── Hülle ───────────────────────────────────────────────────────────────────
 
 /**
- * Kopf, Inhaltskarte, Fuß.
+ * Kopf, Inhaltskarte, Fuß — der Aufbau aus dem Schwesterprojekt, mit unseren
+ * Farben.
  *
- * Die Wortmarke steht als TEXT, nicht als Bild. Bilder werden in vielen
- * Postfächern erst nach einem Klick geladen; ein blockiertes Logo ist ein
- * leerer Kasten über dem Brief, und die Marke ist genau das, was oben stehen
- * soll.
+ * DAS LOGO IST EIN BILD MIT TEXT DAHINTER. Viele Postfächer laden Bilder erst
+ * auf Klick; steht dort nur ein Bild, ist der Kopf des Briefes bis dahin leer.
+ * Der Alternativtext trägt deshalb den Markennamen, und die Größe steht als
+ * Attribut UND im Stil — ohne Attribut reißt Outlook das Bild auf seine
+ * Originalgröße auf, bevor es geladen ist.
  */
 function huelle(o: {
   vorschau: string;
@@ -124,15 +143,17 @@ function huelle(o: {
        </p>`
     : `<p style="margin:0 0 12px;font-size:12px;color:${C.leise}">${escapeHtml(o.grundzeile)}</p>`;
 
-  return `<div style="background:${C.grund};margin:0;padding:32px 16px;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif">
+  return `<div style="background:${C.grund};margin:0;padding:32px 16px;font-family:${SCHRIFT};color:${C.fliess}">
   <span style="display:none!important;visibility:hidden;opacity:0;height:0;width:0;overflow:hidden">${escapeHtml(o.vorschau)}</span>
   <div style="max-width:560px;margin:0 auto">
 
-    <div style="text-align:center;padding-bottom:20px">
-      <a href="${SITE}" style="font-size:17px;font-weight:700;color:${C.text};text-decoration:none">Solar&nbsp;Check</a>
+    <div style="text-align:center;padding-bottom:22px">
+      <a href="${SITE}" style="text-decoration:none;color:${C.text};font-size:17px;font-weight:700">
+        <img src="${SITE}/logo.png" alt="Solar Check" width="150" height="26" style="display:block;margin:0 auto;border:0;outline:none;max-width:150px;height:auto">
+      </a>
     </div>
 
-    <div style="background:${C.karte};border:1px solid ${C.linie};border-radius:12px;padding:28px 24px;color:${C.text};font-size:15px;line-height:1.65">
+    <div style="background:${C.karte};border:1px solid ${C.linie};border-radius:${C.eckeKarte};padding:28px 24px;color:${C.fliess};font-size:15px;line-height:1.65">
       ${o.inhalt}
     </div>
 
@@ -151,7 +172,7 @@ function huelle(o: {
 
 function knopf(url: string, text: string): string {
   return `<p style="margin:24px 0">
-    <a href="${url}" style="display:inline-block;background:${C.akzent};color:#fff;text-decoration:none;padding:12px 22px;border-radius:8px;font-weight:600;font-size:15px">${escapeHtml(text)}</a>
+    <a href="${url}" style="display:inline-block;background:${C.akzent};color:${C.aufAkzent};text-decoration:none;padding:13px 24px;border-radius:${C.eckeKnopf};font-weight:700;font-size:15px">${escapeHtml(text)}</a>
   </p>`;
 }
 
@@ -175,7 +196,7 @@ export function aboBestaetigungsMail(o: {
   const subject = `Bitte bestätigen: Meldungen zu ${o.ortName}`;
 
   const inhalt = `
-    <p style="margin:0 0 14px;font-size:19px;font-weight:700">Noch ein Klick</p>
+    <p style="margin:0 0 14px;font-size:20px;font-weight:800;line-height:1.25;color:${C.text};letter-spacing:-0.02em">Noch ein Klick</p>
     <p style="margin:0 0 14px">
       Du möchtest Bescheid bekommen, wenn sich bei den Solaranlagen in ${ort} etwas tut.
       Bestätige das bitte einmal — danach hörst du von uns nur, wenn es wirklich etwas zu
@@ -246,19 +267,19 @@ export function aboMeldungsMail(o: {
        ${weitere
          .map(
            (m) =>
-             `<p style="margin:0 0 12px"><strong>${escapeHtml(m.titel)}</strong><br>
+             `<p style="margin:0 0 12px"><strong style="color:${C.text}">${escapeHtml(m.titel)}</strong><br>
               <span style="font-size:14px">${escapeHtml(m.text)}</span></p>`,
          )
          .join("")}`
     : "";
 
   const inhalt = `
-    <p style="margin:0 0 14px;font-size:19px;font-weight:700">${escapeHtml(erste.titel)}</p>
+    <p style="margin:0 0 14px;font-size:20px;font-weight:800;line-height:1.25;color:${C.text};letter-spacing:-0.02em">${escapeHtml(erste.titel)}</p>
     <p style="margin:0 0 16px">${escapeHtml(erste.text)}</p>
     ${weitereHtml}
     <hr style="border:0;border-top:1px solid ${C.linie};margin:22px 0">
     <p style="margin:0 0 6px">
-      <a href="${o.ortUrl}" style="color:${C.akzent};font-weight:600">Alle Zahlen zu ${ort} ansehen</a>
+      <a href="${o.ortUrl}" style="color:${C.akzent};font-weight:700">Alle Zahlen zu ${ort} ansehen</a>
     </p>
     <p style="margin:0;font-size:12px;color:${C.leise}">
       Grundlage ist das Marktstammdatenregister der Bundesnetzagentur, Stand ${escapeHtml(o.standLabel)}.

@@ -6,6 +6,9 @@ import {
   fehlendeAboPflichtangaben,
 } from "../abo-mail";
 import type { Meldung } from "../gemeinde-meldungen";
+import { readFileSync } from "fs";
+import { resolve } from "path";
+import { tokens } from "../theme";
 
 // Was in einer Abo-Mail stehen MUSS und was darin nichts zu suchen hat.
 //
@@ -125,6 +128,41 @@ describe("Meldungsmail", () => {
       standLabel: "5. August 2026",
     });
     expect(boese.html).not.toContain("<script>");
+  });
+});
+
+describe("Aussehen", () => {
+  const quelle = readFileSync(resolve(process.cwd(), "lib/abo-mail.ts"), "utf8");
+
+  it("tippt keine Farbe hart hin", () => {
+    // Eine Mail hat kein CSS-Variablen-System, also stehen die Werte am Ende
+    // als Hex im HTML — sie müssen aber AUS DEM THEME kommen. Eine erste
+    // Fassung schrieb sie hier hin („die Mail kennt das Theme ja nicht"), und
+    // damit hätte sich das Blau überall geändert außer in den Mails, ohne dass
+    // es jemandem auffällt.
+    expect(quelle).not.toMatch(/#[0-9A-Fa-f]{6}\b/);
+  });
+
+  it("benutzt die Farben, die die Seite benutzt", () => {
+    const m = aboMeldungsMail({
+      ortName: "Musterdorf",
+      ortUrl: "https://solar-check.io/x",
+      meldungen: [MELDUNG],
+      abmeldeUrl: ABMELDEN,
+      standLabel: "5. August 2026",
+    });
+    expect(m.html).toContain(tokens["--color-accent"]);
+    expect(m.html).toContain(tokens["--color-bg-muted"]);
+    expect(m.html).toContain(tokens["--color-border"]);
+  });
+
+  it("trägt das Logo mit Alternativtext und Maßen", () => {
+    const m = aboBestaetigungsMail({ ortName: "Musterdorf", bestaetigenUrl: "#" });
+    // Ohne Alternativtext ist der Kopf leer, solange das Postfach Bilder
+    // zurückhält; ohne Maß-Attribute reißt Outlook das Bild auf die
+    // Originalgröße auf, bevor es geladen ist.
+    expect(m.html).toMatch(/<img [^>]*alt="Solar Check"/);
+    expect(m.html).toMatch(/<img [^>]*width="\d+"[^>]*height="\d+"/);
   });
 });
 
