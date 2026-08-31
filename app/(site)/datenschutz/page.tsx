@@ -624,12 +624,60 @@ export default function DatenschutzPage() {
           Beschwerde bei einer Aufsichtsbehörde — stehen in Abschnitt 12.
         </p>
 
+        {/* Eigener Abschnitt, obwohl Abschnitt 15 auch von Mails an Gemeinden
+            handelt: Das ist der umgekehrte Fall. Dort schreiben WIR ungefragt
+            an Adressen, die wir auf Amtsseiten gefunden haben (Art. 14). Hier
+            trägt jemand SEINE eigene Adresse bei uns ein (Art. 13). Rechts-
+            grundlage, Herkunft, Widerspruchsweg und Löschfrist sind jeweils
+            andere — sie in einen Abschnitt zu ziehen hieße, eine davon falsch
+            darzustellen. */}
+        <h2 style={S.h2}>16. Meldungen zu einer Gemeinde (Abo)</h2>
+        <p style={S.p}>
+          Auf den Gemeindeseiten im Solar-Atlas kannst du dich für Meldungen zu
+          einem Ort eintragen. Wir verarbeiten dafür genau zwei Angaben: deine{" "}
+          <strong>E-Mail-Adresse</strong> und den <strong>Ort</strong>, den du
+          ausgewählt hast. Dazu die Zeitpunkte deiner Eintragung, deiner
+          Bestätigung und der zuletzt versendeten Meldung. Einen Namen fragen wir
+          nicht ab, und deine IP-Adresse speichern wir dabei nicht.
+        </p>
+        <p style={S.p}>
+          Die Anmeldung läuft im <strong>Bestätigungsverfahren</strong>: Nach dem
+          Eintragen schicken wir eine E-Mail mit einem Bestätigungslink. Erst
+          wenn du ihn anklickst, bekommst du Meldungen. Klickst du nicht, wird
+          die Eintragung gelöscht und es folgt keine weitere E-Mail. Rechts&shy;grundlage
+          ist deine <strong>Einwilligung</strong> (Art. 6 Abs. 1 lit. a DSGVO);
+          die Zeitpunkte von Eintragung und Bestätigung dienen dem Nachweis,
+          dass sie vorlag.
+        </p>
+        <p style={S.p}>
+          <strong>Du kannst dich jederzeit abmelden</strong> — mit einem Klick
+          am Fuß jeder Meldung, ohne Anmeldung und ohne Angabe von Gründen.
+          Danach löschen wir die E-Mail-Adresse nicht sofort, sondern vermerken
+          sie als abgemeldet, damit sie nicht versehentlich wieder auf die Liste
+          gerät; nach zwölf Monaten wird der Eintrag entfernt. Der Widerruf
+          wirkt für die Zukunft und lässt die Rechtmäßigkeit der bis dahin
+          erfolgten Verarbeitung unberührt.
+        </p>
+        <p style={S.p}>
+          Die Meldungen versenden wir über das E-Mail-Postfach unserer Domain
+          bei der ALL-INKL.COM – Neue Medien Münnich (Friedrichroda,
+          Deutschland). Ein Auftragsverarbeitungsvertrag besteht; die Daten
+          verlassen dabei die Europäische Union nicht. Die Eintragungen selbst
+          liegen in unserer Datenbank bei Supabase (siehe Abschnitt 9) und sind
+          dort ausschließlich über einen internen Zugang lesbar.
+        </p>
+        <p style={S.p}>
+          Die Meldungen enthalten <strong>keine Zählpixel</strong> und keine
+          Links, an denen wir ablesen könnten, wer sie geöffnet hat. Wir wissen
+          also nicht, ob und wann du eine Meldung liest.
+        </p>
+
         {/* Nur ein Verweis, kein eigener Abschnitt: Die LinkedIn-Angaben
             betreffen Besucher unserer LinkedIn-Seite, nicht die dieser Website.
             Sie hier auszubreiten verlängerte die Erklärung für alle, die sie
             nichts angeht. Ohne diesen Satz wäre die Unterseite allerdings eine
             Waise — erreichbar nur über LinkedIn selbst. */}
-        <h2 style={S.h2}>16. Unsere Präsenz auf LinkedIn</h2>
+        <h2 style={S.h2}>17. Unsere Präsenz auf LinkedIn</h2>
         <p style={S.p}>
           Wir betreiben eine Unternehmensseite auf LinkedIn. Was dort verarbeitet
           wird, findet auf den Systemen von LinkedIn statt und nicht auf dieser

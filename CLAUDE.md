@@ -1104,6 +1104,84 @@ Widget-Distribution an ~11.000 Gemeinden. Tabelle `kommunen_kontakt` (Supabase, 
 
 **Die Rückläufer-Erkennung liest nur den selbst geschriebenen Teil** (`ohneZitat`). Unser eigener Brief endet mit „Ihr Widerspruchsrecht"; Outlook zitiert ihn in jede Antwort. Eine Wortsuche über den ganzen Text hätte **jede freundliche Antwort** als Widerspruch eingestuft und die Gemeinde dauerhaft gesperrt — bei allen 100 Briefen. Wer den Zweig für maschinelle Zustellmeldungen betreten hat, kommt nie als „Widerspruch" heraus, sondern im Zweifel als `unklar-maschinell` in die Liste „bitte selbst ansehen".
 
+## Gemeinde-Abo: „Bescheid bekommen, wenn sich hier etwas tut"
+
+Auf jeder Gemeindeseite im Solar-Atlas steht ein Anmeldefeld (`components/atlas/GemeindeAboBox.tsx`).
+Wer sich einträgt, bekommt eine Nachricht, wenn sich im Ort etwas Nennenswertes bewegt.
+Angelegt 31.08.2026, **vor dem nächsten Outreach-Schub** — der Brief soll das Abo als
+zweite, niedrigere Bitte anbieten können.
+
+**Warum das der stärkere Hebel ist als ein weiterer Kaltbrief:** Ein Abo hebt die
+rechtliche Fessel des Outreach auf. Wer sich anmeldet, hat eingewilligt — kein
+Ferienkalender, keine Tagesgrenze, kein Nachfass-Verbot. Aus einem Einmalkontakt wird
+ein Kanal. Für eine Verwaltung ist es außerdem die niedrigste Hürde, die wir anbieten:
+Das Widget braucht Redaktionssystem, IT und Datenschutzbeauftragten, die fertige Meldung
+braucht die Entscheidung, dass es ein Thema ist — ein Abo braucht einen Klick.
+
+**Der Inhalt wird GERECHNET, nicht getippt** (`lib/gemeinde-meldungen.ts`). Eine reine
+Funktion über die Zahlen, die die Gemeindeseite ohnehin lädt; sie speist Seite, Abo-Mail
+und später den Brief. Dieselbe Systematik wie bei den Social-Posts und aus demselben
+Anlass wie `lib/gemeinde-vergleich.ts`: Zwei getrennt formulierte Oberflächen
+widersprechen sich irgendwann, und beim Kommunen-Anschreiben ist genau das passiert.
+Jede Meldung prüft ihre eigenen Schranken und **meldet sich ab, wenn sie nicht trägt** —
+leer ist ein zulässiges Ergebnis. Mindestmengen (5 Anlagen, beim Vergütungs-Auslauf 20),
+Nenner sichtbar, Lob mit Namen und Kritik ohne, Singular/Plural gebaut statt getippt.
+Festgenagelt von `lib/__tests__/gemeinde-meldungen.test.ts`.
+
+**Der Monat des Netzanschlusses fehlt — und er steht in der Quelldatei.** `parseYear` in
+`scripts/mastr-refresh.ts` schneidet das Inbetriebnahmedatum auf vier Stellen, der
+Aggregat-Schlüssel trägt nur das Jahr. Eine Monatsaussage wäre deshalb nicht gerechnet,
+sondern erfunden; die kleinste ehrliche Einheit ist das Jahr. Nachrüstbar über eine
+Stelle im Import plus eine schmale Monatstabelle für die letzten zwei Jahre — **nicht**
+eine Monatsachse über die ganze Historie, das verzwölffacht 562.000 Zeilen.
+**Ungeprüft und vor der ersten Monatsmeldung zu messen:** Anlagen werden verspätet
+gemeldet, ein Monatswert wächst also nach dem Versand vermutlich noch. Denselben Monat
+über zwei Datenstände vergleichen, bevor eine Zahl rausgeht.
+
+**Drei Regeln kippen gegenüber dem Kommunen-Anschreiben — wer sie kopiert, baut jeweils
+den falschen Fall** (`lib/abo-mail.ts`, `lib/abo-versand.ts`):
+- **`List-Unsubscribe` gehört HIER hinein.** Im Anschreiben ist die Kopfzeile nach einer
+  Messung absichtlich leer (Apple Mail setzt ein „Mailing-Liste"-Banner über den Brief,
+  und der lebt davon, dass ein Mensch einem anderen schreibt). Bei einer Abo-Mail IST es
+  eine Liste — das Banner sagt die Wahrheit, und der Ein-Klick nach RFC 8058 ist genau
+  das, was der Anmeldeknopf zusagt. Die Adresse muss deshalb **auf POST ohne Rückfrage**
+  antworten; wer dort eine Bestätigungsseite vorschaltet, meldet niemanden ab und gilt
+  bei großen Anbietern als nicht abbestellbar.
+- **Herkunftszeile ist Art. 13, nicht Art. 14.** Dort stammen die Adressen von
+  Amtsseiten, hier trägt sie der Empfänger selbst ein.
+- **Ferien, Wochentag und Tagespensum entfallen.** Das sind Bremsen gegen Kaltakquise;
+  einem Abonnenten seine Meldung vorzuenthalten, weil in seinem Bundesland Ferien sind,
+  wäre keine Rücksicht. Was bleibt: Prüfung des Versandwegs und die Pflichtangaben.
+
+**Versendet wird über dasselbe Postfach wie die Anschreiben**, nicht über den Dienst, der
+Kontaktformular und Wächter-Alarme trägt — eine wachsende Verteilerliste dort träfe bei
+der ersten Beschwerdewelle dasselbe Konto, und dann kommen die Alarm-Mails nicht mehr an.
+
+**Keine IP-Adresse, kein Zählpixel.** Der Einwilligungsnachweis sind die Zeitpunkte von
+Eintragung und Bestätigung plus das signierte Token. Das weicht bewusst von dem ab, was
+Anleitungen empfehlen, und **die Abwägung hat die Council-Prüfung mit zwei Legal-Judges
+noch NICHT durchlaufen** — sie gehört dorthin, bevor die erste Meldung rausgeht.
+
+**Die Fristen in der Datenschutzerklärung sind Zusagen, keine Einstellungen.** Abschnitt 16
+sagt zu, dass eine nie bestätigte Eintragung gelöscht wird und ein abgemeldeter Eintrag
+nach zwölf Monaten verschwindet. Eingelöst wird das von `/api/abo/aufraeumen`, eingehängt
+im nächtlichen Förder-Workflow; `lib/__tests__/abo-zusagen.test.ts` hält die
+veröffentlichten Sätze gegen den Code, der sie halten muss. Wer den Lauf abschaltet, macht
+aus beiden Sätzen eine Falschaussage, ohne dass etwas rot wird.
+
+**Ein abgemeldeter Eintrag wird nicht gelöscht, sondern vermerkt.** Der Vermerk IST der
+Widerspruch: Ohne ihn käme dieselbe Adresse bei einer erneuten Anmeldung ohne
+Bestätigung durch.
+
+**Offen vor dem Livegang:** `ABO_HMAC_SECRET` auf Vercel eintragen (ohne sie verweigert
+die Anmeldung — bewusst, ein fester Ersatzwert wäre öffentlich bekannt), die
+Council-Prüfung der Datenschutz-Abwägung, und der Versandlauf für die Meldungen selbst
+(gebaut ist bisher Anmeldung, Bestätigung, Abmeldung).
+
+Tabelle `gemeinde_abos`, angelegt über `/api/abo/setup` — RLS an ohne Policy, nur über den
+Dienstschlüssel erreichbar; am 31.08.2026 mit dem Anon-Key gegengeprüft („permission
+denied"), Service-Key als Gegenprobe.
+
 ## PV-Fachbetriebe (interner Bereich)
 
 Erhebung der Solarteure und Elektro-Fachbetriebe mit PV-Geschäft, angelegt 27.08.2026.

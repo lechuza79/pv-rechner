@@ -60,6 +60,12 @@ export const EVENTS = [
   // Herkunft aus den Outreach-Briefen: zwei Namen statt einer Eigenschaft
   "brief_aufruf_direkt",
   "brief_aufruf_verweis",
+  // Gemeinde-Abo. Gezählt wird der abgeschickte Anmeldeversuch — NICHT die
+  // Bestätigung: Die passiert in einem anderen Postfach, oft auf einem anderen
+  // Gerät, und wäre als Ereignis auf der Bestätigungsseite eine Zählung, die
+  // sich der Anmeldung zuordnen ließe. Welcher Ort es war, wird bewusst nicht
+  // erfasst; das stünde sonst über den Seitenaufruf ohnehin schon zu viel dabei.
+  "abo_anmeldung",
 ] as const;
 
 export type AnalyticsEvent = (typeof EVENTS)[number];

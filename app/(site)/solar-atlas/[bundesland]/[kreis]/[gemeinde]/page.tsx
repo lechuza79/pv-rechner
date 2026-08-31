@@ -23,6 +23,7 @@ import GemeindePeerTiles from "../../../../../../components/atlas/GemeindePeerTi
 import GemeindePlatzierungen from "../../../../../../components/atlas/GemeindePlatzierungen";
 import CollapsibleIntro from "../../../../../../components/atlas/CollapsibleIntro";
 import GemeindeEmbedBox from "../../../../../../components/atlas/GemeindeEmbedBox";
+import GemeindeAboBox from "../../../../../../components/atlas/GemeindeAboBox";
 import GemeindePotentialClient from "../../../../../../components/atlas/GemeindePotentialClient";
 import GemeindeErneuerbareWidget from "../../../../../../components/atlas/GemeindeErneuerbareWidget";
 import GemeindeSolarLive from "../../../../../../components/atlas/GemeindeSolarLive";
@@ -668,6 +669,15 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
             </Link>
           </div>
         )}
+
+        {/* Das Abo steht VOR dem Kommunen-Kasten und getrennt von ihm: Jener
+            beginnt mit „Sie arbeiten für die Gemeinde X?" und spricht eine
+            Verwaltung an, das Abo richtet sich an beide — Rathaus und
+            Bewohnerschaft. Zusammengelegt würde die Hälfte der Zielgruppe schon
+            in der Überschrift ausgeladen. */}
+        <div style={S.section}>
+          <GemeindeAboBox name={region.name} ags={region.region_id} />
+        </div>
 
         <div style={S.section}>
           <GemeindeEmbedBox
