@@ -68,7 +68,7 @@ export default async function Seite(props: { searchParams: Promise<{ t?: string 
       titel={ort ? `Angemeldet für ${ort}` : "Angemeldet"}
       saetze={[
         ort
-          ? `Du bekommst jetzt eine Nachricht, wenn sich bei den Solaranlagen in ${ort} etwas Nennenswertes tut — ein neues Förderprogramm, ein auslaufender Vergütungsjahrgang, der Zubau eines Jahres.`
+          ? `Wir schreiben dir, wenn ${ort} einen Zuschuss auflegt, wenn ein Vergütungsjahrgang ausläuft oder wenn die Zahlen fürs Jahr da sind.`
           : "Du bekommst jetzt eine Nachricht, wenn sich in deinem Ort etwas Nennenswertes tut.",
         "Höchstens eine Mail im Monat, und nur wenn es etwas zu berichten gibt. Abmelden kannst du dich mit einem Klick am Fuß jeder Mail.",
       ]}

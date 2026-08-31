@@ -325,13 +325,15 @@ test.describe("Gemeinde-Abo", () => {
     // Wochen leer.
     await page.goto(ORT);
     await page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first().click();
-    await expect(page.getByRole("dialog")).toContainText("höchstens eine Mail im Monat");
+    // Auf die AUSSAGE prüfen, nicht auf die Schreibweise: Der Satz beginnt jetzt
+    // mit dem Wort, also steht es groß.
+    await expect(page.getByRole("dialog")).toContainText(/höchstens eine Mail im Monat/i);
 
     await page.goto("/photovoltaik-foerderung/hessen/nidda");
     await page.getByRole("button", { name: /^Nidda abonnieren$/ }).first().click();
     const foerder = page.getByRole("dialog");
     await expect(foerder).toContainText("täglich");
-    await expect(foerder).not.toContainText("höchstens eine Mail im Monat");
+    await expect(foerder).not.toContainText(/höchstens eine Mail im Monat/i);
   });
 
   test("das Bestands-Abo fragt keine Technik", async ({ page }) => {

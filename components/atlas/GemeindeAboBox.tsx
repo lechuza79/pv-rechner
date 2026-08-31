@@ -51,17 +51,17 @@ type Zustand = "bereit" | "sendet" | "fertig" | { fehler: string };
 const TEXTE = {
   gemeinde: {
     intro:
-      "Ein neuer kommunaler Zuschuss, ein auslaufender Vergütungsjahrgang, der Zubau eines Jahres — höchstens eine Mail im Monat, und nur wenn es etwas zu berichten gibt.",
+      "Wir schreiben, wenn deine Gemeinde einen Zuschuss auflegt, wenn ein Vergütungsjahrgang ausläuft oder wenn die Zahlen fürs Jahr da sind. Höchstens eine Mail im Monat.",
     teaser: "Förderprogramm, Leistung u.\u00a0v.\u00a0m.",
     hilfe:
-      "Wir schreiben, wenn sich hier etwas Nennenswertes tut: ein neuer kommunaler Zuschuss, ein Vergütungsjahrgang, der ausläuft, der Zubau eines Jahres. Höchstens eine Mail im Monat, und nur wenn es etwas zu berichten gibt. Deine Adresse geben wir nicht weiter. Abmelden kannst du dich mit einem Klick am Fuß jeder Mail.",
+      "Wir schreiben, wenn deine Gemeinde einen Zuschuss auflegt, wenn ein Vergütungsjahrgang ausläuft oder wenn die Zahlen fürs Jahr da sind. Höchstens eine Mail im Monat, und nur wenn es etwas zu berichten gibt. Deine Adresse geben wir nicht weiter, und abmelden kannst du dich mit einem Klick am Fuß jeder Mail.",
   },
   foerderung: {
     intro:
-      "Ein neues Förderprogramm, geänderte Konditionen, ein ausgeschöpfter Topf. Wir sehen die Programmseiten täglich durch und schreiben, sobald sich etwas ändert — für einen einzelnen Ort ist das selten.",
-    teaser: "Neue Zuschüsse, geänderte Konditionen",
+      "Wir sehen die Programmseiten der Gemeinden täglich durch. Kommt ein Zuschuss dazu, ändern sich die Bedingungen oder ist der Topf leer, schreiben wir dir. Für einen einzelnen Ort passiert das selten.",
+    teaser: "Wenn sich an der Förderung etwas ändert",
     hilfe:
-      "Wir sehen die Programmseiten der Gemeinden täglich durch. Ändert sich etwas — ein neues Programm, andere Konditionen, ein leerer Topf —, schreiben wir zeitnah; für einen einzelnen Ort passiert das selten. Der Zeitpunkt zählt hier: Kommunale Töpfe sind oft nach wenigen Wochen ausgeschöpft. Deine Adresse geben wir nicht weiter. Abmelden kannst du dich mit einem Klick am Fuß jeder Mail.",
+      "Wir sehen die Programmseiten der Gemeinden täglich durch. Kommt ein Zuschuss dazu, ändern sich die Bedingungen oder ist der Topf leer, schreiben wir dir. Für einen einzelnen Ort passiert das selten, aber der Zeitpunkt zählt: Kommunale Töpfe sind oft nach wenigen Wochen leer. Deine Adresse geben wir nicht weiter, und abmelden kannst du dich mit einem Klick am Fuß jeder Mail.",
   },
 } as const;
 
