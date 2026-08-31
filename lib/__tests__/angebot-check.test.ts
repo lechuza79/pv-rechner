@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
-  pruefeGroesse, pruefeVollstaendigkeit, pruefePreis, geraetepreisVergleichbar,
+  pruefeGroesse, pruefeVollstaendigkeit, pruefePreis, geraetepreisVergleichbar, pruefeAngebot,
   type AusgelesenesAngebot,
 } from "../angebot-check";
 import { GESAMTKOSTEN, SPEZ_KOSTEN, ANGEBOTS_POSITIONEN } from "../angebot-check-config";
@@ -106,6 +106,28 @@ describe("Preis", () => {
 
   it("sagt „unbekannt“ ohne Leistungsangabe", () => {
     expect(pruefePreis(angebot({ gesamtpreisEur: 35000 })).urteil).toBe("unbekannt");
+  });
+});
+
+describe("Rückfragen: die Zahl nennt ihre Position", () => {
+  it("hängt den Namen der Position an die Zahlen", () => {
+    // Frage und Zahl können verschiedene Positionen meinen — eine Frage nach den
+    // Elektroarbeiten mit den Häufigkeiten des Zählerschranks darunter. Ohne den
+    // Namen ist das unsichtbar, und dann steht eine Beschriftung über einer Zahl,
+    // die etwas anderes misst.
+    const b = pruefeAngebot(angebot({
+      rueckfragen: [{ text: "Frag nach den Elektroarbeiten.", bezug: "zaehlerschrank" }],
+    }), { heizlastKw: 10, auslegungKw: 8.5 });
+    expect(b.rueckfragen[0].bezugName).toBe("Umbau des Zählerschranks");
+    expect(b.rueckfragen[0].medianKosten).toBe(2966);
+  });
+
+  it("lässt den Namen weg, wo es keine Position gibt", () => {
+    const b = pruefeAngebot(angebot({
+      rueckfragen: [{ text: "Frag nach der Heizlastberechnung.", bezug: null }],
+    }), { heizlastKw: 10, auslegungKw: 8.5 });
+    expect(b.rueckfragen[0].bezugName).toBeNull();
+    expect(b.rueckfragen[0].medianKosten).toBeNull();
   });
 });
 

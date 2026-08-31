@@ -262,7 +262,10 @@ function Befund({ befund, geraet, gesamtpreisEur }: { befund: AngebotsBefund; ge
                     deshalb stehen sie hier und nicht im Satz darüber. */}
                 {(f.anteilEnthalten != null || f.medianKosten != null) && (
                   <div style={{ color: v("--color-text-muted"), marginTop: 2 }}>
-                    {f.anteilEnthalten != null && <>Enthalten in {Math.round(f.anteilEnthalten * 100)} % der ausgewerteten Angebote</>}
+                    {/* Der Name muss dabeistehen: Frage und Zahl können
+                        verschiedene Positionen meinen. */}
+                    {f.bezugName && <>{f.bezugName}: </>}
+                    {f.anteilEnthalten != null && <>enthalten in {Math.round(f.anteilEnthalten * 100)} % der ausgewerteten Angebote</>}
                     {f.anteilEnthalten != null && f.medianKosten != null && <> · </>}
                     {f.medianKosten != null && <>wo ausgewiesen im Mittel {euro(f.medianKosten)} (aus {f.medianBasis} Angeboten)</>}
                   </div>

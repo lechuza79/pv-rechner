@@ -230,8 +230,19 @@ export function pruefePreis(angebot: AusgelesenesAngebot): PreisBefund {
 
 // ─── Alles zusammen ──────────────────────────────────────────────────────────
 
-/** Eine Rückfrage samt der Zahlen, die der Code beisteuert. */
+/**
+ * Eine Rückfrage samt der Zahlen, die der Code beisteuert.
+ *
+ * `bezugName` ist nicht Zierde: Die Frage und die Zahl darunter können sich auf
+ * VERSCHIEDENE Positionen beziehen — eine Frage nach den Elektroarbeiten, deren
+ * Zahlen zum Zählerschrank gehören. Ohne den Namen daneben ist das von außen
+ * nicht zu sehen, und dann steht eine Beschriftung über einer Zahl, die etwas
+ * anderes misst. Beim ersten Durchlauf an einem echten Angebot ist genau das
+ * passiert.
+ */
 export interface BelegteRueckfrage extends Rueckfrage {
+  /** Name der Position, auf die sich die Zahlen beziehen. */
+  bezugName: string | null;
   /** Anteil der ausgewerteten Angebote, in denen die Leistung enthalten war. */
   anteilEnthalten: number | null;
   /** Median des Einzelpreises, wo er ausgewiesen war. */
@@ -263,6 +274,7 @@ function belege(fragen: Rueckfrage[]): BelegteRueckfrage[] {
     const p = f.bezug ? ANGEBOTS_POSITIONEN.find((x) => x.id === f.bezug) : undefined;
     return {
       ...f,
+      bezugName: p?.name ?? null,
       anteilEnthalten: p?.anteilEnthalten ?? null,
       medianKosten: p?.medianKosten ?? null,
       medianBasis: p?.medianBasis ?? null,
