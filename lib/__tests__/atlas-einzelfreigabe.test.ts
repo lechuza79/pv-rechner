@@ -194,24 +194,19 @@ describe("Automatische Freigabe verlinkender Gemeinden", () => {
     );
   });
 
-  it("nimmt Orte mit eigener Förderseite vom INDEX aus", () => {
-    // Sonst stünden zwei eigene Seiten auf denselben Ortsanfragen — und die
-    // Förderseite steht dort teils vorn.
+  it("behandelt Orte mit eigener Förderseite NICHT gesondert", () => {
+    // Die Ausnahme gab es einen halben Tag lang und ist wieder raus: Googles
+    // Site-Diversity-Regel zeigt höchstens zwei Seiten je Domain und wählt
+    // selbst aus, zwei eigene Seiten können einander die Position also nicht
+    // kosten. Wer sie wieder einbaut, kostet eine zweite Datenquelle im
+    // Seitenaufbau, ohne ein belegtes Risiko abzuwenden.
     const quelle = readFileSync(resolve(__dirname, "../atlas-outreach-freigabe.ts"), "utf8");
-    expect(quelle).toContain("ATLAS_CITIES");
-    expect(quelle).toContain("indexierbareGemeinden");
+    expect(quelle).not.toContain("indexierbareGemeinden");
   });
 
-  it("lässt die Empfehlung auch bei gesperrten Orten weiterfließen", () => {
-    // Der Fall, den der Betreiber am 29.08.2026 hinterfragt hat: Der Brief
-    // verlinkt auch die Seiten, die aus dem Index bleiben. Mit „nofollow" liefe
-    // die Empfehlung dort ins Leere — genau das Problem, dessentwegen der Umbau
-    // begann. Deshalb kennt der robots-Baustein drei Zustände, nicht zwei.
-    expect(atlasRobots(false, true)).toEqual({ index: false, follow: true });
-    expect(atlasRobots(false, false)).toEqual({ index: false, follow: false });
+  it("kennt genau zwei robots-Zustände", () => {
     expect(atlasRobots(true)).toEqual({ index: true, follow: true });
-    // Und die Seite muss den mittleren Fall auch durchreichen.
-    expect(echteRobotsZeile()).toContain("verlinkt");
+    expect(atlasRobots(false)).toEqual({ index: false, follow: false });
   });
 
   it("schließt gesperrte Gemeinden aus", () => {

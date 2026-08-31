@@ -197,28 +197,23 @@ export function atlasIsIndexable(level: AtlasLevel, anlagen?: number, ags?: stri
 }
 
 /**
- * robots-Feld für Next-Metadata.
+ * robots-Feld für Next-Metadata: indexierbar → index/follow, sonst
+ * noindex/nofollow.
  *
- * DREI Zustände, nicht zwei — das war der Denkfehler bis zum 29.08.2026:
+ * ZWISCHENZEITLICH GAB ES EINEN DRITTEN ZUSTAND (29.08.2026, wieder entfernt):
+ * „noindex, follow" für Orte, die zwar einen Brief bekommen hatten, deren
+ * Ortsseite aber wegen einer eigenen Förder-Stadtseite aus dem Index bleiben
+ * sollte. Die Sorge dahinter — zwei eigene Seiten auf einer Ortsanfrage kosten
+ * beide Positionen — ist durch Googles eigene Dokumentation widerlegt: Die
+ * Site-Diversity-Regel zeigt ohnehin höchstens zwei Seiten je Domain in den
+ * Top-Ergebnissen und wählt selbst aus (Search Central, „A Guide to Google
+ * Search Ranking Systems"). Der befürchtete Schaden kann so gar nicht entstehen.
  *
- *   indexierbar            → index, follow
- *   verlinkt, nicht indexierbar → noindex, FOLLOW
- *   sonst                  → noindex, nofollow
- *
- * Der mittlere Fall sind Orte, an die ein Brief ging, deren Ortsseite aber
- * bewusst aus dem Index bleibt, weil sie schon eine Förder-Stadtseite haben:
- * Zwei eigene Seiten auf denselben Ortsanfragen kosten beide Positionen, und die
- * Förderseite steht dort teils vorn. Der Brief verlinkt trotzdem auf die
- * Ortsseite — und mit `nofollow` versickerte die Empfehlung dort, ohne dass
- * irgendjemand etwas davon hätte. Genau dieser Verlust war heute früh bei
- * Heringen der Anlass für den ganzen Umbau.
- *
- * `follow` löst beides: keine zweite Seite im Index, aber die Autorität fließt
- * an Startseite und Rechner weiter. Die Sorge „follow öffnet den Crawl-Pfad zu
- * 11.000 Gemeinden" trifft hier nicht — es geht um eine Handvoll Orte, deren
- * Nachbarn gesperrt bleiben und die Kette damit sofort beenden.
+ * Was bleibt, ist ein anderes Risiko: Google muss die RICHTIGE der beiden Seiten
+ * wählen, und das wird unzuverlässig, wenn sie sich zu ähnlich sind. Bei uns
+ * sind Bestandsdaten und Fördermittel klar getrennt — die Wortklassen-Trennung
+ * ist per Test erzwungen (lib/__tests__/atlas-foerder-wortklassen.test.ts).
  */
-export function atlasRobots(indexable: boolean, verlinkt = false): Metadata["robots"] {
-  if (indexable) return { index: true, follow: true };
-  return { index: false, follow: verlinkt };
+export function atlasRobots(indexable: boolean): Metadata["robots"] {
+  return indexable ? { index: true, follow: true } : { index: false, follow: false };
 }

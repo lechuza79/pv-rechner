@@ -27,13 +27,18 @@ import { withDbTimeout, DB_SOFT_READ_TIMEOUT_MS } from "./db-timeout";
  * Ort Nachfrage, kollidiert er mit einer anderen Seitenfamilie. Hier wird nichts
  * geschätzt; der Versand ist ein Datum in der Datenbank.
  *
- * AUSGENOMMEN BLEIBEN ORTE MIT EIGENER FÖRDERSEITE. Dort stünden zwei eigene
- * Seiten auf denselben Anfragen, und die Förderseite steht teils vorn (gemessen
- * 29.08.2026: auf Bundeslandebene in 4 von 9 Paarungen auf einem reinen
- * Bestands-Wort). Betroffen sind sieben der angeschriebenen Orte.
+ * KEINE AUSNAHME FÜR ORTE MIT EIGENER FÖRDERSEITE (Vereinfachung 29.08.2026).
+ * Es gab kurzzeitig eine: Sieben angeschriebene Orte haben eine Förder-Stadtseite,
+ * und die Sorge war, dass zwei eigene Seiten auf einer Ortsanfrage beide
+ * Positionen kosten. Googles Site-Diversity-Regel schließt das aus — in den
+ * Top-Ergebnissen erscheinen ohnehin höchstens zwei Seiten je Domain, und Google
+ * wählt selbst aus (Search Central, „A Guide to Google Search Ranking Systems").
+ * Die Ausnahme kostete eine zweite Datenquelle im Seitenaufbau und einen dritten
+ * robots-Zustand, ohne ein belegtes Risiko abzuwenden.
  *
  * WAS DAS NICHT IST: eine Freigabe der Gemeinde-EBENE. Die übrigen rund 11.000
- * Gemeinden bleiben gesperrt.
+ * Gemeinden bleiben gesperrt — der Wettbewerber ema-energiewelt.de hat mit 6.310
+ * indexierten Ortsseiten neun Platzierungen, keine auf Seite 1.
  *
  * FEHLERRICHTUNG: Fällt die Datenbank aus, liefert diese Funktion eine leere
  * Menge — die Seiten bleiben dann gesperrt. Im schlimmsten Fall verpufft eine
@@ -69,24 +74,11 @@ async function verlinkendeGemeindenUncached(): Promise<string[]> {
 }
 
 /**
- * Dieselbe Menge, aber ohne die Orte mit eigener Förder-Stadtseite — das sind
- * die, die INDEXIERBAR werden. Die übrigen angeschriebenen Orte bleiben aus dem
- * Index, geben ihre Empfehlung aber weiter (siehe `atlasRobots`).
- */
-export async function indexierbareGemeinden(): Promise<string[]> {
-  const alle = await verlinkendeGemeinden();
-  const { ATLAS_CITIES } = await import("./atlas-cities");
-  const { ortSchluessel } = await import("./release-plan");
-  const mitFoerderseite = new Set(ATLAS_CITIES.map((c) => ortSchluessel(c.ags)));
-  return alle.filter((id) => !mitFoerderseite.has(ortSchluessel(id)));
-}
-
-/**
  * Gecacht, weil jede Gemeindeseite beim Aufbau danach fragt.
  *
- * Eine Stunde Haltbarkeit: Der Status ändert sich höchstens täglich (er kommt
- * aus einem Lauf, nicht aus einer Nutzerinteraktion), und eine Empfehlung, die
- * eine Stunde später wirkt, verliert nichts. Ohne diesen Deckel wäre es ein
+ * Eine Stunde Haltbarkeit: Der Versandstand ändert sich höchstens täglich (er
+ * kommt aus einem Lauf, nicht aus einer Nutzerinteraktion), und eine Freigabe,
+ * die eine Stunde später wirkt, verliert nichts. Ohne diesen Deckel wäre es ein
  * zusätzlicher Datenbank-Zugriff je Seitenaufbau — bei 11.000 Seiten die Sorte
  * Kosten, vor der die Kostenwache warnt.
  */

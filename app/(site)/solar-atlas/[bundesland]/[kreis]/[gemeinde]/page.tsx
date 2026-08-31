@@ -16,7 +16,7 @@ import {
   atlasRobots,
   GEMEINDE_MIN_ANLAGEN,
 } from "../../../../../../lib/atlas-index";
-import { verlinkendeGemeinden, indexierbareGemeinden } from "../../../../../../lib/atlas-outreach-freigabe";
+import { verlinkendeGemeinden } from "../../../../../../lib/atlas-outreach-freigabe";
 import ZubauChart from "../../../../../../components/atlas/ZubauChart";
 import GemeindeHero, { type KpiOwnerData } from "../../../../../../components/atlas/GemeindeHero";
 import GemeindePeerTiles from "../../../../../../components/atlas/GemeindePeerTiles";
@@ -130,21 +130,15 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
     : kreisfrei
       ? "Bundesland"
       : "Landkreis";
-  // DREI Zustände, nicht zwei (Begründung an `atlasRobots`):
+  // Ein Ort, an den ein Brief ging, bekommt seine Seite offen — der Brief nennt
+  // die Adresse, also kann ab dann jederzeit jemand darauf verweisen. Alles
+  // andere bleibt gesperrt (Begründung in lib/atlas-outreach-freigabe.ts).
   //
-  //   angeschrieben, keine eigene Förderseite → indexierbar
-  //   angeschrieben, MIT Förderseite          → nicht indexierbar, Links folgen
-  //   nie angeschrieben                       → gesperrt
-  //
-  // Der mittlere Fall ist der, den der Betreiber am 29.08.2026 zu Recht
-  // hinterfragt hat: Der Brief verlinkt auch diese Seiten, und mit `nofollow`
-  // liefe die Empfehlung dort ins Leere — dasselbe Problem, dessentwegen der
-  // ganze Umbau begann. Aus dem Index bleiben sie trotzdem, weil sie sonst mit
-  // der eigenen Förderseite um dieselben Ortsanfragen konkurrieren.
+  // KEINE Sonderbehandlung mehr für Orte mit eigener Förderseite: Googles
+  // Site-Diversity-Regel zeigt ohnehin höchstens zwei Seiten je Domain und wählt
+  // selbst aus — zwei eigene Seiten können einander die Position nicht kosten.
   const angeschrieben = await verlinkendeGemeinden();
-  const indexierbar = await indexierbareGemeinden();
-  const verlinkt = angeschrieben.includes(region.region_id);
-  const einzeln = atlasOrtEinzelfreigabe(region.region_id) || indexierbar.includes(region.region_id);
+  const einzeln = atlasOrtEinzelfreigabe(region.region_id) || angeschrieben.includes(region.region_id);
   const anlagen =
     atlasLevelReleased("gemeinde") || einzeln
       ? (await getRegionAtlasData(region.region_id)).solar.total_count
@@ -170,10 +164,7 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
       description: `Photovoltaik in ${region.name}: Anlagenzahl, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister — je Einwohner und im Vergleich zum ${bezugsebene}.`,
       path: `/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`,
     }),
-    robots: atlasRobots(
-      einzeln ? anlagen >= GEMEINDE_MIN_ANLAGEN : atlasIsIndexable("gemeinde", anlagen),
-      verlinkt,
-    ),
+    robots: atlasRobots(einzeln ? anlagen >= GEMEINDE_MIN_ANLAGEN : atlasIsIndexable("gemeinde", anlagen)),
   };
 }
 
