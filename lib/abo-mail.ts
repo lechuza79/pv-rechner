@@ -107,6 +107,23 @@ const C = {
 };
 
 /**
+ * Schriftgrößen — wie die Farben aus dem Theme, nicht getippt.
+ *
+ * Der Fließtext einer Mail liest sich auf denselben Geräten wie der Fließtext
+ * der Seite; ihm eine eigene Größe zu geben hieße, dieselbe Entscheidung ein
+ * zweites Mal zu treffen und beim nächsten Mal anders. Eine erste Fassung
+ * hatte hier acht verschiedene Werte von Hand stehen, darunter zwei, die es in
+ * der Skala gar nicht gibt (14 und 20 px).
+ */
+const T = {
+  klein: tokens["--font-size-caption"],
+  fuss: tokens["--font-size-small"],
+  text: tokens["--font-size-body"],
+  marke: tokens["--font-size-lead"],
+  titel: tokens["--font-size-h2"],
+};
+
+/**
  * Die Schriftfamilie.
  *
  * Unsere Hausschrift wird NICHT geladen: Ein Postfach lädt keine Webfonts, und
@@ -137,29 +154,29 @@ function huelle(o: {
   grundzeile: string;
 }): string {
   const fuss = o.abmeldeUrl
-    ? `<p style="margin:0 0 6px;font-size:12px;color:${C.leise}">${escapeHtml(o.grundzeile)}</p>
-       <p style="margin:0 0 12px;font-size:12px">
+    ? `<p style="margin:0 0 6px;font-size:${T.klein};color:${C.leise}">${escapeHtml(o.grundzeile)}</p>
+       <p style="margin:0 0 12px;font-size:${T.klein}">
          <a href="${o.abmeldeUrl}" style="color:${C.leise}">Diese Meldungen abbestellen</a>
        </p>`
-    : `<p style="margin:0 0 12px;font-size:12px;color:${C.leise}">${escapeHtml(o.grundzeile)}</p>`;
+    : `<p style="margin:0 0 12px;font-size:${T.klein};color:${C.leise}">${escapeHtml(o.grundzeile)}</p>`;
 
   return `<div style="background:${C.grund};margin:0;padding:32px 16px;font-family:${SCHRIFT};color:${C.fliess}">
   <span style="display:none!important;visibility:hidden;opacity:0;height:0;width:0;overflow:hidden">${escapeHtml(o.vorschau)}</span>
   <div style="max-width:560px;margin:0 auto">
 
     <div style="text-align:center;padding-bottom:22px">
-      <a href="${SITE}" style="text-decoration:none;color:${C.text};font-size:17px;font-weight:700">
+      <a href="${SITE}" style="text-decoration:none;color:${C.text};font-size:${T.marke};font-weight:700">
         <img src="${SITE}/logo.png" alt="Solar Check" width="150" height="26" style="display:block;margin:0 auto;border:0;outline:none;max-width:150px;height:auto">
       </a>
     </div>
 
-    <div style="background:${C.karte};border:1px solid ${C.linie};border-radius:${C.eckeKarte};padding:28px 24px;color:${C.fliess};font-size:15px;line-height:1.65">
+    <div style="background:${C.karte};border:1px solid ${C.linie};border-radius:${C.eckeKarte};padding:28px 24px;color:${C.fliess};font-size:${T.text};line-height:1.65">
       ${o.inhalt}
     </div>
 
     <div style="text-align:center;padding:20px 8px 0">
       ${fuss}
-      <p style="margin:0;font-size:12px;color:${C.leise}">
+      <p style="margin:0;font-size:${T.klein};color:${C.leise}">
         <a href="${SITE}/impressum" style="color:${C.leise}">Impressum</a>
         &nbsp;·&nbsp;
         <a href="${SITE}/datenschutz" style="color:${C.leise}">Datenschutz</a>
@@ -172,7 +189,7 @@ function huelle(o: {
 
 function knopf(url: string, text: string): string {
   return `<p style="margin:24px 0">
-    <a href="${url}" style="display:inline-block;background:${C.akzent};color:${C.aufAkzent};text-decoration:none;padding:13px 24px;border-radius:${C.eckeKnopf};font-weight:700;font-size:15px">${escapeHtml(text)}</a>
+    <a href="${url}" style="display:inline-block;background:${C.akzent};color:${C.aufAkzent};text-decoration:none;padding:13px 24px;border-radius:${C.eckeKnopf};font-weight:700;font-size:${T.text}">${escapeHtml(text)}</a>
   </p>`;
 }
 
@@ -196,15 +213,15 @@ export function aboBestaetigungsMail(o: {
   const subject = `Bitte bestätigen: Meldungen zu ${o.ortName}`;
 
   const inhalt = `
-    <p style="margin:0 0 14px;font-size:20px;font-weight:800;line-height:1.25;color:${C.text};letter-spacing:-0.02em">Noch ein Klick</p>
+    <p style="margin:0 0 14px;font-size:${T.titel};font-weight:800;line-height:1.25;color:${C.text};letter-spacing:-0.02em">Noch ein Klick</p>
     <p style="margin:0 0 14px">
       Du möchtest Bescheid bekommen, wenn sich bei den Solaranlagen in ${ort} etwas tut.
       Bestätige das bitte einmal — danach hörst du von uns nur, wenn es wirklich etwas zu
       berichten gibt.
     </p>
     ${knopf(o.bestaetigenUrl, "Ja, Meldungen zu " + o.ortName)}
-    <p style="margin:0 0 8px;font-size:13px;color:${C.leise}">Der Link gilt 48 Stunden.</p>
-    <p style="margin:0;font-size:13px;color:${C.leise}">
+    <p style="margin:0 0 8px;font-size:${T.fuss};color:${C.leise}">Der Link gilt 48 Stunden.</p>
+    <p style="margin:0;font-size:${T.fuss};color:${C.leise}">
       Wenn du das nicht warst, ist nichts passiert: Ohne diesen Klick verschicken wir nichts,
       und die Eintragung wird nach kurzer Zeit von selbst gelöscht.
     </p>`;
@@ -263,25 +280,25 @@ export function aboMeldungsMail(o: {
 
   const weitereHtml = weitere.length
     ? `<hr style="border:0;border-top:1px solid ${C.linie};margin:22px 0">
-       <p style="margin:0 0 10px;font-size:13px;font-weight:600;color:${C.leise}">Außerdem</p>
+       <p style="margin:0 0 10px;font-size:${T.fuss};font-weight:600;color:${C.leise}">Außerdem</p>
        ${weitere
          .map(
            (m) =>
              `<p style="margin:0 0 12px"><strong style="color:${C.text}">${escapeHtml(m.titel)}</strong><br>
-              <span style="font-size:14px">${escapeHtml(m.text)}</span></p>`,
+              <span style="font-size:${T.text}">${escapeHtml(m.text)}</span></p>`,
          )
          .join("")}`
     : "";
 
   const inhalt = `
-    <p style="margin:0 0 14px;font-size:20px;font-weight:800;line-height:1.25;color:${C.text};letter-spacing:-0.02em">${escapeHtml(erste.titel)}</p>
+    <p style="margin:0 0 14px;font-size:${T.titel};font-weight:800;line-height:1.25;color:${C.text};letter-spacing:-0.02em">${escapeHtml(erste.titel)}</p>
     <p style="margin:0 0 16px">${escapeHtml(erste.text)}</p>
     ${weitereHtml}
     <hr style="border:0;border-top:1px solid ${C.linie};margin:22px 0">
     <p style="margin:0 0 6px">
       <a href="${o.ortUrl}" style="color:${C.akzent};font-weight:700">Alle Zahlen zu ${ort} ansehen</a>
     </p>
-    <p style="margin:0;font-size:12px;color:${C.leise}">
+    <p style="margin:0;font-size:${T.klein};color:${C.leise}">
       Grundlage ist das Marktstammdatenregister der Bundesnetzagentur, Stand ${escapeHtml(o.standLabel)}.
       Erzeugungs- und CO₂-Angaben sind gerechnet, nicht gemessen.
     </p>`;

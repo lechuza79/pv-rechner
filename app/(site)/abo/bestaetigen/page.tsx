@@ -70,7 +70,7 @@ export default async function Seite(props: { searchParams: Promise<{ t?: string 
         ort
           ? `Du bekommst jetzt eine Nachricht, wenn sich bei den Solaranlagen in ${ort} etwas Nennenswertes tut — ein neues Förderprogramm, ein auslaufender Vergütungsjahrgang, der Zubau eines Jahres.`
           : "Du bekommst jetzt eine Nachricht, wenn sich in deinem Ort etwas Nennenswertes tut.",
-        "Höchstens eine Mail im Monat, und nur wenn es wirklich etwas zu berichten gibt. Abmelden kannst du dich mit einem Klick am Fuß jeder Mail.",
+        "Höchstens eine Mail im Monat, und nur wenn es etwas zu berichten gibt. Abmelden kannst du dich mit einem Klick am Fuß jeder Mail.",
       ]}
       ortHref={pfad ?? undefined}
       ortName={ort}

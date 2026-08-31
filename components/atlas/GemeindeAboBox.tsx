@@ -51,17 +51,17 @@ type Zustand = "bereit" | "sendet" | "fertig" | { fehler: string };
 const TEXTE = {
   gemeinde: {
     intro:
-      "Ein neuer kommunaler Zuschuss, ein auslaufender Vergütungsjahrgang, der Zubau eines Jahres — höchstens eine Mail im Monat, und nur wenn es wirklich etwas zu berichten gibt.",
+      "Ein neuer kommunaler Zuschuss, ein auslaufender Vergütungsjahrgang, der Zubau eines Jahres — höchstens eine Mail im Monat, und nur wenn es etwas zu berichten gibt.",
     teaser: "Förderprogramm, Leistung u.\u00a0v.\u00a0m.",
     hilfe:
-      "Wir schreiben, wenn sich hier etwas Nennenswertes tut: ein neuer kommunaler Zuschuss, ein Vergütungsjahrgang, der ausläuft, der Zubau eines Jahres. Höchstens eine Mail im Monat — und nur, wenn es wirklich etwas zu berichten gibt. Kein Spam, keine Werbung, kein Weitergeben der Adresse. Abmelden mit einem Klick am Fuß jeder Mail.",
+      "Wir schreiben, wenn sich hier etwas Nennenswertes tut: ein neuer kommunaler Zuschuss, ein Vergütungsjahrgang, der ausläuft, der Zubau eines Jahres. Höchstens eine Mail im Monat, und nur wenn es etwas zu berichten gibt. Deine Adresse geben wir nicht weiter. Abmelden kannst du dich mit einem Klick am Fuß jeder Mail.",
   },
   foerderung: {
     intro:
       "Ein neues Förderprogramm, geänderte Konditionen, ein ausgeschöpfter Topf. Wir sehen die Programmseiten täglich durch und schreiben, sobald sich etwas ändert — für einen einzelnen Ort ist das selten.",
     teaser: "Neue Zuschüsse, geänderte Konditionen",
     hilfe:
-      "Wir sehen die Programmseiten der Gemeinden täglich durch. Ändert sich etwas — ein neues Programm, andere Konditionen, ein leerer Topf —, schreiben wir zeitnah; für einen einzelnen Ort passiert das selten. Der Zeitpunkt zählt hier: Kommunale Töpfe sind oft nach wenigen Wochen ausgeschöpft. Kein Spam, keine Werbung, kein Weitergeben der Adresse. Abmelden mit einem Klick am Fuß jeder Mail.",
+      "Wir sehen die Programmseiten der Gemeinden täglich durch. Ändert sich etwas — ein neues Programm, andere Konditionen, ein leerer Topf —, schreiben wir zeitnah; für einen einzelnen Ort passiert das selten. Der Zeitpunkt zählt hier: Kommunale Töpfe sind oft nach wenigen Wochen ausgeschöpft. Deine Adresse geben wir nicht weiter. Abmelden kannst du dich mit einem Klick am Fuß jeder Mail.",
   },
 } as const;
 
