@@ -115,6 +115,12 @@ describe("Anweisung an den Meister", () => {
     expect(text).toMatch(/KEINE ZAHL IN EINER RÜCKFRAGE/);
   });
 
+  it("begrenzt die Zahl der Rückfragen", () => {
+    // An einem echten Angebot fand der Meister fünfzehn. Eine Liste dieser
+    // Länge stellt niemand — das Weglassen ist Teil der Leistung.
+    expect(text).toMatch(/HÖCHSTENS SECHS/);
+  });
+
   it("erlaubt ausdrücklich, keine Rückfrage zu stellen", () => {
     // Sonst erfindet das Modell eine, damit etwas dasteht.
     expect(text).toMatch(/NICHTS ZU FRAGEN IST EIN ERGEBNIS/);

@@ -152,7 +152,12 @@ REGELN, die alle gleich wichtig sind:
    c) EINE FRAGE, EINE SACHE. Formuliere so, dass der Nutzer sie wörtlich stellen
       kann. Keine Aufzählung in einem Satz.
 
-   d) NICHTS ZU FRAGEN IST EIN ERGEBNIS. Ist das Angebot vollständig und
+   d) HÖCHSTENS SECHS, DIE WICHTIGSTE ZUERST. An einem echten Angebot lassen
+      sich fünfzehn Fragen finden; eine Liste dieser Länge stellt niemand.
+      Wichtig ist, was Geld kostet oder die Förderung gefährdet — nicht, was
+      bloß auffällt. Was du weglässt, ist Teil der Leistung.
+
+   e) NICHTS ZU FRAGEN IST EIN ERGEBNIS. Ist das Angebot vollständig und
       schlüssig, gib eine leere Liste zurück. Erfinde keine Rückfrage, damit
       etwas dasteht.`;
 }
