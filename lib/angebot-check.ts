@@ -40,6 +40,27 @@ export interface AusgelesenePosition {
   enthaeltAuch: string[];
 }
 
+/**
+ * Eine Rückfrage an den Heizungsbauer, formuliert für DIESES Angebot.
+ *
+ * WARUM DER MEISTER SIE SCHREIBT UND NICHT EINE VORLAGE: Was in einem Angebot
+ * fehlt oder schief steht, lässt sich nicht vorwegnehmen. Der hydraulische
+ * Abgleich, der als Pflicht-Überschrift dasteht und dessen Unterposten alle auf
+ * „Alternativ" stehen, ist keine Kategorie in irgendeiner Liste — den sieht nur,
+ * wer das Dokument liest. Eine feste Vorlage je fehlender Position würde genau
+ * die Fälle verschweigen, für die es die Prüfung gibt.
+ *
+ * WAS DER MEISTER TROTZDEM NICHT DARF: eine Zahl nennen. Beträge und
+ * Häufigkeiten kommen aus der Referenz und werden beim Anzeigen angehängt —
+ * so kann in einer Rückfrage kein Betrag stehen, den niemand belegt hat.
+ */
+export interface Rueckfrage {
+  /** Die Frage im Wortlaut, an den Nutzer gerichtet. */
+  text: string;
+  /** Worauf sie sich bezieht — Positions-Schlüssel, wenn es einer ist. */
+  bezug: string | null;
+}
+
 export interface AusgelesenesAngebot {
   /** Herstellerbezeichnung des Geräts, so wie sie im Angebot steht. */
   geraet: string | null;
@@ -49,6 +70,11 @@ export interface AusgelesenesAngebot {
   /** Gesamtpreis brutto in Euro. */
   gesamtpreisEur: number | null;
   positionen: AusgelesenePosition[];
+  /**
+   * Konkrete Rückfragen an den Heizungsbauer, für dieses Angebot formuliert.
+   * Leer, wenn nichts zu fragen ist — das ist ein zulässiges Ergebnis.
+   */
+  rueckfragen: Rueckfrage[];
   /**
    * Was der Auslese-Schritt NICHT sicher lesen konnte — im Klartext, für die
    * Anzeige. Eine leere Liste ist eine Behauptung; wer hier nie etwas einträgt,
@@ -204,12 +230,44 @@ export function pruefePreis(angebot: AusgelesenesAngebot): PreisBefund {
 
 // ─── Alles zusammen ──────────────────────────────────────────────────────────
 
+/** Eine Rückfrage samt der Zahlen, die der Code beisteuert. */
+export interface BelegteRueckfrage extends Rueckfrage {
+  /** Anteil der ausgewerteten Angebote, in denen die Leistung enthalten war. */
+  anteilEnthalten: number | null;
+  /** Median des Einzelpreises, wo er ausgewiesen war. */
+  medianKosten: number | null;
+  /** Auf wie vielen Angeboten dieser Median beruht. */
+  medianBasis: number | null;
+}
+
 export interface AngebotsBefund {
   groesse: GroessenBefund;
   vollstaendigkeit: VollstaendigkeitsBefund;
   preis: PreisBefund;
+  /** Was der Nutzer nachfragen sollte — Frage vom Meister, Zahlen aus der Referenz. */
+  rueckfragen: BelegteRueckfrage[];
   /** Durchgereicht aus dem Auslesen — gehört sichtbar ins Ergebnis. */
   unsicher: string[];
+}
+
+/**
+ * Hängt an jede Rückfrage die belegten Zahlen ihrer Position.
+ *
+ * Der Meister formuliert „Frag nach, ob der Umbau des Zählerschranks enthalten
+ * ist" — wie oft der fehlt und was er kostet, steht in der Referenz. Damit kann
+ * in einer Rückfrage keine Zahl auftauchen, die niemand belegt hat, auch wenn
+ * das Modell es versuchen würde.
+ */
+function belege(fragen: Rueckfrage[]): BelegteRueckfrage[] {
+  return fragen.map((f) => {
+    const p = f.bezug ? ANGEBOTS_POSITIONEN.find((x) => x.id === f.bezug) : undefined;
+    return {
+      ...f,
+      anteilEnthalten: p?.anteilEnthalten ?? null,
+      medianKosten: p?.medianKosten ?? null,
+      medianBasis: p?.medianBasis ?? null,
+    };
+  });
 }
 
 export function pruefeAngebot(angebot: AusgelesenesAngebot, gebaeude: GebaeudeBezug): AngebotsBefund {
@@ -217,6 +275,7 @@ export function pruefeAngebot(angebot: AusgelesenesAngebot, gebaeude: GebaeudeBe
     groesse: pruefeGroesse(angebot, gebaeude),
     vollstaendigkeit: pruefeVollstaendigkeit(angebot),
     preis: pruefePreis(angebot),
+    rueckfragen: belege(angebot.rueckfragen),
     unsicher: angebot.unsicher,
   };
 }

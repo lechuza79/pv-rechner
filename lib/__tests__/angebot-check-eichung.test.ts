@@ -38,6 +38,12 @@ const bosch: AusgelesenesAngebot = {
     pos("montage", "Montagekosten", 5600),
     pos("heizkoerpertausch", "Heizkörper Profilheizkörper PLATTELLA V6 L", 760),
   ],
+  rueckfragen: [
+    { text: "Frag nach, ob die Elektroarbeiten für die Wärmepumpe enthalten sind — im Angebot findet sich dazu keine Position.", bezug: "elektroinstallation" },
+    { text: "Frag, ob das Ausbauen und Entsorgen der alten Heizung im Preis steckt oder gesondert berechnet wird.", bezug: "demontage" },
+    { text: "Frag nach, ob dein Zählerschrank für die Wärmepumpe angepasst werden muss und wer das übernimmt.", bezug: "zaehlerschrank" },
+    { text: "Lass dir aufschlüsseln, was von dem gemeinsamen Preis für Außeneinheit, Inneneinheit und die beiden Speicher auf welches Gerät entfällt.", bezug: "geraet" },
+  ],
   unsicher: [
     "Die Positionen 10 bis 50 tragen einen gemeinsamen Preis — was davon auf die Wärmepumpe selbst entfällt, steht nicht im Angebot.",
   ],
@@ -59,6 +65,10 @@ const buderus: AusgelesenesAngebot = {
     pos("elektroinstallation", "Stromanschluß für Innen- und Außeneinheit, separater Zähler inkl. Zählerschrank", 1600, ["zaehlerschrank"]),
     pos("montage", "Montage der Anlage", 7275, ["demontage"]),
     pos("heizkoerpertausch", "Heizkörper austauschen und Zusätzlich", 680.92),
+  ],
+  rueckfragen: [
+    { text: "Der hydraulische Abgleich hat eine eigene Überschrift mit dem Hinweis, dass er für die Förderung Pflicht ist — die Posten darunter sind aber als Alternative ausgewiesen. Frag nach, ob er nun im Preis enthalten ist.", bezug: "hydraulischer-abgleich" },
+    { text: "Lass dir die Heizleistung der angebotenen Wärmepumpe schriftlich bestätigen — im Angebot steht sie nur in der Typenbezeichnung.", bezug: null },
   ],
   unsicher: [
     "Die Leistung steht nur in der Typenbezeichnung, nicht als eigene Angabe.",

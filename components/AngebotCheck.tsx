@@ -225,6 +225,33 @@ function Befund({ befund, geraet, gesamtpreisEur }: { befund: AngebotsBefund; ge
         )}
       </Kasten>
 
+      {befund.rueckfragen.length > 0 && (
+        <Kasten titel="Das würde ich nachfragen" ton="neutral">
+          <ul style={{ margin: 0, paddingLeft: space.lg }}>
+            {befund.rueckfragen.map((f, i) => (
+              <li key={i} style={{ marginBottom: space.sm }}>
+                {f.text}
+                {/* Die Zahlen kommen aus der Referenz, nie aus der Formulierung —
+                    deshalb stehen sie hier und nicht im Satz darüber. */}
+                {(f.anteilEnthalten != null || f.medianKosten != null) && (
+                  <div style={{ color: v("--color-text-muted"), marginTop: 2 }}>
+                    {f.anteilEnthalten != null && <>Enthalten in {Math.round(f.anteilEnthalten * 100)} % der ausgewerteten Angebote</>}
+                    {f.anteilEnthalten != null && f.medianKosten != null && <> · </>}
+                    {f.medianKosten != null && <>wo ausgewiesen im Mittel {euro(f.medianKosten)} (aus {f.medianBasis} Angeboten)</>}
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+          <p style={{ marginTop: space.md, marginBottom: 0 }}>
+            Und eine Frage, die sich immer lohnt: <strong>ob du das Material selbst bestellen
+            kannst.</strong> Viele Betriebe lassen das zu. Was das Gerät im Onlinehandel kostet,
+            steht offen im Netz — die Arbeit bleibt beim Fachbetrieb, und die ist bei einer
+            Wärmepumpe der größere Posten.
+          </p>
+        </Kasten>
+      )}
+
       {unsicher.length > 0 && (
         <Kasten titel="Was wir nicht sicher lesen konnten" ton="neutral">
           <ul style={{ margin: 0, paddingLeft: space.lg }}>

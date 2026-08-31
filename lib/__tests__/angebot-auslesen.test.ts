@@ -50,6 +50,50 @@ describe("Antwort des Meisters prüfen", () => {
   });
 });
 
+describe("Rückfragen — die Zahlen-Sperre", () => {
+  it("verwirft eine Rückfrage mit einem Euro-Betrag", () => {
+    // Nicht säubern, verwerfen: Wer die Zahl herausschneidet, lässt einen Satz
+    // stehen, der sich auf sie bezog.
+    const r = leseErgebnisAus(gelesen({
+      rueckfragen: [{ text: "Frag nach dem Zählerschrank, das kostet meist 2.966 €.", bezug: "zaehlerschrank" }],
+    }));
+    if (r.art !== "gelesen") throw new Error("erwartet: gelesen");
+    expect(r.angebot.rueckfragen).toEqual([]);
+  });
+
+  it("verwirft auch einen Prozentsatz", () => {
+    const r = leseErgebnisAus(gelesen({
+      rueckfragen: [{ text: "Fehlt in 46 % der Angebote — frag nach.", bezug: "zaehlerschrank" }],
+    }));
+    if (r.art !== "gelesen") throw new Error("erwartet: gelesen");
+    expect(r.angebot.rueckfragen).toEqual([]);
+  });
+
+  it("behält eine Rückfrage ohne Zahl", () => {
+    const r = leseErgebnisAus(gelesen({
+      rueckfragen: [{ text: "Frag nach, ob der Umbau des Zählerschranks enthalten ist.", bezug: "zaehlerschrank" }],
+    }));
+    if (r.art !== "gelesen") throw new Error("erwartet: gelesen");
+    expect(r.angebot.rueckfragen).toHaveLength(1);
+    expect(r.angebot.rueckfragen[0].bezug).toBe("zaehlerschrank");
+  });
+
+  it("setzt einen erfundenen Bezug auf nichts", () => {
+    const r = leseErgebnisAus(gelesen({
+      rueckfragen: [{ text: "Frag nach der Wartung.", bezug: "wartungsvertrag" }],
+    }));
+    if (r.art !== "gelesen") throw new Error("erwartet: gelesen");
+    expect(r.angebot.rueckfragen[0].bezug).toBeNull();
+  });
+
+  it("lässt eine leere Liste zu", () => {
+    // Ein vollständiges Angebot ist ein zulässiges Ergebnis.
+    const r = leseErgebnisAus(gelesen({ rueckfragen: [] }));
+    if (r.art !== "gelesen") throw new Error("erwartet: gelesen");
+    expect(r.angebot.rueckfragen).toEqual([]);
+  });
+});
+
 describe("Anweisung an den Meister", () => {
   const text = meisterAnweisung();
 
@@ -65,6 +109,15 @@ describe("Anweisung an den Meister", () => {
     // Die Grenze zwischen Verbraucherinformation und Herabsetzung eines
     // Wettbewerbers. Sie muss in der Anweisung stehen, nicht nur im Kommentar.
     expect(text).toMatch(/SCHREIBE NICHTS ÜBER DEN BETRIEB/);
+  });
+
+  it("verbietet Zahlen in Rückfragen", () => {
+    expect(text).toMatch(/KEINE ZAHL IN EINER RÜCKFRAGE/);
+  });
+
+  it("erlaubt ausdrücklich, keine Rückfrage zu stellen", () => {
+    // Sonst erfindet das Modell eine, damit etwas dasteht.
+    expect(text).toMatch(/NICHTS ZU FRAGEN IST EIN ERGEBNIS/);
   });
 
   it("nennt die Kategorien aus der Referenz, nicht getippte", () => {

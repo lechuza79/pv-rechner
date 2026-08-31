@@ -72,6 +72,12 @@ Sonst gib genau dieses JSON zurück, ohne Text davor oder danach:
         "enthaeltAuch": ["<weitere Kategorien, die in dieser Position stecken>"]
       }
     ],
+    "rueckfragen": [
+      {
+        "text": "<eine konkrete Frage an den Heizungsbauer, für DIESES Angebot>",
+        "bezug": "<Kategorie von unten, oder null>"
+      }
+    ],
     "unsicher": ["<was du nicht sicher lesen konntest>"]
   }
 }
@@ -106,7 +112,48 @@ REGELN, die alle gleich wichtig sind:
    beurteilst kein Unternehmen.
 
 6. PERSONENDATEN GEHÖREN NICHT IN DIE ANTWORT. Weder Name noch Anschrift des
-   Empfängers, auch nicht als Beispiel oder Beleg.`;
+   Empfängers, auch nicht als Beispiel oder Beleg.
+
+7. DIE RÜCKFRAGEN SIND DIE EIGENTLICHE LEISTUNG. Formuliere sie für DIESES
+   Angebot, nicht als allgemeine Ratschläge. Was zu fragen ist, lässt sich nicht
+   vorwegnehmen — schreib auf, was dir beim Lesen wirklich aufgefallen ist.
+   Ein Beispiel für die Sorte Fund, die zählt: Eine Überschrift „Hydraulischer
+   Abgleich — für die Förderung Pflicht", unter der alle Posten als Alternative
+   oder mit 0,00 € ausgewiesen sind. Das steht in keiner Kategorienliste.
+
+   Vier Regeln dafür, und die erste ist die wichtigste:
+
+   a) KEINE ZAHL IN EINER RÜCKFRAGE. Kein Euro-Betrag, kein Prozentsatz, keine
+      Häufigkeit. Was eine fehlende Position üblicherweise kostet und wie oft sie
+      fehlt, wird nachher aus einer geprüften Quelle angehängt. Schreibst du
+      selbst eine Zahl hin, steht dort ein Wert, den niemand belegt hat.
+
+   b) FRAG NACH DEM DOKUMENT, NICHT ÜBER DEN BETRIEB. „Frag nach, ob der Umbau
+      des Zählerschranks enthalten ist" ist richtig. „Dein Heizungsbauer
+      verschweigt Kosten" ist falsch — auch dann, wenn es sich aufdrängt.
+
+   c) EINE FRAGE, EINE SACHE. Formuliere so, dass der Nutzer sie wörtlich stellen
+      kann. Keine Aufzählung in einem Satz.
+
+   d) NICHTS ZU FRAGEN IST EIN ERGEBNIS. Ist das Angebot vollständig und
+      schlüssig, gib eine leere Liste zurück. Erfinde keine Rückfrage, damit
+      etwas dasteht.`;
+}
+
+/**
+ * Enthält der Text eine Zahl, die als Betrag, Prozentsatz oder Häufigkeit
+ * durchgehen könnte?
+ *
+ * Eine Rückfrage, in der eine Zahl steht, wird VERWORFEN statt gesäubert. Das
+ * ist Absicht: Wer die Zahl herausschneidet, lässt einen Satz stehen, der sich
+ * auf sie bezog („liegt deutlich über dem, was üblich ist" ohne das Übliche).
+ * Die belegten Werte hängt der Prüfschritt ohnehin an.
+ *
+ * Bewusst grob: Auch eine harmlose Zahl kostet die Rückfrage. Lieber eine Frage
+ * weniger als eine mit einem Betrag, den niemand belegt hat.
+ */
+function enthaeltZahl(text: string): boolean {
+  return /\d/.test(text);
 }
 
 /** Zieht das JSON aus der Antwort, auch wenn ein Modell es in einen Codeblock packt. */
@@ -163,6 +210,15 @@ export function leseErgebnisAus(roh: string): LeseErgebnis {
           .filter((s): s is string => !!s && bekannt.has(s)),
       };
     }),
+    rueckfragen: (Array.isArray(a.rueckfragen) ? a.rueckfragen : [])
+      .map((r) => {
+        const q = (r ?? {}) as Record<string, unknown>;
+        const text = textOderNull(q.text);
+        if (!text || enthaeltZahl(text)) return null;
+        const bezug = textOderNull(q.bezug);
+        return { text, bezug: bezug && bekannt.has(bezug) ? bezug : null };
+      })
+      .filter((r): r is { text: string; bezug: string | null } => !!r),
     unsicher: (Array.isArray(a.unsicher) ? a.unsicher : [])
       .map(textOderNull)
       .filter((s): s is string => !!s),

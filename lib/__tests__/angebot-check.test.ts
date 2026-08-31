@@ -6,7 +6,7 @@ import {
 import { GESAMTKOSTEN, SPEZ_KOSTEN, ANGEBOTS_POSITIONEN } from "../angebot-check-config";
 
 function angebot(teil: Partial<AusgelesenesAngebot> = {}): AusgelesenesAngebot {
-  return { geraet: null, marke: null, leistungKw: null, gesamtpreisEur: null, positionen: [], unsicher: [], ...teil };
+  return { geraet: null, marke: null, leistungKw: null, gesamtpreisEur: null, positionen: [], rueckfragen: [], unsicher: [], ...teil };
 }
 const pos = (id: string | null, betragEur: number | null = null, enthaeltAuch: string[] = []) =>
   ({ id, wortlaut: id ?? "?", betragEur, enthaeltAuch });
