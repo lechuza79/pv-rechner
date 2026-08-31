@@ -216,7 +216,10 @@ export default function InfoTooltip({
               boxShadow: v("--shadow-md"),
               padding: "10px 12px",
               fontFamily: v("--font-text"),
-              fontSize: 12.5,
+              // 12,5 px gab es in der Skala nicht — der einzige Wert im
+              // Baustein, der zwischen zwei Stufen lag. Fließtext zum Lesen
+              // gehört auf die Fußnoten-Stufe, nicht auf die Label-Stufe.
+              fontSize: v("--font-size-small"),
               lineHeight: 1.5,
               fontWeight: 400,
               textAlign: "left",

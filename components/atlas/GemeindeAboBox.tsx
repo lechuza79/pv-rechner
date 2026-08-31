@@ -54,14 +54,14 @@ const TEXTE = {
       "Wir schreiben, wenn deine Gemeinde einen Zuschuss auflegt, wenn ein Vergütungsjahrgang ausläuft oder wenn die Zahlen fürs Jahr da sind. Höchstens eine Mail im Monat.",
     teaser: "Förderprogramm, Leistung u.\u00a0v.\u00a0m.",
     hilfe:
-      "Wir schreiben, wenn deine Gemeinde einen Zuschuss auflegt, wenn ein Vergütungsjahrgang ausläuft oder wenn die Zahlen fürs Jahr da sind. Höchstens eine Mail im Monat, und nur wenn es etwas zu berichten gibt. Deine Adresse geben wir nicht weiter, und abmelden kannst du dich mit einem Klick am Fuß jeder Mail.",
+      "Höchstens eine Mail im Monat, und nur wenn es etwas zu berichten gibt. Abmelden mit einem Klick am Fuß jeder Mail. Deine Adresse geben wir nicht weiter.",
   },
   foerderung: {
     intro:
       "Wir sehen die Programmseiten der Gemeinden täglich durch. Kommt ein Zuschuss dazu, ändern sich die Bedingungen oder ist der Topf leer, schreiben wir dir. Für einen einzelnen Ort passiert das selten.",
     teaser: "Wenn sich an der Förderung etwas ändert",
     hilfe:
-      "Wir sehen die Programmseiten der Gemeinden täglich durch. Kommt ein Zuschuss dazu, ändern sich die Bedingungen oder ist der Topf leer, schreiben wir dir. Für einen einzelnen Ort passiert das selten, aber der Zeitpunkt zählt: Kommunale Töpfe sind oft nach wenigen Wochen leer. Deine Adresse geben wir nicht weiter, und abmelden kannst du dich mit einem Klick am Fuß jeder Mail.",
+      "Wir prüfen täglich, schreiben aber nur bei Änderungen. Für einen Ort ist das selten. Abmelden mit einem Klick am Fuß jeder Mail. Deine Adresse geben wir nicht weiter.",
   },
 } as const;
 

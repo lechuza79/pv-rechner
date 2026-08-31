@@ -385,7 +385,7 @@ const S: Record<string, React.CSSProperties> = {
     gap: space.lg,
     marginBottom: space.xs,
   },
-  h2: { fontSize: 18, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.25 },
+  h2: { fontSize: v("--font-size-h3"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.25 },
   close: {
     border: "none",
     background: "transparent",
@@ -396,5 +396,5 @@ const S: Record<string, React.CSSProperties> = {
     padding: 0,
     flexShrink: 0,
   },
-  intro: { fontSize: 12, color: v("--color-text-muted"), marginBottom: space.xl, lineHeight: 1.5 },
+  intro: { fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginBottom: space.xl, lineHeight: 1.5 },
 };
