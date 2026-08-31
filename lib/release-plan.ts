@@ -293,9 +293,16 @@ export const RELEASE_PLAN: Schub[] = [
     id: "w2-foerder-dach-archiv",
     gattung: "foerder-stadt",
     datum: "2026-09-16",
-    // Ebenfalls zurückgenommen: 0 von 1 Ort mit messbarem Suchvolumen. Eine
-    // Archivseite ohne Geldversprechen für einen Ort, nach dem niemand sucht,
-    // hat keinen Adressaten.
+    // Zurückgenommen — die Begründung am 29.08.2026 ersetzt, weil die alte auf
+    // einem widerlegten Schluss stand („0 von 1 Ort mit messbarem Suchvolumen",
+    // siehe lib/seo-grundregeln.ts, Regel „leeres-suchvolumen").
+    //
+    // Was trägt, ist der Inhalt selbst: Der Fördertopf ist ausgeschöpft, die
+    // Seite verspricht also kein Geld mehr. Eine Förderseite, deren Betrag nicht
+    // mehr abrufbar ist, beantwortet die Frage nicht, für die jemand käme — das
+    // gilt unabhängig davon, wie viele nach dem Ort suchen. Bleibt der Topf
+    // dauerhaft leer, gehört das Programm ohnehin in den Verlauf statt auf eine
+    // eigene Seite.
     status: "zurueckgenommen",
     orte: [
       "07143032", // Höhr-Grenzhausen (Rheinland-Pfalz), Topf ausgeschöpft
@@ -306,7 +313,11 @@ export const RELEASE_PLAN: Schub[] = [
       "werden nicht veröffentlicht.",
     nachweis: {
       gemessenAm: "2026-08-19",
-      nachfrage: "Nein. 0 von 1 Ort mit messbarem Suchvolumen.",
+      nachfrage:
+        "Nicht messbar, und das ist NICHT der Grund (Korrektur 29.08.2026 — ein leeres " +
+        "Suchvolumen heißt „unter der Meldeschwelle von 10 Suchen“, nicht „keine Nachfrage“). " +
+        "Tragend ist der Inhalt: Der Fördertopf des einzigen Orts ist ausgeschöpft, die Seite " +
+        "verspricht also kein Geld mehr und beantwortet die Frage nicht, für die jemand käme.",
       kannibalisierung: "Keine Anfrage, auf der beide Seitenfamilien gleichzeitig erscheinen.",
       beleg: "docs/seo/schub-w2-foerder-dach-archiv-2026-08-19.md",
     },
