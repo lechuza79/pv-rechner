@@ -93,10 +93,22 @@ export const FAMILIEN: Familie[] = [
     // keinem Angebot sauber herauslösen — die Verbraucherzentrale sagt das
     // selbst und fordert die Innungen auf, das zu ändern.
     //
-    // ZWEI SCHRANKEN, die für diese Familie schärfer sind als sonst:
+    // DREI SCHRANKEN, jede schärfer als sonst.
+    //
     // Kein Betriebsname, keine Region, kein Zitat aus einem Angebot — auch nicht
-    // anonymisiert. Und die Vergleichsgruppe gehört ins Bild, nicht nur in den
-    // Text: 160 Angebote aus einem Bundesland sind kein deutscher Markt.
+    // anonymisiert.
+    //
+    // Die Vergleichsgruppe gehört ins Bild, nicht nur in den Text.
+    //
+    // Und die dritte ist die, an der ein Beitrag scheitert: DIE STICHPROBE IST
+    // NICHT DER MARKT, und zwar nicht wegen ihrer Größe. 160 Angebote tragen
+    // einen Anteil auf rund vier Prozentpunkte genau. Das Problem ist die
+    // Auswahl — diese Angebote haben Leute eingereicht, die schon Zweifel
+    // hatten. Wer ein sauberes Angebot bekommt, schickt es nicht zur Prüfung.
+    // Unsere Lücken-Zahlen zeichnen den Markt deshalb eher zu schlecht. Ein
+    // Beitrag der Form „in X % der deutschen Angebote fehlt Y" ist damit falsch,
+    // egal wie vorsichtig er formuliert ist; tragfähig ist nur die Aussage über
+    // die geprüften Angebote selbst.
     hinweis: "Kostenstruktur echter Angebote. Nie über einen Betrieb, immer über die Gattung",
   },
 ];

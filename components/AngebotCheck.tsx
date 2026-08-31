@@ -23,8 +23,14 @@ type Zustand =
   | { art: "leer" }
   | { art: "laeuft" }
   | { art: "fehler"; text: string }
-  | { art: "abgelehnt"; grund: string }
-  | { art: "fertig"; befund: AngebotsBefund; geraet: string | null; gesamtpreisEur: number | null; einheit: string };
+  | { art: "abgelehnt"; grund: string };
+
+/** Ein fertig geprüftes Angebot. Mehrere davon ergeben den Vergleich. */
+type Geprueft = {
+  befund: AngebotsBefund;
+  geraet: string | null;
+  gesamtpreisEur: number | null;
+};
 
 const euro = (n: number) => n.toLocaleString("de-DE", { maximumFractionDigits: 0 }) + " €";
 const proEinheit = (n: number, einheit: string) => Math.round(n).toLocaleString("de-DE") + ` €/${einheit}`;
@@ -103,7 +109,26 @@ export default function AngebotCheck({
   // für Seite, sonst sieht der Meister die Einschränkung auf Seite 4 nicht, die
   // zur Position auf Seite 2 gehört.
   const [seiten, setSeiten] = useState<File[]>([]);
+  // Mehrere Angebote nacheinander. Der Vergleich ist der eigentliche Grund, aus
+  // dem jemand hier landet: Die Verbraucherzentrale schreibt, das Kernproblem
+  // sei nicht der Preis, sondern dass sich zwei Angebote nicht vergleichen
+  // lassen. Genau das können wir auflösen, sobald zwei vorliegen.
+  const [gepruefte, setGepruefte] = useState<Geprueft[]>([]);
+  const [ueberZone, setUeberZone] = useState(false);
   const dateiFeld = useRef<HTMLInputElement>(null);
+
+  /** Wissen wir, wie groß die Anlage sein sollte? Steuert den Einleitungstext. */
+  const kennenGebaeude = !!auslegungKw;
+
+  function seitenAufnehmen(neu: File[]) {
+    if (neu.length) setSeiten((alt) => [...alt, ...neu].slice(0, 12));
+  }
+
+  function zuruecksetzen() {
+    setGepruefte([]);
+    setSeiten([]);
+    setZustand({ art: "leer" });
+  }
 
   async function pruefen() {
     if (seiten.length === 0) return;
@@ -119,7 +144,9 @@ export default function AngebotCheck({
       const daten = await antwort.json();
       if (daten.fehler) return setZustand({ art: "fehler", text: FEHLERTEXT[daten.fehler] ?? "Das hat nicht geklappt." });
       if (daten.art === "kein-angebot" || daten.art === "unlesbar") return setZustand({ art: "abgelehnt", grund: daten.grund });
-      setZustand({ art: "fertig", befund: daten.befund, geraet: daten.geraet, gesamtpreisEur: daten.gesamtpreisEur, einheit });
+      setGepruefte((alt) => [...alt, { befund: daten.befund, geraet: daten.geraet, gesamtpreisEur: daten.gesamtpreisEur }]);
+      setSeiten([]);
+      setZustand({ art: "leer" });
     } catch {
       setZustand({ art: "fehler", text: "Die Verbindung ist abgebrochen." });
     }
@@ -128,11 +155,24 @@ export default function AngebotCheck({
   return (
     <div>
       <p style={{ fontSize: 14, lineHeight: 1.6, color: v("--color-text-secondary"), marginTop: 0 }}>
-        Du hast schon ein Angebot? Lade es hoch. Wir halten es gegen die Heizlast, die wir für dein
-        Gebäude gerechnet haben, gegen die Positionen, die ein vollständiges Angebot nennen sollte,
-        und gegen die Preise vergleichbarer Anlagen. Mehrere Seiten kannst du zusammen auswählen —
-        abfotografiert reicht. <strong>Die Seiten werden nicht gespeichert</strong> — sie werden
-        gelesen und sind danach weg.
+        {gepruefte.length === 0 ? (
+          <>
+            {kennenGebaeude ? (
+              <>Du hast schon ein Angebot? Lade es hoch. Wir halten es gegen die Heizlast, die wir
+              für dein Gebäude gerechnet haben, gegen die Positionen, die ein vollständiges Angebot
+              nennen sollte, und gegen die Preise vergleichbarer Anlagen.</>
+            ) : (
+              <>Wir sagen dir, ob die üblichen Positionen drinstehen, wo der Preis im Vergleich
+              liegt und was du deinem Handwerker noch fragen solltest.</>
+            )}{" "}
+            Mehrere Seiten kannst du zusammen auswählen — abfotografiert reicht.{" "}
+            <strong>Die Seiten werden nicht gespeichert</strong> — sie werden gelesen und sind
+            danach weg.
+          </>
+        ) : (
+          <>Du kannst ein weiteres Angebot hochladen — ab dem zweiten stellen wir sie
+          nebeneinander.</>
+        )}
       </p>
 
       <input
@@ -142,35 +182,63 @@ export default function AngebotCheck({
         multiple
         style={{ display: "none" }}
         onChange={(e) => {
-          const neu = Array.from(e.target.files ?? []);
           // Anhängen statt ersetzen: Wer die Seiten in zwei Griffen auswählt,
           // soll nicht die erste Hälfte verlieren.
-          if (neu.length) setSeiten((alt) => [...alt, ...neu].slice(0, 12));
+          seitenAufnehmen(Array.from(e.target.files ?? []));
           e.target.value = "";
         }}
       />
       {/* Honigtopf — für Menschen unsichtbar, für Ausfüll-Roboter nicht. */}
       <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden style={{ position: "absolute", left: -9999, width: 1, height: 1 }} />
 
-      <label style={{ display: "flex", gap: space.sm, alignItems: "flex-start", fontSize: 13, lineHeight: 1.6, marginBottom: space.md, color: v("--color-text-secondary"), cursor: "pointer" }}>
-        <input
-          type="checkbox"
-          checked={einwilligung}
-          onChange={(e) => setEinwilligung(e.target.checked)}
-          style={{ marginTop: 3, flexShrink: 0 }}
-        />
-        <span>
-          Ich bin damit einverstanden, dass mein Angebot zum Auslesen an unseren Dienstleister
-          Anthropic in die USA übermittelt wird. Dort gilt kein dem europäischen gleichwertiges
-          Datenschutzniveau; abgesichert ist die Übermittlung durch Standardvertragsklauseln.
-          Das Dokument wird nicht gespeichert und nicht zum Training verwendet. Die Zustimmung
-          gilt für diesen einen Vorgang. Mehr dazu in der{" "}
-          <Link href="/datenschutz" style={{ color: v("--color-accent") }}>Datenschutzerklärung</Link>.
-        </span>
-      </label>
+      {einwilligung || gepruefte.length > 0 ? null : (
+        <label style={{ display: "flex", gap: space.sm, alignItems: "flex-start", fontSize: 13, lineHeight: 1.6, marginBottom: space.md, color: v("--color-text-secondary"), cursor: "pointer" }}>
+          <input type="checkbox" checked={einwilligung} onChange={(e) => setEinwilligung(e.target.checked)} style={{ marginTop: 3, flexShrink: 0 }} />
+          <span>
+            Ich bin damit einverstanden, dass mein Angebot zum Auslesen an unseren Dienstleister
+            Anthropic in die USA übermittelt wird. Dort gilt kein dem europäischen gleichwertiges
+            Datenschutzniveau; abgesichert ist die Übermittlung durch Standardvertragsklauseln.
+            Das Dokument wird nicht gespeichert und nicht zum Training verwendet. Die Zustimmung
+            gilt für diesen einen Vorgang. Mehr dazu in der{" "}
+            <Link href="/datenschutz" style={{ color: v("--color-accent") }}>Datenschutzerklärung</Link>.
+          </span>
+        </label>
+      )}
+
+      {/* Ablegefeld. Auf Mobilgeräten gibt es kein Ziehen — dort ist der ganze
+          Kasten schlicht ein großer Knopf, und der Text nennt nur das Tippen. */}
+      <div
+        onClick={() => einwilligung && dateiFeld.current?.click()}
+        onDragOver={(e) => { if (einwilligung) { e.preventDefault(); setUeberZone(true); } }}
+        onDragLeave={() => setUeberZone(false)}
+        onDrop={(e) => {
+          if (!einwilligung) return;
+          e.preventDefault();
+          setUeberZone(false);
+          seitenAufnehmen(Array.from(e.dataTransfer.files ?? []));
+        }}
+        style={{
+          border: `2px dashed ${ueberZone ? v("--color-accent") : v("--color-border")}`,
+          borderRadius: v("--radius-md"),
+          background: ueberZone ? v("--color-accent-dim") : "transparent",
+          padding: pad("lg", "md"),
+          textAlign: "center",
+          cursor: einwilligung ? "pointer" : "not-allowed",
+          opacity: einwilligung ? 1 : 0.55,
+          fontSize: 14,
+          color: v("--color-text-secondary"),
+        }}
+      >
+        <strong style={{ color: einwilligung ? v("--color-accent") : v("--color-text-muted") }}>
+          {seiten.length === 0 ? "Seiten auswählen" : "Weitere Seite hinzufügen"}
+        </strong>
+        <div style={{ marginTop: 4, fontSize: 13, color: v("--color-text-muted") }}>
+          oder hierher ziehen · PDF oder Foto · bis zwölf Seiten
+        </div>
+      </div>
 
       {seiten.length > 0 && (
-        <ul style={{ listStyle: "none", padding: 0, margin: `0 0 ${space.md}px`, fontSize: 13 }}>
+        <ul style={{ listStyle: "none", padding: 0, margin: `${space.md}px 0 0`, fontSize: 13 }}>
           {seiten.map((s, i) => (
             <li key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: space.sm, padding: "4px 0", borderBottom: `1px solid ${v("--color-border")}` }}>
               <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: v("--color-text-secondary") }}>
@@ -189,31 +257,14 @@ export default function AngebotCheck({
         </ul>
       )}
 
-      <div style={{ display: "flex", gap: space.sm, flexWrap: "wrap" }}>
-      <button
-        type="button"
-        onClick={() => dateiFeld.current?.click()}
-        disabled={zustand.art === "laeuft" || !einwilligung}
-        style={{
-          padding: pad("sm", "lg"), borderRadius: v("--radius-md"),
-          border: `1px solid ${einwilligung ? v("--color-accent") : v("--color-border")}`,
-          background: "transparent",
-          color: einwilligung ? v("--color-accent") : v("--color-text-muted"),
-          fontSize: 15, fontWeight: 600,
-          cursor: einwilligung && zustand.art !== "laeuft" ? "pointer" : "not-allowed",
-        }}
-      >
-        {seiten.length === 0 ? "Seiten auswählen" : "Weitere Seite hinzufügen"}
-      </button>
-
       {seiten.length > 0 && (
         <button
           type="button"
           onClick={pruefen}
           disabled={zustand.art === "laeuft" || !einwilligung}
           style={{
-            padding: pad("sm", "lg"), borderRadius: v("--radius-md"),
-            border: "none",
+            marginTop: space.md,
+            padding: pad("sm", "lg"), borderRadius: v("--radius-md"), border: "none",
             background: einwilligung ? v("--color-accent") : v("--color-border"),
             color: einwilligung ? "#fff" : v("--color-text-muted"),
             fontSize: 15, fontWeight: 600,
@@ -225,7 +276,6 @@ export default function AngebotCheck({
             : `${seiten.length} ${seiten.length === 1 ? "Seite" : "Seiten"} prüfen`}
         </button>
       )}
-      </div>
 
       {zustand.art === "fehler" && (
         <p style={{ fontSize: 14, color: v("--color-negative"), marginTop: space.md }}>{zustand.text}</p>
@@ -233,11 +283,123 @@ export default function AngebotCheck({
 
       {zustand.art === "abgelehnt" && (
         <p style={{ fontSize: 14, color: v("--color-text-secondary"), marginTop: space.md }}>
-          Das sieht nicht nach einem Heizungsangebot aus: {zustand.grund}
+          Das sieht nicht nach einem Angebot für dieses Gewerk aus: {zustand.grund}
         </p>
       )}
 
-      {zustand.art === "fertig" && <Befund {...zustand} />}
+      {gepruefte.length > 1 && <Vergleich gepruefte={gepruefte} einheit={einheit} />}
+
+      {gepruefte.map((g, i) => (
+        <div key={i} style={{ marginTop: space.xl }}>
+          {gepruefte.length > 1 && (
+            <h3 style={{ fontSize: 16, margin: `0 0 ${space.sm}px` }}>Angebot {i + 1}</h3>
+          )}
+          <Befund {...g} einheit={einheit} />
+        </div>
+      ))}
+
+      {(gepruefte.length > 0 || seiten.length > 0) && (
+        <button
+          type="button"
+          onClick={zuruecksetzen}
+          style={{
+            marginTop: space.xl, padding: pad("xs", "md"), borderRadius: v("--radius-md"),
+            border: `1px solid ${v("--color-border")}`, background: "transparent",
+            color: v("--color-text-muted"), fontSize: 13, cursor: "pointer",
+          }}
+        >
+          Von vorn anfangen
+        </button>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Zwei oder mehr Angebote nebeneinander.
+ *
+ * Der Vergleich ist die eigentliche Leistung: Die Verbraucherzentrale schreibt,
+ * das Kernproblem sei nicht der Preis, sondern dass Angebote unterschiedlich
+ * geschnitten sind und sich deshalb nicht vergleichen lassen. Wir lösen genau
+ * das auf — jede Zeile ist eine Position, jede Spalte ein Angebot, und man sieht
+ * auf einen Blick, wo eines etwas enthält, das dem anderen fehlt.
+ *
+ * KEIN GESAMTURTEIL, keine Empfehlung, welches das bessere ist. Das hängt an
+ * Dingen, die in keinem der beiden Dokumente stehen — Termin, Erreichbarkeit,
+ * wer schon vor Ort war.
+ */
+function Vergleich({ gepruefte, einheit }: { gepruefte: Geprueft[]; einheit: string }) {
+  // Alle Positionen, die in irgendeinem der Angebote vorkommen oder gefordert
+  // sind — sonst verschwindet eine Position, die nur eines von beiden nennt,
+  // und das ist der interessanteste Fall.
+  const positionen = gepruefte[0].befund.gewerk.positionen;
+
+  const zustandVon = (g: Geprueft, id: string): string => {
+    const v = g.befund.vollstaendigkeit;
+    if (v.fehlend.some((f) => f.position.id === id)) return "fehlt";
+    if (v.moeglicherweiseNoetig.some((f) => f.position.id === id)) return "fehlt";
+    if (v.ohnePreis.some((f) => f.position.id === id)) return "im Paket";
+    return "drin";
+  };
+
+  const farbe = (z: string) =>
+    z === "fehlt" ? v("--color-negative") : z === "im Paket" ? v("--color-text-muted") : v("--color-positive");
+
+  return (
+    <div style={{ marginTop: space.xl }}>
+      <h3 style={{ fontSize: 17, margin: `0 0 ${space.sm}px` }}>Die Angebote nebeneinander</h3>
+      <div style={{ overflowX: "auto" }}>
+        <table style={{ borderCollapse: "collapse", fontSize: 14, minWidth: 320, width: "100%" }}>
+          <thead>
+            <tr>
+              <th style={{ textAlign: "left", padding: "6px 8px 6px 0", fontWeight: 600 }}></th>
+              {gepruefte.map((_, i) => (
+                <th key={i} style={{ textAlign: "left", padding: "6px 8px", fontWeight: 600 }}>Angebot {i + 1}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style={{ padding: "6px 8px 6px 0", color: v("--color-text-secondary") }}>Gesamtpreis</td>
+              {gepruefte.map((g, i) => (
+                <td key={i} style={{ padding: "6px 8px", fontWeight: 600 }}>
+                  {g.gesamtpreisEur != null ? euro(g.gesamtpreisEur) : "—"}
+                </td>
+              ))}
+            </tr>
+            <tr>
+              <td style={{ padding: "6px 8px 6px 0", color: v("--color-text-secondary") }}>Größe</td>
+              {gepruefte.map((g, i) => (
+                <td key={i} style={{ padding: "6px 8px" }}>
+                  {g.befund.groesse.angebotKw != null ? `${g.befund.groesse.angebotKw} ${einheit}` : "—"}
+                </td>
+              ))}
+            </tr>
+            <tr>
+              <td style={{ padding: "6px 8px 6px 0", color: v("--color-text-secondary") }}>je {einheit}</td>
+              {gepruefte.map((g, i) => (
+                <td key={i} style={{ padding: "6px 8px" }}>
+                  {g.befund.preis.spezKostenEurProKw != null ? proEinheit(g.befund.preis.spezKostenEurProKw, einheit) : "—"}
+                </td>
+              ))}
+            </tr>
+            {positionen.map((p) => (
+              <tr key={p.id} style={{ borderTop: `1px solid ${v("--color-border")}` }}>
+                <td style={{ padding: "6px 8px 6px 0", color: v("--color-text-secondary") }}>{p.name}</td>
+                {gepruefte.map((g, i) => {
+                  const z = zustandVon(g, p.id);
+                  return <td key={i} style={{ padding: "6px 8px", color: farbe(z) }}>{z}</td>;
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p style={{ fontSize: 13, color: v("--color-text-muted"), lineHeight: 1.6, marginTop: space.md }}>
+        „Im Paket" heißt: die Leistung ist enthalten, aber ohne eigenen Preis — dann lässt sich
+        genau dieser Posten nicht vergleichen. Welches Angebot das bessere ist, sagen wir nicht;
+        das hängt auch an Dingen, die in keinem der Dokumente stehen.
+      </p>
     </div>
   );
 }
