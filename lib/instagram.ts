@@ -119,16 +119,23 @@ export async function loginAbschliessen(
   const appSecret = process.env.INSTAGRAM_APP_SECRET;
   if (!appId || !appSecret) throw new Error("Instagram-Zugangsdaten fehlen in der Umgebung");
 
+  // DER KÖRPER WIRD VON HAND GEBAUT, aus demselben Grund wie die Anmeldeadresse:
+  // Die Parameter-Sammlung kodiert jeden Wert, und Instagram vergleicht die
+  // Rückrufadresse offenbar als unveränderten Text. Nur eine der beiden Seiten
+  // umzustellen half nicht — der Dialog sah dann die rohe Form, der Tausch
+  // schickte die kodierte, und der Fehler blieb Zeichen für Zeichen derselbe.
+  const koerper = [
+    `client_id=${appId}`,
+    `client_secret=${appSecret}`,
+    "grant_type=authorization_code",
+    `redirect_uri=${rueckrufAdresse(origin)}`,
+    `code=${code}`,
+  ].join("&");
+
   const tokenRes = await fetch(TOKEN_URL, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      client_id: appId,
-      client_secret: appSecret,
-      grant_type: "authorization_code",
-      redirect_uri: rueckrufAdresse(origin),
-      code,
-    }),
+    body: koerper,
   });
   if (!tokenRes.ok) {
     throw new Error(`Instagram-Schlüsseltausch fehlgeschlagen (${tokenRes.status}): ${await tokenRes.text()}`);
