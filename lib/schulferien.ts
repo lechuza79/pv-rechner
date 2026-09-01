@@ -299,7 +299,41 @@ export function versandfenster(blAgs: string, iso: string): Versandfenster {
   if (feiertag) {
     return { frei: false, grund: `Feiertag: ${feiertag}`, wiederFrei: naechsterTag(iso) };
   }
+  // DER ERSTE TAG NACH DEN FERIEN ist gesperrt (Betreiber, 01.09.2026).
+  //
+  // Er ist formal ein Arbeitstag und trotzdem der schlechteste Versandtag im
+  // Jahr: Wer aus mehreren Wochen Ferien kommt, arbeitet an diesem Vormittag
+  // ein volles Postfach ab, und eine unverlangte Nachricht ist darin genau das,
+  // was zuerst weggeklickt wird. Ein Brief, den niemand liest, ist nicht neutral
+  // — die Gemeinde ist danach als angeschrieben verbucht und bekommt keinen
+  // zweiten.
+  //
+  // Als Regel im Code und nicht als Merksatz, aus demselben Grund wie die
+  // Ferien selbst: Ein Merksatz gilt, bis ihn jemand vergisst, und der Versand
+  // läuft über Wochen in wechselnden Sitzungen.
+  const rueckkehr = ersterTagNachFerien(bl, iso);
+  if (rueckkehr) {
+    return {
+      frei: false,
+      grund: `Erster Tag nach den Ferien (${rueckkehr.name} bis ${rueckkehr.bis}) — volle Postfächer`,
+      wiederFrei: naechsterTag(iso),
+    };
+  }
   return { frei: true };
+}
+
+/** Endeten in diesem Bundesland gestern die Ferien? */
+function ersterTagNachFerien(bl: string, iso: string): Ferienzeitraum | null {
+  const gestern = vorigerTag(iso);
+  const liste = SCHULFERIEN[bl];
+  if (!liste) return null;
+  return liste.find((f) => f.bis === gestern) ?? null;
+}
+
+function vorigerTag(iso: string): string {
+  const d = new Date(`${iso}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() - 1);
+  return d.toISOString().slice(0, 10);
 }
 
 function naechsterTag(iso: string): string {

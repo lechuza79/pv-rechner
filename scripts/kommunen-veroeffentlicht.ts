@@ -33,6 +33,7 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync } from "node:fs";
 import { notizZeile } from "../lib/outreach-ruecklauf";
+import { releaseFreigegeben } from "../lib/release-plan";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -148,6 +149,28 @@ async function main(): Promise<void> {
   }
   log(`${treffer.size} ${treffer.size === 1 ? "Gemeinde verlinkt" : "Gemeinden verlinken"} uns:`, "ok");
   for (const t of treffer.values()) log(`  ${t.name} — ${t.url}${t.seit ? ` (seit ${t.seit})` : ""}`);
+
+  // Zeigt der Verweis auf eine Seite, die wir für Suchmaschinen gesperrt haben?
+  //
+  // WOZU: Am 29.08.2026 verlinkte Heringen (Werra) unsere Gemeindeseite in einer
+  // eigenen Meldung — der erste redaktionelle Verweis dieses Projekts. Die Seite
+  // stand auf `noindex, nofollow`, die Empfehlung lief also ins Leere. Aufgefallen
+  // ist das durch Zufall bei einer Wettbewerbsanalyse, nicht durch einen Lauf.
+  //
+  // Freigegeben wird weiterhin von Hand über den Releaseplan (ein Ort, ein
+  // Eintrag, ein Nachweis) — eine Seite, die live geht, weil ein Datenbankfeld
+  // kippt, wäre genau die Automatik, gegen die der Plan gebaut wurde. Dieser
+  // Block ersetzt die Entscheidung nicht, er sorgt nur dafür, dass sie ansteht.
+  const offen = [...treffer.values()].filter((t) => !releaseFreigegeben("atlas-gemeinde", t.region_id));
+  if (offen.length) {
+    log();
+    log(`${offen.length} davon zeigen auf eine GESPERRTE Seite — die Empfehlung verpufft:`, "warn");
+    for (const t of offen) log(`  ${t.name} (${t.region_id})`);
+    log();
+    log("Zu tun: je Ort einen Beleg-Schub in lib/release-plan.ts eintragen");
+    log("(zweck: \"beleg\", genau ein Ort, Nachweis mit ausdrücklichem „keine Nachfrage\").");
+    log("Muster: w5-atlas-outreach-beleg.");
+  }
 
   if (!hat("schreiben")) {
     log();

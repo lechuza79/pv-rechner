@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { supabase } from "../../../../lib/supabase-server";
 import { v, space, pad } from "../../../../lib/theme";
+import AdminSeitenkopf from "../../../../components/admin/AdminSeitenkopf";
 import type { StoredReport } from "../../../../lib/waechter-reports";
 
 export const metadata = {
@@ -35,13 +36,10 @@ export default async function WaechterReportsPage() {
 
   return (
     <div style={{ fontFamily: v("--font-text"), color: v("--color-text-primary"), maxWidth: 760 }}>
-      <div style={{ marginBottom: space.xl }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-accent"), letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: space.xs }}>Admin</div>
-        <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: space.xs }}>Wächter-Berichte</h1>
-        <p style={{ fontSize: 13, color: v("--color-text-muted"), lineHeight: 1.5 }}>
-          Jeder Lauf wird hier abgelegt — auch die, die keine Mail ausgelöst haben. Die letzten 100.
-        </p>
-      </div>
+      <AdminSeitenkopf
+        titel="Wächter-Berichte"
+        hilfe="Jeder Lauf wird hier abgelegt — auch die, die keine Mail ausgelöst haben. Die letzten 100."
+      />
 
       {problem && (
         <p style={{ fontSize: 13, color: v("--color-negative") }}>{problem}</p>

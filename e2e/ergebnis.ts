@@ -37,14 +37,14 @@ export interface ErgebnisUnterTest {
    * geändert" ist eben nicht „das Ergebnis hat sich geändert".
    */
   kernzahlen: RegExp[];
-  /**
-   * Warum dieses Ergebnis NICHT per Adresse erreichbar ist — dann klickt der
-   * Lauf sich hin und die Geteilter-Link-Prüfung entfällt mit Begründung.
-   * Angemeldet statt verschwiegen: Ein Rechner ohne teilbares Ergebnis ist ein
-   * Produktbefund, kein Grund, die Prüfung stillschweigend auszulassen.
-   */
-  ohneTeilenLink?: string;
 }
+
+// Hier stand bis zum 26.08.2026 ein Feld für „dieses Ergebnis ist per Adresse
+// nicht erreichbar" — mit dem Wärmepumpen-Rechner als einzigem Fall. Es ist
+// weg, weil der Fall weg ist: Jeder Rechner hat jetzt einen Teilen-Link, und
+// damit prüft dieser Lauf ihn überall. Wer je wieder einen Rechner ohne
+// teilbares Ergebnis baut, meldet das hier an, statt die Prüfung stillschweigend
+// auszulassen.
 
 export const ERGEBNISSE: ErgebnisUnterTest[] = [
   {
@@ -61,14 +61,12 @@ export const ERGEBNISSE: ErgebnisUnterTest[] = [
   },
   {
     name: "Wärmepumpen-Rechner",
-    pfad: "/waermepumpe-rechner",
+    // Bewusst mit Angaben, die vom Ausgangszustand ABWEICHEN: Ein Link aus
+    // lauter Standardwerten sähe auch dann richtig aus, wenn das Lesen der
+    // Adresse gar nicht stattfindet.
+    pfad: "/waermepumpe-rechner?fl=180&da=0&hz=hk_alt&ah=oel_kohle",
     enthaelt: "Deine Wärmepumpen-Prognose",
     kernzahlen: [/⌀ Ersparnis\/Jahr\s*\n?\s*([\d.,]+)\s*€/, /CO₂ 20 J\s*\n?\s*([\d.,]+)\s*t/],
-    ohneTeilenLink:
-      "Der Wärmepumpen-Rechner kennt keinen Teilen-Link — sein Ergebnis lässt sich weder " +
-      "verschicken noch neu laden, es lebt nur im Browser. Das steht als offener Punkt in der " +
-      "Roadmap (Arbeitspaket Wärmepumpe: Share-URL und Dashboard-Save). Bis dahin klickt sich " +
-      "dieser Lauf hin.",
   },
 ];
 

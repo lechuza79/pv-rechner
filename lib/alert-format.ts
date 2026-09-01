@@ -28,6 +28,8 @@
 // stillschweigend — und abgelehnt wird nie, sonst ginge eine echte Frage
 // verloren, nur weil ihr Autor zu viel geschrieben hat.
 
+import { escapeHtml } from "./html-escape";
+
 /** Länge, ab der eine einzelne Entscheidung sichtbar gekürzt wird. */
 const MAX_DECISION_CHARS = 400;
 const MAX_DECISIONS = 5;
@@ -112,13 +114,11 @@ export function decideDelivery(p: AlertPayload): Delivery {
   return { send: false, reason: "nichts zu entscheiden" };
 }
 
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
+// escapeHtml stand hier privat und behandelte das Apostroph nicht. Seit
+// 31.08.2026 kommt sie aus lib/html-escape.ts — dieselbe Fassung, die auch die
+// Abo-Mails benutzen. Zwei Escape-Funktionen, von denen eine ein Zeichen
+// weniger kennt, sind die Sorte Unterschied, die weder im Diff noch im Browser
+// auffällt.
 
 /**
  * Die drei Zeilen, die im Postfach sichtbar sind, bevor irgendjemand klickt.

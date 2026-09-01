@@ -13,6 +13,8 @@ import "server-only";
 
 import { unstable_cache } from "next/cache";
 import { supabase } from "./supabase-server";
+import { getFundingPrograms } from "./funding-data";
+import { bedingungText, fundingZaehlt } from "./funding-programs";
 import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
 import type { SocialKennzahlen } from "./social-posts";
 
@@ -64,6 +66,17 @@ async function ladeGemeinden(): Promise<AwardZeile[]> {
   return alle;
 }
 
+/** Der Name EINER Gemeinde. Eine Zeile, kein zweiter Volldurchlauf. */
+async function ladeGemeindeName(regionId: string): Promise<string> {
+  if (!supabase) throw new Error("Datenbank nicht konfiguriert");
+  const { data } = await withDbTimeout(
+    supabase.from("mastr_regions").select("name").eq("region_id", regionId).maybeSingle(),
+    "social-kennzahlen: gemeindename",
+    DB_SOFT_READ_TIMEOUT_MS,
+  );
+  return (data as { name?: string } | null)?.name ?? regionId;
+}
+
 async function ladeNamen(): Promise<Map<string, string>> {
   if (!supabase) throw new Error("Datenbank nicht konfiguriert");
   const { data, error } = await withDbTimeout(
@@ -85,8 +98,48 @@ async function ladeStand(): Promise<string> {
   return (data as { imported_at?: string } | null)?.imported_at ?? new Date().toISOString();
 }
 
+/**
+ * Der Förderkatalog, verdichtet.
+ *
+ * Gezählt wird nur, was AKTUELL ZÄHLT — dieselbe Entscheidung wie im Rechner
+ * (`fundingZaehlt`). Ein Programm mit abgelaufenem Beleg zieht dort kein Geld
+ * ab, und in einem Beitrag darf es genauso wenig eine Zahl tragen: Eine
+ * Auskunft, die wir gerade nicht bestätigen können, ist eine Behauptung.
+ */
+async function rechneFoerderung(): Promise<SocialKennzahlen["foerderung"]> {
+  const alle = await getFundingPrograms();
+  // Nur KOMMUNALE Programme: Die Beiträge sprechen von dem, was Gemeinden tun.
+  // Bund und Länder mitzuzählen verschöbe jede Quote, und die KfW hat weder eine
+  // Gemeinde noch dasselbe Muster.
+  const zaehlend = alle.filter((p) => p.level === "kommune" && fundingZaehlt(p));
+  // Ohne Angabe gilt `["pv"]` — der Katalog war lange ein reiner PV-Katalog,
+  // und ein Programm ohne Angabe ist eines, das noch niemand daraufhin gelesen
+  // hat. Als „nur Balkon" zählt deshalb nur, wo es ausdrücklich so steht.
+  const nurBalkon = zaehlend.filter((p) => p.foerdert?.length === 1 && p.foerdert[0] === "balkon");
+  // `capped` wäre das falsche Feld: Es heißt „Budget gedeckelt, wer zuerst
+  // kommt" und sagt nichts über den Höchstbetrag je Antrag. Genannt ist der
+  // entweder als lesbarer Satz oder als struktureller Deckel.
+  const hoechstbetrag = (p: (typeof zaehlend)[number]) =>
+    !!p.maxFoerderung || p.pvCap != null || p.speicherCap != null;
+  const antragVorher = (p: (typeof zaehlend)[number]) =>
+    p.conditions.some((c) => /vor (dem )?(vorhabenbeginn|beginn|auftrag|beauftragung|kauf|bestellung)/i.test(bedingungText(c)));
+
+  return {
+    programme: zaehlend.length,
+    gemeinden: new Set(zaehlend.map((p) => p.agsCode ?? p.region)).size,
+    nurBalkon: nurBalkon.length,
+    ohneHoechstbetrag: zaehlend.filter((p) => !hoechstbetrag(p)).length,
+    mitAntragVorher: zaehlend.filter(antragVorher).length,
+  };
+}
+
 async function rechne(): Promise<SocialKennzahlen> {
-  const [zeilen, namen, standIso] = await Promise.all([ladeGemeinden(), ladeNamen(), ladeStand()]);
+  const [zeilen, namen, standIso, foerderung] = await Promise.all([
+    ladeGemeinden(),
+    ladeNamen(),
+    ladeStand(),
+    rechneFoerderung(),
+  ]);
 
   // Nur bewohnte Gemeinden mit achtstelligem Schlüssel. Kreis- und
   // Landeszeilen stünden sonst zusätzlich im Nenner und verdoppelten Einwohner.
@@ -103,17 +156,30 @@ async function rechne(): Promise<SocialKennzahlen> {
 
   const proLand = new Map<
     string,
-    { ew: number; balkon: number; pv: number; frei: number; solar: number; solar5: number }
+    {
+      ew: number;
+      balkon: number;
+      pv: number;
+      frei: number;
+      solar: number;
+      solar5: number;
+      anlagen: number;
+      speicher: number;
+    }
   >();
   for (const r of gem) {
     const k = r.region_id.slice(0, 2);
-    const e = proLand.get(k) ?? { ew: 0, balkon: 0, pv: 0, frei: 0, solar: 0, solar5: 0 };
+    const e = proLand.get(k) ?? {
+      ew: 0, balkon: 0, pv: 0, frei: 0, solar: 0, solar5: 0, anlagen: 0, speicher: 0,
+    };
     e.ew += r.population;
     e.balkon += r.balkon_count ?? 0;
     e.pv += zahl(r.privat_dach_kwp);
     e.frei += zahl(r.freiflaeche_kwp);
     e.solar += zahl(r.solar_kwp);
     e.solar5 += zahl(r.solar_kwp_l5);
+    e.anlagen += r.privat_dach_count ?? 0;
+    e.speicher += r.batterie_privat_count ?? 0;
     proLand.set(k, e);
   }
 
@@ -124,6 +190,28 @@ async function rechne(): Promise<SocialKennzahlen> {
   // Nenners, nicht des Orts.
   const MIN_EW = 500;
   const bewertbar = gem.filter((r) => r.population >= MIN_EW);
+
+  const privatAnlagen = summe((r) => r.privat_dach_count ?? 0);
+  // SPEICHER-EINHEITEN, nicht „Anlagen mit Speicher": Das Register führt
+  // Heimspeicher als eigene Anlagen (Energieträger „speicher"). Ein Haushalt
+  // kann mehrere anmelden, und ein Balkonspeicher hat gar keine Dachanlage —
+  // deshalb ist das Verhältnis kein Anteil und kann über 100 liegen.
+  const speicherEinheiten = summe((r) => r.batterie_privat_count ?? 0);
+
+  // Der Ausreißer: höchste Balkon-Quote über einer Mindestgröße. Die Schwelle
+  // liegt deutlich höher als die der Bundeszahl oben — bei einem Dorf mit
+  // wenigen hundert Einwohnern entsteht ein Spitzenwert aus einer Handvoll
+  // Geräten, und der Superlativ säße vollständig im Nenner.
+  const ANOMALIE_MIN_EW = 5_000;
+  const kandidaten = gem.filter((r) => r.population >= ANOMALIE_MIN_EW);
+  const spitze = kandidaten.reduce(
+    (best, r) =>
+      (r.balkon_count ?? 0) / r.population > (best.balkon_count ?? 0) / best.population ? r : best,
+    kandidaten[0] ?? gem[0],
+  );
+  const bundesBalkon = gem.reduce((s, r) => s + (r.balkon_count ?? 0), 0);
+  const bundesEw = gem.reduce((s, r) => s + r.population, 0);
+  const spitzeName = await ladeGemeindeName(spitze.region_id);
 
   return {
     standIso,
@@ -152,11 +240,27 @@ async function rechne(): Promise<SocialKennzahlen> {
       betrachtet: bewertbar.length,
       darueber: bewertbar.filter((r) => zahl(r.solar_kwp) > r.population).length,
     },
+    kohorte: {
+      privatAnlagen,
+      mittlereKwp: privatAnlagen ? summe((r) => zahl(r.privat_dach_kwp)) / privatAnlagen : 0,
+      speicherEinheiten,
+      speicherJe100: privatAnlagen ? (speicherEinheiten / privatAnlagen) * 100 : 0,
+    },
+    anomalie: {
+      ort: spitzeName,
+      einwohner: spitze.population,
+      jeTausend: ((spitze.balkon_count ?? 0) / spitze.population) * 1000,
+      bundesJeTausend: bundesEw ? (bundesBalkon / bundesEw) * 1000 : 0,
+      mindestEinwohner: ANOMALIE_MIN_EW,
+    },
+    foerderung,
     laender: [...proLand.entries()]
       .map(([ags, e]) => ({
         name: namen.get(ags) ?? ags,
         balkonJeTausend: e.ew ? (e.balkon / e.ew) * 1000 : 0,
         wpProKopf: e.ew ? (e.pv * 1000) / e.ew : 0,
+        privatDachKwp: e.pv,
+        speicherJe100: e.anlagen ? (e.speicher / e.anlagen) * 100 : 0,
         freiflaecheAnteil: e.solar ? (e.frei / e.solar) * 100 : 0,
         solarKwp: e.solar,
         wachstumFuenfJahre: e.solar5 ? e.solar / e.solar5 : 0,
@@ -165,7 +269,18 @@ async function rechne(): Promise<SocialKennzahlen> {
   };
 }
 
-export const socialKennzahlen = unstable_cache(rechne, ["social-kennzahlen"], {
+/**
+ * Der Schlüssel trägt eine FORM-Version.
+ *
+ * Der Cache hält einen Tag. Kommt eine neue Kennzahl dazu, liefert er nach dem
+ * Deploy weiter das alte Objekt — ohne das neue Feld, und die Post-Funktion, die
+ * es liest, wirft. Von außen sieht das aus wie ein Fehler im neuen Code, ist
+ * aber ein Fehler in der Haltbarkeit. Wer ein Feld ergänzt oder entfernt, zählt
+ * hier hoch.
+ */
+const FORM_VERSION = "v6";
+
+export const socialKennzahlen = unstable_cache(rechne, ["social-kennzahlen", FORM_VERSION], {
   revalidate: 86_400,
   tags: ["social-kennzahlen"],
 });

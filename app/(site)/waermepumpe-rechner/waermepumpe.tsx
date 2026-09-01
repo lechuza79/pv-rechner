@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, type ReactNode } from "react";
+import { useState, useMemo, useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import FlowNav from "../../../components/FlowNav";
@@ -33,15 +33,25 @@ import ResultFunding from "../../../components/ResultFunding";
 import WpGeraeteEmpfehlung from "../../../components/WpGeraeteEmpfehlung";
 import { stackFunding, programmeNebenBundesfoerderung, zeilenBisDeckel } from "../../../lib/funding-programs";
 import { useFoerderung } from "../../../lib/use-foerderung";
+import KfwFoerderpraxis, { kfwPraxisZusammenfassung } from "../../../components/KfwFoerderpraxis";
+import { useKfwKreis } from "../../../lib/use-kfw-kreis";
+import { type HeizungsfoerderungBund } from "../../../lib/kfw-format";
+import {
+  istGeteilterLink,
+  wpAusParametern,
+  wpZuParametern,
+  type WpZustand,
+} from "../../../lib/wp-share-state";
 import HeatPumpChart from "./_components/HeatPumpChart";
 import GasPriceStackChart from "../../../components/charts/GasPriceStackChart";
 import HeatCostCompareChart from "../../../components/charts/HeatCostCompareChart";
 import Modal from "../../../components/Modal";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import InfoTooltip from "../../../components/InfoTooltip";
-import { IconArrowRight, IconRefresh, IconChevronDown, IconSun, IconLink } from "../../../components/Icons";
+import { IconArrowRight, IconRefresh, IconChevronDown, IconSun, IconCheck, IconLink, IconShare, IconWhatsApp } from "../../../components/Icons";
 import { v, iconSizes, space, pad } from "../../../lib/theme";
 import { trackEvent } from "../../../lib/analytics";
+import { trackFunnelStep, type Funnel } from "../../../lib/analytics";
 
 /** Einheit, in der ein Nutzer seinen Jahresverbrauch von der Abrechnung abliest. */
 type VerbrauchEinheit = "gas" | "oel";
@@ -56,7 +66,18 @@ const STEPS = ["Situation", "Größe & Typ", "Dämmstandard", "Haushalt", "Heizs
 export default function Waermepumpe({
   embedded = false,
   stand,
-}: { embedded?: boolean; stand?: StandSeite } = {}) {
+  kfw = null,
+}: {
+  embedded?: boolean;
+  stand?: StandSeite;
+  /**
+   * Was aus der Bundesförderung im letzten Jahrgang wirklich geworden ist —
+   * auf dem Server nachgeschlagen und hereingereicht, damit die Seite statisch
+   * bleibt und die Tabellen hinter dem Dienstschlüssel bleiben. Fehlt sie
+   * (kein Datenbankzugriff), entfällt der Abschnitt lautlos.
+   */
+  kfw?: HeizungsfoerderungBund | null;
+} = {}) {
   // ── Step state ───────────────────────────────────────────────
   const router = useRouter();
   const suchParams = useSearchParams();
@@ -172,6 +193,9 @@ export default function Waermepumpe({
   // steht der Check im Ergebnis, wo er eine bereits gerechnete Zahl verbessert.
   const [plz, setPlz] = useState(p0("plz") ?? "");
   const foerderQuelle = useFoerderung("waermepumpe");
+  // Der Kreisbezug hängt am Ort, den der Fördercheck ohnehin schon aufgelöst
+  // hat — keine zweite Ortsfrage, kein Abruf ohne Ort.
+  const kfwKreis = useKfwKreis(foerderQuelle.ags);
   const [fundingEnabled, setFundingEnabled] = useState(true);
   const [showDetails, setShowDetails] = useState(false);
   // Szenario-Auswahl (steuert TCO/Amortisation/Ersparnis/CO₂ + Chart):
@@ -227,62 +251,157 @@ export default function Waermepumpe({
   // Secondary-Block "Marktübliche Preissteigerung" (die 3 Preis-Modelle) auf-/zugeklappt.
   const [preisExpanded, setPreisExpanded] = useState(false);
 
-  const isResult = step >= STEPS.length;
+  // ── Geteilter Link ───────────────────────────────────────────
+  //
+  // GELESEN WIRD IM BROWSER, nicht auf dem Server. Die Adresse in der
+  // Seitenkomponente auszuwerten würde die Seite dynamisch machen — jeder
+  // Besucher zahlte dann den vollen Aufbau, obwohl fast keiner über einen
+  // geteilten Link kommt. Der Rechner läuft ohnehin im Browser; hier kostet es
+  // nichts.
+  //
+  // NUR EINMAL, und das ist der Punkt: Ein Effekt, der die Adresse dauerhaft
+  // beobachtet, würde die Eingaben des Nutzers bei jeder Adressänderung wieder
+  // überschreiben. Deshalb ein Merker, der nach dem ersten Lauf zusperrt.
+  const linkGelesen = useRef(false);
+  useEffect(() => {
+    if (linkGelesen.current) return;
+    linkGelesen.current = true;
+    // Direkt aus der Adresse des Fensters, NICHT über den Adress-Hook von Next:
+    // Der ist auf einer vorgerenderten Seite beim ersten Durchlauf noch leer,
+    // und dieser Effekt läuft genau einmal — er würde die Angaben des Links
+    // dann für immer verpassen. Gemessen: Der Rechner blieb bei Frage eins
+    // stehen, obwohl alle Werte in der Adresse standen. Im Browser ist
+    // `location.search` immer vollständig.
+    const p = new URLSearchParams(window.location.search);
+    if (!istGeteilterLink(p)) return;
+    const z = wpAusParametern(p);
+    setSituation(z.situation);
+    const preset = WOHNFLAECHEN.findIndex(f => f.m2 === z.wohnflaeche);
+    if (preset >= 0) { setFlaecheIdx(preset); setCustomFlaeche(null); }
+    else { setCustomFlaeche(z.wohnflaeche); setCustomFlaecheDraft(String(z.wohnflaeche)); }
+    const ht = HAUSTYP_WP.findIndex(h => h.id === z.haustyp);
+    if (ht >= 0) setHaustypIdx(ht);
+    setInsulationIdx(z.daemmung);
+    setPersonen(z.personen);
+    setHeizsystem(z.heizsystem);
+    setWpType(z.wpType);
+    setOFuel(z.brennstoff);
+    setHeizkoerperTausch(z.heizkoerperTausch);
+    setScenario(z.szenario);
+    setWegId(z.weg);
+    setSelbstnutzer(z.selbstnutzer);
+    setAltheizung(z.altheizung);
+    setEinkommen(z.einkommen);
+    setKindImHaushalt(z.kindImHaushalt);
+    setEuUrsprung(z.euUrsprung);
+    setBegStand(z.begStand);
+    setFundingEnabled(z.foerderungAn);
+    setPvStatus(z.pvStatus);
+    setPvKwp(z.pvKwp);
+    setPvSpeicher(z.pvSpeicher);
+    setOGasPrice(z.gaspreis);
+    setOStromPrice(z.strompreis);
+    setOJaz(z.jaz);
+    setOInvest(z.investition);
+    setOQges(z.heizwaerme);
+    setOHeizlast(z.heizlast);
+    setOFossilInvest(z.fossilInvest);
+    if (z.plz) { setPlz(z.plz); void foerderQuelle.ausPlz(z.plz); }
+    // Ein geteilter Link ZEIGT ein Ergebnis — er stellt keine Fragen noch
+    // einmal. Alle Antworten gelten damit als gegeben; ohne das stünde der
+    // Empfänger vor einem Flow, dessen Weiter-Knopf gesperrt ist, obwohl alle
+    // Werte gesetzt sind.
+    setBeantwortet(new Set(["situation", "flaeche", "haustyp", "daemmung", "personen", "heizsystem", "wptyp"]));
+    setStep(STEPS.length);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  /**
-   * Die aktuelle Rechnung als Adresse.
-   *
-   * Aufgenommen wird nur, was das Ergebnis WIRKLICH verändert — jeder weitere
-   * Parameter ist eine Stelle, an der Absender und Empfänger auseinanderlaufen
-   * können. Von Hand gesetzte Werte (Investition, Heizwärme, Heizlast) müssen
-   * mit: Ohne sie rechnet der Empfänger mit unseren Schätzungen weiter und
-   * sieht eine andere Zahl unter derselben Überschrift.
-   *
-   * `e=1` schaltet direkt ins Ergebnis. Das ist kein Entwicklungs-Kürzel,
-   * sondern der Sinn der Sache: Ein geteilter Link, der den Empfänger erst
-   * durch fünf Fragen schickt, teilt kein Ergebnis.
-   */
-  const teilenAdresse = () => {
-    const p = new URLSearchParams();
-    p.set("e", "1");
-    p.set("si", situation);
-    p.set("fl", String(flaecheIdx));
-    if (customFlaeche !== null) p.set("cf", String(customFlaeche));
-    p.set("ht", String(haustypIdx));
-    p.set("da", String(insulationIdx));
-    p.set("pe", String(personen));
-    p.set("hz", heizsystem);
-    p.set("wt", wpType);
-    if (wegId !== "ist") p.set("wg", wegId);
-    if (scenario !== "gruengas") p.set("sz", scenario);
-    if (oFuel !== "gas_neu") p.set("br", oFuel);
-    if (heizkoerperTausch) p.set("hk", "1");
-    if (!selbstnutzer) p.set("sn", "0");
-    if (kindImHaushalt) p.set("ki", "1");
-    if (euUrsprung) p.set("eu", "1");
-    if (pvStatus !== "nein") p.set("pv", pvStatus);
-    if (plz) p.set("plz", plz);
-    if (oInvest !== null) p.set("iv", String(oInvest));
-    if (oQges !== null) p.set("qg", String(oQges));
-    if (oHeizlast !== null) p.set("hl", String(oHeizlast));
-    const basis = typeof window !== "undefined" ? window.location.origin : "https://solar-check.io";
-    return `${basis}/waermepumpe-rechner?${p.toString()}`;
+  /** Der aktuelle Zustand als Datensatz — eine Quelle für Link und Prüfung. */
+  const shareZustand = (): WpZustand => ({
+    situation,
+    wohnflaeche: customFlaeche ?? WOHNFLAECHEN[flaecheIdx].m2,
+    haustyp: HAUSTYP_WP[haustypIdx]?.id ?? "frei",
+    daemmung: insulationIdx,
+    personen,
+    heizsystem,
+    wpType,
+    brennstoff: oFuel,
+    heizkoerperTausch,
+    szenario: scenario,
+    weg: wegId,
+    selbstnutzer,
+    altheizung,
+    einkommen,
+    kindImHaushalt,
+    euUrsprung,
+    begStand,
+    foerderungAn: fundingEnabled,
+    plz,
+    pvStatus,
+    pvKwp,
+    pvSpeicher,
+    gaspreis: oGasPrice,
+    strompreis: oStromPrice,
+    jaz: oJaz,
+    investition: oInvest,
+    heizwaerme: oQges,
+    heizlast: oHeizlast,
+    fossilInvest: oFossilInvest,
+  });
+
+  const buildShareUrl = () => {
+    const p = wpZuParametern(shareZustand()).toString();
+    return `${window.location.origin}${window.location.pathname}${p ? `?${p}` : ""}`;
   };
 
-  const [linkKopiert, setLinkKopiert] = useState(false);
-  const linkKopieren = async () => {
+  /** Was in der Nachricht steht, bevor der Link kommt. */
+  const shareText = () =>
+    `Wärmepumpe statt ${fuel.refLabel}: ${sel.einsparungProJahr > 0 ? "spart" : "kostet"} ${Math.abs(sel.einsparungProJahr).toLocaleString("de-DE")} € im Jahr.`;
+
+  const [copied, setCopied] = useState(false);
+  const canShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
+  const shareBtnStyle = (aktiv?: boolean) => ({
+    width: 40, height: 40, borderRadius: v('--radius-md'), cursor: "pointer" as const,
+    background: aktiv ? v('--color-accent-dim') : v('--color-bg'),
+    border: `1px solid ${aktiv ? v('--color-accent') : v('--color-border-accent')}`,
+    color: v('--color-accent'),
+    display: "flex" as const, alignItems: "center" as const, justifyContent: "center" as const,
+    flexShrink: 0 as const, transition: "all 0.2s",
+  });
+  const handleCopy = async () => {
+    trackEvent("waermepumpe_geteilt");
+    const url = buildShareUrl();
     try {
-      await navigator.clipboard.writeText(teilenAdresse());
-      setLinkKopiert(true);
-      setTimeout(() => setLinkKopiert(false), 2000);
-    } catch {
-      prompt("Link kopieren:", teilenAdresse());
-    }
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch { prompt("Link kopieren:", url); }
   };
+  const handleNativeShare = async () => {
+    trackEvent("waermepumpe_geteilt");
+    try { await navigator.share({ title: "Solar Check – Meine Wärmepumpen-Rechnung", text: shareText(), url: buildShareUrl() }); } catch {}
+  };
+  const handleWhatsApp = () => {
+    trackEvent("waermepumpe_geteilt");
+    window.open(`https://wa.me/?text=${encodeURIComponent(`${shareText()}\n${buildShareUrl()}`)}`, "_blank");
+  };
+
+  const isResult = step >= STEPS.length;
+  // Ereignis je erreichtem Schritt, Reihenfolge wie STEPS, danach das Ergebnis.
+  // Bis 29.08.2026 meldete dieser Rechner NUR das Ergebnis — wo jemand abbricht,
+  // war unsichtbar. Länge und Reihenfolge sind festgenagelt (siehe `lib/analytics.ts`).
+  const FUNNEL: Funnel = [
+    null,
+    "waermepumpe_schritt_groesse",
+    "waermepumpe_schritt_daemmung",
+    "waermepumpe_schritt_haushalt",
+    "waermepumpe_schritt_heizsystem",
+    "waermepumpe_ergebnis",
+  ];
   const next = () => {
     if (step >= STEPS.length) return;
     const target = step + 1;
-    if (target === STEPS.length) trackEvent("waermepumpe_ergebnis");
+    trackFunnelStep(FUNNEL, target);
     setStep(target);
   };
   const back = () => step > 0 && setStep(step - 1);
@@ -1386,6 +1505,179 @@ export default function Waermepumpe({
               />
             )}
 
+            {/* Was aus der Bundesförderung wirklich geworden ist.
+
+                Alles darüber beschreibt, was die Förderung HERGIBT — Sätze, Boni,
+                Höchstbetrag. Die Frage, mit der die meisten herkommen, ist eine
+                andere: „bekomme ich das auch?" Darauf antwortet nur das, was
+                das Amt gezählt hat. Der Abschnitt steht deshalb direkt unter dem
+                Förderblock und nicht am Seitenende.
+
+                Nur im Bestand: Im Neubau gibt es diese Förderung nicht, und
+                Zahlen zu einer Förderung zu zeigen, die der gerechnete Fall gar
+                nicht bekommt, wäre die Sorte Zahl, die zur falschen Erwartung
+                führt. */}
+            {situation === "bestand" && kfw && (
+              <ResultSection
+                title="Wer bekommt die Förderung wirklich?"
+                summary={kfwPraxisZusammenfassung(kfw)}
+              >
+                <KfwFoerderpraxis daten={kfw} kreis={kfwKreis} nackt />
+              </ResultSection>
+            )}
+
+
+
+            {zeigeWege && (
+              <div style={{ fontSize: 12, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", margin: "4px 2px 8px" }}>
+                Gewählter Weg: {activeWeg?.titel}
+              </div>
+            )}
+
+            {/* Hero: TCO-Differenz */}
+            <div style={{ padding: "24px 20px", marginBottom: 16, background: v('--color-bg-accent'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border-accent')}` }}>
+              <div style={{ fontSize: 12, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, width: "100%" }}>
+                Einsparung über {DEFAULT_HEATPUMP_CONFIG.years} Jahre
+                <InfoTooltip title="So wird die Einsparung berechnet" ariaLabel="Wie wird die Einsparung berechnet?">
+                  <TcoBreakdown r={sel} situation={situation} jahre={DEFAULT_HEATPUMP_CONFIG.years} sanierungHinweis={activeWeg?.sanierung ?? false} refLabel={fuel.refLabel} />
+                </InfoTooltip>
+              </div>
+              <div style={{ fontSize: 42, fontWeight: 800, color: sel.tcoEinsparung >= 0 ? v('--color-positive') : v('--color-negative'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
+                {sel.tcoEinsparung >= 0 ? "+" : ""}{sel.tcoEinsparung.toLocaleString("de-DE")} €
+              </div>
+              {/* Die große Zahl gilt für EINE Preisannahme. Ohne die Bandbreite daneben
+                  liest sie sich wie eine Prognose der Energiepreise der nächsten 20 Jahre
+                  — die niemand hat (Nutzerkritik 28.07.2026). Deshalb steht die Spanne
+                  aller gerechneten Annahmen direkt unter dem Wert, nicht nur im Tooltip. */}
+              <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 8, textAlign: "center", lineHeight: 1.5 }}>
+                Künftige Energiepreise kennt niemand. Je nach Annahme sind es{" "}
+                <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, whiteSpace: "nowrap" }}>
+                  {spanne.min >= 0 ? "+" : ""}{spanne.min.toLocaleString("de-DE")} €
+                </span>{" "}bis{" "}
+                <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, whiteSpace: "nowrap" }}>
+                  {spanne.max >= 0 ? "+" : ""}{spanne.max.toLocaleString("de-DE")} €
+                </span>.
+              </div>
+              <div style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6, display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: 4 }}>
+                {/* „vs. neue" + Auswahlfeld ergab „vs. neue Heizöl". Der Fall steht
+                    jetzt im Satz, das Feld nennt nur noch das Gerät. */}
+                vs. {ersatzInvest > 0 ? "neue Heizung:" : "Weiterbetrieb:"}
+                {/* Beim Wechsel des Energieträgers den Preis-Override fallen lassen —
+                    sonst bliebe ein von Hand gesetzter Gaspreis am Heizöl kleben und
+                    die Umstellung wirkte wirkungslos. */}
+                <select value={fuel.id} onChange={e => { setOFuel(e.target.value); setOGasPrice(null); }} aria-label="Referenzheizung wählen" style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-accent'), background: v('--color-accent-dim'), border: `1px solid ${v('--color-accent')}`, borderRadius: v('--radius-sm'), padding: "2px 6px", fontSize: 13 }}>
+                  {fuelOptions.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
+                </select>
+                {situation === "neubau" ? "(Neubau)" : null}
+                <InfoTooltip title="Wie sich der Brennstoffpreis entwickelt" ariaLabel="Wie sich der Brennstoffpreis in der Rechnung entwickelt">
+                  {greenGas
+                    ? <>Das Grüngas-Szenario ist aktiv: Der Gaspreis folgt dem GModG-Gas-Mix — mit der Bio-Treppe wird ab 2029 zunehmend teures Biomethan beigemischt, dazu steigen Netzentgelte und CO₂-Preis. Details und Verlauf siehst du im Grüngas-Block weiter unten. Die drei Szenarien im Diagramm rechnen mit niedrigem, mittlerem und hohem Preispfad.</>
+                    : <>Der heutige Brennstoffpreis steigt in der Rechnung jedes Jahr — durch allgemeine Teuerung (realistisch rund 2 % pro Jahr) und durch den steigenden CO₂-Preis auf fossile Energie. Der CO₂-Preis liegt 2026 und 2027 bei 55–65 € pro Tonne und klettert ab 2028 mit dem EU-Emissionshandel voraussichtlich um etwa 8 € pro Tonne und Jahr. Die im heutigen Preis schon enthaltene CO₂-Abgabe wird dabei nicht doppelt gezählt. Die drei Szenarien im Diagramm rechnen mit unterschiedlich starkem Anstieg.</>}
+                </InfoTooltip>
+              </div>
+
+
+              {/* Editierbare Kernannahmen */}
+              <div style={{ marginTop: 18, borderTop: `1px solid ${v('--color-border-accent')}`, paddingTop: 14, fontSize: 13, lineHeight: 2 }}>
+                <div>
+                  Heizwärme pro Jahr: <InlineEdit value={result.qGes} onCommit={v => setOQges(v)} unit=" kWh" min={1000} max={80000} step={500} width={90} />
+                  <InfoTooltip title="Woher diese Menge kommt" ariaLabel="Woher kommt der Jahres-Heizwärmebedarf?">
+                    Geschätzt aus Wohnfläche, Dämmzustand und Personenzahl — und zwar als <strong>erwarteter Verbrauch</strong>, nicht als Norm-Bedarf. Der Unterschied ist groß: Die Norm rechnet ein Gebäude durch, in dem alle Räume auf Solltemperatur stehen. Real wird weniger geheizt (Räume bleiben kühl, nachts wird abgesenkt), im Altbau rund 30 % weniger.<br /><br />
+                    <strong>Du kennst deinen Gas- oder Ölverbrauch? Trag ihn im Schritt „Dämmstandard" ein</strong> — oder rechne hier direkt: Jahresverbrauch in kWh × {Math.round(fuel.efficiency * 100)} % (Kessel-Nutzungsgrad). Ein gemessener Wert schlägt jede Schätzung.<br /><br />
+                    Diese Menge steht auf beiden Seiten der Rechnung — sie bestimmt den Gasverbrauch genauso wie den Strom der Wärmepumpe. <strong>Wenn nach dem Wechsel wärmer oder in mehr Räumen geheizt wird, steigt sie</strong>, und die Ersparnis fällt kleiner aus als hier gezeigt. Nach Sanierungen wird dieser Effekt mit 10 bis 30 % beziffert; wie stark er bei einem reinen Heizungstausch auftritt, ist nicht belastbar gemessen — deshalb rechnen wir ihn nicht ein, sondern nennen ihn.
+                  </InfoTooltip>
+                </div>
+                <div>
+                  Heizlast: <InlineEdit value={result.heizlastKw} onCommit={v => setOHeizlast(v)} unit=" kW" min={3} max={40} step={0.5} width={60} fmt={v => (Math.round(v * 10) / 10).toString().replace(".", ",")} />
+                  <span style={{ fontSize: 12, color: v('--color-text-muted') }}>
+                    {" "}· Anlage {result.auslegungKw.toLocaleString("de-DE")} kW
+                  </span>
+                  <InfoTooltip title="Heizlast und Anlagengröße" ariaLabel="Was ist die Heizlast?">
+                    Die <strong>Heizlast</strong> ist die Leistung, die dein Gebäude am kältesten Tag braucht — wir schätzen sie aus Wohnfläche, Dämmzustand und Haustyp. <strong>Hast du eine Berechnung nach DIN EN 12831 vom Energieberater oder Heizungsbauer? Trag den Wert hier ein</strong>, dann rechnen alle Kosten damit.<br /><br />
+                    Die <strong>Anlage</strong> wird bewusst kleiner ausgelegt als die Heizlast ({Math.round(DEFAULT_HEATPUMP_CONFIG.auslegungsfaktor * 100)} %): Die wenigen extrem kalten Stunden im Jahr deckt der eingebaute Heizstab günstiger ab, als wenn man die Wärmepumpe das ganze Jahr überdimensioniert betreibt. Diese Anlagengröße bestimmt den Preis.
+                  </InfoTooltip>
+                </div>
+                <div>
+                  Wärmepumpe:{" "}
+                  <select value={wpType} onChange={e => { setWpType(e.target.value as "lwwp" | "swwp"); setOInvest(null); setOJaz(null); }} style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-accent'), background: v('--color-accent-dim'), border: `1px solid ${v('--color-accent')}`, borderRadius: v('--radius-sm'), padding: "2px 6px", fontSize: 13 }}>
+                    {WP_TYPE.map(w => <option key={w.id} value={w.id}>{w.label}</option>)}
+                  </select>
+                </div>
+                <div><GlossaryTerm id="jaz">JAZ (Jahresarbeitszahl)</GlossaryTerm>: <InlineEdit value={result.jaz} onCommit={v => setOJaz(v)} unit="" min={2.0} max={5.5} step={0.1} width={60} fmt={v => v.toFixed(2).replace(".", ",")} /></div>
+                <div>{fuel.kind === "oil" ? "Heizölpreis" : "Gaspreis"}: {greenGas
+                  ? <span style={{ fontStyle: "italic", color: v('--color-text-muted') }}>folgt dem Grüngas-Pfad (Block unten)</span>
+                  : <InlineEdit value={Math.round((oGasPrice ?? fuel.price) * 100 * 100) / 100} onCommit={v => setOGasPrice(v / 100)} unit=" ct/kWh" min={3} max={40} step={0.5} width={70} />}</div>
+                <div>
+                  Neue {fuel.refLabel}: <InlineEdit value={oFossilInvest ?? DEFAULT_HEATPUMP_CONFIG.fossilErsatzInvest} onCommit={v => setOFossilInvest(v)} unit=" €" min={0} max={40000} step={500} width={80} />
+                  <InfoTooltip title="Warum eine neue Heizung in der Rechnung steht" ariaLabel="Warum steht eine neue Heizung in der Rechnung?">
+                    Der Rechner vergleicht zwei Entscheidungen, die <strong>jetzt</strong> anstehen: Wärmepumpe oder neue fossile Heizung. Beide werden im ersten Jahr bezahlt, deshalb steht die Anschaffung auf der fossilen Seite — man spart sie sich mit der Wärmepumpe. Sie ist zugleich der Grund, warum die Beimischungspflicht greift: Die gilt nur für Heizungen, die neu eingebaut werden. <strong>Steht bei dir gar keine Entscheidung an, weil die Heizung noch lange läuft? Dann trag hier 0 ein</strong> — dann rechnet der Vergleich gegen den Weiterbetrieb, ohne Anschaffung und ohne Beimischungspflicht.
+                  </InfoTooltip>
+                </div>
+                <div>WP-Strompreis: <InlineEdit value={Math.round((oStromPrice ?? DEFAULT_HEATPUMP_CONFIG.wpTarif) * 100 * 100) / 100} onCommit={v => setOStromPrice(v / 100)} unit=" ct/kWh" min={10} max={60} step={0.5} width={70} /></div>
+                <div>Investition (nach Förderung): <InlineEdit value={result.investNetto} onCommit={v => setOInvest(v)} unit=" €" min={5000} max={80000} step={500} width={90} />{situation === "bestand" ? <span style={{ fontSize: 12, color: v('--color-text-muted') }}> · {result.investBrutto.toLocaleString("de-DE")} € vor {Math.round(result.beg.rate * 100)} % Förderung</span> : null}</div>
+              </div>
+            </div>
+
+            {/* Sekundäre Stats */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
+              {/* „Amortisation" war hier eine Lüge in einem Wort (31.07.2026): Amortisiert
+                  wird NICHT die Investition, sondern der Mehrpreis gegenüber der fossilen
+                  Alternative. Bei kleinen Häusern liegt der nahe null oder darunter — dann
+                  stand dort „1 J" oder „0 J", und wer das las, verstand „die Anlage hat
+                  sich nach einem Jahr bezahlt". In 33 von 84 durchgerechneten Fällen. */}
+              <StatCard
+                label={mehrkosten > 0 ? "Mehrkosten drin nach" : "Mehrkosten"}
+                value={mehrkosten <= 0
+                  ? "keine"
+                  : sel.amortisationsJahre !== null ? `${sel.amortisationsJahre} J` : "> 20 J"}
+                positive={mehrkosten <= 0 || (sel.amortisationsJahre !== null && sel.amortisationsJahre <= 15)}
+                helpTitle="Worauf sich diese Zahl bezieht"
+                helpAriaLabel="Worauf bezieht sich die Amortisation?"
+                help={mehrkosten <= 0
+                  ? `Die Wärmepumpe kostet dich nach Förderung ${sel.investNetto.toLocaleString("de-DE")} € — das ist ${Math.abs(mehrkosten).toLocaleString("de-DE")} € WENIGER als die ${sel.gasInvest.toLocaleString("de-DE")} € für eine neue ${fuel.refLabel}. Es gibt also keine Mehrkosten, die sich erst rechnen müssten; die Ersparnis beim Heizen kommt oben drauf. Achtung: Das heißt nicht, dass die Anlage nichts kostet — du zahlst die ${sel.investNetto.toLocaleString("de-DE")} € trotzdem.`
+                  : `Nicht die ganze Investition, sondern nur der Unterschied zur Alternative. Die Wärmepumpe kostet dich nach Förderung ${sel.investNetto.toLocaleString("de-DE")} €, eine neue ${fuel.refLabel} ${sel.gasInvest.toLocaleString("de-DE")} € — bleiben ${mehrkosten.toLocaleString("de-DE")} € Mehrkosten. Die sind nach dieser Zeit durch die niedrigeren Heizkosten wieder eingespielt. Steht bei dir gar kein Heizungstausch an, setz die neue ${fuel.refLabel} oben auf 0; dann rechnet sich die volle Investition gegen den Weiterbetrieb.`}
+              />
+              <StatCard label="⌀ Ersparnis/Jahr" value={`${sel.einsparungProJahr.toLocaleString("de-DE")} €`} positive={sel.einsparungProJahr > 0} />
+              <StatCard
+                label="CO₂ 20 J"
+                value={`${Math.round(sel.co2Einsparung / 1000).toLocaleString("de-DE")} t`}
+                positive={sel.co2Einsparung > 0}
+                helpTitle="CO₂-Einsparung"
+                helpAriaLabel="Was bedeutet die CO₂-Zahl?"
+                help="Vermiedener CO₂-Ausstoß über 20 Jahre: die Emissionen der fossilen Heizung minus die Emissionen aus dem Strom, den die Wärmepumpe verbraucht (deutscher Strommix). Es ist also netto eingespartes CO₂, nicht ausgestoßenes — der Stromverbrauch der Wärmepumpe ist schon abgezogen."
+              />
+            </div>
+
+            {/* Chart */}
+            <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "16px 12px 8px", marginBottom: 16, border: `1px solid ${v('--color-border')}` }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10, paddingLeft: 4 }}>
+                {greenGas ? "Kumulierte Einsparung · Heizungsgesetz vs. Preis-Szenarien" : "Kumulierte Einsparung · 3 Szenarien"}
+              </div>
+              <HeatPumpChart
+                scenarios={chartScenarios}
+                horizon={DEFAULT_HEATPUMP_CONFIG.years}
+                highlightId={greenGas ? "gruengas" : effScenario}
+              />
+              <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 16, marginTop: 10, fontSize: 11 }}>
+                {greenGas ? (
+                  <>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, color: v('--color-text-secondary'), fontWeight: 700 }}>
+                      <span style={{ width: 10, height: 2, background: v('--color-positive'), borderRadius: 1 }} /> Mit Grüngas-Pflicht
+                    </span>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, color: v('--color-text-muted') }}>
+                      <span style={{ width: 10, height: 2, background: v('--color-text-muted'), borderRadius: 1, opacity: 0.5 }} /> Preis-Szenarien (ohne)
+                    </span>
+                  </>
+                ) : (
+                  scenariosPlain.map(s => (
+                    <span key={s.id} style={{ display: "inline-flex", alignItems: "center", gap: 4, color: s.id === effScenario ? v("--color-text-secondary") : v("--color-text-muted"), fontWeight: s.id === effScenario ? 700 : 400 }}>
+                      <span style={{ width: 10, height: 2, background: s.color, borderRadius: 1, opacity: s.id === effScenario ? 1 : 0.5 }} /> {s.label}
+                    </span>
+                  ))
+                )}
+              </div>
+            </div>
+
             {/* Details aufklappbar */}
             <details
               open={showDetails}
@@ -1479,32 +1771,38 @@ export default function Waermepumpe({
               )}
             </div>
 
+            {/* Teilen — der Link trägt die ganze Rechnung, auch den Förderstand.
+                Ohne ihn bekäme der Empfänger unsere Förderannahme auf seine
+                eigenen Gebäudewerte gerechnet. */}
+            <div style={{ display: "flex", gap: 5, alignItems: "center", padding: "10px 0", marginBottom: 8 }}>
+              <button
+                onClick={handleCopy}
+                title={copied ? "Kopiert!" : "Link kopieren"}
+                aria-label="Link zu diesem Ergebnis kopieren"
+                style={shareBtnStyle(copied)}
+              >
+                {copied ? <IconCheck size={iconSizes.md} /> : <IconLink size={iconSizes.md} />}
+              </button>
+              {canShare && (
+                <button onClick={handleNativeShare} title="Teilen" aria-label="Ergebnis teilen" style={shareBtnStyle()}>
+                  <IconShare size={iconSizes.md} />
+                </button>
+              )}
+              <button onClick={handleWhatsApp} title="WhatsApp" aria-label="Ergebnis per WhatsApp teilen" style={shareBtnStyle()}>
+                <IconWhatsApp size={iconSizes.md} />
+              </button>
+              <span style={{ fontSize: 12, color: v('--color-text-muted'), marginLeft: 4 }}>
+                {copied ? "Link kopiert — er enthält deine ganze Rechnung." : "Ergebnis teilen"}
+              </span>
+            </div>
+
             {/* Aktionen */}
             <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
               <Link href={`/photovoltaik-rechner${pvStatus !== "nein" ? `?a=${pvKwp <= 5 ? 0 : pvKwp <= 8 ? 1 : pvKwp <= 10 ? 2 : pvKwp <= 15 ? 3 : 4}${pvKwp > 15 ? `&ck=${pvKwp}` : ""}&s=${pvSpeicher === 0 ? 0 : pvSpeicher <= 5 ? 1 : pvSpeicher <= 10 ? 2 : 3}&wp=ja` : ""}`} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer", textDecoration: "none", textAlign: "center" }}>
                 PV-Rechner öffnen <IconArrowRight size={iconSizes.sm} />
               </Link>
-              <button onClick={() => { setHeizkoerperTausch(false); setWegId("ist"); setSelbstnutzer(true); setAltheizung("gas_alt"); setEinkommen("none"); setKindImHaushalt(false); setOHeizlast(null); setOQges(null); setOJaz(null); setOInvest(null); setOGasPrice(null); setOStromPrice(null); setOFossilInvest(null); setOFuel("gas_neu"); setHaustypIdx(0); setStep(0); }} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
+              <button onClick={() => { setHeizkoerperTausch(false); setWegId("ist"); setSelbstnutzer(true); setAltheizung("gas_alt"); setEinkommen("none"); setKindImHaushalt(false); setOHeizlast(null); setOQges(null); setOJaz(null); setOInvest(null); setOGasPrice(null); setOStromPrice(null); setOFossilInvest(null); setOFuel("gas_neu"); setHaustypIdx(0); setStep(0); /* Die Adresse mitleeren: Sonst stehen die Angaben des geteilten Links noch darin, und ein Neuladen holt die gerade verworfene Rechnung zurück. */ if (typeof window !== "undefined") window.history.replaceState(null, "", window.location.pathname); }} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={iconSizes.sm} /> Neu berechnen</span>
-              </button>
-            </div>
-
-            {/* Teilen — die Adresse trägt die ganze Rechnung. Bis hierher war
-                dieser Rechner der einzige ohne: Wer zurückkam, klickte sich
-                erneut durch fünf Fragen, und ein Ergebnis weiterzugeben war gar
-                nicht möglich. */}
-            <div style={{ textAlign: "center", marginBottom: 12 }}>
-              <button
-                onClick={linkKopieren}
-                style={{
-                  display: "inline-flex", alignItems: "center", gap: 6,
-                  background: "none", border: "none", padding: "6px 8px",
-                  fontSize: 12, fontFamily: "inherit", fontWeight: 700,
-                  color: v('--color-accent'), cursor: "pointer",
-                }}
-              >
-                <IconLink size={iconSizes.sm} />
-                {linkKopiert ? "Link kopiert" : "Ergebnis als Link kopieren"}
               </button>
             </div>
 

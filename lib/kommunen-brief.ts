@@ -1,6 +1,7 @@
 import "server-only";
 import { supabase as serviceDb } from "./supabase-server";
 import { renderOutreachDraft, type OutreachDraft } from "./kommunen-outreach-draft";
+import { mitHerkunft } from "./brief-herkunft";
 import { buildHookIndex, loadElternSlugs } from "./awards-server";
 import { AWARD_CATEGORY_BY_KEY } from "./awards";
 import { ranglisteUrl } from "./atlas-ranking";
@@ -121,7 +122,9 @@ export async function briefFuerGemeinde(
     hook?.categoryKey && AWARD_CATEGORY_BY_KEY[hook.categoryKey]?.traeger === "gewerbe"
       ? "gewerbe"
       : "privat";
-  const seiteUrl = path ? `${SITE_URL}${path}#${ownerAnker(bestandOwner)}` : null;
+  const seiteUrl = path
+    ? mitHerkunft(`${SITE_URL}${path}#${ownerAnker(bestandOwner)}`)
+    : null;
 
   const variante: AskVariante =
     (leadRow?.ask_variante as AskVariante | null) ??
@@ -136,7 +139,7 @@ export async function briefFuerGemeinde(
     // ein. Ohne ihn beginnt der Leser über drei Reihen Umschaltern und sucht
     // die Tabelle, die die Adresse längst richtig ausgewählt hat.
     const pfad = ranglisteUrl(kat, hook?.klasseSlug ?? null, gebiet, true);
-    return pfad ? `${SITE_URL}${pfad}` : null;
+    return pfad ? mitHerkunft(`${SITE_URL}${pfad}`) : null;
   })();
 
   const draft = renderOutreachDraft({
@@ -163,6 +166,12 @@ export async function briefFuerGemeinde(
     weitere: hook?.weitere ?? [],
     ranglisteUrl: liste,
     // Die fertige Grafik für genau diesen Ort — live geprüft, kein Anhang.
+    //
+    // OHNE HERKUNFTSKENNUNG, anders als die beiden Links darüber: Diese Adresse
+    // ist die Vorschau auf das Widget und landet, wenn das Angebot angenommen
+    // wird, im Einbettungscode auf der Website der Gemeinde. Dort wäre sie kein
+    // Brief-Klick mehr, sondern dauerhaft jeder Aufruf des eingebauten Widgets
+    // — die Zählung würde von da an etwas anderes messen, als sie behauptet.
     widgetUrl: `${SITE_URL}/embed/gemeinde-solar?ags=${regionId}`,
     zahlen: {
       anlagen: atlas.solar.total_count,

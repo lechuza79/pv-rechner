@@ -45,6 +45,16 @@ describe("Mindestleistung der Dachanlage", () => {
     expect(fundingAmount(muehlhausen, pv(5, 5)).total).toBe(1000);
   });
 
+  it("nimmt eine ausschließende Grenze wörtlich", () => {
+    // Lohfelden fördert Anlagen „mit mehr als 2000 Wp Leistung" — genau 2,0 kWp
+    // ist damit NICHT gefördert. `pvMin` kennt nur einschließende Grenzen, also
+    // steht dort 2.001 und nicht 2. Beide Zeilen sind der Grund für die Zahl:
+    // Wer sie auf 2 rundet, macht die erste rot.
+    const lohfelden = FUNDING_PROGRAMS["lohfelden-100-daecher"];
+    expect(fundingAmount(lohfelden, pv(2, 0, 8000)).total).toBe(0);
+    expect(fundingAmount(lohfelden, pv(2.5, 0, 8000)).total).toBe(800);
+  });
+
   it("nennt den Betrag null, statt ihn für unbestimmbar zu erklären", () => {
     // "0 €" und "lässt sich nicht berechnen" sind zwei verschiedene Aussagen, und
     // die Karte zeigt sie verschieden an. Unter der Grenze ist der Betrag bekannt.
@@ -62,7 +72,22 @@ describe("Mindestleistung der Dachanlage", () => {
 
   it("hat für jede Untergrenze im Bedingungstext auch einen Rechenwert", () => {
     // Die Gegenrichtung — ohne sie wächst die Lücke beim nächsten Eintrag weiter.
-    const muster = /(?:mindestens|ab|von)\s*([0-9]+(?:[.,][0-9]+)?)\s*kWp/i;
+    //
+    // ERWEITERT AM 28.08.2026, nachdem genau das passiert war: Lohfelden setzt
+    // „eine PV-Anlage mit mehr als 2000 Wp Leistung" voraus und hatte kein
+    // `pvMin`. Die erste Fassung sah es aus zwei Gründen nicht — sie kannte nur
+    // die Einheit kWp, und sie verlangte eines von vier Signalwörtern, von denen
+    // die Gemeinde keines benutzt. Ein Wächter, der nichts sieht und trotzdem
+    // grün meldet, ist schlimmer als keiner: Der Fehler stand vier Tage nach dem
+    // Einbau der Grenze weiter im Katalog, mit grünem Test daneben.
+    //
+    // Beide Einheiten, und die Untergrenze wird an ihrem WORTLAUT erkannt, nicht
+    // an einer Liste von Signalwörtern. „größer als" steht bewusst NICHT dabei:
+    // Schiltach sagt „Die Anlage darf größer als 10 kWp sein; bezuschusst werden
+    // nur die ersten 10 kWp" — das ist eine Obergrenze, und sie hier zu melden
+    // würde den Test zum Rauschen machen.
+    const muster =
+      /(?:mindestens|ab|von|mehr als)\s*([0-9]+(?:[.,][0-9]+)?)\s*k?Wp/i;
     const rechnet = (p: FundingProgram) =>
       !!(p.pvTiers || p.pvPerKwp || p.percentOfCost);
 
@@ -77,7 +102,9 @@ describe("Mindestleistung der Dachanlage", () => {
       // Eine Staffel nennt ihre Stufen ebenfalls mit "ab" — die ist keine
       // Untergrenze. Es zählt nur, was ausdrücklich eine Bedingung ist.
       const treffer = texte.filter(
-        (t) => muster.test(t) && /mindest|nicht gefördert|nicht förderfähig|Voraussetzung/i.test(t),
+        (t) =>
+          muster.test(t) &&
+          /mindest|mehr als|nicht gefördert|nicht förderfähig|Voraussetzung/i.test(t),
       );
       if (treffer.length) fehlend.push(`${p.id}: ${treffer[0]}`);
     }

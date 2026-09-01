@@ -56,10 +56,28 @@ describe("Werbe-Zusagen", () => {
     for (const ordner of ORDNER) {
       for (const datei of dateien(path.join(WURZEL, ordner))) {
         const text = fs.readFileSync(datei, "utf-8");
+        let imBlock = false;
         text.split("\n").forEach((zeile, i) => {
           // Kommentare dürfen den Begriff erklären; nur ausgelieferter Text zählt.
-          if (/^\s*(\/\/|\*|\/\*)/.test(zeile)) return;
-          if (PAUSCHAL.test(zeile)) {
+          //
+          // Der Blockzustand wird MITGEFÜHRT und nicht je Zeile geraten: Eine
+          // Fortsetzungszeile ohne führenden Stern ist ein Kommentar wie jeder
+          // andere, und der frühere Test hielt sie für Text. Gefunden am
+          // 01.09.2026 an einem erklärenden Kommentar über der Abo-Box.
+          const vorher = imBlock;
+          if (/\/\*/.test(zeile)) imBlock = true;
+          if (/\*\//.test(zeile)) imBlock = false;
+          if (vorher || /^\s*(\/\/|\*|\/\*)/.test(zeile)) return;
+          // Eine Zusage zitiert sich nicht selbst. Wo der Ausdruck in
+          // typografischen Anführungszeichen steht, ist er Gegenstand einer
+          // Aussage (ein Redaktionsplan, der die Änderung beschreibt) und nicht
+          // das Versprechen.
+          // Nur das typografische Paar, NICHT das gerade Anführungszeichen: Das
+          // ist der Begrenzer einer Zeichenkette im Code. Mit ihm in der Klasse
+          // griff der Ausdruck von dort bis zum ersten typografischen Zeichen
+          // und ließ die Zusage stehen.
+          const ohneZitate = zeile.replace(/„[^“]*“/g, "");
+          if (PAUSCHAL.test(ohneZitate)) {
             funde.push(`${path.relative(WURZEL, datei)}:${i + 1} — ${zeile.trim()}`);
           }
         });

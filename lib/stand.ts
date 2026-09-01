@@ -58,6 +58,7 @@ export {
   type StandSeite,
 } from "./stand-format";
 import type { StandSeite } from "./stand-format";
+import { KFW_REPORT_STAND } from "./kfw-format";
 
 export const STAND: Record<string, StandSeite> = {
   // Marktpreise kommen hier live aus der Preis-Pipeline (monatlicher Scrape in
@@ -104,6 +105,11 @@ export const STAND: Record<string, StandSeite> = {
       { was: "Grüngas-Pflicht", iso: GREEN_GAS_CONFIG.geprueftRechtIso, praezision: "tag" },
       { was: "Gaspreis-Bestandteile", iso: GREEN_GAS_CONFIG.geprueftIso, praezision: "tag", wertIso: GREEN_GAS_CONFIG.validFrom },
       { was: "CO₂-Preispfad", iso: CO2_PRICE.geprueftIso, praezision: "tag", wertIso: CO2_PRICE.validFrom },
+      // Eigener Wertstand, weil er ein STICHTAG ist und keine Monatsangabe: Der
+      // Förderreport zählt bis zu einem Tag, und jeder Jahrgang hat seinen
+      // eigenen. Ihn mit den Marktwerten unter ein Datum zu stellen hieße, den
+      // Zeitraum falsch zu behaupten.
+      { was: "Zusagen der Bundesförderung", iso: KFW_REPORT_STAND.geprueftIso, praezision: "tag", wertIso: KFW_REPORT_STAND.wertIso },
     ],
     live: ["Kommunale Förderprogramme (mit Postleitzahl, je Programm eigenes Prüfdatum)"],
   },

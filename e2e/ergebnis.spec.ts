@@ -1,7 +1,6 @@
 import { test, expect } from "@playwright/test";
 import {
   ERGEBNISSE,
-  bisZumErgebnis,
   ergebnisBereit,
   ergebnisFingerabdruck,
   schalter,
@@ -33,7 +32,6 @@ for (const erg of ERGEBNISSE) {
     test.setTimeout(180_000);
 
     test("der geteilte Link liefert dasselbe Ergebnis", async ({ page }) => {
-      test.skip(!!erg.ohneTeilenLink, erg.ohneTeilenLink ?? "");
       await page.goto(erg.pfad);
       await ergebnisBereit(page, erg.enthaelt);
       const zuerst = await ergebnisFingerabdruck(page);
@@ -60,17 +58,35 @@ for (const erg of ERGEBNISSE) {
      * jede Zahl darunter umrechnet.
      */
     test("der selbst erzeugte Teilen-Link trägt den geänderten Zustand", async ({ page, context }) => {
-      test.skip(!!erg.ohneTeilenLink, erg.ohneTeilenLink ?? "");
       await context.grantPermissions(["clipboard-read", "clipboard-write"]);
       await page.goto(erg.pfad);
       await ergebnisBereit(page, erg.enthaelt);
 
+      // Etwas verstellen — und zwar irgendetwas, das die Zahlen umrechnet.
+      //
+      // Zuerst das Szenario, weil es alles darunter umrechnet. Wo der
+      // Umschalter eingeklappt ist und deshalb nicht sichtbar (Wärmepumpe),
+      // wird stattdessen ein Wert von Hand gesetzt. Diese Ausweichstelle ist
+      // der Grund, warum dieser Test überhaupt läuft: Bis zum 26.08.2026 hat er
+      // sich beim Wärmepumpen-Rechner stillschweigend übersprungen — und ein
+      // übersprungener Test ist von einem bestandenen im Protokoll kaum zu
+      // unterscheiden.
       const reiterListe = await reiter(page);
-      test.skip(reiterListe.length < 2, "ohne Szenario-Umschalter gibt es nichts zu verstellen");
-
-      // Ein anderes als das voreingestellte Szenario wählen.
-      const anderes = reiterListe.findIndex((r) => !r.aktiv);
-      await page.locator('[role="tab"]:visible').nth(anderes).click();
+      if (reiterListe.length >= 2) {
+        const anderes = reiterListe.findIndex((r) => !r.aktiv);
+        await page.locator('[role="tab"]:visible').nth(anderes).click();
+      } else {
+        const werte = await editierbareWerte(page);
+        test.skip(
+          werte.length === 0,
+          "weder Szenario-Umschalter noch editierbarer Wert — hier lässt sich nichts verstellen",
+        );
+        const ziel = werte[0];
+        const roh = ziel.text.replace(/[^\d,.]/g, "").replace(/\./g, "").replace(",", ".");
+        const alt = Number.parseFloat(roh);
+        test.skip(!Number.isFinite(alt) || alt <= 0, `„${ziel.label}" trägt keine lesbare Zahl`);
+        await wertSetzen(page, ziel.label, String(Math.round(alt * 1.5)));
+      }
       await ergebnisBereit(page, erg.enthaelt);
       const erwartet = await kernzahlen(page, erg.kernzahlen);
 
@@ -91,7 +107,6 @@ for (const erg of ERGEBNISSE) {
 
     test("jeder Schalter bewegt eine Zahl — und zurück", async ({ page }) => {
       await page.goto(erg.pfad);
-      if (erg.ohneTeilenLink) await bisZumErgebnis(page);
       await ergebnisBereit(page, erg.enthaelt);
 
       const liste = await schalter(page);
@@ -143,7 +158,6 @@ for (const erg of ERGEBNISSE) {
      */
     test("ein von Hand gesetzter Wert kommt im Ergebnis an", async ({ page }) => {
       await page.goto(erg.pfad);
-      if (erg.ohneTeilenLink) await bisZumErgebnis(page);
       await ergebnisBereit(page, erg.enthaelt);
 
       const werte = await editierbareWerte(page);
@@ -170,7 +184,6 @@ for (const erg of ERGEBNISSE) {
 
     test("jeder Szenario-Reiter rechnet neu", async ({ page }) => {
       await page.goto(erg.pfad);
-      if (erg.ohneTeilenLink) await bisZumErgebnis(page);
       await ergebnisBereit(page, erg.enthaelt);
 
       const liste = await reiter(page);
@@ -194,7 +207,6 @@ for (const erg of ERGEBNISSE) {
 
     test("jeder Abschnitt klappt auf und zeigt Inhalt", async ({ page }) => {
       await page.goto(erg.pfad);
-      if (erg.ohneTeilenLink) await bisZumErgebnis(page);
       await ergebnisBereit(page, erg.enthaelt);
 
       const liste = await abschnitte(page);

@@ -332,7 +332,74 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // steht in keinem Gesetz. Ein Quotengesetz gibt es weiterhin nicht.
   //
   // Bioheizöl, siebte Gegensuche, unverändert ohne Preisreihe.
-  geprueftRechtIso: "2026-08-26",
+  //
+  // 28.08.2026 am amtlichen Infoportal (gmodg.bund.de, Meldungen) nachgesehen,
+  // unverändert: Die jüngste Meldung datiert weiter auf den 29.07.2026 (erste
+  // Bestimmungen in Kraft), § 42a wird weiter allein als Ankündigung geführt
+  // („bis zum 01.12.2026 ein Gesetz … ab dem Jahr 2045 vollständig auf
+  // klimaneutrale Brennstoffe"), und die Stufen der Bio-Treppe stehen dort
+  // unverändert bei 2029: 10 %, 2030: 15 %, 2035: 30 %, 2040: 60 % — zellgleich
+  // mit `quoteStops`. Ein Quotengesetz gibt es nicht.
+  //
+  // Bioheizöl, ACHTE Gegensuche, ohne Preisreihe — und der neue Treffer taugt
+  // ausdrücklich nicht: Ein Marktdienst beziffert die Erlöse „aus dem
+  // Inverkehrbringen von 100 Litern HVO" auf rund 114 €/100 l. Das ist der
+  // Quotenerlös des Inverkehrbringers, also der Wert eines Zertifikats — nicht
+  // der Preis, den ein Haushalt für Bioheizöl zahlt. Wer ihn als Preisreihe
+  // nähme, setzte in den Rechner eine Zahl aus dem falschen Markt. Destatis
+  // führt weiterhin leichtes Heizöl ohne Bio-Heizöl-Zeile.
+  //
+  // 29.08.2026 an der amtlichen CHRONOLOGIE des Infoportals nachgesehen
+  // (gmodg.bund.de, GModG_Chronologie), unverändert: Die Zeitleiste endet mit
+  // dem 28.07.2026 (Verkündung im Bundesgesetzblatt Nr. 226) und dem
+  // 29.07.2026 (Inkrafttreten der Artikel 1, 5, 6 und 8). Danach steht dort
+  // KEIN Eintrag mehr — weder zum Quotengesetz nach § 42a noch zu einer
+  // Änderung der Bio-Treppe. Die Stufen bleiben 2029: 10 %, 2030: 15 %,
+  // 2035: 30 %, 2040: 60 %, zellgleich mit `quoteStops`.
+  //
+  // Bioheizöl, NEUNTE Gegensuche, weiter ohne Preisreihe — und wieder ein
+  // Treffer, der ausdrücklich nicht taugt: Mehrere Ratgeberseiten schreiben
+  // im August 2026 noch, ab Juli 2026 müsse beim Heizungstausch in Städten
+  // über 100.000 Einwohnern zu 65 % erneuerbar geheizt werden. Das ist die
+  // Regel des GEG 2024, die genau dieses Gesetz gestrichen hat (Art. 1 Nr. 32,
+  // §§ 71–73 GEG). Eine Sekundärquelle, die einen aufgehobenen Rechtsstand
+  // referiert, ist auch für ihre übrigen Angaben keine Quelle.
+  //
+  // 30.08.2026 an der amtlichen Meldungsübersicht des Infoportals
+  // (gmodg.bund.de) nachgesehen, unverändert: Die jüngste Meldung ist weiterhin
+  // der 29.07.2026 („Die ersten Regelungen sind am 29. Juli 2026 in Kraft
+  // getreten"), danach steht dort nichts. Zusätzlich § 42a im geltenden
+  // Gesetzestext selbst gelesen: Er kündigt weiterhin nur ein „bis zum
+  // 1. Dezember 2026 durch die Bundesregierung vorzulegendes Gesetz" an, das
+  // Inverkehrbringer von Gas, Öl und Flüssiggas ab 2045 vollständig auf
+  // klimaneutrale Brennstoffe verpflichten soll — KEINE Quote, KEIN Startjahr,
+  // kein Prozentsatz. Das Quotengesetz gibt es also nach wie vor nicht.
+  //
+  // ZEHNTE Bioheizöl-Gegensuche, weiter ohne Preisreihe — und ein Treffer, der
+  // ausdrücklich NICHT verwendet werden darf: Mehrere Sekundärquellen schreiben
+  // im August 2026, die Grüngas-/Grünheizölquote starte 2028 mit einem Prozent.
+  // Im Gesetzestext steht davon nichts (siehe oben); es ist die Wiedergabe einer
+  // Ankündigung, nicht der Wortlaut einer Regelung. Wer die Zahl übernimmt,
+  // schreibt einen Entwurfswert als geltendes Recht (Gate-Regel 1). Die
+  // Preisseiten zu HVO betreffen durchweg den KRAFTSTOFF (HVO100 an der Zapf-
+  // säule), nicht Bioheizöl für die Gebäudeheizung — eine andere Ware mit
+  // anderer Besteuerung, also auch als Näherung unbrauchbar.
+  //
+  // 01.09.2026 unverändert, diesmal beide Paragrafen im geltenden Gesetzestext
+  // Wort für Wort gelesen statt nur § 42a: § 43 Absatz 1 trägt die Stufen
+  // „ab dem 1. Januar 2029 mindestens 10 Prozent, ab dem 1. Januar 2030
+  // mindestens 15 Prozent, ab dem 1. Januar 2035 mindestens 30 Prozent und ab
+  // dem 1. Januar 2040 mindestens 60 Prozent" — zellgleich mit BIO_TREPPE_STUFEN
+  // — und knüpft sie an Heizungen, die „nach dem 29. Juli 2026 in ein bestehendes
+  // Gebäude neu eingebaut" werden. § 42a kündigt unverändert nur das bis zum
+  // 01.12.2026 vorzulegende Gesetz an. Die Meldungsübersicht des Infoportals
+  // endet weiterhin beim Inkrafttreten am 29.07.2026.
+  //
+  // ELFTE Bioheizöl-Gegensuche, weiter ohne Preisreihe. Die Treffer betreffen
+  // erneut den Kraftstoff (HVO100) oder den allgemeinen Heizölpreis samt
+  // CO2-Aufschlag; eine Preisreihe für Bioheizöl zur Gebäudeheizung führt keine
+  // Trägerquelle. Der Lücken-Hinweis im Öl-Ergebnis bleibt damit bestehen.
+  geprueftRechtIso: "2026-09-01",
   reviewBy: "2027-07-25",
 };
 

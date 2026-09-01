@@ -26,6 +26,7 @@ const AB_SCROLL_PX = 260;
 export default function StickyCta({
   primaer,
   sekundaer,
+  dritte,
 }: {
   primaer: { href: string; label: string };
   /**
@@ -33,7 +34,34 @@ export default function StickyCta({
    * `ereignis` statt `href`, wo das Ziel kein Ort ist, sondern ein Fenster
    * (der Förder-Check öffnet sich, statt irgendwohin zu springen).
    */
-  sekundaer?: { href?: string; ereignis?: string; label: string; extern?: boolean };
+  sekundaer?: {
+    href?: string;
+    ereignis?: string;
+    label: string;
+    extern?: boolean;
+    /**
+     * Zeichen vor der Beschriftung.
+     *
+     * Als ReactNode statt als Name aus einer Liste: Der Baustein soll nicht
+     * wissen müssen, welche Symbole es gibt. Die Klasse für einen Effekt
+     * (`.sc-glocke`) reicht der Aufrufer über `klasse` mit.
+     */
+    icon?: React.ReactNode;
+    /** Zusätzliche Klasse am Knopf — für Effekte, die am Aufrufer hängen. */
+    klasse?: string;
+  };
+  /**
+   * Dritter Weg — als SYMBOL, nicht als dritter Textknopf.
+   *
+   * Drei gleichwertige Knöpfe passen nicht: Auf 375 px bleiben je rund 110 px,
+   * und darin steht keine Beschriftung mehr, die man lesen kann. Ein Symbol
+   * braucht die Breite nicht und nimmt den beiden anderen nichts weg; auf
+   * breiten Schirmen tritt die Beschriftung daneben (CSS: .sc-cta-dritte).
+   *
+   * Deshalb ist `label` hier Pflicht, auch wenn es meist unsichtbar ist: Für
+   * eine Vorlesehilfe ist ein Knopf mit nur einem Symbol sonst namenlos.
+   */
+  dritte?: { ereignis: string; label: string; icon: React.ReactNode; klasse?: string };
 }) {
   const [hidden, setHidden] = useState(false);
   const [gescrollt, setGescrollt] = useState(false);
@@ -65,6 +93,7 @@ export default function StickyCta({
 
   const base: React.CSSProperties = {
     flex: 1,
+    minWidth: 0,
     textAlign: "center",
     padding: "12px 10px",
     borderRadius: v("--radius-md"),
@@ -72,7 +101,14 @@ export default function StickyCta({
     fontWeight: 700,
     textDecoration: "none",
     lineHeight: 1.2,
-    whiteSpace: "nowrap",
+    // KEIN nowrap. Mit drei Elementen bleiben auf 375 px je rund 145 px für die
+    // beiden Textknöpfe, und „Anlage durchrechnen" braucht mehr — die Reihe lief
+    // gemessen 42 px über den Rand. Ein zweizeiliger Knopf ist besser als eine
+    // Leiste, die sich seitlich schieben lässt.
+    //
+    // Auf breiten Schirmen bricht ohnehin nichts um; die Regel kostet dort
+    // nichts.
+    hyphens: "auto",
   };
 
   return (
@@ -117,14 +153,20 @@ export default function StickyCta({
             <button
               type="button"
               onClick={() => window.dispatchEvent(new Event(sekundaer.ereignis!))}
+              className={sekundaer.klasse}
               style={{
                 ...base,
                 cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 6,
                 background: v("--color-bg"),
                 color: v("--color-accent"),
                 border: `1px solid ${v("--color-border-accent")}`,
               }}
             >
+              {sekundaer.icon}
               {sekundaer.label}
             </button>
           ) : (
@@ -141,6 +183,31 @@ export default function StickyCta({
               {sekundaer.label}
             </a>
           )
+        )}
+        {dritte && (
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new Event(dritte.ereignis))}
+            className={`sc-cta-dritte${dritte.klasse ? ` ${dritte.klasse}` : ""}`}
+            aria-label={dritte.label}
+            title={dritte.label}
+            style={{
+              ...base,
+              flex: "0 0 auto",
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 6,
+              padding: "12px 14px",
+              background: v("--color-bg"),
+              color: v("--color-accent"),
+              border: `1px solid ${v("--color-border-accent")}`,
+            }}
+          >
+            {dritte.icon}
+            <span className="sc-cta-dritte-text">{dritte.label}</span>
+          </button>
         )}
       </div>
     </div>

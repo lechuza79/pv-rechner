@@ -132,6 +132,12 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (error) {
+    // Der Grund MUSS ins Log. Die drei Geschwister-Pfade (GET hier, PUT und DELETE
+    // in [id]/route.ts) tun das laengst; nur ausgerechnet das Speichern schwieg.
+    // Folge (gemessen 28.08.2026): Am 27.08. schlugen zwei Speicherversuche mit 500
+    // fehl, und weder Vercels Fehler-Cluster noch die Logs kannten den Grund — die
+    // Ursache liess sich nur ueber einen Abgleich der Tabellenspalten finden.
+    console.error("[calculations] insert failed:", error.message);
     return NextResponse.json({ error: "Berechnung konnte nicht gespeichert werden" }, { status: 500 });
   }
 

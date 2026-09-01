@@ -120,6 +120,55 @@ describe("Adressen", () => {
   });
 });
 
+// Verschleierte Adressen waren eine von drei Ursachen der Kontaktlücke — 7.448
+// Gemeinden mit Website, aber ohne erfasstes Postfach (gemessen 01.09.2026).
+describe("Verschleierte Adressen", () => {
+  it("liest die Sonderzeichen-Schreibweise, die real vorkam", () => {
+    // Hürth schrieb „rathaus⚹huerth◦de" statt rathaus@huerth.de.
+    const a = extractAdressen("Schreiben Sie an rathaus⚹huerth◦de", "huerth.de", istGemeindeDomain);
+    expect(a.rollenEmail).toBe("rathaus@huerth.de");
+  });
+
+  it("liest die ausgeschriebene Form mit und ohne Klammern", () => {
+    expect(extractAdressen("info (at) engen (dot) de", "engen.de", istGemeindeDomain).rollenEmail).toBe(
+      "info@engen.de",
+    );
+    expect(extractAdressen("info [at] engen [punkt] de", "engen.de", istGemeindeDomain).rollenEmail).toBe(
+      "info@engen.de",
+    );
+    expect(extractAdressen("rathaus at engen dot de", "engen.de", istGemeindeDomain).rollenEmail).toBe(
+      "rathaus@engen.de",
+    );
+  });
+
+  it("liest das als Entity kodierte @", () => {
+    const a = extractAdressen("info&#64;engen.de", "engen.de", istGemeindeDomain);
+    expect(a.rollenEmail).toBe("info@engen.de");
+  });
+
+  // DIE WICHTIGERE RICHTUNG: nichts erfinden. Eine geratene Adresse geht in den
+  // Versand und kommt als Unzustellbarkeit zurück — schlimmer als keine.
+  it("erfindet keine Adresse aus gewöhnlichem Text", () => {
+    const t = "Das Rathaus ist Montag bis Freitag geöffnet. Die Sprechzeiten stehen unten.";
+    const a = extractAdressen(t, "engen.de", istGemeindeDomain);
+    expect(a.rollenEmail).toBeNull();
+    expect(a.personenEmail).toBeNull();
+  });
+
+  it("zerlegt keinen Bindestrich-Namen", () => {
+    // Der Bindestrich steht bewusst NICHT in der Ersetzungsliste: er kommt in
+    // echten Adressen und Ortsnamen vor.
+    const a = extractAdressen("info@bad-krozingen.de", "bad-krozingen.de", istGemeindeDomain);
+    expect(a.rollenEmail).toBe("info@bad-krozingen.de");
+  });
+
+  it("macht aus einem gewöhnlichen „at\" im Fließtext keine Adresse", () => {
+    const a = extractAdressen("Der Automat at der Ecke", "engen.de", istGemeindeDomain);
+    expect(a.rollenEmail).toBeNull();
+    expect(a.personenEmail).toBeNull();
+  });
+});
+
 describe("Vokabular austauschbar (Versorger-Modul)", () => {
   it("erkennt Unternehmenskommunikation als operative Stelle", () => {
     const v = extractVerantwortlich(

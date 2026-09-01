@@ -3,6 +3,8 @@ import { liveCities, archivedCities, slugify, publishedBundeslaender, fundingFor
 import { landProgramBundeslaender } from "../lib/funding-programs";
 import { getFundingPrograms } from "../lib/funding-data";
 import { atlasLevelReleased } from "../lib/atlas-index";
+import { freigegebeneOrte } from "../lib/release-plan";
+import { verlinkendeGemeinden } from "../lib/atlas-outreach-freigabe";
 import { BUNDESLAENDER } from "../lib/mastr-regions";
 import { RATGEBER } from "../lib/ratgeber";
 import { standLastModIso } from "../lib/stand";
@@ -47,7 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Nur freigegebene Seiten: Eine gebaute, aber noch gesperrte Seite gehört
   // nicht in die Sitemap — sonst laden wir Google genau zu der Seite ein, die
   // wir ihm per noindex gerade verweigern.
-  const cityPages: MetadataRoute.Sitemap = liveCities().filter(cityIndexFreigegeben).map((c) => {
+  const cityPages: MetadataRoute.Sitemap = liveCities().filter((c) => cityIndexFreigegeben(c)).map((c) => {
     const f = fundingForFrom(programs, c);
     return {
       url: `${BASE_URL}/photovoltaik-foerderung/${slugify(c.bundesland)}/${c.slug}`,
@@ -58,7 +60,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   });
   // Archive pages (program exhausted/paused/discontinued): still indexable for
   // SEO, but lower priority and less churn than the live ones.
-  const archivedCityPages: MetadataRoute.Sitemap = archivedCities().filter(cityIndexFreigegeben).map((c) => {
+  const archivedCityPages: MetadataRoute.Sitemap = archivedCities().filter((c) => cityIndexFreigegeben(c)).map((c) => {
     const f = fundingForFrom(programs, c);
     return {
       url: `${BASE_URL}/photovoltaik-foerderung/${slugify(c.bundesland)}/${c.slug}`,
@@ -128,6 +130,39 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       for (const p of await getKreisPfade()) {
         atlasPages.push({
           url: `${BASE_URL}/solar-atlas/${p.bundesland}/${p.kreis}`,
+          lastModified: mastrStand,
+          changeFrequency: "monthly",
+          priority: 0.5,
+        });
+      }
+    } catch {
+      // bewusst still: siehe Kommentar oben
+    }
+  }
+
+  // Einzeln freigegebene Gemeinden. Die EBENE bleibt gesperrt (dort gibt es keine
+  // Nachfrage); freigegeben sind nur Orte, die uns nach dem Outreach öffentlich
+  // verlinkt haben — Begründung an `atlasOrtEinzelfreigabe` in lib/atlas-index.
+  // Eine indexierbare Seite, die in keiner Sitemap steht, wäre nur halb
+  // freigegeben: Google fände sie über den externen Verweis, aber ohne unser
+  // eigenes Signal, dass wir sie für vollwertig halten.
+  //
+  // Der Slug-Pfad kommt wie bei den Kreisen aus der Datenbank, nicht aus einer
+  // Liste im Code — er ist dieselbe Quelle, aus der die Seite selbst aufgelöst
+  // wird. Fällt die Abfrage aus, fehlt der Eintrag, statt den Build zu kippen.
+  // Zwei Quellen: der Releaseplan (Entscheidung mit Nachweis) und die Orte, die
+  // uns nach dem Outreach nachweislich verlinkt haben (Tatsache, kein Ermessen).
+  const ausPlan = freigegebeneOrte("atlas-gemeinde");
+  const ausOutreach = await verlinkendeGemeinden().catch(() => [] as string[]);
+  const einzelOrte = [...new Set([...ausPlan, ...ausOutreach])].filter((ags) => ags.length === 8);
+  if (einzelOrte.length && !atlasLevelReleased("gemeinde")) {
+    try {
+      const { getGemeindePfad } = await import("../lib/atlas");
+      for (const ags of einzelOrte) {
+        const p = await getGemeindePfad(ags);
+        if (!p) continue;
+        atlasPages.push({
+          url: `${BASE_URL}/solar-atlas/${p.bundesland}/${p.kreis}/${p.gemeinde}`,
           lastModified: mastrStand,
           changeFrequency: "monthly",
           priority: 0.5,

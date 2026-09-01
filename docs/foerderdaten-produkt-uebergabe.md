@@ -1,5 +1,22 @@
 # Förderdaten der KfW ins Produkt — Übergabe
 
+> **UMGESETZT am 26.08.2026.** Was daraus geworden ist, steht in CLAUDE.md unter „Zahlen des
+> KfW-Förderreports" und im Runbook `scripts/kfw-report-verify.md`. Dieses Dokument bleibt als
+> Vorarbeit stehen — vor allem wegen der Absagen weiter unten, die niemand ein zweites Mal prüfen
+> soll.
+>
+> **Zwei Zahlen aus der Vorarbeit haben sich beim Umsetzen als zu niedrig erwiesen** und sind hier
+> unten noch in der alten Fassung stehengeblieben: Die Heizungsförderung hat 2025 nicht 323, sondern
+> **400** Kreis-Zeilen, und **keine** davon ist unterdrückt. Der Unterschied ist kein Streit über
+> Zählweisen, sondern das Ergebnis der Kontrollsumme: Erst mit ihr summieren sich die Kreiswerte
+> exakt auf den Bundeswert (375.475 Zusagen / 5.225,8 Mio €). Vorher fehlte rund ein Viertel des
+> Volumens, ohne dass es aufgefallen wäre — genau der Fehler, vor dem der Abschnitt „Zwei Fallen für
+> den Parser" warnt.
+>
+> **Verworfen: „KFN Wohngebäude Selbstnutzung".** Die Kreissumme dieses Programms liegt um rund ein
+> Prozent ÜBER dem Bundeswert; der Bericht ist dort in sich nicht deckungsgleich. Es wird deshalb
+> nicht abgelegt.
+
 **Für eine eigene Sitzung.** Ziel ist nicht eine Datengeschichte, sondern der Einbau in
 Wärmepumpen-Rechner und Förderseiten. Die Geschichten fallen danach ab; der Katalog
 (`docs/datenstories-katalog.md`, Abschnitt „Ausbaustufe 2") hält fest, welche.

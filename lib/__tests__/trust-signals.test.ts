@@ -85,26 +85,28 @@ describe("Vertrauens-Leiste", () => {
     );
 
     it("behauptet nichts als rein lokal, was als Ereignis rausgeht", () => {
-      // Die Eigenschaften des Ergebnis-Ereignisses aus dem Rechner ziehen.
-      const block = rechner.match(/trackEvent\("pv_ergebnis",\s*\{([\s\S]*?)\}\)/);
-      expect(block, "trackEvent('pv_ergebnis') nicht gefunden — Aufruf umbenannt?").not.toBeNull();
-      const felder = [...block![1].matchAll(/^\s*(\w+)\s*:/gm)].map((m) => m[1]);
-      expect(felder.length, "keine Eigenschaften erkannt").toBeGreaterThan(0);
+      // Seit 27.08.2026 tragen Ereignisse GAR KEINE Eigenschaften mehr — daran
+      // hängt die Einwilligungsfreiheit der Messung
+      // (docs/lehren/reichweitenmessung-einwilligung-2026-08.md). Damit kann
+      // dieser Widerspruch nicht mehr entstehen, und der Test prüft die
+      // Voraussetzung dafür statt den Einzelfall: Wenn wieder Werte mitgehen,
+      // wird er rot und der Satz der Leiste gehört erneut geprüft.
+      const mitEigenschaften = [
+        ...rechner.matchAll(/trackEvent\(\s*[^)]*,/g),
+      ];
+      expect(
+        mitEigenschaften.map((m) => m[0]),
+        "Ein Ereignis trägt wieder Eigenschaften — Aussage der Vertrauens-Leiste neu prüfen",
+      ).toEqual([]);
 
-      // Zu jeder gesendeten Eigenschaft das Wort, mit dem die Leiste sie nennt.
-      const wortFuer: Record<string, string> = { anlage: "Anlagen", speicher: "Speicher" };
-      for (const feld of felder) {
-        const wort = wortFuer[feld];
-        if (!wort) continue;
-        const nenntEs = datenPunkt.detail.includes(wort);
-        const behauptetLokal = /bleib(en|t) bei dir|verlassen? (dein|Ihr) Gerät nicht|nur auf deinem Gerät/i.test(
+      // Und die Leiste darf weiterhin nicht behaupten, Rechenwerte blieben auf
+      // dem Gerät, solange irgendein Ereignis den Browser verlässt.
+      const behauptetLokal =
+        /bleib(en|t) bei dir|verlassen? (dein|Ihr) Gerät nicht|nur auf deinem Gerät/i.test(
           datenPunkt.detail,
         );
-        expect(
-          nenntEs && behauptetLokal,
-          `"${feld}" geht als Ereignis raus, der Text sagt aber, es bleibe lokal`,
-        ).toBe(false);
-      }
+      const nenntRechenwerte = /Anlagen|Speicher/.test(datenPunkt.detail);
+      expect(behauptetLokal && nenntRechenwerte).toBe(false);
     });
 
     it("sagt kein 'nur' über das, was den Browser verlässt", () => {
@@ -392,6 +394,36 @@ describe("Vertrauens-Leiste", () => {
           `${s.titel} ${s.text}`.toLowerCase(),
           `"${s.titel}" verspricht Vollständigkeit — /datenstand hält Modell-Datensätze zurück`,
         ).not.toMatch(/(alle|jede[rs]?|sämtliche)\s+\w*\s*(werte?|annahmen|zahlen)/);
+      }
+    });
+
+    // DIE GEGENRICHTUNG — sie hat gefehlt, und genau dort ist der Fehler
+    // passiert (29.08.2026).
+    //
+    // Alle Prüfungen oben fragen: Verschweigt die Leiste etwas? Keine fragte:
+    // Behauptet sie etwas, das es nicht gibt. Seit dem 27.08.2026 nimmt
+    // `trackEvent` keine Begleitangaben mehr entgegen — die
+    // Einwilligungsfreiheit der ganzen Messung hängt daran. Die Leiste kündigte
+    // trotzdem weiter an, wir zählten mit, "welche Anlagen- und Speichergröße
+    // gewählt wurde". Auf jeder Seite, als Werbeaussage nach § 5 UWG.
+    //
+    // Geprüft wird gegen die SIGNATUR im Code, nicht gegen eine Wortliste: Nimmt
+    // die Zählfunktion nur einen Namen, darf die Leiste keine Erhebung von
+    // Werten ankündigen. Wer die Signatur eines Tages wieder erweitert, bekommt
+    // die Formulierung damit automatisch wieder frei.
+    it("kündigt keine Erhebung an, die die Zählfunktion gar nicht kann", () => {
+      const analytics = readFileSync(join(REPO, "lib", "analytics.ts"), "utf8");
+      const signatur = analytics.match(/export function trackEvent\(([^)]*)\)/);
+      expect(signatur, "trackEvent nicht gefunden — Test anpassen").toBeTruthy();
+      const nimmtNurNamen = !signatur![1].includes(",");
+      if (!nimmtNurNamen) return; // Signatur erweitert: Ankündigung wieder erlaubt.
+
+      for (const s of TRUST_SIGNALS) {
+        const text = `${s.titel} ${s.text} ${s.detail ?? ""}`.toLowerCase();
+        expect(
+          text,
+          `"${s.titel}" kündigt an, WELCHE Angaben mitgezählt werden — die Zählfunktion nimmt aber nur einen Namen`,
+        ).not.toMatch(/(zählen|erfassen|messen|übermitteln)\s+wir[^.]{0,60}\bwelche\b/);
       }
     });
 
