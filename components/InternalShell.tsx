@@ -49,6 +49,13 @@ export default function InternalShell({
       title: "Versorger",
       links: [{ href: "/admin/versorger", label: "Stadtwerke" }],
     });
+    // Eigener Bereich, nicht ein Punkt unter „Versorger": Handwerksbetriebe sind
+    // eine andere Zielgruppe mit anderem Rechtsrahmen, und der Bereich wächst um
+    // weitere Gewerke (Heizungsbau, Dachdecker).
+    sections.push({
+      title: "Fachbetriebe",
+      links: [{ href: "/admin/fachbetriebe", label: "Verzeichnis" }],
+    });
     // Zwei Beitragsarten unter einem Dach. Sie teilen sich die Redaktion, aber
     // sonst wenig: Ein Post hat einen Wochentag und eine Bildform, ein Artikel
     // eine Suchfrage und eine Indexierung. Deshalb getrennte Gruppen statt einer

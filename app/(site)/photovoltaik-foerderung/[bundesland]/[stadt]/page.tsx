@@ -17,6 +17,8 @@ import FundingHistory from "../../../../../components/FundingHistory";
 import { FundingStatusBadge, ExampleCards, FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE } from "../../../../../components/FundingProgramParts";
 import FundingTechnikTabs from "../../../../../components/FundingTechnikTabs";
 import StickyCta from "../../../../../components/StickyCta";
+import GemeindeAboBox, { ABO_OEFFNEN } from "../../../../../components/atlas/GemeindeAboBox";
+import { IconGlocke } from "../../../../../components/Icons";
 import PvRechnerModal, { PV_RECHNER_HASH } from "../../../../../components/PvRechnerModal";
 import FoerderCheckStarter, { FOERDER_CHECK_OEFFNEN } from "../../../../../components/FoerderCheckStarter";
 import { buildFundingExamples } from "../../../../../lib/funding-examples";
@@ -86,6 +88,13 @@ const S = {
   h1: { fontSize: "var(--font-size-h1)", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" } as React.CSSProperties,
   intro: { fontSize: "var(--font-size-body)", lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 22px" } as React.CSSProperties,
   ortszeile: { fontSize: "var(--font-size-small)", color: v("--color-text-muted"), margin: "0 0 14px" } as React.CSSProperties,
+  // Stand über der Überschrift — dieselbe Größe und Farbe wie auf der
+  // Atlas-Seite zum Ort, damit beide Kopfzeilen als dieselbe Sache lesen.
+  stand: {
+    fontSize: "var(--font-size-caption)",
+    color: v("--color-text-muted"),
+    marginBottom: 8,
+  } as React.CSSProperties,
   strong: { color: v("--color-text-primary"), fontWeight: 600 } as React.CSSProperties,
   metricsGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 10, marginBottom: 28 } as React.CSSProperties,
   metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: 14 } as React.CSSProperties,
@@ -246,7 +255,16 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
           items={[
             { label: "Förderung", href: "/photovoltaik-foerderung" },
             { label: city.bundesland, href: `/photovoltaik-foerderung/${slugify(city.bundesland)}` },
-            { label: city.name },
+            // DER KREIS STEHT HIER, nicht als eigene Zeile unter der
+            // Überschrift (Betreiber, 31.08.2026). Er ist Einordnung, kein
+            // Satz: Ein Ortsname allein ist mehrdeutig — Mühlhausen und Senden
+            // gibt es mehrfach in Deutschland.
+            //
+            // Als KLAMMERZUSATZ am Blatt, ausdrücklich NICHT als eigene Station
+            // der Spur: Eine zusätzliche Ebene behauptete eine Hierarchie, die
+            // die Adresse nicht hat (sie lautet /bundesland/ort, ohne Kreis) —
+            // die schwächste Form einer Krümelspur.
+            { label: city.kreis ? `${city.name} (${city.kreis})` : city.name },
           ]}
         />
         {/* Das Suchwort gehört in die H1: Die Seite rankt für „photovoltaik
@@ -265,7 +283,34 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
             stammt (Betreiber-Entscheidung 26.08.2026). Die Seite ist erreichbar,
             steht aber nicht im Suchindex; der Verweis von hier ist damit ein
             interner Weg zu mehr Zahlen, kein Ausgang. */}
-        <h1 style={S.h1}>
+        {/* Stand ÜBER der Überschrift, wie auf der Atlas-Seite zum Ort: Er ordnet
+            die Seite zeitlich ein, bevor die erste Zahl kommt.
+
+            Die Angabe kommt aus DERSELBEN Funktion wie die Programmkarte weiter
+            unten — eine zweite, kürzere Formulierung wäre die bekannte
+            Drift-Falle. Sie nennt bewusst BEIDE Daten: aus welchem Monat die
+            Werte stammen UND wann wir sie zuletzt bestätigt haben. Eines von
+            beiden allein lässt offen, ob die Beträge von gestern oder von vor
+            einem Jahr sind.
+
+            Nur bei genau einem regionalen Programm — mehr kann diese Seite
+            per Ableitung nicht tragen, und ein gemeinsames Datum über mehreren
+            Ständen behauptete den schnellsten Takt für den langsamsten Wert. */}
+        {/* Überschrift links, Abo-Block rechts daneben — dieselbe Mechanik wie
+            auf der Atlas-Seite zum Ort. Vermerkt wird, dass HIER abonniert
+            wurde: Beide Seitengattungen tragen denselben Ortsnamen und sprechen
+            verschiedene Leute an (dort der Bestand, hier das Geld).
+
+            Der Ortsschlüssel ist hier FÜNF- oder achtstellig — kreisfreie Städte
+            tragen fünf. Die Anmelde-Adresse nimmt beide Formen; die eigentliche
+            Prüfung ist, ob es den Ort im Melderegister gibt. */}
+        <div className="gemeinde-titelzeile">
+          <div style={{ minWidth: 0 }}>
+            {/* Der Stand gehört MIT in die linke Spalte, nicht über die ganze
+                Zeile: Sonst beginnt der Abo-Block auf Höhe der Statuszeile und
+                die Kopfzeile hat zwei verschiedene Oberkanten. */}
+            {f && <div style={S.stand}>{fundingStandLabel(f)}</div>}
+            <h1 style={S.h1}>
           {f ? (
             <>
               Photovoltaik-Förderung in{" "}
@@ -284,16 +329,11 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
           ) : (
             <>Photovoltaik in {city.name}</>
           )}
-        </h1>
-        {/* Ein Ortsname allein ist mehrdeutig — Mühlhausen und Senden gibt es
-            mehrfach in Deutschland. Der Kreis darunter sagt, welcher Ort hier
-            gemeint ist, bevor die erste Zahl kommt.
+            </h1>
+          </div>
+          <GemeindeAboBox name={city.name} ags={city.ags} quelle="foerderung" />
+        </div>
 
-            Bewusst ohne Präposition: „im {kreis}" liest sich bei fast allen
-            Namen richtig und bei „StädteRegion Aachen" oder „Region Hannover"
-            falsch. Eine Zeile, die für 47 von 50 Namen stimmt, ist keine
-            Lösung — als Angabe für sich genommen stimmt sie für alle. */}
-        {city.kreis && <p style={S.ortszeile}>{city.kreis}</p>}
         {/* Introtext und Amtslink nebeneinander: Die Programmseite der Gemeinde
             ist die Quelle, aus der jede Zahl hier stammt, und der einzige Ort,
             an dem jemand den Antrag wirklich stellt. Sie stand bisher nur als
@@ -621,6 +661,16 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
              auf DIESER Seite weiterhilft — die Amtsseite führt hinaus und steht
              ohnehin in der Herkunftszeile der Karte. */
           sekundaer={{ ereignis: FOERDER_CHECK_OEFFNEN, label: "Förder-Check starten" }}
+          /* Das Abo als DRITTER Weg — auf schmalen Schirmen nur die Glocke
+             (Betreiber, 31.08.2026). So muss keiner der beiden anderen weichen:
+             Ein Symbol braucht die Breite nicht, die ein dritter Textknopf
+             genommen hätte. */
+          dritte={{
+            ereignis: ABO_OEFFNEN,
+            label: `${city.name} abonnieren`,
+            icon: <IconGlocke size={16} />,
+            klasse: "sc-glocke",
+          }}
         />
       )}
     </div>

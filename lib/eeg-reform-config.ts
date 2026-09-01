@@ -220,7 +220,56 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // „Bundestag und Bundesrat beraten ab September" kursiert, ist eine
   // Ankündigung, kein Verfahrensschritt — der Zustand bleibt
   // „Regierungsentwurf".
-  geprueftIso: "2026-08-26",
+  //
+  // 28.08.2026 nachgesehen, unverändert, wieder beide Kammern einzeln:
+  // bundesrat.de führt unter 470/26 weiterhin ausschließlich die
+  // „BReg 470/26 Grunddrucksache", keine Beschlussdrucksache; die
+  // Tagesordnungsseite des Bundestages nennt weder „Erneuerbare" noch
+  // „Brennstoff", ruft also weder diesen Entwurf noch die BEHG-Novelle auf. Auf
+  // bundesregierung.de ist der Kabinettsbeschluss vom 29.07.2026 unverändert der
+  // letzte Verfahrensschritt, den eine amtliche Stelle nennt.
+  //
+  // EINE SUCHFALLE, damit sie nicht wiederkommt: Eine Verbände-Mitteilung mit
+  // dem Titel „Erste Lesung der EEG-Novelle" steht weit oben in den
+  // Suchtreffern und stammt vom 30.10.2020 — sie betrifft das EEG 2021. Ein
+  // Treffer, der die richtige Sache benennt, ist noch kein Treffer aus der
+  // richtigen Zeit; das Datum gehört zu jeder Fundstelle.
+  //
+  // 29.08.2026 nachgesehen, unverändert — diesmal wieder über die beiden
+  // Sitzungskalender, weil sie die Frage abschließend beantworten statt sie
+  // wahrscheinlich zu machen: Der Sitzungskalender des Bundestages
+  // (bundestag.de/parlament/plenum/sitzungskalender) führt für August 2026
+  // ÜBERHAUPT KEINE Sitzungswoche; die erste nach der Sommerpause ist der
+  // 07.–11.09.2026. Der Bundesrat führt als letzte Plenarsitzung die 1067. am
+  // 10.07.2026 und als nächste den 25.09.2026 — zwischen dem Eingang der
+  // Drucksache 470/26 am 14.08.2026 und heute liegt also in beiden Kammern
+  // keine einzige Sitzung. Ein Beschluss KANN es nicht gegeben haben; der
+  // Zustand bleibt „Regierungsentwurf".
+  //
+  // 30.08.2026 erneut an beiden Sitzungskalendern nachgesehen, unverändert.
+  // Der Bundestag führt für August 2026 weiterhin keine Sitzungswoche; die
+  // Jahresübersicht 2026 nennt als Sitzungswochen um die Sommerpause herum
+  // den 06.–10.07.2026 und dann erst den 07.–11.09.2026. Die Terminliste des
+  // Bundesrates führt als nächste Plenarsitzungen den 25.09., 16.10., 20.11.
+  // und 18.12.2026 — vor dem 25.09.2026 tagt er also nicht. Damit hat seit dem
+  // Eingang der Drucksache 470/26 am 14.08.2026 keine der beiden Kammern
+  // getagt, ein Beschluss ist ausgeschlossen. Die BR-Drucksache selbst trägt
+  // unverändert den Titel „Entwurf eines Gesetzes für einen planbaren,
+  // kosteneffizienten, netzverträglichen und marktorientierten Ausbau der
+  // erneuerbaren Energien im Stromsektor" als Grunddrucksache ohne Beschluss.
+  //
+  // 01.09.2026 erneut an beiden Sitzungskalendern nachgesehen, unverändert — und
+  // der 01.09. ist der letzte Tag, an dem dieser Befund ohne Weiteres gilt: Der
+  // Sitzungskalender des Bundestages für 2026 führt für August keine Sitzungswoche
+  // und nennt als erste nach der Sommerpause den 07.–11.09.2026; die Terminliste
+  // des Bundesrates führt als letzte Plenarsitzung die 1067. am 10.07.2026 und als
+  // nächste den 25.09.2026. Zwischen dem Eingang der Drucksache 470/26 am
+  // 14.08.2026 und heute hat damit weiterhin keine der beiden Kammern getagt.
+  // AB DEM 07.09.2026 GILT DIESE ABKÜRZUNG NICHT MEHR: Dann kann eine erste
+  // Lesung stattgefunden haben, und der Sitzungskalender beantwortet die Frage
+  // nicht mehr — ab dann ist der Verfahrensstand an der Drucksache selbst
+  // (dip.bundestag.de) nachzusehen, nicht am Terminplan.
+  geprueftIso: "2026-09-01",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

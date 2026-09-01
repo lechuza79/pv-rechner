@@ -81,6 +81,21 @@ ein Zusatzpaket (10 $/Monat auf Pro, Stand 27.08.2026), ohne das Vercel Seiten
 ohne Abfrageteil zusammenfasst — der Parameter liefe ins Leere. Kennung,
 Rechtslage und die Grenze zu unzulässigen Ausprägungen: `lib/brief-herkunft.ts`.
 
+### Gemeinde-Abo
+| Event | Auslöser |
+|---|---|
+| `abo_anmeldung` | Anmeldeformular auf einer Gemeindeseite erfolgreich abgeschickt |
+
+**Gezählt wird der ABGESCHICKTE VERSUCH, nicht die Bestätigung.** Der Klick auf
+den Bestätigungslink passiert in einem anderen Postfach, oft auf einem anderen
+Gerät — ein Ereignis auf der Bestätigungsseite wäre eine Zählung, die sich der
+vorherigen Anmeldung zuordnen ließe, und damit genau die Verknüpfung, die die
+Messung einwilligungspflichtig machte. Wie viele Anmeldungen bestätigt werden,
+beantwortet die eigene Ablage, nicht die Reichweitenmessung.
+
+WELCHER Ort abonniert wurde, steht bewusst nicht im Ereignis. Es stünde über
+den Seitenaufruf ohnehin schon zu viel daneben.
+
 ## Ereignisse tragen keine Eigenschaften — BLOCKER
 
 `trackEvent` nimmt nur einen Namen entgegen. Das ist keine Sparsamkeit, sondern

@@ -549,6 +549,19 @@ export function renderMeldung(c: DraftContext): string {
   // dl-de/by-2-0 verlangt einen Quellenvermerk mit dem Namen der
   // bereitstellenden Stelle — „Bundesnetzagentur" kann deshalb nicht weg, der
   // ganze Satz drumherum schon (Vorgabe des Betreibers, 19.08.2026).
+  //
+  // DIE HIER VERLINKTE ORTSSEITE IST AB DEM VERSAND FÜR SUCHMASCHINEN OFFEN.
+  // Der Versand schaltet sie frei (lib/atlas-outreach-freigabe.ts), nicht erst
+  // eine erkannte Veröffentlichung. Grund, gemessen am 29.08.2026: Wallertheim
+  // veröffentlichte eine eigene Meldung mit diesem Link in seiner Dorf-App und
+  // schickte 47 Besucher — unsere Verweis-Erhebung sah davon nichts, weil
+  // Verzeichnisse App-Plattformen nicht crawlen und der Link `rel="noreferrer"`
+  // trägt. Wer auf den Nachweis wartet, wartet in solchen Fällen für immer.
+  //
+  // WER DEN LINK HIER ÄNDERT, ändert damit auch, welche Seite freigeschaltet
+  // wird: Die Freigabe hängt am Gemeindeschlüssel des Empfängers, nicht an
+  // dieser Zeichenkette. Zeigt der Brief künftig woandershin, muss die Freigabe
+  // mitwandern — sonst ist wieder eine Seite verlinkt und gesperrt.
   return `${ueberschrift}
 
 ${anlagenSatz}${vergleichSatz}${belegSatz}

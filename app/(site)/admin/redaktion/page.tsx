@@ -1,24 +1,31 @@
 import { redirect } from "next/navigation";
 import { isAdminSession } from "../../../../lib/admin-guard";
 import { socialKennzahlen } from "../../../../lib/social-kennzahlen";
-import { baueAllePosts } from "../../../../lib/social-posts";
-import { FAMILIEN } from "../../../../lib/redaktionsplan";
-import { FeedVorschau } from "../../../../components/social/FeedVorschau";
-import { VorlagenEditor } from "../../../../components/social/VorlagenEditor";
-import { ladeVorlagen } from "../../../../lib/social-vorlagen-db";
+import { baueAllePosts, templateVon, type SocialPost } from "../../../../lib/social-posts";
+import { KATEGORIEN, kategorieAusAdresse } from "../../../../lib/redaktions-kategorien";
+import { BEREICHE } from "../../../../lib/redaktionsplan";
+import { KategorieNav } from "../../../../components/social/KategorieNav";
+import { ladeFassungen } from "../../../../lib/social-vorlagen-db";
+import { fassungsAbdruck, ladeAllePruefungen } from "../../../../lib/social-pruefung";
+import { pruefeMechanisch } from "../../../../lib/social-mechanik";
+import { ladeVersand } from "../../../../lib/social-versand-log";
+import { StoryListe } from "../../../../components/social/StoryListe";
+import { StoryGrid } from "../../../../components/social/StoryGrid";
+import { kategorie } from "../../../../lib/redaktions-kategorien";
 import { v, space, pad } from "../../../../lib/theme";
 
-// Entwicklung: Der Post so, wie er im Feed erscheint — Bild oben, Text darunter
-// eingeklappt.
+// Das Design-Werkzeug: Kategorien oben, darunter ihre Beschreibung und ihre
+// Stories.
 //
-// Die Anordnung ist der Kern dieser Seite. Wer einen Beitrag mit vollständigem
-// Text neben einem großen Bild beurteilt, beurteilt eine Ansicht, die niemand
-// zu sehen bekommt: Im Feed kommt das Bild zuerst, der Text steht darunter nach
-// wenigen Zeilen abgeschnitten, und in dieser Ansicht entscheidet sich, ob
-// jemand stehenbleibt.
+// Eine Kategorie ist eine Geschichten-Familie aus dem Katalog
+// (lib/redaktionsplan.ts) — sie sagt, was ein Beitrag dieser Art behauptet und
+// woran er scheitert. Die vier Wähler oben gruppieren nach dem, WORAUS ein
+// Beitrag entsteht; daran hängt, wer ihn bauen kann. Das Farbschema gehört
+// dagegen an den einzelnen Post.
 //
-// Rechts daneben der Vorrat an Geschichten-Familien, damit beim Entwickeln
-// sichtbar ist, was es sonst noch gibt und woran es jeweils hängt.
+// Jede Story steht so, wie sie im Feed steht: Text zuerst, nach zwei Zeilen
+// gekappt, Bild darunter. Bild und Text tragen gemeinsam — deshalb wird beides
+// zusammen beurteilt und nicht nebeneinander in zwei Vorschauen.
 
 export const metadata = {
   title: "Redaktion – Entwicklung",
@@ -27,32 +34,72 @@ export const metadata = {
 
 export const dynamic = "force-dynamic";
 
-const ZUSTAND_TEXT: Record<string, string> = {
-  gebaut: "gebaut",
-  "daten-da": "Daten da",
-  "fehlt-daten": "Daten fehlen",
-  spaeter: "später",
-};
-
-export default async function RedaktionEntwicklung() {
+export default async function RedaktionEntwicklung({
+  searchParams,
+}: {
+  searchParams: Promise<{ k?: string }>;
+}) {
   if (!(await isAdminSession())) redirect("/login?next=/admin/redaktion");
 
-  let posts;
+  const gewaehlt = (await searchParams).k;
+  // Ohne Kategorie in der Adresse: das Raster über alles. Das ist der Einstieg —
+  // erst sehen, was es gibt, dann in eine Kategorie gehen, um daran zu arbeiten.
+  const uebersicht = !gewaehlt;
+  const kat = kategorieAusAdresse(gewaehlt);
+
+  let posts: SocialPost[] | undefined;
+  let kennzahlen: Awaited<ReturnType<typeof socialKennzahlen>> | undefined;
   let fehler: string | null = null;
   try {
-    const [kennzahlen, vorlagen] = await Promise.all([socialKennzahlen(), ladeVorlagen()]);
-    posts = baueAllePosts(kennzahlen, vorlagen);
+    const [k, fassungen] = await Promise.all([socialKennzahlen(), ladeFassungen()]);
+    kennzahlen = k;
+    posts = baueAllePosts(k, fassungen);
   } catch (e) {
     fehler = (e as Error).message;
   }
 
+  // Die mechanische Prüfung läuft SERVERSEITIG und bei jedem Aufruf, nicht auf
+  // Knopfdruck. Sie ist billig (reine Rechnung, keine Datenbank) und soll dort
+  // stehen, wo gearbeitet wird — ein Befund, den man erst beim Senden erfährt,
+  // kommt zwei Schritte zu spät.
+  const befundeJePost = new Map<string, ReturnType<typeof pruefeMechanisch>>();
+  if (posts && kennzahlen) {
+    for (const p of posts) befundeJePost.set(p.id, pruefeMechanisch(p, kennzahlen));
+  }
+
+  const dieser = uebersicht ? (posts ?? []) : (posts?.filter((p) => p.kategorie === kat.schluessel) ?? []);
+  // Die Prüfungen kommen je Story mit: Das Urteil rechnet die Oberfläche selbst,
+  // weil es sich mit jeder Änderung dort bewegen muss. Eine Abfrage für alle
+  // statt einer je Story — die Tabelle ist klein, die Roundtrips sind es nicht.
+  const pruefungen = await ladeAllePruefungen();
+  // Das Versandprotokoll: Welche FASSUNG ging schon raus. Am Beitrag zu hängen
+  // wäre falsch — nach einer echten Überarbeitung darf er wieder laufen.
+  const versand = await ladeVersand();
+  const gesendetAm = (postId: string, abdruck: string) =>
+    versand.find((x) => x.post_id === postId && x.fassung_fingerabdruck === abdruck)?.gesendet_am ?? null;
+
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto" }}>
-      <h1 style={{ fontSize: v("--font-size-h1"), marginBottom: space.sm }}>Entwicklung</h1>
-      <p style={{ color: v("--color-text-secondary"), marginBottom: space.huge, maxWidth: 760 }}>
-        Text und Bild kommen aus derselben Berechnung — ein Post kann hier keine Zahl behaupten, die
-        das Bild widerlegt. Die Vorschau zeigt den Beitrag so, wie er im Feed steht: Bild zuerst,
-        Text darunter eingeklappt.
+      <KategorieNav
+        aktiv={kat.schluessel}
+        uebersicht={uebersicht}
+        bereiche={BEREICHE.map((b) => ({
+          schluessel: b.schluessel,
+          name: b.name,
+          eintraege: KATEGORIEN.filter((k) => k.bereich === b.schluessel).map((k) => ({
+            wert: k.schluessel,
+            text: k.kurz,
+            zusatz: String(posts?.filter((p) => p.kategorie === k.schluessel).length ?? 0),
+          })),
+        })).filter((b) => b.eintraege.length > 0)}
+      />
+
+      {/* Keine Überschrift: Die Leiste darüber sagt bereits, wo man ist, und der
+          Name stünde zweimal untereinander. */}
+      <p style={{ color: v("--color-text-secondary"), maxWidth: 760, marginTop: 0, marginBottom: space.huge }}>
+        {uebersicht
+          ? `Alle ${dieser.length} fertigen Beiträge. Bearbeiten öffnet denselben Tisch wie in der Kategorie; dort steht eine Story zwischen ihren Geschwistern.`
+          : kat.beschreibung}
       </p>
 
       {fehler && (
@@ -61,104 +108,49 @@ export default async function RedaktionEntwicklung() {
         </p>
       )}
 
-      <div style={{ display: "flex", flexDirection: "column", gap: space.huge * 1.5 }}>
-          {posts?.map((p) => (
-            <section key={p.id} style={{ borderTop: `1px solid ${v("--color-border-muted")}`, paddingTop: space.xxl }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "baseline",
-                  gap: space.md,
-                  marginBottom: space.md,
-                  flexWrap: "wrap",
-                  maxWidth: 500,
-                }}
-              >
-                <h2 style={{ fontSize: v("--font-size-h3"), margin: 0 }}>{p.titel}</h2>
-                <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
-                  {p.kanal.join(" · ")} · {p.bild?.art === "kennzahl" ? "Einzelkennzahl" : "Vergleich"} ·{" "}
-                  {p.text.length} Zeichen
-                </span>
-              </div>
+      {!fehler && dieser.length === 0 && (
+        <p
+          style={{
+            padding: pad("xxl", "xxl"),
+            background: v("--color-bg-muted"),
+            borderRadius: v("--radius-md"),
+            color: v("--color-text-muted"),
+            maxWidth: 760,
+          }}
+        >
+          Noch keine Story in dieser Kategorie — der Platz ist benannt, gebaut ist hier nichts.
+        </p>
+      )}
 
-              {/* Vorschau links, Bearbeitung rechts: Wer eine Formulierung
-                  ändert, will die Wirkung sehen, ohne zu scrollen. */}
-              <div style={{ display: "flex", gap: space.xxxl, alignItems: "flex-start", flexWrap: "wrap" }}>
-                <div style={{ flex: "0 0 auto" }}>
-                  <FeedVorschau bild={p.bild!} text={p.text} breite={440} />
-                </div>
-                <div style={{ flex: "1 1 460px", minWidth: 340 }}>
-                  {p.vorlage && p.platzhalter ? (
-                    <VorlagenEditor postId={p.id} vorlage={p.vorlage} platzhalter={p.platzhalter} />
-                  ) : (
-                    <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
-                      Noch nicht auf Vorlagen umgestellt — hier nur lesbar.
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <details style={{ marginTop: space.md, maxWidth: 500 }}>
-                <summary
-                  style={{ cursor: "pointer", fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}
-                >
-                  Belege ({p.belege.length})
-                </summary>
-                <ul
-                  style={{
-                    fontSize: v("--font-size-small"),
-                    color: v("--color-text-secondary"),
-                    marginTop: space.sm,
-                    paddingLeft: space.lg,
-                  }}
-                >
-                  {p.belege.map((b) => (
-                    <li key={b} style={{ marginBottom: space.xs }}>
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-              </details>
-            </section>
-          ))}
-
-        <aside style={{ maxWidth: 700 }}>
-          <h2 style={{ fontSize: v("--font-size-h3"), marginTop: 0 }}>Der Vorrat</h2>
-          <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginTop: 0 }}>
-            Neunzehn Geschichten-Familien. Was hier als „Daten da" steht, lässt sich ohne neuen
-            Datenbestand bauen.
-          </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: space.xs }}>
-            {FAMILIEN.map((f) => (
-              <div
-                key={f.kuerzel}
-                style={{
-                  background: v("--color-bg-muted"),
-                  borderRadius: v("--radius-sm"),
-                  padding: pad("sm", "md"),
-                  opacity: f.zustand === "spaeter" ? 0.6 : 1,
-                }}
-              >
-                <div style={{ display: "flex", gap: space.sm, alignItems: "baseline" }}>
-                  <span style={{ fontSize: v("--font-size-body"), flex: 1 }}>{f.name}</span>
-                  <span
-                    style={{
-                      fontSize: v("--font-size-caption"),
-                      color: f.zustand === "gebaut" ? v("--color-positive") : v("--color-text-muted"),
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {ZUSTAND_TEXT[f.zustand]}
-                  </span>
-                </div>
-                {f.hinweis && (
-                  <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>{f.hinweis}</div>
-                )}
-              </div>
-            ))}
-          </div>
-        </aside>
-      </div>
+      {uebersicht ? (
+        <StoryGrid
+          eintraege={dieser.map((p) => {
+            const k = kategorie(p.kategorie);
+            return {
+              post: p,
+              pruefungen: pruefungen[p.id] ?? [],
+              // Der Abdruck wird HIER gerechnet, auf dem Server. Der Browser
+              // bekommt ihn fertig — er soll nicht hashen können müssen.
+              abdruck: fassungsAbdruck({ text: p.text, bild: p.bild }),
+              befunde: befundeJePost.get(p.id) ?? [],
+              gesendetAm: gesendetAm(p.id, fassungsAbdruck({ text: p.text, bild: p.bild })),
+              kategorie: { name: k.name, schluessel: k.schluessel },
+              // Gestaltet heißt: Der Beitrag verwendet ein abgenommenes Template.
+              bearbeitet: !!p.bild && !!templateVon(p.bild),
+            };
+          })}
+        />
+      ) : (
+        <StoryListe
+          eintraege={dieser.map((p) => ({
+            post: p,
+            pruefungen: pruefungen[p.id] ?? [],
+            abdruck: fassungsAbdruck({ text: p.text, bild: p.bild }),
+            befunde: befundeJePost.get(p.id) ?? [],
+            gesendetAm: gesendetAm(p.id, fassungsAbdruck({ text: p.text, bild: p.bild })),
+          }))}
+        />
+      )}
     </div>
   );
 }

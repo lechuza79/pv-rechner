@@ -131,6 +131,14 @@ An diesem Repo arbeiten regelmäßig mehrere Sessions gleichzeitig, dazu die Wä
 
   **Eine Gemeinde hat MEHRERE Förderseiten, und jede trägt ihre eigene Technik — BLOCKER** (`funding_seiten`, Logik in `lib/funding-seiten.ts`). Die Erfassung hielt vorher genau eine Adresse je Gemeinde fest; eine Stadt, die Photovoltaik auf der einen und Balkonkraftwerke auf einer anderen Seite fördert, verlor eine der beiden — ohne Fehler, ohne Meldung. Damit konnte der Katalog **je Technik gar nicht vollständig werden**. Der Schlüssel heißt jetzt (Gemeinde × Adresse).
 
+  **Die Datenbank ist EINE, die Codestände sind viele — BLOCKER (27.08.2026).** `row.data` wird beim Lesen per `as FundingProgram` **behauptet, nicht geprüft**. Wer eine neue Datenform einführt und den Abgleich fährt, schreibt sie in dieselbe Tabelle, aus der jeder ältere Arbeitsstand weiterliest. Gemessen: Die Bedingungen bekamen am 26.08. neben dem blanken Satz die Objektform; ein Zweig ohne diese Änderung spreizte die Liste weiter direkt ins JSX und antwortete auf Niddas Stadtseite mit **HTTP 500** („Objects are not valid as a React child, keys {nur, text}"). Beim Vorrendern ist das schlimmer als ein Laufzeitfehler — der ganze Bau bricht ab. Zum Zeitpunkt des Fundes fehlte die Änderung **24 der Zweige mit Arbeit aus den letzten zehn Tagen** — und **drei der vier laufenden Dev-Server** lieferten auf dieser Adresse einen Fehler aus.
+  - **Die bisherige Antwort war eine Verfahrensregel** („den Abgleich nicht vor dem Deploy laufen lassen", steht am Schalter `FOERDER_AUS_CODE`). Sie hält nicht: An diesem Repo hängen dauerhaft ein Dutzend Arbeitsstände, und alle lesen dieselbe Produktions-Datenbank. Eine Regel, die jeder Zweig gleichzeitig einhalten müsste, ist keine.
+  - **Jetzt prüft der Lader die Form** (`datenFormVerstanden` in `lib/funding-data.ts`): Was dieser Code nicht als Text ausgeben kann, kommt aus dem Code-Seed — **ohne die Beleg-Spalten**, das Programm zählt also nicht mehr mit und zieht kein Geld ab. Lieber kein Betrag als einer aus einer Form, die wir nicht verstehen. Geprüft wird die **Renderbarkeit, nicht die exakte Form**: Zusatzfelder sind erlaubt, sonst schaltete jede spätere Erweiterung ein Programm still ab. **Wer `FundingCondition` oder `rates` erweitert, erweitert die Prüfung im selben Commit** — `lib/__tests__/funding-datenform.test.ts` hält den Code-Seed gegen sie und wird sonst rot.
+  - **Die Fehlerklasse ist von außen unsichtbar:** kein Typfehler (die Grenze behauptet die Form), kein roter Test, kein kaputtes Aussehen. Deshalb steht Niddas Stadtseite zusätzlich im Rundgang — sie ist die einzige mit einem Programm für mehrere Techniken und damit die einzige, die die Objektform überhaupt rendert.
+  - **Und der Grund, warum es tagelang niemand sah:** Die letzten Auslieferungen waren übersprungene Builds (nur `*.md`/`.claude/` geändert). Ein übersprungener Build sieht in der Vercel-Liste aus wie ein Abbruch nach drei Sekunden, nicht wie ein Fehler — er verbirgt einen kaputten. Die Prüfung nach jedem Merge steht schon oben beim Ignored Build Step; sie gilt auch dann, wenn nichts kaputt zu sein scheint.
+
+  **Wer ein Programm zeigt, sagt für WELCHE Technik — BLOCKER.** Die Trennung kam am 26.08. auf die Stadtseite, und **das Detail-Fenster im Rechner wurde dabei übersehen**: Im PV-Rechner stand bei Nidda „Höchstens zwei Module je Haushalt, höchstens 800 W Einspeisung" — eine Bedingung des Balkonkraftwerks, die jede Dachanlage ausschließt, und daneben ein Höchstbetrag, der das Siebeneinhalbfache des echten behauptete. Die Seite funktioniert dabei tadellos; falsch ist nur die Auskunft. `lib/__tests__/foerderung-je-technik.test.ts` verlangt deshalb an **jeder** Verwendung von `FundingConditions`/`FundingRates` eine Technik-Angabe; die beiden Übersichtsseiten stehen mit Grund in der Ausnahmeliste, weil sie ein Programm bewusst als Ganzes zeigen. Die Regel für den Höchstbetrag steht als `istDachSicht` an einer Stelle — zwei Fassungen davon liefen binnen einer Woche auseinander.
+
   **Die Erfassung schreibt NIE die Programm-Spalte `data` — BLOCKER.** Die Stadtseite liest die Programme aus der Datenbank, der Kohärenz-Test `atlas-funding-sync` aus dem Code. Das trägt nur, solange die Datenbank ausschließlich aus dem Code-Seed befüllt wird. Ein direkt eingetragenes Programm ist für den Test unsichtbar — und fallen dabei zwei Programme auf denselben Gemeindeschlüssel, liefert `fundingFor()` bewusst `undefined`, die Adresse fällt aus `generateStaticParams` und die Stadtseite antwortet **404 ohne Fehlermeldung, ohne roten Test, ohne kaputtes Aussehen**. Die Trennlinie ist die SPALTE, nicht die Tabelle: Die Beleg-Spalten (`last_verified`, `page_fingerprint`, `page_seen_at`, `page_changed_at`) werden absichtlich von mehreren Stellen fortgeschrieben. Festgenagelt von `lib/__tests__/funding-erfassung-grenze.test.ts`.
 
   **Programm und Seite werden über das FÖRDERGEBIET zusammengeführt, nie über gleiche Schlüssel** (`programmDecktSeite`). Die Seiten tragen durchweg acht Stellen, der Katalog gemischt (zwei, fünf oder acht) — ein Vergleich auf Gleichheit verfehlt jedes dritte Programm. **Die Richtung ist der ganze Punkt:** Das Fördergebiet enthält die Gemeinde, nie umgekehrt — ein Dorfzuschuss darf niemals für den ganzen Landkreis zählen. Wer den Programm-Schlüssel kürzt statt den Seiten-Schlüssel zu prüfen, baut genau diesen Fehler.
@@ -544,6 +552,12 @@ Umgesetzt als geteilte Feld-Bausteine: **`components/DachField.tsx`** (Dachform 
 
 **Admin-Backend (`/admin`):** Geschützte Übersicht (`ADMIN_EMAILS`-Guard) mit Kacheln zu den internen Views — neue Admin-Seiten hier als Kachel ergänzen; erreichbar über einen „Admin"-Eintrag im Header, der nur eingeloggten Admins erscheint. Die Admin-Erkennung läuft **client-seitig** über `useIsAdmin` (`lib/auth.ts`) → `GET /api/admin/status`, damit die öffentlichen Seiten **statisch bleiben** und die Admin-Mail-Liste nicht in den Browser wandert — bewusst NICHT im Layout auf `getUser()` prüfen (das würde jede Seite dynamisch machen).
 
+**Im Adminbereich keine Seitenüberschrift und kein Intro — BLOCKER** (Betreiber, 28.08.2026: „im adminbereich platz verschenken mit hl und intro macht keinen sinn"). Eine Adminseite fängt mit dem ersten Inhalt an. Wer sie aufruft, weiß, wo er ist — die Navigation sagt es, der Reiter sagt es, und niemand landet dort versehentlich. Eine Überschrift „Planung" über einer Seite namens Planung kostet eine Bildschirmhöhe und trägt nichts.
+
+- **Erklärungen gehören hinter ein „?"** (`components/InfoTooltip.tsx`, `exportNote={false}` — Adminseiten exportieren keine Bilder). Nicht gelöscht, nur weggeräumt: Der Grund, warum eine Ansicht so gebaut ist, gehört an die Ansicht, aber nicht in die Sichtachse. Wo eine Zahl den Zustand trägt, steht sie klein neben der Abschnitts-Überschrift („4 gedeckt, 2 offen") statt als Satz darunter.
+- **Abschnitts-Überschriften bleiben** und werden dabei kürzer: „Kalender" statt „Die Wochen", „Themen" statt „Der Vorrat an Themen", „Regeln" statt „Vor jedem Post". Sie sortieren die Seite; die Erläuterung dazu ist der Tooltip.
+- **Gilt nur für `/admin`.** Auf öffentlichen Seiten trägt der Einleitungstext SEO und Verständlichkeit — dort ist er kein verschenkter Platz, sondern der Inhalt.
+
 **Abstands-Skala (`space` + `pad()` in `lib/theme.ts`):** Zahlen statt CSS-Variablen, weil Abstände in Inline-Styles stehen (`gap: space.md`, `padding: pad("lg", "xl")`). Stufen: 2 · 4 · 6 · 8 · 12 · 16 · 24 · 32 · 48. **10, 14, 18 und 28 gibt es bewusst nicht** — sie waren Drift; wer sie brauchte, entscheidet sich sichtbar für die Stufe darunter oder darüber. Neue Komponenten setzen Abstände **nur** aus der Skala. Der Bestand wird stückweise nachgezogen, nicht in einem Zug — jede Rundung ist eine sichtbare Änderung und gehört einzeln abgenommen.
 
 **Header→Content-Abstand — BLOCKER:** Der Abstand kommt aus **einer** Quelle (`headerContentGap` + `--content-lede-top` in `lib/theme.ts`), nicht mehr aus jeder Seite einzeln (vorher projektweit driftend, sichtbar 32–108 px).
@@ -604,7 +618,15 @@ Unter jedem Rechner steht — abgesetzt durch eine Trennlinie — der Aktualisie
 
 Aufgefallen ist das am 19.08.2026, als der Katalog auf 97 regionale Programme wuchs und 61 davon (48 aktiv) noch keine Seite hatten. Wer die Einträge anlegt, hätte 61 Ortsseiten auf einen Schlag veröffentlicht, ohne dass irgendwo die Frage gestellt worden wäre, ob sie gerade jetzt erscheinen sollen.
 
-**`lib/release-plan.ts` ist die eine Quelle: welcher Ort, welche Seitengattung, welche Welle, welches Datum.** `isCityPublished()` fragt ihn zusätzlich zum Programmstatus. Er steuert ausschließlich die **Seite** — ob ein Programm im Rechner Geld abzieht, entscheidet unverändert allein `fundingZaehlt()`; ein Ort ohne Seite bleibt im Rechner voll wirksam.
+**Seit dem 01.09.2026 steuert der Plan nur noch die ATLAS-Ortsseiten.** Für die beiden anderen Gattungen ist die Freigabe an eine Tatsache gebunden statt an eine Sitzung — der Plan war dort nur noch Verwaltung:
+
+- **Förderseite:** live, sobald ihr Programm **aktiv** ist und **Dach-Photovoltaik** fördert (`foerderseiteTraegt` in `lib/atlas-cities.ts`). Kein Schub, keine Entscheidung. Zwei Bedingungen, beide aus einem gemessenen Fall: Ein ausgeschöpfter Topf ergibt eine Förderseite ohne abrufbares Geld, und eine Seite mit dem Titel „Photovoltaik-Förderung", die nur Balkonkraftwerke fördert, hält nicht, was sie verspricht (betrifft 35 Orte, die eine eigene Seitenfamilie brauchen). **Der Beleg-Zustand wird hier bewusst NICHT geprüft** — er entscheidet, ob ein Betrag im Rechner Geld abzieht, nicht ob eine Seite existiert; eine erste Fassung prüfte ihn mit und war dadurch komplett wirkungslos, weil der Code-Seed keine Beleg-Spalten trägt und deshalb kein einziges der 110 Programme qualifizierte.
+- **Atlas-Gemeindeseite:** live, sobald die Gemeinde **einen Brief bekommen hat** (`lib/atlas-outreach-freigabe.ts`). Der Brief nennt die Adresse, also kann ab dann jederzeit jemand darauf verweisen — eine Seite anzubieten und gleichzeitig zu sperren, ist der einzige Zustand, der sich nicht begründen lässt. Auslöser ist der VERSAND, nicht der Nachweis einer Veröffentlichung: Wallertheim verlinkte uns in seiner Dorf-App und schickte 51 Besucher, während unsere Verweis-Erhebung nichts davon wusste (Verzeichnisse crawlen App-Plattformen nicht, und der Link trägt `rel="noreferrer"`).
+- **Die Ebene bleibt trotzdem gesperrt** (`RELEASED.gemeinde = false`): Der Wettbewerber ema-energiewelt.de holt aus 6.310 indexierten Ortsseiten neun Platzierungen, keine auf Seite 1.
+
+**`lib/release-plan.ts` bleibt die Quelle für die Atlas-Ortsseiten** und für den Altbestand. Er steuert ausschließlich die **Seite** — ob ein Programm im Rechner Geld abzieht, entscheidet unverändert allein `fundingZaehlt()`; ein Ort ohne Seite bleibt im Rechner voll wirksam.
+
+**Die Kette schließt ein Test, nicht ein Merksatz:** Ein Programm ohne Eintrag im Ortsverzeichnis macht `lib/__tests__/atlas-funding-sync.test.ts` rot (am 01.09.2026 durch absichtliche Sabotage gegengeprüft). Wer ein neues Förderprogramm aufnimmt und den Ortseintrag vergisst, kann nicht einchecken; mit Eintrag entsteht die Seite von selbst. Der Test hält seitdem die REGEL fest statt einer Liste — eine feste Zahl fängt den Fall nicht, dass ein Programm auf „ausgeschöpft" wechselt und seine Seite trotzdem stehen bleibt.
 
 - **Kein Ort in zwei Gattungen ohne Abstand** (`MIN_ABSTAND_GATTUNG_TAGE` = 28). Die Zahl ist hergeleitet, nicht gegriffen: 28 Tage ist das Fenster, mit dem hier überhaupt gemessen wird (`?days=28` in allen SEO-Routen). Wer die zweite Gattung früher live nimmt, nimmt sie blind live. Die Schreibweise des Schlüssels darf dabei nicht täuschen — die Förderseite trägt fünf Stellen, die Atlasseite acht; `ortSchluessel()` normalisiert, sonst liefe die Regel leer.
 - **Kein Schub dichter als 14 Tage am vorigen** (`MIN_ABSTAND_SCHUB_TAGE`). Darunter lässt sich eine Bewegung keinem der beiden Schübe mehr zuordnen — Search-Console-Daten hinken zwei bis drei Tage nach und brauchen danach Verlauf.
@@ -614,6 +636,17 @@ Aufgefallen ist das am 19.08.2026, als der Katalog auf 97 regionale Programme wu
 - **Die Messung läuft VOR dem Schub**, nicht nur monatlich hinterher: `scripts/seo-verify.md`, Schritt 4b. Sie hängt am Plan, nicht am Kalender, und kostet unter 0,10 $ je Schub — Aufwand ist kein Argument gegen sie.
 
 **Was der Plan nicht ist: eine Priorisierung.** Welche Orte in welcher Reihenfolge erscheinen, entscheidet der Betreiber; der Plan hält die Entscheidung fest und macht sie prüfbar.
+
+### Die vier Regeln, nach denen über eine Freigabe entschieden wird — BLOCKER
+
+`lib/seo-grundregeln.ts`, festgenagelt von `lib/__tests__/seo-grundregeln.test.ts`. **Anlass (29.08.2026): Die Freigabe der Ortsseiten wurde an EINEM Tag fünfmal in die Gegenrichtung entschieden** — jedes Mal nach einer neuen Einzelmessung, jedes Mal plausibel begründet, jedes Mal auf einem der immer gleichen Denkfehler. Der Betreiber nannte es „viel zu fragil" und „nur noch Rumgeeier", und das traf zu: Was fehlte, war keine weitere Messung, sondern eine festgeschriebene Regel. Der Test lehnt jeden Freigabe-Nachweis ab, der auf einem widerlegten Schluss steht — und fand beim ersten Lauf sofort einen.
+
+1. **Ein leeres Suchvolumen heißt „unter der Meldeschwelle", nie „keine Nachfrage".** Der Dienst liefert über 477 Einträge keinen Wert unter 10 und meldet Fehlendes als „keine Daten". Gegenprobe an eigenen Zahlen: „stadt essen solarförderung 2026" hat kein gemeldetes Volumen und brachte in 90 Tagen einen echten Klick. Dieser Fehlschluss trug zwei zurückgenommene Schübe und die Landkreis-Sperre.
+2. **Geringe erwartete Nachfrage ist KEIN Grund zurückzuhalten — nur belegbarer Schaden ist einer.** Die Verwechslung von „bringt wenig" mit „schadet" hatte 145 Seiten mit echtem Inhalt monatelang blockiert.
+3. **Zwei eigene Seiten auf einer Anfrage kosten einander NICHT die Position.** Googles Site-Diversity-System zeigt höchstens zwei Seiten je Domain und wählt selbst aus (Search Central, „A Guide to Google Search Ranking Systems"). Ausnahmelisten dagegen schützen vor einem Schaden, den es nicht gibt.
+4. **Crawl-Budget ist unterhalb von rund 10.000 Seiten kein Argument** (Search Central, „Large site owner's guide"). Nicht zu verwechseln mit der gemessenen Renderlast der Ranglisten-Seiten (57 % aller Funktionsaufrufe) — das ist eine Kostenfrage, keine SEO-Frage.
+
+**Wer eine Regel kippen will, kippt ihren Beleg.** Eine neue Stichprobe genügt nicht; genau dieser Mechanismus hat den Tag gekostet.
 
 ## Befehle
 
@@ -688,6 +721,20 @@ Vollständige Vorfallsberichte: `docs/lehren/atlas-performance-2026-07.md`.
 3. **Middleware-Matcher** auf `/dashboard`, `/admin`, `/api/calculations`, `/auth/callback` beschränkt — öffentliche Seiten bleiben statisch.
 4. **CDN-Cache-Header** auf `/api/weather` (s-maxage=900) und `/api/pvgis` (s-maxage=2592000).
 
+### Die Ausgabenbremse pausiert EIN Projekt, nicht das Team — BLOCKER
+
+Vercels eingebaute Notbremse („Pause deployments when the limit is reached") kennt nur einen Schalter für das **ganze Team**. Sie nähme mit dem Filmprojekt (`life-is-a-binge`) auch solar-check.io offline — also ausgerechnet die Seite, die Geld verdienen soll, wegen Kosten, die woanders entstehen. **Der Betreiber hat deshalb entschieden: Pauschal-Abschaltung bleibt AUS**, das Ausgabenlimit steht auf 150 $, und die Bremse wird gezielt gebaut: `app/api/vercel/budget/route.ts` nimmt Vercels Ausgaben-Webhook entgegen, die Entscheidungen liegen in `lib/vercel-budget.ts`.
+
+- **Der Empfänger wohnt in DIESEM Repo, nicht im Filmprojekt.** Er soll das Filmprojekt pausieren; läge er dort, nähme er sich mit dem Pausieren selbst offline und könnte am Ende des Abrechnungszeitraums nicht mehr entpausen — ein Sicherheitsnetz, das genau in dem Moment reißt, in dem es gehalten hat.
+- **Pausiert wird NUR bei 100 %**, die Meldungen bei 50 und 75 % sind Vorwarnung und landen stumm in der Ablage. Am Ende des Abrechnungszeitraums (`type: "endOfBillingCycle"`) wird wieder entpaust. Die Grenze ist `>= 100` und nicht `=== 100`: Führt Vercel je eine höhere Schwelle ein, ist Abschalten die sichere Richtung.
+- **Die Projekt-Kennung ist eine Konstante im Code, KEINE Umgebungsvariable.** Eine Variable ist im Diff unsichtbar und im Dashboard mit einem Tippfehler gesetzt — sie stünde zwischen einer Kostenmeldung und der Abschaltung des falschen Projekts. `zielGeprueft()` wirft beim Laden des Moduls, wenn dort je die Kennung von solar-check.io steht; `lib/__tests__/vercel-budget.test.ts` nagelt beides fest.
+- **Ohne Signatur wird abgewiesen, und ein fehlendes Geheimnis wird NICHT durchgewunken.** Die Adresse ist öffentlich erreichbar; die bequeme Variante („ohne Geheimnis keine Prüfung") verwandelt einen vergessenen Eintrag im Dashboard in einen offenen Abschalt-Knopf für jeden, der die Adresse kennt. Geprüft wird HMAC-SHA1 über den **rohen** Anfragetext (`x-vercel-signature`) — wer erst JSON parst und wieder zusammensetzt, prüft eine andere Zeichenkette als die, die Vercel signiert hat.
+- **Zwei Umgebungsvariablen auf Vercel, nur Production:** `VERCEL_BUDGET_WEBHOOK_SECRET` (die Prüfsumme, die Vercel beim Speichern des Webhooks einmalig anzeigt) und `VERCEL_TOKEN` (Zugriffstoken mit Schreibrecht auf Projekte). **Fehlt oder verfällt eine davon, greift die Bremse nicht** — deshalb meldet der Fehlschlag als Entscheidung an den Betreiber, statt still zu scheitern. Ein Sicherheitsnetz, das lautlos nicht hält, ist schlimmer als keins.
+- **EIN Ding, EIN Name — und der Fehler ist von außen unsichtbar (29.08.2026).** Die Bremse las das Token zunächst unter einem eigenen Namen, während Kostenwache und Gesundheitscheck dasselbe Token als `VERCEL_TOKEN` lesen. Beide Namen kamen von uns; der Betreiber legte den einen an, und die Bremse stand ohne Token da — kein Fehler, kein roter Test, nur ein Sicherheitsnetz, das nicht hält. Wer eine Zugangsvariable einführt, sucht vorher, ob dasselbe Geheimnis im Repo schon einen Namen hat.
+- **Ausgabenlimit und Webhook lassen sich über die Schnittstelle SETZEN, die Verbrauchszahlen nicht** (gemessen 29.08.2026, gegen die frühere Notiz „gibt nur Lesezugriff her"): Ein Schreibaufruf auf die Budget-Liste mit `fixedBudget`, `type` und `pauseProjects` aktualisiert den vorhandenen Eintrag; wird `webhookUrl` mitgegeben, kommt das Webhook-Geheimnis **einmalig** in der Antwort zurück. `isActive` wird dabei abgelehnt. Der aktuelle Verbrauchsstand bleibt unerreichbar.
+- **Die 50-%-Meldung ist die Probe aufs Exempel.** Ruft Vercel gar nicht erst an (Webhook gelöscht, Adresse vertippt), merkt das niemand — es gibt kein Lebenszeichen für ein Ausbleiben. Kommt die erste Vorwarnung nie an, stimmt die Eintragung nicht.
+- **Die Ausgaben-EINSTELLUNG selbst wird nicht per Schnittstelle geändert** — sie gibt nur Lesezugriff her (vier Schreibwege am 11.08.2026 erfolglos probiert). Nicht erneut daran versuchen; Betrag und Webhook-Adresse trägt der Betreiber im Dashboard ein.
+
 **Bei Kostenanalyse:** im Vercel-Usage-Dashboard immer nach Projekt filtern (`projectId`-URL-Parameter), sonst siehst du Org-Gesamtzahlen und fixst das falsche Projekt. Details: `docs/lehren/vercel-build-und-kosten.md`.
 
 ## Wächter-Gate — BLOCKER für alle Wächter
@@ -749,6 +796,21 @@ Der Umzug nach GitHub Actions ist **fertig recherchiert, aber nicht beauftragt**
 - **`beleg: "keiner"` ist ein Befund, kein Versehen** — er verlangt einen ausgeschriebenen Grund (`blindWeil`) und erzeugt bewusst **keinen** roten Lauf. Rot gibt es nur bei Stillstand; sonst gewöhnt man sich an Rot, und der echte Ausfall geht darin unter.
 - **Die Toleranz steht nur EINMAL.** Wo das Prüfdatum der Beleg ist, kommt die Grenze aus `PRUEFSTAND.maxAlterTage`, nie aus einer zweiten Zahl im Register — sonst zeigt irgendwann eine Stelle rot und die andere grün. Ein Test verbietet das eigene `stummAbTage` dort. **Die wichtigere Testrichtung ist die andere:** kein Prüfstand-Wert ohne zuständigen Lauf. Sie hat beim Übernehmen sofort zwei gefangen (Glossar und Rechtsbelege, seit der Inhalts-Inventur ohne Wächter im Register).
 - **Was der Test nicht kann:** prüfen, ob es einen Auftrag dieses Namens wirklich gibt und ob sein Rhythmus stimmt — die Aufträge liegen unter `~/.claude/scheduled-tasks/`, außerhalb des Repos.
+
+**Schreibt der Code in Spalten, die es gibt? — BLOCKER (28.08.2026).** Das Speichern einer Berechnung war **fünf Monate kaputt**, ohne dass irgendetwas angeschlagen hätte: Am 28.03.2026 kam im Code ein Feld dazu (`einspeisung_modus`), die Tabelle bekam es nie, jeder Speicherversuch endete mit HTTP 500. Kein Typfehler (die Grenze zur Datenbank **behauptet** die Form, sie prüft sie nicht), kein roter Test (Tests kennen die echte Tabelle nicht), keine kaputte Seite — und bei drei Aufrufen die Woche fällt es an keiner Fehlerquote auf. Gefunden wurde es an zwei 500ern in der Tagesstatistik. **Dieselbe Klasse wie `datenFormVerstanden` beim Förderkatalog, nur in der anderen Richtung:** dort läuft die Datenform dem Code davon, hier der Code der Tabelle.
+- **`spaltenAbgleich` im Gesundheitscheck misst beides**, statt es zu vermuten: ein Feld, das die Tabelle nicht hat — und ein Feld, in das der Code NULL schreibt, wo die Tabelle einen Wert verlangt. **Der zweite Fall ist der teurere**: `o_einsp` („kein eigener Einspeisesatz gesetzt", also der Normalfall) stand auf NOT NULL, und dieser Blocker wäre erst NACH der Reparatur des ersten sichtbar geworden — ein Wächter, der nur den ersten meldet, schickt dieselbe Sitzung ein zweites Mal los. Deshalb prüft der Abgleich mit dem **ungünstigsten** Datensatz: alles Optionale auf null.
+- **Die Feldliste kommt aus `paramsToRow`**, also aus der Umwandlung, die der Code selbst benutzt — nie aus einer zweiten Aufzählung, die beim nächsten Feld vergessen würde. Zusatzspalten in der Tabelle sind **kein** Befund, sonst wird der Wächter bei jeder Erweiterung rot.
+- **Die Migration steht als Route im Repo** (`/api/calculations/setup`, idempotent, hinter `CRON_SECRET`) — **nicht** die Tabellendefinition. Dieselbe Begründung wie in `lib/security-sql.ts`: Ein aus der laufenden Datenbank abgeschriebenes Schema ist eine Quelle, der man beim Neuaufbau glaubt, ohne dass sie stimmt. Der alte Schalter `einspeisung_an` bleibt stehen (die Altzeilen tragen dort ihre Angabe), verliert aber Pflicht und Vorgabewert: Mit `NOT NULL DEFAULT true` hätte er über **jede neue** Berechnung „Einspeisung an" behauptet, auch die eines Nutzers, der sie ausgeschaltet hat.
+- Festgenagelt von `lib/__tests__/health-check-spaltenabgleich.test.ts` — mit dem echten Vorfall als Fixture, plus der Gegenprobe, dass der Abgleich überhaupt aufgerufen wird. **Beide Richtungen absichtlich kaputtgemacht und rot gesehen**, bevor er eingecheckt wurde.
+
+**Kostet uns gerade etwas mehr, als es soll? — BLOCKER (29.08.2026).** Der größte Posten der Vercel-Rechnung hat sich verdreifacht (+249 %) und stand tagelang sichtbar in den Zahlen, ohne dass etwas angeschlagen hätte: Der Gesundheitscheck maß Erreichbarkeit, Antwortzeiten, Cache-Wirksamkeit und stillstehende Wächter — **Kosten maß er nicht.** Dieselbe Lücke wie beim Atlas im Juli, nur an einer anderen Größe: Was niemand wiederkehrend misst, merkt niemand. Die Wache hängt deshalb am Gesundheitscheck (`messeKosten` in `scripts/health-check.ts`, Logik in `lib/kostenwache.ts`, Ablage über `/api/kostenwache/setup`) und **nicht** an einem geplanten Auftrag — die laufen nur, wenn die App des Betreibers offen ist, und genau daran ist im August eine Woche Überwachung ausgefallen.
+- **Gemessen werden MENGEN, nicht Euro — und das ist keine Bequemlichkeit.** Am 29.08.2026 durchgeprüft: Der Ausgaben-Endpunkt der Plattform existiert, weist unsere Anfrage aber schon an der Form ab (HTTP 400, auch ganz ohne Parameter) — **kein** Rechteproblem an unserem Zugang. Die Verbrauchszahlen der Abrechnung weisen jeden Zeitraum ab. Die Beobachtungs-Metriken enthalten genau die abgerechneten Größen und antworten mit HTTP 402: Sie brauchen das kostenpflichtige „Observability Plus". **Nicht erneut die Endpunktliste durchprobieren** — die Messung steht in `KOSTENWACHE_ZUGANG`.
+- **Zwei Größen je Projekt, weil sie verschiedene Ursachen anzeigen.** *Last* (Zahl der Aufbauten) springt, wenn dieselben Adressen häufiger gerufen werden — eine Route aus dem Cache gefallen, eine Wiederholungswelle. *Fläche* (Zahl verschiedener Adressen) springt, wenn viele NEUE Adressen entdeckt werden — und das ist der teure Fall, weil jede noch nie gerufene Adresse einen vollen Aufbau kostet. Genau das war der Befund: 48.930 verschiedene Personenadressen an einem Tag im Filmprojekt. Eine Meldung, die beides nicht trennt, sagt „es ist mehr geworden" und lässt offen, wonach zu suchen ist.
+- **Die Protokolle werden EINEN TAG aufbewahrt** (gemessen: der Vortag antwortet, alles davor liefert nichts). Daraus folgt alles: Es gibt keine Historie zum Nachrechnen, ein verpasster Tag ist für immer verpasst — deshalb die eigene Ablage (`kosten_tageswerte`, RLS an ohne Policy). Und deshalb die wichtigste Regel: **Ein leerer Abruf wird NIE als „null Verkehr" abgelegt.** Eine Null behauptete am Folgetag einen Sprung ins Unendliche und verdürbe danach zwei Wochen das Vergleichsniveau — dieselbe Trennung wie beim Förder-Wächter zwischen „hat sich geändert" und „Abruf kam nicht durch".
+- **Alarm auf den SPRUNG gegen das eigene Niveau, nicht auf einen festen Betrag.** Verglichen wird gegen den **Median** der bis zu 14 Vortage (Mittelwert wäre falsch: Ein Vorfall höbe das Niveau an und versteckte den nächsten). Die Schwelle `SPRUNG_FAKTOR` (2,5) ist von zwei Seiten eingeklemmt: nach oben vom einzigen Vorfall mit Zahl (das 3,49-fache — eine Schwelle darüber hätte ihn durchgelassen), nach unten von der gemessenen Tagesschwankung (Filmprojekt höchstens das 2,39-fache; bei 2,0 hätte es mehrfach im Monat grundlos angeschlagen). **Die Schwäche gehört dazu:** Für die Mengen, um die es geht, gab es beim Bau keine Historie; hergeleitet ist die Zahl an Seitenaufrufen. Der Bericht nennt bei jedem Lauf das größte bisher abgelegte Vielfache — **ab 10/2026 gehört die Schwelle daran nachgezogen.** Dazu Mindestmengen: Von 4 auf 14 Aufbauten ist das 3,5-fache und kostet nichts.
+- **Ohne Vergleichszeitraum meldet sie „noch kein Urteil möglich", nicht „in Ordnung".** Der Unterschied ist der ganze Punkt — „ich habe nachgesehen und nichts gefunden" und „ich konnte nicht nachsehen" sind zwei Auskünfte.
+- **Beurteilt wird der letzte VOLLSTÄNDIGE Tag, und je Tag genau einmal.** Der Check läuft alle drei Stunden; ohne den Merker `gemeldet_am` stünde derselbe Alarm achtmal am Tag im Protokoll, und nach zwei Tagen läse ihn niemand mehr. Der Befund geht an **Claude** (Mengensprung heißt Analyse: wer ruft was, kommt es aus dem CDN), nie als Mail an den Betreiber — er kann ihn nicht beheben. **Die Schwelle nicht hochsetzen, damit der Befund verschwindet** (Gate, Teil 2).
+- Festgenagelt von `lib/__tests__/kostenwache.test.ts`, in beide Richtungen: Der Normalbetrieb beider Projekte löst nicht aus, das Ausmaß des bekannten Vorfalls löst aus. Fünf Sabotagen (Schwelle auf 10, leerer Abruf als Null, Mindestmenge ausgebaut, Anlaufzeit übergangen, Median durch Mittelwert ersetzt) wurden vor dem Einchecken absichtlich eingebaut und machten den Lauf jedes Mal rot.
 
 **Selbstheilung nur in der sicheren Richtung.** Automatisch korrigiert wird ausschließlich die Function-Region — der einzige Befund mit genau *einer* richtigen Antwort. Steht in `vercel.json` bewusst eine andere Region, wird **nicht** überschrieben, sondern gemeldet; eine menschliche Entscheidung zu überfahren wäre gefährlicher als das Problem. Festgenagelt von `lib/__tests__/health-check-selbstheilung.test.ts`.
 
@@ -922,7 +984,7 @@ Gilt für Ratgeber-Artikel, FAQ-Inhalte, Methodik-Seiten, Rechner-Annahmen und G
 - **Rechte immer über ALLE Signaturen setzen** (Schleife über `pg_proc`, nicht eine fest getippte Signatur): Ein zweiter Overload trägt seine eigene, unangetastete Rechtevergabe.
 - **`exec_sql` muss `SECURITY DEFINER` sein** (gemessen, nicht geschätzt): Als `service_role` kommt „must be owner of table" und `has_schema_privilege(…, 'CREATE') = false` — mit `INVOKER` wären alle Setup-Routen tot. Deshalb trägt sie einen **festen `search_path`**; ohne ihn entscheidet die Sitzung des Aufrufers, in welchem Schema ein unqualifizierter Name landet, bei einer Funktion die als `postgres` läuft.
 - **Selbstauskunft statt Vertrauen:** `exec_sql` gibt nichts zurück (`void`, HTTP 204) — ein „ok" auf das Einspielen sagt nur, dass das SQL durchlief. `sc_security_posture()` liefert den Zustand als JSON, `auditPosture()` fällt das Urteil. Bewusst eng geschnitten: Sie beantwortet feste Fragen und führt **kein** übergebenes SQL aus — eine generische „exec_sql mit Rückgabewert" wäre dieselbe Lücke ein zweites Mal.
-- **Bei jeder neuen Tabelle oder RPC prüfen:** RLS an? Policy an `auth.uid()` gebunden? Keine Grants an `anon`/`authenticated`/PUBLIC, die nicht gebraucht werden? RLS **an ohne Policy** ist dicht und für rein interne Tabellen die Absicht (`waechter_reports`, `theme_overrides`, `pvgis_cache`, `klima_cache`) — für alles, was ein angemeldeter Nutzer sehen soll, ist es ein Bug.
+- **Bei jeder neuen Tabelle oder RPC prüfen:** RLS an? Policy an `auth.uid()` gebunden? Keine Grants an `anon`/`authenticated`/PUBLIC, die nicht gebraucht werden? RLS **an ohne Policy** ist dicht und für rein interne Tabellen die Absicht (`waechter_reports`, `theme_overrides`, `pvgis_cache`, `klima_cache`, `gemeinde_abos`) — für alles, was ein angemeldeter Nutzer sehen soll, ist es ein Bug.
 - **Gegenprobe wie ein Angreifer:** mit dem Anon-Key direkt gegen `/rest/v1/…` gehen, Service-Key als Gegenprobe (ohne die bedeutet ein leeres `[]` auch „Tabelle leer"). Festgenagelt von `lib/__tests__/security-sql.test.ts`.
 
 ## Legal-Checkliste für Neuentwicklungen — BLOCKER
@@ -952,7 +1014,7 @@ Lehren aus dem Legal-Audit 2026-07 (Details: Memory `project_legal_audit`). Vor 
    **Einstellung und Daten-Cache sind zwei Fälle — BLOCKER.** § 25 Abs. 2 Nr. 2 trägt dauerhaft nur, was der Nutzer selbst gesetzt hat (PLZ, Farbschema, Heimatort, „Speichern"-Vormerkung, Admin-Flag). Ein reiner **Geschwindigkeits-Cache** ist eine Optimierung und damit nicht „unbedingt erforderlich" — er gehört in die **Sitzung**, nicht in den `localStorage`. Das gilt unabhängig vom Personenbezug: § 25 schützt das Endgerät, nicht nur personenbezogene Daten (EuGH C-673/17 *Planet49* Rn. 70; EDSA-Leitlinien 2/2023 Rn. 6, 10, 12), und die Norm kennt **keine Interessenabwägung** (DSK-Orientierungshilfe digitale Dienste, Fassung 1.2, Rn. 69 — die Randnummern verschieben sich zwischen den Fassungen um zwei, jedes Zitat braucht deshalb die Versionsangabe; in 1.1 ist es Rn. 67) — die Alternative wäre ein Cookie-Banner für einen Datencache. Deshalb liegt der Energie-/Preis-Cache seit 16.08.2026 in der Sitzung (`LONG_CACHE_TTL` in `lib/energy.ts`; `longLived` in `lib/use-cached-fetch.ts` trägt einen Warnhinweis und wird bewusst von niemandem gesetzt). **Und: Nr. 2 ist keine Rechtsgrundlage**, sondern eine Ausnahme vom Einwilligungserfordernis — nie „Rechtsgrundlage ist § 25 …" schreiben.
 4. **Neue Seite mit Zahlen/Geldbeträgen** → Unverbindlichkeits-Hinweis (Footer-Disclaimer deckt (site)-Seiten ab; Rechner-Ergebnisse und Förderbeträge brauchen zusätzlich Stand-Datum + "ohne Gewähr, verbindlich ist die offizielle Quelle"). Förder-/Steuer-Aussagen informieren, nie individuell beraten.
 5. **Neues Embed-Widget** → Widget-Konvention (oben) einhalten: `PoweredBy`, `DataSourceNote` immer sichtbar, kein Browser-Storage, `ChartActionBar` (enthält den Impressum-Menüpunkt). Prüfen, ob der Datenschutz-Baustein in der Galerie (`/energie-widgets`) noch zutrifft (neue Datenflüsse?).
-6. **E-Mail-Versand** → an Nutzer nur transaktional (Auth, angeforderte Funktion). Werbe-/Outreach-Mails nach den Leitplanken in `docs/outreach-process-konzept.md`. **§ 7 UWG kalibriert (Judge-Prüfung Juli 2026, ersetzt das frühere pauschale „keine Kaltakquise"):** Eine unverlangte Outreach-Mail mit kostenlosem Widget-/Backlink-Angebot ist zwar mit hoher Wahrscheinlichkeit „Werbung" und damit *materiell* angreifbar — ABER das Durchsetzungsrisiko ist niedrig und überwiegend theoretisch: Der Empfänger selbst (auch eine Kommune) ist nach § 8 Abs. 3 UWG **nicht** abmahnbefugt; nur Mitbewerber/Verbände/IHK könnten, und die bekommen B2G-Mails an Rathaus-Postfächer praktisch nicht mit. „Massenversand" ist kein eigener Tatbestand (jede einzelne Mail zählt) — schubweise senkt nur das Entdeckungsrisiko, nicht die Rechtslage. **Maßvolle, schubweise Kaltakquise ist damit eine bewusste unternehmerische Entscheidung, kein Verbot.** Risiko-frei sitzt es, wenn der Erstkontakt **nicht** als unverlangte Mail läuft, sondern über das **Kontaktformular** der Zielstelle oder einen **Permission-Ask** → die Folge-Mail ist dann angefordert und § 7 entfällt. Bei jeder Outreach-Mail Pflicht: Klarname + „Betreiber solar-check.io" + Impressum-Link + Datenschutz-Einzeiler (Art. 14 DSGVO); Rollen-Postfächer (info@/rathaus@) statt Klarnamen bevorzugen (dämpft den DSGVO-Strang). Newsletter o. Ä. → Double-Opt-in + Datenschutzerklärung. Mail-Betreff/Header nie aus Freitext bauen (Allowlist-Muster wie `lib/contact-topics.ts`).
+6. **E-Mail-Versand** → an Nutzer nur transaktional (Auth, angeforderte Funktion). Werbe-/Outreach-Mails nach den Leitplanken in `docs/outreach-process-konzept.md`. **§ 7 UWG kalibriert (Judge-Prüfung Juli 2026, ersetzt das frühere pauschale „keine Kaltakquise"):** Eine unverlangte Outreach-Mail mit kostenlosem Widget-/Backlink-Angebot ist zwar mit hoher Wahrscheinlichkeit „Werbung" und damit *materiell* angreifbar — ABER das Durchsetzungsrisiko ist niedrig und überwiegend theoretisch: Der Empfänger selbst (auch eine Kommune) ist nach § 8 Abs. 3 UWG **nicht** abmahnbefugt; nur Mitbewerber/Verbände/IHK könnten, und die bekommen B2G-Mails an Rathaus-Postfächer praktisch nicht mit. „Massenversand" ist kein eigener Tatbestand (jede einzelne Mail zählt) — schubweise senkt nur das Entdeckungsrisiko, nicht die Rechtslage. **Maßvolle, schubweise Kaltakquise ist damit eine bewusste unternehmerische Entscheidung, kein Verbot.** Risiko-frei sitzt es, wenn der Erstkontakt **nicht** als unverlangte Mail läuft, sondern über das **Kontaktformular** der Zielstelle oder einen **Permission-Ask** → die Folge-Mail ist dann angefordert und § 7 entfällt. Bei jeder Outreach-Mail Pflicht: Klarname + „Betreiber solar-check.io" + Impressum-Link + Datenschutz-Einzeiler (Art. 14 DSGVO); Rollen-Postfächer (info@/rathaus@) statt Klarnamen bevorzugen (dämpft den DSGVO-Strang). Newsletter o. Ä. → Double-Opt-in + Datenschutzerklärung; der Nachweis umfasst den **Wortlaut** der Einwilligung und den **Versandbeleg**, nicht nur den Zeitpunkt (Herleitung im Abschnitt „Gemeinde-Abo“). Mail-Betreff/Header nie aus Freitext bauen (Allowlist-Muster wie `lib/contact-topics.ts`).
 7. **Neue personenbezogene Daten** (Formularfelder, Account-Felder) → Datenschutzerklärung ergänzen (Zweck, Rechtsgrundlage, Empfänger, Speicherdauer); Eingaben serverseitig validieren + escapen; öffentliche POST-Endpoints mit Rate-Limit + Honeypot (Muster: `app/api/contact/route.ts`).
    **Der Empfänger ist Teil der Verarbeitung — BLOCKER.** Wo Nutzerdaten *landen*, ist eine eigene Angabe nach Art. 13, nicht nur der Weg dorthin. Das Kontaktformular ging bis 16.08.2026 an `ADMIN_EMAILS`, und das ist ein privates Gmail-Konto: Damit war Google ein zweiter Empfänger jeder Nachricht in einem Drittland, für den sich bei einem privaten Konto kein Auftragsverarbeitungsvertrag abschließen lässt — in der Erklärung stand davon nichts. Deshalb: **Nutzerdaten nie an die Admin-/Betriebs-Liste hängen** (die ist Zugangssteuerung und zeigt auf private Postfächer), sondern an ein Postfach mit Vertrag; und **beim Postfach die Weiterleitung mitprüfen** — eine Auto-Weiterleitung in ein Drittland hebt die Trennung still wieder auf. Festgenagelt von `lib/__tests__/kontakt-empfaenger.test.ts`. Auch die Ratenbegrenzung ist eine eigene Verarbeitung mit eigener Rechtsgrundlage, und wo auf berechtigtes Interesse gestützt wird, gehört der Verweis aufs Widerspruchsrecht daneben.
 8. **Marketing-Claims** → absolute Aussagen ("keine …", "immer …", "100 %") gegen Datenschutzerklärung und Realität prüfen (§ 5 UWG Irreführung). Wettbewerber nicht herabsetzend nennen (§ 6 UWG). Keine ungeprüften Superlative.
@@ -1010,6 +1072,18 @@ Das Projekt veröffentlicht seit 26.08.2026 selbst auf LinkedIn. Der Redaktionsb
 `/admin/redaktion` (Entwicklung, Planung, Auswertung); der Ausbau der Ansicht zum Design-Werkzeug
 läuft in einer eigenen Sitzung — Übergabe mit den Fallen: `docs/redaktionssystem-uebergabe.md`.
 Der Vorrat an Geschichten steht in `docs/datenstories-katalog.md`.
+
+**OFFEN (bis 12/2026): Datenstories und Abo-Meldungen aus einer Quelle**
+(Betreiber, 01.09.2026). Beide rechnen aus denselben Zahlen und wissen
+nichts voneinander: Der Story-Katalog rechnet bundesweit für die
+Social-Beiträge, `gemeindeMeldungen()` rechnet je Ort für die Abo-Mail.
+Eine Geschichte, die eine Gemeinde betrifft, ist damit zweimal zu
+formulieren — und genau daraus entsteht der Widerspruch, den dieses
+Projekt beim Kommunen-Anschreiben schon einmal hatte. Umgekehrt liegt der
+Hebel auf der Hand: Was einen Social-Beitrag trägt, trägt auch eine
+Meldung an die Abonnenten des betroffenen Orts, ohne dass jemand sie
+schreibt. **Erst angehen, wenn es Abonnenten gibt** — vorher wäre es eine
+Zusammenführung von etwas, das noch niemand liest.
 
 **Ein Post wird GERECHNET, nicht getippt — BLOCKER.** Text und Bild entstehen aus derselben
 Funktion (`lib/social-posts.ts`), gespeist aus einer Kennzahlen-Abfrage (`lib/social-kennzahlen.ts`).
@@ -1076,6 +1150,536 @@ Widget-Distribution an ~11.000 Gemeinden. Tabelle `kommunen_kontakt` (Supabase, 
 **Empfänger werden beim Versand noch einmal geprüft** (`postfachBefund`). Die Erkennung beim Einsammeln erlaubte hinter dem Rollenwort einen beliebigen Zusatz — `buergermeister-klein@` galt als Funktionspostfach und ist der Nachname einer Person. Und eine Domain, die schlicht einen anderen Ortsnamen trägt (`stadtbuergermeister@bad-sobernheim.de` für Daubach), ist ein gültiges Amtspostfach der falschen Kommune. Beides wird abgewiesen und **gemeldet**, statt den Datenbestand rückwirkend umzuschreiben.
 
 **Die Rückläufer-Erkennung liest nur den selbst geschriebenen Teil** (`ohneZitat`). Unser eigener Brief endet mit „Ihr Widerspruchsrecht"; Outlook zitiert ihn in jede Antwort. Eine Wortsuche über den ganzen Text hätte **jede freundliche Antwort** als Widerspruch eingestuft und die Gemeinde dauerhaft gesperrt — bei allen 100 Briefen. Wer den Zweig für maschinelle Zustellmeldungen betreten hat, kommt nie als „Widerspruch" heraus, sondern im Zweifel als `unklar-maschinell` in die Liste „bitte selbst ansehen".
+
+## Gemeinde-Abo: „Bescheid bekommen, wenn sich hier etwas tut"
+
+Auf jeder Gemeindeseite im Solar-Atlas UND auf jeder Förder-Stadtseite steht rechts neben
+der Überschrift ein Knopf „<Ort> abonnieren", daneben in derselben Zeile der Erklärtext;
+das Formular liegt im Fenster dahinter (`components/atlas/GemeindeAboBox.tsx`). Wer sich
+einträgt, bekommt eine Nachricht, wenn sich im Ort etwas Nennenswertes bewegt.
+
+**Der Ortsname steht im Knopf, obwohl die Überschrift daneben ihn schon trägt.** Der
+doppelte Name ist der kleinere Preis: In der klebenden Leiste am Seitenende ist die
+Überschrift weggescrollt, und dort steht der Knopf neben „Für dein Haus durchrechnen" —
+ein nacktes „Abonnieren" ließe offen, was man abonniert.
+
+**Die Herkunft wird mitgeschrieben** (`quelle`, `ueber_brief`): auf welcher Seitengattung
+angemeldet wurde und ob der Aufruf über ein Kommunen-Anschreiben kam. Beide Gattungen
+tragen denselben Ortsnamen und sprechen verschiedene Leute an — ohne die Unterscheidung
+ließe sich nach dem ersten Schub nicht sagen, welcher Einstieg trägt. Die Brief-Kennung ist
+in JEDEM Brief dieselbe; sie sagt „über ein Anschreiben", nicht welche Gemeinde. Beides
+steht in der Datenschutzerklärung (Abschnitt 16) und ist per Test daran gebunden.
+
+**Der Ortsschlüssel ist FÜNF- oder achtstellig — BLOCKER.** Die Förderseiten tragen für
+kreisfreie Städte fünf Stellen, für kreisangehörige Gemeinden acht. Die erste Fassung der
+Anmelde-Adresse verlangte genau acht; auf jeder kreisfreien Stadt wäre die Anmeldung stumm
+gescheitert — die Seite funktioniert, nur der Knopf nicht. Die tragende Prüfung ist nicht
+die Länge der Zahl, sondern ob es den Ort im Melderegister gibt.
+
+**Das Formular steht NICHT auf der Seite** (Betreiber, 31.08.2026): Ein Eingabefeld mit
+Beschriftung, Knopf und Zusage-Zeile ist im Kopfbereich ein zweites Anliegen mitten im
+ersten und schiebt die Zahlen nach unten. Der Erklärtext steht **neben** dem Knopf, nicht
+darin — eine Beschriftung wie „Förderprogramm, Leistung u. v. m. abonnieren" macht ihn so
+breit, dass er die Überschrift erdrückt, und ein Knopf sagt ohnehin, was passiert, nicht
+warum man ihn drückt. Die Feinheiten (was kommt, woran wir es merken, wie man wieder herauskommt)
+hängen am „?".
+
+**Die klebende Aktionsleiste am Seitenende öffnet dasselbe Fenster** — über ein
+Fenster-Ereignis (`ABO_OEFFNEN`), nicht über einen hochgezogenen Zustand: Den nach oben zu
+ziehen machte die halbe Gemeindeseite zur Client-Komponente. Denselben Weg geht der
+Förder-Check auf den Stadtseiten (`sekundaer.ereignis`).
+
+**Beide Wege sind im Browser festgenagelt** (`e2e/gemeinde-abo.spec.ts`), samt Layout:
+bündig zur Überschrift, Text auf der Mitte des Knopfes, auf 375 px gestapelt mit
+vollbreitem Knopf und ohne seitlichen Überlauf. Der Grund ist gemessen — im Prüf-Browser
+meldete die Seite „hydratisiert", und trotzdem öffnete keiner der beiden Knöpfe das
+Fenster; ohne diesen Test wäre das eine Zusage geblieben, die man erst bemerkt, wenn sich
+niemand anmeldet.
+Angelegt 31.08.2026, **vor dem nächsten Outreach-Schub** — der Brief soll das Abo als
+zweite, niedrigere Bitte anbieten können.
+
+**Warum das der stärkere Hebel ist als ein weiterer Kaltbrief:** Ein Abo hebt die
+rechtliche Fessel des Outreach auf. Wer sich anmeldet, hat eingewilligt — kein
+Ferienkalender, keine Tagesgrenze, kein Nachfass-Verbot. Aus einem Einmalkontakt wird
+ein Kanal. Für eine Verwaltung ist es außerdem die niedrigste Hürde, die wir anbieten:
+Das Widget braucht Redaktionssystem, IT und Datenschutzbeauftragten, die fertige Meldung
+braucht die Entscheidung, dass es ein Thema ist — ein Abo braucht einen Klick.
+
+**Der Inhalt wird GERECHNET, nicht getippt** (`lib/gemeinde-meldungen.ts`). Eine reine
+Funktion über die Zahlen, die die Gemeindeseite ohnehin lädt; sie speist Seite, Abo-Mail
+und später den Brief. Dieselbe Systematik wie bei den Social-Posts und aus demselben
+Anlass wie `lib/gemeinde-vergleich.ts`: Zwei getrennt formulierte Oberflächen
+widersprechen sich irgendwann, und beim Kommunen-Anschreiben ist genau das passiert.
+Jede Meldung prüft ihre eigenen Schranken und **meldet sich ab, wenn sie nicht trägt** —
+leer ist ein zulässiges Ergebnis. Mindestmengen (5 Anlagen, beim Vergütungs-Auslauf 20),
+Nenner sichtbar, Lob mit Namen und Kritik ohne, Singular/Plural gebaut statt getippt.
+Festgenagelt von `lib/__tests__/gemeinde-meldungen.test.ts`.
+
+**Der Monat des Netzanschlusses fehlt — und er steht in der Quelldatei.** `parseYear` in
+`scripts/mastr-refresh.ts` schneidet das Inbetriebnahmedatum auf vier Stellen, der
+Aggregat-Schlüssel trägt nur das Jahr. Eine Monatsaussage wäre deshalb nicht gerechnet,
+sondern erfunden; die kleinste ehrliche Einheit ist das Jahr. Nachrüstbar über eine
+Stelle im Import plus eine schmale Monatstabelle für die letzten zwei Jahre — **nicht**
+eine Monatsachse über die ganze Historie, das verzwölffacht 562.000 Zeilen.
+**Ungeprüft und vor der ersten Monatsmeldung zu messen:** Anlagen werden verspätet
+gemeldet, ein Monatswert wächst also nach dem Versand vermutlich noch. Denselben Monat
+über zwei Datenstände vergleichen, bevor eine Zahl rausgeht.
+
+**Drei Regeln kippen gegenüber dem Kommunen-Anschreiben — wer sie kopiert, baut jeweils
+den falschen Fall** (`lib/abo-mail.ts`, `lib/abo-versand.ts`):
+- **`List-Unsubscribe` gehört HIER hinein.** Im Anschreiben ist die Kopfzeile nach einer
+  Messung absichtlich leer (Apple Mail setzt ein „Mailing-Liste"-Banner über den Brief,
+  und der lebt davon, dass ein Mensch einem anderen schreibt). Bei einer Abo-Mail IST es
+  eine Liste — das Banner sagt die Wahrheit, und der Ein-Klick nach RFC 8058 ist genau
+  das, was der Anmeldeknopf zusagt. Die Adresse muss deshalb **auf POST ohne Rückfrage**
+  antworten; wer dort eine Bestätigungsseite vorschaltet, meldet niemanden ab und gilt
+  bei großen Anbietern als nicht abbestellbar.
+- **Herkunftszeile ist Art. 13, nicht Art. 14.** Dort stammen die Adressen von
+  Amtsseiten, hier trägt sie der Empfänger selbst ein.
+- **Ferien, Wochentag und Tagespensum entfallen.** Das sind Bremsen gegen Kaltakquise;
+  einem Abonnenten seine Meldung vorzuenthalten, weil in seinem Bundesland Ferien sind,
+  wäre keine Rücksicht. Was bleibt: Prüfung des Versandwegs und die Pflichtangaben.
+
+**Versendet wird über dasselbe Postfach wie die Anschreiben**, nicht über den Dienst, der
+Kontaktformular und Wächter-Alarme trägt — eine wachsende Verteilerliste dort träfe bei
+der ersten Beschwerdewelle dasselbe Konto, und dann kommen die Alarm-Mails nicht mehr an.
+
+**Das Förder-Abo fragt nach der Technik, das Bestands-Abo nicht** (`lib/abo-technik.ts`).
+Auf der Förderseite sind die drei Techniken des Katalogs abwählbar, alle drei als
+Ausgangszustand — wer ein Förder-Abo abschließt, will erst einmal jedes Geld sehen, das für
+ihn gilt, und abwählen ist leichter als anwählen. Die REICHWEITE wird bewusst **nicht**
+gefragt: Der Abonnent bekommt, was für ihn gilt (Ort, Kreis, Land, Bund) — „möchten Sie
+auch vom Landesprogramm hören?" ist eine Frage mit genau einer sinnvollen Antwort, und
+jeder Schritt im Anmeldefenster kostet Abbrüche. Die Konstanten liegen in einem eigenen
+Modul, weil beide Seiten der Grenze sie brauchen: Läge die Liste in der Ablage, zöge das
+Anmeldefenster deren Server-Sperre mit.
+
+**Die Pflichtangaben gelten JE MAILART — BLOCKER, beim ersten echten Versand aufgefallen.**
+Die Prüfung verlangte von jeder Abo-Mail einen Abmeldelink, den die Bestätigungsmail
+bewusst nicht hat (es gibt noch nichts, wovon man sich abmelden könnte). Der Versand wies
+sie damit ab: Es wäre **nie eine Bestätigungsmail hinausgegangen** und damit nie ein Abo
+zustande gekommen. Kein Test hat es gefangen — sie prüften die Vorlagen einzeln, und die
+Bestätigung wurde nur darauf geprüft, dass sie keinen Abmeldelink trägt. Die Vorlage muss
+gegen die Schranke geprüft werden, an der sie im Betrieb scheitert, nicht nur für sich.
+
+**Nirgends eine Frequenzzusage** — weder „höchstens eine Mail im Monat" noch eine Rate
+(Betreiber, 31.08.2026: „wir haben bestimmt mal mehr ideen"). Eine solche Zusage ist eine
+Werbeaussage nach § 5 UWG, die JEDE künftige Meldung bindet; sie später zu brechen ist
+teurer, als sie nie gegeben zu haben. Gemessen wäre sie ohnehin nicht: Der Förderverlauf
+zeigt auf 110 Programme 24 echte Änderungen in neun Tagen — für einen einzelnen Ort selten,
+aber der Zeitraum trägt keine Zahl. Zugesagt wird der **Anlass**, und die Aufzählung ist
+ausdrücklich **offen**: Ein „und sonst nichts" hinter drei Beispielen schlösse den vierten
+Anlass aus, den wir noch nicht kennen. Die Schranke steht in der Zusage über dem
+Absenden-Knopf und im Hilfetext („nur, wenn es etwas zu berichten gibt"), festgenagelt von
+`e2e/gemeinde-abo.spec.ts` → „kein Abo verspricht eine Frequenz" — auf ein MUSTER geprüft,
+nicht auf den Wortlaut: Die erste Fassung ließ „monatlich eine Mail" durch.
+
+**Jede Gattung stellt genau eine Zusatzfrage.** Das Förder-Abo fragt nach der Technik, das
+Bestands-Abo danach, ob jemand **für die Stadt- oder Gemeindeverwaltung arbeitet** — der
+Grund liegt am Inhalt: Bestandszahlen sind für eine Verwaltung ein anderer Gegenstand als
+für einen Hausbesitzer (sie kann sie veröffentlichen, er kann sich daran messen), die
+Förderprogramme des eigenen Orts kennt sie dagegen bereits; dort wäre die Angabe eine ohne
+Verwendung. Selbstauskunft, nicht prüfbar und genau deshalb harmlos: Sie steuert den TON
+einer künftigen Meldung, nie einen Zugang. **Nicht vorausgewählt** — die überwiegende
+Mehrheit arbeitet nicht dort, ein gesetzter Haken wäre eine untergeschobene Angabe. Die
+Technik-Häkchen sind umgekehrt alle drei gesetzt: kein Verstoß gegen die Flow-Regel
+(die gilt Fragen mit einer Antwort), sondern der Ausgangszustand einer Ein/Aus-Angabe.
+
+**Der Einwilligungsnachweis ist der WORTLAUT und der VERSAND, nicht die IP** (Council mit
+zwei Legal-Judges, 01.09.2026, Fundstellen im Volltext gelesen). Der IP-Verzicht ist
+richtig und **keine Abweichung von irgendetwas** — er ist die Linie der Aufsicht selbst:
+Die DSK sagt wörtlich, das Abspeichern einer IP genüge „auch nach der Rechtsprechung des
+BGH zum UWG nicht" (Orientierungshilfe Direktwerbung 2/2022, Ziff. 3.3), und das VG
+Düsseldorf hat einen Versender abgewiesen, der genau die empfohlenen zwei IPs vorlegte
+(29 K 9714/24). „Beim Double-Opt-in ist die IP Pflicht" ist Ratgeber-Literatur ohne
+Fundstelle. Falsch war, worauf sich der Nachweis hier stützte — das signierte Token belegt
+nichts, weil es nach der Bestätigung verworfen wird. Zwei Stellen, die niemand angesehen
+hatte, sind jetzt gebaut:
+- **WOZU** eingewilligt wurde. Der Nachweis umfasst den Wortlaut (DSK Ziff. 3.3, EDSA
+  05/2020 Rn. 108: auf eine „korrekte Konfiguration der Website" zu verweisen genügt
+  ausdrücklich nicht), und der stand als Konstante im Code der Oberfläche, die sich mit dem
+  nächsten Commit ändert. Jetzt trägt jedes Abo seine Fassung, die Wortlaute stehen datiert
+  und **nie überschrieben** in `lib/abo-einwilligung.ts` — dieselbe Bauform wie der
+  BEG-Fahrplan. Die Oberfläche tippt keinen dieser Sätze selbst, sie liest sie aus dem
+  Archiv; `lib/__tests__/abo-einwilligung.test.ts` hält beides aneinander.
+- **DASS** eine Bestätigungsmail hinausging. Der BGH verlangt die Erklärung speicher- und
+  ausdruckbar (I ZR 164/09 Rn. 38); genau daran scheiterte der Düsseldorfer Fall (Rn. 46).
+  Gespeichert wird die Kennung des Mailservers — **keine zweite Kopie der Mail**, ihr Inhalt
+  lässt sich aus der Fassung wortgleich neu erzeugen (Datenminimierung, EDSA Rn. 106).
+
+**Die Löschuhr hängt am letzten VERSAND, nicht an der Abmeldung — beides war vorher falsch.**
+Der Anspruch, gegen den der Nachweis schützt, entsteht mit der einzelnen Mail (§ 31 Abs. 3
+S. 1 OWiG, § 199 Abs. 1 BGB samt Ultimo-Regel); wer sich nach drei Jahren Abo abmeldet,
+hätte bei einer Uhr ab Abmeldung drei Jahre zu viel gespeichert. Und die Länge: Die DSK
+verlangt Nachweisfähigkeit über die Verjährung hinaus, also drei Jahre (Ziff. 3.7), und
+zwar ausdrücklich „auch nach einem Widerruf und der Löschung der personenbezogenen Daten
+aus der Werbe-Datenbank". Zugesagt und gerechnet wird deshalb der **31. Dezember des
+dritten Jahres nach dem Jahr des letzten Versands**; `ABGEMELDET_MAX_TAGE` bleibt als
+`@deprecated`-Konstante stehen, damit ein Test rot wird, wenn jemand die zwölf Monate
+zurückbringt. **Der Aufräumlauf braucht drei Zweige, nicht zwei:** Wer nie bestätigt hat und
+dann per Abmeldelink abmeldet, hat weder Versand- noch Bestätigungsdatum — und `NULL <
+stichtag` ist in Postgres nicht falsch, sondern NULL. Der Fall fiel durch alle Zweige und
+wäre für immer stehen geblieben, während die Erklärung seine Löschung zusagt.
+
+**Ein abgemeldeter Eintrag wird nicht gelöscht, sondern vermerkt — und der Grund ist ein
+anderer, als hier stand.** Falsch war „der Vermerk IST der Widerspruch, sonst käme die
+Adresse ohne Bestätigung durch": Das beschreibt eine Sperrliste, und die DSK sagt
+ausdrücklich, eine solche trage nur, wo die zu verhindernde Verarbeitung auf berechtigtem
+Interesse beruht (Ziff. 5.1) — bei einem einwilligungsbasierten Verteiler tut sie das nicht.
+Die Sorge dahinter war ohnehin ein Programmfehler: Eine erneute Anmeldung läuft IMMER durch
+eine neue Bestätigung. **Richtig ist:** Die Zeile bleibt als Nachweis, auf anderer
+Rechtsgrundlage (Art. 6 Abs. 1 lit. c i. V. m. Art. 5 Abs. 2, Art. 7 Abs. 1 und lit. f) und
+mit eingeschränktem Zweck. Deshalb ist `empfaengerFuerOrt()` die **einzige Tür zum
+Versand** — läse ein zweiter Lesepfad dieselbe Tabelle ohne Filter, wäre die
+Zweckbeschränkung eine Behauptung, und Erwägungsgrund 67 verlangt, dass sie im System
+sichtbar ist. `lib/__tests__/abo-zweckbindung.test.ts` verbietet den zweiten Lesepfad.
+
+**Drei Bremsen gegen Listen-Bombing, und keine ersetzt die andere:** ein unsichtbares Feld
+gegen Maschinen · fünf Versuche je Stunde und Herkunft, im Arbeitsspeicher · **höchstens
+fünf offene Anmeldungen je ADRESSE** und keine zweite Bestätigung binnen zwei Minuten. Nur
+die dritte trägt gegen einen verteilten Angriff, und deshalb sitzt sie in der Datenschicht:
+Der Speicherzähler lebt je Instanz und ist nach einem Neustart weg. Sie zählt zudem an der
+**Adresse** statt an der Herkunft — geschützt werden soll der Mensch, dessen Postfach
+zugeschüttet wird, nicht ein Anschluss, und eine dauerhafte Zählung je IP müsste diese
+speichern, was die Datenschutzerklärung ausschließt. **Die Antwort nach außen ist in jedem
+Fall dieselbe**, ob die Adresse neu, schon angemeldet oder gerade gedeckelt ist: Eine
+Maske, die „bereits angemeldet" sagt, ist ein Abfragedienst für fremde Abos.
+`lib/__tests__/abo-bremsen.test.ts`.
+
+**Der Code war geprüft, die Umgebung nie — dritte Ausprägung derselben Klasse.** Das Abo war
+lokal vollständig getestet (Browser-Tests, echte Mail, echter Bestätigungsklick) und schlug
+beim ersten Live-Versuch fehl, weil auf der Produktion **keine der fünf Zugangsdaten des
+Postfachs** gesetzt war: kein roter Test, kein Fehler im Diff, keine kaputte Seite. Der
+Spaltenabgleich fand denselben Fall zwischen Code und Tabelle, die Kostenwache zwischen
+Mengen und Rechnung — ein lokaler Lauf kann diese Klasse prinzipiell nicht finden, weil
+lokal alles gesetzt ist. `/api/abo/bereit` fragt deshalb die **Produktion selbst** nach
+ihrer Konfiguration (Signatur, Versandweg, Basis-Adresse, Datenbank, Nachweis-Spalten), der
+Gesundheitscheck ruft sie bei jedem Lauf. Zurück kommt nur, WAS fehlt, nie ein Wert — auch
+keine Länge, die ist bei einem Passwort schon eine Auskunft. Der Befund geht an Claude, und
+ein fehlgeschlagener Abruf ist **kein** Befund, sondern „konnte nicht nachsehen".
+`lib/__tests__/abo-produktionsbereit.test.ts`.
+
+**Der Versandlauf schickt nur, wenn es einen Anlass gibt** (`lib/abo-lauf.ts`,
+`/api/abo/versenden`, `lib/__tests__/abo-lauf.test.ts`). Er geht die Orte durch, für die es
+bestätigte Abos gibt, und fragt je Ort `hatNachricht()` — schärfer als „es gibt eine
+Meldung": Eine reine Bestandsbeschreibung stand beim letzten Mal genauso da. Drei
+Eigenschaften, jede gegen einen Fehler, den ein Versandlauf üblicherweise macht:
+- **Der Versandmerker wird VOR dem Versand gesetzt**, nicht danach. Bricht der Lauf
+  zwischen zwei Empfängern ab, darf der Neustart niemanden zweimal anschreiben; der Preis
+  ist eine verlorene Meldung im Fehlerfall, und das ist die günstigere Richtung. Schlägt
+  das Setzen fehl, wird gar nicht erst gesendet.
+- **Zeit und Basis-Adresse kommen von außen.** Die Zeit, weil sich sonst nichts prüfen
+  lässt; die Adresse, weil ein Abmeldelink aus einer Testumgebung sonst auf die Produktion
+  zeigt und dort ein fremdes Abo abmeldet. **Kein Rückfall** auf die Produktionsadresse.
+- **Ein Probelauf** (`?trocken=1`) rechnet alles durch und verschickt nichts. Ein
+  Versandlauf, den noch nie jemand ohne Wirkung gesehen hat, ist einer, dessen erste
+  Wirkung eine echte Mail an einen echten Menschen ist.
+
+Tabelle `gemeinde_abos`, angelegt über `/api/abo/setup` — RLS an ohne Policy, nur über den
+Dienstschlüssel erreichbar; am 31.08.2026 mit dem Anon-Key gegengeprüft („permission
+denied"), Service-Key als Gegenprobe.
+
+## PV-Fachbetriebe (interner Bereich)
+
+Erhebung der Solarteure und Elektro-Fachbetriebe mit PV-Geschäft, angelegt 27.08.2026.
+**Anlass ist gemessen:** Der HTW-Rechner — kostenlos, unabhängig, ohne Leadfunnel, also
+unser Zwilling — hat 2.080 verweisende Domains, wir null echte; größte Gruppe darunter
+sind Fachbetriebe. Ein Fachbetrieb verlinkt einen unabhängigen Rechner, weil er die eigene
+Beratung stützt und selbst keinen bauen will. `scripts/fachbetriebe-refresh.ts` +
+`lib/fachbetrieb-extrakt.ts`, Tabellen `fachbetriebe`, `fachbetrieb_belege`,
+`fachbetrieb_treffer`, `fachbetrieb_suchlauf` (RLS an, nur service_role — die Sätze
+enthalten bei Einzelunternehmern personenbezogene Daten). Quellenbewertung:
+`docs/fachbetriebe-quellen.md`.
+
+**Es gibt keinen Vermittlungsweg und es wird nichts verschickt — BLOCKER.** Die Zusage
+„ohne Verkaufsanrufe · keine Lead-Erfassung · kein Vertriebskontakt" steht an vierzehn
+Stellen im Code und in der Datenschutzerklärung. Wer die Adressen nutzen will, klärt
+vorher zwei Fragen, die dem Betreiber gehören: ob ein Fachbetrieb ein Widget einbettet,
+das ihm keine Leads liefert (der Wettbewerbsbefund nennt das ausdrücklich als offen und
+sagt, es sei „eine Frage an drei Betriebe, nicht an eine Datenbank"), und die
+Informationspflicht nach Art. 14 DSGVO — die Datenschutzerklärung nennt diese
+Verarbeitung heute **nicht**.
+
+**Bewertungen öffentlich zeigen scheitert am BEWERTUNGSRECHT, nicht an Google (geprüft
+29.08.2026, zwei Legal-Judges).** Wer Verbraucherbewertungen zugänglich macht, muss sagen,
+ob und wie er ihre Echtheit sicherstellt (§ 5b Abs. 3 UWG); sie ohne Überprüfung als echt
+auszugeben, ist per se unlauter (Anhang Nr. 23b zu § 3 Abs. 3 UWG). Wir können nichts
+überprüfen — und hier sind Mitbewerber und Verbände anspruchsberechtigt, also Stellen, die
+tatsächlich abmahnen. **Der zuerst genannte Grund „ein gespeicherter Wert veraltet und ist
+dann eine unwahre Tatsachenbehauptung (§ 824 BGB)" trägt NICHT** und darf nicht
+wiederverwendet werden: Ein datierter Wert sagt etwas über den Stichtag, und Absatz 2 nimmt
+aus, wo der Empfänger ein berechtigtes Interesse hat. Wer ihn für die Hürde hält, glaubt,
+ein „Stand: 08/2026" räume sie ab — und lässt die echte stehen. **Intern zur Priorisierung
+wäre der Bezug über einen Datenlieferanten vertretbar**, aber schon das Speichern ist
+Vervielfältigung (§ 87b Abs. 1 UrhG) — „wird ja nicht angezeigt" ist keine
+urheberrechtliche Kategorie. Herleitung, Gegenargumente und der DMA-Weg über den Betrieb
+selbst: `docs/fachbetriebe-quellen.md`, Abschnitt 1b.
+
+**Google scheidet als DIREKTE Quelle aus, nicht nur für Bewertungen.** Maps Platform Terms
+3.2.3(a)(iii) untersagt „copy and save business names, addresses, or user reviews", (b)
+das Zwischenspeichern über Kennnummern hinaus, (d)(iii) ausdrücklich die Nutzung „in a
+listings or directory service" — wortwörtlich dieser Fall, **solange man die Schnittstelle
+selbst nutzt**. Die Klauseln binden den Kunden der Maps Platform; gegen einen Nichtkunden
+sind sie kein Beleg, und sie so zu zitieren belegt eine Aussage, die sie nicht trägt.
+Volltext:
+`docs/quellen/fachbetriebe/`. Eine Bewertung wird deshalb **nur** als Selbstauskunft der
+eigenen Website erfasst (`bewertung_quelle`), nie als „Google-Bewertung" beschriftet.
+
+**Ein Batch-Upsert vereinheitlicht die Spaltenmenge — BLOCKER, und der teuerste Unfall
+dieses Bereichs.** PostgREST baut aus einem Batch EIN Insert mit EINER Spaltenliste;
+trägt eine Zeile ein Feld und die anderen 499 nicht, bekommen diese 499 dort **NULL**
+und überschreiben den bestehenden Wert. Kein Fehler, keine Warnung. Real passiert am
+29.08.2026, obwohl der Fall im Projekt bereits dokumentiert war: Der Über-uns-Lauf
+setzte ein Trust-Signal nur dort in die Zeile, wo es sich geändert hatte — die
+vorsichtige Bauweise, wie man denkt. Meisterbetrieb fiel von 676 auf 167, das
+Geschäftsfeld Photovoltaik von 2.913 auf 135. **Die Absicherung sitzt jetzt in der
+Schreibfunktion** (ungleiche Feldmengen werden gruppiert und getrennt geschrieben), nicht
+in einer Regel für Aufrufer — eine Regel, an die sich jeder künftige Lauf erinnern muss,
+ist keine; dieser Lauf hätte sie gebraucht und nicht gehabt.
+`lib/__tests__/upsert-spaltenmenge.test.ts`, in beide Richtungen kaputtgemacht und rot
+gesehen.
+- **Die zweite Lehre wiegt schwerer als die erste: Was keinen Beleg hat, ist bei einem
+  Schreibfehler unwiederbringlich.** Die Trust-Signale kamen vollständig aus
+  `fachbetrieb_belege` zurück — genau dafür gibt es sie. Die Geschäftsfelder nicht, für
+  sie legt kein Lauf einen Beleg an; sie mussten neu abgerufen werden (`--felder`).
+
+**Die frei abrufbare Kammer-Betriebsdatenbank ist ERLEDIGT — nicht rechtlich, sondern
+praktisch (gemessen 29.08.2026).** Zwölf Betriebe gezielt gesucht, **einer** gefunden;
+Gegenprobe mit einem Gattungsbegriff im selben Umkreis: 26 Treffer, die Suche
+funktioniert also. Der Grund war die ganze Zeit erkennbar: **Die Mitgliedschaft ist
+Pflicht, der Eintrag in dieses Verzeichnis freiwillig.** Wer das amtliche Merkmal will,
+fragt die **Handwerksrolle** (§ 6 Abs. 2 HwO, 53 Anträge, nur zulassungspflichtige
+Handwerke) — oder, am billigsten, den Betrieb selbst beim ohnehin geplanten Erstkontakt.
+**Die Rechtsprüfung war trotzdem nicht umsonst**: Ihre Ergebnisse gelten für jede fremde
+Datenbank, die dieses Projekt je abgleicht.
+
+**Die Handwerkskammer ist GEPRÜFT, nicht mehr offen (29.08.2026, zwei Legal-Judges):
+intern zulässig, öffentlich später.** Tragend ist allein das Datenbankrecht, und die
+eine Bedingung, die wirklich zählt, heißt **abgleichen statt abernten**: gezielt
+nachschlagen, was wir schon haben, nie ganze Gewerke-Kategorien durchgehen (EuGH
+C-203/02 Rn. 89 verbietet nur, was die Datenbank wieder erstellt). **Die DNG-Begründung
+unten ist hinfällig** — beide Fassungen streiten über die Ausnahmen, ohne zu prüfen, ob
+die Kammer überhaupt „öffentliche Stelle" im Sinne des DNG ist; das Gesetz hat dafür
+eine eigene Definition. Herleitung, Bedingungen und der amtliche Weg über § 6 Abs. 2 HwO:
+`docs/fachbetriebe-quellen.md`.
+
+**Der Merksatz „öffentliche Stelle, also kein § 87b UrhG" trägt bei Handwerkskammern
+NICHT.** Sie sind zwar Körperschaften des öffentlichen Rechts (§ 90 Abs. 1 HwO), aber
+§ 2 Abs. 5 DNG gilt nur im Anwendungsbereich des Gesetzes — und § 2 Abs. 3 Nr. 1 nimmt
+davon aus, was personenbezogen ist (Buchst. a Doppelbuchst. aa) und was nicht zum
+gesetzlichen Auftrag gehört (Buchst. d; die Betriebsdatenbank ist eine freiwillige
+Werbedatenbank, nicht die Handwerksrolle nach § 6 HwO). Die Quelle ist fachlich die beste
+von allen — amtliche Gewerke aus der Handwerksrolle, Landkreis frei Haus — und bleibt
+eine **offene Entscheidung für zwei Legal-Judges**, keine Sackgasse. Der Förder-Merksatz
+wäre hier ungeprüft übernommen worden; genau davor warnt die Faktenprüfungs-Regel, dass
+ein „gilt nicht für X" eine eigene Fundstelle braucht.
+
+**Betrieb oder Portal entscheidet die STREUUNG, nicht eine gepflegte Liste**
+(`portalSchwelle`). Ein Fachbetrieb erscheint in ein bis drei Landkreisen, ein
+Vergleichsportal in jedem. Eine Sperrliste wäre dasselbe Wettrennen wie beim Förder-Crawl.
+Die Schwelle wächst mit der Zahl der abgefragten Kreise — sonst wäre in einem Teillauf
+jedes Portal ein „Betrieb", und nach der Vollabfrage prüft das niemand mehr nach.
+
+**Kein Merkmal ohne Beleg.** Jeder Fund landet mit Fundstelle, Textstelle und Datum in
+`fachbetrieb_belege`; die Spalte in `fachbetriebe` ist nur die Auswertung. Eine spätere
+Neubewertung kostet damit keinen zweiten Crawl. „Vermutlich Meisterbetrieb" gibt es nicht.
+
+**Die Trust-Signale stehen NICHT im Impressum.** Beim Eichen an drei Betrieben trug keines
+der drei Impressen die Handwerkskammer, obwohl § 5 Abs. 1 Nr. 5 DDG sie für
+zulassungspflichtige Handwerke verlangt; Meisterbetrieb, Gründungsjahr und Einzugsgebiet
+standen im Marketing-Text der Startseite. Beide Seiten werden gelesen. Und die
+Impressum-Adresse ist nicht ratbar — `/impressum` traf in zwei von drei Fällen daneben.
+
+**Wer einen Extraktor baut, liest dreißig Zeilen Ergebnis von Hand gegen.** Der erste
+Profil-Lauf lieferte gute Quoten (88 % mit Anschrift, 40 % mit Handelsregisternummer) und
+enthielt sechs Fehlerklassen, von denen keine an einer Quote zu erkennen war: Rechtsform
+aus der Wortmitte („DORFMANAGEMENT" → AG), Gründungsjahr aus einem beliebigen
+„seit"-Satz, eine Beispieladresse und die Adresse des Hosters als Kontaktweg, eine
+Überschrift als Kammername, und „nichts gefunden" als Urteil „ist kein Betrieb". Alle sechs
+sind in `lib/__tests__/fachbetrieb-extrakt.test.ts` festgenagelt; **ein Muster
+aufzuweichen, damit mehr Treffer entstehen, ist genau der Weg, auf dem sie zurückkommen.**
+
+**Ein Formular IST ein Kontaktweg.** 473 Betriebe hatten keine auslesbare E-Mail, 233 gar
+keinen Weg — der stand meist auf der **Kontaktseite**, oft als Formular statt als Adresse
+(135 neue Adressen, 699 Formulare). Dieselbe Systematik wie bei den Gemeinden. **Das
+GEWERK prüft man dort aber NICHT**: Auf einer Kontaktseite steht das Angebot nicht, und
+der erste Anlauf löste damit fast nichts auf. Dafür ist die **Navigation der Startseite**
+zuständig — sie steht statisch im HTML, auch wenn der Inhalt per Skript nachlädt.
+
+**„Nichts gefunden" und „noch nicht angesehen" müssen unterscheidbar bleiben.** Von 908
+unklaren Domains wurden 55 doch Betriebe, 74 Nicht-Betriebe (überwiegend kommunale
+Solarkataster) und **758 zweimal geprüft ohne PV-Angebot** — dahinter stecken
+Elektrobetriebe ohne PV-Geschäft und geparkte Domains, keine verborgenen Fachbetriebe.
+Sie behalten „unklar" (ein Angebot kann auf einer ungelesenen Unterseite stehen), aber ihr
+Grund sagt, dass zweimal nachgesehen wurde. Ohne diesen Unterschied prüft die nächste
+Sitzung dieselben 758 noch einmal.
+
+**Die Angebots-Unterseiten schlagen die Sitemap — gemessen, nicht vermutet (29.08.2026).**
+An denselben 20 Betrieben: über die Navigation 3 Treffer für 4,3 Abrufe, über die Sitemap
+1 Treffer für 6,2. Sie ist bei 17 von 20 lesbar, und genau ihre **Vollständigkeit** ist
+das Problem — sie listet Blogartikel und Rechtstexte gleichrangig neben den
+Leistungsseiten. **Die Navigation ist bereits die Auswahl, die der Betrieb selbst
+getroffen hat.** Im Förderbereich liegt es umgekehrt (dort fand der Crawl nur 13 %, die
+Volltextsuche musste nachhelfen); der Unterschied ist die Größe: Eine Kommunalseite hat
+Tausende Seiten, eine Firmenseite dreißig. **Eine Adresse, die das gesuchte Wort selbst
+trägt, ist bereits der Beleg** — null Abrufe. Ergebnis über beide Bestände: Balkonkraftwerk
+von 8 % auf 19 % bei den Fachbetrieben, Speicher von 44 auf 61 %, Wärmepumpe von 45 auf 55 %.
+
+**Das ANGEBOT wird in beiden Beständen erhoben, die Bestände bleiben getrennt**
+(Betreiber-Vorgabe 29.08.2026: „Nutzer suchen explizit nach Hilfe bei der Montage. Dazu
+können wir passende Betriebe listen — egal ob Versorger oder nicht"). Geteilt sind die
+Suchmuster und die Seitenauswahl — sie ein zweites Mal zu schreiben wäre ein Fehler, kein
+Duplikat. Getrennt bleibt die Einordnung: Ein Stadtwerk, das Balkonkraftwerke verkauft, ist
+kein Handwerksbetrieb. **Bei Balkonkraftwerken liegen die Versorger anteilig VORN** (200
+von 937 = 21 %, gegen 19 % der Fachbetriebe), bei Photovoltaik weit zurück (44 % gegen
+96 %). Wer dort nur Handwerk listet, lässt ein Viertel der Anbieter weg.
+
+**`decodeURIComponent` wirft bei kaputten Adressen — nie ungeschützt aufrufen.** Zweimal
+einen Erhebungslauf abgerissen: am 28.08. nach 450 von 1.254 Domains, am 29.08. nach 2.400
+von 2.850. **Beim zweiten Mal existierte die Absicherung bereits** — als try/catch an genau
+der Stelle, an der es beim ersten Mal passiert war; zwei neue Aufrufer bekamen sie nicht
+mit. Sie steht jetzt in einer Funktion, und
+`lib/__tests__/adress-dekodierung-waechter.test.ts` verbietet den direkten Aufruf überall
+sonst. **Der Wächter prüft beide Richtungen** — auch, ob die erlaubten Schutzfunktionen
+wirklich abfangen; einer, der nur Aufrufstellen zählt, ließe eine Schutzfunktion durch, die
+gar nichts schützt.
+
+**Ein Prüfmuster findet nur, wonach es sucht — irgendwann muss man alles lesen.** Nach dem
+ersten Namens-Umbau meldete die Musterprüfung 0,3 % verdächtige Namen, und der Betreiber
+sagte trotzdem: „es müssen alle korrekt sein." Die vollständige Durchsicht — alle Namen
+nach Länge sortiert, in Blöcken gelesen — fand danach **sechs** Klassen, die kein Muster
+gesucht hatte: Anschrift ohne Trennzeichen hinter der Rechtsform („Banik Haustechnik
+Schwabach GmbH O´Brien-Straße 2 91126 Schwabach"), Leistungsversprechen ganz ohne Namen
+(167 Stück), Impressum-Vorspann („Diese Webseite ist ein Angebot von …"), reine
+Leistungsaufzählungen, Menüpunkte als Name („Start" elfmal) und zwei unerkannte
+Trennzeichen (das freistehende „I" als Pipe-Ersatz, „ᐅ"). **Die Länge war der Schlüssel:**
+Jeder einzelne Name sah für sich plausibel aus, nur die Sortierung machte die Klassen
+sichtbar. Ergebnis 2.826 → 2.513 Namen; wo keiner bleibt, zeigt die Liste die Anschrift,
+und die stimmt immer.
+
+**Der Beleg muss den FUND tragen, nicht das geputzte Urteil — sonst ist jede Verbesserung
+einbahnig.** Der Namensbeleg speicherte das Ergebnis der Reinigung; damit putzt ein
+Nachlauf ein zweites Mal, was schon geputzt war, und ein Fehlgriff ist unwiederbringlich.
+Gemessen, als eine zu breite Werbesatz-Regel aus „Welt in Elbe-Elster e.V." ein „Welt"
+machte — der Rohfund stand nirgends mehr. Der Titel-Rückfall legte überdies **gar keinen**
+Beleg an, weshalb genau diese zwei Namen nicht wiederherstellbar waren. **Aber: vom Beleg
+auszugehen wäre der übernächste Fehler** — er ist nicht durchweg der bessere Fund (bei
+era-goslar.de steht dort „AG Solar", in der Tabelle das richtige „ERA-Goslar"). Der
+Nachputz putzt nach; die Quellenwahl bleibt im Profil-Lauf, wo sie gemessen wird.
+
+**Nach einem Fix an einem Extraktor läuft die Messung NOCH EINMAL.** Ein Fix öffnet
+leicht eine neue Fehlerklasse, und die sieht genauso plausibel aus wie die alte: Die
+Zerlegung von Seitentiteln senkte die kaputten Namen von 20 % auf 1,4 % — und schnitt
+dabei „Uwe Schmidt Elektroinstallation Gas | Wasser | Sanitär GmbH" zu „Sanitär GmbH"
+zusammen, weil die Striche dort eine Aufzählung IM Namen sind und kein Titel-Trenner.
+Sichtbar wurde das nur, weil dieselbe Auszählung ein zweites Mal lief. Zweiter belegter
+Fall: Die Werbesatz-Regel las „IM" in „IM Elektrotechnik Nord" als Verhältniswort, und
+`Solar\w*` fraß „Solarma" — der Bestand verlor daraufhin **mehr** Namen statt weniger (168
+statt 131), und das sah man nur an der Zahl. **Branchenwörter gehören eng gefasst, und
+durchgehende Großschreibung schützt:** „PV ELEKTRO" ist ein Firmenname, keine Aufzählung.
+
+**Eine Spalte prüft man dort, wo sie später gelesen wird — nicht in der Datenbank.** Die
+Firmennamen sahen einzeln unauffällig aus; untereinander in der Ansicht standen dann
+„Impressum - 3E-Elektrotechnik GmbH", „Home | ABEL ReTec" und einmal bloß „GmbH & Co. KG"
+ohne Namen. In einem Anschreiben wäre jeder davon peinlich. `firmennameSaeubern` ist
+deshalb streng: Was nach dem Putzen nur noch aus einer Rechtsform besteht, wird verworfen.
+
+**Das GEWERK ist eine eigene Größe, nicht das Geschäftsfeld.** Die Geschäftsfelder sagen,
+WAS angeboten wird (Photovoltaik, Speicher, Wallbox), das Gewerk sagt, WER es anbietet —
+ein Elektrobetrieb, ein Dachdecker und ein reiner Solarteur bauen dieselbe Anlage und sind
+drei verschiedene Gesprächspartner. Angelegt 28.08.2026 auf Vorgabe des Betreibers, weil
+der Bereich um Heizungsbauer und weitere Gewerke wachsen soll; mehrere je Betrieb sind der
+Normalfall (67 % tragen mindestens eines, 40 von 3.117 vier oder mehr — echte
+Komplettanbieter).
+
+**Bewertungen gehen NUR über die strukturierten Daten der eigenen Website**
+(`AggregateRating` nach schema.org). Das hebt die Quote von 42 auf 156 Betriebe (5 %) und
+bleibt trotzdem eine Minderheit — mehr gibt kein zulässiger Weg her, Google ist gesperrt.
+Die Herkunft heißt immer „eigene Website", auch wenn der Betrieb dort seine Google-Sterne
+wiedergibt: Wir haben die Zahl von ihm, nicht von Google.
+
+**Ein Trust-Signal misst, ob der Betrieb es HINSCHREIBT — nicht, ob er es hat.** Vor
+dem Über-uns-Lauf zweimal an 30 Betrieben geeicht (29.08.2026), und die Eichung hat
+die Erwartung widerlegt: Von 21 erreichbaren „Über uns"-Seiten brachten **zwei**
+einen Meisterbetrieb, eine ein Gründungsjahr, **keine** eine Handwerkskammer.
+Hochgerechnet 22 % → 27 %, also eine Nachlese statt des vermuteten Hebels. Der
+Grund gilt über diesen Lauf hinaus: **Wer Meisterbetrieb ist, schreibt es auf die
+Startseite; wer es dort nicht schreibt, schreibt es nirgends.** Im
+zulassungspflichtigen Elektrohandwerk sind fast alle Meisterbetriebe — unsere Quote
+misst die Erwähnung, nicht den Bestand. Über die Website ist diese Grenze nicht zu
+überwinden; dafür braucht es eine amtliche Quelle (Handwerkskammer, Rechtslage
+geprüft — siehe `docs/fachbetriebe-quellen.md`). **Und genau dafür ist das Eichen
+da:** ohne es wären 6.000 Abrufe für einen Ertrag gelaufen, den niemand
+nachgemessen hätte.
+
+**Adressen werden GELESEN, nicht geraten — dreimal dieselbe Lehre.** Impressum, Kontaktseite
+und Favicon liegen alle unter frei gewählten Pfaden; `/impressum` traf in zwei von drei
+Fällen daneben, `/favicon.ico` bei einem Drittel. Wer rät, hält „nicht gefunden" für „gibt
+es nicht".
+
+**Die Ansicht (`/admin/fachbetriebe`) kann bewusst wenig.** Filter, Details, Arbeitsstand,
+Notiz — kein Versand, kein Anschreiben, keine Auswahlliste. Die Stände heißen „offen ·
+vorgemerkt · angesehen · ungeeignet"; ein Zustand wie „angeschrieben" würde einen Apparat
+behaupten, den es nicht gibt, und `lib/__tests__/fachbetrieb-stand.test.ts` verbietet
+solche Namen. **Die Zahl `3/8` zählt belegte Merkmale, nicht Qualität** — ein
+Meisterbetrieb, der seinen Titel nicht auf die Website schreibt, bekommt weniger Punkte
+als einer, der es tut; gemessen wird unser Datenstand, nicht der Betrieb.
+
+**Bei Versorgern sagt das Merkmal „nennt das Thema", nicht „bietet an" — und das ist
+gemessene Resignation, keine Nachlässigkeit (29.08.2026).** Vier Anläufe, jeder an denselben
+von Hand belegten Fällen geeicht (zwei Verkäufer, drei reine Erklärseiten): Verkaufssprache
+in derselben Zeile → 30 von 910 mit Photovoltaik, absurd streng. Umfeld von ±300 Zeichen
+(Maße aus dem Förder-Screener) → 4 von 5, durchgefallen an einer **Beispielrechnung**
+(„72,- € EEG-Förderung") — ein nackter Betrag belegt keinen Verkauf. Betrag nur mit
+Kaufkontext → 3 von 5, jetzt fielen die echten Verkäufer durch, weil ihre Preisseite nicht
+unter den ersten Unterseiten lag. **Der Grund, warum es hier schwerer ist als bei
+Fachbetrieben: Ein Versorger hat eine Informationspflicht, und seine Erklärseiten sehen
+Produktseiten zum Verwechseln ähnlich — inklusive Beträge.** Belastbar ist nur die
+Handprüfung: von sechs gelesenen Balkon-Seiten verkauften **zwei**. Wer die Spalte als
+Anbieterliste nutzt, rechnet diese Quote ein oder liest nach. **Aufhören zu messen ist hier
+das Ergebnis, nicht das Aufgeben** — ein fünftes Muster hätte dieselbe Quote mit mehr
+Selbstvertrauen geliefert.
+
+**Bei Versorgern belegt die ERWÄHNUNG kein Angebot — BLOCKER (29.08.2026).** Ein Versorger
+hat eine Informationspflicht gegenüber seinen Kunden, ein Handwerksbetrieb nicht: Bei einem
+Solarteur IST die Erwähnung das Angebot, bei einem Stadtwerk ist sie oft nur Aufklärung.
+Sechs Balkon-Seiten von Vertrieben im Wortlaut gelesen — drei erklären bloß, was ein
+Balkonkraftwerk ist, einer schickt den Leser zum Netzbetreiber; verkauft haben zwei.
+Deshalb zählt ein Geschäftsfeld dort nur mit Verkaufssprache daneben, und die **Adresse
+allein zählt gar nicht** („/balkonkraftwerk" führt genauso oft auf eine Erklärseite).
+**Dieselbe Frage an zwei Bestände braucht nicht dieselbe Beweisschwelle** — die Mechanik zu
+teilen war richtig, die Schwelle mitzuteilen nicht.
+
+**Ein NETZBETRIEB ist kein Anbieter — BLOCKER (29.08.2026).** Die Versorger-Adressen
+stammen aus dem Anlagenregister und benennen überwiegend die Netzgesellschaft, nicht den
+Vertrieb: 225 der 937. Bei ihnen maß das Geschäftsfeld „erwähnt" statt „bietet an" — ein
+Netzbetreiber MUSS über Balkonkraftwerke schreiben (Anmeldepflicht), ohne eines zu
+verkaufen. Zwölf von Hand nachgelesen, **kein einziger verkauft**. Deshalb zählt dort nur,
+was neben Verkaufssprache steht; die Adresse allein nicht („/balkonkraftwerk-anmelden"
+trägt das Wort und ist kein Angebot). Aufgefallen ist es dem Betreiber an einem Link, nicht
+einer Quote. **Die Lücke dahinter ist offen:** Wo wir den Netzbetrieb haben, fehlt der
+Vertrieb, und der verkauft und montiert.
+
+**Nicht mit dem Versorger-Modul vermischen** (937 Stadtwerke, `docs/versorger-uebergabe.md`).
+Fachbetriebe sind Handwerk, Versorger sind Energieversorger — andere Käufer, andere
+Budgets, anderer Rechtsrahmen.
+
+**Der Erstkontakt ist die billigste Quelle für alles, was die Website nicht hergibt** —
+Meisterbrief, Balkonkraftwerk-Angebot, aktuelle Bewertung. Übergabe für die Konzept-Session
+(Anliegen, Rechtsrahmen, was die Kommunen-Mechanik schon kann und was fehlt):
+`docs/fachbetriebe-erstkontakt-uebergabe.md`. **Vor dem ersten Versand:** Die
+Datenschutzerklärung nennt diese Erhebung mit keinem Wort, und die Ausnahme
+„unverhältnismäßiger Aufwand" trägt hier nicht — wer Kontaktdaten erhebt, UM Kontakt
+aufzunehmen, kann Kontakt nicht als zu aufwendig ausgeben.
+
+**Das Angebots-Feature am Ende des Rechners ist NICHT beauftragt** und hat eine eigene
+Merkliste: `docs/solarteur-widget-offene-fragen.md`. Kern daraus: Der Nutzer sieht erst
+sein Ergebnis und stellt DANACH selbst eine Anfrage — diese Reihenfolge ist die Trennlinie
+zum gesamten Wettbewerb und darf nie umgedreht werden. Vor dem ersten Kontakt muss die
+Zusage „keine Lead-Erfassung · kein Vertriebskontakt" umformuliert werden (Betreiber,
+28.08.2026: zusammen mit den ersten Kontakten, nicht vorher auf Verdacht). Zwei Fragen
+bleiben beim Betreiber: ob Geld je Anfrage fließt, und ob der Betrieb den Kontakt behalten
+darf, wenn nichts daraus wird.
 
 ## Archiv & Lehren
 
