@@ -13,7 +13,7 @@ import Modal from "../../../../components/Modal";
 import ResultSection from "../../../../components/ResultSection";
 import { ART_LABEL, liesNotiz } from "../../../../lib/outreach-ruecklauf";
 import { aboSatz, type AboSpiegel } from "../../../../lib/kommunen-abo-spiegel";
-import type { Auswertung } from "../../../../lib/kommunen-auswertung";
+import type { Auswertung, Versandtag } from "../../../../lib/kommunen-auswertung";
 import {
   ASK_LABEL,
   ASK_VARIANTEN,
@@ -145,7 +145,7 @@ export default function KommunenCockpit() {
 
   const [verteilung, setVerteilung] = useState<VariantenVerteilung[] | null>(null);
   const [offen, setOffen] = useState<{ nochNichtVersendet: number } | null>(null);
-  const [wirkung, setWirkung] = useState<{ gesamt: Auswertung; jeKampagne: Auswertung[] } | null>(null);
+  const [wirkung, setWirkung] = useState<{ gesamt: Auswertung; jeKampagne: Auswertung[]; jeTag: Versandtag[] } | null>(null);
   useEffect(() => {
     fetch("/api/admin/kommunen/bilanz")
       .then((r) => (r.ok ? r.json() : null))
@@ -200,7 +200,7 @@ export default function KommunenCockpit() {
               gut={wirkung.gesamt.abosMitAngabeVerwaltung > 0}
             />
           </div>
-          {wirkung.jeKampagne.length > 1 && (
+          {(wirkung.jeKampagne?.length ?? 0) > 1 && (
             <table style={{ borderCollapse: "collapse", fontSize: 12, fontFamily: v("--font-mono") }}>
               <thead>
                 <tr style={{ color: v("--color-text-muted") }}>
@@ -229,6 +229,71 @@ export default function KommunenCockpit() {
               </tbody>
             </table>
           )}
+          {/* DIE VERSANDHISTORIE — je Tag eine Zeile.
+              Ohne sie ist „lief der groessere Schub so gut wie der kleine?"
+              nicht zu beantworten: Ueber alles gemittelt verschwindet jeder
+              Unterschied zwischen den Tagen. Der Balken macht die Menge je Tag
+              auf einen Blick vergleichbar; die Zahl daneben bleibt die
+              Auskunft, der Balken ist nur die Form. */}
+          {(wirkung.jeTag?.length ?? 0) > 0 && (
+            <details style={{ marginTop: space.md }}>
+              <summary style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-secondary"), cursor: "pointer" }}>
+                Versandhistorie ({wirkung.jeTag.length} {wirkung.jeTag.length === 1 ? "Tag" : "Tage"})
+              </summary>
+              <table style={{ borderCollapse: "collapse", fontSize: 12, fontFamily: v("--font-mono"), marginTop: space.sm }}>
+                <thead>
+                  <tr style={{ color: v("--color-text-muted") }}>
+                    <th style={{ textAlign: "left", padding: pad("xs", "sm") }}>Tag</th>
+                    <th style={{ textAlign: "left", padding: pad("xs", "sm") }}>Schub</th>
+                    <th style={{ textAlign: "left", padding: pad("xs", "sm") }} colSpan={2}>
+                      verschickt
+                    </th>
+                    <th style={{ textAlign: "right", padding: pad("xs", "sm") }}>Antw.</th>
+                    <th style={{ textAlign: "right", padding: pad("xs", "sm") }}>veröff.</th>
+                    <th style={{ textAlign: "right", padding: pad("xs", "sm") }}>Abos</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {wirkung.jeTag.map((t) => {
+                    const groesster = Math.max(...wirkung.jeTag.map((x) => x.verschickt));
+                    return (
+                      <tr key={t.tag} style={{ borderTop: `1px solid ${v("--color-border")}` }}>
+                        <td style={{ padding: pad("xs", "sm"), whiteSpace: "nowrap" }}>
+                          {new Date(t.tag).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit" })}
+                        </td>
+                        <td style={{ padding: pad("xs", "sm"), color: v("--color-text-muted") }}>{t.schuebe.join(", ")}</td>
+                        <td style={{ padding: pad("xs", "sm"), textAlign: "right", width: 34 }}>{t.verschickt}</td>
+                        <td style={{ padding: pad("xs", "sm"), width: 130 }}>
+                          <div
+                            aria-hidden
+                            style={{
+                              height: 8,
+                              width: `${Math.round((100 * t.verschickt) / (groesster || 1))}%`,
+                              minWidth: 3,
+                              background: v("--color-accent"),
+                              borderRadius: 2,
+                            }}
+                          />
+                        </td>
+                        <td style={{ padding: pad("xs", "sm"), textAlign: "right" }}>{t.antworten}</td>
+                        <td style={{ padding: pad("xs", "sm"), textAlign: "right" }}>{t.veroeffentlicht}</td>
+                        <td style={{ padding: pad("xs", "sm"), textAlign: "right" }}>
+                          {t.abos}
+                          {t.abosMitAngabeVerwaltung > 0 && ` (${t.abosMitAngabeVerwaltung} Verw.)`}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              <p style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: space.xs, maxWidth: 620, lineHeight: 1.4 }}>
+                Die Reaktionen zählen zum VERSANDTAG, nicht zum Tag der Reaktion — eine Antwort gehört zu dem
+                Schub, der sie ausgelöst hat, auch wenn sie zwei Wochen später kommt. Frische Tage haben deshalb
+                zwangsläufig weniger Reaktionen; sie sind mit älteren erst nach ein paar Wochen vergleichbar.
+              </p>
+            </details>
+          )}
+
           {/* JEDE ZAHL IST EINE UNTERGRENZE, und das gehoert an die Anzeige,
               nicht in eine Fussnote irgendwo im Code. */}
           <p style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: space.xs, maxWidth: 620, lineHeight: 1.4 }}>

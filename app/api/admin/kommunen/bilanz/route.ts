@@ -62,7 +62,7 @@ export async function GET(req: NextRequest) {
     .select("region_id, status, aus_verwaltung, ueber_brief");
   const spiegel = zaehleAbos((aboRows ?? []) as AboZeile[]);
 
-  const { gesamt, jeKampagne } = werteAus(alle, spiegel);
+  const { gesamt, jeKampagne, jeTag } = werteAus(alle, spiegel);
 
   // ─── Teil 2: Verteilung der Anschreiben-Fassungen einer Kampagne ───────────
   //
@@ -75,7 +75,7 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({
     kampagne,
-    wirkung: { gesamt, jeKampagne },
+    wirkung: { gesamt, jeKampagne, jeTag },
     verteilung: verteile(zeilen),
     // Was noch aussteht — sonst liest sich „0 Antworten" wie ein Ergebnis,
     // obwohl schlicht noch nichts raus ist.
