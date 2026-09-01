@@ -148,7 +148,7 @@ describe("Bausteine-Register", () => {
     // Beispiel — und ohne Beispiel ist die Karte wieder das, wogegen der ganze
     // Umbau geht: eine Beschreibung statt der Sache.
     const schau = readFileSync(
-      join(ROOT, "app/(site)/admin/designsystem/KomponentenSchau.tsx"),
+      join(ROOT, "app/(site)/admin/komponenten/KomponentenSchau.tsx"),
       "utf8",
     );
     const ohneBeispiel = BAUSTEINE.filter((b) => !new RegExp(`\\b${b.name}:`).test(schau)).map(

@@ -350,7 +350,7 @@ function Karte({ b }: { b: Baustein }) {
         border: `1px solid ${v("--color-border")}`,
         borderRadius: v("--radius-md"),
         padding: space.lg,
-        marginBottom: space.md,
+        height: "100%",
       }}
     >
       <div style={{ display: "flex", alignItems: "baseline", gap: space.sm, flexWrap: "wrap" }}>
@@ -412,9 +412,21 @@ export default function KomponentenSchau() {
               <h2 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, margin: 0 }}>{g.titel}</h2>
               <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>{g.text}</span>
             </div>
-            {teile.map((b) => (
-              <Karte key={b.name} b={b} />
-            ))}
+            <div
+              style={{
+                display: "grid",
+                gap: space.md,
+                // Eine Karte trägt ein bedienbares Beispiel und braucht Breite;
+                // 420 px ist die Grenze, unterhalb derer die Beispiele selbst
+                // umbrechen. Darüber zwei Spalten, sonst eine.
+                gridTemplateColumns: "repeat(auto-fill, minmax(420px, 1fr))",
+                alignItems: "start",
+              }}
+            >
+              {teile.map((b) => (
+                <Karte key={b.name} b={b} />
+              ))}
+            </div>
           </div>
         );
       })}
