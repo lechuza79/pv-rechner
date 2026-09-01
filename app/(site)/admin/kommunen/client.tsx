@@ -15,6 +15,7 @@ import { ART_LABEL, liesNotiz } from "../../../../lib/outreach-ruecklauf";
 import { aboSatz, type AboSpiegel } from "../../../../lib/kommunen-abo-spiegel";
 import { ASK_LABEL, ASK_VARIANTEN, type AskVariante } from "../../../../lib/kommunen-ask";
 import { SCHUEBE } from "../../../../lib/kommunen-testballon";
+import { adminTh, adminTd } from "../../../../lib/admin-tabelle";
 
 // ─── Typen ──────────────────────────────────────────────────────────────────
 
@@ -950,22 +951,10 @@ const inputStyle: React.CSSProperties = {
   fontFamily: v("--font-text"),
 };
 
-const thStyle: React.CSSProperties = {
-  textAlign: "left",
-  fontSize: 11,
-  fontWeight: 700,
-  textTransform: "uppercase",
-  letterSpacing: "0.05em",
-  color: v("--color-text-muted"),
-  padding: pad("sm", "md"),
-  background: v("--color-bg-muted"),
-  whiteSpace: "nowrap",
-};
-
-const tdStyle: React.CSSProperties = {
-  padding: pad("sm", "md"),
-  verticalAlign: "top",
-};
+// Das Aussehen kommt aus lib/admin-tabelle.ts — eine zweite Fassung hier wäre
+// die Stelle, an der die beiden Ansichten auseinanderlaufen.
+const thStyle = adminTh;
+const tdStyle = adminTd;
 
 const linkStyle: React.CSSProperties = {
   color: v("--color-accent"),

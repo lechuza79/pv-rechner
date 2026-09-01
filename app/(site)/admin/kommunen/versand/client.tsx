@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { v, space, pad } from "../../../../../lib/theme";
+import { adminTabelle, adminTh, adminTd, adminZeile } from "../../../../../lib/admin-tabelle";
 import type { Auswertung, Versandtag } from "../../../../../lib/kommunen-auswertung";
 
 // Auswertung des Kommunen-Outreach.
@@ -94,12 +95,12 @@ export default function VersandAuswertung() {
           {(wirkung.jeTag?.length ?? 0) > 0 && (
             <section>
               <h2 style={ueberschrift}>Versandtage</h2>
-              <table style={tabelle}>
+              <table style={{ ...adminTabelle, maxWidth: 760 }}>
                 <thead>
-                  <tr style={{ color: v("--color-text-muted") }}>
-                    <th style={thLinks}>Tag</th>
-                    <th style={thLinks}>Schub</th>
-                    <th style={thLinks} colSpan={2}>
+                  <tr>
+                    <th style={adminTh}>Tag</th>
+                    <th style={adminTh}>Schub</th>
+                    <th style={adminTh} colSpan={2}>
                       verschickt
                     </th>
                     <th style={thRechts}>Antworten</th>
@@ -111,17 +112,17 @@ export default function VersandAuswertung() {
                   {wirkung.jeTag.map((t) => {
                     const groesster = Math.max(...wirkung.jeTag.map((x) => x.verschickt));
                     return (
-                      <tr key={t.tag} style={{ borderTop: `1px solid ${v("--color-border")}` }}>
-                        <td style={{ ...td, whiteSpace: "nowrap" }}>
+                      <tr key={t.tag} style={adminZeile}>
+                        <td style={{ ...adminTd, whiteSpace: "nowrap" }}>
                           {new Date(t.tag).toLocaleDateString("de-DE", {
                             day: "2-digit",
                             month: "2-digit",
                             year: "numeric",
                           })}
                         </td>
-                        <td style={{ ...td, color: v("--color-text-muted") }}>{t.schuebe.join(", ")}</td>
+                        <td style={{ ...adminTd, color: v("--color-text-muted") }}>{t.schuebe.join(", ")}</td>
                         <td style={{ ...tdRechts, width: 40 }}>{t.verschickt}</td>
-                        <td style={{ ...td, width: 160 }}>
+                        <td style={{ ...adminTd, width: 160 }}>
                           {/* Der Balken macht die Menge je Tag auf einen Blick
                               vergleichbar; die Zahl daneben bleibt die Auskunft,
                               der Balken ist nur ihre Form. */}
@@ -209,13 +210,7 @@ const ueberschrift: React.CSSProperties = {
   marginBottom: space.sm,
 };
 
-const tabelle: React.CSSProperties = {
-  borderCollapse: "collapse",
-  fontSize: 12,
-  fontFamily: v("--font-mono"),
-};
-
-const thLinks: React.CSSProperties = { textAlign: "left", padding: pad("xs", "sm"), fontWeight: 400 };
-const thRechts: React.CSSProperties = { textAlign: "right", padding: pad("xs", "sm"), fontWeight: 400 };
-const td: React.CSSProperties = { padding: pad("xs", "sm") };
-const tdRechts: React.CSSProperties = { padding: pad("xs", "sm"), textAlign: "right" };
+// Zahlen rechtsbündig — sonst kann man Spalten nicht übereinander lesen. Der
+// Rest kommt aus dem gemeinsamen Tabellen-Aussehen.
+const thRechts: React.CSSProperties = { ...adminTh, textAlign: "right" };
+const tdRechts: React.CSSProperties = { ...adminTd, textAlign: "right", fontVariantNumeric: "tabular-nums" };
