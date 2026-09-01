@@ -125,19 +125,31 @@ export const tokens = {
   '--font-text': "var(--font-dm-sans),'DM Sans',system-ui,sans-serif",
   '--font-mono': "var(--font-jetbrains-mono),'JetBrains Mono',monospace",
 
-  // ─── Typografie-Skala (7) ──────────────────────────────────────────────────
-  // Modulare Skala, Basis 15px (Fließtext), Verhältnis ~1.2, gerundet auf
-  // ganze/halbe px. EINE Leseskala für alle Content-/Textseiten (Ratgeber,
-  // Methodik, Glossar, Impressum, …), damit dieselbe Rolle überall dieselbe
-  // Größe hat. Die interaktiven Rechner/Flows und Embed-Widgets nutzen sie
-  // bewusst NICHT — dort ist die kompakte Größe gewollt.
-  '--font-size-caption': '12px',        // Uppercase-Labels, Bildunterschriften
-  '--font-size-small': '13px',          // Sekundär-/Tabellentext, Fußnoten
-  '--font-size-body': '15px',           // Basis: Fließtext
-  '--font-size-lead': '17px',           // Hero/Einleitung (Subtitle)
+  // ─── Typografie-Skala (8) ──────────────────────────────────────────────────
+  // Vom Betreiber freigegeben am 20.07.2026, in Kraft gesetzt am 01.09.2026.
+  // Sie gilt für die GANZE Site — Leseseiten, Rechner, Atlas, Admin und
+  // Embed-Widgets. Die frühere Fassung (Basis 15, modulare Skala) galt laut
+  // eigenem Kommentar nur für Content-Seiten und nahm Rechner und Widgets
+  // ausdrücklich aus; damit stand der größte Teil des Bestands dauerhaft
+  // außerhalb der Skala und driftete weiter (+35 % getippte Größen in sechs
+  // Wochen, gemessen 01.09.2026).
+  //
+  // Eine ROLLE hat genau eine Größe. Wird eine weitere gebraucht, kommt sie
+  // als neues Token dazu (Betreiber, 01.09.2026) — nie als getippte Zahl.
+  // Erzwungen von lib/__tests__/schriftgroessen-waechter.test.ts.
+  //
+  // Die großen Zahlen (Hero-Ergebnisse, KPI-Werte) sind KEINE Textstufe: dort
+  // drückt der Größenunterschied zur Einheit daneben eine Rangfolge aus. Sie
+  // bekommen eigene Display-Stufen, sobald der jeweilige Bereich umgestellt
+  // wird — nicht durch Runden auf eine Textstufe.
+  '--font-size-micro': '10px',          // Dichte Chart-/Achsenbeschriftungen
+  '--font-size-caption': '11px',        // Uppercase-Labels, Hints, dichte Daten
+  '--font-size-small': '12px',          // Sekundärtext, Chips, Tabellenzellen
+  '--font-size-body': '14px',           // Basis: Fließtext, Nav, Fußzeile, Eingabefelder
+  '--font-size-lead': '16px',           // Lead/Einleitung, Kartentitel
   '--font-size-h3': '18px',             // Kleine Überschrift
-  '--font-size-h2': '21px',             // Sektions-Überschrift
-  '--font-size-h1': '26px',             // Seiten-Titel
+  '--font-size-h2': '20px',             // Sektions-Überschrift
+  '--font-size-h1': '24px',             // Seiten-Titel
 
   // ─── Radii (3) ─────────────────────────────────────────────────────────────
   '--radius-sm': '6px',                 // Small: inputs, checkboxes, pills
@@ -742,10 +754,10 @@ export const globalStyles = `
   .kpi-mrow{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;animation:fu 0.28s ease-out}
   .kpi-mrow::-webkit-scrollbar{display:none}
   .kpi-mgroup{flex:0 0 auto;display:flex;flex-direction:column;gap:6px}
-  .kpi-mtitle{font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--color-text-secondary)}
+  .kpi-mtitle{font-size:var(--font-size-caption);font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--color-text-secondary)}
   .kpi-mcards{display:flex;gap:8px}
   .kpi-mcard{flex:0 0 auto;min-width:120px;background:var(--color-bg-muted);border-radius:var(--radius-md);padding:12px;scroll-snap-align:start}
-  .kpi-mnote{font-size:12px;color:var(--color-text-secondary);line-height:1.5;max-width:260px}
+  .kpi-mnote{font-size:var(--font-size-small);color:var(--color-text-secondary);line-height:1.5;max-width:260px}
 
   /* Breadcrumb: Kruemel-Spur links (.crumb-trail), optionale Suche rechts
      (.crumb-right). Auf breiten Schirmen bricht die Spur um (genug Platz), auf
@@ -764,11 +776,14 @@ export const globalStyles = `
      Verlauf und „Weiterlesen". Voller Text bleibt im DOM (SEO), nur per Hoehe
      beschnitten. */
   .intro-clamp{margin:0 0 48px}
-  .intro-text{font-size:15px;line-height:1.6;color:var(--color-text-secondary);margin:0}
-  .intro-more{display:none;background:none;border:none;padding:0;margin-top:10px;font-family:inherit;font-size:14px;font-weight:700;color:var(--color-accent);cursor:pointer}
+  .intro-text{font-size:var(--font-size-body);line-height:1.6;color:var(--color-text-secondary);margin:0}
+  .intro-more{display:none;background:none;border:none;padding:0;margin-top:10px;font-family:inherit;font-size:var(--font-size-body);font-weight:700;color:var(--color-accent);cursor:pointer}
   @media (max-width:640px){
     .intro-clamp:not(.intro-open) .intro-text{
-      max-height:132px;overflow:hidden;
+      /* 5,5 Zeilen = 14px * 1.6 * 5.5. Partnerkonstante zu --font-size-body:
+         waechst die Schrift, muss diese Hoehe mitwachsen, sonst schneidet der
+         Verlauf mitten in eine andere Zeile. */
+      max-height:123px;overflow:hidden;
       -webkit-mask-image:linear-gradient(180deg,#000 62%,transparent);
       mask-image:linear-gradient(180deg,#000 62%,transparent);
     }

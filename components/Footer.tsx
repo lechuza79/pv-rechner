@@ -6,13 +6,16 @@ import { slugify } from "../lib/atlas-cities";
 import { atlasLevelReleased } from "../lib/atlas-index";
 
 const linkStyle: React.CSSProperties = {
-  fontSize: 11,
+  // Fliesstext-Stufe: ausdrueckliches Anliegen des Betreibers (20.07.2026) —
+  // die Fusszeile ist neben dem Themen-Einstieg der einzige Ort, an dem die
+  // Themen-Cluster von aussen crawlbar verlinkt sind, und stand auf 11px.
+  fontSize: v("--font-size-body"),
   color: v("--color-text-faint"),
   textDecoration: "none",
 };
 
 const groupLabelStyle: React.CSSProperties = {
-  fontSize: 11,
+  fontSize: v("--font-size-caption"),
   fontWeight: 700,
   textTransform: "uppercase",
   letterSpacing: "0.06em",
@@ -92,7 +95,7 @@ export default function Footer() {
       </div>
       <p
         style={{
-          fontSize: 11,
+          fontSize: v("--font-size-small"),
           lineHeight: 1.6,
           color: v("--color-text-faint"),
           textAlign: "center",
