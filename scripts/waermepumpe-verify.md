@@ -285,6 +285,20 @@ zusätzlich in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
 - `jazLwwp` / `jazSwwp` / Vorlauftemperaturen (Fraunhofer ISE WPsmart)
 - `gasCo2PerKwh` (physikalischer Emissionsfaktor), Inflationsannahmen (Konvention)
 
+## Schritt 0: Gibt es einen neuen Jahrgang des KfW-Förderreports?
+
+**Nur im Quartalslauf Januar interessant** — dann erscheint der Jahrgang des
+Vorjahres. In den übrigen drei Quartalen ist „unverändert" das erwartete
+Ergebnis und genau die Auskunft, für die das Prüfdatum da ist.
+
+Der Bericht speist zwei Oberflächen: den Abschnitt „Wer bekommt die Förderung
+wirklich?" im Ergebnis dieses Rechners und denselben Block im Förder-Ratgeber.
+Ablauf, Fallen und Befugnisse stehen vollständig in `scripts/kfw-report-verify.md`;
+hier steht nur, DASS dieser Lauf zuständig ist — das Prüfdatum
+(`KFW_REPORT_STAND.geprueftIso`) hängt an ihm.
+
+Ein eigener Auftrag dafür wäre einer, der elf Monate im Jahr nichts findet.
+
 ## So wird die Routine ausgelöst
 
 Dem Assistenten sagen: **„Lauf die Wärmepumpen-Prüfung."**
