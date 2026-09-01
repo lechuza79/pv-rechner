@@ -210,6 +210,60 @@ den Versand baut, hebt diese Sperre bewusst auf.
 
 ---
 
+## 6b. Testversand: was gebaut sein muss und wie gemessen wird
+
+**Entscheidung des Betreibers (01.09.2026): Es wird ein Testversand, kein Vorab-Gespräch
+als Pflicht.** Die fünf bis zehn Gespräche laufen parallel, nicht davor — sie kosten nichts
+und beantworten Fragen, die eine Klickrate nie beantwortet (etwa: mit welcher
+Angebotssoftware arbeitet er).
+
+### Was vorher stehen muss
+
+1. **Die Datenschutzerklärung.** Harter Blocker, auch für einen Anruf.
+2. **Die gebrandeten Seiten.** Sie liegen als Link im Brief. Existieren sie nicht, ist
+   „hier ist Ihre Seite" ein Versprechen statt eines Geschenks — und wir messen die
+   Reaktion auf eine Ankündigung statt auf ein Produkt.
+3. **Der Anfrage-Knopf muss FUNKTIONIEREN, kein Dummy.** Er schickt die Anfrage an genau
+   die Adresse, an die wir die Demo geschickt haben — der Betrieb kann sie also selbst
+   auslösen und bekommt sie ins eigene Postfach. **Er hat das Produkt damit erlebt statt
+   nur gesehen.** Ein toter Knopf wäre doppelt schädlich: Der Betrieb hält das Produkt für
+   kaputt, und ein späterer echter Interessent klickt ins Leere. Formular und Mailversand
+   sind vorhanden.
+
+### Gemessen wird SERVERSEITIG, nicht im Browser
+
+Jeder Betrieb bekommt eine eigene Adresse. Ihr Aufruf **ist** das Signal — gezählt beim
+Ausliefern, wie bei der Einbettungs-Zählung: Tag, Kennung, Ereignis. Kein Skript, kein
+Cookie, nichts wird auf dem Gerät gelesen oder geschrieben; die Einwilligungsfrage stellt
+sich damit gar nicht.
+
+| Was | Woher |
+|---|---|
+| zugestellt / abgewiesen | meldet der Mailversand selbst |
+| Seite aufgerufen | serverseitige Zählung je Betriebs-Adresse |
+| Anfrage-Knopf benutzt | dieselbe Zählung |
+| Seite verlinkt | die bereits laufende Herkunftszählung |
+| geantwortet | von Hand |
+
+**Die eingebaute Reichweitenmessung wird dafür NICHT benutzt.** Sie trägt bewusst keine
+Begleitangaben und wirft den Abfrageteil des Seitenaufrufs weg — genau daran hängt, dass
+sie ohne Einwilligung auskommt. Wer die Betriebskennung dort hineinreicht, reißt das ein.
+
+### Kein Öffnungs-Tracking — geprüft und verworfen
+
+Drei unabhängige Gründe:
+- **Rechtlich das schwächste Glied:** Ein Zählpixel lässt das Empfängergerät eine Ressource
+  von uns laden — nach den EDSA-Leitlinien ein Zugriff auf das Endgerät, der Einwilligung
+  braucht. Für die Zustellung ist er nicht erforderlich, also greift keine Ausnahme. Bei
+  unverlangter Post haben wir keine Einwilligung.
+- **Der Messwert ist beidseitig verzerrt:** Apple lädt Pixel vorsorglich (Falsch-Öffnungen),
+  geschäftliche Postfächer blockieren externe Bilder (Falsch-Nicht-Öffnungen). Bei 30–50
+  Empfängern ist das Rauschen.
+- **Es würde keine Entscheidung ändern.** Ob jemand die Mail gesehen und ignoriert hat oder
+  gar nicht gesehen hat — der nächste Schritt ist derselbe.
+
+---
+
 ## 7. Was dem Betreiber gehört
 
 1. **Ob überhaupt angeschrieben wird.**
