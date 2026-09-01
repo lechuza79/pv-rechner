@@ -45,6 +45,29 @@ describe("Anmeldeadresse", () => {
   });
 });
 
+describe("Feste Rückrufadresse", () => {
+  it("nimmt die konfigurierte Adresse, nicht den Ursprung der Anfrage", () => {
+    // Aus der Anfrage abgeleitet hing die Adresse daran, über welche Domain der
+    // Aufruf kam — mit „www." davor ist es ein anderer Ursprung als ohne, und
+    // Instagram lehnt den Schlüsseltausch dann ab, obwohl im Portal alles
+    // richtig steht. Real passiert am 01.09.2026.
+    const vorher = process.env.INSTAGRAM_REDIRECT_URI;
+    process.env.INSTAGRAM_REDIRECT_URI = "https://solar-check.io/api/instagram/callback";
+    try {
+      expect(rueckrufAdresse("https://www.solar-check.io")).toBe(
+        "https://solar-check.io/api/instagram/callback",
+      );
+      const url = new URL(anmeldeAdresse("https://www.solar-check.io", "x"));
+      expect(url.searchParams.get("redirect_uri")).toBe(
+        "https://solar-check.io/api/instagram/callback",
+      );
+    } finally {
+      if (vorher === undefined) delete process.env.INSTAGRAM_REDIRECT_URI;
+      else process.env.INSTAGRAM_REDIRECT_URI = vorher;
+    }
+  });
+});
+
 describe("Berechtigungen", () => {
   it("nennt die seit März 2026 gültigen Namen", () => {
     // Die alten Kurzformen sind abgelöst. Wer sie noch schickt, bekommt eine

@@ -44,8 +44,27 @@ export function instagramKonfiguriert(): boolean {
   return !!(process.env.INSTAGRAM_APP_ID && process.env.INSTAGRAM_APP_SECRET);
 }
 
+/**
+ * Die Rückrufadresse — FEST, nicht aus der Anfrage abgeleitet.
+ *
+ * Sie muss zeichengleich mit der im Meta-Portal hinterlegten sein, und zwar
+ * ZWEIMAL: beim Aufruf des Anmeldedialogs und beim Tausch des Codes gegen den
+ * Schlüssel. Instagram vergleicht beide und lehnt sonst ab („Please make sure
+ * your redirect_uri is identical to the one you used in the OAuth dialog
+ * request").
+ *
+ * Aus der Anfrage abgeleitet hing sie daran, über welche Adresse der Betreiber
+ * gerade kam — mit `www.` davor ist es ein anderer Ursprung als ohne, und der
+ * Tausch scheiterte, obwohl im Portal alles richtig stand. Eine Adresse, die
+ * bei der Registrierung festgelegt wurde, ist eine Konstante und kein
+ * Nebenprodukt des Aufrufs.
+ *
+ * Der Parameter bleibt für die lokale Entwicklung: Ohne gesetzte Adresse in der
+ * Umgebung gilt der Ursprung der Anfrage.
+ */
 export function rueckrufAdresse(origin: string): string {
-  return `${origin}/api/instagram/callback`;
+  const fest = process.env.INSTAGRAM_REDIRECT_URI;
+  return fest && fest.trim() ? fest.trim() : `${origin}/api/instagram/callback`;
 }
 
 /** Adresse, auf die der Betreiber geschickt wird, um die App zu autorisieren. */
