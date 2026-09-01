@@ -976,7 +976,7 @@ Gilt für Ratgeber-Artikel, FAQ-Inhalte, Methodik-Seiten, Rechner-Annahmen und G
 - **Rechte immer über ALLE Signaturen setzen** (Schleife über `pg_proc`, nicht eine fest getippte Signatur): Ein zweiter Overload trägt seine eigene, unangetastete Rechtevergabe.
 - **`exec_sql` muss `SECURITY DEFINER` sein** (gemessen, nicht geschätzt): Als `service_role` kommt „must be owner of table" und `has_schema_privilege(…, 'CREATE') = false` — mit `INVOKER` wären alle Setup-Routen tot. Deshalb trägt sie einen **festen `search_path`**; ohne ihn entscheidet die Sitzung des Aufrufers, in welchem Schema ein unqualifizierter Name landet, bei einer Funktion die als `postgres` läuft.
 - **Selbstauskunft statt Vertrauen:** `exec_sql` gibt nichts zurück (`void`, HTTP 204) — ein „ok" auf das Einspielen sagt nur, dass das SQL durchlief. `sc_security_posture()` liefert den Zustand als JSON, `auditPosture()` fällt das Urteil. Bewusst eng geschnitten: Sie beantwortet feste Fragen und führt **kein** übergebenes SQL aus — eine generische „exec_sql mit Rückgabewert" wäre dieselbe Lücke ein zweites Mal.
-- **Bei jeder neuen Tabelle oder RPC prüfen:** RLS an? Policy an `auth.uid()` gebunden? Keine Grants an `anon`/`authenticated`/PUBLIC, die nicht gebraucht werden? RLS **an ohne Policy** ist dicht und für rein interne Tabellen die Absicht (`waechter_reports`, `theme_overrides`, `pvgis_cache`, `klima_cache`) — für alles, was ein angemeldeter Nutzer sehen soll, ist es ein Bug.
+- **Bei jeder neuen Tabelle oder RPC prüfen:** RLS an? Policy an `auth.uid()` gebunden? Keine Grants an `anon`/`authenticated`/PUBLIC, die nicht gebraucht werden? RLS **an ohne Policy** ist dicht und für rein interne Tabellen die Absicht (`waechter_reports`, `theme_overrides`, `pvgis_cache`, `klima_cache`, `gemeinde_abos`) — für alles, was ein angemeldeter Nutzer sehen soll, ist es ein Bug.
 - **Gegenprobe wie ein Angreifer:** mit dem Anon-Key direkt gegen `/rest/v1/…` gehen, Service-Key als Gegenprobe (ohne die bedeutet ein leeres `[]` auch „Tabelle leer"). Festgenagelt von `lib/__tests__/security-sql.test.ts`.
 
 ## Legal-Checkliste für Neuentwicklungen — BLOCKER
@@ -998,7 +998,7 @@ Lehren aus dem Legal-Audit 2026-07 (Details: Memory `project_legal_audit`). Vor 
    **Einstellung und Daten-Cache sind zwei Fälle — BLOCKER.** § 25 Abs. 2 Nr. 2 trägt dauerhaft nur, was der Nutzer selbst gesetzt hat (PLZ, Farbschema, Heimatort, „Speichern"-Vormerkung, Admin-Flag). Ein reiner **Geschwindigkeits-Cache** ist eine Optimierung und damit nicht „unbedingt erforderlich" — er gehört in die **Sitzung**, nicht in den `localStorage`. Das gilt unabhängig vom Personenbezug: § 25 schützt das Endgerät, nicht nur personenbezogene Daten (EuGH C-673/17 *Planet49* Rn. 70; EDSA-Leitlinien 2/2023 Rn. 6, 10, 12), und die Norm kennt **keine Interessenabwägung** (DSK-Orientierungshilfe Rn. 68) — die Alternative wäre ein Cookie-Banner für einen Datencache. Deshalb liegt der Energie-/Preis-Cache seit 16.08.2026 in der Sitzung (`LONG_CACHE_TTL` in `lib/energy.ts`; `longLived` in `lib/use-cached-fetch.ts` trägt einen Warnhinweis und wird bewusst von niemandem gesetzt). **Und: Nr. 2 ist keine Rechtsgrundlage**, sondern eine Ausnahme vom Einwilligungserfordernis — nie „Rechtsgrundlage ist § 25 …" schreiben.
 4. **Neue Seite mit Zahlen/Geldbeträgen** → Unverbindlichkeits-Hinweis (Footer-Disclaimer deckt (site)-Seiten ab; Rechner-Ergebnisse und Förderbeträge brauchen zusätzlich Stand-Datum + "ohne Gewähr, verbindlich ist die offizielle Quelle"). Förder-/Steuer-Aussagen informieren, nie individuell beraten.
 5. **Neues Embed-Widget** → Widget-Konvention (oben) einhalten: `PoweredBy`, `DataSourceNote` immer sichtbar, kein Browser-Storage, `ChartActionBar` (enthält den Impressum-Menüpunkt). Prüfen, ob der Datenschutz-Baustein in der Galerie (`/energie-widgets`) noch zutrifft (neue Datenflüsse?).
-6. **E-Mail-Versand** → an Nutzer nur transaktional (Auth, angeforderte Funktion). Werbe-/Outreach-Mails nach den Leitplanken in `docs/outreach-process-konzept.md`. **§ 7 UWG kalibriert (Judge-Prüfung Juli 2026, ersetzt das frühere pauschale „keine Kaltakquise"):** Eine unverlangte Outreach-Mail mit kostenlosem Widget-/Backlink-Angebot ist zwar mit hoher Wahrscheinlichkeit „Werbung" und damit *materiell* angreifbar — ABER das Durchsetzungsrisiko ist niedrig und überwiegend theoretisch: Der Empfänger selbst (auch eine Kommune) ist nach § 8 Abs. 3 UWG **nicht** abmahnbefugt; nur Mitbewerber/Verbände/IHK könnten, und die bekommen B2G-Mails an Rathaus-Postfächer praktisch nicht mit. „Massenversand" ist kein eigener Tatbestand (jede einzelne Mail zählt) — schubweise senkt nur das Entdeckungsrisiko, nicht die Rechtslage. **Maßvolle, schubweise Kaltakquise ist damit eine bewusste unternehmerische Entscheidung, kein Verbot.** Risiko-frei sitzt es, wenn der Erstkontakt **nicht** als unverlangte Mail läuft, sondern über das **Kontaktformular** der Zielstelle oder einen **Permission-Ask** → die Folge-Mail ist dann angefordert und § 7 entfällt. Bei jeder Outreach-Mail Pflicht: Klarname + „Betreiber solar-check.io" + Impressum-Link + Datenschutz-Einzeiler (Art. 14 DSGVO); Rollen-Postfächer (info@/rathaus@) statt Klarnamen bevorzugen (dämpft den DSGVO-Strang). Newsletter o. Ä. → Double-Opt-in + Datenschutzerklärung. Mail-Betreff/Header nie aus Freitext bauen (Allowlist-Muster wie `lib/contact-topics.ts`).
+6. **E-Mail-Versand** → an Nutzer nur transaktional (Auth, angeforderte Funktion). Werbe-/Outreach-Mails nach den Leitplanken in `docs/outreach-process-konzept.md`. **§ 7 UWG kalibriert (Judge-Prüfung Juli 2026, ersetzt das frühere pauschale „keine Kaltakquise"):** Eine unverlangte Outreach-Mail mit kostenlosem Widget-/Backlink-Angebot ist zwar mit hoher Wahrscheinlichkeit „Werbung" und damit *materiell* angreifbar — ABER das Durchsetzungsrisiko ist niedrig und überwiegend theoretisch: Der Empfänger selbst (auch eine Kommune) ist nach § 8 Abs. 3 UWG **nicht** abmahnbefugt; nur Mitbewerber/Verbände/IHK könnten, und die bekommen B2G-Mails an Rathaus-Postfächer praktisch nicht mit. „Massenversand" ist kein eigener Tatbestand (jede einzelne Mail zählt) — schubweise senkt nur das Entdeckungsrisiko, nicht die Rechtslage. **Maßvolle, schubweise Kaltakquise ist damit eine bewusste unternehmerische Entscheidung, kein Verbot.** Risiko-frei sitzt es, wenn der Erstkontakt **nicht** als unverlangte Mail läuft, sondern über das **Kontaktformular** der Zielstelle oder einen **Permission-Ask** → die Folge-Mail ist dann angefordert und § 7 entfällt. Bei jeder Outreach-Mail Pflicht: Klarname + „Betreiber solar-check.io" + Impressum-Link + Datenschutz-Einzeiler (Art. 14 DSGVO); Rollen-Postfächer (info@/rathaus@) statt Klarnamen bevorzugen (dämpft den DSGVO-Strang). Newsletter o. Ä. → Double-Opt-in + Datenschutzerklärung; der Nachweis umfasst den **Wortlaut** der Einwilligung und den **Versandbeleg**, nicht nur den Zeitpunkt (Herleitung im Abschnitt „Gemeinde-Abo“). Mail-Betreff/Header nie aus Freitext bauen (Allowlist-Muster wie `lib/contact-topics.ts`).
 7. **Neue personenbezogene Daten** (Formularfelder, Account-Felder) → Datenschutzerklärung ergänzen (Zweck, Rechtsgrundlage, Empfänger, Speicherdauer); Eingaben serverseitig validieren + escapen; öffentliche POST-Endpoints mit Rate-Limit + Honeypot (Muster: `app/api/contact/route.ts`).
    **Der Empfänger ist Teil der Verarbeitung — BLOCKER.** Wo Nutzerdaten *landen*, ist eine eigene Angabe nach Art. 13, nicht nur der Weg dorthin. Das Kontaktformular ging bis 16.08.2026 an `ADMIN_EMAILS`, und das ist ein privates Gmail-Konto: Damit war Google ein zweiter Empfänger jeder Nachricht in einem Drittland, für den sich bei einem privaten Konto kein Auftragsverarbeitungsvertrag abschließen lässt — in der Erklärung stand davon nichts. Deshalb: **Nutzerdaten nie an die Admin-/Betriebs-Liste hängen** (die ist Zugangssteuerung und zeigt auf private Postfächer), sondern an ein Postfach mit Vertrag; und **beim Postfach die Weiterleitung mitprüfen** — eine Auto-Weiterleitung in ein Drittland hebt die Trennung still wieder auf. Festgenagelt von `lib/__tests__/kontakt-empfaenger.test.ts`. Auch die Ratenbegrenzung ist eine eigene Verarbeitung mit eigener Rechtsgrundlage, und wo auf berechtigtes Interesse gestützt wird, gehört der Verweis aufs Widerspruchsrecht daneben.
 8. **Marketing-Claims** → absolute Aussagen ("keine …", "immer …", "100 %") gegen Datenschutzerklärung und Realität prüfen (§ 5 UWG Irreführung). Wettbewerber nicht herabsetzend nennen (§ 6 UWG). Keine ungeprüften Superlative.
@@ -1153,7 +1153,7 @@ Beschriftung, Knopf und Zusage-Zeile ist im Kopfbereich ein zweites Anliegen mit
 ersten und schiebt die Zahlen nach unten. Der Erklärtext steht **neben** dem Knopf, nicht
 darin — eine Beschriftung wie „Förderprogramm, Leistung u. v. m. abonnieren" macht ihn so
 breit, dass er die Überschrift erdrückt, und ein Knopf sagt ohnehin, was passiert, nicht
-warum man ihn drückt. Die Feinheiten (was kommt, wie oft, wie man wieder herauskommt)
+warum man ihn drückt. Die Feinheiten (was kommt, woran wir es merken, wie man wieder herauskommt)
 hängen am „?".
 
 **Die klebende Aktionsleiste am Seitenende öffnet dasselbe Fenster** — über ein
@@ -1234,26 +1234,118 @@ zustande gekommen. Kein Test hat es gefangen — sie prüften die Vorlagen einze
 Bestätigung wurde nur darauf geprüft, dass sie keinen Abmeldelink trägt. Die Vorlage muss
 gegen die Schranke geprüft werden, an der sie im Betrieb scheitert, nicht nur für sich.
 
-**Keine IP-Adresse, kein Zählpixel.** Der Einwilligungsnachweis sind die Zeitpunkte von
-Eintragung und Bestätigung plus das signierte Token. Das weicht bewusst von dem ab, was
-Anleitungen empfehlen, und **die Abwägung hat die Council-Prüfung mit zwei Legal-Judges
-noch NICHT durchlaufen** — sie gehört dorthin, bevor die erste Meldung rausgeht.
+**Nirgends eine Frequenzzusage** — weder „höchstens eine Mail im Monat" noch eine Rate
+(Betreiber, 31.08.2026: „wir haben bestimmt mal mehr ideen"). Eine solche Zusage ist eine
+Werbeaussage nach § 5 UWG, die JEDE künftige Meldung bindet; sie später zu brechen ist
+teurer, als sie nie gegeben zu haben. Gemessen wäre sie ohnehin nicht: Der Förderverlauf
+zeigt auf 110 Programme 24 echte Änderungen in neun Tagen — für einen einzelnen Ort selten,
+aber der Zeitraum trägt keine Zahl. Zugesagt wird der **Anlass**, und die Aufzählung ist
+ausdrücklich **offen**: Ein „und sonst nichts" hinter drei Beispielen schlösse den vierten
+Anlass aus, den wir noch nicht kennen. Die Schranke steht in der Zusage über dem
+Absenden-Knopf und im Hilfetext („nur, wenn es etwas zu berichten gibt"), festgenagelt von
+`e2e/gemeinde-abo.spec.ts` → „kein Abo verspricht eine Frequenz" — auf ein MUSTER geprüft,
+nicht auf den Wortlaut: Die erste Fassung ließ „monatlich eine Mail" durch.
 
-**Die Fristen in der Datenschutzerklärung sind Zusagen, keine Einstellungen.** Abschnitt 16
-sagt zu, dass eine nie bestätigte Eintragung gelöscht wird und ein abgemeldeter Eintrag
-nach zwölf Monaten verschwindet. Eingelöst wird das von `/api/abo/aufraeumen`, eingehängt
-im nächtlichen Förder-Workflow; `lib/__tests__/abo-zusagen.test.ts` hält die
-veröffentlichten Sätze gegen den Code, der sie halten muss. Wer den Lauf abschaltet, macht
-aus beiden Sätzen eine Falschaussage, ohne dass etwas rot wird.
+**Jede Gattung stellt genau eine Zusatzfrage.** Das Förder-Abo fragt nach der Technik, das
+Bestands-Abo danach, ob jemand **für die Stadt- oder Gemeindeverwaltung arbeitet** — der
+Grund liegt am Inhalt: Bestandszahlen sind für eine Verwaltung ein anderer Gegenstand als
+für einen Hausbesitzer (sie kann sie veröffentlichen, er kann sich daran messen), die
+Förderprogramme des eigenen Orts kennt sie dagegen bereits; dort wäre die Angabe eine ohne
+Verwendung. Selbstauskunft, nicht prüfbar und genau deshalb harmlos: Sie steuert den TON
+einer künftigen Meldung, nie einen Zugang. **Nicht vorausgewählt** — die überwiegende
+Mehrheit arbeitet nicht dort, ein gesetzter Haken wäre eine untergeschobene Angabe. Die
+Technik-Häkchen sind umgekehrt alle drei gesetzt: kein Verstoß gegen die Flow-Regel
+(die gilt Fragen mit einer Antwort), sondern der Ausgangszustand einer Ein/Aus-Angabe.
 
-**Ein abgemeldeter Eintrag wird nicht gelöscht, sondern vermerkt.** Der Vermerk IST der
-Widerspruch: Ohne ihn käme dieselbe Adresse bei einer erneuten Anmeldung ohne
-Bestätigung durch.
+**Der Einwilligungsnachweis ist der WORTLAUT und der VERSAND, nicht die IP** (Council mit
+zwei Legal-Judges, 01.09.2026, Fundstellen im Volltext gelesen). Der IP-Verzicht ist
+richtig und **keine Abweichung von irgendetwas** — er ist die Linie der Aufsicht selbst:
+Die DSK sagt wörtlich, das Abspeichern einer IP genüge „auch nach der Rechtsprechung des
+BGH zum UWG nicht" (Orientierungshilfe Direktwerbung 2/2022, Ziff. 3.3), und das VG
+Düsseldorf hat einen Versender abgewiesen, der genau die empfohlenen zwei IPs vorlegte
+(29 K 9714/24). „Beim Double-Opt-in ist die IP Pflicht" ist Ratgeber-Literatur ohne
+Fundstelle. Falsch war, worauf sich der Nachweis hier stützte — das signierte Token belegt
+nichts, weil es nach der Bestätigung verworfen wird. Zwei Stellen, die niemand angesehen
+hatte, sind jetzt gebaut:
+- **WOZU** eingewilligt wurde. Der Nachweis umfasst den Wortlaut (DSK Ziff. 3.3, EDSA
+  05/2020 Rn. 108: auf eine „korrekte Konfiguration der Website" zu verweisen genügt
+  ausdrücklich nicht), und der stand als Konstante im Code der Oberfläche, die sich mit dem
+  nächsten Commit ändert. Jetzt trägt jedes Abo seine Fassung, die Wortlaute stehen datiert
+  und **nie überschrieben** in `lib/abo-einwilligung.ts` — dieselbe Bauform wie der
+  BEG-Fahrplan. Die Oberfläche tippt keinen dieser Sätze selbst, sie liest sie aus dem
+  Archiv; `lib/__tests__/abo-einwilligung.test.ts` hält beides aneinander.
+- **DASS** eine Bestätigungsmail hinausging. Der BGH verlangt die Erklärung speicher- und
+  ausdruckbar (I ZR 164/09 Rn. 38); genau daran scheiterte der Düsseldorfer Fall (Rn. 46).
+  Gespeichert wird die Kennung des Mailservers — **keine zweite Kopie der Mail**, ihr Inhalt
+  lässt sich aus der Fassung wortgleich neu erzeugen (Datenminimierung, EDSA Rn. 106).
 
-**Offen vor dem Livegang:** `ABO_HMAC_SECRET` auf Vercel eintragen (ohne sie verweigert
-die Anmeldung — bewusst, ein fester Ersatzwert wäre öffentlich bekannt), die
-Council-Prüfung der Datenschutz-Abwägung, und der Versandlauf für die Meldungen selbst
-(gebaut ist bisher Anmeldung, Bestätigung, Abmeldung).
+**Die Löschuhr hängt am letzten VERSAND, nicht an der Abmeldung — beides war vorher falsch.**
+Der Anspruch, gegen den der Nachweis schützt, entsteht mit der einzelnen Mail (§ 31 Abs. 3
+S. 1 OWiG, § 199 Abs. 1 BGB samt Ultimo-Regel); wer sich nach drei Jahren Abo abmeldet,
+hätte bei einer Uhr ab Abmeldung drei Jahre zu viel gespeichert. Und die Länge: Die DSK
+verlangt Nachweisfähigkeit über die Verjährung hinaus, also drei Jahre (Ziff. 3.7), und
+zwar ausdrücklich „auch nach einem Widerruf und der Löschung der personenbezogenen Daten
+aus der Werbe-Datenbank". Zugesagt und gerechnet wird deshalb der **31. Dezember des
+dritten Jahres nach dem Jahr des letzten Versands**; `ABGEMELDET_MAX_TAGE` bleibt als
+`@deprecated`-Konstante stehen, damit ein Test rot wird, wenn jemand die zwölf Monate
+zurückbringt. **Der Aufräumlauf braucht drei Zweige, nicht zwei:** Wer nie bestätigt hat und
+dann per Abmeldelink abmeldet, hat weder Versand- noch Bestätigungsdatum — und `NULL <
+stichtag` ist in Postgres nicht falsch, sondern NULL. Der Fall fiel durch alle Zweige und
+wäre für immer stehen geblieben, während die Erklärung seine Löschung zusagt.
+
+**Ein abgemeldeter Eintrag wird nicht gelöscht, sondern vermerkt — und der Grund ist ein
+anderer, als hier stand.** Falsch war „der Vermerk IST der Widerspruch, sonst käme die
+Adresse ohne Bestätigung durch": Das beschreibt eine Sperrliste, und die DSK sagt
+ausdrücklich, eine solche trage nur, wo die zu verhindernde Verarbeitung auf berechtigtem
+Interesse beruht (Ziff. 5.1) — bei einem einwilligungsbasierten Verteiler tut sie das nicht.
+Die Sorge dahinter war ohnehin ein Programmfehler: Eine erneute Anmeldung läuft IMMER durch
+eine neue Bestätigung. **Richtig ist:** Die Zeile bleibt als Nachweis, auf anderer
+Rechtsgrundlage (Art. 6 Abs. 1 lit. c i. V. m. Art. 5 Abs. 2, Art. 7 Abs. 1 und lit. f) und
+mit eingeschränktem Zweck. Deshalb ist `empfaengerFuerOrt()` die **einzige Tür zum
+Versand** — läse ein zweiter Lesepfad dieselbe Tabelle ohne Filter, wäre die
+Zweckbeschränkung eine Behauptung, und Erwägungsgrund 67 verlangt, dass sie im System
+sichtbar ist. `lib/__tests__/abo-zweckbindung.test.ts` verbietet den zweiten Lesepfad.
+
+**Drei Bremsen gegen Listen-Bombing, und keine ersetzt die andere:** ein unsichtbares Feld
+gegen Maschinen · fünf Versuche je Stunde und Herkunft, im Arbeitsspeicher · **höchstens
+fünf offene Anmeldungen je ADRESSE** und keine zweite Bestätigung binnen zwei Minuten. Nur
+die dritte trägt gegen einen verteilten Angriff, und deshalb sitzt sie in der Datenschicht:
+Der Speicherzähler lebt je Instanz und ist nach einem Neustart weg. Sie zählt zudem an der
+**Adresse** statt an der Herkunft — geschützt werden soll der Mensch, dessen Postfach
+zugeschüttet wird, nicht ein Anschluss, und eine dauerhafte Zählung je IP müsste diese
+speichern, was die Datenschutzerklärung ausschließt. **Die Antwort nach außen ist in jedem
+Fall dieselbe**, ob die Adresse neu, schon angemeldet oder gerade gedeckelt ist: Eine
+Maske, die „bereits angemeldet" sagt, ist ein Abfragedienst für fremde Abos.
+`lib/__tests__/abo-bremsen.test.ts`.
+
+**Der Code war geprüft, die Umgebung nie — dritte Ausprägung derselben Klasse.** Das Abo war
+lokal vollständig getestet (Browser-Tests, echte Mail, echter Bestätigungsklick) und schlug
+beim ersten Live-Versuch fehl, weil auf der Produktion **keine der fünf Zugangsdaten des
+Postfachs** gesetzt war: kein roter Test, kein Fehler im Diff, keine kaputte Seite. Der
+Spaltenabgleich fand denselben Fall zwischen Code und Tabelle, die Kostenwache zwischen
+Mengen und Rechnung — ein lokaler Lauf kann diese Klasse prinzipiell nicht finden, weil
+lokal alles gesetzt ist. `/api/abo/bereit` fragt deshalb die **Produktion selbst** nach
+ihrer Konfiguration (Signatur, Versandweg, Basis-Adresse, Datenbank, Nachweis-Spalten), der
+Gesundheitscheck ruft sie bei jedem Lauf. Zurück kommt nur, WAS fehlt, nie ein Wert — auch
+keine Länge, die ist bei einem Passwort schon eine Auskunft. Der Befund geht an Claude, und
+ein fehlgeschlagener Abruf ist **kein** Befund, sondern „konnte nicht nachsehen".
+`lib/__tests__/abo-produktionsbereit.test.ts`.
+
+**Der Versandlauf schickt nur, wenn es einen Anlass gibt** (`lib/abo-lauf.ts`,
+`/api/abo/versenden`, `lib/__tests__/abo-lauf.test.ts`). Er geht die Orte durch, für die es
+bestätigte Abos gibt, und fragt je Ort `hatNachricht()` — schärfer als „es gibt eine
+Meldung": Eine reine Bestandsbeschreibung stand beim letzten Mal genauso da. Drei
+Eigenschaften, jede gegen einen Fehler, den ein Versandlauf üblicherweise macht:
+- **Der Versandmerker wird VOR dem Versand gesetzt**, nicht danach. Bricht der Lauf
+  zwischen zwei Empfängern ab, darf der Neustart niemanden zweimal anschreiben; der Preis
+  ist eine verlorene Meldung im Fehlerfall, und das ist die günstigere Richtung. Schlägt
+  das Setzen fehl, wird gar nicht erst gesendet.
+- **Zeit und Basis-Adresse kommen von außen.** Die Zeit, weil sich sonst nichts prüfen
+  lässt; die Adresse, weil ein Abmeldelink aus einer Testumgebung sonst auf die Produktion
+  zeigt und dort ein fremdes Abo abmeldet. **Kein Rückfall** auf die Produktionsadresse.
+- **Ein Probelauf** (`?trocken=1`) rechnet alles durch und verschickt nichts. Ein
+  Versandlauf, den noch nie jemand ohne Wirkung gesehen hat, ist einer, dessen erste
+  Wirkung eine echte Mail an einen echten Menschen ist.
 
 Tabelle `gemeinde_abos`, angelegt über `/api/abo/setup` — RLS an ohne Policy, nur über den
 Dienstschlüssel erreichbar; am 31.08.2026 mit dem Anon-Key gegengeprüft („permission

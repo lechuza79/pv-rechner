@@ -129,4 +129,30 @@ describe("Die Löschuhr hängt am richtigen Ereignis", () => {
   it("hält drei Jahre, nicht mehr und nicht weniger", () => {
     expect(NACHWEIS_JAHRE).toBe(3);
   });
+
+  it("lässt keinen abgemeldeten Eintrag ungelöscht liegen", () => {
+    // DER FALL, DER DURCHFIEL (gefunden bei der Doku-Prüfung, 01.09.2026): Wer
+    // nie bestätigt hat und dann per Abmeldelink abmeldet, steht auf
+    // „abgemeldet" ohne Bestätigungs- und ohne Versanddatum. Die beiden
+    // vorhandenen Zweige griffen bei ihm nicht — `NULL < stichtag` ist in
+    // Postgres nicht falsch, sondern NULL, also nie wahr. Die Zeile wäre für
+    // immer stehen geblieben, während die Datenschutzerklärung zusagt: „Hast
+    // du deine Anmeldung nie bestätigt, löschen wir sie ohne diese Frist."
+    //
+    // Geprüft wird die VOLLSTÄNDIGKEIT der Zweige: Jeder abgemeldete Eintrag
+    // muss in genau einen fallen. Die drei Fälle sind: mit Versand · ohne
+    // Versand, aber bestätigt · weder noch.
+    const schicht = lies("lib/gemeinde-abo.ts");
+    const stelle = schicht.slice(schicht.indexOf("export async function aboAufraeumen"));
+    const koerper = stelle.slice(0, stelle.indexOf("\n}\n"));
+
+    expect(koerper).toMatch(/\.not\("letzte_mail_am",\s*"is",\s*null\)/); // mit Versand
+    expect(koerper).toMatch(/\.is\("letzte_mail_am",\s*null\)[\s\S]{0,120}\.lt\("bestaetigt_am"/); // bestätigt
+    expect(koerper).toMatch(/\.is\("bestaetigt_am",\s*null\)/); // weder noch
+
+    // Und der dritte Zweig darf NICHT die Nachweisfrist nehmen: Ohne
+    // Bestätigung gibt es keine Einwilligung, also nichts nachzuweisen.
+    const dritter = koerper.slice(koerper.indexOf('.is("bestaetigt_am", null)'));
+    expect(dritter.slice(0, 300)).toMatch(/UNBESTAETIGT_MAX_TAGE/);
+  });
 });

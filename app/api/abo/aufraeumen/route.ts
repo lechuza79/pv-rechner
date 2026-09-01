@@ -8,7 +8,13 @@ import { aboAufraeumen } from "../../../../lib/gemeinde-abo";
 // (Abschnitt 16) und in der Bestätigungsmail wörtlich steht:
 //
 //   „Klickst du nicht, wird die Eintragung gelöscht"
-//   „nach zwölf Monaten wird der Eintrag entfernt"
+//   „Gelöscht wird der Nachweis zum 31. Dezember des dritten Jahres nach dem
+//    Jahr, in dem wir dir zuletzt geschrieben haben"
+//
+// HIER STAND BIS ZUM 01.09.2026 DIE ALTE ZUSAGE („nach zwölf Monaten"), und
+// zwar als Zitat — die gefährlichere Form: Wer hier nachliest, glaubt, die
+// veröffentlichte Fassung gesehen zu haben. Genau die Fehlerklasse, vor der
+// der nächste Absatz warnt.
 //
 // Läuft sie nicht, sind beide Sätze falsch — und zwar auf der Seite, die für
 // die Ehrlichkeit des ganzen Projekts bürgt. Die Fristen selbst stehen im

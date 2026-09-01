@@ -6,7 +6,7 @@ import { leseSmtpKonfig } from "../outreach-mail";
 // Kann die PRODUKTION das Abo überhaupt bedienen?
 //
 // DER ANLASS, gemeldet vom Betreiber beim ersten Live-Versuch (01.09.2026):
-// Das Abo war lokal vollständig geprüft — 19 Browser-Tests, echte Mail, echter
+// Das Abo war lokal vollständig geprüft — Browser-Tests, echte Mail, echter
 // Bestätigungsklick — und scheiterte auf der Produktion an der ersten
 // Anmeldung, weil dort KEINE der fünf Zugangsdaten des Postfachs gesetzt war.
 //

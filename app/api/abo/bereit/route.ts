@@ -5,7 +5,7 @@ import { supabase } from "../../../../lib/supabase-server";
 // ─── Ist der Abo-Weg in DIESER Umgebung einsatzbereit? ───────────────────────
 //
 // DER ANLASS (01.09.2026, gemeldet vom Betreiber beim ersten Live-Versuch):
-// Das Abo war lokal vollständig getestet — 19 Browser-Tests, echte Mail, echter
+// Das Abo war lokal vollständig getestet — Browser-Tests, echte Mail, echter
 // Bestätigungsklick. Auf der Produktion schlug die erste Anmeldung fehl, weil
 // dort KEINE der fünf Zugangsdaten des Postfachs gesetzt war. Kein roter Test,
 // kein Fehler im Diff, keine kaputte Seite: die Umgebung war nie geprüft

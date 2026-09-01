@@ -145,6 +145,15 @@ export type GemeindeAbo = {
    */
   versandBeleg: string | null;
   erstelltAm: string;
+  /**
+   * Wann abgemeldet wurde.
+   *
+   * Wurde geschrieben, aber bis zum 01.09.2026 nirgends gelesen — die Spalte
+   * fehlte in der Leseliste und im Typ. Die Datenschutzerklärung sagt zu, dass
+   * „dass und wann du dich … wieder abgemeldet hast" als Nachweis aufbewahrt
+   * wird; ein Nachweis, den die Leseschicht nicht herausgibt, ist aber keiner.
+   */
+  abgemeldetAm: string | null;
   bestaetigtAm: string | null;
   letzteMailAm: string | null;
 };
@@ -161,6 +170,7 @@ type Zeile = {
   einwilligung_version: string | null;
   versand_beleg: string | null;
   erstellt_am: string;
+  abgemeldet_am: string | null;
   bestaetigt_am: string | null;
   letzte_mail_am: string | null;
 };
@@ -186,13 +196,14 @@ function ausZeile(r: Zeile): GemeindeAbo {
     einwilligungVersion: r.einwilligung_version,
     versandBeleg: r.versand_beleg,
     erstelltAm: r.erstellt_am,
+    abgemeldetAm: r.abgemeldet_am,
     bestaetigtAm: r.bestaetigt_am,
     letzteMailAm: r.letzte_mail_am,
   };
 }
 
 const SPALTEN =
-  "id,region_id,email,status,quelle,ueber_brief,techniken,aus_verwaltung,einwilligung_version,versand_beleg,erstellt_am,bestaetigt_am,letzte_mail_am";
+  "id,region_id,email,status,quelle,ueber_brief,techniken,aus_verwaltung,einwilligung_version,versand_beleg,erstellt_am,bestaetigt_am,abgemeldet_am,letzte_mail_am";
 
 /**
  * Adresse vereinheitlichen, bevor sie irgendwo hingeschrieben wird.
@@ -511,15 +522,6 @@ export const OFFENE_JE_ADRESSE_MAX = 5;
 export const BESTAETIGUNG_SPERRE_MS = 2 * 60 * 1000;
 
 /**
- * Abgemeldete Einträge werden nach einem Jahr entfernt.
- *
- * NICHT sofort: Der Vermerk „abgemeldet" ist der Widerspruch. Wird die Zeile
- * gelöscht, ist er weg — und wer die Adresse danach erneut einträgt, käme ohne
- * erneute Bestätigung durch, weil nichts mehr von der früheren Abmeldung weiß.
- * Ein Jahr ist die Spanne, nach der ein Widerspruch praktisch keine Wirkung
- * mehr entfalten muss.
- */
-/**
  * Wann der Einwilligungsnachweis gelöscht wird.
  *
  * NICHT „zwölf Monate nach der Abmeldung" — das war zweimal falsch (Council mit
@@ -636,12 +638,78 @@ export async function aboAufraeumen(jetztMs: number): Promise<AufraeumErgebnis> 
     DB_READ_TIMEOUT_MS,
   );
 
-  const b = [...(b1 ?? []), ...(b2 ?? [])];
+  // DRITTER ZWEIG, und er fehlte (gefunden bei der Doku-Prüfung, 01.09.2026):
+  // Wer nie bestätigt hat und dann per Abmeldelink abmeldet, steht auf
+  // „abgemeldet" OHNE Bestätigungsdatum und ohne Versanddatum. Die beiden
+  // Zweige darüber greifen bei ihm nicht — `NULL < stichtag` ist in Postgres
+  // nicht wahr, sondern NULL. Die Zeile wäre für immer stehen geblieben,
+  // während die Datenschutzerklärung zusagt: „Hast du deine Anmeldung nie
+  // bestätigt, löschen wir sie ohne diese Frist."
+  //
+  // Und genau so ist es auch richtig: Ohne Bestätigung gibt es keine
+  // Einwilligung, also nichts nachzuweisen. Es gilt die kurze Frist der
+  // unbestätigten Eintragungen, gerechnet ab der Eintragung.
+  const { data: b3 } = await withDbTimeout(
+    supabase
+      .from("gemeinde_abos")
+      .delete()
+      .eq("status", "abgemeldet")
+      .is("letzte_mail_am", null)
+      .is("bestaetigt_am", null)
+      .lt("erstellt_am", grenze(UNBESTAETIGT_MAX_TAGE))
+      .select("id"),
+    "abo-aufraeumen-nie-bestaetigt",
+    DB_READ_TIMEOUT_MS,
+  );
+
+  const b = [...(b1 ?? []), ...(b2 ?? []), ...(b3 ?? [])];
 
   return {
     unbestaetigtGeloescht: (a ?? []).length,
     abgemeldetGeloescht: (b ?? []).length,
   };
+}
+
+/**
+ * Für welche Orte gibt es überhaupt bestätigte Abos?
+ *
+ * Der Versandlauf fragt zuerst danach, statt über alle Gemeinden zu gehen: Es
+ * gibt über zehntausend, und Abonnenten hat anfangs eine Handvoll. Ein Lauf,
+ * der jeden Ort durchrechnet, um in 99,9 % der Fälle „niemand da" zu
+ * beantworten, ist kein Lauf, sondern eine Rechnung ohne Empfänger.
+ */
+export async function orteMitAbos(): Promise<string[]> {
+  if (!supabase) return [];
+  const { data, error } = await withDbTimeout(
+    supabase.from("gemeinde_abos").select("region_id").eq("status", "bestaetigt"),
+    "abo-orte",
+    DB_READ_TIMEOUT_MS,
+  );
+  if (error || !data) return [];
+  return [...new Set((data as { region_id: string }[]).map((r) => r.region_id))];
+}
+
+/**
+ * Den Zeitpunkt der letzten Meldung setzen.
+ *
+ * VOR dem Versand aufgerufen, nicht danach. Bricht der Lauf zwischen zwei
+ * Empfängern ab, darf der Neustart niemanden ein zweites Mal anschreiben — der
+ * Preis ist, dass ein fehlgeschlagener Versand als „geschrieben" zählt, und das
+ * ist die günstigere Richtung.
+ *
+ * Dieselbe Spalte trägt die Löschuhr des Nachweises: Sie rechnet ab der letzten
+ * Meldung, nicht ab der Abmeldung (siehe NACHWEIS_JAHRE).
+ */
+export async function versandVermerken(aboId: string, jetztIso: string): Promise<void> {
+  if (!supabase) return;
+  const { error } = await withDbTimeout(
+    supabase.from("gemeinde_abos").update({ letzte_mail_am: jetztIso }).eq("id", aboId),
+    "abo-versand-vermerken",
+    DB_READ_TIMEOUT_MS,
+  );
+  // WIRFT ABSICHTLICH: Der Aufrufer darf ohne gesetzten Merker nicht senden.
+  // Ein stilles Scheitern hier wäre der Weg zum doppelten Versand.
+  if (error) throw new Error(`Versandmerker nicht gesetzt: ${error.message}`);
 }
 
 /**
