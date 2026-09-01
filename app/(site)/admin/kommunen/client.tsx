@@ -80,6 +80,12 @@ export default function KommunenCockpit() {
   const [sort, setSort] = useState("");
   const [charge, setCharge] = useState("");
   const [kampagne, setKampagne] = useState("");
+  // Der Versandtag — der „Batch", wie er in der Übersicht steht.
+  const [tag, setTag] = useState("");
+  // Die auswählbaren Tage kommen aus derselben Auswertung, die die Übersicht
+  // zeigt. Eine eigene Abfrage dafür wäre eine zweite Fassung derselben Liste,
+  // und die beiden liefen beim ersten abgebrochenen Versand auseinander.
+  const [versandtage, setVersandtage] = useState<{ tag: string; verschickt: number; schuebe: string[] }[]>([]);
   // Der Schub kommt aus der Adresse: Die Übersicht verlinkt je Versandtag
   // hierher, und ohne ihn käme man auf einer ungefilterten Liste mit 11.000
   // Zeilen an.
@@ -94,8 +100,18 @@ export default function KommunenCockpit() {
   // teilbaren Zustände, und ein mitwandernder Adressbalken wäre eine zweite
   // Wahrheit neben den Bedienelementen.
   useEffect(() => {
-    const ausAdresse = new URLSearchParams(window.location.search).get("kampagne");
+    const adresse = new URLSearchParams(window.location.search);
+    const ausAdresse = adresse.get("kampagne");
     if (ausAdresse) setKampagne(ausAdresse);
+    const tagAusAdresse = adresse.get("tag");
+    if (tagAusAdresse) setTag(tagAusAdresse);
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/admin/kommunen/bilanz")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => setVersandtage(j?.wirkung?.jeTag ?? []))
+      .catch(() => undefined);
   }, []);
   const [page, setPage] = useState(0);
 
@@ -121,6 +137,7 @@ export default function KommunenCockpit() {
     if (hasLink) params.set("hasLink", "1");
     if (qDebounced) params.set("q", qDebounced);
     if (sort) params.set("sort", sort);
+    if (tag) params.set("tag", tag);
     if (kampagne) params.set("kampagne", kampagne);
     if (kampagne && charge) params.set("charge", charge);
     params.set("page", String(page));
@@ -136,7 +153,7 @@ export default function KommunenCockpit() {
     } finally {
       setLoading(false);
     }
-  }, [bl, status, hasLink, qDebounced, sort, kampagne, charge, page]);
+  }, [bl, status, hasLink, qDebounced, sort, kampagne, charge, tag, page]);
 
   useEffect(() => {
     load();
@@ -145,7 +162,7 @@ export default function KommunenCockpit() {
   // Filterwechsel → zurück auf Seite 1.
   useEffect(() => {
     setPage(0);
-  }, [bl, status, hasLink, qDebounced, sort, kampagne, charge]);
+  }, [bl, status, hasLink, qDebounced, sort, kampagne, charge, tag]);
 
   const patchLead = useCallback((updated: Lead) => {
     setRows((prev) => prev.map((r) => (r.region_id === updated.region_id ? updated : r)));
@@ -162,6 +179,26 @@ export default function KommunenCockpit() {
 
       {/* Filterleiste */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, alignItems: "center", marginBottom: space.md }}>
+        {/* DER VERSANDTAG STEHT VORN, weil man meistens aus der Übersicht kommt
+            und genau diesen einen Batch sehen will. Chronologisch, neueste
+            zuerst — so wie die Übersicht sie zeigt; eine zweite Sortierung wäre
+            beim Vergleichen nur verwirrend.
+            Abwählbar über den ersten Eintrag: Ein Filter, den man nur über den
+            Zurück-Knopf loswird, ist keiner. */}
+        <select
+          value={tag}
+          onChange={(e) => setTag(e.target.value)}
+          style={{ ...selectStyle, ...(tag ? aktiverFilter : null) }}
+          aria-label="Versandtag"
+        >
+          <option value="">Alle Versandtage</option>
+          {versandtage.map((t) => (
+            <option key={t.tag} value={t.tag}>
+              {new Date(t.tag).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })} ·{" "}
+              {t.verschickt}
+            </option>
+          ))}
+        </select>
         <select value={bl} onChange={(e) => setBl(e.target.value)} style={selectStyle} aria-label="Bundesland">
           <option value="">Alle Bundesländer</option>
           {BUNDESLAENDER.map((b) => (
@@ -185,7 +222,12 @@ export default function KommunenCockpit() {
             zwei feste Zeilen mit dem Namen der ersten Kampagne und ihrer
             Größe — nach der zweiten Kampagne zeigte der Filter auf eine
             Auswahl, die es unter diesem Namen nicht mehr gab. */}
-        <select value={kampagne} onChange={(e) => setKampagne(e.target.value)} style={selectStyle} aria-label="Schub">
+        <select
+          value={kampagne}
+          onChange={(e) => setKampagne(e.target.value)}
+          style={{ ...selectStyle, ...(kampagne ? aktiverFilter : null) }}
+          aria-label="Schub"
+        >
           <option value="">Alle Gemeinden</option>
           {Object.keys(SCHUEBE).map((k) => (
             <option key={k} value={k}>
@@ -972,6 +1014,14 @@ const inputStyle: React.CSSProperties = {
 // die Stelle, an der die beiden Ansichten auseinanderlaufen.
 const thStyle = adminTh;
 const tdStyle = adminTd;
+
+// Ein gesetzter Filter muss sich vom leeren unterscheiden — sonst sitzt man vor
+// 100 statt 11.000 Zeilen und sucht den Grund.
+const aktiverFilter: React.CSSProperties = {
+  borderColor: v("--color-accent"),
+  color: v("--color-accent"),
+  fontWeight: 700,
+};
 
 const linkStyle: React.CSSProperties = {
   color: v("--color-accent"),

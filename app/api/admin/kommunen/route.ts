@@ -31,6 +31,11 @@ export async function GET(req: NextRequest) {
   const sort = sp.get("sort") ?? "";
   const kampagne = sp.get("kampagne") ?? "";
   const charge = sp.get("charge") ?? "";
+  // Ein VERSANDTAG als Filter — das ist der Batch, wie er in der Übersicht
+  // steht. Schub und Charge beantworten „welche Auswahl", der Tag beantwortet
+  // „was ging an dem Tag raus", und das ist die Frage, mit der man aus der
+  // Übersicht kommt.
+  const tag = (sp.get("tag") ?? "").slice(0, 10);
   const page = Math.max(0, parseInt(sp.get("page") ?? "0", 10) || 0);
 
   // Immer inner-join auf mastr_regions (jede Zeile hat per FK eine Gemeinde) —
@@ -62,6 +67,11 @@ export async function GET(req: NextRequest) {
     query = query.eq("outreach_status", status);
   }
   if (hasLink) query = query.not("kontakt_url", "is", null);
+  // Der Tag steht als Zeitstempel in der Spalte, also von Mitternacht bis
+  // Mitternacht eingrenzen statt auf Gleichheit prüfen.
+  if (/^\d{4}-\d{2}-\d{2}$/.test(tag)) {
+    query = query.gte("contacted_at", `${tag}T00:00:00Z`).lt("contacted_at", `${tag}T23:59:59.999Z`);
+  }
   if (kampagne) query = query.eq("kampagne", kampagne);
   if (charge) query = query.eq("charge", parseInt(charge, 10));
   if (q) query = query.ilike("mastr_regions.name", `%${q}%`);

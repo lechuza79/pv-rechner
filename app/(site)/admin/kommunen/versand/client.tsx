@@ -112,6 +112,7 @@ export default function VersandAuswertung() {
                     <th style={thRechts}>Antworten</th>
                     <th style={thRechts}>veröffentlicht</th>
                     <th style={thRechts}>Abos</th>
+                    <th style={thRechts} />
                   </tr>
                 </thead>
                 <tbody>
@@ -119,23 +120,7 @@ export default function VersandAuswertung() {
                     const groesster = Math.max(...wirkung.jeTag.map((x) => x.verschickt));
                     return (
                       <tr key={t.tag} style={adminZeile}>
-                        {/* Der Tag führt in die Gemeindeliste, gefiltert auf den
-                            Schub dieses Tages. Ein Datum allein beantwortet
-                            „50 verschickt" nur bis zur nächsten Frage — welche
-                            50 das waren. Bei mehreren Schüben an einem Tag der
-                            erste; die übrigen stehen daneben. */}
-                        <td style={{ ...adminTd, whiteSpace: "nowrap" }}>
-                          {t.schuebe[0] ? (
-                            <a
-                              href={`/admin/kommunen?kampagne=${encodeURIComponent(t.schuebe[0])}`}
-                              style={{ color: v("--color-accent"), textDecoration: "none", fontWeight: 600 }}
-                            >
-                              {datum(t.tag)}
-                            </a>
-                          ) : (
-                            datum(t.tag)
-                          )}
-                        </td>
+                        <td style={{ ...adminTd, whiteSpace: "nowrap" }}>{datum(t.tag)}</td>
                         <td style={{ ...adminTd, color: v("--color-text-muted") }}>{t.schuebe.join(", ")}</td>
                         <td style={{ ...tdRechts, width: 40 }}>{t.verschickt}</td>
                         <td style={{ ...adminTd, width: 160 }}>
@@ -159,6 +144,17 @@ export default function VersandAuswertung() {
                           {t.abos}
                           {t.abosMitAngabeVerwaltung > 0 && ` (${t.abosMitAngabeVerwaltung} Verw.)`}
                         </td>
+                        {/* Ein Datum beantwortet „50 verschickt" nur bis zur
+                            nächsten Frage: welche 50. Der Knopf öffnet genau
+                            diesen Batch in der Gemeindeliste — nach dem TAG
+                            gefiltert, nicht nach dem Schub: An einem Tag können
+                            mehrere Chargen desselben Schubs hinausgegangen sein,
+                            und „welche 50" meint die des Tages. */}
+                        <td style={{ ...adminTd, textAlign: "right" }}>
+                          <a href={`/admin/kommunen?tag=${t.tag}`} style={knopf}>
+                            Batch aufrufen
+                          </a>
+                        </td>
                       </tr>
                     );
                   })}
@@ -176,6 +172,19 @@ export default function VersandAuswertung() {
     </div>
   );
 }
+
+const knopf: React.CSSProperties = {
+  display: "inline-block",
+  padding: pad("xs", "sm"),
+  borderRadius: v("--radius-sm"),
+  border: `1px solid ${v("--color-border")}`,
+  background: v("--color-bg"),
+  color: v("--color-accent"),
+  textDecoration: "none",
+  fontSize: 12,
+  fontWeight: 600,
+  whiteSpace: "nowrap",
+};
 
 /** Versandtag im deutschen Format — einmal, nicht je Zelle. */
 function datum(iso: string): string {
