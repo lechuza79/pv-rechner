@@ -534,8 +534,57 @@ export function publishedCitiesInBundesland(blSlug: string): AtlasCity[] {
  * Sitemap und robots-Angabe hängen weiterhin an dieser EINEN Funktion, damit
  * sie sich nicht auseinanderentwickeln können.
  */
-export function cityIndexFreigegeben(c: AtlasCity): boolean {
-  return releaseFreigegeben("foerder-stadt", c.ags);
+export function cityIndexFreigegeben(c: AtlasCity, heute: Date = new Date()): boolean {
+  // Weg 1: eine Entscheidung im Releaseplan (Altbestand und die Schübe davor).
+  if (releaseFreigegeben("foerder-stadt", c.ags, heute)) return true;
+  // Weg 2: das Programm besteht die Schwelle, die es ohnehin gibt.
+  return foerderseiteTraegt(c);
+}
+
+/**
+ * Trägt das Programm dieses Orts eine eigene Seite?
+ *
+ * ENTSCHEIDUNG DES BETREIBERS, 01.09.2026: Eine Förderseite geht künftig live,
+ * sobald ihr Programm die Schwelle besteht — sie braucht keinen eigenen Schub
+ * mehr. Der Releaseplan bleibt für die ATLAS-Ortsseiten, wo die Freigabe
+ * wirklich eine Entscheidung ist; hier war er nur noch Verwaltung.
+ *
+ * WARUM DAS JETZT GEHT: Der Plan wurde gebaut, weil Seiten als Nebenwirkung
+ * eines Programmstatus entstanden — 61 auf einen Schlag, ohne dass jemand
+ * hingesehen hätte. Das war ein Kontrollproblem. Inzwischen gibt es die
+ * Kontrolle an der richtigen Stelle: `fundingZaehlt()` entscheidet, ob ein
+ * Programm belastbar genug ist, um im Rechner Geld abzuziehen. Was dafür reicht,
+ * reicht auch für eine Seite — und was es nicht besteht, bekommt weiterhin keine.
+ *
+ * ZWEI BEDINGUNGEN, jede aus einem gemessenen Fall:
+ *
+ *   1. Das Programm muss AKTIV sein. Ein ausgeschöpfter, pausierter oder
+ *      eingestellter Topf ergibt eine Förderseite ohne abrufbares Geld — sie
+ *      beantwortet die Frage nicht, für die jemand kommt (Göttingen, Weyhe,
+ *      Feucht); dieselbe Begründung wie beim zurückgenommenen Archiv-Schub.
+ *   2. Es muss DACH-Photovoltaik fördern. Eine Seite mit dem Titel
+ *      „Photovoltaik-Förderung“, die nur Balkonkraftwerke fördert, hält nicht,
+ *      was sie verspricht — betrifft heute 35 Orte, die eine eigene
+ *      Seitenfamilie brauchen.
+ *
+ * NICHT geprüft wird hier der BELEG-Zustand (`fundingZaehlt`), und das ist eine
+ * bewusste Trennung: Der Beleg entscheidet, ob ein Betrag im Rechner Geld
+ * abzieht — eine Frage der Zahl, nicht der Seite. Die Seite liest ihre Daten zur
+ * Laufzeit aus der Datenbank und zeigt dort ohnehin nur, was belegt ist. Eine
+ * erste Fassung dieser Funktion prüfte den Beleg mit und war deshalb komplett
+ * WIRKUNGSLOS: Im Code-Seed gibt es keine Beleg-Spalten, also zählte kein
+ * einziges der 110 Programme, und die Freigabe hätte nie gegriffen — ohne dass
+ * ein Test das gezeigt hätte.
+ *
+ * Geringe Nachfrage ist ausdrücklich KEINE Bedingung: Sie war der Grund, aus dem
+ * diese Seiten monatelang zurückgehalten wurden, und sie ist keiner (siehe
+ * lib/seo-grundregeln.ts, Regel „kein-ertrag-ist-kein-schaden“).
+ */
+export function foerderseiteTraegt(c: AtlasCity): boolean {
+  const p = fundingFor(c);
+  if (!p) return false;
+  if (p.status !== "aktiv") return false;
+  return (p.foerdert ?? ["pv"]).includes("pv");
 }
 
 /**
