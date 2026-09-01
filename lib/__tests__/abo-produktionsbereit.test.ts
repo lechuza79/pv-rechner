@@ -106,11 +106,16 @@ describe("Die Versandprüfung selbst", () => {
     // Adresse, verfehlt die Mail ihre Ausrichtung und landet im Spam, während
     // im Kopf weiter der richtige Name steht. Meine erste Fassung dieses Tests
     // hatte zwei verschiedene und hielt die Ablehnung für einen Fehler.
+    // ALS PLATZHALTER ERKENNBAR, nicht nur erfunden. Die erste Fassung nahm
+    // realistisch aussehende Werte — und ein Geheimnis-Scanner schlug beim
+    // Push Alarm (01.09.2026). Es war ein Fehlalarm, aber er kostet jedes Mal
+    // dieselbe Prüfung: Steht hier ein echtes Passwort? Ein Wert, den man
+    // dieser Frage gar nicht erst aussetzt, ist der bessere.
     const befund = leseSmtpKonfig({
-      OUTREACH_SMTP_HOST: "w01abcde.kasserver.com",
-      OUTREACH_SMTP_USER: "post@solar-check.io",
-      OUTREACH_SMTP_PASS: "geheim",
-      OUTREACH_MAIL_FROM: "Solar Check <post@solar-check.io>",
+      OUTREACH_SMTP_HOST: "BEISPIEL-HOST.kasserver.com",
+      OUTREACH_SMTP_USER: "beispiel@solar-check.io",
+      OUTREACH_SMTP_PASS: "BEISPIEL-KEIN-ECHTES-PASSWORT",
+      OUTREACH_MAIL_FROM: "Solar Check <beispiel@solar-check.io>",
       OUTREACH_SMTP_PORT: "465",
     });
     expect(befund.ok, "ok" in befund && !befund.ok ? befund.fehler.join(" · ") : "").toBe(true);
