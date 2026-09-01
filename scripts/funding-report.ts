@@ -25,6 +25,7 @@ import { resolve } from "node:path";
 import { readFileSync, existsSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
 import { technikenLesen, programmDecktSeite } from "../lib/funding-seiten";
+import { berichtAblegen } from "../lib/alert-senden";
 import type { FundingTechnik } from "../lib/funding-programs";
 
 function loadEnvFile(): void {
@@ -172,23 +173,22 @@ async function main(): Promise<void> {
   if (decisions.length) console.log(`\n  ENTSCHEIDUNG: ${decisions[0]}`);
   if (dry) return;
 
-  const basis = process.env.ALERT_BASE_URL ?? "https://solar-check.io";
-  const res = await fetch(`${basis}/api/alert`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.CRON_SECRET ?? ""}`,
-    },
-    body: JSON.stringify({
+  // Ablegen mit Wiederholung: Ein einzelner Netzhänger beim MELDEN darf nicht
+  // über den Rest des Laufs entscheiden — am 30.08.2026 hat er genau das getan
+  // und die beiden Schritte hinter diesem übersprungen. Begründung der Regeln
+  // (was wiederholt wird und was nicht) steht in `lib/alert-senden.ts`.
+  await berichtAblegen(
+    {
       tag: TAG,
       subject: "Förder-Erfassung: Tagesbericht",
       audience: decisions.length ? "betreiber" : "claude",
       decisions,
       done,
       details,
-    }),
-  });
-  console.log(`\nAn die Ablage gemeldet: HTTP ${res.status}`);
+    },
+    process.env.CRON_SECRET ?? "",
+    { basis: process.env.ALERT_BASE_URL, log: (z) => console.log(`\n${z}`) },
+  );
 }
 
 main().catch((err) => {

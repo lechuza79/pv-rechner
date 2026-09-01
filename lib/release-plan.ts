@@ -61,7 +61,17 @@ export const GATTUNG_LABEL: Record<Seitengattung, string> = {
   "atlas-bundesland": "Atlas-Landesseite",
 };
 
-export type SchubStatus = "geplant" | "live" | "zurueckgenommen";
+/**
+ * `ueberholt` (01.09.2026): zurückgenommen, aber die Rücknahme trägt nicht mehr.
+ *
+ * Beide Rücknahmen standen auf „bringt nichts" — kein Suchvolumen, KI-Antwort
+ * über den Treffern, Amtsseiten vorn. Nach der Grundregel
+ * „kein-ertrag-ist-kein-schaden" ist das kein Grund zurückzuhalten, und die
+ * Freigabe hängt seit dem 01.09.2026 ohnehin am Programmstatus statt an einem
+ * Schub. Der Eintrag bleibt stehen, weil die Messung darin richtig ist und
+ * erklärt, was diese Seiten NICHT leisten werden — er sperrt nur nichts mehr.
+ */
+export type SchubStatus = "geplant" | "live" | "zurueckgenommen" | "ueberholt";
 
 /**
  * Die beiden Fragen aus CLAUDE.md, je Schub beantwortet — mit Zahlen, nicht mit
@@ -250,7 +260,7 @@ export const RELEASE_PLAN: Schub[] = [
     // nicht in eigenen Seiten. Sie wirken dort unverändert weiter; hier entsteht
     // nur keine Seite. Wer den Schub wieder aufmachen will, muss den Aufbau der
     // Ergebnisseite widerlegen — nicht ein Suchvolumen nachreichen.
-    status: "zurueckgenommen",
+    status: "ueberholt",
     orte: [
       "03256036", // Wietzen (Niedersachsen)
       "06433004", // Gernsheim (Hessen)
@@ -303,7 +313,7 @@ export const RELEASE_PLAN: Schub[] = [
     // gilt unabhängig davon, wie viele nach dem Ort suchen. Bleibt der Topf
     // dauerhaft leer, gehört das Programm ohnehin in den Verlauf statt auf eine
     // eigene Seite.
-    status: "zurueckgenommen",
+    status: "ueberholt",
     orte: [
       "07143032", // Höhr-Grenzhausen (Rheinland-Pfalz), Topf ausgeschöpft
     ],
