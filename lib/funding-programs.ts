@@ -102,6 +102,37 @@ export interface FundingProgram {
   /** Human-readable as-of, e.g. "Juni 2026". */
   stand: string;
   status: FundingStatus;
+  /**
+   * SEIT WANN läuft das Programm, und seit wann ist es vorbei?
+   *
+   * Beide ISO, beide so genau wie belegt und nicht genauer: `2024-07-15`,
+   * `2024-07` oder `2024`. Kein Wert ist besser als ein geschätzter — ein
+   * erfundenes Startjahr verschiebt in der Auswertung unten die ganze Kurve.
+   *
+   * WOFÜR (01.09.2026): Der Katalog wusste bisher nur, DASS ein Programm läuft
+   * oder vorbei ist, nie ab wann. Damit lässt sich die Frage nicht beantworten,
+   * für die dieser Katalog neben dem Rechner überhaupt taugt: Wie hat sich der
+   * Zubau einer Gemeinde entwickelt, bevor und nachdem sie gefördert hat? Die
+   * Zubauzahlen je Jahr und Gemeinde liegen im Atlas bereits vor; es fehlte
+   * ausschließlich die Zeitachse auf dieser Seite. Ohne sie bliebe nur der
+   * Vergleich „Gemeinden mit Förderung gegen Gemeinden ohne" — und der ist
+   * wertlos, weil die Wirkungsrichtung offenbliebe: Eine Gemeinde, in der viel
+   * gebaut wird, beschließt eher ein Programm, nicht nur umgekehrt.
+   *
+   * `endetIso` ist NICHT die Befristung der Richtlinie. „Gilt bis 31.12.2026"
+   * heißt, dass die Richtlinie ausläuft, nicht dass keine Anträge mehr
+   * angenommen werden; ein leerer Topf im August endet früher als sein
+   * Richtlinientext. Gesetzt wird der Tag, ab dem die Gemeinde keine Anträge
+   * mehr annimmt.
+   *
+   * `beschlossenIso` ist oft das EINZIGE harte Datum auf einer Amtsseite
+   * („Der Rat beschloss am 17.09.2025 …"). Es ist nicht der Antragsstart —
+   * zwischen Beschluss und erster Antragsmöglichkeit liegen regelmäßig Monate —
+   * und ersetzt `beginntIso` deshalb nicht, sondern steht daneben.
+   */
+  beginntIso?: string;
+  endetIso?: string;
+  beschlossenIso?: string;
   /** Budget capped / first-come-first-served. */
   capped: boolean;
   /** Confirmed against the official source (vs. only aggregator portals). */
