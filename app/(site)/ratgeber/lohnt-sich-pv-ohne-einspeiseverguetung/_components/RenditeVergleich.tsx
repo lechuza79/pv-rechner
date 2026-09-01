@@ -114,23 +114,23 @@ export default function RenditeVergleich(p: RenditeVergleichProps) {
     background: aktiv ? v("--color-bg-accent") : "transparent",
     color: aktiv ? v("--color-accent-dark") : v("--color-text-secondary"),
     fontWeight: aktiv ? 700 : 500,
-    fontSize: 13,
+    fontSize: v("--font-size-small"),
     cursor: "pointer",
     fontFamily: v("--font-mono"),
   });
 
   return (
     <div style={box}>
-      <div style={{ fontSize: 13, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 2 }}>
+      <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 2 }}>
         Wie sich die Rendite verschiebt
       </div>
-      <div style={{ fontSize: 12, color: v("--color-text-muted"), lineHeight: 1.6, marginBottom: 12 }}>
+      <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6, marginBottom: 12 }}>
         Dieselbe Anlage ({p.kwp} kWp), derselbe Haushalt — nur andere Konditionen für den Strom, der
         ins Netz geht. Die Kurven zeigen, was nach Abzug der Investition übrig bleibt.
       </div>
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6, alignItems: "center", marginBottom: 4 }}>
-        <span style={{ fontSize: 12, color: v("--color-text-secondary"), marginRight: 2 }}>
+        <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginRight: 2 }}>
           Inbetriebnahme
         </span>
         {JAHRE.map((j) => (
@@ -142,7 +142,7 @@ export default function RenditeVergleich(p: RenditeVergleichProps) {
 
       <label style={{
         display: "flex", alignItems: "center", gap: 7, margin: "10px 0 12px",
-        fontSize: 12, color: v("--color-text-secondary"), cursor: "pointer",
+        fontSize: v("--font-size-small"), color: v("--color-text-secondary"), cursor: "pointer",
       }}>
         <input
           type="checkbox"
@@ -159,7 +159,7 @@ export default function RenditeVergleich(p: RenditeVergleichProps) {
 
       <div style={{
         display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "center",
-        fontSize: 11, color: v("--color-text-secondary"), margin: "2px 0 12px",
+        fontSize: v("--font-size-caption"), color: v("--color-text-secondary"), margin: "2px 0 12px",
       }}>
         <Legende farbe={FARBEN.heute}>
           Heute: {p.heuteSatzCt.toLocaleString("de-DE", { minimumFractionDigits: 2 })} ct, {FEED_IN_YEARS} Jahre
@@ -176,7 +176,7 @@ export default function RenditeVergleich(p: RenditeVergleichProps) {
 
       <div style={{
         borderTop: `1px dashed ${v("--color-border")}`, paddingTop: 10,
-        fontSize: 12, color: v("--color-text-secondary"), lineHeight: 1.7,
+        fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.7,
       }}>
         {uebergangMoeglich ? (
           <>
@@ -202,7 +202,7 @@ export default function RenditeVergleich(p: RenditeVergleichProps) {
       <div style={{
         display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8,
         marginTop: 10, paddingTop: 10, borderTop: `1px dashed ${v("--color-border")}`,
-        fontSize: 12, color: v("--color-text-secondary"),
+        fontSize: v("--font-size-small"), color: v("--color-text-secondary"),
       }}>
         <span>Eigene Annahme rechnen:</span>
         <InlineEdit
@@ -223,7 +223,7 @@ export default function RenditeVergleich(p: RenditeVergleichProps) {
             onClick={() => setEigenerSatz(null)}
             style={{
               border: "none", background: "transparent", color: v("--color-accent"),
-              fontSize: 12, cursor: "pointer", padding: 0, textDecoration: "underline",
+              fontSize: v("--font-size-small"), cursor: "pointer", padding: 0, textDecoration: "underline",
             }}
           >
             zurücksetzen
@@ -233,7 +233,7 @@ export default function RenditeVergleich(p: RenditeVergleichProps) {
 
       <div style={{
         marginTop: 10, paddingTop: 10, borderTop: `1px solid ${v("--color-border")}`,
-        fontSize: 11, color: v("--color-text-muted"), lineHeight: 1.6,
+        fontSize: v("--font-size-caption"), color: v("--color-text-muted"), lineHeight: 1.6,
       }}>
         Die Werte für 2027 und später stammen aus dem Gesetzentwurf und sind kein geltendes Recht
         (Stand: {eegReformStandLabel()}).{" "}

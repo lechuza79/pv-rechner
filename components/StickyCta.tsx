@@ -97,7 +97,7 @@ export default function StickyCta({
     textAlign: "center",
     padding: "12px 10px",
     borderRadius: v("--radius-md"),
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     fontWeight: 700,
     textDecoration: "none",
     lineHeight: 1.2,

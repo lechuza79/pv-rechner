@@ -9,7 +9,7 @@ import { CONTACT_TOPICS, DEFAULT_CONTACT_TOPIC, type ContactTopic } from "../lib
 const S = {
   form: { marginTop: space.xxl, display: "flex", flexDirection: "column", gap: space.lg } as React.CSSProperties,
   label: {
-    fontSize: 12,
+    fontSize: v("--font-size-small"),
     fontWeight: 700,
     color: v('--color-text-secondary'),
     textTransform: "uppercase",
@@ -18,7 +18,7 @@ const S = {
   field: { display: "flex", flexDirection: "column", gap: space.sm } as React.CSSProperties,
   input: {
     fontFamily: v('--font-text'),
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     color: v('--color-text-primary'),
     background: v('--color-bg-muted'),
     border: `1px solid ${v('--color-border')}`,
@@ -28,7 +28,7 @@ const S = {
   } as React.CSSProperties,
   textarea: {
     fontFamily: v('--font-text'),
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     color: v('--color-text-primary'),
     background: v('--color-bg-muted'),
     border: `1px solid ${v('--color-border')}`,
@@ -47,7 +47,7 @@ const S = {
   } as React.CSSProperties,
   button: {
     fontFamily: v('--font-text'),
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     fontWeight: 700,
     color: v('--color-text-on-accent'),
     background: v('--color-accent'),
@@ -62,7 +62,7 @@ const S = {
   // wo die Daten eingegeben werden — die Erklärung allein reicht nicht, wenn
   // das Formular selbst nicht auf sie zeigt.
   privacy: {
-    fontSize: 12,
+    fontSize: v("--font-size-small"),
     lineHeight: 1.6,
     color: v('--color-text-faint'),
     marginTop: space.xs,
@@ -72,7 +72,7 @@ const S = {
     display: "flex",
     alignItems: "center",
     gap: space.md,
-    fontSize: 13,
+    fontSize: v("--font-size-small"),
     borderRadius: v('--radius-sm'),
     padding: pad("lg"),
     marginTop: space.xs,

@@ -390,7 +390,7 @@ const S: Record<string, React.CSSProperties> = {
     border: "none",
     background: "transparent",
     color: v("--color-text-muted"),
-    fontSize: 24,
+    fontSize: v("--font-size-h1"),
     lineHeight: 0.8,
     cursor: "pointer",
     padding: 0,

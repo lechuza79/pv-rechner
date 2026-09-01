@@ -22,7 +22,7 @@ export const metadata: Metadata = pageMetadata({
 });
 
 const td: React.CSSProperties = {
-  fontSize: 14,
+  fontSize: v("--font-size-body"),
   color: v("--color-text-muted"),
   padding: "9px 6px",
   borderBottom: `1px solid ${v("--color-border")}`,
@@ -31,7 +31,7 @@ const th: React.CSSProperties = {
   ...td,
   fontWeight: 700,
   color: v("--color-text-secondary"),
-  fontSize: 12,
+  fontSize: v("--font-size-small"),
   textTransform: "uppercase",
   letterSpacing: "0.04em",
 };
@@ -53,10 +53,10 @@ function SaetzeBlock() {
   const stichtag = rates.validFrom.split("-").reverse().join(".");
   return (
     <section style={{ marginTop: space.huge * 2 }}>
-      <h2 style={{ fontSize: 18, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 8 }}>
+      <h2 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 8 }}>
         Einspeisevergütung {year}: die aktuellen EEG-Sätze
       </h2>
-      <p style={{ fontSize: 14, lineHeight: 1.7, color: v("--color-text-muted"), marginBottom: 14 }}>
+      <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.7, color: v("--color-text-muted"), marginBottom: 14 }}>
         Für Photovoltaik-Anlagen, die ab dem {stichtag} in Betrieb gehen, gelten diese
         Vergütungssätze pro eingespeister Kilowattstunde — garantiert für 20 Jahre ab
         Inbetriebnahme:
@@ -84,7 +84,7 @@ function SaetzeBlock() {
           </tbody>
         </table>
       </div>
-      <p style={{ fontSize: 14, lineHeight: 1.7, color: v("--color-text-muted"), margin: 0 }}>
+      <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.7, color: v("--color-text-muted"), margin: 0 }}>
         Die EEG-Vergütung sinkt für neue Anlagen planmäßig um 1 % je Halbjahr (jeweils zum
         1. Februar und 1. August). Bestandsanlagen behalten ihren Satz — welchen deine Anlage
         bekommt, rechnet der Rechner oben für jeden Inbetriebnahme-Monat seit April 2012
@@ -99,10 +99,10 @@ export default function EinspeiseverguetungPage() {
     <div style={{ background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "0 16px 32px" }}>
       <div style={{ maxWidth: v("--page-max-width"), margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", color: v("--color-text-primary"), lineHeight: 1.2 }}>
+          <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", color: v("--color-text-primary"), lineHeight: 1.2 }}>
             Einspeisevergütung-Rechner
           </h1>
-          <p style={{ fontSize: 13, color: v("--color-text-muted"), marginTop: 6, lineHeight: 1.5 }}>
+          <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-muted"), marginTop: 6, lineHeight: 1.5 }}>
             Aktueller EEG-Satz und Jahresvergütung für deine Anlage — auch für Bestandsanlagen
             seit 2012, die Sätze folgen automatisch den gesetzlichen Stichtagen.
           </p>

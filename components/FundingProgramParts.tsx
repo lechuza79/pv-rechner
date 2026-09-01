@@ -239,11 +239,11 @@ export function ExampleCards({ examples }: { examples: FundingExample[] }) {
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10 }}>
       {examples.map((ex) => (
         <div key={ex.kwp} style={{ background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: "16px 18px" }}>
-          <div style={{ fontSize: 17, fontWeight: 800 }}>{ex.kwp} kWp</div>
-          <div style={{ fontSize: 12, color: v("--color-text-muted"), marginBottom: 12 }}>
+          <div style={{ fontSize: v("--font-size-lead"), fontWeight: 800 }}>{ex.kwp} kWp</div>
+          <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginBottom: 12 }}>
             {ex.spKwh > 0 ? `mit ${ex.spKwh} kWh Speicher` : "ohne Speicher"}
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 13 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: v("--font-size-small") }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ color: v("--color-text-secondary") }}>Investition</span>
               <span style={{ fontFamily: v("--font-mono") }}>{nf(ex.brutto)} €</span>

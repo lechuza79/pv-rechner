@@ -219,11 +219,11 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 24 }}>
-          <h1 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
+          <h1 style={{ fontSize: v("--font-size-h2"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
             {isResult ? "Deine Klimaanlage im Betrieb" : "Was kostet eine Klimaanlage?"}
           </h1>
           {!isResult && (
-            <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>
+            <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>
               Stromverbrauch, Kosten und CO₂ — ehrlich aus Wetterdaten. Ohne Anmeldung.
             </p>
           )}
@@ -241,7 +241,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
         {/* ── STEPS ── */}
         {!isResult && (
           <div className="fu" key={step}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 18 }}>{STEPS[step]}</h2>
+            <h2 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, marginBottom: 18 }}>{STEPS[step]}</h2>
 
             {/* 0: Gerätetyp */}
             {step === 0 && (
@@ -258,17 +258,17 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                     border: aktiv ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
                   }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                      <span style={{ fontSize: 14, fontWeight: 700, color: aktiv ? v('--color-accent') : v('--color-text-primary') }}>{d.label}</span>
-                      <span style={{ fontSize: 11, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-text-muted'), whiteSpace: "nowrap" }}>Effizienz {d.seer.toString().replace(".", ",")}</span>
+                      <span style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: aktiv ? v('--color-accent') : v('--color-text-primary') }}>{d.label}</span>
+                      <span style={{ fontSize: v("--font-size-caption"), fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-text-muted'), whiteSpace: "nowrap" }}>Effizienz {d.seer.toString().replace(".", ",")}</span>
                     </div>
-                    <div style={{ fontSize: 12, color: v('--color-text-secondary'), lineHeight: 1.5, marginTop: 6 }}>{d.what}</div>
-                    <div style={{ fontSize: 11, color: v('--color-text-faint'), lineHeight: 1.5, marginTop: 4 }}>
+                    <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), lineHeight: 1.5, marginTop: 6 }}>{d.what}</div>
+                    <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), lineHeight: 1.5, marginTop: 4 }}>
                       Typenschild: {d.labelMetric} {d.labelValue.toString().replace(".", ",")} ({d.labelClass})
                     </div>
                   </button>
                   );
                 })}
-                <div style={{ fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.5, marginTop: 2 }}>
+                <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), lineHeight: 1.5, marginTop: 2 }}>
                   Der <GlossaryHint /> sagt, wie effizient gekühlt wird: Ein Split-Gerät zieht für dieselbe Kühlung
                   nur einen Bruchteil des Stroms eines Monoblocks. Wir rechnen für alle drei Typen mit der Effizienz
                   im echten Betrieb, damit der Vergleich fair bleibt — die Zahlen vom Typenschild stehen darunter.
@@ -279,14 +279,14 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
             {/* 1: Räume & Größe */}
             {step === 1 && (
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Wie viele Räume kühlst du?</div>
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Wie viele Räume kühlst du?</div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 6, marginBottom: 20 }}>
                   {[1, 2, 3, 4, 5].map(n => {
                     const aktiv = beantwortet.has("raeume") && rooms === n;
                     return (
                     <button key={n} data-flow-option={n === 1 ? "1 Raum" : `${n} Räume`} data-flow-group="raeume" aria-pressed={aktiv}
                       onClick={() => { setRooms(n); markBeantwortet("raeume"); }} style={{
-                      padding: "14px 4px", borderRadius: v('--radius-md'), fontSize: 16, fontWeight: 700, cursor: "pointer", textAlign: "center",
+                      padding: "14px 4px", borderRadius: v('--radius-md'), fontSize: v("--font-size-lead"), fontWeight: 700, cursor: "pointer", textAlign: "center",
                       background: aktiv ? v('--color-accent-dim') : v('--color-bg-muted'),
                       border: aktiv ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
                       color: aktiv ? v('--color-accent') : v('--color-text-secondary'),
@@ -294,20 +294,20 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                     );
                   })}
                 </div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Fläche je Raum</div>
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Fläche je Raum</div>
                 <div style={{
                   padding: "12px 14px", borderRadius: v('--radius-md'), background: v('--color-bg-muted'),
                   border: `2px solid ${v('--color-border')}`, display: "flex", justifyContent: "space-between", alignItems: "center",
                 }}>
-                  <span style={{ fontSize: 13, fontWeight: 600 }}>Durchschnittliche Raumgröße</span>
+                  <span style={{ fontSize: v("--font-size-small"), fontWeight: 600 }}>Durchschnittliche Raumgröße</span>
                   <InlineEdit value={roomM2} onCommit={val => setRoomM2(Math.round(val))} unit=" m²" min={8} max={80} step={5} width={56} />
                 </div>
-                <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 10, lineHeight: 1.5 }}>
+                <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 10, lineHeight: 1.5 }}>
                   Gekühlt wird gesamt <strong style={{ color: v('--color-text-primary') }}>{rooms * roomM2} m²</strong> — nicht die ganze
                   Wohnfläche, sondern nur die Räume, die du wirklich kühlst.
                 </div>
 
-                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, marginTop: 22, textTransform: "uppercase", letterSpacing: "0.04em", display: "inline-flex", alignItems: "center", gap: 4 }}>
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, marginTop: 22, textTransform: "uppercase", letterSpacing: "0.04em", display: "inline-flex", alignItems: "center", gap: 4 }}>
                   Wie sonnig liegt der Raum?
                   <InfoTooltip title="Warum Sonne, nicht Dämmung?" ariaLabel="Warum fragen wir nach der Sonne statt nach der Dämmung?" size={iconSizes.sm}>
                     Beim Kühlen kommt der größte Wärmeeintrag durch die Fenster — Sonne, Ausrichtung,
@@ -324,7 +324,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                     <OptionCard key={opt.id} group="sonne" selected={beantwortet.has("sonne") && exposure === opt.id} onClick={() => { setExposure(opt.id); markBeantwortet("sonne"); }} label={opt.label} sub={opt.sub} />
                   ))}
                 </div>
-                <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.5 }}>
+                <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.5 }}>
                   Sonne durchs Fenster ist beim Kühlen der größte Posten — größer als die Dämmung. Ein Dachgeschoss
                   oder Südfenster ohne Verschattung heizt sich stark auf.
                 </div>
@@ -334,7 +334,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
             {/* 2: Nutzung & Standort */}
             {step === 2 && (
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Auf welche Temperatur kühlen?</div>
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Auf welche Temperatur kühlen?</div>
                 <div style={{ display: "grid", gridTemplateColumns: `repeat(${CFG.targetTempOptions.length}, 1fr)`, gap: 6, marginBottom: 20 }}>
                   {CFG.targetTempOptions.map(t => {
                     const aktiv = beantwortet.has("temperatur") && targetTemp === t;
@@ -346,21 +346,21 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                       border: aktiv ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
                       color: aktiv ? v('--color-accent') : v('--color-text-secondary'),
                     }}>
-                      <div style={{ fontSize: 16, fontWeight: 700, fontFamily: v('--font-mono') }}>{t} °C</div>
-                      <div style={{ fontSize: 10, color: v('--color-text-muted'), marginTop: 2 }}>{TARGET_LABELS[t]}</div>
+                      <div style={{ fontSize: v("--font-size-lead"), fontWeight: 700, fontFamily: v('--font-mono') }}>{t} °C</div>
+                      <div style={{ fontSize: v("--font-size-micro"), color: v('--color-text-muted'), marginTop: 2 }}>{TARGET_LABELS[t]}</div>
                     </button>
                     );
                   })}
                 </div>
 
-                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Wann läuft die Anlage?</div>
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Wann läuft die Anlage?</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8, marginBottom: 20 }}>
                   {WINDOWS.map(w => (
                     <OptionCard key={w.id} group="zeitfenster" selected={beantwortet.has("zeitfenster") && window_ === w.id} onClick={() => { setWindow(w.id); markBeantwortet("zeitfenster"); }} label={w.label} sub={w.sub} />
                   ))}
                 </div>
 
-                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Standort (für echte Hitzedaten)</div>
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Standort (für echte Hitzedaten)</div>
                 <form onSubmit={e => { e.preventDefault(); if (!plzConfirmed) fetchCooling(plz); }} style={{ display: "flex", gap: 8 }}>
                   <input
                     type="text" inputMode="numeric" aria-label="Postleitzahl"
@@ -368,13 +368,13 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                     value={plz}
                     onChange={e => onPlzChange(e.target.value)}
                     style={{
-                      flex: 1, padding: "12px 14px", fontSize: 15, fontFamily: v('--font-mono'),
+                      flex: 1, padding: "12px 14px", fontSize: v("--font-size-body"), fontFamily: v('--font-mono'),
                       borderRadius: v('--radius-md'), border: `2px solid ${v('--color-border')}`,
                       background: v('--color-bg-muted'), color: v('--color-text-primary'), outline: "none", textAlign: "center", letterSpacing: "0.08em",
                     }}
                   />
                   <button type="submit" disabled={plz.length !== 5 || plzLoading || plzConfirmed} style={{
-                    padding: "0 18px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, whiteSpace: "nowrap",
+                    padding: "0 18px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 700, whiteSpace: "nowrap",
                     border: "none", cursor: plz.length === 5 && !plzConfirmed ? "pointer" : "default",
                     background: plzConfirmed ? v('--color-bg-muted') : plz.length === 5 ? v('--color-accent') : v('--color-bg-muted'),
                     color: plzConfirmed ? v('--color-text-muted') : plz.length === 5 ? v('--color-text-on-accent') : v('--color-text-muted'),
@@ -385,29 +385,29 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                   </button>
                 </form>
                 {plzConfirmed ? (
-                  <div style={{ fontSize: 12, color: v('--color-text-secondary'), marginTop: 8, lineHeight: 1.5, fontWeight: 600 }}>
+                  <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), marginTop: 8, lineHeight: 1.5, fontWeight: 600 }}>
                     Standort übernommen: {cdh.toLocaleString("de-DE")} Kühlgradstunden pro Jahr{cdhSource === "fallback" ? " (Durchschnitt)" : ""}.
                     {heatwave && heatwave.hotDays > 0 && ` Aktuell bis ${heatwave.maxTemp} °C.`}
                   </div>
                 ) : (
-                  <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>
+                  <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>
                     Optional. Ohne PLZ rechnen wir mit einem deutschen Durchschnitt. Mit PLZ nutzen wir die echten
                     Sommertemperaturen deines Orts.
                   </div>
                 )}
 
-                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, marginTop: 22, textTransform: "uppercase", letterSpacing: "0.04em" }}>Hast du eine Solaranlage?</div>
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, marginTop: 22, textTransform: "uppercase", letterSpacing: "0.04em" }}>Hast du eine Solaranlage?</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                   {[{ on: true, label: "Ja, vorhanden oder geplant" }, { on: false, label: "Nein" }].map(opt => (
                     <button key={String(opt.on)} onClick={() => setPvActive(opt.on)} style={{
-                      padding: "12px 8px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, cursor: "pointer", textAlign: "center",
+                      padding: "12px 8px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 700, cursor: "pointer", textAlign: "center",
                       background: pvActive === opt.on ? v('--color-accent-dim') : v('--color-bg-muted'),
                       border: pvActive === opt.on ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
                       color: pvActive === opt.on ? v('--color-accent') : v('--color-text-secondary'),
                     }}>{opt.label}</button>
                   ))}
                 </div>
-                <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>
+                <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>
                   Kühlen passt fast perfekt zur Sonne — mit PV deckt sie den Großteil des Kühlstroms.
                 </div>
               </div>
@@ -433,7 +433,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
           <div className="fu">
             {/* Hitzewellen-Banner (akut, aus 16-Tage-Vorhersage) */}
             {heatwave && heatwave.hotDays > 0 && (
-              <div style={{ padding: "10px 14px", marginBottom: 16, background: v('--color-negative-dim'), border: `1px solid ${v('--color-negative-border')}`, borderRadius: v('--radius-md'), fontSize: 13, color: v('--color-negative'), lineHeight: 1.5 }}>
+              <div style={{ padding: "10px 14px", marginBottom: 16, background: v('--color-negative-dim'), border: `1px solid ${v('--color-negative-border')}`, borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), color: v('--color-negative'), lineHeight: 1.5 }}>
                 <strong>{heatwave.active ? "Hitzewelle voraus:" : "Heiß:"}</strong> in den nächsten 16 Tagen bis {heatwave.maxTemp} °C
                 {heatwave.hotDays > 0 && <> · {heatwave.hotDays} {heatwave.hotDays === 1 ? "Hitzetag" : "Hitzetage"} (≥ {CFG.heatwaveThreshold} °C)</>}
                 {plz && ` an PLZ ${plz}`}.
@@ -442,7 +442,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
 
             {/* Hero: Stromkosten/Jahr */}
             <div style={{ padding: "24px 20px", marginBottom: 16, background: v('--color-bg-accent'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border-accent')}` }}>
-              <div style={{ fontSize: 12, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, width: "100%" }}>
+              <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, width: "100%" }}>
                 Stromkosten pro Jahr · {result.device.label}
                 <InfoTooltip title="Was den Wert treibt" ariaLabel="Wie kommt die Stromkosten-Zahl zustande?" size={iconSizes.sm}>
                   Das ist ein <strong>Jahres</strong>betrag, nicht pro Monat. Die deutsche Kühlsaison ist kurz —
@@ -452,10 +452,10 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                   eine Frage der Geräte-Leistung, nicht der Jahresenergie.
                 </InfoTooltip>
               </div>
-              <div style={{ fontSize: 42, fontWeight: 800, color: v('--color-text-primary'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
+              <div style={{ fontSize: v("--font-size-display-lg"), fontWeight: 800, color: v('--color-text-primary'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
                 {result.runningCost.toLocaleString("de-DE")} €
               </div>
-              <div style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6, textAlign: "center" }}>
+              <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6, textAlign: "center" }}>
                 {result.electricityKwh.toLocaleString("de-DE")} kWh Strom/Jahr · {result.co2Kg.toLocaleString("de-DE")} kg CO₂/Jahr
               </div>
 
@@ -474,7 +474,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
               summary={`${rooms} ${rooms === 1 ? "Raum" : "Räume"} · ${cooledArea} m² · ${cdhModusLabel()}`}
             >
                 {/* Editierbare Annahmen */}
-                <div style={{ marginTop: 18, borderTop: `1px solid ${v('--color-border-accent')}`, paddingTop: 14, fontSize: 13, lineHeight: 2 }}>
+                <div style={{ marginTop: 18, borderTop: `1px solid ${v('--color-border-accent')}`, paddingTop: 14, fontSize: v("--font-size-small"), lineHeight: 2 }}>
                   <div>
                     Gekühlt: <InlineEdit value={rooms} onCommit={val => setRooms(Math.max(1, Math.min(10, Math.round(val))))} unit="" min={1} max={10} step={1} width={32} /> {rooms === 1 ? "Raum" : "Räume"}
                     {" × "}<InlineEdit value={roomM2} onCommit={val => setRoomM2(Math.round(val))} unit=" m²" min={8} max={80} step={5} width={52} />
@@ -482,7 +482,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                   </div>
                   <div>Strompreis: <InlineEdit value={Math.round(strompreis * 100 * 100) / 100} onCommit={val => setOStrom(val / 100)} unit=" ct/kWh" min={10} max={70} step={1} width={70} /></div>
                   <div>Kühlgradstunden pro Jahr: <strong style={{ fontFamily: v('--font-mono') }}>{cdh.toLocaleString("de-DE")}</strong>{" "}
-                    <span style={{ fontSize: 11, color: v('--color-text-faint') }}>
+                    <span style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint') }}>
                       ({cdhSource === "fallback" ? (bl ? `Ø ${bl}` : "Ø Deutschland") : plz ? `PLZ ${plz}` : "Ø Deutschland"})
                     </span>
                   </div>
@@ -496,13 +496,13 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                     { id: "projection", label: `Projektion ~${PROJ_YEAR}` },
                   ] as { id: CdhMode; label: string }[]).map(opt => (
                     <button key={opt.id} onClick={() => setCdhMode(opt.id)} style={{
-                      flex: 1, padding: "7px 4px", borderRadius: v('--radius-sm'), fontSize: 11, fontWeight: 700, cursor: "pointer", border: "none", lineHeight: 1.2,
+                      flex: 1, padding: "7px 4px", borderRadius: v('--radius-sm'), fontSize: v("--font-size-caption"), fontWeight: 700, cursor: "pointer", border: "none", lineHeight: 1.2,
                       background: cdhMode === opt.id ? v('--color-accent') : "transparent",
                       color: cdhMode === opt.id ? v('--color-text-on-accent') : v('--color-text-muted'),
                     }}>{opt.label}</button>
                   ))}
                 </div>
-                <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 6, lineHeight: 1.5, textAlign: "center" }}>
+                <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), marginTop: 6, lineHeight: 1.5, textAlign: "center" }}>
                   {cdhMode === "avg5" && `Durchschnitt der letzten ${CFG.avgYears} Sommer — der ausgewogene Wert.`}
                   {cdhMode === "lastSummer" && "Der letzte Sommer — oft heißer als der Schnitt."}
                   {cdhMode === "projection" && `So heiß wird ein Sommer um ${PROJ_YEAR} laut Klimamodell (CMIP6) — Projektion, kein exakter Wert.`}
@@ -512,7 +512,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
 
             {/* Gerätevergleich — getroffene Auswahl als Referenz, andere mit Differenz */}
             <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}` }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
+              <div style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
                 Deine Auswahl · gleiche Kühlung
               </div>
 
@@ -520,16 +520,16 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
               <div style={{ padding: "12px 14px", borderRadius: v('--radius-sm'), background: v('--color-accent-dim'), border: `1.5px solid ${v('--color-accent')}`, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 10 }}>
                 <span style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
                   <span style={{ width: 16, height: 16, borderRadius: 4, flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", background: v('--color-accent'), color: v('--color-text-on-accent') }}><IconCheck size={iconSizes.xs} /></span>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: v('--color-accent') }}>{result.device.label}</span>
+                  <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v('--color-accent') }}>{result.device.label}</span>
                 </span>
-                <span style={{ display: "flex", gap: 12, flexShrink: 0, fontFamily: v('--font-mono'), fontSize: 13, alignItems: "baseline" }}>
-                  <span style={{ color: v('--color-text-muted'), fontSize: 11 }}>{result.electricityKwh} kWh/Jahr</span>
+                <span style={{ display: "flex", gap: 12, flexShrink: 0, fontFamily: v('--font-mono'), fontSize: v("--font-size-small"), alignItems: "baseline" }}>
+                  <span style={{ color: v('--color-text-muted'), fontSize: v("--font-size-caption") }}>{result.electricityKwh} kWh/Jahr</span>
                   <span style={{ fontWeight: 800, color: v('--color-text-primary') }}>{result.runningCost} €/Jahr</span>
                 </span>
               </div>
 
               {/* Andere Gerätetypen: kleiner, mit +/- gegenüber der Auswahl */}
-              <div style={{ fontSize: 10, fontWeight: 700, color: v('--color-text-faint'), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 6 }}>im Vergleich</div>
+              <div style={{ fontSize: v("--font-size-micro"), fontWeight: 700, color: v('--color-text-faint'), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 6 }}>im Vergleich</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 {comparison.filter(r => r.device.id !== deviceId).map(r => {
                   const dCost = r.runningCost - result.runningCost;
@@ -542,8 +542,8 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                       background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`,
                       display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10,
                     }}>
-                      <span style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-secondary'), overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{r.device.label}</span>
-                      <span style={{ display: "flex", gap: 10, flexShrink: 0, fontFamily: v('--font-mono'), fontSize: 11, alignItems: "baseline" }}>
+                      <span style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-secondary'), overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{r.device.label}</span>
+                      <span style={{ display: "flex", gap: 10, flexShrink: 0, fontFamily: v('--font-mono'), fontSize: v("--font-size-caption"), alignItems: "baseline" }}>
                         <span style={{ color: v('--color-text-faint') }}>{dKwh > 0 ? "+" : ""}{dKwh} kWh/Jahr</span>
                         <span style={{ fontWeight: 700, color: deltaColor, width: 78, textAlign: "right" }}>{dCost > 0 ? "+" : ""}{dCost} €/Jahr</span>
                       </span>
@@ -551,7 +551,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                   );
                 })}
               </div>
-              <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.5 }}>
+              <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.5 }}>
                 Anderen Typ antippen, um ihn als Auswahl zu übernehmen.
               </div>
             </div>
@@ -581,12 +581,12 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
                   <IconSun size={iconSizes.md} color={v('--color-accent')} />
-                  <span style={{ fontSize: 14, fontWeight: 700 }}>Solaranlage</span>
+                  <span style={{ fontSize: v("--font-size-body"), fontWeight: 700 }}>Solaranlage</span>
                 </span>
                 <span style={{ display: "inline-flex", gap: 3, background: v('--color-bg-muted'), borderRadius: v('--radius-sm'), padding: 3, border: `1px solid ${v('--color-border')}` }}>
                   {[{ on: true, label: "Ja" }, { on: false, label: "Nein" }].map(opt => (
                     <button key={String(opt.on)} onClick={() => setPvActive(opt.on)} style={{
-                      padding: "4px 14px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 700, cursor: "pointer", border: "none",
+                      padding: "4px 14px", borderRadius: v('--radius-sm'), fontSize: v("--font-size-small"), fontWeight: 700, cursor: "pointer", border: "none",
                       background: pvActive === opt.on ? v('--color-accent') : "transparent",
                       color: pvActive === opt.on ? v('--color-text-on-accent') : v('--color-text-muted'),
                     }}>{opt.label}</button>
@@ -597,23 +597,23 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                 <>
                   {/* Mit / ohne Speicher — mit ist Default */}
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 12 }}>
-                    <span style={{ fontSize: 12, color: v('--color-text-muted') }}>Batteriespeicher?</span>
+                    <span style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted') }}>Batteriespeicher?</span>
                     <span style={{ display: "inline-flex", gap: 3, background: v('--color-bg-muted'), borderRadius: v('--radius-sm'), padding: 3, border: `1px solid ${v('--color-border')}` }}>
                       {[{ on: true, label: "Mit Speicher" }, { on: false, label: "Ohne" }].map(opt => (
                         <button key={String(opt.on)} onClick={() => setBattery(opt.on)} style={{
-                          padding: "4px 12px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 700, cursor: "pointer", border: "none",
+                          padding: "4px 12px", borderRadius: v('--radius-sm'), fontSize: v("--font-size-small"), fontWeight: 700, cursor: "pointer", border: "none",
                           background: battery === opt.on ? v('--color-accent') : "transparent",
                           color: battery === opt.on ? v('--color-text-on-accent') : v('--color-text-muted'),
                         }}>{opt.label}</button>
                       ))}
                     </span>
                   </div>
-                  <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${v('--color-border')}`, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.6 }}>
+                  <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${v('--color-border')}`, fontSize: v("--font-size-body"), color: v('--color-text-secondary'), lineHeight: 1.6 }}>
                     Die Sonne übernimmt rund <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{Math.round(result.pvCoverage * 100)} %</span> deines Kühlstroms.{" "}
                     {COVERAGE_COPY[battery ? "battery" : "noBattery"][window_]} Reststromkosten:{" "}
                     <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{result.netRunningCost.toLocaleString("de-DE")} €/Jahr</span>{" "}
                     statt {result.runningCost.toLocaleString("de-DE")} €/Jahr.
-                    <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 4 }}>
+                    <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), marginTop: 4 }}>
                       {battery
                         ? "Mit typischem Heimspeicher (~10 kWh) gerechnet — er puffert den Tagstrom für Abend und Nacht."
                         : "Direktnutzung ohne Speicher — ein Akku würde die Deckung heben, vor allem nachts."}{" "}
@@ -622,7 +622,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                   </div>
                 </>
               ) : (
-                <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${v('--color-border')}`, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.6 }}>
+                <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${v('--color-border')}`, fontSize: v("--font-size-body"), color: v('--color-text-secondary'), lineHeight: 1.6 }}>
                   Mit einer Solaranlage und Speicher würde die Sonne rund <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{Math.round(potentialCoverage * 100)} %</span> deines Kühlstroms übernehmen.{" "}
                   {COVERAGE_COPY.battery[window_]} Statt {result.runningCost.toLocaleString("de-DE")} €/Jahr nur noch{" "}
                   <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>~{potentialNet.toLocaleString("de-DE")} €/Jahr</span>.{" "}
@@ -635,7 +635,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
             <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16, border: `1px solid ${heatMode ? v('--color-accent') : v('--color-border')}` }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontSize: 14, fontWeight: 700 }}>Auch heizen?</span>
+                  <span style={{ fontSize: v("--font-size-body"), fontWeight: 700 }}>Auch heizen?</span>
                   <InfoTooltip title="Split-Klima als Heizung" ariaLabel="Wie gut heizt eine Split-Klimaanlage?" size={iconSizes.sm}>
                     Split-Geräte sind reversibel — sie funktionieren wie eine Luft-Luft-Wärmepumpe und heizen mit einer
                     Jahresarbeitszahl von rund 3,4 im Realbetrieb — auf dem Typenschild steht 4,0, damit rechnen wir bewusst nicht. In der Übergangszeit ist das günstiger als Gas. Für tiefe Winterkälte
@@ -645,7 +645,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                 <span style={{ display: "inline-flex", gap: 3, background: v('--color-bg-muted'), borderRadius: v('--radius-sm'), padding: 3, border: `1px solid ${v('--color-border')}` }}>
                   {[{ on: true, label: "Ja" }, { on: false, label: "Nein" }].map(opt => (
                     <button key={String(opt.on)} onClick={() => setHeatMode(opt.on)} style={{
-                      padding: "4px 14px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 700, cursor: "pointer", border: "none",
+                      padding: "4px 14px", borderRadius: v('--radius-sm'), fontSize: v("--font-size-small"), fontWeight: 700, cursor: "pointer", border: "none",
                       background: heatMode === opt.on ? v('--color-accent') : "transparent",
                       color: heatMode === opt.on ? v('--color-text-on-accent') : v('--color-text-muted'),
                     }}>{opt.label}</button>
@@ -659,20 +659,20 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                     {/* Wärmepreis pro kWh — der belastbare Kern */}
                     <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
                       <div style={{ flex: 1, padding: "10px 12px", borderRadius: v('--radius-sm'), background: v('--color-chart-positive-bg'), border: `1px solid ${v('--color-border')}`, textAlign: "center" }}>
-                        <div style={{ fontSize: 10, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em" }}>Split (Arbeitszahl {heat.scop.toString().replace(".", ",")})</div>
-                        <div style={{ fontSize: 18, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-positive'), marginTop: 2 }}>{heat.costPerKwhHeatSplitCt.toString().replace(".", ",")} ct</div>
-                        <div style={{ fontSize: 10, color: v('--color-text-faint') }}>je kWh Wärme</div>
+                        <div style={{ fontSize: v("--font-size-micro"), fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em" }}>Split (Arbeitszahl {heat.scop.toString().replace(".", ",")})</div>
+                        <div style={{ fontSize: v("--font-size-h3"), fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-positive'), marginTop: 2 }}>{heat.costPerKwhHeatSplitCt.toString().replace(".", ",")} ct</div>
+                        <div style={{ fontSize: v("--font-size-micro"), color: v('--color-text-faint') }}>je kWh Wärme</div>
                       </div>
                       <div style={{ flex: 1, padding: "10px 12px", borderRadius: v('--radius-sm'), background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, textAlign: "center" }}>
-                        <div style={{ fontSize: 10, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em" }}>Gas (Brennwert)</div>
-                        <div style={{ fontSize: 18, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-text-secondary'), marginTop: 2 }}>{heat.costPerKwhHeatGasCt.toString().replace(".", ",")} ct</div>
-                        <div style={{ fontSize: 10, color: v('--color-text-faint') }}>je kWh Wärme</div>
+                        <div style={{ fontSize: v("--font-size-micro"), fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em" }}>Gas (Brennwert)</div>
+                        <div style={{ fontSize: v("--font-size-h3"), fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-text-secondary'), marginTop: 2 }}>{heat.costPerKwhHeatGasCt.toString().replace(".", ",")} ct</div>
+                        <div style={{ fontSize: v("--font-size-micro"), color: v('--color-text-faint') }}>je kWh Wärme</div>
                       </div>
                     </div>
 
                     {/* Gebäudestandard — beim Heizen der dominante Hebel. Nur hier
                         gefragt, damit der Kühl-Flow schlank bleibt. */}
-                    <div style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 6 }}>
+                    <div style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 6 }}>
                       Wie gut ist das Gebäude gedämmt?
                     </div>
                     {/* Zweispaltig, aber ohne feste Spaltenzahl: flex-basis 45 % ergibt
@@ -695,8 +695,8 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                               color: on ? v('--color-accent') : v('--color-text-secondary'),
                             }}
                           >
-                            <div style={{ fontSize: 12, fontWeight: 700 }}>{std.label}</div>
-                            <div style={{ fontSize: 10, color: on ? v('--color-accent') : v('--color-text-faint'), fontFamily: v('--font-mono'), marginTop: 1 }}>
+                            <div style={{ fontSize: v("--font-size-small"), fontWeight: 700 }}>{std.label}</div>
+                            <div style={{ fontSize: v("--font-size-micro"), color: on ? v('--color-accent') : v('--color-text-faint'), fontFamily: v('--font-mono'), marginTop: 1 }}>
                               {acHeatSpecKwhPerM2(std.id)} kWh/m²·a
                             </div>
                           </button>
@@ -704,7 +704,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                       })}
                     </div>
 
-                    <div style={{ fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.7 }}>
+                    <div style={{ fontSize: v("--font-size-body"), color: v('--color-text-secondary'), lineHeight: 1.7 }}>
                       Für die Übergangszeit deiner {result.cooledArea} m² rechnen wir{" "}
                       <InlineEdit value={heat.heatThermalKwh} onCommit={val => setHeatThermalOverride(Math.round(val))} unit=" kWh/Jahr" min={100} max={20000} step={100} width={72} /> Heizwärme:{" "}
                       <strong style={{ fontFamily: v('--font-mono') }}>{heat.heatElectricKwh.toLocaleString("de-DE")} kWh/Jahr</strong> Strom ={" "}
@@ -717,7 +717,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                       )}
                     </div>
 
-                    <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.6 }}>
+                    <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.6 }}>
                       Angesetzt sind {heat.specKwhPerM2} kWh/m²·a — das sind {Math.round(CFG.heatTransitionShare * 100)} % des
                       Jahres-Heizwärmeverbrauchs von {heat.standardVerbrauchKwhPerM2} kWh/m²·a, den wir für „{heat.standard.label}" erwarten
                       (die Norm-Rechnung nennt {heat.standard.specKwh} kWh/m²·a; real wird weniger geheizt). Gerechnet ist also nur
@@ -727,9 +727,9 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                     </div>
                   </div>
                 ) : (
-                  <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${v('--color-border')}`, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.6 }}>
+                  <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${v('--color-border')}`, fontSize: v("--font-size-body"), color: v('--color-text-secondary'), lineHeight: 1.6 }}>
                     Ein Monoblock eignet sich nicht zum Heizen. Zum effizienten Heizen brauchst du eine{" "}
-                    <button onClick={() => setDeviceId("split")} style={{ background: "none", border: "none", padding: 0, color: v('--color-accent'), fontWeight: 600, cursor: "pointer", fontSize: 13 }}>fest installierte Split-Anlage</button>
+                    <button onClick={() => setDeviceId("split")} style={{ background: "none", border: "none", padding: 0, color: v('--color-accent'), fontWeight: 600, cursor: "pointer", fontSize: v("--font-size-small") }}>fest installierte Split-Anlage</button>
                     {" "}oder eine mobile Split. Für eine vollwertige Heizung:{" "}
                     <Link href="/waermepumpe-rechner" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Wärmepumpe rechnen</Link>.
                   </div>
@@ -739,15 +739,15 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
 
             {/* Aktionen */}
             <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-              <Link href={pvRechnerHref} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), textDecoration: "none", textAlign: "center" }}>
+              <Link href={pvRechnerHref} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), textDecoration: "none", textAlign: "center" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>Im PV-Rechner mitrechnen <IconArrowRight size={iconSizes.sm} /></span>
               </Link>
-              <button onClick={() => setStep(0)} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
+              <button onClick={() => setStep(0)} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={iconSizes.sm} /> Neu berechnen</span>
               </button>
             </div>
 
-            <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.6 }}>
+            <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: v("--font-size-small"), color: v('--color-text-muted'), lineHeight: 1.6 }}>
               <Link href="/methodik" style={{ fontWeight: 700, color: v('--color-text-secondary'), textDecoration: "none", borderBottom: `1px dashed ${v('--color-text-faint')}` }}>Methodik</Link>
               <span> · Kühlbedarf aus echten Kühlgradstunden · Heizen als Übergangszeit-Schätzung · Werte auf der </span>
               <Link href="/datenstand" style={{ color: v('--color-accent'), textDecoration: "none" }}>Datenstand-Seite</Link>.
@@ -756,7 +756,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
               </div>
             </div>
 
-            <div style={{ textAlign: "center", fontSize: 11, color: v('--color-text-faint'), padding: "8px 0" }}>
+            <div style={{ textAlign: "center", fontSize: v("--font-size-caption"), color: v('--color-text-faint'), padding: "8px 0" }}>
               Näherungswerte aus Klimatologie und Durchschnittsgeräten. Genauigkeit ±20 %. Keine Anlageberatung.
             </div>
           </div>
@@ -790,12 +790,12 @@ function GlossaryHint() {
 function StatCard({ label, value, sub, help, helpTitle }: { label: string; value: string; sub?: string; help?: React.ReactNode; helpTitle?: string }) {
   return (
     <div style={{ padding: "14px 12px", borderRadius: v('--radius-md'), background: v('--color-bg'), border: `1px solid ${v('--color-border')}`, textAlign: "center" }}>
-      <div style={{ fontSize: 10, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 3 }}>
+      <div style={{ fontSize: v("--font-size-micro"), fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 3 }}>
         {label}
         {help && <InfoTooltip title={helpTitle ?? label} ariaLabel="Mehr Infos" size={iconSizes.sm}>{help}</InfoTooltip>}
       </div>
-      <div style={{ fontSize: 18, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-text-primary') }}>{value}</div>
-      {sub && <div style={{ fontSize: 10, color: v('--color-text-faint'), fontFamily: v('--font-mono'), marginTop: 2 }}>{sub}</div>}
+      <div style={{ fontSize: v("--font-size-h3"), fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-text-primary') }}>{value}</div>
+      {sub && <div style={{ fontSize: v("--font-size-micro"), color: v('--color-text-faint'), fontFamily: v('--font-mono'), marginTop: 2 }}>{sub}</div>}
     </div>
   );
 }

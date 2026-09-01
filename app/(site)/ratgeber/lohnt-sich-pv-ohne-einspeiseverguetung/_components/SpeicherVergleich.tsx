@@ -60,14 +60,14 @@ export default function SpeicherVergleich({
   );
 
   const tileLabel = {
-    fontSize: 10,
+    fontSize: v("--font-size-micro"),
     color: v("--color-text-secondary"),
     textTransform: "uppercase" as const,
     letterSpacing: "0.04em",
     fontWeight: 600,
   } as const;
   const tileValue = {
-    fontSize: 17,
+    fontSize: v("--font-size-lead"),
     fontWeight: 800,
     fontFamily: v("--font-mono"),
     marginTop: 3,
@@ -102,8 +102,8 @@ export default function SpeicherVergleich({
                 flexDirection: "column",
               }}
             >
-              <div style={{ fontSize: 13.5, fontWeight: 700, color: v("--color-text-primary") }}>{col.title}</div>
-              <div style={{ fontSize: 11, color: v("--color-text-muted"), fontFamily: v("--font-mono"), marginTop: 2, marginBottom: 10 }}>
+              <div style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary") }}>{col.title}</div>
+              <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), fontFamily: v("--font-mono"), marginTop: 2, marginBottom: 10 }}>
                 {col.sub}
               </div>
 
@@ -135,7 +135,7 @@ export default function SpeicherVergleich({
                   marginTop: 12,
                   padding: "8px 14px",
                   borderRadius: v("--radius-md"),
-                  fontSize: 12.5,
+                  fontSize: v("--font-size-small"),
                   fontWeight: 700,
                   background: v("--color-accent"),
                   color: v("--color-text-on-accent"),

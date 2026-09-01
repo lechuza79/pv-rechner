@@ -159,7 +159,9 @@ export const tokens = {
   // Einheit stand plötzlich in Kachelgröße neben ihrem Wert.
   // Wer eine dieser Zahlen verkleinert, verkleinert ihre Einheit mit.
   '--font-size-display-sm': '22px',     // Kennzahl-Werte in Kacheln
-  '--font-size-display-lg': '56px',     // Große Ergebniszahl (Hero)
+  '--font-size-display-md': '28px',     // Mitte eines Rings, mittlere Kennzahl
+  '--font-size-display-lg': '42px',     // Hero-Zahl der Rechner-Ergebnisse
+  '--font-size-display-xl': '56px',     // Die eine große Zahl einer Seite
 
   // ─── Radii (3) ─────────────────────────────────────────────────────────────
   '--radius-sm': '6px',                 // Small: inputs, checkboxes, pills
@@ -287,6 +289,19 @@ export const faqContentGap = space.huge * 2; // 96
 
 /** CSS variable reference for inline styles: v('--color-accent') → 'var(--color-accent)' */
 export const v = (name: TokenName): string => `var(${name})`;
+
+/**
+ * Schriftgröße als ZAHL aus der Skala — für SVG-Präsentationsattribute und
+ * für Rechnungen.
+ *
+ * `<text fontSize={…}>` wird zum Attribut `font-size`, und ein `var(…)` ist
+ * dort ungültig: Der Browser wirft die Angabe weg, statt sie aufzulösen —
+ * dieselbe Falle, an der die Serienfarben im Bild-Export monatelang schwarz
+ * gerendert haben. Deshalb kommt hier der Wert, nicht der Verweis. Die Quelle
+ * bleibt dieselbe; wer die Stufe ändert, ändert beides zugleich.
+ */
+export type FontSizeName = Extract<TokenName, `--font-size-${string}`>;
+export const fsPx = (name: FontSizeName): number => parseFloat(tokens[name]);
 
 /** Generate :root CSS block from tokens */
 export function getCssVariables(): string {
@@ -609,7 +624,13 @@ export const globalStyles = `
     .mastr-live{width:fit-content;margin-inline:auto}
     .mastr-kpis{grid-template-columns:repeat(3,1fr);gap:8px}
     .mastr-kpis .kachel-tile{padding:10px}
-    .mastr-kpis .kachel-value{font-size:15px !important;letter-spacing:-0.4px}
+    /* Zusammengedrängte Kachel: der Wert schrumpft — und seine Einheit MUSS
+       mitschrumpfen, sonst steht sie fast so groß da wie ihr Wert. Der
+       Größenunterschied sagt hier, welche der beiden Zahlen die Aussage trägt.
+       Dieselbe Regel steht im Embed-Layout, weil ein iframe von seiner Seite
+       nichts erbt — die beiden dürfen nie auseinanderlaufen. */
+    .mastr-kpis .kachel-value{font-size:var(--font-size-lead) !important;letter-spacing:-0.4px}
+    .mastr-kpis .kachel-unit{font-size:var(--font-size-caption)}
   }
   .tool-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media (max-width:720px){.tool-cards-grid{grid-template-columns:1fr}}
@@ -748,7 +769,7 @@ export const globalStyles = `
      schrumpfen kann (inline schluege jede Media Query). Einheit heller, eigene
      Zeile — immer vorhanden (leer bei einheitenlosen Kacheln), damit die Tendenz
      ueberall gleich sitzt. Zahlen brechen NIE um (nowrap). */
-  .kpi-val{font-family:var(--font-mono);font-size:22px;font-weight:700;line-height:1.1;white-space:nowrap}
+  .kpi-val{font-family:var(--font-mono);font-size:var(--font-size-display-sm);font-weight:700;line-height:1.1;white-space:nowrap}
   .kpi-unit{font-family:var(--font-mono);font-size:var(--font-size-small);font-weight:600;color:var(--color-text-muted);margin-top:2px}
   /* Trennlinie zwischen Bedingungen und Konditionen auf der Förderkarte. Sobald
      die beiden Spalten untereinander stehen, liefe sie ins Leere — dann weg. */

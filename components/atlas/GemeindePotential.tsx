@@ -141,7 +141,7 @@ export default function GemeindePotential({
 const S: Record<string, React.CSSProperties> = {
   // Einheitlicher Section-Abstand (space.huge) wie die übrigen Blöcke der Seite.
   section: { marginBottom: space.huge },
-  h2: { fontSize: 16, fontWeight: 700, margin: "0 0 4px" },
+  h2: { fontSize: v("--font-size-lead"), fontWeight: 700, margin: "0 0 4px" },
   // Nebeneinander auf Desktop, gestapelt auf Mobil — über flex-wrap statt Media
   // Query (Inline-Styles). Bei 720px Breite passen drei ~200er-Karten in eine Reihe.
   cards: { display: "flex", flexWrap: "wrap", gap: 10 },
@@ -170,23 +170,23 @@ const S: Record<string, React.CSSProperties> = {
   },
   exVal: {
     fontFamily: v("--font-mono"),
-    fontSize: 22,
+    fontSize: v("--font-size-display-sm"),
     fontWeight: 700,
     color: v("--color-text-primary"),
     lineHeight: 1.1,
   },
-  exLabel: { fontSize: 14, lineHeight: 1.5, color: v("--color-text-primary"), marginBottom: 6 },
+  exLabel: { fontSize: v("--font-size-body"), lineHeight: 1.5, color: v("--color-text-primary"), marginBottom: 6 },
   // Der ortsbezogene Satz: derselbe Grad wie der Parameter-Fuß, aber in der
   // Textfarbe der Karte — er ist Aussage, nicht Kleingedrucktes.
-  exOrt: { fontSize: 12, lineHeight: 1.5, color: v("--color-text-secondary"), marginBottom: 6 },
-  exSub: { fontSize: 11, color: v("--color-text-muted"), marginBottom: 12 },
+  exOrt: { fontSize: v("--font-size-small"), lineHeight: 1.5, color: v("--color-text-secondary"), marginBottom: 6 },
+  exSub: { fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginBottom: 12 },
   exCta: {
     display: "inline-flex",
     alignItems: "center",
     gap: 6,
     marginTop: "auto",
     alignSelf: "flex-start",
-    fontSize: 13,
+    fontSize: v("--font-size-small"),
     fontWeight: 600,
     color: v("--color-accent"),
   },

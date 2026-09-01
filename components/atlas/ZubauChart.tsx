@@ -67,7 +67,7 @@ export default function ZubauChart({
             style={{
               flex: 1,
               textAlign: "center",
-              fontSize: 9,
+              fontSize: v("--font-size-micro"),
               color: r.year === now ? v("--color-text-secondary") : v("--color-text-muted"),
               fontFamily: v("--font-mono"),
             }}
@@ -76,7 +76,7 @@ export default function ZubauChart({
           </div>
         ))}
       </div>
-      <p style={{ fontSize: 11, color: v("--color-text-muted"), margin: "10px 0 0", lineHeight: 1.6 }}>
+      <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), margin: "10px 0 0", lineHeight: 1.6 }}>
         Der schraffierte Balken ist das laufende Jahr {now} und noch nicht vollständig. Anlagen
         dürfen bis zu einen Monat nach Inbetriebnahme gemeldet werden, die jüngsten Wochen sind
         daher immer untererfasst.

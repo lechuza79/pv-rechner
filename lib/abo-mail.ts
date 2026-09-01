@@ -113,7 +113,8 @@ const C = {
  * der Seite; ihm eine eigene Größe zu geben hieße, dieselbe Entscheidung ein
  * zweites Mal zu treffen und beim nächsten Mal anders. Eine erste Fassung
  * hatte hier acht verschiedene Werte von Hand stehen, darunter zwei, die es in
- * der Skala gar nicht gibt (14 und 20 px).
+ * der damaligen Skala gar nicht gab (14 und 20 px — beide gehören seit dem
+ * 01.09.2026 dazu, der Punkt bleibt: getippt war es trotzdem).
  */
 const T = {
   klein: tokens["--font-size-caption"],

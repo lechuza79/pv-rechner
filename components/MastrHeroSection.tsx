@@ -293,7 +293,7 @@ export function MastrHeroSection({
       {showSource && (
         <div
           style={{
-            fontSize: 10,
+            fontSize: v("--font-size-micro"),
             color: v("--color-text-faint"),
             marginTop: 10,
             textAlign: "right",
@@ -331,7 +331,7 @@ function TraegerSwitch({
         onClick={() => onChange(t.key)}
         style={{
           padding: "6px 12px",
-          fontSize: 13,
+          fontSize: v("--font-size-small"),
           fontWeight: active ? 600 : 400,
           whiteSpace: "nowrap",
           color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
@@ -412,7 +412,7 @@ function SegmentSwitch({
         onClick={() => onChange(s.key)}
         style={{
           padding: "4px 10px",
-          fontSize: 12,
+          fontSize: v("--font-size-small"),
           fontWeight: active ? 600 : 400,
           whiteSpace: "nowrap",
           color: active ? v("--color-accent") : v("--color-text-secondary"),
@@ -443,14 +443,14 @@ function SegmentSwitch({
       }}
     >
       {PRIMARY_SEGMENTS.map(renderPrimary)}
-      <span style={{ color: v("--color-text-faint"), fontSize: 12, margin: "0 2px" }}>·</span>
+      <span style={{ color: v("--color-text-faint"), fontSize: v("--font-size-small"), margin: "0 2px" }}>·</span>
       <button
         role="tab"
         aria-selected={freiActive}
         onClick={() => onChange(freiActive ? "alle" : SECONDARY_SEGMENT.key)}
         style={{
           padding: "3px 8px",
-          fontSize: 11,
+          fontSize: v("--font-size-caption"),
           fontWeight: freiActive ? 600 : 400,
           color: freiActive ? v("--color-accent") : v("--color-text-muted"),
           background: freiActive ? v("--color-accent-dim") : "transparent",
@@ -501,7 +501,7 @@ function GemeindeHint({ kreisAgs, kreisName }: { kreisAgs: string; kreisName?: s
         alignItems: "center",
         gap: 8,
         marginTop: 8,
-        fontSize: 12,
+        fontSize: v("--font-size-small"),
         color: v("--color-text-muted"),
       }}
     >
@@ -535,16 +535,16 @@ function MapBreadcrumb({
 }) {
   const link: React.CSSProperties = {
     background: "none", border: 0, padding: 0, cursor: "pointer",
-    fontSize: 13, fontWeight: 600, color: v("--color-accent"), fontFamily: "inherit",
+    fontSize: v("--font-size-small"), fontWeight: 600, color: v("--color-accent"), fontFamily: "inherit",
   };
-  const sep: React.CSSProperties = { color: v("--color-text-muted"), fontSize: 13 };
+  const sep: React.CSSProperties = { color: v("--color-text-muted"), fontSize: v("--font-size-small") };
   const current: React.CSSProperties = {
-    fontSize: 13, fontWeight: 700, color: v("--color-text-primary"),
+    fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary"),
     display: "inline-flex", alignItems: "center", gap: 4,
   };
   const close: React.CSSProperties = {
     background: "none", border: 0, padding: "0 2px", cursor: "pointer",
-    color: v("--color-text-muted"), fontSize: 14, lineHeight: 1, fontFamily: "inherit",
+    color: v("--color-text-muted"), fontSize: v("--font-size-body"), lineHeight: 1, fontFamily: "inherit",
   };
   const Current = ({ label, up }: { label: string; up: string | undefined }) => (
     <span style={current}>
@@ -621,11 +621,11 @@ function SummaryPanel({
           three KPI tiles below are (installed capacity), with the data date and
           region. Both stay dynamic: träger and region follow the filter/map. */}
       <div style={{ display: "grid", gap: 2, minWidth: 0 }}>
-        <span style={{ fontSize: 15, fontWeight: 700, color: v("--color-text-primary") }}>
+        <span style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary") }}>
           Kapazität {traegerLabel}
           {segmentSuffix}
         </span>
-        <span style={{ fontSize: 12, color: v("--color-text-muted") }}>
+        <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
           {summary
             ? `${summary.source === "placeholder" ? "Schätzung · " : "Stand "}${formatDataAsOf(summary.data_as_of)} · ${regionLabel}`
             : regionLabel}
@@ -663,7 +663,7 @@ function SummaryPanel({
         >
           <div
             style={{
-              fontSize: 11,
+              fontSize: v("--font-size-caption"),
               textTransform: "uppercase",
               letterSpacing: 0.8,
               color: v("--color-text-muted"),
@@ -681,7 +681,7 @@ function SummaryPanel({
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "baseline",
-                  fontSize: 13,
+                  fontSize: v("--font-size-small"),
                   padding: "3px 0",
                   color: v("--color-text-primary"),
                 }}
@@ -735,7 +735,7 @@ export function Kachel({
     >
       <div
         style={{
-          fontSize: 11,
+          fontSize: v("--font-size-caption"),
           textTransform: "uppercase",
           letterSpacing: 0.8,
           color: v("--color-text-muted"),
@@ -753,7 +753,7 @@ export function Kachel({
       <div
         className="kachel-value"
         style={{
-          fontSize: 22,
+          fontSize: v("--font-size-display-sm"),
           fontWeight: 700,
           color: v("--color-text-primary"),
           fontVariantNumeric: "tabular-nums",
@@ -768,13 +768,13 @@ export function Kachel({
       >
         <span>{value}</span>
         {unit && (
-          <span style={{ fontSize: 12, fontWeight: 600, color: v("--color-text-secondary"), letterSpacing: 0 }}>
+          <span className="kachel-unit" style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v("--color-text-secondary"), letterSpacing: 0 }}>
             {unit}
           </span>
         )}
       </div>
       {hint && (
-        <div style={{ fontSize: 12, color: v("--color-text-secondary"), marginTop: 2 }}>{hint}</div>
+        <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginTop: 2 }}>{hint}</div>
       )}
     </div>
   );
@@ -800,7 +800,7 @@ function StaleBanner({
       role="status"
       style={{
         marginTop: 8,
-        fontSize: 12,
+        fontSize: v("--font-size-small"),
         color: error ? v("--color-negative") : v("--color-text-muted"),
         background: error ? v("--color-negative-dim") : v("--color-bg-muted"),
         border: `1px solid ${error ? v("--color-negative-border") : v("--color-border")}`,
@@ -817,7 +817,7 @@ function StaleBanner({
           onClick={onRetry}
           style={{
             padding: "3px 10px",
-            fontSize: 12,
+            fontSize: v("--font-size-small"),
             fontWeight: 600,
             color: v("--color-text-on-accent"),
             background: v("--color-accent"),
@@ -841,7 +841,7 @@ function ErrorKachel({ message, onRetry }: { message: string; onRetry: () => voi
         border: `1px solid ${v("--color-negative-border")}`,
         borderRadius: 12,
         padding: 12,
-        fontSize: 13,
+        fontSize: v("--font-size-small"),
         color: v("--color-negative"),
         display: "grid",
         gap: 8,
@@ -852,7 +852,7 @@ function ErrorKachel({ message, onRetry }: { message: string; onRetry: () => voi
         onClick={onRetry}
         style={{
           padding: "6px 12px",
-          fontSize: 13,
+          fontSize: v("--font-size-small"),
           fontWeight: 600,
           color: v("--color-text-on-accent"),
           background: v("--color-accent"),

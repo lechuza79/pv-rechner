@@ -33,7 +33,7 @@ export default function SelectField({
           MozAppearance: "none",
           width: "100%",
           fontFamily: v("--font-text"),
-          fontSize: 14,
+          fontSize: v("--font-size-body"),
           color: v("--color-text-primary"),
           background: v("--color-bg-muted"),
           border: `1px solid ${v("--color-border")}`,

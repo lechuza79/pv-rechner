@@ -68,7 +68,7 @@ export default function Toast({
         borderRadius: v("--radius-md"), padding: "12px 16px",
         boxShadow: "0 6px 24px rgba(0,0,0,0.25)",
         display: "flex", alignItems: "center", gap: 10,
-        fontSize: 13, fontWeight: 600, lineHeight: 1.4,
+        fontSize: v("--font-size-small"), fontWeight: 600, lineHeight: 1.4,
       }}
     >
       <span style={{ flex: 1 }}>{children}</span>
@@ -77,7 +77,7 @@ export default function Toast({
         aria-label="Schließen"
         style={{
           border: "none", background: "transparent", color: v("--color-text-on-accent"),
-          fontSize: 18, lineHeight: 0.8, cursor: "pointer", padding: 0, opacity: 0.85,
+          fontSize: v("--font-size-h3"), lineHeight: 0.8, cursor: "pointer", padding: 0, opacity: 0.85,
         }}
       >
         ×

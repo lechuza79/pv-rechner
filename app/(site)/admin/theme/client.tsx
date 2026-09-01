@@ -298,7 +298,7 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
               borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border-accent')}`,
             }}>
               <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8 }}>Hero Card</div>
-              <div style={{ fontSize: v("--font-size-display-lg"), fontWeight: 800, color: v('--color-accent'), fontFamily: v('--font-mono'), lineHeight: 1 }}>
+              <div style={{ fontSize: v("--font-size-display-xl"), fontWeight: 800, color: v('--color-accent'), fontFamily: v('--font-mono'), lineHeight: 1 }}>
                 12<span style={{ fontSize: v("--font-size-display-sm"), fontWeight: 600, marginLeft: 4 }}>Jahren</span>
               </div>
             </div>

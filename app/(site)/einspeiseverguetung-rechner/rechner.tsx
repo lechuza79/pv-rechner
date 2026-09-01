@@ -236,21 +236,21 @@ export default function EinspeiseRechner() {
     border: `1px solid ${active ? v("--color-accent") : v("--color-border")}`,
     background: active ? v("--color-bg-accent") : v("--color-bg"),
     color: active ? v("--color-accent") : v("--color-text-secondary"),
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     fontWeight: 700,
     cursor: "pointer",
   });
   const label: React.CSSProperties = {
-    fontSize: 13,
+    fontSize: v("--font-size-small"),
     fontWeight: 700,
     color: v("--color-text-secondary"),
     marginBottom: space.md,
   };
-  const h2: React.CSSProperties = { fontSize: 18, fontWeight: 700, marginBottom: 18, color: v("--color-text-primary") };
+  const h2: React.CSSProperties = { fontSize: v("--font-size-h3"), fontWeight: 700, marginBottom: 18, color: v("--color-text-primary") };
   const zurueckBtn: React.CSSProperties = {
     padding: "10px 20px",
     borderRadius: v("--radius-md"),
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     fontWeight: 600,
     background: "transparent",
     border: `1px solid ${v("--color-border-muted")}`,
@@ -306,7 +306,7 @@ export default function EinspeiseRechner() {
       {stepKey === "datum" && (
         <div className="fu">
           <h2 style={h2}>Wann ging die Anlage in Betrieb?</h2>
-          <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-muted"), margin: `0 0 ${space.lg}px` }}>
+          <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-muted"), margin: `0 0 ${space.lg}px` }}>
             Das ungefähre Jahr reicht schon — der Monat macht den Satz nur genauer. Beides
             steht auch auf deinem Vergütungsbescheid oder der Jahresabrechnung.
           </p>
@@ -325,20 +325,20 @@ export default function EinspeiseRechner() {
             </SelectField>
           </div>
           {ibJahr === 2022 && ibMonat === 7 && (
-            <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-muted"), margin: `0 0 ${space.lg}px` }}>
+            <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-muted"), margin: `0 0 ${space.lg}px` }}>
               Grenzmonat: Anlagen, die am 30. oder 31. Juli 2022 in Betrieb gingen, bekommen
               bereits die höheren EEG-2023-Sätze — wähle dann August 2022.
             </p>
           )}
           {manuellNoetig && (
-            <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-muted"), margin: `0 0 ${space.lg}px` }}>
+            <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-muted"), margin: `0 0 ${space.lg}px` }}>
               Vor April 2012 galten ältere Vergütungsmodelle (zeitweise wurde sogar der selbst
               verbrauchte Strom vergütet) — deinen Satz trägst du gleich im Ergebnis aus deinem
               Bescheid ein, den Rest rechnen wir.
             </p>
           )}
           {inZukunft && (
-            <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-muted"), margin: `0 0 ${space.lg}px` }}>
+            <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-muted"), margin: `0 0 ${space.lg}px` }}>
               Das Datum liegt in der Zukunft — gerechnet wird mit den aktuellen Sätzen für Neuanlagen.
             </p>
           )}
@@ -375,7 +375,7 @@ export default function EinspeiseRechner() {
               onChange={(e) => setCustomKwp(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter" && commitCustom()) next(); }}
               onBlur={() => { if (customKwp !== "") commitCustom(); }}
-              style={{ width: 160, padding: "10px 12px", borderRadius: v("--radius-md"), border: `1px solid ${customKwp ? v("--color-accent") : v("--color-border")}`, background: v("--color-bg-muted"), fontSize: 14, fontFamily: v("--font-text"), color: v("--color-text-primary") }}
+              style={{ width: 160, padding: "10px 12px", borderRadius: v("--radius-md"), border: `1px solid ${customKwp ? v("--color-accent") : v("--color-border")}`, background: v("--color-bg-muted"), fontSize: v("--font-size-body"), fontFamily: v("--font-text"), color: v("--color-text-primary") }}
             />
           </div>
           <FlowNav
@@ -425,7 +425,7 @@ export default function EinspeiseRechner() {
                 type="button"
                 onClick={() => { if (opt.m !== verbrauchMode) { setVerbrauchMode(opt.m); if (!opt.m) setOVerbrauch(null); } }}
                 style={{
-                  flex: 1, padding: "8px 4px", borderRadius: v("--radius-sm"), fontSize: 13, fontWeight: 600, cursor: "pointer",
+                  flex: 1, padding: "8px 4px", borderRadius: v("--radius-sm"), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
                   background: verbrauchMode === opt.m ? v("--color-accent") : "transparent",
                   border: "none",
                   color: verbrauchMode === opt.m ? v("--color-text-on-accent") : v("--color-text-muted"),
@@ -456,10 +456,10 @@ export default function EinspeiseRechner() {
             <div style={{ marginBottom: space.lg }}>
               <div style={label}>Jahresverbrauch Haushalt</div>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: space.md, background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: "14px 16px", border: `1.5px solid ${v("--color-accent")}` }}>
-                <span style={{ fontSize: 13, color: v("--color-text-secondary") }}>Dein Stromverbrauch pro Jahr</span>
+                <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>Dein Stromverbrauch pro Jahr</span>
                 <InlineEdit value={oVerbrauch ?? PERSONEN[2].verbrauch} onCommit={(val) => setOVerbrauch(Math.round(val))} unit=" kWh" step={100} min={500} max={30000} width={72} />
               </div>
-              <div style={{ fontSize: 12, color: v("--color-text-muted"), marginTop: space.md, lineHeight: 1.5 }}>
+              <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginTop: space.md, lineHeight: 1.5 }}>
                 Der Wert von deiner Stromrechnung — er bestimmt, wie viel vom Solarstrom im Haus
                 bleibt statt eingespeist zu werden.
               </div>
@@ -475,7 +475,7 @@ export default function EinspeiseRechner() {
             ))}
           </div>
           </div>
-          <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-muted"), margin: `0 0 ${space.lg}px` }}>
+          <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-muted"), margin: `0 0 ${space.lg}px` }}>
             Daraus schätzen wir den Eigenverbrauch — was du selbst verbrauchst, wird nicht
             eingespeist und taucht deshalb nicht in der Vergütung auf.
           </p>
@@ -487,11 +487,11 @@ export default function EinspeiseRechner() {
       {isResult && (
         <div className="fu">
           <div style={{ background: v("--color-bg-accent"), border: `1px solid ${v("--color-border-accent")}`, borderRadius: v("--radius-lg"), padding: space.xl, marginBottom: space.lg }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: v("--color-text-secondary"), marginBottom: 2 }}>
+            <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-secondary"), marginBottom: 2 }}>
               Dein Vergütungssatz ({periodLabel})
             </div>
             <div style={{ marginBottom: space.md }}>
-              <span style={{ fontFamily: v("--font-mono"), fontSize: 34, fontWeight: 700, color: v("--color-accent") }}>
+              <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-display-md"), fontWeight: 700, color: v("--color-accent") }}>
                 <InlineEdit
                   value={satz}
                   unit=" ct/kWh"
@@ -504,13 +504,13 @@ export default function EinspeiseRechner() {
               </span>
             </div>
             {historisch && (
-              <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.md}px` }}>
+              <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.md}px` }}>
                 Für diesen Jahrgang gab es einen einheitlichen Vergütungssatz — die Wahl zwischen
                 Teil- und Volleinspeisung mit eigenen Sätzen kam erst mit dem EEG 2023.
               </p>
             )}
             {manuellNoetig && satzOverride === null && (
-              <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.md}px` }}>
+              <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.md}px` }}>
                 Für Inbetriebnahmen vor April 2012 gelten ältere Vergütungsmodelle — ein
                 automatischer Wert wäre hier oft falsch. Klick auf den Wert und trag den Satz
                 aus deinem Bescheid oder deiner Abrechnung ein.
@@ -521,14 +521,14 @@ export default function EinspeiseRechner() {
                 <button
                   type="button"
                   onClick={() => setSatzOverride(null)}
-                  style={{ border: "none", background: "none", padding: 0, color: v("--color-accent"), fontSize: 13, fontWeight: 700, cursor: "pointer", textDecoration: "underline" }}
+                  style={{ border: "none", background: "none", padding: 0, color: v("--color-accent"), fontSize: v("--font-size-small"), fontWeight: 700, cursor: "pointer", textDecoration: "underline" }}
                 >
                   Zurücksetzen
                 </button>
               </p>
             )}
             {satzOverride === null && !manuellNoetig && rates && kwpVal > rates.thresholdKwp && (
-              <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.md}px` }}>
+              <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.md}px` }}>
                 Gewichteter Mischsatz: Die ersten {rates.thresholdKwp} kWp bekommen{" "}
                 {ctFmt(effMode === "teil" ? rates.teilUnder10 : rates.vollUnder10)} ct/kWh, die weiteren{" "}
                 {(kwpVal - rates.thresholdKwp).toLocaleString("de-DE")} kWp{" "}
@@ -537,50 +537,50 @@ export default function EinspeiseRechner() {
             )}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: space.lg, marginTop: space.md }}>
               <div>
-                <div style={{ fontSize: 12, color: v("--color-text-muted") }}>Eingespeist pro Jahr</div>
-                <div style={{ fontFamily: v("--font-mono"), fontSize: 18, fontWeight: 700, color: v("--color-text-primary") }}>
-                  {nf(einspeisungKwh)} <span style={{ fontSize: 12, fontWeight: 400 }}>kWh</span>
+                <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Eingespeist pro Jahr</div>
+                <div style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-text-primary") }}>
+                  {nf(einspeisungKwh)} <span style={{ fontSize: v("--font-size-small"), fontWeight: 400 }}>kWh</span>
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: 12, color: v("--color-text-muted") }}>Vergütung pro Jahr</div>
-                <div style={{ fontFamily: v("--font-mono"), fontSize: 18, fontWeight: 700, color: v("--color-positive") }}>
-                  {geld(jahresverguetung)} <span style={{ fontSize: 12, fontWeight: 400 }}>€</span>
+                <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Vergütung pro Jahr</div>
+                <div style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-positive") }}>
+                  {geld(jahresverguetung)} <span style={{ fontSize: v("--font-size-small"), fontWeight: 400 }}>€</span>
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: 12, color: v("--color-text-muted") }}>Summe über die {FEED_IN_YEARS} Vergütungsjahre</div>
-                <div style={{ fontFamily: v("--font-mono"), fontSize: 18, fontWeight: 700, color: v("--color-positive") }}>
-                  {geld(summeGesamt)} <span style={{ fontSize: 12, fontWeight: 400 }}>€</span>
+                <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Summe über die {FEED_IN_YEARS} Vergütungsjahre</div>
+                <div style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-positive") }}>
+                  {geld(summeGesamt)} <span style={{ fontSize: v("--font-size-small"), fontWeight: 400 }}>€</span>
                 </div>
               </div>
               {effMode === "teil" && (
                 <div>
-                  <div style={{ fontSize: 12, color: v("--color-text-muted") }}>Eigenverbrauch (geschätzt)</div>
-                  <div style={{ fontFamily: v("--font-mono"), fontSize: 18, fontWeight: 700, color: v("--color-text-primary") }}>
-                    {evPct} <span style={{ fontSize: 12, fontWeight: 400 }}>%</span>
+                  <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Eigenverbrauch (geschätzt)</div>
+                  <div style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-text-primary") }}>
+                    {evPct} <span style={{ fontSize: v("--font-size-small"), fontWeight: 400 }}>%</span>
                   </div>
                 </div>
               )}
               {anlage === "bestand" && !inZukunft && (
                 <>
                   <div>
-                    <div style={{ fontSize: 12, color: v("--color-text-muted") }}>Davon bereits erhalten (geschätzt)</div>
-                    <div style={{ fontFamily: v("--font-mono"), fontSize: 18, fontWeight: 700, color: v("--color-text-primary") }}>
-                      {geld(bereitsErhalten)} <span style={{ fontSize: 12, fontWeight: 400 }}>€</span>
+                    <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Davon bereits erhalten (geschätzt)</div>
+                    <div style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-text-primary") }}>
+                      {geld(bereitsErhalten)} <span style={{ fontSize: v("--font-size-small"), fontWeight: 400 }}>€</span>
                     </div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 12, color: v("--color-text-muted") }}>Noch ausstehend (geschätzt)</div>
-                    <div style={{ fontFamily: v("--font-mono"), fontSize: 18, fontWeight: 700, color: v("--color-positive") }}>
-                      {geld(nochAusstehend)} <span style={{ fontSize: 12, fontWeight: 400 }}>€</span>
+                    <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Noch ausstehend (geschätzt)</div>
+                    <div style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-positive") }}>
+                      {geld(nochAusstehend)} <span style={{ fontSize: v("--font-size-small"), fontWeight: 400 }}>€</span>
                     </div>
                   </div>
                 </>
               )}
             </div>
             {anlage === "bestand" && !inZukunft && (
-              <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-secondary"), margin: `${space.md}px 0 0` }}>
+              <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-secondary"), margin: `${space.md}px 0 0` }}>
                 {verguetungVorbei ? (
                   <>Die {FEED_IN_YEARS} Vergütungsjahre dieser Anlage sind vorbei — die EEG-Zahlung
                   endete am 31.12.{endJahr}. Die Ersparnis durch Eigenverbrauch läuft weiter.</>
@@ -597,7 +597,7 @@ export default function EinspeiseRechner() {
             <button type="button" onClick={restart} style={zurueckBtn}>Neu berechnen</button>
           </div>
 
-          <p style={{ fontSize: 13, lineHeight: 1.7, color: v("--color-text-muted"), marginBottom: space.lg }}>
+          <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.7, color: v("--color-text-muted"), marginBottom: space.lg }}>
             Annahmen: Standort-Ertrag {nf(ertragKwp)} kWh je kWp
             {standortYield !== null ? " (dein Standort)" : " (konservativer Deutschland-Durchschnitt)"}
             {neigungsFaktor < 1 ? ", inklusive Dachneigung und Ausrichtung" : ""}, Nutzungsprofil „teils zuhause",{" "}
@@ -614,7 +614,7 @@ export default function EinspeiseRechner() {
             title="Standort und Dach"
             summary={dachZusammenfassung()}
           >
-            <div style={{ fontSize: 13, marginBottom: space.lg }}>
+            <div style={{ fontSize: v("--font-size-small"), marginBottom: space.lg }}>
               <StandortField plz={plz} onPlzChange={onPlzChange} loading={plzLoading} confirmed={plzConfirmed} onSubmit={() => fetchPvgis(plz)} />
             </div>
             <div style={{ borderTop: `1px solid ${v("--color-border")}`, margin: `0 0 ${space.lg}px` }} />
@@ -637,14 +637,14 @@ export default function EinspeiseRechner() {
           {anlage === "neu" && (
             <Link
               href="/photovoltaik-rechner"
-              style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "11px 20px", borderRadius: v("--radius-md"), fontSize: 14, fontWeight: 700, background: v("--color-accent"), color: v("--color-text-on-accent"), textDecoration: "none", marginBottom: space.xl }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "11px 20px", borderRadius: v("--radius-md"), fontSize: v("--font-size-body"), fontWeight: 700, background: v("--color-accent"), color: v("--color-text-on-accent"), textDecoration: "none", marginBottom: space.xl }}
             >
               Komplette Rechnung: Lohnt sich die Anlage? <IconArrowRight size={iconSizes.sm} />
             </Link>
           )}
 
           {/* ── Sachstand EEG-Reform (eine Quelle: lib/eeg-reform-config.ts) ── */}
-          <div style={{ border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md"), padding: `${space.lg}px ${space.xl}px`, marginBottom: space.lg, fontSize: 13, lineHeight: 1.7, color: v("--color-text-secondary") }}>
+          <div style={{ border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md"), padding: `${space.lg}px ${space.xl}px`, marginBottom: space.lg, fontSize: v("--font-size-body"), lineHeight: 1.7, color: v("--color-text-secondary") }}>
             <span style={{ fontWeight: 700, color: v("--color-text-primary") }}>Geplante EEG-Reform:</span>{" "}
             Für Neuanlagen ab 2027 soll die feste Einspeisevergütung enden — {eegVerfahrenSatz({ kurz: true })}.
             Für Anlagen, die bis Ende 2026 in Betrieb gehen, ändert sich nichts: Ihr Satz bleibt{" "}
@@ -654,7 +654,7 @@ export default function EinspeiseRechner() {
             </Link>
           </div>
 
-          <p style={{ fontSize: 11, lineHeight: 1.6, color: v("--color-text-muted") }}>
+          <p style={{ fontSize: v("--font-size-caption"), lineHeight: 1.6, color: v("--color-text-muted") }}>
             Sätze seit Februar 2024: Bundesnetzagentur (§§ 48/49/53 EEG); Juli 2022 bis Januar
             2024: eingefrorene Basiswerte des EEG 2023; April 2012 bis Juli 2022: Archivtabellen
             der Bundesnetzagentur (feste Einspeisevergütung für Dachanlagen); Laufzeit nach
