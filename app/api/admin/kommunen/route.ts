@@ -3,6 +3,7 @@ import { supabase as serviceDb } from "../../../../lib/supabase-server";
 import { briefFuerGemeinde, istBriefFehler } from "../../../../lib/kommunen-brief";
 import { isOutreachStatus, UNBEANTWORTET, UNBEANTWORTET_TAGE } from "../../../../lib/outreach-status";
 import { isAdminSession } from "../../../../lib/admin-guard";
+import { zaehleAbos, type AboSpiegel, type AboZeile, type GemeindeDomains } from "../../../../lib/kommunen-abo-spiegel";
 
 // Admin-Cockpit für den Kommunen-Outreach. Liest/schreibt kommunen_kontakt
 // (interne, nicht-öffentliche Tabelle) über den Service-Client. Auth läuft über
@@ -89,8 +90,32 @@ export async function GET(req: NextRequest) {
     return teile.every(Boolean) ? `/solar-atlas/${teile.join("/")}` : null;
   };
 
+  // Eintragungen ins Gemeinde-Abo — das dritte Signal neben Antwort und
+  // Veröffentlichung, und für eine angeschriebene Gemeinde das schnellste: Der
+  // Brief verlinkt genau die Seite, auf der die Eintragung sitzt.
+  //
+  // Nur für die Gemeinden DIESER Seite, nicht für alle 11.000 — und die
+  // Adressen bleiben hier, nach draußen gehen Zahlen (lib/kommunen-abo-spiegel).
+  // Fällt die Abfrage aus, bleibt die Spalte leer: eine Zusatzangabe darf die
+  // Liste nicht mitnehmen.
+  const regionIds = zeilen.map((z) => z.region_id);
+  let aboSpiegel = new Map<string, AboSpiegel>();
+  if (regionIds.length) {
+    const [{ data: aboRows }, { data: domainRows }] = await Promise.all([
+      serviceDb.from("gemeinde_abos").select("region_id, email, status, ueber_brief").in("region_id", regionIds),
+      serviceDb.from("kommunen_kontakt").select("region_id, website, verwaltung_domain").in("region_id", regionIds),
+    ]);
+    if (aboRows?.length) {
+      aboSpiegel = zaehleAbos(aboRows as AboZeile[], (domainRows ?? []) as GemeindeDomains[]);
+    }
+  }
+
   return NextResponse.json({
-    rows: zeilen.map((z) => ({ ...z, atlas_path: atlasPfad(z.region_id) })),
+    rows: zeilen.map((z) => ({
+      ...z,
+      atlas_path: atlasPfad(z.region_id),
+      abo: aboSpiegel.get(z.region_id) ?? null,
+    })),
     total: count ?? 0,
     page,
     pageSize: PAGE_SIZE,

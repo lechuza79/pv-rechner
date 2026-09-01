@@ -12,6 +12,7 @@ import {
 import Modal from "../../../../components/Modal";
 import ResultSection from "../../../../components/ResultSection";
 import { ART_LABEL, liesNotiz } from "../../../../lib/outreach-ruecklauf";
+import { aboSatz, type AboSpiegel } from "../../../../lib/kommunen-abo-spiegel";
 import {
   ASK_LABEL,
   ASK_VARIANTEN,
@@ -59,6 +60,9 @@ type Lead = {
   ref_token: string | null;
   ref_klicks: number | null;
   atlas_path: string | null;
+  /** Eintragungen ins Gemeinde-Abo. null, solange es keine gibt — oder wenn die
+   *  Abfrage ausgefallen ist; die Liste soll daran nicht hängen. */
+  abo: AboSpiegel | null;
   mastr_regions: Region | Region[];
 };
 
@@ -386,6 +390,23 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
           {r?.population != null && ` · ${r.population.toLocaleString("de-DE")} Ew.`}
           {lead.charge != null && ` · Charge ${lead.charge}`}
         </div>
+        {/* Eintragungen ins Gemeinde-Abo: das dritte Signal neben Antwort und
+            Veroeffentlichung. Steht nur da, wo es welche gibt — eine Null unter
+            11.000 Gemeinden verdeckt die wenigen echten Funde. Hervorgehoben
+            wird die Verwaltung, nicht die Menge: Ein Buerger ist Reichweite,
+            jemand aus dem Rathaus ist die Stelle, die ueber eine
+            Veroeffentlichung entscheidet. */}
+        {aboSatz(lead.abo) && (
+          <div
+            style={{
+              fontSize: 11,
+              marginTop: 3,
+              color: lead.abo?.ausVerwaltung ? v("--color-positive") : v("--color-text-muted"),
+            }}
+          >
+            {aboSatz(lead.abo)}
+          </div>
+        )}
       </td>
 
       {/* WEBSITE-THEMEN, NICHT DER AUFHÄNGER DES BRIEFES.
