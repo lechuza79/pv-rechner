@@ -1214,6 +1214,82 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+  "ulm-energiefoerderprogramm": {
+    id: "ulm-energiefoerderprogramm", name: "Ulmer Energieförderprogramm",
+    traeger: "Stadt Ulm", level: "kommune", region: "Ulm", bundesland: "Baden-Württemberg", agsCode: "08421",
+    url: "https://www.ulm.de/leben-in-ulm/umwelt-energie-entsorgung/energie-und-klimaschutz/energiefoerderprogramm",
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    endetIso: "2026-09-01",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts:
+      "Zuschüsse für Heizungstausch, Balkonkraftwerk und Mieterstrom — eine gewöhnliche Dachanlage wird nicht gefördert",
+    maxFoerderung: "max. 100 € je Wohneinheit für ein Balkonkraftwerk",
+    rates: [
+      { label: "Balkonkraftwerk", value: "50 % der Gerätekosten, max. 100 € je Wohneinheit", nur: ["balkon"] },
+      { label: "Ölheizung raus, Wärmepumpe rein", value: "2.000 €", nur: ["waermepumpe"] },
+      { label: "Gas- oder Nachtspeicherheizung raus, Wärmepumpe rein", value: "1.500 €", nur: ["waermepumpe"] },
+      { label: "Solarthermie zusätzlich zur neuen Heizung", value: "+1.000 €", nur: ["waermepumpe"] },
+      { label: "Mieterstrom-Anlage", value: "150 €/kWp", nur: ["pv"] },
+      { label: "Prüfung einer Anlage über 19 Jahre", value: "50 % der Kosten, max. 500 €", nur: ["pv"] },
+    ],
+    conditions: [
+      "Antrags- und Förderstopp seit dem 1. September 2026 — die Haushaltsmittel des Jahres sind aufgebraucht",
+      "Anträge, die bis zum 31. August 2026 eingegangen sind, werden noch ausgezahlt",
+      "Der Antrag wird nach der Umsetzung gestellt, binnen drei Monaten ab der Schlussrechnung; danach gibt es nichts mehr",
+      "Gefördert wird nur im Stadtkreis Ulm; antragsberechtigt sind auch Mieterinnen und Mieter",
+      "Bund und Land sind vorrangig in Anspruch zu nehmen",
+      { text: "Vor dem Heizungstausch ist ein kostenloses Beratungsgespräch bei der Regionalen Energieagentur Ulm Pflicht", nur: ["waermepumpe"] },
+      { text: "Gefördert wird nur eine funktionstüchtige Altanlage, die keiner Austauschpflicht unterliegt", nur: ["waermepumpe"] },
+      { text: "Die Vorlauftemperatur der Wärmepumpe darf 50 °C nicht überschreiten", nur: ["waermepumpe"] },
+      { text: "Gefördert wird bis 800 W Wechselrichterleistung; mobile Geräte sind ausgeschlossen", nur: ["balkon"] },
+      { text: "Versand- und Montagekosten zählen nicht mit", nur: ["balkon"] },
+      { text: "Eine gewöhnliche Dachanlage wird nicht gefördert — der Satz je kWp gilt nur für Mieterstrom", nur: ["pv"] },
+      { text: "Der Mieterstrom-Satz setzt mindestens sechs versorgte Wohneinheiten und fünf Jahre Laufzeit voraus", nur: ["pv"] },
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    balkonPercentOfCost: 0.5, balkonCap: 100,
+    // NEU AUFGENOMMEN 02.09.2026, an der Programmseite und an der Richtlinie 2026
+    // gelesen (Volltext-PDF von ulm.de, „Richtlinie Ulmer Energieförderprogramm
+    // 2026 — Gültig ab dem 1. Januar 2026 bis zum 31. Dezember 2026").
+    //
+    // Aufgenommen wird ein GESTOPPTES Programm, und das ist Absicht: Ohne Eintrag
+    // sagt Ulms Stadtseite „keine kommunale Förderung", und das ist für eine Stadt
+    // mit 130.000 Einwohnern, die bis vorgestern gefördert hat, dieselbe
+    // Falschauskunft wie ein zu hoher Betrag. Der Wortlaut der Stadt: „Antrags-
+    // und Förderstopp seit dem 1. September 2026 — Wie am 26. Juni angekündigt,
+    // musst[e] das Ulmer Energieförderprogramm aufgrund begrenzter Haushaltsmittel
+    // zum 1. September gestoppt werden. Alle förderfähigen Anträge, die bis zum
+    // 31. August 2026 eingereicht wurden, werden ausbezahlt."
+    //
+    // NUR DER BALKON-SATZ IST GERECHNET. Die beiden anderen kann das Modell nicht
+    // ausdrücken, und die falsche Zahl wäre hier teurer als gar keine:
+    //   * Die Wärmepumpe hat ZWEI Pauschalen, und welche gilt, hängt an der alten
+    //     Heizung (Öl 2.000 €, Gas/Nachtspeicher 1.500 €). `wpPauschale` kennt nur
+    //     eine Zahl; die höhere verspräche jedem Gas-Haushalt 500 € zu viel, die
+    //     niedrigere zöge jedem Öl-Haushalt 500 € ab, die er bekäme.
+    //   * Die 150 €/kWp sind KEIN Dach-Satz. Sie gelten allein für ein
+    //     Mieterstrommodell nach EEG mit mindestens sechs versorgten Wohnungen und
+    //     einem Vertrag, der 10 % unter dem Grundversorger liegt — `pvPerKwp`
+    //     versprächen sie jedem Einfamilienhaus.
+    //
+    // Der Balkon-Satz steht trotz Stopp mit Zahl da: `fundingZaehlt()` lässt ihn
+    // nicht rechnen, solange der Status nicht „aktiv" ist, und der Code-Seed trägt
+    // ohnehin kein Prüfdatum. Kommt das Programm 2027 unverändert zurück, stimmt
+    // die Zahl; kommt es verändert zurück, sieht der Seiten-Wächter die Bewegung.
+    //
+    // `endetIso` ist der 01.09.2026 — der Tag, ab dem die Stadt keine Anträge mehr
+    // annimmt, nicht das Laufzeitende der Richtlinie (31.12.2026). Genau die
+    // Unterscheidung, die das Feld verlangt.
+    //
+    // KEIN `beginntIso` und kein `beschlossenIso`, obwohl beide Daten greifbar
+    // wären — sie würden etwas anderes bedeuten, als sie sagen: Der 01.01.2026 ist
+    // der Beginn der RICHTLINIE 2026, nicht des Programms (das Ulmer
+    // Energieförderprogramm läuft seit Jahren und wird jährlich fortgeschrieben),
+    // und der 26.06.2026 ist der Tag, an dem die Stadt den STOPP angekündigt hat,
+    // nicht der Beschluss des Programms. Beides einzutragen hieße, dem Feld für
+    // die Zubau-Auswertung ein Startjahr zu geben, das es nicht gibt.
+  },
   "essen-solar": {
     id: "essen-solar", name: "Förderprogramm Photovoltaik- und Solaranlagen",
     traeger: "Stadt Essen", level: "kommune", region: "Essen", bundesland: "Nordrhein-Westfalen", agsCode: "05113",
@@ -1711,18 +1787,31 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "bergstrasse-speicher", name: "PV-Stromspeicher-Förderprogramm",
     traeger: "Kreis Bergstraße", level: "landkreis", region: "Kreis Bergstraße", bundesland: "Hessen", agsCode: "06431",
     url: "https://www.kreis-bergstrasse.de/themen-projekte/nachhaltigkeit/klimaschutz/",
-    stand: "Juli 2026", status: "ausgeschoepft", capped: true, verified: true,
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Zuschuss je kWh Batteriespeicher (PV ab 2 kWp Voraussetzung)",
     maxFoerderung: "max. 3.000 € (max. 50 % der Kosten)",
     rates: [{ label: "Batteriespeicher (ab 3 kWh)", value: "180 €/kWh, max. 3.000 €" }],
     conditions: [
-      "Keine Antragsannahme: Der 2024er-Topf ist erschöpft, 2025 gab es kein Programm, und für 2026 ist keines aufgelegt (am 28.07.2026 an den Seiten des Kreises geprüft)",
+      "Keine Antragsannahme: Der 2024er-Topf ist erschöpft, 2025 gab es kein Programm, und für 2026 ist keines aufgelegt",
+      "Der Kreis hat seine Förderseiten abgeschaltet und nennt kein Nachfolgeprogramm",
       "Beträge stammen aus der 2024er-Runde und gelten nur als Anhaltspunkt für eine mögliche Neuauflage",
       "PV-Anlage ab 2 kWp Voraussetzung; max. 50 % der Kosten",
     ],
     combinableWith: BUND,
     speicherPerKwh: 180, speicherCap: 3000, speicherMin: 3,
+    // NACHGEPRÜFT 02.09.2026. Die Bedingung nannte bis heute ein Prüfdatum vom
+    // 28.07.2026 und verwies auf „die Seiten des Kreises" — die es so nicht mehr
+    // gibt: Sowohl die Förder-Übersicht als auch die Unterseite der 2024er-Runde
+    // antworten inzwischen mit 404 (beide heute abgerufen), nur die
+    // Klimaschutz-Seite lebt noch und ist deshalb die hinterlegte Adresse.
+    //
+    // Der Status bleibt, wo er war. Eine verschwundene Seite ist keine Aussage:
+    // Sie belegt weder eine Neuauflage noch das endgültige Ende, sie nimmt uns
+    // nur den Satz weg, auf den wir uns bisher gestützt haben („2025 kein
+    // Programm, verlässliche Aussagen ab Mitte Juli 2026"). Deshalb steht das
+    // Fehlen jetzt als eigene Bedingung da, statt weiter ein Prüfdatum zu
+    // nennen, hinter dem nichts Abrufbares mehr steht.
   },
   "mayen-koblenz-speicher": {
     id: "mayen-koblenz-speicher", name: "Solarspeicher-Förderprogramm",
@@ -2386,7 +2475,13 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // und ob jemand zur Miete wohnt, fragt der Balkon-Rechner nicht ab. Ein
     // Abzug wäre für jeden Eigentümer falsch. Das Programm informiert deshalb,
     // es rechnet nicht.
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    //
+    // LAUFZEIT NACHGETRAGEN (02.09.2026, dieselbe Richtlinie erneut im Volltext):
+    // Präambel „hat der Stadtrat am 30.04.2026 beschlossen, das Förderprogramm …
+    // aufzulegen", § 5 „Die vorstehenden Richtlinien treten am 01.05.2026 in
+    // Kraft." Kein `endetIso` — die Richtlinie nennt kein Ende.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-05-01", beschlossenIso: "2026-04-30",
     eligibility: ["privat"],
     coveredCosts: "Zuschuss für Balkonkraftwerke — ausdrücklich für Mieter gedacht",
     rates: [{ label: "Balkonkraftwerk", value: "50 € je Anlage" }],
@@ -2694,7 +2789,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Gemeinde Limburgerhof", level: "kommune", region: "Limburgerhof",
     bundesland: "Rheinland-Pfalz", agsCode: "07338017",
     url: "https://www.limburgerhof.de/service/aktionen-und-kampagnen/foerderung-von-balkonkraftwerken/",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // Amtsseite: „Eine Beantragung ist nur in der Zeit vom 01.03.2024 bis zum
+    // 31.12.2026 möglich." Hier ist das Ende ausnahmsweise das ANTRAGSFENSTER
+    // und nicht bloß die Befristung einer Richtlinie — deshalb steht es drin.
+    beginntIso: "2024-03-01", endetIso: "2026-12-31",
     eligibility: ["privat"],
     coveredCosts: "Einmaliger Zuschuss je Balkonkraftwerk",
     maxFoerderung: "200 € einmalig",
@@ -2861,7 +2960,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Stadt Herbrechtingen", level: "kommune", region: "Herbrechtingen",
     bundesland: "Baden-Württemberg", agsCode: "08135020",
     url: "http://www.herbrechtingen.de/Startseite/stadt+_+buerger/foerderprogramm+balkonkraftwerke.html",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // Amtsseite: „Der Gemeinderat der Stadt Herbrechtingen hat in seiner Sitzung
+    // am 14.12.2023 … das stadteigene [Zuschussprogramm beschlossen]" und „Das
+    // Förderprogramm tritt ab dem 1.1.2024 in Kraft."
+    beginntIso: "2024-01-01", beschlossenIso: "2023-12-14",
     eligibility: ["privat"],
     coveredCosts: "Pauschale je Modul, höchstens zwei Module je Wohneinheit",
     maxFoerderung: "max. 100 € je Wohneinheit",
@@ -2991,7 +3094,13 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Gemeinde Reichelsheim (Odenwald)", level: "kommune", region: "Reichelsheim (Odenwald)",
     bundesland: "Hessen", agsCode: "06437013",
     url: "https://www.reichelsheim.de/leben-in-reichelsheim/bauen-wohnen/foerderung-von-stecker-solaranlagen/",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // Amtsseite: „Die Gemeindevertretung der Gemeinde Reichelsheim hat in ihrer
+    // Sitzung am 23.02.2023 eine Richtlinie zur Förderung von Stecker-Solaranlagen
+    // auf den Weg gebracht." Kein `beginntIso`: Wann die Richtlinie in Kraft trat,
+    // sagt die Seite nicht, und zwischen Beschluss und Antragsstart liegen
+    // regelmäßig Monate.
+    beschlossenIso: "2023-02-23",
     eligibility: ["privat"],
     coveredCosts: "Pauschale je Anlage, gestaffelt nach Leistung",
     maxFoerderung: "max. 100 € je Wohnung",
@@ -3477,7 +3586,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Gemeinde Schwebheim", level: "kommune", region: "Schwebheim",
     bundesland: "Bayern", agsCode: "09678176",
     url: "https://www.schwebheim.de/foerderung-eines-batteriespeichersystems",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // Nr. 9 der Richtlinie: „Die Richtlinie tritt mit Wirkung zum 26.01.2026 in
+    // Kraft." Kein `endetIso`: Der 31.12.2026 ist das Auslaufen der Richtlinie,
+    // nicht der Tag, an dem die Gemeinde keine Anträge mehr annimmt.
+    beginntIso: "2026-01-26",
     eligibility: ["privat"],
     coveredCosts: "Zuschuss zum Batteriespeicher, gestaffelt nach Kapazität",
     maxFoerderung: "max. 1.000 € je Speichersystem",
