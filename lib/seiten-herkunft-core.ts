@@ -161,11 +161,31 @@ export function istMaschine(userAgent: string | null | undefined): boolean {
 }
 
 /**
+ * Zählt NUR die echte Produktion — BLOCKER, und ein bereits eingetretener
+ * Fehler.
+ *
+ * Der Entwicklungs-Server und die Produktion teilen sich dieselbe Datenbank.
+ * Am 01.09.2026, wenige Minuten nach dem Livegang, standen deshalb 369 Aufrufe
+ * für eine Seite in der Tabelle — sämtlich aus drei lokalen Testläufen, die
+ * jede Seite und jeden Frage-Weg durchklicken. Das ist die schlimmere Sorte
+ * Verschmutzung: Die Zeilen sehen aus wie echter Verkehr, sie stehen unter
+ * denselben Pfaden, und hinterher lassen sie sich nicht mehr auseinanderhalten.
+ *
+ * Vercel setzt `VERCEL_ENV` nur in seinen eigenen Umgebungen; lokal ist die
+ * Variable leer. Geprüft wird auf „production", nicht auf „nicht leer" — sonst
+ * schriebe auch eine Vorschau-Auslieferung mit.
+ */
+function istProduktion(): boolean {
+  return process.env.VERCEL_ENV === "production";
+}
+
+/**
  * Zählt einen Seitenaufruf — direkt über die Datenbank-Schnittstelle, weil das
  * in der Edge-Laufzeit der einzige Weg ist. Schlägt es fehl, ist das folgenlos:
  * Eine verlorene Zählung darf niemals die Auslieferung einer Seite stören.
  */
 export async function zaehleSeitenaufruf(pfad: string, herkunft: string): Promise<boolean> {
+  if (!istProduktion()) return false;
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
   if (!url || !key) return false;

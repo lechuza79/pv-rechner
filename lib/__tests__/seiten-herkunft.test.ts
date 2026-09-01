@@ -193,6 +193,24 @@ describe("Grenze zur Wiedererkennung — BLOCKER", () => {
     expect(zaehlStelle).toBeLessThan(authStelle);
   });
 
+  it("zählt nur die echte Produktion", () => {
+    // Entwicklungs-Server und Produktion teilen sich dieselbe Datenbank. Am
+    // 01.09.2026, Minuten nach dem Livegang, standen 369 Aufrufe für EINE Seite
+    // in der Tabelle — sämtlich aus drei lokalen Testläufen, die jede Seite und
+    // jeden Frage-Weg durchklicken. Solche Zeilen sehen aus wie echter Verkehr,
+    // stehen unter denselben Pfaden und lassen sich hinterher nicht mehr
+    // aussortieren.
+    //
+    // Geprüft wird auf „production", nicht auf „nicht leer": Sonst schriebe
+    // auch eine Vorschau-Auslieferung mit.
+    expect(kern).toMatch(/VERCEL_ENV === "production"/);
+    const fn = kern.match(/export async function zaehleSeitenaufruf[\s\S]*?\n\}/)![0];
+    expect(
+      fn,
+      "der Produktions-Riegel steht nicht als erstes in zaehleSeitenaufruf",
+    ).toMatch(/^\s*export async function zaehleSeitenaufruf[^{]*\{\s*\n\s*if \(!istProduktion\(\)\) return false;/);
+  });
+
   it("lässt die Ablage nur über den Dienstschlüssel zu", () => {
     expect(ablage).toMatch(/alter table seiten_herkunft enable row level security/);
     expect(ablage).not.toMatch(/create policy/);
