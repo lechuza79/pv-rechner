@@ -3,7 +3,7 @@ import { supabase as serviceDb } from "../../../../lib/supabase-server";
 import { briefFuerGemeinde, istBriefFehler } from "../../../../lib/kommunen-brief";
 import { isOutreachStatus, UNBEANTWORTET, UNBEANTWORTET_TAGE } from "../../../../lib/outreach-status";
 import { isAdminSession } from "../../../../lib/admin-guard";
-import { zaehleAbos, type AboSpiegel, type AboZeile, type GemeindeDomains } from "../../../../lib/kommunen-abo-spiegel";
+import { zaehleAbos, type AboSpiegel, type AboZeile } from "../../../../lib/kommunen-abo-spiegel";
 
 // Admin-Cockpit für den Kommunen-Outreach. Liest/schreibt kommunen_kontakt
 // (interne, nicht-öffentliche Tabelle) über den Service-Client. Auth läuft über
@@ -101,13 +101,15 @@ export async function GET(req: NextRequest) {
   const regionIds = zeilen.map((z) => z.region_id);
   let aboSpiegel = new Map<string, AboSpiegel>();
   if (regionIds.length) {
-    const [{ data: aboRows }, { data: domainRows }] = await Promise.all([
-      serviceDb.from("gemeinde_abos").select("region_id, email, status, ueber_brief").in("region_id", regionIds),
-      serviceDb.from("kommunen_kontakt").select("region_id, website, verwaltung_domain").in("region_id", regionIds),
-    ]);
-    if (aboRows?.length) {
-      aboSpiegel = zaehleAbos(aboRows as AboZeile[], (domainRows ?? []) as GemeindeDomains[]);
-    }
+    // Die E-Mail-Adresse wird NICHT mitgelesen. Gebraucht wird sie nicht — ob
+    // jemand aus der Verwaltung kommt, steht als Selbstauskunft in der Zeile —
+    // und was nicht abgefragt wird, kann auch nicht versehentlich nach draußen
+    // geraten.
+    const { data: aboRows } = await serviceDb
+      .from("gemeinde_abos")
+      .select("region_id, status, aus_verwaltung, ueber_brief")
+      .in("region_id", regionIds);
+    if (aboRows?.length) aboSpiegel = zaehleAbos(aboRows as AboZeile[]);
   }
 
   return NextResponse.json({

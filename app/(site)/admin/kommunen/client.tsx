@@ -401,7 +401,7 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
             style={{
               fontSize: 11,
               marginTop: 3,
-              color: lead.abo?.ausVerwaltung ? v("--color-positive") : v("--color-text-muted"),
+              color: lead.abo?.mitAngabeVerwaltung ? v("--color-positive") : v("--color-text-muted"),
             }}
           >
             {aboSatz(lead.abo)}
