@@ -77,6 +77,14 @@ export async function GET(req: NextRequest) {
       CREATE INDEX IF NOT EXISTS idx_gemeinde_abos_versand
         ON public.gemeinde_abos (region_id, status);
 
+      -- Die Bremse gegen Listen-Bombing zaehlt "wie viele offene Anmeldungen hat
+      -- DIESE Adresse". Der eindeutige Index oben liegt auf (Ort, Adresse) und
+      -- hilft dafuer nicht: Gesucht wird ueber alle Orte hinweg. Ohne diesen
+      -- Index kostet jede Anmeldung einen vollstaendigen Tabellendurchlauf --
+      -- heute unmerklich, bei zehntausend Zeilen nicht mehr.
+      CREATE INDEX IF NOT EXISTS idx_gemeinde_abos_offene_je_adresse
+        ON public.gemeinde_abos (email, status);
+
       -- Aufräumen: nie bestätigte Eintragungen. Die Bestätigungsmail sagt zu,
       -- dass eine unbestätigte Eintragung "nach kurzer Zeit von selbst
       -- gelöscht" wird — der Index macht das Suchen danach billig.

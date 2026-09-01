@@ -190,6 +190,16 @@ export function siehtNachEmailAus(email: string): boolean {
 export type AnlageErgebnis =
   | { art: "bestaetigung-noetig"; abo: GemeindeAbo }
   | { art: "schon-angemeldet" }
+  /**
+   * Es wird KEINE Mail geschickt — die Adresse hat zu viele offene Anmeldungen
+   * oder gerade eben schon eine Bestätigung bekommen.
+   *
+   * Nach außen sieht das aus wie jeder andere Fall (der Aufrufer antwortet
+   * gleich); der Unterschied ist nur, dass hier nichts hinausgeht. Wer hier
+   * eine eigene Fehlermeldung ausgäbe, verriete, welche Adressen bereits
+   * eingetragen sind.
+   */
+  | { art: "still" }
   | { art: "keine-db" };
 
 export async function aboAnlegen(o: {
@@ -219,6 +229,14 @@ export async function aboAnlegen(o: {
     const abo = ausZeile(vorhanden as Zeile);
     if (abo.status === "bestaetigt") return { art: "schon-angemeldet" };
 
+    // Gerade eben schon eine Bestätigung geschickt? Dann keine zweite. Ohne
+    // diese Sperre löst jeder erneute Klick eine weitere Mail an denselben
+    // Empfänger aus.
+    const zuletzt = Date.parse(abo.erstelltAm);
+    if (Number.isFinite(zuletzt) && Date.parse(o.jetztIso) - zuletzt < BESTAETIGUNG_SPERRE_MS) {
+      return { art: "still" };
+    }
+
     // Ausstehend oder abgemeldet: auf Anfang, Bestätigung erneut schicken.
     const { data, error } = await withDbTimeout(
       supabase
@@ -244,6 +262,21 @@ export async function aboAnlegen(o: {
     if (error || !data) throw new Error(`Abo konnte nicht aufgeweckt werden: ${error?.message}`);
     return { art: "bestaetigung-noetig", abo: ausZeile(data as Zeile) };
   }
+
+  // NUR VOR EINER NEUEN ZEILE geprüft, nicht vor dem Aufwecken: Wer einen
+  // vorhandenen Eintrag erneuert, erhöht die Zahl der offenen Anmeldungen
+  // nicht. Ihn hier abzuweisen träfe genau den Menschen, dessen Mail nicht
+  // ankam.
+  const { count } = await withDbTimeout(
+    supabase
+      .from("gemeinde_abos")
+      .select("id", { count: "exact", head: true })
+      .eq("email", email)
+      .eq("status", "ausstehend"),
+    "abo-offene-zaehlen",
+    DB_READ_TIMEOUT_MS,
+  );
+  if ((count ?? 0) >= OFFENE_JE_ADRESSE_MAX) return { art: "still" };
 
   const { data, error } = await withDbTimeout(
     supabase
@@ -346,6 +379,37 @@ export async function aboAbmelden(aboId: string, jetztIso: string): Promise<void
 
 /** Nie bestätigte Eintragungen verfallen. Die Bestätigungsmail sagt es zu. */
 export const UNBESTAETIGT_MAX_TAGE = 7;
+
+/**
+ * Wie viele UNBESTÄTIGTE Anmeldungen eine Adresse gleichzeitig haben darf.
+ *
+ * Die wirksame Bremse gegen Listen-Bombing: Wer eine fremde Adresse für
+ * hunderte Orte einträgt, erzeugt hunderte unbestätigte Zeilen, und der
+ * Betroffene bekommt hunderte Bestätigungsmails, die er nie wollte. Der
+ * Schaden trifft dabei UNS — die Beschwerden landen bei dem Postfach, über das
+ * später die echten Meldungen laufen.
+ *
+ * Fünf ist großzügig für einen Menschen (Wohnort, Elternwohnort, Arbeitsort)
+ * und deckelt den Schaden bei fünf Mails statt hunderten.
+ *
+ * WARUM NICHT ÜBER DIE HERKUNFTSADRESSE: Eine dauerhafte Zählung je
+ * IP-Adresse müsste die IP speichern — und die Datenschutzerklärung sagt
+ * ausdrücklich zu, dass wir das nicht tun. Die E-Mail-Adresse speichern wir
+ * ohnehin, und sie ist hier auch die treffendere Größe: Geschützt werden soll
+ * der Mensch, dessen Postfach zugeschüttet wird, nicht ein Anschluss.
+ */
+export const OFFENE_JE_ADRESSE_MAX = 5;
+
+/**
+ * Wie lange nach einer Bestätigungsmail keine zweite an dieselbe Adresse für
+ * denselben Ort geht.
+ *
+ * Ohne diese Sperre löst jeder erneute Klick auf „Abonnieren" eine weitere
+ * Mail aus — hundert Klicks, hundert Mails, alle an denselben Empfänger. Zwei
+ * Minuten sind kurz genug, dass ein Mensch, dessen Mail wirklich nicht ankam,
+ * nicht warten muss, und lang genug gegen ein Skript.
+ */
+export const BESTAETIGUNG_SPERRE_MS = 2 * 60 * 1000;
 
 /**
  * Abgemeldete Einträge werden nach einem Jahr entfernt.

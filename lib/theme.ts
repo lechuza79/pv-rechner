@@ -846,6 +846,27 @@ export const globalStyles = `
     .gemeinde-abo > button{width:100%}
   }
 
+  /* Eingabefeld mit beanstandeter Eingabe.
+     Der rote Rahmen ist NICHT das ganze Signal — er allein waere fuer jemanden
+     mit Rot-Gruen-Schwaeche und fuer einen Screenreader nichts. Er kommt
+     deshalb immer zusammen mit aria-invalid und einer Meldung, die per
+     aria-describedby am Feld haengt (WCAG 1.4.1: Farbe darf nie der einzige
+     Traeger einer Information sein). */
+  .abo-feld-fehler{border-color:var(--color-negative) !important;box-shadow:0 0 0 3px color-mix(in srgb,var(--color-negative) 18%,transparent)}
+
+  /* Meldung als Sprechblase UNTER dem Feld, mit Zeiger nach oben.
+     Kein echter Tooltip am Zeiger: Der erschiene nur beim Ueberfahren, und auf
+     einem Telefon gibt es kein Ueberfahren — die Meldung waere dort unsichtbar.
+     Sie steht deshalb fest da, sieht aber aus wie einer. */
+  .abo-fehlerblase{position:relative;margin:10px 0 0;padding:8px 10px;border:1px solid var(--color-negative);border-radius:var(--radius-md);background:color-mix(in srgb,var(--color-negative) 10%,var(--color-bg));color:var(--color-negative);font-size:var(--font-size-small);line-height:1.4}
+  .abo-fehlerblase::before,.abo-fehlerblase::after{content:"";position:absolute;bottom:100%;left:14px;width:0;height:0;border:6px solid transparent}
+  /* Zwei Zeiger uebereinander: der untere traegt die Rahmenfarbe, der obere
+     verdeckt ihn um einen Pixel versetzt mit der Fuellfarbe. Ein einzelnes
+     gedrehtes Quadrat waere kuerzer, wuerde aber den Rahmen der Blase an der
+     Ansatzstelle durchschneiden. */
+  .abo-fehlerblase::before{border-bottom-color:var(--color-negative)}
+  .abo-fehlerblase::after{margin-bottom:-1px;border-bottom-color:color-mix(in srgb,var(--color-negative) 10%,var(--color-bg))}
+
   .gemeinde-kopf{display:flex;gap:24px;align-items:flex-start;margin-bottom:24px}
   /* Die Ueberschrift stand bis 31.08.2026 IN der linken Spalte, also neben der
      Auszeichnung — bei einem langen Ortsnamen brach sie dort um, waehrend

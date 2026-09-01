@@ -384,6 +384,86 @@ test.describe("Gemeinde-Abo", () => {
     await expect(fenster.getByText("Wofür interessierst du dich?")).toHaveCount(0);
   });
 
+  test("eine beanstandete Adresse färbt das Feld, ein Serverfehler nicht", async ({ page }) => {
+    // ZWEI FÄLLE, und der Unterschied ist der Punkt: Ein roter Rahmen sagt
+    // „an deiner Eingabe stimmt etwas nicht". Ihn bei JEDEM Fehler zu setzen
+    // schickt jemanden auf die Suche nach einem Tippfehler, den es nicht gibt,
+    // während in Wahrheit die Verbindung weg war.
+    // BEIDE ANTWORTEN WERDEN GESTELLT, statt den echten Server zu treffen.
+    // Geprüft wird hier die Oberfläche, nicht die Route — die hat ihren eigenen
+    // Test. Und der echte Server macht diesen hier unzuverlässig: Seine
+    // Ratenbegrenzung lässt fünf Versuche je Stunde durch, danach antwortet er
+    // mit 429 und der Test bekäme genau den Fall nicht mehr zu sehen, den er
+    // prüfen soll.
+    let antwort = { status: 400, body: { error: "Diese E-Mail-Adresse sieht nicht richtig aus." } };
+    await page.route("**/api/abo/anmelden", (r) =>
+      r.fulfill({
+        status: antwort.status,
+        contentType: "application/json",
+        body: JSON.stringify(antwort.body),
+      }),
+    );
+
+    await page.goto(ORT);
+    await page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first().click();
+    const fenster = page.getByRole("dialog");
+    const feld = fenster.getByLabel("E-Mail-Adresse");
+
+    // Der Browser lässt "a@b" durch (type=email verlangt keinen Punkt in der
+    // Domain), der Server nicht — genau dieser Fall landet in der Oberfläche.
+    await feld.fill("a@b");
+    await fenster.getByRole("button", { name: "Abonnieren" }).click();
+
+    const blase = fenster.getByRole("alert");
+    await expect(blase).toBeVisible();
+    // Auf die KENNZEICHNUNG prüfen, nicht auf die Farbe: Ein Test gegen einen
+    // Farbwert wäre bei jeder Tagesstufe des Themes ein anderer.
+    await expect(feld).toHaveAttribute("aria-invalid", "true");
+    await expect(feld).toHaveClass(/abo-feld-fehler/);
+    // Die Meldung hängt am Feld, sonst liest ein Screenreader sie nie vor.
+    await expect(feld).toHaveAttribute("aria-describedby", "abo-fehler");
+    // Und die Blase steht UNTER dem Feld, nicht irgendwo im Fenster.
+    const oben = (await feld.boundingBox())!;
+    const unten = (await blase.boundingBox())!;
+    expect(unten.y).toBeGreaterThan(oben.y + oben.height - 1);
+
+    // Beim Korrigieren verschwindet die Beanstandung sofort.
+    await feld.fill("a@b.de");
+    await expect(feld).not.toHaveAttribute("aria-invalid", "true");
+    await expect(fenster.getByRole("alert")).toHaveCount(0);
+
+    // Gegenprobe: Ein Fehler, der NICHT an der Eingabe hängt, lässt das Feld
+    // unangetastet und erscheint als schlichte Zeile.
+    antwort = { status: 503, body: { error: "Gerade nicht möglich." } };
+    await fenster.getByRole("button", { name: "Abonnieren" }).click();
+    await expect(fenster.getByRole("alert")).toContainText("Gerade nicht möglich.");
+    await expect(feld).not.toHaveAttribute("aria-invalid", "true");
+    await expect(feld).not.toHaveClass(/abo-feld-fehler/);
+  });
+
+  test("nach der Bestätigung steht die Quittung, wo der Knopf stand", async ({ page }) => {
+    // Der Weg endet auf der SEITE DES ORTS, nicht auf einer Quittungsseite
+    // (Betreiber, 01.09.2026). Geprüft wird hier das Ende dieses Wegs: die
+    // Ortsseite mit dem Merker, den die Bestätigung anhängt.
+    await page.goto(`${ORT}?abo=1`);
+
+    const quittung = page.getByRole("status").filter({ hasText: "Angemeldet für Höchberg" });
+    await expect(quittung).toBeVisible();
+
+    // Kein Anmeldeknopf mehr daneben — er böte an, was gerade geschehen ist.
+    await expect(page.getByRole("button", { name: /^Höchberg abonnieren$/ })).toHaveCount(0);
+
+    // Der Merker verschwindet aus der Adresse. Sonst trägt jeder geteilte Link
+    // und jedes Lesezeichen für immer eine Bestätigung, die dem nächsten Leser
+    // nichts sagt.
+    await expect(page).toHaveURL((u) => !u.searchParams.has("abo"));
+
+    // Und ohne Merker steht wieder der Knopf da.
+    await page.goto(ORT);
+    await expect(page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first()).toBeVisible();
+    await expect(page.getByRole("status").filter({ hasText: "Angemeldet für" })).toHaveCount(0);
+  });
+
   test("eine unbrauchbare Adresse kommt nicht durch", async ({ page }) => {
     await page.goto(ORT);
     await page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first().click();

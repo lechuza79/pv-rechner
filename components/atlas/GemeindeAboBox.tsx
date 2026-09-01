@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { v, space } from "../../lib/theme";
 import { trackEvent } from "../../lib/analytics";
 import InfoTooltip from "../InfoTooltip";
 import Modal, { ModalSticky } from "../Modal";
 import { IconGlocke } from "../Icons";
+import { ABO_BESTAETIGT_PARAM } from "../../lib/abo-bestaetigt";
 import { ABO_TECHNIKEN, ABO_TECHNIK_LABEL, type AboTechnik } from "../../lib/abo-technik";
 import { HERKUNFT_PARAM, HERKUNFT_WERT } from "../../lib/brief-herkunft";
 
@@ -29,7 +30,17 @@ import { HERKUNFT_PARAM, HERKUNFT_WERT } from "../../lib/brief-herkunft";
 // Notbremse. Diese Komponente lädt NICHTS — kein Abruf beim Rendern, keine
 // Zahl, kein Zustand aus der Datenbank.
 
-type Zustand = "bereit" | "sendet" | "fertig" | { fehler: string };
+/**
+ * Ein Fehler trägt, WORAN er hängt.
+ *
+ * `amFeld` unterscheidet „deine Adresse stimmt nicht" von „bei uns klemmt
+ * gerade etwas". Ohne die Unterscheidung müsste die Oberfläche raten, und die
+ * naheliegende Antwort wäre die falsche: Das Feld bei JEDEM Fehler rot zu
+ * färben behauptet einen Tippfehler auch dann, wenn die Adresse stimmt und nur
+ * die Verbindung weg war. Der Nutzer sucht dann an einer Stelle, an der nichts
+ * zu finden ist.
+ */
+type Zustand = "bereit" | "sendet" | "fertig" | { fehler: string; amFeld: boolean };
 
 /**
  * Was das Abo verspricht — JE ART verschieden, und das ist keine Kosmetik.
@@ -143,9 +154,33 @@ export default function GemeindeAboBox({
    * Angabe, die wir dem Anmeldenden untergeschoben haben.
    */
   const [ausVerwaltung, setAusVerwaltung] = useState(false);
+  /**
+   * Kommt der Aufruf aus einer gerade bestätigten Anmeldung?
+   *
+   * ERST NACH DEM ERSTEN RENDERN gelesen, nicht beim Aufbau: Diese Seite wird
+   * vorgerendert und zwischengespeichert. Läse die Komponente die Adresse
+   * schon beim ersten Durchlauf, unterschiede sich das Ergebnis vom
+   * ausgelieferten HTML, und React verwürfe den ganzen Teilbaum.
+   */
+  const [bestaetigt, setBestaetigt] = useState(false);
 
   const umschalten = (t: AboTechnik) =>
     setGewaehlt((alt) => (alt.includes(t) ? alt.filter((x) => x !== t) : [...alt, t]));
+
+  useEffect(() => {
+    try {
+      if (new URLSearchParams(window.location.search).get(ABO_BESTAETIGT_PARAM) !== "1") return;
+      setBestaetigt(true);
+      // Den Parameter aus der Adresse nehmen, ohne die Seite neu zu laden.
+      // Sonst trägt jeder geteilte Link und jedes Lesezeichen dieser Seite für
+      // immer eine Bestätigung, die dem nächsten Leser nichts sagt.
+      const sauber = new URL(window.location.href);
+      sauber.searchParams.delete(ABO_BESTAETIGT_PARAM);
+      window.history.replaceState(null, "", sauber.pathname + sauber.search + sauber.hash);
+    } catch {
+      // Eine kaputte Adresse ist kein Grund, die Seite zu verlieren.
+    }
+  }, []);
 
   // Die klebende Leiste am unteren Rand ruft dasselbe Fenster auf.
   useEffect(() => {
@@ -157,6 +192,11 @@ export default function GemeindeAboBox({
   const texte = TEXTE[quelle];
   const sendet = zustand === "sendet";
   const fehler = typeof zustand === "object" ? zustand.fehler : null;
+  const fehlerAmFeld = typeof zustand === "object" && zustand.amFeld;
+  // Bei einem Feldfehler springt der Fokus zurück ins Feld. Sonst steht der
+  // Cursor weiter auf dem Absenden-Knopf, und wer mit der Tastatur arbeitet,
+  // müsste rückwärts navigieren, um die beanstandete Eingabe zu erreichen.
+  const feldRef = useRef<HTMLInputElement>(null);
 
   async function absenden(e: { preventDefault: () => void }) {
     e.preventDefault();
@@ -187,13 +227,21 @@ export default function GemeindeAboBox({
       });
       if (!antwort.ok) {
         const daten = (await antwort.json().catch(() => ({}))) as { error?: string };
-        setZustand({ fehler: daten.error ?? "Das hat gerade nicht geklappt. Bitte später erneut." });
+        // 400 heißt: An der Eingabe stimmt etwas nicht (die Adresse oder der
+        // Ortsschlüssel). Alles andere — Ratenbegrenzung, Datenbank weg,
+        // Versand klemmt — liegt bei uns und wird dem Feld nicht angelastet.
+        const amFeld = antwort.status === 400;
+        setZustand({
+          fehler: daten.error ?? "Das hat gerade nicht geklappt. Bitte später erneut.",
+          amFeld,
+        });
+        if (amFeld) feldRef.current?.focus();
         return;
       }
       trackEvent("abo_anmeldung");
       setZustand("fertig");
     } catch {
-      setZustand({ fehler: "Keine Verbindung. Bitte später erneut." });
+      setZustand({ fehler: "Keine Verbindung. Bitte später erneut.", amFeld: false });
     }
   }
 
@@ -216,16 +264,34 @@ export default function GemeindeAboBox({
             Stylesheet, nicht im Code — so wird genau so viel weggenommen, wie
             der vorhandene Platz verlangt, statt nach einer geratenen
             Zeichenzahl. */}
-        <button type="button" onClick={() => setOffen(true)} className="sc-glocke" style={S.knopfPrimaer}>
-          <IconGlocke size={16} />
-          <span className="gemeinde-abo-ort">{name}</span> abonnieren
-        </button>
-        <p style={S.ctaText}>
-          {texte.teaser}{" "}
-          <InfoTooltip title={`Meldungen zu ${name}`} ariaLabel="Was das Abo bedeutet" exportNote={false}>
-            {texte.hilfe}
-          </InfoTooltip>
-        </p>
+        {bestaetigt ? (
+          /* DIE QUITTUNG STEHT, WO DER KNOPF STAND. Ein Streifen oben auf der
+             Seite oder ein Toast wären zwei andere Orte für dieselbe Auskunft;
+             hier ist sie an der Stelle, an der die Handlung begonnen hat, und
+             sie verschwindet nicht von selbst. Kein Knopf mehr daneben — er
+             böte an, was gerade geschehen ist. */
+          <div role="status" style={S.quittung}>
+            <span style={S.quittungTitel}>
+              <IconGlocke size={16} /> Angemeldet für {name}
+            </span>
+            <span style={S.quittungText}>
+              Wir schreiben dir, sobald es hier etwas zu berichten gibt.
+            </span>
+          </div>
+        ) : (
+          <>
+            <button type="button" onClick={() => setOffen(true)} className="sc-glocke" style={S.knopfPrimaer}>
+              <IconGlocke size={16} />
+              <span className="gemeinde-abo-ort">{name}</span> abonnieren
+            </button>
+            <p style={S.ctaText}>
+              {texte.teaser}{" "}
+              <InfoTooltip title={`Meldungen zu ${name}`} ariaLabel="Was das Abo bedeutet" exportNote={false}>
+                {texte.hilfe}
+              </InfoTooltip>
+            </p>
+          </>
+        )}
       </div>
 
       <Modal
@@ -257,8 +323,18 @@ export default function GemeindeAboBox({
               inputMode="email"
               placeholder="name@beispiel.de"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                // Beim Tippen die Beanstandung zurücknehmen. Ein roter Rahmen,
+                // der stehen bleibt, während jemand gerade korrigiert,
+                // beanstandet eine Eingabe, die es nicht mehr gibt.
+                if (typeof zustand === "object") setZustand("bereit");
+              }}
               disabled={sendet}
+              ref={feldRef}
+              aria-invalid={fehlerAmFeld || undefined}
+              aria-describedby={fehler ? "abo-fehler" : undefined}
+              className={fehlerAmFeld ? "abo-feld-fehler" : undefined}
               style={S.feld}
             />
 
@@ -276,6 +352,12 @@ export default function GemeindeAboBox({
               aria-hidden="true"
               style={S.falle}
             />
+
+            {fehler && fehlerAmFeld && (
+              <p id="abo-fehler" role="alert" className="abo-fehlerblase">
+                {fehler}
+              </p>
+            )}
 
             {quelle === "foerderung" && (
               <fieldset style={S.feld_gruppe}>
@@ -326,8 +408,11 @@ export default function GemeindeAboBox({
             </label>
             )}
 
-            {fehler && (
-              <p role="alert" style={S.fehler}>
+            {/* Am Feld: Sprechblase direkt darunter, mit Zeiger auf das Feld.
+                Sonst: eine schlichte Zeile über dem Absenden-Knopf — sie
+                gehört dann zum Vorgang, nicht zur Eingabe. */}
+            {fehler && !fehlerAmFeld && (
+              <p id="abo-fehler" role="alert" style={S.fehler}>
                 {fehler}
               </p>
             )}
@@ -440,6 +525,28 @@ const S: Record<string, React.CSSProperties> = {
     color: v("--color-text-primary"),
     lineHeight: 1.4,
     cursor: "pointer",
+  },
+  quittung: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-end",
+    gap: 2,
+    padding: "10px 14px",
+    border: `1px solid ${v("--color-positive")}`,
+    borderRadius: v("--radius-md"),
+    background: "color-mix(in srgb, var(--color-positive) 10%, var(--color-bg))",
+  },
+  quittungTitel: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: space.sm,
+    fontSize: v("--font-size-body"),
+    fontWeight: 700,
+    color: v("--color-positive"),
+  },
+  quittungText: {
+    fontSize: v("--font-size-small"),
+    color: v("--color-text-muted"),
   },
   rolleGrund: {
     display: "block",

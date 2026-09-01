@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import AboErgebnis from "../_ergebnis";
 import { pruefeBestaetigung } from "../../../../lib/abo-token";
 import { aboBestaetigen } from "../../../../lib/gemeinde-abo";
-import { getRegionById } from "../../../../lib/atlas";
 import { atlasPathForRegionId } from "../../../../lib/atlas";
+import { ATLAS_CITIES, cityPath, isCityPublished } from "../../../../lib/atlas-cities";
+import { ABO_BESTAETIGT_PARAM } from "../../../../lib/abo-bestaetigt";
 
 // Der zweite Schritt der Anmeldung: Der Klick aus der Bestätigungsmail landet
 // hier.
@@ -59,21 +61,45 @@ export default async function Seite(props: { searchParams: Promise<{ t?: string 
     );
   }
 
-  const region = await getRegionById(ergebnis.abo.regionId);
-  const pfad = region ? await atlasPathForRegionId(ergebnis.abo.regionId) : null;
-  const ort = region?.name;
+  // ZURÜCK AUF DIE SEITE DES ORTS, nicht auf eine eigene Quittungsseite
+  // (Betreiber, 01.09.2026). Eine Seite, die nur „hat geklappt" sagt, ist eine
+  // Sackgasse: Wer gerade Meldungen zu einem Ort abonniert hat, will diesen Ort
+  // sehen, nicht einen Haken. Die Bestätigung erscheint dort an der Stelle, an
+  // der vorher der Anmeldeknopf stand.
+  //
+  // Und ZU DER GATTUNG, auf der er sich eingetragen hat: Wer über die
+  // Förderseite kam, interessiert sich für Zuschüsse und nicht für den
+  // Anlagenbestand. Beide Seiten tragen denselben Ortsnamen; die Quittung auf
+  // der falschen abzusetzen wäre die Sorte Fehler, die niemand meldet.
+  const ziel = await zielPfad(ergebnis.abo.regionId, ergebnis.abo.quelle);
+  if (ziel) redirect(`${ziel}?${ABO_BESTAETIGT_PARAM}=1`);
 
+  // Kein Ziel auflösbar (Ort ohne freigeschaltete Seite): Dann bleibt die
+  // eigene Quittung — sie ist die Rückfallebene, nicht der Normalfall.
   return (
     <AboErgebnis
-      titel={ort ? `Angemeldet für ${ort}` : "Angemeldet"}
+      titel="Angemeldet"
       saetze={[
-        ort
-          ? `Wir schreiben dir, wenn ${ort} einen Zuschuss auflegt, wenn ein Vergütungsjahrgang ausläuft, wenn die Zahlen fürs Jahr da sind — oder wenn wir sonst etwas über den Ort herausfinden, das der Rede wert ist.`
-          : "Du bekommst jetzt eine Nachricht, wenn sich in deinem Ort etwas Nennenswertes tut.",
+        "Du bekommst jetzt eine Nachricht, wenn sich in deinem Ort etwas Nennenswertes tut.",
         "Es kommt nur etwas, wenn es etwas zu berichten gibt. Abmelden kannst du dich mit einem Klick am Fuß jeder Mail.",
       ]}
-      ortHref={pfad ?? undefined}
-      ortName={ort}
     />
   );
+}
+
+/**
+ * Wohin nach der Bestätigung?
+ *
+ * Die Förderseite gibt es nur, wenn der Ort im Katalog steht UND freigeschaltet
+ * ist — das entscheidet der Releaseplan, nicht die Existenz eines Programms.
+ * Ist sie nicht da, fällt auch ein Förder-Abo auf die Atlas-Seite zurück: Eine
+ * Weiterleitung auf eine Adresse, die 404 wirft, wäre schlimmer als die
+ * Quittungsseite.
+ */
+async function zielPfad(regionId: string, quelle: "gemeinde" | "foerderung"): Promise<string | null> {
+  if (quelle === "foerderung") {
+    const stadt = ATLAS_CITIES.find((c) => c.ags === regionId);
+    if (stadt && isCityPublished(stadt)) return cityPath(stadt);
+  }
+  return atlasPathForRegionId(regionId);
 }

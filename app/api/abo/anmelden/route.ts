@@ -8,9 +8,19 @@ import { getRegionById } from "../../../../lib/atlas";
 
 // ─── Anmeldung zu einem Gemeinde-Abo ─────────────────────────────────────────
 //
-// Öffentlich erreichbar, nimmt eine E-Mail-Adresse entgegen — damit gilt hier
-// dasselbe Schutzmuster wie beim Kontaktformular: Ratenbegrenzung je Herkunft
-// plus ein unsichtbares Feld gegen Maschinen.
+// Öffentlich erreichbar, nimmt eine E-Mail-Adresse entgegen. DREI Bremsen,
+// und sie greifen an verschiedenen Stellen — keine ersetzt die andere:
+//
+//   1. Ein unsichtbares Feld gegen Maschinen (hier).
+//   2. Fünf Versuche je Stunde und Herkunft (hier, im Arbeitsspeicher).
+//   3. Höchstens fünf offene Anmeldungen je ADRESSE, und keine zweite
+//      Bestätigung binnen zwei Minuten (in der Datenschicht, gegen die
+//      Datenbank).
+//
+// Die dritte ist die einzige, die gegen einen verteilten Angriff trägt, und
+// deshalb gehört sie dorthin: Sie zählt Zeilen in der Datenbank statt in einem
+// Prozessgedächtnis, das jede Instanz für sich führt und jeder Neustart
+// verliert.
 //
 // DIE ANTWORT IST IMMER DIESELBE, egal ob die Adresse neu ist, schon
 // angemeldet war oder gerade bestätigt werden muss. Das ist kein Versehen: Wer
@@ -30,15 +40,20 @@ function herkunft(req: NextRequest): string {
 }
 
 /**
- * Ratenbegrenzung im Arbeitsspeicher.
+ * Erste, billige Hürde: Versuche je Herkunft, gezählt im Arbeitsspeicher.
  *
- * Reicht hier und ist absichtlich nicht mehr: Der Zähler lebt je Instanz und
- * ist nach einem Neustart weg. Gegen eine entschlossene Maschine hilft er
- * nicht — gegen den Fall, für den er da ist, schon: dass jemand über das
- * Formular eine fremde Adresse mit Bestätigungsmails belegt. Der Aufwand einer
- * Ablage in der Datenbank stünde in keinem Verhältnis; die Bestätigungsmail
- * selbst ist die eigentliche Bremse, weil ohne Klick nie eine zweite Mail
- * folgt.
+ * WAS SIE NICHT KANN, und das ist wichtig, damit sich niemand auf sie
+ * verlässt: Der Zähler lebt je Instanz und ist nach einem Neustart weg. Auf
+ * einer Plattform, die Anfragen über mehrere Instanzen verteilt, kommt ein
+ * Skript beliebig oft durch, indem es einfach weiterfeuert. Sie hält einen
+ * Menschen auf, der zwanzigmal klickt — mehr nicht.
+ *
+ * Die Bremse, die wirklich trägt, sitzt deshalb in der Datenschicht und zählt
+ * an der E-MAIL-ADRESSE statt an der Herkunft. Das ist zusätzlich die
+ * treffendere Größe: Geschützt werden soll der Mensch, dessen Postfach
+ * zugeschüttet wird, nicht ein Anschluss. Und eine dauerhafte Zählung je
+ * IP-Adresse müsste diese speichern — was die Datenschutzerklärung
+ * ausdrücklich ausschließt.
  */
 function zuOft(ip: string, jetzt: number): boolean {
   const liste = (versuche.get(ip) ?? []).filter((t) => jetzt - t < FENSTER_MS);
@@ -132,6 +147,12 @@ export async function POST(req: NextRequest) {
   }
   // Schon bestätigt: keine zweite Mail. Nach außen dieselbe Antwort.
   if (ergebnis.art === "schon-angemeldet") return OK;
+  // Zu viele offene Anmeldungen für diese Adresse, oder gerade eben schon eine
+  // Bestätigung geschickt: Es geht nichts hinaus, die Antwort bleibt trotzdem
+  // dieselbe. Eine eigene Meldung („Sie haben zu viele offene Anmeldungen")
+  // verriete, welche Adressen bereits eingetragen sind — genau die Auskunft,
+  // die diese Route sonst überall vermeidet.
+  if (ergebnis.art === "still") return OK;
 
   const basis = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
   const token = bestaetigungsToken(ergebnis.abo.id, jetzt);
