@@ -24,7 +24,7 @@ export function StoryListe({
     pruefungen: Pruefung[];
     abdruck: string;
     befunde: MechanikBefund[];
-    gesendetAm: string | null;
+    gesendetAm: Record<string, string>;
   }[];
 }) {
   return (

@@ -33,7 +33,7 @@ export type GridEintrag = {
   /** Was die mechanische Pruefung festgestellt hat. */
   befunde: MechanikBefund[];
   /** Ging genau DIESE Fassung schon raus? */
-  gesendetAm: string | null;
+  gesendetAm: Record<string, string>;
   kategorie: { name: string; schluessel: string };
   /**
    * Ist das Design dieser Story durchgesehen — im Code abgenommen ODER im

@@ -42,7 +42,13 @@ export function StoryTisch({
   /** Was die mechanische Pruefung an dieser Fassung festgestellt hat. */
   befunde: MechanikBefund[];
   /** Ging genau DIESE Fassung schon einmal raus? */
-  gesendetAm?: string | null;
+  /**
+   * Wann diese Fassung auf welchem Kanal rausging.
+   *
+   * Eine Zuordnung, kein einzelnes Datum: Derselbe Beitrag geht auf zwei
+   * Kanäle, und ein Versand auf dem einen sagt nichts über den anderen.
+   */
+  gesendetAm?: Record<string, string>;
   /**
    * Der Fingerabdruck der ABGELEGTEN Fassung, vom Server gerechnet.
    *
@@ -112,6 +118,25 @@ export function StoryTisch({
   // Dasselbe Urteil, das die Freigabe-Karte zeigt — hier für den Sende-Knopf.
   // Es wird nicht zweimal gerechnet, sondern einmal und zweimal gelesen.
   const urteilOk = !geaendert && urteil(abdruck, gepruefte).ok;
+
+  // Warum gerade NICHT gesendet werden kann — einmal abgeleitet, für beide
+  // Kanäle. Zwei Ableitungen wären zwei Wahrheiten darüber, ob ein Beitrag
+  // fertig ist, und die eine ginge beim nächsten Umbau auseinander.
+  const gemeinsameSperre = geaendert
+    ? "Erst speichern."
+    : befunde.some((b) => b.schwere === "sperre")
+      ? "Die mechanische Prüfung sperrt — siehe oben."
+      : !urteilOk
+        ? "Es fehlt eine Freigabe."
+        : undefined;
+
+  /** Warum auf DIESEM Kanal gerade nicht gesendet werden kann. */
+  const sperreFuer = (kanal: string): string | undefined => {
+    if (geaendert) return "Erst speichern.";
+    const raus = gesendetAm?.[kanal];
+    if (raus) return `Diese Fassung ging dort bereits am ${new Date(raus).toLocaleDateString("de-DE")} raus.`;
+    return gemeinsameSperre;
+  };
 
   /**
    * Alles auf einmal ablegen — Text, Farbschema, Bildform.
@@ -304,27 +329,39 @@ export function StoryTisch({
           }
         />
 
-        {/* Der Auslöser. Er beurteilt nichts — er löst aus, was die Sperren
-            ohnehin freigegeben haben. Die Begründung, warum er gerade nicht
-            geht, steht daneben, statt dass er nur grau ist: Ein toter Knopf
-            ohne Grund schickt jemanden dreimal um den Block. */}
-        <SendenKnopf
-          postId={post.id}
-          abdruck={abdruck}
-          bildAlt={bild ? `${bild.aussage}. ${bild.gemessen}.` : ""}
-          kartenRef={karte}
-          gesperrtWeil={
-            geaendert
-              ? "Erst speichern."
-              : gesendetAm
-                ? `Diese Fassung ging bereits am ${new Date(gesendetAm).toLocaleDateString("de-DE")} raus.`
-                : befunde.some((b) => b.schwere === "sperre")
-                  ? "Die mechanische Prüfung sperrt — siehe oben."
-                  : !urteilOk
-                    ? "Es fehlt eine Freigabe."
-                    : undefined
-          }
-        />
+        {/* Die Auslöser. Sie beurteilen nichts — sie lösen aus, was die Sperren
+            ohnehin freigegeben haben. Die Begründung, warum gerade nicht
+            gesendet werden kann, steht daneben, statt dass der Knopf nur grau
+            ist: Ein toter Knopf ohne Grund schickt jemanden dreimal um den
+            Block. */}
+        {/* EIN KNOPF JE KANAL. Die Sperren sind dieselben — Mechanik, Freigabe,
+            Doppelversand —, nur das Versandprotokoll unterscheidet sie: Ein
+            Beitrag, der auf LinkedIn draußen ist, ist auf Instagram noch nicht
+            gesendet. Der Instagram-Knopf erscheint nur, wo der Beitrag für
+            diesen Kanal überhaupt vorgesehen ist; die Story selbst sagt das. */}
+        <div style={{ display: "flex", gap: space.sm, flexWrap: "wrap", alignItems: "flex-start" }}>
+          <SendenKnopf
+            postId={post.id}
+            abdruck={abdruck}
+            bildAlt={bild ? `${bild.aussage}. ${bild.gemessen}.` : ""}
+            kartenRef={karte}
+            gesperrtWeil={sperreFuer("linkedin")}
+          />
+          {post.kanal.includes("instagram") && (
+            <SendenKnopf
+              kanal="instagram"
+              postId={post.id}
+              abdruck={abdruck}
+              bildAlt={bild ? `${bild.aussage}. ${bild.gemessen}.` : ""}
+              kartenRef={karte}
+              gesperrtWeil={
+                !bild
+                  ? "Instagram kennt keinen reinen Textbeitrag — ohne Bild geht dort nichts."
+                  : sperreFuer("instagram")
+              }
+            />
+          )}
+        </div>
 
         <div style={{ display: "flex", gap: space.sm, marginTop: space.md, alignItems: "center", flexWrap: "wrap" }}>
           <button

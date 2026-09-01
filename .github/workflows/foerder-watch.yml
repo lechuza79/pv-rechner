@@ -57,7 +57,18 @@ jobs:
     # Schritte am Ende — Technik, Bericht, Screening, Leseliste. Genau die sind
     # vier Tage lang ausgefallen, weil sie hinten stehen und vorne jemand alles
     # aufgebraucht hat.
-    timeout-minutes: 60
+    #
+    # AUF 95 MINUTEN GEZOGEN (01.09.2026), gemeinsam mit dem Suchschritt: Der
+    # darf jetzt 40 statt 12 Minuten (Begründung und Messung stehen dort). Das
+    # Job-Limit MUSS über der Summe der Schrittlimits liegen, sonst reißt wieder
+    # der Job zuerst, der Ausgang heißt „abgebrochen" statt „rot", und das
+    # Protokoll verliert seine Gliederung — jede Zeile trägt dann „UNKNOWN STEP".
+    # Rechnung: 40 (Suche) + 12 (jede einzelne Seite) + 3 (Screening) = 55
+    # Schrittlimits, dazu die Schritte OHNE eigenes Limit, die den Job reißen
+    # dürfen und sollen: Setup ~2, Amtsseiten ~7, AGS + bekannte Seiten ~8,
+    # Technik/Bericht/Leseliste am Ende ~10. Zusammen rund 82 — 95 lässt Luft,
+    # ohne die Notbremse abzuschaffen.
+    timeout-minutes: 95
     steps:
       - uses: actions/checkout@v4
 
@@ -115,8 +126,32 @@ jobs:
       # darf die Schritte danach nicht mitreißen. Am 23.08.2026 brauchte er 12
       # der 35 Minuten — der zweitgrößte Posten im Lauf und einer, der mit der
       # Zahl der Gemeinden weiterwächst.
+      # NACHGEMESSEN (01.09.2026): Der Umfang von 1.000 wurde nie erreicht. Der
+      # Lauf sah je Nacht 110 bis 250 Gemeinden an — nicht weil er fertig war,
+      # sondern weil dieses Zeitlimit jede Nacht griff. Die Zählung aus der
+      # Abdeckungstabelle, Gemeinden mit erstmals angesehener Adresse je Tag:
+      #   18.08. 2.380 (Erstlauf) · 24.08. 234 · 25.08. 225 · 26.08. 235
+      #   27.08. 117 · 28.08. 108 · 29.08. 128 · 31.08. 146 · 01.09. 250
+      # Macht rund 180 je Nacht, also gut 4 Sekunden je Gemeinde — genau die
+      # 12 Minuten. Von 11.247 Gemeinden waren damit 3.855 angesehen; die
+      # restlichen 7.392 hätten in diesem Takt noch rund sechs Wochen gebraucht,
+      # obwohl der Kommentar oben mit „rund zehn Nächte" rechnete. Die Zahl im
+      # `--limit` war also seit dem 19.08. wirkungslos.
+      #
+      # Auf 40 Minuten gezogen. Das ist keine Anhebung, „damit der Schritt
+      # durchgeht" (die verbietet Teil 2 des Gates) — es ist der Fall, für den
+      # ein abschneidbarer Schritt gebaut ist: Er ist fortschreitend, nichts ist
+      # gewachsen oder langsamer geworden, es sind schlicht noch 7.392 Gemeinden
+      # übrig. Die Rücksicht bleibt unberührt, denn sie hängt an der Last je
+      # SERVER, nicht am Umfang: Jede Website bekommt weiterhin ihre gemessenen
+      # 2,9 Anfragen, es sind nur mehr verschiedene Websites je Nacht.
+      # Rechenminuten kosten nichts (öffentliches Repo).
+      #
+      # Das Job-Limit darunter musste mitwachsen — ein Schritt-Limit über dem
+      # Job-Limit ist wirkungslos, dann reißt wieder der Job zuerst und der
+      # Ausgang heißt erneut „abgebrochen" (CLAUDE.md, Monitoring).
       - name: Förderseiten auf den Amtsdomains suchen
-        timeout-minutes: 12
+        timeout-minutes: 40
         continue-on-error: true
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}

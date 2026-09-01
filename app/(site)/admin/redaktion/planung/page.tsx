@@ -3,6 +3,7 @@ import { isAdminSession } from "../../../../../lib/admin-guard";
 import { socialKennzahlen } from "../../../../../lib/social-kennzahlen";
 import { baueAllePosts } from "../../../../../lib/social-posts";
 import { FAMILIEN, PUFFER_VOR_START, REGELN, SLOTS } from "../../../../../lib/redaktionsplan";
+import { haltbarkeitText, HALTBARKEIT_VORGABE } from "../../../../../lib/social-haltbarkeit";
 import { fassungsAbdruck, ladeAllePruefungen } from "../../../../../lib/social-pruefung";
 import { pruefeMechanisch } from "../../../../../lib/social-mechanik";
 import { ladeVersand } from "../../../../../lib/social-versand-log";
@@ -87,6 +88,13 @@ export default async function RedaktionPlanung() {
         sendbar: sendbare.has(p.id),
         familie: p.kategorie,
         bild: p.bild ?? null,
+        kanal: p.kanal,
+        // Die Haltbarkeit hängt an der KATEGORIE, nicht am einzelnen Beitrag:
+        // Sie ist eine Eigenschaft der Gattung. Fehlt sie, gilt die vorsichtige
+        // Vorgabe — zeitgebunden.
+        haltbarkeit: haltbarkeitText(
+          FAMILIEN.find((f) => f.schluessel === p.kategorie)?.haltbarkeit ?? HALTBARKEIT_VORGABE,
+        ),
       })),
       familien: FAMILIEN.map((f) => ({
         schluessel: f.schluessel,

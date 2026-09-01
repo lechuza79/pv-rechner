@@ -98,7 +98,17 @@ export function anmeldeAdresse(origin: string, state: string): string {
   return `${AUTH_URL}?${teile.join("&")}`;
 }
 
-type KurzToken = { access_token: string; user_id: string | number; permissions?: string };
+// Die Berechtigungen kommen als LISTE, nicht als Text — anders als bei
+// LinkedIn, wo sie eine getrennte Zeichenkette sind. Gemessen an der echten
+// Antwort am 01.09.2026: Der Tausch lieferte ein Feld, und der Versuch, es zu
+// zerlegen, brach den letzten Schritt der Anmeldung ab, nachdem alles davor
+// schon funktioniert hatte. Beide Formen werden jetzt angenommen: Was eine
+// Schnittstelle heute als Text schickt, kann morgen eine Liste sein.
+type KurzToken = {
+  access_token: string;
+  user_id: string | number;
+  permissions?: string | string[];
+};
 type LangToken = { access_token: string; expires_in: number };
 type Profil = { id: string; username?: string };
 
@@ -112,31 +122,39 @@ type Profil = { id: string; username?: string };
  * wenn längst nichts mehr geht.
  */
 export async function loginAbschliessen(
-  code: string,
+  rohCode: string,
   origin: string,
 ): Promise<{ name: string; gueltigBis: string }> {
+  // Instagram hängt an die Rückrufadresse ein `#_` an. Als Fragment erreicht es
+  // den Server normalerweise nicht — aber die Dokumentation sagt ausdrücklich,
+  // es gehöre nicht zum Code und sei abzuschneiden. Zwei Zeichen zu entfernen,
+  // die nie da sind, kostet nichts; ein Code mit angehängtem Anker ist ein
+  // ungültiger Code, und der Fehler dafür sähe aus wie jeder andere.
+  const code = rohCode.replace(/#_$/, "");
   const appId = process.env.INSTAGRAM_APP_ID;
   const appSecret = process.env.INSTAGRAM_APP_SECRET;
   if (!appId || !appSecret) throw new Error("Instagram-Zugangsdaten fehlen in der Umgebung");
 
-  // DER KÖRPER WIRD VON HAND GEBAUT, aus demselben Grund wie die Anmeldeadresse:
-  // Die Parameter-Sammlung kodiert jeden Wert, und Instagram vergleicht die
-  // Rückrufadresse offenbar als unveränderten Text. Nur eine der beiden Seiten
-  // umzustellen half nicht — der Dialog sah dann die rohe Form, der Tausch
-  // schickte die kodierte, und der Fehler blieb Zeichen für Zeichen derselbe.
-  const koerper = [
-    `client_id=${appId}`,
-    `client_secret=${appSecret}`,
-    "grant_type=authorization_code",
-    `redirect_uri=${rueckrufAdresse(origin)}`,
-    `code=${code}`,
-  ].join("&");
+  // MULTIPART, nicht URL-kodiert — und das ist keine Geschmacksfrage. Metas
+  // eigenes Beispiel für diesen Aufruf verwendet durchgehend `-F`, also
+  // multipart/form-data. Dort stehen die Werte roh im Körper; im URL-kodierten
+  // Format wird die Rückrufadresse zu `https%3A%2F%2F…`, und Instagram
+  // vergleicht sie offenbar unverändert mit der aus dem Anmeldedialog. Der
+  // Tausch scheiterte deshalb stundenlang mit „redirect_uri is identical to the
+  // one you used in the OAuth dialog request", obwohl im Portal, in der
+  // Anmeldeadresse und hier zeichengleich dieselbe Adresse stand.
+  //
+  // Den Trennstrich der multipart-Grenze setzt fetch selbst — deshalb hier KEIN
+  // Content-Type von Hand: Ein selbst gesetzter Kopf ohne Grenzangabe macht den
+  // Körper unlesbar.
+  const formular = new FormData();
+  formular.set("client_id", appId);
+  formular.set("client_secret", appSecret);
+  formular.set("grant_type", "authorization_code");
+  formular.set("redirect_uri", rueckrufAdresse(origin));
+  formular.set("code", code);
 
-  const tokenRes = await fetch(TOKEN_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: koerper,
-  });
+  const tokenRes = await fetch(TOKEN_URL, { method: "POST", body: formular });
   if (!tokenRes.ok) {
     throw new Error(`Instagram-Schlüsseltausch fehlgeschlagen (${tokenRes.status}): ${await tokenRes.text()}`);
   }
@@ -161,12 +179,19 @@ export async function loginAbschliessen(
     anzeigename: profil.username ?? null,
     access_token: lang.access_token,
     gueltig_bis: gueltigBis,
-    scopes: kurz.permissions ? kurz.permissions.split(/[ ,]+/).filter(Boolean) : INSTAGRAM_SCOPES,
+    scopes: berechtigungen(kurz.permissions),
     // Frischer Zugang: die Warnkette beginnt von vorn.
     gewarnt_bei_stufe: null,
   });
 
   return { name: profil.username ?? String(kurz.user_id), gueltigBis };
+}
+
+/** Die erteilten Berechtigungen — als Liste, egal in welcher Form sie kamen. */
+export function berechtigungen(wert: string | string[] | undefined): string[] {
+  if (Array.isArray(wert)) return wert.filter(Boolean);
+  if (typeof wert === "string" && wert.trim()) return wert.split(/[ ,]+/).filter(Boolean);
+  return INSTAGRAM_SCOPES;
 }
 
 async function ladeProfil(token: string): Promise<Profil> {
@@ -282,3 +307,6 @@ export async function veroeffentlichungsGrenze(): Promise<{ genutzt: number; gre
   if (!eintrag) return null;
   return { genutzt: eintrag.quota_usage ?? 0, grenze: eintrag.config?.quota_total ?? 100 };
 }
+
+/** Nur für den Test — die Ableitung ist sonst ein innerer Helfer. */
+export { berechtigungen as berechtigungenFuerTest };
