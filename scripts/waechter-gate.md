@@ -327,10 +327,65 @@ es eine — und dann gehört sie in **einen** Satz plus Empfehlung.
 | Wärmepumpe (quartalsweise) | Investition (Basis, Steigung, Heizkörpertausch) | BEG-Sätze, WP-Tarif, Gaspreis |
 | Geräte-Config (quartalsweise) | Set-/Gerätepreise, Effizienzen **nach der Systematik** | neue Gerätekategorie, neue Effizienz-Systematik |
 | Freiflächen-Zuschlagswerte (3× jährlich) | veröffentlichte Ausschreibungsrunde ins gleitende Fenster, **vollständiges** Ausschreibungsjahr in die Jahresreihe | Fenstergröße, Gewichtungsregel, Versatz-Regel (§ 37e), unvollständiges Jahr |
-| Förderprogramme (täglich + quartalsweise) | Programm abschalten, Sätze senken, Programm einschalten nach Träger-Beleg | neues Programm aufnehmen |
+| Förderprogramme (täglich + quartalsweise) | Programm abschalten, Sätze senken, Programm einschalten nach Träger-Beleg, **Programm neu aufnehmen** (Bedingungen unten) | Aufnahme allein aus einer Sekundärquelle |
 | Grüngas / GModG | Verkündungs-Flag, Stufenwerte nach Gesetzestext | Quotengesetz nach § 42a, neue Stufen |
 | Legal (quartalsweise) | faktische Rechtsstände in Texten, Tippfehler und tote Links, nachgeprüfter DPF-Status — dazu der Abgleich der Rechtstexte gegen den Code (`scripts/rechtstexte-verify.md`) | Struktur der Rechtstexte, jede neue oder geänderte Rechtsaussage, jede neue Empfängernennung |
 | Atlas-Index-Wellen | Sitemap-Einreichung, Regressionsbefunde | Welle freischalten |
 | Fehler-Triage (täglich) | Function-Region, eindeutige Betriebsfehler | Berechnungslogik, Zahlen, Datenbank |
 
 Neuer Wächter → Zeile hier ergänzen, sonst gilt: nur Vorschlag.
+
+### Ein Förderprogramm neu aufnehmen (01.09.2026)
+
+**Aufnehmen ist erlaubt, weil das Geld an einer anderen Bedingung hängt als die
+Aufnahme.** Bis zum 01.09.2026 stand hier pauschal „neues Programm aufnehmen →
+Vorschlag", direkt neben „Programm einschalten nach Träger-Beleg → darf selbst".
+Das war widersprüchlich: Einschalten bewegt Geld, Aufnehmen zunächst nicht. Ein
+Programm, das niemand aufnimmt, ist außerdem keine sichere Richtung — es fehlt
+auf der Stadtseite, und der Nutzer dort sieht „keine kommunale Förderung", wo es
+eine gibt. Das ist dieselbe Falschauskunft wie ein zu hoher Betrag, nur in die
+andere Richtung.
+
+**Die Bremse sitzt woanders und wirkt von selbst:** `fundingBelegAktuell()` lässt
+ein Programm erst dann Geld abziehen, wenn ein protokollierter Abruf an der
+AMTSSEITE vorliegt (`last_verified` aus `funding_checks`, gesetzt allein durch
+`npm run foerder:probe -- --ok <id> --wie traeger`). Der Code-Seed trägt kein
+Prüfdatum. Ein frisch aufgenommenes Programm steht also auf der Stadtseite und
+informiert, rechnet aber nachweislich nicht mit, bis jemand die Amtsseite gelesen
+und das protokolliert hat. Das ist keine Regel zum Merken, sondern hängt an der
+Datenstruktur.
+
+**Bedingungen für die Aufnahme:**
+
+1. **Die Amtsseite selbst gelesen**, im Rohtext, nicht über ein
+   zusammenfassendes Abrufwerkzeug (Regel 2 und der Ludwigshafen-Fall vom
+   30.08.2026: Ein Zusammenfasser übersah die Überschrift der Seite und
+   erzeugte daraus eine falsche Aussage). Ein Screening-Zitat ist der Anlass
+   hinzusehen, nie die Quelle.
+2. **Gemeindeschlüssel aus dem Register**, nie aus einer Bildschirmliste
+   (`npm run foerder:ags -- --suche <ort>`). Ein vertippter Schlüssel bleibt
+   gültig und zeigt auf einen anderen Ort.
+3. **Rechenwerte nur, wo das Modell die Regel ausdrücken kann.** Was es nicht
+   kann (Sockel plus Satz je kWh, Einkommensgrenzen, Zuschuss auf den
+   Speicherpreis statt auf die Anlage), wird als Text aufgenommen und zieht
+   nichts ab. Lieber keine Zahl als eine falsche.
+4. **Bei Rechtsaussagen der Gegenprüfer** (`scripts/council-verify.md`).
+   Fördersätze und Bedingungen sind abgeschriebene Tatsachen, keine
+   Rechtsauslegung — dafür genügt der Beleg. Sobald ein Programm eine
+   Rechtsfolge behauptet (Rückzahlungspflicht, Ausschluss, Kumulierungsverbot),
+   gilt der volle Council.
+5. **Laufzeit mit erfassen**, soweit die Seite sie hergibt: `beginntIso`,
+   `endetIso`, `beschlossenIso`. Sie stehen fast immer da, wenn man ohnehin
+   liest, und sind später nur mit einem zweiten Crawl zu holen.
+
+**Ein BEENDETES Programm wird ebenso aufgenommen** (Entscheidung des Betreibers,
+17.08.2026, hier am 01.09.2026 nachgetragen, weil ein Wächter-Lauf sie nicht
+fand): „gab es, ist beendet" ist für jemanden vor Ort eine echte Auskunft, wir
+merken es, wenn die Gemeinde neu auflegt, und für die Zubau-Auswertung ist gerade
+die abgelaufene Förderung der interessante Fall.
+
+**Was Vorschlag bleibt:** eine Aufnahme, die sich allein auf ein Förderportal,
+eine Vergleichsseite oder Presse stützt. Nicht weil die Quelle unzuverlässig
+wäre, sondern weil sie in beide Richtungen falsch liegt — sie kennt beendete
+Programme als laufend und übersieht Bedingungen, die nur im Richtlinien-PDF
+stehen.

@@ -58,6 +58,10 @@ export const config = {
   // plus /embed, where it counts embeddings from the request header (see the
   // embed branch above; that branch does NOT touch Supabase auth).
   // Keeps Vercel middleware-invocations (and Supabase getUser() calls) low.
+  //
+  // Am 01.09.2026 lief der Matcher kurzzeitig über ALLE Seiten, für eine
+  // serverseitige Herkunftszählung. Die ist wieder ausgebaut — warum, steht in
+  // CLAUDE.md unter „Was hier NICHT noch einmal gebaut wird".
   matcher: [
     "/dashboard/:path*",
     "/admin/:path*",

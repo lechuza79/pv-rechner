@@ -190,35 +190,66 @@ export default function DatenschutzPage() {
         <p style={S.p}>
           Um zu verstehen, wie unsere Website genutzt wird — etwa welche Seiten
           aufgerufen werden und über welche Kanäle Besucher zu uns kommen —
-          setzen wir Vercel Web Analytics ein, einen Dienst der Vercel Inc. Die
-          Erfassung erfolgt bewusst cookiefrei: Es werden keine Cookies gesetzt
-          und nichts auf deinem Gerät gespeichert. Ausgelesen wird allein ein
-          technisches Merkmal, an dem das Messskript automatisierte Zugriffe
-          erkennt, um die Messung dann zu unterlassen; dieser Wert wird nicht
-          übertragen. Angaben wie Gerätetyp oder ungefähre Herkunftsregion
-          leitet der Dienst aus dem ab, was dein Browser bei jedem Seitenaufruf
-          ohnehin mitsendet — nicht aus einer Abfrage deines Geräts.
-          Erhoben werden anonyme, aggregierte Daten: die aufgerufene Seite, die
-          ungefähre Herkunftsregion, der Gerätetyp und die Verweis-Quelle.
-          Dazu zählen wir anonyme Nutzungsereignisse — etwa
-          dass ein Berechnungsschritt erreicht, eine Berechnung abgeschlossen oder
-          ein Ergebnis geteilt wurde. In aggregierter, anonymer Form erfassen wir
-          dabei einzelne gewählte Eckdaten der Berechnung (zum Beispiel die
-          Anlagen- oder Speichergröße), um typische Nutzungsprofile zu verstehen.
-          Diese Ereignisse enthalten keine personenbezogenen Daten, keine
-          Freitext-Eingaben und keinen Bezug zu deiner Person. Es findet kein
-          geräteübergreifendes Tracking statt, es werden keine Nutzerprofile
-          einzelner Personen gebildet und einzelne Besucher werden nicht
-          wiedererkannt.
+          setzen wir Vercel Web Analytics ein, einen Dienst der Vercel Inc.
+          Cookies werden dabei nicht gesetzt. Ein kleines Messskript läuft in
+          deinem Browser und wird dort für eine Weile zwischengespeichert; es
+          liest die Adresse der Seite, auf der du gerade bist, und die Seite,
+          von der du gekommen bist, und übermittelt beides. Kamst du von einer
+          anderen Seite unserer eigenen Website, wird diese Angabe verworfen.
+          <strong> Die Adresse übermitteln wir ohne den Teil hinter dem
+          Fragezeichen</strong> — deine Postleitzahl und alles andere, was du
+          eingibst, erreichen die Messung deshalb nicht. Außerdem prüft das
+          Skript an einem technischen Merkmal deines Browsers, ob der Aufruf
+          automatisiert ist, und misst dann gar nicht; dieser Wert wird nicht
+          übertragen. Gerätetyp, Betriebssystem, Browser und ungefährer Ort
+          (bis zur Stadt) werden aus dem abgeleitet, was dein Browser bei jedem
+          Seitenaufruf ohnehin mitsendet — nicht aus einer Abfrage deines
+          Geräts.
         </p>
         <p style={S.p}>
-          Da hierbei keine Informationen auf deinem Gerät gespeichert oder
-          abgerufen werden, ist dafür keine Einwilligung nach § 25 TDDDG
-          erforderlich und es wird kein Cookie-Banner benötigt. Rechtsgrundlage
-          für die Verarbeitung ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes
-          Interesse an einer datensparsamen Reichweitenmessung zur Verbesserung
-          unseres Angebots). Der Erhebung kannst du jederzeit widersprechen
-          (Abschnitt 12). Weitere Informationen:{" "}
+          Dazu zählen wir Nutzungsereignisse: dass ein Berechnungsschritt
+          erreicht, eine Berechnung abgeschlossen oder ein Ergebnis geteilt
+          wurde. Das sind reine Zähler — sie tragen <strong>keine
+          Begleitangaben</strong>, also weder deine Eingaben noch Eckdaten
+          deiner Berechnung, keine Freitexte und keinen Bezug zu deiner Person.
+        </p>
+        <p style={S.p}>
+          Aufrufe desselben Besuchs fasst der Dienst über eine kurzlebige
+          Kennung zusammen, die aus der eingehenden Anfrage berechnet und nach
+          24 Stunden verworfen wird — anders ließen sich Besuche nicht von
+          Seitenaufrufen unterscheiden. Darüber hinaus wirst du nicht
+          wiedererkannt: kein geräteübergreifendes Tracking, keine dauerhafte
+          Kennung, keine Verfolgung über andere Websites hinweg und keine
+          Profile einzelner Personen. Was wir am Ende auswerten, sind Summen.
+        </p>
+        <p style={S.p}>
+          In Links, die wir selbst verschicken — etwa in Anschreiben an
+          Kommunalverwaltungen —, steht ein fester Zusatz an der Adresse, an dem
+          wir erkennen, dass ein Aufruf aus einer solchen Aktion stammt. Dieser
+          Zusatz ist in jedem dieser Links derselbe und enthält keine Angabe zum
+          Empfänger. Weil die verlinkte Seite jeweils einen bestimmten Ort
+          betrifft, lässt sich daraus allerdings ablesen, aus welcher Gemeinde
+          eine unserer Seiten geöffnet wurde — das ist eine Aussage über eine
+          Verwaltung, nicht über eine einzelne Person, und sie ergäbe sich aus
+          der verlinkten Adresse auch ohne diesen Zusatz. Rechtsgrundlage ist
+          Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse daran, den Erfolg
+          der eigenen Ansprache beurteilen zu können). Der Erhebung kannst du
+          jederzeit widersprechen (Abschnitt 12).
+        </p>
+        <p style={S.p}>
+          Damit das Messskript laufen kann, wird kurzzeitig etwas auf deinem
+          Gerät abgelegt und von dort gelesen. Eine Einwilligung ist dafür
+          trotzdem nicht nötig, weil die Messung auf das beschränkt bleibt, was
+          zum Betrieb dieses Angebots nötig ist (§ 25 Abs. 2 Nr. 2 TDDDG): Wir
+          verkaufen keine Werbung und keine Kontaktdaten, wir verfolgen dich
+          nicht über andere Websites hinweg, die Ereignisse sind bloße Zähler
+          ohne Begleitangaben, und die Kennung, die einen Besuch zusammenfasst,
+          lebt einen Tag. Ein Cookie-Banner wird daher nicht benötigt.
+          Rechtsgrundlage für die Verarbeitung der dabei anfallenden Daten ist
+          Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer
+          datensparsamen Reichweitenmessung zur Verbesserung unseres Angebots).
+          Der Erhebung kannst du jederzeit widersprechen (Abschnitt 12).
+          Weitere Informationen:{" "}
           <a
             href="https://vercel.com/docs/analytics/privacy-policy"
             target="_blank"
@@ -593,12 +624,139 @@ export default function DatenschutzPage() {
           Beschwerde bei einer Aufsichtsbehörde — stehen in Abschnitt 12.
         </p>
 
+        {/* Eigener Abschnitt, obwohl Abschnitt 15 auch von Mails an Gemeinden
+            handelt: Das ist der umgekehrte Fall. Dort schreiben WIR ungefragt
+            an Adressen, die wir auf Amtsseiten gefunden haben (Art. 14). Hier
+            trägt jemand SEINE eigene Adresse bei uns ein (Art. 13). Rechts-
+            grundlage, Herkunft, Widerspruchsweg und Löschfrist sind jeweils
+            andere — sie in einen Abschnitt zu ziehen hieße, eine davon falsch
+            darzustellen. */}
+        <h2 style={S.h2}>16. Meldungen zu einer Gemeinde (Abo)</h2>
+        <p style={S.p}>
+          Auf den Gemeindeseiten im Solar-Atlas und auf den Förderseiten zu einer
+          Stadt oder Gemeinde kannst du dich für Meldungen zu einem Ort
+          eintragen. Wir verarbeiten dafür deine{" "}
+          <strong>E-Mail-Adresse</strong> und den <strong>Ort</strong>, den du
+          ausgewählt hast, dazu die Zeitpunkte deiner Eintragung, deiner
+          Bestätigung, einer etwaigen Abmeldung und der zuletzt versendeten
+          Meldung. Welche weiteren Angaben je nach Einstiegsseite dazukommen,
+          steht in den nächsten Absätzen. Einen Namen fragen wir nicht ab.
+        </p>
+        <p style={S.p}>
+          <strong>Deine IP-Adresse speichern wir nicht am Abo.</strong> Beim
+          Absenden des Formulars hält unser Server sie kurzzeitig im
+          Arbeitsspeicher, um automatisierte Masseneintragungen abzuwehren (bis
+          zu fünf Versuche je Stunde und Serverinstanz). Sie wird nicht in die
+          Datenbank übernommen, nicht mit deinem Abo verknüpft und spätestens
+          beim Neustart der Serverinstanz verworfen. Rechtsgrundlage hierfür ist
+          unser berechtigtes Interesse an einem vor automatisierten Eintragungen
+          geschützten Formular (Art. 6 Abs. 1 lit. f DSGVO); du kannst dieser
+          Verarbeitung nach Art. 21 DSGVO widersprechen.
+        </p>
+        <p style={S.p}>
+          Außerdem vermerken wir, <strong>auf welcher Seite du dich eingetragen
+          hast</strong> — auf der Atlas-Seite zum Ort oder auf der Förderseite —
+          und ob du dabei <strong>über ein Anschreiben an die Gemeinde</strong>
+          gekommen bist. Beides sagt nichts über dich aus, sondern beantwortet
+          eine Frage über unsere eigene Arbeit: welcher Einstieg überhaupt
+          genutzt wird. Die Kennung in den Anschreiben ist in jedem Brief
+          dieselbe; sie unterscheidet keine Empfänger.
+        </p>
+        <p style={S.p}>
+          Meldest du dich auf einer Förderseite an, speichern wir zusätzlich,{" "}
+          <strong>für welche Techniken du dich interessierst</strong>
+          {" "}(Solaranlage, Balkonkraftwerk, Wärmepumpe). Wir nutzen die Angabe
+          ausschließlich, um dir keine Meldungen zu schicken, die dich nicht
+          betreffen.
+        </p>
+        <p style={S.p}>
+          Trägst du dich auf einer Ortsseite im Solar-Atlas ein, kannst du
+          angeben, dass du{" "}
+          <strong>für die Stadt- oder Gemeindeverwaltung arbeitest</strong>. Die
+          Angabe ist freiwillig, wir prüfen sie nicht nach, und sie entscheidet
+          über nichts außer der Formulierung: Für eine Verwaltung ist dieselbe
+          Zahl eine andere Nachricht als für jemanden, der über eine eigene
+          Anlage nachdenkt. Lässt du das Feld leer, bekommst du die Meldung in
+          der allgemeinen Fassung.
+        </p>
+        <p style={S.p}>
+          Zum <strong>Nachweis deiner Einwilligung</strong> halten wir zwei
+          weitere Angaben fest: die <strong>Fassung des Textes</strong>, den du
+          beim Eintragen gelesen hast, und die Kennung, unter der unser
+          Mailserver die <strong>Bestätigungsmail angenommen</strong> hat. Die
+          erste sagt, wozu genau du zugestimmt hast — der Wortlaut kann sich
+          später ändern, und ohne diese Angabe ließe sich nicht mehr sagen,
+          welche Fassung dir vorlag. Die zweite belegt, dass die Bestätigungsmail
+          wirklich hinausging. Eine Kopie der Mail selbst legen wir nicht an; ihr
+          Inhalt lässt sich aus der Fassung wortgleich wiederherstellen.
+        </p>
+        <p style={S.p}>
+          Die Anmeldung läuft im <strong>Bestätigungsverfahren</strong>: Nach dem
+          Eintragen schicken wir eine E-Mail mit einem Bestätigungslink. Erst
+          wenn du ihn anklickst, bekommst du Meldungen. Klickst du nicht, wird
+          die Eintragung gelöscht und es folgt keine weitere E-Mail. Rechts&shy;grundlage
+          ist deine <strong>Einwilligung</strong> (Art. 6 Abs. 1 lit. a DSGVO);
+          die Zeitpunkte von Eintragung und Bestätigung dienen dem Nachweis,
+          dass sie vorlag.
+        </p>
+        <p style={S.p}>
+          <strong>Du kannst dich jederzeit abmelden</strong> — mit einem Klick
+          am Fuß jeder Meldung, ohne Anmeldung und ohne Angabe von Gründen.
+          Der Versand endet damit sofort, und deine Adresse verlässt den
+          Verteiler. Der Widerruf wirkt für die Zukunft und lässt die
+          Rechtmäßigkeit der bis dahin erfolgten Verarbeitung unberührt.
+        </p>
+        <p style={S.p}>
+          <strong>Was danach bleibt, ist der Nachweis deiner Einwilligung:</strong>{" "}
+          dass und wann du dich angemeldet, bestätigt und wieder abgemeldet
+          hast, für welchen Ort, und mit welchem Wortlaut. Diese Angaben werden
+          ausschließlich noch dafür verwendet — nicht mehr für den Versand.
+          Rechtsgrundlage ist dann nicht mehr deine Einwilligung, sondern unsere
+          Rechenschaftspflicht (Art. 6 Abs. 1 lit. c in Verbindung mit Art. 5
+          Abs. 1 lit. a, Art. 5 Abs. 2 und Art. 7 Abs. 1 DSGVO) sowie unser
+          berechtigtes Interesse an der Abwehr von Ansprüchen und Bußgeldern
+          (Art. 6 Abs. 1 lit. f DSGVO).
+        </p>
+        <p style={S.p}>
+          <strong>Gelöscht wird der Nachweis</strong> zum 31. Dezember des
+          dritten Jahres nach dem Jahr, in dem wir dir zuletzt geschrieben
+          haben. Diese Frist folgt den Verjährungsfristen, innerhalb derer
+          Ansprüche und Bußgelder noch geltend gemacht werden können (drei
+          Jahre, § 195 BGB und § 31 Abs. 2 Nr. 1 OWiG). Hast du deine Anmeldung
+          nie bestätigt, löschen wir sie ohne diese Frist. Eine vorzeitige
+          Löschung des Nachweises können wir nicht anbieten, solange Ansprüche
+          daraus möglich sind (Art. 17 Abs. 3 Buchst. b und e DSGVO) — schreib
+          uns, dann erklären wir dir deinen Fall.
+        </p>
+        <p style={S.p}>
+          Die Meldungen versenden wir über das E-Mail-Postfach unserer Domain
+          bei der ALL-INKL.COM – Neue Medien Münnich (Friedrichroda,
+          Deutschland). Ein Auftragsverarbeitungsvertrag besteht; die Daten
+          verlassen dabei die Europäische Union nicht. Die Eintragungen selbst
+          liegen in unserer Datenbank bei Supabase (siehe Abschnitt 9) und sind
+          dort ausschließlich über einen internen Zugang lesbar.
+        </p>
+        <p style={S.p}>
+          Die Meldungen enthalten <strong>keine Zählpixel</strong> und keine
+          Links, an denen wir ablesen könnten, wer sie geöffnet hat. Wir messen
+          also nicht, ob und wann du eine Meldung liest. Vollständig unsichtbar
+          ist ein Öffnen dennoch nicht: Die Mail zeigt oben unser Logo, und wie
+          jeder Bildabruf im Netz hinterlässt dieser eine Zeile im
+          Server-Protokoll (siehe Abschnitt 3). Zuordnen lässt sich diese Zeile
+          trotzdem nicht: Die Bildadresse ist für alle Empfänger dieselbe und
+          trägt kein Merkmal deines Abos, und deine IP-Adresse ist am Abo nicht
+          gespeichert — es gibt also nichts, womit sich das Protokoll verknüpfen
+          ließe. Wer auch das vermeiden möchte, stellt sein Mailprogramm so
+          ein, dass es Bilder nicht automatisch lädt; die Meldung bleibt dann
+          vollständig lesbar.
+        </p>
+
         {/* Nur ein Verweis, kein eigener Abschnitt: Die LinkedIn-Angaben
             betreffen Besucher unserer LinkedIn-Seite, nicht die dieser Website.
             Sie hier auszubreiten verlängerte die Erklärung für alle, die sie
             nichts angeht. Ohne diesen Satz wäre die Unterseite allerdings eine
             Waise — erreichbar nur über LinkedIn selbst. */}
-        <h2 style={S.h2}>16. Unsere Präsenz auf LinkedIn</h2>
+        <h2 style={S.h2}>17. Unsere Präsenz auf LinkedIn</h2>
         <p style={S.p}>
           Wir betreiben eine Unternehmensseite auf LinkedIn. Was dort verarbeitet
           wird, findet auf den Systemen von LinkedIn statt und nicht auf dieser

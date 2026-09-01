@@ -14,11 +14,17 @@ import { fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../
 import { getFundingPrograms } from "../../../../../lib/funding-data";
 import { getFundingHistoryFor } from "../../../../../lib/funding-history";
 import FundingHistory from "../../../../../components/FundingHistory";
-import { FundingRates, FundingConditions, FundingStatusBadge, ExampleCards, FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE } from "../../../../../components/FundingProgramParts";
-import FoerderCheckStarter from "../../../../../components/FoerderCheckStarter";
+import { FundingStatusBadge, ExampleCards, FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE } from "../../../../../components/FundingProgramParts";
+import FundingTechnikTabs from "../../../../../components/FundingTechnikTabs";
+import StickyCta from "../../../../../components/StickyCta";
+import GemeindeAboBox, { ABO_OEFFNEN } from "../../../../../components/atlas/GemeindeAboBox";
+import { IconGlocke } from "../../../../../components/Icons";
+import PvRechnerModal, { PV_RECHNER_HASH } from "../../../../../components/PvRechnerModal";
+import FoerderCheckStarter, { FOERDER_CHECK_OEFFNEN } from "../../../../../components/FoerderCheckStarter";
 import { buildFundingExamples } from "../../../../../lib/funding-examples";
 import { buildFundingFaq } from "../../../../../lib/funding-faq";
 import { getRegionAtlasData, type RegionAtlas } from "../../../../../lib/mastr-data";
+import { atlasPathForRegionId } from "../../../../../lib/atlas";
 import { DATA_SOURCES } from "../../../../../lib/data-sources";
 
 // ISR: read live funding data from Supabase, re-render at most hourly.
@@ -82,6 +88,13 @@ const S = {
   h1: { fontSize: "var(--font-size-h1)", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" } as React.CSSProperties,
   intro: { fontSize: "var(--font-size-body)", lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 22px" } as React.CSSProperties,
   ortszeile: { fontSize: "var(--font-size-small)", color: v("--color-text-muted"), margin: "0 0 14px" } as React.CSSProperties,
+  // Stand über der Überschrift — dieselbe Größe und Farbe wie auf der
+  // Atlas-Seite zum Ort, damit beide Kopfzeilen als dieselbe Sache lesen.
+  stand: {
+    fontSize: "var(--font-size-caption)",
+    color: v("--color-text-muted"),
+    marginBottom: 8,
+  } as React.CSSProperties,
   strong: { color: v("--color-text-primary"), fontWeight: 600 } as React.CSSProperties,
   metricsGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 10, marginBottom: 28 } as React.CSSProperties,
   metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: 14 } as React.CSSProperties,
@@ -116,6 +129,28 @@ const S = {
   aktionsLink: { fontSize: "var(--font-size-small)", fontWeight: 600, color: v("--color-accent"), textDecoration: "none", marginTop: space.xs } as React.CSSProperties,
   /** Echte Schaltfläche statt Textlink — das hier ist der Schritt, den die
    *  Seite von jemandem will, und der soll wie einer aussehen. */
+  /**
+   * Sekundärer Knopf — Rahmen statt Fläche.
+   *
+   * Wird an zwei Stellen gebraucht, die zusammengehören sollen: der Verweis auf
+   * die Amtsseite oben und die Technik-Filter in der Karte. Beide führen NICHT
+   * zum Ziel der Seite (durchrechnen), sondern daneben; sie dürfen deshalb nicht
+   * so laut sein wie der eine primäre Knopf.
+   */
+  sekundaerKnopf: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 8,
+    flexShrink: 0,
+    padding: pad("sm", "lg"),
+    borderRadius: v("--radius-md"),
+    border: `1px solid ${v("--color-border")}`,
+    background: v("--color-bg"),
+    color: v("--color-text-secondary"),
+    fontSize: "var(--font-size-small)",
+    fontWeight: 700,
+    textDecoration: "none",
+  } as React.CSSProperties,
   aktionsKnopf: {
     display: "inline-block",
     alignSelf: "flex-start",
@@ -144,6 +179,22 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
     atlas = await getRegionAtlasData(city.ags);
   } catch {
     atlas = null;
+  }
+
+  // Adresse der Atlas-Ortsseite — ABGELEITET, nicht getippt (26.08.2026).
+  //
+  // Sie setzt sich aus den Slugs der Region und ihrer Eltern zusammen, und die
+  // stehen im Melderegister: Der Wetteraukreis heißt dort
+  // „landkreis-wetteraukreis", nicht „wetteraukreis". Eine von Hand gebaute
+  // Adresse trifft das bei jedem zweiten Kreis nicht — geprüft, indem genau
+  // dieser Fehler beim ersten Versuch passiert ist und eine 404 erzeugte, die
+  // wie eine gesperrte Seite aussah. Der Kommunen-Brief benutzt dieselbe
+  // Ableitung; zwei Wege zu derselben Adresse wären zwei Fehlerquellen.
+  let atlasPfad: string | null = null;
+  try {
+    atlasPfad = await atlasPathForRegionId(city.ags);
+  } catch {
+    atlasPfad = null;
   }
 
   const programs = await getFundingPrograms();
@@ -204,7 +255,16 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
           items={[
             { label: "Förderung", href: "/photovoltaik-foerderung" },
             { label: city.bundesland, href: `/photovoltaik-foerderung/${slugify(city.bundesland)}` },
-            { label: city.name },
+            // DER KREIS STEHT HIER, nicht als eigene Zeile unter der
+            // Überschrift (Betreiber, 31.08.2026). Er ist Einordnung, kein
+            // Satz: Ein Ortsname allein ist mehrdeutig — Mühlhausen und Senden
+            // gibt es mehrfach in Deutschland.
+            //
+            // Als KLAMMERZUSATZ am Blatt, ausdrücklich NICHT als eigene Station
+            // der Spur: Eine zusätzliche Ebene behauptete eine Hierarchie, die
+            // die Adresse nicht hat (sie lautet /bundesland/ort, ohne Kreis) —
+            // die schwächste Form einer Krümelspur.
+            { label: city.kreis ? `${city.name} (${city.kreis})` : city.name },
           ]}
         />
         {/* Das Suchwort gehört in die H1: Die Seite rankt für „photovoltaik
@@ -212,19 +272,76 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
             Hauptwort fehlte genau dort, wo Google es am stärksten gewichtet.
             Ohne Förderprogramm bleibt es beim Bestandstitel, sonst verspräche
             die Überschrift etwas, das die Seite nicht hat. */}
-        <h1 style={S.h1}>
-          {f ? <>Photovoltaik-Förderung in {city.name}</> : <>Photovoltaik in {city.name}</>}
-        </h1>
-        {/* Ein Ortsname allein ist mehrdeutig — Mühlhausen und Senden gibt es
-            mehrfach in Deutschland. Der Kreis darunter sagt, welcher Ort hier
-            gemeint ist, bevor die erste Zahl kommt.
+        {/* Der Ortsname führt zur Programmseite der Gemeinde (Betreiber-
+            Entscheidung 26.08.2026). Sie ist die Quelle jeder Zahl hier und der
+            einzige Ort, an dem der Antrag wirklich gestellt wird; als eigener
+            Knopf daneben nahm sie dem einen nächsten Schritt den Platz weg.
+            Unterstrichen statt farbig: In einer Überschrift dieser Größe wäre
+            ein farbiges Wort ein zweiter Blickfang neben der Aussage. */}
+        {/* Der Ortsname führt auf unsere Atlas-Seite zum Ort — den Bestand,
+            aus dem auch der Block „Photovoltaik in … in Zahlen" weiter unten
+            stammt (Betreiber-Entscheidung 26.08.2026). Die Seite ist erreichbar,
+            steht aber nicht im Suchindex; der Verweis von hier ist damit ein
+            interner Weg zu mehr Zahlen, kein Ausgang. */}
+        {/* Stand ÜBER der Überschrift, wie auf der Atlas-Seite zum Ort: Er ordnet
+            die Seite zeitlich ein, bevor die erste Zahl kommt.
 
-            Bewusst ohne Präposition: „im {kreis}" liest sich bei fast allen
-            Namen richtig und bei „StädteRegion Aachen" oder „Region Hannover"
-            falsch. Eine Zeile, die für 47 von 50 Namen stimmt, ist keine
-            Lösung — als Angabe für sich genommen stimmt sie für alle. */}
-        {city.kreis && <p style={S.ortszeile}>{city.kreis}</p>}
-        <p style={S.intro}>
+            Die Angabe kommt aus DERSELBEN Funktion wie die Programmkarte weiter
+            unten — eine zweite, kürzere Formulierung wäre die bekannte
+            Drift-Falle. Sie nennt bewusst BEIDE Daten: aus welchem Monat die
+            Werte stammen UND wann wir sie zuletzt bestätigt haben. Eines von
+            beiden allein lässt offen, ob die Beträge von gestern oder von vor
+            einem Jahr sind.
+
+            Nur bei genau einem regionalen Programm — mehr kann diese Seite
+            per Ableitung nicht tragen, und ein gemeinsames Datum über mehreren
+            Ständen behauptete den schnellsten Takt für den langsamsten Wert. */}
+        {/* Überschrift links, Abo-Block rechts daneben — dieselbe Mechanik wie
+            auf der Atlas-Seite zum Ort. Vermerkt wird, dass HIER abonniert
+            wurde: Beide Seitengattungen tragen denselben Ortsnamen und sprechen
+            verschiedene Leute an (dort der Bestand, hier das Geld).
+
+            Der Ortsschlüssel ist hier FÜNF- oder achtstellig — kreisfreie Städte
+            tragen fünf. Die Anmelde-Adresse nimmt beide Formen; die eigentliche
+            Prüfung ist, ob es den Ort im Melderegister gibt. */}
+        <div className="gemeinde-titelzeile">
+          <div style={{ minWidth: 0 }}>
+            {/* Der Stand gehört MIT in die linke Spalte, nicht über die ganze
+                Zeile: Sonst beginnt der Abo-Block auf Höhe der Statuszeile und
+                die Kopfzeile hat zwei verschiedene Oberkanten. */}
+            {f && <div style={S.stand}>{fundingStandLabel(f)}</div>}
+            <h1 style={S.h1}>
+          {f ? (
+            <>
+              Photovoltaik-Förderung in{" "}
+              {atlasPfad ? (
+                <Link
+                  href={atlasPfad}
+                  title={`Anlagenbestand in ${city.name} im Solar-Atlas`}
+                  style={{ color: "inherit", textDecorationColor: v("--color-border-accent"), textUnderlineOffset: 4 }}
+                >
+                  {city.name}
+                </Link>
+              ) : (
+                city.name
+              )}
+            </>
+          ) : (
+            <>Photovoltaik in {city.name}</>
+          )}
+            </h1>
+          </div>
+          <GemeindeAboBox name={city.name} ags={city.ags} quelle="foerderung" />
+        </div>
+
+        {/* Introtext und Amtslink nebeneinander: Die Programmseite der Gemeinde
+            ist die Quelle, aus der jede Zahl hier stammt, und der einzige Ort,
+            an dem jemand den Antrag wirklich stellt. Sie stand bisher nur als
+            kleines Symbol im Kleingedruckten der Karte und nur dann, wenn die
+            Mittel begrenzt sind — also ausgerechnet nicht bei den Programmen,
+            die problemlos laufen. */}
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: space.lg, flexWrap: "wrap" }}>
+        <p style={{ ...S.intro, flex: "1 1 320px", minWidth: 0 }}>
           {!f
             ? <>Anlagenbestand und Beispielrechnungen für Photovoltaik in {city.name}.</>
             : f.status === "aktiv"
@@ -235,6 +352,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
             ? <>In {city.name} gibt es für neue Solaranlagen einen Zuschuss über das <span style={S.strong}>{f.name}</span> — zusätzlich zur bundesweiten 0 % Mehrwertsteuer. Was sich damit rechnet:</>
             : <>In {city.name} gibt es mit dem <span style={S.strong}>{f.name}</span> ein kommunales Förderprogramm — {FUNDING_STATUS_NOTE[f.status]}. Bundesweit gilt weiterhin die 0 % Mehrwertsteuer auf Kauf und Installation.</>}
         </p>
+        </div>
 
         {/* ── Förderung (oben) ── */}
         {f && (
@@ -303,20 +421,10 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                     über allem, wo es zu nichts gehörte.
                     Auf schmalen Bildschirmen stapeln sie von selbst; die Linie
                     verschwindet dann, weil sie danebenläge. */}
-                <div className="foerder-spalten" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16, alignItems: "stretch", marginTop: 36 }}>
-                  <div style={S.datenBox}>
-                    <FundingConditions conditions={f.conditions} eligibility={f.eligibility} />
-                  </div>
-                  <div style={S.datenBox}>
-                    <FundingRates rates={f.rates} bordered label="Konditionen" />
-                    {f.maxFoerderung && (
-                      /* Wie eine Konditionszeile gesetzt, nicht als Fließtext:
-                         Es IST eine Kondition — Beschriftung links, Betrag
-                         rechts in der Zahlen-Schrift. */
-                      <FundingRates rates={[{ label: "Höchstbetrag", value: f.maxFoerderung.replace(/^max\.\s*/, "") }]} />
-                    )}
-                  </div>
-                </div>
+                {/* Fördert das Programm mehrere Techniken und ist wirklich etwas
+                    technikgebunden, trennt die Komponente nach Reitern — sonst
+                    rendert sie dieselben zwei Spalten wie zuvor. */}
+                <FundingTechnikTabs program={f} datenBoxStyle={S.datenBox} knopfStil={S.sekundaerKnopf} />
 
                 {combinable.length > 0 && (
                   <div style={{ marginTop: 44, textAlign: "center" }}>
@@ -455,6 +563,15 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                   Fehler, den diese Seite machen kann. */}
               {city.kreis ? <> — nur {city.name}, nicht {city.kreis}</> : null}
             </p>
+            {/* Einordnung statt Zahlenreihe: Die Kacheln sagen, wie viel in
+                diesem Ort steht, aber nicht, ob das viel ist. Der Atlas des
+                Bundeslands beantwortet genau das. Eine eigene Atlas-Seite für
+                den Ort gibt es bewusst nicht — die Gemeindeebene ist nicht
+                freigeschaltet, und ein Link ins Leere wäre schlimmer als keiner. */}
+            <Link href={atlasPfad ?? `/solar-atlas/${params.bundesland}`} style={{ ...S.sekundaerKnopf, marginBottom: space.md }}>
+              {atlasPfad ? <>Alle Zahlen zu {city.name} im Solar-Atlas</> : <>Im Solar-Atlas {city.bundesland} vergleichen</>}
+              <IconArrowRight size={iconSizes.sm} />
+            </Link>
             <div style={S.metricsGrid}>
               <div style={S.metric}>
                 <div style={S.metricLabel}>Solaranlagen</div>
@@ -524,7 +641,38 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
           ist allein die offizielle Quelle des jeweiligen Programms. Beispielrechnungen sind unverbindliche Schätzungen.
         </div>
 
+        {/* Merker fürs Ende: Sobald er in Sicht kommt, fährt die klebende Leiste
+            aus — sie darf die Rechtshinweise darunter nie überdecken. */}
+        <div id="sc-cta-sentinel" style={{ height: 1 }} aria-hidden />
       </div>
+      {/* Der Rechner wohnt in einem Fenster auf dieser Seite: vorbefüllt mit dem
+          gemessenen Standort-Ertrag und dem lokalen Programm, damit die Zahl
+          sofort zu diesem Ort passt. Der Teilen-Link zeigt trotzdem auf den
+          Rechner selbst — sonst landete der Empfänger hier. */}
+      <PvRechnerModal
+        initialParams={{ er: String(city.yieldKwhKwp), ...(ctaFoe ? { foe: f!.id } : {}) }}
+      />
+      {f && (
+        <StickyCta
+          /* Öffnet den Rechner im Fenster statt die Seite zu verlassen —
+             derselbe Weg wie im Wärmepumpen-Ratgeber. */
+          primaer={{ href: PV_RECHNER_HASH, label: "Anlage durchrechnen" }}
+          /* Der Förder-Check statt der Amtsseite: Er ist der zweite Weg, der
+             auf DIESER Seite weiterhilft — die Amtsseite führt hinaus und steht
+             ohnehin in der Herkunftszeile der Karte. */
+          sekundaer={{ ereignis: FOERDER_CHECK_OEFFNEN, label: "Förder-Check starten" }}
+          /* Das Abo als DRITTER Weg — auf schmalen Schirmen nur die Glocke
+             (Betreiber, 31.08.2026). So muss keiner der beiden anderen weichen:
+             Ein Symbol braucht die Breite nicht, die ein dritter Textknopf
+             genommen hätte. */
+          dritte={{
+            ereignis: ABO_OEFFNEN,
+            label: `${city.name} abonnieren`,
+            icon: <IconGlocke size={16} />,
+            klasse: "sc-glocke",
+          }}
+        />
+      )}
     </div>
   );
 }

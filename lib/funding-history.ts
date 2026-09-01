@@ -29,7 +29,7 @@
 // längst eingestellten Programmen werden deshalb NICHT gelöscht.
 
 import type { FundingProgram } from "./funding-programs";
-import { FUNDING_STATUS_LABEL } from "./funding-programs";
+import { FUNDING_STATUS_LABEL, bedingungText } from "./funding-programs";
 import { supabase } from "./supabase-server";
 import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
 
@@ -150,9 +150,36 @@ export const NICHT_PROTOKOLLIERTE_FELDER: readonly string[] = NICHT_PROTOKOLLIER
 type Ableitung = { feld: HistorieFeld; bedeutung: Bedeutung; lies: (p: FundingProgram) => string | null };
 
 const ABLEITUNGEN: Ableitung[] = [
+/**
+ * EINE UMBENENNUNG IST KEINE ÄNDERUNG DES PROGRAMMS — BLOCKER (26.08.2026).
+ *
+ * Der Verlauf sagt auf der Stadtseite: „Was sich am Programm geändert hat …
+ * festgestellt beim regelmäßigen Abruf der Programmseite." Das ist eine Aussage
+ * über die GEMEINDE. Wer hier eine unserer eigenen Beschriftungen ändert —
+ * einen Satz-Titel, einen Erklärtext, ein vereinheitlichtes Wort —, lässt den
+ * Abgleich das der Gemeinde zuschreiben.
+ *
+ * Gemessen am selben Tag: Die Vereinheitlichung der 39 Bezeichnungen für
+ * Balkonkraftwerke erzeugte 61 Verlaufseinträge. Vier davon waren echt. Auf
+ * Niddas Seite stand daraufhin live „4 Änderungen, die wir beim regelmäßigen
+ * Abruf festgestellt haben" — für ein Programm, das am selben Tag erst
+ * aufgenommen worden war und sich nie geändert hatte.
+ *
+ * Der Vergleich kann das nicht selbst erkennen: „Steckersolar: 100 €" zu
+ * „Balkonkraftwerk: 100 €" ist eine Umbenennung, „Steckersolar: 100 €" zu
+ * „Steckersolar: 150 €" nicht — und beides sieht hier gleich aus. Ihm die
+ * Entscheidung zu überlassen hieße, irgendwann eine echte Änderung stumm zu
+ * verschlucken, also die teurere Fehlerrichtung.
+ *
+ * DESHALB ALS ARBEITSSCHRITT, NICHT ALS FILTER: Wer Beschriftungen im Katalog
+ * umbenennt, fährt danach
+ *   npm run foerder:verlauf-bereinigen -- --seit <Tag> --loeschen
+ * und sieht die übrig gebliebenen Einträge von Hand durch.
+ */
+
   { feld: "status", bedeutung: "inhalt", lies: (p) => FUNDING_STATUS_LABEL[p.status] ?? p.status },
   { feld: "rates", bedeutung: "inhalt", lies: (p) => ausRaten(p.rates) },
-  { feld: "conditions", bedeutung: "inhalt", lies: (p) => ausListe(p.conditions) },
+  { feld: "conditions", bedeutung: "inhalt", lies: (p) => ausListe(p.conditions.map(bedingungText)) },
   { feld: "coveredCosts", bedeutung: "inhalt", lies: (p) => p.coveredCosts || null },
   { feld: "maxFoerderung", bedeutung: "inhalt", lies: (p) => p.maxFoerderung || null },
   { feld: "eligibility", bedeutung: "inhalt", lies: (p) => ausListe(p.eligibility) },

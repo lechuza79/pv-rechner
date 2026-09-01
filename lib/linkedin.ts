@@ -17,6 +17,30 @@ const AUTH_URL = "https://www.linkedin.com/oauth/v2/authorization";
 const TOKEN_URL = "https://www.linkedin.com/oauth/v2/accessToken";
 const USERINFO_URL = "https://api.linkedin.com/v2/userinfo";
 const POSTS_URL = "https://api.linkedin.com/rest/posts";
+const SOCIAL_ACTIONS_URL = "https://api.linkedin.com/rest/socialActions";
+const IMAGES_URL = "https://api.linkedin.com/rest/images";
+
+/**
+ * Kennung unserer Unternehmensseite, für die Erwähnung im Beitragstext.
+ *
+ * Eine Erwähnung ist ein Link, der INNERHALB von LinkedIn bleibt und die
+ * Verbreitung deshalb nicht drückt — anders als ein externer Link im Beitrag.
+ * Sie funktioniert nur, wenn der geschriebene Name exakt dem Seitennamen
+ * entspricht; sonst erscheint er als gewöhnlicher Text (so steht es in der
+ * Entwicklerdokumentation, Abschnitt „Mentions and Hashtags").
+ */
+const ORG_URN = process.env.LINKEDIN_ORG_URN;
+const ORG_NAME = process.env.LINKEDIN_ORG_NAME ?? "Solar Check";
+
+/**
+ * Ersetzt den Seitennamen im Text durch eine Erwähnung. Ohne hinterlegte
+ * Kennung bleibt der Text unverändert — eine halb gebaute Erwähnung wäre im
+ * Beitrag als Klammerausdruck sichtbar.
+ */
+export function mitErwaehnung(text: string): string {
+  if (!ORG_URN) return text;
+  return text.replace(ORG_NAME, `@[${ORG_NAME}](${ORG_URN})`);
+}
 
 /**
  * Datierte API-Version im Format JJJJMM.
@@ -105,13 +129,86 @@ export async function loginAbschliessen(code: string, origin: string): Promise<{
 export type PostErgebnis = { id: string; url: string };
 
 /**
+ * Setzt einen Kommentar unter einen eigenen Beitrag.
+ *
+ * Dafür gibt es genau einen Zweck: den Link auf unsere Seite. Im Beitrag selbst
+ * drückt ein externer Link die Verbreitung, im ersten Kommentar nicht. Die
+ * Schreibberechtigung deckt Kommentare mit ab.
+ */
+export async function kommentiere(postUrn: string, text: string): Promise<void> {
+  const konto = await ladeKonto("linkedin");
+  if (!konto) throw new Error("Kein LinkedIn-Konto hinterlegt.");
+  const res = await fetch(`${SOCIAL_ACTIONS_URL}/${encodeURIComponent(postUrn)}/comments`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${konto.access_token}`,
+      "Content-Type": "application/json",
+      "X-Restli-Protocol-Version": "2.0.0",
+      "LinkedIn-Version": API_VERSION,
+    },
+    body: JSON.stringify({ actor: konto.konto_id, object: postUrn, message: { text } }),
+  });
+  if (!res.ok) {
+    throw new Error(`LinkedIn-Kommentar fehlgeschlagen (${res.status}): ${await res.text()}`);
+  }
+}
+
+/**
+ * Lädt ein Bild hoch und gibt seine Kennung zurück.
+ *
+ * Zwei Schritte, so schreibt es die Schnittstelle vor: erst eine Adresse zum
+ * Hochladen anfordern, dann die Bytes dorthin schicken. Die Kennung entsteht
+ * schon im ersten Schritt und wird danach im Beitrag genannt.
+ */
+export async function ladeBildHoch(png: ArrayBuffer): Promise<string> {
+  const konto = await ladeKonto("linkedin");
+  if (!konto) throw new Error("Kein LinkedIn-Konto hinterlegt.");
+  const kopf = {
+    Authorization: `Bearer ${konto.access_token}`,
+    "X-Restli-Protocol-Version": "2.0.0",
+    "LinkedIn-Version": API_VERSION,
+  };
+
+  const init = await fetch(`${IMAGES_URL}?action=initializeUpload`, {
+    method: "POST",
+    headers: { ...kopf, "Content-Type": "application/json" },
+    body: JSON.stringify({ initializeUploadRequest: { owner: konto.konto_id } }),
+  });
+  if (!init.ok) {
+    throw new Error(`Bild-Upload konnte nicht begonnen werden (${init.status}): ${await init.text()}`);
+  }
+  const { value } = (await init.json()) as { value: { uploadUrl: string; image: string } };
+
+  const put = await fetch(value.uploadUrl, {
+    method: "PUT",
+    headers: { Authorization: `Bearer ${konto.access_token}`, "Content-Type": "image/png" },
+    body: png,
+  });
+  if (!put.ok) {
+    throw new Error(`Bild-Upload fehlgeschlagen (${put.status}): ${await put.text()}`);
+  }
+  return value.image;
+}
+
+/**
  * Veröffentlicht einen Textbeitrag unter dem hinterlegten Konto.
  *
  * Bilder folgen als eigener Schritt (sie brauchen erst einen Upload und dann
  * eine Bild-Kennung im Beitrag) — ein Textbeitrag ist der Beweis, dass die
  * Kette Login → Schlüssel → Veröffentlichung steht.
  */
-export async function posteText(text: string): Promise<PostErgebnis> {
+export async function posteText(
+  text: string,
+  opts: {
+    ersterKommentar?: string;
+    /** Bild-Kennung aus ladeBildHoch. Ohne sie bleibt es ein Textbeitrag. */
+    bildUrn?: string;
+    /** Kurze Beschreibung des Bildes. Pflicht, sobald ein Bild dabei ist:
+     *  Ein Diagramm ohne Alternativtext ist für Menschen mit Screenreader
+     *  eine leere Fläche — und für sie ist die Zahl genauso interessant. */
+    bildAlt?: string;
+  } = {},
+): Promise<PostErgebnis> {
   const konto = await ladeKonto("linkedin");
   if (!konto) throw new Error("Kein LinkedIn-Konto hinterlegt — erst anmelden.");
   if (new Date(konto.gueltig_bis).getTime() < Date.now()) {
@@ -128,11 +225,14 @@ export async function posteText(text: string): Promise<PostErgebnis> {
     },
     body: JSON.stringify({
       author: konto.konto_id,
-      commentary: text,
+      commentary: mitErwaehnung(text),
       visibility: "PUBLIC",
       distribution: { feedDistribution: "MAIN_FEED", targetEntities: [], thirdPartyDistributionChannels: [] },
       lifecycleState: "PUBLISHED",
       isReshareDisabledByAuthor: false,
+      ...(opts.bildUrn
+        ? { content: { media: { id: opts.bildUrn, altText: opts.bildAlt ?? "" } } }
+        : {}),
     }),
   });
   if (!res.ok) {
@@ -140,5 +240,16 @@ export async function posteText(text: string): Promise<PostErgebnis> {
   }
   // Die Kennung des Beitrags steht nur in der Kopfzeile, nicht im Körper.
   const id = res.headers.get("x-restli-id") ?? "";
+
+  // Der Kommentar darf den Beitrag nicht mitreißen: Er ist schon
+  // veröffentlicht, und ein Fehlschlag hier heißt „Link fehlt", nicht „Post
+  // fehlgeschlagen". Ein Wurf würde den Aufrufer glauben lassen, es sei nichts
+  // rausgegangen — und ein zweiter Versuch veröffentlichte dann doppelt.
+  if (opts.ersterKommentar && id) {
+    await kommentiere(id, opts.ersterKommentar).catch((e) => {
+      console.error("Erster Kommentar konnte nicht gesetzt werden:", (e as Error).message);
+    });
+  }
+
   return { id, url: id ? `https://www.linkedin.com/feed/update/${id}/` : "" };
 }

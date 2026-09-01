@@ -10,11 +10,60 @@ import { FUNDING_PROGRAMS } from "../funding-programs";
  */
 
 describe("Zahl, Einheit und Zusatz eines Fördersatzes", () => {
-  it("trennt den einfachen Fall", () => {
+  it("der Deckel ist keine Einheit", () => {
+    // 88 von 201 Sätzen tragen ihren Höchstbetrag im selben String. Landete er
+    // in der Einheit, wurde diese zu lang für die Zeile und rutschte unter die
+    // Zahl — oben stand dann eine blanke „100".
     const z = zerlegeSatz("100 €/kWp, max. 1.000 €");
     expect(z.zahl).toBe("100");
-    expect(z.einheit).toBe("€/kWp, max. 1.000 €");
-    expect(z.zusatz).toBeNull();
+    expect(z.einheit).toBe("€/kWp");
+    expect(z.kurzeEinheit).toBe(true);
+    expect(z.zusatz).toBe("max. 1.000 €");
+  });
+
+  it("das Symbol bleibt bei der Zahl, die Erläuterung nicht", () => {
+    // Der Fall aus dem Screenshot: „50" ohne Prozentzeichen ist keine
+    // schwächere Angabe, sondern eine andere — Euro oder Prozent?
+    const z = zerlegeSatz("50 % der Kosten, max. 200 €");
+    expect(z.zahl).toBe("50");
+    expect(z.einheit).toBe("%");
+    expect(z.kurzeEinheit).toBe(true);
+    expect(z.zusatz).toBe("der Kosten, max. 200 €");
+  });
+
+  it("kennt Kurzzeichen ohne Symbol", () => {
+    // „ct" trägt kein Sonderzeichen und ist trotzdem ein Kurzzeichen. Die alte
+    // Regel maß die LÄNGE (≤ 3) — daran scheiterten „€/kWp" und „€/kWh", die
+    // mit fünf Zeichen als ausgeschriebene Wörter galten, obwohl sie das
+    // Gegenteil sind.
+    const z = zerlegeSatz("85 ct je Watt Wechselrichterleistung, max. 85 %");
+    expect(z.zahl).toBe("85");
+    expect(z.einheit).toBe("ct");
+    expect(z.kurzeEinheit).toBe(true);
+  });
+
+  it("lässt ein echtes Wort unten stehen", () => {
+    // Gegenrichtung: „Prozentpunkte" ist eine ausgeschriebene Einheit und
+    // gehört unter die Zahl — dort hängt auch ihr Erklär-Tooltip.
+    const z = zerlegeSatz("+5 Prozentpunkte");
+    expect(z.einheit).toBe("Prozentpunkte");
+    expect(z.kurzeEinheit).toBe(false);
+  });
+
+  it("KEINE Zahl im Katalog steht ohne ihre Einheit", () => {
+    // Die schärfste Prüfung, und die einzige, die den ursprünglichen Fehler
+    // gefunden hätte: Eine Zahl, deren Einheit unter ihr steht statt neben ihr,
+    // ist in der Kachel-Optik eine Zahl ohne Angabe. 88 Sätze waren betroffen.
+    const nackt: string[] = [];
+    for (const p of Object.values(FUNDING_PROGRAMS)) {
+      for (const r of p.rates) {
+        const z = zerlegeSatz(r.value);
+        if (!z.kurzeEinheit && /^[\d.,+−-]+$/.test(z.zahl) && z.einheit !== "Prozentpunkte") {
+          nackt.push(`${p.id}: „${r.value}" zeigt oben nur „${z.zahl}"`);
+        }
+      }
+    }
+    expect(nackt, nackt.join("\n")).toEqual([]);
   });
 
   it("holt den Zusatz aus der Klammer", () => {

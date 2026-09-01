@@ -28,14 +28,26 @@ export default function InternalShell({
 }) {
   const narrow = useIsNarrow();
 
-  const sections: NavSection[] = [
-    { title: "Mein Konto", links: [{ href: "/dashboard", label: "Meine Berechnungen" }] },
-  ];
+  const sections: NavSection[] = [];
   if (isAdmin) {
+    // Analytics steht oben: Es ist die Gruppe, die man beim Reinkommen ansieht,
+    // bevor man irgendwo weiterarbeitet. „Mein Konto" wandert dafür ans Ende —
+    // die eigenen Berechnungen sind ein Nachschlagewerk, kein Einstieg
+    // (Betreiber, 01.09.2026).
+    sections.push({
+      title: "Analytics",
+      links: [{ href: "/admin/einbettungen", label: "Einbettungen" }],
+    });
     sections.push({
       title: "Kommunen",
       links: [
-        { href: "/admin/kommunen", label: "Outreach" },
+        {
+          label: "Outreach",
+          children: [
+            { href: "/admin/kommunen/versand", label: "Übersicht" },
+            { href: "/admin/kommunen", label: "Gemeinden", exact: true },
+          ],
+        },
         {
           label: "Award",
           children: [
@@ -49,6 +61,37 @@ export default function InternalShell({
       title: "Versorger",
       links: [{ href: "/admin/versorger", label: "Stadtwerke" }],
     });
+    // Eigener Bereich, nicht ein Punkt unter „Versorger": Handwerksbetriebe sind
+    // eine andere Zielgruppe mit anderem Rechtsrahmen, und der Bereich wächst um
+    // weitere Gewerke (Heizungsbau, Dachdecker).
+    sections.push({
+      title: "Fachbetriebe",
+      links: [{ href: "/admin/fachbetriebe", label: "Verzeichnis" }],
+    });
+    // Zwei Beitragsarten unter einem Dach. Sie teilen sich die Redaktion, aber
+    // sonst wenig: Ein Post hat einen Wochentag und eine Bildform, ein Artikel
+    // eine Suchfrage und eine Indexierung. Deshalb getrennte Gruppen statt einer
+    // gemeinsamen Liste, in der man erst am Seitentitel merkt, wo man ist.
+    sections.push({
+      title: "Redaktion",
+      links: [
+        {
+          label: "Social Media",
+          children: [
+            { href: "/admin/redaktion", label: "Entwicklung", exact: true },
+            { href: "/admin/redaktion/planung", label: "Planung" },
+            { href: "/admin/redaktion/auswertung", label: "Auswertung" },
+          ],
+        },
+        {
+          label: "Blog",
+          children: [
+            { href: "/admin/redaktion/artikel", label: "Artikel" },
+            { href: "/admin/redaktion/veroeffentlicht", label: "Veröffentlicht" },
+          ],
+        },
+      ],
+    });
     sections.push({
       title: "System",
       links: [
@@ -60,6 +103,7 @@ export default function InternalShell({
       ],
     });
   }
+  sections.push({ title: "Mein Konto", links: [{ href: "/dashboard", label: "Meine Berechnungen" }] });
 
   return (
     <div

@@ -15,7 +15,7 @@ import ScenarioTabs from "../../../../components/ScenarioTabs";
 import { DEFAULT_BALKON_CONFIG as CFG, BALKON_RECHT, BALKON_DACH_HINWEIS_KWH, type BalkonSetId, type BalkonStorageId } from "../../../../lib/balkon-config";
 import { calcBalkon, recommendBalkon, type BalkonInputs, type BalkonOption } from "../../../../lib/balkon";
 import { referenceYearKwh } from "../../../../lib/solar-year";
-import { trackEvent } from "../../../../lib/analytics";
+import { trackFunnelStep, type Funnel } from "../../../../lib/analytics";
 import { useSharedPlz, readLocation } from "../../../../lib/location";
 import { DataSourceNote } from "../../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
@@ -118,10 +118,18 @@ export default function Balkon() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [isResult]);
 
+  // Ereignis je erreichtem Schritt, Reihenfolge wie STEPS, danach das Ergebnis.
+  // Bis 29.08.2026 meldete dieser Rechner NUR das Ergebnis — wo jemand abbricht,
+  // war unsichtbar. Länge und Reihenfolge sind festgenagelt (siehe `lib/analytics.ts`).
+  const FUNNEL: Funnel = [
+    null,
+    "balkon_schritt_ausrichtung",
+    "balkon_ergebnis",
+  ];
   const next = () => {
     if (step >= STEPS.length) return;
     const target = step + 1;
-    if (target === STEPS.length) trackEvent("balkon_ergebnis");
+    trackFunnelStep(FUNNEL, target);
     setStep(target);
   };
   const back = () => step > 0 && setStep(step - 1);

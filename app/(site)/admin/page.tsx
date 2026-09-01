@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "../../../lib/supabase-server-component";
 import { v } from "../../../lib/theme";
+import AdminSeitenkopf from "../../../components/admin/AdminSeitenkopf";
 
 export const metadata = {
   title: "Admin – Solar Check",
@@ -20,6 +21,7 @@ const TOOLS: { href: string; title: string; desc: string }[] = [
   { href: "/admin/charts", title: "Chart-Baukasten", desc: "Alle Charts und Werkzeuge mit Art, Quelle und nächstem Schritt — plus die Reihenfolge für ein neues Chart." },
   { href: "/admin/kommunen", title: "Kommunen-Outreach", desc: "Kontaktdaten der ~11.000 Gemeinden: filtern, Status pflegen, Kontaktseite öffnen." },
   { href: "/admin/versorger", title: "Stadtwerke & Energieversorger", desc: "Versorger erfassen, Gemeinden zuordnen, Kennzahlen im Versorgungsgebiet ansehen." },
+  { href: "/admin/fachbetriebe", title: "PV-Fachbetriebe", desc: "Erhobene Solarteure und Elektrobetriebe mit PV-Geschäft — filtern, ansehen, vormerken." },
   { href: "/admin/waechter", title: "Wächter-Berichte", desc: "Ablage aller Wächter-Läufe — auch der stummen, die keine Mail ausgelöst haben." },
   { href: "/admin/einbettungen", title: "Einbettungen", desc: "Fremde Seiten, auf denen unsere Widgets laufen — der Erfolg des Outreach, ohne auf eine Antwort zu warten." },
 ];
@@ -37,11 +39,7 @@ export default async function AdminHub() {
   return (
     <div style={{ fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
       <div style={{ maxWidth: 640 }}>
-        <div style={{ marginBottom: 24 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-accent"), letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>Admin</div>
-          <h1 style={{ fontSize: 24, fontWeight: 800, color: v("--color-text-primary"), marginBottom: 4 }}>Admin-Backend</h1>
-          <p style={{ fontSize: 13, color: v("--color-text-muted") }}>Interne Werkzeuge. Nur für angemeldete Admins sichtbar.</p>
-        </div>
+        <AdminSeitenkopf titel="Admin-Backend" />
 
         <div style={{ display: "grid", gap: 10 }}>
           {TOOLS.map((t) => (

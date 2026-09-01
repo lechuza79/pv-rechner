@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { v, iconSizes } from "../../../../../lib/theme";
 import { IconCheck } from "../../../../../components/Icons";
 import { fristStand } from "../../../../../lib/balkon-anmeldung";
@@ -19,9 +19,34 @@ function heuteIso(): string {
  *
  * Das Datum kommt bewusst erst beim ersten Rendern im Browser (Zustand leer),
  * damit die Seite statisch bleibt und kein Server/Client-Unterschied entsteht.
+ *
+ * DIE OBERGRENZE DES EINGABEFELDES GEHOERT ZUR SELBEN REGEL — und hielt sie bis
+ * zum 27.08.2026 als einzige nicht ein. `max` wurde beim Vorrendern mitgeschrieben
+ * und stand danach als Datum des BUILDS im ausgelieferten HTML: gemessen an dem
+ * Tag auf der Produktion `max="2026-08-26"`, waehrend heute der 27. war. Die Seite
+ * ist ein reines Vorrendern (`x-vercel-cache: PRERENDER`), das Datum entfernt sich
+ * also pro Tag ohne Auslieferung um einen weiteren Tag von der Wirklichkeit — und
+ * wer sein Balkonkraftwerk gestern angeschlossen hat, kann genau das nicht
+ * eintragen. Der Datumswaehler nimmt den Tag schlicht nicht an.
+ *
+ * Zusaetzlich meldete React beim Hydrieren einen Attributunterschied und brach
+ * damit den Rundgang auf `main` (CI-Lauf vom 26.08.2026, 22:47 UTC).
+ *
+ * Deshalb: Die Obergrenze entsteht erst NACH dem ersten Rendern im Browser. Der
+ * Server liefert das Feld ohne Obergrenze aus, der Browser traegt sie nach. Der
+ * Wert wird dabei nicht eingefroren, sondern bei jedem Rendern neu bestimmt —
+ * eine Seite, die ueber Mitternacht offen bleibt, bekommt sonst die Grenze von
+ * gestern. Aus demselben Grund rechnet der Fristenstand weiterhin direkt mit
+ * `heuteIso()`.
+ *
+ * Der Waechter dagegen ist der Rundgang (`e2e/rundgang.spec.ts`): Er faellt bei
+ * jedem Hydrierungs-Unterschied durch, hat genau diesen gefunden und braucht
+ * keine zweite Absicherung.
  */
 export default function Fristencheck() {
   const [eingabe, setEingabe] = useState("");
+  const [imBrowser, setImBrowser] = useState(false);
+  useEffect(() => setImBrowser(true), []);
   const stand = eingabe ? fristStand(eingabe, heuteIso()) : null;
 
   const farbe = !stand
@@ -55,7 +80,7 @@ export default function Fristencheck() {
         id="inbetriebnahme"
         type="date"
         value={eingabe}
-        max={heuteIso()}
+        max={imBrowser ? heuteIso() : undefined}
         onChange={e => setEingabe(e.target.value)}
         style={{
           width: "100%",

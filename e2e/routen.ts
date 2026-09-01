@@ -36,6 +36,12 @@ export const SEITEN: Seite[] = [
   { pfad: "/photovoltaik-foerderung", erwartet: /förder/i },
   { pfad: "/photovoltaik-foerderung/bayern", erwartet: /bayern/i },
   { pfad: "/photovoltaik-foerderung/bayern/wuerzburg", erwartet: /würzburg/i },
+  // Nidda ist die einzige Stadtseite mit einem Programm, das MEHRERE Techniken
+  // fördert — also die einzige, die Bedingungen in der Objektform rendert und
+  // den Technik-Filter zeigt. Genau daran starb am 27.08.2026 jeder Codestand,
+  // der die Form noch nicht kannte, mit HTTP 500 beim Vorrendern. Ein Unit-Test
+  // sieht das nicht: Die Form ist typkorrekt, sie ist nur nicht renderbar.
+  { pfad: "/photovoltaik-foerderung/hessen/nidda", erwartet: /nidda/i },
   // Ratgeber — die Seiten mit live gerechneten Beispielen
   { pfad: "/ratgeber", erwartet: /ratgeber/i },
   { pfad: "/ratgeber/lohnt-sich-pv-mit-speicher", erwartet: /speicher/i },
