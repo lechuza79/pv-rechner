@@ -642,7 +642,108 @@ export default function DatenschutzPage() {
           .
         </p>
 
-        <p style={S.muted}>Stand: August 2026</p>
+        {/* Angelegt am 01.09.2026. Die Erhebung lief vom 27. bis 29.08.2026 —
+            die Frist des Art. 14 Abs. 3 lit. a DSGVO (ein Monat ab Erlangung)
+            läuft ab dem Tag der Erhebung, NICHT ab dem ersten Anschreiben. Zwei
+            Legal-Judges haben unabhängig festgestellt, dass die Erhebung hier
+            bis dahin mit keinem Wort vorkam.
+
+            Beschrieben wird ausschließlich, was es GIBT: die Erhebung. Der
+            Versand, die betriebseigene Rechner-Seite und der Anfrage-Knopf sind
+            geplant, aber nicht gebaut — sie kommen in diesen Abschnitt, wenn sie
+            existieren. Eine Erklärung, die Verarbeitungen beschreibt, die es
+            nicht gibt, ist derselbe Fehler wie eine, die vorhandene verschweigt. */}
+        <h2 style={S.h2}>17. Verzeichnis von PV-Fachbetrieben</h2>
+        <p style={S.p}>
+          Wir haben ein internes Verzeichnis von Photovoltaik-Fachbetrieben und
+          Elektrohandwerksbetrieben in Deutschland angelegt. Erhoben wurden{" "}
+          <strong>öffentlich zugängliche Angaben</strong>, überwiegend von den
+          Websites der Betriebe selbst — aus dem Impressum, der Kontaktseite und
+          den Leistungsseiten: Firmenname, Rechtsform, Anschrift, Telefonnummer,
+          E-Mail-Adresse, Handelsregister- und Umsatzsteuernummer, angebotene
+          Leistungen und Gewerk, Angaben, die der Betrieb dort über sich selbst
+          macht (etwa Meisterbetrieb, Handwerkskammer, Innung, Gründungsjahr,
+          Zertifikate), sowie eine Bewertungszahl, sofern der Betrieb sie auf
+          seiner eigenen Website angibt.
+        </p>
+        <p style={S.p}>
+          Zu jeder dieser Angaben halten wir zusätzlich einen{" "}
+          <strong>Beleg</strong> fest: die Adresse der Seite, auf der wir sie
+          gefunden haben, die betreffende Textstelle und das Datum des Abrufs.
+          Dazu kommen zwei Angaben, die nicht vom Betrieb stammen, sondern von
+          uns: unsere <strong>Einordnung</strong> (ob es sich um einen regionalen
+          Fachbetrieb handelt) und der <strong>Bearbeitungsstand</strong>.
+        </p>
+        <p style={S.p}>
+          <strong>Herkunft.</strong> Welche Websites wir überhaupt angesehen
+          haben, stammt aus einer Suchmaschinen-Abfrage je Landkreis über den
+          Dienstleister <strong>DataForSEO OÜ</strong>, Vesivärava tn 50-201,
+          10152 Tallinn, Estland. Aus dessen Antwort übernehmen wir die Adresse
+          der Website und den Seitentitel; der Seitentitel ist in einigen Fällen
+          die Grundlage des erfassten Firmennamens. An den Dienstleister
+          übermitteln wir dabei keine personenbezogenen Daten — unsere Anfrage
+          besteht aus einem Suchbegriff und einem Landkreis. Das Unternehmen hat
+          seinen Sitz in der Europäischen Union. Ein Drittlandbezug entsteht durch
+          diese Abfrage nicht, weil wir dorthin keine personenbezogenen Daten
+          übermitteln.
+        </p>
+        <p style={S.p}>
+          Bei Einzelunternehmen und Betrieben, die den Namen ihrer Inhaberinnen
+          oder Inhaber führen, sind diese Angaben{" "}
+          <strong>personenbezogene Daten</strong>. Deshalb steht dieser Abschnitt
+          hier.
+        </p>
+        <p style={S.p}>
+          <strong>Zweck.</strong> Wir möchten diesen Betrieben unser Angebot
+          unterbreiten — einen unabhängigen Rechner, den sie ihren Kunden zur
+          Verfügung stellen können — und ihnen künftig Anfragen weiterleiten, die
+          Nutzerinnen und Nutzer von sich aus an sie richten. Rechtsgrundlage ist
+          Art. 6 Abs. 1 lit. f DSGVO; unsere berechtigten Interessen sind die
+          Ansprache möglicher Partnerbetriebe und die Vermittlung von Anfragen,
+          die Nutzerinnen und Nutzer von sich aus stellen. Ein Verzeichnis dieser
+          Betriebe ist auf unserer Website{" "}
+          <strong>nicht veröffentlicht</strong>, und wir verkaufen keine
+          Kontaktdaten.
+        </p>
+        <p style={S.p}>
+          <strong>Wie wir informieren.</strong> Nach Art. 14 DSGVO informieren wir
+          über eine Erhebung, die nicht bei der betroffenen Person selbst erfolgt
+          ist. Jeder Betrieb, den wir ansprechen, erhält diese Information{" "}
+          <strong>unmittelbar in unserem Anschreiben</strong> (Art. 14 Abs. 3
+          lit. b DSGVO). Für alle übrigen erfassten Betriebe stellen wir sie an
+          dieser Stelle öffentlich bereit.
+        </p>
+        <p style={S.p}>
+          <strong>Speicherort und Dauer.</strong> Die Angaben liegen in unserer
+          Datenbank bei Supabase (Einzelheiten und Drittlandbezug in Abschnitt 9);
+          außer uns haben nur Supabase als unser Auftragsverarbeiter und die dort
+          eingesetzten Unterauftragsverarbeiter technisch Zugriff darauf. Wir
+          überprüfen den Bestand <strong>jährlich</strong>. Gelöscht wird der
+          Eintrag eines Betriebs, sobald feststeht, dass wir ihn nicht ansprechen
+          werden, und spätestens bei der Überprüfung, die auf den Abschluss des
+          Vorhabens folgt.
+        </p>
+        <p style={S.p}>
+          <strong>Widerspruch.</strong> Ein Widerspruch gegen die Speicherung oder
+          gegen eine Ansprache genügt formlos an die in Abschnitt 1 genannte
+          Adresse. Wir löschen den Datensatz daraufhin. Erhalten bleibt nur, was
+          nötig ist, um den Widerspruch dauerhaft beachten zu können: die Adresse
+          der Website und das Datum des Widerspruchs. Nur so lässt sich
+          verhindern, dass derselbe Betrieb bei einer späteren Erhebung erneut
+          erfasst und angeschrieben wird; von der Löschung ist dieser Vermerk
+          deshalb ausgenommen (Art. 6 Abs. 1 lit. c DSGVO in Verbindung mit
+          Art. 21 Abs. 3 DSGVO, Art. 17 Abs. 3 lit. b DSGVO). Zu einem anderen
+          Zweck wird er nicht verwendet. Gegen eine Ansprache kannst du{" "}
+          <strong>ohne Begründung und jederzeit</strong> widersprechen (Art. 21
+          Abs. 2 DSGVO); gegen die Speicherung selbst besteht das Widerspruchsrecht
+          nach Art. 21 Abs. 1 DSGVO aus Gründen, die sich aus deiner besonderen
+          Situation ergeben. <strong>Wir behandeln beide gleich</strong> und
+          verlangen auch für den zweiten Fall keine Begründung. Die übrigen Rechte —
+          Auskunft, Berichtigung, Löschung, Einschränkung und Beschwerde bei einer
+          Aufsichtsbehörde — stehen in Abschnitt 12.
+        </p>
+
+        <p style={S.muted}>Stand: September 2026</p>
       </div>
     </div>
   );
