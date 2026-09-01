@@ -13,6 +13,7 @@ import Modal from "../../../../components/Modal";
 import ResultSection from "../../../../components/ResultSection";
 import { ART_LABEL, liesNotiz } from "../../../../lib/outreach-ruecklauf";
 import { aboSatz, type AboSpiegel } from "../../../../lib/kommunen-abo-spiegel";
+import type { Auswertung } from "../../../../lib/kommunen-auswertung";
 import {
   ASK_LABEL,
   ASK_VARIANTEN,
@@ -144,6 +145,7 @@ export default function KommunenCockpit() {
 
   const [verteilung, setVerteilung] = useState<VariantenVerteilung[] | null>(null);
   const [offen, setOffen] = useState<{ nochNichtVersendet: number } | null>(null);
+  const [wirkung, setWirkung] = useState<{ gesamt: Auswertung; jeKampagne: Auswertung[] } | null>(null);
   useEffect(() => {
     fetch("/api/admin/kommunen/bilanz")
       .then((r) => (r.ok ? r.json() : null))
@@ -151,6 +153,7 @@ export default function KommunenCockpit() {
         if (j) {
           setVerteilung(j.verteilung);
           setOffen(j.offen);
+          setWirkung(j.wirkung ?? null);
         }
       })
       .catch(() => undefined);
@@ -174,6 +177,66 @@ export default function KommunenCockpit() {
           {VARIANTE_ERKLAERUNG}
         </p>
       </div>
+
+      {/* WAS DER OUTREACH BEWIRKT HAT — die Auswertung, die man wirklich liest.
+          Reihenfolge ist Absicht: verschickt ist der Nenner, dann die drei
+          Reaktionen in aufsteigender Aussagekraft. Antwort misst Höflichkeit,
+          Veroeffentlichung ist das Ziel, eine Eintragung aus der Verwaltung
+          heisst, dass der Brief die entscheidende Stelle erreicht hat. */}
+      {wirkung && (
+        <div style={{ marginBottom: space.lg }}>
+          <div style={{ display: "flex", gap: space.md, flexWrap: "wrap", marginBottom: space.sm }}>
+            <Kennzahl label="verschickt" wert={wirkung.gesamt.verschickt} />
+            <Kennzahl label="Antworten" wert={wirkung.gesamt.antworten} />
+            <Kennzahl label="Veröffentlichungen" wert={wirkung.gesamt.veroeffentlicht} gut />
+            <Kennzahl
+              label="Eintragungen ins Abo"
+              wert={wirkung.gesamt.abos}
+              unten={
+                wirkung.gesamt.abos
+                  ? `davon ${wirkung.gesamt.abosMitAngabeVerwaltung} mit Angabe Verwaltung`
+                  : undefined
+              }
+              gut={wirkung.gesamt.abosMitAngabeVerwaltung > 0}
+            />
+          </div>
+          {wirkung.jeKampagne.length > 1 && (
+            <table style={{ borderCollapse: "collapse", fontSize: 12, fontFamily: v("--font-mono") }}>
+              <thead>
+                <tr style={{ color: v("--color-text-muted") }}>
+                  <th style={{ textAlign: "left", padding: pad("xs", "sm") }}>Schub</th>
+                  <th style={{ textAlign: "right", padding: pad("xs", "sm") }}>verschickt</th>
+                  <th style={{ textAlign: "right", padding: pad("xs", "sm") }}>offen</th>
+                  <th style={{ textAlign: "right", padding: pad("xs", "sm") }}>Antworten</th>
+                  <th style={{ textAlign: "right", padding: pad("xs", "sm") }}>veröffentlicht</th>
+                  <th style={{ textAlign: "right", padding: pad("xs", "sm") }}>Abos</th>
+                </tr>
+              </thead>
+              <tbody>
+                {wirkung.jeKampagne.map((k) => (
+                  <tr key={k.kampagne} style={{ borderTop: `1px solid ${v("--color-border")}` }}>
+                    <td style={{ padding: pad("xs", "sm") }}>{k.kampagne}</td>
+                    <td style={{ textAlign: "right", padding: pad("xs", "sm") }}>{k.verschickt}</td>
+                    <td style={{ textAlign: "right", padding: pad("xs", "sm"), color: v("--color-text-muted") }}>{k.offen}</td>
+                    <td style={{ textAlign: "right", padding: pad("xs", "sm") }}>{k.antworten}</td>
+                    <td style={{ textAlign: "right", padding: pad("xs", "sm") }}>{k.veroeffentlicht}</td>
+                    <td style={{ textAlign: "right", padding: pad("xs", "sm") }}>
+                      {k.abos}
+                      {k.abosMitAngabeVerwaltung > 0 && ` (${k.abosMitAngabeVerwaltung} Verw.)`}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+          {/* JEDE ZAHL IST EINE UNTERGRENZE, und das gehoert an die Anzeige,
+              nicht in eine Fussnote irgendwo im Code. */}
+          <p style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: space.xs, maxWidth: 620, lineHeight: 1.4 }}>
+            Untergrenzen: Eine Veröffentlichung ohne Link auf uns wird nicht gefunden, und wer sich einträgt,
+            ohne das Kästchen „Ich arbeite für die Verwaltung" anzukreuzen, zählt hier als Bürger.
+          </p>
+        </div>
+      )}
 
       {/* Verteilung je Ask-Variante — wie viele Briefe welcher Fassung raus
           sind. Kein Vergleich, Begründung in lib/kommunen-ask.ts. */}
@@ -945,6 +1008,41 @@ function VerlaufsZeileView({
 }
 
 // ─── Kleinteile ───────────────────────────────────────────────────────────────
+
+/**
+ * Eine Kennzahl der Outreach-Auswertung.
+ *
+ * `gut` faerbt gruen — bewusst nur dort, wo eine Zahl ueber null wirklich ein
+ * Erfolg ist (Veroeffentlichung, Eintragung aus der Verwaltung). Alles gruen zu
+ * faerben nimmt der Farbe ihre Aussage; „100 verschickt" ist eine Menge, kein
+ * Ergebnis.
+ */
+function Kennzahl({ label, wert, unten, gut }: { label: string; wert: number; unten?: string; gut?: boolean }) {
+  return (
+    <div
+      style={{
+        border: `1px solid ${v("--color-border")}`,
+        borderRadius: v("--radius-md"),
+        padding: pad("sm", "md"),
+        minWidth: 150,
+        background: v("--color-bg-muted"),
+      }}
+    >
+      <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-secondary") }}>{label}</div>
+      <div
+        style={{
+          fontSize: 22,
+          fontWeight: 800,
+          fontFamily: v("--font-mono"),
+          color: gut && wert > 0 ? v("--color-positive") : v("--color-text-primary"),
+        }}
+      >
+        {wert.toLocaleString("de-DE")}
+      </div>
+      {unten && <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 2 }}>{unten}</div>}
+    </div>
+  );
+}
 
 function Merkmal({ label, href, stark }: { label: string; href: string; stark?: boolean }) {
   return (

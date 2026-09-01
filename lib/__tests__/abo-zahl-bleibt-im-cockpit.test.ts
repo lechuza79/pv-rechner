@@ -29,6 +29,14 @@ const ERLAUBT: Record<string, string> = {
     "Liefert die Zahl an das Cockpit. Liest die Adressen nicht mit und gibt sie nicht aus.",
   "app/(site)/admin/kommunen/client.tsx":
     "Das Cockpit selbst — hinter Anmeldung, kleiner Kreis, Zahl steht neben der angeschriebenen Gemeinde.",
+  "lib/kommunen-auswertung.ts":
+    "Rechnet die Summe je Schub für die Auswertung im Cockpit. Sieht keine Eintragungen, " +
+    "sondern bekommt fertige Zahlen je Gemeinde hereingereicht.",
+  "app/api/admin/kommunen/bilanz/route.ts":
+    "Liefert die Auswertung an dasselbe Cockpit — gleiche Anmeldung, gleicher Kreis. " +
+    "Die Summe über alle Schübe ist bei kleiner Menge genauso identifizierend wie eine " +
+    "einzelne Zeile; sie bleibt deshalb an dieselbe Ansicht gebunden und wird nicht " +
+    "weitergereicht.",
   "lib/__tests__/kommunen-abo-spiegel.test.ts": "Die Tests der Zählregel.",
   "lib/__tests__/abo-zahl-bleibt-im-cockpit.test.ts": "Diese Schranke.",
 };
