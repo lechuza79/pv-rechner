@@ -384,7 +384,22 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // Preisseiten zu HVO betreffen durchweg den KRAFTSTOFF (HVO100 an der Zapf-
   // säule), nicht Bioheizöl für die Gebäudeheizung — eine andere Ware mit
   // anderer Besteuerung, also auch als Näherung unbrauchbar.
-  geprueftRechtIso: "2026-08-30",
+  //
+  // 01.09.2026 unverändert, diesmal beide Paragrafen im geltenden Gesetzestext
+  // Wort für Wort gelesen statt nur § 42a: § 43 Absatz 1 trägt die Stufen
+  // „ab dem 1. Januar 2029 mindestens 10 Prozent, ab dem 1. Januar 2030
+  // mindestens 15 Prozent, ab dem 1. Januar 2035 mindestens 30 Prozent und ab
+  // dem 1. Januar 2040 mindestens 60 Prozent" — zellgleich mit BIO_TREPPE_STUFEN
+  // — und knüpft sie an Heizungen, die „nach dem 29. Juli 2026 in ein bestehendes
+  // Gebäude neu eingebaut" werden. § 42a kündigt unverändert nur das bis zum
+  // 01.12.2026 vorzulegende Gesetz an. Die Meldungsübersicht des Infoportals
+  // endet weiterhin beim Inkrafttreten am 29.07.2026.
+  //
+  // ELFTE Bioheizöl-Gegensuche, weiter ohne Preisreihe. Die Treffer betreffen
+  // erneut den Kraftstoff (HVO100) oder den allgemeinen Heizölpreis samt
+  // CO2-Aufschlag; eine Preisreihe für Bioheizöl zur Gebäudeheizung führt keine
+  // Trägerquelle. Der Lücken-Hinweis im Öl-Ergebnis bleibt damit bestehen.
+  geprueftRechtIso: "2026-09-01",
   reviewBy: "2027-07-25",
 };
 

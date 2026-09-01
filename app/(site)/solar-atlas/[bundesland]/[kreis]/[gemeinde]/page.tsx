@@ -132,17 +132,15 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
     : kreisfrei
       ? "Bundesland"
       : "Landkreis";
-  // Anlagenzahl (für die Thin-Schwelle) nur laden, wenn die Seite überhaupt
-  // indexierbar werden kann — sonst ist sie ohnehin noindex und der Abruf wäre
-  // reine Last. Neben der Ebene zählt dabei die Einzelfreigabe: Ein Ort, der uns
-  // nach dem Outreach öffentlich verlinkt, ist freigegeben, obwohl die Ebene es
-  // nicht ist (Begründung an `atlasOrtEinzelfreigabe`).
-  // Zwei Wege zur Einzelfreigabe, und der zweite braucht keine Sitzung: Ein Ort
-  // aus dem Releaseplan (Entscheidung mit Nachweis) ODER ein Ort, der uns nach
-  // dem Outreach nachweislich öffentlich verlinkt hat (Tatsache, kein Ermessen —
-  // Begründung in lib/atlas-outreach-freigabe.ts).
-  const verlinker = await verlinkendeGemeinden();
-  const einzeln = atlasOrtEinzelfreigabe(region.region_id) || verlinker.includes(region.region_id);
+  // Ein Ort, an den ein Brief ging, bekommt seine Seite offen — der Brief nennt
+  // die Adresse, also kann ab dann jederzeit jemand darauf verweisen. Alles
+  // andere bleibt gesperrt (Begründung in lib/atlas-outreach-freigabe.ts).
+  //
+  // KEINE Sonderbehandlung mehr für Orte mit eigener Förderseite: Googles
+  // Site-Diversity-Regel zeigt ohnehin höchstens zwei Seiten je Domain und wählt
+  // selbst aus — zwei eigene Seiten können einander die Position nicht kosten.
+  const angeschrieben = await verlinkendeGemeinden();
+  const einzeln = atlasOrtEinzelfreigabe(region.region_id) || angeschrieben.includes(region.region_id);
   const anlagen =
     atlasLevelReleased("gemeinde") || einzeln
       ? (await getRegionAtlasData(region.region_id)).solar.total_count

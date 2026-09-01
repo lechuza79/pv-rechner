@@ -778,15 +778,51 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     coveredCosts: "Zuschuss je kWp (Budget 2026 erschöpft)",
     maxFoerderung: "max. 25.000 € je Objekt (Denkmal 27.500 €)",
     rates: [
-      { label: "Dach-PV Wohngebäude (Vollbelegung)", value: "100 €/kWp" },
-      { label: "Mehrfamilienhaus / Fassade / Denkmal", value: "bis 300 €/kWp" },
+      { label: "Dach-PV Wohngebäude bis 3 Wohneinheiten (Vollbelegung)", value: "100 €/kWp" },
+      { label: "Mehrfamilienhaus ab 4 Wohneinheiten / Fassade", value: "300 €/kWp" },
+      { label: "Denkmal / Nicht-Wohngebäude / Freifläche", value: "200 €/kWp" },
     ],
     conditions: [
       "Mittel 2026 ausgeschöpft — Wiedereröffnung üblicherweise zum Jahresbeginn",
-      "Antrag vor Beauftragung; nur Bestandsgebäude (fertiggestellt bis 31.12.2021)",
+      "Der Antrag darf vor oder nach dem Kauf gestellt werden, spätestens drei Monate nach der Schlussrechnung",
+      "Bis zum Bewilligungsbescheid geht der Kauf auf eigenes Risiko; die Stadt empfiehlt deshalb, vorher zu beantragen",
+      "Nur Bestandsgebäude (fertiggestellt bis 31.12.2021)",
       "Standardsatz nur bei voller Belegung der geeigneten Dachfläche",
+      "Der städtische Zuschuss darf 30 % der Gesamtkosten nicht überschreiten",
+      "Mit anderen Förderprogrammen kombinierbar, zusammen höchstens 90 % der Gesamtkosten",
     ],
     combinableWith: BUND,
+    // ANTRAGSZEITPUNKT KORRIGIERT (01.09.2026, an Seite und Richtlinie gelesen).
+    // Hier stand „Antrag vor Beauftragung" — das ist die Empfehlung der Stadt,
+    // nicht ihre Bedingung, und als Bedingung gelesen die teuerste Sorte
+    // Falschauskunft: Wer schon bestellt hat, hält den Zuschuss für verloren und
+    // beantragt ihn nicht mehr. Die Stadt schreibt auf der Programmseite: „Die
+    // Antragstellung erfolgt über ein Online-Formular und kann wahlweise vor oder
+    // nach der Beauftragung, dem Kauf oder der Installation der Solaranlage
+    // erfolgen – jedoch spätestens drei Monate nach Schlussrechnung", und die
+    // Förderrichtlinie (Nr. 8, Fassung ab 01.08.2026) wortgleich: „Der Antrag ist
+    // spätestens drei Monate nach (Schluss)Rechnung einzureichen. Eine vorherige
+    // Beantragung auf Grundlage eines Angebots bzw. Kostenvoranschlags ist möglich
+    // und zu empfehlen." Die Empfehlung steht jetzt als das da, was sie ist.
+    //
+    // DENKMAL AUS DER 300er-ZEILE GELÖST: Die Richtlinie führt in Nr. 4.2 „M5
+    // Denkmalgerechte Photovoltaik — 200 €/kWp", zusammen mit Nicht-Wohngebäuden
+    // (M6) und Freiflächen (M8); 300 €/kWp gelten M2 (ab 4 Wohneinheiten), M3
+    // (geförderter Wohnungsbau) und M4 (Fassade). „Denkmal … bis 300 €/kWp" hat
+    // die drei Sätze in eine Zeile geworfen und für das Denkmal den höheren
+    // genannt — das „bis" macht es nicht richtig, nur ungenau.
+    //
+    // Der Höchstbetrag für Denkmäler ist dagegen BESTÄTIGT und bleibt stehen: Er
+    // steht nicht auf der Programmseite, sondern in Nr. 4.2 der Richtlinie
+    // („beträgt die maximale Förderhöhe 27.500 Euro, soweit nachgewiesen wird,
+    // dass … Mehrkosten von mindestens 20 Prozent … entstanden sind"). Beinahe
+    // gestrichen, weil die Seite ihn nicht trägt — Wächter-Gate Regel 6: erst die
+    // Fundstelle beschaffen, dann streichen.
+    //
+    // Zwei Bedingungen ergänzt, die beide seit jeher in der Richtlinie stehen und
+    // bei uns fehlten: der 30-%-Deckel auf die Gesamtkosten (Nr. 9) und die
+    // Kumulierungsgrenze von 90 % (Nr. 6). Kein Rechenwert im Katalog, also kein
+    // Geldeffekt — aber zwei Angaben, nach denen jemand seine Rechnung aufstellt.
   },
   "goettingen-klimafonds": {
     id: "goettingen-klimafonds", name: "KlimaFonds Göttingen",
@@ -1641,15 +1677,40 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "mayen-koblenz-speicher", name: "Solarspeicher-Förderprogramm",
     traeger: "Landkreis Mayen-Koblenz", level: "landkreis", region: "Landkreis Mayen-Koblenz", bundesland: "Rheinland-Pfalz", agsCode: "07137",
     url: "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
-    stand: "Juli 2026", status: "eingestellt", capped: true, verified: true,
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Zuschuss je kWh Batteriespeicher (mit PV)",
-    rates: [{ label: "Batteriespeicher", value: "200 €/kWh" }],
+    coveredCosts: "Zuschuss je kWh Batteriespeicher (mit PV) — der Kreis führt das Programm nicht mehr",
+    rates: [{ label: "Batteriespeicher", value: "zuletzt 200 €/kWh — Programm nicht mehr im Angebot" }],
     conditions: [
-      "Bisherige Runde ausgeschöpft, Antragstellung derzeit nicht möglich",
-      "Neuauflage angekündigt — vor Antrag beim Kreis prüfen",
+      "Der Landkreis führt das Solarspeicher-Programm auf seinen Förderseiten nicht mehr auf",
+      "Von einer Neuauflage steht dort nichts; wer darauf wartet, fragt am besten beim Klimaschutzmanagement des Kreises nach",
+      "Der Satz von 200 €/kWh stammt aus der letzten Runde und gilt nur als Anhaltspunkt",
     ],
     combinableWith: BUND,
+    // „NEUAUFLAGE ANGEKÜNDIGT" ENTFERNT (01.09.2026). Der Satz stand hier als
+    // Bedingung und ist an keiner Amtsseite mehr zu finden — dieselbe Fehlerklasse
+    // wie bei Ludwigshafen: eine Aussage ohne Rechenwert dahinter, die deshalb von
+    // keinem Test rot wird, aber jemanden warten lässt. Und die Richtung ist die
+    // teurere: Wer auf eine angekündigte Neuauflage wartet, schiebt seine
+    // Anschaffung auf.
+    //
+    // Am 01.09.2026 im echten Browser gelesen (die Seiten des Kreises laden ihren
+    // Inhalt per Skript nach; ein einfacher Abruf liefert nur die leere Hülle —
+    // deshalb erst über die Eskalationsleiter, nicht über eine Sekundärquelle):
+    // Die Übersicht „Klimaschutzmaßnahmen" führt nur noch das Zuschussprogramm für
+    // Balkonkraftwerke und die Dach- und Fassadenbegrünung; Solarspeicher steht
+    // dort überhaupt nicht mehr. Die Seite „Förderinformationen" des Kreises nennt
+    // gar kein eigenes Programm, sondern verweist auf die Förderdatenbank des
+    // Bundes, den Fördermittelkompass des Landes und die Angebote der Städte und
+    // Verbandsgemeinden.
+    //
+    // NEBENBEFUND, bewusst NICHT hier eingetragen: Der Kreis hatte ein eigenes
+    // Zuschussprogramm für Balkonkraftwerke (150.000 € aus dem Landesprogramm
+    // KIPKI). Es ist ebenfalls vorbei — die Seite trägt oben „+++ Das
+    // Zuschussprogramm ist beendet - eine Antragstellung ist nicht mehr möglich!
+    // +++". Ein beendetes Programm neu in den Katalog aufzunehmen ist keine
+    // Korrektur, sondern eine Aufnahme, und die bleibt Vorschlag (Wächter-Gate,
+    // Teil 3).
   },
   // ── Kommune – aus dem Abdeckungs-Screening, 18.08.2026 ──────────────────────
   //
@@ -2476,9 +2537,19 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Für Photovoltaik und Balkonkraftwerke bietet die Stadt keine eigene Förderung, sondern nur eine kostenlose Beratung",
       "Die Maßnahme muss bis spätestens 31.12.2026 umgesetzt sein",
       "Der Zuschuss steht unter dem Vorbehalt, dass der Gemeinderat die Mittel bereitstellt",
+      "Bei der Stadt registriert wird erst, nachdem der Zuwendungsbescheid des Bundes da ist",
     ],
     combinableWith: BUND,
     foerdert: ["waermepumpe"],
+    // REIHENFOLGE ergänzt (01.09.2026, an der Amtsseite gelesen). Die Stadt
+    // schreibt: „Nachdem Sie den Zuwendungsbescheid für die Bundesförderung
+    // erhalten haben, registrieren Sie sich elektronisch oder schriftlich bei der
+    // Förderstelle der Stadt Weinheim." Wir sagten bisher nur, der Zuschuss stocke
+    // die Bundesförderung auf — nicht, dass die Stadt erst nach dem Bundesbescheid
+    // an der Reihe ist. Wer sich zuerst bei der Stadt meldet, wartet auf eine
+    // Bestätigung, die es in dieser Reihenfolge nicht gibt. Die Reihenfolge ist im
+    // Förderbereich die teuerste Auskunft (siehe lib/beg-antrag.ts), deshalb steht
+    // sie hier ausdrücklich und nicht zwischen den Zeilen.
     // Die beiden letzten Bedingungen am 30.08.2026 an der Amtsseite ergänzt.
     // Sie standen dort die ganze Zeit und fehlten bei uns: „Um den Zuschuss zu
     // erhalten, muss die Maßnahme bis spätestens 31.12.2026 umgesetzt werden"

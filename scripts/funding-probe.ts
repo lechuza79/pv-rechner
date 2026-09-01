@@ -36,6 +36,7 @@ import {
   type SeitenAenderung,
 } from "../lib/funding-verify-state";
 import type { FundingProgram } from "../lib/funding-programs";
+import { heuteInBerlin } from "../lib/zeit";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -77,7 +78,12 @@ function flag(name: string): string | undefined {
   return rest.length ? rest.join(" ") : undefined;
 }
 
-const heute = new Date().toISOString().slice(0, 10);
+// Der DEUTSCHE Kalendertag. Dieses Datum wird als „Zuletzt geprüft" auf jeder
+// Förderseite ausgegeben, also als Kalendertag gelesen. Über `toISOString()`
+// gemessen lag es zwischen 00:00 und 02:00 deutscher Sommerzeit einen Tag
+// zurück — ein Wächter-Lauf kurz nach Mitternacht hätte den Vortag gestempelt
+// und die Prüfung damit um einen Tag älter aussehen lassen, als sie ist.
+const heute = heuteInBerlin();
 
 async function ladeProgramme(): Promise<FundingProgram[]> {
   const { data, error } = await sb.from("funding_programs").select("id, data, last_verified, archived");

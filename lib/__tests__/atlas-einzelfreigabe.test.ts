@@ -5,6 +5,7 @@ import {
   atlasIsIndexable,
   atlasLevelReleased,
   atlasOrtEinzelfreigabe,
+  atlasRobots,
   GEMEINDE_MIN_ANLAGEN,
 } from "../atlas-index";
 import { freigegebeneOrte, planBefunde, RELEASE_PLAN, type Schub } from "../release-plan";
@@ -148,10 +149,15 @@ describe("Automatische Freigabe verlinkender Gemeinden", () => {
    * naturgemäß nicht. Die erste Fassung dieses Tests prüfte genau diese Zeile
    * und war rot, obwohl der Code stimmte.
    */
-  const echteRobotsZeile = () =>
-    gemeindeSeite
-      .split("\n")
-      .find((z) => z.includes("robots: atlasRobots") && !z.includes("atlasRobots(false)"));
+  const echteRobotsZeile = () => {
+    // Der Aufruf steht über mehrere Zeilen, seit er drei Zustände unterscheidet
+    // — deshalb ab der Fundstelle einen Block lesen statt einer Zeile. Der
+    // Abbruch für unbekannte Adressen weiter oben trägt den Zustand nicht und
+    // wird übersprungen.
+    const zeilen = gemeindeSeite.split("\n");
+    const i = zeilen.findIndex((z) => z.includes("robots: atlasRobots") && !z.includes("atlasRobots(false)"));
+    return i < 0 ? undefined : zeilen.slice(i, i + 5).join(" ");
+  };
 
   it("ist in der Gemeindeseite verdrahtet", () => {
     expect(gemeindeSeite).toContain("verlinkendeGemeinden");
@@ -188,11 +194,19 @@ describe("Automatische Freigabe verlinkender Gemeinden", () => {
     );
   });
 
-  it("nimmt Orte mit eigener Förderseite aus", () => {
-    // Sonst stünden zwei eigene Seiten auf denselben Ortsanfragen — und die
-    // Förderseite steht dort teils vorn.
+  it("behandelt Orte mit eigener Förderseite NICHT gesondert", () => {
+    // Die Ausnahme gab es einen halben Tag lang und ist wieder raus: Googles
+    // Site-Diversity-Regel zeigt höchstens zwei Seiten je Domain und wählt
+    // selbst aus, zwei eigene Seiten können einander die Position also nicht
+    // kosten. Wer sie wieder einbaut, kostet eine zweite Datenquelle im
+    // Seitenaufbau, ohne ein belegtes Risiko abzuwenden.
     const quelle = readFileSync(resolve(__dirname, "../atlas-outreach-freigabe.ts"), "utf8");
-    expect(quelle).toContain("ATLAS_CITIES");
+    expect(quelle).not.toContain("indexierbareGemeinden");
+  });
+
+  it("kennt genau zwei robots-Zustände", () => {
+    expect(atlasRobots(true)).toEqual({ index: true, follow: true });
+    expect(atlasRobots(false)).toEqual({ index: false, follow: false });
   });
 
   it("schließt gesperrte Gemeinden aus", () => {

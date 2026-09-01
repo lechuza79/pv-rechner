@@ -93,8 +93,13 @@ async function pruefeSeite(url: string): Promise<Befund> {
     });
     if (!res.ok) return "unerreichbar";
     const html = await res.text();
-    if (/<a[^>]*solar-check[^>]*>/i.test(html)) return "link";
-    return /solar-check/i.test(html) ? "erwaehnt" : "fehltreffer";
+    // Es zählt NUR ein Link auf unsere DOMAIN — nicht das Wort „Solar-Check".
+    // Gemessen am 29.08.2026: Wedemark schien uns zweimal zu erwähnen, gemeint
+    // war die „Solar-Check-Beratung" der Klimaschutzagentur Hannover, eine
+    // Meldung davon von 2013. „Solar-Check" ist ein Gattungsbegriff, den
+    // mindestens sechs Anbieter führen.
+    if (/<a[^>]*href="[^"]*solar-check\.io[^"]*"[^>]*>/i.test(html)) return "link";
+    return /solar-check\.io/i.test(html) ? "erwaehnt" : "fehltreffer";
   } catch {
     return "unerreichbar";
   }
