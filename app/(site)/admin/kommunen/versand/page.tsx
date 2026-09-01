@@ -3,7 +3,7 @@ import { createClient } from "../../../../../lib/supabase-server-component";
 import VersandAuswertung from "./client";
 
 export const metadata = {
-  title: "Versand – Kommunen-Outreach",
+  title: "Übersicht – Kommunen-Outreach",
   robots: { index: false, follow: false },
 };
 

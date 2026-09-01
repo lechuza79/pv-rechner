@@ -35,7 +35,7 @@ export default function VersandAuswertung() {
     <div style={{ fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
       <div style={{ marginBottom: space.lg }}>
         <div style={labelKicker}>Kommunen-Outreach</div>
-        <h1 style={{ fontSize: 24, fontWeight: 800 }}>Versand</h1>
+        <h1 style={{ fontSize: 24, fontWeight: 800 }}>Übersicht</h1>
       </div>
 
       {fehler && (
@@ -80,7 +80,13 @@ export default function VersandAuswertung() {
               {offeneSchuebe.map((k, i) => (
                 <span key={k.kampagne}>
                   {i > 0 && <span style={{ color: v("--color-text-muted") }}> · </span>}
-                  {k.kampagne} {k.offen}
+                  <a
+                    href={`/admin/kommunen?kampagne=${encodeURIComponent(k.kampagne)}`}
+                    style={{ color: v("--color-accent"), textDecoration: "none", fontWeight: 600 }}
+                  >
+                    {k.kampagne}
+                  </a>{" "}
+                  {k.offen}
                   {k.kampagne.endsWith("-geparkt") && (
                     <span style={{ color: v("--color-text-muted") }}> (geparkt)</span>
                   )}
@@ -113,12 +119,22 @@ export default function VersandAuswertung() {
                     const groesster = Math.max(...wirkung.jeTag.map((x) => x.verschickt));
                     return (
                       <tr key={t.tag} style={adminZeile}>
+                        {/* Der Tag führt in die Gemeindeliste, gefiltert auf den
+                            Schub dieses Tages. Ein Datum allein beantwortet
+                            „50 verschickt" nur bis zur nächsten Frage — welche
+                            50 das waren. Bei mehreren Schüben an einem Tag der
+                            erste; die übrigen stehen daneben. */}
                         <td style={{ ...adminTd, whiteSpace: "nowrap" }}>
-                          {new Date(t.tag).toLocaleDateString("de-DE", {
-                            day: "2-digit",
-                            month: "2-digit",
-                            year: "numeric",
-                          })}
+                          {t.schuebe[0] ? (
+                            <a
+                              href={`/admin/kommunen?kampagne=${encodeURIComponent(t.schuebe[0])}`}
+                              style={{ color: v("--color-accent"), textDecoration: "none", fontWeight: 600 }}
+                            >
+                              {datum(t.tag)}
+                            </a>
+                          ) : (
+                            datum(t.tag)
+                          )}
                         </td>
                         <td style={{ ...adminTd, color: v("--color-text-muted") }}>{t.schuebe.join(", ")}</td>
                         <td style={{ ...tdRechts, width: 40 }}>{t.verschickt}</td>
@@ -133,7 +149,7 @@ export default function VersandAuswertung() {
                               width: `${Math.round((100 * t.verschickt) / (groesster || 1))}%`,
                               minWidth: 3,
                               background: v("--color-accent"),
-                              borderRadius: 2,
+                              borderRadius: v("--radius-sm"),
                             }}
                           />
                         </td>
@@ -159,6 +175,11 @@ export default function VersandAuswertung() {
       )}
     </div>
   );
+}
+
+/** Versandtag im deutschen Format — einmal, nicht je Zelle. */
+function datum(iso: string): string {
+  return new Date(iso).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
 /**

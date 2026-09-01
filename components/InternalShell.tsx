@@ -38,8 +38,8 @@ export default function InternalShell({
         {
           label: "Outreach",
           children: [
+            { href: "/admin/kommunen/versand", label: "Übersicht" },
             { href: "/admin/kommunen", label: "Gemeinden", exact: true },
-            { href: "/admin/kommunen/versand", label: "Versand" },
           ],
         },
         {

@@ -80,6 +80,23 @@ export default function KommunenCockpit() {
   const [sort, setSort] = useState("");
   const [charge, setCharge] = useState("");
   const [kampagne, setKampagne] = useState("");
+  // Der Schub kommt aus der Adresse: Die Übersicht verlinkt je Versandtag
+  // hierher, und ohne ihn käme man auf einer ungefilterten Liste mit 11.000
+  // Zeilen an.
+  //
+  // NACH dem ersten Rendern, nicht als Anfangswert. Als Anfangswert gelesen
+  // rendert der Server ohne Filter und der Browser mit — React meldet das als
+  // Abweichung und flickt sie nicht; sichtbar wurde es an einem Auswahlfeld,
+  // das serverseitig gesperrt war und im Browser nicht. Ein Effekt läuft erst,
+  // wenn beide Seiten dasselbe gezeichnet haben.
+  //
+  // Nur GELESEN, nie zurückgeschrieben: Die Filter hier sind Handgriffe, keine
+  // teilbaren Zustände, und ein mitwandernder Adressbalken wäre eine zweite
+  // Wahrheit neben den Bedienelementen.
+  useEffect(() => {
+    const ausAdresse = new URLSearchParams(window.location.search).get("kampagne");
+    if (ausAdresse) setKampagne(ausAdresse);
+  }, []);
   const [page, setPage] = useState(0);
 
   const [rows, setRows] = useState<Lead[]>([]);
