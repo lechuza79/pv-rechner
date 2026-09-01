@@ -14,7 +14,7 @@ import { v, iconSizes } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
 import { calcAircon, compareDevices, acquisitionRange, calcAirconHeating, acHeatSpecKwhPerM2, type CoolingWindow, type AcInputs } from "../../../lib/aircon";
-import { trackEvent } from "../../../lib/analytics";
+import { trackFunnelStep, type Funnel } from "../../../lib/analytics";
 import { useSharedPlz } from "../../../lib/location";
 import { coordsForPlz, fetchHeatwave } from "../../../lib/useCoolingDegree";
 import { bundeslandFromPlz } from "../../../lib/plz-bundesland";
@@ -118,10 +118,19 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
   const strompreis = oStrom ?? (prices.electricityPrice > 0 ? prices.electricityPrice : CFG.stromPrice);
 
   const isResult = step >= STEPS.length;
+  // Ereignis je erreichtem Schritt, Reihenfolge wie STEPS, danach das Ergebnis.
+  // Bis 29.08.2026 meldete dieser Rechner NUR das Ergebnis — wo jemand abbricht,
+  // war unsichtbar. Länge und Reihenfolge sind festgenagelt (siehe `lib/analytics.ts`).
+  const FUNNEL: Funnel = [
+    null,
+    "klima_schritt_raeume",
+    "klima_schritt_nutzung",
+    "klima_ergebnis",
+  ];
   const next = () => {
     if (step >= STEPS.length) return;
     const target = step + 1;
-    if (target === STEPS.length) trackEvent("klima_ergebnis");
+    trackFunnelStep(FUNNEL, target);
     setStep(target);
   };
   const back = () => step > 0 && setStep(step - 1);

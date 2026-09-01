@@ -4,6 +4,8 @@
 // selbst ist bewusst kurz — er hält fest, was entschieden ist, und benennt, was
 // noch nicht entschieden ist, statt eine Vollständigkeit vorzutäuschen.
 
+import type { PruefArt } from "./social-pruefung-kern";
+
 export type Wochentag = "Mo" | "Di" | "Mi" | "Do" | "Fr";
 
 export type Slot = {
@@ -14,15 +16,53 @@ export type Slot = {
 };
 
 /**
- * Drei Posts pro Woche.
+ * Drei Posts pro Woche, dienstags, donnerstags und freitags.
  *
- * Nicht mehr, weil eine Einzelperson ohne Redaktion bei täglicher Kadenz in
- * Woche vier abbricht — und ein Account, der sichtbar aufgehört hat, wirkt
- * schlechter als einer, der nie angefangen hat. Nicht weniger, weil unter drei
- * Beiträgen keine Erwartung entsteht.
+ * DIE BEGRÜNDUNG DAFÜR WAR ERFUNDEN, und das steht hier, weil sie wie eine
+ * Erkenntnis dastand. Recherchiert am 29.08.2026 gegen Primärquellen; die drei
+ * Behauptungen der ersten Fassung im Einzelnen:
  *
- * Dienstag und Donnerstag sind im deutschen Fach-Feed die stärksten Tage;
- * Montag geht in der Inbox-Abarbeitung unter.
+ * 1. „Eine Einzelperson bricht bei täglicher Kadenz in Woche vier ab."
+ *    NICHT BELEGBAR. Die Richtung ist plausibel, die Zahl vier hat keine
+ *    Grundlage. Die nächstgelegene harte Quelle zur Routinebildung (Lally u. a.
+ *    2010, European Journal of Social Psychology, 96 Teilnehmer) findet einen
+ *    Median von 66 Tagen bis zur Automatisierung, Spanne 18–254 Tage, und nur
+ *    48 % erreichten sie überhaupt — das spricht eher gegen „Woche vier".
+ *
+ * 2. „Unter drei Beiträgen pro Woche entsteht keine Erwartung."
+ *    WIDERLEGT. LinkedIn selbst zieht die Linie bei EINMAL wöchentlich
+ *    („Companies that post weekly see a 2x lift in engagement", LinkedIn Pages
+ *    Best Practices). Das ist Marketingmaterial ohne offengelegte Methode, aber
+ *    es ist die Aussage des Plattformbetreibers, und sie nennt eine andere
+ *    Schwelle als drei.
+ *
+ * 3. „Dienstag und Donnerstag sind im deutschen Fach-Feed die stärksten Tage."
+ *    NICHT BELEGBAR — für keinen Wochentag. LinkedIns eigene technische
+ *    Veröffentlichungen zum Feed-Ranking führen als Kontextmerkmale die
+ *    TAGESZEIT und das Beitragsalter auf, den Wochentag nicht. Und LinkedIns
+ *    eigener Blogbeitrag zur besten Posting-Zeit zitiert drei Fremdstudien, die
+ *    einander widersprechen (Montag, Dienstag, Donnerstag/Freitag), und schließt
+ *    mit „there's no substitute for testing". Fünf Quellen, vier verschiedene
+ *    beste Tage. Für den deutschsprachigen Raum gibt es dazu gar keine Daten.
+ *
+ * WAS BELEGT BLEIBT: Werktag schlägt Wochenende. Sonst nichts.
+ *
+ * WARUM DIE TAGE TROTZDEM FESTSTEHEN: nicht wegen der Reichweite, sondern wegen
+ * der eigenen Planbarkeit. Ein fester Rhythmus macht den Vorrat planbar; welche
+ * drei Tage es sind, ist nach heutigem Wissensstand gleichgültig.
+ *
+ * NICHT MESSBAR, UND ZWAR NIE: welcher Wochentag besser trägt. Wir können
+ * LinkedIns Reichweitenzahlen nicht abrufen; messbar sind nur die Zugriffe auf
+ * unsere eigenen Seiten. Bei drei Beiträgen pro Woche bekommt jeder Wochentag
+ * rund 52 Beiträge im Jahr — für einen Unterschied von 10 %, der Größenordnung
+ * der Literatur, bräuchte es etwa 550 Beiträge je Tag, also rund zehn Jahre. Und
+ * das unterstellt noch, dass nur der Zufall streut; in Wahrheit streut das THEMA
+ * um ein Vielfaches mehr. Wer aus den ersten zwanzig Beiträgen einen „besten
+ * Tag" abliest, liest Rauschen.
+ *
+ * WAS SICH MESSEN LÄSST: die Frequenz, als Phasenvergleich über die
+ * Wochensumme — und, ohne jede Statistik, Soll gegen Ist: Wie viele geplante
+ * Beiträge sind wirklich rausgegangen. Daran hängt die Kadenz wirklich.
  */
 export const SLOTS: Slot[] = [
   {
@@ -307,46 +347,91 @@ export const FAMILIEN: Familie[] = [
   },
 ];
 
-export type Regel = { regel: string; grund: string };
+export type Regel = {
+  regel: string;
+  grund: string;
+  /**
+   * Welche der beiden Prüfungen diese Regel abdeckt.
+   *
+   * Ohne die Zuordnung wäre die Liste beim Erteilen einer Freigabe eine
+   * Sammelaufforderung: Wer die Zahlen nachrechnet, bekäme die Namensnennung
+   * mit vorgelegt und hakte sie nebenbei ab. Die Regel gegen den Superlativ
+   * gehört deshalb bewusst zur ZAHLENprüfung — er entsteht im Nenner, nicht im
+   * Wortlaut, und wird nur beim Nachrechnen der Grundmenge gefunden.
+   */
+  gilt: PruefArt;
+};
 
 /**
  * Was vor jedem Post geprüft wird. Steht hier und nicht nur im Konzept, weil
- * eine Regel, die man nachlesen muss, im Zweifel nicht nachgelesen wird.
+ * eine Regel, die man nachlesen muss, im Zweifel nicht nachgelesen wird — und
+ * seit dem Freigabe-Umbau steht sie deshalb auch dort, wo unterschrieben wird,
+ * statt nur auf der Planungsseite.
  */
 export const REGELN: Regel[] = [
   {
     regel: "Lob mit Namen, Kritik ohne Namen.",
     grund:
       "Kommunen reden untereinander. Eine vorgeführte Gemeinde beendet den Outreach in ihrer ganzen Region, ohne dass es jemand sagt.",
+    gilt: "recht",
   },
   {
     regel: "Keine Gemeinde nennen, die im selben Zeitraum ein Anschreiben bekommt.",
     grund: "Sonst liest sich der Post als Druckmittel und der Brief als Drohung.",
+    gilt: "recht",
   },
   {
     regel: "Genannte Gemeinden drei bis fünf Tage vorher informieren.",
     grund: "Wer vorgewarnt wurde, teilt. Wer überrascht wurde, dementiert.",
+    gilt: "recht",
   },
   {
     regel: 'Sprachregel: "in [Ort] stehen \u2026", nie "[Ort] hat geschafft/vers\u00e4umt".',
     grund:
       "Private Dächer sind nicht die Leistung einer Verwaltung. Daran hängt sich ein Bürgermeister auch beim Lob auf.",
+    gilt: "recht",
   },
   {
     regel: "Kein Superlativ auf kleiner Grundmenge.",
     grund:
       'Sechzehn Einwohner, ein Balkonkraftwerk, "Platz 1 von 150" — der Superlativ entsteht dann vollständig im Nenner.',
+    gilt: "zahlen",
+  },
+  {
+    regel: "Text und Bild nennen dieselbe Zahl, in derselben Rundung.",
+    grund:
+      'Schon einmal so gebaut: Der Text sagte "8 Prozent", das Bild zeigte "8,1" — aus derselben Zahl. Sichtbar wurde es erst am gerenderten Bild, kein Test hat es gefunden.',
+    gilt: "zahlen",
+  },
+  {
+    regel: "Jede Zahl trägt ihre Einheit und ihren Nenner.",
+    grund:
+      "Eine Registerspalte zählte Speichergeräte, nicht Anlagen mit Speicher — als Anteil beschriftet kam ein Bundesland auf 98 Prozent und der Bund auf 67. Beides las sich plausibel und war falsch.",
+    gilt: "zahlen",
   },
   {
     regel: "Kein Link im Beitrag.",
     grund: "Ein Link drückt die Verbreitung. Jeder Post muss ohne Klick vollständig sein.",
+    gilt: "recht",
   },
   {
     regel: "Quellenangabe im Bild, nicht nur im Text.",
     grund: "Beim Weiterteilen reist der Beitragstext nicht mit, das Bild schon.",
+    gilt: "recht",
   },
   {
     regel: "Keine Ortsseite verlinken, die im Releaseplan noch nicht live ist.",
     grund: "Ein Post darf keine Seite ins Schaufenster stellen, die dafür nicht freigegeben ist.",
+    gilt: "recht",
   },
 ];
+
+/**
+ * Die Regeln, die zu einer Prüfung gehören.
+ *
+ * Wird beim Erteilen der Freigabe als Prüfliste gezeigt. Eine Prüfart ohne eine
+ * einzige Regel wäre ein leeres Formular — dagegen steht ein Test.
+ */
+export function regelnFuer(art: PruefArt): Regel[] {
+  return REGELN.filter((r) => r.gilt === art);
+}

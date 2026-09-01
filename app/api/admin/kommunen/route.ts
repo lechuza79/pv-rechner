@@ -4,6 +4,7 @@ import { briefFuerGemeinde, istBriefFehler } from "../../../../lib/kommunen-brie
 import { isOutreachStatus, UNBEANTWORTET, UNBEANTWORTET_TAGE } from "../../../../lib/outreach-status";
 import { isAdminSession } from "../../../../lib/admin-guard";
 import { zaehleAbos, type AboSpiegel, type AboZeile } from "../../../../lib/kommunen-abo-spiegel";
+import { aboZeilenFuerAuswertung } from "../../../../lib/gemeinde-abo";
 
 // Admin-Cockpit für den Kommunen-Outreach. Liest/schreibt kommunen_kontakt
 // (interne, nicht-öffentliche Tabelle) über den Service-Client. Auth läuft über
@@ -115,11 +116,8 @@ export async function GET(req: NextRequest) {
     // jemand aus der Verwaltung kommt, steht als Selbstauskunft in der Zeile —
     // und was nicht abgefragt wird, kann auch nicht versehentlich nach draußen
     // geraten.
-    const { data: aboRows } = await serviceDb
-      .from("gemeinde_abos")
-      .select("region_id, status, aus_verwaltung, ueber_brief")
-      .in("region_id", regionIds);
-    if (aboRows?.length) aboSpiegel = zaehleAbos(aboRows as AboZeile[]);
+    const aboRows = await aboZeilenFuerAuswertung(regionIds);
+    if (aboRows.length) aboSpiegel = zaehleAbos(aboRows as AboZeile[]);
   }
 
   return NextResponse.json({

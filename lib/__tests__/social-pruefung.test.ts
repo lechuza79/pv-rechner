@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   NOETIGE_PRUEFUNGEN,
   SOCIAL_PRUEFUNG_DDL,
-  fassungsAbdruck,
+  fassungsText,
   urteil,
   type Fassung,
   type Pruefung,
@@ -25,36 +25,36 @@ const BILD: PostBild = {
 
 const fassung = (text = TEXT, bild: PostBild | null = BILD): Fassung => ({ text, bild });
 
-const p = (art: "zahlen" | "recht", f: Fassung, bestanden = true, befund = ""): Pruefung => ({
+const p = (art: "zahlen" | "recht" | "gegenpruefung", f: Fassung, bestanden = true, befund = ""): Pruefung => ({
   post_id: "test",
-  fassung_fingerabdruck: fassungsAbdruck(f),
+  fassung_fingerabdruck: fassungsText(f),
   art,
   bestanden,
   befund,
   geprueft_am: "2026-08-26T10:00:00.000Z",
 });
 
-const beide = (f: Fassung) => [p("zahlen", f), p("recht", f)];
+const beide = (f: Fassung) => [p("zahlen", f), p("recht", f), p("gegenpruefung", f)];
 
 describe("Freigabe vor der Veröffentlichung", () => {
   it("verlangt beide Prüfungen", () => {
-    expect(urteil(fassung(), [])).toMatchObject({ ok: false });
-    expect(urteil(fassung(), [p("zahlen", fassung())])).toMatchObject({ ok: false });
-    expect(urteil(fassung(), beide(fassung()))).toEqual({ ok: true });
-    expect(NOETIGE_PRUEFUNGEN).toEqual(["zahlen", "recht"]);
+    expect(urteil(fassungsText(fassung()), [])).toMatchObject({ ok: false });
+    expect(urteil(fassungsText(fassung()), [p("zahlen", fassung())])).toMatchObject({ ok: false });
+    expect(urteil(fassungsText(fassung()), beide(fassung()))).toEqual({ ok: true });
+    expect(NOETIGE_PRUEFUNGEN).toEqual(["zahlen", "recht", "gegenpruefung"]);
   });
 
   it("verfällt, sobald der Text sich ändert", () => {
     // Wer nach der Prüfung umformuliert, hat eine Freigabe für eine Fassung,
     // die es nicht mehr gibt.
     const geaendert = fassung(TEXT.replace("halb so viele", "dreimal so viele"));
-    const u = urteil(geaendert, beide(fassung()));
+    const u = urteil(fassungsText(geaendert), beide(fassung()));
     expect(u.ok).toBe(false);
     if (!u.ok) expect(u.grund).toMatch(/nach der Prüfung geändert/);
   });
 
   it("unterscheidet nie-geprueft von nach-der-Pruefung-geaendert", () => {
-    const u = urteil(fassung(), []);
+    const u = urteil(fassungsText(fassung()), []);
     expect(u.ok).toBe(false);
     if (!u.ok) expect(u.grund).toMatch(/Noch nicht geprüft/);
   });
@@ -62,11 +62,11 @@ describe("Freigabe vor der Veröffentlichung", () => {
   it("lässt reine Formatierung durchgehen", () => {
     // Ein zusätzlicher Umbruch ist keine inhaltliche Änderung. Eine Sperre, die
     // auch daran anschlägt, wird zur Schikane und irgendwann umgangen.
-    expect(urteil(fassung(`  ${TEXT}\n\n `), beide(fassung()))).toEqual({ ok: true });
+    expect(urteil(fassungsText(fassung(`  ${TEXT}\n\n `)), beide(fassung()))).toEqual({ ok: true });
   });
 
   it("hält eine nicht bestandene Prüfung zurück und nennt den Befund", () => {
-    const u = urteil(fassung(), [p("zahlen", fassung()), p("recht", fassung(), false, "Werbeaussage ohne Beleg")]);
+    const u = urteil(fassungsText(fassung()), [p("zahlen", fassung()), p("gegenpruefung", fassung()), p("recht", fassung(), false, "Werbeaussage ohne Beleg")]);
     expect(u.ok).toBe(false);
     if (!u.ok) expect(u.grund).toContain("Werbeaussage ohne Beleg");
   });
@@ -86,7 +86,7 @@ describe("Die Freigabe deckt das BILD mit ab", () => {
   const geprueft = beide(fassung());
 
   const bleibtGesperrt = (bild: PostBild) => {
-    const u = urteil(fassung(TEXT, bild), geprueft);
+    const u = urteil(fassungsText(fassung(TEXT, bild)), geprueft);
     expect(u.ok).toBe(false);
     if (!u.ok) expect(u.grund).toMatch(/nach der Prüfung geändert/);
   };
@@ -145,7 +145,7 @@ describe("Die Freigabe deckt das BILD mit ab", () => {
   });
 
   it("ein Beitrag ohne Bild ist etwas anderes als derselbe Text mit Bild", () => {
-    const u = urteil(fassung(TEXT, null), geprueft);
+    const u = urteil(fassungsText(fassung(TEXT, null)), geprueft);
     expect(u.ok).toBe(false);
   });
 });

@@ -3,6 +3,7 @@ import { supabase as serviceDb } from "../../../../../lib/supabase-server";
 import { verteile } from "../../../../../lib/kommunen-ask";
 import { werteAus, type OutreachZeile } from "../../../../../lib/kommunen-auswertung";
 import { zaehleAbos, type AboZeile } from "../../../../../lib/kommunen-abo-spiegel";
+import { aboZeilenFuerAuswertung } from "../../../../../lib/gemeinde-abo";
 import { isAdminSession } from "../../../../../lib/admin-guard";
 
 // Auswertung des Outreach: was hinausging und was daraus wurde.
@@ -57,10 +58,7 @@ export async function GET(req: NextRequest) {
   // Eintragungen: nur die Zahlen, nie die Adressen (lib/kommunen-abo-spiegel).
   // Fällt die Abfrage aus, bleiben die Abo-Spalten leer — eine Zusatzangabe
   // darf die Auswertung nicht mitnehmen.
-  const { data: aboRows } = await serviceDb
-    .from("gemeinde_abos")
-    .select("region_id, status, aus_verwaltung, ueber_brief");
-  const spiegel = zaehleAbos((aboRows ?? []) as AboZeile[]);
+  const spiegel = zaehleAbos((await aboZeilenFuerAuswertung()) as AboZeile[]);
 
   const { gesamt, jeKampagne, jeTag } = werteAus(alle, spiegel);
 

@@ -38,6 +38,10 @@ const ERLAUBT: Record<string, string> = {
     "einzelne Zeile; sie bleibt deshalb an dieselbe Ansicht gebunden und wird nicht " +
     "weitergereicht.",
   "lib/kommunen-abo-spiegel.ts": "Das Modul selbst — es definiert die Zahl und die Beschriftung.",
+  "lib/gemeinde-abo.ts":
+    "Die Datenschicht der Abos: Sie liefert die Rohzeilen OHNE Adressen, damit es nur " +
+    "einen Lesepfad auf die Tabelle gibt (siehe abo-zweckbindung.test.ts). Sie zählt nicht " +
+    "und beschriftet nichts — das Wort steht dort nur im erklärenden Text.",
   "app/(site)/admin/kommunen/versand/client.tsx":
     "Die Auswertung des Outreach — dieselbe Anmeldung, dieselbe Ansicht wie das Cockpit, " +
     "nur eine eigene Seite. Zeigt Summen, nie einzelne Eintragungen.",

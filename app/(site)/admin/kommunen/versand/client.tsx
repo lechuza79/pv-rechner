@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { v, space, pad } from "../../../../../lib/theme";
 import { adminTabelle, adminTh, adminTd, adminZeile } from "../../../../../lib/admin-tabelle";
 import type { Auswertung, Versandtag } from "../../../../../lib/kommunen-auswertung";
+import AdminSeitenkopf from "../../../../../components/admin/AdminSeitenkopf";
 
 // Auswertung des Kommunen-Outreach.
 //
@@ -33,10 +34,7 @@ export default function VersandAuswertung() {
 
   return (
     <div style={{ fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
-      <div style={{ marginBottom: space.lg }}>
-        <div style={labelKicker}>Kommunen-Outreach</div>
-        <h1 style={{ fontSize: 24, fontWeight: 800 }}>Übersicht</h1>
-      </div>
+      <AdminSeitenkopf titel="Übersicht" />
 
       {fehler && (
         <p style={{ fontSize: 13, color: v("--color-negative") }}>
@@ -224,15 +222,6 @@ function Kennzahl({ label, wert, unten, gut }: { label: string; wert: number; un
     </div>
   );
 }
-
-const labelKicker: React.CSSProperties = {
-  fontSize: 11,
-  fontWeight: 700,
-  letterSpacing: "0.08em",
-  textTransform: "uppercase",
-  color: v("--color-text-muted"),
-  marginBottom: 4,
-};
 
 const ueberschrift: React.CSSProperties = {
   fontSize: 14,

@@ -26,6 +26,26 @@ export interface RatgeberEntry {
    * leave it alone for typos and styling.
    */
   updated: string;
+  /**
+   * Der Tag, an dem dieser Ratgeber live ging (YYYY-MM-DD).
+   *
+   * ETWAS ANDERES ALS `updated`, und die Unterscheidung war der Anlass: Der
+   * Redaktionskalender zeigt, wann ein Ratgeber erschienen ist, damit man ihn
+   * auf Social aufgreifen kann. Bis dahin gab es in dieser Registry nur EIN
+   * Datum — den letzten inhaltlichen Eingriff — und das als Erscheinungsdatum
+   * auszugeben wäre eine erfundene Angabe gewesen.
+   *
+   * Der Bestand wurde einmalig aus der Historie der Hauptlinie nachgetragen
+   * (`npm run ratgeber:livedatum`): der Tag, an dem die Seitendatei zum ersten
+   * Mal dort stand. Weil bei jedem Schub auf die Hauptlinie automatisch
+   * ausgeliefert wird, ist das der Tag der Veröffentlichung — auf Minuten
+   * genau, nicht auf die Sekunde.
+   *
+   * NEUE RATGEBER TRAGEN IHN VON HAND EIN. Wer die Seite einstellt, weiß den
+   * Tag; ein Skript, das bei jedem Lauf schreibt, überschriebe irgendwann
+   * etwas, das jemand bewusst gesetzt hat.
+   */
+  live: string;
 }
 
 export const RATGEBER: RatgeberEntry[] = [
@@ -34,6 +54,7 @@ export const RATGEBER: RatgeberEntry[] = [
     title: "Lohnt sich PV mit Speicher?",
     teaser:
       "Der ehrliche Realitätscheck: wann sich ein Batteriespeicher zur PV-Anlage rechnet und wann nicht — mit live gerechneter Beispielrechnung auf Basis aktueller Marktpreise.",
+    live: "2026-07-19",
     updated: "2026-07-26",
   },
   {
@@ -41,6 +62,7 @@ export const RATGEBER: RatgeberEntry[] = [
     title: "Lohnt sich PV ohne Einspeisevergütung?",
     teaser:
       "Die Einspeisevergütung für Neuanlagen soll ab 2027 fallen — trägt sich Photovoltaik dann noch? Mit Beispielrechnung bei Vergütung null und dem Blick auf den Eigenverbrauch.",
+    live: "2026-07-19",
     updated: "2026-07-26",
   },
   {
@@ -52,6 +74,7 @@ export const RATGEBER: RatgeberEntry[] = [
     title: "Wärmepumpen-Förderung: Wie viel Zuschuss gibt es?",
     teaser:
       "Grundförderung, Klima-Bonus, Einkommens-Bonus: Wie sich der BEG-Zuschuss für den Heizungstausch zusammensetzt — mit live gerechneten Beispielfällen, dem Förder-Check zum selbst Ausprobieren und der Antragsreihenfolge, in der der Zuschuss steckt oder verlorengeht.",
+    live: "2026-07-24",
     updated: "2026-08-25",
   },
   {
@@ -61,6 +84,7 @@ export const RATGEBER: RatgeberEntry[] = [
     title: "Neigungswinkel & Ausrichtung: Was dein Dach wirklich bringt",
     teaser:
       "Die Ertrags-Tabelle für jede Kombination aus Dachneigung und Ausrichtung — aus PVGIS-Daten der EU-Kommission, mit Schnell-Check für dein Dach. Und warum ein vermeintlich falsches Dach fast nie ein Ausschlusskriterium ist.",
+    live: "2026-08-04",
     updated: "2026-08-04",
   },
   {
@@ -72,6 +96,7 @@ export const RATGEBER: RatgeberEntry[] = [
     title: "Balkonkraftwerk anmelden: Frist, Angaben und die drei Fallen",
     teaser:
       "Seit 2024 genügt eine Registrierung im Marktstammdatenregister — der Netzbetreiber bekommt sie automatisch. Was du bereithalten musst, wann die Frist läuft und warum der Begriff Inbetriebnahme etwas anderes bedeutet, als die meisten denken.",
+    live: "2026-08-17",
     updated: "2026-08-17",
   },
   {
@@ -86,6 +111,7 @@ export const RATGEBER: RatgeberEntry[] = [
     title: "Lohnt sich ein Balkonkraftwerk mit Speicher?",
     teaser:
       "Der Speicher verdoppelt die Anschaffung ungefähr und hält deutlich kürzer als die Module — er muss sich also für sich rechnen. Wann er das tut und wann nicht, hier durchgerechnet: mit dem Wirkungsgrad eines real vermessenen Systems statt dem aus dem Datenblatt.",
+    live: "2026-08-19",
     updated: "2026-08-19",
   },
   {
@@ -96,6 +122,7 @@ export const RATGEBER: RatgeberEntry[] = [
     title: "Einspeisevergütung: aktuelle Sätze & Tabelle seit 2000",
     teaser:
       "Alle Vergütungssätze zum Nachschlagen: aktuelle Werte, Halbjahres-Sätze seit 2022, die amtliche Monatstabelle 2012–2022 für Bestandsanlagen und die Jahreswerte zurück bis 2000 — mit dem Verlaufs-Chart und seinen Weichenstellungen.",
+    live: "2026-08-04",
     updated: "2026-08-06",
   },
   {
@@ -103,6 +130,7 @@ export const RATGEBER: RatgeberEntry[] = [
     title: "Gasheizung oder Wärmepumpe: Was rechnet sich noch?",
     teaser:
       "Das neue Heizungsgesetz erlaubt Gasheizungen wieder — aber die Grüngas-Pflicht macht sie ab 2029 zur Kostenfalle. Die ehrliche Rechnung über 20 Jahre, umschaltbar zwischen teilsaniertem und unsaniertem Altbau.",
+    live: "2026-07-25",
     updated: "2026-07-27",
   },
 ];

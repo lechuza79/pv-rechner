@@ -8,6 +8,7 @@ import { StoryTisch } from "./StoryTisch";
 import { Kennung } from "./Kennung";
 import { v, space, pad } from "../../lib/theme";
 import type { Pruefung } from "../../lib/social-pruefung-kern";
+import type { Befund as MechanikBefund } from "../../lib/social-mechanik";
 import { urteil } from "../../lib/social-pruefung-kern";
 import { BILDFORM_NAME, templateVon, type SocialPost } from "../../lib/social-posts";
 import { KARTEN_STIL_NAME } from "../../lib/social-karten-stil";
@@ -27,6 +28,12 @@ import { KARTEN_STIL_NAME } from "../../lib/social-karten-stil";
 export type GridEintrag = {
   post: SocialPost;
   pruefungen: Pruefung[];
+  /** Abdruck der abgelegten Fassung, serverseitig gerechnet. */
+  abdruck: string;
+  /** Was die mechanische Pruefung festgestellt hat. */
+  befunde: MechanikBefund[];
+  /** Ging genau DIESE Fassung schon raus? */
+  gesendetAm: string | null;
   kategorie: { name: string; schluessel: string };
   /**
    * Ist das Design dieser Story durchgesehen — im Code abgenommen ODER im
@@ -51,8 +58,29 @@ const SICHTEN: { wert: Sicht; text: string }[] = [
 export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
   const [offen, setOffen] = useState<string | null>(null);
   const [sicht, setSicht] = useState<Sicht>("alle");
-  const aktiv = eintraege.find((e) => e.post.id === offen);
-  const gezeigt = eintraege.filter(
+  /**
+   * Prüfungen, die in DIESER Sitzung im Fenster erteilt wurden.
+   *
+   * Die Kachel zeigt den Prüfstand ein zweites Mal. Ohne diesen Merker stünde
+   * dort nach dem Schließen weiter „offen", während das Fenster gerade
+   * „freigegeben" gemeldet hat — zwei Aussagen über dieselbe Sache auf einem
+   * Bildschirm, und die sichtbare wäre die falsche.
+   */
+  const [dazu, setDazu] = useState<Record<string, Pruefung[]>>({});
+  const mitStand = eintraege.map((e) => {
+    const neu = dazu[e.post.id];
+    if (!neu) return e;
+    // ERSETZEN, nicht anhängen: Die Ablage hält je Fassung und Art genau eine
+    // Zeile. Zwei davon nebeneinander — eine bestandene und eine nicht
+    // bestandene — ließen das Urteil auf die alte fallen, und die Kachel
+    // behauptete eine Sperre, die es nicht mehr gibt.
+    const ersetzt = e.pruefungen.filter(
+      (a) => !neu.some((n) => n.art === a.art && n.fassung_fingerabdruck === a.fassung_fingerabdruck),
+    );
+    return { ...e, pruefungen: [...ersetzt, ...neu] };
+  });
+  const aktiv = mitStand.find((e) => e.post.id === offen);
+  const gezeigt = mitStand.filter(
     (e) => sicht === "alle" || (sicht === "bearbeitet" ? e.bearbeitet : !e.bearbeitet),
   );
 
@@ -109,8 +137,8 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
           gap: space.xxl,
         }}
       >
-        {gezeigt.map(({ post, pruefungen, kategorie }) => {
-          const stand = urteil({ text: post.text, bild: post.bild }, pruefungen);
+        {gezeigt.map(({ post, pruefungen, kategorie, abdruck }) => {
+          const stand = urteil(abdruck, pruefungen);
           return (
             <div key={post.id} style={{ display: "flex", flexDirection: "column", gap: space.sm }}>
               <Link
@@ -173,8 +201,31 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
         title={aktiv?.post.titel ?? ""}
         maxWidth={1180}
       >
-        {/* Ohne Titel: Die Kopfzeile des Fensters trägt ihn bereits. */}
-        {aktiv && <StoryTisch post={aktiv.post} pruefungen={aktiv.pruefungen} ohneTitel />}
+        {/* Ohne Titel: Die Kopfzeile des Fensters trägt ihn bereits.
+            `key`: Wechselt der Beitrag, muss der Tisch seinen inneren Zustand
+            neu setzen — sonst trüge er die Einstellungen des vorigen. */}
+        {aktiv && (
+          <StoryTisch
+            key={aktiv.post.id}
+            post={aktiv.post}
+            pruefungen={aktiv.pruefungen}
+            abdruck={aktiv.abdruck}
+            befunde={aktiv.befunde}
+            gesendetAm={aktiv.gesendetAm}
+            ohneTitel
+            onPruefung={(postId, p) =>
+              setDazu((alt) => ({
+                ...alt,
+                [postId]: [
+                  ...(alt[postId] ?? []).filter(
+                    (a) => !(a.art === p.art && a.fassung_fingerabdruck === p.fassung_fingerabdruck),
+                  ),
+                  p,
+                ],
+              }))
+            }
+          />
+        )}
       </Modal>
     </>
   );

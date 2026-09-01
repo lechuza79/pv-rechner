@@ -7,7 +7,7 @@ import { recommend, economicsForScenario } from "../../../lib/recommend";
 import ScenarioTabs from "../../../components/ScenarioTabs";
 import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING, wpGebaeudeUebersprungenFolge } from "../../../lib/heatpump";
 import { AccordionField } from "../../../components/AccordionField";
-import { trackEvent } from "../../../lib/analytics";
+import { trackFunnelStep, type Funnel } from "../../../lib/analytics";
 import { stackFunding, type FundingProgram } from "../../../lib/funding-programs";
 import OptionCard from "../../../components/OptionCard";
 import GebaeudeField, { GEBAEUDE_FIELDS, type GebaeudeWerte } from "../../../components/GebaeudeField";
@@ -320,9 +320,20 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
   };
 
   const STEPS = ["Dein Haus", "Dein Haushalt", "Großverbraucher"];
+  // Ereignis je erreichtem Schritt, Reihenfolge wie STEPS, danach das Ergebnis.
+  // Bis 29.08.2026 meldete dieser Flow NUR das Ergebnis — wo jemand abbricht,
+  // war unsichtbar. Länge und Reihenfolge sind festgenagelt (siehe `lib/analytics.ts`).
+  const FUNNEL: Funnel = [
+    null,
+    "empfehlung_schritt_haushalt",
+    "empfehlung_schritt_verbraucher",
+    "empfehlung_ergebnis",
+  ];
   const next = () => {
-    if (wizardStep < STEPS.length - 1) setWizardStep(wizardStep + 1);
-    else { trackEvent("empfehlung_ergebnis"); showRecommendation(); }
+    const target = wizardStep + 1;
+    trackFunnelStep(FUNNEL, target);
+    if (target < STEPS.length) setWizardStep(target);
+    else showRecommendation();
   };
   const back = () => wizardStep > 0 && setWizardStep(wizardStep - 1);
 

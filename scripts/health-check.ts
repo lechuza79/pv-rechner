@@ -636,6 +636,45 @@ async function messeSpaltenAbgleich(): Promise<SpaltenBefund | null> {
 }
 
 /**
+ * Kann die PRODUKTION Abo-Mails verschicken?
+ *
+ * DER ANLASS (01.09.2026): Das Abo war lokal vollständig geprüft — Browser-
+ * Tests, echte Mail, echter Bestätigungsklick — und schlug beim ersten
+ * Live-Versuch fehl, weil auf der Produktion keine der fünf Zugangsdaten des
+ * Postfachs gesetzt war. Kein roter Test, kein Fehler im Diff, keine kaputte
+ * Seite: geprüft war der Code, nie die Umgebung.
+ *
+ * DAS IST DIE DRITTE AUSPRÄGUNG DERSELBEN KLASSE in diesem Projekt. Der
+ * Spaltenabgleich fand sie zwischen Code und Tabelle, die Kostenwache zwischen
+ * Mengen und Rechnung, hier liegt sie zwischen Code und Umgebung. Gemeinsam
+ * ist allen: Ein lokaler Lauf kann sie prinzipiell nicht finden, weil lokal
+ * alles gesetzt ist.
+ *
+ * Gefragt wird deshalb die Produktion SELBST — sie antwortet über ihre eigene
+ * Konfiguration, statt dass jemand von hier aus vermutet. Zurück kommt nur,
+ * WAS fehlt, nie ein Wert.
+ */
+async function messeAboBereit(): Promise<{ bereit: boolean; fehlt: string[] } | null> {
+  const geheim = process.env.CRON_SECRET;
+  if (!geheim) return null; // Ohne Betriebsgeheimnis keine Auskunft — kein Befund.
+  try {
+    const r = await fetch(`${BASE_URL}/api/abo/bereit`, {
+      headers: { Authorization: `Bearer ${geheim}` },
+      signal: AbortSignal.timeout(20000),
+    });
+    // Ein fehlgeschlagener Abruf ist KEIN Befund über die Konfiguration —
+    // dieselbe Trennung wie überall sonst zwischen „ist kaputt" und „konnte
+    // nicht nachsehen".
+    if (!r.ok) return null;
+    const d = (await r.json()) as { bereit?: boolean; fehlt?: string[] };
+    if (typeof d?.bereit !== "boolean") return null;
+    return { bereit: d.bereit, fehlt: Array.isArray(d.fehlt) ? d.fehlt : [] };
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Liest den Datenstand der MaStR-Auswertung.
  *
  * Gibt `null` zurück, wenn die Datenbank nicht erreichbar ist oder die Zeile
@@ -1571,6 +1610,25 @@ async function main() {
     warnings.push("MaStR-Datenstand nicht abrufbar — keine Aussage über die Frische der Atlas-Zahlen.");
   }
 
+  // ── Kann die Produktion Abo-Mails verschicken? ────────────────────────────
+  const aboBereit = await messeAboBereit();
+  if (aboBereit) {
+    lines.push(
+      aboBereit.bereit
+        ? "Gemeinde-Abo: Versandweg und Signatur sind in der Produktion gesetzt."
+        : `Gemeinde-Abo: ${aboBereit.fehlt.length} Einstellung(en) fehlen in der Produktion.`,
+    );
+    if (!aboBereit.bereit) {
+      forClaude.push(
+        `Das Gemeinde-Abo kann in der PRODUKTION nicht arbeiten — es fehlt: ${aboBereit.fehlt.join(", ")}. ` +
+          `Jede Anmeldung endet damit für den Nutzer bei „Die Bestätigungsmail konnte gerade nicht verschickt ` +
+          `werden", und niemand kommt ins Abo. Von außen ist das unsichtbar: Die Seite lädt, der Knopf ` +
+          `funktioniert, kein Test wird rot — lokal ist ja alles gesetzt. Zu tun: die genannten Einstellungen ` +
+          `in der Produktionsumgebung nachtragen und danach EINMAL neu ausliefern, sonst greifen sie nicht.`,
+      );
+    }
+  }
+
   // ── Schreibt der Code in Spalten, die es gibt? ────────────────────────────
   const spalten = await messeSpaltenAbgleich();
   if (spalten) {
@@ -1603,13 +1661,19 @@ async function main() {
   // ── Ablauf der Social-Zugänge ─────────────────────────────────────────────
   for (const s of await messeSocialAblauf()) {
     const wer = s.konto ? ` (${s.konto})` : "";
+    // DIE ADRESSE MUSS ZUR PLATTFORM PASSEN. Sie stand fest auf LinkedIn, weil
+    // es lange nur die eine gab — mit einem zweiten Kanal wird daraus eine
+    // Anleitung, die ins Leere führt: Der Betreiber klickt, meldet LinkedIn neu
+    // an, und der Instagram-Zugang läuft weiter aus. Dieselbe Fehlerklasse wie
+    // eine Beschriftung, die etwas anderes sagt, als die Zahl daneben misst.
+    const start = `solar-check.io/api/${s.plattform}/start`;
     fuerBetreiberOhneRot.push(
       s.tageBisAblauf < 0
         ? `Der ${s.plattform}-Zugang${wer} ist abgelaufen — seitdem wird nichts mehr veröffentlicht. ` +
-          `Zum Erneuern einmal solar-check.io/api/linkedin/start aufrufen (eingeloggt als Admin). ` +
+          `Zum Erneuern einmal ${start} aufrufen (eingeloggt als Admin). ` +
           `Das kann nur jemand mit deinem Konto, ich komme da nicht heran.`
         : `Der ${s.plattform}-Zugang${wer} läuft in ${s.tageBisAblauf} Tagen ab. Danach hört das ` +
-          `Veröffentlichen still auf. Einmal solar-check.io/api/linkedin/start aufrufen (eingeloggt ` +
+          `Veröffentlichen still auf. Einmal ${start} aufrufen (eingeloggt ` +
           `als Admin) setzt die Frist zurück — das dauert zwei Klicks und kann nur jemand mit deinem Konto.`,
     );
   }

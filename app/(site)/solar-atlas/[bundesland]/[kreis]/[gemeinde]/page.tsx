@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import AtlasSkeleton from "../../../../../../components/atlas/AtlasSkeleton";
 import Breadcrumb from "../../../../../../components/Breadcrumb";
 import RegionSearch from "../../../../../../components/atlas/RegionSearch";
-import { IconArrowRight } from "../../../../../../components/Icons";
+import { IconArrowRight, IconGlocke } from "../../../../../../components/Icons";
 import { v, space, pad } from "../../../../../../lib/theme";
 import { pageMetadata } from "../../../../../../lib/seo";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../../../lib/json-ld";
@@ -23,6 +23,8 @@ import GemeindePeerTiles from "../../../../../../components/atlas/GemeindePeerTi
 import GemeindePlatzierungen from "../../../../../../components/atlas/GemeindePlatzierungen";
 import CollapsibleIntro from "../../../../../../components/atlas/CollapsibleIntro";
 import GemeindeEmbedBox from "../../../../../../components/atlas/GemeindeEmbedBox";
+import GemeindeAboBox, { ABO_OEFFNEN } from "../../../../../../components/atlas/GemeindeAboBox";
+import StickyCta from "../../../../../../components/StickyCta";
 import GemeindePotentialClient from "../../../../../../components/atlas/GemeindePotentialClient";
 import GemeindeErneuerbareWidget from "../../../../../../components/atlas/GemeindeErneuerbareWidget";
 import GemeindeSolarLive from "../../../../../../components/atlas/GemeindeSolarLive";
@@ -467,20 +469,27 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
           NICHT — der rechtlich nötige Lizenz-Credit steht vollständig im
           Quellen-Fuß; oben zählt nur die Aktualität.
         */}
-        <div style={S.stand}>
-          Stand{" "}
-          <time dateTime={atlas.data_as_of} style={S.standDate}>
-            {standLabel(atlas.data_as_of)}
-          </time>{" "}
-          · monatlich aktualisiert
+        {/* Statuszeile und Überschrift links, Abo-Block rechts daneben.
+            Der Stand gehört MIT in die linke Spalte — über die ganze Zeile
+            gesetzt begänne der Abo-Block auf seiner Höhe, und die Kopfzeile
+            hätte zwei verschiedene Oberkanten. Auf schmalen Schirmen
+            gestapelt. */}
+        <div className="gemeinde-titelzeile">
+          <div style={{ minWidth: 0 }}>
+            <div style={S.stand}>
+              Stand{" "}
+              <time dateTime={atlas.data_as_of} style={S.standDate}>
+                {standLabel(atlas.data_as_of)}
+              </time>{" "}
+              · monatlich aktualisiert
+            </div>
+            <h1 style={S.h1}>Solaranlagen in {region.name}</h1>
+          </div>
+          <GemeindeAboBox name={region.name} ags={region.region_id} />
         </div>
 
-        {/* Überschrift UND Einleitung links, Auszeichnung rechts: Der Badge
-            beginnt damit auf Höhe der Überschrift statt erst neben dem
-            Fließtext. Auf schmalen Schirmen gestapelt (CSS: .gemeinde-kopf). */}
         <div className="gemeinde-kopf">
           <div style={{ minWidth: 0 }}>
-            <h1 style={S.h1}>Solaranlagen in {region.name}</h1>
             <CollapsibleIntro>
           {/*
             Der Einleitungstext kommt in Stücken, weil zwei davon auf eine
@@ -725,7 +734,27 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
           Gezählt werden nur Anlagen in Betrieb. Alle Angaben sind
           Näherungswerte ohne Anspruch auf Richtigkeit, Aktualität oder Vollständigkeit.
         </div>
+
+        {/* Merker für die klebende Aktionsleiste: Sobald er in Sicht kommt,
+            blendet sie sich aus und überdeckt die Rechtshinweise darüber nicht. */}
+        <div id="sc-cta-sentinel" />
       </div>
+
+      {/* Die Gemeindeseite ist lang, und beide Wege stehen weit oben: der
+          Rechner in der Potential-Karte, das Abo im Kopf. Die Leiste holt sie
+          zurück, sobald man daran vorbeigescrollt ist.
+          Der zweite Knopf trägt ein Ereignis statt einer Adresse — das Abo ist
+          ein Fenster, kein Ort; denselben Weg geht der Förder-Check auf den
+          Stadtseiten. */}
+      <StickyCta
+        primaer={{ href: "/photovoltaik-rechner", label: "Für dein Haus durchrechnen" }}
+        sekundaer={{
+          ereignis: ABO_OEFFNEN,
+          label: `${region.name} abonnieren`,
+          icon: <IconGlocke size={15} />,
+          klasse: "sc-glocke",
+        }}
+      />
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { v, space, pad } from "../../../../lib/theme";
+import AdminSeitenkopf from "../../../../components/admin/AdminSeitenkopf";
 import { BUNDESLAENDER } from "../../../../lib/mastr-regions";
 import {
   OUTREACH_STATUS,
@@ -172,10 +173,7 @@ export default function KommunenCockpit() {
 
   return (
     <div style={{ fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
-      <div style={{ marginBottom: space.lg }}>
-        <div style={labelKicker}>Admin</div>
-        <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 4 }}>Kommunen-Outreach</h1>
-      </div>
+<AdminSeitenkopf titel="Kommunen-Outreach" />
 
       {/* Filterleiste */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, alignItems: "center", marginBottom: space.md }}>
@@ -980,15 +978,6 @@ function StatusTab({ active, label, onClick }: { active: boolean; label: string;
     </button>
   );
 }
-
-const labelKicker: React.CSSProperties = {
-  fontSize: 12,
-  fontWeight: 700,
-  color: v("--color-accent"),
-  letterSpacing: "0.1em",
-  textTransform: "uppercase",
-  marginBottom: 6,
-};
 
 const selectStyle: React.CSSProperties = {
   fontSize: 13,
