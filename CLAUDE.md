@@ -610,7 +610,15 @@ Unter jedem Rechner steht — abgesetzt durch eine Trennlinie — der Aktualisie
 
 Aufgefallen ist das am 19.08.2026, als der Katalog auf 97 regionale Programme wuchs und 61 davon (48 aktiv) noch keine Seite hatten. Wer die Einträge anlegt, hätte 61 Ortsseiten auf einen Schlag veröffentlicht, ohne dass irgendwo die Frage gestellt worden wäre, ob sie gerade jetzt erscheinen sollen.
 
-**`lib/release-plan.ts` ist die eine Quelle: welcher Ort, welche Seitengattung, welche Welle, welches Datum.** `isCityPublished()` fragt ihn zusätzlich zum Programmstatus. Er steuert ausschließlich die **Seite** — ob ein Programm im Rechner Geld abzieht, entscheidet unverändert allein `fundingZaehlt()`; ein Ort ohne Seite bleibt im Rechner voll wirksam.
+**Seit dem 01.09.2026 steuert der Plan nur noch die ATLAS-Ortsseiten.** Für die beiden anderen Gattungen ist die Freigabe an eine Tatsache gebunden statt an eine Sitzung — der Plan war dort nur noch Verwaltung:
+
+- **Förderseite:** live, sobald ihr Programm **aktiv** ist und **Dach-Photovoltaik** fördert (`foerderseiteTraegt` in `lib/atlas-cities.ts`). Kein Schub, keine Entscheidung. Zwei Bedingungen, beide aus einem gemessenen Fall: Ein ausgeschöpfter Topf ergibt eine Förderseite ohne abrufbares Geld, und eine Seite mit dem Titel „Photovoltaik-Förderung", die nur Balkonkraftwerke fördert, hält nicht, was sie verspricht (betrifft 35 Orte, die eine eigene Seitenfamilie brauchen). **Der Beleg-Zustand wird hier bewusst NICHT geprüft** — er entscheidet, ob ein Betrag im Rechner Geld abzieht, nicht ob eine Seite existiert; eine erste Fassung prüfte ihn mit und war dadurch komplett wirkungslos, weil der Code-Seed keine Beleg-Spalten trägt und deshalb kein einziges der 110 Programme qualifizierte.
+- **Atlas-Gemeindeseite:** live, sobald die Gemeinde **einen Brief bekommen hat** (`lib/atlas-outreach-freigabe.ts`). Der Brief nennt die Adresse, also kann ab dann jederzeit jemand darauf verweisen — eine Seite anzubieten und gleichzeitig zu sperren, ist der einzige Zustand, der sich nicht begründen lässt. Auslöser ist der VERSAND, nicht der Nachweis einer Veröffentlichung: Wallertheim verlinkte uns in seiner Dorf-App und schickte 51 Besucher, während unsere Verweis-Erhebung nichts davon wusste (Verzeichnisse crawlen App-Plattformen nicht, und der Link trägt `rel="noreferrer"`).
+- **Die Ebene bleibt trotzdem gesperrt** (`RELEASED.gemeinde = false`): Der Wettbewerber ema-energiewelt.de holt aus 6.310 indexierten Ortsseiten neun Platzierungen, keine auf Seite 1.
+
+**`lib/release-plan.ts` bleibt die Quelle für die Atlas-Ortsseiten** und für den Altbestand. Er steuert ausschließlich die **Seite** — ob ein Programm im Rechner Geld abzieht, entscheidet unverändert allein `fundingZaehlt()`; ein Ort ohne Seite bleibt im Rechner voll wirksam.
+
+**Die Kette schließt ein Test, nicht ein Merksatz:** Ein Programm ohne Eintrag im Ortsverzeichnis macht `lib/__tests__/atlas-funding-sync.test.ts` rot (am 01.09.2026 durch absichtliche Sabotage gegengeprüft). Wer ein neues Förderprogramm aufnimmt und den Ortseintrag vergisst, kann nicht einchecken; mit Eintrag entsteht die Seite von selbst. Der Test hält seitdem die REGEL fest statt einer Liste — eine feste Zahl fängt den Fall nicht, dass ein Programm auf „ausgeschöpft" wechselt und seine Seite trotzdem stehen bleibt.
 
 - **Kein Ort in zwei Gattungen ohne Abstand** (`MIN_ABSTAND_GATTUNG_TAGE` = 28). Die Zahl ist hergeleitet, nicht gegriffen: 28 Tage ist das Fenster, mit dem hier überhaupt gemessen wird (`?days=28` in allen SEO-Routen). Wer die zweite Gattung früher live nimmt, nimmt sie blind live. Die Schreibweise des Schlüssels darf dabei nicht täuschen — die Förderseite trägt fünf Stellen, die Atlasseite acht; `ortSchluessel()` normalisiert, sonst liefe die Regel leer.
 - **Kein Schub dichter als 14 Tage am vorigen** (`MIN_ABSTAND_SCHUB_TAGE`). Darunter lässt sich eine Bewegung keinem der beiden Schübe mehr zuordnen — Search-Console-Daten hinken zwei bis drei Tage nach und brauchen danach Verlauf.
@@ -620,6 +628,17 @@ Aufgefallen ist das am 19.08.2026, als der Katalog auf 97 regionale Programme wu
 - **Die Messung läuft VOR dem Schub**, nicht nur monatlich hinterher: `scripts/seo-verify.md`, Schritt 4b. Sie hängt am Plan, nicht am Kalender, und kostet unter 0,10 $ je Schub — Aufwand ist kein Argument gegen sie.
 
 **Was der Plan nicht ist: eine Priorisierung.** Welche Orte in welcher Reihenfolge erscheinen, entscheidet der Betreiber; der Plan hält die Entscheidung fest und macht sie prüfbar.
+
+### Die vier Regeln, nach denen über eine Freigabe entschieden wird — BLOCKER
+
+`lib/seo-grundregeln.ts`, festgenagelt von `lib/__tests__/seo-grundregeln.test.ts`. **Anlass (29.08.2026): Die Freigabe der Ortsseiten wurde an EINEM Tag fünfmal in die Gegenrichtung entschieden** — jedes Mal nach einer neuen Einzelmessung, jedes Mal plausibel begründet, jedes Mal auf einem der immer gleichen Denkfehler. Der Betreiber nannte es „viel zu fragil" und „nur noch Rumgeeier", und das traf zu: Was fehlte, war keine weitere Messung, sondern eine festgeschriebene Regel. Der Test lehnt jeden Freigabe-Nachweis ab, der auf einem widerlegten Schluss steht — und fand beim ersten Lauf sofort einen.
+
+1. **Ein leeres Suchvolumen heißt „unter der Meldeschwelle", nie „keine Nachfrage".** Der Dienst liefert über 477 Einträge keinen Wert unter 10 und meldet Fehlendes als „keine Daten". Gegenprobe an eigenen Zahlen: „stadt essen solarförderung 2026" hat kein gemeldetes Volumen und brachte in 90 Tagen einen echten Klick. Dieser Fehlschluss trug zwei zurückgenommene Schübe und die Landkreis-Sperre.
+2. **Geringe erwartete Nachfrage ist KEIN Grund zurückzuhalten — nur belegbarer Schaden ist einer.** Die Verwechslung von „bringt wenig" mit „schadet" hatte 145 Seiten mit echtem Inhalt monatelang blockiert.
+3. **Zwei eigene Seiten auf einer Anfrage kosten einander NICHT die Position.** Googles Site-Diversity-System zeigt höchstens zwei Seiten je Domain und wählt selbst aus (Search Central, „A Guide to Google Search Ranking Systems"). Ausnahmelisten dagegen schützen vor einem Schaden, den es nicht gibt.
+4. **Crawl-Budget ist unterhalb von rund 10.000 Seiten kein Argument** (Search Central, „Large site owner's guide"). Nicht zu verwechseln mit der gemessenen Renderlast der Ranglisten-Seiten (57 % aller Funktionsaufrufe) — das ist eine Kostenfrage, keine SEO-Frage.
+
+**Wer eine Regel kippen will, kippt ihren Beleg.** Eine neue Stichprobe genügt nicht; genau dieser Mechanismus hat den Tag gekostet.
 
 ## Befehle
 
