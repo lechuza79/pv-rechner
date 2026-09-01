@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { v, space, pad } from "../../../../lib/theme";
+import AdminSeitenkopf from "../../../../components/admin/AdminSeitenkopf";
 import { BUNDESLAENDER } from "../../../../lib/mastr-regions";
 import { OUTREACH_STATUS, OUTREACH_STATUS_LABEL } from "../../../../lib/outreach-status";
 import {
@@ -188,16 +189,17 @@ export default function VersorgerCockpit() {
 
   return (
     <div style={{ fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
-      <div style={{ marginBottom: space.lg }}>
-        <div style={labelKicker}>Admin</div>
-        <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 4 }}>Stadtwerke &amp; Energieversorger</h1>
-        <p style={{ fontSize: 13, color: v("--color-text-muted"), lineHeight: 1.6, maxWidth: 760 }}>
-          Die Netzgebiete sind aus den amtlichen Anlagendaten abgeleitet: Jede Anlage hängt an einem
-          Netzanschlusspunkt, und der nennt seinen Netzbetreiber. Das ist eine Auszählung mit Beleg —
-          aber es ist das <strong>Netz</strong>gebiet, nicht der Vertrieb. Strom verkaufen viele auch
-          außerhalb davon, und das steht in keinem Register.
-        </p>
-      </div>
+      <AdminSeitenkopf
+        titel="Stadtwerke &amp; Energieversorger"
+        hilfe={
+          <>
+            Die Netzgebiete sind aus den amtlichen Anlagendaten abgeleitet: Jede Anlage hängt an einem
+            Netzanschlusspunkt, und der nennt seinen Netzbetreiber. Das ist eine Auszählung mit Beleg —
+            aber es ist das <strong>Netz</strong>gebiet, nicht der Vertrieb. Strom verkaufen viele auch
+            außerhalb davon, und das steht in keinem Register.
+          </>
+        }
+      />
 
       <div style={{ display: "flex", gap: space.xs, marginBottom: space.md, alignItems: "center" }}>
         <Tab active={tab === "liste"} label={`Versorger (${erfasstGesamt})`} onClick={() => setTab("liste")} />

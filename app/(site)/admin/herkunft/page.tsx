@@ -1,6 +1,8 @@
 import { seitenaufrufeSeit, nachHerkunft, nachSeite } from "../../../../lib/seiten-herkunft";
 import { DIREKT, INTERN } from "../../../../lib/seiten-herkunft-core";
 import { v, space } from "../../../../lib/theme";
+import AdminSeitenkopf from "../../../../components/admin/AdminSeitenkopf";
+import InfoTooltip from "../../../../components/InfoTooltip";
 
 export const metadata = {
   title: "Herkunft – Solar Check Admin",
@@ -49,6 +51,13 @@ export default async function HerkunftPage() {
     fontSize: 13,
     verticalAlign: "top",
   };
+  // Zahlenspalten sind rechtsbündig — das „?" gehört dann rechts NEBEN die
+  // Beschriftung, nicht darunter.
+  const spaltenKopf: React.CSSProperties = {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 4,
+  };
   const zahlStil: React.CSSProperties = {
     ...zellStil,
     fontFamily: v("--font-mono"),
@@ -58,18 +67,19 @@ export default async function HerkunftPage() {
 
   return (
     <div style={{ fontFamily: v("--font-text"), color: v("--color-text-primary"), maxWidth: 860 }}>
-      <div style={{ marginBottom: space.xl }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-accent"), letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: space.xs }}>Admin</div>
-        <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: space.xs }}>Herkunft</h1>
-        <p style={{ fontSize: 13, color: v("--color-text-muted"), lineHeight: 1.5 }}>
-          Woher die Aufrufe unserer eigenen Seiten kommen — die letzten {TAGE} Tage.
-          Gezählt werden <strong>Aufrufe, keine Besucher</strong>: Gespeichert sind nur
-          Kalendertag, Seite und verweisende Domain. Keine Kennung, keine Uhrzeit,
-          kein Abfrageteil der Adresse — damit ist keine Zeile einem Menschen
-          zuzuordnen, auch nicht rückwirkend. Aufrufe, die sich selbst als Maschine
-          ausweisen, zählen nicht mit.
-        </p>
-      </div>
+      <AdminSeitenkopf
+        titel="Herkunft"
+        hilfe={
+          <>
+            Woher die Aufrufe unserer eigenen Seiten kommen — die letzten {TAGE} Tage.
+            Gezählt werden <strong>Aufrufe, keine Besucher</strong>: Gespeichert sind nur
+            Kalendertag, Seite und verweisende Domain. Keine Kennung, keine Uhrzeit,
+            kein Abfrageteil der Adresse — damit ist keine Zeile einem Menschen
+            zuzuordnen, auch nicht rückwirkend. Aufrufe, die sich selbst als Maschine
+            ausweisen, zählen nicht mit.
+          </>
+        }
+      />
 
       {zeilen.length === 0 ? (
         <p style={{ fontSize: 13, color: v("--color-text-muted"), lineHeight: 1.6 }}>
@@ -137,21 +147,41 @@ export default async function HerkunftPage() {
           </div>
 
           <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: space.sm }}>Welche Seite</h2>
-          <p style={{ fontSize: 12, color: v("--color-text-muted"), marginBottom: space.sm, lineHeight: 1.5 }}>
-            Die 40 meistaufgerufenen. „Von außen" heißt: jemand kam von einer fremden
-            Seite hierher — das ist der Eintritt. „Weiterklick" ist Navigation
-            innerhalb unserer Seiten und dient als Gegenprobe: Stünde dort überall
-            null, wäre die Zählung kaputt.
-          </p>
           <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 560 }}>
             <thead>
               <tr style={{ textAlign: "left", fontSize: 12, color: v("--color-text-muted") }}>
                 <th style={{ ...zellStil, fontWeight: 600 }}>Seite</th>
                 <th style={{ ...zahlStil, fontWeight: 600 }}>Gesamt</th>
-                <th style={{ ...zahlStil, fontWeight: 600 }}>Von außen</th>
-                <th style={{ ...zahlStil, fontWeight: 600 }}>Direkt</th>
-                <th style={{ ...zahlStil, fontWeight: 600 }}>Weiterklick</th>
+                <th style={{ ...zahlStil, fontWeight: 600 }}>
+                  <span style={spaltenKopf}>
+                    Von außen
+                    <InfoTooltip title="Von außen" ariaLabel="Erklärung zur Spalte Von außen" exportNote={false}>
+                      Jemand kam von einer fremden Seite hierher — das ist der Eintritt
+                      in unser Angebot. Die Domain dazu steht in der Tabelle darüber.
+                    </InfoTooltip>
+                  </span>
+                </th>
+                <th style={{ ...zahlStil, fontWeight: 600 }}>
+                  <span style={spaltenKopf}>
+                    Direkt
+                    <InfoTooltip title="Direkt" ariaLabel="Erklärung zur Spalte Direkt" exportNote={false}>
+                      Der Browser hat keine verweisende Seite mitgeschickt: Lesezeichen,
+                      Adresszeile, ein Klick aus einer App oder eine Seite, die den
+                      Verweis unterdrückt. Genau dieser Topf war in der Messung im
+                      Browser unerklärt groß.
+                    </InfoTooltip>
+                  </span>
+                </th>
+                <th style={{ ...zahlStil, fontWeight: 600 }}>
+                  <span style={spaltenKopf}>
+                    Weiterklick
+                    <InfoTooltip title="Weiterklick" ariaLabel="Erklärung zur Spalte Weiterklick" exportNote={false}>
+                      Navigation innerhalb unserer eigenen Seiten. Dient als Gegenprobe:
+                      Stünde hier überall null, wäre die Zählung kaputt.
+                    </InfoTooltip>
+                  </span>
+                </th>
               </tr>
             </thead>
             <tbody>

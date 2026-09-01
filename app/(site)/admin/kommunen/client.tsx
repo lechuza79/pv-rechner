@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { v, space, pad } from "../../../../lib/theme";
+import AdminSeitenkopf from "../../../../components/admin/AdminSeitenkopf";
 import { BUNDESLAENDER } from "../../../../lib/mastr-regions";
 import {
   OUTREACH_STATUS,
@@ -154,22 +155,21 @@ export default function KommunenCockpit() {
 
   return (
     <div style={{ fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
-      <div style={{ marginBottom: space.lg }}>
-        <div style={labelKicker}>Admin</div>
-        <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 4 }}>Kommunen-Outreach</h1>
-        <p style={{ fontSize: 13, color: v("--color-text-muted") }}>
-          Kontaktdaten der ~11.000 Gemeinden. Filtern, Status pflegen, Kontaktseite öffnen.
-        </p>
-        <p style={{ fontSize: 13, color: v("--color-text-muted"), marginTop: 4, maxWidth: 720, lineHeight: 1.5 }}>
-          {/* Der Text steht in lib/kommunen-ask.ts. Er sagt, wie die Variante
-              ZUSTANDE KOMMT, und das ist eine Aussage über das Verfahren — an
-              der Oberfläche ist ein falscher Satz darüber nicht zu erkennen.
-              Hier stand bis zum 20.08.2026, beide Fassungen seien „sonst
-              identisch, sonst wüssten wir hinterher nicht, woran eine Reaktion
-              lag": die Beschreibung eines Versuchsaufbaus, den es nie gab. */}
-          {VARIANTE_ERKLAERUNG}
-        </p>
-      </div>
+      <AdminSeitenkopf
+        titel="Kommunen-Outreach"
+        hilfe={
+          <>
+            Kontaktdaten der ~11.000 Gemeinden. Filtern, Status pflegen, Kontaktseite öffnen.
+            {/* Der Text steht in lib/kommunen-ask.ts. Er sagt, wie die Variante
+                ZUSTANDE KOMMT, und das ist eine Aussage über das Verfahren — an
+                der Oberfläche ist ein falscher Satz darüber nicht zu erkennen.
+                Hier stand bis zum 20.08.2026, beide Fassungen seien „sonst
+                identisch, sonst wüssten wir hinterher nicht, woran eine Reaktion
+                lag": die Beschreibung eines Versuchsaufbaus, den es nie gab. */}
+            <span style={{ display: "block", marginTop: 8 }}>{VARIANTE_ERKLAERUNG}</span>
+          </>
+        }
+      />
 
       {/* Verteilung je Ask-Variante — wie viele Briefe welcher Fassung raus
           sind. Kein Vergleich, Begründung in lib/kommunen-ask.ts. */}
@@ -966,15 +966,6 @@ function StatusTab({ active, label, onClick }: { active: boolean; label: string;
     </button>
   );
 }
-
-const labelKicker: React.CSSProperties = {
-  fontSize: 12,
-  fontWeight: 700,
-  color: v("--color-accent"),
-  letterSpacing: "0.1em",
-  textTransform: "uppercase",
-  marginBottom: 6,
-};
 
 const selectStyle: React.CSSProperties = {
   fontSize: 13,
