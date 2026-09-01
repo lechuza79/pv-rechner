@@ -67,17 +67,35 @@ export function rueckrufAdresse(origin: string): string {
   return fest && fest.trim() ? fest.trim() : `${origin}/api/instagram/callback`;
 }
 
-/** Adresse, auf die der Betreiber geschickt wird, um die App zu autorisieren. */
+/**
+ * Adresse, auf die der Betreiber geschickt wird, um die App zu autorisieren.
+ *
+ * VON HAND ZUSAMMENGESETZT, und das ist der Punkt. Der übliche Weg über die
+ * Parameter-Sammlung kodiert jeden Wert — aus der Rückrufadresse wird
+ * `https%3A%2F%2Fsolar-check.io%2F…`. Metas eigene Einbettungs-URL, die das
+ * Portal zum Kopieren anbietet, setzt sie dagegen ROH ein, und der Tausch des
+ * Codes scheiterte solange mit „redirect_uri is identical to the one you used
+ * in the OAuth dialog request", obwohl im Portal zeichengleich dieselbe Adresse
+ * stand. Instagram vergleicht offenbar den unveränderten Text.
+ *
+ * Die Berechtigungen bleiben kodiert (das Komma als %2C) — genau so steht es
+ * auch in Metas Vorlage.
+ *
+ * `force_reauth=true` steht ebenfalls in ihrer Vorlage: Es erzwingt die
+ * Anmeldung, statt eine bestehende Sitzung stillschweigend weiterzuverwenden —
+ * bei einem Rechner, auf dem mehrere Konten angemeldet sind, sonst die Quelle
+ * dafür, dass am Ende das falsche verknüpft ist.
+ */
 export function anmeldeAdresse(origin: string, state: string): string {
-  const url = new URL(AUTH_URL);
-  url.searchParams.set("client_id", process.env.INSTAGRAM_APP_ID ?? "");
-  url.searchParams.set("redirect_uri", rueckrufAdresse(origin));
-  url.searchParams.set("response_type", "code");
-  // Komma-getrennt, so verlangt es die Anmeldedokumentation — nicht mit
-  // Leerzeichen wie bei LinkedIn.
-  url.searchParams.set("scope", INSTAGRAM_SCOPES.join(","));
-  url.searchParams.set("state", state);
-  return url.toString();
+  const teile = [
+    "force_reauth=true",
+    `client_id=${process.env.INSTAGRAM_APP_ID ?? ""}`,
+    `redirect_uri=${rueckrufAdresse(origin)}`,
+    "response_type=code",
+    `scope=${INSTAGRAM_SCOPES.join("%2C")}`,
+    `state=${encodeURIComponent(state)}`,
+  ];
+  return `${AUTH_URL}?${teile.join("&")}`;
 }
 
 type KurzToken = { access_token: string; user_id: string | number; permissions?: string };

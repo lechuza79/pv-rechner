@@ -16,7 +16,8 @@ import { INSTAGRAM_SCOPES, anmeldeAdresse, rueckrufAdresse } from "../instagram"
 const WURZEL = join(__dirname, "..", "..");
 
 describe("Anmeldeadresse", () => {
-  const url = new URL(anmeldeAdresse("https://solar-check.io", "abc123"));
+  const roh = anmeldeAdresse("https://solar-check.io", "abc123");
+  const url = new URL(roh);
 
   it("führt zu Instagram, nicht zu Facebook", () => {
     // Es gibt ZWEI Wege zur selben Schnittstelle: über den Instagram-Login und
@@ -33,6 +34,23 @@ describe("Anmeldeadresse", () => {
   it("reicht den Zufallswert gegen untergeschobene Rückrufe durch", () => {
     expect(url.searchParams.get("state")).toBe("abc123");
     expect(url.searchParams.get("response_type")).toBe("code");
+  });
+
+  it("setzt die Rückrufadresse ROH ein, nicht kodiert", () => {
+    // DER FEHLER, der den Schlüsseltausch tagelang scheitern ließ. Die übliche
+    // Parameter-Sammlung kodiert jeden Wert; Metas eigene Einbettungs-URL, die
+    // das Portal zum Kopieren anbietet, setzt die Adresse roh ein. Instagram
+    // vergleicht offenbar den unveränderten Text und meldete sonst, die Adresse
+    // sei nicht dieselbe — obwohl im Portal zeichengleich dieselbe stand.
+    expect(roh).toContain("redirect_uri=https://solar-check.io/api/instagram/callback");
+    expect(roh).not.toContain("https%3A%2F%2F");
+  });
+
+  it("erzwingt die Anmeldung", () => {
+    // Ebenfalls aus Metas Vorlage. Ohne das wird eine bestehende Sitzung
+    // stillschweigend weiterverwendet — auf einem Rechner mit mehreren
+    // angemeldeten Konten die Quelle dafür, dass am Ende das falsche hängt.
+    expect(roh).toContain("force_reauth=true");
   });
 
   it("trennt die Berechtigungen mit Komma, nicht mit Leerzeichen", () => {
@@ -57,9 +75,8 @@ describe("Feste Rückrufadresse", () => {
       expect(rueckrufAdresse("https://www.solar-check.io")).toBe(
         "https://solar-check.io/api/instagram/callback",
       );
-      const url = new URL(anmeldeAdresse("https://www.solar-check.io", "x"));
-      expect(url.searchParams.get("redirect_uri")).toBe(
-        "https://solar-check.io/api/instagram/callback",
+      expect(anmeldeAdresse("https://www.solar-check.io", "x")).toContain(
+        "redirect_uri=https://solar-check.io/api/instagram/callback",
       );
     } finally {
       if (vorher === undefined) delete process.env.INSTAGRAM_REDIRECT_URI;
