@@ -11,6 +11,7 @@ import {
   hatKontaktweg,
 } from "../../../../lib/fachbetrieb-stand";
 import InfoTooltip from "../../../../components/InfoTooltip";
+import SelectField from "../../../../components/SelectField";
 
 // Ansicht der erhobenen PV-Fachbetriebe.
 //
@@ -278,49 +279,43 @@ export default function FachbetriebeAnsicht() {
           placeholder="Name, Ort oder Adresse"
           style={{ ...eingabeStil, minWidth: 200 }}
         />
-        <select value={bl} onChange={(e) => filterSetzen(setBl)(e.target.value)} style={eingabeStil}>
+        <SelectField value={bl} onChange={(e) => filterSetzen(setBl)(e.target.value)} ariaLabel="Auswahl" size="sm">
           <option value="">alle Bundesländer</option>
           {BUNDESLAENDER.map((b) => (
             <option key={b.ags} value={b.ags}>
               {b.name}
             </option>
           ))}
-        </select>
-        <select
+        </SelectField>
+        <SelectField
           value={gewerk}
-          onChange={(e) => filterSetzen(setGewerk)(e.target.value)}
-          style={eingabeStil}
-        >
+          onChange={(e) => filterSetzen(setGewerk)(e.target.value)} ariaLabel="Auswahl" size="sm">
           <option value="">jedes Gewerk</option>
           {GEWERKE.map((g) => (
             <option key={g.name} value={g.name}>
               {g.text}
             </option>
           ))}
-        </select>
-        <select
+        </SelectField>
+        <SelectField
           value={art}
-          onChange={(e) => filterSetzen(setArt)(e.target.value)}
-          style={eingabeStil}
-        >
+          onChange={(e) => filterSetzen(setArt)(e.target.value)} ariaLabel="Auswahl" size="sm">
           <option value="betrieb">Betriebe</option>
           <option value="unklar">unklar</option>
           <option value="kein-betrieb">kein Betrieb</option>
           <option value="ueberregional">überregional</option>
           <option value="">alle</option>
-        </select>
-        <select
+        </SelectField>
+        <SelectField
           value={stand}
-          onChange={(e) => filterSetzen(setStand)(e.target.value)}
-          style={eingabeStil}
-        >
+          onChange={(e) => filterSetzen(setStand)(e.target.value)} ariaLabel="Auswahl" size="sm">
           <option value="">jeder Arbeitsstand</option>
           {STAENDE.map((s) => (
             <option key={s.wert} value={s.wert}>
               {s.text}
             </option>
           ))}
-        </select>
+        </SelectField>
         <label style={hakenStil}>
           <input
             type="checkbox"

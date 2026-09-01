@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { v, space, pad } from "../../../../../lib/theme";
 import type { HookExample, HookKind } from "../../../../../lib/award-hook";
+import SelectField from "../../../../../components/SelectField";
 
 export type HooksPayload = {
   total: number;
@@ -81,16 +82,16 @@ export default function HooksClient({ payload }: { payload: HooksPayload }) {
           <input type="number" name="cut" defaultValue={settings.cut} min={1} max={50} step={1} style={inputStyle} />
         </Field>
         <Field label="Bei Gleichstand">
-          <select name="buerger" defaultValue={settings.buerger ? "1" : "0"} style={inputStyle}>
+          <SelectField name="buerger" defaultValue={settings.buerger ? "1" : "0"} ariaLabel="Auswahl" size="sm">
             <option value="1">Bürger bevorzugen</option>
             <option value="0">neutral</option>
-          </select>
+          </SelectField>
         </Field>
         <Field label="Ebene">
-          <select name="hoch" defaultValue={settings.hoch ? "1" : "0"} style={inputStyle}>
+          <SelectField name="hoch" defaultValue={settings.hoch ? "1" : "0"} ariaLabel="Auswahl" size="sm">
             <option value="1">höhere Ebene zuerst</option>
             <option value="0">lokal (Kreis) zuerst</option>
-          </select>
+          </SelectField>
         </Field>
         <button type="submit" style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-on-accent"), background: v("--color-accent"), border: "none", borderRadius: v("--radius-sm"), padding: pad("sm", "lg"), cursor: "pointer" }}>
           Anwenden

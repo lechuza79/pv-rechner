@@ -17,6 +17,7 @@ import {
 import Modal from "../../../../components/Modal";
 import TendTag from "../../../../components/atlas/TendTag";
 import VersorgerGebietKarte from "../../../../components/admin/VersorgerGebietKarte";
+import SelectField from "../../../../components/SelectField";
 
 // Cockpit für Stadtwerke / Energieversorger.
 //
@@ -209,42 +210,42 @@ export default function VersorgerCockpit() {
       {tab === "liste" ? (
         <>
           <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, alignItems: "center", marginBottom: space.md }}>
-            <select value={bl} onChange={(e) => setBl(e.target.value)} style={selectStyle} aria-label="Bundesland">
+            <SelectField value={bl} onChange={(e) => setBl(e.target.value)} ariaLabel="Bundesland" size="sm">
               <option value="">Alle Bundesländer</option>
               {BUNDESLAENDER.map((b) => (
                 <option key={b.ags} value={b.ags}>
                   {b.name}
                 </option>
               ))}
-            </select>
-            <select value={typ} onChange={(e) => setTyp(e.target.value)} style={selectStyle} aria-label="Typ">
+            </SelectField>
+            <SelectField value={typ} onChange={(e) => setTyp(e.target.value)} ariaLabel="Typ" size="sm">
               <option value="">Alle Typen</option>
               {(Object.keys(UTILITY_TYP_LABEL) as UtilityTyp[]).map((t) => (
                 <option key={t} value={t}>
                   {UTILITY_TYP_LABEL[t]}
                 </option>
               ))}
-            </select>
-            <select value={status} onChange={(e) => setStatus(e.target.value)} style={selectStyle} aria-label="Status">
+            </SelectField>
+            <SelectField value={status} onChange={(e) => setStatus(e.target.value)} ariaLabel="Status" size="sm">
               <option value="">Alle Status</option>
               {OUTREACH_STATUS.map((s) => (
                 <option key={s.key} value={s.key}>
                   {s.label}
                 </option>
               ))}
-            </select>
-            <select value={ampel} onChange={(e) => setAmpel(e.target.value)} style={selectStyle} aria-label="Gebiets-Prüfung">
+            </SelectField>
+            <SelectField value={ampel} onChange={(e) => setAmpel(e.target.value)} ariaLabel="Gebiets-Prüfung" size="sm">
               <option value="">Prüfung: alle</option>
               <option value="gruen">bestätigt</option>
               <option value="gelb">teilweise prüfbar</option>
               <option value="rot">widersprüchlich</option>
-            </select>
-            <select value={sort} onChange={(e) => setSort(e.target.value)} style={selectStyle} aria-label="Sortierung">
+            </SelectField>
+            <SelectField value={sort} onChange={(e) => setSort(e.target.value)} ariaLabel="Sortierung" size="sm">
               <option value="gemeinden">Größtes Gebiet zuerst</option>
               <option value="einwohner">Meiste Einwohner zuerst</option>
               <option value="erzeugung">Meiste Erzeugung zuerst</option>
               <option value="name">Name</option>
-            </select>
+            </SelectField>
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
@@ -423,18 +424,19 @@ function VersorgerZeile({ u, onChanged }: { u: Versorger; onChanged: () => void 
           )}
         </td>
         <td style={tdStyle}>
-          <select
+          <SelectField
             value={u.status}
             onChange={(e) => patch({ status: e.target.value })}
-            style={{ ...selectStyle, fontWeight: 700, color: v(statusMeta.color), background: v(statusMeta.bg) }}
-            aria-label={`Status ${u.name}`}
+            ariaLabel={`Status ${u.name}`}
+            size="sm"
+            ampel={{ text: v(statusMeta.color), hintergrund: v(statusMeta.bg) }}
           >
             {OUTREACH_STATUS.map((s) => (
               <option key={s.key} value={s.key}>
                 {OUTREACH_STATUS_LABEL[s.key]}
               </option>
             ))}
-          </select>
+          </SelectField>
         </td>
       </tr>
       {offen && (
@@ -808,25 +810,23 @@ function GemeindeHinzufuegen({ utilityId, onAdded }: { utilityId: string; onAdde
   return (
     <div style={{ marginTop: space.sm }}>
       <div style={{ display: "flex", flexWrap: "wrap", gap: space.xs }}>
-        <select value={rolle} onChange={(e) => setRolle(e.target.value as ZuordnungRolle)} style={selectStyle} aria-label="Rolle">
+        <SelectField value={rolle} onChange={(e) => setRolle(e.target.value as ZuordnungRolle)} ariaLabel="Rolle" size="sm">
           {(Object.keys(ZUORDNUNG_ROLLE_LABEL) as ZuordnungRolle[]).map((r) => (
             <option key={r} value={r}>
               {ZUORDNUNG_ROLLE_LABEL[r]}
             </option>
           ))}
-        </select>
-        <select
+        </SelectField>
+        <SelectField
           value={quelle}
           onChange={(e) => setQuelle(e.target.value as ZuordnungQuelle)}
-          style={selectStyle}
-          aria-label="Herkunft der Zuordnung"
-        >
+          ariaLabel="Herkunft der Zuordnung" size="sm">
           {(["verlinkt", "recherchiert", "vermutet"] as ZuordnungQuelle[]).map((qk) => (
             <option key={qk} value={qk}>
               Herkunft: {ZUORDNUNG_QUELLE_LABEL[qk]}
             </option>
           ))}
-        </select>
+        </SelectField>
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
@@ -892,13 +892,13 @@ function Erfassung({ onAnlegen }: { onAnlegen: (regionId: string, name: string) 
         ein zweiter Versorger fehlt.
       </p>
       <div style={{ display: "flex", gap: space.sm, alignItems: "center", marginBottom: space.md }}>
-        <select value={limit} onChange={(e) => setLimit(Number(e.target.value))} style={selectStyle} aria-label="Anzahl">
+        <SelectField value={limit} onChange={(e) => setLimit(Number(e.target.value))} ariaLabel="Anzahl" size="sm">
           {[50, 100, 200].map((n) => (
             <option key={n} value={n}>
               Top {n}
             </option>
           ))}
-        </select>
+        </SelectField>
         <label style={{ display: "flex", alignItems: "center", gap: space.xs, fontSize: v("--font-size-small"), cursor: "pointer" }}>
           <input type="checkbox" checked={nurOffene} onChange={(e) => setNurOffene(e.target.checked)} />
           nur ohne Versorger
@@ -1029,13 +1029,13 @@ function NeuModal({
           <input value={name} onChange={(e) => setName(e.target.value)} style={{ ...inputStyle, width: "100%" }} />
         </Feld>
         <Feld label="Typ">
-          <select value={typ} onChange={(e) => setTyp(e.target.value as UtilityTyp)} style={{ ...selectStyle, width: "100%" }}>
+          <SelectField value={typ} onChange={(e) => setTyp(e.target.value as UtilityTyp)} ariaLabel="Auswahl" size="sm">
             {(Object.keys(UTILITY_TYP_LABEL) as UtilityTyp[]).map((t) => (
               <option key={t} value={t}>
                 {UTILITY_TYP_LABEL[t]}
               </option>
             ))}
-          </select>
+          </SelectField>
         </Feld>
         <Feld label="Website">
           <input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://…" style={{ ...inputStyle, width: "100%" }} />
@@ -1100,8 +1100,6 @@ const inputStyle: React.CSSProperties = {
   border: `1px solid ${v("--color-border")}`,
   borderRadius: v("--radius-sm"),
 };
-
-const selectStyle: React.CSSProperties = { ...inputStyle, cursor: "pointer" };
 
 const secondaryBtn: React.CSSProperties = { ...inputStyle, cursor: "pointer" };
 

@@ -126,33 +126,9 @@ export const BAUSTEINE: Baustein[] = [
             "Die Galerie stellt Baustein und nacktes Feld absichtlich nebeneinander — ohne den Vergleich lässt sich nicht entscheiden, ob der Unterschied gebraucht wird.",
         },
         {
-          datei: "app/(site)/waermepumpe-rechner/waermepumpe.tsx",
-          grund:
-            "Fünf gewachsene Felder auf einer öffentlichen Oberfläche. Die Umstellung ist sichtbar und braucht die Abnahme des Betreibers — sie steht aus, ist aber vorgesehen.",
-        },
-        {
-          datei: "components/ContactForm.tsx",
-          grund: "Themenwahl im Kontaktformular, ebenfalls sichtbar und noch nicht abgenommen.",
-        },
-        {
-          datei: "app/(site)/admin/versorger/client.tsx",
-          grund: "Interne Tabellenfilter ohne Publikum — sie ziehen mit, wenn diese Ansicht ohnehin angefasst wird.",
-        },
-        {
-          datei: "app/(site)/admin/fachbetriebe/client.tsx",
-          grund: "Interner Tabellenfilter, wie bei den Versorgern.",
-        },
-        {
-          datei: "app/(site)/admin/awards/client.tsx",
-          grund: "Interne Auswahl ohne Publikum, wie bei den Versorgern.",
-        },
-        {
-          datei: "app/(site)/admin/awards/anschreiben/client.tsx",
-          grund: "Interne Auswahl ohne Publikum, wie bei den Versorgern.",
-        },
-        {
           datei: "app/(site)/admin/kommunen/client.tsx",
-          grund: "Wird gerade von einer anderen Sitzung umgebaut; Typografie und Bausteine folgen danach.",
+          grund:
+            "Wird gerade von einer anderen Sitzung umgebaut; Typografie und Bausteine folgen, sobald deren Arbeit auf der Hauptlinie ist.",
         },
       ],
     },

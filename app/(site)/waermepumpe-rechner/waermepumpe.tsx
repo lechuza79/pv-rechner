@@ -40,6 +40,7 @@ import InfoTooltip from "../../../components/InfoTooltip";
 import { IconArrowRight, IconRefresh, IconChevronDown, IconSun, IconSparkle, IconCheck } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
 import { trackFunnelStep, type Funnel } from "../../../lib/analytics";
+import SelectField from "../../../components/SelectField";
 
 /** Einheit, in der ein Nutzer seinen Jahresverbrauch von der Abrechnung abliest. */
 type VerbrauchEinheit = "gas" | "oel";
@@ -661,19 +662,19 @@ export default function Waermepumpe({
                         aria-label={verbrauchEinheit === "oel" ? "Heizölverbrauch pro Jahr in Litern" : "Gasverbrauch pro Jahr in Kilowattstunden"}
                         style={{ width: 110, textAlign: "right", fontSize: v("--font-size-body"), fontWeight: 700, fontFamily: v('--font-mono'), background: v('--color-bg'), border: `1px solid ${v('--color-border')}`, borderRadius: v('--radius-sm'), padding: "8px 10px", outline: "none" }}
                       />
-                      <select
+                      <SelectField
                         value={verbrauchEinheit}
                         onChange={e => {
                           const next = e.target.value as VerbrauchEinheit;
                           setVerbrauchEinheit(next);
                           applyVerbrauch(verbrauchDraft, next);
                         }}
-                        aria-label="Einheit des Verbrauchs"
-                        style={{ fontSize: v("--font-size-small"), fontWeight: 600, background: v('--color-bg'), border: `1px solid ${v('--color-border')}`, borderRadius: v('--radius-sm'), padding: "8px 8px", outline: "none" }}
+                        ariaLabel="Einheit des Verbrauchs"
+                        size="sm"
                       >
                         <option value="gas">kWh Gas pro Jahr</option>
                         <option value="oel">Liter Heizöl pro Jahr</option>
-                      </select>
+                      </SelectField>
                       {verbrauchKwh !== null && (
                         <button
                           onClick={() => { setVerbrauchDraft(""); setVerbrauchKwh(null); setOQges(null); }}
@@ -957,10 +958,10 @@ export default function Waermepumpe({
                           {Math.round(begStufe.klimaBonus * 100)} % Zusatzförderung, wenn eine funktionierende fossile Heizung ersetzt wird: Öl, Kohle, Nachtspeicher und die Gas-Etagenheizung zählen unabhängig vom Alter, eine Gas-Zentralheizung sowie Holz- und Pelletheizungen erst ab 20 Jahren. Maßgeblich ist, wann die alte Anlage in Betrieb ging — das Datum steht auf dem Typenschild am Kessel. Der Bonus sinkt ab dem 1. Februar 2027 halbjährlich um 4 Prozentpunkte und entfällt bei Antragstellung ab dem 1. August 2028. Quelle: Förderrichtlinie BEG EM vom 17.07.2026.
                         </InfoTooltip>
                       </span>
-                      <select value={altheizung} onChange={e => { setAltheizung(e.target.value as AltheizungKey); setOInvest(null); }}
-                        style={{ fontSize: v("--font-size-small"), padding: "3px 6px", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, background: v('--color-bg'), color: v('--color-text-secondary'), cursor: "pointer", maxWidth: "100%" }}>
+                      <SelectField value={altheizung} onChange={e => { setAltheizung(e.target.value as AltheizungKey); setOInvest(null); }}
+                        ariaLabel="Alte Heizung" size="sm">
                         {ALTHEIZUNG_OPTIONS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
-                      </select>
+                      </SelectField>
                     </div>
                     )}
                     <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: v("--font-size-small"), color: v('--color-text-secondary'), marginBottom: 4, flexWrap: "wrap" }}>
@@ -970,10 +971,10 @@ export default function Waermepumpe({
                           Zusatzförderung für selbstnutzende Eigentümer, gestaffelt nach zu versteuerndem Haushaltsjahreseinkommen: bis 30.000 € +40 %, bis 40.000 € +30 %, bis 50.000 € +10 %. Bei der untersten Stufe steigt der Förderdeckel auf 80 %. Quelle: KfW Merkblatt 458 (BEG EM), gültig ab 21.07.2026.
                         </InfoTooltip>
                       </span>
-                      <select value={einkommen} onChange={e => { setEinkommen(e.target.value as EinkommenKey); setOInvest(null); }}
-                        style={{ fontSize: v("--font-size-small"), padding: "3px 6px", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, background: v('--color-bg'), color: v('--color-text-secondary'), cursor: "pointer", maxWidth: "100%" }}>
+                      <SelectField value={einkommen} onChange={e => { setEinkommen(e.target.value as EinkommenKey); setOInvest(null); }}
+                        ariaLabel="Einkommens-Bonus" size="sm">
                         {EINKOMMEN_OPTIONS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
-                      </select>
+                      </SelectField>
                     </div>
                     {einkommen !== "none" && (
                       <label style={{ display: "flex", alignItems: "center", gap: 5, fontSize: v("--font-size-small"), color: v('--color-text-secondary'), cursor: "pointer", marginBottom: 4 }}>
@@ -1107,9 +1108,9 @@ export default function Waermepumpe({
                 {/* Beim Wechsel des Energieträgers den Preis-Override fallen lassen —
                     sonst bliebe ein von Hand gesetzter Gaspreis am Heizöl kleben und
                     die Umstellung wirkte wirkungslos. */}
-                <select value={fuel.id} onChange={e => { setOFuel(e.target.value); setOGasPrice(null); }} aria-label="Referenzheizung wählen" style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-accent'), background: v('--color-accent-dim'), border: `1px solid ${v('--color-accent')}`, borderRadius: v('--radius-sm'), padding: "2px 6px", fontSize: v("--font-size-small") }}>
+                <SelectField value={fuel.id} onChange={e => { setOFuel(e.target.value); setOGasPrice(null); }} ariaLabel="Referenzheizung wählen" size="sm" ton="akzent">
                   {fuelOptions.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
-                </select>
+                </SelectField>
                 {situation === "neubau" ? "(Neubau)" : null}
                 <InfoTooltip title="Wie sich der Brennstoffpreis entwickelt" ariaLabel="Wie sich der Brennstoffpreis in der Rechnung entwickelt">
                   {greenGas
@@ -1180,9 +1181,9 @@ export default function Waermepumpe({
                 </div>
                 <div>
                   Wärmepumpe:{" "}
-                  <select value={wpType} onChange={e => { setWpType(e.target.value as "lwwp" | "swwp"); setOInvest(null); setOJaz(null); }} style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-accent'), background: v('--color-accent-dim'), border: `1px solid ${v('--color-accent')}`, borderRadius: v('--radius-sm'), padding: "2px 6px", fontSize: v("--font-size-small") }}>
+                  <SelectField value={wpType} onChange={e => { setWpType(e.target.value as "lwwp" | "swwp"); setOInvest(null); setOJaz(null); }} ariaLabel="Bauart der Wärmepumpe" size="sm" ton="akzent">
                     {WP_TYPE.map(w => <option key={w.id} value={w.id}>{w.label}</option>)}
-                  </select>
+                  </SelectField>
                 </div>
                 <div><GlossaryTerm id="jaz">JAZ (Jahresarbeitszahl)</GlossaryTerm>: <InlineEdit value={result.jaz} onCommit={v => setOJaz(v)} unit="" min={2.0} max={5.5} step={0.1} width={60} fmt={v => v.toFixed(2).replace(".", ",")} /></div>
                 <div>{fuel.kind === "oil" ? "Heizölpreis" : "Gaspreis"}: {greenGas

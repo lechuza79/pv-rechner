@@ -7,6 +7,7 @@ import { v, space, pad } from "../../../../lib/theme";
 // nicht — eine zweite Kopie eines Formatters ist ein Fehler, kein Duplikat.
 import { formatAwardValue } from "../../../../lib/awards";
 import type { MetricFormat, Messart, Traeger } from "../../../../lib/awards";
+import SelectField from "../../../../components/SelectField";
 
 export type WinnerRow = {
   scopeId: string;
@@ -74,7 +75,7 @@ export default function AwardsClient({ payload }: { payload: AwardsPayload }) {
         }}
       >
         <Field label="Kategorie">
-          <select name="cat" defaultValue={selection.cat} onChange={submit} style={selectStyle}>
+          <SelectField name="cat" defaultValue={selection.cat} onChange={submit} ariaLabel="Auswahl" size="sm">
             <optgroup label="Bürger">
               {buerger.map((c) => (
                 <option key={c.key} value={c.key}>
@@ -89,26 +90,26 @@ export default function AwardsClient({ payload }: { payload: AwardsPayload }) {
                 </option>
               ))}
             </optgroup>
-          </select>
+          </SelectField>
         </Field>
 
         <Field label="Geografischer Bezug">
-          <select name="level" defaultValue={selection.level} onChange={submit} style={selectStyle}>
+          <SelectField name="level" defaultValue={selection.level} onChange={submit} ariaLabel="Auswahl" size="sm">
             <option value="de">Deutschland</option>
             <option value="bundesland">je Bundesland</option>
             <option value="landkreis">je Landkreis</option>
-          </select>
+          </SelectField>
         </Field>
 
         <Field label="Bundesland-Filter">
-          <select name="bl" defaultValue={selection.bl} onChange={submit} style={selectStyle}>
+          <SelectField name="bl" defaultValue={selection.bl} onChange={submit} ariaLabel="Auswahl" size="sm">
             <option value="">Alle</option>
             {bundeslaender.map((b) => (
               <option key={b.ags} value={b.ags}>
                 {b.name}
               </option>
             ))}
-          </select>
+          </SelectField>
         </Field>
 
         <Field label="Einwohner-Untergrenze">

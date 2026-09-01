@@ -5,6 +5,7 @@ import { v, iconSizes, space, pad } from "../lib/theme";
 import { IconCheck, IconClose } from "./Icons";
 import { ModalSticky } from "./Modal";
 import { CONTACT_TOPICS, DEFAULT_CONTACT_TOPIC, type ContactTopic } from "../lib/contact-topics";
+import SelectField from "./SelectField";
 
 const S = {
   form: { marginTop: space.xxl, display: "flex", flexDirection: "column", gap: space.lg } as React.CSSProperties,
@@ -183,16 +184,17 @@ export default function ContactForm({
 
       <div style={S.field}>
         <label style={S.label} htmlFor="contact-topic">Worum geht es?</label>
-        <select
+        <SelectField
           id="contact-topic"
-          style={{ ...S.input, cursor: "pointer" }}
           value={topic}
           onChange={(e) => setTopic(e.target.value as ContactTopic)}
+          ariaLabel="Thema der Nachricht"
+          block
         >
           {CONTACT_TOPICS.map((t) => (
             <option key={t} value={t}>{t}</option>
           ))}
-        </select>
+        </SelectField>
       </div>
 
       <div style={S.field}>

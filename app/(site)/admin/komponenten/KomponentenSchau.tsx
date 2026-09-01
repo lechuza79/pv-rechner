@@ -273,10 +273,33 @@ function AuswahlBeispiel() {
           </SelectField>
         </div>
       </Zustand>
-      {/* Der Vergleich steht hier, WEIL an 32 Stellen im Code das nackte Feld
-          benutzt wird. Ohne beides nebeneinander lässt sich nicht entscheiden,
-          ob der Unterschied gebraucht wird oder nur Drift ist. Diese Datei ist
-          deshalb die eine begründete Ausnahme der Gegenprobe. */}
+      <Zustand name="kompakt (dichte Zeilen)">
+        <SelectField value={a} onChange={(e) => setA(e.target.value)} ariaLabel="Ausrichtung, kompakt" size="sm">
+          {optionen}
+        </SelectField>
+      </Zustand>
+      <Zustand name="Akzent (Wert im Ergebnis)">
+        <SelectField value={a} onChange={(e) => setA(e.target.value)} ariaLabel="Ausrichtung, Akzent" size="sm" ton="akzent">
+          {optionen}
+        </SelectField>
+      </Zustand>
+      <Zustand name="Ampel (Farbe ist die Aussage)">
+        <SelectField
+          value={a}
+          onChange={(e) => setA(e.target.value)}
+          ariaLabel="Ausrichtung, Ampel"
+          size="sm"
+          ampel={{ text: v("--color-positive-text"), hintergrund: v("--color-bg-accent") }}
+        >
+          {optionen}
+        </SelectField>
+      </Zustand>
+      {/* Der Vergleich steht hier, WEIL das nackte Feld an sieben Stellen im
+          Code stand. Ohne beides nebeneinander ließ sich nicht entscheiden, ob
+          der Unterschied gebraucht wird oder nur Drift ist — und der Vergleich
+          hat dabei zwei echte Unterschiede zutage gefördert (dichte Zeilen,
+          Werte im Ergebnis), die jetzt Varianten sind. Diese Datei ist deshalb
+          die eine begründete Ausnahme der Gegenprobe. */}
       <Zustand name="nackt, wie an 32 Stellen im Code">
         <select
           value={b}
