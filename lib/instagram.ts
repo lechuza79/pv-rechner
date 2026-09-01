@@ -98,7 +98,17 @@ export function anmeldeAdresse(origin: string, state: string): string {
   return `${AUTH_URL}?${teile.join("&")}`;
 }
 
-type KurzToken = { access_token: string; user_id: string | number; permissions?: string };
+// Die Berechtigungen kommen als LISTE, nicht als Text — anders als bei
+// LinkedIn, wo sie eine getrennte Zeichenkette sind. Gemessen an der echten
+// Antwort am 01.09.2026: Der Tausch lieferte ein Feld, und der Versuch, es zu
+// zerlegen, brach den letzten Schritt der Anmeldung ab, nachdem alles davor
+// schon funktioniert hatte. Beide Formen werden jetzt angenommen: Was eine
+// Schnittstelle heute als Text schickt, kann morgen eine Liste sein.
+type KurzToken = {
+  access_token: string;
+  user_id: string | number;
+  permissions?: string | string[];
+};
 type LangToken = { access_token: string; expires_in: number };
 type Profil = { id: string; username?: string };
 
@@ -169,12 +179,19 @@ export async function loginAbschliessen(
     anzeigename: profil.username ?? null,
     access_token: lang.access_token,
     gueltig_bis: gueltigBis,
-    scopes: kurz.permissions ? kurz.permissions.split(/[ ,]+/).filter(Boolean) : INSTAGRAM_SCOPES,
+    scopes: berechtigungen(kurz.permissions),
     // Frischer Zugang: die Warnkette beginnt von vorn.
     gewarnt_bei_stufe: null,
   });
 
   return { name: profil.username ?? String(kurz.user_id), gueltigBis };
+}
+
+/** Die erteilten Berechtigungen — als Liste, egal in welcher Form sie kamen. */
+export function berechtigungen(wert: string | string[] | undefined): string[] {
+  if (Array.isArray(wert)) return wert.filter(Boolean);
+  if (typeof wert === "string" && wert.trim()) return wert.split(/[ ,]+/).filter(Boolean);
+  return INSTAGRAM_SCOPES;
 }
 
 async function ladeProfil(token: string): Promise<Profil> {
@@ -290,3 +307,6 @@ export async function veroeffentlichungsGrenze(): Promise<{ genutzt: number; gre
   if (!eintrag) return null;
   return { genutzt: eintrag.quota_usage ?? 0, grenze: eintrag.config?.quota_total ?? 100 };
 }
+
+/** Nur für den Test — die Ableitung ist sonst ein innerer Helfer. */
+export { berechtigungen as berechtigungenFuerTest };
