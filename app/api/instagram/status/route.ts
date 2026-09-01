@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { istAdminOderCron } from "../../../../lib/admin-guard";
 import { ablaufBefund, ladeKonto } from "../../../../lib/social-konten";
-import { instagramKonfiguriert, verlaengere, veroeffentlichungsGrenze } from "../../../../lib/instagram";
+import {
+  instagramKonfiguriert,
+  rueckrufAdresse,
+  verlaengere,
+  veroeffentlichungsGrenze,
+} from "../../../../lib/instagram";
 
 // Zustand des Instagram-Zugangs (GET) und Verlängerung (POST).
 //
@@ -19,10 +24,17 @@ export async function GET(req: NextRequest) {
   if (!(await istAdminOderCron(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  // Die Rückrufadresse steht MIT in der Auskunft. Sie ist kein Geheimnis, aber
+  // die häufigste Fehlerquelle: Instagram vergleicht sie zeichengleich mit der
+  // im Portal hinterlegten und meldet dann nur, dass sie nicht übereinstimmt —
+  // ohne zu sagen, welche es gesehen hat. Ohne diese Zeile bleibt Raten.
+  const rueckruf = rueckrufAdresse(new URL(req.url).origin);
+
   const konto = await ladeKonto("instagram");
   if (!konto) {
     return NextResponse.json({
       konfiguriert: instagramKonfiguriert(),
+      rueckrufadresse: rueckruf,
       angemeldet: false,
       hinweis: "Noch kein Konto verknüpft. Als Admin /api/instagram/start aufrufen.",
     });
@@ -30,6 +42,7 @@ export async function GET(req: NextRequest) {
   const befund = ablaufBefund(konto, new Date());
   return NextResponse.json({
     konfiguriert: instagramKonfiguriert(),
+    rueckrufadresse: rueckruf,
     angemeldet: true,
     konto: konto.anzeigename,
     scopes: konto.scopes,
