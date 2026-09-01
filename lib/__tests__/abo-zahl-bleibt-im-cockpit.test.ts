@@ -37,9 +37,26 @@ const ERLAUBT: Record<string, string> = {
     "Die Summe über alle Schübe ist bei kleiner Menge genauso identifizierend wie eine " +
     "einzelne Zeile; sie bleibt deshalb an dieselbe Ansicht gebunden und wird nicht " +
     "weitergereicht.",
+  "lib/kommunen-abo-spiegel.ts": "Das Modul selbst — es definiert die Zahl und die Beschriftung.",
+  "app/(site)/admin/kommunen/versand/client.tsx":
+    "Die Auswertung des Outreach — dieselbe Anmeldung, dieselbe Ansicht wie das Cockpit, " +
+    "nur eine eigene Seite. Zeigt Summen, nie einzelne Eintragungen.",
   "lib/__tests__/kommunen-abo-spiegel.test.ts": "Die Tests der Zählregel.",
+  "lib/__tests__/kommunen-auswertung.test.ts": "Die Tests der Auswertung.",
   "lib/__tests__/abo-zahl-bleibt-im-cockpit.test.ts": "Diese Schranke.",
 };
+
+// WAS DIE ZAHL VERRÄT, unabhängig davon, woher sie kommt.
+//
+// Die erste Fassung prüfte nur, wer das Zähl-Modul einliest — und ging deshalb
+// beim ersten echten Umbau daneben: Die neue Auswertungs-Seite zeigt „davon N
+// mit Angabe Verwaltung", holt die Zahl aber als fertiges JSON über die
+// Schnittstelle und liest das Modul gar nicht. Die Schranke blieb grün, während
+// die Zahl an einer neuen Stelle stand.
+//
+// Deshalb wird zusätzlich auf die BESCHRIFTUNG geprüft. Sie ist das, was ein
+// Mensch sieht, und sie überlebt jeden Umbau der Datenwege.
+const VERRAETERISCH = [/mitAngabeVerwaltung/, /Angabe Verwaltung/];
 
 const WURZEL = join(__dirname, "..", "..");
 const ORDNER = ["app", "lib", "components", "scripts"];
@@ -60,7 +77,9 @@ describe("Die Abo-Zahl bleibt im Cockpit", () => {
     const nutzer: string[] = [];
     for (const ordner of ORDNER) {
       for (const datei of dateien(join(WURZEL, ordner))) {
-        if (!readFileSync(datei, "utf8").includes("kommunen-abo-spiegel")) continue;
+        const inhalt = readFileSync(datei, "utf8");
+        const liest = inhalt.includes("kommunen-abo-spiegel") || VERRAETERISCH.some((re) => re.test(inhalt));
+        if (!liest) continue;
         nutzer.push(datei.slice(WURZEL.length + 1));
       }
     }

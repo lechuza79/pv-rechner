@@ -35,7 +35,13 @@ export default function InternalShell({
     sections.push({
       title: "Kommunen",
       links: [
-        { href: "/admin/kommunen", label: "Outreach" },
+        {
+          label: "Outreach",
+          children: [
+            { href: "/admin/kommunen", label: "Gemeinden", exact: true },
+            { href: "/admin/kommunen/versand", label: "Versand" },
+          ],
+        },
         {
           label: "Award",
           children: [

@@ -13,15 +13,7 @@ import Modal from "../../../../components/Modal";
 import ResultSection from "../../../../components/ResultSection";
 import { ART_LABEL, liesNotiz } from "../../../../lib/outreach-ruecklauf";
 import { aboSatz, type AboSpiegel } from "../../../../lib/kommunen-abo-spiegel";
-import type { Auswertung, Versandtag } from "../../../../lib/kommunen-auswertung";
-import {
-  ASK_LABEL,
-  ASK_VARIANTEN,
-  VARIANTE_ERKLAERUNG,
-  VERTEILUNG_HINWEIS,
-  type AskVariante,
-  type VariantenVerteilung,
-} from "../../../../lib/kommunen-ask";
+import { ASK_LABEL, ASK_VARIANTEN, type AskVariante } from "../../../../lib/kommunen-ask";
 import { SCHUEBE } from "../../../../lib/kommunen-testballon";
 
 // ─── Typen ──────────────────────────────────────────────────────────────────
@@ -143,199 +135,12 @@ export default function KommunenCockpit() {
 
   const maxPage = Math.max(0, Math.ceil(total / pageSize) - 1);
 
-  const [verteilung, setVerteilung] = useState<VariantenVerteilung[] | null>(null);
-  const [offen, setOffen] = useState<{ nochNichtVersendet: number } | null>(null);
-  const [wirkung, setWirkung] = useState<{ gesamt: Auswertung; jeKampagne: Auswertung[]; jeTag: Versandtag[] } | null>(null);
-  useEffect(() => {
-    fetch("/api/admin/kommunen/bilanz")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((j) => {
-        if (j) {
-          setVerteilung(j.verteilung);
-          setOffen(j.offen);
-          setWirkung(j.wirkung ?? null);
-        }
-      })
-      .catch(() => undefined);
-  }, [rows]);
-
   return (
     <div style={{ fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
       <div style={{ marginBottom: space.lg }}>
         <div style={labelKicker}>Admin</div>
         <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 4 }}>Kommunen-Outreach</h1>
-        <p style={{ fontSize: 13, color: v("--color-text-muted") }}>
-          Kontaktdaten der ~11.000 Gemeinden. Filtern, Status pflegen, Kontaktseite öffnen.
-        </p>
-        <p style={{ fontSize: 13, color: v("--color-text-muted"), marginTop: 4, maxWidth: 720, lineHeight: 1.5 }}>
-          {/* Der Text steht in lib/kommunen-ask.ts. Er sagt, wie die Variante
-              ZUSTANDE KOMMT, und das ist eine Aussage über das Verfahren — an
-              der Oberfläche ist ein falscher Satz darüber nicht zu erkennen.
-              Hier stand bis zum 20.08.2026, beide Fassungen seien „sonst
-              identisch, sonst wüssten wir hinterher nicht, woran eine Reaktion
-              lag": die Beschreibung eines Versuchsaufbaus, den es nie gab. */}
-          {VARIANTE_ERKLAERUNG}
-        </p>
       </div>
-
-      {/* WAS DER OUTREACH BEWIRKT HAT — die Auswertung, die man wirklich liest.
-          Reihenfolge ist Absicht: verschickt ist der Nenner, dann die drei
-          Reaktionen in aufsteigender Aussagekraft. Antwort misst Höflichkeit,
-          Veroeffentlichung ist das Ziel, eine Eintragung aus der Verwaltung
-          heisst, dass der Brief die entscheidende Stelle erreicht hat. */}
-      {wirkung && (
-        <div style={{ marginBottom: space.lg }}>
-          <div style={{ display: "flex", gap: space.md, flexWrap: "wrap", marginBottom: space.sm }}>
-            <Kennzahl label="verschickt" wert={wirkung.gesamt.verschickt} />
-            <Kennzahl label="Antworten" wert={wirkung.gesamt.antworten} />
-            <Kennzahl label="Veröffentlichungen" wert={wirkung.gesamt.veroeffentlicht} gut />
-            <Kennzahl
-              label="Eintragungen ins Abo"
-              wert={wirkung.gesamt.abos}
-              unten={
-                wirkung.gesamt.abos
-                  ? `davon ${wirkung.gesamt.abosMitAngabeVerwaltung} mit Angabe Verwaltung`
-                  : undefined
-              }
-              gut={wirkung.gesamt.abosMitAngabeVerwaltung > 0}
-            />
-          </div>
-          {(wirkung.jeKampagne?.length ?? 0) > 1 && (
-            <table style={{ borderCollapse: "collapse", fontSize: 12, fontFamily: v("--font-mono") }}>
-              <thead>
-                <tr style={{ color: v("--color-text-muted") }}>
-                  <th style={{ textAlign: "left", padding: pad("xs", "sm") }}>Schub</th>
-                  <th style={{ textAlign: "right", padding: pad("xs", "sm") }}>verschickt</th>
-                  <th style={{ textAlign: "right", padding: pad("xs", "sm") }}>offen</th>
-                  <th style={{ textAlign: "right", padding: pad("xs", "sm") }}>Antworten</th>
-                  <th style={{ textAlign: "right", padding: pad("xs", "sm") }}>veröffentlicht</th>
-                  <th style={{ textAlign: "right", padding: pad("xs", "sm") }}>Abos</th>
-                </tr>
-              </thead>
-              <tbody>
-                {wirkung.jeKampagne.map((k) => (
-                  <tr key={k.kampagne} style={{ borderTop: `1px solid ${v("--color-border")}` }}>
-                    <td style={{ padding: pad("xs", "sm") }}>{k.kampagne}</td>
-                    <td style={{ textAlign: "right", padding: pad("xs", "sm") }}>{k.verschickt}</td>
-                    <td style={{ textAlign: "right", padding: pad("xs", "sm"), color: v("--color-text-muted") }}>{k.offen}</td>
-                    <td style={{ textAlign: "right", padding: pad("xs", "sm") }}>{k.antworten}</td>
-                    <td style={{ textAlign: "right", padding: pad("xs", "sm") }}>{k.veroeffentlicht}</td>
-                    <td style={{ textAlign: "right", padding: pad("xs", "sm") }}>
-                      {k.abos}
-                      {k.abosMitAngabeVerwaltung > 0 && ` (${k.abosMitAngabeVerwaltung} Verw.)`}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-          {/* DIE VERSANDHISTORIE — je Tag eine Zeile.
-              Ohne sie ist „lief der groessere Schub so gut wie der kleine?"
-              nicht zu beantworten: Ueber alles gemittelt verschwindet jeder
-              Unterschied zwischen den Tagen. Der Balken macht die Menge je Tag
-              auf einen Blick vergleichbar; die Zahl daneben bleibt die
-              Auskunft, der Balken ist nur die Form. */}
-          {(wirkung.jeTag?.length ?? 0) > 0 && (
-            <details style={{ marginTop: space.md }}>
-              <summary style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-secondary"), cursor: "pointer" }}>
-                Versandhistorie ({wirkung.jeTag.length} {wirkung.jeTag.length === 1 ? "Tag" : "Tage"})
-              </summary>
-              <table style={{ borderCollapse: "collapse", fontSize: 12, fontFamily: v("--font-mono"), marginTop: space.sm }}>
-                <thead>
-                  <tr style={{ color: v("--color-text-muted") }}>
-                    <th style={{ textAlign: "left", padding: pad("xs", "sm") }}>Tag</th>
-                    <th style={{ textAlign: "left", padding: pad("xs", "sm") }}>Schub</th>
-                    <th style={{ textAlign: "left", padding: pad("xs", "sm") }} colSpan={2}>
-                      verschickt
-                    </th>
-                    <th style={{ textAlign: "right", padding: pad("xs", "sm") }}>Antw.</th>
-                    <th style={{ textAlign: "right", padding: pad("xs", "sm") }}>veröff.</th>
-                    <th style={{ textAlign: "right", padding: pad("xs", "sm") }}>Abos</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {wirkung.jeTag.map((t) => {
-                    const groesster = Math.max(...wirkung.jeTag.map((x) => x.verschickt));
-                    return (
-                      <tr key={t.tag} style={{ borderTop: `1px solid ${v("--color-border")}` }}>
-                        <td style={{ padding: pad("xs", "sm"), whiteSpace: "nowrap" }}>
-                          {new Date(t.tag).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit" })}
-                        </td>
-                        <td style={{ padding: pad("xs", "sm"), color: v("--color-text-muted") }}>{t.schuebe.join(", ")}</td>
-                        <td style={{ padding: pad("xs", "sm"), textAlign: "right", width: 34 }}>{t.verschickt}</td>
-                        <td style={{ padding: pad("xs", "sm"), width: 130 }}>
-                          <div
-                            aria-hidden
-                            style={{
-                              height: 8,
-                              width: `${Math.round((100 * t.verschickt) / (groesster || 1))}%`,
-                              minWidth: 3,
-                              background: v("--color-accent"),
-                              borderRadius: 2,
-                            }}
-                          />
-                        </td>
-                        <td style={{ padding: pad("xs", "sm"), textAlign: "right" }}>{t.antworten}</td>
-                        <td style={{ padding: pad("xs", "sm"), textAlign: "right" }}>{t.veroeffentlicht}</td>
-                        <td style={{ padding: pad("xs", "sm"), textAlign: "right" }}>
-                          {t.abos}
-                          {t.abosMitAngabeVerwaltung > 0 && ` (${t.abosMitAngabeVerwaltung} Verw.)`}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-              <p style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: space.xs, maxWidth: 620, lineHeight: 1.4 }}>
-                Die Reaktionen zählen zum VERSANDTAG, nicht zum Tag der Reaktion — eine Antwort gehört zu dem
-                Schub, der sie ausgelöst hat, auch wenn sie zwei Wochen später kommt. Frische Tage haben deshalb
-                zwangsläufig weniger Reaktionen; sie sind mit älteren erst nach ein paar Wochen vergleichbar.
-              </p>
-            </details>
-          )}
-
-          {/* JEDE ZAHL IST EINE UNTERGRENZE, und das gehoert an die Anzeige,
-              nicht in eine Fussnote irgendwo im Code. */}
-          <p style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: space.xs, maxWidth: 620, lineHeight: 1.4 }}>
-            Untergrenzen: Eine Veröffentlichung ohne Link auf uns wird nicht gefunden, und wer sich einträgt,
-            ohne das Kästchen „Ich arbeite für die Verwaltung" anzukreuzen, zählt hier als Bürger.
-          </p>
-        </div>
-      )}
-
-      {/* Verteilung je Ask-Variante — wie viele Briefe welcher Fassung raus
-          sind. Kein Vergleich, Begründung in lib/kommunen-ask.ts. */}
-      {verteilung && verteilung.some((b) => b.versendet > 0) && (
-        <div style={{ display: "flex", gap: space.md, flexWrap: "wrap", marginBottom: space.md }}>
-          {verteilung.map((b) => (
-            <div
-              key={b.variante}
-              style={{
-                border: `1px solid ${v("--color-border")}`,
-                borderRadius: v("--radius-md"),
-                padding: pad("sm", "md"),
-                minWidth: 200,
-                background: v("--color-bg-muted"),
-              }}
-            >
-              <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-secondary") }}>{ASK_LABEL[b.variante]}</div>
-              {/* KEINE KLICKZAHLEN MEHR. Der Brief trägt keinen zählenden
-                  Link, „0 mit Klick" war deshalb kein Messergebnis, sondern
-                  eine leere Spalte, die wie eines aussah. */}
-              <div style={{ fontSize: 13, marginTop: 4, fontFamily: v("--font-mono") }}>
-                {b.versendet} versendet
-                <div style={{ color: v("--color-text-muted"), fontSize: 12 }}>
-                  {b.antworten} Antworten · {b.widgetAnfragen} Widget-Anfragen
-                </div>
-              </div>
-            </div>
-          ))}
-          <div style={{ fontSize: 11, color: v("--color-text-muted"), alignSelf: "center", maxWidth: 300, lineHeight: 1.4 }}>
-            {VERTEILUNG_HINWEIS}
-            {offen ? ` ${offen.nochNichtVersendet} noch nicht versendet.` : ""}
-          </div>
-        </div>
-      )}
 
       {/* Filterleiste */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, alignItems: "center", marginBottom: space.md }}>
@@ -1073,41 +878,6 @@ function VerlaufsZeileView({
 }
 
 // ─── Kleinteile ───────────────────────────────────────────────────────────────
-
-/**
- * Eine Kennzahl der Outreach-Auswertung.
- *
- * `gut` faerbt gruen — bewusst nur dort, wo eine Zahl ueber null wirklich ein
- * Erfolg ist (Veroeffentlichung, Eintragung aus der Verwaltung). Alles gruen zu
- * faerben nimmt der Farbe ihre Aussage; „100 verschickt" ist eine Menge, kein
- * Ergebnis.
- */
-function Kennzahl({ label, wert, unten, gut }: { label: string; wert: number; unten?: string; gut?: boolean }) {
-  return (
-    <div
-      style={{
-        border: `1px solid ${v("--color-border")}`,
-        borderRadius: v("--radius-md"),
-        padding: pad("sm", "md"),
-        minWidth: 150,
-        background: v("--color-bg-muted"),
-      }}
-    >
-      <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-secondary") }}>{label}</div>
-      <div
-        style={{
-          fontSize: 22,
-          fontWeight: 800,
-          fontFamily: v("--font-mono"),
-          color: gut && wert > 0 ? v("--color-positive") : v("--color-text-primary"),
-        }}
-      >
-        {wert.toLocaleString("de-DE")}
-      </div>
-      {unten && <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 2 }}>{unten}</div>}
-    </div>
-  );
-}
 
 function Merkmal({ label, href, stark }: { label: string; href: string; stark?: boolean }) {
   return (
