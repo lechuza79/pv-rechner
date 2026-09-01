@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../Modal";
 import OptionCard from "../OptionCard";
 import { SocialKarte } from "./SocialKarte";
 import { v, space, pad } from "../../lib/theme";
 import type { PostBild } from "../../lib/social-posts";
+import { istUhrzeit, zeitpunktFuer } from "../../lib/social-zeitpunkt";
 
 // Einen Kalendertag belegen.
 //
@@ -80,6 +81,7 @@ export function PlatzModal({
   onClose,
   wahl,
   belegt,
+  bestehendeZeit,
 }: {
   /** Der Tag, der belegt wird. Leer = geschlossen. */
   datum: string | null;
@@ -88,12 +90,23 @@ export function PlatzModal({
   wahl: PlatzWahl;
   /** Ist der Tag schon belegt? Dann gibt es zusätzlich „freigeben". */
   belegt: boolean;
+  /** Die schon gespeicherte Uhrzeit des Tages, falls es eine gibt. */
+  bestehendeZeit?: string | null;
 }) {
   const [sorte, setSorte] = useState<Sorte | null>(null);
   const [ziel, setZiel] = useState<Ziel | null>(null);
   const [titel, setTitel] = useState("");
+  const [uhrzeit, setUhrzeit] = useState("");
   const [laeuft, setLaeuft] = useState(false);
   const [fehler, setFehler] = useState<string | null>(null);
+
+  // Die Vorbelegung hängt am TAG, nicht am Öffnen: Sie wird aus dem Datum
+  // abgeleitet und ist damit für denselben Tag immer dieselbe. Eine bereits
+  // gesetzte Zeit gewinnt — wer sie von Hand geändert hat, will sie behalten.
+  useEffect(() => {
+    if (!datum) return;
+    setUhrzeit(bestehendeZeit && istUhrzeit(bestehendeZeit) ? bestehendeZeit : zeitpunktFuer(datum));
+  }, [datum, bestehendeZeit]);
 
   function schliessen() {
     setSorte(null);
@@ -111,7 +124,9 @@ export function PlatzModal({
       const res = await fetch("/api/social/platz", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(loeschen ? { datum, loeschen: true } : { datum, ...nutzlast(ziel, titel) }),
+        body: JSON.stringify(
+          loeschen ? { datum, loeschen: true } : { datum, uhrzeit, ...nutzlast(ziel, titel) },
+        ),
       });
       const j = (await res.json().catch(() => ({}))) as { error?: string };
       if (!res.ok) {
@@ -143,7 +158,8 @@ export function PlatzModal({
     ziel?.art === "post" ? wahl.posts.find((p) => p.id === ziel.id) : undefined;
   // Ein Vorhaben braucht einen Arbeitstitel, ein fertiger Beitrag hat einen.
   const brauchtTitel = ziel?.art === "familie" || ziel?.art === "widget";
-  const bereit = !!ziel && (!brauchtTitel || !!titel.trim() || ziel.art === "widget");
+  const bereit =
+    !!ziel && istUhrzeit(uhrzeit) && (!brauchtTitel || !!titel.trim() || ziel.art === "widget");
 
   return (
     <Modal open={offen} onClose={schliessen} title={tagText} maxWidth={640}>
@@ -199,6 +215,37 @@ export function PlatzModal({
               Schriftgrößen absolut. Ohne ihn stünde die Karte in voller
               Feed-Breite da und liefe aus dem Dialog heraus. */}
           <SocialKarte bild={gewaehlterPost.bild} stufe="teaser" skala={VORSCHAU_BREITE / 1080} />
+        </div>
+      )}
+
+      {/* DIE UHRZEIT IST EINE SETZUNG, und der Satz daneben sagt das. Sie als
+          „beste Zeit" zu beschriften wäre eine Behauptung, für die es im
+          deutschsprachigen Raum keine Erhebung gibt — LinkedIns eigener
+          Beitrag dazu sagt selbst, dass keine maßgebliche Studie dahintersteht.
+          Die Minute ist bewusst unrund: drei Beiträge je Woche, jeder auf die
+          Minute um 11:00, sind als Muster erkennbar. */}
+      {sorte && (
+        <div style={{ display: "flex", alignItems: "center", gap: space.sm, marginTop: space.md }}>
+          <label style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>
+            Uhrzeit
+          </label>
+          <input
+            type="time"
+            value={uhrzeit}
+            onChange={(e) => setUhrzeit(e.target.value)}
+            style={{
+              padding: pad("xs", "sm"),
+              borderRadius: v("--radius-sm"),
+              border: `1px solid ${v("--color-border")}`,
+              background: v("--color-bg"),
+              color: v("--color-text-primary"),
+              fontSize: v("--font-size-small"),
+              fontFamily: "inherit",
+            }}
+          />
+          <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
+            gesetzt, nicht gemessen — um 11 Uhr gestreut
+          </span>
         </div>
       )}
 

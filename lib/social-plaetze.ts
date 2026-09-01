@@ -37,6 +37,15 @@ export type GeplanterPlatz = {
   kategorie: string | null;
   /** Bei „datenstory" und „individuell": die Arbeitsbezeichnung. */
   titel: string | null;
+  /**
+   * Wann an dem Tag gesendet werden soll — „11:07".
+   *
+   * SIE WIRD MITGESCHRIEBEN, obwohl sie sich aus dem Datum ableiten ließe. Der
+   * Grund ist nicht die Rechnung, sondern die Absicht: Wer die Zeit von Hand
+   * ändert, will nicht, dass die Formel sie beim nächsten Aufbau überschreibt.
+   * Alte Plätze ohne Zeit fallen auf die Ableitung zurück.
+   */
+  uhrzeit: string | null;
   geplant_am: string;
 };
 
@@ -48,8 +57,10 @@ export const SOCIAL_PLAETZE_DDL = `
     familie text,
     kategorie text,
     titel text,
+    uhrzeit text,
     geplant_am timestamptz NOT NULL DEFAULT now()
   );
+  ALTER TABLE social_plaetze ADD COLUMN IF NOT EXISTS uhrzeit text;
   ALTER TABLE social_plaetze ENABLE ROW LEVEL SECURITY;
   REVOKE ALL ON social_plaetze FROM PUBLIC;
   REVOKE ALL ON social_plaetze FROM anon;
@@ -60,7 +71,7 @@ export async function ladePlaetze(): Promise<GeplanterPlatz[]> {
   if (!supabase) return [];
   const { data, error } = await supabase
     .from("social_plaetze")
-    .select("datum,art,post_id,familie,kategorie,titel,geplant_am");
+    .select("datum,art,post_id,familie,kategorie,titel,uhrzeit,geplant_am");
   if (error || !data) return [];
   return data as GeplanterPlatz[];
 }

@@ -7,6 +7,7 @@ import { ladeFassungen } from "../../../../lib/social-vorlagen-db";
 import { FAMILIEN } from "../../../../lib/redaktionsplan";
 import { RATGEBER } from "../../../../lib/ratgeber";
 import { WIDGETS } from "../../../../lib/widget-registry";
+import { istUhrzeit, zeitpunktFuer } from "../../../../lib/social-zeitpunkt";
 
 // Einen Kalendertag belegen oder freigeben.
 //
@@ -37,6 +38,7 @@ export async function POST(req: NextRequest) {
     titel?: string;
     slug?: string;
     widget?: string;
+    uhrzeit?: string;
     loeschen?: boolean;
   };
 
@@ -52,6 +54,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: (err as Error).message }, { status: 500 });
     }
   }
+
+  // Die Uhrzeit wird GEPRÜFT, nicht durchgereicht. Sie landet in einer Spalte,
+  // die später eine Anzeige und womöglich einen Versandzeitpunkt speist; ein
+  // Freitext dort wäre eine Angabe, der niemand ansieht, dass sie keine Uhrzeit
+  // ist. Ohne Angabe gilt die Ableitung aus dem Datum.
+  if (body.uhrzeit !== undefined && !istUhrzeit(body.uhrzeit)) {
+    return NextResponse.json({ error: "Keine gültige Uhrzeit" }, { status: 400 });
+  }
+  const uhrzeit = body.uhrzeit ?? zeitpunktFuer(body.datum);
 
   // „artikel" und „widget" sind Wege im Dialog, keine eigenen Arten in der
   // Ablage: Beide landen als Vorhaben („individuell") mit ihrer Herkunft in der
@@ -77,6 +88,7 @@ export async function POST(req: NextRequest) {
         familie: null,
         kategorie: null,
         titel: post.titel,
+        uhrzeit,
       });
       return NextResponse.json({ ok: true });
     }
@@ -97,6 +109,7 @@ export async function POST(req: NextRequest) {
         familie: familie.schluessel,
         kategorie: null,
         titel: body.titel?.trim() || familie.name,
+        uhrzeit,
       });
       return NextResponse.json({ ok: true });
     }
@@ -111,6 +124,7 @@ export async function POST(req: NextRequest) {
         familie: null,
         kategorie: "artikel",
         titel: `Ratgeber featuren: ${ratgeber.title}`,
+        uhrzeit,
       });
       return NextResponse.json({ ok: true });
     }
@@ -125,6 +139,7 @@ export async function POST(req: NextRequest) {
         familie: null,
         kategorie: `widget:${widget.id}`,
         titel: `Widget vorstellen: ${widget.title}`,
+        uhrzeit,
       });
       return NextResponse.json({ ok: true });
     }
@@ -142,6 +157,7 @@ export async function POST(req: NextRequest) {
       familie: null,
       kategorie: familie.schluessel,
       titel: body.titel.trim(),
+      uhrzeit,
     });
     return NextResponse.json({ ok: true });
   } catch (err) {

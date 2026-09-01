@@ -7,6 +7,7 @@ import { Pill, type PillTon } from "./Pill";
 import { PlatzModal, type PlatzWahl } from "./PlatzModal";
 import { deckung, type KalenderPlatz, type KalenderWoche } from "../../lib/social-kalender";
 import { ferienJeLand, freiBaender, tagesbefund, type FreiBand } from "../../lib/social-kalendertage";
+import { zeitpunktFuer } from "../../lib/social-zeitpunkt";
 import { FreiBaender } from "./FreiBaender";
 import { FerienModal, type FerienZeile } from "./FerienModal";
 import { KalenderNav, type NavMonat } from "./KalenderNav";
@@ -82,6 +83,22 @@ function platzPille(p: KalenderPlatz): { ton: PillTon; icon: React.ReactNode; te
     default:
       return null;
   }
+}
+
+/**
+ * Wann an diesem Platz gesendet wird.
+ *
+ * Ein von Hand gesetzter Wert gewinnt; sonst die Ableitung aus dem Datum. So
+ * trägt auch ein noch nicht belegter Vorschlag schon die Zeit, zu der er ginge
+ * — sonst erschiene die Angabe erst beim Belegen, also genau dann, wenn man sie
+ * nicht mehr zum Vergleichen braucht.
+ */
+function platzZeit(p: KalenderPlatz): string {
+  const gesetzt =
+    (p.zustand === "geplant" || p.zustand === "verstrichen") && p.zuweisung.uhrzeit
+      ? p.zuweisung.uhrzeit
+      : null;
+  return gesetzt ?? zeitpunktFuer(p.iso);
 }
 
 function tagZahl(iso: string): string {
@@ -245,6 +262,17 @@ export function Wochenplan({
     if (monate.some((m) => m.schluessel === schluessel)) return;
     monate.push({ schluessel, name: monatVon(w.beginnIso), index: i });
   });
+
+  // Von Hand gesetzte Zeiten, damit der Dialog sie nicht mit der Ableitung
+  // überschreibt.
+  const gesetzteZeiten = new Map<string, string>();
+  for (const w of wochen) {
+    for (const p of w.plaetze) {
+      if ((p.zustand === "geplant" || p.zustand === "verstrichen") && p.zuweisung.uhrzeit) {
+        gesetzteZeiten.set(p.iso, p.zuweisung.uhrzeit);
+      }
+    }
+  }
 
   const belegteTage = new Set(
     wochen.flatMap((w) => w.plaetze.filter((p) => p.zustand === "geplant" || p.zustand === "verstrichen").map((p) => p.iso)),
@@ -482,10 +510,26 @@ export function Wochenplan({
                       )}
 
                       {pille && (
-                        <div style={{ marginTop: space.xxs, display: "flex" }}>
-                          <Pill ton={pille.ton} icon={pille.icon} titel={pille.text}>
-                            {pille.text}
-                          </Pill>
+                        <div style={{ marginTop: space.xxs }}>
+                          {/* Die Uhrzeit steht ÜBER der Pille, nicht darin: In
+                              einer Kalenderzelle kappt die Pille ihren Text,
+                              und die Zeit wäre das Erste, was verschwindet —
+                              ausgerechnet die Angabe, die man beim Planen
+                              sucht. */}
+                          <div
+                            style={{
+                              fontSize: v("--font-size-caption"),
+                              color: v("--color-text-muted"),
+                              marginBottom: 1,
+                            }}
+                          >
+                            {platzZeit(platz!)}
+                          </div>
+                          <div style={{ display: "flex" }}>
+                            <Pill ton={pille.ton} icon={pille.icon} titel={pille.text}>
+                              {pille.text}
+                            </Pill>
+                          </div>
                         </div>
                       )}
 
@@ -535,6 +579,7 @@ export function Wochenplan({
         onClose={() => setOffenerTag(null)}
         wahl={wahl}
         belegt={!!offenerTag && belegteTage.has(offenerTag)}
+        bestehendeZeit={offenerTag ? gesetzteZeiten.get(offenerTag) : null}
       />
     </div>
   );

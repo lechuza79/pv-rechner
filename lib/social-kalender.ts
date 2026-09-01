@@ -33,6 +33,8 @@ export type PlatzZuweisung = {
   familie: string | null;
   kategorie: string | null;
   titel: string | null;
+  /** Wann an dem Tag gesendet werden soll — „11:07". */
+  uhrzeit?: string | null;
 };
 
 /** Ein Platz in einer Woche — vergangen oder kommend. */
