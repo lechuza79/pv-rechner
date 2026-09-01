@@ -1661,13 +1661,19 @@ async function main() {
   // ── Ablauf der Social-Zugänge ─────────────────────────────────────────────
   for (const s of await messeSocialAblauf()) {
     const wer = s.konto ? ` (${s.konto})` : "";
+    // DIE ADRESSE MUSS ZUR PLATTFORM PASSEN. Sie stand fest auf LinkedIn, weil
+    // es lange nur die eine gab — mit einem zweiten Kanal wird daraus eine
+    // Anleitung, die ins Leere führt: Der Betreiber klickt, meldet LinkedIn neu
+    // an, und der Instagram-Zugang läuft weiter aus. Dieselbe Fehlerklasse wie
+    // eine Beschriftung, die etwas anderes sagt, als die Zahl daneben misst.
+    const start = `solar-check.io/api/${s.plattform}/start`;
     fuerBetreiberOhneRot.push(
       s.tageBisAblauf < 0
         ? `Der ${s.plattform}-Zugang${wer} ist abgelaufen — seitdem wird nichts mehr veröffentlicht. ` +
-          `Zum Erneuern einmal solar-check.io/api/linkedin/start aufrufen (eingeloggt als Admin). ` +
+          `Zum Erneuern einmal ${start} aufrufen (eingeloggt als Admin). ` +
           `Das kann nur jemand mit deinem Konto, ich komme da nicht heran.`
         : `Der ${s.plattform}-Zugang${wer} läuft in ${s.tageBisAblauf} Tagen ab. Danach hört das ` +
-          `Veröffentlichen still auf. Einmal solar-check.io/api/linkedin/start aufrufen (eingeloggt ` +
+          `Veröffentlichen still auf. Einmal ${start} aufrufen (eingeloggt ` +
           `als Admin) setzt die Frist zurück — das dauert zwei Klicks und kann nur jemand mit deinem Konto.`,
     );
   }
