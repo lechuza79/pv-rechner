@@ -13,15 +13,10 @@ import {
 import Modal from "../../../../components/Modal";
 import ResultSection from "../../../../components/ResultSection";
 import { ART_LABEL, liesNotiz } from "../../../../lib/outreach-ruecklauf";
-import {
-  ASK_LABEL,
-  ASK_VARIANTEN,
-  VARIANTE_ERKLAERUNG,
-  VERTEILUNG_HINWEIS,
-  type AskVariante,
-  type VariantenVerteilung,
-} from "../../../../lib/kommunen-ask";
+import { aboSatz, type AboSpiegel } from "../../../../lib/kommunen-abo-spiegel";
+import { ASK_LABEL, ASK_VARIANTEN, type AskVariante } from "../../../../lib/kommunen-ask";
 import { SCHUEBE } from "../../../../lib/kommunen-testballon";
+import { adminTh, adminTd } from "../../../../lib/admin-tabelle";
 
 // ─── Typen ──────────────────────────────────────────────────────────────────
 
@@ -60,6 +55,9 @@ type Lead = {
   ref_token: string | null;
   ref_klicks: number | null;
   atlas_path: string | null;
+  /** Eintragungen ins Gemeinde-Abo. null, solange es keine gibt — oder wenn die
+   *  Abfrage ausgefallen ist; die Liste soll daran nicht hängen. */
+  abo: AboSpiegel | null;
   mastr_regions: Region | Region[];
 };
 
@@ -83,6 +81,39 @@ export default function KommunenCockpit() {
   const [sort, setSort] = useState("");
   const [charge, setCharge] = useState("");
   const [kampagne, setKampagne] = useState("");
+  // Der Versandtag — der „Batch", wie er in der Übersicht steht.
+  const [tag, setTag] = useState("");
+  // Die auswählbaren Tage kommen aus derselben Auswertung, die die Übersicht
+  // zeigt. Eine eigene Abfrage dafür wäre eine zweite Fassung derselben Liste,
+  // und die beiden liefen beim ersten abgebrochenen Versand auseinander.
+  const [versandtage, setVersandtage] = useState<{ tag: string; verschickt: number; schuebe: string[] }[]>([]);
+  // Der Schub kommt aus der Adresse: Die Übersicht verlinkt je Versandtag
+  // hierher, und ohne ihn käme man auf einer ungefilterten Liste mit 11.000
+  // Zeilen an.
+  //
+  // NACH dem ersten Rendern, nicht als Anfangswert. Als Anfangswert gelesen
+  // rendert der Server ohne Filter und der Browser mit — React meldet das als
+  // Abweichung und flickt sie nicht; sichtbar wurde es an einem Auswahlfeld,
+  // das serverseitig gesperrt war und im Browser nicht. Ein Effekt läuft erst,
+  // wenn beide Seiten dasselbe gezeichnet haben.
+  //
+  // Nur GELESEN, nie zurückgeschrieben: Die Filter hier sind Handgriffe, keine
+  // teilbaren Zustände, und ein mitwandernder Adressbalken wäre eine zweite
+  // Wahrheit neben den Bedienelementen.
+  useEffect(() => {
+    const adresse = new URLSearchParams(window.location.search);
+    const ausAdresse = adresse.get("kampagne");
+    if (ausAdresse) setKampagne(ausAdresse);
+    const tagAusAdresse = adresse.get("tag");
+    if (tagAusAdresse) setTag(tagAusAdresse);
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/admin/kommunen/bilanz")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => setVersandtage(j?.wirkung?.jeTag ?? []))
+      .catch(() => undefined);
+  }, []);
   const [page, setPage] = useState(0);
 
   const [rows, setRows] = useState<Lead[]>([]);
@@ -107,6 +138,7 @@ export default function KommunenCockpit() {
     if (hasLink) params.set("hasLink", "1");
     if (qDebounced) params.set("q", qDebounced);
     if (sort) params.set("sort", sort);
+    if (tag) params.set("tag", tag);
     if (kampagne) params.set("kampagne", kampagne);
     if (kampagne && charge) params.set("charge", charge);
     params.set("page", String(page));
@@ -122,7 +154,7 @@ export default function KommunenCockpit() {
     } finally {
       setLoading(false);
     }
-  }, [bl, status, hasLink, qDebounced, sort, kampagne, charge, page]);
+  }, [bl, status, hasLink, qDebounced, sort, kampagne, charge, tag, page]);
 
   useEffect(() => {
     load();
@@ -131,7 +163,7 @@ export default function KommunenCockpit() {
   // Filterwechsel → zurück auf Seite 1.
   useEffect(() => {
     setPage(0);
-  }, [bl, status, hasLink, qDebounced, sort, kampagne, charge]);
+  }, [bl, status, hasLink, qDebounced, sort, kampagne, charge, tag]);
 
   const patchLead = useCallback((updated: Lead) => {
     setRows((prev) => prev.map((r) => (r.region_id === updated.region_id ? updated : r)));
@@ -139,74 +171,32 @@ export default function KommunenCockpit() {
 
   const maxPage = Math.max(0, Math.ceil(total / pageSize) - 1);
 
-  const [verteilung, setVerteilung] = useState<VariantenVerteilung[] | null>(null);
-  const [offen, setOffen] = useState<{ nochNichtVersendet: number } | null>(null);
-  useEffect(() => {
-    fetch("/api/admin/kommunen/bilanz")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((j) => {
-        if (j) {
-          setVerteilung(j.verteilung);
-          setOffen(j.offen);
-        }
-      })
-      .catch(() => undefined);
-  }, [rows]);
-
   return (
     <div style={{ fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
-      <AdminSeitenkopf
-        titel="Kommunen-Outreach"
-        hilfe={
-          <>
-            Kontaktdaten der ~11.000 Gemeinden. Filtern, Status pflegen, Kontaktseite öffnen.
-            {/* Der Text steht in lib/kommunen-ask.ts. Er sagt, wie die Variante
-                ZUSTANDE KOMMT, und das ist eine Aussage über das Verfahren — an
-                der Oberfläche ist ein falscher Satz darüber nicht zu erkennen.
-                Hier stand bis zum 20.08.2026, beide Fassungen seien „sonst
-                identisch, sonst wüssten wir hinterher nicht, woran eine Reaktion
-                lag": die Beschreibung eines Versuchsaufbaus, den es nie gab. */}
-            <span style={{ display: "block", marginTop: 8 }}>{VARIANTE_ERKLAERUNG}</span>
-          </>
-        }
-      />
-
-      {/* Verteilung je Ask-Variante — wie viele Briefe welcher Fassung raus
-          sind. Kein Vergleich, Begründung in lib/kommunen-ask.ts. */}
-      {verteilung && verteilung.some((b) => b.versendet > 0) && (
-        <div style={{ display: "flex", gap: space.md, flexWrap: "wrap", marginBottom: space.md }}>
-          {verteilung.map((b) => (
-            <div
-              key={b.variante}
-              style={{
-                border: `1px solid ${v("--color-border")}`,
-                borderRadius: v("--radius-md"),
-                padding: pad("sm", "md"),
-                minWidth: 200,
-                background: v("--color-bg-muted"),
-              }}
-            >
-              <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-secondary") }}>{ASK_LABEL[b.variante]}</div>
-              {/* KEINE KLICKZAHLEN MEHR. Der Brief trägt keinen zählenden
-                  Link, „0 mit Klick" war deshalb kein Messergebnis, sondern
-                  eine leere Spalte, die wie eines aussah. */}
-              <div style={{ fontSize: 13, marginTop: 4, fontFamily: v("--font-mono") }}>
-                {b.versendet} versendet
-                <div style={{ color: v("--color-text-muted"), fontSize: 12 }}>
-                  {b.antworten} Antworten · {b.widgetAnfragen} Widget-Anfragen
-                </div>
-              </div>
-            </div>
-          ))}
-          <div style={{ fontSize: 11, color: v("--color-text-muted"), alignSelf: "center", maxWidth: 300, lineHeight: 1.4 }}>
-            {VERTEILUNG_HINWEIS}
-            {offen ? ` ${offen.nochNichtVersendet} noch nicht versendet.` : ""}
-          </div>
-        </div>
-      )}
+<AdminSeitenkopf titel="Kommunen-Outreach" />
 
       {/* Filterleiste */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, alignItems: "center", marginBottom: space.md }}>
+        {/* DER VERSANDTAG STEHT VORN, weil man meistens aus der Übersicht kommt
+            und genau diesen einen Batch sehen will. Chronologisch, neueste
+            zuerst — so wie die Übersicht sie zeigt; eine zweite Sortierung wäre
+            beim Vergleichen nur verwirrend.
+            Abwählbar über den ersten Eintrag: Ein Filter, den man nur über den
+            Zurück-Knopf loswird, ist keiner. */}
+        <select
+          value={tag}
+          onChange={(e) => setTag(e.target.value)}
+          style={{ ...selectStyle, ...(tag ? aktiverFilter : null) }}
+          aria-label="Versandtag"
+        >
+          <option value="">Alle Versandtage</option>
+          {versandtage.map((t) => (
+            <option key={t.tag} value={t.tag}>
+              {new Date(t.tag).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })} ·{" "}
+              {t.verschickt}
+            </option>
+          ))}
+        </select>
         <select value={bl} onChange={(e) => setBl(e.target.value)} style={selectStyle} aria-label="Bundesland">
           <option value="">Alle Bundesländer</option>
           {BUNDESLAENDER.map((b) => (
@@ -230,7 +220,12 @@ export default function KommunenCockpit() {
             zwei feste Zeilen mit dem Namen der ersten Kampagne und ihrer
             Größe — nach der zweiten Kampagne zeigte der Filter auf eine
             Auswahl, die es unter diesem Namen nicht mehr gab. */}
-        <select value={kampagne} onChange={(e) => setKampagne(e.target.value)} style={selectStyle} aria-label="Schub">
+        <select
+          value={kampagne}
+          onChange={(e) => setKampagne(e.target.value)}
+          style={{ ...selectStyle, ...(kampagne ? aktiverFilter : null) }}
+          aria-label="Schub"
+        >
           <option value="">Alle Gemeinden</option>
           {Object.keys(SCHUEBE).map((k) => (
             <option key={k} value={k}>
@@ -386,6 +381,23 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
           {r?.population != null && ` · ${r.population.toLocaleString("de-DE")} Ew.`}
           {lead.charge != null && ` · Charge ${lead.charge}`}
         </div>
+        {/* Eintragungen ins Gemeinde-Abo: das dritte Signal neben Antwort und
+            Veroeffentlichung. Steht nur da, wo es welche gibt — eine Null unter
+            11.000 Gemeinden verdeckt die wenigen echten Funde. Hervorgehoben
+            wird die Verwaltung, nicht die Menge: Ein Buerger ist Reichweite,
+            jemand aus dem Rathaus ist die Stelle, die ueber eine
+            Veroeffentlichung entscheidet. */}
+        {aboSatz(lead.abo) && (
+          <div
+            style={{
+              fontSize: 11,
+              marginTop: 3,
+              color: lead.abo?.mitAngabeVerwaltung ? v("--color-positive") : v("--color-text-muted"),
+            }}
+          >
+            {aboSatz(lead.abo)}
+          </div>
+        )}
       </td>
 
       {/* WEBSITE-THEMEN, NICHT DER AUFHÄNGER DES BRIEFES.
@@ -987,21 +999,17 @@ const inputStyle: React.CSSProperties = {
   fontFamily: v("--font-text"),
 };
 
-const thStyle: React.CSSProperties = {
-  textAlign: "left",
-  fontSize: 11,
-  fontWeight: 700,
-  textTransform: "uppercase",
-  letterSpacing: "0.05em",
-  color: v("--color-text-muted"),
-  padding: pad("sm", "md"),
-  background: v("--color-bg-muted"),
-  whiteSpace: "nowrap",
-};
+// Das Aussehen kommt aus lib/admin-tabelle.ts — eine zweite Fassung hier wäre
+// die Stelle, an der die beiden Ansichten auseinanderlaufen.
+const thStyle = adminTh;
+const tdStyle = adminTd;
 
-const tdStyle: React.CSSProperties = {
-  padding: pad("sm", "md"),
-  verticalAlign: "top",
+// Ein gesetzter Filter muss sich vom leeren unterscheiden — sonst sitzt man vor
+// 100 statt 11.000 Zeilen und sucht den Grund.
+const aktiverFilter: React.CSSProperties = {
+  borderColor: v("--color-accent"),
+  color: v("--color-accent"),
+  fontWeight: 700,
 };
 
 const linkStyle: React.CSSProperties = {

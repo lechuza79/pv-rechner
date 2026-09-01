@@ -46,6 +46,20 @@ export type GeplanterPlatz = {
    * Alte Plätze ohne Zeit fallen auf die Ableitung zurück.
    */
   uhrzeit: string | null;
+  /**
+   * Auf welche Kanäle dieser Platz geht.
+   *
+   * DREI EBENEN, und sie sagen Verschiedenes: Die Story sagt, wofür sie taugt;
+   * dieser Platz sagt, wohin sie gehen soll; das Versandprotokoll sagt, wo sie
+   * war. Ohne die mittlere ließe sich „diesmal nur LinkedIn" gar nicht
+   * ausdrücken.
+   *
+   * Leer heißt: alles, wofür die Story taugt. So verhalten sich die Plätze, die
+   * vor dieser Unterscheidung angelegt wurden — ihnen nachträglich eine
+   * Einschränkung zu unterstellen, die niemand getroffen hat, wäre die falsche
+   * Richtung.
+   */
+  kanaele: string[] | null;
   geplant_am: string;
 };
 
@@ -58,9 +72,11 @@ export const SOCIAL_PLAETZE_DDL = `
     kategorie text,
     titel text,
     uhrzeit text,
+    kanaele text[],
     geplant_am timestamptz NOT NULL DEFAULT now()
   );
   ALTER TABLE social_plaetze ADD COLUMN IF NOT EXISTS uhrzeit text;
+  ALTER TABLE social_plaetze ADD COLUMN IF NOT EXISTS kanaele text[];
   ALTER TABLE social_plaetze ENABLE ROW LEVEL SECURITY;
   REVOKE ALL ON social_plaetze FROM PUBLIC;
   REVOKE ALL ON social_plaetze FROM anon;
@@ -71,7 +87,7 @@ export async function ladePlaetze(): Promise<GeplanterPlatz[]> {
   if (!supabase) return [];
   const { data, error } = await supabase
     .from("social_plaetze")
-    .select("datum,art,post_id,familie,kategorie,titel,uhrzeit,geplant_am");
+    .select("datum,art,post_id,familie,kategorie,titel,uhrzeit,kanaele,geplant_am");
   if (error || !data) return [];
   return data as GeplanterPlatz[];
 }

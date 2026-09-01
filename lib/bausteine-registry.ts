@@ -486,6 +486,7 @@ export const NOCH_NICHT_EINGEORDNET: string[] = [
   "FundingTechnikTabs",
   "GlossaryTerm",
   "HerkunftsMelder",
+  "KfwFoerderpraxis",
   "KlimaDetailModal",
   "KontaktTeaser",
   "MastrHeroSection",

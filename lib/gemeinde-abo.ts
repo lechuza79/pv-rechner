@@ -770,3 +770,39 @@ export async function aboZahl(regionId: string): Promise<number | null> {
     return null;
   }
 }
+
+/**
+ * Eintragungen je Ort, ZAHLEN statt Empfänger — für die Outreach-Auswertung.
+ *
+ * WARUM HIER UND NICHT IM AUFRUFER: Es soll genau eine Stelle geben, die diese
+ * Tabelle abfragt. Ein zweiter Lesepfad umgeht die Beschränkung, ohne dass man
+ * es ihm ansieht — er funktioniert ja. Die Auswertung braucht aber etwas
+ * anderes als der Versand: nicht wer, sondern wie viele.
+ *
+ * Zurück kommt deshalb KEINE Adresse. Zurück kommt je Ort, wie viele bestätigt
+ * sind, wie viele noch nicht bestätigt haben und wie viele angegeben haben, für
+ * die Verwaltung zu arbeiten — die Zählregel selbst steht in
+ * lib/kommunen-abo-spiegel.ts, dieses Modul liefert ihr nur die Rohzeilen ohne
+ * Adressen.
+ *
+ * Abgemeldete sind nicht dabei: Nach der Abmeldung ist derselbe Datensatz etwas
+ * anderes (Nachweis der Einwilligung, andere Rechtsgrundlage, andere Frist) und
+ * gehört in keine Reichweiten-Zahl.
+ */
+export async function aboZeilenFuerAuswertung(
+  regionIds?: string[],
+): Promise<{ region_id: string; status: string; aus_verwaltung: boolean | null; ueber_brief: boolean | null }[]> {
+  if (!supabase) return [];
+  try {
+    let q = supabase
+      .from("gemeinde_abos")
+      .select("region_id, status, aus_verwaltung, ueber_brief")
+      .neq("status", "abgemeldet");
+    if (regionIds?.length) q = q.in("region_id", regionIds);
+    const { data, error } = await withDbTimeout(q, "abo-auswertung", DB_SOFT_READ_TIMEOUT_MS);
+    if (error) return [];
+    return (data ?? []) as { region_id: string; status: string; aus_verwaltung: boolean | null; ueber_brief: boolean | null }[];
+  } catch {
+    return [];
+  }
+}

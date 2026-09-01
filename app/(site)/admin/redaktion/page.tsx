@@ -75,8 +75,19 @@ export default async function RedaktionEntwicklung({
   // Das Versandprotokoll: Welche FASSUNG ging schon raus. Am Beitrag zu hängen
   // wäre falsch — nach einer echten Überarbeitung darf er wieder laufen.
   const versand = await ladeVersand();
-  const gesendetAm = (postId: string, abdruck: string) =>
-    versand.find((x) => x.post_id === postId && x.fassung_fingerabdruck === abdruck)?.gesendet_am ?? null;
+  // JE KANAL, nicht je Beitrag. Ein Beitrag, der auf LinkedIn draußen ist, ist
+  // auf Instagram noch gar nicht gesendet — die Sperre gilt der Wiederholung,
+  // nicht der Verbreitung. Ohne die Trennung hätte der erste Versand den
+  // zweiten Kanal stillschweigend gesperrt.
+  const gesendetAm = (postId: string, abdruck: string): Record<string, string> => {
+    const treffer: Record<string, string> = {};
+    for (const x of versand) {
+      if (x.post_id !== postId || x.fassung_fingerabdruck !== abdruck) continue;
+      // Der früheste Versand je Kanal zählt: Er ist der, der wirklich stattfand.
+      if (!treffer[x.kanal] || x.gesendet_am < treffer[x.kanal]) treffer[x.kanal] = x.gesendet_am;
+    }
+    return treffer;
+  };
 
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto" }}>

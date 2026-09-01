@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, type ReactNode } from "react";
+import { useState, useMemo, useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FlowNav from "../../../components/FlowNav";
@@ -31,14 +31,24 @@ import StandortField from "../../../components/StandortField";
 import ResultFunding from "../../../components/ResultFunding";
 import { stackFunding, programmeNebenBundesfoerderung, zeilenBisDeckel } from "../../../lib/funding-programs";
 import { useFoerderung } from "../../../lib/use-foerderung";
+import KfwFoerderpraxis, { kfwPraxisZusammenfassung } from "../../../components/KfwFoerderpraxis";
+import { useKfwKreis } from "../../../lib/use-kfw-kreis";
+import { type HeizungsfoerderungBund } from "../../../lib/kfw-format";
+import {
+  istGeteilterLink,
+  wpAusParametern,
+  wpZuParametern,
+  type WpZustand,
+} from "../../../lib/wp-share-state";
 import HeatPumpChart from "./_components/HeatPumpChart";
 import GasPriceStackChart from "../../../components/charts/GasPriceStackChart";
 import HeatCostCompareChart from "../../../components/charts/HeatCostCompareChart";
 import Modal from "../../../components/Modal";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import InfoTooltip from "../../../components/InfoTooltip";
-import { IconArrowRight, IconRefresh, IconChevronDown, IconSun, IconSparkle, IconCheck } from "../../../components/Icons";
+import { IconArrowRight, IconRefresh, IconChevronDown, IconSun, IconSparkle, IconCheck, IconLink, IconShare, IconWhatsApp } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
+import { trackEvent } from "../../../lib/analytics";
 import { trackFunnelStep, type Funnel } from "../../../lib/analytics";
 import SelectField from "../../../components/SelectField";
 
@@ -55,7 +65,18 @@ const STEPS = ["Situation", "Größe & Typ", "Dämmstandard", "Haushalt", "Heizs
 export default function Waermepumpe({
   embedded = false,
   stand,
-}: { embedded?: boolean; stand?: StandSeite } = {}) {
+  kfw = null,
+}: {
+  embedded?: boolean;
+  stand?: StandSeite;
+  /**
+   * Was aus der Bundesförderung im letzten Jahrgang wirklich geworden ist —
+   * auf dem Server nachgeschlagen und hereingereicht, damit die Seite statisch
+   * bleibt und die Tabellen hinter dem Dienstschlüssel bleiben. Fehlt sie
+   * (kein Datenbankzugriff), entfällt der Abschnitt lautlos.
+   */
+  kfw?: HeizungsfoerderungBund | null;
+} = {}) {
   // ── Step state ───────────────────────────────────────────────
   const router = useRouter();
   const [step, setStep] = useState(0);
@@ -134,6 +155,9 @@ export default function Waermepumpe({
   // steht der Check im Ergebnis, wo er eine bereits gerechnete Zahl verbessert.
   const [plz, setPlz] = useState("");
   const foerderQuelle = useFoerderung("waermepumpe");
+  // Der Kreisbezug hängt am Ort, den der Fördercheck ohnehin schon aufgelöst
+  // hat — keine zweite Ortsfrage, kein Abruf ohne Ort.
+  const kfwKreis = useKfwKreis(foerderQuelle.ags);
   const [fundingEnabled, setFundingEnabled] = useState(true);
   const [showDetails, setShowDetails] = useState(false);
   // Szenario-Auswahl (steuert TCO/Amortisation/Ersparnis/CO₂ + Chart):
@@ -188,6 +212,141 @@ export default function Waermepumpe({
   const [showGasInfo, setShowGasInfo] = useState(false);
   // Secondary-Block "Marktübliche Preissteigerung" (die 3 Preis-Modelle) auf-/zugeklappt.
   const [preisExpanded, setPreisExpanded] = useState(false);
+
+  // ── Geteilter Link ───────────────────────────────────────────
+  //
+  // GELESEN WIRD IM BROWSER, nicht auf dem Server. Die Adresse in der
+  // Seitenkomponente auszuwerten würde die Seite dynamisch machen — jeder
+  // Besucher zahlte dann den vollen Aufbau, obwohl fast keiner über einen
+  // geteilten Link kommt. Der Rechner läuft ohnehin im Browser; hier kostet es
+  // nichts.
+  //
+  // NUR EINMAL, und das ist der Punkt: Ein Effekt, der die Adresse dauerhaft
+  // beobachtet, würde die Eingaben des Nutzers bei jeder Adressänderung wieder
+  // überschreiben. Deshalb ein Merker, der nach dem ersten Lauf zusperrt.
+  const linkGelesen = useRef(false);
+  useEffect(() => {
+    if (linkGelesen.current) return;
+    linkGelesen.current = true;
+    // Direkt aus der Adresse des Fensters, NICHT über den Adress-Hook von Next:
+    // Der ist auf einer vorgerenderten Seite beim ersten Durchlauf noch leer,
+    // und dieser Effekt läuft genau einmal — er würde die Angaben des Links
+    // dann für immer verpassen. Gemessen: Der Rechner blieb bei Frage eins
+    // stehen, obwohl alle Werte in der Adresse standen. Im Browser ist
+    // `location.search` immer vollständig.
+    const p = new URLSearchParams(window.location.search);
+    if (!istGeteilterLink(p)) return;
+    const z = wpAusParametern(p);
+    setSituation(z.situation);
+    const preset = WOHNFLAECHEN.findIndex(f => f.m2 === z.wohnflaeche);
+    if (preset >= 0) { setFlaecheIdx(preset); setCustomFlaeche(null); }
+    else { setCustomFlaeche(z.wohnflaeche); setCustomFlaecheDraft(String(z.wohnflaeche)); }
+    const ht = HAUSTYP_WP.findIndex(h => h.id === z.haustyp);
+    if (ht >= 0) setHaustypIdx(ht);
+    setInsulationIdx(z.daemmung);
+    setPersonen(z.personen);
+    setHeizsystem(z.heizsystem);
+    setWpType(z.wpType);
+    setOFuel(z.brennstoff);
+    setHeizkoerperTausch(z.heizkoerperTausch);
+    setScenario(z.szenario);
+    setWegId(z.weg);
+    setSelbstnutzer(z.selbstnutzer);
+    setAltheizung(z.altheizung);
+    setEinkommen(z.einkommen);
+    setKindImHaushalt(z.kindImHaushalt);
+    setEuUrsprung(z.euUrsprung);
+    setBegStand(z.begStand);
+    setFundingEnabled(z.foerderungAn);
+    setPvStatus(z.pvStatus);
+    setPvKwp(z.pvKwp);
+    setPvSpeicher(z.pvSpeicher);
+    setOGasPrice(z.gaspreis);
+    setOStromPrice(z.strompreis);
+    setOJaz(z.jaz);
+    setOInvest(z.investition);
+    setOQges(z.heizwaerme);
+    setOHeizlast(z.heizlast);
+    setOFossilInvest(z.fossilInvest);
+    if (z.plz) { setPlz(z.plz); void foerderQuelle.ausPlz(z.plz); }
+    // Ein geteilter Link ZEIGT ein Ergebnis — er stellt keine Fragen noch
+    // einmal. Alle Antworten gelten damit als gegeben; ohne das stünde der
+    // Empfänger vor einem Flow, dessen Weiter-Knopf gesperrt ist, obwohl alle
+    // Werte gesetzt sind.
+    setBeantwortet(new Set(["situation", "flaeche", "haustyp", "daemmung", "personen", "heizsystem", "wptyp"]));
+    setStep(STEPS.length);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /** Der aktuelle Zustand als Datensatz — eine Quelle für Link und Prüfung. */
+  const shareZustand = (): WpZustand => ({
+    situation,
+    wohnflaeche: customFlaeche ?? WOHNFLAECHEN[flaecheIdx].m2,
+    haustyp: HAUSTYP_WP[haustypIdx]?.id ?? "frei",
+    daemmung: insulationIdx,
+    personen,
+    heizsystem,
+    wpType,
+    brennstoff: oFuel,
+    heizkoerperTausch,
+    szenario: scenario,
+    weg: wegId,
+    selbstnutzer,
+    altheizung,
+    einkommen,
+    kindImHaushalt,
+    euUrsprung,
+    begStand,
+    foerderungAn: fundingEnabled,
+    plz,
+    pvStatus,
+    pvKwp,
+    pvSpeicher,
+    gaspreis: oGasPrice,
+    strompreis: oStromPrice,
+    jaz: oJaz,
+    investition: oInvest,
+    heizwaerme: oQges,
+    heizlast: oHeizlast,
+    fossilInvest: oFossilInvest,
+  });
+
+  const buildShareUrl = () => {
+    const p = wpZuParametern(shareZustand()).toString();
+    return `${window.location.origin}${window.location.pathname}${p ? `?${p}` : ""}`;
+  };
+
+  /** Was in der Nachricht steht, bevor der Link kommt. */
+  const shareText = () =>
+    `Wärmepumpe statt ${fuel.refLabel}: ${sel.einsparungProJahr > 0 ? "spart" : "kostet"} ${Math.abs(sel.einsparungProJahr).toLocaleString("de-DE")} € im Jahr.`;
+
+  const [copied, setCopied] = useState(false);
+  const canShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
+  const shareBtnStyle = (aktiv?: boolean) => ({
+    width: 40, height: 40, borderRadius: v('--radius-md'), cursor: "pointer" as const,
+    background: aktiv ? v('--color-accent-dim') : v('--color-bg'),
+    border: `1px solid ${aktiv ? v('--color-accent') : v('--color-border-accent')}`,
+    color: v('--color-accent'),
+    display: "flex" as const, alignItems: "center" as const, justifyContent: "center" as const,
+    flexShrink: 0 as const, transition: "all 0.2s",
+  });
+  const handleCopy = async () => {
+    trackEvent("waermepumpe_geteilt");
+    const url = buildShareUrl();
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch { prompt("Link kopieren:", url); }
+  };
+  const handleNativeShare = async () => {
+    trackEvent("waermepumpe_geteilt");
+    try { await navigator.share({ title: "Solar Check – Meine Wärmepumpen-Rechnung", text: shareText(), url: buildShareUrl() }); } catch {}
+  };
+  const handleWhatsApp = () => {
+    trackEvent("waermepumpe_geteilt");
+    window.open(`https://wa.me/?text=${encodeURIComponent(`${shareText()}\n${buildShareUrl()}`)}`, "_blank");
+  };
 
   const isResult = step >= STEPS.length;
   // Ereignis je erreichtem Schritt, Reihenfolge wie STEPS, danach das Ergebnis.
@@ -1053,6 +1212,27 @@ export default function Waermepumpe({
               />
             )}
 
+            {/* Was aus der Bundesförderung wirklich geworden ist.
+
+                Alles darüber beschreibt, was die Förderung HERGIBT — Sätze, Boni,
+                Höchstbetrag. Die Frage, mit der die meisten herkommen, ist eine
+                andere: „bekomme ich das auch?" Darauf antwortet nur das, was
+                das Amt gezählt hat. Der Abschnitt steht deshalb direkt unter dem
+                Förderblock und nicht am Seitenende.
+
+                Nur im Bestand: Im Neubau gibt es diese Förderung nicht, und
+                Zahlen zu einer Förderung zu zeigen, die der gerechnete Fall gar
+                nicht bekommt, wäre die Sorte Zahl, die zur falschen Erwartung
+                führt. */}
+            {situation === "bestand" && kfw && (
+              <ResultSection
+                title="Wer bekommt die Förderung wirklich?"
+                summary={kfwPraxisZusammenfassung(kfw)}
+              >
+                <KfwFoerderpraxis daten={kfw} kreis={kfwKreis} nackt />
+              </ResultSection>
+            )}
+
             {/* 3. Realistische Wege */}
             {zeigeWege && (
               <div style={{ marginBottom: 16 }}>
@@ -1353,12 +1533,37 @@ export default function Waermepumpe({
               )}
             </div>
 
+            {/* Teilen — der Link trägt die ganze Rechnung, auch den Förderstand.
+                Ohne ihn bekäme der Empfänger unsere Förderannahme auf seine
+                eigenen Gebäudewerte gerechnet. */}
+            <div style={{ display: "flex", gap: 5, alignItems: "center", padding: "10px 0", marginBottom: 8 }}>
+              <button
+                onClick={handleCopy}
+                title={copied ? "Kopiert!" : "Link kopieren"}
+                aria-label="Link zu diesem Ergebnis kopieren"
+                style={shareBtnStyle(copied)}
+              >
+                {copied ? <IconCheck size={iconSizes.md} /> : <IconLink size={iconSizes.md} />}
+              </button>
+              {canShare && (
+                <button onClick={handleNativeShare} title="Teilen" aria-label="Ergebnis teilen" style={shareBtnStyle()}>
+                  <IconShare size={iconSizes.md} />
+                </button>
+              )}
+              <button onClick={handleWhatsApp} title="WhatsApp" aria-label="Ergebnis per WhatsApp teilen" style={shareBtnStyle()}>
+                <IconWhatsApp size={iconSizes.md} />
+              </button>
+              <span style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginLeft: 4 }}>
+                {copied ? "Link kopiert — er enthält deine ganze Rechnung." : "Ergebnis teilen"}
+              </span>
+            </div>
+
             {/* Aktionen */}
             <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
               <Link href={`/photovoltaik-rechner${pvStatus !== "nein" ? `?a=${pvKwp <= 5 ? 0 : pvKwp <= 8 ? 1 : pvKwp <= 10 ? 2 : pvKwp <= 15 ? 3 : 4}${pvKwp > 15 ? `&ck=${pvKwp}` : ""}&s=${pvSpeicher === 0 ? 0 : pvSpeicher <= 5 ? 1 : pvSpeicher <= 10 ? 2 : 3}&wp=ja` : ""}`} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer", textDecoration: "none", textAlign: "center" }}>
                 PV-Rechner öffnen <IconArrowRight size={iconSizes.sm} />
               </Link>
-              <button onClick={() => { setHeizkoerperTausch(false); setWegId("ist"); setSelbstnutzer(true); setAltheizung("gas_alt"); setEinkommen("none"); setKindImHaushalt(false); setOHeizlast(null); setOQges(null); setOJaz(null); setOInvest(null); setOGasPrice(null); setOStromPrice(null); setOFossilInvest(null); setOFuel("gas_neu"); setHaustypIdx(0); setStep(0); }} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
+              <button onClick={() => { setHeizkoerperTausch(false); setWegId("ist"); setSelbstnutzer(true); setAltheizung("gas_alt"); setEinkommen("none"); setKindImHaushalt(false); setOHeizlast(null); setOQges(null); setOJaz(null); setOInvest(null); setOGasPrice(null); setOStromPrice(null); setOFossilInvest(null); setOFuel("gas_neu"); setHaustypIdx(0); setStep(0); /* Die Adresse mitleeren: Sonst stehen die Angaben des geteilten Links noch darin, und ein Neuladen holt die gerade verworfene Rechnung zurück. */ if (typeof window !== "undefined") window.history.replaceState(null, "", window.location.pathname); }} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={iconSizes.sm} /> Neu berechnen</span>
               </button>
             </div>

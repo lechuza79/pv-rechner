@@ -49,7 +49,8 @@
     "kommunen:stand": "tsx scripts/kommunen-stand.ts",
     "kommunen:vorflug": "tsx scripts/kommunen-vorflug.ts",
     "atlas:kreisfrei": "tsx scripts/atlas-kreisfrei-messen.ts",
-    "kommunen:verweise": "tsx scripts/kommunen-verweise-suchen.ts"
+    "kommunen:verweise": "tsx scripts/kommunen-verweise-suchen.ts",
+    "kfw:import": "tsx scripts/kfw-report-import.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",

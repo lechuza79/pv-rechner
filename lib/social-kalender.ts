@@ -35,6 +35,8 @@ export type PlatzZuweisung = {
   titel: string | null;
   /** Wann an dem Tag gesendet werden soll — „11:07". */
   uhrzeit?: string | null;
+  /** Auf welche Kanäle er geht. Leer = alles, wofür die Story taugt. */
+  kanaele?: string[] | null;
 };
 
 /** Ein Platz in einer Woche — vergangen oder kommend. */

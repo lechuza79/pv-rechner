@@ -63,6 +63,8 @@ export const EVENTS = [
   "waermepumpe_schritt_haushalt",
   "waermepumpe_schritt_heizsystem",
   "waermepumpe_ergebnis",
+  // Aktion im Wärmepumpen-Ergebnis — dasselbe Muster wie im PV-Rechner.
+  "waermepumpe_geteilt",
   // Trichter Klimaanlage
   "klima_schritt_raeume",
   "klima_schritt_nutzung",

@@ -114,3 +114,28 @@ describe("Versandfenster", () => {
     expect(SCHULFERIEN_QUELLE.geprueftIso).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 });
+
+// Der erste Tag nach den Ferien ist formal ein Arbeitstag und der schlechteste
+// Versandtag im Jahr: volle Postfächer, und ein Brief, den niemand liest, ist
+// nicht neutral — die Gemeinde gilt danach als angeschrieben und bekommt keinen
+// zweiten.
+describe("Erster Tag nach den Ferien", () => {
+  it("sperrt den Tag nach dem letzten Ferientag", () => {
+    // Nordrhein-Westfalen: Sommerferien bis einschließlich 01.09.2026.
+    expect(versandfenster("05", "2026-09-01").frei).toBe(false);
+    const rueckkehr = versandfenster("05", "2026-09-02");
+    expect(rueckkehr.frei).toBe(false);
+    if (!rueckkehr.frei) expect(rueckkehr.grund).toContain("Erster Tag nach den Ferien");
+  });
+
+  it("gibt den zweiten Tag wieder frei", () => {
+    expect(versandfenster("05", "2026-09-03").frei).toBe(true);
+  });
+
+  // Die Gegenrichtung: Ein Land, dessen Ferien länger her sind, darf nicht
+  // mitgesperrt werden — sonst stünde der ganze Versand still.
+  it("sperrt nicht, wo die Ferien länger her sind", () => {
+    expect(versandfenster("03", "2026-09-02").frei).toBe(true);
+    expect(versandfenster("06", "2026-09-02").frei).toBe(true);
+  });
+});
