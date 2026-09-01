@@ -1057,6 +1057,18 @@ Das Projekt veröffentlicht seit 26.08.2026 selbst auf LinkedIn. Der Redaktionsb
 läuft in einer eigenen Sitzung — Übergabe mit den Fallen: `docs/redaktionssystem-uebergabe.md`.
 Der Vorrat an Geschichten steht in `docs/datenstories-katalog.md`.
 
+**OFFEN (bis 12/2026): Datenstories und Abo-Meldungen aus einer Quelle**
+(Betreiber, 01.09.2026). Beide rechnen aus denselben Zahlen und wissen
+nichts voneinander: Der Story-Katalog rechnet bundesweit für die
+Social-Beiträge, `gemeindeMeldungen()` rechnet je Ort für die Abo-Mail.
+Eine Geschichte, die eine Gemeinde betrifft, ist damit zweimal zu
+formulieren — und genau daraus entsteht der Widerspruch, den dieses
+Projekt beim Kommunen-Anschreiben schon einmal hatte. Umgekehrt liegt der
+Hebel auf der Hand: Was einen Social-Beitrag trägt, trägt auch eine
+Meldung an die Abonnenten des betroffenen Orts, ohne dass jemand sie
+schreibt. **Erst angehen, wenn es Abonnenten gibt** — vorher wäre es eine
+Zusammenführung von etwas, das noch niemand liest.
+
 **Ein Post wird GERECHNET, nicht getippt — BLOCKER.** Text und Bild entstehen aus derselben
 Funktion (`lib/social-posts.ts`), gespeist aus einer Kennzahlen-Abfrage (`lib/social-kennzahlen.ts`).
 Ein Beitrag kann damit keine Zahl behaupten, die das Diagramm daneben widerlegt. Wer das Bearbeiten
