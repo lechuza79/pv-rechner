@@ -42,6 +42,16 @@ drei bis fünf Betriebe; wer dort kauft, kauft einen Platz im Bieterwettbewerb. 
 Anfrage kommt von seinem eigenen Besucher, geht nur an ihn, wird nicht weiterverkauft und
 kostet nichts.
 
+**Die kommunale Förderung, die er selbst nicht kennt.** Der Kunde sieht über seine
+Postleitzahl, ob seine Gemeinde zuzahlt; der Betrieb erfährt es aus der Anfrage. Über
+hundert Programme, täglich auf Bewegung geprüft — das bekommt er nirgends sonst. **Ab
+Stufe 1 automatisch dabei**, weil der Fördercheck ohnehin im Rechner sitzt.
+
+**Eine Seite, die von selbst aktuell bleibt.** Einspeisevergütung, Förderung und
+Rechtsstände pflegen wir laufend. 2027 wird die Vergütung umgestellt — seine verlinkte
+Seite rechnet dann richtig, ohne dass er etwas tut, während seine eigenen
+Angebotsunterlagen veralten.
+
 **Ein Werkzeug, das er nicht bauen will.** Der Grund, aus dem 2.080 Domains den
 HTW-Rechner verlinken.
 
@@ -60,6 +70,19 @@ nicht. Wer hier mehr verspricht, verliert beim ersten Nachrechnen.
 
 *Und der Nutzen hängt am Link:* Fällt der Link weg, fällt alles weg. Das ist zugleich
 unsere Absicherung — wer den Rückkanal will, verlinkt.
+
+### Was Stufe 4 wirklich ist — und warum sie heute nicht angeboten wird
+
+„Anfragen von unseren Ortsseiten" heißt im Klartext: **Leads.** Jemand landet auf einer
+unserer Gemeinde- oder Förderseiten, sucht einen Betrieb in der Nähe, und wir reichen ihn
+weiter. Das ist das, was ein Fachbetrieb am liebsten hätte — und **wir können es nicht
+anbieten, weil uns die Reichweite fehlt.**
+
+**Damit schließt sich der Kreis des ganzen Vorhabens:** Wir bitten um Links, um die
+Reichweite aufzubauen, aus der später Anfragen für sie werden. Der erste Schub ist eine
+Investition in das, was wir ihnen erst danach geben können. **Im Gespräch darf das als
+Perspektive vorkommen, nie als Zusage** — eine versprochene Anfrage, die nicht kommt, ist
+teurer als gar kein Versprechen.
 
 ---
 
@@ -110,7 +133,7 @@ Leistungsumfang, keine Beträge — die gehören dem Betreiber und brauchen eine
 | **1 Partner** | dazu Rückkanal, Übernahme ins Angebot, Umkreis hinterlegt | Link von seiner Website | frei |
 | **2 Einbettung** | Werkzeuge auf seiner Seite, unsere Marke, unser Modell | Link | frei |
 | **3 Whitelabel** | ohne unsere Marke, eigene Zusatzfragen | — | zahlt |
-| **4 später** | Förderdaten in seinem Angebotswerkzeug, Verkehr aus unseren Ortsseiten | — | zahlt |
+| **4 später** | Förderdaten in seinem eigenen Angebotswerkzeug; **Anfragen von unseren Ortsseiten** | — | zahlt |
 
 **Stufe 3 ist die schwächste Bezahlstufe, nicht die erste, die wir bepreisen.** Die
 Hersteller verschenken Planungssoftware, um Hardware zu verkaufen (BayWa, SMA, SolarEdge,
