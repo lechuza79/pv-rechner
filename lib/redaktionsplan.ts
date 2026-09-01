@@ -5,6 +5,7 @@
 // noch nicht entschieden ist, statt eine Vollständigkeit vorzutäuschen.
 
 import type { PruefArt } from "./social-pruefung-kern";
+import type { Haltbarkeit } from "./social-haltbarkeit";
 
 export type Wochentag = "Mo" | "Di" | "Mi" | "Do" | "Fr";
 
@@ -136,6 +137,19 @@ export type Familie = {
   beschreibung: string;
   zustand: "gebaut" | "daten-da" | "fehlt-daten" | "spaeter";
   hinweis?: string;
+  /**
+   * Wie lange die Aussagen dieser Familie tragen.
+   *
+   * AN DER FAMILIE, nicht am einzelnen Beitrag — hier ist sie eine Eigenschaft
+   * der Gattung: „Was in einem Monat dazugekommen ist" ist zeitgebunden, egal
+   * welche Zahl gerade darin steht; „wo die Geräte wirklich stehen" ist es
+   * nicht. Ein einzelner Beitrag kann davon abweichen, aber er muss nicht.
+   *
+   * Wofür das gebraucht wird: Kommt später ein Kanal dazu, liegt es nahe, die
+   * bereits gesendeten Beiträge dort nachzureichen — und für einen Teil von
+   * ihnen wäre das falsch.
+   */
+  haltbarkeit: Haltbarkeit;
 };
 
 export const FAMILIEN: Familie[] = [
@@ -148,6 +162,7 @@ export const FAMILIEN: Familie[] = [
     beschreibung:
       "Was der Bestand in diesem Moment leistet, bis hinunter auf die Region. Unser Alleinstellungsmerkmal und zugleich die Familie mit der härtesten Voraussetzung: Ohne die Verbindung von Bestand und Wetter ist jede Tageszahl geraten.",
     zustand: "fehlt-daten",
+    haltbarkeit: { art: "zeitgebunden", tage: 7, grund: "beschreibt einen Moment" },
     hinweis: "Regionaler Tageswert braucht Bestand × Wetter",
   },
   {
@@ -159,6 +174,7 @@ export const FAMILIEN: Familie[] = [
     beschreibung:
       "Was in einem Monat dazugekommen ist, nach Größenklasse und Geografie. Braucht den Monat des Netzanschlusses — mit dem Jahr allein ist ein Monatswert eine Behauptung über einen Zeitraum, den die Quelle nicht hergibt.",
     zustand: "fehlt-daten",
+    haltbarkeit: { art: "zeitgebunden", tage: 30, grund: "nennt einen bestimmten Monat" },
     hinweis: "Braucht den Anschlussmonat statt nur das Jahr",
   },
   {
@@ -170,6 +186,7 @@ export const FAMILIEN: Familie[] = [
     beschreibung:
       "Zwei Orte, zwei Größen, eine Rangliste. Trägt nur, wenn beide Seiten benannt sind statt aus einer Sortierung erraten — und nie mit einem Superlativ auf kleiner Grundmenge, der vollständig im Nenner entsteht.",
     zustand: "gebaut",
+    haltbarkeit: { art: "dauerhaft" },
   },
   {
     schluessel: "g4",
@@ -180,6 +197,7 @@ export const FAMILIEN: Familie[] = [
     beschreibung:
       "Was an Vergütung in einen Ort geflossen ist und welcher Jahrgang gerade ausläuft. Der stärkste Vorsprung im Katalog, weil kaum jemand sonst beide Seiten hat — Bestand und Vergütungsrecht.",
     zustand: "daten-da",
+    haltbarkeit: { art: "zeitgebunden", tage: 60, grund: "nennt einen auslaufenden Jahrgang" },
   },
   {
     schluessel: "g5",
@@ -190,6 +208,7 @@ export const FAMILIEN: Familie[] = [
     beschreibung:
       "Was sich diese Woche in den kommunalen Programmen bewegt hat, und wo eine Lücke klafft. Täglich gepflegt und damit exklusiv; die Schranke ist die Namensnennung — geholfen wird, nicht bewertet.",
     zustand: "gebaut",
+    haltbarkeit: { art: "zeitgebunden", tage: 14, grund: "beschreibt die Bewegung einer Woche" },
   },
   {
     schluessel: "g6",
@@ -200,6 +219,7 @@ export const FAMILIEN: Familie[] = [
     beschreibung:
       "Was sich zu einem Datum ändert und was man davor tun muss. Der planbare Teil des Redaktionsplans — und der gefährlichste: Ein Entwurf, der als geltendes Recht gelesen wird, ist die teuerste Auskunft, die wir geben können.",
     zustand: "gebaut",
+    haltbarkeit: { art: "zeitgebunden", tage: 30, grund: "hängt an einem Stichtag" },
   },
   {
     schluessel: "g7",
@@ -210,6 +230,7 @@ export const FAMILIEN: Familie[] = [
     beschreibung:
       "Eine verbreitete Annahme, neben die gemessene Zahl gestellt. Der Zug auf unsere Ratgeber — und die Bedingung ist, dass die Annahme wirklich verbreitet ist, sonst widerlegt der Beitrag einen Popanz.",
     zustand: "gebaut",
+    haltbarkeit: { art: "dauerhaft" },
   },
   {
     schluessel: "g8",
@@ -220,6 +241,7 @@ export const FAMILIEN: Familie[] = [
     beschreibung:
       "Deutschland neben andere Länder gestellt, pro Kopf statt absolut. Die Reihen stammen aus einer fremden Quelle mit eigener Jahresachse — was sie nicht mehr hergibt, wächst nicht mit.",
     zustand: "gebaut",
+    haltbarkeit: { art: "dauerhaft" },
   },
   {
     schluessel: "g9",
@@ -230,6 +252,7 @@ export const FAMILIEN: Familie[] = [
     beschreibung:
       "Was eine Anlage kostet, gegen das, was sie einbringt. Die Anschaffungsseite ist gescrapt und altert monatlich; wer hier eine Zahl nennt, nennt ihren Stand dazu.",
     zustand: "daten-da",
+    haltbarkeit: { art: "zeitgebunden", tage: 60, grund: "nennt Marktpreise, die sich bewegen" },
   },
   {
     schluessel: "g10",
@@ -240,6 +263,7 @@ export const FAMILIEN: Familie[] = [
     beschreibung:
       "Ein Ort, der aus der Reihe fällt, ohne dass wir die Ursache kennen — und genau so gefragt. Stärkster Kommentar-Motor des Katalogs, aber nur bei positivem Ausschlag: Ein negativer wäre eine Bloßstellung.",
     zustand: "gebaut",
+    haltbarkeit: { art: "dauerhaft" },
     hinweis: "Stärkster Kommentar-Motor",
   },
   {
@@ -251,6 +275,7 @@ export const FAMILIEN: Familie[] = [
     beschreibung:
       "Was wir falsch hatten, wie wir es gefunden haben und was wir daraufhin geändert haben. Wirkt stärker als jede Kennzahl — aber nur mit dem dritten Teil, sonst ist es Koketterie.",
     zustand: "daten-da",
+    haltbarkeit: { art: "dauerhaft" },
   },
   {
     schluessel: "g12",
@@ -261,6 +286,7 @@ export const FAMILIEN: Familie[] = [
     beschreibung:
       "Was in kommunalen Förderprogrammen typischerweise fehlt und sie für Bürger unbrauchbar macht. Ohne einen einzigen Ortsnamen — diese Familie hilft, sie bewertet nicht.",
     zustand: "gebaut",
+    haltbarkeit: { art: "dauerhaft" },
   },
   {
     schluessel: "g13",
@@ -271,6 +297,7 @@ export const FAMILIEN: Familie[] = [
     beschreibung:
       "Steckersolar als eigene Welt: wo die Geräte wirklich stehen, wie schnell sie wachsen, welche Kommunen nur noch sie fördern. Die breiteste Alltagsanschlussfähigkeit im Katalog und ohne Kränkungsrisiko, weil aggregiert.",
     zustand: "gebaut",
+    haltbarkeit: { art: "dauerhaft" },
   },
   {
     schluessel: "g14",
@@ -281,6 +308,7 @@ export const FAMILIEN: Familie[] = [
     beschreibung:
       "Wie sich die Solarleistung auf Freifläche, Gewerbe- und Privatdach verteilt. Höchster Ertrag und höchstes Risiko: kommunalpolitisch heiß, deshalb streng neutral, keine Wertung, keine Empfehlung.",
     zustand: "gebaut",
+    haltbarkeit: { art: "dauerhaft" },
     hinweis: "Hoher Ertrag, hohes Risiko",
   },
   {
@@ -292,6 +320,7 @@ export const FAMILIEN: Familie[] = [
     beschreibung:
       "Die Dächer, auf denen praktisch nichts steht — Mehrfamilienhäuser vor allem. Braucht eine Quelle für den Gebäudebestand, die wir nicht haben; ohne sie ist der Nenner geraten.",
     zustand: "fehlt-daten",
+    haltbarkeit: { art: "dauerhaft" },
     hinweis: "Braucht den Gebäudebestand",
   },
   {
@@ -303,6 +332,7 @@ export const FAMILIEN: Familie[] = [
     beschreibung:
       "Wie sich die typische Anlage über die Jahrgänge verändert hat — Größe, Speicher, Ausrichtung. Ohne Ortsbezug und damit ohne Kränkungsrisiko, eine der wenigen Familien ganz ohne Schranke.",
     zustand: "gebaut",
+    haltbarkeit: { art: "dauerhaft" },
   },
   {
     schluessel: "g17",
@@ -313,6 +343,7 @@ export const FAMILIEN: Familie[] = [
     beschreibung:
       "Fragen aus den Kommentaren, eine pro Woche mit einer Grafik beantwortet. Eine Antwort auf Zuruf ist kein Freibrief für eine ungeprüfte Zahl — es gelten dieselben Prüfschwellen wie sonst.",
     zustand: "daten-da",
+    haltbarkeit: { art: "zeitgebunden", tage: 30, grund: "antwortet auf eine Frage von dieser Woche" },
   },
   {
     schluessel: "g18",
@@ -323,6 +354,7 @@ export const FAMILIEN: Familie[] = [
     beschreibung:
       "Wie dieses Produkt entsteht: Entscheidungen, Verworfenes, Messungen. Zurückgestellt, bis das Posten steht — es ist die Familie, die am wenigsten mit unseren Daten zu tun hat.",
     zustand: "spaeter",
+    haltbarkeit: { art: "dauerhaft" },
   },
   {
     schluessel: "g19",
@@ -333,6 +365,7 @@ export const FAMILIEN: Familie[] = [
     beschreibung:
       "Zusagen der Bundesförderung je Kreis — die erste Zahl im Haus, die etwas über Wärmepumpen sagt statt über Photovoltaik. Vier Schranken, darunter die wichtigste: Eine zugesagte Heizungsförderung ist keine Wärmepumpe — auf Kreisebene ist nicht nach Technik aufgeschlüsselt.",
     zustand: "fehlt-daten",
+    haltbarkeit: { art: "zeitgebunden", tage: 60, grund: "nennt einen Förderstand" },
     hinweis: "Eigene Sitzung bringt es ins Produkt",
   },
   {
@@ -344,6 +377,7 @@ export const FAMILIEN: Familie[] = [
     beschreibung:
       "Was eines unserer Werkzeuge kann, an einem echten Fall gezeigt. Trägt nur, wenn der Beitrag eine Frage beantwortet, die jemand ohnehin hat — eine Funktion vorzuführen, nach der niemand gefragt hat, ist Werbung und wird auch so gelesen.",
     zustand: "daten-da",
+    haltbarkeit: { art: "dauerhaft" },
   },
 ];
 

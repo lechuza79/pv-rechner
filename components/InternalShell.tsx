@@ -28,10 +28,16 @@ export default function InternalShell({
 }) {
   const narrow = useIsNarrow();
 
-  const sections: NavSection[] = [
-    { title: "Mein Konto", links: [{ href: "/dashboard", label: "Meine Berechnungen" }] },
-  ];
+  const sections: NavSection[] = [];
   if (isAdmin) {
+    // Analytics steht oben: Es ist die Gruppe, die man beim Reinkommen ansieht,
+    // bevor man irgendwo weiterarbeitet. „Mein Konto" wandert dafür ans Ende —
+    // die eigenen Berechnungen sind ein Nachschlagewerk, kein Einstieg
+    // (Betreiber, 01.09.2026).
+    sections.push({
+      title: "Analytics",
+      links: [{ href: "/admin/einbettungen", label: "Einbettungen" }],
+    });
     sections.push({
       title: "Kommunen",
       links: [
@@ -97,6 +103,7 @@ export default function InternalShell({
       ],
     });
   }
+  sections.push({ title: "Mein Konto", links: [{ href: "/dashboard", label: "Meine Berechnungen" }] });
 
   return (
     <div

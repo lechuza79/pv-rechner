@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { istAdminOderCron } from "../../../../lib/admin-guard";
-import { ladeBildHoch, posteText } from "../../../../lib/linkedin";
+import { posteBild } from "../../../../lib/instagram";
+import { legeBildAb } from "../../../../lib/social-bildablage";
 import { pruefungGueltig, fassungsAbdruck } from "../../../../lib/social-pruefung";
 import { socialKennzahlen } from "../../../../lib/social-kennzahlen";
 import { baueAllePosts } from "../../../../lib/social-posts";
@@ -11,27 +12,29 @@ import { HALTBARKEIT_VORGABE, darfNachgereichtWerden } from "../../../../lib/soc
 import { FAMILIEN } from "../../../../lib/redaktionsplan";
 import { heuteInBerlin } from "../../../../lib/zeit";
 
-// Veröffentlichung eines Beitrags mit Bild.
+// Veröffentlichung eines Beitrags auf Instagram.
 //
-// Das Bild wird im Browser aus der Karte aufgenommen, die dort ohnehin steht,
-// und hier hochgereicht. Ein zweiter Renderweg auf dem Server hieße, dass das
-// veröffentlichte Bild ein anderes ist als das abgenommene — und genau diese
-// Sorte Unterschied merkt niemand, bis er im Feed steht.
+// DIESELBEN SPERREN WIE BEI LINKEDIN, in derselben Reihenfolge: Abgleich der
+// Fassung, mechanische Prüfung, Freigabe, Doppelversand. Sie hier zu lockern,
+// weil es „nur" der zweite Kanal ist, hieße, dass eine ungeprüfte Zahl über den
+// Nebeneingang hinausgeht.
 //
-// DER TEXT KOMMT NICHT VOM BROWSER. Er wird hier neu gebaut, aus denselben
-// Kennzahlen und derselben gespeicherten Fassung wie in der Ansicht. Sonst wäre
-// die Prüfung nur so gut wie das, was der Aufrufer behauptet: Wer den geprüften
-// Text schickt und ein anderes Bild aufnimmt, käme durch.
+// DREI UNTERSCHIEDE, alle aus der Schnittstelle:
 //
-// Das Bild lässt sich so nicht absichern — es entsteht im Browser. Absicherbar
-// ist der Abgleich: Der Aufrufer schickt den Abdruck der Fassung, die er
-// aufgenommen hat, und wir halten ihn gegen unseren eigenen. Weicht er ab, hat
-// der Browser einen alten Stand, und wir senden nicht.
+// 1. DAS BILD IST PFLICHT. Instagram kennt keinen reinen Textbeitrag — ohne
+//    Bild gäbe es nichts zu veröffentlichen.
+// 2. ES MUSS ERST ÖFFENTLICH LIEGEN. Instagram nimmt keine Bilddaten entgegen,
+//    sondern holt sie von einer Adresse ab. Deshalb der Umweg über die Ablage.
+// 3. JPEG. Der Browser nimmt für diesen Weg als JPEG auf, nicht als PNG.
+//
+// Der TEXT kommt wie bei LinkedIn nicht vom Browser, sondern wird hier neu
+// gebaut — sonst wäre die Prüfung nur so gut wie das, was der Aufrufer
+// behauptet.
 
 export const dynamic = "force-dynamic";
 
-/** Vercel-Funktionen haben ein Größenlimit für Anfragen; ein PNG dieser Karte
- *  liegt bei rund 200 KB, die Grenze hier ist großzügig darüber. */
+/** Eine Kartenaufnahme liegt bei einigen hundert Kilobyte; die Grenze ist
+ *  großzügig darüber und schützt die Funktion vor einem Fehlgriff. */
 const MAX_BILD_BYTES = 4_000_000;
 
 export async function POST(req: NextRequest) {
@@ -45,7 +48,6 @@ export async function POST(req: NextRequest) {
     fassung?: string;
     bildBase64?: string;
     bildAlt?: string;
-    ersterKommentar?: string;
   };
 
   if (!body.postId) return NextResponse.json({ error: "Keine Post-Kennung übergeben" }, { status: 400 });
@@ -60,16 +62,18 @@ export async function POST(req: NextRequest) {
   }
   if (!post) return NextResponse.json({ error: "Unbekannte Post-Kennung" }, { status: 404 });
 
+  // Der Beitrag muss für diesen Kanal überhaupt vorgesehen sein. Ohne die
+  // Prüfung ginge jede Story auf Instagram, auch die, für die dort bewusst kein
+  // Platz ist.
+  if (!post.kanal.includes("instagram")) {
+    return NextResponse.json(
+      { error: "Dieser Beitrag ist nicht für Instagram vorgesehen." },
+      { status: 409 },
+    );
+  }
+
   const fassung = { text: post.text, bild: post.bild };
   const abdruck = fassungsAbdruck(fassung);
-  // PFLICHT, nicht optional. Vorher stand hier `if (body.fassung && …)` — wer
-  // das Feld wegließ, übersprang die Prüfung ersatzlos. Damit war folgender
-  // Weg offen: Ein Tab steht auf altem Datenstand und hat das Bild dazu
-  // aufgenommen; in einem zweiten wird nach einer Datenbewegung neu geprüft und
-  // freigegeben. Der erste sendet ohne Abdruck — veröffentlicht wird der neue
-  // Text mit dem alten Bild, beide Prüfungen grün. Genau die Fehlerklasse, die
-  // dieses Projekt als schwerste führt: eine Aussage, die nicht zur Zahl
-  // daneben passt. Gefunden von einem adversarialen Prüfer.
   if (!body.fassung) {
     return NextResponse.json(
       { error: "Kein Fassungs-Abdruck übergeben — ohne ihn ist nicht belegbar, was aufgenommen wurde." },
@@ -86,17 +90,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // DIE MECHANIK SPERRT HIER, nicht erst in der Oberfläche.
-  //
-  // Sie läuft gegen die Fassung, die WIRKLICH rausgeht, und gegen den
-  // Datenstand von jetzt — nicht gegen eine Werkbank, die jemand starten muss.
-  // Genau das war der Unterschied, an dem die bisherige Prüfung hing: Eine
-  // Regel, die nur läuft, wenn sie jemand aufruft, ist keine Sperre.
-  //
-  // Sie steht VOR der Freigabeprüfung: Ein Beitrag mit einem mechanischen
-  // Widerspruch soll das erfahren, auch wenn er noch gar keine Freigabe hat —
-  // sonst schickt man erst jemanden zum Prüfen und erfährt danach, dass die
-  // Zahlen sich widersprechen.
   const mechanik = sperren(pruefeMechanisch(post, kennzahlen));
   if (mechanik.length) {
     return NextResponse.json(
@@ -105,15 +98,16 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // DIE FREIGABE GILT DEM INHALT, NICHT DEM KANAL — und deshalb steht hier
+  // dieselbe Prüfung wie bei LinkedIn, ohne Kanal-Zusatz. Ob eine Zahl stimmt
+  // und ob eine Rechtsaussage trägt, hängt nicht daran, wo sie erscheint. Trägt
+  // Instagram einen eigenen Text, ist das eine andere Fassung mit eigenem
+  // Abdruck und braucht damit von selbst eine eigene Freigabe.
   const pruefung = await pruefungGueltig(post.id, fassung);
   if (!pruefung.ok) {
     return NextResponse.json({ error: pruefung.grund }, { status: 409 });
   }
 
-  // DOPPELVERSAND. Bricht die Verbindung nach dem Aufruf bei LinkedIn ab und
-  // jemand wiederholt, standen bisher zwei identische Beiträge im Feed — nichts
-  // verhinderte das. Die Sperre hängt an der FASSUNG, nicht am Beitrag: Nach
-  // einer echten Überarbeitung darf er wieder laufen, unverändert nie.
 
   // NACHREICHEN AUF EINEM SPÄTEREN KANAL. Kommt ein Kanal dazu, liegt es nahe,
   // die schon gesendeten Beiträge dort nachzureichen — und für einen Teil von
@@ -136,49 +130,51 @@ export async function POST(req: NextRequest) {
   if (!nachreichen.darf) {
     return NextResponse.json({ error: nachreichen.grund }, { status: 409 });
   }
-  const bereits = await schonGesendet(post.id, abdruck);
+  const bereits = await schonGesendet(post.id, abdruck, "instagram");
   if (bereits) {
     return NextResponse.json(
       {
-        error: `Diese Fassung ging bereits am ${new Date(bereits.gesendet_am).toLocaleString("de-DE")} raus.`,
+        error: `Diese Fassung ging auf Instagram bereits am ${new Date(bereits.gesendet_am).toLocaleString("de-DE")} raus.`,
         extern: bereits.extern_id,
       },
       { status: 409 },
     );
   }
 
+  if (!body.bildBase64) {
+    return NextResponse.json(
+      { error: "Ohne Bild geht auf Instagram nichts — die Plattform kennt keinen reinen Textbeitrag." },
+      { status: 400 },
+    );
+  }
+  if (!body.bildAlt?.trim()) {
+    return NextResponse.json({ error: "Bildbeschreibung fehlt" }, { status: 400 });
+  }
+
   try {
-    let bildUrn: string | undefined;
-    if (body.bildBase64) {
-      const bytes = Buffer.from(body.bildBase64, "base64");
-      if (bytes.byteLength > MAX_BILD_BYTES) {
-        return NextResponse.json({ error: "Bild zu groß" }, { status: 413 });
-      }
-      if (!body.bildAlt?.trim()) {
-        // Ein Diagramm ohne Alternativtext ist für Screenreader eine leere
-        // Fläche. Die Zahl darin interessiert dieselben Leute.
-        return NextResponse.json({ error: "Bildbeschreibung fehlt" }, { status: 400 });
-      }
-      bildUrn = await ladeBildHoch(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength));
+    const bytes = Buffer.from(body.bildBase64, "base64");
+    if (bytes.byteLength > MAX_BILD_BYTES) {
+      return NextResponse.json({ error: "Bild zu groß" }, { status: 413 });
     }
 
-    const ergebnis = await posteText(post.text, {
-      bildUrn,
-      bildAlt: body.bildAlt,
-      ersterKommentar: body.ersterKommentar,
-    });
+    const bildUrl = await legeBildAb(
+      post.id,
+      bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer,
+      new Date().toISOString(),
+    );
 
-    // SOFORT NACH dem Aufruf protokollieren, vor der Antwort. Scheitert das
-    // Schreiben, ist der Beitrag trotzdem draußen — dann muss der Fehler laut
-    // sein, damit niemand ein zweites Mal sendet. Deshalb wird er in die
-    // Antwort gehoben statt geschluckt.
+    const ergebnis = await posteBild(bildUrl, post.text, { bildAlt: body.bildAlt });
+
+    // SOFORT NACH dem Aufruf protokollieren. Scheitert das Schreiben, ist der
+    // Beitrag trotzdem draußen — dann muss der Fehler laut sein, damit niemand
+    // ein zweites Mal sendet.
     let protokollFehler: string | null = null;
     try {
       await schreibeVersand({
         post_id: post.id,
         fassung_fingerabdruck: abdruck,
-        extern_id: (ergebnis as { id?: string }).id ?? null,
-        kanal: "linkedin",
+        extern_id: ergebnis.id || null,
+        kanal: "instagram",
       });
     } catch (err) {
       protokollFehler = (err as Error).message;

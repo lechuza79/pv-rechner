@@ -260,40 +260,6 @@ export default function DatenschutzPage() {
           </a>
         </p>
 
-        {/* Ergänzt am 29.08.2026 mit der serverseitigen Herkunftszählung.
-            Sie ist bewusst KEIN zweites Messwerkzeug, sondern der Ersatz für
-            das, was die browserseitige Messung bauartbedingt nicht kann: Die
-            erfährt die Herkunft nur beim ersten Aufruf eines Besuchs. Der
-            Absatz steht hier und nicht in Abschnitt 3, weil die Server-Logfiles
-            dort dem Hosting-Anbieter gehören — diese Zählung ist unsere eigene
-            Verarbeitung mit eigenem Zweck. */}
-        <p style={S.p}>
-          <strong>Zusätzlich zählen wir auf unserem Server mit, von welcher
-          Website aus eine unserer Seiten aufgerufen wurde.</strong> Dafür wird
-          kein Skript ausgeliefert und nichts auf deinem Gerät gespeichert oder
-          von dort gelesen: Ausgewertet wird allein die Angabe, die dein Browser
-          beim Aufruf von sich aus mitschickt. Gespeichert werden davon nur drei
-          Dinge — der <strong>Kalendertag</strong>, die <strong>aufgerufene
-          Seite ohne den Teil hinter dem Fragezeichen</strong> und die
-          <strong> Domain der verweisenden Website</strong> (nie deren Adresse
-          im Einzelnen). Kam der Aufruf von einer anderen Seite unserer eigenen
-          Website oder ganz ohne Verweis, wird genau das vermerkt.
-        </p>
-        <p style={S.p}>
-          Was dabei entsteht, ist ein <strong>Zähler, keine Liste von
-          Besuchen</strong>: Jeder Aufruf erhöht eine Zahl, die für einen ganzen
-          Tag gilt. Es gibt keine Zeile je Aufruf und keine je Person. Deine
-          IP-Adresse, die Kennung deines Browsers und die Uhrzeit werden
-          <strong> nicht gespeichert</strong> — auch nicht verkürzt und auch
-          nicht in verschlüsselter Form. Damit lässt sich keine dieser Zahlen
-          einem Menschen zuordnen, auch nicht nachträglich. Die Kennung deines
-          Browsers wird einmal gelesen, um automatisierte Aufrufe von der
-          Zählung auszunehmen, und danach verworfen. Rechtsgrundlage ist
-          Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse daran, zu
-          verstehen, über welche Wege unser Angebot gefunden wird). Der
-          Erhebung kannst du jederzeit widersprechen (Abschnitt 12).
-        </p>
-
         <h2 style={S.h2}>6. Schriftarten</h2>
         <p style={S.p}>
           Diese Website verwendet die Schriftarten DM Sans und JetBrains Mono.

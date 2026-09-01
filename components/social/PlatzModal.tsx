@@ -7,6 +7,7 @@ import { SocialKarte } from "./SocialKarte";
 import { v, space, pad } from "../../lib/theme";
 import type { PostBild } from "../../lib/social-posts";
 import { istUhrzeit, zeitpunktFuer } from "../../lib/social-zeitpunkt";
+import { moeglicheKanaele } from "../../lib/social-kanalwahl";
 
 // Einen Kalendertag belegen.
 //
@@ -36,6 +37,10 @@ export type PlatzWahl = {
     familie: string;
     /** Für die Vorschau im Dialog. */
     bild: PostBild | null;
+    /** Wofür die Story taugt — Grundlage der Kanalwahl. */
+    kanal: ("linkedin" | "instagram")[];
+    /** Wie lange die Aussage trägt, in Worten. */
+    haltbarkeit: string;
   }[];
   familien: { schluessel: string; name: string; zustand: string; bereich: string }[];
   ratgeber: { slug: string; titel: string }[];
@@ -97,6 +102,7 @@ export function PlatzModal({
   const [ziel, setZiel] = useState<Ziel | null>(null);
   const [titel, setTitel] = useState("");
   const [uhrzeit, setUhrzeit] = useState("");
+  const [kanaele, setKanaele] = useState<string[] | null>(null);
   const [laeuft, setLaeuft] = useState(false);
   const [fehler, setFehler] = useState<string | null>(null);
 
@@ -108,10 +114,23 @@ export function PlatzModal({
     setUhrzeit(bestehendeZeit && istUhrzeit(bestehendeZeit) ? bestehendeZeit : zeitpunktFuer(datum));
   }, [datum, bestehendeZeit]);
 
+  // Die Voreinstellung ist eine Aussage, keine Bequemlichkeit: Ein Beitrag, der
+  // für zwei Kanäle taugt, geht auf beide. Nichts vorauszuwählen hieße, dass ein
+  // vergessener Haken stillschweigend die halbe Reichweite kostet.
+  useEffect(() => {
+    if (ziel?.art !== "post") {
+      setKanaele(null);
+      return;
+    }
+    const p = wahl.posts.find((x) => x.id === ziel.id);
+    setKanaele(p ? moeglicheKanaele(p.kanal, !!p.bild) : null);
+  }, [ziel, wahl.posts]);
+
   function schliessen() {
     setSorte(null);
     setZiel(null);
     setTitel("");
+    setKanaele(null);
     setFehler(null);
     onClose();
   }
@@ -125,7 +144,9 @@ export function PlatzModal({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
-          loeschen ? { datum, loeschen: true } : { datum, uhrzeit, ...nutzlast(ziel, titel) },
+          loeschen
+            ? { datum, loeschen: true }
+            : { datum, uhrzeit, ...(kanaele ? { kanaele } : {}), ...nutzlast(ziel, titel) },
         ),
       });
       const j = (await res.json().catch(() => ({}))) as { error?: string };
@@ -159,7 +180,11 @@ export function PlatzModal({
   // Ein Vorhaben braucht einen Arbeitstitel, ein fertiger Beitrag hat einen.
   const brauchtTitel = ziel?.art === "familie" || ziel?.art === "widget";
   const bereit =
-    !!ziel && istUhrzeit(uhrzeit) && (!brauchtTitel || !!titel.trim() || ziel.art === "widget");
+    !!ziel &&
+    istUhrzeit(uhrzeit) &&
+    // Ein Platz ohne Kanal ist ein belegter Tag, an dem nichts passiert.
+    (ziel.art !== "post" || (kanaele?.length ?? 0) > 0) &&
+    (!brauchtTitel || !!titel.trim() || ziel.art === "widget");
 
   return (
     <Modal open={offen} onClose={schliessen} title={tagText} maxWidth={640}>
@@ -215,6 +240,54 @@ export function PlatzModal({
               Schriftgrößen absolut. Ohne ihn stünde die Karte in voller
               Feed-Breite da und liefe aus dem Dialog heraus. */}
           <SocialKarte bild={gewaehlterPost.bild} stufe="teaser" skala={VORSCHAU_BREITE / 1080} />
+        </div>
+      )}
+
+      {/* KANÄLE. Sie stehen nur beim fertigen Beitrag: Ein Vorhaben hat noch
+          keinen, dessen Tauglichkeit man prüfen könnte, und ein Haken ohne
+          etwas dahinter ist eine Zusage, die niemand einlösen kann. */}
+      {gewaehlterPost && kanaele && (
+        <div style={{ marginTop: space.md }}>
+          <div style={{ display: "flex", alignItems: "center", gap: space.sm, flexWrap: "wrap" }}>
+            <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>
+              Kanäle
+            </span>
+            {moeglicheKanaele(gewaehlterPost.kanal, !!gewaehlterPost.bild).map((k) => {
+              const an = kanaele.includes(k);
+              return (
+                <label
+                  key={k}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: space.xxs,
+                    fontSize: v("--font-size-small"),
+                    cursor: "pointer",
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={an}
+                    onChange={() =>
+                      setKanaele(an ? kanaele.filter((x) => x !== k) : [...kanaele, k])
+                    }
+                  />
+                  {k === "linkedin" ? "LinkedIn" : "Instagram"}
+                </label>
+              );
+            })}
+          </div>
+          {/* Was der Beitrag NICHT kann, steht als Grund da statt als toter
+              Haken — sonst sucht jemand nach einem Häkchen, das es nicht gibt. */}
+          {gewaehlterPost.kanal.includes("instagram") && !gewaehlterPost.bild && (
+            <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), margin: 0, marginTop: space.xxs }}>
+              Instagram fehlt: Ohne Bild geht dort nichts.
+            </p>
+          )}
+          <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), margin: 0, marginTop: space.xxs }}>
+            Haltbarkeit: {gewaehlterPost.haltbarkeit}. Danach wird der Beitrag auf einem später
+            hinzukommenden Kanal nicht mehr nachgereicht.
+          </p>
         </div>
       )}
 

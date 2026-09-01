@@ -6,6 +6,7 @@ import { SOCIAL_PRUEFUNG_DDL } from "../../../../lib/social-pruefung-kern";
 import { SOCIAL_VORLAGEN_DDL } from "../../../../lib/social-vorlage";
 import { SOCIAL_VERSAND_DDL } from "../../../../lib/social-versand-log";
 import { SOCIAL_PLAETZE_DDL } from "../../../../lib/social-plaetze";
+import { richteBildAblageEin } from "../../../../lib/social-bildablage";
 
 // Einmalige Einrichtung der Konten-Ablage, mehrfach aufrufbar. RLS ist an und es
 // gibt keine Policy — die Tabelle hält Zugangsschlüssel und ist damit
@@ -28,5 +29,16 @@ export async function GET(req: NextRequest) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-  return NextResponse.json({ ok: true, tables: ["social_konten", "social_pruefungen", "social_vorlagen", "social_versand", "social_plaetze"] });
+  // Der Ablageort für Beitragsbilder gehört mit in die Einrichtung: Ohne ihn
+  // kann auf Instagram nichts erscheinen, denn dort wird das Bild nicht
+  // übergeben, sondern von einer öffentlichen Adresse abgeholt.
+  let ablage: string;
+  try {
+    const { angelegt } = await richteBildAblageEin();
+    ablage = angelegt ? "angelegt" : "bestand schon";
+  } catch (err) {
+    ablage = `FEHLT: ${(err as Error).message}`;
+  }
+
+  return NextResponse.json({ ok: true, bildablage: ablage, tables: ["social_konten", "social_pruefungen", "social_vorlagen", "social_versand", "social_plaetze"] });
 }

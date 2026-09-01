@@ -24,7 +24,6 @@ const TOOLS: { href: string; title: string; desc: string }[] = [
   { href: "/admin/fachbetriebe", title: "PV-Fachbetriebe", desc: "Erhobene Solarteure und Elektrobetriebe mit PV-Geschäft — filtern, ansehen, vormerken." },
   { href: "/admin/waechter", title: "Wächter-Berichte", desc: "Ablage aller Wächter-Läufe — auch der stummen, die keine Mail ausgelöst haben." },
   { href: "/admin/einbettungen", title: "Einbettungen", desc: "Fremde Seiten, auf denen unsere Widgets laufen — der Erfolg des Outreach, ohne auf eine Antwort zu warten." },
-  { href: "/admin/herkunft", title: "Herkunft", desc: "Woher die Aufrufe unserer eigenen Seiten kommen — am Server gezählt, weil die Messung im Browser die Herkunft nach dem ersten Klick verliert." },
 ];
 
 export default async function AdminHub() {

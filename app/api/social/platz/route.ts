@@ -8,6 +8,7 @@ import { FAMILIEN } from "../../../../lib/redaktionsplan";
 import { RATGEBER } from "../../../../lib/ratgeber";
 import { WIDGETS } from "../../../../lib/widget-registry";
 import { istUhrzeit, zeitpunktFuer } from "../../../../lib/social-zeitpunkt";
+import { kanalVorgabe, pruefeKanalwahl } from "../../../../lib/social-kanalwahl";
 
 // Einen Kalendertag belegen oder freigeben.
 //
@@ -39,6 +40,7 @@ export async function POST(req: NextRequest) {
     slug?: string;
     widget?: string;
     uhrzeit?: string;
+    kanaele?: string[];
     loeschen?: boolean;
   };
 
@@ -81,6 +83,15 @@ export async function POST(req: NextRequest) {
       const posts = baueAllePosts(await socialKennzahlen(), await ladeFassungen());
       const post = posts.find((p) => p.id === body.postId);
       if (!post) return NextResponse.json({ error: "Unbekannte Post-Kennung" }, { status: 404 });
+      // DIE KANALWAHL WIRD GEGEN DIE STORY GEPRÜFT, nicht übernommen. Ein Platz
+      // kann keinen Kanal wählen, den der Beitrag nicht bedienen kann — ein
+      // Beitrag ohne Bild erscheint auf Instagram nicht, egal was jemand
+      // anhakt. Ohne Angabe gilt alles, wofür die Story taugt.
+      const wahl = body.kanaele
+        ? pruefeKanalwahl(body.kanaele, post.kanal, !!post.bild)
+        : { ok: true as const, kanaele: kanalVorgabe(post.kanal, !!post.bild) };
+      if (!wahl.ok) return NextResponse.json({ error: wahl.grund }, { status: 400 });
+
       await setzePlatz({
         datum: body.datum,
         art: "post",
@@ -89,6 +100,7 @@ export async function POST(req: NextRequest) {
         kategorie: null,
         titel: post.titel,
         uhrzeit,
+        kanaele: wahl.kanaele,
       });
       return NextResponse.json({ ok: true });
     }
@@ -110,6 +122,7 @@ export async function POST(req: NextRequest) {
         kategorie: null,
         titel: body.titel?.trim() || familie.name,
         uhrzeit,
+        kanaele: null,
       });
       return NextResponse.json({ ok: true });
     }
@@ -125,6 +138,7 @@ export async function POST(req: NextRequest) {
         kategorie: "artikel",
         titel: `Ratgeber featuren: ${ratgeber.title}`,
         uhrzeit,
+        kanaele: null,
       });
       return NextResponse.json({ ok: true });
     }
@@ -140,6 +154,7 @@ export async function POST(req: NextRequest) {
         kategorie: `widget:${widget.id}`,
         titel: `Widget vorstellen: ${widget.title}`,
         uhrzeit,
+        kanaele: null,
       });
       return NextResponse.json({ ok: true });
     }
@@ -158,6 +173,7 @@ export async function POST(req: NextRequest) {
       kategorie: familie.schluessel,
       titel: body.titel.trim(),
       uhrzeit,
+      kanaele: null,
     });
     return NextResponse.json({ ok: true });
   } catch (err) {
