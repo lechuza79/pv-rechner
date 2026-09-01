@@ -6,6 +6,7 @@ import { baueAllePosts } from "../../../../lib/social-posts";
 import { ladeFassungen } from "../../../../lib/social-vorlagen-db";
 import { FAMILIEN } from "../../../../lib/redaktionsplan";
 import { RATGEBER } from "../../../../lib/ratgeber";
+import { WIDGETS } from "../../../../lib/widget-registry";
 
 // Einen Kalendertag belegen oder freigeben.
 //
@@ -35,6 +36,7 @@ export async function POST(req: NextRequest) {
     kategorie?: string;
     titel?: string;
     slug?: string;
+    widget?: string;
     loeschen?: boolean;
   };
 
@@ -51,8 +53,14 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const art = body.art as PlatzArt | "artikel" | undefined;
-  if (!art || (!ARTEN.includes(art as PlatzArt) && art !== "artikel")) {
+  // „artikel" und „widget" sind Wege im Dialog, keine eigenen Arten in der
+  // Ablage: Beide landen als Vorhaben („individuell") mit ihrer Herkunft in der
+  // Kategorie. Die Datenbank kennt drei Arten, und eine vierte einzuführen
+  // hieße, eine Beschränkung zu ändern, ohne dass sich an der Aussage etwas
+  // ändert — es ist in beiden Fällen ein geplantes Thema ohne fertigen Beitrag.
+  const art = body.art as PlatzArt | "artikel" | "widget" | undefined;
+  const WEGE = [...ARTEN, "artikel", "widget"];
+  if (!art || !WEGE.includes(art)) {
     return NextResponse.json({ error: "Unbekannte Art" }, { status: 400 });
   }
 
@@ -103,6 +111,20 @@ export async function POST(req: NextRequest) {
         familie: null,
         kategorie: "artikel",
         titel: `Ratgeber featuren: ${ratgeber.title}`,
+      });
+      return NextResponse.json({ ok: true });
+    }
+
+    if (art === "widget") {
+      const widget = Object.values(WIDGETS).find((w) => w.id === body.widget);
+      if (!widget) return NextResponse.json({ error: "Unbekanntes Widget" }, { status: 404 });
+      await setzePlatz({
+        datum: body.datum,
+        art: "individuell",
+        post_id: null,
+        familie: null,
+        kategorie: `widget:${widget.id}`,
+        titel: `Widget vorstellen: ${widget.title}`,
       });
       return NextResponse.json({ ok: true });
     }

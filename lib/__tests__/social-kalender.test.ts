@@ -3,6 +3,7 @@ import { baueKalender, deckung, montagVon, type Gesendetes, type PlatzZuweisung 
 import type { PlanEintrag } from "../social-plan";
 import type { SocialPost } from "../social-posts";
 import { freiBaender, tagesbefund } from "../social-kalendertage";
+import { fensterTitel } from "../../components/social/Wochenplan";
 
 /**
  * Die Wochenübersicht.
@@ -278,5 +279,35 @@ describe("Ferienbänder", () => {
     // sagt als die Zahl darunter misst.
     const band = freiBaender("2026-08-10").find((b) => b.text.startsWith("Ferien"));
     expect(band!.text).toMatch(/Ferien in \d+–\d+ Ländern/);
+  });
+});
+
+describe("Fenster-Beschriftung", () => {
+  /**
+   * Was über dem Kalender steht, muss zu dem passen, was darunter liegt.
+   *
+   * Ein Fenster über vier Wochen liegt selten in EINEM Monat. „September 2026"
+   * zu schreiben, während die halbe Fläche August zeigt, ist dieselbe
+   * Fehlerklasse, die dieses Projekt bei Zahlen als schwersten Fehler führt:
+   * eine Beschriftung, die etwas anderes sagt als das, was sie beschriftet.
+   */
+  it("nennt einen Monat, wenn das Fenster in einem liegt", () => {
+    expect(fensterTitel("2026-09-07", "2026-09-27")).toBe("September 2026");
+  });
+
+  it("nennt die Spanne, wenn es zwei sind — das Jahr nur einmal", () => {
+    expect(fensterTitel("2026-08-24", "2026-09-20")).toBe("Aug – Sep 2026");
+  });
+
+  it("nennt beide Jahre über den Jahreswechsel", () => {
+    expect(fensterTitel("2026-12-21", "2027-01-17")).toBe("Dez 2026 – Jan 2027");
+  });
+
+  it("verwechselt gleiche Monate verschiedener Jahre nicht", () => {
+    // Acht Wochen sind kein Jahr — aber die Prüfung „gleicher Monatsname" ohne
+    // Jahresvergleich würde bei einem Fenster über zwölf Monate „September"
+    // schreiben und den Sprung verschlucken. Die Grenze wird geprüft, nicht
+    // angenommen.
+    expect(fensterTitel("2026-09-07", "2027-09-06")).toBe("Sep 2026 – Sep 2027");
   });
 });

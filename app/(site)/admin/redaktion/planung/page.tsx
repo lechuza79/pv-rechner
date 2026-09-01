@@ -8,6 +8,7 @@ import { pruefeMechanisch } from "../../../../../lib/social-mechanik";
 import { ladeVersand } from "../../../../../lib/social-versand-log";
 import { ladePlaetze } from "../../../../../lib/social-plaetze";
 import { RATGEBER } from "../../../../../lib/ratgeber";
+import { WIDGETS } from "../../../../../lib/widget-registry";
 import { sendbar } from "../../../../../lib/social-plan";
 import { ladeFassungen } from "../../../../../lib/social-vorlagen-db";
 import { planen } from "../../../../../lib/social-plan";
@@ -48,7 +49,7 @@ export default async function RedaktionPlanung() {
 
   let fertig = 0;
   let wochen: ReturnType<typeof baueKalender> = [];
-  let wahl: PlatzWahl = { posts: [], familien: [], ratgeber: [] };
+  let wahl: PlatzWahl = { posts: [], familien: [], ratgeber: [], widgets: [] };
   try {
     const kennzahlen = await socialKennzahlen();
     const posts = baueAllePosts(kennzahlen, await ladeFassungen());
@@ -77,7 +78,16 @@ export default async function RedaktionPlanung() {
     const zuweisungen = await ladePlaetze();
     const sendbare = new Set(sendbar(plan).map((e) => e.post.id));
     wahl = {
-      posts: posts.map((p) => ({ id: p.id, titel: p.titel, sendbar: sendbare.has(p.id) })),
+      // Die Kategorie des Beitrags ist der Schlüssel seiner Unterkategorie —
+      // darüber steht er im Dialog bei seinen Geschwistern statt in einer
+      // eigenen Liste „fertige Beiträge".
+      posts: posts.map((p) => ({
+        id: p.id,
+        titel: p.titel,
+        sendbar: sendbare.has(p.id),
+        familie: p.kategorie,
+        bild: p.bild ?? null,
+      })),
       familien: FAMILIEN.map((f) => ({
         schluessel: f.schluessel,
         name: f.name,
@@ -85,6 +95,7 @@ export default async function RedaktionPlanung() {
         bereich: f.bereich,
       })),
       ratgeber: RATGEBER.map((r) => ({ slug: r.slug, titel: r.title })),
+      widgets: Object.values(WIDGETS).map((w) => ({ id: w.id, titel: w.title })),
     };
 
     wochen = baueKalender(
@@ -96,10 +107,15 @@ export default async function RedaktionPlanung() {
       })),
       heuteIso,
       {
-        // Weiter, als zunächst gezeigt wird: Der Kalender klappt nach vorn auf,
-        // und die Rechnung ist rein — ein Nachladen je Woche wäre ein Netzweg
-        // für etwas, das ohnehin schon da ist.
-        wochenVoraus: 10,
+        // EIN HALBES JAHR IN JEDE RICHTUNG. Sichtbar ist davon ein Fenster,
+        // das man schiebt; alles andere liegt schon bereit. Die Rechnung ist
+        // rein und kostet nichts — ein Nachladen je Sprung wäre ein Netzweg für
+        // etwas, das ohnehin da ist, und die Verteilung des Vorrats auf die
+        // Plätze muss ohnehin AM STÜCK gerechnet werden: Sie zählt von heute an
+        // durch, und ein Fenster, das seinen Ausschnitt einzeln rechnet, legte
+        // dieselben Beiträge in jede Woche, zu der man blättert.
+        wochenZurueck: 26,
+        wochenVoraus: 26,
         zuweisungen,
         // Beide Ereignisse je Ratgeber. „Erschienen" und „überarbeitet" am
         // selben Tag ergäbe zwei identische Zeilen — dann zählt das Erscheinen.
@@ -128,17 +144,15 @@ export default async function RedaktionPlanung() {
     <div style={{ maxWidth: 900, margin: "0 auto" }}>
       {wochen.length > 0 && (
         <section style={{ marginBottom: space.xxxl }}>
-          <h2 style={{ fontSize: v("--font-size-h3"), display: "flex", alignItems: "center", gap: space.xs }}>
-            Kalender
-            <InfoTooltip ariaLabel="Wie dieser Kalender gefüllt wird" exportNote={false}>
-              Kein zugesagter Termin, sondern der Vorrat auf die Plätze gelegt: Vergangenes kommt aus
-              dem Versandprotokoll, Kommendes aus der Warteschlange. Verschiebt sich etwas,
-              verschiebt sich die Anzeige mit — verstreichen kann hier nichts.
-            </InfoTooltip>
-          </h2>
-          <div style={{ marginTop: space.xl }}>
-            <Wochenplan wochen={wochen} heuteIso={heuteIso} wahl={wahl} />
-          </div>
+          {/* Die Überschrift geht IN die Steuerleiste. Darüber stehend kostete
+              sie eine eigene Zeile, ohne etwas zu trennen — was das ist, sagt
+              sie, welchen Ausschnitt man sieht, sagt die Leiste. */}
+          <Wochenplan
+            wochen={wochen}
+            heuteIso={heuteIso}
+            wahl={wahl}
+            ueberschrift="Kalender"
+          />
         </section>
       )}
 

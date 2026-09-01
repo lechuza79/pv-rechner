@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { v, space, pad } from "../../lib/theme";
 import { IconCheck, IconClose, IconLinkedIn, IconRefresh } from "../Icons";
 import { Pill, type PillTon } from "./Pill";
@@ -9,6 +9,7 @@ import { deckung, type KalenderPlatz, type KalenderWoche } from "../../lib/socia
 import { ferienJeLand, freiBaender, tagesbefund, type FreiBand } from "../../lib/social-kalendertage";
 import { FreiBaender } from "./FreiBaender";
 import { FerienModal, type FerienZeile } from "./FerienModal";
+import { KalenderNav, type NavMonat } from "./KalenderNav";
 
 // Der Redaktionskalender: Wochen als Zeilen, Werktage als Spalten.
 //
@@ -116,39 +117,134 @@ function tagInWoche(montagIso: string, index: number): string {
 }
 
 /**
- * Wie viele Wochen im Voraus zunächst zu sehen sind.
+ * Wie viele Wochen gleichzeitig zu sehen sind.
  *
- * Der Server rechnet WEITER, als hier gezeigt wird — die Rechnung ist rein und
- * kostet nichts, und ein Nachladen je Woche wäre ein Netzweg für etwas, das
- * längst da ist. Sichtbar sind zwei Wochen, weil das die Frage beantwortet, mit
- * der man die Seite aufmacht: Ist die kommende Woche gedeckt.
+ * Der Server rechnet ein halbes Jahr in jede Richtung — die Rechnung ist rein
+ * und kostet nichts, und ein Nachladen je Woche wäre ein Netzweg für etwas, das
+ * längst da ist. Sichtbar ist davon ein Fenster, das man schiebt.
+ *
+ * VIER als Voreinstellung: Das ist der Blick, mit dem man die Seite aufmacht —
+ * die vergangene Woche als Beleg, diese und die nächsten beiden als Arbeit.
  */
-const VORAUS_ANFANG = 2;
+const WOCHEN_VOREINSTELLUNG = 4;
+const WOCHENZAHLEN = [2, 4, 6, 8];
+
+/**
+ * Wie viele vergangene Wochen im Anfangsfenster stehen.
+ *
+ * EINE. Der Kalender ist ein Planungswerkzeug, kein Archiv — aber ganz ohne
+ * Rückblick fehlt der Beleg, dass die Kadenz überhaupt gehalten wurde. Wer
+ * weiter zurück will, schiebt.
+ */
+const RUECKBLICK = 1;
+
+function begrenze(n: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, n));
+}
+
+/**
+ * Wie das Fenster beschriftet wird.
+ *
+ * Ein Fenster über vier Wochen liegt selten in EINEM Monat. „September 2026" zu
+ * schreiben, während die halbe Fläche August zeigt, wäre eine Beschriftung, die
+ * etwas anderes sagt als der Inhalt darunter — dieselbe Fehlerklasse, die dieses
+ * Projekt bei Zahlen als schwersten Fehler führt. Also die Spanne, und das Jahr
+ * nur einmal, wenn beide Enden im selben liegen.
+ */
+export function fensterTitel(vonIso: string, bisIso: string): string {
+  const d = (iso: string) => new Date(`${iso}T12:00:00Z`);
+  const monat = (iso: string, lang: boolean) =>
+    d(iso).toLocaleDateString("de-DE", { month: lang ? "long" : "short", timeZone: "UTC" });
+  const jahr = (iso: string) => d(iso).getUTCFullYear();
+
+  if (monat(vonIso, true) === monat(bisIso, true) && jahr(vonIso) === jahr(bisIso)) {
+    return `${monat(vonIso, true)} ${jahr(vonIso)}`;
+  }
+  if (jahr(vonIso) === jahr(bisIso)) {
+    return `${monat(vonIso, false)} – ${monat(bisIso, false)} ${jahr(vonIso)}`;
+  }
+  return `${monat(vonIso, false)} ${jahr(vonIso)} – ${monat(bisIso, false)} ${jahr(bisIso)}`;
+}
+
+function monatsSchluessel(iso: string): string {
+  return iso.slice(0, 7);
+}
 
 export function Wochenplan({
   wochen,
   heuteIso,
   wahl,
+  ueberschrift,
+  hilfe,
+  hilfeLabel,
 }: {
   wochen: KalenderWoche[];
   heuteIso: string;
   wahl: PlatzWahl;
+  /** Die Überschrift — sie steht in der Steuerleiste, nicht darüber. */
+  ueberschrift: string;
+  hilfe?: string;
+  hilfeLabel?: string;
 }) {
   const [offenerTag, setOffenerTag] = useState<string | null>(null);
   const [ueber, setUeber] = useState<string | null>(null);
   const [ferienTag, setFerienTag] = useState<string | null>(null);
-  const [voraus, setVoraus] = useState(VORAUS_ANFANG);
-  let letzterMonat = "";
+  const [wochenzahl, setWochenzahl] = useState(WOCHEN_VOREINSTELLUNG);
 
-  // Vergangene Wochen bleiben vollständig stehen; nach vorn wird aufgeklappt.
-  const vergangen = wochen.filter((w) => w.plaetze.every((p) => p.iso < heuteIso)).length;
-  const gezeigteWochen = wochen.slice(0, vergangen + 1 + voraus);
-  const nochMehr = gezeigteWochen.length < wochen.length;
+  // Die Woche, in der heute liegt — der Anker für Anfangslage und Rücksprung.
+  const heuteWoche = Math.max(
+    0,
+    wochen.findIndex((w) => w.plaetze.some((p) => p.iso >= heuteIso)),
+  );
+  const maxVersatz = Math.max(0, wochen.length - wochenzahl);
+  const heimVersatz = begrenze(heuteWoche - RUECKBLICK, 0, maxVersatz);
+
+  const [versatz, setVersatz] = useState(heimVersatz);
+  // Ein Einzelschritt wird verfolgt (oben eine raus, unten eine rein), ein
+  // Sprung nicht — bei vier gleichzeitig fahrenden Zeilen sieht man nichts mehr
+  // als Zappeln. Der Merker sagt der CSS-Regel, welcher Fall gerade vorliegt.
+  const [sprung, setSprung] = useState(true);
+  const gemerkt = useRef(versatz);
+
+  // Wird das Fenster breiter, kann sein Versatz aus dem Bereich laufen.
+  useEffect(() => {
+    setVersatz((n) => begrenze(n, 0, Math.max(0, wochen.length - wochenzahl)));
+  }, [wochenzahl, wochen.length]);
+
+  function schiebe(auf: number, alsSprung: boolean) {
+    const ziel = begrenze(auf, 0, maxVersatz);
+    setSprung(alsSprung || Math.abs(ziel - gemerkt.current) !== 1);
+    gemerkt.current = ziel;
+    setVersatz(ziel);
+  }
+
+  const gezeigteWochen = wochen.slice(versatz, versatz + wochenzahl);
+  // Ein Nachbar über und unter dem Fenster wird MITGERENDERT, aber zugeklappt.
+  // Nur so gibt es beim Schritt etwas, das hereinfahren kann — käme die Woche
+  // erst mit dem Klick in den Baum, stünde sie sofort in voller Höhe da.
+  const vonIndex = Math.max(0, versatz - 1);
+  const bisIndex = Math.min(wochen.length, versatz + wochenzahl + 1);
 
   // Die Abdeckung zählt, WAS ZU SEHEN IST. Sie über alle gerechneten Wochen zu
-  // zählen hieße, eine Lücke in zwölf Wochen als offenen Punkt zu melden, den
-  // niemand sieht — und die Zahl spränge beim Aufklappen ohne erkennbaren Grund.
+  // zählen hieße, eine Lücke in einem halben Jahr als offenen Punkt zu melden,
+  // den niemand sieht — und die Zahl spränge beim Schieben ohne erkennbaren
+  // Grund.
   const gedeckt = deckung(gezeigteWochen, heuteIso);
+
+  const letzterTag = gezeigteWochen.length
+    ? tagInWoche(gezeigteWochen[gezeigteWochen.length - 1].beginnIso, 6)
+    : heuteIso;
+  const titel = gezeigteWochen.length
+    ? fensterTitel(gezeigteWochen[0].beginnIso, letzterTag)
+    : "";
+
+  // Zu jedem Monat des gerechneten Bereichs die erste Woche, die ihn berührt.
+  const monate: NavMonat[] = [];
+  wochen.forEach((w, i) => {
+    const schluessel = monatsSchluessel(w.beginnIso);
+    if (monate.some((m) => m.schluessel === schluessel)) return;
+    monate.push({ schluessel, name: monatVon(w.beginnIso), index: i });
+  });
 
   const belegteTage = new Set(
     wochen.flatMap((w) => w.plaetze.filter((p) => p.zustand === "geplant" || p.zustand === "verstrichen").map((p) => p.iso)),
@@ -156,17 +252,31 @@ export function Wochenplan({
 
   return (
     <div>
-      <div
-        style={{
-          fontSize: v("--font-size-small"),
-          color: v("--color-text-muted"),
-          marginBottom: space.sm,
+      <KalenderNav
+        ueberschrift={ueberschrift}
+        hilfe={hilfe}
+        hilfeLabel={hilfeLabel}
+        hinweis={
+          gedeckt.offen > 0
+            ? `${gedeckt.belegt} gedeckt, ${gedeckt.offen} offen`
+            : `alle ${gedeckt.belegt} gedeckt`
+        }
+        titel={titel}
+        monate={monate}
+        aktiverMonat={gezeigteWochen.length ? monatsSchluessel(gezeigteWochen[0].beginnIso) : ""}
+        wochenzahl={wochenzahl}
+        wochenzahlen={WOCHENZAHLEN}
+        amAnfang={versatz === 0}
+        amEnde={versatz >= maxVersatz}
+        istHeuteFenster={versatz === heimVersatz}
+        aufHeute={() => schiebe(heimVersatz, true)}
+        onSchritt={(r) => schiebe(versatz + r, false)}
+        onMonat={(i) => schiebe(i, true)}
+        onWochenzahl={(n) => {
+          setSprung(true);
+          setWochenzahl(n);
         }}
-      >
-        {gedeckt.offen > 0
-          ? `${gedeckt.belegt} gedeckt, ${gedeckt.offen} offen`
-          : `alle ${gedeckt.belegt} gedeckt`}
-      </div>
+      />
 
       <div style={{ ...raster, marginBottom: space.xs }}>
         {TAGE.map((t, i) => (
@@ -185,16 +295,32 @@ export function Wochenplan({
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: space.xs }}>
-        {gezeigteWochen.map((w) => {
+        {wochen.slice(vonIndex, bisIndex).map((w, n) => {
+          const index = vonIndex + n;
+          const imFenster = index >= versatz && index < versatz + wochenzahl;
           // Der Monatsname steht in der Zeile, in der er WECHSELT — nicht über
           // jeder Woche. Ein Kalender, der zwölfmal „September" sagt, sagt es
-          // elfmal zu oft.
+          // elfmal zu oft. Gemessen wird gegen die VORHERIGE Woche im Bestand,
+          // nicht gegen die vorherige gerenderte: Sonst trägt die erste Woche
+          // des Fensters ihren Monat mal und mal nicht, je nachdem, ob über ihr
+          // gerade ein zugeklappter Nachbar hängt.
+          const vorher = index > 0 ? monatVon(wochen[index - 1].beginnIso) : "";
           const monat = monatVon(w.beginnIso);
-          const zeigeMonat = monat !== letzterMonat;
-          letzterMonat = monat;
+          // Die OBERSTE sichtbare Woche trägt ihren Monat immer. Sonst steht
+          // ganz oben eine Woche ohne Monatsangabe, sobald man in einen Monat
+          // hineinscrollt statt an seinem Anfang zu beginnen — der Trenner
+          // hängt am Wechsel, und den hat man dann schon hinter sich.
+          const zeigeMonat = index === versatz || monat !== vorher;
 
           return (
-            <div key={w.beginnIso}>
+            <div
+              key={w.beginnIso}
+              className="sc-kalwoche"
+              data-zu={imFenster ? undefined : "1"}
+              data-sprung={sprung ? "1" : undefined}
+              aria-hidden={imFenster ? undefined : true}
+            >
+            <div>
               {zeigeMonat && (
                 <div
                   style={{
@@ -391,28 +517,10 @@ export function Wochenplan({
               </div>
               </div>
             </div>
+            </div>
           );
         })}
       </div>
-
-      {nochMehr && (
-        <button
-          type="button"
-          onClick={() => setVoraus((n) => n + 1)}
-          style={{
-            marginTop: space.md,
-            padding: pad("xs", "lg"),
-            borderRadius: v("--radius-sm"),
-            border: `1px solid ${v("--color-border")}`,
-            background: "transparent",
-            color: v("--color-text-secondary"),
-            cursor: "pointer",
-            fontSize: v("--font-size-small"),
-          }}
-        >
-          Nächste Woche anzeigen
-        </button>
-      )}
 
       <FerienModal
         datum={ferienTag}

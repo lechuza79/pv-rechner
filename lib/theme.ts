@@ -534,6 +534,22 @@ export const globalStyles = `
      (div ↔ button), die Animation läuft also bei jedem Wechsel neu an. */
   .sc-acc{animation:sc-reveal .22s ease-out}
   @media (prefers-reduced-motion:reduce){.sc-acc{animation:none}}
+  /* Eine Kalenderwoche, die auf- oder zugeht.
+     Über grid-template-rows 0fr→1fr, weil die Höhe einer Woche NICHT bekannt ist
+     — sie hängt daran, ob ein Ferienband, eine Ratgeber-Pille oder beides drin
+     steht. Eine feste Höhe wäre eine Zahl, die beim nächsten Inhalt daneben
+     liegt, und max-height als Ersatz macht aus jeder Bewegung ein Ruckeln, weil
+     die Kurve dann für den ungenutzten Rest weiterläuft.
+     Das innere Element MUSS overflow:hidden und min-height:0 tragen, sonst
+     ignoriert der Rasterbereich die Null-Zeile und nichts bewegt sich. */
+  .sc-kalwoche{display:grid;grid-template-rows:1fr;transition:grid-template-rows .26s ease,opacity .26s ease}
+  .sc-kalwoche>*{overflow:hidden;min-height:0}
+  .sc-kalwoche[data-zu='1']{grid-template-rows:0fr;opacity:0}
+  /* Beim Sprung über mehrere Wochen (Monatswahl, andere Fensterbreite) gäbe es
+     nichts zu verfolgen — dann erscheint das Fenster einfach in seiner neuen
+     Lage, statt vier Zeilen gleichzeitig auf- und zuzufahren. */
+  .sc-kalwoche[data-sprung='1']{transition:none}
+  @media (prefers-reduced-motion:reduce){.sc-kalwoche{transition:none}}
   .sc-live-dot{position:relative}
   .sc-live-dot::before,.sc-live-dot::after{content:'';position:absolute;top:50%;left:50%;width:100%;height:100%;border-radius:50%;background:var(--color-highlight);pointer-events:none;animation:sc-live-ring 1.8s ease-out infinite}
   .sc-live-dot::after{animation-delay:.9s}
