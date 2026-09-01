@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Metadata } from "next";
 import { pageMetadata } from "../../../lib/seo";
 import { standSeite } from "../../../lib/stand";
@@ -37,7 +38,23 @@ export const revalidate = 86400;
 // Dienstschlüssel — eine offene Schnittstelle darauf wäre nach der Erlaubnis
 // der KfW gerade nicht gedeckt. Fällt der Abruf aus, kommt `null` heraus und
 // der Abschnitt entfällt lautlos; die Seite bleibt vollständig.
+// Die Suspense-Grenze ist die Bedingung dafür, dass die Seite STATISCH bleibt:
+// Der Rechner liest die Adresse eines geteilten Links im Browser. Ohne diese
+// Grenze verlangt Next, die ganze Seite bei jedem Aufruf frisch zu bauen — und
+// dann zahlt jeder Besucher den vollen Aufbau, damit die wenigen über einen
+// geteilten Link ihre Zahlen vorfinden. Mit ihr wird nur dieser eine Zweig im
+// Browser nachgezogen.
+//
+// WAS DAS KOSTET, und zwar bewusst: Ein geteilter Link bekommt KEIN eigenes
+// Vorschaubild mit seinen Zahlen — dafür müsste die Seite die Adresse auf dem
+// Server lesen, also dynamisch werden. Der PV-Rechner tut das und ist deshalb
+// dynamisch. Hier ist die Vorschau die allgemeine Karte; der Link selbst trägt
+// die Rechnung vollständig.
 export default async function WaermepumpePage() {
   const kfw = await heizungsfoerderungBund();
-  return <Waermepumpe stand={standSeite("/waermepumpe-rechner")} kfw={kfw} />;
+  return (
+    <Suspense fallback={null}>
+      <Waermepumpe stand={standSeite("/waermepumpe-rechner")} kfw={kfw} />
+    </Suspense>
+  );
 }
