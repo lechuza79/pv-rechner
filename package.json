@@ -46,7 +46,8 @@
     "kommunen:veroeffentlicht": "tsx scripts/kommunen-veroeffentlicht.ts",
     "claude-md:verify": "tsx scripts/claude-md-verify.ts",
     "kommunen:stand": "tsx scripts/kommunen-stand.ts",
-    "kommunen:vorflug": "tsx scripts/kommunen-vorflug.ts"
+    "kommunen:vorflug": "tsx scripts/kommunen-vorflug.ts",
+    "fachbetriebe:cms": "tsx scripts/fachbetriebe-cms.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",
