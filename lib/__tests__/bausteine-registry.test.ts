@@ -142,26 +142,34 @@ describe("Bausteine-Register", () => {
     expect(NOCH_NICHT_EINGEORDNET.filter((n) => eingeordnet.has(n))).toEqual([]);
   });
 
-  it("zeigt jeden Baustein auf der Designsystem-Seite und nennt fehlende Beispiele", () => {
-    // Die Seite rendert die Gruppen aus dem Register, jeder Baustein bekommt
+  it("gibt jedem Baustein ein lebendes Beispiel oder einen Grund dagegen", () => {
+    // Die Galerie rendert die Gruppen aus dem Register, jeder Baustein bekommt
     // also von selbst eine Karte. Was NICHT von selbst kommt, ist das lebende
-    // Beispiel — und ohne Beispiel ist die Karte wieder das, wogegen der ganze
+    // Beispiel — und ohne eins ist die Karte wieder das, wogegen der ganze
     // Umbau geht: eine Beschreibung statt der Sache.
+    //
+    // Ein Baustein darf ohne Beispiel bleiben, wenn er sich nicht in eine Karte
+    // stellen lässt (ein Seitenrahmen enthielte sich selbst). Dann steht der
+    // Grund am Eintrag und auf der Karte. Was NICHT erlaubt ist, ist die stille
+    // Lücke: „kein Beispiel" ohne Aussage darüber, ob das Absicht ist.
     const schau = readFileSync(
       join(ROOT, "app/(site)/admin/komponenten/KomponentenSchau.tsx"),
       "utf8",
     );
-    const ohneBeispiel = BAUSTEINE.filter((b) => !new RegExp(`\\b${b.name}:`).test(schau)).map(
-      (b) => b.name,
-    );
+    const stumm = BAUSTEINE.filter(
+      (b) => !new RegExp(`\\b${b.name}:`).test(schau) && !b.keinBeispielWeil,
+    ).map((b) => b.name);
+    expect(stumm, `Ohne Beispiel und ohne Grund: ${stumm.join(", ")}`).toEqual([]);
 
-    // Die Zahl darf sinken, nicht steigen. Ein neuer Baustein ohne Beispiel ist
-    // in Ordnung — er muss nur sichtbar bleiben, statt in der Liste unterzugehen.
-    const OHNE_BEISPIEL_HOECHSTENS = 21;
-    expect(
-      ohneBeispiel.length,
-      `Ohne lebendes Beispiel (${ohneBeispiel.length}): ${ohneBeispiel.join(", ")}`,
-    ).toBeLessThanOrEqual(OHNE_BEISPIEL_HOECHSTENS);
+    // Ein Grund, der jede Lücke deckt, deckt am Ende auch die vermeidbaren.
+    for (const b of BAUSTEINE) {
+      if (!b.keinBeispielWeil) continue;
+      expect(b.keinBeispielWeil.length, b.name).toBeGreaterThan(60);
+      expect(
+        new RegExp(`\\b${b.name}:`).test(schau),
+        `${b.name} hat ein Beispiel UND einen Grund dagegen — eines von beidem ist falsch`,
+      ).toBe(false);
+    }
   });
 
   it("beantwortet die Gegenrichtung: wer benutzt diesen Baustein", () => {

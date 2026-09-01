@@ -18,6 +18,22 @@ import Switch from "../../../../components/Switch";
 import Toast from "../../../../components/Toast";
 import TriToggle from "../../../../components/TriToggle";
 import Logo from "../../../../components/Logo";
+import ChartActionBar from "../../../../components/ChartActionBar";
+import DataSourceList from "../../../../components/DataSourceList";
+import FlowNav from "../../../../components/FlowNav";
+import StandortField from "../../../../components/StandortField";
+import StandNoteView from "../../../../components/StandNoteView";
+import { AuswahlSkipper } from "../../../../components/AuswahlSkipper";
+import { DataSourceNote } from "../../../../components/PoweredBy";
+import { ErrorBoundary } from "../../../../components/ErrorBoundary";
+import * as Icons from "../../../../components/Icons";
+import { DATA_SOURCES } from "../../../../lib/data-sources";
+import DachField from "../../../../components/DachField";
+import GebaeudeField, { type GebaeudeWerte } from "../../../../components/GebaeudeField";
+import type { TiltOrientation } from "../../../../lib/tilt-config";
+import CiteModal from "../../../../components/CiteModal";
+import ChartExportBar from "../../../../components/ChartExportBar";
+import { WIDGETS } from "../../../../lib/widget-registry";
 import { BAUSTEINE, GRUPPEN, verwendetVon, type Baustein } from "../../../../lib/bausteine-registry";
 import { v, space, pad } from "../../../../lib/theme";
 
@@ -269,6 +285,254 @@ function DreifachBeispiel() {
   );
 }
 
+
+function FlowNavBeispiel() {
+  const [gewaehlt, setGewaehlt] = useState(false);
+  const [schritt, setSchritt] = useState(1);
+  return (
+    <div style={{ maxWidth: 420 }}>
+      <p style={{ margin: `0 0 ${space.sm}px`, fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
+        Schritt {schritt}. Weiter bleibt gesperrt, bis etwas gewählt ist.
+      </p>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: space.sm, marginBottom: space.md }}>
+        {["Ja", "Nein"].map((l) => (
+          <OptionCard key={l} selected={gewaehlt && l === "Ja"} onClick={() => setGewaehlt(true)} label={l} sub="" />
+        ))}
+      </div>
+      <FlowNav
+        weiterAktiv={gewaehlt}
+        onWeiter={() => {
+          setSchritt((n) => n + 1);
+          setGewaehlt(false);
+        }}
+        onZurueck={schritt > 1 ? () => setSchritt((n) => n - 1) : undefined}
+        zurueckSichtbar={schritt > 1}
+      />
+    </div>
+  );
+}
+
+function StandortBeispiel() {
+  const [plz, setPlz] = useState("");
+  const [bestaetigt, setBestaetigt] = useState(false);
+  return (
+    <div style={{ maxWidth: 420 }}>
+      <StandortField
+        plz={plz}
+        onPlzChange={(w) => {
+          setPlz(w);
+          setBestaetigt(false);
+        }}
+        loading={false}
+        confirmed={bestaetigt}
+        onSubmit={() => setBestaetigt(plz.length === 5)}
+      />
+    </div>
+  );
+}
+
+function SkipperBeispiel() {
+  const [wert, setWert] = useState("");
+  return (
+    <AuswahlSkipper
+      ariaLabel="Dachform überspringen"
+      wert={wert}
+      onWaehle={setWert}
+      eintraege={[
+        { wert: "", text: "Weiß ich nicht" },
+        { wert: "sued", text: "Süden" },
+        { wert: "ostwest", text: "Ost / West" },
+      ]}
+    />
+  );
+}
+
+function AbsturzBeispiel() {
+  const [kaputt, setKaputt] = useState(false);
+  function Kind() {
+    if (kaputt) throw new Error("Absichtlich ausgelöst — so sieht der Auffangnetz-Zustand aus.");
+    return (
+      <span style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary") }}>
+        Ein Bauteil, das gerade funktioniert.
+      </span>
+    );
+  }
+  return (
+    <div style={{ display: "grid", gap: space.sm, justifyItems: "start" }}>
+      <ErrorBoundary key={String(kaputt)}>
+        <Kind />
+      </ErrorBoundary>
+      <button
+        onClick={() => setKaputt((k) => !k)}
+        style={{
+          padding: pad("xs", "sm"),
+          borderRadius: v("--radius-sm"),
+          border: `1px solid ${v("--color-border")}`,
+          background: v("--color-bg"),
+          color: v("--color-text-primary"),
+          fontSize: v("--font-size-small"),
+          fontWeight: 600,
+          cursor: "pointer",
+        }}
+      >
+        {kaputt ? "wieder heil machen" : "Absturz auslösen"}
+      </button>
+    </div>
+  );
+}
+
+function IconsBeispiel() {
+  const alle = Object.entries(Icons).filter(([n]) => n.startsWith("Icon")) as [
+    string,
+    React.ComponentType<{ size?: number }>,
+  ][];
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(74px, 1fr))", gap: space.sm }}>
+      {alle.map(([name, Icon]) => (
+        <div key={name} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, minWidth: 0 }}>
+          <Icon size={20} />
+          <span
+            style={{
+              fontSize: v("--font-size-micro"),
+              fontFamily: v("--font-mono"),
+              color: v("--color-text-faint"),
+              maxWidth: "100%",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {name.replace("Icon", "")}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function AktionsleisteBeispiel() {
+  const nichts = () => {};
+  return (
+    <Reihe>
+      <Zustand name="Leiste (breite Karten)">
+        <ChartActionBar
+          onCopyLink={nichts}
+          onDownload={nichts}
+          onEmbed={nichts}
+          onWhatsApp={nichts}
+          onTwitter={nichts}
+          isExporting={false}
+          canNativeShare={false}
+          variant="bar"
+        />
+      </Zustand>
+      <Zustand name="Menü (kleine Karten)">
+        <ChartActionBar
+          onCopyLink={nichts}
+          onDownload={nichts}
+          onEmbed={nichts}
+          onWhatsApp={nichts}
+          onTwitter={nichts}
+          isExporting={false}
+          canNativeShare={false}
+          variant="menu"
+        />
+      </Zustand>
+    </Reihe>
+  );
+}
+
+
+/** Der „schon beantwortet"-Zustand, den beide Feld-Bausteine von außen erwarten. */
+function useBeantwortet() {
+  const [menge, setMenge] = useState<ReadonlySet<string>>(new Set());
+  return {
+    beantwortet: menge,
+    markiereBeantwortet: (k: string) => setMenge((m) => new Set(m).add(k)),
+    nimmZurueck: (k: string) =>
+      setMenge((m) => {
+        const n = new Set(m);
+        n.delete(k);
+        return n;
+      }),
+  };
+}
+
+function DachFeldBeispiel() {
+  const { beantwortet, markiereBeantwortet, nimmZurueck } = useBeantwortet();
+  const [dachart, setDachart] = useState<number | null>(null);
+  const [ausrichtung, setAusrichtung] = useState<TiltOrientation | null>(null);
+  const [neigung, setNeigung] = useState<number | null>(null);
+  const [bearbeitet, setBearbeitet] = useState<string | null>(null);
+  return (
+    <div style={{ maxWidth: 460 }}>
+      <DachField
+        dachartIdx={dachart}
+        setDachartIdx={setDachart}
+        ausrichtung={ausrichtung}
+        setAusrichtung={setAusrichtung}
+        neigungGrad={neigung}
+        setNeigungGrad={setNeigung}
+        beantwortet={beantwortet}
+        markiereBeantwortet={markiereBeantwortet}
+        nimmZurueck={nimmZurueck}
+        bearbeitet={bearbeitet}
+        setBearbeitet={setBearbeitet}
+        onWeissNicht={() => undefined}
+      />
+    </div>
+  );
+}
+
+function GebaeudeFeldBeispiel() {
+  const { beantwortet, markiereBeantwortet } = useBeantwortet();
+  const [werte, setWerte] = useState<GebaeudeWerte>({
+    haustypIdx: 0,
+    wohnflaeche: 140,
+    insulationIdx: 1,
+    heizsystem: "hk_alt",
+  });
+  const [bearbeitet, setBearbeitet] = useState<string | null>(null);
+  return (
+    <div style={{ maxWidth: 460 }}>
+      <GebaeudeField
+        werte={werte}
+        setWerte={(patch) => setWerte((w) => ({ ...w, ...patch }))}
+        beantwortet={beantwortet}
+        markiereBeantwortet={markiereBeantwortet}
+        bearbeitet={bearbeitet}
+        setBearbeitet={setBearbeitet}
+        onWeissNicht={() => undefined}
+      />
+    </div>
+  );
+}
+
+
+function ZitierBeispiel() {
+  const [offen, setOffen] = useState(false);
+  return (
+    <>
+      <button
+        onClick={() => setOffen(true)}
+        style={{
+          padding: pad("sm", "md"),
+          borderRadius: v("--radius-md"),
+          border: `1px solid ${v("--color-border")}`,
+          background: v("--color-bg"),
+          color: v("--color-text-primary"),
+          fontSize: v("--font-size-body"),
+          fontWeight: 600,
+          cursor: "pointer",
+        }}
+      >
+        Zitierhilfe öffnen
+      </button>
+      <CiteModal widget={WIDGETS.strommix} open={offen} onClose={() => setOffen(false)} />
+    </>
+  );
+}
+
 const BEISPIELE: Record<string, Beispiel> = {
   OptionCard: OptionCardBeispiel,
   Switch: SchalterBeispiel,
@@ -333,6 +597,53 @@ const BEISPIELE: Record<string, Beispiel> = {
     </Reihe>
   ),
   Logo: () => <Logo />,
+  FlowNav: FlowNavBeispiel,
+  StandortField: StandortBeispiel,
+  AuswahlSkipper: SkipperBeispiel,
+  ErrorBoundary: AbsturzBeispiel,
+  Icons: IconsBeispiel,
+  ChartActionBar: AktionsleisteBeispiel,
+  CiteModal: ZitierBeispiel,
+  ChartExportBar: () => (
+    <ChartExportBar
+      onDownload={() => undefined}
+      onWhatsApp={() => undefined}
+      onTwitter={() => undefined}
+      isExporting={false}
+      canNativeShare={false}
+    />
+  ),
+  DachField: DachFeldBeispiel,
+  GebaeudeField: GebaeudeFeldBeispiel,
+  PoweredBy: () => (
+    <Reihe>
+      <Zustand name="eine Quelle">
+        <DataSourceNote source={DATA_SOURCES.mastr} />
+      </Zustand>
+      <Zustand name="mehrere">
+        <DataSourceNote source={[DATA_SOURCES.energyCharts, DATA_SOURCES.ember]} />
+      </Zustand>
+    </Reihe>
+  ),
+  DataSourceList: () => (
+    <div style={{ maxHeight: 260, overflow: "auto" }}>
+      <DataSourceList />
+    </div>
+  ),
+  StandNoteView: () => (
+    <StandNoteView
+      seite={{
+        // Beispieldaten, keine echten Stände: Die Zeile ist hier der Baustein,
+        // nicht die Auskunft. Die echten Stände einer Seite kommen aus lib/stand.ts
+        // und dürfen nirgends getippt werden.
+        eintraege: [
+          { was: "Marktpreise", iso: "2026-08-28", praezision: "tag", wertIso: "2026-07" },
+          { was: "Rechtsstand", iso: "2026-09-01", praezision: "tag" },
+        ],
+        live: ["Strompreis", "Standort-Ertrag"],
+      }}
+    />
+  ),
 };
 
 /** Die Bausteine, für die es hier ein Beispiel gibt. */
@@ -383,8 +694,8 @@ function Karte({ b }: { b: Baustein }) {
         {Beispiel ? (
           <Beispiel />
         ) : (
-          <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-faint") }}>
-            Noch kein Beispiel — der Baustein existiert, steht hier aber noch nicht bedienbar.
+          <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-faint"), lineHeight: 1.5 }}>
+            {b.keinBeispielWeil ?? "Noch kein Beispiel — der Baustein existiert, steht hier aber noch nicht bedienbar."}
           </span>
         )}
       </div>

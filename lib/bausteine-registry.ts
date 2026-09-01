@@ -79,6 +79,15 @@ export interface Baustein {
    */
   bestehtAus: string[];
   gegenprobe?: Gegenprobe;
+  /**
+   * Warum es in der Galerie KEIN lebendes Beispiel gibt.
+   *
+   * Nur für Bausteine, die sich nicht in eine Karte stellen lassen — ein
+   * Seitenrahmen, der sich sonst selbst enthielte, oder etwas, das ein
+   * Diagramm um sich herum braucht. „Noch nicht gebaut" gehört NICHT hierher:
+   * Ein Grund, der jede Lücke deckt, deckt am Ende auch die vermeidbaren.
+   */
+  keinBeispielWeil?: string;
 }
 
 export const BAUSTEINE: Baustein[] = [
@@ -104,8 +113,44 @@ export const BAUSTEINE: Baustein[] = [
     name: "SelectField",
     zweck: "Auswahl aus einer Liste, wenn die Optionen zu viele für Karten sind.",
     gruppe: "eingabe",
-    stand: "im-aufbau",
+    stand: "verbindlich",
     bestehtAus: ["Icons"],
+    gegenprobe: {
+      muster: "<select",
+      bedeutet:
+        "Hier steht ein nacktes Auswahlfeld. Es sieht in jedem Browser anders aus und trägt weder unseren Pfeil noch unsere Maße — der Unterschied fällt auf, sobald zwei davon nebeneinander stehen.",
+      ausser: [
+        {
+          datei: "app/(site)/waermepumpe-rechner/waermepumpe.tsx",
+          grund:
+            "Fünf gewachsene Felder auf einer öffentlichen Oberfläche. Die Umstellung ist sichtbar und braucht die Abnahme des Betreibers — sie steht aus, ist aber vorgesehen.",
+        },
+        {
+          datei: "components/ContactForm.tsx",
+          grund: "Themenwahl im Kontaktformular, ebenfalls sichtbar und noch nicht abgenommen.",
+        },
+        {
+          datei: "app/(site)/admin/versorger/client.tsx",
+          grund: "Interne Tabellenfilter ohne Publikum — sie ziehen mit, wenn diese Ansicht ohnehin angefasst wird.",
+        },
+        {
+          datei: "app/(site)/admin/fachbetriebe/client.tsx",
+          grund: "Interner Tabellenfilter, wie bei den Versorgern.",
+        },
+        {
+          datei: "app/(site)/admin/awards/client.tsx",
+          grund: "Interne Auswahl ohne Publikum, wie bei den Versorgern.",
+        },
+        {
+          datei: "app/(site)/admin/awards/anschreiben/client.tsx",
+          grund: "Interne Auswahl ohne Publikum, wie bei den Versorgern.",
+        },
+        {
+          datei: "app/(site)/admin/kommunen/client.tsx",
+          grund: "Wird gerade von einer anderen Sitzung umgebaut; Typografie und Bausteine folgen danach.",
+        },
+      ],
+    },
   },
   {
     datei: "components/PresetNumberInput.tsx",
@@ -255,6 +300,8 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "struktur",
     stand: "verbindlich",
     bestehtAus: [],
+    keinBeispielWeil:
+      "Klebt am unteren Fensterrand. In einer Karte gezeigt läge sie über der ganzen Seite statt in ihr.",
   },
   {
     datei: "components/Header.tsx",
@@ -263,6 +310,8 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "struktur",
     stand: "verbindlich",
     bestehtAus: ["Icons", "Logo"],
+    keinBeispielWeil:
+      "Der Seitenrahmen selbst — auf dieser Seite steht er bereits oben. Ein zweiter darin wäre kein Beispiel, sondern ein Fehler.",
   },
   {
     datei: "components/Footer.tsx",
@@ -271,6 +320,8 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "struktur",
     stand: "verbindlich",
     bestehtAus: ["TrustBar"],
+    keinBeispielWeil:
+      "Wie die Kopfzeile ein Seitenrahmen; er steht auf jeder Seite genau einmal und enthielte sich hier selbst.",
   },
   {
     datei: "components/TrustBar.tsx",
@@ -279,6 +330,8 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "struktur",
     stand: "verbindlich",
     bestehtAus: ["Icons", "Modal"],
+    keinBeispielWeil:
+      "Sitzt fest über der Fußzeile und trägt vier Werbeaussagen mit Belegen — ein Beispiel daneben ließe offen, welche der beiden Fassungen gilt.",
   },
   {
     datei: "components/Breadcrumb.tsx",
@@ -311,6 +364,8 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "struktur",
     stand: "im-aufbau",
     bestehtAus: [],
+    keinBeispielWeil:
+      "Rahmen und Navigation der internen Bereiche — er umgibt diese Seite gerade.",
   },
   {
     datei: "components/Icons.tsx",
@@ -380,6 +435,8 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "widget",
     stand: "verbindlich",
     bestehtAus: ["ChartActionBar", "CiteModal", "PoweredBy"],
+    keinBeispielWeil:
+      "Steuert, was in ein erzeugtes Bild kommt und was nicht. Sichtbar wird das erst im Bild, nicht auf dem Bildschirm.",
   },
   {
     datei: "components/CiteModal.tsx",
@@ -397,6 +454,8 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "widget",
     stand: "verbindlich",
     bestehtAus: [],
+    keinBeispielWeil:
+      "Braucht ein eingebettetes Widget um sich herum; für sich allein wäre nur ein leerer Rahmen zu sehen.",
   },
   {
     datei: "components/StandNote.tsx",
@@ -405,6 +464,8 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "widget",
     stand: "verbindlich",
     bestehtAus: ["StandNoteView"],
+    keinBeispielWeil:
+      "Läuft ausschließlich auf dem Server — sie zieht sieben Konfigurationen nach sich, die im Browser nichts zu suchen haben. Die Ansicht daneben zeigt dieselbe Zeile.",
   },
   {
     datei: "components/StandNoteView.tsx",
