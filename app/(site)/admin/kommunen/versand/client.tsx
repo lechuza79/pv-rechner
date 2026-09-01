@@ -21,6 +21,7 @@ type Wirkung = { gesamt: Auswertung; jeKampagne: Auswertung[]; jeTag: Versandtag
 export default function VersandAuswertung() {
   const [wirkung, setWirkung] = useState<Wirkung | null>(null);
   const [fehler, setFehler] = useState<string | null>(null);
+  const offeneSchuebe = (wirkung?.jeKampagne ?? []).filter((k) => k.offen > 0);
 
   useEffect(() => {
     fetch("/api/admin/kommunen/bilanz")
@@ -33,10 +34,7 @@ export default function VersandAuswertung() {
     <div style={{ fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
       <div style={{ marginBottom: space.lg }}>
         <div style={labelKicker}>Kommunen-Outreach</div>
-        <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 4 }}>Versand</h1>
-        <p style={{ fontSize: 13, color: v("--color-text-muted") }}>
-          Was hinausging und was daraus wurde.
-        </p>
+        <h1 style={{ fontSize: 24, fontWeight: 800 }}>Versand</h1>
       </div>
 
       {fehler && (
@@ -48,6 +46,8 @@ export default function VersandAuswertung() {
 
       {wirkung && (
         <>
+          {/* Was noch aussteht. Ohne diese Zeile liest sich „0 Antworten" wie
+              ein Ergebnis, obwohl der halbe Schub noch gar nicht raus ist. */}
           <div style={{ display: "flex", gap: space.md, flexWrap: "wrap", marginBottom: space.md }}>
             <Kennzahl label="verschickt" wert={wirkung.gesamt.verschickt} />
             <Kennzahl label="Antworten" wert={wirkung.gesamt.antworten} />
@@ -67,40 +67,25 @@ export default function VersandAuswertung() {
             das Kästchen „Ich arbeite für die Verwaltung" anzukreuzen, zählt hier als Bürger.
           </p>
 
-          {/* JE SCHUB — welche Auswahl wie weit ist. Geparkte stehen mit ihrer
-              Null darin: Ein Schub, der bewusst wartet, ist ein anderer Zustand
-              als einer, der nicht funktioniert hat. */}
-          {(wirkung.jeKampagne?.length ?? 0) > 0 && (
-            <section style={{ marginBottom: space.xl }}>
-              <h2 style={ueberschrift}>Schübe</h2>
-              <table style={tabelle}>
-                <thead>
-                  <tr style={{ color: v("--color-text-muted") }}>
-                    <th style={thLinks}>Schub</th>
-                    <th style={thRechts}>verschickt</th>
-                    <th style={thRechts}>offen</th>
-                    <th style={thRechts}>Antworten</th>
-                    <th style={thRechts}>veröffentlicht</th>
-                    <th style={thRechts}>Abos</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {wirkung.jeKampagne.map((k) => (
-                    <tr key={k.kampagne} style={{ borderTop: `1px solid ${v("--color-border")}` }}>
-                      <td style={td}>{k.kampagne}</td>
-                      <td style={tdRechts}>{k.verschickt}</td>
-                      <td style={{ ...tdRechts, color: v("--color-text-muted") }}>{k.offen}</td>
-                      <td style={tdRechts}>{k.antworten}</td>
-                      <td style={tdRechts}>{k.veroeffentlicht}</td>
-                      <td style={tdRechts}>
-                        {k.abos}
-                        {k.abosMitAngabeVerwaltung > 0 && ` (${k.abosMitAngabeVerwaltung} Verw.)`}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </section>
+          {/* NUR EINE TABELLE. Es waren zwei, und sie sagten fast dasselbe:
+              Ein Schub IST eine Menge von Versandtagen, also stand jede Zahl
+              zweimal da — einmal je Tag und einmal aufsummiert. Das Einzige,
+              was die Schub-Tabelle wirklich mehr wusste, ist der OFFENE Rest,
+              und der hat kein Datum, weil er noch nicht hinausging. Er steht
+              deshalb als Zeile darüber statt als eigene Tabelle. */}
+          {offeneSchuebe.length > 0 && (
+            <p style={{ fontSize: 12, fontFamily: v("--font-mono"), marginBottom: space.lg }}>
+              <span style={{ color: v("--color-text-muted") }}>Noch offen: </span>
+              {offeneSchuebe.map((k, i) => (
+                <span key={k.kampagne}>
+                  {i > 0 && <span style={{ color: v("--color-text-muted") }}> · </span>}
+                  {k.kampagne} {k.offen}
+                  {k.kampagne.endsWith("-geparkt") && (
+                    <span style={{ color: v("--color-text-muted") }}> (geparkt)</span>
+                  )}
+                </span>
+              ))}
+            </p>
           )}
 
           {/* JE VERSANDTAG — ohne diese Aufteilung ist „lief der größere Schub so
