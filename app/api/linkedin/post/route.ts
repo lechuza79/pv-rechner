@@ -6,7 +6,10 @@ import { socialKennzahlen } from "../../../../lib/social-kennzahlen";
 import { baueAllePosts } from "../../../../lib/social-posts";
 import { ladeFassungen } from "../../../../lib/social-vorlagen-db";
 import { pruefeMechanisch, sperren } from "../../../../lib/social-mechanik";
-import { schonGesendet, schreibeVersand } from "../../../../lib/social-versand-log";
+import { ersterVersand, schonGesendet, schreibeVersand } from "../../../../lib/social-versand-log";
+import { HALTBARKEIT_VORGABE, darfNachgereichtWerden } from "../../../../lib/social-haltbarkeit";
+import { FAMILIEN } from "../../../../lib/redaktionsplan";
+import { heuteInBerlin } from "../../../../lib/zeit";
 
 // Veröffentlichung eines Beitrags mit Bild.
 //
@@ -111,6 +114,28 @@ export async function POST(req: NextRequest) {
   // jemand wiederholt, standen bisher zwei identische Beiträge im Feed — nichts
   // verhinderte das. Die Sperre hängt an der FASSUNG, nicht am Beitrag: Nach
   // einer echten Überarbeitung darf er wieder laufen, unverändert nie.
+
+  // NACHREICHEN AUF EINEM SPÄTEREN KANAL. Kommt ein Kanal dazu, liegt es nahe,
+  // die schon gesendeten Beiträge dort nachzureichen — und für einen Teil von
+  // ihnen wäre das falsch. „251.000 neue Anlagen in zwölf Monaten" ist im
+  // November eine andere Aussage als im September, auch wenn kein Wort sich
+  // ändert; ein Strukturbefund trägt dagegen über Jahre.
+  //
+  // Der Fingerabdruck fängt das NICHT: Er merkt, wenn sich die Zahlen bewegen,
+  // nicht, wenn dieselbe Zahl ein anderes Zeitfenster meint.
+  //
+  // Die Frist hängt an der Kategorie, nicht am einzelnen Beitrag — sie ist eine
+  // Eigenschaft der Gattung. Ohne Angabe gilt die vorsichtige Vorgabe.
+  const haltbarkeit =
+    FAMILIEN.find((f) => f.schluessel === post.kategorie)?.haltbarkeit ?? HALTBARKEIT_VORGABE;
+  const nachreichen = darfNachgereichtWerden(
+    haltbarkeit,
+    await ersterVersand(post.id, abdruck),
+    heuteInBerlin(),
+  );
+  if (!nachreichen.darf) {
+    return NextResponse.json({ error: nachreichen.grund }, { status: 409 });
+  }
   const bereits = await schonGesendet(post.id, abdruck);
   if (bereits) {
     return NextResponse.json(

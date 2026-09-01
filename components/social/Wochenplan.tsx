@@ -8,6 +8,7 @@ import { PlatzModal, type PlatzWahl } from "./PlatzModal";
 import { deckung, type KalenderPlatz, type KalenderWoche } from "../../lib/social-kalender";
 import { ferienJeLand, freiBaender, tagesbefund, type FreiBand } from "../../lib/social-kalendertage";
 import { zeitpunktFuer } from "../../lib/social-zeitpunkt";
+import { kanalText } from "../../lib/social-kanalwahl";
 import { FreiBaender } from "./FreiBaender";
 import { FerienModal, type FerienZeile } from "./FerienModal";
 import { KalenderNav, type NavMonat } from "./KalenderNav";
@@ -99,6 +100,20 @@ function platzZeit(p: KalenderPlatz): string {
       ? p.zuweisung.uhrzeit
       : null;
   return gesetzt ?? zeitpunktFuer(p.iso);
+}
+
+/**
+ * Die Kanäle eines Platzes — nur, wenn sie von der Voreinstellung abweichen.
+ *
+ * Ohne Angabe geht der Beitrag auf alles, wofür er taugt; das ist der Normalfall
+ * und muss nicht dastehen. Sichtbar gehört die ENTSCHEIDUNG, nicht die Vorgabe —
+ * sonst steht an jedem zweiten Tag dasselbe, und niemand liest es mehr.
+ */
+function platzKanalHinweis(p: KalenderPlatz): string | null {
+  if (p.zustand !== "geplant" && p.zustand !== "verstrichen") return null;
+  const k = p.zuweisung.kanaele;
+  if (!k?.length || k.length > 1) return null;
+  return kanalText(k as ("linkedin" | "instagram")[]);
 }
 
 function tagZahl(iso: string): string {
@@ -524,6 +539,14 @@ export function Wochenplan({
                             }}
                           >
                             {platzZeit(platz!)}
+                            {/* Die Kanäle stehen nur da, wo jemand EINGESCHRÄNKT
+                                hat. „LinkedIn + Instagram" an jedem zweiten Tag
+                                ist die Voreinstellung und sagt nichts; „nur
+                                LinkedIn" ist eine Entscheidung und gehört
+                                sichtbar. */}
+                            {platzKanalHinweis(platz!) && (
+                              <span style={{ marginLeft: space.xxs }}>· {platzKanalHinweis(platz!)}</span>
+                            )}
                           </div>
                           <div style={{ display: "flex" }}>
                             <Pill ton={pille.ton} icon={pille.icon} titel={pille.text}>

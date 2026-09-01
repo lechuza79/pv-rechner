@@ -97,3 +97,24 @@ export async function schonGesendet(
   if (error || !data?.length) return null;
   return data[0] as Versand;
 }
+
+/**
+ * Wann diese Fassung ZUERST rausging — über alle Kanäle hinweg.
+ *
+ * Der Bezugspunkt der Haltbarkeit. Nicht der Versand auf dem gefragten Kanal:
+ * Eine Aussage altert ab ihrer ersten Veröffentlichung, nicht ab der zweiten.
+ * Wer den kanaleigenen Versand nähme, bekäme bei jedem neuen Kanal eine frische
+ * Frist — und genau das soll die Regel verhindern.
+ */
+export async function ersterVersand(postId: string, abdruck: string): Promise<string | null> {
+  if (!supabase) return null;
+  const { data, error } = await supabase
+    .from("social_versand")
+    .select("gesendet_am")
+    .eq("post_id", postId)
+    .eq("fassung_fingerabdruck", abdruck)
+    .order("gesendet_am", { ascending: true })
+    .limit(1);
+  if (error || !data?.length) return null;
+  return (data[0] as { gesendet_am: string }).gesendet_am;
+}
