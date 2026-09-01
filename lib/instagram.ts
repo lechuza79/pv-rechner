@@ -112,31 +112,39 @@ type Profil = { id: string; username?: string };
  * wenn längst nichts mehr geht.
  */
 export async function loginAbschliessen(
-  code: string,
+  rohCode: string,
   origin: string,
 ): Promise<{ name: string; gueltigBis: string }> {
+  // Instagram hängt an die Rückrufadresse ein `#_` an. Als Fragment erreicht es
+  // den Server normalerweise nicht — aber die Dokumentation sagt ausdrücklich,
+  // es gehöre nicht zum Code und sei abzuschneiden. Zwei Zeichen zu entfernen,
+  // die nie da sind, kostet nichts; ein Code mit angehängtem Anker ist ein
+  // ungültiger Code, und der Fehler dafür sähe aus wie jeder andere.
+  const code = rohCode.replace(/#_$/, "");
   const appId = process.env.INSTAGRAM_APP_ID;
   const appSecret = process.env.INSTAGRAM_APP_SECRET;
   if (!appId || !appSecret) throw new Error("Instagram-Zugangsdaten fehlen in der Umgebung");
 
-  // DER KÖRPER WIRD VON HAND GEBAUT, aus demselben Grund wie die Anmeldeadresse:
-  // Die Parameter-Sammlung kodiert jeden Wert, und Instagram vergleicht die
-  // Rückrufadresse offenbar als unveränderten Text. Nur eine der beiden Seiten
-  // umzustellen half nicht — der Dialog sah dann die rohe Form, der Tausch
-  // schickte die kodierte, und der Fehler blieb Zeichen für Zeichen derselbe.
-  const koerper = [
-    `client_id=${appId}`,
-    `client_secret=${appSecret}`,
-    "grant_type=authorization_code",
-    `redirect_uri=${rueckrufAdresse(origin)}`,
-    `code=${code}`,
-  ].join("&");
+  // MULTIPART, nicht URL-kodiert — und das ist keine Geschmacksfrage. Metas
+  // eigenes Beispiel für diesen Aufruf verwendet durchgehend `-F`, also
+  // multipart/form-data. Dort stehen die Werte roh im Körper; im URL-kodierten
+  // Format wird die Rückrufadresse zu `https%3A%2F%2F…`, und Instagram
+  // vergleicht sie offenbar unverändert mit der aus dem Anmeldedialog. Der
+  // Tausch scheiterte deshalb stundenlang mit „redirect_uri is identical to the
+  // one you used in the OAuth dialog request", obwohl im Portal, in der
+  // Anmeldeadresse und hier zeichengleich dieselbe Adresse stand.
+  //
+  // Den Trennstrich der multipart-Grenze setzt fetch selbst — deshalb hier KEIN
+  // Content-Type von Hand: Ein selbst gesetzter Kopf ohne Grenzangabe macht den
+  // Körper unlesbar.
+  const formular = new FormData();
+  formular.set("client_id", appId);
+  formular.set("client_secret", appSecret);
+  formular.set("grant_type", "authorization_code");
+  formular.set("redirect_uri", rueckrufAdresse(origin));
+  formular.set("code", code);
 
-  const tokenRes = await fetch(TOKEN_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: koerper,
-  });
+  const tokenRes = await fetch(TOKEN_URL, { method: "POST", body: formular });
   if (!tokenRes.ok) {
     throw new Error(`Instagram-Schlüsseltausch fehlgeschlagen (${tokenRes.status}): ${await tokenRes.text()}`);
   }
