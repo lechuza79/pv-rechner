@@ -142,6 +142,28 @@ describe("Bausteine-Register", () => {
     expect(NOCH_NICHT_EINGEORDNET.filter((n) => eingeordnet.has(n))).toEqual([]);
   });
 
+  it("zeigt jeden Baustein auf der Designsystem-Seite und nennt fehlende Beispiele", () => {
+    // Die Seite rendert die Gruppen aus dem Register, jeder Baustein bekommt
+    // also von selbst eine Karte. Was NICHT von selbst kommt, ist das lebende
+    // Beispiel — und ohne Beispiel ist die Karte wieder das, wogegen der ganze
+    // Umbau geht: eine Beschreibung statt der Sache.
+    const schau = readFileSync(
+      join(ROOT, "app/(site)/admin/designsystem/KomponentenSchau.tsx"),
+      "utf8",
+    );
+    const ohneBeispiel = BAUSTEINE.filter((b) => !new RegExp(`\\b${b.name}:`).test(schau)).map(
+      (b) => b.name,
+    );
+
+    // Die Zahl darf sinken, nicht steigen. Ein neuer Baustein ohne Beispiel ist
+    // in Ordnung — er muss nur sichtbar bleiben, statt in der Liste unterzugehen.
+    const OHNE_BEISPIEL_HOECHSTENS = 21;
+    expect(
+      ohneBeispiel.length,
+      `Ohne lebendes Beispiel (${ohneBeispiel.length}): ${ohneBeispiel.join(", ")}`,
+    ).toBeLessThanOrEqual(OHNE_BEISPIEL_HOECHSTENS);
+  });
+
   it("beantwortet die Gegenrichtung: wer benutzt diesen Baustein", () => {
     expect(verwendetVon("Modal").map((b) => b.name).sort()).toEqual(["CiteModal", "FlowNav", "TrustBar"]);
     expect(verwendetVon("Switch").map((b) => b.name)).toEqual(["ResultSection"]);

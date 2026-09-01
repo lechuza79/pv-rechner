@@ -203,10 +203,10 @@ describe("Wächter: keine getippten Schriftgrößen", () => {
     // denen keine mehr stimmte — man baut danach, ohne es zu merken. Eine neue
     // Stufe, die dort fehlt, existiert für den Entwurf nicht.
     const theme = readFileSync(join(ROOT, "lib/theme.ts"), "utf8");
-    const guide = readFileSync(join(ROOT, "app/(site)/admin/theme/client.tsx"), "utf8");
+    const guide = readFileSync(join(ROOT, "app/(site)/admin/designsystem/page.tsx"), "utf8");
     const stufen = [...theme.matchAll(/'(--font-size-[a-z0-9-]+)':/g)].map((m) => m[1]);
     expect(stufen.length).toBeGreaterThanOrEqual(12);
-    const fehlend = stufen.filter((t) => !guide.includes(`"${t}" as const`));
+    const fehlend = stufen.filter((t) => !guide.includes(`token: "${t}"`));
     expect(fehlend, `Diese Stufen fehlen im Design-Guide: ${fehlend.join(", ")}`).toEqual([]);
   });
 
