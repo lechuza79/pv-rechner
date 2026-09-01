@@ -1,7 +1,7 @@
 "use client";
 import { useState, useMemo, useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import FlowNav from "../../../components/FlowNav";
 import {
   SITUATION, WOHNFLAECHEN, WP_M2_MIN, WP_M2_MAX, INSULATION_BESTAND, INSULATION_NEUBAU,
@@ -48,6 +48,7 @@ import GlossaryTerm from "../../../components/GlossaryTerm";
 import InfoTooltip from "../../../components/InfoTooltip";
 import { IconArrowRight, IconRefresh, IconChevronDown, IconSun, IconSparkle, IconCheck, IconLink, IconShare, IconWhatsApp } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
+import { trackEvent } from "../../../lib/analytics";
 import { trackFunnelStep, type Funnel } from "../../../lib/analytics";
 
 /** Einheit, in der ein Nutzer seinen Jahresverbrauch von der Abrechnung abliest. */
@@ -222,12 +223,17 @@ export default function Waermepumpe({
   // NUR EINMAL, und das ist der Punkt: Ein Effekt, der die Adresse dauerhaft
   // beobachtet, würde die Eingaben des Nutzers bei jeder Adressänderung wieder
   // überschreiben. Deshalb ein Merker, der nach dem ersten Lauf zusperrt.
-  const suchParams = useSearchParams();
   const linkGelesen = useRef(false);
   useEffect(() => {
     if (linkGelesen.current) return;
     linkGelesen.current = true;
-    const p = new URLSearchParams(suchParams?.toString() ?? "");
+    // Direkt aus der Adresse des Fensters, NICHT über den Adress-Hook von Next:
+    // Der ist auf einer vorgerenderten Seite beim ersten Durchlauf noch leer,
+    // und dieser Effekt läuft genau einmal — er würde die Angaben des Links
+    // dann für immer verpassen. Gemessen: Der Rechner blieb bei Frage eins
+    // stehen, obwohl alle Werte in der Adresse standen. Im Browser ist
+    // `location.search` immer vollständig.
+    const p = new URLSearchParams(window.location.search);
     if (!istGeteilterLink(p)) return;
     const z = wpAusParametern(p);
     setSituation(z.situation);
@@ -324,7 +330,7 @@ export default function Waermepumpe({
     flexShrink: 0 as const, transition: "all 0.2s",
   });
   const handleCopy = async () => {
-    trackEvent("wp_geteilt");
+    trackEvent("waermepumpe_geteilt");
     const url = buildShareUrl();
     try {
       await navigator.clipboard.writeText(url);
@@ -333,11 +339,11 @@ export default function Waermepumpe({
     } catch { prompt("Link kopieren:", url); }
   };
   const handleNativeShare = async () => {
-    trackEvent("wp_geteilt");
+    trackEvent("waermepumpe_geteilt");
     try { await navigator.share({ title: "Solar Check – Meine Wärmepumpen-Rechnung", text: shareText(), url: buildShareUrl() }); } catch {}
   };
   const handleWhatsApp = () => {
-    trackEvent("wp_geteilt");
+    trackEvent("waermepumpe_geteilt");
     window.open(`https://wa.me/?text=${encodeURIComponent(`${shareText()}\n${buildShareUrl()}`)}`, "_blank");
   };
 
