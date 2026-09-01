@@ -85,6 +85,20 @@ describe("Feste Rückrufadresse", () => {
   });
 });
 
+describe("Erteilte Berechtigungen aus der Antwort", () => {
+  it("nimmt sie als Liste UND als Text", async () => {
+    // Instagram liefert sie als Liste; LinkedIn nebenan als getrennten Text.
+    // Der Versuch, die Liste zu zerlegen, brach die Anmeldung im letzten
+    // Schritt ab — nachdem Tausch und Verlängerung längst funktioniert hatten.
+    const { berechtigungenFuerTest } = (await import("../instagram")) as unknown as {
+      berechtigungenFuerTest: (w: string | string[] | undefined) => string[];
+    };
+    expect(berechtigungenFuerTest(["a", "b"])).toEqual(["a", "b"]);
+    expect(berechtigungenFuerTest("a,b")).toEqual(["a", "b"]);
+    expect(berechtigungenFuerTest(undefined)).toEqual(INSTAGRAM_SCOPES);
+  });
+});
+
 describe("Berechtigungen", () => {
   it("nennt die seit März 2026 gültigen Namen", () => {
     // Die alten Kurzformen sind abgelöst. Wer sie noch schickt, bekommt eine
