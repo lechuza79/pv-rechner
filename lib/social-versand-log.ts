@@ -25,6 +25,7 @@ import "server-only";
 // zu bearbeiten.
 
 import { supabase } from "./supabase-server";
+import type { SocialPlattform } from "./social-ablauf";
 
 export type Versand = {
   post_id: string;
@@ -69,19 +70,29 @@ export async function schreibeVersand(v: Omit<Versand, "gesendet_am">): Promise<
 }
 
 /**
- * Ging DIESE Fassung schon einmal raus?
+ * Ging DIESE Fassung auf DIESEM Kanal schon einmal raus?
  *
  * Die Sperre gegen den Doppelversand hängt an der FASSUNG, nicht am Beitrag:
  * Ein Beitrag darf nach einer echten Überarbeitung ein zweites Mal laufen —
  * dieselbe Fassung zweimal ist dagegen immer ein Versehen.
+ *
+ * UND SIE HÄNGT AM KANAL. Ohne ihn hätte der LinkedIn-Versand den auf Instagram
+ * gesperrt: Derselbe Beitrag soll auf beiden erscheinen, und ein Beitrag, der
+ * auf einem Kanal draußen ist, ist auf dem anderen noch gar nicht gesendet. Die
+ * Sperre gilt der Wiederholung, nicht der Verbreitung.
  */
-export async function schonGesendet(postId: string, abdruck: string): Promise<Versand | null> {
+export async function schonGesendet(
+  postId: string,
+  abdruck: string,
+  kanal: SocialPlattform = "linkedin",
+): Promise<Versand | null> {
   if (!supabase) return null;
   const { data, error } = await supabase
     .from("social_versand")
     .select("post_id,fassung_fingerabdruck,extern_id,kanal,gesendet_am")
     .eq("post_id", postId)
     .eq("fassung_fingerabdruck", abdruck)
+    .eq("kanal", kanal)
     .limit(1);
   if (error || !data?.length) return null;
   return data[0] as Versand;
