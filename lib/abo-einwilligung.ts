@@ -46,6 +46,14 @@ export type EinwilligungsFassung = {
   foerderung: string;
   /** Die Zusage über dem Absenden-Knopf, für beide Gattungen dieselbe. */
   zusage: string;
+  /**
+   * Der Hinweis auf die fortgesetzte Aufbewahrung des Nachweises.
+   *
+   * Er gehört in die Fassung, weil er Teil dessen ist, was jemandem bei der
+   * Anmeldung vorlag — und weil die DSK ihn genau dort verlangt (Ziff. 3.7:
+   * „bereits bei der Erhebung der Daten").
+   */
+  nachweisHinweis: string;
 };
 
 export const EINWILLIGUNGS_FASSUNGEN: EinwilligungsFassung[] = [
@@ -58,6 +66,8 @@ export const EINWILLIGUNGS_FASSUNGEN: EinwilligungsFassung[] = [
       "Die uns bekannten Programmseiten sehen wir täglich durch, nach neuen Programmen suchen wir laufend. Ändern sich die Bedingungen, ist der Topf leer oder kommt ein Zuschuss dazu, schreiben wir dir. Für einen einzelnen Ort passiert das selten.",
     zusage:
       "Kein Spam, jederzeit abmeldbar. Wir geben die Adresse nicht weiter und messen nicht, ob du die Mail öffnest. Was wir speichern, steht in der Datenschutzerklärung.",
+    nachweisHinweis:
+      "Deine Anmeldung halten wir auch nach einer Abmeldung noch fest, damit wir belegen können, dass du sie erteilt hast. Das beruht dann nicht mehr auf deiner Einwilligung, sondern auf unserer Nachweispflicht.",
   },
 ];
 

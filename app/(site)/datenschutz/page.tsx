@@ -702,11 +702,31 @@ export default function DatenschutzPage() {
         <p style={S.p}>
           <strong>Du kannst dich jederzeit abmelden</strong> — mit einem Klick
           am Fuß jeder Meldung, ohne Anmeldung und ohne Angabe von Gründen.
-          Danach löschen wir die E-Mail-Adresse nicht sofort, sondern vermerken
-          sie als abgemeldet, damit sie nicht versehentlich wieder auf die Liste
-          gerät; nach zwölf Monaten wird der Eintrag entfernt. Der Widerruf
-          wirkt für die Zukunft und lässt die Rechtmäßigkeit der bis dahin
-          erfolgten Verarbeitung unberührt.
+          Der Versand endet damit sofort, und deine Adresse verlässt den
+          Verteiler. Der Widerruf wirkt für die Zukunft und lässt die
+          Rechtmäßigkeit der bis dahin erfolgten Verarbeitung unberührt.
+        </p>
+        <p style={S.p}>
+          <strong>Was danach bleibt, ist der Nachweis deiner Einwilligung:</strong>{" "}
+          dass und wann du dich angemeldet, bestätigt und wieder abgemeldet
+          hast, für welchen Ort, und mit welchem Wortlaut. Diese Angaben werden
+          ausschließlich noch dafür verwendet — nicht mehr für den Versand.
+          Rechtsgrundlage ist dann nicht mehr deine Einwilligung, sondern unsere
+          Rechenschaftspflicht (Art. 6 Abs. 1 lit. c in Verbindung mit Art. 5
+          Abs. 1 lit. a, Art. 5 Abs. 2 und Art. 7 Abs. 1 DSGVO) sowie unser
+          berechtigtes Interesse an der Abwehr von Ansprüchen und Bußgeldern
+          (Art. 6 Abs. 1 lit. f DSGVO).
+        </p>
+        <p style={S.p}>
+          <strong>Gelöscht wird der Nachweis</strong> zum 31. Dezember des
+          dritten Jahres nach dem Jahr, in dem wir dir zuletzt geschrieben
+          haben. Diese Frist folgt den Verjährungsfristen, innerhalb derer
+          Ansprüche und Bußgelder noch geltend gemacht werden können (drei
+          Jahre, § 195 BGB und § 31 Abs. 2 Nr. 1 OWiG). Hast du deine Anmeldung
+          nie bestätigt, löschen wir sie ohne diese Frist. Eine vorzeitige
+          Löschung des Nachweises können wir nicht anbieten, solange Ansprüche
+          daraus möglich sind (Art. 17 Abs. 3 Buchst. b und e DSGVO) — schreib
+          uns, dann erklären wir dir deinen Fall.
         </p>
         <p style={S.p}>
           Die Meldungen versenden wir über das E-Mail-Postfach unserer Domain

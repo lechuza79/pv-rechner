@@ -33,7 +33,7 @@ export default async function Seite(props: { searchParams: Promise<{ t?: string 
     <AboErgebnis
       titel="Abgemeldet"
       saetze={[
-        "Von uns kommt zu diesem Ort keine Mail mehr. Deine Adresse bleibt als abgemeldet vermerkt, damit sie nicht versehentlich wieder auf die Liste gerät. Mehr steht dort nicht.",
+        "Von uns kommt zu diesem Ort keine Mail mehr. Wir halten noch fest, dass du einmal angemeldet warst und dich abgemeldet hast — das brauchen wir als Nachweis deiner Einwilligung, und es wird für nichts anderes verwendet.",
         "Falls du es dir anders überlegst: Auf der Seite deines Orts steht der Knopf weiterhin, und du müsstest die Anmeldung einmal neu bestätigen.",
       ]}
     />

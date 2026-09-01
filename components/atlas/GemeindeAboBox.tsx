@@ -431,6 +431,20 @@ export default function GemeindeAboBox({
               </a>
               .
             </p>
+            {/* BEREITS BEI DER ERHEBUNG, nicht nur in der Datenschutzerklärung.
+                Die DSK verlangt genau das: „Auf diese auch nach dem Widerruf
+                fortgesetzte Verarbeitung der Einwilligung ist bereits bei der
+                Erhebung der Daten hinzuweisen. Rechtsgrundlage ist insoweit
+                gerade nicht Art. 6 Abs. 1 lit. a DS-GVO."
+                (Orientierungshilfe Direktwerbung 2/2022, Ziff. 3.7.)
+
+                Der Satz steht bewusst leiser als die Zusage darüber — er ist
+                eine Pflichtangabe, keine Werbung für das Abo. */}
+            <p style={S.nachweisHinweis}>
+              Deine Anmeldung halten wir auch nach einer Abmeldung noch fest, damit wir
+              belegen können, dass du sie erteilt hast. Das beruht dann nicht mehr auf
+              deiner Einwilligung, sondern auf unserer Nachweispflicht.
+            </p>
 
             <ModalSticky>
               <button type="submit" disabled={sendet || !email} style={S.knopf}>
@@ -559,6 +573,12 @@ const S: Record<string, React.CSSProperties> = {
     color: v("--color-text-muted"),
   },
   zusageLink: { color: v("--color-accent"), textDecoration: "underline" },
+  nachweisHinweis: {
+    fontSize: v("--font-size-caption"),
+    color: v("--color-text-muted"),
+    lineHeight: 1.5,
+    margin: `${space.sm}px 0 0`,
+  },
   rolleGrund: {
     display: "block",
     fontSize: v("--font-size-small"),

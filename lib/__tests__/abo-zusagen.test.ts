@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "fs";
 import { resolve } from "path";
-import { ABGEMELDET_MAX_TAGE, UNBESTAETIGT_MAX_TAGE } from "../gemeinde-abo";
+import { NACHWEIS_JAHRE, UNBESTAETIGT_MAX_TAGE } from "../gemeinde-abo";
 import { aboBestaetigungsMail } from "../abo-mail";
 
 // Die Datenschutzerklärung ist eine ZUSAGE, keine Bestandsaufnahme — und die
@@ -64,12 +64,31 @@ describe("Was die Datenschutzerklärung über das Abo zusagt", () => {
     expect(UNBESTAETIGT_MAX_TAGE).toBeLessThanOrEqual(30);
   });
 
-  it("nennt zwölf Monate — und der Code rechnet mit demselben Zeitraum", () => {
-    // Die Zahl steht an zwei Stellen: als Wort in der Erklärung, als Frist im
-    // Code. Laufen sie auseinander, ist die veröffentlichte Aussage falsch.
-    expect(abschnitt).toMatch(/nach zwölf Monaten wird der Eintrag entfernt/);
-    expect(ABGEMELDET_MAX_TAGE).toBeGreaterThanOrEqual(365);
-    expect(ABGEMELDET_MAX_TAGE).toBeLessThan(400);
+  it("nennt die Nachweisfrist so, wie der Code sie rechnet", () => {
+    // ZWÖLF MONATE AB ABMELDUNG WAR ZWEIMAL FALSCH (Council 01.09.2026): das
+    // falsche Ereignis (der Anspruch entsteht mit der Mail, nicht mit der
+    // Abmeldung — § 31 Abs. 3 S. 1 OWiG, § 199 Abs. 1 BGB) und die zu kurze
+    // Länge (drei Jahre nach DSK-Orientierungshilfe Ziff. 3.7, die die
+    // Nachweisfähigkeit ausdrücklich auch nach dem Widerruf verlangt).
+    expect(abschnitt).toMatch(/31\. Dezember des dritten Jahres/);
+    expect(abschnitt).toMatch(/zuletzt geschrieben/);
+    expect(NACHWEIS_JAHRE).toBe(3);
+
+    // Und die widerlegten Fassungen dürfen nicht zurückkommen — samt der
+    // Sperrlisten-Begründung, die in einem einwilligungsbasierten Verteiler
+    // keine tragfähige Grundlage hat (DSK Ziff. 5.1).
+    expect(abschnitt).not.toMatch(/nach zwölf Monaten wird der Eintrag entfernt/);
+    expect(abschnitt).not.toMatch(/nicht versehentlich wieder auf die Liste/);
+  });
+
+  it("nennt die andere Rechtsgrundlage für den Nachweis", () => {
+    // DSK Ziff. 3.7, wörtlich: „Rechtsgrundlage ist insoweit gerade nicht
+    // Art. 6 Abs. 1 lit. a DS-GVO." Fehlt der Satz, liest sich die
+    // fortgesetzte Aufbewahrung als Teil der Einwilligung — und die ist
+    // widerrufen.
+    expect(abschnitt).toMatch(/nicht mehr deine Einwilligung/);
+    expect(abschnitt).toMatch(/Art\. 6 Abs\. 1 lit\. c/);
+    expect(abschnitt).toMatch(/Art\. 17 Abs\. 3/);
   });
 
   it("beschreibt die IP-Verarbeitung so, wie sie stattfindet", () => {

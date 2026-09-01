@@ -423,11 +423,30 @@ export async function aboBestaetigen(
 /**
  * Abmelden.
  *
- * Die Zeile wird NICHT gelöscht, sondern auf „abgemeldet" gesetzt. Zwei
- * Gründe, beide praktisch: Eine gelöschte Zeile lässt sich beim nächsten
- * Anmelde-Versuch nicht von einer neuen unterscheiden, und der Widerspruch
- * wäre damit weg. Und wer später wiederkommt, soll erneut bestätigen müssen —
- * das geht nur, wenn wir wissen, dass er einmal abgemeldet war.
+ * Die Zeile wird NICHT gelöscht, sondern auf „abgemeldet" gesetzt — und der
+ * Grund dafür ist ein anderer, als hier lange stand.
+ *
+ * FALSCH WAR: „damit die Adresse nicht versehentlich wieder auf die Liste
+ * gerät". Das beschreibt eine Sperrliste, und eine Sperrliste hat in einem
+ * einwilligungsbasierten Verteiler keine tragfähige Grundlage. Die DSK sagt es
+ * ausdrücklich (Orientierungshilfe Direktwerbung 2/2022, Ziff. 5.1): „Ist die
+ * werbliche Nutzung nur auf Basis einer Einwilligung zulässig, muss der
+ * Verantwortliche ohnehin sicherstellen, dass in jedem Einzelfall eine
+ * Einwilligung vorliegt" — eine Sperrdatei kann deshalb „letztlich nur
+ * rechtmäßig sein, wenn die zu verhindernde Verarbeitung … auf Art. 6 Abs. 1
+ * UAbs. 1 lit. f DS-GVO beruht". Bei uns beruht sie das nicht.
+ *
+ * Und die Sorge dahinter war ein Programmfehler, keine Rechtspflicht: Eine
+ * erneute Anmeldung läuft IMMER durch eine neue Bestätigung, ob die Adresse
+ * schon einmal da war oder nicht. Eine neue, gültige Einwilligung ist kein
+ * Unfall, den man verhindern müsste.
+ *
+ * RICHTIG IST: Die Zeile bleibt als NACHWEIS der Einwilligung — auf anderer
+ * Rechtsgrundlage (Art. 6 Abs. 1 lit. c i. V. m. Art. 5 Abs. 2, Art. 7 Abs. 1
+ * DSGVO und lit. f) und mit eingeschränktem Zweck. Der Versandlauf darf sie
+ * nicht mehr lesen; sichtbar gemacht wird das durch den Status selbst
+ * (Erwägungsgrund 67: „Auf die Tatsache, dass die Verarbeitung … beschränkt
+ * wurde, sollte in dem System unmissverständlich hingewiesen werden.").
  *
  * Ein unbekanntes Abo ist hier KEIN Fehler nach außen: Die Seite sagt in
  * beiden Fällen „abgemeldet". Sonst verrät die Abmelde-Adresse, welche
@@ -500,6 +519,58 @@ export const BESTAETIGUNG_SPERRE_MS = 2 * 60 * 1000;
  * Ein Jahr ist die Spanne, nach der ein Widerspruch praktisch keine Wirkung
  * mehr entfalten muss.
  */
+/**
+ * Wann der Einwilligungsnachweis gelöscht wird.
+ *
+ * NICHT „zwölf Monate nach der Abmeldung" — das war zweimal falsch (Council mit
+ * Legal-Judge, 01.09.2026, Fundstellen im Original gelesen):
+ *
+ *   FALSCHES EREIGNIS. Die Uhr startet am letzten VERSAND, nicht an der
+ *   Abmeldung. Der Anspruch, gegen den der Nachweis schützt, entsteht mit der
+ *   einzelnen Mail (§ 31 Abs. 3 S. 1 OWiG: „sobald die Handlung beendet ist";
+ *   § 199 Abs. 1 BGB: mit dem Schluss des Jahres, in dem der Anspruch entstand).
+ *   Wer sich nach drei Jahren Abo abmeldet, hätte bei einer Uhr ab Abmeldung
+ *   drei Jahre zu viel; wer sich sofort abmeldet, ohne je eine Meldung bekommen
+ *   zu haben, zu wenig.
+ *
+ *   FALSCHE LÄNGE. Die DSK verlangt Nachweisfähigkeit über die Verjährung
+ *   hinaus — drei Jahre, § 31 Abs. 2 Nr. 1 OWiG bzw. § 195 BGB
+ *   (Orientierungshilfe Direktwerbung 2/2022, Ziff. 3.7) — und ausdrücklich
+ *   „auch nach einem Widerruf und der Löschung der personenbezogenen Daten aus
+ *   der Werbe-Datenbank".
+ *
+ * Die zivilrechtliche Frist ist die längere und deckt die bußgeldrechtliche mit
+ * ab: Ultimo-Regel aus § 199 Abs. 1 BGB, also der 31.12. des dritten Jahres
+ * nach dem Jahr des letzten Versands. Je nach Versandmonat sind das 36 bis 48
+ * Monate.
+ */
+export const NACHWEIS_JAHRE = 3;
+
+/**
+ * Der Tag, an dem der Nachweis zu einem Abo gelöscht werden darf.
+ *
+ * `letzterVersandIso` ist der Zeitpunkt der letzten Meldung. Gab es nie eine
+ * (jemand meldet sich ab, bevor etwas kam), gibt es auch keinen Anspruch, gegen
+ * den der Nachweis schützt — dann zählt die Bestätigung als Ereignis, denn sie
+ * ist die Einwilligung, um die im Streit gestritten würde.
+ */
+export function nachweisLoeschbarAb(letzterVersandIso: string | null, bestaetigtIso: string | null): string | null {
+  const anker = letzterVersandIso ?? bestaetigtIso;
+  if (!anker) return null;
+  const jahr = Number(anker.slice(0, 4));
+  if (!Number.isFinite(jahr)) return null;
+  // Der 1. Januar danach — gelöscht wird ab diesem Tag, die Frist endet also
+  // mit dem 31.12. des dritten Jahres.
+  return `${jahr + NACHWEIS_JAHRE + 1}-01-01T00:00:00.000Z`;
+}
+
+/**
+ * ALT: zwölf Monate ab Abmeldung. Bleibt als Konstante stehen, weil ein Test
+ * die veröffentlichte Zusage dagegen hält — er muss rot werden, wenn jemand
+ * die alte Frist zurückbringt.
+ *
+ * @deprecated Ersetzt durch NACHWEIS_JAHRE, siehe dort.
+ */
 export const ABGEMELDET_MAX_TAGE = 365;
 
 export type AufraeumErgebnis = {
@@ -530,21 +601,80 @@ export async function aboAufraeumen(jetztMs: number): Promise<AufraeumErgebnis> 
     DB_READ_TIMEOUT_MS,
   );
 
-  const { data: b } = await withDbTimeout(
+  // Der Nachweis: gelöscht wird nach dem 31.12. des dritten Jahres nach der
+  // letzten Meldung — nicht nach der Abmeldung (siehe NACHWEIS_JAHRE).
+  //
+  // ZWEI BEDINGUNGEN, weil zwei Ereignisse in Frage kommen. Wer nie eine
+  // Meldung bekam, hat kein Versanddatum; dort zählt die Bestätigung. Beide
+  // Fälle einzeln abzufragen ist umständlicher als eine Bedingung — aber eine
+  // Bedingung über zwei Spalten würde in der Datenbank zum vollständigen
+  // Durchlauf, und die Reihenfolge der Prüfung wäre nicht mehr abzulesen.
+  const jahr = new Date(jetztMs).getUTCFullYear();
+  const stichtag = `${jahr - NACHWEIS_JAHRE}-01-01T00:00:00.000Z`;
+
+  const { data: b1 } = await withDbTimeout(
     supabase
       .from("gemeinde_abos")
       .delete()
       .eq("status", "abgemeldet")
-      .lt("abgemeldet_am", grenze(ABGEMELDET_MAX_TAGE))
+      .not("letzte_mail_am", "is", null)
+      .lt("letzte_mail_am", stichtag)
       .select("id"),
-    "abo-aufraeumen-abgemeldet",
+    "abo-aufraeumen-nachweis-versand",
     DB_READ_TIMEOUT_MS,
   );
+
+  const { data: b2 } = await withDbTimeout(
+    supabase
+      .from("gemeinde_abos")
+      .delete()
+      .eq("status", "abgemeldet")
+      .is("letzte_mail_am", null)
+      .lt("bestaetigt_am", stichtag)
+      .select("id"),
+    "abo-aufraeumen-nachweis-ohne-versand",
+    DB_READ_TIMEOUT_MS,
+  );
+
+  const b = [...(b1 ?? []), ...(b2 ?? [])];
 
   return {
     unbestaetigtGeloescht: (a ?? []).length,
     abgemeldetGeloescht: (b ?? []).length,
   };
+}
+
+/**
+ * Wer bekommt eine Meldung zu diesem Ort?
+ *
+ * DIE EINZIGE TÜR ZUM VERSAND — und der Grund, warum es sie gibt, ist die
+ * Zweckbeschränkung nach der Abmeldung. Ein abgemeldetes Abo bleibt als
+ * NACHWEIS der Einwilligung stehen (siehe `aboAbmelden`), auf anderer
+ * Rechtsgrundlage und für einen anderen Zweck. Läse der Versand dieselbe
+ * Tabelle ohne Filter, wäre die Beschränkung eine Behauptung.
+ *
+ * Erwägungsgrund 67 verlangt, dass eine solche Beschränkung „in dem System
+ * unmissverständlich" sichtbar ist. Sie ist es hier zweifach: am Status der
+ * Zeile und daran, dass es genau eine Funktion gibt, die Empfänger liefert.
+ *
+ * Wer einen Versandlauf baut, nimmt DIESE Funktion. Ein zweiter Lesepfad auf
+ * dieselbe Tabelle wäre kein Duplikat, sondern der Weg, auf dem eine
+ * abgemeldete Adresse wieder Post bekommt — festgenagelt von
+ * `lib/__tests__/abo-zweckbindung.test.ts`.
+ */
+export async function empfaengerFuerOrt(regionId: string): Promise<GemeindeAbo[]> {
+  if (!supabase) return [];
+  const { data, error } = await withDbTimeout(
+    supabase
+      .from("gemeinde_abos")
+      .select(SPALTEN)
+      .eq("region_id", regionId)
+      .eq("status", "bestaetigt"),
+    "abo-empfaenger",
+    DB_READ_TIMEOUT_MS,
+  );
+  if (error || !data) return [];
+  return (data as Zeile[]).map(ausZeile);
 }
 
 /**
