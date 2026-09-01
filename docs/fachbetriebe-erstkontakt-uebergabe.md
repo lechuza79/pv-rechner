@@ -1,5 +1,9 @@
 # Fachbetriebe ansprechen: Übergabe für die Konzept-Session
 
+> **Der aktuelle Stand steht in `fachbetriebe-erstkontakt-konzept.md`.** Diese Datei ist das
+> Protokoll: Ausgangslage, geprüfte und verworfene Vorschläge, Messungen. Wer wissen will,
+> WAS gilt, liest das Konzept; wer wissen will, WARUM etwas nicht gilt, liest hier weiter.
+
 **Angelegt 29.08.2026** am Ende der Erhebungs-Session. Auftrag des Betreibers: **erst
 konzeptionell/strategisch die Anfrage prüfen**, nicht bauen.
 
