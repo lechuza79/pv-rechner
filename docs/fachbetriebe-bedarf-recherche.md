@@ -384,6 +384,29 @@ hat keine deutsche Handwerker-Zielgruppe.
 
 ---
 
+## 8. Wer baut ihre Websites? — eigene Messung, 01.09.2026, Ergebnis: niemand im Besonderen
+
+Der Plugin-Befund nannte als Alternative eine Kooperation mit den Agenturen, die
+Solarteur-Seiten bauen. **Gemessen statt vermutet** (`npm run fachbetriebe:agenturen`):
+400er-Stichprobe, Startseite und Impressum je Betrieb, Treffer nur bei Signalwort
+(„Realisierung", „Webdesign" …) UND fremdem Link in dessen Nähe.
+
+**384 erreicht · 73 mit Ersteller-Vermerk (19 %) · 81 verschiedene Ersteller.** Der
+häufigste betreut drei Betriebe, danach nur noch Zweier.
+
+**Es gibt keine Konzentration.** Der Websitebau für PV-Betriebe ist so zersplittert wie
+alles andere in diesem Markt; eine Kooperation erreicht jeweils eine Handvoll Seiten. **Der
+Weg ist damit erledigt** — mit einer Ausnahme: Heise tritt mit zwei Marken für fertige
+Handwerker-Websites auf (zusammen vier Treffer), also ein Anbieter mit vielen Kunden statt
+ein Einzelbüro. Ob das lohnt, ist eine eigene, ungeprüfte Frage.
+
+**Zwei Fehlgriffe der Erkennung, offen benannt** (Regel: Extraktoren von Hand gegenlesen):
+Ein Anbieter für Rechtstexte und die EU-Streitschlichtungsstelle standen als „Ersteller" in
+der Liste — beide stehen im Impressum, beide sind keine Agentur. Sie gehören in die
+Ausschlussliste; am Gesamtbild ändert die Bereinigung nichts.
+
+---
+
 ## Was daraus für die Ansprache folgt
 
 1. **Der Aufhänger ist die Verunsicherung der Endkunden, nicht das Werkzeug.** Es ist der

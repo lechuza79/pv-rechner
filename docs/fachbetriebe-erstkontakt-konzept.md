@@ -135,10 +135,27 @@ Leistungsumfang, keine Beträge — die gehören dem Betreiber und brauchen eine
 | **3 Whitelabel** | ohne unsere Marke, eigene Zusatzfragen | — | zahlt |
 | **4 später** | Förderdaten in seinem eigenen Angebotswerkzeug; **Anfragen von unseren Ortsseiten** | — | zahlt |
 
-**Stufe 3 ist die schwächste Bezahlstufe, nicht die erste, die wir bepreisen.** Die
-Hersteller verschenken Planungssoftware, um Hardware zu verkaufen (BayWa, SMA, SolarEdge,
-OpenSolar — alle gratis); für ein Werkzeug allein gibt es keinen Zahlungswillen. Bezahlt
-wird abgenommene Arbeit: 275 € netto je Netzanmeldung im Zehnerpaket sind belegt.
+**Zum Zahlungswillen für Stufe 3 wissen wir NICHTS — und die frühere Begründung war
+falsch.** Sie lautete: Die Hersteller verschenken Planungssoftware, also gibt es für ein
+Werkzeug keinen Zahlungswillen. Der Vergleich hinkt, wie der Betreiber am 01.09.2026 zu
+Recht angemerkt hat: Planungssoftware ist ein **Auslegungswerkzeug für den Betrieb**,
+Whitelabel ist ein **Rechner für seine Kunden**. Zwei verschiedene Produkte; der
+Zahlungswille für das eine sagt über das andere nichts. **Die Frage gehört in die
+Gespräche, nicht in eine Vorab-Behauptung.**
+
+Belegt ist nur: Für **abgenommene Arbeit** wird gezahlt (275 € netto je Netzanmeldung im
+Zehnerpaket, offene Preisliste).
+
+**Das Modell hat damit heute genau ein Bezahlprodukt, und dessen Nachfrage ist ungemessen.
+Konsequenz, die vor der ersten Arbeitsstunde klar sein sollte: Dieses Vorhaben macht auf
+absehbare Zeit keinen Umsatz.** Es ist eine Reichweiten-Investition — Links jetzt, damit
+Stufe 4 später überhaupt möglich wird. In der Pilotphase ist ohnehin alles kostenlos.
+
+**Der aussichtsreichste zweite Bezahlkandidat** (Idee des Betreibers, 01.09.2026): die
+Förderdaten samt Renditerechnung **als Anbindung an seine Angebotssoftware** — Export in
+das Werkzeug, mit dem er ohnehin arbeitet. Das ist abgenommene Arbeit, also die Achse, auf
+der belegter Zahlungswille existiert, und wir sind die einzige Quelle dafür. **Gehört als
+Frage in den ersten Kontakt**, nicht als Ankündigung.
 
 **Pilotstatus:** „Noch x von y Plätzen frei" nur, wenn die Begrenzung echt ist — erfundene
 Knappheit ist Irreführung, ausgerechnet auf der Seite, die mit Ehrlichkeit wirbt. Echt wird
@@ -225,4 +242,8 @@ die Mehrdeutigkeit wäre mit der Liste bezahlt. Danach 30 bis 50, nicht 3.114.
 - Macht er Wärmepumpe, und ist die ihm inzwischen wichtiger als PV?
 - Kauft er heute Leads, und was zahlt er? (Der Markt ist preisintransparent — jede echte
   Zahl ist mehr wert als alle Blogartikel zusammen.)
+- **Mit welcher Angebotssoftware arbeitet er, und würde er Förderdaten und Renditerechnung
+  dort hinein exportiert bekommen wollen?** Das ist der aussichtsreichste Bezahlkandidat.
+- Wäre ihm ein Rechner ohne unsere Marke etwas wert — und wenn ja, warum? (Zu Whitelabel
+  haben wir keine Messung.)
 - Nennt er nebenbei seinen Meisterbrief?
