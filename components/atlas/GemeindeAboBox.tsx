@@ -7,6 +7,7 @@ import InfoTooltip from "../InfoTooltip";
 import Modal, { ModalSticky } from "../Modal";
 import { IconGlocke } from "../Icons";
 import { ABO_BESTAETIGT_PARAM } from "../../lib/abo-bestaetigt";
+import { AKTUELLE_EINWILLIGUNG } from "../../lib/abo-einwilligung";
 import { ABO_TECHNIKEN, ABO_TECHNIK_LABEL, type AboTechnik } from "../../lib/abo-technik";
 import { HERKUNFT_PARAM, HERKUNFT_WERT } from "../../lib/brief-herkunft";
 
@@ -70,18 +71,20 @@ type Zustand = "bereit" | "sendet" | "fertig" | { fehler: string; amFeld: boolea
  */
 const TEXTE = {
   gemeinde: {
-    intro:
-      "Wir schreiben, wenn deine Gemeinde einen Zuschuss auflegt, wenn ein Vergütungsjahrgang ausläuft, wenn die Zahlen fürs Jahr da sind — oder wenn wir sonst etwas über den Ort herausfinden, das der Rede wert ist.",
+    // AUS DEM ARCHIV, nicht hier getippt: Was jemandem bei der Anmeldung
+    // vorlag, muss später vorlegbar sein (EDSA 05/2020 Rn. 108, DSK Ziff. 2.1).
+    // Eine zweite Fassung an dieser Stelle wäre genau der Fall, in dem der
+    // gespeicherte Verweis auf einen Wortlaut zeigt, den niemand gesehen hat.
+    intro: AKTUELLE_EINWILLIGUNG.gemeinde,
     teaser: "Förderprogramm, Leistung u.\u00a0v.\u00a0m.",
     hilfe:
-      "Es kommt nur etwas, wenn es etwas zu berichten gibt. Abmelden mit einem Klick am Fuß jeder Mail. Deine Adresse geben wir nicht weiter.",
+      "Es kommt nur etwas, wenn es etwas zu berichten gibt. Abmelden mit einem Klick am Fuß jeder Meldung. Deine Adresse geben wir nicht weiter.",
   },
   foerderung: {
-    intro:
-      "Wir sehen die Programmseiten der Gemeinden täglich durch. Kommt ein Zuschuss dazu, ändern sich die Bedingungen oder ist der Topf leer, schreiben wir dir. Für einen einzelnen Ort passiert das selten.",
+    intro: AKTUELLE_EINWILLIGUNG.foerderung,
     teaser: "Wenn sich an der Förderung etwas ändert",
     hilfe:
-      "Wir prüfen täglich, schreiben aber nur bei Änderungen. Für einen Ort ist das selten. Abmelden mit einem Klick am Fuß jeder Mail. Deine Adresse geben wir nicht weiter.",
+      "Die bekannten Programmseiten prüfen wir täglich, nach neuen suchen wir laufend — geschrieben wird nur bei Änderungen, und die sind für einen Ort selten. Abmelden mit einem Klick am Fuß jeder Meldung. Deine Adresse geben wir nicht weiter.",
   },
 } as const;
 
@@ -223,6 +226,9 @@ export default function GemeindeAboBox({
           // immer false, nicht der Zustand eines Kästchens, das dort gar nicht
           // steht.
           ausVerwaltung: quelle === "gemeinde" ? ausVerwaltung : false,
+          // Wozu genau eingewilligt wurde. Der Server prüft die Angabe gegen
+          // das Archiv und übernimmt sie nicht ungeprüft.
+          einwilligung: AKTUELLE_EINWILLIGUNG.version,
         }),
       });
       if (!antwort.ok) {
@@ -419,7 +425,11 @@ export default function GemeindeAboBox({
 
             <p style={S.zusage}>
               Kein Spam, jederzeit abmeldbar. Wir geben die Adresse nicht weiter und
-              messen nicht, ob du die Mail öffnest.
+              messen nicht, ob du die Mail öffnest. Was wir speichern, steht in der{" "}
+              <a href="/datenschutz" style={S.zusageLink}>
+                Datenschutzerklärung
+              </a>
+              .
             </p>
 
             <ModalSticky>
@@ -548,6 +558,7 @@ const S: Record<string, React.CSSProperties> = {
     fontSize: v("--font-size-small"),
     color: v("--color-text-muted"),
   },
+  zusageLink: { color: v("--color-accent"), textDecoration: "underline" },
   rolleGrund: {
     display: "block",
     fontSize: v("--font-size-small"),

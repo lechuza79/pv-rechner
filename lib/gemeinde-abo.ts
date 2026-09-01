@@ -23,11 +23,36 @@ import "server-only";
 // Anmeldeknopf — „kein Spam, jederzeit abmeldbar" — nicht daneben steht,
 // während wir Verkehrsdaten sammeln.
 //
-// OFFEN, NICHT ENTSCHIEDEN: Diese Abwägung ist eine Rechtsaussage und hat die
-// Council-Prüfung mit zwei Legal-Judges noch NICHT durchlaufen (Projektregel
-// Faktenprüfung, Punkt 8). Sie gehört dorthin, bevor die erste Mail rausgeht.
-// Fällt die Prüfung anders aus, kommen zwei Spalten dazu — die Ablage ist
-// dafür vorbereitet, die Entscheidung ist es noch nicht.
+// GEPRÜFT AM 01.09.2026 (Council, Legal-Judge mit Volltext-Fundstellen). Das
+// Ergebnis war nicht das erwartete: Der IP-Verzicht ist RICHTIG und keine
+// Abweichung von irgendetwas — er ist die Linie der Aufsicht selbst. Die DSK
+// sagt wörtlich, das Abspeichern einer IP genüge „auch nach der Rechtsprechung
+// des BGH zum UWG nicht" (Orientierungshilfe Direktwerbung, Februar 2022,
+// Ziff. 3.3 S. 11), und das VG Düsseldorf hat einen Versender abgewiesen, der
+// genau die empfohlenen zwei IPs vorlegte (27.07.2026, 29 K 9714/24, Rn. 38,
+// 41). Weder BGH I ZR 164/09 noch OLG München 29 U 1682/12 verlangen die IP;
+// „beim Double-Opt-in ist die IP Pflicht" ist Ratgeber-Literatur ohne
+// Fundstelle. Abweichend war unsere Beschreibung, nicht unsere Praxis.
+//
+// FALSCH WAR DAGEGEN, WORAUF SICH DIESER KOMMENTAR STÜTZTE. Hier stand, das
+// signierte Token belege die Einwilligung mit — es belegt gar nichts, weil es
+// nach der Bestätigung verworfen und nirgends aufbewahrt wird. Der Preis lag
+// nie bei der IP, sondern an zwei Stellen, die niemand angesehen hatte:
+//
+//   1. WOZU eingewilligt wurde. Der Nachweis umfasst den Wortlaut (DSK
+//      Ziff. 3.3), und der stand als Konstante im Code der Oberfläche, die
+//      sich mit dem nächsten Commit ändert. Behoben: `einwilligung_version`
+//      am Abo, Wortlaute datiert in `lib/abo-einwilligung.ts`.
+//   2. DASS eine Bestätigungsmail hinausging. Der BGH verlangt die Erklärung
+//      speicher- und ausdruckbar (I ZR 164/09 Rn. 38); genau daran scheiterte
+//      der Düsseldorfer Fall (Rn. 46). Behoben: `versand_beleg` — die Kennung,
+//      die der Mailserver zurückgibt, ohne eine zweite Kopie der Mail.
+//
+// OFFEN und dem Betreiber vorgelegt: Die Löschzusage von zwölf Monaten nimmt
+// uns den Nachweis in genau dem Fenster, in dem er gebraucht würde — die DSK
+// nennt drei Jahre (Ziff. 3.7 S. 14), und Beschwerden kommen typischerweise
+// NACH der Abmeldung. Beide Wege sind vertretbar; die stillschweigende Fassung
+// ist es nicht.
 //
 // ─── Zugriff ────────────────────────────────────────────────────────────────
 //
@@ -95,6 +120,30 @@ export type GemeindeAbo = {
    * beiden dasselbe und treffen keinen von beiden.
    */
   ausVerwaltung: boolean;
+  /**
+   * Unter welcher Fassung des Einwilligungstexts diese Anmeldung zustande kam.
+   *
+   * Der Nachweis nach Art. 7 Abs. 1 DSGVO umfasst den WORTLAUT, nicht nur den
+   * Zeitpunkt (DSK Ziff. 3.3: nachweisbar „auch hinsichtlich ihres Wortlauts";
+   * EDSA 05/2020 Rn. 108). Ohne diese Angabe stützte sich der Nachweis auf die
+   * Bauart des Systems — und genau die erklärt der EDSA für nicht ausreichend.
+   */
+  einwilligungVersion: string | null;
+  /**
+   * Beleg des Mailservers für die Bestätigungsmail.
+   *
+   * Der BGH verlangt „Speicherung und die jederzeitige Möglichkeit, sie
+   * auszudrucken" (I ZR 164/09 Rn. 38). Am Düsseldorfer Fall (VG Düsseldorf,
+   * 29 K 9714/24, Rn. 46) ist ein Versender genau daran gescheitert: Er konnte
+   * keine Bestätigungsmail vorlegen — „lässt nur den Schluss zu, dass es keine
+   * Bestätigungsmail gibt."
+   *
+   * WIR LEGEN KEINE KOPIE AN, sondern nur den Beleg, DASS versendet wurde. Der
+   * Inhalt lässt sich aus der Fassung oben wortgleich neu erzeugen; eine
+   * zweite Kopie jeder Mail wäre mehr Daten für denselben Nachweis und liefe
+   * der Datenminimierung zuwider (EDSA Rn. 106).
+   */
+  versandBeleg: string | null;
   erstelltAm: string;
   bestaetigtAm: string | null;
   letzteMailAm: string | null;
@@ -109,6 +158,8 @@ type Zeile = {
   ueber_brief: boolean | null;
   techniken: string[] | null;
   aus_verwaltung: boolean | null;
+  einwilligung_version: string | null;
+  versand_beleg: string | null;
   erstellt_am: string;
   bestaetigt_am: string | null;
   letzte_mail_am: string | null;
@@ -132,6 +183,8 @@ function ausZeile(r: Zeile): GemeindeAbo {
     // vorsichtige Richtung: Wer nicht gesagt hat, dass er dort arbeitet,
     // bekommt den Text für alle anderen.
     ausVerwaltung: r.aus_verwaltung === true,
+    einwilligungVersion: r.einwilligung_version,
+    versandBeleg: r.versand_beleg,
     erstelltAm: r.erstellt_am,
     bestaetigtAm: r.bestaetigt_am,
     letzteMailAm: r.letzte_mail_am,
@@ -139,7 +192,7 @@ function ausZeile(r: Zeile): GemeindeAbo {
 }
 
 const SPALTEN =
-  "id,region_id,email,status,quelle,ueber_brief,techniken,aus_verwaltung,erstellt_am,bestaetigt_am,letzte_mail_am";
+  "id,region_id,email,status,quelle,ueber_brief,techniken,aus_verwaltung,einwilligung_version,versand_beleg,erstellt_am,bestaetigt_am,letzte_mail_am";
 
 /**
  * Adresse vereinheitlichen, bevor sie irgendwo hingeschrieben wird.
@@ -210,6 +263,8 @@ export async function aboAnlegen(o: {
   ueberBrief: boolean;
   technikenGewaehlt: AboTechnik[];
   ausVerwaltung: boolean;
+  /** Fassung des Einwilligungstexts, vom Aufrufer gegen das Archiv geprüft. */
+  einwilligungVersion: string;
 }): Promise<AnlageErgebnis> {
   if (!supabase) return { art: "keine-db" };
   const email = normalisiereEmail(o.email);
@@ -252,6 +307,11 @@ export async function aboAnlegen(o: {
         ueber_brief: o.ueberBrief,
         techniken: o.technikenGewaehlt,
         aus_verwaltung: o.ausVerwaltung,
+        // Beim Aufwecken NEU gesetzt: Wer sich ein zweites Mal einträgt, tut
+        // das unter dem Text, der ihm JETZT vorliegt. Die alte Fassung wäre ab
+        // diesem Moment die falsche Auskunft.
+        einwilligung_version: o.einwilligungVersion,
+        versand_beleg: null,
       })
         .eq("id", abo.id)
         .select(SPALTEN)
@@ -290,6 +350,7 @@ export async function aboAnlegen(o: {
         ueber_brief: o.ueberBrief,
         techniken: o.technikenGewaehlt,
         aus_verwaltung: o.ausVerwaltung,
+        einwilligung_version: o.einwilligungVersion,
       })
       .select(SPALTEN)
       .single(),
@@ -298,6 +359,25 @@ export async function aboAnlegen(o: {
   );
   if (error || !data) throw new Error(`Abo konnte nicht angelegt werden: ${error?.message}`);
   return { art: "bestaetigung-noetig", abo: ausZeile(data as Zeile) };
+}
+
+/**
+ * Den Versandbeleg der Bestätigungsmail nachtragen.
+ *
+ * Getrennt vom Anlegen, weil der Beleg erst NACH dem Versand existiert — und
+ * versendet wird erst, wenn die Zeile steht (sonst stünde in einer Mail eine
+ * Kennung, zu der es kein Abo gibt).
+ *
+ * Wirft nicht: Ein fehlender Beleg schwächt den Nachweis, aber eine
+ * erfolgreiche Anmeldung deswegen zu verwerfen wäre der teurere Fehler.
+ */
+export async function versandBelegSetzen(aboId: string, beleg: string): Promise<void> {
+  if (!supabase) return;
+  await withDbTimeout(
+    supabase.from("gemeinde_abos").update({ versand_beleg: beleg }).eq("id", aboId),
+    "abo-versandbeleg",
+    DB_READ_TIMEOUT_MS,
+  );
 }
 
 /**

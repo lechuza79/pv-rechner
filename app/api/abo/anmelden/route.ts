@@ -1,10 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { aboAnlegen, normalisiereEmail, siehtNachEmailAus, type AboQuelle } from "../../../../lib/gemeinde-abo";
+import {
+  aboAnlegen,
+  normalisiereEmail,
+  siehtNachEmailAus,
+  versandBelegSetzen,
+  type AboQuelle,
+} from "../../../../lib/gemeinde-abo";
 import { techniken } from "../../../../lib/abo-technik";
 import { bestaetigungsToken } from "../../../../lib/abo-token";
 import { aboBestaetigungsMail } from "../../../../lib/abo-mail";
 import { sendeAboMail } from "../../../../lib/abo-versand";
 import { getRegionById } from "../../../../lib/atlas";
+import { AKTUELLE_EINWILLIGUNG, einwilligungsFassung } from "../../../../lib/abo-einwilligung";
 
 // ─── Anmeldung zu einem Gemeinde-Abo ─────────────────────────────────────────
 //
@@ -132,6 +139,16 @@ export async function POST(req: NextRequest) {
   // Richtung hier kostenlos.
   const ausVerwaltung = payload.ausVerwaltung === true;
 
+  // WOZU eingewilligt wurde. Der Browser meldet die Fassung, die er ausgeliefert
+  // hat — geprüft wird sie trotzdem: Eine unbekannte Kennung würde auf einen
+  // Wortlaut zeigen, den es nie gab, und das wäre ein Nachweis, der schlechter
+  // ist als keiner. Kennt das Archiv sie nicht, gilt die heutige Fassung; das
+  // ist die einzige, die der Server mit Sicherheit ausliefert.
+  const gemeldet = typeof payload.einwilligung === "string" ? payload.einwilligung : null;
+  const einwilligungVersion = einwilligungsFassung(gemeldet)
+    ? gemeldet!
+    : AKTUELLE_EINWILLIGUNG.version;
+
   const ergebnis = await aboAnlegen({
     regionId,
     email,
@@ -140,6 +157,7 @@ export async function POST(req: NextRequest) {
     ueberBrief,
     technikenGewaehlt,
     ausVerwaltung,
+    einwilligungVersion,
   });
 
   if (ergebnis.art === "keine-db") {
@@ -177,6 +195,19 @@ export async function POST(req: NextRequest) {
       { error: "Die Bestätigungsmail konnte gerade nicht verschickt werden. Bitte später erneut." },
       { status: 503 },
     );
+  }
+
+  // DASS die Bestätigungsmail hinausging, wird am Abo vermerkt — nachträglich,
+  // weil der Beleg erst nach dem Versand existiert. Schlägt das Nachtragen
+  // fehl, ist die Mail trotzdem draußen: Der Nutzer bekommt sein OK, und der
+  // fehlende Beleg steht im Protokoll. Ihn hier zum Blocker zu machen hieße,
+  // eine erfolgreiche Anmeldung wegen eines Nachweises zu verwerfen.
+  if (versand.beleg) {
+    try {
+      await versandBelegSetzen(ergebnis.abo.id, versand.beleg);
+    } catch (e) {
+      console.error("[Abo] Versandbeleg nicht gespeichert:", e);
+    }
   }
 
   return OK;

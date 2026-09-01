@@ -29,19 +29,36 @@ const fliessend = (s: string) => s.replace(/\s+/g, " ");
 describe("Was die Datenschutzerklärung über das Abo zusagt", () => {
   const dse = fliessend(lies("app/(site)/datenschutz/page.tsx"));
 
+  /**
+   * NUR der Abo-Abschnitt.
+   *
+   * Gegen das ganze Dokument geprüft, ist jede Aussage über das Abo wertlos,
+   * sobald dieselben Wörter woanders vorkommen — und sie kommen vor: Die
+   * Rechtsgrundlage für berechtigte Interessen steht mehrfach in der Erklärung,
+   * für ganz andere Verarbeitungen. In der Gegenprobe ließ sich die
+   * Rechtsgrundlage aus dem Abo-Abschnitt löschen, ohne dass der Test rot
+   * wurde. Er belegte eine Aussage mit dem Text einer fremden.
+   */
+  const abschnitt = (() => {
+    const von = dse.indexOf("16. Meldungen zu einer Gemeinde");
+    if (von < 0) throw new Error("Abschnitt 16 nicht gefunden");
+    const bis = dse.indexOf("<h2", von + 10);
+    return dse.slice(von, bis > 0 ? bis : undefined);
+  })();
+
   it("hat überhaupt einen Abschnitt dazu", () => {
     // Das Kontaktformular stand einen Tag nach seinem Livegang mit keinem Wort
     // in der Erklärung. Dieselbe Lücke soll hier nicht entstehen.
-    expect(dse).toMatch(/Meldungen zu einer Gemeinde/);
+    expect(abschnitt).toMatch(/Meldungen zu einer Gemeinde/);
   });
 
   it("nennt das Bestätigungsverfahren und die Einwilligung als Grundlage", () => {
-    expect(dse).toMatch(/Bestätigungsverfahren/);
-    expect(dse).toMatch(/Art\.\s*6\s*Abs\.\s*1\s*lit\.\s*a\s*DSGVO/);
+    expect(abschnitt).toMatch(/Bestätigungsverfahren/);
+    expect(abschnitt).toMatch(/Art\.\s*6\s*Abs\.\s*1\s*lit\.\s*a\s*DSGVO/);
   });
 
   it("sagt die Löschung nicht bestätigter Eintragungen zu — und der Code kann sie", () => {
-    expect(dse).toMatch(/Klickst du nicht, wird die Eintragung gelöscht/);
+    expect(abschnitt).toMatch(/Klickst du nicht, wird die Eintragung gelöscht/);
     // Ohne eine endliche Frist im Code wäre der Satz eine Absichtserklärung.
     expect(UNBESTAETIGT_MAX_TAGE).toBeGreaterThan(0);
     expect(UNBESTAETIGT_MAX_TAGE).toBeLessThanOrEqual(30);
@@ -50,20 +67,106 @@ describe("Was die Datenschutzerklärung über das Abo zusagt", () => {
   it("nennt zwölf Monate — und der Code rechnet mit demselben Zeitraum", () => {
     // Die Zahl steht an zwei Stellen: als Wort in der Erklärung, als Frist im
     // Code. Laufen sie auseinander, ist die veröffentlichte Aussage falsch.
-    expect(dse).toMatch(/nach zwölf Monaten wird der Eintrag entfernt/);
+    expect(abschnitt).toMatch(/nach zwölf Monaten wird der Eintrag entfernt/);
     expect(ABGEMELDET_MAX_TAGE).toBeGreaterThanOrEqual(365);
     expect(ABGEMELDET_MAX_TAGE).toBeLessThan(400);
   });
 
-  it("sagt zu, dass keine IP-Adresse gespeichert wird — und der Code speichert keine", () => {
-    expect(dse).toMatch(/IP-Adresse speichern wir dabei nicht/);
-    // Gegenprobe am Code: Die Ablage darf kein IP-Feld beschreiben.
+  it("beschreibt die IP-Verarbeitung so, wie sie stattfindet", () => {
+    // DIESER TEST PRÜFTE DIE FALSCHE STELLE (Legal-Judge, 01.09.2026). Er sah
+    // nach, ob eine IP in die DATENBANK geschrieben wird — sie wird es nicht.
+    // Widerlegt wurde die veröffentlichte Zusage aber vom ARBEITSSPEICHER: Die
+    // Ratenbegrenzung hält die volle Adresse eine Stunde lang als Schlüssel in
+    // einer Map, und Halten im Arbeitsspeicher ist Speicherung nach Art. 4
+    // Nr. 2 DSGVO. Der Test war grün, der Satz „deine IP-Adresse speichern wir
+    // dabei nicht" stand falsch auf der Seite.
+    //
+    // Die Erklärung beschreibt dieselbe Mechanik drei Abschnitte höher für das
+    // Kontaktformular völlig richtig — es fehlte nur hier.
     const ablage = lies("lib/gemeinde-abo.ts");
     const anmelden = lies("app/api/abo/anmelden/route.ts");
+
+    // Weiterhin richtig und weiterhin geprüft: nichts davon in die Ablage.
     expect(ablage).not.toMatch(/\bip\b\s*:/i);
-    // Die Anmelde-Route liest eine Herkunft für die Ratenbegrenzung — sie darf
-    // sie NICHT in die Ablage geben.
     expect(anmelden).not.toMatch(/insert\([^)]*\bip\b/i);
+
+    // NEU und der Kern: Liest die Route eine Herkunft, MUSS die Erklärung die
+    // Zwischenspeicherung nennen — samt Rechtsgrundlage und Widerspruchsweg,
+    // denn sie läuft auf berechtigtem Interesse, nicht auf der Einwilligung.
+    const liestHerkunft = /x-real-ip|x-forwarded-for/.test(anmelden);
+    if (liestHerkunft) {
+      expect(abschnitt).toMatch(/IP-Adresse speichern wir nicht am Abo/);
+      expect(abschnitt).toMatch(/kurzzeitig im\s+Arbeitsspeicher/);
+      expect(abschnitt).toMatch(/Art\.\s*6\s*Abs\.\s*1\s*lit\.\s*f\s*DSGVO/);
+      expect(abschnitt).toMatch(/Art\.\s*21\s*DSGVO/);
+    }
+    // Und die widerlegte Fassung darf nicht zurückkommen.
+    expect(abschnitt).not.toMatch(/IP-Adresse speichern wir dabei nicht/);
+  });
+
+  it("zählt die Angaben nicht ab", () => {
+    // „genau zwei Angaben" stand über einer Tabelle mit zwölf Spalten, von
+    // denen die Erklärung vier in den nächsten Absätzen selbst nachreicht — der
+    // Satz widersprach sich also innerhalb desselben Abschnitts. Dieselbe
+    // Fehlerklasse wie „in zwei Fällen" (es waren vier): Eine abgezählte
+    // Aufzählung wird beim nächsten Feld still falsch.
+    expect(abschnitt).not.toMatch(
+      /genau (zwei|drei|vier|zwölf) Angaben|alle (zwei|drei|vier) Angaben/,
+    );
+  });
+
+  it("nennt jede Spalte, die die Tabelle wirklich führt", () => {
+    // DER ABGLEICH, DER DEN FEHLER OBEN GEFANGEN HÄTTE. Er liest die
+    // Spaltennamen aus der Tabellendefinition statt aus einer zweiten Liste —
+    // eine zweite Liste würde beim nächsten Feld vergessen.
+    //
+    // Wer eine Spalte ergänzt, trägt sie hier ein: entweder mit dem Wortlaut,
+    // der sie in der Erklärung nennt, oder mit einem Grund, warum sie dort
+    // nichts zu suchen hat.
+    const setup = lies("app/api/abo/setup/route.ts");
+    const bereich = setup.slice(
+      setup.indexOf("CREATE TABLE IF NOT EXISTS public.gemeinde_abos"),
+      setup.indexOf("CREATE UNIQUE INDEX"),
+    );
+    const spalten = new Set<string>();
+    for (const m of bereich.matchAll(/^\s*([a-z_]+)\s+(text|timestamptz|boolean|uuid|text\[\])/gm)) {
+      spalten.add(m[1]);
+    }
+    for (const m of setup.matchAll(/ADD COLUMN IF NOT EXISTS\s+([a-z_]+)/g)) {
+      spalten.add(m[1]);
+    }
+    expect(spalten.size).toBeGreaterThan(8); // sonst hat der Test nichts gelesen
+
+    // Was die Erklärung nennen MUSS, und woran man es erkennt.
+    const genannt: Record<string, RegExp> = {
+      email: /E-Mail-Adresse/,
+      region_id: /den <strong>Ort<\/strong>/,
+      erstellt_am: /Zeitpunkte deiner Eintragung/,
+      bestaetigt_am: /deiner\s+Bestätigung/,
+      abgemeldet_am: /einer etwaigen Abmeldung/,
+      letzte_mail_am: /zuletzt versendeten\s+Meldung/,
+      quelle: /auf welcher Seite du dich eingetragen/,
+      ueber_brief: /über ein Anschreiben an die Gemeinde/,
+      techniken: /für welche Techniken du dich interessierst/,
+      aus_verwaltung: /für die Stadt- oder Gemeindeverwaltung arbeitest/,
+      einwilligung_version: /Fassung des Textes<\/strong>, den du/,
+      versand_beleg: /Bestätigungsmail angenommen/,
+    };
+    // Technische Felder ohne eigenen Aussagegehalt — mit ausgeschriebenem Grund.
+    const ohneAussage: Record<string, string> = {
+      id: "Zufallskennung der Zeile, sagt über die Person nichts aus",
+      status: "Zustand des Abos selbst (ausstehend/bestätigt/abgemeldet), im Text als Verfahren beschrieben",
+    };
+
+    for (const spalte of spalten) {
+      if (spalte in ohneAussage) continue;
+      const muster = genannt[spalte];
+      expect(
+        muster,
+        `Die Tabelle führt „${spalte}", der Test kennt die Spalte nicht. Trag sie ein — mit dem Wortlaut, der sie in der Datenschutzerklärung nennt, oder mit einem Grund in der Ausnahmeliste.`,
+      ).toBeDefined();
+      expect(abschnitt, `Spalte „${spalte}" wird im Abo-Abschnitt der Datenschutzerklärung nicht genannt`).toMatch(muster!);
+    }
   });
 
   it("sagt zu, dass keine Zählpixel in den Mails stecken — und es steckt keiner drin", () => {

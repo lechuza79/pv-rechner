@@ -633,12 +633,25 @@ export default function DatenschutzPage() {
             darzustellen. */}
         <h2 style={S.h2}>16. Meldungen zu einer Gemeinde (Abo)</h2>
         <p style={S.p}>
-          Auf den Gemeindeseiten im Solar-Atlas kannst du dich für Meldungen zu
-          einem Ort eintragen. Wir verarbeiten dafür genau zwei Angaben: deine{" "}
+          Auf den Gemeindeseiten im Solar-Atlas und auf den Förderseiten zu einer
+          Stadt oder Gemeinde kannst du dich für Meldungen zu einem Ort
+          eintragen. Wir verarbeiten dafür deine{" "}
           <strong>E-Mail-Adresse</strong> und den <strong>Ort</strong>, den du
-          ausgewählt hast. Dazu die Zeitpunkte deiner Eintragung, deiner
-          Bestätigung und der zuletzt versendeten Meldung. Einen Namen fragen wir
-          nicht ab, und deine IP-Adresse speichern wir dabei nicht.
+          ausgewählt hast, dazu die Zeitpunkte deiner Eintragung, deiner
+          Bestätigung, einer etwaigen Abmeldung und der zuletzt versendeten
+          Meldung. Welche weiteren Angaben je nach Einstiegsseite dazukommen,
+          steht in den nächsten Absätzen. Einen Namen fragen wir nicht ab.
+        </p>
+        <p style={S.p}>
+          <strong>Deine IP-Adresse speichern wir nicht am Abo.</strong> Beim
+          Absenden des Formulars hält unser Server sie kurzzeitig im
+          Arbeitsspeicher, um automatisierte Masseneintragungen abzuwehren (bis
+          zu fünf Versuche je Stunde und Serverinstanz). Sie wird nicht in die
+          Datenbank übernommen, nicht mit deinem Abo verknüpft und spätestens
+          beim Neustart der Serverinstanz verworfen. Rechtsgrundlage hierfür ist
+          unser berechtigtes Interesse an einem vor automatisierten Eintragungen
+          geschützten Formular (Art. 6 Abs. 1 lit. f DSGVO); du kannst dieser
+          Verarbeitung nach Art. 21 DSGVO widersprechen.
         </p>
         <p style={S.p}>
           Außerdem vermerken wir, <strong>auf welcher Seite du dich eingetragen
@@ -665,6 +678,17 @@ export default function DatenschutzPage() {
           Zahl eine andere Nachricht als für jemanden, der über eine eigene
           Anlage nachdenkt. Lässt du das Feld leer, bekommst du die Meldung in
           der allgemeinen Fassung.
+        </p>
+        <p style={S.p}>
+          Zum <strong>Nachweis deiner Einwilligung</strong> halten wir zwei
+          weitere Angaben fest: die <strong>Fassung des Textes</strong>, den du
+          beim Eintragen gelesen hast, und die Kennung, unter der unser
+          Mailserver die <strong>Bestätigungsmail angenommen</strong> hat. Die
+          erste sagt, wozu genau du zugestimmt hast — der Wortlaut kann sich
+          später ändern, und ohne diese Angabe ließe sich nicht mehr sagen,
+          welche Fassung dir vorlag. Die zweite belegt, dass die Bestätigungsmail
+          wirklich hinausging. Eine Kopie der Mail selbst legen wir nicht an; ihr
+          Inhalt lässt sich aus der Fassung wortgleich wiederherstellen.
         </p>
         <p style={S.p}>
           Die Anmeldung läuft im <strong>Bestätigungsverfahren</strong>: Nach dem
@@ -698,9 +722,11 @@ export default function DatenschutzPage() {
           also nicht, ob und wann du eine Meldung liest. Vollständig unsichtbar
           ist ein Öffnen dennoch nicht: Die Mail zeigt oben unser Logo, und wie
           jeder Bildabruf im Netz hinterlässt dieser eine Zeile im
-          Server-Protokoll (siehe Abschnitt 3). Sie enthält keine Kennung, die
-          dich von anderen Empfängern unterscheidet — zuordnen lässt sie sich
-          also nicht. Wer auch das vermeiden möchte, stellt sein Mailprogramm so
+          Server-Protokoll (siehe Abschnitt 3). Zuordnen lässt sich diese Zeile
+          trotzdem nicht: Die Bildadresse ist für alle Empfänger dieselbe und
+          trägt kein Merkmal deines Abos, und deine IP-Adresse ist am Abo nicht
+          gespeichert — es gibt also nichts, womit sich das Protokoll verknüpfen
+          ließe. Wer auch das vermeiden möchte, stellt sein Mailprogramm so
           ein, dass es Bilder nicht automatisch lädt; die Meldung bleibt dann
           vollständig lesbar.
         </p>

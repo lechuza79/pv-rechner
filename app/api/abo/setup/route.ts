@@ -63,6 +63,23 @@ export async function GET(req: NextRequest) {
       -- Ein NOT NULL DEFAULT false haette ueber jede Altzeile "arbeitet nicht
       -- dort" behauptet -- eine Aussage, die niemand erhoben hat.
       ALTER TABLE public.gemeinde_abos ADD COLUMN IF NOT EXISTS aus_verwaltung boolean;
+      -- Der NACHWEIS der Einwilligung, zwei Spalten (Council 01.09.2026):
+      --
+      --   einwilligung_version -- WOZU eingewilligt wurde. Der Nachweis nach
+      --     Art. 7 Abs. 1 DSGVO umfasst den Wortlaut (DSK Orientierungshilfe
+      --     Direktwerbung, Ziff. 3.3), nicht nur den Zeitpunkt. Die Wortlaute
+      --     stehen datiert in lib/abo-einwilligung.ts.
+      --   versand_beleg -- DASS eine Bestaetigungsmail hinausging. Der BGH
+      --     verlangt die Erklaerung speicher- und ausdruckbar (I ZR 164/09
+      --     Rn. 38); am Fehlen genau dieses Belegs ist ein Versender vor dem
+      --     VG Duesseldorf gescheitert (29 K 9714/24, Rn. 46). Gespeichert wird
+      --     die Kennung des Mailservers, KEINE zweite Kopie der Mail.
+      --
+      -- Beide nullable: Die Zeilen aus der Zeit davor tragen nichts, und ein
+      -- Vorgabewert wuerde ueber sie eine Angabe behaupten, die niemand erhoben
+      -- hat -- dieselbe Fehlerklasse wie ein erfundenes Pruefdatum.
+      ALTER TABLE public.gemeinde_abos ADD COLUMN IF NOT EXISTS einwilligung_version text;
+      ALTER TABLE public.gemeinde_abos ADD COLUMN IF NOT EXISTS versand_beleg text;
 
       -- EIN Abo je Ort und Adresse. Ohne diese Regel legt jeder erneute Klick
       -- auf "Anmelden" eine weitere Zeile an, und der Ort schickt später
