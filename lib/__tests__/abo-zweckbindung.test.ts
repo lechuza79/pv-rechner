@@ -45,6 +45,10 @@ describe("Der Versand liest nur bestätigte Abos", () => {
       "lib/gemeinde-abo.ts": "die Datenschicht selbst — sie IST die Tür",
       "app/api/abo/setup/route.ts": "legt die Tabelle an",
       "app/api/abo/aufraeumen/route.ts": "ruft nur den Aufräumlauf der Datenschicht",
+      "app/api/abo/bereit/route.ts":
+        "Bereitschaftsmeldung: fragt EINE Zeile ab, um zu prüfen, ob die Spalten " +
+        "angelegt sind — liest keine Empfänger und verschickt nichts. Der Status " +
+        "ist dafür bedeutungslos, ein Filter darauf wäre irreführend.",
     };
 
     const treffer: string[] = [];
