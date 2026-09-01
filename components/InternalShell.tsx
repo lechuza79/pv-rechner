@@ -84,7 +84,8 @@ export default function InternalShell({
       title: "System",
       links: [
         { href: "/admin", label: "Übersicht", exact: true },
-        { href: "/admin/theme", label: "Signalfarben-Theming" },
+        { href: "/admin/theme", label: "Designsystem" },
+        { href: "/admin/bausteine", label: "Bausteine" },
         { href: "/admin/prices", label: "Marktpreise" },
         { href: "/admin/charts", label: "Chart-Baukasten" },
         { href: "/admin/waechter", label: "Wächter-Berichte" },
