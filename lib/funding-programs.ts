@@ -721,7 +721,27 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "koeln-pv": {
     id: "koeln-pv", name: "Klimafreundliches Wohnen & Arbeiten",
     traeger: "Stadt Köln", level: "kommune", region: "Köln", bundesland: "Nordrhein-Westfalen", agsCode: "05315",
-    url: "https://www.stadt-koeln.de/klimafreundliches-wohnen-und-arbeiten", stand: "August 2026",
+    // ADRESSE AUF DIE PROGRAMMSEITE GEZOGEN (01.09.2026) — die Sammelseite ist
+    // eine Falle, und sie hat heute zugeschnappt. Ein Recherche-Lauf las dort
+    // „Seit 27. August 2024 werden keine neuen Anträge angenommen" und meldete
+    // Köln als beendet. Der Satz steht unter der Überschrift „Ausgelaufene
+    // Förderprogramme" („Die untenstehenden Förderprogramme sind bereits
+    // ausgelaufen") und gilt den Vorgängern von 2018 — das laufende Programm
+    // steht auf einer anderen Seite und führt seine Staffel unverändert.
+    // Nachgelesen habe ich beide Seiten im Rohtext, bevor irgendetwas geändert
+    // wurde: Hätte der Befund gestimmt und ich ihn übernommen, wäre ein
+    // Programm abgeschaltet worden, das bis zu 3.800 € abzieht; hätte ich ihn
+    // ungeprüft geglaubt, dasselbe. Genau dafür gibt es die Gegenprobe — ein
+    // Befund fühlt sich wie ein Fund an, ein „stimmt so" nicht.
+    //
+    // Der Kommentar unten warnte seit dem 27.08.2026 vor genau diesem Fehlgriff
+    // („was einen Abruf beinahe zu ‚Programm tot' gelesen hätte") und hat ihn
+    // nicht verhindert — eine Warnung im Code erreicht niemanden, der die Seite
+    // von außen abruft. Deshalb jetzt die Adresse selbst, statt eines Hinweises
+    // daneben. Der Seiten-Wächter meldet den Wechsel einmalig als „nicht
+    // vergleichbar"; das ist der Preis und in seiner Bauart vorgesehen.
+    url: "https://www.stadt-koeln.de/leben-in-koeln/klima-umwelt-tiere/klima/photovoltaik-klimafreundliches-wohnen",
+    stand: "September 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Staffel-Pauschalen, max. 60 % der Kosten",
