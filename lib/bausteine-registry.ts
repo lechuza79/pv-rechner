@@ -121,6 +121,11 @@ export const BAUSTEINE: Baustein[] = [
         "Hier steht ein nacktes Auswahlfeld. Es sieht in jedem Browser anders aus und trägt weder unseren Pfeil noch unsere Maße — der Unterschied fällt auf, sobald zwei davon nebeneinander stehen.",
       ausser: [
         {
+          datei: "app/(site)/admin/komponenten/KomponentenSchau.tsx",
+          grund:
+            "Die Galerie stellt Baustein und nacktes Feld absichtlich nebeneinander — ohne den Vergleich lässt sich nicht entscheiden, ob der Unterschied gebraucht wird.",
+        },
+        {
           datei: "app/(site)/waermepumpe-rechner/waermepumpe.tsx",
           grund:
             "Fünf gewachsene Felder auf einer öffentlichen Oberfläche. Die Umstellung ist sichtbar und braucht die Abnahme des Betreibers — sie steht aus, ist aber vorgesehen.",

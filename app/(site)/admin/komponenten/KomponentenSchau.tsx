@@ -255,15 +255,39 @@ function ZahlenfeldBeispiel() {
 }
 
 function AuswahlBeispiel() {
-  const [wert, setWert] = useState("sued");
+  const [a, setA] = useState("sued");
+  const [b, setB] = useState("sued");
+  const optionen = (
+    <>
+      <option value="sued">Süden</option>
+      <option value="ostwest">Ost / West</option>
+      <option value="nord">Norden</option>
+    </>
+  );
   return (
-    <div style={{ maxWidth: 260, display: "flex" }}>
-      <SelectField value={wert} onChange={(e) => setWert(e.target.value)} ariaLabel="Ausrichtung">
-        <option value="sued">Süden</option>
-        <option value="ostwest">Ost / West</option>
-        <option value="nord">Norden</option>
-      </SelectField>
-    </div>
+    <Reihe>
+      <Zustand name="Baustein">
+        <div style={{ width: 200, display: "flex" }}>
+          <SelectField value={a} onChange={(e) => setA(e.target.value)} ariaLabel="Ausrichtung, Baustein">
+            {optionen}
+          </SelectField>
+        </div>
+      </Zustand>
+      {/* Der Vergleich steht hier, WEIL an 32 Stellen im Code das nackte Feld
+          benutzt wird. Ohne beides nebeneinander lässt sich nicht entscheiden,
+          ob der Unterschied gebraucht wird oder nur Drift ist. Diese Datei ist
+          deshalb die eine begründete Ausnahme der Gegenprobe. */}
+      <Zustand name="nackt, wie an 32 Stellen im Code">
+        <select
+          value={b}
+          onChange={(e) => setB(e.target.value)}
+          aria-label="Ausrichtung, nacktes Feld"
+          style={{ width: 200 }}
+        >
+          {optionen}
+        </select>
+      </Zustand>
+    </Reihe>
   );
 }
 
