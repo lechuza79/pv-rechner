@@ -197,6 +197,19 @@ describe("Wächter: keine getippten Schriftgrößen", () => {
     for (const a of ERLAUBTE_ZEILEN) expect(a.grund.length, a.fragment).toBeGreaterThan(40);
   });
 
+  it("zeigt jede Stufe der Skala im Design-Guide", () => {
+    // Der Guide ist die Stelle, an der über eine Größe entschieden wird. Bis
+    // zum 01.09.2026 stand dort eine handgetippte Liste mit acht Zeilen, von
+    // denen keine mehr stimmte — man baut danach, ohne es zu merken. Eine neue
+    // Stufe, die dort fehlt, existiert für den Entwurf nicht.
+    const theme = readFileSync(join(ROOT, "lib/theme.ts"), "utf8");
+    const guide = readFileSync(join(ROOT, "app/(site)/admin/theme/client.tsx"), "utf8");
+    const stufen = [...theme.matchAll(/'(--font-size-[a-z0-9-]+)':/g)].map((m) => m[1]);
+    expect(stufen.length).toBeGreaterThanOrEqual(12);
+    const fehlend = stufen.filter((t) => !guide.includes(`"${t}" as const`));
+    expect(fehlend, `Diese Stufen fehlen im Design-Guide: ${fehlend.join(", ")}`).toEqual([]);
+  });
+
   it("lässt keine offene Frist verstreichen", () => {
     const heute = new Date().toISOString().slice(0, 10);
     for (const a of NOCH_OFFEN) {

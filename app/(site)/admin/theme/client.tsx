@@ -24,6 +24,44 @@ const tokenGroups: { label: string; prefix: string }[] = [
   { label: "Layout", prefix: "--page" },
 ];
 
+/**
+ * Die Schriftgrößen-Skala, wie sie im Design-Guide steht.
+ *
+ * Es wird KEINE Größe getippt, nur die Rolle benannt — die Zahl kommt aus dem
+ * Token. Bis zum 01.09.2026 stand hier eine handgetippte Liste, und sie war
+ * die falsche: acht Zeilen mit 24/20/15/14/13/12/11/10, während die Skala
+ * längst andere Werte trug. Ein Design-Guide, der etwas anderes zeigt als die
+ * Seite, ist schlimmer als keiner — man baut danach.
+ *
+ * Die Beschriftung nennt die Rolle, nicht den Ort: „Fließtext" gilt überall,
+ * „Body im Rechner" wäre schon wieder eine zweite Wahrheit.
+ */
+const TEXTSTUFEN = [
+  { token: "--font-size-h1" as const, weight: 800, label: "Seitentitel" },
+  { token: "--font-size-h2" as const, weight: 800, label: "Abschnitts-Überschrift" },
+  { token: "--font-size-h3" as const, weight: 700, label: "Kleine Überschrift" },
+  { token: "--font-size-lead" as const, weight: 700, label: "Lead, Kartentitel" },
+  { token: "--font-size-body" as const, weight: 400, label: "Fließtext, Navigation, Fußzeile, Eingabefelder" },
+  { token: "--font-size-small" as const, weight: 600, label: "Sekundärtext, Chips, Tabellenzellen" },
+  { token: "--font-size-caption" as const, weight: 700, label: "Versal-Label, Hinweis, dichte Daten" },
+  { token: "--font-size-micro" as const, weight: 400, label: "Diagramm- und Achsenbeschriftung" },
+];
+
+/**
+ * Die großen Zahlen. Sie sind KEINE Textstufen: Neben jeder steht eine
+ * Einheit, und der Größenunterschied zu ihr trägt die Aussage. Deshalb stehen
+ * sie getrennt — wer eine davon auf eine Textstufe rundet, nimmt der Zahl
+ * ihren Vorrang vor der Einheit.
+ */
+const ZAHLENSTUFEN = [
+  { token: "--font-size-display-xl" as const, weight: 800, label: "Die eine große Zahl einer Seite", color: v("--color-accent") },
+  { token: "--font-size-display-lg" as const, weight: 800, label: "Hero-Zahl eines Rechner-Ergebnisses", color: v("--color-accent") },
+  { token: "--font-size-display-md" as const, weight: 800, label: "Mitte eines Rings, mittlere Kennzahl", color: v("--color-positive") },
+  { token: "--font-size-display-sm" as const, weight: 800, label: "Kennzahl in einer Kachel", color: v("--color-positive") },
+  { token: "--font-size-body" as const, weight: 700, label: "Zahl im Fließtext, editierbarer Wert", color: v("--color-text-primary") },
+  { token: "--font-size-micro" as const, weight: 500, label: "Zahl an einer Diagramm-Achse", color: v("--color-text-muted") },
+];
+
 function getTokensForGroup(prefix: string) {
   const prefixes = prefix.split("|");
   return Object.entries(tokens).filter(([k]) => prefixes.some(p => k.startsWith(p)));
@@ -118,21 +156,12 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
             Typografie — DM Sans
           </h2>
           <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: 16, border: `1px solid ${v('--color-border')}`, display: "flex", flexDirection: "column", gap: 8 }}>
-            {[
-              { size: 24, weight: 800, label: "24px / 800 — Page Title" },
-              { size: 20, weight: 800, label: "20px / 800 — Section Title" },
-              { size: 15, weight: 700, label: "15px / 700 — Step Title" },
-              { size: 14, weight: 600, label: "14px / 600 — Button" },
-              { size: 13, weight: 400, label: "13px / 400 — Body" },
-              { size: 12, weight: 600, label: "12px / 600 — Small Label" },
-              { size: 11, weight: 700, label: "11px / 700 — Uppercase Label" },
-              { size: 10, weight: 400, label: "10px / 400 — Caption" },
-            ].map(t => (
+            {TEXTSTUFEN.map(t => (
               <div key={t.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                <span style={{ fontSize: t.size, fontWeight: t.weight, fontFamily: v('--font-text'), color: v('--color-text-primary') }}>
+                <span style={{ fontSize: v(t.token), fontWeight: t.weight, fontFamily: v('--font-text'), color: v('--color-text-primary') }}>
                   Lohnt sich PV?
                 </span>
-                <span style={{ fontSize: v("--font-size-micro"), color: v('--color-text-faint'), fontFamily: v('--font-mono'), flexShrink: 0, marginLeft: 12 }}>{t.label}</span>
+                <span style={{ fontSize: v("--font-size-micro"), color: v('--color-text-faint'), fontFamily: v('--font-mono'), flexShrink: 0, marginLeft: 12 }}>{tokens[t.token]} — {t.label}</span>
               </div>
             ))}
           </div>
@@ -143,19 +172,12 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
             Typografie — JetBrains Mono
           </h2>
           <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: 16, border: `1px solid ${v('--color-border')}`, display: "flex", flexDirection: "column", gap: 8 }}>
-            {[
-              { size: 56, weight: 800, label: "56px / 800 — Hero Number", color: v('--color-accent') },
-              { size: 22, weight: 800, label: "22px / 800 — Stat Value", color: v('--color-positive') },
-              { size: 20, weight: 800, label: "20px / 800 — Savings", color: v('--color-positive') },
-              { size: 15, weight: 700, label: "15px / 700 — Inline Data", color: v('--color-text-primary') },
-              { size: 13, weight: 700, label: "13px / 700 — Editable Value", color: v('--color-accent') },
-              { size: 10, weight: 500, label: "10px / 500 — Chart Label", color: v('--color-text-muted') },
-            ].map(t => (
+            {ZAHLENSTUFEN.map(t => (
               <div key={t.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                <span style={{ fontSize: t.size, fontWeight: t.weight, fontFamily: v('--font-mono'), color: t.color }}>
+                <span style={{ fontSize: v(t.token), fontWeight: t.weight, fontFamily: v('--font-mono'), color: t.color }}>
                   12.450
                 </span>
-                <span style={{ fontSize: v("--font-size-micro"), color: v('--color-text-faint'), fontFamily: v('--font-mono'), flexShrink: 0, marginLeft: 12 }}>{t.label}</span>
+                <span style={{ fontSize: v("--font-size-micro"), color: v('--color-text-faint'), fontFamily: v('--font-mono'), flexShrink: 0, marginLeft: 12 }}>{tokens[t.token]} — {t.label}</span>
               </div>
             ))}
           </div>
