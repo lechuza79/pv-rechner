@@ -153,7 +153,7 @@ function SortPfeil({ an, auf }: { an: boolean; auf: boolean }) {
   return (
     <span
       aria-hidden={!an}
-      style={{ fontSize: 8, lineHeight: 1, marginLeft: 3, visibility: an ? "visible" : "hidden" }}
+      style={{ fontSize: v("--font-size-micro"), lineHeight: 1, marginLeft: 3, visibility: an ? "visible" : "hidden" }}
     >
       {auf ? "▲" : "▼"}
     </span>

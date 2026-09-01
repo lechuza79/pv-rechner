@@ -55,10 +55,10 @@ export default async function AdminHub() {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-                <div style={{ fontSize: 16, fontWeight: 700, color: v("--color-text-primary") }}>{t.title}</div>
-                <span style={{ fontSize: 18, color: v("--color-accent") }} aria-hidden>→</span>
+                <div style={{ fontSize: v("--font-size-lead"), fontWeight: 700, color: v("--color-text-primary") }}>{t.title}</div>
+                <span style={{ fontSize: v("--font-size-h3"), color: v("--color-accent") }} aria-hidden>→</span>
               </div>
-              <div style={{ fontSize: 13, color: v("--color-text-muted"), marginTop: 4, lineHeight: 1.5 }}>{t.desc}</div>
+              <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginTop: 4, lineHeight: 1.5 }}>{t.desc}</div>
             </Link>
           ))}
         </div>

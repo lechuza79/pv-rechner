@@ -48,7 +48,7 @@ export default async function HerkunftPage() {
   const zellStil: React.CSSProperties = {
     padding: `${space.sm}px ${space.md}px`,
     borderBottom: `1px solid ${v("--color-border")}`,
-    fontSize: 13,
+    fontSize: v("--font-size-small"),
     verticalAlign: "top",
   };
   // Zahlenspalten sind rechtsbündig — das „?" gehört dann rechts NEBEN die
@@ -82,7 +82,7 @@ export default async function HerkunftPage() {
       />
 
       {zeilen.length === 0 ? (
-        <p style={{ fontSize: 13, color: v("--color-text-muted"), lineHeight: 1.6 }}>
+        <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6 }}>
           Noch nichts gezählt. Solange die Zählung neu ist, ist dieser Stand nicht
           von „sie läuft nicht" zu unterscheiden — eine beliebige Seite aufrufen und
           hier neu laden, dann muss unter „Direkt aufgerufen" mindestens eine Zeile
@@ -92,27 +92,27 @@ export default async function HerkunftPage() {
         <>
           <div style={{ display: "flex", gap: space.xl, marginBottom: space.xl, flexWrap: "wrap" }}>
             <div>
-              <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono") }}>
+              <div style={{ fontSize: v("--font-size-display-sm"), fontWeight: 800, fontFamily: v("--font-mono") }}>
                 {gesamt.toLocaleString("de-DE")}
               </div>
-              <div style={{ fontSize: 12, color: v("--color-text-muted") }}>Aufrufe gesamt</div>
+              <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Aufrufe gesamt</div>
             </div>
             <div>
-              <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono") }}>
+              <div style={{ fontSize: v("--font-size-display-sm"), fontWeight: 800, fontFamily: v("--font-mono") }}>
                 {vonAussen.toLocaleString("de-DE")}
               </div>
-              <div style={{ fontSize: 12, color: v("--color-text-muted") }}>davon von fremden Seiten</div>
+              <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>davon von fremden Seiten</div>
             </div>
           </div>
 
-          <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: space.sm }}>Woher</h2>
+          <h2 style={{ fontSize: v("--font-size-lead"), fontWeight: 700, marginBottom: space.sm }}>Woher</h2>
           {/* Eigener Scrollbereich je Tabelle: Auf schmalen Schirmen quetscht
               die Seiten-Spalte den Pfad sonst in Einzelbuchstaben. Die SEITE
               darf dabei nie seitlich scrollen, nur die Tabelle in sich. */}
           <div style={{ overflowX: "auto", marginBottom: space.xxl }}>
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 300 }}>
             <thead>
-              <tr style={{ textAlign: "left", fontSize: 12, color: v("--color-text-muted") }}>
+              <tr style={{ textAlign: "left", fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
                 <th style={{ ...zellStil, fontWeight: 600 }}>Herkunft</th>
                 <th style={{ ...zahlStil, fontWeight: 600 }}>Aufrufe</th>
                 <th style={{ ...zahlStil, fontWeight: 600 }}>Seiten</th>
@@ -146,11 +146,11 @@ export default async function HerkunftPage() {
           </table>
           </div>
 
-          <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: space.sm }}>Welche Seite</h2>
+          <h2 style={{ fontSize: v("--font-size-lead"), fontWeight: 700, marginBottom: space.sm }}>Welche Seite</h2>
           <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 560 }}>
             <thead>
-              <tr style={{ textAlign: "left", fontSize: 12, color: v("--color-text-muted") }}>
+              <tr style={{ textAlign: "left", fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
                 <th style={{ ...zellStil, fontWeight: 600 }}>Seite</th>
                 <th style={{ ...zahlStil, fontWeight: 600 }}>Gesamt</th>
                 <th style={{ ...zahlStil, fontWeight: 600 }}>

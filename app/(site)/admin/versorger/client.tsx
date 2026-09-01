@@ -252,19 +252,19 @@ export default function VersorgerCockpit() {
               style={inputStyle}
               aria-label="Versorger suchen"
             />
-            <label style={{ display: "flex", alignItems: "center", gap: space.xs, fontSize: 13, cursor: "pointer" }}>
+            <label style={{ display: "flex", alignItems: "center", gap: space.xs, fontSize: v("--font-size-small"), cursor: "pointer" }}>
               <input type="checkbox" checked={nurGebiet} onChange={(e) => setNurGebiet(e.target.checked)} />
               nur mit Gebiet
             </label>
           </div>
 
-          <div style={{ fontSize: 12, color: v("--color-text-muted"), marginBottom: space.sm }}>
+          <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginBottom: space.sm }}>
             {loading ? "Lädt…" : `${total.toLocaleString("de-DE")} Versorger`}
             {error && <span style={{ color: v("--color-negative"), marginLeft: space.sm }}>Fehler: {error}</span>}
           </div>
 
           <div style={{ overflowX: "auto", border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md") }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 900 }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: v("--font-size-small"), minWidth: 900 }}>
               <thead>
                 <tr>
                   <th style={{ ...thStyle, width: 26 }} aria-label="Aufklappen" />
@@ -297,7 +297,7 @@ export default function VersorgerCockpit() {
           </div>
 
           {total > pageSize && (
-            <div style={{ display: "flex", alignItems: "center", gap: space.md, marginTop: space.md, fontSize: 13 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: space.md, marginTop: space.md, fontSize: v("--font-size-small") }}>
               <button style={secondaryBtn} disabled={page <= 0} onClick={() => setPage((p) => Math.max(0, p - 1))}>
                 ← Zurück
               </button>
@@ -374,7 +374,7 @@ function VersorgerZeile({ u, onChanged }: { u: Versorger; onChanged: () => void 
         </td>
         <td style={tdStyle}>
           <div style={{ fontWeight: 700 }}>{u.name}</div>
-          <div style={{ fontSize: 11, color: v("--color-text-muted") }}>
+          <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
             {u.typLabel}
             {land && ` · ${land}`}
             {u.mehrereBundeslaender && " · länderübergreifend"}
@@ -393,7 +393,7 @@ function VersorgerZeile({ u, onChanged }: { u: Versorger; onChanged: () => void 
         <KennzahlZelle k={u.highlights.zubauAnteil} />
         <td style={tdStyle}>
           {u.themen.length === 0 ? (
-            <span style={{ color: v("--color-text-muted"), fontSize: 11 }}>{u.profilGeprueft ? "—" : "ungeprüft"}</span>
+            <span style={{ color: v("--color-text-muted"), fontSize: v("--font-size-caption") }}>{u.profilGeprueft ? "—" : "ungeprüft"}</span>
           ) : (
             <span style={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
               {u.themen.slice(0, 3).map((t) => (
@@ -417,7 +417,7 @@ function VersorgerZeile({ u, onChanged }: { u: Versorger; onChanged: () => void 
               {u.kontakt.adresse}
             </a>
           ) : (
-            <span style={{ color: v("--color-text-muted"), fontSize: 11 }} title={u.kontakt.art}>
+            <span style={{ color: v("--color-text-muted"), fontSize: v("--font-size-caption") }} title={u.kontakt.art}>
               {u.kontakt.adresse ? "nur Fachpostfach" : "keine"}
             </span>
           )}
@@ -505,10 +505,10 @@ function Detail({
   };
 
   return (
-    <div style={{ display: "grid", gap: space.md, fontSize: 13 }}>
+    <div style={{ display: "grid", gap: space.md, fontSize: v("--font-size-small") }}>
       <div style={{ padding: pad("sm", "md"), background: v("--color-bg"), borderRadius: v("--radius-sm"), border: `1px solid ${v("--color-border")}` }}>
         <div style={{ fontWeight: 700 }}>{u.aufhaenger}</div>
-        <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 4 }}>{u.aufhaengerHinweis}</div>
+        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: 4 }}>{u.aufhaengerHinweis}</div>
       </div>
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: space.md, alignItems: "center" }}>
@@ -522,7 +522,7 @@ function Detail({
             {u.website.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")} ↗
           </a>
         ) : (
-          <span style={{ fontSize: 12, color: v("--color-text-muted") }}>keine Website hinterlegt</span>
+          <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>keine Website hinterlegt</span>
         )}
         {u.kontaktEmail && (
           <a href={`mailto:${u.kontaktEmail}`} style={linkStyle}>
@@ -540,7 +540,7 @@ function Detail({
       </div>
 
       <Abschnitt titel="Kontakt und Themen">
-        <div style={{ display: "grid", gap: 3, fontSize: 12 }}>
+        <div style={{ display: "grid", gap: 3, fontSize: v("--font-size-small") }}>
           {u.kontakt.adresse && u.kontakt.brauchbar ? (
             <div>
               <a href={`mailto:${u.kontakt.adresse}`} style={linkStyle}>
@@ -566,7 +566,7 @@ function Detail({
               <span style={{ color: v("--color-text-muted") }}>
                 {u.verantwortlich.operativ ? "(operative Stelle)" : "(gesetzliche Vertretung — sagt nicht, wer die Website pflegt)"}
               </span>
-              <div style={{ color: v("--color-text-muted"), fontSize: 11 }}>{u.verantwortlich.zeile}</div>
+              <div style={{ color: v("--color-text-muted"), fontSize: v("--font-size-caption") }}>{u.verantwortlich.zeile}</div>
             </div>
           )}
           {u.verbundDomain && (
@@ -592,7 +592,7 @@ function Detail({
             </div>
           )}
           {u.themen.some((t) => t.thema === "foerderung") && (
-            <div style={{ fontSize: 11, color: v("--color-text-muted"), lineHeight: 1.5 }}>
+            <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), lineHeight: 1.5 }}>
               Der Förder-Chip heißt nur: Auf dieser Website steht irgendwo etwas von Förderung. Ob es ein
               Programm gibt, wie hoch es ist und ob es noch läuft, entscheidet die Prüfung an der Quelle.
             </div>
@@ -614,7 +614,7 @@ function Detail({
                 />
               ))}
             </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: space.md, marginTop: space.xs, fontSize: 12 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: space.md, marginTop: space.xs, fontSize: v("--font-size-small") }}>
               {u.mix.map((t) => (
                 <span key={t.art} style={{ display: "flex", alignItems: "center", gap: 5 }}>
                   <span style={{ width: 9, height: 9, borderRadius: 2, background: ERZEUGER_FARBE[t.art] ?? v("--color-text-muted") }} />
@@ -623,7 +623,7 @@ function Detail({
                 </span>
               ))}
             </div>
-            <p style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 4, lineHeight: 1.5 }}>
+            <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: 4, lineHeight: 1.5 }}>
               Anteil an der installierten Leistung im Gebiet — nicht am Strommix. Gezählt wird, was
               erneuerbar erzeugt; konventionelle Anlagen wertet unsere Auswertung nicht aus.
             </p>
@@ -644,7 +644,7 @@ function Detail({
           <Kachel label="Speicher" wert={u.werte.speicher} />
           <Kachel label="Zubau letztes Jahr" wert={u.werte.zubau} />
         </div>
-        <div style={{ display: "grid", gap: 2, marginTop: space.sm, fontSize: 11, color: v("--color-text-muted") }}>
+        <div style={{ display: "grid", gap: 2, marginTop: space.sm, fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
           <div>Dach je Einwohner: {u.highlights.dachProKopf.anzeige} — {u.highlights.dachProKopf.referenz}</div>
           <div>Bürger-Anteil: {u.highlights.buergerAnteil.anzeige} — {u.highlights.buergerAnteil.referenz}</div>
           <div>Zubau: {u.highlights.zubauAnteil.anzeige} — {u.highlights.zubauAnteil.referenz}</div>
@@ -709,7 +709,7 @@ function Detail({
           {gemeinden.map((g) => (
             <div
               key={g.regionId}
-              style={{ display: "flex", alignItems: "center", gap: space.sm, fontSize: 12, padding: "3px 0", borderBottom: `1px solid ${v("--color-border")}` }}
+              style={{ display: "flex", alignItems: "center", gap: space.sm, fontSize: v("--font-size-small"), padding: "3px 0", borderBottom: `1px solid ${v("--color-border")}` }}
             >
               <span style={{ flex: 1, minWidth: 0 }}>
                 <strong>{g.name}</strong>
@@ -757,10 +757,10 @@ function Detail({
 function Kachel({ label, wert }: { label: string; wert: string }) {
   return (
     <div>
-      <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: v("--color-text-muted") }}>
+      <div style={{ fontSize: v("--font-size-micro"), textTransform: "uppercase", letterSpacing: "0.06em", color: v("--color-text-muted") }}>
         {label}
       </div>
-      <div style={{ fontFamily: v("--font-mono"), fontWeight: 700, fontSize: 14 }}>{wert}</div>
+      <div style={{ fontFamily: v("--font-mono"), fontWeight: 700, fontSize: v("--font-size-body") }}>{wert}</div>
     </div>
   );
 }
@@ -843,7 +843,7 @@ function GemeindeHinzufuegen({ utilityId, onAdded }: { utilityId: string; onAdde
               onClick={() => zuordnen(t.regionId)}
               style={{
                 display: "block", width: "100%", textAlign: "left", border: "none", background: "transparent",
-                padding: pad("xs", "sm"), fontSize: 12, cursor: "pointer", color: v("--color-text-primary"),
+                padding: pad("xs", "sm"), fontSize: v("--font-size-small"), cursor: "pointer", color: v("--color-text-primary"),
                 fontFamily: v("--font-text"),
               }}
             >
@@ -855,7 +855,7 @@ function GemeindeHinzufuegen({ utilityId, onAdded }: { utilityId: string; onAdde
           ))}
         </div>
       )}
-      <p style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 4, lineHeight: 1.5 }}>
+      <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: 4, lineHeight: 1.5 }}>
         Von Hand ergänzte Zuordnungen überleben den nächsten Registerlauf — überschrieben wird nur, was
         als <em>gemessen</em> markiert ist.
       </p>
@@ -887,7 +887,7 @@ function Erfassung({ onAnlegen }: { onAnlegen: (regionId: string, name: string) 
 
   return (
     <div>
-      <p style={{ fontSize: 13, color: v("--color-text-muted"), marginBottom: space.sm, lineHeight: 1.6, maxWidth: 760 }}>
+      <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginBottom: space.sm, lineHeight: 1.6, maxWidth: 760 }}>
         Die größten Gemeinden zuerst — zum Nacharbeiten dort, wo die Messung nichts gefunden hat oder
         ein zweiter Versorger fehlt.
       </p>
@@ -899,15 +899,15 @@ function Erfassung({ onAnlegen }: { onAnlegen: (regionId: string, name: string) 
             </option>
           ))}
         </select>
-        <label style={{ display: "flex", alignItems: "center", gap: space.xs, fontSize: 13, cursor: "pointer" }}>
+        <label style={{ display: "flex", alignItems: "center", gap: space.xs, fontSize: v("--font-size-small"), cursor: "pointer" }}>
           <input type="checkbox" checked={nurOffene} onChange={(e) => setNurOffene(e.target.checked)} />
           nur ohne Versorger
         </label>
-        {laden && <span style={{ fontSize: 12, color: v("--color-text-muted") }}>Lädt…</span>}
+        {laden && <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Lädt…</span>}
       </div>
 
       <div style={{ overflowX: "auto", border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md") }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 640 }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: v("--font-size-small"), minWidth: 640 }}>
           <thead>
             <tr>
               {["Gemeinde", "Einwohner", "Website", "Versorger"].map((h) => (
@@ -922,7 +922,7 @@ function Erfassung({ onAnlegen }: { onAnlegen: (regionId: string, name: string) 
               <tr key={r.regionId} style={{ borderTop: `1px solid ${v("--color-border")}` }}>
                 <td style={tdStyle}>
                   <strong>{r.name}</strong>{" "}
-                  <span style={{ color: v("--color-text-muted"), fontSize: 11 }}>{r.bundesland}</span>
+                  <span style={{ color: v("--color-text-muted"), fontSize: v("--font-size-caption") }}>{r.bundesland}</span>
                 </td>
                 <td style={{ ...tdStyle, fontFamily: v("--font-mono") }}>
                   {r.einwohner > 0 ? r.einwohner.toLocaleString("de-DE") : "—"}
@@ -1046,7 +1046,7 @@ function NeuModal({
         <Feld label="Kontaktseite">
           <input value={kontaktseite} onChange={(e) => setKontaktseite(e.target.value)} placeholder="https://…/kontakt" style={{ ...inputStyle, width: "100%" }} />
         </Feld>
-        {fehler && <div style={{ color: v("--color-negative"), fontSize: 12 }}>{fehler}</div>}
+        {fehler && <div style={{ color: v("--color-negative"), fontSize: v("--font-size-small") }}>{fehler}</div>}
         <button style={primaryBtn} disabled={busy || !name.trim()} onClick={speichern}>
           {busy ? "Speichert…" : "Anlegen"}
         </button>
@@ -1084,7 +1084,7 @@ function Tab({ active, label, onClick }: { active: boolean; label: string; onCli
 // ─── Styles ───────────────────────────────────────────────────────────────────
 
 const labelKicker: React.CSSProperties = {
-  fontSize: 11,
+  fontSize: v("--font-size-caption"),
   fontWeight: 700,
   color: v("--color-accent"),
   letterSpacing: "0.1em",
@@ -1093,7 +1093,7 @@ const labelKicker: React.CSSProperties = {
 
 const inputStyle: React.CSSProperties = {
   padding: pad("xs", "sm"),
-  fontSize: 13,
+  fontSize: v("--font-size-small"),
   fontFamily: v("--font-text"),
   color: v("--color-text-primary"),
   background: v("--color-bg-muted"),
@@ -1114,11 +1114,11 @@ const primaryBtn: React.CSSProperties = {
   borderColor: v("--color-accent"),
 };
 
-const miniBtn: React.CSSProperties = { ...secondaryBtn, padding: "2px 6px", fontSize: 11, lineHeight: 1 };
-const miniPrimary: React.CSSProperties = { ...primaryBtn, padding: "4px 8px", fontSize: 12 };
+const miniBtn: React.CSSProperties = { ...secondaryBtn, padding: "2px 6px", fontSize: v("--font-size-caption"), lineHeight: 1 };
+const miniPrimary: React.CSSProperties = { ...primaryBtn, padding: "4px 8px", fontSize: v("--font-size-small") };
 
 const badge: React.CSSProperties = {
-  fontSize: 11,
+  fontSize: v("--font-size-caption"),
   fontWeight: 700,
   padding: "1px 7px",
   borderRadius: 999,
@@ -1149,7 +1149,7 @@ function quelleBadge(q: ZuordnungQuelle): React.CSSProperties {
 function themaChip(thema: string): React.CSSProperties {
   const foerder = thema === "foerderung";
   return {
-    fontSize: 10,
+    fontSize: v("--font-size-micro"),
     fontWeight: 700,
     padding: "1px 6px",
     borderRadius: 999,
@@ -1174,7 +1174,7 @@ function ampelBadge(ampel: string | null): React.CSSProperties {
   const farbe =
     ampel === "gruen" ? v("--color-positive") : ampel === "rot" ? v("--color-negative") : v("--color-text-muted");
   return {
-    fontSize: 10,
+    fontSize: v("--font-size-micro"),
     fontWeight: 700,
     padding: "1px 6px",
     borderRadius: 999,
@@ -1188,7 +1188,7 @@ function ampelBadge(ampel: string | null): React.CSSProperties {
 const linkStyle: React.CSSProperties = {
   color: v("--color-accent"),
   textDecoration: "none",
-  fontSize: 12,
+  fontSize: v("--font-size-small"),
   fontWeight: 600,
   whiteSpace: "nowrap",
 };
@@ -1196,7 +1196,7 @@ const linkStyle: React.CSSProperties = {
 const thStyle: React.CSSProperties = {
   textAlign: "left",
   padding: pad("xs", "sm"),
-  fontSize: 11,
+  fontSize: v("--font-size-caption"),
   fontWeight: 700,
   textTransform: "uppercase",
   letterSpacing: "0.06em",

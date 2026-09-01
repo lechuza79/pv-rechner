@@ -67,7 +67,7 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
       <div style={{ maxWidth: 640 }}>
 
         <div style={{ marginBottom: 32 }}>
-          <Link href="/admin" style={{ fontSize: 12, fontWeight: 600, color: v('--color-accent'), textDecoration: "none", display: "inline-block", marginBottom: 10 }}>← Admin-Backend</Link>
+          <Link href="/admin" style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-accent'), textDecoration: "none", display: "inline-block", marginBottom: 10 }}>← Admin-Backend</Link>
           <AdminSeitenkopf titel="Design System" hilfe="Alle Tokens und Komponenten auf einen Blick." />
         </div>
 
@@ -80,7 +80,7 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
           if (items.length === 0) return null;
           return (
             <div key={group.label} style={{ marginBottom: 28 }}>
-              <h2 style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
+              <h2 style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
                 {group.label}
               </h2>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
@@ -98,10 +98,10 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
                       }} />
                     )}
                     <div style={{ minWidth: 0 }}>
-                      <div style={{ fontSize: 11, fontFamily: v('--font-mono'), color: v('--color-text-primary'), overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      <div style={{ fontSize: v("--font-size-caption"), fontFamily: v('--font-mono'), color: v('--color-text-primary'), overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                         {name}
                       </div>
-                      <div style={{ fontSize: 10, fontFamily: v('--font-mono'), color: v('--color-text-faint'), overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      <div style={{ fontSize: v("--font-size-micro"), fontFamily: v('--font-mono'), color: v('--color-text-faint'), overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                         {value}
                       </div>
                     </div>
@@ -114,7 +114,7 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
 
         {/* ── TYPOGRAPHY ── */}
         <div style={{ marginBottom: 28 }}>
-          <h2 style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
+          <h2 style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
             Typografie — DM Sans
           </h2>
           <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: 16, border: `1px solid ${v('--color-border')}`, display: "flex", flexDirection: "column", gap: 8 }}>
@@ -132,14 +132,14 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
                 <span style={{ fontSize: t.size, fontWeight: t.weight, fontFamily: v('--font-text'), color: v('--color-text-primary') }}>
                   Lohnt sich PV?
                 </span>
-                <span style={{ fontSize: 10, color: v('--color-text-faint'), fontFamily: v('--font-mono'), flexShrink: 0, marginLeft: 12 }}>{t.label}</span>
+                <span style={{ fontSize: v("--font-size-micro"), color: v('--color-text-faint'), fontFamily: v('--font-mono'), flexShrink: 0, marginLeft: 12 }}>{t.label}</span>
               </div>
             ))}
           </div>
         </div>
 
         <div style={{ marginBottom: 28 }}>
-          <h2 style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
+          <h2 style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
             Typografie — JetBrains Mono
           </h2>
           <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: 16, border: `1px solid ${v('--color-border')}`, display: "flex", flexDirection: "column", gap: 8 }}>
@@ -155,7 +155,7 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
                 <span style={{ fontSize: t.size, fontWeight: t.weight, fontFamily: v('--font-mono'), color: t.color }}>
                   12.450
                 </span>
-                <span style={{ fontSize: 10, color: v('--color-text-faint'), fontFamily: v('--font-mono'), flexShrink: 0, marginLeft: 12 }}>{t.label}</span>
+                <span style={{ fontSize: v("--font-size-micro"), color: v('--color-text-faint'), fontFamily: v('--font-mono'), flexShrink: 0, marginLeft: 12 }}>{t.label}</span>
               </div>
             ))}
           </div>
@@ -163,7 +163,7 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
 
         {/* ── RADII ── */}
         <div style={{ marginBottom: 28 }}>
-          <h2 style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
+          <h2 style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
             Border Radii
           </h2>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
@@ -176,7 +176,7 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
                 width: 80, height: 80, borderRadius: v(r.token),
                 background: v('--color-bg'), border: `2px solid ${v('--color-accent')}`,
                 display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 10, color: v('--color-text-muted'), textAlign: "center", lineHeight: 1.2,
+                fontSize: v("--font-size-micro"), color: v('--color-text-muted'), textAlign: "center", lineHeight: 1.2,
                 fontFamily: v('--font-mono'),
               }}>
                 {r.label}
@@ -187,7 +187,7 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
 
         {/* ── COMPONENTS ── */}
         <div style={{ marginBottom: 28 }}>
-          <h2 style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
+          <h2 style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
             OptionCard
           </h2>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
@@ -199,7 +199,7 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
         </div>
 
         <div style={{ marginBottom: 28 }}>
-          <h2 style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
+          <h2 style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
             TriToggle
           </h2>
           <TriToggle
@@ -211,19 +211,19 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
         </div>
 
         <div style={{ marginBottom: 28 }}>
-          <h2 style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
+          <h2 style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
             InlineEdit
           </h2>
           <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: 16, border: `1px solid ${v('--color-border')}`, display: "flex", flexDirection: "column", gap: 12 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: v("--font-size-small") }}>
               <span style={{ color: v('--color-text-secondary') }}>Investition</span>
               <InlineEdit value={editValue} onCommit={setEditValue} unit=" €" step={500} min={500} max={80000} width={68} />
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: v("--font-size-small") }}>
               <span style={{ color: v('--color-text-secondary') }}>Eigenverbrauch</span>
               <InlineEdit value={42} onCommit={() => {}} unit="%" step={1} min={10} max={90} width={40} />
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: v("--font-size-small") }}>
               <span style={{ color: v('--color-text-secondary') }}>Strompreis</span>
               <InlineEdit value={0.34} onCommit={() => {}} unit=" €" step={0.01} min={0.15} max={0.60} width={52} />
             </div>
@@ -231,7 +231,7 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
         </div>
 
         <div style={{ marginBottom: 28 }}>
-          <h2 style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
+          <h2 style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
             Chart (Amortisation)
           </h2>
           <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: 12, border: `1px solid ${v('--color-border')}` }}>
@@ -241,12 +241,12 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
 
         {/* ── BUTTONS ── */}
         <div style={{ marginBottom: 28 }}>
-          <h2 style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
+          <h2 style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
             Buttons
           </h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             <button style={{
-              padding: "14px", borderRadius: v('--radius-md'), fontSize: 15, fontWeight: 700,
+              padding: "14px", borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), fontWeight: 700,
               background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
               fontFamily: v('--font-text'), width: "100%",
             }}>
@@ -254,13 +254,13 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
             </button>
             <div style={{ display: "flex", gap: 8 }}>
               <button style={{
-                flex: 1, padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 600,
+                flex: 1, padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), fontWeight: 600,
                 background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer",
               }}>
                 Secondary — Zurück
               </button>
               <button style={{
-                flex: 1, padding: "10px 32px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700,
+                flex: 1, padding: "10px 32px", borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), fontWeight: 700,
                 background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
               }}>
                 Weiter →
@@ -268,13 +268,13 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
             </div>
             <div style={{ display: "flex", gap: 8 }}>
               <button style={{
-                padding: "8px 14px", borderRadius: v('--radius-md'), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                padding: "8px 14px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
                 background: v('--color-accent-dim'), border: `1.5px solid ${v('--color-accent')}`, color: v('--color-accent'),
               }}>
                 Quick Setting aktiv
               </button>
               <button style={{
-                padding: "8px 14px", borderRadius: v('--radius-md'), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                padding: "8px 14px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
                 background: v('--color-bg'), border: `1.5px solid ${v('--color-border')}`, color: v('--color-text-secondary'),
               }}>
                 Quick Setting inaktiv
@@ -285,28 +285,28 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
 
         {/* ── CARDS ── */}
         <div style={{ marginBottom: 28 }}>
-          <h2 style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
+          <h2 style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
             Cards
           </h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: 16, border: `1px solid ${v('--color-border')}` }}>
-              <div style={{ fontSize: 11, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Gewinn nach 25 Jahren</div>
-              <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-positive'), marginTop: 4 }}>+18.450 €</div>
+              <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Gewinn nach 25 Jahren</div>
+              <div style={{ fontSize: v("--font-size-display-sm"), fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-positive'), marginTop: 4 }}>+18.450 €</div>
             </div>
             <div style={{
               textAlign: "center", padding: "24px 20px", background: v('--color-bg-accent'),
               borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border-accent')}`,
             }}>
-              <div style={{ fontSize: 12, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8 }}>Hero Card</div>
-              <div style={{ fontSize: 56, fontWeight: 800, color: v('--color-accent'), fontFamily: v('--font-mono'), lineHeight: 1 }}>
-                12<span style={{ fontSize: 22, fontWeight: 600, marginLeft: 4 }}>Jahren</span>
+              <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8 }}>Hero Card</div>
+              <div style={{ fontSize: v("--font-size-display-lg"), fontWeight: 800, color: v('--color-accent'), fontFamily: v('--font-mono'), lineHeight: 1 }}>
+                12<span style={{ fontSize: v("--font-size-display-sm"), fontWeight: 600, marginLeft: 4 }}>Jahren</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Footer */}
-        <div style={{ textAlign: "center", fontSize: 11, color: v('--color-text-faint'), padding: "24px 0" }}>
+        <div style={{ textAlign: "center", fontSize: v("--font-size-caption"), color: v('--color-text-faint'), padding: "24px 0" }}>
           {Object.keys(tokens).length} Design Tokens definiert
         </div>
       </div>

@@ -54,12 +54,12 @@ export default async function GruppePage({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: space.md }}>
-      <div style={{ fontSize: 13 }}>
+      <div style={{ fontSize: v("--font-size-small") }}>
         <Link href="/admin/awards/anschreiben" style={{ color: v("--color-accent"), textDecoration: "none" }}>← Anschreiben-Aufhänger</Link>
       </div>
       <header>
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: v("--color-text-primary"), margin: 0 }}>{cat.label}</h1>
-        <p style={{ fontSize: 14, color: v("--color-text-secondary"), marginTop: space.xs }}>
+        <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, color: v("--color-text-primary"), margin: 0 }}>{cat.label}</h1>
+        <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), marginTop: space.xs }}>
           {levelKey === "bund" ? "bundesweit" : ortPhrase({ name: scopeName, level: levelKey === "land" ? "bundesland" : undefined })} · {nf(ranked.length)} wertbare Gemeinden ·{" "}
           {cat.messart === "proKopf" ? "pro Kopf" : "absolut"}
         </p>
@@ -74,9 +74,9 @@ export default async function GruppePage({
               padding: pad("xs", "md"), borderRadius: v("--radius-sm"),
               background: isMark ? v("--color-accent-dim") : r.rank % 2 ? "transparent" : v("--color-bg-muted"),
             }}>
-              <span style={{ fontFamily: v("--font-mono"), fontSize: 13, color: v("--color-text-muted"), textAlign: "right" }}>{r.rank}.</span>
-              <span style={{ fontSize: 14, fontWeight: isMark ? 700 : 500, color: v("--color-text-primary") }}>{r.name}</span>
-              <span style={{ fontFamily: v("--font-mono"), fontSize: 13, color: isMark ? v("--color-accent") : v("--color-text-secondary") }}>{formatAwardValue(r.value, cat.format)}</span>
+              <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-small"), color: v("--color-text-muted"), textAlign: "right" }}>{r.rank}.</span>
+              <span style={{ fontSize: v("--font-size-body"), fontWeight: isMark ? 700 : 500, color: v("--color-text-primary") }}>{r.name}</span>
+              <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-small"), color: isMark ? v("--color-accent") : v("--color-text-secondary") }}>{formatAwardValue(r.value, cat.format)}</span>
             </li>
           );
         })}
@@ -84,15 +84,15 @@ export default async function GruppePage({
           <>
             <li style={{ textAlign: "center", color: v("--color-text-muted"), padding: pad("xs", "md") }}>…</li>
             <li style={{ display: "grid", gridTemplateColumns: "48px 1fr auto", gap: space.md, alignItems: "baseline", padding: pad("xs", "md"), borderRadius: v("--radius-sm"), background: v("--color-accent-dim") }}>
-              <span style={{ fontFamily: v("--font-mono"), fontSize: 13, color: v("--color-text-muted"), textAlign: "right" }}>{markRank.rank}.</span>
-              <span style={{ fontSize: 14, fontWeight: 700, color: v("--color-text-primary") }}>{markRank.name}</span>
-              <span style={{ fontFamily: v("--font-mono"), fontSize: 13, color: v("--color-accent") }}>{formatAwardValue(markRank.value, cat.format)}</span>
+              <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-small"), color: v("--color-text-muted"), textAlign: "right" }}>{markRank.rank}.</span>
+              <span style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary") }}>{markRank.name}</span>
+              <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-small"), color: v("--color-accent") }}>{formatAwardValue(markRank.value, cat.format)}</span>
             </li>
           </>
         )}
       </ol>
       {ranked.length > MAX_ROWS && !showMarkSeparately && (
-        <div style={{ fontSize: 12, color: v("--color-text-muted") }}>Zeige die ersten {MAX_ROWS} von {nf(ranked.length)}.</div>
+        <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Zeige die ersten {MAX_ROWS} von {nf(ranked.length)}.</div>
       )}
     </div>
   );

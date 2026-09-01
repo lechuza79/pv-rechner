@@ -24,22 +24,22 @@ interface PriceRow {
 const S = {
   page: { fontFamily: v("--font-text"), color: v("--color-text-primary") } as const,
   wrap: { maxWidth: 600 } as const,
-  h1: { fontSize: 22, fontWeight: 700, marginBottom: 24 } as const,
-  h2: { fontSize: 18, fontWeight: 600, marginTop: 32, marginBottom: 12 } as const,
+  h1: { fontSize: v("--font-size-h1"), fontWeight: 700, marginBottom: 24 } as const,
+  h2: { fontSize: v("--font-size-h3"), fontWeight: 600, marginTop: 32, marginBottom: 12 } as const,
   card: { background: "#fff", border: `1px solid ${v("--color-border")}`, borderRadius: 14, padding: 20, marginBottom: 16 } as const,
-  label: { display: "block", fontSize: 13, fontWeight: 600, color: v("--color-text-secondary"), textTransform: "uppercase" as const, letterSpacing: "0.5px", marginBottom: 6 },
-  input: { width: "100%", padding: "8px 12px", border: `1px solid ${v("--color-border")}`, borderRadius: 8, fontSize: 15, fontFamily: v("--font-mono"), background: v("--color-bg-muted") } as const,
+  label: { display: "block", fontSize: v("--font-size-small"), fontWeight: 600, color: v("--color-text-secondary"), textTransform: "uppercase" as const, letterSpacing: "0.5px", marginBottom: 6 },
+  input: { width: "100%", padding: "8px 12px", border: `1px solid ${v("--color-border")}`, borderRadius: 8, fontSize: v("--font-size-body"), fontFamily: v("--font-mono"), background: v("--color-bg-muted") } as const,
   row: { display: "flex", gap: 12, marginBottom: 12 } as const,
-  btn: { background: v("--color-accent"), color: "#fff", border: "none", borderRadius: 10, padding: "12px 24px", fontSize: 15, fontWeight: 600, cursor: "pointer", width: "100%" } as const,
-  btnSecondary: { background: "transparent", color: v("--color-accent"), border: `1px solid ${v("--color-accent")}`, borderRadius: 10, padding: "10px 20px", fontSize: 14, fontWeight: 600, cursor: "pointer" } as const,
-  preview: { fontFamily: v("--font-mono"), fontSize: 14, color: v("--color-accent"), marginTop: 12 } as const,
-  table: { width: "100%", borderCollapse: "collapse" as const, fontSize: 13 },
+  btn: { background: v("--color-accent"), color: "#fff", border: "none", borderRadius: 10, padding: "12px 24px", fontSize: v("--font-size-body"), fontWeight: 600, cursor: "pointer", width: "100%" } as const,
+  btnSecondary: { background: "transparent", color: v("--color-accent"), border: `1px solid ${v("--color-accent")}`, borderRadius: 10, padding: "10px 20px", fontSize: v("--font-size-body"), fontWeight: 600, cursor: "pointer" } as const,
+  preview: { fontFamily: v("--font-mono"), fontSize: v("--font-size-body"), color: v("--color-accent"), marginTop: 12 } as const,
+  table: { width: "100%", borderCollapse: "collapse" as const, fontSize: v("--font-size-small") },
   th: { textAlign: "left" as const, padding: "6px 8px", borderBottom: `2px solid ${v("--color-border")}`, fontWeight: 600, color: v("--color-text-secondary") },
   td: { padding: "6px 8px", borderBottom: `1px solid ${v("--color-border")}`, fontFamily: v("--font-mono") },
-  muted: { color: v("--color-text-muted"), fontSize: 12 },
-  success: { color: v("--color-positive"), fontSize: 14, fontWeight: 600, marginTop: 8 },
-  error: { color: v("--color-negative"), fontSize: 14, fontWeight: 600, marginTop: 8 },
-  link: { color: v("--color-accent"), textDecoration: "none", fontSize: 13 },
+  muted: { color: v("--color-text-muted"), fontSize: v("--font-size-small") },
+  success: { color: v("--color-positive"), fontSize: v("--font-size-body"), fontWeight: 600, marginTop: 8 },
+  error: { color: v("--color-negative"), fontSize: v("--font-size-body"), fontWeight: 600, marginTop: 8 },
+  link: { color: v("--color-accent"), textDecoration: "none", fontSize: v("--font-size-small") },
 };
 
 interface FeedInRow {
@@ -174,7 +174,7 @@ export default function PricesClient({ history, feedInHistory = [] }: { history:
         {/* Scrape trigger */}
         <div style={S.card}>
           <span style={S.label}>Automatisches Update</span>
-          <p style={{ fontSize: 14, color: v("--color-text-secondary"), margin: "0 0 12px" }}>
+          <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), margin: "0 0 12px" }}>
             Preise von solaranlagen-portal.com scrapen und in die Datenbank schreiben.
           </p>
           <button style={S.btnSecondary} onClick={handleScrape} disabled={scrapeStatus === "running"}>
@@ -258,7 +258,7 @@ export default function PricesClient({ history, feedInHistory = [] }: { history:
         {/* Data sources */}
         <h2 style={S.h2}>Datenquellen</h2>
         <div style={S.card}>
-          <ul style={{ margin: 0, padding: "0 0 0 16px", fontSize: 14, lineHeight: 2 }}>
+          <ul style={{ margin: 0, padding: "0 0 0 16px", fontSize: v("--font-size-body"), lineHeight: 2 }}>
             <li><a href="https://www.solaranlagen-portal.com/photovoltaik/kosten" target="_blank" rel="noopener" style={S.link}>solaranlagen-portal.com</a> — Systempreise (250+ Angebote)</li>
             <li><a href="https://www.solarserver.de/photovoltaik-preis-pv-modul-preisindex/" target="_blank" rel="noopener" style={S.link}>Solarserver SPINX</a> — Modulpreise (monatlich)</li>
             <li><a href="https://www.ise.fraunhofer.de/de/veroeffentlichungen/studien/aktuelle-fakten-zur-photovoltaik-in-deutschland.html" target="_blank" rel="noopener" style={S.link}>Fraunhofer ISE</a> — Aktuelle Fakten (jährlich)</li>
@@ -290,7 +290,7 @@ export default function PricesClient({ history, feedInHistory = [] }: { history:
                     <td style={S.td}>
                       {row.source === "SCRAPE_ERROR" ? "—" : `${row.battery_per_kwh} €/kWh`}
                     </td>
-                    <td style={{ ...S.td, fontFamily: v("--font-text"), fontSize: 12, maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <td style={{ ...S.td, fontFamily: v("--font-text"), fontSize: v("--font-size-small"), maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {row.source === "SCRAPE_ERROR" ? (
                         <span style={{ color: v("--color-negative") }} title={row.notes || ""}>Fehler</span>
                       ) : (
@@ -372,7 +372,7 @@ export default function PricesClient({ history, feedInHistory = [] }: { history:
                     <td style={S.td}>{row.valid_from}</td>
                     <td style={S.td}>{row.teil_under_10}/{row.teil_over_10}</td>
                     <td style={S.td}>{row.voll_under_10}/{row.voll_over_10}</td>
-                    <td style={{ ...S.td, fontFamily: v("--font-text"), fontSize: 12, maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <td style={{ ...S.td, fontFamily: v("--font-text"), fontSize: v("--font-size-small"), maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       <span title={row.notes || ""}>{row.source || row.updated_by || "—"}</span>
                     </td>
                   </tr>

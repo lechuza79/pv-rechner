@@ -151,6 +151,16 @@ export const tokens = {
   '--font-size-h2': '20px',             // Sektions-Überschrift
   '--font-size-h1': '24px',             // Seiten-Titel
 
+  // ─── Display-Stufen (2) ────────────────────────────────────────────────────
+  // KEINE Textstufen. Sie stehen dort, wo eine große Zahl neben ihrer Einheit
+  // eine RANGFOLGE ausdrückt — der Größenunterschied IST die Aussage, und ihn
+  // auf eine Textstufe zu runden zerstört sie. Genau dieser Fehler ist beim
+  // Zusammenführen der Einheiten-Formatierer schon einmal passiert: Die
+  // Einheit stand plötzlich in Kachelgröße neben ihrem Wert.
+  // Wer eine dieser Zahlen verkleinert, verkleinert ihre Einheit mit.
+  '--font-size-display-sm': '22px',     // Kennzahl-Werte in Kacheln
+  '--font-size-display-lg': '56px',     // Große Ergebniszahl (Hero)
+
   // ─── Radii (3) ─────────────────────────────────────────────────────────────
   '--radius-sm': '6px',                 // Small: inputs, checkboxes, pills
   '--radius-md': '12px',                // Medium: buttons, cards, panels

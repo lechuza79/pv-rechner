@@ -44,15 +44,15 @@ export default function AwardsClient({ payload }: { payload: AwardsPayload }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: space.lg }}>
       <header>
-        <h1 style={{ fontSize: 24, fontWeight: 800, color: v("--color-text-primary"), margin: 0 }}>
+        <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, color: v("--color-text-primary"), margin: 0 }}>
           Kommunen-Solar-Awards
         </h1>
-        <p style={{ fontSize: 14, color: v("--color-text-secondary"), marginTop: space.xs, maxWidth: 640, lineHeight: 1.5 }}>
+        <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), marginTop: space.xs, maxWidth: 640, lineHeight: 1.5 }}>
           Backend-Prototyp zum Durchblättern und Festzurren. Sieger je Kategorie, geografischem
           Bezug und optional je Rolle bzw. Größenklasse — gerechnet aus {nf(totalGemeinden)}{" "}
           bewohnten Gemeinden. Noch keine Darstellung nach außen.
         </p>
-        <a href="/admin/awards/anschreiben" style={{ display: "inline-block", marginTop: space.sm, fontSize: 13, fontWeight: 600, color: v("--color-accent"), textDecoration: "none" }}>
+        <a href="/admin/awards/anschreiben" style={{ display: "inline-block", marginTop: space.sm, fontSize: v("--font-size-small"), fontWeight: 600, color: v("--color-accent"), textDecoration: "none" }}>
           → Anschreiben-Aufhänger je Gemeinde
         </a>
       </header>
@@ -143,15 +143,15 @@ export default function AwardsClient({ payload }: { payload: AwardsPayload }) {
       </form>
 
       <div>
-        <div style={{ fontSize: 16, fontWeight: 700, color: v("--color-text-primary") }}>
+        <div style={{ fontSize: v("--font-size-lead"), fontWeight: 700, color: v("--color-text-primary") }}>
           {activeCategory.label}{" "}
-          <span style={{ fontSize: 12, fontWeight: 600, color: v("--color-text-muted") }}>
+          <span style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v("--color-text-muted") }}>
             {activeCategory.messart === "proKopf" ? "· pro Kopf" : "· absolut"}
           </span>
         </div>
-        <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginTop: 2 }}>{activeCategory.merit}</div>
+        <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginTop: 2 }}>{activeCategory.merit}</div>
         {tertiles && (
-          <div style={{ fontSize: 12, color: v("--color-text-muted"), marginTop: 4 }}>
+          <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginTop: 4 }}>
             Größenklassen aus der Verteilung: klein &lt; {nf(tertiles.c1)} · mittel {nf(tertiles.c1)}–{nf(tertiles.c2)} · groß ≥{" "}
             {nf(tertiles.c2)} Einwohner
           </div>
@@ -159,10 +159,10 @@ export default function AwardsClient({ payload }: { payload: AwardsPayload }) {
       </div>
 
       {rows.length === 0 ? (
-        <div style={{ fontSize: 14, color: v("--color-text-muted") }}>Keine Sieger für diese Auswahl.</div>
+        <div style={{ fontSize: v("--font-size-body"), color: v("--color-text-muted") }}>Keine Sieger für diese Auswahl.</div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <div style={{ ...rowGrid, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: v("--color-text-muted"), padding: pad("xs", "sm") }}>
+          <div style={{ ...rowGrid, fontSize: v("--font-size-caption"), fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: v("--color-text-muted"), padding: pad("xs", "sm") }}>
             <span>Bezug{selection.splitByRole ? " · Rolle" : ""}{selection.splitBySize ? " · Größe" : ""}</span>
             <span>Sieger</span>
             <span style={{ textAlign: "right" }}>Wert</span>
@@ -172,7 +172,7 @@ export default function AwardsClient({ payload }: { payload: AwardsPayload }) {
           {rows.map((r, i) => (
             <div
               key={`${r.scopeId}-${r.roleLabel ?? ""}-${r.sizeLabel ?? ""}-${i}`}
-              style={{ ...rowGrid, fontSize: 13.5, padding: pad("sm", "sm"), borderRadius: v("--radius-sm"), background: i % 2 ? "transparent" : v("--color-bg-muted") }}
+              style={{ ...rowGrid, fontSize: v("--font-size-small"), padding: pad("sm", "sm"), borderRadius: v("--radius-sm"), background: i % 2 ? "transparent" : v("--color-bg-muted") }}
             >
               <span style={{ color: v("--color-text-secondary"), minWidth: 0 }}>
                 {r.scopeLabel}
@@ -180,7 +180,7 @@ export default function AwardsClient({ payload }: { payload: AwardsPayload }) {
                 {r.sizeLabel ? ` · ${r.sizeLabel}` : ""}
               </span>
               <span style={{ color: v("--color-text-primary"), fontWeight: 600, minWidth: 0 }}>
-                {r.winnerName} <span style={{ color: v("--color-text-muted"), fontWeight: 400, fontSize: 12 }}>({r.winnerBl})</span>
+                {r.winnerName} <span style={{ color: v("--color-text-muted"), fontWeight: 400, fontSize: v("--font-size-small") }}>({r.winnerBl})</span>
               </span>
               <span style={{ textAlign: "right", fontFamily: v("--font-mono"), color: v("--color-accent") }}>
                 {formatAwardValue(r.value, activeCategory.format)}
@@ -204,7 +204,7 @@ const rowGrid: React.CSSProperties = {
 
 const selectStyle: React.CSSProperties = {
   width: "100%",
-  fontSize: 14,
+  fontSize: v("--font-size-body"),
   padding: pad("sm", "md"),
   background: v("--color-bg"),
   border: `1px solid ${v("--color-border")}`,
@@ -213,7 +213,7 @@ const selectStyle: React.CSSProperties = {
 };
 
 const checkLabel: React.CSSProperties = {
-  fontSize: 13,
+  fontSize: v("--font-size-small"),
   color: v("--color-text-secondary"),
   display: "flex",
   alignItems: "center",
@@ -224,7 +224,7 @@ const checkLabel: React.CSSProperties = {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label style={{ display: "flex", flexDirection: "column", gap: space.xs }}>
-      <span style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: v("--color-text-muted") }}>
+      <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: v("--color-text-muted") }}>
         {label}
       </span>
       {children}
