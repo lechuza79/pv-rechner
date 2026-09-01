@@ -11,19 +11,53 @@ für das Projekt aktiviert ist.
 
 ## Aktive Events
 
-### PV-Rechner-Trichter (`app/(site)/photovoltaik-rechner/rechner.tsx`)
-Feuern nur beim Vorwärtsgehen im direkten Flow (Share-/Empfehlungs-Aufrufe
-landen per URL direkt auf dem Ergebnis, nicht über `next()`).
+### Die Trichter — eine Liste je Rechner, ein Eintrag je Schritt
 
-| Event | Bedeutung |
+Alle fünf Rechner laufen über denselben Baustein (`trackFunnelStep`, Liste
+`FUNNEL` im jeweiligen Rechner). Die Ereignisse feuern nur beim Vorwärtsgehen im
+direkten Flow — wer über einen geteilten Link im Ergebnis landet, läuft nicht
+durch `next()` und verfälscht die Treppe deshalb nicht.
+
+**Die Liste ist nach INDEX aufgebaut:** `FUNNEL[i]` ist das Ereignis für
+„Schritt i erreicht", der letzte Eintrag das Ergebnis, der erste immer `null`
+(Schritt 0 sieht jeder, der die Seite öffnet). Sie muss deshalb exakt so lang
+sein wie `STEPS` plus eins — festgenagelt von
+`lib/__tests__/analytics-trichter.test.ts`, das beide Listen aus den
+Rechner-Dateien liest.
+
+| PV-Rechner | Bedeutung |
 |---|---|
+| `pv_schritt_dach` | Schritt „Dein Dach" erreicht |
 | `pv_schritt_speicher` | Schritt „Batteriespeicher" erreicht |
 | `pv_schritt_haushalt` | Schritt „Dein Haushalt" erreicht |
 | `pv_schritt_verbraucher` | Schritt „Großverbraucher" erreicht |
-| `pv_ergebnis` | Ergebnis erreicht (mit Eigenschaften, s. u.) |
+| `pv_ergebnis` | Ergebnis erreicht |
 
-Abbruch-Treppe im Dashboard: Seitenaufrufe `/photovoltaik-rechner` (Pages) →
-`pv_schritt_speicher` → `_haushalt` → `_verbraucher` → `pv_ergebnis`.
+| Empfehlung | Wärmepumpe | Klimaanlage | Balkonkraftwerk |
+|---|---|---|---|
+| `empfehlung_schritt_haushalt` | `waermepumpe_schritt_groesse` | `klima_schritt_raeume` | `balkon_schritt_ausrichtung` |
+| `empfehlung_schritt_verbraucher` | `waermepumpe_schritt_daemmung` | `klima_schritt_nutzung` | `balkon_ergebnis` |
+| `empfehlung_ergebnis` | `waermepumpe_schritt_haushalt` | `klima_ergebnis` | |
+| | `waermepumpe_schritt_heizsystem` | | |
+| | `waermepumpe_ergebnis` | | |
+
+Abbruch-Treppe im Dashboard: Seitenaufrufe der Rechner-Adresse (Pages) → die
+Schritt-Ereignisse der Reihe nach → das Ergebnis.
+
+**Zwei Vorgeschichten, die erklären, warum das so gebaut ist:**
+
+Die PV-Liste entstand am 06.07.2026 für die damaligen Schritte. Am 07.08.2026
+kam „Dein Dach" als Schritt 1 dazu, ohne dass die Liste nachgezogen wurde —
+seither zählte `pv_schritt_speicher` in Wahrheit das Dach, `_haushalt` den
+Speicher, `_verbraucher` den Haushalt, und der letzte Schritt gar nicht mehr.
+Drei Wochen lang, ohne roten Test: die Fehlerklasse „Beschriftung sagt etwas
+anderes, als die Zahl misst". Behoben und per Test verhindert am 29.08.2026.
+
+Und: Bis zum selben Tag hatten die vier anderen Rechner **überhaupt keinen
+Trichter** — sie meldeten nur „Ergebnis erreicht". Wo jemand bei der
+Wärmepumpe oder beim Balkonkraftwerk abbricht, war schlicht unsichtbar. Das war
+nie eine Rechtsfrage: Ein Zähler ohne Eigenschaften bleibt ein Zähler. Es hatte
+nur niemand gebaut.
 
 ### PV-Rechner-Aktionen
 | Event | Auslöser |
@@ -61,14 +95,6 @@ beantwortet die eigene Ablage, nicht die Reichweitenmessung.
 
 WELCHER Ort abonniert wurde, steht bewusst nicht im Ereignis. Es stünde über
 den Seitenaufruf ohnehin schon zu viel daneben.
-
-### Andere Rechner (nur „Ergebnis erreicht")
-| Event | Datei |
-|---|---|
-| `empfehlung_ergebnis` | `app/(site)/pv-bedarf-berechnen/empfehlung.tsx` |
-| `waermepumpe_ergebnis` | `app/(site)/waermepumpe-rechner/waermepumpe.tsx` |
-| `klima_ergebnis` | `app/(site)/klimaanlage-stromkosten/klimaanlage.tsx` |
-| `balkon_ergebnis` | `app/(site)/balkonkraftwerk/rechner/balkon.tsx` |
 
 ## Ereignisse tragen keine Eigenschaften — BLOCKER
 

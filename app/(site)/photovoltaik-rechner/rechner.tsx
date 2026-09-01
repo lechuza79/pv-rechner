@@ -43,7 +43,7 @@ import FlowNav from "../../../components/FlowNav";
 import { AccordionField, ChoiceButtons } from "../../../components/AccordionField";
 import ScenarioTabs from "../../../components/ScenarioTabs";
 import { useChartExport } from "../../../lib/useChartExport";
-import { trackEvent } from "../../../lib/analytics";
+import { trackEvent, trackFunnelStep, type Funnel } from "../../../lib/analytics";
 import ChartExportBar from "../../../components/ChartExportBar";
 import ResultHeroCard from "./_components/ResultHeroCard";
 // ResultSection steht schon oben; ResultVerbrauch ist entfallen (die
@@ -645,29 +645,27 @@ export default function PVRechner({
     return () => clearTimeout(t);
   }, [plzToast]);
 
-  // Funnel-Events: feuern nur beim Vorwärtsgehen im direkten Rechner-Flow
-  // (Share-/Empfehlungs-Aufrufe landen per URL direkt auf dem Ergebnis und
-  // laufen nicht durch next()). So bildet die Event-Treppe echte Abbrüche ab.
-  // Der leere Eintrag steht für Schritt 0, der kein eigenes Ereignis hat.
-  const FUNNEL_EVENTS = [
+  // Ereignis je erreichtem Schritt, Reihenfolge wie STEPS, danach das Ergebnis.
+  // Bis 29.08.2026 fehlte hier der Dach-Schritt (eingefügt am 07.08.2026, Liste
+  // nicht nachgezogen) — seither bezeichnete jeder Name den falschen Schritt.
+  // Länge und Reihenfolge sind jetzt festgenagelt; Begründung in `lib/analytics.ts`.
+  //
+  // Das Ergebnis zählt als reine Zahl: Bis 27.08.2026 gingen hier Anlagen- und
+  // Speichergröße als Ereignis-Eigenschaften mit — der einzige Posten, der
+  // etwas über den NUTZER sagte statt über die Seite, und genau der, an dem die
+  // Einwilligungsfreiheit der Messung gekippt wäre.
+  const FUNNEL: Funnel = [
     null,
+    "pv_schritt_dach",
     "pv_schritt_speicher",
     "pv_schritt_haushalt",
     "pv_schritt_verbraucher",
-  ] as const;
+    "pv_ergebnis",
+  ];
   const next = () => {
     if (step >= STEPS.length) return;
     const target = step + 1;
-    if (target === STEPS.length) {
-      // Ergebnis erreicht — als reine Zählung. Bis 27.08.2026 gingen hier
-      // Anlagen- und Speichergröße als Ereignis-Eigenschaften mit; das war die
-      // einzige Auswertung, die etwas über den NUTZER sagte statt über die
-      // Seite, und genau der Posten, an dem die Einwilligungsfreiheit der
-      // Messung gekippt wäre (Begründung in `lib/analytics.ts`).
-      trackEvent("pv_ergebnis");
-    } else if (FUNNEL_EVENTS[target]) {
-      trackEvent(FUNNEL_EVENTS[target]);
-    }
+    trackFunnelStep(FUNNEL, target);
     setStep(target);
   };
   const back = () => step > 0 && setStep(step - 1);

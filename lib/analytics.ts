@@ -44,6 +44,7 @@ import { track } from "@vercel/analytics";
  */
 export const EVENTS = [
   // Trichter PV-Rechner
+  "pv_schritt_dach",
   "pv_schritt_speicher",
   "pv_schritt_haushalt",
   "pv_schritt_verbraucher",
@@ -52,10 +53,22 @@ export const EVENTS = [
   "pv_geteilt",
   "pv_gespeichert",
   "pv_methodik",
-  // Die übrigen Rechner melden nur „Ergebnis erreicht"
+  // Trichter Empfehlung
+  "empfehlung_schritt_haushalt",
+  "empfehlung_schritt_verbraucher",
   "empfehlung_ergebnis",
+  // Trichter Wärmepumpe
+  "waermepumpe_schritt_groesse",
+  "waermepumpe_schritt_daemmung",
+  "waermepumpe_schritt_haushalt",
+  "waermepumpe_schritt_heizsystem",
   "waermepumpe_ergebnis",
+  // Trichter Klimaanlage
+  "klima_schritt_raeume",
+  "klima_schritt_nutzung",
   "klima_ergebnis",
+  // Trichter Balkonkraftwerk
+  "balkon_schritt_ausrichtung",
   "balkon_ergebnis",
   // Herkunft aus den Outreach-Briefen: zwei Namen statt einer Eigenschaft
   "brief_aufruf_direkt",
@@ -84,4 +97,46 @@ export function trackEvent(name: AnalyticsEvent) {
   } catch {
     /* analytics must never throw into the UI */
   }
+}
+
+// ─── Der Trichter: eine Liste je Rechner, ein Eintrag je Schritt. ────────────
+//
+// WARUM DAS EIN GETEILTER BAUSTEIN IST UND KEINE FÜNF KOPIEN: Bis zum
+// 29.08.2026 hatte NUR der PV-Rechner einen Trichter, inline im Rechner
+// gebaut; die vier anderen meldeten ausschließlich „Ergebnis erreicht". Wo
+// jemand bei der Wärmepumpe, beim Balkonkraftwerk, bei der Klimaanlage oder im
+// Empfehlungs-Flow abbricht, war schlicht unsichtbar — und das war nie eine
+// Rechtsfrage, sondern eine, die niemand gebaut hatte.
+//
+// DER FEHLER, DEN DIESE BAUFORM VERHINDERT, IST BEREITS EINGETRETEN. Die
+// PV-Ereignisliste entstand am 06.07.2026 für fünf Schritte. Am 07.08.2026 kam
+// der Schritt „Dein Dach" als Index 1 dazu — die Liste wurde nicht nachgezogen.
+// Seither zählte `pv_schritt_speicher` in Wahrheit „Dach erreicht",
+// `pv_schritt_haushalt` den Speicher, `pv_schritt_verbraucher` den Haushalt,
+// und der Großverbraucher-Schritt wurde gar nicht gemessen. Drei Wochen lang,
+// ohne roten Test, ohne kaputte Seite: die Fehlerklasse „Beschriftung sagt
+// etwas anderes, als die Zahl misst" — im Projekt die schwerste.
+//
+// Deshalb ist die Liste nach INDEX aufgebaut, nicht nach Reihenfolge der
+// Nennung: `FUNNEL[i]` ist das Ereignis für „Schritt i erreicht", der letzte
+// Eintrag das Ergebnis. Sie muss damit exakt so lang sein wie die Schrittliste
+// des Rechners plus eins — und genau das prüft
+// `lib/__tests__/analytics-trichter.test.ts` aus den Rechner-Dateien heraus.
+// Wer künftig einen Schritt einfügt, bekommt einen roten Test statt einer still
+// verschobenen Messung.
+//
+// Der erste Eintrag ist immer `null`: Schritt 0 sieht jeder, der die Seite
+// öffnet — ihn zu zählen hieße, den Seitenaufruf ein zweites Mal zu zählen.
+
+/** Ereignis-Treppe eines Rechners: Index = erreichter Schritt. */
+export type Funnel = readonly (AnalyticsEvent | null)[];
+
+/**
+ * Zählt das Erreichen eines Schritts. Feuert nur beim Vorwärtsgehen im
+ * Frage-Flow — wer über einen geteilten Link direkt im Ergebnis landet, läuft
+ * hier nicht durch und verfälscht die Treppe deshalb nicht.
+ */
+export function trackFunnelStep(funnel: Funnel, erreichterSchritt: number) {
+  const name = funnel[erreichterSchritt];
+  if (name) trackEvent(name);
 }

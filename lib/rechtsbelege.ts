@@ -414,6 +414,28 @@ export const RECHTSBELEGE: Rechtsbeleg[] = [
     geprueftIso: "2026-08-26",
     zustand: "gesetz",
   },
+
+  // ── Wettbewerbsrecht ──────────────────────────────────────────────────────
+  {
+    norm: "UWG §5",
+    gesetz: "Gesetz gegen den unlauteren Wettbewerb",
+    traegt:
+      "Warum das Wort „Test“ auf dieser Seite nirgends steht: Wir messen keine Geräte. " +
+      "Trägt außerdem die Schranken für absolute Werbeaussagen in der Vertrauensleiste.",
+    // Am 27.08.2026 im Original gelesen. Absatz 1 ist die Generalklausel
+    // (irreführende Handlung, die zu einer anderen geschäftlichen Entscheidung
+    // veranlasst). Der für uns einschlägige Teil steht in Absatz 2 Nr. 1: dort
+    // sind neben den „wesentlichen Merkmalen der Ware oder Dienstleistung“
+    // ausdrücklich „die Ergebnisse oder wesentlichen Bestandteile von Tests der
+    // Waren oder Dienstleistungen“ genannt. Eine Seite, die „Test“ in den Titel
+    // nimmt, ohne gemessen zu haben, macht damit eine Angabe über ein
+    // Testergebnis, das es nicht gibt — die Fundstelle ist also nicht nur die
+    // allgemeine Irreführung, sondern der ausdrücklich benannte Fall.
+    fundstelle: "§ 5 Abs. 1 und Abs. 2 Nr. 1 (Tests der Waren oder Dienstleistungen)",
+    quelle: "gesetze-im-internet.de/uwg_2004/__5.html",
+    geprueftIso: "2026-08-27",
+    zustand: "gesetz",
+  },
 ];
 
 
