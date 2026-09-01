@@ -277,7 +277,12 @@ describe("Leere Liste, fehlendes Feld — zwei verschiedene Fragen", () => {
     // gaiberg-steckersolar: schließt KfW, BAFA und Land ausdrücklich aus.
     // tegernheim-stecker-pv: „nur, sofern keine zusätzlichen Drittförderungen
     //   in Anspruch genommen werden" (Nr. 3 der Richtlinie).
-    const BELEGTE_AUSSCHLUESSE = ["gaiberg-steckersolar", "tegernheim-stecker-pv"];
+    // weyhe-klimaschutz: „Mit Ausnahme des Zuschusses zu Energieberatungen,
+    //   dürfen die Fördermittel nicht mit Fördermitteln von anderen Stellen
+    //   kumuliert werden" (Nr. 1 der Richtlinie 2026, am 29.08.2026 im
+    //   Volltext gelesen). Der Ausschluss gilt allen fremden Mitteln, also
+    //   auch den Bundesmitteln.
+    const BELEGTE_AUSSCHLUESSE = ["gaiberg-steckersolar", "tegernheim-stecker-pv", "weyhe-klimaschutz"];
     const ausschluss = Object.values(FUNDING_PROGRAMS).filter(schliesstBundesfoerderungAus);
     expect(
       ausschluss.map(p => p.id).sort(),

@@ -792,10 +792,111 @@ export const globalStyles = `
      Text zu wenig, deshalb ab 760px Fensterbreite gestapelt.
      Gezielt .gemeinde-auszeichnung, NICHT "letztes Kind": ohne Platzierung
      rendert sie gar nichts, und dann bekaeme der Text die schmale Spalte. */
+  /* Titelzeile: Ueberschrift links, Abo-Block rechts daneben.
+     Die Ueberschrift darf schrumpfen (min-width:0), der Abo-Block behaelt seine
+     Breite — sonst wuerde erst der Knopf gequetscht und dann sein Text
+     umbrochen, waehrend links Platz frei bleibt.
+     Ab 860px gestapelt: Bei 720px Inhaltsbreite bleiben neben dem Abo-Block
+     rund 300px fuer den Ortsnamen, und darunter wird jeder zweite dreizeilig. */
+  /* align-items:center, nicht baseline: Links stehen zwei Zeilen (Status und
+     Ueberschrift), rechts der Abo-Block — an der Schriftlinie ausgerichtet
+     haengt der Block dann an der Oberkante der Ueberschrift statt auf der
+     Mitte des Ganzen. */
+  .gemeinde-titelzeile{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:32px}
+  /* Die linke Spalte traegt Statuszeile UND Ueberschrift; sie darf wachsen
+     und schrumpfen. Frueher stand die Ueberschrift direkt in der Zeile — dann
+     begann der Abo-Block auf Hoehe der Statuszeile darueber. */
+  .gemeinde-titelzeile > *:first-child{flex:1 1 260px;min-width:0}
+  .gemeinde-titelzeile h1{margin-top:0}
+  /* Der Block darf SCHRUMPFEN (0 1 statt 0 0) und braucht min-width:0.
+     Sonst behaelt er immer seine Inhaltsbreite, und die Kuerzung des
+     Ortsnamens im Knopf greift nie — sie kann nur wirken, wenn der Platz
+     wirklich enger wird. */
+  .gemeinde-titelzeile > .gemeinde-abo{flex:0 1 auto;min-width:0}
+  @media (max-width:860px){
+    /* Gestapelt nimmt der Abo-Block die volle Zeile UND darf schrumpfen.
+       Mit dem "flex:0 0 auto" von oben behielt er seine Inhaltsbreite, der
+       Knopf darin richtete sich mit width:100% nach ihm — und der Block ragte
+       auf 375px 60 Pixel aus dem Fenster. Ein Block, der sich nach seinem
+       Inhalt richtet, waehrend sein Inhalt sich nach ihm richtet, hat keine
+       Breite, die das Fenster kennt. */
+    .gemeinde-titelzeile{gap:0}
+    .gemeinde-titelzeile > .gemeinde-abo{flex:1 1 100%;min-width:0;max-width:100%}
+  }
+
+  /* Abo-Block: Knopf oben, Erklaertext darunter, beides rechtsbuendig.
+     Als Einheit rechts neben der Ueberschrift; gestapelt (schmale Schirme)
+     nimmt er die volle Zeile und richtet sich links aus wie alles andere. */
+  .gemeinde-abo{display:flex;flex-direction:column;align-items:flex-end;margin:0 0 24px}
+  .gemeinde-titelzeile > .gemeinde-abo{margin-bottom:0}
+  .gemeinde-abo > p{text-align:right}
+
+  /* Der Ortsname im Knopf wird gekuerzt, "abonnieren" bleibt stehen.
+     Ohne das waere bei "Alt Zauche-Wusswerk/Stara Niwa-Wozwjerch" (39 Zeichen)
+     entweder der Knopf breiter als die Seite oder die Handlung abgeschnitten.
+     min-width:0 ist noetig, damit ein Flex-Kind ueberhaupt unter seine
+     Inhaltsbreite schrumpfen darf — ohne das greift text-overflow nie. */
+  .gemeinde-abo-ort{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+
+  /* Die Glocke im Abo-Knopf schwingt beim Ueberfahren einmal an.
+     Kurz und klein gehalten: Sie soll sagen "hier wird etwas angekuendigt",
+     nicht die Aufmerksamkeit vom Text daneben abziehen. Der Effekt haengt am
+     KNOPF, nicht am Symbol — dasselbe Symbol steht anderswo nur beschreibend
+     da, und was dort wackelt, sieht nach einem Fehler aus. */
+  @keyframes sc-glocke-schwingt{
+    0%,100%{transform:rotate(0)}
+    20%{transform:rotate(-11deg)}
+    40%{transform:rotate(8deg)}
+    60%{transform:rotate(-5deg)}
+    80%{transform:rotate(3deg)}
+  }
+  /* Der dritte Weg in der klebenden Leiste ist auf schmalen Schirmen NUR das
+     Symbol. Drei gleichwertige Textknoepfe passen dort nicht — auf 375px
+     blieben je rund 110px, und darin steht keine lesbare Beschriftung mehr.
+     Ab 560px tritt die Beschriftung daneben. Der Knopf traegt sie immer als
+     aria-label, ist also nie namenlos. */
+  .sc-cta-dritte-text{display:none}
+  @media (min-width:560px){.sc-cta-dritte-text{display:inline}}
+
+  .sc-glocke svg{transform-origin:50% 15%}
+  .sc-glocke:hover svg,.sc-glocke:focus-visible svg{animation:sc-glocke-schwingt .55s ease-in-out}
+  @media (prefers-reduced-motion:reduce){
+    .sc-glocke:hover svg,.sc-glocke:focus-visible svg{animation:none}
+  }
+
+  @media (max-width:520px){
+    .gemeinde-abo{align-items:stretch}
+    .gemeinde-abo > p{text-align:left}
+    .gemeinde-abo > button{width:100%}
+  }
+
+  /* Eingabefeld mit beanstandeter Eingabe.
+     Der rote Rahmen ist NICHT das ganze Signal — er allein waere fuer jemanden
+     mit Rot-Gruen-Schwaeche und fuer einen Screenreader nichts. Er kommt
+     deshalb immer zusammen mit aria-invalid und einer Meldung, die per
+     aria-describedby am Feld haengt (WCAG 1.4.1: Farbe darf nie der einzige
+     Traeger einer Information sein). */
+  .abo-feld-fehler{border-color:var(--color-negative) !important;box-shadow:0 0 0 3px color-mix(in srgb,var(--color-negative) 18%,transparent)}
+
+  /* Meldung als Sprechblase UNTER dem Feld, mit Zeiger nach oben.
+     Kein echter Tooltip am Zeiger: Der erschiene nur beim Ueberfahren, und auf
+     einem Telefon gibt es kein Ueberfahren — die Meldung waere dort unsichtbar.
+     Sie steht deshalb fest da, sieht aber aus wie einer. */
+  .abo-fehlerblase{position:relative;margin:10px 0 0;padding:8px 10px;border:1px solid var(--color-negative);border-radius:var(--radius-md);background:color-mix(in srgb,var(--color-negative) 10%,var(--color-bg));color:var(--color-negative);font-size:var(--font-size-small);line-height:1.4}
+  .abo-fehlerblase::before,.abo-fehlerblase::after{content:"";position:absolute;bottom:100%;left:14px;width:0;height:0;border:6px solid transparent}
+  /* Zwei Zeiger uebereinander: der untere traegt die Rahmenfarbe, der obere
+     verdeckt ihn um einen Pixel versetzt mit der Fuellfarbe. Ein einzelnes
+     gedrehtes Quadrat waere kuerzer, wuerde aber den Rahmen der Blase an der
+     Ansatzstelle durchschneiden. */
+  .abo-fehlerblase::before{border-bottom-color:var(--color-negative)}
+  .abo-fehlerblase::after{margin-bottom:-1px;border-bottom-color:color-mix(in srgb,var(--color-negative) 10%,var(--color-bg))}
+
   .gemeinde-kopf{display:flex;gap:24px;align-items:flex-start;margin-bottom:24px}
-  /* Die Ueberschrift traegt ihren eigenen Abstand nach unten; oben muss sie
-     buendig mit dem Badge daneben starten. */
-  .gemeinde-kopf > *:first-child > h1{margin-top:0}
+  /* Die Ueberschrift stand bis 31.08.2026 IN der linken Spalte, also neben der
+     Auszeichnung — bei einem langen Ortsnamen brach sie dort um, waehrend
+     rechts Platz frei blieb. Sie steht jetzt darueber ueber die volle Breite;
+     die Regel, die ihren oberen Abstand hier zurueckgenommen hat, ist damit
+     gegenstandslos und entfernt. */
   .gemeinde-kopf > *:first-child{flex:1 1 0;min-width:0}
   .gemeinde-kopf > .gemeinde-auszeichnung{flex:0 0 252px;max-width:252px}
   @media (max-width:760px){

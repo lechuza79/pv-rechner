@@ -91,6 +91,38 @@ export const VORBEHALT_WOERTER = [
  * steht für einen Originaltext, den ein Prüfer an diesem Tag selbst gelesen hat.
  */
 export const RECHTSBELEGE: Rechtsbeleg[] = [
+  // ── Verjährung: wie lange der Einwilligungsnachweis aufbewahrt wird ───────
+  //
+  // Beide Fristen bestimmen zusammen, wann der Nachweis eines abgemeldeten
+  // Abos gelöscht wird. Die zivilrechtliche ist die längere und deckt die
+  // bußgeldrechtliche mit ab; maßgeblich ist deshalb § 199 Abs. 1 BGB mit
+  // seiner Ultimo-Regel.
+  {
+    norm: "BGB §195",
+    gesetz: "Bürgerliches Gesetzbuch",
+    traegt:
+      "Regelmäßige Verjährungsfrist von drei Jahren. Zusammen mit § 199 Abs. 1 " +
+      "(Beginn mit dem Schluss des Jahres) ergibt sich der Löschtermin für den " +
+      "Einwilligungsnachweis: 31.12. des dritten Jahres nach der letzten Meldung.",
+    fundstelle: "§ 195, dazu § 199 Abs. 1",
+    quelle: "gesetze-im-internet.de/bgb/__195.html",
+    geprueftIso: "2026-09-01",
+    zustand: "gesetz",
+  },
+  {
+    norm: "OWiG §31",
+    gesetz: "Gesetz über Ordnungswidrigkeiten",
+    traegt:
+      "Verfolgungsverjährung von drei Jahren bei einem Bußgeldrahmen über " +
+      "15.000 € (Abs. 2 Nr. 1); Beginn, sobald die Handlung beendet ist " +
+      "(Abs. 3 Satz 1) — hier also mit der einzelnen versandten Mail, nicht " +
+      "mit der Abmeldung. Anwendbar über § 41 Abs. 1 BDSG.",
+    fundstelle: "§ 31 Abs. 2 Nr. 1 und Abs. 3 Satz 1",
+    quelle: "gesetze-im-internet.de/owig_1968/__31.html",
+    geprueftIso: "2026-09-01",
+    zustand: "gesetz",
+  },
+
   // ── Umsatzsteuer ──────────────────────────────────────────────────────────
   {
     norm: "UStG §12",

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { v, iconSizes } from "../lib/theme";
 import { IconArrowRight } from "./Icons";
 import Modal from "./Modal";
-import { FundingStatusBadge, FundingRates, FundingConditions } from "./FundingProgramParts";
+import { FundingStatusBadge, FundingRates, FundingConditions, istDachSicht } from "./FundingProgramParts";
 import { fundingStandLabel, FUNDING_TECHNIK_LABEL, type FundingProgram, type FundingTechnik } from "../lib/funding-programs";
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
@@ -15,7 +15,29 @@ const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 //
 // `program` bleibt beim Schließen kurz erhalten, weil der Dialog sonst leer
 // ausblendet — das Modal bleibt bis zum Ende der Animation gemountet.
-function FundingProgramModal({ program, onClose }: { program: FundingProgram | null; onClose: () => void }) {
+function FundingProgramModal({
+  program,
+  onClose,
+  technik,
+}: {
+  program: FundingProgram | null;
+  onClose: () => void;
+  /**
+   * Die Technik, die dieser Rechner rechnet — und damit die einzige, deren
+   * Bedingungen und Sätze hier etwas zu suchen haben.
+   *
+   * WARUM (27.08.2026): Das Fenster zeigte alles, was am Programm steht. Im
+   * PV-Rechner las man bei Nidda deshalb „Höchstens zwei Module je Haushalt,
+   * höchstens 800 W Einspeisung" — eine Bedingung des Balkonkraftwerks, die
+   * jede Dachanlage ausschließt. Genau die Fehlerklasse, für die die Stadtseite
+   * am 26.08. den Technik-Filter bekommen hat; der Rechner war dabei übersehen
+   * worden. Eine Bedingung am falschen Ort ist eine falsche Auskunft.
+   *
+   * `useFoerderung` entscheidet, WELCHE Programme hier ankommen; welche Zeilen
+   * eines Programms gelten, entscheidet erst diese Angabe.
+   */
+  technik: FundingTechnik;
+}) {
   const [shownProgram, setShownProgram] = useState(program);
   useEffect(() => {
     if (program) setShownProgram(program);
@@ -29,13 +51,17 @@ function FundingProgramModal({ program, onClose }: { program: FundingProgram | n
         <span style={{ fontSize: 12, color: v("--color-text-secondary") }}>{shownProgram.traeger}</span>
       </div>
       <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginBottom: 12 }}>
-        Förderfähig: <span style={{ color: v("--color-text-primary") }}>{shownProgram.coveredCosts}</span>{shownProgram.maxFoerderung ? ` · ${shownProgram.maxFoerderung}` : ""}
+        {/* Der Gesamt-Höchstbetrag beschreibt die Dachanlage; unter einer
+            Balkon-Sicht behauptete er bei Nidda das Siebeneinhalbfache des
+            echten Deckels. Dieselbe Regel wie auf der Stadtseite, aus einer
+            Quelle. */}
+        Förderfähig: <span style={{ color: v("--color-text-primary") }}>{shownProgram.coveredCosts}</span>{shownProgram.maxFoerderung && istDachSicht(technik) ? ` · ${shownProgram.maxFoerderung}` : ""}
       </div>
       <div style={{ marginBottom: 14 }}>
-        <FundingRates rates={shownProgram.rates} bordered />
+        <FundingRates rates={shownProgram.rates} bordered technik={technik} />
       </div>
       <div style={{ marginBottom: shownProgram.conditions.length > 0 ? 14 : 0 }}>
-        <FundingConditions conditions={shownProgram.conditions} />
+        <FundingConditions conditions={shownProgram.conditions} technik={technik} />
       </div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", fontSize: 12 }}>
         <a href={shownProgram.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none", fontWeight: 700 }}>Zur offiziellen Quelle ›</a>
@@ -247,7 +273,7 @@ export default function ResultFunding({
         Alle Förderprogramme <IconArrowRight size={iconSizes.xs} />
       </Link>
 
-      <FundingProgramModal program={modalProgram} onClose={() => setModalProgram(null)} />
+      <FundingProgramModal program={modalProgram} onClose={() => setModalProgram(null)} technik={technik} />
     </Karte>
   );
 }

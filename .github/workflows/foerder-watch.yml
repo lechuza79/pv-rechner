@@ -242,6 +242,32 @@ jobs:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: npm run foerder:bericht
 
+      # Verfallene Abo-Einträge löschen.
+      #
+      # DIESER SCHRITT HÄLT ZWEI VERÖFFENTLICHTE ZUSAGEN — die
+      # Datenschutzerklärung (Abschnitt 16) sagt zu, dass eine nie bestätigte
+      # Eintragung gelöscht wird und ein abgemeldeter Eintrag nach zwölf Monaten
+      # verschwindet. Läuft er nicht, sind beide Sätze falsch.
+      #
+      # WARUM HIER UND NICHT IN EINEM EIGENEN ZEITPLAN: Ein weiterer geplanter
+      # Lauf ist ein weiterer, der ausfallen kann — und ein ausgefallener Lauf
+      # meldet seinen eigenen Ausfall nicht. Dieser Workflow läuft ohnehin jede
+      # Nacht und wird vom Gesundheitscheck beobachtet (drei abgeschlossene
+      # Läufe ohne Erfolg auf einem täglichen Workflow gehen als Befund raus).
+      #
+      # `continue-on-error` bewusst NICHT: Wenn das Aufräumen hängt, soll der
+      # Lauf rot werden. Eine Löschzusage, die still ausfällt, ist genau der
+      # Fall, den niemand bemerkt.
+      - name: Verfallene Abo-Einträge löschen
+        if: always()
+        timeout-minutes: 3
+        env:
+          BASIS: ${{ secrets.HEALTH_BASE_URL || 'https://solar-check.io' }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          curl -sS --fail-with-body -H "Authorization: Bearer $CRON_SECRET" \
+            "$BASIS/api/abo/aufraeumen"
+
       # Der Katalog soll vollständig werden, nicht stichprobenhaft. Der Bestand
       # wächst jetzt aus zwei Quellen: den Adressen des Kommunen-Outreach und dem
       # Schritt darüber. Unerreichbare Seiten kommen von selbst wieder dran, und

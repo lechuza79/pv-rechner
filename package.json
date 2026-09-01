@@ -34,6 +34,7 @@
     "ratgeber:livedatum": "tsx scripts/ratgeber-livedatum.ts",
     "laender:sync": "tsx scripts/ember-laender-sync.ts",
     "foerder:serp": "tsx scripts/funding-serp-test.ts",
+    "fachbetriebe": "tsx scripts/fachbetriebe-refresh.ts",
     "foerder:verlauf-bereinigen": "tsx scripts/funding-history-bereinigen.ts",
     "foerder:suche": "tsx scripts/funding-discover.ts",
     "foerder:seiten": "tsx scripts/funding-coverage-watch.ts",
@@ -46,7 +47,9 @@
     "kommunen:veroeffentlicht": "tsx scripts/kommunen-veroeffentlicht.ts",
     "claude-md:verify": "tsx scripts/claude-md-verify.ts",
     "kommunen:stand": "tsx scripts/kommunen-stand.ts",
-    "kommunen:vorflug": "tsx scripts/kommunen-vorflug.ts"
+    "kommunen:vorflug": "tsx scripts/kommunen-vorflug.ts",
+    "atlas:kreisfrei": "tsx scripts/atlas-kreisfrei-messen.ts",
+    "kommunen:verweise": "tsx scripts/kommunen-verweise-suchen.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",

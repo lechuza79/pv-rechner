@@ -624,12 +624,139 @@ export default function DatenschutzPage() {
           Beschwerde bei einer Aufsichtsbehörde — stehen in Abschnitt 12.
         </p>
 
+        {/* Eigener Abschnitt, obwohl Abschnitt 15 auch von Mails an Gemeinden
+            handelt: Das ist der umgekehrte Fall. Dort schreiben WIR ungefragt
+            an Adressen, die wir auf Amtsseiten gefunden haben (Art. 14). Hier
+            trägt jemand SEINE eigene Adresse bei uns ein (Art. 13). Rechts-
+            grundlage, Herkunft, Widerspruchsweg und Löschfrist sind jeweils
+            andere — sie in einen Abschnitt zu ziehen hieße, eine davon falsch
+            darzustellen. */}
+        <h2 style={S.h2}>16. Meldungen zu einer Gemeinde (Abo)</h2>
+        <p style={S.p}>
+          Auf den Gemeindeseiten im Solar-Atlas und auf den Förderseiten zu einer
+          Stadt oder Gemeinde kannst du dich für Meldungen zu einem Ort
+          eintragen. Wir verarbeiten dafür deine{" "}
+          <strong>E-Mail-Adresse</strong> und den <strong>Ort</strong>, den du
+          ausgewählt hast, dazu die Zeitpunkte deiner Eintragung, deiner
+          Bestätigung, einer etwaigen Abmeldung und der zuletzt versendeten
+          Meldung. Welche weiteren Angaben je nach Einstiegsseite dazukommen,
+          steht in den nächsten Absätzen. Einen Namen fragen wir nicht ab.
+        </p>
+        <p style={S.p}>
+          <strong>Deine IP-Adresse speichern wir nicht am Abo.</strong> Beim
+          Absenden des Formulars hält unser Server sie kurzzeitig im
+          Arbeitsspeicher, um automatisierte Masseneintragungen abzuwehren (bis
+          zu fünf Versuche je Stunde und Serverinstanz). Sie wird nicht in die
+          Datenbank übernommen, nicht mit deinem Abo verknüpft und spätestens
+          beim Neustart der Serverinstanz verworfen. Rechtsgrundlage hierfür ist
+          unser berechtigtes Interesse an einem vor automatisierten Eintragungen
+          geschützten Formular (Art. 6 Abs. 1 lit. f DSGVO); du kannst dieser
+          Verarbeitung nach Art. 21 DSGVO widersprechen.
+        </p>
+        <p style={S.p}>
+          Außerdem vermerken wir, <strong>auf welcher Seite du dich eingetragen
+          hast</strong> — auf der Atlas-Seite zum Ort oder auf der Förderseite —
+          und ob du dabei <strong>über ein Anschreiben an die Gemeinde</strong>
+          gekommen bist. Beides sagt nichts über dich aus, sondern beantwortet
+          eine Frage über unsere eigene Arbeit: welcher Einstieg überhaupt
+          genutzt wird. Die Kennung in den Anschreiben ist in jedem Brief
+          dieselbe; sie unterscheidet keine Empfänger.
+        </p>
+        <p style={S.p}>
+          Meldest du dich auf einer Förderseite an, speichern wir zusätzlich,{" "}
+          <strong>für welche Techniken du dich interessierst</strong>
+          {" "}(Solaranlage, Balkonkraftwerk, Wärmepumpe). Wir nutzen die Angabe
+          ausschließlich, um dir keine Meldungen zu schicken, die dich nicht
+          betreffen.
+        </p>
+        <p style={S.p}>
+          Trägst du dich auf einer Ortsseite im Solar-Atlas ein, kannst du
+          angeben, dass du{" "}
+          <strong>für die Stadt- oder Gemeindeverwaltung arbeitest</strong>. Die
+          Angabe ist freiwillig, wir prüfen sie nicht nach, und sie entscheidet
+          über nichts außer der Formulierung: Für eine Verwaltung ist dieselbe
+          Zahl eine andere Nachricht als für jemanden, der über eine eigene
+          Anlage nachdenkt. Lässt du das Feld leer, bekommst du die Meldung in
+          der allgemeinen Fassung.
+        </p>
+        <p style={S.p}>
+          Zum <strong>Nachweis deiner Einwilligung</strong> halten wir zwei
+          weitere Angaben fest: die <strong>Fassung des Textes</strong>, den du
+          beim Eintragen gelesen hast, und die Kennung, unter der unser
+          Mailserver die <strong>Bestätigungsmail angenommen</strong> hat. Die
+          erste sagt, wozu genau du zugestimmt hast — der Wortlaut kann sich
+          später ändern, und ohne diese Angabe ließe sich nicht mehr sagen,
+          welche Fassung dir vorlag. Die zweite belegt, dass die Bestätigungsmail
+          wirklich hinausging. Eine Kopie der Mail selbst legen wir nicht an; ihr
+          Inhalt lässt sich aus der Fassung wortgleich wiederherstellen.
+        </p>
+        <p style={S.p}>
+          Die Anmeldung läuft im <strong>Bestätigungsverfahren</strong>: Nach dem
+          Eintragen schicken wir eine E-Mail mit einem Bestätigungslink. Erst
+          wenn du ihn anklickst, bekommst du Meldungen. Klickst du nicht, wird
+          die Eintragung gelöscht und es folgt keine weitere E-Mail. Rechts&shy;grundlage
+          ist deine <strong>Einwilligung</strong> (Art. 6 Abs. 1 lit. a DSGVO);
+          die Zeitpunkte von Eintragung und Bestätigung dienen dem Nachweis,
+          dass sie vorlag.
+        </p>
+        <p style={S.p}>
+          <strong>Du kannst dich jederzeit abmelden</strong> — mit einem Klick
+          am Fuß jeder Meldung, ohne Anmeldung und ohne Angabe von Gründen.
+          Der Versand endet damit sofort, und deine Adresse verlässt den
+          Verteiler. Der Widerruf wirkt für die Zukunft und lässt die
+          Rechtmäßigkeit der bis dahin erfolgten Verarbeitung unberührt.
+        </p>
+        <p style={S.p}>
+          <strong>Was danach bleibt, ist der Nachweis deiner Einwilligung:</strong>{" "}
+          dass und wann du dich angemeldet, bestätigt und wieder abgemeldet
+          hast, für welchen Ort, und mit welchem Wortlaut. Diese Angaben werden
+          ausschließlich noch dafür verwendet — nicht mehr für den Versand.
+          Rechtsgrundlage ist dann nicht mehr deine Einwilligung, sondern unsere
+          Rechenschaftspflicht (Art. 6 Abs. 1 lit. c in Verbindung mit Art. 5
+          Abs. 1 lit. a, Art. 5 Abs. 2 und Art. 7 Abs. 1 DSGVO) sowie unser
+          berechtigtes Interesse an der Abwehr von Ansprüchen und Bußgeldern
+          (Art. 6 Abs. 1 lit. f DSGVO).
+        </p>
+        <p style={S.p}>
+          <strong>Gelöscht wird der Nachweis</strong> zum 31. Dezember des
+          dritten Jahres nach dem Jahr, in dem wir dir zuletzt geschrieben
+          haben. Diese Frist folgt den Verjährungsfristen, innerhalb derer
+          Ansprüche und Bußgelder noch geltend gemacht werden können (drei
+          Jahre, § 195 BGB und § 31 Abs. 2 Nr. 1 OWiG). Hast du deine Anmeldung
+          nie bestätigt, löschen wir sie ohne diese Frist. Eine vorzeitige
+          Löschung des Nachweises können wir nicht anbieten, solange Ansprüche
+          daraus möglich sind (Art. 17 Abs. 3 Buchst. b und e DSGVO) — schreib
+          uns, dann erklären wir dir deinen Fall.
+        </p>
+        <p style={S.p}>
+          Die Meldungen versenden wir über das E-Mail-Postfach unserer Domain
+          bei der ALL-INKL.COM – Neue Medien Münnich (Friedrichroda,
+          Deutschland). Ein Auftragsverarbeitungsvertrag besteht; die Daten
+          verlassen dabei die Europäische Union nicht. Die Eintragungen selbst
+          liegen in unserer Datenbank bei Supabase (siehe Abschnitt 9) und sind
+          dort ausschließlich über einen internen Zugang lesbar.
+        </p>
+        <p style={S.p}>
+          Die Meldungen enthalten <strong>keine Zählpixel</strong> und keine
+          Links, an denen wir ablesen könnten, wer sie geöffnet hat. Wir messen
+          also nicht, ob und wann du eine Meldung liest. Vollständig unsichtbar
+          ist ein Öffnen dennoch nicht: Die Mail zeigt oben unser Logo, und wie
+          jeder Bildabruf im Netz hinterlässt dieser eine Zeile im
+          Server-Protokoll (siehe Abschnitt 3). Zuordnen lässt sich diese Zeile
+          trotzdem nicht: Die Bildadresse ist für alle Empfänger dieselbe und
+          trägt kein Merkmal deines Abos, und deine IP-Adresse ist am Abo nicht
+          gespeichert — es gibt also nichts, womit sich das Protokoll verknüpfen
+          ließe. Wer auch das vermeiden möchte, stellt sein Mailprogramm so
+          ein, dass es Bilder nicht automatisch lädt; die Meldung bleibt dann
+          vollständig lesbar.
+        </p>
+
         {/* Nur ein Verweis, kein eigener Abschnitt: Die LinkedIn-Angaben
             betreffen Besucher unserer LinkedIn-Seite, nicht die dieser Website.
             Sie hier auszubreiten verlängerte die Erklärung für alle, die sie
             nichts angeht. Ohne diesen Satz wäre die Unterseite allerdings eine
             Waise — erreichbar nur über LinkedIn selbst. */}
-        <h2 style={S.h2}>16. Unsere Präsenz auf LinkedIn</h2>
+        <h2 style={S.h2}>17. Unsere Präsenz auf LinkedIn</h2>
         <p style={S.p}>
           Wir betreiben eine Unternehmensseite auf LinkedIn. Was dort verarbeitet
           wird, findet auf den Systemen von LinkedIn statt und nicht auf dieser
