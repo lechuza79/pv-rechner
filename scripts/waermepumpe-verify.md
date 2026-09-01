@@ -299,6 +299,15 @@ hier steht nur, DASS dieser Lauf zuständig ist — das Prüfdatum
 
 Ein eigener Auftrag dafür wäre einer, der elf Monate im Jahr nichts findet.
 
+**Findet der Januar-Lauf noch keinen neuen Jahrgang, wird im Februar erneut
+nachgesehen — NICHT erst im April.** Das ist die einzige Terminfrage, die hier
+wirklich Geld kostet: Zu spät zu prüfen kostet Tage, zu früh zu prüfen kostet
+ein Quartal, weil der nächste reguläre Termin drei Monate entfernt ist. Der
+einzige Messpunkt, den wir haben: Der Jahrgang 2025 trug als Erstellungsdatum
+den 8. Januar 2026, der Lauf am 20. Januar hätte ihn also erwischt. Ein
+Messpunkt ist kein Fahrplan — deshalb die Wiedervorlage statt eines früheren
+Termins.
+
 ## So wird die Routine ausgelöst
 
 Dem Assistenten sagen: **„Lauf die Wärmepumpen-Prüfung."**
