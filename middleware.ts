@@ -1,4 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
+import { nurFuerDieSitzung } from "./lib/auth-cookies";
 import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
 import { hostAusHerkunft, widgetAusPfad, zaehleEinbettung } from "./lib/embed-herkunft-core";
 
@@ -40,7 +41,7 @@ export async function middleware(request: NextRequest, event: NextFetchEvent) {
           );
           supabaseResponse = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            supabaseResponse.cookies.set(name, value, nurFuerDieSitzung(name, options))
           );
         },
       },

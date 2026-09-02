@@ -59,6 +59,11 @@ export const SEITEN: Seite[] = [
   // Datenschutzerklärung die Pflichtangaben dazu. Beide waren bis 15.08.2026
   // im Rundgang nicht enthalten.
   { pfad: "/kontakt", erwartet: /kontakt/i },
+  // Die Anmeldung steht im Rundgang, weil sie die einzige Seite ist, auf der
+  // ein kaputtes Bauteil niemanden erreicht, der es meldet: Wer sich nicht
+  // anmelden kann, schreibt keine Mail, er geht.
+  { pfad: "/login", erwartet: /anmelden/i },
+  { pfad: "/passwort-setzen", erwartet: /passwort setzen/i },
   { pfad: "/datenschutz", erwartet: /datenschutzerklärung/i },
   { pfad: "/datenschutz-linkedin", erwartet: /gemeinsam mit der/i },
 ];

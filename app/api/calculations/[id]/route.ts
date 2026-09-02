@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { nurFuerDieSitzung } from "../../../../lib/auth-cookies";
 import { NextRequest, NextResponse } from "next/server";
 
 async function getSupabase() {
@@ -15,7 +16,7 @@ async function getSupabase() {
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
+              cookieStore.set(name, value, nurFuerDieSitzung(name, options))
             );
           } catch {
             // Server Component context

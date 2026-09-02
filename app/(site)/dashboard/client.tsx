@@ -24,7 +24,7 @@ export default function DashboardClient({
   const [editDesc, setEditDesc] = useState("");
   const [pendingSaved, setPendingSaved] = useState(false);
 
-  // Auto-save pending calculation from localStorage (after Magic Link redirect)
+  // Auto-save pending calculation from localStorage (after the sign-in redirect)
   useEffect(() => {
     const pending = localStorage.getItem("pendingSave");
     if (!pending) return;

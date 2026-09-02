@@ -1,7 +1,9 @@
 "use client";
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
-import { useAuth, signInWithMagicLink } from "../../../lib/auth";
+import { useAuth } from "../../../lib/auth";
+import Modal from "../../../components/Modal";
+import AnmeldeFormular from "../../../components/AnmeldeFormular";
 import { useSharedPlz, readLocation } from "../../../lib/location";
 import { paramsToRow } from "../../../lib/types";
 import { einspeiseVerlauf, einspeiseDeckelKw, profilFaktorAus, type EinspeiseRegime } from "../../../lib/einspeise-regime";
@@ -345,33 +347,15 @@ export default function PVRechner({
   // Auth + Save
   const authState = useAuth();
   const [showLogin, setShowLogin] = useState(false);
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginSent, setLoginSent] = useState(false);
-  const [loginError, setLoginError] = useState("");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [savedCalcId, setSavedCalcId] = useState<string | null>(initialParams?.calc ? String(initialParams.calc) : null);
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!loginEmail.trim()) return;
-    setLoginError("");
-    const { error } = await signInWithMagicLink(loginEmail.trim(), { next: isResult ? "/dashboard" : "/dashboard" });
-    if (error) {
-      setLoginError(error.message);
-    } else {
-      setLoginSent(true);
-      // Pending save: speichere Berechnung in localStorage für Auto-Save nach Login
-      if (isResult) {
-        const row = paramsToRow(
-          { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag: effErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
-          { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(sel.data.years[YEARS - 1]?.kum ?? 0) }
-        );
-        const spLabel = spKwh > 0 ? ` + ${spKwh} kWh` : "";
-        localStorage.setItem("pendingSave", JSON.stringify({ ...row, name: `${kwp} kWp${spLabel}` }));
-      }
-    }
-  };
+  // Merkt sich, dass die Anmeldung aus dem "Speichern"-Knopf kam. Meldet sich
+  // jemand hier im Fenster an, bleibt er auf seinem Ergebnis stehen — dann muss
+  // die Berechnung noch gespeichert werden, sobald der Anmelde-Zustand
+  // umgesprungen ist. Wer über Google geht, verlässt die Seite; für den greift
+  // die im Browser vorgemerkte Berechnung, die der eigene Bereich abholt.
+  const [speichernNachLogin, setSpeichernNachLogin] = useState(false);
 
   // Auto-save wird jetzt vom Dashboard übernommen (pendingSave in localStorage)
 
@@ -826,6 +810,45 @@ export default function PVRechner({
     setSaving(false);
   }, [authState, saving, anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, effErtrag, plz, fuelType, kwp, spKwh, be, sel, flowType, htIdx, daIdx]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  /**
+   * Anmeldefenster öffnen und die Berechnung schon einmal im Browser vormerken.
+   *
+   * Die Vormerkung greift für den Weg über Google: Dabei verlässt der Browser
+   * die Seite und kommt im eigenen Bereich wieder an, der sie dort abholt. Wer
+   * sich mit Passwort anmeldet, bleibt hier stehen — für den speichert der
+   * Effekt darunter, sobald der Anmelde-Zustand umgesprungen ist.
+   */
+  const oeffneAnmeldung = useCallback(() => {
+    if (isResult) {
+      const row = paramsToRow(
+        { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag: effErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
+        { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(sel.data.years[YEARS - 1]?.kum ?? 0) }
+      );
+      const spLabel = spKwh > 0 ? ` + ${spKwh} kWh` : "";
+      try {
+        localStorage.setItem("pendingSave", JSON.stringify({ ...row, name: `${kwp} kWp${spLabel}` }));
+      } catch {
+        // Browser-Speicher gesperrt — dann greift nur der Weg über das Passwort.
+      }
+      setSpeichernNachLogin(true);
+    }
+    setShowLogin(true);
+  }, [isResult, anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, effErtrag, plz, fuelType, flowType, htIdx, daIdx, kwp, spKwh, be, sel]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Anmeldung im Fenster abgeschlossen: jetzt speichern, was der Knopf
+  // versprochen hat. Hängt am Anmelde-Zustand, nicht am Klick — der Zustand
+  // springt erst um, nachdem die Sitzung steht.
+  useEffect(() => {
+    if (!speichernNachLogin || authState.status !== "authed") return;
+    setSpeichernNachLogin(false);
+    try {
+      localStorage.removeItem("pendingSave");
+    } catch {
+      // ignorieren
+    }
+    handleSave();
+  }, [speichernNachLogin, authState.status, handleSave]);
+
   // Empfehlungs-Kontext für "Warum diese Anlage?"
   const empfehlungKontext = flowType === "empfehlung" && htIdx >= 0 && daIdx >= 0 ? (() => {
     const ht = HAUSTYPEN[htIdx];
@@ -869,46 +892,6 @@ export default function PVRechner({
           <div style={{ textAlign: "center", marginBottom: 24 }}>
             <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Lohnt sich Photovoltaik?</h1>
             <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.</p>
-          </div>
-        )}
-
-        {/* Inline Login — only during question steps, sticky bar handles result page */}
-        {showLogin && authState.status === "anon" && !isResult && (
-          <div className="fu" style={{
-            background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "16px", marginBottom: 16,
-            border: `1px solid ${v('--color-border')}`,
-          }}>
-            {loginSent ? (
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: v("--font-size-body"), fontWeight: 600, color: v('--color-accent'), marginBottom: 6 }}>Link gesendet!</div>
-                <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary') }}>Prüfe deine E-Mails und klicke den Link zum Anmelden.</div>
-              </div>
-            ) : (
-              <form onSubmit={handleLogin} style={{ display: "flex", gap: 8 }}>
-                <input
-                  type="email"
-                  placeholder="E-Mail-Adresse"
-                  value={loginEmail}
-                  onChange={e => setLoginEmail(e.target.value)}
-                  style={{
-                    flex: 1, padding: "10px 12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-body"),
-                    background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, color: v('--color-text-primary'),
-                    fontFamily: v('--font-text'), outline: "none",
-                  }}
-                />
-                <button type="submit" style={{
-                  padding: "10px 16px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600,
-                  background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
-                  fontFamily: v('--font-text'), whiteSpace: "nowrap",
-                }}>
-                  Link senden
-                </button>
-              </form>
-            )}
-            {loginError && <div style={{ fontSize: v("--font-size-small"), color: v('--color-negative'), marginTop: 8 }}>{loginError}</div>}
-            <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), marginTop: 8, textAlign: "center" }}>
-              Passwordless per Magic Link · Keine Werbung
-            </div>
           </div>
         )}
 
@@ -1596,7 +1579,7 @@ export default function PVRechner({
             <ResultActions
               copied={copied} canShare={canShare} authState={authState} saving={saving} saved={saved} savedCalcId={savedCalcId}
               onCopy={handleCopy} onNativeShare={handleNativeShare} onWhatsApp={handleWhatsApp}
-              onSave={handleSave} onLoginClick={() => { setShowLogin(true); setLoginSent(false); setLoginError(""); }}
+              onSave={handleSave} onLoginClick={oeffneAnmeldung}
             />
 
             {/* Restart */}
@@ -1614,56 +1597,31 @@ export default function PVRechner({
 
         {/* Footer kommt aus dem (site)-Layout. Hier nur Abstand, damit die
             sticky Login-Leiste den Seitenfuß nicht verdeckt. */}
-        {isResult && authState.status === "anon" && showLogin && <div style={{ height: 64 }} />}
       </div>
 
-      {/* Sticky Bottom Bar — Login-Formular für nicht-eingeloggte Nutzer */}
-      {isResult && authState.status === "anon" && showLogin && (
-        <div style={{
-          position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 100,
-          background: `linear-gradient(to top, ${v('--color-bg')} 80%, transparent)`,
-          padding: "20px 16px 16px",
-        }}>
-          <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
-            {loginSent ? (
-              <div style={{
-                background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px",
-                border: `1px solid ${v('--color-border')}`, textAlign: "center",
-              }}>
-                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-accent') }}>Link gesendet!</div>
-                <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), marginTop: 4 }}>Prüfe deine E-Mails.</div>
-              </div>
-            ) : (
-              <form onSubmit={handleLogin} style={{
-                display: "flex", gap: 8,
-                background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "12px",
-                border: `1px solid ${v('--color-border')}`,
-              }}>
-                <input
-                  type="email"
-                  placeholder="E-Mail-Adresse"
-                  value={loginEmail}
-                  onChange={e => setLoginEmail(e.target.value)}
-                  autoFocus
-                  style={{
-                    flex: 1, padding: "10px 12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-body"),
-                    background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, color: v('--color-text-primary'),
-                    fontFamily: v('--font-text'), outline: "none",
-                  }}
-                />
-                <button type="submit" style={{
-                  padding: "10px 16px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600,
-                  background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
-                  fontFamily: v('--font-text'), whiteSpace: "nowrap",
-                }}>
-                  Link senden
-                </button>
-              </form>
-            )}
-            {loginError && <div style={{ fontSize: v("--font-size-small"), color: v('--color-negative'), marginTop: 6, textAlign: "center" }}>{loginError}</div>}
-          </div>
-        </div>
-      )}
+
+      {/* Anmelden aus dem Ergebnis heraus — dieselbe Maske wie auf der
+          Anmeldeseite, im Dialog statt als eigene Seite: Wer sein Ergebnis vor
+          sich hat, soll es beim Anmelden nicht verlassen müssen. */}
+      <Modal
+        open={showLogin && authState.status === "anon"}
+        onClose={() => {
+          setShowLogin(false);
+          // Ohne Anmeldung bleibt keine Vormerkung liegen. Sonst holt der
+          // eigene Bereich sie beim nächsten Anmelden ab und speichert eine
+          // Berechnung, die der Nutzer inzwischen verworfen hat.
+          setSpeichernNachLogin(false);
+          try {
+            localStorage.removeItem("pendingSave");
+          } catch {
+            // ignorieren
+          }
+        }}
+        title="Berechnung speichern"
+        intro="Dafür brauchst du ein Konto. Danach findest du deine Berechnungen jederzeit in deinem Bereich wieder."
+      >
+        <AnmeldeFormular kompakt next="/dashboard" onErfolg={() => setShowLogin(false)} />
+      </Modal>
     </div>
   );
 }
