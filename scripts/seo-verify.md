@@ -64,9 +64,26 @@ dass jemand sie übergehen musste. Vor jeder Empfehlung also:
 Body `[{"keyword":…,"location_code":2276,"language_code":"de","depth":10}]` (0,002 $;
 **nur ein Task je Aufruf**, sonst „You can set only one task at a time"). Auswerten:
 
-1. **Steht `ai_overview` oder `featured_snippet` im `items`-Aufbau?** Dann fängt Google
-   die Klicks ab — eine erklärende Seite dort zu verbessern, bringt Einblendungen und
-   keine Besucher. Nicht als Chance melden.
+1. **Steht `ai_overview` oder `featured_snippet` im `items`-Aufbau?** Das wird
+   MITGEMELDET, ist aber **kein Ausschlusskriterium** (Betreiber-Entscheidung
+   02.09.2026: „ich gehe davon aus, dass es bald für alles eine KI-Antwort gibt. Es ist
+   gut zu wissen, aber kein Ausschlusskriterium").
+
+   **Warum die Regel gelockert wurde, und zwar begründet:** Sie stand vorher als
+   Ausschluss („nicht als Chance melden") und stützte sich auf **vier** Suchbegriffe vom
+   13.08.2026 — drei mit KI-Antwort und null Klicks, einer ohne und mit einem Klick. Für
+   einen Ausschluss, der ganze Themenfelder streicht, ist das zu dünn, und die Entwicklung
+   läuft ohnehin dagegen: Im Lauf 09/2026 trugen bereits 7 von 12 geprüften Begriffen eine
+   KI-Antwort. Ein Ausschluss auf dieser Grundlage streicht demnächst alles.
+
+   **Was von dem Befund trägt, ist der MECHANISMUS, nicht die Zahl:** Abgefangen wird,
+   was sich vorab beantworten lässt. Veränderliches, Ortsbezogenes und Interaktives nicht
+   — eine Antwortmaschine kann weder den aktuellen Strommix noch „zahlt MEINE Gemeinde
+   einen Zuschuss, und wie viel" vorformulieren. Also einordnen statt streichen:
+   - erklärende Seite + KI-Antwort → Klickerwartung stark dämpfen, Aufwand meiden;
+   - Live-Wert, Ortsbezug oder Rechner + KI-Antwort → Chance bleibt, mit Vermerk.
+   Die Einordnung gehört als Satz in den Bericht, damit die Erwartung von Anfang an
+   stimmt und ein späteres „bringt ja doch nichts" nicht als Überraschung ankommt.
 2. **Wer steht auf Platz 1–8, und welche Frage beantworten die?** Deckt sich die
    Intention nicht mit unserem Angebot, ist der Begriff kein Ziel, egal wie groß das
    Volumen ist.
