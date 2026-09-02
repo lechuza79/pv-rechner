@@ -209,7 +209,13 @@ export default function AnmeldeFormular({
               />
               <span>{AKTUELLE_BLEIBEN_FASSUNG.label}</span>
             </label>
-            <p style={S.bleibenErklaerung}>{AKTUELLE_BLEIBEN_FASSUNG.erklaerung}</p>
+            {/* Der Weg zur zweiten Ebene gehört DORT hin, wo eingewilligt wird —
+                nicht nur in die Datenschutzerklärung. Ohne ihn ist alles, was
+                dort steht, für den Einwilligenden nicht erreichbar. */}
+            <p style={S.bleibenErklaerung}>
+              {AKTUELLE_BLEIBEN_FASSUNG.erklaerung}{" "}
+              <a href="/datenschutz#cookies" style={S.hinweisLink}>Einzelheiten im Datenschutz</a>
+            </p>
           </div>
         )}
 

@@ -24,17 +24,17 @@ import { BLEIBEN_TAGE } from "./auth-einwilligung";
 // Legal-Judges im Original geprüft; der zweite hatte den Auftrag, den ersten
 // zu widerlegen, und hat diesen Punkt bestätigt.
 //
-// DIE ANGENEHMERE ALTERNATIVE WÄRE EIN HÄKCHEN „angemeldet bleiben" — WP194
-// nennt genau das als sauberen Weg. Sie ist bewusst NICHT gebaut: Das Häkchen
-// heilt die Ausnahme nicht, es ersetzt sie durch eine Einwilligung nach § 25
-// Abs. 1 TDDDG, und die zieht Nachweis, Widerruf und Dokumentation nach sich.
-// Diese Seite hat heute keine einzige Einwilligung; die erste dafür
-// einzuführen, dass man einen Rechner-Bookmark nicht neu anmelden muss, wäre
-// der teurere Tausch. Wer es später doch will, baut es HIER ein.
+// DIE EINE AUSNAHME IST DAS HÄKCHEN „Angemeldet bleiben" (Betreiber,
+// 02.09.2026) — WP194 nennt an derselben Stelle genau diese Checkbox als
+// sauberen Weg. Es heilt die Ausnahme nicht, es ERSETZT sie durch eine
+// Einwilligung nach § 25 Abs. 1 TDDDG, und die zieht Nachweis, Widerruf und
+// Dokumentation nach sich; das alles steht in `lib/auth-einwilligung.ts`.
 //
-// WAS DAS FÜR NUTZER HEISST: Wer den Browser schließt, meldet sich beim
-// nächsten Mal neu an. Für ein Werkzeug, das man zweimal im Jahr benutzt, ist
-// das vertretbar — und es steht so in der Datenschutzerklärung.
+// WAS DAS FÜR NUTZER HEISST: Ohne Häkchen meldet sich beim nächsten Mal neu
+// an, wer den Browser schließt. Mit Häkchen bleibt die Anmeldung 90 Tage ab
+// dem letzten Besuch — und der Nachweis der Einwilligung gleitet dabei MIT
+// (siehe `browserCookies.setAll`), sonst überlebte die Anmeldung ihre eigene
+// Einwilligung um bis zu 90 Tage.
 
 /**
  * Wie lange der Prüfschlüssel für einen Link aus einer Mail gilt: 24 Stunden,
@@ -95,13 +95,25 @@ export const BLEIBEN_COOKIE = "sc-angemeldet-bleiben";
  * auf, warum man nach einer Stunde ausgeloggt ist.
  */
 export function bleibenGewuenscht(cookieZeile: string | null | undefined): boolean {
+  return bleibenFassungAus(cookieZeile) !== null;
+}
+
+/**
+ * Welche FASSUNG des Einwilligungstextes steht im Merker — oder null.
+ *
+ * Der Wert wird gebraucht, nicht nur das Ja/Nein: Beim Auffrischen wird der
+ * Merker mit derselben Fassung erneuert, unter der die Einwilligung erteilt
+ * wurde. Auf die heutige umzuschreiben hieße, eine Zustimmung umzudatieren.
+ */
+export function bleibenFassungAus(cookieZeile: string | null | undefined): string | null {
   const zeile = cookieZeile ?? (typeof document !== "undefined" ? document.cookie : "");
   for (const teil of zeile.split(";")) {
     const t = teil.trim();
     if (!t.startsWith(`${BLEIBEN_COOKIE}=`)) continue;
-    return bleibenGilt(t.slice(BLEIBEN_COOKIE.length + 1));
+    const wert = t.slice(BLEIBEN_COOKIE.length + 1);
+    return bleibenGilt(wert) ? wert : null;
   }
-  return false;
+  return null;
 }
 
 /**
@@ -147,9 +159,33 @@ export const browserCookies = {
   },
   setAll(cookies: { name: string; value: string; options: CookieOptions }[]) {
     if (typeof document === "undefined") return;
+    const fassung = bleibenFassungAus(null);
     for (const { name, value, options } of cookies) {
-      document.cookie = serialisiere(name, value, nurFuerDieSitzung(name, options, bleibenGewuenscht(null)));
+      document.cookie = serialisiere(name, value, nurFuerDieSitzung(name, options, !!fassung));
     }
+    // ─── Der Nachweis muss MITGLEITEN — BLOCKER ─────────────────────────────
+    //
+    // Der Zugang wird stündlich aufgefrischt, und dabei bekommt das
+    // Anmelde-Cookie jedes Mal wieder die volle Laufzeit. Der Merker dagegen
+    // entstand einmal beim Anmelden. Ohne diese Zeilen laufen beide
+    // auseinander: Wer an Tag 89 zuletzt da war, trägt ein Anmelde-Cookie bis
+    // Tag 179 — und ab Tag 90 gibt es keinen Nachweis mehr für eine
+    // Einwilligung, auf die sich die Verarbeitung noch stützt. Der Nutzer wäre
+    // zwei Monate länger angemeldet, als ihm zugesagt wurde.
+    //
+    // Deshalb: bei jeder Auffrischung mitschreiben. Damit heißt „bis zu 90
+    // Tage" das, was der Text sagt — 90 Tage nach dem letzten Besuch.
+    //
+    // GRENZE DER PRÜFUNG: Dass diese Zeile läuft, hält ein Test fest (viermal
+    // absichtlich kaputtgemacht und rot gesehen). Das Mitgleiten NACH einem
+    // echten stündlichen Auffrischen ist im Browser nicht in Sekunden
+    // nachstellbar — dafür müsste eine Stunde vergehen. Wer hier etwas ändert,
+    // weiß das.
+    //
+    // DIE FASSUNG BLEIBT DIE ALTE. Sie auf die heutige umzuschreiben würde eine
+    // Einwilligung umdatieren, die unter einem anderen Wortlaut erteilt wurde —
+    // und damit genau den Nachweis zerstören, um den es hier geht.
+    if (fassung) document.cookie = serialisiere(BLEIBEN_COOKIE, fassung, { path: "/", sameSite: "lax", maxAge: BLEIBEN_TAGE * 24 * 60 * 60 });
   },
 };
 

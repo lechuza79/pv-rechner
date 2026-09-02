@@ -214,6 +214,45 @@ describe("Angemeldet bleiben ist eine Einwilligung", () => {
     for (const f of BLEIBEN_FASSUNGEN) expect(f.version).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 
+  it("lässt den Nachweis mit der Anmeldung MITGLEITEN", () => {
+    // GEFUNDEN von einem adversarialen Prüfer (02.09.2026), nachgerechnet am
+    // Code: Der Zugang wird stündlich aufgefrischt und das Anmelde-Cookie dabei
+    // jedes Mal auf volle Laufzeit gesetzt — der Merker entstand aber einmal
+    // beim Anmelden. Wer an Tag 89 zuletzt da war, trüge ein Anmelde-Cookie bis
+    // Tag 179, während der Nachweis seiner Einwilligung ab Tag 90 weg ist. Zwei
+    // Monate länger angemeldet als zugesagt, ohne Nachweis, und von außen
+    // vollkommen unsichtbar: kein Fehler, kein roter Test, keine kaputte Seite.
+    const quelle = lies("lib/auth-cookies.ts");
+    const setAll = quelle.slice(quelle.indexOf("setAll("), quelle.indexOf("/** Cookie-Zeile bauen"));
+    expect(setAll, "Auffrischen schreibt den Merker nicht mit").toContain("BLEIBEN_COOKIE");
+    // Und zwar mit DERSELBEN Fassung — sie auf die heutige umzuschreiben würde
+    // eine Einwilligung umdatieren, die unter einem anderen Wortlaut erteilt
+    // wurde, und damit genau den Nachweis zerstören.
+    expect(setAll).not.toContain("AKTUELLE_BLEIBEN_FASSUNG");
+    expect(setAll).toContain("bleibenFassungAus");
+  });
+
+  it("verspricht keine andere Dauer, als die Cookies wirklich bekommen", () => {
+    // Beide gleiten mit dem letzten Besuch — deshalb muss der Text das auch so
+    // sagen. Ein blankes „bis zu 90 Tage" wäre nach dem Umbau zu knapp.
+    expect(AKTUELLE_BLEIBEN_FASSUNG.erklaerung).toContain("nach deinem letzten Besuch");
+  });
+
+  it("nennt am Häkchen alles, was dort stehen muss", () => {
+    const t = AKTUELLE_BLEIBEN_FASSUNG.erklaerung;
+    // Jeder Teil deckt eine eigene Anforderung ab (DSK-Orientierungshilfe
+    // Digitale Dienste 1.2, Rn. 29/37): Dauer · WOZU wir die Cookies später
+    // lesen (ohne das ist es keine Einwilligung nach der DSGVO, nur nach dem
+    // TDDDG) · dass kein Dritter herankommt · der Widerruf · dass er nicht
+    // rückwirkt. Und ein Weg zur ausführlichen Fassung, direkt am Häkchen.
+    expect(t).toContain(`${BLEIBEN_TAGE} Tage`);
+    expect(t).toMatch(/wiederzuerkennen|wiedererkennen/);
+    expect(t).toMatch(/niemand außer uns|keine? Dritte/i);
+    expect(t).toMatch(/zurück|abmeld/i);
+    expect(t).toMatch(/bleibt rechtmäßig|rechtmäßig/i);
+    expect(lies("components/AnmeldeFormular.tsx")).toContain('href="/datenschutz#cookies"');
+  });
+
   it("nimmt die Einwilligung beim Abmelden zurück", () => {
     // Der Widerruf muss so einfach sein wie die Erteilung (Art. 7 Abs. 3 S. 4).
     // Erteilt wird mit einem Häkchen, zurückgenommen mit dem Abmelden — dabei

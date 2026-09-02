@@ -34,13 +34,27 @@ export type BleibenFassung = {
   erklaerung: string;
 };
 
+// EINE EINZIGE FASSUNG, UND DAS IST KEIN VERSEHEN: Eine erste Formulierung vom
+// selben Tag ist ERSETZT statt archiviert worden, weil sie nie ausgeliefert
+// wurde — sie stand nur auf einem lokalen Arbeitsstand, und niemand hat je
+// darauf eingewilligt. Ein Archiv, das eine Fassung führt, die es für Nutzer
+// nie gab, behauptet einen Nachweis, den es nicht gibt. Ab dem ersten
+// Livegang gilt die Regel ohne Ausnahme: ändern heißt neue Fassung anlegen.
 export const BLEIBEN_FASSUNGEN: BleibenFassung[] = [
   {
     version: "2026-09-02",
     seit: "2026-09-02",
     label: "Angemeldet bleiben",
+    // Was hier alles drinstehen MUSS, ist keine Geschmacksfrage — jeder Teil
+    // deckt eine eigene Anforderung ab (Legal-Judge, 02.09.2026, DSK
+    // Orientierungshilfe Digitale Dienste Fassung 1.2, Rn. 29, 37, 38):
+    // wer speichert · was gespeichert wird · wozu es SPÄTER benutzt wird
+    // (ohne diesen Halbsatz ist es nur eine Einwilligung nach TDDDG und nicht
+    // zugleich nach der DSGVO) · wie lange · dass kein Dritter herankommt ·
+    // wie man es zurücknimmt · dass der Widerruf nicht rückwirkt · und ein
+    // Weg zur ausführlichen Fassung.
     erklaerung:
-      "Dann legen wir zusätzlich ein Cookie an, das dich bis zu 90 Tage angemeldet hält — sonst endet die Anmeldung, sobald du den Browser schließt. Du nimmst das jederzeit zurück, indem du dich abmeldest.",
+      "Sonst endet die Anmeldung, sobald du den Browser schließt. Mit Haken bleibst du auf diesem Gerät bis zu 90 Tage nach deinem letzten Besuch angemeldet: Die Anmelde-Cookies bekommen diese Laufzeit, dazu eines für deine Entscheidung. Wir lesen sie bei jedem Besuch, um dich wiederzuerkennen — Zugriff hat niemand außer uns. Zurücknehmen kannst du es jederzeit, indem du dich abmeldest; was bis dahin geschah, bleibt rechtmäßig.",
   },
 ];
 

@@ -269,7 +269,7 @@ export default function DatenschutzPage() {
           wird keine IP-Adresse an Google übermittelt.
         </p>
 
-        <h2 style={S.h2}>7. Cookies</h2>
+        <h2 id="cookies" style={{ ...S.h2, scrollMarginTop: 96 }}>7. Cookies</h2>
         <p style={S.p}>
           Diese Website setzt keine Tracking- oder Werbe-Cookies. Solange du den
           Anmeldevorgang nicht startest, setzen wir überhaupt keine Cookies —
@@ -280,26 +280,37 @@ export default function DatenschutzPage() {
           Anmeldevorgang selbst gegen Manipulation ab; es gilt höchstens 24
           Stunden, weil ein Link aus einer Mail auch dann noch funktionieren
           soll, wenn du den Browser zwischendurch geschlossen hast. Nach
-          erfolgreicher Anmeldung hält dich mindestens ein weiteres angemeldet —{" "}
-          <strong>und dieses endet, wenn du den Browser schließt</strong>: Beim
-          nächsten Besuch meldest du dich also neu an. Beide sind für den
-          Anmeldevorgang erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG); ein
-          Cookie-Banner ist dafür nicht nötig.
+          erfolgreicher Anmeldung halten dich ein oder mehrere weitere
+          angemeldet —{" "}
+          <strong>
+            und diese enden, wenn du den Browser schließt, sofern du beim
+            Anmelden nicht „Angemeldet bleiben" angehakt hast
+          </strong>{" "}
+          (dazu der nächste Absatz). Beim nächsten Besuch meldest du dich dann
+          also neu an. Alle diese Cookies sind für den Anmeldevorgang
+          erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG); ein Cookie-Banner ist dafür
+          nicht nötig.
         </p>
         <p style={S.p}>
           Beim Anmelden kannst du zusätzlich <strong>„Angemeldet bleiben"</strong>{" "}
-          anhaken. Dann — und nur dann — legen wir ein weiteres Cookie an, das
-          dich bis zu 90 Tage angemeldet hält, damit du dich nicht bei jedem
-          Besuch neu anmelden musst. Dieses eine ist <em>nicht</em> unbedingt
-          erforderlich; es entsteht ausschließlich aufgrund deiner Einwilligung
-          (§ 25 Abs. 1 TDDDG, Art. 6 Abs. 1 lit. a DSGVO). Das Häkchen ist nicht
-          vorausgewählt, und du nimmst die Einwilligung jederzeit mit Wirkung
-          für die Zukunft zurück, indem du dich abmeldest — dann werden beide
-          Cookies gelöscht. Die Rechtmäßigkeit der bis dahin erfolgten
-          Verarbeitung bleibt davon unberührt. Damit wir nachweisen können,
-          wozu du zugestimmt hast, hält das Cookie fest, welche Fassung dieses
-          Hinweises dir dabei vorlag; ein Merkmal deiner Person steht nicht
-          darin.
+          anhaken. Dann — und nur dann — bleibt die Anmeldung auf diesem Gerät
+          bis zu 90 Tage nach deinem letzten Besuch bestehen, statt mit dem
+          Browserfenster zu enden: Die Anmelde-Cookies bekommen diese Laufzeit,
+          und dazu kommt ein weiteres Cookie, das deine Entscheidung festhält.
+          Diese Verlängerung ist <em>nicht</em> unbedingt erforderlich; sie
+          beruht ausschließlich auf deiner Einwilligung — § 25 Abs. 1 TDDDG für
+          das Speichern und Auslesen auf deinem Gerät, Art. 6 Abs. 1 lit. a
+          DSGVO dafür, dass wir dich damit bei einem späteren Besuch
+          wiedererkennen und angemeldet halten. Auf keines dieser Cookies haben
+          Dritte Zugriff. Das Häkchen ist nicht vorausgewählt, und du nimmst die
+          Einwilligung jederzeit mit Wirkung für die Zukunft zurück, indem du
+          dich abmeldest — dann löschen wir auf diesem Gerät die Anmelde-Cookies
+          und das zusätzliche Cookie. Die Rechtmäßigkeit der bis dahin erfolgten
+          Verarbeitung bleibt davon unberührt. Damit wir nachweisen können, wozu
+          du zugestimmt hast, hält <strong>das zusätzliche Cookie</strong> fest,
+          welche Fassung des Hinweises am Häkchen dir dabei vorlag; mehr als
+          diese Fassungskennung steht nicht darin — insbesondere keine Kennung
+          deiner Person.
         </p>
 
         <p style={S.p}>
