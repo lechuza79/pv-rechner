@@ -126,6 +126,23 @@ export function aufrufeJeSeite(praefix: string, zeitraum: Zeitraum, limit = 100)
   });
 }
 
+/**
+ * Seitenaufrufe je Adresse UND verweisender Domain.
+ *
+ * Die zweite Dimension ist der ganze Punkt: Ohne sie ist ein Aufruf nur ein
+ * Aufruf, mit ihr steht dabei, ob er aus einem sozialen Netz, von der eigenen
+ * Website der Gemeinde, aus einem Postfach oder von einem Mail-Prüfdienst kam.
+ */
+export function herkunftJeSeite(praefix: string, zeitraum: Zeitraum, limit = 100): Promise<Gruppe[]> {
+  return aggregat({
+    datensatz: "visits",
+    zeitraum,
+    nach: ["requestPath", "referrerHostname"],
+    filter: `startswith(requestPath, '${praefix}')`,
+    limit,
+  });
+}
+
 /** Eigene Ereignisse je Name. */
 export function ereignisseJeName(zeitraum: Zeitraum, limit = 100): Promise<Gruppe[]> {
   return aggregat({ datensatz: "events", zeitraum, nach: ["eventName"], limit });

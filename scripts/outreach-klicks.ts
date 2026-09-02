@@ -1,38 +1,38 @@
 /**
- * Wie viele der angeschriebenen Gemeinden haben den Brief geöffnet?
+ * Was ist aus den angeschriebenen Gemeinden geworden?
  *
  * Bis zum 02.09.2026 war zwischen „verschickt" und „veröffentlicht" nichts zu
  * sehen. Lägerdorf kam nur ans Licht, weil der Betreiber zufällig in die
- * Besucherstatistik sah. Ohne diese Zahl ist jede Änderung am Brief geraten:
- * Man kann nicht unterscheiden, ob er nicht überzeugt oder ob er nicht gelesen
- * wird.
+ * Besucherstatistik sah.
  *
- * DER SCHLÜSSEL IST DIE ADRESSE, KEIN MERKMAL AM LINK. Jede Gemeinde hat ihre
- * eigene Seite, die Statistik zählt je Adresse — die Zuordnung entsteht also
- * aus dem, was ohnehin da ist. Es wird nichts an den Brief gehängt, kein
- * Kennzeichen, kein zusätzliches Ereignis.
+ * ZWEI SCHLÜSSEL, BEIDE OHNE ZUTUN AM BRIEF:
+ *   · Die ADRESSE sagt, WELCHE Gemeinde — jede hat ihre eigene Seite.
+ *   · Der VERWEIS sagt, WAS passiert ist — ein Besucher von Facebook oder von
+ *     der Website der Gemeinde bedeutet, dass jemand dort etwas veröffentlicht
+ *     hat.
+ *
+ * DER VERWEIS SCHLÄGT DIE BACKLINK-SUCHE. Sie kannte zwei Veröffentlichungen;
+ * gemessen sind vier — Aue-Bad Schlema und Urmitz haben in sozialen Netzen
+ * gepostet, und ein Beitrag dort ist kein Backlink, den ein Verzeichnis
+ * crawlt. Die Einordnung selbst steht in `lib/outreach-herkunft.ts`.
  *
  *   npm run kommunen:klicks
  *   npm run kommunen:klicks -- --seit=2026-08-19
  *
- * DREI GRENZEN, und sie gehören in jede Zahl, die von hier weitergegeben wird:
+ * ZWEI GRENZEN, und sie gehören in jede Zahl, die von hier weitergegeben wird:
  *
- *   1. Ein Aufruf ist nicht der Empfänger. Die Seite ist öffentlich; wer über
- *      eine Suchmaschine kommt, zählt genauso. Die Ereignisse aus dem Brief
- *      (`brief_aufruf_direkt` / `_verweis`) sind die schärfere Zahl — dafür
- *      sagen sie nicht, WELCHE Gemeinde es war.
- *   2. Die Statistik läuft im Browser. Wer Skripte blockt, ist unsichtbar; in
+ *   1. Die Statistik läuft im Browser. Wer Skripte blockt, ist unsichtbar; in
  *      einer Verwaltung ist das keine Randerscheinung. Jede Zahl hier ist eine
  *      UNTERGRENZE.
- *   3. Vor dem 04.08.2026 gibt es nichts. Das ist nicht „null Aufrufe",
- *      sondern „nicht gemessen" — der erste Schub vom 20.08. liegt danach, ein
- *      früherer läge davor.
+ *   2. Vor dem 04.08.2026 gibt es nichts. Das ist nicht „null Aufrufe",
+ *      sondern „nicht gemessen".
  */
 
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync } from "node:fs";
-import { aufrufeJeSeite, ereignisseJeName, ANALYTICS_SEIT } from "../lib/web-analytics";
+import { herkunftJeSeite, ereignisseJeName, ANALYTICS_SEIT } from "../lib/web-analytics";
+import { ordneHerkunft, HERKUNFT_TEXT, type Herkunft } from "../lib/outreach-herkunft";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -95,14 +95,21 @@ async function main() {
 
   // Angeschriebene Gemeinden. Unzustellbare bleiben drin und werden getrennt
   // ausgewiesen: Sie sind der Nenner, den man abziehen muss, nicht ein Fall,
-  // den man verschweigt.
+  // den man verschweigt. Die Website brauchen wir, um einen Verweis von der
+  // eigenen Seite der Gemeinde zu erkennen.
   const { data: kontakte, error } = await db
     .from("kommunen_kontakt")
-    .select("region_id, kampagne, contacted_at, outreach_status")
+    .select("region_id, kampagne, contacted_at, outreach_status, website")
     .not("contacted_at", "is", null)
     .order("contacted_at");
   if (error) throw new Error(error.message);
-  const zeilen = (kontakte ?? []) as { region_id: string; kampagne: string | null; contacted_at: string; outreach_status: string }[];
+  const zeilen = (kontakte ?? []) as {
+    region_id: string;
+    kampagne: string | null;
+    contacted_at: string;
+    outreach_status: string;
+    website: string | null;
+  }[];
 
   // Regionen samt Eltern, für die Adressen. SEITENWEISE: Eine Abfrage ohne
   // Bereich liefert stumm nur die ersten 1.000 Zeilen — bei rund 11.000
@@ -122,83 +129,140 @@ async function main() {
   }
 
   const pfade = adressen(regionen, zeilen.map((z) => z.region_id));
+  const gemeindeJePfad = new Map<string, { name: string; website: string | null; kampagne: string; tag: string }>();
+  for (const z of zeilen) {
+    const pfad = pfade.get(z.region_id);
+    if (!pfad) continue;
+    gemeindeJePfad.set(pfad, {
+      name: regionen.get(z.region_id)?.name ?? z.region_id,
+      website: z.website,
+      kampagne: z.kampagne ?? "ohne Schub",
+      tag: z.contacted_at.slice(0, 10),
+    });
+  }
 
-  // Besuche je Atlas-Adresse.
+  // Besuche je Adresse UND Verweis.
   //
   // JE BUNDESLAND GEFRAGT, NICHT IN EINEM ZUG: Vercel liefert höchstens 100
-  // verschiedene Adressen und wirft den ganzen Rest in einen Sammelposten
-  // („Others"). Über den Atlas in einer Abfrage lagen darin 195 Besucher —
-  // also gerade die Gemeinden mit wenigen Aufrufen, die hier interessieren.
-  // Ein Land für sich bleibt unter der Grenze, und was trotzdem übrig bleibt,
-  // wird unten benannt statt weggerundet.
+  // Zeilen und wirft den ganzen Rest in einen Sammelposten („Others"). Über
+  // den Atlas in einer Abfrage lagen darin 195 Besucher — also gerade die
+  // Gemeinden mit wenigen Aufrufen, um die es geht.
   const zeitraum = { seit, bis };
   const laender = [...new Set([...pfade.values()].map((p) => p.split("/")[2]))].sort();
-  const besucher = new Map<string, number>();
+  type Seite = { gesamt: number; je: Map<Herkunft, number>; verweise: Map<string, number> };
+  const seiten = new Map<string, Seite>();
   const abgeschnitten: { land: string; besucher: number }[] = [];
+
   for (const land of laender) {
-    for (const gruppe of await aufrufeJeSeite(`/solar-atlas/${land}/`, zeitraum, 100)) {
+    for (const gruppe of await herkunftJeSeite(`/solar-atlas/${land}/`, zeitraum, 100)) {
       const pfad = String(gruppe.requestPath ?? "");
       const b = Number(gruppe.visitors ?? 0);
       if (pfad === "Others") {
         if (b > 0) abgeschnitten.push({ land, besucher: b });
         continue;
       }
-      besucher.set(pfad, b);
+      const gemeinde = gemeindeJePfad.get(pfad);
+      if (!gemeinde) continue;
+      const verweis = String(gruppe.referrerHostname ?? "");
+      const art = ordneHerkunft(verweis, gemeinde.website);
+      const s = seiten.get(pfad) ?? { gesamt: 0, je: new Map(), verweise: new Map() };
+      s.gesamt += b;
+      s.je.set(art, (s.je.get(art) ?? 0) + b);
+      if (verweis) s.verweise.set(verweis, (s.verweise.get(verweis) ?? 0) + b);
+      seiten.set(pfad, s);
     }
   }
 
   const zugestellt = zeilen.filter((z) => z.outreach_status !== "bounce");
-  const jeSchub = new Map<string, { verschickt: number; gesehen: number; besucher: number; ohneAdresse: number }>();
-  const treffer: { name: string; schub: string; tag: string; besucher: number }[] = [];
-
-  for (const z of zugestellt) {
-    const schub = z.kampagne ?? "ohne Schub";
-    const s = jeSchub.get(schub) ?? { verschickt: 0, gesehen: 0, besucher: 0, ohneAdresse: 0 };
-    s.verschickt++;
-    const pfad = pfade.get(z.region_id);
-    if (!pfad) {
-      s.ohneAdresse++;
-    } else {
-      const b = besucher.get(pfad) ?? 0;
-      if (b > 0) {
-        s.gesehen++;
-        s.besucher += b;
-        treffer.push({
-          name: regionen.get(z.region_id)?.name ?? z.region_id,
-          schub,
-          tag: z.contacted_at.slice(0, 10),
-          besucher: b,
-        });
-      }
-    }
-    jeSchub.set(schub, s);
-  }
-
   const unzustellbar = zeilen.length - zugestellt.length;
   console.log(`Zeitraum ${seit} bis ${bis} · ${zeilen.length} angeschrieben, davon ${unzustellbar} unzustellbar\n`);
 
-  console.log("Je Schub (zugestellt / Seite aufgerufen / Besucher auf diesen Seiten):");
+  // ─── Veröffentlichungen ─────────────────────────────────────────────────────
+  //
+  // Die einzige Zahl, auf die es ankommt. Sie steht zuerst und nennt bei jeder
+  // Gemeinde, WO veröffentlicht wurde — sonst ist sie eine Behauptung.
+  const veroeffentlicht = [...seiten]
+    .filter(([, s]) => (s.je.get("veroeffentlichung") ?? 0) > 0)
+    .sort((a, b) => (b[1].je.get("veroeffentlichung") ?? 0) - (a[1].je.get("veroeffentlichung") ?? 0));
+
+  console.log(`Veröffentlicht: ${veroeffentlicht.length} von ${zugestellt.length} zugestellten Briefen`);
+  for (const [pfad, s] of veroeffentlicht) {
+    const g = gemeindeJePfad.get(pfad)!;
+    const wo = [...s.verweise]
+      .filter(([h]) => ordneHerkunft(h, g.website) === "veroeffentlichung")
+      .sort((a, b) => b[1] - a[1])
+      .map(([h, n]) => `${h} ${n}`)
+      .join(", ");
+    console.log(`  ${g.name} (${g.kampagne}, ${g.tag}): ${s.je.get("veroeffentlichung")} Besucher über ${wo}`);
+  }
+
+  // WAS DIESE MESSUNG NICHT SIEHT, wird benannt statt weggelassen. Eine
+  // App-Plattform schickt bewusst keinen Verweis mit — Wallertheim hat uns in
+  // seiner Dorf-App verlinkt und 51 Besucher geschickt, und hier steht dazu
+  // nichts. Ohne diese Zeile läse sich die Zahl oben als vollständig.
+  const bekannt = zeilen.filter((z) => z.outreach_status === "veroeffentlicht");
+  const gesehen = new Set(veroeffentlicht.map(([p]) => p));
+  const unsichtbar = bekannt.filter((z) => {
+    const p = pfade.get(z.region_id);
+    return !p || !gesehen.has(p);
+  });
+  if (unsichtbar.length) {
+    console.log("\nAls veröffentlicht vermerkt, hier aber ohne Verweis sichtbar (App-Plattform o. Ä.):");
+    for (const z of unsichtbar) console.log(`  ${regionen.get(z.region_id)?.name ?? z.region_id}`);
+  }
+
+  // ─── Alles andere, nach Art getrennt ────────────────────────────────────────
+  const summe = new Map<Herkunft, number>();
+  for (const s of seiten.values()) for (const [art, n] of s.je) summe.set(art, (summe.get(art) ?? 0) + n);
+  console.log("\nAlle Besucher auf angeschriebenen Gemeindeseiten, nach Herkunft:");
+  for (const [art, n] of [...summe].sort((a, b) => b[1] - a[1])) {
+    console.log(`  ${HERKUNFT_TEXT[art]}: ${n}`);
+  }
+
+  // „andere Seite" ist kein Ergebnis, sondern Arbeitsvorrat: Dahinter kann
+  // eine Veröffentlichung stecken, die wir noch nicht als solche kennen.
+  const fremde = new Map<string, number>();
+  for (const [pfad, s] of seiten) {
+    const g = gemeindeJePfad.get(pfad)!;
+    for (const [h, n] of s.verweise) {
+      if (ordneHerkunft(h, g.website) === "andere") fremde.set(`${h} → ${g.name}`, n);
+    }
+  }
+  if (fremde.size) {
+    console.log("\nNoch nicht eingeordnet — bitte ansehen, ob eine Veröffentlichung dahintersteckt:");
+    for (const [k, n] of [...fremde].sort((a, b) => b[1] - a[1])) console.log(`  ${n}  ${k}`);
+  }
+
+  // ─── Je Schub ───────────────────────────────────────────────────────────────
+  const jeSchub = new Map<string, { verschickt: number; gesehen: number; veroeffentlicht: number; ohneAdresse: number }>();
+  for (const z of zugestellt) {
+    const schub = z.kampagne ?? "ohne Schub";
+    const s = jeSchub.get(schub) ?? { verschickt: 0, gesehen: 0, veroeffentlicht: 0, ohneAdresse: 0 };
+    s.verschickt++;
+    const pfad = pfade.get(z.region_id);
+    if (!pfad) s.ohneAdresse++;
+    else {
+      const seite = seiten.get(pfad);
+      if (seite && seite.gesamt > 0) s.gesehen++;
+      if (seite && (seite.je.get("veroeffentlichung") ?? 0) > 0) s.veroeffentlicht++;
+    }
+    jeSchub.set(schub, s);
+  }
+  console.log("\nJe Schub (zugestellt / Seite überhaupt aufgerufen / veröffentlicht):");
   for (const [schub, s] of [...jeSchub].sort((a, b) => b[1].verschickt - a[1].verschickt)) {
-    const quote = s.verschickt ? Math.round((1000 * s.gesehen) / s.verschickt) / 10 : 0;
     const fehlt = s.ohneAdresse ? ` · ${s.ohneAdresse} ohne Atlas-Adresse` : "";
-    console.log(`  ${schub}: ${s.verschickt} / ${s.gesehen} (${quote} %) / ${s.besucher}${fehlt}`);
+    console.log(`  ${schub}: ${s.verschickt} / ${s.gesehen} / ${s.veroeffentlicht}${fehlt}`);
   }
 
-  console.log("\nAngeschriebene Gemeinden mit Besuchern auf ihrer Seite (Besucher, nicht Empfänger):");
-  for (const t of treffer.sort((a, b) => b.besucher - a.besucher)) {
-    console.log(`  ${String(t.besucher).padStart(3)}  ${t.name} (${t.schub}, ${t.tag})`);
-  }
   if (abgeschnitten.length) {
-    const summe = abgeschnitten.reduce((n, a) => n + a.besucher, 0);
-    console.log(`\n! ${summe} Besucher stecken in Vercels Sammelposten für die Adressen jenseits der 100 meistbesuchten:`);
+    const n = abgeschnitten.reduce((a, b) => a + b.besucher, 0);
+    console.log(`\n! ${n} Besucher stecken in Vercels Sammelposten jenseits der 100 meistbesuchten Zeilen je Land:`);
     for (const a of abgeschnitten) console.log(`  ${a.land}: ${a.besucher}`);
-    console.log("  Gemeinden mit sehr wenigen Aufrufen können darin verschwinden; die Quoten oben sind Untergrenzen.");
   }
 
-  // Die schärfere Zahl, und die kleinere: Sie zählt nur Aufrufe, die die
-  // Herkunftskennung des Briefes tragen. Erst seit dem 27.08.2026 verlässlich
-  // — davor feuerte die Meldung vor dem Start der Messbibliothek und war
-  // stillschweigend weg.
+  // Die schärfere Zahl für den Klick IM Brief. Erst seit dem 27.08.2026
+  // verlässlich — davor feuerte die Meldung vor dem Start der Messbibliothek
+  // und war stillschweigend weg.
   console.log("\nAufrufe mit der Herkunftskennung des Briefes (ohne Gemeinde, erst ab 27.08.2026 verlässlich):");
   for (const e of await ereignisseJeName(zeitraum)) {
     const name = String(e.eventName ?? "");
