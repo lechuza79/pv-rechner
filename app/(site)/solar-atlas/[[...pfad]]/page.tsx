@@ -28,6 +28,7 @@ import {
 } from "../../../../lib/atlas";
 import { pvLeistungTeile, wattProKopfTeile } from "../../../../lib/atlas-format";
 import { ortPhrase, childNoun } from "../../../../lib/atlas-orte";
+import { atlasSeitenTitel } from "../../../../lib/atlas-titel";
 import { GROESSENKLASSEN_WARUM } from "../../../../lib/gemeindegroesse";
 import { buildRegionHighlight } from "../../../../lib/region-highlight";
 import { rankingKategorienGruppiert } from "../../../../lib/atlas-ranking";
@@ -98,40 +99,11 @@ function headline(region: AtlasRegion): string {
 }
 
 /**
- * Titel der Regionsseiten: führendes Wort ist „Photovoltaik", dann der Ort.
- *
- * ZWEI VERWORFENE ANLÄUFE stehen hinter dieser Zeile, beide am 18.08.2026, beide
- * vom Betreiber gestoppt — deshalb steht die Herleitung hier und nicht nur im
- * Commit:
- *
- * 1. „Solaratlas Bayern" als ÜBERSCHRIFT. Verworfen, weil nur gemessen worden war,
- *    wie gut wir für den Eigennamen stehen — nicht, was der Begriff wiegt, den er
- *    ersetzen sollte.
- * 2. „Solaratlas Bayern" als TITEL. Ebenfalls verworfen, aus zwei Gründen:
- *    - Die Suchabsicht passt nicht. Auf Platz 1–10 zu „solaratlas bayern" steht
- *      ausnahmslos ein Dachflächen-Potenzialkataster (Energie-Atlas Bayern,
- *      Geoportal, Solaratlas des Landkreises Berchtesgadener Land). Das ist
- *      dieselbe Falle wie bei „solarkataster", die wir am 13.08.2026 schon einmal
- *      dokumentiert hatten: „darf ich auf mein Dach?" ist eine andere Frage als
- *      „was steht hier schon?".
- *    - Die Nachfrage war Rauschen: „solaratlas bayern" 48 Einblendungen, aber
- *      „solaratlas nrw" 2 und „solaratlas rlp" 5. Aus einer Seite wurde eine Regel
- *      für siebzehn.
- *
- * WAS STATTDESSEN GEMESSEN IST: Auf unserer stärksten Atlas-Seite (Rheinland-Pfalz)
- * sind die drei größten Anfragen „photovoltaik pfalz" (18 Einblendungen),
- * „photovoltaik rheinland-pfalz" (11) und „photovoltaik rheinland pfalz" (7) —
- * zusammen 36 gegen 5 für den Eigennamen. Über alle Atlas-Seiten: „photovoltaik"
- * in 36 Anfragen mit 140 Einblendungen, „solaratlas" in 6 mit 71. Das Wort stand
- * bis dahin in keinem Titel und in keinem sichtbaren Satz.
- *
- * Die Ortsangabe kommt aus ortPhrase(), damit die Präposition stimmt („im Landkreis
- * Würzburg", „in der Region Hannover", „im Saarland") — der Titel wird sonst an
- * genau den drei Stellen falsch, für die es diese Funktion gibt.
- * Quelle: Search Console 18.07.–15.08.2026, Anfragen-Ebene; docs/seo/befund-2026-08-18-atlas-wellen.md
+ * Titel der Regionsseiten. Wortwahl, Zeichen-Budget und die Messung dahinter
+ * stehen in lib/atlas-titel.ts — dieselbe Vorlage traegt die Gemeindeseite.
  */
 function seitenTitel(region: AtlasRegion): string {
-  return `Photovoltaik ${ortPhrase(region)}: Solaranlagen, Bestand & Zubau`;
+  return atlasSeitenTitel(region);
 }
 
 export async function generateMetadata(props: { params: Promise<Params> }): Promise<Metadata> {

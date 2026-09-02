@@ -4,6 +4,12 @@
 **Keywords gesamt:** 58 (Vormonat 34) · **Top 10:** 0 · **Pos. 11–25:** 7 · beste gespeicherte Position: 14
 **Kosten des Laufs:** 0,185 $ (Deckel 0,50 $) · **Guthaben danach:** 26,75 $
 
+> **Nachtrag 02.09.2026 — zwei Befunde dieses Berichts sind nachgemessen und
+> korrigiert.** Schritt 2b-1 (Titel) hatte die richtige Beobachtung und die falsche
+> Ursache; die Chancen-Shortlist empfiehlt einen Hebel, der drei Wochen zuvor schon
+> einmal gemessen und verworfen worden war. Beides steht am Ende unter
+> „Nachtrag". Die übrigen Abschnitte sind davon nicht berührt.
+
 ---
 
 ## BLOCKER-Befund zur Methode: der Vergleich zum Vormonat trägt nicht
@@ -572,3 +578,116 @@ auf einer Nachfrage, die es nachweislich gibt.
   "url": "/einspeiseverguetung-rechner"
  }
 ]```
+
+---
+
+## Nachtrag (02.09.2026, eigene Nachmessung)
+
+Beide Befunde wurden noch am Tag des Berichts nachgeprüft — der eine hielt in der
+Beobachtung, aber nicht in der Ursache, der andere gar nicht.
+
+### 1. Der Titel — richtig beobachtet, falsch erklärt
+
+Der Bericht schließt aus drei Landesseiten: „Google verwirft das führende
+‚Photovoltaik‘ und zieht den Wortlaut der sichtbaren Überschrift heran." Die
+Nachmessung an **neun** Landesseiten zeigt etwas anderes:
+
+| Titel ohne Marke | Seiten | Google zeigt |
+|---|---|---|
+| 52 · 52 · 53 · 54 · 58 · 60 | Bayern, Berlin, Hamburg, Hessen, Brandenburg, Niedersachsen | **unseren Titel** |
+| 62 · 64 · 66 | Rheinland-Pfalz, Baden-Württemberg, Nordrhein-Westfalen | die Überschrift |
+
+Neun von neun, ohne Ausnahme, Schnitt zwischen 60 und 62 Zeichen. Die drei Seiten des
+Berichts waren zufällig die drei längsten. Google greift auf die Überschrift **nur**
+zurück, wenn unser Titel nicht in die Ergebnisliste passt.
+
+**Die Gegenprobe des Berichts konnte das nicht ausschließen:** `/strommix-deutschland`
+hat 55 Zeichen ohne Marke und liegt damit selbst unterhalb der Grenze. Eine Gegenprobe
+muss auf der anderen Seite der vermuteten Grenze liegen.
+
+**Folge für die Empfehlung.** Der Bericht leitet daraus eine Angleichung an die
+Überschrift ab, also eine Frage der Wortwahl. Richtig ist eine Frage der Länge: Der
+Titel wurde gekürzt (`Photovoltaik <Ort>: Bestand & Zubau`, höchstens 55 Zeichen) und
+liegt seitdem als eine Quelle in `lib/atlas-titel.ts` — er stand vorher zweimal getippt
+da, in der Regions- und in der Gemeindeseite, beide zu lang.
+
+Die Wortwahl bleibt dabei, wo sie war, und dafür gibt es eine breitere Messung als die
+71 % im Runbook (die stammen von **einer** Seite mit 42 sichtbaren Einblendungen — dem
+Kreis Hameln-Pyrmont, dessen Indexierung ein Versehen war). Über alle Atlas-Seiten,
+Search Console 01.06.–30.08.2026, 225 Anfragen mit 1.227 Einblendungen — das sind die
+Anfragen, die Google einzeln ausweist, und nur die können eine Wortanalyse tragen:
+
+| Wort | Anfragen | Einblendungen | Anteil |
+|---|---|---|---|
+| photovoltaik | 63 | 372 | 30 % |
+| solaranlage | 27 | 176 | 14 % |
+| solarkataster | 23 | 160 | 13 % |
+| solaratlas | 10 | 130 | 11 % |
+| pv | 21 | 66 | 5 % |
+
+„Photovoltaik" bleibt führend; „Solaranlagen" ist weiterhin die Überschrift und der
+Anfang jeder Beschreibung und damit nicht aus dem Auszug verschwunden.
+
+### 2. Der empfohlene Hebel trägt nicht
+
+Die Chancen-Shortlist empfiehlt „Positionsarbeit an den Atlas-Landesseiten" und
+begründet das mit dem Volumen von „solarkataster nrw" (2.400), „solarkataster rlp"
+(720) und „energieatlas nrw" (590). **Das ist derselbe Schluss, den der Befund vom
+13.08.2026 gemessen und verworfen hat.**
+
+Der Bericht hat die Ergebnisseiten abgerufen, aber nur auf KI-Antworten hin — Punkt 1
+der Prüfliste aus Schritt 2b. Punkt 2 („wer steht auf Platz 1–8, welche Frage
+beantworten die?") blieb offen. Nachgeholt am 02.09.2026:
+
+| Anfrage | Seite 1 |
+|---|---|
+| solarkataster nrw | energieatlas.nrw.de (4×), land.nrw, open.nrw, opengeodata.nrw.de, Kreis Coesfeld, RVR |
+| energieatlas nrw | energieatlas.nrw.de, lanuk.nrw.de, energieatlasnrw.de, open.nrw, Städte Erwitte/Marsberg/Lüdenscheid |
+| solarkataster rlp | energieatlas.rlp.de (2×), service.rlp.de, Kreise und Verbandsgemeinden |
+| solaratlas bayern | bayernportal.de, karten.energieatlas.bayern.de, Landkreise |
+
+Ausnahmslos amtliche **Dachflächen-Kataster**: „taugt mein Dach?". Unsere Seiten
+beantworten „was steht hier schon?". Kein einziger Treffer auf Seite 1 beantwortet
+unsere Frage.
+
+Die Gegenprobe an den Begriffen, die wirklich die Absicht treffen könnten, fällt
+ebenfalls aus: Auf „photovoltaik brandenburg" und „solaranlagen brandenburg" stehen ein
+zwölfstelliger lokaler Anbieterblock und danach Installateure, Ministerium und
+Förderbank.
+
+**Die eigenen Zahlen — und hier ist eine Zahl zurückzunehmen, die in der ersten
+Fassung dieses Nachtrags stand.** Sie lautete „1.227 Einblendungen auf Atlas-Seiten,
+0 Klicks" und war aus der ANFRAGEN-Ebene summiert. Die Anfragen-Ebene enthält aber nur
+die Anfragen, die Google einzeln ausweist; alles unterhalb der Anonymisierungsschwelle
+fehlt darin. Auf der Seitenebene sieht es anders aus (Search Console, 01.06.–30.08.2026):
+
+| Fläche | Einblendungen | Klicks | CTR |
+|---|---|---|---|
+| /photovoltaik-foerderung | 5.123 | 30 | 0,59 % |
+| Übrige (Start, Ratgeber, Rechner) | 2.558 | 26 | 1,02 % |
+| **/solar-atlas** | **1.953** | **13** | **0,67 %** |
+| /strommix + /atomstrom + Zubau | 829 | 10 | 1,21 % |
+| **gesamt** | **10.463** | **79** | **0,76 %** |
+
+Der Atlas holt also Klicks, und seine Klickrate liegt mit 0,67 % im Bereich der Seite
+insgesamt (0,76 %). **Die Behauptung „diese Fläche holt keinen einzigen Klick" war
+falsch** — sie beschrieb den sichtbaren Anfragen-Ausschnitt, nicht die Fläche.
+
+Für die Empfehlung ändert das die Begründung, nicht das Ergebnis: Der Atlas ist keine
+tote Fläche, sondern eine kleine. Was nicht trägt, ist der Weg, den der Bericht
+vorschlägt — über die Kataster-Begriffe, deren Seite 1 uns verschlossen ist.
+
+**Lehre für den nächsten Lauf, weil sie über diesen Fall hinausgeht:** Eine Summe über
+die Anfragen-Ebene ist keine Seitensumme. Über alle Flächen fehlen dort 61 % der
+Einblendungen und 90 % der Klicks. Wer Reichweite oder Klicks einer Fläche beziffert,
+nimmt `prefix=`, nicht `dim=query`.
+
+**Was am Befund des Berichts trotzdem stimmt:** Der Anteil sichtbarer Anfragen ist auf
+den Atlas-Landesseiten hoch und auf den Förder-Stadtseiten nahe null. Die Nachfrage
+hinter den Atlas-Positionen ist also echt — sie ist nur nicht unsere.
+
+**Konsequenz:** keine Positionsarbeit an den Atlas-Landesseiten. Festgehalten als
+Grundregel `absicht-vor-volumen` (`lib/seo-grundregeln.ts`), und der Geltungsbereich von
+Schritt 2b im Runbook ist geweitet — er galt nur „für einen Begriff aus der
+Quick-Win-Zone", und genau durch diese Lücke ist die Regel gebrochen worden, ohne dass
+jemand sie übergehen musste.

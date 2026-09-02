@@ -80,6 +80,26 @@ export const SEO_GRUNDREGELN: Grundregel[] = [
       "Crawl-Budget als Universalargument gegen jede Seitengattung — und die Verwechslung mit " +
       "der gemessenen Renderlast der Ranglisten-Seiten (57 % aller Funktionsaufrufe).",
   },
+  {
+    id: "absicht-vor-volumen",
+    regel:
+      "Ein hohes Suchvolumen ist kein Hinweis darauf, wo Arbeit lohnt, solange nicht geprüft " +
+      "ist, WER auf Seite 1 steht und WELCHE Frage diese Treffer beantworten. Die Regel gilt " +
+      "der Frage „wo lohnt sich Aufwand“ — sie ist ausdrücklich KEIN Grund, eine Seite " +
+      "zurückzuhalten (siehe Regel „kein-ertrag-ist-kein-schaden“).",
+    beleg:
+      "Gemessen 02.09.2026 an live abgerufenen Ergebnisseiten: Auf „solarkataster nrw“ (2.400 " +
+      "Suchen/Monat), „solarkataster rlp“ (720) und „solaratlas bayern“ steht auf Seite 1 " +
+      "ausnahmslos ein amtliches Dachflächen-Kataster (energieatlas.nrw.de, land.nrw, " +
+      "energieatlas.rlp.de, Energie-Atlas Bayern) — die Frage „taugt MEIN Dach?“. Unsere " +
+      "Atlas-Seiten beantworten „was steht hier schon?“. Kein Treffer auf Seite 1 beantwortet " +
+      "unsere Frage. Erstmals gemessen am 13.08.2026, docs/seo/befund-2026-08-13.md.",
+    verhindert:
+      "„Diese Begriffe haben Volumen, also ist dort der Hebel.“ Genau dieser Schluss stand am " +
+      "02.09.2026 als Empfehlung im Monatsbericht („Positionsarbeit an den Atlas-Landesseiten“) " +
+      "— drei Wochen nachdem dieselbe Empfehlung schon einmal gemessen und verworfen worden war. " +
+      "Der Bericht hatte die Ergebnisseiten geprüft, aber nur auf KI-Antworten, nicht auf Absicht.",
+  },
 ];
 
 /**
@@ -92,6 +112,12 @@ export const UNZULAESSIGE_BEGRUENDUNGEN: { muster: RegExp; warum: string }[] = [
   {
     muster: /kein(?:e)? messbare[sn]? suchvolumen.{0,40}(also|deshalb|daher)/i,
     warum: "Leeres Suchvolumen ist eine Messgrenze, kein Befund (siehe Regel „leeres-suchvolumen“).",
+  },
+  {
+    muster: /(hohes |echtes? )?suchvolumen.{0,60}(also|deshalb|daher).{0,40}(hebel|chance|lohnt)/i,
+    warum:
+      "Volumen ohne Absichtsprüfung ist kein Chancensignal (siehe Regel „absicht-vor-volumen“). " +
+      "Erst nachsehen, wer auf Seite 1 steht und welche Frage er beantwortet.",
   },
   {
     muster: /die null ist (also )?echt/i,
