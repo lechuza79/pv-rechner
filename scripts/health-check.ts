@@ -654,7 +654,7 @@ async function messeSpaltenAbgleich(): Promise<SpaltenBefund | null> {
  * Konfiguration, statt dass jemand von hier aus vermutet. Zurück kommt nur,
  * WAS fehlt, nie ein Wert.
  */
-async function messeAboBereit(): Promise<{ bereit: boolean; fehlt: string[] } | null> {
+async function messeAboBereit(): Promise<AboBereit | null> {
   const geheim = process.env.CRON_SECRET;
   if (!geheim) return null; // Ohne Betriebsgeheimnis keine Auskunft — kein Befund.
   try {
@@ -666,12 +666,45 @@ async function messeAboBereit(): Promise<{ bereit: boolean; fehlt: string[] } | 
     // dieselbe Trennung wie überall sonst zwischen „ist kaputt" und „konnte
     // nicht nachsehen".
     if (!r.ok) return null;
-    const d = (await r.json()) as { bereit?: boolean; fehlt?: string[] };
+    const d = (await r.json()) as { bereit?: boolean; fehlt?: string[]; versandOhneBeleg?: unknown };
     if (typeof d?.bereit !== "boolean") return null;
-    return { bereit: d.bereit, fehlt: Array.isArray(d.fehlt) ? d.fehlt : [] };
+    // Eine ältere Auslieferung kennt das Feld nicht. Das ist „nicht gemessen",
+    // nicht „null hängende Anmeldungen" — eine Null behauptete hier einen
+    // Befund („alles ging raus"), den es nicht gab.
+    const ohneBeleg = typeof d.versandOhneBeleg === "number" ? d.versandOhneBeleg : null;
+    return { bereit: d.bereit, fehlt: Array.isArray(d.fehlt) ? d.fehlt : [], ohneBeleg };
   } catch {
     return null;
   }
+}
+
+interface AboBereit {
+  bereit: boolean;
+  fehlt: string[];
+  /** Anmeldungen ohne Versandbeleg; `null` = nicht gemessen. */
+  ohneBeleg: number | null;
+}
+
+/**
+ * Wirkt der Abo-Versand, oder ist er bloß eingerichtet?
+ *
+ * DER ANLASS (02.09.2026, in der Fehler-Triage gemessen): Der Bereitschafts-
+ * Melder daneben sagte „Versandweg und Signatur sind in der Produktion
+ * gesetzt" — und in der Ablage standen zwei Anmeldungen und NULL je versendete
+ * Bestätigungsmails. Er prüft, ob etwas GESETZT ist; ein falsch getipptes
+ * Passwort ist gesetzt. Dieselbe Klasse wie die drei Fälle, für die es ihn
+ * überhaupt gibt, nur eine Ebene weiter: Geprüft war diesmal die Umgebung,
+ * nie ihre Wirkung.
+ *
+ * `null` (nicht gemessen) ist kein Befund. Fehlt die Konfiguration bereits,
+ * ebenfalls nicht: Der Grund steht dann schon im Befund nebenan, und zwei
+ * Meldungen über dieselbe Ursache sind der Lärm, von dem man sich abgewöhnt,
+ * Meldungen zu lesen.
+ */
+export function aboVersandStockt(b: { bereit: boolean; ohneBeleg: number | null }): boolean {
+  if (b.ohneBeleg === null) return false;
+  if (!b.bereit) return false;
+  return b.ohneBeleg > 0;
 }
 
 /**
@@ -1625,6 +1658,26 @@ async function main() {
           `werden", und niemand kommt ins Abo. Von außen ist das unsichtbar: Die Seite lädt, der Knopf ` +
           `funktioniert, kein Test wird rot — lokal ist ja alles gesetzt. Zu tun: die genannten Einstellungen ` +
           `in der Produktionsumgebung nachtragen und danach EINMAL neu ausliefern, sonst greifen sie nicht.`,
+      );
+    }
+    // Und die zweite Hälfte: hat es auch gewirkt?
+    if (aboBereit.ohneBeleg !== null && aboBereit.bereit) {
+      lines.push(
+        aboBereit.ohneBeleg === 0
+          ? "Gemeinde-Abo: keine frische Anmeldung wartet auf eine Bestätigungsmail."
+          : `Gemeinde-Abo: ${aboBereit.ohneBeleg} frische Anmeldung(en) ohne Versandbeleg.`,
+      );
+    }
+    if (aboVersandStockt(aboBereit)) {
+      forClaude.push(
+        `${aboBereit.ohneBeleg} frische Anmeldung(en) im Gemeinde-Abo tragen keinen Versandbeleg, während die ` +
+          `Zugangsdaten des Postfachs vollständig gesetzt sind. Beides ist gemessen; der Schluss daraus nicht — ` +
+          `deshalb steht hier keine Diagnose, sondern der nächste Schritt. Zwei Lesarten: entweder die Mail hat ` +
+          `den Server nicht verlassen (dann kommt niemand ins Abo, und der Anmelder sieht nur „Bitte später ` +
+          `erneut" — gesetzt heißt eben nicht richtig, ein falsch getipptes Passwort ist gesetzt), oder sie ging ` +
+          `hinaus und das Nachtragen des Belegs schlug fehl (dann fehlt der Einwilligungsnachweis, den die ` +
+          `Datenschutzerklärung zusagt). Zu tun: das Protokoll der Produktion nach „[Abo]" durchsehen — dort ` +
+          `steht, welcher der beiden Fälle vorliegt.`,
       );
     }
   }
