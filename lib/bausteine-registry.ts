@@ -654,6 +654,28 @@ export const BAUSTEINE: Baustein[] = [
 
   // ─── Zusammensetzungen: kennen ein Fach, gehören nicht in die Galerie ──────
   {
+    datei: "components/AnmeldeFormular.tsx",
+    name: "AnmeldeFormular",
+    zweck:
+      "Die Anmeldemaske: über Google oder mit E-Mail und Passwort, dazu der Weg, ein Passwort zu setzen.",
+    gruppe: "eingabe",
+    ebene: "zusammensetzung",
+    stand: "verbindlich",
+    bestehtAus: ["Icons"],
+    gegenprobe: {
+      muster: 'type="password"',
+      bedeutet:
+        "Hier entsteht eine zweite Anmeldemaske von Hand. Genau das gab es schon — die Anmeldeseite und der Rechner trugen getrennte Formulare, und als der Anmeldeweg wechselte, war eines davon tagelang das alte. Eine Maske, die anders aussieht oder anders antwortet als die andere, liest sich für den Nutzer wie ein Fehler.",
+      ausser: [
+        {
+          datei: "app/(site)/passwort-setzen/client.tsx",
+          grund:
+            "Das ist keine Anmeldung, sondern das Vergeben eines neuen Passworts nach dem Link aus der Mail — dort ist der Nutzer bereits angemeldet, und es gibt weder eine Adresse noch einen Weg über Google.",
+        },
+      ],
+    },
+  },
+  {
     datei: "components/ContactForm.tsx",
     name: "ContactForm",
     zweck:

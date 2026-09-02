@@ -35,10 +35,14 @@ const ORDNER = ["lib", "scripts", "app", "components"];
  * die Liste zu verlängern.
  */
 const SCHUTZFUNKTIONEN = [
-  "lib/fachbetrieb-extrakt.ts",
-  // Der Förderbereich liest ebenfalls fremde Adressen und hat dieselbe
-  // Absicherung unabhängig gebaut, mit eigenem Kommentar zum selben Fehlerbild.
-  "lib/funding-url-suche.ts",
+  // Seit 02.09.2026 nur noch EINE. Vorher standen hier zwei unabhängig gebaute
+  // Fassungen derselben drei Zeilen — und der Kommentar darüber sagte an, was
+  // beim dritten Fall zu tun ist: zusammenlegen, nicht die Liste verlängern.
+  // Der dritte Fall kam mit den Anmelde-Cookies (lib/auth-cookies.ts), und er
+  // ist fachlich ein ganz anderer: dort werden keine fremden Webadressen
+  // gelesen, sondern eigene Cookie-Werte. Zusammengelegt ist deshalb nur die
+  // eine Zeile Vorsicht, nicht die Zuständigkeit.
+  "lib/uri-sicher.ts",
 ];
 
 function dateien(ordner: string): string[] {

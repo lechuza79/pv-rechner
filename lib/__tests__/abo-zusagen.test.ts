@@ -190,7 +190,12 @@ describe("Was die Datenschutzerklärung über das Abo zusagt", () => {
 
   it("sagt zu, dass keine Zählpixel in den Mails stecken — und es steckt keiner drin", () => {
     expect(dse).toMatch(/<strong>keine Zählpixel<\/strong>/);
-    const mail = lies("lib/abo-mail.ts");
+    // BEIDE Dateien: Das Logo steht seit dem 02.09.2026 in der gemeinsamen
+    // Hülle, weil die Anmeldemails dieselbe benutzen. Nur die eine zu lesen
+    // ließ den Test grün laufen, ohne ein einziges Bild zu sehen — und die
+    // eingebaute Gegenprobe („sonst prüft der Test nichts") hat genau das
+    // gefangen.
+    const mail = lies("lib/abo-mail.ts") + lies("lib/mail-huelle.ts");
 
     // EIN ZÄHLPIXEL IST NICHT „EIN BILD", SONDERN EIN BILD MIT KENNUNG.
     // Die erste Fassung verbot jedes <img> — das war einfach zu prüfen und
