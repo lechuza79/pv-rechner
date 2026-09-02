@@ -16,6 +16,7 @@ import { feedInRatesFor, naechsteDegressionIso } from "./feedin-config";
 import { eegVerfahrenSatz } from "./eeg-reform-config";
 import { PERCAPITA_SERIES, YEARS_PERCAPITA } from "./country-comparison-percapita";
 import type { KategorieSchluessel } from "./redaktions-kategorien";
+import { DATA_SOURCES } from "./data-sources";
 import { KARTEN_STIL_STANDARD, istKartenStil, type KartenStil } from "./social-karten-stil";
 import { moeglicheFormen as formenFuer } from "./social-bildformen";
 import { fuelle, type PlatzhalterInfo } from "./social-vorlage";
@@ -317,11 +318,32 @@ const MARKE = "Solar Check";
  * Im TEXT muss er stehen, damit die Erwähnung der Unternehmensseite ihn findet.
  * Im BILD steht daneben das Logo — dort wäre der Name ein zweites Mal dasselbe.
  */
-function quellenzeile(standIso: string, mitMarke: boolean): string {
+/**
+ * Name und Lizenz kommen aus dem Quellenregister, nicht aus diesem Modul.
+ *
+ * DIE LIZENZ IST PFLICHT, und sie war getippt — also fehlte sie. Die mechanische
+ * Prüfung hat das gemeldet und den Versand gesperrt, was richtig ist; die
+ * Meldung war trotzdem der falsche Ort. Eine Angabe, die ohnehin gerechnet wird,
+ * darf gar nicht erst ohne Lizenz entstehen können — sonst steht dieselbe
+ * Korrektur bei jedem neuen Beitrag wieder an, und irgendwann schaltet jemand
+ * die Sperre ab, statt die Zeile zu reparieren.
+ *
+ * Die Sperre bleibt: Sie fängt weiterhin, wer eine Quellenzeile von Hand tippt.
+ */
+function quelleAus(schluessel: "mastr" | "ember", stand: string, mitMarke: boolean): string {
+  const q = DATA_SOURCES[schluessel];
+  const lizenz = "license" in q && q.license ? `, ${q.license}` : "";
+  // Der Änderungshinweis ist bei CC BY dort geschuldet, wo wir wirklich
+  // verändern — und das tun wir überall hier: Wir mitteln, leiten ab, rechnen um.
+  const veraendert = "license" in q && q.license?.startsWith("CC BY") ? ", Daten verändert" : "";
+  const basis = `${q.name}${lizenz}${veraendert}. Stand ${stand}. Eigene Berechnung`;
+  return mitMarke ? `${basis}, ${MARKE}.` : `${basis}.`;
+}
+
+export function quellenzeile(standIso: string, mitMarke: boolean): string {
   const d = new Date(standIso);
   const datum = d.toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" });
-  const basis = `Marktstammdatenregister (Bundesnetzagentur), Stand ${datum}. Eigene Berechnung`;
-  return mitMarke ? `${basis}, ${MARKE}.` : `${basis}.`;
+  return quelleAus("mastr", datum, mitMarke);
 }
 
 /**
@@ -1088,8 +1110,7 @@ export function postNurBalkon(k: SocialKennzahlen): SocialPost {
  */
 function quellenzeileEmber(mitMarke: boolean): string {
   const bis = YEARS_PERCAPITA[YEARS_PERCAPITA.length - 1];
-  const basis = `Ember, CC BY 4.0, Daten verändert. Stand ${bis}. Eigene Berechnung`;
-  return mitMarke ? `${basis}, ${MARKE}.` : `${basis}.`;
+  return quelleAus("ember", String(bis), mitMarke);
 }
 
 /**

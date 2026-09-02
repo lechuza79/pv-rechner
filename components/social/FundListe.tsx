@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { v, space, pad } from "../../lib/theme";
 import type { VorratsFund, FundStand } from "../../lib/social-fundvorrat";
 import { MUSTER_TAKT, TAKT_LABEL } from "../../lib/social-funde";
@@ -174,6 +175,15 @@ export function FundListe({
               >
                 {auf ? "Grundlage zu" : "Grundlage"}
               </button>
+              {/* Der Weg zum Entwurf steht an JEDEM Fund, nicht nur an den
+                  vorgemerkten: Man sieht dem Satz allein nicht an, ob er als
+                  Beitrag trägt — das entscheidet sich am Bild daneben. */}
+              <Link
+                href={`/admin/redaktion/bucket/${encodeURIComponent(f.kennung)}`}
+                style={{ ...knopf(false), textDecoration: "none" }}
+              >
+                Entwurf
+              </Link>
               {(["vorgemerkt", "verworfen", "offen"] as FundStand[])
                 .filter((z) => z !== stand)
                 .map((z) => (
