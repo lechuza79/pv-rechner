@@ -311,9 +311,15 @@ export default function Waermepumpe({
     fossilInvest: oFossilInvest,
   });
 
+  // Die Adresse des RECHNERS, nicht die der Seite, auf der er gerade steht.
+  //
+  // Er wohnt auch in einem Fenster auf dem Förder-Ratgeber. Über den Pfad des
+  // Fensters gebaut, zeigte der Link dorthin — der Empfänger landete auf einem
+  // Artikel mit einer Query, die dort niemand liest, und sähe die geteilte
+  // Rechnung nie. Genau dieser Fehler ist dem PV-Rechner schon einmal passiert.
   const buildShareUrl = () => {
     const p = wpZuParametern(shareZustand()).toString();
-    return `${window.location.origin}${window.location.pathname}${p ? `?${p}` : ""}`;
+    return `${window.location.origin}/waermepumpe-rechner${p ? `?${p}` : ""}`;
   };
 
   /** Was in der Nachricht steht, bevor der Link kommt. */

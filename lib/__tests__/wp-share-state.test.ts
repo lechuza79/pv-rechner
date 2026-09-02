@@ -167,6 +167,15 @@ describe("Der Rechner benutzt wirklich diese eine Quelle", () => {
     expect(rechner).toMatch(/linkGelesen\.current/);
   });
 
+  it("baut den Link auf die Adresse des RECHNERS, nicht auf die der Seite", () => {
+    // Der Rechner wohnt auch in einem Fenster auf dem Förder-Ratgeber. Über den
+    // Pfad des Fensters gebaut, zeigte der Link dorthin — der Empfänger landete
+    // auf einem Artikel mit einer Query, die dort niemand liest. Genau dieser
+    // Fehler ist dem PV-Rechner schon einmal passiert.
+    expect(rechner).toMatch(/origin\}\/waermepumpe-rechner/);
+    expect(rechner).not.toMatch(/origin\}\$\{window\.location\.pathname\}/);
+  });
+
   it("leert die Adresse beim Neu-Berechnen", () => {
     // Sonst holt ein Neuladen die gerade verworfene Rechnung zurück.
     expect(rechner).toMatch(/setStep\(0\);[\s\S]{0,300}history\.replaceState/);

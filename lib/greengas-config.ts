@@ -399,7 +399,14 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // erneut den Kraftstoff (HVO100) oder den allgemeinen Heizölpreis samt
   // CO2-Aufschlag; eine Preisreihe für Bioheizöl zur Gebäudeheizung führt keine
   // Trägerquelle. Der Lücken-Hinweis im Öl-Ergebnis bleibt damit bestehen.
-  geprueftRechtIso: "2026-09-01",
+  //
+  // 02.09.2026: unverändert. Die Meldungsübersicht des Infoportals endet
+  // weiterhin am 28.07.2026 (Verkündung im Bundesgesetzblatt, Heizungsteil in
+  // Kraft seit 29.07.2026); die Stufen 10 / 15 / 30 / 60 Prozent zu 2029, 2030,
+  // 2035 und 2040 stehen unverändert, § 42a kündigt weiterhin nur das bis zum
+  // 01.12.2026 vorzulegende Gesetz an. ZWÖLFTE Bioheizöl-Gegensuche, weiter ohne
+  // Trägerquelle mit einer Preisreihe — dieselben zwei Treffersorten wie zuvor.
+  geprueftRechtIso: "2026-09-02",
   reviewBy: "2027-07-25",
 };
 

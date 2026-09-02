@@ -269,7 +269,14 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // Lesung stattgefunden haben, und der Sitzungskalender beantwortet die Frage
   // nicht mehr — ab dann ist der Verfahrensstand an der Drucksache selbst
   // (dip.bundestag.de) nachzusehen, nicht am Terminplan.
-  geprueftIso: "2026-09-01",
+  //
+  // 02.09.2026: unverändert, und diesmal nicht nur über den Terminplan. Die
+  // Vorgangsseite des Bundesrates zur Drucksache 470/26 führt weiterhin allein
+  // Eingang (14.08.2026), die Kennzeichnung als besonders eilbedürftige Vorlage
+  // nach Art. 76 Abs. 2 Satz 4 GG und die Ausschusszuweisung — keine
+  // Plenarsitzung, keine Stellungnahme, keinen Beschluss. Der 07.09.2026 steht
+  // weiter als Stichtag, ab dem der Terminplan als Beleg ausfällt.
+  geprueftIso: "2026-09-02",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.
