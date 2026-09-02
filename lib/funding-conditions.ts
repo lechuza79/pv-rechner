@@ -115,6 +115,10 @@ export interface FundingChecks {
  * Entscheidung, kein Versehen.
  */
 export const NOCH_NICHT_ERFASST: string[] = [
+  // Die beiden Landesprogramme für Balkonkraftwerke, aufgenommen am 02.09.2026.
+  // Ihre Bedingungen hängen an Mieter/Eigentümer — eine Unterscheidung, die das
+  // Modell (privat/gewerblich) nicht kennt. Erfassbar erst, wenn es sie kennt.
+  "sachsen-balkon-eeus", "mv-mini-solaranlagen",
   "berlin-solarplus", "stuttgart-solaroffensive", "karlsruhe-klimabonus",
   "regensburg-effizient", "wuerzburg-klimastadt", "darmstadt-pv",
   "badhomburg-energiespar", "koeln-pv", "duesseldorf-klimafreundlich",

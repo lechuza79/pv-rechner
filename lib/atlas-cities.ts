@@ -475,10 +475,34 @@ export function liveBundeslaender(): { name: string; slug: string }[] {
 // badge and compute their example amounts WITHOUT the inactive grant.
 const ARCHIVE_STATUSES: FundingStatus[] = ["ausgeschoepft", "pausiert", "eingestellt"];
 
+/**
+ * Landesprogramme der FLÄCHENLÄNDER erzeugen keine Stadtseite.
+ *
+ * Ein Landesprogramm trägt einen zweistelligen Schlüssel und passt damit auf
+ * jede Stadt seines Landes. Bei den Stadtstaaten ist das richtig — dort IST das
+ * Land die Stadt, und Berlin und Bremen leben genau davon. Bei einem
+ * Flächenland wäre es eine Seite je Ort für ein Programm, das mit dem Ort nichts
+ * zu tun hat: Dresden, Leipzig, Chemnitz und jede weitere sächsische Stadt
+ * bekämen dieselbe Auskunft unter ihrem eigenen Namen.
+ *
+ * Aufgefallen am 02.09.2026 beim Aufnehmen der beiden Landesprogramme für
+ * Balkonkraftwerke (Sachsen beendet, Mecklenburg-Vorpommern aktiv). Vorher gab
+ * es im Katalog nur Landesprogramme von Stadtstaaten, deshalb ist die Lücke nie
+ * aufgefallen — sie war da, seit die Zuordnung über den Schlüssel läuft.
+ */
+const STADTSTAATEN = ["02", "04", "11"]; // Hamburg, Bremen, Berlin
+
+function programmTraegtStadtseite(p: FundingProgram | undefined): boolean {
+  if (!p) return false;
+  if (p.level === "land" && !STADTSTAATEN.includes(p.agsCode ?? "")) return false;
+  return true;
+}
+
 /** True if the city's own program is inactive but published as an archive page. */
 export function isCityArchived(c: AtlasCity): boolean {
-  const s = fundingFor(c)?.status;
-  return !!s && ARCHIVE_STATUSES.includes(s);
+  const p = fundingFor(c);
+  if (!programmTraegtStadtseite(p)) return false;
+  return ARCHIVE_STATUSES.includes(p!.status);
 }
 
 /** Cities with an inactive (archived) program. */
@@ -582,9 +606,9 @@ export function cityIndexFreigegeben(c: AtlasCity, heute: Date = new Date()): bo
  */
 export function foerderseiteTraegt(c: AtlasCity): boolean {
   const p = fundingFor(c);
-  if (!p) return false;
-  if (p.status !== "aktiv") return false;
-  return (p.foerdert ?? ["pv"]).includes("pv");
+  if (!programmTraegtStadtseite(p)) return false;
+  if (p!.status !== "aktiv") return false;
+  return (p!.foerdert ?? ["pv"]).includes("pv");
 }
 
 /**

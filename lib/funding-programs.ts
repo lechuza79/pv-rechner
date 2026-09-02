@@ -1128,6 +1128,71 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
     foerdert: ["balkon"],
   },
+  /**
+   * BEENDET zum 30.06.2026 — und das ist der Grund, warum der Eintrag existiert.
+   *
+   * Am 02.09.2026 auf der Amtsseite gelesen: „[01.07.2026] Das Programm ist
+   * ausgelaufen. Eine Antragstellung ist nicht mehr möglich." Programmteil B der
+   * Förderrichtlinie EEuS/2023 trat am 30.06.2026 planmäßig außer Kraft; seit
+   * dem Start im August 2023 wurden rund 16.600 Balkonkraftwerke mit über
+   * 5 Mio. € gefördert.
+   *
+   * Aufgenommen, obwohl beendet — nach der Regel „gab es, ist beendet" ist das
+   * eine echte Auskunft. Hier ist sie sogar die WERTVOLLERE: „balkonkraftwerk
+   * förderung sachsen" hat 390 Suchen im Monat, und auf Seite 1 stand am
+   * 02.09.2026 durchweg, es gebe 300 € von der SAB. Vier Ratgeberseiten, alle
+   * falsch. Wer hier nach Geld sucht, findet überall die veraltete Zusage.
+   */
+  "sachsen-balkon-eeus": {
+    id: "sachsen-balkon-eeus", name: "Zuschuss für Balkonkraftwerke (FRL EEuS, Programmteil B)",
+    traeger: "Sächsische Aufbaubank (SAB)", level: "land", region: "Sachsen", bundesland: "Sachsen", agsCode: "14",
+    url: "https://www.sab.sachsen.de/balkonkraftwerke", stand: "September 2026",
+    status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-08", endetIso: "2026-06-30",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Anschaffung und Installation eines Balkonkraftwerks",
+    rates: [{ label: "Zuschuss", value: "ausgelaufen — seit 1. Juli 2026 keine Anträge mehr" }],
+    conditions: [
+      "Seit dem 1. Juli 2026 sind keine Anträge mehr möglich",
+      "Zuletzt waren nur noch Mieter antragsberechtigt — die Mittel für Eigentümer waren aufgebraucht",
+    ],
+    combinableWith: BUND,
+  },
+  /**
+   * AKTIV, aber nur für Mieter — und deshalb bewusst OHNE Rechenwert.
+   *
+   * Am 02.09.2026 auf der Amtsseite gelesen: „Die Mittel des Programms für
+   * Eigentümer einer Wohneinheit sind vollständig ausgeschöpft. Bitte sehen Sie
+   * von einer Antragstellung als Eigentümer ab, da keinerlei Aussicht auf Erfolg
+   * besteht." Für Mieter reichen die Mittel laut LFI „noch für längere Zeit".
+   *
+   * Warum kein `balkonPauschale: 500`: Unser Modell kennt bei der Berechtigung
+   * nur privat/gewerblich, nicht Mieter/Eigentümer. Ein strukturierter Satz
+   * würde jedem Eigentümer 500 € ausrechnen, die er nachweislich nicht bekommt —
+   * das ist die Klasse „eine Bedingung am falschen Ort ist eine falsche
+   * Auskunft". Also informieren, nicht abziehen. Sobald das Modell Mieter und
+   * Eigentümer trennt, kann der Betrag nachgezogen werden.
+   */
+  "mv-mini-solaranlagen": {
+    id: "mv-mini-solaranlagen", name: "Zuwendungen für steckerfertige PV-Anlagen (Mini-Solaranlagen)",
+    traeger: "Landesförderinstitut Mecklenburg-Vorpommern", level: "land", region: "Mecklenburg-Vorpommern",
+    bundesland: "Mecklenburg-Vorpommern", agsCode: "13",
+    url: "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/", stand: "September 2026",
+    status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Anschaffung und Installation eines Balkonkraftwerks",
+    rates: [{ label: "Zuschuss", value: "bis 500 € je Anlage und Wohneinheit — nur für Mieter" }],
+    conditions: [
+      "Nur Mieter können noch beantragen — für Eigentümer sind die Mittel aufgebraucht",
+      "Antrag erst nach Kauf und Installation stellen",
+      "Antrag nur per Post, per E-Mail eingereichte Anträge sind unwirksam",
+      "Erstwohnsitz in Mecklenburg-Vorpommern",
+      "Nur Anlagen mit Kaufdatum ab dem 8. November 2022",
+    ],
+    combinableWith: BUND,
+  },
   "bremen-rundumshaus": {
     id: "bremen-rundumshaus", name: "Rund ums Haus – PV nach Plan",
     traeger: "BAB Bremer Aufbau-Bank (Land Bremen)", level: "land", region: "Bremen", bundesland: "Bremen", agsCode: "04",
