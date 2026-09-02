@@ -156,14 +156,19 @@ describe("Bausteine-Register", () => {
       join(ROOT, "app/(site)/admin/komponenten/KomponentenSchau.tsx"),
       "utf8",
     );
+    // Nur die GENERISCHEN Bausteine. Eine Zusammensetzung kennt ihr Fach — ein
+    // Förder-Detailfenster ohne Förderprogramm wäre eine Attrappe, und eine
+    // Attrappe in der Galerie ist genau die zweite Fassung, gegen die es das
+    // Register gibt.
     const stumm = BAUSTEINE.filter(
-      (b) => !new RegExp(`\\b${b.name}:`).test(schau) && !b.keinBeispielWeil,
+      (b) => b.ebene === "baustein" && !new RegExp(`\\b${b.name}:`).test(schau) && !b.keinBeispielWeil,
     ).map((b) => b.name);
     expect(stumm, `Ohne Beispiel und ohne Grund: ${stumm.join(", ")}`).toEqual([]);
 
     // Ein Grund, der jede Lücke deckt, deckt am Ende auch die vermeidbaren.
     for (const b of BAUSTEINE) {
       if (!b.keinBeispielWeil) continue;
+      expect(b.ebene, `${b.name}: eine Zusammensetzung braucht keinen Grund`).toBe("baustein");
       expect(b.keinBeispielWeil.length, b.name).toBeGreaterThan(60);
       expect(
         new RegExp(`\\b${b.name}:`).test(schau),
@@ -173,7 +178,18 @@ describe("Bausteine-Register", () => {
   });
 
   it("beantwortet die Gegenrichtung: wer benutzt diesen Baustein", () => {
-    expect(verwendetVon("Modal").map((b) => b.name).sort()).toEqual(["CiteModal", "FlowNav", "TrustBar"]);
-    expect(verwendetVon("Switch").map((b) => b.name)).toEqual(["ResultSection"]);
+    // Keine feste Namensliste — die wächst mit jedem Eintrag und wäre dann eine
+    // zweite Wahrheit neben `bestehtAus`. Geprüft wird die Umkehrung selbst.
+    for (const b of BAUSTEINE) {
+      for (const teil of b.bestehtAus) {
+        expect(
+          verwendetVon(teil).map((x) => x.name),
+          `${teil} sollte ${b.name} als Nutzer kennen`,
+        ).toContain(b.name);
+      }
+    }
+    // Und mindestens einer der verbindlichen Bausteine steckt wirklich in
+    // anderen — sonst prüft die Schleife oben über eine leere Menge.
+    expect(verwendetVon("Modal").length).toBeGreaterThan(3);
   });
 });

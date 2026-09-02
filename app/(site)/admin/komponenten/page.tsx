@@ -1,7 +1,7 @@
 import Link from "next/link";
 import AdminSeitenkopf from "../../../../components/admin/AdminSeitenkopf";
 import KomponentenSchau from "./KomponentenSchau";
-import { BAUSTEINE, GRUPPEN, NOCH_NICHT_EINGEORDNET } from "../../../../lib/bausteine-registry";
+import { BAUSTEINE, GRUPPEN } from "../../../../lib/bausteine-registry";
 import { v, space, pad } from "../../../../lib/theme";
 
 // ─── Die Komponenten-Galerie. ────────────────────────────────────────────────
@@ -48,22 +48,29 @@ function Sprungmarken() {
       }}
     >
       {GRUPPEN.map((g) => {
-        const anzahl = BAUSTEINE.filter((b) => b.gruppe === g.schluessel).length;
+        const anzahl = BAUSTEINE.filter(
+          (b) => b.gruppe === g.schluessel && b.ebene === "baustein",
+        ).length;
         return (
           <a key={g.schluessel} href={`#gruppe-${g.schluessel}`} style={eintrag}>
             {g.titel} <span style={{ color: v("--color-text-faint") }}>{anzahl}</span>
           </a>
         );
       })}
-      <a href="#offen" style={eintrag}>
-        Offen <span style={{ color: v("--color-text-faint") }}>{NOCH_NICHT_EINGEORDNET.length}</span>
+      <a href="#gruppe-zusammensetzungen" style={eintrag}>
+        Zusammensetzungen{" "}
+        <span style={{ color: v("--color-text-faint") }}>
+          {BAUSTEINE.filter((b) => b.ebene === "zusammensetzung").length}
+        </span>
       </a>
     </nav>
   );
 }
 
 export default function KomponentenPage() {
-  const verbindliche = BAUSTEINE.filter((b) => b.stand === "verbindlich").length;
+  const bausteine = BAUSTEINE.filter((b) => b.ebene === "baustein");
+  const zusammensetzungen = BAUSTEINE.filter((b) => b.ebene === "zusammensetzung");
+  const verbindliche = bausteine.filter((b) => b.stand === "verbindlich").length;
 
   return (
     <div>
@@ -86,12 +93,19 @@ export default function KomponentenPage() {
               wäre die Seite eine Vitrine — die Schriftgrößen-Tokens gab es seit Juli, und der Bestand
               handgetippter Größen wuchs danach trotzdem um ein Drittel.
             </p>
+            <p>
+              Ganz unten stehen die Zusammensetzungen: Teile, die ein Fach kennen (ein Förderprogramm,
+              das Anlagenregister, einen Rechner) und deshalb nicht allgemein einsetzbar sind. Sie
+              stehen im Register, damit sichtbar ist, woraus sie bestehen — aber ohne Beispiel, weil
+              eines ohne echte Daten eine Attrappe wäre.
+            </p>
           </>
         }
       />
 
       <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), margin: `-${space.md}px 0 0` }}>
-        {BAUSTEINE.length} eingeordnet, davon {verbindliche} verbindlich · {NOCH_NICHT_EINGEORDNET.length} offen ·{" "}
+        {bausteine.length} Bausteine, davon {verbindliche} verbindlich · {zusammensetzungen.length}{" "}
+        Zusammensetzungen · alles eingeordnet ·{" "}
         <Link href="/admin/theme" style={{ color: v("--color-accent"), textDecoration: "none" }}>
           Farben, Schriften und Abstände ansehen
         </Link>
@@ -101,17 +115,6 @@ export default function KomponentenPage() {
 
       <KomponentenSchau />
 
-      <section id="offen">
-        <div style={{ display: "flex", alignItems: "baseline", gap: space.sm, marginBottom: space.md }}>
-          <h2 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, margin: 0 }}>Noch nicht eingeordnet</h2>
-          <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
-            {NOCH_NICHT_EINGEORDNET.length} geteilte Bauteile ohne Eintrag — der nächste Schritt, kein Fehler.
-          </span>
-        </div>
-        <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.7, margin: 0 }}>
-          {NOCH_NICHT_EINGEORDNET.join(" · ")}
-        </p>
-      </section>
     </div>
   );
 }

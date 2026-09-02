@@ -34,6 +34,13 @@ import type { TiltOrientation } from "../../../../lib/tilt-config";
 import CiteModal from "../../../../components/CiteModal";
 import ChartExportBar from "../../../../components/ChartExportBar";
 import { WIDGETS } from "../../../../lib/widget-registry";
+import ArticleMeta from "../../../../components/ArticleMeta";
+import ContactPerson from "../../../../components/ContactPerson";
+import Faq from "../../../../components/Faq";
+import GlossaryTerm, { GlossaryProvider } from "../../../../components/GlossaryTerm";
+import ObfuscatedEmail from "../../../../components/ObfuscatedEmail";
+import ProConLists from "../../../../components/ProConLists";
+import ScenarioTabs from "../../../../components/ScenarioTabs";
 import { BAUSTEINE, GRUPPEN, verwendetVon, type Baustein } from "../../../../lib/bausteine-registry";
 import { v, space, pad } from "../../../../lib/theme";
 
@@ -580,6 +587,24 @@ function ZitierBeispiel() {
   );
 }
 
+
+function SzenarienBeispiel() {
+  const [gewaehlt, setGewaehlt] = useState("real");
+  return (
+    <div style={{ maxWidth: 520 }}>
+      <ScenarioTabs
+        selected={gewaehlt}
+        onSelect={setGewaehlt}
+        tabs={[
+          { id: "pess", label: "Pessimistisch", sub: "+1 %/Jahr", explain: "Der Strompreis steigt kaum — die Ersparnis wächst langsam." },
+          { id: "real", label: "Realistisch", sub: "+2 %/Jahr", explain: "Der Strompreis steigt etwa wie die allgemeine Teuerung." },
+          { id: "opti", label: "Optimistisch", sub: "+5 %/Jahr", explain: "Der Strompreis steigt deutlich — die Anlage rechnet sich schneller." },
+        ]}
+      />
+    </div>
+  );
+}
+
 const BEISPIELE: Record<string, Beispiel> = {
   OptionCard: OptionCardBeispiel,
   Switch: SchalterBeispiel,
@@ -660,6 +685,52 @@ const BEISPIELE: Record<string, Beispiel> = {
       canNativeShare={false}
     />
   ),
+  ScenarioTabs: SzenarienBeispiel,
+  GlossaryTerm: () => (
+    <GlossaryProvider>
+      <span style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary") }}>
+        Eine Anlage mit 10 <GlossaryTerm id="kwp">kWp</GlossaryTerm> passt auf ein normales Einfamilienhaus.
+      </span>
+    </GlossaryProvider>
+  ),
+  Faq: () => (
+    <div style={{ maxWidth: 520 }}>
+      <Faq
+        title="Häufige Fragen"
+        items={[
+          { q: "Lohnt sich ein Speicher?", a: "Er verlängert die Amortisation meist — dafür steigt die Unabhängigkeit." },
+          { q: "Wie lange hält eine Anlage?", a: "Die Module arbeiten über 25 Jahre, mit langsam sinkendem Ertrag." },
+        ]}
+      />
+    </div>
+  ),
+  ProConLists: () => (
+    <div style={{ maxWidth: 560 }}>
+      <ProConLists
+        proTitle="Wann es sich lohnt"
+        proItems={[
+          { term: "Viel Eigenverbrauch", desc: "Wer tagsüber zu Hause ist, nutzt mehr vom eigenen Strom." },
+          { term: "Süddach", desc: "Ein unverschattetes Süddach bringt den höchsten Ertrag." },
+        ]}
+        conTitle="Wo es eng wird"
+        conItems={[
+          { term: "Norddach", desc: "Ein reines Norddach rechnet sich selten." },
+          { term: "Wenig Verbrauch", desc: "Bei kleinem Verbrauch bleibt viel Strom in der Einspeisung." },
+        ]}
+      />
+    </div>
+  ),
+  ArticleMeta: () => (
+    <ArticleMeta
+      headline="Beispielartikel"
+      description="Eine Zeile, wie sie über jedem Ratgeber steht."
+      path="/beispiel"
+      published="2026-07-01"
+      modified="2026-09-01"
+    />
+  ),
+  ContactPerson: () => <ContactPerson note="Antwort meist am selben Tag." />,
+  ObfuscatedEmail: () => <ObfuscatedEmail user="beispiel" domain="solar-check.io" />,
   DachField: DachFeldBeispiel,
   GebaeudeField: GebaeudeFeldBeispiel,
   PoweredBy: () => (
@@ -762,7 +833,7 @@ export default function KomponentenSchau() {
   return (
     <>
       {GRUPPEN.map((g) => {
-        const teile = BAUSTEINE.filter((b) => b.gruppe === g.schluessel);
+        const teile = BAUSTEINE.filter((b) => b.gruppe === g.schluessel && b.ebene === "baustein");
         if (teile.length === 0) return null;
         return (
           <div key={g.schluessel} id={`gruppe-${g.schluessel}`} style={{ marginBottom: space.huge }}>
@@ -788,6 +859,63 @@ export default function KomponentenSchau() {
           </div>
         );
       })}
+
+      <div id="gruppe-zusammensetzungen" style={{ marginBottom: space.huge }}>
+        <div style={{ display: "flex", alignItems: "baseline", gap: space.sm, marginBottom: space.md }}>
+          <h2 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, margin: 0 }}>Zusammensetzungen</h2>
+          <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
+            Kennen ein Fach und sind deshalb nicht allgemein einsetzbar — hier ohne Beispiel, weil eines
+            ohne echte Daten eine Attrappe wäre.
+          </span>
+        </div>
+        <div
+          style={{
+            display: "grid",
+            gap: space.sm,
+            gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+          }}
+        >
+          {BAUSTEINE.filter((b) => b.ebene === "zusammensetzung").map((b) => {
+            const nutzer = verwendetVon(b.name);
+            return (
+              <div
+                key={b.name}
+                style={{
+                  background: v("--color-bg"),
+                  border: `1px solid ${v("--color-border")}`,
+                  borderRadius: v("--radius-md"),
+                  padding: space.md,
+                }}
+              >
+                <span style={{ fontSize: v("--font-size-body"), fontWeight: 700 }}>{b.name}</span>
+                <p
+                  style={{
+                    fontSize: v("--font-size-small"),
+                    color: v("--color-text-muted"),
+                    lineHeight: 1.5,
+                    margin: `${space.xs}px 0 0`,
+                  }}
+                >
+                  {b.zweck}
+                </p>
+                {(b.bestehtAus.length > 0 || nutzer.length > 0) && (
+                  <p
+                    style={{
+                      fontSize: v("--font-size-caption"),
+                      color: v("--color-text-faint"),
+                      margin: `${space.xs}px 0 0`,
+                    }}
+                  >
+                    {b.bestehtAus.length > 0 ? <>Besteht aus: {b.bestehtAus.join(" · ")}</> : null}
+                    {b.bestehtAus.length > 0 && nutzer.length > 0 ? "   ·   " : null}
+                    {nutzer.length > 0 ? <>Steckt in: {nutzer.map((n) => n.name).join(" · ")}</> : null}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </>
   );
 }
