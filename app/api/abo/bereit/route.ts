@@ -94,7 +94,7 @@ export async function GET(req: NextRequest) {
 /** Karenz zwischen Anlegen und Beleg — siehe `zaehleOhneVersandbeleg`. */
 const KARENZ_MS = 15 * 60 * 1000;
 /** Beobachtungsfenster — siehe `zaehleOhneVersandbeleg`. */
-const FENSTER_MS = 24 * 60 * 60 * 1000;
+const FENSTER_MS = 6 * 60 * 60 * 1000;
 
 /**
  * Wie viele Anmeldungen warten auf eine Bestätigungsmail, die nie hinausging?
@@ -114,9 +114,20 @@ const FENSTER_MS = 24 * 60 * 60 * 1000;
  *   nachgetragen; dazwischen liegen Sekunden. Ein Lauf, der genau in dieses
  *   Fenster fällt, hielte eine gesunde Anmeldung für einen Befund.
  *
- *   FENSTER — nur die letzten 24 Stunden. Ohne diese Grenze meldete jede
- *   liegengebliebene Zeile bis in alle Ewigkeit weiter, und eine Warnung, die
- *   bei jedem Lauf angeht, filtert man weg und verpasst dann die echte.
+ *   FENSTER — nur die letzten SECHS Stunden, und die Zahl ist hergeleitet, nicht
+ *   gegriffen: Der Gesundheitscheck läuft alle drei Stunden, sechs Stunden decken
+ *   also zwei Läufe und damit einen ausgefallenen ab. Der erste Entwurf nahm 24
+ *   Stunden und war damit falsch — nicht bloß großzügig: Die Meldung daneben
+ *   spricht von „eingerichtet und wirkt trotzdem nicht", und über 24 Stunden
+ *   zählt sie Anmeldungen aus einer Zeit mit, in der noch gar nichts
+ *   eingerichtet war. Genau so gemessen am 02.09.2026: zwei Anmeldungen vom
+ *   Vortag, entstanden als die Zugangsdaten des Postfachs nachweislich fehlten,
+ *   gemeldet als Beleg dafür, dass der eingerichtete Versand nicht wirke. Das
+ *   Fenster muss kurz genug sein, dass der vorige Lauf die Einrichtung bereits
+ *   bestätigt hatte — sonst behauptet die Beschriftung etwas anderes, als die
+ *   Zahl misst. Nebenbei fällt damit auch der zweite Fehler weg: Über 24 Stunden
+ *   meldete eine liegengebliebene Zeile einen Tag lang bei jedem Lauf, und eine
+ *   Warnung, die dauernd angeht, filtert man weg und verpasst dann die echte.
  *
  * Gezählt wird nur `ausstehend`. Wer bestätigt hat, hat seine Mail
  * offensichtlich bekommen — dort fehlt höchstens der Nachweis, nicht die

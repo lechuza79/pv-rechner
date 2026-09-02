@@ -72,9 +72,32 @@ describe("Die Abfrage hinter der Zahl", () => {
   // angeht, filtert man weg und verpasst dann die echte.
   it("laesst dem Versand seine Karenz und schaut nur in ein Fenster", () => {
     expect(quelle).toMatch(/KARENZ_MS\s*=\s*15\s*\*\s*60\s*\*\s*1000/);
-    expect(quelle).toMatch(/FENSTER_MS\s*=\s*24\s*\*\s*60\s*\*\s*60\s*\*\s*1000/);
     expect(quelle).toMatch(/\.lt\("erstellt_am"/);
     expect(quelle).toMatch(/\.gt\("erstellt_am"/);
+  });
+
+  // DAS FENSTER MUSS KURZ BLEIBEN, und der Grund ist nicht Sparsamkeit.
+  //
+  // Die Meldung daneben stellt „keine Bestaetigung belegt" und „Zugangsdaten
+  // gesetzt" nebeneinander. Diese Gegenueberstellung traegt nur, wenn der
+  // vorige Lauf die Einrichtung schon bestaetigt hatte — sonst zaehlt sie
+  // Anmeldungen aus einer Zeit mit, in der nichts eingerichtet war.
+  //
+  // GENAU SO GEMESSEN am 02.09.2026, an der ersten Fassung dieses Waechters:
+  // Sie nahm 24 Stunden, fand die zwei Anmeldungen des Vortags — entstanden,
+  // als die Zugangsdaten des Postfachs nachweislich fehlten — und meldete sie
+  // als Beleg dafuer, dass der eingerichtete Versand nicht wirke. Die
+  // Beschriftung sagte etwas anderes, als die Zahl misst.
+  //
+  // Der Gesundheitscheck laeuft alle drei Stunden; sechs decken zwei Laeufe und
+  // damit einen ausgefallenen ab. Wer diese Zahl anhebt, holt den Fehler
+  // zurueck.
+  it("schaut nur so weit zurueck, dass der vorige Lauf die Einrichtung bestaetigt hatte", () => {
+    const m = quelle.match(/FENSTER_MS\s*=\s*(\d+)\s*\*\s*60\s*\*\s*60\s*\*\s*1000/);
+    expect(m, "FENSTER_MS muss als Stundenzahl dastehen").not.toBeNull();
+    const stunden = Number(m![1]);
+    expect(stunden).toBeGreaterThanOrEqual(6); // sonst reisst ein ausgefallener Lauf eine Luecke
+    expect(stunden).toBeLessThanOrEqual(12); // darueber zaehlt es Zeilen aus einem anderen Zustand mit
   });
 
   // Ein Fehler beim Zaehlen darf nicht als „null Haenger" zurueckkommen: Das

@@ -1664,20 +1664,20 @@ async function main() {
     if (aboBereit.ohneBeleg !== null && aboBereit.bereit) {
       lines.push(
         aboBereit.ohneBeleg === 0
-          ? "Gemeinde-Abo: keine Anmeldung wartet auf eine Bestätigungsmail."
-          : `Gemeinde-Abo: ${aboBereit.ohneBeleg} Anmeldung(en) der letzten 24 Stunden ohne Versandbeleg.`,
+          ? "Gemeinde-Abo: keine frische Anmeldung wartet auf eine Bestätigungsmail."
+          : `Gemeinde-Abo: ${aboBereit.ohneBeleg} frische Anmeldung(en) ohne Versandbeleg.`,
       );
     }
     if (aboVersandStockt(aboBereit)) {
       forClaude.push(
-        `Der Abo-Versand ist eingerichtet und wirkt trotzdem nicht: ${aboBereit.ohneBeleg} Anmeldung(en) der ` +
-          `letzten 24 Stunden stehen in der Ablage, ohne dass zu ihnen eine Bestätigungsmail belegt wäre. Die ` +
-          `Bereitschaftsprüfung meldet grün, weil sie fragt, ob die Zugangsdaten GESETZT sind — ein falsch ` +
-          `getipptes Passwort ist gesetzt. Zwei Lesarten, beide prüfen: entweder die Mail hat den Server nicht ` +
-          `verlassen (dann kommt niemand ins Abo, und der Anmelder sieht nur „Bitte später erneut"), oder sie ` +
-          `ging hinaus und das Nachtragen des Belegs schlug fehl (dann fehlt der Einwilligungsnachweis, den ` +
-          `die Datenschutzerklärung zusagt). Zu tun: das Protokoll der Produktion nach „[Abo]" durchsehen — ` +
-          `dort steht, welcher der beiden Fälle vorliegt.`,
+        `${aboBereit.ohneBeleg} frische Anmeldung(en) im Gemeinde-Abo tragen keinen Versandbeleg, während die ` +
+          `Zugangsdaten des Postfachs vollständig gesetzt sind. Beides ist gemessen; der Schluss daraus nicht — ` +
+          `deshalb steht hier keine Diagnose, sondern der nächste Schritt. Zwei Lesarten: entweder die Mail hat ` +
+          `den Server nicht verlassen (dann kommt niemand ins Abo, und der Anmelder sieht nur „Bitte später ` +
+          `erneut" — gesetzt heißt eben nicht richtig, ein falsch getipptes Passwort ist gesetzt), oder sie ging ` +
+          `hinaus und das Nachtragen des Belegs schlug fehl (dann fehlt der Einwilligungsnachweis, den die ` +
+          `Datenschutzerklärung zusagt). Zu tun: das Protokoll der Produktion nach „[Abo]" durchsehen — dort ` +
+          `steht, welcher der beiden Fälle vorliegt.`,
       );
     }
   }
