@@ -102,6 +102,49 @@ export function gemeindeDomain(website?: string | null): string | null {
   }
 }
 
+/**
+ * Der KANAL hinter einem Hostnamen — „Facebook", nicht fünf Hostnamen.
+ *
+ * Facebook meldet sich je nach Gerät und Weiterleitung als `facebook.com`,
+ * `m.`, `l.` oder `lm.facebook.com`; im Vermerk stünden sonst vier Kanäle für
+ * einen Beitrag. Was kein bekanntes Netz ist (die eigene Website der Gemeinde),
+ * behält seinen Hostnamen — dort IST er die Auskunft.
+ */
+export function kanalName(host: string): string {
+  const h = host.trim().toLowerCase().replace(/^www\./, "");
+  const netze: [string[], string][] = [
+    [["facebook.com", "fb.com", "fb.me"], "Facebook"],
+    [["instagram.com"], "Instagram"],
+    [["linkedin.com", "lnkd.in"], "LinkedIn"],
+    [["x.com", "twitter.com", "t.co"], "X"],
+    [["threads.net", "threads.com"], "Threads"],
+    [["youtube.com"], "YouTube"],
+    [["whatsapp.com"], "WhatsApp"],
+    [["t.me"], "Telegram"],
+    [["bsky.app"], "Bluesky"],
+    [["nebenan.de"], "nebenan.de"],
+    [["nextdoor.de"], "Nextdoor"],
+  ];
+  for (const [muster, name] of netze) {
+    if (muster.some((m) => h === m || h.endsWith(`.${m}`))) return name;
+  }
+  return h;
+}
+
+/**
+ * Verlaufszeile für eine Veröffentlichung, die über die Besucherstatistik
+ * aufgefallen ist.
+ *
+ * EIGENE FORM, NICHT DIE DER RÜCKLÄUFER: Die sagt „aus Postfach", und das wäre
+ * hier gelogen — niemand hat uns geschrieben, wir haben es an den Besuchern
+ * gesehen. Genannt werden deshalb der KANAL und das Datum des ersten Besuchs
+ * von dort, und beides wird als das beschriftet, was es ist: der Tag, an dem
+ * wir es gesehen haben, nicht der Tag der Veröffentlichung.
+ */
+export function veroeffentlichungsNotiz(z: { datum: string; kanal: string }): string {
+  return `[${z.datum}] veröffentlicht über ${z.kanal} (erster Besuch von dort, aus der Besucherstatistik)`;
+}
+
 /** Wortlaut für die Ausgabe — je Einordnung ein Satzteil, nie eine Abkürzung. */
 export const HERKUNFT_TEXT: Record<Herkunft, string> = {
   veroeffentlichung: "veröffentlicht",

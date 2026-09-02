@@ -24,10 +24,16 @@
  *      Papier, oder jemand übernimmt den Text und lässt die Adresse weg. Genau
  *      darum bittet der Brief, aber es passiert.
  *
- * Der schnellere, kostenlose Gegenkanal ist die Besucherstatistik: Aufrufe mit
- * einer Gemeinde-Domain als Herkunft erscheinen sofort. Sie ist über die
- * Abfrage-Schnittstelle für dieses Konto nicht erreichbar, im Dashboard aber
- * sichtbar.
+ * DER SCHNELLERE UND VOLLSTÄNDIGERE WEG IST DIE BESUCHERSTATISTIK
+ * (`npm run kommunen:klicks`, seit 02.09.2026). Sie ist erreichbar — die
+ * frühere Notiz an dieser Stelle behauptete das Gegenteil — sie kostet nichts,
+ * sie zeigt einen Verweis am selben Tag statt Wochen später, und sie sieht
+ * etwas, das ein Verweis-Verzeichnis prinzipiell nicht sieht: einen Beitrag in
+ * einem sozialen Netz. Von den vier bekannten Veröffentlichungen fand dieser
+ * Lauf hier ZWEI; die anderen beiden liefen über Facebook und LinkedIn.
+ *
+ * Beide behalten ihren Sinn: Ein Verzeichnis findet auch den Verweis, den
+ * niemand anklickt.
  */
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";

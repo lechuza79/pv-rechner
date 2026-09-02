@@ -31,8 +31,14 @@
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync } from "node:fs";
-import { herkunftJeSeite, ereignisseJeName, ANALYTICS_SEIT } from "../lib/web-analytics";
-import { ordneHerkunft, HERKUNFT_TEXT, type Herkunft } from "../lib/outreach-herkunft";
+import { aggregat, herkunftJeSeite, ereignisseJeName, ANALYTICS_SEIT } from "../lib/web-analytics";
+import {
+  ordneHerkunft,
+  kanalName,
+  veroeffentlichungsNotiz,
+  HERKUNFT_TEXT,
+  type Herkunft,
+} from "../lib/outreach-herkunft";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -90,6 +96,7 @@ async function main() {
   // aus wie „gab es nicht" statt wie „nicht gefragt".
   const morgen = new Date(Date.now() + 86_400_000).toISOString().slice(0, 10);
   const bis = args.find((a) => a.startsWith("--bis="))?.split("=")[1] ?? morgen;
+  const schreiben = args.includes("--schreiben");
 
   const db = await makeClient();
 
@@ -99,7 +106,7 @@ async function main() {
   // eigenen Seite der Gemeinde zu erkennen.
   const { data: kontakte, error } = await db
     .from("kommunen_kontakt")
-    .select("region_id, kampagne, contacted_at, outreach_status, website")
+    .select("region_id, kampagne, contacted_at, outreach_status, website, notes")
     .not("contacted_at", "is", null)
     .order("contacted_at");
   if (error) throw new Error(error.message);
@@ -109,6 +116,7 @@ async function main() {
     contacted_at: string;
     outreach_status: string;
     website: string | null;
+    notes: string | null;
   }[];
 
   // Regionen samt Eltern, für die Adressen. SEITENWEISE: Eine Abfrage ohne
@@ -129,13 +137,27 @@ async function main() {
   }
 
   const pfade = adressen(regionen, zeilen.map((z) => z.region_id));
-  const gemeindeJePfad = new Map<string, { name: string; website: string | null; kampagne: string; tag: string }>();
+  const gemeindeJePfad = new Map<
+    string,
+    {
+      regionId: string;
+      name: string;
+      website: string | null;
+      status: string;
+      notes: string | null;
+      kampagne: string;
+      tag: string;
+    }
+  >();
   for (const z of zeilen) {
     const pfad = pfade.get(z.region_id);
     if (!pfad) continue;
     gemeindeJePfad.set(pfad, {
+      regionId: z.region_id,
       name: regionen.get(z.region_id)?.name ?? z.region_id,
       website: z.website,
+      status: z.outreach_status,
+      notes: z.notes,
       kampagne: z.kampagne ?? "ohne Schub",
       tag: z.contacted_at.slice(0, 10),
     });
@@ -185,15 +207,92 @@ async function main() {
     .filter(([, s]) => (s.je.get("veroeffentlichung") ?? 0) > 0)
     .sort((a, b) => (b[1].je.get("veroeffentlichung") ?? 0) - (a[1].je.get("veroeffentlichung") ?? 0));
 
+  // JE VERÖFFENTLICHUNG DER ERSTE TAG. Der Kanal allein sagt nicht, wann es
+  // passiert ist, und ein Vermerk ohne Datum ist später nicht mehr einzuordnen.
+  // Gefragt wird je Seite nach Verweis UND Tag; genommen wird der früheste Tag,
+  // an dem ein Verweis dieser Art kam. Das ist der Tag, an dem WIR es gesehen
+  // haben — die Veröffentlichung selbst kann früher liegen, und genau so steht
+  // es auch im Vermerk.
   console.log(`Veröffentlicht: ${veroeffentlicht.length} von ${zugestellt.length} zugestellten Briefen`);
+  const belege: { name: string; regionId: string; kanaele: string; erstTag: string; status: string; notes: string | null }[] = [];
   for (const [pfad, s] of veroeffentlicht) {
     const g = gemeindeJePfad.get(pfad)!;
-    const wo = [...s.verweise]
+    const kanalListe = [...s.verweise]
       .filter(([h]) => ordneHerkunft(h, g.website) === "veroeffentlichung")
-      .sort((a, b) => b[1] - a[1])
-      .map(([h, n]) => `${h} ${n}`)
-      .join(", ");
-    console.log(`  ${g.name} (${g.kampagne}, ${g.tag}): ${s.je.get("veroeffentlichung")} Besucher über ${wo}`);
+      .sort((a, b) => b[1] - a[1]);
+    const kanaele = kanalListe.map(([h, n]) => `${h} ${n}`).join(", ");
+
+    let erstTag = "";
+    for (const r of await aggregat({
+      datensatz: "visits",
+      zeitraum,
+      nach: ["referrerHostname", "day"],
+      filter: `requestPath eq '${pfad}'`,
+      limit: 100,
+    })) {
+      if (ordneHerkunft(String(r.referrerHostname ?? ""), g.website) !== "veroeffentlichung") continue;
+      if (Number(r.visitors ?? 0) <= 0) continue;
+      const tag = String(r.timestamp ?? "").slice(0, 10);
+      if (tag && (!erstTag || tag < erstTag)) erstTag = tag;
+    }
+
+    belege.push({
+      name: g.name,
+      regionId: g.regionId,
+      kanaele: [...new Set(kanalListe.map(([h]) => kanalName(h)))].join(", "),
+      erstTag,
+      status: g.status,
+      notes: g.notes,
+    });
+    console.log(
+      `  ${g.name} (${g.kampagne}, Brief ${g.tag}): ${s.je.get("veroeffentlichung")} Besucher über ${kanaele}` +
+        (erstTag ? ` · erstmals am ${erstTag}` : " · Tag nicht ermittelbar"),
+    );
+  }
+
+  // ─── Nachtragen ─────────────────────────────────────────────────────────────
+  //
+  // Nur mit `--schreiben`, und nur, was noch nicht vermerkt ist. Der Vermerk
+  // trägt Kanal UND Datum: „über Facebook" allein ist in vier Wochen nicht mehr
+  // einzuordnen, und ein Datum ohne Kanal sagt nicht, woran wir es gesehen
+  // haben.
+  //
+  // GESPERRT BLEIBT GESPERRT — dieselbe Einbahnstraße wie bei den Rückläufern:
+  // Wer widersprochen hat, wird durch einen Besucher aus einem sozialen Netz
+  // nicht wieder zum offenen Kontakt.
+  if (belege.length) {
+    if (!schreiben) {
+      const offen = belege.filter((b) => b.status !== "veroeffentlicht");
+      if (offen.length) {
+        console.log(`\n${offen.length} davon noch nicht als veröffentlicht vermerkt. Zum Nachtragen: --schreiben`);
+      }
+    } else {
+      let n = 0;
+      for (const b of belege) {
+        const notiz = veroeffentlichungsNotiz({
+          datum: b.erstTag || new Date().toISOString().slice(0, 10),
+          kanal: b.kanaele,
+        });
+        const zeilenBisher = (b.notes ?? "").split("\n");
+        if (b.status === "veroeffentlicht" && zeilenBisher.includes(notiz)) continue;
+        const { error: e } = await db
+          .from("kommunen_kontakt")
+          .update({
+            outreach_status: "veroeffentlicht",
+            notes: b.notes ? `${b.notes}\n${notiz}` : notiz,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("region_id", b.regionId)
+          .neq("outreach_status", "gesperrt");
+        if (e) {
+          console.log(`  ! ${b.name}: ${e.message}`);
+          continue;
+        }
+        console.log(`  ✓ ${b.name}: ${notiz}`);
+        n++;
+      }
+      console.log(n ? `\n${n} nachgetragen.` : "\nNichts nachzutragen — alles schon vermerkt.");
+    }
   }
 
   // WAS DIESE MESSUNG NICHT SIEHT, wird benannt statt weggelassen. Eine

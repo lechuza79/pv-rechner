@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { ordneHerkunft, gemeindeDomain } from "../outreach-herkunft";
+import { ordneHerkunft, gemeindeDomain, kanalName, veroeffentlichungsNotiz } from "../outreach-herkunft";
 
 // Alle Fälle unten sind echte Verweise auf angeschriebene Gemeindeseiten,
 // gemessen am 02.09.2026. Der Test hält die Einordnung an der Wirklichkeit
@@ -66,5 +66,38 @@ describe("Herkunft eines Besuchers auf einer angeschriebenen Gemeindeseite", () 
     expect(gemeindeDomain("heringen.de")).toBe("heringen.de");
     expect(gemeindeDomain("kaputt::/")).toBeNull();
     expect(gemeindeDomain(null)).toBeNull();
+  });
+});
+
+// EIN BEITRAG IST EIN KANAL. Heringen kam über vier Facebook-Hostnamen; im
+// Vermerk standen daraufhin vier „Kanäle" für eine einzige Veröffentlichung.
+describe("Kanalname im Vermerk", () => {
+  it("fasst die Hostnamen eines Netzes zu einem Kanal zusammen", () => {
+    const kanaele = ["facebook.com", "m.facebook.com", "lm.facebook.com", "l.facebook.com"].map(kanalName);
+    expect(new Set(kanaele)).toEqual(new Set(["Facebook"]));
+  });
+
+  it("nennt die anderen Netze bei ihrem Namen", () => {
+    expect(kanalName("linkedin.com")).toBe("LinkedIn");
+    expect(kanalName("lnkd.in")).toBe("LinkedIn");
+    expect(kanalName("instagram.com")).toBe("Instagram");
+  });
+
+  // Die eigene Website der Gemeinde IST die Auskunft — sie zu „einem Netz"
+  // zusammenzufassen würde die stärkste Fundstelle unkenntlich machen.
+  it("lässt die Website der Gemeinde stehen", () => {
+    expect(kanalName("heringen.de")).toBe("heringen.de");
+    expect(kanalName("www.Heringen.DE")).toBe("heringen.de");
+  });
+
+  // Der Vermerk sagt, was er misst: den ersten Besuch von dort, nicht den Tag
+  // der Veröffentlichung. Beides zu verwechseln wäre die Fehlerklasse
+  // „Beschriftung sagt etwas anderes, als die Zahl misst".
+  it("schreibt Kanal, Datum und die Herkunft der Angabe in eine Zeile", () => {
+    const zeile = veroeffentlichungsNotiz({ datum: "2026-09-02", kanal: "Facebook" });
+    expect(zeile).toContain("2026-09-02");
+    expect(zeile).toContain("Facebook");
+    expect(zeile).toContain("erster Besuch");
+    expect(zeile).not.toContain("Postfach");
   });
 });
