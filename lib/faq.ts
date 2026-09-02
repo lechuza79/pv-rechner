@@ -785,7 +785,7 @@ export function anlagenbestandFaq(b: Anlagenbestand): FaqEntry[] {
   return [
     {
       q: "Wie viele Photovoltaikanlagen gibt es in Deutschland?",
-      a: `Im Marktstammdatenregister der Bundesnetzagentur sind ${zahl(b.gesamt.anzahl)} Solaranlagen gemeldet (Stand ${stand}). Darin stecken alle Größen: ${balkon ? `${zahl(balkon.anzahl)} Balkonkraftwerke` : "Balkonkraftwerke"}, ${privat ? `${zahl(privat.anzahl)} private Dachanlagen` : "private Dachanlagen"}, gewerbliche Dächer und ${frei ? `${zahl(frei.anzahl)} Freiflächenanlagen` : "Freiflächenanlagen"}. Gezählt werden gemeldete Anlagen — stillgelegte sind im Register nicht mehr enthalten.`,
+      a: `Im Marktstammdatenregister der Bundesnetzagentur sind ${zahl(b.gesamt.anzahl)} Solaranlagen gemeldet (Stand ${stand}). Darin stecken alle Größen: ${balkon ? `${zahl(balkon.anzahl)} Balkonkraftwerke` : "Balkonkraftwerke"}, ${privat ? `${zahl(privat.anzahl)} private Dachanlagen` : "private Dachanlagen"}, gewerbliche Dächer und ${frei ? `${zahl(frei.anzahl)} Freiflächenanlagen` : "Freiflächenanlagen"}. Gezählt wird, was dort als „in Betrieb" geführt ist; stillgelegte Anlagen bleiben im Register stehen, wir rechnen sie aber nicht mit.`,
     },
     {
       q: "Wie viele Balkonkraftwerke gibt es in Deutschland?",

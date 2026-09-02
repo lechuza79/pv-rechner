@@ -319,9 +319,10 @@ export default async function BestandDeutschlandPage() {
 
           <h2 style={S.h2}>Was diese Zahlen nicht sagen</h2>
           <p style={S.p}>
-            Das Register zählt gemeldete Anlagen. Stillgelegte fallen heraus, nicht
-            angemeldete tauchen nie auf, und je Anlage steht dort nur das Jahr der
-            Inbetriebnahme — kein Tag. Ein Vergleich „gegenüber genau vor einem Jahr" ist
+            Wir zählen, was im Register als „in Betrieb" geführt ist. Stillgelegte
+            Anlagen bleiben dort zwar stehen, sind hier aber nicht mitgerechnet; nicht
+            angemeldete tauchen überhaupt nie auf. Und je Anlage steht dort nur das Jahr
+            der Inbetriebnahme — kein Tag. Ein Vergleich „gegenüber genau vor einem Jahr" ist
             daraus nicht ableitbar; vergleichbar ist der Bestand zum Jahresende, und genau
             das steht überall auf dieser Seite.
           </p>

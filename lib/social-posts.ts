@@ -194,7 +194,7 @@ export function postStadtLand(k: SocialKennzahlen): SocialPost {
       absaetze: [
         `Das Balkonkraftwerk gilt als Lösung für Mieter in der Stadt: kleine Wohnung, kein eigenes Dach, 800 Watt am Geländer. Die Anmeldedaten zeigen das Gegenteil.`,
         `In den ${de(s.stadtAnzahl)} Städten über ${de(s.stadtAb / 1000)}.000 Einwohnern kommen ${de(s.stadtJeTausend, 1)} Steckersolargeräte auf 1.000 Einwohner, in den gut ${de(Math.round(s.landAnzahl / 1000))}.000 Gemeinden unter ${de(s.landUnter / 1000)}.000 Einwohnern sind es ${de(s.landJeTausend, 1)} — ${staerker ? `das ${de(faktor, 1)}-Fache` : `weniger`}. ${schlussSatz} ${untenText} je 1.000 Einwohner; an der Spitze steht ${spitze.name} mit ${de(spitze.balkonJeTausend, 1)}.`,
-        `Plausibel wird das, wenn man sich den Aufbau vorstellt: Ein Balkonkraftwerk braucht keine Genehmigung und keinen Handwerker, aber jemanden, der es aufstellt, ausrichtet und anmeldet. Im Reihenhaus mit Garten ist das einfacher als im vierten Stock über einem Balkon nach Norden.`,
+        `Plausibel wird das, wenn man sich den Aufbau vorstellt: Ein Balkonkraftwerk braucht keine Baugenehmigung und keinen Handwerker, aber jemanden, der es aufstellt, ausrichtet und anmeldet — und in der Mietwohnung zusätzlich das Einverständnis des Vermieters. Im Reihenhaus mit Garten fällt beides weg.`,
       ],
     },
     bild: {

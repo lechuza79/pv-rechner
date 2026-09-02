@@ -157,7 +157,7 @@ export default function AnlagenbestandWidget({
               beziehen und was das Register überhaupt zählt. */}
           <WidgetExportFooter
             widget={WIDGET}
-            note={`Anteile an ${anlagenZahlTeile(bestand.gesamt.anzahl).value} ${anlagenZahlTeile(bestand.gesamt.anzahl).unit} und ${gesamtLeistung.value} ${gesamtLeistung.unit}, jeweils gerundet — sie ergeben deshalb nicht exakt hundert. Gezählt werden gemeldete Anlagen; stillgelegte sind im Register nicht mehr enthalten.`}
+            note={`Anteile an ${anlagenZahlTeile(bestand.gesamt.anzahl).value} ${anlagenZahlTeile(bestand.gesamt.anzahl).unit} und ${gesamtLeistung.value} ${gesamtLeistung.unit}, jeweils gerundet — sie ergeben deshalb nicht exakt hundert. Gezählt wird, was im Register als „in Betrieb" geführt ist; stillgelegte Anlagen bleiben dort stehen und sind hier nicht mitgerechnet.`}
           />
         </div>
       </div>
