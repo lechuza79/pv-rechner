@@ -5,7 +5,7 @@ import { v, iconSizes } from "../lib/theme";
 import { IconArrowRight } from "./Icons";
 import Modal from "./Modal";
 import { FundingStatusBadge, FundingRates, FundingConditions, istDachSicht } from "./FundingProgramParts";
-import { fundingStandLabel, FUNDING_TECHNIK_LABEL, type FundingProgram, type FundingTechnik } from "../lib/funding-programs";
+import { fundingStandLabel, FUNDING_TECHNIK_FUER, type FundingProgram, type FundingTechnik } from "../lib/funding-programs";
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
@@ -251,7 +251,7 @@ export default function ResultFunding({
             </>
           ) : (
             <>
-              Für deinen Ort kennen wir kein aktives kommunales Förderprogramm für {FUNDING_TECHNIK_LABEL[technik]}.
+              Für deinen Ort kennen wir kein aktives kommunales Förderprogramm für {FUNDING_TECHNIK_FUER[technik]}.
               {/* Der bundesweite Zusatz gilt NICHT für jede Technik: Die Nullsteuer
                   ist ein Umsatzsteuersatz auf Photovoltaik und Speicher, und die
                   BEG rechnet der Wärmepumpen-Rechner längst selbst ab. Der Satz

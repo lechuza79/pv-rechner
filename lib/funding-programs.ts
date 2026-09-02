@@ -88,6 +88,23 @@ export function saetzeFuer<T extends { nur?: FundingTechnik[] }>(rates: T[], tec
 export const FUNDING_TECHNIK_LABEL: Record<FundingTechnik, string> = {
   pv: "Photovoltaik", balkon: "Balkonkraftwerk", waermepumpe: "Wärmepumpe",
 };
+
+/**
+ * Dieselben drei Techniken nach „für …" — und deshalb im Plural.
+ *
+ * Die Beschriftung oben steht für sich („Balkonkraftwerk"), in einem Satz
+ * gebeugt sie nicht: „kein Förderprogramm für Balkonkraftwerk" und „für
+ * Wärmepumpe" sind schlicht falsches Deutsch. Aufgefallen am 02.09.2026, als der
+ * Balkon-Rechner seinen Fördercheck bekam — im Wärmepumpen-Rechner stand der
+ * Fehler da schon länger und war nur niemandem aufgefallen.
+ *
+ * Der Plural passt in allen drei Fällen, ohne dass der Satz einen Artikel
+ * braucht. Grammatik ist Teil der Richtigkeit: „1 neue Anlagen" ist derselbe
+ * Fehler in Worten.
+ */
+export const FUNDING_TECHNIK_FUER: Record<FundingTechnik, string> = {
+  pv: "Photovoltaik", balkon: "Balkonkraftwerke", waermepumpe: "Wärmepumpen",
+};
 export type FundingStatus = "aktiv" | "ausgeschoepft" | "pausiert" | "eingestellt" | "unsicher";
 
 export const FUNDING_STATUS_LABEL: Record<FundingStatus, string> = {
