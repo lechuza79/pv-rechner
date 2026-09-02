@@ -50,7 +50,8 @@
     "kommunen:vorflug": "tsx scripts/kommunen-vorflug.ts",
     "atlas:kreisfrei": "tsx scripts/atlas-kreisfrei-messen.ts",
     "kommunen:verweise": "tsx scripts/kommunen-verweise-suchen.ts",
-    "kfw:import": "tsx scripts/kfw-report-import.ts"
+    "kfw:import": "tsx scripts/kfw-report-import.ts",
+    "auth:mailvorlagen": "tsx scripts/auth-mailvorlagen.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",
