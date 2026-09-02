@@ -194,8 +194,8 @@ const S: Record<string, React.CSSProperties> = {
     overflow: "hidden",
   },
   header: { marginBottom: 10 },
-  title: { fontSize: 17, fontWeight: 800, letterSpacing: "-0.01em", margin: "0 0 3px", lineHeight: 1.25, color: v("--color-text-primary") },
-  sub: { fontSize: 12.5, color: v("--color-text-muted"), margin: 0, lineHeight: 1.4 },
+  title: { fontSize: v("--font-size-h3"), fontWeight: 800, letterSpacing: "-0.01em", margin: "0 0 3px", lineHeight: 1.25, color: v("--color-text-primary") },
+  sub: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), margin: 0, lineHeight: 1.4 },
 
   summe: {
     display: "flex",
@@ -206,21 +206,21 @@ const S: Record<string, React.CSSProperties> = {
     borderBottom: `1px solid ${v("--color-border")}`,
   },
   summeWert: { display: "flex", alignItems: "baseline", gap: 6, whiteSpace: "nowrap" },
-  summeZahl: { fontSize: 30, fontWeight: 700, lineHeight: 1.1, color: v("--color-text-primary") },
-  summeEinheit: { fontSize: 14, color: v("--color-text-muted") },
-  summeLabel: { fontSize: 12.5, color: v("--color-text-secondary"), marginTop: 2 },
+  summeZahl: { fontSize: v("--font-size-display-md"), fontWeight: 700, lineHeight: 1.1, color: v("--color-text-primary") },
+  summeEinheit: { fontSize: v("--font-size-body"), color: v("--color-text-muted") },
+  summeLabel: { fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginTop: 2 },
 
   zeilen: { display: "flex", flexDirection: "column", gap: space.lg },
   zeile: { display: "flex", flexDirection: "column", gap: 4 },
-  zeileKopf: { fontSize: 13.5, fontWeight: 600, color: v("--color-text-primary") },
+  zeileKopf: { fontSize: v("--font-size-body"), fontWeight: 600, color: v("--color-text-primary") },
 
   balkenZeile: { display: "flex", alignItems: "center", gap: space.md },
   balkenSpur: { flex: 1, height: 12, background: v("--color-border"), borderRadius: v("--radius-sm"), overflow: "hidden" },
   balken: { height: "100%", borderRadius: v("--radius-sm") },
-  balkenWert: { display: "flex", gap: 6, alignItems: "baseline", fontSize: 12, whiteSpace: "nowrap", minWidth: 132, justifyContent: "flex-end", color: v("--color-text-primary") },
+  balkenWert: { display: "flex", gap: 6, alignItems: "baseline", fontSize: v("--font-size-small"), whiteSpace: "nowrap", minWidth: 132, justifyContent: "flex-end", color: v("--color-text-primary") },
   balkenProzent: { color: v("--color-text-muted") },
 
-  legende: { display: "flex", flexWrap: "wrap", gap: space.lg, marginTop: space.lg, fontSize: 12, color: v("--color-text-secondary") },
+  legende: { display: "flex", flexWrap: "wrap", gap: space.lg, marginTop: space.lg, fontSize: v("--font-size-small"), color: v("--color-text-secondary") },
   legendeEintrag: { display: "inline-flex", alignItems: "center", gap: 6 },
   legendePunkt: { width: 9, height: 9, borderRadius: 2, flexShrink: 0 },
 };

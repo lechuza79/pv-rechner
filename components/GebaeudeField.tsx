@@ -126,7 +126,7 @@ export default function GebaeudeField({
                 onClick={() => waehle(F_FLAECHE, { wohnflaeche: m2 })}
                 {...flowWahl(FRAGE_FLAECHE, mi, aktiv)}
                 style={{
-                  padding: "7px 10px", borderRadius: v("--radius-sm"), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                  padding: "7px 10px", borderRadius: v("--radius-sm"), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
                   background: aktiv ? v("--color-accent-dim") : v("--color-bg-muted"),
                   border: aktiv ? `1.5px solid ${v("--color-accent")}` : `1.5px solid ${v("--color-border")}`,
                   color: aktiv ? v("--color-accent") : v("--color-text-muted"),
@@ -182,7 +182,7 @@ export default function GebaeudeField({
       </AccordionField>
 
       {hinweis && offen === null && (
-        <div className="sc-acc" style={{ fontSize: 11, color: v("--color-text-faint"), marginTop: space.xs, lineHeight: 1.5 }}>
+        <div className="sc-acc" style={{ fontSize: v("--font-size-caption"), color: v("--color-text-faint"), marginTop: space.xs, lineHeight: 1.5 }}>
           {hinweis}
         </div>
       )}
@@ -192,7 +192,7 @@ export default function GebaeudeField({
           onClick={onWeissNicht}
           style={{
             marginTop: space.md, padding: 0, border: "none", background: "transparent",
-            color: v("--color-text-muted"), fontSize: 12, fontWeight: 600, cursor: "pointer",
+            color: v("--color-text-muted"), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
             textDecoration: "underline", textUnderlineOffset: 3,
           }}
         >

@@ -124,6 +124,15 @@ export function IconChevronRight({ size = 16, color = "currentColor", style }: I
   );
 }
 
+export function IconCopy({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={style} aria-hidden="true">
+      <rect x="9" y="9" width="12" height="12" rx="2" />
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+    </svg>
+  );
+}
+
 export function IconCheck({ size = 16, color = "currentColor", style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
@@ -265,6 +274,14 @@ export function IconTwitter({ size = 16, color = "currentColor", style }: IconPr
   );
 }
 
+export function IconLinkedIn({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M13.633 0H2.363C1.633 0 1 .55 1 1.273v11.361C1 13.36 1.633 14 2.363 14h11.265C14.36 14 15 13.358 15 12.634V1.273C15.005.55 14.36 0 13.633 0ZM5.153 11.716H3.18V6.05h1.973v5.666ZM4.235 5.12h-.014c-.634 0-1.045-.463-1.045-1.043 0-.59.421-1.04 1.069-1.04.647 0 1.044.448 1.058 1.04 0 .58-.411 1.043-1.068 1.043Zm8.03 6.596h-1.973V8.63c0-.744-.266-1.252-.928-1.252-.506 0-.806.342-.94.674-.05.119-.063.283-.063.449v3.215H6.388s.026-5.216 0-5.756h1.973v.815c.262-.405.731-.983 1.777-.983 1.297 0 2.269.849 2.269 2.673v3.251h-.142Z" fill={color} />
+    </svg>
+  );
+}
+
 export function IconCar({ size = 16, color = "currentColor", style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
@@ -306,6 +323,40 @@ export function IconTrendDown({ size = 16, color = "currentColor", style }: Icon
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
       <polyline points="23 18 13.5 8.5 8.5 13.5 1 6" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       <polyline points="17 18 23 18 23 12" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/**
+ * Glocke — das Zeichen fürs Abonnieren.
+ *
+ * Dieselbe Form wie im Schwesterprojekt, wo sie an derselben Handlung hängt.
+ * Der Schwing-Effekt sitzt NICHT hier, sondern am Knopf, der sie trägt
+ * (`.sc-glocke` in lib/theme.ts): Ein Symbol, das von sich aus wackelt, wäre
+ * überall dort falsch, wo es nur etwas bezeichnet statt zu einer Handlung
+ * einzuladen.
+ */
+export function IconGlocke({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+// Das Google-Zeichen trägt seine vier Farben fest — sie sind Teil der Marke und
+// dürfen dem Tageslicht-Theme NICHT folgen, aus demselben Grund wie das
+// Ampel-Grün der EE-Ampel. Deshalb nimmt dieses Zeichen als einziges keinen
+// Farbwert an. Googles Gestaltungsvorgaben für den Anmeldeknopf verlangen das
+// unveränderte Zeichen.
+export function IconGoogle({ size = 16, style }: { size?: number; style?: React.CSSProperties }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }} aria-hidden="true">
+      <path d="M17.64 9.2045c0-.6381-.0573-1.2518-.1636-1.8409H9v3.4814h4.8436c-.2086 1.125-.8427 2.0782-1.7959 2.7164v2.2581h2.9087c1.7018-1.5668 2.6836-3.874 2.6836-6.615Z" fill="#4285F4" />
+      <path d="M9 18c2.43 0 4.4673-.806 5.9564-2.1805l-2.9087-2.2581c-.8059.54-1.8368.859-3.0477.859-2.344 0-4.3282-1.5831-5.0359-3.7104H.9573v2.3318C2.4382 15.9832 5.4818 18 9 18Z" fill="#34A853" />
+      <path d="M3.9641 10.71c-.18-.54-.2822-1.1168-.2822-1.71s.1023-1.17.2822-1.71V4.9582H.9573A8.9965 8.9965 0 0 0 0 9c0 1.4523.3477 2.8268.9573 4.0418L3.9641 10.71Z" fill="#FBBC05" />
+      <path d="M9 3.5795c1.3214 0 2.5077.4541 3.4405 1.346l2.5814-2.5814C13.4632.8918 11.426 0 9 0 5.4818 0 2.4382 2.0168.9573 4.9582L3.9641 7.29C4.6718 5.1627 6.6559 3.5795 9 3.5795Z" fill="#EA4335" />
     </svg>
   );
 }

@@ -12,6 +12,32 @@ Kein Redaktionsplan, sondern die Materialsammlung, aus der später ein Generator
 
 ---
 
+## Stand der Umsetzung (26.08.2026)
+
+Sechs Geschichten sind gebaut und stehen im Redaktionstisch; die LinkedIn-Anbindung
+veröffentlicht Text und Bild, prüft vorher und warnt vor dem Ablauf des Zugangs. Der Ausbau der
+Ansicht zum Design-Werkzeug läuft in einer eigenen Sitzung — Übergabe samt Fallen:
+`docs/redaktionssystem-uebergabe.md`.
+
+**Zwei Messungen aus dieser Runde, die nicht wiederholt werden müssen:**
+
+- **Die Story-Themen haben kein messbares Suchvolumen** („Balkonkraftwerk Stadt Land", „wo stehen
+  die meisten", „Solaranlagen pro Einwohner Bundesland": null). Nachfrage haben die
+  BESTANDSfragen: „wie viele Balkonkraftwerke gibt es in Deutschland" 90 Suchen im Monat bei
+  geringer Konkurrenz, „wie viele Wärmepumpen" ebenfalls 90, dazu ein halbes Dutzend kleinerer.
+  Zusammen rund 240 im Monat auf Fragen, die wir tagesaktuell beantworten können. Daraus entsteht
+  eine eigene Zahlen-Seite (eigene Sitzung), nicht eine Seite je Geschichte.
+- **Verborgener Text im HTML wird indexiert.** Googles Spam-Richtlinie nennt Akkordeons und Tabs
+  ausdrücklich als zulässig; was verloren geht, ist Inhalt, der erst per Klick NACHGELADEN wird.
+  Zur Gewichtung gibt es keine Primärquelle, in keine Richtung. Adress-Anker gelten nicht als
+  eigene Adressen — ein Sprungziel erzeugt keine eigene Sichtbarkeit.
+
+**Was daraus folgt:** Die Geschichten sind Material für Beiträge und für Seiteninhalte, nicht
+Seitenziele. Der Betreiber will den Website-Teil verschoben, bis das Posten steht — verschoben,
+nicht verworfen.
+
+---
+
 ## Wie ein Eintrag zu lesen ist
 
 Jeder Eintrag beantwortet sechs Fragen:

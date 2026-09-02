@@ -91,6 +91,38 @@ export const VORBEHALT_WOERTER = [
  * steht für einen Originaltext, den ein Prüfer an diesem Tag selbst gelesen hat.
  */
 export const RECHTSBELEGE: Rechtsbeleg[] = [
+  // ── Verjährung: wie lange der Einwilligungsnachweis aufbewahrt wird ───────
+  //
+  // Beide Fristen bestimmen zusammen, wann der Nachweis eines abgemeldeten
+  // Abos gelöscht wird. Die zivilrechtliche ist die längere und deckt die
+  // bußgeldrechtliche mit ab; maßgeblich ist deshalb § 199 Abs. 1 BGB mit
+  // seiner Ultimo-Regel.
+  {
+    norm: "BGB §195",
+    gesetz: "Bürgerliches Gesetzbuch",
+    traegt:
+      "Regelmäßige Verjährungsfrist von drei Jahren. Zusammen mit § 199 Abs. 1 " +
+      "(Beginn mit dem Schluss des Jahres) ergibt sich der Löschtermin für den " +
+      "Einwilligungsnachweis: 31.12. des dritten Jahres nach der letzten Meldung.",
+    fundstelle: "§ 195, dazu § 199 Abs. 1",
+    quelle: "gesetze-im-internet.de/bgb/__195.html",
+    geprueftIso: "2026-09-01",
+    zustand: "gesetz",
+  },
+  {
+    norm: "OWiG §31",
+    gesetz: "Gesetz über Ordnungswidrigkeiten",
+    traegt:
+      "Verfolgungsverjährung von drei Jahren bei einem Bußgeldrahmen über " +
+      "15.000 € (Abs. 2 Nr. 1); Beginn, sobald die Handlung beendet ist " +
+      "(Abs. 3 Satz 1) — hier also mit der einzelnen versandten Mail, nicht " +
+      "mit der Abmeldung. Anwendbar über § 41 Abs. 1 BDSG.",
+    fundstelle: "§ 31 Abs. 2 Nr. 1 und Abs. 3 Satz 1",
+    quelle: "gesetze-im-internet.de/owig_1968/__31.html",
+    geprueftIso: "2026-09-01",
+    zustand: "gesetz",
+  },
+
   // ── Umsatzsteuer ──────────────────────────────────────────────────────────
   {
     norm: "UStG §12",
@@ -380,6 +412,28 @@ export const RECHTSBELEGE: Rechtsbeleg[] = [
     fundstelle: "§ 5 Abs. 1 Satz 1, Ausnahme in Abs. 2 Nr. 1",
     quelle: "gesetze-im-internet.de/mastrv/__5.html",
     geprueftIso: "2026-08-26",
+    zustand: "gesetz",
+  },
+
+  // ── Wettbewerbsrecht ──────────────────────────────────────────────────────
+  {
+    norm: "UWG §5",
+    gesetz: "Gesetz gegen den unlauteren Wettbewerb",
+    traegt:
+      "Warum das Wort „Test“ auf dieser Seite nirgends steht: Wir messen keine Geräte. " +
+      "Trägt außerdem die Schranken für absolute Werbeaussagen in der Vertrauensleiste.",
+    // Am 27.08.2026 im Original gelesen. Absatz 1 ist die Generalklausel
+    // (irreführende Handlung, die zu einer anderen geschäftlichen Entscheidung
+    // veranlasst). Der für uns einschlägige Teil steht in Absatz 2 Nr. 1: dort
+    // sind neben den „wesentlichen Merkmalen der Ware oder Dienstleistung“
+    // ausdrücklich „die Ergebnisse oder wesentlichen Bestandteile von Tests der
+    // Waren oder Dienstleistungen“ genannt. Eine Seite, die „Test“ in den Titel
+    // nimmt, ohne gemessen zu haben, macht damit eine Angabe über ein
+    // Testergebnis, das es nicht gibt — die Fundstelle ist also nicht nur die
+    // allgemeine Irreführung, sondern der ausdrücklich benannte Fall.
+    fundstelle: "§ 5 Abs. 1 und Abs. 2 Nr. 1 (Tests der Waren oder Dienstleistungen)",
+    quelle: "gesetze-im-internet.de/uwg_2004/__5.html",
+    geprueftIso: "2026-08-27",
     zustand: "gesetz",
   },
 ];

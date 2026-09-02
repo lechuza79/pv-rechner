@@ -13,7 +13,7 @@ export default function AnlagenbestandEmbed({ bestand }: { bestand: Anlagenbesta
 
   if (!bestand || bestand.segmente.length === 0) {
     return (
-      <div style={{ padding: 16, fontFamily: "var(--widget-font-family)", color: "var(--widget-muted)", fontSize: 13 }}>
+      <div style={{ padding: 16, fontFamily: "var(--widget-font-family)", color: "var(--widget-muted)", fontSize: "var(--font-size-small)" }}>
         Die Bestandszahlen sind gerade nicht abrufbar.
       </div>
     );

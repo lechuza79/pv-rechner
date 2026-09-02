@@ -79,7 +79,20 @@ jobs:
         timeout-minutes: 5
         run: npx playwright install-deps chromium
 
+      # Schritt-Zeitlimit UNTER dem Job-Limit von 300 — der Unterschied ist die
+      # Ampel: Ein gerissenes JOB-Limit endet „cancelled" und faellt erst nach
+      # drei erfolglosen Naechten auf (`laufStumm`), ein gerissenes SCHRITT-Limit
+      # endet „failure" und ist am naechsten Morgen rot zu sehen.
+      #
+      # 280 statt 300, damit der Vorlauf hineinpasst: Bei kaltem Cache kommen
+      # Browser-Download (bis 10) und Systempakete (bis 5) plus Grundlast dazu,
+      # zusammen 298. GEMESSEN 27.08.2026 (8 Laeufe): der Schritt brauchte
+      # zuletzt 263,6 Minuten — die Reserve ist duenn, und genau das meldet der
+      # Gesundheitscheck bereits als Warnung (`zeitreserveKnapp`, ab drei
+      # Vierteln). Waechst der Lauf weiter, soll er hier rot reissen und nicht
+      # drei Naechte lang stumm abbrechen.
       - name: Flow walker, alle Kombinationen (production build)
+        timeout-minutes: 280
         run: npm run test:flows
         env:
           FLOW_ALLE_KOMBINATIONEN: "1"
@@ -91,10 +104,27 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
 
-      - name: Upload Playwright report
+      # GEMESSEN 27.08.2026: Dieser Schritt hat noch NIE etwas hochgeladen. Im
+      # roten Lauf 32966743790 stand woertlich „No files were found with the
+      # provided path: playwright-report/" — und zwei Zeilen darueber im selben
+      # Log eine Ablaufverfolgung unter `test-results/.../trace.zip`, die damit
+      # niemand bekommen hat.
+      #
+      # Der Grund ist die Berichtsform: Im CI steht der Reporter auf „github"
+      # (playwright.config.ts), und der schreibt seine Ausgabe in die Annotationen
+      # des Laufs, nicht in einen Ordner `playwright-report/`. Den gibt es nur mit
+      # dem HTML-Reporter. Was bei einem Fehlschlag WIRKLICH entsteht, ist die
+      # Ablaufverfolgung des Wiederholungslaufs (`trace: "on-first-retry"`), und
+      # die liegt in Playwrights Standard-Ausgabeordner `test-results/`.
+      #
+      # Bewusst NICHT `if: always()`: Bei gruenem Lauf entsteht dort nichts, und
+      # ein Abbruch mitten im Testschritt hinterlaesst ebenfalls nichts —
+      # Playwright schreibt die Verfolgung erst beim Abschluss eines Versuchs.
+      # Gegen einen Abbruch hilft das Schritt-Zeitlimit oben, nicht der Upload.
+      - name: Upload Playwright-Ablaufverfolgung
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-flows-nightly
-          path: playwright-report/
+          path: test-results/
           retention-days: 7

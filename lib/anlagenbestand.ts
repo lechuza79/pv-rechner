@@ -175,7 +175,10 @@ export function zuwachs(jetzt: number, stichtag: number): { absolut: number; ant
 export function monateSeitStichtag(standIso: string, stichtagJahr: number): number {
   const jahr = Number(standIso.slice(0, 4));
   const monat = Number(standIso.slice(5, 7));
-  if (!Number.isFinite(jahr) || !Number.isFinite(monat)) return 0;
+  // Auch das Stichtagsjahr prüfen: Fehlt es, rechnete die Funktion mit einem
+  // ungültigen Wert weiter, und das Wort für „null Monate" landete im
+  // sichtbaren Text. Vom Mechanik-Wächter gefunden, nicht im Browser.
+  if (!Number.isFinite(jahr) || !Number.isFinite(monat) || !Number.isFinite(stichtagJahr)) return 0;
   return Math.max(0, (jahr - stichtagJahr - 1) * 12 + monat);
 }
 
@@ -192,6 +195,10 @@ const MONATSWORT = [
 
 export function zeitraumSeitStichtag(standIso: string, stichtagJahr: number): string {
   const m = monateSeitStichtag(standIso, stichtagJahr);
+  // Ohne belastbaren Stichtag wird der Zeitraum GAR NICHT benannt. Eine
+  // Beschriftung, die ihn errät, ist genau das, was diese Funktion verhindern
+  // soll.
+  if (!Number.isFinite(stichtagJahr)) return "seit dem letzten Jahreswechsel";
   if (m <= 0) return `seit Ende ${stichtagJahr}`;
   const wort = m < MONATSWORT.length ? MONATSWORT[m] : String(m);
   return m === 1 ? `im ersten Monat des Jahres ${stichtagJahr + 1}` : `in den ersten ${wort} Monaten des Jahres ${stichtagJahr + 1}`;

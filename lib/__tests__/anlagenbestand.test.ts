@@ -237,7 +237,18 @@ describe("Eine Quelle für die Bundeszahlen", () => {
     // einzige Oberfläche waren, fiel das in gerundeten Millionen nicht auf;
     // seit die Bestandsseite dieselben Zahlen groß hinschreibt, wären es zwei
     // Zahlen für dieselbe Größe auf einer Seite.
+    //
+    // Geprüft werden die ZUWEISUNGEN, nicht die gelesenen Spalten: Die
+    // Jahresstände der Award-Tabelle werden weiterhin gebraucht, nur eben für
+    // Größen mit Einwohnerbezug, die der Rollup gar nicht kennt. Die erste
+    // Fassung verbot die Spalten und wurde rot, sobald jemand eine solche
+    // Kennzahl ergänzte — ein Wächter, der die falsche Frage stellt.
     expect(quelle).toContain("getNationalSolarStock");
-    expect(quelle).not.toMatch(/balkon_count_ly|solar_kwp_ly/);
+    const zuweisung = (feld: string) =>
+      new RegExp(`${feld}:\\s*(gem|zeilen|bewertbar)\\.|${feld}:\\s*summe\\(`).test(quelle);
+    for (const feld of ["balkonJetzt", "balkonVorJahr", "solarKwpJetzt", "solarKwpVorJahr",
+                        "privatDachKwp", "gewerbeDachKwp", "freiflaecheKwp", "solarGesamtKwp"]) {
+      expect(zuweisung(feld), `${feld} wird aus den Gemeindezeilen summiert`).toBe(false);
+    }
   });
 });

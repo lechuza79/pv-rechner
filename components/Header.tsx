@@ -171,7 +171,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   const linkStyle = (page: string): React.CSSProperties => ({
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     fontWeight: 600,
     color: activePage === page ? v('--color-accent') : v('--color-text-secondary'),
     textDecoration: "none",
@@ -182,7 +182,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
   });
 
   const mobileLinkStyle = (page: string): React.CSSProperties => ({
-    fontSize: 16,
+    fontSize: v("--font-size-lead"),
     fontWeight: 600,
     color: activePage === page ? v('--color-accent') : v('--color-text-primary'),
     textDecoration: "none",
@@ -198,7 +198,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
   // Einloggen-Element (für Desktop-Leiste UND Burger, Styling folgt isDesktop).
   const loginElement = onLoginClick ? (
     <button onClick={() => { onLoginClick(); closeMenu(); }} style={{
-      background: "none", border: "none", fontSize: isDesktop ? 14 : 16, fontWeight: 600,
+      background: "none", border: "none", fontSize: isDesktop ? v("--font-size-body") : v("--font-size-lead"), fontWeight: 600,
       color: v('--color-text-secondary'), cursor: "pointer", padding: isDesktop ? 0 : "12px 0",
       fontFamily: v('--font-text'), display: "flex", alignItems: "center", gap: isDesktop ? 6 : 8,
     }}>
@@ -224,7 +224,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     : authState.status === "authed" ? (
       <>
         <div style={{
-          fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
+          fontSize: v("--font-size-small"), fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
           color: v('--color-text-muted'), padding: "14px 0 4px",
         }}>
           {email || "Mein Konto"}
@@ -233,7 +233,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
           <IconUser size={16} color={v('--color-accent-light')} /> Mein Konto
         </Link>
         <button onClick={doLogout} style={{
-          background: "none", border: "none", fontSize: 16, fontWeight: 600,
+          background: "none", border: "none", fontSize: v("--font-size-lead"), fontWeight: 600,
           color: v('--color-text-muted'), cursor: "pointer", padding: "12px 0",
           fontFamily: v('--font-text'), textAlign: "left",
         }}>
@@ -411,7 +411,7 @@ function ProfileMenu({ email, onLogout }: { email: string; onLogout: () => void 
 
   const itemStyle: React.CSSProperties = {
     display: "block", width: "100%", textAlign: "left", textDecoration: "none",
-    padding: "10px 12px", borderRadius: 10, fontSize: 14, fontWeight: 600,
+    padding: "10px 12px", borderRadius: 10, fontSize: v("--font-size-body"), fontWeight: 600,
     color: v('--color-text-primary'), background: "transparent",
     border: "none", cursor: "pointer", fontFamily: v('--font-text'),
   };
@@ -446,7 +446,7 @@ function ProfileMenu({ email, onLogout }: { email: string; onLogout: () => void 
         }}>
           {email && (
             <div style={{
-              fontSize: 12, color: v('--color-text-muted'), padding: "6px 12px 8px",
+              fontSize: v("--font-size-small"), color: v('--color-text-muted'), padding: "6px 12px 8px",
               borderBottom: `1px solid ${v('--color-border')}`, marginBottom: 4,
               overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
             }}>
@@ -505,7 +505,7 @@ function DesktopDropdown({
         aria-expanded={open}
         onFocus={openNow}
         style={{
-          fontSize: 14,
+          fontSize: v("--font-size-body"),
           fontWeight: 600,
           textDecoration: "none",
           display: "inline-flex",
@@ -555,14 +555,14 @@ function DesktopDropdown({
                   onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = "transparent"; }}
                 >
                   <div style={{
-                    fontSize: 14,
+                    fontSize: v("--font-size-body"),
                     fontWeight: 700,
                     color: isActive ? v('--color-accent') : v('--color-text-primary'),
                     marginBottom: 2,
                   }}>
                     {item.label}
                   </div>
-                  <div style={{ fontSize: 12.5, color: v('--color-text-muted') }}>{item.desc}</div>
+                  <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted') }}>{item.desc}</div>
                 </Link>
               );
             })}
@@ -588,7 +588,7 @@ function MobileSection({
   return (
     <>
       <div style={{
-        fontSize: 12,
+        fontSize: v("--font-size-small"),
         fontWeight: 700,
         textTransform: "uppercase",
         letterSpacing: "0.04em",
@@ -603,7 +603,7 @@ function MobileSection({
           href={item.href}
           onClick={onNavigate}
           style={{
-            fontSize: 16,
+            fontSize: v("--font-size-lead"),
             fontWeight: 600,
             color: !item.zweitnennung && activePage === item.page ? v('--color-accent') : v('--color-text-primary'),
             textDecoration: "none",

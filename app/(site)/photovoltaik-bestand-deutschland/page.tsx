@@ -157,8 +157,9 @@ export default async function BestandDeutschlandPage() {
   const balkonPlus = balkon ? zuwachs(balkon.anzahl, balkon.anzahlStichtag) : null;
   const gesamtPlusKwp = bestand.gesamt.kwp - bestand.gesamt.kwpStichtag;
   const laender = laenderNachLeistung(bestand);
-  const postWachstum = posts.find((p) => p.id === "wachstum-balkon-solar");
-  const postStadtLand = posts.find((p) => p.id === "stadt-land-balkon");
+  const onsiteVon = (id: string) => posts.find((p) => p.id === id)?.onsite;
+  const postWachstum = onsiteVon("wachstum-balkon-solar");
+  const postStadtLand = onsiteVon("stadt-land-balkon");
 
   return (
     <div style={S.page}>
@@ -263,8 +264,8 @@ export default async function BestandDeutschlandPage() {
 
           {postWachstum ? (
             <>
-              <h2 style={S.h2}>{postWachstum.onsite.ueberschrift}</h2>
-              {postWachstum.onsite.absaetze.map((a) => (
+              <h2 style={S.h2}>{postWachstum.ueberschrift}</h2>
+              {postWachstum.absaetze.map((a) => (
                 <p key={a} style={S.p}>{a}</p>
               ))}
             </>
@@ -310,8 +311,8 @@ export default async function BestandDeutschlandPage() {
 
           {postStadtLand ? (
             <>
-              <h2 style={S.h2}>{postStadtLand.onsite.ueberschrift}</h2>
-              {postStadtLand.onsite.absaetze.map((a) => (
+              <h2 style={S.h2}>{postStadtLand.ueberschrift}</h2>
+              {postStadtLand.absaetze.map((a) => (
                 <p key={a} style={S.p}>{a}</p>
               ))}
             </>

@@ -61,8 +61,8 @@ export default function PresetNumberInput({
   }, [value, isCustom]);
 
   const s = compact
-    ? { width: 48, fontSize: 11, padding: "5px 4px", border: 1, unitSize: 10, unitColor: v("--color-text-faint"), bgIdle: v("--color-bg"), colorIdle: v("--color-text-faint"), gap: 3 }
-    : { width: 56, fontSize: 12, padding: "7px 4px", border: 1.5, unitSize: 11, unitColor: v("--color-text-muted"), bgIdle: v("--color-bg-muted"), colorIdle: v("--color-text-muted"), gap: 4 };
+    ? { width: 48, fontSize: v("--font-size-caption"), padding: "5px 4px", border: 1, unitSize: 10, unitColor: v("--color-text-faint"), bgIdle: v("--color-bg"), colorIdle: v("--color-text-faint"), gap: 3 }
+    : { width: 56, fontSize: v("--font-size-small"), padding: "7px 4px", border: 1.5, unitSize: 11, unitColor: v("--color-text-muted"), bgIdle: v("--color-bg-muted"), colorIdle: v("--color-text-muted"), gap: 4 };
 
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: s.gap }}>

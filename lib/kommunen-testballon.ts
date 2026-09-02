@@ -139,6 +139,30 @@ export const SCHUEBE: Record<string, Schub> = {
     regeln: TESTBALLON_REGELN,
     grund: "Reserve für den zweiten Schub: Ferien seit 12.08.2026 vorbei, nächste ab 12.10.2026.",
   },
+  "mail-nord-ost": {
+    kampagne: "mail-nord-ost",
+    // Schleswig-Holstein, Hamburg, Berlin, Brandenburg, Mecklenburg-Vorpommern,
+    // Sachsen, Sachsen-Anhalt, Thüringen.
+    bl: ["01", "02", "11", "12", "13", "14", "15", "16"],
+    kanal: "rollen-postfach",
+    regeln: TESTBALLON_REGELN,
+    grund:
+      "Acht Länder in einem Schub statt jede Woche einen neuen festzuschreiben. " +
+      "Alle acht sind ab dem 27.08.2026 durchgehend ferienfrei; die nächsten Ferien " +
+      "beginnen frühestens im Oktober. Der Versand prüft die Ferien ohnehin je " +
+      "Gemeinde, die Bündelung spart nur das wiederholte Festschreiben.",
+  },
+  "mail-nrw": {
+    kampagne: "mail-nrw",
+    bl: ["05"], // Nordrhein-Westfalen
+    kanal: "rollen-postfach",
+    regeln: TESTBALLON_REGELN,
+    grund:
+      "Eigener Schub, weil die Sommerferien dort erst am 01.09.2026 enden — " +
+      "einen Tag später als bei den übrigen. In einem gemeinsamen Schub hätte der " +
+      "Versand die NRW-Gemeinden am ersten Tag stillschweigend übersprungen, und " +
+      "übersprungene Gemeinden sind von versendeten schwer zu unterscheiden.",
+  },
 };
 
 /**

@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import Modal from "../../../../components/Modal";
+import { v } from "../../../../lib/theme";
 
 // The full Wärmepumpen-Rechner is a heavy client flow — load it lazily and only
 // once the modal is opened, so the guide page stays light. It's a self-contained
@@ -12,7 +13,7 @@ import Modal from "../../../../components/Modal";
 const Waermepumpe = dynamic(() => import("../../waermepumpe-rechner/waermepumpe"), {
   ssr: false,
   loading: () => (
-    <div style={{ padding: "48px 0", textAlign: "center", color: "var(--color-text-muted)", fontSize: 14 }}>
+    <div style={{ padding: "48px 0", textAlign: "center", color: "var(--color-text-muted)", fontSize: v("--font-size-body") }}>
       Rechner wird geladen …
     </div>
   ),

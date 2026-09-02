@@ -1,10 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { nurFuerDieSitzung, BLEIBEN_COOKIE, bleibenGilt } from "../../../lib/auth-cookies";
 import { NextRequest, NextResponse } from "next/server";
 import { DEFAULT_PRICES } from "../../../lib/prices-config";
 
 async function getSupabase() {
   const cookieStore = await cookies();
+  const bleiben = bleibenGilt(cookieStore.get(BLEIBEN_COOKIE)?.value);
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -16,7 +18,7 @@ async function getSupabase() {
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
+              cookieStore.set(name, value, nurFuerDieSitzung(name, options, bleiben))
             );
           } catch {
             // Server Component context
@@ -132,6 +134,12 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (error) {
+    // Der Grund MUSS ins Log. Die drei Geschwister-Pfade (GET hier, PUT und DELETE
+    // in [id]/route.ts) tun das laengst; nur ausgerechnet das Speichern schwieg.
+    // Folge (gemessen 28.08.2026): Am 27.08. schlugen zwei Speicherversuche mit 500
+    // fehl, und weder Vercels Fehler-Cluster noch die Logs kannten den Grund — die
+    // Ursache liess sich nur ueber einen Abgleich der Tabellenspalten finden.
+    console.error("[calculations] insert failed:", error.message);
     return NextResponse.json({ error: "Berechnung konnte nicht gespeichert werden" }, { status: 500 });
   }
 

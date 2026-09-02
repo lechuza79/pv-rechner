@@ -33,6 +33,22 @@ import { DB_READ_TIMEOUT_MS } from "../lib/db-timeout";
 import { PRUEFSTAND, faelligkeiten } from "../lib/pruefstand";
 import { RELEASE_PLAN, planMeldungen } from "../lib/release-plan";
 import { sollWarnen, warnstufe } from "../lib/social-ablauf";
+import { paramsToRow } from "../lib/types";
+import {
+  BASIS_TAGE,
+  FEHLBETRAG_MELDEN_AB_ANTEIL,
+  KOSTEN_PROJEKTE,
+  KOSTEN_TEAM_ID,
+  KOSTENWACHE_ZUGANG,
+  PROTOKOLL_AUFBEWAHRUNG_TAGE,
+  SPRUNG_FAKTOR,
+  beurteileKostenTag,
+  fehlbetragObergrenze,
+  groesstesVielfaches,
+  leseGruppen,
+  menge,
+  zuBeurteilenderTag,
+} from "../lib/kostenwache";
 
 // In der GitHub-Action kommen die Zugangsdaten aus den Repo-Secrets. Lokal
 // standen sie nicht zur Verfügung — der Check fiel dann still auf die feste
@@ -496,6 +512,227 @@ export function mastrAlterTage(importedAt: string, heute: Date): number {
 
 export type MastrFrische = { importedAt: string; alterTage: number; urteil: "gruen" | "gelb" | "rot" };
 
+// ─── Schreibt der Code Felder, die die Tabelle gar nicht hat? ────────────────
+//
+// WARUM ES DAS GIBT (28.08.2026): Das Speichern einer Berechnung war FÜNF
+// MONATE kaputt, ohne dass irgendetwas angeschlagen hätte. Am 28.03.2026 kam im
+// Code ein neues Feld dazu (`einspeisung_modus`), die Tabelle bekam es nie —
+// jeder Speicherversuch endete mit HTTP 500. Kein Typfehler (die Grenze zur
+// Datenbank behauptet die Form, sie prüft sie nicht), kein roter Test (Tests
+// kennen die echte Tabelle nicht), keine kaputte Seite (nur der eine Knopf).
+// Und die Nutzung ist zu gering, als dass es an einer Fehlerquote auffiele:
+// drei Aufrufe in sieben Tagen.
+//
+// Dieselbe Klasse wie `datenFormVerstanden` beim Förderkatalog, nur in der
+// anderen Richtung: dort läuft die DATENFORM dem Code davon, hier der CODE der
+// Tabelle. Beide sind von außen unsichtbar und brauchen deshalb eine Messung
+// statt eines Merksatzes.
+//
+// Zwei Befunde, beide real eingetreten:
+//   fehlend       — der Code schreibt ein Feld, das es in der Tabelle nicht gibt
+//   nullKollision — der Code schreibt dort NULL, wo die Tabelle einen Wert
+//                   verlangt. DAS war der zweite Blocker desselben Tages
+//                   (`o_einsp`, „kein eigener Einspeisesatz gesetzt") und der
+//                   teurere: Er wäre erst NACH der Reparatur des ersten
+//                   sichtbar geworden, also beim nächsten Lauf noch einmal.
+//
+// Reine Funktion mit hereingereichten Listen — sie soll ohne Netz prüfbar sein.
+export function spaltenAbgleich(
+  geschrieben: Record<string, unknown>,
+  vorhandeneSpalten: readonly string[],
+  pflichtSpalten: readonly string[],
+): { fehlend: string[]; nullKollision: string[] } {
+  const vorhanden = new Set(vorhandeneSpalten);
+  const pflicht = new Set(pflichtSpalten);
+  const fehlend: string[] = [];
+  const nullKollision: string[] = [];
+
+  for (const [feld, wert] of Object.entries(geschrieben)) {
+    if (!vorhanden.has(feld)) {
+      fehlend.push(feld);
+      continue; // Was fehlt, kann nicht zusätzlich kollidieren — sonst zweimal gemeldet.
+    }
+    if ((wert === null || wert === undefined) && pflicht.has(feld)) nullKollision.push(feld);
+  }
+
+  return { fehlend, nullKollision };
+}
+
+export type SpaltenBefund = { tabelle: string; fehlend: string[]; nullKollision: string[] };
+
+/**
+ * Holt die echten Spalten der Berechnungs-Tabelle und hält die Feldliste
+ * dagegen, die der Code beim Speichern schreibt.
+ *
+ * Die Feldliste kommt aus `paramsToRow` — also aus der Umwandlung, die der
+ * Code selbst benutzt, nicht aus einer zweiten Aufzählung, die beim nächsten
+ * Feld vergessen würde. Belegt wird sie mit dem UNGÜNSTIGSTEN Fall: alles
+ * Optionale auf null, weil genau dort die zweite Fehlerklasse sitzt.
+ *
+ * Gibt `null` zurück, wenn die Datenbank nicht erreichbar ist — ein
+ * gescheiterter Abruf ist KEIN Befund über die Spalten (dieselbe Trennung wie
+ * bei der MaStR-Frische darüber).
+ */
+async function messeSpaltenAbgleich(): Promise<SpaltenBefund | null> {
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!url || !key) return null;
+  try {
+    // PostgREST beschreibt sich selbst: Spaltenliste plus die Pflichtfelder.
+    const r = await fetch(`${url}/rest/v1/`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+      signal: AbortSignal.timeout(20000),
+    });
+    if (!r.ok) return null;
+    const spec = (await r.json()) as {
+      definitions?: Record<string, { properties?: Record<string, unknown>; required?: string[] }>;
+    };
+    const def = spec.definitions?.calculations;
+    if (!def?.properties) return null;
+
+    const zeile = paramsToRow(
+      {
+        anlage: 1,
+        customKwp: 10,
+        speicher: 1,
+        personen: 1,
+        nutzung: 1,
+        wp: "nein",
+        ea: "nein",
+        eaKm: 15000,
+        // Der ungünstigste Fall: alles, was der Nutzer NICHT selbst gesetzt hat.
+        oKosten: null,
+        oEv: null,
+        oStrom: 0.34,
+        oEinsp: null,
+        einspeisungModus: "teil",
+        oErtrag: 950,
+        plz: "",
+        fuelType: "gas",
+        flowType: "manual",
+        haustyp: null,
+        dachart: null,
+        budgetLimit: null,
+      },
+      { kwp: 10, amortisationJahre: null, rendite25j: null },
+    );
+    // Die Route setzt zusätzlich diese drei; sie stehen nicht in paramsToRow.
+    const geschrieben: Record<string, unknown> = {
+      ...zeile,
+      user_id: "x",
+      name: "Meine Berechnung",
+      description: null,
+    };
+
+    const { fehlend, nullKollision } = spaltenAbgleich(
+      geschrieben,
+      Object.keys(def.properties),
+      def.required ?? [],
+    );
+    return { tabelle: "calculations", fehlend, nullKollision };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Kann die PRODUKTION Abo-Mails verschicken?
+ *
+ * DER ANLASS (01.09.2026): Das Abo war lokal vollständig geprüft — Browser-
+ * Tests, echte Mail, echter Bestätigungsklick — und schlug beim ersten
+ * Live-Versuch fehl, weil auf der Produktion keine der fünf Zugangsdaten des
+ * Postfachs gesetzt war. Kein roter Test, kein Fehler im Diff, keine kaputte
+ * Seite: geprüft war der Code, nie die Umgebung.
+ *
+ * DAS IST DIE DRITTE AUSPRÄGUNG DERSELBEN KLASSE in diesem Projekt. Der
+ * Spaltenabgleich fand sie zwischen Code und Tabelle, die Kostenwache zwischen
+ * Mengen und Rechnung, hier liegt sie zwischen Code und Umgebung. Gemeinsam
+ * ist allen: Ein lokaler Lauf kann sie prinzipiell nicht finden, weil lokal
+ * alles gesetzt ist.
+ *
+ * Gefragt wird deshalb die Produktion SELBST — sie antwortet über ihre eigene
+ * Konfiguration, statt dass jemand von hier aus vermutet. Zurück kommt nur,
+ * WAS fehlt, nie ein Wert.
+ */
+async function messeAboBereit(): Promise<AboBereit | null> {
+  const geheim = process.env.CRON_SECRET;
+  if (!geheim) return null; // Ohne Betriebsgeheimnis keine Auskunft — kein Befund.
+  try {
+    const r = await fetch(`${BASE_URL}/api/abo/bereit`, {
+      headers: { Authorization: `Bearer ${geheim}` },
+      signal: AbortSignal.timeout(20000),
+    });
+    // Ein fehlgeschlagener Abruf ist KEIN Befund über die Konfiguration —
+    // dieselbe Trennung wie überall sonst zwischen „ist kaputt" und „konnte
+    // nicht nachsehen".
+    if (!r.ok) return null;
+    const d = (await r.json()) as {
+      bereit?: boolean;
+      fehlt?: string[];
+      versandOhneBeleg?: unknown;
+      postfach?: unknown;
+    };
+    if (typeof d?.bereit !== "boolean") return null;
+    // Eine ältere Auslieferung kennt das Feld nicht. Das ist „nicht gemessen",
+    // nicht „null hängende Anmeldungen" — eine Null behauptete hier einen
+    // Befund („alles ging raus"), den es nicht gab.
+    const ohneBeleg = typeof d.versandOhneBeleg === "number" ? d.versandOhneBeleg : null;
+    // Ältere Auslieferung ohne Anmeldeprobe: „nicht gemessen", nicht „in Ordnung".
+    const postfach = typeof d.postfach === "string" ? (d.postfach as AboBereit["postfach"]) : null;
+    return { bereit: d.bereit, fehlt: Array.isArray(d.fehlt) ? d.fehlt : [], ohneBeleg, postfach };
+  } catch {
+    return null;
+  }
+}
+
+interface AboBereit {
+  bereit: boolean;
+  fehlt: string[];
+  /** Anmeldungen ohne Versandbeleg; `null` = nicht gemessen. */
+  ohneBeleg: number | null;
+  /** Ausgang der Anmeldeprobe am Postfach; `null` = nicht gemessen. */
+  postfach: "ok" | "abgelehnt" | "unerreichbar" | "nicht-konfiguriert" | null;
+}
+
+/**
+ * Wirkt der Abo-Versand, oder ist er bloß eingerichtet?
+ *
+ * DER ANLASS (02.09.2026, in der Fehler-Triage gemessen): Der Bereitschafts-
+ * Melder daneben sagte „Versandweg und Signatur sind in der Produktion
+ * gesetzt" — und in der Ablage standen zwei Anmeldungen und NULL je versendete
+ * Bestätigungsmails. Er prüft, ob etwas GESETZT ist; ein falsch getipptes
+ * Passwort ist gesetzt. Dieselbe Klasse wie die drei Fälle, für die es ihn
+ * überhaupt gibt, nur eine Ebene weiter: Geprüft war diesmal die Umgebung,
+ * nie ihre Wirkung.
+ *
+ * `null` (nicht gemessen) ist kein Befund. Fehlt die Konfiguration bereits,
+ * ebenfalls nicht: Der Grund steht dann schon im Befund nebenan, und zwei
+ * Meldungen über dieselbe Ursache sind der Lärm, von dem man sich abgewöhnt,
+ * Meldungen zu lesen.
+ */
+/**
+ * Wie meldet sich der Ausgang der Anmeldeprobe im Protokoll?
+ *
+ * Drei Zustände, drei Sätze — und der Unterschied zwischen den letzten beiden
+ * ist der ganze Grund für diese Funktion: „Ich habe nachgesehen und nichts
+ * gefunden" und „ich konnte nicht nachsehen" sind zwei Auskünfte. Eine
+ * unerreichbare Verbindung als „in Ordnung" zu protokollieren behauptet eine
+ * Beobachtung, die es nicht gab. Der abgelehnte Fall steht hier nicht: Er ist
+ * ein Befund und wird als solcher gemeldet, nicht als Protokollzeile.
+ */
+export function aboPostfachSatz(p: AboBereit["postfach"]): string {
+  if (p === "ok") return "Gemeinde-Abo: Einstellungen gesetzt, das Postfach nimmt die Zugangsdaten an.";
+  if (p === "unerreichbar")
+    return "Gemeinde-Abo: Einstellungen gesetzt; das Postfach war für die Probe nicht erreichbar (kein Urteil).";
+  return "Gemeinde-Abo: Versandweg und Signatur sind in der Produktion gesetzt.";
+}
+
+export function aboVersandStockt(b: { bereit: boolean; ohneBeleg: number | null }): boolean {
+  if (b.ohneBeleg === null) return false;
+  if (!b.bereit) return false;
+  return b.ohneBeleg > 0;
+}
+
 /**
  * Liest den Datenstand der MaStR-Auswertung.
  *
@@ -578,6 +815,326 @@ async function messeSocialAblauf(): Promise<SocialAblauf[]> {
   } catch {
     return [];
   }
+}
+
+// ─── Kostenwache: Mengen je Projekt ──────────────────────────────────────────
+//
+// Sie hängt hier und nicht an einem geplanten Auftrag auf dem Rechner des
+// Betreibers: Die laufen nur, wenn seine App offen ist, und genau daran ist im
+// August schon einmal eine Woche Überwachung ausgefallen, ohne dass es jemand
+// bemerkt hat. Diese Action läuft in GitHubs Rechenzentrum.
+//
+// Der Vergleich braucht einen VOLLEN Tag, der Check läuft alle drei Stunden.
+// Beurteilt wird deshalb immer nur der letzte vollständige Tag, und die Zeile
+// dieses Tages merkt sich, dass gemeldet wurde (`gemeldet_am`). Sonst stünde
+// derselbe Alarm achtmal am Tag im Protokoll, und nach zwei Tagen liest ihn
+// niemand mehr.
+
+/** Token für die Plattform. In der Action aus dem Repo-Geheimnis; lokal
+ *  ersatzweise aus der Anmeldung des Kommandozeilen-Werkzeugs, damit ein Lauf
+ *  auf dem eigenen Rechner dasselbe misst wie der in der Action. Der Wert wird
+ *  nirgends ausgegeben. */
+function vercelToken(): string | null {
+  if (process.env.VERCEL_TOKEN) return process.env.VERCEL_TOKEN;
+  const pfad = resolve(
+    process.env.HOME ?? "",
+    "Library/Application Support/com.vercel.cli/auth.json",
+  );
+  if (!existsSync(pfad)) return null;
+  try {
+    const t = (JSON.parse(readFileSync(pfad, "utf8")) as { token?: string }).token;
+    return typeof t === "string" && t ? t : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Fragt die Laufzeitprotokolle nach Gruppen ab.
+ *
+ * Der Ausgang wird BENANNT, nicht auf „null" zusammengeworfen. Drei Fälle sehen
+ * an der Aufrufstelle sonst gleich aus und verlangen völlig Verschiedenes:
+ * ein abgewiesener Zugang (der Betreiber muss ein Geheimnis anlegen oder
+ * erneuern), ein leerer Tag (zu spät gefragt, die Protokolle halten einen Tag)
+ * und ein Netzfehler. „Kennzahl ist nicht Zustand" — dieselbe Trennung wie beim
+ * Förder-Wächter zwischen „hat sich geändert" und „Abruf kam nicht durch".
+ */
+type ProtokollAusgang =
+  | { art: "ok"; text: string }
+  | { art: "kein-zugang"; status: number }
+  | { art: "nicht-abrufbar" };
+
+async function protokollGruppen(
+  token: string,
+  projectId: string,
+  tag: string,
+  gruppe: "statusCode" | "requestPath",
+): Promise<ProtokollAusgang> {
+  try {
+    const res = await fetch("https://mcp.vercel.com", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "content-type": "application/json",
+        accept: "application/json, text/event-stream",
+      },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        id: 1,
+        method: "tools/call",
+        params: {
+          name: "get_runtime_logs",
+          arguments: {
+            projectId,
+            teamId: KOSTEN_TEAM_ID,
+            environment: "production",
+            since: `${tag}T00:00:00.000Z`,
+            until: `${tag}T23:59:59.999Z`,
+            group_by: gruppe,
+          },
+        },
+      }),
+      signal: AbortSignal.timeout(60000),
+    });
+    if (res.status === 401 || res.status === 403) return { art: "kein-zugang", status: res.status };
+    if (!res.ok) return { art: "nicht-abrufbar" };
+    const roh = await res.text();
+    // Die Antwort kommt als Ereignisstrom; die Nutzlast steht in der data-Zeile.
+    const zeile = roh.match(/^data: (.*)$/m);
+    if (!zeile) return { art: "nicht-abrufbar" };
+    const nutzlast = JSON.parse(zeile[1]) as {
+      result?: { content?: { text?: string }[]; isError?: boolean };
+      error?: unknown;
+    };
+    if (nutzlast.error || nutzlast.result?.isError) return { art: "nicht-abrufbar" };
+    const text = (nutzlast.result?.content ?? []).map((c) => c.text ?? "").join("\n");
+    return text ? { art: "ok", text } : { art: "nicht-abrufbar" };
+  } catch {
+    return { art: "nicht-abrufbar" };
+  }
+}
+
+type KostenZeile = {
+  projekt: string;
+  tag: string;
+  aufbauten: number;
+  adressen: number;
+  gemeldet_am: string | null;
+};
+
+function supabaseZugang(): { url: string; key: string } | null {
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  return url && key ? { url, key } : null;
+}
+
+async function kostenZeilen(projekt: string, bisTag: string): Promise<KostenZeile[] | null> {
+  const z = supabaseZugang();
+  if (!z) return null;
+  try {
+    const r = await fetch(
+      `${z.url}/rest/v1/kosten_tageswerte?select=projekt,tag,aufbauten,adressen,gemeldet_am` +
+        `&projekt=eq.${encodeURIComponent(projekt)}&tag=lte.${bisTag}&order=tag.desc&limit=${BASIS_TAGE + 1}`,
+      { headers: { apikey: z.key, Authorization: `Bearer ${z.key}` }, signal: AbortSignal.timeout(20000) },
+    );
+    if (!r.ok) return null;
+    return (await r.json()) as KostenZeile[];
+  } catch {
+    return null;
+  }
+}
+
+async function kostenSchreiben(zeile: Record<string, unknown>): Promise<boolean> {
+  const z = supabaseZugang();
+  if (!z) return false;
+  try {
+    const r = await fetch(`${z.url}/rest/v1/kosten_tageswerte`, {
+      method: "POST",
+      headers: {
+        apikey: z.key,
+        Authorization: `Bearer ${z.key}`,
+        "Content-Type": "application/json",
+        Prefer: "resolution=merge-duplicates,return=minimal",
+      },
+      body: JSON.stringify(zeile),
+      signal: AbortSignal.timeout(20000),
+    });
+    return r.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function kostenGemeldet(projekt: string, tag: string): Promise<void> {
+  const z = supabaseZugang();
+  if (!z) return;
+  await fetch(
+    `${z.url}/rest/v1/kosten_tageswerte?projekt=eq.${encodeURIComponent(projekt)}&tag=eq.${tag}`,
+    {
+      method: "PATCH",
+      headers: {
+        apikey: z.key,
+        Authorization: `Bearer ${z.key}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify({ gemeldet_am: new Date().toISOString() }),
+      signal: AbortSignal.timeout(20000),
+    },
+  ).catch(() => {});
+}
+
+export type KostenBefund = {
+  zeilen: string[];
+  fuerClaude: string[];
+  warnungen: string[];
+};
+
+/**
+ * Misst, legt ab, urteilt. Der Stichtag wird hereingereicht, damit ein Test
+ * denselben Tag beurteilen kann, ohne von einer Uhr abzuhängen.
+ */
+export async function messeKosten(jetzt: Date): Promise<KostenBefund> {
+  const b: KostenBefund = { zeilen: [], fuerClaude: [], warnungen: [] };
+  const token = vercelToken();
+  const tag = zuBeurteilenderTag(jetzt);
+
+  if (!token) {
+    b.warnungen.push(
+      "Kostenwache: kein Zugang zur Plattform (VERCEL_TOKEN fehlt) — die Tagesmengen wurden weder erfasst " +
+        "noch beurteilt. Kein Urteil heißt hier nicht „in Ordnung“: Die Protokolle werden nur einen Tag " +
+        "aufbewahrt, ein verpasster Tag ist für immer verpasst.",
+    );
+    return b;
+  }
+  if (!supabaseZugang()) {
+    b.warnungen.push(
+      "Kostenwache: keine Datenbank erreichbar — ohne Ablage gibt es kein Vergleichsniveau und damit kein Urteil.",
+    );
+    return b;
+  }
+
+  for (const p of KOSTEN_PROJEKTE) {
+    const bestand = await kostenZeilen(p.schluessel, tag);
+    if (bestand === null) {
+      b.warnungen.push(`Kostenwache ${p.name}: Ablage nicht lesbar — kein Urteil über diesen Tag.`);
+      continue;
+    }
+
+    let heute = bestand.find((z) => z.tag === tag) ?? null;
+
+    // Erst messen, wenn der Tag noch fehlt. Zweimal am Tag dieselbe Abfrage
+    // liefert dasselbe und belastet die Plattform ohne Erkenntnis.
+    if (!heute) {
+      const [statusAusgang, pfadAusgang] = await Promise.all([
+        protokollGruppen(token, p.projectId, tag, "statusCode"),
+        protokollGruppen(token, p.projectId, tag, "requestPath"),
+      ]);
+
+      const abgewiesen = [statusAusgang, pfadAusgang].find((a) => a.art === "kein-zugang");
+      if (abgewiesen && abgewiesen.art === "kein-zugang") {
+        b.warnungen.push(
+          `Kostenwache ${p.name}: Der Zugang zur Plattform wurde abgewiesen (HTTP ${abgewiesen.status}). ` +
+            `Das ist kein leerer Tag, sondern ein ungültiges oder abgelaufenes Geheimnis — VERCEL_TOKEN in den ` +
+            `Repo-Geheimnissen prüfen. Solange das steht, sammelt die Wache nichts, und jeder Tag ist danach ` +
+            `unwiederbringlich weg (die Protokolle werden nur ${PROTOKOLL_AUFBEWAHRUNG_TAGE} Tag aufbewahrt).`,
+        );
+        continue;
+      }
+
+      const last = statusAusgang.art === "ok" ? leseGruppen(statusAusgang.text) : null;
+      const flaeche = pfadAusgang.art === "ok" ? leseGruppen(pfadAusgang.text) : null;
+
+      if (!last || !flaeche) {
+        b.warnungen.push(
+          `Kostenwache ${p.name}: Der ${tag} war nicht abrufbar — kein Wert abgelegt. ` +
+            `Eine Null wäre hier eine Falschaussage (die Protokolle werden nur ${PROTOKOLL_AUFBEWAHRUNG_TAGE} Tag ` +
+            `aufbewahrt; „nichts gefunden“ heißt fast immer „zu spät gefragt“, nicht „kein Verkehr“).`,
+        );
+        continue;
+      }
+
+      // Die Antwort listet nur die größten Gruppen auf. Fehlt etwas, ist es
+      // höchstens so groß wie die kleinste gezeigte Gruppe — das wird
+      // AUSGERECHNET statt behauptet. Bei der Gruppierung nach Statuscode sind
+      // es eine Handvoll Gruppen und die Lücke rechnerisch belanglos; wächst sie
+      // eines Tages, soll das auffallen und nicht in die Vergleichszahl wandern.
+      const luecke = fehlbetragObergrenze(last);
+      if (luecke > last.summe * FEHLBETRAG_MELDEN_AB_ANTEIL) {
+        b.warnungen.push(
+          `Kostenwache ${p.name}: Die Antwort für den ${tag} hat nur ${last.gezeigt} von ${last.verschiedene} ` +
+            `Gruppen aufgelistet; die Zahl der Aufbauten kann um bis zu ${menge(luecke)} zu niedrig sein. ` +
+            `Der Wert wird trotzdem abgelegt — er ist dann eine Untergrenze, keine Summe.`,
+        );
+      }
+
+      const geschrieben = await kostenSchreiben({
+        projekt: p.schluessel,
+        tag,
+        aufbauten: last.summe,
+        adressen: flaeche.verschiedene,
+        quelle: KOSTENWACHE_ZUGANG.quelle,
+        gruppen_gezeigt: last.gezeigt,
+        gruppen_gesamt: last.verschiedene,
+      });
+      if (!geschrieben) {
+        b.warnungen.push(`Kostenwache ${p.name}: Tageswert für ${tag} konnte nicht abgelegt werden.`);
+        continue;
+      }
+      heute = { projekt: p.schluessel, tag, aufbauten: last.summe, adressen: flaeche.verschiedene, gemeldet_am: null };
+      bestand.unshift(heute);
+    }
+
+    // Number() auch hier: Große Ganzzahlen können aus der Datenbank als
+    // Zeichenkette ankommen, und dann verglichen sich zwei Strings — der Sprung
+    // fiele stumm aus, ohne Fehler und ohne dass es jemandem auffiele.
+    const urteil = beurteileKostenTag(
+      { tag: heute.tag, aufbauten: Number(heute.aufbauten), adressen: Number(heute.adressen) },
+      bestand.map((z) => ({ tag: z.tag, aufbauten: Number(z.aufbauten), adressen: Number(z.adressen) })),
+    );
+
+    if (urteil.art === "kein-urteil") {
+      // Ausdrücklich als offener Zustand ausgewiesen, nicht als grün.
+      b.zeilen.push(`Kostenwache ${p.name} (${tag}): ${menge(Number(heute.aufbauten))} Aufbauten, ` +
+        `${menge(Number(heute.adressen))} verschiedene Adressen — noch kein Urteil möglich (${urteil.grund})`);
+      continue;
+    }
+
+    const reihe = bestand.map((z) => ({
+      tag: z.tag,
+      aufbauten: Number(z.aufbauten),
+      adressen: Number(z.adressen),
+    }));
+    const maxLast = groesstesVielfaches(reihe, "aufbauten");
+    const maxFlaeche = groesstesVielfaches(reihe, "adressen");
+    const teil = urteil.groessen
+      .map((g) => `${g.groesse === "aufbauten" ? "Aufbauten" : "Adressen"} ${menge(g.wert)} ` +
+        `(Niveau ${menge(Math.round(g.basis))}, ${g.vielfaches === null ? "—" : `${g.vielfaches.toFixed(2)}×`})`)
+      .join(" · ");
+    b.zeilen.push(
+      `Kostenwache ${p.name} (${tag}): ${teil}; Schwelle ${SPRUNG_FAKTOR}× — ` +
+        `größtes bisher abgelegtes Vielfaches: Last ${maxLast ?? "—"}×, Fläche ${maxFlaeche ?? "—"}×`,
+    );
+
+    if (urteil.art === "sprung") {
+      if (heute.gemeldet_am) continue; // schon gemeldet, nicht achtmal am Tag
+      const details = urteil.groessen
+        .filter((g) => g.gesprungen)
+        .map((g) => `${g.name} liegt bei ${menge(g.wert)} statt der üblichen ${menge(Math.round(g.basis))} ` +
+          `(${g.vielfaches?.toFixed(2)}-faches des Niveaus der Vortage)`)
+        .join("; ");
+      b.fuerClaude.push(
+        `Kostensprung bei ${p.name} am ${tag}: ${details}. ${urteil.satz} ` +
+          `Gemessen sind Mengen, nicht Euro — aber genau diese Mengen treiben den größten Rechnungsposten. ` +
+          `Die Schwelle liegt beim ${SPRUNG_FAKTOR}-fachen des Medians der bis zu ${BASIS_TAGE} Vortage. ` +
+          `Nachsehen: welche Adressen dazugekommen sind, wer sie aufruft (Bot-Kennung, Netzbetreiber), ` +
+          `und ob sie aus dem CDN kommen. Die Schwelle NICHT hochsetzen, damit der Befund verschwindet.`,
+      );
+      await kostenGemeldet(p.schluessel, tag);
+    }
+  }
+
+  return b;
 }
 
 function verdict(seconds: number, limits: { warn: number; fail: number }): "gruen" | "gelb" | "rot" {
@@ -1112,19 +1669,103 @@ async function main() {
     warnings.push("MaStR-Datenstand nicht abrufbar — keine Aussage über die Frische der Atlas-Zahlen.");
   }
 
+  // ── Kann die Produktion Abo-Mails verschicken? ────────────────────────────
+  const aboBereit = await messeAboBereit();
+  if (aboBereit) {
+    lines.push(
+      aboBereit.bereit
+        ? aboPostfachSatz(aboBereit.postfach)
+        : `Gemeinde-Abo: ${aboBereit.fehlt.length} Punkt(e) hindern den Versand in der Produktion.`,
+    );
+    if (!aboBereit.bereit) {
+      forClaude.push(
+        `Das Gemeinde-Abo kann in der PRODUKTION nicht arbeiten: ${aboBereit.fehlt.join(", ")}. ` +
+          `Jede Anmeldung endet damit für den Nutzer bei „Die Bestätigungsmail konnte gerade nicht verschickt ` +
+          `werden", und niemand kommt ins Abo. Von außen ist das unsichtbar: Die Seite lädt, der Knopf ` +
+          `funktioniert, kein Test wird rot — lokal ist ja alles gesetzt. Zu tun: die genannten Punkte in der ` +
+          `Produktionsumgebung richtigstellen und danach EINMAL neu ausliefern, sonst greifen sie nicht.`,
+      );
+    }
+    // Und die zweite Hälfte: hat es auch gewirkt?
+    if (aboBereit.ohneBeleg !== null && aboBereit.bereit) {
+      lines.push(
+        aboBereit.ohneBeleg === 0
+          ? "Gemeinde-Abo: keine frische Anmeldung wartet auf eine Bestätigungsmail."
+          : `Gemeinde-Abo: ${aboBereit.ohneBeleg} frische Anmeldung(en) ohne Versandbeleg.`,
+      );
+    }
+    if (aboVersandStockt(aboBereit)) {
+      forClaude.push(
+        `${aboBereit.ohneBeleg} frische Anmeldung(en) im Gemeinde-Abo tragen keinen Versandbeleg, während die ` +
+          `Zugangsdaten des Postfachs vollständig gesetzt sind. Beides ist gemessen; der Schluss daraus nicht — ` +
+          `deshalb steht hier keine Diagnose, sondern der nächste Schritt. Zwei Lesarten: entweder die Mail hat ` +
+          `den Server nicht verlassen (dann kommt niemand ins Abo, und der Anmelder sieht nur „Bitte später ` +
+          `erneut" — gesetzt heißt eben nicht richtig, ein falsch getipptes Passwort ist gesetzt), oder sie ging ` +
+          `hinaus und das Nachtragen des Belegs schlug fehl (dann fehlt der Einwilligungsnachweis, den die ` +
+          `Datenschutzerklärung zusagt). Zu tun: das Protokoll der Produktion nach „[Abo]" durchsehen — dort ` +
+          `steht, welcher der beiden Fälle vorliegt.`,
+      );
+    }
+  }
+
+  // ── Schreibt der Code in Spalten, die es gibt? ────────────────────────────
+  const spalten = await messeSpaltenAbgleich();
+  if (spalten) {
+    const summe = spalten.fehlend.length + spalten.nullKollision.length;
+    lines.push(
+      summe === 0
+        ? `Gespeicherte Berechnungen: Code und Tabelle passen zusammen.`
+        : `Gespeicherte Berechnungen: ${summe} Abweichung(en) zwischen Code und Tabelle.`,
+    );
+    if (spalten.fehlend.length) {
+      forClaude.push(
+        `Beim Speichern einer Berechnung schreibt der Code ${spalten.fehlend.length === 1 ? "ein Feld" : "Felder"}, ` +
+          `die es in der Tabelle nicht gibt: ${spalten.fehlend.join(", ")}. Damit scheitert JEDER Speicherversuch ` +
+          `mit HTTP 500 — und zwar unsichtbar: kein Typfehler, kein roter Test, keine kaputte Seite, und bei drei ` +
+          `Aufrufen die Woche fällt es auch an keiner Fehlerquote auf. Genau so blieb es von 03/2026 bis 08/2026 ` +
+          `liegen. Zu tun: Spalte über /api/calculations/setup nachziehen (die Route trägt die Migration).`,
+      );
+    }
+    if (spalten.nullKollision.length) {
+      forClaude.push(
+        `Beim Speichern einer Berechnung schreibt der Code NULL in Spalten, die einen Wert verlangen: ` +
+          `${spalten.nullKollision.join(", ")}. Betroffen ist der Normalfall — der Nutzer hat dort nichts ` +
+          `eigenes gesetzt. Auch das endet in HTTP 500 und ist von außen unsichtbar. Entweder darf die Spalte ` +
+          `leer sein (dann Nullbarkeit nachziehen, /api/calculations/setup) oder der Code muss einen Wert ` +
+          `liefern — was von beidem stimmt, entscheidet die Bedeutung des Feldes, nicht die Bequemlichkeit.`,
+      );
+    }
+  }
+
   // ── Ablauf der Social-Zugänge ─────────────────────────────────────────────
   for (const s of await messeSocialAblauf()) {
     const wer = s.konto ? ` (${s.konto})` : "";
+    // DIE ADRESSE MUSS ZUR PLATTFORM PASSEN. Sie stand fest auf LinkedIn, weil
+    // es lange nur die eine gab — mit einem zweiten Kanal wird daraus eine
+    // Anleitung, die ins Leere führt: Der Betreiber klickt, meldet LinkedIn neu
+    // an, und der Instagram-Zugang läuft weiter aus. Dieselbe Fehlerklasse wie
+    // eine Beschriftung, die etwas anderes sagt, als die Zahl daneben misst.
+    const start = `solar-check.io/api/${s.plattform}/start`;
     fuerBetreiberOhneRot.push(
       s.tageBisAblauf < 0
         ? `Der ${s.plattform}-Zugang${wer} ist abgelaufen — seitdem wird nichts mehr veröffentlicht. ` +
-          `Zum Erneuern einmal solar-check.io/api/linkedin/start aufrufen (eingeloggt als Admin). ` +
+          `Zum Erneuern einmal ${start} aufrufen (eingeloggt als Admin). ` +
           `Das kann nur jemand mit deinem Konto, ich komme da nicht heran.`
         : `Der ${s.plattform}-Zugang${wer} läuft in ${s.tageBisAblauf} Tagen ab. Danach hört das ` +
-          `Veröffentlichen still auf. Einmal solar-check.io/api/linkedin/start aufrufen (eingeloggt ` +
+          `Veröffentlichen still auf. Einmal ${start} aufrufen (eingeloggt ` +
           `als Admin) setzt die Frist zurück — das dauert zwei Klicks und kann nur jemand mit deinem Konto.`,
     );
   }
+
+  // ── Kostenwache ───────────────────────────────────────────────────────────
+  // Weder Statuscode noch Antwortzeit noch Cache-Treffer beantworten die Frage,
+  // ob die Mengen gerade davonlaufen. Der größte Rechnungsposten hat sich im
+  // August verdreifacht und stand tagelang sichtbar da, ohne dass etwas
+  // angeschlagen hätte — es gab schlicht niemanden, der hinsah.
+  const kosten = await messeKosten(new Date());
+  lines.push(...kosten.zeilen);
+  forClaude.push(...kosten.fuerClaude);
+  warnings.push(...kosten.warnungen);
 
   // ── Cache-Wirksamkeit ─────────────────────────────────────────────────────
   // Kein Zeitmaß, sondern eine Ja/Nein-Frage: Kommt die Seite beim zweiten

@@ -55,7 +55,7 @@ const S: Record<string, React.CSSProperties> = {
     borderRadius: 4,
     border: "1px solid transparent",
     fontFamily: v("--font-mono"),
-    fontSize: 10,
+    fontSize: v("--font-size-micro"),
     fontWeight: 700,
     lineHeight: 1.5,
   },

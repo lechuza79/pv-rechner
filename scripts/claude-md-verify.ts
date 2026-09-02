@@ -131,6 +131,29 @@ type Zahlenpruefung = {
 
 const ZAHLEN: Zahlenpruefung[] = [
   {
+    // Genau die Sorte Angabe, die hier schon einmal falsch stand: Die Anleitung
+    // nannte im August eine Skala, die im Code eine andere war — bei sieben
+    // Stufen stimmte eine. Deshalb steht die Aufzaehlung im Register.
+    was: "Textstufen der Schriftgroessen-Skala",
+    wahrheit: () => {
+      const t = lies("lib/theme.ts");
+      const stufen = ["micro", "caption", "small", "body", "lead", "h3", "h2", "h1"];
+      const werte = stufen.map((n) => greif(t, new RegExp(`'--font-size-${n}':\\s*'(\\d+)px'`)));
+      return werte.some((w) => w === null) ? null : werte.join(" · ");
+    },
+    behauptung: () => greif(claudeMd, /Acht Textstufen \(([\d\u00b7 ]+),/),
+  },
+  {
+    was: "Display-Stufen der Schriftgroessen-Skala",
+    wahrheit: () => {
+      const t = lies("lib/theme.ts");
+      const stufen = ["sm", "md", "lg", "xl"];
+      const werte = stufen.map((n) => greif(t, new RegExp(`'--font-size-display-${n}':\\s*'(\\d+)px'`)));
+      return werte.some((w) => w === null) ? null : werte.join(" · ");
+    },
+    behauptung: () => greif(claudeMd, /vier Display-Stufen \(([\d\u00b7 ]+)\)/),
+  },
+  {
     was: "Maximale Breite der Kopfzeile",
     wahrheit: () => greif(lies("lib/theme.ts"), /'--header-max-width':\s*'(\d+)px'/),
     behauptung: () => greif(claudeMd, /`--header-max-width`\s*\((\d+)\s*px\)/),

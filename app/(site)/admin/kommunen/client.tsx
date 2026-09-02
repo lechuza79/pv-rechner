@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { v, space, pad } from "../../../../lib/theme";
+import AdminSeitenkopf from "../../../../components/admin/AdminSeitenkopf";
 import { BUNDESLAENDER } from "../../../../lib/mastr-regions";
 import {
   OUTREACH_STATUS,
@@ -12,15 +13,11 @@ import {
 import Modal from "../../../../components/Modal";
 import ResultSection from "../../../../components/ResultSection";
 import { ART_LABEL, liesNotiz } from "../../../../lib/outreach-ruecklauf";
-import {
-  ASK_LABEL,
-  ASK_VARIANTEN,
-  VARIANTE_ERKLAERUNG,
-  VERTEILUNG_HINWEIS,
-  type AskVariante,
-  type VariantenVerteilung,
-} from "../../../../lib/kommunen-ask";
+import { aboSatz, type AboSpiegel } from "../../../../lib/kommunen-abo-spiegel";
+import { ASK_LABEL, ASK_VARIANTEN, type AskVariante } from "../../../../lib/kommunen-ask";
 import { SCHUEBE } from "../../../../lib/kommunen-testballon";
+import { adminTh, adminTd } from "../../../../lib/admin-tabelle";
+import SelectField from "../../../../components/SelectField";
 
 // ─── Typen ──────────────────────────────────────────────────────────────────
 
@@ -59,6 +56,9 @@ type Lead = {
   ref_token: string | null;
   ref_klicks: number | null;
   atlas_path: string | null;
+  /** Eintragungen ins Gemeinde-Abo. null, solange es keine gibt — oder wenn die
+   *  Abfrage ausgefallen ist; die Liste soll daran nicht hängen. */
+  abo: AboSpiegel | null;
   mastr_regions: Region | Region[];
 };
 
@@ -82,6 +82,39 @@ export default function KommunenCockpit() {
   const [sort, setSort] = useState("");
   const [charge, setCharge] = useState("");
   const [kampagne, setKampagne] = useState("");
+  // Der Versandtag — der „Batch", wie er in der Übersicht steht.
+  const [tag, setTag] = useState("");
+  // Die auswählbaren Tage kommen aus derselben Auswertung, die die Übersicht
+  // zeigt. Eine eigene Abfrage dafür wäre eine zweite Fassung derselben Liste,
+  // und die beiden liefen beim ersten abgebrochenen Versand auseinander.
+  const [versandtage, setVersandtage] = useState<{ tag: string; verschickt: number; schuebe: string[] }[]>([]);
+  // Der Schub kommt aus der Adresse: Die Übersicht verlinkt je Versandtag
+  // hierher, und ohne ihn käme man auf einer ungefilterten Liste mit 11.000
+  // Zeilen an.
+  //
+  // NACH dem ersten Rendern, nicht als Anfangswert. Als Anfangswert gelesen
+  // rendert der Server ohne Filter und der Browser mit — React meldet das als
+  // Abweichung und flickt sie nicht; sichtbar wurde es an einem Auswahlfeld,
+  // das serverseitig gesperrt war und im Browser nicht. Ein Effekt läuft erst,
+  // wenn beide Seiten dasselbe gezeichnet haben.
+  //
+  // Nur GELESEN, nie zurückgeschrieben: Die Filter hier sind Handgriffe, keine
+  // teilbaren Zustände, und ein mitwandernder Adressbalken wäre eine zweite
+  // Wahrheit neben den Bedienelementen.
+  useEffect(() => {
+    const adresse = new URLSearchParams(window.location.search);
+    const ausAdresse = adresse.get("kampagne");
+    if (ausAdresse) setKampagne(ausAdresse);
+    const tagAusAdresse = adresse.get("tag");
+    if (tagAusAdresse) setTag(tagAusAdresse);
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/admin/kommunen/bilanz")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => setVersandtage(j?.wirkung?.jeTag ?? []))
+      .catch(() => undefined);
+  }, []);
   const [page, setPage] = useState(0);
 
   const [rows, setRows] = useState<Lead[]>([]);
@@ -106,6 +139,7 @@ export default function KommunenCockpit() {
     if (hasLink) params.set("hasLink", "1");
     if (qDebounced) params.set("q", qDebounced);
     if (sort) params.set("sort", sort);
+    if (tag) params.set("tag", tag);
     if (kampagne) params.set("kampagne", kampagne);
     if (kampagne && charge) params.set("charge", charge);
     params.set("page", String(page));
@@ -121,7 +155,7 @@ export default function KommunenCockpit() {
     } finally {
       setLoading(false);
     }
-  }, [bl, status, hasLink, qDebounced, sort, kampagne, charge, page]);
+  }, [bl, status, hasLink, qDebounced, sort, kampagne, charge, tag, page]);
 
   useEffect(() => {
     load();
@@ -130,7 +164,7 @@ export default function KommunenCockpit() {
   // Filterwechsel → zurück auf Seite 1.
   useEffect(() => {
     setPage(0);
-  }, [bl, status, hasLink, qDebounced, sort, kampagne, charge]);
+  }, [bl, status, hasLink, qDebounced, sort, kampagne, charge, tag]);
 
   const patchLead = useCallback((updated: Lead) => {
     setRows((prev) => prev.map((r) => (r.region_id === updated.region_id ? updated : r)));
@@ -138,83 +172,41 @@ export default function KommunenCockpit() {
 
   const maxPage = Math.max(0, Math.ceil(total / pageSize) - 1);
 
-  const [verteilung, setVerteilung] = useState<VariantenVerteilung[] | null>(null);
-  const [offen, setOffen] = useState<{ nochNichtVersendet: number } | null>(null);
-  useEffect(() => {
-    fetch("/api/admin/kommunen/bilanz")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((j) => {
-        if (j) {
-          setVerteilung(j.verteilung);
-          setOffen(j.offen);
-        }
-      })
-      .catch(() => undefined);
-  }, [rows]);
-
   return (
     <div style={{ fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
-      <div style={{ marginBottom: space.lg }}>
-        <div style={labelKicker}>Admin</div>
-        <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 4 }}>Kommunen-Outreach</h1>
-        <p style={{ fontSize: 13, color: v("--color-text-muted") }}>
-          Kontaktdaten der ~11.000 Gemeinden. Filtern, Status pflegen, Kontaktseite öffnen.
-        </p>
-        <p style={{ fontSize: 13, color: v("--color-text-muted"), marginTop: 4, maxWidth: 720, lineHeight: 1.5 }}>
-          {/* Der Text steht in lib/kommunen-ask.ts. Er sagt, wie die Variante
-              ZUSTANDE KOMMT, und das ist eine Aussage über das Verfahren — an
-              der Oberfläche ist ein falscher Satz darüber nicht zu erkennen.
-              Hier stand bis zum 20.08.2026, beide Fassungen seien „sonst
-              identisch, sonst wüssten wir hinterher nicht, woran eine Reaktion
-              lag": die Beschreibung eines Versuchsaufbaus, den es nie gab. */}
-          {VARIANTE_ERKLAERUNG}
-        </p>
-      </div>
-
-      {/* Verteilung je Ask-Variante — wie viele Briefe welcher Fassung raus
-          sind. Kein Vergleich, Begründung in lib/kommunen-ask.ts. */}
-      {verteilung && verteilung.some((b) => b.versendet > 0) && (
-        <div style={{ display: "flex", gap: space.md, flexWrap: "wrap", marginBottom: space.md }}>
-          {verteilung.map((b) => (
-            <div
-              key={b.variante}
-              style={{
-                border: `1px solid ${v("--color-border")}`,
-                borderRadius: v("--radius-md"),
-                padding: pad("sm", "md"),
-                minWidth: 200,
-                background: v("--color-bg-muted"),
-              }}
-            >
-              <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-secondary") }}>{ASK_LABEL[b.variante]}</div>
-              {/* KEINE KLICKZAHLEN MEHR. Der Brief trägt keinen zählenden
-                  Link, „0 mit Klick" war deshalb kein Messergebnis, sondern
-                  eine leere Spalte, die wie eines aussah. */}
-              <div style={{ fontSize: 13, marginTop: 4, fontFamily: v("--font-mono") }}>
-                {b.versendet} versendet
-                <div style={{ color: v("--color-text-muted"), fontSize: 12 }}>
-                  {b.antworten} Antworten · {b.widgetAnfragen} Widget-Anfragen
-                </div>
-              </div>
-            </div>
-          ))}
-          <div style={{ fontSize: 11, color: v("--color-text-muted"), alignSelf: "center", maxWidth: 300, lineHeight: 1.4 }}>
-            {VERTEILUNG_HINWEIS}
-            {offen ? ` ${offen.nochNichtVersendet} noch nicht versendet.` : ""}
-          </div>
-        </div>
-      )}
+<AdminSeitenkopf titel="Kommunen-Outreach" />
 
       {/* Filterleiste */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, alignItems: "center", marginBottom: space.md }}>
-        <select value={bl} onChange={(e) => setBl(e.target.value)} style={selectStyle} aria-label="Bundesland">
+        {/* DER VERSANDTAG STEHT VORN, weil man meistens aus der Übersicht kommt
+            und genau diesen einen Batch sehen will. Chronologisch, neueste
+            zuerst — so wie die Übersicht sie zeigt; eine zweite Sortierung wäre
+            beim Vergleichen nur verwirrend.
+            Abwählbar über den ersten Eintrag: Ein Filter, den man nur über den
+            Zurück-Knopf loswird, ist keiner. */}
+        <SelectField
+          value={tag}
+          onChange={(e) => setTag(e.target.value)}
+          ariaLabel="Versandtag"
+          size="sm"
+          ton={tag ? "aktiv" : "neutral"}
+        >
+          <option value="">Alle Versandtage</option>
+          {versandtage.map((t) => (
+            <option key={t.tag} value={t.tag}>
+              {new Date(t.tag).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })} ·{" "}
+              {t.verschickt}
+            </option>
+          ))}
+        </SelectField>
+        <SelectField value={bl} onChange={(e) => setBl(e.target.value)} ariaLabel="Bundesland" size="sm">
           <option value="">Alle Bundesländer</option>
           {BUNDESLAENDER.map((b) => (
             <option key={b.ags} value={b.ags}>
               {b.name}
             </option>
           ))}
-        </select>
+        </SelectField>
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
@@ -222,7 +214,7 @@ export default function KommunenCockpit() {
           style={inputStyle}
           aria-label="Gemeinde suchen"
         />
-        <label style={{ display: "flex", alignItems: "center", gap: space.xs, fontSize: 13, color: v("--color-text-secondary"), cursor: "pointer" }}>
+        <label style={{ display: "flex", alignItems: "center", gap: space.xs, fontSize: v("--font-size-small"), color: v("--color-text-secondary"), cursor: "pointer" }}>
           <input type="checkbox" checked={hasLink} onChange={(e) => setHasLink(e.target.checked)} />
           nur mit Kontaktlink
         </label>
@@ -230,33 +222,37 @@ export default function KommunenCockpit() {
             zwei feste Zeilen mit dem Namen der ersten Kampagne und ihrer
             Größe — nach der zweiten Kampagne zeigte der Filter auf eine
             Auswahl, die es unter diesem Namen nicht mehr gab. */}
-        <select value={kampagne} onChange={(e) => setKampagne(e.target.value)} style={selectStyle} aria-label="Schub">
+        <SelectField
+          value={kampagne}
+          onChange={(e) => setKampagne(e.target.value)}
+          ariaLabel="Schub"
+          size="sm"
+          ton={kampagne ? "aktiv" : "neutral"}
+        >
           <option value="">Alle Gemeinden</option>
           {Object.keys(SCHUEBE).map((k) => (
             <option key={k} value={k}>
               Schub: {k}
             </option>
           ))}
-        </select>
-        <select
+        </SelectField>
+        <SelectField
           value={charge}
           onChange={(e) => setCharge(e.target.value)}
-          style={selectStyle}
-          aria-label="Charge"
-          disabled={!kampagne}
-        >
+          ariaLabel="Charge"
+          disabled={!kampagne} size="sm">
           <option value="">Alle Chargen</option>
           {[1, 2, 3, 4, 5].map((c) => (
             <option key={c} value={String(c)}>
               Charge {c}
             </option>
           ))}
-        </select>
-        <select value={sort} onChange={(e) => setSort(e.target.value)} style={selectStyle} aria-label="Sortierung">
+        </SelectField>
+        <SelectField value={sort} onChange={(e) => setSort(e.target.value)} ariaLabel="Sortierung" size="sm">
           <option value="">Sortierung: Standard</option>
           <option value="gruen">Grün-affin zuerst</option>
           <option value="links">Links-affin zuerst</option>
-        </select>
+        </SelectField>
       </div>
 
       {/* Status-Tabs */}
@@ -277,14 +273,14 @@ export default function KommunenCockpit() {
       </div>
 
       {/* Ergebniszeile */}
-      <div style={{ fontSize: 12, color: v("--color-text-muted"), marginBottom: space.sm }}>
+      <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginBottom: space.sm }}>
         {loading ? "Lädt…" : `${total.toLocaleString("de-DE")} Gemeinden`}
         {error && <span style={{ color: v("--color-negative"), marginLeft: space.sm }}>Fehler: {error}</span>}
       </div>
 
       {/* Tabelle */}
       <div style={{ overflowX: "auto", border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md") }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 720 }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: v("--font-size-small"), minWidth: 720 }}>
           <thead>
             <tr>
               {["Gemeinde", "Website-Themen", "Variante", "Kontakt", "Status", "Korrespondenz", "Notiz"].map((h) => (
@@ -311,7 +307,7 @@ export default function KommunenCockpit() {
 
       {/* Pagination */}
       {total > pageSize && (
-        <div style={{ display: "flex", alignItems: "center", gap: space.md, marginTop: space.md, fontSize: 13 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: space.md, marginTop: space.md, fontSize: v("--font-size-small") }}>
           <button style={pagerBtn} disabled={page <= 0} onClick={() => setPage((p) => Math.max(0, p - 1))}>
             ← Zurück
           </button>
@@ -381,11 +377,28 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
             (r?.name ?? lead.region_id)
           )}
         </div>
-        <div style={{ fontSize: 11, color: v("--color-text-muted") }}>
+        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
           {r?.bezeichnung ?? "Gemeinde"}
           {r?.population != null && ` · ${r.population.toLocaleString("de-DE")} Ew.`}
           {lead.charge != null && ` · Charge ${lead.charge}`}
         </div>
+        {/* Eintragungen ins Gemeinde-Abo: das dritte Signal neben Antwort und
+            Veroeffentlichung. Steht nur da, wo es welche gibt — eine Null unter
+            11.000 Gemeinden verdeckt die wenigen echten Funde. Hervorgehoben
+            wird die Verwaltung, nicht die Menge: Ein Buerger ist Reichweite,
+            jemand aus dem Rathaus ist die Stelle, die ueber eine
+            Veroeffentlichung entscheidet. */}
+        {aboSatz(lead.abo) && (
+          <div
+            style={{
+              fontSize: v("--font-size-caption"),
+              marginTop: 3,
+              color: lead.abo?.mitAngabeVerwaltung ? v("--color-positive") : v("--color-text-muted"),
+            }}
+          >
+            {aboSatz(lead.abo)}
+          </div>
+        )}
       </td>
 
       {/* WEBSITE-THEMEN, NICHT DER AUFHÄNGER DES BRIEFES.
@@ -401,17 +414,17 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
           {lead.thema_klima_url && <Merkmal label="Klima" href={lead.thema_klima_url} />}
           {lead.thema_blatt_url && <Merkmal label="Blatt" href={lead.thema_blatt_url} />}
           {!lead.thema_solar_url && !lead.thema_klima_url && !lead.thema_blatt_url && (
-            <span style={{ fontSize: 11, color: v("--color-text-muted") }}>keine Themenseite</span>
+            <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>keine Themenseite</span>
           )}
         </div>
         {lead.verantwortlich_funktion && (
-          <div style={{ fontSize: 11, color: lead.verantwortlich_operativ ? v("--color-positive") : v("--color-text-muted") }}>
+          <div style={{ fontSize: v("--font-size-caption"), color: lead.verantwortlich_operativ ? v("--color-positive") : v("--color-text-muted") }}>
             {lead.verantwortlich_operativ ? "zuständig: " : "nur Vertretung: "}
             {lead.verantwortlich_funktion}
           </div>
         )}
         {lead.verwaltung_domain && (
-          <div style={{ fontSize: 11, color: v("--color-negative") }} title="Gemeinsame Verwaltung laut Impressum">
+          <div style={{ fontSize: v("--font-size-caption"), color: v("--color-negative") }} title="Gemeinsame Verwaltung laut Impressum">
             Verbund: {lead.verwaltung_domain}
           </div>
         )}
@@ -423,15 +436,13 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
           keine Information. */}
       <td style={tdStyle}>
         {!lead.kampagne ? (
-          <span style={{ fontSize: 11, color: v("--color-text-muted") }}>nicht in Versandliste</span>
+          <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>nicht in Versandliste</span>
         ) : (
         <>
-        <select
+        <SelectField
           value={lead.ask_variante ?? ""}
           onChange={(e) => patch({ ask_variante: e.target.value })}
-          style={{ ...selectStyle, fontSize: 12, maxWidth: 150 }}
-          aria-label="Ask-Variante"
-        >
+          ariaLabel="Ask-Variante" size="sm">
           <option value="" disabled>
             —
           </option>
@@ -440,8 +451,8 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
               {ASK_LABEL[a]}
             </option>
           ))}
-        </select>
-        <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 3 }}>
+        </SelectField>
+        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: 3 }}>
           {lead.variante_manuell ? "von Hand · " : ""}
           {/* DIE ZÄHLUNG MISST HIER NICHTS.
               Der Brief trägt seit dem 31.07.2026 keinen zählenden Link mehr
@@ -454,9 +465,9 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
           {lead.ref_klicks ? `${lead.ref_klicks} Klicks` : "Klicks werden nicht gezählt"}
         </div>
         {lead.versendet_variante && (
-          <div style={{ fontSize: 10, color: v("--color-text-muted") }}>versendet als {ASK_LABEL[lead.versendet_variante]}</div>
+          <div style={{ fontSize: v("--font-size-micro"), color: v("--color-text-muted") }}>versendet als {ASK_LABEL[lead.versendet_variante]}</div>
         )}
-        <label style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, marginTop: 3, cursor: "pointer" }}>
+        <label style={{ display: "flex", alignItems: "center", gap: 4, fontSize: v("--font-size-caption"), marginTop: 3, cursor: "pointer" }}>
           <input
             type="checkbox"
             checked={!!lead.widget_anfrage}
@@ -476,15 +487,15 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
               Kontaktseite öffnen ↗
             </a>
           ) : (
-            <span style={{ color: v("--color-text-muted"), fontSize: 12 }}>kein Kontaktlink</span>
+            <span style={{ color: v("--color-text-muted"), fontSize: v("--font-size-small") }}>kein Kontaktlink</span>
           )}
           {(lead.rollen_email || lead.email) && (
-            <a href={`mailto:${lead.rollen_email ?? lead.email}`} style={{ ...linkStyle, fontSize: 12 }}>
+            <a href={`mailto:${lead.rollen_email ?? lead.email}`} style={{ ...linkStyle, fontSize: v("--font-size-small") }}>
               {lead.rollen_email ?? lead.email}
             </a>
           )}
           {lead.website && (
-            <a href={lead.website} target="_blank" rel="noopener noreferrer" style={{ ...linkStyle, fontSize: 11, color: v("--color-text-muted") }}>
+            <a href={lead.website} target="_blank" rel="noopener noreferrer" style={{ ...linkStyle, fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
               {lead.website.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}
             </a>
           )}
@@ -493,26 +504,21 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
 
       {/* Status */}
       <td style={tdStyle}>
-        <select
+        <SelectField
           value={lead.outreach_status}
           onChange={(e) => patch({ outreach_status: e.target.value })}
-          style={{
-            ...selectStyle,
-            fontWeight: 700,
-            color: v(statusMeta.color),
-            background: v(statusMeta.bg),
-            borderColor: v("--color-border"),
-          }}
-          aria-label={`Status ${r?.name ?? ""}`}
+          ariaLabel={`Status ${r?.name ?? ""}`}
+          size="sm"
+          ampel={{ text: v(statusMeta.color), hintergrund: v(statusMeta.bg) }}
         >
           {STATUS.map((s) => (
             <option key={s.key} value={s.key}>
               {STATUS_LABEL[s.key]}
             </option>
           ))}
-        </select>
+        </SelectField>
         {lead.contacted_at && (
-          <div style={{ fontSize: 10, color: v("--color-text-muted"), marginTop: 2 }}>
+          <div style={{ fontSize: v("--font-size-micro"), color: v("--color-text-muted"), marginTop: 2 }}>
             {new Date(lead.contacted_at).toLocaleDateString("de-DE")}
           </div>
         )}
@@ -546,7 +552,7 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
             if (notes !== savedNotes.current) patch({ notes });
           }}
           placeholder="Notiz…"
-          style={{ ...inputStyle, width: "100%", minWidth: 120, fontSize: 12 }}
+          style={{ ...inputStyle, width: "100%", minWidth: 120, fontSize: v("--font-size-small") }}
           aria-label="Notiz"
         />
       </td>
@@ -683,7 +689,7 @@ function DraftModal({
             dort will man sehen, was rausging und was zurückkam. Vorher verdeckte
             der Sperr-Kasten beides. */}
         {blocked && (
-          <div style={{ background: v("--color-bg-muted"), border: `1px solid ${v("--color-negative")}`, borderRadius: v("--radius-sm"), padding: pad("md", "md"), fontSize: 13, color: v("--color-text-secondary") }}>
+          <div style={{ background: v("--color-bg-muted"), border: `1px solid ${v("--color-negative")}`, borderRadius: v("--radius-sm"), padding: pad("md", "md"), fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>
             Diese Gemeinde ist <strong style={{ color: v("--color-negative") }}>gesperrt</strong> — es wird kein weiteres
             Anschreiben erzeugt oder versendet. Um die Sperre aufzuheben, den Status in der Tabelle ändern.
           </div>
@@ -693,7 +699,7 @@ function DraftModal({
         ) : (
           <>
             {/* Erstkontakt bevorzugt über das Kontaktformular (dann ist die Folge-Mail angefordert). */}
-            <div style={{ background: v("--color-accent-dim"), borderRadius: v("--radius-sm"), padding: pad("sm", "md"), fontSize: 12.5, color: v("--color-text-secondary"), lineHeight: 1.5 }}>
+            <div style={{ background: v("--color-accent-dim"), borderRadius: v("--radius-sm"), padding: pad("sm", "md"), fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.5 }}>
               Erstkontakt am besten über das <strong>Kontaktformular</strong> der Gemeinde — dann ist die Folge-Mail
               angefordert (rechtlich sauber). Text unten kopieren, Formular öffnen, einfügen.
             </div>
@@ -703,7 +709,7 @@ function DraftModal({
                   Kontaktformular öffnen ↗
                 </a>
               ) : (
-                <span style={{ fontSize: 12, color: v("--color-text-muted") }}>Kein Kontaktformular hinterlegt.</span>
+                <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Kein Kontaktformular hinterlegt.</span>
               )}
               {lead.email && (
                 <a
@@ -716,7 +722,7 @@ function DraftModal({
             </div>
 
             {lead.draft_manuell && lead.draft_generated_at && (
-              <div style={{ fontSize: 11, color: v("--color-negative") }}>
+              <div style={{ fontSize: v("--font-size-caption"), color: v("--color-negative") }}>
                 Von Hand bearbeitet am {new Date(lead.draft_generated_at).toLocaleString("de-DE")} — wird nicht automatisch
                 aktualisiert. „Neu generieren" verwirft die Änderungen.
               </div>
@@ -738,7 +744,7 @@ function DraftModal({
               aria-label="Nachricht"
             />
 
-            {genError && <div style={{ color: v("--color-negative"), fontSize: 12 }}>Fehler: {genError}</div>}
+            {genError && <div style={{ color: v("--color-negative"), fontSize: v("--font-size-small") }}>Fehler: {genError}</div>}
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, alignItems: "center" }}>
               <button style={primaryBtn} disabled={busy} onClick={() => copy(body, "body")}>
@@ -754,20 +760,18 @@ function DraftModal({
                 {busy ? "…" : "Neu generieren"}
               </button>
               <div style={{ display: "flex", gap: space.xs, alignItems: "center", marginLeft: "auto" }}>
-                <label style={{ fontSize: 11, color: v("--color-text-muted") }} htmlFor="kanal-wahl">
+                <label style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }} htmlFor="kanal-wahl">
                   über
                 </label>
-                <select
+                <SelectField
                   id="kanal-wahl"
                   value={kanal}
-                  onChange={(e) => setKanal(e.target.value)}
-                  style={{ ...inputStyle, fontSize: 12, padding: pad("xs", "sm") }}
-                >
+                  onChange={(e) => setKanal(e.target.value)} ariaLabel="Auswahl" size="sm">
                   <option value="mail">Mail</option>
                   <option value="formular">Kontaktformular</option>
                   <option value="post">Post</option>
                   <option value="telefon">Telefon</option>
-                </select>
+                </SelectField>
                 <button
                   style={{ ...pagerBtn, color: v("--color-positive"), fontWeight: 700 }}
                   disabled={busy}
@@ -833,7 +837,7 @@ function Verlauf({
           />
         ))}
         {!verlauf.length && (
-          <div style={{ fontSize: 12, color: v("--color-text-muted"), paddingLeft: 2 }}>
+          <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), paddingLeft: 2 }}>
             {/* „Noch nichts" ist eine Auskunft, kein leerer Bildschirm. */}
             Noch nichts zurückgekommen. Rückläufe trägt der Postfach-Lauf hier ein.
           </div>
@@ -843,7 +847,7 @@ function Verlauf({
       {freitext.length > 0 && (
         <div>
           <label style={fieldLabel}>Notizen</label>
-          <div style={{ fontSize: 12.5, color: v("--color-text-secondary"), lineHeight: 1.5, whiteSpace: "pre-wrap" }}>
+          <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.5, whiteSpace: "pre-wrap" }}>
             {freitext.join("\n")}
           </div>
         </div>
@@ -851,7 +855,7 @@ function Verlauf({
 
       <ResultSection title="Verschickter Brief" summary={lead.draft_subject ?? "kein Text gespeichert"}>
         <div style={{ display: "flex", flexDirection: "column", gap: space.sm }}>
-          <div style={{ fontSize: 12.5, lineHeight: 1.6, whiteSpace: "pre-wrap", color: v("--color-text-secondary") }}>
+          <div style={{ fontSize: v("--font-size-small"), lineHeight: 1.6, whiteSpace: "pre-wrap", color: v("--color-text-secondary") }}>
             {lead.draft_body ?? "Für diese Gemeinde ist kein Text gespeichert — sie wurde vor dem 20.08.2026 oder von Hand angeschrieben."}
           </div>
           {lead.draft_body && (
@@ -910,8 +914,8 @@ function VerlaufsZeileView({
 }) {
   const farbe = ton === "accent" ? v("--color-accent") : ton === "negativ" ? v("--color-negative") : v("--color-text-secondary");
   return (
-    <div style={{ display: "flex", gap: space.sm, alignItems: "baseline", fontSize: 12.5, lineHeight: 1.5 }}>
-      <span style={{ fontFamily: v("--font-mono"), fontSize: 11.5, color: v("--color-text-muted"), whiteSpace: "nowrap" }}>
+    <div style={{ display: "flex", gap: space.sm, alignItems: "baseline", fontSize: v("--font-size-small"), lineHeight: 1.5 }}>
+      <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-caption"), color: v("--color-text-muted"), whiteSpace: "nowrap" }}>
         {datum}
       </span>
       <span style={{ fontWeight: 700, color: farbe, whiteSpace: "nowrap" }}>{was}</span>
@@ -933,7 +937,7 @@ function Merkmal({ label, href, stark }: { label: string; href: string; stark?: 
       rel="noopener noreferrer"
       title={href}
       style={{
-        fontSize: 11,
+        fontSize: v("--font-size-caption"),
         fontWeight: 700,
         textDecoration: "none",
         padding: "1px 6px",
@@ -952,7 +956,7 @@ function StatusTab({ active, label, onClick }: { active: boolean; label: string;
     <button
       onClick={onClick}
       style={{
-        fontSize: 13,
+        fontSize: v("--font-size-small"),
         fontWeight: active ? 700 : 600,
         color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
         background: active ? v("--color-accent") : v("--color-bg-muted"),
@@ -967,27 +971,9 @@ function StatusTab({ active, label, onClick }: { active: boolean; label: string;
   );
 }
 
-const labelKicker: React.CSSProperties = {
-  fontSize: 12,
-  fontWeight: 700,
-  color: v("--color-accent"),
-  letterSpacing: "0.1em",
-  textTransform: "uppercase",
-  marginBottom: 6,
-};
-
-const selectStyle: React.CSSProperties = {
-  fontSize: 13,
-  padding: pad("xs", "sm"),
-  borderRadius: v("--radius-sm"),
-  border: `1px solid ${v("--color-border")}`,
-  background: v("--color-bg"),
-  color: v("--color-text-primary"),
-  fontFamily: v("--font-text"),
-};
 
 const inputStyle: React.CSSProperties = {
-  fontSize: 13,
+  fontSize: v("--font-size-small"),
   padding: pad("xs", "sm"),
   borderRadius: v("--radius-sm"),
   border: `1px solid ${v("--color-border")}`,
@@ -996,32 +982,22 @@ const inputStyle: React.CSSProperties = {
   fontFamily: v("--font-text"),
 };
 
-const thStyle: React.CSSProperties = {
-  textAlign: "left",
-  fontSize: 11,
-  fontWeight: 700,
-  textTransform: "uppercase",
-  letterSpacing: "0.05em",
-  color: v("--color-text-muted"),
-  padding: pad("sm", "md"),
-  background: v("--color-bg-muted"),
-  whiteSpace: "nowrap",
-};
+// Das Aussehen kommt aus lib/admin-tabelle.ts — eine zweite Fassung hier wäre
+// die Stelle, an der die beiden Ansichten auseinanderlaufen.
+const thStyle = adminTh;
+const tdStyle = adminTd;
 
-const tdStyle: React.CSSProperties = {
-  padding: pad("sm", "md"),
-  verticalAlign: "top",
-};
-
+// Ein gesetzter Filter muss sich vom leeren unterscheiden — sonst sitzt man vor
+// 100 statt 11.000 Zeilen und sucht den Grund.
 const linkStyle: React.CSSProperties = {
   color: v("--color-accent"),
   textDecoration: "none",
-  fontSize: 13,
+  fontSize: v("--font-size-small"),
   fontWeight: 600,
 };
 
 const pagerBtn: React.CSSProperties = {
-  fontSize: 13,
+  fontSize: v("--font-size-small"),
   fontWeight: 600,
   padding: pad("xs", "md"),
   borderRadius: v("--radius-sm"),
@@ -1032,7 +1008,7 @@ const pagerBtn: React.CSSProperties = {
 };
 
 const draftBtn: React.CSSProperties = {
-  fontSize: 12,
+  fontSize: v("--font-size-small"),
   fontWeight: 600,
   padding: pad("xs", "sm"),
   borderRadius: v("--radius-sm"),
@@ -1044,7 +1020,7 @@ const draftBtn: React.CSSProperties = {
 };
 
 const primaryBtn: React.CSSProperties = {
-  fontSize: 13,
+  fontSize: v("--font-size-small"),
   fontWeight: 700,
   padding: pad("sm", "md"),
   borderRadius: v("--radius-sm"),
@@ -1055,7 +1031,7 @@ const primaryBtn: React.CSSProperties = {
 };
 
 const miniBtn: React.CSSProperties = {
-  fontSize: 12,
+  fontSize: v("--font-size-small"),
   fontWeight: 600,
   padding: pad("xs", "sm"),
   borderRadius: v("--radius-sm"),
@@ -1067,7 +1043,7 @@ const miniBtn: React.CSSProperties = {
 };
 
 const fieldLabel: React.CSSProperties = {
-  fontSize: 11,
+  fontSize: v("--font-size-caption"),
   fontWeight: 700,
   textTransform: "uppercase",
   letterSpacing: "0.05em",

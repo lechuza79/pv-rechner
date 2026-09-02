@@ -9,7 +9,7 @@ const tagBase: React.CSSProperties = {
   borderRadius: 5,
   border: "1px solid transparent",
   fontFamily: v("--font-mono"),
-  fontSize: 11,
+  fontSize: v("--font-size-caption"),
   fontWeight: 600,
   lineHeight: 1.4,
 };

@@ -133,7 +133,7 @@ export default function EeAmpelWidget() {
       {/* Quelle vertikal an der rechten Kante (geteilter Baustein), nie als
           horizontaler Block. Auf einer eigenen Seite kreditiert die Seite. */}
       <WidgetSourceEdge widget={WIDGET} visible={!settings.onsite} />
-      <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2, marginBottom: 12 }}>
+      <div style={{ fontSize: "var(--font-size-small)", fontWeight: 600, letterSpacing: 0.2, marginBottom: 12 }}>
         EE-Ampel · Strommix Deutschland
       </div>
 
@@ -145,7 +145,7 @@ export default function EeAmpelWidget() {
           <div style={{ minWidth: 0 }}>
             <div
               style={{
-                fontSize: 30,
+                fontSize: "var(--font-size-display-md)",
                 fontWeight: 800,
                 lineHeight: 1.1,
                 fontVariantNumeric: "tabular-nums",
@@ -154,17 +154,17 @@ export default function EeAmpelWidget() {
             >
               {current ? `${Math.round(current.pct)} %` : <LoadingDots />}
             </div>
-            <div style={{ fontSize: 11, color: "var(--widget-muted)", marginTop: 2 }}>
+            <div style={{ fontSize: "var(--font-size-caption)", color: "var(--widget-muted)", marginTop: 2 }}>
               Anteil Erneuerbare gerade
             </div>
-            <div style={{ fontSize: 12, lineHeight: 1.45, marginTop: 8 }}>
+            <div style={{ fontSize: "var(--font-size-small)", lineHeight: 1.45, marginTop: 8 }}>
               {level ? LEVELS[level].text : "Die aktuellen Erzeugungsdaten werden geladen."}
             </div>
           </div>
         </div>
       )}
 
-      <div style={{ fontSize: 11, color: "var(--color-text-muted)", paddingTop: 10 }}>
+      <div style={{ fontSize: "var(--font-size-caption)", color: "var(--color-text-muted)", paddingTop: 10 }}>
         {current && stats
           ? `Ø letzte 24 Std: ${Math.round(stats.eeSharePct)} % · Stand ${formatTime(current.ts, "time")} Uhr`
           : ""}
@@ -229,7 +229,7 @@ function TrafficLight({ active }: { active: Level | null }) {
 function ErrorState({ onRetry }: { onRetry: () => void }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "flex-start" }}>
-      <span style={{ fontSize: 12, color: "var(--widget-muted)" }}>
+      <span style={{ fontSize: "var(--font-size-small)", color: "var(--widget-muted)" }}>
         Die Daten sind gerade nicht verfügbar.
       </span>
       <button
@@ -237,7 +237,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
         onClick={onRetry}
         style={{
           padding: "5px 12px",
-          fontSize: 11,
+          fontSize: "var(--font-size-caption)",
           fontWeight: 600,
           background: "var(--widget-accent)",
           color: "var(--widget-accent-fg)",
