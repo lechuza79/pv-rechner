@@ -43,6 +43,7 @@ export default function SelectField({
   block = false,
   ton = "neutral",
   ampel,
+  disabled,
 }: (Gesteuert | Formular) & {
   ariaLabel: string;
   children: React.ReactNode;
@@ -64,8 +65,14 @@ export default function SelectField({
    * (Referenzheizung, Wärmepumpen-Bauart). Dort ist die Auswahl selbst ein
    * geänderter Wert und muss so aussehen wie die Zahlen daneben — sonst liest
    * sie sich als Beschriftung und niemand merkt, dass man sie anfassen kann.
+   *
+   * „aktiv" für einen Filter, der die Liste gerade einschränkt. Eine Filterzeile
+   * aus fünf gleich aussehenden Feldern lässt nicht erkennen, welche davon
+   * gerade wirken — und wer eine leere Liste vor sich hat, sucht dann den Fehler
+   * in den Daten statt im Filter. Bewusst OHNE Schreibmaschinenschrift und ohne
+   * eigenen Hintergrund: Hier ist der Wert ein Ortsname, kein Zahlenwert.
    */
-  ton?: "neutral" | "akzent";
+  ton?: "neutral" | "akzent" | "aktiv";
   /**
    * SEMANTISCHE Farbe — grün/gelb/rot einer Ampel, die den gewählten Zustand
    * trägt. Nur dafür: Hier IST die Farbe die Information, und sie hängt am
@@ -73,9 +80,17 @@ export default function SelectField({
    * Feld anders aussehen zu lassen — dafür gibt es `ton` und `size`.
    */
   ampel?: { text: string; hintergrund: string };
+  /**
+   * Gesperrt, weil eine vorgelagerte Auswahl fehlt (erst der Schub, dann die
+   * Charge darin). Sichtbar gesperrt statt ausgeblendet: Ein Feld, das
+   * verschwindet und wiederkommt, lässt die Zeile springen — und wer es nicht
+   * sieht, weiß nicht, dass es die Verfeinerung überhaupt gibt.
+   */
+  disabled?: boolean;
 }) {
   const klein = size === "sm";
   const akzent = ton === "akzent";
+  const aktiv = ton === "aktiv";
   return (
     <span
       style={{
@@ -93,6 +108,7 @@ export default function SelectField({
         defaultValue={defaultValue}
         onChange={onChange}
         aria-label={ariaLabel}
+        disabled={disabled}
         style={{
           appearance: "none",
           WebkitAppearance: "none",
@@ -100,10 +116,10 @@ export default function SelectField({
           width: "100%",
           fontFamily: akzent ? v("--font-mono") : v("--font-text"),
           fontSize: klein ? v("--font-size-small") : v("--font-size-body"),
-          fontWeight: ampel || akzent || klein ? 700 : 400,
-          color: ampel?.text ?? (akzent ? v("--color-accent") : v("--color-text-primary")),
+          fontWeight: ampel || akzent || aktiv || klein ? 700 : 400,
+          color: ampel?.text ?? (akzent || aktiv ? v("--color-accent") : v("--color-text-primary")),
           background: ampel?.hintergrund ?? (akzent ? v("--color-accent-dim") : v("--color-bg-muted")),
-          border: `1px solid ${akzent ? v("--color-accent") : v("--color-border")}`,
+          border: `1px solid ${akzent || aktiv ? v("--color-accent") : v("--color-border")}`,
           // Maße wie die Texteingaben daneben (Muster Kontaktformular): gleiche
           // Ecke, gleiche Innenhöhe. Sie waren auseinandergelaufen — im
           // Kontaktformular stand das Auswahlfeld 4 px niedriger als die Felder
@@ -112,7 +128,8 @@ export default function SelectField({
           borderRadius: v("--radius-sm"),
           padding: klein ? "4px 26px 4px 8px" : "12px 34px 12px 12px",
           outline: "none",
-          cursor: "pointer",
+          cursor: disabled ? "not-allowed" : "pointer",
+          opacity: disabled ? 0.5 : 1,
         }}
       >
         {children}
@@ -124,7 +141,7 @@ export default function SelectField({
           top: "50%",
           transform: "translateY(-50%)",
           pointerEvents: "none",
-          color: akzent ? v("--color-accent") : v("--color-text-secondary"),
+          color: akzent || aktiv ? v("--color-accent") : v("--color-text-secondary"),
           display: "inline-flex",
         }}
       >

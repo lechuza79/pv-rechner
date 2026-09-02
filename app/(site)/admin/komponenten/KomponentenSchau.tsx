@@ -290,6 +290,16 @@ function AuswahlBeispiel() {
           {optionen}
         </SelectField>
       </Zustand>
+      <Zustand name="aktiver Filter">
+        <SelectField value={a} onChange={(e) => setA(e.target.value)} ariaLabel="Ausrichtung, aktiver Filter" size="sm" ton="aktiv">
+          {optionen}
+        </SelectField>
+      </Zustand>
+      <Zustand name="gesperrt (Vorauswahl fehlt)">
+        <SelectField value={a} onChange={(e) => setA(e.target.value)} ariaLabel="Ausrichtung, gesperrt" size="sm" disabled>
+          {optionen}
+        </SelectField>
+      </Zustand>
       <Zustand name="Ampel (Farbe ist die Aussage)">
         <SelectField
           value={a}

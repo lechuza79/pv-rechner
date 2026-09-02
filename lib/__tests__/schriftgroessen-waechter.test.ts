@@ -133,16 +133,7 @@ const ERLAUBTE_ZEILEN: { fragment: string; grund: string }[] = [
  * Läuft die Frist ab, wird dieser Test rot. Das ist Absicht: Ein „OFFEN" ohne
  * Wecker ist ein Vorsatz, kein Termin.
  */
-const NOCH_OFFEN: { datei: string; bis: string; grund: string }[] = [
-  {
-    datei: "app/(site)/admin/kommunen/client.tsx",
-    bis: "2026-11-01",
-    grund:
-      "Eine andere Sitzung baut diese Ansicht gerade um. Keine Oberfläche mit " +
-      "Publikum, kein Bild-Export — die 41 Stellen kosten niemanden etwas, " +
-      "solange sie eingeplant bleiben.",
-  },
-];
+const NOCH_OFFEN: { datei: string; bis: string; grund: string }[] = [];
 
 function dateienUnter(rel: string): string[] {
   const abs = join(ROOT, rel);

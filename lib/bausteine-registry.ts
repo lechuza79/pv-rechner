@@ -147,11 +147,6 @@ export const BAUSTEINE: Baustein[] = [
           grund:
             "Die Galerie stellt Baustein und nacktes Feld absichtlich nebeneinander — ohne den Vergleich lässt sich nicht entscheiden, ob der Unterschied gebraucht wird.",
         },
-        {
-          datei: "app/(site)/admin/kommunen/client.tsx",
-          grund:
-            "Wird gerade von einer anderen Sitzung umgebaut; Typografie und Bausteine folgen, sobald deren Arbeit auf der Hauptlinie ist.",
-        },
       ],
     },
   },
