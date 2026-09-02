@@ -17,6 +17,9 @@ import { calcBalkon, recommendBalkon, type BalkonInputs, type BalkonOption } fro
 import { referenceYearKwh } from "../../../../lib/solar-year";
 import { trackFunnelStep, type Funnel } from "../../../../lib/analytics";
 import { useSharedPlz, readLocation } from "../../../../lib/location";
+import ResultFunding from "../../../../components/ResultFunding";
+import { useFoerderung } from "../../../../lib/use-foerderung";
+import { stackFunding, type Wohnform } from "../../../../lib/funding-programs";
 import { DataSourceNote } from "../../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
 
@@ -219,10 +222,44 @@ export default function Balkon() {
     [orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, scenarioStrom],
   );
 
+  // ── Förderung ───────────────────────────────────────────────────────────────
+  // Der Rechner hatte bis zum 02.09.2026 gar keinen Fördercheck, obwohl 43
+  // Programme im Katalog einen Balkon-Betrag ausrechnen können. Bei einem Set um
+  // 500 € sind 100 bis 200 € Zuschuss ein Fünftel bis ein Drittel des Preises —
+  // der Posten mit der größten Hebelwirkung auf die Amortisation, und der
+  // einzige, den wir nicht gezeigt haben.
+  const foerderQuelle = useFoerderung("balkon");
+  const fundingPrograms = foerderQuelle.programme;
+  const [fundingEnabled, setFundingEnabled] = useState(true);
+  // Wohnform: nur gefragt, wo ein aufgelöstes Programm sie unterscheidet.
+  // Sonst beantwortet sie niemand umsonst — dieselbe Regel wie bei den
+  // Technik-Filtern auf der Förder-Stadtseite.
+  const [wohnform, setWohnform] = useState<Wohnform | null>(null);
+  const wohnformGefragt = fundingPrograms.some((p) => p.nurWohnform);
+
+  // Dieselbe Postleitzahl wie für den Standort-Ertrag löst auch die Förderung
+  // auf — der Rechner fragt sie also kein zweites Mal.
+  const ausPlz = foerderQuelle.ausPlz;
+  useEffect(() => { if (/^\d{5}$/.test(plz)) void ausPlz(plz); }, [plz, ausPlz]);
+
+  const bruttoInvest = oInvest ?? calcBalkon({
+    setId: active.setId, orientationId, presenceId, storageId: active.storageId,
+    haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease: scenarioStrom,
+  }).invest;
+  const fundingStack = useMemo(
+    () => stackFunding(fundingPrograms, {
+      technik: "balkon", wattPeak: CFG.sets.find(x => x.id === active.setId)?.moduleWp ?? 0,
+      kosten: bruttoInvest, wohnform: wohnform ?? undefined,
+    }),
+    [fundingPrograms, active.setId, bruttoInvest, wohnform],
+  );
+  const foerderung = fundingEnabled ? fundingStack.total : 0;
+
   const inputs: BalkonInputs = useMemo(() => ({
     setId: active.setId, orientationId, presenceId, storageId: active.storageId,
-    haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease: scenarioStrom, invest: oInvest ?? undefined,
-  }), [active.setId, active.storageId, orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, scenarioStrom, oInvest]);
+    haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease: scenarioStrom,
+    invest: Math.max(0, bruttoInvest - foerderung),
+  }), [active.setId, active.storageId, orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, scenarioStrom, bruttoInvest, foerderung]);
 
   const r = useMemo(() => calcBalkon(inputs), [inputs]);
   const amortLabel = isFinite(r.amortYears) ? `${r.amortYears.toFixed(1).replace(".", ",")} J.` : "—";
@@ -558,12 +595,52 @@ export default function Balkon() {
 
               {/* Editierbare Annahmen inkl. nachträglicher Standort-Eingabe */}
               <div style={{ marginTop: 18, borderTop: `1px solid ${v('--color-border-accent')}`, paddingTop: 14, fontSize: 13, lineHeight: 2 }}>
-                <div>{r.storageKwh > 0 ? "Anschaffung (Set + Speicher)" : "Set-Preis"}: <InlineEdit value={r.invest} onCommit={val => setOInvest(Math.round(val))} unit=" €" min={100} max={4000} step={50} width={64} /></div>
+                <div>{r.storageKwh > 0 ? "Anschaffung (Set + Speicher)" : "Set-Preis"}: <InlineEdit value={bruttoInvest} onCommit={val => setOInvest(Math.round(val))} unit=" €" min={100} max={4000} step={50} width={64} /></div>
                 <div>Strompreis: <InlineEdit value={Math.round(strompreis * 100 * 100) / 100} onCommit={val => setOStrom(val / 100)} unit=" ct/kWh" min={10} max={70} step={1} width={70} /></div>
                 <div>Haushaltsverbrauch: <InlineEdit value={haushaltKwh} onCommit={val => setOVerbrauch(Math.round(val))} unit=" kWh" min={800} max={12000} step={100} width={76} /></div>
                 <StandortField plz={plz} onPlzChange={onPlzChange} loading={plzLoading} confirmed={plzConfirmed} onSubmit={() => fetchPvgis(plz)} />
               </div>
             </div>
+
+            <ResultFunding
+              loading={foerderQuelle.laedt}
+              candidates={foerderQuelle.kandidaten}
+              chosenAgs={foerderQuelle.ags}
+              onChooseAgs={foerderQuelle.waehleOrt}
+              programs={fundingPrograms}
+              applied={fundingStack.applied}
+              total={fundingStack.total}
+              enabled={fundingEnabled}
+              onToggle={setFundingEnabled}
+              brutto={bruttoInvest}
+              technik="balkon"
+              kopf={wohnformGefragt ? (
+                <div style={{ fontSize: 12, color: v("--color-text-secondary"), marginTop: 10 }}>
+                  {/* Nur sichtbar, wo ein Programm Mieter und Eigentümer trennt.
+                      Ohne Antwort wird nicht gerechnet — der leere Topf für
+                      Eigentümer ist real, eine Voreinstellung wäre geraten. */}
+                  <div style={{ marginBottom: 6 }}>Ein Programm hier unterscheidet, ob du zur Miete oder im Eigentum wohnst:</div>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    {([["mieter", "Zur Miete"], ["eigentuemer", "Im Eigentum"]] as const).map(([id, label]) => (
+                      <button
+                        key={id}
+                        data-flow-option
+                        aria-pressed={wohnform === id}
+                        onClick={() => setWohnform(wohnform === id ? null : id)}
+                        style={{
+                          padding: "6px 12px", borderRadius: v("--radius-md"), cursor: "pointer", fontSize: 12,
+                          border: `1px solid ${wohnform === id ? v("--color-accent") : v("--color-border")}`,
+                          background: wohnform === id ? v("--color-bg-accent") : v("--color-bg"),
+                          color: v("--color-text-primary"),
+                        }}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : undefined}
+            />
 
             {/* Stats 2×2 */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
