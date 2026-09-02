@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { leseSmtpKonfig } from "../../../../lib/outreach-mail";
+import { pruefePostfachAnmeldung } from "../../../../lib/abo-versand";
 import { supabase } from "../../../../lib/supabase-server";
 
 // ─── Ist der Abo-Weg in DIESER Umgebung einsatzbereit? ───────────────────────
@@ -66,7 +67,18 @@ export async function GET(req: NextRequest) {
     else spaltenGeprueft = true;
   }
 
-  // 6. UND DIE WIRKUNG, nicht nur die Einstellung. Alles oben fragt, ob etwas
+  // 6. NIMMT DAS POSTFACH DIE ZUGANGSDATEN AN? Alles oben fragt, ob etwas
+  //    GESETZT ist — ein falsch getipptes Passwort ist gesetzt. Die Probe
+  //    meldet sich am Mailserver an und sendet nichts. Nur eine ZURÜCKWEISUNG
+  //    zählt als Befund; ein nicht erreichbarer Server ist „konnte nicht
+  //    nachsehen" und ändert an der Bereitschaft nichts (sonst meldete jede
+  //    Netzstörung eine Fehlkonfiguration).
+  const postfach = await pruefePostfachAnmeldung(process.env);
+  if (postfach === "abgelehnt") {
+    fehlt.push("Das Postfach weist die hinterlegten Zugangsdaten zurück (Konto oder Passwort stimmt nicht).");
+  }
+
+  // 7. UND DIE WIRKUNG, nicht nur die Einstellung. Alles oben fragt, ob etwas
   //    GESETZT ist. Ein falsch getipptes Passwort ist gesetzt und trotzdem
   //    wirkungslos — dann meldet diese Route grün, während jede Anmeldung
   //    scheitert. Gemessen wird deshalb zusätzlich am Ergebnis.
@@ -75,6 +87,9 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     bereit: fehlt.length === 0,
     fehlt,
+    // Der Ausgang der Anmeldeprobe im Klartext — „unerreichbar" ist bewusst
+    // KEIN Befund und steht deshalb nur hier, nicht in `fehlt`.
+    postfach,
     // BEWUSST NEBEN `bereit`, nicht darin: „ist eingerichtet" und „hat
     // gewirkt" sind zwei Aussagen. Eine hängende Anmeldung in `bereit`
     // einzurechnen hieße zu behaupten, es fehle eine Einstellung — und der
@@ -86,6 +101,7 @@ export async function GET(req: NextRequest) {
       basisAdresse: true,
       datenbank: true,
       spalten: spaltenGeprueft,
+      postfach: postfach !== "unerreichbar",
       wirkung: versandOhneBeleg !== null,
     },
   });
