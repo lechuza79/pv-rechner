@@ -286,6 +286,21 @@ export default function DatenschutzPage() {
           Anmeldevorgang erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG); ein
           Cookie-Banner ist dafür nicht nötig.
         </p>
+        <p style={S.p}>
+          Beim Anmelden kannst du zusätzlich <strong>„Angemeldet bleiben"</strong>{" "}
+          anhaken. Dann — und nur dann — legen wir ein weiteres Cookie an, das
+          dich bis zu 90 Tage angemeldet hält, damit du dich nicht bei jedem
+          Besuch neu anmelden musst. Dieses eine ist <em>nicht</em> unbedingt
+          erforderlich; es entsteht ausschließlich aufgrund deiner Einwilligung
+          (§ 25 Abs. 1 TDDDG, Art. 6 Abs. 1 lit. a DSGVO). Das Häkchen ist nicht
+          vorausgewählt, und du nimmst die Einwilligung jederzeit mit Wirkung
+          für die Zukunft zurück, indem du dich abmeldest — dann werden beide
+          Cookies gelöscht. Die Rechtmäßigkeit der bis dahin erfolgten
+          Verarbeitung bleibt davon unberührt. Damit wir nachweisen können,
+          wozu du zugestimmt hast, hält das Cookie fest, welche Fassung dieses
+          Hinweises dir dabei vorlag; ein Merkmal deiner Person steht nicht
+          darin.
+        </p>
 
         <p style={S.p}>
           Zusätzlich nutzt die Website den Browser-Speicher. Öffentliche Energie- und Preisdaten werden dort nur für die Dauer deines Besuchs zwischengespeichert, damit dieselben Zahlen nicht mehrfach geladen werden müssen; schließt du den Browser-Tab, sind sie weg. Klickst du auf „Speichern", wird deine Berechnung bis zum Login vorgehalten. Diese Einträge dienen keinem Tracking und enthalten keine Kennung, mit der sich ein Gerät wiedererkennen ließe. Du kannst sie jederzeit über die Einstellungen deines Browsers löschen.

@@ -10,6 +10,7 @@ import {
   signInWithGoogle,
 } from "../lib/auth";
 import { FEHLERTEXT, PASSWORT_MIN, istEmail, passwortOk } from "../lib/auth-regeln";
+import { AKTUELLE_BLEIBEN_FASSUNG } from "../lib/auth-einwilligung";
 
 // ─── DAS Anmeldeformular. Ein Baustein, zwei Aufrufer ────────────────────────
 //
@@ -49,6 +50,8 @@ export default function AnmeldeFormular({
   const [passwort, setPasswort] = useState("");
   const [fehler, setFehler] = useState("");
   const [gesendet, setGesendet] = useState<null | "bestaetigung" | "passwortlink">(null);
+  // NICHT vorausgewählt: Eine Einwilligung, die schon gesetzt ist, ist keine.
+  const [bleiben, setBleiben] = useState(false);
   const [busy, setBusy] = useState(false);
 
   function wechsle(neu: AnmeldeModus) {
@@ -77,7 +80,7 @@ export default function AnmeldeFormular({
     setFehler("");
     const antwort =
       modus === "anmelden"
-        ? await signInWithPassword(adresse, passwort)
+        ? await signInWithPassword(adresse, passwort, bleiben)
         : modus === "registrieren"
           ? await signUpWithPassword(adresse, passwort, { next })
           : await requestPasswordReset(adresse);
@@ -97,7 +100,7 @@ export default function AnmeldeFormular({
   async function google() {
     setFehler("");
     setBusy(true);
-    const antwort = await signInWithGoogle({ next });
+    const antwort = await signInWithGoogle({ next, bleiben });
     // Bei Erfolg verlässt der Browser die Seite — der Zustand danach ist nur im
     // Fehlerfall überhaupt noch sichtbar.
     if (antwort.fehler) {
@@ -195,6 +198,21 @@ export default function AnmeldeFormular({
           </>
         )}
 
+        {modus === "anmelden" && (
+          <div style={S.bleibenBlock}>
+            <label style={S.bleibenLabel}>
+              <input
+                type="checkbox"
+                checked={bleiben}
+                onChange={(e) => setBleiben(e.target.checked)}
+                style={S.haken}
+              />
+              <span>{AKTUELLE_BLEIBEN_FASSUNG.label}</span>
+            </label>
+            <p style={S.bleibenErklaerung}>{AKTUELLE_BLEIBEN_FASSUNG.erklaerung}</p>
+          </div>
+        )}
+
         <button type="submit" disabled={busy} style={{ ...S.absenden, opacity: busy ? 0.7 : 1, cursor: busy ? "default" : "pointer" }}>
           {busy ? "Einen Moment…" : knopfText}
         </button>
@@ -242,6 +260,23 @@ const S: Record<string, React.CSSProperties> = {
     border: `1px solid ${v("--color-border")}`,
     color: v("--color-text-primary"),
     cursor: "pointer",
+  },
+  bleibenBlock: { marginTop: space.lg },
+  bleibenLabel: {
+    display: "flex",
+    alignItems: "center",
+    gap: space.md,
+    fontSize: v("--font-size-body"),
+    color: v("--color-text-primary"),
+    cursor: "pointer",
+  },
+  haken: { width: 18, height: 18, accentColor: v("--color-accent"), cursor: "pointer", flexShrink: 0 },
+  bleibenErklaerung: {
+    fontSize: v("--font-size-caption"),
+    color: v("--color-text-faint"),
+    lineHeight: 1.45,
+    marginTop: space.sm,
+    marginLeft: 18 + space.md,
   },
   hinweis: {
     fontSize: v("--font-size-caption"),

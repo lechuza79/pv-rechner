@@ -2,6 +2,8 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "../../../../lib/supabase-server-component";
 import { rateLimit } from "../../../../lib/rate-limit";
 import { fehlerAusMeldung, istEmail, type AuthFehler } from "../../../../lib/auth-regeln";
+import { BLEIBEN_COOKIE } from "../../../../lib/auth-cookies";
+import { AKTUELLE_BLEIBEN_FASSUNG, BLEIBEN_TAGE } from "../../../../lib/auth-einwilligung";
 
 // ─── Anmeldung mit Passwort — SERVERSEITIG, nicht im Browser ─────────────────
 //
@@ -35,13 +37,17 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
   const email = typeof body?.email === "string" ? body.email.trim() : "";
   const passwort = typeof body?.passwort === "string" ? body.passwort : "";
+  // „Angemeldet bleiben": nur wahr, wenn der Nutzer es ausdrücklich angehakt
+  // hat. Alles andere gilt als nicht erteilt — eine Einwilligung, die aus
+  // einem fehlenden Wert entsteht, wäre eine vorangekreuzte.
+  const bleiben = body?.bleiben === true;
   if (!istEmail(email) || !passwort) return fehler("ungueltige_eingabe", 400);
 
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     return fehler("nicht_eingerichtet", 503);
   }
 
-  const supabase = await createClient();
+  const supabase = await createClient(bleiben);
   const { data, error } = await supabase.auth.signInWithPassword({ email, password: passwort });
 
   if (error) {
@@ -54,7 +60,7 @@ export async function POST(request: NextRequest) {
   // die Cookie-Schnittstelle von Next). Die beiden Schlüssel gehen zusätzlich
   // an den Browser, damit dessen eigener Anmelde-Zustand sofort umspringt und
   // die Kopfzeile nicht erst nach einem Seitenwechsel „angemeldet" zeigt.
-  return NextResponse.json(
+  const antwort = NextResponse.json(
     {
       ok: true,
       access_token: data.session.access_token,
@@ -62,4 +68,24 @@ export async function POST(request: NextRequest) {
     },
     { headers: { "Cache-Control": "no-store" } },
   );
+
+  // Der Merker trägt die FASSUNG des Einwilligungstextes, nicht bloß ein „ja".
+  // Damit lässt sich später sagen, wozu jemand zugestimmt hat — ein Verweis auf
+  // „die Website war korrekt eingerichtet" genügt dafür ausdrücklich nicht
+  // (EDSA-Leitlinien 05/2020 Rn. 108). Ohne Häkchen wird er gelöscht: Wer sich
+  // einmal ohne anmeldet, hat die Einwilligung damit zurückgenommen.
+  if (bleiben) {
+    antwort.cookies.set(BLEIBEN_COOKIE, AKTUELLE_BLEIBEN_FASSUNG.version, {
+      path: "/",
+      maxAge: BLEIBEN_TAGE * 24 * 60 * 60,
+      sameSite: "lax",
+      secure: request.nextUrl.protocol === "https:",
+    });
+  } else {
+    // Mit Lebensdauer null löschen, nicht bloß leeren: Ein leer gesetztes
+    // Cookie bleibt im Browser stehen, und ein Leser, der nur auf
+    // „vorhanden" prüft, hielte es für eine erteilte Einwilligung.
+    antwort.cookies.set(BLEIBEN_COOKIE, "", { path: "/", maxAge: 0 });
+  }
+  return antwort;
 }

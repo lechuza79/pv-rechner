@@ -2,7 +2,8 @@ import { describe, it, expect } from "vitest";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { FEHLERTEXT, PASSWORT_MIN, fehlerAusMeldung, istEmail, passwortOk } from "../auth-regeln";
-import { nurFuerDieSitzung } from "../auth-cookies";
+import { nurFuerDieSitzung, bleibenGilt, bleibenGewuenscht } from "../auth-cookies";
+import { AKTUELLE_BLEIBEN_FASSUNG, BLEIBEN_FASSUNGEN, BLEIBEN_TAGE } from "../auth-einwilligung";
 
 /**
  * Wächter für die Anmeldung.
@@ -154,6 +155,71 @@ describe("Die Anmeldung endet mit dem Browser", () => {
     expect(o.maxAge).toBe(24 * 60 * 60);
     // Auch hier gilt: eine Löschung bleibt eine Löschung.
     expect(nurFuerDieSitzung("sb-abc-auth-token-code-verifier", { maxAge: 0 }).maxAge).toBe(0);
+  });
+});
+
+describe("Angemeldet bleiben ist eine Einwilligung", () => {
+  // Ohne Häkchen endet die Anmeldung mit dem Browser und braucht keine
+  // Einwilligung. MIT Häkchen wird die Ausnahme nicht geheilt, sondern ersetzt
+  // (WP194 Abschnitt 3.2 nennt genau diese Checkbox als geeignetes Mittel) —
+  // und damit gelten die Anforderungen an eine Einwilligung.
+
+  it("ist nicht vorausgewählt", () => {
+    // Eine Einwilligung, die schon gesetzt ist, ist keine.
+    const quelle = lies("components/AnmeldeFormular.tsx");
+    expect(quelle).toMatch(/useState\(false\);\s*$/m);
+    expect(quelle).toMatch(/const \[bleiben, setBleiben\] = useState\(false\)/);
+  });
+
+  it("gilt nur mit Inhalt, nicht schon bei Vorhandensein", () => {
+    // Ein Löschversuch kann ein Cookie mit LEEREM Wert hinterlassen. Wer
+    // „vorhanden" mit „gesetzt" verwechselt, verlängert die Anmeldung gegen
+    // den ausdrücklichen Willen des Nutzers. Beim Bauen genau so gemessen.
+    expect(bleibenGilt("2026-09-02")).toBe(true);
+    expect(bleibenGilt("")).toBe(false);
+    expect(bleibenGilt("  ")).toBe(false);
+    expect(bleibenGilt(undefined)).toBe(false);
+    expect(bleibenGewuenscht("sc-angemeldet-bleiben=; andere=1")).toBe(false);
+    expect(bleibenGewuenscht("andere=1; sc-angemeldet-bleiben=2026-09-02")).toBe(true);
+    expect(bleibenGewuenscht("")).toBe(false);
+  });
+
+  it("verlängert das Anmelde-Cookie NUR mit erteilter Einwilligung", () => {
+    const name = "sb-abc-auth-token";
+    expect(nurFuerDieSitzung(name, { maxAge: 34560000 }, false).maxAge).toBeUndefined();
+    expect(nurFuerDieSitzung(name, { maxAge: 34560000 }, true).maxAge).toBe(BLEIBEN_TAGE * 24 * 60 * 60);
+    // Eine Löschung bleibt eine Löschung, auch mit Einwilligung.
+    expect(nurFuerDieSitzung(name, { maxAge: 0 }, true).maxAge).toBe(0);
+  });
+
+  it("nennt die Dauer im Einwilligungstext genau so, wie sie gilt", () => {
+    // Sonst willigt jemand in 90 Tage ein und bekommt 400 — dieselbe
+    // Fehlerklasse wie eine Beschriftung, die etwas anderes sagt als die Zahl.
+    expect(AKTUELLE_BLEIBEN_FASSUNG.erklaerung).toContain(`${BLEIBEN_TAGE} Tage`);
+    // Und der Text sagt, wie man es zurücknimmt (Art. 7 Abs. 3 DSGVO).
+    expect(AKTUELLE_BLEIBEN_FASSUNG.erklaerung).toMatch(/zurück|abmeld/i);
+  });
+
+  it("hält den Wortlaut fest, statt ihn in der Oberfläche zu tippen", () => {
+    // Ein Einwilligungstext als Konstante in der Oberfläche ändert sich mit dem
+    // nächsten Commit; danach ist nicht mehr rekonstruierbar, wozu jemand
+    // zugestimmt hat (EDSA-Leitlinien 05/2020 Rn. 108). Dieselbe Bauform wie
+    // beim Gemeinde-Abo.
+    const quelle = lies("components/AnmeldeFormular.tsx");
+    expect(quelle).toContain("AKTUELLE_BLEIBEN_FASSUNG.label");
+    expect(quelle).toContain("AKTUELLE_BLEIBEN_FASSUNG.erklaerung");
+    // Fassungen tragen ein Datum und werden nie doppelt vergeben.
+    const versionen = BLEIBEN_FASSUNGEN.map((f) => f.version);
+    expect(new Set(versionen).size).toBe(versionen.length);
+    for (const f of BLEIBEN_FASSUNGEN) expect(f.version).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+
+  it("nimmt die Einwilligung beim Abmelden zurück", () => {
+    // Der Widerruf muss so einfach sein wie die Erteilung (Art. 7 Abs. 3 S. 4).
+    // Erteilt wird mit einem Häkchen, zurückgenommen mit dem Abmelden — dabei
+    // darf kein Merker stehen bleiben, der beim nächsten Mal still wieder greift.
+    const quelle = lies("lib/auth.ts");
+    expect(quelle.replace(/\n/g, " ")).toMatch(/export async function signOut\(\)[^}]*merkeBleiben\(false\)/);
   });
 });
 

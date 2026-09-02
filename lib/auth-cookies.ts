@@ -1,5 +1,6 @@
 import type { CookieOptions } from "@supabase/ssr";
 import { entschluesseltOderRoh } from "./uri-sicher";
+import { BLEIBEN_TAGE } from "./auth-einwilligung";
 
 // ─── Die Anmeldung endet mit dem Browser — BLOCKER ───────────────────────────
 //
@@ -61,14 +62,63 @@ const PRUEFSCHLUESSEL_SEKUNDEN = 24 * 60 * 60;
  *    nicht auf (dort kommt man binnen Sekunden zurück), bei der Mail schon.
  *    24 Stunden, weil der Link selbst nicht länger gilt.
  */
-export function nurFuerDieSitzung(name: string, options: CookieOptions): CookieOptions {
+export function nurFuerDieSitzung(
+  name: string,
+  options: CookieOptions,
+  /**
+   * Hat der Nutzer „Angemeldet bleiben" angehakt? Dann darf das Anmelde-Cookie
+   * leben — aber nur, weil er es ausdrücklich wollte, und nur so lange, wie im
+   * Einwilligungstext steht.
+   */
+  bleiben = false,
+): CookieOptions {
   if (options.maxAge === 0) return options;
   if (name.includes("code-verifier")) {
     const { expires: _expires, ...rest } = options;
     return { ...rest, maxAge: PRUEFSCHLUESSEL_SEKUNDEN };
   }
   const { maxAge: _maxAge, expires: _expires2, ...rest } = options;
+  if (bleiben) return { ...rest, maxAge: BLEIBEN_TAGE * 24 * 60 * 60 };
   return rest;
+}
+
+/** Der Merker: steht er, hat jemand „Angemeldet bleiben" angehakt. */
+export const BLEIBEN_COOKIE = "sc-angemeldet-bleiben";
+
+/**
+ * Liest den Merker aus einer Cookie-Zeile (Server) oder aus dem Browser.
+ *
+ * Der Merker muss an BEIDEN Enden lesbar sein: Der Server setzt das
+ * Anmelde-Cookie beim Anmelden, der Browser schreibt es stündlich beim
+ * Auffrischen des Zugangs neu. Läse nur eine Seite ihn, verlöre die Anmeldung
+ * ihre Lebensdauer bei der ersten Auffrischung wieder — und niemandem fiele
+ * auf, warum man nach einer Stunde ausgeloggt ist.
+ */
+export function bleibenGewuenscht(cookieZeile: string | null | undefined): boolean {
+  const zeile = cookieZeile ?? (typeof document !== "undefined" ? document.cookie : "");
+  for (const teil of zeile.split(";")) {
+    const t = teil.trim();
+    if (!t.startsWith(`${BLEIBEN_COOKIE}=`)) continue;
+    return bleibenGilt(t.slice(BLEIBEN_COOKIE.length + 1));
+  }
+  return false;
+}
+
+/**
+ * Gilt ein Merker?
+ *
+ * NUR MIT INHALT — und das ist kein Detail: Ein Löschversuch kann ein Cookie
+ * mit LEEREM Wert hinterlassen statt es zu entfernen. Wer „vorhanden" mit
+ * „gesetzt" verwechselt, hält den Rest eines zurückgenommenen Häkchens für
+ * eine erteilte Einwilligung — und verlängert das Anmelde-Cookie gegen den
+ * ausdrücklichen Willen des Nutzers. Beim Bauen genau so gemessen.
+ *
+ * Der Inhalt ist die Fassung des Textes, dem zugestimmt wurde. Eine hier
+ * unbekannte Fassung gilt trotzdem: Sie ist eine ÄLTERE, unter der die
+ * Einwilligung wirksam erteilt wurde.
+ */
+export function bleibenGilt(wert: string | undefined | null): boolean {
+  return typeof wert === "string" && wert.trim().length > 0;
 }
 
 /**
@@ -98,7 +148,7 @@ export const browserCookies = {
   setAll(cookies: { name: string; value: string; options: CookieOptions }[]) {
     if (typeof document === "undefined") return;
     for (const { name, value, options } of cookies) {
-      document.cookie = serialisiere(name, value, nurFuerDieSitzung(name, options));
+      document.cookie = serialisiere(name, value, nurFuerDieSitzung(name, options, bleibenGewuenscht(null)));
     }
   },
 };
