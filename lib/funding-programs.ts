@@ -6,6 +6,26 @@
 // and budgets run dry mid-year — treat `status` as a point-in-time snapshot.
 
 export type Eligibility = "privat" | "gewerblich";
+
+/**
+ * Wohnt der Antragsteller zur Miete oder im Eigentum?
+ *
+ * Eine EIGENE Dimension neben `eligibility` (privat/gewerblich), weil sie eine
+ * andere Frage beantwortet: Wer ist der Antragsteller, gegen wo wohnt er. Ein
+ * privater Mieter und ein privater Eigentümer sind beide „privat" — und bei
+ * Balkonkraftwerken trotzdem regelmäßig verschieden berechtigt.
+ *
+ * WARUM ES SIE GIBT (02.09.2026): Die Landesprogramme für Balkonkraftwerke
+ * teilen ihre Mittel auf zwei Töpfe, und der für Eigentümer läuft zuerst leer.
+ * In Mecklenburg-Vorpommern ist er es, das Institut bittet Eigentümer
+ * ausdrücklich, gar nicht erst zu beantragen; in Sachsen war es dasselbe Bild,
+ * bevor das Programm auslief. Ohne diese Angabe hätte der Rechner jedem
+ * Eigentümer 500 € abgezogen, die er nachweislich nicht bekommt — oder wir
+ * hätten den Betrag ganz weglassen müssen und dem Mieter seine Förderung
+ * verschwiegen. Beides ist eine falsche Auskunft, nur in verschiedene
+ * Richtungen.
+ */
+export type Wohnform = "mieter" | "eigentuemer";
 export type FundingLevel = "bund" | "land" | "landkreis" | "kommune";
 
 /**
@@ -138,6 +158,12 @@ export interface FundingProgram {
   /** Confirmed against the official source (vs. only aggregator portals). */
   verified: boolean;
   eligibility: Eligibility[];
+  /**
+   * Grenzt das Programm auf eine Wohnform ein. Ohne Angabe gilt es für beide —
+   * das ist der Normalfall und bleibt es: Nur wo eine Amtsseite die Einschränkung
+   * ausdrücklich nennt, wird sie gesetzt.
+   */
+  nurWohnform?: Wohnform;
   /**
    * Bedingungen als LESBARE Sätze — eine Bedingung je Eintrag.
    *
@@ -1184,6 +1210,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     foerdert: ["balkon"],
     coveredCosts: "Anschaffung und Installation eines Balkonkraftwerks",
     rates: [{ label: "Zuschuss", value: "bis 500 € je Anlage und Wohneinheit — nur für Mieter" }],
+    nurWohnform: "mieter",
+    balkonPauschale: 500,
     conditions: [
       "Nur Mieter können noch beantragen — für Eigentümer sind die Mittel aufgebraucht",
       "Antrag erst nach Kauf und Installation stellen",
@@ -4011,7 +4039,7 @@ export type FundingAmount = {
  */
 export type FundingAnlage =
   | { technik: "pv"; kwp: number; speicherKwh: number; kosten: number }
-  | { technik: "balkon"; wattPeak: number; kosten: number }
+  | { technik: "balkon"; wattPeak: number; kosten: number; wohnform?: Wohnform }
   | { technik: "waermepumpe"; kosten: number };
 
 /**
@@ -4132,6 +4160,16 @@ export function fundingAmount(
   if (!f || !foerdertTechnik(f, anlage.technik)) return { total: 0, computable: false, active };
 
   if (anlage.technik === "balkon") {
+    // Grenzt das Programm auf eine Wohnform ein und passt sie nicht, zahlt es
+    // nichts — und zwar als „nicht berechenbar", nicht als Betrag null. Der
+    // Unterschied steht auf der Karte: „für Eigentümer sind die Mittel
+    // aufgebraucht" ist eine andere Auskunft als „0 €".
+    if (f.nurWohnform && anlage.wohnform && f.nurWohnform !== anlage.wohnform) {
+      return { total: 0, computable: false, active };
+    }
+    // Solange die Wohnform unbekannt ist, wird ebenfalls nicht gerechnet: Der
+    // Rechner darf nicht raten, welcher der beiden Töpfe gemeint ist.
+    if (f.nurWohnform && !anlage.wohnform) return { total: 0, computable: false, active };
     const computable = !!(f.balkonPauschale || f.balkonProWp || f.balkonPercentOfCost || f.balkonTiers);
     if (!computable) return { total: 0, computable: false, active };
     if (f.balkonPauschale) return { total: Math.round(f.balkonPauschale), computable: true, active };
