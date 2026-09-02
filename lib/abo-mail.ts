@@ -150,15 +150,29 @@ function huelle(o: {
   /** Fehlt er, ist es eine transaktionale Mail (Bestätigung) — dann kein
    *  Abmeldelink: Es gibt noch nichts, wovon man sich abmelden könnte. */
   abmeldeUrl?: string;
+  /**
+   * Die eigene Einstellungsseite.
+   *
+   * STEHT IN BEIDEN MAILARTEN, auch in der Bestätigung — und das ist der
+   * Punkt: Bis zur ersten Meldung können Monate vergehen, und bis dahin hätte
+   * niemand einen Weg zu seinen Einstellungen. Als leiser Fußlink, nicht als
+   * zweiter Knopf: Die Bestätigungsmail hat genau eine Handlung, und eine
+   * zweite daneben kostet Bestätigungen.
+   */
+  einstellungenUrl?: string;
   /** Warum kam diese Mail? Steht im Fuß, nie im Kleingedruckten. */
   grundzeile: string;
 }): string {
+  const einstellungen = o.einstellungenUrl
+    ? `<a href="${o.einstellungenUrl}" style="color:${C.leise}">Deine Meldungen einstellen</a>`
+    : "";
   const fuss = o.abmeldeUrl
     ? `<p style="margin:0 0 6px;font-size:${T.klein};color:${C.leise}">${escapeHtml(o.grundzeile)}</p>
        <p style="margin:0 0 12px;font-size:${T.klein}">
-         <a href="${o.abmeldeUrl}" style="color:${C.leise}">Diese Meldungen abbestellen</a>
+         ${einstellungen}${einstellungen ? "&nbsp;·&nbsp;" : ""}<a href="${o.abmeldeUrl}" style="color:${C.leise}">Diese Meldungen abbestellen</a>
        </p>`
-    : `<p style="margin:0 0 12px;font-size:${T.klein};color:${C.leise}">${escapeHtml(o.grundzeile)}</p>`;
+    : `<p style="margin:0 0 6px;font-size:${T.klein};color:${C.leise}">${escapeHtml(o.grundzeile)}</p>
+       ${einstellungen ? `<p style="margin:0 0 12px;font-size:${T.klein}">${einstellungen}</p>` : ""}`;
 
   return `<div style="background:${C.grund};margin:0;padding:32px 16px;font-family:${SCHRIFT};color:${C.fliess}">
   <span style="display:none!important;visibility:hidden;opacity:0;height:0;width:0;overflow:hidden">${escapeHtml(o.vorschau)}</span>
@@ -208,6 +222,7 @@ function knopf(url: string, text: string): string {
 export function aboBestaetigungsMail(o: {
   ortName: string;
   bestaetigenUrl: string;
+  einstellungenUrl?: string;
 }): { subject: string; html: string; text: string } {
   const ort = escapeHtml(o.ortName);
   const subject = `Bitte bestätigen: Meldungen zu ${o.ortName}`;
@@ -229,6 +244,7 @@ export function aboBestaetigungsMail(o: {
   const html = huelle({
     vorschau: `Ein Klick, dann bekommst du Meldungen zu ${o.ortName}.`,
     inhalt,
+    einstellungenUrl: o.einstellungenUrl,
     grundzeile:
       "Diese E-Mail bekommst du, weil diese Adresse auf solar-check.io für Meldungen zu " +
       `${o.ortName} eingetragen wurde. Sie wurde bei uns eingegeben und nicht aus einer anderen Quelle übernommen (Art. 13 DSGVO).`,
@@ -243,6 +259,7 @@ export function aboBestaetigungsMail(o: {
     ``,
     `Der Link gilt 48 Stunden. Wenn du das nicht warst, ist nichts passiert.`,
     ``,
+    ...(o.einstellungenUrl ? [`Deine Meldungen einstellen: ${o.einstellungenUrl}`, ``] : []),
     `Impressum: ${SITE}/impressum · Datenschutz: ${SITE}/datenschutz`,
   ].join("\n");
 
@@ -265,6 +282,7 @@ export function aboMeldungsMail(o: {
   ortUrl: string;
   meldungen: Meldung[];
   abmeldeUrl: string;
+  einstellungenUrl?: string;
   /** Datenstand des Anlagenregisters, ausgeschrieben. */
   standLabel: string;
 }): { subject: string; html: string; text: string } {
@@ -307,6 +325,7 @@ export function aboMeldungsMail(o: {
     vorschau: erste.titel,
     inhalt,
     abmeldeUrl: o.abmeldeUrl,
+    einstellungenUrl: o.einstellungenUrl,
     grundzeile: `Diese E-Mail bekommst du, weil du Meldungen zu ${o.ortName} abonniert hast.`,
   });
 
@@ -319,6 +338,7 @@ export function aboMeldungsMail(o: {
     `Alle Zahlen zu ${o.ortName}: ${o.ortUrl}`,
     "",
     `Grundlage: Marktstammdatenregister der Bundesnetzagentur, Stand ${o.standLabel}.`,
+    ...(o.einstellungenUrl ? [`Deine Meldungen einstellen: ${o.einstellungenUrl}`] : []),
     `Abbestellen: ${o.abmeldeUrl}`,
     `Impressum: ${SITE}/impressum · Datenschutz: ${SITE}/datenschutz`,
   ].join("\n");

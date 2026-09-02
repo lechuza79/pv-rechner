@@ -806,3 +806,130 @@ export async function aboZeilenFuerAuswertung(
     return [];
   }
 }
+
+// ─── Die eigenen Einstellungen ───────────────────────────────────────────────
+//
+// WOZU (Betreiber, 02.09.2026): Wer abonniert hat, konnte bisher nur eines —
+// aufhören. Was er abonniert hat und ob es zu ihm passt, stand nirgends; die
+// einzige Änderung, die das System kannte, war die endgültige.
+//
+// WARUM NICHT IM ANMELDEFORMULAR: Eine Maske, die auf eine eingetippte Adresse
+// hin „du hast diesen Ort schon abonniert" antwortet, ist ein Abfragedienst
+// für fremde Abos — jeder könnte durchprobieren, wer wo eingetragen ist.
+// Deshalb antwortet die Anmeldung nach außen immer gleich, und die
+// Einstellungen hängen an einem signierten Link, den nur bekommt, wer Zugang
+// zu diesem Postfach hat.
+//
+// WARUM ALLE ABOS DIESER ADRESSE UND NICHT NUR EINES: Wer drei Orte abonniert
+// hat, hat drei Zeilen — für ihn ist es eine Sache. Eine Seite, die nur den
+// Ort zeigt, aus dessen Mail er gerade kam, ließe ihn die anderen zwei nur
+// dadurch finden, dass er ihre Mails aufhebt. Der Preis ist benannt: Wer den
+// Link weitergibt, gibt Einblick, welche Orte diese Adresse abonniert hat.
+//
+// KEIN VERSANDPFAD. Diese Funktionen liefern Einstellungen an ihren eigenen
+// Inhaber, nie eine Empfängerliste — dafür gibt es genau eine Tür
+// (`empfaengerFuerOrt`), und sie filtert auf „bestätigt". Wer hier einen Lauf
+// anhängt, umgeht diese Trennung.
+
+export type AboEinstellungen = {
+  /** Die Adresse, der diese Abos gehören. */
+  email: string;
+  /** Alle nicht abgemeldeten Abos dieser Adresse, jüngste zuerst. */
+  abos: GemeindeAbo[];
+};
+
+/**
+ * Die Einstellungen zu einem Token-Abo — samt aller Geschwister derselben
+ * Adresse.
+ *
+ * Abgemeldete bleiben draußen: Sie stehen nur noch als Nachweis in der Ablage
+ * und sind für den Inhaber nichts, was er einstellen könnte. Sie ihm trotzdem
+ * zu zeigen, wäre eine Einladung, an einem Eintrag zu drehen, den es als Abo
+ * nicht mehr gibt.
+ */
+export async function aboEinstellungen(aboId: string): Promise<AboEinstellungen | null> {
+  if (!supabase) return null;
+  const { data, error } = await withDbTimeout(
+    supabase.from("gemeinde_abos").select(SPALTEN).eq("id", aboId).limit(1),
+    "abo-einstellungen-anker",
+    DB_READ_TIMEOUT_MS,
+  );
+  if (error || !data || data.length === 0) return null;
+  const anker = ausZeile(data[0] as Zeile);
+
+  const { data: alle, error: fehler2 } = await withDbTimeout(
+    supabase
+      .from("gemeinde_abos")
+      .select(SPALTEN)
+      .eq("email", anker.email)
+      .neq("status", "abgemeldet")
+      .order("erstellt_am", { ascending: false }),
+    "abo-einstellungen-geschwister",
+    DB_READ_TIMEOUT_MS,
+  );
+  // Der Anker allein ist eine brauchbare Antwort, wenn die zweite Abfrage
+  // ausfällt — „konnte die anderen nicht laden" ist besser als gar keine
+  // Seite. Ist der Anker selbst abgemeldet, bleibt die Liste leer, und die
+  // Seite sagt genau das.
+  if (fehler2 || !alle) return { email: anker.email, abos: anker.status === "abgemeldet" ? [] : [anker] };
+  return { email: anker.email, abos: (alle as Zeile[]).map(ausZeile) };
+}
+
+/**
+ * Gehört dieses Abo derselben Adresse wie das Token-Abo?
+ *
+ * DER RIEGEL, ohne den die Seite mehr könnte, als der Link erlaubt: Sie ändert
+ * auch Geschwister-Abos, und deren Kennungen stehen im HTML. Ohne diese
+ * Prüfung genügte EIN gültiges Token plus eine fremde Kennung, um an einem
+ * fremden Abo zu drehen. Geprüft wird gegen die Adresse, weil genau sie der
+ * Link beweist: Wer ihn hat, hat Zugang zu diesem Postfach.
+ */
+async function gehoertZusammen(tokenAboId: string, zielAboId: string): Promise<boolean> {
+  if (tokenAboId === zielAboId) return true;
+  if (!supabase) return false;
+  const { data, error } = await withDbTimeout(
+    supabase.from("gemeinde_abos").select("id,email").in("id", [tokenAboId, zielAboId]),
+    "abo-einstellungen-zugehoerig",
+    DB_READ_TIMEOUT_MS,
+  );
+  if (error || !data || data.length !== 2) return false;
+  const [a, b] = data as { id: string; email: string }[];
+  return a.email === b.email;
+}
+
+/**
+ * Techniken und Selbstauskunft eines Abos ändern.
+ *
+ * WAS SICH NICHT ÄNDERN LÄSST: der Ort und die Adresse. Beides wäre keine
+ * Änderung, sondern eine neue Anmeldung — und die muss durch die Bestätigung,
+ * sonst trüge ein Abo für Ort B die Einwilligung, die für Ort A erteilt wurde.
+ */
+export async function aboEinstellungenSetzen(
+  tokenAboId: string,
+  zielAboId: string,
+  o: { technikenGewaehlt: AboTechnik[]; ausVerwaltung: boolean },
+): Promise<boolean> {
+  if (!supabase) return false;
+  if (!(await gehoertZusammen(tokenAboId, zielAboId))) return false;
+  const { error } = await withDbTimeout(
+    supabase
+      .from("gemeinde_abos")
+      .update({ techniken: o.technikenGewaehlt, aus_verwaltung: o.ausVerwaltung })
+      .eq("id", zielAboId)
+      .neq("status", "abgemeldet"),
+    "abo-einstellungen-setzen",
+    DB_READ_TIMEOUT_MS,
+  );
+  return !error;
+}
+
+/** Ein einzelnes Abo derselben Adresse beenden. */
+export async function aboAbmeldenFuer(
+  tokenAboId: string,
+  zielAboId: string,
+  jetztIso: string,
+): Promise<boolean> {
+  if (!(await gehoertZusammen(tokenAboId, zielAboId))) return false;
+  await aboAbmelden(zielAboId, jetztIso);
+  return true;
+}
