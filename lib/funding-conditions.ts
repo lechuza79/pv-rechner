@@ -172,6 +172,11 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "asbach-balkonkraftwerke", "parkstein-nachhaltigkeitszuschuss",
   "marburg-balkonkraftwerke", "schoenbrunn-balkon-pv",
   "hillscheid-energie", "schlierbach-energiespeicher",
+  // Aufgenommen am 03.09.2026, jede Zahl an der Amtsseite im Rohtext gelesen.
+  // Die Prüfformen fehlen noch — bei Hamburg und Böblingen hängt die volle
+  // Förderhöhe zusätzlich an einer Einkommensprüfung, die das Modell nicht
+  // kennt; das ist eine eigene Arbeit und halb erfasst gibt es hier nicht.
+  "hamburg-balkon-einkommen", "kiel-solarstadt", "boeblingen-balkonkraftwerke",
 ];
 
 /**

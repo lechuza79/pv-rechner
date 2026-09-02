@@ -787,18 +787,86 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     stand: "September 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "Staffel-Pauschalen, max. 60 % der Kosten",
+    coveredCosts: "Staffel-Pauschalen für Dachanlage und Speicher, dazu eine Pauschale fürs Balkonkraftwerk",
     rates: [
-      { label: "PV-Anlage", value: "1.500–2.500 € (nach kWp)" },
-      { label: "Batteriespeicher", value: "500–1.300 € (nach kWh)" },
+      { label: "PV-Anlage", value: "1.500–2.500 € (nach kWp)", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "500–1.300 € (nach kWh)", nur: ["pv"] },
+      {
+        label: "Balkonkraftwerk",
+        value: "150 € je Wohn- oder Gewerbeeinheit, 300 € mit Köln-Pass",
+        nur: ["balkon"],
+      },
     ],
     conditions: [
-      "Solange Mittel reichen (Budget 8 Mio. € 2026)",
-      "Speicher ab 3 kWh",
-      "Die Dachanlage muss mindestens 2 kWp leisten — die unterste Förderstufe beginnt dort",
+      "Bewilligt wird im Rahmen der verfügbaren Haushaltsmittel; einen Rechtsanspruch gibt es nicht",
       "Nur Bestandsgebäude: die Baufertigstellung liegt bei Antragstellung mindestens fünf Jahre zurück",
+      { text: "Speicher ab 3 kWh", nur: ["pv"] },
+      {
+        text: "Die Dachanlage muss mindestens 2 kWp leisten — die unterste Förderstufe beginnt dort",
+        nur: ["pv"],
+      },
+      {
+        text: "Erst nach dem Zuwendungsbescheid darf bestellt oder ein Fachbetrieb beauftragt werden",
+        nur: ["pv"],
+      },
+      {
+        text: "Dachanlage und Speicher muss ein Fachbetrieb planen und in Betrieb nehmen; Eigenleistung ist ausgeschlossen",
+        nur: ["pv"],
+      },
+      {
+        text: "Gefördert wird ein Balkonkraftwerk je Wohn- oder Gewerbeeinheit",
+        nur: ["balkon"],
+      },
+      {
+        text: "Die Module leisten zusammen 600 bis 2.000 Wp, der Wechselrichter 600 bis 800 W oder ist darauf drosselbar",
+        nur: ["balkon"],
+      },
+      {
+        text: "Hier darf vor dem Antrag gekauft werden — dann aber auf eigenes Risiko und mit Antrag binnen drei Monaten nach dem Kauf",
+        nur: ["balkon"],
+      },
+      {
+        text: "Die Montage darf selbst erfolgen; Eigenbau-Geräte und ein Speicher zum Balkonkraftwerk werden nicht gefördert",
+        nur: ["balkon"],
+      },
+      {
+        text: "Die erhöhte Pauschale von 300 € setzt einen gültigen Köln-Pass voraus — wir rechnen mit den 150 €, die jede und jeder bekommt",
+        nur: ["balkon"],
+      },
     ],
     combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    // BALKONKRAFTWERK NACHGETRAGEN (03.09.2026), an der Programmseite im Rohtext
+    // und im Merkblatt Steckersolargerät (Stand 02.06.2025) sowie in der
+    // Förderrichtlinie vom 02.06.2025 gelesen, Abschnitt 1.3.3: „150 Euro pro
+    // Wohn-/Gewerbeeinheit · 300 Euro pro Wohneinheit für Inhaber*innen eines
+    // gültigen Köln-Pass".
+    //
+    // Der Eintrag war ein reiner Dach-Eintrag und trug deshalb die Voreinstellung
+    // `["pv"]`. Für eine Stadt mit über einer Million Einwohnern sagte der
+    // Balkon-Rechner damit „keine kommunale Förderung", während die Stadt 150 €
+    // auf ein Set von rund 500 € zahlt — bei einem Fünftel bis Drittel des
+    // Kaufpreises ist das der größte Hebel auf die Amortisation, und es ist
+    // dieselbe Falschauskunft wie ein zu hoher Betrag, nur andersherum.
+    //
+    // GERECHNET WIRD DIE KLEINERE der beiden Pauschalen. Der Köln-Pass hängt an
+    // einer Einkommensgrenze, die der Rechner nicht kennt; die 300 € anzusetzen
+    // verspräche der Mehrheit das Doppelte. Die höhere Zahl steht im Satz daneben,
+    // damit sie niemandem entgeht.
+    //
+    // Das Budget von 8 Mio € ist ERSATZLOS ENTFALLEN: Es steht weder auf der
+    // Programmseite noch in der Förderrichtlinie, und beide habe ich heute im
+    // Volltext gelesen. Was dort steht, ist schwächer und belegt: „Die Zuteilung
+    // erfolgt im Rahmen der haushaltsrechtlich zur Verfügung stehenden Mittel"
+    // und kein Rechtsanspruch. Eine Zahl, die sich an der Quelle nicht wiederholen
+    // lässt, gehört nicht in den Katalog.
+    //
+    // Die Antragsreihenfolge ist beim Balkonkraftwerk UMGEKEHRT und deshalb je
+    // Technik notiert: Für Dachanlage und Speicher gilt „erst Bescheid, dann
+    // bestellen"; für das Steckersolargerät erlaubt die Richtlinie ausdrücklich
+    // den Kauf vorab, verlangt dann aber den Antrag binnen drei Monaten. Beides
+    // in einen Satz zu ziehen wäre für die eine Hälfte der Leser falsch.
+    balkonPauschale: 150,
     // Untergrenze am 27.08.2026 auf der Programmseite selbst gelesen
     // (stadt-koeln.de/leben-in-koeln/klima-umwelt-tiere/klima/photovoltaik-klimafreundliches-wohnen):
     // Die Staffel beginnt bei „Von 2 kWp bis 5 kWp 1.500 Euro". Darunter nennt die
@@ -1252,6 +1320,172 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "kommunaler swb-Zuschuss ggf. zusätzlich (separat beim Versorger)",
     ],
     combinableWith: BUND,
+  },
+  "hamburg-balkon-einkommen": {
+    id: "hamburg-balkon-einkommen", name: "Balkonkraftwerk für Haushalte mit geringem Einkommen",
+    traeger: "Behörde für Umwelt, Klima, Energie und Agrarwirtschaft (Hamburg)",
+    level: "land", region: "Hamburg", bundesland: "Hamburg", agsCode: "02",
+    url: "https://www.hamburg.de/politik-und-verwaltung/behoerden/bukea/themen/energie/erneuerbare-energien/photovoltaik/solarstrom-fuer-mieter-innen/strom-vom-balkon-foerderung-1054204",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2025-10-01", endetIso: "2027-07-31",
+    eligibility: ["privat"],
+    coveredCosts: "Fast der ganze Kaufpreis eines Balkonkraftwerks — aber nur bei geringem Einkommen",
+    maxFoerderung: "max. 500 € je Haushalt",
+    rates: [
+      {
+        label: "Balkonkraftwerk (nur bei geringem Einkommen)",
+        value: "90 % der Anschaffungskosten, max. 500 €",
+        nur: ["balkon"],
+      },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Haushalte mit Bürgergeld, Sozialhilfe, Grundsicherung, Wohngeld, Asylbewerberleistungen, Kinderzuschlag oder BAföG — oder mit einem Einkommen unter dem Pfändungsfreibetrag",
+      "Der Antrag läuft über die Caritas, nicht über ein Online-Formular: erst ein Telefonat, dann ein Hausbesuch",
+      "Zwei Module dürfen zusammen höchstens 800 W leisten; die Module sind TÜV-geprüft",
+      "Montiert wird selbst — die Beratung hilft beim Werkzeug, bei der Zustimmung der Vermieterseite und bei der Anmeldung im Marktstammdatenregister",
+      "Ein Jahr nach dem Einbau kommt die Beratung noch einmal vorbei und sieht sich die Anlage an",
+      "Der Förderzeitraum läuft bis zum 31. Juli 2027; dafür stehen rund 580.000 € bereit",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // NEU AUFGENOMMEN 03.09.2026. Gelesen an der Programmseite der Umweltbehörde
+    // im Rohtext und an der Pressemitteilung vom 08.09.2025 ebenfalls im
+    // Rohtext: „Für ein passendes PV-Modul werden 90 Prozent der Gesamtsumme
+    // für das Balkonkraftwerk gefördert. So können Haushalte bis zu 500 Euro
+    // bei der Anschaffung … sparen." und „Im Förderzeitraum bis zum 31. Juli
+    // 2027 stehen für das Projekt rund 580.000 Euro zur Verfügung."
+    //
+    // Bis heute stand für Hamburg — 1,86 Mio Einwohner — im Balkon-Rechner
+    // „keine kommunale Förderung", während die Stadt seit Oktober 2025 fast den
+    // ganzen Kaufpreis übernimmt. Dieselbe Falschauskunft wie ein zu hoher
+    // Betrag, nur andersherum.
+    //
+    // KEIN RECHENWERT, obwohl 90 % und 500 € ausdrücklich dastehen — dieselbe
+    // Zurückhaltung wie bei Tübingen, München-Pass und der Stuttgarter
+    // FamilienCard: Die Berechtigung hängt an Sozialleistungen und am
+    // Pfändungsfreibetrag, und beides kennt der Rechner nicht. 500 € auf ein
+    // 500-€-Set anzurechnen hieße, der großen Mehrheit der Hamburger Haushalte
+    // eine Förderung zu versprechen, die sie nicht bekommt.
+    //
+    // Zweistelliger Schlüssel, und das ist hier RICHTIG: Hamburg ist Stadtstaat,
+    // ein Landesprogramm deckt genau eine Gemeinde. Bei einem Flächenland wäre
+    // dieselbe Schreibweise der Fehler, vor dem die Regel vom 02.09.2026 warnt.
+    // Schlüssel aus dem Melderegister geholt, nicht aus einer Bildschirmliste.
+    //
+    // `endetIso` ist der 31.07.2027 — das Ende des Förderzeitraums, das die
+    // Behörde selbst nennt. `beginntIso` der 01.10.2025, der Start des Programms.
+    // Ein `beschlossenIso` gibt es nicht: Die Pressemitteilung datiert die
+    // Ankündigung, nicht den Beschluss.
+  },
+  "kiel-solarstadt": {
+    id: "kiel-solarstadt", name: "Solarstadt Kiel",
+    traeger: "Landeshauptstadt Kiel", level: "kommune", region: "Kiel",
+    bundesland: "Schleswig-Holstein", agsCode: "01002",
+    url: "https://www.kiel.de/de/umwelt_verkehr/klimaschutz/kieler_innen/foerderung_photovoltaik_solarthermieanlagen.php",
+    stand: "September 2026", status: "pausiert", capped: true, verified: true,
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Zuschüsse für Dachanlage, Balkonkraftwerk und Solarthermie — im Haushaltsjahr 2026 ausgesetzt",
+    rates: [
+      { label: "Dachanlage am Einfamilienhaus", value: "300 € je kWp, aber nur für den Teil über 5 kWp", nur: ["pv"] },
+      { label: "Dachanlage am Mehrfamilienhaus", value: "100 € je kWp", nur: ["pv"] },
+      { label: "Fassade, Solardach und andere aufwendige Bauformen", value: "zusätzlich 100 € je kWp", nur: ["pv"] },
+      { label: "Mieterstrom-Anlage", value: "5.000 € pauschal", nur: ["pv"] },
+      { label: "Umbau einer Anlage nach 20 Jahren auf Eigenverbrauch", value: "500 € pauschal", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "100 € pauschal je Anlage", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Die Förderung ist ausgesetzt: Die Ratsversammlung hat am 16. Oktober 2025 beschlossen, das Programm im Haushaltsjahr 2026 ruhen zu lassen",
+      "Neue Anträge nimmt die Stadt nicht mehr an; vollständig eingereichte Anträge werden weiter bearbeitet",
+      { text: "Gefördert wird nur der Teil der Anlage über 5 kWp — die ersten 5 kWp bekommen nichts", nur: ["pv"] },
+      { text: "Gefördert wird bis zur vollen Dachbelegung", nur: ["pv"] },
+      { text: "Je Haushalt wird höchstens ein Balkonkraftwerk gefördert", nur: ["balkon"] },
+      { text: "Gefördert werden Geräte bis 600 W Einspeiseleistung des Wechselrichters", nur: ["balkon"] },
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    balkonPauschale: 100,
+    // NEU AUFGENOMMEN 03.09.2026, an der Förderseite der Stadt im Rohtext
+    // gelesen. Der Satz, der alles entscheidet, steht ZWEIMAL auf der Seite —
+    // einmal oben und einmal ganz unten hinter zwölf Fördertatbeständen:
+    // „In der Sitzung der Ratsversammlung am 16. Oktober 2025 wurde beschlossen
+    // (Drucksache 1007/2025-01), die Förderung des Projekts ‚Solarstadt Kiel'
+    // im Haushaltsjahr 2026 auszusetzen. Neue Förderanträge können nicht mehr
+    // eingereicht werden, da die Fördermittel für das Jahr 2025 bereits
+    // vollständig ausgeschöpft sind."
+    //
+    // `pausiert`, nicht `ausgeschoepft`: Beides trifft zu, aber die tragende
+    // Aussage ist der Ratsbeschluss für EIN Haushaltsjahr — das ist eine
+    // befristete Aussetzung mit Fundstelle, kein leergelaufener Topf.
+    //
+    // KEIN pvPerKwp, obwohl 300 €/kWp dasteht: Der Satz gilt nur für den Teil
+    // ÜBER 5 kWp, und diese Schwelle kann das Modell nicht ausdrücken —
+    // `pvMin` schließt kleine Anlagen aus, es zieht aber keine Schwelle vom
+    // Bezugswert ab. 300 €/kWp auf die ganze Anlage gerechnet verspräche einer
+    // 8-kWp-Anlage 2.400 € statt der 900 €, die Kiel zahlt. Dieselbe Bauform
+    // wie in Heidelberg (nur der Teil über der PV-Pflicht), und dort steht der
+    // Eintrag aus demselben Grund ohne Rechenwert.
+    //
+    // Der Balkon-Satz ist eine schlichte Pauschale und steht deshalb mit Zahl
+    // da; solange der Status nicht „aktiv" ist, lässt `fundingZaehlt()` ihn
+    // ohnehin nicht rechnen. Kommt das Programm 2027 zurück, sieht der
+    // Seiten-Wächter die Bewegung.
+  },
+  "boeblingen-balkonkraftwerke": {
+    id: "boeblingen-balkonkraftwerke", name: "Förderprogramm Balkonkraftwerke",
+    traeger: "Stadt Böblingen", level: "kommune", region: "Böblingen",
+    bundesland: "Baden-Württemberg", agsCode: "08115003",
+    url: "https://www.boeblingen.de/foerderung--beratung",
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    beschlossenIso: "2025-11-01", beginntIso: "2026-05-01", endetIso: "2026-08-17",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil des Kaufpreises für Balkonkraftwerk und passenden Speicher — die Mittel sind aufgebraucht",
+    maxFoerderung: "max. 150 € je Haushalt",
+    rates: [
+      { label: "Balkonkraftwerk, auch mit Speicher", value: "50 % der Kosten, max. 150 € je Haushalt", nur: ["balkon"] },
+      {
+        label: "Balkonkraftwerk mit Böblinger Bonuspass oder BAföG-Bescheid",
+        value: "90 % der Kosten, max. 550 €",
+        nur: ["balkon"],
+      },
+    ],
+    conditions: [
+      "Antragsstopp seit dem 17. August 2026: Das Haushaltsbudget ist vollständig aufgebraucht, das Programm wurde vorzeitig beendet",
+      "Anträge, die bis dahin eingegangen sind, werden der Reihe nach bearbeitet",
+      "Der Antrag muss vor Kauf und Installation gestellt werden — nachträglich gibt es nichts",
+      "Antragsberechtigt sind Eigentümer und Mieter in Böblingen und Dagersheim; je Haushalt ein Antrag",
+      "Wer in der ersten Förderperiode bis Ende 2025 schon einen Zuschuss bekommen hat, ist ausgeschlossen",
+      "Gefördert wird auch ein Batteriespeicher für das Balkonkraftwerk",
+      "Der höhere Satz von 550 € setzt den Böblinger Bonuspass oder einen gültigen BAföG-Bescheid voraus — wir rechnen mit den 150 €, die alle bekommen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPercentOfCost: 0.5, balkonCap: 150,
+    // NEU AUFGENOMMEN 03.09.2026. Zwei Seiten der Stadt gelesen, beide im
+    // Rohtext, und die REIHENFOLGE ist die Lehre: Die Pressemeldung 99/26 vom
+    // 27.04.2026 („Start der neuen Förderperiode für Balkonkraftwerke") liest
+    // sich wie ein offenes Programm und nennt alle Sätze. Der Satz, der es
+    // beendet, steht auf der Förderseite: „Antragsstopp für das kommunale
+    // Förderprogramm Balkonkraftwerke aufgrund ausgeschöpfter Fördermittel
+    // (Stand: 17.08.2026, 16:10 Uhr) … Aufgrund der vollständigen Ausschöpfung
+    // der zur Verfügung stehenden Haushaltsmittel wurde das Förderprogramm
+    // vorzeitig beendet." Wer nur die Pressemeldung gelesen hätte, hätte ein
+    // totes Programm als aktiv aufgenommen — der Wietzen-Fall in neuer Kleidung.
+    //
+    // Deshalb zeigt `url` auf die FÖRDERSEITE, nicht auf die Pressemeldung: Die
+    // Pressemeldung ist ein Datum und ändert sich nie mehr, die Förderseite
+    // trägt den Zustand und wird vom Seiten-Wächter beobachtet.
+    //
+    // `endetIso` ist der 17.08.2026 — der Tag des Antragsstopps, nicht der
+    // 31.12.2026, an dem die Förderperiode planmäßig geendet hätte. Genau die
+    // Unterscheidung, die das Feld verlangt. `beschlossenIso` ist auf den Monat
+    // genau belegt („Im November 2025 hat der Gemeinderat die Fortführung …
+    // beschlossen"), der Tag nicht — der Erste des Monats ist hier eine
+    // Arbeitsannahme und keine Tagesangabe der Stadt.
+    //
+    // Der höhere Satz (90 %, max. 550 €) hängt am Bonuspass beziehungsweise an
+    // einem BAföG-Bescheid, also an einer Einkommensprüfung, die der Rechner
+    // nicht kennt. Gerechnet wird die kleinere Pauschale; die höhere steht im
+    // Satz daneben. Dieselbe Aufteilung wie in Köln.
   },
 
   // ── Batch Juni 2026, Teil 2 ────────────────────────────────────────────────
