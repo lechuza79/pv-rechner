@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { v, space, pad } from "../../lib/theme";
-import { IconChevronDown, IconChevronLeft, IconChevronRight } from "../Icons";
+import { IconChevronLeft, IconChevronRight } from "../Icons";
 import InfoTooltip from "../InfoTooltip";
+import { Auswahl } from "../Auswahl";
 
 // Die Steuerleiste des Kalenders: Überschrift · ‹ [Monat ▾] › · Heute · Stand
 // · [Wochen ▾] — alles in EINER Zeile.
@@ -112,6 +112,9 @@ export function KalenderNav({
         <Auswahl
           titel={titel}
           breite={150}
+          eckenLinks={false}
+          eckenRechts={false}
+          suchbar={false}
           eintraege={monate.map((m) => ({ schluessel: m.schluessel, name: m.name }))}
           aktiv={aktiverMonat}
           onWahl={(schluessel) => {
@@ -151,7 +154,7 @@ export function KalenderNav({
         <Auswahl
           titel={`${wochenzahl} Wochen`}
           breite={104}
-          rund
+          suchbar={false}
           eintraege={wochenzahlen.map((n) => ({ schluessel: String(n), name: `${n} Wochen` }))}
           aktiv={String(wochenzahl)}
           onWahl={(s) => onWochenzahl(Number(s))}
@@ -219,107 +222,3 @@ function Kante({
  * der ihn bräuchte, und eine Abstraktion mit einem Anwendungsfall ist im Projekt
  * ausdrücklich unerwünscht. Zieht ein dritter Ort nach, wandert er nach oben.
  */
-function Auswahl({
-  titel,
-  eintraege,
-  aktiv,
-  onWahl,
-  breite,
-  rund,
-}: {
-  titel: string;
-  eintraege: { schluessel: string; name: string }[];
-  aktiv: string;
-  onWahl: (schluessel: string) => void;
-  breite: number;
-  rund?: boolean;
-}) {
-  const [offen, setOffen] = useState(false);
-  const ref = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (!offen) return;
-    const zu = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOffen(false);
-    };
-    const escape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOffen(false);
-    };
-    document.addEventListener("mousedown", zu);
-    document.addEventListener("keydown", escape);
-    return () => {
-      document.removeEventListener("mousedown", zu);
-      document.removeEventListener("keydown", escape);
-    };
-  }, [offen]);
-
-  return (
-    <div ref={ref} style={{ position: "relative", display: "flex" }}>
-      <button
-        type="button"
-        onClick={() => setOffen((o) => !o)}
-        aria-expanded={offen}
-        style={{
-          ...knopf,
-          borderRadius: rund ? v("--radius-sm") : 0,
-          padding: pad("xs", "sm"),
-          gap: space.xs,
-          minWidth: breite,
-          justifyContent: "space-between",
-        }}
-      >
-        <span>{titel}</span>
-        <IconChevronDown size={12} />
-      </button>
-      {offen && (
-        <div
-          role="listbox"
-          style={{
-            position: "absolute",
-            top: "calc(100% + 4px)",
-            left: 0,
-            background: v("--color-bg"),
-            border: `1px solid ${v("--color-border")}`,
-            borderRadius: v("--radius-sm"),
-            boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
-            zIndex: 20,
-            padding: `${space.xxs}px 0`,
-            // Über ein Jahr Monate passen nicht auf den Schirm.
-            maxHeight: 260,
-            overflowY: "auto",
-            minWidth: breite + 24,
-          }}
-        >
-          {eintraege.map((e) => (
-            <button
-              key={e.schluessel}
-              type="button"
-              role="option"
-              aria-selected={e.schluessel === aktiv}
-              onClick={() => {
-                onWahl(e.schluessel);
-                setOffen(false);
-              }}
-              style={{
-                display: "block",
-                width: "100%",
-                textAlign: "left",
-                padding: pad("xs", "md"),
-                border: "none",
-                background: e.schluessel === aktiv ? v("--color-bg-accent") : "transparent",
-                color: e.schluessel === aktiv ? v("--color-accent") : v("--color-text-primary"),
-                fontSize: v("--font-size-small"),
-                fontWeight: e.schluessel === aktiv ? 600 : 400,
-                fontFamily: "inherit",
-                cursor: "pointer",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {e.name}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}

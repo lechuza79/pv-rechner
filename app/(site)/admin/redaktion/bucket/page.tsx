@@ -1,0 +1,125 @@
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import { isAdminSession } from "../../../../../lib/admin-guard";
+import {
+  leseFunde,
+  orteImVorrat,
+  setzeStand,
+  zaehleFunde,
+  type FundStand,
+} from "../../../../../lib/social-fundvorrat";
+import { FundListe } from "../../../../../components/social/FundListe";
+import { BucketFilter } from "../../../../../components/social/BucketFilter";
+import AdminSeitenkopf from "../../../../../components/admin/AdminSeitenkopf";
+import { v, space } from "../../../../../lib/theme";
+
+// Der Story-Bucket — was der Suchlauf in den Daten gefunden hat.
+//
+// EIN VORRAT AN IDEEN, NICHT AN BEITRÄGEN. Jeder Eintrag ist ein gerechneter
+// Satz mit seinen Zahlen und seiner Grundlage; was davon taugt, entscheidet ein
+// Mensch, und aus dem Vorgemerkten wird dann Visual und Text.
+//
+// Die Kennung neben jedem Satz ist der Griff: Sie bleibt über Läufe hinweg
+// dieselbe und lässt sich zurufen („mach aus g10-anomalie-fuerfeld einen
+// Post"). Ohne sie wäre die Auswahl auf dieser Seite eingesperrt.
+
+export const metadata = {
+  title: "Redaktion – Story-Bucket",
+  robots: { index: false, follow: false },
+};
+
+export const dynamic = "force-dynamic";
+
+const STAENDE: FundStand[] = ["offen", "vorgemerkt", "verworfen", "gepostet"];
+
+export default async function StoryBucket({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    stand?: string;
+    muster?: string;
+    ort?: string;
+    land?: string;
+    zeit?: string;
+    suche?: string;
+  }>;
+}) {
+  if (!(await isAdminSession())) redirect("/login?next=/admin/redaktion/bucket");
+
+  const p = await searchParams;
+  const stand = STAENDE.includes(p.stand as FundStand) ? (p.stand as FundStand) : undefined;
+  const muster = p.muster || undefined;
+  const ort = p.ort || undefined;
+  const land = p.land || undefined;
+  const zeit = p.zeit === "evergreen" || p.zeit === "zeitnah" ? p.zeit : undefined;
+  const suche = p.suche || undefined;
+
+  const [funde, zahlen, orte] = await Promise.all([
+    leseFunde({
+      stand,
+      muster,
+      ort,
+      land,
+      evergreen: zeit ? zeit === "evergreen" : undefined,
+      suche,
+      grenze: 300,
+    }),
+    zaehleFunde(),
+    orteImVorrat(),
+  ]);
+
+  const jeMuster = new Map<string, number>();
+  const jeStand = new Map<string, number>();
+  for (const z of zahlen) {
+    jeMuster.set(z.muster, (jeMuster.get(z.muster) ?? 0) + z.zahl);
+    jeStand.set(z.stand, (jeStand.get(z.stand) ?? 0) + z.zahl);
+  }
+  const gesamt = zahlen.reduce((n, z) => n + z.zahl, 0);
+
+  async function standSetzen(kennung: string, neu: FundStand) {
+    "use server";
+    await setzeStand(kennung, neu);
+    revalidatePath("/admin/redaktion/bucket");
+  }
+
+  const gefiltert = Boolean(stand || muster || ort || land || zeit || suche);
+
+  return (
+    <>
+      <AdminSeitenkopf
+        titel="Story-Bucket"
+        hilfe={
+          "Was der Suchlauf in den Daten gefunden hat — Ideen, keine fertigen Beiträge. " +
+          "Jeder Eintrag ist ein gerechneter Satz mit seinen Zahlen; „Grundlage“ zeigt, " +
+          "worauf er beruht und was die Zahlen NICHT hergeben. Vormerken heißt: daraus " +
+          "soll ein Post werden. Die Kennung links lässt sich kopieren und zurufen."
+        }
+      />
+
+      <BucketFilter
+        staende={STAENDE.map((s) => ({ schluessel: s, name: s, zahl: jeStand.get(s) ?? 0 }))}
+        muster={[...jeMuster.entries()]
+          .sort((a, b) => b[1] - a[1])
+          .map(([m, n]) => ({ schluessel: m, name: m, zahl: n }))}
+        kommunen={orte.kommunen.map((o) => ({ schluessel: o.name, name: o.name, zahl: o.zahl }))}
+        laender={orte.laender.map((o) => ({ schluessel: o.name, name: o.name, zahl: o.zahl }))}
+        gewaehlt={{
+          stand: stand ?? "",
+          muster: muster ?? "",
+          ort: ort ?? "",
+          land: land ?? "",
+          zeit: zeit ?? "",
+          suche: suche ?? "",
+        }}
+      />
+
+      {/* Die Trefferzahl nur bei gesetztem Filter: Eine Liste, die kürzer ist
+          als erwartet, sieht sonst nach einem leeren Bucket aus. */}
+      <p style={{ fontSize: 13, color: v("--color-text-muted"), margin: `0 0 ${space.sm}px` }}>
+        {gefiltert ? `${funde.length} von ${gesamt} Funden` : `${gesamt} Funde`}
+      </p>
+
+      <FundListe funde={funde} onStandAction={standSetzen} />
+    </>
+  );
+}

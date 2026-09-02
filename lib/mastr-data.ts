@@ -281,6 +281,16 @@ export async function loadChildren(
 type SeriesRow = { energietraeger: string; segment: string; year: number; count: number; kwp: number; kwh: number };
 
 /** One region's segment x year series, summed over everything beneath it. */
+/**
+ * Die bundesweite Jahresreihe je Segment — dieselbe Abfrage, die der Atlas für
+ * jede Region fährt, nur ohne Präfix. Für die Kohorten-Geschichte gebraucht:
+ * Anlagenzahl und Leistung je BAUJAHR, aus denen sich die typische Größe eines
+ * Jahrgangs ergibt.
+ */
+export function nationalSeries(energietraeger: Energietraeger): Promise<SeriesRow[]> {
+  return loadSeries("de", energietraeger);
+}
+
 async function loadSeries(regionId: string, energietraeger: Energietraeger): Promise<SeriesRow[]> {
   const { supabase } = await import("./supabase-server");
   if (!supabase) throw new Error("Supabase not configured");
