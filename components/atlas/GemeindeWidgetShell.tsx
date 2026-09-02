@@ -176,8 +176,8 @@ const S: Record<string, React.CSSProperties> = {
     minHeight: 360,
     overflow: "hidden",
   },
-  title: { fontSize: 16, fontWeight: 700, margin: "0 0 4px", lineHeight: 1.25 },
-  sub: { fontSize: 12, color: v("--color-text-muted"), margin: "0 0 14px", lineHeight: 1.4 },
+  title: { fontSize: v("--font-size-lead"), fontWeight: 700, margin: "0 0 4px", lineHeight: 1.25 },
+  sub: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), margin: "0 0 14px", lineHeight: 1.4 },
   body: { flex: 1, display: "flex" },
   // Spur der senkrechten Quellen-Beschriftung: über die ganze Kartenhöhe, nicht
   // nur über den Inhalt — sonst reicht die Höhe für den Vermerk nicht.

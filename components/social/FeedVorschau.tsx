@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { space } from "../../lib/theme";
+import { space, v } from "../../lib/theme";
 import { SocialKarte } from "./SocialKarte";
 import type { PostBild } from "../../lib/social-posts";
 
@@ -97,16 +97,16 @@ export function FeedVorschau({
           }}
         />
         <div style={{ lineHeight: 1.25 }}>
-          <div style={{ fontSize: 14, fontWeight: 600 }}>Sebastian Schäder</div>
-          <div style={{ fontSize: 12, color: FEED.gedimmt }}>Design meets business.</div>
-          <div style={{ fontSize: 12, color: FEED.gedimmt }}>jetzt · 🌐</div>
+          <div style={{ fontSize: v("--font-size-body"), fontWeight: 600 }}>Sebastian Schäder</div>
+          <div style={{ fontSize: v("--font-size-small"), color: FEED.gedimmt }}>Design meets business.</div>
+          <div style={{ fontSize: v("--font-size-small"), color: FEED.gedimmt }}>jetzt · 🌐</div>
         </div>
       </div>
 
       <div style={{ padding: "0 12px 8px" }}>
         <div
           style={{
-            fontSize: 14,
+            fontSize: v("--font-size-body"),
             lineHeight: 1.45,
             whiteSpace: "pre-wrap",
             ...(offen
@@ -131,7 +131,7 @@ export function FeedVorschau({
             padding: 0,
             cursor: "pointer",
             color: FEED.gedimmt,
-            fontSize: 14,
+            fontSize: v("--font-size-body"),
           }}
         >
           {offen ? "weniger anzeigen" : "… mehr"}

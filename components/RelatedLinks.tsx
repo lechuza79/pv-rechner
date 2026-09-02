@@ -28,7 +28,7 @@ export default function RelatedLinks({
   if (items.length === 0) return null;
   return (
     <nav aria-label={title} style={{ marginTop: space.xxl, marginBottom: space.xxl }}>
-      <h2 style={{ fontSize: 16, fontWeight: 800, margin: `0 0 ${space.lg}px`, color: v("--color-text-primary") }}>
+      <h2 style={{ fontSize: v("--font-size-lead"), fontWeight: 800, margin: `0 0 ${space.lg}px`, color: v("--color-text-primary") }}>
         {title}
       </h2>
       <div style={{ display: "flex", flexDirection: "column", gap: space.sm }}>
@@ -45,11 +45,11 @@ export default function RelatedLinks({
               background: v("--color-bg"),
             }}
           >
-            <span style={{ display: "inline-flex", alignItems: "center", gap: space.xs, fontSize: 14, fontWeight: 700, color: v("--color-accent") }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: space.xs, fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-accent") }}>
               {l.label} <IconArrowRight size={iconSizes.sm} />
             </span>
             {l.desc && (
-              <span style={{ display: "block", marginTop: space.xxs, fontSize: 13, lineHeight: 1.5, color: v("--color-text-secondary") }}>
+              <span style={{ display: "block", marginTop: space.xxs, fontSize: v("--font-size-body"), lineHeight: 1.5, color: v("--color-text-secondary") }}>
                 {l.desc}
               </span>
             )}

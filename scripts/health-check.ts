@@ -666,13 +666,20 @@ async function messeAboBereit(): Promise<AboBereit | null> {
     // dieselbe Trennung wie überall sonst zwischen „ist kaputt" und „konnte
     // nicht nachsehen".
     if (!r.ok) return null;
-    const d = (await r.json()) as { bereit?: boolean; fehlt?: string[]; versandOhneBeleg?: unknown };
+    const d = (await r.json()) as {
+      bereit?: boolean;
+      fehlt?: string[];
+      versandOhneBeleg?: unknown;
+      postfach?: unknown;
+    };
     if (typeof d?.bereit !== "boolean") return null;
     // Eine ältere Auslieferung kennt das Feld nicht. Das ist „nicht gemessen",
     // nicht „null hängende Anmeldungen" — eine Null behauptete hier einen
     // Befund („alles ging raus"), den es nicht gab.
     const ohneBeleg = typeof d.versandOhneBeleg === "number" ? d.versandOhneBeleg : null;
-    return { bereit: d.bereit, fehlt: Array.isArray(d.fehlt) ? d.fehlt : [], ohneBeleg };
+    // Ältere Auslieferung ohne Anmeldeprobe: „nicht gemessen", nicht „in Ordnung".
+    const postfach = typeof d.postfach === "string" ? (d.postfach as AboBereit["postfach"]) : null;
+    return { bereit: d.bereit, fehlt: Array.isArray(d.fehlt) ? d.fehlt : [], ohneBeleg, postfach };
   } catch {
     return null;
   }
@@ -683,6 +690,8 @@ interface AboBereit {
   fehlt: string[];
   /** Anmeldungen ohne Versandbeleg; `null` = nicht gemessen. */
   ohneBeleg: number | null;
+  /** Ausgang der Anmeldeprobe am Postfach; `null` = nicht gemessen. */
+  postfach: "ok" | "abgelehnt" | "unerreichbar" | "nicht-konfiguriert" | null;
 }
 
 /**
@@ -701,6 +710,23 @@ interface AboBereit {
  * Meldungen über dieselbe Ursache sind der Lärm, von dem man sich abgewöhnt,
  * Meldungen zu lesen.
  */
+/**
+ * Wie meldet sich der Ausgang der Anmeldeprobe im Protokoll?
+ *
+ * Drei Zustände, drei Sätze — und der Unterschied zwischen den letzten beiden
+ * ist der ganze Grund für diese Funktion: „Ich habe nachgesehen und nichts
+ * gefunden" und „ich konnte nicht nachsehen" sind zwei Auskünfte. Eine
+ * unerreichbare Verbindung als „in Ordnung" zu protokollieren behauptet eine
+ * Beobachtung, die es nicht gab. Der abgelehnte Fall steht hier nicht: Er ist
+ * ein Befund und wird als solcher gemeldet, nicht als Protokollzeile.
+ */
+export function aboPostfachSatz(p: AboBereit["postfach"]): string {
+  if (p === "ok") return "Gemeinde-Abo: Einstellungen gesetzt, das Postfach nimmt die Zugangsdaten an.";
+  if (p === "unerreichbar")
+    return "Gemeinde-Abo: Einstellungen gesetzt; das Postfach war für die Probe nicht erreichbar (kein Urteil).";
+  return "Gemeinde-Abo: Versandweg und Signatur sind in der Produktion gesetzt.";
+}
+
 export function aboVersandStockt(b: { bereit: boolean; ohneBeleg: number | null }): boolean {
   if (b.ohneBeleg === null) return false;
   if (!b.bereit) return false;
@@ -1648,16 +1674,16 @@ async function main() {
   if (aboBereit) {
     lines.push(
       aboBereit.bereit
-        ? "Gemeinde-Abo: Versandweg und Signatur sind in der Produktion gesetzt."
-        : `Gemeinde-Abo: ${aboBereit.fehlt.length} Einstellung(en) fehlen in der Produktion.`,
+        ? aboPostfachSatz(aboBereit.postfach)
+        : `Gemeinde-Abo: ${aboBereit.fehlt.length} Punkt(e) hindern den Versand in der Produktion.`,
     );
     if (!aboBereit.bereit) {
       forClaude.push(
-        `Das Gemeinde-Abo kann in der PRODUKTION nicht arbeiten — es fehlt: ${aboBereit.fehlt.join(", ")}. ` +
+        `Das Gemeinde-Abo kann in der PRODUKTION nicht arbeiten: ${aboBereit.fehlt.join(", ")}. ` +
           `Jede Anmeldung endet damit für den Nutzer bei „Die Bestätigungsmail konnte gerade nicht verschickt ` +
           `werden", und niemand kommt ins Abo. Von außen ist das unsichtbar: Die Seite lädt, der Knopf ` +
-          `funktioniert, kein Test wird rot — lokal ist ja alles gesetzt. Zu tun: die genannten Einstellungen ` +
-          `in der Produktionsumgebung nachtragen und danach EINMAL neu ausliefern, sonst greifen sie nicht.`,
+          `funktioniert, kein Test wird rot — lokal ist ja alles gesetzt. Zu tun: die genannten Punkte in der ` +
+          `Produktionsumgebung richtigstellen und danach EINMAL neu ausliefern, sonst greifen sie nicht.`,
       );
     }
     // Und die zweite Hälfte: hat es auch gewirkt?

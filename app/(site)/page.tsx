@@ -105,8 +105,8 @@ export default function Home() {
 
         {/* Hero Text */}
         <div style={{ textAlign: "center", marginBottom: 20 }}>
-          <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Energie ehrlich berechnet.</h1>
-          <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>{toolAnzahlSatz(tools.length)} Ohne Anmeldung, ohne Verkaufsanrufe.</p>
+          <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Energie ehrlich berechnet.</h1>
+          <p style={{ fontSize: v("--font-size-body"), color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>{toolAnzahlSatz(tools.length)} Ohne Anmeldung, ohne Verkaufsanrufe.</p>
         </div>
       </div>
 
@@ -118,7 +118,7 @@ export default function Home() {
             href="/solar-atlas"
             style={{
               display: "inline-flex", alignItems: "center", gap: 6,
-              fontSize: 14, fontWeight: 700, textDecoration: "none",
+              fontSize: v("--font-size-body"), fontWeight: 700, textDecoration: "none",
               color: v('--color-accent'),
             }}
           >
@@ -151,15 +151,15 @@ export default function Home() {
                   }}>
                     <Icon size={iconSizes.xl} color={v('--color-accent')} />
                   </div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: v('--color-text-primary'), marginBottom: 6 }}>
+                  <div style={{ fontSize: v("--font-size-lead"), fontWeight: 700, color: v('--color-text-primary'), marginBottom: 6 }}>
                     {tool.title}
                   </div>
-                  <div style={{ fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.5 }}>
+                  <div style={{ fontSize: v("--font-size-body"), color: v('--color-text-secondary'), lineHeight: 1.5 }}>
                     {tool.description}
                   </div>
                   <div style={{
                     marginTop: 14, display: "inline-block", padding: "8px 16px", borderRadius: v('--radius-md'),
-                    fontSize: 13, fontWeight: 700, background: v('--color-accent'), color: v('--color-text-on-accent'),
+                    fontSize: v("--font-size-small"), fontWeight: 700, background: v('--color-accent'), color: v('--color-text-on-accent'),
                   }}>
                     <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
                       {tool.cta} <IconArrowRight size={iconSizes.sm} />
@@ -180,10 +180,10 @@ export default function Home() {
           borderRadius: v('--radius-md'), background: v('--color-bg-accent'),
           border: `1px solid ${v('--color-border-accent')}`,
         }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-accent') }}>
+          <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-accent') }}>
             🔒 Keine Anmeldung nötig
           </div>
-          <div style={{ fontSize: 11, color: v('--color-text-muted'), marginTop: 4 }}>
+          <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted'), marginTop: 4 }}>
             Keine Lead-Erfassung · Keine Werbung · Kein Vertriebskontakt
           </div>
         </div>

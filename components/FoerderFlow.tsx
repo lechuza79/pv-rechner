@@ -98,14 +98,14 @@ export default function FoerderFlow({
 
   return (
     <div style={imFenster ? {} : box}>
-      <div style={{ fontSize: 12, color: v("--color-text-muted"), marginBottom: space.xs }}>
+      <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginBottom: space.xs }}>
         Schritt {schritt + 1} von {fragen.length}
       </div>
-      <h3 style={{ fontSize: 17, fontWeight: 700, color: v("--color-text-primary"), margin: `0 0 ${space.xs}px` }}>
+      <h3 style={{ fontSize: v("--font-size-lead"), fontWeight: 700, color: v("--color-text-primary"), margin: `0 0 ${space.xs}px` }}>
         {aktuell.titel}
       </h3>
       {aktuell.hinweis && (
-        <p style={{ fontSize: 13, color: v("--color-text-secondary"), margin: `0 0 ${space.md}px`, lineHeight: 1.5 }}>
+        <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), margin: `0 0 ${space.md}px`, lineHeight: 1.5 }}>
           {aktuell.hinweis}
         </p>
       )}
@@ -162,7 +162,7 @@ function Ergebnis({
   const { moeglich, ausgeschlossen, ungeprueft, durchBeauftragungVerloren } = ergebnis;
   return (
     <div style={imFenster ? {} : box}>
-      <h3 style={{ fontSize: 17, fontWeight: 700, color: v("--color-text-primary"), margin: `0 0 ${space.md}px` }}>
+      <h3 style={{ fontSize: v("--font-size-lead"), fontWeight: 700, color: v("--color-text-primary"), margin: `0 0 ${space.md}px` }}>
         Das gilt für dich in {ortName}
       </h3>
 
@@ -176,12 +176,12 @@ function Ergebnis({
             marginBottom: space.md,
           }}
         >
-          <div style={{ fontSize: 14, fontWeight: 700, color: v("--color-negative"), marginBottom: space.xs }}>
+          <div style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-negative"), marginBottom: space.xs }}>
             {durchBeauftragungVerloren.length === 1
               ? "Ein Programm ist nicht mehr möglich"
               : `${durchBeauftragungVerloren.length} Programme sind nicht mehr möglich`}
           </div>
-          <p style={{ fontSize: 13, color: v("--color-text-secondary"), margin: 0, lineHeight: 1.5 }}>
+          <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), margin: 0, lineHeight: 1.5 }}>
             Weil der Auftrag schon vergeben ist. Diese Frist lässt sich nicht nachholen — bei
             künftigen Vorhaben zuerst den Antrag stellen.
           </p>
@@ -190,7 +190,7 @@ function Ergebnis({
               <li key={b.program.id} style={{ marginTop: space.xs }}>
                 <strong style={{ color: v("--color-text-primary") }}>{b.program.name}</strong>
                 {b.gruende[0] && (
-                  <div style={{ fontSize: 12, color: v("--color-text-secondary") }}>{b.gruende[0]}</div>
+                  <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>{b.gruende[0]}</div>
                 )}
               </li>
             ))}
@@ -201,7 +201,7 @@ function Ergebnis({
       {moeglich.length > 0 ? (
         moeglich.map((b) => <MoeglichesProgramm key={b.program.id} befund={b} />)
       ) : (
-        <p style={{ fontSize: 14, color: v("--color-text-secondary"), lineHeight: 1.5 }}>
+        <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), lineHeight: 1.5 }}>
           Nach deinen Angaben passt hier keines der geprüften Programme.
         </p>
       )}
@@ -223,7 +223,7 @@ function Ergebnis({
       {ungeprueft.length > 0 && (
         <details style={{ marginTop: space.sm }}>
           <summary style={zusammen}>Noch nicht im Check enthalten ({ungeprueft.length})</summary>
-          <p style={{ fontSize: 13, color: v("--color-text-secondary"), lineHeight: 1.5, marginTop: space.xs }}>
+          <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), lineHeight: 1.5, marginTop: space.xs }}>
             Für diese Programme haben wir die Bedingungen noch nicht in prüfbarer Form erfasst.
             Wir sagen dazu lieber nichts, als etwas zu raten — die Bedingungen stehen bei der
             jeweiligen Stelle.
@@ -244,7 +244,7 @@ function Ergebnis({
         Angaben ändern
       </button>
 
-      <p style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: space.md, lineHeight: 1.5 }}>
+      <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: space.md, lineHeight: 1.5 }}>
         Diese Angaben informieren und ersetzen keine Beratung. Verbindlich ist immer die
         Förderstelle — Bedingungen und Mittel ändern sich, ohne Gewähr.
       </p>
@@ -264,19 +264,19 @@ function MoeglichesProgramm({ befund }: { befund: ProgrammBefund }) {
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", gap: space.sm, alignItems: "baseline" }}>
-        <strong style={{ fontSize: 15, color: v("--color-text-primary") }}>{p.name}</strong>
-        <span style={{ fontSize: 12, color: v("--color-text-muted"), whiteSpace: "nowrap" }}>{p.traeger}</span>
+        <strong style={{ fontSize: v("--font-size-body"), color: v("--color-text-primary") }}>{p.name}</strong>
+        <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), whiteSpace: "nowrap" }}>{p.traeger}</span>
       </div>
-      <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginTop: 2 }}>{p.coveredCosts}</div>
+      <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginTop: 2 }}>{p.coveredCosts}</div>
 
       {schritte.length > 0 && (
         <>
-          <div style={{ fontSize: 13, fontWeight: 700, color: v("--color-text-primary"), marginTop: space.md }}>
+          <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary"), marginTop: space.md }}>
             In dieser Reihenfolge:
           </div>
           <ol style={{ ...liste, listStyle: "decimal", paddingLeft: 20 }}>
             {schritte.map((s, i) => (
-              <li key={i} style={{ marginTop: 4, fontSize: 13, color: v("--color-text-secondary") }}>
+              <li key={i} style={{ marginTop: 4, fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>
                 {s}
               </li>
             ))}
@@ -284,7 +284,7 @@ function MoeglichesProgramm({ befund }: { befund: ProgrammBefund }) {
         </>
       )}
 
-      <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: space.sm }}>
+      <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: space.sm }}>
         {fundingStandLabel(p)} ·{" "}
         <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent") }}>
           Zum Programm
@@ -304,12 +304,12 @@ const box: React.CSSProperties = {
 const liste: React.CSSProperties = {
   margin: `${space.xs}px 0 0`,
   paddingLeft: 18,
-  fontSize: 13,
+  fontSize: v("--font-size-small"),
   lineHeight: 1.5,
 };
 
 const zusammen: React.CSSProperties = {
-  fontSize: 13,
+  fontSize: v("--font-size-small"),
   fontWeight: 600,
   color: v("--color-text-secondary"),
   cursor: "pointer",
@@ -319,7 +319,7 @@ const neuKnopf: React.CSSProperties = {
   marginTop: space.md,
   padding: "10px 20px",
   borderRadius: v("--radius-md"),
-  fontSize: 14,
+  fontSize: v("--font-size-body"),
   fontWeight: 600,
   background: "transparent",
   border: `1px solid ${v("--color-border-muted")}`,

@@ -28,7 +28,7 @@ import "server-only";
 // sind Zustellbarkeits- und Rechtsfragen und gelten unabhängig davon, ob jemand
 // gefragt hat.
 
-import { leseSmtpKonfig } from "./outreach-mail";
+import { leseSmtpKonfig, anmeldeBefundAus, type AnmeldeBefund, type SmtpKonfiguration } from "./outreach-mail";
 import { aboMailKopfzeilen, fehlendeAboPflichtangaben, type AboMailArt } from "./abo-mail";
 
 /**
@@ -81,13 +81,7 @@ export async function sendeAboMail(o: {
     return { ok: false, fehler: `Pflichtangaben fehlen: ${fehlend.join(", ")}` };
   }
 
-  const nodemailer = await import("nodemailer");
-  const transport = nodemailer.createTransport({
-    host: befund.konfig.host,
-    port: befund.konfig.port,
-    secure: befund.konfig.port === 465,
-    auth: { user: befund.konfig.user, pass: befund.konfig.pass },
-  });
+  const transport = await baueTransport(befund.konfig);
 
   try {
     const quittung = await transport.sendMail({
@@ -105,5 +99,67 @@ export async function sendeAboMail(o: {
     return { ok: true, beleg };
   } catch (e) {
     return { ok: false, fehler: e instanceof Error ? e.message : String(e) };
+  }
+}
+
+// ─── Die Verbindung zum Postfach ─────────────────────────────────────────────
+//
+// EINE Stelle für beides — Versand und Anmeldeprobe. Zwei Fassungen davon
+// liefen unweigerlich auseinander, und dann prüfte die Probe eine Verbindung,
+// die der Versand so gar nicht aufbaut: Sie meldete grün, während der echte
+// Versand an einem anderen Port scheitert.
+
+/** Zeitgrenzen der Anmeldeprobe. Der Versand selbst läuft ohne — siehe unten. */
+const PROBE_TIMEOUT_MS = 8000;
+
+async function baueTransport(konfig: SmtpKonfiguration, timeoutMs?: number) {
+  const nodemailer = await import("nodemailer");
+  return nodemailer.createTransport({
+    host: konfig.host,
+    port: konfig.port,
+    secure: konfig.port === 465,
+    auth: { user: konfig.user, pass: konfig.pass },
+    // NUR DIE PROBE BEKOMMT EINE ZEITGRENZE. Sie hängt an einer Route, die
+    // alle drei Stunden abgefragt wird; ein hängender Verbindungsversuch
+    // blockierte dort eine Funktion, bis die Plattform sie abräumt. Der
+    // Versand behält die großzügigen Vorgabewerte der Mail-Bibliothek: Dort
+    // ist ein Abbruch teurer als ein langsamer Server, weil eine
+    // Bestätigungsmail dann gar nicht ankommt.
+    ...(timeoutMs
+      ? { connectionTimeout: timeoutMs, greetingTimeout: timeoutMs, socketTimeout: timeoutMs }
+      : {}),
+  });
+}
+
+/**
+ * Nimmt das Postfach unsere Zugangsdaten an? Meldet sich an, sendet nichts.
+ *
+ * DER ANLASS (02.09.2026): Die Bereitschaftsprüfung sagte „gesetzt" und meinte
+ * genau das — ob ein Passwort auch STIMMT, sieht man ihm nicht an. Diese Probe
+ * schließt die Lücke bis zum letzten Glied, das ohne einen echten Empfänger
+ * messbar ist.
+ *
+ * Sie verschickt bewusst KEINE Testmail: Jede Mail braucht einen Empfänger,
+ * und ein Postfach, das nur zum Prüfen angeschrieben wird, ist entweder ein
+ * echter Mensch (dem man alle drei Stunden schreibt) oder eine Adresse, deren
+ * Erreichbarkeit selbst wieder niemand prüft. Die Anmeldung beweist
+ * Zugangsdaten und Erreichbarkeit; die Zustellung beweist erst eine echte
+ * Mail an einen echten Menschen.
+ */
+export async function pruefePostfachAnmeldung(
+  env: Record<string, string | undefined> = process.env,
+): Promise<AnmeldeBefund> {
+  const befund = leseSmtpKonfig(env);
+  // Ohne vollständige Zugangsdaten gibt es nichts zu probieren, und der Grund
+  // steht bereits im Befund daneben. Zwei Meldungen über dieselbe Ursache sind
+  // der Lärm, von dem man sich abgewöhnt, Meldungen zu lesen.
+  if (!befund.ok) return "nicht-konfiguriert";
+  try {
+    const transport = await baueTransport(befund.konfig, PROBE_TIMEOUT_MS);
+    await transport.verify();
+    transport.close();
+    return "ok";
+  } catch (e) {
+    return anmeldeBefundAus(e);
   }
 }

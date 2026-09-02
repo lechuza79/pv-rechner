@@ -31,7 +31,7 @@ import "server-only";
 import { empfaengerFuerOrt, versandVermerken, type GemeindeAbo } from "./gemeinde-abo";
 import { gemeindeMeldungen, hatNachricht, type Meldung } from "./gemeinde-meldungen";
 import { aboMeldungsMail } from "./abo-mail";
-import { abmeldeToken } from "./abo-token";
+import { abmeldeLink, einstellungenLink } from "./abo-token";
 import { sendeAboMail } from "./abo-versand";
 import { getRegionAtlasData } from "./mastr-data";
 import { getRegionById, atlasPathForRegionId } from "./atlas";
@@ -161,10 +161,12 @@ export async function aboLauf(o: {
         continue;
       }
 
-      const abmeldeUrl = `${o.basisUrl}/abo/abmelden?t=${encodeURIComponent(abmeldeToken(abo.id))}`;
+      const abmeldeUrl = abmeldeLink(o.basisUrl, abo.id);
+      const einstellungenUrl = einstellungenLink(o.basisUrl, abo.id);
       const mail = aboMeldungsMail({
         ortName: stoff.ortName,
         ortUrl: `${o.basisUrl}${stoff.ortUrl}`,
+        einstellungenUrl,
         meldungen: stoff.meldungen,
         abmeldeUrl,
         standLabel: tagMonatJahr(stoff.standIso.slice(0, 10)),

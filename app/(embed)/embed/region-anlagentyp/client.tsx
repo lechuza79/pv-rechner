@@ -21,7 +21,7 @@ export default function RegionAnlagentypEmbed(props: RegionAnlagentypEmbedProps)
 
   if (props.error || !props.name || !props.liveUrl || !props.segments || props.segments.length === 0) {
     return (
-      <div style={{ padding: 16, fontFamily: "var(--widget-font-family)", color: "var(--widget-muted)", fontSize: 13 }}>
+      <div style={{ padding: 16, fontFamily: "var(--widget-font-family)", color: "var(--widget-muted)", fontSize: "var(--font-size-small)" }}>
         {props.error ?? "Für dieses Bundesland liegen keine Bestandsdaten vor."}
       </div>
     );

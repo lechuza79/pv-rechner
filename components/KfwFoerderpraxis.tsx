@@ -65,7 +65,7 @@ export default function KfwFoerderpraxis({ daten, kreis, nackt }: KfwFoerderprax
   const d = daten;
   const inhalt = (
     <>
-      <p style={{ fontSize: 14, lineHeight: 1.7, margin: `0 0 ${space.lg}px` }}>
+      <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.7, margin: `0 0 ${space.lg}px` }}>
         Der Bund hat {d.jahr} für {d.zusagen.toLocaleString("de-DE")} Heizungen einen Zuschuss zugesagt und dafür{" "}
         {fmtEuro(d.volumenMio * 1_000_000)} bewilligt. Auf eine Zusage entfielen damit im Schnitt{" "}
         <strong>{fmtEuroVoll(d.schnittJeZusage)}</strong>.
@@ -73,21 +73,21 @@ export default function KfwFoerderpraxis({ daten, kreis, nackt }: KfwFoerderprax
 
       {d.boni.length > 0 && (
         <>
-          <p style={{ fontSize: 13, lineHeight: 1.7, margin: `0 0 ${space.md}px`, color: v("--color-text-muted") }}>
+          <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.7, margin: `0 0 ${space.md}px`, color: v("--color-text-muted") }}>
             So oft kamen die Boni zum Tragen, jeweils bezogen auf die{" "}
             {d.basisMassnahmen.toLocaleString("de-DE")} geförderten Heizungen mit Grundförderung:
           </p>
           <div style={{ display: "grid", gap: space.md, marginBottom: space.lg }}>
             {d.boni.map((b) => (
               <div key={b.name}>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 4 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: v("--font-size-small"), marginBottom: 4 }}>
                   <span>{b.name}</span>
                   <span style={{ fontFamily: v("--font-mono"), fontWeight: 700 }}>
                     {prozentGerundet(b.anteil)} %
                   </span>
                 </div>
                 <Balken anteil={b.anteil} />
-                <div style={{ fontSize: 11.5, color: v("--color-text-muted"), marginTop: 3 }}>
+                <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: 3 }}>
                   {b.massnahmen.toLocaleString("de-DE")} Heizungen
                 </div>
               </div>
@@ -102,7 +102,7 @@ export default function KfwFoerderpraxis({ daten, kreis, nackt }: KfwFoerderprax
               Leser nichts zu tun. Eine Zahl ohne ihre Bedingung ist dieselbe
               Fehlerklasse wie eine Beschriftung, die etwas anderes sagt als die
               Zahl misst. */}
-          <p style={{ fontSize: 12, lineHeight: 1.65, margin: `0 0 ${space.lg}px`, color: v("--color-text-muted") }}>
+          <p style={{ fontSize: v("--font-size-small"), lineHeight: 1.65, margin: `0 0 ${space.lg}px`, color: v("--color-text-muted") }}>
             Das ist eine Beobachtung, keine Wahrscheinlichkeit. Ob ein Bonus bei dir greift, hängt an deiner alten
             Heizung, an deinem Einkommen und daran, ob du selbst dort wohnst — nicht daran, wie oft ihn andere
             bekommen haben.
@@ -116,7 +116,7 @@ export default function KfwFoerderpraxis({ daten, kreis, nackt }: KfwFoerderprax
           daneben — bei einer Zahl je Einwohner ließe sich die Ausgangszahl
           zurückrechnen, und genau davor schützt die Schwelle der KfW. */}
       {kreis && (
-        <p style={{ fontSize: 13.5, lineHeight: 1.7, margin: `0 0 ${space.lg}px` }}>
+        <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.7, margin: `0 0 ${space.lg}px` }}>
           {kreis.zusagen === null ? (
             <>
               Für {kreis.name} weist der Bericht keine Zahl aus: Bei weniger als zehn Zusagen lässt die KfW die
@@ -136,7 +136,7 @@ export default function KfwFoerderpraxis({ daten, kreis, nackt }: KfwFoerderprax
 
       <div
         style={{
-          fontSize: 11.5,
+          fontSize: v("--font-size-caption"),
           lineHeight: 1.65,
           color: v("--color-text-muted"),
           borderTop: `1px solid ${v("--color-border")}`,
@@ -177,7 +177,7 @@ export default function KfwFoerderpraxis({ daten, kreis, nackt }: KfwFoerderprax
         margin: `${space.xxl}px 0`,
       }}
     >
-      <h2 style={{ fontSize: 20, margin: `0 0 ${space.md}px` }}>Wer bekommt die Förderung wirklich?</h2>
+      <h2 style={{ fontSize: v("--font-size-h2"), margin: `0 0 ${space.md}px` }}>Wer bekommt die Förderung wirklich?</h2>
       {inhalt}
     </section>
   );

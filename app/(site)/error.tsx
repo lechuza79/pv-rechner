@@ -29,10 +29,10 @@ export default function SiteError({ error, reset }: { error: Error & { digest?: 
       padding: 20,
     }}>
       <div style={{ textAlign: "center", maxWidth: 400 }}>
-        <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 12 }}>
+        <div style={{ fontSize: v("--font-size-h3"), fontWeight: 700, marginBottom: 12 }}>
           Etwas ist schiefgegangen
         </div>
-        <div style={{ fontSize: 13, color: v('--color-text-secondary'), marginBottom: 20, lineHeight: 1.5 }}>
+        <div style={{ fontSize: v("--font-size-body"), color: v('--color-text-secondary'), marginBottom: 20, lineHeight: 1.5 }}>
           Die Seite konnte nicht geladen werden. Versuch es noch mal — falls es bleibt, geh zur Startseite.
         </div>
         <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
@@ -41,7 +41,7 @@ export default function SiteError({ error, reset }: { error: Error & { digest?: 
             style={{
               padding: "10px 24px",
               borderRadius: v('--radius-md'),
-              fontSize: 14,
+              fontSize: v("--font-size-body"),
               fontWeight: 700,
               background: v('--color-accent'),
               color: v('--color-text-on-accent'),
@@ -57,7 +57,7 @@ export default function SiteError({ error, reset }: { error: Error & { digest?: 
               display: "inline-block",
               padding: "10px 24px",
               borderRadius: v('--radius-md'),
-              fontSize: 14,
+              fontSize: v("--font-size-body"),
               fontWeight: 700,
               background: v('--color-bg-muted'),
               color: v('--color-text-primary'),
@@ -69,7 +69,7 @@ export default function SiteError({ error, reset }: { error: Error & { digest?: 
           </a>
         </div>
         {error.digest && (
-          <div style={{ marginTop: 16, fontSize: 11, color: v('--color-text-muted'), fontFamily: v('--font-mono') }}>
+          <div style={{ marginTop: 16, fontSize: v("--font-size-caption"), color: v('--color-text-muted'), fontFamily: v('--font-mono') }}>
             Fehler-Code: {error.digest}
           </div>
         )}

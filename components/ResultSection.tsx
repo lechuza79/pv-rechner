@@ -94,13 +94,13 @@ export default function ResultSection({
           }}
         >
           <span style={{
-            fontSize: 13, fontWeight: 700, flexShrink: 0,
+            fontSize: v("--font-size-small"), fontWeight: 700, flexShrink: 0,
             color: schaltbar && !aktiv ? v("--color-text-muted") : v("--color-text-primary"),
           }}>
             {title}
           </span>
           <span style={{
-            marginLeft: "auto", fontSize: 12, color: v("--color-text-muted"),
+            marginLeft: "auto", fontSize: v("--font-size-small"), color: v("--color-text-muted"),
             textAlign: "right", lineHeight: 1.4, minWidth: 0,
           }}>
             {/* Ausgeschaltet steht dort, DASS nicht gerechnet wird — nicht der

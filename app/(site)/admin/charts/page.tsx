@@ -54,7 +54,7 @@ export default async function AdminChartsPage() {
   const widgets = allWidgets();
   const th: React.CSSProperties = {
     textAlign: "left",
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     fontWeight: 700,
     textTransform: "uppercase",
     letterSpacing: "0.04em",
@@ -64,7 +64,7 @@ export default async function AdminChartsPage() {
     whiteSpace: "nowrap",
   };
   const td: React.CSSProperties = {
-    fontSize: 13,
+    fontSize: v("--font-size-small"),
     color: v("--color-text-secondary"),
     padding: "10px",
     borderBottom: `1px solid ${v("--color-border")}`,
@@ -73,10 +73,10 @@ export default async function AdminChartsPage() {
 
   return (
     <div style={{ maxWidth: 1000 }}>
-      <h1 style={{ fontSize: 22, fontWeight: 800, color: v("--color-text-primary"), marginBottom: 6 }}>
+      <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, color: v("--color-text-primary"), marginBottom: 6 }}>
         Chart-Baukasten
       </h1>
-      <p style={{ fontSize: 14, color: v("--color-text-muted"), lineHeight: 1.6, marginBottom: 24, maxWidth: 640 }}>
+      <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-muted"), lineHeight: 1.6, marginBottom: 24, maxWidth: 640 }}>
         Alle einbettbaren Charts und Werkzeuge mit ihren Eckdaten. Die Tabelle liest dieselbe Quelle,
         aus der die Widgets ihre Fußzeile, ihr geteiltes Bild und die Galerie bauen — sie kann also
         nicht auseinanderlaufen.
@@ -99,7 +99,7 @@ export default async function AdminChartsPage() {
               <tr key={w.id}>
                 <td style={{ ...td, color: v("--color-text-primary"), fontWeight: 600 }}>
                   {w.title}
-                  <div style={{ fontSize: 11, fontWeight: 400, color: v("--color-text-muted"), marginTop: 2 }}>
+                  <div style={{ fontSize: v("--font-size-caption"), fontWeight: 400, color: v("--color-text-muted"), marginTop: 2 }}>
                     <Link href={`/embed/${w.id}`} style={{ color: v("--color-accent"), textDecoration: "none" }}>
                       /embed/{w.id}
                     </Link>
@@ -122,7 +122,7 @@ export default async function AdminChartsPage() {
         </table>
       </div>
 
-      <h2 style={{ fontSize: 17, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 10 }}>
+      <h2 style={{ fontSize: v("--font-size-lead"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 10 }}>
         So entsteht ein neues Chart
       </h2>
       <div style={{ display: "grid", gap: 10, maxWidth: 720 }}>
@@ -135,15 +135,15 @@ export default async function AdminChartsPage() {
               padding: "12px 14px",
             }}
           >
-            <div style={{ fontSize: 14, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 4 }}>
+            <div style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 4 }}>
               {s.titel}
             </div>
-            <div style={{ fontSize: 13, color: v("--color-text-muted"), lineHeight: 1.6 }}>{s.text}</div>
+            <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6 }}>{s.text}</div>
           </div>
         ))}
       </div>
 
-      <p style={{ fontSize: 12.5, color: v("--color-text-muted"), lineHeight: 1.6, marginTop: 20, maxWidth: 720 }}>
+      <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6, marginTop: 20, maxWidth: 720 }}>
         Die ausführliche Fassung mit den Gründen steht in der Projektdoku unter „Das geteilte Bild“.
         Wer ein Chart baut, muss nur diese Seite und die geteilten Bausteine kennen.
       </p>

@@ -76,7 +76,7 @@ export function KategorieNav({
             border: `1px solid ${uebersicht ? v("--color-accent") : v("--color-border")}`,
             background: uebersicht ? v("--color-accent-dim") : v("--color-bg-muted"),
             color: uebersicht ? v("--color-accent") : v("--color-text-secondary"),
-            fontSize: 14,
+            fontSize: v("--font-size-body"),
             textDecoration: "none",
             whiteSpace: "nowrap",
           }}

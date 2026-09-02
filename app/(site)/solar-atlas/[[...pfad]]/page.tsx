@@ -569,8 +569,8 @@ const S: Record<string, React.CSSProperties> = {
     textDecoration: "none",
     color: v("--color-text-primary"),
   },
-  rangKachelTitel: { fontSize: 15, fontWeight: 700, textTransform: "capitalize" },
-  rangKachelCta: { display: "flex", alignItems: "center", gap: 5, fontSize: 13, color: v("--color-accent") },
+  rangKachelTitel: { fontSize: v("--font-size-body"), fontWeight: 700, textTransform: "capitalize" },
+  rangKachelCta: { display: "flex", alignItems: "center", gap: 5, fontSize: v("--font-size-small"), color: v("--color-accent") },
   page: {
     background: v("--color-bg"),
     fontFamily: v("--font-text"),
@@ -591,8 +591,8 @@ const S: Record<string, React.CSSProperties> = {
     marginBottom: space.sm,
   },
   standDate: { fontWeight: 600, color: "inherit" },
-  h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
-  intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.xxl}px` },
+  h1: { fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
+  intro: { fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.xxl}px` },
   strong: { color: v("--color-text-primary"), fontWeight: 600 },
   metricsGrid: {
     display: "grid",
@@ -601,11 +601,11 @@ const S: Record<string, React.CSSProperties> = {
     marginBottom: space.xxl,
   },
   metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: space.xl },
-  metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: space.xs },
-  metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 },
-  tendCaption: { fontSize: 11, color: v("--color-text-muted"), margin: `0 ${space.xxs}px ${space.xxl}px` },
-  h2: { fontSize: 16, fontWeight: 700, margin: `0 0 ${space.xs}px` },
-  sub: { fontSize: 12, color: v("--color-text-muted"), margin: `0 0 ${space.lg}px`, lineHeight: 1.6 },
+  metricLabel: { fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginBottom: space.xs },
+  metricValue: { fontFamily: v("--font-mono"), fontSize: v("--font-size-display-sm"), fontWeight: 700 },
+  tendCaption: { fontSize: v("--font-size-caption"), color: v("--color-text-muted"), margin: `0 ${space.xxs}px ${space.xxl}px` },
+  h2: { fontSize: v("--font-size-lead"), fontWeight: 700, margin: `0 0 ${space.xs}px` },
+  sub: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), margin: `0 0 ${space.lg}px`, lineHeight: 1.6 },
   section: { marginBottom: space.huge },
   card: {
     background: v("--color-bg"),
@@ -613,7 +613,7 @@ const S: Record<string, React.CSSProperties> = {
     borderRadius: v("--radius-lg"),
     padding: pad("xl"),
   },
-  link: { color: v("--color-accent"), textDecoration: "none", fontSize: 14, fontWeight: 600 },
+  link: { color: v("--color-accent"), textDecoration: "none", fontSize: v("--font-size-body"), fontWeight: 600 },
   // Verweis MITTEN im Fließtext: Akzentfarbe UND Unterstreichung, so wie überall
   // sonst im Fließtext des Projekts (Quellenangaben, Ratgeber, Förderseiten).
   // `link` ohne Unterstreichung ist der Stil für eigenständige Links, die durch
@@ -630,7 +630,7 @@ const S: Record<string, React.CSSProperties> = {
     textUnderlineOffset: 2,
   },
   disclaimer: {
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     color: v("--color-text-muted"),
     lineHeight: 1.6,
     borderTop: `1px solid ${v("--color-border")}`,
