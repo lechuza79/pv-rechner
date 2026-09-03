@@ -1,26 +1,42 @@
 // ─── Wann eine Meldung an Privatleute rausgeht ───────────────────────────────
 //
-// GEMESSEN IST DIE WIRKUNG, NICHT VON UNS: Zwischen dem besten und dem
-// schlechtesten Wochentag liegen im Schnitt 5 bis 8 Prozentpunkte Öffnungsrate,
-// zwischen den Tageszeiten bis zu 30. Rund 80 % aller Öffnungen passieren in
-// den ersten vier Stunden nach Zustellung — der Zeitpunkt entscheidet also vor
-// allem, ob eine Mail oben im Postfach liegt oder unter zwanzig anderen.
-// (rapidmail-Auswertung und dogado-Zusammenfassung des Inxmail-Benchmarks,
-// beide am 03.09.2026 gelesen.)
+// EMPFÄNGER SIND PRIVATLEUTE ZU HAUSE, keine Schreibtische im Büro. Das ist die
+// ganze Begründung für die Uhrzeit: Wer über seine eigene Dachfläche nachdenkt,
+// tut das nach Feierabend. Die verbreitete Empfehlung „Dienstag bis Donnerstag,
+// vormittags" ist die für Geschäftsempfänger — sie stand hier zuerst und war
+// die falsche Zielgruppe. Für Privatempfänger zeigen die Auswertungen
+// übereinstimmend den Abend (Brevo, Mailjet, ActiveCampaign, GetResponse,
+// rapidmail; MailerLites Auswertung von 2,1 Mio Kampagnen sieht die höchsten
+// KLICKraten bei Privat-Zielgruppen zwischen 18 und 21 Uhr — alle am 03.09.2026
+// gelesen).
 //
-// DIE ZAHLEN STAMMEN AUS NEWSLETTER-VERSAND, und das ist die Grenze dieser
-// Datei: Für eine persönliche Nachricht von einem Menschen an wenige Empfänger
-// gibt es keine belastbaren Zahlen. Deshalb greift das Fenster hier nur, wo
-// wirklich viele Meldungen auf einmal rausgehen — bei siebzehn Empfängern wäre
-// der Unterschied ein einziger, und ein Lauf, der deswegen einen Tag wartet,
-// kostet mehr, als er bringt.
+// ─── Warum die meisten Zahlen dazu nichts wert sind ──────────────────────────
 //
-// WARUM DAS NICHT DIE FERIENREGEL DER ANSCHREIBEN IST: Die bremst Kaltakquise
-// an Rathäuser und fragt nach Bundesland, Schulferien und Feiertagen. Hier
-// geht es um Menschen, die eine Meldung bestellt haben — ihnen etwas
-// vorzuenthalten, weil in ihrem Bundesland Ferien sind, wäre keine Rücksicht,
-// sondern Willkür. Geprüft wird nur, ob der Zeitpunkt die Mail unnötig
-// begräbt.
+// ÖFFNUNGSRATEN TAUGEN SEIT 09/2021 NICHT MEHR FÜR EINE ZEITAUSSAGE. Apples
+// Mail-Datenschutz lädt die Bilder einer Mail beim EINGANG, nicht beim Lesen,
+// und Apple Mail steht für rund 58 % aller gemeldeten Öffnungen. Eine
+// Auswertung „welche Versandstunde hat die beste Öffnungsrate" misst damit zu
+// gutem Teil die Versandstunde selbst. Genau daher kommt das sonst unerklärliche
+// Ergebnis des Inxmail-Benchmarks 2026 (4 Mrd. Mails), die beste Versandzeit
+// liege zwischen 3 und 6 Uhr morgens — DIESE ZAHL WIRD HIER BEWUSST NICHT
+// BENUTZT. MailerLite empfiehlt aus demselben Grund ausdrücklich, nur noch über
+// Klickraten zu testen.
+//
+// UND KEINE DIESER AUSWERTUNGEN IST EIN EXPERIMENT. Sie vergleichen Kampagnen,
+// die zu verschiedenen Zeiten rausgingen — also verschiedene Absender an
+// verschiedene Listen. Keine nennt Signifikanz oder Streuung; die Unterschiede
+// liegen im Bereich weniger Prozentpunkte. Wir übernehmen die Richtung, nicht
+// die Genauigkeit.
+//
+// DESHALB DIE SCHWELLE. Bei siebzehn Empfängern ist der erwartete Unterschied
+// kein ganzer Mensch, und ein Lauf, der dafür einen Abend wartet, kostet mehr,
+// als er bringt. Das Fenster greift erst, wo wirklich viele Meldungen auf
+// einmal rausgehen.
+//
+// WAS DAS FENSTER NICHT IST: die Ferienbremse der Kommunen-Anschreiben. Die
+// bremst Kaltakquise an Rathäuser. Hier haben Menschen die Meldung bestellt;
+// ihnen etwas vorzuenthalten, weil in ihrem Bundesland Ferien sind, wäre keine
+// Rücksicht, sondern Willkür.
 
 /** Ein Zeitfenster in lokaler Zeit (Deutschland). */
 export type Versandfenster = { ok: true } | { ok: false; grund: string; naechstes: string };
@@ -28,11 +44,15 @@ export type Versandfenster = { ok: true } | { ok: false; grund: string; naechste
 /** Wochentage, an denen versendet wird. 2 = Dienstag … 4 = Donnerstag. */
 export const GUTE_WOCHENTAGE = [2, 3, 4];
 
-/** Stunden, in denen versendet wird — die beiden Fenster der Auswertung. */
-export const GUTE_STUNDEN = [
-  { von: 9, bis: 11 },
-  { von: 14, bis: 15 },
-];
+/**
+ * Stunden, in denen versendet wird — der Feierabend.
+ *
+ * 17 bis 20 Uhr: früh genug, dass die Mail nicht über Nacht nach unten rutscht,
+ * spät genug, dass sie nicht im Arbeitstag untergeht. Rund 80 % aller Öffnungen
+ * passieren in den ersten vier Stunden nach Zustellung — der Versand liegt
+ * damit im selben Abend wie das Lesen.
+ */
+export const GUTE_STUNDEN = [{ von: 17, bis: 20 }];
 
 /**
  * Ab wie vielen Empfängern das Fenster überhaupt gilt.
@@ -78,8 +98,8 @@ export function versandzeitOk(jetzt: Date, empfaenger: number): Versandfenster {
   return {
     ok: false,
     grund: tagOk
-      ? `${stunde} Uhr liegt außerhalb der Fenster (9–11 und 14–15 Uhr)`
+      ? `${stunde} Uhr liegt außerhalb des Fensters (17–20 Uhr)`
       : `${namen[wochentag] ?? "?"} ist kein Versandtag (Dienstag bis Donnerstag)`,
-    naechstes: "Dienstag bis Donnerstag, 9–11 oder 14–15 Uhr deutscher Zeit",
+    naechstes: "Dienstag bis Donnerstag, 17–20 Uhr deutscher Zeit",
   };
 }

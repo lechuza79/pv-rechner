@@ -18,10 +18,13 @@ import { versandzeitOk, AB_EMPFAENGERN, GUTE_WOCHENTAGE, GUTE_STUNDEN } from "..
 const lies = (p: string) => readFileSync(resolve(process.cwd(), p), "utf8");
 const lauf = lies("lib/abo-lauf.ts");
 
-// Ein Dienstag um 10 Uhr deutscher Zeit (Sommerzeit = UTC+2).
-const imFenster = new Date("2026-09-08T08:00:00Z");
-const sonntag = new Date("2026-09-06T08:00:00Z");
-const dienstagAbends = new Date("2026-09-08T18:00:00Z");
+// Ein Dienstag um 18 Uhr deutscher Zeit (Sommerzeit = UTC+2).
+const imFenster = new Date("2026-09-08T16:00:00Z");
+const sonntag = new Date("2026-09-06T16:00:00Z");
+// Derselbe Dienstag um 10 Uhr — mitten im Arbeitstag, also draußen. Genau
+// dieses Fenster stand hier zuerst; es ist die Empfehlung für
+// Geschäftsempfänger und für Privatleute die falsche Zielgruppe.
+const dienstagVormittags = new Date("2026-09-08T08:00:00Z");
 
 describe("Das Fenster selbst", () => {
   it("lässt einen kleinen Lauf immer durch", () => {
@@ -46,7 +49,7 @@ describe("Das Fenster selbst", () => {
   });
 
   it("bremst einen großen Lauf zur falschen Stunde", () => {
-    const u = versandzeitOk(dienstagAbends, 500);
+    const u = versandzeitOk(dienstagVormittags, 500);
     expect(u.ok).toBe(false);
     if (!u.ok) expect(u.grund).toMatch(/außerhalb/);
   });
@@ -56,11 +59,11 @@ describe("Das Fenster selbst", () => {
   });
 
   it("rechnet in DEUTSCHER Zeit, nicht in UTC", () => {
-    // 07:30 UTC ist im Sommer 09:30 in Deutschland — also drin. Wer die
+    // 15:30 UTC ist im Sommer 17:30 in Deutschland — also drin. Wer die
     // Systemzeit nimmt, sperrt hier zu, und im Winter genau andersherum.
-    expect(versandzeitOk(new Date("2026-09-08T07:30:00Z"), 500).ok).toBe(true);
-    // Und dieselbe Uhrzeit im Winter (UTC+1) ist 08:30 — also draußen.
-    expect(versandzeitOk(new Date("2026-12-08T07:30:00Z"), 500).ok).toBe(false);
+    expect(versandzeitOk(new Date("2026-09-08T15:30:00Z"), 500).ok).toBe(true);
+    // Dieselbe Uhrzeit im Winter (UTC+1) ist 16:30 — also draußen.
+    expect(versandzeitOk(new Date("2026-12-08T15:30:00Z"), 500).ok).toBe(false);
   });
 
   it("nennt bei Ablehnung, wann es wieder geht", () => {
@@ -68,12 +71,22 @@ describe("Das Fenster selbst", () => {
     if (!u.ok) expect(u.naechstes.length).toBeGreaterThan(10);
   });
 
-  it("die Fenster sind die gemessenen, nicht irgendwelche", () => {
+  it("versendet am ABEND, nicht im Arbeitstag", () => {
+    // Empfänger sind Privatleute zu Hause. Die Vormittagsempfehlung gilt
+    // Geschäftsempfängern und stand hier zuerst — sie ist die falsche
+    // Zielgruppe, und der Fehler war von außen unsichtbar.
     expect(GUTE_WOCHENTAGE).toEqual([2, 3, 4]);
-    expect(GUTE_STUNDEN).toEqual([
-      { von: 9, bis: 11 },
-      { von: 14, bis: 15 },
-    ]);
+    expect(GUTE_STUNDEN).toEqual([{ von: 17, bis: 20 }]);
+    expect(versandzeitOk(new Date("2026-09-08T08:00:00Z"), 500).ok).toBe(false);
+  });
+
+  it("übernimmt die Nachtstunden des Öffnungs-Benchmarks NICHT", () => {
+    // Der Inxmail-Benchmark 2026 weist 3–6 Uhr morgens als beste Versandzeit
+    // aus. Das misst zu gutem Teil sich selbst: Apples Mail-Datenschutz lädt
+    // die Bilder beim EINGANG, und Apple Mail steht für rund 58 % aller
+    // gemeldeten Öffnungen. Eine Nacht-Zustellung wäre hier ein Fehler, der
+    // sich auf eine große Zahl beruft.
+    expect(versandzeitOk(new Date("2026-09-08T02:00:00Z"), 500).ok).toBe(false);
   });
 });
 

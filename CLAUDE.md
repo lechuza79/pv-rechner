@@ -1369,14 +1369,32 @@ den falschen Fall** (`lib/abo-mail.ts`, `lib/abo-versand.ts`):
   einem Abonnenten seine Meldung vorzuenthalten, weil in seinem Bundesland Ferien sind,
   wäre keine Rücksicht. Was bleibt: Prüfung des Versandwegs und die Pflichtangaben.
 - **Ein VERSANDFENSTER gibt es trotzdem — aber erst ab Menge** (`lib/versandzeit.ts`,
-  Di–Do, 9–11 und 14–15 Uhr **deutscher** Zeit, ab 20 Meldungen je Lauf). Gemessen ist
-  die Wirkung nicht von uns: 5–8 Prozentpunkte Öffnungsrate zwischen bestem und
-  schlechtestem Wochentag, bis zu 30 zwischen den Tageszeiten, rund 80 % aller
-  Öffnungen in den ersten vier Stunden (rapidmail; dogado über den Inxmail-Benchmark,
-  beide 03.09.2026 gelesen). **Die Zahlen stammen aus Newsletter-Versand** — für eine
-  persönliche Nachricht an wenige Empfänger gibt es keine; deshalb die Schwelle: Bei
-  siebzehn Empfängern ist die Spanne kein ganzer Mensch, und ein Lauf, der dafür einen
-  Tag wartet, kostet mehr, als er bringt.
+  Di–Do, **17–20 Uhr deutscher Zeit**, ab 20 Meldungen je Lauf).
+  - **Der Abend ist die Zielgruppen-Entscheidung, nicht der Durchschnitt.** Empfänger
+    sind Privatleute zu Hause; wer über seine eigene Dachfläche nachdenkt, tut das nach
+    Feierabend. Die verbreitete Empfehlung „Di–Do vormittags" gilt GESCHÄFTS-Empfängern
+    — sie stand hier zuerst und war schlicht die falsche Zielgruppe, von außen
+    unsichtbar. Für Privatempfänger zeigen Brevo, Mailjet, ActiveCampaign, GetResponse
+    und rapidmail übereinstimmend den Abend; MailerLites Auswertung von 2,1 Mio
+    Kampagnen sieht die höchsten **Klick**raten bei Privat-Zielgruppen zwischen 18 und
+    21 Uhr (alle 03.09.2026 gelesen). Dazu: rund 80 % aller Öffnungen fallen in die
+    ersten vier Stunden nach Zustellung — Versand und Lesen liegen damit im selben Abend.
+  - **Öffnungsraten taugen seit 09/2021 nicht mehr für eine Zeitaussage — BLOCKER.**
+    Apples Mail-Datenschutz lädt die Bilder beim EINGANG, nicht beim Lesen, und Apple
+    Mail steht für rund 58 % aller gemeldeten Öffnungen. Eine Auswertung „welche
+    Versandstunde hat die beste Öffnungsrate" misst damit zu gutem Teil die
+    Versandstunde selbst. Daher stammt das sonst unerklärliche Ergebnis des
+    **Inxmail-Benchmarks 2026** (4 Mrd. Mails), die beste Versandzeit liege zwischen
+    **3 und 6 Uhr morgens** — eine große, seriös wirkende Zahl, die hier ausdrücklich
+    NICHT benutzt wird; ein Test verbietet das Nachtfenster. MailerLite empfiehlt aus
+    demselben Grund, nur noch über Klickraten zu testen.
+  - **Keine dieser Auswertungen ist ein Experiment.** Sie vergleichen Kampagnen, die zu
+    verschiedenen Zeiten rausgingen, also verschiedene Absender an verschiedene Listen;
+    keine nennt Signifikanz oder Streuung, die Unterschiede liegen bei wenigen
+    Prozentpunkten. Übernommen wird die RICHTUNG, nicht die Genauigkeit — und sobald es
+    genug Abonnenten gibt, wird über **Klicks** nachgemessen statt über Öffnungen.
+  - **Deshalb die Schwelle:** Bei siebzehn Empfängern ist die Spanne kein ganzer Mensch,
+    und ein Lauf, der dafür einen Abend wartet, kostet mehr, als er bringt.
   - **Der Lauf sammelt ERST alle Empfänger und schickt DANN.** Zwei Durchgänge statt
     einem, weil das Fenster die Menge kennen muss, bevor die erste Mail draußen ist:
     Ein Fenster, das mitten im Lauf zuschlägt, hätte die Hälfte verschickt und die
