@@ -23,6 +23,14 @@ import "server-only";
 // ein fehlgeschlagener Versand als „geschrieben" gilt; das ist die günstigere
 // Richtung.
 //
+// EIN VERSANDFENSTER, ABER KEINE FERIENBREMSE. Die Anschreiben an Rathäuser
+// halten Schulferien, Wochentag und Tagespensum ein — das sind Bremsen gegen
+// Kaltakquise. Hier haben Menschen die Meldung bestellt; ihnen etwas
+// vorzuenthalten, weil in ihrem Bundesland Ferien sind, wäre keine Rücksicht.
+// Geprüft wird nur, ob der Zeitpunkt die Mail unnötig begräbt, und das auch
+// erst ab einer Menge, bei der der gemessene Unterschied überhaupt einen
+// Empfänger ausmacht (siehe `lib/versandzeit.ts`).
+//
 // KEINE EIGENE EMPFÄNGER-ABFRAGE. Wer bekommt eine Meldung, beantwortet
 // `empfaengerFuerOrt()` — die einzige Stelle, die auf „bestätigt" filtert.
 // Nach der Abmeldung bleibt die Zeile als Nachweis stehen, und ein zweiter
@@ -36,6 +44,7 @@ import { sendeAboMail } from "./abo-versand";
 import { getRegionAtlasData } from "./mastr-data";
 import { getRegionById, atlasPathForRegionId } from "./atlas";
 import { tagMonatJahr } from "./stand-format";
+import { versandzeitOk } from "./versandzeit";
 
 export type LaufErgebnis = {
   /** Orte, für die es überhaupt Abonnenten gibt. */
@@ -44,6 +53,8 @@ export type LaufErgebnis = {
   orteStill: number;
   versendet: number;
   fehlgeschlagen: number;
+  /** Gesetzt, wenn der Lauf wegen des Versandfensters nichts geschickt hat. */
+  verschoben: string | null;
   /** Was schiefging — für den Bericht, nicht für den Nutzer. */
   fehler: string[];
 };
@@ -108,10 +119,19 @@ export async function aboLauf(o: {
     orteStill: 0,
     versendet: 0,
     fehlgeschlagen: 0,
+    verschoben: null,
     fehler: [],
   };
   const heuteJahr = o.jetzt.getUTCFullYear();
   const jetztIso = o.jetzt.toISOString();
+
+  // ─── Erst rechnen, dann schicken ──────────────────────────────────────────
+  //
+  // Zwei Durchgänge statt einem, weil das Versandfenster die Menge kennen muss,
+  // BEVOR die erste Mail draußen ist. Ein Fenster, das mitten im Lauf zuschlägt,
+  // hätte die Hälfte verschickt und die andere Hälfte auf morgen vertagt — und
+  // wer dann nachsieht, findet einen Lauf, der weder gelaufen noch gestoppt ist.
+  const versandliste: { abo: GemeindeAbo; stoff: NonNullable<Awaited<ReturnType<typeof meldungenFuerOrt>>> }[] = [];
 
   for (const regionId of o.orte) {
     erg.orteGeprueft++;
@@ -137,55 +157,67 @@ export async function aboLauf(o: {
     }
 
     const empfaenger = await empfaengerFuerOrt(regionId);
-    if (empfaenger.length === 0) {
+    const offen = empfaenger.filter((abo) => !schonHeuteGeschrieben(abo, o.jetzt));
+    if (offen.length === 0) {
       erg.orteStill++;
       continue;
     }
+    for (const abo of offen) versandliste.push({ abo, stoff });
+  }
 
-    for (const abo of empfaenger) {
-      if (schonHeuteGeschrieben(abo, o.jetzt)) continue;
+  // ─── Das Versandfenster ───────────────────────────────────────────────────
+  //
+  // Es greift NICHT im Probelauf: Der verschickt ohnehin nichts, und ein
+  // Probelauf, der außerhalb des Fensters schweigt, verbirgt genau das, wofür
+  // es ihn gibt.
+  const fenster = versandzeitOk(o.jetzt, versandliste.length);
+  if (!fenster.ok && !o.trocken) {
+    erg.verschoben = `${fenster.grund}. Nächstes Fenster: ${fenster.naechstes}. ${versandliste.length} Meldungen warten.`;
+    return erg;
+  }
+  if (!fenster.ok) erg.verschoben = `Nur im Probelauf gerechnet — echt wäre verschoben: ${fenster.grund}.`;
 
-      if (o.trocken) {
-        erg.versendet++;
-        continue;
-      }
+  for (const { abo, stoff } of versandliste) {
+    if (o.trocken) {
+      erg.versendet++;
+      continue;
+    }
 
-      // VOR dem Versand vermerken, nicht danach — siehe Kopf. Schlägt das
-      // Vermerken fehl, wird gar nicht erst gesendet: Lieber eine Meldung zu
-      // wenig als dieselbe zweimal.
-      try {
-        await versandVermerken(abo.id, jetztIso);
-      } catch (e) {
-        erg.fehlgeschlagen++;
-        erg.fehler.push(`${abo.id}: Versandmerker nicht gesetzt — ${e instanceof Error ? e.message : String(e)}`);
-        continue;
-      }
+    // VOR dem Versand vermerken, nicht danach — siehe Kopf. Schlägt das
+    // Vermerken fehl, wird gar nicht erst gesendet: Lieber eine Meldung zu
+    // wenig als dieselbe zweimal.
+    try {
+      await versandVermerken(abo.id, jetztIso);
+    } catch (e) {
+      erg.fehlgeschlagen++;
+      erg.fehler.push(`${abo.id}: Versandmerker nicht gesetzt — ${e instanceof Error ? e.message : String(e)}`);
+      continue;
+    }
 
-      const abmeldeUrl = abmeldeLink(o.basisUrl, abo.id);
-      const einstellungenUrl = einstellungenLink(o.basisUrl, abo.id);
-      const mail = aboMeldungsMail({
-        ortName: stoff.ortName,
-        ortUrl: `${o.basisUrl}${stoff.ortUrl}`,
-        einstellungenUrl,
-        meldungen: stoff.meldungen,
-        abmeldeUrl,
-        standLabel: tagMonatJahr(stoff.standIso.slice(0, 10)),
-      });
+    const abmeldeUrl = abmeldeLink(o.basisUrl, abo.id);
+    const einstellungenUrl = einstellungenLink(o.basisUrl, abo.id);
+    const mail = aboMeldungsMail({
+      ortName: stoff.ortName,
+      ortUrl: `${o.basisUrl}${stoff.ortUrl}`,
+      einstellungenUrl,
+      meldungen: stoff.meldungen,
+      abmeldeUrl,
+      standLabel: tagMonatJahr(stoff.standIso.slice(0, 10)),
+    });
 
-      const versand = await sendeAboMail({
-        an: abo.email,
-        subject: mail.subject,
-        html: mail.html,
-        text: mail.text,
-        abmeldeUrl,
-        art: "meldung",
-      });
+    const versand = await sendeAboMail({
+      an: abo.email,
+      subject: mail.subject,
+      html: mail.html,
+      text: mail.text,
+      abmeldeUrl,
+      art: "meldung",
+    });
 
-      if (versand.ok) erg.versendet++;
-      else {
-        erg.fehlgeschlagen++;
-        erg.fehler.push(`${abo.id}: ${versand.fehler}`);
-      }
+    if (versand.ok) erg.versendet++;
+    else {
+      erg.fehlgeschlagen++;
+      erg.fehler.push(`${abo.id}: ${versand.fehler}`);
     }
   }
 

@@ -1365,9 +1365,31 @@ den falschen Fall** (`lib/abo-mail.ts`, `lib/abo-versand.ts`):
   bei großen Anbietern als nicht abbestellbar.
 - **Herkunftszeile ist Art. 13, nicht Art. 14.** Dort stammen die Adressen von
   Amtsseiten, hier trägt sie der Empfänger selbst ein.
-- **Ferien, Wochentag und Tagespensum entfallen.** Das sind Bremsen gegen Kaltakquise;
+- **Ferien und Tagespensum entfallen.** Das sind Bremsen gegen Kaltakquise;
   einem Abonnenten seine Meldung vorzuenthalten, weil in seinem Bundesland Ferien sind,
   wäre keine Rücksicht. Was bleibt: Prüfung des Versandwegs und die Pflichtangaben.
+- **Ein VERSANDFENSTER gibt es trotzdem — aber erst ab Menge** (`lib/versandzeit.ts`,
+  Di–Do, 9–11 und 14–15 Uhr **deutscher** Zeit, ab 20 Meldungen je Lauf). Gemessen ist
+  die Wirkung nicht von uns: 5–8 Prozentpunkte Öffnungsrate zwischen bestem und
+  schlechtestem Wochentag, bis zu 30 zwischen den Tageszeiten, rund 80 % aller
+  Öffnungen in den ersten vier Stunden (rapidmail; dogado über den Inxmail-Benchmark,
+  beide 03.09.2026 gelesen). **Die Zahlen stammen aus Newsletter-Versand** — für eine
+  persönliche Nachricht an wenige Empfänger gibt es keine; deshalb die Schwelle: Bei
+  siebzehn Empfängern ist die Spanne kein ganzer Mensch, und ein Lauf, der dafür einen
+  Tag wartet, kostet mehr, als er bringt.
+  - **Der Lauf sammelt ERST alle Empfänger und schickt DANN.** Zwei Durchgänge statt
+    einem, weil das Fenster die Menge kennen muss, bevor die erste Mail draußen ist:
+    Ein Fenster, das mitten im Lauf zuschlägt, hätte die Hälfte verschickt und die
+    andere vertagt — und wer nachsieht, findet einen Lauf, der weder gelaufen noch
+    gestoppt ist. Verschoben wird als `verschoben` im Ergebnis benannt, nie stumm.
+  - **Im Probelauf greift es NICHT.** Der verschickt ohnehin nichts; schwiege er
+    außerhalb des Fensters, verbärge er genau das, wofür es ihn gibt.
+  - **Gerechnet wird in deutscher Ortszeit**, nicht in UTC — sonst verschiebt sich das
+    Fenster zweimal im Jahr um eine Stunde, und zwar unsichtbar.
+  - Festgenagelt von `lib/__tests__/versandzeit.test.ts`, vor dem Einchecken viermal
+    absichtlich kaputtgemacht. **Eine der vier blieb zuerst grün:** Der Test rechnete
+    die Empfängerzahl aus der Schwelle selbst (`AB_EMPFAENGERN - 1`) und verglich den
+    Fehler mit sich selbst — dieselbe Klasse wie beim Gemeindeschlüssel-Test.
 
 **Versendet wird über dasselbe Postfach wie die Anschreiben**, nicht über den Dienst, der
 Kontaktformular und Wächter-Alarme trägt — eine wachsende Verteilerliste dort träfe bei
