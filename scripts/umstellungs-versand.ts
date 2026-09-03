@@ -17,7 +17,8 @@
  */
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
-import { umstellungsMail, beipackBefund } from "../lib/umstellungs-mail";
+import { umstellungsMail, beipackBefund, loeschdatum, type Empfaengergruppe } from "../lib/umstellungs-mail";
+import { versandzeitOk, AB_EMPFAENGERN } from "../lib/versandzeit";
 
 const PROTOKOLL = "docs/versand/umstellung-anmeldung.json";
 
@@ -55,6 +56,12 @@ function protokollSchreiben(eintraege: Eintrag[]) {
 
 async function main() {
   const senden = process.argv.includes("--senden");
+  // Das Versandfenster der Abo-Meldungen gilt hier mit — dieselben Empfänger,
+  // dieselbe Überlegung: Privatleute lesen nach Feierabend. Anders als dort
+  // greift es UNABHÄNGIG von der Menge: Das ist eine einmalige Nachricht, die
+  // ohnehin von Hand ausgelöst wird, also kostet das Warten auf den Abend
+  // nichts. `--egal-wann` hebt es auf, wenn es einen Grund gibt.
+  const egalWann = process.argv.includes("--egal-wann");
   const env = { ...umgebung(".env.local"), ...process.env } as Record<string, string>;
   Object.assign(process.env, umgebung(".env.local"));
 
@@ -62,16 +69,21 @@ async function main() {
   const schluessel = env.SUPABASE_SERVICE_KEY;
   if (!url || !schluessel) throw new Error("Zugangsdaten der Datenbank fehlen.");
 
-  const mail = umstellungsMail();
+  const jetzt = new Date();
+  const fassungen = {
+    bestaetigt: umstellungsMail({ gruppe: "bestaetigt", jetzt }),
+    unbestaetigt: umstellungsMail({ gruppe: "unbestaetigt", jetzt }),
+  } as const;
 
-  // Erst die Nachricht selbst prüfen, dann erst Adressen anfassen. Ein
-  // Beipack macht aus der erlaubten Systemmail eine Werbemail an Adressen
-  // ohne Werbeeinwilligung — das darf nicht am Versandtag auffallen.
-  const beipack = beipackBefund(mail.html);
-  if (beipack.length) {
-    console.error("Die Nachricht trägt Beipack und darf so nicht raus:");
-    for (const b of beipack) console.error("  · " + b);
-    process.exit(1);
+  // Erst die Nachrichten prüfen, dann erst Adressen anfassen. Ein Beipack
+  // über den zugestandenen Rahmen hinaus darf nicht am Versandtag auffallen.
+  for (const [gruppe, m] of Object.entries(fassungen)) {
+    const beipack = [...beipackBefund(m.html), ...beipackBefund(m.text)];
+    if (beipack.length) {
+      console.error(`Die Fassung für „${gruppe}" trägt Beipack und darf so nicht raus:`);
+      for (const b of beipack) console.error("  · " + b);
+      process.exit(1);
+    }
   }
 
   const antwort = await fetch(`${url}/auth/v1/admin/users?per_page=200`, {
@@ -88,14 +100,27 @@ async function main() {
     if (!u.email) continue;
     (u.email_confirmed_at ? bestaetigt : unbestaetigt).push(u.email.toLowerCase());
   }
-  const offen = bestaetigt.filter((a) => !schon.has(a));
+  const offen: { adresse: string; gruppe: Empfaengergruppe }[] = [
+    ...bestaetigt.map((adresse) => ({ adresse, gruppe: "bestaetigt" as const })),
+    ...unbestaetigt.map((adresse) => ({ adresse, gruppe: "unbestaetigt" as const })),
+  ].filter((e) => !schon.has(e.adresse));
 
   console.log(`Konten gesamt:            ${users.length}`);
-  console.log(`davon bestätigt:          ${bestaetigt.length}`);
-  console.log(`davon nie eingelöst:      ${unbestaetigt.length}  (bekommen NICHTS — siehe lib/umstellungs-mail.ts)`);
+  console.log(`davon bestätigt:          ${bestaetigt.length}  → „Anmeldung hat sich geändert"`);
+  console.log(`davon nie eingelöst:      ${unbestaetigt.length}  → „Wir löschen deinen Eintrag am ${loeschdatum(jetzt)}"`);
   console.log(`schon angeschrieben:      ${schon.size}`);
   console.log(`\nWürde jetzt rausgehen an: ${offen.length}`);
-  for (const a of offen) console.log("  · " + a.replace(/^(..)[^@]*/, "$1***"));
+  for (const e of offen) {
+    console.log(`  · ${e.adresse.replace(/^(..)[^@]*/, "$1***").padEnd(30)} ${e.gruppe}`);
+  }
+
+  const fenster = versandzeitOk(jetzt, AB_EMPFAENGERN);
+  if (!fenster.ok) {
+    console.log(`\nVersandfenster: ZU — ${fenster.grund}.`);
+    console.log(`Offen ab: ${fenster.naechstes}.`);
+  } else {
+    console.log("\nVersandfenster: offen.");
+  }
 
   if (!senden) {
     console.log("\nProbelauf. Zum wirklichen Versand: --senden");
@@ -106,9 +131,15 @@ async function main() {
     return;
   }
 
+  if (!fenster.ok && !egalWann) {
+    console.error("\nAbgebrochen: außerhalb des Versandfensters. Mit --egal-wann trotzdem senden.");
+    process.exit(1);
+  }
+
   const { sendeAboMail } = await import("../lib/abo-versand");
   const protokoll = protokollLesen();
-  for (const adresse of offen) {
+  for (const { adresse, gruppe } of offen) {
+    const mail = fassungen[gruppe];
     // VOR dem Versand vermerken: Bricht der Lauf zwischen zwei Adressen ab,
     // darf der Neustart niemanden zweimal anschreiben. Der Preis ist eine
     // verlorene Nachricht im Fehlerfall, und das ist die günstigere Richtung.
@@ -124,7 +155,7 @@ async function main() {
     });
     protokoll[protokoll.length - 1].beleg = ergebnis.ok ? ergebnis.beleg : `FEHLER: ${ergebnis.fehler}`;
     protokollSchreiben(protokoll);
-    console.log(`  ${ergebnis.ok ? "ok" : "FEHLGESCHLAGEN"}  ${adresse.replace(/^(..)[^@]*/, "$1***")}`);
+    console.log(`  ${ergebnis.ok ? "ok" : "FEHLGESCHLAGEN"}  ${adresse.replace(/^(..)[^@]*/, "$1***")}  (${gruppe})`);
   }
   console.log(`\n${offen.length} Nachricht(en) verarbeitet. Protokoll: ${PROTOKOLL}`);
 }
