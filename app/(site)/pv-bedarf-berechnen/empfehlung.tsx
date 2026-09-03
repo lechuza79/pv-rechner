@@ -25,7 +25,7 @@ import { usePrices } from "../../../lib/prices";
 import { useFeedInRates } from "../../../lib/feedin";
 import { IconArrowRight, IconChevronDown, IconRefresh } from "../../../components/Icons";
 import FlowNav from "../../../components/FlowNav";
-import KlebenderKnopf, { LEISTE_NEBEN, LEISTE_SENDEN } from "../../../components/KlebenderKnopf";
+import KlebenderKnopf, { LEISTE_BASIS, LEISTE_NEBEN, LEISTE_SENDEN } from "../../../components/KlebenderKnopf";
 import ErgebnisAnBetrieb, { RUECKKANAL_OEFFNEN, RUECKKANAL_ZUSTAND, type PartnerAngabe } from "../../../components/ErgebnisAnBetrieb";
 
 // ─── URL slug mappings (sprechende Werte statt Indizes) ─────────────────────
@@ -97,6 +97,7 @@ export default function Empfehlung({
   heimPfad = "/",
   eigenerPfad = "/pv-bedarf-berechnen",
   partner,
+  ohneZwischenansicht = false,
 }: {
   stand?: StandSeite;
   zielPfad?: string;
@@ -108,6 +109,13 @@ export default function Empfehlung({
    *  kann die Empfehlung direkt an ihn geschickt werden — derselbe Rückkanal
    *  wie im Ergebnis des Rechners. Ohne ihn entfällt er ersatzlos. */
   partner?: PartnerAngabe;
+  /** Den letzten Schritt direkt ins Ergebnis führen, ohne die
+   *  Empfehlungs-Zwischenansicht. Auf der Seite eines Fachbetriebs gewollt: Das
+   *  Ergebnis trägt dieselbe Empfehlung samt „Warum diese Anlage?", und ein
+   *  Zwischenschritt mehr kostet dort Abbrüche, ohne etwas zu zeigen, was
+   *  danach nicht auch dasteht. Auf unserer eigenen Seite bleibt die
+   *  Zwischenansicht — sie ist dort eine eigene, verlinkbare Seite. */
+  ohneZwischenansicht?: boolean;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -366,6 +374,11 @@ export default function Empfehlung({
     const target = wizardStep + 1;
     trackFunnelStep(FUNNEL, target);
     if (target < STEPS.length) setWizardStep(target);
+    // Ohne Zwischenansicht führt der letzte Schritt direkt ins Ergebnis. `rec`
+    // ist dann bereits gerechnet (siehe dort); fehlt es wider Erwarten, bleibt
+    // die Zwischenansicht als Rückfall — lieber ein Schritt zu viel als eine
+    // Schaltfläche, die nichts tut.
+    else if (ohneZwischenansicht && rec) goToResult(rec.kwp, rec.speicherIdx);
     else showRecommendation();
   };
   const back = () => wizardStep > 0 && setWizardStep(wizardStep - 1);
@@ -436,7 +449,10 @@ export default function Empfehlung({
   };
   // Die Empfehlung selbst bleibt am realistischen Szenario verankert — sonst
   // würde die empfohlene Anlagengröße beim Szenario-Umschalten springen.
-  const rec = isRecommendation ? recommend(recInput, prices, feedIn) : null;
+  // Auch OHNE die Zwischenansicht berechnen, wenn der letzte Schritt direkt
+  // ins Ergebnis führt (Partnerseite) — dort braucht der Sprung die
+  // empfohlene Größe, ohne dass die Empfehlung je gezeigt wurde.
+  const rec = (isRecommendation || ohneZwischenansicht) ? recommend(recInput, prices, feedIn) : null;
   // Rendite/Amortisation der empfohlenen Anlage je Strompreis-Szenario.
   const recScenarios = useMemo(() => (rec
     ? SCENARIOS.map(s => ({ ...s, eco: economicsForScenario(recInput, rec.kwp, rec.speicherKwh, { strom: s.strom, evDelta: s.evDelta }, prices, feedIn) }))
@@ -726,7 +742,13 @@ export default function Empfehlung({
             <div style={{ marginTop: 24 }}>
               <FlowNav
                 weiterAktiv={stepBeantwortet}
-                weiterLabel={step === STEPS.length - 1 ? "Empfehlung anzeigen" : "Weiter"}
+                // Ohne Zwischenansicht führt der Knopf direkt ins Ergebnis — dann muss
+                // er das auch sagen.
+                weiterLabel={
+                  step === STEPS.length - 1
+                    ? (ohneZwischenansicht ? "Ergebnis anzeigen" : "Empfehlung anzeigen")
+                    : "Weiter"
+                }
                 onWeiter={next}
                 // Im ersten Schritt führt Zurück aus dem Flow heraus auf die
                 // Startseite — dieselbe Wirkung wie vorher, nur im gemeinsamen
@@ -971,9 +993,25 @@ export default function Empfehlung({
                   <button onClick={hideRecommendation} style={LEISTE_NEBEN} aria-label="Eingaben ändern">
                     <IconRefresh size={iconSizes.md} />
                   </button>
-                  <div style={{ flex: 1, display: "flex" }}>
-                    <ErgebnisKnopf onClick={() => goToResult(rec.kwp, rec.speicherIdx)} />
-                  </div>
+                  {/* In der Leiste kürzer, einzeilig und in der Zweitfarbe.
+                      Zweizeilig sprengte „Ergebnis anzeigen" auf 375 px die
+                      Leistenhöhe; zwei blaue Knöpfe nebeneinander ließen offen,
+                      welcher der Hauptweg ist. Dieselbe Aufteilung wie im
+                      Ergebnis des Rechners: verschicken trägt die Farbe. Der
+                      Knopf im Fließtext behält den vollen Wortlaut — dort ist
+                      Platz, und dort steht er ohne Nachbarn. */}
+                  <button
+                    onClick={() => goToResult(rec.kwp, rec.speicherIdx)}
+                    style={{
+                      ...LEISTE_BASIS, flex: 1, minWidth: 0, padding: "0 12px",
+                      background: v("--color-bg"), color: v("--color-accent"),
+                      border: `1px solid ${v("--color-border-accent")}`,
+                      overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                      display: "block", lineHeight: "42px",
+                    }}
+                  >
+                    Zum Ergebnis
+                  </button>
                   {partner && (
                     <button
                       onClick={() => window.dispatchEvent(new Event(RUECKKANAL_OEFFNEN))}
