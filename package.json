@@ -53,7 +53,8 @@
     "kommunen:klicks": "tsx scripts/outreach-klicks.ts",
     "kfw:import": "tsx scripts/kfw-report-import.ts",
     "auth:mailvorlagen": "tsx scripts/auth-mailvorlagen.ts",
-    "umstellung:versand": "NODE_OPTIONS=--conditions=react-server tsx scripts/umstellungs-versand.ts"
+    "umstellung:versand": "NODE_OPTIONS=--conditions=react-server tsx scripts/umstellungs-versand.ts",
+    "presse": "tsx scripts/presse-refresh.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",
