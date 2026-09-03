@@ -130,3 +130,52 @@ export default function KlebenderKnopf({
     </>
   );
 }
+
+/**
+ * Die drei Knopfformen der Leiste. Sie stehen HIER und nicht in den Rechnern,
+ * weil inzwischen zwei Oberflächen dieselbe Leiste tragen (das Ergebnis des
+ * PV-Rechners und die Empfehlung) — und eine zweite getippte Fassung von Höhe,
+ * Radius und Umbruchverhalten läuft beim ersten Anfassen auseinander.
+ */
+export const LEISTE_BASIS = {
+  height: 44,
+  borderRadius: v("--radius-md"),
+  fontSize: v("--font-size-body"),
+  fontWeight: 700,
+  fontFamily: v("--font-text"),
+  cursor: "pointer" as const,
+  display: "flex" as const,
+  alignItems: "center" as const,
+  justifyContent: "center" as const,
+  border: "none",
+};
+
+/** Der schmale Knopf am Rand (Rückweg) — nur ein Zeichen, feste Breite. */
+export const LEISTE_NEBEN = {
+  ...LEISTE_BASIS,
+  width: 44,
+  flexShrink: 0,
+  background: v("--color-bg"),
+  color: v("--color-accent"),
+  border: `1px solid ${v("--color-border-accent")}`,
+};
+
+/**
+ * Der Senden-Knopf mit dem Namen des Betriebs darauf. Ein langer Firmenname
+ * darf die Beschriftung kürzen, nicht den Knopf sprengen — `minWidth: 0` ist
+ * dabei der eigentliche Schalter: Ohne ihn weigert sich ein Flex-Element zu
+ * schrumpfen und schiebt seine Nachbarn aus der Leiste.
+ */
+export const LEISTE_SENDEN = {
+  ...LEISTE_BASIS,
+  flex: 1,
+  minWidth: 0,
+  padding: "0 12px",
+  background: v("--color-accent"),
+  color: v("--color-text-on-accent"),
+  overflow: "hidden" as const,
+  textOverflow: "ellipsis" as const,
+  whiteSpace: "nowrap" as const,
+  display: "block" as const,
+  lineHeight: "44px",
+};

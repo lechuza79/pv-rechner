@@ -13,7 +13,7 @@ import { simulateSolarYear, monthlyFromAnnual } from "../../../lib/balkon-sim";
 import ResultVerguetung from "./_components/ResultVerguetung";
 import ResultSection from "../../../components/ResultSection";
 import ErgebnisAnBetrieb, { RUECKKANAL_OEFFNEN, RUECKKANAL_ZUSTAND, type PartnerAngabe } from "../../../components/ErgebnisAnBetrieb";
-import KlebenderKnopf from "../../../components/KlebenderKnopf";
+import KlebenderKnopf, { LEISTE_BASIS, LEISTE_NEBEN, LEISTE_SENDEN } from "../../../components/KlebenderKnopf";
 // HEIZSYSTEM/HEIZSYSTEM_SHORT/WP_M2_PRESETS brauchte der entfallene
 // Verbrauchs-Abschnitt; die Gebäudefragen holen sie sich jetzt selbst aus
 // components/GebaeudeField.
@@ -777,45 +777,12 @@ export default function PVRechner({
   });
 
   // ─── Die klebende Leiste am Ende des Ergebnisses ─────────────────────────
-  // Maße und Verlauf kommen aus dem geteilten Baustein; hier stehen nur die
-  // drei Knöpfe. Der primäre trägt denselben Zustand wie der im Fließtext.
-  const leisteBasis = {
-    height: 44,
-    borderRadius: v("--radius-md"),
-    fontSize: v("--font-size-body"),
-    fontWeight: 700,
-    fontFamily: v("--font-text"),
-    cursor: "pointer" as const,
-    display: "flex" as const,
-    alignItems: "center" as const,
-    justifyContent: "center" as const,
-    border: "none",
-  };
-  const leisteNeben = {
-    ...leisteBasis,
-    width: 44,
-    flexShrink: 0,
-    background: v("--color-bg"),
-    color: v("--color-accent"),
-    border: `1px solid ${v("--color-border-accent")}`,
-  };
-  const leisteSenden = {
-    ...leisteBasis,
-    flex: 1,
-    minWidth: 0,
-    padding: "0 12px",
-    background: v("--color-accent"),
-    color: v("--color-text-on-accent"),
-    // Ein langer Firmenname darf die Beschriftung kürzen, nicht den Knopf
-    // sprengen. `minWidth: 0` ist dabei der eigentliche Schalter — ohne ihn
-    // weigert sich ein Flex-Element zu schrumpfen und schiebt die Nachbarn
-    // aus der Leiste.
-    overflow: "hidden" as const,
-    textOverflow: "ellipsis" as const,
-    whiteSpace: "nowrap" as const,
-    display: "block" as const,
-    lineHeight: "44px",
-  };
+  // Maße, Verlauf und die drei Knopfformen kommen aus dem geteilten Baustein;
+  // hier steht nur, was in der Leiste steht. Der primäre Knopf trägt denselben
+  // Zustand wie der im Fließtext.
+  const leisteBasis = LEISTE_BASIS;
+  const leisteNeben = LEISTE_NEBEN;
+  const leisteSenden = LEISTE_SENDEN;
   const primaerLeiste = () => {
     const gemeinsam = { ...leisteBasis, flex: 1, width: "100%" };
     if (authState.status === "authed") {

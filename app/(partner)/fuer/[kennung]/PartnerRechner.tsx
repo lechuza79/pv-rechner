@@ -106,7 +106,15 @@ export default function PartnerRechner({
         aktion="Direkt durchrechnen"
       />
       {/* `zielPfad` hält den Empfehlungsweg auf dieser Seite — siehe oben. */}
-      <Empfehlung stand={stand} zielPfad={pfad} heimPfad={null} eigenerPfad={pfad} />
+      <Empfehlung
+        stand={stand}
+        zielPfad={pfad}
+        heimPfad={null}
+        eigenerPfad={pfad}
+        /* Derselbe Rückkanal wie im Ergebnis: Wer schon auf der Empfehlung
+           weiß, dass er anfragen will, soll nicht erst weiterklicken müssen. */
+        partner={{ kennung, name }}
+      />
     </>
   );
 }

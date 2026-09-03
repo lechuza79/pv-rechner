@@ -20,11 +20,13 @@ import { type StandSeite } from "../../../lib/stand-format";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
 import PresetNumberInput from "../../../components/PresetNumberInput";
-import { v, iconSizes } from "../../../lib/theme";
+import { v, iconSizes, space } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { useFeedInRates } from "../../../lib/feedin";
 import { IconArrowRight, IconChevronDown, IconRefresh } from "../../../components/Icons";
 import FlowNav from "../../../components/FlowNav";
+import KlebenderKnopf, { LEISTE_NEBEN, LEISTE_SENDEN } from "../../../components/KlebenderKnopf";
+import ErgebnisAnBetrieb, { RUECKKANAL_OEFFNEN, RUECKKANAL_ZUSTAND, type PartnerAngabe } from "../../../components/ErgebnisAnBetrieb";
 
 // ─── URL slug mappings (sprechende Werte statt Indizes) ─────────────────────
 // Reihenfolge MUSS mit den Arrays in lib/constants.ts übereinstimmen
@@ -94,6 +96,7 @@ export default function Empfehlung({
   zielPfad = "/photovoltaik-rechner",
   heimPfad = "/",
   eigenerPfad = "/pv-bedarf-berechnen",
+  partner,
 }: {
   stand?: StandSeite;
   zielPfad?: string;
@@ -101,6 +104,10 @@ export default function Empfehlung({
   /** Die Adresse, unter der dieser Flow gerade läuft. Er schreibt seinen
    *  Zustand dorthin zurück. */
   eigenerPfad?: string;
+  /** Der Fachbetrieb, über dessen Seite der Besucher kam. Ist er gesetzt,
+   *  kann die Empfehlung direkt an ihn geschickt werden — derselbe Rückkanal
+   *  wie im Ergebnis des Rechners. Ohne ihn entfällt er ersatzlos. */
+  partner?: PartnerAngabe;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -456,7 +463,9 @@ export default function Empfehlung({
     ? fundingStack.applied[fundingStack.applied.length - 1].program.id
     : null;
 
-  const goToResult = (kwp: number, speicherIdx: number) => {
+  // Die Adress-Parameter des Ergebnisses — getrennt vom Sprung dorthin, weil
+  // der Rückkanal an den Fachbetrieb dieselbe Adresse als LINK braucht.
+  const ergebnisParams = (kwp: number, speicherIdx: number) => {
     const anlageIdx = kwp <= 5 ? 0 : kwp <= 8 ? 1 : kwp <= 10 ? 2 : kwp <= 15 ? 3 : 4;
     const p = new URLSearchParams();
     p.set("a", String(anlageIdx));
@@ -489,8 +498,21 @@ export default function Empfehlung({
     // Lokale Förderung scharf ans Ergebnis durchreichen, damit die Amortisation
     // sie einrechnet (wie bei einem Link von einer Förder-Stadtseite).
     if (armedFoeId) p.set("foe", armedFoeId);
-    router.push(`${zielPfad}?${p.toString()}`);
+    return p;
   };
+
+  // Solange das Rückkanal-Fenster offen ist, hat die klebende Leiste nichts zu
+  // suchen: Sie läge hinter der Abdunkelung und sähe aus wie ein Knopf, der
+  // nicht reagiert. (Dieselbe Regel wie im Ergebnis des Rechners.)
+  const [rueckkanalOffen, setRueckkanalOffen] = useState(false);
+  useEffect(() => {
+    const hoere = (e: Event) => setRueckkanalOffen(!!(e as CustomEvent).detail?.offen);
+    window.addEventListener(RUECKKANAL_ZUSTAND, hoere);
+    return () => window.removeEventListener(RUECKKANAL_ZUSTAND, hoere);
+  }, []);
+
+  const goToResult = (kwp: number, speicherIdx: number) =>
+    router.push(`${zielPfad}?${ergebnisParams(kwp, speicherIdx).toString()}`);
 
   const findSpeicherIdx = (kwh: number) => {
     const idx = SPEICHER.findIndex(s => s.kwh === kwh);
@@ -910,14 +932,59 @@ export default function Empfehlung({
               </div>
             )}
 
-            {/* CTA */}
-            <button onClick={() => goToResult(rec.kwp, rec.speicherIdx)} style={{
-              width: "100%", padding: "14px", borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), fontWeight: 700,
-              background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
-              fontFamily: v('--font-text'), marginBottom: 12,
-            }}>
-<span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>Ergebnis anzeigen <IconArrowRight size={iconSizes.md} /></span>
-            </button>
+            {/* Der Weg nach vorn — im Fluss und noch einmal als klebende
+                Leiste, sobald er aus dem Bild ist. Unter ihm stehen
+                Alternativen, Annahmen und die Stand-Zeile; wer dort liest,
+                hätte den einzigen Weg nach vorn sonst über sich.
+
+                Kam der Besucher über die Seite eines Fachbetriebs, steht
+                dieselbe Reihenfolge wie im Ergebnis des Rechners: der Rückweg
+                links, die Hauptaktion in der Mitte, verschicken rechts. Ohne
+                Partner entfällt der dritte Knopf ersatzlos. */}
+            <KlebenderKnopf
+              aktiv={!rueckkanalOffen}
+              kinder={(ref) => (
+                <div ref={ref} style={{ marginBottom: 12 }}>
+                  {/* Der Rückkanal steht ÜBER dem Weg ins Ergebnis: Wer über
+                      einen Betrieb gekommen ist, für den ist „an ihn schicken"
+                      der naheliegende nächste Schritt. Verschickt wird der
+                      LINK auf das Ergebnis dieser Empfehlung — der Betrieb
+                      sieht dieselbe Rechnung, nicht eine nachgebaute. */}
+                  {partner && (
+                    <div style={{ marginBottom: space.lg }}>
+                      <ErgebnisAnBetrieb
+                        partner={partner}
+                        ergebnisUrl={
+                          typeof window !== "undefined"
+                            ? `${window.location.origin}${zielPfad}?${ergebnisParams(rec.kwp, rec.speicherIdx).toString()}`
+                            : ""
+                        }
+                        plz={plz}
+                      />
+                    </div>
+                  )}
+                  <ErgebnisKnopf onClick={() => goToResult(rec.kwp, rec.speicherIdx)} />
+                </div>
+              )}
+              leiste={
+                <>
+                  <button onClick={hideRecommendation} style={LEISTE_NEBEN} aria-label="Eingaben ändern">
+                    <IconRefresh size={iconSizes.md} />
+                  </button>
+                  <div style={{ flex: 1, display: "flex" }}>
+                    <ErgebnisKnopf onClick={() => goToResult(rec.kwp, rec.speicherIdx)} />
+                  </div>
+                  {partner && (
+                    <button
+                      onClick={() => window.dispatchEvent(new Event(RUECKKANAL_OEFFNEN))}
+                      style={LEISTE_SENDEN}
+                    >
+                      An {partner.name} schicken
+                    </button>
+                  )}
+                </>
+              }
+            />
 
             {/* Share + Eingaben ändern */}
             <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
@@ -980,5 +1047,30 @@ export default function Empfehlung({
         <StandNoteView seite={stand} />
       </div>
     </div>
+  );
+}
+
+/**
+ * Der Weg von der Empfehlung ins Ergebnis. Steht als eigene Komponente da,
+ * weil er zweimal gerendert wird — einmal im Seitenfluss und einmal in der
+ * klebenden Leiste. Zwei getippte Fassungen desselben Knopfes laufen
+ * auseinander, sobald jemand eine davon anfasst.
+ */
+function ErgebnisKnopf({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        width: "100%", padding: "14px", borderRadius: v("--radius-md"),
+        fontSize: v("--font-size-body"), fontWeight: 700,
+        background: v("--color-accent"), border: "none",
+        color: v("--color-text-on-accent"), cursor: "pointer",
+        fontFamily: v("--font-text"),
+      }}
+    >
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>
+        Ergebnis anzeigen <IconArrowRight size={iconSizes.md} />
+      </span>
+    </button>
   );
 }
