@@ -12,7 +12,7 @@ import { simulateSolarYear, monthlyFromAnnual } from "../../../lib/balkon-sim";
 // ResultVerguetung umschließt ResultRegime — deshalb hier nur der äußere Import.
 import ResultVerguetung from "./_components/ResultVerguetung";
 import ResultSection from "../../../components/ResultSection";
-import ErgebnisAnBetrieb, { RUECKKANAL_OEFFNEN, type PartnerAngabe } from "../../../components/ErgebnisAnBetrieb";
+import ErgebnisAnBetrieb, { RUECKKANAL_OEFFNEN, RUECKKANAL_ZUSTAND, type PartnerAngabe } from "../../../components/ErgebnisAnBetrieb";
 import KlebenderKnopf from "../../../components/KlebenderKnopf";
 // HEIZSYSTEM/HEIZSYSTEM_SHORT/WP_M2_PRESETS brauchte der entfallene
 // Verbrauchs-Abschnitt; die Gebäudefragen holen sie sich jetzt selbst aus
@@ -843,6 +843,16 @@ export default function PVRechner({
     );
   };
 
+  // Solange das Rückkanal-Fenster offen ist, hat die klebende Leiste nichts zu
+  // suchen: Sie läge hinter der Abdunkelung und sähe aus wie ein Knopf, der
+  // nicht reagiert.
+  const [rueckkanalOffen, setRueckkanalOffen] = useState(false);
+  useEffect(() => {
+    const hoere = (e: Event) => setRueckkanalOffen(!!(e as CustomEvent).detail?.offen);
+    window.addEventListener(RUECKKANAL_ZUSTAND, hoere);
+    return () => window.removeEventListener(RUECKKANAL_ZUSTAND, hoere);
+  }, []);
+
   const handleCopy = async () => {
     trackEvent("pv_geteilt");
     try {
@@ -1670,7 +1680,7 @@ export default function PVRechner({
                 Mitte, verschicken rechts (Betreiber, 01.09.2026). Ohne Partner
                 entfällt der dritte Knopf ersatzlos. */}
             <KlebenderKnopf
-              aktiv={!saved && authState.status !== "loading"}
+              aktiv={!saved && authState.status !== "loading" && !rueckkanalOffen}
               leiste={
                 <>
                   <button onClick={restart} style={leisteNeben}>
@@ -1700,6 +1710,7 @@ export default function PVRechner({
                       <ErgebnisAnBetrieb
                         partner={partner}
                         ergebnisUrl={typeof window !== "undefined" ? buildShareUrl() : ""}
+                        plz={plz}
                       />
                     </div>
                   )}

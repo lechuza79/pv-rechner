@@ -54,7 +54,8 @@
     "auth:mailvorlagen": "tsx scripts/auth-mailvorlagen.ts",
     "fachbetriebe:cms": "tsx scripts/fachbetriebe-cms.ts",
     "fachbetriebe:agenturen": "tsx scripts/fachbetriebe-agenturen.ts",
-    "fachbetrieb:link": "tsx scripts/fachbetrieb-link.ts"
+    "fachbetrieb:link": "tsx scripts/fachbetrieb-link.ts",
+    "fachbetriebe:formulare": "tsx scripts/fachbetriebe-formularfelder.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",

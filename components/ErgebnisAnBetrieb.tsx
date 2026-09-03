@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { v, space, pad, iconSizes } from "../lib/theme";
 import { IconArrowRight, IconCheck } from "./Icons";
+import Modal, { ModalSticky } from "./Modal";
 
 /**
  * Der Rückkanal: Der Nutzer schickt sein fertiges Ergebnis an den Betrieb,
@@ -32,6 +33,15 @@ import { IconArrowRight, IconCheck } from "./Icons";
 /** Öffnet den Rückkanal von außen — aus der klebenden Leiste des Ergebnisses. */
 export const RUECKKANAL_OEFFNEN = "sc-rueckkanal-oeffnen";
 
+/**
+ * Sagt der Umgebung, ob das Fenster offen ist.
+ *
+ * Ohne diese Meldung bleibt die klebende Leiste hinter dem Fenster sichtbar —
+ * ein Knopf, der durch die Abdunkelung schimmert und nicht anklickbar ist. Der
+ * Rechner kennt den Zustand des Fensters nicht; er hört ihn hier.
+ */
+export const RUECKKANAL_ZUSTAND = "sc-rueckkanal-zustand";
+
 export type PartnerAngabe = {
   /** Wie der Betrieb heißt — steht im Knopf und in der Bestätigung. */
   name: string;
@@ -42,15 +52,25 @@ export type PartnerAngabe = {
 export default function ErgebnisAnBetrieb({
   partner,
   ergebnisUrl,
+  plz: plzAusRechner,
 }: {
   partner: PartnerAngabe;
   /** Der Teilen-Link der aktuellen Rechnung. */
   ergebnisUrl: string;
+  /** Die Postleitzahl, die der Rechner ohnehin kennt — als Vorbelegung. */
+  plz?: string;
 }) {
   const [offen, setOffen] = useState(false);
   const [name, setName] = useState("");
   const [kontakt, setKontakt] = useState("");
   const [nachricht, setNachricht] = useState("");
+  // Die Anschrift ist OPTIONAL. Pflicht wäre eine Hürde vor dem Absenden — wer
+  // nur eine Rückfrage stellen will, hat noch kein Vorhaben und bricht ab. Die
+  // Postleitzahl kommt aus dem Rechner: Sie ein zweites Mal eintippen zu lassen
+  // wäre eine Frage, deren Antwort wir schon haben.
+  const [strasse, setStrasse] = useState("");
+  const [plz, setPlz] = useState(plzAusRechner ?? "");
+  const [ort, setOrt] = useState("");
   const [sendet, setSendet] = useState(false);
   const [gesendet, setGesendet] = useState(false);
   const [fehler, setFehler] = useState<string | null>(null);
@@ -64,6 +84,12 @@ export default function ErgebnisAnBetrieb({
     window.addEventListener(RUECKKANAL_OEFFNEN, auf);
     return () => window.removeEventListener(RUECKKANAL_OEFFNEN, auf);
   }, []);
+
+  // Zustand nach außen melden, damit die klebende Leiste sich wegnimmt, solange
+  // das Fenster offen ist.
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent(RUECKKANAL_ZUSTAND, { detail: { offen: offen && !gesendet } }));
+  }, [offen, gesendet]);
 
   // Ein Kontaktweg genügt — wer nur anrufen lassen will, soll keine
   // Mailadresse erfinden müssen. Der Name ist Pflicht, weil eine Anfrage ohne
@@ -84,6 +110,9 @@ export default function ErgebnisAnBetrieb({
           name: name.trim(),
           kontakt: kontakt.trim(),
           nachricht: nachricht.trim(),
+          strasse: strasse.trim(),
+          plz: plz.trim(),
+          ort: ort.trim(),
           ergebnisUrl,
         }),
       });
@@ -95,93 +124,150 @@ export default function ErgebnisAnBetrieb({
     setSendet(false);
   }
 
-  if (gesendet) {
-    return (
-      <div style={S.fertig}>
-        <IconCheck size={iconSizes.md} color={v("--color-positive")} />
-        <div>
-          <strong style={S.fertigStark}>Ihre Anfrage ist unterwegs an {partner.name}.</strong>
-          <div style={S.fertigText}>
-            Mitgeschickt haben wir Ihre Angaben und einen Link auf genau diese
-            Rechnung. Sie können die Seite jetzt schließen.
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!offen) {
-    return (
-      <button type="button" onClick={() => setOffen(true)} style={S.aufmachen}>
-        <span style={S.aufmachenInner}>
-          Ergebnis an {partner.name} schicken
-          <IconArrowRight size={iconSizes.md} />
-        </span>
-      </button>
-    );
-  }
+  const knopf = (
+    <button type="button" onClick={() => setOffen(true)} style={S.aufmachen}>
+      <span style={S.aufmachenInner}>
+        Ergebnis an {partner.name} schicken
+        <IconArrowRight size={iconSizes.md} />
+      </span>
+    </button>
+  );
 
   return (
-    <form onSubmit={senden} style={S.karte}>
-      <div style={S.titel}>Ergebnis an {partner.name} schicken</div>
+    <>
+      {/* Im Seitenfluss steht nur der Knopf. Das Formular gehört ins Fenster:
+          Es ist eine abgeschlossene Handlung, kein weiterer Abschnitt des
+          Ergebnisses — und im Fenster klebt der Absende-Knopf am unteren Rand,
+          statt auf flachen Displays weggescrollt zu sein. */}
+      {gesendet ? (
+        <div style={S.fertig}>
+          <IconCheck size={iconSizes.md} color={v("--color-positive")} />
+          <div>
+            <strong style={S.fertigStark}>Ihre Anfrage ist unterwegs an {partner.name}.</strong>
+            <div style={S.fertigText}>
+              Mitgeschickt haben wir Ihre Angaben und einen Link auf genau diese
+              Rechnung. Sie können die Seite jetzt schließen.
+            </div>
+          </div>
+        </div>
+      ) : (
+        knopf
+      )}
 
-      {/* Vor dem Absenden sichtbar, WAS an WEN geht. Das ersetzt die
-          Einwilligungs-Checkbox und ist die eigentliche Auflage. */}
-      <p style={S.was}>
-        {partner.name} bekommt Ihren Namen, Ihren Kontaktweg, Ihre Nachricht und
-        einen Link auf diese Rechnung. Sonst nichts — und niemand sonst bekommt
-        etwas davon.
-      </p>
+      {/* `open` statt bedingtem Rendern: Sonst nimmt das Ausblenden keine Zeit
+          und das Fenster verschwindet schlagartig. */}
+      <Modal
+        open={offen && !gesendet}
+        onClose={() => setOffen(false)}
+        title={`Ergebnis an ${partner.name} schicken`}
+      >
+        <form onSubmit={senden} style={S.karte}>
+          {/* Vor dem Absenden sichtbar, WAS an WEN geht. Das ersetzt die
+              Einwilligungs-Checkbox und ist die eigentliche Auflage. */}
+          <p style={S.was}>
+            {partner.name} bekommt Ihren Namen, Ihren Kontaktweg, Ihre Nachricht,
+            die Adresse — soweit Sie sie angeben — und einen Link auf diese
+            Rechnung. Sonst nichts, und niemand sonst bekommt etwas davon.
+          </p>
 
-      <label style={S.label}>
-        Ihr Name
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          style={S.feld}
-          autoComplete="name"
-          required
-        />
-      </label>
+          {/* Die Anschrift steht VOR den Kontaktdaten: Sie gehört zum Vorhaben,
+              die Kontaktdaten zur Person. Wer erst nach seinem Namen gefragt
+              wird, liest das Formular als Datenerfassung; wer erst nach dem Haus
+              gefragt wird, als Vorbereitung eines Angebots. */}
+          <div style={S.gruppe}>
+            <div style={S.gruppeTitel}>
+              Wo steht das Haus? <span style={S.optional}>(optional)</span>
+            </div>
+            <p style={S.gruppeText}>
+              Mit der Adresse kann {partner.name} das Dach schon vorab ansehen und
+              die nutzbare Fläche einschätzen — das spart beim ersten Gespräch die
+              Rückfragen.
+            </p>
+            <label style={S.label}>
+              Straße und Hausnummer
+              <input
+                value={strasse}
+                onChange={(e) => setStrasse(e.target.value)}
+                style={S.feld}
+                autoComplete="street-address"
+              />
+            </label>
+            <div style={S.zeile}>
+              <label style={{ ...S.label, width: 110, flexShrink: 0 }}>
+                PLZ
+                <input
+                  value={plz}
+                  onChange={(e) => setPlz(e.target.value)}
+                  style={S.feld}
+                  autoComplete="postal-code"
+                  inputMode="numeric"
+                />
+              </label>
+              <label style={{ ...S.label, flex: 1 }}>
+                Ort
+                <input
+                  value={ort}
+                  onChange={(e) => setOrt(e.target.value)}
+                  style={S.feld}
+                  autoComplete="address-level2"
+                />
+              </label>
+            </div>
+          </div>
 
-      <label style={S.label}>
-        E-Mail oder Telefon
-        <input
-          value={kontakt}
-          onChange={(e) => setKontakt(e.target.value)}
-          style={S.feld}
-          autoComplete="email"
-          required
-        />
-      </label>
+          <label style={S.label}>
+            Ihr Name
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              style={S.feld}
+              autoComplete="name"
+              required
+            />
+          </label>
 
-      <label style={S.label}>
-        Nachricht <span style={S.optional}>(optional)</span>
-        <textarea
-          value={nachricht}
-          onChange={(e) => setNachricht(e.target.value)}
-          rows={3}
-          style={{ ...S.feld, resize: "vertical" as const }}
-        />
-      </label>
+          <label style={S.label}>
+            E-Mail oder Telefon
+            <input
+              value={kontakt}
+              onChange={(e) => setKontakt(e.target.value)}
+              style={S.feld}
+              autoComplete="email"
+              required
+            />
+          </label>
 
-      {fehler && <div style={S.fehler}>{fehler}</div>}
+          <label style={S.label}>
+            Nachricht <span style={S.optional}>(optional)</span>
+            <textarea
+              value={nachricht}
+              onChange={(e) => setNachricht(e.target.value)}
+              rows={3}
+              style={{ ...S.feld, resize: "vertical" as const }}
+            />
+          </label>
 
-      {/* „Absenden" allein sagt nicht, WOHIN. Der Name gehört auf den Knopf,
-          der die Übermittlung auslöst — das ist der Moment, in dem der Nutzer
-          es zuletzt lesen kann. */}
-      <button type="submit" disabled={!gueltig || sendet} style={S.senden(gueltig && !sendet)}>
-        {sendet ? "Wird gesendet …" : `An ${partner.name} schicken`}
-      </button>
+          {fehler && <div style={S.fehler}>{fehler}</div>}
 
-      <p style={S.klein}>
-        Wie wir mit Ihren Angaben umgehen, steht in unserer{" "}
-        <a href="/datenschutz" style={S.link}>
-          Datenschutzerklärung
-        </a>
-        .
-      </p>
-    </form>
+          <p style={S.klein}>
+            Wie wir mit Ihren Angaben umgehen, steht in unserer{" "}
+            <a href="/datenschutz" style={S.link}>
+              Datenschutzerklärung
+            </a>
+            .
+          </p>
+
+          {/* Klebt am unteren Rand des Fensters: Auf flachen Displays und bei
+              eingeblendeter Tastatur wäre er sonst weggescrollt, und ein Schritt
+              ohne sichtbaren Abschluss sieht aus wie einer ohne Fortsetzung. */}
+          <ModalSticky>
+            <button type="submit" disabled={!gueltig || sendet} style={S.senden(gueltig && !sendet)}>
+              {sendet ? "Wird gesendet …" : `An ${partner.name} schicken`}
+            </button>
+          </ModalSticky>
+        </form>
+      </Modal>
+    </>
   );
 }
 
@@ -223,6 +309,30 @@ const S = {
     color: v("--color-text-muted"),
     lineHeight: 1.6,
     margin: 0,
+  },
+  gruppe: {
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: space.sm,
+    padding: pad("md", "md"),
+    borderRadius: v("--radius-md"),
+    background: v("--color-bg"),
+    border: `1px solid ${v("--color-border-muted")}`,
+  },
+  gruppeTitel: {
+    fontSize: v("--font-size-small"),
+    fontWeight: 700,
+    color: v("--color-text-secondary"),
+  },
+  gruppeText: {
+    fontSize: v("--font-size-caption"),
+    color: v("--color-text-muted"),
+    lineHeight: 1.5,
+    margin: 0,
+  },
+  zeile: {
+    display: "flex",
+    gap: space.sm,
   },
   label: {
     display: "flex",
