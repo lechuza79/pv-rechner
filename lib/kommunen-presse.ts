@@ -44,6 +44,7 @@ const PRESSE_WORT = [
   "pressemitteilung",
   "pressemitteilungen",
   "medien",
+  "newsroom",
   "medienportal",
   "medienbuero",
   "medienbüro",
@@ -91,21 +92,52 @@ export function empfaengerFuerBrief(o: {
 }
 
 /**
- * Links, die auf eine Presseseite zeigen könnten — für den Crawl.
+ * Wie sehr sieht ein Link nach der Presseseite aus? Höher = zuerst verfolgen.
  *
- * Die Startseite verlinkt die Pressestelle oft NICHT (bei Düsseldorf gar
- * nicht, nachgesehen am 03.09.2026), deshalb zählen auch Kontakt- und
- * Impressumsseiten als Zwischenschritt: Von dort führt der Weg weiter.
+ * DIE RANGFOLGE IST DER KERN, nicht die Wortliste. Eine erste Fassung
+ * behandelte alle Treffer gleich und verfolgte sie in der Reihenfolge des
+ * HTML; auf der Startseite einer Großstadt stehen Dutzende Links mit
+ * „rathaus" oder „kontakt", und die Obergrenze war erreicht, bevor der
+ * eigentliche Presse-Link an der Reihe war. Düsseldorf verlinkt sein
+ * Medienportal auf der Startseite — der Crawl kam nie dort an.
+ *
+ * Die Presseseite steht typischerweise in der Fußzeile, oft neben den
+ * Social-Media-Links; sie wird also gefunden, wenn man sie zuerst nimmt.
+ *
+ * Die schwachen Wörter bleiben drin, aber hinten: Kontakt- und
+ * Impressumsseiten sind kein Ziel, sondern ein Zwischenschritt.
  */
-const LINK_WORT =
-  /presse|medien|pressestelle|newsroom|öffentlichkeitsarbeit|oeffentlichkeitsarbeit|kommunikation|aktuelles|rathaus|kontakt|impressum|ansprechpartner/i;
+export function presseLinkRang(url: string, linktext = ""): number {
+  const h = `${url} ${linktext}`.toLowerCase();
+  if (/^(mailto:|tel:|javascript:|#)/.test(url.trim().toLowerCase())) return 0;
+  if (/presseportal|pressestelle|presse-und-oeffentlichkeitsarbeit|medienportal|newsroom/.test(h)) return 100;
+  if (/presse|pressemitteilung|pressemeldung/.test(h)) return 90;
+  if (/öffentlichkeitsarbeit|oeffentlichkeitsarbeit|medien|kommunikation/.test(h)) return 70;
+  if (/ansprechpartner|mitarbeiterverzeichnis|fachbereich/.test(h)) return 40;
+  if (/impressum|kontakt/.test(h)) return 30;
+  if (/rathaus|verwaltung|aktuelles/.test(h)) return 20;
+  return 0;
+}
 
 export function istPresseLink(url: string, linktext = ""): boolean {
-  return LINK_WORT.test(`${url} ${linktext}`);
+  return presseLinkRang(url, linktext) > 0;
 }
 
 /**
  * Wie wurde die Adresse gefunden? Steht an der Adresse, damit später
  * unterscheidbar bleibt, wie belastbar sie ist.
  */
-export type PresseQuelle = "presseseite" | "kontaktseite" | "impressum" | "suche";
+export type PresseQuelle =
+  | "presseseite"
+  | "kontaktseite"
+  | "impressum"
+  | "suche"
+  /**
+   * Von Hand nachgetragen, nachdem ein Mensch die Seite gelesen hat.
+   *
+   * Eigener Wert, weil er etwas anderes bedeutet als die vier darüber: Der
+   * Crawl hat die Adresse NICHT gefunden, und das bleibt eine Aussage über den
+   * Crawl. Sie unter „presseseite" abzulegen hieße zu behaupten, er habe
+   * funktioniert — dieselbe Fehlerklasse wie ein Prüfdatum ohne Prüfung.
+   */
+  | "hand";

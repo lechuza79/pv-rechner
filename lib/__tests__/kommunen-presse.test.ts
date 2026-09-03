@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { istPressePostfach, empfaengerFuerBrief } from "../kommunen-presse";
+import { istPressePostfach, empfaengerFuerBrief, presseLinkRang } from "../kommunen-presse";
 
 // Alle Adressen unten sind echte Funde vom 03.09.2026 an den größten Städten
 // des offenen NRW-Schubs.
@@ -88,5 +88,37 @@ describe("Empfänger des Briefes", () => {
 
   it("meldet gar keine Adresse, wenn beide fehlen", () => {
     expect(empfaengerFuerBrief({ rollenEmail: null }).email).toBeNull();
+  });
+});
+
+// Der Hinweis des Betreibers (03.09.2026): Die Presseseite steht meist in der
+// Fußzeile, oft neben den Social-Media-Links. Sie wird also gefunden, wenn man
+// sie ZUERST nimmt — genau daran ist der erste Anlauf gescheitert. Der Crawl
+// behandelte alle Treffer gleich, und die Dutzenden „rathaus"- und
+// „kontakt"-Links einer Großstadt füllten das Abruf-Budget, bevor der
+// Presse-Link an der Reihe war. Düsseldorf verlinkt sein Medienportal auf der
+// Startseite; gefunden wurde es trotzdem nie.
+describe("Rangfolge der Presse-Links", () => {
+  it("stellt Presse- und Medienportal vor Kontakt und Rathaus", () => {
+    expect(presseLinkRang("/medienportal")).toBeGreaterThan(presseLinkRang("/infonav/kontakt"));
+    expect(presseLinkRang("/rathaus/presseportal.php")).toBeGreaterThan(presseLinkRang("/rathaus"));
+    expect(presseLinkRang("/presse")).toBeGreaterThan(presseLinkRang("/impressum"));
+  });
+
+  // Kontakt und Impressum bleiben drin, aber als Zwischenschritt: Von dort
+  // führt der Weg weiter, sie sind selbst nicht das Ziel.
+  it("wirft die schwachen Wörter nicht weg", () => {
+    expect(presseLinkRang("/impressum")).toBeGreaterThan(0);
+    expect(presseLinkRang("/rathaus")).toBeGreaterThan(0);
+  });
+
+  it("bewertet auch den Linktext, nicht nur die Adresse", () => {
+    expect(presseLinkRang("/x/y/12345", "Presseportal")).toBe(100);
+  });
+
+  it("verwirft, was gar kein Link auf eine Seite ist", () => {
+    expect(presseLinkRang("mailto:presse@x.de")).toBe(0);
+    expect(presseLinkRang("#presse")).toBe(0);
+    expect(presseLinkRang("/veranstaltungen")).toBe(0);
   });
 });

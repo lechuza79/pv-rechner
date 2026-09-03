@@ -1230,7 +1230,7 @@ type PresseRow = {
 async function scrapePresse(opts: FormsOpts): Promise<void> {
   const { toText, domainOf } = await import("../lib/kommunen-profil.js");
   const { entschleiere } = await import("../lib/kommunen-profil.js");
-  const { istPressePostfach, istPresseLink } = await import("../lib/kommunen-presse.js");
+  const { istPressePostfach, presseLinkRang } = await import("../lib/kommunen-presse.js");
   const { suchFormular, suchAdresse, suchseitenLink } = await import("../lib/funding-url-suche.js");
   const supabase = await makeClient();
 
@@ -1275,15 +1275,29 @@ async function scrapePresse(opts: FormsOpts): Promise<void> {
   const jeQuelle = new Map<PresseQuelle, number>();
   let done = 0;
 
-  /** Presseadressen auf der Domain der Gemeinde aus einem HTML herausziehen. */
+  /**
+   * Presseadressen auf der Domain der Gemeinde aus einem HTML herausziehen.
+   *
+   * ZWEI DURCHGAENGE, und der zweite ist der wichtige: erst der sichtbare
+   * Text, dann das rohe HTML. Duesseldorf schreibt seine Presseadresse als
+   * Spamschutz ausschliesslich in ein Titel-Attribut („Email an:
+   * presse@duesseldorf.de"); im sichtbaren Text steht sie nirgends, und der
+   * Crawl lief deshalb an der groessten Stadt des Schubs vorbei.
+   *
+   * Im rohen HTML zu suchen ist hier ungefaehrlich, weil beide Schranken
+   * bestehen bleiben: die Adresse muss auf der Domain der Gemeinde liegen und
+   * ihr Lokalteil ein Pressewort SEIN. Eine fremde Agentur-Adresse im
+   * Seitenquelltext faellt an der ersten Schranke.
+   */
+  const MAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
   const finde = (html: string, domain: string): string | null => {
-    const text = entschleiere(toText(html));
-    const treffer = text.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g) ?? [];
-    for (const roh of treffer) {
-      const m = roh.toLowerCase();
-      const host = m.split("@")[1] ?? "";
-      if (host !== domain && !host.endsWith(`.${domain}`)) continue;
-      if (istPressePostfach(m)) return m;
+    for (const quelle of [toText(html), html]) {
+      for (const roh of entschleiere(quelle).match(MAIL_RE) ?? []) {
+        const m = roh.toLowerCase();
+        const host = m.split("@")[1] ?? "";
+        if (host !== domain && !host.endsWith(`.${domain}`)) continue;
+        if (istPressePostfach(m)) return m;
+      }
     }
     return null;
   };
@@ -1322,41 +1336,67 @@ async function scrapePresse(opts: FormsOpts): Promise<void> {
       nimm(direkt, "presseseite");
       return;
     }
+    // NACH RANG, nicht in der Reihenfolge des HTML. Auf der Startseite einer
+    // Großstadt stehen Dutzende schwache Treffer („rathaus", „kontakt"); ohne
+    // Rangfolge ist die Obergrenze erreicht, bevor der Presse-Link an der Reihe
+    // ist. Genau daran ist Düsseldorf gescheitert, dessen Startseite das
+    // Medienportal sehr wohl verlinkt.
     const besucht = new Set<string>();
-    let ebene = extractAnchors(start)
-      .filter((a) => !/^(mailto:|tel:|javascript:|#)/i.test(a.href.trim()) && istPresseLink(a.href, a.text))
-      .map((a) => {
-        try {
-          return new URL(a.href, c.website).toString().split("#")[0];
-        } catch {
-          return "";
-        }
-      })
-      .filter((u) => u && safeHost(u) === safeHost(c.website));
-
-    for (let tiefe = 0; tiefe < 2; tiefe++) {
-      const naechste: string[] = [];
-      for (const url of ebene) {
-        if (besucht.has(url) || besucht.size >= 12) continue;
-        besucht.add(url);
-        const html = await fetchText(url);
-        if (!html) continue;
-        const treffer = finde(html, domain);
-        if (treffer) {
-          nimm(treffer, "presseseite");
-          return;
-        }
-        for (const a of extractAnchors(html)) {
-          if (/^(mailto:|tel:|javascript:|#)/i.test(a.href.trim()) || !istPresseLink(a.href, a.text)) continue;
+    const nachRang = (liste: { href: string; text: string }[], basis: string): string[] =>
+      liste
+        .map((a) => ({ rang: presseLinkRang(a.href, a.text), a }))
+        .filter((x) => x.rang > 0)
+        .sort((x, y) => y.rang - x.rang)
+        .map((x) => {
           try {
-            const u = new URL(a.href, c.website).toString().split("#")[0];
-            if (safeHost(u) === safeHost(c.website)) naechste.push(u);
+            return new URL(x.a.href, basis).toString().split("#")[0];
           } catch {
-            /* kaputter Link */
+            return "";
           }
+        })
+        .filter((u) => u && safeHost(u) === safeHost(basis));
+    // EIN GEMEINSAMER VORRAT, NICHT EBENE FÜR EBENE. Eine Obergrenze je Ebene
+    // ist keine: Sie war global, und die Startseite einer Großstadt füllt sie
+    // allein — die zweite Ebene kam dann nie an die Reihe. Düsseldorf verlinkt
+    // sein Medienportal auf der Startseite, die Adresse steht eine Seite
+    // weiter, und der Crawl hat sie trotzdem nie gesehen.
+    //
+    // Stattdessen: alle Kandidaten in einen Topf, immer den bestbewerteten
+    // zuerst, bis das Abruf-Budget aufgebraucht ist.
+    const vorrat = new Map<string, number>();
+    const sammle = (html: string, basis: string, tiefe: number) => {
+      if (tiefe > 2) return;
+      for (const a of extractAnchors(html)) {
+        const rang = presseLinkRang(a.href, a.text);
+        if (rang <= 0) continue;
+        let u: string;
+        try {
+          u = new URL(a.href, basis).toString().split("#")[0];
+        } catch {
+          continue;
         }
+        if (safeHost(u) !== safeHost(c.website) || besucht.has(u)) continue;
+        // Je tiefer, desto schwächer — sonst zieht ein „Kontakt" der dritten
+        // Ebene an einem „Presseportal" der ersten vorbei.
+        const wert = rang - tiefe * 5;
+        if ((vorrat.get(u) ?? -1) < wert) vorrat.set(u, wert);
       }
-      ebene = naechste;
+    };
+    sammle(start, c.website, 0);
+
+    const BUDGET = 14;
+    for (let i = 0; i < BUDGET && vorrat.size; i++) {
+      const [url] = [...vorrat].sort((a, b) => b[1] - a[1])[0];
+      vorrat.delete(url);
+      besucht.add(url);
+      const html = await fetchText(url);
+      if (!html) continue;
+      const treffer = finde(html, domain);
+      if (treffer) {
+        nimm(treffer, "presseseite");
+        return;
+      }
+      sammle(html, url, 1);
     }
 
     // 3. Die Volltextsuche der Website — nur wenn der Crawl leer ausging.
@@ -1381,14 +1421,7 @@ async function scrapePresse(opts: FormsOpts): Promise<void> {
       return;
     }
     // Die Trefferliste selbst trägt selten eine Adresse — dem ersten Treffer folgen.
-    for (const a of extractAnchors(treffer).slice(0, 40)) {
-      if (!istPresseLink(a.href, a.text)) continue;
-      let u: string;
-      try {
-        u = new URL(a.href, sucheUrl).toString().split("#")[0];
-      } catch {
-        continue;
-      }
+    for (const u of nachRang(extractAnchors(treffer), sucheUrl).slice(0, 12)) {
       if (safeHost(u) !== safeHost(c.website) || besucht.has(u)) continue;
       besucht.add(u);
       const html = await fetchText(u);
