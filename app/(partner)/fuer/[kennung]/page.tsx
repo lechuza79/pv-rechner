@@ -5,6 +5,7 @@ import { seiteFuerKennung, anzeigename, kurzname } from "../../../../lib/fachbet
 import InfoTooltip from "../../../../components/InfoTooltip";
 import Logo from "../../../../components/Logo";
 import PartnerRechner from "./PartnerRechner";
+import ZuUnsWechseln from "./ZuUnsWechseln";
 
 /**
  * Die betriebseigene Rechner-Seite.
@@ -58,23 +59,27 @@ export default async function FachbetriebSeite(props: {
 
   return (
     <div style={S.page}>
-      {/* Betrieb und Herkunft stehen NEBENEINANDER und als Gruppe mittig. Der
-          Ort steht nicht mehr dabei — wer über die Website seines Betriebs
-          kommt, weiß, wo der sitzt. */}
+      {/* Wieder BREIT: der Betrieb links, unsere Marke rechts — die Aufteilung,
+          die ein Besucher von jeder Kopfzeile kennt. Mittig gruppiert wirkte
+          beides wie ein Titel und nicht wie ein Rahmen. Der Ort steht nicht
+          dabei: Wer über die Website seines Betriebs kommt, weiß, wo der
+          sitzt. */}
       <header style={S.kopf}>
         <div style={S.kopfInner}>
           <div style={S.betriebZeile}>
             {seite.logoUrl && (
-              /* Das Zeichen des Betriebs. Ohne Herkunftsangabe geladen, damit
-                 sein Server nicht erfährt, von welcher Seite der Abruf kommt.
-                 Fehlt es, bleibt der Platz leer — ein Ersatzbild würde eine
-                 Marke behaupten, die es nicht gibt. */
+              /* Das Zeichen des Betriebs, rund beschnitten mit feiner Kante.
+                 Rund, weil die Favicons in jedem Seitenverhältnis kommen — ein
+                 quadratischer Rahmen zeigt bei einem breiten Logo vor allem
+                 Leerraum. Ohne Herkunftsangabe geladen, damit sein Server nicht
+                 erfährt, von welcher Seite der Abruf kommt; fehlt es, bleibt der
+                 Platz leer, statt eine Marke zu behaupten, die es nicht gibt. */
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={seite.logoUrl}
                 alt=""
-                width={28}
-                height={28}
+                width={30}
+                height={30}
                 referrerPolicy="no-referrer"
                 style={S.betriebLogo}
               />
@@ -83,9 +88,7 @@ export default async function FachbetriebSeite(props: {
             {istVorschlag && (
               /* Der Hinweis bleibt SICHTBAR und wandert nicht ganz hinter das
                  Fragezeichen: Er muss im ersten sichtbaren Bereich stehen, sonst
-                 trägt er den optischen Gesamteindruck nicht (Legal-Judge). Als
-                 Kasten über der ganzen Seite war er lauter als der Inhalt — die
-                 Plakette sagt dasselbe, die Begründung steht einen Klick daneben. */
+                 trägt er den optischen Gesamteindruck nicht (Legal-Judge). */
               <span style={S.demo}>
                 <span style={S.demoWort}>Demo</span>
                 <InfoTooltip title="Was diese Seite ist" ariaLabel="Was diese Seite ist" size={12}>
@@ -97,12 +100,17 @@ export default async function FachbetriebSeite(props: {
               </span>
             )}
           </div>
-          {/* „Powered by" wie in den eingebetteten Widgets — dieselbe Formel für
-              dieselbe Sache: unsere Marke auf einer fremden Kundenreise. */}
-          <a href="/" style={S.herkunft} aria-label="Powered by solar-check.io">
-            <span style={S.herkunftWort}>Powered by</span>
-            <Logo width={88} />
-          </a>
+
+          <div style={S.rechts}>
+            {/* „Powered by" wie in den eingebetteten Widgets — dieselbe Formel
+                für dieselbe Sache: unsere Marke auf einer fremden
+                Kundenreise. */}
+            <a href="/" style={S.herkunft} aria-label="Powered by solar-check.io">
+              <span style={S.herkunftWort}>Powered by</span>
+              <Logo width={76} />
+            </a>
+            <ZuUnsWechseln />
+          </div>
         </div>
       </header>
 
@@ -131,28 +139,33 @@ const S = {
   kopfInner: {
     maxWidth: v("--content-max-width"),
     margin: "0 auto",
-    padding: pad("lg", "lg"),
+    padding: pad("md", "lg"),
     display: "flex",
-    // Nebeneinander und als Gruppe mittig — nicht untereinander gestapelt und
-    // nicht an die Ränder gedrückt. Letzteres sah aus wie eine
-    // Navigationsleiste ohne Navigation.
     alignItems: "center",
-    justifyContent: "center",
-    gap: space.xl,
+    justifyContent: "space-between",
+    gap: space.md,
     flexWrap: "wrap" as const,
+  },
+  rechts: {
+    display: "flex",
+    alignItems: "center",
+    gap: space.xs,
   },
   betriebZeile: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
     gap: space.sm,
     flexWrap: "wrap" as const,
   },
   betriebLogo: {
-    width: 28,
-    height: 28,
-    objectFit: "contain" as const,
-    borderRadius: v("--radius-sm"),
+    width: 30,
+    height: 30,
+    // `cover` statt `contain`: Ein rundes Feld mit einem hineingerechneten
+    // breiten Logo zeigt vor allem Rand. Beschnitten wirkt es wie ein Zeichen.
+    objectFit: "cover" as const,
+    borderRadius: "50%",
+    border: `1px solid ${v("--color-border")}`,
+    background: v("--color-bg"),
   },
   betrieb: {
     fontSize: v("--font-size-h3"),

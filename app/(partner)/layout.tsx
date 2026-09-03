@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import { getCssVariables, getThemeOverrides, globalStyles, v, space, pad } from "../../lib/theme";
+import Logo from "../../components/Logo";
 import { getOverrideCss } from "../../lib/theme-overrides";
 import { getSavedThemeOverrides } from "../../lib/theme-overrides-data";
 
@@ -73,12 +74,11 @@ export default async function PartnerLayout({ children }: { children: React.Reac
         <div style={{ flex: 1 }}>{children}</div>
         <footer style={F.fuss}>
           <div style={F.inner}>
-            <span>
-              Rechner und Betrieb dieser Seite:{" "}
-              <a href="/" style={F.link}>
-                solar-check.io
-              </a>
-            </span>
+            {/* Die Marke als Zeichen, nicht als Satz: „Rechner und Betrieb
+                dieser Seite: solar-check.io" erklärte, was das Logo zeigt. */}
+            <a href="/" aria-label="solar-check.io" style={F.marke}>
+              <Logo width={96} />
+            </a>
             <span style={F.links}>
               <a href="/impressum" style={F.link}>
                 Impressum
@@ -111,6 +111,7 @@ const F = {
     gap: space.md,
     flexWrap: "wrap" as const,
   },
+  marke: { display: "inline-flex", alignItems: "center", textDecoration: "none" },
   links: { display: "flex", gap: space.md },
   link: { color: v("--color-text-secondary"), textDecoration: "none" },
 };
