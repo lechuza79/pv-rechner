@@ -1017,7 +1017,7 @@ export default function Empfehlung({
                       onClick={() => window.dispatchEvent(new Event(RUECKKANAL_OEFFNEN))}
                       style={LEISTE_SENDEN}
                     >
-                      An {partner.name} schicken
+                      Bei {partner.name} anfragen
                     </button>
                   )}
                 </>

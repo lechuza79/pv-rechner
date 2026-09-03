@@ -1659,10 +1659,12 @@ export default function PVRechner({
                       onClick={() => window.dispatchEvent(new Event(RUECKKANAL_OEFFNEN))}
                       style={leisteSenden}
                     >
-                      {/* Der Name gehört auch hier drauf — „Schicken" allein
-                          lässt offen, an wen. Er bricht bei Bedarf um, statt
-                          über den Knopf hinauszulaufen. */}
-                      An {partner.name} schicken
+                      {/* Der Name gehört auch hier drauf — „Anfragen" allein
+                          lässt offen, bei wem. Kürzer als in der Karte, weil
+                          neben ihm zwei weitere Knöpfe stehen; „unverbindlich"
+                          und der Hinweis auf die Übersicht stehen dort, wo
+                          Platz dafür ist. */}
+                      Bei {partner.name} anfragen
                     </button>
                   )}
                 </>

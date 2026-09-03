@@ -185,12 +185,23 @@ export default function ErgebnisAnBetrieb({
           </div>
         </div>
       ) : (
-        <button type="button" onClick={() => setOffen(true)} style={S.aufmachen}>
-          <span style={S.aufmachenInner}>
-            Ergebnis an {partner.name} schicken
-            <IconArrowRight size={iconSizes.md} />
-          </span>
-        </button>
+        <div>
+          {/* „schicken" liest sich, als ginge beim Klick schon etwas hinaus —
+              tatsächlich öffnet der Knopf nur den Fragebogen. „Anfragen" trifft
+              die Handlung, „unverbindlich" nimmt die Sorge vor dem
+              Vertreterbesuch. Die Zeile darunter sagt NICHT „im nächsten
+              Schritt": Die Übersicht der Angaben steht im dritten, unmittelbar
+              vor dem Absenden. */}
+          <button type="button" onClick={() => setOffen(true)} style={S.aufmachen}>
+            <span style={S.aufmachenInner}>
+              Unverbindlich bei {partner.name} anfragen
+              <IconArrowRight size={iconSizes.md} />
+            </span>
+          </button>
+          <div style={S.aufmachenHinweis}>
+            Bevor etwas hinausgeht, siehst du, welche Angaben mitgehen.
+          </div>
+        </div>
       )}
 
       {/* `open` statt bedingtem Rendern: Sonst nimmt das Ausblenden keine Zeit
@@ -409,6 +420,13 @@ const S: Record<string, React.CSSProperties> = {
     marginBottom: space.md,
   },
   aufmachenInner: { display: "inline-flex", alignItems: "center", gap: space.sm },
+  aufmachenHinweis: {
+    marginTop: space.xs,
+    textAlign: "center",
+    fontSize: v("--font-size-caption"),
+    color: v("--color-text-muted"),
+    lineHeight: 1.4,
+  },
   fortschritt: { display: "flex", gap: 4, marginBottom: space.xl },
   hinweis: {
     fontSize: v("--font-size-small"),
