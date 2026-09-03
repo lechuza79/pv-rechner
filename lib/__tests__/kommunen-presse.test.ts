@@ -51,6 +51,22 @@ describe("Presse-Postfach erkennen", () => {
     expect(istPressePostfach("medienzentrum-abo@musterstadt.de")).toBe(false);
   });
 
+  // „medien" ALLEIN ist die Pressestelle (bei Brilon nachgesehen: Abteilung
+  // „Medien / Öffentlichkeitsarbeit" im Rathaus, eigene Durchwahl). Mit einem
+  // Zusatz dahinter ist es oft eine ganz andere Stelle — ein Medienzentrum der
+  // Schulverwaltung, eine medienpädagogische Beratung. Der Zusatz entscheidet.
+  it("nimmt medien nur alleinstehend", () => {
+    expect(istPressePostfach("medien@brilon.de")).toBe(true);
+    expect(istPressePostfach("medien-zentrum@musterstadt.de")).toBe(false);
+    expect(istPressePostfach("medien.paedagogik@musterstadt.de")).toBe(false);
+    expect(istPressePostfach("medienteam@musterstadt.de")).toBe(true);
+  });
+
+  it("nimmt kommunikation ebenfalls nur alleinstehend", () => {
+    expect(istPressePostfach("kommunikation@musterstadt.de")).toBe(true);
+    expect(istPressePostfach("kommunikation-technik@musterstadt.de")).toBe(false);
+  });
+
   // Stadtmarketing ist vielerorts eine eigene Gesellschaft für Tourismus und
   // Veranstaltungen. Ein Angebot dorthin sieht aus wie Werbung.
   it("nimmt Marketing NICHT als Pressestelle", () => {

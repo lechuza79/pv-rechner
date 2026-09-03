@@ -43,17 +43,17 @@ const PRESSE_WORT = [
   "presseinfo",
   "pressemitteilung",
   "pressemitteilungen",
-  "medien",
   "newsroom",
   "medienportal",
   "medienbuero",
   "medienbüro",
+  "medienteam",
+  "medienstelle",
   "redaktion",
   "redaktionsteam",
   "oeffentlichkeitsarbeit",
   "öffentlichkeitsarbeit",
   "presse-und-oeffentlichkeitsarbeit",
-  "kommunikation",
   "unternehmenskommunikation",
   "stabsstelle-kommunikation",
 ];
@@ -66,9 +66,22 @@ const PRESSE_WORT = [
  * „Pressel". Erlaubt sind nur die üblichen Trennzeichen dahinter
  * (`presse.info@`, `presse-team@`, `presse_stelle@`).
  */
+/**
+ * Wörter, die NUR alleinstehend zählen — nie mit einem Zusatz dahinter.
+ *
+ * `medien@brilon.de` ist die Abteilung „Medien / Öffentlichkeitsarbeit" im
+ * Rathaus, mit eigener Durchwahl (nachgesehen am 03.09.2026). `medien-` mit
+ * Zusatz ist dagegen oft etwas ganz anderes: ein Medienzentrum der
+ * Schulverwaltung, eine medienpädagogische Stelle, ein Medienarchiv. Der
+ * Zusatz macht aus der Pressestelle eine Fachstelle, und ein Brief dorthin
+ * ginge an die falsche Adresse.
+ */
+const NUR_ALLEINSTEHEND = ["medien", "kommunikation"];
+
 export function istPressePostfach(email: string | null | undefined): boolean {
   const lokal = (email ?? "").trim().toLowerCase().split("@")[0];
   if (!lokal) return false;
+  if (NUR_ALLEINSTEHEND.includes(lokal)) return true;
   return PRESSE_WORT.some((w) => lokal === w || new RegExp(`^${w}[._-]`).test(lokal));
 }
 
