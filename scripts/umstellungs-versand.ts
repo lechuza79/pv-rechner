@@ -156,7 +156,7 @@ async function main() {
       subject: mail.betreff,
       html: mail.html,
       text: mail.text,
-      art: "bestaetigung",
+      art: "umstellung",
       absender: ABSENDER,
     });
     protokoll[protokoll.length - 1].beleg = ergebnis.ok ? ergebnis.beleg : `FEHLER: ${ergebnis.fehler}`;

@@ -204,28 +204,45 @@ export function umstellungsMail(o: {
         ...SIGNATURE.split("\n"),
       ];
 
-  const grund = bestaetigt
-    ? "Diese E-Mail bekommst du, weil du bei Solar Check ein Konto hast. Sie geht einmalig an alle Konten."
-    : "Diese E-Mail bekommst du, weil du dich bei Solar Check für ein Konto eingetragen hast. Danach schreibe ich nicht wieder.";
-
-  const fuss = [grund, `Impressum: ${SITE}/impressum · Datenschutz: ${SITE}/datenschutz`];
+  const fuss = [`Impressum: ${SITE}/impressum · Datenschutz: ${SITE}/datenschutz`];
 
   const text = [...zeilen, "", "--", ...fuss].join("\n");
 
-  // Das HTML ist derselbe Text, nur mit Zeilenumbrüchen und klickbarer Adresse.
-  // Kein Layout: Wer eine gestaltete Karte baut, baut wieder die Systemmail,
-  // die hier gerade abgeschafft wurde.
-  const alsHtml = (z: string[]) =>
-    z
-      .map((l) =>
-        l.replace(/https:\/\/[^\s]+/g, (u) => `<a href="${u}" style="color:${C.akzent}">${u}</a>`),
-      )
-      .join("<br>");
+  // Das HTML ist derselbe Text, nur mit Zeilenumbrüchen, klickbarer Adresse —
+  // und mit einer echten Liste. Als „* …" mit Zeilenumbruch gesetzt sah die
+  // Aufzählung im Postfach aus wie ein Tippfehler: kein Einzug, und eine zu
+  // lange Zeile brach unter den Stern statt unter den Text.
+  const verlinke = (l: string) =>
+    l.replace(/https:\/\/[^\s]+/g, (u) => `<a href="${u}" style="color:${C.akzent}">${u}</a>`);
+
+  const alsHtml = (z: string[]) => {
+    const teile: string[] = [];
+    let punkte: string[] = [];
+    const listeSchliessen = () => {
+      if (!punkte.length) return;
+      teile.push(
+        `<ul style="margin:0 0 16px;padding:0 0 0 20px">` +
+          punkte.map((p) => `<li style="margin:0 0 6px">${p}</li>`).join("") +
+          `</ul>`,
+      );
+      punkte = [];
+    };
+    for (const l of z) {
+      if (l.startsWith("* ")) {
+        punkte.push(verlinke(l.slice(2)));
+        continue;
+      }
+      listeSchliessen();
+      teile.push(verlinke(l) + "<br>");
+    }
+    listeSchliessen();
+    return teile.join("");
+  };
 
   const html =
     `<div style="font-family:${SCHRIFT};font-size:${T.text};line-height:1.55;color:${C.text}">` +
     alsHtml(zeilen) +
-    `<br><br><span style="color:${C.leise};font-size:${T.fuss}">--<br>` +
+    `<br><span style="color:${C.leise};font-size:${T.fuss}">` +
     alsHtml(fuss) +
     `</span></div>`;
 

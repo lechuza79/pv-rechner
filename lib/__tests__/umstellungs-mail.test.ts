@@ -67,8 +67,14 @@ describe("Nachricht zur Umstellung der Anmeldung", () => {
     expect(mail.html).toContain("/datenschutz");
   });
 
-  it("nennt den Grund, warum die Nachricht kam", () => {
-    expect(mail.html).toMatch(/weil du bei Solar Check ein Konto hast/);
+  it("trägt KEINE Systemzeile über den Grund der Zusendung", () => {
+    // Sie war da und ist bewusst raus (Betreiber, 03.09.2026): „Diese E-Mail
+    // bekommst du, weil …" ist der Systemton, gegen den die Nachricht gebaut
+    // ist. Rechtlich verlangt ihn hier nichts — der Empfänger hat sich selbst
+    // eingetragen, es gibt keinen Verteiler. Impressum und Datenschutz bleiben.
+    expect(mail.html).not.toMatch(/Diese E-Mail bekommst du, weil/);
+    expect(mail.html).toContain("/impressum");
+    expect(mail.html).toContain("/datenschutz");
     // Die Bestätigten haben KEIN Passwort. Ohne diesen Hinweis stehen sie vor
     // einem Anmeldeformular, in das sie nichts eintragen können.
     expect(mail.text).toMatch(/Passwort vergessen/);
