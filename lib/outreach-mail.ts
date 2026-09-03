@@ -23,6 +23,8 @@
 //    bearbeitet hat —, ist das kein Schönheitsfehler, sondern eine
 //    Informationspflicht, die verletzt wird.
 
+import { istPressePostfach } from "./kommunen-presse";
+
 /** Anbieter, über die niemals ein Anschreiben hinausgeht. */
 /** Wer laut SPF-Eintrag der Domain überhaupt für uns senden darf. */
 export const ERLAUBTE_MAIL_HOSTS = ["kasserver.com", "all-inkl.com"];
@@ -248,7 +250,13 @@ export function postfachBefund(
   const istRollenwort = (t: string) =>
     ROLLEN_WORTE.map(ohneUmlaute).includes(t) ||
     // Zusammengesetzte Formen wie „stadtbuergermeister" oder „ortsbuergermeister".
-    ROLLEN_WORTE.map(ohneUmlaute).some((r) => r.length >= 4 && t.endsWith(r));
+    ROLLEN_WORTE.map(ohneUmlaute).some((r) => r.length >= 4 && t.endsWith(r)) ||
+    // ZWEI LISTEN, DIE ÜBEREINSTIMMEN MÜSSEN — deshalb fragt diese hier die
+    // andere. `medien@brilon.de` ist ein Pressepostfach, stand aber nicht in
+    // ROLLEN_WORTE; die Prüfung hielt „medien" für einen Nachnamen und warf den
+    // Brief am 03.09.2026 aus dem Versand. Wer die Presse-Wortliste erweitert,
+    // muss nicht daran denken, hier nachzuziehen.
+    istPressePostfach(`${t}@example.org`);
 
   if (ROLLEN_WORTE_TECHNISCH.includes(teile[0])) {
     return { ok: false, grund: `${teile[0]}@ betreut die Website, nicht die Verwaltung` };

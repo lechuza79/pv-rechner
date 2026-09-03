@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { istPressePostfach, empfaengerFuerBrief, presseLinkRang } from "../kommunen-presse";
+import { postfachBefund } from "../outreach-mail";
 
 // Alle Adressen unten sind echte Funde vom 03.09.2026 an den größten Städten
 // des offenen NRW-Schubs.
@@ -120,5 +121,29 @@ describe("Rangfolge der Presse-Links", () => {
     expect(presseLinkRang("mailto:presse@x.de")).toBe(0);
     expect(presseLinkRang("#presse")).toBe(0);
     expect(presseLinkRang("/veranstaltungen")).toBe(0);
+  });
+});
+
+// ZWEI LISTEN, DIE ÜBEREINSTIMMEN MÜSSEN. Die Versand-Prüfung hat eine eigene
+// Liste von Funktionswörtern; „medien" stand nicht darin, und sie warf
+// medien@brilon.de als vermuteten Personennamen aus dem Versand. Seitdem fragt
+// sie die Presse-Wortliste mit — dieser Test hält beide zusammen.
+describe("Presse-Postfächer bestehen die Versand-Prüfung", () => {
+  it("nimmt jedes erkannte Pressepostfach als Funktionspostfach an", () => {
+    for (const [mail, ort] of [
+      ["medien@brilon.de", "Brilon"],
+      ["newsroom@duesseldorf.de", "Düsseldorf"],
+      ["presse@kleve.de", "Kleve"],
+      ["pressestelle@goch.de", "Goch"],
+      ["redaktion@gemeinde-dennheritz.de", "Dennheritz"],
+    ] as const) {
+      expect(postfachBefund(mail, ort).ok, mail).toBe(true);
+    }
+  });
+
+  // Die Gegenrichtung bleibt scharf: Ein Nachname wird weiterhin abgewiesen.
+  it("lässt sich davon nicht aufweichen", () => {
+    expect(postfachBefund("pressel@brilon.de", "Brilon").ok).toBe(false);
+    expect(postfachBefund("mueller@brilon.de", "Brilon").ok).toBe(false);
   });
 });
