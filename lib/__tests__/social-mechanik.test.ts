@@ -184,25 +184,23 @@ describe("Die echten Beiträge", () => {
    * Schrumpfen rot wird, wird gepflegt.
    */
   const BEKANNTE_DEFEKTE: Record<string, string[]> = {
-    // Kein Lizenz-Befund: Dieser Beitrag zieht seine Quellenzeile aus dem
-    // Ember-Zweig, und der nannte die Lizenz — anders als der Zweig für das
-    // Anlagenregister. Genau diese Ungleichheit war der Befund: Zwei
-    // handgetippte Fassungen derselben Angabe wichen VERSCHIEDEN ab, und
-    // welche stimmte, hing daran, wer die Zeile gerade schrieb.
+    // DIE ZWÖLF LIZENZ-BEFUNDE SIND WEG, und zwar nicht durch eine gelockerte
+    // Regel: Die Quellenzeile wird nicht mehr getippt, sondern aus dem
+    // Quellenregister gebaut — Name und Lizenz kommen von dort, und ohne Lizenz
+    // kann sie gar nicht erst entstehen.
+    //
+    // Der Anlass war der Einwand des Betreibers: Eine Angabe, die ohnehin
+    // gerechnet wird, gehört nicht als Sperre gemeldet, sondern richtig
+    // erzeugt. Sonst steht dieselbe Korrektur bei jedem neuen Beitrag wieder
+    // an, und irgendwann schaltet jemand die Sperre ab, statt die Zeile zu
+    // reparieren.
+    //
+    // Die Sperre BLEIBT trotzdem — sie fängt weiterhin, wer eine Quellenzeile
+    // von Hand tippt. Genau das war der ursprüngliche Befund: Zwei handgetippte
+    // Fassungen derselben Angabe wichen VERSCHIEDEN ab, und welche stimmte,
+    // hing daran, wer die Zeile gerade schrieb.
     "g8-ausland-pro-kopf": ["jahr-trennzeichen"],
-    "g7-segmente-anteile": ["prozent-ohne-ganzes", "quelle-lizenz"],
-    "g13-stadt-land-balkon": ["quelle-lizenz"],
-    "g13-wachstum-balkon-solar": ["quelle-lizenz"],
-    "g14-freiflaeche-ost-west": ["quelle-lizenz"],
-    "g3-aufholjagd-fuenf-jahre": ["quelle-lizenz"],
-    "g3-mehr-kwp-als-einwohner": ["quelle-lizenz"],
-    "g16-kohorte-typische-anlage": ["quelle-lizenz"],
-    "g10-anomalie-balkon-ort": ["quelle-lizenz"],
-    "g6-degression-stichtag": ["quelle-lizenz"],
-    "g12-foerder-luecken": ["quelle-lizenz"],
-    "g5-nur-balkon-foerderung": ["quelle-lizenz"],
-    "g14-privatdach-anteil": ["quelle-lizenz"],
-    "g16-speicher-je-land": ["quelle-lizenz"],
+    "g7-segmente-anteile": ["prozent-ohne-ganzes"],
   };
 
   it("meldet genau die bekannten Defekte, nicht mehr und nicht weniger", () => {

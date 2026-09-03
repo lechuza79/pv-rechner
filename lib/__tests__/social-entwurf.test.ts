@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { entwurfAus, OFFENE_STELLE } from "../social-entwurf";
-import type { VorratsFund } from "../social-fundvorrat";
+import { standMitAbleitung, type VorratsFund } from "../social-fundvorrat";
 
 /**
  * Der Entwurf darf die Arbeit nicht vortäuschen, die er nicht leisten kann.
@@ -97,5 +97,26 @@ describe("Entwurf aus einem Fund", () => {
     // Ein ausgedachter Titel wäre eine zweite Aussage, die niemand geprüft hat.
     const e = entwurfAus(fund(), "Q");
     expect(fund().satz).toContain(e.titel);
+  });
+});
+
+describe("Der Weg: Bucket → Entwurf → Beitrag → geplant", () => {
+  it("leitet die späten Stände ab, statt sie zu speichern", () => {
+    // Sie zusätzlich mitzuschreiben hieße, dieselbe Tatsache an zwei Orten zu
+    // führen — und der zweite ist der falsche, sobald jemand vergisst, ihn
+    // nachzuziehen. Dieselbe Fehlerklasse wie das Prüfdatum im Förderkatalog.
+    const f = fund({ stand: "vorgemerkt" });
+    expect(standMitAbleitung(f, new Set(), new Set())).toBe("vorgemerkt");
+    expect(standMitAbleitung(f, new Set([f.kennung]), new Set())).toBe("beitrag");
+    // Geplant schlägt Beitrag: Es ist der spätere Schritt.
+    expect(standMitAbleitung(f, new Set([f.kennung]), new Set([f.kennung]))).toBe("geplant");
+  });
+
+  it("überschreibt ein Verworfen nicht stillschweigend", () => {
+    // Wer einen Fund verworfen hat, soll ihn verworfen sehen. Läge dazu
+    // zufällig ein gleichnamiger Beitrag vor, wäre „Beitrag" eine Aussage über
+    // eine Entscheidung, die der Mensch anders getroffen hat.
+    const f = fund({ stand: "verworfen" });
+    expect(standMitAbleitung(f, new Set(), new Set())).toBe("verworfen");
   });
 });

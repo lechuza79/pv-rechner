@@ -1,7 +1,12 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { isAdminSession } from "../../../../../lib/admin-guard";
+import { baueAllePosts } from "../../../../../lib/social-posts";
+import { socialKennzahlen } from "../../../../../lib/social-kennzahlen";
+import { ladePlaetze } from "../../../../../lib/social-plaetze";
 import {
+  FUND_STAND_LABEL,
+  standMitAbleitung,
   leseFunde,
   orteImVorrat,
   setzeStand,
@@ -30,7 +35,9 @@ export const metadata = {
 
 export const dynamic = "force-dynamic";
 
-const STAENDE: FundStand[] = ["offen", "vorgemerkt", "verworfen", "gepostet"];
+// Alle Stände als Filter — auch die abgeleiteten: Man will sehen, was schon
+// ein Beitrag ist, ohne es setzen zu können.
+const STAENDE: FundStand[] = ["offen", "vorgemerkt", "beitrag", "geplant", "verworfen"];
 
 export default async function StoryBucket({
   searchParams,
@@ -54,6 +61,26 @@ export default async function StoryBucket({
   const zeit = p.zeit === "evergreen" || p.zeit === "zeitnah" ? p.zeit : undefined;
   const suche = p.suche || undefined;
 
+  // Welche Funde sind schon ein Beitrag, welche geplant? Abgeleitet statt
+  // mitgeschrieben: Ein Beitrag trägt die Kennung seines Fundes, und der Platz
+  // im Kalender hängt am Beitrag. Beides zusätzlich zu speichern wäre eine
+  // zweite Wahrheit, und die veraltet beim ersten Vergessen.
+  //
+  // Fällt einer der beiden Abrufe aus, bleibt der Stand der von Hand gesetzte —
+  // ein Fund erscheint dann als „vorgemerkt" statt als „Beitrag". Die
+  // vorsichtige Richtung: zu wenig Fortschritt zu zeigen kostet einen Klick,
+  // zu viel verdeckt Arbeit, die noch aussteht.
+  const [posts, plaetze] = await Promise.all([
+    socialKennzahlen()
+      .then((kz) => baueAllePosts(kz))
+      .catch(() => []),
+    ladePlaetze().catch(() => []),
+  ]);
+  const beitragsKennungen = new Set(posts.map((p) => p.id));
+  const geplanteKennungen = new Set(
+    plaetze.map((pl) => pl.post_id).filter((id): id is string => Boolean(id)),
+  );
+
   const [funde, zahlen, orte] = await Promise.all([
     leseFunde({
       stand,
@@ -67,6 +94,11 @@ export default async function StoryBucket({
     zaehleFunde(),
     orteImVorrat(),
   ]);
+
+  const mitStand = funde.map((f) => ({
+    ...f,
+    stand: standMitAbleitung(f, beitragsKennungen, geplanteKennungen),
+  }));
 
   const jeMuster = new Map<string, number>();
   const jeStand = new Map<string, number>();
@@ -97,7 +129,11 @@ export default async function StoryBucket({
       />
 
       <BucketFilter
-        staende={STAENDE.map((s) => ({ schluessel: s, name: s, zahl: jeStand.get(s) ?? 0 }))}
+        staende={STAENDE.map((s) => ({
+          schluessel: s,
+          name: FUND_STAND_LABEL[s],
+          zahl: jeStand.get(s) ?? 0,
+        }))}
         muster={[...jeMuster.entries()]
           .sort((a, b) => b[1] - a[1])
           .map(([m, n]) => ({ schluessel: m, name: m, zahl: n }))}
@@ -116,10 +152,10 @@ export default async function StoryBucket({
       {/* Die Trefferzahl nur bei gesetztem Filter: Eine Liste, die kürzer ist
           als erwartet, sieht sonst nach einem leeren Bucket aus. */}
       <p style={{ fontSize: 13, color: v("--color-text-muted"), margin: `0 0 ${space.sm}px` }}>
-        {gefiltert ? `${funde.length} von ${gesamt} Funden` : `${gesamt} Funde`}
+        {gefiltert ? `${mitStand.length} von ${gesamt} Funden` : `${gesamt} Funde`}
       </p>
 
-      <FundListe funde={funde} onStandAction={standSetzen} />
+      <FundListe funde={mitStand} onStandAction={standSetzen} />
     </>
   );
 }

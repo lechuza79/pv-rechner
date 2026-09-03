@@ -1,5 +1,5 @@
 import type { VorratsFund } from "./social-fundvorrat";
-import type { BildSerie, PostBild } from "./social-posts";
+import type { BildSerie, PostBild, SocialPost } from "./social-posts";
 import { KARTEN_STIL_STANDARD } from "./social-karten-stil";
 
 /**
@@ -28,14 +28,17 @@ import { KARTEN_STIL_STANDARD } from "./social-karten-stil";
 /** Was im Entwurf noch von einem Menschen kommen muss. */
 export const OFFENE_STELLE = "[[ dein Gedanke dazu — was findest du daran bemerkenswert? ]]";
 
-export type Entwurf = {
-  kennung: string;
-  titel: string;
-  kategorie: string;
-  /** Der Text mit der offenen Stelle darin. */
-  text: string;
-  bild: PostBild | null;
-  belege: string[];
+/**
+ * EIN ENTWURF IST EIN BEITRAG, kein eigenes Ding.
+ *
+ * Ein eigener Typ daneben hätte eine zweite Ansicht verlangt — mit eigener
+ * Vorschau, eigenem Bild, eigener Prüfanzeige. Zwei Oberflächen für dieselbe
+ * Sache driften, und man merkt es erst, wenn der Entwurf anders aussieht als
+ * der Beitrag, der aus ihm wird. Deshalb dieselbe Form: Der Redaktionstisch
+ * zeigt ihn wie jeden anderen, nur dass sein letzter Absatz noch offen ist und
+ * er noch nirgends abgelegt wurde.
+ */
+export type Entwurf = SocialPost & {
   /** Was noch fehlt, im Klartext — steht in der Ansicht über dem Entwurf. */
   offen: string[];
 };
@@ -98,12 +101,17 @@ export function entwurfAus(fund: VorratsFund, quelle: string): Entwurf {
   }
 
   return {
-    kennung: fund.kennung,
+    // Die Kennung des Fundes IST die Kennung des Entwurfs: Damit lässt er sich
+    // zurufen, und ein Beitrag, der später daraus wird, trägt seine Herkunft.
+    id: fund.kennung,
     // Kein erfundener Titel: Der erste Halbsatz des Fundes sagt, worum es geht,
     // und ein ausgedachter Titel wäre eine zweite Aussage, die niemand geprüft
     // hat. Er ist ohnehin nur die interne Bezeichnung in der Vorschau.
     titel: fund.satz.split(/[—.:]/)[0].trim().slice(0, 80),
     kategorie: fund.kategorie,
+    // Beide Kanäle: Was auf welchem läuft, entscheidet sich am fertigen
+    // Beitrag, nicht am Entwurf.
+    kanal: ["linkedin", "instagram"],
     text,
     bild:
       fund.werte.length > 0

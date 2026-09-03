@@ -14,14 +14,31 @@ import { type Fund } from "./social-funde";
  * eines Menschen überschreibt, macht die Ansicht wertlos.
  */
 
-export type FundStand = "offen" | "vorgemerkt" | "verworfen" | "gepostet";
+/**
+ * Wo im Weg ein Fund steht: Bucket → Entwurf → Beitrag → geplant.
+ *
+ * DIE STÄNDE SIND DER WEG, NICHT EINE BEWERTUNG. „Vorgemerkt" allein sagte
+ * nicht, ob schon jemand daran gearbeitet hat — und genau das ist die Frage,
+ * mit der man vor einer Liste von sechshundert Funden steht.
+ *
+ * Die letzten beiden Stände werden NICHT hier gesetzt, sondern folgen aus dem,
+ * was anderswo passiert: „beitrag", sobald ein fertiger Beitrag diese Kennung
+ * trägt, „geplant", sobald er einen Platz im Kalender hat. Sie hier von Hand
+ * setzbar zu machen hieße, zwei Wahrheiten zu führen — und die eine wäre die
+ * falsche, sobald jemand vergisst, sie nachzuziehen.
+ */
+export type FundStand = "offen" | "vorgemerkt" | "verworfen" | "beitrag" | "geplant";
 
 export const FUND_STAND_LABEL: Record<FundStand, string> = {
   offen: "offen",
   vorgemerkt: "vorgemerkt",
   verworfen: "verworfen",
-  gepostet: "gepostet",
+  beitrag: "Beitrag",
+  geplant: "geplant",
 };
+
+/** Was ein Mensch im Bucket selbst setzen kann. */
+export const HAND_STAENDE: FundStand[] = ["offen", "vorgemerkt", "verworfen"];
 
 export type VorratsFund = Fund & {
   kennung: string;
@@ -231,4 +248,27 @@ export async function orteImVorrat(): Promise<{
       .sort((a, b) => a.name.localeCompare(b.name, "de"));
   };
   return { kommunen: zaehle("orte"), laender: zaehle("laender") };
+}
+
+/**
+ * Die zwei Stände, die sich nicht setzen lassen, sondern folgen.
+ *
+ * ABGELEITET, NICHT GESPEICHERT. Ein Fund ist „Beitrag", sobald ein fertiger
+ * Beitrag seine Kennung trägt, und „geplant", sobald der einen Platz im
+ * Kalender hat. Beides irgendwo mitzuschreiben hieße, dieselbe Tatsache an zwei
+ * Orten zu führen — und der zweite ist der falsche, sobald jemand vergisst, ihn
+ * nachzuziehen. Genau diese Fehlerklasse steckte im Förderkatalog, bis das
+ * Prüfdatum nur noch aus einer Quelle kam.
+ *
+ * Ein Mensch setzt deshalb nur offen, vorgemerkt und verworfen; die übrigen
+ * beiden ergeben sich beim Lesen.
+ */
+export function standMitAbleitung(
+  fund: VorratsFund,
+  beitragsKennungen: Set<string>,
+  geplanteKennungen: Set<string>,
+): FundStand {
+  if (geplanteKennungen.has(fund.kennung)) return "geplant";
+  if (beitragsKennungen.has(fund.kennung)) return "beitrag";
+  return fund.stand;
 }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { v, space, pad } from "../../lib/theme";
+import { HAND_STAENDE, FUND_STAND_LABEL } from "../../lib/social-fundvorrat";
 import type { VorratsFund, FundStand } from "../../lib/social-fundvorrat";
 import { MUSTER_TAKT, TAKT_LABEL } from "../../lib/social-funde";
 
@@ -19,7 +20,7 @@ import { MUSTER_TAKT, TAKT_LABEL } from "../../lib/social-funde";
 
 function standFarbe(stand: FundStand): string {
   if (stand === "vorgemerkt") return v("--color-accent");
-  if (stand === "gepostet") return v("--color-positive");
+  if (stand === "beitrag" || stand === "geplant") return v("--color-positive");
   return v("--color-text-muted");
 }
 
@@ -163,7 +164,7 @@ export function FundListe({
                 Stärke {f.staerke.toLocaleString("de-DE", { maximumFractionDigits: 1 })}
               </span>
               <span aria-hidden>·</span>
-              <span style={{ color: standFarbe(stand) }}>{stand}</span>
+              <span style={{ color: standFarbe(stand) }}>{FUND_STAND_LABEL[stand]}</span>
 
               <span style={{ flex: 1 }} />
 
@@ -184,8 +185,10 @@ export function FundListe({
               >
                 Entwurf
               </Link>
-              {(["vorgemerkt", "verworfen", "offen"] as FundStand[])
-                .filter((z) => z !== stand)
+              {/* Nur die Stände, die ein Mensch selbst setzt. „Beitrag" und
+                  „geplant" folgen aus dem, was anderswo passiert — sie hier
+                  anzubieten hieße, eine zweite Wahrheit zu führen. */}
+              {HAND_STAENDE.filter((z) => z !== stand)
                 .map((z) => (
                   <button
                     key={z}
@@ -194,7 +197,7 @@ export function FundListe({
                     onClick={() => void setzen(f, z)}
                     style={knopf(z === "vorgemerkt")}
                   >
-                    {z === "offen" ? "zurücksetzen" : z}
+                    {z === "offen" ? "zurücksetzen" : FUND_STAND_LABEL[z]}
                   </button>
                 ))}
             </div>
