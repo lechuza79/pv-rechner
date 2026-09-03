@@ -88,6 +88,16 @@ export type DraftContext = {
    * Pressepostfach; vorher waren es in 227 verschickten Briefen genau EINES.
    */
   anPresse?: boolean;
+  /**
+   * Woher die Empfängeradresse stammt — für die Pflichtangabe nach Art. 14.
+   *
+   * Sie stand pauschal auf „Impressum". Bei einer Presseadresse ist das
+   * schlicht falsch: Düsseldorfs Adresse steht auf der Kontaktseite des
+   * Medienportals, nicht im Impressum. Eine falsche Quellenangabe ausgerechnet
+   * in dem Absatz, der Seriosität herstellen soll, ist die teuerste Stelle für
+   * eine Ungenauigkeit — dieselbe Begründung wie bei `herkunftsangabe`.
+   */
+  adressherkunft?: Adressherkunft;
   /** Zahlen für die Meldung — aus derselben Quelle wie die Atlas-Seite. */
   zahlen: {
     anlagen: number;
@@ -418,13 +428,58 @@ const dsgvoHinweis = (quelle: string) =>
  * Steht die Adresse auf der Domain des Ortes, bleibt der Satz wie er war; sonst
  * nennt er die Domain, aus deren Impressum wir sie haben.
  */
-export function herkunftsangabe(ortsname: string, empfaenger?: string | null): string {
+/** Wo die Adresse gestanden hat — so, wie es in der Pflichtangabe steht. */
+export type Adressherkunft = "impressum" | "kontaktseite" | "presseseite" | "suche" | "verwaltung";
+
+const HERKUNFT_WORT: Record<Adressherkunft, string> = {
+  impressum: "Impressum",
+  kontaktseite: "Kontaktseite",
+  presseseite: "Presseseite",
+  // Über die Suche der Website gefunden — die Seite dahinter ist eine
+  // Presseseite, und genau das ist die ehrliche Auskunft. „Suche" wäre keine
+  // Herkunft, sondern der Weg dorthin.
+  suche: "Presseseite",
+  verwaltung: "Impressum",
+};
+
+/** Umlaute wie eine Domain sie schreibt — sonst gilt duesseldorf.de als fremd. */
+function domainSchreibweise(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/ä/g, "ae")
+    .replace(/ö/g, "oe")
+    .replace(/ü/g, "ue")
+    .replace(/ß/g, "ss")
+    .replace(/[^a-z]/g, "");
+}
+
+export function herkunftsangabe(
+  ortsname: string,
+  empfaenger?: string | null,
+  /** Woher wir die Adresse haben. Ohne Angabe gilt der bisherige Regelfall. */
+  herkunft: Adressherkunft = "impressum",
+): string {
   const domain = (empfaenger ?? "").split("@")[1]?.trim().toLowerCase();
   if (!domain) return `Website von ${ortsname}`;
-  const kern = ortsname.toLowerCase().replace(/[^a-zäöüß]/g, "");
-  const stamm = domain.split(".").slice(0, -1).join(".");
-  const passt = kern.length >= 4 && stamm.replace(/[^a-zäöüß]/g, "").includes(kern.slice(0, 5));
-  return passt ? `Website von ${ortsname}` : `Impressum von ${domain}`;
+  const kern = domainSchreibweise(ortsname);
+  const stamm = domainSchreibweise(domain.split(".").slice(0, -1).join("."));
+  // Kurzformen zählen mit: „Linz am Rhein" schreibt linz.de, „Hude (Oldenburg)"
+  // hude.de. Fünf Zeichen sind die Grenze, ab der ein Ortsname kein Zufall mehr
+  // ist; „Berg" (vier) bliebe damit außen vor, und das ist die vorsichtige
+  // Richtung — dort steht dann die Domain statt des Ortsnamens.
+  const wort = HERKUNFT_WORT[herkunft];
+  // DIE HERKUNFT SCHLAEGT DEN NAMENSVERGLEICH. „verwaltung" heisst, dass die
+  // Adresse der mitverwaltenden Gemeinde gehoert — dann MUSS deren Domain
+  // dastehen, auch wenn der Ortsname zufaellig darin vorkommt. Gemessen:
+  // Rengsdorf ist ein Praefix von rengsdorf-waldbreitbach.de, der Vergleich
+  // meldete „Impressum von Rengsdorf" und behauptete damit eine Herkunft, die
+  // es nicht gab.
+  if (herkunft === "verwaltung") return `${wort} von ${domain}`;
+  const passt = kern.length >= 4 && stamm.includes(kern.slice(0, 5));
+  // Eigene Domain: der ORTSNAME ist die verständlichere Angabe. Fremde Domain
+  // (mitverwaltende Gemeinde): dann muss sie dastehen, sonst behauptet der Satz
+  // eine Herkunft, die es nicht gab.
+  return passt ? `${wort} von ${ortsname}` : `${wort} von ${domain}`;
 }
 
 /**
@@ -722,7 +777,7 @@ ${FUSS_TRENNER}
 Impressum: https://solar-check.io/impressum
 Datenschutz: https://solar-check.io/datenschutz
 
-${dsgvoHinweis(herkunftsangabe(c.name, c.empfaenger))}`;
+${dsgvoHinweis(herkunftsangabe(c.name, c.empfaenger, c.adressherkunft))}`;
 
   return { subject: c.betreff, body, bodyHtml: briefAlsHtml(body), meldung };
 }

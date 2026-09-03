@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase as serviceDb } from "../../../../../lib/supabase-server";
 import { briefFuerGemeinde, istBriefFehler } from "../../../../../lib/kommunen-brief";
+import type { Adressherkunft } from "../../../../../lib/kommunen-outreach-draft";
 import { istAdminOderCron } from "../../../../../lib/admin-guard";
 import { SCHUEBE, AKTUELLER_SCHUB } from "../../../../../lib/kommunen-testballon";
 import { versandfenster } from "../../../../../lib/schulferien";
@@ -50,7 +51,7 @@ export async function GET(req: NextRequest) {
   const { data, error } = await serviceDb
     .from("kommunen_kontakt")
     .select(
-      "region_id, rollen_email, presse_email, kontakt_url, outreach_status, contacted_at, charge, ask_variante, verwaltung_domain, mastr_regions!inner(name)",
+      "region_id, rollen_email, rollen_email_quelle, presse_email, presse_email_quelle, kontakt_url, outreach_status, contacted_at, charge, ask_variante, verwaltung_domain, mastr_regions!inner(name)",
     )
     .eq("kampagne", schub.kampagne)
     .eq("charge", charge)
@@ -60,7 +61,9 @@ export async function GET(req: NextRequest) {
   type Zeile = {
     region_id: string;
     rollen_email: string | null;
+    rollen_email_quelle: string | null;
     presse_email: string | null;
+    presse_email_quelle: string | null;
     verwaltung_domain: string | null;
     outreach_status: string;
     contacted_at: string | null;
@@ -131,7 +134,16 @@ export async function GET(req: NextRequest) {
       continue;
     }
 
-    const gebaut = await briefFuerGemeinde(z.region_id, ziel.email, { anPresse: ziel.anPresse });
+    // WOHER DIE ADRESSE STAMMT, steht in der Pflichtangabe nach Art. 14. Sie
+    // pauschal „Impressum" zu nennen war bei einer Presseadresse falsch —
+    // Düsseldorfs steht auf der Kontaktseite des Medienportals.
+    const herkunft = (
+      ziel.anPresse ? z.presse_email_quelle : z.rollen_email_quelle
+    ) as Adressherkunft | null;
+    const gebaut = await briefFuerGemeinde(z.region_id, ziel.email, {
+      anPresse: ziel.anPresse,
+      herkunft: herkunft ?? undefined,
+    });
     if (istBriefFehler(gebaut)) {
       skip(`Brief nicht erzeugbar (${gebaut.grund})`);
       continue;
