@@ -52,7 +52,8 @@
     "kommunen:verweise": "tsx scripts/kommunen-verweise-suchen.ts",
     "kommunen:klicks": "tsx scripts/outreach-klicks.ts",
     "kfw:import": "tsx scripts/kfw-report-import.ts",
-    "auth:mailvorlagen": "tsx scripts/auth-mailvorlagen.ts"
+    "auth:mailvorlagen": "tsx scripts/auth-mailvorlagen.ts",
+    "umstellung:versand": "NODE_OPTIONS=--conditions=react-server tsx scripts/umstellungs-versand.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",
@@ -92,6 +93,7 @@
     "imapflow": "^1.7.1",
     "nodemailer": "^9.0.5",
     "sax": "^1.6.0",
+    "server-only": "^0.0.1",
     "tsx": "^4.21.0",
     "typescript": "5.9.3",
     "unzipper": "^0.12.3",
