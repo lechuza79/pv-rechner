@@ -1,7 +1,10 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { isAdminSession } from "../../../../../lib/admin-guard";
-import { baueAllePosts } from "../../../../../lib/social-posts";
+import { baueAllePosts, quellenzeile } from "../../../../../lib/social-posts";
+import { entwurfAus } from "../../../../../lib/social-entwurf";
+import { fassungsAbdruck } from "../../../../../lib/social-pruefung";
+import { pruefeMechanisch } from "../../../../../lib/social-mechanik";
 import { socialKennzahlen } from "../../../../../lib/social-kennzahlen";
 import { ladePlaetze } from "../../../../../lib/social-plaetze";
 import {
@@ -95,10 +98,32 @@ export default async function StoryBucket({
     orteImVorrat(),
   ]);
 
-  const mitStand = funde.map((f) => ({
-    ...f,
-    stand: standMitAbleitung(f, beitragsKennungen, geplanteKennungen),
-  }));
+  // DER ENTWURF ENTSTEHT HIER, für jeden Fund der Liste — und das kostet keinen
+  // Abruf: Er ist eine reine Funktion über den Fund. So kann das Fenster mit
+  // den Pfeilen sofort weiterblättern, statt je Fund nachzuladen.
+  const kennzahlen = await socialKennzahlen().catch(() => null);
+  const quelle = kennzahlen ? quellenzeile(kennzahlen.standIso, false) : "";
+
+  const mitStand = funde.map((f) => {
+    const entwurf = entwurfAus(f, quelle);
+    return {
+      kennung: f.kennung,
+      muster: f.muster,
+      satz: f.satz,
+      staerke: f.staerke,
+      grundlage: f.grundlage,
+      werte: f.werte,
+      // Ohne Angabe zeitgebunden — dieselbe vorsichtige Richtung wie in der
+      // Ablage: Ein Fund, den niemand eingeordnet hat, gilt nicht als Evergreen.
+      evergreen: f.evergreen ?? false,
+      stand: standMitAbleitung(f, beitragsKennungen, geplanteKennungen),
+      entwurf,
+      abdruck: fassungsAbdruck({ text: entwurf.text, bild: entwurf.bild }),
+      // Ohne Kennzahlen keine mechanische Prüfung — sie braucht den Datenstand.
+      // Lieber keine Befunde als erfundene.
+      befunde: kennzahlen ? pruefeMechanisch(entwurf, kennzahlen) : [],
+    };
+  });
 
   const jeMuster = new Map<string, number>();
   const jeStand = new Map<string, number>();
