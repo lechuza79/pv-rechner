@@ -3,8 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { v, space, pad } from "../../lib/theme";
-import { HAND_STAENDE, FUND_STAND_LABEL } from "../../lib/social-fundvorrat";
-import type { VorratsFund, FundStand } from "../../lib/social-fundvorrat";
+import { HAND_STAENDE, FUND_STAND_LABEL } from "../../lib/social-fundstand";
+import type { FundStand } from "../../lib/social-fundstand";
+import type { VorratsFund } from "../../lib/social-fundvorrat";
 import { MUSTER_TAKT, TAKT_LABEL } from "../../lib/social-funde";
 
 // Der Vorrat zum Stöbern.
