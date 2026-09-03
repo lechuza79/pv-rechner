@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { v, space, pad, iconSizes } from "../lib/theme";
 import { IconArrowRight, IconCheck } from "./Icons";
+import KlebenderKnopf from "./KlebenderKnopf";
 
 /**
  * Der Rückkanal: Der Nutzer schickt sein fertiges Ergebnis an den Betrieb,
@@ -98,13 +99,23 @@ export default function ErgebnisAnBetrieb({
   }
 
   if (!offen) {
-    return (
-      <button type="button" onClick={() => setOffen(true)} style={S.aufmachen}>
+    const knopf = (schatten?: boolean) => (
+      <button
+        type="button"
+        onClick={() => setOffen(true)}
+        style={schatten ? { ...S.aufmachen, marginBottom: 0, boxShadow: "0 4px 16px rgba(0,0,0,0.18)" } : S.aufmachen}
+      >
         <span style={S.aufmachenInner}>
           Ergebnis an {partner.name} schicken
           <IconArrowRight size={iconSizes.md} />
         </span>
       </button>
+    );
+    return (
+      <KlebenderKnopf
+        kinder={(ref) => <div ref={ref}>{knopf()}</div>}
+        leiste={knopf(true)}
+      />
     );
   }
 

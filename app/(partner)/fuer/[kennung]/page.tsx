@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { v, space, pad } from "../../../../lib/theme";
 import { seiteFuerKennung, anzeigename } from "../../../../lib/fachbetrieb-seite";
 import InfoTooltip from "../../../../components/InfoTooltip";
+import Logo from "../../../../components/Logo";
 import PartnerRechner from "./PartnerRechner";
 
 /**
@@ -60,38 +61,41 @@ export default async function FachbetriebSeite(props: {
       <header style={S.kopf}>
         <div style={S.kopfInner}>
           <div>
-            <div style={S.betrieb}>{name}</div>
-            {(seite.ort || seite.plz) && (
-              <div style={S.ort}>
-                {[seite.plz, seite.ort].filter(Boolean).join(" ")}
-              </div>
-            )}
-            {istVorschlag && (
+            <div style={S.betriebZeile}>
+              <span style={S.betrieb}>{name}</span>
+              {istVorschlag && (
               /* Der Hinweis bleibt SICHTBAR und wandert nicht ganz hinter das
                  Fragezeichen: Er muss im ersten sichtbaren Bereich stehen, sonst
                  trägt er den optischen Gesamteindruck nicht (Legal-Judge). Als
                  Kasten über der ganzen Seite war er allerdings lauter als der
                  Inhalt — die kurze Zeile sagt dasselbe, die Begründung steht
                  einen Klick daneben. */
-              <div style={S.demo}>
-                <span style={S.demoWort}>Demo-Ansicht</span>
-                <InfoTooltip title="Was diese Seite ist" ariaLabel="Was diese Seite ist" size={12}>
-                  Diese Seite haben wir für {name} vorbereitet, um zu zeigen, wie ein
-                  unabhängiger Rechner auf der eigenen Website aussehen könnte. Zwischen{" "}
-                  {name} und solar-check.io besteht bislang keine Zusammenarbeit und keine
-                  Vereinbarung.
-                </InfoTooltip>
+                <span style={S.demo}>
+                  <span style={S.demoWort}>Demo</span>
+                  <InfoTooltip title="Was diese Seite ist" ariaLabel="Was diese Seite ist" size={12}>
+                    Diese Seite haben wir für {name} vorbereitet, um zu zeigen, wie ein
+                    unabhängiger Rechner auf der eigenen Website aussehen könnte. Zwischen{" "}
+                    {name} und solar-check.io besteht bislang keine Zusammenarbeit und keine
+                    Vereinbarung.
+                  </InfoTooltip>
+                </span>
+              )}
+            </div>
+            {(seite.ort || seite.plz) && (
+              <div style={S.ort}>
+                {[seite.plz, seite.ort].filter(Boolean).join(" ")}
               </div>
             )}
           </div>
           {/* Die Herkunft steht im ersten sichtbaren Bereich, nicht im Fuß —
               sonst trägt der Hinweis den optischen Gesamteindruck nicht. */}
-          <div style={S.herkunft}>
-            Rechner von{" "}
-            <a href="/" style={S.herkunftLink}>
-              solar-check.io
-            </a>
-          </div>
+          {/* Unsere Marke als Logo, nicht als Textlink: Sie steht auf einer
+              fremden Kundenreise und muss dort auf einen Blick erkennbar sein —
+              dasselbe Muster wie „Powered by" in den eingebetteten Widgets. */}
+          <a href="/" style={S.herkunft} aria-label="Rechner von solar-check.io">
+            <span style={S.herkunftWort}>Rechner von</span>
+            <Logo width={116} />
+          </a>
         </div>
       </header>
 
@@ -127,6 +131,12 @@ const S = {
     gap: space.md,
     flexWrap: "wrap" as const,
   },
+  betriebZeile: {
+    display: "flex",
+    alignItems: "center",
+    gap: space.sm,
+    flexWrap: "wrap" as const,
+  },
   betrieb: {
     fontSize: v("--font-size-h3"),
     fontWeight: 700,
@@ -139,19 +149,22 @@ const S = {
     marginTop: 2,
   },
   herkunft: {
-    fontSize: v("--font-size-small"),
-    color: v("--color-text-muted"),
-  },
-  herkunftLink: {
-    color: v("--color-accent"),
-    textDecoration: "none",
-    fontWeight: 600,
-  },
-  demo: {
     display: "flex",
     alignItems: "center",
-    gap: 4,
-    marginTop: 4,
+    gap: 6,
+    textDecoration: "none",
+  },
+  herkunftWort: {
+    fontSize: v("--font-size-caption"),
+    color: v("--color-text-faint"),
+  },
+  demo: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 3,
+    padding: "2px 8px",
+    borderRadius: v("--radius-sm"),
+    background: v("--color-bg-accent"),
   },
   demoWort: {
     fontSize: v("--font-size-small"),

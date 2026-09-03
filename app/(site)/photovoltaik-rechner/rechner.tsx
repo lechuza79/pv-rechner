@@ -37,7 +37,7 @@ import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
 import { useCoolingDegree } from "../../../lib/useCoolingDegree";
 import KlimaDetailModal from "../../../components/KlimaDetailModal";
 import Chart from "./_components/Chart";
-import { v, iconSizes } from "../../../lib/theme";
+import { v, iconSizes, space } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { DEFAULT_PRICES } from "../../../lib/prices-config";
 import { useFeedInRates } from "../../../lib/feedin";
@@ -899,8 +899,16 @@ export default function PVRechner({
           </div>
         ) : (
           <div style={{ textAlign: "center", marginBottom: 24 }}>
-            <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Lohnt sich Photovoltaik?</h1>
-            <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.</p>
+            {/* Auf einer betriebseigenen Seite trägt der Kopf schon den Namen des
+                Betriebs — „Lohnt sich Photovoltaik? · Ohne Verkaufsanrufe" wäre
+                darunter eine zweite Ansage und liest sich als unsere Werbung auf
+                seiner Seite. Im Ergebnis genügt dort die Überschrift. */}
+            <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>
+              {partner ? (isResult ? "Dein Ergebnis" : "Deine Anlage berechnen") : "Lohnt sich Photovoltaik?"}
+            </h1>
+            {!partner && (
+              <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.</p>
+            )}
           </div>
         )}
 
@@ -1590,16 +1598,21 @@ export default function PVRechner({
                 schicken" der naheliegende nächste Schritt, nicht „Link kopieren".
                 Ohne Partner-Angabe entfällt der Block ersatzlos. */}
             {partner && (
-              <ErgebnisAnBetrieb
-                partner={partner}
-                ergebnisUrl={typeof window !== "undefined" ? buildShareUrl() : ""}
-              />
+              <div style={{ marginTop: space.xl }}>
+                <ErgebnisAnBetrieb
+                  partner={partner}
+                  ergebnisUrl={typeof window !== "undefined" ? buildShareUrl() : ""}
+                />
+              </div>
             )}
 
             <ResultActions
               copied={copied} canShare={canShare} authState={authState} saving={saving} saved={saved} savedCalcId={savedCalcId}
               onCopy={handleCopy} onNativeShare={handleNativeShare} onWhatsApp={handleWhatsApp}
               onSave={handleSave} onLoginClick={oeffneAnmeldung}
+              // Auf der betriebseigenen Seite klebt der Rückkanal unten — zwei
+              // Leisten übereinander wären eine zu viel.
+              klebenderKnopf={!partner}
             />
 
             {/* Restart */}

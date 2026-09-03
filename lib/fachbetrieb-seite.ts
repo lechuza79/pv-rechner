@@ -88,16 +88,28 @@ export async function seiteFuerKennung(kennung: string): Promise<FachbetriebSeit
     const { data, error } = await withDbTimeout(
       db
         .from("fachbetriebe")
-        .select("domain, firmenname, ort, plz")
+        .select("domain, firmenname, ort, plz, email")
         .eq("art", "betrieb")
         .order("domain", { ascending: true })
         .range(von, von + SEITE - 1),
       "fachbetrieb-seite",
     );
     if (error) return null;
-    const zeilen = (data ?? []) as { domain: string; firmenname: string | null; ort: string | null; plz: string | null }[];
+    const zeilen = (data ?? []) as {
+      domain: string;
+      firmenname: string | null;
+      ort: string | null;
+      plz: string | null;
+      email: string | null;
+    }[];
     for (const z of zeilen) {
       if (kennungFuer(z.domain) === kennung) {
+        // OHNE Mailadresse gibt es keine Seite — aus einem einfachen Grund: Wir
+        // koennen diesen Betrieb ohnehin nicht anschreiben (Betreiber,
+        // 01.09.2026). Eine Seite ohne Empfaenger haette einen Anfrage-Knopf,
+        // der ins Leere liefe, sobald jemand ihn drueckt. Rund 15 % der
+        // erfassten Betriebe haben nur ein Formular oder eine Telefonnummer.
+        if (!z.email?.includes("@")) return null;
         return {
           kennung,
           domain: z.domain,

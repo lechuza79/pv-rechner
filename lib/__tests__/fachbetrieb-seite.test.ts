@@ -123,7 +123,9 @@ describe("Die Seite darf nicht in den Index", () => {
     expect(text).toMatch(/keine (Zusammenarbeit|Vereinbarung|Gesch[äa]ftsbeziehung)/i);
     expect(text).not.toMatch(/bereitgestellt f[uü]r/i);
     // Und die Verneinung darf nicht erst hinter einem Klick auftauchen: Der
-    // Hinweis muss im ersten sichtbaren Bereich stehen.
-    expect(text).toMatch(/Demo-Ansicht/);
+    // Hinweis muss im ersten sichtbaren Bereich stehen. Geprüft wird das Wort
+    // selbst, nicht seine Schreibung — es stand erst als „Demo-Ansicht" unter
+    // dem Namen und ist jetzt eine Plakette „Demo" daneben.
+    expect(text).toMatch(/}>Demo<\/span>/);
   });
 });
