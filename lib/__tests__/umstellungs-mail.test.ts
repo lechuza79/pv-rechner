@@ -47,9 +47,13 @@ describe("Nachricht zur Umstellung der Anmeldung", () => {
     expect(mail.html).not.toMatch(/token|code=|access_token|\{\{/i);
   });
 
-  it("sagt, dass Konto und Berechnungen unverändert da sind", () => {
-    // Die einzige Frage, die jemand beim Lesen wirklich hat.
-    expect(mail.html).toMatch(/unverändert da/);
+  it("sagt, WIE man wieder hineinkommt", () => {
+    // Die einzige Frage, die jemand beim Lesen wirklich hat. Sie haben kein
+    // Passwort und bekommen hier auch keins — ohne den Weg über „Passwort
+    // vergessen" stehen sie vor einem Formular, in das sie nichts eintragen
+    // können.
+    expect(mail.html.replace(/\s+/g, " ")).toMatch(/Passwort vergessen/);
+    expect(mail.html).toContain("https://solar-check.io/login");
     expect(mail.html).not.toMatch(/Berechnungen sind unverändert/); // niemand hat welche
   });
 

@@ -172,11 +172,9 @@ export function umstellungsMail(o: {
   const bloecke: Block[] = bestaetigt
     ? [
         "Hallo,",
-        "du hattest dir mal ein Konto bei Solar Check angelegt. Die Anmeldung läuft ab jetzt anders: nicht mehr über einen Link in der Mail, sondern über ein Passwort, das du selbst setzt — oder über Google.",
-        "Dein Konto ist unverändert da. Du brauchst nur einmal ein Passwort: auf der Anmeldeseite auf \u201ePasswort vergessen?\u201c, dann schicke ich dir einen Link dorthin.",
+        `du hattest dir mal ein Konto bei Solar Check angelegt. Wir haben die Anmeldefunktion optimiert, dazu müsstest du nur einmal ein Passwort hier bei \u201ePasswort vergessen\u201c anfordern: ${anmeldeUrl}`,
         "Würde mich freuen wenn du mal wieder reinschaust, es hat sich einiges getan:",
         { liste: NEUERUNGEN.map((n) => n.was) },
-        anmeldeUrl,
         "Brauchst du das Konto nicht mehr, schreib einfach zurück, dann lösche ich es.",
         { zeilen: ["Viele Grüße", ...SIGNATURE.split("\n")] },
       ]
