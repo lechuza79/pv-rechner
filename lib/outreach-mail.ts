@@ -372,12 +372,28 @@ export const PAUSE_MS = 90_000;
  * Bounces zeigen sich erst, wenn es längst zu spät ist, die Einsortierung in den
  * Spam-Ordner dagegen sofort.
  */
-export const MAX_JE_LAUF = 50;
+export const MAX_JE_LAUF = 65;
 // 50 statt 40 am 26.08.2026, damit der Schub Niedersachsen/Bremen (48 Gemeinden)
 // an einem Tag durchgeht statt an zwei. Der Sprung ist damit 20 → 48 in einem
 // Schritt; die Messung deckt bisher 20 ab. Was ihn trotzdem trägt, ist der
 // Befund aus sechs Läufen — kein Bounce, bestandene Echtheitsprüfungen — und die
 // Zustellungsprobe, die ab jetzt mitläuft und den leisen Fehler zeigen würde.
+//
+// 65 statt 50 am 03.09.2026, aus demselben Grund und auf breiterer Messung: Der
+// NRW-Schub hat 63 Gemeinden, und ein Schub, der über zwei Versandtage zerfällt,
+// ist in der Auswertung nicht mehr einem Anlass zuzuordnen — Freitag ist
+// gesperrt, der Rest läge fünf Tage später.
+//
+// WAS DIE ZAHL TRÄGT: 227 verschickte Briefe über vier Schübe, davon 4
+// unzustellbar (1,8 %), und alle vier sind Fehlgriffe beim Einsammeln der
+// Adresse, kein Zustellproblem. Kein Hinweis auf Spam-Einsortierung, die
+// Echtheitsprüfungen bestehen weiterhin. Die Pause von 90 Sekunden bleibt
+// unangetastet — 65 Mails brauchen damit rund anderthalb Stunden, das Muster
+// eines Menschen, der einen Vormittag lang schreibt.
+//
+// WEITER IST DAS KEIN FREIBRIEF: Die Stufe deckt den größten bekannten Schub ab,
+// nicht mehr. Wer sie erneut anhebt, misst vorher — die Zustellungsprobe zeigt
+// den leisen Fehler, der Bounce zeigt ihn zu spät.
 
 /**
  * Empfänger der Zustellungsprobe: je Versandlauf eine zusätzliche Mail an ein
