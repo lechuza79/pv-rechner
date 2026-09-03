@@ -185,9 +185,9 @@ export function umstellungsMail(o: {
     : [
         "Hallo,",
         "",
-        "du hattest dich mal bei Solar Check angemeldet, aber nie bestätigt. Meine Mail",
-        "ist wahrscheinlich im Spam gelandet, weil sie von einer komischen",
-        "Absenderadresse kam. Ist inzwischen gefixt, deshalb kommt die hier an.",
+        "du hattest dich mal bei Solar Check angemeldet. Die Mail ist wahrscheinlich",
+        "im Spam gelandet, weil sie von einer komischen Absenderadresse kam. Ist",
+        "inzwischen gefixt.",
         "",
         `Deine Adresse wird am ${frist} automatisch gelöscht, falls du nichts tust.`,
         "",
