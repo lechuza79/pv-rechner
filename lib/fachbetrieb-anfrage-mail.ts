@@ -36,6 +36,8 @@ export type AnfrageMailDaten = {
   strasse?: string;
   plz?: string;
   ort?: string;
+  /** Wie viele Bilder als Anhang mitgehen. */
+  fotoAnzahl?: number;
   /** Link auf die Rechnung. Fehlt er, entfällt der Absatz. */
   ergebnisUrl: string | null;
 };
@@ -88,6 +90,14 @@ export function anfrageMailHtml(d: AnfrageMailDaten): string {
         ? `<p style="margin:0 0 14px;color:${C.leise};font-size:${T.fuss}">
              Die Adresse hat er freiwillig angegeben, damit Sie das Dach vorab
              ansehen können.
+           </p>`
+        : ""
+    }
+
+    ${
+      d.fotoAnzahl
+        ? `<p style="margin:0 0 14px">
+             <strong>${d.fotoAnzahl === 1 ? "Ein Bild" : `${d.fotoAnzahl} Bilder`}</strong> hängen dieser Mail an.
            </p>`
         : ""
     }

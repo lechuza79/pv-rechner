@@ -103,6 +103,24 @@ export async function POST(req: Request) {
   // die Beschreibung genau eines Haushalts.
   const feld = (k: string, max: number) =>
     typeof payload[k] === "string" ? (payload[k] as string).trim().slice(0, max) : "";
+  // Fotos werden DURCHGEREICHT, nicht gespeichert: Sie gehen als Anhang an den
+  // Betrieb und liegen danach nirgends bei uns. Zwei Bilder, je höchstens 5 MB
+  // — mehr verträgt eine Mail ohnehin nicht, und ein größeres Bild ist ein Scan
+  // oder ein Irrtum.
+  const rohFotos = Array.isArray(payload.fotos) ? payload.fotos : [];
+  const fotos = rohFotos
+    .slice(0, 2)
+    .map((f) => (f && typeof f === "object" ? (f as { name?: unknown; inhalt?: unknown }) : {}))
+    .filter((f) => typeof f.name === "string" && typeof f.inhalt === "string")
+    .map((f) => ({
+      // Der Dateiname kommt vom Client. Alles außer Buchstaben, Ziffern, Punkt
+      // und Strich fliegt raus — ein Name mit Pfadanteilen hat in einem Anhang
+      // nichts verloren.
+      filename: (f.name as string).replace(/[^\w.\- ]+/g, "").slice(0, 80) || "foto.jpg",
+      content: f.inhalt as string,
+    }))
+    .filter((f) => f.content.length < 7_000_000);
+
   const strasse = feld("strasse", 160);
   const plz = feld("plz", 10);
   const ort = feld("ort", 120);
@@ -146,6 +164,7 @@ export async function POST(req: Request) {
     strasse,
     plz,
     ort,
+    fotoAnzahl: fotos.length,
     ergebnisUrl,
   };
   const subject = anfrageMailBetreff(daten);
@@ -160,6 +179,7 @@ export async function POST(req: Request) {
         to: [empfaenger],
         subject,
         html,
+        ...(fotos.length ? { attachments: fotos } : {}),
         // Antworten gehen direkt an den Interessenten, nicht an uns. Wir sind
         // der Weg, nicht die Zwischenstation.
         reply_to: kontakt.includes("@") ? kontakt : undefined,
