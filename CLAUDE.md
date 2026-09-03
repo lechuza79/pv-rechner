@@ -557,6 +557,39 @@ Bis 09/2026 lief die Anmeldung ausschließlich über einen Link in der Mail. **D
 
 **Offen und dem Betreiber vorgelegt:** die eigene Adresse für den Anmeldedienst (10 $/Monat je Projekt, Zusatzmodul). Ohne sie steht auf Googles Zustimmungsbildschirm und in den Links der Anmeldemails eine Zufallszeichenfolge statt der Marke — bei einer Sicherheitsmail der Unterschied zwischen „echt" und „Phishing". **Bei keinem der drei Projekte des Kontos gebucht**, bei Life is a Binge seit Monaten als offener Punkt geführt.
 
+## Die einmalige Nachricht zur Umstellung — BLOCKER
+
+Die bestehenden Konten haben kein Passwort und kämen ohne diese Nachricht nicht mehr hinein. **Sie zu unterlassen wäre nicht die vorsichtigere, sondern die schlechtere Option.** Text in `lib/umstellungs-mail.ts`, Versand über `npm run umstellung:versand` — **ohne die ausdrückliche Ansage geht nichts raus**, der Lauf zeigt dann nur, wer sie bekäme.
+
+**ZWEI GRUPPEN, ZWEI FASSUNGEN** (Betreiber-Entscheidung 02.09.2026). Von 17 fremden Konten haben 7 den Anmeldelink damals eingelöst, 10 nie — und beide werden angeschrieben, mit verschiedenem Aufhänger:
+- **Bestätigt → „die Anmeldung läuft jetzt anders".** Fortführung eines bestehenden Nutzungsverhältnisses (Art. 6 Abs. 1 Buchst. b); ohne die Nachricht kämen sie nicht mehr in ihr Konto.
+- **Nie bestätigt → „dein Account wird gelöscht".** Hier gibt es kein Nutzungsverhältnis: Im doppelten Bestätigungsverfahren ist die ausbleibende Bestätigung **definitionsgemäß ein Nein**. Was die Nachricht trägt, ist die Transparenz über eine ohnehin fällige Löschung (Art. 17 Abs. 1 Buchst. a — der Zweck der Speicherung ist mit dem Scheitern der Registrierung entfallen). **Die Löschung ist der GRUND der Mail, nicht ihr Nachsatz**; wer die Reihenfolge umdreht, macht aus der Transparenz einen Vorwand. Der Legal-Judge (02.09.2026, Fundstellen im Volltext) empfahl, diese 10 kommentarlos zu löschen; der Betreiber hat sich für die Ankündigung entschieden, die derselbe Prüfer ausdrücklich als tragfähig bezeichnet hat.
+- **Der Einwand „die erste Mail lag im Spam" bleibt eine VERMUTUNG.** Die alten Mails gingen über den eingebauten Versand des Anmeldedienstes, dessen Zustellprotokolle nicht herausgegeben werden (02.09.2026 über die Schnittstelle geprüft, nicht erreichbar).
+
+**SIE SIEHT AUS WIE EINE MAIL VON EINEM MENSCHEN, WEIL SIE EINE IST** (Betreiber, 03.09.2026). Keine Wortmarke, keine Karte, kein Knopf — die Hülle der übrigen Nutzermails bleibt bewusst weg. **Eine gestaltete Systemmail über eine geänderte Anmeldung trägt exakt die Merkmale, an denen man Phishing erkennt:** fremdes Layout, „dein Konto", ein Knopf. Ein kurzer Text vom Absender persönlich trägt sie nicht.
+- **Absender ist `sebastian@solar-check.io`**, nicht die Marke — über einen Absender-Vorbehalt in `sendeAboMail`, der **nur dieselbe Domain zulässt**: Ein fremder Absender bricht SPF und DKIM und landet die Mail genau dort, wo ihre Vorgänger schon lagen. Abgewiesen statt stillschweigend ersetzt — wer eine Absenderadresse angibt und eine andere verschickt bekommt, merkt es nie.
+- **Die Signatur ist dieselbe wie im Kommunen-Anschreiben** (importiert, nie abgetippt): die aus dem Mailprogramm des Betreibers, samt Telefonnummer. Wer hier antwortet, landet in demselben Postfach; zwei Fassungen desselben Absenders wären genau dort sichtbar, wo jemand prüft, ob da ein Mensch sitzt.
+- **KEINE Systemzeile „Diese E-Mail bekommst du, weil …".** Sie ist der Ton, gegen den die Nachricht gebaut ist, und rechtlich verlangt sie hier nichts: Der Empfänger hat sich selbst eingetragen, es gibt keinen Verteiler und keine Werbeeinwilligung, auf die zu verweisen wäre. Umgesetzt als **eigene Mailart** in der Pflichtangaben-Prüfung, nicht als gelockerte Regel — die Abo-Meldungen tragen die Zeile weiter. Impressum und Datenschutz bleiben Pflicht.
+- **Kein Abmeldelink und keine Mailinglisten-Kopfzeile**: Es gibt keinen Verteiler. Ein Link, der nichts abmeldet, ist eine unwahre Angabe, und das Banner der Mailprogramme ordnete die Nachricht falsch ein.
+- **Der Link führt auf die Anmeldeseite, nicht auf einen fertigen Zugang.** Die Mail transportiert dann keinen gültigen Kontozugang, der im Postfach liegen bleibt.
+- **Die Bestätigten haben KEIN Passwort und bekommen hier auch keins.** Der Text muss deshalb sagen, dass sie es sich über „Passwort vergessen" anfordern — sonst stehen sie vor einem Formular, in das sie nichts eintragen können. Beim ersten Entwurf aufgefallen, seitdem per Test festgenagelt.
+
+**KEIN WORT MEHR, ALS DORT STEHT.** Jeder Beipack kippt die Einordnung — der BGH hat eine im Kern zulässige Rechnungsmail allein wegen einer angehängten Zufriedenheitsbefragung als unzulässige Werbung eingestuft (VI ZR 225/17). Ein Hinweis auf das Themen-Abo, ein Marketing-Fuß oder ein Symbol eines sozialen Netzes machen aus der erlaubten Nachricht eine Werbemail an Adressen ohne Werbeeinwilligung. Der Hinweis auf **drei** Neuerungen ist eine bewusste Abwägung des Betreibers und die Grenze; ein Test prüft das am fertigen HTML und hat seine eigene Gegenprobe.
+
+**Was nur im echten Postfach sichtbar war** (03.09.2026, drei Runden Probemails an den Betreiber) — kein Test hätte eines davon gefunden:
+- **Der Text war fest umbrochen, und das HTML hat es geerbt.** Ein Mailprogramm bricht selbst um, unser Umbruch kam obendrauf: „Die Mail ist wahrscheinlich / im Spam gelandet". Die Nachricht steht deshalb als **Blöcke** im Code (Absatz · Liste · Signatur), die Textfassung bricht erst beim Ausgeben um, das HTML gar nicht. Nur die Signatur behält ihre Zeilen — dort ist der Umbruch der Inhalt.
+- **Die Aufzählung war keine Liste**, sondern Zeilen mit Sternchen: kein Einzug, und eine lange Zeile brach unter den Stern statt unter den Text.
+- **Eine Leerzeile zu viel unter der Liste** — der Abstand der Liste UND die leere Zeile daneben.
+- **Der Betreff mit Datum wurde abgeschnitten.** „Dein Eintrag bei Solar Check wird am 01. Oktober 2026 gelöscht" passt in keine Postfachliste; das Datum steht im ersten Absatz, wo es der Grund der Mail ist.
+
+**Der Versandweg war nie gelaufen, und das wäre beim ersten echten Mal aufgefallen** (03.09.2026). `server-only` ist aus einem CLI-Prozess nicht auflösbar — der Lauf setzt jetzt die `react-server`-Bedingung und das Paket ist Entwicklungs-Abhängigkeit. Ohne beides wäre der allererste Versand abgestürzt, **nachdem** der „schon angeschrieben"-Merker geschrieben war, also mit verlorener Nachricht. **Dieselbe Klasse wie der Spalten-Abgleich und die Kostenwache: Was nur lokal getestet ist, ist nicht getestet.**
+
+**Der Merker wird VOR dem Versand geschrieben.** Bricht der Lauf zwischen zwei Adressen ab, darf der Neustart niemanden ein zweites Mal anschreiben; der Preis ist eine verlorene Nachricht im Fehlerfall, und das ist die günstigere Richtung. Dieselbe Bauform wie im Abo-Versandlauf.
+
+**Das Versandfenster der Abo-Meldungen gilt mit — hier aber UNABHÄNGIG von der Menge.** Dort greift es erst ab 20 Meldungen, weil das Warten sonst mehr kostet, als es bringt; diese Nachricht wird ohnehin von Hand ausgelöst, also kostet der Abend nichts. Ein Schalter hebt es auf, wenn es einen Grund gibt.
+
+**OFFEN (bis 10/2026): eine Löschfrist für nie bestätigte Registrierungen als REGEL**, nicht als einmalige Aufräumaktion (30–90 Tage nach dem Versand der Bestätigungsanfrage). Sonst steht dieselbe Frage in einem Jahr wieder an. Gelöscht wird dabei wirklich — **kein „gelöscht"-Vermerk als Sperrliste**: Die trägt nur, wo die zu verhindernde Verarbeitung auf berechtigtem Interesse beruht, und hier gibt es keine zu verhindernde Verarbeitung.
+
 ## Modals — BLOCKER
 
 **`components/Modal.tsx` ist DER Modal-Baustein. Modals werden nicht pro Stelle neu gebaut.** Die aufrufende Stelle liefert nur `open`, `onClose`, `title` (optional `intro`, `ariaLabel`, `maxWidth`) und den Inhalt als Children — das gesamte Verhalten kommt aus dem Baustein:
@@ -1134,7 +1167,7 @@ Lehren aus dem Legal-Audit 2026-07 (Details: Memory `project_legal_audit`). Vor 
    **Einstellung und Daten-Cache sind zwei Fälle — BLOCKER.** § 25 Abs. 2 Nr. 2 trägt dauerhaft nur, was der Nutzer selbst gesetzt hat (PLZ, Farbschema, Heimatort, „Speichern"-Vormerkung, Admin-Flag). Ein reiner **Geschwindigkeits-Cache** ist eine Optimierung und damit nicht „unbedingt erforderlich" — er gehört in die **Sitzung**, nicht in den `localStorage`. Das gilt unabhängig vom Personenbezug: § 25 schützt das Endgerät, nicht nur personenbezogene Daten (EuGH C-673/17 *Planet49* Rn. 70; EDSA-Leitlinien 2/2023 Rn. 6, 10, 12), und die Norm kennt **keine Interessenabwägung** (DSK-Orientierungshilfe digitale Dienste, Fassung 1.2, Rn. 69 — die Randnummern verschieben sich zwischen den Fassungen um zwei, jedes Zitat braucht deshalb die Versionsangabe; in 1.1 ist es Rn. 67) — die Alternative wäre ein Cookie-Banner für einen Datencache. Deshalb liegt der Energie-/Preis-Cache seit 16.08.2026 in der Sitzung (`LONG_CACHE_TTL` in `lib/energy.ts`; `longLived` in `lib/use-cached-fetch.ts` trägt einen Warnhinweis und wird bewusst von niemandem gesetzt). **Und: Nr. 2 ist keine Rechtsgrundlage**, sondern eine Ausnahme vom Einwilligungserfordernis — nie „Rechtsgrundlage ist § 25 …" schreiben.
 4. **Neue Seite mit Zahlen/Geldbeträgen** → Unverbindlichkeits-Hinweis (Footer-Disclaimer deckt (site)-Seiten ab; Rechner-Ergebnisse und Förderbeträge brauchen zusätzlich Stand-Datum + "ohne Gewähr, verbindlich ist die offizielle Quelle"). Förder-/Steuer-Aussagen informieren, nie individuell beraten.
 5. **Neues Embed-Widget** → Widget-Konvention (oben) einhalten: `PoweredBy`, `DataSourceNote` immer sichtbar, kein Browser-Storage, `ChartActionBar` (enthält den Impressum-Menüpunkt). Prüfen, ob der Datenschutz-Baustein in der Galerie (`/energie-widgets`) noch zutrifft (neue Datenflüsse?).
-6. **E-Mail-Versand** → an Nutzer nur transaktional (Auth, angeforderte Funktion). Werbe-/Outreach-Mails nach den Leitplanken in `docs/outreach-process-konzept.md`. **§ 7 UWG kalibriert (Judge-Prüfung Juli 2026, ersetzt das frühere pauschale „keine Kaltakquise"):** Eine unverlangte Outreach-Mail mit kostenlosem Widget-/Backlink-Angebot ist zwar mit hoher Wahrscheinlichkeit „Werbung" und damit *materiell* angreifbar — ABER das Durchsetzungsrisiko ist niedrig und überwiegend theoretisch: Der Empfänger selbst (auch eine Kommune) ist nach § 8 Abs. 3 UWG **nicht** abmahnbefugt; nur Mitbewerber/Verbände/IHK könnten, und die bekommen B2G-Mails an Rathaus-Postfächer praktisch nicht mit. „Massenversand" ist kein eigener Tatbestand (jede einzelne Mail zählt) — schubweise senkt nur das Entdeckungsrisiko, nicht die Rechtslage. **Maßvolle, schubweise Kaltakquise ist damit eine bewusste unternehmerische Entscheidung, kein Verbot.** Risiko-frei sitzt es, wenn der Erstkontakt **nicht** als unverlangte Mail läuft, sondern über das **Kontaktformular** der Zielstelle oder einen **Permission-Ask** → die Folge-Mail ist dann angefordert und § 7 entfällt. Bei jeder Outreach-Mail Pflicht: Klarname + „Betreiber solar-check.io" + Impressum-Link + Datenschutz-Einzeiler (Art. 14 DSGVO); Rollen-Postfächer (info@/rathaus@) statt Klarnamen bevorzugen (dämpft den DSGVO-Strang). Newsletter o. Ä. → Double-Opt-in + Datenschutzerklärung; der Nachweis umfasst den **Wortlaut** der Einwilligung und den **Versandbeleg**, nicht nur den Zeitpunkt (Herleitung im Abschnitt „Gemeinde-Abo“). Mail-Betreff/Header nie aus Freitext bauen (Allowlist-Muster wie `lib/contact-topics.ts`).
+6. **E-Mail-Versand** → an Nutzer nur transaktional (Auth, angeforderte Funktion). Werbe-/Outreach-Mails nach den Leitplanken in `docs/outreach-process-konzept.md`. **§ 7 UWG kalibriert (Judge-Prüfung Juli 2026, ersetzt das frühere pauschale „keine Kaltakquise"):** Eine unverlangte Outreach-Mail mit kostenlosem Widget-/Backlink-Angebot ist zwar mit hoher Wahrscheinlichkeit „Werbung" und damit *materiell* angreifbar — ABER das Durchsetzungsrisiko ist niedrig und überwiegend theoretisch: Der Empfänger selbst (auch eine Kommune) ist nach § 8 Abs. 3 UWG **nicht** abmahnbefugt — **wohl aber klagebefugt auf anderem Weg, und das ist der übliche** (Korrektur 02.09.2026): Die gesamte höchstrichterliche Rechtsprechung zu E-Mail-Werbung kommt vom VI. Zivilsenat und läuft über §§ 823 Abs. 1, 1004 BGB analog; § 7 UWG liefert dort nur den Maßstab der Rechtswidrigkeit. In BGH VI ZR 225/17 hat genau der **Empfänger** geklagt und gewonnen. Wer aus „nicht abmahnbefugt“ schließt, vom Empfänger drohe nichts, zieht den falschen Schluss. Nur Mitbewerber/Verbände/IHK könnten, und die bekommen B2G-Mails an Rathaus-Postfächer praktisch nicht mit. „Massenversand" ist kein eigener Tatbestand (jede einzelne Mail zählt) — schubweise senkt nur das Entdeckungsrisiko, nicht die Rechtslage. **Maßvolle, schubweise Kaltakquise ist damit eine bewusste unternehmerische Entscheidung, kein Verbot.** Risiko-frei sitzt es, wenn der Erstkontakt **nicht** als unverlangte Mail läuft, sondern über das **Kontaktformular** der Zielstelle oder einen **Permission-Ask** → die Folge-Mail ist dann angefordert und § 7 entfällt. Bei jeder Outreach-Mail Pflicht: Klarname + „Betreiber solar-check.io" + Impressum-Link + Datenschutz-Einzeiler (Art. 14 DSGVO); Rollen-Postfächer (info@/rathaus@) statt Klarnamen bevorzugen (dämpft den DSGVO-Strang). Newsletter o. Ä. → Double-Opt-in + Datenschutzerklärung; der Nachweis umfasst den **Wortlaut** der Einwilligung und den **Versandbeleg**, nicht nur den Zeitpunkt (Herleitung im Abschnitt „Gemeinde-Abo“). Mail-Betreff/Header nie aus Freitext bauen (Allowlist-Muster wie `lib/contact-topics.ts`).
 7. **Neue personenbezogene Daten** (Formularfelder, Account-Felder) → Datenschutzerklärung ergänzen (Zweck, Rechtsgrundlage, Empfänger, Speicherdauer); Eingaben serverseitig validieren + escapen; öffentliche POST-Endpoints mit Rate-Limit + Honeypot (Muster: `app/api/contact/route.ts`).
    **Der Empfänger ist Teil der Verarbeitung — BLOCKER.** Wo Nutzerdaten *landen*, ist eine eigene Angabe nach Art. 13, nicht nur der Weg dorthin. Das Kontaktformular ging bis 16.08.2026 an `ADMIN_EMAILS`, und das ist ein privates Gmail-Konto: Damit war Google ein zweiter Empfänger jeder Nachricht in einem Drittland, für den sich bei einem privaten Konto kein Auftragsverarbeitungsvertrag abschließen lässt — in der Erklärung stand davon nichts. Deshalb: **Nutzerdaten nie an die Admin-/Betriebs-Liste hängen** (die ist Zugangssteuerung und zeigt auf private Postfächer), sondern an ein Postfach mit Vertrag; und **beim Postfach die Weiterleitung mitprüfen** — eine Auto-Weiterleitung in ein Drittland hebt die Trennung still wieder auf. Festgenagelt von `lib/__tests__/kontakt-empfaenger.test.ts`. Auch die Ratenbegrenzung ist eine eigene Verarbeitung mit eigener Rechtsgrundlage, und wo auf berechtigtes Interesse gestützt wird, gehört der Verweis aufs Widerspruchsrecht daneben.
 8. **Marketing-Claims** → absolute Aussagen ("keine …", "immer …", "100 %") gegen Datenschutzerklärung und Realität prüfen (§ 5 UWG Irreführung). Wettbewerber nicht herabsetzend nennen (§ 6 UWG). Keine ungeprüften Superlative.
@@ -1367,9 +1400,49 @@ den falschen Fall** (`lib/abo-mail.ts`, `lib/abo-versand.ts`):
   bei großen Anbietern als nicht abbestellbar.
 - **Herkunftszeile ist Art. 13, nicht Art. 14.** Dort stammen die Adressen von
   Amtsseiten, hier trägt sie der Empfänger selbst ein.
-- **Ferien, Wochentag und Tagespensum entfallen.** Das sind Bremsen gegen Kaltakquise;
+- **Ferien und Tagespensum entfallen.** Das sind Bremsen gegen Kaltakquise;
   einem Abonnenten seine Meldung vorzuenthalten, weil in seinem Bundesland Ferien sind,
   wäre keine Rücksicht. Was bleibt: Prüfung des Versandwegs und die Pflichtangaben.
+- **Ein VERSANDFENSTER gibt es trotzdem — aber erst ab Menge** (`lib/versandzeit.ts`,
+  Di–Do, **17–20 Uhr deutscher Zeit**, ab 20 Meldungen je Lauf).
+  - **Der Abend ist die Zielgruppen-Entscheidung, nicht der Durchschnitt.** Empfänger
+    sind Privatleute zu Hause; wer über seine eigene Dachfläche nachdenkt, tut das nach
+    Feierabend. Die verbreitete Empfehlung „Di–Do vormittags" gilt GESCHÄFTS-Empfängern
+    — sie stand hier zuerst und war schlicht die falsche Zielgruppe, von außen
+    unsichtbar. Für Privatempfänger zeigen Brevo, Mailjet, ActiveCampaign, GetResponse
+    und rapidmail übereinstimmend den Abend; MailerLites Auswertung von 2,1 Mio
+    Kampagnen sieht die höchsten **Klick**raten bei Privat-Zielgruppen zwischen 18 und
+    21 Uhr (alle 03.09.2026 gelesen). Dazu: rund 80 % aller Öffnungen fallen in die
+    ersten vier Stunden nach Zustellung — Versand und Lesen liegen damit im selben Abend.
+  - **Öffnungsraten taugen seit 09/2021 nicht mehr für eine Zeitaussage — BLOCKER.**
+    Apples Mail-Datenschutz lädt die Bilder beim EINGANG, nicht beim Lesen, und Apple
+    Mail steht für rund 58 % aller gemeldeten Öffnungen. Eine Auswertung „welche
+    Versandstunde hat die beste Öffnungsrate" misst damit zu gutem Teil die
+    Versandstunde selbst. Daher stammt das sonst unerklärliche Ergebnis des
+    **Inxmail-Benchmarks 2026** (4 Mrd. Mails), die beste Versandzeit liege zwischen
+    **3 und 6 Uhr morgens** — eine große, seriös wirkende Zahl, die hier ausdrücklich
+    NICHT benutzt wird; ein Test verbietet das Nachtfenster. MailerLite empfiehlt aus
+    demselben Grund, nur noch über Klickraten zu testen.
+  - **Keine dieser Auswertungen ist ein Experiment.** Sie vergleichen Kampagnen, die zu
+    verschiedenen Zeiten rausgingen, also verschiedene Absender an verschiedene Listen;
+    keine nennt Signifikanz oder Streuung, die Unterschiede liegen bei wenigen
+    Prozentpunkten. Übernommen wird die RICHTUNG, nicht die Genauigkeit — und sobald es
+    genug Abonnenten gibt, wird über **Klicks** nachgemessen statt über Öffnungen.
+  - **Deshalb die Schwelle:** Bei siebzehn Empfängern ist die Spanne kein ganzer Mensch,
+    und ein Lauf, der dafür einen Abend wartet, kostet mehr, als er bringt.
+  - **Der Lauf sammelt ERST alle Empfänger und schickt DANN.** Zwei Durchgänge statt
+    einem, weil das Fenster die Menge kennen muss, bevor die erste Mail draußen ist:
+    Ein Fenster, das mitten im Lauf zuschlägt, hätte die Hälfte verschickt und die
+    andere vertagt — und wer nachsieht, findet einen Lauf, der weder gelaufen noch
+    gestoppt ist. Verschoben wird als `verschoben` im Ergebnis benannt, nie stumm.
+  - **Im Probelauf greift es NICHT.** Der verschickt ohnehin nichts; schwiege er
+    außerhalb des Fensters, verbärge er genau das, wofür es ihn gibt.
+  - **Gerechnet wird in deutscher Ortszeit**, nicht in UTC — sonst verschiebt sich das
+    Fenster zweimal im Jahr um eine Stunde, und zwar unsichtbar.
+  - Festgenagelt von `lib/__tests__/versandzeit.test.ts`, vor dem Einchecken viermal
+    absichtlich kaputtgemacht. **Eine der vier blieb zuerst grün:** Der Test rechnete
+    die Empfängerzahl aus der Schwelle selbst (`AB_EMPFAENGERN - 1`) und verglich den
+    Fehler mit sich selbst — dieselbe Klasse wie beim Gemeindeschlüssel-Test.
 
 **Versendet wird über dasselbe Postfach wie die Anschreiben**, nicht über den Dienst, der
 Kontaktformular und Wächter-Alarme trägt — eine wachsende Verteilerliste dort träfe bei
