@@ -406,7 +406,28 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // 2035 und 2040 stehen unverändert, § 42a kündigt weiterhin nur das bis zum
   // 01.12.2026 vorzulegende Gesetz an. ZWÖLFTE Bioheizöl-Gegensuche, weiter ohne
   // Trägerquelle mit einer Preisreihe — dieselben zwei Treffersorten wie zuvor.
-  geprueftRechtIso: "2026-09-02",
+  //
+  // 03.09.2026: unverändert, und diesmal am GESETZESTEXT selbst statt am
+  // Infoportal. § 43 Abs. 1 im Volltext gelesen (gesetze-im-internet.de):
+  // „ab dem 1. Januar 2029 mindestens 10 Prozent, ab dem 1. Januar 2030
+  // mindestens 15 Prozent, ab dem 1. Januar 2035 mindestens 30 Prozent und ab
+  // dem 1. Januar 2040 mindestens 60 Prozent" — zellgleich mit `quoteStops`,
+  // und die Pflicht knüpft unverändert an den Neueinbau „nach dem 29. Juli
+  // 2026" in ein bestehendes Gebäude an. § 42a ebenfalls im Volltext: „In einem
+  // bis zum 1. Dezember 2026 durch die Bundesregierung vorzulegenden Gesetz
+  // wird eine Grüngas-/Grünheizölquote eingeführt." Es gibt dieses Gesetz also
+  // weiterhin nicht — nur die Pflicht, es vorzulegen, und bis dahin sind es
+  // noch knapp drei Monate.
+  //
+  // DREIZEHNTE Bioheizöl-Gegensuche, weiter ohne Trägerquelle mit einer
+  // Preisreihe. Beide Stränge geprüft: Regelung (das Quotengesetz nach § 42a
+  // gibt es nicht, siehe oben) und Preis (die Treffer sind erneut der
+  // Kraftstoff HVO100 oder der allgemeine Heizölpreis samt CO2-Aufschlag; die
+  // Norm DIN 51603-1 wurde 2024 um „Heizöl EL A" erweitert und lässt höhere
+  // Beimischungen ausdrücklich zu — eine Norm ist aber keine Preisreihe). Der
+  // Lücken-Hinweis im Öl-Ergebnis bleibt bestehen, und mit ihm die benannte
+  // Fehlerrichtung: Öl wird zu günstig gerechnet.
+  geprueftRechtIso: "2026-09-03",
   reviewBy: "2027-07-25",
 };
 
