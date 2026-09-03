@@ -288,7 +288,7 @@ const LEISE_ZEILEN = [
  * Auszeichnung zu viel: Der Unterschied soll spürbar sein, nicht auffällig.
  * Grau bleibt allein im Fuß, wo es um Pflichtangaben geht.
  */
-const LEISE_STIL = "font-size:12px";
+const LEISE_STIL = `font-size:${tokens["--font-size-small"]}`;
 
 /**
  * BEIDE GRÖSSEN WERDEN GESETZT, sonst stimmt die Staffelung nicht.
@@ -302,7 +302,7 @@ const LEISE_STIL = "font-size:12px";
  * gegen eine unbekannte Voreinstellung zu stellen, ist keine Staffelung,
  * sondern eine Wette.
  */
-const TEXT_STIL = "font-size:14px;line-height:1.6";
+const TEXT_STIL = `font-size:${tokens["--font-size-body"]};line-height:1.6`;
 
 export function briefAlsHtml(body: string): string {
   // Auch Anführungszeichen: Der verlinkte Text landet in einem HTML-Attribut,
@@ -386,8 +386,11 @@ export function briefAlsHtml(body: string): string {
         // 13px, nicht 12: Der Fuß soll als Fuß erkennbar sein, aber die
         // Pflichtangaben muss man auch lesen können — im echten Postfach war
         // die Impressum-Zeile die kleinste Schrift des Briefes (Betreiber,
-        // 20.08.2026). Grau trägt den Unterschied bereits.
-        .map((a) => absatz(a, `color:${GRAU};font-size:13px;line-height:1.5`))
+        // 20.08.2026). Grau trägt den Unterschied bereits, deshalb steht hier
+        // seit der Skala die volle Fließtext-Stufe: Die Zwischengröße 13, mit
+        // der es damals behoben wurde, gibt es nicht mehr, und die Stufe
+        // darunter wäre wieder die kleinste Schrift des Briefes.
+        .map((a) => absatz(a, `color:${GRAU};font-size:${tokens["--font-size-body"]};line-height:1.5`))
         .join("\n")
     : "";
   return `<div style="max-width:640px;${TEXT_STIL}">\n${kopf}${fuss}\n</div>`;

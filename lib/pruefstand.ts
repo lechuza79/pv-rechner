@@ -32,6 +32,7 @@ import { DEFAULT_PRICES } from "./prices-config";
 import { RECHTSTEXTE_GEPRUEFT_ISO } from "./rechtstexte-stand";
 import { rechtsbelegeGeprueftIso } from "./rechtsbelege";
 import { GLOSSAR_GEPRUEFT_ISO } from "./glossary";
+import { KFW_REPORT_STAND } from "./kfw-format";
 
 export interface PruefEintrag {
   /** In der Sprache der Seite, damit die Meldung ohne Code-Kenntnis lesbar ist. */
@@ -110,6 +111,23 @@ export const PRUEFSTAND: PruefEintrag[] = [
     rhythmus: "quartalsweise, dazu täglicher News-Scan auf Programmstopps",
     maxAlterTage: 120,
     runbook: "scripts/waermepumpe-verify.md",
+  },
+  {
+    was: "Wärmepumpe: Zusagen der Bundesförderung",
+    feld: "KFW_REPORT_STAND.geprueftIso",
+    geprueftIso: KFW_REPORT_STAND.geprueftIso,
+    // Der Bericht erscheint einmal im Jahr; der Jahrgang des Vorjahres liegt im
+    // Januar vor. Ein eigener Lauf dafür wäre einer, der elf Monate im Jahr
+    // nichts findet — deshalb hängt der Schritt am quartalsweisen
+    // Wärmepumpen-Lauf, der diese Seite ohnehin prüft. Einen Auftrag zu
+    // erfinden, den niemand starten kann, ist die Fehlerklasse, gegen die
+    // dieser Prüfstand gebaut wurde.
+    waechter: "waermepumpe-werte-verify-jaehrlich",
+    rhythmus: "quartalsweise; ein neuer Jahrgang erscheint im Januar",
+    // Ein Jahr plus ein Quartal Luft: Erst danach ist sicher ein Jahrgang
+    // erschienen, den wir nicht eingelesen haben.
+    maxAlterTage: 460,
+    runbook: "scripts/kfw-report-verify.md",
   },
   {
     was: "Wärmepumpe: Grüngas-Pflicht (Rechtsstand)",

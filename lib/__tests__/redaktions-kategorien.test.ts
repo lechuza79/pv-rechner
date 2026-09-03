@@ -11,6 +11,7 @@ import { BUNDESLAND_UMRISS } from "../bundesland-umrisse";
 
 const basis: SocialKennzahlen = {
   standIso: "2026-08-05T00:00:00+00:00",
+  stichtagJahr: 2025,
   stadtLand: {
     stadtAb: 100_000,
     landUnter: 20_000,

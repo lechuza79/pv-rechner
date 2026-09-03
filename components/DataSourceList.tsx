@@ -27,6 +27,7 @@ const VERWENDUNG: Record<keyof typeof DATA_SOURCES, string> = {
   bkg: "Verwaltungsgrenzen der Karten",
   destatis: "Einwohnerzahlen der Gemeinden",
   uba: "Stromerzeugung und CO₂-Intensität im langen Rückblick seit 1990",
+  kfwFoerderreport: "Wie viele Haushalte die Heizungsförderung wirklich bekommen haben",
 };
 
 export default function DataSourceList() {

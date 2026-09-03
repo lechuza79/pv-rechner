@@ -152,10 +152,10 @@ const S: Record<string, React.CSSProperties> = {
   // Gleiche Kachel-Optik wie die Kennzahlen-Reihe darunter: dieselben Tokens,
   // damit beide Reihen als eine Familie lesen.
   kachel: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: pad("lg") },
-  label: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: space.xs },
-  value: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 },
+  label: { fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginBottom: space.xs },
+  value: { fontFamily: v("--font-mono"), fontSize: v("--font-size-display-sm"), fontWeight: 700 },
   unit: { fontSize: v("--font-size-small"), fontWeight: 600, color: v("--color-text-secondary") },
-  sub: { fontSize: 12, color: v("--color-text-muted"), marginTop: space.xxs, lineHeight: 1.4 },
+  sub: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginTop: space.xxs, lineHeight: 1.4 },
   selbst: { color: v("--color-text-secondary"), fontWeight: 600 },
   link: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
   leer: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginTop: space.xxs },

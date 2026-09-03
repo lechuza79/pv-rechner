@@ -5,11 +5,12 @@ import { v, iconSizes, space, pad } from "../lib/theme";
 import { IconCheck, IconClose } from "./Icons";
 import { ModalSticky } from "./Modal";
 import { CONTACT_TOPICS, DEFAULT_CONTACT_TOPIC, type ContactTopic } from "../lib/contact-topics";
+import SelectField from "./SelectField";
 
 const S = {
   form: { marginTop: space.xxl, display: "flex", flexDirection: "column", gap: space.lg } as React.CSSProperties,
   label: {
-    fontSize: 12,
+    fontSize: v("--font-size-small"),
     fontWeight: 700,
     color: v('--color-text-secondary'),
     textTransform: "uppercase",
@@ -18,7 +19,7 @@ const S = {
   field: { display: "flex", flexDirection: "column", gap: space.sm } as React.CSSProperties,
   input: {
     fontFamily: v('--font-text'),
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     color: v('--color-text-primary'),
     background: v('--color-bg-muted'),
     border: `1px solid ${v('--color-border')}`,
@@ -28,7 +29,7 @@ const S = {
   } as React.CSSProperties,
   textarea: {
     fontFamily: v('--font-text'),
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     color: v('--color-text-primary'),
     background: v('--color-bg-muted'),
     border: `1px solid ${v('--color-border')}`,
@@ -47,7 +48,7 @@ const S = {
   } as React.CSSProperties,
   button: {
     fontFamily: v('--font-text'),
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     fontWeight: 700,
     color: v('--color-text-on-accent'),
     background: v('--color-accent'),
@@ -62,7 +63,7 @@ const S = {
   // wo die Daten eingegeben werden — die Erklärung allein reicht nicht, wenn
   // das Formular selbst nicht auf sie zeigt.
   privacy: {
-    fontSize: 12,
+    fontSize: v("--font-size-small"),
     lineHeight: 1.6,
     color: v('--color-text-faint'),
     marginTop: space.xs,
@@ -72,7 +73,7 @@ const S = {
     display: "flex",
     alignItems: "center",
     gap: space.md,
-    fontSize: 13,
+    fontSize: v("--font-size-small"),
     borderRadius: v('--radius-sm'),
     padding: pad("lg"),
     marginTop: space.xs,
@@ -183,16 +184,17 @@ export default function ContactForm({
 
       <div style={S.field}>
         <label style={S.label} htmlFor="contact-topic">Worum geht es?</label>
-        <select
+        <SelectField
           id="contact-topic"
-          style={{ ...S.input, cursor: "pointer" }}
           value={topic}
           onChange={(e) => setTopic(e.target.value as ContactTopic)}
+          ariaLabel="Thema der Nachricht"
+          block
         >
           {CONTACT_TOPICS.map((t) => (
             <option key={t} value={t}>{t}</option>
           ))}
-        </select>
+        </SelectField>
       </div>
 
       <div style={S.field}>

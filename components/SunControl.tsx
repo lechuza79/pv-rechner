@@ -27,7 +27,7 @@ const PREF_HINT: Record<ThemePref, string> = {
 };
 
 const labelStyle: React.CSSProperties = {
-  fontSize: 11,
+  fontSize: v("--font-size-caption"),
   fontWeight: 700,
   textTransform: "uppercase",
   letterSpacing: "0.04em",
@@ -104,7 +104,7 @@ export default function SunControl({
           background: v("--color-bg-muted"),
           color: v("--color-text-secondary"),
           fontFamily: v("--font-text"),
-          fontSize: 13,
+          fontSize: v("--font-size-small"),
           fontWeight: 600,
           cursor: "pointer",
         }}
@@ -149,10 +149,10 @@ export default function SunControl({
         >
           {/* Keyed: entering a postcode swaps these lines — fade, don't snap. */}
           <div key={place} className="sc-swap">
-            <div style={{ fontSize: 13, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 4 }}>
+            <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 4 }}>
               Sonnenleistung {plz ? `in ${plz}` : "in Deutschland"}: {data.powerPct} %
             </div>
-            <p style={{ fontSize: 12.5, lineHeight: 1.5, color: v("--color-text-secondary"), margin: 0 }}>
+            <p style={{ fontSize: v("--font-size-small"), lineHeight: 1.5, color: v("--color-text-secondary"), margin: 0 }}>
               {plz
                 ? "So viel liefert eine Solaranlage an deinem Standort gerade von dem, was sie bei voller Sonne bringen würde."
                 : "So viel liefern Deutschlands Solaranlagen gerade von dem, was sie bei voller Sonne bringen würden."}
@@ -182,7 +182,7 @@ export default function SunControl({
                 background: v("--color-bg-muted"),
                 color: v("--color-text-primary"),
                 fontFamily: v("--font-text"),
-                fontSize: 16, // 16px stops iOS zooming the page on focus
+                fontSize: v("--font-size-lead"), // 16px stops iOS zooming the page on focus
               }}
             />
             <button
@@ -196,7 +196,7 @@ export default function SunControl({
                 background: isValidPlz(draft) && draft !== plz ? v("--color-accent") : v("--color-border"),
                 color: isValidPlz(draft) && draft !== plz ? v("--color-text-on-accent") : v("--color-text-muted"),
                 fontFamily: v("--font-text"),
-                fontSize: 13,
+                fontSize: v("--font-size-small"),
                 fontWeight: 700,
                 cursor: isValidPlz(draft) && draft !== plz ? "pointer" : "default",
               }}
@@ -217,7 +217,7 @@ export default function SunControl({
                 border: "none",
                 padding: 0,
                 marginTop: 8,
-                fontSize: 12.5,
+                fontSize: v("--font-size-small"),
                 fontWeight: 600,
                 fontFamily: v("--font-text"),
                 color: v("--color-accent"),
@@ -262,7 +262,7 @@ export default function SunControl({
                     background: active ? v("--color-accent") : "transparent",
                     color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
                     fontFamily: v("--font-text"),
-                    fontSize: 12.5,
+                    fontSize: v("--font-size-small"),
                     fontWeight: 700,
                     cursor: "pointer",
                     transition: "background .15s ease, color .15s ease",
@@ -274,7 +274,7 @@ export default function SunControl({
             })}
           </div>
 
-          <p key={pref} className="sc-swap" style={{ fontSize: 12, lineHeight: 1.5, color: v("--color-text-muted"), margin: "8px 0 0" }}>
+          <p key={pref} className="sc-swap" style={{ fontSize: v("--font-size-small"), lineHeight: 1.5, color: v("--color-text-muted"), margin: "8px 0 0" }}>
             {PREF_HINT[pref]}
           </p>
         </div>

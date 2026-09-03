@@ -24,6 +24,11 @@ import {
 } from "./eeg-reform-config";
 import type { PriceConfig } from "./prices-config";
 import { DEFAULT_HEATPUMP_CONFIG, begStufeAm } from "./heatpump-config";
+import { fmtPvLeistung, fmtWattProKopf, formatDataAsOf } from "./atlas-format";
+import {
+  laenderNachLeistung, laenderNachProKopf, segmentZeile, zeitraumSeitStichtag, zuwachs,
+  type Anlagenbestand,
+} from "./anlagenbestand";
 
 export interface FaqLink {
   /** Exact phrase inside `a`; its first occurrence becomes a link. */
@@ -748,6 +753,64 @@ export function balkonSpeicherFaq(): FaqEntry[] {
     {
       q: "Fällt auf einen Balkonspeicher Mehrwertsteuer an?",
       a: BALKON_RECHT.nullsteuer,
+    },
+  ];
+}
+
+/**
+ * FAQ der Bestandsseite (/photovoltaik-bestand-deutschland).
+ *
+ * Die Fragen sind ABSICHTLICH so formuliert, wie sie gesucht werden („wie viele
+ * … gibt es in Deutschland"), und jede Antwort steht auf einer Zahl aus dem
+ * Anlagenregister — keine ist getippt. Das ist der Punkt dieser Seite: Eine
+ * Jahresstatistik kann dieselbe Frage beantworten, aber nicht mit dem Stand von
+ * diesem Monat.
+ *
+ * Der Zeitraum wird benannt statt behauptet (`zeitraumSeitStichtag`): Das
+ * Register führt je Anlage nur das Jahr der Inbetriebnahme, der Vergleich läuft
+ * also gegen einen Jahresendbestand und nicht gegen „vor zwölf Monaten".
+ */
+export function anlagenbestandFaq(b: Anlagenbestand): FaqEntry[] {
+  const zahl = (n: number, stellen = 0) =>
+    n.toLocaleString("de-DE", { minimumFractionDigits: stellen, maximumFractionDigits: stellen });
+  const balkon = segmentZeile(b, "steckersolar");
+  const privat = segmentZeile(b, "privat_dach");
+  const frei = segmentZeile(b, "freiflaeche");
+  const stand = formatDataAsOf(b.standIso.slice(0, 10));
+  const zeitraum = zeitraumSeitStichtag(b.standIso, b.stichtagJahr);
+  const balkonPlus = balkon ? zuwachs(balkon.anzahl, balkon.anzahlStichtag) : null;
+  const spitzeLeistung = laenderNachLeistung(b)[0];
+  const spitzeProKopf = laenderNachProKopf(b)[0];
+
+  return [
+    {
+      q: "Wie viele Photovoltaikanlagen gibt es in Deutschland?",
+      a: `Im Marktstammdatenregister der Bundesnetzagentur sind ${zahl(b.gesamt.anzahl)} Solaranlagen gemeldet (Stand ${stand}). Darin stecken alle Größen: ${balkon ? `${zahl(balkon.anzahl)} Balkonkraftwerke` : "Balkonkraftwerke"}, ${privat ? `${zahl(privat.anzahl)} private Dachanlagen` : "private Dachanlagen"}, gewerbliche Dächer und ${frei ? `${zahl(frei.anzahl)} Freiflächenanlagen` : "Freiflächenanlagen"}. Gezählt wird, was dort als „in Betrieb" geführt ist; stillgelegte Anlagen bleiben im Register stehen, wir rechnen sie aber nicht mit.`,
+    },
+    {
+      q: "Wie viele Balkonkraftwerke gibt es in Deutschland?",
+      a: balkon
+        ? `${zahl(balkon.anzahl)} Steckersolargeräte sind angemeldet (Stand ${stand})${
+            balkonPlus
+              ? ` — ${zeitraum} sind ${zahl(balkonPlus.absolut)} dazugekommen, ein Plus von ${zahl(balkonPlus.anteil * 100, 0)} Prozent`
+              : ""
+          }. Zusammen bringen sie ${fmtPvLeistung(balkon.kwp)} auf die Waage, also einen kleinen Teil der gesamten Solarleistung. Die Zahl ist eine Untergrenze: Wer sein Gerät nicht anmeldet, taucht im Register nicht auf, obwohl die Anmeldung Pflicht ist.`
+        : `Die Zahl der angemeldeten Steckersolargeräte lässt sich gerade nicht abrufen.`,
+      links: [{ phrase: "Anmeldung Pflicht", href: "/balkonkraftwerk/ratgeber/anmelden" }],
+      cta: { label: "Balkonkraftwerk durchrechnen", href: "/balkonkraftwerk/rechner" },
+    },
+    {
+      q: "Wie viel Photovoltaik-Leistung ist in Deutschland installiert?",
+      a: `${fmtPvLeistung(b.gesamt.kwp)} (Stand ${stand}). Gemeint ist die Nennleistung der Module unter Standard-Testbedingungen, deshalb die Einheit Gigawatt-Peak — nicht die Leistung, die gerade wirklich fließt. ${zeitraum} sind ${fmtPvLeistung(b.gesamt.kwp - b.gesamt.kwpStichtag)} dazugekommen.`,
+    },
+    {
+      q: "In welchem Bundesland stehen die meisten Solaranlagen?",
+      a: `Nach installierter Leistung ${spitzeLeistung.name} mit ${fmtPvLeistung(spitzeLeistung.kwp)}. Je Einwohner sieht die Reihenfolge anders aus: dort führt ${spitzeProKopf.name} mit ${fmtWattProKopf((spitzeProKopf.kwp * 1000) / spitzeProKopf.einwohner)} je Kopf. Beide Größen beantworten verschiedene Fragen — die erste, wo am meisten Strom erzeugt wird, die zweite, wo am meisten Menschen mitmachen.`,
+      cta: { label: "Zahlen für deinen Ort", href: "/solar-atlas" },
+    },
+    {
+      q: "Woher kommen diese Zahlen?",
+      a: `Aus dem Marktstammdatenregister der Bundesnetzagentur, dem amtlichen Verzeichnis aller Strom­erzeugungsanlagen in Deutschland. Wer eine Solaranlage in Betrieb nimmt, muss sie dort binnen eines Monats eintragen — vom Solarpark bis zum Balkonkraftwerk. Wir werten den Gesamtdatenexport monatlich aus; der hier gezeigte Stand ist ${stand}. Zwei Einschränkungen gehören dazu: Nicht angemeldete Geräte fehlen, und das Register führt je Anlage nur das Jahr der Inbetriebnahme, keinen Tag.`,
     },
   ];
 }

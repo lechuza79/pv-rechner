@@ -1,8 +1,9 @@
 // Signierte Token für Bestätigung und Abmeldung eines Gemeinde-Abos.
 //
 // AUFBAU: <abo-id>.<zweck>.<signatur>
-//   bestätigen  <id>.<ablauf-zeitstempel>.<signatur>   — läuft nach 48 h ab
-//   abmelden    <id>.unsub.<signatur>                  — gilt dauerhaft
+//   bestätigen    <id>.<ablauf-zeitstempel>.<signatur> — läuft nach 48 h ab
+//   abmelden      <id>.unsub.<signatur>                — gilt dauerhaft
+//   einstellungen <id>.prefs.<signatur>                — gilt dauerhaft
 //
 // WARUM EIN TOKEN UND KEIN LOGIN: Wer sich abmelden will, hat kein Konto und
 // soll keines anlegen müssen. Ein Abmeldelink, der eine Anmeldung verlangt, ist
@@ -90,6 +91,27 @@ export function abmeldeToken(aboId: string): string {
   return `${nutzlast}.${signiere(nutzlast)}`;
 }
 
+/**
+ * Der Schlüssel zur eigenen Einstellungsseite.
+ *
+ * EIGENER ZWECK, nicht das Abmelde-Token mitbenutzt — und das ist kein
+ * Ordnungssinn. Das Abmelde-Token steht in der Kopfzeile jeder Meldung; ein
+ * Postfach oder ein Sicherheitsscanner ruft solche Adressen von sich aus auf.
+ * Wäre es dasselbe Token, käme irgendwann jemand über einen vorab abgerufenen
+ * Link auf einer Seite an, die abmelden KANN — und ein Zweck, den man an der
+ * Adresse ablesen muss statt am Token, ist keiner.
+ *
+ * DAUERHAFT GÜLTIG, wie die Abmeldung: Ein Link, der abläuft, schickt jemanden
+ * mit einer Frage zu seinen Einstellungen in eine Fehlermeldung. Der Preis ist
+ * benannt — wer den Link weitergibt, gibt Einblick in die Orte, die diese
+ * Adresse abonniert hat; ändern und abmelden kann der Empfänger ohnehin schon
+ * über den Abmeldelink derselben Mail.
+ */
+export function einstellungenToken(aboId: string): string {
+  const nutzlast = `${aboId}.prefs`;
+  return `${nutzlast}.${signiere(nutzlast)}`;
+}
+
 // ─── Prüfen ──────────────────────────────────────────────────────────────────
 
 export type TokenBefund =
@@ -121,7 +143,7 @@ export function pruefeBestaetigung(token: string, jetztMs: number): TokenBefund 
   // damit womöglich die eigentliche Sperre, ohne dass etwas rot wird — deshalb
   // steht der ausdrückliche Riegel hier, und deshalb steht dieser Absatz
   // daneben.
-  if (mitte === "unsub") return { ok: false, grund: "ungueltig" };
+  if (mitte === "unsub" || mitte === "prefs") return { ok: false, grund: "ungueltig" };
 
   if (!signaturStimmt(`${aboId}.${mitte}`, signatur)) return { ok: false, grund: "ungueltig" };
 
@@ -134,12 +156,48 @@ export function pruefeBestaetigung(token: string, jetztMs: number): TokenBefund 
 
 /** Ein Abmelde-Token prüfen. Läuft nie ab — ein Abo muss immer kündbar sein. */
 export function pruefeAbmeldung(token: string): TokenBefund {
+  return pruefeMitZweck(token, "unsub");
+}
+
+/** Ein Einstellungs-Token prüfen. Läuft nie ab, wie die Abmeldung. */
+export function pruefeEinstellungen(token: string): TokenBefund {
+  return pruefeMitZweck(token, "prefs");
+}
+
+/**
+ * Die gemeinsame Prüfung der beiden dauerhaften Zwecke.
+ *
+ * EINE Fassung, nicht zwei: Als der zweite Zweck dazukam, wäre die zweite
+ * Kopie der Prüfung entstanden — und in ihr hätte irgendwann eine Härtung
+ * gefehlt, die die erste längst hat (der Vergleich in konstanter Zeit zum
+ * Beispiel). Der Zweck ist der einzige Unterschied, also ist er der Parameter.
+ */
+function pruefeMitZweck(token: string, zweck: "unsub" | "prefs"): TokenBefund {
   const teile = token.split(".");
   if (teile.length !== 3) return { ok: false, grund: "ungueltig" };
   const [aboId, mitte, signatur] = teile;
 
-  if (mitte !== "unsub") return { ok: false, grund: "ungueltig" };
+  // Der Riegel gegen den jeweils anderen Zweck. Er hängt am Mittelstück, nicht
+  // an der Adresse, unter der das Token ankam: Ein Einstellungs-Token darf die
+  // Abmeldung nicht auslösen, auch wenn es an der Abmelde-Adresse abgegeben
+  // wird.
+  if (mitte !== zweck) return { ok: false, grund: "ungueltig" };
   if (!signaturStimmt(`${aboId}.${mitte}`, signatur)) return { ok: false, grund: "ungueltig" };
 
   return { ok: true, aboId };
+}
+
+// ─── Die fertigen Adressen ───────────────────────────────────────────────────
+//
+// EINE Stelle, an der aus einem Token ein Link wird. Vorher stand die
+// Zusammensetzung an jedem Aufrufer einzeln; mit der zweiten Linkart wären es
+// vier Stellen gewesen, und die vierte hätte irgendwann einen anderen Pfad
+// getragen als die Seite, die ihn bedient.
+
+export function abmeldeLink(basisUrl: string, aboId: string): string {
+  return `${basisUrl}/abo/abmelden?t=${encodeURIComponent(abmeldeToken(aboId))}`;
+}
+
+export function einstellungenLink(basisUrl: string, aboId: string): string {
+  return `${basisUrl}/abo/einstellungen?t=${encodeURIComponent(einstellungenToken(aboId))}`;
 }

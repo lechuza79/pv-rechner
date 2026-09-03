@@ -314,6 +314,11 @@ export const WAECHTER: WaechterJob[] = [
     pruefFelder: [
       "DEFAULT_HEATPUMP_CONFIG.geprueftIso",
       "DEFAULT_HEATPUMP_CONFIG.geprueftFoerderungIso",
+      // Der Förderreport der KfW hängt mit dran, statt einen eigenen Lauf zu
+      // bekommen: Er erscheint einmal im Jahr, ein eigener Auftrag fände elf
+      // Monate lang nichts. Sein Ablauf steht in scripts/kfw-report-verify.md
+      // und ist Schritt des Quartalslaufs.
+      "KFW_REPORT_STAND.geprueftIso",
     ],
     runbook: "scripts/waermepumpe-verify.md",
   },

@@ -18,6 +18,7 @@ import { MECHANIK_REGELN, pruefeMechanisch, sperren } from "../social-mechanik";
 
 const basis = JSON.parse(JSON.stringify({
   standIso: "2026-08-05T00:00:00+00:00",
+  stichtagJahr: 2025,
   stadtLand: { stadtAb: 100000, landUnter: 20000, stadtAnzahl: 80, landAnzahl: 10037, stadtJeTausend: 9.9, landJeTausend: 22.8 },
   wachstum: { balkonJetzt: 1453026, balkonVorJahr: 1202467, solarKwpJetzt: 127100000, solarKwpVorJahr: 117600000 },
   segmente: { privatDachKwp: 36200000, gewerbeDachKwp: 44500000, freiflaecheKwp: 44900000, solarGesamtKwp: 127100000 },

@@ -18,6 +18,7 @@ import {
 
 const basis: SocialKennzahlen = {
   standIso: "2026-08-05T00:00:00+00:00",
+  stichtagJahr: 2025,
   stadtLand: {
     stadtAb: 100_000,
     landUnter: 20_000,
@@ -169,6 +170,61 @@ describe("Alle Posts", () => {
     // vollständig sein; der Link gehört in den ersten Kommentar.
     for (const p of baueAllePosts(basis)) {
       expect(p.text).not.toMatch(/https?:\/\//);
+    }
+  });
+});
+
+describe("Der Vergleichszeitraum wird benannt, nicht behauptet", () => {
+  // Das Register führt je Anlage nur das JAHR der Inbetriebnahme. Ableitbar ist
+  // der Bestand zum 31.12., und der Abstand zum Datenstand ist dann so lang,
+  // wie das laufende Jahr alt ist. „In zwölf Monaten" stand über einem
+  // Vergleich gegen den 31.12.2025, während der Auszug vom 5. August war —
+  // sieben Monate als zwölf ausgegeben, auf Beitrag UND Bild.
+  it("nennt bei einem Datenstand im August keine zwölf Monate", () => {
+    const p = postWachstum(basis);
+    expect(p.text).not.toMatch(/zwölf Monaten|12 Monaten/);
+    expect(p.bild?.gemessen).not.toMatch(/zwölf Monaten/);
+    for (const serie of p.bild?.serien ?? []) {
+      expect(serie.label, "Bildbeschriftung").not.toMatch(/zwölf Monaten/);
+    }
+  });
+
+  it("nennt den gemessenen Zeitraum in Beitrag und Bild gleich", () => {
+    // Bild und Text stehen nebeneinander im Feed. Sagt eins „acht Monate" und
+    // das andere „zwölf", widersprechen sie sich auf der Fläche, die geteilt
+    // wird — dieselbe Regel wie bei den Nachkommastellen.
+    const p = postWachstum(basis);
+    expect(p.text).toContain("2026");
+    expect(p.bild?.gemessen).toMatch(/2026/);
+  });
+
+  it("wächst mit, wenn der Datenstand später im Jahr liegt", () => {
+    const dezember = { ...basis, standIso: "2026-12-20T00:00:00+00:00" };
+    expect(postWachstum(dezember).text).toContain("zwölf");
+    expect(postWachstum(basis).text).toContain("acht");
+  });
+});
+
+describe("Onsite-Fassungen", () => {
+  it("kommen ohne Ich-Form und ohne Quellenzeile aus", () => {
+    // Auf einer Seite trägt der Fuß die Quelle, und ein „Ich finde" gehört
+    // nicht in einen Abschnitt, der eine Frage beantwortet.
+    for (const p of baueAllePosts(basis)) {
+      if (!p.onsite) continue;
+      const text = p.onsite.absaetze.join(" ");
+      expect(text, `${p.id}: Ich-Form`).not.toMatch(/\bIch\b/);
+      expect(text, `${p.id}: Quellenzeile`).not.toContain("Eigene Berechnung");
+    }
+  });
+
+  it("behaupten nicht, ein Balkonkraftwerk brauche gar keine Erlaubnis", () => {
+    // „Keine Genehmigung" widerspricht unserer eigenen belegten Rechtsaussage:
+    // Seit 2024 ist Steckersolar eine privilegierte Maßnahme — die Zustimmung
+    // des Vermieters bzw. der Eigentümergemeinschaft bleibt Voraussetzung, sie
+    // ist nur schwerer zu verweigern. Gemeint war die BAUgenehmigung.
+    for (const p of baueAllePosts(basis)) {
+      const alles = [p.text, ...(p.onsite?.absaetze ?? [])].join(" ");
+      expect(alles, p.id).not.toMatch(/braucht keine Genehmigung/);
     }
   });
 });

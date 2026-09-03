@@ -96,7 +96,8 @@ export default function InternalShell({
       title: "System",
       links: [
         { href: "/admin", label: "Übersicht", exact: true },
-        { href: "/admin/theme", label: "Signalfarben-Theming" },
+        { href: "/admin/theme", label: "Designsystem" },
+        { href: "/admin/komponenten", label: "Komponenten" },
         { href: "/admin/prices", label: "Marktpreise" },
         { href: "/admin/charts", label: "Chart-Baukasten" },
         { href: "/admin/waechter", label: "Wächter-Berichte" },
@@ -214,7 +215,7 @@ function Sidebar({ sections, horizontal }: { sections: NavSection[]; horizontal:
 }
 
 const sectionTitleStyle: React.CSSProperties = {
-  fontSize: 11,
+  fontSize: v("--font-size-caption"),
   fontWeight: 700,
   textTransform: "uppercase",
   letterSpacing: "0.06em",
@@ -224,7 +225,7 @@ const sectionTitleStyle: React.CSSProperties = {
 };
 
 const groupLabelStyle: React.CSSProperties = {
-  fontSize: 12,
+  fontSize: v("--font-size-small"),
   fontWeight: 700,
   color: v("--color-text-secondary"),
   padding: `0 ${space.sm}px`,
@@ -235,7 +236,7 @@ function itemStyle(active: boolean): React.CSSProperties {
   return {
     display: "block",
     textDecoration: "none",
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     fontWeight: active ? 700 : 600,
     color: active ? v("--color-accent") : v("--color-text-secondary"),
     background: active ? v("--color-accent-dim") : "transparent",
@@ -249,7 +250,7 @@ function pillStyle(active: boolean): React.CSSProperties {
   return {
     flex: "0 0 auto",
     textDecoration: "none",
-    fontSize: 13,
+    fontSize: v("--font-size-small"),
     fontWeight: active ? 700 : 600,
     color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
     background: active ? v("--color-accent") : v("--color-bg-muted"),

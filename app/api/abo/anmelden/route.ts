@@ -7,7 +7,7 @@ import {
   type AboQuelle,
 } from "../../../../lib/gemeinde-abo";
 import { techniken } from "../../../../lib/abo-technik";
-import { bestaetigungsToken } from "../../../../lib/abo-token";
+import { bestaetigungsToken, einstellungenLink } from "../../../../lib/abo-token";
 import { aboBestaetigungsMail } from "../../../../lib/abo-mail";
 import { sendeAboMail } from "../../../../lib/abo-versand";
 import { getRegionById } from "../../../../lib/atlas";
@@ -177,6 +177,9 @@ export async function POST(req: NextRequest) {
   const mail = aboBestaetigungsMail({
     ortName: region.name,
     bestaetigenUrl: `${basis}/abo/bestaetigen?t=${encodeURIComponent(token)}`,
+    // Auch hier schon: Bis zur ersten Meldung können Monate vergehen, und bis
+    // dahin gäbe es sonst keinen Weg zu den eigenen Einstellungen.
+    einstellungenUrl: einstellungenLink(basis, ergebnis.abo.id),
   });
 
   const versand = await sendeAboMail({
