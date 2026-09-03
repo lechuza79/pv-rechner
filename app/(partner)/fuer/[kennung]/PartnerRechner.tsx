@@ -27,6 +27,20 @@ const PVRechner = dynamic(() => import("../../../(site)/photovoltaik-rechner/rec
   ),
 });
 
-export default function PartnerRechner({ kennung }: { kennung: string }) {
-  return <PVRechner sharePfad={`/fuer/${kennung}`} />;
+export default function PartnerRechner({
+  kennung,
+  name,
+  initialParams,
+}: {
+  kennung: string;
+  name: string;
+  initialParams?: Record<string, string | string[] | undefined>;
+}) {
+  return (
+    <PVRechner
+      sharePfad={`/fuer/${kennung}`}
+      partner={{ kennung, name }}
+      initialParams={initialParams}
+    />
+  );
 }

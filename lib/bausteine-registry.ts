@@ -267,6 +267,18 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: [],
   },
   {
+    datei: "components/ErgebnisAnBetrieb.tsx",
+    name: "ErgebnisAnBetrieb",
+    zweck:
+      "Der Rückkanal auf der betriebseigenen Rechner-Seite: Der Nutzer schickt sein fertiges Ergebnis an genau den Betrieb, von dessen Website er kam — nach dem Ergebnis, nie davor.",
+    gruppe: "eingabe",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: ["Icons"],
+    keinBeispielWeil:
+      "Der Baustein schickt beim Absenden eine echte Mail an einen echten Handwerksbetrieb. Ein Beispiel in der Galerie wäre entweder eine Attrappe mit totem Knopf — genau die zweite Fassung, gegen die es dieses Register gibt — oder es verschickt bei jedem Klick eines Neugierigen Post an einen Fremden. Zu sehen ist er auf jeder betriebseigenen Rechner-Seite unter dem Ergebnis.",
+  },
+  {
     datei: "components/InfoTooltip.tsx",
     name: "InfoTooltip",
     zweck:

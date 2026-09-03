@@ -12,6 +12,7 @@ import { simulateSolarYear, monthlyFromAnnual } from "../../../lib/balkon-sim";
 // ResultVerguetung umschließt ResultRegime — deshalb hier nur der äußere Import.
 import ResultVerguetung from "./_components/ResultVerguetung";
 import ResultSection from "../../../components/ResultSection";
+import ErgebnisAnBetrieb, { type PartnerAngabe } from "../../../components/ErgebnisAnBetrieb";
 // HEIZSYSTEM/HEIZSYSTEM_SHORT/WP_M2_PRESETS brauchte der entfallene
 // Verbrauchs-Abschnitt; die Gebäudefragen holen sie sich jetzt selbst aus
 // components/GebaeudeField.
@@ -76,6 +77,7 @@ const KLIMA_DEVICE_LABEL = (CFG.devices.find(d => d.id === CFG.defaultDeviceId)?
 export default function PVRechner({
   initialParams,
   sharePfad,
+  partner,
 }: {
   initialParams?: Record<string, string | string[] | undefined>;
   /**
@@ -89,6 +91,13 @@ export default function PVRechner({
    * der ins Leere führt, ist schlimmer als kein Teilen-Knopf.
    */
   sharePfad?: string;
+  /**
+   * Gesetzt auf der betriebseigenen Seite: Dann erscheint unter dem Ergebnis
+   * der Rückkanal — der Nutzer kann seine fertige Rechnung an genau den
+   * Betrieb schicken, von dessen Website er gekommen ist. Ohne diese Angabe
+   * verhält sich der Rechner unverändert.
+   */
+  partner?: PartnerAngabe;
 }) {
   // 'er' (Ertrag) und 'plz' sind reine Vorbefüll-Hinweise (z.B. von einer
   // regionalen Landingpage): sie seeden State, dürfen aber NICHT direkt ins
@@ -1576,6 +1585,17 @@ export default function PVRechner({
               }</span>
             </div>
 
+            {/* Der Rückkanal steht ÜBER den allgemeinen Aktionen: Wer über die
+                Seite eines Betriebs gekommen ist, für den ist „an diesen Betrieb
+                schicken" der naheliegende nächste Schritt, nicht „Link kopieren".
+                Ohne Partner-Angabe entfällt der Block ersatzlos. */}
+            {partner && (
+              <ErgebnisAnBetrieb
+                partner={partner}
+                ergebnisUrl={typeof window !== "undefined" ? buildShareUrl() : ""}
+              />
+            )}
+
             <ResultActions
               copied={copied} canShare={canShare} authState={authState} saving={saving} saved={saved} savedCalcId={savedCalcId}
               onCopy={handleCopy} onNativeShare={handleNativeShare} onWhatsApp={handleWhatsApp}
@@ -1589,7 +1609,14 @@ export default function PVRechner({
             }}><span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><IconRefresh size={iconSizes.md} /> Neu berechnen</span></button>
 
             <div style={{ textAlign: "center", fontSize: v("--font-size-caption"), color: v('--color-text-faint'), padding: "20px 0 8px", lineHeight: 1.6 }}>
-              Keine Lead-Erfassung · Keine Werbung<br />
+              {/* „Keine Lead-Erfassung" wäre auf einer Partnerseite unwahr:
+                  Dort gibt es genau darüber einen Knopf. Der Satz sagt deshalb
+                  dort, was wirklich gilt — der Nutzer entscheidet, und ohne ihn
+                  passiert nichts. Auf allen anderen Seiten bleibt die Zusage
+                  unverändert, weil sie dort weiterhin stimmt. */}
+              {partner
+                ? "Wir geben nichts weiter, außer du bittest uns darum · Keine Werbung"
+                : "Keine Lead-Erfassung · Keine Werbung"}<br />
               Alle Angaben ohne Gewähr · Keine Steuer- oder Anlageberatung
             </div>
           </div>

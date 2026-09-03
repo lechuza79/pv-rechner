@@ -38,8 +38,14 @@ export async function generateMetadata(props: {
 
 export default async function FachbetriebSeite(props: {
   params: Promise<{ kennung: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { kennung } = await props.params;
+  // Die Adress-Parameter tragen den geteilten Rechenstand. Sie NICHT
+  // durchzureichen war der erste Fehler dieser Seite: Ein Link, den jemand von
+  // hier aus geteilt hat, landete wieder am Anfang des Frageflusses — die
+  // Rechnung war weg, ohne dass es jemandem aufgefallen wäre.
+  const searchParams = await props.searchParams;
   const seite = await seiteFuerKennung(kennung);
   if (!seite) notFound();
 
@@ -94,7 +100,7 @@ export default async function FachbetriebSeite(props: {
           („Lohnt sich Photovoltaik?"). Eine zweite darüber stand beim ersten
           Bauversuch fast wortgleich daneben. */}
       <div style={S.wrap}>
-        <PartnerRechner kennung={seite.kennung} />
+        <PartnerRechner kennung={seite.kennung} name={name} initialParams={searchParams} />
       </div>
     </div>
   );
