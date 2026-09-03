@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { v, space, pad } from "../../../../lib/theme";
-import { seiteFuerKennung, anzeigename } from "../../../../lib/fachbetrieb-seite";
+import { seiteFuerKennung, anzeigename, kurzname } from "../../../../lib/fachbetrieb-seite";
 import InfoTooltip from "../../../../components/InfoTooltip";
 import Logo from "../../../../components/Logo";
 import PartnerRechner from "./PartnerRechner";
@@ -51,50 +51,57 @@ export default async function FachbetriebSeite(props: {
   if (!seite) notFound();
 
   const name = anzeigename(seite);
+  // Der Kurzname ohne Rechtsform trägt Kopf und Knöpfe — „Ergebnis an Elektro
+  // Mustermann GmbH & Co. KG schicken" ist als Beschriftung unbrauchbar.
+  const kurz = kurzname(name);
   const istVorschlag = seite.zustand === "vorschlag";
 
   return (
     <div style={S.page}>
-      {/* Der Kopf trägt den NAMEN, nicht das Logo. Vor einer Freigabe ist die
-          Logo-Verwendung markenrechtlich nicht gedeckt, und der Name trägt den
-          Zweck ebenso gut (zwei Legal-Judges, 01.09.2026). */}
+      {/* Betrieb und Herkunft stehen NEBENEINANDER und als Gruppe mittig. Der
+          Ort steht nicht mehr dabei — wer über die Website seines Betriebs
+          kommt, weiß, wo der sitzt. */}
       <header style={S.kopf}>
         <div style={S.kopfInner}>
-          <div>
-            <div style={S.betriebZeile}>
-              <span style={S.betrieb}>{name}</span>
-              {istVorschlag && (
+          <div style={S.betriebZeile}>
+            {seite.logoUrl && (
+              /* Das Zeichen des Betriebs. Ohne Herkunftsangabe geladen, damit
+                 sein Server nicht erfährt, von welcher Seite der Abruf kommt.
+                 Fehlt es, bleibt der Platz leer — ein Ersatzbild würde eine
+                 Marke behaupten, die es nicht gibt. */
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={seite.logoUrl}
+                alt=""
+                width={28}
+                height={28}
+                referrerPolicy="no-referrer"
+                style={S.betriebLogo}
+              />
+            )}
+            <span style={S.betrieb}>{kurz}</span>
+            {istVorschlag && (
               /* Der Hinweis bleibt SICHTBAR und wandert nicht ganz hinter das
                  Fragezeichen: Er muss im ersten sichtbaren Bereich stehen, sonst
                  trägt er den optischen Gesamteindruck nicht (Legal-Judge). Als
-                 Kasten über der ganzen Seite war er allerdings lauter als der
-                 Inhalt — die kurze Zeile sagt dasselbe, die Begründung steht
-                 einen Klick daneben. */
-                <span style={S.demo}>
-                  <span style={S.demoWort}>Demo</span>
-                  <InfoTooltip title="Was diese Seite ist" ariaLabel="Was diese Seite ist" size={12}>
-                    Diese Seite haben wir für {name} vorbereitet, um zu zeigen, wie ein
-                    unabhängiger Rechner auf der eigenen Website aussehen könnte. Zwischen{" "}
-                    {name} und solar-check.io besteht bislang keine Zusammenarbeit und keine
-                    Vereinbarung.
-                  </InfoTooltip>
-                </span>
-              )}
-            </div>
-            {(seite.ort || seite.plz) && (
-              <div style={S.ort}>
-                {[seite.plz, seite.ort].filter(Boolean).join(" ")}
-              </div>
+                 Kasten über der ganzen Seite war er lauter als der Inhalt — die
+                 Plakette sagt dasselbe, die Begründung steht einen Klick daneben. */
+              <span style={S.demo}>
+                <span style={S.demoWort}>Demo</span>
+                <InfoTooltip title="Was diese Seite ist" ariaLabel="Was diese Seite ist" size={12}>
+                  Diese Seite haben wir für {name} vorbereitet, um zu zeigen, wie ein
+                  unabhängiger Rechner auf der eigenen Website aussehen könnte. Zwischen{" "}
+                  {name} und solar-check.io besteht bislang keine Zusammenarbeit und keine
+                  Vereinbarung.
+                </InfoTooltip>
+              </span>
             )}
           </div>
-          {/* Die Herkunft steht im ersten sichtbaren Bereich, nicht im Fuß —
-              sonst trägt der Hinweis den optischen Gesamteindruck nicht. */}
-          {/* Unsere Marke als Logo, nicht als Textlink: Sie steht auf einer
-              fremden Kundenreise und muss dort auf einen Blick erkennbar sein —
-              dasselbe Muster wie „Powered by" in den eingebetteten Widgets. */}
-          <a href="/" style={S.herkunft} aria-label="Rechner von solar-check.io">
-            <span style={S.herkunftWort}>Rechner von</span>
-            <Logo width={116} />
+          {/* „Powered by" wie in den eingebetteten Widgets — dieselbe Formel für
+              dieselbe Sache: unsere Marke auf einer fremden Kundenreise. */}
+          <a href="/" style={S.herkunft} aria-label="Powered by solar-check.io">
+            <span style={S.herkunftWort}>Powered by</span>
+            <Logo width={88} />
           </a>
         </div>
       </header>
@@ -104,7 +111,7 @@ export default async function FachbetriebSeite(props: {
           („Lohnt sich Photovoltaik?"). Eine zweite darüber stand beim ersten
           Bauversuch fast wortgleich daneben. */}
       <div style={S.wrap}>
-        <PartnerRechner kennung={seite.kennung} name={name} initialParams={searchParams} />
+        <PartnerRechner kennung={seite.kennung} name={kurz} initialParams={searchParams} />
       </div>
     </div>
   );
@@ -124,29 +131,34 @@ const S = {
   kopfInner: {
     maxWidth: v("--content-max-width"),
     margin: "0 auto",
-    padding: pad("md", "lg"),
+    padding: pad("lg", "lg"),
     display: "flex",
+    // Nebeneinander und als Gruppe mittig — nicht untereinander gestapelt und
+    // nicht an die Ränder gedrückt. Letzteres sah aus wie eine
+    // Navigationsleiste ohne Navigation.
     alignItems: "center",
-    justifyContent: "space-between",
-    gap: space.md,
+    justifyContent: "center",
+    gap: space.xl,
     flexWrap: "wrap" as const,
   },
   betriebZeile: {
     display: "flex",
     alignItems: "center",
+    justifyContent: "center",
     gap: space.sm,
     flexWrap: "wrap" as const,
+  },
+  betriebLogo: {
+    width: 28,
+    height: 28,
+    objectFit: "contain" as const,
+    borderRadius: v("--radius-sm"),
   },
   betrieb: {
     fontSize: v("--font-size-h3"),
     fontWeight: 700,
     color: v("--color-text-primary"),
     lineHeight: 1.3,
-  },
-  ort: {
-    fontSize: v("--font-size-small"),
-    color: v("--color-text-muted"),
-    marginTop: 2,
   },
   herkunft: {
     display: "flex",
@@ -176,6 +188,8 @@ const S = {
   wrap: {
     maxWidth: v("--content-max-width"),
     margin: "0 auto",
-    padding: pad("lg", "lg"),
+    // Mehr Luft unter dem Kopf: Er ist jetzt mittig und wirkt als eigener
+    // Block — direkt auf den Rechner gesetzt klebte er daran.
+    padding: `${space.xxxl}px 12px ${space.lg}px`,
   },
 };

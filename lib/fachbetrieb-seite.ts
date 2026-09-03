@@ -31,6 +31,16 @@ import { withDbTimeout } from "./db-timeout";
  * die Beschriftung — die Adresse bleibt, damit ein gesetzter Link nicht bricht.
  */
 
+/**
+ * Zeigt die Seite das Zeichen des Betriebs schon VOR seiner Zusage?
+ *
+ * Entscheidung des Betreibers am 01.09.2026, gegen den Rat zweier
+ * Legal-Judges — die Begründung steht an der Verwendungsstelle unten. Als
+ * Schalter, damit ein Schub ohne fremde Zeichen ein Handgriff bleibt und keine
+ * Umbauarbeit.
+ */
+const LOGO_VOR_ZUSAGE = true;
+
 /** Vor der Zusage: Vorschlag. Danach: laufende Zusammenarbeit. */
 export type FachbetriebSeitenZustand = "vorschlag" | "partner";
 
@@ -88,7 +98,7 @@ export async function seiteFuerKennung(kennung: string): Promise<FachbetriebSeit
     const { data, error } = await withDbTimeout(
       db
         .from("fachbetriebe")
-        .select("domain, firmenname, ort, plz, email")
+        .select("domain, firmenname, ort, plz, email, favicon_url")
         .eq("art", "betrieb")
         .order("domain", { ascending: true })
         .range(von, von + SEITE - 1),
@@ -101,6 +111,7 @@ export async function seiteFuerKennung(kennung: string): Promise<FachbetriebSeit
       ort: string | null;
       plz: string | null;
       email: string | null;
+      favicon_url: string | null;
     }[];
     for (const z of zeilen) {
       if (kennungFuer(z.domain) === kennung) {
@@ -116,11 +127,20 @@ export async function seiteFuerKennung(kennung: string): Promise<FachbetriebSeit
           firmenname: z.firmenname,
           ort: z.ort,
           plz: z.plz,
-          // Das Logo bleibt leer, bis der Betrieb es freigegeben hat. Vor der
-          // Zusage ist seine Verwendung markenrechtlich nicht gedeckt; der
-          // Firmenname als Text trägt den Zweck ebenso (Legal-Judges,
-          // 01.09.2026).
-          logoUrl: null,
+          // Das Zeichen des Betriebs — sein Favicon, aus dem HTML seiner
+          // Startseite GELESEN, nicht geraten.
+          //
+          // RECHTLICHER VORBEHALT, bewusst hier und nicht nur im Konzept: Zwei
+          // Legal-Judges haben am 01.09.2026 festgestellt, dass die Verwendung
+          // eines fremden Zeichens VOR der Zusage markenrechtlich nicht gedeckt
+          // ist (§ 14 Abs. 2 MarkenG verbietet die Benutzung „ohne Zustimmung";
+          // nach der Zusage ist die Frage weg). Der Betreiber hat sich am
+          // 01.09.2026 dennoch dafür entschieden, weil die Seite ohne Zeichen
+          // nicht wie seine aussieht.
+          //
+          // Der Schalter macht das umkehrbar, ohne die Seite umzubauen: Wer den
+          // Testschub ohne fremde Zeichen fahren will, setzt ihn auf false.
+          logoUrl: LOGO_VOR_ZUSAGE ? z.favicon_url : null,
           // Solange es keinen Zusage-Vermerk gibt, ist jede Seite ein Vorschlag.
           // Der Zustand kommt später aus dem Arbeitsstand — ihn heute zu raten
           // hieße, eine Zusammenarbeit zu behaupten, die es nicht gibt.
@@ -134,7 +154,7 @@ export async function seiteFuerKennung(kennung: string): Promise<FachbetriebSeit
 }
 
 /**
- * Wie der Betrieb auf der Seite genannt wird.
+ * Wie der Betrieb auf der Seite genannt wird — der volle Name.
  *
  * Der Firmenname ist bei rund einem Fünftel der Einträge leer oder unbrauchbar
  * (gemessen bei der Erhebung). Dann trägt die Domain — sie stimmt immer. Eine
@@ -143,4 +163,67 @@ export async function seiteFuerKennung(kennung: string): Promise<FachbetriebSeit
 export function anzeigename(s: FachbetriebSeite): string {
   const n = s.firmenname?.trim();
   return n && n.length > 2 ? n : s.domain;
+}
+
+/**
+ * Rechtsformen und ihre üblichen Schreibweisen. Die längeren stehen VORNE:
+ * Sonst schneidet „KG" aus „GmbH & Co. KG" nur die letzten zwei Zeichen weg
+ * und lässt „GmbH & Co." stehen.
+ */
+const RECHTSFORMEN = [
+  "gmbh & co\\. kg",
+  "gmbh & co\\.? ?kg",
+  "gmbh u\\. co\\. kg",
+  "ag & co\\. kg",
+  "gmbh",
+  "mbh",
+  "ug \\(haftungsbeschränkt\\)",
+  "ug",
+  "ohg",
+  "kgaa",
+  "kg",
+  "gbr",
+  "e\\. ?k\\.",
+  "e\\. ?kfm\\.",
+  "eg",
+  "e\\. ?v\\.",
+  "ag",
+  "se",
+  "gmbh & co\\. kgaa",
+  "inh\\..*",
+  "& co\\.",
+];
+
+/**
+ * Der KURZNAME für Knöpfe und Fließtext: „2H-Solar GmbH" wird zu „2H-Solar".
+ *
+ * Warum überhaupt: „Ergebnis an Elektro Mustermann GmbH & Co. KG schicken" ist
+ * als Knopfbeschriftung unbrauchbar — und im Gespräch sagt niemand die
+ * Rechtsform mit. Der volle Name bleibt dort, wo es um die Firma als
+ * Rechtsträger geht.
+ *
+ * **Was NICHT gekürzt wird:** alles außer der Rechtsform. Ein Versuch, auch
+ * Branchenwörter wegzuschneiden („Elektro", „Solar"), wäre derselbe Fehlgriff
+ * wie beim Firmennamen-Extraktor — dort machte eine zu breite Regel aus „Welt
+ * in Elbe-Elster e.V." ein „Welt".
+ *
+ * **Und die Untergrenze ist Absicht:** Bleibt weniger als drei Zeichen übrig
+ * („Solar GmbH" → „Solar" ist noch gut, „PV GmbH" → „PV" wird knapp), gilt der
+ * volle Name. Lieber eine Rechtsform zu viel als ein Name, der niemanden mehr
+ * bezeichnet.
+ */
+export function kurzname(voll: string): string {
+  // Die Wortgrenze steht NUR vor Buchstaben-Formen. Bei „& Co." greift `\b`
+  // nicht — das kaufmännische Und ist kein Wortzeichen, und „Hansen & Co. KG"
+  // behielt dadurch ein einsames „& Co.".
+  const muster = new RegExp(`[\\s,]*(?:\\b|(?=&))(${RECHTSFORMEN.join("|")})\\s*$`, "i");
+  let kurz = voll.trim();
+  // Mehrfach anwenden: „Muster GmbH & Co. KG" braucht zwei Durchgänge, wenn die
+  // zusammengesetzte Form nicht greift.
+  for (let i = 0; i < 3; i++) {
+    const naechst = kurz.replace(muster, "").trim().replace(/[,\-–]\s*$/, "").trim();
+    if (naechst === kurz) break;
+    kurz = naechst;
+  }
+  return kurz.length >= 3 ? kurz : voll.trim();
 }
