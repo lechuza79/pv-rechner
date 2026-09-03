@@ -28,6 +28,7 @@ import {
 } from "../../../../lib/atlas";
 import { pvLeistungTeile, wattProKopfTeile } from "../../../../lib/atlas-format";
 import { ortPhrase, childNoun } from "../../../../lib/atlas-orte";
+import { atlasSeitenTitel } from "../../../../lib/atlas-titel";
 import { GROESSENKLASSEN_WARUM } from "../../../../lib/gemeindegroesse";
 import { buildRegionHighlight } from "../../../../lib/region-highlight";
 import { rankingKategorienGruppiert } from "../../../../lib/atlas-ranking";
@@ -98,40 +99,11 @@ function headline(region: AtlasRegion): string {
 }
 
 /**
- * Titel der Regionsseiten: führendes Wort ist „Photovoltaik", dann der Ort.
- *
- * ZWEI VERWORFENE ANLÄUFE stehen hinter dieser Zeile, beide am 18.08.2026, beide
- * vom Betreiber gestoppt — deshalb steht die Herleitung hier und nicht nur im
- * Commit:
- *
- * 1. „Solaratlas Bayern" als ÜBERSCHRIFT. Verworfen, weil nur gemessen worden war,
- *    wie gut wir für den Eigennamen stehen — nicht, was der Begriff wiegt, den er
- *    ersetzen sollte.
- * 2. „Solaratlas Bayern" als TITEL. Ebenfalls verworfen, aus zwei Gründen:
- *    - Die Suchabsicht passt nicht. Auf Platz 1–10 zu „solaratlas bayern" steht
- *      ausnahmslos ein Dachflächen-Potenzialkataster (Energie-Atlas Bayern,
- *      Geoportal, Solaratlas des Landkreises Berchtesgadener Land). Das ist
- *      dieselbe Falle wie bei „solarkataster", die wir am 13.08.2026 schon einmal
- *      dokumentiert hatten: „darf ich auf mein Dach?" ist eine andere Frage als
- *      „was steht hier schon?".
- *    - Die Nachfrage war Rauschen: „solaratlas bayern" 48 Einblendungen, aber
- *      „solaratlas nrw" 2 und „solaratlas rlp" 5. Aus einer Seite wurde eine Regel
- *      für siebzehn.
- *
- * WAS STATTDESSEN GEMESSEN IST: Auf unserer stärksten Atlas-Seite (Rheinland-Pfalz)
- * sind die drei größten Anfragen „photovoltaik pfalz" (18 Einblendungen),
- * „photovoltaik rheinland-pfalz" (11) und „photovoltaik rheinland pfalz" (7) —
- * zusammen 36 gegen 5 für den Eigennamen. Über alle Atlas-Seiten: „photovoltaik"
- * in 36 Anfragen mit 140 Einblendungen, „solaratlas" in 6 mit 71. Das Wort stand
- * bis dahin in keinem Titel und in keinem sichtbaren Satz.
- *
- * Die Ortsangabe kommt aus ortPhrase(), damit die Präposition stimmt („im Landkreis
- * Würzburg", „in der Region Hannover", „im Saarland") — der Titel wird sonst an
- * genau den drei Stellen falsch, für die es diese Funktion gibt.
- * Quelle: Search Console 18.07.–15.08.2026, Anfragen-Ebene; docs/seo/befund-2026-08-18-atlas-wellen.md
+ * Titel der Regionsseiten. Wortwahl, Zeichen-Budget und die Messung dahinter
+ * stehen in lib/atlas-titel.ts — dieselbe Vorlage traegt die Gemeindeseite.
  */
 function seitenTitel(region: AtlasRegion): string {
-  return `Photovoltaik ${ortPhrase(region)}: Solaranlagen, Bestand & Zubau`;
+  return atlasSeitenTitel(region);
 }
 
 export async function generateMetadata(props: { params: Promise<Params> }): Promise<Metadata> {
@@ -597,8 +569,8 @@ const S: Record<string, React.CSSProperties> = {
     textDecoration: "none",
     color: v("--color-text-primary"),
   },
-  rangKachelTitel: { fontSize: 15, fontWeight: 700, textTransform: "capitalize" },
-  rangKachelCta: { display: "flex", alignItems: "center", gap: 5, fontSize: 13, color: v("--color-accent") },
+  rangKachelTitel: { fontSize: v("--font-size-body"), fontWeight: 700, textTransform: "capitalize" },
+  rangKachelCta: { display: "flex", alignItems: "center", gap: 5, fontSize: v("--font-size-small"), color: v("--color-accent") },
   page: {
     background: v("--color-bg"),
     fontFamily: v("--font-text"),
@@ -619,8 +591,8 @@ const S: Record<string, React.CSSProperties> = {
     marginBottom: space.sm,
   },
   standDate: { fontWeight: 600, color: "inherit" },
-  h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
-  intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.xxl}px` },
+  h1: { fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
+  intro: { fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.xxl}px` },
   strong: { color: v("--color-text-primary"), fontWeight: 600 },
   metricsGrid: {
     display: "grid",
@@ -629,11 +601,11 @@ const S: Record<string, React.CSSProperties> = {
     marginBottom: space.xxl,
   },
   metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: space.xl },
-  metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: space.xs },
-  metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 },
-  tendCaption: { fontSize: 11, color: v("--color-text-muted"), margin: `0 ${space.xxs}px ${space.xxl}px` },
-  h2: { fontSize: 16, fontWeight: 700, margin: `0 0 ${space.xs}px` },
-  sub: { fontSize: 12, color: v("--color-text-muted"), margin: `0 0 ${space.lg}px`, lineHeight: 1.6 },
+  metricLabel: { fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginBottom: space.xs },
+  metricValue: { fontFamily: v("--font-mono"), fontSize: v("--font-size-display-sm"), fontWeight: 700 },
+  tendCaption: { fontSize: v("--font-size-caption"), color: v("--color-text-muted"), margin: `0 ${space.xxs}px ${space.xxl}px` },
+  h2: { fontSize: v("--font-size-lead"), fontWeight: 700, margin: `0 0 ${space.xs}px` },
+  sub: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), margin: `0 0 ${space.lg}px`, lineHeight: 1.6 },
   section: { marginBottom: space.huge },
   card: {
     background: v("--color-bg"),
@@ -641,7 +613,7 @@ const S: Record<string, React.CSSProperties> = {
     borderRadius: v("--radius-lg"),
     padding: pad("xl"),
   },
-  link: { color: v("--color-accent"), textDecoration: "none", fontSize: 14, fontWeight: 600 },
+  link: { color: v("--color-accent"), textDecoration: "none", fontSize: v("--font-size-body"), fontWeight: 600 },
   // Verweis MITTEN im Fließtext: Akzentfarbe UND Unterstreichung, so wie überall
   // sonst im Fließtext des Projekts (Quellenangaben, Ratgeber, Förderseiten).
   // `link` ohne Unterstreichung ist der Stil für eigenständige Links, die durch
@@ -658,7 +630,7 @@ const S: Record<string, React.CSSProperties> = {
     textUnderlineOffset: 2,
   },
   disclaimer: {
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     color: v("--color-text-muted"),
     lineHeight: 1.6,
     borderTop: `1px solid ${v("--color-border")}`,

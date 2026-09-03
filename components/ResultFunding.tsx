@@ -5,7 +5,7 @@ import { v, iconSizes } from "../lib/theme";
 import { IconArrowRight } from "./Icons";
 import Modal from "./Modal";
 import { FundingStatusBadge, FundingRates, FundingConditions, istDachSicht } from "./FundingProgramParts";
-import { fundingStandLabel, FUNDING_TECHNIK_LABEL, type FundingProgram, type FundingTechnik } from "../lib/funding-programs";
+import { fundingStandLabel, FUNDING_TECHNIK_FUER, type FundingProgram, type FundingTechnik } from "../lib/funding-programs";
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
@@ -48,9 +48,9 @@ function FundingProgramModal({
     <Modal open={!!program} onClose={onClose} title={shownProgram.name}>
       <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
         <FundingStatusBadge status={shownProgram.status} />
-        <span style={{ fontSize: 12, color: v("--color-text-secondary") }}>{shownProgram.traeger}</span>
+        <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>{shownProgram.traeger}</span>
       </div>
-      <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginBottom: 12 }}>
+      <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginBottom: 12 }}>
         {/* Der Gesamt-Höchstbetrag beschreibt die Dachanlage; unter einer
             Balkon-Sicht behauptete er bei Nidda das Siebeneinhalbfache des
             echten Deckels. Dieselbe Regel wie auf der Stadtseite, aus einer
@@ -63,7 +63,7 @@ function FundingProgramModal({
       <div style={{ marginBottom: shownProgram.conditions.length > 0 ? 14 : 0 }}>
         <FundingConditions conditions={shownProgram.conditions} technik={technik} />
       </div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", fontSize: 12 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", fontSize: v("--font-size-small") }}>
         <a href={shownProgram.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none", fontWeight: 700 }}>Zur offiziellen Quelle ›</a>
         <span style={{ color: v("--color-text-muted") }}>{fundingStandLabel(shownProgram)}</span>
       </div>
@@ -137,7 +137,7 @@ export default function ResultFunding({
     padding: "16px 16px", marginBottom: 16, border: `1px solid ${v("--color-border")}`,
   };
   const heading = (
-    <div style={{ fontSize: 13, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 10 }}>
+    <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 10 }}>
       Förderung
     </div>
   );
@@ -153,20 +153,20 @@ export default function ResultFunding({
   );
 
   if (loading && !chosenAgs) {
-    return <Karte><div style={{ fontSize: 12, color: v("--color-text-muted") }}>Förderprogramme werden geprüft …</div></Karte>;
+    return <Karte><div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Förderprogramme werden geprüft …</div></Karte>;
   }
 
   // Ambiguous PLZ: ask which municipality the user lives in before computing.
   if (!chosenAgs && candidates && candidates.length > 1) {
     return (
       <Karte>
-        <div style={{ fontSize: 12, color: v("--color-text-secondary"), marginBottom: 10 }}>
+        <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginBottom: 10 }}>
           Diese PLZ deckt mehrere Orte ab — wo wohnst du?
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
           {candidates.map((c) => (
             <button key={c.ags} onClick={() => onChooseAgs(c.ags)} style={{
-              padding: "6px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer",
+              padding: "6px 12px", fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
               background: v("--color-bg-muted"), color: v("--color-text-primary"),
               border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-sm"),
             }}>
@@ -206,13 +206,13 @@ export default function ResultFunding({
               }} />
               <input type="checkbox" checked={enabled} onChange={(e) => onToggle(e.target.checked)} style={{ position: "absolute", opacity: 0, width: "100%", height: "100%", margin: 0, cursor: "pointer" }} />
             </span>
-            <span style={{ fontSize: 13, color: v("--color-text-primary"), fontWeight: 600 }}>
+            <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-primary"), fontWeight: 600 }}>
               Förderung anrechnen{ortLabel ? ` (${ortLabel})` : ""}
             </span>
           </label>
 
           {enabled ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: 7, fontSize: 13 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 7, fontSize: v("--font-size-small") }}>
               {applied.map(({ program, amount }) => (
                 <div key={program.id} style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
                   <ProgramLink p={program} />
@@ -223,18 +223,18 @@ export default function ResultFunding({
                 <span style={{ color: v("--color-text-secondary") }}>Investition nach Förderung</span>
                 <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-text-primary") }}>{nf(effektiv)} €</span>
               </div>
-              <p style={{ fontSize: 11, lineHeight: 1.5, color: v("--color-text-faint"), margin: "2px 0 0" }}>
+              <p style={{ fontSize: v("--font-size-caption"), lineHeight: 1.5, color: v("--color-text-faint"), margin: "2px 0 0" }}>
                 Fördersätze ohne Gewähr — verbindlich ist die offizielle Quelle des Programms, Budgets können erschöpft sein.
               </p>
             </div>
           ) : mostSpecific ? (
-            <div style={{ fontSize: 12, marginTop: 8 }}>
+            <div style={{ fontSize: v("--font-size-small"), marginTop: 8 }}>
               <ProgramLink p={mostSpecific}>Details zu {mostSpecific.name} ›</ProgramLink>
             </div>
           ) : null}
         </>
       ) : (
-        <div style={{ fontSize: 12, color: v("--color-text-secondary"), lineHeight: 1.6 }}>
+        <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.6 }}>
           {mostSpecific && hinweis ? (
             // Ein Hinweis nennt den Grund bereits — dann darf hier NICHT zusätzlich
             // „lässt sich nicht berechnen" stehen. Bei der Kumulierungsgrenze der BEG
@@ -251,7 +251,7 @@ export default function ResultFunding({
             </>
           ) : (
             <>
-              Für deinen Ort kennen wir kein aktives kommunales Förderprogramm für {FUNDING_TECHNIK_LABEL[technik]}.
+              Für deinen Ort kennen wir kein aktives kommunales Förderprogramm für {FUNDING_TECHNIK_FUER[technik]}.
               {/* Der bundesweite Zusatz gilt NICHT für jede Technik: Die Nullsteuer
                   ist ein Umsatzsteuersatz auf Photovoltaik und Speicher, und die
                   BEG rechnet der Wärmepumpen-Rechner längst selbst ab. Der Satz
@@ -266,10 +266,10 @@ export default function ResultFunding({
       )}
 
       {hinweis ? (
-        <p style={{ fontSize: 11.5, lineHeight: 1.5, color: v("--color-text-muted"), margin: "10px 0 0" }}>{hinweis}</p>
+        <p style={{ fontSize: v("--font-size-caption"), lineHeight: 1.5, color: v("--color-text-muted"), margin: "10px 0 0" }}>{hinweis}</p>
       ) : null}
 
-      <Link href="/photovoltaik-foerderung" style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 12, fontSize: 12, color: v("--color-accent"), textDecoration: "none" }}>
+      <Link href="/photovoltaik-foerderung" style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 12, fontSize: v("--font-size-small"), color: v("--color-accent"), textDecoration: "none" }}>
         Alle Förderprogramme <IconArrowRight size={iconSizes.xs} />
       </Link>
 

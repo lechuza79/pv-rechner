@@ -22,7 +22,11 @@ describe("live cities (only active programs)", () => {
     expect(slugs).not.toContain("schweinfurt"); // eingestellt (Council Juli 2026)
     expect(slugs).not.toContain("muenchen"); // eingestellt
     expect(slugs).not.toContain("karlsruhe"); // ausgeschoepft
-    expect(slugs).not.toContain("dresden"); // kein Programm
+    // Dresden hatte lange gar kein Programm. Seit dem 02.09.2026 gilt für die
+    // Stadt das sächsische LANDESprogramm — und ein Landesprogramm eines
+    // Flächenlands trägt keine Stadtseite: Dresden, Leipzig und Chemnitz
+    // bekämen sonst dieselbe Auskunft unter drei Ortsnamen.
+    expect(slugs).not.toContain("dresden"); // Landesprogramm, keine Stadtseite
   });
   it("isCityLive is false for cities without any program", () => {
     const noProg = ATLAS_CITIES.find((c) => !fundingFor(c))!;

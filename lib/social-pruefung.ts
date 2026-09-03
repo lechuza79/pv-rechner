@@ -3,10 +3,12 @@ import "server-only";
 // Datenbank-Schicht der Prüfstufe. Regeln und Typen: lib/social-pruefung-kern.ts
 
 import { supabase } from "./supabase-server";
-import { fassungsAbdruck, urteil, type Fassung, type PruefUrteil, type Pruefung } from "./social-pruefung-kern";
+import { urteil, type Fassung, type PruefUrteil, type Pruefung } from "./social-pruefung-kern";
+import { fassungsAbdruck } from "./social-abdruck";
 
 export type { PruefArt, Pruefung, PruefUrteil, Fassung } from "./social-pruefung-kern";
-export { NOETIGE_PRUEFUNGEN, SOCIAL_PRUEFUNG_DDL, fassungsAbdruck, urteil } from "./social-pruefung-kern";
+export { NOETIGE_PRUEFUNGEN, SOCIAL_PRUEFUNG_DDL, fassungsText, urteil } from "./social-pruefung-kern";
+export { fassungsAbdruck } from "./social-abdruck";
 
 export async function ladePruefungen(postId: string): Promise<Pruefung[]> {
   if (!supabase) return [];
@@ -49,7 +51,7 @@ export async function speicherePruefung(p: Omit<Pruefung, "geprueft_am">): Promi
  */
 export async function pruefungGueltig(postId: string, fassung: Fassung): Promise<PruefUrteil> {
   if (!supabase) return { ok: false, grund: "Prüfungen sind nicht abrufbar (keine Datenbank)." };
-  return urteil(fassung, await ladePruefungen(postId));
+  return urteil(fassungsAbdruck(fassung), await ladePruefungen(postId));
 }
 
 export function abdruckVon(fassung: Fassung): string {

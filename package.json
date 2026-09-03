@@ -31,6 +31,7 @@
     "waechter:gesundheit": "tsx scripts/waechter-gesundheit.ts",
     "sessions": "tsx scripts/sessions.ts",
     "geo:umrisse": "tsx scripts/bundesland-umrisse.ts",
+    "ratgeber:livedatum": "tsx scripts/ratgeber-livedatum.ts",
     "laender:sync": "tsx scripts/ember-laender-sync.ts",
     "foerder:serp": "tsx scripts/funding-serp-test.ts",
     "fachbetriebe": "tsx scripts/fachbetriebe-refresh.ts",
@@ -47,6 +48,10 @@
     "claude-md:verify": "tsx scripts/claude-md-verify.ts",
     "kommunen:stand": "tsx scripts/kommunen-stand.ts",
     "kommunen:vorflug": "tsx scripts/kommunen-vorflug.ts",
+    "atlas:kreisfrei": "tsx scripts/atlas-kreisfrei-messen.ts",
+    "kommunen:verweise": "tsx scripts/kommunen-verweise-suchen.ts",
+    "kfw:import": "tsx scripts/kfw-report-import.ts",
+    "auth:mailvorlagen": "tsx scripts/auth-mailvorlagen.ts",
     "fachbetriebe:cms": "tsx scripts/fachbetriebe-cms.ts",
     "fachbetriebe:agenturen": "tsx scripts/fachbetriebe-agenturen.ts",
     "fachbetrieb:link": "tsx scripts/fachbetrieb-link.ts"

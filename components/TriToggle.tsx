@@ -9,7 +9,7 @@ export default function TriToggle({ options, value, onChange, label }: { options
   const frage = label.replace(/^[^\p{L}]+/u, "");
   return (
     <div style={{ marginBottom: 18 }}>
-      <div style={{ fontSize: 14, fontWeight: 700, color: v('--color-text-primary'), marginBottom: 8 }}>{label}</div>
+      <div style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v('--color-text-primary'), marginBottom: 8 }}>{label}</div>
       <div style={{ display: "flex", gap: 6 }}>
         {options.map(o => (
           // Kennzeichnung für den Flow-Läufer. Sie fehlte bis zum 22.08.2026 —
@@ -29,7 +29,7 @@ export default function TriToggle({ options, value, onChange, label }: { options
             data-flow-group={frage}
             aria-pressed={value === o.id}
             style={{
-            flex: 1, padding: "10px 8px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
+            flex: 1, padding: "10px 8px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600,
             cursor: "pointer", textAlign: "center",
             background: value === o.id ? v('--color-accent-dim') : v('--color-bg-muted'),
             border: value === o.id ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,

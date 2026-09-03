@@ -28,6 +28,16 @@
 // stillschweigend — und abgelehnt wird nie, sonst ginge eine echte Frage
 // verloren, nur weil ihr Autor zu viel geschrieben hat.
 
+import { escapeHtml } from "./html-escape";
+import { tokens } from "./theme";
+
+// Eine Mail löst keine CSS-Variable auf, deshalb werden die Größen als Werte
+// aus der einen Quelle gelesen statt hier getippt — dieselbe Bauform, mit der
+// die Abo-Mail und der Preisbericht ihre Farben holen.
+const F_SMALL = tokens["--font-size-small"];
+const F_BODY = tokens["--font-size-body"];
+const F_H3 = tokens["--font-size-h3"];
+
 /** Länge, ab der eine einzelne Entscheidung sichtbar gekürzt wird. */
 const MAX_DECISION_CHARS = 400;
 const MAX_DECISIONS = 5;
@@ -112,13 +122,11 @@ export function decideDelivery(p: AlertPayload): Delivery {
   return { send: false, reason: "nichts zu entscheiden" };
 }
 
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
+// escapeHtml stand hier privat und behandelte das Apostroph nicht. Seit
+// 31.08.2026 kommt sie aus lib/html-escape.ts — dieselbe Fassung, die auch die
+// Abo-Mails benutzen. Zwei Escape-Funktionen, von denen eine ein Zeichen
+// weniger kennt, sind die Sorte Unterschied, die weder im Diff noch im Browser
+// auffällt.
 
 /**
  * Die drei Zeilen, die im Postfach sichtbar sind, bevor irgendjemand klickt.
@@ -159,8 +167,8 @@ export function buildAlertMail(p: AlertPayload, opts: MailOptions = {}): { subje
 
   const block = (title: string, items: string[], ordered: boolean) =>
     items.length
-      ? `<h3 style="font-size:14px;margin:20px 0 6px">${escapeHtml(title)}</h3>
-         <${ordered ? "ol" : "ul"} style="margin:0;padding-left:20px;font-size:14px;line-height:1.7">
+      ? `<h3 style="font-size:${F_BODY};margin:20px 0 6px">${escapeHtml(title)}</h3>
+         <${ordered ? "ol" : "ul"} style="margin:0;padding-left:20px;font-size:${F_BODY};line-height:1.7">
            ${items.map((i) => `<li style="margin-bottom:6px">${escapeHtml(i)}</li>`).join("")}
          </${ordered ? "ol" : "ul"}>`
       : "";
@@ -168,21 +176,21 @@ export function buildAlertMail(p: AlertPayload, opts: MailOptions = {}): { subje
   // Regelfall: ein Link. Notfall (Ablage ausgefallen): der Volltext, sichtbar als
   // solcher gekennzeichnet — sonst wirkt die lange Mail wie ein Rückfall.
   const detailsBlock = opts.reportUrl
-    ? `<p style="margin-top:24px;font-size:13px">
+    ? `<p style="margin-top:24px;font-size:${F_SMALL}">
          <a href="${escapeHtml(opts.reportUrl)}" style="color:#1365EA">Ganzen Bericht dieses Laufs ansehen</a>
        </p>`
     : details
-      ? `<p style="margin-top:24px;font-size:12px;color:#949494">Der Bericht konnte nicht abgelegt werden und steht deshalb ausnahmsweise hier:</p>
-         <div style="font-size:13px;line-height:1.7;color:#777">${escapeHtml(details).replace(/\n/g, "<br>")}</div>`
+      ? `<p style="margin-top:24px;font-size:${F_SMALL};color:#949494">Der Bericht konnte nicht abgelegt werden und steht deshalb ausnahmsweise hier:</p>
+         <div style="font-size:${F_SMALL};line-height:1.7;color:#777">${escapeHtml(details).replace(/\n/g, "<br>")}</div>`
       : "";
 
   const html = `<div style="font-family:system-ui,sans-serif;max-width:640px;margin:0 auto;color:#3F3F3F">
-    <h2 style="margin:0 0 4px;font-size:18px">${escapeHtml(rawSubject)}</h2>
-    <p style="color:#777;margin:0 0 16px;font-size:13px">${kopf.map(escapeHtml).join(" · ")}${tag ? ` · ${escapeHtml(tag)}` : ""}</p>
+    <h2 style="margin:0 0 4px;font-size:${F_H3}">${escapeHtml(rawSubject)}</h2>
+    <p style="color:#777;margin:0 0 16px;font-size:${F_SMALL}">${kopf.map(escapeHtml).join(" · ")}${tag ? ` · ${escapeHtml(tag)}` : ""}</p>
     ${block("Deine Entscheidung", decisions, true)}
     ${block("Selbst erledigt (nichts zu tun)", done, false)}
     ${detailsBlock}
-    <p style="color:#949494;font-size:12px;margin-top:24px">Automatisch erzeugt von einem solar-check.io-Wächter. Diese Mail kommt nur, wenn eine Entscheidung bei dir liegt. Alle Läufe — auch die ohne Mail — stehen unter solar-check.io/admin/waechter.</p>
+    <p style="color:#949494;font-size:${F_SMALL};margin-top:24px">Automatisch erzeugt von einem solar-check.io-Wächter. Diese Mail kommt nur, wenn eine Entscheidung bei dir liegt. Alle Läufe — auch die ohne Mail — stehen unter solar-check.io/admin/waechter.</p>
   </div>`;
 
   return { subject, html };

@@ -512,7 +512,11 @@ function applyBrightestStage(wrapper: HTMLElement): void {
  * This lets a widget show one footer on the web and a print-tuned one in the
  * image (source inline next to "Powered by", no underline) from the same card.
  */
-export async function captureNodeToBlob(node: HTMLElement, scale = 2): Promise<Blob> {
+export async function captureNodeToBlob(
+  node: HTMLElement,
+  scale = 2,
+  format?: { type: string; quality?: number; background?: string },
+): Promise<Blob> {
   // Snapshot a detached CLONE of the card, not the live node. The live node is
   // owned by React, which re-renders the moment the caller flips its isExporting
   // flag on click — that reconciliation undoes any edit we make to the live tree
@@ -555,12 +559,35 @@ export async function captureNodeToBlob(node: HTMLElement, scale = 2): Promise<B
   try {
     return await domToBlob(clone, {
       scale,
-      // Transparent canvas → the card's rounded corners stay rounded.
-      backgroundColor: undefined,
+      // Transparent canvas → the card's rounded corners stay rounded. A format
+      // that cannot carry transparency (JPEG) passes its own background instead,
+      // otherwise those corners come out black.
+      backgroundColor: format?.background,
+      ...(format ? { type: format.type, quality: format.quality } : {}),
     });
   } finally {
     wrapper.remove();
   }
+}
+
+/**
+ * Same capture, but as a JPEG on white.
+ *
+ * Instagram accepts nothing else — "JPEG is the only image format supported" —
+ * and it fetches the file itself from a public address rather than taking bytes
+ * from us. JPEG carries no transparency, so the rounded corners of the PNG path
+ * would come out black; the card is drawn on white instead.
+ *
+ * Deliberately the SAME capture as everywhere else. A second render path would
+ * mean the published image is not the one that was approved, and that is the
+ * kind of difference nobody notices until it is in the feed.
+ */
+export async function captureNodeToJpeg(node: HTMLElement, scale = 2): Promise<Blob> {
+  return captureNodeToBlob(node, scale, {
+    type: 'image/jpeg',
+    quality: 0.92,
+    background: '#ffffff',
+  });
 }
 
 /**

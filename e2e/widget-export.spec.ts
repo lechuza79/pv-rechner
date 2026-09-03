@@ -63,3 +63,41 @@ test.describe("Widget-Bildexport", () => {
     if (OUT_DIR) await download.saveAs(`${OUT_DIR}/gruengas-export.png`);
   });
 });
+
+test.describe("Anlagenbestand-Widget", () => {
+  test("Download liefert ein Bild, das für sich steht", async ({ page }) => {
+    await page.goto("/embed/anlagenbestand-deutschland");
+    await expect(page.getByText("Solaranlagen in Deutschland").first()).toBeVisible();
+
+    // Die Legende steht bei diesem Widget SICHTBAR in der Karte, nicht nur im
+    // Bild-Fuß: Zwei gleich lange Balken je Zeile sind ohne sie zwei
+    // unbeschriftete Streifen — auf der Seite genauso wie im Bild.
+    await expect(page.getByText("Anteil an der Anzahl")).toBeVisible();
+    await expect(page.getByText("Anteil an der Leistung")).toBeVisible();
+
+    // Quelle senkrecht an der Kante, vollständig samt Lizenz und
+    // Änderungshinweis (dl-de/by-2-0 verlangt beides).
+    const kante = page.locator('[title^="Quelle:"]');
+    await expect(kante).toHaveCount(1);
+    await expect(kante).toContainText("Bundesnetzagentur");
+    await expect(kante).toContainText("dl-de/by-2-0");
+
+    // Ein Anteil unter einem Prozent darf nicht als „0 %" dastehen: 19.374
+    // Freiflächenanlagen sind nicht nichts. Im Bild kann das niemand nachfragen.
+    await expect(page.locator("body")).not.toContainText(/(?<!\d,)\b0 %/);
+
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByTitle("Als Bild herunterladen").click();
+    const download = await downloadPromise;
+    const path = await download.path();
+    expect(path).toBeTruthy();
+
+    const buf = await readFile(path!);
+    expect(buf.byteLength).toBeGreaterThan(30_000);
+    expect(buf.subarray(1, 4).toString("ascii")).toBe("PNG");
+    expect(buf.readUInt32BE(16)).toBeGreaterThan(600);
+    expect(buf.readUInt32BE(20)).toBeGreaterThan(400);
+
+    if (OUT_DIR) await download.saveAs(`${OUT_DIR}/anlagenbestand-export.png`);
+  });
+});

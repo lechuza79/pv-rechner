@@ -196,8 +196,24 @@ export function atlasIsIndexable(level: AtlasLevel, anlagen?: number, ags?: stri
   return true;
 }
 
-/** robots-Feld für Next-Metadata: indexierbar → explizit index/follow (überschreibt
- *  den Pilot-Default), sonst noindex/nofollow. */
+/**
+ * robots-Feld für Next-Metadata: indexierbar → index/follow, sonst
+ * noindex/nofollow.
+ *
+ * ZWISCHENZEITLICH GAB ES EINEN DRITTEN ZUSTAND (29.08.2026, wieder entfernt):
+ * „noindex, follow" für Orte, die zwar einen Brief bekommen hatten, deren
+ * Ortsseite aber wegen einer eigenen Förder-Stadtseite aus dem Index bleiben
+ * sollte. Die Sorge dahinter — zwei eigene Seiten auf einer Ortsanfrage kosten
+ * beide Positionen — ist durch Googles eigene Dokumentation widerlegt: Die
+ * Site-Diversity-Regel zeigt ohnehin höchstens zwei Seiten je Domain in den
+ * Top-Ergebnissen und wählt selbst aus (Search Central, „A Guide to Google
+ * Search Ranking Systems"). Der befürchtete Schaden kann so gar nicht entstehen.
+ *
+ * Was bleibt, ist ein anderes Risiko: Google muss die RICHTIGE der beiden Seiten
+ * wählen, und das wird unzuverlässig, wenn sie sich zu ähnlich sind. Bei uns
+ * sind Bestandsdaten und Fördermittel klar getrennt — die Wortklassen-Trennung
+ * ist per Test erzwungen (lib/__tests__/atlas-foerder-wortklassen.test.ts).
+ */
 export function atlasRobots(indexable: boolean): Metadata["robots"] {
   return indexable ? { index: true, follow: true } : { index: false, follow: false };
 }

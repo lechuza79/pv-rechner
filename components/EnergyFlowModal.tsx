@@ -15,7 +15,7 @@
 // nachts Netz), der in der Monatsbilanz verschwindet und die Rest-Autarkie erklärt.
 import { useState } from "react";
 import Modal from "./Modal";
-import { v } from "../lib/theme";
+import { v, fsPx } from "../lib/theme";
 import type { SolarMonth } from "../lib/balkon-sim";
 import type { ExampleDayResult } from "../lib/pv-sim";
 import DayProfileChart, { DAY_C_DIRECT as C_DIRECT, DAY_C_BATTERY as C_BATTERY, DAY_C_GRID as C_GRID } from "./DayProfileChart";
@@ -45,7 +45,7 @@ const MONTH_LABELS = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"
 
 function LegendDot({ color, label }: { color: string; label: string }) {
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, color: v('--color-text-muted') }}>
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: v("--font-size-caption"), color: v('--color-text-muted') }}>
       <span style={{ width: 9, height: 9, borderRadius: 2, background: color, flexShrink: 0 }} />
       {label}
     </span>
@@ -80,7 +80,7 @@ function YearChart({ monthly }: { monthly: SolarMonth[] }) {
                 cursor -= h;
                 return h > 0.3 ? <rect key={k} x={x} y={cursor} width={barW} height={h} fill={s.c} rx={1} /> : null;
               })}
-              <text x={x + barW / 2} y={H - 6} textAnchor="middle" fontSize={10} fill={v('--color-text-muted')} fontFamily={v('--font-text')}>{MONTH_LABELS[i]}</text>
+              <text x={x + barW / 2} y={H - 6} textAnchor="middle" fontSize={fsPx("--font-size-micro")} fill={v('--color-text-muted')} fontFamily={v('--font-text')}>{MONTH_LABELS[i]}</text>
             </g>
           );
         })}
@@ -102,7 +102,7 @@ function DayChart({ day, scaleMax }: { day: ExampleDayResult; scaleMax: number }
   return (
     <div>
       <DayProfileChart hours={day.hours} scaleMax={scaleMax} />
-      <div style={{ fontSize: 11.5, color: v('--color-text-secondary'), textAlign: "center", marginTop: 8, lineHeight: 1.5 }}>
+      <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-secondary'), textAlign: "center", marginTop: 8, lineHeight: 1.5 }}>
         Erzeugung <strong style={{ fontFamily: v('--font-mono') }}>{day.prod.toLocaleString("de-DE")}</strong> kWh ·
         Verbrauch <strong style={{ fontFamily: v('--font-mono') }}>{day.cons.toLocaleString("de-DE")}</strong> kWh ·
         davon <strong style={{ fontFamily: v('--font-mono'), color: day.grid > 0 ? v('--color-text-primary') : v('--color-positive') }}>{day.grid.toLocaleString("de-DE")}</strong> kWh aus dem Netz ·
@@ -120,8 +120,8 @@ function Bar({ label, total, parts }: {
   return (
     <div style={{ marginBottom: 18 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
-        <span style={{ fontSize: 12, fontWeight: 700, color: v('--color-text-primary') }}>{label}</span>
-        <span style={{ fontSize: 12, fontFamily: v('--font-mono'), color: v('--color-text-secondary') }}>
+        <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v('--color-text-primary') }}>{label}</span>
+        <span style={{ fontSize: v("--font-size-small"), fontFamily: v('--font-mono'), color: v('--color-text-secondary') }}>
           {Math.round(total).toLocaleString("de-DE")} kWh/Jahr
         </span>
       </div>
@@ -132,14 +132,14 @@ function Bar({ label, total, parts }: {
             justifyContent: "center", minWidth: p.pct > 0 ? 2 : 0,
           }}>
             {p.pct >= 12 && (
-              <span style={{ fontSize: 12, fontWeight: 800, fontFamily: v('--font-mono'), color: "#fff" }}>{Math.round(p.pct)} %</span>
+              <span style={{ fontSize: v("--font-size-small"), fontWeight: 800, fontFamily: v('--font-mono'), color: "#fff" }}>{Math.round(p.pct)} %</span>
             )}
           </div>
         ))}
       </div>
       <div style={{ display: "flex", gap: 14, marginTop: 6, flexWrap: "wrap" }}>
         {parts.map((p, i) => (
-          <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, color: v('--color-text-muted') }}>
+          <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: v("--font-size-caption"), color: v('--color-text-muted') }}>
             <span style={{ width: 9, height: 9, borderRadius: 2, background: p.color, flexShrink: 0 }} />
             <span><strong style={{ color: v('--color-text-secondary'), fontWeight: 600 }}>{p.caption}</strong> · {p.sub}</span>
           </span>
@@ -221,7 +221,7 @@ export default function EnergyFlowModal({ open, onClose, jahresertrag, gesamtVer
                   border: `1px solid ${on ? v('--color-accent') : v('--color-border')}`,
                   background: on ? v('--color-accent') : "transparent",
                   color: on ? v('--color-text-on-accent') : v('--color-text-secondary'),
-                  fontSize: 11.5, fontWeight: 600, fontFamily: "inherit",
+                  fontSize: v("--font-size-caption"), fontWeight: 600, fontFamily: "inherit",
                   padding: "5px 10px", borderRadius: 999, cursor: "pointer", whiteSpace: "nowrap",
                 }}
               >
@@ -233,7 +233,7 @@ export default function EnergyFlowModal({ open, onClose, jahresertrag, gesamtVer
 
         {view === "year" ? (
           <>
-            <p style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginBottom: 8 }}>
+            <p style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted'), lineHeight: 1.5, marginBottom: 8 }}>
               Jeder Balken ist dein Verbrauch eines Monats — woher der Strom kommt: direkt aus der
               Sonne, aus dem Speicher oder aus dem Netz. Im Winter reicht die Sonne nicht, deshalb
               wächst dort der graue Netz-Anteil.
@@ -242,7 +242,7 @@ export default function EnergyFlowModal({ open, onClose, jahresertrag, gesamtVer
           </>
         ) : activeDay ? (
           <>
-            <p style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginBottom: 8 }}>
+            <p style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted'), lineHeight: 1.5, marginBottom: 8 }}>
               Ein einzelner {activeDay.label.toLowerCase()} über 24 Stunden. Mittags liefert die Sonne
               oft weit mehr als gebraucht wird — der Überschuss lädt den Speicher und wird eingespeist.
               Abends und nachts kommt nichts vom Dach: erst springt der Speicher ein, dann das Netz.
@@ -256,7 +256,7 @@ export default function EnergyFlowModal({ open, onClose, jahresertrag, gesamtVer
       <div style={{
         marginTop: 16, padding: "12px 14px", background: v('--color-bg-accent'),
         borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border-accent')}`,
-        fontSize: 12.5, lineHeight: 1.6, color: v('--color-text-secondary'),
+        fontSize: v("--font-size-small"), lineHeight: 1.6, color: v('--color-text-secondary'),
       }}>
         {groß && (
           <>
@@ -282,13 +282,13 @@ export default function EnergyFlowModal({ open, onClose, jahresertrag, gesamtVer
         )}
       </div>
 
-      <p style={{ fontSize: 11.5, color: v('--color-text-muted'), marginTop: 14, lineHeight: 1.6 }}>
+      <p style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted'), marginTop: 14, lineHeight: 1.6 }}>
         <strong style={{ color: v('--color-text-secondary'), fontWeight: 600 }}>Warum nicht 100 % Autarkie?</strong>{" "}
         Im Dezember und Januar liefert selbst eine große Anlage nur einen Bruchteil, und ein Hausspeicher
         überbrückt gut einen Tag — keinen dunklen Winter. Deshalb bleibt immer ein Rest Netzbezug. Volle
         Unabhängigkeit ist mit einem Hausspeicher praktisch nicht erreichbar.
       </p>
-      <p style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 10, lineHeight: 1.5 }}>
+      <p style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), marginTop: 10, lineHeight: 1.5 }}>
         Autarkie, Jahresverlauf und Beispieltage aus einer Stunden-Jahressimulation (Erzeugung,
         Verbrauch und Speicher Stunde für Stunde, echte PVGIS-Tagestypen), geprüft gegen das
         Unabhängigkeits-Kennfeld der HTW Berlin. Werte gerundet.

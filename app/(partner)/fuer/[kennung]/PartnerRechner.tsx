@@ -19,7 +19,7 @@ const PVRechner = dynamic(() => import("../../../(site)/photovoltaik-rechner/rec
         padding: "48px 0",
         textAlign: "center",
         color: "var(--color-text-muted)",
-        fontSize: 14,
+        fontSize: "var(--font-size-small)",
       }}
     >
       Rechner wird geladen …

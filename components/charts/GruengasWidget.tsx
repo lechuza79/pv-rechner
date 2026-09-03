@@ -15,7 +15,7 @@ import {
 import { useChartExport } from "../../lib/useChartExport";
 import { EXPORT_IGNORE_ATTR } from "../../lib/export-markers";
 import { WIDGETS } from "../../lib/widget-registry";
-import { v } from "../../lib/theme";
+import { v, fsPx } from "../../lib/theme";
 import { MUSTER_STAND_ISO, type MusterVariant } from "../../lib/greengas-muster";
 import { formatDataAsOf } from "../../lib/atlas-format";
 
@@ -156,7 +156,7 @@ function GruengasCard({
     </span>
   );
   const plusBadge = (
-    <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minWidth: 18, height: 18, padding: "0 4px", borderRadius: 6, border: `1px solid ${v("--color-positive")}`, background: `color-mix(in srgb, ${v("--color-positive")} 12%, transparent)`, color: v("--color-positive-text"), fontFamily: v("--font-mono"), fontSize: 14, fontWeight: 800, lineHeight: 1 }}>+</span>
+    <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minWidth: 18, height: 18, padding: "0 4px", borderRadius: 6, border: `1px solid ${v("--color-positive")}`, background: `color-mix(in srgb, ${v("--color-positive")} 12%, transparent)`, color: v("--color-positive-text"), fontFamily: v("--font-mono"), fontSize: v("--font-size-body"), fontWeight: 800, lineHeight: 1 }}>+</span>
   );
   // Die „?"-Trigger nehmen sich selbst aus dem Bild und melden ihren Text an den
   // Bild-Fuß (components/WidgetExport.tsx) — nichts geht im PNG verloren.
@@ -183,7 +183,7 @@ function GruengasCard({
   const scaleLabels = yTicks
     .filter((val, i) => val > 0 && i % 2 === 0)
     .map(val => (
-      <text key={val} x={P.l + 2} y={yL(val) + 10} textAnchor="start" fontSize={9} fill="var(--color-text-secondary)" fontFamily="var(--font-mono)">
+      <text key={val} x={P.l + 2} y={yL(val) + 10} textAnchor="start" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-secondary)" fontFamily="var(--font-mono)">
         {eur(val)}
       </text>
     ));
@@ -230,7 +230,7 @@ function GruengasCard({
                   {barValueTspans(val, true)}
                 </text>
               </g>
-              <text x={bbx(j) + bBarW / 2} y={by0 + 16} textAnchor="middle" fontSize={11} fill="var(--color-text-muted)">{s.short}</text>
+              <text x={bbx(j) + bBarW / 2} y={by0 + 16} textAnchor="middle" fontSize={fsPx("--font-size-caption")} fill="var(--color-text-muted)">{s.short}</text>
             </g>
           );
         })}
@@ -258,7 +258,7 @@ function GruengasCard({
           return (
             <div key={s.key} style={{ marginTop: 7 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8, marginBottom: 2 }}>
-                <span style={{ fontSize: 11.5, color: v("--color-text-secondary") }}>{s.label}</span>
+                <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-secondary") }}>{s.label}</span>
                 {amtHtml(val, 12, false, 700)}
               </div>
               <div style={{ height: 11, background: `color-mix(in srgb, ${v("--color-text-muted")} 14%, transparent)`, borderRadius: 4, overflow: "hidden" }}>
@@ -299,8 +299,8 @@ function GruengasCard({
       {/* Kopf (nicht in der reinen Balken-Ansicht) */}
       {!isBars && (
         <>
-          <div style={{ fontSize: 15, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 2 }}>Die Rechnung über 20 Jahre</div>
-          <div style={{ fontSize: 12.5, color: v("--color-text-muted"), lineHeight: 1.5, marginBottom: 12 }}>
+          <div style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 2 }}>Die Rechnung über 20 Jahre</div>
+          <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.5, marginBottom: 12 }}>
             So entwickeln sich die jährlichen Heizkosten für ein typisches{" "}
             <span style={{ whiteSpace: "nowrap" }}>
               Einfamilienhaus{" "}
@@ -317,7 +317,7 @@ function GruengasCard({
               return (
                 <button key={vr.key} role="tab" aria-selected={on} onClick={() => setActive(i)}
                   style={{ flex: 1, padding: "8px 6px", cursor: "pointer", textAlign: "center", background: on ? v("--color-accent-dim") : "transparent", border: "none", borderBottom: `2px solid ${on ? v("--color-accent") : "transparent"}` }}>
-                  <div style={{ fontSize: 12.5, fontWeight: 700, color: on ? v("--color-accent") : v("--color-text-muted") }}>{vr.label}</div>
+                  <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: on ? v("--color-accent") : v("--color-text-muted") }}>{vr.label}</div>
                 </button>
               );
             })}
@@ -325,11 +325,11 @@ function GruengasCard({
           {/* Im Bild ersetzt eine Zwischenüberschrift den Umschalter — sonst
               bliebe offen, welcher Gebäudestand abgebildet ist. */}
           <ExportOnly style={{ marginBottom: 8 }}>
-            <span style={{ fontSize: 13.5, fontWeight: 700, color: v("--color-text-primary") }}>
+            <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary") }}>
               Gebäude: {m.label}
             </span>
           </ExportOnly>
-          <div style={{ fontSize: 11.5, color: v("--color-text-secondary"), lineHeight: 1.5, marginBottom: 8, padding: "0 2px" }}>
+          <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-secondary"), lineHeight: 1.5, marginBottom: 8, padding: "0 2px" }}>
             {m.explain}
           </div>
         </>
@@ -358,7 +358,7 @@ function GruengasCard({
               const last = i === xYears.length - 1;
               const anchor = i === 0 ? "start" : last ? "end" : "middle";
               const xpos = i === 0 ? P.l : last ? P.l + linienW : xL(yr - startYear);
-              return <text key={yr} x={xpos} y={y0 + 18} textAnchor={anchor} fontSize={12} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{yr}</text>;
+              return <text key={yr} x={xpos} y={y0 + 18} textAnchor={anchor} fontSize={fsPx("--font-size-small")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{yr}</text>;
             })}
 
             <line x1={P.l} x2={showBarsInSvg ? W - P.r : P.l + linienW} y1={y0} y2={y0} stroke="var(--color-chart-zero)" strokeWidth={1} />
@@ -392,7 +392,7 @@ function GruengasCard({
                       {barValueTspans(val, !narrow)}
                     </text>
                   </g>
-                  <text x={bx(j) + barW / 2} y={y0 + 17} textAnchor="middle" fontSize={11} fill="var(--color-text-muted)">{s.short}</text>
+                  <text x={bx(j) + barW / 2} y={y0 + 17} textAnchor="middle" fontSize={fsPx("--font-size-caption")} fill="var(--color-text-muted)">{s.short}</text>
                 </g>
               );
             })}
@@ -417,9 +417,9 @@ function GruengasCard({
 
           {hoverLine !== null && (
             <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ position: "absolute", left: `${(xL(hoverLine) / W) * 100}%`, top: 0, transform: `translateX(${hoverLine > n / 2 ? "-105%" : "5%"})`, background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md"), padding: "7px 9px", pointerEvents: "none", boxShadow: "0 2px 10px rgba(0,0,0,0.12)", zIndex: 2, minWidth: 138 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 4, fontFamily: v("--font-mono") }}>{pts[hoverLine].year}</div>
+              <div style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 4, fontFamily: v("--font-mono") }}>{pts[hoverLine].year}</div>
               {SERIES.map(s => (
-                <div key={s.key} style={{ display: "flex", justifyContent: "space-between", gap: 10, fontSize: 11, marginTop: 2 }}>
+                <div key={s.key} style={{ display: "flex", justifyContent: "space-between", gap: 10, fontSize: v("--font-size-caption"), marginTop: 2 }}>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 5, color: v("--color-text-secondary") }}>
                     <span style={{ width: 8, height: 8, borderRadius: 2, background: s.color, flexShrink: 0 }} />{s.label}
                   </span>

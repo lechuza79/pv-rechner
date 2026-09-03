@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { createClient } from "./supabase-browser";
 import type { User } from "@supabase/supabase-js";
+import { FEHLERTEXT, fehlerAusMeldung, type AuthFehler } from "./auth-regeln";
+import { BLEIBEN_COOKIE } from "./auth-cookies";
+import { AKTUELLE_BLEIBEN_FASSUNG, BLEIBEN_TAGE } from "./auth-einwilligung";
 
 export type AuthState =
   | { status: "loading" }
@@ -39,23 +42,154 @@ export function useAuth(): AuthState {
   return state;
 }
 
-export async function signInWithMagicLink(email: string, options?: { next?: string }) {
+type AuthAntwort = { fehler?: AuthFehler };
+
+async function ruf(pfad: string, body: unknown): Promise<AuthAntwort> {
+  try {
+    const res = await fetch(pfad, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    if (res.ok) return {};
+    const daten = await res.json().catch(() => null);
+    const kennung = daten?.fehler;
+    return { fehler: kennung in FEHLERTEXT ? (kennung as AuthFehler) : "fehlgeschlagen" };
+  } catch {
+    return { fehler: "fehlgeschlagen" };
+  }
+}
+
+/**
+ * Anmelden mit E-Mail und Passwort.
+ *
+ * Der Netzaufruf läuft bewusst über den Server (siehe Kopf von
+ * `app/api/auth/signin/route.ts`); der Browser übernimmt danach nur noch die
+ * fertige Sitzung. Das ist ein reiner Speicher-Schreibvorgang und blockiert
+ * keine anderen offenen Tabs.
+ */
+export async function signInWithPassword(
+  email: string,
+  passwort: string,
+  bleiben = false,
+): Promise<AuthAntwort> {
   const supabase = createClient();
-  if (!supabase) return { error: new Error("Anmeldung ist hier nicht eingerichtet.") };
+  if (!supabase) return { fehler: "nicht_eingerichtet" };
+
+  let res: Response;
+  try {
+    res = await fetch("/api/auth/signin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, passwort, bleiben }),
+    });
+  } catch {
+    return { fehler: "fehlgeschlagen" };
+  }
+
+  const daten = await res.json().catch(() => null);
+  if (!res.ok) {
+    const kennung = daten?.fehler;
+    return { fehler: kennung in FEHLERTEXT ? (kennung as AuthFehler) : "fehlgeschlagen" };
+  }
+
+  // Die Sitzungs-Cookies stehen serverseitig bereits — sie sind die
+  // maßgebliche Quelle. Der Schreibvorgang hier weckt zusätzlich den
+  // Anmelde-Zustand IM Tab, damit Kopfzeile und Rechner sofort umschalten,
+  // statt erst beim nächsten Seitenwechsel. Schlägt er fehl, ist das kein
+  // Grund, die Anmeldung als gescheitert zu melden: Der nächste Seitenaufbau
+  // liest die Sitzung ohnehin aus den Cookies.
+  //
+  // MIT ZEITLIMIT, und das ist kein Übermaß an Vorsicht: Auch dieser
+  // Schreibvorgang nimmt die Sperre auf dem Anmelde-Speicher. Sind mehrere
+  // Tabs offen, kann er dahinter warten — im Schwesterprojekt bis zum
+  // Zehn-Sekunden-Limit, und der Nutzer sah „Anmeldung fehlgeschlagen",
+  // obwohl die Sitzung längst stand. Nach zwei Sekunden gehen wir weiter; der
+  // nächste Seitenaufbau holt den Zustand aus den Cookies.
+  if (daten?.access_token && daten?.refresh_token) {
+    try {
+      await Promise.race([
+        supabase.auth.setSession({
+          access_token: daten.access_token,
+          refresh_token: daten.refresh_token,
+        }),
+        new Promise((_, ab) => setTimeout(() => ab(new Error("zeitlimit")), 2000)),
+      ]);
+    } catch {
+      // bewusst geschluckt — siehe oben
+    }
+  }
+  return {};
+}
+
+/** Konto anlegen. Der Dienst schickt eine Bestätigungsmail. */
+export async function signUpWithPassword(
+  email: string,
+  passwort: string,
+  options?: { next?: string },
+): Promise<AuthAntwort> {
+  return ruf("/api/auth/signup", { email, passwort, next: options?.next });
+}
+
+/**
+ * Mail zum Passwort-Setzen anfordern. Auch der Weg für die Konten aus der
+ * Zeit vor dem Passwort-Login — sie haben keins und setzen hier ihr erstes.
+ */
+export async function requestPasswordReset(email: string): Promise<AuthAntwort> {
+  return ruf("/api/auth/reset", { email });
+}
+
+/** Neues Passwort vergeben. Setzt voraus, dass der Link aus der Mail geöffnet wurde. */
+export async function setNewPassword(passwort: string): Promise<AuthAntwort> {
+  const supabase = createClient();
+  if (!supabase) return { fehler: "nicht_eingerichtet" };
+  const { error } = await supabase.auth.updateUser({ password: passwort });
+  if (error) return { fehler: fehlerAusMeldung(error.message ?? "") };
+  return {};
+}
+
+/**
+ * Anmeldung über Google.
+ *
+ * Der Browser wird zu Google umgeleitet und kommt über dieselbe
+ * Rückkehr-Adresse zurück wie jede andere Anmeldung. Google erfährt dabei, dass
+ * jemand sich hier anmeldet — das steht so in der Datenschutzerklärung
+ * (Abschnitt 9).
+ */
+export async function signInWithGoogle(options?: { next?: string; bleiben?: boolean }): Promise<AuthAntwort> {
+  const supabase = createClient();
+  if (!supabase) return { fehler: "nicht_eingerichtet" };
   const next = options?.next || "/dashboard";
-  const { error } = await supabase.auth.signInWithOtp({
-    email,
-    options: {
-      emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
-    },
+  // Beim Weg über Google gibt es keine eigene Route, die den Merker setzen
+  // könnte — der Browser schreibt die Anmelde-Cookies nach der Rückkehr selbst.
+  // Also muss die Einwilligung VOR der Umleitung stehen, sonst käme das lange
+  // Cookie ohne sie zustande.
+  merkeBleiben(options?.bleiben === true);
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}` },
   });
-  return { error };
+  if (error) return { fehler: "fehlgeschlagen" };
+  return {};
 }
 
 export async function signOut() {
+  // Abmelden IST der Widerruf: Es muss so einfach sein wie das Anhaken
+  // (Art. 7 Abs. 3 S. 4 DSGVO), und danach darf kein Merker stehen bleiben,
+  // der bei der nächsten Anmeldung stillschweigend wieder greift.
+  merkeBleiben(false);
   const supabase = createClient();
   if (!supabase) return;
   await supabase.auth.signOut();
+}
+
+/** Merker im Browser setzen oder entfernen. Trägt die Fassung, nicht bloß „ja". */
+function merkeBleiben(an: boolean) {
+  if (typeof document === "undefined") return;
+  const sicher = location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = an
+    ? `${BLEIBEN_COOKIE}=${AKTUELLE_BLEIBEN_FASSUNG.version}; Path=/; Max-Age=${BLEIBEN_TAGE * 24 * 60 * 60}; SameSite=Lax${sicher}`
+    : `${BLEIBEN_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax${sicher}`;
 }
 
 /**

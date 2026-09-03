@@ -142,6 +142,6 @@ const S: Record<string, React.CSSProperties> = {
   },
   eintragAktiv: { background: v("--color-bg-accent") },
   name: { fontSize: v("--font-size-body"), color: v("--color-text-primary") },
-  spanne: { fontFamily: v("--font-mono"), fontSize: 11, color: v("--color-text-secondary") },
-  fuss: { fontSize: 11, color: v("--color-text-muted"), margin: `${space.md}px 0 0` },
+  spanne: { fontFamily: v("--font-mono"), fontSize: v("--font-size-caption"), color: v("--color-text-secondary") },
+  fuss: { fontSize: v("--font-size-caption"), color: v("--color-text-muted"), margin: `${space.md}px 0 0` },
 };

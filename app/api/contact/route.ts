@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { DEFAULT_CONTACT_TOPIC, isContactTopic } from "../../../lib/contact-topics";
+import { tokens } from "../../../lib/theme";
 
 // ─── Contact form submission (email via Resend) ──────────────────────────────
 // Public-facing counterpart to /api/alert: same Resend send pattern, but
@@ -135,10 +136,10 @@ export async function POST(req: Request) {
 
   const html = `<div style="font-family:system-ui,sans-serif;max-width:640px;margin:0 auto;color:#3F3F3F">
     <h2 style="margin:0 0 4px">Neue Nachricht über das Kontaktformular</h2>
-    <p style="color:#777;margin:0 0 16px;font-size:13px">
+    <p style="color:#777;margin:0 0 16px;font-size:${tokens["--font-size-small"]}">
       Betreff: ${escapeHtml(topic)}<br>${name ? `Von: ${escapeHtml(name)}<br>` : ""}E-Mail: ${escapeHtml(email)}
     </p>
-    <div style="font-size:14px;line-height:1.7;white-space:normal">${bodyHtml}</div>
+    <div style="font-size:${tokens["--font-size-body"]};line-height:1.7;white-space:normal">${bodyHtml}</div>
   </div>`;
 
   try {

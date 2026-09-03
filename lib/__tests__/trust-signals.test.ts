@@ -397,6 +397,36 @@ describe("Vertrauens-Leiste", () => {
       }
     });
 
+    // DIE GEGENRICHTUNG — sie hat gefehlt, und genau dort ist der Fehler
+    // passiert (29.08.2026).
+    //
+    // Alle Prüfungen oben fragen: Verschweigt die Leiste etwas? Keine fragte:
+    // Behauptet sie etwas, das es nicht gibt. Seit dem 27.08.2026 nimmt
+    // `trackEvent` keine Begleitangaben mehr entgegen — die
+    // Einwilligungsfreiheit der ganzen Messung hängt daran. Die Leiste kündigte
+    // trotzdem weiter an, wir zählten mit, "welche Anlagen- und Speichergröße
+    // gewählt wurde". Auf jeder Seite, als Werbeaussage nach § 5 UWG.
+    //
+    // Geprüft wird gegen die SIGNATUR im Code, nicht gegen eine Wortliste: Nimmt
+    // die Zählfunktion nur einen Namen, darf die Leiste keine Erhebung von
+    // Werten ankündigen. Wer die Signatur eines Tages wieder erweitert, bekommt
+    // die Formulierung damit automatisch wieder frei.
+    it("kündigt keine Erhebung an, die die Zählfunktion gar nicht kann", () => {
+      const analytics = readFileSync(join(REPO, "lib", "analytics.ts"), "utf8");
+      const signatur = analytics.match(/export function trackEvent\(([^)]*)\)/);
+      expect(signatur, "trackEvent nicht gefunden — Test anpassen").toBeTruthy();
+      const nimmtNurNamen = !signatur![1].includes(",");
+      if (!nimmtNurNamen) return; // Signatur erweitert: Ankündigung wieder erlaubt.
+
+      for (const s of TRUST_SIGNALS) {
+        const text = `${s.titel} ${s.text} ${s.detail ?? ""}`.toLowerCase();
+        expect(
+          text,
+          `"${s.titel}" kündigt an, WELCHE Angaben mitgezählt werden — die Zählfunktion nimmt aber nur einen Namen`,
+        ).not.toMatch(/(zählen|erfassen|messen|übermitteln)\s+wir[^.]{0,60}\bwelche\b/);
+      }
+    });
+
     // "Die Berechnung läuft in deinem Browser" ist wörtlich die Aussage der
     // Datenschutzerklärung. Ändert sich der Datenfluss, muss der Footer mit.
     it("die Browser-Aussage deckt sich mit der Datenschutzerklärung", () => {

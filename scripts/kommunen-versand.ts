@@ -46,6 +46,8 @@ import {
 import { versandfenster } from "../lib/schulferien";
 import { SCHUEBE, AKTUELLER_SCHUB } from "../lib/kommunen-testballon";
 import { berlinOffset, heuteInBerlin, wochentagInBerlin } from "../lib/zeit";
+import { ATLAS_CITIES } from "../lib/atlas-cities";
+import { ortSchluessel } from "../lib/release-plan";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PROTOKOLL_DIR = resolve(SCRIPT_DIR, ".cache", "versand");
@@ -144,6 +146,25 @@ function bremsen(b: Brief, heute: string): string[] {
   // die einzige, die bis eben nur an einer Stelle stand.
   const postfach = postfachBefund(b.empfaenger, b.name, b.verwaltung_domain);
   if (!postfach.ok) gruende.push(postfach.grund);
+  // Verlinkt der Brief auf eine Seite, die für Suchmaschinen gesperrt BLEIBT?
+  //
+  // Der Versand schaltet die Ortsseite normalerweise frei
+  // (lib/atlas-outreach-freigabe.ts). Orte mit eigener Förderseite sind davon
+  // ausgenommen — dort stünden sonst zwei eigene Seiten auf denselben Anfragen.
+  // Der Brief zeigt aber trotzdem dorthin. Das ist derselbe Widerspruch, der am
+  // 29.08.2026 aufgefallen ist, nur andersherum: eine Seite anbieten und
+  // gleichzeitig sperren.
+  //
+  // KEIN Abbruch, sondern eine Meldung: Ob der Brief trotzdem rausgeht, ist eine
+  // Abwägung (die Förderseite steht dort oft besser), und die gehört dem
+  // Betreiber, nicht diesem Lauf.
+  if (b.region_id.length === 8 && ATLAS_CITIES.some((c) => ortSchluessel(c.ags) === ortSchluessel(b.region_id))) {
+    gruende.push(
+      "HINWEIS: Dieser Ort hat eine eigene Förderseite, seine Atlas-Ortsseite bleibt deshalb " +
+        "gesperrt — der Brief verlinkt sie trotzdem. Entweder Brief auf die Förderseite zeigen " +
+        "lassen oder den Ort bewusst ausnehmen.",
+    );
+  }
   return gruende;
 }
 

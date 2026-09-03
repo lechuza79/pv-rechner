@@ -26,13 +26,13 @@ export const metadata: Metadata = pageMetadata({
 // Reading-flow styles for the explainer below the interactive chart.
 const S = {
   h2: {
-    fontSize: 17,
+    fontSize: v("--font-size-lead"),
     fontWeight: 800 as const,
     letterSpacing: "-0.01em",
     margin: `${space.xxl}px 0 ${space.md}px`,
   },
   p: {
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     lineHeight: 1.7,
     color: v("--color-text-secondary"),
     margin: `0 0 ${space.md}px`,

@@ -16,6 +16,8 @@
  * Herleitung und verworfene Quellen: docs/fachbetriebe-quellen.md
  */
 
+import { entschluesseltOderRoh } from "./uri-sicher";
+
 // ─── Ortssuche ───────────────────────────────────────────────────────────────
 
 export interface Kreis {
@@ -290,11 +292,7 @@ export function kontaktUrl(html: string, basis: string): string | null {
  * Vorsichtsmaßnahme, an die sich jeder Aufrufer erinnern muss, ist keine.
  */
 export function adresseLesbar(href: string): string {
-  try {
-    return decodeURIComponent(href);
-  } catch {
-    return href;
-  }
+  return entschluesseltOderRoh(href);
 }
 
 /**

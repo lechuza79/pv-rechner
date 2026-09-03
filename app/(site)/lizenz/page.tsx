@@ -137,8 +137,23 @@ export default function LizenzPage() {
           Schnittstellen. Einzelne Werte zu zitieren bleibt erlaubt und ist ausdrücklich erwünscht:
           Wenn du für einen Artikel drei Förderbeträge brauchst, nimm sie.
         </p>
+        {/* Fremde Daten, die wir nur zeigen dürfen. Das ist ein ANDERER Fall als
+            der Absatz darüber: Dort geht es um unsere eigene Sammelarbeit, hier
+            um ein fremdes Werk. Wir können es nicht freier weitergeben, als wir
+            es bekommen haben — und eine CC-BY-Lizenz, die es mit erfasste, wäre
+            eine Zusage, die uns nicht zusteht. */}
         <p style={S.p}>
-          Diese Abgrenzung gilt ab dem 17. August 2026 und wirkt nur nach vorn. Was du zuvor unter{" "}
+          Ebenfalls nicht erfasst sind fremde Daten, die wir nur zeigen dürfen. Das betrifft die
+          Zahlen aus dem Förderreport der KfW — wie viele Haushalte die Bundesförderung für den
+          Heizungstausch bekommen haben. Die KfW erlaubt, Beiträge aus ihrem Newsroom unter Angabe
+          der Quelle zu Informationszwecken weiterzugeben; verändern und als Datensatz
+          weiterverbreiten erlaubt sie nicht. Was wir daraus ausrechnen und schreiben, ist unsere
+          Arbeit und steht unter der Lizenz oben. Die zugrunde liegenden Zahlen selbst können wir
+          nicht freier weitergeben, als wir sie bekommen haben.
+        </p>
+        <p style={S.p}>
+          Diese Abgrenzung gilt ab dem 17. August 2026 (für die Zahlen der KfW ab dem 26. August
+          2026) und wirkt nur nach vorn. Was du zuvor unter{" "}
           {OWN_WORK_LICENSE.code} von uns übernommen hast, bleibt davon unberührt — eine einmal
           erteilte Lizenz nehmen wir nicht zurück, das lässt {OWN_WORK_LICENSE.code} auch gar nicht
           zu.

@@ -3,6 +3,7 @@
 // eingerechnet (Daten: heatCostComparisonSeries, lib/greengas.ts). Reines SVG im
 // Stil von HeatPumpChart, ohne externe Chart-Library. Geteilt: Rechner + Embed.
 import type { HeatCostPoint } from "../../lib/greengas";
+import { fsPx } from "../../lib/theme";
 
 const fmtCt = (v: number) => `${(Math.round(v * 10) / 10).toLocaleString("de-DE")} ct`;
 
@@ -68,14 +69,14 @@ export default function HeatCostCompareChart({
       {yTicks.map(val => (
         <g key={val}>
           <line x1={P.l} x2={P.l + cW} y1={y(val)} y2={y(val)} stroke="var(--color-chart-grid)" strokeWidth={0.5} />
-          <text x={P.l - 8} y={y(val)} textAnchor="end" dominantBaseline="middle" fontSize={10} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{val.toLocaleString("de-DE")}</text>
+          <text x={P.l - 8} y={y(val)} textAnchor="end" dominantBaseline="middle" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{val.toLocaleString("de-DE")}</text>
         </g>
       ))}
-      <text x={P.l - 8} y={P.t - 8} textAnchor="end" fontSize={9.5} fill="var(--color-text-faint)">{unit}</text>
+      <text x={P.l - 8} y={P.t - 8} textAnchor="end" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-faint)">{unit}</text>
       {/* X-Labels */}
       {xYears.map(yr => {
         const i = yr - startYear;
-        return <text key={yr} x={x(i)} y={H - 4} textAnchor="middle" fontSize={10} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{yr}</text>;
+        return <text key={yr} x={x(i)} y={H - 4} textAnchor="middle" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{yr}</text>;
       })}
       {/* Polylinien */}
       {series.map(s => {
@@ -104,9 +105,9 @@ export default function HeatCostCompareChart({
           <g key={e.key}>
             <circle cx={lx} cy={e.cy} r={3.5} fill={e.color} stroke="var(--color-bg)" strokeWidth={1.5} />
             {Math.abs(e.ly - e.cy) > 2 && <line x1={lx + 3.5} y1={e.cy} x2={lx + 8} y2={e.ly - 4} stroke={e.color} strokeWidth={1} opacity={0.5} />}
-            <text x={lx + 10} y={e.ly - 4} fontSize={11.5} fontWeight={700} fill={e.color} fontFamily="var(--font-mono)">{fmt(e.last)}</text>
-            <text x={lx + 10} y={e.ly + 8} fontSize={9.5} fill="var(--color-text-secondary)">{e.label}</text>
-            <text x={lx + 10} y={e.ly + 19} fontSize={8.5} fill="var(--color-text-faint)">{e.labelSub}</text>
+            <text x={lx + 10} y={e.ly - 4} fontSize={fsPx("--font-size-caption")} fontWeight={700} fill={e.color} fontFamily="var(--font-mono)">{fmt(e.last)}</text>
+            <text x={lx + 10} y={e.ly + 8} fontSize={fsPx("--font-size-micro")} fill="var(--color-text-secondary)">{e.label}</text>
+            <text x={lx + 10} y={e.ly + 19} fontSize={fsPx("--font-size-micro")} fill="var(--color-text-faint)">{e.labelSub}</text>
           </g>
         ));
       })()}

@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { FUNDING_TECHNIK_FUER } from "../funding-programs";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import {
@@ -148,5 +149,16 @@ describe("Wer ein Programm zeigt, nennt seine Technik", () => {
       const inhalt = readFileSync(join(ROOT, datei), "utf8");
       expect(inhalt, `${datei}: ${grund}`).toMatch(/<Funding(Conditions|Rates)\b/);
     }
+  });
+});
+
+describe("Grammatik der Technik-Beschriftung", () => {
+  it("liest sich nach einem 'fuer' in allen drei Techniken richtig", () => {
+    // "kein Foerderprogramm fuer Balkonkraftwerk" stand so im Balkon-Rechner und
+    // "fuer Waermepumpe" davor schon im Waermepumpen-Rechner. Der Plural passt in
+    // allen drei Faellen ohne Artikel.
+    expect(FUNDING_TECHNIK_FUER.balkon).toBe("Balkonkraftwerke");
+    expect(FUNDING_TECHNIK_FUER.waermepumpe).toBe("Wärmepumpen");
+    expect(FUNDING_TECHNIK_FUER.pv).toBe("Photovoltaik");
   });
 });

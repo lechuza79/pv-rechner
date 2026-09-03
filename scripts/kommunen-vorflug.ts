@@ -21,6 +21,25 @@
  *
  *   npm run kommunen:vorflug -- --schub=mail-ni-hb --charge=1
  *   npm run kommunen:vorflug -- --schub=mail-ni-hb            (alle Chargen)
+ *
+ * NACH DEM VERSAND weiterprüfen:
+ *
+ *   npm run kommunen:vorflug -- --verschickt                  (alle Schübe)
+ *   npm run kommunen:vorflug -- --verschickt --schub=mail-ni-hb
+ *
+ * WARUM DAS SEIN MUSS: Bis zum 01.09.2026 zog diese Prüfung ihre Briefe
+ * ausschließlich aus dem Versandpaket, und das überspringt jede Gemeinde, die
+ * schon angeschrieben wurde. Ein Brief war damit genau bis zu dem Moment
+ * prüfbar, in dem er hinausging.
+ *
+ * Das ist keine Formalie: Die Zahlen auf unseren Seiten werden mit jedem Lauf
+ * der Anlagendaten neu gerechnet, der Brief steht fest. Eine Aussage, die beim
+ * Versand stimmte, kann später von unserer eigenen verlinkten Seite widerlegt
+ * werden — und der Empfänger sieht das mit einem Klick, womöglich Wochen
+ * später, wenn er die Meldung veröffentlichen will. Im Nachhinein lässt sich
+ * daran nichts mehr ändern; man kann nur davon WISSEN, sich melden und die
+ * Regel für die nächsten Briefe nachziehen. Nichts davon geht, wenn es
+ * niemandem auffällt.
  */
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -85,22 +104,46 @@ async function main(): Promise<void> {
   const schub = arg("schub") ?? AKTUELLER_SCHUB;
   const charge = arg("charge");
   const basis = arg("basis") ?? "https://solar-check.io";
+  const verschickt = process.argv.includes("--verschickt");
 
-  const chargen = charge ? [Number(charge)] : [1, 2, 3, 4, 5, 6, 7, 8];
   const briefe: Brief[] = [];
-  for (const c of chargen) {
-    const res = await fetch(`${basis}/api/admin/kommunen/versandpaket?schub=${schub}&charge=${c}&limit=100`, {
+  if (verschickt) {
+    // Die schon verschickten: gespeicherter TEXT aus der Datenbank, dazu die
+    // heutigen Adressen von Seite und Rangliste. Ein heute neu gebauter Brief
+    // würde gegen die heutige Seite natürlich passen — geprüft wird, was die
+    // Gemeinde wirklich bekommen hat.
+    const res = await fetch(`${basis}/api/admin/kommunen/nachpruefung?schub=${charge ? schub : "alle"}`, {
       headers: { Authorization: `Bearer ${process.env.CRON_SECRET}` },
     });
-    if (!res.ok) continue;
-    const j = (await res.json()) as { paket?: Brief[] };
-    briefe.push(...(j.paket ?? []));
+    if (!res.ok) {
+      log(`Die verschickten Briefe waren nicht abrufbar (${res.status}).`, "err");
+      process.exit(1);
+    }
+    const j = (await res.json()) as { briefe?: Brief[]; ohneText?: { name: string; grund: string }[] };
+    briefe.push(...(j.briefe ?? []));
+    // Ein verschickter Brief ohne gespeicherten Text ist selbst ein Befund und
+    // wird genannt, nicht stillschweigend übersprungen.
+    for (const o of j.ohneText ?? []) log(`${o.name}: ${o.grund} — nicht mehr nachprüfbar`, "warn");
+  } else {
+    const chargen = charge ? [Number(charge)] : [1, 2, 3, 4, 5, 6, 7, 8];
+    for (const c of chargen) {
+      const res = await fetch(`${basis}/api/admin/kommunen/versandpaket?schub=${schub}&charge=${c}&limit=100`, {
+        headers: { Authorization: `Bearer ${process.env.CRON_SECRET}` },
+      });
+      if (!res.ok) continue;
+      const j = (await res.json()) as { paket?: Brief[] };
+      briefe.push(...(j.paket ?? []));
+    }
   }
   if (!briefe.length) {
     log(`Kein Brief im Schub „${schub}"${charge ? `, Charge ${charge}` : ""}.`, "err");
     process.exit(1);
   }
-  log(`${briefe.length} Briefe werden geprüft — Seite, Zahlen, Vorschau, Postfach.`);
+  log(
+    verschickt
+      ? `${briefe.length} bereits verschickte Briefe werden nachgeprüft — hält die verlinkte Seite noch, was sie behaupten?`
+      : `${briefe.length} Briefe werden geprüft — Seite, Zahlen, Vorschau, Postfach.`,
+  );
   log();
 
   const fehler: string[] = [];
@@ -178,8 +221,15 @@ async function main(): Promise<void> {
     }
 
     // 5: gehört das Postfach zu dieser Gemeinde?
-    const pf = postfachBefund(b.empfaenger, b.name, b.verwaltung_domain ?? undefined);
-    if (!pf.ok) mängel.push(`Postfach: ${pf.grund}`);
+    //
+    // Entfällt bei der Nachprüfung, und zwar mit Grund: Die Nachprüfung bekommt
+    // absichtlich keine Empfängeradresse geliefert, damit aus ihr nie ein
+    // zweiter Versandweg werden kann. Die Frage ist dort ohnehin beantwortet —
+    // die Mail ist zugestellt.
+    if (!verschickt) {
+      const pf = postfachBefund(b.empfaenger, b.name, b.verwaltung_domain ?? undefined);
+      if (!pf.ok) mängel.push(`Postfach: ${pf.grund}`);
+    }
 
     if (mängel.length) {
       fehler.push(`${b.name}: ${mängel.join(" · ")}`);
@@ -189,7 +239,13 @@ async function main(): Promise<void> {
 
   log();
   if (fehler.length) {
-    log(`${fehler.length} von ${briefe.length} Briefen haben einen Mangel — NICHT senden, bevor das geklärt ist.`, "err");
+    log(
+      verschickt
+        ? `${fehler.length} von ${briefe.length} BEREITS VERSCHICKTEN Briefen passen nicht mehr zu ihrer Seite. ` +
+            `Zurücknehmen geht nicht — entscheiden, ob die Gemeinde eine Richtigstellung bekommt, und die Regel nachziehen.`
+        : `${fehler.length} von ${briefe.length} Briefen haben einen Mangel — NICHT senden, bevor das geklärt ist.`,
+      "err",
+    );
     process.exit(1);
   }
   log(`Alle ${briefe.length} Briefe geprüft, kein Mangel.`, "ok");

@@ -636,6 +636,104 @@ async function messeSpaltenAbgleich(): Promise<SpaltenBefund | null> {
 }
 
 /**
+ * Kann die PRODUKTION Abo-Mails verschicken?
+ *
+ * DER ANLASS (01.09.2026): Das Abo war lokal vollständig geprüft — Browser-
+ * Tests, echte Mail, echter Bestätigungsklick — und schlug beim ersten
+ * Live-Versuch fehl, weil auf der Produktion keine der fünf Zugangsdaten des
+ * Postfachs gesetzt war. Kein roter Test, kein Fehler im Diff, keine kaputte
+ * Seite: geprüft war der Code, nie die Umgebung.
+ *
+ * DAS IST DIE DRITTE AUSPRÄGUNG DERSELBEN KLASSE in diesem Projekt. Der
+ * Spaltenabgleich fand sie zwischen Code und Tabelle, die Kostenwache zwischen
+ * Mengen und Rechnung, hier liegt sie zwischen Code und Umgebung. Gemeinsam
+ * ist allen: Ein lokaler Lauf kann sie prinzipiell nicht finden, weil lokal
+ * alles gesetzt ist.
+ *
+ * Gefragt wird deshalb die Produktion SELBST — sie antwortet über ihre eigene
+ * Konfiguration, statt dass jemand von hier aus vermutet. Zurück kommt nur,
+ * WAS fehlt, nie ein Wert.
+ */
+async function messeAboBereit(): Promise<AboBereit | null> {
+  const geheim = process.env.CRON_SECRET;
+  if (!geheim) return null; // Ohne Betriebsgeheimnis keine Auskunft — kein Befund.
+  try {
+    const r = await fetch(`${BASE_URL}/api/abo/bereit`, {
+      headers: { Authorization: `Bearer ${geheim}` },
+      signal: AbortSignal.timeout(20000),
+    });
+    // Ein fehlgeschlagener Abruf ist KEIN Befund über die Konfiguration —
+    // dieselbe Trennung wie überall sonst zwischen „ist kaputt" und „konnte
+    // nicht nachsehen".
+    if (!r.ok) return null;
+    const d = (await r.json()) as {
+      bereit?: boolean;
+      fehlt?: string[];
+      versandOhneBeleg?: unknown;
+      postfach?: unknown;
+    };
+    if (typeof d?.bereit !== "boolean") return null;
+    // Eine ältere Auslieferung kennt das Feld nicht. Das ist „nicht gemessen",
+    // nicht „null hängende Anmeldungen" — eine Null behauptete hier einen
+    // Befund („alles ging raus"), den es nicht gab.
+    const ohneBeleg = typeof d.versandOhneBeleg === "number" ? d.versandOhneBeleg : null;
+    // Ältere Auslieferung ohne Anmeldeprobe: „nicht gemessen", nicht „in Ordnung".
+    const postfach = typeof d.postfach === "string" ? (d.postfach as AboBereit["postfach"]) : null;
+    return { bereit: d.bereit, fehlt: Array.isArray(d.fehlt) ? d.fehlt : [], ohneBeleg, postfach };
+  } catch {
+    return null;
+  }
+}
+
+interface AboBereit {
+  bereit: boolean;
+  fehlt: string[];
+  /** Anmeldungen ohne Versandbeleg; `null` = nicht gemessen. */
+  ohneBeleg: number | null;
+  /** Ausgang der Anmeldeprobe am Postfach; `null` = nicht gemessen. */
+  postfach: "ok" | "abgelehnt" | "unerreichbar" | "nicht-konfiguriert" | null;
+}
+
+/**
+ * Wirkt der Abo-Versand, oder ist er bloß eingerichtet?
+ *
+ * DER ANLASS (02.09.2026, in der Fehler-Triage gemessen): Der Bereitschafts-
+ * Melder daneben sagte „Versandweg und Signatur sind in der Produktion
+ * gesetzt" — und in der Ablage standen zwei Anmeldungen und NULL je versendete
+ * Bestätigungsmails. Er prüft, ob etwas GESETZT ist; ein falsch getipptes
+ * Passwort ist gesetzt. Dieselbe Klasse wie die drei Fälle, für die es ihn
+ * überhaupt gibt, nur eine Ebene weiter: Geprüft war diesmal die Umgebung,
+ * nie ihre Wirkung.
+ *
+ * `null` (nicht gemessen) ist kein Befund. Fehlt die Konfiguration bereits,
+ * ebenfalls nicht: Der Grund steht dann schon im Befund nebenan, und zwei
+ * Meldungen über dieselbe Ursache sind der Lärm, von dem man sich abgewöhnt,
+ * Meldungen zu lesen.
+ */
+/**
+ * Wie meldet sich der Ausgang der Anmeldeprobe im Protokoll?
+ *
+ * Drei Zustände, drei Sätze — und der Unterschied zwischen den letzten beiden
+ * ist der ganze Grund für diese Funktion: „Ich habe nachgesehen und nichts
+ * gefunden" und „ich konnte nicht nachsehen" sind zwei Auskünfte. Eine
+ * unerreichbare Verbindung als „in Ordnung" zu protokollieren behauptet eine
+ * Beobachtung, die es nicht gab. Der abgelehnte Fall steht hier nicht: Er ist
+ * ein Befund und wird als solcher gemeldet, nicht als Protokollzeile.
+ */
+export function aboPostfachSatz(p: AboBereit["postfach"]): string {
+  if (p === "ok") return "Gemeinde-Abo: Einstellungen gesetzt, das Postfach nimmt die Zugangsdaten an.";
+  if (p === "unerreichbar")
+    return "Gemeinde-Abo: Einstellungen gesetzt; das Postfach war für die Probe nicht erreichbar (kein Urteil).";
+  return "Gemeinde-Abo: Versandweg und Signatur sind in der Produktion gesetzt.";
+}
+
+export function aboVersandStockt(b: { bereit: boolean; ohneBeleg: number | null }): boolean {
+  if (b.ohneBeleg === null) return false;
+  if (!b.bereit) return false;
+  return b.ohneBeleg > 0;
+}
+
+/**
  * Liest den Datenstand der MaStR-Auswertung.
  *
  * Gibt `null` zurück, wenn die Datenbank nicht erreichbar ist oder die Zeile
@@ -1571,6 +1669,45 @@ async function main() {
     warnings.push("MaStR-Datenstand nicht abrufbar — keine Aussage über die Frische der Atlas-Zahlen.");
   }
 
+  // ── Kann die Produktion Abo-Mails verschicken? ────────────────────────────
+  const aboBereit = await messeAboBereit();
+  if (aboBereit) {
+    lines.push(
+      aboBereit.bereit
+        ? aboPostfachSatz(aboBereit.postfach)
+        : `Gemeinde-Abo: ${aboBereit.fehlt.length} Punkt(e) hindern den Versand in der Produktion.`,
+    );
+    if (!aboBereit.bereit) {
+      forClaude.push(
+        `Das Gemeinde-Abo kann in der PRODUKTION nicht arbeiten: ${aboBereit.fehlt.join(", ")}. ` +
+          `Jede Anmeldung endet damit für den Nutzer bei „Die Bestätigungsmail konnte gerade nicht verschickt ` +
+          `werden", und niemand kommt ins Abo. Von außen ist das unsichtbar: Die Seite lädt, der Knopf ` +
+          `funktioniert, kein Test wird rot — lokal ist ja alles gesetzt. Zu tun: die genannten Punkte in der ` +
+          `Produktionsumgebung richtigstellen und danach EINMAL neu ausliefern, sonst greifen sie nicht.`,
+      );
+    }
+    // Und die zweite Hälfte: hat es auch gewirkt?
+    if (aboBereit.ohneBeleg !== null && aboBereit.bereit) {
+      lines.push(
+        aboBereit.ohneBeleg === 0
+          ? "Gemeinde-Abo: keine frische Anmeldung wartet auf eine Bestätigungsmail."
+          : `Gemeinde-Abo: ${aboBereit.ohneBeleg} frische Anmeldung(en) ohne Versandbeleg.`,
+      );
+    }
+    if (aboVersandStockt(aboBereit)) {
+      forClaude.push(
+        `${aboBereit.ohneBeleg} frische Anmeldung(en) im Gemeinde-Abo tragen keinen Versandbeleg, während die ` +
+          `Zugangsdaten des Postfachs vollständig gesetzt sind. Beides ist gemessen; der Schluss daraus nicht — ` +
+          `deshalb steht hier keine Diagnose, sondern der nächste Schritt. Zwei Lesarten: entweder die Mail hat ` +
+          `den Server nicht verlassen (dann kommt niemand ins Abo, und der Anmelder sieht nur „Bitte später ` +
+          `erneut" — gesetzt heißt eben nicht richtig, ein falsch getipptes Passwort ist gesetzt), oder sie ging ` +
+          `hinaus und das Nachtragen des Belegs schlug fehl (dann fehlt der Einwilligungsnachweis, den die ` +
+          `Datenschutzerklärung zusagt). Zu tun: das Protokoll der Produktion nach „[Abo]" durchsehen — dort ` +
+          `steht, welcher der beiden Fälle vorliegt.`,
+      );
+    }
+  }
+
   // ── Schreibt der Code in Spalten, die es gibt? ────────────────────────────
   const spalten = await messeSpaltenAbgleich();
   if (spalten) {
@@ -1603,13 +1740,19 @@ async function main() {
   // ── Ablauf der Social-Zugänge ─────────────────────────────────────────────
   for (const s of await messeSocialAblauf()) {
     const wer = s.konto ? ` (${s.konto})` : "";
+    // DIE ADRESSE MUSS ZUR PLATTFORM PASSEN. Sie stand fest auf LinkedIn, weil
+    // es lange nur die eine gab — mit einem zweiten Kanal wird daraus eine
+    // Anleitung, die ins Leere führt: Der Betreiber klickt, meldet LinkedIn neu
+    // an, und der Instagram-Zugang läuft weiter aus. Dieselbe Fehlerklasse wie
+    // eine Beschriftung, die etwas anderes sagt, als die Zahl daneben misst.
+    const start = `solar-check.io/api/${s.plattform}/start`;
     fuerBetreiberOhneRot.push(
       s.tageBisAblauf < 0
         ? `Der ${s.plattform}-Zugang${wer} ist abgelaufen — seitdem wird nichts mehr veröffentlicht. ` +
-          `Zum Erneuern einmal solar-check.io/api/linkedin/start aufrufen (eingeloggt als Admin). ` +
+          `Zum Erneuern einmal ${start} aufrufen (eingeloggt als Admin). ` +
           `Das kann nur jemand mit deinem Konto, ich komme da nicht heran.`
         : `Der ${s.plattform}-Zugang${wer} läuft in ${s.tageBisAblauf} Tagen ab. Danach hört das ` +
-          `Veröffentlichen still auf. Einmal solar-check.io/api/linkedin/start aufrufen (eingeloggt ` +
+          `Veröffentlichen still auf. Einmal ${start} aufrufen (eingeloggt ` +
           `als Admin) setzt die Frist zurück — das dauert zwei Klicks und kann nur jemand mit deinem Konto.`,
     );
   }

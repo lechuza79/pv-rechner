@@ -1,0 +1,17 @@
+# Die Berichte selbst bleiben AUSSERHALB des Repos — bewusst.
+#
+# Zwei Gründe, und der zweite ist der wichtigere:
+#
+#  1. Größe: rund 4,5 MB je Jahrgang, für eine Datei, die sich jederzeit neu
+#     herunterladen lässt.
+#  2. Die Erlaubnis der KfW deckt die Weitergabe zu INFORMATIONSZWECKEN unter
+#     Angabe der Quelle. Dieses Repo ist öffentlich; das vollständige Werk hier
+#     abzulegen wäre eine Weiterverbreitung des Bestands, und genau die ist die
+#     Grenze, an der wir auch die Datenbanktabellen hinter dem Dienstschlüssel
+#     halten.
+#
+# Woher: siehe scripts/kfw-report-verify.md, Schritt 1.
+# Was hier bleibt: der Auszug aus dem Impressum — er ist der Beleg für die
+# Erlaubnis und muss ohne erneuten Abruf zu haben sein.
+KfW-Foerderreport_*.pdf
+txt-*.txt

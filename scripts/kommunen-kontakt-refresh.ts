@@ -219,6 +219,20 @@ async function setup(): Promise<void> {
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS thema_blatt_url text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS thema_presse_url text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS profil_at timestamptz;
+    -- WOHER das Postfach stammt. Nachtraeglich ergaenzt, deshalb nullable: die
+    -- vorhandenen Zeilen kommen ausnahmslos aus dem Impressum, und ein
+    -- Vorgabewert haette ueber jede Altzeile eine Herkunft behauptet, die
+    -- niemand erhoben hat (dieselbe Fehlerklasse wie ein erfundenes Pruefdatum).
+    --   impressum    im Impressum der eigenen Website gefunden
+    --   kontaktseite auf der Kontaktseite gefunden
+    --   verwaltung   Postfach der Gemeinde, die diese Gemeinde mitverwaltet
+    -- Die dritte Herkunft ist die einzige, bei der wir NICHT an die Gemeinde
+    -- selbst schreiben — das muss ablesbar bleiben, ohne die Adresse zu deuten.
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS rollen_email_quelle text;
+    -- Wann zuletzt nach einem Postfach gesucht wurde, auch erfolglos. Ohne
+    -- dieses Datum ist "nichts gefunden" nicht von "noch nie gesucht" zu
+    -- unterscheiden, und der naechste Lauf beginnt wieder bei denselben.
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS luecke_at timestamptz;
     -- Versandliste: die Auswahl wird FESTGESCHRIEBEN, nicht nur gefiltert. Der
     -- Aufhaenger aendert sich mit jedem Monatslauf der Anlagendaten — ein reiner
     -- Filter haette in Charge 2 andere Gemeinden als in Charge 1.
@@ -968,6 +982,204 @@ async function scrapeProfil(opts: FormsOpts): Promise<void> {
   log(`${rows.length} Profile gespeichert`, "ok");
 }
 
+// ─── Die Kontaktlücke schließen ──────────────────────────────────────────────
+//
+// GEMESSEN am 01.09.2026: 10.980 Gemeinden haben eine Website, 7.448 davon
+// tragen bei uns kein Rollen-Postfach. Für den nächsten Versandschub bedeutete
+// das konkret: von 399 in Frage kommenden Gemeinden fielen 300 aus, weil wir
+// keine Adresse haben. Nicht der Kalender bremst den Ausbau, sondern das hier.
+//
+// Der Profil-Lauf liest ausschließlich das IMPRESSUM. Das war die richtige
+// erste Quelle (gesetzlich vorgeschrieben, nie per JavaScript versteckt), aber
+// es ist nicht die einzige. Drei Ursachen, alle an einer Stichprobe von 25
+// Gemeinden ohne erfasstes Postfach belegt:
+//
+//   1. Die Adresse steht auf der KONTAKTSEITE statt im Impressum. Das ist der
+//      große Posten: 5.051 der Lücken-Gemeinden haben eine bekannte
+//      Kontaktseite, die noch nie auf Adressen hin gelesen wurde. Dazu 1.555,
+//      bei denen gar kein Impressum auffindbar war — dort ist die Kontaktseite
+//      der einzige verbleibende Weg.
+//   2. Die Adresse ist VERSCHLEIERT („rathaus⚹huerth◦de"). Behoben in
+//      lib/kommunen-profil.ts, wirkt für beide Quellen.
+//   3. Die Gemeinde wird MITVERWALTET, und das Postfach gehört der
+//      verwaltenden Gemeinde. Der kleinste der drei Posten (289 Fälle), aber
+//      der billigste: die Verwaltung ist bereits belegt, bei 167 davon haben
+//      wir deren Postfach schon.
+//
+// WAS DIESER LAUF NICHT TUT: raten. Eine Adresse auf einer fremden Domain, die
+// nicht zur Grundgesamtheit der Kommunen gehört, ist der Dienstleister der
+// Website und wird verworfen — dieselbe Regel wie im Profil-Lauf, und sie hat
+// dort schon zwei Agenturadressen abgefangen. Lieber keine Adresse als eine
+// falsche: eine falsche geht in den Versand und kommt zurück.
+
+type LueckeRow = {
+  region_id: string;
+  rollen_email: string;
+  rollen_email_quelle: string;
+  luecke_at: string;
+};
+
+type LueckeKandidat = {
+  region_id: string;
+  website: string;
+  kontakt_url: string | null;
+  verwaltung_domain: string | null;
+};
+
+async function schliesseLuecke(opts: FormsOpts): Promise<void> {
+  const { toText, domainOf, extractAdressen } = await import("../lib/kommunen-profil.js");
+  const supabase = await makeClient();
+
+  // Alle Gemeinden EINMAL lesen: die Lücken-Liste und der Domain-Vergleich
+  // kommen aus demselben Bestand. Der Vergleich muss bundesweit sein, auch bei
+  // einem Lauf mit --bl — eine Verwaltungsgemeinschaft reicht über Landesgrenzen,
+  // und der Partner wäre sonst nicht im Vergleich.
+  type Alle = {
+    region_id: string;
+    website: string | null;
+    rollen_email: string | null;
+    kontakt_url: string | null;
+    verwaltung_domain: string | null;
+    luecke_at: string | null;
+  };
+  const alle: Alle[] = [];
+  for (let von = 0; ; von += 1000) {
+    const { data, error } = await supabase
+      .from("kommunen_kontakt")
+      .select("region_id, website, rollen_email, kontakt_url, verwaltung_domain, luecke_at")
+      .order("region_id")
+      .range(von, von + 999);
+    if (error) throw new Error(`Lücken lesen: ${error.message}`);
+    if (!data?.length) break;
+    alle.push(...(data as Alle[]));
+    if (data.length < 1000) break;
+  }
+
+  const domains = new Set<string>();
+  const postfachJeDomain = new Map<string, string>();
+  for (const r of alle) {
+    if (!r.website) continue;
+    const d = domainOf(r.website);
+    if (!d) continue;
+    domains.add(d);
+    if (r.rollen_email) postfachJeDomain.set(d, r.rollen_email);
+  }
+
+  let luecken = alle.filter((r): r is Alle & { website: string } => !!r.website && !r.rollen_email);
+  if (opts.bl) luecken = luecken.filter((r) => r.region_id.startsWith(opts.bl!));
+  // Die am längsten nicht gesehenen zuerst; nie gesuchte vor schon gesuchten.
+  // Ohne diese Reihenfolge beginnt jeder Lauf wieder bei denselben Gemeinden.
+  if (!opts.refetch) {
+    luecken.sort((a, b) => (a.luecke_at ?? "").localeCompare(b.luecke_at ?? ""));
+  }
+  const liste: LueckeKandidat[] = (opts.limit ? luecken.slice(0, opts.limit) : luecken).map((r) => ({
+    region_id: r.region_id,
+    website: r.website,
+    kontakt_url: r.kontakt_url,
+    verwaltung_domain: r.verwaltung_domain,
+  }));
+
+  log(
+    `${luecken.length.toLocaleString()} Gemeinden ohne Postfach` +
+      (opts.limit ? `, davon ${liste.length.toLocaleString()} in diesem Lauf` : "") +
+      ` · ${domains.size.toLocaleString()} bekannte Domains als Vergleich`,
+  );
+
+  const now = new Date().toISOString();
+  const rows: LueckeRow[] = [];
+  const gesehen: string[] = [];
+  let done = 0;
+  let ausKontaktseite = 0;
+  let ausVerwaltung = 0;
+  let ohneSeite = 0;
+
+  await pool(liste, CONCURRENCY, async (c) => {
+    done++;
+    gesehen.push(c.region_id);
+    const eigene = domainOf(c.website);
+    const verwandt = (d: string) => d !== eigene && domains.has(d);
+
+    // 1. Die Kontaktseite. Ist keine bekannt, aus der Startseite eine suchen —
+    //    derselbe Weg wie --forms, nur hier gleich mitgelesen statt in einem
+    //    zweiten Lauf.
+    let ziel = c.kontakt_url;
+    if (!ziel) {
+      const start = await fetchText(c.website);
+      if (!start) {
+        ohneSeite++;
+      } else {
+        ziel = findKontaktUrl(start, c.website);
+        // Steht die Adresse schon auf der Startseite, ist das ein gültiger Fund.
+        const a = extractAdressen(toText(start), eigene, verwandt);
+        if (a.rollenEmail) {
+          rows.push({ region_id: c.region_id, rollen_email: a.rollenEmail, rollen_email_quelle: "kontaktseite", luecke_at: now });
+          ausKontaktseite++;
+          if (done % 50 === 0) log(`  ${done}/${liste.length} geprüft, ${rows.length} gefunden`);
+          return;
+        }
+      }
+    }
+    if (ziel) {
+      const html = await fetchText(ziel);
+      if (html) {
+        const a = extractAdressen(toText(html), eigene, verwandt);
+        if (a.rollenEmail) {
+          rows.push({ region_id: c.region_id, rollen_email: a.rollenEmail, rollen_email_quelle: "kontaktseite", luecke_at: now });
+          ausKontaktseite++;
+          if (done % 50 === 0) log(`  ${done}/${liste.length} geprüft, ${rows.length} gefunden`);
+          return;
+        }
+      }
+    }
+
+    // 2. Die verwaltende Gemeinde. Nur wenn ihr Postfach schon erfasst ist —
+    //    ein zweiter Abruf lohnt hier nicht, der nächste Lauf holt sie ein.
+    const vw = c.verwaltung_domain ? postfachJeDomain.get(c.verwaltung_domain) : undefined;
+    if (vw) {
+      rows.push({ region_id: c.region_id, rollen_email: vw, rollen_email_quelle: "verwaltung", luecke_at: now });
+      ausVerwaltung++;
+    }
+    if (done % 50 === 0) log(`  ${done}/${liste.length} geprüft, ${rows.length} gefunden`);
+  });
+
+  const quote = liste.length ? ((100 * rows.length) / liste.length).toFixed(1) : "0";
+  log(
+    `${rows.length}/${liste.length} Postfächer gefunden (${quote} %)\n` +
+      `  von der Kontaktseite: ${ausKontaktseite} · von der verwaltenden Gemeinde: ${ausVerwaltung}\n` +
+      `  Website nicht erreichbar: ${ohneSeite}`,
+    "ok",
+  );
+
+  if (opts.dry) {
+    for (const r of rows.slice(0, 20)) log(`  ${r.region_id} → ${r.rollen_email} (${r.rollen_email_quelle})`);
+    log("--dry: nichts geschrieben", "ok");
+    return;
+  }
+
+  for (let i = 0; i < rows.length; i += 500) {
+    const { error } = await supabase.from("kommunen_kontakt").upsert(rows.slice(i, i + 500), { onConflict: "region_id" });
+    if (error) throw new Error(`Postfächer speichern: ${error.message}`);
+  }
+  // Auch die ERFOLGLOSEN bekommen ihr Datum. Sonst ist „geprüft, nichts
+  // gefunden" nicht von „noch nie geprüft" zu unterscheiden, und der nächste
+  // Lauf beginnt wieder bei denselben Gemeinden.
+  //
+  // Getrennt geschrieben und NICHT über denselben Upsert: Ein Upsert mit
+  // ungleicher Feldmenge vereinheitlicht die Spaltenliste und schriebe den
+  // Zeilen ohne Fund ein NULL ins Postfach — dieselbe Klasse Unfall, die im
+  // Fachbetriebe-Bestand 2.700 Merkmale gelöscht hat.
+  const gefunden = new Set(rows.map((r) => r.region_id));
+  const leer = gesehen.filter((id) => !gefunden.has(id));
+  for (let i = 0; i < leer.length; i += 500) {
+    const { error } = await supabase
+      .from("kommunen_kontakt")
+      .update({ luecke_at: now })
+      .in("region_id", leer.slice(i, i + 500));
+    if (error) throw new Error(`Prüfdatum speichern: ${error.message}`);
+  }
+  log(`${rows.length} Postfächer gespeichert, ${leer.length} als geprüft vermerkt`, "ok");
+}
+
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const dry = argv.includes("--dry");
@@ -980,6 +1192,7 @@ async function main(): Promise<void> {
   const doRang = argv.includes("--rang");
   const doStats = argv.includes("--stats");
   const doProfil = argv.includes("--profil");
+  const doLuecke = argv.includes("--luecke");
 
   const blArg = argv.find((a) => a.startsWith("--bl="));
   const limitArg = argv.find((a) => a.startsWith("--limit="));
@@ -990,14 +1203,15 @@ async function main(): Promise<void> {
     dry,
   };
 
-  if (!doSetup && !doWikidata && !doUpload && !doForms && !doProbe && !doWahl && !doRang && !doStats && !doProfil) {
+  if (!doSetup && !doWikidata && !doUpload && !doForms && !doProbe && !doWahl && !doRang && !doStats && !doProfil && !doLuecke) {
     log(
-      "Nichts zu tun. Flags: --setup --wikidata --upload --forms --probe --wahl --rang --profil --stats [--dry]\n" +
+      "Nichts zu tun. Flags: --setup --wikidata --upload --forms --probe --wahl --rang --profil --luecke --stats [--dry]\n" +
         "  --forms [--bl=10] [--limit=N] [--refetch]  Kontaktlink aus der Startseite\n" +
         "  --probe [--bl=10] [--limit=N]              Kontakt-Pfade direkt anklopfen (Lücken)\n" +
         "  --wahl [--dry]                             Grünen/Linke/SPD-Anteil je Gemeinde (BTW 2025)\n" +
         "  --rang [--dry]                             Dach-pro-Kopf Perzentil + Landkreis-Rang\n" +
-        "  --profil [--bl=09] [--limit=N] [--dry]     Impressum + Themen: Verantwortliche, Rollen-Postfach, Aufhänger",
+        "  --profil [--bl=09] [--limit=N] [--dry]     Impressum + Themen: Verantwortliche, Rollen-Postfach, Aufhänger\n" +
+        "  --luecke [--bl=09] [--limit=N] [--dry]     Gemeinden ohne Postfach: Kontaktseite lesen, Verwaltung erben",
       "err",
     );
     process.exit(1);
@@ -1011,6 +1225,7 @@ async function main(): Promise<void> {
   if (doWahl) await uploadWahl(dry);
   if (doRang) await uploadRang(dry);
   if (doProfil) await scrapeProfil(formsOpts);
+  if (doLuecke) await schliesseLuecke(formsOpts);
   if (doStats) await stats();
   log("Fertig", "ok");
 }

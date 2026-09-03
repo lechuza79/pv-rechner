@@ -22,7 +22,7 @@ export default function ZubauEmbed({ series }: { series: NationalSolarSeries | n
 
   if (!series || series.points.length === 0) {
     return (
-      <div style={{ padding: 16, fontFamily: "var(--widget-font-family)", color: "var(--widget-muted)", fontSize: 13 }}>
+      <div style={{ padding: 16, fontFamily: "var(--widget-font-family)", color: "var(--widget-muted)", fontSize: "var(--font-size-small)" }}>
         Die Zubaudaten sind gerade nicht abrufbar.
       </div>
     );

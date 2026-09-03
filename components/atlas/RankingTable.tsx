@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { v } from "../../lib/theme";
 import { IconArrowUp, IconArrowDown, IconChevronDown, IconArrowLeft, IconArrowRight } from "../Icons";
+import { SortPfeil } from "../SortPfeil";
 import { useHomeGemeinde, lookupPlz, type GemeindeHit } from "../../lib/home-gemeinde";
 import { SEGMENT_OWNER, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
 import {
@@ -333,18 +334,10 @@ function RankDelta({ value, sinceYear, onAccent = false }: { value: number | nul
  * Der Platz ist immer belegt, auch ohne Pfeil (`visibility` statt Ausblenden):
  * Sonst rückte das „?" bei jedem Sortierwechsel hin und her.
  */
-function SortPfeil({ an, auf }: { an: boolean; auf: boolean }) {
-  const Icon = auf ? IconArrowUp : IconArrowDown;
-  return (
-    <span
-      aria-hidden={!an}
-      data-sortpfeil={an ? "an" : "aus"}
-      style={{ ...S.sortPfeil, ...(an ? null : { visibility: "hidden" }) }}
-    >
-      <Icon size={9} />
-    </span>
-  );
-}
+// Der Pfeil selbst liegt seit 28.08.2026 in components/SortPfeil.tsx, weil die
+// Tabellen des internen Bereichs denselben brauchen. Der Kommentarblock darüber
+// beschreibt weiterhin die Platzierung IM KOPF DIESER TABELLE; das Verhalten des
+// Pfeils steht bei ihm.
 
 /**
  * Sortable ranking of a region's children.

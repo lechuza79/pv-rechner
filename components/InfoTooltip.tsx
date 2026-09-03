@@ -54,6 +54,21 @@ interface Props {
    * kann.
    */
   label?: React.ReactNode;
+  /**
+   * Beliebiges Element als Ausloeser, OHNE die Textdekoration von `label`.
+   *
+   * WOFUER: Ein Balken, ein Punkt, eine Pille — etwas, das schon aussieht wie
+   * es aussehen soll. `label` gibt dem Ausloeser eine gepunktete Unterstreichung
+   * und erbt Schrift und Farbe der Umgebung; das ist fuer einen Satz richtig und
+   * fuer einen farbigen Balken falsch.
+   *
+   * Der Grund fuer den dritten Modus statt einer eigenen Kurzinfo im Kalender:
+   * Die Positionierung am Rand, das Schliessen per Escape, der Portal-Ausweg aus
+   * abgeschnittenen Elternelementen und die Bedienbarkeit per Tastatur stecken
+   * hier drin. Eine zweite Kurzinfo daneben haette das alles noch einmal — und
+   * beim naechsten Umbau anders.
+   */
+  trigger?: React.ReactNode;
 }
 
 export default function InfoTooltip({
@@ -63,6 +78,7 @@ export default function InfoTooltip({
   ariaLabel = "Mehr Infos",
   exportNote = true,
   label,
+  trigger,
 }: Props) {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const tooltipRef = useRef<HTMLSpanElement>(null);
@@ -146,7 +162,7 @@ export default function InfoTooltip({
         type="button"
         // A "?" you cannot click is noise in a still image — the text it hides
         // is carried into the export footer instead (see useRegisterExportNote).
-        {...(label ? {} : { [EXPORT_IGNORE_ATTR]: "" })}
+        {...(label || trigger ? {} : { [EXPORT_IGNORE_ATTR]: "" })}
         aria-label={ariaLabel}
         aria-describedby={open ? tooltipId : undefined}
         onMouseEnter={() => setOpen(true)}
@@ -158,7 +174,21 @@ export default function InfoTooltip({
           setOpen((o) => !o);
         }}
         style={
-          label
+          trigger
+            ? {
+                // Nackt: Der Ausloeser bringt sein Aussehen selbst mit.
+                display: "block",
+                width: "100%",
+                background: "none",
+                border: "none",
+                padding: 0,
+                margin: 0,
+                font: "inherit",
+                color: "inherit",
+                textAlign: "left",
+                cursor: "pointer",
+              }
+            : label
             ? {
                 // Text-Ausloeser: erbt Groesse, Gewicht und Farbe der Stelle, an
                 // der er steht — der Satz soll ein Satz bleiben.
@@ -191,7 +221,7 @@ export default function InfoTooltip({
               }
         }
       >
-        {label ?? <IconHelpCircle size={size} />}
+        {trigger ?? label ?? <IconHelpCircle size={size} />}
       </button>
       {mounted &&
         open &&
@@ -216,7 +246,10 @@ export default function InfoTooltip({
               boxShadow: v("--shadow-md"),
               padding: "10px 12px",
               fontFamily: v("--font-text"),
-              fontSize: 12.5,
+              // 12,5 px gab es in der Skala nicht — der einzige Wert im
+              // Baustein, der zwischen zwei Stufen lag. Fließtext zum Lesen
+              // gehört auf die Fußnoten-Stufe, nicht auf die Label-Stufe.
+              fontSize: v("--font-size-small"),
               lineHeight: 1.5,
               fontWeight: 400,
               textAlign: "left",

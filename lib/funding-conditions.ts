@@ -115,6 +115,10 @@ export interface FundingChecks {
  * Entscheidung, kein Versehen.
  */
 export const NOCH_NICHT_ERFASST: string[] = [
+  // Die beiden Landesprogramme für Balkonkraftwerke, aufgenommen am 02.09.2026.
+  // Ihre Bedingungen hängen an Mieter/Eigentümer — eine Unterscheidung, die das
+  // Modell (privat/gewerblich) nicht kennt. Erfassbar erst, wenn es sie kennt.
+  "sachsen-balkon-eeus", "mv-mini-solaranlagen",
   "berlin-solarplus", "stuttgart-solaroffensive", "karlsruhe-klimabonus",
   "regensburg-effizient", "wuerzburg-klimastadt", "darmstadt-pv",
   "badhomburg-energiespar", "koeln-pv", "duesseldorf-klimafreundlich",
@@ -125,7 +129,7 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "essen-solar", "schweinfurt-pv", "osnabrueck-saniert", "memmingen-ee",
   "baden-baden-pvplus", "schwerin-pv", "wolfsburg-pv", "bottrop-solaroffensive",
   "krefeld-klimafreundlich", "rhein-erft-energieoffensive", "viersen-klimaschutz",
-  "bergstrasse-speicher", "mayen-koblenz-speicher",
+  "bergstrasse-speicher", "mayen-koblenz-speicher", "ulm-energiefoerderprogramm",
   // Nach dem Merge von main dazugekommen — der Test hat sie gefunden, statt sie
   // still ungeprüft durchzulassen. Genau dafür ist die Liste da.
   "ludwigshafen-kipki", "waiblingen-klimaschutz", "herne-klimafoerderung",
@@ -168,6 +172,11 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "asbach-balkonkraftwerke", "parkstein-nachhaltigkeitszuschuss",
   "marburg-balkonkraftwerke", "schoenbrunn-balkon-pv",
   "hillscheid-energie", "schlierbach-energiespeicher",
+  // Aufgenommen am 03.09.2026, jede Zahl an der Amtsseite im Rohtext gelesen.
+  // Die Prüfformen fehlen noch — bei Hamburg und Böblingen hängt die volle
+  // Förderhöhe zusätzlich an einer Einkommensprüfung, die das Modell nicht
+  // kennt; das ist eine eigene Arbeit und halb erfasst gibt es hier nicht.
+  "hamburg-balkon-einkommen", "kiel-solarstadt", "boeblingen-balkonkraftwerke",
 ];
 
 /**

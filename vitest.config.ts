@@ -14,6 +14,9 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname),
+      // Begründung in test-stubs/server-only.ts: Ohne diesen Ersatz scheitert
+      // jeder Test, der ein server-only-Modul mitzieht.
+      "server-only": path.resolve(__dirname, "test-stubs/server-only.ts"),
     },
   },
 });

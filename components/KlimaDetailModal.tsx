@@ -67,15 +67,15 @@ export default function KlimaDetailModal({ open, onClose, rooms, plz, stromPrice
         display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10,
       }}>
         <div>
-          <div style={{ fontSize: 11, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Kühlstrom pro Jahr</div>
-          <div style={{ fontSize: 24, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-text-primary') }}>
+          <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Kühlstrom pro Jahr</div>
+          <div style={{ fontSize: v("--font-size-h1"), fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-text-primary') }}>
             {result.electricityKwh.toLocaleString("de-DE")} kWh
           </div>
         </div>
         <button
           onClick={() => { onApply(result.electricityKwh); onClose(); }}
           style={{
-            padding: "12px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700,
+            padding: "12px 20px", borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), fontWeight: 700,
             background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
             display: "inline-flex", alignItems: "center", gap: 6, whiteSpace: "nowrap",
           }}
@@ -83,7 +83,7 @@ export default function KlimaDetailModal({ open, onClose, rooms, plz, stromPrice
           <IconCheck size={iconSizes.md} /> Übernehmen
         </button>
       </div>
-      <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.5, textAlign: "center" }}>
+      <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.5, textAlign: "center" }}>
         {cooling.confirmed && plz && /^\d{5}$/.test(plz)
           ? `Standort PLZ ${plz} · ${cooling.cdhSet.avg5.toLocaleString("de-DE")} Kühlgradstunden`
           : "Ohne PLZ mit deutschem Durchschnitt gerechnet. PLZ im Ergebnis eingeben für echte Hitzedaten."}
