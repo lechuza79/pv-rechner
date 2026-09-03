@@ -62,6 +62,11 @@ async function main() {
   // ohnehin von Hand ausgelöst wird, also kostet das Warten auf den Abend
   // nichts. `--egal-wann` hebt es auf, wenn es einen Grund gibt.
   const egalWann = process.argv.includes("--egal-wann");
+  // Persönlicher Absender statt der Marke: Die Nachricht ist als Mail eines
+  // Menschen geschrieben, und ein Absender „solar-check.io" widerspräche dem
+  // im Postfach, bevor jemand den ersten Satz liest. Muss auf derselben Domain
+  // liegen, sonst brechen SPF und DKIM — der Versandweg weist das ab.
+  const ABSENDER = "Sebastian von Solar Check <sebastian@solar-check.io>";
   const env = { ...umgebung(".env.local"), ...process.env } as Record<string, string>;
   Object.assign(process.env, umgebung(".env.local"));
 
@@ -152,6 +157,7 @@ async function main() {
       html: mail.html,
       text: mail.text,
       art: "bestaetigung",
+      absender: ABSENDER,
     });
     protokoll[protokoll.length - 1].beleg = ergebnis.ok ? ergebnis.beleg : `FEHLER: ${ergebnis.fehler}`;
     protokollSchreiben(protokoll);

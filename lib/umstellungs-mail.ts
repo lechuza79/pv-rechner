@@ -1,4 +1,20 @@
-import { huelle, knopf, C, T, SITE } from "./mail-huelle";
+import { SITE, C, T, SCHRIFT } from "./mail-huelle";
+// DIESELBE SIGNATUR WIE IM KOMMUNEN-ANSCHREIBEN (Betreiber, 03.09.2026), also
+// die aus seinem Mailprogramm. Zwei Fassungen desselben Absenders wären genau
+// dort sichtbar, wo jemand prüft, ob da wirklich ein Mensch sitzt — und wer
+// hier antwortet, landet in demselben Postfach.
+import { SIGNATURE } from "./kommunen-outreach-draft";
+
+// ─── SIE SIEHT AUS WIE EINE MAIL VON EINEM MENSCHEN, WEIL SIE EINE IST ──────
+//
+// Keine Wortmarke, keine Karte, kein Knopf — die Hülle der übrigen Nutzermails
+// bleibt hier bewusst weg (Betreiber-Entscheidung 03.09.2026). Eine gestaltete
+// Systemmail über eine geänderte Anmeldung trägt exakt die Merkmale, an denen
+// man Phishing erkennt: fremdes Layout, „dein Konto", ein Knopf. Ein kurzer
+// Text vom Absender persönlich trägt sie nicht.
+//
+// Die Pflichtangaben stehen trotzdem drin, nur als Zeile statt als Fußleiste:
+// Impressum, Datenschutz und der Grund der Zusendung.
 
 // ─── Die einmalige Nachricht zur Umstellung der Anmeldung ────────────────────
 //
@@ -7,33 +23,57 @@ import { huelle, knopf, C, T, SITE } from "./mail-huelle";
 // und kämen ohne diese Nachricht nicht mehr in ihren eigenen Bereich. Sie zu
 // unterlassen wäre nicht die vorsichtigere, sondern die schlechtere Option.
 //
-// ─── SIE GEHT NUR AN BESTÄTIGTE ADRESSEN — BLOCKER ───────────────────────────
+// ─── ZWEI FASSUNGEN, WEIL ZWEI GRUPPEN ──────────────────────────────────────
 //
-// Von 17 fremden Konten haben 10 den Anmeldelink nie eingelöst. An sie geht
-// NICHTS: Im doppelten Bestätigungsverfahren ist die ausbleibende Bestätigung
-// definitionsgemäß ein Nein, und eine zweite Mail behandelt dieses Nein als
-// Vielleicht. Dazu kommt der Zeitablauf (Monate) gegen die vernünftigen
-// Erwartungen aus Erwägungsgrund 47 und das ohnehin fällige Löschgebot aus
-// Art. 17 Abs. 1 Buchst. a — der Zweck der Speicherung ist mit dem Scheitern
-// der Registrierung entfallen. Legal-Judge am 02.09.2026, Fundstellen im
-// Volltext geprüft.
+// Von 17 fremden Konten haben 7 den Anmeldelink damals eingelöst, 10 nie.
+// Beide werden angeschrieben (Betreiber-Entscheidung 02.09.2026), aber mit
+// verschiedenem Aufhänger — und der Unterschied ist kein Zierrat:
 //
-// Der Einwand „die erste Mail ist im Spam gelandet, sie hatten nie die Wahl"
-// ist ernst zu nehmen und bleibt eine VERMUTUNG: Die alten Mails gingen über
-// den eingebauten Versand des Anmeldedienstes, dessen Zustellprotokolle nicht
-// herausgegeben werden (am 02.09.2026 über die Schnittstelle geprüft, nicht
-// erreichbar). Ohne diesen Beleg wird gelöscht, nicht geschrieben.
+//   BESTÄTIGT  → „Die Anmeldung hat sich geändert." Das ist die Fortführung
+//                eines bestehenden Nutzungsverhältnisses; ohne diese Nachricht
+//                kämen sie nicht mehr in ihr Konto.
+//   UNBESTÄTIGT → „Wir löschen deinen Eintrag am …" Hier gibt es kein
+//                Nutzungsverhältnis: Im doppelten Bestätigungsverfahren ist
+//                die ausbleibende Bestätigung definitionsgemäß ein Nein. Was
+//                die Nachricht trägt, ist die Transparenz über eine Löschung,
+//                die ohnehin fällig ist (Art. 17 Abs. 1 Buchst. a — der Zweck
+//                der Speicherung ist mit dem Scheitern der Registrierung
+//                entfallen). Die Löschung ist der GRUND der Mail, nicht ihr
+//                Nachsatz. Wer die Reihenfolge umdreht — erst einladen, dann
+//                als Fußnote löschen —, macht aus der Transparenz einen
+//                Vorwand, und dann trägt die Mail nichts mehr.
 //
-// ─── WARUM KEIN WORT MEHR DARIN STEHT, ALS DORT STEHT ────────────────────────
+// Legal-Judge am 02.09.2026, Fundstellen im Volltext geprüft. Seine Empfehlung
+// war, die 10 kommentarlos zu löschen; der Betreiber hat sich für die
+// Löschankündigung entschieden, die derselbe Prüfer ausdrücklich als tragfähig
+// bezeichnet hat.
 //
-// Diese Nachricht ist KEINE Werbung — sie führt ein bestehendes
-// Nutzungsverhältnis fort (Art. 6 Abs. 1 Buchst. b DSGVO). Genau diese
-// Einordnung kippt, sobald irgendetwas beigepackt wird: ein Hinweis auf einen
-// neuen Rechner, auf das Themen-Abo, ein Marketing-Fuß, Symbole sozialer
-// Netze. Der Bundesgerichtshof hat eine im Kern zulässige Rechnungsmail allein
-// wegen einer angehängten Zufriedenheitsbefragung als unzulässige Werbung
-// eingestuft (VI ZR 225/17). Wer hier etwas hinzufügt, macht aus einer
-// erlaubten Systemmail eine Werbemail an Adressen ohne Werbeeinwilligung.
+// ─── DAS ABMAHNRISIKO IST PRAKTISCH NULL — UND WAR NIE DAS ARGUMENT ─────────
+//
+// Der Empfänger selbst darf nach § 8 Abs. 3 UWG nicht abmahnen; Mitbewerber
+// und Verbände bekommen Mails an private Postfächer nicht mit. Bliebe eine
+// Klage des Empfängers über §§ 823, 1004 BGB — bei einer einmaligen Nachricht
+// eines kostenlosen Rechners praktisch ausgeschlossen.
+//
+// Was wirklich zählt, ist die ZUSTELLBARKEIT: Wer sich nach Monaten an nichts
+// erinnert, drückt eher Spam als jemand, der eine Löschankündigung liest und
+// nichts tun muss. Bei zehn Adressen sind das ein bis zwei Klicks — auf einem
+// Versandweg, der am 02.09.2026 seinen ersten Tag hatte und später die
+// Abo-Meldungen tragen soll. Deshalb steht der Hinweis auf die Neuerungen in
+// der Fassung für die Unbestätigten UNTER der Löschankündigung, nicht darüber.
+//
+// ─── DER HINWEIS AUF DIE NEUERUNGEN IST EINE ENTSCHEIDUNG, KEIN VERSEHEN ────
+//
+// Er macht die Nachricht formal zur Werbung (Absatzförderung nach Art. 2
+// Buchst. a RL 2006/114/EG) — der Bundesgerichtshof hat eine im Kern zulässige
+// Rechnungsmail allein wegen einer angehängten Zufriedenheitsbefragung als
+// unzulässige Werbung eingestuft (VI ZR 225/17). Der Betreiber hat das
+// abgewogen und sich dafür entschieden; das Risiko steht oben.
+//
+// WAS TROTZDEM NICHT HINEINDARF, steht in der Liste unten: kein Themen-Abo,
+// keine sozialen Netze, kein Abmeldelink für einen Verteiler, den es nicht
+// gibt. Drei Neuerungen in drei Zeilen sind der Rahmen — was darüber
+// hinausgeht, ist ein Newsletter, und dafür bräuchte es eine Einwilligung.
 //
 // ─── UND WARUM SIE KEINEN ZUGANG TRÄGT ───────────────────────────────────────
 //
@@ -46,8 +86,7 @@ import { huelle, knopf, C, T, SITE } from "./mail-huelle";
 /** Was in dieser Nachricht NICHT stehen darf. Geprüft am fertigen HTML. */
 export const VERBOTEN_IN_UMSTELLUNGSMAIL: { muster: RegExp; warum: string }[] = [
   { muster: /abonn|newsletter|meldungen zu deiner gemeinde/i, warum: "Hinweis auf das Themen-Abo" },
-  { muster: /jetzt (berechnen|rechnen|ausprobieren)|schau dir an|entdecke/i, warum: "Aufforderung zur Nutzung" },
-  { muster: /rabatt|angebot|kostenlos testen|empfehlen/i, warum: "werbliche Ansprache" },
+  { muster: /rabatt|angebot|kostenlos testen|empfehl/i, warum: "werbliche Ansprache" },
   { muster: /linkedin|instagram|facebook|folge uns/i, warum: "Verweis auf soziale Netze" },
   { muster: /abbestellen|abmelden von|unsubscribe/i, warum: "Abmeldelink, obwohl es keinen Verteiler gibt" },
 ];
@@ -57,47 +96,138 @@ export function beipackBefund(html: string): string[] {
   return VERBOTEN_IN_UMSTELLUNGSMAIL.filter((v) => v.muster.test(html)).map((v) => v.warum);
 }
 
-export const UMSTELLUNG_BETREFF = "Die Anmeldung bei Solar Check funktioniert jetzt anders";
+/**
+ * Die drei Neuerungen, die seit dem Frühsommer dazugekommen sind.
+ *
+ * DREI, NICHT MEHR: Was darüber hinausgeht, ist ein Newsletter — und dafür
+ * bräuchte es eine Einwilligung, die hier niemand erteilt hat. Die Förderung
+ * steht zuerst, weil sie als einzige konkret Geld bewegt.
+ */
+const NEUERUNGEN: { was: string }[] = [
+  { was: "Förderprogramme deiner Gemeinde werden automatisch abgezogen, Postleitzahl eingeben reicht" },
+  { was: "Umschalten zwischen heutiger Einspeisevergütung und dem, was ab 2027 geplant ist" },
+  { was: "Neue Rechner für Balkonkraftwerk, Klimaanlage und Einspeisevergütung" },
+];
+
+function neuerungenZeilen(): string[] {
+  return NEUERUNGEN.map((n) => `* ${n.was}`);
+}
+
+export const UMSTELLUNG_BETREFF = "Die Anmeldung bei Solar Check läuft jetzt anders";
+
+export type Empfaengergruppe = "bestaetigt" | "unbestaetigt";
 
 /**
- * Die Nachricht an ein bestätigtes Konto.
+ * Wie lange ein nie bestätigter Eintrag noch bleibt, gerechnet ab dem Versand.
  *
- * Ohne Anrede: Wir kennen keinen Namen, und „Hallo" an eine Adresse, hinter der
- * ein Rathaus oder eine Nachbarin sitzen kann, ist geraten — dieselbe
- * Entscheidung wie bei den Abo-Mails.
+ * Vier Wochen: lang genug, dass niemand die Mail im Urlaub verpasst, kurz
+ * genug, dass es eine echte Ankündigung bleibt und keine Floskel.
  */
-export function umstellungsMail(): { betreff: string; html: string; text: string } {
+export const LOESCHFRIST_TAGE = 28;
+
+export function loeschdatum(ab: Date): string {
+  const d = new Date(ab.getTime() + LOESCHFRIST_TAGE * 24 * 60 * 60 * 1000);
+  return d.toLocaleDateString("de-DE", { day: "2-digit", month: "long", year: "numeric" });
+}
+
+/**
+ * Die Nachricht an ein Konto.
+ *
+ * OHNE ANREDE: Wir kennen keinen Namen, und „Hallo" an eine Adresse, hinter
+ * der ein Rathaus oder eine Nachbarin sitzen kann, ist geraten — dieselbe
+ * Entscheidung wie bei den Abo-Mails.
+ *
+ * DIE REIHENFOLGE IST BEI DEN UNBESTÄTIGTEN DER GANZE PUNKT: erst die
+ * Löschung, dann erst der Rest. Sie trägt die Nachricht; kommt sie als
+ * Nachsatz, ist sie ein Vorwand (siehe Kopf dieser Datei).
+ */
+export function umstellungsMail(o: {
+  gruppe: Empfaengergruppe;
+  /** Wird hereingereicht, nie hier geholt — sonst ließe sich nichts prüfen. */
+  jetzt: Date;
+}): { betreff: string; html: string; text: string } {
   const anmeldeUrl = `${SITE}/login`;
+  const bestaetigt = o.gruppe === "bestaetigt";
+  const frist = loeschdatum(o.jetzt);
 
-  const html = huelle({
-    vorschau: "Dein Konto und deine Berechnungen sind unverändert da.",
-    grundzeile:
-      "Du bekommst diese Nachricht, weil du bei Solar Check ein Konto hast. Sie geht einmalig an alle Konten.",
-    inhalt:
-      `<h1 style="margin:0;font-size:${T.titel};line-height:1.3;font-weight:700;color:${C.text}">Die Anmeldung hat sich geändert</h1>` +
-      `<p style="margin:16px 0 0;font-size:${T.text};line-height:1.65;color:${C.fliess}">Bisher hast du dich über einen Link angemeldet, den wir dir per Mail geschickt haben. Ab jetzt läuft es über ein Passwort, das du selbst wählst — oder über dein Google-Konto.</p>` +
-      `<p style="margin:16px 0 0;font-size:${T.text};line-height:1.65;color:${C.fliess}">Dein Konto und deine gespeicherten Berechnungen sind unverändert da. Du brauchst nur einmal ein Passwort zu setzen: auf der Anmeldeseite auf „Passwort vergessen?", dann bekommst du einen Link dorthin.</p>` +
-      knopf(anmeldeUrl, "Zur Anmeldung") +
-      `<p style="margin:22px 0 0;font-size:${T.fuss};line-height:1.6;color:${C.leise}">Falls du dein Konto nicht mehr brauchst, musst du nichts tun — schreib uns, dann löschen wir es samt allem, was darin liegt.</p>`,
-  });
+  const betreff = bestaetigt
+    ? UMSTELLUNG_BETREFF
+    : `Dein Eintrag bei Solar Check wird am ${frist} gelöscht`;
 
-  const text = [
-    "Die Anmeldung bei Solar Check hat sich geändert.",
-    "",
-    "Bisher hast du dich über einen Link angemeldet, den wir dir per Mail geschickt haben.",
-    "Ab jetzt läuft es über ein Passwort, das du selbst wählst — oder über dein Google-Konto.",
-    "",
-    "Dein Konto und deine gespeicherten Berechnungen sind unverändert da. Du brauchst nur",
-    "einmal ein Passwort zu setzen: auf der Anmeldeseite auf „Passwort vergessen?\", dann",
-    "bekommst du einen Link dorthin.",
-    "",
-    anmeldeUrl,
-    "",
-    "Falls du dein Konto nicht mehr brauchst, musst du nichts tun — schreib uns, dann",
-    "löschen wir es samt allem, was darin liegt.",
-    "",
-    "Solar Check · " + SITE + "/impressum · " + SITE + "/datenschutz",
-  ].join("\n");
+  // WICHTIG BEI DEN BESTÄTIGTEN: Sie haben kein Passwort und bekommen hier
+  // auch keins. Der Text muss deshalb sagen, dass sie es sich per Mail
+  // anfordern („Passwort vergessen?") — sonst stehen sie vor einem Formular,
+  // in das sie nichts eintragen können. Genau das ist beim ersten Entwurf
+  // aufgefallen.
+  const zeilen = bestaetigt
+    ? [
+        "Hallo,",
+        "",
+        "du hattest dir mal ein Konto bei Solar Check angelegt. Die Anmeldung läuft",
+        "ab jetzt anders: nicht mehr über einen Link in der Mail, sondern über ein",
+        "Passwort, das du selbst setzt — oder über Google.",
+        "",
+        "Dein Konto ist unverändert da. Du brauchst nur einmal ein Passwort: auf der",
+        "Anmeldeseite auf \u201ePasswort vergessen?\u201c, dann schicke ich dir einen Link",
+        "dorthin.",
+        "",
+        "Würde mich freuen wenn du mal wieder reinschaust, es hat sich einiges getan:",
+        "",
+        ...neuerungenZeilen(),
+        "",
+        anmeldeUrl,
+        "",
+        "Brauchst du das Konto nicht mehr, schreib einfach zurück, dann lösche ich es.",
+        "",
+        "Viele Grüße",
+        ...SIGNATURE.split("\n"),
+      ]
+    : [
+        "Hallo,",
+        "",
+        "du hattest dich mal bei Solar Check angemeldet, aber nie bestätigt. Meine Mail",
+        "ist wahrscheinlich im Spam gelandet, weil sie von einer komischen",
+        "Absenderadresse kam. Ist inzwischen gefixt, deshalb kommt die hier an.",
+        "",
+        `Deine Adresse wird am ${frist} automatisch gelöscht, falls du nichts tust.`,
+        "",
+        "Würde mich allerdings freuen wenn du noch mal reinschaust, es hat sich einiges",
+        "getan:",
+        "",
+        ...neuerungenZeilen(),
+        "",
+        `Willst du das Konto doch, leg es bis dahin einfach neu an: ${anmeldeUrl}`,
+        "",
+        "Soll ich früher löschen, schreib einfach zurück.",
+        "",
+        "Viele Grüße",
+        ...SIGNATURE.split("\n"),
+      ];
 
-  return { betreff: UMSTELLUNG_BETREFF, html, text };
+  const grund = bestaetigt
+    ? "Diese E-Mail bekommst du, weil du bei Solar Check ein Konto hast. Sie geht einmalig an alle Konten."
+    : "Diese E-Mail bekommst du, weil du dich bei Solar Check für ein Konto eingetragen hast. Danach schreibe ich nicht wieder.";
+
+  const fuss = [grund, `Impressum: ${SITE}/impressum · Datenschutz: ${SITE}/datenschutz`];
+
+  const text = [...zeilen, "", "--", ...fuss].join("\n");
+
+  // Das HTML ist derselbe Text, nur mit Zeilenumbrüchen und klickbarer Adresse.
+  // Kein Layout: Wer eine gestaltete Karte baut, baut wieder die Systemmail,
+  // die hier gerade abgeschafft wurde.
+  const alsHtml = (z: string[]) =>
+    z
+      .map((l) =>
+        l.replace(/https:\/\/[^\s]+/g, (u) => `<a href="${u}" style="color:${C.akzent}">${u}</a>`),
+      )
+      .join("<br>");
+
+  const html =
+    `<div style="font-family:${SCHRIFT};font-size:${T.text};line-height:1.55;color:${C.text}">` +
+    alsHtml(zeilen) +
+    `<br><br><span style="color:${C.leise};font-size:${T.fuss}">--<br>` +
+    alsHtml(fuss) +
+    `</span></div>`;
+
+  return { betreff, html, text };
 }

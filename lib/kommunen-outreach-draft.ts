@@ -234,7 +234,7 @@ export type OutreachDraft = { subject: string; body: string; bodyHtml: string; m
  */
 const NAMENSZUSATZ = "Dipl. Des.";
 
-const SIGNATURE = `Sebastian Schäder
+export const SIGNATURE = `Sebastian Schäder
 ${NAMENSZUSATZ}
 
 solar-check.io
