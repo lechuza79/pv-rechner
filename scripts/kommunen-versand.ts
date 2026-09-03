@@ -46,8 +46,6 @@ import {
 import { versandfenster } from "../lib/schulferien";
 import { SCHUEBE, AKTUELLER_SCHUB } from "../lib/kommunen-testballon";
 import { berlinOffset, heuteInBerlin, wochentagInBerlin } from "../lib/zeit";
-import { ATLAS_CITIES } from "../lib/atlas-cities";
-import { ortSchluessel } from "../lib/release-plan";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PROTOKOLL_DIR = resolve(SCRIPT_DIR, ".cache", "versand");
@@ -155,16 +153,19 @@ function bremsen(b: Brief, heute: string): string[] {
   // 29.08.2026 aufgefallen ist, nur andersherum: eine Seite anbieten und
   // gleichzeitig sperren.
   //
-  // KEIN Abbruch, sondern eine Meldung: Ob der Brief trotzdem rausgeht, ist eine
-  // Abwägung (die Förderseite steht dort oft besser), und die gehört dem
-  // Betreiber, nicht diesem Lauf.
-  if (b.region_id.length === 8 && ATLAS_CITIES.some((c) => ortSchluessel(c.ags) === ortSchluessel(b.region_id))) {
-    gruende.push(
-      "HINWEIS: Dieser Ort hat eine eigene Förderseite, seine Atlas-Ortsseite bleibt deshalb " +
-        "gesperrt — der Brief verlinkt sie trotzdem. Entweder Brief auf die Förderseite zeigen " +
-        "lassen oder den Ort bewusst ausnehmen.",
-    );
-  }
+  // HIER STAND EINE BREMSE, DEREN VORAUSSETZUNG ES NICHT MEHR GIBT.
+  //
+  // Sie meldete: „Dieser Ort hat eine eigene Förderseite, seine Atlas-Ortsseite
+  // bleibt deshalb gesperrt." Diese Ausnahme wurde am 29.08.2026 abgeschafft
+  // (Begründung in lib/atlas-outreach-freigabe.ts: Googles Site-Diversity-Regel
+  // schließt das befürchtete Risiko aus, und die Ausnahme kostete eine zweite
+  // Datenquelle im Seitenaufbau). Die Ortsseite geht seitdem mit dem Versand
+  // live, ganz gleich ob der Ort eine Förderseite hat.
+  //
+  // Die Bremse beschrieb also einen Zustand, den es seit fünf Tagen nicht mehr
+  // gibt — und hielt am 03.09.2026 Düsseldorf und Ennepetal zurück, die größte
+  // Stadt des NRW-Schubs darunter. Wer eine Regel abschafft, sucht die Stellen,
+  // die sie noch behaupten.
   return gruende;
 }
 
