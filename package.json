@@ -48,7 +48,8 @@
     "kommunen:stand": "tsx scripts/kommunen-stand.ts",
     "kommunen:vorflug": "tsx scripts/kommunen-vorflug.ts",
     "fachbetriebe:cms": "tsx scripts/fachbetriebe-cms.ts",
-    "fachbetriebe:agenturen": "tsx scripts/fachbetriebe-agenturen.ts"
+    "fachbetriebe:agenturen": "tsx scripts/fachbetriebe-agenturen.ts",
+    "fachbetrieb:link": "tsx scripts/fachbetrieb-link.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",
