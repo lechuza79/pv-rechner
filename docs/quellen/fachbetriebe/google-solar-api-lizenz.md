@@ -96,3 +96,74 @@ Baum steht nicht im Modell.
 Nutzung „ausschließlich für Ihre eigenen Geschäftszwecke" — die Weitergabe an
 einen Fachbetrieb ist damit ungeklärt; keine Verschattung; vierstellige
 Monatskosten.
+
+---
+
+# NACHTRAG 03.09.2026: gemessen und VERWORFEN — nicht neu erheben
+
+Die Lizenzprüfung oben gilt weiter. Die Dachanalyse wurde trotzdem **nicht**
+eingebaut: Sie scheitert nicht am Recht und nicht am Code, sondern an einer
+Eigenschaft der Quelle, die sich nicht wegprogrammieren lässt.
+
+## Der Befund
+
+**Google kennt keine Grundstücksgrenzen.** Die Antwort beschreibt ein
+*Gebäude* im Sinne des Höhenmodells — bei Reihen- und Doppelhäusern ist das
+die ganze Zeile. Am Referenzfall (Reihenhaus, Höchberg) meldete die
+Schnittstelle 141 m² Dachfläche für ein Haus mit rund 60 m², und die
+vorgeschlagene Modulbelegung lief quer über zwei Häuser hinweg. Der Betreiber
+zum Bild: „das layout ist so auch unmöglich — das wäre eher peinlich es einem
+solateur so zu schicken".
+
+Weitere gemessene Fälle: Bornholmer Straße Berlin — 69 m lange Zeile, 785 m²,
+80 kWp als ein „Gebäude". Christaweg Freiburg — 1.648 m² für eine
+Wohnadresse.
+
+**Es gibt keine Angabe in der Antwort, an der sich das eigene Haus erkennen
+ließe.** Ein Umkreisfilter um den Adresspunkt greift zu kurz: Bei 60 echten
+Anschriften lag der Adresspunkt in der Hälfte der Fälle unter 7 m vom
+Gebäudemittelpunkt, bei 20 % über 20 m, im schlechtesten Fall 63 m. Die
+Lösung wäre, den Nutzer seine Dachfläche auf dem Luftbild einzeichnen zu
+lassen — also Solateur-Software in einem Rechner, der in vier Fragen ein
+Ergebnis liefern soll.
+
+## Was TROTZDEM gemessen wurde und stimmt
+
+- **Der Zugang steht.** Schlüssel angelegt, auf die Solar-Schnittstelle
+  beschränkt, in Produktion und lokal hinterlegt. Kostet nichts, solange
+  niemand ihn benutzt (10.000 Gebäudeabfragen im Monat frei; die Bildebenen
+  1.000, danach 7,5 Cent je Abruf).
+- **Die Abdeckung ist gut.** Von 60 echten Anschriften lieferte die
+  Schnittstelle in 60 Fällen eine Antwort. Luftbilder zwischen 2015 und 2025.
+- **Geokodierung braucht kein Google.** Zwei kostenlose Dienste (Photon,
+  Nominatim) fanden 39 von 40 Anschriften und lieferten dieselbe Koordinate.
+  Die früher vermutete Ausfallquote von 40 % lag an erfundenen Testadressen,
+  nicht an den Diensten.
+- **Verschattung liefert Google wirklich.** Wörtlich: „Shading from trees,
+  other buildings, and other parts of the roof are taken into account."
+  Innerhalb desselben Gebäudes lagen zwischen der schlechtesten und besten
+  Dachfläche 430–450 Sonnenstunden im Jahr.
+- **Googles Ertrag ist NICHT unser Ertrag** (861–927 kWh/kWp in der
+  Stichprobe — das ist der Wert vor dem Wechselrichter). Wer das je einbaut:
+  Google liefert die Geometrie, der Ertrag bleibt bei der bisherigen Quelle.
+  Zwei Ertragsquellen nebeneinander wären zwei Wahrheiten für dieselbe Zahl.
+
+## Die Lehre, die über diesen Fall hinausgeht
+
+**Eine schematische Darstellung taugt nicht zur Bestätigung.** Der erste
+Versuch zeichnete die Dachflächen als Umriss-Grafik ohne Luftbild — Urteil
+des Betreibers: „ich checke auf den grafiken garnix". Erst das Luftbild mit
+den eingezeichneten Flächen machte den Fehler in einer Sekunde sichtbar. Wer
+eine automatische Erkennung bestätigen lassen will, zeigt das Original, nicht
+eine Ableitung davon.
+
+**Und: Das Bild allein reicht nicht, wenn niemand die Gegend kennt.** Ich
+habe die beiden Reihenhäuser auf dem Luftbild für einen Garten gehalten und
+den Befund entsprechend falsch berichtet. Bestätigen kann nur, wer den Ort
+kennt — das ist der Nutzer, nie wir.
+
+## Wann es sich lohnen würde, wieder hinzusehen
+
+Nur, wenn Google je eine Angabe liefert, die eine Adresse einer einzelnen
+Dachfläche zuordnet. Bis dahin nicht erneut prüfen — die Rechtslage ist
+geklärt, die Datenqualität gemessen, das Ergebnis liegt hier.
