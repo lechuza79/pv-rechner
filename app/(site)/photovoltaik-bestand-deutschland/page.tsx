@@ -157,9 +157,15 @@ export default async function BestandDeutschlandPage() {
   const balkonPlus = balkon ? zuwachs(balkon.anzahl, balkon.anzahlStichtag) : null;
   const gesamtPlusKwp = bestand.gesamt.kwp - bestand.gesamt.kwpStichtag;
   const laender = laenderNachLeistung(bestand);
-  const onsiteVon = (id: string) => posts.find((p) => p.id === id)?.onsite;
-  const postWachstum = onsiteVon("wachstum-balkon-solar");
-  const postStadtLand = onsiteVon("stadt-land-balkon");
+  // Gesucht wird über den ANKER der Onsite-Fassung, nicht über die
+  // Beitrags-Kennung: Die trägt ein Ordnungspräfix aus dem Redaktionstisch
+  // („g13-…"), das sich beim Umsortieren ändert — und dann fehlt hier still ein
+  // Abschnitt, während die Seite völlig normal aussieht. Genau so ist es beim
+  // Ausbau des Post-Moduls passiert. `lib/__tests__/bestand-onsite.test.ts`
+  // hält die beiden Anker fest.
+  const onsiteMit = (anker: string) => posts.find((p) => p.onsite?.anker === anker)?.onsite;
+  const postWachstum = onsiteMit("balkon-wachstum");
+  const postStadtLand = onsiteMit("stadt-land");
 
   return (
     <div style={S.page}>
@@ -264,7 +270,7 @@ export default async function BestandDeutschlandPage() {
 
           {postWachstum ? (
             <>
-              <h2 style={S.h2}>{postWachstum.ueberschrift}</h2>
+              <h2 style={S.h2} id={postWachstum.anker}>{postWachstum.ueberschrift}</h2>
               {postWachstum.absaetze.map((a) => (
                 <p key={a} style={S.p}>{a}</p>
               ))}
@@ -311,7 +317,7 @@ export default async function BestandDeutschlandPage() {
 
           {postStadtLand ? (
             <>
-              <h2 style={S.h2}>{postStadtLand.ueberschrift}</h2>
+              <h2 style={S.h2} id={postStadtLand.anker}>{postStadtLand.ueberschrift}</h2>
               {postStadtLand.absaetze.map((a) => (
                 <p key={a} style={S.p}>{a}</p>
               ))}
