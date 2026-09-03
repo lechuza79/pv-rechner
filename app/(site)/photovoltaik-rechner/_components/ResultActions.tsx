@@ -3,7 +3,6 @@ import Link from "next/link";
 import { v, iconSizes } from "../../../../lib/theme";
 import { IconCheck, IconLink, IconShare, IconWhatsApp, IconArrowRight } from "../../../../components/Icons";
 import type { AuthState } from "../../../../lib/auth";
-import KlebenderKnopf from "../../../../components/KlebenderKnopf";
 
 interface ResultActionsProps {
   copied: boolean;
@@ -17,18 +16,11 @@ interface ResultActionsProps {
   onWhatsApp: () => void;
   onSave: () => void;
   onLoginClick: () => void;
-  /**
-   * Aus, wo eine wichtigere klebende Leiste unten steht — auf der
-   * betriebseigenen Seite hat der Rückkanal Vorrang. Zwei klebende Leisten auf
-   * einer Seite sind eine zu viel.
-   */
-  klebenderKnopf?: boolean;
 }
 
 export default function ResultActions({
   copied, canShare, authState, saving, saved, savedCalcId,
   onCopy, onNativeShare, onWhatsApp, onSave, onLoginClick,
-  klebenderKnopf = true,
 }: ResultActionsProps) {
   const iconBtnStyle = (active?: boolean) => ({
     width: 40, height: 40, borderRadius: v('--radius-md'), cursor: "pointer" as const,
@@ -78,20 +70,9 @@ export default function ResultActions({
     );
   };
 
-  // Die klebende Leiste wiederholt NUR den primären Knopf, nicht die
-  // Symbolreihe daneben: Teilen und WhatsApp sind Nebenwege — sie dauerhaft
-  // einzublenden machte aus der Leiste eine zweite Werkzeugleiste statt eines
-  // nächsten Schritts. Bei „gespeichert" verschwindet sie, weil es dann nichts
-  // mehr zu tun gibt.
-  const leisteAktiv = klebenderKnopf && !saved && authState.status !== "loading";
-
   return (
-    <KlebenderKnopf
-      aktiv={leisteAktiv}
-      leiste={<div style={{ display: "flex", boxShadow: "0 4px 16px rgba(0,0,0,0.18)", borderRadius: v('--radius-md') }}>{primaryBtn()}</div>}
-      kinder={(ref) => (
     <>
-      <div ref={ref} style={{ display: "flex", gap: 5, alignItems: "center", padding: "10px 0", marginBottom: 16 }}>
+      <div style={{ display: "flex", gap: 5, alignItems: "center", padding: "10px 0", marginBottom: 16 }}>
         <button onClick={onCopy} title={copied ? "Kopiert!" : "Link kopieren"} style={iconBtnStyle(copied)}>
           {copied ? <IconCheck size={iconSizes.md} /> : <IconLink size={iconSizes.md} />}
         </button>
@@ -113,7 +94,5 @@ export default function ResultActions({
         </div>
       )}
     </>
-      )}
-    />
   );
 }

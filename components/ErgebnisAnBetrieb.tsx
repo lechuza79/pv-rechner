@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { v, space, pad, iconSizes } from "../lib/theme";
 import { IconArrowRight, IconCheck } from "./Icons";
-import KlebenderKnopf from "./KlebenderKnopf";
 
 /**
  * Der Rückkanal: Der Nutzer schickt sein fertiges Ergebnis an den Betrieb,
@@ -30,6 +29,9 @@ import KlebenderKnopf from "./KlebenderKnopf";
  * sonst im Projekt.
  */
 
+/** Öffnet den Rückkanal von außen — aus der klebenden Leiste des Ergebnisses. */
+export const RUECKKANAL_OEFFNEN = "sc-rueckkanal-oeffnen";
+
 export type PartnerAngabe = {
   /** Wie der Betrieb heißt — steht im Knopf und in der Bestätigung. */
   name: string;
@@ -52,6 +54,16 @@ export default function ErgebnisAnBetrieb({
   const [sendet, setSendet] = useState(false);
   const [gesendet, setGesendet] = useState(false);
   const [fehler, setFehler] = useState<string | null>(null);
+
+  // Die klebende Leiste am unteren Rand ruft dasselbe Formular auf. Sie liegt
+  // im Rechner (der alle drei Aktionen kennt), nicht hier — deshalb ein
+  // Ereignis statt einer hochgezogenen Zustandsvariablen. Dasselbe Muster
+  // benutzt die klebende Leiste der Ratgeber für den Förder-Check.
+  useEffect(() => {
+    const auf = () => setOffen(true);
+    window.addEventListener(RUECKKANAL_OEFFNEN, auf);
+    return () => window.removeEventListener(RUECKKANAL_OEFFNEN, auf);
+  }, []);
 
   // Ein Kontaktweg genügt — wer nur anrufen lassen will, soll keine
   // Mailadresse erfinden müssen. Der Name ist Pflicht, weil eine Anfrage ohne
@@ -99,23 +111,13 @@ export default function ErgebnisAnBetrieb({
   }
 
   if (!offen) {
-    const knopf = (schatten?: boolean) => (
-      <button
-        type="button"
-        onClick={() => setOffen(true)}
-        style={schatten ? { ...S.aufmachen, marginBottom: 0, boxShadow: "0 4px 16px rgba(0,0,0,0.18)" } : S.aufmachen}
-      >
+    return (
+      <button type="button" onClick={() => setOffen(true)} style={S.aufmachen}>
         <span style={S.aufmachenInner}>
           Ergebnis an {partner.name} schicken
           <IconArrowRight size={iconSizes.md} />
         </span>
       </button>
-    );
-    return (
-      <KlebenderKnopf
-        kinder={(ref) => <div ref={ref}>{knopf()}</div>}
-        leiste={knopf(true)}
-      />
     );
   }
 

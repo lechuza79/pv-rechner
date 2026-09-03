@@ -12,7 +12,8 @@ import { simulateSolarYear, monthlyFromAnnual } from "../../../lib/balkon-sim";
 // ResultVerguetung umschließt ResultRegime — deshalb hier nur der äußere Import.
 import ResultVerguetung from "./_components/ResultVerguetung";
 import ResultSection from "../../../components/ResultSection";
-import ErgebnisAnBetrieb, { type PartnerAngabe } from "../../../components/ErgebnisAnBetrieb";
+import ErgebnisAnBetrieb, { RUECKKANAL_OEFFNEN, type PartnerAngabe } from "../../../components/ErgebnisAnBetrieb";
+import KlebenderKnopf from "../../../components/KlebenderKnopf";
 // HEIZSYSTEM/HEIZSYSTEM_SHORT/WP_M2_PRESETS brauchte der entfallene
 // Verbrauchs-Abschnitt; die Gebäudefragen holen sie sich jetzt selbst aus
 // components/GebaeudeField.
@@ -774,6 +775,63 @@ export default function PVRechner({
     shareText: `PV-Amortisation: ${kwp} kWp${spKwh > 0 ? ` + ${spKwh} kWh Speicher` : ""} – ${be ? `${be.i} Jahre` : ">25 Jahre"}`,
     shareUrl: typeof window !== "undefined" ? buildShareUrl() : undefined,
   });
+
+  // ─── Die klebende Leiste am Ende des Ergebnisses ─────────────────────────
+  // Maße und Verlauf kommen aus dem geteilten Baustein; hier stehen nur die
+  // drei Knöpfe. Der primäre trägt denselben Zustand wie der im Fließtext.
+  const leisteBasis = {
+    height: 44,
+    borderRadius: v("--radius-md"),
+    fontSize: v("--font-size-body"),
+    fontWeight: 700,
+    fontFamily: v("--font-text"),
+    cursor: "pointer" as const,
+    display: "flex" as const,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    border: "none",
+  };
+  const leisteNeben = {
+    ...leisteBasis,
+    width: 44,
+    flexShrink: 0,
+    background: v("--color-bg"),
+    color: v("--color-accent"),
+    border: `1px solid ${v("--color-border-accent")}`,
+  };
+  const leisteSenden = {
+    ...leisteBasis,
+    flex: 1,
+    padding: "0 16px",
+    background: v("--color-accent"),
+    color: v("--color-text-on-accent"),
+  };
+  const primaerLeiste = () => {
+    const gemeinsam = { ...leisteBasis, flex: 1, width: "100%" };
+    if (authState.status === "authed") {
+      return (
+        <button onClick={handleSave} disabled={saving} style={{
+          ...gemeinsam,
+          background: partner ? v("--color-bg") : v("--color-accent"),
+          color: partner ? v("--color-accent") : v("--color-text-on-accent"),
+          border: partner ? `1px solid ${v("--color-border-accent")}` : "none",
+          cursor: saving ? "wait" : "pointer",
+        }}>
+          {saving ? "Speichert…" : "Speichern"}
+        </button>
+      );
+    }
+    return (
+      <button onClick={oeffneAnmeldung} style={{
+        ...gemeinsam,
+        background: partner ? v("--color-bg") : v("--color-accent"),
+        color: partner ? v("--color-accent") : v("--color-text-on-accent"),
+        border: partner ? `1px solid ${v("--color-border-accent")}` : "none",
+      }}>
+        Speichern
+      </button>
+    );
+  };
 
   const handleCopy = async () => {
     trackEvent("pv_geteilt");
@@ -1593,33 +1651,60 @@ export default function PVRechner({
               }</span>
             </div>
 
-            {/* Der Rückkanal steht ÜBER den allgemeinen Aktionen: Wer über die
-                Seite eines Betriebs gekommen ist, für den ist „an diesen Betrieb
-                schicken" der naheliegende nächste Schritt, nicht „Link kopieren".
-                Ohne Partner-Angabe entfällt der Block ersatzlos. */}
-            {partner && (
-              <div style={{ marginTop: space.xl }}>
-                <ErgebnisAnBetrieb
-                  partner={partner}
-                  ergebnisUrl={typeof window !== "undefined" ? buildShareUrl() : ""}
-                />
-              </div>
-            )}
+            {/* Die drei nächsten Schritte am Ende des Ergebnisses — und
+                dieselben drei noch einmal in der klebenden Leiste, solange sie
+                nicht im Bild sind. Das Ergebnis ist lang; wer oben bei der
+                Amortisation liest, sähe sie sonst nie.
 
-            <ResultActions
-              copied={copied} canShare={canShare} authState={authState} saving={saving} saved={saved} savedCalcId={savedCalcId}
-              onCopy={handleCopy} onNativeShare={handleNativeShare} onWhatsApp={handleWhatsApp}
-              onSave={handleSave} onLoginClick={oeffneAnmeldung}
-              // Auf der betriebseigenen Seite klebt der Rückkanal unten — zwei
-              // Leisten übereinander wären eine zu viel.
-              klebenderKnopf={!partner}
+                Reihenfolge: neu rechnen links (der Rückweg), speichern in der
+                Mitte, verschicken rechts (Betreiber, 01.09.2026). Ohne Partner
+                entfällt der dritte Knopf ersatzlos. */}
+            <KlebenderKnopf
+              aktiv={!saved && authState.status !== "loading"}
+              leiste={
+                <>
+                  <button onClick={restart} style={leisteNeben}>
+                    <IconRefresh size={iconSizes.md} />
+                  </button>
+                  <div style={{ flex: 1, display: "flex" }}>{primaerLeiste()}</div>
+                  {partner && (
+                    <button
+                      onClick={() => window.dispatchEvent(new Event(RUECKKANAL_OEFFNEN))}
+                      style={leisteSenden}
+                    >
+                      Schicken
+                    </button>
+                  )}
+                </>
+              }
+              kinder={(ref) => (
+                <div ref={ref}>
+                  {/* Der Rückkanal steht ÜBER den allgemeinen Aktionen: Wer über die
+                      Seite eines Betriebs gekommen ist, für den ist „an diesen Betrieb
+                      schicken" der naheliegende nächste Schritt, nicht „Link kopieren". */}
+                  {partner && (
+                    <div style={{ marginTop: space.xl }}>
+                      <ErgebnisAnBetrieb
+                        partner={partner}
+                        ergebnisUrl={typeof window !== "undefined" ? buildShareUrl() : ""}
+                      />
+                    </div>
+                  )}
+
+                  <ResultActions
+                    copied={copied} canShare={canShare} authState={authState} saving={saving} saved={saved} savedCalcId={savedCalcId}
+                    onCopy={handleCopy} onNativeShare={handleNativeShare} onWhatsApp={handleWhatsApp}
+                    onSave={handleSave} onLoginClick={oeffneAnmeldung}
+                  />
+
+                  {/* Restart */}
+                  <button onClick={restart} style={{
+                    width: "100%", padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600,
+                    background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer",
+                  }}><span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><IconRefresh size={iconSizes.md} /> Neu berechnen</span></button>
+                </div>
+              )}
             />
-
-            {/* Restart */}
-            <button onClick={restart} style={{
-              width: "100%", padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600,
-              background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer",
-            }}><span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><IconRefresh size={iconSizes.md} /> Neu berechnen</span></button>
 
             <div style={{ textAlign: "center", fontSize: v("--font-size-caption"), color: v('--color-text-faint'), padding: "20px 0 8px", lineHeight: 1.6 }}>
               {/* „Keine Lead-Erfassung" wäre auf einer Partnerseite unwahr:
