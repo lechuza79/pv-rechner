@@ -152,7 +152,7 @@ export function umstellungsMail(o: {
 
   const betreff = bestaetigt
     ? UMSTELLUNG_BETREFF
-    : `Dein Eintrag bei Solar Check wird am ${frist} gelöscht`;
+    : "Dein Account bei solar-check.io wird gelöscht";
 
   // WICHTIG BEI DEN BESTÄTIGTEN: Sie haben kein Passwort und bekommen hier
   // auch keins. Der Text muss deshalb sagen, dass sie es sich per Mail

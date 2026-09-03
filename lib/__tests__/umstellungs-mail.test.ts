@@ -97,8 +97,12 @@ describe("Nachricht zur Umstellung der Anmeldung", () => {
   });
 
   it("nennt in beiden Fassungen dieselbe Löschfrist wie der Versandlauf", () => {
+    // Im BETREFF steht das Datum bewusst nicht (Betreiber, 03.09.2026): Er
+    // muss im Postfach in einer Zeile lesbar sein, und die Frist steht im
+    // ersten Absatz. Im Text steht sie zwingend — sie ist der Grund der Mail.
     const frist = loeschdatum(jetzt);
-    expect(loesch.betreff).toContain(frist);
+    expect(loesch.betreff).toMatch(/gelöscht/);
+    expect(loesch.betreff.length).toBeLessThan(50);
     expect(loesch.html).toContain(frist);
     expect(loesch.text).toContain(frist);
   });
