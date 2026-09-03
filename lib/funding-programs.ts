@@ -1271,19 +1271,28 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
   },
   /**
-   * AKTIV, aber nur für Mieter — und deshalb bewusst OHNE Rechenwert.
+   * AKTIV, aber nur für Mieter — der Betrag rechnet deshalb NUR mit
+   * `nurWohnform: "mieter"`, und ohne beantwortete Wohnform gar nicht.
    *
-   * Am 02.09.2026 auf der Amtsseite gelesen: „Die Mittel des Programms für
-   * Eigentümer einer Wohneinheit sind vollständig ausgeschöpft. Bitte sehen Sie
-   * von einer Antragstellung als Eigentümer ab, da keinerlei Aussicht auf Erfolg
-   * besteht." Für Mieter reichen die Mittel laut LFI „noch für längere Zeit".
+   * Am 02.09.2026 auf der Amtsseite gelesen, am 04.09.2026 im Rohtext
+   * bestätigt: „Die Mittel des Programms für Eigentümer einer Wohneinheit sind
+   * vollständig ausgeschöpft. Bitte sehen Sie von einer Antragstellung als
+   * Eigentümer ab, da keinerlei Aussicht auf Erfolg besteht." Für Mieter reichen
+   * die Mittel laut LFI „noch für längere Zeit".
    *
-   * Warum kein `balkonPauschale: 500`: Unser Modell kennt bei der Berechtigung
-   * nur privat/gewerblich, nicht Mieter/Eigentümer. Ein strukturierter Satz
-   * würde jedem Eigentümer 500 € ausrechnen, die er nachweislich nicht bekommt —
-   * das ist die Klasse „eine Bedingung am falschen Ort ist eine falsche
-   * Auskunft". Also informieren, nicht abziehen. Sobald das Modell Mieter und
-   * Eigentümer trennt, kann der Betrag nachgezogen werden.
+   * DER KOMMENTAR HIER SAGTE BIS ZUM 04.09.2026 DAS GEGENTEIL DES CODES
+   * DARUNTER: „Warum kein `balkonPauschale: 500`" stand über einem Eintrag, der
+   * genau diese Pauschale trägt. Er beschrieb einen Zustand, den dieselbe Arbeit
+   * zwei Absätze später aufgehoben hatte — das Modell trennt Mieter und
+   * Eigentümer seit dem 02.09.2026 über `nurWohnform`, also ist der Betrag
+   * zulässig geworden. Dieselbe Fehlerklasse wie eine Beschriftung, die etwas
+   * anderes sagt als die Zahl daneben; nur trifft sie hier nicht den Nutzer,
+   * sondern die nächste Sitzung, die den Betrag auf Verdacht wieder ausbaut.
+   *
+   * Die Grenze, die der Betrag WIRKLICH braucht, ist eine andere und sitzt in
+   * `fundingAmount`: Die Richtlinie zahlt „maximal in Höhe der zuwendungsfähigen
+   * Ausgaben, sofern diese unter 500 EUR liegen" — und das billigste Set unseres
+   * Rechners kostet 300 €.
    */
   "mv-mini-solaranlagen": {
     id: "mv-mini-solaranlagen", name: "Zuwendungen für steckerfertige PV-Anlagen (Mini-Solaranlagen)",
@@ -1299,8 +1308,9 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     balkonPauschale: 500,
     conditions: [
       "Nur Mieter können noch beantragen — für Eigentümer sind die Mittel aufgebraucht",
+      "Höchstens in Höhe der Ausgaben: Kostet das Set weniger als 500 €, gibt es den Kaufpreis",
       "Antrag erst nach Kauf und Installation stellen",
-      "Antrag nur per Post, per E-Mail eingereichte Anträge sind unwirksam",
+      "Schriftlicher Antrag auf dem vorgeschriebenen Formular — per E-Mail eingereichte Anträge sind unwirksam",
       "Erstwohnsitz in Mecklenburg-Vorpommern",
       "Nur Anlagen mit Kaufdatum ab dem 8. November 2022",
     ],
@@ -4423,11 +4433,28 @@ export function fundingAmount(
     if (f.nurWohnform && !anlage.wohnform) return { total: 0, computable: false, active };
     const computable = !!(f.balkonPauschale || f.balkonProWp || f.balkonPercentOfCost || f.balkonTiers);
     if (!computable) return { total: 0, computable: false, active };
-    if (f.balkonPauschale) return { total: Math.round(f.balkonPauschale), computable: true, active };
-    if (f.balkonTiers) return { total: tierAmount(f.balkonTiers, anlage.wattPeak), computable: true, active };
+    // KEIN Zuschuss über dem Kaufpreis — BLOCKER (04.09.2026).
+    //
+    // Die Pauschalen des Katalogs liegen sonst durchweg unter dem billigsten Set
+    // (300 €), weshalb das jahrelang nicht auffiel. Mecklenburg-Vorpommern zahlt
+    // 500 € — und schreibt die Grenze selbst hin: „max. 500 EUR pro
+    // steckerfertiger PV-Anlage und Wohnungseinheit … jedoch maximal in Höhe der
+    // zuwendungsfähigen Ausgaben, sofern diese unter 500 EUR liegen"
+    // (lfi-mv.de/foerderfinder/mini-solaranlagen, am 04.09.2026 im Rohtext
+    // gelesen). Ohne Deckel rechnet der Balkon-Rechner einem Mieter in M-V auf
+    // das Ein-Modul-Set 500 € an, zieht sie von 300 € Kaufpreis ab und zeigt eine
+    // Anlage, die nichts kostet und sich am ersten Tag amortisiert hat.
+    //
+    // Der Deckel gilt ALLEN Balkon-Sätzen, nicht nur der Pauschale: Ein Zuschuss
+    // über dem Kaufpreis ist in jeder Bauform derselbe Unsinn, und ihn nur dort
+    // zu setzen, wo er heute bindet, hieße auf den nächsten Fall zu warten. Für
+    // jedes andere Programm im Katalog ist er wirkungslos.
+    const deckel = (betrag: number) => Math.round(Math.min(betrag, anlage.kosten));
+    if (f.balkonPauschale) return { total: deckel(f.balkonPauschale), computable: true, active };
+    if (f.balkonTiers) return { total: deckel(tierAmount(f.balkonTiers, anlage.wattPeak)), computable: true, active };
     if (f.balkonProWp) {
       const roh = anlage.wattPeak * f.balkonProWp;
-      return { total: Math.round(f.balkonCap ? Math.min(roh, f.balkonCap) : roh), computable: true, active };
+      return { total: deckel(f.balkonCap ? Math.min(roh, f.balkonCap) : roh), computable: true, active };
     }
     return { total: anteil(anlage.kosten, f.balkonPercentOfCost!, f.balkonCap), computable: true, active };
   }

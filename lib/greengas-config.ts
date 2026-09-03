@@ -427,7 +427,22 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // Beimischungen ausdrücklich zu — eine Norm ist aber keine Preisreihe). Der
   // Lücken-Hinweis im Öl-Ergebnis bleibt bestehen, und mit ihm die benannte
   // Fehlerrichtung: Öl wird zu günstig gerechnet.
-  geprueftRechtIso: "2026-09-03",
+  //
+  // 04.09.2026: unverändert, erneut am Gesetzestext. § 43 Abs. 1 zellgleich mit
+  // `quoteStops` und `BIO_TREPPE_STUFEN`; die Pflicht knüpft weiterhin an den
+  // Neueinbau „nach dem 29. Juli 2026 in ein bestehendes Gebäude" an. § 42a
+  // wörtlich unverändert — das Quotengesetz ist nach wie vor nur eine Pflicht
+  // der Bundesregierung, bis zum 01.12.2026 eines vorzulegen; es existiert
+  // nicht. Damit ist auch der Regelungs-Strang der Bioheizöl-Frage weiterhin
+  // ohne Befund.
+  //
+  // VIERZEHNTE Bioheizöl-Gegensuche, Preis-Strang ebenfalls ohne Ergebnis: Die
+  // Treffer sind wieder Heizölpreis-Charts der Händler, der CO2-Aufschlag je
+  // Liter und Angebote „Bioheizöl mit mindestens 10 % biogenem Anteil" — ein
+  // Produktversprechen, keine fortgeschriebene Preisreihe. Es bleibt dabei, dass
+  // die Beimischung für Öl NICHT gerechnet wird und der Hinweis im Öl-Ergebnis
+  // die Lücke samt ihrer Richtung benennt.
+  geprueftRechtIso: "2026-09-04",
   reviewBy: "2027-07-25",
 };
 

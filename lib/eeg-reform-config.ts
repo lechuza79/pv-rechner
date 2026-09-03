@@ -286,7 +286,30 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // ist der Sitzungskalender kein Beleg mehr und der Verfahrensstand gehört an
   // der Drucksache selbst nachgesehen. Dieser Lauf hat das schon getan; der
   // Stichtag ändert daran nichts, er nimmt nur die bequemere Abkürzung weg.
-  geprueftIso: "2026-09-03",
+  //
+  // 04.09.2026: unverändert — der letzte Tag, an dem sich das ohne Blick in die
+  // Drucksache sagen ließe. Zwei amtliche Quellen im Rohtext gelesen: Die
+  // Vorgangsseite zur Drucksache 470/26 führt weiterhin ausschließlich die
+  // Grunddrucksache — kein Plenarabschnitt, keine Stellungnahme, kein Beschluss.
+  // Und der Sitzungskalender des Bundestages (Stand: 04.09.2026, also heute
+  // fortgeschrieben) nennt als nächste Sitzungswochen 07.–11.09. und
+  // 21.–25.09.2026. Bis heute Abend KANN der Bundestag also nichts beschlossen
+  // haben; ab Montag kann er es jeden Tag.
+  //
+  // WAS DAS FÜR DEN NÄCHSTEN LAUF HEISST: In der Woche ab dem 07.09. reicht es
+  // NICHT mehr, die Vorgangsseite des Bundesrates anzusehen. Der Entwurf ist als
+  // besonders eilbedürftig nach Art. 76 Abs. 2 Satz 4 GG eingebracht, also läuft
+  // er im Bundestag parallel zur Stellungnahme des Bundesrates — ein
+  // Bundestagsbeschluss würde auf der Bundesrats-Vorgangsseite zunächst gar
+  // nicht auftauchen. Nachzusehen ist die Drucksache im Bundestag selbst.
+  //
+  // Eine kursierende Terminangabe („Bundestag beschließt am 08.09.2026") ist
+  // ausdrücklich NICHT übernommen: Sie stammt aus einem meinungsstarken
+  // Online-Medium, und die Tagesordnung der Sitzungswoche war am 04.09.2026
+  // amtlich noch nicht abrufbar. Ein Datum aus einer solchen Quelle in diese
+  // Datei zu schreiben hieße, einen Verfahrensstand zu behaupten — genau das,
+  // was Regel 1 des Wächter-Gates verbietet.
+  geprueftIso: "2026-09-04",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.
