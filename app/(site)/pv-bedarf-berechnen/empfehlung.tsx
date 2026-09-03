@@ -78,7 +78,30 @@ const GV_FIELDS = [...WP_FIELDS, ...EA_FIELDS];
 
 // `stand` kommt fertig aufgelöst von der Server-Seite (page.tsx) — siehe dort,
 // warum der Flow ihn nicht selbst aus `lib/stand.ts` liest.
-export default function Empfehlung({ stand }: { stand?: StandSeite }) {
+//
+// `zielPfad` ist die Adresse, auf der das Ergebnis gerechnet wird. Voreinstellung
+// ist unser eigener Rechner; auf der Seite eines Fachbetriebs ist es dessen
+// Adresse, damit der Flow dort NICHT herausführt. Ohne diesen Parameter hätte
+// der Empfehlungsweg den Besucher mitten im Vorgang auf solar-check.io
+// abgesetzt — mit dem Ergebnis, aber ohne den Betrieb, der ihn geschickt hat.
+//
+// `heimPfad` ist das Ziel des Zurück-Knopfes im ERSTEN Schritt — dort führt er
+// aus dem Flow heraus. Auf unserer Seite ist das die Startseite. Auf der Seite
+// eines Fachbetriebs gibt es keine: `null` lässt den Knopf dort ganz weg,
+// statt den Besucher auf solar-check.io abzusetzen.
+export default function Empfehlung({
+  stand,
+  zielPfad = "/photovoltaik-rechner",
+  heimPfad = "/",
+  eigenerPfad = "/pv-bedarf-berechnen",
+}: {
+  stand?: StandSeite;
+  zielPfad?: string;
+  heimPfad?: string | null;
+  /** Die Adresse, unter der dieser Flow gerade läuft. Er schreibt seinen
+   *  Zustand dorthin zurück. */
+  eigenerPfad?: string;
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const prices = usePrices();
@@ -237,8 +260,11 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
       }
     }
     geschriebeneParams.current = next.toString();
-    router.replace(`/pv-bedarf-berechnen?${next.toString()}`, { scroll: false });
-  }, [router]);
+    // Auf DIESE Adresse schreiben, nicht auf eine feste: Der Flow läuft auch
+    // auf der Seite eines Fachbetriebs, und ein fester Pfad hätte den
+    // Besucher beim ersten Klick dorthin zurückgeworfen, wo er nicht ist.
+    router.replace(`${eigenerPfad}?${next.toString()}`, { scroll: false });
+  }, [router, eigenerPfad]);
 
   // Setters — each writes back to the URL with speaking slugs
   // Defaults werden weggelassen → kurze URLs
@@ -463,7 +489,7 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
     // Lokale Förderung scharf ans Ergebnis durchreichen, damit die Amortisation
     // sie einrechnet (wie bei einem Link von einer Förder-Stadtseite).
     if (armedFoeId) p.set("foe", armedFoeId);
-    router.push(`/photovoltaik-rechner?${p.toString()}`);
+    router.push(`${zielPfad}?${p.toString()}`);
   };
 
   const findSpeicherIdx = (kwh: number) => {
@@ -682,8 +708,15 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                 onWeiter={next}
                 // Im ersten Schritt führt Zurück aus dem Flow heraus auf die
                 // Startseite — dieselbe Wirkung wie vorher, nur im gemeinsamen
-                // Baustein statt als eigener Link daneben.
-                onZurueck={step > 0 ? back : () => router.push("/")}
+                // Baustein statt als eigener Link daneben. Ohne Heimatadresse
+                // (Partnerseite) entfällt der Knopf dort.
+                onZurueck={
+                  step > 0
+                    ? back
+                    : heimPfad
+                      ? () => router.push(heimPfad)
+                      : undefined
+                }
                 inaktivHinweis={stepHinweis}
               />
             </div>

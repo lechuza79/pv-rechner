@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { v, space, pad } from "../../../../lib/theme";
 import { seiteFuerKennung, anzeigename, kurzname } from "../../../../lib/fachbetrieb-seite";
+import { standSeite } from "../../../../lib/stand";
 import InfoTooltip from "../../../../components/InfoTooltip";
 import Logo from "../../../../components/Logo";
 import PartnerRechner from "./PartnerRechner";
@@ -119,7 +120,16 @@ export default async function FachbetriebSeite(props: {
           („Lohnt sich Photovoltaik?"). Eine zweite darüber stand beim ersten
           Bauversuch fast wortgleich daneben. */}
       <div style={S.wrap}>
-        <PartnerRechner kennung={seite.kennung} name={kurz} initialParams={searchParams} />
+        <PartnerRechner
+          kennung={seite.kennung}
+          name={kurz}
+          initialParams={searchParams}
+          /* Der Wertstand wird HIER nachgeschlagen: Die Auflösung hängt an
+             sieben Config-Modulen, die im Browser-Bündel nichts zu suchen
+             haben. Es ist der Stand des Empfehlungswegs — den zeigt diese
+             Seite als Erstes. */
+          stand={standSeite("/pv-bedarf-berechnen")}
+        />
       </div>
     </div>
   );
