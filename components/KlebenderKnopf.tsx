@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { v } from "../lib/theme";
+import { v, KLEBELEISTE_VAR } from "../lib/theme";
 
 /**
  * Die klebende Aktionsleiste am unteren Rand des Ergebnisses.
@@ -27,6 +27,14 @@ import { v } from "../lib/theme";
  * Seite zu früh und auf der anderen zu spät. Die Leiste beobachtet deshalb den
  * echten Knopf und verschwindet, sobald er im Bild ist — zwei gleiche Knöpfe
  * übereinander wären Lärm.
+ *
+ * ── Sie meldet ihre Höhe, damit nichts unter ihr verschwindet ──────────────
+ * Der Toast liegt ebenfalls am unteren Rand; ohne Meldung lag die
+ * PLZ-Aufforderung genau unter der Leiste und war nicht mehr lesbar. Die
+ * Leiste schreibt ihre tatsächliche Höhe an das Wurzelelement
+ * (`--sc-klebeleiste`), eingefahren null — wer unten etwas platziert, rechnet
+ * sie auf seinen Abstand. Gemessen statt geschätzt, weil die Höhe an der
+ * Beschriftung hängt: Auf schmalen Schirmen bricht die dritte Aktion um.
  */
 export default function KlebenderKnopf({
   aktiv = true,
@@ -41,6 +49,7 @@ export default function KlebenderKnopf({
   leiste: ReactNode;
 }) {
   const ankerRef = useRef<HTMLDivElement>(null);
+  const leisteRef = useRef<HTMLDivElement>(null);
   const [zeigen, setZeigen] = useState(false);
 
   useEffect(() => {
@@ -62,10 +71,44 @@ export default function KlebenderKnopf({
 
   const sichtbar = aktiv && zeigen;
 
+  // Die Höhe wird gemessen, nicht angenommen — sie hängt an der Beschriftung
+  // und am Umbruch. Eingefahren gilt null, sonst hielte die Leiste den Platz
+  // frei, den sie gar nicht belegt.
+  //
+  // Gemessen wird die KNOPFREIHE plus der Abstand darunter, nicht die ganze
+  // Box: Deren oberes Drittel ist der durchsichtige Auslauf des Verlaufs. Wer
+  // ihn mitzählt, schiebt alles darüber 64 px zu hoch. Und nicht über die
+  // Bildschirmposition — während die Leiste einfährt, steht sie noch woanders.
+  useEffect(() => {
+    const wurzel = document.documentElement;
+    const setzen = () => {
+      const box = leisteRef.current;
+      const reihe = box?.firstElementChild as HTMLElement | null;
+      if (!sichtbar || !box || !reihe) {
+        wurzel.style.setProperty(KLEBELEISTE_VAR, "0px");
+        return;
+      }
+      const unten = parseFloat(getComputedStyle(box).paddingBottom) || 0;
+      wurzel.style.setProperty(KLEBELEISTE_VAR, `${Math.round(reihe.offsetHeight + unten)}px`);
+    };
+    setzen();
+    const el = leisteRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return () => {
+      wurzel.style.removeProperty(KLEBELEISTE_VAR);
+    };
+    const beobachter = new ResizeObserver(setzen);
+    beobachter.observe(el);
+    return () => {
+      beobachter.disconnect();
+      wurzel.style.removeProperty(KLEBELEISTE_VAR);
+    };
+  }, [sichtbar]);
+
   return (
     <>
       {kinder(ankerRef)}
       <div
+        ref={leisteRef}
         aria-hidden={!sichtbar}
         style={{
           position: "fixed",
