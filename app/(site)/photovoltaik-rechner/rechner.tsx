@@ -802,9 +802,19 @@ export default function PVRechner({
   const leisteSenden = {
     ...leisteBasis,
     flex: 1,
-    padding: "0 16px",
+    minWidth: 0,
+    padding: "0 12px",
     background: v("--color-accent"),
     color: v("--color-text-on-accent"),
+    // Ein langer Firmenname darf die Beschriftung kürzen, nicht den Knopf
+    // sprengen. `minWidth: 0` ist dabei der eigentliche Schalter — ohne ihn
+    // weigert sich ein Flex-Element zu schrumpfen und schiebt die Nachbarn
+    // aus der Leiste.
+    overflow: "hidden" as const,
+    textOverflow: "ellipsis" as const,
+    whiteSpace: "nowrap" as const,
+    display: "block" as const,
+    lineHeight: "44px",
   };
   const primaerLeiste = () => {
     const gemeinsam = { ...leisteBasis, flex: 1, width: "100%" };
@@ -1672,7 +1682,10 @@ export default function PVRechner({
                       onClick={() => window.dispatchEvent(new Event(RUECKKANAL_OEFFNEN))}
                       style={leisteSenden}
                     >
-                      Schicken
+                      {/* Der Name gehört auch hier drauf — „Schicken" allein
+                          lässt offen, an wen. Er bricht bei Bedarf um, statt
+                          über den Knopf hinauszulaufen. */}
+                      An {partner.name} schicken
                     </button>
                   )}
                 </>

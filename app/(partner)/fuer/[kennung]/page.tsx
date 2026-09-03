@@ -107,7 +107,7 @@ export default async function FachbetriebSeite(props: {
                 Kundenreise. */}
             <a href="/" style={S.herkunft} aria-label="Powered by solar-check.io">
               <span style={S.herkunftWort}>Powered by</span>
-              <Logo width={76} />
+              <Logo width={88} />
             </a>
             <ZuUnsWechseln />
           </div>

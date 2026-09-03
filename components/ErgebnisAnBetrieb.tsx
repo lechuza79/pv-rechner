@@ -167,8 +167,11 @@ export default function ErgebnisAnBetrieb({
 
       {fehler && <div style={S.fehler}>{fehler}</div>}
 
+      {/* „Absenden" allein sagt nicht, WOHIN. Der Name gehört auf den Knopf,
+          der die Übermittlung auslöst — das ist der Moment, in dem der Nutzer
+          es zuletzt lesen kann. */}
       <button type="submit" disabled={!gueltig || sendet} style={S.senden(gueltig && !sendet)}>
-        {sendet ? "Wird gesendet …" : "Absenden"}
+        {sendet ? "Wird gesendet …" : `An ${partner.name} schicken`}
       </button>
 
       <p style={S.klein}>
