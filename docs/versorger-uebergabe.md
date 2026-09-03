@@ -72,7 +72,9 @@ Recherche, bevor mit einem echten Versorger gesprochen wurde.
 ## Material
 
 docs/versorger-geschaeftsmodell.md · docs/versorger-adressen-recherche.md ·
-docs/versorger-preisstrategie.md
+docs/versorger-preisstrategie.md · docs/versorger-wettbewerb.md (Erhebung ueber
+alle 910 Versorger: wer bietet seinen Kunden einen Rechner an, wer liefert die
+Werkzeuge, was die Messung nicht sieht)
 
 ## Nachtrag
 
