@@ -78,6 +78,78 @@ const PRESSE_WORT = [
  */
 const NUR_ALLEINSTEHEND = ["medien", "kommunikation"];
 
+/**
+ * Wörter, deren Adresse ALLEIN nichts beweist — sie brauchen den Kontext.
+ *
+ * Der Einwand des Betreibers (03.09.2026): „glaube wir müssen das immer im
+ * Kontext prüfen und nicht nur anhand der Syntax". Er trifft genau diese
+ * beiden. `kommunikation@` ist in der einen Verwaltung die Stabsstelle
+ * Kommunikation, in der nächsten die Kommunikationstechnik, also IT.
+ * `medien@` ist bei Brilon die Pressestelle und anderswo ein Medienzentrum.
+ *
+ * Bei ihnen entscheidet nicht die Adresse, sondern was auf der Seite daneben
+ * steht (siehe `presseKontextBelegt`). Die eindeutigen Wörter — `presse`,
+ * `pressestelle`, `redaktion`, `newsroom` — brauchen das nicht: Sie bedeuten
+ * in einer Verwaltung nichts anderes.
+ */
+const BRAUCHT_KONTEXT = ["medien", "kommunikation"];
+
+/** Braucht diese Adresse einen Beleg aus dem Seitentext? */
+export function brauchtKontext(email: string | null | undefined): boolean {
+  const lokal = (email ?? "").trim().toLowerCase().split("@")[0];
+  return BRAUCHT_KONTEXT.includes(lokal);
+}
+
+/**
+ * Steht die Adresse in einem Presse-Zusammenhang?
+ *
+ * Geprüft wird der Text UM die Adresse herum, nicht die ganze Seite: Auf einer
+ * Kontaktseite steht irgendwo immer „Presse", und dann belegte jede Adresse
+ * dort alles. Der Ausschnitt kommt aus dem Fundort.
+ *
+ * Ein Gegenwort schlägt ein Treffwort. Steht „Medienzentrum" oder
+ * „Kommunikationstechnik" daneben, ist die Frage beantwortet, auch wenn im
+ * selben Ausschnitt das Wort „Presse" vorkommt — es könnte aus der Navigation
+ * stammen.
+ */
+const KONTEXT_DAFUER = [
+  "pressestelle",
+  "pressesprecher",
+  "presse- und öffentlichkeitsarbeit",
+  "presse und öffentlichkeitsarbeit",
+  "öffentlichkeitsarbeit",
+  "oeffentlichkeitsarbeit",
+  "pressearbeit",
+  "presseanfragen",
+  "presseinformation",
+  "pressemitteilung",
+  "für journalisten",
+  "journalistinnen und journalisten",
+  "medienvertreter",
+  "presseverteiler",
+];
+
+const KONTEXT_DAGEGEN = [
+  "medienzentrum",
+  "medienpädagog",
+  "medienpaedagog",
+  "medienbildung",
+  "medienkompetenz",
+  "stadtbücherei",
+  "stadtbuecherei",
+  "mediathek",
+  "kommunikationstechnik",
+  "telekommunikation",
+  "datenverarbeitung",
+  "informationstechnik",
+];
+
+export function presseKontextBelegt(ausschnitt: string): boolean {
+  const t = ausschnitt.toLowerCase();
+  if (KONTEXT_DAGEGEN.some((w) => t.includes(w))) return false;
+  return KONTEXT_DAFUER.some((w) => t.includes(w));
+}
+
 export function istPressePostfach(email: string | null | undefined): boolean {
   const lokal = (email ?? "").trim().toLowerCase().split("@")[0];
   if (!lokal) return false;

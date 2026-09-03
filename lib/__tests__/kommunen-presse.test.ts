@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { istPressePostfach, empfaengerFuerBrief, presseLinkRang } from "../kommunen-presse";
+import {
+  istPressePostfach,
+  empfaengerFuerBrief,
+  presseLinkRang,
+  brauchtKontext,
+  presseKontextBelegt,
+} from "../kommunen-presse";
 import { postfachBefund } from "../outreach-mail";
 
 // Alle Adressen unten sind echte Funde vom 03.09.2026 an den größten Städten
@@ -161,5 +167,39 @@ describe("Presse-Postfächer bestehen die Versand-Prüfung", () => {
   it("lässt sich davon nicht aufweichen", () => {
     expect(postfachBefund("pressel@brilon.de", "Brilon").ok).toBe(false);
     expect(postfachBefund("mueller@brilon.de", "Brilon").ok).toBe(false);
+  });
+});
+
+// NICHT NUR DIE SCHREIBWEISE, SONDERN DER ZUSAMMENHANG (Einwand des Betreibers,
+// 03.09.2026). Die Adresse allein sagt bei zwei Wörtern nichts: kommunikation@
+// ist in der einen Verwaltung die Stabsstelle, in der nächsten die
+// Kommunikationstechnik; medien@ ist bei Brilon die Pressestelle und anderswo
+// ein Medienzentrum.
+describe("Kontext statt Schreibweise", () => {
+  it("verlangt einen Beleg nur bei den mehrdeutigen Wörtern", () => {
+    expect(brauchtKontext("medien@brilon.de")).toBe(true);
+    expect(brauchtKontext("kommunikation@musterstadt.de")).toBe(true);
+    // Diese bedeuten in einer Verwaltung nichts anderes.
+    expect(brauchtKontext("presse@kleve.de")).toBe(false);
+    expect(brauchtKontext("pressestelle@goch.de")).toBe(false);
+    expect(brauchtKontext("redaktion@musterstadt.de")).toBe(false);
+  });
+
+  it("nimmt einen Ausschnitt an, der die Pressestelle benennt", () => {
+    expect(presseKontextBelegt("Stadt Brilon, Medien / Öffentlichkeitsarbeit, Zimmer 36")).toBe(true);
+    expect(presseKontextBelegt("Ansprechpartner für Journalistinnen und Journalisten")).toBe(true);
+  });
+
+  // EIN GEGENWORT SCHLÄGT EIN TREFFWORT. „Presse" steht auf einer Kommunalseite
+  // fast immer irgendwo in der Navigation; wenn daneben „Medienzentrum" steht,
+  // ist die Frage beantwortet.
+  it("weist ab, wo ein Gegenwort steht — auch mit Presse-Wort daneben", () => {
+    expect(presseKontextBelegt("Medienzentrum des Kreises · Presse · Kontakt")).toBe(false);
+    expect(presseKontextBelegt("Abteilung Kommunikationstechnik, Öffentlichkeitsarbeit")).toBe(false);
+  });
+
+  it("weist ab, wo gar nichts dafür spricht", () => {
+    expect(presseKontextBelegt("Öffnungszeiten des Bürgerbüros")).toBe(false);
+    expect(presseKontextBelegt("")).toBe(false);
   });
 });

@@ -256,6 +256,10 @@ async function setup(): Promise<void> {
     -- bei luecke_at: sonst ist "nichts gefunden" nicht von "nie gesucht" zu
     -- unterscheiden.
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS presse_at timestamptz;
+    -- Der Textausschnitt, der eine MEHRDEUTIGE Adresse traegt (medien@,
+    -- kommunikation@). Eindeutige Adressen brauchen ihn nicht und lassen ihn
+    -- leer — ein Beleg, den niemand geprueft hat, waere schlechter als keiner.
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS presse_beleg text;
     -- Versandliste: die Auswahl wird FESTGESCHRIEBEN, nicht nur gefiltert. Der
     -- Aufhaenger aendert sich mit jedem Monatslauf der Anlagendaten — ein reiner
     -- Filter haette in Charge 2 andere Gemeinden als in Charge 1.
@@ -1209,6 +1213,9 @@ type PresseRow = {
   region_id: string;
   presse_email: string;
   presse_email_quelle: PresseQuelle;
+  /** Der Textausschnitt, der die Einordnung traegt — nur bei mehrdeutigen
+   *  Adressen. Ohne ihn waere spaeter nicht nachvollziehbar, worauf sie beruht. */
+  presse_beleg: string | null;
   presse_at: string;
 };
 
@@ -1230,7 +1237,8 @@ type PresseRow = {
 async function scrapePresse(opts: FormsOpts): Promise<void> {
   const { toText, domainOf } = await import("../lib/kommunen-profil.js");
   const { entschleiere } = await import("../lib/kommunen-profil.js");
-  const { istPressePostfach, presseLinkRang } = await import("../lib/kommunen-presse.js");
+  const { istPressePostfach, presseLinkRang, brauchtKontext, presseKontextBelegt } =
+    await import("../lib/kommunen-presse.js");
   const { suchFormular, suchAdresse, suchseitenLink } = await import("../lib/funding-url-suche.js");
   const supabase = await makeClient();
 
@@ -1290,13 +1298,39 @@ async function scrapePresse(opts: FormsOpts): Promise<void> {
    * Seitenquelltext faellt an der ersten Schranke.
    */
   const MAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
-  const finde = (html: string, domain: string): string | null => {
-    for (const quelle of [toText(html), html]) {
-      for (const roh of entschleiere(quelle).match(MAIL_RE) ?? []) {
-        const m = roh.toLowerCase();
+
+  /**
+   * NICHT NUR DIE SCHREIBWEISE, SONDERN DER ZUSAMMENHANG (Einwand des
+   * Betreibers, 03.09.2026: „wir müssen das immer im Kontext prüfen und nicht
+   * nur anhand der Syntax").
+   *
+   * Für die eindeutigen Woerter — presse@, pressestelle@, redaktion@ — reicht
+   * die Adresse: Sie bedeuten in einer Verwaltung nichts anderes. Fuer die
+   * mehrdeutigen (medien@, kommunikation@) wird der Text UM den Fund herum
+   * gelesen und muss eine Pressestelle benennen. Steht dort ein Gegenwort
+   * („Medienzentrum", „Kommunikationstechnik"), faellt der Fund.
+   *
+   * Der Ausschnitt wird mitgegeben und gespeichert — ohne ihn ist spaeter
+   * nicht mehr nachvollziehbar, worauf die Einordnung beruhte.
+   */
+  const finde = (html: string, domain: string): { email: string; beleg: string | null } | null => {
+    const text = entschleiere(toText(html));
+    const roh = entschleiere(html);
+    for (const quelle of [text, roh]) {
+      for (const treffer of quelle.match(MAIL_RE) ?? []) {
+        const m = treffer.toLowerCase();
         const host = m.split("@")[1] ?? "";
         if (host !== domain && !host.endsWith(`.${domain}`)) continue;
-        if (istPressePostfach(m)) return m;
+        if (!istPressePostfach(m)) continue;
+        if (!brauchtKontext(m)) return { email: m, beleg: null };
+        // Der Ausschnitt kommt aus dem SICHTBAREN Text, auch wenn die Adresse
+        // im Quelltext gefunden wurde: Was ein Leser dort sieht, ist die
+        // Auskunft — Attribut-Salat ringsum waere keine.
+        const i = text.toLowerCase().indexOf(m);
+        const ausschnitt = i >= 0 ? text.slice(Math.max(0, i - 400), i + 400) : text.slice(0, 800);
+        if (presseKontextBelegt(ausschnitt)) {
+          return { email: m, beleg: ausschnitt.replace(/\s+/g, " ").trim().slice(0, 300) };
+        }
       }
     }
     return null;
@@ -1308,8 +1342,14 @@ async function scrapePresse(opts: FormsOpts): Promise<void> {
     const domain = domainOf(c.website);
     if (!domain) return;
 
-    const nimm = (email: string, quelle: PresseQuelle) => {
-      rows.push({ region_id: c.region_id, presse_email: email, presse_email_quelle: quelle, presse_at: now });
+    const nimm = (email: string, quelle: PresseQuelle, beleg: string | null = null) => {
+      rows.push({
+        region_id: c.region_id,
+        presse_email: email,
+        presse_email_quelle: quelle,
+        presse_beleg: beleg,
+        presse_at: now,
+      });
       jeQuelle.set(quelle, (jeQuelle.get(quelle) ?? 0) + 1);
     };
 
@@ -1321,9 +1361,9 @@ async function scrapePresse(opts: FormsOpts): Promise<void> {
     ] as [string | null, PresseQuelle][]) {
       if (!url) continue;
       const html = await fetchText(url);
-      const treffer = html && finde(html, domain);
+      const treffer = html ? finde(html, domain) : null;
       if (treffer) {
-        nimm(treffer, quelle);
+        nimm(treffer.email, quelle, treffer.beleg);
         return;
       }
     }
@@ -1333,7 +1373,7 @@ async function scrapePresse(opts: FormsOpts): Promise<void> {
     if (!start) return;
     const direkt = finde(start, domain);
     if (direkt) {
-      nimm(direkt, "presseseite");
+      nimm(direkt.email, "presseseite", direkt.beleg);
       return;
     }
     // NACH RANG, nicht in der Reihenfolge des HTML. Auf der Startseite einer
@@ -1393,7 +1433,7 @@ async function scrapePresse(opts: FormsOpts): Promise<void> {
       if (!html) continue;
       const treffer = finde(html, domain);
       if (treffer) {
-        nimm(treffer, "presseseite");
+        nimm(treffer.email, "presseseite", treffer.beleg);
         return;
       }
       sammle(html, url, 1);
@@ -1417,7 +1457,7 @@ async function scrapePresse(opts: FormsOpts): Promise<void> {
     if (!treffer) return;
     const direktInSuche = finde(treffer, domain);
     if (direktInSuche) {
-      nimm(direktInSuche, "suche");
+      nimm(direktInSuche.email, "suche", direktInSuche.beleg);
       return;
     }
     // Die Trefferliste selbst trägt selten eine Adresse — dem ersten Treffer folgen.
@@ -1425,9 +1465,9 @@ async function scrapePresse(opts: FormsOpts): Promise<void> {
       if (safeHost(u) !== safeHost(c.website) || besucht.has(u)) continue;
       besucht.add(u);
       const html = await fetchText(u);
-      const t = html && finde(html, domain);
+      const t = html ? finde(html, domain) : null;
       if (t) {
-        nimm(t, "suche");
+        nimm(t.email, "suche", t.beleg);
         return;
       }
       if (besucht.size >= 18) break;
