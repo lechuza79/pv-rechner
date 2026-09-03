@@ -99,7 +99,12 @@ describe("Nachricht zur Umstellung der Anmeldung", () => {
     expect(neuerungen).toBeGreaterThan(-1);
     expect(ueberschrift, "Neuerungen stehen vor der Löschankündigung").toBeLessThan(neuerungen);
     // Und sie sagt, dass Nichtstun genügt.
-    expect(loesch.text).toMatch(/falls du nichts tust/);
+    // Gegen den FLIESSTEXT geprüft, nicht gegen die umbrochenen Zeilen: Die
+    // Textfassung bricht bei 78 Zeichen um, und wo der Umbruch fällt, ist eine
+    // Formatfrage — ein Test, der daran hängt, prüft die Zeilenbreite statt der
+    // Aussage.
+    const fliess = loesch.text.replace(/\s+/g, " ");
+    expect(fliess).toMatch(/falls du nichts tust/);
   });
 
   it("nennt in beiden Fassungen dieselbe Löschfrist wie der Versandlauf", () => {

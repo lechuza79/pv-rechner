@@ -109,10 +109,6 @@ const NEUERUNGEN: { was: string }[] = [
   { was: "Neue Rechner für Balkonkraftwerk, Klimaanlage und Einspeisevergütung" },
 ];
 
-function neuerungenZeilen(): string[] {
-  return NEUERUNGEN.map((n) => `* ${n.was}`);
-}
-
 export const UMSTELLUNG_BETREFF = "Die Anmeldung bei Solar Check läuft jetzt anders";
 
 export type Empfaengergruppe = "bestaetigt" | "unbestaetigt";
@@ -159,92 +155,90 @@ export function umstellungsMail(o: {
   // anfordern („Passwort vergessen?") — sonst stehen sie vor einem Formular,
   // in das sie nichts eintragen können. Genau das ist beim ersten Entwurf
   // aufgefallen.
-  const zeilen = bestaetigt
+  // ─── Inhalt als BLÖCKE, nicht als Zeilen ───────────────────────────────────
+  //
+  // Vorher stand der Text als fest umbrochene Zeilen da, und beide Fassungen
+  // haben ihn geerbt. Im Postfach sah man das sofort: „Die Mail ist
+  // wahrscheinlich / im Spam gelandet" bricht mitten im Satz, weil ein
+  // Mailprogramm selbst umbricht und unser Umbruch obendrauf kommt. Dazu eine
+  // Leerzeile zu viel unter der Liste — der Abstand der Liste UND die leere
+  // Zeile daneben.
+  //
+  // Also: Absätze bleiben ungebrochen, das HTML setzt sie als Absätze, und die
+  // Textfassung bricht sie erst beim Ausgeben um. Nur die Signatur behält ihre
+  // Zeilen, dort ist der Umbruch der Inhalt.
+  type Block = string | { liste: string[] } | { zeilen: string[] };
+
+  const bloecke: Block[] = bestaetigt
     ? [
         "Hallo,",
-        "",
-        "du hattest dir mal ein Konto bei Solar Check angelegt. Die Anmeldung läuft",
-        "ab jetzt anders: nicht mehr über einen Link in der Mail, sondern über ein",
-        "Passwort, das du selbst setzt — oder über Google.",
-        "",
-        "Dein Konto ist unverändert da. Du brauchst nur einmal ein Passwort: auf der",
-        "Anmeldeseite auf \u201ePasswort vergessen?\u201c, dann schicke ich dir einen Link",
-        "dorthin.",
-        "",
+        "du hattest dir mal ein Konto bei Solar Check angelegt. Die Anmeldung läuft ab jetzt anders: nicht mehr über einen Link in der Mail, sondern über ein Passwort, das du selbst setzt — oder über Google.",
+        "Dein Konto ist unverändert da. Du brauchst nur einmal ein Passwort: auf der Anmeldeseite auf \u201ePasswort vergessen?\u201c, dann schicke ich dir einen Link dorthin.",
         "Würde mich freuen wenn du mal wieder reinschaust, es hat sich einiges getan:",
-        "",
-        ...neuerungenZeilen(),
-        "",
+        { liste: NEUERUNGEN.map((n) => n.was) },
         anmeldeUrl,
-        "",
         "Brauchst du das Konto nicht mehr, schreib einfach zurück, dann lösche ich es.",
-        "",
-        "Viele Grüße",
-        ...SIGNATURE.split("\n"),
+        { zeilen: ["Viele Grüße", ...SIGNATURE.split("\n")] },
       ]
     : [
         "Hallo,",
-        "",
-        "du hattest dich mal bei Solar Check angemeldet. Die Mail ist wahrscheinlich",
-        "im Spam gelandet, weil sie von einer komischen Absenderadresse kam. Ist",
-        "inzwischen gefixt.",
-        "",
+        "du hattest dich mal bei Solar Check angemeldet. Die Mail ist wahrscheinlich im Spam gelandet, weil sie von einer komischen Absenderadresse kam. Ist inzwischen gefixt.",
         `Deine Adresse wird am ${frist} automatisch gelöscht, falls du nichts tust.`,
-        "",
-        "Würde mich allerdings freuen wenn du noch mal reinschaust, es hat sich einiges",
-        "getan:",
-        "",
-        ...neuerungenZeilen(),
-        "",
+        "Würde mich allerdings freuen wenn du noch mal reinschaust, es hat sich einiges getan:",
+        { liste: NEUERUNGEN.map((n) => n.was) },
         `Willst du das Konto doch, leg es bis dahin einfach neu an: ${anmeldeUrl}`,
-        "",
         "Soll ich früher löschen, schreib einfach zurück.",
-        "",
-        "Viele Grüße",
-        ...SIGNATURE.split("\n"),
+        { zeilen: ["Viele Grüße", ...SIGNATURE.split("\n")] },
       ];
 
-  const fuss = [`Impressum: ${SITE}/impressum · Datenschutz: ${SITE}/datenschutz`];
+  const fussZeile = `Impressum: ${SITE}/impressum · Datenschutz: ${SITE}/datenschutz`;
 
-  const text = [...zeilen, "", "--", ...fuss].join("\n");
+  // ─── Textfassung ──────────────────────────────────────────────────────────
 
-  // Das HTML ist derselbe Text, nur mit Zeilenumbrüchen, klickbarer Adresse —
-  // und mit einer echten Liste. Als „* …" mit Zeilenumbruch gesetzt sah die
-  // Aufzählung im Postfach aus wie ein Tippfehler: kein Einzug, und eine zu
-  // lange Zeile brach unter den Stern statt unter den Text.
-  const verlinke = (l: string) =>
-    l.replace(/https:\/\/[^\s]+/g, (u) => `<a href="${u}" style="color:${C.akzent}">${u}</a>`);
-
-  const alsHtml = (z: string[]) => {
-    const teile: string[] = [];
-    let punkte: string[] = [];
-    const listeSchliessen = () => {
-      if (!punkte.length) return;
-      teile.push(
-        `<ul style="margin:0 0 16px;padding:0 0 0 20px">` +
-          punkte.map((p) => `<li style="margin:0 0 6px">${p}</li>`).join("") +
-          `</ul>`,
-      );
-      punkte = [];
-    };
-    for (const l of z) {
-      if (l.startsWith("* ")) {
-        punkte.push(verlinke(l.slice(2)));
-        continue;
-      }
-      listeSchliessen();
-      teile.push(verlinke(l) + "<br>");
+  const umbrechen = (t: string, breite = 78): string[] => {
+    const raus: string[] = [];
+    let zeile = "";
+    for (const wort of t.split(" ")) {
+      if (zeile && (zeile + " " + wort).length > breite) {
+        raus.push(zeile);
+        zeile = wort;
+      } else zeile = zeile ? zeile + " " + wort : wort;
     }
-    listeSchliessen();
-    return teile.join("");
+    if (zeile) raus.push(zeile);
+    return raus;
   };
+
+  const textTeile: string[] = [];
+  for (const b of bloecke) {
+    if (typeof b === "string") textTeile.push(umbrechen(b).join("\n"));
+    else if ("liste" in b) textTeile.push(b.liste.map((l) => `* ${l}`).join("\n"));
+    else textTeile.push(b.zeilen.join("\n"));
+  }
+  const text = textTeile.join("\n\n") + "\n\n--\n" + fussZeile;
+
+  // ─── HTML ─────────────────────────────────────────────────────────────────
+
+  const verlinke = (t: string) =>
+    t.replace(/https:\/\/[^\s]+/g, (u) => `<a href="${u}" style="color:${C.akzent}">${u}</a>`);
+
+  const absatz = (inhalt: string) => `<p style="margin:0 0 16px">${inhalt}</p>`;
+
+  const htmlTeile = bloecke.map((b) => {
+    if (typeof b === "string") return absatz(verlinke(b));
+    if ("liste" in b)
+      return (
+        `<ul style="margin:0 0 16px;padding:0 0 0 20px">` +
+        b.liste.map((l) => `<li style="margin:0 0 6px">${verlinke(l)}</li>`).join("") +
+        `</ul>`
+      );
+    return absatz(b.zeilen.map((z) => verlinke(z)).join("<br>"));
+  });
 
   const html =
     `<div style="font-family:${SCHRIFT};font-size:${T.text};line-height:1.55;color:${C.text}">` +
-    alsHtml(zeilen) +
-    `<br><span style="color:${C.leise};font-size:${T.fuss}">` +
-    alsHtml(fuss) +
-    `</span></div>`;
+    htmlTeile.join("") +
+    `<p style="margin:0;color:${C.leise};font-size:${T.fuss}">--<br>${verlinke(fussZeile)}</p>` +
+    `</div>`;
 
   return { betreff, html, text };
 }
