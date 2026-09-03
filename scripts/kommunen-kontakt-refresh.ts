@@ -36,6 +36,10 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import * as unzipper from "unzipper";
+import type { PresseQuelle } from "../lib/kommunen-presse";
+
+/** Auf einen Versand-Schub eingrenzen (`--schub=mail-nrw`), sonst alle. */
+const schubArg = process.argv.slice(2).find((a) => a.startsWith("--schub="))?.slice(8);
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const CACHE_DIR = resolve(SCRIPT_DIR, ".cache", "kommunen");
@@ -233,6 +237,25 @@ async function setup(): Promise<void> {
     -- dieses Datum ist "nichts gefunden" nicht von "noch nie gesucht" zu
     -- unterscheiden, und der naechste Lauf beginnt wieder bei denselben.
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS luecke_at timestamptz;
+    -- PRESSEPOSTFACH, getrennt vom allgemeinen. Der Brief bietet eine fertige
+    -- Meldung an; er gehoert an die Stelle, die Meldungen veroeffentlicht.
+    -- Gemessen am 03.09.2026: Von den 20 groessten Staedten des offenen
+    -- NRW-Schubs fuehren mindestens 7 ein Pressepostfach, und wir schrieben bei
+    -- 6 davon an info@ oder stadt@.
+    --
+    -- EIGENE SPALTE, kein Ueberschreiben: Eine falsch erhobene Presseadresse
+    -- duerfte sonst die einzige bekannte Adresse zerstoeren, und die Herkunft
+    -- der beiden Angaben ist verschieden.
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS presse_email text;
+    --   presseseite   auf einer Presse-/Medienseite gefunden
+    --   kontaktseite  auf der Kontaktseite gefunden
+    --   impressum     im Impressum gefunden
+    --   suche         ueber die Volltextsuche der eigenen Website gefunden
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS presse_email_quelle text;
+    -- Wann zuletzt gesucht wurde, auch erfolglos — dieselbe Begruendung wie
+    -- bei luecke_at: sonst ist "nichts gefunden" nicht von "nie gesucht" zu
+    -- unterscheiden.
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS presse_at timestamptz;
     -- Versandliste: die Auswahl wird FESTGESCHRIEBEN, nicht nur gefiltert. Der
     -- Aufhaenger aendert sich mit jedem Monatslauf der Anlagendaten — ein reiner
     -- Filter haette in Charge 2 andere Gemeinden als in Charge 1.
@@ -1180,6 +1203,236 @@ async function schliesseLuecke(opts: FormsOpts): Promise<void> {
   log(`${rows.length} Postfächer gespeichert, ${leer.length} als geprüft vermerkt`, "ok");
 }
 
+// ─── Pressepostfächer ────────────────────────────────────────────────────────
+
+type PresseRow = {
+  region_id: string;
+  presse_email: string;
+  presse_email_quelle: PresseQuelle;
+  presse_at: string;
+};
+
+/**
+ * Sucht das Presse- oder Redaktionspostfach einer Gemeinde.
+ *
+ * DREI WEGE, in dieser Reihenfolge, und die Reihenfolge ist die Belastbarkeit:
+ *   1. Presse-/Medienseite — der stärkste Fund, dort steht die Stelle selbst.
+ *   2. Kontaktseite und Impressum — schwächer, aber oft ergiebig.
+ *   3. Volltextsuche der eigenen Website — nur wenn die ersten beiden leer
+ *      ausgehen. Dieselbe Mechanik wie beim Förder-Crawl, und aus demselben
+ *      Grund: Die Startseite verlinkt die Pressestelle oft NICHT. Bei
+ *      Düsseldorf ist auf der Startseite kein einziger Presse-Link, das
+ *      Postfach existiert trotzdem.
+ *
+ * GERATEN WIRD NICHTS: Eine Adresse zählt nur, wenn sie auf der Domain der
+ * Gemeinde liegt und ihr Lokalteil ein Pressewort IST (nicht enthält).
+ */
+async function scrapePresse(opts: FormsOpts): Promise<void> {
+  const { toText, domainOf } = await import("../lib/kommunen-profil.js");
+  const { entschleiere } = await import("../lib/kommunen-profil.js");
+  const { istPressePostfach, istPresseLink } = await import("../lib/kommunen-presse.js");
+  const { suchFormular, suchAdresse, suchseitenLink } = await import("../lib/funding-url-suche.js");
+  const supabase = await makeClient();
+
+  type Zeile = {
+    region_id: string;
+    website: string | null;
+    kontakt_url: string | null;
+    impressum_url: string | null;
+    thema_presse_url: string | null;
+    presse_email: string | null;
+    presse_at: string | null;
+    kampagne: string | null;
+  };
+  const alle: Zeile[] = [];
+  for (let von = 0; ; von += 1000) {
+    const { data, error } = await supabase
+      .from("kommunen_kontakt")
+      .select("region_id, website, kontakt_url, impressum_url, thema_presse_url, presse_email, presse_at, kampagne")
+      .order("region_id")
+      .range(von, von + 999);
+    if (error) throw new Error(`Presse lesen: ${error.message}`);
+    if (!data?.length) break;
+    alle.push(...(data as Zeile[]));
+    if (data.length < 1000) break;
+  }
+
+  let offen = alle.filter((r): r is Zeile & { website: string } => !!r.website && !r.presse_email);
+  if (opts.bl) offen = offen.filter((r) => r.region_id.startsWith(opts.bl!));
+  if (schubArg) offen = offen.filter((r) => r.kampagne === schubArg);
+  // Die am längsten nicht gesehenen zuerst — sonst beginnt jeder Lauf bei denselben.
+  if (!opts.refetch) offen.sort((a, b) => (a.presse_at ?? "").localeCompare(b.presse_at ?? ""));
+  const liste = opts.limit ? offen.slice(0, opts.limit) : offen;
+
+  log(
+    `${offen.length.toLocaleString()} Gemeinden ohne Pressepostfach` +
+      (opts.limit ? `, davon ${liste.length.toLocaleString()} in diesem Lauf` : ""),
+  );
+
+  const now = new Date().toISOString();
+  const rows: PresseRow[] = [];
+  const gesehen: string[] = [];
+  const jeQuelle = new Map<PresseQuelle, number>();
+  let done = 0;
+
+  /** Presseadressen auf der Domain der Gemeinde aus einem HTML herausziehen. */
+  const finde = (html: string, domain: string): string | null => {
+    const text = entschleiere(toText(html));
+    const treffer = text.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g) ?? [];
+    for (const roh of treffer) {
+      const m = roh.toLowerCase();
+      const host = m.split("@")[1] ?? "";
+      if (host !== domain && !host.endsWith(`.${domain}`)) continue;
+      if (istPressePostfach(m)) return m;
+    }
+    return null;
+  };
+
+  await pool(liste, CONCURRENCY, async (c) => {
+    done++;
+    gesehen.push(c.region_id);
+    const domain = domainOf(c.website);
+    if (!domain) return;
+
+    const nimm = (email: string, quelle: PresseQuelle) => {
+      rows.push({ region_id: c.region_id, presse_email: email, presse_email_quelle: quelle, presse_at: now });
+      jeQuelle.set(quelle, (jeQuelle.get(quelle) ?? 0) + 1);
+    };
+
+    // 1. Bekannte Presseseite, danach Kontaktseite und Impressum.
+    for (const [url, quelle] of [
+      [c.thema_presse_url, "presseseite"],
+      [c.kontakt_url, "kontaktseite"],
+      [c.impressum_url, "impressum"],
+    ] as [string | null, PresseQuelle][]) {
+      if (!url) continue;
+      const html = await fetchText(url);
+      const treffer = html && finde(html, domain);
+      if (treffer) {
+        nimm(treffer, quelle);
+        return;
+      }
+    }
+
+    // 2. Von der Startseite aus den Presse-Links folgen, zwei Ebenen tief.
+    const start = await fetchText(c.website);
+    if (!start) return;
+    const direkt = finde(start, domain);
+    if (direkt) {
+      nimm(direkt, "presseseite");
+      return;
+    }
+    const besucht = new Set<string>();
+    let ebene = extractAnchors(start)
+      .filter((a) => !/^(mailto:|tel:|javascript:|#)/i.test(a.href.trim()) && istPresseLink(a.href, a.text))
+      .map((a) => {
+        try {
+          return new URL(a.href, c.website).toString().split("#")[0];
+        } catch {
+          return "";
+        }
+      })
+      .filter((u) => u && safeHost(u) === safeHost(c.website));
+
+    for (let tiefe = 0; tiefe < 2; tiefe++) {
+      const naechste: string[] = [];
+      for (const url of ebene) {
+        if (besucht.has(url) || besucht.size >= 12) continue;
+        besucht.add(url);
+        const html = await fetchText(url);
+        if (!html) continue;
+        const treffer = finde(html, domain);
+        if (treffer) {
+          nimm(treffer, "presseseite");
+          return;
+        }
+        for (const a of extractAnchors(html)) {
+          if (/^(mailto:|tel:|javascript:|#)/i.test(a.href.trim()) || !istPresseLink(a.href, a.text)) continue;
+          try {
+            const u = new URL(a.href, c.website).toString().split("#")[0];
+            if (safeHost(u) === safeHost(c.website)) naechste.push(u);
+          } catch {
+            /* kaputter Link */
+          }
+        }
+      }
+      ebene = naechste;
+    }
+
+    // 3. Die Volltextsuche der Website — nur wenn der Crawl leer ausging.
+    //    Genau der Fall Düsseldorf: kein Presse-Link auf der Startseite.
+    const formular = suchFormular(start, c.website) ?? (() => null)();
+    let sucheUrl: string | null = null;
+    if (formular) sucheUrl = suchAdresse(formular, "pressestelle");
+    else {
+      const seite = suchseitenLink(start, c.website);
+      if (seite) {
+        const html = await fetchText(seite);
+        const f = html ? suchFormular(html, seite) : null;
+        if (f) sucheUrl = suchAdresse(f, "pressestelle");
+      }
+    }
+    if (!sucheUrl) return;
+    const treffer = await fetchText(sucheUrl);
+    if (!treffer) return;
+    const direktInSuche = finde(treffer, domain);
+    if (direktInSuche) {
+      nimm(direktInSuche, "suche");
+      return;
+    }
+    // Die Trefferliste selbst trägt selten eine Adresse — dem ersten Treffer folgen.
+    for (const a of extractAnchors(treffer).slice(0, 40)) {
+      if (!istPresseLink(a.href, a.text)) continue;
+      let u: string;
+      try {
+        u = new URL(a.href, sucheUrl).toString().split("#")[0];
+      } catch {
+        continue;
+      }
+      if (safeHost(u) !== safeHost(c.website) || besucht.has(u)) continue;
+      besucht.add(u);
+      const html = await fetchText(u);
+      const t = html && finde(html, domain);
+      if (t) {
+        nimm(t, "suche");
+        return;
+      }
+      if (besucht.size >= 18) break;
+    }
+    if (done % 25 === 0) log(`  ${done}/${liste.length} geprüft, ${rows.length} gefunden`);
+  });
+
+  const quote = liste.length ? ((100 * rows.length) / liste.length).toFixed(1) : "0";
+  log(
+    `${rows.length}/${liste.length} Pressepostfächer gefunden (${quote} %)\n  ` +
+      [...jeQuelle].map(([q, n]) => `${q}: ${n}`).join(" · "),
+    "ok",
+  );
+
+  if (opts.dry) {
+    for (const r of rows.slice(0, 40)) log(`  ${r.region_id} → ${r.presse_email} (${r.presse_email_quelle})`);
+    log("--dry: nichts geschrieben", "ok");
+    return;
+  }
+
+  for (let i = 0; i < rows.length; i += 500) {
+    const { error } = await supabase.from("kommunen_kontakt").upsert(rows.slice(i, i + 500), { onConflict: "region_id" });
+    if (error) throw new Error(`Pressepostfächer speichern: ${error.message}`);
+  }
+  // Auch die ERFOLGLOSEN bekommen ihr Datum — und getrennt geschrieben, damit
+  // ein Upsert mit ungleicher Feldmenge nicht die Adress-Spalte auf NULL setzt.
+  const gefunden = new Set(rows.map((r) => r.region_id));
+  const leer = gesehen.filter((id) => !gefunden.has(id));
+  for (let i = 0; i < leer.length; i += 500) {
+    const { error } = await supabase
+      .from("kommunen_kontakt")
+      .update({ presse_at: now })
+      .in("region_id", leer.slice(i, i + 500));
+    if (error) throw new Error(`Prüfdatum speichern: ${error.message}`);
+  }
+  log(`${rows.length} Pressepostfächer gespeichert, ${leer.length} als geprüft vermerkt`, "ok");
+}
+
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const dry = argv.includes("--dry");
@@ -1193,6 +1446,7 @@ async function main(): Promise<void> {
   const doStats = argv.includes("--stats");
   const doProfil = argv.includes("--profil");
   const doLuecke = argv.includes("--luecke");
+  const doPresse = argv.includes("--presse");
 
   const blArg = argv.find((a) => a.startsWith("--bl="));
   const limitArg = argv.find((a) => a.startsWith("--limit="));
@@ -1203,15 +1457,16 @@ async function main(): Promise<void> {
     dry,
   };
 
-  if (!doSetup && !doWikidata && !doUpload && !doForms && !doProbe && !doWahl && !doRang && !doStats && !doProfil && !doLuecke) {
+  if (!doSetup && !doWikidata && !doUpload && !doForms && !doProbe && !doWahl && !doRang && !doStats && !doProfil && !doLuecke && !doPresse) {
     log(
-      "Nichts zu tun. Flags: --setup --wikidata --upload --forms --probe --wahl --rang --profil --luecke --stats [--dry]\n" +
+      "Nichts zu tun. Flags: --setup --wikidata --upload --forms --probe --wahl --rang --profil --luecke --presse --stats [--dry]\n" +
         "  --forms [--bl=10] [--limit=N] [--refetch]  Kontaktlink aus der Startseite\n" +
         "  --probe [--bl=10] [--limit=N]              Kontakt-Pfade direkt anklopfen (Lücken)\n" +
         "  --wahl [--dry]                             Grünen/Linke/SPD-Anteil je Gemeinde (BTW 2025)\n" +
         "  --rang [--dry]                             Dach-pro-Kopf Perzentil + Landkreis-Rang\n" +
         "  --profil [--bl=09] [--limit=N] [--dry]     Impressum + Themen: Verantwortliche, Rollen-Postfach, Aufhänger\n" +
-        "  --luecke [--bl=09] [--limit=N] [--dry]     Gemeinden ohne Postfach: Kontaktseite lesen, Verwaltung erben",
+        "  --luecke [--bl=09] [--limit=N] [--dry]     Gemeinden ohne Postfach: Kontaktseite lesen, Verwaltung erben\n" +
+        "  --presse [--schub=X] [--limit=N] [--dry]   Presse-/Redaktionspostfach suchen (Presseseite, Kontakt, Volltextsuche)",
       "err",
     );
     process.exit(1);
@@ -1226,6 +1481,7 @@ async function main(): Promise<void> {
   if (doRang) await uploadRang(dry);
   if (doProfil) await scrapeProfil(formsOpts);
   if (doLuecke) await schliesseLuecke(formsOpts);
+  if (doPresse) await scrapePresse(formsOpts);
   if (doStats) await stats();
   log("Fertig", "ok");
 }

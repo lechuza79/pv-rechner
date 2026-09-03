@@ -52,6 +52,9 @@ export async function briefFuerGemeinde(
   /** Empfängeradresse, falls bekannt — sie entscheidet allein, welche Quelle
    *  die Herkunftsangabe nach Art. 14 nennt (siehe kommunen-outreach-draft). */
   empfaenger?: string | null,
+  /** Geht der Brief an ein Presse-/Redaktionspostfach? Dann entfällt die Bitte
+   *  um Weiterleitung — wir schreiben bereits an die Stelle, die sie nennt. */
+  opt?: { anPresse?: boolean },
 ): Promise<BriefErgebnis | BriefFehler> {
   if (!serviceDb) return { grund: "keine-db" };
 
@@ -162,6 +165,7 @@ export async function briefFuerGemeinde(
     vergleich,
     vergleichBezug,
     empfaenger: empfaenger ?? null,
+    anPresse: !!opt?.anPresse,
     rang: hook?.rank && hook?.total && hook?.gruppe ? { platz: hook.rank, von: hook.total } : null,
     weitere: hook?.weitere ?? [],
     ranglisteUrl: liste,

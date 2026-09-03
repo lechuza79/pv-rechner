@@ -76,6 +76,18 @@ export type DraftContext = {
    * gleichzeitig ging.
    */
   einwohner?: number | null;
+  /**
+   * Geht der Brief an ein Presse- oder Redaktionspostfach?
+   *
+   * Dann entfällt die Bitte um Weiterleitung — sie nennt genau die Stelle, an
+   * die wir bereits schreiben. Ein Brief, der die Pressestelle bittet, ihn an
+   * die Pressestelle weiterzuleiten, verrät im ersten Satz, dass niemand
+   * hingesehen hat, wohin er geht.
+   *
+   * Gemessen am 03.09.2026: Im offenen NRW-Schub führen 17 der 63 Städte ein
+   * Pressepostfach; vorher waren es in 227 verschickten Briefen genau EINES.
+   */
+  anPresse?: boolean;
   /** Zahlen für die Meldung — aus derselben Quelle wie die Atlas-Seite. */
   zahlen: {
     anlagen: number;
@@ -609,12 +621,12 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   // Facebook-Seite der schnellere Weg als die Website, und das Mitteilungsblatt
   // ist dort verbreiteter als jede Pressestelle.
   const grosseVerwaltung = (c.einwohner ?? 0) > WIDGET_AB_EINWOHNER;
-  const weiterleitung = c.funktion
+  const weiterleitung = c.funktion || c.anPresse
     ? ""
     : grosseVerwaltung
       ? `\n\nfalls Sie nicht zuständig sind: bitte an die Pressestelle oder an die Redaktion von Website und Social Media weiterleiten.`
       : `\n\nfalls Sie nicht zuständig sind: bitte an die Stelle weiterleiten, die Website, Mitteilungsblatt oder Social Media betreut.`;
-  const einstiegGross = !c.funktion;
+  const einstiegGross = !c.funktion && !c.anPresse;
 
   // Der Widget-Absatz ist der EINZIGE Unterschied zwischen den Varianten —
   // sonst waere nicht zu erkennen, ob eine Reaktion am Widget oder am Text lag.
