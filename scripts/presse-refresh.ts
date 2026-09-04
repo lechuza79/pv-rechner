@@ -59,6 +59,11 @@ import {
 } from "../lib/presse-extrakt";
 import { personenAus } from "../lib/personen-fund";
 import { SAAT, doppelteInDerSaat, type Paket } from "../lib/presse-saat";
+import {
+  alsCsv,
+  type KontaktZeile,
+  type MediumZeile,
+} from "../lib/presse-katalog";
 
 // ─── Grundlagen ──────────────────────────────────────────────────────────────
 
@@ -268,6 +273,15 @@ async function setup(): Promise<void> {
     -- Laufzeit. Genau die Fehlerklasse, gegen die der Spalten-Abgleich im
     -- Gesundheitscheck gebaut wurde.
     ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS hinweis text;
+    -- Der Arbeitsstand hängt am KONTAKT, nicht am Medium: Angeschrieben wird
+    -- ein Mensch, und „Medium angesehen" ist bei einem Fachtitel mit acht
+    -- Redakteurinnen keine Auskunft, mit der sich arbeiten lässt. Diese drei
+    -- Spalten gehören dem Menschen an der Ansicht — der Erhebungslauf fasst sie
+    -- nie an, sonst hätte die Tabelle zwei Schreiber mit widersprüchlichen
+    -- Annahmen.
+    ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS stand text NOT NULL DEFAULT 'offen';
+    ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS notiz text;
+    ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS stand_at timestamptz;
 
     CREATE INDEX IF NOT EXISTS presse_kontakte_domain_idx ON presse_kontakte(domain);
     CREATE INDEX IF NOT EXISTS presse_medien_paket_idx ON presse_medien(paket);
@@ -881,12 +895,41 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
   // standen nach dem Fix weiter im Katalog, weil ihre Zeilen aus dem Lauf davor
   // stammten. Der Fix sah im Diff richtig aus und änderte nichts.
   const angefasst = medienZeilen.map((z) => String(z.domain));
+  // ARBEITSSTAND UND NOTIZ ÜBERLEBEN DAS LÖSCHEN. Sie gehören dem Menschen an
+  // der Ansicht, nicht dem Lauf; ein neuer Erhebungslauf darf ein „ungeeignet,
+  // Grund steht in der Notiz" nicht stillschweigend auf „offen" zurücksetzen.
+  // Gemerkt wird an derselben Kennung, unter der der Kontakt wiederkommt.
+  const gemerkt = new Map<string, { stand: string; notiz: string | null; stand_at: string | null }>();
   for (let i = 0; i < angefasst.length; i += 200) {
-    const { error } = await sb
+    const teil = angefasst.slice(i, i + 200);
+    const { data, error: leseFehler } = await sb
       .from("presse_kontakte")
-      .delete()
-      .in("domain", angefasst.slice(i, i + 200));
+      .select("domain, schluessel, stand, notiz, stand_at")
+      .in("domain", teil);
+    if (leseFehler) throw new Error(`Arbeitsstand sichern: ${leseFehler.message}`);
+    for (const r of (data ?? []) as {
+      domain: string;
+      schluessel: string;
+      stand: string | null;
+      notiz: string | null;
+      stand_at: string | null;
+    }[]) {
+      if ((!r.stand || r.stand === "offen") && !r.notiz) continue;
+      gemerkt.set(`${r.domain}|${r.schluessel}`, {
+        stand: r.stand ?? "offen",
+        notiz: r.notiz,
+        stand_at: r.stand_at,
+      });
+    }
+    const { error } = await sb.from("presse_kontakte").delete().in("domain", teil);
     if (error) throw new Error(`alte Kontakte entfernen: ${error.message}`);
+  }
+  for (const z of kontaktZeilen) {
+    const alt = gemerkt.get(`${z.domain}|${z.schluessel}`);
+    if (!alt) continue;
+    z.stand = alt.stand;
+    z.notiz = alt.notiz;
+    z.stand_at = alt.stand_at;
   }
   await upsert(sb, "presse_kontakte", kontaktZeilen, "domain,schluessel");
   await upsert(sb, "presse_belege", belegZeilen, "domain,merkmal,quelle_url");
@@ -1084,263 +1127,24 @@ async function eichen(domain: string): Promise<void> {
 }
 
 // ─── CSV ─────────────────────────────────────────────────────────────────────
-
-/** Stabile Spaltennamen — sie sind ab dem ersten gelieferten Katalog eine
- *  Schnittstelle und dürfen sich nicht mehr ändern. */
-const SPALTEN = [
-  "medium",
-  "website",
-  "medientyp",
-  "schwerpunkt",
-  "gebiet",
-  "reichweite",
-  "redaktion_oder_person",
-  "funktion",
-  "kontakt",
-  "kontakt_art",
-  "quelle_url",
-  "geprueft_am",
-  "passende_geschichten",
-  "aufhaenger",
-  "prioritaet",
-  "mediengruppe",
-  "paket",
-  "notizen",
-] as const;
-
-function csvFeld(v: unknown): string {
-  const s = v === null || v === undefined ? "" : String(v);
-  return /[",\n;]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-}
-
-interface MediumZeile {
-  domain: string;
-  saat_name: string | null;
-  saat_typ: string | null;
-  saat_schwerpunkt: string | null;
-  saat_gebiet: string | null;
-  gruppe: string | null;
-  paket: number;
-  notiz: string | null;
-  titel: string | null;
-  medientyp: string[] | null;
-  themen: Themenfund[] | null;
-  geschichten: string[] | null;
-  reichweite: string | null;
-  ist_medium: string | null;
-  medium_grund: string | null;
-  formular_url: string | null;
-  prioritaet: string | null;
-  aufhaenger: string | null;
-  hinweis: string | null;
-  profil_at: string | null;
-  fehler: string | null;
-}
-
-interface KontaktZeile {
-  domain: string;
-  name: string | null;
-  funktion: string | null;
-  rang: number;
-  mail: string | null;
-  mail_art: string | null;
-  formular_url: string | null;
-  quelle_url: string;
-  geprueft_am: string;
-}
+//
+// Der Aufbau der Zeile steht in lib/presse-katalog.ts, nicht hier: Die Ansicht
+// im Adminbereich exportiert dieselbe Tabelle, und zwei Fassungen derselben
+// Spalten würden auseinanderlaufen, ohne dass es jemandem auffiele.
 
 async function csv(paket: Paket | null, nurMedien: boolean, top: number): Promise<void> {
   const sb = await makeClient();
-  const medien = await alleZeilen<MediumZeile>(sb, "presse_medien", "*");
+  const alleMedien = await alleZeilen<MediumZeile>(sb, "presse_medien", "*");
   const kontakte = await alleZeilen<KontaktZeile>(sb, "presse_kontakte", "*");
-  const jeDomain = new Map<string, KontaktZeile[]>();
-  for (const k of kontakte) jeDomain.set(k.domain, [...(jeDomain.get(k.domain) ?? []), k]);
-
-  // Dieselbe Adresse unter zwei Domains ist eine DUBLETTE für den Versand —
-  // gemessen bei pv magazine, dessen Redaktion auf der deutschen und der
-  // internationalen Seite steht. Nicht löschen (beide Titel sind echt), aber
-  // benennen: Wer beide anschreibt, schreibt demselben Menschen zweimal.
-  const mailKommtVor = new Map<string, string[]>();
-  for (const k of kontakte) {
-    if (!k.mail) continue;
-    mailKommtVor.set(k.mail, [...(mailKommtVor.get(k.mail) ?? []), k.domain]);
-  }
-
-  const zeilen: string[] = [SPALTEN.join(",")];
-  const sortiert = medien
+  const medien = alleMedien
     .filter((m) => paket === null || m.paket === paket)
-    .filter((m) => !nurMedien || m.ist_medium === "medium")
-    .sort((a, b) => {
-      const p = (x: string | null) => (x === "A" ? 0 : x === "B" ? 1 : 2);
-      return p(a.prioritaet) - p(b.prioritaet) || a.domain.localeCompare(b.domain);
-    });
+    .filter((m) => !nurMedien || m.ist_medium === "medium");
 
-  for (const m of sortiert) {
-    const ks = (jeDomain.get(m.domain) ?? []).sort((a, b) => b.rang - a.rang);
-    // Eine Zeile je KONTAKT, nicht je Medium — der Katalog wird zum Anschreiben
-    // benutzt, und angeschrieben wird ein Mensch oder ein Postfach.
-    // Mit --top wird je Medium nur der BESTE Kontakt ausgegeben. Das ist die
-    // Fassung für die Qualitätskontrolle in Paketen von 50: Fünfzig Zeilen von
-    // fünfzig verschiedenen Medien lassen sich lesen, fünfzig Zeilen von acht
-    // Medien nicht.
-    const auszugeben = ks.length ? (top > 0 ? ks.slice(0, 1) : ks) : [null];
-    for (const k of auszugeben) {
-      zeilen.push(
-        [
-          mediumName(m),
-          `https://${m.domain}`,
-          feldMitVermerk(m.medientyp?.join(" · ") ?? null, m.saat_typ),
-          feldMitVermerk(themenText(m.themen), m.saat_schwerpunkt),
-          `${m.saat_gebiet ?? ""} (ungeprüft)`,
-          m.reichweite ?? "ungeprüft",
-          k?.name ??
-            (k?.mail_art === "person-ohne-namen"
-              ? "Person (Name auf der Seite nicht zuzuordnen)"
-              : k?.mail
-                ? "Redaktion (Postfach)"
-                : m.fehler
-                  ? ""
-                  : "ungeprüft"),
-          k?.funktion ?? "",
-          k?.mail ?? k?.formular_url ?? m.formular_url ?? "",
-          kontaktArt(k, !!m.formular_url),
-          k?.quelle_url ?? "",
-          k?.geprueft_am ?? (m.profil_at ? m.profil_at.slice(0, 10) : ""),
-          (m.geschichten ?? []).join(" · "),
-          m.aufhaenger ?? "",
-          zeilenPrioritaet(m.prioritaet, k),
-          m.gruppe ?? "",
-          String(m.paket),
-          notizen(m, k, mailKommtVor),
-        ].map(csvFeld).join(","),
-      );
-    }
-  }
-  const kopf = zeilen[0];
+  const text = alsCsv(medien, kontakte, { nurBesterKontakt: top > 0 });
+  const zeilen = text.split("\n");
   const rest = top > 0 ? zeilen.slice(1, top + 1) : zeilen.slice(1);
   // eslint-disable-next-line no-console
-  console.log([kopf, ...rest].join("\n"));
-}
-
-/**
- * Wie das Medium im Katalog heißt.
- *
- * Gemessen schlägt angenommen — mit EINER Ausnahme, und die ist ebenfalls
- * gemessen: energiezukunft.eu trägt als Seitentitel „EWS Schönau" (den Namen
- * seines Herausgebers), springerprofessional.de „Springer Professional". Beides
- * ist wahr und im Verteiler unbrauchbar: Wer die Zeile liest, sucht das Medium,
- * nicht den Verlag. Teilt der gemessene Titel kein tragendes Wort mit dem Namen
- * aus der Saat oder mit der Adresse, gilt der Name aus der Saat — und der
- * gemessene Titel steht in den Notizen, damit die Abweichung nicht verschwindet.
- */
-function mediumName(m: MediumZeile): string {
-  if (!m.titel) return m.saat_name ?? m.domain;
-  if (!m.saat_name) return m.titel;
-  if (teiltWort(m.titel, `${m.saat_name} ${m.domain}`)) return m.titel;
-  return m.saat_name;
-}
-
-function teiltWort(a: string, b: string): boolean {
-  const zerlege = (s: string) =>
-    new Set(
-      s
-        .toLowerCase()
-        .split(/[^a-zäöüß0-9]+/)
-        .filter((w) => w.length >= 4),
-    );
-  const eins = zerlege(a);
-  for (const w of zerlege(b)) if (eins.has(w)) return true;
-  return false;
-}
-
-function titelBrauchbarImKatalog(m: MediumZeile): boolean {
-  return !!m.titel;
-}
-
-function themenText(t: Themenfund[] | null): string | null {
-  if (!t || !t.length) return null;
-  return t
-    .filter((x) => x.treffer >= 2)
-    .slice(0, 5)
-    .map((x) => `${x.name} (${x.treffer})`)
-    .join(" · ");
-}
-
-/** Gemessenes schlägt Vorannahme — und was nur aus der Saat kommt, trägt den
- *  Vermerk. Ohne ihn wäre eine Behauptung von einer Messung nicht zu
- *  unterscheiden, und genau das verbietet die Vorgabe. */
-function feldMitVermerk(gemessen: string | null, saat: string | null): string {
-  if (gemessen) return gemessen;
-  return saat ? `${saat} (ungeprüft)` : "ungeprüft";
-}
-
-function kontaktArt(k: KontaktZeile | null, mediumHatFormular: boolean): string {
-  if (!k) return "kein Kontakt gefunden";
-  if (k.mail_art === "person") return "persönliche Adresse";
-  if (k.mail_art === "redaktion") return "Redaktionspostfach";
-  if (k.mail_art === "allgemein") return "allgemeines Postfach";
-  if (k.mail_art === "werblich") return "nur Werbekontakt gefunden";
-  if (k.mail_art === "formular") return "Kontaktformular";
-  if (k.mail_art === "person-ohne-namen") return "persönliche Adresse, Name nicht zugeordnet";
-  // Die Person ist benannt, die Adresse fehlt — dann steht in der Kontaktspalte
-  // das Formular DES MEDIUMS. Das muss dranstehen: „Person ohne Adresse" neben
-  // einer Adresse in derselben Zeile ist genau die Sorte Beschriftung, die etwas
-  // anderes sagt als der Wert daneben.
-  if (k.name) {
-    return mediumHatFormular
-      ? "Person benannt — erreichbar über das Kontaktformular des Mediums"
-      : "Person benannt, keine Adresse veröffentlicht";
-  }
-  return "ungeprüft";
-}
-
-/**
- * Die Priorität der ZEILE, nicht des Mediums.
- *
- * Ein A-Medium kann einen C-Kontakt tragen: Bei pv magazine steht die
- * Australien-Redaktion auf derselben Seite wie die deutsche. Wer die Zeile nach
- * der Medien-Priorität abarbeitet, schreibt einer Kollegin in Sydney über den
- * Zubau in Nordrhein-Westfalen.
- */
-function zeilenPrioritaet(medium: string | null, k: KontaktZeile | null): string {
-  const p = medium ?? "C";
-  if (!k) return p;
-  if (AUSLAND.test(k.funktion ?? "")) return "C";
-  // Eine Verlagsgeschäftsführung ist nie der Adressat einer Datengeschichte.
-  if (k.rang <= 20) return p === "A" ? "B" : "C";
-  return p;
-}
-
-const AUSLAND =
-  /\b(?:France|Australia|Brasil|Brazil|Italia|Italy|España|Spain|India|China|Japan|Mexico|Chile|Argentina|USA|U\.S\.|America|UK|Ireland|Poland|Polska|Nederland|Netherlands|Türkiye|Turkey|Frankreich|Australien|Brasilien|Italien|Spanien|Indien|Polen|Niederlande|Türkei)\b/i;
-
-function notizen(
-  m: MediumZeile,
-  k: KontaktZeile | null,
-  mailKommtVor: Map<string, string[]>,
-): string {
-  const teile: string[] = [];
-  if (m.fehler) teile.push(`Abruf: ${m.fehler}`);
-  if (m.hinweis) teile.push(m.hinweis);
-  if (m.ist_medium === "unklar") teile.push("redaktionelles Angebot nicht eindeutig belegt");
-  if (m.ist_medium === "kein-medium") teile.push(`kein redaktionelles Angebot (${m.medium_grund})`);
-  if (k && k.name && !k.mail) teile.push("Person benannt, Adresse nur über Postfach/Formular");
-  if (k && k.mail_art === "werblich") teile.push("kein redaktioneller Weg gefunden");
-  if (k?.funktion && AUSLAND.test(k.funktion)) {
-    teile.push("Auslandsredaktion — berichtet nicht über Deutschland");
-  }
-  if (k?.mail) {
-    const auch = (mailKommtVor.get(k.mail) ?? []).filter((d) => d !== m.domain);
-    if (auch.length) teile.push(`dieselbe Adresse auch unter ${auch.join(", ")}`);
-  }
-  if (!titelBrauchbarImKatalog(m)) {
-    teile.push("Name des Mediums aus der Saat (ungeprüft)");
-  } else if (mediumName(m) !== m.titel) {
-    teile.push(`Seitentitel lautet abweichend: „${m.titel}"`);
-  }
-  if (m.gruppe) teile.push(`Mediengruppe: ${m.gruppe}`);
-  if (m.notiz) teile.push(m.notiz);
-  return teile.join("; ");
+  console.log([zeilen[0], ...rest].join("\n"));
 }
 
 // ─── Stats ───────────────────────────────────────────────────────────────────
