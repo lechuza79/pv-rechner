@@ -42,6 +42,10 @@ export interface MediumZeile {
   formular_url: string | null;
   impressum_url?: string | null;
   prioritaet: string | null;
+  gattung?: string | null;
+  /** Von Hand gesetzt — schlägt die Messung und überlebt jeden Erhebungslauf. */
+  gattung_hand?: string | null;
+  woerter?: number | null;
   aufhaenger: string | null;
   hinweis: string | null;
   profil_at: string | null;
@@ -87,6 +91,7 @@ export const SPALTEN = [
   "passende_geschichten",
   "aufhaenger",
   "prioritaet",
+  "gattung",
   "mediengruppe",
   "paket",
   "arbeitsstand",
@@ -124,6 +129,25 @@ function teiltWort(a: string, b: string): boolean {
   const eins = zerlege(a);
   for (const w of zerlege(b)) if (eins.has(w)) return true;
   return false;
+}
+
+/**
+ * Fachmedium oder Publikumsmedium — die Handentscheidung schlägt die Messung.
+ *
+ * Die Messung sieht EINE Startseite an EINEM Tag. Sie trennt die klaren Fälle
+ * (eine Tageszeitung kommt nie über zwei Kerntreffer je tausend Wörter, ein
+ * Fachtitel selten unter vier), aber ein Fachtitel, der an diesem Tag über
+ * etwas anderes schreibt, fällt durch. Deshalb entscheidet am Ende ein Mensch,
+ * und seine Entscheidung wird nicht überschrieben.
+ */
+export function gattungEffektiv(m: MediumZeile): string | null {
+  return m.gattung_hand ?? m.gattung ?? null;
+}
+
+export function gattungText(m: MediumZeile): string {
+  const g = gattungEffektiv(m);
+  const wort = g === "fach" ? "Fachmedium" : g === "publikum" ? "Publikumsmedium" : "nicht gemessen";
+  return m.gattung_hand ? `${wort} (von Hand gesetzt)` : wort;
 }
 
 export function themenText(t: Themenfund[] | null): string | null {
@@ -240,6 +264,7 @@ export function katalogZeile(
     (m.geschichten ?? []).join(" · "),
     m.aufhaenger ?? "",
     zeilenPrioritaet(m.prioritaet, k),
+    gattungText(m),
     m.gruppe ?? "",
     String(m.paket),
     k?.stand && k.stand !== "offen" ? k.stand : "",

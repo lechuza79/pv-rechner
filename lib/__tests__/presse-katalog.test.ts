@@ -8,6 +8,8 @@ import {
   mediumName,
   zeilenPrioritaet,
   adressenNachDomain,
+  gattungEffektiv,
+  gattungText,
   type MediumZeile,
   type KontaktZeile,
 } from "../presse-katalog";
@@ -98,6 +100,26 @@ describe("Katalog-Zeile", () => {
     const zweit = { ...kontakt, domain: "beispiel.com" };
     const karte = adressenNachDomain([kontakt, zweit]);
     expect(karte.get(kontakt.mail as string)).toEqual(["beispiel.de", "beispiel.com"]);
+  });
+});
+
+describe("Art des Mediums", () => {
+  it("lässt die Handentscheidung die Messung schlagen", () => {
+    // Die Messung sieht EINE Startseite an EINEM Tag. Sie trennt die klaren
+    // Fälle, aber ein Fachtitel, der an diesem Tag über etwas anderes schreibt,
+    // fällt durch — gemessen an energate, pv Europe und der SBZ.
+    const gemessen = { ...medium, gattung: "publikum", gattung_hand: null };
+    expect(gattungEffektiv(gemessen)).toBe("publikum");
+    expect(gattungEffektiv({ ...gemessen, gattung_hand: "fach" })).toBe("fach");
+  });
+
+  it("schreibt dran, dass von Hand entschieden wurde", () => {
+    // Ohne den Vermerk wäre eine Handentscheidung von einer Messung nicht zu
+    // unterscheiden — dieselbe Regel wie bei jedem anderen Feld des Katalogs.
+    expect(gattungText({ ...medium, gattung: "publikum", gattung_hand: "fach" })).toContain(
+      "von Hand",
+    );
+    expect(gattungText({ ...medium, gattung: "fach", gattung_hand: null })).toBe("Fachmedium");
   });
 });
 

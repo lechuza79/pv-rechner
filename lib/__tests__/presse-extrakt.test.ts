@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, it, expect } from "vitest";
 import {
   cfAdresseKlartext,
@@ -14,6 +15,7 @@ import {
   siehtNachImpressumAus,
   titelBrauchbar,
   istMarkeStattName,
+  gattungAus,
 } from "../presse-extrakt";
 
 /**
@@ -202,6 +204,7 @@ describe("Priorität", () => {
       hatPerson: true,
       hatRedaktionsPostfach: false,
       hatIrgendeinenWeg: true,
+      gattung: "fach",
     });
     expect(stark).toBe("A");
   });
@@ -212,8 +215,73 @@ describe("Priorität", () => {
       hatPerson: false,
       hatRedaktionsPostfach: false,
       hatIrgendeinenWeg: false,
+      gattung: "fach",
     });
     expect(p).toBe("C");
+  });
+});
+
+describe("Fachmedium oder Publikumsmedium", () => {
+  // Alle Zahlen hier sind am 04.09.2026 an den echten Startseiten gemessen.
+  it("erkennt einen Fachtitel an der Dichte, nicht an der Zahl", () => {
+    expect(gattungAus([{ name: "photovoltaik", treffer: 45 }, { name: "speicher", treffer: 15 }], 900)).toBe("fach");
+  });
+
+  it("hält eine große Publikumsseite nicht für ein Fachmedium", () => {
+    // DER ANLASS: „ZEIT und COMPUTER BILD brauche ich nicht anschreiben."
+    // heise stand mit drei Kerntreffern auf einer sehr langen Startseite auf
+    // Priorität A, weil weiche Wörter wie „Test" die Einstufung trugen.
+    expect(gattungAus([{ name: "photovoltaik", treffer: 2 }, { name: "verbraucher", treffer: 30 }], 4000)).toBe("publikum");
+  });
+
+  it("nennt es unklar, wenn die Startseite nicht gelesen werden konnte", () => {
+    // Kein schwaches Ergebnis, sondern gar keins — das muss unterscheidbar
+    // bleiben, sonst sieht „nicht gemessen" wie „passt nicht" aus.
+    expect(gattungAus([], null)).toBe("unklar");
+  });
+
+  it("gibt einem Publikumsmedium nie ein A", () => {
+    const p = prioritaet({
+      themen: [{ name: "photovoltaik", treffer: 40 }],
+      hatPerson: true,
+      hatRedaktionsPostfach: true,
+      hatIrgendeinenWeg: true,
+      gattung: "publikum",
+    });
+    expect(p).not.toBe("A");
+  });
+
+  it("lässt die weichen Themen ein A nie allein tragen", () => {
+    const p = prioritaet({
+      themen: [{ name: "verbraucher", treffer: 82 }, { name: "daten", treffer: 6 }],
+      hatPerson: true,
+      hatRedaktionsPostfach: true,
+      hatIrgendeinenWeg: true,
+      gattung: "fach",
+    });
+    expect(p).not.toBe("A");
+  });
+});
+
+describe("Der Erhebungslauf fasst die Handentscheidung nicht an", () => {
+  it("schreibt gattung_hand an keiner Stelle", () => {
+    // DER GANZE PUNKT DER GETRENNTEN SPALTE. Stünde die Handentscheidung in
+    // derselben Spalte wie die Messung, überschriebe sie der nächste Lauf — und
+    // man korrigierte dieselbe Fehleinschätzung jeden Monat neu, ohne dass es
+    // auffällt. Der Wächter liest den Lauf, statt sich auf eine Regel zu
+    // verlassen, an die sich jede spätere Änderung erinnern müsste.
+    const lauf = readFileSync(
+      new URL("../../scripts/presse-refresh.ts", import.meta.url),
+      "utf8",
+    );
+    // Die Spalte ANZULEGEN ist erlaubt und steht im Setup-SQL; verboten ist,
+    // sie zu beschreiben. Geprüft wird deshalb der Code OHNE das SQL — sonst
+    // müsste der Wächter die eine erlaubte Zeile namentlich ausnehmen, und eine
+    // Ausnahme nach Wortlaut ist genau die Sorte Prüfung, die beim nächsten
+    // Umformatieren nichts mehr sieht.
+    const ohneSql = lauf.replace(/const sql = `[\s\S]*?`;/, "");
+    const schreibend = ohneSql.split("\n").filter((z) => z.includes("gattung_hand"));
+    expect(schreibend).toEqual([]);
   });
 });
 

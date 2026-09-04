@@ -49,6 +49,7 @@ import {
   medientypAus,
   themenAus,
   geschichtenZu,
+  gattungAus,
   reichweiteAus,
   medienurteil,
   prioritaet,
@@ -279,6 +280,17 @@ async function setup(): Promise<void> {
     -- Spalten gehören dem Menschen an der Ansicht — der Erhebungslauf fasst sie
     -- nie an, sonst hätte die Tabelle zwei Schreiber mit widersprüchlichen
     -- Annahmen.
+    -- Fachmedium oder Publikumsmedium, und die Wortzahl, aus der es gemessen
+    -- wurde. Die Wortzahl wird MITGESCHRIEBEN, damit die Einstufung nachprüfbar
+    -- bleibt: Ohne sie steht dort ein Urteil, dessen Grundlage niemand mehr
+    -- nachrechnen kann.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS gattung text;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS woerter integer;
+    -- Die HANDENTSCHEIDUNG steht in einer eigenen Spalte und wird vom
+    -- Erhebungslauf nie angefasst. Sie in dieselbe zu schreiben hieße, dass der
+    -- nächste Lauf sie überschreibt — und dann korrigiert man dieselbe
+    -- Fehleinschätzung jeden Monat neu, ohne dass es auffällt.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS gattung_hand text;
     ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS stand text NOT NULL DEFAULT 'offen';
     ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS notiz text;
     ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS stand_at timestamptz;
@@ -421,6 +433,8 @@ interface Auswertung {
   formular_url: string | null;
   impressum_url: string | null;
   prioritaet: string;
+  gattung: string;
+  woerter: number | null;
   aufhaenger: string;
   hinweis: string | null;
   kontakte: Record<string, unknown>[];
@@ -436,7 +450,13 @@ function werteAus(domain: string, seiten: Seite[]): Auswertung {
   const tag = heute();
 
   // Themen kommen von der STARTSEITE — sie sagt, worüber gerade berichtet wird.
-  const themen = start ? themenAus(sichtbarerText(start.html)) : [];
+  const startText = start ? sichtbarerText(start.html) : null;
+  const themen = startText ? themenAus(startText) : [];
+  // Die Wortzahl wird MITGEMESSEN, weil ohne sie die Zahl der Fundstellen nichts
+  // aussagt: Eine Tageszeitung nennt unser Thema zweimal auf einer Startseite
+  // mit viertausend Wörtern, ein Fachtitel fünfundvierzigmal auf einer kürzeren.
+  const woerter = startText ? startText.split(/\s+/).filter(Boolean).length : null;
+  const gattung = gattungAus(themen, woerter);
   const geschichten = geschichtenZu(themen);
 
   // Medientyp aus allen Seiten: Der Newsletter-Hinweis steht oft nur im Fuß der
@@ -659,6 +679,7 @@ function werteAus(domain: string, seiten: Seite[]): Auswertung {
     hatPerson: alle.some((k) => k.name),
     hatRedaktionsPostfach: genommen.some((p) => !p.werblich),
     hatIrgendeinenWeg: alle.length > 0,
+    gattung,
   });
 
   const seitenKarte: Record<string, string> = {};
@@ -682,6 +703,8 @@ function werteAus(domain: string, seiten: Seite[]): Auswertung {
     formular_url: formularUrl,
     impressum_url: seitenKarte["impressum"] ?? null,
     prioritaet: prio,
+    gattung,
+    woerter,
     aufhaenger: aufhaenger(themen, rolleFuerAufhaenger),
     hinweis: hinweisZu(seiten, alle.length),
     kontakte: alle,
@@ -846,6 +869,8 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
         formular_url: null,
         impressum_url: null,
         prioritaet: null,
+        gattung: null,
+        woerter: null,
         aufhaenger: null,
         hinweis: null,
         updated_at: new Date().toISOString(),
@@ -871,6 +896,8 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
       formular_url: a.formular_url,
       impressum_url: a.impressum_url,
       prioritaet: a.prioritaet,
+      gattung: a.gattung,
+      woerter: a.woerter,
       aufhaenger: a.aufhaenger,
       hinweis: a.hinweis,
       profil_at: new Date().toISOString(),
@@ -1108,6 +1135,8 @@ async function eichen(domain: string): Promise<void> {
         geschichten: a.geschichten,
         reichweite: a.reichweite,
         prioritaet: a.prioritaet,
+        gattung: a.gattung,
+        woerter: a.woerter,
         aufhaenger: a.aufhaenger,
         kontakte: a.kontakte.map((k) => ({
           name: k.name,

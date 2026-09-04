@@ -35,14 +35,70 @@ Das ist kein Umgehen einer Schutzmaßnahme: Die Adresse ist veröffentlicht,
 verschleiert wird sie gegen Sammler ohne JavaScript. Was nicht passiert: eine
 Adresse erfinden, die dort nicht steht.
 
+## Fachmedium oder Publikumsmedium
+
+**Der Betreiber am 04.09.2026: „ZEIT und COMPUTER BILD brauche ich nicht
+anschreiben."** Er hatte recht, und die Ursache war messbar: Die erste
+Einstufung zählte Themenwörter ABSOLUT, und die weiche Gruppe „Verbraucher"
+(Test, Kosten, Vergleich, Ratgeber) trug ein A allein. heise stand damit auf
+Priorität A mit 30 Treffern dieser Gruppe und **zwei** für Photovoltaik,
+COMPUTER BILD mit 82 zu null.
+
+Drei Änderungen, jede an einer Handprüfung von 24 bekannten Titeln kalibriert:
+
+1. **Die weiche Gruppe ist an die Energie gebunden.** „Test" sagt über die
+   Passung nichts, „Stromkosten" schon.
+2. **Ein A braucht das Kernthema** (Photovoltaik, Balkonkraftwerk, Speicher,
+   Strommix) — die Randthemen können es nie allein tragen.
+3. **Fach- und Publikumsmedium werden an der DICHTE getrennt**, nicht an der
+   Zahl. Gemessene Kerntreffer je 1.000 Wörter der Startseite:
+
+   | Fachtitel | | Publikumstitel | |
+   |---|---|---|---|
+   | Solarserver | 18,9 | energiezukunft | 1,8 |
+   | photovoltaik | 15,1 | heise | 1,1 |
+   | pv magazine | 13,3 | n-tv | 0,6 |
+   | stadt+werk | 5,3 | test.de | 0,4 |
+   | Erneuerbare Energien | 4,7 | SPIEGEL | 0,3 |
+   | IKZ | 4,3 | ZEIT, taz, SZ | 0,0 |
+   | ZfK | 4,1 | | |
+
+   Die Schwelle liegt in der Lücke zwischen 4,1 und 1,8. **Eine erste Fassung
+   verlangte zusätzlich acht absolute Treffer — und stufte damit stadt+werk,
+   Erneuerbare Energien und die IKZ als Publikumsmedien ein**, weil ihre
+   Startseite an diesem Tag nur fünf bis sieben Fundstellen trug. Drei Fachtitel
+   als Publikum ist der teurere Fehler: Sie fallen aus der Ansicht heraus.
+
+**Die Messung ist ein VORSCHLAG, kein Urteil**, und das ist keine Bescheidenheit,
+sondern gemessen: Sie sieht eine Startseite an einem Tag. Fünf echte Fachtitel
+liegen knapp darunter, weil ihre Startseite gerade über etwas anderes schrieb —
+energate (1,7), pv Europe (2,1), SBZ (0,5), klimareporter (1,1), Treffpunkt
+Kommune (0,5). Umgekehrt steht Finanztip als Fachmedium da, obwohl es ein
+Verbraucherportal ist.
+
+Deshalb lässt sich die Einordnung **von Hand überschreiben**, in einer eigenen
+Spalte, die der Erhebungslauf nie anfasst — ein Test liest den Lauf und wird
+rot, wenn er es doch täte. Stünde die Handentscheidung in derselben Spalte wie
+die Messung, korrigierte man dieselbe Fehleinschätzung jeden Monat neu, ohne
+dass es auffiele.
+
+**Gelöscht wird nichts** (Betreiber, 04.09.2026). Publikumsmedien bleiben im
+Bestand und sind einen Filter weit entfernt; für eine wirklich gute
+Datengeschichte ist ein Datenressort irgendwann der richtige Adressat — nur
+nicht im ersten Schub.
+
 ## Die vier Pakete
 
 | Paket | Was | Zeilen |
 |---|---|---|
-| 1 | bundesweite Fach-, Energie-, Kommunal- und Verbrauchermedien | 804 |
+| 1 | bundesweite Fach-, Energie-, Kommunal- und Verbrauchermedien | 786 |
 | 2 | Regionalmedien mit eindeutig zuordenbarem Gebiet | 356 |
 | 3 | Newsletter, Podcasts, Creator | 22 |
-| 4 | **Prüfliste** — was die Suche gefunden hat, noch niemand angesehen | 2.042 |
+| 4 | **Prüfliste** — was die Suche gefunden hat, noch niemand angesehen | 2.024 |
+
+Die Ansicht im internen Bereich zeigt standardmäßig nur **Fachmedien** aus Paket
+1 — 23 Titel statt 94. Das ist der Filter, den der Betreiber am 04.09.2026
+verlangt hat, nicht eine Verkleinerung des Bestands.
 
 **Paket 4 ist kein Katalogpaket.** Ein Suchtreffer ist eine Adresse, kein Befund;
 grob die Hälfte ist nichts (im Förderbereich gemessen, hier nicht anders). Neben

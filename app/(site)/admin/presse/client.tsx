@@ -12,6 +12,7 @@ import {
   adressenNachDomain,
   kontaktArt,
   mediumName,
+  gattungText,
   notizen,
   themenText,
   zeilenPrioritaet,
@@ -45,6 +46,7 @@ export default function PresseAnsicht() {
   const [laedt, setLaedt] = useState(true);
   const [fehler, setFehler] = useState<string | null>(null);
 
+  const [gattung, setGattung] = useState("fach");
   const [paket, setPaket] = useState("1");
   const [prio, setPrio] = useState("");
   const [geschichte, setGeschichte] = useState("");
@@ -56,6 +58,7 @@ export default function PresseAnsicht() {
 
   const parameter = useCallback(() => {
     const p = new URLSearchParams();
+    p.set("gattung", gattung);
     if (paket) p.set("paket", paket);
     if (prio) p.set("prio", prio);
     if (geschichte) p.set("geschichte", geschichte);
@@ -65,7 +68,7 @@ export default function PresseAnsicht() {
     if (suche) p.set("q", suche);
     if (nurPerson) p.set("person", "1");
     return p;
-  }, [paket, prio, geschichte, mediumArt, kontaktart, stand, suche, nurPerson]);
+  }, [gattung, paket, prio, geschichte, mediumArt, kontaktart, stand, suche, nurPerson]);
 
   const laden = useCallback(async () => {
     setLaedt(true);
@@ -86,6 +89,20 @@ export default function PresseAnsicht() {
   useEffect(() => {
     void laden();
   }, [laden]);
+
+  async function gattungSetzen(domain: string, wert: string | null) {
+    const r = await fetch("/api/admin/presse", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ domain, gattungHand: wert }),
+    });
+    if (!r.ok) {
+      setFehler(`Speichern fehlgeschlagen (${r.status})`);
+      return;
+    }
+    const { medium } = (await r.json()) as { medium: MediumZeile };
+    setMedien((alt) => alt.map((m) => (m.domain === medium.domain ? medium : m)));
+  }
 
   async function aendern(
     domain: string,
@@ -244,6 +261,12 @@ export default function PresseAnsicht() {
           aria-label="Suche"
           style={{ ...eingabeStil, flex: "1 1 220px", minWidth: 200 }}
         />
+        <Filter label="Art des Mediums" wert={gattung} setzen={setGattung} breit>
+          <option value="fach">Fachmedien</option>
+          <option value="publikum">Publikumsmedien</option>
+          <option value="unklar">nicht gemessen</option>
+          <option value="">alle</option>
+        </Filter>
         <Filter label="Paket" wert={paket} setzen={setPaket}>
           {PAKETE.map((p) => (
             <option key={p.wert} value={String(p.wert)}>
@@ -348,6 +371,31 @@ export default function PresseAnsicht() {
                       : m.ist_medium === "kein-medium"
                         ? `nein — ${m.medium_grund}`
                         : "unklar — zu wenige Merkmale"}
+                  </Feld>
+                  <Feld titel="Art des Mediums">
+                    <span style={{ display: "flex", alignItems: "center", gap: space.xs }}>
+                      <span style={{ flex: "0 0 150px" }}>
+                        <SelectField
+                          value={m.gattung_hand ?? ""}
+                          onChange={(e) => void gattungSetzen(m.domain, e.target.value || null)}
+                          ariaLabel={`Art des Mediums für ${mediumName(m)}`}
+                          size="sm"
+                        >
+                          {/* Die Messung als erster Eintrag, damit eine
+                              Korrektur zurückgenommen werden kann — ohne den
+                              Weg zurück wäre jede Handentscheidung endgültig. */}
+                          <option value="">{gattungText({ ...m, gattung_hand: null })} (gemessen)</option>
+                          <option value="fach">Fachmedium</option>
+                          <option value="publikum">Publikumsmedium</option>
+                        </SelectField>
+                      </span>
+                      {m.woerter ? (
+                        <span style={{ color: v("--color-text-muted") }}>
+                          {(((m.themen ?? []).filter((t) => ["photovoltaik", "balkonkraftwerk", "speicher", "strommix"].includes(t.name)).reduce((s, t) => s + t.treffer, 0) / m.woerter) * 1000).toFixed(1)}{" "}
+                          Kerntreffer je 1.000 Wörter
+                        </span>
+                      ) : null}
+                    </span>
                   </Feld>
                   <Feld titel="Zuletzt geprüft">
                     {m.profil_at ? new Date(m.profil_at).toLocaleDateString("de-DE") : "—"}

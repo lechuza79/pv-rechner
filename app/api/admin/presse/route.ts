@@ -29,13 +29,14 @@ const MEDIUM_SPALTEN =
   "domain, saat_name, saat_typ, saat_schwerpunkt, saat_gebiet, gruppe, paket, notiz, " +
   "titel, medientyp, themen, geschichten, reichweite, reichweite_quelle, ist_medium, " +
   "medium_grund, medium_merkmale, seiten, formular_url, impressum_url, prioritaet, " +
-  "aufhaenger, hinweis, profil_at, fehler";
+  "aufhaenger, gattung, gattung_hand, woerter, hinweis, profil_at, fehler";
 
 const KONTAKT_SPALTEN =
   "domain, schluessel, name, funktion, rang, mail, mail_art, formular_url, quelle_url, " +
   "seitenart, anker, fundstelle, geprueft_am, stand, notiz, stand_at";
 
 type Filter = {
+  gattung: string;
   paket: string;
   prio: string;
   geschichte: string;
@@ -48,6 +49,11 @@ type Filter = {
 
 function filterAus(sp: URLSearchParams): Filter {
   return {
+    // VOREINSTELLUNG „fach". Der Betreiber am 04.09.2026: „ZEIT und COMPUTER
+    // BILD brauche ich nicht anschreiben." Publikumsmedien bleiben im Bestand
+    // — gelöscht wird nichts —, aber sie stehen nicht mehr zwischen den
+    // Titeln, mit denen tatsächlich zu arbeiten ist.
+    gattung: sp.get("gattung") ?? "fach",
     paket: sp.get("paket") ?? "",
     prio: sp.get("prio") ?? "",
     geschichte: sp.get("geschichte") ?? "",
@@ -64,6 +70,13 @@ function medienAbfrage(db: any, f: Filter, zaehlen: boolean) {
   let q = db
     .from("presse_medien")
     .select(MEDIUM_SPALTEN, zaehlen ? { count: "exact" } : undefined);
+  // GEFILTERT WIRD AUF DIE EFFEKTIVE EINORDNUNG: Wo eine Handentscheidung
+  // steht, gilt sie; sonst die Messung. Nur auf die Messung zu filtern hieße,
+  // dass eine Korrektur von Hand in der Ansicht folgenlos bleibt — die Zeile
+  // stünde weiter unter der alten Einordnung.
+  if (f.gattung) {
+    q = q.or(`gattung_hand.eq.${f.gattung},and(gattung_hand.is.null,gattung.eq.${f.gattung})`);
+  }
   if (f.paket) q = q.eq("paket", Number(f.paket));
   if (f.prio) q = q.eq("prioritaet", f.prio);
   if (f.medium) q = q.eq("ist_medium", f.medium);
@@ -147,9 +160,31 @@ export async function PATCH(req: NextRequest) {
     schluessel?: string;
     stand?: string;
     notiz?: string | null;
+    gattungHand?: string | null;
   } | null;
-  if (!body?.domain || !body?.schluessel)
-    return NextResponse.json({ error: "domain und schluessel fehlen" }, { status: 400 });
+  if (!body?.domain) return NextResponse.json({ error: "domain fehlt" }, { status: 400 });
+
+  // Die Einordnung von Hand hängt am MEDIUM, nicht am Kontakt — deshalb ein
+  // eigener Zweig. Sie schreibt ausschließlich die Handspalte; die gemessene
+  // bleibt stehen, damit der Vergleich „was hat die Messung gesagt" möglich
+  // bleibt.
+  if (body.gattungHand !== undefined) {
+    const wert = body.gattungHand;
+    if (wert !== null && wert !== "fach" && wert !== "publikum") {
+      return NextResponse.json({ error: "unbekannte Einordnung" }, { status: 400 });
+    }
+    const { data, error } = await serviceDb
+      .from("presse_medien")
+      .update({ gattung_hand: wert })
+      .eq("domain", body.domain)
+      .select(MEDIUM_SPALTEN)
+      .single();
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ medium: data });
+  }
+
+  if (!body?.schluessel)
+    return NextResponse.json({ error: "schluessel fehlt" }, { status: 400 });
 
   // Nur die zwei Felder, die dem Menschen gehören. Eine Erlaubnisliste statt
   // eines Durchreichens des Rumpfs: Sonst könnte ein Tippfehler im Browser eine
