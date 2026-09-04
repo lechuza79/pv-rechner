@@ -96,9 +96,19 @@ nicht im ersten Schub.
 | 3 | Newsletter, Podcasts, Creator | 22 |
 | 4 | **Prüfliste** — was die Suche gefunden hat, noch niemand angesehen | 2.024 |
 
-Die Ansicht im internen Bereich zeigt standardmäßig nur **Fachmedien** aus Paket
-1 — 23 Titel statt 94. Das ist der Filter, den der Betreiber am 04.09.2026
-verlangt hat, nicht eine Verkleinerung des Bestands.
+Die Ansicht zeigt bei Paket 1 standardmäßig nur **Fachmedien** — 23 Titel statt
+129. Das ist ein Filter, keine Verkleinerung des Bestands, und die Zeile über der
+Tabelle sagt das inzwischen auch: „23 von 382 Medien im Bestand". **Sie sagte es
+zuerst nicht**, und der Betreiber hat prompt gefragt, ob alles außer den 23
+rausgeflogen sei — eine Zahl ohne ihren Nenner behauptet etwas anderes, als sie
+misst, hier wie überall sonst im Projekt.
+
+**Die Voreinstellung hängt am PAKET.** Fachmedien vorzufiltern ist nur bei den
+bundesweiten Titeln und den Creatorn richtig; eine Lokalzeitung ist per
+Definition kein Fachmedium. Paket 2 enthält 55 Regionaltitel und **null**
+Fachmedien — mit einer festen Voreinstellung wäre das ganze Regionalpaket
+unsichtbar gewesen, und zwar so, dass es wie ein leerer Bestand aussieht statt
+wie ein Filter. Aufgefallen erst beim Nachzählen nach dem Umbau.
 
 **Paket 4 ist kein Katalogpaket.** Ein Suchtreffer ist eine Adresse, kein Befund;
 grob die Hälfte ist nichts (im Förderbereich gemessen, hier nicht anders). Neben

@@ -147,7 +147,14 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  return NextResponse.json({ medien, kontakte, gesamt: count ?? 0 });
+  // Der Bestand OHNE jeden Filter — als Bezugsgröße für die Ansicht. Eine Zahl
+  // ohne ihren Nenner behauptet sonst etwas anderes, als sie misst: 23 gezeigte
+  // Medien sehen wie ein kleiner Bestand aus, nicht wie ein gesetzter Filter.
+  const { count: bestand } = await serviceDb
+    .from("presse_medien")
+    .select("*", { count: "exact", head: true });
+
+  return NextResponse.json({ medien, kontakte, gesamt: count ?? 0, bestand: bestand ?? 0 });
 }
 
 export async function PATCH(req: NextRequest) {

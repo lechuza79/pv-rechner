@@ -38,16 +38,35 @@ import {
 // Tabelle bereits auseinandergelaufen waren; eine dritte hätte das Muster
 // endgültig verloren.
 
-type Antwort = { medien: MediumZeile[]; kontakte: KontaktZeile[]; gesamt: number };
+type Antwort = {
+  medien: MediumZeile[];
+  kontakte: KontaktZeile[];
+  gesamt: number;
+  /** Der GANZE Bestand, ohne jeden Filter — die Bezugsgröße für die Zeile über
+   *  der Tabelle. */
+  bestand: number;
+};
 
 export default function PresseAnsicht() {
   const [medien, setMedien] = useState<MediumZeile[]>([]);
   const [kontakte, setKontakte] = useState<KontaktZeile[]>([]);
+  const [gesamt, setGesamt] = useState(0);
   const [laedt, setLaedt] = useState(true);
   const [fehler, setFehler] = useState<string | null>(null);
 
   const [gattung, setGattung] = useState("fach");
   const [paket, setPaket] = useState("1");
+  // DIE VOREINSTELLUNG HÄNGT AM PAKET, und das ist keine Bequemlichkeit.
+  //
+  // Eine Lokalzeitung ist per Definition kein Fachmedium — Paket 2 enthält 55
+  // Regionaltitel und NULL Fachmedien. Mit der festen Voreinstellung „Fachmedien"
+  // wäre das ganze Regionalpaket unsichtbar gewesen, und zwar so, dass es wie ein
+  // leerer Bestand aussieht statt wie ein Filter.
+  //
+  // Fachmedien vorzufiltern ist nur bei den bundesweiten Titeln (Paket 1) und den
+  // Creatorn (Paket 3) richtig: Dort stehen Fach- und Publikumstitel
+  // nebeneinander, und die Trennung ist die Antwort auf „ZEIT brauche ich nicht".
+  // Bei Regionalmedien und in der Prüfliste trennt sie nichts, was zu trennen wäre.
   const [prio, setPrio] = useState("");
   const [geschichte, setGeschichte] = useState("");
   const [mediumArt, setMediumArt] = useState("medium");
@@ -79,6 +98,7 @@ export default function PresseAnsicht() {
       const d = (await r.json()) as Antwort;
       setMedien(d.medien);
       setKontakte(d.kontakte);
+      setGesamt(d.bestand);
     } catch (e) {
       setFehler(e instanceof Error ? e.message : String(e));
     } finally {
@@ -267,7 +287,14 @@ export default function PresseAnsicht() {
           <option value="unklar">nicht gemessen</option>
           <option value="">alle</option>
         </Filter>
-        <Filter label="Paket" wert={paket} setzen={setPaket}>
+        <Filter
+          label="Paket"
+          wert={paket}
+          setzen={(w) => {
+            setPaket(w);
+            setGattung(w === "1" || w === "3" ? "fach" : "");
+          }}
+        >
           {PAKETE.map((p) => (
             <option key={p.wert} value={String(p.wert)}>
               {p.text}
@@ -324,8 +351,15 @@ export default function PresseAnsicht() {
       <div
         style={{ display: "flex", alignItems: "center", gap: space.sm, marginBottom: space.sm }}
       >
+        {/* NEBEN DER GEZEIGTEN ZAHL STEHT DER BESTAND. Ohne ihn sieht ein
+            gesetzter Filter aus wie ein kleiner Bestand — der Betreiber hat
+            genau das gefragt („und jetzt hast du alles rausgeschmissen außer
+            den 23?"). Dieselbe Fehlerklasse wie überall sonst im Projekt: Eine
+            Zahl ohne ihren Nenner behauptet etwas anderes, als sie misst. */}
         <p style={{ color: v("--color-text-muted"), fontSize: v("--font-size-small"), margin: 0 }}>
-          {laedt ? "lädt …" : `${medien.length.toLocaleString("de-DE")} Medien`}
+          {laedt
+            ? "lädt …"
+            : `${medien.length.toLocaleString("de-DE")} von ${gesamt.toLocaleString("de-DE")} Medien im Bestand — die übrigen sind gefiltert, nicht gelöscht`}
         </p>
         {/* Der Abzug nimmt alles, was die Filter übrig lassen. Ein Export, der
             stillschweigend bei der sichtbaren Menge endet, sieht vollständig aus
