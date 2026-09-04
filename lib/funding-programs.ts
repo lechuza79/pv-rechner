@@ -1854,7 +1854,10 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // stehen; der Topf ist auf 20.000 € im Jahr begrenzt, das nächste Haushalts-
     // jahr füllt ihn wieder. Wieder einschalten darf das nur ein Träger-Beleg.
     url: "https://www.weser-aue.de/rathaus-politik/foerderprogramme/",
-    stand: "August 2026", status: "ausgeschoepft", capped: true, verified: true,
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    // Laufzeit am 05.09.2026 an der Amtsseite abgelesen: „Die Förderung ist
+    // vorbehaltlich der Haushaltslage vorerst bis zum 31.12.2026 aufgelegt."
+    endetIso: "2026-12-31",
     eligibility: ["privat"],
     coveredCosts: "Anteiliger Zuschuss je kWp und je kWh Speicher",
     maxFoerderung: "max. 1.000 € je Förderfall",
@@ -2227,6 +2230,47 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Das Gerät muss fabrikneu sein",
       "Je Haushalt wird ein Gerät gefördert",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPauschale: 100,
+  },
+
+  // Aufgenommen am 05.09.2026. Anlass war eine Sekundärquelle, die Quelle waren
+  // die Richtlinie der Stadt (Stand 19.05.2026, im Volltext gelesen), die
+  // Dienstleistungsseite des Service-Portals und die Pressemitteilung vom
+  // 22.05.2026 — von dort auch die Zahl der geförderten Anlagen, die in der
+  // Richtlinie nicht steht.
+  //
+  // WARUM DIE 50-%-GRENZE NICHT ALS RECHENWERT DASTEHT: Nr. 6 der Richtlinie
+  // erlaubt die Kumulierung, deckelt aber die SUMME aller öffentlichen Mittel
+  // auf 50 % der Gesamtkosten und stellt fremde Mittel voran. Das ist keine
+  // Grenze für unseren Betrag allein, sondern für einen Stapel, dessen andere
+  // Teile der Rechner nicht kennt — als `balkonPercentOfCost: 0.5` gerechnet
+  // hieße das, eine fremde Förderung stillschweigend mit null anzusetzen. Sie
+  // steht deshalb als Bedingung da. Der Deckel auf den Kaufpreis (siehe
+  // fundingAmount) fängt den absurden Fall ohnehin ab; bei 100 € auf das
+  // billigste Set unseres Rechners (300 €) bindet die Grenze nicht.
+  "wetter-ruhr-balkonsolar": {
+    id: "wetter-ruhr-balkonsolar", name: "Förderung von Balkon-Solaranlagen",
+    traeger: "Stadt Wetter (Ruhr)", level: "kommune", region: "Wetter (Ruhr)",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05954032",
+    url: "https://serviceportal.stadt-wetter.de/buergerservice/dienstleistungen/balkonsolaranlagen-kommunale-foerderung-900000038-0.html",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-06-01", endetIso: "2026-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Wohneinheit für ein Balkonkraftwerk bis 800 W",
+    maxFoerderung: "100 € je Wohneinheit",
+    rates: [{ label: "Balkonkraftwerk", value: "100 € je Wohneinheit" }],
+    conditions: [
+      "Antragsberechtigt sind Mietende, Vermietende und Eigentümerinnen und Eigentümer — je Haus oder Wohneinheit und antragstellender Person ein Gerät",
+      "Anträge sind seit dem 1. Juni 2026, 11 Uhr über das Online-Service-Portal möglich; insgesamt werden 30 Anlagen gefördert",
+      "Gekauft werden darf erst nach dem Bewilligungsbescheid; vorher erworbene Geräte sind ausgeschlossen",
+      "Die Nachweise müssen bis zum 31. Dezember 2026 eingereicht sein",
+      "Die Module müssen nach Osten, Süden oder Westen zeigen und weitgehend unverschattet stehen — nach Norden ausgerichtete Anlagen sind ausgeschlossen",
+      "Zusammen mit anderen öffentlichen Mitteln darf die Förderung 50 % der Gesamtkosten nicht überschreiten; fremde Mittel sind vorrangig auszuschöpfen",
+      "Nach der Montage ist ein Foto einzusenden, das die Stadt anonymisiert veröffentlicht",
+      "Entschieden wird nach Eingang im Rahmen der Mittel; ein Rechtsanspruch besteht nicht",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
@@ -2892,7 +2936,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Stadt Rodgau", level: "kommune", region: "Rodgau",
     bundesland: "Hessen", agsCode: "06438011",
     url: "https://www.rodgau.de/de/leben/stadtplanung-umwelt-mobiltaet/umwelt/foerderung-von-balkon-solaranlagen/",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // Laufzeit am 05.09.2026 an der Amtsseite abgelesen: „Seit dem 1. Januar 2024
+    // ist die aktualisierte Richtlinie zur Förderung von Balkon-Solaranlagen für
+    // 3 Jahre bis zum 31.12.2026 in Kraft."
+    beginntIso: "2024-01-01", endetIso: "2026-12-31",
     eligibility: ["privat"],
     coveredCosts: "Anteil des Rechnungsbetrags eines Balkonkraftwerks",
     maxFoerderung: "max. 200 € je Anlage",

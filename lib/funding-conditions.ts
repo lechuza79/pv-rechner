@@ -177,6 +177,11 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Förderhöhe zusätzlich an einer Einkommensprüfung, die das Modell nicht
   // kennt; das ist eine eigene Arbeit und halb erfasst gibt es hier nicht.
   "hamburg-balkon-einkommen", "kiel-solarstadt", "boeblingen-balkonkraftwerke",
+  // Aufgenommen am 05.09.2026, Richtlinie und Service-Portal im Volltext
+  // gelesen. Die Prüfformen fehlen noch, und eine davon kennt das Modell gar
+  // nicht: Die Kumulierungsgrenze deckelt die SUMME aller öffentlichen Mittel
+  // auf 50 % der Gesamtkosten, nicht unseren Betrag allein.
+  "wetter-ruhr-balkonsolar",
 ];
 
 /**
