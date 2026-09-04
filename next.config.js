@@ -237,6 +237,7 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/nottuln", destination: "/photovoltaik-foerderung/nordrhein-westfalen/nottuln", permanent: true },
       { source: "/photovoltaik-foerderung/senden", destination: "/photovoltaik-foerderung/nordrhein-westfalen/senden", permanent: true },
       { source: "/photovoltaik-foerderung/ennepetal", destination: "/photovoltaik-foerderung/nordrhein-westfalen/ennepetal", permanent: true },
+      { source: "/photovoltaik-foerderung/wetter-ruhr", destination: "/photovoltaik-foerderung/nordrhein-westfalen/wetter-ruhr", permanent: true },
       { source: "/photovoltaik-foerderung/wenden", destination: "/photovoltaik-foerderung/nordrhein-westfalen/wenden", permanent: true },
       { source: "/photovoltaik-foerderung/gernsheim", destination: "/photovoltaik-foerderung/hessen/gernsheim", permanent: true },
       { source: "/photovoltaik-foerderung/bad-homburg", destination: "/photovoltaik-foerderung/hessen/bad-homburg", permanent: true },
