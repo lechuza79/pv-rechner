@@ -1444,25 +1444,26 @@ async function inhaltsseiten(domain: string): Promise<string[]> {
 }
 
 /**
- * GEPRÜFT WIRD NUR, WO ES JEMANDEN ANZUSPRECHEN GIBT.
+ * „UNKLAR" IST KEIN URTEIL — GEPRÜFT WIRD ES MIT.
  *
- * Die Kreissuche liefert neben Lokalzeitungen auch Bibliothekskataloge,
- * Behördenseiten, Telefonbücher und Portale wie aol.com oder apps.apple.com —
- * eine Sperrliste dagegen wäre dasselbe Wettrennen wie beim Förder-Crawl. Die
- * Kante ist deshalb der eigene Befund: Erst wenn der Profil-Lauf ein
- * redaktionelles Angebot BELEGT hat, lohnt die Frage „lohnt eine Ansprache".
- * Ohne Redaktion gibt es niemanden anzusprechen, und jede Abfrage kostet Geld.
+ * Eine erste Fassung sparte hier Geld, indem sie nur Medien mit BELEGTER
+ * Redaktion prüfte. Die Stichprobe hat das widerlegt: Unter den 787 unklaren
+ * Adressen stehen die Allgemeine Zeitung, 24rhein, detektor.fm, Clean Energy
+ * Wire und das Akkudoktor-Forum neben Abfallkalendern und Bibliothekskatalogen.
+ * „unklar" heißt in aller Regel nur, dass kein NAME gefunden wurde — nicht,
+ * dass es keine Redaktion gibt. Wer hier spart, verliert Zeitungen stumm, und
+ * das ist der teurere Fehler: Eine Fehlanzeige auf einem Abfallkalender kostet
+ * 0,002 $ und macht die Liste sauber, eine verlorene Tageszeitung fällt
+ * niemandem auf.
  *
- * „unklar" ist dabei kein Urteil, sondern ein Zwischenstand (blockierte
- * Startseite, noch nicht gelesen) — solche Adressen behalten kein Prüfdatum und
- * kommen zurück, sobald der Profil-Lauf sie einordnen konnte. `--auch-unklar`
- * öffnet den Lauf für sie, wenn man das ausdrücklich will.
+ * Ausgeschlossen bleibt allein, was der Profil-Lauf als NICHT-Medium belegt hat.
+ * `--nur-belegte` fährt den sparsamen Lauf, wenn das Guthaben knapp ist.
  */
 async function eignung(
   paket: Paket | null,
   limit: number,
   neu: boolean,
-  auchUnklar: boolean,
+  nurBelegte: boolean,
 ): Promise<void> {
   const sb = await makeClient();
   loadEnvFile();
@@ -1475,7 +1476,7 @@ async function eignung(
   }>(sb, "presse_medien", "domain, paket, ist_medium, eignung, eignung_at");
   const offen = alle
     .filter((m) => (paket === null || m.paket === paket))
-    .filter((m) => (auchUnklar ? m.ist_medium !== "kein-medium" : m.ist_medium === "medium"))
+    .filter((m) => (nurBelegte ? m.ist_medium === "medium" : m.ist_medium !== "kein-medium"))
     .filter((m) => neu || !m.eignung_at)
     .slice(0, limit);
   if (!offen.length) {
@@ -1775,7 +1776,7 @@ async function main(): Promise<void> {
       paket,
       zahlArg("--limit", 500),
       args.includes("--neu"),
-      args.includes("--auch-unklar"),
+      args.includes("--nur-belegte"),
     );
   }
   if (args.includes("--eichen")) {
