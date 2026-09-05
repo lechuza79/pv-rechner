@@ -894,11 +894,66 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
   }
   log(`${offen.length} Medien werden gelesen`);
 
-  const medienZeilen: Record<string, unknown>[] = [];
-  const kontaktZeilen: Record<string, unknown>[] = [];
-  const belegZeilen: Record<string, unknown>[] = [];
+  let medienZeilen: Record<string, unknown>[] = [];
+  let kontaktZeilen: Record<string, unknown>[] = [];
+  let belegZeilen: Record<string, unknown>[] = [];
   let ok = 0;
   let leer = 0;
+  let kontakteGesamt = 0;
+
+  /**
+   * ZWISCHENSTAND SCHREIBEN — sonst kostet ein Abbruch den ganzen Lauf.
+   *
+   * Gemessen am 05.09.2026: Zwei Läufe über je 500 Regionalmedien liefen zehn
+   * Minuten, starben und hinterließen NICHTS — der Bestand stand danach exakt
+   * dort, wo er vorher stand, während das Protokoll hunderte gelesener Seiten
+   * zeigte. Dieselbe Lehre wie bei den teuren Erhebungsläufen: Was nur am Ende
+   * geschrieben wird, existiert bis dahin nicht.
+   */
+  const STAPEL = 50;
+  async function ablegen(): Promise<void> {
+    if (!medienZeilen.length) return;
+    await upsert(sb, "presse_medien", medienZeilen, "domain");
+    const angefasst = medienZeilen.map((z) => String(z.domain));
+    const gemerkt = new Map<string, { stand: string; notiz: string | null; stand_at: string | null }>();
+    for (let i = 0; i < angefasst.length; i += 200) {
+      const teil = angefasst.slice(i, i + 200);
+      const { data, error: leseFehler } = await sb
+        .from("presse_kontakte")
+        .select("domain, schluessel, stand, notiz, stand_at")
+        .in("domain", teil);
+      if (leseFehler) throw new Error(`Arbeitsstand sichern: ${leseFehler.message}`);
+      for (const r of (data ?? []) as {
+        domain: string;
+        schluessel: string;
+        stand: string | null;
+        notiz: string | null;
+        stand_at: string | null;
+      }[]) {
+        if ((!r.stand || r.stand === "offen") && !r.notiz) continue;
+        gemerkt.set(`${r.domain}|${r.schluessel}`, {
+          stand: r.stand ?? "offen",
+          notiz: r.notiz,
+          stand_at: r.stand_at,
+        });
+      }
+      const { error } = await sb.from("presse_kontakte").delete().in("domain", teil);
+      if (error) throw new Error(`alte Kontakte entfernen: ${error.message}`);
+    }
+    for (const z of kontaktZeilen) {
+      const alt = gemerkt.get(`${z.domain}|${z.schluessel}`);
+      if (!alt) continue;
+      z.stand = alt.stand;
+      z.notiz = alt.notiz;
+      z.stand_at = alt.stand_at;
+    }
+    await upsert(sb, "presse_kontakte", kontaktZeilen, "domain,schluessel");
+    await upsert(sb, "presse_belege", belegZeilen, "domain,merkmal,quelle_url");
+    kontakteGesamt += kontaktZeilen.length;
+    medienZeilen = [];
+    kontaktZeilen = [];
+    belegZeilen = [];
+  }
 
   await pool(offen, 6, async (m) => {
     // EIN kaputtes Medium darf den Lauf nicht abreißen. Real passiert: eine
@@ -979,55 +1034,11 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
       `${a.domain}: ${a.ist_medium}, ${personen} Person(en), ${a.kontakte.length} Kontakt(e), Prio ${a.prioritaet}`,
       "ok",
     );
+    if (medienZeilen.length >= STAPEL) await ablegen();
   });
+  await ablegen();
 
-  await upsert(sb, "presse_medien", medienZeilen, "domain");
-  // ALTE KONTAKTE EINES NEU GELESENEN MEDIUMS WEG, BEVOR DIE NEUEN KOMMEN.
-  // Ein Upsert schreibt nur, was jetzt gefunden wurde — was ein früherer Lauf
-  // fälschlich gefunden hat, bleibt sonst für immer stehen. Real gemessen am
-  // 03.09.2026: „Rolle Vorstandsmitglied" und „National Geographic Magazin"
-  // standen nach dem Fix weiter im Katalog, weil ihre Zeilen aus dem Lauf davor
-  // stammten. Der Fix sah im Diff richtig aus und änderte nichts.
-  const angefasst = medienZeilen.map((z) => String(z.domain));
-  // ARBEITSSTAND UND NOTIZ ÜBERLEBEN DAS LÖSCHEN. Sie gehören dem Menschen an
-  // der Ansicht, nicht dem Lauf; ein neuer Erhebungslauf darf ein „ungeeignet,
-  // Grund steht in der Notiz" nicht stillschweigend auf „offen" zurücksetzen.
-  // Gemerkt wird an derselben Kennung, unter der der Kontakt wiederkommt.
-  const gemerkt = new Map<string, { stand: string; notiz: string | null; stand_at: string | null }>();
-  for (let i = 0; i < angefasst.length; i += 200) {
-    const teil = angefasst.slice(i, i + 200);
-    const { data, error: leseFehler } = await sb
-      .from("presse_kontakte")
-      .select("domain, schluessel, stand, notiz, stand_at")
-      .in("domain", teil);
-    if (leseFehler) throw new Error(`Arbeitsstand sichern: ${leseFehler.message}`);
-    for (const r of (data ?? []) as {
-      domain: string;
-      schluessel: string;
-      stand: string | null;
-      notiz: string | null;
-      stand_at: string | null;
-    }[]) {
-      if ((!r.stand || r.stand === "offen") && !r.notiz) continue;
-      gemerkt.set(`${r.domain}|${r.schluessel}`, {
-        stand: r.stand ?? "offen",
-        notiz: r.notiz,
-        stand_at: r.stand_at,
-      });
-    }
-    const { error } = await sb.from("presse_kontakte").delete().in("domain", teil);
-    if (error) throw new Error(`alte Kontakte entfernen: ${error.message}`);
-  }
-  for (const z of kontaktZeilen) {
-    const alt = gemerkt.get(`${z.domain}|${z.schluessel}`);
-    if (!alt) continue;
-    z.stand = alt.stand;
-    z.notiz = alt.notiz;
-    z.stand_at = alt.stand_at;
-  }
-  await upsert(sb, "presse_kontakte", kontaktZeilen, "domain,schluessel");
-  await upsert(sb, "presse_belege", belegZeilen, "domain,merkmal,quelle_url");
-  log(`${ok} gelesen, ${leer} nicht erreichbar, ${kontaktZeilen.length} Kontakte`, "ok");
+  log(`${ok} gelesen, ${leer} nicht erreichbar, ${kontakteGesamt} Kontakte`, "ok");
 }
 
 // ─── Phase: Suche ────────────────────────────────────────────────────────────
@@ -1432,7 +1443,27 @@ async function inhaltsseiten(domain: string): Promise<string[]> {
     .slice(0, 4);
 }
 
-async function eignung(paket: Paket | null, limit: number, neu: boolean): Promise<void> {
+/**
+ * GEPRÜFT WIRD NUR, WO ES JEMANDEN ANZUSPRECHEN GIBT.
+ *
+ * Die Kreissuche liefert neben Lokalzeitungen auch Bibliothekskataloge,
+ * Behördenseiten, Telefonbücher und Portale wie aol.com oder apps.apple.com —
+ * eine Sperrliste dagegen wäre dasselbe Wettrennen wie beim Förder-Crawl. Die
+ * Kante ist deshalb der eigene Befund: Erst wenn der Profil-Lauf ein
+ * redaktionelles Angebot BELEGT hat, lohnt die Frage „lohnt eine Ansprache".
+ * Ohne Redaktion gibt es niemanden anzusprechen, und jede Abfrage kostet Geld.
+ *
+ * „unklar" ist dabei kein Urteil, sondern ein Zwischenstand (blockierte
+ * Startseite, noch nicht gelesen) — solche Adressen behalten kein Prüfdatum und
+ * kommen zurück, sobald der Profil-Lauf sie einordnen konnte. `--auch-unklar`
+ * öffnet den Lauf für sie, wenn man das ausdrücklich will.
+ */
+async function eignung(
+  paket: Paket | null,
+  limit: number,
+  neu: boolean,
+  auchUnklar: boolean,
+): Promise<void> {
   const sb = await makeClient();
   loadEnvFile();
   const alle = await alleZeilen<{
@@ -1444,7 +1475,7 @@ async function eignung(paket: Paket | null, limit: number, neu: boolean): Promis
   }>(sb, "presse_medien", "domain, paket, ist_medium, eignung, eignung_at");
   const offen = alle
     .filter((m) => (paket === null || m.paket === paket))
-    .filter((m) => m.ist_medium !== "kein-medium")
+    .filter((m) => (auchUnklar ? m.ist_medium !== "kein-medium" : m.ist_medium === "medium"))
     .filter((m) => neu || !m.eignung_at)
     .slice(0, limit);
   if (!offen.length) {
@@ -1740,7 +1771,12 @@ async function main(): Promise<void> {
     return eichenEignung(d.replace(/^https?:\/\//, "").replace(/\/.*$/, ""));
   }
   if (args.includes("--eignung")) {
-    return eignung(paket, zahlArg("--limit", 500), args.includes("--neu"));
+    return eignung(
+      paket,
+      zahlArg("--limit", 500),
+      args.includes("--neu"),
+      args.includes("--auch-unklar"),
+    );
   }
   if (args.includes("--eichen")) {
     const d = textArg("--eichen");
