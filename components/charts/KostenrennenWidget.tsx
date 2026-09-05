@@ -30,6 +30,8 @@ interface Props {
   showEmbed?: boolean;
   /** Läuft von selbst los, sobald die Karte im Bild ist (nicht bei reduzierter Bewegung). */
   autoplay?: boolean;
+  /** „mini": Kurzfassung für redaktionelle Seiten (nur Chart, verlinkt auf die Seite des Rennens). */
+  variante?: "voll" | "mini";
   /** Stichtag der Preise (ISO), für die Quellen-Kante. */
   preiseStandIso?: string;
 }
@@ -90,7 +92,7 @@ export function kostenrennenEreignisse(rennen: Kostenrennen, verlauf: Tagesverla
   return liste.sort((a, b) => a.tag - b.tag);
 }
 
-export default function KostenrennenWidget({ rennen, onsite, branding, showEmbed, autoplay, preiseStandIso }: Props) {
+export default function KostenrennenWidget({ rennen, onsite, branding, showEmbed, autoplay, preiseStandIso, variante }: Props) {
   const verlauf = useMemo(() => tagesverlauf(rennen), [rennen]);
   const ereignisse = useMemo(() => kostenrennenEreignisse(rennen, verlauf), [rennen, verlauf]);
   const pv = rennen.laeufer.find((l) => l.hatPv)!;
@@ -144,6 +146,7 @@ export default function KostenrennenWidget({ rennen, onsite, branding, showEmbed
       branding={branding}
       showEmbed={showEmbed}
       autoplay={autoplay}
+      variante={variante}
       stand={preiseStandIso ? formatDataAsOf(preiseStandIso) : undefined}
     />
   );

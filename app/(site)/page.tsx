@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { IconSun, IconBolt, IconSparkle, IconArrowRight, IconBattery, IconUser, IconSnowflake, IconEuro, IconPanel } from "../../components/Icons";
 import { MastrHeroSection } from "../../components/MastrHeroSection";
+import KostenrennenMini from "../../components/charts/KostenrennenMini";
 import Faq from "../../components/Faq";
 import { homeFaq } from "../../lib/faq";
 import { v, iconSizes } from "../../lib/theme";
@@ -170,6 +171,11 @@ export default function Home() {
             );
           })}
         </div>
+      </div>
+
+      {/* Das Stromkosten-Rennen als Teaser: nur das Chart, die Karte führt zum Ratgeber. */}
+      <div style={{ maxWidth: 760, margin: "0 auto 32px" }}>
+        <KostenrennenMini />
       </div>
 
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>

@@ -27,6 +27,8 @@ interface Props {
   branding?: boolean;
   showEmbed?: boolean;
   autoplay?: boolean;
+  /** „mini": Kurzfassung für redaktionelle Seiten (nur Chart, verlinkt auf die Seite des Rennens). */
+  variante?: "voll" | "mini";
 }
 
 /** Die Ereignisse dieses Rennens — als Funktion, damit sie testbar sind. */
@@ -90,7 +92,7 @@ export function heizkostenrennenEreignisse(rennen: Heizkostenrennen): RaceEreign
   return liste.sort((a, b) => a.tag - b.tag);
 }
 
-export default function HeizkostenrennenWidget({ onsite, branding, showEmbed, autoplay }: Props) {
+export default function HeizkostenrennenWidget({ onsite, branding, showEmbed, autoplay, variante }: Props) {
   const rennen = useMemo(() => heizkostenrennen(), []);
   const ereignisse = useMemo(() => heizkostenrennenEreignisse(rennen), [rennen]);
   const r = rennen.rechner;
@@ -146,6 +148,7 @@ export default function HeizkostenrennenWidget({ onsite, branding, showEmbed, au
       branding={branding}
       showEmbed={showEmbed}
       autoplay={autoplay}
+      variante={variante}
       stand={formatDataAsOf(cfg.validFrom)}
     />
   );

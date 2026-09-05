@@ -42,6 +42,17 @@ Schrift beim kleinsten Token bleibt), Video in Echtzeit (die Box auch im
 Video, ohne Pfeile). Wer davon etwas
 ändert, ändert alle Rennen — das ist gewollt.
 
+## Kurzfassung für redaktionelle Seiten
+
+`variante="mini"` zeigt nur Zeitraum, Legende und das Chart (Raster ohne
+Achsenzahlen, Beträge an den Spitzen, Ereignis-Linien ohne Text) — keine
+Ereignis-Box, kein Player, keine Aktionen, keine Quellen-Kante (die Seite
+nennt die Quelle). Die ganze Karte ist ein Link auf das Teilen-Ziel im
+Register; unten rechts steht der Titel als Linktext. Läuft von selbst los,
+wenn sie ins Bild kommt. Beispiel: `components/charts/KostenrennenMini.tsx`
+auf der Startseite (Preise live über `usePrices`, damit die Seite statisch
+bleibt).
+
 ## Anderer Zeitraum oder Werteraum
 
 Die Voreinstellungen sind für 25 Jahre und Tausende Euro. Zwei Props passen sie an:

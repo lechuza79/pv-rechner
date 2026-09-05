@@ -13,11 +13,12 @@ import {
   WidgetExportFooter,
   type ExportLegendEntry,
 } from "../WidgetExport";
-import { IconPause, IconPlay, IconRefresh } from "../Icons";
+import Link from "next/link";
+import { IconArrowRight, IconPause, IconPlay, IconRefresh } from "../Icons";
 import { useChartExport } from "../../lib/useChartExport";
 import { EXPORT_IGNORE_ATTR } from "../../lib/export-markers";
 import { brandLabel, type WidgetDef } from "../../lib/widget-registry";
-import { v, fsPx, space, pad as abstand, tokens, type TokenName } from "../../lib/theme";
+import { v, fsPx, space, pad as abstand, tokens, iconSizes, type TokenName } from "../../lib/theme";
 import { RaceVideo, videoFormat, type VideoFrameDaten } from "../../lib/race-video";
 import { downloadBlob } from "../../lib/chart-export";
 import { sourceLabel } from "../../lib/data-sources";
@@ -164,6 +165,14 @@ export interface RaceChartProps {
   /** Abweichendes Tempo / abweichende Skala für andere Zeiträume und Werteräume. */
   tempo?: Partial<RaceTempo>;
   skala?: Partial<RaceSkala>;
+  /**
+   * „mini": die Kurzfassung für redaktionelle Seiten (Startseite, Teaser) —
+   * nur Zeitraum, Legende und das Chart mit Raster ohne Achsenbeschriftung,
+   * keine Ereignis-Box, kein Player, keine Aktionen; die ganze Karte ist ein
+   * Link auf die Seite des Rennens (Teilen-Ziel im Register). Die Quelle nennt
+   * dort die Seite, wie bei jedem eigenen Einbau.
+   */
+  variante?: "voll" | "mini";
 }
 
 export default function RaceChart(props: RaceChartProps) {
@@ -178,8 +187,9 @@ function RaceCard({
   widget, kamera, anderer, startJahr, jahre, ersterTag, datumVon, ereignisse, fmt, fmtKurz,
   titelHilfe, zeitraumHilfe, ariaLabel, exportNote, dateiname,
   onsite = false, branding = true, showEmbed = false, autoplay = true, stand: quellenStand,
-  tempo: tempoProp, skala: skalaProp,
+  tempo: tempoProp, skala: skalaProp, variante = "voll",
 }: RaceChartProps) {
+  const mini = variante === "mini";
   const tempo: RaceTempo = { ...TEMPO_STANDARD, ...tempoProp };
   const skala: RaceSkala = { ...SKALA_STANDARD, ...skalaProp };
   const kA = kamera.werte, kB = anderer.werte;
@@ -306,8 +316,9 @@ function RaceCard({
     });
 
   // ── Mitlaufende Achsen: x vom Start bis heute, y als Kamera auf Läufer A ──
-  const W = narrow ? 320 : 640, H = narrow ? 260 : 340;
-  const P = { t: 18, r: narrow ? 10 : 12, b: 28, l: narrow ? 58 : 56 };
+  const W = narrow ? 320 : 640, H = mini ? (narrow ? 200 : 240) : narrow ? 260 : 340;
+  // Mini: kein Platz für Achsenzahlen nötig — das Raster allein bleibt.
+  const P = mini ? { t: 12, r: 12, b: 12, l: 12 } : { t: 18, r: narrow ? 10 : 12, b: 28, l: narrow ? 58 : 56 };
   const cW = W - P.l - P.r, cH = H - P.t - P.b;
   const y0 = P.t + cH;
 
@@ -488,7 +499,7 @@ function RaceCard({
     return () => clearTimeout(timer);
   }, [aufnahme, spielt, t, T, dateiname]);
 
-  return (
+  const karte = (
     <div
       ref={(el) => { (chartRef as { current: HTMLDivElement | null }).current = el; hostRef.current = el; }}
       onMouseEnter={() => setShowCredit(true)}
@@ -499,27 +510,28 @@ function RaceCard({
         background: v("--color-bg"),
         border: `1px solid ${v("--color-border")}`,
         borderRadius: v("--radius-lg"),
-        padding: `${space.xl}px ${space.xl}px ${space.lg}px ${space.xl}px`,
+        padding: mini ? `${space.lg}px` : `${space.xl}px ${space.xl}px ${space.lg}px ${space.xl}px`,
         boxSizing: "border-box",
+        cursor: mini ? "pointer" : undefined,
       }}
     >
       {/* Titel groß; das „?" hängt am letzten Wort, auch wenn der Titel umbricht. */}
-      <div style={{ fontSize: v("--font-size-h2"), fontWeight: 800, lineHeight: 1.2, color: v("--color-text-primary"), marginBottom: space.md }}>
+      {!mini && <div style={{ fontSize: v("--font-size-h2"), fontWeight: 800, lineHeight: 1.2, color: v("--color-text-primary"), marginBottom: space.md }}>
         {widget.title}{" "}
         <span style={{ display: "inline-block", verticalAlign: "middle", fontSize: v("--font-size-body"), fontWeight: 400 }}>
           <InfoTooltip title={titelHilfe.title} ariaLabel={titelHilfe.ariaLabel}>{titelHilfe.inhalt}</InfoTooltip>
         </span>
-      </div>
+      </div>}
 
       {/* Zeitraum „Start – jetzt" in fester Breite (Tabellenziffern + Platz für
           das letzte Jahr, damit die Zeile beim Hochzählen nicht springt), das „?"
           zu dem, was die Linien zählen, und die Legende daneben. */}
-      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: `${space.xs}px ${space.md}px`, marginBottom: space.xl }}>
+      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: `${space.xs}px ${space.md}px`, marginBottom: mini ? space.md : space.xl }}>
         <span style={{ display: "inline-flex", alignItems: "center", gap: space.sm }}>
           <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary"), lineHeight: 1.3, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap", minWidth: `${zeitraum(datumVon(T).jahr).length}ch`, display: "inline-block" }}>
             {zeitraum(tag === 0 ? startJahr : datum.jahr)}
           </span>
-          <InfoTooltip title={zeitraumHilfe.title} ariaLabel={zeitraumHilfe.ariaLabel}>{zeitraumHilfe.inhalt}</InfoTooltip>
+          {!mini && <InfoTooltip title={zeitraumHilfe.title} ariaLabel={zeitraumHilfe.ariaLabel}>{zeitraumHilfe.inhalt}</InfoTooltip>}
         </span>
         {/* Legende: die Spitzen tragen nur Zahlen, die Zuordnung braucht einen
             Namen. Im Bild kommt sie aus dem Bild-Fuß. */}
@@ -535,7 +547,7 @@ function RaceCard({
 
       {/* Die Quellen-Kante steht am Chart-Bereich, nicht über die Fußzeile
           hinaus: dieser Rahmen trägt sie und lässt ihr rechts Platz. */}
-      <div style={{ position: "relative", paddingRight: SOURCE_EDGE_WIDTH * kantenSpalten + space.sm }}>
+      <div style={{ position: "relative", paddingRight: mini ? 0 : SOURCE_EDGE_WIDTH * kantenSpalten + space.sm }}>
       <ExportBox>
         <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }} role="img"
           aria-label={ariaLabel(stand, kA[tag], kB[tag])}>
@@ -548,16 +560,18 @@ function RaceCard({
           {yTicks.map((val, i) => (
             <g key={val} className="kr-neu">
               <line x1={P.l} x2={P.l + cW} y1={yL(val)} y2={yL(val)} stroke="var(--color-chart-grid)" strokeWidth={0.5} />
-              <text x={P.l - 6} y={yL(val) + 3} textAnchor="end" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
-                {yLabels[i]}
-              </text>
+              {!mini && (
+                <text x={P.l - 6} y={yL(val) + 3} textAnchor="end" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
+                  {yLabels[i]}
+                </text>
+              )}
             </g>
           ))}
           <line x1={P.l} x2={P.l + cW} y1={y0} y2={y0} stroke="var(--color-chart-zero)" strokeWidth={1} />
           {xJahre.map(({ x, jahr }) => (
             <g key={jahr} className="kr-neu">
               <line x1={x} x2={x} y1={P.t} y2={y0} stroke="var(--color-chart-grid)" strokeWidth={0.5} />
-              <text x={x + 4} y={y0 + 18} textAnchor="start" fontSize={fsPx("--font-size-small")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{x > P.l + cW - 40 ? "" : jahr}</text>
+              {!mini && <text x={x + 4} y={y0 + 18} textAnchor="start" fontSize={fsPx("--font-size-small")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{x > P.l + cW - 40 ? "" : jahr}</text>}
             </g>
           ))}
 
@@ -609,8 +623,14 @@ function RaceCard({
           ))}
         </svg>
       </ExportBox>
-      <WidgetSourceEdge widget={widget} visible={!onsite || showCredit} stand={quellenStand} spalten={kantenSpalten} />
+      {!mini && <WidgetSourceEdge widget={widget} visible={!onsite || showCredit} stand={quellenStand} spalten={kantenSpalten} />}
       </div>
+
+      {mini ? (
+        <div style={{ marginTop: space.md, display: "flex", alignItems: "center", justifyContent: "flex-end", gap: space.sm, fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-accent") }}>
+          {widget.title} <IconArrowRight size={iconSizes.sm} />
+        </div>
+      ) : (<>
 
       {/* Ereignis-Zeitleiste unter dem Chart im Stil der Weichenstellungen des
             Zubau-Charts: Punkte auf der Achse des Charts (Punkt und gestrichelte
@@ -713,6 +733,11 @@ function RaceCard({
       />
 
       <WidgetExportFooter widget={widget} legend={legend} note={exportNote} />
+      </>)}
     </div>
   );
+  if (!mini) return karte;
+  // Die ganze Mini-Karte ist der Link auf die Seite des Rennens.
+  const ziel = (() => { try { const u = new URL(widget.shareUrl); return u.pathname + u.hash; } catch { return widget.shareUrl; } })();
+  return <Link href={ziel} style={{ display: "block", textDecoration: "none", color: "inherit" }}>{karte}</Link>;
 }
