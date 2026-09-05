@@ -189,7 +189,10 @@ export function FundingRates({
           <div
             key={r.label}
             style={{
-              display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 16, paddingTop: 4,
+              // flexWrap: Passt der Wert nicht mehr neben die Beschriftung (schmale
+              // Spalte, langes Label), rutscht er darunter statt über den Rand —
+              // dritter Fund des Überlauf-Tests (05.09.2026, 14 px bei „120 €/kWp").
+              display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "baseline", gap: 16, paddingTop: 4,
               fontSize: "var(--font-size-body)",
               ...(bordered ? { borderBottom: `1px solid ${v("--color-border")}`, paddingBottom: 12 } : {}),
             }}
