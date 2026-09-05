@@ -1,14 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  DEFAULT_FEED_IN,
-  FEED_IN_SCHEDULE,
-  feedInDegressionSteps,
-  feedInEndIso,
-  feedInPeriodsSince2022,
-  feedInRatesFor,
-  feedInRatesForCommissioning,
-  naechsteDegressionIso,
-} from "../feedin-config";
+import { DEFAULT_FEED_IN, FEED_IN_SCHEDULE, feedInDegressionSteps, feedInEndIso, feedInPeriodsSince2022, feedInRatesFor, feedInRatesForCommissioning, naechsteDegressionIso, halbjahresBeginnIso } from "../feedin-config";
 
 /**
  * Realitäts-Anker für die EEG-Einspeisevergütung (Wächter-Gate, Regel 7).
@@ -147,6 +138,51 @@ describe("EEG-Vergütung – Realitäts-Anker", () => {
     for (const satz of FEED_IN_SCHEDULE) {
       if (satz.note) expect(satz.source ?? "").not.toMatch(/Bundesnetzagentur/);
     }
+  });
+});
+
+describe("Der Stichtags-Plan läuft nicht aus (Council 05.09.2026)", () => {
+  // Der Plan endete mit dem Halbjahr 08/2026–01/2027. Ab dem 01.02.2027 lieferte
+  // feedInRatesFor() den alten Satz weiter (7,70 ct), während die Nachschlage-
+  // Tabelle aus der Gesetzeskette schon 7,62 ct zeigte — zwei Sätze für denselben
+  // Tag auf zwei Seiten, und der Rechner mit dem falschen. Gefangen wird das nur
+  // mit Datums-Injektion: Am Tag der Prüfung stimmen beide immer überein.
+  const letzter = FEED_IN_SCHEDULE[FEED_IN_SCHEDULE.length - 1];
+
+  it("am letzten Tag des geplanten Halbjahrs gilt der Plan-Satz ohne Vorbehalt", () => {
+    const tag = new Date(naechsteDegressionIso(letzter.validFrom) + "T11:00:00Z");
+    tag.setUTCDate(tag.getUTCDate() - 1);
+    const satz = feedInRatesFor(tag);
+    expect(satz).toBe(letzter);
+    expect(satz.note ?? null).toBeNull();
+  });
+
+  it("nach dem Ende des Plans fällt der Rechner auf die Gesetzeskette zurück — mit Vorbehalt, ohne Behörde", () => {
+    const stichtag = naechsteDegressionIso(letzter.validFrom);
+    for (const tagIso of [stichtag, naechsteDegressionIso(stichtag), "2029-03-15"]) {
+      const satz = feedInRatesFor(new Date(tagIso + "T11:00:00Z"));
+      const kette = feedInRatesForCommissioning(tagIso)!;
+      expect(satz.teilUnder10).toBe(kette.teilUnder10);
+      expect(satz.vollOver10).toBe(kette.vollOver10);
+      expect(satz.teilUnder10).toBeLessThan(letzter.teilUnder10);
+      expect(satz.validFrom).toBe(halbjahresBeginnIso(tagIso));
+      expect(satz.note).toBeTruthy();
+      expect(satz.source ?? "").not.toMatch(/Bundesnetzagentur,/);
+    }
+  });
+
+  it("die Ableitung kennt die konkrete Zelle: 01.02.2027 = 7,62 / 12,09 ct", () => {
+    // n = 7 Halbjahresschritte: 8,60 × 0,99^7 = 8,019 → 8,02 − 0,40 = 7,62.
+    const satz = feedInRatesFor(new Date("2027-02-01T11:00:00Z"));
+    expect(satz.teilUnder10).toBe(7.62);
+    expect(satz.vollUnder10).toBe(12.09);
+  });
+
+  it("Halbjahresbeginn folgt der 1.2./1.8.-Regel, Januar gehört zum Vorjahr", () => {
+    expect(halbjahresBeginnIso("2027-02-01")).toBe("2027-02-01");
+    expect(halbjahresBeginnIso("2027-07-31")).toBe("2027-02-01");
+    expect(halbjahresBeginnIso("2027-08-01")).toBe("2027-08-01");
+    expect(halbjahresBeginnIso("2028-01-15")).toBe("2027-08-01");
   });
 });
 

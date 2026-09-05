@@ -1351,7 +1351,7 @@ export default function Waermepumpe({
                   Heizwärme pro Jahr: <InlineEdit value={result.qGes} onCommit={v => setOQges(v)} unit=" kWh" min={1000} max={80000} step={500} width={90} />
                   <InfoTooltip title="Woher diese Menge kommt" ariaLabel="Woher kommt der Jahres-Heizwärmebedarf?">
                     Geschätzt aus Wohnfläche, Dämmzustand und Personenzahl — und zwar als <strong>erwarteter Verbrauch</strong>, nicht als Norm-Bedarf. Der Unterschied ist groß: Die Norm rechnet ein Gebäude durch, in dem alle Räume auf Solltemperatur stehen. Real wird weniger geheizt (Räume bleiben kühl, nachts wird abgesenkt), im Altbau rund 30 % weniger.<br /><br />
-                    <strong>Du kennst deinen Gas- oder Ölverbrauch? Trag ihn im Schritt „Dämmstandard" ein</strong> — oder rechne hier direkt: Jahresverbrauch in kWh × {Math.round(fuel.efficiency * 100)} % (Kessel-Nutzungsgrad). Ein gemessener Wert schlägt jede Schätzung.<br /><br />
+                    <strong>Du kennst deinen Gas- oder Ölverbrauch? Trag ihn im Schritt „Dämmstandard" ein</strong> — oder rechne hier direkt: Jahresverbrauch in kWh × {Math.round(FUEL.gas.efficiency * 100)} % (Nutzungsgrad deiner vorhandenen Gastherme; bei Öl {Math.round(FUEL.oil.efficiency * 100)} %) — derselbe Faktor, mit dem der Schritt „Dämmstandard" rechnet. Ein gemessener Wert schlägt jede Schätzung.<br /><br />
                     Diese Menge steht auf beiden Seiten der Rechnung — sie bestimmt den Gasverbrauch genauso wie den Strom der Wärmepumpe. <strong>Wenn nach dem Wechsel wärmer oder in mehr Räumen geheizt wird, steigt sie</strong>, und die Ersparnis fällt kleiner aus als hier gezeigt. Nach Sanierungen wird dieser Effekt mit 10 bis 30 % beziffert; wie stark er bei einem reinen Heizungstausch auftritt, ist nicht belastbar gemessen — deshalb rechnen wir ihn nicht ein, sondern nennen ihn.
                   </InfoTooltip>
                 </div>
@@ -1614,7 +1614,7 @@ function TcoBreakdown({ r, situation, jahre, sanierungHinweis, refLabel }: { r: 
         <div style={{ fontWeight: 700, marginBottom: 2 }}>Wärmepumpe kostet</div>
         <Row label="Investition (nach Förderung)" val={r.investNetto} />
         <Row label="Strom" val={r.stromKosten} />
-        <Row label="Wartung" val={r.wartungWp} />
+        <Row label="Wartung + Grundpreis Zähler" val={r.wartungWp} />
         {r.pvBenefit > 0 && <Row label="− PV-Synergie" val={-r.pvBenefit} />}
         <div style={{ borderTop: `1px solid ${v('--color-border')}`, marginTop: 2, paddingTop: 2 }}><Row label="Summe" val={r.tcoWp} strong /></div>
       </div>

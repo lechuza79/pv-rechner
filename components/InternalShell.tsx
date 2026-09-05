@@ -78,6 +78,10 @@ export default function InternalShell({
         {
           label: "Social Media",
           children: [
+            // Der Vorrat steht VOR der Entwicklung, weil er ihr vorausgeht:
+            // Erst wird gestöbert und ausgewählt, dann entsteht daraus ein
+            // Beitrag. Die Reihenfolge im Menü ist der Arbeitsweg.
+            { href: "/admin/redaktion/bucket", label: "Story-Bucket" },
             { href: "/admin/redaktion", label: "Entwicklung", exact: true },
             { href: "/admin/redaktion/planung", label: "Planung" },
             { href: "/admin/redaktion/auswertung", label: "Auswertung" },

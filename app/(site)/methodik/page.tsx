@@ -166,6 +166,14 @@ export default async function MethodikPage() {
           überschüssiger Strom ins Netz fließt.
         </p>
         <p style={S.p}>
+          Nach oben ist der Eigenverbrauch doppelt begrenzt: durch die Jahresbilanz (mehr als
+          deinen Verbrauch kannst du nicht selbst nutzen) und durch das Autarkie-Kennfeld der HTW
+          Berlin — es sagt, welchen Teil seines Verbrauchs ein Haushalt deiner Größe mit dieser
+          Anlage und diesem Speicher überhaupt selbst decken kann (meist 70–90 %, nie 100 %). Ohne
+          diese zweite Schranke rechnete das Modell bei Anlagen mit Speicher so, als würde jede
+          Kilowattstunde bis zur Verbrauchsmenge selbst genutzt.
+        </p>
+        <p style={S.p}>
           Wichtig: Der Eigenverbrauchsanteil ist eine <strong style={S.strong}>Jahresgröße</strong>.
           Er stammt aus Ganzjahres-Simulationen der HTW Berlin (25.000 Konfigurationen im
           Minutentakt) und bildet damit bereits ab, dass im Sommer Überschüsse eingespeist
@@ -529,8 +537,8 @@ export default async function MethodikPage() {
           <span style={S.accent}>Verschattung</span> — Bäume, Nachbargebäude oder
           Gauben kann nur ein Fachbetrieb vor Ort bewerten
           <br />
-          <span style={S.accent}>Förderung</span> — regionale Zuschüsse fließen nicht
-          in die Amortisation ein; passende Programme zeigen wir im Ergebnis an
+          <span style={S.accent}>Förderung</span> — regionale Zuschüsse fließen erst
+          in die Amortisation ein, wenn du sie im Ergebnis anrechnest oder von einer Förderseite kommst; passende Programme zeigen wir im Ergebnis an
           <br />
           <br />
           <span style={S.muted}>

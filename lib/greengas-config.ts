@@ -442,7 +442,25 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // Produktversprechen, keine fortgeschriebene Preisreihe. Es bleibt dabei, dass
   // die Beimischung für Öl NICHT gerechnet wird und der Hinweis im Öl-Ergebnis
   // die Lücke samt ihrer Richtung benennt.
-  geprueftRechtIso: "2026-09-04",
+  //
+  // 05.09.2026: unverändert, wieder am Gesetzestext statt am Infoportal. § 43
+  // Abs. 1 im Volltext gelesen — „ab dem 1. Januar 2029 mindestens 10 Prozent,
+  // ab dem 1. Januar 2030 mindestens 15 Prozent, ab dem 1. Januar 2035
+  // mindestens 30 Prozent und ab dem 1. Januar 2040 mindestens 60 Prozent",
+  // zellgleich mit `quoteStops` und `BIO_TREPPE_STUFEN`, und weiterhin für Gas,
+  // Heizöl UND Flüssiggas gleichermaßen, geknüpft an den Neueinbau „nach dem
+  // 29. Juli 2026 in ein bestehendes Gebäude". § 42a wörtlich unverändert: eine
+  // Pflicht der Bundesregierung, bis zum 1. Dezember 2026 ein Gesetz vorzulegen,
+  // das die Inverkehrbringer ab 2045 vollständig auf klimaneutrale Brennstoffe
+  // verpflichtet — ohne eigenen Prozentsatz. Ein Quotengesetz gibt es nicht.
+  //
+  // FÜNFZEHNTE Bioheizöl-Gegensuche, Preis-Strang unverändert leer. Dieselben
+  // drei Trefferklassen wie beim letzten Mal: Heizölpreis-Charts der Händler,
+  // der CO2-Aufschlag je Liter (rund 20 ct bei 65 €/t) und Produktversprechen
+  // („Premium-Bioheizöl mit mindestens 10 % aus nachhaltig angebauten
+  // Rohstoffen"). Keine davon ist eine fortgeschriebene Preisreihe eines
+  // Trägers. Der Lücken-Hinweis im Öl-Ergebnis bleibt, samt Fehlerrichtung.
+  geprueftRechtIso: "2026-09-05",
   reviewBy: "2027-07-25",
 };
 

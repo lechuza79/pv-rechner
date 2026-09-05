@@ -134,6 +134,10 @@ const S = {
     color: v("--color-text-faint"),
     marginTop: 8,
     lineHeight: 1.5,
+    // Quellenzeilen tragen Lizenzkürzel und Adressen ohne Leerzeichen; auf
+    // Telefonbreite lief die MaStR-Zeile 100 px über den Rand (Überlauf-Test,
+    // 05.09.2026). Ein langes Token darf innerhalb brechen.
+    overflowWrap: "anywhere" as const,
   },
   caveat: {
     fontSize: v("--font-size-caption"),
@@ -543,7 +547,7 @@ export default async function DatenstandPage() {
           stand="Modell (HTW Berlin · BDEW)"
           intro="Diese Werte beruhen auf wissenschaftlichen Lastprofilen, nicht auf tagesaktuellen Marktdaten — daher ein Modellstand statt eines Datums."
           rows={[
-            { label: "Eigenverbrauchs-Modell", value: "Power-Law, HTW Berlin" },
+            { label: "Eigenverbrauchs-Modell", value: "Power-Law, HTW Berlin — nach oben begrenzt durch das HTW-Autarkie-Kennfeld (dieselbe Quelle)" },
             { label: "Grundverbrauch 1 / 2 / 3–4 / 5+ Personen", value: PERSONEN.map((p) => nf(p.verbrauch)).join(" / ") + " kWh/a" },
             { label: "Tag-Anteil je Nutzungsprofil", value: NUTZUNG.map((n) => `${nf(n.tagQuote * 100)}`).join(" / ") + " %" },
             { label: "Saisonaler Verbrauchsfaktor", value: `${nf(Math.min(...CONSUMPTION_MONTHLY))}–${nf(Math.max(...CONSUMPTION_MONTHLY))} (BDEW H0)` },

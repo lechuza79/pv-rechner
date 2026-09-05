@@ -685,6 +685,66 @@ async function messeAboBereit(): Promise<AboBereit | null> {
   }
 }
 
+/**
+ * Ist die Datenbank-Sicherheitsgrenze noch dicht?
+ *
+ * DER ANLASS (05.09.2026): Die Selbstauskunft (`sc_security_posture`) und ihr
+ * Urteil (`auditPosture`) gibt es seit dem 29.07.2026 — aufgerufen hat sie
+ * seitdem niemand. Kein Waechter, keine Action, kein Auftrag nennt die Route.
+ * In den fuenf Wochen dazwischen kamen rund 40 Tabellen und 40 Routen dazu;
+ * ob eine davon ohne Zeilenschutz angelegt wurde, haette sich in keiner
+ * Anzeige gezeigt: Die Seite laeuft, die Tests sind gruen, und mit dem
+ * Anon-Key aus dem Browser-Bundle waere die Tabelle trotzdem lesbar.
+ *
+ * Dieselbe Klasse wie das Rechtstexte-Runbook, das drei Tage im Repo lag,
+ * ohne dass ein Auftrag es ausfuehrte: Eine Pruefung, die existiert und nie
+ * laeuft, ist von keiner Pruefung nicht zu unterscheiden. Deshalb haengt sie
+ * hier — der Gesundheitscheck ist die einzige Pruefung, die auch dann laeuft,
+ * wenn der Rechner des Betreibers aus ist.
+ *
+ * Gefragt wird die Produktion selbst (`?verify=1` misst nur, spielt nichts
+ * ein). Zurueck kommt das Urteil samt Problemliste; die Rohdaten bleiben dort.
+ */
+async function messeSicherheitsPosture(): Promise<SicherheitsPosture | null> {
+  const geheim = process.env.CRON_SECRET;
+  if (!geheim) return null; // Ohne Betriebsgeheimnis keine Auskunft — kein Befund.
+  try {
+    const r = await fetch(`${BASE_URL}/api/security/setup?verify=1`, {
+      headers: { Authorization: `Bearer ${geheim}` },
+      signal: AbortSignal.timeout(20000),
+    });
+    // Die Route antwortet bei Befund absichtlich mit 500 — das ist die
+    // Auskunft, nicht ein gescheiterter Abruf. Nur was gar nicht als Urteil
+    // lesbar ist, gilt als „konnte nicht nachsehen".
+    const d = (await r.json().catch(() => null)) as { ok?: unknown; problems?: unknown } | null;
+    if (typeof d?.ok !== "boolean") return null;
+    return { ok: d.ok, problems: Array.isArray(d.problems) ? d.problems.map(String) : [] };
+  } catch {
+    return null;
+  }
+}
+
+export type SicherheitsPosture = { ok: boolean; problems: string[] };
+
+/**
+ * Was aus der Selbstauskunft ein Befund fuer Claude wird.
+ *
+ * Jedes Problem ist eine offene Tuer, keine Warnung: Eine Tabelle ohne
+ * Zeilenschutz ist JETZT lesbar, nicht irgendwann. Deshalb gibt es hier kein
+ * Gelb. „Nicht gemessen" (null) bleibt stumm — dieselbe Trennung wie ueberall
+ * sonst zwischen „ist kaputt" und „Abruf kam nicht durch".
+ */
+export function sicherheitsBefund(p: SicherheitsPosture | null): string[] {
+  if (!p || p.ok) return [];
+  const liste = p.problems.length ? p.problems.join(" · ") : "Urteil rot, aber ohne Problemliste.";
+  return [
+    `Die Datenbank-Sicherheitsgrenze ist nicht dicht: ${liste} Der Anon-Key steht im ` +
+      `Browser-Bundle, was hier offen ist, ist oeffentlich. Zu tun: Ursache in lib/security-sql.ts ` +
+      `beheben (neue Tabelle ohne RLS → Setup-Route der Tabelle), danach /api/security/setup ohne ` +
+      `verify aufrufen und den Lauf gruen sehen.`,
+  ];
+}
+
 interface AboBereit {
   bereit: boolean;
   fehlt: string[];
@@ -1169,6 +1229,13 @@ const CACHE_PFLICHT = [
   // zahlt jeder Besucher die 4,9 s — und der Googlebot kommt ueber 119 Verweise
   // von den indexierten Atlas-Seiten.
   { label: "Ranglisten-Uebersicht", path: "/solar-atlas/ranking/zubau-3-jahre-je-einwohner" },
+  // Die nackte Rechner-Adresse — seit 05.09.2026 statisch, und der Grund steht
+  // an der Seite selbst: Solange sie nichts aus dem Abfrageteil las, kostete
+  // sie 2.612 volle Aufbauten am Tag bei neun Besuchern. Wer dort wieder
+  // `searchParams` einbaut, macht sie in derselben Zeile wieder dynamisch —
+  // ohne dass irgendetwas kaputt aussaehe. Ein Test faengt das im Code, dieser
+  // Eintrag faengt es in der Produktion.
+  { label: "PV-Rechner (nackt)", path: "/photovoltaik-rechner" },
   { label: "Förder-Bundeslandseite", path: "/photovoltaik-foerderung/bayern" },
   { label: "Ratgeber", path: "/ratgeber/gasheizung-oder-waermepumpe" },
   { label: "Standort-Ertrag (30 Tage haltbar)", path: "/api/pvgis?lat=52.52&lon=13.405&plzPrefix=10" },
@@ -1199,6 +1266,72 @@ export function cacheBefundAusZustaenden(label: string, erster: string, zweiter:
 
 /** Wie oft nachgefasst wird, bevor „nicht gecacht" feststeht. */
 const CACHE_VERSUCHE = 3;
+
+/**
+ * ZWEI GETEILTE RECHNUNGEN, ZWEI VERSCHIEDENE ANTWORTEN — live gegen das CDN.
+ *
+ * Seit dem 05.09.2026 kommt die nackte Rechner-Adresse aus dem Zwischenspeicher
+ * und ein geteilter Link vom Server. Die Browser-Tests belegen, dass der Code
+ * das richtig trennt; sie koennen aber nicht sehen, ob sich das CDN in der
+ * Produktion auch so verhaelt — dort steht eine Schicht dazwischen, die es
+ * lokal gar nicht gibt.
+ *
+ * DER SCHADEN, gegen den das hier steht: Wuerde eine geteilte Rechnung
+ * zwischengespeichert, bekaeme der naechste Besucher mit einem ANDEREN Link die
+ * Zahlen des Vorgaengers — unter seiner eigenen Adresse, mit dem falschen Bild
+ * im Chat. Die Seite saehe dabei vollkommen normal aus.
+ */
+const GETEILT_A = "/photovoltaik-rechner?a=0&s=0&p=1&n=1&wp=nein&ea=nein";
+const GETEILT_B = "/photovoltaik-rechner?a=3&s=3&p=3&n=3&wp=ja&ea=ja";
+
+export type TeilenBefund = { ok: boolean; meldung: string };
+
+/** Das Vorschaubild aus dem ausgelieferten HTML — der Teil, den der Chat zeigt. */
+export function vorschaubildAus(html: string): string {
+  const m = /property="og:image"\s+content="([^"]*)"/.exec(html);
+  return m ? m[1].replace(/&amp;/g, "&") : "";
+}
+
+export function teilenBefund(
+  a: { status: number; cache: string; bild: string },
+  b: { status: number; cache: string; bild: string },
+): TeilenBefund {
+  if (a.status !== 200 || b.status !== 200)
+    return { ok: false, meldung: `geteilte Rechnung antwortete ${a.status}/${b.status} statt 200` };
+  if (!a.bild || !b.bild) return { ok: false, meldung: "geteilte Rechnung liefert kein Vorschaubild" };
+  if (a.bild === b.bild)
+    return { ok: false, meldung: "zwei VERSCHIEDENE geteilte Rechnungen liefern DASSELBE Vorschaubild" };
+  if (!a.bild.includes("a=0") || !b.bild.includes("a=3"))
+    return { ok: false, meldung: "das Vorschaubild traegt nicht die Parameter seines eigenen Links" };
+  // Ein Cache-Treffer auf einer geteilten Rechnung heisst: Diese Antwort wird
+  // weitergereicht. Genau das darf nie passieren.
+  const getroffen = [a.cache, b.cache].filter((c) => CACHE_TREFFER.has(c));
+  if (getroffen.length)
+    return { ok: false, meldung: `eine geteilte Rechnung kam aus dem Zwischenspeicher (${getroffen.join(", ")})` };
+  return { ok: true, meldung: "zwei geteilte Rechnungen bleiben getrennt und kommen nicht aus dem Zwischenspeicher" };
+}
+
+async function holeMitKoerper(pfad: string): Promise<{ status: number; cache: string; bild: string }> {
+  try {
+    const res = await fetch(`${BASE_URL}${pfad}`, {
+      redirect: "manual",
+      headers: { "user-agent": "solar-check-health-check" },
+      signal: AbortSignal.timeout(30000),
+    });
+    return {
+      status: res.status,
+      cache: res.headers.get("x-vercel-cache") ?? "",
+      bild: vorschaubildAus(await res.text()),
+    };
+  } catch {
+    return { status: 0, cache: "fetch failed", bild: "" };
+  }
+}
+
+async function pruefeGeteilteRechnungen(): Promise<TeilenBefund> {
+  const [a, b] = await Promise.all([holeMitKoerper(GETEILT_A), holeMitKoerper(GETEILT_B)]);
+  return teilenBefund(a, b);
+}
 
 async function pruefeCacheWirksamkeit(): Promise<CacheBefund[]> {
   const befunde: CacheBefund[] = [];
@@ -1669,6 +1802,17 @@ async function main() {
     warnings.push("MaStR-Datenstand nicht abrufbar — keine Aussage über die Frische der Atlas-Zahlen.");
   }
 
+  // ── Ist die Datenbank-Sicherheitsgrenze noch dicht? ───────────────────────
+  const posture = await messeSicherheitsPosture();
+  lines.push(
+    posture === null
+      ? "Sicherheitsgrenze: nicht messbar (Selbstauskunft nicht erreichbar)."
+      : posture.ok
+        ? "Sicherheitsgrenze: dicht (Zeilenschutz auf jeder Tabelle, SQL-Funktion nur fuer den Dienst)."
+        : `Sicherheitsgrenze: ${posture.problems.length} Problem(e).`,
+  );
+  forClaude.push(...sicherheitsBefund(posture));
+
   // ── Kann die Produktion Abo-Mails verschicken? ────────────────────────────
   const aboBereit = await messeAboBereit();
   if (aboBereit) {
@@ -1787,6 +1931,20 @@ async function main() {
         `fehlendes generateStaticParams oder ein Aufruf, der sie dynamisch macht (Cookies, Header, searchParams); ` +
         `bei einer API-Route ein fehlender oder überschriebener Cache-Control-Header. ` +
         `Ist die Ausnahme gewollt, gehört der Eintrag aus CACHE_PFLICHT heraus — mit Begründung.`,
+    );
+  }
+
+  // ── Geteilte Rechnungen ───────────────────────────────────────────────────
+  const teilen = await pruefeGeteilteRechnungen();
+  lines.push(`Geteilte Rechnungen: ${teilen.meldung}`);
+  if (!teilen.ok) {
+    forClaude.push(
+      `Der Rechner trennt geteilte Ergebnisse nicht mehr sauber: ${teilen.meldung}. ` +
+        `Das heisst im schlimmsten Fall, dass jemand mit seinem eigenen Link die Rechnung eines Fremden sieht — ` +
+        `unter seiner Adresse, mit dem falschen Bild im Chat, und die Seite sieht dabei vollkommen normal aus. ` +
+        `Zuerst pruefen, ob die Rechner-Weiche in der Middleware noch greift (nackte Adresse statisch, Link mit ` +
+        `Parametern auf den dynamischen Zwilling umgeschrieben) und ob die nackte Seite wieder etwas aus dem ` +
+        `Abfrageteil liest. Bis das geklaert ist, ist die Trennung nicht belegt.`,
     );
   }
 

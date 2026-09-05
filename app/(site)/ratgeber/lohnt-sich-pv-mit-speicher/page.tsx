@@ -630,7 +630,7 @@ export default async function LohntSichPvMitSpeicherPage() {
         <div style={{ ...S.hero, marginTop: 28 }}>
           <span style={S.label}>Für deinen Fall durchrechnen</span>
           <p style={{ ...S.p, color: v("--color-text-primary"), marginBottom: 14 }}>
-            Vier Fragen, sofort das Ergebnis — ohne Anmeldung, ohne Verkaufsanrufe. Alle
+            Fünf Fragen, sofort das Ergebnis — ohne Anmeldung, ohne Verkaufsanrufe. Alle
             Annahmen sind im Ergebnis sichtbar und anpassbar.
           </p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
@@ -660,9 +660,8 @@ export default async function LohntSichPvMitSpeicherPage() {
           ]}
         />
         <p style={{ ...S.p, fontSize: v("--font-size-small"), marginTop: 16 }}>
-          Zuletzt aktualisiert: {new Date().toLocaleDateString("de-DE", { month: "long", year: "numeric" })} —
-          die Zahlen auf dieser Seite werden automatisch aus den aktuellen Marktpreisen
-          berechnet ({year}).
+          Preisstand {formatPriceDate(prices.validFrom)} — die Zahlen auf dieser Seite werden
+          automatisch aus den aktuellen Marktpreisen berechnet ({year}).
         </p>
       </div>
     </div>

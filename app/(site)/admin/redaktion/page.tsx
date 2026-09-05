@@ -105,13 +105,18 @@ export default async function RedaktionEntwicklung({
         })).filter((b) => b.eintraege.length > 0)}
       />
 
-      {/* Keine Überschrift: Die Leiste darüber sagt bereits, wo man ist, und der
-          Name stünde zweimal untereinander. */}
-      <p style={{ color: v("--color-text-secondary"), maxWidth: 760, marginTop: 0, marginBottom: space.huge }}>
-        {uebersicht
-          ? `Alle ${dieser.length} fertigen Beiträge. Bearbeiten öffnet denselben Tisch wie in der Kategorie; dort steht eine Story zwischen ihren Geschwistern.`
-          : kat.beschreibung}
-      </p>
+      {/* Keine Überschrift und in der Übersicht auch kein Einleitungssatz: Die
+          Leiste darüber sagt, wo man ist, und die Zahl steht dort schon. „Alle
+          14 fertigen Beiträge. Bearbeiten öffnet denselben Tisch …" beschrieb
+          eine Bedienung, die man nach dem ersten Klick kennt, und stand danach
+          jedes Mal im Weg. In einer KATEGORIE bleibt der Satz: Dort sagt er,
+          was die Familie behauptet und woran sie scheitert — das ist Inhalt,
+          keine Bedienungsanleitung. */}
+      {!uebersicht && (
+        <p style={{ color: v("--color-text-secondary"), maxWidth: 760, marginTop: 0, marginBottom: space.huge }}>
+          {kat.beschreibung}
+        </p>
+      )}
 
       {fehler && (
         <p style={{ color: v("--color-negative"), marginBottom: space.xxl }}>

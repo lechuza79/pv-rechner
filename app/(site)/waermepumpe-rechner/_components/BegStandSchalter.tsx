@@ -237,7 +237,7 @@ export default function BegStandSchalter({
             </InfoTooltip>
           </>
         ) : (
-          <>Diese Sätze gelten für Anträge, die noch in diesem Jahr eingehen.</>
+          <>Diese Sätze gelten für Anträge bis {naechste.bezeichnung.replace(/^ab /i, "vor ")}.</>
         )}{" "}
         Ein Rechtsanspruch auf die Förderung besteht nicht; entschieden wird über den Antrag.
       </div>

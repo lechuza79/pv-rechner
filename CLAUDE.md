@@ -45,7 +45,7 @@ An diesem Repo arbeiten regelmäßig mehrere Sessions gleichzeitig, dazu die Wä
 
 ## Projektüberblick
 
-"Solar Check" (solar-check.io) ist ein kostenloser PV-Rentabilitätsrechner ohne Leadfunnel. Nutzer beantworten 4 Fragen und bekommen sofort ein Ergebnis mit Amortisationschart und Szenariovergleich. Alle Berechnungsannahmen sind im Ergebnis transparent editierbar.
+"Solar Check" (solar-check.io) ist ein kostenloser PV-Rentabilitätsrechner ohne Leadfunnel. Nutzer beantworten 5 Fragen und bekommen sofort ein Ergebnis mit Amortisationschart und Szenariovergleich. Alle Berechnungsannahmen sind im Ergebnis transparent editierbar.
 
 **Differenzierung:** Enpal, Klarsolar, Check24 etc. zeigen Ergebnisse erst nach Lead-Erfassung. Wir liefern sofort — keine Datensammlung, kein Vertriebskontakt, keine Werbung.
 
@@ -59,7 +59,7 @@ An diesem Repo arbeiten regelmäßig mehrere Sessions gleichzeitig, dazu die Wä
 
 **Ab der dritten Seite zu einem Thema wird verschachtelt — und zwar BEVOR die zweite live geht (Entscheidung 18.08.2026).** Ein Cluster bekommt einen Hub und hängt seine Seiten darunter (`/balkonkraftwerk` + `/rechner` + `/anmelden`); Einzelthemen ohne Cluster bleiben flach (`/photovoltaik-neigungswinkel`, `/einspeiseverguetung-tabelle` — ein Ordner mit einer Datei ist Zeremonie). Der Bestand mit gewachsenem Ranking zieht **nicht** um.
 - **Der Grund ist nicht SEO, sondern Betrieb.** Verzeichnistiefe kommt in Googles URL-Empfehlung **überhaupt nicht vor**: Sie verlangt Adressen, die logisch und für Menschen möglichst verständlich aufgebaut sind, und lesbare Wörter statt Kennnummern — mehr nicht (Search Central, URL structure, am 19.08.2026 im Original gelesen). `/balkonkraftwerk/rechner` trägt dieselben zwei Wörter wie `/balkonkraftwerk-rechner`. **Was hier NICHT als Beleg gilt** (Faktenprüfungs-Regel 6): die kursierenden Zuspitzungen „Tiefe ist kein Rankingfaktor“ und „Hierarchie wegen Crawl-Segmentierung“ — nur über Sekundärberichte bekannt, nie am Original geprüft, standen hier trotzdem zweieinhalb Wochen als Google-Aussage. Wer sie braucht, beschafft zuerst die Fundstelle. „Verzeichnisse erzeugen thematische Autorität" ist SEO-Blog-Literatur ohne Google-Aussage.
-- **Die Asymmetrie ist der Punkt:** Verschachtelt kostet ein späterer Umzug **eine** Weiterleitung für den Bereich, flach **eine pro Seite** — und man zahlt sie später, mit mehr Seiten und mehr eingehenden Links. Das Repo hat diese Rechnung schon einmal bezahlt: 181 der 202 Weiterleitungen in `next.config.js` sind Förderseiten, die ohne Bundesland-Ebene starteten.
+- **Die Asymmetrie ist der Punkt:** Verschachtelt kostet ein späterer Umzug **eine** Weiterleitung für den Bereich, flach **eine pro Seite** — und man zahlt sie später, mit mehr Seiten und mehr eingehenden Links. Das Repo hat diese Rechnung schon einmal bezahlt: 182 der 203 Weiterleitungen in `next.config.js` sind Förderseiten, die ohne Bundesland-Ebene starteten.
 - **Ein Präfix ist die einzige Steuerungseinheit, die die Plattform kennt** — Header, Middleware-Matcher, robots, gestaffelte Index-Freischaltung arbeiten alle darauf. Die Namenskonvention „Themenwort zuerst" trägt das nicht: `photovoltaik-rechner`, `-foerderung`, `-neigungswinkel` und `-zubau-deutschland` gehören zu **vier** Themen, und derselbe PV-Bereich benutzt zusätzlich `pv-simulation` und `pv-bedarf-berechnen`.
 - **`/ratgeber` ist eine ANSICHT, kein Ordner.** Die Registry (`lib/ratgeber.ts`) akzeptiert jeden Pfad und speist Übersicht, Krümelspur und Sitemap — ein Ratgeber im Themen-Cluster bleibt Registry-Eintrag. Seine Krümelspur nennt aber das **Thema** als Elternteil, nicht die Ratgeber-Liste: Eine BreadcrumbList, die eine Hierarchie behauptet, die die Adresse nicht hat, ist die schwächste Form davon.
 
@@ -179,6 +179,8 @@ An diesem Repo arbeiten regelmäßig mehrere Sessions gleichzeitig, dazu die Wä
 
   **Der Standort-Ertrag im Verzeichnis ist gemessen, nicht geschätzt.** `yieldKwhKwp` kommt aus `/api/pvgis` an der repräsentativen Lage des Orts (`gemeindeGeo`), also aus derselben Quelle wie die Rechner. Die früheren Handwerte lagen in 104 von 105 Fällen zu niedrig. Landkreis-Einträge behalten einen Handwert — ein Kreis hat keinen Punkt, an dem man messen könnte.
 
+  **Eine Bedingung, die nur im Speicher-Zweig geprüft wird, schützt die Dachanlage nicht.** `speicherMin` wirkt ausschließlich auf den Speicherzuschuss; „Dachanlage nur zusammen mit Speicher" braucht `pvNurMitSpeicher` (Mühlhausen an der Sulz zahlte bis 05.09.2026 1.000–1.500 € für Dachanlagen ohne Speicher, mit einem Kommentar, der das Gegenteil behauptete). `funding-mindestleistung.test.ts` hält Bedingungstext und Feld aneinander.
+
   **Prozentuale Zuschüsse tragen einen Deckel** (`percentOfCost` + `pvCap`). „20 % der Kosten, höchstens 300 €" ist die häufigste Bauform kommunaler Zuschüsse. **Was das Modell nicht ausdrücken kann, bekommt keinen strukturierten Satz** (z. B. „Sockel für die ersten 7 kWp, danach je kWp"): Das Programm informiert dann, zieht aber nichts ab — lieber keine Zahl als eine falsche.
 
   **Bot-Prüfungen werden nicht weggeklickt.** Sie sind keine Mauer, sondern eine Laune: Ein einzelner Versuch ist Glückssache, über mehrere Läufe kommt man durch. Tarnwerkzeuge oder gelöste Mensch-Prüfungen sind keine Option — sie wären zusätzlich brüchig, und ein stillstehender Wächter meldet weiter Grün.
@@ -223,7 +225,10 @@ Empirisches Power-Law (kalibriert an HTW Berlin Simulationsdaten, ±2pp):
   y              = Speicher kWh / (Gesamtverbrauch in MWh)
   EV_Basis       = tagQuote × x^(-0.69)
   EV_Speicher    = 0.61 × x^(-0.72) × (1 - e^(-0.6×y))
-  EV_Max         = Gesamtverbrauch / Jahresertrag
+  EV_Bilanz      = Gesamtverbrauch / Jahresertrag
+  EV_Max         = min(EV_Bilanz, Autarkie_HTW(kWp, Speicher, Verbrauch) × EV_Bilanz)
+                   (HTW-Kennfeld calcAutarkie — seit 05.09.2026; die Bilanz allein
+                   unterstellte 100 % Autarkie und rechnete mit Speicher ~5 pp zu viel)
   Eigenverbrauch = min(EV_Basis + EV_Speicher, EV_Max, 90%)
 Ergebnis: 10–90%, gerundet
 
@@ -233,12 +238,12 @@ tagQuote 0.30 ≈ HTW Standard-Profil, andere Werte skaliert nach Nutzungsprofil
 
 **Kostenschätzung (automatisch, manuell überschreibbar):** Preise werden monatlich via Cron von taptaphome.com (vormals solaranlagen-portal.com, DAA GmbH) gescrapt und in Supabase (`market_prices`) gespeichert. Admin-UI `/admin/prices`. Fallback-Defaults in `lib/prices-config.ts`; gerundet auf 500 €.
 
-**Amortisation:** 25 Jahre, Degradation 0,5 %/Jahr, Szenarien Strompreis +1 / +2 / +5 % p. a. mit EV-Delta −5 / 0 / +5 %.
+**Amortisation:** 25 Jahre, Degradation 0,5 %/Jahr, Szenarien Strompreis +1 / +2 / +5 % p. a. mit EV-Delta −5 / 0 / +5 %. **Jahr 1 ist das erste Betriebsjahr zu heutigen Preisen und mit neuen Modulen** (Anstieg und Degradation ab Jahr 2) — dieselbe Konvention wie Balkon- und Wärmepumpen-Rechner; bis 05.09.2026 zählte der PV-Rechner ab Jahr 1 hoch, rund 1 % Gewinnunterschied für dieselbe kWh.
 
 **Einspeisevergütung (Regeln — die Sätze selbst stehen in `lib/feedin-config.ts`, sichtbar auf `/datenstand`):**
 - Vier Sätze (Teil/Voll × ≤10/>10 kWp), gewichteter Mischsatz bei Anlagen >10 kWp. 3-State im Ergebnis: Aus / Teil / Voll (auto-berechnet, manuell überschreibbar).
 - **Zahlung nur 20 Jahre** (`FEED_IN_YEARS`): die EEG-Garantie endet nach 20 J., danach 0 (Marktwert konservativ nicht angesetzt); die Eigenverbrauchs-Ersparnis läuft weiter.
-- Die Config ist ein **Stichtags-Plan** (`FEED_IN_SCHEDULE` + `feedInRatesFor()`), weil das EEG fest 1 %/Halbjahr degressiert (1.2. / 1.8.) — der Wechsel passiert am Stichtag von selbst, nicht erst beim nächsten Deploy. Die Supabase-Tabelle `feed_in_rates` ist NICHT angelegt; die Config ist die De-facto-Quelle.
+- Die Config ist ein **Stichtags-Plan** (`FEED_IN_SCHEDULE` + `feedInRatesFor()`), weil das EEG fest 1 %/Halbjahr degressiert (1.2. / 1.8.) — der Wechsel passiert am Stichtag von selbst, nicht erst beim nächsten Deploy. **Läuft der Plan aus, fällt `feedInRatesFor()` auf die Gesetzeskette zurück** (mit Herkunfts-Vorbehalt, ohne Nennung der Behörde): Bis 05.09.2026 lieferte er nach dem letzten eingetragenen Halbjahr den alten Satz weiter, während die Nachschlage-Tabelle aus derselben Kette schon den neuen zeigte — zwei Sätze für einen Tag auf zwei Seiten. Gefangen nur mit Datums-Injektion (`feedin-config.test.ts`). Die Supabase-Tabelle `feed_in_rates` ist NICHT angelegt; die Config ist die De-facto-Quelle.
 - **Rechenregel:** anzulegender Wert = Basiswert × 0,99^n, auf 2 Stellen gerundet, minus 0,4 ct (§ 53 Abs. 1). Fortgeschrieben wird der **ungerundete** Wert (§ 49 Abs. 1 S. 2) — wer stattdessen den gerundeten Vergütungssatz degressiert, verfehlt 11 amtliche Zellen (dort entsteht das kursierende 10,25 statt 10,24). Realitäts-Anker: `lib/__tests__/feedin-config.test.ts` rechnet die Kette unabhängig nach.
 - **Herkunfts-Vorbehalt:** Sätze, die aus dem Gesetz abgeleitet sind, BEVOR die Bundesnetzagentur ihre (nur nachrichtliche) Liste veröffentlicht, tragen `note` — sichtbar auf `/datenstand` — und nennen die Behörde NICHT als Quelle. Beides fällt weg, sobald die Liste da ist.
 - **Sachstand der EEG-Reform 2027 kommt aus EINER Quelle — BLOCKER.** `lib/eeg-reform-config.ts` (`EEG_REFORM_STAND`, `eegVerfahrenSatz()`, `eegStaffelSatz()`) speist alle sechs Oberflächen: die zwei FAQ-Antworten, den Sachstands-Block im Ratgeber (dessen `REFORM_STAND` daraus kommt), die Ergebnis-Notiz im Rechner (nur bei aktiver Einspeisung) und die 2027-Marke der Zubau-Zeitleiste. Vorher stand der Verfahrenssatz **sechsmal handgetippt** da — als das Kabinett am 29.07.2026 den Entwurf beschloss, war „der Weg durch Kabinett, Bundestag und Bundesrat stand noch aus" auf allen sechs gleichzeitig falsch, und derselbe Satz kippt am Tag des Bundestagsbeschlusses wieder. Dieselbe Systematik wie bei der Bio-Treppe: **Stufen, Fristen und Verfahrensstände kommen aus einer Quelle im Code.** `eegVerfahrenSatz()` **wirft** bei einem Zustandswechsel absichtlich, damit niemand einen Satz erbt, der den neuen Stand falsch beschreibt.
@@ -293,7 +298,7 @@ tagQuote 0.30 ≈ HTW Standard-Profil, andere Werte skaliert nach Nutzungsprofil
 | **Stundenlast Haushalt** | `calcHourlyConsumption(household, hour, month)` + `HouseholdProfile` (`lib/consumption.ts`, BDEW H0 / VDI 4655) | Eigenes Lastprofil bauen |
 | **Stunden-Jahressimulation** | `simulateSolarYear` (`lib/balkon-sim.ts`): Erzeugung/Verbrauch/Speicher Stunde für Stunde; Balkon + Dach-PV teilen sie | Eigene Dispatch-Schleife bauen |
 | **Autarkie** | aus der Stundensimulation (`lib/pv-sim.ts → simulatePvYear`), NICHT aus dem Eigenverbrauch × Jahresbilanz zurückrechnen | Jahresbilanz → 100 % bei großen Anlagen; Wärmepumpen-Winter fehlt. Gegen HTW-Kennfeld validiert (`lib/__tests__/pv-sim.test.ts`, ±3 pp) |
-| **Eigenverbrauch fürs GELD** | `calcEigenverbrauch` (HTW-Power-Law, `lib/calc.ts`) — bewusst NICHT die Simulation | Simulation hat bei Stundenauflösung leichten Optimismus-Bias → würde die Ersparnis schönen |
+| **Eigenverbrauch fürs GELD** | `calcEigenverbrauch` (HTW-Power-Law, `lib/calc.ts`) — bewusst NICHT die Simulation | Die frühere Begründung „die Simulation ist zu optimistisch" ist **widerlegt** (Council 05.09.2026, 108 Fälle): Die Simulation ist die pessimistischere von beiden. Die großen Abweichungen entstehen nicht im Power-Law-Kern, sondern an seiner Kappe (`gesamt / jahresertrag` unterstellt 100 % Autarkie; das HTW-Kennfeld liegt bei 71–91 %) und am 10-%-Boden bei stark überdimensionierten Anlagen. **Seit 05.09.2026 (Betreiber-Entscheidung) ist die Kappe das HTW-Kennfeld** (`calcAutarkie`): HTW gegen HTW, kein neues Fundament; Referenzfall 10 kWp / 10 kWh / 3–4 Personen 36 → 31 % EV. Erklärt auf /methodik, /datenstand und im Glossar. Nicht pauschal auf die Simulation umstellen, das verschöbe jedes Ergebnis um 20–50 % |
 | **Tag/Nacht-Verhalten** | `tagQuote` (`NUTZUNG` in `lib/constants.ts`) | Eine eigene „Anwesenheits"-Größe erfinden |
 | **Jahresverbrauch je Haushalt** | `PERSONEN` (`lib/constants.ts`) | Eigene kWh-Tabelle |
 | **Gebäude der Wärmepumpe** (Haustyp, Fläche, Dämmung, Heizsystem) | UI immer `components/GebaeudeField.tsx`, Feldliste `GEBAEUDE_FIELDS` | Den **Haustyp** weglassen. Der Empfehlungs-Flow tat das bis 07.08.2026 und rechnete jedes Haus als freistehend — beim Reihenmittelhaus 22 % zu viel Heizwärme. Der Haustyp der Dach-Frage (`HAUSTYPEN`, Ein-/Mehrfamilienhaus für die Dachfläche) ist eine ANDERE Größe als `HAUSTYP_WP` (geteilte Wände) und taugt nicht als Ersatz |
@@ -555,11 +560,15 @@ Bis 09/2026 lief die Anmeldung ausschließlich über einen Link in der Mail. **D
 
 **Absender und Google-Anbieter sind seit 02.09.2026 eingerichtet** (Betreiber im Dashboard, von hier aus gegengeprüft): Anmeldemails gehen über das Domain-Postfach, Google ist als Anmeldeweg aktiv und im Browser durchgespielt. **Der tatsächlich gelieferte Datensatz von Google ist damit erstmals messbar** — der Text der Datenschutzerklärung ist weiterhin aus dem Quelltext des Dienstes abgeleitet und sollte einmal gegen eine echte Anmeldung gehalten werden.
 
+**Die Umstellungs-Nachricht ist am 05.09.2026 raus** (siehe nächster Abschnitt) — die 18 Bestandskonten wissen also Bescheid. **Was daraus wurde, ist die eigentliche Prüfung der Umstellung:** Von 18 Konten hatten sich vor der Umstellung nur 6 je angemeldet, davon eines das des Betreibers; die anderen fünf genau einmal, am Tag der Anmeldung, keiner je wieder. Wer das für einen reinen Zustellungs-Fehler hält, sollte die Zahl kennen — sie sagt genauso gut, dass niemand einen Grund hatte wiederzukommen.
+
 **Offen und dem Betreiber vorgelegt:** die eigene Adresse für den Anmeldedienst (10 $/Monat je Projekt, Zusatzmodul). Ohne sie steht auf Googles Zustimmungsbildschirm und in den Links der Anmeldemails eine Zufallszeichenfolge statt der Marke — bei einer Sicherheitsmail der Unterschied zwischen „echt" und „Phishing". **Bei keinem der drei Projekte des Kontos gebucht**, bei Life is a Binge seit Monaten als offener Punkt geführt.
 
 ## Die einmalige Nachricht zur Umstellung — BLOCKER
 
 Die bestehenden Konten haben kein Passwort und kämen ohne diese Nachricht nicht mehr hinein. **Sie zu unterlassen wäre nicht die vorsichtigere, sondern die schlechtere Option.** Text in `lib/umstellungs-mail.ts`, Versand über `npm run umstellung:versand` — **ohne die ausdrückliche Ansage geht nichts raus**, der Lauf zeigt dann nur, wer sie bekäme.
+
+**VERSCHICKT am 05.09.2026 an alle 18 Konten** (8 bestätigt, 10 nie eingelöst), kein Fehlschlag; der Merker steht, ein zweiter Lauf schickt nichts mehr. **Rücklauf nach vier Stunden: null Anmeldungen** — die Konten tragen ihre letzte Anmeldung, die Zahl ist also messbar und nicht geschätzt. Das ist noch kein Urteil über die Mail: Der Versand lag am Samstagvormittag, außerhalb des eigenen Fensters (der Betreiber hat es bewusst übergangen), und die Frist der Löschankündigung läuft bis zum 03.10.2026.
 
 **ZWEI GRUPPEN, ZWEI FASSUNGEN** (Betreiber-Entscheidung 02.09.2026). Von 17 fremden Konten haben 7 den Anmeldelink damals eingelöst, 10 nie — und beide werden angeschrieben, mit verschiedenem Aufhänger:
 - **Bestätigt → „die Anmeldung läuft jetzt anders".** Fortführung eines bestehenden Nutzungsverhältnisses (Art. 6 Abs. 1 Buchst. b); ohne die Nachricht kämen sie nicht mehr in ihr Konto.
@@ -588,7 +597,56 @@ Die bestehenden Konten haben kein Passwort und kämen ohne diese Nachricht nicht
 
 **Das Versandfenster der Abo-Meldungen gilt mit — hier aber UNABHÄNGIG von der Menge.** Dort greift es erst ab 20 Meldungen, weil das Warten sonst mehr kostet, als es bringt; diese Nachricht wird ohnehin von Hand ausgelöst, also kostet der Abend nichts. Ein Schalter hebt es auf, wenn es einen Grund gibt.
 
+**OFFEN (bis 10/2026): die angekündigte Löschung am 03.10.2026 wirklich ausführen.** Sie steht in zehn verschickten Mails; eine Löschankündigung, die verstreicht, ist eine gebrochene Zusage — und zwar eine, die der Empfänger nachprüfen kann. Es gibt dafür bisher **keinen Automatismus**, der Termin hängt an einem Menschen.
+
 **OFFEN (bis 10/2026): eine Löschfrist für nie bestätigte Registrierungen als REGEL**, nicht als einmalige Aufräumaktion (30–90 Tage nach dem Versand der Bestätigungsanfrage). Sonst steht dieselbe Frage in einem Jahr wieder an. Gelöscht wird dabei wirklich — **kein „gelöscht"-Vermerk als Sperrliste**: Die trägt nur, wo die zu verhindernde Verarbeitung auf berechtigtem Interesse beruht, und hier gibt es keine zu verhindernde Verarbeitung.
+
+## Die nackte Rechner-Adresse liest nichts aus dem Abfrageteil — BLOCKER
+
+`/photovoltaik-rechner` ist für alle Besucher gleich und wird **statisch**
+ausgeliefert. Steht ein Parameter in der Adresse — ein geteiltes Ergebnis oder
+eine Vorbefüllung von einer Förderseite, dem Klimarechner, der Simulation oder
+dem Empfehlungs-Flow —, schiebt die Middleware die Anfrage auf den dynamischen
+Zwilling `/photovoltaik-rechner/ergebnis`. **Umgeschrieben, nicht
+weitergeleitet:** Die Adresse im Browser bleibt exakt, wie sie geteilt wurde,
+jeder je geteilte Link funktioniert unverändert, und der Teilen-Knopf baut
+seinen Link weiterhin aus dem Pfad der Seite, auf der er steht.
+
+**Der Anlass ist gemessen (05.09.2026).** Weil `generateMetadata` **und** die
+Seite selbst den Abfrageteil lasen, war der Rechner vollständig dynamisch:
+`no-store`, bei **jedem** Aufruf ein voller Serverless-Aufbau. Über 24 h waren
+das **2.612 Aufbauten für EINE Adresse — 19 % aller Aufbauten der Domain** —
+bei **neun** menschlichen Besuchen am Tag (52 in sechs Tagen, Besucherstatistik).
+Der Rest waren Maschinen: Die Seite ist von fast jeder anderen verlinkt und war
+damit die einzige, die ein Crawler beliebig oft zum vollen Preis holen konnte.
+Nachweis der Trennung ist die **Routentabelle des Builds** — die nackte Adresse
+steht dort als statisch, der Zwilling als dynamisch.
+
+- **Die Fehlerklasse ist von außen unsichtbar.** Kein Typfehler, kein roter
+  Test, kein kaputtes Aussehen — die Seite war schnell, grün und richtig. Sie
+  war nur nicht zwischenspeicherbar, und das sieht man einer Seite nicht an.
+  Der Preis war in CLAUDE.md sogar als bewusst eingegangen vermerkt; **beziffert
+  hatte ihn nie jemand.**
+- **Der Zwilling bleibt dynamisch, und das ist sein Zweck.** Der Rechner braucht
+  den geteilten Zustand schon im ersten ausgelieferten Bild — sonst springt er
+  sichtbar von der Fragestrecke ins Ergebnis —, und das persönliche
+  Vorschaubild im Chat hängt am Abfrageteil. Wer ihn „auch noch" statisch
+  macht, zerlegt genau das. Kanonisch bleibt die nackte Adresse.
+- **Die Liste der Einstiegs-Parameter steht in `lib/share-keys.ts`**, damit die
+  Middleware sie lesen kann, ohne das Theme ins Edge-Bündel zu ziehen;
+  `lib/constants.ts` reicht sie nur weiter. Fremde Parameter (`utm_*`, `gclid`)
+  zählen bewusst nicht — sie ändern an der Seite nichts und dürfen den
+  Zwischenspeicher nicht umgehen.
+- **Ein neuer interner Link in den Rechner benutzt einen Parameter aus dieser
+  Liste.** Sonst erkennt die Weiche ihn nicht, der Besucher landet auf der
+  statischen Seite und seine Vorbefüllung ist **still** weg — kein Fehler, keine
+  kaputte Seite, nur eine verschwundene Angabe. `lib/__tests__/rechner-einstieg.test.ts`
+  prüft beide Richtungen (vor dem Einchecken viermal absichtlich kaputtgemacht:
+  `searchParams` zurück in die nackte Seite, Weiche entfernt, Umschreiben durch
+  Weiterleiten ersetzt, interner Link mit unbekanntem Parameter — jedes Mal rot).
+- **Zusätzlich steht die Seite in der Cache-Pflichtliste des Gesundheitschecks.**
+  Der Test fängt den Rückfall im Code, dieser Eintrag fängt ihn in der
+  Produktion.
 
 ## Modals — BLOCKER
 
@@ -630,7 +688,7 @@ Seit 01.09.2026 hat auch dieser Rechner einen teilbaren Zustand (`lib/wp-share-s
 - **Nur Abweichungen vom Ausgangszustand stehen im Link**, und der Ausgangszustand liegt in derselben Datei wie die Umwandlung: Er sagt, was der Link weglassen darf, UND worauf er ohne Angabe zurückfällt. Zwei Fassungen davon würden auseinanderlaufen — und das Ergebnis wäre ein Link, der beim Empfänger anders rechnet als beim Absender.
 - **Zwei Angaben sind eine Listennummer** (Dämmzustand, Haushaltsgröße), weil ihre Listen keine Kennungen tragen — wie im Empfehlungs-Flow. Wer diese Listen umsortiert, macht geteilte Links falsch.
 - **Parameternamen sind ab dem ersten geteilten Link öffentlich** und dürfen sich nicht mehr ändern.
-- **Kein eigenes Vorschaubild.** Dafür müsste die Seite die Adresse auf dem Server lesen und würde dynamisch — der PV-Rechner zahlt diesen Preis, dieser bewusst nicht.
+- **Kein eigenes Vorschaubild.** Dafür müsste die Seite die Adresse auf dem Server lesen und würde dynamisch. Der PV-Rechner hat dafür seit 05.09.2026 eine eigene Adresse (siehe unten); wer dieses Vorschaubild hier je nachrüstet, geht denselben Weg und macht **nicht** die Rechner-Seite selbst dynamisch.
 
 **Welche Frage in welchen Rechner gehört, steht in `lib/inflows.ts`** — samt der Rechner, die sie **begründet nicht** bekommen. Ohne diese Ausnahmeliste ist „fehlt" nicht von „gehört da nicht hin" zu unterscheiden. `lib/__tests__/inflows.test.ts` liest die Rechner-Dateien und prüft die Liste dagegen, in beide Richtungen: ein vorgesehener Einbau, der fehlt, schlägt an — und ein Baustein, der auftaucht, wo die Liste ihn ausnimmt, ebenso. Jede Ausnahme braucht einen ausgeschriebenen Grund, jedes „OFFEN" eine Frist im Format `OFFEN (bis MM/JJJJ)`; läuft sie ab, wird der Test rot.
 
@@ -823,6 +881,11 @@ npm run kfw:import    # KfW-Förderreport einlesen (jährlich, braucht poppler; 
 **Atlas-Präfix gehört als Literal in die Abfrage — BLOCKER.** Der Index auf `mastr_aggregates_gem` (591.024 Zeilen) greift **nur, wenn der AGS-Präfix beim Planen der Abfrage bekannt ist**. Supabase reicht Funktionsargumente als JSON-Nutzlast über einen LATERAL-Join herein — `region_id LIKE p_prefix || '%'` fällt damit auf einen vollständigen Tabellendurchlauf zurück (590–650 ms statt 67–80 ms, bei zwei Aufrufen pro Gemeindeseite). Deshalb bauen die Zweige auf der Rohtabelle ihre Bedingung mit `format(%L)` in den Abfragetext; die vier heißen Funktionen stehen dafür an **einer** Stelle (`lib/mastr-region-sql.ts`).
 
 **`vercel.json` verträgt keine Kommentare.** Vercel validiert strikt gegen ein Schema und bricht den Deploy bei jedem unbekannten Top-Level-Schlüssel ab — auch bei einem reinen `"//kommentar"`. Das scheitert **vor** dem Build, also ohne Build-Log und ohne sichtbaren Fehlergrund. Begründungen gehören in den Code, den die Einstellung betrifft (hier `lib/db-timeout.ts`), nicht in die Konfigurationsdatei.
+
+**Eine Seite darf nicht mit den DATEN teurer werden — BLOCKER (05.09.2026).** Die Sitemap löste jede angeschriebene Gemeinde einzeln auf, und eine Auflösung kostet drei Abfragen nacheinander (Gemeinde → Kreis → Bundesland). Gemessen an diesem Tag: **289 Gemeinden, also 867 Abfragen in Reihe, 60,4 Sekunden** von einer schnellen Leitung aus. Auf dem Prüf-Rechner reicht das über die Zeitgrenze, die der Bau je Seite hat — und dann bricht der **ganze Produktionsbau** ab, mit „Export encountered an error" und ohne jeden Hinweis worauf. Zweimal an einem Tag, an verschiedenen Ständen, in beiden Fällen sah es nach einem Zufall aus.
+- **Der Fehler ist nicht die Langsamkeit, sondern die Kopplung.** Die Zahl wächst mit jedem verschickten Anschreiben; die Frage war nie ob es kippt, sondern wann. Drei Abfragen für alle Orte zusammen (`getGemeindePfade`, 0,24 s für dieselben 289 Orte, gleiches Ergebnis) hängen an gar nichts.
+- **Ein Bauabbruch an einer Route sieht aus wie ein Zufall und ist keiner.** Er kommt ohne Stapelspur, nach Minuten, und trifft mal den einen, mal den anderen Stand — genau das Muster, das man als „Umgebung" abtut. Wer ihn zweimal sieht, misst die Abfragezahl der Route, statt den Lauf zu wiederholen.
+- Festgenagelt von `lib/__tests__/sitemap-abfragen.test.ts` — geprüft wird die **Schleife** (kein `await` je Ort), nicht der Funktionsname, sonst fängt die Regel nur den einen bekannten Fall. Vor dem Einchecken zweimal absichtlich kaputtgemacht.
 
 **Jeder Datenbank-Read im Seitenaufbau hat ein Zeitbudget — BLOCKER.** Nicht der Ausfall der Datenbank wirft eine Seite um, sondern die eigene Reaktion darauf. Gemessene Kette bei einem Schwesterprojekt auf demselben Unterbau (21.08.2026): Ein Crawler verdreifachte zwanzig Stunden lang den Maschinen-Verkehr, die Datenbank ging in Speichermangel, gewöhnliche Abfragen brauchten 10–30 s statt Millisekunden — und die eigenen Server feuerten in der Spitzenstunde **2,08 Mio Anfragen** gegen eine Datenbank, die längst nicht mehr antwortete. Die Datenbank war um 18:51 wieder schnell, der Endpunkt blieb bis 19:11 tot: Der Ausfall hielt sich zwanzig Minuten selbst am Leben.
 - **Drei Bauweisen tragen das, alle drei sind im Diff unsichtbar und im Browser unauffällig, solange die Datenbank gesund ist:** ein Read ohne Zeitbudget (die Function wartet bis zum 300-s-Limit und hält ihren Slot besetzt), ein Fehlschlag ohne Ruhepause (der nächste Aufbau feuert sofort wieder) und viele Aufrufe hintereinander gegen dasselbe tote Ziel.
@@ -1058,6 +1121,7 @@ Der Nutzer muss nichts davon manuell triggern.
 Vercel ist Production. Ein kaputter Merge bedeutet kaputte Domain und/oder fehlgeschlagene Builds. Type-Check und `npm run build` decken Compile-Fehler ab — aber **nicht** UX-Bugs, hässliche Layouts oder unintendiertes Verhalten. Das fängt nur ein Mensch im Browser.
 
 **Woran der Betreiber NICHT abnimmt: Fakten. — BLOCKER.** Die Abnahme gilt Aussehen, Verständlichkeit und Produktentscheidung. Ob eine Zahl, eine Frist, ein Geltungsbereich oder eine Rechtsfolge stimmt, kann er nicht prüfen — ihn danach zu fragen, verlagert die Verantwortung an die falsche Stelle und erzeugt eine Freigabe, die nichts absichert. Seine eigene Ansage (28.07.2026): „ich kann nichts abnehmen, weil das viel zu komplex ist als das ich einen fehler bemerken könnte. das musst du über prüfmechanismen sicherstellen." Wer merkt, dass er gerade „ich bin nicht sicher, schau du mal drauf" schreiben will, hat den Mechanismus übersprungen.
+**Und nicht an Layout-Details, die man sehen MÜSSTE, um sie zu finden (05.09.2026).** Eine vierte Auswahlkarte und eine fünfte Tabellenspalte gingen ihm mit der Frage „passt das auf 375 px?" zur Abnahme. Seine Antwort: „ich kann das nicht testen. das muss ein system 100 % zuverlässig testen. wie soll mir ein fehler auffallen?" Ob etwas ein paar Pixel über den Rand ragt oder ob eine Option fehlt, entscheidet kein Blick, sondern eine Messung — seitdem prüft `e2e/kein-ueberlauf.spec.ts` jede Seite der Rundgangsliste auf Telefonbreite, und die Auswahlkarten klickt der Flow-Läufer ohnehin. **Seine Abnahme bleibt dort, wo er etwas ENTSCHEIDET** — ob ein Feature so aussehen und so heißen soll —, nie dort, wo er einen Fehler entdecken müsste. Wer eine Änderung zur Abnahme schickt, sagt dazu, WELCHE Entscheidung sie ihm stellt; fällt einem keine ein, gehört an ihre Stelle ein Test.
 
 Für diese Klasse gilt, **bevor** die Seite ihm gezeigt wird — unabhängig davon, woher die Änderung kam (Wächter-Lauf, eigene Recherche oder ein Gespräch mit ihm selbst):
 - **Rechtsbezug, Fristen, Geltungsbereiche** → Council (siehe Faktenprüfung, Regel 8).
@@ -1138,6 +1202,7 @@ Gilt für Ratgeber-Artikel, FAQ-Inhalte, Methodik-Seiten, Rechner-Annahmen und G
 - **Selbstauskunft statt Vertrauen:** `exec_sql` gibt nichts zurück (`void`, HTTP 204) — ein „ok" auf das Einspielen sagt nur, dass das SQL durchlief. `sc_security_posture()` liefert den Zustand als JSON, `auditPosture()` fällt das Urteil. Bewusst eng geschnitten: Sie beantwortet feste Fragen und führt **kein** übergebenes SQL aus — eine generische „exec_sql mit Rückgabewert" wäre dieselbe Lücke ein zweites Mal.
 - **Bei jeder neuen Tabelle oder RPC prüfen:** RLS an? Policy an `auth.uid()` gebunden? Keine Grants an `anon`/`authenticated`/PUBLIC, die nicht gebraucht werden? RLS **an ohne Policy** ist dicht und für rein interne Tabellen die Absicht (`waechter_reports`, `theme_overrides`, `pvgis_cache`, `klima_cache`, `gemeinde_abos`) — für alles, was ein angemeldeter Nutzer sehen soll, ist es ein Bug.
 - **Gegenprobe wie ein Angreifer:** mit dem Anon-Key direkt gegen `/rest/v1/…` gehen, Service-Key als Gegenprobe (ohne die bedeutet ein leeres `[]` auch „Tabelle leer"). Festgenagelt von `lib/__tests__/security-sql.test.ts`.
+- **Die Selbstauskunft wird seit 05.09.2026 vom Gesundheitscheck abgefragt** (`?verify=1`, Befund an Claude; `lib/__tests__/health-check-sicherheitsgrenze.test.ts`). Fünf Wochen lang hatte sie niemand aufgerufen, während rund 40 Tabellen und 40 Routen dazukamen — eine Prüfung, die existiert und nie läuft, ist von keiner nicht zu unterscheiden.
 
 ## Legal-Checkliste für Neuentwicklungen — BLOCKER
 
@@ -1404,7 +1469,7 @@ den falschen Fall** (`lib/abo-mail.ts`, `lib/abo-versand.ts`):
   einem Abonnenten seine Meldung vorzuenthalten, weil in seinem Bundesland Ferien sind,
   wäre keine Rücksicht. Was bleibt: Prüfung des Versandwegs und die Pflichtangaben.
 - **Ein VERSANDFENSTER gibt es trotzdem — aber erst ab Menge** (`lib/versandzeit.ts`,
-  Di–Do, **17–20 Uhr deutscher Zeit**, ab 20 Meldungen je Lauf).
+  **Di–Do 17–20 Uhr und Sa 13–16 Uhr deutscher Zeit**, ab 20 Meldungen je Lauf).
   - **Der Abend ist die Zielgruppen-Entscheidung, nicht der Durchschnitt.** Empfänger
     sind Privatleute zu Hause; wer über seine eigene Dachfläche nachdenkt, tut das nach
     Feierabend. Die verbreitete Empfehlung „Di–Do vormittags" gilt GESCHÄFTS-Empfängern
@@ -1428,6 +1493,20 @@ den falschen Fall** (`lib/abo-mail.ts`, `lib/abo-versand.ts`):
     keine nennt Signifikanz oder Streuung, die Unterschiede liegen bei wenigen
     Prozentpunkten. Übernommen wird die RICHTUNG, nicht die Genauigkeit — und sobald es
     genug Abonnenten gibt, wird über **Klicks** nachgemessen statt über Öffnungen.
+  - **DER SAMSTAG ZÄHLT MIT, und er fehlte zuerst — Recherchelücke, kein Urteil.** Die
+    erste Suche lieferte wörtlich „B2C-Newsletter erreichen früh morgens, abends und **am
+    Wochenende** die besten Werte"; der Satz stand im Ergebnis und wurde nicht ausgewertet,
+    das Fenster ging ohne ihn live. Der Betreiber hat es bemerkt (05.09.2026), die
+    Nachrecherche hat ihm recht gegeben. **Die Lehre ist nicht „mehr suchen", sondern: eine
+    Suchantwort, die eine dritte Möglichkeit nennt, wird beantwortet oder ausdrücklich
+    verworfen — nicht überlesen.**
+  - **Der Samstag trägt sich über einen MECHANISMUS, nicht über eine Öffnungsrate.** Die
+    höchste weist der Inxmail-Benchmark 2026 im B2C dem Montag zu (26,9 %). Für den Samstag
+    spricht, dass deutlich weniger Absender am Wochenende verschicken: leereres Postfach,
+    und wer samstags liest, hat Zeit. Uhrzeit ist der **frühe Nachmittag** (13–16 Uhr) —
+    die einzige, die die Quellen für den Wochenendversand nennen; samstags abends ist
+    niemand am Postfach, das Werktagsfenster taugt dort nicht. **Der Sonntag bleibt
+    draußen** (21,8 %), der einzige Tag mit einem deutlich schlechteren belegten Wert.
   - **Deshalb die Schwelle:** Bei siebzehn Empfängern ist die Spanne kein ganzer Mensch,
     und ein Lauf, der dafür einen Abend wartet, kostet mehr, als er bringt.
   - **Der Lauf sammelt ERST alle Empfänger und schickt DANN.** Zwei Durchgänge statt

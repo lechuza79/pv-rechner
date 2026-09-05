@@ -309,7 +309,27 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // amtlich noch nicht abrufbar. Ein Datum aus einer solchen Quelle in diese
   // Datei zu schreiben hieße, einen Verfahrensstand zu behaupten — genau das,
   // was Regel 1 des Wächter-Gates verbietet.
-  geprueftIso: "2026-09-04",
+  //
+  // 05.09.2026 (Samstag): unverändert. Die Vorgangsseite zur Drucksache 470/26
+  // im Rohtext gelesen — weiterhin nur Titel, Eingang (14.08.2026), der Vermerk
+  // „bes. eilbedürftige Vorlage gem. Art. 76 Abs. 2 Satz 4 GG", die
+  // Ausschusszuweisung und die Grunddrucksache. Kein Plenarabschnitt, keine
+  // Stellungnahme, kein Beschluss. Heute ist Samstag, die Sitzungswoche beginnt
+  // am Montag — ein Beschluss ist bis hierher ausgeschlossen.
+  //
+  // EIN NEUES, AMTLICHES SIGNAL FÜR DIE KOMMENDE WOCHE, und es ist ausdrücklich
+  // KEIN Verfahrensstand: Der Tagesordnungs-Feed des Bundestages führt für
+  // Dienstag, den 08.09.2026, eine „45. (Sonder-)Sitzung" des Ausschusses für
+  // Wirtschaft und Energie, angesetzt zehn Minuten nach Ende der Plenarsitzung,
+  // dazu zwei Änderungsmitteilungen vom 02. und 03.09.2026. Die Sitzung ist
+  // nicht öffentlich, ihre Tagesordnung wird nicht veröffentlicht — WELCHE
+  // Vorlage dort behandelt wird, steht nirgends. Eine Sondersitzung des
+  // federführenden Ausschusses unmittelbar nach dem Plenum ist das übliche
+  // Muster für eine Vorlage, die in derselben Woche erste Lesung und
+  // Ausschussberatung durchläuft; daraus zu schließen, es gehe um DIESEN
+  // Entwurf, wäre trotzdem geraten. Notiert als Anlass, in der kommenden Woche
+  // die Drucksache im Bundestag selbst nachzusehen — nicht als Zustand.
+  geprueftIso: "2026-09-05",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

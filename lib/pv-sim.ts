@@ -22,7 +22,11 @@ import { SOLAR_YEAR_DE, referenceMonthKwh } from "./solar-year";
 
 // Roundtrip-Wirkungsgrad Hausspeicher (Laden × Entladen). Konservativ; moderne
 // LFP-Systeme liegen bei ~0,90–0,95.
-const BATTERY_ROUNDTRIP = 0.90;
+/** Speicher-Wirkungsgrad der Dach-PV-Simulation. Exportiert, weil rechner.tsx
+ *  ihn für die Marktwert-Simulation braucht — bis 05.09.2026 stand dort das
+ *  Literal 0,9 als zweite Fassung. (Balkon rechnet bewusst 0,825 aus der
+ *  eigenen, belegten Config.) */
+export const BATTERY_ROUNDTRIP = 0.90;
 
 /** Monatswerte (kWh/kWp) auf den — evtl. manuell editierten — Jahresertrag skalieren:
  *  die FORM (Sommer/Winter) kommt aus PVGIS, die MENGE aus ertragKwp. Ohne diese

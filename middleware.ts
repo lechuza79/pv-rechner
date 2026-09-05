@@ -2,6 +2,8 @@ import { createServerClient } from "@supabase/ssr";
 import { nurFuerDieSitzung, BLEIBEN_COOKIE, bleibenGilt } from "./lib/auth-cookies";
 import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
 import { hostAusHerkunft, widgetAusPfad, zaehleEinbettung } from "./lib/embed-herkunft-core";
+import { traegtRechnung } from "./lib/share-keys";
+import { istKreisRangliste } from "./lib/ranking-tiefe";
 
 export async function middleware(request: NextRequest, event: NextFetchEvent) {
   // ─── Embed-Zweig: zählen, sonst nichts ─────────────────────────────────────
@@ -14,6 +16,42 @@ export async function middleware(request: NextRequest, event: NextFetchEvent) {
   // die Auslieferung nicht. Gezählt wird ohne `await` über `waitUntil`, damit
   // die Antwort nicht auf die Datenbank wartet — ein Widget darf nie langsamer
   // werden, weil wir mitschreiben.
+  // ─── Ranglisten-Weiche: die tiefen Listen nicht ablegen ────────────────────
+  //
+  // Eine Rangliste innerhalb eines Landkreises wird praktisch nie ein zweites
+  // Mal aufgerufen (gemessen: 3.806 Aufrufe auf 3.679 verschiedene Adressen).
+  // Sie trotzdem abzulegen kostet eine Schreibung je Aufruf fuer einen Treffer,
+  // der nicht kommt. Die Zwillingsroute baut dieselbe Seite ohne Ablage.
+  //
+  // Umgeschrieben, nicht weitergeleitet — die Adresse bleibt, jeder Link haelt.
+  if (istKreisRangliste(request.nextUrl.pathname)) {
+    const ziel = request.nextUrl.clone();
+    ziel.pathname = request.nextUrl.pathname.replace("/solar-atlas/ranking/", "/solar-atlas/ranking-tief/");
+    return NextResponse.rewrite(ziel);
+  }
+
+  // ─── Rechner-Weiche: nur mit Rechnung im Gepaeck an den Server ─────────────
+  //
+  // Die nackte Rechner-Adresse ist fuer alle gleich und wird statisch
+  // ausgeliefert. Steht ein Parameter dabei — ein geteiltes Ergebnis oder eine
+  // Vorbefuellung von einer Foerderseite, dem Klimarechner, der Simulation oder
+  // dem Empfehlungs-Flow —, muss die Seite am Server gebaut werden; die
+  // Umschreibung schickt sie auf die dynamische Zwillingsroute.
+  //
+  // UMSCHREIBEN, NICHT WEITERLEITEN: Die Adresse im Browser bleibt exakt, wie
+  // sie geteilt wurde. Jeder Link, der heute existiert, funktioniert
+  // unveraendert weiter — und der Teilen-Knopf im Rechner baut seinen Link
+  // weiterhin aus dem Pfad der Seite, auf der er steht.
+  //
+  // Dass eine Middleware davor die statische Auslieferung NICHT ersetzt, ist in
+  // diesem Repo schon belegt: Der Embed-Zweig unten sitzt seit Monaten vor
+  // Seiten, die aus dem Zwischenspeicher kommen.
+  if (request.nextUrl.pathname === "/photovoltaik-rechner" && traegtRechnung(request.nextUrl.searchParams)) {
+    const ziel = request.nextUrl.clone();
+    ziel.pathname = "/photovoltaik-rechner/ergebnis";
+    return NextResponse.rewrite(ziel);
+  }
+
   if (request.nextUrl.pathname.startsWith("/embed/")) {
     const widget = widgetAusPfad(request.nextUrl.pathname);
     // `referer` (die Schreibweise mit einem r ist der Fehler von 1996 und steht
@@ -70,5 +108,11 @@ export const config = {
     "/api/calculations/:path*",
     "/auth/callback",
     "/embed/:path*",
+    // Nur die nackte Adresse, nicht der Zwilling darunter: Sonst schriebe die
+    // Weiche die umgeschriebene Anfrage ein zweites Mal um.
+    "/photovoltaik-rechner",
+    // Nur unterhalb der Ranglisten-Wurzel; welche Tiefe wirklich umgeschrieben
+    // wird, entscheidet die Weiche oben.
+    "/solar-atlas/ranking/:pfad*",
   ],
 };

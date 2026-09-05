@@ -83,6 +83,12 @@ describe("Analytics-Ereignisse", () => {
     }
   });
 
+  // 20 Sekunden statt der voreingestellten fünf: Die Prüfung durchsucht den
+  // ganzen Quellbaum je Ereignisnamen. Auf einer ruhigen Maschine dauert das
+  // gut eine Sekunde, unter der Last mehrerer paralleler Sitzungen (gemessen
+  // 05.09.2026: Lastwert 60 auf acht Kernen) über zehn — der Lauf wurde dann
+  // rot, ohne dass am Code etwas falsch war, und blockierte jeden Commit.
+  // Angehoben wird die WARTEZEIT, nicht die Aussage.
   it("die Liste hat keine Karteileichen und keine Lücken", () => {
     // Beide Richtungen: ein Eintrag ohne Aufrufer ist tote Dokumentation, ein
     // Aufruf ohne Eintrag ginge gar nicht erst durch die Übersetzung — aber
@@ -114,7 +120,7 @@ describe("Analytics-Ereignisse", () => {
     );
     const ohneAufrufer = EVENTS.filter((e) => !treffer.some((z) => z.includes(`"${e}"`)));
     expect(ohneAufrufer, `Ereignisse ohne Aufrufer: ${ohneAufrufer.join(", ")}`).toEqual([]);
-  });
+  }, 20_000);
 
   it("der Ereignis-Katalog kennt jedes Ereignis", () => {
     const katalog = lies("docs/analytics-events.md");

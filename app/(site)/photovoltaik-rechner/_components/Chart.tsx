@@ -15,7 +15,7 @@ import { fsPx } from "../../../../lib/theme";
  * Aussage weg. Dann werden zusätzlich die Break-even-Marken gestaffelt, weil sie
  * bei ähnlichen Laufzeiten sonst übereinanderliegen.
  */
-export default function Chart({ scenarios, kosten, highlightId = "realistic", dimOthers = true }: { scenarios: { id: string; color: string; data: { years: { i: number; kum: number }[]; be: { i: number; kum: number } | undefined } }[]; kosten: number; highlightId?: string; dimOthers?: boolean }) {
+export default function Chart({ scenarios, kosten, highlightId = "realistic", dimOthers = true, startJahr = YEAR }: { startJahr?: number; scenarios: { id: string; color: string; data: { years: { i: number; kum: number }[]; be: { i: number; kum: number } | undefined } }[]; kosten: number; highlightId?: string; dimOthers?: boolean }) {
   const W = 640, H = 280;
   const P = { t: 24, r: 16, b: 32, l: 52 };
   const cW = W - P.l - P.r, cH = H - P.t - P.b;
@@ -39,7 +39,7 @@ export default function Chart({ scenarios, kosten, highlightId = "realistic", di
         </g>
       ))}
       {[0, 5, 10, 15, 20, 25].map(i => (
-        <text key={i} x={x(i)} y={H - 4} textAnchor="middle" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{YEAR + i}</text>
+        <text key={i} x={x(i)} y={H - 4} textAnchor="middle" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{startJahr + i}</text>
       ))}
       {scenarios.map((s, si) => {
         const pts = s.data.years.map((yr, i) => `${x(i)},${y(yr.kum)}`).join(" ");

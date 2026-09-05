@@ -59,7 +59,7 @@ type AggregateValue = { count: number; kwp: number; kwh: number };
 type RegionLevel = "landkreis" | "gemeinde";
 type RegionMeta = { level: RegionLevel; name: string; parent: string };
 
-type UnitSpec = {
+export type UnitSpec = {
   et: Energietraeger;
   filePattern: RegExp;       // matches XML entry name inside the ZIP
   recordTag: string;          // XML element for one unit record
@@ -67,7 +67,7 @@ type UnitSpec = {
 
 // File names follow the pattern <EntityType>_<n>.xml (e.g. EinheitenSolar_1.xml).
 // The record element is the entity tag in singular (without "Einheiten" prefix).
-const UNIT_SPECS: UnitSpec[] = [
+export const UNIT_SPECS: UnitSpec[] = [
   { et: "solar",     filePattern: /^EinheitenSolar(_\d+)?\.xml$/i,         recordTag: "EinheitSolar" },
   { et: "wind",      filePattern: /^EinheitenWind(_\d+)?\.xml$/i,           recordTag: "EinheitWind" },
   { et: "biomasse",  filePattern: /^EinheitenBiomasse(_\d+)?\.xml$/i,       recordTag: "EinheitBiomasse" },
@@ -567,7 +567,7 @@ function parseYear(s: string | undefined): number | null {
   return y;
 }
 
-function parseKwp(s: string | undefined): number {
+export function parseKwp(s: string | undefined): number {
   if (!s) return 0;
   // BNetzA uses dot as decimal separator in the XML (verified in samples);
   // accept comma as a defensive fallback.
@@ -628,7 +628,7 @@ async function buildStorageCapacityMap(zipPath: string): Promise<Map<string, num
   return map;
 }
 
-async function buildActorMap(zipPath: string): Promise<Map<string, ActorKind>> {
+export async function buildActorMap(zipPath: string): Promise<Map<string, ActorKind>> {
   const directory = await unzipper.Open.file(zipPath);
   const actorEntries = directory.files
     .filter((f) => f.type === "File" && ACTORS_FILE_PATTERN.test(f.path))

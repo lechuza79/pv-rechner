@@ -338,6 +338,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "nottuln", name: "Nottuln", ags: "05558032", kreis: "Kreis Coesfeld", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1039 },
   { slug: "senden", name: "Senden", ags: "05558044", kreis: "Kreis Coesfeld", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1034 },
   { slug: "ennepetal", name: "Ennepetal", ags: "05954008", kreis: "Ennepe-Ruhr-Kreis", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 960 },
+  { slug: "wetter-ruhr", name: "Wetter (Ruhr)", ags: "05954032", kreis: "Ennepe-Ruhr-Kreis", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 994 },
   { slug: "wenden", name: "Wenden", ags: "05966028", kreis: "Kreis Olpe", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 989 },
   { slug: "gernsheim", name: "Gernsheim", ags: "06433004", kreis: "Landkreis Groß-Gerau", bundesland: "Hessen", yieldKwhKwp: 1092 },
   { slug: "bad-homburg", name: "Bad Homburg v. d. Höhe", ags: "06434001", kreis: "Hochtaunuskreis", bundesland: "Hessen", yieldKwhKwp: 1099 },
@@ -512,25 +513,39 @@ export function archivedCities(): AtlasCity[] {
 }
 
 /**
- * A city gets a published page when its program is live OR archived — UND der
- * Releaseplan diesen Ort freigegeben hat.
+ * A city gets a published page when its program is live OR archived — UND die
+ * Freigabe steht. Die Freigabe-Frage beantwortet cityIndexFreigegeben() und
+ * sonst nichts.
  *
- * WARUM DIE ZWEITE BEDINGUNG (19.08.2026): Bis hierher hing die Veröffentlichung
+ * WARUM DIE ZWEITE BEDINGUNG (19.08.2026): Bis dahin hing die Veröffentlichung
  * allein am Status des Förderprogramms. Ein neuer Eintrag in ATLAS_CITIES mit
  * einem aktiven Programm war damit beim nächsten Deploy eine öffentliche,
  * indexierte Seite — die Veröffentlichung war keine Entscheidung, sondern eine
- * Nebenwirkung. Aufgefallen ist das, als der Katalog auf 97 regionale Programme
- * wuchs und 61 davon (48 aktiv) noch keine Seite hatten: Wer die Einträge anlegt,
- * hätte 61 Ortsseiten auf einen Schlag veröffentlicht, ohne dass irgendwo die
- * Frage gestellt worden wäre, ob sie gerade jetzt erscheinen sollen.
+ * Nebenwirkung.
  *
- * Der Plan (lib/release-plan.ts) beantwortet sie je Ort und Schub. Er steuert
- * ausschließlich die SEITE — ob ein Programm im Rechner Geld abzieht, entscheidet
+ * WARUM SIE SEIT DEM 05.09.2026 ÜBER cityIndexFreigegeben LÄUFT — BLOCKER:
+ * Die Freigabe hatte danach ZWEI Wege (Releaseplan ODER foerderseiteTraegt,
+ * Betreiber-Entscheidung 01.09.2026), aber die zweite Bedingung stand an ZWEI
+ * Stellen: die Sitemap fragte cityIndexFreigegeben() und kannte beide Wege,
+ * diese Funktion fragte releaseFreigegeben() und kannte nur den ersten. Da die
+ * Seite mit `dynamicParams = false` erzeugt wird, ist eine Adresse, die nicht
+ * aus publishedCities() kommt, eine HARTE 404. Gemessen am 05.09.2026:
+ * 21 der 59 Förder-Stadtseiten standen in der Sitemap und antworteten mit 404 —
+ * vier Tage lang, auf der Seitenfamilie mit der besten Sichtbarkeit des Projekts
+ * (2.147 Einblendungen in 28 Tagen gegen 1.700 im ganzen Atlas).
+ *
+ * Die Fehlerklasse ist von außen unsichtbar: kein Typfehler, kein roter Test,
+ * kein kaputtes Aussehen — nur eine Sitemap, die Google zu Seiten einlädt, die
+ * es nicht gibt. Genau die Doppelpflege, an der hier schon `fundingId`
+ * gescheitert ist. Wer eine dritte Bedingung für die Freigabe einführt, trägt
+ * sie in cityIndexFreigegeben() ein und nirgendwo sonst.
+ *
+ * Was NICHT dazugehört: ob ein Programm im Rechner Geld abzieht, entscheidet
  * unverändert allein fundingZaehlt(). Ein Ort ohne Seite bleibt im Rechner
  * vollständig wirksam.
  */
 export function isCityPublished(c: AtlasCity): boolean {
-  return (isCityLive(c) || isCityArchived(c)) && releaseFreigegeben("foerder-stadt", c.ags);
+  return (isCityLive(c) || isCityArchived(c)) && cityIndexFreigegeben(c);
 }
 
 /** Cities that get a page (live + archived) — drives page generation & sitemap. */
@@ -556,8 +571,10 @@ export function publishedCitiesInBundesland(blSlug: string): AtlasCity[] {
  * live, und haben wir vorher gemessen?". Zwei Schalter für eine Frage sind die
  * Doppelpflege, an der hier schon `fundingId` gescheitert ist.
  *
- * Sitemap und robots-Angabe hängen weiterhin an dieser EINEN Funktion, damit
- * sie sich nicht auseinanderentwickeln können.
+ * Sitemap, robots-Angabe UND die Seitenerzeugung (über isCityPublished) hängen
+ * an dieser EINEN Funktion, damit sie sich nicht auseinanderentwickeln können.
+ * Die Seitenerzeugung fehlte hier bis zum 05.09.2026 — mit dem Ergebnis, dass
+ * 21 Adressen in der Sitemap standen und 404 antworteten.
  */
 export function cityIndexFreigegeben(c: AtlasCity, heute: Date = new Date()): boolean {
   // Weg 1: eine Entscheidung im Releaseplan (Altbestand und die Schübe davor).
