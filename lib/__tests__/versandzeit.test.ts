@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "fs";
 import { resolve } from "path";
-import { versandzeitOk, AB_EMPFAENGERN, GUTE_WOCHENTAGE, GUTE_STUNDEN } from "../versandzeit";
+import { versandzeitOk, AB_EMPFAENGERN, GUTE_WOCHENTAGE, FENSTER } from "../versandzeit";
 
 // Das Versandfenster — und die vier Arten, auf die so eine Bremse falsch wird.
 //
@@ -71,13 +71,35 @@ describe("Das Fenster selbst", () => {
     if (!u.ok) expect(u.naechstes.length).toBeGreaterThan(10);
   });
 
-  it("versendet am ABEND, nicht im Arbeitstag", () => {
+  it("versendet werktags am ABEND, nicht im Arbeitstag", () => {
     // Empfänger sind Privatleute zu Hause. Die Vormittagsempfehlung gilt
     // Geschäftsempfängern und stand hier zuerst — sie ist die falsche
     // Zielgruppe, und der Fehler war von außen unsichtbar.
-    expect(GUTE_WOCHENTAGE).toEqual([2, 3, 4]);
-    expect(GUTE_STUNDEN).toEqual([{ von: 17, bis: 20 }]);
+    expect(FENSTER.filter((f) => f.tag < 5)).toEqual([
+      { tag: 2, von: 17, bis: 20 },
+      { tag: 3, von: 17, bis: 20 },
+      { tag: 4, von: 17, bis: 20 },
+    ]);
     expect(versandzeitOk(new Date("2026-09-08T08:00:00Z"), 500).ok).toBe(false);
+  });
+
+  it("der SAMSTAG zählt mit — und am frühen Nachmittag, nicht abends", () => {
+    // Er fehlte zuerst, weil eine Suchantwort ihn nannte und niemand sie
+    // auswertete. Er trägt sich über einen Mechanismus, nicht über eine
+    // Öffnungsrate: Am Wochenende verschicken deutlich weniger Absender, das
+    // Postfach ist leerer, und wer samstags liest, hat Zeit.
+    expect(GUTE_WOCHENTAGE).toEqual([2, 3, 4, 6]);
+    // Samstag, 14 Uhr deutscher Sommerzeit.
+    expect(versandzeitOk(new Date("2026-09-12T12:00:00Z"), 500).ok).toBe(true);
+    // Samstag, 18 Uhr — werktags das beste Fenster, samstags ist niemand da.
+    expect(versandzeitOk(new Date("2026-09-12T16:00:00Z"), 500).ok).toBe(false);
+  });
+
+  it("der SONNTAG bleibt draußen", () => {
+    // Der einzige Tag, für den eine Quelle einen deutlich schlechteren Wert
+    // nennt (21,8 % gegen 26,9 % am besten Tag).
+    expect(GUTE_WOCHENTAGE).not.toContain(0);
+    expect(versandzeitOk(new Date("2026-09-13T12:00:00Z"), 500).ok).toBe(false);
   });
 
   it("übernimmt die Nachtstunden des Öffnungs-Benchmarks NICHT", () => {

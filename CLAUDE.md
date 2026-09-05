@@ -1385,7 +1385,7 @@ den falschen Fall** (`lib/abo-mail.ts`, `lib/abo-versand.ts`):
   einem Abonnenten seine Meldung vorzuenthalten, weil in seinem Bundesland Ferien sind,
   wäre keine Rücksicht. Was bleibt: Prüfung des Versandwegs und die Pflichtangaben.
 - **Ein VERSANDFENSTER gibt es trotzdem — aber erst ab Menge** (`lib/versandzeit.ts`,
-  Di–Do, **17–20 Uhr deutscher Zeit**, ab 20 Meldungen je Lauf).
+  **Di–Do 17–20 Uhr und Sa 13–16 Uhr deutscher Zeit**, ab 20 Meldungen je Lauf).
   - **Der Abend ist die Zielgruppen-Entscheidung, nicht der Durchschnitt.** Empfänger
     sind Privatleute zu Hause; wer über seine eigene Dachfläche nachdenkt, tut das nach
     Feierabend. Die verbreitete Empfehlung „Di–Do vormittags" gilt GESCHÄFTS-Empfängern
@@ -1409,6 +1409,20 @@ den falschen Fall** (`lib/abo-mail.ts`, `lib/abo-versand.ts`):
     keine nennt Signifikanz oder Streuung, die Unterschiede liegen bei wenigen
     Prozentpunkten. Übernommen wird die RICHTUNG, nicht die Genauigkeit — und sobald es
     genug Abonnenten gibt, wird über **Klicks** nachgemessen statt über Öffnungen.
+  - **DER SAMSTAG ZÄHLT MIT, und er fehlte zuerst — Recherchelücke, kein Urteil.** Die
+    erste Suche lieferte wörtlich „B2C-Newsletter erreichen früh morgens, abends und **am
+    Wochenende** die besten Werte"; der Satz stand im Ergebnis und wurde nicht ausgewertet,
+    das Fenster ging ohne ihn live. Der Betreiber hat es bemerkt (05.09.2026), die
+    Nachrecherche hat ihm recht gegeben. **Die Lehre ist nicht „mehr suchen", sondern: eine
+    Suchantwort, die eine dritte Möglichkeit nennt, wird beantwortet oder ausdrücklich
+    verworfen — nicht überlesen.**
+  - **Der Samstag trägt sich über einen MECHANISMUS, nicht über eine Öffnungsrate.** Die
+    höchste weist der Inxmail-Benchmark 2026 im B2C dem Montag zu (26,9 %). Für den Samstag
+    spricht, dass deutlich weniger Absender am Wochenende verschicken: leereres Postfach,
+    und wer samstags liest, hat Zeit. Uhrzeit ist der **frühe Nachmittag** (13–16 Uhr) —
+    die einzige, die die Quellen für den Wochenendversand nennen; samstags abends ist
+    niemand am Postfach, das Werktagsfenster taugt dort nicht. **Der Sonntag bleibt
+    draußen** (21,8 %), der einzige Tag mit einem deutlich schlechteren belegten Wert.
   - **Deshalb die Schwelle:** Bei siebzehn Empfängern ist die Spanne kein ganzer Mensch,
     und ein Lauf, der dafür einen Abend wartet, kostet mehr, als er bringt.
   - **Der Lauf sammelt ERST alle Empfänger und schickt DANN.** Zwei Durchgänge statt
