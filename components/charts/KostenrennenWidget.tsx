@@ -318,7 +318,8 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           {spitzen.map(({ l, wert, y }, i) => (
             <g key={l.key}>
               <circle cx={xL(t)} cy={y} r={4} fill={farbe(l.key)} stroke="var(--color-bg)" strokeWidth={1.5} />
-              <text x={xL(t) + 8} y={y + spitzeDy(i)} textAnchor="start" fontSize={fsPx("--font-size-small")} fontWeight={800} fill={farbe(l.key)} fontFamily="var(--font-mono)" style={{ fontVariantNumeric: "tabular-nums" }}>
+              {/* Nie unter die Nulllinie: Bei 0 € säße der Betrag sonst auf dem Jahr der x-Achse. */}
+              <text x={xL(t) + 8} y={Math.min(y + spitzeDy(i), y0 - 3)} textAnchor="start" fontSize={fsPx("--font-size-small")} fontWeight={800} fill={farbe(l.key)} fontFamily="var(--font-mono)" style={{ fontVariantNumeric: "tabular-nums" }}>
                 {narrow ? `${Math.round(wert / 1000)} T€` : fmtEuroVoll(l.kumuliert[idx])}
               </text>
             </g>
