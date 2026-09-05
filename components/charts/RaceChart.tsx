@@ -386,14 +386,17 @@ function RaceCard({
   // Sekundär, nur Icon — dieselbe Form wie die Aktionsknöpfe in der Fußzeile.
   const knopf: React.CSSProperties = {
     display: "inline-flex", alignItems: "center", justifyContent: "center",
-    width: 32, height: 32, padding: 0, borderRadius: v("--radius-md"), flexShrink: 0,
-    border: `1px solid ${v("--color-border-accent")}`, background: v("--color-bg"), color: v("--color-accent"),
+    width: 32, height: 32, padding: 0, borderRadius: "50%", flexShrink: 0, boxSizing: "border-box",
+    border: `1px solid ${v("--color-border")}`, background: v("--color-bg"), color: v("--color-accent"),
     cursor: "pointer",
   };
   // Die Kante steht nur am Chart-Bereich (Chart, Spur, Ereignis-Box), nicht am
   // Player oder der Fußzeile. Zwei Quellen passen dort nur in zwei Spalten,
   // wenn die Schrift beim kleinsten Token bleiben soll.
   const kantenSpalten: 1 | 2 = widget.sources.length > 1 ? 2 : 1;
+  // Ein Ton für Ereignis-Box und Player: eine leichte Tönung des gedämpften
+  // Hintergrunds, ohne Kontur.
+  const toenung = `color-mix(in srgb, ${v("--color-bg-muted")} 55%, ${v("--color-bg")})`;
   const legend: ExportLegendEntry[] = [
     { color: FARBE_B, label: anderer.label, shape: "line" },
     { color: FARBE_A, label: kamera.label, shape: "line" },
@@ -605,18 +608,23 @@ function RaceCard({
             </g>
           ))}
         </svg>
+      </ExportBox>
+      <WidgetSourceEdge widget={widget} visible={!onsite || showCredit} stand={quellenStand} spalten={kantenSpalten} />
+      </div>
 
-        {/* Ereignis-Zeitleiste unter dem Chart im Stil der Weichenstellungen des
+      {/* Ereignis-Zeitleiste unter dem Chart im Stil der Weichenstellungen des
             Zubau-Charts: Punkte auf der Achse des Charts (Punkt und gestrichelte
             Linie stehen übereinander, auch während die Achse wächst), der
             zuletzt erreichte Punkt ist groß und wird darunter in einer Box
             erklärt, mit Pfeilen zum vorigen und nächsten Ereignis — ein Pfeil
             springt die Wiedergabe dorthin und hält an. Darunter der Abspielknopf.
             Nur auf der Seite — im Bild tragen die Marken ihren Text im Chart.
-            Kein Regler: Die Spur liegt auf der wachsenden Chart-Achse, ein
-            Regler darauf wechselte beim Ziehen die Skala (Betreiber, 05.09.2026). */}
+            Kein Regler auf der Spur: Sie liegt auf der wachsenden Chart-Achse, ein
+            Regler darauf wechselte beim Ziehen die Skala (Betreiber, 05.09.2026).
+            Derselbe rechte Rand wie das Chart, damit die Punkte über den
+            Chart-Tagen stehen; die Quellen-Kante steht nur neben dem Chart. */}
         <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ marginTop: space.md }}>
-          <div style={{ position: "relative", height: 32 }}>
+          <div style={{ position: "relative", height: 32, marginRight: SOURCE_EDGE_WIDTH * kantenSpalten + space.sm }}>
             <div style={{ position: "absolute", top: 15, left: `${(P.l / W) * 100}%`, width: `${(cW / W) * 100}%`, height: 2, background: v("--color-border") }} />
             {sichtbareEreignisse.map((e) => {
               const aktiv = e === aktivesEreignis;
@@ -626,7 +634,7 @@ function RaceCard({
               );
             })}
           </div>
-          <div style={{ marginTop: space.sm, background: `color-mix(in srgb, ${v("--color-bg-muted")} 55%, ${v("--color-bg")})`, borderRadius: v("--radius-md"), padding: abstand("md", "lg"), display: "flex", flexDirection: narrow ? "column" : "row", alignItems: narrow ? "stretch" : "center", gap: space.lg }}>
+          <div style={{ marginTop: space.sm, background: toenung, borderRadius: v("--radius-md"), padding: abstand("md", "lg"), display: "flex", flexDirection: narrow ? "column" : "row", alignItems: narrow ? "stretch" : "center", gap: space.lg }}>
             {!narrow && pfeil(-1)}
             <div style={{ flex: narrow ? undefined : 1, minWidth: 0, minHeight: 64 }}>
               {aktivesEreignis && (
@@ -649,16 +657,14 @@ function RaceCard({
             )}
           </div>
         </div>
-      </ExportBox>
-      <WidgetSourceEdge widget={widget} visible={!onsite || showCredit} stand={quellenStand} spalten={kantenSpalten} />
-      </div>
 
       {/* Player unter dem Chart-Bereich (außerhalb der Quellen-Kante, nur auf der
           Seite): Abspielen/Anhalten/noch einmal und ein Regler über die ganze
           Strecke — auf seiner eigenen, festen Skala, nicht auf der wachsenden
           Chart-Achse (dort scheiterte er zweimal). Darunter eine Linie, die den
           Chart-Block von der Fußzeile trennt. */}
-      <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", alignItems: "center", gap: space.lg, marginTop: space.md }}>
+      <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", alignItems: "center", gap: space.lg, marginTop: space.md, background: toenung, borderRadius: v("--radius-md"), padding: abstand("md", "lg") }}>
+        <style>{`.kr-regler{-webkit-appearance:none;appearance:none;height:2px;margin:0;background:var(--color-border);border-radius:1px;outline:none}.kr-regler::-webkit-slider-runnable-track{height:2px;background:transparent}.kr-regler::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:13px;height:13px;margin-top:-5.5px;border-radius:50%;background:var(--color-accent);border:2px solid var(--color-bg);box-sizing:border-box;cursor:pointer}.kr-regler::-moz-range-track{height:2px;background:var(--color-border)}.kr-regler::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:var(--color-accent);border:2px solid var(--color-bg);box-sizing:border-box;cursor:pointer}.kr-regler:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 3px color-mix(in srgb, var(--color-accent) 35%, transparent)}`}</style>
         <button
           type="button"
           onClick={() => {
@@ -683,7 +689,8 @@ function RaceCard({
           onChange={(e) => { cancelAnimationFrame(gleitRaf.current); gleitZiel.current = null; setSpielt(false); gestartet.current = true; setT(Number(e.target.value)); }}
           aria-label="Tag wählen"
           aria-valuetext={stand}
-          style={{ flex: 1, accentColor: v("--color-accent"), minWidth: 0 }}
+          className="kr-regler"
+          style={{ flex: 1, minWidth: 0 }}
         />
       </div>
       <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ borderTop: `1px solid ${v("--color-border")}`, marginTop: space.lg }} />
