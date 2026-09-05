@@ -394,8 +394,8 @@ function RaceCard({
   // Player oder der Fußzeile. Zwei Quellen passen dort nur in zwei Spalten,
   // wenn die Schrift beim kleinsten Token bleiben soll.
   const kantenSpalten: 1 | 2 = widget.sources.length > 1 ? 2 : 1;
-  // Ein Ton für Ereignis-Box und Player: eine leichte Tönung des gedämpften
-  // Hintergrunds, ohne Kontur.
+  // Die Ereignis-Box: eine leichte Tönung des gedämpften Hintergrunds, ohne
+  // Kontur. Der Player darunter bleibt auf dem Kartengrund (Betreiber, 05.09.2026).
   const toenung = `color-mix(in srgb, ${v("--color-bg-muted")} 55%, ${v("--color-bg")})`;
   const legend: ExportLegendEntry[] = [
     { color: FARBE_B, label: anderer.label, shape: "line" },
@@ -663,7 +663,7 @@ function RaceCard({
           Strecke — auf seiner eigenen, festen Skala, nicht auf der wachsenden
           Chart-Achse (dort scheiterte er zweimal). Darunter eine Linie, die den
           Chart-Block von der Fußzeile trennt. */}
-      <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", alignItems: "center", gap: space.lg, marginTop: space.md, background: toenung, borderRadius: v("--radius-md"), padding: abstand("md", "lg") }}>
+      <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", alignItems: "center", gap: space.lg, marginTop: space.md, background: v("--color-bg"), borderRadius: v("--radius-md"), padding: abstand("md", "lg") }}>
         <style>{`.kr-regler{-webkit-appearance:none;appearance:none;height:2px;margin:0;background:var(--color-border);border-radius:1px;outline:none}.kr-regler::-webkit-slider-runnable-track{height:2px;background:transparent}.kr-regler::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:13px;height:13px;margin-top:-5.5px;border-radius:50%;background:var(--color-accent);border:2px solid var(--color-bg);box-sizing:border-box;cursor:pointer}.kr-regler::-moz-range-track{height:2px;background:var(--color-border)}.kr-regler::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:var(--color-accent);border:2px solid var(--color-bg);box-sizing:border-box;cursor:pointer}.kr-regler:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 3px color-mix(in srgb, var(--color-accent) 35%, transparent)}`}</style>
         <button
           type="button"
