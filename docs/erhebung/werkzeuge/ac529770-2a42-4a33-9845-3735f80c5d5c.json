@@ -1,0 +1,29 @@
+{
+  "id": "ac529770-2a42-4a33-9845-3735f80c5d5c",
+  "name": "Stadtwerke Lauterbach GmbH",
+  "url": "https://www.stadtwerke-lauterbach.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Stadtwerke Lauterbach | Meine Stadtwerke. Meine Energie.",
+  "text": "Störungsdienst: 06641 / 9128-170 Strom (Kernstadt), 06031 / 820 Strom (Stadtteile) | 06641 / 9128-210 Wasser Stadtwerke Lauterbach: 06641 / 9128-0 STADTWERKE SERVICE NETZE FREIZEITZENTRUM KONTAKT STROM GAS WASSER GLASFASER FREIZEIT Sie möchten Ihren Zählerstand melden? Nutzen Sie hierzu gerne unsere Zählerstandsmeldung: ZÄHLERSTAND ÜBERMITTELN Hilfe & Schutz bei ungewolltem Anbieter- oder Tarifwechsel Bitte geben Sie niemals Ihre Zählernummer preis! Vermehrt kommt es in der letzten Zeit durch übergreifende Gespräche an der Haustür oder per Telefonanruf zu ungewollten Abschlüssen und Wechseln der Energielieferanten oder Verträge. Was tun, wenn Ihnen ein ungewollter Energievertrag untergeschoben wurde? Hier finden Sie Hilfe und Hinweise, wie Sie sich schützen können. Neue Regelungen beim Stromanbieterwechsel Ab dem 06. Juni 2025 kommt der 24-Stunden-Lieferantenwechsel. Durch diese gesetzliche Änderung sind An- und Abmeldungen im Strombereich nur noch im Voraus möglich. Mehr lesen… Mehr als nurEnergie Die Stadtwerke Lauterbach versorgen Menschen in Lauterbach und der Region günstig und umweltfreundlich mit Strom und Gas und bieten zahlreiche Energiedienstleistungen an. In Lauterbach sorgen die Stadtwerke außerdem für Wasser und per Glasfaser für leistungsstarkes Internet mit Bandbreiten bis zu 1 Gbit/s. KONTAKT AUFNEHMEN Zugang zu schnellem Internet istmoderne Grundversorgung Wir versorgen unsere Stadt und machen sie bereit für die Zukunft! WEITERE INFOS AKTUELLES Hier erfahren Sie aktuelle Informationen und wichtige Meldungen. MEHR ERFAHREN KARRIERE/ AUSBILDUNG MEHR ERFAHREN Wir bitten um etwas Geduld. Das Laden der Seite kann bis zu 20 Sekunden dauern. Vielen Dank für Ihr Verständnis! Öffnungszeiten Kundenzentrum Montag bis Mittwoch: 8.00 – 16.00 Uhr Donnerstag: 8.00 – 18.00 Uhr Freitag: 8.00 – 12.30 Uhr Stadtwerke Kontakt Stadtwerke BHKW E-Mobilität Aktuelles Historie Karriere/Ausbildung Service Hilfe & Schutz bei ungewolltem Anbieter- oder Tarifwechsel​ Planauskunft Infos zum Hausbau Rechnungserklärung Formulare Netze Strom Wasser Glasfaser Freizeitzentrum Hallenbad Sauna Freibad Minigolf Wohnmobilstellplatz Aktuelles Newsletter Haus- und Badeordnung © 2026 Stadtwerke Lauterbach Vertrag hier kündigen | Impressum | Datenschutzerklärung | Barrierefreiheitserklärung | Vertrag widerrufen",
+  "felder": [
+    {
+      "art": "search",
+      "name": "s",
+      "label": ""
+    }
+  ],
+  "rahmen": [
+    "https://kundenportal.stadtwerke-lauterbach.de/powercommerce/csit3/fo/portal/productSearchIframeV3",
+    "https://kundenportal.stadtwerke-lauterbach.de/powercommerce/csit3/fo/portal/meterReadingIframe",
+    "https://kundenportal.stadtwerke-lauterbach.de/powercommerce/csit3/fo/portal/userRegistrationIframe",
+    "https://kundenportal.stadtwerke-lauterbach.de/powercommerce/csit3/fo/portal/loginIframe"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "ac529770-2a42-4a33-9845-3735f80c5d5c.png"
+}

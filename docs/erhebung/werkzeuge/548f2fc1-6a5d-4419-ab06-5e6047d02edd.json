@@ -1,0 +1,39 @@
+{
+  "id": "548f2fc1-6a5d-4419-ab06-5e6047d02edd",
+  "name": "Müller - Mühle GmbH & Co. KG",
+  "url": "https://www.mueller-muehle.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Müller Mühle - der Energieversorger - EWT Elektrizitätswerk Tauberrettersheim",
+  "text": "Diese Webseite verwendet Cookies, um das Nutzererlebnis zu verbessern. Essenziell Details einblenden Auswahl speichern Alle akzeptieren Datenschutz Suchen Navigation überspringen home Vertrieb Netz Services Elektromobilität Messtellenbetreiber Strassenbeleuchtung News Kontakt Müller Mühle - der Energieversorger Sie erwarten günstige Preise, erstklassigen Service und eine sichere Lieferung Ihres Stroms. Auf diesen Wunsch hat sich EWT frühzeitig eingestellt. Wir zeigen Ihnen, wie einfach und vor allem schnell sie in der Zukunft bei der Lieferung Ihres Stroms durch EWT Geld sparen. Unsere Angebotspalette im Überblick Franken-Single Franken-Privat Franken-Select Alle Tarife 100% Ökostrom für alle unsere Kunden © Müller-Mühle | Design by profimedien:net GmbH Kommunikationsdaten | Impressum | Datenschutz",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "group[]",
+      "label": "Essenziell"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookie[]",
+      "label": "Contao HTTPS CSRF Token"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookie[]",
+      "label": "PHP SESSION ID"
+    },
+    {
+      "art": "search",
+      "name": "keywords",
+      "label": "Suchbegriffe"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "548f2fc1-6a5d-4419-ab06-5e6047d02edd.png"
+}

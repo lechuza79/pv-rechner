@@ -1,0 +1,104 @@
+{
+  "id": "b81fab54-9563-48cf-8f32-99cd626952d1",
+  "name": "Stadtwerke Eberbach GmbH",
+  "url": "https://www.stadtwerke-eberbach.de/de/Produkte-Angebote/Solar/",
+  "vermutet": "kontaktformular",
+  "abruf": "ok",
+  "titel": "Solarenergie für Eberbach - Ihre Energiezukunft beginnt hier",
+  "text": "Visuelle Assistenzsoftware und Vorlesefunktion Eye-Able öffnen. Mit der Tastatur erreichbar über ALT + 1 Wir verwenden Cookies auf unserer Website. Wir verwenden Cookies, um Ihnen ein optimales Webseitenerlebnis zu bieten. Dazu zählen Cookies, die für den Betrieb der Seite notwendig sind, sowie solche, die lediglich zu anonymen Statistikzwecken genutzt werden. Sie können Ihre Auswahl jederzeit in den Cookie-Einstellungen anpassen oder widerrufen. Auswahl Notwendige Statistik Alle akzeptieren Auswahl speichern Alle ablehnen Notwendige Statistik Impressum Datenschutz Verträge kündigen Vertrag widerrufen Zur Navigation springen (Eingabetaste betätigen) Zur Suche springen (Eingabetaste betätigen) Zum Inhalt springen (Eingabetaste betätigen) Online-Kundencenter Ticket Freibad & Sauna Kundenportal Suche Info Telefon Schließen Produkte & Angebote Solar Solarenergie für Eberbach – Ihre Energiezukunft beginnt hier Ob auf dem eigenen Dach oder am Balkon – mit unseren Solarangeboten können Sie aktiv zur Energiewende beitragen und gleichzeitig Ihre Stromkosten senken. Wir bieten Ihnen hochwertige Photovoltaiklösungen und steckerfertige Balkonkraftwerke, die einfach zu installieren sind und sich schnell amortisieren. Balkonkraftwerke: Strom einfach selbst erzeugen Das Balkonkraftwerk Ihrer Stadtwerke Eberbach Speziell für unsere Kunden haben wir ein Balkonkraftwerk für die Stromerzeugung zum Eigenverbrauch zusammengestellt. Die von uns gewählten Hersteller der Solarmodule und Wechselrichter sind weltweit anerkannt und in jeder Hinsicht zertifiziert und qualifiziert für sichere, zuverlässige und langlebige technische Lösungen. Die steckerfertigen PV-Anlagen lassen sich ohne bauliche Veränderungen und daher genehmigungsfrei zum Beispiel an Balkonen anbringen – daher auch der Name Balkonkraftwerke. Möglich ist aber auch die Installation an allen anderen geeigneten Flächen am Haus oder auf dem Dach. Solarmodul Hohe Ausgangsleistung, maximaler Wirkungsgrad Geeignet für den Einsatz an und auf Wohngebäuden Strenge Qualitätskontrollen durch TÜV etc. Zertifizierte Beständigkeit gegenüber Umwelteinflüssen Problemlose Montage z.B. an Balkonen Wechselrichter Einfache Installation: Plug & Play Externe Antenne für stärkere Kommunikation Entspricht VDE- und EN-Vorschriften Daten über App abrufbar Balkonkraftwerk Lux Classic* Im Lieferumfang enthalten: 2 x Solarmodul 435 Wp 1 x Modulwechselrichter 800 W 1 x Schuko-Anschlusskabel 5 m Technische Daten (je Modul): Modulleistung: 435 Wp Maße: 1.722 x 1134 x 30 mm Gewicht: 21,3 kg Optional: Balkonhalterungs-Set Flachdachhalterungs-Set Lieferung gerne liefern wir Ihnen das System zum Preis von 60,00 € an Ihre Bordsteinkante. Die Lieferung ist nur in Eberbach und seinen Stadteilen möglich. Bei dieser Gelegenheit kann der kostenlose Austausch Ihres Stromzählers erfolgen. * Bestellung ist nur mit eigener E-Mail möglich zur Produktauswahl Wir sind für Sie da Stadtwerke Eberbach Güterbahnhofstraße 4 69412 Eberbach Telefon: 06271 9209-0 Telefax: 06271 9209-72 E-Mail: post@sw-eberbach.de Öffnungszeiten: Montag bis Freitag von 08:00 bis 12:00 Uhr Mittwoch von 13:00 bis 16:00 Uhr Impressum Datenschutz Verträge kündigen Vertrag widerrufen Erklärung zur Barrierefreiheit Gebärdensprachvideos Leichte Sprache Cookie Einstellungen",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Notwendige"
+    },
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Statistik"
+    },
+    {
+      "art": "text",
+      "name": "VolltextSuchbegriff",
+      "label": "Wie dürfen wir Ihnen weiterhelfen?"
+    },
+    {
+      "art": "text",
+      "name": "_StromVertrieb_PLZ",
+      "label": "Ihre Postleitzahl"
+    },
+    {
+      "art": "select-one",
+      "name": "OrtAuswahl",
+      "label": "Ihr Ort"
+    },
+    {
+      "art": "radio",
+      "name": "_StromVertrieb_Kundenart",
+      "label": "Haushaltsbedarf"
+    },
+    {
+      "art": "radio",
+      "name": "_StromVertrieb_Kundenart",
+      "label": "Gewerblicher Bedarf"
+    },
+    {
+      "art": "text",
+      "name": "_StromVertrieb_Kundenart",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "_StromVertrieb_Verbrauch",
+      "label": "Verbrauch kWh/Jahr"
+    },
+    {
+      "art": "text",
+      "name": "_StromVertrieb_VerbrauchNT",
+      "label": "Verbrauch NT kWh/Jahr"
+    },
+    {
+      "art": "text",
+      "name": "_GasVertrieb_PLZ",
+      "label": "Ihre Postleitzahl"
+    },
+    {
+      "art": "select-one",
+      "name": "OrtAuswahl",
+      "label": "Ort"
+    },
+    {
+      "art": "text",
+      "name": "_GasVertrieb_Ort",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "_GasVertrieb_Verbrauch",
+      "label": "Verbrauch kWh/Jahr"
+    },
+    {
+      "art": "radio",
+      "name": "_GasVertrieb_Kundenart",
+      "label": "Haushaltsbedarf"
+    },
+    {
+      "art": "radio",
+      "name": "_GasVertrieb_Kundenart",
+      "label": "Gewerblicher Bedarf"
+    },
+    {
+      "art": "text",
+      "name": "VolltextSuchbegriff",
+      "label": "Wie dürfen wir Ihnen weiterhelfen?"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "b81fab54-9563-48cf-8f32-99cd626952d1.png"
+}

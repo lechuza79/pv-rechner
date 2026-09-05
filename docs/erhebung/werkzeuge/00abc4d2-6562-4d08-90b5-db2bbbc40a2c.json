@@ -1,0 +1,29 @@
+{
+  "id": "00abc4d2-6562-4d08-90b5-db2bbbc40a2c",
+  "name": "Verteilnetz Plauen GmbH",
+  "url": "https://www.plauen-netz.de/energie-einspeisen/anlage-anmelden/pv-anlagen-ab-30-kw",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Photovoltaik-Anlagen - PV-Anlagen ab 30 kW - Plauen NETZ | PLAUEN NETZ",
+  "text": "Zum Hauptinhalt springen Karriere Suche Services Energie beziehen Energie einspeisen Marktpartner Unternehmen Übersicht Ihr Zuhause Ihr Zähler und Messsystem Gewerbe und Industrie Ihren Stromanschluss nutzen Das Stromnetz nutzen Verträge, Verordnungen und technische Details Antworten auf häufig gestellte Fragen Übersicht Vorabprüfung Anschluss Anlage anmelden FCA – Flexible Netzanschlussvereinbarung Einspeiseabrechnung Redispatch 2.0 Steuerbarkeitscheck Bestehende Anlagen verwalten Zähler- und Messstellenbetrieb Gesetze und Infos Allgemeine Bedingungen Technische Mindestanforderungen Technische Regeln Übersicht Installateure/Elektrofachkraft Lieferanten/Händler Messstellenbetreiber Energieserviceanbieter Übersicht Porträt Servicecenter Plauen Geschäftsführung Zertifikate Servicegarantien Veröffentlichungspflichten Compliance Übersicht Balkonkraftwerke/Steckersolargeräte PV-Anlagen bis 30 kW PV-Anlagen ab 30 kW Wallbox, Wärmepumpe, Speicher und Klimaanlage Wind-Anlagen KWK-Anlage Biomasse-Anlage Wasserkraft-Anlage Großspeicher Reservierung Installateur- und Elektrofachkraft-Suche Wonach suchen Sie? Schnelleinstieg Startseite Energie einspeisen Anlage anmelden PV-Anlagen ab 30 kW PV-Anlagen ab 30 kW Anschluss Ihrer Photovoltaik-Anlage mit einer Leistung über 30 kW Sie möchten Energie aus Sonne erzeugen und in das Energienetz einspeisen? Kein Problem! Auf den folgenden Seiten haben wir alle relevanten Informationen für Betreiber oder Errichter einer dezentralen Solaranlage zusammengefasst. Sie finden hier eine Auflistung aller für den Bearbeitungsablauf notwendigen Dokumente und Hinweise. So läuft der Anschluss ab Wichtig vor der Anmeldung Ihrer Anlage Bevor Sie Ihre Anlage bei uns anmelden, prüfen Sie kostenlos und unverbindlich, ob ein Netzanschluss an Ihrer Adresse möglich ist. Das machen Sie online über unsere schnelle Netzanschlussprüfung (SNAP): für größere Anlagen ab 135 kW - jetzt prüfen. Bitte beachten Sie, dass wir Ihre Anmeldung nur bearbeiten können, wenn eine Vorprüfung durchgeführt wurde. 1. Anmeldung im Antragsportal 2. Prüfung der Netzanschluss-/Einspeisemöglichkeit 3. Mitteilung der Anschlussbedingungen 4. Bestätigung der Stellungnahme / Anschlusszusage 5. Einreichung Projektunterlagen 6. Prüfung Projektunterlagen 7. Versendung Anschlussangebot 8. Fertigmeldung übermitteln 9. Inbetriebnahme & Zählersetzung 10. Nachweise einreichen 11. Abrechnung Alle Dokumente im Überblick Downloads Technische Anschlussbedingungen für Mittelspannung (PDF, 4,7 MB) E.4 Errichtungsplanung für Mittelspannung (DOCX, 107,2 kB) Datenblatt EEA (DOCX, 162,2 kB) Erklärung zur Inbetriebnahme für Niederspannung (DOCX, 142,6 kB) Erklärung zur Inbetriebnahme für Mittelspannung (DOCX, 130,1 kB) Erklärung zur Fernsteuerbarkeit zur Direktvermarktung (DOCX, 95,9 kB) Das könnte Sie auch interessieren Installateur-Suche Wenn Sie Hilfe oder fachlichen Rat bei Ihrem Netzanschluss benötigen, wenden Sie sich gerne an einen Elektroinstallateur in Ihrer Nähe! Bestehende Anlage verwalten Einen gewünschten Betreiberwechsel und weitere Änderungen melden Sie uns bitte schnellstmöglich. Gesetze & Verordnungen Erneuerbare-Energien-Gesetz (EEG), Kraft-Wärme-Kopplungsgesetz (KWKG) und Kraftwerks-Netzanschlussverordung. Hier finden Sie die maßgeblichen gesetzlichen Grundlagen. Hilfe & Kontakt UNSERE ZERTIFIKATE KONTAKT Verteilnetz Plauen GmbH Postfach 156016 03060 Cottbus Anfrageformular SERVICE-LINKS Zählerstand mitteilen Installateur- und Elektrofachkraft-Suche Plan-/Schachtscheinauskunft Download-Center Veröffentlichungspflichten Impressum Datenschutzerklärung Datenschutzeinstellungen Rechtliche Hinweise Kontakt Sitemap Servicecenter Plauen",
+  "felder": [
+    {
+      "art": "search",
+      "name": "searchQuery",
+      "label": "Suche"
+    },
+    {
+      "art": "text",
+      "name": "search-bar",
+      "label": "Wonach suchen Sie?"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "00abc4d2-6562-4d08-90b5-db2bbbc40a2c.png"
+}

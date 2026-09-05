@@ -1,0 +1,106 @@
+{
+  "id": "d280e9fa-ef34-4222-ac4e-44db14fa8df0",
+  "name": "Stadtwerke Lutherstadt Wittenberg GmbH",
+  "url": "https://www.stadtwerke-wittenberg.de/tarife/strom/waermepumpentarif",
+  "vermutet": "rechner",
+  "abruf": "ok",
+  "titel": "Wärmepumpentarif | Strom für Wittenberg und die Region | Stadtwerke Lutherstadt Wittenberg GmbH",
+  "text": "Visuelle Assistenzsoftware und Vorlesefunktion Eye-Able öffnen. Mit der Tastatur erreichbar über ALT + 1 Springe zu Inhalt Zur Startseite Netzservice Suchbegriff eingeben und Website durchsuchen Öffne die Suche Kontakt Login Karriere Tarife Service Über uns Sidebar öffnen Kundenportal Kontakt Zählerstand melden Günstiger Strom für Ihre Wärmepumpe Tarifrechner Strom Finden Sie hier Ihren Stromtarif der Stadtwerke Wittenberg. Strom Heizungsstrom Informationen anzeigen Ladestrom PLZ Stromverbrauch / Jahr kWh oder Personen im Haushalt 1 Person im Haushalt 2 Person im Haushalt 3 Person im Haushalt 4+ Person im Haushalt 2 Personen Jetzt berechnen Unser Wärmepumpentarif Unser spezieller Wärmepumpentarif bietet Ihnen günstigen Strom für den Betrieb Ihrer Wärmepumpe – abgestimmt auf den Verbrauch elektrischer Heizsysteme und ideal für Haushalte mit separatem Heizstromzähler; auf Wunsch können Sie zusätzlich 100 % CO₂-freien Naturstrom beziehen. Ihre Vorteile mit dem Wärmepumpentarif Speziell für Wärmepumpen Profitieren Sie von einem vergünstigten Stromtarif speziell für Ihre Wärmepumpe. Optional mit Naturstrom Sie haben die Option mit 100 % CO₂-freiem Naturstrom betreiben – für ein rundum klimafreundliches Zuhause. Kundenservice vor Ort Mit persönlichem Kundenservice direkt vor Ort stehen wir Ihnen schnell und unkompliziert zur Seite. Solarpark Reinsdorf „Cranach-Höfe“ Close media infomation Open media information Optional 100 % C0₂-freier Naturstrom Ganz einfach dazu buchen. Entscheiden Sie sich ganz bewusst für 100 % Strom aus europäischen, erneuerbaren Energiequellen mit unserer Option: Naturstrom. Jeder gelieferte Stromanteil wird über Herkunftsnachweise beim Umweltbundesamt registriert und nachvollziehbar dokumentiert. Alle aktuellen Preise finden Sie jederzeit bequem in unserem Download-Center. Tarif mit Naturstrom buchen Download-Center Meine Wärme Das Rundum-Sorglos-Heizpaket Ihrer Stadtwerke Wittenberg Mieten statt kaufen: Wir schnüren Ihnen Ihr individuelles Heizpaket inklusive Gerät, Installation, Energielieferung, Wartung und Service. Zum Heizpaket Wir sind für Sie da. Sie haben Fragen? Sie sind sich nicht sicher, welcher Stromtarif am besten zu Ihnen passt? Kein Problem, wir stehen Ihnen gern beratend zur Seite. Gemeinsam finden wir den Tarif, der optimal auf Ihre Bedürfnisse zugeschnitten ist. Tarifberatung Kundencenter: Lucas-Cranach-Straße 22 06886 Lutherstadt Wittenberg 03491 470-180 vertrieb@stadtwerke-wittenberg.de Alle Stromtarife in der Übersicht Finden Sie Ihren passenden Stromtarif von den Stadtwerken Wittenberg. Dynamischer Stromtarif Optimieren Ihren Stromverbrauch und sparen Sie Energiekosten. Geschäftskunden Sie sind Geschäftskunde? Wir beraten Sie gern zu Ihrem individuellen Stromtarif. Häufig gestellte Fragen - FAQs Was ist Wärmepumpenstrom? Welche Voraussetzungen gelten für den Wärmepumpentarif? Was ist der Unterschied zwischen einem Eintarif- und Zweitarifzähler? Scrolle nach oben Hier zuliebe. Ihre Stadtwerke Gruppe Service Plan- und Leitungsauskunft Installateurverzeichnis Marktpartnerinformationen Netzgebiet Baustellen Zertifizierungen Vertrag widerrufen Vertrag kündigen Support Wir helfen Ihnen gern. Rufen Sie uns an. Kundenhotline 03491 470-0 Störhotline (24/7) 03491 470-100 Kundencenter Stadtwerke Lutherstadt Wittenberg Lucas-Cranach-Straße 22 06886 Lutherstadt Wittenberg Öffnungszeiten: Mo, Mi: 8 bis 16 Uhr Di, Do: 8 bis 18 Uhr Fr: 8 bis 13 Uhr Folgen Sie uns Zertifizierungen Programm Immo-und Installateur-Treff Datenschutz Impressum Sitemap Privatsphäre-Einstellungen Barrierefreiheitserklärung Copyright © 2026 Stadtwerke Lutherstadt Wittenberg GmbH Alle Rechte vorbehalten Privatsphären-Einstellungen Wir verwenden auf dieser Website mehrere Arten von Cookies und Integrationen, um Ihnen ein optimales Online-Erlebnis zu ermöglichen, die Nutzerfreundlichkeit unseres Portals zu erhöhen und unsere Kommunikation mit Ihnen stetig zu verbessern. Sie können entscheiden, welche Kategorien Sie zulassen möchten und welche nicht (mehr dazu unter „Individuelle Einstellung“). INDIVIDUELLE EINSTELLUNG ALLE AKZEPTIEREN Impressum | Datenschutz",
+  "felder": [
+    {
+      "art": "text",
+      "name": "tx_kesearch_pi1[sword]",
+      "label": "Suchbegriff eingeben und Website durchsuchen"
+    },
+    {
+      "art": "radio",
+      "name": "tx_swwbtariffs_showpowertariffs[tariffRequest][energyType]",
+      "label": "Strom"
+    },
+    {
+      "art": "radio",
+      "name": "tx_swwbtariffs_showpowertariffs[tariffRequest][energyType]",
+      "label": "Heizungsstrom"
+    },
+    {
+      "art": "radio",
+      "name": "tx_swwbtariffs_showpowertariffs[tariffRequest][energyType]",
+      "label": "Ladestrom"
+    },
+    {
+      "art": "text",
+      "name": "tx_swwbtariffs_showpowertariffs[tariffRequest][postalCode]",
+      "label": "PLZ"
+    },
+    {
+      "art": "select-one",
+      "name": "tx_swwbtariffs_showpowertariffs[tariffRequest][city]",
+      "label": "Ort auswählen"
+    },
+    {
+      "art": "number",
+      "name": "tx_swwbtariffs_showpowertariffs[tariffRequest][consumptionDe",
+      "label": "Stromverbrauch / Jahr"
+    },
+    {
+      "art": "number",
+      "name": "tx_swwbtariffs_showpowertariffs[tariffRequest][drivingPerfor",
+      "label": "oder jährliche Fahrleistung in km"
+    },
+    {
+      "art": "range",
+      "name": "tx_swwbtariffs_showpowertariffs[tariffRequest][chargingRange",
+      "label": "Anteil Ladungen zu Hause"
+    },
+    {
+      "art": "number",
+      "name": "tx_swwbtariffs_showpowertariffs[tariffRequest][consumptionHi",
+      "label": "Verbrauch HT"
+    },
+    {
+      "art": "number",
+      "name": "tx_swwbtariffs_showpowertariffs[tariffRequest][consumptionLo",
+      "label": "Verbrauch NT"
+    },
+    {
+      "art": "range",
+      "name": "tx_swwbtariffs_showpowertariffs[tariffRequest][heatRange]",
+      "label": "Anteil Nebenzeit in"
+    },
+    {
+      "art": "range",
+      "name": "tx_swwbtariffs_showpowertariffs[tariffRequest][houseHoldRang",
+      "label": "oder Personen im Haushalt"
+    },
+    {
+      "art": "range",
+      "name": "tx_swwbtariffs_showpowertariffs[tariffRequest][livingSpaceRa",
+      "label": "oder Wohnfläche"
+    },
+    {
+      "art": "checkbox",
+      "name": "cc_type_required",
+      "label": "Notwendige EinstellungenDiese technischen und funktionalen Einstellungen stellen"
+    },
+    {
+      "art": "checkbox",
+      "name": "cc_type_statistics",
+      "label": "StatistikMithilfe diesen Einstellungen können wir anhand von anonymisierten Info"
+    },
+    {
+      "art": "checkbox",
+      "name": "cc_type_thirdparty",
+      "label": "Drittanbieter-EinbindungenWir verwenden Integrationen von Drittanbietern auf die"
+    }
+  ],
+  "rahmen": [
+    "https://storage.eye-able-cdn.com/testing/localStorage.html"
+  ],
+  "merkmale": {
+    "tarifwort": true,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": true,
+    "pflichtprozess": false
+  },
+  "bild": "d280e9fa-ef34-4222-ac4e-44db14fa8df0.png"
+}

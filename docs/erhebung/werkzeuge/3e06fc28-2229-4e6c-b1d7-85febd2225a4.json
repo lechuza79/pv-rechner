@@ -1,0 +1,129 @@
+{
+  "id": "3e06fc28-2229-4e6c-b1d7-85febd2225a4",
+  "name": "Stadtwerke Haslach i.K.",
+  "url": "https://www.stadtwerke-haslach.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Startseite - Stadtwerke Haslach",
+  "text": "Zur Hauptnavigation springen Zum Inhalt springen Zum Fußbereich springen Störungsmeldung Barrierefrei-Menü Schrift Normal Groß Sehr groß Kontrast Normal Stark Bilder Anzeigen Ausblenden Leichte Sprache Aus Ein Vorlesen Vorlesen starten Energie Trinkwasser Freibad Netze Kundenservice Unternehmen Kontakt Stadtwerk Haslach senkt die Strompreise Jetzt Stromvertrag online abschließen: Neukund:innen können ihren Stromvertrag online abschließen – einfach den Tarifrechner auf der Webseite nutzen und den passenden Tarif in wenigen Klicks finden – schnell, transparent und bequem. Strom PLZ* Ort* Haslach Hofstetten Fischerbach 1 Pers. 2 Pers. 3 Pers. 4 Pers. Verbrauch HT in kWh/Jahr* Zweitarifzähler Verbrauch NT in kWh/Jahr* Tarif finden Wärmestrom Play 1x Mute -0:24 Full-Screen Stadtwerke Haslach Alte Hausacher Straße 1 77716 Haslach im Kinzigtal Telefon: 07832 / 706-270 Fax: 07832 / 706-289 nfstdtwrk-hslchd + − © OpenStreetMap contributors. Aktuelle Meldungen Neuerungen zur Freibadsaison 2026 09.05.26 - Auftakt in die neue Freibadsaison Mit Erfolg abgeschlossene Gesellenprüfungen Alle Meldungen anzeigen Instagram Facebook Stadtwerke Haslach Alte Hausacher Str. 1 77716 Haslach im Kinzigtal Telefon: 07832 / 706-270 Fax: 07832 / 706-289 Mail: info@stadtwerke-haslach.de Wichtige Rufnummern Kundencenter: 07832 706-270 Störungsmeldungen: 07832 2621 Öffnungszeiten Montag, Mittwoch, Freitag 08.00 - 12.00 Uhr Dienstag, Donnerstag 08.00 - 16.30 Uhr Service Zwischenablesung Zählerstand Einzug/Auszug melden Änderung Bankverbindung Digitale Rechnungen erhalten Änderung Abschlagszahlung Kündigen (wg. Lieferantenwechsel) Störungsdienst Impressum Datenschutz Datenschutzeinstellungen © Stadtwerke Haslach Diese Webseite verwendet ausschließlich technisch notwendige Cookies. Datenschutzinformationen Schließen",
+  "felder": [
+    {
+      "art": "text",
+      "name": "searchTerm",
+      "label": "Suche"
+    },
+    {
+      "art": "text",
+      "name": "plz",
+      "label": "PLZ*"
+    },
+    {
+      "art": "select-one",
+      "name": "o~@~r~@~t",
+      "label": "HaslachHofstettenFischerbach"
+    },
+    {
+      "art": "radio",
+      "name": "persons",
+      "label": "1 Pers."
+    },
+    {
+      "art": "radio",
+      "name": "persons",
+      "label": "2 Pers."
+    },
+    {
+      "art": "radio",
+      "name": "persons",
+      "label": "3 Pers."
+    },
+    {
+      "art": "radio",
+      "name": "persons",
+      "label": "4 Pers."
+    },
+    {
+      "art": "text",
+      "name": "verbrauch",
+      "label": "Verbrauch HT in kWh/Jahr*"
+    },
+    {
+      "art": "checkbox",
+      "name": "zweitarifzaehler[]",
+      "label": "Zweitarifzähler"
+    },
+    {
+      "art": "text",
+      "name": "v~@~e~@~r~@~b~@~r~@~a~@~u~@~c~@~h~@~N~@~T~@~S",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "subject-4",
+      "label": "Ich bin bereits Stromkunde*"
+    },
+    {
+      "art": "text",
+      "name": "plz",
+      "label": "PLZ*"
+    },
+    {
+      "art": "select-one",
+      "name": "o~@~r~@~t",
+      "label": "HaslachHofstettenFischerbach"
+    },
+    {
+      "art": "radio",
+      "name": "typ",
+      "label": "Wärmepumpe"
+    },
+    {
+      "art": "radio",
+      "name": "typ",
+      "label": "Speicherheizung (getrennte Messung)"
+    },
+    {
+      "art": "radio",
+      "name": "typ",
+      "label": "Speicherheizung (gemeinsame Messung)"
+    },
+    {
+      "art": "text",
+      "name": "verbrauchHT",
+      "label": "Verbrauch HT*"
+    },
+    {
+      "art": "text",
+      "name": "verbrauchNT",
+      "label": "Verbrauch NT"
+    },
+    {
+      "art": "text",
+      "name": "subject-4",
+      "label": "Ich bin bereits Stromkunde*"
+    },
+    {
+      "art": "range",
+      "name": "speed-bar-d4c2b3198c3f1ce2980581154f62c32c",
+      "label": "1x"
+    },
+    {
+      "art": "range",
+      "name": "volume-bar-d4c2b3198c3f1ce2980581154f62c32c",
+      "label": "Mute"
+    },
+    {
+      "art": "range",
+      "name": "seek-bar-d4c2b3198c3f1ce2980581154f62c32c",
+      "label": "Play1xMute-0:24Full-Screen"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": true,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "3e06fc28-2229-4e6c-b1d7-85febd2225a4.png"
+}

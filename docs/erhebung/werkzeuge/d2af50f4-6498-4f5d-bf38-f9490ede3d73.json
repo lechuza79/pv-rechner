@@ -1,0 +1,31 @@
+{
+  "id": "d2af50f4-6498-4f5d-bf38-f9490ede3d73",
+  "name": "Mitteldeutsche Netzgesellschaft Strom mbH",
+  "url": "https://www.mitnetz-strom.de/energie-einspeisen/anlage-anmelden/pv-anlage-ab-30-kw",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "PV-Anlage ab 30 kW MITNETZ STROM",
+  "text": "Zum Hauptinhalt springen Karriere Blog Suche Portale & Services Energie beziehen Energie einspeisen Netzdienstleistungen Marktpartner Unternehmen Übersicht Ihr Zuhause Ihr Zähler und Messsystem Gewerbe und Industrie Ihren Stromanschluss nutzen Das Stromnetz nutzen Verträge, Verordnungen und technische Details Antworten auf häufig gestellte Fragen Übersicht Vorabprüfung Anschluss Anlage anmelden FCA – Flexible Netzanschlussvereinbarung Einspeiseabrechnung Redispatch 2.0 Steuerbarkeitscheck Bestehende Anlage verwalten Zähler- und Messstellenbetrieb Gesetze und Infos Allgemeine Bedingungen Technische Mindestanforderungen Technische Regeln Übersicht Planung und Bau von technischen Anlagen Betriebsführung von technischen Anlagen Smarte Lösungen Messstellenbetrieb Kaufmännischer Service Technischer Service Ladeinfrastruktur für Geschäftskunden NDL Top-Referenzen Übersicht Installateure/Elektrofachkraft Lieferanten/Händler Messstellenbetreiber Energieserviceanbieter Partnerfirmen/Stadtwerke Übersicht Porträt Servicecenter Veröffentlichungspflichten Blog Media Mediathek Forschung Netzausbau Karriere Compliance Übersicht Balkonkraftwerk/Steckersolargerät PV-Anlage bis 30 kW PV-Anlage ab 30 kW Wallbox, Wärmepumpe, Speicher und Klimaanlage Wind-Anlage KWK-Anlage Biomasse-Anlage Wasserkraft-Anlage Großspeicher Kraftwerk ab 100 MW Reservierung Installateur- und Elektrofachkraft-Suche Wonach suchen Sie? Schnelleinstieg Kontakt Ansprechpartner/Servicecenter-Suche Pressemitteilungen Download-Center Zählerstand mitteilen Installateur- und Elektrofachkraft-Suche Startseite Energie einspeisen Anlage anmelden PV-Anlage ab 30 kW PV-Anlage ab 30 kW Anschluss Ihrer Photovoltaik-Anlage mit einer Leistung über 30 kW Sie möchten Energie aus Sonne erzeugen und in das Energienetz einspeisen? Kein Problem! Auf den folgenden Seiten haben wir alle relevanten Informationen für Betreiber oder Errichter einer dezentralen Solaranlage zusammengefasst. Sie finden hier eine Auflistung aller für den Bearbeitungsablauf notwendigen Dokumente und Hinweise. So läuft der Anschluss ab Wichtig vor der Anmeldung Ihrer Anlage Bevor Sie Ihre Anlage bei uns anmelden, prüfen Sie kostenlos und unverbindlich, ob ein Netzanschluss an Ihrer Adresse möglich ist. Unsere Online-Services: Für kleinere Anlagen im Niederspannungsnetz bis 135 kW - jetzt prüfen Für größere Anlagen ab 135 kW - jetzt prüfen Bitte beachten Sie, dass wir Ihre Anmeldung nur bearbeiten können, wenn eine Vorprüfung durchgeführt wurde. 1. Anmeldung im Antragsportal 2. Prüfung der Netzanschluss-/Einspeisemöglichkeit 3. Mitteilung der Anschlussbedingungen 4. Bestätigung der Stellungnahme / Anschlusszusage 5. Einreichung Projektunterlagen 6. Prüfung Projektunterlagen 7. Versendung Anschlussangebot 8. Fertigmeldung übermitteln 9. Inbetriebnahme & Zählersetzung 10. Nachweise einreichen 11. Abrechnung Alle Dokumente im Überblick Downloads Technische Anschlussbedingungen für Mittelspannung E.4 Errichtungsplanung für Mittelspannung Technische Anschlussbedingungen für Hochspannung E.4 Errichtungsplanung für Hochspannung Datenblatt EAA Erklärung zur Inbetriebnahme für Niederspannung Erklärung zur Inbetriebnahme für Mittelspannung Erklärung zur Inbetriebnahme für Hochspannung Erklärung zur Fernsteuerbarkeit nach § 10b EEG (DOCX, 105,7 kB) Das könnte Sie auch interessieren Finden Sie hier weitere Informationen rund um den Anschluss Ihrer Erzeugungsanlage. Installateur-Suche Wenn Sie Hilfe oder fachlichen Rat bei Ihrem Netzanschluss benötigen, wenden Sie sich gerne an einen Elektroinstallateur in Ihrer Nähe! Bestehende Anlage verwalten Einen gewünschten Betreiberwechsel und weitere Änderungen melden Sie uns bitte schnellstmöglich. Gesetze & Verordnungen Erneuerbare-Energien-Gesetz (EEG), Kraft-Wärme-Kopplungsgesetz (KWKG) und Kraftwerks-Netzanschlussverordung. Hier finden Sie die maßgeblichen gesetzlichen Grundlagen. Hilfe & Kontakt UNSERE ZERTIFIKATE KONTAKT Mitteldeutsche Netzgesellschaft Strom mbH Postfach 156017 03060 Cottbus Anfrageformular SERVICE-LINKS Ansprechpartner-Suche Download-Center Zählerstand mitteilen Installateur- und Elektrofachkraft-Suche Auskunft Versorgungsunterbrechung Plan-/Schachtscheinauskunft Online-ANA Partner-Portal Veröffentlichungspflichten Impressum Datenschutzerklärung Datenschutzeinstellungen Barrierefreiheitsinformation Rechtliche Hinweise Kontakt Sitemap",
+  "felder": [
+    {
+      "art": "search",
+      "name": "searchQuery",
+      "label": "Suche"
+    },
+    {
+      "art": "text",
+      "name": "search-bar",
+      "label": "Wonach suchen Sie?"
+    }
+  ],
+  "rahmen": [
+    "https://app.usercentrics.eu/browser-sdk/4.64.0/cross-domain-bridge.html"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "d2af50f4-6498-4f5d-bf38-f9490ede3d73.png"
+}

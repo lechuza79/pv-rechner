@@ -1,0 +1,34 @@
+{
+  "id": "000ff192-8da7-414d-bff9-766fbe6330a5",
+  "name": "ENWG Energienetze Weimar GmbH & Co. KG",
+  "url": "https://www.enwg-weimar.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "ENWG Weimar: enwg-weimar.de",
+  "text": "Visuelle Assistenzsoftware und Vorlesefunktion Eye-Able öffnen. Mit der Tastatur erreichbar über ALT + 1 ZÄHLERSTANDSMELDUNG STÖRUNGSMELDUNG LEITUNGSAUSKUNFT ANSCHLUSS EINSPEISUNG MARKTPARTNER PORTALE UNTERNEHMEN UNSERE PORTALE - ONLINE ZUM HAUSANSCHLUSS WIR SORGEN FÜR ANSCHLUSS WIR VERNETZEN IHR LEBEN HERZLICH WILLKOMMEN BEI DER ENWG ENERGIENETZE WEIMAR GMBH & CO. KG Die ENWG Energienetze Weimar GmbH & Co. KG ist eine 100%ige Tochtergesellschaft der Stadtwerke Weimar GmbH und gehört zum Konzern der Stadtwirtschaft Weimar GmbH. Unsere zentrale Aufgabe ist die sichere, effiziente und diskriminierungsfreie Bereitstellung der örtlichen Energieversorgungsnetze. Wir sind Betreiberin des Elektrizitäts- und des Gasverteilnetzes der allgemeinen Versorgung im Gebiet der Stadt Weimar und - hinsichtlich des Gasversorgungsnetzes - auch der Gemeinde Ettersburg. Wir sorgen jeden Tag für eine hohe Netzqualität und sichern mit unserer Erfahrung und qualifizierten Mitarbeitern eine zuverlässige Energie- und Gasversorgung für die angeschlossenen Haushalte, Gewerbe- und Industriekunden. Neben dem Betrieb der technischen Anlagen, der Abwicklung der Netznutzung und Lieferantenwechsel gehört auch die Betreuung und Ablesung der Zähler zu unseren Aufgaben. Wir fühlen uns der Stadt Weimar und ihren Bürgern verplichtet – auch als Partner für neue Technologien, beispielsweise dem EEG- und Glasfaserausbau und dem modernen Messstellenbetrieb. Grundversorger im Netzgebiet der ENWG Energienetze Weimar GmbH & Co. KG ist derzeit die Stadtwerke Weimar GmbH. ZÄHLERSTAND MELDEN Hier können Sie uns Ihren Zählerstand für Strom und Gas schnell und unkompliziert mitteilen. KONTAKT Sie haben eine Frage? Rufen Sie uns an oder schreiben einfach eine E-Mail. Den passenden Ansprechpartner zu Ihrem Anliegen finden Sie hier. KARRIERE Sie möchten Teil unseres Unternehmens werden? Informieren Sie sich hier über unsere Stellenangebote. IT-SICHERHEIT VON ERZEUGUNGSANLAGEN Informationen für Betreiber von Erzeugungsanlagen über aktuelle Hinweise zur IT-Sicherheit von Photovoltaik-Anlagen und vergleichbaren Einspeiseanlagen. ENWG ENERGIENETZE WEIMAR GMBH & CO. KG INDUSTRIESTRASSE 14 99427 WEIMAR 03643 4341-600 Störungsnummer: 03643 4341-666 Geschäftszeiten: Montag bis Donnerstag: 08:00 Uhr bis 16:00 Uhr Freitag: 08:00 Uhr bis 12:00 Uhr oder nach Terminvereinbarung ZÄHLERSTANDSMELDUNG STÖRUNGSMELDUNG LEITUNGSAUSKUNFT DATENSCHUTZ BARRIEREFREIHEIT IMPRESSUM AGB Hinweis zu Cookies Wir nutzen Cookies auf unserer Internetseite. Einige sind essenziell, während andere uns helfen, diese Webseite und Ihre Benutzererfahrung zu verbessern. Mehr Informationen erhalten Sie in unserer Datenschutzerklärung. EINSTELLUNGEN ALLE COOKIES ABLEHNEN ALLE COOKIES AKZEPTIEREN",
+  "felder": [
+    {
+      "art": "text",
+      "name": "tx_kesearch_pi1[sword]",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "mandatory",
+      "label": "Zustimmen"
+    },
+    {
+      "art": "checkbox",
+      "name": "marketing",
+      "label": "Zustimmen"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "000ff192-8da7-414d-bff9-766fbe6330a5.png"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "57ab19e9-a1ab-4662-a20c-6559a6c74756",
+  "name": "Elektrizitätsgenossenschaft Dirmstein eG",
+  "url": "https://frontend.vlink.com/?key=ftpvst#/solar/postalcode",
+  "vermutet": "eingekauft",
+  "abruf": "ok",
+  "titel": "VLink - Bewertung des möglichen Angebots",
+  "text": "",
+  "felder": [],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "57ab19e9-a1ab-4662-a20c-6559a6c74756.png"
+}

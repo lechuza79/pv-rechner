@@ -1,0 +1,29 @@
+{
+  "id": "ed7dd31f-6ab0-49f7-ba1a-8539183b4146",
+  "name": "StWB Stadtwerke Brandenburg an der Havel GmbH & Co. KG",
+  "url": "https://www.stwb.de/balkonkraftwerk_anmeldung/",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Balkonkraftwerk-Anmeldung - Stadtwerke Brandenburg",
+  "text": "Zum Inhalt springen Visuelle Assistenzsoftware und Vorlesefunktion Eye-Able öffnen. Mit der Tastatur erreichbar über ALT + 1 Suche nach: Terminbuchung Kontakt Für Ihr Zuhause Für Ihr Unternehmen Ihre Stadtwerke Ökostrom Erdgas Wärme E-Mobilität Kundenservice Netzservice Strom Erdgas Wärme Dienstleistungen Service Über uns Unser Engagement Netze Karriere Kundenportal Anmeldung Ihres Balkonkraftwerks (steckerfertige PV-Anlage bis 800Wp) für eine Erzeugungsanlage im Parallelbetrieb mit dem Niederspannungsnetz. SEE-Nummer griffbereit? Dann einfach folgendes Formular ausfüllen und an uns zurücksenden. Wir kümmern uns um alles Weitere. Unser Standort StWB Stadtwerke Brandenburg an der Havel GmbH & Co. KG Packhofstraße 31 14776 Brandenburg an der Havel Telefonische Beratung Mo, Di, Do: 9 Uhr - 18 Uhr Fr: 9 Uhr - 16 Uhr Telefon 03381 752 752 Sie wünschen eine individuelle Beratung im Kundencenter? ONLINE-TERMINVERGABE Online Service KONTAKTFORMULAR KUNDENPORTAL DOWNLOADS VERTRÄGE HIER WIDERRUFEN ⁠⁠VERTRÄGE HIER KÜNDIGEN © 2026 StWB Datenschutz Impressum Cookie-Einstellungen nach oben",
+  "felder": [
+    {
+      "art": "search",
+      "name": "s",
+      "label": "Suche nach:"
+    },
+    {
+      "art": "search",
+      "name": "s",
+      "label": "Suche nach:"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "ed7dd31f-6ab0-49f7-ba1a-8539183b4146.png"
+}

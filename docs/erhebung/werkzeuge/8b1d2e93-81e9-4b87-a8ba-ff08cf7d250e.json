@@ -1,0 +1,71 @@
+{
+  "id": "8b1d2e93-81e9-4b87-a8ba-ff08cf7d250e",
+  "name": "IGS Netze GmbH",
+  "url": "https://www.igs-netze.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "IGS-Netze - IGS Netze GmbH",
+  "text": "Zustimmung Details Über Cookies Diese Webseite verwendet Cookies Wir verwenden Cookies, um Inhalte und Anzeigen zu personalisieren, Funktionen für soziale Medien anbieten zu können und die Zugriffe auf unsere Website zu analysieren. Außerdem geben wir Informationen zu Ihrer Verwendung unserer Website an unsere Partner für soziale Medien, Werbung und Analysen weiter. Unsere Partner führen diese Informationen möglicherweise mit weiteren Daten zusammen, die Sie ihnen bereitgestellt haben oder die sie im Rahmen Ihrer Nutzung der Dienste gesammelt haben. Bzgl. einer Datenweitergabe außerhalb der EU oder eines sicheren Drittlands weisen wir darauf hin, dass Sie nur erfolgt, wenn Sie uns dazu Ihre Einwilligung erteilt haben und dass die Verarbeitung der Daten im Einklang mit den Feststellungen aus dem Gerichtsurteil des Europäischen Gerichtshofes vom 16.07.2020 (Fall C-311/18), sogenanntes Schrems II Urteil steht. Weitere Informationen finden Sie in unseren Datenschutzhinweisen. Einwilligungsauswahl Notwendig Präferenzen Statistiken Marketing Auswahl zustimmen Allen zustimmen Zur Hauptnavigation springen Zum Hauptinhalt springen Zur Footernavigation springen Kontakt Unternehmen Veröffentlichungen Netzanschluss Netzdienstleistungen Vernetzt denken - vernetzt handeln! Willkommen bei der IGS Netze GmbH Die IGS Netze GmbH wurde zum 1. Oktober 2013 als Netzgesellschaft gegründet und hat ihren Sitz in Gersthofen. Das Unternehmen ist eine 100 %-ige Tochtergesellschaft der MVV Industriepark Gersthofen GmbH. Es erfüllt damit die Unbundling-Vorgaben des Gesetzgebers, wonach der Netzbetrieb von Vertrieb und Erzeugung getrennt werden muss. Die IGS Netze GmbH betreibt das Stromverteilnetz im Industriepark Gersthofen. Als Verteilnetzbetreiber bringt das Unternehmen die elektrische Energie zuverlässig zu den Anlagen der Kunden, die von der hohen Verfügbarkeit und Qualität der Versorgungsleitungen profitieren. Neben dem Betrieb kümmert sich die Netzgesellschaft um die Planung, den Ausbau und die Instandhaltung des Netzes. Impressum Datenschutz Haftung Barrierefreiheit IGS Netze GmbH Ludwig-Hermann-Str. 100 86368 Gersthofen Telefon: 0821 479-2568 E-Mail: info@igs-netze.de © 2026 IGS Netze GmbH",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonNecessary",
+      "label": "Notwendig"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonPreferences",
+      "label": "Präferenzen"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonStatistics",
+      "label": "Statistiken"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonMarketing",
+      "label": "Marketing"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonNecessaryInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonPreferencesInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonStatisticsInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonMarketingInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyContentCheckboxPersonalInformation",
+      "label": "Meine persönlichen Daten nicht verkaufen oder weitergeben"
+    },
+    {
+      "art": "text",
+      "name": "tx_kesearch_pi1[sword]",
+      "label": ""
+    }
+  ],
+  "rahmen": [
+    "https://consentcdn.cookiebot.eu/sdk/bc-v4.min.html"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "8b1d2e93-81e9-4b87-a8ba-ff08cf7d250e.png"
+}

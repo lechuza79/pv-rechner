@@ -1,0 +1,49 @@
+{
+  "id": "e0db86ec-2c6b-413f-8db3-0c881fb82ddc",
+  "name": "Stadtwerke Menden GmbH",
+  "url": "https://www.stadtwerke-menden.de/netze/anschluss-service/photovoltaikanlage-anmelden.html",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Voranfrage Photovoltaikanlage - Anschluss-Service - Netze - Stadtwerke Menden",
+  "text": "Zum Hauptinhalt wechseln Produkte & Services Netze Für Menden Karriere Versorgungsgebiet Stromnetz Erdgasnetz Messstellenbetrieb Anschluss-Service Installateure Marktpartner Sie sind hier: Home Netze Anschluss-Service Voranfrage Photovoltaikanlage Voranfrage Photovoltaikanlage Sie möchten Ihren eigenen Strom erzeugen mit einer Photovoltaik-Anlage? Wir zeigen Ihnen, welche Schritte von der Beantragung bis zur Auszahlung der Einspeisevergütung dazu erforderlich sind. Dabei ist die richtige Vorbereitung das A und O. Deshalb haben wir alle wichtigen Informationen hier für Sie zusammengestellt. Und sollten noch Fragen offen bleiben: Nehmen Sie einfach Kontakt mit uns auf. Hier können Sie die Möglichkeit des Anschlusses einer geplanten PV-Anlage ab 0,8 kWp an unser Versorgungsnetz prüfen lassen. Bitte beachten Sie, dass Balkon-PV-Kraftwerke bis 0,8 kWp zwar nicht angemeldet werden müssen, aber laut Gesetzgeber im Marktstammdatenregister registriert werden müssen. Voranfrage PV-Anlage Marktstammdatenregister Häufige Fragen, unsere Antworten Wie ist der Bearbeitungsstand meiner Anlage? Ich warte auf einen Termin zur Zählersetzung, an wen kann ich mich wenden? Wann und wie muss ich meine Zählerstände abgeben? Sie haben noch Fragen? Thomas Friedrich Team Netznutzung 02373 169-3202 E-Mail schreiben Bei Störungen sind wir rund um die Uhr für Sie erreichbar. +49 2373 2424 Kontakt Stadtwerke Menden, Am Papenbusch 8–10, 58708 Menden Telefon: +49 2373 169 0 Telefax: +49 2373 169 1001 info@stadtwerke-menden.de Öffnungszeiten Montag–Donnerstag:08:00–16:00 Uhr Freitag:08:00–14:00 Uhr Vereinbaren Sie auch außerhalb der Öffnungszeiten einen Termin mit uns! Direkteinstiege Rückrufservice naturliebeStrom Erdgas Vertrag kündigen Widerruf Unternehmen Wir für Menden Über uns Karriere Presse © 2026 Stadtwerke Menden Marktpartner Impressum Datenschutz Sitemap Barrierefreiheitserklärung close Barrierefreiheit refresh Schrift vergrößern Schrift verkleinern Wortabstand vergrößern Wortabstand verkleinern Zeilenabstand vergrößern Zeilenabstand verkleinern Graustufen Großer Mauszeiger Lesehilfe Links unterstreichen Animationen ausschalten",
+  "felder": [
+    {
+      "art": "text",
+      "name": "search[word]",
+      "label": ""
+    },
+    {
+      "art": "select-one",
+      "name": "ccm-widget--language-select",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-41ba25c",
+      "label": "Technisch notwendig (3)"
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-a717ff5",
+      "label": "Analyse / Statistiken (1)"
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-7c19e32",
+      "label": "Personalisierung (1)"
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-15c61c3",
+      "label": "Sonstiges (1)"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "e0db86ec-2c6b-413f-8db3-0c881fb82ddc.png"
+}

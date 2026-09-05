@@ -1,0 +1,24 @@
+{
+  "id": "b543b443-39d9-42a3-b230-b25ed503913b",
+  "name": "Dortmunder Netz GmbH",
+  "url": "https://www.do-netz.de/netzanschluss/steuerbare-verbrauchseinrichtungen-va-e-mobilitaet-waermepumpen-raumklima-anlagen",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Steuerbare Verbrauchseinrichtungen (private Wallboxen, Wärmepumpen, Raumklima-Anlagen, u.U. Stromspeicher)",
+  "text": "Visuelle Assistenzsoftware öffnen. Mit der Tastatur erreichbar über ALT + 1 Direkt zur Hauptnavigation Direkt zum Inhalt Direkt zum Footer ZÄHLERSTAND ERFASSEN STÖRUNGS­MELDUNG Hauptnavigation Kontrast erhöhen Suche Inhalt Sie befinden sich hier: Netzanschluss Steuerbare Verbrauchseinrichtungen (private Wallboxen, Wärmepumpen, Raumklima-Anlagen, u.U. Stromspeicher) Steuerbare Verbrauchs-einrichtungen Mit den ab 01.01.2024 geltenden neuen Festlegungen der Bundesnetzagentur zum § 14a EnWG haben sich zahlreiche neue Vorgaben für die sog. steuerbaren Verbrauchseinrichtungen ergeben. Hier finden Sie einen Überblick der relevanten Vorgaben für die Betreiber von privaten Ladesäulen, Raumklimageräten, Wärmepumpen und Speichern, die ab 01.01.2024 in Betrieb gehen. Neue Regelungen für steuerbare Verbrauchseinrichtungen ab 01.01.2024 Mehr erfahren Schritt 1: Anschluss von § 14a-Anlagen an das Netz - Meldung über das Netzanschlussportal Mehr erfahren Schritt 2: Netzentgeltreduzierung für Steuerbare Verbrauchseinrichtungen - Antrag stellen! Mehr erfahren Häufig gestellte Fragen zu Steuerbaren Verbrauchseinrichtungen finden Sie hier Footer ENTSTÖRUNGSDIENSTE Unsere Entstörungsdienste sind für Sie rund um die Uhr erreichbar. Weitere Kontaktmöglichkeiten finden Sie hier. 0231.54497-111 Störung der Stromversorgung 0231.54497-112 Störung von Gasgeräten und der Wärmeversorgung 0231.54497-113 Störung der Wasserversorgung 0231.54497-114 Gasgeruch Störungen der Straßenbeleuchtung: Bitte melden Sie diese direkt unter www.stoerung24.de. Besteht eine akute Gefahr für Leib und Leben (z.B. offenliegende Stromkabel oder offene Mastklappen), rufen Sie bitte direkt unter 0231.54497-111 an. Ein Unternehmen der DEW21 Gruppe Widerruf Kontakt Datenschutz Impressum Cookies Barrierefreiheit © Dortmunder Netz GmbH",
+  "felder": [
+    {
+      "art": "text",
+      "name": "tx_solr[q]",
+      "label": "Ihr Suchbegriff"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "b543b443-39d9-42a3-b230-b25ed503913b.png"
+}

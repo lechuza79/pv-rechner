@@ -1,0 +1,69 @@
+{
+  "id": "fe824876-7cf0-4261-a7a9-3691e7cbf8c6",
+  "name": "Stadtwerke Bernau GmbH",
+  "url": "https://www.stadtwerke-bernau.de/waermepumpenrechner/",
+  "vermutet": "rechner-mit-leadfunnel",
+  "abruf": "ok",
+  "titel": "Wärmepumpen-Rechner-Stadtwerke Bernau",
+  "text": "Stadtwerke Bernau GmbH Preisrechner Kontakt Ihre Wärmepumpen‑Lösung für Ihr Eigenheim Seriös, regional, transparent: Erhalten Sie in wenigen Klicks eine unverbindliche Schätzung – inklusive empfohlener Heizleistung, ungefährer Kosten und einer ersten Orientierung zu Betriebskosten. Jetzt Preis berechnen Beratung anfragen Wärmepumpen‑Preisrechner Beantworten Sie folgende Fragen. Das Ergebnis dient der ersten Orientierung und ersetzt keine individuelle Planung. 1) Wie viele Wohneinheiten hat das Gebäude? Der Online-Rechner ist für Gebäude mit genau 1 Wohneinheit ausgelegt. Bei mehr Wohneinheiten ist eine individuelle Berechnung notwendig. 2) Welche Art von Haus möchten Sie mit einer Wärmepumpe ausstatten? Der Rechner ist auf Einfamilienhäuser, Doppelhaushälften und Reihenhäuser ausgelegt. Einfamilienhaus Doppelhaushälfte Reihenmittelhaus 3) Aus welchem Baujahr stammt Ihr Gebäude ungefähr? bis 1977 1978–1983 1984–1994 1995–2001 2002–2008 ab 2009 4) Wurde Ihr Gebäude bereits energetisch saniert? Teilsanierung bedeutet zum Beispiel Dach- oder Außenwanddämmung oder Fenstertausch. Nein Teilweise Umfassend 5) Wie groß ist die beheizte Wohnfläche ungefähr? 6) Soll die Wärmepumpe auch das Warmwasser bereiten? Ja Nein 7) Wie viele Personen leben im Haushalt? 8) Welche Heizsysteme sind überwiegend vorhanden? Fußbodenheizung Heizkörper Gemischt (z. B. Heizkörper und Fußbodenheizung) 9) Welche Heizung soll ersetzt werden? Gasheizung Ölheizung Andere Heizung 11) Nutzen Sie das Haus selbst? Klima- und Einkommensbonus setzen in der Regel voraus, dass es sich um Ihre selbstgenutzte Haupt- oder alleinige Wohneinheit handelt. Die genaue Förderfähigkeit prüfen wir in der Beratung. Ja, selbstgenutzt Nein 12) In welchem Bereich liegt Ihr durchschnittliches zu versteuerndes Haushaltsjahreseinkommen? Für einen Antrag im Jahr 2026 zählt der Durchschnitt aus dem zweiten und dritten Jahr vor Antragstellung, also 2024 und 2023. Für die erste Schätzung reicht eine grobe Einordnung. Bis 30.000 € 30.001 bis 40.000 € 40.001 bis 50.000 € 50.001 bis 60.000 € Über 60.000 € Die Schätzung rechnet vorsichtig mit der Obergrenze des gewählten Bereichs. 13) Lebt ein minderjähriges kindergeldberechtigtes Kind im Haushalt? Diese Angabe kann für den Einkommensbonus relevant sein. Für die erste Schätzung reicht Ja oder Nein. Ja Nein Preis berechnen Zurücksetzen Die Berechnung startet nach Klick auf „Preis berechnen“. Unverbindliche Beratung anfragen Hinterlassen Sie Ihre Kontaktdaten. Wir melden uns zeitnah. Bevorzugter Wochentag Montag Dienstag Mittwoch Donnerstag Freitag Bevorzugtes Zeitfenster 08:00 Uhr – 11:00 Uhr 11:00 Uhr – 14:00 Uhr 14:00 Uhr – 17:00 Uhr Mit dem Absenden dieses Formulars erkläre ich mich mit der Verarbeitung meiner Daten zur Kontaktaufnahme gemäß Datenschutzerklärung einverstanden. Unverbindlich anfragen © 2026 Stadtwerke Bernau Kontakt Barrierefreiheit Datenschutz Impressum",
+  "felder": [
+    {
+      "art": "number",
+      "name": "residentialUnits",
+      "label": ""
+    },
+    {
+      "art": "number",
+      "name": "wohnflaeche",
+      "label": ""
+    },
+    {
+      "art": "number",
+      "name": "personen",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "fullname",
+      "label": "Bevorzugter Wochentag Montag Dienstag Mittwoch Donnerstag Freitag Bevorzugtes Ze"
+    },
+    {
+      "art": "text",
+      "name": "city",
+      "label": "Bevorzugter Wochentag Montag Dienstag Mittwoch Donnerstag Freitag Bevorzugtes Ze"
+    },
+    {
+      "art": "tel",
+      "name": "phone",
+      "label": "Bevorzugter Wochentag Montag Dienstag Mittwoch Donnerstag Freitag Bevorzugtes Ze"
+    },
+    {
+      "art": "email",
+      "name": "email",
+      "label": "Bevorzugter Wochentag Montag Dienstag Mittwoch Donnerstag Freitag Bevorzugtes Ze"
+    },
+    {
+      "art": "select-one",
+      "name": "contact_day",
+      "label": "Bevorzugter Wochentag Montag Dienstag Mittwoch Donnerstag Freitag Bevorzugtes Ze"
+    },
+    {
+      "art": "select-one",
+      "name": "contact_window",
+      "label": "Bevorzugter Wochentag Montag Dienstag Mittwoch Donnerstag Freitag Bevorzugtes Ze"
+    },
+    {
+      "art": "textarea",
+      "name": "message",
+      "label": "Bevorzugter Wochentag Montag Dienstag Mittwoch Donnerstag Freitag Bevorzugtes Ze"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": true,
+    "pflichtprozess": false
+  },
+  "bild": "fe824876-7cf0-4261-a7a9-3691e7cbf8c6.png"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "4c3bbd33-4646-46c1-b5a9-051ee44baaba",
+  "name": "SWKiel Netz GmbH",
+  "url": "https://www.swkiel-netz.de/energie-einspeisen/photovoltaikanlagen-anmelden",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Photovoltaikanlagen anmelden",
+  "text": "Zur Hauptnavigation springen Zur Servicelasche springen Zum Hauptinhalt springen Zur Footernavigation springen Störung melden Karriere Unternehmen Veröffentlichungen Login ENERGIE ANSCHLIESSEN ENERGIE EINSPEISEN ZÄHLER UNSERE NETZE SERVICE & KONTAKT SWKiel Netz GmbH SWKiel Netz GmbH / Energie einspeisen / Photovoltaikanlagen anmelden Photovoltaikanlage anmelden Sie haben gebaut, besitzen große Dachflächen oder umfangreichen Platz für den Bau einer Photovoltaik- oder Windkraftanlage? Wir geben Ihnen hier einen Überblick, was Sie Step-by-Step dabei beachten sollten, und haben außerdem alle wichtigen Formulare und Datenblätter auf dieser Seite zusammengestellt. So steht Ihrem Vorhaben nichts mehr im Wege. Rollenschaubild im Einspeiseprozess Sind Sie Installateur und möchten eine Inbetriebnahme melden? Inbetrieb­setzungs­protokoll übermitteln Schaubild und Checkliste für den Einspeiseprozess Wir haben für Sie eine Erläuterung der einzelnen Prozessschritte für den Einspeiseprozess sowie eine Checkliste im folgenden Dokument zusammengestellt: Checkliste zum Einspeiseprozess Im nächsten PDF finden Sie ein Schaubild des Einspeiseprozesses, die Rollenverteilung sowie die Checkliste - alles in einem Dokument fertig zum Ausdrucken: Erläuterung Einspeiseprozess gesamt Zur Anmeldung Ihrer Erzeugungsanlage Ihre Erzeugungsanlage melden Sie im Einspeiseportal der SWKiel Netz GmbH an. ZUM EINSPEISEPORTAL Zur besseren Verständlichkeit Ihrer Einspeiseabrechnung finden Sie hier eine Kurzanleitung. Zur Bearbeitung Ihrer Anfrage erhaben wir personenbezogene Daten von Ihnen. Über den Umgang mit diesen Daten informieren wir Sie hier. Hinweise Haben Sie technische Fragen zu Ihrem Stromanschluss im Haus, wie z. B. zum Leistungsbedarf, Zählerschrank oder zur Messeinrichtung? Dann wenden Sie sich bitte an einen qualifizierten Elektroinstallateur. Die SWKiel Netz GmbH steht Ihnen in diesen Fragen leider nicht mit einer direkten Beratung zur Verfügung. Arbeiten am Netzanschluss und an der elektrischen Anlage dürfen nur durch den Netzbetreiber oder einem Elektroinstallationsunternehmen, das in einem offiziellen Installateur-Verzeichnis eines Netzbetreibers eingetragen ist, durchgeführt werden. Bitte führen Sie keine eigenen Arbeiten am Netzanschluss durch und beauftragen Sie ausschließlich zugelassene Fachbetriebe. Dies ist gesetzlich vorgeschrieben (§13 NAV und §10 EEG 2023) und dient Ihrer Sicherheit. Eine Liste der bei uns eingetragenen Elektroinstallateure finden Sie auf unserer Webseite unter: Installateur finden. Steckerfertige Photovoltaikanlagen müssen Sie nur im Marktstammdatenregister registrieren. Weitere Informationen haben wir Ihnen auf unserer Webseite unter Steckerfertige Photovoltaikanlagen zusammengestellt. Sofern Sie Herausforderungen bei der Anmeldung oder der Dateneingabe im Portal haben, nutzen Sie bitte unser Kontaktformular auf unserer Webseite www.swkiel-netz.de. Bitte beachten Sie nach Fertigstellung Ihrer Erzeugungsanlage die Verpflichtung der Übermittlung von Zählerständen Ihrer Erzeugungsanlage an den Netzbetreiber bis spätestens zum 28.02. des Folgejahres. Hierfür senden wir Ihnen zum 31.12. eines jeden Jahres eine Ablesekarte. Sollten Sie diese nicht erhalten, kontaktieren Sie uns über die bekannten Kanäle. Wichtige Informationen & Rechtsgrundlagen Auf dieser Seite finden sie aktuelle Informationen und Rechtsgrundlagen zum Thema. Wichtige Informationen & Rechtsgrundlagen SWKiel Netz GmbH Ein Unternehmen der Stadtwerke Kiel AG. Unter unserer Servicenummer helfen wir Ihnen gern bei Fragen zu Strom, Erdgas, Wasser und Wärme. Mo bis Fr 8 - 16 Uhr. 0431 594 3410 DATENSCHUTZ BARRIEREFREIHEIT IMPRESSUM",
+  "felder": [
+    {
+      "art": "text",
+      "name": "tx_kesearch_pi1[sword]",
+      "label": ""
+    }
+  ],
+  "rahmen": [
+    "https://app.usercentrics.eu/browser-sdk/4.64.0/cross-domain-bridge.html"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "4c3bbd33-4646-46c1-b5a9-051ee44baaba.png"
+}

@@ -1,0 +1,199 @@
+{
+  "id": "1c15557c-01d3-423c-b7fd-52a2abb27281",
+  "name": "Energieversorgung Beckum GmbH & Co. KG",
+  "url": "https://www.evb-beckum.de/produkte/photovoltaik/",
+  "vermutet": "kontaktformular",
+  "abruf": "ok",
+  "titel": "Photovoltaik - Energieversorgung Beckum GmbH",
+  "text": "Zum Inhalt springen Suche Suche Privatkunden Geschäftskunden Karriere Anmeldung Kontakt Strom Gas Wärmepumpe Produkte Service Wir Netz Startseite » Produkte » Photovoltaik Photovoltaik Gemeinsam die Energiewende gestalten! Sie möchten Ihren eigenen Solarstrom erzeugen und sich mit einer Photovoltaikanlage auf Ihrem Dach autark mit Energie versorgen? Bei uns können Sie eine leistungsstarke Photovoltaikanlage inklusive Wechselrichter, Batteriespeicher und Energiemanager kaufen und langfristig Ihre Energiekosten senken. Gute Gründe für Ihre Photovoltaikanlage: Stromkosten sparen mit unbegrenzter Solarenergie Unabhängig von schwankenden Marktpreisen Nachhaltige Energieerzeugung Fördermöglichkeiten Alles aus einer Hand Individuelle Möglichkeiten, Technik auf dem neuesten Stand und dazu umfassende Service- und Zusatzleistungen, abgestimmt auf Ihre Bedürfnisse. Überzeugen Sie sich selbst, dass wir bei unserem Rundum-Sorglos-Paket an alles gedacht haben: von der kostenlosen Beratung über die individuelle Planung bis zur fachgerechten Installation und anschließendem Monitoring Ihrer Photovoltaik-Anlage. Vereinbaren Sie gerne ein kostenloses Beratungsgespräch. Rufen Sie uns dazu einfach an oder füllen Sie das Kontaktformular aus. Wir freuen uns auf Ihre Anfrage! Ihre zukünftige PV-Anlage besteht aus folgenden Komponenten: Solarmodule Glas/Glas oder Glas/Folie Wechselrichter Unterkonstruktion Montageset Energiemanager optional: Stromspeicher 1 Kunde2 Objektdetails3 Daten für die Wirtschaftlichkeitsberechnung Kontaktanfrage Photovoltaikanlage Anrede* Bitte wählen Herr Frau Eheleute Titel Bitte wählen Dr. Prof. Prof. Dr. Vorname* Nachname* E-Mail* Telefon* Anschrift* Straße & Nr. Anschrift Zusatz PLZ Ort Alternative: Herr Felling Kundenservice 0 25 21 / 85 06-48 Kooperationspartner Hochschule Hamm-Lippstadt Top Lokalversorger 2026 Impressum Datenschutz Barrierefreiheitserklärung Streitschlichtung Sitemap Cookie-Einstellungen © 2026 Energieversorgung Beckum GmbH & Co. KG Facebook Youtube Instagram Xing Linkedin Mit diesem Button wird der Dialog geschlossen. Seine Funktionalität ist identisch mit der des Buttons Nur essenzielle Cookies akzeptieren. Datenschutzeinstellungen Wir nutzen Cookies auf unserer Website. Einige von ihnen sind essenziell, während andere uns helfen, diese Website und Ihre Erfahrung zu verbessern. Wenn Sie unter 16 Jahre alt sind und Ihre Zustimmung zu freiwilligen Diensten geben möchten, müssen Sie Ihre Erziehungsberechtigten um Erlaubnis bitten. Personenbezogene Daten können verarbeitet werden (z. B. IP-Adressen), z. B. für personalisierte Anzeigen und Inhalte oder Anzeigen- und Inhaltsmessung. Weitere Informationen über die Verwendung Ihrer Daten finden Sie in unserer Datenschutzerklärung. Es besteht keine Verpflichtung, der Verarbeitung Ihrer Daten zuzustimmen, um dieses Angebot nutzen zu können. Sie können Ihre Auswahl jederzeit unter Einstellungen widerrufen oder anpassen. Bitte beachten Sie, dass aufgrund individueller Einstellungen möglicherweise nicht alle Funktionen der Website zur Verfügung stehen. Einige Services verarbeiten personenbezogene Daten in den USA. Mit Ihrer Einwilligung zur Nutzung dieser Services stimmen Sie auch der Verarbeitung Ihrer Daten in den USA gemäß Art. 49 (1) lit. a DSGVO zu. Der EuGH stuft die USA als Land mit unzureichendem Datenschutz nach EU-Standards ein. So besteht etwa das Risiko, dass US-Behörden personenbezogene Daten in Überwachungsprogrammen verarbeiten, ohne bestehende Klagemöglichkeit für Europäer. Es folgt eine Liste der Service-Gruppen, für die eine Einwilligung erteilt werden kann. Die erste Service-Gruppe ist essenziell und kann nicht abgewählt werden. Essenziell Essenzielle Cookies ermöglichen grundlegende Funktionen und sind für die einwandfreie Funktion der Website erforderlich. Statistiken Statistik Cookies erfassen Informationen anonym. Diese Informationen helfen uns zu verstehen, wie unsere Besucher unsere Website nutzen. Externe Medien Inhalte von Videoplattformen und Social-Media-Plattformen werden standardmäßig blockiert. Wenn Cookies von externen Medien akzeptiert werden, bedarf der Zugriff auf diese Inhalte keiner manuellen Einwilligung mehr. Speichern Alle akzeptieren Nur essenzielle Cookies akzeptieren Individuelle Datenschutzeinstellungen Cookie-Details Datenschutzerklärung Impressum",
+  "felder": [
+    {
+      "art": "search",
+      "name": "s",
+      "label": "Suche"
+    },
+    {
+      "art": "text",
+      "name": "input_54",
+      "label": "Anschrift (Pflichtfeld)"
+    },
+    {
+      "art": "select-one",
+      "name": "input_11",
+      "label": "Anrede*"
+    },
+    {
+      "art": "select-one",
+      "name": "input_12",
+      "label": "Titel"
+    },
+    {
+      "art": "text",
+      "name": "input_4",
+      "label": "Vorname*"
+    },
+    {
+      "art": "text",
+      "name": "input_3",
+      "label": "Nachname*"
+    },
+    {
+      "art": "email",
+      "name": "input_28",
+      "label": "E-Mail*"
+    },
+    {
+      "art": "tel",
+      "name": "input_9",
+      "label": "Telefon*"
+    },
+    {
+      "art": "text",
+      "name": "input_26.1",
+      "label": "Straße & Nr."
+    },
+    {
+      "art": "text",
+      "name": "input_26.2",
+      "label": "Anschrift Zusatz"
+    },
+    {
+      "art": "text",
+      "name": "input_26.3",
+      "label": "PLZ"
+    },
+    {
+      "art": "text",
+      "name": "input_26.5",
+      "label": "Ort"
+    },
+    {
+      "art": "button",
+      "name": "gform_next_button_39_31",
+      "label": ""
+    },
+    {
+      "art": "select-one",
+      "name": "input_34",
+      "label": "Gebäude*"
+    },
+    {
+      "art": "select-one",
+      "name": "input_35",
+      "label": "Dach*"
+    },
+    {
+      "art": "select-one",
+      "name": "input_50",
+      "label": "Verlegung an der Fassade*"
+    },
+    {
+      "art": "select-one",
+      "name": "input_37",
+      "label": "Was für eine Heizung ist installiert?*"
+    },
+    {
+      "art": "text",
+      "name": "input_43",
+      "label": "Wie alt ist die Heizung ca.? (in Jahren)*"
+    },
+    {
+      "art": "select-one",
+      "name": "input_40",
+      "label": "Ist eine Klimaanlage vorhanden?*"
+    },
+    {
+      "art": "button",
+      "name": "gform_previous_button_39_38",
+      "label": ""
+    },
+    {
+      "art": "button",
+      "name": "gform_next_button_39_38",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "input_44",
+      "label": "Wie viele Personen wohnen in dem Objekt aktuell?*"
+    },
+    {
+      "art": "text",
+      "name": "input_45",
+      "label": "Wie viele Personen wohnen in dem Objekt mittelfristig?*"
+    },
+    {
+      "art": "text",
+      "name": "input_46",
+      "label": "Wie hoch ist der aktuelle jährliche Stromverbrauch? (in kWh)*"
+    },
+    {
+      "art": "text",
+      "name": "input_48",
+      "label": "Was zahlen Sie für die kWh Strom (netto)? (in €)*"
+    },
+    {
+      "art": "select-one",
+      "name": "input_49",
+      "label": "Welche Art der Finanzierung haben Sie?*"
+    },
+    {
+      "art": "textarea",
+      "name": "input_27",
+      "label": "Welche Fragen dürfen wir für Sie beantworten?"
+    },
+    {
+      "art": "file",
+      "name": "html5_1k1o9m7mv1akq5bi1oihmo5br73",
+      "label": "Anhänge"
+    },
+    {
+      "art": "checkbox",
+      "name": "input_29.1",
+      "label": "Ich habe die Datenschutzerklärung zur Kenntnis genommen und bin mit der dort bes"
+    },
+    {
+      "art": "submit",
+      "name": "gform_previous_button_39",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "gform_submit_button_39",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "alt_s",
+      "label": "Alternative:"
+    },
+    {
+      "art": "text",
+      "name": "qxpbsp8119",
+      "label": "WPA"
+    },
+    {
+      "art": "checkbox",
+      "name": "essential",
+      "label": "Essenziell"
+    },
+    {
+      "art": "checkbox",
+      "name": "statistics",
+      "label": "Statistiken"
+    },
+    {
+      "art": "checkbox",
+      "name": "external-media",
+      "label": "Externe Medien"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "1c15557c-01d3-423c-b7fd-52a2abb27281.png"
+}

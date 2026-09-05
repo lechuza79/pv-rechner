@@ -1,0 +1,59 @@
+{
+  "id": "6ce2be5d-0511-4876-958f-7861d51cf008",
+  "name": "Stadtwerke Wolmirstedt GmbH",
+  "url": "https://www.stadtwerke-wolmirstedt.de/antraege-und-formulare/netzanschluss-pv-anlagen.html",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Netzanschluss - Strom",
+  "text": "Um die optimale Nutzung unserer Website zu ermöglichen, verwenden wir Cookies. Um nicht gegen geltende Gesetze zu verstoßen, benötigen wir dazu Ihr ausdrückliches Einverständnis. Ja, ich gebe mein Einverständnis! Ablehnen Cookie - Einstellungen Weitere Informationen KundenserviceAnträge / FormulareUnternehmenPartnerserviceKontakt KUNDEN-PORTAL Netzanschluss - PV Anlagen Hier finden Sie die aktuellen Formulare zur Anmeldung einer PV-Anlage/Balkonkraftwerk. PDF Anmeldung zum Netzanschluss Strom Größe: 603.65 KB Herunterladen Öffnen PDF Datenblatt zum Anschluss von Photovoltaikanlagen Größe: 67.60 KB Herunterladen Öffnen PDF Formular Anmeldung Balkonkraftwerk Größe: 194.23 KB Herunterladen Öffnen PDF Hinweise Anmeldung Balkonkraftwerk Größe: 163.58 KB Herunterladen Öffnen PDF Checkliste Inbetriebnahme PV-Anlage Größe: 119.85 KB Herunterladen Öffnen PDF Protokolle Erzeugungsanlagen Größe: 394.26 KB Herunterladen Öffnen SIE HABEN FRAGEN ? Wir helfen Ihnen gern. Wir verwenden Ihre Daten ausschließlich gemäß unserer Datenschutzerklärung. Sicherheitsabfrage * Senden Stadtwerke Wolmirstedt Wir sind persönlich für Sie da! Besuchen Sie uns in unseren Geschäftsräumen in der Samsweger Strasse 22. Kommen Sie vorbei und lassen Sie uns gemeinsam über Ihre Anliegen sprechen! Geschäftszeiten Mo, Mi, Do von 07:00 bis 16:00 Uhr Die von 07:00 bis 17:30 Uhr Fr von 07:00 bis 12:00 Uhr Kontakt Stadtwerke Wolmirstedt GmbH Samsweger Strasse 22 39326 Wolmirstedt Hotline: +49 (0)39201 55-777 Telefon: +49 (0)39201 55-70 Telefax: +49 (0)39201 55-750 E-Mail: kontakt@stadtwerke-wolmirstedt.de Folgen Sie uns © Stadtwerke Wolmirstedt | Impressum | Datenschutz | Barrierefreiheit Kundenservice Anträge / Formulare Unternehmen Partnerservice Kontakt Kundenportal - Netzanschluss Kunden-Registrierung",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "modalCheckBox_id_cookie_categories_group0",
+      "label": "Aktiviert"
+    },
+    {
+      "art": "text",
+      "name": "cf[name]",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "cf[vorname]",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "cf[text_8_telefon]",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "cf[text_7]",
+      "label": ""
+    },
+    {
+      "art": "email",
+      "name": "cf[email]",
+      "label": ""
+    },
+    {
+      "art": "textarea",
+      "name": "cf[textarea_3]",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "jad9v7b1",
+      "label": "3 + 7"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "6ce2be5d-0511-4876-958f-7861d51cf008.png"
+}

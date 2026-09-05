@@ -1,0 +1,59 @@
+{
+  "id": "902f337d-d65f-4966-8ca1-714f2274d956",
+  "name": "Stromversorgung Sulz am Neckar GmbH",
+  "url": "https://www.stromversorgung-sulz.de/dein-service/downloads/anmeldung-pv-anlage",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Anmeldung PV-Anlage: Stromversorgung Sulz am Neckar",
+  "text": "Hinweis: Durch die Nutzung der Webseite stimmen Sie der Verwendung von Cookies zu. Mehr Infos OK Anmeldung PV-Anlage: Sulz Stromversorgung Hauptmenü DEIN STROMVERSORGER DEINE ENERGIE DEIN SERVICE Notfall Telefonnummer 07454 3071 Startseite | Dein Service | Downloads | Anmeldung PV-Anlage Untermenü DOWNLOADS Service Kontakte Downloads An / Abmeldung -Strom, Wasser Anmeldung / Inbetriebsetzung Anmeldung Ladeeinrichtung Anmeldung PV-Anlage Messstellenbetrieb Kommunikationsdatenblätter & Verträge Netznutzungsentgelte Technische Anschlussbedingungen Hochlastzeitfenster Netzdaten EEG-Veröffentlichung § 15 Kostenpflichtige Arbeiten im Verteilnetz Allgemeine Bedingungen Niederspannungsanschlussverordnung Ergänzende Bestimmungen zur Niederspannungsanschlussverordnung (NAV) Stromgrundversorgungsordnung Technische Mindestanforderungen für den Netzanschluss Energieträgermix Verwendete Lastprofile Streitbeilegung Energieeinsparung Anmeldung PV-Anlage Hauptbereich Download Anmeldung / Inbetriebsetzung PV-Anlage Anmeldung steckerfertige PV-Anlage bis 600W (PDF-Dokument, 73,04 KB) Anmeldung Netzanschluss (PDF-Dokument, 210,49 KB) Anfrage PV (PDF-Dokument, 71,08 KB) Datenblatt Erzeugungsanlagen (PDF-Dokument, 70,06 KB) Datenblatt Speicher (PDF-Dokument, 86,41 KB) Einheitenzertifikat (PDF-Dokument, 61,17 KB) Prüfbericht Netzrückwirkungen (PDF-Dokument, 94,27 KB) Zertifikat Anlagenschutz (PDF-Dokument, 52,05 KB) Prüfbericht NA-Schutz (PDF-Dokument, 78,08 KB) IB-Protokoll Erzeugungsanlage (PDF-Dokument, 115,92 KB) Betriebserlaubnisverfahren (PDF-Dokument, 55,46 KB) Erklärung zum Netzsicherheitsmanagement (PDF-Dokument, 55,00 KB) Inbetriebsetzung PV-Anlage (PDF-Dokument, 296,29 KB) Infobereich Adobe Reader Den zum Betrachten von PDF-Dateien notwendigen Adobe Reader können Sie ganz einfach auf den Seiten von Adobe herunter laden. Ansprechpartner Alle Kontakte finden Sie in der Rubrik Ansprechpartner. Kontaktdaten Vertretungsberechtigte Geschäftsführer: Julia Fischer Kaufmännische Geschäftsführerin Hartensteinstraße 12 72172 Sulz a. N. Telefonnummer 07454 9650865 E-Mail schreiben Udo Huber Technischer Geschäftsführer Hartensteinstr. 21 72172 Sulz a. N. Telefonnummer 07454 3071 E-Mail schreiben Kontaktformular Einwilligung:* Hiermit erteile ich gegenüber Stromversorgung Sulz meine Einwilligung mehr lesen in die Verarbeitung der vorstehenden von mir angegebenen personenbezogenen Daten. Ich bin damit einverstanden, dass die von mir angegebenen personenbezogenen Daten verarbeitet werden, um meine Kontaktanfrage zu bearbeiten und mich zu diesem Zwecke zu kontaktieren. Ich willige ebenfalls ein, dass meine IP-Adresse gespeichert wird. Ich habe das Recht, diese Einwilligung jederzeit ohne Angabe von Gründen zu widerrufen (siehe Datenschutzerklärung), ohne dass die Rechtmäßigkeit der aufgrund meiner Einwilligung bis zum Widerruf erfolgten Verarbeitung davon berührt wird. Diese Feld nicht ausfüllen! Impressum|Datenschutz made byHirsch & Wölfl GmbH",
+  "felder": [
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][name]",
+      "label": "Name*"
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][vorname]",
+      "label": "Vorname*"
+    },
+    {
+      "art": "email",
+      "name": "tx_powermail_pi1[field][marker]",
+      "label": "E-Mail Adresse*"
+    },
+    {
+      "art": "textarea",
+      "name": "tx_powermail_pi1[field][bemerkung]",
+      "label": "Bemerkung*"
+    },
+    {
+      "art": "checkbox",
+      "name": "tx_powermail_pi1[field][einwilligung][]",
+      "label": "Hiermit erteile ich gegenüber Stromversorgung Sulz meine Einwilligung mehr lesen"
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": ""
+    },
+    {
+      "art": "reset",
+      "name": "",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][__hp]",
+      "label": "Diese Feld nicht ausfüllen!"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "902f337d-d65f-4966-8ca1-714f2274d956.png"
+}

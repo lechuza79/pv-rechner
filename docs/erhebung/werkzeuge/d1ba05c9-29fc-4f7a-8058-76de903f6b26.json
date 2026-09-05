@@ -1,0 +1,129 @@
+{
+  "id": "d1ba05c9-29fc-4f7a-8058-76de903f6b26",
+  "name": "Überlandwerk Rhön GmbH",
+  "url": "https://www.uew-rhoen.de/de/Strom/Privatkunden/Privilegierung-von-Waermepumpenstrom/Anfrage-zur-Privilegierung-von-Waermepumpenstrom.html",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Überlandwerk Rhön - Anfrage zur Privilegierung von Wärmepumpenstrom",
+  "text": "Wir verwenden Cookies auf unserer Website. Sie haben hier die Möglichkeit zu entscheiden, welche Cookies verwendet werden dürfen. Ihre Auswahl bleibt für 30 Tage gespeichert. Sie haben jederzeit die Möglichkeit, Ihre Cookie-Einstellungen über die Datenschutzerklärung zu ändern. Notwendige Statistik Tracking Externe Medien Alle Cookies zulassen Cookie-Auswahl speichern Nur notwendige Cookies zulassen Notwendige Statistik Tracking Externe Medien Zugang zu den wichtigen Informationen Impressum Datenschutz Verträge kündigen Vertrag widerrufen Zur Navigation springen (Press Enter) Zum Inhalt springen (Press Enter) MENÜ Strom Ihre Möglichkeiten, uns zu erreichen Überlandwerk Rhön GmbH Sondheimer Straße 5 97638 Mellrichstadt 09776 61-0 info@uew-rhoen.de Kontaktformular Sie möchten eine Störung melden? Rund um die Uhr sind wir bei Störungsfällen für Sie erreichbar unter 09776 61-0 Zusätzliche Netzbereiche Ansprechpartner Für all Ihre Belange finden Sie hier den richtigen und kompetenten Ansprechpartner. Ansprechpartner Startseite Strom Privatkunden Anfrage zur Privilegierung von Wärmepumpenstrom Die Kundendaten finden Sie auf Ihrer Stromrechnung zur Wärmepumpe oder auf unserem Anschreiben zur Wärmepumpenprivilegierung. Die mit * gekennzeichneten Felder sind Pflichtangaben. Bitte füllen Sie diese vollständig aus. Kundendaten Kundennummer*: Objektnummer*: Nachname*: Vorname*: Straße, Hausnummer*: Postleitzahl*: Ort*: E-Mail*: Ich versichere, dass es sich bei vorgenannter Entnahmestelle um eine elektrisch angetriebene Wärmepumpe handelt, die über einen eigenen Zählpunkt mit dem Netz verbunden ist.* Voraussetzungen zur Umlagenprivilegierung Ich bin kein „Unternehmen in Schwierigkeiten nach § 2 Nr. 20 EnFG.* Info: Als „Unternehmen“ definiert § 2 Nr. 19 EnFG jeden Rechtsträger, der einen nach Art und Umfang in kaufmännischer Weise eingerichteten Geschäftsbetrieb unter Beteiligung am allgemeinen wirtschaftlichen Verkehr nachhaltig mit eigener Gewinnerzielungsabsicht betreibt. Als „Unternehmen in Schwierigkeiten“ definiert § 2 Nr. 20 EnFG „ein Unternehmen in Schwierigkei-ten im Sinn der Mitteilung der Kommission - Leitlinien für staatliche Beihilfen zur Rettung und Um-strukturierung nichtfinanzieller Unternehmen in Schwierigkeiten (ABl. C 249 vom 31.7.2014, S. 1)“. Gegen mich bestehen keine offenen Rückforderungsansprüche aus Beihilfen.* Info: Rückforderungsansprüche, die aufgrund eines Beschlusses der Europäischen Kommission zur Feststellung der Unzulässigkeit einer Beihilfe und ihrer Unvereinbarkeit mit dem europäischen Binnenmarkt ent-/bestehen. Bestätigung und Datenschutzerklärung Ich versichere, dass alle Angaben korrekt sind. Mir ist bekannt, dass die vorgenannten Angaben subventionserheblich im Sinne des § 264 Abs. 9 des Strafgesetzbuches (StGB) sind und dass ein Subventionsbetrug nach § 264 StGB strafbar ist.* Hiermit stimme ich der Nutzung meiner personenbezogenen Daten im Rahmen der Meldung zur Wärmepumpenprivilegierung zu.* Ja, ich habe die Datenschutzerklärung gelesen und akzeptiere diese.* Bitte füllen Sie alle mit * gekennzeichneten Felder aus! Ausgezeichneter Service Das unabhängige „Energie­verbraucher­portal“ hat uns die höchste Bewertung als „Top-Lokalversorger“ verliehen. Dabei bewerteten die Prüfer insbesondere Kundenservice, Klimaschutz, regionales Engagement und Energiezukunft positiv. Kontakt Wir sind persönlich für Sie da Überlandwerk Rhön GmbH Sondheimer Straße 5 97638 Mellrichstadt 09776 61-0 info@uew-rhoen.de Kontaktformular Störung melden? Wir sind rund um die Uhr erreichbar 09776 61-0 Impressum Datenschutz Sitemap Verträge kündigen Vertrag widerrufen Barrierefreiheit Instagram Facebook",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Notwendige"
+    },
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Statistik"
+    },
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Tracking"
+    },
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Externe Medien"
+    },
+    {
+      "art": "text",
+      "name": "VolltextSuchbegriff",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "suche",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "Formular.KUNDENNUMMER",
+      "label": "Kundennummer*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.OBJEKTNUMMER",
+      "label": "Objektnummer*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.NAME",
+      "label": "Nachname*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.VORNAME",
+      "label": "Vorname*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.STRASSEHAUSNR",
+      "label": "Straße, Hausnummer*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.PLZ",
+      "label": "Postleitzahl*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ORT",
+      "label": "Ort*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.EMAIL",
+      "label": "E-Mail*:"
+    },
+    {
+      "art": "checkbox",
+      "name": "Formular.ABNAHMESTELLEWAERMEPUMPE",
+      "label": "Ich versichere, dass es sich bei vorgenannter Entnahmestelle um eine elektrisch "
+    },
+    {
+      "art": "checkbox",
+      "name": "Formular.KEINE_OFFENEN_RUECKFORDERUNGSANSPRUECHE_",
+      "label": "Ich bin kein „Unternehmen in Schwierigkeiten nach § 2 Nr. 20 EnFG.*"
+    },
+    {
+      "art": "checkbox",
+      "name": "Formular.KEIN_UNTERNEHMEN_IN_SCHWIERIGKEITEN",
+      "label": "Gegen mich bestehen keine offenen Rückforderungsansprüche aus Beihilfen.*"
+    },
+    {
+      "art": "checkbox",
+      "name": "Formular.BESTAETIGUNG_KORREKTHEIT_ANGABEN",
+      "label": "Ich versichere, dass alle Angaben korrekt sind. Mir ist bekannt, dass die vorgen"
+    },
+    {
+      "art": "checkbox",
+      "name": "Formular.ZUSTIMMUNG_DATENNUTZUNG",
+      "label": "Hiermit stimme ich der Nutzung meiner personenbezogenen Daten im Rahmen der Meld"
+    },
+    {
+      "art": "checkbox",
+      "name": "Formular.DATENSCHUTZERKLAERUNG_AKZEPTIERT",
+      "label": "Ja, ich habe die Datenschutzerklärung gelesen und akzeptiere diese.*"
+    },
+    {
+      "art": "submit",
+      "name": "Abschicken",
+      "label": "if (typeof(HRJavaScriptIncludesRegistry) != \"object\") { var head = document.getE"
+    },
+    {
+      "art": "textarea",
+      "name": "Container.Children:7.ClientSecurityCheck.Ergebnis",
+      "label": "Das folgende Eingabefeld ist aus technischen Gründen erforderlich und darf nicht"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "d1ba05c9-29fc-4f7a-8058-76de903f6b26.png"
+}

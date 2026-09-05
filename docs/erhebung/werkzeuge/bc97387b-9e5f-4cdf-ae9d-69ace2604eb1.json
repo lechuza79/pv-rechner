@@ -1,0 +1,96 @@
+{
+  "id": "bc97387b-9e5f-4cdf-ae9d-69ace2604eb1",
+  "name": "Stadtwerke Norderney GmbH",
+  "url": "https://stadtwerke-norderney.de/strom/pv-anlagen/flyer-hinweise-zur-anmeldung-pv-anlage-2/",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Flyer Hinweise zur Anmeldung PV-Anlage - Stadtwerke Norderney",
+  "text": "digi·access - Zugänglichkeit verbessern Optimieren Sie die Webseite für bessere Lesbarkeit und Nutzerfreundlichkeit. F2 zum öffnen Diese Webseite verwendet Cookies Wir verwenden Cookies, um Inhalte und Anzeigen zu personalisieren, Funktionen für soziale Medien anbieten zu können und die Zugriffe auf unsere Website zu analysieren. Außerdem geben wir Informationen zu Ihrer Verwendung unserer Website an unsere Partner für soziale Medien, Werbung und Analysen weiter. Unsere Partner führen diese Informationen möglicherweise mit weiteren Daten zusammen, die Sie ihnen bereitgestellt haben oder die sie im Rahmen Ihrer Nutzung der Dienste gesammelt haben. Sie geben Einwilligung zu unseren Cookies, wenn Sie unsere Webseite weiterhin nutzen. Einwilligungsauswahl Notwendig Präferenzen Statistiken Marketing Details zeigen OK Kunden- portal Kontakt Facebook Suchen Störungshotline: 0 49 32 -10 01 STROM GAS WÄRME WASSER NYNET eMobility UNTERNEHMEN NETZE ENERGIEBERATUNG Startseite » Strom » PV-Anlagen » Flyer Hinweise zur Anmeldung PV-Anlage FLYER HINWEISE ZUR ANMELDUNG PV-ANLAGE Flyer Hinweise zur Anmeldung PV-Anlage STROM NEYSTROM Standard NEYSTROM Spezial NEYSTROM Meine Insel Preise Anschlussmaterial GAS NEYGAS Standard NEYGAS Spezial Preise Anschlussmaterial WÄRME Allgemein Wärme plus Heizzentralen Fernwärme WASSER Preise und Qualität Gewinnung und Aufbereitung Abwasser Netzanschluss KONTAKT Stadtwerke Norderney GmbH Jann-Berghaus-Straße 34 26548 Norderney Telefonnummer: 0 49 32 / 8 79 0 info@stadtwerke-norderney.de Impressum Datenschutz Vertrag widerrufen Vertrag kündigen Barrierefreiheitserklärung HOME STROM GAS WÄRME WASSER eMobility UNTERNEHMEN NETZE KARRIERE FLYER",
+  "felder": [
+    {
+      "art": "range",
+      "name": "da-font-size--range",
+      "label": "- +"
+    },
+    {
+      "art": "range",
+      "name": "da-line-spacing--range",
+      "label": "- +"
+    },
+    {
+      "art": "range",
+      "name": "da-content-size--range",
+      "label": "- +"
+    },
+    {
+      "art": "range",
+      "name": "da-word-spacing--range",
+      "label": "- +"
+    },
+    {
+      "art": "range",
+      "name": "da-char-spacing--range",
+      "label": "- +"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonNecessary",
+      "label": "Notwendig"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonPreferences",
+      "label": "Präferenzen"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonStatistics",
+      "label": "Statistiken"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonMarketing",
+      "label": "Marketing"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonNecessaryInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonPreferencesInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonStatisticsInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonMarketingInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyContentCheckboxPersonalInformation",
+      "label": "Meine persönlichen Daten nicht verkaufen oder weitergeben"
+    },
+    {
+      "art": "text",
+      "name": "s",
+      "label": ""
+    }
+  ],
+  "rahmen": [
+    "https://consentcdn.cookiebot.com/sdk/bc-v4.min.html"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "bc97387b-9e5f-4cdf-ae9d-69ace2604eb1.png"
+}

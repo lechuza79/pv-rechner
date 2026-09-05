@@ -1,0 +1,264 @@
+{
+  "id": "88f8ef58-97b6-434e-8247-ad35f6365cb5",
+  "name": "GWS Gemeindewerke Sinzheim GmbH & Co. KG",
+  "url": "https://www.gw-sinzheim.de/tarif/24h-tarif-fuer-waermepumpen/",
+  "vermutet": "rechner-mit-leadfunnel",
+  "abruf": "ok",
+  "titel": "24h-Tarif für Wärmepumpen - Gemeindewerke Sinzheim",
+  "text": "Bar­rie­re­frei­heit Über uns Netze Mess­stel­len­be­trieb KUNDENBERATUNG: 07221 / 806-517 Ab dem 9. September startet eine neue Informations- und Vertriebsaktion. Weitere Infos hier. Strom Wasser Ser­vice+ Bera­tung Aus­schrei­bungen Suchen 5 Bestel­lung Titel output=‘bootstrap’] Bestel­lung zur Ver­sor­gung mit Tarif: 24h-Tarif für Wärmepumpen Sind Sie Privat- oder Gewerbekunde? Treffen Sie eine Auswahl: Pri­vat­kunde Gewer­be­kunde Gewählter Tarif --- nicht eingestellt --- 24h-Tarif für Wärmepumpen × 24h-Tarif für Wärmepumpen Alternative: Kundencenter Öffnungszeiten Montag bis Donnerstag: 08:00 - 12:00 und 14:00 - 16:30 Uhr Freitag: 08:00 - 12:30 Uhr T: 07221 / 806 517 F: 07221 / 806 526 E: info@gw-sinzheim.de Störungsnummern Strom T: 07221 / 806 500 Wasser T: 07221 / 806 500 Straßenbeleuchtung (innerhalb der Öffnungszeiten) T: 07221 / 806 510 E: strassenbeleuchtung@sinzheim.de Klicken & informieren Strom Wasser Ser­vice+ Bera­tung Gemeinde Sinz­heim Bar­rie­re­frei­heit Strom­preis­bremse Schnellzugriff Daten­schutz Impressum Ver­trag kündigen Cle­a­ring-Stelle » Cookieeinstellungen Copyright © 2026 GW Sinzheim Konzept, Design & Umsetzung: hsag Kontakt Anfahrt Öffnungszeiten",
+  "felder": [
+    {
+      "art": "search",
+      "name": "s",
+      "label": "Suchen"
+    },
+    {
+      "art": "text",
+      "name": "post_title",
+      "label": "Bestel­lung Titel"
+    },
+    {
+      "art": "radio",
+      "name": "wpcf-kunden-type",
+      "label": "Pri­vat­kunde"
+    },
+    {
+      "art": "radio",
+      "name": "wpcf-kunden-type",
+      "label": "Gewer­be­kunde"
+    },
+    {
+      "art": "select-one",
+      "name": "wpcf-personen-anzahl",
+      "label": "1 Person 2 Personen 3 Personen 4 Personen 5 Personen"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-jahresverbrauch",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "wpcf-jahresverbrauch-gewerbe",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "wpcf-abschlag-jahrlich",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "wpcf-abschlag-jahrlich-gewerbe",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "wpcf-abschlag",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "wpcf-abschlag-gewerbe",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "wpcf-firmen-name",
+      "label": "Fir­men­name*"
+    },
+    {
+      "art": "select-one",
+      "name": "wpcf-anrede",
+      "label": "--- nicht eingestellt --- Herr Frau Familie"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-vorname",
+      "label": "Vor­name*"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-nachname",
+      "label": "Nach­name*"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-geburtsdatum[display-only]",
+      "label": "Geburts­datum*"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-strase",
+      "label": "Straße*"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-hausnummer",
+      "label": "Haus­nummer*"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-plz",
+      "label": "PLZ*"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-ort",
+      "label": "Ort*"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-telefon",
+      "label": "Telefon"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-email",
+      "label": "E‑Mail*"
+    },
+    {
+      "art": "radio",
+      "name": "wpcf-rechnungsadresse",
+      "label": "die Rech­nungs­adresse ent­spricht der Lieferadresse"
+    },
+    {
+      "art": "radio",
+      "name": "wpcf-rechnungsadresse",
+      "label": "Abwei­chende Rechnungsadresse"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-strase-a",
+      "label": "Straße*"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-hausnummer-a",
+      "label": "Haus­nummer*"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-plz-a",
+      "label": "PLZ*"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-ort-a",
+      "label": "Ort*"
+    },
+    {
+      "art": "radio",
+      "name": "wpcf-vertrag-type",
+      "label": "Was möchten Sie?"
+    },
+    {
+      "art": "radio",
+      "name": "wpcf-vertrag-type",
+      "label": "Anbie­ter­wechsel"
+    },
+    {
+      "art": "radio",
+      "name": "wpcf-vertrag-type",
+      "label": "Tarif­wechsel"
+    },
+    {
+      "art": "radio",
+      "name": "wpcf-bisherigen-anbieter-kundigungsstatus",
+      "label": "Ist Ihr bis­he­riger Strom-Ver­trag bereits gekün­digt?*"
+    },
+    {
+      "art": "radio",
+      "name": "wpcf-bisherigen-anbieter-kundigungsstatus",
+      "label": "Nein, ich möchte, dass die GW Sinz­heim für mich kündigt."
+    },
+    {
+      "art": "text",
+      "name": "wpcf-bisheriger-versorger",
+      "label": "Bis­he­riger Versorger"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-kundennummer",
+      "label": "Kun­den­nummer"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-zaehlernummer",
+      "label": "Zäh­ler­nummer*"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-zaehlerstand",
+      "label": "Zäh­ler­stand*"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-ablesedatum[display-only]",
+      "label": "Able­se­datum*"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-gewuenschter-lieferbeginn[display-only]",
+      "label": "Gewünschter Lie­fer­be­ginn*"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-gewunschter-lieferbeginn-anbieterwechsel[display-only]",
+      "label": ""
+    },
+    {
+      "art": "radio",
+      "name": "wpcf-zahlungsweise",
+      "label": "Zah­lungs­weise*"
+    },
+    {
+      "art": "radio",
+      "name": "wpcf-zahlungsweise",
+      "label": "Last­schrift"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-kontoinhaber",
+      "label": "Kon­to­in­haber"
+    },
+    {
+      "art": "text",
+      "name": "wpcf-iban",
+      "label": "IBAN"
+    },
+    {
+      "art": "select-one",
+      "name": "@tarif-bestellung.parent",
+      "label": "Gewählter Tarif"
+    },
+    {
+      "art": "checkbox",
+      "name": "wpcf-iban-eingabe-bestatigung",
+      "label": "IBAN Ein­gabe Bestätigung"
+    },
+    {
+      "art": "checkbox",
+      "name": "wpcf-agb",
+      "label": "AGB"
+    },
+    {
+      "art": "checkbox",
+      "name": "wpcf-datenschutz",
+      "label": "Daten­schutz"
+    },
+    {
+      "art": "submit",
+      "name": "form_submit_1",
+      "label": "Zurück"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "88f8ef58-97b6-434e-8247-ad35f6365cb5.png"
+}

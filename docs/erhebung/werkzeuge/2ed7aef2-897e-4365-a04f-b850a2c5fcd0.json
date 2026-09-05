@@ -1,0 +1,64 @@
+{
+  "id": "2ed7aef2-897e-4365-a04f-b850a2c5fcd0",
+  "name": "Stadtwerke Völklingen Netz GmbH",
+  "url": "https://www.swvk-netz.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Startseite - Stadtwerke Völklingen (Netz)",
+  "text": "digi·access - Zugänglichkeit verbessern Optimieren Sie die Webseite für bessere Lesbarkeit und Nutzerfreundlichkeit. F2 zum öffnen Zum Inhalt springen German Zählerstand melden Downloads FAQ Kontakt German Störung melden Search ... Verbrauchen & Erzeugen Unser Netz Unternehmen Karriere Hausanschluss Planen & Anmelden Hausanschluss Wärmepumpe und Klimageräte Informationen zu §14a Modulwechsel §14a Anlage Elektromobilität Baustrom und Bauwasser Erzeuger und Speicher Leitungsauskunft Zeitlich befristete Anschlüsse Messen & Betreiben Zählerstand erfassen Stromzähler Gaszähler Abmelden & Verändern Änderungen an Erzeugungsanlagen und Speichern Veränderung und Trennung des Hausanschlusses Unser Netz Strom Gas Wasser Fernwärme MSB Unternehmen Notfallnummer / Störung melden Kontakt Marktkommunikation Aktuelles Infrastruktur für Völklingen Mehr erfahren Wie können wir Ihnen helfen? Planen & Anmelden Messen & Betreiben Abmelden & Verändern Hausanschluss Zuverlässige Anbindung für Strom, Gas und Wasser. Erzeuger und Speicher Regional erzeugt, intelligent gespeichert. Baustrom und Bauwasser Strom- und Wasserversorgung für jede Bauphase. Strom Hier finden Sie alle Informationen zu den allgemeinen und technische Bedingungen. Unser Netz Wir kümmern uns täglich um die Entwicklung und den Ausbau Ihres Netzes in Völklingen und in der Umgebung. Fernwärme Schritt für Schritt zu Ihrem Hausanschluss für Fernwärme. Aktuelles Mehr erfahren Alle Neuigkeiten und Mitteilungen der SWVK Netz für Sie im Überblick. Unternehmen Über uns Karriere Kontakt Downloads Ihr zentraler Ort für alle verfügbaren Dateien. Preise Netzanschluss Netzzugang Einspeisung Messstellenbetrieb Gesetze Allgemein Einkauf Häufige Fragen und weitere Hilfethemen Mehr erfahren Energiespeicher Hausanschluss Stromzähler Welche Informationen benötigen die Stadtwerke Völklingen von mir? Welche Unterlagen benötige ich für die Anmeldung? Wie lange dauert die Bearbeitung meiner Anmeldung? Ihr Feedback hilft uns, uns ständig zu verbessern. Senden Sie uns gerne eine Nachricht Persönlich für Sie da Sie erreichen uns über das Kundenportal, telefonisch oder vor Ort im Kundencenter. Sichere Versorgung Seit 1963 sind wir in Völklingen für Sie da. Regional Wir tragen zu einer nachhaltigen Entwicklung unserer Region bei. Zertifikate GZQ Qualitäts­management ZfK Nachhaltig­keitsaward PÜG ISMS Zertifikat DVGW TSM Eine Gesellschaft der Stadtwerke Völklingen-Gruppe Unser Netz Unternehmen Downloads FAQ Karriere Kontakt Stadtwerke Völklingen Netz GmbH Hohenzollernstraße 10 66333 Völklingen info@swvk-netz.de +49 6898 150 - 0 +49 6898 150 - 158 Planen & Anmelden Hausanschluss Wärmepumpe & Klimageräte Elektromobilität Festplatzanschluss Baustrom & Bauwasser Erzeuger & Speicher Leitungsauskunft Messen & Betreiben EEG Zählerstand erfassen Strom Gas Wasser Abmelden & Verändern Veränderung und Trennung des Hausanschlusses Änderungen an Erzeugungsanlagen und Speichern Impressum Datenschutz Widerrufsbelehrung Cookie Einstellungen Barrierefreiheit",
+  "felder": [
+    {
+      "art": "range",
+      "name": "da-font-size--range",
+      "label": "- +"
+    },
+    {
+      "art": "range",
+      "name": "da-line-spacing--range",
+      "label": "- +"
+    },
+    {
+      "art": "range",
+      "name": "da-content-size--range",
+      "label": "- +"
+    },
+    {
+      "art": "range",
+      "name": "da-word-spacing--range",
+      "label": "- +"
+    },
+    {
+      "art": "range",
+      "name": "da-char-spacing--range",
+      "label": "- +"
+    },
+    {
+      "art": "search",
+      "name": "s",
+      "label": "Search ..."
+    },
+    {
+      "art": "select-one",
+      "name": "switcher",
+      "label": "Online Portale"
+    },
+    {
+      "art": "search",
+      "name": "s",
+      "label": "Search ..."
+    },
+    {
+      "art": "select-one",
+      "name": "switcher",
+      "label": "Online Portale"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "2ed7aef2-897e-4365-a04f-b850a2c5fcd0.png"
+}

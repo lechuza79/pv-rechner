@@ -1,0 +1,49 @@
+{
+  "id": "bc45ae42-cba1-456b-8b36-9b59764187a7",
+  "name": "Überlandzentrale Wörth/I.-Altheim Netz AG",
+  "url": "https://www.uezw-strom.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Fairer Strom aus der Region | ÜZW Energie",
+  "text": "Zum Inhalt springen STROMTARIFRECHNER STÖRUNGSDIENST HILFE UND KONTAKT KUNDENPORTALE STROM PHOTOVOLTAIK E-MOBILITÄT GEWERBE SERVICE ÜZW NETZ ÜBER ÜZW SUCHE Ein Versorger. Viele Lösungen. Tarif berechnen und Vorteile genießen! Ihre Postleitzahl Ihr Jahresverbrauch in KWh Jetzt Strompreis berechnen Warum ÜZW Ihre Vorteile auf einen Blick Persönlich für Sie da Aus der Region für die Region Sicher in die Zukunft Fair im Preis, fair zum Menschen Gute Nachrichten: Wir haben zum 01.01.2026 unsere Strompreise gesenkt. Zum Strom-Tarifrechner Wir beraten Sie persönlich – garantiert Call Center-frei Sie erreichen uns bei Fragen und Anliegen direkt in unserem Kundencenter in unserer Energiewelt in Altheim. Kommen Sie persönlich vorbei, rufen Sie uns an oder schreiben Sie uns. Sie erhalten jederzeit eine individuelle Beratung von unserem ÜZW Team. Und das garantiert ohne lästige Warteschleife im Call Center. Überzeugen Sie sich selbst. Zum Kundencenter REGIONAL VERWURZELT UND ALLES AUS EINER HAND Seit über 100 Jahren kümmern wir uns zuverlässig um die Energieversorgung in der Region. Daneben überzeugen wir mit innovativen Energielösungen. Neben fairen Stromtarifen bieten wir als Stromversorger für Photovoltaik-Anlagen im Raum Landshut bereits seit vielen Jahren unseren Kunden Lösungen zur eigenen Strom-Erzeugung, Stromspeicher oder Ladelösungen für E-Autos. Über ÜZW 100 % ÖKOSTROM AUS ALTHEIMER WASSERKRAFT – ERNEUERBARE ENERGIE AUS DER REGION STROMTARIFE Wir bieten allen Kunden in Bayern das passende Strom-Angebot, ob Ökostrom aus 100 % Wasserkraft des Uniper-Kraftwerks Altheim, Wärmestrom, einen dynamischen Tarif oder besonders sparsam mit unserem günstigsten Standardtarif. Zu den Stromtarifen PHOTOVOLTAIK Erzeugen Sie Ihre Sonnenenergie vor Ort. Wir unterstützen Sie im Raum Landshut mit Beratung, Planung und Installation rund um das Thema Solarenergie, PV-Anlagen sowie Stromspeicher. Zu den Photovoltaik-Angeboten E-MOBILITÄT Als moderner Stromanbieter fördern wir mit zahlreichen Maßnahmen wie z.B. Wallboxen oder Autostrom-Tarifen die Elektromobilität in der Region und leisten damit einen aktiven Beitrag zum Ausbau der E-Mobilität. Zu den E-Mobilitäts-Angeboten Mit PV-Anlage zum Solar-Strom Ganz bequem Strom selbst erzeugen – mit einer PV-Anlage von der ÜZW ist das möglich. Zu unseren PV-Angeboten Schnell & einfach Umzug melden. Bei Ihnen steht ein Umzug an? Hier können Sie uns diesen schnell und bequem mitteilen. Ab 6. Juni ist eine An- und Abmeldung nur noch im Voraus möglich. Umzug melden Alles rund um Ihre Rechnung. Fragen zu Ihrer Rechnung beantworten wir gerne. Hier finden Sie die wichtigsten Informationen auf einen Blick. Rechnung beantragen Ohne Aufwand Zählerstand melden. Sie möchten uns Ihren Zählerstand mitteilen? Kein Problem, das geht ganz einfach. Zählerstand melden Stromsparen: Potential nutzen. Stromspartipps: So finden Sie auch in Ihrem Haushalte noch Einspar-Möglichkeiten. Stromspar-Tipps Kundenzufriedenheit – Wir setzen auf Qualität ÜZW Kundenerfahrungen sprechen für sich! Die Auszeichnung Exzellente Servicequalität von essentiq bestätigt unseren Erfolg, darauf bauen wir auf. Aktuelles Neues von der ÜZW KONZESSIONSVERTRAG IN NIEDERAICHBACH VERLÄNGERT Das Strom-Leitungsnetz der Gemeinde Niederaichbach bleibt weitere 20 Jahre beim regionalen Netzbetreiber ÜZW Netz. Mehr lesen BLICK HINTER DIE KULISSEN DES REGIONALEN ENERGIEVERSORGERS ÜZW Die Freien Wähler Essenbach waren bei der ÜZW Energie zu Besuch, um sich über den neuen Batteriespeicher zu informieren. Mehr lesen SPANNENDER UNTERRICHT ZUM THEMA STROM Wie entsteht Strom, wofür benötigen wir ihn und wie kommt er eigentlich zu uns nach Hause? Mit diesen Fragen durften drei 3. Klassen in den… Mehr lesen Jetzt zu allen Berichten Starte deine Erfolgsgeschichte Wir sind ein regionaler Arbeitgeber im Raum Landshut, der mittlerweile seit mehr als 100 Jahren Erfolgsgeschichte schreibt. Wir sind stolz auf unsere regionalen Wurzeln und unsere Mitarbeiter, die die Region genauso lieben wie wir. Wir packen gemeinsam an und gestalten die Energiezukunft. Aktuelle Jobs Mitarbeiter/in Netzabrechnung (m/w/d) Ausbildung zum Elektroniker/in für Energie- und Gebäudetechnik (m/w/d) Ausbildung zum Kaufmann/-frau für Büromanagement (m/w/d) Schüler-Praktikum (m/w/d) offenen Stellen entdecken So funktioniert unsere Strom-Beschaffung Wir legen großen Wert auf eine verantwortungsvolle Beschaffung von Strom. Erfahren Sie, wie die Energiebeschaffung funktioniert und welche Einflussfaktoren es bei der Strompreis-Entwicklung gibt. Mehr zur Strompreis-Entwicklung",
+  "felder": [
+    {
+      "art": "text",
+      "name": "s",
+      "label": "Suchbegriff eingeben"
+    },
+    {
+      "art": "text",
+      "name": "yourplz",
+      "label": "Ihre Postleitzahl"
+    },
+    {
+      "art": "text",
+      "name": "stromverbrauch",
+      "label": "Ihr Jahresverbrauch in KWh"
+    },
+    {
+      "art": "text",
+      "name": "tariftyp",
+      "label": "Ihr Tariftyp"
+    },
+    {
+      "art": "checkbox",
+      "name": "essential",
+      "label": "Essenziell"
+    },
+    {
+      "art": "checkbox",
+      "name": "marketing",
+      "label": "Marketing"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": true,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "bc45ae42-cba1-456b-8b36-9b59764187a7.png"
+}

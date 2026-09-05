@@ -1,0 +1,49 @@
+{
+  "id": "4b5e3164-3868-43e1-8150-e094cbe3b627",
+  "name": "Regionetz GmbH",
+  "url": "https://www.regionetz.de/pv-anmeldung",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "PV-Anlagen registrieren | Hinweise & Ablauf | Regionetz",
+  "text": "Visuelle Assistenzsoftware und Vorlesefunktion Eye-Able öffnen. Mit der Tastatur erreichbar über ALT + 1 Wir verwenden Cookies auf unserer Website. Sie haben hier die Möglichkeit zu entscheiden, welche Cookies verwendet werden dürfen. Ihre Auswahl bleibt für 30 Tage gespeichert. Sie haben jederzeit die Möglichkeit, Ihre Cookie-Einstellungen über die Datenschutzerklärung zu ändern. Auswahl Notwendige Statistik Tracking Externe Medien Alle akzeptieren Auswahl speichern Alle ablehnen Notwendige Statistik Tracking Externe Medien Zugang zu den wichtigen Informationen Impressum Datenschutz Zur Navigation springen (Eingabetaste betätigen) Zum Inhalt springen (Eingabetaste betätigen) Zur Suche springen (Eingabetaste betätigen) Service Sonne trifft Netz – so melden Sie Ihre PV-Anlage richtig an. Startseite Einspeiser Registrierung von PV-Anlagen Registrierung von PV-Anlagen Bitte §52 EEG beachten – sonst drohen Geldstrafen Kundinnen und Kunden, die eine PV-Anlage auf ihrem Hausdach betreiben, haben nach den Regelungen des EEG diverse Rechte, aber auch (immer mehr) Pflichten. Das bekannteste Recht besteht darin, eine Vergütung gemäß EEG in Anspruch zu nehmen. Im Gegenzug stellen Anlagenbetreiber die überschüssige Energie aus der eigenen PV-Anlage für den Netzbetreiber bereit. Zu den Pflichten zählt unter anderem, dass Eigentümer von Photovoltaikanlagen und Speichern ihre Anlagen, wenn sie in Betrieb gehen, im „Marktstammdatenregister“ der Bundesnetzagentur registrieren müssen. Diese Pflicht besteht seit vielen Jahren. Wer die Registrierung versäumt hatte, bei dem wurden bisher 20 Prozent von der Einspeisevergütung abgezogen. Mit der Novellierung des EEG wurden die Strafen ab Anfang 2023 drastisch verschärft. Der Hintergrund: Bereits in seiner Form aus 2014 kannte das EEG Regularien, wenn Kundinnen oder Kunden ihren Pflichten nicht nachkamen. Die bekannsteste Art der Ahndung bestand darin, die Einspeisvergütung zu reduzieren, je nach Art des Verstoßes bis auf „Null“. Da die Einspeisevergütung immer stärker sinkt, Betreiber häufig einen Vergütungsverzicht wünschen oder verstärkt auf eine aktive Vermarktung (Direktvermarktung) der Strommengen aus EEG-Anlagen setzen, greift diese Ahndung mittlerweile oft ins Leere. Dem ist der Gesetzgeber mit der Schaffung des §52 EEG begegnet. Betreiber von PV-Anlagen werden fortan nicht mehr in der Vergütungszahlung sanktioniert, sondern mit Strafzahlungen belegt. Die Regionetz ist als Verteilnetzbetreiber verpflichtet, diese gesetzliche Regelung umzusetzen. Es kann in bestimmten Konstellationen von Pflichtverstößen dazu kommen, dass der Höchstsatz von 10 Euro/kW und Monat in Ansatz gebracht werden muss. So könnte beispielsweise ein Pflichtverstoß über 6 Monate bei einer installierten Leistung von 10 kW zu einer Strafzahlung von 600 Euro führen. Speicher, die auch EEG-Anlagen sind, werden separat betrachtet und die Strafzahlung könnte sich dementsprechend erhöhen. Bitte berücksichtigen Sie daher die Regelungen des §52 in Ihrem eigenen Interesse. Kontakt für Privatkunden Allgemeiner Kundenservice Einspeisung Mo – Fr: 8 – 16 Uhr Telefon: 0241 41368-6370 Fax: 0241 41368-6301 E-Mail: kunde@regionetz.de Terminvereinbarung Jetzt online Termin für Hausanschluss und Einspeisung vereinbaren. Zur Online-Terminvereinbarung So erreichen Sie uns Regionetz GmbH Lombardenstraße 12-22 52070 Aachen Telefon: 0241 41368-2930 E-Mail: info@regionetz.de Datenschutz Impressum Information zur Barrierefreiheit Gebärdensprache Leichte Sprache Instagram Facebook Linked-In Youtube",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Notwendige"
+    },
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Statistik"
+    },
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Tracking"
+    },
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Externe Medien"
+    },
+    {
+      "art": "text",
+      "name": "VolltextSuchbegriff",
+      "label": "Von Kabel bis Karriere – hier finden Sie, was Sie suchen."
+    },
+    {
+      "art": "submit",
+      "name": "suche",
+      "label": "Von Kabel bis Karriere – hier finden Sie, was Sie suchen."
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "4b5e3164-3868-43e1-8150-e094cbe3b627.png"
+}

@@ -1,0 +1,39 @@
+{
+  "id": "c6c9c10a-f772-4c47-8e82-39ace4a9d72a",
+  "name": "Herzo Werke GmbH",
+  "url": "https://www.herzowerke.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Die Herzo Werke in Herzogenaurach - Ihr Energieversorger regional und zuverlässig - Herzo Werke",
+  "text": "Navigation überspringen Strom STROM E³ Powertarife HERZOstrom puls HERZOstrom steuerbar Heizstrom Grund- und Ersatzversorgung E˟ Trinkwasser TRINKWASSER Wasserversorgung Trinkwasseranalyse Wasserpreise Versorgungszone Wasserproben Erdgas ERDGAS CO2 Abgabe HERZOgas fair Grundversorgung Gas E˟ Wärme WÄRME Wärmelösungen CO2 KostAufG Preise Preisgleitformel Primärenergiefaktor E-Mobilität E-MOBILITÄT Ladesäulenfinder Anmeldung & Abrechnung Car Sharing Laden zu Hause E-Bikes Navigation überspringen UNTERNEHMEN WIR FÜR HERZOGENAURACH HILFE & SERVICE NETZE KONTAKT Suchbegriffe Suchen NOTFALL x Notfallnummern Erdgas 09132 904-53 Trinkwasser 09132 904-54 Strom 09132 904-55 Wärme 09132 904-56 Der Bereitschaftsdienst der Herzo Werke ist an 365 Tagen rund um die Uhr, 24 Stunden erreichbar. Herzo Media 09132 904-57 Den Bereitschaftsdienst der Herzo Media erreichen Sie von 8:00 bis 20:00 Uhr. Navigation überspringen STROM E³ Powertarife HERZOstrom puls HERZOstrom steuerbar Heizstrom Grund- und Ersatzversorgung E˟ TRINKWASSER Wasserversorgung Trinkwasseranalyse Wasserpreise Versorgungszone Wasserproben ERDGAS CO2 Abgabe HERZOgas fair Grundversorgung Gas E˟ WÄRME Wärmelösungen CO2 KostAufG Preise Preisgleitformel Primärenergiefaktor E-MOBILITÄT Ladesäulenfinder Anmeldung & Abrechnung Car Sharing Laden zu Hause E-Bikes Unsere Themen Anpassung bei der Abrechnungssoftware Berechnungstool für die Korrekturen Ihrer CO Kosten 24 Stunden Lieferantenwechsel Stadtwerke bei Instagram Betrüger unterwegs! Informationen zu den Netzanschlüssen STROM E³ Powertarife HERZOstrom puls HERZOstrom steuerbar Heizstrom Grund- und Ersatzversorgung E˟ TRINKWASSER Wasserversorgung Trinkwasseranalyse Wasserpreise Versorgungszone Wasserproben ERDGAS CO2 Abgabe HERZOgas fair Grundversorgung Gas E˟ WÄRME Wärmelösungen CO2 KostAufG Preise Preisgleitformel Primärenergiefaktor E-MOBILITÄT Ladesäulenfinder Anmeldung & Abrechnung Car Sharing Laden zu Hause E-Bikes Navigation überspringen UNTERNEHMEN Presse & Medien Über uns Jobs WIR FÜR HERZOGENAURACH Dem Trinkwasser auf der Spur NETZE Stromnetz Erdgasnetz Netzanschlüsse Messstellenbetrieb KONTAKT ZENTRALE 09132 904-0 info@herzowerke.de ÖFFNUNGSZEITEN Montag, Dienstag, Donnerstag 08:00 bis 17:00 Uhr Mittwoch und Freitag 8:00 bis 12:30 Uhr ADRESSE Schießhausstraße 9 91074 Herzogenaurach Navigation überspringen IMPRESSUM DATENSCHUTZ HINWEISGEBERPORTAL © 2026 - Herzo Werke GmbH | Hosting: 1601.communication, Erlangen Cookie Einstellungen Wir verwenden Cookies. Einige von ihnen sind essenziell und werden zum Betrieb der Webseite benötigt. Andere dienen der Verbesserung Ihres Nutzererlebnisses und können nach Belieben aktiviert oder deaktiviert werden. Essenziell Alle akzeptieren Auswahl speichern & schließen Cookie-Informationen | Datenschutz | Impressum Essenziell Essenzielle Cookies sind für den Betrieb der Webseite unbedingt erforderlich und können daher nicht deaktiviert werden. Cookie-Informationen Cookie-Consent-Cookie Zweck Dieser Cookie wird benötigt, um die von Ihnen getroffene Auswahl der erlaubten Cookies zu speichern. Name cc1601 Dauer 1 Jahr Session-Cookie Zweck Dieser Cookie ist für die Funktionalität der Webseite erforderlich. Name PHPSESSID Dauer Sessiondauer Informations-Pop-up Cookie Zweck In diesem Cookie wird Ihre Bestätigung des Informations-Pop-ups gespeichert. Name cModal Dauer 1 Jahr",
+  "felder": [
+    {
+      "art": "search",
+      "name": "keywords",
+      "label": "Suchbegriffe"
+    },
+    {
+      "art": "search",
+      "name": "keywords",
+      "label": "Suchbegriffe"
+    },
+    {
+      "art": "checkbox",
+      "name": "cc-essential",
+      "label": "Essenziell"
+    },
+    {
+      "art": "checkbox",
+      "name": "mainNavToggleCheck",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "c6c9c10a-f772-4c47-8e82-39ace4a9d72a.png"
+}

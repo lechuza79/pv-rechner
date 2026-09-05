@@ -1,0 +1,194 @@
+{
+  "id": "28765015-a95d-4429-8b66-7e855ed8dd93",
+  "name": "Havelstrom Zehdenick GmbH",
+  "url": "https://www.stadtwerke-zehdenick.de/photovoltaik/",
+  "vermutet": "rechner-mit-leadfunnel",
+  "abruf": "ok",
+  "titel": "Photovoltaik - Stadtwerke Zehdenick GmbH",
+  "text": "Cookie-Zustimmung verwalten Um dir ein optimales Erlebnis zu bieten, verwenden wir Technologien wie Cookies, um Geräteinformationen zu speichern und/oder darauf zuzugreifen. Wenn du diesen Technologien zustimmst, können wir Daten wie das Surfverhalten oder eindeutige IDs auf dieser Website verarbeiten. Wenn du deine Zustimmung nicht erteilst oder zurückziehst, können bestimmte Merkmale und Funktionen beeinträchtigt werden. Akzeptieren Ablehnen Einstellungen ansehen Cookie-Richtlinie Datenschutzerklärung Impressum Startseite Privatkunden Geschäftskunden Netz Service Downloads Aktuelles Über uns Kontakt – PHOTOVOLTAIK AUS ZEHDENICK PV Anlagen mit Speicher für Dein Zuhause Seit vielen Jahren realisieren wir PV Anlagen in OHV und Umgebung, darunter in Oranienburg, Zehdenick, Gransee, Lindow, Fürstenberg, Liebenwalde, Löwenberger Land und Templin. Persönlich, regional und zuverlässig. Kostenlos beraten lassen 03307 / 46 93-90 Solarrechner Kostenloser Photovoltaik-Rechner zur Berechnung von Kosten, Erträgen und Einsparpotenzial. Finde in wenigen Schritten heraus, wie viel du mit einer PV-Anlage sparen kannst. Schritt 1 Schritt 2 Schritt 3 Schritt 4 Schritt 5 Schritt 6 Wie hoch ist Dein Stromverbrauch im Jahr? Personen im Haushalt: 1-2 Personen oder kWh/Jahr: Next – DEINE VORTEILE Warum Photovoltaik mit den Stadtwerken? Als regionaler Energieversorger kennen wir die Bedürfnisse unserer Kunden und bieten Euch ein Komplettpaket ohne Umwege. Lokale Expertise Fachwissen aus der Region, individuell auf dein Projekt abgestimmt. Eigener Strom Produziere Deinen eigenen Strom und senke langfristig Deine Energiekosten. Nachhaltigkeit Setze auf saubere Energie und reduziere Deinen CO₂-Fußabdruck. Komplettservice Von Planung über Montage bis zu Anmeldung. Wir kümmern uns um alles, Du um nichts. – FAQ – HÄUFIG GESTELLTE FRAGEN Lohnt sich eine Photovoltaikanlage noch? Ja. Durch hohe Strompreise und steuerliche Vorteile lohnt sich Photovoltaik für viele Hausbesitzer weiterhin. Moderne Anlagen amortisieren sich meist innerhalb von 8–12 Jahren, produzieren aber über 25–30 Jahre Strom. Wie viel Strom produziert eine Solaranlage? In Deutschland erzeugt 1 kWp (installierte Leistung) etwa 850–1.050 kWh Strom pro Jahr. Das hängt von mehreren Faktoren ab. Wann amortisiert sich eine PV-Anlage? Meist innerhalb von 8 bis 12 Jahren. Weitere Fragen? Wir haben die häufigsten Fragen zu Photovoltaik, Stromspeichern, Kosten, Förderung und Installation für Sie zusammengestellt. → Alle Fragen zur Photovoltaikanlage lesen Kostenlose Beratung So leicht kommst Du zu Deiner eigenen Photovoltaikanlage. Tel.: 03307 / 46 93-90 E-Mail: pv@stadtwerke-zehdenick.de Kostenlose Erstberatung Montage & Inbetriebnahme inklusive Lokale Ansprechpartner vor Ort Individuelles Angebot Zehdenick: Tourismusinformationen und aktuelle Neuigkeiten Stadtwerke Zehdenick GmbH Schleusenstraße 22 16792 Zehdenick Kontakt aufnehmen 24h Störungsdienst Trinkwasser: 03307 / 469340 Abwasser: 03307 / 469350 Fernwärme: 03307 / 469360 Gas: 03307 / 469370 Strom: 03307 / 469380 Öffnungszeiten Montag: 08:00-12:00 & 13:00-16:00 Dienstag: 08:00-12:00 & 13:00-18:00 Mittwoch: 08:00-12:00 Donnerstag: 08:00-12:00 & 13:00-16:00 Freitag: nach Vereinbarung Instagram Facebook Verträge hier widerrufen Verträge hier kündigen 03307 / 4693 – 0 Impressum Förderungen Barrierefreiheit Datenschutz © 2026 Stadtwerke Zehdenick GmbH",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "cmplz-functional-optin",
+      "label": "Funktional"
+    },
+    {
+      "art": "checkbox",
+      "name": "cmplz-preferences-optin",
+      "label": "Vorlieben"
+    },
+    {
+      "art": "checkbox",
+      "name": "cmplz-statistics-optin",
+      "label": "Statistiken"
+    },
+    {
+      "art": "checkbox",
+      "name": "cmplz-marketing-optin",
+      "label": "Marketing"
+    },
+    {
+      "art": "search",
+      "name": "s",
+      "label": "Suchen"
+    },
+    {
+      "art": "range",
+      "name": "pih-range",
+      "label": "Personen im Haushalt:"
+    },
+    {
+      "art": "number",
+      "name": "nummer-kwpj",
+      "label": "oder kWh/Jahr:"
+    },
+    {
+      "art": "radio",
+      "name": "dachform",
+      "label": "Flachdach"
+    },
+    {
+      "art": "radio",
+      "name": "dachform",
+      "label": "Schrägdach"
+    },
+    {
+      "art": "number",
+      "name": "dachflaeche",
+      "label": "Dachfläche in m²:"
+    },
+    {
+      "art": "radio",
+      "name": "dacheindeckung",
+      "label": "Bitumen"
+    },
+    {
+      "art": "radio",
+      "name": "dacheindeckung",
+      "label": "Kies"
+    },
+    {
+      "art": "radio",
+      "name": "dacheindeckung",
+      "label": "Dachbegrünung"
+    },
+    {
+      "art": "radio",
+      "name": "dacheindeckung",
+      "label": "Ziegel"
+    },
+    {
+      "art": "radio",
+      "name": "dacheindeckung",
+      "label": "Blech"
+    },
+    {
+      "art": "radio",
+      "name": "dacheindeckung",
+      "label": "Folie"
+    },
+    {
+      "art": "checkbox",
+      "name": "waermepumpe",
+      "label": "Anschaffung einer Wärmepumpe"
+    },
+    {
+      "art": "checkbox",
+      "name": "wallbox",
+      "label": "Anschaffung einer WallBox für e-Auto"
+    },
+    {
+      "art": "text",
+      "name": "firmenname",
+      "label": "Firmenname (optional)"
+    },
+    {
+      "art": "select-one",
+      "name": "anrede",
+      "label": "Anrede*– Bitte auswählen –FrauHerr"
+    },
+    {
+      "art": "text",
+      "name": "vorname",
+      "label": "Vorname*"
+    },
+    {
+      "art": "text",
+      "name": "nachname",
+      "label": "Nachname*"
+    },
+    {
+      "art": "text",
+      "name": "selected_city",
+      "label": "PLZ oder Ort:*"
+    },
+    {
+      "art": "checkbox",
+      "name": "register-lieferadresse[]",
+      "label": "Adresse entspricht der zukünftigen PV-Anlage Installationsort"
+    },
+    {
+      "art": "text",
+      "name": "lieferadresse",
+      "label": "Photovoltaikanlage, PLZ oder Ort:*"
+    },
+    {
+      "art": "text",
+      "name": "strasse",
+      "label": "Straße*"
+    },
+    {
+      "art": "text",
+      "name": "hausnr",
+      "label": "Hausnummer*"
+    },
+    {
+      "art": "email",
+      "name": "email",
+      "label": "E-Mail*"
+    },
+    {
+      "art": "tel",
+      "name": "tel",
+      "label": "Telefonnummer*"
+    },
+    {
+      "art": "textarea",
+      "name": "form-anmerkung",
+      "label": "Anmerkungen:"
+    },
+    {
+      "art": "checkbox",
+      "name": "acceptance-680",
+      "label": "*Ich versichere, die Datenschutzbestimmungen gelesen zu haben. Der Nutzung meine"
+    },
+    {
+      "art": "submit",
+      "name": "senden",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "your-name",
+      "label": "Name:"
+    },
+    {
+      "art": "email",
+      "name": "your-email",
+      "label": "E-Mail-Adresse*:"
+    },
+    {
+      "art": "tel",
+      "name": "your-phone",
+      "label": "Telefon*:"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": true,
+    "pflichtprozess": false
+  },
+  "bild": "28765015-a95d-4429-8b66-7e855ed8dd93.png"
+}

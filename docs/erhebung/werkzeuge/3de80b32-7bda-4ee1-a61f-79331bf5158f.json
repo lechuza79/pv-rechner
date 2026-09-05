@@ -1,0 +1,24 @@
+{
+  "id": "3de80b32-7bda-4ee1-a61f-79331bf5158f",
+  "name": "Stadtwerke Waldkirch GmbH",
+  "url": "https://www.stadtwerke-waldkirch.de/privatkunden/oekologie/photovoltaik/solarkataster-waldkirch.html",
+  "vermutet": "eingekauft",
+  "abruf": "ok",
+  "titel": "Stadtwerke Waldkirch - Strom, Gas, Wasser, Wärme - Versorgung fair und kundennah in Waldkirch, Freiburg und Umgebung: Solarkataster Waldkirch",
+  "text": "Home | Sitemap | Impressum | Datenschutz | Digitales Hinweisgebersystem Kontakt | Download | News Netze Unternehmen Dienstleistungen W-Net Geschäftskunden Privatkunden Online Service Strom Erdgas Trinkwasser Wärme Ökologie E-Mobilität W-Net Privatkunden >Ökologie >Photovoltaik >Solarkataster Waldkirch Ökologie Direktstrom Photovoltaik Solarkataster Waldkirch Eigene PV-Anlagen Bürger PV-Anlagen Kundenanlagen Das Solarkataster für die Stadt Waldkirch Für die Energiewende spielt die Nutzung von Solarenergie eine zentrale Rolle. Die Stadt Waldkirch unterstützt deshalb Hausbesitzerinnen darin, Photovoltaik auf das eigene Dach zu bringen. Ein erster Schritt dahin ist das neue Solarkataster der Stadt Waldkirch. Es zeigt auf einen Blick das Potential der nutzbaren Flächen des jeweiligen Gebäudes, beispielsweise die Intensität der Sonneneinstrahlung, den geschätzten Eigenverbrauch und damit das Einsparpotential sowohl an Strom als auch an CO². Das Solarkataser wurde auf Basis von Satellitenaufnahmen, Klimadaten und weiteren Parametern entwickelt und ist nun über folgenden Link aufrufbar: Solarkataster Waldkirch Strom Tarife Umlagenbefreiung für Wärmepumpen Vertragliche Bedingungen Zählerablesung Erdgas Tarife Saubere Energie Vertragliche Bedingungen Thermische Gasabrechnung Trinkwasser Tarife Trinkwasseranalyse Lebenselixier Vertragliche Bedingungen Wärme Wärme-Contracting Holzhackschnitzel Veröffentlichungspflichten AVB FernwärmeV - FFVAV Ökologie Direktstrom Photovoltaik",
+  "felder": [
+    {
+      "art": "text",
+      "name": "tx_indexedsearch_pi2[search][sword]",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "3de80b32-7bda-4ee1-a61f-79331bf5158f.png"
+}

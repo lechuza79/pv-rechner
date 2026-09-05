@@ -1,0 +1,24 @@
+{
+  "id": "2f120e93-5864-475f-81a3-e67039b45596",
+  "name": "Stadtwerke Erkrath GmbH",
+  "url": "https://www.stadtwerke-erkrath.de/strom/waermepumpentarif/anmeldung-waermepumpe/",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Anmeldung Wärmepumpe - Stadtwerke Erkrath",
+  "text": "Zum Inhalt springen Privatkunden Leichte Sprache Unternehmen Aktuelles Hilfecenter Kontakt Suche Suche Kundenportal Strom Gas Wärme Wasser Netze Weiteres Wärmepumpe Anmeldung und Netzanschluss Elektrische Heiz- und Klimageräte müssen vor der Inbetriebnahme beim Netzbetreiber angemeldet werden und sind genehmigungspflichtig. Melden Sie Ihre Wärmepumpe einfach über unsere Klickstrecke an. Wärmepumpe anmelden Stadtwerke Erkrath GmbH Gruitener Straße 27 40699 Erkrath Kontakt T 02104 943 60 70 F 02104 943 60 78 service@stadtwerke-erkrath.de Kundencenter Hochdahler Markt 29 40699 Erkrath Mo.-Do. 9.00-16.00 Uhr Fr. 9.00-13.30 Uhr Störung melden Vertrag widerrufen Verträge kündigen Sitemap Auszeichnung Downloads Kontakt AGB Datenschutz Impressum Barrierefreiheitserklärung © 2026 Stadtwerke Erkrath GmbH",
+  "felder": [
+    {
+      "art": "search",
+      "name": "s",
+      "label": "Suche"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "2f120e93-5864-475f-81a3-e67039b45596.png"
+}

@@ -1,0 +1,64 @@
+{
+  "id": "66217de1-6bce-414d-b178-e290576bb058",
+  "name": "Stadtwerke Wertheim GmbH",
+  "url": "https://www.stadtwerke-wertheim.de/de/Photovoltaik/Mini-PV-Anlagen-anmelden/",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Steckerfertige PV-Anlagen",
+  "text": "digi·access - Zugänglichkeit verbessern Optimieren Sie die Webseite für bessere Lesbarkeit und Nutzerfreundlichkeit. F2 zum öffnen Wir verwenden Cookies auf unserer Website. Sie haben hier die Möglichkeit zu entscheiden, welche Cookies verwendet werden dürfen. Ihre Auswahl bleibt für 30 Tage gespeichert. Sie haben jederzeit die Möglichkeit, Ihre Cookie-Einstellungen über die Datenschutzerklärung zu ändern. Notwendige Statistik Alle zulassen Auswahl speichern Alle ablehnen Notwendige Statistik Zugang zu den wichtigen Informationen Impressum Datenschutz Verträge kündigen Startseite Photovoltaik Mini-PV-Anlagen anmelden Schön, dass Sie da sind. Wie dürfen wir Ihnen helfen? Andere Kunden suchten auch: Naturstrom Hausanschluss Glasfasernetze Online-Service Ansprechpartner Installateurportal Defekte Straßenbeleuchtung melden Anmeldung Ihrer Mini-PV-Anlage Sie schaffen sich eine steckerfertige PV-Anlage an? Dann denken Sie daran, diese bei Ihrem Netzbetreiber anzumelden. Denn generell sind alle Erzeugungsanlagen, unabhängig von der Anlagengröße, zu melden. Dies gilt auch für kleine Anlagen wie Stecker-PV-Anlagen oder Balkonanlagen (bis 800 W Wechselrichterleistung). Sofern Sie im Netzgebiet der Stadtwerke Wertheim wohnen, können Sie Ihre Mini-PV-Anlage direkt online bei uns anmelden. Informationen, die Sie für die Online-Anmeldung benötigen Um die Anmeldung ganz einfach online durchzuführen, bitten wir Sie, folgende Informationen bereitzuhalten: Angaben zu Ihrer Person Standort der Anlage Technische Daten zu Ihrer steckerfertigen PV-Anlage Inbetriebnahmedatum der Anlage Sie haben alle notwendigen Infos vorliegen? Hier geht es zur Anmeldung Wie geht es nach der Antragstellung weiter? Zunächst prüfen wir, ob Ihr Zähler ausgetauscht werden muss. In diesem Fall informieren wir Sie nach Ihrer Anmeldung zeitnah. Nachdem der Zähler ausgetauscht wurde oder Sie eine Genehmigung der Anlage von uns erhalten haben, können Sie Ihre Anlage im Marktstammdatenregister registrieren. Zum Marktstammdatenregister Das gibt es außerdem zu beachten Steckerfertige Erzeugungsanlagen dürfen lediglich über eine spezielle Energiesteckdose angeschlossen werden. Schließen Sie lediglich steckerfertige PV-Anlagen an, bei welchen der Hersteller sowohl ein Einheitenzertifikat als auch ein Zertifikat für den Netz- und Anlagenschutz vorlegen kann. Elektrische Anlagen sind so zu errichten und zu betreiben, dass die technische Sicherheit jederzeit gewährleistet ist. Dies ist durch Einhaltung der anerkannten Regeln der Technik, insbesondere der VDE-AR-N 4105 und DIN VDE V 0100-551-1, sichergestellt. Wenden Sie sich hier an Ihren Installateur - er kann Sie hier fachmännisch unterstützen. Aufgrund der geringen Einspeisemengen von Kleinanlagen gehen wir davon aus, dass Sie auf eine Vergütung des eingespeisten Stroms verzichten. Sie haben Fragen oder benötigen weitere Informationen? Dann wenden Sie sich jederzeit gerne an unsere Ansprechpartner. Frank Milich Technischer Ansprechpartner PV 09342 909-100 frank.milich@stadtwerke-wertheim.de Erich Gerber Team Einspeisemanagement / EEG-KWK-Anlagen 09342 909-148 eeg-kwk@stadtwerke-wertheim.de Das könnte Sie ebenfalls interessieren Ihre PV-Anlage Lassen Sie die Sonne rein und errichten Sie Ihre PV-Anlage auf Ihrem Dach. weiterlesen Sie haben noch Fragen oder Wünsche? Sie haben Fragen oder wünsche? Dann melden Sie sich gerne telefonisch oder per E-Mail bei uns oder besuchen Sie unser Kundencenter in der Wertheimer Altstadt. Wir freuen uns auf Sie! Stadtwerke Wertheim GmbH Hauptstandort Mühlenstraße 60 97877 Wertheim Telefon 09342 909-0 E-Mail: info@stadtwerke-wertheim.de Öffnungszeiten Hauptstandort Montag bis Donnerstag 8.00 Uhr - 16.00 Uhr Freitag 8.00 Uhr - 12.00 Uhr Stadtwerke Wertheim GmbH Kundencenter Rathausgasse 9 97877 Wertheim Telefon 09342 909-222 E-Mail: kundencenter@stadtwerke-wertheim.de Öffnungszeiten Kundencenter Montag & Donnerstag 8.00 Uhr - 18.00 Uhr Dienstag 8.00 Uhr - 16.00 Uhr Mittwoch & Freitag 8.00 Uhr - 12.00 Uhr Störungsmeldestelle Ansprechpartner Kunden-Onlineportal Im Störungsfall sind wir rund um die Uhr für Sie im Einsatz. Strom 09342 909-101 Erdgas & Trinkwasser 09342 909-102 Wärme 09342 909-103 Glasfaser Privatkunden 09342 909-104 Glasfaser Geschäftskunden 09342 909-105 Impressum Datenschutz Online-Service Verträge kündigen Netze Facebook Instagram Cookies",
+  "felder": [
+    {
+      "art": "range",
+      "name": "da-font-size--range",
+      "label": "- +"
+    },
+    {
+      "art": "range",
+      "name": "da-line-spacing--range",
+      "label": "- +"
+    },
+    {
+      "art": "range",
+      "name": "da-content-size--range",
+      "label": "- +"
+    },
+    {
+      "art": "range",
+      "name": "da-word-spacing--range",
+      "label": "- +"
+    },
+    {
+      "art": "range",
+      "name": "da-char-spacing--range",
+      "label": "- +"
+    },
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Notwendige"
+    },
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Statistik"
+    },
+    {
+      "art": "text",
+      "name": "VolltextSuchbegriff",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "suche",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "66217de1-6bce-414d-b178-e290576bb058.png"
+}

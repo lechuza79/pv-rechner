@@ -1,0 +1,64 @@
+{
+  "id": "172b5247-0ccd-43b8-99b2-2dee4d65adc8",
+  "name": "Gemeindewerke Kiefersfelden",
+  "url": "https://www.gemeindewerke-kiefersfelden.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Startseite - Gemeindewerke Kiefersfelden",
+  "text": "Skip To Content ↵ ENTER Skip To Navigation ↵ ENTER Open Accessibility Toolbar ↵ ENTER Skip To Footer ↵ ENTER Wir verwenden Cookies, um unsere Website und unseren Service zu optimieren. Cookies Akzeptieren Ablehnen Einstellungen Anzeigen Datenschutz Datenschutz Impressum info@gemeindewerke-kiefersfelden.de +49 (0)8033976521 Startseite Aktuelles Produkte Netze Onlineservice Kontakt Startseite Aktuelles Produkte Netze Onlineservice Kontakt Kontakt: Kufsteiner Straße 17 83088 Kiefersfelden info@gemeindewerke-kiefersfelden.de +49 (0)8033 976521 Herzlich Willkommen bei den Gemeindewerken Kiefersfelden Jahrelange Erfahrung Für alle Fragen rund um das Thema \"Energie\" sind wir für Sie da! Vielfältige Leistungen Unser Betrieb umfasst die Sparten Strom-, Erdgas- und Wasserversorgung sowie Elektromobilität. Strom Erdgas Wasser Kontakt Kufsteiner Straße 17 83088 Kiefersfelden info@gemeindewerke-kiefersfelden.de +49 (0) 8033 976521 Notrufnummer: 08033 976522 © 2023 Gemeindewerke Kiefersfelden | Alle Rechte vorbehalten Datenschutz Impressum",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "aioa-oversize-widget-switcher",
+      "label": "Oversize Widget"
+    },
+    {
+      "art": "checkbox",
+      "name": "cmplz-functional-optin",
+      "label": "Funktional"
+    },
+    {
+      "art": "checkbox",
+      "name": "cmplz-preferences-optin",
+      "label": "Vorlieben"
+    },
+    {
+      "art": "checkbox",
+      "name": "cmplz-statistics-optin",
+      "label": "Statistiken"
+    },
+    {
+      "art": "checkbox",
+      "name": "cmplz-marketing-optin",
+      "label": "Marketing"
+    },
+    {
+      "art": "text",
+      "name": "s",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "s",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "172b5247-0ccd-43b8-99b2-2dee4d65adc8.png"
+}

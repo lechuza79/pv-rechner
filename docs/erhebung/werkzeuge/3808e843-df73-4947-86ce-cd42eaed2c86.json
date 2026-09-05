@@ -1,0 +1,69 @@
+{
+  "id": "3808e843-df73-4947-86ce-cd42eaed2c86",
+  "name": "Stadtwerke Bad Vilbel GmbH",
+  "url": "https://www.sw-bv.de/privatkunden/energie-and-wasser/strom/vil-strom-waermepumpe.html",
+  "vermutet": "tarifrechner",
+  "abruf": "ok",
+  "titel": "VilStrom Wärmepumpe - Strom - Energie & Wasser - Privatkunden - Stadtwerke Bad Vilbel",
+  "text": "Zum Hauptinhalt wechseln PRIVATKUNDEN NETZE UNTERNEHMEN VilApp Energie & Wasser Mobilität Entsorgung Services KARRIERE PRESSE STÖRUNG Menü VilStrom Wärmepumpe Ihr spezieller Wärmepumpen-Tarif Hohe Effizienz Komfortabel Zuverlässig Jetzt Preis berechnen Sie sind hier: Home Privatkunden Energie & Wasser Strom VilStrom Wärmepumpe Faire Tarife und Service vor Ort Die Stadtwerke Bad Vilbel bieten Stromversorgung zu fairen Preisen – und darüber hinaus klar definierte Konditionen. Versteckte Kosten suchen Sie bei uns vergeblich. Wärmetarif einfach wechseln. Finden Sie Ihren passenden Wärmetarif. 2 Personen Ihr Jahresverbrauch (kWh/Jahr) Ihre Postleitzahl Faire Preise Zuverlässiger Service Sichere Versorgung Preiswerte Stromversorgung Entscheiden Sie sich für unseren günstigen VilStrom Wärmepumpe Tarif. Dabei können Sie von reduzierteren Netzentgelten und Umlagen profitieren. Bitte beachten Sie: Um den speziellen Wärmestromtarif nutzen zu können, muss Ihre Wärmepumpe einen eigenen Stromzähler haben. An diesem separaten Zähler wird der Betriebsstromverbrauch getrennt vom allgemeinen Haushaltsstrom gemessen und abgerechnet. Drei gute Gründe für VilStrom Wärmepumpe von den Stadtwerken Bad Vilbel Preiswert Mit dem Tarif VilStrom Wärmepumpe profitieren Sie von günstigeren Strompreisen, die speziell auf die Bedürfnisse von Wärmepumpen-Nutzern zugeschnitten sind. Komfort Wärmepumpen bieten eine konstante und zuverlässige Wärmeversorgung, unabhängig von den Außentemperaturen. Sie sind sowohl für Heizung als auch für Warmwasseraufbereitung ideal geeignet. Zukunftssicher Wärmepumpen gehören zu den modernsten und effizientesten Heiztechnologien auf dem Markt. Sie sind bestens für die Zukunft gerüstet und bieten eine langfristige Lösung für Ihre Heizbedürfnisse. In 3 Schritten zum VilStrom Wärmepumpe 1 Tarif wählen Geben Sie über den Tarifrechner Ihre Postleitzahl und den Verbrauch an. 2 Stromtarif abschließen Sie können den gewünschten Tarif bequem online abschließen. 3 Hallo VilStrom Wärmepumpe! Wir kümmern uns um Ihren Wechsel und garantieren die Belieferung. Ein Stromtarif-Wechsel zu uns ist jederzeit möglich. Das Beste daran: Sie können sich entspannt zurücklehnen, weil wir den Wechsel für Sie regeln und obendrein die Kündigung bei Ihrem aktuellen Stromanbieter übernehmen. Sie berechnen einfach Ihren Strompreis in unserem Preisrechner, fertig! Jetzt wechseln, denn regional lohnt sich für alle. Jetzt Strompreis berechnen und wechseln Weitere Infos zu VilStrom Wärmepumpe Preise Downloads Für den Abschluss des Wärmestromtarifes muss Ihre Wärmepumpe einen eigenen Stromzähler haben. An diesem separaten Zähler wird der Betriebsstromverbrauch getrennt vom allgemeinen Haushaltsstrom gemessen und abgerechnet. Sondertarif / Versorgung erfolgt außerhalb der Grundversorgung Vertragslaufzeit: 1 Monat Abnahmestelle in Bad Vilbel Preise ab 01.07.2026 Tarifsystem für Eintarifzähler Netto Brutto Arbeitspreis (ct/kWh) 24,00 28,56 Grundpreis (MME) (Euro/Monat) 10,38 12,35 *In den Bruttopreisen sind die Umsatzsteuer, Stromsteuer, die §19 Strom NEV-Umlage, die Konzessionsabgabe (gem. § 35e EnWG) sowie die gültigen Netzentgelte enthalten. Die Preise sind auf zwei Nachkommastellen gerundet. Sie können sich direkt online oder mit dem Vertrag bei uns anmelden. Hinweis zu steuerbaren Verbrauchseinrichtungen Jetzt wechseln, denn regional lohnt sich für alle. Jetzt Preis berechnen und wechseln Sie haben Fragen? Kundenservice Sie haben Fragen zu Ihrem Vertrag? 06101/528-800 E-Mail schreiben Kontakt Stadtwerke Bad Vilbel GmbH Theodor-Heuss-Straße 51 61118 Bad Vilbel Tel.: +49 6101 / 528-01 Fax: +49 6101 / 528-111 kundenservice (at) sw-bv.de Öffnungszeiten Mo. + Di. 07:30-12:00 Uhr 12:45-15:30 Uhr Do.: 07:30-12:00 Uhr 12:45-17:30 Uhr Fr.: 07:30-12:00 Uhr Mittwoch für den Kundenverkehr geschlossen Notrufnummern Erdgas/Wasser Tel. 06101 / 528-100 Strom Tel. 06101 / 528-200 Direkteinstiege Strom Gas Kundenportal Netzportal Energie sparen © 2026 Stadtwerke Bad Vilbel GmbH Impressum Datenschutz Barrierefreiheitserklärung Sitemap Vertrag kündigen close Barrierefreiheit refresh Schrift vergrößern Schrift verkleinern Wortabstand vergrößern Wortabstand verkleinern Zeilenabstand vergrößern Zeilenabstand verkleinern Graustufen Großer Mauszeiger Lesehilfe Links unterstreichen Animationen ausschalten",
+  "felder": [
+    {
+      "art": "text",
+      "name": "search[word]",
+      "label": ""
+    },
+    {
+      "art": "number",
+      "name": "consumption",
+      "label": "Ihr Jahresverbrauch HT (kWh/Jahr)"
+    },
+    {
+      "art": "number",
+      "name": "consumptionNT",
+      "label": "Ihr Jahresverbrauch NT (kWh/Jahr)"
+    },
+    {
+      "art": "text",
+      "name": "postalCode",
+      "label": "Ihre Postleitzahl"
+    },
+    {
+      "art": "submit",
+      "name": "forward",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "doubleTariff",
+      "label": "Zweitarifzähler vorhanden?"
+    },
+    {
+      "art": "select-one",
+      "name": "ccm-widget--language-select",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-41ba25c",
+      "label": "Technisch notwendig (3)"
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-a717ff5",
+      "label": "Analyse / Statistiken (1)"
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-15c61c3",
+      "label": "Sonstiges (1)"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": true,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "3808e843-df73-4947-86ce-cd42eaed2c86.png"
+}

@@ -1,0 +1,79 @@
+{
+  "id": "f02eee17-17c8-4da1-8674-caef8baad5d0",
+  "name": "Versorgungsbetriebe Hoyerswerda GmbH",
+  "url": "https://www.vbh-hoy.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Startseite - VBH Versorgungsbetriebe Hoyerswerda GmbH",
+  "text": "Cookie-Zustimmung verwalten Um Ihnen ein optimales Erlebnis zu bieten, verwenden wir Technologien wie Cookies, um Geräteinformationen zu speichern bzw. darauf zuzugreifen. Wenn Sie diesen Technologien zustimmen, können wir Daten wie das Surfverhalten oder eindeutige IDs auf dieser Website verarbeiten. Wenn Sie Ihre Zustimmung nicht erteilen oder zurückziehen, können bestimmte Merkmale und Funktionen beeinträchtigt werden. Akzeptieren Ablehnen Voreinstellungen anzeigen Cookie-Richtlinie Datenschutzinformationen Impressum Zum Inhalt springen Kundenlogin Kontakt Baustellen und Störungen Zählerstand Privatkunden Geschäftskunden Netz Kundenservice Unternehmen Karriere Strom Erdgas Fernwärme Wasser/Abwasser Sie sind Ihr Wohnort Ihr Jahresverbrauch kWh Personen im Haushalt Datenschutz Information Durch Klicken auf den Link werden Sie, inklusive der eingegebenen Daten, zu unserem Kundenportal weitergeleitet. jetzt Tarif finden Aktuelle Informationen Kanalarbeiten in Hoyerswerda: Vollsperrung im Flurweg und weitere Verkehrseinschränkungen 3. September 2026 Die Versorgungsbetriebe Hoyerswerda (VBH) führen im September und Oktober turnusmäßige Reinigungs- und Inspektionsarbeiten am Schmutzwasserkanalnetz durch. Mit den Arbeiten wurde die Firma ETS Cottbus beauftragt. … VBH erhält Förderzusage in Millionenhöhe für die Wärmewende in Hoyerswerda 2. September 2026 Just-Transition-Fund unterstützt zwei Zukunftsprojekte der Versorgungsbetriebe Hoyerswerda Die Versorgungsbetriebe Hoyerswerda (VBH) haben einen wichtigen Meilenstein auf dem Weg zur zukünftigen Wärmeversorgung der Stadt erreicht: Für … VBH-Trinkflaschen für Oberschüler 27. August 2026 Zu Beginn des neuen Schuljahres überreichte der Marketing-Bereich der Versorgungsbetriebe Hoyerswerda GmbH (VBH) in dieser Woche wieder 80 grüne Trinkflaschen an die Schülerinnen und Schüler … alle aktuellen Beiträge ansehen Top-Themen für Sie Wärmewende Lausitz​ Fernwärmeerschließung Kühnicht Angebote & Tipps​ Unsere Tarife und Leistungen Unsere Stromtarife Wir haben für jeden die passende Lösung Leben mit Erdgas Tarife und Voraussetzungen Fernwärme für Ihr Zuhause Wir sorgen dafür, dass Sie sich wohlfühlen Abwasserentsorgung Unsere Tarife und Leistungen 100% sauberes Trinkwasser 365 Tage im Jahr Meine Versorgungswelt Tarif finden Service+Card Energiewelt Zählerstand Elektromobilität Kundendaten Netzbetreiber Widerruf Vertragskündigung Ihr PlusService - Vergnügen Das Portal für Plus - Macher Service Hotline Telefon: 08000 469 666 energiewelt@vbh-hoy.de Kundencenter Servicecenter Energiewelt Lausitzer Platz 4 02977 Hoyerswerda Auf Google-Maps öffnen Terminvergabe Online einen Termin vereinbaren Durch Klicken auf den Link werden Sie zum Terminbuchungsportal von Terminland.de weitergeleitet. Servicezeiten Energiewelt Montag 09:00 – 12:00 Uhr Dienstag 09:00 - 18:00 Uhr Mittwoch 09:00 – 12:00 Uhr Donnerstag 09:00 - 18:00 Uhr Freitag 09:00 – 12:00 Uhr Liebe Kundinnen und Kunden, vermeiden Sie unnötige Wartezeiten. Vereinbaren Sie Ihren Termin ganz einfach online oder gern auch telefonisch. Wir freuen uns auf Ihren Besuch. Privatkunden Strom Erdgas Fernwärme Trinkwasser Abwasser Elektromobilität Photovoltaik Geschäftskunden Strom Erdgas Fernwärme Trinkwasser Abwasser Elektromobilität Netz Strom Erdgas Fernwärme Trinkwasser Abwasser Leitungsauskunft Service Servicecenter Energiewelt Service+Card Angebote und Tipps Baustellen und Störungen Fernwärmeerschließung Kühnicht Kundeninformationen / FAQs Downloadbereich Über Uns News Über uns Sponsoring & Spenden Veröffentlichungspflichten Zertifizierungen SWH Gruppe Lausitzwerk Koark Automation GmbH © 2021 Versorgungsbetriebe Hoyerswerda GmbH Erklärung zur Barrierefreiheit Presse Impressum Cookie-Richtlinie (EU) Datenschutzinformationen 0800 0469 666 Wir richten uns neu aus Der Hoyerswerdaer Stadtrat hat am 26. Mai 2026 zentrale Beschlüsse zur strategischen Neuausrichtung der SWH Gruppe gefasst. Auf unserer Sonderseite dazu, erfahren Sie mehr zu den Details sowie die häufigsten Fragen und Antworten zum Thema. ×",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "cmplz-functional-optin",
+      "label": "Funktional"
+    },
+    {
+      "art": "checkbox",
+      "name": "cmplz-preferences-optin",
+      "label": "Vorlieben"
+    },
+    {
+      "art": "checkbox",
+      "name": "cmplz-statistics-optin",
+      "label": "Statistiken"
+    },
+    {
+      "art": "checkbox",
+      "name": "cmplz-marketing-optin",
+      "label": "Marketing"
+    },
+    {
+      "art": "text",
+      "name": "j_username",
+      "label": "Benutzername"
+    },
+    {
+      "art": "password",
+      "name": "j_password",
+      "label": "Passwort"
+    },
+    {
+      "art": "submit",
+      "name": "login",
+      "label": ""
+    },
+    {
+      "art": "search",
+      "name": "s",
+      "label": "Suchen nach:"
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": "Suchen nach:"
+    },
+    {
+      "art": "text",
+      "name": "calculatorEnergyType4",
+      "label": "Sie sind"
+    },
+    {
+      "art": "text",
+      "name": "plzsuche",
+      "label": "Ihr Wohnort"
+    },
+    {
+      "art": "text",
+      "name": "stromverbrauch",
+      "label": "Ihr Jahresverbrauch"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": true,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "f02eee17-17c8-4da1-8674-caef8baad5d0.png"
+}

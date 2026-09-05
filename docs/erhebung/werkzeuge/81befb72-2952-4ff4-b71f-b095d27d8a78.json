@@ -1,0 +1,34 @@
+{
+  "id": "81befb72-2952-4ff4-b71f-b095d27d8a78",
+  "name": "Netze ODR GmbH",
+  "url": "https://www.netze-odr.de/einspeiser/neuanlage-anmelden/photovoltaikanlage",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Photovoltaikanlage anmelden | Netze ODR GmbH",
+  "text": "Zum Hauptinhalt springen Zum Footer springen Häuslebauer & -besitzer Einspeiser Zähler Dienstleistungen Partner Netze ODR Karriere Service Suche Kontakt Kundenzentrum Online Onlineportal für Elektroinstallateure Kontrastmodus Photovoltaikanlage In wenigen Schritten zu Ihrer PV-Anlage 01 1. Schritt Netzanfrage / Anmeldung Jeder Anlagenbetreiber ist dazu verpflichtet die Anlage beim zuständigen Netzbetreiber anzumelden. Dadurch können wir die Anschlusssituation prüfen und die netztechnischen Auswirkungen der Anlage berechnen. Die Anmeldung kann sowohl von Ihnen als auch von Ihrem Elektroinstallateur über unser digitales Anmeldeformular durchgeführt werden. Zur Anmeldemaske 02 2. Schritt 03 3. Schritt 04 4. Schritt 05 5. Schritt Hinweis Bitte warten Sie immer den Eingang der Einspeisezusage ab, bevor Sie über die Investition entscheiden oder sogar mit dem Bau beginnen. Wir reservieren für Sie die Einspeiseleistung für 6 Monate, gibt es Verzögerungen bei Baubeginn, geben Sie uns bitte Bescheid. Formulare zur Fertigmeldung Ihrer PV-Anlage Formulare für die Fertigmeldung Formulare für Messkonzepte und Speicherschema Erklärvideo für die Netzanfrage / Anmeldung einer PV-Anlage YouTube Video anzeigen? Wir nehmen den Schutz Ihrer Daten ernst. Bereits beim Anzeigen des YouTube Players werden Daten an Google übertragen. Mit einem Klick auf den Button stimmen Sie dieser Übertragung zu und Ihnen wird das Video angezeigt. Ja, Video anzeigen Kontakt Bei Fragen zur Anmeldung Ihrer PV-Anlage, wenden Sie sich bitte an unser EEG-Team. EEG-Team 07961 9336-1472 Gesetzliche Grundlagen Verschaffen Sie sich einen Überblick! Bereich wechseln Marktstammdatenregister Registrieren Sie jetzt Ihre Anlage! Bereich wechseln Netze ODR GmbH Unterer Brühl 2 73479 Ellwangen Unsere Servicenummer: 07961 9336-0 Unsere Servicezeiten: Montag - Donnerstag: 08:00 bis 16:00 Uhr Freitag: 08:00 Uhr bis 14:00 Uhr Störung melden im Stromnetz: 07961 9336-1401 im Gasnetz: 07961 9336-1402 DIE NETZE ODR Engagement Karriere Kontakt Presse SERVICES Baustromportal Netzanschlussportal Kundenzentrum Online PV-Portal für Installateure Lob & Kritik - Ihr Feedback! Kontakt aufnehmen Impressum Datenschutz Barrierefreiheit Ein Unternehmen der EnBW ODR AG © Netze ODR 2026. Alle Rechte vorbehalten. Bevor Sie zur Netze ODR weitergehen Cookies und weitere Technologien helfen uns dabei, Ihren Besuch so angenehm wie möglich zu gestalten. Zum einen sind sie für einen zuverlässigen und sicheren Betrieb der Website unbedingt erforderlich. Diese Cookies und Technologien sind daher immer aktiv. Zum anderen würden wir gerne mit Ihrer Zustimmung auch Cookies und weitere Technologien für individuelle Auswertungen und Komfortfunktionen sowie personalisierte Werbeinhalte einsetzen. Hierzu wollen wir Daten, die bei der Nutzung unserer digitalen Angebote bezüglich Ihres Online-Nutzungsverhaltens erhoben werden, kunden- und vertragsbezogene Daten, weitere zur Verfügung gestellte Informationen sowie Daten, die wir im Rahmen Ihrer Kommunikation mit uns erheben, zusammenführen. Mit Klick auf \"Alle akzeptieren\" willigen Sie in die Verwendung aller zustimmungspflichtigen Cookies und Technologien ein. Damit ermöglichen Sie die webseiten-, partner- sowie geräteübergreifende Erstellung und Verarbeitung individueller Nutzungsprofile sowie die Weitergabe Ihrer Daten an Drittanbieter (z. B. an Werbenetzwerke und Social Media), die Ihre Daten zum Teil in Ländern außerhalb der EU verarbeiten (Art. 49 Abs. 1 DSGVO). Mit Klick auf \"Alle ablehnen\" werden keine zustimmungspflichtigen Cookies und Technologien verwendet. Über den Button \"Cookies selbst festlegen\" können Sie weitere Informationen zu den Verarbeitungszwecken abrufen und die eingesetzten Cookies und Technologien individuell konfigurieren. Einzelheiten zu den Widerrufsmöglichkeiten, den eingesetzten Technologien sowie Informationen zur Datenweitergabe an Dritte finden Sie in unseren Datenschutzhinweisen. Cookies selbst festlegen Alle ablehnen Alle akzeptieren Datenschutz | Impressum",
+  "felder": [
+    {
+      "art": "text",
+      "name": "tx_indexedsearch_pi2[search][sword]",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "mandatory",
+      "label": "Unbedingt erforderlich"
+    },
+    {
+      "art": "checkbox",
+      "name": "marketing",
+      "label": "Marketing, Personalisierung und Profilbildung"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "81befb72-2952-4ff4-b71f-b095d27d8a78.png"
+}

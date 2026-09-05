@@ -1,0 +1,214 @@
+{
+  "id": "40b76fe8-b5b0-45c7-bf3b-2ffb05274f7d",
+  "name": "Stadtwerke Dorfen GmbH",
+  "url": "https://www.stadtwerke-dorfen.de/service/netzanschluss/pv-anlage",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Anmeldung einer Photovoltaikanlage - Stadtwerke Dorfen GmbH",
+  "text": "STARTSEITE ÜBER DIE STADTWERKE KARRIERE DOWNLOADS KONTAKT NETZE NOTFALL Skip to content WILLKOMMEN PRODUKTE ENERGIEBERATUNG SERVICE AKTUELLES ANMELDUNG EINER PHOTOVOLTAIKANLAGE Anlagenstandort Straße, Hausnr. PLZ, Ort Anlagenbetreiber*in Sind Sie der Anlagenbetreiber? Ja Nein Firma, Vorname, Nachname Straße, Hausnr. PLZ, Ort E-Mail Telefon Anlagendaten Gesamtleistung Wechselrichterleistung Ist ein Speicher geplant? Ja Nein Upload der Dokumente Anmeldung zum Anschluss an das Niederspannungsnetz Antragstellung für Erzeugungsanlagen am Niederspannungsnetz (G.1) Datenblatt Erzeugungsanlagen am Niederspannungsnetz (F.2) Messkonzept Begrenzung 60 Prozent Einspeiseleistung Lageplan Weiteres Dokument Weitere Angaben zur Anmeldung: Ich erkläre mich damit einverstanden, dass meine obenstehenden Angaben gespeichert und von der Stadtwerke Dorfen GmbH intern verarbeitet werden. Eine Weitergabe der Daten an Dritte erfolgt nicht. Ich habe die Nachfolgende Datenschutzerklärung gelesen. Datenschutzerklärung Sie müssen den Inhalt von reCAPTCHA laden, um das Formular abzuschicken. Bitte beachten Sie, dass dabei Daten mit Drittanbietern ausgetauscht werden. Mehr Informationen Inhalt entsperren Erforderlichen Service akzeptieren und Inhalte entsperren Die mit einem * gekennzeichneten Felder sind Pflichtfelder. Persönlich für Sie da: Kundenzentrum Netzanschluss 08081 9317-0 Kontaktformular Netzanschluss Hausanschluss Erzeugungsanlagen, Stromspeicher und Ladeinfrastruktur Planauskunft Glasfaser Check Elektromobilität Elektro-Installation Kontakt Downloads Spartipps 24/7 Störungshotline Strom, Wasser und Wärme: 08081 9317-0 Gas: 08122 9779-0 Glasfaser: 08081 9317-0 Persönlich für Sie da Strom, Gas, Wasser und Wärme: 08081 9317-99 Glasfaser: 08081 9317-59 Anschrift und Öffnungszeiten Kundenzentrum Unterer Marktplatz 1a, 84405 Dorfen Montag – Donnerstag: 8:00 bis 16:00 Uhr Freitag: 8:00 bis 12:00 Uhr Produkte Strom Wärme Gas Glasfaser Wasser Elektro-Installation Energieberatung Spartipps Follow us facebook instagram linkedin Service Ihr Kundenportal Downloads Tarifrechner SEPA-Lastschrift Defekte Straßenbeleuchtung melden Ihre Rechnung An- und Abmelden Zählerstand melden Vertrag widerrufen Verträge kündigen Schlichtungsstelle Fernwartung Über uns Beruf und Karriere Geschichte Partner Verlinkungen Unser Standort Presse Aktuelles Neuigkeiten Datenschutzeinstellungen Startseite Impressum Datenschutz Kontakt Schreiben Sie uns Rufen Sie uns an Kunden- portal Kunden- zentrum",
+  "felder": [
+    {
+      "art": "submit",
+      "name": "",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "s",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "s",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "anlagenstrasse",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "anlagenhausnr",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "anlagenplz",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "anlagenort",
+      "label": ""
+    },
+    {
+      "art": "radio",
+      "name": "anlagenbetreiber",
+      "label": "Ja"
+    },
+    {
+      "art": "radio",
+      "name": "anlagenbetreiber",
+      "label": "Nein"
+    },
+    {
+      "art": "text",
+      "name": "vorname",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "nachname",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "strasse",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "hausnr",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "plz",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "ort",
+      "label": ""
+    },
+    {
+      "art": "email",
+      "name": "email",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "telefon",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "checkboxkontakt[]",
+      "label": "Ich bin vom Anlagenbetreiber bevollmächtigt."
+    },
+    {
+      "art": "text",
+      "name": "kontaktfirma",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "kontaktvorname",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "kontaktnachname",
+      "label": ""
+    },
+    {
+      "art": "email",
+      "name": "kontaktemail",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "kontakttelefon",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "gesamtleistung",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "wechselleistung",
+      "label": ""
+    },
+    {
+      "art": "radio",
+      "name": "speicher",
+      "label": "Ja"
+    },
+    {
+      "art": "radio",
+      "name": "speicher",
+      "label": "Nein"
+    },
+    {
+      "art": "file",
+      "name": "anmeldungnetzanschluss",
+      "label": ""
+    },
+    {
+      "art": "file",
+      "name": "antragsstellungerzeugungsanlagen",
+      "label": ""
+    },
+    {
+      "art": "file",
+      "name": "datenblatterzeugungsanlagen",
+      "label": ""
+    },
+    {
+      "art": "file",
+      "name": "messkonzept",
+      "label": ""
+    },
+    {
+      "art": "file",
+      "name": "begrenzung",
+      "label": ""
+    },
+    {
+      "art": "file",
+      "name": "lageplan",
+      "label": ""
+    },
+    {
+      "art": "file",
+      "name": "dokument",
+      "label": ""
+    },
+    {
+      "art": "file",
+      "name": "datenblattspeicher",
+      "label": ""
+    },
+    {
+      "art": "textarea",
+      "name": "message-60",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "checkbox-6[]",
+      "label": "Ich erkläre mich damit einverstanden, dass meine obenstehenden Angaben gespeiche"
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": true,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "40b76fe8-b5b0-45c7-bf3b-2ffb05274f7d.png"
+}

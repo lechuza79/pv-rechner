@@ -1,0 +1,214 @@
+{
+  "id": "e5eb0ca9-b039-4a80-b810-f3e8fdb0e8f1",
+  "name": "Stadtwerke Aue - Bad Schlema GmbH",
+  "url": "https://www.swaue.de/formulare/erfassung-photovoltaik",
+  "vermutet": "rechner-mit-leadfunnel",
+  "abruf": "ok",
+  "titel": "Erfassung Photovoltaik - Stadtwerke Aue-Bad Schlema",
+  "text": "03771 55 66 0 vertrieb@swaue.de Störungshotline 03771 55 66 77 PRODUKTE KUNDENSERVICE MEINE STADTWERKE NETZ KONTAKT SUCHE SOLARSTROM FÜR IHR ZUHAUSE SAUBERE ENERGIE VOM EIGENEN DACH. Haben Sie schon einmal darüber nachgedacht, Ihren Strom selber zu erzeugen? Umweltfreundlich, nachhaltig und dazu noch zu günstigen und stabilen Konditionen? Dann haben wir die richtige Lösung für Sie. Werden Sie Stromerzeuger, machen Sie sich unabhängig von schwankenden Preisen am Strommarkt und leisten Sie Ihren Beitrag zur Energiewende für unsere Heimat und eine nachhaltige Zukunft. Gemeinsam mit unseren regionalen Kooperationspartnern bieten wir Ihnen Photovoltaik fürs eigene Dach, perfekt abgestimmt auf Ihre Immobilie und Ihre Bedürfnisse. PHOTOVOLTAIK TRIFFT SPEICHER. Strom selbst erzeugen und auch genau zu dem Zeitpunkt verbrauchen, an dem Sie ihn benötigen? Stromspeicher und Photovoltaikanlagen bieten Ihnen die Möglichkeit, aus dem eigenen Haus ein umweltfreundliches Kraftwerk zu machen. Gemeinsam mit Ihnen realisieren wir Ihre maßgeschneiderte Photovoltaikanlage mit Stromspeicher. Durch dieses Paket aus Photovoltaik und moderner Speichertechnik können sich Einfamilienhäuser bis zu 70 % selbst mit Strom versorgen. SOLARSTROM TRIFFT ELEKTROMOBILITÄT. Wie lässt sich ein Elektroauto so klimafreundlich wie möglich aufladen? Mit Sonnenstrom aus der Photovoltaik-Anlage vom eigenen Hausdach. Wer sich für eine eigene Ladestation, auch Wallbox genannt, daheim entscheidet, kann nicht nur den Eigenverbrauch seiner PV-Anlage erhöhen, sondern leistet auch einen wertvollen Beitrag für umweltschonende und preisgünstige Mobilität. FÖRDERMÖGLICHKEITEN. In den letzten zehn Jahren war Deutschland der größte Wachstumsmarkt für Solarstromanlagen. Bund und Länder verfügen über eine Reihe von Fördermaßnahmen, die zumeist über die Kreditanstalt für Wiederaufbau (KfW) abgewickelt werden. Eine Solaranlage lohnt sich in vielen Fällen. Fragen Sie Ihre Hausbank nach Details zur Förderung von Solarenergie. Antragsteller Herr Frau Sonstiges Familie Wohngemeinschaft Vorname* Nachname* E-Mail Adresse* Telefonnummer (erforderlich)* Straße Nr. Postleitzahl Ort Abweichende Lieferadresse Straße Nr. Postleitzahl Ort Angaben zur Anlage Dachart Satteldach Pultdach Walmdach Flachdach Sonstiges Bemerkung zur Dachart Dacheindeckung Dachplatten Trapezblech Stehfalz Foliendach Sonstiges Bemerkung zur Dacheindeckung Sichtbares Ziegeldeckmaß in Höhe und Breite Ziegeltyp Angaben zum Dach Dachlänge Dachtiefe Neigung Ausrichtung Traufhöhe Sonstiges Verbrauchsverhalten Anzahl der Personen Jährlicher Verbrauch in kWh Wann ist Ihr Verbrauch am höchsten? morgens mittags nachmittags abends nachts Speicher gewünscht? Nein Ja Sonstige Angaben E-Mobilität vorhanden? Nein Ja Wärmepumpe vorhanden? Nein Ja Sonstige Anmerkungen Hiermit erklären Sie sich einverstanden, dass die von Ihnen angegebenen Daten elektronisch erhoben und gespeichert werden. Ihre Daten werden dabei nur streng zweckgebunden zur Bearbeitung und Beantwortung Ihrer Anfrage genutzt. Diese Einwilligung können Sie jederzeit durch Nachricht an uns widerrufen. Weitere Informationen entnehmen Sie der Datenschutzerklärung. Anfrage senden Alle Produkte Strom Naturstrom Gas Fernwärme Dynamischer Stromtarif Elektromobilität Erdgasmobilität LED-Werbung Kundenservice Umzugs-Service Formulare Verbraucherschutz FAQ Strom- & Gaspreise in Deutschland Strom- & Gaspreisbremse Information zur Soforthilfe für die SWA Meine Stadtwerke Ansprechpartner Kundenmagazin Engagement Veröffentlichungspflichten Stellenanzeigen Aktuelles aus den Stadtwerken 30 Jahre Stadtwerke Netz Strom Gas Smart Meter Kontakt Suche Preisrechner Online kündigen Widerruf Aktuelle Meldungen Cookie-Einstellungen Datenschutz © 2026 Stadtwerke Aue - Bad Schlema GmbH Kontakt Datenschutz Impressum",
+  "felder": [
+    {
+      "art": "text",
+      "name": "qddc3l0gv",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "Kategorie",
+      "label": ""
+    },
+    {
+      "art": "select-one",
+      "name": "Anrede",
+      "label": "Herr Frau Sonstiges Familie Wohngemeinschaft"
+    },
+    {
+      "art": "text",
+      "name": "Vorname",
+      "label": "Vorname*"
+    },
+    {
+      "art": "text",
+      "name": "Nachname",
+      "label": "Nachname*"
+    },
+    {
+      "art": "email",
+      "name": "E-Mail",
+      "label": "E-Mail Adresse*"
+    },
+    {
+      "art": "tel",
+      "name": "Telefonnummer",
+      "label": "Telefonnummer (erforderlich)*"
+    },
+    {
+      "art": "text",
+      "name": "Straße",
+      "label": "Straße"
+    },
+    {
+      "art": "text",
+      "name": "Hausnummer",
+      "label": "Nr."
+    },
+    {
+      "art": "text",
+      "name": "PLZ",
+      "label": "Postleitzahl"
+    },
+    {
+      "art": "text",
+      "name": "Stadt",
+      "label": "Ort"
+    },
+    {
+      "art": "text",
+      "name": "Liefer-Straße",
+      "label": "Straße"
+    },
+    {
+      "art": "text",
+      "name": "Liefer-Hausnummer",
+      "label": "Nr."
+    },
+    {
+      "art": "text",
+      "name": "Liefer-PLZ",
+      "label": "Postleitzahl"
+    },
+    {
+      "art": "text",
+      "name": "Liefer-Stadt",
+      "label": "Ort"
+    },
+    {
+      "art": "select-one",
+      "name": "Dachart",
+      "label": "Dachart"
+    },
+    {
+      "art": "text",
+      "name": "Dachart Sonstiges",
+      "label": "Bemerkung zur Dachart"
+    },
+    {
+      "art": "select-one",
+      "name": "Dacheindeckung",
+      "label": "Dacheindeckung"
+    },
+    {
+      "art": "text",
+      "name": "Dacheindeckung Sonstiges",
+      "label": "Bemerkung zur Dacheindeckung"
+    },
+    {
+      "art": "text",
+      "name": "Ziegeldeckmaß",
+      "label": "Sichtbares Ziegeldeckmaß in Höhe und Breite"
+    },
+    {
+      "art": "text",
+      "name": "Ziegeltyp",
+      "label": "Ziegeltyp"
+    },
+    {
+      "art": "text",
+      "name": "Dachlänge",
+      "label": "Dachlänge"
+    },
+    {
+      "art": "text",
+      "name": "Dachtiefe",
+      "label": "Dachtiefe"
+    },
+    {
+      "art": "text",
+      "name": "Neigung",
+      "label": "Neigung"
+    },
+    {
+      "art": "text",
+      "name": "Ausrichtung",
+      "label": "Ausrichtung"
+    },
+    {
+      "art": "text",
+      "name": "Traufhöhe",
+      "label": "Traufhöhe"
+    },
+    {
+      "art": "textarea",
+      "name": "Sonstiges",
+      "label": "Sonstiges"
+    },
+    {
+      "art": "number",
+      "name": "Pläne",
+      "label": "Anzahl der Personen"
+    },
+    {
+      "art": "number",
+      "name": "Verbrauch",
+      "label": "Jährlicher Verbrauch in kWh"
+    },
+    {
+      "art": "checkbox",
+      "name": "Wann ist Ihr Verbrauch am höchsten?",
+      "label": "morgens"
+    },
+    {
+      "art": "checkbox",
+      "name": "Wann ist Ihr Verbrauch am höchsten?",
+      "label": "mittags"
+    },
+    {
+      "art": "checkbox",
+      "name": "Wann ist Ihr Verbrauch am höchsten?",
+      "label": "nachmittags"
+    },
+    {
+      "art": "checkbox",
+      "name": "Wann ist Ihr Verbrauch am höchsten?",
+      "label": "abends"
+    },
+    {
+      "art": "checkbox",
+      "name": "Wann ist Ihr Verbrauch am höchsten?",
+      "label": "nachts"
+    },
+    {
+      "art": "select-one",
+      "name": "Speicher gewünscht?",
+      "label": "Speicher gewünscht?"
+    },
+    {
+      "art": "select-one",
+      "name": "E-Mobilität vorhanden?",
+      "label": "E-Mobilität vorhanden?"
+    },
+    {
+      "art": "select-one",
+      "name": "Wärmepumpe vorhanden?",
+      "label": "Wärmepumpe vorhanden?"
+    },
+    {
+      "art": "textarea",
+      "name": "Anmerkung",
+      "label": "Sonstige Anmerkungen"
+    },
+    {
+      "art": "checkbox",
+      "name": "Datenschutz",
+      "label": "Hiermit erklären Sie sich einverstanden, dass die von Ihnen angegebenen Daten el"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": true,
+    "pflichtprozess": false
+  },
+  "bild": "e5eb0ca9-b039-4a80-b810-f3e8fdb0e8f1.png"
+}

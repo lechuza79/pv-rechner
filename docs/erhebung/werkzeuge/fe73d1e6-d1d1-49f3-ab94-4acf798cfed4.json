@@ -1,0 +1,194 @@
+{
+  "id": "fe73d1e6-d1d1-49f3-ab94-4acf798cfed4",
+  "name": "NGN Netzgesellschaft Niederrhein mbH",
+  "url": "https://www.ngn-mbh.de/de/anschliessen/steuerbare-verbrauchseinrichtungen/formular-anmeldung-netzentgeltreduzierung-waermepumpe",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Anmeldung Netzentgeltreduzierung für Ihre Wärmepumpe | NGN",
+  "text": "Kontakt Suche Kundenportal Anschließen Einspeisen Zählen Marktpartner Service Dienstleistungen Über uns Antrag auf Netzentgeltreduzierung einer Wärmepumpe als steuerbare Verbrauchseinrichtung Wo ist/wird die Wärmepumpe angeschlossen? Straße & Hausnummer * Postleitzahl * Stadt * Stromzählernummer (Bezug) * Messlokation Marktlokation Daten des Anschlussnehmenden/ -nutzenden Vorname * Nachname * Straße & Hausnummer * Postleitzahl * Stadt * Telefonnummer * E-Mail * Daten des Elektrofachbetriebs Firma Ansprechpartner * Straße & Hausnummer * Postleitzahl * Stadt * Telefon * E-Mail * Geräteangaben Luft - Luft Luft - Wasser Wasser - Wasser Sole - Wasser Welche Art von Wärmepumpe wird errichtet? * Maximale Leistung des Kompressors in Kilowatt (elektrisch) * Maximale Leistung der Zusatzheizung in Kilowatt (elektrisch) Direktsteuerung EMS-Steuerung Wie werden die Steuersignale umgesetzt? (Steuerungsart) * Dimmbar Ein-/Ausschaltbar Ist die Wärmepumpe dimmbar oder kann ein-/ausgeschaltet werden? * Pauschale jährliche Netzentgeltreduzierung (Modul 1) Reduzierung des Arbeitspreises pro Kilowattstunde (Modul 2) Welche Form von Netzentgeltreduzierung möchten Sie beantragen? * Hinweis Modul 2: Sie benötigen einen zusätzlichen Zähler. Bitte wenden Sie sich hierzu an Ihren Installateur. Modul 3: Modul 3 (Pauschale jährliche Netzentgeltreduzierung mit zeitvariablem Netzentgelt) kann ausschließlich über Ihren Lieferanten bei uns geordert werden. Voraussetzung dafür ist, dass Sie bereits die Pauschale jährliche Netzentgeltreduzierung (Modul 1) erhalten. Vorhanden Geplant Nein Ist eine Erzeugungsanlage (z. B. PV-Anlage) bereits vorhanden oder geplant? * Bestätigung der Steuerbarkeit Hinweis Digitale Schnittstelle / Ethernet Schnittstelle (z. B. mittels EEBUS): Für die Steuerbarkeit ist ein Patchkabel mind. Cat. 5 mit RJ45-Stecker von der SteuVE in den Raum für Zusatzanwendungen (RfZ) zu führen. Dies gilt auch bei Nutzung eines EMS. Bei Vorhandensein mehrerer SteuVE ohne EMS sind diese netzwerktechnisch zu koppeln. Das Datenkabel ist mit der Aufschrift “Datenleitung SteuVE” dauerhaft zu kennzeichnen. Hinweis Potentialfreier Kontakt (EVU-Relaiskontakt): Für die Steuerbarkeit per EVU-Relaiskontakt ist im anlagenseitigen Anschlussraum (AAR) je Leiter eine Übergabeklemme zu installieren und diese an die EVU-Kontakte der SteuVE mittels zwei 2-adriger Leitungen anzuschließen. Die potentialfreien Kontakte dürfen mit einem maximalen Schaltstrom i.H.v. 1 A (max. 250 V) pro EVU-Kontakt, belastet werden. Vor der Installation des Steuergerätes sind zwei 2-adrige Leitungen pro SteuVE von den Übergabeklemmen im AAR in den RfZ zu verlegen. Bei Nutzung eines EMS sind zwei 2-adrige Leitungen vom EVU-Kontakt des EMS zu den jeweiligen Übergabeklemmen im AAR und von dort in den RfZ zu verlegen und anzuschließen. Bis zur Installation des Steuergerätes durch den Netzbetreiber sind die Enden dieser Leitung im RfZ derart zu kontaktieren, dass die SteuVE im Regelbetrieb arbeiten kann. Die einzelnen Klemmstellen der Übergabeklemmen sowie die Enden der Leitungen im RfZ sind wie an der SteuVE eindeutig zu kennzeichnen. Die Steuerung ist so umzusetzen, dass bei Anzug der Relaisspule die Steuerung auf den zugesicherten Minimalwert nach §14a EnWG umgesetzt wird. Digitale Schnittstelle / Ethernet Schnittstelle (z. B. mittels EEBUS) Potentialfreier Kontakt (EVU-Relaiskontakt) Bitte wählen Sie die für Sie passende Option aus. * Hiermit stimme ich den Bedingungen für die netzorientierte Steuerung der steuerbare Verbrauchseinrichtung / des steuerbaren Netzanschlusses zu. Ausschlusskriterien der BNetzA-Festlegung Ladepunkte für Elektromobile, die von Institutionen betrieben werden, die gemäß § 35 Absätze 1 und 5a Straßenverkehrsordnung (StVO) Sonderrechte in Anspruch nehmen dürfen Wärmepumpen und Klimaanlagen, die nicht der Raumheizung oder -kühlung in Wohn-, Büro- oder Aufenthaltsräumen dienen, sondern die zu gewerblichen betriebsnotwendigen Zwecken eingesetzt werden Wärmepumpen und Klimaanlagen bei Einrichtungen der kritischen Infrastruktur (etwa bei Krankenhäusern) Das Gerät fällt nicht unter die Ausschlusskriterien der BNetzA-Festlegung. Die Inbetriebnahme der Wärmepumpe liegt nach dem 1.1.2024. Datum der Inbetriebnahme * Hinweis: Wenn Sie keinen wettbewerblichen Messstellenbetreiber beauftragt haben, übernimmt der grundzuständige Messstellenbetreiber (in Krefeld ist das die NGN) diese Aufgabe automatisch. Ich habe einen wettbewerblichen Messstellenbetreiber mit den technischen Einrichtungen einschließlich Steuerungseinrichtungen für meine steuerbare Verbrauchseinrichtung beauftragt. Informationen zur Datenverarbeitung erhalten Sie in der Datenschutzerklärung der NGN. Anti-Roboter-Verifizierung Hier klicken FriendlyCaptcha ⇗ SENDEN KONZERN SWK Konzern Karriere Kununu HILFE & KONTAKT Übersicht Kontaktformular Entstörungsdienst 0800 2425 400 Downloadcenter SOCIAL MEDIA Facebook Instagram XING Datenschutzeinstellungen Impressum Datenschutzerklärung Lieferkettengesetz Hinweisgeber Erklärung zur Barrierefreiheit © NGN NETZGESELLSCHAFT NIEDERRHEIN MBH 2026",
+  "felder": [
+    {
+      "art": "text",
+      "name": "address",
+      "label": "Straße & Hausnummer *"
+    },
+    {
+      "art": "number",
+      "name": "postalcode",
+      "label": "Postleitzahl *"
+    },
+    {
+      "art": "text",
+      "name": "city",
+      "label": "Stadt *"
+    },
+    {
+      "art": "text",
+      "name": "counternumber",
+      "label": "Stromzählernummer (Bezug) *"
+    },
+    {
+      "art": "text",
+      "name": "measurementlocation",
+      "label": "Messlokation"
+    },
+    {
+      "art": "text",
+      "name": "location",
+      "label": "Marktlokation"
+    },
+    {
+      "art": "text",
+      "name": "firstnamerecipient",
+      "label": "Vorname *"
+    },
+    {
+      "art": "text",
+      "name": "lastnamerecipient",
+      "label": "Nachname *"
+    },
+    {
+      "art": "text",
+      "name": "addressrecipient",
+      "label": "Straße & Hausnummer *"
+    },
+    {
+      "art": "number",
+      "name": "postalcoderecipient",
+      "label": "Postleitzahl *"
+    },
+    {
+      "art": "text",
+      "name": "cityrecipient",
+      "label": "Stadt *"
+    },
+    {
+      "art": "number",
+      "name": "telephonerecipient",
+      "label": "Telefonnummer *"
+    },
+    {
+      "art": "email",
+      "name": "emailrecipient",
+      "label": "E-Mail *"
+    },
+    {
+      "art": "text",
+      "name": "company",
+      "label": "Firma"
+    },
+    {
+      "art": "text",
+      "name": "contact",
+      "label": "Ansprechpartner *"
+    },
+    {
+      "art": "text",
+      "name": "addressspecialist",
+      "label": "Straße & Hausnummer *"
+    },
+    {
+      "art": "number",
+      "name": "postalcodespecialist",
+      "label": "Postleitzahl *"
+    },
+    {
+      "art": "text",
+      "name": "cityspecialist",
+      "label": "Stadt *"
+    },
+    {
+      "art": "number",
+      "name": "telephonespecialist",
+      "label": "Telefon *"
+    },
+    {
+      "art": "email",
+      "name": "emailspecialist",
+      "label": "E-Mail *"
+    },
+    {
+      "art": "select-one",
+      "name": "heating",
+      "label": "Welche Art von Wärmepumpe wird errichtet? *"
+    },
+    {
+      "art": "number",
+      "name": "compressor",
+      "label": "Maximale Leistung des Kompressors in Kilowatt (elektrisch) *"
+    },
+    {
+      "art": "number",
+      "name": "additionalheating",
+      "label": "Maximale Leistung der Zusatzheizung in Kilowatt (elektrisch)"
+    },
+    {
+      "art": "select-one",
+      "name": "controltype",
+      "label": "Wie werden die Steuersignale umgesetzt? (Steuerungsart) *"
+    },
+    {
+      "art": "select-one",
+      "name": "dimmability",
+      "label": "Ist die Wärmepumpe dimmbar oder kann ein-/ausgeschaltet werden? *"
+    },
+    {
+      "art": "select-one",
+      "name": "feereduction",
+      "label": "Welche Form von Netzentgeltreduzierung möchten Sie beantragen? *"
+    },
+    {
+      "art": "select-one",
+      "name": "generating",
+      "label": "Ist eine Erzeugungsanlage (z. B. PV-Anlage) bereits vorhanden oder geplant? *"
+    },
+    {
+      "art": "select-one",
+      "name": "measurementconcept",
+      "label": "Messkonzept"
+    },
+    {
+      "art": "file",
+      "name": "upload",
+      "label": "Upload"
+    },
+    {
+      "art": "select-one",
+      "name": "chosenoption",
+      "label": "Bitte wählen Sie die für Sie passende Option aus. *"
+    },
+    {
+      "art": "checkbox",
+      "name": "approvalconditions",
+      "label": "Hiermit stimme ich den Bedingungen für die netzorientierte Steuerung der steuerb"
+    },
+    {
+      "art": "checkbox",
+      "name": "exclusioncriterion",
+      "label": "Das Gerät fällt nicht unter die Ausschlusskriterien der BNetzA-Festlegung."
+    },
+    {
+      "art": "checkbox",
+      "name": "commissioning",
+      "label": "Die Inbetriebnahme der Wärmepumpe liegt nach dem 1.1.2024."
+    },
+    {
+      "art": "date",
+      "name": "dateofcommissioning",
+      "label": "Datum der Inbetriebnahme *"
+    },
+    {
+      "art": "checkbox",
+      "name": "measuringoperator",
+      "label": "Ich habe einen wettbewerblichen Messstellenbetreiber mit den technischen Einrich"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": true,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": true,
+    "pflichtprozess": true
+  },
+  "bild": "fe73d1e6-d1d1-49f3-ab94-4acf798cfed4.png"
+}

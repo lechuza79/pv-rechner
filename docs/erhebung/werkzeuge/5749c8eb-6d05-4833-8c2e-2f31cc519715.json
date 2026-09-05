@@ -1,0 +1,69 @@
+{
+  "id": "5749c8eb-6d05-4833-8c2e-2f31cc519715",
+  "name": "Stadtwerke Rinteln GmbH",
+  "url": "https://www.stadtwerke-rinteln.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Stadtwerke Rinteln | Energie und Service vor Ort",
+  "text": "Barrierefreie Navigation Direkt zur Suche Direkt zur Hauptnavigation Direkt zum Inhalt Zum Bereich Stadtwerke Zum Bereich Bäder Zum Bereich Netze Service Karriere Unternehmen Suche öffnen Zur Startseite der Stadtwerke Rinteln Strom Gas Wasser Wärme Solar Schnell-link für Ansprechpartner öffnen Schnell-link für Meldung öffnen #energyforyou ' Strom ' Bereich öffnen / schließen ' Gas ' Bereich öffnen / schließen ' Kommunale Wärmeplanung ' Bereich öffnen / schließen Darauf können Sie zählen Faire Preise: Profitieren Sie von transparenten Produkten. Kundenservice: Unser freundliches Team steht Ihnen bei Fragen jederzeit zur Seite. Flexibilität: Verschiedene Produkte, die sich an Ihren Verbrauch anpassen. Nachhaltigkeit: 100% Ökostrom für Ihr zu Hause. Engagement: Ihr lokales Projekt liegt uns am Herzen. Unsere wichtigsten Themen Strom zuverlässig, fair und nachhaltig Strom Erdgas moderne Energielösung Erdgas Photovoltaik #energyforyou PV Service Wir sind für Sie da Service Neues von Ihren Stadtwerken Aktuelles Neuigkeiten Wir sind für Sie da Besuchen Sie uns Bahnhofsweg 6 31737 Rinteln Schreiben sie uns E-Mail senden Rufen Sie uns an 05751 700-0 Lesen Sie unsere FAQs Oft gestellte Fragen Social Media Externer Link zu Tiktok Externer Link zu LinkedIn Produkte Strom Gas Wasser Wärme Solar Inhalte Service Karriere Unternehmen Konzern Stadt Rinteln Abwasserbetrieb der Stadt Rinteln GVS Rinteln Stadt Rinteln Impressum Datenschutz Verbraucherservice Vertrag kündigen Vertrag widerrufen Datenschutz-Einstellungen Datenschutzeinstellungen Sie können nachfolgend Ihre Datenschutzeinstellungen festlegen. Detaillierte Informationen zur Datenverarbeitung finden Sie in unserer Datenschutzerklärung. Erforderlich 1 Dienst anzeigen / ausblenden Marketing 3 Dienste anzeigen / ausblenden Präferenzen 1 Dienst anzeigen / ausblenden Sie haben jederzeit das Recht Ihre Einwilligungen einzeln oder in Gänze zu widerrufen. Werden Einwilligungen zur Datenverarbeitung widerrufen, sind die bis zum Widerruf rechtmäßig erhobenen Daten vom Anbieter weiterhin verarbeitbar. Ablehnen Auswahl akzeptieren Alle akzeptieren",
+  "felder": [
+    {
+      "art": "search",
+      "name": "query",
+      "label": "Suchfeld"
+    },
+    {
+      "art": "search",
+      "name": "query",
+      "label": "Suchfeld"
+    },
+    {
+      "art": "checkbox",
+      "name": "category-item-46",
+      "label": "Erforderlich"
+    },
+    {
+      "art": "checkbox",
+      "name": "purpose-item-4",
+      "label": "TYPO3"
+    },
+    {
+      "art": "checkbox",
+      "name": "category-item-45",
+      "label": "Marketing"
+    },
+    {
+      "art": "checkbox",
+      "name": "purpose-item-1",
+      "label": "Google Tag Manager"
+    },
+    {
+      "art": "checkbox",
+      "name": "purpose-item-2",
+      "label": "Google Analytics"
+    },
+    {
+      "art": "checkbox",
+      "name": "purpose-item-3",
+      "label": "Google Ads"
+    },
+    {
+      "art": "checkbox",
+      "name": "category-item-44",
+      "label": "Präferenzen"
+    },
+    {
+      "art": "checkbox",
+      "name": "purpose-item-5",
+      "label": "Youtube"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "5749c8eb-6d05-4833-8c2e-2f31cc519715.png"
+}

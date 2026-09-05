@@ -1,0 +1,76 @@
+{
+  "id": "84353d6d-52ae-4cf6-b2ed-fd504adaff46",
+  "name": "Osterholzer Stadtwerke GmbH & Co. KG",
+  "url": "https://osterholzer-stadtwerke.de/energieloesungen/pv-anmeldung/",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Anmeldung für PV-Anlagen - Osterholzer Stadtwerke",
+  "text": "Diese Webseite verwendet Cookies Wir verwenden Cookies, um Inhalte und Anzeigen zu personalisieren, Funktionen für soziale Medien anbieten zu können und die Zugriffe auf unsere Website zu analysieren. Außerdem geben wir Informationen zu Ihrer Verwendung unserer Website an unsere Partner für soziale Medien, Werbung und Analysen weiter. Unsere Partner führen diese Informationen möglicherweise mit weiteren Daten zusammen, die Sie ihnen bereitgestellt haben oder die sie im Rahmen Ihrer Nutzung der Dienste gesammelt haben. Einwilligungsauswahl Notwendig Präferenzen Statistiken Marketing Details zeigen Cookies zulassen Auswahl erlauben Nur notwendige Cookies Zum Inhalt springen Privatkunden Über uns Karriere Netze Störungsnummern Leichte Sprache Log in TARIFE ENERGIELÖSUNGEN SERVICE KONTAKT Startseite → Energielösungen → Anmeldung für PV-Anlagen ANMELDUNG FÜR PV-ANLAGEN Diese Anmeldung wird ausschließlich durch einen Installateur ausgefüllt. Anmeldung PV-ANLAGEN JETZT UNSERE TARIFE ENTDECKEN Strom-Tarife Erdgas-Tarife Wärme-Tarife 04791 809 - 0 Instagram Facebook Whatsapp Linkedin Link Youtube Störung online melden Vertrag widerrufen PRODUKTE Strom Erdgas Wasser und Entwässerung Wärme E-Mobilität DIENSTLEISTUNGEN Wärmepaket Kommunale Wärmeplanung Photovoltaikpaket Klimaanlagenpaket Solarcarport SERVICE Zählerstände Infocenter Netze MARKTPARTNER Marktkommunikation gMSB mMe / iMsys Stromnetz Gasnetz AGB Impressum Barrierefreiheitserklärung Compliance Datenschutzerklärung",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonNecessary",
+      "label": "Notwendig"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonPreferences",
+      "label": "Präferenzen"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonStatistics",
+      "label": "Statistiken"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonMarketing",
+      "label": "Marketing"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonNecessaryInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonPreferencesInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonStatisticsInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonMarketingInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyContentCheckboxPersonalInformation",
+      "label": "Meine persönlichen Daten nicht verkaufen oder weitergeben"
+    },
+    {
+      "art": "search",
+      "name": "s",
+      "label": "Suche"
+    },
+    {
+      "art": "search",
+      "name": "s",
+      "label": "Suche"
+    }
+  ],
+  "rahmen": [
+    "https://consentcdn.cookiebot.com/sdk/bc-v4.min.html"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "84353d6d-52ae-4cf6-b2ed-fd504adaff46.png"
+}

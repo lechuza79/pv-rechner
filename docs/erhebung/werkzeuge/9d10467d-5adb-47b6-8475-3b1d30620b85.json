@@ -1,0 +1,119 @@
+{
+  "id": "9d10467d-5adb-47b6-8475-3b1d30620b85",
+  "name": "Stadtwerke Elmshorn",
+  "url": "https://www.stadtwerke-elmshorn.de/PV-Gewerbe",
+  "vermutet": "kontaktformular",
+  "abruf": "ok",
+  "titel": "Photovoltaik für Gewerbe Elmshorn - Solarstrom clever nutzen",
+  "text": "Wir verwenden Cookies auf unserer Website. Sie haben hier die Möglichkeit zu entscheiden, welche Cookies verwendet werden dürfen. Ihre Auswahl bleibt für 30 Tage gespeichert. Sie haben jederzeit die Möglichkeit, Ihre Cookie-Einstellungen über die Datenschutzerklärung zu ändern. Notwendige Externe Medien Alle akzeptieren Speichern Alle ablehnen Notwendige Externe Medien Zugang zu den wichtigen Informationen Impressum Datenschutz Verträge kündigen Vertrag widerrufen Zur Navigation springen (Eingabetaste betätigen) Zum Inhalt springen (Eingabetaste betätigen) Privatkunden Navigation toggeln Geschäftskunden Produkte Netze Unternehmen Service Karriere Badepark E.Net EnergieRellingen Kontakt Kundenportal Suche Kontakt Terminvereinbarung Störungsnummer ENERGIELÖSUNGEN FÜR IHR GEWERBE Photovoltaikanlagen für Unternehmen – ökonomisch sinnvoll wirtschaften! Mit einer Photovoltaikanlage der Stadtwerke Elmshorn erzeugen Sie Ihren eigenen Solarstrom auf Ihrer Immobilie. So reduzieren Sie die Energiekosten Ihres Unternehmens signifikant und sind in der Lage, Ihre CO2-Bilanz deutlich zu verbessern und so einen Beitrag zum Umweltschutz zu leisten. Dies kann nicht nur das Image des Unternehmens verbessern, sondern auch die Erfüllung von Umweltauflagen unterstützen. Mit unserem interaktiven Photovoltaik-Konfigurator erhalten Sie einen ersten Überblick zu Anlagengröße, Stromertrag, Eigenverbrauch, Autarkie, Kosten und Rendite individuell für Ihren Firmensitz in Elmshorn und Umgebung. Starten Sie jetzt Ihr Solarprojekt. Zum Photovoltaik-Konfigurator Wie funktioniert eine Photovoltaikanlage und woraus besteht sie? Eine Photovoltaik- bzw. Solaranlage besteht aus drei Bestandteilen: Den Photovoltaik-Modulen auf dem Dach, welche wiederum aus vielen zusammengeschalteten Solarzellen bestehen. Diese wandeln die Sonneneinstrahlung in elektrischen Strom um. Dem Wechselrichter, dieser erzeugt aus dem über die Photovoltaik-Module gewonnenen Gleichstrom einen Wechselstrom. Einem Speicher, in diesem kann nach Bedarf eine begrenzte Energiemenge gespeichert werden, hier handelt es sich um einen umgangssprachlichen „Akku“. Die Vorteile einer eigenen Solaranlage Eigene Stromproduktion Auf Ihren persönlichen Verbrauch ausgelegte Anlage Eigener Beitrag zum Umweltschutz Niedrigere Stromkosten und Preissicherheit Zuverlässige und starke Partner Bestellablauf für eine Photovoltaikanlage – Ihr Weg zur eigenen Energieerzeugung Selbst- überprüfung Sie geben Ihre Daten ein und nehmen einen Vorabcheck Ihres Gebäudes über unseren Photovoltaik-Konfigurator vor. Beratungstermin beantragen Im nächsten Schritt senden Sie uns eine Anfrage für einen Beratungstermin. Prüfung und Vor-Ort-Termin Nach Prüfung Ihrer Daten vereinbaren wir mit Ihnen einen Vor-Ort-Termin an Ihrem Firmensitz. Angebots- erstellung Danach erstellen wir ein auf Ihre Anforderungen und Wünsche angepasstes Angebot. Montage Das von uns beauftragte Fachunternehmen und errichtet die Anlage auf Ihrem Firmengebäude. Los geht’s Nach erfolgter Errichtung kümmern wir uns um die Anmeldung und begleiten Sie bis zur Inbetriebnahme der Anlage. Kontaktieren Sie uns Ihre Daten Ihre Mitteilung an uns Folgende Dokumente können diesem Antrag beigefügt werden: Ergebnis des Photovoltaik-Konfigurators Max. 8 MB Datei auswählen Ich bin darüber informiert, dass das Ergebnis des Konfigurators nicht verbindlich ist und im Falle eines Auftrages eine genaue Berechnung durch die Stadtwerke erfolgen muss. Ich habe die Datenschutzbestimmungen zur Kenntnis genommen. Alle mit * (Pflichtfeld) gekennzeichneten Felder sind Pflichtfelder. Ihr Ansprechpartner Hermann Thomsen Kundenservice T 04121 645 111 energiedienstleistungen@stadtwerke-elmshorn.de Sie planen bereits eine Anlage und benötigen Informationen zum Netzanschluss? Hier finden Sie die benötigten Dokumente vom Netzbetrieb der Stadtwerke Elmshorn im Bereich NS Einspeiseanlagen. 04121 645 0 WhatsApp 04121 645 333 Wir sind von Montag bis Freitag für Sie da. Kundenzentrum Westerstr. 50-54 25336 Elmshorn Öffnungszeiten Mo – Do: 8.00 – 16.00 Uhr Fr: 8.00 – 12.00 Uhr Datenschutz Impressum Anfahrt Verträge hier kündigen Vertrag widerrufen Barrierefreiheit Leichte Sprache Gebärdensprachvideos",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Notwendige"
+    },
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Externe Medien"
+    },
+    {
+      "art": "text",
+      "name": "VolltextSuchbegriff",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "Formular.KDNR",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "Formular.NAME",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "Formular.VORNAME",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "Formular.ANSCHRIFT",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "Formular.PLZ",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "Formular.ORT",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "Formular.EMAIL",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "Formular.TEL",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "Formular.BETREFF",
+      "label": ""
+    },
+    {
+      "art": "textarea",
+      "name": "Formular.IHREMITTEILUNG",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "Formular.UPLOADZUSTIMMUNG",
+      "label": "Ich bin darüber informiert, dass das Ergebnis des Konfigurators nicht verbindlic"
+    },
+    {
+      "art": "checkbox",
+      "name": "Formular.DATENSCHUTZERKLAERUNG",
+      "label": "Ich habe die Datenschutzbestimmungen zur Kenntnis genommen."
+    },
+    {
+      "art": "submit",
+      "name": "Abschicken",
+      "label": "if (typeof(HRJavaScriptIncludesRegistry) != \"object\") { var head = document.getE"
+    },
+    {
+      "art": "reset",
+      "name": "",
+      "label": "if (typeof(HRJavaScriptIncludesRegistry) != \"object\") { var head = document.getE"
+    },
+    {
+      "art": "file",
+      "name": "dropzone_1921938_hidden_file_input",
+      "label": ""
+    },
+    {
+      "art": "file",
+      "name": "dropzone_1921938_hidden_file_input",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "9d10467d-5adb-47b6-8475-3b1d30620b85.png"
+}

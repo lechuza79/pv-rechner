@@ -1,0 +1,104 @@
+{
+  "id": "780cfa98-f274-4a2b-81e6-081f64da14a4",
+  "name": "Stadtwerke Werl GmbH",
+  "url": "https://www.stadtwerke-werl.de/preisrechner-waermepumpen.html",
+  "vermutet": "rechner",
+  "abruf": "ok",
+  "titel": "Preisrechner Wärmepumpen - Stadtwerke Werl",
+  "text": "Zum Hauptinhalt wechseln Kontakt Stadtwerke Werl Grafenstraße 25 59457 Werl Telefon 0 29 22 / 985-0 Telefax 0 29 22 / 985-102 info@stadtwerke-werl.de Öffnungszeiten Kundenzentrum Mo., Di.:08:30 – 12:30 Uhr, 13:30 – 16:00 Uhr Mi.:08:30 – 12:30 Uhr Do.:08:30 – 17:00 Uhr Fr.:08:30 – 12:00 Uhr Störungsdienst Erdgas / Wasser Tel. 0 29 22 / 985-111 Strom Tel. 0 29 22 / 985-222 Sollten die Störungstelefonnummern unerwartet nicht erreichbar sein, melden Sie sich bitte bei der Feuerwehr unter der Rufnummer 112. Kundenportal Die meisten unserer Kunden profitieren bereits von unserem 24h-Service im Internet. Auch Sie können die Vorteile des Kundenportals nutzen. ZUM LOGIN / REGISTRIERUNG Kunden- portal Kontakt Störungs- dienst Netz News & Presse Karriere Suche Energie & Trinkwasser Lösungen für Zuhause Online-Service 24/7 Info & FAQ Unternehmen Sie sind hier: Home Wir haben den optimalen Tarif für Sie Strom Gas Wärmepumpe 2 Personen Ihr Jahresverbrauch (kWh/Jahr) Ihre Postleitzahl Service & Kontakt Grafenstraße 25 59457 Werl Telefon: 0 29 22 / 985-0 info@stadtwerke-werl.de Öffnungszeiten Mo., Di. 08:30 – 12:30 Uhr 13:30 – 16:00 Uhr Mi. 08:30 – 12:30 Uhr Do. 08:30 – 17:00 Uhr Fr. 08:30 – 12:00 Uhr Störungsdienst Erdgas / Wasser Tel. 0 29 22 / 985-111 Strom Tel. 0 29 22 / 985-222 Folgen Sie uns Zertifikate Impressum Datenschutz Schlichtungsstelle Barrierefreiheitserklärung Sitemap © 2026 Stadtwerke Werl close Barrierefreiheit refresh Schrift vergrößern Schrift verkleinern Wortabstand vergrößern Wortabstand verkleinern Zeilenabstand vergrößern Zeilenabstand verkleinern Graustufen Großer Mauszeiger Lesehilfe Links unterstreichen Animationen ausschalten Hoher Kontrast",
+  "felder": [
+    {
+      "art": "text",
+      "name": "search[word]",
+      "label": "Suche"
+    },
+    {
+      "art": "text",
+      "name": "search[word]",
+      "label": "Suche"
+    },
+    {
+      "art": "text",
+      "name": "search[word]",
+      "label": "Suche"
+    },
+    {
+      "art": "number",
+      "name": "verbrauch",
+      "label": "Ihr Jahresverbrauch (kWh/Jahr)"
+    },
+    {
+      "art": "text",
+      "name": "plz",
+      "label": "Ihre Postleitzahl"
+    },
+    {
+      "art": "submit",
+      "name": "forward",
+      "label": ""
+    },
+    {
+      "art": "number",
+      "name": "verbrauch",
+      "label": "Ihr Jahresverbrauch (kWh/Jahr)"
+    },
+    {
+      "art": "text",
+      "name": "plz",
+      "label": "Ihre Postleitzahl"
+    },
+    {
+      "art": "submit",
+      "name": "forward",
+      "label": ""
+    },
+    {
+      "art": "number",
+      "name": "verbrauch",
+      "label": "Ihr Jahresverbrauch (kWh/Jahr)"
+    },
+    {
+      "art": "text",
+      "name": "plz",
+      "label": "Ihre Postleitzahl"
+    },
+    {
+      "art": "submit",
+      "name": "forward",
+      "label": ""
+    },
+    {
+      "art": "select-one",
+      "name": "ccm-widget--language-select",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-41ba25c",
+      "label": "Technisch notwendig (4)"
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-a717ff5",
+      "label": "Analyse / Statistiken (1)"
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-7c19e32",
+      "label": "Personalisierung (2)"
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-15c61c3",
+      "label": "Sonstiges (10)"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "780cfa98-f274-4a2b-81e6-081f64da14a4.png"
+}

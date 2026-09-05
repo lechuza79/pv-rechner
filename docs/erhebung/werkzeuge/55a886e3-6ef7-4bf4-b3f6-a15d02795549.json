@@ -1,0 +1,144 @@
+{
+  "id": "55a886e3-6ef7-4bf4-b3f6-a15d02795549",
+  "name": "Gemeindewerke Gundelfingen GmbH",
+  "url": "https://www.gwg-gundelfingen.de/Netzanschlussportal/Anschluss-Inbetriebnahme/Photovoltaik-Solar.html",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Gemeindewerke Gundelfingen - Photovoltaik/Solar",
+  "text": "Wir verwenden Cookies auf unserer Website. Sie haben hier die Möglichkeit zu entscheiden, welche Cookies verwendet werden dürfen. Ihre Auswahl bleibt für 30 Tage gespeichert. Sie haben jederzeit die Möglichkeit, Ihre Cookie-Einstellungen über die Datenschutzerklärung zu ändern. Auswahl Notwendige Alle Cookies zulassen Cookie-Auswahl speichern Nur notwendige Cookies zulassen Notwendige Zugang zu den wichtigen Informationen Impressum Datenschutz Telefon: 0761 / 88797 511 Mo - Fr 08.00 – 12.00 Uhr Mo + Do 14.00 – 16.00 Uhr Zur Navigation springen (Press Enter) Zum Inhalt springen (Press Enter) Zum Login Anschluss Kontaktformular Hallo, ich helfe Ihnen Ihren Anschluss anzumelden und beantworte Ihre Fragen. Zu den FAQs Startseite Zurück Hallo, melden Sie hier Ihren Anschluss an. Starten Sie in die Anschlussstrecke Fragen kann ich zu folgenden Themen beantworten Zeit- und Ablaufplan für die Bearbeitung des Netzanschlussbegehrens Wie lange ist die Bearbeitungszeit für einen Hausanschluss? Wie erhalte ich einen Netzanschluss für meine Einspeiseanlage/PV-Anlage? Wann kann ich meine Photovoltaikanlage bei der Bundesnetzagentur (BNetzA) melden? Anlagedaten Photovoltaik/Solar Zählernummer*: Separate Zählernummer: Modulhersteller/-typ*: Modulleistung (Wp)*: Modulzahl (Stück)*: Wechselrichterhersteller/-typ*: Wechselrichterleistung (kW)*: Wechselrichteranzahl (Stück)*: Max. Wechselrichterscheinleistung (kVA)*: Summe der maximalen Scheinleistungen (kVA)*: Netzeinspeisung*: Bitte auswählen... L1 L2 L3 L12 L13 L23 Drehstrom Gewünschte Veräußerungsform der Einspeisung*: Bitte auswählen... Geförderte Direktvermarktung (Marktprämie) nach § 20 EEG Einspeisevergütung nach § 21 Abs. 1 EEG Mieterstromzuschlag nach § 21 Abs. 3 EEG Sonstige Direktvermarktung nach § 21a EEG Vermarktung ohne gesetzliche Vergütung Gesamtleistung aller PV-Module (Wp)*: Ort der Anbringung*: Bitte auswählen... Dachfläche Freifläche Inbetriebsetzungsdatum*: Betriebsweise Welches Messkonzept werden Sie einsetzen?*: Bitte auswählen... Nulleinspeisung Volleinspeisung Überschusseinspeisung Abweichendes Messkonzept Halten Sie, soweit benötigt und noch nicht hochgeladen, folgende Dokumente digital bereit Lageplan mit Flurstücksnummer und gekennzeichneten Aufstellort der Erzeugungsanlage Übersichtsschaltplan ab Netzanschluss Vergütungsrelevante Angaben zur Anlage Nachweis Fernsteuerbarkeit PV-Anlage zur Direktvermaktung Begrenzung max. Wirkleistungseinspeisung §9 EEG Ergänzende Hinweise Weitere Meldepflichten ergeben sich aus dem Erneuerbare-Energien-Gesetz (EEG) bzw. der Marktstammdatenregisterverordnung(MaStRV). Weitere Informationen hierzu stellt die Bundesnetzagentur zur Verfügung. ZEREZ-ID Wechselrichter*: ZEREZ-ID NA-Schutz*: Lageplan mit Flurstücksnummer und gekennzeichneten Aufstellort der Erzeugungsanlage*: Max. 20 MB Datei auswählen Übersichtsschaltplan ab Netzanschluss (einpoliges Übersichtsschaltbild)*: Max. 20 MB Datei auswählen Nachweis Fernsteuerbarkeit oder Begrenzung PV-Anlage*: Max. 20 MB Datei auswählen Bitte laden Sie hier sonstige benötigte Dokumente hoch: Max. 20 MB Datei auswählen Zurück Weiter Impressum Datenschutz Cookie-Einstellungen ändern © 2026 Gemeindewerke Gundelfingen",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Notwendige"
+    },
+    {
+      "art": "textarea",
+      "name": "Container.Children:2.Container.Children:1.ClientSecurityChec",
+      "label": "Das folgende Eingabefeld ist aus technischen Gründen erforderlich und darf nicht"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARZAEHLERNUMMER",
+      "label": "Zählernummer*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARSEPARATERZAEHLER",
+      "label": "Separate Zählernummer:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARMODULHERSTELLERTYP",
+      "label": "Modulhersteller/-typ*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARMODULLEISTUNG",
+      "label": "Modulleistung (Wp)*:"
+    },
+    {
+      "art": "number",
+      "name": "Formular.SOLARMODULZAHL",
+      "label": "Modulzahl (Stück)*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARWECHSELRICHTERHERSTELLERTYP",
+      "label": "Wechselrichterhersteller/-typ*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARWECHSELRICHTERLEISTUNGPAMAX",
+      "label": "Wechselrichterleistung (kW)*:"
+    },
+    {
+      "art": "number",
+      "name": "Formular.SOLARWECHSELRICHTERANZAHL",
+      "label": "Wechselrichteranzahl (Stück)*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARWECHSELRICHTERSCHEINLEISTUNGSAMAX",
+      "label": "Max. Wechselrichterscheinleistung (kVA)*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARSUMMEDERMAXIMALENSCHEINLEISTUNGEN",
+      "label": "Summe der maximalen Scheinleistungen (kVA)*:"
+    },
+    {
+      "art": "select-one",
+      "name": "Formular.SOLARNETZEINSPEISUNG",
+      "label": "Netzeinspeisung*:"
+    },
+    {
+      "art": "select-one",
+      "name": "Formular.SOLARGEWUENSCHTEVERAEUSSERUNGSFORMDEREIN",
+      "label": "Gewünschte Veräußerungsform der Einspeisung*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARGESAMTLEISTUNGALLERPV-MODULE",
+      "label": "Gesamtleistung aller PV-Module (Wp)*:"
+    },
+    {
+      "art": "select-one",
+      "name": "Formular.SOLARORTDERANBRINGUNG",
+      "label": "Ort der Anbringung*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARDATUMINBETRIEBNAHME",
+      "label": "Inbetriebsetzungsdatum*:"
+    },
+    {
+      "art": "select-one",
+      "name": "Formular.SOLARMESSKONZEPT",
+      "label": "Welches Messkonzept werden Sie einsetzen?*:"
+    },
+    {
+      "art": "textarea",
+      "name": "Formular.SOLARABWEICHENDESMESSKONZEPT",
+      "label": "Abweichendes Messkonzept benennen*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARZEREZ-IDWECHSELRICHTER",
+      "label": "ZEREZ-ID Wechselrichter*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARZEREZ-IDNA-SCHUTZ",
+      "label": "ZEREZ-ID NA-Schutz*:"
+    },
+    {
+      "art": "file",
+      "name": "dropzone_260644_hidden_file_input",
+      "label": "Lageplan mit Flurstücksnummer und gekennzeichneten Aufstellort der Erzeugungsanl"
+    },
+    {
+      "art": "file",
+      "name": "dropzone_260645_hidden_file_input",
+      "label": "Übersichtsschaltplan ab Netzanschluss (einpoliges Übersichtsschaltbild)*:"
+    },
+    {
+      "art": "file",
+      "name": "dropzone_260647_hidden_file_input",
+      "label": "Nachweis Fernsteuerbarkeit oder Begrenzung PV-Anlage*:"
+    },
+    {
+      "art": "file",
+      "name": "dropzone_260648_hidden_file_input",
+      "label": "Bitte laden Sie hier sonstige benötigte Dokumente hoch:"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": true,
+    "pflichtprozess": true
+  },
+  "bild": "55a886e3-6ef7-4bf4-b3f6-a15d02795549.png"
+}

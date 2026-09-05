@@ -1,0 +1,139 @@
+{
+  "id": "7320b789-aad7-43a3-8431-91f8a396e685",
+  "name": "Stadtwerke Soltau GmbH & Co. KG",
+  "url": "https://energiefuermorgen.energy/produkte/solar",
+  "vermutet": "kontaktformular",
+  "abruf": "ok",
+  "titel": "SonnenStrom – Energie für morgen",
+  "text": "Ein Unternehmen der Stadtwerke Soltau Start Über uns Produkte Suche Soltauer SonnenStrom Solarenergie selbst produzieren, nutzen und speichern Solar Soltauer SonnenStrom Energie aus Sonne zu gewinnen, war nie so einfach wie heute. Dank Soltauer SonnenStrom können Sie sich mit leistungsstarken Photovoltaikmodulen und auf Wunsch auch mit einem intelligenten Stromspeicher ganz einfach mit Strom versorgen. Und das Beste: Mit unserem Rundum-sorglos-Paket müssen Sie sich um nichts kümmern. Wir planen und installieren die auf Ihre individuellen Bedürfnisse und Gegebenheiten ausgelegte Anlage gemeinsam mit einem regionalen Fachpartner. Auf Wunsch können Sie diese durch einen Stromspeicher oder eine Wallbox ergänzen. Der Ablauf 1 Beratung & vor Ort Termin 2 Konzept 3 Auftrag 4 Montage & Installation 5 Abnahme Die Vorteile Unabhängig - Autarkiegrad von 70% erreichbar. Effizienz Zukunftsorientierung Steuervorteile Regionale Wirtschaft unterstützen Hochwertige Komponenten Kostenfreie App zur Visualisierung der Energieflüsse Rundum-sorglos- Paket: Planbare Kosten Mietkauf statt hoher Investitionen Einspeisevergütung Wertsteigerung Ihrer Immobilie FAQ-Bereich Solar Noch Fragen? Wir haben Antworten für Ihre wichtigsten Fragen kurz und präzise für Sie aufbereitet. Wie funktioniert Soltauer SonnenStrom genau? Wie hoch sind die monatlichen Kosten? Wie viel Energie produziert überhaupt eine Photovoltaikanlage? Was passiert, wenn die Photovoltaikanlage weniger Strom produziert als ich benötige? Photovoltaik und Stromspeicher - Welche Vorteile habe ich dadurch? Was versteht man unter Eigenverbrauch? Was bedeutet Autarkie? Ist mein Dach für Photovoltaik geeignet? Gibt es eine App, mit der die täglichen Erträge bzw. mein Verbrauch visualisiert wird? Lohnt sich ein Stromspeicher für die Photovoltaikanlage? Was ist der Unterschied zwischen Solarthermie und Photovoltaik? Kontaktformular Wir helfen gerne weiter Felder mit \"*\" sind Pflichtfelder. Anrede * Herr Frau Divers Anliegen Produktwelt Service Rückruf vereinbaren Beratungstermin Sonstiges 10 + 4 = Das Ergebnis der Gleichung eintragen Rückruf Ich bin mit dem Rückruf durch einen Mitarbeiter der Stadtwerke Soltau einverstanden. Weitere Informationen zur Verarbeitung Ihrer personenbezogenen Daten finden Sie in unserer Datenschutzerklärung. Senden Energie für morgen GmbH & Co. KG Weinberg 46, 29614 Soltau (05191) 84-0 info@energiefuermorgen.energy Rückruf vereinbaren Produkte WärmePumpe SonnenStrom Kunden werben Kunden Services Fragecenter Impressum Datenschutz Barrierefreiheit Ein Unternehmen der",
+  "felder": [
+    {
+      "art": "radio",
+      "name": "cf[anrede][]",
+      "label": "Herr"
+    },
+    {
+      "art": "radio",
+      "name": "cf[anrede][]",
+      "label": "Frau"
+    },
+    {
+      "art": "radio",
+      "name": "cf[anrede][]",
+      "label": "Divers"
+    },
+    {
+      "art": "select-one",
+      "name": "cf[anliegen]",
+      "label": "Anliegen Produktwelt Service Rückruf vereinbaren Beratungstermin Sonstiges"
+    },
+    {
+      "art": "text",
+      "name": "cf[name]",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "cf[vorname]",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "cf[telefon]",
+      "label": ""
+    },
+    {
+      "art": "email",
+      "name": "cf[email]",
+      "label": ""
+    },
+    {
+      "art": "textarea",
+      "name": "cf[nachricht]",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "captcha_8",
+      "label": "10 + 4 ="
+    },
+    {
+      "art": "checkbox",
+      "name": "cf[rueckruf][]",
+      "label": "Ich bin mit dem Rückruf durch einen Mitarbeiter der Stadtwerke Soltau einverstan"
+    },
+    {
+      "art": "text",
+      "name": "cf[hnpt]",
+      "label": "First Name"
+    },
+    {
+      "art": "search",
+      "name": "q",
+      "label": "Webseite durchsuchen"
+    },
+    {
+      "art": "radio",
+      "name": "cf[anrede][]",
+      "label": "Herr"
+    },
+    {
+      "art": "radio",
+      "name": "cf[anrede][]",
+      "label": "Frau"
+    },
+    {
+      "art": "radio",
+      "name": "cf[anrede][]",
+      "label": "Divers"
+    },
+    {
+      "art": "select-one",
+      "name": "cf[erreichbar]",
+      "label": "Wann am besten erreichbar? Vormittags zwischen 8 - 11 Uhr Mittags zwischen 11 - "
+    },
+    {
+      "art": "text",
+      "name": "cf[name]",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "cf[telefon]",
+      "label": ""
+    },
+    {
+      "art": "email",
+      "name": "cf[email]",
+      "label": ""
+    },
+    {
+      "art": "textarea",
+      "name": "cf[nachricht]",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "captcha_8",
+      "label": "5 + 2 ="
+    },
+    {
+      "art": "checkbox",
+      "name": "cf[rueckruf][]",
+      "label": "* Ich bin mit dem Rückruf durch einen Mitarbeiter der Stadtwerke Soltau einverst"
+    },
+    {
+      "art": "text",
+      "name": "cf[hnpt]",
+      "label": "Website"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "7320b789-aad7-43a3-8431-91f8a396e685.png"
+}

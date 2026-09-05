@@ -1,0 +1,20 @@
+{
+  "id": "c7981edd-7c37-4652-a303-79abf1dacce2",
+  "name": "LeineNetz GmbH",
+  "url": "https://www.leinenetz.de/kundenanlagen-hausanschluss/neue-pv-anlage-anmelden",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "PV-Anlage / Speicher < 15 kW anmelden - Hausanschluss, PV-, Wallbox-Anmeldung - leinenetz.de",
+  "text": "Kontakt Störung melden Downloads Jobs Login Installateursportal Login Kundenportal STARTSEITE NETZBETREIBERWECHSEL HAUSANSCHLUSS, PV-, WALLBOX-ANMELDUNG Hausanschluss beantragen Wallbox-Anmeldung PV-Anlage / Speicher < 15 kW anmelden Für Installateure DEFEKTE STRASSENLATERNE MELDEN MESSSTELLENBETREIBER ALLES ZUM SMART METER STEUERBARE VERBRAUCHSEINRICHTUNGEN NACH § 14A ENWG NETZBETREIBER INFOS FÜR MARKTPARTNER INFOS ZU ENERGIEEFFIZIENZ UND FÖRDERUNG INFORMATIONEN ZUM DATENSCHUTZ VON FUNKWASSERZÄHLERN STÖRUNG MELDEN INSTALLATEURSPORTAL INSTALLATEUR-FRÜHSTÜCK ZAEHLERSTAND Aktuelle Meldungen Jobs Über Uns Ansprechpartner © LeineNetz GmbH 2026 Impressum Datenschutzerklärung",
+  "felder": [],
+  "rahmen": [
+    "https://leinenetz.softproject.de/X4/webapp/PVAnlageAntrag"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "c7981edd-7c37-4652-a303-79abf1dacce2.png"
+}

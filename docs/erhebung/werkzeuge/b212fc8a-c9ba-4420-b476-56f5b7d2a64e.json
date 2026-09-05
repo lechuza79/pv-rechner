@@ -1,0 +1,24 @@
+{
+  "id": "b212fc8a-c9ba-4420-b476-56f5b7d2a64e",
+  "name": "Netze Magdeburg GmbH",
+  "url": "https://www.netze-magdeburg.de/netzanschluss/erzeugungsanlagen/steckerfertige-pv-anlage/",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "NETZE Magdeburg | Steckerfertige PV-Anlage (Plug-In)",
+  "text": "Service: 0391 587 – 1500 Notfall Netzleitstelle: 0391 587 – 2121 Störung Über uns Karriere Kontakt Anfahrt Start Netzanschluss Erzeugungsanlagen Steckerfertige PV-Anlage (Plug-In) Steckerfertige PV-Anlage (Plug-In) Beabsichtigen Sie, ein Steckersolargerät (auch Mini-PV-Anlage, Balkonkraftwerk oder Plug-In-Anlage genannt) bis 800 VA am Niederspannungsnetz zu betreiben, dann finden Sie hier die notwendigen Informationen. Seit Inkrafttreten des „Solarpaket I“ am 16.05.2024 müssen Balkonkraftwerke nur noch im Markstammdatenregister angemeldet werden. Es gilt also ein vereinfachtes Anmeldeverfahren, wenn die folgenden Kriterien erfüllt sind: Modulleistung max 2.000 Wp Wechselrichterleistung max 800 VA Hinweis: Bei mehreren Anlagen hinter einer Entnahmestelle werden die Leistungen zusammengefasst! Gilt für Ihr Steckersolargerät das vereinfachte Anmeldeverfahren? Wann gilt eine Balkon-Solaranlage als „Steckersolargerät“ im Sinne der Sonderregelungen des EEG? Ihre steckerfertige PV-Anlage wurde verkauft oder verschenkt? Ihre steckerfertige PV-Anlage wurde stillgelegt? Zusätzliche Informationen zu steckerfertigen PV-Anlagen finden Sie auf der Seite des VDE|FNN. Download Messkonzept für steckerfertige Erzeugungsanlagen Netzanschluss Erzeugungsanlagen Netznutzung Messwesen Netzinformationen Netzgesellschaft Kontakt Über uns Karriere Anfahrt Hinweisgebersystem Datenschutz Barrierefreiheitserklärung Impressum Anschrift Netze Magdeburg GmbH Franckestraße 8 39104 Magdeburg Service: 0391 587 - 1500 Notfall Netzleitstelle: 0391 587 - 2121 info@netze-magdeburg.de",
+  "felder": [
+    {
+      "art": "search",
+      "name": "s",
+      "label": "Website durchsuchen"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "b212fc8a-c9ba-4420-b476-56f5b7d2a64e.png"
+}

@@ -1,0 +1,34 @@
+{
+  "id": "e83613ad-80db-469f-9025-0efbf43f61da",
+  "name": "Stadtwerke Oranienburg GmbH",
+  "url": "https://stadtwerke-oranienburg.de/meine-netzanmeldung/waermepumpen/",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Wärmepumpen - Stadtwerke Oranienburg",
+  "text": "Skip to main content Störungshotline 03301 608-555 Kundenportal Mein Zuhause Mein Gewerbe Meine Netzanmeldung Unser Netz Unser Service Kontakt Suche Wärmepumpen Sie möchten sich eine Wärmepumpe installieren und anmelden, sprechen Sie sich vorab mit einem Elektrofachbetrieb ab. Dieser berät Sie und prüft vor Ort ob Ihre Hausinstallation für die Anforderungen geeignet ist. Für die Anmeldung einer Wärmepumpe werden folgende Unterlagen benötigt: Anmeldung zum Netzanschluss Herstellerdatenblatt mit technischem Leistungsbezug Auswahl Messkonzept Inbetriebsetzungsanzeige Zusatzblatt anmeldepflichtige/steuerbare Verbrauchseinrichtungen nach §14a EnWG Ablauf: Anmeldung: Bitte übersenden Sie uns oder Ihre ausgewählte Elektrofachfirma die ausgefüllten Unterlagen. Bitte achten Sie darauf, dass alle technischen Anlagen vollständig dokumentiert sind. Bitte wählen Sie in Abstimmung mit ihrer Elektrofachkraft auch das Messkonzept und das passende Modul für steuerbare Verbrauchseinheit mit einer Bezugsleistung >4,2KW aus. Prüfung Ihrer Anmeldung: Sobald uns alle Unterlagen – vollständig ausgefüllt vorliegen – prüfen wir die technischen Rahmenbedingungen und geben Ihnen eine Rückmeldung dazu. Zählereinbau: Wir bauen den Zähler ein, sobald uns die Inbetriebsetzungsanzeige vorliegt. Dazu vereinbaren wir mit Ihnen oder Ihrer Elektrofachkraft einen Termin vor Ort. Änderung Ihrer Anlage im Abrechnungssystem: Damit der von Ihnen beauftragte Lieferant auch alle Daten Ihrer neuen Anlage vorliegen hat und mit Ihnen abrechnen kann, bauen wir Ihre Anlage im letzten Schritt in unserem Abrechnungssystem um und melden Ihrem Lieferanten die benötigten Daten. Bitte beachten Sie, seit dem 1.Januar 2024 müssen Wärmepumpen mit einem Leistungsbezug >4,2 kW steuerbar errichtet werden. Informationen dazu finden Sie in unserem Hinweisblatt. Für einen extra Wärmepumpentarif wird eine separate Messeinrichtung benötigt, die ausschließlich den Strombezug für die Wärmepumpe erfasst. Dokumente zum Download Zusatzblatt anmeldepflichtige Verbrauchseinrichtungen (inkl. Steuerbare Verbrauchseinrichtungen nach §14a EnWG) Ihr Ansprechpartner Team Hausanschluss Kundenberatung Hausanschlusswesen Telefon 03301 608-605 E-Mail hausanschluss@stadtwerke-oranienburg.de E-Mail schreiben Unsere Auszeichnungen und Zertifikate Impressum Datenschutz Karriere Presse Über uns Verträge kündigen Verträge widerrufen Barrierefreiheit Privatsphaere-Einstellungen © 2025 Stadtwerke Oranienburg GmbH",
+  "felder": [
+    {
+      "art": "search",
+      "name": "s",
+      "label": ""
+    },
+    {
+      "art": "search",
+      "name": "s",
+      "label": ""
+    },
+    {
+      "art": "search",
+      "name": "s",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "e83613ad-80db-469f-9025-0efbf43f61da.png"
+}

@@ -1,0 +1,29 @@
+{
+  "id": "cc73673c-c424-4779-b605-0f385c0b424b",
+  "name": "SEW Stromversorgungs GmbH",
+  "url": "https://www.sew-erding.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "SEW Erding - Ihr regionaler Stromversorger und Elektriker",
+  "text": "Stromversorgungs-GmbH Erding Stromversorgungs-GmbH Erding Stromvertrieb Stromnetz Elektroinstallation Kontakt Unternehmen Kundenportal Willkommen bei Ihrem regionalen Versorger Kundenportal unter anderem Kontoverwaltung Abschlagserhöhung Bankverbindung ändern Kunden werben Kunden >>> jetzt 20 € Gutschein sichern Seit über 100 Jahren kümmern wir uns um Ihre zuverlässige Stromversorgung! Ihr Elektriker vor Ort! Online Service Umzug (Einzug / Auszug) Bankverbindung mitteilen (SEPA) Meldung erhöhter Stromverbrauch (z.B. Wasserschaden / Umbau) Zähler ablesen e-Mobility unsere Ladestationen Ihre Ladelösung für Zuhause Netzanschluss Allgemeine Bedingungen Technische Mindestanforderungen Anmeldung Provisorischer Stromanschluss (Baustrom) Umweltschutz ist uns wichtig! Seit über 100 Jahren produzieren wir ökologischen Strom in unseren Wasserkraftwerken Unsere Servicezeiten Mo - Do 07:15 - 12:00 Uhr Mo - Do 13:00 - 16:00 Uhr Fr 07:15 - 12:00 Uhr Tel: 08122 / 9827 - 0 Fax: 08122 / 9827 - 60 info@sew-erding.de Unser 24 h Service für Sie! Entstörungsdienst Netz Außerhalb der Servicezeiten: 08122 / 9827 - 49 Während der Servicezeiten: 08122 / 9827 - 0 Straßenbeleuchtung Störungsmeldung Sie können uns gerne benachrichtigen, wenn die Straßenbeleuchtung ausgefallen ist. Die Kontaktdaten finden Sie unter Straßenbeleuchtung © 2026 RossaMedia | Impressum - Datenschutz - Cookies 🍪 Cookies Diese Webseite verwendet Cookies. Durch diese kann u.a. fest­ge­stellt werden, ob Sie uns eine Einwilligung zu der Verarbeitung der sie betreffenden personenbezogenen Daten für einen oder mehrere bestimmte Zwecke gegeben haben (Art. 6 Abs. 1 lit a DSGVO). In der Datenschutzerklärung finden Sie weitere Informationen zu den ein­ge­setz­ten Cookies. » Datenschutzerklärung allen zustimmen alle ablehnen auswählen",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "",
+      "label": "Google Maps"
+    },
+    {
+      "art": "checkbox",
+      "name": "",
+      "label": "Google ReCaptcha"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "cc73673c-c424-4779-b605-0f385c0b424b.png"
+}

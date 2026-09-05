@@ -1,0 +1,39 @@
+{
+  "id": "d3116370-ed07-4e0d-b18a-e8514d831dd8",
+  "name": "Stadtwerke Südholstein GmbH",
+  "url": "https://www.sw-suedholstein.de/oekostrom/waermepumpe",
+  "vermutet": "tarifrechner",
+  "abruf": "ok",
+  "titel": "ÖkoStrom wärmepumpe: Für alle mit steuerbarer Wärmepumpe | Pinneberg",
+  "text": "Direkt zum Inhalt PRIVATKUNDEN GEWERBEKUNDEN KARRIERE Unternehmen Netze Bäder Pinneberg ÖKOSTROM ERDGAS WÄRME WASSER E-MOBILITÄT GLASFASER Störung melden Service Kontakt Suche Login News Netzgebiet Südholstein ÖKOSTROM WÄRMEPUMPE: FÜR ALLE, DIE EINE STEUERBARE WÄRMEPUMPE BESITZEN Mit unserem ÖkoStrom wärmepumpe profitieren Besitzerinnen und Besitzer einer steuerbaren Wärmepumpe von reduzierten Stromkosten. Denn der § 14a EnWG regelt, dass die Leistung von Wärmepumpen und anderen stromintensiven Geräten in Spitzenzeiten vom Netzbetreiber gesteuert werden kann, um das Stromnetz zu entlasten. Diese Steuerung durch den Netzbetreiber wird mit einer Reduzierung der Netzentgelte belohnt, die pauschal (Modul 1) oder prozentual für jede Kilowattstunde (Modul 2) abgerechnet wird. So leistet eure Wärmepumpe nicht nur einen Beitrag zur Energiewende, sondern bietet auch attraktive Vorteile in eurem Stromtarif! Eure Vorteile auf einen Blick: 100 % Ökostrom Reduzierte Netzentgelte & Modulwahl nach § 14a EnWG Preisgarantie: ausschließlich auf den Arbeitspreis Vertrieb bis 31.12.2026 Erstlaufzeit: bis Ende des Jahres Vertragsverlängerung nach Erstlaufzeit: 1 Monat Kündigungsfrist: 1 Monat Kundencenter in Pinneberg und Tornesch Angebot für Kunden aus: Pinneberg | Bönningstedt | Borstel-Hohenraden | Prisdorf | Tangstedt | Tornesch Unsere Preise ÖkoStrom wärmepumpe / Preis seit 01.02.2026 unabhängig vom Verbrauch Netto Brutto* Arbeitspreis Vertrieb** (Cent/kWh) 15,82 18,83 Grundpreis Vertrieb ohne Messstellenbetrieb*** (Euro/Jahr) 79,15 94,19 Die Preise verstehen sich zuzüglich der vom Netzbetreiber berechneten Netzentgelte sowie der Konzessionsabgabe, Umlagen und Steuern in der jeweils gültigen Höhe und dem jeweils ausgewähltem Modul. ÖkoStrom WÄRMEPUMPE STROM Haushalt * 2 Personen 3 Personen 4 Personen 5 Personen 6 Personen Jahresverbrauch in kWh * Postleitzahl * Produkt berechnen FAQ'S Hier findet ihr die Antworten auf die häufigsten Fragen rund um den § 14a EnWG und unseren ÖkoStrom wärmepumpe! Was genau regelt § 14a EnWG? Was sind steuerbare Verbrauchseinrichtungen? Was ist unter der netzdienlichen Steuerung zu verstehen? Was ist der Vorteil von der netzdienlichen Steuerung? Was sind reduzierte Netzentgelte? Wozu dienen die Module? Meine Wärmepumpe wurde vor dem 1. Januar 2024 angeschlossen: Welche Regelungen greifen? Meine Wärmepumpe wurde am 1. Januar 2024 oder später angeschlossen: Welche Regelungen greifen? Kann meine Wärmepumpe durch den Netzbetreiber vollständig abgeschaltet werden? Zu welchen Zeiten finden die Steuerungsmaßnahmen statt? Wie kann ich die Steuerungsvereinbarung mit meinem Netzbetreiber abschließen? DOWNLOADS 324,1 KB AGB Strom Verbraucher separates Preissystem (ab 01.07.2025) 202,4 KB Ergänzende Bedingungen Wärmepumpe 234,5 KB Anlage Datenschutzinformationen PREISE (ARCHIV) ÖkoStrom wärmepumpe / Preis bis 31.01.2026 * Die Preise sind als Nettopreise kalkuliert, die Bruttopreise (beinhalten den derzeit gültigen Umsatzsteuersatz von 19%) und sind gerundet. ** Hinzu kommen die jeweils vom Netzbetreiber berechneten Netzentgelte sowie die Konzessionsabgabe, Umlagen und Steuern in der jeweils gültigen Höhe und dem jeweils ausgewähltem Modul. *** Zusätzlich zum Arbeits- und Grundpreis werden dem Kunden vom Lieferanten die Entgelte für den Messstellenbetrieb und Messdienstleistung für die jeweils verbaute Messeinrichtung an der Abnahmestelle / dem Zählpunkt in der jeweils geltenden Höhe in Rechnung gestellt, wenn der Kunde keine Vereinbarung mit einem anderen Messstellenbetreiber (i. S. § 5 MsbG) als dem grundzuständigen Messstellenbetreiber geschlossen hat. Ist letzteres der Fall erfolgt die Abrechnung zwischen Kunden und dem anderen Messstellenbetreiber direkt; in der Jahresverbrauchsabrechnung entfällt somit die Berechnung der Kosten für den Messstellenbetrieb. SERVICEHOTLINE 04101 – 20 30 ÖkoStrom Erdgas Wärme E-Mobilität Downloads FAQ Informationen Störung melden Kundenportal Gewerbekunden Karriere Vertrag widerrufen © 2026 Stadtwerke Südholstein Impressum Datenschutz Barrierefreiheit Vertrag kündigen Cookie-Einstellungen",
+  "felder": [
+    {
+      "art": "select-one",
+      "name": "calculator_1371_strom_consumption_source",
+      "label": "Haushalt *"
+    },
+    {
+      "art": "number",
+      "name": "consumptionPowerHt",
+      "label": "Jahresverbrauch in kWh *"
+    },
+    {
+      "art": "text",
+      "name": "pocode",
+      "label": "Postleitzahl *"
+    },
+    {
+      "art": "search",
+      "name": "keywords",
+      "label": "Suchbegriffe"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": true,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "d3116370-ed07-4e0d-b18a-e8514d831dd8.png"
+}

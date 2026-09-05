@@ -1,0 +1,41 @@
+{
+  "id": "86fad28a-51eb-4509-8847-958411d0c26f",
+  "name": "Hanau Netz GmbH",
+  "url": "https://hanau-netz.de/netzanschluss/waermepumpe",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Wärmepumpe",
+  "text": "Diese Webseite verwendet Cookies Cookies sind kleine Textdateien, die von Webseiten verwendet werden, um die Benutzererfahrung effizienter zu gestalten. Laut Gesetz können wir Cookies auf Ihrem Gerät speichern, wenn diese für den Betrieb dieser Seite unbedingt notwendig sind. Für alle anderen Cookie-Typen benötigen wir Ihre Erlaubnis. Weitere Infos finden Sie unter „Details“ und auf unserer Datenschutzseite. Notwendig Präferenzen Statistiken Marketing Details zeigen Cookies zulassenAuswahl erlauben Netzanschluss Einspeisung Service Marktpartner Blog Karriere Über uns Login Top Energie für unsere Stadt. Netzanschluss Wärmepumpe Wärmepumpe Hier finden Sie alle Informationen zur Anmeldung und zum Anschluss einer Wärmepumpe. Jede Wärmepumpe und jedes Gerät zur Raumkühlung ist vorab bei der Hanau Netz GmbH anzumelden. Der Anschluss einer Wärmepumpe oder eines Gerätes zur Raumkühlung hat Auswirkungen auf die Anschlussleistung Ihres Strom-Netzanschlusses. Bitte melden Sie Ihre Wärmepumpe über unser Netzanschlussportal an. Netzanschlussportal Anschlussmöglichkeit einer Wärmepumpe oder eines Gerätes zur Raumkühlung Anschluss am Haushaltszähler Sie können Ihre Wärmepumpe oder Ihr Gerät zur Raumkühlung an Ihren Haushaltszähler anschließen und die Geräte über den normalen Haushaltsstrom versorgen. Die Verbrauchsmessung Ihres Haushaltsstroms und Ihrer Wärmepumpe bzw. Ihres Gerätes zur Raumkühlung läuft dann über einen gemeinsamen Zähler. Sie können in diesem Fall keinen Sondertarif für Wärmestrom vereinbaren. Sofern es sich um eine steuerbare Verbrauchseinrichtung gemäß §14a EnWG handelt, bitten wir Sie um Beachtung des EnWG. Informationen zu steuerbaren Verbrauchseinrichtungen gemäß § 14a EnWG. Anschluss an einen separaten Zähler Sie können Ihre Wärmepumpe oder Ihr Gerät zur Raumkühlung an einen eigenen Zähler anschließen. Eventuell ist dafür der Umbau Ihres Zählerschrankes notwendig. Bitte klären Sie mit Ihrem Installationsbetrieb die dafür notwendigen Maßnahmen und Kosten. Die Beantragung des Zählers erfolgt mit dem Antrag Zählersetzung/Inbetriebsetzung Wenn Ihre Wärmepumpe über einen eigenen Zähler mit dem Netz verbunden ist, können Sie bei vielen Stromlieferanten einen Sondertarif für Wärmestrom abschließen. Sofern es sich um eine steuerbare Verbrauchseinrichtung gemäß §14a EnWG handelt, bitten wir Sie um Beachtung des EnWG. Informationen zu steuerbaren Verbrauchseinrichtungen gemäß § 14a EnWG. Wir sind zertifiziert Notfallnummer Bei Problemen mit Strom, Gas oder Trinkwasser erreichen Sie im Notfall unsere Störungs-Hotline unter 0800 365-2000. Defekte Straßenbeleuchtung und Ampeln? Defekte Straßenbeleuchtung und Ampeln melden Sie bitte per Formular oder auch telefonisch unter unserer Störungs-Hotline: 0800 365-2000. Herzlichen Dank für Ihre Mithilfe! __ Ein Unternehmen der Stadtwerke Hanau Zählerstände Zählerstände teilen Sie uns unter der Telefonnummer 06181 365-6446 mit oder nutzen Sie unser Formular. Einkauf Informationen Barrierefreiheit Erklärung zur Barrierefreiheit Energie für unsere Stadt. © 2026 Hanau Netz GmbH ImpressumDatenschutzHinweise",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonNecessary",
+      "label": "Notwendig"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonPreferences",
+      "label": "Präferenzen"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonStatistics",
+      "label": "Statistiken"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonMarketing",
+      "label": "Marketing"
+    }
+  ],
+  "rahmen": [
+    "https://consentcdn.cookiebot.com/sdk/bc-v4.min.html"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "86fad28a-51eb-4509-8847-958411d0c26f.png"
+}

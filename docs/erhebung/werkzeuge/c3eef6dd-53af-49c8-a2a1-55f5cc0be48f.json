@@ -1,0 +1,134 @@
+{
+  "id": "c3eef6dd-53af-49c8-a2a1-55f5cc0be48f",
+  "name": "energie- und wassergesellschaft mbh",
+  "url": "https://www.enwag.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "enwag - mehr als günstige Energie.",
+  "text": "Wir verwenden Cookies auf unserer Website. Sie haben hier die Möglichkeit zu entscheiden, welche Cookies verwendet werden dürfen. Ihre Auswahl bleibt für 30 Tage gespeichert. Sie haben jederzeit die Möglichkeit, Ihre Cookie-Einstellungen über die Datenschutzerklärung zu ändern. Notwendige Statistik Externe Medien Alle akzeptieren Auswahl speichern Alle ablehnen Notwendige Statistik Externe Medien Zugang zu den wichtigen Informationen Kundenportal Impressum Datenschutz Verträge kündigen Vertrag widerrufen Zur Navigation springen (Press Enter) Zum Inhalt springen (Press Enter) Störungsnummer: 06441 939-0 Kunden Netze Messung Unternehmen Karriere Tarife & Angebote Service & Beratung Blog Cookie-Einstellungen ändern Strom Gas Heizstrom Ladestrom Passenden Stromtarif finden Personen im Haushalt Jahresverbrauch in kWh: Ihre Postleitzahl: Jetzt berechnen Jetzt berechnen Jetzt berechnen Zählerstand mitteilen Tarife vergleichen Umzug Kundencenter FAQs Schnelleinstieg Energiespartipps Ausbildung & Karriere Planauskunft Wasseranalyse Netzzugang Strom Netzzugang Gas Informationen Installateure Verwalten Sie Ihre Verträge online über unser KundenPortal! Abschläge ändern, Zählerstände übertragen oder allgemeine Vertragsdaten anpassen - ganz bequem online in unserem KundenPortal. Azubi gesucht! Du suchst nach einer Ausbildung mit Zukunft und einer spannenden Tätigkeit mit tollen Perspektiven? Dann such nicht länger und bewirb dich bei uns. Werde jetzt Teil der enwag. Sie ziehen um? Aufgrund gesetzlicher Anforderungen müssen Umzüge 14 Tage vorher an uns gemeldet werden. Hier haben wir alle relevanten Informationen für Sie zusammengestellt. Einfach unterwegs Strom tanken – unser WetzlarFahrStrom! Laden Sie Ihr E-Auto auch im öffentlichen Bereich einfach und günstig mit unserer Ladekarte. Werden Sie Ihr eigener Stromerzeuger mit enwagSolar! Mit enwagSolar erzeugen Sie auf Ihrem Dach günstigen Strom für Ihr Zuhause und Ihr E-Auto. Störungsfälle Strom-, Gas-, Wasserstörungen Telefon: 06441 939-0 Störungen der Straßenbeleuchtung strassenbeleuchtung@enwag.de Öffnungszeiten Kundencenter: Mo. - Mi: 8:00 Uhr - 16:00 Uhr Do.: 8:00 Uhr - 18:00 Uhr Fr.: 8:00 Uhr - 13:00 Uhr Telefon: 06441 939-500 kundencenter@enwag.de Wir sind zertifiziert Karriere Pressemitteilungen Kundencenter Tarife & Angebote Strom für Zuhause Erdgas für Zuhause enwagLadebox+ enwagSolar enwagWärme+ Services & Informationen FAQs Musterrechnung Zählerstand mitteilen Wasserhärte Kundenzeitschrift e.facts Umzugsservice Verbrauchsgerät & Strommessgerät Energiespartipps Baustellen Krisenvorsorge Erdgas Kontakt Verträge hier kündigen Vertrag widerrufen Datenschutz Impressum Barrierefreiheit Gebärdensprachvideos Leichte Sprache",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Notwendige"
+    },
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Statistik"
+    },
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Externe Medien"
+    },
+    {
+      "art": "text",
+      "name": "VolltextSuchbegriff",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "suche",
+      "label": ""
+    },
+    {
+      "art": "radio",
+      "name": "_ItcStrom_Kundenart",
+      "label": "Privatkunde"
+    },
+    {
+      "art": "radio",
+      "name": "_ItcStrom_Kundenart",
+      "label": "Gewerbekunde"
+    },
+    {
+      "art": "text",
+      "name": "_ItcStrom_Verbrauch",
+      "label": "Jahresverbrauch in kWh:"
+    },
+    {
+      "art": "text",
+      "name": "_ItcStrom_PLZ",
+      "label": "Ihre Postleitzahl:"
+    },
+    {
+      "art": "select-one",
+      "name": "OrtAuswahl",
+      "label": "Ihr Ort:"
+    },
+    {
+      "art": "text",
+      "name": "_ItcStrom_Ort",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "_ItcStrom_VerbrauchNT",
+      "label": "Verbrauch NT:"
+    },
+    {
+      "art": "radio",
+      "name": "_ItcGas_Kundenart",
+      "label": "Privatkunde"
+    },
+    {
+      "art": "radio",
+      "name": "_ItcGas_Kundenart",
+      "label": "Gewerbekunde"
+    },
+    {
+      "art": "text",
+      "name": "_ItcGas_Verbrauch",
+      "label": "Jahresverbrauch in kWh:"
+    },
+    {
+      "art": "text",
+      "name": "_ItcGas_PLZ",
+      "label": "Ihre Postleitzahl:"
+    },
+    {
+      "art": "select-one",
+      "name": "OrtAuswahl",
+      "label": "Ihr Ort:"
+    },
+    {
+      "art": "text",
+      "name": "_ItcGas_Ort",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "Heizstrom_Auswahl",
+      "label": "Wärmepumpe"
+    },
+    {
+      "art": "radio",
+      "name": "_ItcHeizstrom_Kundenart",
+      "label": "Privatkunde"
+    },
+    {
+      "art": "radio",
+      "name": "_ItcHeizstrom_Kundenart",
+      "label": "Gewerbekunde"
+    },
+    {
+      "art": "text",
+      "name": "_ItcHeizstrom_Verbrauch",
+      "label": "Jahresverbrauch HT in kWh:"
+    },
+    {
+      "art": "text",
+      "name": "_ItcHeizstrom_VerbrauchNT",
+      "label": "Jahresverbrauch NT in kWh"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": true,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "c3eef6dd-53af-49c8-a2a1-55f5cc0be48f.png"
+}

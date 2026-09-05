@@ -1,0 +1,144 @@
+{
+  "id": "840faf67-3a0f-4f09-a9fe-036e6f0be080",
+  "name": "Sömmerdaer Energieversorgung GmbH",
+  "url": "https://www.sev-soemmerda.de/Netzanschlussportal/Anschluss/Photovoltaik-Solar.html",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Sömmerdaer Energieversorgung GmbH - Photovoltaik/Solar",
+  "text": "Wir verwenden Cookies auf unserer Website. Sie haben hier die Möglichkeit zu entscheiden, welche Cookies verwendet werden dürfen. Ihre Auswahl bleibt für 30 Tage gespeichert. Sie haben jederzeit die Möglichkeit, Ihre Cookie-Einstellungen über die Datenschutzerklärung zu ändern. Notwendige Alle Cookies zulassen Cookie-Auswahl speichern Nur notwendige Cookies zulassen Notwendige Zugang zu den wichtigen Informationen Impressum Datenschutz Tel.: +49 3634 3711-0 E-Mail: strom.netz@sev-soemmerda.de Internet: http://www.sev-soemmerda.de Zur Navigation springen (Press Enter) Zum Inhalt springen (Press Enter) Zum Login Anschluss Angebotsupload Kontaktformular Startseite Anschluss Anlagedaten Photovoltaik/Solar Zählernummer: Wenn Sie einen separaten Zähler haben, geben Sie hier bitte die entsprechende Zählernummer an. Separate Zählernummer: Modulhersteller/-typ*: Modulleistung (Wp)*: Modulzahl (Stück)*: Wechselrichterhersteller/-typ*: Wechselrichterleistung (kW)*: Wechselrichteranzahl (Stück)*: Max. Wechselrichterscheinleistung (kVA)*: Summe der maximalen Scheinleistungen (kVA)*: Netzeinspeisung*: Bitte auswählen... L1 L2 L3 L12 L13 L23 Drehstrom Wie ist der Netz- und Anlagenschutz ausgeführt?: Bitte auswählen... Zentral am Zählerplatz Integriert im Wechselrichter Gewünschte Veräußerungsform der Einspeisung: Bitte auswählen... Geförderte Direktvermarktung (Marktprämie) nach § 20 EEG Einspeisevergütung nach § 21 Abs. 1 EEG Mieterstromzuschlag nach § 21 Abs. 3 EEG Sonstige Direktvermarktung nach § 21a EEG Vermarktung ohne gesetzliche Vergütung Geplanter Inbetriebsetzungstermin*: Betriebsweise Da das EEG/KWKG keine expliziten Vorgaben für die Messkonzepte macht, kann keine Gewähr für deren rechtliche Verbindlichkeit übernommen werden. Die Auswahl des Messkonzeptes trifft daher der Anlagenbetreiber. Welches Messkonzept werden Sie einsetzen?*: Nulleinspeisung Volleinspeisung Überschusseinspeisung Abweichendes Messkonzept Halten Sie, soweit benötigt, folgende Dokumente digital bereit Amtlicher Lageplan (mit geplantem Gebäude) im Maßstab 1:500 Grundrissplan Ihres Wohnhauses / Gewerbebetriebes (aus dem der Netzanschlussraum ersichtlich ist) Leistungsaufstellung Strom Projektschaltbild / Zählerschema Datenblätter zustimmungspflichtiger Verbraucher mit Netzrückwirkungen Vollmacht Ergänzende Hinweise Weitere Meldepflichten ergeben sich aus dem Erneuerbare-Energien-Gesetz (EEG) bzw. der Marktstammdatenregisterverordnung(MaStRV). Weitere Informationen hierzu stellt die Bundesnetzagentur zur Verfügung. ZEREZ-ID: Bitte laden Sie hier die benötigten Dokumente hoch*: Max. 20 MB Datei auswählen Impressum Datenschutz Cookie-Einstellungen ändern © 2026 Sömmerdaer Energieversorgung GmbH",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Notwendige"
+    },
+    {
+      "art": "textarea",
+      "name": "Container.Children:2.Container.Children:1.ClientSecurityChec",
+      "label": "Das folgende Eingabefeld ist aus technischen Gründen erforderlich und darf nicht"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARZAEHLERNUMMER",
+      "label": "Zählernummer:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARSEPARATERZAEHLER",
+      "label": "Separate Zählernummer:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARMODULHERSTELLERTYP",
+      "label": "Modulhersteller/-typ*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARMODULLEISTUNG",
+      "label": "Modulleistung (Wp)*:"
+    },
+    {
+      "art": "number",
+      "name": "Formular.SOLARMODULZAHL",
+      "label": "Modulzahl (Stück)*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARWECHSELRICHTERHERSTELLERTYP",
+      "label": "Wechselrichterhersteller/-typ*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARWECHSELRICHTERLEISTUNGPAMAX",
+      "label": "Wechselrichterleistung (kW)*:"
+    },
+    {
+      "art": "number",
+      "name": "Formular.SOLARWECHSELRICHTERANZAHL",
+      "label": "Wechselrichteranzahl (Stück)*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARWECHSELRICHTERSCHEINLEISTUNGSAMAX",
+      "label": "Max. Wechselrichterscheinleistung (kVA)*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARSUMMEDERMAXIMALENSCHEINLEISTUNGEN",
+      "label": "Summe der maximalen Scheinleistungen (kVA)*:"
+    },
+    {
+      "art": "select-one",
+      "name": "Formular.SOLARNETZEINSPEISUNG",
+      "label": "Netzeinspeisung*:"
+    },
+    {
+      "art": "select-one",
+      "name": "Formular.SOLARNA-SCHUTZ",
+      "label": "Wie ist der Netz- und Anlagenschutz ausgeführt?:"
+    },
+    {
+      "art": "select-one",
+      "name": "Formular.SOLARGEWUENSCHTEVERAEUSSERUNGSFORMDEREIN",
+      "label": "Gewünschte Veräußerungsform der Einspeisung:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARDATUMINBETRIEBNAHME",
+      "label": "Geplanter Inbetriebsetzungstermin*:"
+    },
+    {
+      "art": "radio",
+      "name": "Formular.SOLARMESSKONZEPT",
+      "label": "Welches Messkonzept werden Sie einsetzen?*:"
+    },
+    {
+      "art": "radio",
+      "name": "Formular.SOLARMESSKONZEPT",
+      "label": "Volleinspeisung"
+    },
+    {
+      "art": "radio",
+      "name": "Formular.SOLARMESSKONZEPT",
+      "label": "Überschusseinspeisung"
+    },
+    {
+      "art": "radio",
+      "name": "Formular.SOLARMESSKONZEPT",
+      "label": "Abweichendes Messkonzept"
+    },
+    {
+      "art": "textarea",
+      "name": "Formular.SOLARABWEICHENDESMESSKONZEPT",
+      "label": "Abweichendes Messkonzept benennen*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.SOLARZEREZ-ID",
+      "label": "ZEREZ-ID:"
+    },
+    {
+      "art": "button",
+      "name": "SeiteZurueckWechseln",
+      "label": "submitFormularpage = function(anwendung, methode, ressourceId, darstellungInKont"
+    },
+    {
+      "art": "submit",
+      "name": "SeiteWechseln",
+      "label": "submitFormularpage = function(anwendung, methode, ressourceId, darstellungInKont"
+    },
+    {
+      "art": "file",
+      "name": "dropzone_142778_hidden_file_input",
+      "label": "Bitte laden Sie hier die benötigten Dokumente hoch*:"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": true,
+    "pflichtprozess": true
+  },
+  "bild": "840faf67-3a0f-4f09-a9fe-036e6f0be080.png"
+}

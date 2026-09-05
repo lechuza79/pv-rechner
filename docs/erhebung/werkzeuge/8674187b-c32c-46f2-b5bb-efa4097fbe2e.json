@@ -1,0 +1,36 @@
+{
+  "id": "8674187b-c32c-46f2-b5bb-efa4097fbe2e",
+  "name": "Stadtwerke Service Meerbusch Willich GmbH & Co. KG",
+  "url": "https://stadtwerke-service.de/einspeiser/pv-anlage-anmelden/",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "PV-Anlage anmelden: So geht's",
+  "text": "Notdienst: 0800 8 101 102 Netzanschluss Netzanschlussprüfung Planauskunft Löschwasserauskunft Hausanschluss Hausanschluss beantragen Hausanschluss anpassen Hausanschluss abmelden Baustellen & Veranstaltungen Baustrom & Bauwasser Kurzzeitanschluss für Veranstaltungen Standrohr mieten Ladeeinrichtung anmelden Steuerbare Verbrauchseinrichtungen Mittelspannungsanschluss Zähler Smart Meter PIN Abfrage Zählerstand mitteilen Zähleraustausch Preise und Verträge Einspeisung PV-Anlage anmelden Technische Richtlinien Messkonzepte Marktstammdatenregister Installateure Installateurportal Installateurverzeichnis Technische Richtlinien Über uns Kontakt Unternehmen Karriere Unser Firmengebäude Einkauf Netze Stromnetz Gasnetz Wassernetz Startseite > Einspeisung > PV-Anlage anmelden Photovoltaikanlage anmelden Mit einer Photovoltaikanlage leisten Sie einen aktiven Beitrag zur regionalen Energiewende. Damit Sie Ihren eigenen Sonnenstrom erzeugen können, muss die Photovoltaikanlage zunächst bei diesen drei Stellen angemeldet werden: beim Netzbetreiber im Marktstammdatenregister beim Gewerbe- & Finanzamt Jede privat und gewerblich genutzte Photovoltaikanlage, die ans Stromnetz angeschlossen wird, muss angemeldet werden. Wer die eigene Photovoltaikanlage nicht anmeldet, riskiert den Anspruch auf die Einspeisevergütung. Anschlussanfrage einer PV-Anlage Um Ihre PV-Anlage bei uns anzumelden, nutzen Sie bitte die Anschlussanfrage im nachfolgenden Link. Die Anfrage lässt sich in wenigen Schritten durchführen: Jetzt PV-Anschluss anfragen Sie haben Fragen, dann klicken Sie hier und Sie gelangen zur passenden Kontaktadresse. Warum muss ich eine Photovoltaikanlage anmelden? Netzstabilität: Die Produktion von z.B. Solarstrom kann stark schwanken. Wir als Netzbetreiber müssen diese Schwankungen kennen und berücksichtigen, um die Netzstabilität zu gewährleisten und Überlastungen oder Spannungsschwankungen zu vermeiden. Sicherheitsstandards: Mit der Anmeldung wird geprüft ob alle technische Anforderungen und Sicherheitsstandards eingehalten werden. Einspeisevergütung: Um eine Vergütungen für eingespeisten Strom zu erhalten, ist eine Anmeldung notwendig. Förderprogramme: Voraussetzung für staatliche Förderungen und steuerliche Vorteil ist eine offizielle Anmeldung. Dokumentation: Zur Überwachung und Förderung der Energiewende werden. Wo muss ich meine Photovoltaikanlage anmelden? Anmeldung beim Netzbetreiber Anmeldung im Marktstammdatenregister Anmeldung beim Finanzamt Anmeldung beim Gewerbeamt Informationen zu Mikro-PV-Anlagen (Balkonkraftwerk) und Kraft-Wärme-Kopplung (KWK) Mikro-PV-Anlagen (Balkonkraftwerk) Kraft-Wärme-Kopplung (KWK) Sollten Sie zusätzlich eine Wärmepumpe oder gar E-Mobilität einplanen, nutzen Sie bitte unsere Online-Anfragen: E-Mobilität Netzanschlussverstärkung (Wärmepumpe) Haben Sie Fragen oder ein Anliegen? Unser Team ist für Sie da und hilft Ihnen gerne weiter. E-Mail: einspeiser@stm-stw.de Kontakt Stadtwerke Service Meerbusch Willich GmbH & Co. KG Gießerallee 24 47877 Willich Netzservicecenter (NSC) Kaarster Straße 135 40670 Meerbusch-Osterath Öffnungszeiten: Mo.- Do. 08:00 - 15:00 Uhr Fr. 08:00 - 12:00 Uhr Über uns Stadtwerke Willich Stadtwerke Meerbusch Karriere Einkauf Bescheinigungen Kontakt Barrierefreiheitserklärung Cookie-Einstellungen Datenschutz Disclaimer Impressum KI-Transparenz Copyright © 2026 Stadtwerke Service Meerbusch Willich GmbH & Co. KG",
+  "felder": [
+    {
+      "art": "search",
+      "name": "s",
+      "label": ""
+    },
+    {
+      "art": "search",
+      "name": "s",
+      "label": ""
+    },
+    {
+      "art": "textarea",
+      "name": "g-recaptcha-response",
+      "label": ""
+    }
+  ],
+  "rahmen": [
+    "https://www.google.com/recaptcha/api2/anchor?ar=1&k=6Lf_lkogAAAAAD0Xagtf_Rbnk69YRkn4oyLEe6GQ&co=aHR0cHM6Ly9zdGFkdHdlcmtlLXNlcnZpY2UuZGU6NDQz&hl=de&v=8x-4t2pegToiW8KmThtO4AQt&size=invisible&anchor-ms=20000&execute-ms=30000&cb=8tgkszo0pp8m"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "8674187b-c32c-46f2-b5bb-efa4097fbe2e.png"
+}

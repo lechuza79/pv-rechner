@@ -1,0 +1,319 @@
+{
+  "id": "54c555e8-f577-44c7-8561-fc51895ae8e9",
+  "name": "Stadtwerke Rothenburg o.d.T. GmbH",
+  "url": "https://www.stadtwerke-rothenburg.de/info-service/online-services/anmeldung-pv-anlage-speicher.html",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Anmeldung PV-Anlage & Speicher – Stadtwerke Rothenburg o.d.T. GmbH",
+  "text": "Zum Seiteninhalt springen Hauptmenü öffnen Kontrast Suche Kontakt Portal Menü Aktuelle Seite: Startseite Info & Service Online-Services Anmeldung PV-Anlage & Speicher Text vorlesen Anmeldung PV-Anlage & Speicher NACHFOLGEND KÖNNEN SIE EINE PV-ANLAGE UND STROMSPEICHER ANMELDEN Angaben zum Anlagenstandort PLZ * Ort * Sind Straße u. Hausnummer vorhanden? * ja nein Angaben zum Anschlussnehmer Name/Firma * Vorname Straße * Hausnr. * Zusatz PLZ * Ort * Telefon * E-Mail * Anschlussnutzer abweichend Anschlussnutzer abweichend Angaben zum technischen Ansprechpartner Installationsfachbetrieb * Ausweisnummer * Eingetragen bei * Straße * Hausnr. * Zusatz PLZ * Ort * Telefon * E-Mail * Angaben zur Kundenanlage Art des Netzanschlussbegehrens * Neuanschluss Anlagen-und Anschlussveränderung Stilllegung Art der Anlage * PV-Anlage Stromspeicher Gleichzeitig benötigte Gesamtleistung am Netzanschluss * Nachricht Ihre Nachricht Bestätigung der Angaben * Hiermit bestätige ich die Richtigkeit und Vollständigkeit der im Formular eingegebenen Daten. Bestätigung der Vorgaben * Hiermit erkenne ich die Vorgaben der NAV, TAB des VNB sowie die technischen Anschlussregeln des VDE an Zurücksetzen Senden Kundenservice Steinweg 25 91541 Rothenburg o.d.T. Telefon: 09861.9477-0 Telefax: 09861.9477-88 Strom: 09861.9477-0 Gas und Wasser: 09861.4551 info@stadtwerke-rothenburg.de www.stadtwerke-rothenburg.de Links Verträge hier widerrufen Verträge hier kündigen Barrierefreiheit Leichte Sprache RothenburgBad Nördlinger Str. 20 91541 Rothenburg o.d.T. Telefon: 09861.4565 Öffnungszeiten Eintrittspreise Auszeichnungen Copyright © 2026 | Stadtwerke Rothenburg o.d.T. GmbH | Design & Realisierung SWH-Marketing | Template hueper.de Cookies | Sitemap | Kontakt | Impressum | Datenschutz Wir nutzen Cookies und andere Technologien Diese Website verwendet nur technisch notwendige Cookies und Dienste, um Ihnen die grundlegende Funktionalität zu gewährleisten. Impressum – Datenschutz",
+  "felder": [
+    {
+      "art": "text",
+      "name": "cf[anschlusshort_plz]",
+      "label": "PLZ *"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlusshort_ort]",
+      "label": "Ort *"
+    },
+    {
+      "art": "radio",
+      "name": "cf[anschlusshort_adressevorhanden][]",
+      "label": "ja"
+    },
+    {
+      "art": "radio",
+      "name": "cf[anschlusshort_adressevorhanden][]",
+      "label": "nein"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlusshort_strasse]",
+      "label": "Straße *"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlusshort_hausnr]",
+      "label": "Hausnr. *"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlusshort_straße_nr_zusatz]",
+      "label": "Zusatz"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlusshort_gemarkung]",
+      "label": "Gemarkung *"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlusshort_flurstknr]",
+      "label": "Flurstücknummer *"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlussnehmer_namefirma]",
+      "label": "Name/Firma *"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlussnehmer_vorname]",
+      "label": "Vorname"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlussnehmer_strasse]",
+      "label": "Straße *"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlussnehmer_hausnr]",
+      "label": "Hausnr. *"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlussnehmer_straße_nr_zusatz]",
+      "label": "Zusatz"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlussnehmer_plz]",
+      "label": "PLZ *"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlussnehmer_ort]",
+      "label": "Ort *"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlussnehmer_telefon]",
+      "label": "Telefon *"
+    },
+    {
+      "art": "email",
+      "name": "cf[anschlussnehmer_absender]",
+      "label": "E-Mail *"
+    },
+    {
+      "art": "checkbox",
+      "name": "cf[anschlusnutzer_abweichend][]",
+      "label": "Anschlussnutzer abweichend"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlussnutzer_namefirma]",
+      "label": "Name/Firma *"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlussnutzer_vorname]",
+      "label": "Vorname"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlussnutzer_strasse]",
+      "label": "Straße *"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlussnutzer_hausnr]",
+      "label": "Hausnr. *"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlussnutzer_straße_nr_zusatz]",
+      "label": "Zusatz"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlussnutzer_plz]",
+      "label": "PLZ *"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlussnutzer_ort]",
+      "label": "Ort *"
+    },
+    {
+      "art": "text",
+      "name": "cf[anschlussnutzer_telefon]",
+      "label": "Telefon *"
+    },
+    {
+      "art": "email",
+      "name": "cf[anschlussnutzer_absender]",
+      "label": "E-Mail *"
+    },
+    {
+      "art": "text",
+      "name": "cf[techn_fachbetrieb]",
+      "label": "Installationsfachbetrieb *"
+    },
+    {
+      "art": "text",
+      "name": "cf[techn_ausweisnr]",
+      "label": "Ausweisnummer *"
+    },
+    {
+      "art": "text",
+      "name": "cf[techn_eintragbei]",
+      "label": "Eingetragen bei *"
+    },
+    {
+      "art": "text",
+      "name": "cf[techn_strasse]",
+      "label": "Straße *"
+    },
+    {
+      "art": "text",
+      "name": "cf[techn_hausnr]",
+      "label": "Hausnr. *"
+    },
+    {
+      "art": "text",
+      "name": "cf[techn_zusatz]",
+      "label": "Zusatz"
+    },
+    {
+      "art": "text",
+      "name": "cf[techn_plz]",
+      "label": "PLZ *"
+    },
+    {
+      "art": "text",
+      "name": "cf[techn_ort]",
+      "label": "Ort *"
+    },
+    {
+      "art": "text",
+      "name": "cf[techn_telefon]",
+      "label": "Telefon *"
+    },
+    {
+      "art": "email",
+      "name": "cf[techn_absender]",
+      "label": "E-Mail *"
+    },
+    {
+      "art": "radio",
+      "name": "cf[art_anschlussbegehren][]",
+      "label": "Neuanschluss"
+    },
+    {
+      "art": "radio",
+      "name": "cf[art_anschlussbegehren][]",
+      "label": "Anlagen-und Anschlussveränderung"
+    },
+    {
+      "art": "radio",
+      "name": "cf[art_anschlussbegehren][]",
+      "label": "Stilllegung"
+    },
+    {
+      "art": "checkbox",
+      "name": "cf[anlagenart][]",
+      "label": "PV-Anlage"
+    },
+    {
+      "art": "checkbox",
+      "name": "cf[anlagenart][]",
+      "label": "Stromspeicher"
+    },
+    {
+      "art": "text",
+      "name": "cf[pv_geplantertermin]",
+      "label": "Geplanter Inbetriebsetzungstermin *"
+    },
+    {
+      "art": "text",
+      "name": "cf[pv_termin]",
+      "label": "Inbetriebsetzungstermin"
+    },
+    {
+      "art": "text",
+      "name": "cf[pv_netzparallelbetrieb]",
+      "label": "Datum erstmaliger Netzparalellbetrieb"
+    },
+    {
+      "art": "select-one",
+      "name": "cf[pv_anlagenschutz]",
+      "label": "Wie ist der Netz- und Anlagenschutz ausgeführt? *"
+    },
+    {
+      "art": "select-one",
+      "name": "cf[pv_betriebsweise]",
+      "label": "Wählen Sie die Betriebsweise der Erzeugungsanlage aus *"
+    },
+    {
+      "art": "text",
+      "name": "cf[pv_herstellerwechselrichter]",
+      "label": "Hersteller Wechselrichter *"
+    },
+    {
+      "art": "text",
+      "name": "cf[pv_typwechselrichter]",
+      "label": "Typ des Wechselrichters *"
+    },
+    {
+      "art": "text",
+      "name": "cf[pv_maxscheinleistung]",
+      "label": "Max. Scheinleistung *"
+    },
+    {
+      "art": "text",
+      "name": "cf[pv_maxwirkleistung]",
+      "label": "Max. Wirkleistung *"
+    },
+    {
+      "art": "text",
+      "name": "cf[pv_summescheinleistungen]",
+      "label": "Summe der max. Scheinleistungen *"
+    },
+    {
+      "art": "text",
+      "name": "cf[pv_summewirkleistung]",
+      "label": "Summer der max. Wirkleistungen *"
+    },
+    {
+      "art": "text",
+      "name": "cf[pv_anzahlwechselrichter]",
+      "label": "Anzahl von Wechselrichtern *"
+    },
+    {
+      "art": "select-one",
+      "name": "cf[pv_netzeinspeisung]",
+      "label": "Netzeinspeisung *"
+    },
+    {
+      "art": "text",
+      "name": "cf[pv_leistungmodul]",
+      "label": "Leistung je PV-Modul *"
+    },
+    {
+      "art": "text",
+      "name": "cf[pv_anzahlmodul]",
+      "label": "Anzahl von PV-Modulen *"
+    },
+    {
+      "art": "text",
+      "name": "cf[pv_zaehler]",
+      "label": "Zählernummer *"
+    },
+    {
+      "art": "select-one",
+      "name": "cf[pv_messstellenbetreiber]",
+      "label": "Auswahl Messstellenbetreiber *"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": true,
+    "pflichtprozess": true
+  },
+  "bild": "54c555e8-f577-44c7-8561-fc51895ae8e9.png"
+}

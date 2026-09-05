@@ -1,0 +1,44 @@
+{
+  "id": "09baf12d-c5b0-4dab-bdee-c8aed87e6052",
+  "name": "inetz GmbH",
+  "url": "https://www.inetz.de/startseite/erzeugungsanlagen/dokumente-zur-anmeldung-von-photovoltaikanlagen-und-stromspeichern/",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Dokumente zur Anmeldung von Photovoltaikanlagen und Stromspeichern | inetz - Ein Unternehmen von eins",
+  "text": "Visuelle Assistenzsoftware und Vorlesefunktion Eye-Able öffnen. Mit der Tastatur erreichbar über ALT + 1 NetzanschlussNetzzugangErzeugungsanlagenMesswesenService Sicherheit rund um die Uhr: Wir helfen Ihnen bei Technischen Störungen Startseite Erzeugungsanlagen Dokumente zur Anmeldung von Photovoltaikanlagen und Stromspeichern Falls Sie Probleme bei der Registrierung in unserem Kundenportal haben, können Sie im folgenden Abschnitt die Dokumente zur Anmeldung einer Photovoltaikanlage oder eines Stromspeichers abrufen. Bitte beachten Sie, dass diese Dokumente nur bis voraussichtlich Ende Juni 2025 verfügbar sein werden. Danach ist die Verwendung unseres Kundenportal verpflichtend. Anmeldungen per Formular werden zum 1. Juli 2025 nicht mehr angenommen. Zur Anmeldung einer Photovoltaikanlage und/oder eines Stromspeichers benötigen wir immer das ausgefüllte Formular \"Anmeldung zum Netzanschluss - ANA\" (1.) sowie die spezifischen Anmeldeunterlagen je nach Anlagengröße (2.). Für die Sonderfälle Mieterstrom oder einer Übergabestation sind noch zusätzliche Unterlagen (3.) nötig. Die benannten Unterlagen finden Sie nachfolgend. Bitte beachten Sie, dass ein Stromspeicher auch als Erzeugungsanlage gilt und ebenfalls angemeldet und ein separates Inbetriebnahmeprotokoll für diesen vorgelegt werden muss. Steckerfertige PV-Anlagen müssen nicht mehr bei Netzbetreiber angemeldet werden, hier reicht die Registirierung im Marktstammdatenregister. Bitte schicken Sie die vollständig ausgefüllten Anmeldeunterlagen, die technische Fertigmeldung (ANA) sowie die Inbetriebnahmeprotokolle direkt an die E-Mail Adresse einspeisemanagement@inetz.de. 1.) Formular Anmeldung zum Netzanschluss \"ANA\" Für alle Anlagengrößen notwendig Anmeldung zum Netzanschluss 2.) Spezifische Anmeldeunterlagen je Anlagengröße Photovoltaikanlagen bis 100 kWp (DIN VDE-AR 4105) Anmeldeunterlagen Unterlagen zur Inbetriebnahme Anlage zur Anmeldung (nur bei Freiflächenanlagen) Photovoltaikanlagen über 100 kWp bis 500 kWp (270 kW) (DIN VDE-AR 4105, NELEV) Anmeldeunterlagen Unterlagen zur Inbetriebnahme Anlage zur Anmeldung (nur bei Freiflächenanlagen) Photovoltaikanlagen über 270 kW (DIN VDE-AR 4110) Anmeldeunterlagen Unterlagen zur Inbetriebnahme Anlage zur Anmeldung (nur bei Freiflächenanlagen) Ablaufschemata 3.) Zusätzliche Dokumente Notwendig bei der Anmeldung von: Übergabestationen - Link zum Netzanschluss Strom Mieterstromanlagen Zusatzerklärung Inbetriebnahme PVA ohne Netzparallelbetrieb Zur verbindlichen Reservierung der Einspeiseleistung verwenden Sie bitte folgende Formulare: - für die Mittelspannung: \"Bestätigung der Netztechnischen Stellungnahme (E.8.1)\" - für die Niederspannung: \"Bestätigung der Netztechnischen Stellungnahme (E.2.1)\" Kontakt inetz GmbH Straße der Nationen 140 09113 Chemnitz Sie erreichen uns telefonisch: (0371) 489-2999 Mo-Do: 9:00 - 12:00 Uhr 13:00 - 15:00 Uhr Freitag: 9:00 - 12:00 Uhr Unternehmen Netzgebiet Netzstrukturdaten Gleichbehandlung Karriere Porträt Impressum Datenschutz Barrierefreiheit Sitemap Cookie-Einstellungen COOKIE EINSTELLUNGEN Wir nutzen Cookies auf unserer Website. Einige von ihnen sind technisch notwendig, während andere uns helfen, diese Website zu verbessern oder zusätzliche Funktionalitäten zur Verfügung zu stellen. Notwendige Cookies Statistik ALLE AUSWÄHLEN ABLEHNEN SPEICHERN Details anzeigen NOTWENDIGE COOKIES Notwendige Cookies ermöglichen grundlegende Funktionen und sind für die einwandfreie Funktion der Website erforderlich. Einverständnis-Cookie Name: cookie_consent Zweck: Dieser Cookie speichert die ausgewählten Einverständnis-Optionen des Benutzers Cookie Laufzeit: 1 Jahr STATISTIK Mit Hilfe dieser Cookies sind wir bemüht unser Angebot für Sie noch attraktiver zu gestalten. Mittels pseudonymisierter Daten von Websitenutzern kann der Nutzerfluss analysiert und beurteilt werden. Dies gibt uns die Möglichkeit Werbe- und Websiteinhalte zu optimieren. Matomo Name: _pk_id, _pk_ref, _pk_ses, _pk_cvar, _pk_hsr Anbieter: Matomo Zweck: Werden verwendet, um ein Details über den Benutzer wie die eindeutige Besucher-ID zu speichern. Cookie Laufzeit: 13 Monate Impressum | Datenschutz",
+  "felder": [
+    {
+      "art": "text",
+      "name": "tx_indexedsearch_pi2[search][sword]",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "modal-option-necessary",
+      "label": "Notwendige Cookies"
+    },
+    {
+      "art": "checkbox",
+      "name": "modal-option-1",
+      "label": "Statistik"
+    },
+    {
+      "art": "checkbox",
+      "name": "modal-cookieoption-1",
+      "label": "Einverständnis-Cookie"
+    },
+    {
+      "art": "checkbox",
+      "name": "tx_mindshapecookieconsent_consent[consent][cookieOptions][]",
+      "label": "Matomo"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "09baf12d-c5b0-4dab-bdee-c8aed87e6052.png"
+}

@@ -1,0 +1,79 @@
+{
+  "id": "2556ca3d-8dac-465f-8379-c153918d4c33",
+  "name": "MEGA Monheimer Elektrizitäts- und Gasversorgung GmbH",
+  "url": "https://www.mega-monheim.de/privatkunden/photovoltaik",
+  "vermutet": "kontaktformular",
+  "abruf": "ok",
+  "titel": "Photovoltaik: Strom aus der Sonne",
+  "text": "Zum Inhalt Zum Cookiehinweis Deutsch Privatkundschaft Unternehmen Karriere Kontakt Hilfe-Center Netze Onlineshop Online-Services Störung melden Strom Erdgas Multimedia E-Mobilität Wärme Photovoltaik Bauen Netze Suchen Adobe Stock Photovoltaik: Strom aus der Sonne. Bei der Umwandlung von Sonnenlicht in elektrische Energie nutzen Sie ihren produzierten Strom selbst, zum Beispiel im Haushalt oder zur Betankung Ihres Elektrofahrzeugs. Falls der erzeugte Strom nicht direkt verbraucht werden kann, bietet sich der Einsatz einer dafür geeigneten Speicherbatterie an. Damit können Sie auch in den Zeiten Ihren eigens erzeugten Sonnenstrom nutzen, wenn die Sonne mal nicht scheint. Natürlich können Sie den Sonnenstrom auch in das öffentliche Stromnetz einspeisen, wofür Sie eine Vergütung durch die MEGA erhalten. Wenn Sie in eine eigene Photovoltaikanlage investieren möchten, dann beraten wir Sie gerne. Vorteile Beratung Downloads Sonnenlicht in Strom verwandeln Wie Photovoltaik funktioniert und was sie leistet. Wir nutzen YouTube, ein Service von Google, zur Einbettung von Videos. Mit dem Laden des YouTube-Videos erklären Sie sich mit der Datenschutzerklärung von Google einverstanden. YouTube-Video laden Beratungsanfrage Kontaktdaten Vorname * Nachname * E-Mail * Telefonnummer * Straße und Hausnummer * Ihr Anliegen Status * Bitte wählen Ich bin Kundin/Kunde Ich bin keine Kundin/kein Kunde Anliegen * Datenschutz Mit dem Absenden des Formular bestätige ich, dass ich die Datenschutzerklärung gelesen habe und damit einverstanden bin. * Anfrage senden Mit * gekennzeichnete Felder sind Pflichtangaben Häufige Fragen zum Thema Photovoltaik Hier finden Sie die wichtigsten Antworten rund um das Thema Photovoltaik. FAQ Photovoltaik Downloads zum Thema Photovoltaik Formblatt S28 Datenblatt Ladeeinrichtung für Elektrofahrzeuge 28.11.2025pdf Formblatt S31 Anmeldung und Inbetriebnahme einer steckfertigen Erzeugungsanlage 28.11.2025pdf Formblatt S20 Messkonzepte für Erzeugungsanlagen 27.05.2026pdf Formblatt S21 Inbetriebnahmeprotokoll für eine EEG-Anlage 28.11.2025pdf Formblatt S6 Auftrag zur Stromzählermontage und Demontage 28.11.2025pdf Formblatt S19 Anschlussanfrage für eine Erzeugungsanlage 28.11.2025pdf Praktischer Nebeneffekt für Elektroautos Mit dem Sonnenstrom vom eigenen Dach können Sie Ihr E-Auto direkt aus selbst erzeugtem PV-Strom laden – ohne Netzbezugskosten für den selbst verbrauchten Anteil. Wir nutzen YouTube, ein Service von Google, zur Einbettung von Videos. Mit dem Laden des YouTube-Videos erklären Sie sich mit der Datenschutzerklärung von Google einverstanden. YouTube-Video laden Wir sind mehrfach ausgezeichnet. Aus Verantwortung für den Klimaschutz. Folgen Sie uns auf Unternehmen Über uns Klimastrategie Karriere Aktuelles Projekte Kontakt & Hilfe Hilfe-Center Ansprechpersonen Online Services Strom-Anmeldung Strom-Ummeldung Strom-Abmeldung Erdgas-Anmeldung Erdgas-Ummeldung Erdgas-Abmeldung Online-Kündigung Online-Widerruf SEPA-Lastschriftmandat Rechtliches Impressum Datenschutz Datenschutz für Bewerbende AGB Barrierefreiheitserklärung Die Monheimer Elektrizitäts- und Gas­versorgung GmbH ist eine Tochter­gesellschaft der Stadt Monheim am Rhein. Privatsphäre-Einstellungen Diese Seite verwendet Cookies, um eine einfache Bedienung zu ermöglichen. Mit der Nutzung erklären Sie sich mit der Verwendung von Cookies einverstanden. Mehr zum Thema finden Sie unter Datenschutz. Diese Seite verwendet Google Analytics, um anonymisierte Statistiken aufzuzeichnen. Mit Klick auf den Button Einverstanden stimmen Sie der Nutzung von Google Analytics zu. Mit Klick auf den Button Ablehnen wird Ihr Besuch nicht aufgezeichnet. Hoher Kontrast Ablehnen Einverstanden Chatbot Wir nutzen Langdock zur Bereitstellung eines KI-Chatbots. Mit dem Laden des Chatbots erklären Sie sich mit der Datenschutzerklärung von Langdock einverstanden. Chatbot laden Hallo! Wie kann ich Ihnen helfen? Nachricht senden Dieser Chatbot basiert auf Künstlicher Intelligenz (KI). KI-generierte Antworten können Fehler enthalten. Weitere Informationen zur Nutzung finden Sie unter Datenschutz. Chatbot",
+  "felder": [
+    {
+      "art": "text",
+      "name": "tx_form_formframework[consulting-photovoltaics-351][consulti",
+      "label": "Vorname *"
+    },
+    {
+      "art": "text",
+      "name": "tx_form_formframework[consulting-photovoltaics-351][consulti",
+      "label": "Nachname *"
+    },
+    {
+      "art": "email",
+      "name": "tx_form_formframework[consulting-photovoltaics-351][consulti",
+      "label": "E-Mail *"
+    },
+    {
+      "art": "tel",
+      "name": "tx_form_formframework[consulting-photovoltaics-351][consulti",
+      "label": "Telefonnummer *"
+    },
+    {
+      "art": "text",
+      "name": "tx_form_formframework[consulting-photovoltaics-351][consulti",
+      "label": "Straße und Hausnummer *"
+    },
+    {
+      "art": "text",
+      "name": "tx_form_formframework[consulting-photovoltaics-351][DuqtfQKC",
+      "label": "Kontaktdaten Vorname * Nachname * E-Mail * Telefonnummer * Straße und Hausnummer"
+    },
+    {
+      "art": "select-one",
+      "name": "tx_form_formframework[consulting-photovoltaics-351][consulti",
+      "label": "Status *"
+    },
+    {
+      "art": "textarea",
+      "name": "tx_form_formframework[consulting-photovoltaics-351][consulti",
+      "label": "Anliegen *"
+    },
+    {
+      "art": "checkbox",
+      "name": "tx_form_formframework[consulting-photovoltaics-351][consulti",
+      "label": "Mit dem Absenden des Formular bestätige ich, dass ich die Datenschutzerklärung g"
+    },
+    {
+      "art": "text",
+      "name": "",
+      "label": ""
+    },
+    {
+      "art": "search",
+      "name": "tx_indexedsearch_pi2[search][sword]",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "chatbotFormInput",
+      "label": "Nachricht senden"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "2556ca3d-8dac-465f-8379-c153918d4c33.png"
+}

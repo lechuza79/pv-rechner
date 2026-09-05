@@ -1,0 +1,8 @@
+{
+  "id": "29dc0f4c-8d93-4159-9821-7ced9b047dcd",
+  "name": "GETEC net delta GmbH & Co. KG",
+  "url": "https://www.getec-net-delta.de",
+  "vermutet": "keins",
+  "abruf": "fehler",
+  "fehler": "page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.getec-net-delta.de/\nCall log:\n  - navigating to \"https://www.getec-net-delta.de/\", waiting until \"domcontentloaded\"\n"
+}

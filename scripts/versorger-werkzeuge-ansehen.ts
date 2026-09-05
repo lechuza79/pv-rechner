@@ -30,7 +30,7 @@
 // Die Belege landen unter docs/erhebung/werkzeuge/ als eine JSON-Datei je
 // Versorger; das Bild daneben als PNG.
 
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -102,7 +102,18 @@ async function main(): Promise<void> {
   const leere = zeilen.filter((z) => z.website && (!z.werkzeug || z.werkzeug.zustand === "keins"));
 
   const liste: { z: Zeile; url: string; vermutet: string }[] = [];
-  for (const z of kandidaten) liste.push({ z, url: z.werkzeug!.url!, vermutet: z.werkzeug!.zustand });
+  for (const z of kandidaten) {
+    // DEM VERWEIS FOLGEN, nicht die Seite mit dem Verweis ansehen.
+    //
+    // Gemessen 05.09.2026: Bei fünfzehn Kandidaten stand das Werkzeug nicht auf
+    // der gefundenen Seite, sondern hinter einem Link („Zum PV-Rechner"). Der
+    // erste Durchgang öffnete die Seite MIT dem Verweis und sah dort
+    // erwartungsgemäß kein Werkzeug — die Einordnung blieb bei „unklar", obwohl
+    // eine einzige weitere Seite die Frage beantwortet hätte. Ein Verweis auf
+    // ein Werkzeug ist eine Adresse, kein Befund.
+    const verlinkt = /verlinkt:\s*(\S+)/.exec(z.werkzeug?.beleg ?? "")?.[1];
+    liste.push({ z, url: verlinkt ?? z.werkzeug!.url!, vermutet: z.werkzeug!.zustand });
+  }
   if (stichprobe > 0) {
     // Gleichmäßig über die Liste greifen statt die ersten n zu nehmen: Die
     // Tabelle ist nach Größe sortiert, und die ersten n wären lauter große
@@ -113,7 +124,12 @@ async function main(): Promise<void> {
       liste.push({ z: leere[i], url: leere[i].website!, vermutet: "keins" });
     }
   }
-  const arbeit = liste.slice(0, grenze === Infinity ? undefined : grenze);
+  // Gezielt nachfassen: eine Datei mit einer Kennung je Zeile. Gebraucht für
+  // die Fälle, die beim ersten Durchgang „unklar" blieben.
+  const nurDatei = argv.find((a) => a.startsWith("--nur="))?.split("=")[1];
+  const nur = nurDatei ? new Set(readFileSync(nurDatei, "utf8").split("\n").map((s) => s.trim()).filter(Boolean)) : null;
+  const gefiltert = nur ? liste.filter((a) => nur.has(a.z.id)) : liste;
+  const arbeit = gefiltert.slice(0, grenze === Infinity ? undefined : grenze);
   log(`${kandidaten.length} Kandidaten, ${leere.length} ohne Befund; angesehen werden ${arbeit.length}`);
 
   mkdirSync(ABLAGE, { recursive: true });

@@ -1,0 +1,109 @@
+{
+  "id": "0a2e9df0-756a-4f52-afdc-18874f131a7e",
+  "name": "Stadtwerke Oberkirch GmbH",
+  "url": "https://www.stadtwerke-oberkirch.de/Netzanschlussportal/Balkonkraftwerk/",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Stadtwerke Oberkirch - Kontaktdaten",
+  "text": "Wir verwenden Cookies auf unserer Website. Sie haben hier die Möglichkeit zu entscheiden, welche Cookies verwendet werden dürfen. Ihre Auswahl bleibt für 30 Tage gespeichert. Sie haben jederzeit die Möglichkeit, Ihre Cookie-Einstellungen über die Datenschutzerklärung zu ändern. Notwendige Statistik Alle zulassen Alle speichern Alle ablehnen Notwendige Statistik Zugang zu den wichtigen Informationen Impressum Datenschutz Zur Navigation springen (Press Enter) Zum Inhalt springen (Press Enter) 07802 9178-0 Mo bis Mi: 8-12 Uhr und 13-16:30 Uhr Do: 8-12 Uhr und 13-18 Uhr Fr: 8-13 Uhr Zum Login Netzanschluss Strom Baustrom Photovoltaik/Solar Speicher Balkonkraftwerk Wallbox Weitere Anschlüsse Angebotsupload Kontaktformular Hallo, ich helfe Ihnen, Ihren Anschluss anzumelden, und beantworte Ihre Fragen. Zu den FAQs Startseite Balkonkraftwerk Zurück zur Startseite Hallo, was möchten Sie anmelden? Wärmepumpe Speicher Balkonkraftwerk Netzanschluss Strom Fragen kann ich zu folgenden Themen beantworten Zeit- und Ablaufplan für die Bearbeitung des Netzanschlussbegehrens Wie lange ist die Bearbeitungszeit für einen Hausanschluss? Wie erhalte ich einen Netzanschluss für meine Einspeiseanlage/PV-Anlage? Wann kann ich meine Photovoltaikanlage bei der Bundesnetzagentur (BNetzA) melden? Kontaktdaten Anschlussnehmer Firma: Anrede: Bitte auswählen... Frau Herr Divers Vorname*: Nachname*: Straße*: Hausnr.*: Postleitzahl*: Ort*: Telefon*: E-Mail*: Abweichende Daten Sind Anschlussnehmer und Grundstückseigentümer nicht identisch, ist spätestens zum Zeitpunkt der Beauftragung des Netzbetreibers zur Ausführung des Netzanschlusses die Zustimmung des Grundstückseigentümers erforderlich. Gibt es Abweichungen vom Anschlussnehmer zum Anschlussnutzer, Anlagenstandort, Grundstückseigentümer oder Rechnungsempfänger?*: Ja Nein Impressum Datenschutz Cookie-Einstellungen ändern © 2026 Stadtwerke Oberkirch",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Notwendige"
+    },
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Statistik"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ANSCHLUSSNEHMER.FIRMA",
+      "label": "Firma:"
+    },
+    {
+      "art": "select-one",
+      "name": "Formular.ANSCHLUSSNEHMER.ANREDE",
+      "label": "Anrede:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ANSCHLUSSNEHMER.VORNAME",
+      "label": "Vorname*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ANSCHLUSSNEHMER.NACHNAME",
+      "label": "Nachname*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ADRESSE.STRASSE",
+      "label": "Straße*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ADRESSE.HAUSNR",
+      "label": "Hausnr.*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ADRESSE.PLZ",
+      "label": "Postleitzahl*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ADRESSE.ORT",
+      "label": "Ort*:"
+    },
+    {
+      "art": "tel",
+      "name": "Formular.KONTAKT.TELEFON",
+      "label": "Telefon*:"
+    },
+    {
+      "art": "email",
+      "name": "Formular.KONTAKT.EMAIL",
+      "label": "E-Mail*:"
+    },
+    {
+      "art": "radio",
+      "name": "Formular.DATENENTSPRECHENANSCHLUSSNEHMER",
+      "label": "Gibt es Abweichungen vom Anschlussnehmer zum Anschlussnutzer, Anlagenstandort, G"
+    },
+    {
+      "art": "radio",
+      "name": "Formular.DATENENTSPRECHENANSCHLUSSNEHMER",
+      "label": "Nein"
+    },
+    {
+      "art": "textarea",
+      "name": "Formular.ABWEICHENDEDATEN",
+      "label": "Bitte tragen Sie hier die entsprechend abweichenden Daten ein.*:"
+    },
+    {
+      "art": "button",
+      "name": "SeiteZurueckWechseln",
+      "label": "if (typeof(HRJavaScriptIncludesRegistry) != \"object\") { var head = document.getE"
+    },
+    {
+      "art": "button",
+      "name": "AusfuellenUnterbrechen",
+      "label": "if (typeof(HRJavaScriptIncludesRegistry) != \"object\") { var head = document.getE"
+    },
+    {
+      "art": "submit",
+      "name": "SeiteWechseln",
+      "label": "if (typeof(HRJavaScriptIncludesRegistry) != \"object\") { var head = document.getE"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "0a2e9df0-756a-4f52-afdc-18874f131a7e.png"
+}

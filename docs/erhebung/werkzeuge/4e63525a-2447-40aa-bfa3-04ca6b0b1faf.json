@@ -1,0 +1,256 @@
+{
+  "id": "4e63525a-2447-40aa-bfa3-04ca6b0b1faf",
+  "name": "Stadtwerke Jülich GmbH",
+  "url": "https://www.stadtwerke-juelich.de/solar/beratung-buchen/",
+  "vermutet": "kontaktformular",
+  "abruf": "ok",
+  "titel": "Solarberatung buchen | Stadtwerke Jülich",
+  "text": "Skip to main content Skip to footer Großkunden Über uns Sponsoring Job & Karriere Presse Glasfaser Netz Anmelden Strom, Gas & Wasser Heizen & Wärme Solar Bäder Energieservice Solarberatung buchen „*“ zeigt erforderliche Felder an 1 Persönliche Angaben 2 Angaben zum Objekt 3 Abschluss ANREDE * Bitte wählen Frau Herr Eheleute Familie Herrn und Frau ANSPRECHPERSON * Vorname Nachname GEBURTSDATUM * MM Schrägstrich TT Schrägstrich JJJJ E-MAIL ADRESSE * TELEFONNUMMER FIRMA OBJEKTANSCHRIFT * KundeStraße KundeHausnummer KundePLZ KundeOrt RECHNUNGSANSCHRIFT Ich will eine separate Rechnungsanschrift angeben. Home / Solar / Beratung buchen Folgen Sie uns Strom, Gas, Wasser BasisStrom DirektStrom Solar Wärmepumpen Strom BasisGas DirektGas Wasser Heizen & Wärme Wärme Wärmepumpe Gasheizung mieten Nah- und Fernwärme Solar Solar Mieterstrom Bäder Hallenbad Freibad Energieservice Digitale Stromzähler Wallbox Autostrom Energieberatung Hilfe & Service Kundenportal Marktkommunikation 24h Lieferantenwechsel Netzanschluss Über uns Unternehmen Job & Karriere Aktuelles Engagement & Sponsoring Presse Mediathek Stadtwerke Jülich GmbH Kundenzentrum An der Vogelstange 2a 52428 Jülich 02461 625-122 service@stadtwerke-juelich.de Öffnungzeiten: Montag-Donnerstag 09:00 bis 18:00 Uhr Freitag 09:00 bis 14:00 Uhr Unsere Service-App. Jetzt downloaden. Copyright © 2026 Stadtwerke Jülich GmbH Vertrag kündigen Vertrag widerrufen Impressum Datenschutz Barrierefreiheit Cookie-Einstellungen",
+  "felder": [
+    {
+      "art": "search",
+      "name": "s",
+      "label": "Search"
+    },
+    {
+      "art": "search",
+      "name": "s",
+      "label": "Search"
+    },
+    {
+      "art": "text",
+      "name": "input_154",
+      "label": "X/Twitter"
+    },
+    {
+      "art": "select-one",
+      "name": "input_39",
+      "label": "Anrede*"
+    },
+    {
+      "art": "text",
+      "name": "input_21.3",
+      "label": "Vorname"
+    },
+    {
+      "art": "text",
+      "name": "input_21.6",
+      "label": "Nachname"
+    },
+    {
+      "art": "text",
+      "name": "input_153",
+      "label": "Geburtsdatum*"
+    },
+    {
+      "art": "email",
+      "name": "input_23",
+      "label": "E-Mail Adresse*"
+    },
+    {
+      "art": "tel",
+      "name": "input_24",
+      "label": "Telefonnummer"
+    },
+    {
+      "art": "text",
+      "name": "input_22",
+      "label": "Firma"
+    },
+    {
+      "art": "text",
+      "name": "input_25.1",
+      "label": "KundeStraße"
+    },
+    {
+      "art": "text",
+      "name": "input_25.2",
+      "label": "KundeHausnummer"
+    },
+    {
+      "art": "text",
+      "name": "input_25.5",
+      "label": "KundePLZ"
+    },
+    {
+      "art": "text",
+      "name": "input_25.3",
+      "label": "KundeOrt"
+    },
+    {
+      "art": "checkbox",
+      "name": "input_27.1",
+      "label": "Ich will eine separate Rechnungsanschrift angeben."
+    },
+    {
+      "art": "select-one",
+      "name": "input_48",
+      "label": "Anrede*"
+    },
+    {
+      "art": "text",
+      "name": "input_28.3",
+      "label": "Vorname"
+    },
+    {
+      "art": "text",
+      "name": "input_28.6",
+      "label": "Nachname"
+    },
+    {
+      "art": "text",
+      "name": "input_30",
+      "label": "Firma (c/o)"
+    },
+    {
+      "art": "text",
+      "name": "input_29.1",
+      "label": "RechnungStraße"
+    },
+    {
+      "art": "text",
+      "name": "input_29.2",
+      "label": "RechnungHausnummer"
+    },
+    {
+      "art": "text",
+      "name": "input_29.5",
+      "label": "RechnungPLZ"
+    },
+    {
+      "art": "text",
+      "name": "input_29.3",
+      "label": "RechnungOrt"
+    },
+    {
+      "art": "button",
+      "name": "gform_next_button_7_151",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "input_141.1",
+      "label": "ObjektStraße"
+    },
+    {
+      "art": "text",
+      "name": "input_141.2",
+      "label": "ObjektHausnummer"
+    },
+    {
+      "art": "text",
+      "name": "input_141.5",
+      "label": "ObjektPLZ"
+    },
+    {
+      "art": "text",
+      "name": "input_141.3",
+      "label": "ObjektOrt"
+    },
+    {
+      "art": "radio",
+      "name": "input_142",
+      "label": "Ja"
+    },
+    {
+      "art": "radio",
+      "name": "input_142",
+      "label": "Nein"
+    },
+    {
+      "art": "text",
+      "name": "input_144",
+      "label": "Baujahr*"
+    },
+    {
+      "art": "radio",
+      "name": "input_145",
+      "label": "Ja"
+    },
+    {
+      "art": "radio",
+      "name": "input_145",
+      "label": "Nein"
+    },
+    {
+      "art": "text",
+      "name": "input_146",
+      "label": "Zeitpunkt der Dachrenovierungen*"
+    },
+    {
+      "art": "text",
+      "name": "input_147",
+      "label": "Stromverbrauch in kWh pro Jahr"
+    },
+    {
+      "art": "text",
+      "name": "input_148",
+      "label": "Derzeitiger Energieversorger*"
+    },
+    {
+      "art": "radio",
+      "name": "input_149",
+      "label": "Ja"
+    },
+    {
+      "art": "radio",
+      "name": "input_149",
+      "label": "Nein"
+    },
+    {
+      "art": "radio",
+      "name": "input_150",
+      "label": "Ja"
+    },
+    {
+      "art": "radio",
+      "name": "input_150",
+      "label": "Nein"
+    },
+    {
+      "art": "button",
+      "name": "gform_previous_button_7_152",
+      "label": ""
+    },
+    {
+      "art": "button",
+      "name": "gform_next_button_7_152",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "input_138.1",
+      "label": "Ja, ich bin damit einverstanden, dass die Stadtwerke Jülich GmbH eine Bonitätsau"
+    },
+    {
+      "art": "checkbox",
+      "name": "input_137.1",
+      "label": "Ich bestätige, dass ich die Widerrufsbelehrung gelesen habe und akzeptiere diese"
+    },
+    {
+      "art": "checkbox",
+      "name": "input_136.1",
+      "label": "Ich bestätige, dass ich die Datenschutzerklärung gelesen habe und akzeptiere die"
+    },
+    {
+      "art": "submit",
+      "name": "gform_previous_button_7",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "gform_submit_button_7",
+      "label": ""
+    }
+  ],
+  "rahmen": [
+    "https://app.usercentrics.eu/browser-sdk/4.64.0/cross-domain-bridge.html"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": true,
+    "pflichtprozess": false
+  },
+  "bild": "4e63525a-2447-40aa-bfa3-04ca6b0b1faf.png"
+}

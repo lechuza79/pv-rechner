@@ -1,0 +1,34 @@
+{
+  "id": "a3ad7670-72fa-47dd-b60c-1bc014ce82ab",
+  "name": "e.wa riss Netze GmbH",
+  "url": "https://www.ewa-netze.de/de/Einspeiser/Anmeldung-Inbetriebnahme/Balkonkraftwerke/",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "ewa.riss Netze GmbH - Balkonkraftwerke",
+  "text": "Wir verwenden Cookies auf unserer Website. Sie haben hier die Möglichkeit zu entscheiden, welche Cookies verwendet werden dürfen. Ihre Auswahl bleibt für 30 Tage gespeichert. Sie haben jederzeit die Möglichkeit, Ihre Cookie-Einstellungen über die Datenschutzerklärung zu ändern. AUSWAHL Notwendige Statistik Alle akzeptieren Alle speichern Alle ablehnen Notwendige Statistik Zugang zu den wichtigen Informationen Impressum Datenschutz Zur Navigation springen (Eingabetaste betätigen) Zur Suche springen (Eingabetaste betätigen) Zum Inhalt springen (Eingabetaste betätigen) Karriere Störungen Suche Menü Startseite Einspeiser Anmeldung / Inbetriebnahme Balkonkraftwerke Balkonkraftwerke Steckerfertige Solaranlagen – auch Balkonkraftwerke, Plug-in-PV-Anlagen oder Mini-PV-Anlagen genannt – ermöglichen die Nutzung selbst erzeugten Solarstroms im eigenen Haushalt. Anlagen mit einer Wechselrichterleistung (Leistung des Wechselrichters zur Umwandlung des Solarstroms) von bis zu 800 Watt und einer Modulleistung (Leistung der Solarmodule) von bis zu 2.000 Watt sind lediglich im Marktstammdatenregister (MaStR) zu registrieren. Eine Anmeldung bei uns ist nicht notwendig. Sollte im Zusammenhang mit dem Betrieb der Anlage ein Zählerwechsel erforderlich sein, informieren wir Sie und veranlassen die weiteren Schritte. Wichtiger Hinweis: Bei Balkonkraftwerken bis 960 Wp Modulleistung ist der Anschluss an eine Haushaltssteckdose gemäß den aktuellen VDE-Empfehlungen möglich. Für größere Anlagen bis 2.000 Wp empfiehlt der VDE die Installation einer Energiesteckdose durch eine Elektrofachkraft. Lassen Sie sich hierzu von Ihrem Elektroinstallationsunternehmen beraten. Weiterführende Informationen zu steckerfertigen Solaranlagen finden Sie auf der Webseite des VDE (Verband der Elektrotechnik Elektronik Informationstechnik e. V.). Anmeldung im Marktstammdatenregister Betreiberinnen und Betreiber eines Balkonkraftwerks sind verpflichtet, ihre Anlage im Marktstammdatenregister (MaStR) der Bundesnetzagentur zu registrieren. Die Anmeldung dient der zentralen Erfassung von Stromerzeugungsanlagen in Deutschland und ist unabhängig davon erforderlich, ob Strom ins öffentliche Netz eingespeist wird. Bitte gehen Sie anhand der Registrierungshilfe vor. Hinweis zur Einspeisevergütung Balkonkraftwerke dienen in erster Linie dem Eigenverbrauch des selbst erzeugten Stroms. Überschüssige Strommengen können in das öffentliche Netz eingespeist werden. Eine Vergütung eingespeister Strommengen ist grundsätzlich möglich, setzt jedoch eine entsprechende messtechnische Erfassung (geeigneter Stromzähler) und Abrechnung voraus. Bei Fragen hierzu wenden Sie sich bitte an uns. Wir sind für Sie da! e.wa riss Netze GmbH Freiburger Str. 6 88400 Biberach/Riß Telefon: 07351 3000-0 E-Mail: info@ewa-netze.de Folgen Sie uns auf Instagram Linkedin Kununu Datenschutz Impressum Kontakt Erklärung zur Barrierefreiheit Leichte Sprache",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Notwendige"
+    },
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Statistik"
+    },
+    {
+      "art": "text",
+      "name": "VolltextSuchbegriff",
+      "label": "Wie dürfen wir helfen?"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "a3ad7670-72fa-47dd-b60c-1bc014ce82ab.png"
+}

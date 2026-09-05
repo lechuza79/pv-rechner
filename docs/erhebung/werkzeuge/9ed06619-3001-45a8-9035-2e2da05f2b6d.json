@@ -1,0 +1,77 @@
+{
+  "id": "9ed06619-3001-45a8-9035-2e2da05f2b6d",
+  "name": "Elektrizitäts-Genossenschaft Tacherting-Feichten eG",
+  "url": "https://www.egtf.de/stromnetz/steckerfertige-pv-anlage.html",
+  "vermutet": "kontaktformular",
+  "abruf": "ok",
+  "titel": "Steckerfertige PV Anlage - Stromnetz - egtf",
+  "text": "Um unsere Webseite für Sie optimal zu gestalten und fortlaufend verbessern zu können, verwenden wir Cookies. Durch die weitere Nutzung der Webseite stimmen Sie der Verwendung von Cookies zu. Weitere Informationen zu Cookies erhalten Sie in unserer Datenschutzerklärung Cookies ablehnen Okay ZUM INHALT SPRINGEN STÖRUNGSHOTLINE Webmail STROMTARIFE STROMNETZ INTERNET ÜBER UNS KARRIERE DOWNLOADS DIENSTLEISTUNGEN KUNDENPORTALE STECKERFERTIGE PV ANLAGE Immer mehr Menschen haben den Wunsch, sich auch in kleinerem Rahmen an der Energiewende zu beteiligen. Oftmals entschließen sie sich in diesem Zusammenhang für eine sogenannte steckerfertige PV-Anlage - auch Balkonkraftwerk - genannt. Ein Balkonkraftwerk ist eine Mini-Solaranlage, die mit einem Stecker an das Stromnetz von Haus oder Wohnung angeschlossen wird. Der produzierte Strom kann unmittelbar für den eigenen Bedarf genutzt werden. Jedoch gibt es hier einiges zu beachten. Die wichtigsten Infos finden Sie hier: WAS IST EINE STECKERFERTIGE PV ANLAGE? MUSS ICH EINE STECKERFERTIGE PV-ANLAGE ANMELDEN? BENÖTIGE ICH EINE ELEKTROFACHKRAFT? IST EIN BESONDERER ZÄHLER NOTWENDIG? SIE HABEN FRAGEN? MELDEN SIE SICH GERNE BEI UNS! ÜBER DIE EGTF Als moderner Strom- und Telekommunikationsanbieter mit über 100 Jahren Erfahrung bieten wir das Beste aus zwei Welten. Ultraschnelle Internetanschlüsse und faire Stromangebote vom Privat- bis zum Industriekunden. Gestalte mit uns die regionale Zukunft aus einer Mischung von Glasfaserinternet und Ökostrom. UNSERE BEREICHE Stromtarife Stromnetz Internettarife KONTAKTIEREN SIE UNS MONTAG UND DONNERSTAG 08:00 - 16:00 DIENSTAG, MITTWOCH UND FREITAG 08:00 - 12:00 Elektrizitätsgenossenschaft Tacherting-Feichten e.G. Stefan-Flötzl-Straße 4 83342 Tacherting +49 8621 80 63 00 +49 8621 8063029 info (at) egtf.de IMPRESSUMDATENSCHUTZBARRIEREFREIHEITAGBLEISTUNGEN FÜR PARTNER 2026 Elektrizitätsgenossenschaft Tacherting-Feichten e.G.",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "--incident-form[incidentEnergy]",
+      "label": "Störung Strom"
+    },
+    {
+      "art": "checkbox",
+      "name": "--incident-form[incidentInternet]",
+      "label": "Störung Internet"
+    },
+    {
+      "art": "checkbox",
+      "name": "--incident-form[incidentInfrastructure]",
+      "label": "Beschädigte Infrastruktur"
+    },
+    {
+      "art": "text",
+      "name": "--incident-form[street]",
+      "label": "Straße *"
+    },
+    {
+      "art": "text",
+      "name": "--incident-form[houseNumber]",
+      "label": "Hausnummer *"
+    },
+    {
+      "art": "text",
+      "name": "--incident-form[zip]",
+      "label": "PLZ *"
+    },
+    {
+      "art": "text",
+      "name": "--incident-form[city]",
+      "label": "Ort *"
+    },
+    {
+      "art": "textarea",
+      "name": "--incident-form[message]",
+      "label": "Störungsmeldung *"
+    },
+    {
+      "art": "tel",
+      "name": "--incident-form[tel]",
+      "label": "Telefonnr. für Rückfragen *"
+    },
+    {
+      "art": "email",
+      "name": "--incident-form[email]",
+      "label": "E-Mail für Rückfragen *"
+    },
+    {
+      "art": "textarea",
+      "name": "g-recaptcha-response",
+      "label": ""
+    }
+  ],
+  "rahmen": [
+    "https://www.google.com/recaptcha/api2/anchor?ar=1&k=6LcHkdkrAAAAAGnavdb0UQAuokaUVVCazl0r4mhE&co=aHR0cHM6Ly93d3cuZWd0Zi5kZTo0NDM.&hl=de&v=8x-4t2pegToiW8KmThtO4AQt&size=normal&anchor-ms=20000&execute-ms=30000&cb=tpojnguncsnc",
+    "https://www.google.com/recaptcha/api2/bframe?hl=de&v=8x-4t2pegToiW8KmThtO4AQt&k=6LcHkdkrAAAAAGnavdb0UQAuokaUVVCazl0r4mhE&bft=0dAFcWeA7x2ZZFYRtxqhX_y-UXbupMQrwS4yc39btTYo2Jx8gLunligg6GJStnrs8Ugag_tcN3v7jN3wMuxLsFVa7ctIpYkS2hhA"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "9ed06619-3001-45a8-9035-2e2da05f2b6d.png"
+}

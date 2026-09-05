@@ -1,0 +1,34 @@
+{
+  "id": "e27fd952-9d97-486d-9a82-876ba46e6c97",
+  "name": "NHF Netzgesellschaft Heilbronn-Franken mbH",
+  "url": "https://www.n-hf.de/nhf/presse/steckerfertige-photovoltaikanlage-anmelden.html",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Steckerfertige Photovoltaikanlage anmelden - Netzgesellschaft Heilbronn-Franken",
+  "text": "Navigation überspringen NHF NETZANSCHLUSS NETZNUTZUNG EINSPEISUNG ZÄHLER KONTAKT SUCHE Steckerfertige Photovoltaikanlage anmelden Zum 01.01.2024 vereinfachen wir den Anmeldeprozess für sog. „Balkonkraftwerke“. Ab diesem Zeitpunkt ist die Registrierung Ihrer steckerfertigen Photovoltaikanlagen nur noch im Marktstammdatenregister der Bundesnetzagentur erforderlich. Eine zusätzliche Anmeldung bei der NHF Netzgesellschaft Heilbronn-Franken mbH wird dann entfallen. Bis dahin ist es erforderlich, dass Sie Ihre Anlage sowohl über unser NETZANSCHLUSSPORTAL unter \"Anmeldung einer Erzeugungsanlage\" als auch im MARKTSTAMMDATENREGISTER anmelden. PRESSE Archiv 2026 (2 Einträge) Archiv 2024 (2 Einträge) Archiv 2023 (4 Einträge) Archiv 2022 (9 Einträge) Archiv 2020 (2 Einträge) Archiv 2019 (3 Einträge) Archiv 2018 (1 Eintrag) Archiv 2017 (3 Einträge) Archiv 2015 (1 Eintrag) Unsere Servicenummer 0800 7711 666 24-Stunden-Entstörungsdienst 0800 610 8000 Ihr Anliegen zum Anschluss an das Stromnetz Für alle Fragen rund um Ihren Netzanschluss finden Sie hier die RICHTIGEN KONTAKTE. NHF Unser Unternehmen Umwelt und Region Unbundling & Compliance Karriere Presse Service & Schlichtung NETZANSCHLUSS Strom Erdgas NETZNUTZUNG Strom Erdgas EINSPEISUNG Strom Erdgas ZÄHLER Zählerstand melden Inbetriebsetzung Niederspannung Konventionelle Zähler Moderne Messeinrichtungen Intelligente Messsysteme KONTAKT Anfahrt IMPRESSUM DATENSCHUTZ NHF Netzgesellschaft Heilbronn-Franken mbH Weipertstraße 39 74076 Heilbronn Telefon 07131 6499 - 188 KONTAKT Um Ihnen einen einwandfreien Service auf unserer Webseite anbieten zu können, verwenden wir Cookies und Drittanbieter-Tools zur Verbesserung der Funktionalität. Sie können der Nutzung generell zustimmen, oder in den Datenschutz-Einstellungen spezifische Werkzeuge an- und abschalten. Die Einstellungen können in der DATENSCHUTZ-ERKLÄRUNG jederzeit bearbeitet werden. Alle aktivieren Alle ablehnen Privatsphären-Einstellungen",
+  "felder": [
+    {
+      "art": "text",
+      "name": "keywords",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "privacy-g-analytics",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "privacy-g-maps",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "e27fd952-9d97-486d-9a82-876ba46e6c97.png"
+}

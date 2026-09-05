@@ -1,0 +1,119 @@
+{
+  "id": "c8c90245-9643-45e8-8130-23bbb03ffadc",
+  "name": "Stadtwerke Ditzingen GmbH & Co. KG",
+  "url": "https://sw-ditzingen.de/unsere-leistungen/solar/",
+  "vermutet": "rechner-mit-leadfunnel",
+  "abruf": "ok",
+  "titel": "Solar und Photovoltaik | Stadtwerke Ditzingen - Stadtwerke Ditzingen",
+  "text": "Zum Inhalt springen Suchen Erzeugungsanlage anmelden Störung melden UNSERE LEISTUNGEN NETZE UNTERNEHMEN AKTUELLES DOWNLOADCENTER KONTAKT ©Beton Studio / stock.adobe.com (#363547834) Home Unsere Leistungen Solar Solarstrom vom eigenen Dach KI-generiertes Bild Ihr SWD-Sonnendach Mit einer Photovoltaikanlage erzeugen Sie Strom auf Ihrem eigenen Dach und können einen Teil davon direkt im Haushalt nutzen. Ein auf Ihren Bedarf abgestimmter Batteriespeicher kann zusätzlich ermöglichen, selbst erzeugten Solarstrom zu einem späteren Zeitpunkt zu nutzen. Wir beraten Sie zu einer passenden Photovoltaik-Lösung für Ihr Gebäude. Ihre Vorteile auf einen Blick Strom mit der eigenen Photovoltaikanlage erzeugen Selbst erzeugten Solarstrom direkt im Haushalt nutzen Möglichkeit zur Kombination mit einem Batteriespeicher Photovoltaik-Lösung passend zu Gebäude und individuellem Bedarf Persönliche Beratung zu Planung und Umsetzung ©anatoliy_gleb / stock.adobe.com (#218252376) Unsere Leistungen für Ihre PV-Anlage Von der Beratung über die Planung bis zur Installation und Inbetriebnahme begleiten wir Sie bei Ihrer Photovoltaik-Lösung. Die Umsetzung erfolgt gemeinsam mit unseren Partnern. Folgende Leistungen sind vorgesehen: Kostenfreie individuelle Beratung vor Ort.Angebotserstellung passend zu Ihrem Bedarf. Planung der Photovoltaikanlage und eines optionalen Batteriespeichers. Lieferung und Montage der vereinbarten Komponenten. Unterstützung bei der Inbetriebnahme und beim Netzanschluss. Persönliche Ansprechpersonen bei Fragen zur Anlage. Sie sehen gerade einen Platzhalterinhalt von PlexMap Solar. Um auf den eigentlichen Inhalt zuzugreifen, klicken Sie auf den Button unten. Bitte beachten Sie, dass dabei Daten an Drittanbieter weitergegeben werden. Inhalt entsperren Erforderlichen Service akzeptieren und Inhalte entsperren Weitere Informationen Ist Ihr Haus für ein SWD-Sonnendach geeignet? Eine grundsätzliche Prüfung der Photovoltaik-Eignung Ihres Gebäudes können Sie der LUBU-Potenzialkarte entnehmen. Solar-Potenzial auf Dachflächen in Ditzingen. Wechseln Sie zur interaktiven Ansicht der LUBW durch Anklicken der Karte. Quelle: Solarpotenzial auf Dachflächen – Energieatlas Ihr individuelles PV-Angebot Gerne erstellen wir Ihnen ein individuelles Angebot für Ihr Energiedach. Nutzen Sie dafür das Kontaktformular. Anrede * Bitte wählen Herr Frau Divers Vorname * Nachname * E-Mail-Adresse * Telefonnummer Gebäudeanschrift Gebäudetyp: * Einfamilienhaus Mehrfamilienhaus Wärmepumpe vorhanden oder in der Planung: * Ja Nein Elektroauto vorhanden oder in Planung: * Ja Nein Jährlicher Stromverbrauch [kWh] (gegebenenfalls Schätzung) Sonstiges Weitere Informationen zum Datenschutz finden Sie in der Datenschutzerklärung. Hinweis: Ihre Angaben verwenden wir zur Bearbeitung Ihres Anliegens. Eine Weitergabe erfolgt nur, soweit dies zur Bearbeitung erforderlich ist, eine gesetzliche Verpflichtung besteht oder Sie eingewilligt haben. Weitere Informationen zur Verarbeitung Ihrer personenbezogenen Daten finden Sie in unserer Datenschutzinformation. * Pflichtfeld Alternative: PV-Anlage beim Netzbetreiber anmelden Sie möchten Ihre Photovoltaikanlage anmelden? Über unser Portal melden Sie Ihre PV-Anlage oder eine andere Erzeugungsanlage beim Netzbetreiber an. ERZEUGUNGSANLAGE ANMELDEN Kontakt Für Fragen Rund zum Thema Solar stehen wir Ihnen gerne zur Verfügung. Innovative Energiekonzepte E-Mail: energiekonzepte@sw-ditzingen.de Telefon: 07156 / 16584 – 0 Stadtwerke Ditzingen Bauernstraße 76/1 71254 Ditzingen 07156 16584-0 info@sw-ditzingen.de Öffnungszeiten Kundenzentrum Mo - Do: 8:30 - 17:00 Uhr Fr: 8:30 - 13:00 Uhr VERTRAG HIER WIDERRUFEN VERTRAG HIER KÜNDIGEN Service Downloadcenter Umzug melden Störung melden Baustellen-Updates Karrierewege Kontakt Informationen Barrierefreiheit Datenschutz Cookie Einstellungen © 2026 Stadtwerke Ditzingen GmbH & Co. KG Impressum",
+  "felder": [
+    {
+      "art": "search",
+      "name": "s",
+      "label": "Suche nach:"
+    },
+    {
+      "art": "select-one",
+      "name": "your-salutation",
+      "label": "Anrede *"
+    },
+    {
+      "art": "text",
+      "name": "your-first-name",
+      "label": "Vorname *"
+    },
+    {
+      "art": "text",
+      "name": "your-last-name",
+      "label": "Nachname *"
+    },
+    {
+      "art": "email",
+      "name": "your-email",
+      "label": "E-Mail-Adresse *"
+    },
+    {
+      "art": "tel",
+      "name": "your-phone",
+      "label": "Telefonnummer"
+    },
+    {
+      "art": "text",
+      "name": "your-street",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "your-postcode",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "your-city",
+      "label": ""
+    },
+    {
+      "art": "radio",
+      "name": "your-building-type",
+      "label": "Einfamilienhaus"
+    },
+    {
+      "art": "radio",
+      "name": "your-building-type",
+      "label": "Mehrfamilienhaus"
+    },
+    {
+      "art": "radio",
+      "name": "your-heatpump-planned",
+      "label": "Ja"
+    },
+    {
+      "art": "radio",
+      "name": "your-heatpump-planned",
+      "label": "Nein"
+    },
+    {
+      "art": "radio",
+      "name": "your-ev-planned",
+      "label": "Ja"
+    },
+    {
+      "art": "radio",
+      "name": "your-ev-planned",
+      "label": "Nein"
+    },
+    {
+      "art": "number",
+      "name": "your-annual-consumption",
+      "label": "Jährlicher Stromverbrauch [kWh] (gegebenenfalls Schätzung)"
+    },
+    {
+      "art": "textarea",
+      "name": "your-other",
+      "label": "Sonstiges"
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "alt_s",
+      "label": "Alternative:"
+    },
+    {
+      "art": "text",
+      "name": "loampt9724",
+      "label": "WPA"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "c8c90245-9643-45e8-8130-23bbb03ffadc.png"
+}

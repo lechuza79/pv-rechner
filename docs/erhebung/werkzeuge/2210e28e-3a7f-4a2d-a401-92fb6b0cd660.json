@@ -1,0 +1,24 @@
+{
+  "id": "2210e28e-3a7f-4a2d-a401-92fb6b0cd660",
+  "name": "Gemeindewerke Rückersdorf",
+  "url": "https://www.gemeindewerke.rueckersdorf.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Wasserwerk Rückersdorf | Startseite |  ",
+  "text": "R�ckersdorf Wasserwerk Rückersdorf Hauptmenü WASSER SERVICE WASSERWERK RÜCKERSDORF.DE Kunden-Login > PrevNext Aus einer Hand Gut versorgt mit Wasser! Notfalldienst Trinkwasser Aktuelles Alle Artikel N-ERGIE Netz GmbH - Einmessung und Datenerfassung Eine Mitteilung der N-ERGIE Netz GmbH Mitteilungsblatt Link zur aktuellen Version Warnung vor Telefongeschäften Unseriöse Anrufe in Rückersdorf! PFC in Oberflächengewässern und Grundwasser Information des Landkreises Nürnberger Land zum Thema PFC Barrierefreiheit Leichte Sprache Gebärdensprache Kontakt Brunnenweg 9 90607 Rückersdorf Tel.: 0911/57054-43 E-Mail schreiben Öffnungszeiten Gemeindewerke-Verwaltung (im Rathaus) Montag bis Mittwoch: Vormittag: 7:30 bis 12:00 Uhr Nachmittag: 13:30 bis 15:00 Uhr Donnerstag: Vormittag: 9:00 bis 12:00 Uhr Nachmittag: 15:00 bis 18:00 Uhr Freitag: Vormittag: 7:30 bis 12:00 Uhr Nachmittag: Geschlossen Rückersdorf.de Zur Homepage der Gemeinde Informativ Wichtige Links Hilfe Inhalt Impressum Datenschutzerklärung Barrierefreiheit Kontrast Schriftgröße Cookies Auf dieser Webseite werden ausschließlich essentielle Daten in Cookies gespeichert, um wichtige Funktionen der Website zu ermöglichen. Mehr dazu in der Datenschutzerklärung Barrierefreiheit Hier können Sie die Farbkontraste auf dieser Webseite erhöhen. Sie können diese Einstellungen über den Button \"Kontrast\" jederzeit deaktivieren. Schließen",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "barrierefreiheit-switch-checkbox",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "2210e28e-3a7f-4a2d-a401-92fb6b0cd660.png"
+}

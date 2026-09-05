@@ -1,0 +1,99 @@
+{
+  "id": "70d092ed-4041-4005-aca5-0fa55b9d53c4",
+  "name": "Blomberger Versorgungsbetriebe GmbH",
+  "url": "https://www.bvb-blomberg.de/produkte/photovoltaik/solarkataster/",
+  "vermutet": "kontaktformular",
+  "abruf": "ok",
+  "titel": "Solarkataster - Blomberger Versorgungsbetriebe GmbH",
+  "text": "Produkte Bäder News Service Unternehmen FAQ Kundenportal Kontakt Störungsnummer: 05251 20 20 300 Solarkataster Solarkataster Blomberg Mit unserem Solarkataster habt ihr die Möglichkeit zu prüfen ob die Lage eurer Dachfläche für die Aufstellung einer Photovoltaik-Anlage geeignet ist. Bei Interesse an unserem Solar-Leasing könnt ihr mithilfe des nachfolgenden Buttons per Kontaktformular eine Anfrage für ein Leasingangebot stellen. Solarkataster ansehen Anfrage stellen So arbeiten Sie mit dem Solarkataster Über das Symbol auf der linken Seite können Sie die Darstellungsoptionen aufrufen. Dort können Sie per Klick verschiedene Ansichten auswählen (Solarpotenzial (Photovoltaik), Solarpotenzial (Thermie), Einstrahlung, Dachflächen (Photovoltaik), Dachflächen (Thermie)) und sehen dann an der farblichen Markierung, inwieweit die von Ihnen ausgewählte Dachfläche geeignet ist. Per Klick auf die ausgewählte Dachfläche sehen Sie weitere Informationen und können eine Musteranlage konfigurieren. Über das Suchfeld in der Mitte können Sie direkt nach einer Straße Ihrer Wahl suchen. Sie sehen gerade einen Platzhalterinhalt von Standard. Um auf den eigentlichen Inhalt zuzugreifen, klicken Sie auf den Button unten. Bitte beachten Sie, dass dabei Daten an Drittanbieter weitergegeben werden. Inhalt entsperren Weitere Informationen Anfrage stellen E-Auto geplant: —Please choose an option— ja nein geplant Bitte laden Sie hier ein Bild Ihres geöffneten Zählerschranks hoch. So können wir erkennen, ob eine Zählerschranksanierung erfolgen muss. Bitte laden Sie hier ein Bild von Ihrem Haus hoch. Es soll die Hausseite fotografiert werden, auf der die PV Anlage aufgebaut werden soll. Wir benötigen eine komplett Ablichtung vom Fuße des Hauses, damit entstehende Gerüstkosten einkalkuliert werden können. Ich stimme den Datenschutzbedingungen zu, klicken Sie hier für mehr Informationen zum Datenschutz. Sie müssen den Inhalt von reCAPTCHA laden, um das Formular abzuschicken. Bitte beachten Sie, dass dabei Daten mit Drittanbietern ausgetauscht werden. Mehr Informationen Inhalt entsperren Erforderlichen Service akzeptieren und Inhalte entsperren Blomberger Versorgungsbetriebe GmbH Nederlandstraße 15 32825 Blomberg Tel 05235 – 9502 3060 Fax 05235 – 9502 3065 service@blomberger-versorgungsbetriebe.de Öffnungszeiten Servicecenter Montag bis Donnerstag: 8 bis 16 Uhr Freitag: 8 bis 12 Uhr Gender-Hinweis: Zur besseren Lesbarkeit verwenden wir in unseren Texten überwiegend die männliche Form. Diese schließt ausdrücklich alle Geschlechter mit ein. Kontakt Impressum Datenschutz Störungsnummer 05251 20 20 300 Abschlag ändern Zählerstand melden Chatbot öffnen Mit diesem Button wird der Dialog geschlossen. Seine Funktionalität ist identisch mit der des Buttons Nur essenzielle Cookies akzeptieren. Wir benötigen Ihre Einwilligung, bevor Sie unsere Website weiter besuchen können. Wir verwenden Cookies und andere Technologien auf unserer Website. Einige von ihnen sind essenziell, während andere uns helfen, diese Website und Ihre Erfahrung zu verbessern. Weitere Informationen über die Verwendung Ihrer Daten finden Sie in unserer Datenschutzerklärung. Es besteht keine Verpflichtung, in die Verarbeitung Ihrer Daten einzuwilligen, um dieses Angebot zu nutzen. Sie können Ihre Auswahl jederzeit unter Einstellungen widerrufen oder anpassen. Es folgt eine Liste der Service-Gruppen, für die eine Einwilligung erteilt werden kann. Die erste Service-Gruppe ist essenziell und kann nicht abgewählt werden. Essenziell Externe Medien Ich akzeptiere alle Nur essenzielle Cookies akzeptieren Individuelle Datenschutz-Präferenzen Präferenzen Datenschutzerklärung Impressum",
+  "felder": [
+    {
+      "art": "search",
+      "name": "s",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "Name",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "Vorname",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "Strasse",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "Hausnummer",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "PLZ",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "Ort",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "Telefonnummer",
+      "label": ""
+    },
+    {
+      "art": "email",
+      "name": "Email",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "Jahresverbrauch",
+      "label": ""
+    },
+    {
+      "art": "select-one",
+      "name": "e-auto",
+      "label": "—Please choose an option—janeingeplant"
+    },
+    {
+      "art": "file",
+      "name": "foto_zaehlerschrank",
+      "label": ""
+    },
+    {
+      "art": "file",
+      "name": "foto_haus",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "acceptance",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "essential",
+      "label": "Essenziell"
+    },
+    {
+      "art": "checkbox",
+      "name": "external-media",
+      "label": "Externe Medien"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "70d092ed-4041-4005-aca5-0fa55b9d53c4.png"
+}

@@ -1,0 +1,99 @@
+{
+  "id": "14e4ad0a-193b-4c36-9a22-58668024516e",
+  "name": "Stadtwerke Bad Kissingen GmbH",
+  "url": "https://www.waermepumpe.de/foerderrechner/",
+  "vermutet": "eingekauft",
+  "abruf": "ok",
+  "titel": "Förderrechner | BWP | waermepumpe.de",
+  "text": "Direkt zur Hauptnavigation springen Direkt zum Inhalt springen Verbraucher Profis Politik Normen & Technik Presse Verband Werkzeuge CO2-Ersparnis durch Wärmepumpen: 49.575.433,8 t Verbraucher Förderung Förderrechner Förderrechner Wärmepumpe Kompakt Detailliert Aktuell werden nur Förderfälle mit einer Wohneinheit berücksichtigt. Die Definition von Unionsursprung ist noch nicht abschließend geklärt. Außerdem ist das Inkrafttretensdatum noch nicht bekannt. Derzeit unterstellen wir, dass die Regelung ab dem 01.01.2027 gilt. Bitte beachten Sie, dass die Berechnung der möglichen Fördersumme und Förderquote auf den von Ihnen eingegebenen Daten basiert und keine Gewähr für die tatsächliche Förderung darstellt. Des Weiteren basiert die Berechnung auf der Förderrichtlinie sowie dem aktuellen Stand der Merkblätter. Anzahl der Wohneinheiten Investitionssumme Datum der Antragstellung Wärmepumpe hat Unionsursprung Die Immobilie ist Ihr Hauptwohnsitz (Nachweis über Grundbucheintrag und Meldebescheinigung) Es lebt mindestens ein mindjähriges Kind im Haushalt Bitte wählen Gas-Etagen- oder Öl-, Kohle-, Nachtstromspeicherheizung Gaszentral- oder Biomasseheizung, min. 20 Jahre alt EE-Heizung (z.B. Wärmepumpe oder Biomasse), installiert ab 2008 EE-Heizung (z.B. Wärmepumpe oder Biomasse), installiert vor 2008 Gebäude- oder Wärmenetz Bestehende Heizung Bitte wählen Bis 30000 EUR 30000 bis 40000 EUR 40000 bis 50000 EUR 50000 bis 60000 EUR Über 60000 EUR Zu versteuerndes Haushaltseinkommen Mögliche Fördersumme Mögliche Förderquote Mögliche Fördersumme Mögliche Förderquote Kontakt Login Newsletter Facebook Youtube Instagram LinkedIn Impressum Datenschutzerklärung Barrierefreiheit © 2026 Bundesverband Wärmepumpe (BWP) e.V. und BWP Marketing & Service GmbH Hauptstraße 3, D-10827 Berlin Verbraucher Profis Politik Normen & Technik Presse Verband Werkzeuge",
+  "felder": [
+    {
+      "art": "text",
+      "name": "search_term_string",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "tx_kesearch_pi1[sword]",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "search_term_string",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "tx_kesearch_pi1[sword]",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "search_term_string",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "tx_kesearch_pi1[sword]",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "tx_bwpsubsidycalculator_subsidycalculator[numberOfDwellings]",
+      "label": "Anzahl der Wohneinheiten"
+    },
+    {
+      "art": "text",
+      "name": "tx_bwpsubsidycalculator_subsidycalculator[expenses]",
+      "label": "Investitionssumme"
+    },
+    {
+      "art": "text",
+      "name": "tx_bwpsubsidycalculator_subsidycalculator[dateOfApplication]",
+      "label": "Datum der Antragstellung"
+    },
+    {
+      "art": "checkbox",
+      "name": "tx_bwpsubsidycalculator_subsidycalculator[madeInEurope]",
+      "label": "Wärmepumpe hat Unionsursprung"
+    },
+    {
+      "art": "checkbox",
+      "name": "tx_bwpsubsidycalculator_subsidycalculator[primaryResidence]",
+      "label": "Die Immobilie ist Ihr Hauptwohnsitz (Nachweis über Grundbucheintrag und Meldebes"
+    },
+    {
+      "art": "checkbox",
+      "name": "tx_bwpsubsidycalculator_subsidycalculator[minorInHousehold]",
+      "label": "Es lebt mindestens ein mindjähriges Kind im Haushalt"
+    },
+    {
+      "art": "select-one",
+      "name": "tx_bwpsubsidycalculator_subsidycalculator[existingHeating]",
+      "label": "Bestehende Heizung"
+    },
+    {
+      "art": "select-one",
+      "name": "tx_bwpsubsidycalculator_subsidycalculator[taxableHouseholdIn",
+      "label": "Zu versteuerndes Haushaltseinkommen"
+    },
+    {
+      "art": "text",
+      "name": "tx_bwpsubsidycalculator_subsidycalculator[subsidy]",
+      "label": "Mögliche Fördersumme"
+    },
+    {
+      "art": "text",
+      "name": "tx_bwpsubsidycalculator_subsidycalculator[subsidyPercentage]",
+      "label": "Mögliche Förderquote"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "14e4ad0a-193b-4c36-9a22-58668024516e.png"
+}

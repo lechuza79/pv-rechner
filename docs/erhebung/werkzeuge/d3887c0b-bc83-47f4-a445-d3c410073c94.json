@@ -1,0 +1,44 @@
+{
+  "id": "d3887c0b-bc83-47f4-a445-d3c410073c94",
+  "name": "Stadtwerke Iserlohn GmbH",
+  "url": "https://www.stadtwerke-iserlohn.de/strom/photovoltaik/privat/",
+  "vermutet": "eingekauft",
+  "abruf": "ok",
+  "titel": "Photovoltaik für Ihr Zuhause - Stadtwerke Iserlohn",
+  "text": "Unternehmen Karriere Handwerk Magazin/Presse Kontakt Kundenportal Suche Suchen Zählerstand melden Gas Abschläge Gasumlage Abschlag anpassen PV-Anlagen Wasserhärte E-Auto Baustellen Störung Fragen zur Rechnung Strom E-Mobilität Solar Wärme & Gas Trinkwasser Services FÜR GESCHÄFTSKUNDEN Mit Photovoltaik auf dem Dach wird Sonnenschein noch schöner Sonnen Strom Die Energiewende ist in vollem Gange. Wir stellen immer mehr auf regenerative Energiequellen um. Sonne, Wind und Wasser sind erneuerbare Energielieferanten, die langfristig verfügbar sind. Wir erhöhen kontinuierlich den Anteil erneuerbarer Energien in unserem Stromangebot. Wir setzen auf effiziente Nutzung der Energie. Seien Sie mit dabei und installieren Sie gemeinsam mit uns und dem örtlichen Handwerk eine Photovoltaikanlage auf Ihrem Dach. Gute Gründe für eine PV-Anlage Individuelle Photovoltaik-Lösung für Ihr Gebäude Wir beraten Sie über die Möglichkeiten, die Ihnen eine PV-Anlage bietet und begleiten Sie von der Planung bis zur schlüsselfertigen Anlage für Ihr Schrägdach oder Flachdach. Günstiger Strom Mit einer PV-Anlage können Sie einen Teil Ihres Strombedarfs direkt mit Sonnenenergie decken. Langlebige, wartungsfreundliche und sichere Anlagen Eine Photovoltaikanlage produziert den Strom vollautomatisch und ist nahezu wartungsfrei. Wertsteigerung Ihrer Immobilie Eine Photovoltaikanlage kann sich positiv auf den Wert Ihrer Immobilie auswirken. Sie sind Gewerbekunde? Hier geht's zu unserem Angebot: Photovoltaik für Ihr Unternehmen PV-Anlage ab 99 € im Monat Strom aus Sonnenkraft reduziert den CO₂-Ausstoß und ist emissionsarm im Betrieb. Besitzer von PV-Anlagen kennen das gute Gefühl der Nutzung von selbst erzeugtem Ökostrom. Moderne Anlagen sind wartungsarm und effizient. Mit einer PV-Anlage können Sie Ihren Eigenverbrauch erhöhen und Energiekosten langfristig stabilisieren! Wir kümmern uns um die Planung und Installation Ihrer Anlage. Mehr dazu Anmeldung der PV-Anlage Sie planen eine eigene PV-Anlage und möchten Ihren selbst erzeugten Sonnenstrom in unser Netz einspeisen? Hier haben Sie die Möglichkeit ein Balkonkraftwerk, eine mittlere Anlage oder auch eine große Anlage bei uns anzumelden. Jetzt PV-Anlage anmelden So funktioniert die Registrierung im Einspeiserportal … für Anlagenerrichter/Installateure: für Anlagenbetreiber: Sonnenstrom auf Freiflächen Wir haben großes Interesse am Bau von Photovoltaik-Anlagen auf Freiflächen ab einer Größe von zwei Hektar. Ein wichtiger Schritt, um den geplanten PV Ausbau auf 200 Gigawatt bis zum Jahr 2030 zu erreichen. Sie besitzen eine geeignete Freifläche, möchten die lokale Stromerzeugung aus erneuerbaren Energien fördern und hiervon auch finanziell partizipieren? Schreiben Sie uns Ist mein Dach für eine PV-Anlage geeignet? PV-Anlagen lassen sich inzwischen auf vielen Dachtypen installieren. Im Solarpotenzial-Kataster der Stadt Iserlohn können Sie eine erste, unverbindliche Analyse zur Eignung Ihres Dachs für eine PV-Anlage vornehmen. Zum Solarpotenzial-Kataster Für eine individuelle Beratung zur Eignung Ihres Dachs wenden Sie sich bitte direkt an uns. Falls eine Dachsanierung oder ein Neubau bei Ihnen ansteht, ist dies der optimale Zeitpunkt, um eine PV Anlage installieren zu lassen. Für Gewerbebetriebe gibt es PV-Anlagen nicht als Bausatz von der Stange. Sie müssen individuell geplant werden – auch weil es zahlreiche Besonderheiten wie Schneelasten oder den Brandschutz zu beachten gilt. Außerdem spielen Auswahl und Qualität der Komponenten und der Montage eine große Rolle. Die Stadtwerke Iserlohn realisieren Ihr Bauvorhaben gemeinsam mit dem ortsansässigen Handwerk und gehen auf spezielle Kundenanforderungen ein. Die Rendite einer eigenen Solaranlage können Sie ganz leicht mit unserem Schnell-Check herausfinden. Zum Online-Schnell-Check Informationen Für Handwerker Rund ums Netz Unternehmen Stadtwerke Iserlohn Bädergesellschaft Iserlohn Heimat-Engagement Beruf & Karriere Aktuelles Kontakt Telefon Kundenzentrum © 2026 Stadtwerke Iserlohn GmbH Impressum Datenschutz Barrierefreiheits-Erklärung Widerrufs-Formular Kontaktieren Sie uns Störungs-Hotlines Service-Hotline anrufen Im Rahmen der Nutzung unserer Webseiten verwenden wir, neben technisch notwendigen Cookies, auch Cookies von Dritten zu Werbe- und zu Analyse-Zwecken (z.B. Google Analytics). Weitere Hinweise zum Umgang mit Ihren personenbezogenen Daten finden Sie in unserer Datenschutzerklärung Nur technisch notwendige Cookies nutzen Zustimmen und weiter",
+  "felder": [
+    {
+      "art": "text",
+      "name": "searchTerm",
+      "label": "Suche"
+    },
+    {
+      "art": "range",
+      "name": "volume-bar-e9167197855bc0f1338091d3d0b8d2f5",
+      "label": "Mute"
+    },
+    {
+      "art": "range",
+      "name": "seek-bar-e9167197855bc0f1338091d3d0b8d2f5",
+      "label": "PlayMute-4:42Full-Screen"
+    },
+    {
+      "art": "range",
+      "name": "volume-bar-fee9a05da9fec43347728d76477f57a9",
+      "label": "Mute"
+    },
+    {
+      "art": "range",
+      "name": "seek-bar-fee9a05da9fec43347728d76477f57a9",
+      "label": "PlayMute-2:50Full-Screen"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "d3887c0b-bc83-47f4-a445-d3c410073c94.png"
+}

@@ -1,0 +1,284 @@
+{
+  "id": "7dc09774-c229-492c-b8eb-3af8c6389958",
+  "name": "Stadtwerke Langen GmbH",
+  "url": "https://stadtwerke-langen.de/produkte/waerme/klickstrecke-waermepumpen/",
+  "vermutet": "rechner-mit-leadfunnel",
+  "abruf": "ok",
+  "titel": "Klickstrecke Wärmepumpe - Stadtwerke Langen",
+  "text": "digi·access - Zugänglichkeit verbessern Optimieren Sie die Webseite für bessere Lesbarkeit und Nutzerfreundlichkeit. F2 zum öffnen Über uns Tarifrechner Kundenmagazin Zusamme-Crowd Presse Karriere Kontakt Onlineservice Anfrage Wärmepumpe Haben wir Ihr Interesse an einer Wärmepumpe geweckt? Über unser Online-Formular können Sie ganz schnell und einfach eine unverbindliche Anfrage stellen. Wir melden uns zeitnah bei Ihnen. Step 1 of 12 BITTE NUR PLZ Bitte geben Sie Ihre Postleitzahl an * Weiter Folgen Sie uns Kontakt Kundenzentrum Tel: 06103 595-260 oder per E-Mail Anfahrt Kontakt Öffnungszeiten Mo. – Do. 7:30 – 16:00 Uhr Fr. 7:30 – 12:00 Uhr Und 24 Stunden über unser Kundenportal Links Netze Presse Vertrag kündigen Vertrag widerrufen Impressum Datenschutz Cookie-Einstellungen Externe Links Kommunale Betriebe Langen Abfallservice Langen Egelsbach Bürger Energiegenossenschaft © Copyright 2026 Stadtwerke Langen GmbH Störungsmeldung: 08000 595-148 Verhalten bei Gasgeruch (klicken) Mit diesem Button wird der Dialog geschlossen. Seine Funktionalität ist identisch mit der des Buttons Nur wesentliche Cookies akzeptieren. Datenschutz-Präferenz Wir benötigen Ihre Zustimmung, bevor Sie unsere Website weiter besuchen können. Wenn Sie unter 16 Jahre alt sind und Ihre Zustimmung zu freiwilligen Diensten geben möchten, müssen Sie Ihre Erziehungsberechtigten um Erlaubnis bitten. Wir verwenden Cookies und andere Technologien auf unserer Website. Einige von ihnen sind unerlässlich, während andere uns helfen, diese Website und Ihre Erfahrung zu verbessern. Personenbezogene Daten können verarbeitet werden (z. B. IP-Adressen), z. B. für personalisierte Anzeigen und Inhalte oder die Messung von Anzeigen und Inhalten. Weitere Informationen über die Verwendung Ihrer Daten finden Sie in unserer Datenschutzerklärung. Sie können Ihre Auswahl jederzeit unter Einstellungen widerrufen oder anpassen. Es folgt eine Liste der Service-Gruppen, für die eine Einwilligung erteilt werden kann. Die erste Service-Gruppe ist essenziell und kann nicht abgewählt werden. Essenziell Statistiken Externe Medien Alle akzeptieren Speichern Nur wesentliche Cookies akzeptieren Individuelle Datenschutzpräferenzen Cookie Details Datenschutzbestimmungen Impressum",
+  "felder": [
+    {
+      "art": "range",
+      "name": "da-font-size--range",
+      "label": "- +"
+    },
+    {
+      "art": "range",
+      "name": "da-line-spacing--range",
+      "label": "- +"
+    },
+    {
+      "art": "range",
+      "name": "da-content-size--range",
+      "label": "- +"
+    },
+    {
+      "art": "range",
+      "name": "da-word-spacing--range",
+      "label": "- +"
+    },
+    {
+      "art": "range",
+      "name": "da-char-spacing--range",
+      "label": "- +"
+    },
+    {
+      "art": "text",
+      "name": "s",
+      "label": ""
+    },
+    {
+      "art": "number",
+      "name": "wpforms[fields][1]",
+      "label": "Bitte geben Sie Ihre Postleitzahl an *"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][46]",
+      "label": "Erdgas"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][46]",
+      "label": "Heizöl"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][46]",
+      "label": "Sonstiges"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][46]",
+      "label": "Noch kein Brennstoff"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][45]",
+      "label": "0-9 Jahre"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][45]",
+      "label": "10-19 Jahre"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][45]",
+      "label": "20-29 Jahre"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][45]",
+      "label": "30 Jahre und mehr"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][45]",
+      "label": "Ich weiß es nicht"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][45]",
+      "label": "Ich habe derzeit keine Heizung"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][40]",
+      "label": "1961-1977"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][40]",
+      "label": "1978-1994"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][40]",
+      "label": "1995-2001"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][40]",
+      "label": "ab 2002"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][40]",
+      "label": "im Bau"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][41]",
+      "label": "0-100 m²"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][41]",
+      "label": "101-150 m²"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][41]",
+      "label": "151-200 m²"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][41]",
+      "label": "ab 200 m²"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][47]",
+      "label": "1 bis 2"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][47]",
+      "label": "3 bis 4"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][47]",
+      "label": "5 bis 6"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][47]",
+      "label": "7 oder mehr"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][48]",
+      "label": "Heizkörper"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][48]",
+      "label": "Fußbodenheizung"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][48]",
+      "label": "Beides"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][48]",
+      "label": "Sonstiges"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][44]",
+      "label": "Ja"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][44]",
+      "label": "Nein, separat"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][44]",
+      "label": "Ich weiß es nicht"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][42]",
+      "label": "5.000-20.000"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][42]",
+      "label": "21.000-25.000"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][42]",
+      "label": "26.000-30.000"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][42]",
+      "label": "31.000-35.000"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][42]",
+      "label": "mehr als 35.000"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][42]",
+      "label": "Ich weiß es nicht"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][43]",
+      "label": "Sie funktioniert noch gut"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][43]",
+      "label": "Sie funktioniert mit Einschränkungen"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][43]",
+      "label": "Sie ist vollständig ausgefallen"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][53][first]",
+      "label": "Vorname"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][53][last]",
+      "label": "Nachname"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][61][address1]",
+      "label": "Adresszeile 1"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][61][city]",
+      "label": "Stadt"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][61][state]",
+      "label": "Region"
+    },
+    {
+      "art": "tel",
+      "name": "wpf-temp-wpforms[fields][55]",
+      "label": "Telefon *"
+    },
+    {
+      "art": "email",
+      "name": "wpforms[fields][56]",
+      "label": "E-Mail"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": true,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "7dc09774-c229-492c-b8eb-3af8c6389958.png"
+}

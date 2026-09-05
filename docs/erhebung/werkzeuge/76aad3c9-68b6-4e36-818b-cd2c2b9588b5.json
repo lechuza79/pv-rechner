@@ -1,0 +1,44 @@
+{
+  "id": "76aad3c9-68b6-4e36-818b-cd2c2b9588b5",
+  "name": "SVS-Versorgungsbetriebe GmbH",
+  "url": "http://www.svs-versorgung.de/",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "LokalWerke GmbH",
+  "text": "Über uns Karriere Login Suchen Tarife Service Glasfaser E-Mobilität Bäder Netz Kontakt Kundenbefragung - Was denken Sie über Ihre LokalWerke? Mehr dazu Ihr lokaler Energieversorger Suchen Tarifrechner Jetzt berechnen Schnelleinstieg Produkte und Dienstleistungen Sie suchen einen Energieversorger auf den Sie sich verlassen können? Bei uns finden Sie den passenden Tarif inklusive rundum Service. Mehr erfahren Glasfaser für Privatkunden Starten Sie in die digitale Zukunft mit Ihrem Glasfaseranschluss von den LokalWerken! Mehr erfahren Karriere Haben Sie Interesse, unser LokalWerke-Team zu unterstützen und mit uns gemeinsam die Energiewelt von morgen aufzubauen? Mehr erfahren Aktuelle News Baustellen-Update Düwing Dyk 25. August 2026 Seit Anfang August wird eine Horizontalbohrung vom Hellweg bis zum Parkplatz der LokalWerke durchgeführt. Dabei wird ein Mittelspannungskabel zwischen zwei... Kundenbefragung – Was denken Sie eigentlich über Ihre LokalWerke? 28. Juli 2026 Wir wollen es wissen und daraus lernen. Vom 17. August bis zum 25. September führen wir dazu eine Umfrage durch.... Baustellen-Update Vredener Straße 5. Juni 2026 An der Vredener Straße und der Gerhard-Hauptmann-Straße in Stadtlohn finden derzeit umfangreiche Bauarbeiten statt. Dabei werden die Versorgungsleitungen für Strom,... Baustellen am Bierbaumgelände beginnen 21. Mai 2026 Auf dem Bierbaumgelände haben die Arbeiten am ersten von insgesamt fünf Bauabschnitten begonnen. Im Bereich der Weberstraße werden auf einer... Umzug melden – Checkliste für Mieter und Vermieter 23. April 2026 Neue Regeln für die Ab- und Anmeldung bei Umzug Ein- und Auszüge können durch den Energieanbieter nicht mehr rückwirkend berücksichtigt... Westmünsterlandtarif: Stadtwerke stärken gemeinsam die Elektromobilität in der Region 21. April 2026 Seit dem 1. April 2026 setzen wir als LokalWerke, die Stadtwerke Gescher und die Stadtwerke Dülmen im Rahmen der Stadtwerke... LokalWerke GmbH Hoher Weg 2 48683 Ahaus Von-Ardenne-Straße 8 48703 Stadtlohn 02561 9308-0 Öffnungszeiten: Kundencenter Mo. 07:30 - 18:00 Uhr Di. - Do. 07:30 - 16:00 Uhr Fr. 07:30 - 12:30 Uhr Einspeisemanagement & Hausanschlüsse Mo. 08:00 - 16:30 Uhr Di. - Mi. 07:30 - 12:00 Uhr Do. 13:00 - 16:00 Uhr Fr. 08:00 - 12:30 Uhr Störungsmeldungen Strom 02561 9308-220 Mo. - So. 24h Störungsmeldungen Gas, Wasser, Wärme 02561 9308-240 Mo. - So. 24h Störungsmeldungen Glasfaser 02561 9308-260 s. Öffnungszeiten Feedback Impressum Datenschutz Erklärung zur Barrierefreiheit Facebook Instagram WhatsApp Vertrag kündigen Vertrag widerrufen Was denken Sie eigentlich über Ihre LokalWerke? Wir wollen es wissen und daraus lernen. Vom 17. August bis zum 25. September führen wir dazu eine Umfrage durch. Dabei werden Bürgerinnen und Bürger in unserem Versorgungsgebiet durch ein unabhängiges Marktforschungsunternehmen telefonisch kontaktiert und zu ihren Erfahrungen, Wünschen und ihrer Zufriedenheit mit den LokalWerken befragt. Durch Ihr ehrliches Feedback können wir erkennen, was bereits gut funktioniert und wo wir uns noch verbessern können. Wir freuen wir uns sehr, wenn Sie sich ein paar Minuten Zeit nehmen und Ihre Erfahrungen mit uns teilen. Zur Kundenbefragung x Datenschutzeinstellungen Wir benötigen Ihre Zustimmung, bevor Sie unsere Website weiter besuchen können. Wir verwenden Cookies und andere Technologien auf unserer Website. Einige von ihnen sind essenziell, während andere uns helfen, diese Website und Ihre Erfahrung zu verbessern. Personenbezogene Daten können verarbeitet werden (z. B. IP-Adressen), z. B. für personalisierte Anzeigen und Inhalte oder Anzeigen- und Inhaltsmessung. Es folgt eine Liste der Service-Gruppen, für die eine Einwilligung erteilt werden kann. Die erste Service-Gruppe ist essenziell und kann nicht abgewählt werden. Essenziell Statistiken Externe Medien Speichern Alle akzeptieren Individuelle Datenschutzeinstellungen Cookie-Details Datenschutzerklärung Impressum",
+  "felder": [
+    {
+      "art": "text",
+      "name": "s",
+      "label": "Suchen"
+    },
+    {
+      "art": "text",
+      "name": "s",
+      "label": "Suchen"
+    },
+    {
+      "art": "checkbox",
+      "name": "essential",
+      "label": "Essenziell"
+    },
+    {
+      "art": "checkbox",
+      "name": "statistics",
+      "label": "Statistiken"
+    },
+    {
+      "art": "checkbox",
+      "name": "external-media",
+      "label": "Externe Medien"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": true,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "76aad3c9-68b6-4e36-818b-cd2c2b9588b5.png"
+}

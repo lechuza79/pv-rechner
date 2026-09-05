@@ -1,0 +1,29 @@
+{
+  "id": "fd7e8aeb-ed87-4631-86ff-7f5c524af4b9",
+  "name": "Gebrüder Eirich GmbH & Co. KG",
+  "url": "https://gebruedereirich.de/Netzanschluss/Steckerfertige%20Photovoltaikanlage.html",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Gebrüder Eirich - Hardheim :: Netzanschluss :: Steckerfertige Photovoltaikanlage",
+  "text": "Willkommen Stromversorgung Netznutzung Netzanschluss Netzinformationen Kundencenter Steckerfertigen Photovoltaikanlage Steckerfertige Photovoltaikanlagen werden auch als Balkonkraftwerke, Balkonsolaranlagen, Plug-in-Anlagen oder Mini-PV-Anlagen bezeichnet. Eine registrieren Ihre steckerfertigen Photovoltaikanlage bis max. 800 Watt erfolgt nur noch im Marktstammdatenregister. Eine zusätzliche Anmeldung bei der Gebrüder Eirich GmbH & Co KG ist nicht notwendig. Nachfolgend finden Sie Informationen zum Ablauf, die zu beachten sind: Prüfen Sie als Mieter, ob das Anbringen einer steckerfertigen Erzeugungsanlage erlaubt ist. Die Installation der Anlage erfolgt nach den gesetzlichen Vorgaben und dem aktuellen Stand der Technik. Sprechen Sie sich hierzu mit Ihrer Elektrofachkraft ab. Diese überprüft, ob eine spezielle Energiesteckdose notwendig ist. Registrieren Sie Ihre steckerfertige Photovoltaikanlage im Marktstammdatenregister der Bundesnetzagentur und geben Sie beim Registrierungsprozess im Eingabefeld „Identifikationsnummer des Netzbetreibers“ Ihre Zählernummer ein. Die Anlage ist für Eigenverbrauch gedacht - daher entfällt hier die Einspeisevergütung. Sollten Sie für Ihre steckerfertige Photovoltaikanlage eine Einspeisevergütung wünschen, setzen Sie sich bitte mit uns in Verbindung. Netzanschluss Hausanschluss Bauanschluss Industrieanschluss Eigenerzeugungsanlage anmelden Steckerfertige Photovoltaikanlage Einspeisemanagement Baukostenzuschuss BKZ Infos für Elektroinstallateure Formulare und Datenblätter Sitemap / Suche Gebrüder Eirich GmbH & Co KG | Walldürner Strasse 50 | 74736 Hardheim Telefon: 06283 51-5 | Telefax: 06283 51-210 | eMail: info@gebruedereirich.de | www.gebruedereirich.de Impressum | Datenschutz",
+  "felder": [
+    {
+      "art": "text",
+      "name": "search",
+      "label": ""
+    },
+    {
+      "art": "image",
+      "name": "",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "fd7e8aeb-ed87-4631-86ff-7f5c524af4b9.png"
+}

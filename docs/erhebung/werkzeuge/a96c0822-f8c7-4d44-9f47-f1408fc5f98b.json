@@ -1,0 +1,29 @@
+{
+  "id": "a96c0822-f8c7-4d44-9f47-f1408fc5f98b",
+  "name": "Elektrizitätswerk Mainbernheim GmbH",
+  "url": "https://www.ewerk-mainbernheim.de/news-detail/anmeldung-von-pv-anlagen-im-markstammdatenregister.html",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Anmeldung von PV-Anlagen im Markstammdatenregister - E-Werk Mainbernheim | E-Werk Mainbernheim",
+  "text": "Anmeldung von PV-Anlagen im Markstammdatenregister E-Werk Mainbernheim Start Das E-Werk Das E-Werk Elektrobau Mainbernheim Elektromobilität Energieausweis Stromlieferung Preisblatt & Verträge Ökostrom Stromkennzeichnung Energiespartipps Erzeugung PV-Anlagen Balkonsolaranlagen Netznutzung Veröffentlichungspflichten Netzanschluss Bedingungen & Verträge Kommunikationsparameter Grundzuständiger Messstellenbetreiber Kontakt Kontaktaufnahme Zählerstand melden Netzanschlussanfrage Anmeldung von PV-Anlagen im Markstammdatenregister ZURÜCK Seit 2019 müssen Solaranlagen im Markstammdatenregister eingetragen werden. Neu installierte Anlagen tragen Sie bitte innerhalb eines Monats ein. Bestandsanlagen haben dafür Zeit bis Ende 2020. Für Vorabinformationen welche Daten in das Register eingetragen werden müssen, besuchen Sie bitte folgenden beiden Links der Bundesnetzagentur und beim Markstammdatenregister. ZURÜCK ©2026 Elektrizitätswerk Mainbernheim GmbH Hoheimer Weg 3, 97350 Mainbernheim, Deutschland Telefon: 09323 / 258 | Fax: 09323 / 6537 info@ewerk-mainbernheim.de Impressum Datenschutz Nutzungsbedinungen Elektronischer Datenaustausch Bitte erteilen Sie Ihre Zustimmung zur Verwendung von Cookies und anderen Technologien, um unsere Inhalte zu personalisieren und zu verbessern. Lassen Sie mich wählen... Ich lehne ab Das ist ok Start Das E-Werk Das E-Werk Elektrobau Mainbernheim Elektromobilität Energieausweis Stromlieferung Preisblatt & Verträge Ökostrom Stromkennzeichnung Energiespartipps Erzeugung PV-Anlagen Balkonsolaranlagen Netznutzung Veröffentlichungspflichten Netzanschluss Bedingungen & Verträge Kommunikationsparameter Grundzuständiger Messstellenbetreiber Kontakt Kontaktaufnahme Zählerstand melden Netzanschlussanfrage",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "nav-toggle",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "nav-toggle",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "a96c0822-f8c7-4d44-9f47-f1408fc5f98b.png"
+}

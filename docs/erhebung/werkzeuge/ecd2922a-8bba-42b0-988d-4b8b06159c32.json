@@ -1,0 +1,34 @@
+{
+  "id": "ecd2922a-8bba-42b0-988d-4b8b06159c32",
+  "name": "Stadtwerke Eschwege GmbH",
+  "url": "https://www.stadtwerke-eschwege.de/swe/strom/anschluss-eeg-anlagen/photovoltaik-inbetriebnahme.php",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Anmeldung einer PV-Anlage - Stadtwerke Eschwege",
+  "text": "Zum Inhalt (Access key c)Zur Hauptnavigation (Access key h)Zur Unternavigation (Access key u) Strom Erdgas+Wasser Energielösungen Service Unternehmen Notrufnummern Barrierefrei-Menü Schrift Normal Groß Sehr groß Kontrast Normal Stark Animationen Erlauben Stoppen Vorlesen Vorlesen starten StartseiteStromAnschluss EEG-AnlagenAnmeldung PV-Anlage Anschluss EEG-Anlagen Anmeldung einer PV-Anlage Die Anmeldung Ihrer Photovoltaikanlage übernimmt Ihr Installateur für Sie. Nachfolgend finden Sie den Ablauf bis zur Inbetriebnahme Ihrer Anlage. In 3 Schritten zum Anschluss Ihrer Photovoltaikanlage Anmeldung Prüfung der Netzanschlussfähigkeit und Netzverträglichkeit Inbetriebnahme Ist die Photovoltaikanlage erfolgreich an das Netz der Stadtwerke Eschwege GmbH angeschlossen und in Betrieb, muss das Inbetriebnahme-Protokoll an unseren Kundenservice Netz - Dezentrale Einspeisung - EEG gesandt werden. Als Anlagenbetreiber bekommen Sie dann von uns ein Anschreiben mit Bitte um Angabe einiger Daten. Ist diese Erklärung erfolgt, erhalten Sie eine Mitteilung, welche die Abrechnung der Einspeisevergütung regelt. Bei allen Fragen zur EEG-Einspeisung oder zur Abrechnung wenden Sie sich bitte an unsere Mitarbeiter im Bereich Netz - Dezentrale Einspeisung - EEG. Michael Küster Bereichsleitung Technischer Service Strom Niederspannung - Straßenbeleuchtung Technischer Service Strom Technischer Service Energiedienstleistungen Stadtwerke Eschwege GmbH Niederhoner Straße 36 37269 Eschwege +49 5651 807-254 E-Mail senden Kontakt speichern Lisa Roscher Assistenz der Technischen Leitung Technische Abteilung Stadtwerke Eschwege GmbH Niederhoner Straße 36 37269 Eschwege +49 5651 807-172 E-Mail senden Kontakt speichern Oliver Neumann Bereichsleitung Technischer Service Messstellenbetrieb Technischer Service Messstellenbetrieb Stadtwerke Eschwege GmbH Niederhoner Straße 36 37269 Eschwege +49 5651 807-249 E-Mail senden Kontakt speichern Anfahrt Stadtwerke Eschwege GmbH Niederhoner Straße 36 37269 Eschwege Kontakt Telefon +49 5651 807-0 Telefax +49 5651 807-245 Kundenservice 0800 0 807000 Kontaktformular Häufig gesucht Energielösungen Karriere Unternehmen Volltextsuche Produkte Strom Erdgas Wasser E-Mobilität Kontrast erhöhen Impressum | Datenschutz | Widerruf | Privatsphäre-Einstellungen | Barrierefreiheit | Bedienungshilfe Abschlag ändern Zählerstand melden Chatbot öffnen Zum Inhalt (Access key c) Zur Hauptnavigation (Access key h) Zur Unternavigation (Access key u) Bedienungshilfe (Access key 0) Startseite (Access key 1) Inhaltsverzeichnis (Access key 3) Suche (Access key 4) Datenschutz (Access key 7) Impressum (Access key 8) Kontakt (Access key 9) Datenschutzhinweis Diese Website nutzt Tracking-Technologien (Google Tag Manager, Google Analytics) und bindet Dienste Dritter für Komfortfunktionen (YouTube-Videos, Google Maps, Chatbot) ein, um die Website stetig zu verbessern und Ihnen ein optimales Nutzungserlebnis zu bieten. Zudem binden wir externe Inhalte bzw. Komponenten auf der Website ein, um unser Informationsangebot zu erweitern bzw. zu vervollständigen (z. B. eine Funktion zur Sprachumschaltung der Website). Für den Einsatz dieser Dienste benötigen wir nach Art. 6 Abs. 1 lit. a DSGVO und § 25 Abs. 1 TDDDG Ihre Einwilligung, welche Sie freiwillig erteilen können. Eine erteilte Einwilligung können Sie jederzeit über die Privatsphäre-Einstellungen (Link im Footer) mit Wirkung für die Zukunft widerrufen. Weitere Informationen zu den eingesetzten Diensten finden Sie in unseren Datenschutzinformationen. Notwendige Cookies Analyse-/Marketing Cookies Externe Komponenten laden Alles bestätigenAuswahl bestätigen Nicht erforderliche Dienste ablehnen",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "cookiesEssential",
+      "label": "Notwendige Cookies"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookiesTracking",
+      "label": "Analyse-/Marketing Cookies"
+    },
+    {
+      "art": "checkbox",
+      "name": "loadExternRessources",
+      "label": "Externe Komponenten laden"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "ecd2922a-8bba-42b0-988d-4b8b06159c32.png"
+}

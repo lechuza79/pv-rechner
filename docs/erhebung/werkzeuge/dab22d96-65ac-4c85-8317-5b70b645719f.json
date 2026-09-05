@@ -1,0 +1,34 @@
+{
+  "id": "dab22d96-65ac-4c85-8317-5b70b645719f",
+  "name": "Freisinger Stadtwerke Versorgungs-GmbH",
+  "url": "https://www.freisinger-stadtwerke.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Freisinger Stadtwerke Versorgungs-GmbH - Herzlich willkommen bei den Freisinger Stadtwerken",
+  "text": "WIR VERWENDEN COOKIES AUF UNSERER WEBSITE. Sie haben hier die Möglichkeit zu entscheiden, welche Cookies verwendet werden dürfen. Ihre Auswahl bleibt für 30 Tage gespeichert. Sie haben jederzeit die Möglichkeit, Ihre Cookie-Einstellungen über die Datenschutzerklärung zu ändern. Notwendige Alle akzeptieren Speichern Notwendige ZUGANG ZU DEN WICHTIGEN INFORMATIONEN Impressum Datenschutz Zur Navigation springen (Press Enter) Zum Inhalt springen (Press Enter) Zur Suche springen (Press Enter) Kontakt Aktuelles Presse Kundenmagazin fresch ENERGIE & WASSER STADTBUS & PARKHÄUSER NETZE ONLINE-SERVICE UNTERNEHMEN Überschrift JETZT ZU UNS WECHSELN Werden Sie Kunde der Freisinger Stadtwerke Versorgungs-GmbH. Auch das Freisinger Umland versorgen wir zuverlässig und günstig. Unsere Tarife - 100 % Ökostrom. Wählen Sie selbst aus unserem Angebot für Strom oder Erdgas NEUE LADESTANDORTE Neue Ladestandorte für Elektrofahrzeuge sind in der Asamstraße, der Falkentraße, der Gartenstraße, im Parkhaus in der Weizengasse und in der Pullinger Hauptstraße in Betrieb gegangen. An jeweils zwei, im Parkhaus vier Ladepunkten, kann hier rund um die Uhr mit 22 KW Leistung Strom geladen werden. mehr LAUFEN UND TRINKWASSER Beim Sparkassenlauf traten heuer besonders viele Erwachsene und Kinder an. Auch die Belegschaft der Freisinger Stadtwerke war mit dabei. Zur Erfrischung gab es wieder das gute Freisinger Trinkwasser für alle Teilnehmenden. JAHRESABSCHLUSS Die Freisinger Stadtwerke stellten im Werkausschuss ihren Jahresabschluss 2025 vor. Demnach konnte das vergangene Jahr mit einem Gesamtergebnis in Höhe von rund 2,03 Millionen Euro abgeschlossen werden. Das Freisinger Erlebnis Schwimmbad fresch besuchten im vergangenen Jahr 412.141 Badegäste. mehr WENN DIE SONNE WASSER BEWEGT Wie kommt das Trinkwasser nach Freising – und welche Rolle spielt dabei die Sonne? Diese Fragen stand im Mittelpunkt einer Fahrrad-Entdeckungstour, die die Agenda 21 Energie und Klima gemeinsam mit der Domberg-Akademie sowie den Freisinger Stadtwerken durchführte und auf großes Interesse stieß. GASROHRNETZÜBERPRÜFUNG Die Freisinger Stadtwerke Versorgungs-GmbH überprüft aktuell und noch bis Ende August die Gasleitungen in Freising. Eventuell vorhandene Undichtigkeiten werden dabei aufgespürt und dann sofort beseitigt, was nicht nur der Sicherheit, sondern auch dem Schutz der Umwelt dient. mehr BAUMASSNAHME ERDINGER STRASSE Ab Montag, 18. Mai 2026, bis voraussichtlich Freitag, 14. August 2026 werden die Gas- und Wasserleitungen im Bereich Erdinger Straße Ecke Amselstraße bis Erdinger Straße Ecke Moosstraße erneuert. Für die Tiefbauarbeiten ist eine Einbahnstraßenregelung in stadtauswärtiger Richtung für den Kfz-Verkehr notwendig. Zu Fuß und mit dem Rad kann die Baustelle passiert werden. 100 % ÖKOSTROM Für die gesamte Stromlieferung an alle unsere Kunden in Freising und der Region beziehen wir Strom, der garantiert zu 100 Prozent aus regenerativer Erzeugung stammt. Mehr lesen KUNDENMAGAZIN Aktuelle Ausgabe Archiv Öffnungszeiten Wir haben für Sie geöffnet: Mo bis Do: 7.30 Uhr bis 16.30 Uhr Fr: 7.30 Uhr bis 12.00 Uhr Besuchen Sie uns bei Facebook Freisinger Stadtwerke Hallen- und Freibad Datenschutz Impressum Verträge kündigen Widerruf Gebärdensprachvideos Leichte Sprache Barrierefreiheit",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Notwendige"
+    },
+    {
+      "art": "text",
+      "name": "VolltextSuchbegriff",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "suche",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "dab22d96-65ac-4c85-8317-5b70b645719f.png"
+}

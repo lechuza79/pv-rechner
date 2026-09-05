@@ -1,0 +1,29 @@
+{
+  "id": "c7920519-76a5-45e1-a9d0-312e3f2b3ea9",
+  "name": "Gemeindewerke Neuendettelsau",
+  "url": "http://www.gw-neuendettelsau.de/Balkonkraftwerk-anmelden.html",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Balkonkraftwerk anmelden - Gemeindewerke Neuendettelsau",
+  "text": "Home Strom Gas Wasser Service Messwesen Strom Netze Back to Top Balkonkaftwerk anmelden Ihr Balkonkraftwerk müssen Sie nur noch beim Marktstammdatenregister anmelden. Von dort werden wir dann informiert. https://www.marktstammdatenregister.de/MaStR/Assistent/RegistrierungSolarArt Gemeindewerke Neuendettelsau Telefon: +49(0)9874/502-800 | service@gw-neuendettelsau.de Kontakt | Anfahrt | Impressum | Datenschutzhinweis | Barrierefreiheit | Cookie-Zustimmungen ändern Webdesign Böker und Mundry, ANsbach | © 2026 Gemeindewerke Neuendettelsau Wir möchten unsere Website für Sie so attraktiv wie möglich gestalten und würden uns freuen, wenn Sie uns dabei behilflich sind. Dazu ist es nötig, dass Sie uns erlauben, Ihr Surf-Verhalten auf unserer Seite für folgende Zwecke aufzuzeichnen: Speicherung von Einstellungen dieser Anwendung & Verbesserung der Nutzungserfahrungen Mit Klick auf \"Alle Akzeptieren\" erlauben Sie auch das Tracking auf dieser Seite. Lassen Sie mich wählen Nur essenzielle Cookies akzeptierenAlle akzeptieren",
+  "felder": [
+    {
+      "art": "text",
+      "name": "q",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "suche",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "c7920519-76a5-45e1-a9d0-312e3f2b3ea9.png"
+}

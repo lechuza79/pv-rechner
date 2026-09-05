@@ -1,0 +1,18 @@
+{
+  "id": "9acaa607-1152-4dcc-826b-6e01ab0f9ffa",
+  "name": "Stadtwerke Frankenthal GmbH",
+  "url": "https://frontend.vlink.com/?key=ftpvst#/solar/postalcode",
+  "vermutet": "eingekauft",
+  "abruf": "ok",
+  "titel": "VLink - Bewertung des möglichen Angebots",
+  "text": "",
+  "felder": [],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "9acaa607-1152-4dcc-826b-6e01ab0f9ffa.png"
+}

@@ -1,0 +1,262 @@
+{
+  "id": "3824cff5-4230-41b6-bba1-2758d51a0bdc",
+  "name": "Bad Honnef AG",
+  "url": "https://www.bhag.de/privatkunden/strom/waermepumpenstrom/",
+  "vermutet": "rechner-mit-leadfunnel",
+  "abruf": "ok",
+  "titel": "Wärmepumpenstrom - Bad Honnef AG",
+  "text": "Einwilligung verwalten Um dir ein optimales Erlebnis zu bieten, verwenden wir Technologien wie Cookies, um Geräteinformationen zu speichern und/oder darauf zuzugreifen. Wenn du diesen Technologien zustimmst, können wir Daten wie das Surfverhalten oder eindeutige IDs auf dieser Website verarbeiten. Wenn du deine Einwilligung nicht erteilst oder zurückziehst, können bestimmte Merkmale und Funktionen beeinträchtigt werden. Akzeptieren Ablehnen Einstellungen ansehen Datenschutzerklärung Impressum Zum Inhalt springen Suche Online-Service-Portal Privatkunden Geschäftskunden Unternehmen Netzbetrieb Karriere Kontakt Entstördienst Ansprechpartner FAQ / Wissensdatenbank Wärmepumpenstrom Unabhängig von Öl und Gas durch Einsatz moderner Technik. Privatkunden > Strom > Wärmepumpenstrom Zwei Stromprodukte für Ihre Wärmepumpe Mit beiden Produkten profitieren Sie von besonders günstigen Konditionen: BHAG Wärmepumpenstrom (für Wärmepumpen mit Einbaudatum vor dem 01.01.2024) BHAG Strom für steuerbare Verbrauchseinrichtungen Wärmepumpenstrom: 3 Vorteile günstiger im Vergleich zum normalen Haushaltsstrom reduzierte Netzentgelte (nach § 14a) 100% TÜV Nord zertifizierter Ökostrom aus erneuerbaren Energien Unser Ökostrom ist zertifiziert Unsere Privatkunden erhalten in allen Stromprodukten 100% grünen Strom – auch in der Grundversorgung. Unser Ökostrom wird regelmäßig vom TÜV NORD geprüft und zertifiziert. Mehr Informationen Wann wurde Ihre Wärmepumpe installiert? Je nachdem ob Ihr Einbaudatum vor oder nach 2024 liegt, gelten unterschiedliche gesetzliche Regelungen. In beiden Fällen können Sie von günstigeren Konditionen profitieren. Voraussetzung ist ein separater Stromzähler für Ihre Wärmepumpe. Ihre Wärmepumpe wurde vor 2024 in Betrieb genommen? Dann gilt Ihre Wärmepumpe nicht automatisch als steuerbare Verbrauchseinrichtung (§ 14a). Nutzen Sie unseren Tarifrechner, um schnell und einfach den BHAG Wärmepumpenstrom zu buchen. Strom & Gas Strom Gas Wohnort Bitte gültige PLZ eingeben Bitte wählen Sie Ihren Kundentyp: Privatkunde Geschäftskunde 1 2 3 4 5 Personen im Haushalt Produkte finden Deine Vorteile 100% Ökostrom TÜV Nord zertifizierter Ökostrom aus Erneuerbaren Energien. Ihr persönlicher Kontakt Für Ihre Fragen nehmen wir uns gerne Zeit. Sichere Energieversorgung Seit über 135 Jahren liefern wir zuverlässig Energie. Ihre Wärmepumpe wurde 2024 oder später in Betrieb genommen? Dann haben Sie die Möglichkeit diese als steuerbare Verbrauchseinrichtung (§ 14a) bei Ihrem Netzbetreiber anzumelden. Mit dem BHAG Strom für steuerbare Verbrauchseinrichtungen profitieren Sie von reduzierten Netzentgelten. Füllen Sie bitte nachfolgendes Formular aus. Wir prüfen Ihre Angaben und unterbreiten Ihnen anschließend ein Angebot. Angebot anfordern: BHAG Strom für steuerbare Verbrauchseinrichtungen (§ 14a) Weitere Fragen Unser Service hilft Ihnen gerne weiter 0 22 24 / 17-0 Das könnte Sie auch interessieren Dynamische Stromtarife Mit dem dynamischen Tarif können Sie von günstigen Preisen am Strommarkt profitieren. Der Preis ist nicht fest, sondern passt sich dem Börsenpreis an. Das bietet Chancen auf Ersparnisse aber auch Risiken. Mehr erfahren Gasprodukte Erdgas für Ihr Zuhause. Jetzt Gasprodukte vergleichen und mit wenigen Klicks Ihre Energiekosten senken. Wir bieten faire Tarife und einen starken Service von flexiblen bis hin zu stabilen Preisen. Mehr erfahren BHAG – Ausgezeichnet Instagram Allgemeines TOP-Lokalversorger Baustellen Vertrag kündigen Vertrag widerrufen Marktkommunikation Regulierungsmanagement Genderhinweis Über uns Kontakt Datenschutz IT-Sicherheit Erklärung zur Barrierefreiheit Impressum Entstördienst 0800 / 17 222 00 Kundenbetreuung 0 22 24 / 17-170",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "cmplz-functional-optin",
+      "label": "Funktional"
+    },
+    {
+      "art": "checkbox",
+      "name": "cmplz-preferences-optin",
+      "label": "Präferenzen"
+    },
+    {
+      "art": "checkbox",
+      "name": "cmplz-statistics-optin",
+      "label": "Statistiken"
+    },
+    {
+      "art": "checkbox",
+      "name": "cmplz-marketing-optin",
+      "label": "Marketing"
+    },
+    {
+      "art": "text",
+      "name": "pocode",
+      "label": "PLZ ausserhalb des Versorgungsgebietes Bitte geben Sie Ihre PLZ ein"
+    },
+    {
+      "art": "select-one",
+      "name": "city",
+      "label": "Wohnort Bitte gültige PLZ eingeben Bitte wählen Sie Ihren Wohnort aus"
+    },
+    {
+      "art": "radio",
+      "name": "type",
+      "label": "Privatkunde"
+    },
+    {
+      "art": "radio",
+      "name": "type",
+      "label": "Geschäftskunde"
+    },
+    {
+      "art": "number",
+      "name": "consumptionPowerHt",
+      "label": "Bitte geben Sie Ihren Stromverbrauch ein"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][36]",
+      "label": "Postleitzahl der Lieferadresse *"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][37]",
+      "label": "Ja"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][37]",
+      "label": "Nein"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][38]",
+      "label": "Ja"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][38]",
+      "label": "Nein"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][39]",
+      "label": "Ja"
+    },
+    {
+      "art": "radio",
+      "name": "wpforms[fields][39]",
+      "label": "Nein"
+    },
+    {
+      "art": "select-one",
+      "name": "wpforms[fields][45]",
+      "label": "Art der steuerbaren Verbrauchseinrichtung"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][46]",
+      "label": "Sonstiges *"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][43]",
+      "label": "Anschlusswert in kW"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][3]",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][44]",
+      "label": "Voraussichtlicher Jahresverbrauch in kWh"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][67]",
+      "label": "Zählernummer"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][68]",
+      "label": "MaLo-ID"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][47]",
+      "label": "Bezeichnung bzw. Nummer der Steuerbox"
+    },
+    {
+      "art": "select-one",
+      "name": "wpforms[fields][49]",
+      "label": "Welches Modul haben Sie beim Netzbetreiber beantragt?"
+    },
+    {
+      "art": "select-one",
+      "name": "wpforms[fields][4]",
+      "label": "Anrede"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][8]",
+      "label": "Titel"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][32]",
+      "label": "Vorname *"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][33]",
+      "label": "Nachname *"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][20]",
+      "label": "Straße/Hausnummer *"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][21]",
+      "label": "PLZ *"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][22]",
+      "label": "Ort *"
+    },
+    {
+      "art": "email",
+      "name": "wpforms[fields][11]",
+      "label": "E-Mail-Adresse *"
+    },
+    {
+      "art": "tel",
+      "name": "wpf-temp-wpforms[fields][12]",
+      "label": "Telefonnummer"
+    },
+    {
+      "art": "checkbox",
+      "name": "wpforms[fields][62][]",
+      "label": "Identisch mit oben angegebener Kontaktadresse"
+    },
+    {
+      "art": "select-one",
+      "name": "wpforms[fields][51]",
+      "label": "Anrede"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][56]",
+      "label": "Titel"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][52]",
+      "label": "Vorname *"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][57]",
+      "label": "Nachname *"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][53]",
+      "label": "Straße/Hausnummer *"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][58]",
+      "label": "PLZ *"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][54]",
+      "label": "Ort *"
+    },
+    {
+      "art": "email",
+      "name": "wpforms[fields][55]",
+      "label": "E-Mail-Adresse *"
+    },
+    {
+      "art": "tel",
+      "name": "wpf-temp-wpforms[fields][60]",
+      "label": "Telefonnummer"
+    },
+    {
+      "art": "text",
+      "name": "wpforms[fields][1]",
+      "label": "separaten Sie (Moderne"
+    },
+    {
+      "art": "checkbox",
+      "name": "wpforms[fields][28][]",
+      "label": "Ich habe die Datenschutzbestimmungen zur Kenntnis genommen."
+    },
+    {
+      "art": "textarea",
+      "name": "g-recaptcha-response",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "g-recaptcha-hidden",
+      "label": ""
+    }
+  ],
+  "rahmen": [
+    "https://www.google.com/recaptcha/api2/anchor?ar=1&k=6LfbE0ksAAAAAKXW-PVY5iv4A4ldqXyFKHOILTT7&co=aHR0cHM6Ly93d3cuYmhhZy5kZTo0NDM.&hl=de&v=8x-4t2pegToiW8KmThtO4AQt&size=normal&anchor-ms=20000&execute-ms=30000&cb=xxn8lbsrn4o7",
+    "https://www.google.com/recaptcha/api2/bframe?hl=de&v=8x-4t2pegToiW8KmThtO4AQt&k=6LfbE0ksAAAAAKXW-PVY5iv4A4ldqXyFKHOILTT7&bft=0dAFcWeA53hqE0Kb7Fv5y59Q0SC5iTuFSIFn1x0FNF2HwVM6POTADYBuEfghR-wel9KGi_rYImLfbN_HwTHUDdkybhy01bxJjeBw"
+  ],
+  "merkmale": {
+    "tarifwort": true,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": true,
+    "pflichtprozess": false
+  },
+  "bild": "3824cff5-4230-41b6-bba1-2758d51a0bdc.png"
+}

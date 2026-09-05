@@ -1,0 +1,24 @@
+{
+  "id": "e3262c55-7b0b-4794-8c33-e4619b7812d4",
+  "name": "Hamburger Energienetze GmbH",
+  "url": "https://www.hamburger-energienetze.de/verbrauchen-erzeugen/planen-anmelden/erzeuger-speicher/steckerfertige-pv-anlage",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Balkonkraftwerk | Hamburger Energienetze",
+  "text": "Zum Inhalt springen Barrierefreiheit Online-Portale Zählerstand erfassen Hilfe & Kontakt Störung melden Kundenportal Moin, ich bin der Netzassistent. Stellen Sie mir eine Frage, ich helfe gerne. Verbrauchen & Erzeugen Energie der Zukunft Partner Karriere Über uns Verbrauchen & Erzeugen Planen & Anmelden Erzeuger & Speicher Steckerfertige PV-Anlage Steckerfertige Photovoltaikanlagen Immer mehr Menschen möchten auch bei sich zu Hause ihren Beitrag zu einem besseren Klima leisten, denn genau da fängt die Energiewende an. Im Bereich der erneuerbaren Energien erfreuen sich steckerfertige PV-Anlagen daher bei Mietern und Eigentümern wachsender Beliebtheit. Das entsprechende Angebot ist vielfältig. Damit diese Anlagen installiert und sorgenfrei betrieben werden können, sollten vorher einige Punkte berücksichtigt werden. Hier erklären wir, was Sie wissen und beachten sollten. Anmeldung von Balkonkraftwerken Das Gerät Ihre Elektroinstallation Vereinfachte Anmeldung Erweiterte Anmeldung Achten Sie beim Kauf Ihrer PV-Anlage auf die Einhaltung der Sicherheitsanforderungen Die meisten der im Handel erhältlichen steckerfertigen PV-Anlagen (Photovoltaik-Anlagen) sind mit einem Schutzkontaktstecker (Schukostecker) ausgestattet. Der Anschluss solcher Anlagen an einen Endstromkreis über eine haushaltsübliche Schuko-Steckdose sowie die Einspeisung von Strom ist ausschließlich möglich, wenn die Anlage die Produktnorm DIN VDE V 0126-95 erfüllt die angeschlossenen Module maximal 960 Wpeak leisten und der Wechselrichter eine Leistung von 800 VA nicht überschreitet. Eine spezielle Energiesteckvorrichtung bleibt eine sichere Option und sollte bei einer Modulleistung oberhalb von 960 bis maximal 2000 Wpeak verwendet werden. Andernfalls muss die PV-Anlage vor der Inbetriebnahme von einem Fachbetrieb fest an die Elektroinstallation des Gebäudes angeschlossen worden sein. Ihr Elektrofachbetrieb unterstützt Sie dabei sicher gern. Ausführliche Informationen hierzu finden Sie auf der Internetseite des VDE (Verband der Elektrotechnik Elektronik Informationstechnik e. V.). Mehr zum Thema FAQ der Bundesnetzagentur (BNetzA) Die BNetzA hat auf ihren Internetseiten umfassende Informationen rund um Betrieb und Förderung von PV-Anlagen zusammengestellt. (Öffnet neuen Tab) Hausanschluss-Portal Hamburg Das Hausanschluss-Portal erleichtert das Stellen und Verwalten von Anträgen. Hier können Sie nicht nur Hausanschlüsse beantragen, sondern auch andere Geräte wie Wallboxen oder PV-Anlagen anmelden. (Öffnet neuen Tab) Nach oben Hamburger Energienetze GmbH Bramfelder Chaussee 130 22177 Hamburg Barrierefreiheit Erklärung zur Barrierefreiheit Barriere melden Folgen Copyright 2026 Hamburger Energienetze GmbH Cookie-Einstellung AGB Datenschutz Impressum Sitemap",
+  "felder": [
+    {
+      "art": "text",
+      "name": "q",
+      "label": "Womit können wir Sie unterstützen?"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "e3262c55-7b0b-4794-8c33-e4619b7812d4.png"
+}

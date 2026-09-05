@@ -1,0 +1,29 @@
+{
+  "id": "04717fda-200b-4929-88be-8b90f144f358",
+  "name": "Stadtwerke Fürstenfeldbruck GmbH",
+  "url": "https://ffbstromdach.solarmaker.com",
+  "vermutet": "eingekauft",
+  "abruf": "ok",
+  "titel": "Photovoltaik Konfigurator | Stadtwerke Fürstenfeldbruck",
+  "text": "Zum Hauptinhalt springen www.stadtwerke-ffb.de HEY SUN FOR SHINING Photovoltaik-Anlage planen & Kosten berechnen Mit wenigen Klicks zur PV-Anlage. Erfahre welche Möglichkeiten dir die Sonne bietet. Probiers einfach aus! Erklärvideo Adresse Ich akzeptiere die AGB und die Datenschutz-Bestimmungen. Weiter Wir verwenden Cookies für wichtige Funktionen und die Webstatistik. Datenschutz Nicht OK OK",
+  "felder": [
+    {
+      "art": "text",
+      "name": ":r0:",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "register_consent",
+      "label": "Ich akzeptiere die AGB und die Datenschutz-Bestimmungen."
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "04717fda-200b-4929-88be-8b90f144f358.png"
+}

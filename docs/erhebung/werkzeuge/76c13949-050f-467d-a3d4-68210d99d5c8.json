@@ -1,0 +1,34 @@
+{
+  "id": "76c13949-050f-467d-a3d4-68210d99d5c8",
+  "name": "Stadtwerke Kempen GmbH",
+  "url": "https://www.stadtwerke-kempen.de/de/Strom/Photovoltaik/",
+  "vermutet": "eingekauft",
+  "abruf": "ok",
+  "titel": "Stadtwerke Kempen - Photovoltaik",
+  "text": "Zur Navigation springen (Press Enter) Zum Inhalt springen (Press Enter) Unternehmen Aktuelles Kundenservice Mein Kundenportal Kontakt Störungsnr. 02152 50 000 Strom Gas Wasser Fernwärme Energieberatung Inhalt Produktübersicht Strom E-Mobilität Photovoltaik Solaranlage für das Eigenheim Balkonkraftwerk Anmelden einer Erzeugungsanlage Wärmepumpe Strompreiszusammensetzung Stromkennzeichnung Messstellenbetrieb Stromnetz Photovoltaik Solaranlage für das Eigenheim WEITERE DETAILS Anmeldung einer Erzeugungsanlage WEITERE DETAILS PV-Anlagen nach der Förderung WEITERE DETAILS Redispatch 2.0 WEITERE DETAILS Wir sind persönlich für Sie da! Öffnungszeiten Kundencenter & Servicetelefon Montag bis Donnerstag 8:00 - 16:00 Uhr Freitag 8:00 - 12:00 Uhr Weitere Termine nach Vereinbarung. Telefon: 02152 1496-0 Telefax: 02152 1496-202 E-Mail: info@stadtwerke-kempen.de Notdienst: 02152 50000 (24/7) Links Strom Gas Wasser Wärme AquaSol Unternehmen Angebote & Services Kundenportal Technikportal Finden Sie den besten Tarif Karriere Verträge hier kündigen Verträge hier widerrufen Informationen Gasgeruch - was tun? Trinkwasseranalyse Der Heizenergie-Check Datenschutz Barrierefreiheitserklärung Social Media Stadtwerke Kempen - Facebook AquaSol - Facebook Stadtwerke Kempen - Instagram AquaSol - Instagram ©2026 Stadtwerke Kempen GmbH § Impressum Datenschutz Sitemap Empfehlen Druckversion Zum Seitenanfang Um die Webseite und Services für Sie zu optimieren, werden Cookies verwendet. Durch die weitere Nutzung der Webseite stimmen Sie der Verwendung von Cookies zu. Datenschutzhinweise",
+  "felder": [
+    {
+      "art": "text",
+      "name": "Suchkriterium1",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "suche",
+      "label": ""
+    },
+    {
+      "art": "button",
+      "name": "",
+      "label": "Um die Webseite und Services für Sie zu optimieren, werden Cookies verwendet. Du"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "76c13949-050f-467d-a3d4-68210d99d5c8.png"
+}

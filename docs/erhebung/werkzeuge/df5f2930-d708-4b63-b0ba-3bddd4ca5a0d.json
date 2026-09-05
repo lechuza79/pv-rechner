@@ -1,0 +1,142 @@
+{
+  "id": "df5f2930-d708-4b63-b0ba-3bddd4ca5a0d",
+  "name": "Stromversorgung Stadtwerke Garbsen GmbH & Co.",
+  "url": "https://www.stadtwerke-garbsen.de/produkte/solaranlagen-garbsen-privat/",
+  "vermutet": "kontaktformular",
+  "abruf": "ok",
+  "titel": "Privat-Solaranlagen clever kaufen und mieten in Garbsen und Umgebung - Stadtwerke Garbsen",
+  "text": "Zum Inhalt springen In wenigen Schritten zur Solaranlage Mit unserem PV-Konfigurator planen Sie Ihre Photovoltaikanlage schnell, kostenfrei und unverbindlich – ganz einfach von zu Hause aus. Kosten einer PV-Anlage Anlagengröße Preis* ab 5,34 kWp ohne Speicher ab 8.999 € ab 5,34 kWp mit Speicher ab 11.999 € Ich interessiere mich für Wärmepumpe Photovoltaik HomePulse Connect HomePulse (Paket) Ich habe die Datenschutzerklärung und die erweiterten Datenschutzinformationen gelesen und akzeptiere diese.* Ich akzeptiere. Absenden Störungsmeldung Sie möchten einen Stromausfall melden? Jetzt direkt hier melden oder einfach anrufen: Netzgebiet Garbsen Strom und Wärme: für Strom 0511 430 3111, Ersatznummer für Strom 0511 148 80 für Wärme 05131 908 14-431 Störungsnummer für die Straßenbeleuchtung 05131 908 14–432 Netzgebiet Garbsen Gas: 05137 7030-155 Kundenzentrum Stadtwerke Garbsen GmbH Steinriede 3 30827 Garbsen 05131 9081 4433 E-Mail Vertrag widerrufen Geschäftszeiten Montag bis Donnerstag: 08:00 – 12:00 Uhr und 13:00 – 16:00 Uhr Freitag: 08:00 – 13:00 Uhr Menü Verträge jetzt kündigen Impressum Datenschutz Informationspflichten Barrierefreiheitserklärung Teilnahmebedingungen Disclaimer Preise Kontakt © 2026 Stadtwerke Garbsen GmbH Datenschutzeinstellungen Wir nutzen Cookies auf unserer Website. Einige von ihnen sind essenziell, während andere uns helfen, diese Website und Ihre Erfahrung zu verbessern. Wenn Sie unter 16 Jahre alt sind und Ihre Zustimmung zu freiwilligen Diensten geben möchten, müssen Sie Ihre Erziehungsberechtigten um Erlaubnis bitten. Wir verwenden Cookies und andere Technologien auf unserer Website. Einige von ihnen sind essenziell, während andere uns helfen, diese Website und Ihre Erfahrung zu verbessern. Personenbezogene Daten können verarbeitet werden (z. B. IP-Adressen), z. B. für personalisierte Anzeigen und Inhalte oder Anzeigen- und Inhaltsmessung. Weitere Informationen über die Verwendung Ihrer Daten finden Sie in unserer Datenschutzerklärung. Sie können Ihre Auswahl jederzeit unter Einstellungen widerrufen oder anpassen. Datenschutzeinstellungen Essenziell Statistiken Externe Medien Alle akzeptieren Speichern Individuelle Datenschutzeinstellungen Cookie-Details Datenschutzerklärung Impressum Datenschutzeinstellungen Wenn Sie unter 16 Jahre alt sind und Ihre Zustimmung zu freiwilligen Diensten geben möchten, müssen Sie Ihre Erziehungsberechtigten um Erlaubnis bitten. Wir verwenden Cookies und andere Technologien auf unserer Website. Einige von ihnen sind essenziell, während andere uns helfen, diese Website und Ihre Erfahrung zu verbessern. Personenbezogene Daten können verarbeitet werden (z. B. IP-Adressen), z. B. für personalisierte Anzeigen und Inhalte oder Anzeigen- und Inhaltsmessung. Weitere Informationen über die Verwendung Ihrer Daten finden Sie in unserer Datenschutzerklärung. Hier finden Sie eine Übersicht über alle verwendeten Cookies. Sie können Ihre Einwilligung zu ganzen Kategorien geben oder sich weitere Informationen anzeigen lassen und so nur bestimmte Cookies auswählen. Alle akzeptieren Speichern Zurück Datenschutzeinstellungen Essenziell (1) Essenzielle Cookies ermöglichen grundlegende Funktionen und sind für die einwandfreie Funktion der Website erforderlich. Cookie-Informationen anzeigen Statistiken (2) Statistiken Statistik Cookies erfassen Informationen anonym. Diese Informationen helfen uns zu verstehen, wie unsere Besucher unsere Website nutzen. Cookie-Informationen anzeigen Externe Medien (5) Externe Medien Inhalte von Videoplattformen und Social-Media-Plattformen werden standardmäßig blockiert. Wenn Cookies von externen Medien akzeptiert werden, bedarf der Zugriff auf diese Inhalte keiner manuellen Einwilligung mehr. Cookie-Informationen anzeigen Datenschutzerklärung Impressum Nach oben Home Produkte Smarte Zukunft Energie und Beratung Service Unternehmen Energielevel Podcast Kundenportal Kontakt",
+  "felder": [
+    {
+      "art": "text",
+      "name": "vorname",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "name",
+      "label": ""
+    },
+    {
+      "art": "tel",
+      "name": "telefon",
+      "label": ""
+    },
+    {
+      "art": "email",
+      "name": "email",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "interesse-fuer[]",
+      "label": "Wärmepumpe"
+    },
+    {
+      "art": "checkbox",
+      "name": "interesse-fuer[]",
+      "label": "Photovoltaik"
+    },
+    {
+      "art": "checkbox",
+      "name": "interesse-fuer[]",
+      "label": "HomePulse Connect"
+    },
+    {
+      "art": "checkbox",
+      "name": "interesse-fuer[]",
+      "label": "HomePulse (Paket)"
+    },
+    {
+      "art": "textarea",
+      "name": "nachricht",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "[]",
+      "label": "Ich akzeptiere."
+    },
+    {
+      "art": "checkbox",
+      "name": "cookieGroup[]",
+      "label": "Essenziell"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookieGroup[]",
+      "label": "Statistiken"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookieGroup[]",
+      "label": "Externe Medien"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookieGroup[]",
+      "label": "Statistiken"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookies[statistics][]",
+      "label": "Google Analytics"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookies[statistics][]",
+      "label": "Facebook Pixel"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookieGroup[]",
+      "label": "Externe Medien"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookies[external-media][]",
+      "label": "Facebook"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookies[external-media][]",
+      "label": "Adobe Fonts"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookies[external-media][]",
+      "label": "Spotify"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookies[external-media][]",
+      "label": "Google Maps"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookies[external-media][]",
+      "label": "Instagram"
+    },
+    {
+      "art": "text",
+      "name": "s",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": ""
+    }
+  ],
+  "rahmen": [
+    "https://portal.reonic.de/public/db55a0e8-af08-4b11-b97d-dae553d1c56e/energyhouse?frontendId=69747282-ef25-4aad-ac02-ecc441cd691b&sourceUrl=https%3A%2F%2Fwww.stadtwerke-garbsen.de%2Fprodukte%2Fsolaranlagen-garbsen-privat%2F&direct=energyhouse",
+    "https://apps.reonic.de/db55a0e8-af08-4b11-b97d-dae553d1c56e/v2/solar/faqs?sourceUrl=https%3A%2F%2Fwww.stadtwerke-garbsen.de%2Fprodukte%2Fsolaranlagen-garbsen-privat%2F&direct=v2%2Fsolar%2Ffaqs"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "df5f2930-d708-4b63-b0ba-3bddd4ca5a0d.png"
+}

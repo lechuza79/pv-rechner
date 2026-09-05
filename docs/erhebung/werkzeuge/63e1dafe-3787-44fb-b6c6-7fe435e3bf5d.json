@@ -1,0 +1,49 @@
+{
+  "id": "63e1dafe-3787-44fb-b6c6-7fe435e3bf5d",
+  "name": "KEW Karwendel Energie und Wasser GmbH",
+  "url": "https://www.KEWGmbH.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Home | KEW",
+  "text": "Direkt zur Hauptnavigation springen Direkt zum Inhalt springen Kundenportal Ableseportal Netzanschlussportal Über die KEW Strom Gas Wasser Carsharing News Willkommen bei der KEW GmbH Mittenwald Previous Next Home Home Wichtige Information für Mieter(in) und Vermieter(in) ab Juni 2025 kein rückwirkender Umzug mehr möglich! Weitere Informationen finden Sie hier Strom Strom Quicklinks mehr Infos Strom Produkte & Preisblätter E-Mobilität Vertrieb Netz Messstellenbetrieb mehr Infos Gas Gas Quicklinks mehr Infos Gas Quicklinks Gas Preisblätter Kommunikationsdaten Vertrieb Kommunikationsdaten Netz​​​​​​​ mehr Infos Wasser Wasser Quicklinks mehr Infos Wasser Quicklinks Wasser aktueller Preis Formulare mehr Infos Baustelleninfos aktuelle Baumaßnahmen Keine Nachrichten verfügbar. News Neuigkeiten der KEW GmbH und aus der Energiewirtschaft. 24h-Lieferantenwechsel und die Konsequenzen 27.05.2025| Allgemein Änderung beim Stromanbieterwechsel ab Juni 2025 Weiterlesen Alle Meldungen anzeigen Vertrag kündigen Sie möchten einen oder mehrere mit uns abgeschlossenen Verträge kündigen? Das bedauern wir sehr und würden uns freuen, wenn Sie vor der Kündigung mit uns in Kontakt treten. Sie erreichen uns per E-Mail unter servicecenter@kewgmbh.de oder telefonisch unter 0 88 23 92 00 - 5. Wir freuen uns auf Sie. Selbstverständlich bieten wir Ihnen hier die Möglichkeit, Ihren Vertrag einfach und unkompliziert zu beenden. Bitte verwenden Sie dafür folgenden Link und füllen Sie hierzu die entsprechenden Felder im Formular aus um uns Ihre Kündiung zu übermitteln. Im Anschluss prüfen wir das Vertragsverhältnis und bestätigen Ihnen die Beendigung. Zum Kündigungsformular Weitere Fragen Bei weiteren Fragen wenden Sie sich gerne an unsere Kundenberater. Öffnungszeiten: Montag - Mittwoch 07:30 - 12:00 Uhr 13:00 - 17:00 Uhr Donnerstag 07:30 - 12:00 Uhr 13:00 - 17:30 Uhr Freitag 07:30 - 12:00 Uhr Kundencenter der KEW GmbH Innsbrucker Straße 31 D-82481 Mittenwald Telefon: +49 (88 23) 92 00 - 5 Fax: +49 (88 23) 34 41 servicecenter@kewgmbh.de Kontakt FAQ KEW Karwendel Energie & Wasser GmbH Innsbrucker Straße 31 82481 Mittenwald Telefon: +49 (88 23) 92 00 - 0 Fax: +49 (88 23) 34 41 Email: info@kewgmbh.de Kundenportal Rechnungen Verbräuche einsehen uvm. Ableseportal Zählerstand einfach und schnell melden Unser Servicecenter erreichen Sie unter Telefon: +49 (88 23) 92 00-5 Email: servicecenter@kewgmbh.de © 2026 KEW GmbH Mittenwald Datenschutz Kontakt Impressum",
+  "felder": [
+    {
+      "art": "text",
+      "name": "search_term_string",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "tx_indexedsearch_pi2[search][sword]",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "search_term_string",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "tx_indexedsearch_pi2[search][sword]",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "search_term_string",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "tx_indexedsearch_pi2[search][sword]",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "63e1dafe-3787-44fb-b6c6-7fe435e3bf5d.png"
+}

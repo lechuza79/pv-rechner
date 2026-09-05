@@ -1,0 +1,34 @@
+{
+  "id": "2ecf1afd-11da-4093-bab9-428644ee19ec",
+  "name": "Gothaer Stadtwerke NETZ GmbH",
+  "url": "https://www.gothaer-stadtwerke-netz.de/hauseigentumer-bauherren/photovoltaik-anmelden.html",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Photovoltaik anmelden - Hauseigentümer / Bauherren - Gothaer Stadtwerke Netz",
+  "text": "Zum Hauptinhalt wechseln Home Hauseigentümer / Bauherren Partner Versorgungsgebiet Online-Services Unternehmen NETZANSCHLUSSPORTAL ZÄHLERPORTAL LEITUNGSAUSKUNFT STÖRUNG MELDEN Suche Menü Photovoltaik anmelden Praktische Tipps, wo, wann und wie Sie Ihre PV-Anlage anmelden. PV-Anlage anmelden Sie sind hier: Home Hauseigentümer / Bauherren Photovoltaik anmelden SCHNELLZUGRIFF: So beantragen Sie den Netzanschluss Formular-Download Häufige Fragen Kontakt Richtig planen von Anfang an. Ihre sechs Schritte zum Netzanschluss. Sie möchten Ihren eigenen Strom erzeugen mit einer PV-Anlage? Wir zeigen Ihnen, welche Schritte von der Beantragung bis zur Auszahlung der Einspeisevergütung dazu erforderlich sind. Dabei ist die richtige Vorbereitung das A und O. Deshalb haben wir alle wichtigen Informationen hier für Sie zusammengestellt. Und sollten noch Fragen offenbleiben: Nehmen Sie einfach Kontakt mit uns auf. 1. Beratung und Planung 2. Anfrage zum Anschluss Ihrer PV-Anlage an das öffentliche Stromnetz 3. Installation der Anlage 4. Zähler für den Betrieb der Anlage 5. Inbetriebnahme der Anlage 6. Abrechnung und Einspeisevergütung Anmelden am Mittelspannungsnetz Die Anmeldung von PV-Anlagen am Mittelspannungsnetz erfolgt mit den Formularen aus der VDE-AR-N 4110. Weitere Details und Formulare stellt die Gothaer Stadtwerke NETZ GmbH auf Anfrage oder im digitalen Kundenportal bereit. Alles Wichtige zur Anmeldung. Dokumente stehen zum Download bereit. Wirkleistungsbegrenzung bzw. Netzsicherheitsmanagement Bedingungen für den Einsatz von Fernwirktechnik, gültig ab 01/2025 Technische Datenblätter und Protokolle Die Dokumente senden Sie bitte an: Zaehlerwesen-Strom@gothaer-stadtwerke-netz.de. Datenblatt für Erzeugungsanlage(n) und/ oder Speicher, gültib ab 08/2026 (179 KB) Inbetriebsetzungsprotokoll für Erzeugungsanlage(n) und/ oder Speicher, gültig ab 08/2026 (152 KB) Dokumente zur Vergütung Die Dokumente senden Sie bitte an: Einspeisung@gothaer-stadtwerke-netz.de. Erklärung über die Berechtigung zum Erhalt der Umsatzsteuer und Erstellung SEPA-Lastschriftmandat, gültig ab 11/2025 (122 KB) Änderung Umsatzsteuerverhältnis (112 KB) Änderung Konto zur Gutschriftsauszahlung/SEPA-Lastschriftmandat (114 KB) Verzichtserklärung auf die Auszahlung der finanziellen EEG-Förderung (112 KB) Betreiberwechsel einer Stromerzeugungsanlage (132 KB) Weitere Informationen Marktstammdatenregister www.marktstammdatenregister.de Elektrotechnische-Eigenschaften-Nachweis-Verordnung (NELEV) www.gesetze-im-internet.de/nelev Zentrales Register für Einheiten- und Komponentenzertifikate (ZEREZ) www.zerez.net Häufige Fragen, unsere Antworten Müssen alle Unterlagen vor der Inbetriebnahme vollständig sein? Kann ich meine Photovoltaik-Anlage selbstständig in Betrieb nehmen? Muss der Netzbetreiber bei der Inbetriebnahme anwesend sein? Kann der produzierte Strom vor der Inbetriebnahme ins öffentliche Netz gespeist werden? Wie ist der Bearbeitungsstand meiner Anlage? Ich warte auf einen Termin zur Zählersetzung. An wen kann ich mich wenden? Wann und wie muss ich meine Zählerstände abgeben? Sie haben Fragen? Wir Lösungen. Kontaktieren Sie uns. Zählerwesen Wir helfen Ihnen gerne weiter. 03621 21198-0 E-Mail schreiben Kontakt Gothaer Stadtwerke NETZ GmbH Pfullendorfer Straße 83 99867 Gotha Tel. 03621 21198-0 mail@gothaer-stadtwerke-netz.de Öffnungszeiten Mo.–Do.8–16 Uhr Fr.8–12 Uhr 24/7 Störungsnummer 03621 21198-182 Für Hauseigentümer Hausanschluss Photovoltaik anmelden Wallbox und Ladesäulen anmelden Wärmepumpen & Klimaanlagen anmelden Zählereinbau melden Unternehmen Wer wir sind Unser Versorgungsgebiet Stellenangebote Aktuelle Baustellen Für Partner Netzanschlussportal Installateure Gas Installateure Strom Messstellenbetreiber Ansprechpartner Netzbetrieb © 2026 Gothaer Stadtwerke NETZ GmbH Impressum Schlichtungsstelle Datenschutz Barrierefreiheit Sitemap close Barrierefreiheit refresh Schrift vergrößern Schrift verkleinern Wortabstand vergrößern Wortabstand verkleinern Zeilenabstand vergrößern Zeilenabstand verkleinern Graustufen Großer Mauszeiger Lesehilfe Links unterstreichen Animationen ausschalten Hoher Kontrast",
+  "felder": [
+    {
+      "art": "text",
+      "name": "search[word]",
+      "label": ""
+    },
+    {
+      "art": "select-one",
+      "name": "ccm-widget--language-select",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-41ba25c",
+      "label": "Technisch notwendig (2)"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "2ecf1afd-11da-4093-bab9-428644ee19ec.png"
+}

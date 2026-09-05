@@ -1,0 +1,24 @@
+{
+  "id": "39528ef1-4b62-4bd6-baca-c7a018255983",
+  "name": "Gemeindewerke Schutterwald (GWS)",
+  "url": "https://www.gemeindewerke-schutterwald.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Gemeindewerke Schutterwald | Startseite |  ",
+  "text": "Gemeinde Schutterwald 1 2 3 4 5 Hauptmenü ALLGEMEIN STROMVERTRIEB NETZBETRIEB WASSER- VERSORGUNG MESSSTELLEN-BETRIEB Volltextsuche Was suchen Sie? Trinkwasserhärte Untersuchung des Trinkwassers 1 2 WEITERE ARTIKEL ZÄHLERSTANDS - MELDUNGEN TARIFE STÖRUNGS - DIENST ENERGIE - EINSPARUNG TRINKWASSER - ANALYSE SCHNELLFINDER Ausschreibungen Datenaustausch Netzeinspeisung Zertifikate Gemeinde Schutterwald MITARBEITER KACHELN AUSBLENDEN Kontakt Barrierefreiheit Leichte Sprache Gebärdensprache KONTAKTDATEN Gemeindewerke Schutterwald Telefon: 0781/9606-29 Kirchstraße 2 Telefax: 0781/9606-97 77746 Schutterwald E-MAIL SCHREIBEN VERTRÄGE WIDERRUFEN VERTRÄGE KÜNDIGEN ÖFFNUNGSZEITEN Tag Uhrzeit Montag - Donnerstag: 08:30 - 12:00 Uhr Mittwochnachmittag: 15:30 - 18:00 Uhr Freitag: 08:30 - 13:00 Uhr OPTIMIERT FÜR MOBILE GERÄTE Impressum | Datenschutzerklärung | Barrierefreiheit | Kontrast © 2013 cm city media GmbH Facebook Instagram Cookies Auf dieser Webseite werden ausschließlich essentielle Daten in Cookies gespeichert, um wichtige Funktionen der Website zu ermöglichen. Mehr dazu in der Datenschutzerklärung Barrierefreiheit Hier können Sie die Farbkontraste auf dieser Webseite erhöhen. Sie können diese Einstellungen über den Button \"Kontrast\" jederzeit deaktivieren. Schließen",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "barrierefreiheit-switch-checkbox",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "39528ef1-4b62-4bd6-baca-c7a018255983.png"
+}

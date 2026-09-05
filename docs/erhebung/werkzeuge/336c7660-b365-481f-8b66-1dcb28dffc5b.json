@@ -1,0 +1,129 @@
+{
+  "id": "336c7660-b365-481f-8b66-1dcb28dffc5b",
+  "name": "NETZE Bad Langensalza GmbH",
+  "url": "https://nbl-badlangensalza.de/meldungen/anzeigeformular-steckerfertige-pv-anlage/",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Formular zur Meldung einer steckerfertige PV-Anlage – Netze Bad Langensalza",
+  "text": "digi·access - Zugänglichkeit verbessern Optimieren Sie die Webseite für bessere Lesbarkeit und Nutzerfreundlichkeit. F2 zum öffnen AKTUELLES NETZNUTZUNG NETZINFORMATION NETZANSCHLUSS MESSWESEN UNTERNEHMEN KONTAKT MELDUNGEN Meldungen » Formular zur Meldung einer steckerfertige PV-Anlage FORMULAR ZUR MELDUNG EINER STECKERFERTIGE PV-ANLAGE Formular Stecker fertige PV Anlage Achtung! Sie müssen sich im Marktstammdatenregister(MaStR) unter folgendem Link registrieren: www.marktstammdatenregister.de Formular zur Meldung einer steckerfertigen PV Anlage* *für PV Anlagen mit Inbetriebnahme bis zum 16.05.2024 Anlagenanschrift Straße / Hausnummer PLZ / Ort Zählernummer Anlagenbetreiber Vorname Name E-Mail Straße / Hausnummer PLZ / Ort Telefonnummer Anlagendetails Hersteller Typ / Modell Nennleistung pro PV Modul in Watt/p Anzahl Gesamtwechselrichterleistung in Watt Formular senden Alternative: NAVIGATION Formular zur Meldung einer Ladeeinrichtung für Elektrofahrzeuge Formular zur Meldung einer steckerfertige PV-Anlage Zählerstandsmeldung KONTAKT NETZE Bad Langensalza GmbH Postfach 1257 99942 Bad Langensalza Tel.: 03603 850 8 100 Fax: 03603 850 8 111 E-Mail: info(at)nbl-badlangensalza.de NETZNUTZUNG Lastprofile Netzentgelte Musterverträge Netzservice NETZANSCHLUSS Mehrspartenhauseinführung Elektrizität Erdgas Umverlegungen Verordungen & Musterverträge NETZINFORMATION Brennwert Netzgebiete Regenerative Energien Ausschreibung Netzverluste MESSWESEN Moderne Messeinrichtungen Intelligentes Messsystem Allgemeine Informationen zum Messstellenbetrieb Messstellenvertrag und Allgemeine Bedingungen Preisblatt grundzuständiger Messstellenbetrieb Mein “neuer” Zähler Fragen und Antworten UNTERNEHMEN Karriere Ansprechpartner Geschichte KONTAKT Impressum Datenschutz Disclaimer Cookies Einwilligung zur Nutzung Diese Webseite verwendet Cookies. Cookies sind Textdateien, die im Speicher und/oder auf einem Datenträger Ihres zum Seitenbesuch genutzten Endgerätes gespeichert werden und die von Ihrem Internetbrowser verarbeitet werden. Wir verwenden Cookies mit rein technischem Inhalt, um die Seitennutzung technisch zu realisieren. Diese Cookies sind notwendig zum Betrieb der Webseite. Das Webanalyse-Tool Google Analytics mit IP Anonymisierung ermöglicht uns eine Analyse der Seitennutzung, wenn Sie uns hierzu Ihre Einwilligung erteilen. Weitere Funktionalitäten, wie die Einbindung von Werbung, externen Videos und Inhalten (z.B. Facebook, YouTube, Twitter) sind ebenfalls optional und können von Ihnen aktiv gewählt werden. Sie finden hierzu weitere Informationen unter „Cookie Einstellungen“ und in unseren Datenschutzhinweisen. Wenn Sie auf „Alle akzeptieren“ klicken, erklären Sie sich damit einverstanden, dass die gewählten Cookies für diesen Zweck verarbeitet werden. Sie können Ihre Auswahl jederzeit mit Wirkung für die Zukunft ändern oder widerrufen indem Sie unsere Einstellungs-Verwaltung in den Datenschutzhinweisen nutzen.\" Alle akzeptieren nicht mehr als nötigCookie Einstellungen Datenschutz | Impressum",
+  "felder": [
+    {
+      "art": "range",
+      "name": "da-font-size--range",
+      "label": "- +"
+    },
+    {
+      "art": "range",
+      "name": "da-line-spacing--range",
+      "label": "- +"
+    },
+    {
+      "art": "range",
+      "name": "da-content-size--range",
+      "label": "- +"
+    },
+    {
+      "art": "range",
+      "name": "da-word-spacing--range",
+      "label": "- +"
+    },
+    {
+      "art": "range",
+      "name": "da-char-spacing--range",
+      "label": "- +"
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "s",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "Anlagenanschrift[address_line_1]",
+      "label": "Straße / Hausnummer"
+    },
+    {
+      "art": "text",
+      "name": "Anlagenanschrift[city]",
+      "label": "PLZ / Ort"
+    },
+    {
+      "art": "text",
+      "name": "Anlagenanschrift[state]",
+      "label": "Zählernummer"
+    },
+    {
+      "art": "text",
+      "name": "Anlagenbetreiber[first_name]",
+      "label": "Vorname Name"
+    },
+    {
+      "art": "text",
+      "name": "Anlagenbetreiber[last_name]",
+      "label": "E-Mail"
+    },
+    {
+      "art": "text",
+      "name": "Anlagenbetreiber1[address_line_1]",
+      "label": "Straße / Hausnummer"
+    },
+    {
+      "art": "text",
+      "name": "Anlagenbetreiber1[city]",
+      "label": "PLZ / Ort"
+    },
+    {
+      "art": "tel",
+      "name": "phone",
+      "label": "Telefonnummer"
+    },
+    {
+      "art": "text",
+      "name": "Anlagendeteils[first_name]",
+      "label": "Hersteller"
+    },
+    {
+      "art": "text",
+      "name": "Anlagendeteils[last_name]",
+      "label": "Typ / Modell"
+    },
+    {
+      "art": "text",
+      "name": "Anlagendeteils1[first_name]",
+      "label": "Nennleistung pro PV Modul in Watt/p"
+    },
+    {
+      "art": "text",
+      "name": "Anlagendeteils1[last_name]",
+      "label": "Anzahl"
+    },
+    {
+      "art": "text",
+      "name": "Anlagendeteils2[first_name]",
+      "label": "Gesamtwechselrichterleistung in Watt"
+    },
+    {
+      "art": "text",
+      "name": "alt_s",
+      "label": "Alternative:"
+    },
+    {
+      "art": "text",
+      "name": "jnqmup5891",
+      "label": "WPA"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": true,
+    "pflichtprozess": true
+  },
+  "bild": "336c7660-b365-481f-8b66-1dcb28dffc5b.png"
+}

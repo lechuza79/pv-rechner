@@ -1,0 +1,29 @@
+{
+  "id": "72fa129d-ca26-46eb-ae29-894967020153",
+  "name": "Stromversorgung Pfaffenhofen a. d. Ilm GmbH & Co. KG",
+  "url": "https://www.stromversorgung-pfaffenhofen.de/stromeinspeisung/balkonkraftwerk-anmelden",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Balkonkraftwerk anmelden - Stromversorgung Pfaffenhofen",
+  "text": "Zählerstand melden Planauskunft AKTUELLES NETZZUGANG NETZANSCHLUSS NETZINFORMATIONEN STROMEINSPEISUNG INSTALLATEURE KONTAKT / SERVICEPORTAL AKTUELLESNETZZUGANGNETZANSCHLUSSNETZINFORMATIONENSTROMEINSPEISUNGINSTALLATEUREKONTAKT / SERVICEPORTAL Sie möchten ein Balkonkraftwerk anmelden? Alle steckerfertigen Anlagen (Balkonkraftwerke) sind im Marktstammdatenregister der Bundesnetzagentur zu registrieren. Startseite | MaStR (marktstammdatenregister.de) Bis zu einer installierten Modulleistung von 2.000 Watt und maximal 800 Watt Wechselrichterleistung ist keine gesonderte Anmeldung Ihrer steckerfertigen Anlage (Balkonkraftwerk) bei uns als Ihrem Netzbetreiber erforderlich. Wir kümmern uns automatisch um die Beauftragung eines evtl. erforderlichen Zählerwechsels. EEG EEG-Umlage Balkonkraftwerk anmelden KWK-G Anlagenzertifikat Einspeisemanagement Gesetzliche Vorgaben Technische Umsetzung Entschädigung Funktionstest FRE Stromversorgung Pfaffenhofen GmbH & Co. KG Michael-Weingartner-Str. 11 85276 Pfaffenhofen a. d. Ilm Telefon: +49 8441 4052 1000 Telefax: +49 8441 4052 1901 info@stromversorgung-pfaffenhofen.de Zählerstand melden AGB Datenschutz Impressum Zertifikat Amtsgericht Ingolstadt · HRA 2987 · Persönlich haftender Gesellschafter Stromversorgung Pfaffenhofen Verwaltungs GmbH Handelsregister Ingolstadt · HRB 7541 · Vorsitzender des Aufsichtsrats: Bürgermeister Thomas Herker · Geschäftsführer: Béla Szabó",
+  "felder": [
+    {
+      "art": "text",
+      "name": "searchtext",
+      "label": ""
+    },
+    {
+      "art": "image",
+      "name": "",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "72fa129d-ca26-46eb-ae29-894967020153.png"
+}

@@ -1,0 +1,92 @@
+{
+  "id": "dd5aedd6-5c94-4088-865a-64b52cbcffd4",
+  "name": "Städtische Werke Netz+Service GmbH",
+  "url": "https://www.netzplusservice.de/fuer-kunden/energieerzeugung/solarstrom-einspeisen/",
+  "vermutet": "eingekauft",
+  "abruf": "ok",
+  "titel": "Solarstrom einspeisen - Netz + Service GmbH | Netzbetreiber in Nordhessen",
+  "text": "Visuelle Assistenzsoftware und Vorlesefunktion Eye-Able öffnen. Mit der Tastatur erreichbar über ALT + 1 Für Kunden Für Partner Über uns Suche Kundenmarktplatz Stromeinspeisung Solarstrom einspeisen Sie beabsichtigen, eine Photovoltaikanlage auf Ihrem Hausdach zu errichten, und wollen den erzeugten Solarstrom in unser Netz einspeisen? Oder sie haben vor, eine steckerfertige Mini-Photovoltaikanlage auf Ihrem Balkon oder Ihrer Terrasse zu installieren? Ob große oder Kleinanlage – in jedem Fall profitieren Sie ebenso wie die Umwelt vom selbsterzeugten, regenerativen Strom. Wenn Sie einmal prüfen wollen, welchen Ertrag Ihre Anlage liefern kann, bietet die EU ein kostenlosen Tool an (+ EU Solar Rechner). Hier finden Sie alle Informationen zur Verwirklichung Ihrer Pläne. Zur Ummeldung einer bestehenden PV-Anlage auf einen neuen Betreiber, nutzen Sie bitte unser Formular, um den Betreiberwechsel anzuzeigen. Anmeldung und Inbetriebnahme einer PV-Anlage §8 EEG 1. EINSPEISE-VORANFRAGE 2. INSTALLATION UND FERTIGMELDUNG 3. ZÄHLERSETZUNG 4. EINSPEISEVERGÜTUNG Sie können die Verfügbarkeit von Anlagenetzanschlüssen (unter anderem Wärmepumpen, PV-Anlagen sowie Ladeeinrichtungen) unverbindlich in unserem Online Connection Check testen. Die Voranfrage Ihrer Photovoltaik-Anlage kann anschließend durch Ihr beauftragtes Installationsunternehmen im + Geoportal Nordhessen vorgenommen werden. Sobald die Voranfrage samt Unterlagen bei uns eingegangen ist, wird diese geprüft. Bei Rückfragen nehmen wir Kontakt mit Ihnen bzw. Ihrem Installateur auf. Voraussetzung für die Einspeisezusage ist die Durchführung einer Netzverträglichkeitsprüfung. Damit stellen wir fest, ob die gewünschte Einspeiseleistung an Ihrem Hausanschluss möglich ist. Nach einer positiven Prüfung erhalten Sie unsere Einspeisezusage sowie eine Aufstellung über die hierzu anfallenden Kosten. Die unverbindliche Zusage hat eine Gültigkeit von 6 Monaten. Detaillierte Informationen finden Sie oder Ihr Installateur hier. Anmeldung und Betrieb der steckerfertigen Mini-PV-Anlage Diese Anlagen bieten eine Möglichkeit sich privat am großen Energiesystem zu beteiligen und so aktiv an der Energiewende mitzuarbeiten. Damit der Betrieb vorschriftsmäßig starten kann, muss eine Elektrofachkraft den Anschluss über eine spezielle Energiesteckdose vornehmen. Für den korrekten Betrieb muss zudem ein Zweirichtungszähler an der Übergabe zum Netz vorhanden sein. Wenn bereits eine moderne Messeinrichtung bei Ihnen verbaut ist, muss diese trotzdem gegen einen Zweirichtungszähler getauscht werden. Der Zählerwechsel ist für Sie kostenlos. Damit wir ähnlich wie bei großen Verbrauchsgeräten wissen, wo Ihr Balkonkraftwerk in unserem Netz vorkommt, müssen Sie es außerdem bei uns anmelden. Registrieren Sie dafür Ihre Anlage unter https://www.marktstammdatenregister.de/ Auch wenn Sie keine Vergütung für Ihre Einspeiseanlage erhalten, ist eine Rechnungsstellung (auch wenn diese keinen Betrag ausweist) unsererseits gesetzlich vorgeschrieben. Mehr zu steckerfertigen PV-Anlagen und deren Installation finden Sie auch beim Verband deutscher Elektrotechniker (VDE). Die Niederspannungsanschlussverordnung und VDE-Anwendungsregel informiert über die Pflicht zur Anmeldung beim Netzbetreiber: „Erzeugungsanlagen am Niederspannungsnetz“ (VDE-AR-N 4105) Agorameter Entwicklungen der Stromerzeugung aus regenerativen Energien Hinweise zum Agorameter Mit dem Agorameter, können Sie die Entwicklungen der Stromerzeugung aus regenerativen Energien (aufgeschlüsselt nach Solarenergie, Windkraft, Laufwasserkraft und Bioenergie), der Stromerzeugung konventioneller Kraftwerke sowie des Stromverbrauchs verfolgen. Ein Klick auf die Grafik links, öffnet das Agorameter. Unser Standort: Städtische Werke Netz + Service GmbH Eisenacher Straße 12 | 34123 Kassel Netzanschluss Kassel Trinkwasser für Kassel Smart Meter nutzen Glasfaser für Kassel Zählerstand übermitteln Kassel Jobs in Nordhessen Kasseler Wasser Störungsnummern 24 h Die Städtische Werke Netz + Service ist ein Unternehmen der KVV-Gruppe ImpressumDatenschutzBarrierefreiheitserklärungVertrag kündigenBeschwerdemanagement Kundenservice + Technische Rückfragen: 0561 5745-2024 Abrechnung: 0561 5745-2092 Dienstag - Donnerstag: 13.00 - 15.00 Uhr Dienstag - Mittwoch: 10.00 - 12.00 Uhr Rückrufservice Für Kunden Für Partner Über uns Suche Kundenmarktplatz Kundenservice Technische Rückfragen: 0561 5745-2024 Abrechnung: 0561 5745-2092 Dienstag - Donnerstag: 13.00 - 15.00 Uhr Dienstag - Mittwoch: 10.00 - 12.00 Uhr Rückrufservice",
+  "felder": [
+    {
+      "art": "select-one",
+      "name": "tx_powermail_pi1[field][thema]",
+      "label": "Thema*"
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][name]",
+      "label": "Name*"
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][telefon]",
+      "label": "Telefon*"
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][kundennummer]",
+      "label": "Kundennummer (optional)"
+    },
+    {
+      "art": "checkbox",
+      "name": "tx_powermail_pi1[field][datenschutz][]",
+      "label": "Ich willige ein, dass meine Daten zum Zweck der Kontaktaufnahme mit der Städtisc"
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][__hp]",
+      "label": "Bitte dieses Feld NICHT ausfüllen!"
+    },
+    {
+      "art": "select-one",
+      "name": "tx_powermail_pi1[field][thema]",
+      "label": "Thema*"
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][name]",
+      "label": "Name*"
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][telefon]",
+      "label": "Telefon*"
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][kundennummer]",
+      "label": "Kundennummer (optional)"
+    },
+    {
+      "art": "checkbox",
+      "name": "tx_powermail_pi1[field][datenschutz][]",
+      "label": "Ich willige ein, dass meine Daten zum Zweck der Kontaktaufnahme mit der Städtisc"
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][__hp]",
+      "label": "Bitte dieses Feld NICHT ausfüllen!"
+    }
+  ],
+  "rahmen": [
+    "https://www.agora-energiewende.de/agorameter-widget-landscape.html",
+    "https://app.usercentrics.eu/browser-sdk/4.64.0/cross-domain-bridge.html"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "dd5aedd6-5c94-4088-865a-64b52cbcffd4.png"
+}

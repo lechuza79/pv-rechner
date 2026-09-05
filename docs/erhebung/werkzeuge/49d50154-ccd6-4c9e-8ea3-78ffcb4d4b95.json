@@ -1,0 +1,84 @@
+{
+  "id": "49d50154-ccd6-4c9e-8ea3-78ffcb4d4b95",
+  "name": "Gammertinger Energie- und Wasserversorgung GmbH",
+  "url": "https://www.gewgmbh.de/de/Strom/Formular-PV/Anfrage-PV-Anlage.html",
+  "vermutet": "kontaktformular",
+  "abruf": "ok",
+  "titel": "Gammertinger Energie- und Wasserversorgung - Anfrage PV-Anlage",
+  "text": "Wir verwenden Cookies auf unserer Website. Sie haben hier die Möglichkeit zu entscheiden, welche Cookies verwendet werden dürfen. Ihre Auswahl bleibt für 30 Tage gespeichert. Sie haben jederzeit die Möglichkeit, Ihre Cookie-Einstellungen über die Datenschutzerklärung zu ändern. Auswahl Notwendige Statistik Alle akzeptieren Alle speichern Alle ablehnen Notwendige Statistik Zugang zu den wichtigen Informationen Impressum Datenschutz Verträge kündigen Vertrag widerrufen Persönliche Daten Anrede: Bitte auswählen... Frau Herr Divers Vorname*: Nachname*: Straße / Hausnr.: Postleitzahl: Ort: E-Mail: Telefon: Wann bin ich erreichbar?: Dateschutzerklärung Ich habe die Datenschutzerklärung gelesen und akzeptiere diese.",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Notwendige"
+    },
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Statistik"
+    },
+    {
+      "art": "select-one",
+      "name": "Formular.PERSON.ANREDE",
+      "label": "Anrede:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.PERSON.VORNAME",
+      "label": "Vorname*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.PERSON.NACHNAME",
+      "label": "Nachname*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ADRESSE.STRASSEHAUSNR",
+      "label": "Straße / Hausnr.:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ADRESSE.PLZ",
+      "label": "Postleitzahl:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ADRESSE.ORT",
+      "label": "Ort:"
+    },
+    {
+      "art": "email",
+      "name": "Formular.KONTAKT.EMAIL",
+      "label": "E-Mail:"
+    },
+    {
+      "art": "tel",
+      "name": "Formular.KONTAKT.TELEFON",
+      "label": "Telefon:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ERREICHBARKEIT",
+      "label": "Wann bin ich erreichbar?:"
+    },
+    {
+      "art": "checkbox",
+      "name": "Formular.DATENSCHUTZERKLAERUNG",
+      "label": "Ich habe die Datenschutzerklärung gelesen und akzeptiere diese."
+    },
+    {
+      "art": "textarea",
+      "name": "Container.Children:2.Container.Children:2.ClientSecurityChec",
+      "label": "Das folgende Eingabefeld ist aus technischen Gründen erforderlich und darf nicht"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "49d50154-ccd6-4c9e-8ea3-78ffcb4d4b95.png"
+}

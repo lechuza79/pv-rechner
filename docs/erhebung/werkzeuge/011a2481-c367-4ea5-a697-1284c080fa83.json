@@ -1,0 +1,34 @@
+{
+  "id": "011a2481-c367-4ea5-a697-1284c080fa83",
+  "name": "Stadtwerke Weilburg GmbH",
+  "url": "https://stadtwerke-weilburg.de/veroeffentlichungen/anmeldung-von-pv-anlagen-co",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Anmeldung von PV-Anlagen & Co. | Stadtwerke Weilburg GmbH",
+  "text": "VERÖFFENTLICHUNGEN SERVICE STROM WASSER ERDGAS E-MOBILITÄT KUNDENPORTAL KONTAKT ÜBER UNS SCHADEN MELDEN GAS NOTRUF 01803-427668 STROM & WASSER NOTRUF 01803 427779 Anmeldung von PV-Anlagen & Co. Achtung Terminsache! Besitzer müssen PV-Anlagen und Co. jetzt anmelden - sonst Vergütungsstopp Hinweis für alle Weilburger EEG- oder KWKG-Anlagenbetreiber Weilburg, 22.12.2020 (JK) Der Staat hat das EEG- Vergütungsverfahren geändert: Ab 1. Februar 2021 erhalten nur noch die Anlagenbetreiber ihre monatliche EEG- Vergütung, die ihre Erzeugungsanlage rechtzeitig im neuen Marktstammdatenregister eingetragen, angemeldet und die Anmeldung den Stadtwerken Weilburg als ihren zuständigen Netzbetreiber zugesandt haben. Die Stadtwerke haben die betroffenen Kunden angeschrieben, aber es gibt leider immer noch Anlagenbetreiber, die ihre Anmeldung noch nicht an die Stadtwerke übermittelt haben: Ohne Übermittlung keine Vergütung, so sieht es der Gesetzgeber. Die Bearbeitung erfolgt nach Eingang der Anmeldungen. Aufgrund der großen Menge und der Feiertage kann allerdings nicht mehr garantiert werden, dass auch jeder Betreiber über den 31. Januar hinaus weiterhin die EEG- Vergütung bekommt. Deshalb: Lassen Sie sich so schnell wie möglich im Marktstammdatenregister registrieren und melden Sie Ihre Anlage an. Es muss wirklich jede Anlage gemeldet werden, egal wie groß oder wie klein oder mit Speicher oder ohne, denn ohne Meldung kein Geld: Das Marktstammdatenregister (MaStR) ist ein umfassendes amtliches Register für alle stromerzeugenden Anlagen. Es ist seit Anfang 2019 online und löst alle bisherigen Meldewege für Anlagen nach dem Erneuerbare-Energien-Gesetz (EEG) oder Kraft-Wärme-Kopplungs-Gesetz (KWKG) ab. Wenn Sie Ihre Anlage nicht registrieren, drohen ein Bußgeld und der Verlust Ihrer EEG-Vergütung. (Quelle: Verbaucherzentrale.de) Die Anmeldung erfolgt ausschließlich im Online Verfahren über das Webportal: https://www.marktstammdatenregister.de/MaStR weitere Hinweise finden Sie bei der: https://www.bundesnetzagentur.de/DE/Sachgebiete/ElektrizitaetundGas/Unternehmen_ Institutionen/DatenaustauschundMonitoring/Marktstammdatenregister/MaStR_node.html In den Webportalen befinden sich auch eine Anleitung zur Anmeldung und Erklärvideos. Bis zum Stand heute haben rund 70% der Weilburger Anlagenbetreiber ihre Anlage erfolgreich selbst angemeldet. Wer seine Anlage nicht selbst anmelden möchte, kann auch jemand anderen, wie z.B. den Installateur oder den Steuerberater, damit bevollmächtigen. Informationsblatt zum Netzanschluss von EEG-Anlagen & Co. (pdf, 0,08 MB) Information zum Marktstammdatenregister (pdf, 0,08 MB) Antrag PV-Anlage (pdf, 0,61 MB) Stadtwerke Weilburg GmbH Lessingstraße 6 35781 Weilburg an der Lahn Tel 06471 93 90-0 kunden@stadtwerke-weilburg.de Impressum Datenschutz Kontakt Kundenportal Über uns Schaden melden Gas Notruf 01803-427668 Strom & Wasser Notruf 01803 427779 Datenschutz-Einstellungen Diese Website verwendet Cookies für Videos und anonyme, technisch notwendige Cookies. Ihre Einwilligung in deren Nutzung ist freiwillig und kann jederzeit widerrufen werden. Eine einfache Widerrufsmöglichkeit sowie weitere Informationen finden Sie in unserer Datenschutzerklärung. Notwendig Videos Einstellungen speichern & schließen Alle ablehnen Alle akzeptieren",
+  "felder": [
+    {
+      "art": "text",
+      "name": "q",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "technical",
+      "label": "Notwendig"
+    },
+    {
+      "art": "checkbox",
+      "name": "videos",
+      "label": "Videos"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "011a2481-c367-4ea5-a697-1284c080fa83.png"
+}

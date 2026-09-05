@@ -1,0 +1,39 @@
+{
+  "id": "99b2cad7-34d1-4e4a-b160-54cb9b7cd0ed",
+  "name": "Energieversorgung Inselsberg GmbH",
+  "url": "https://www.evi-energy.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Strom, Erdgas und Wärme von der Energieversorgung Inselsberg",
+  "text": "WIR VERWENDEN COOKIES AUF UNSERER WEBSITE. Sie haben hier die Möglichkeit zu entscheiden, welche Cookies verwendet werden dürfen. Ihre Auswahl bleibt für 30 Tage gespeichert. Sie haben jederzeit die Möglichkeit, Ihre Cookie-Einstellungen über die Datenschutzerklärung zu ändern. Notwendige Statistik Alle akzeptieren Auswahl speichern Alle ablehnen Notwendige Statistik Zugang zu den wichtigen Informationen Impressum Datenschutz Energieversorgung Inselsberg GmbH Zur Navigation springen (Press Enter) Zum Inhalt springen (Press Enter) Unser Partner KlimaInvest FAQ STROM GAS WÄRME SERVICE NETZE UNTERNEHMEN SUCHE STARTSEITE Netzanschlussportal Mehr erfahren Aktuelles Mehr erfahren Zählerstände Mehr erfahren Tarifrechner Mehr erfahren 24h-Lieferantenwechsel – Auswirkungen auf Mitteilungsfristen von Ein- und Auszugsmeldungen im Strombereich. Die Bundesnetzagentur (BNetzA) hat mit den neuen Vorgaben (BK6-22-024) festgelegt, dass der Lieferantenwechsel für den Strombereich ab dem 06. Juni 2025 werktags innerhalb von 24 Stunden abzuwickeln ist. Diese neuen Regelungen wirken sich direkt auf die Mitteilungsfristen von Ein- und Auszügen für Strom aus. Optimierte Marktkommunikation – aber keine veränderten Vertragsfristen Die neuen Regelungen betreffen vor allem die technischen Abläufe zwischen den Energielieferanten, Netzbetreibern und Messstellenbetreibern, welche den Wechselprozess insgesamt beschleunigen sollen. Die bestehenden Vertragslaufzeiten und Kündigungsfristen bleiben weiterhin gültig. Somit bestehen Ihre vertraglichen Verpflichtungen unverändert weiter. Was bedeutet dies für Sie? Eine rückwirkende An- oder Abmeldung für Ihren Stromzähler ist nicht mehr möglich – nur noch zu einem in der Zukunft liegenden Termin realisierbar Teilen Sie uns den Einzug – oder Auszugstermin rechtzeitig, mindestens 14 Tage vorher, in Textform (E-Mail, Brief, direkt im Kundencenter) mit Den Zählerstand übermitteln Sie uns nach erfolgtem Auszug / Einzug Sollten Sie eine rechtzeitige Meldung vergessen haben, bleibt der Stromvertrag weiterhin auf Ihren Namen bestehen. Eine Abmeldung kann dann erst zum nächstmöglichen Termin in der Zukunft erfolgen. Bisher war bereits bei Auszug und Belieferung in der Grundversorgung eine Kündigung in Textform gemäß § 20 StromGVV unter Einhaltung einer Kündigungsfrist von 2 Wochen notwendig sowie nach § 41b Nr. 5 EnWG für Haushaltskunden außerhalb der Grundversorgung einer Kündigungsfrist von sechs Wochen bei Auszug. Bei Fragen steht Ihnen unser Team Kundenbetreuung unter 03622/920041, per E-Mail an kundenbetreuung@evi-energy.de oder persönlich in unserem Kundencenter in der Albrechtstraße 14, 99880 Waltershausen zur Verfügung. So erreichen Sie die Energieversorgung Inselsberg GmbH Energieversorgung Inselsberg GmbH Albrechtstraße 14 99880 Waltershausen Ansprechpartner Servicezeiten Montag 08:30 - 12:00 Uhr u. 13:00 - 16:00 Uhr Dienstag 08:30 - 12:00 Uhr u. 13:00 - 18:00 Uhr Mittwoch 08:30 - 12:00 Uhr Donnerstag 08:30 - 12:00 Uhr u. 13:00 - 16:00 Uhr Freitag 08:30 - 13:00 Uhr Störungsannahme Erdgas 03622/ 9200-55 Strom 03622/ 9200-66 Fernwärme 03622/ 9200-77 Datenschutz Impressum Barrierefreiheit Kontakt Störung Baustelle Cookies",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Notwendige"
+    },
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Statistik"
+    },
+    {
+      "art": "text",
+      "name": "VolltextSuchbegriff",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "suche",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": true,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "99b2cad7-34d1-4e4a-b160-54cb9b7cd0ed.png"
+}

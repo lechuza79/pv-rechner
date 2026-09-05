@@ -1,0 +1,134 @@
+{
+  "id": "b6a15f5c-ee4d-4dc9-b57e-51068ce0b4f4",
+  "name": "Stadtwerke Heiligenhaus GmbH",
+  "url": "https://www.stadtwerke-heiligenhaus.de/energiedienstleistungen/photovoltaik/photovoltaik-privat/",
+  "vermutet": "kontaktformular",
+  "abruf": "ok",
+  "titel": "Photovoltaik Privat - Photovoltaik - Energie - Stadtwerke Heiligenhaus",
+  "text": "Stadtwerke Wülfrath Kundenservice Startseite Gas Wasser Strom Netze Energiedienstleistungen Photovoltaik Privat Gewerbe Wärmelieferung Mieterstrom Elektro-Mobilität Energieausweis Energiemanagement Über uns Schwimmbad Photovoltaik Privat Sonnenenergie nutzen Photovoltaik-Lösungen für das Gewerbe Besitzer einer Photovoltaikanlage machen sich mit eigener Stromproduktion unabhängiger von der Strompreisentwicklung, steigern den Wert der eigenen Immobilie und gestalten die Energiewende ganz lokal aktiv mit. Als Stadtwerk übernehmen wir die Planung und kümmern uns um den schlüsselfertigen Bau. Sie profitieren dabei vom reduzierten Umsatzsteuersatz auf 0%. In 3 Schritten zu eigenen AnlageIhre PV-AnfrageIhre Online-Anfrage Noch effizienter wird die eigene Stromversorgung in Kombination mit einem Batterie-Speicher. Dieser ermöglicht es, den tagsüber produzierten Strom auch abends und in den Nachtstunden zu nutzen. Mögliche Kenngrößen mit unserem PV-Online-Rechner ermitteln. Gebäude-Ausrichtung im Solarkataster prüfen. In 3 Schritten zur eigenen Anlage Im persönlichen Vor-Ort-Termin wird das zu versorgende Gebäude, sowie Ihre individuelle Verbrauchssituation aufgenommen. Auch ein optionaler Batteriespeicher, sowie die Integration einer Wallbox für ein Elektrofahrzeug werden hier besprochem. Sie erhalten eine Anlagen-Planung, welche die technischen Kenngrößen und die Wirtschaftlichkeit enthält. Neben Ihren zukünftigen monatlichen Erlösen sind hier auch die CO2-Einsparungen transparent darstellt. Wir kümmern uns um den schlüsselfertigen Bau und sichern auf Wunsch auch den langfristig effizienten Anlagen-Betrieb durch regelmäßige Online-Überwachung. Starten Sie für Ihr persönliches Angebot direkt online und kontaktieren Sie uns. Willkommen. Wie heißen Sie? weiter Diese Feld nicht ausfüllen! Ihre Online-Anfrage Anrede * --- Bitte auswählen --- Herr Frau divers Vorname * Name * E-Mail * Grund für Kontaktaufnahme * Allgemeine Anfrage Photovoltaik / Batteriespeicher (Privat) Photovoltaik / Batteriespeicher (Gewerbe) Elektro-Mobilität Mieterstrom Wärmelieferung Energiemanagement Ihre Nachricht * Datenschutzerklärung * Ich habe die Datenschutzerklärung zur Kenntnis genommen.* Diese Feld nicht ausfüllen! Kundenservice Tel: 02056 / 590-81 E-Mail:­ kundenservice@stadtwerke-heiligenhaus.de Störung melden (24 Std.) Tel.: 02056 / 590-90 Sitemap Impressum Datenschutz Hinweisgeberschutzgesetz zum Seitenanfang",
+  "felder": [
+    {
+      "art": "text",
+      "name": "tx_indexedsearch_pi2[search][sword]",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "tx_indexedsearch_pi2[search][submitButton]",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][willkommenwieheiensie]",
+      "label": "Willkommen. Wie heißen Sie?"
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][wievielepersonenlebeninihremhaushalt",
+      "label": "Wie viele Personen leben in Ihrem Haushalt?"
+    },
+    {
+      "art": "radio",
+      "name": "tx_powermail_pi1[field][marker_02]",
+      "label": "30%"
+    },
+    {
+      "art": "radio",
+      "name": "tx_powermail_pi1[field][marker_02]",
+      "label": "50%"
+    },
+    {
+      "art": "radio",
+      "name": "tx_powermail_pi1[field][marker_02]",
+      "label": ">70%"
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][vorname]",
+      "label": "Vorname*"
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][name_01]",
+      "label": "Name*"
+    },
+    {
+      "art": "email",
+      "name": "tx_powermail_pi1[field][e_mail]",
+      "label": "E-Mail*"
+    },
+    {
+      "art": "tel",
+      "name": "tx_powermail_pi1[field][mobilnummer]",
+      "label": "Mobilnummer"
+    },
+    {
+      "art": "checkbox",
+      "name": "tx_powermail_pi1[field][datenschutzerklrung][]",
+      "label": "Ich habe die Datenschutzerklärung zur Kenntnis genommen.*"
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][__hp]",
+      "label": "Diese Feld nicht ausfüllen!"
+    },
+    {
+      "art": "select-one",
+      "name": "tx_powermail_pi1[field][anrede]",
+      "label": "Anrede*"
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][vorname]",
+      "label": "Vorname*"
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][name]",
+      "label": "Name*"
+    },
+    {
+      "art": "email",
+      "name": "tx_powermail_pi1[field][e_mail]",
+      "label": "E-Mail*"
+    },
+    {
+      "art": "select-one",
+      "name": "tx_powermail_pi1[field][grundfrkontaktaufnahme]",
+      "label": "Grund für Kontaktaufnahme*"
+    },
+    {
+      "art": "textarea",
+      "name": "tx_powermail_pi1[field][ihrenachricht]",
+      "label": "Ihre Nachricht*"
+    },
+    {
+      "art": "checkbox",
+      "name": "tx_powermail_pi1[field][allgm_datenschutzerklrung][]",
+      "label": "Ich habe die Datenschutzerklärung zur Kenntnis genommen.*"
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][__hp]",
+      "label": "Diese Feld nicht ausfüllen!"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "b6a15f5c-ee4d-4dc9-b57e-51068ce0b4f4.png"
+}

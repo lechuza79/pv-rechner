@@ -1,0 +1,219 @@
+{
+  "id": "d91b39bd-8d89-4a92-934f-7b3756ff82ce",
+  "name": "Stadtwerke Warburg GmbH",
+  "url": "https://service.stadtwerke-warburg.de/service/balkonkraftwerk",
+  "vermutet": "rechner-mit-leadfunnel",
+  "abruf": "ok",
+  "titel": "Anmeldung Balkonkraftwerk | Stadtwerke Warburg GmbH",
+  "text": "Anmeldung Balkonkraftwerk Schritt 1 von 6 - Anlagenbetreiber & -standort 16% Anlagenbetreiber & -standort Privatperson/Unternehmen Bitte wählen ... Unternehmen Privatperson Anrede Bitte wählen ... keine Angabe Herr Frau Vorname Nachname Straße Hausnummer PLZ Ort E-Mail Adresse Telefon Bitte geben Sie an, wie wir Sie bei Unklarheiten oder Nachfragen erreichen können: Bitte wählen ... nur per E-Mail nur telefonisch per E-Mail oder telefonisch Eingaben zwischenspeichern Weiter",
+  "felder": [
+    {
+      "art": "select-one",
+      "name": "betreiber_typ",
+      "label": "Privatperson/Unternehmen"
+    },
+    {
+      "art": "text",
+      "name": "betreiber_firma",
+      "label": "Unternehmen"
+    },
+    {
+      "art": "select-one",
+      "name": "betreiber_anrede",
+      "label": "Anrede"
+    },
+    {
+      "art": "text",
+      "name": "betreiber_vorname",
+      "label": "Vorname"
+    },
+    {
+      "art": "text",
+      "name": "betreiber_nachname",
+      "label": "Nachname"
+    },
+    {
+      "art": "text",
+      "name": "betreiber_strasse",
+      "label": "Straße"
+    },
+    {
+      "art": "text",
+      "name": "betreiber_hausnummer",
+      "label": "Hausnummer"
+    },
+    {
+      "art": "text",
+      "name": "betreiber_plz",
+      "label": "PLZ"
+    },
+    {
+      "art": "text",
+      "name": "betreiber_ort",
+      "label": "Ort"
+    },
+    {
+      "art": "email",
+      "name": "betreiber_email",
+      "label": "E-Mail Adresse"
+    },
+    {
+      "art": "text",
+      "name": "betreiber_telefon",
+      "label": "Telefon"
+    },
+    {
+      "art": "select-one",
+      "name": "rueckfrage_art",
+      "label": "Bitte geben Sie an, wie wir Sie bei Unklarheiten oder Nachfragen erreichen könne"
+    },
+    {
+      "art": "text",
+      "name": "module_hersteller",
+      "label": "Hersteller"
+    },
+    {
+      "art": "text",
+      "name": "module_typ",
+      "label": "TypGeben Sie hier den Typ oder das Modell der PV-Anlage, der Module bzw. der Erz"
+    },
+    {
+      "art": "number",
+      "name": "module_anzahl",
+      "label": "Anzahl Module"
+    },
+    {
+      "art": "number",
+      "name": "module_kwp",
+      "label": "Gesamtleistung in Wp (max. 2.000 Wp)"
+    },
+    {
+      "art": "number",
+      "name": "wechselrichter_kw",
+      "label": "Gesamtleistung Wechselrichter (max. 800 Watt)"
+    },
+    {
+      "art": "radio",
+      "name": "zaehler_status",
+      "label": "Ja"
+    },
+    {
+      "art": "radio",
+      "name": "zaehler_status",
+      "label": "Nein"
+    },
+    {
+      "art": "radio",
+      "name": "zaehler_status",
+      "label": "weiß nicht"
+    },
+    {
+      "art": "text",
+      "name": "zaehler_nummer",
+      "label": "Zählernummer"
+    },
+    {
+      "art": "date",
+      "name": "zaehler_ablesedatum",
+      "label": "Ablesedatum"
+    },
+    {
+      "art": "number",
+      "name": "zaehler_stand_180",
+      "label": "Zählerstand Bezug (1.8.0)"
+    },
+    {
+      "art": "number",
+      "name": "zaehler_stand_280",
+      "label": "Zählerstand Einspeisung (2.8.0)"
+    },
+    {
+      "art": "date",
+      "name": "nutzung_ab",
+      "label": "Die Nutzung der Erzeugungsanlage ist geplant ab"
+    },
+    {
+      "art": "radio",
+      "name": "schon_registriert",
+      "label": "Ja"
+    },
+    {
+      "art": "radio",
+      "name": "schon_registriert",
+      "label": "Nein"
+    },
+    {
+      "art": "date",
+      "name": "registrierung_am",
+      "label": "Die Registrierung wird erfolgen am"
+    },
+    {
+      "art": "date",
+      "name": "registrierung_ab",
+      "label": "Die Registrierung erfolgte am"
+    },
+    {
+      "art": "checkbox",
+      "name": "bestaetigung_naschutz",
+      "label": "Der Betreiber bestätigt, dass ein entsprechendes Einheiten- und NA-Schutz-Zertif"
+    },
+    {
+      "art": "radio",
+      "name": "einspeisung_ja_nein",
+      "label": "Ja. Für die in das öffentliche Netz eingespeiste Energie beanspruche ich die ges"
+    },
+    {
+      "art": "radio",
+      "name": "einspeisung_ja_nein",
+      "label": "Nein. Ich beabsichtige keine Energie in das öffentliche Netz einzuspeisen"
+    },
+    {
+      "art": "text",
+      "name": "iban",
+      "label": "IBAN"
+    },
+    {
+      "art": "text",
+      "name": "bic",
+      "label": "BIC"
+    },
+    {
+      "art": "text",
+      "name": "steuernummer",
+      "label": "Steuernummer"
+    },
+    {
+      "art": "radio",
+      "name": "vorsteuerabzugsberechtigt",
+      "label": "Ja"
+    },
+    {
+      "art": "radio",
+      "name": "vorsteuerabzugsberechtigt",
+      "label": "Nein"
+    },
+    {
+      "art": "checkbox",
+      "name": "bestaetigung_keinezahlungsansprueche_einspeisung",
+      "label": "Sollte es zur Einspeisung kommen, so erkläre ich hiermit, dass ich für die ins ö"
+    },
+    {
+      "art": "checkbox",
+      "name": "erklaerung_dsgvo",
+      "label": "Ich bin damit einverstanden, dass die von mir eingegeben Daten DSGVO-konform ges"
+    },
+    {
+      "art": "checkbox",
+      "name": "erklaerung_datenschutz",
+      "label": "Ich habe die Datenschutzerklärung gelesen"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": true,
+    "pflichtprozess": false
+  },
+  "bild": "d91b39bd-8d89-4a92-934f-7b3756ff82ce.png"
+}

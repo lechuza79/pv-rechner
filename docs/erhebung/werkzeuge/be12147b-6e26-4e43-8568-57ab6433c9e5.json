@@ -1,0 +1,44 @@
+{
+  "id": "be12147b-6e26-4e43-8568-57ab6433c9e5",
+  "name": "Netze Duisburg GmbH",
+  "url": "https://www.netze-duisburg.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Startseite - Netze Duisburg",
+  "text": "Zum Hauptinhalt springen Skip to page footer Anschließen Netz nutzen PV-Anlagen Zähler Servicewelt Über uns Kontakt Suche Karriere Unsere Portale Willkommen bei Ihren Netzen Duisburg Wir sind der örtliche Messstellenbetreiber für Duisburg und arbeiten täglich rund um die Uhr an der Sicherung und dem Ausbau leistungsstarker Netze. Haben Sie ein Anschreiben von uns erhalten? Zähler auswechseln oder Zählerstand ablesen? Hier informieren wir Sie, was als nächstes zu tun ist. Ihr Zähler soll ausgewechselt werden Sie haben eine Ankündigung bekommen, dass Ihr Stromzähler im Zuge des Smart Meter Rollouts ausgewechselt werden soll? Mehr Informationen dazu finden Sie hier: Mehr Informationen zum Smart Meter Rollout Sie sollen Ihren Zähler selbst ablesen Sie wurden per Anschreiben dazu aufgefordert, Ihren Zählerstand abzulesen und an uns zu übermitteln? Wir beantworten Ihre Fragen: Mehr Informationen zur Selbstablesung Störungsmelder für Duisburg Bei Ihnen ist der Strom oder die Gasversorgung ausgefallen? Oder Sie möchten wissen, wo/warum demnächst Netzbaumaßnahmen stattfinden? Auf unserer Netzstörungen-Seite sind alle Meldungen zu Versorgungsstörungen im Netzgebiet aufgeführt. Sie erfahren, wie lange die Entstörung voraussichtlich dauern wird. Auch geplante Versorgungsunterbrechungen sind hier aufgelistet. Unsere Baustellen-Seite verschafft Ihnen einen Überblick über alle Baumaßnahmen, die wir im Duisburger Stadtgebiet gerade vornehmen und demnächst vornehmen werden. Sie erfahren auch, wann die Baumaßnahmen voraussichtlich beendet werden. Zu den Netzstörungen Zur Baustellenübersicht Impressum Kontakt Datenschutz Disclaimer Beschwerde & Schlichtung Medienservice Barrierefreiheit © 2025 Netze Duisburg Datenschutzeinstellungen Auf unserer Webseite werden Cookies verwendet. Einige davon werden zwingend benötigt, während es uns andere ermöglichen, Ihre Nutzererfahrung auf unserer Webseite zu verbessern. Essenziell Analyse Externe Inhalte Alle akzeptieren Speichern & schließen Nur essenzielle Cookies akzeptieren Essenziell Essenzielle Cookies werden für grundlegende Funktionen der Webseite benötigt. Dadurch ist gewährleistet, dass die Webseite einwandfrei funktioniert. Name cookie_optin Anbieter sgalinski Internet Services Laufzeit 1 Jahr Zweck Dieses Cookie wird verwendet, um Ihre Cookie-Einstellungen für diese Website zu speichern. Cookie-Informationen anzeigen Analyse Diese Cookies werden zu Analysezwecken zur Optimierung der Webseite und zu Marketingzwecken genutzt. Name _pk_id Anbieter Duisburger Versorgungs- und Verkehrsgesellschaft mbH Laufzeit 13 Monate Zweck speichert einige wenige Details über den Nutzer, z.B. eine eindeutige Besucher ID Name _pk_ses Anbieter Duisburger Versorgungs- und Verkehrsgesellschaft mbH Laufzeit 30 Min Zweck kurzlebiger Cookie um deren des aktuellen Besuchs zu speichern Cookie-Informationen anzeigen Externe Inhalte Wir verwenden auf unserer Website externe Inhalte, um Ihnen zusätzliche Informationen anzubieten. Name __Secure-ENID Anbieter youtube Laufzeit 13 Monate Zweck Dieses Cookie wird von Google verwendet, um betrügerische Login-Versuche zu verhindern. Es enthält eine User ID, die auch für Statistik- und Marketing-Zwecke nach einem erfolgreichen Login verwendet wird. Cookie-Informationen anzeigen Weitere Informationen anzeigen Impressum | Datenschutz",
+  "felder": [
+    {
+      "art": "text",
+      "name": "tx_indexedsearch_pi2[search][sword]",
+      "label": "Suchen nach"
+    },
+    {
+      "art": "submit",
+      "name": "tx_indexedsearch_pi2[search][submitButton]",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "cookies[]",
+      "label": "Essenziell"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookies[]",
+      "label": "Analyse"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookies[]",
+      "label": "Externe Inhalte"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "be12147b-6e26-4e43-8568-57ab6433c9e5.png"
+}

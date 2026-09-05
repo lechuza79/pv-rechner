@@ -1,0 +1,76 @@
+{
+  "id": "50ac6d03-b57f-4ed7-9190-75d5cc654147",
+  "name": "Oberhausener Netzgesellschaft mbH",
+  "url": "http://www.ob-netz.de/",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Startseite (OB-Netz)",
+  "text": "Zustimmung Details Über Cookies Datenschutzeinstellungen Wir bitten Sie um Ihre Einwilligung, Ihr Nutzungsverhalten auf unseren Seiten mit Hilfe von Google Analytics und Facebook-Pixel auswerten zu dürfen. Das dient dazu, unsere Seiten verbessern und optimal zu gestalten und um Ihnen von Facebook zugeschnittene Werbung anzeigen zu lassen. Dazu werden Cookies und Drittanbier eingesetzt und Ihre Daten in die USA übermittelt. Impressum | Datenschutz Einwilligungsauswahl Notwendig Präferenzen Statistiken Werbung Ablehnen Auswahl erlauben Alle zulassen KARRIERE KONTAKT NETZE MESSSTELLENBETRIEB DIENSTLEISTUNGEN & SERVICE UNTERNEHMEN WARNUNG VOR WERBEAKTION ZUM ZÄHLERWECHSEL mehr lesen SO ERREICHEN SIE UNS: InfoLine 0208 835 3000 Störungsannahme: Gas 0208 835 3535 Strom/Öffentliche Beleuchtung 0208 835 4545 Fernwärme 0208 835 6565 SICHERE VERSORGUNG FÜR UNSERE STADT WILLKOMMEN BEI DER OBERHAUSENER NETZGESELLSCHAFT MBH AKTUELLE STÖRUNGEN UND BAUSTELLENINFOS Hier erfahren Sie mehr! Zu den Infos STROMNETZ Die Oberhausener Netzgesellschaft mbH plant, baut und betreibt in Oberhausen das Stromverteilnetz. ZÄHLERSTAND DURCHGEBEN Jetzt durchgeben ABLESETERMINE Aktuelle Liste der Ablesetermine Termin finden GASNETZ Zu den Infos FERNWÄRMENETZ Zu den Infos Zu den Infos MESSSTELLENBETRIEB Auf dieser Seite finden Sie aktuelle Informationen rund um das Thema Messstellen- und Zählerwesen. Zudem haben Sie hier die Möglichkeit, Ihren Zählerstand online einzugeben. DOWNLOADS LISTE DER BAUSTELLEN Aktuelle Liste der Baustellen INFORMATIONEN FÜR BAUHERREN Zur Bauherrenmappe FACHFIRMEN STROM Zu den Listen Impressum Datenschutzinformation Barrierefreiheit Compliance",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonNecessary",
+      "label": "Notwendig"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonPreferences",
+      "label": "Präferenzen"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonStatistics",
+      "label": "Statistiken"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonMarketing",
+      "label": "Werbung"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonNecessaryInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonPreferencesInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonStatisticsInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonMarketingInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyContentCheckboxPersonalInformation",
+      "label": "Meine persönlichen Daten nicht verkaufen oder weitergeben"
+    },
+    {
+      "art": "search",
+      "name": "tx_kesearch_pi1[sword]",
+      "label": ""
+    },
+    {
+      "art": "search",
+      "name": "tx_kesearch_pi1[sword]",
+      "label": ""
+    }
+  ],
+  "rahmen": [
+    "https://consentcdn.cookiebot.eu/sdk/bc-v4.min.html"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "50ac6d03-b57f-4ed7-9190-75d5cc654147.png"
+}

@@ -1,0 +1,29 @@
+{
+  "id": "de5719bc-dab3-4ad4-9867-13dc92120d31",
+  "name": "EVIP GmbH",
+  "url": "https://www.evip.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Startseite | EVIP",
+  "text": "Zum Hauptinhalt springen Karriere Suche Stromnetze Gasnetze Dampfnetz/Druckluftnetz Downloads Unternehmen Veröffentlichungspflichten Übersicht Netzanschluss Anschlussnutzung Messstellenbetrieb/ Messstellenbetriebsgesetz Stromerzeugung Netznutzung Lieferanten/Händler Messstellenbetreiber Allgemeine Bedingungen Übersicht Netzanschluss/Anschlussnutzung Netzanschluss Anschlussnutzung Netznutzung Lieferanten/Transportkunden Messstellenbetreiber Allgemeine Bedingungen Technische Mindestanforderungen Übersicht Dampfnetz Druckluftnetz Übersicht Download-Center Übersicht Porträt Geschäftsführung Produkte & Services Projekte & Referenzen Zertifikate Planauskunft Gasmangellage FAQ Compliance Übersicht Zahlen & Fakten Gleichbehandlungsprogramm Hinweise zur Energieeffizienz Hinweise zur Datenschutz-Information Wonach suchen Sie? Schnelleinstieg Stromnetze Wissenswertes über unseren Strom Mehr erfahren Gasnetze Wir stellen das für Ihre Anforderungen erforderliche Gasnetz zur Verfügung. Mehr erfahren Ihr Partner bei der Industriestandortversorgung Strom-, Erdgas-, Dampf- und Druckluftnetze. Download-Center Zahlen & Fakten Planauskunft Lieferanten, Händler, Transportkunden Belieferung Ihrer Strom-Kunden in unseren Verteilernetzen Unsere Netze werden Ihnen dafür diskriminierungsfrei auf Basis eines Lieferantenrahmenvertrages nach § 20 Abs. 1a EnWG, welcher die Abwicklung der Belieferung der Kunden mit elektrischer Energie regelt, zur Verfügung gestellt. Lieferanten/Händler Belieferung Ihrer Gas-Kunden in unseren Verteilernetzen. Unsere Netze werden Ihnen dafür diskriminierungsfrei auf Basis eines Lieferantenrahmenvertrages nach § 20 Abs. 1b EnWG, welcher die Modalitäten der Transportabwicklung regelt, zur Verfügung gestellt. Lieferanten/Transportkunden Dampfnetz/Druckluftnetz mehr erfahren Hilfe & Kontakt UNSERE ZERTIFIKATE KONTAKT EVIP GmbH Niels-Bohr-Straße 2 06749 Bitterfeld-Wolfen Anfrageformular SERVICE-LINKS Download-Center Zahlen und Fakten Produkte und Services Allgemeine Bedingungen Impressum Datenschutzerklärung Datenschutzeinstellungen Rechtliche Hinweise Kontakt Sitemap",
+  "felder": [
+    {
+      "art": "search",
+      "name": "searchQuery",
+      "label": "Suche"
+    },
+    {
+      "art": "text",
+      "name": "search-bar",
+      "label": "Wonach suchen Sie?"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "de5719bc-dab3-4ad4-9867-13dc92120d31.png"
+}

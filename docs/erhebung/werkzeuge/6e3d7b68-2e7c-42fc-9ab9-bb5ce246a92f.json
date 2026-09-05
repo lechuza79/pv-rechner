@@ -1,0 +1,144 @@
+{
+  "id": "6e3d7b68-2e7c-42fc-9ab9-bb5ce246a92f",
+  "name": "EHINGER ENERGIE GmbH & Co. KG",
+  "url": "https://www.ehinger-energie.de/gewerbekunde/pv/",
+  "vermutet": "rechner-mit-leadfunnel",
+  "abruf": "ok",
+  "titel": "",
+  "text": "Energie von Ihrem Firmen­dach – mit Photovoltaik Individuelle Photo­voltaik­an­lagen für Ihr Gewerbe Gut für die Umwelt, Ihre Außendarstellung und Ihr Unternehmen: Mit einer individuellen Photovoltaikanlage von EHINGER ENERGIE machen Sie Ihr Firmengebäude fit für die Zukunft. Unsere Photovoltaikanlagen erzeugen so viel Strom, dass Sie einen großen Teil Ihres Verbrauchs decken können. Die Größe der Anlage stimmen wir dabei perfekt auf den Stromverbrauch Ihrer Firma ab – so erreichen Sie eine schnelle Amortisationszeit. Mit Hilfe eines zusätzlichen Batteriespeichers lässt sich überschüssiger Solarstrom speichern und auch dann nutzen, wenn die Sonne nicht scheint. Ist trotzdem noch Solarstrom übrig, kann dieser in das öffentliche Netz eingespeist und vergütet werden. So versorgen Sie Ihre Firma nicht nur umweltschonend mit Energie, Sie sparen auch langfristig und nachhaltig. Zudem werten Sie Ihre Produkte auf, da diese nun nachhaltiger mit Sonnenenergie hergestellt werden. So einfach selbst Strom erzeugen – mit EHINGER ENERGIE Flachdach­anlage Firma Liebherr Ehingen MEHR DAZU Flachdach­anlage Firma Liebherr Ehingen Anlagengröße: 30 kWp Ausrichtung: Aufständerung Ost/West Land­wirtschaft­liches Gebäude mit Trapezblech MEHR DAZU Landwirtschaft­liches Gebäude mit Trapezblech Anlagengröße: 39,65 kWp Photovoltaikanlage mit einer Trapezblech Unterkonstruktion Ausrichtung: Südausrichtung Flachdach­anlage öffentliche Einrichtung MEHR DAZU Flachdach­anlage öffentliche Einrichtung Anlagengröße: 9,9 kWp Photovoltaikanlage Ausrichtung: Südaufständerung Unsere Komponenten Sorgfältig ausgewählte Komponenten garantieren eine hohe Effizienz und eine lange Haltbarkeit. Bei der Auswahl der idealen Anlage legen wir Wert auf regionale Produkte. Deshalb beziehen wir unsere Module direkt aus Laupheim von AxSun Solar – und bieten Ihnen so Photovoltaik aus deutscher Herstellung mit einer Premium Produktgarantie von bis zu 25 Jahren. Photovoltaikmodule AxSun Solar Datenblatt Module AxSun Wechselrichter SMA Datenblatt SMA Batteriespeicher BYD Datenblatt BYD 1 2 3 Kontaktdaten Anrede* – Bitte auswählen – Frau Herr keine Angabe Titel Vorname* Nachname* E-Mail-Adresse* Telefonnummer Ihre Wohnadresse: Straße* Hausnummer* Postleitzahl* Wohnort* Pflichtfelder sind mit * gekennzeichnet. WEITER Sie sehen gerade einen Platzhalterinhalt von Standard. Um auf den eigentlichen Inhalt zuzugreifen, klicken Sie auf den Button unten. Bitte beachten Sie, dass dabei Daten an Drittanbieter weitergegeben werden. Inhalt entsperren Weitere Informationen Unsere Produktvielfalt EHINGER STROM GEWERBE MEHR DAZU EHINGER GAS GEWERBE MEHR DAZU Photovoltaik­lösungen für Ihr Zuhause MEHR DAZU Tauchen Sie ein in die Welt der Elektro­mobilität MEHR DAZU EHINGER ENERGIE GMBH & CO. KG Groggentalgasse 5 89584 Ehingen (Donau) Deutschland Telefon: 0 7391/589 – 0 Fax: 0 7391/589 – 48 E-Mail: info@ehinger-energie.de PRODUKTE Strom Gas PV Zählerstand eingeben Tarifrechner QUICKLINKS Vertrag kündigen FAQ Energieentlastungen 24-Stunden-Lieferantenwechsel Öffnungszeiten und Kontakt UNTERNEHMEN Presse & News Unser Netz Karriere ÖFFNUNGSZEITEN Montag: 9.00 – 12.00 Uhr Dienstag: 9.00 – 12.00 und 13.00 – 16.30 Uhr Mittwoch: Geschlossen Donnerstag: 9.00 – 12.00 und 13.00 – 16.30 Uhr Freitag: 9.00 – 12.00 Uhr STÖRUNGSNUMMER Wir sind immer für Sie erreichbar: 0 8005 8958 90 IMPRESSUM DATENSCHUTZERKLÄRUNG AGB BARRIEREFREIHEITSERKLÄRUNG COOKIE-RICHTLINIE (EU) DOWNLOADS VERTRAG WIDERRUFEN Youtube Instagram Facebook © Copyright 2024 Ehinger Energie GmbH & Co. KG. Alle Rechte vorbehalten.",
+  "felder": [
+    {
+      "art": "text",
+      "name": "s",
+      "label": ""
+    },
+    {
+      "art": "select-one",
+      "name": "anrede_",
+      "label": "Anrede* – Bitte auswählen –FrauHerrkeine Angabe"
+    },
+    {
+      "art": "text",
+      "name": "titel_",
+      "label": "Titel"
+    },
+    {
+      "art": "text",
+      "name": "vorname_",
+      "label": "Vorname*"
+    },
+    {
+      "art": "text",
+      "name": "nachname_",
+      "label": "Nachname*"
+    },
+    {
+      "art": "email",
+      "name": "e-mail-adresse_",
+      "label": "E-Mail-Adresse*"
+    },
+    {
+      "art": "tel",
+      "name": "telefonnummer_",
+      "label": "Telefonnummer"
+    },
+    {
+      "art": "text",
+      "name": "strasse_",
+      "label": "Straße*"
+    },
+    {
+      "art": "text",
+      "name": "hausnummer_",
+      "label": "Hausnummer*"
+    },
+    {
+      "art": "text",
+      "name": "postleitzahl_",
+      "label": "Postleitzahl*"
+    },
+    {
+      "art": "text",
+      "name": "wohnort_",
+      "label": "Wohnort*"
+    },
+    {
+      "art": "radio",
+      "name": "sind-sie-mittags-zuhause_",
+      "label": "Ja"
+    },
+    {
+      "art": "radio",
+      "name": "sind-sie-mittags-zuhause_",
+      "label": "Nein"
+    },
+    {
+      "art": "number",
+      "name": "jahresverbrauch-in-kwh_",
+      "label": "Jahresverbrauch in kWh"
+    },
+    {
+      "art": "radio",
+      "name": "moechten-sie-einen-batteriespeicher_",
+      "label": "Ja"
+    },
+    {
+      "art": "radio",
+      "name": "moechten-sie-einen-batteriespeicher_",
+      "label": "Nein"
+    },
+    {
+      "art": "textarea",
+      "name": "mitteilung_",
+      "label": "Mitteilung"
+    },
+    {
+      "art": "file",
+      "name": "bild-von-der-zu-belegenden-dachflaeche_",
+      "label": "Bild von der zu belegenden Dachfläche JPG, PNG, PDF - Max. 3MB"
+    },
+    {
+      "art": "file",
+      "name": "bild-von-der-ziegeleindeckung_",
+      "label": "Bild von der Ziegeleindeckung JPG, PNG, PDF - Max. 3MB"
+    },
+    {
+      "art": "file",
+      "name": "bild-vom-geoeffneten-zaehlerschrank_",
+      "label": "Bild vom geöffneten Zählerschrank JPG, PNG, PDF - Max. 3MB"
+    },
+    {
+      "art": "file",
+      "name": "gebaeudegrundriss-bauplaene_",
+      "label": "Gebäudegrundriss, Baupläne JPG, PNG, PDF - Max. 3MB"
+    },
+    {
+      "art": "checkbox",
+      "name": "checkbox-datenschutz[]",
+      "label": "Hiermit bestätige ich, dass ich die Datenschutzbestimmungen gelesen habe und erk"
+    },
+    {
+      "art": "checkbox",
+      "name": "checkbox-vollmacht[]",
+      "label": "Hiermit erteile ich die Vollmacht, dass mein Netzanschluss geprüft werden darf.*"
+    },
+    {
+      "art": "text",
+      "name": "captcha-1",
+      "label": "Captcha (Geben Sie den Code ein)"
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": "Bilder Damit wir prüfen können, ob Ihr Dach für eine Photovoltaikanlage geeignet"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": true,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": true,
+    "pflichtprozess": false
+  },
+  "bild": "6e3d7b68-2e7c-42fc-9ab9-bb5ce246a92f.png"
+}

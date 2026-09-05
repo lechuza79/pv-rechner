@@ -1,0 +1,99 @@
+{
+  "id": "410b2e31-6c71-43ae-a0b2-a092a2b15615",
+  "name": "Versorgungsbetriebe Bordesholm GmbH",
+  "url": "https://www.vb-bordesholm.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Start - Versorgungsbetriebe Bordesholm",
+  "text": "Ihre VBB Energie E-Mobility Wasser Unsere Netze Glasfaser Kundenportale Aktuelles Kontakt Zurück Vorwärts Zurück ••••••••• Vorwärts Aktuelles 31 Aug „Näher Dran“ Artikel und Infos zu unserer Homepage 13 Aug Vergünstigter Strom für Wärmepumpen und E-Ladesäulen! 29 Jul Warnung vor unseriösen Vertriebsmethoden! VBB fragt KEINE Zählernummer ab! 15 Jul Trotz sicherer Wasserversorgung Wasserverbrauch reduzieren Ökostrom Privat Geschäftlich PLZ* Jahresverbrauch in kWh* Anzahl Personen im Haushalt 1 2 3 4 5+ Erdgas Privat Geschäftlich PLZ* Jahresverbrauch in kWh* Wählen Sie Ihre Gasverbrauchsfläche 50 m2 100 m2 200 m2 Glasfaser Mit Lichtgeschwindigkeit ins Netz! Mit unseren Angeboten erhalten Sie volle Flexibilität! Sie zahlen nur für das, was Sie auch nutzen: Ab sofort sind Internet, Telefon und TV auch einzeln buchbar. In den folgenden Regionen verfügbar Bordesholm Blumenthal Grevenkrug Groß Buchwald Hoffeld Reesdorf Schmalstede Sören Kundenportale Mit dem Kundenportal für Energie & Wasser oder Kundencenter Glasfaser haben Sie die Möglichkeit, auch außerhalb unserer Geschäftszeiten, online Ihre persönlichen Daten abzu-fragen, zu ergänzen und verwalten – einfach, schnell und sicher. Zählerstandsmeldung Anmelden VBB Start Herzlich Willkommen bei der VBB! Wir, die Versorgungsbetriebe Bordesholm, sind der Ansprechpartner für die komplette Versorgung mit Strom, Gas, Fernwärme, Trinkwasser und Glasfaser in Bordesholm und einigen Umlandgemeinden. Als kommunaler Energieversorger liegt uns der direkte Kontakt und die Kommunikation mit unseren Kunden sehr am Herzen. Unsere kompetenten Mitarbeiter sind persönlich für Sie da und stehen Ihnen für Fragen und Anliegen zur Verfügung. Wir haben uns zum Ziel gesetzt, unsere Versorgung schrittweise vollständig auf erneuerbare Energien umzustellen. Das bedeutet langfristig eine vollständige Substitution von Erdgas und konventionell erzeugtem Strom und Wärme. Im Strombereich ist es bereits realisiert worden. Es liegt inzwischen 100% Erneuerbar erzeugter Strom am eigenen Stromnetz der Versorgungsbetriebe Bordesholm GmbH an. Mehr zu unserem zertifizierten Ökostrom erfahren Sie hier. Sehenswertes bei der VBB Die Versorgungsbetriebe Bordesholm GmbH ist für die Versorgung mehrerer Sparten in Bordesholm und einigen Umlandgemeinden zuständig. Möchten Sie mehr über die Trinkwasseraufbereitung im Bordesholmer Wasserwerk, den Aufbau unseres Batteriespeichers oder die Funktionalität unseres EnergiePlus-Hauses erfahren? Wir bieten Ihnen gerne folgende Besichtigungen an: Wasserwerk Batteriespeicher EnergiePlus-Haus (neues VBB-Gebäude) VBB Lasershow Jetzt Besichtigungstermin anfragen Energiespartipps Hier finden Sie einige Energiespartipps vom ASEW Kunden Bonusprogramm Wir sind Partner Kontakt Versorgungsbetriebe Bordesholm GmbH Bahnhofstr. 13, 24582 Bordesholm Tel.: 043 22 69 77-0 | Fax.: 043 22 69 77-13 info@vb-bordesholm-gmbh.de Impressum | Datenschutz Barrierefreiheit Cookie-Einstellungen Kundenportale ► Kundenportal ► Kundencenter Glasfaser ► Zählerstandsmeldung ► Ansprechpartner ► SEPA-Lastschriftmandat ► Hier Verträge kündigen ► Hier Verträge widerrufen Mit KNÖVI näher dran! ► „Näher Dran“ Artikel und Infos zu unserer Homepage ► Vergünstigter Strom für Wärmepumpen und E-Ladesäulen! ► Warnung vor unseriösen Vertriebsmethoden! VBB fragt KEINE Zählernummer ab! ► Trotz sicherer Wasserversorgung Wasserverbrauch reduzieren",
+  "felder": [
+    {
+      "art": "search",
+      "name": "keywords",
+      "label": "Suchbegriffe"
+    },
+    {
+      "art": "submit",
+      "name": "ctrl_submit_24",
+      "label": "Suchbegriffe"
+    },
+    {
+      "art": "radio",
+      "name": "customerType",
+      "label": "Privat"
+    },
+    {
+      "art": "radio",
+      "name": "customerType",
+      "label": "Geschäftlich"
+    },
+    {
+      "art": "text",
+      "name": "PLZ",
+      "label": "Pflichtfeld PLZ*"
+    },
+    {
+      "art": "text",
+      "name": "Jahresverbrauch",
+      "label": "Pflichtfeld Jahresverbrauch in kWh*"
+    },
+    {
+      "art": "range",
+      "name": "inputStrom",
+      "label": "Anzahl Personen im Haushalt"
+    },
+    {
+      "art": "button",
+      "name": "",
+      "label": ""
+    },
+    {
+      "art": "radio",
+      "name": "customerType",
+      "label": "Privat"
+    },
+    {
+      "art": "radio",
+      "name": "customerType",
+      "label": "Geschäftlich"
+    },
+    {
+      "art": "text",
+      "name": "PLZ",
+      "label": "Pflichtfeld PLZ*"
+    },
+    {
+      "art": "text",
+      "name": "Jahresverbrauch",
+      "label": "Pflichtfeld Jahresverbrauch in kWh*"
+    },
+    {
+      "art": "range",
+      "name": "inputGas",
+      "label": "Wählen Sie Ihre Gasverbrauchsfläche"
+    },
+    {
+      "art": "button",
+      "name": "",
+      "label": ""
+    },
+    {
+      "art": "select-one",
+      "name": "Anschlussgebiet",
+      "label": "In den folgenden Regionen verfügbar"
+    },
+    {
+      "art": "button",
+      "name": "",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "410b2e31-6c71-43ae-a0b2-a092a2b15615.png"
+}

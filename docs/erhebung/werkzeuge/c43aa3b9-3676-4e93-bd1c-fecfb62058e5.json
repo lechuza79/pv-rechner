@@ -1,0 +1,24 @@
+{
+  "id": "c43aa3b9-3676-4e93-bd1c-fecfb62058e5",
+  "name": "QuartiersNetz Bayern GmbH",
+  "url": "https://www.swm-infrastruktur.de/einspeisung/erzeugungsanlage-anmelden/photovoltaikanlage-anmelden",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Photovoltaikanlage anmelden",
+  "text": "Zum Inhalt springen Partner Kontakt Netzanschluss Einspeisung Netzzugang Messstellenbetrieb Services Suche Ihr Suchbegriff Suchen Start Einspeisung Erzeugungsanlage anmelden Photovoltaikanlage Photovoltaikanlage anmelden Eine Photovoltaikanlage (PV‑Anlage) bietet die einfache Möglichkeit, eigenständig Strom zu erzeugen und diesen selbst zu verbrauchen oder zu vertreiben. In Kombination mit einem Speicher lässt sich die Eigenverbrauchsquote zudem deutlich steigern. Planen Sie die Errichtung einer eigenen PV‑Anlage mit/ohne Speicher, können Sie diese unter einem der folgenden Links anmelden. Steckersolargeräte Hier finden Sie die Schnellanmeldung für Steckersolargeräte an einem bereits bestehenden Netzanschluss im MaStR: Zum Marktstammdatenregister Hinweis: Steckersolargeräte (sogenannte Balkonkraftwerke) sind durch den verwendeten Wechselrichter in ihrer Leistung auf 800 VA begrenzt und dürfen diese Leistung nicht überschreiten. Die installierte Modulleistung ist auf 2000 Wp begrenzt. Sie sind dazu verpflichtet, Ihr Steckersolargerät im Marktstammdatenregister anzumelden! Photovoltaikanlage Für die Anmeldung von Photovoltaikanlagen nutzen Sie bitte die Anmeldeoptionen und Formulare unter Schritt 1 des Anmeldeprozesses auf dieser Seite: Anmeldung einer Photovoltaikanlage im Netzanschlussportal Erhöhte Vergütung für Volleinspeisung Für Strom aus Solaranlagen ohne Vor-Ort-Verbrauch (Volleinspeisung) kann gemäß § 48 Abs. 2a EEG 2023 eine höhere Vergütung (Volleinspeisungsbonus) beansprucht werden. Dazu muss der Anlagenbetreiber den Netzbetreiber entweder bereits zur Inbetriebnahme oder jeweils bis zum 30. November des Vorjahres darüber informieren, dass er den gesamten im folgenden Kalenderjahr produzierten Strom in das öffentliche Netz einspeisen wird. Soll später der Strom ganz oder teilweise vor Ort verbraucht werden, geht die Vergütung für das gesamte Jahr auf die Grundvergütung zurück. Dies muss dem Netzbetreiber ebenfalls wieder bis zum 30. November des Vorjahres mitgeteilt werden. Erfolgt die Umstellung auf Vor-Ort-Verbrauch ohne diese Meldung, sind für das gesamte Kalenderjahr Sanktionszahlungen in Höhe von 2 EUR pro Kilowatt und Monat an den Netzbetreiber zu leisten. Zur erstmaligen Meldung bei der Inbetriebnahme und für die Umstellung auf Volleinspeisung kann das Formular \"Anmeldung Erhöhte Vergütung für Volleinspeisung bei Solaranlagen\" verwendet werden: Anmeldung Erhöhte Vergütung für Volleinspeisung bei Solaranlagen (PDF, 771 KB) Die Anmeldung beziehungsweise Abmeldung der höheren Vergütung kann auch formlos per E-Mail erfolgen: einspeiser@swm-infrastruktur.de Technische Änderungen des Messkonzepts sind zusätzlich durch eine Installationsunternehmen über das Inbetriebnahmeportal anzumelden: Zum Inbetriebnahmeportal Abrechnungsmöglichkeit bei geringfügigen Verbräuchen von PV‑Anlagen in Volleinspeisung Solaranlagen benötigen nur einen sehr geringen, manchmal kaum messbaren Eigenverbrauch, hauptsächlich für den Betrieb des Wechselrichters, wenn die Sonne nicht scheint. Dieser Eigenverbrauch muss messtechnisch erfasst und einem Lieferanten zugeordnet werden. Da es sich bei einer Volleinspeisung um eine eigenständige Abnahmestelle handelt, wird hier in der Regel auch ein – teilweise recht hoher – Grundpreis erhoben. Das EEG ermöglicht den Eigenverbrauch der Solaranlage mit einer anderen Verbrauchsstelle im selben Gebäude gemeinsam abzurechnen, sodass nur ein Grundpreis fällig wird. Wenn Sie diese Möglichkeit nutzen wollen, senden Sie uns das folgende Formular ausgefüllt zu. Antrag auf Verrechnung des Betriebsverbrauchs einer Solaranlage (PDF, 593 KB) KONTAKT & FAQ Häufig gestellte Fragen und Antworten Hier finden Sie alles Wissenswerte rund um das Thema Erzeugungsanlagen und Einspeiseabrechnung. FAQ Kontakt Weitergehende Fragen? Unsere Ansprechpartner stehen Ihnen selbstverständlich gerne zur Verfügung. Kontakt Impressum Datenschutz Streitbeilegung Compliance & Hinweisgebersystem Barrierefreiheit Sitemap",
+  "felder": [
+    {
+      "art": "text",
+      "name": "suchbegriff",
+      "label": "Ihr Suchbegriff"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": true,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "c43aa3b9-3676-4e93-bd1c-fecfb62058e5.png"
+}

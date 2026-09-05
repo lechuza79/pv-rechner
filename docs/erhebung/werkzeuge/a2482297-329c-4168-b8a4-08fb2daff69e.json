@@ -1,0 +1,69 @@
+{
+  "id": "a2482297-329c-4168-b8a4-08fb2daff69e",
+  "name": "Fürstlich Fugger von Glött´sche Elektrizitätswerk GmbH & Co KG",
+  "url": "http://www.ffew.de/installation/#photovoltaik",
+  "vermutet": "kontaktformular",
+  "abruf": "ok",
+  "titel": "Installation – FFEW",
+  "text": "Zum Inhalt springen Search suchen Hier bewerben in 2 Min.! Marktplatz 4, 87757 Kirchheim · 08266 86100 · info@ffew.de START AKTUELLES 125 JAHRFEIER ELEKTROINSTALLATION STROMVERSORGUNG KARRIERE STELLENANGEBOTE UNTERNEHMEN KONTAKT Elektroinstallation für Privat- und Gewerbekunden Über uns Wir sind ein modern geführter Elektroinstallationsbetrieb im Unterallgäu. Unser Ziel ist es, jedem Kunden eine kompetente, schnelle und zuverlässige Beratung zu bieten sowie ihn bei seinem Vorhaben umfassend zu unterstützen. Das FFEW bietet Ihnen ein breites und fundiertes Leistungsangebot von A bis Z. Ihre Wünsche perfekt zu erfüllen, ist seit 1901 unser Anspruch. Unsere Leistungen im Überblick Antennen- und Satellitentechnik Antennen- und Satellitentechnik Perfekter Empfang garantiert: Wir planen, installieren und warten Ihre Antennen- und Satellitensysteme für beste Bild- und Tonqualität. Vertrauen Sie auf modernste Technik und professionelle Umsetzung. Beleuchtungstechnik E-Check / DGUV V3 Eigenstromversorgungsanlagen Elektroinstallation Elektromobilität Erneuerbare Energien Gebäudeautomation Industriedienstleistungen Kommunikationstechnik Kundendienst Lichtrufsysteme Netzwerktechnik Not- und Sicherheitsbeleuchtung Photovoltaik Schaltanlagenbau Smart Home Videoüberwachungsanlagen Wartung & Service Kontakt Du hast noch Fragen? Melde dich einfach bei Matthias Konrad. E-Mail: info@ffew.de Telefon: 08266/86100 Anrede HerrFrau Vorname Nachname E-Mail-Adresse Betreff Ihre Nachricht (optional) Ich habe die Datenschutzerklärung gelesen und stimme zu. Unsere Referenzen EDV und Fernmeldetechnik Moderne Telekommunikation – Einfach. Sicher. Zukunftsfähig. Die Telekommunikation entwickelt sich schnell – wir sorgen dafür, dass Ihre Telefon- und IP-Anlage immer up to date ist. Mit persönlicher Beratung und professioneller Installation sind Sie bestens vernetzt. Unsere Leistungen: Netzwerkinstallationen Telefonanlagen Damit Sie perfekt vorbereitet sind auf die Zukunft der Kommunikation. Smart Home Smart Home Beleuchtung Als Elektroinstallationsbetrieb, in enger Kooperation mit YES-Company, bringen wir energieeffiziente, langlebige LED-Lösungen in Ihr Zuhause oder Ihr Projekt. Ob maßgeschneiderte Sonderleuchten, Full‑Spectrum‑Stripes mit hoher Farbwiedergabe oder flimmerreduzierte, „gesundere“ Beleuchtung – wir planen, liefern und installieren passgenau. Profitieren Sie von innovativen Details (z. B. magnetische Halterungen) und langjähriger Verfügbarkeit der Komponenten. Jetzt einen Termin vereinbaren und Ihr Lichtkonzept modernisieren. SAT Anlagen Wir erledigen alle Arbeiten rund um Ihren TV-Anschluss. Egal ob DVB-S oder DVBT – wir bringen Sie ans Netz, liefern und montieren Satellitenempfangsanlagen und richten sie natürlich auch aus, damit Sie oder Ihre Mieter einen ungetrübten TV-Empfang genießen können. Wir sind auf folgende Anlagen spezialisiert: Fernsehanlagen Antennenanlagen Satellitenanlagen Kundendienst Funktioniert Ihr Haushaltsgerät nicht mehr richtig oder benötigen Sie ein Neues? Wir führen alle Produkte, die Sie auch im Elektrofachhandel finden. Ihre Vorteile sind jedoch das Preis/Leistungsverhältnis, denn bei uns erhalten Sie Fachberatung und Kundenservice zu einem fairen Preis. Rufen Sie einfach an und wir kümmern uns um Ihr Problem. Photovoltaik Solarstrom – Ihre Energiequelle der Zukunft Nutzen Sie die Kraft der Sonne und produzieren Sie Ihren eigenen Strom – sauber, günstig und unabhängig. Mit unseren Photovoltaik-Anlagen wandeln Sie Sonnenlicht direkt in Energie um, die Sie sofort nutzen, speichern oder ins Netz einspeisen können. Sparen Sie Kosten, schützen Sie die Umwelt und setzen Sie auf eine nachhaltige Zukunft. Solarstrom rechnet sich – wir beraten Sie gern! FFEW Fürstlich Fugger v. Glött‘ sche E-Werk GmbH & Co.KG Marktplatz 4 87757 Kirchheim Tel.: 08266/86100 Mail: info @ ffew.de Web : www.ffew.de Sitemap Start Über uns Elektroinstallation Stromversorgung-Tarife Stromausfall Netz Blogs Dienstleistungen Smart Home EDV und Fernmeldetechnik Beleuchtung SAT Anlagen Kundendienst Photovoltaik Geschäftszeiten Unser Notdienst – ist rund um die Uhr für Sie da! 08266/861048 Laden Mo, Di, Do: 08:00–12:00 & 14:00–17:00 Uhr Mi, Fr: 08:00–12:00 Uhr Büro Mo, Di, Do: 07:00–12:00 & 13:00–17:00 Uhr Mi, Fr: 07:00–12:00 Uhr © 2026 FFEW / Impressum / Datenschutz/ Datenschutzerklärung Kunde Kontakt Facebook Instagram",
+  "felder": [
+    {
+      "art": "search",
+      "name": "s",
+      "label": "Search"
+    },
+    {
+      "art": "radio",
+      "name": "your-anrede",
+      "label": "Herr"
+    },
+    {
+      "art": "radio",
+      "name": "your-anrede",
+      "label": "Frau"
+    },
+    {
+      "art": "text",
+      "name": "your-firstname",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "your-lastname",
+      "label": ""
+    },
+    {
+      "art": "email",
+      "name": "your-email",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "your-subject",
+      "label": ""
+    },
+    {
+      "art": "textarea",
+      "name": "your-message",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "your-consent",
+      "label": "Ich habe die Datenschutzerklärung gelesen und stimme zu."
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "a2482297-329c-4168-b8a4-08fb2daff69e.png"
+}

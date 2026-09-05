@@ -1,0 +1,141 @@
+{
+  "id": "562f2071-2644-4436-a05d-a8a78d3c3913",
+  "name": "BIGGE ENERGIE GmbH & Co. KG",
+  "url": "https://www.bigge-energie.de/formular-center/photovoltaik",
+  "vermutet": "rechner-mit-leadfunnel",
+  "abruf": "ok",
+  "titel": "Bigge Energie Photovoltaik anfragen: PV-Anlage Angebot erhalten",
+  "text": "Diese Webseite verwendet Cookies Wir verwenden Cookies und andere Technologien, damit unsere Webseiten zuverlässig funktionieren, wir Inhalte anzeigen und statistische Auswertungen durchführen können. Dabei möchten wir auf Dienstleister zurückgreifen, die Informationen über Ihre Nutzung möglicherweise mit weiteren Daten zusammenführen, wobei nicht ausgeschlossen ist, dass Daten in Länder außerhalb des EWR, z.B. in die USA, übermittelt werden. Weitere Informationen erhalten Sie in unseren Datenschutz-Informationen. Einwilligungsauswahl Notwendig Präferenzen Statistiken Marketing Details zeigen Alle zulassen Auswahl erlauben Ablehnen Zum Hauptinhalt springen Über uns Karriere Blog Netzkunden & Marktpartner Störungsmeldung Suche Kontakt Download-Center Kundencenter Bereich wählen Strom Gas Wasser Wärme E-Mobilität Photovoltaik Energielösungen Hilfe-Center Home Formular-Center Photovoltaik Photovoltaik-Anlage anfragen Schön, dass Sie sich für ein Angebot einer Photovoltaik-Anlage interessieren. Füllen Sie gerne das unten stehende Formular aus und schildern Sie uns Ihre Wünsche. Unsere Expertinnen und Experten für PV-Anlagen melden sich schnellstmöglich bei Ihnen. Mit * gekennzeichnete Felder sind Pflichtfelder. Kontaktdetails Anrede * Bitte wählen Herrn Frau Divers Vorname * Nachname * Straße * Hausnummer * PLZ * Ort * E-Mail * Telefonnummer * Kundennummer Mitteilung Betreff * Ihre Nachricht * Meine hier angegebenen Daten werden entsprechend den gesetzlichen Bestimmungen bei BIGGE ENERGIE gespeichert. Damit bin ich einverstanden. Ergänzende Informationen sind in der Datenschutzerklärung zu finden. * Absenden Willkommen bei der digitalen Beratung der BIGGE ENERGIE Thema Störungsmeldung Kontakt Kundenportal Zählerstand melden Beschwerdemanagement Umzugsmeldung Tarife Aktuelle Meldungen Sie möchten eine Störung melden? Ob Strom, Gas, Wasser, Fernwärme oder Straßenbeleuchtung – Das geht schnell und unkompliziert. Nutzen Sie dafür den unten aufgeführten Link, oder rufen Sie unseren 24-Stunden-Notfall-Service an. Störung melden Telefon Rufen Sie uns an Home Formular-Center Photovoltaik Produkte Strom Gas Wasser Wärme Energielösungen E-Mobilität Photovoltaik Wallbox Wärmepumpe Standrohr mieten Hilfe-Center Paragraf 14a EnWG Vertrag kündigen Vertrag widerrufen Beschwerdemanagement Zählerstand melden Kundenportal Download-Center Unsere Partner Allgemein Über uns Unternehmen Karriere Unser Engagement Standort Olpe BIGGE ENERGIE In der Wüste 8 57462 Olpe Kontakt aufnehmen Wochentag Öffnungszeiten Mo–Fr 8:30–12:30 Uhr Mo, Di, Do 13:30–16:00 Uhr Standort Attendorn BIGGE ENERGIE In der Stesse 14 57439 Attendorn Kontakt aufnehmen Wochentag Öffnungszeiten Mo–Fr 8:30–12:30 Uhr Mo, Di, Do 13:30–16:00 Uhr *Außerhalb der Öffnungszeiten sind Termine nach Vereinbarung möglich. Bleiben Sie immer auf dem Laufenden Erhalten Sie monatliche Updates über Projekte in der Umgebung, Informationen über Energie und Aktuelles in eigener Sache. Newsletter abonnieren © 2026 BIGGE ENERGIE Barrierefreiheit Newsletter Impressum Datenschutz Vertrag kündigen Vertrag widerrufen Beschwerdemanagement Aktuelle Meldungen instagram facebook linkedin Bereich wählen",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonNecessary",
+      "label": "Notwendig"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonPreferences",
+      "label": "Präferenzen"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonStatistics",
+      "label": "Statistiken"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonMarketing",
+      "label": "Marketing"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonNecessaryInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonPreferencesInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonStatisticsInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonMarketingInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyContentCheckboxPersonalInformation",
+      "label": "Meine persönlichen Daten nicht verkaufen oder weitergeben"
+    },
+    {
+      "art": "select-one",
+      "name": "tx_form_formframework[contactWithAddress-1560][gender]",
+      "label": "Anrede *"
+    },
+    {
+      "art": "text",
+      "name": "tx_form_formframework[contactWithAddress-1560][firstName]",
+      "label": "Vorname *"
+    },
+    {
+      "art": "text",
+      "name": "tx_form_formframework[contactWithAddress-1560][lastName]",
+      "label": "Nachname *"
+    },
+    {
+      "art": "text",
+      "name": "tx_form_formframework[contactWithAddress-1560][street]",
+      "label": "Straße *"
+    },
+    {
+      "art": "text",
+      "name": "tx_form_formframework[contactWithAddress-1560][houseNumber]",
+      "label": "Hausnummer *"
+    },
+    {
+      "art": "text",
+      "name": "tx_form_formframework[contactWithAddress-1560][text-1]",
+      "label": "PLZ *"
+    },
+    {
+      "art": "text",
+      "name": "tx_form_formframework[contactWithAddress-1560][city]",
+      "label": "Ort *"
+    },
+    {
+      "art": "email",
+      "name": "tx_form_formframework[contactWithAddress-1560][email]",
+      "label": "E-Mail *"
+    },
+    {
+      "art": "tel",
+      "name": "tx_form_formframework[contactWithAddress-1560][phoneNumber]",
+      "label": "Telefonnummer *"
+    },
+    {
+      "art": "number",
+      "name": "tx_form_formframework[contactWithAddress-1560][customerNumbe",
+      "label": "Kundennummer"
+    },
+    {
+      "art": "text",
+      "name": "tx_form_formframework[contactWithAddress-1560][customerSubje",
+      "label": "Betreff *"
+    },
+    {
+      "art": "textarea",
+      "name": "tx_form_formframework[contactWithAddress-1560][customerMessa",
+      "label": "Ihre Nachricht *"
+    },
+    {
+      "art": "text",
+      "name": "tx_form_formframework[contactWithAddress-1560][Q27gcvzkMXoh5",
+      "label": "Kontaktdetails Anrede *Bitte wählenHerrnFrauDivers Vorname * Nachname * Straße *"
+    },
+    {
+      "art": "checkbox",
+      "name": "tx_form_formframework[contactWithAddress-1560][dataprotectio",
+      "label": "Meine hier angegebenen Daten werden entsprechend den gesetzlichen Bestimmungen b"
+    },
+    {
+      "art": "select-one",
+      "name": "fab-topic",
+      "label": "Thema"
+    }
+  ],
+  "rahmen": [
+    "https://consentcdn.cookiebot.com/sdk/bc-v4.min.html"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "562f2071-2644-4436-a05d-a8a78d3c3913.png"
+}

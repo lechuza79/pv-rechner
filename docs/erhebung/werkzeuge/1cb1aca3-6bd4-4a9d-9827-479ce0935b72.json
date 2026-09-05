@@ -1,0 +1,129 @@
+{
+  "id": "1cb1aca3-6bd4-4a9d-9827-479ce0935b72",
+  "name": "Stadtwerke Schifferstadt",
+  "url": "https://www.sw-schifferstadt.de/Netzanschlussportal/Anschluss-Inbetriebnahme/Waermepumpe.html",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Stadtwerke Schifferstadt - Wärmepumpe",
+  "text": "Wir verwenden Cookies auf unserer Website. Sie haben hier die Möglichkeit zu entscheiden, welche Cookies verwendet werden dürfen. Ihre Auswahl bleibt für 30 Tage gespeichert. Sie haben jederzeit die Möglichkeit, Ihre Cookie-Einstellungen über die Datenschutzerklärung zu ändern. Auswahl Notwendige Alle Cookies zulassen Cookie-Auswahl speichern Nur notwendige Cookies zulassen Notwendige Zugang zu den wichtigen Informationen Impressum Datenschutz 06235 – 4901 0 Mo.- Mi. 08:00-13:00 Uhr & 14:00 Uhr -16:00 Uhr Do. 08:00-13:00 Uhr & 14:00 Uhr-18:00 Uhr Fr. 08:00-13:00 Uhr Zur Navigation springen (Press Enter) Zum Inhalt springen (Press Enter) Zum Login Anschluss Kontaktformular Hallo, ich helfe Ihnen Ihren Anschluss anzumelden und beantworte Ihre Fragen. Zu den FAQs Startseite Zurück Hallo, melden Sie hier Ihren Anschluss an. Starten Sie in die Anschlussstrecke Fragen kann ich zu folgenden Themen beantworten Zeit- und Ablaufplan für die Bearbeitung des Netzanschlussbegehrens Wie lange ist die Bearbeitungszeit für einen Hausanschluss? Wie erhalte ich einen Netzanschluss für meine Einspeiseanlage/PV-Anlage? Wann kann ich meine Photovoltaikanlage bei der Bundesnetzagentur (BNetzA) melden? Anlagedaten Wärmepumpe Zählernummer*: Hersteller/Typ*: Anzahl baugleicher Wärmepumpen (Stück)*: Elektrische Leistung ohne Zusatzheizung (kW)*: Elektrische Leistung der Zusatzheizung (kW)*: Einsatz für betriebsnotwendige Zwecke oder in kritischer Infrastruktur*: Bitte auswählen... Ja Nein Maximale Netzbezugsleistung (kW)*: Lastmanagement*: Bitte auswählen... Nein Ja - dynamisch Ja - statisch Kommunikationsschnittstelle zur Steuerung*: Bitte auswählen... Relais Digital (EEBUS) Verbrauchseinrichtungen mit Inbetriebnahmedatum ab dem 01.01.24 und einem Leistungsbezug größer 4,2 kW fallen unter §14a EnWG und müssen steuerbar sein (SteuVE). Steuerbare Verbrauchseinrichtung nach § 14a EnWG?*: Bitte auswählen... Ja Nein Steuerungsart*: Bitte auswählen... Direkt Energiemanagementsystem Netzentgeltmodul*: Bitte auswählen... Modul 1 (pauschale jährliche Netzentgeltreduzierung) Modul 2 (Reduzierung des Arbeitspreises pro Kilowattstunde, separater Zähler notwendig, nicht für registrierende Leistungsmessung wählbar) Modul 3 (Anreizmodul mit zeitlich variablen Netzentgelten) Inbetriebssetungsdatum: AGB nach §14a EnWG PDF 0.2MB Ja*, ich stimme der AGB nach EnWG §14a zu. Halten Sie, soweit benötigt und noch nicht hochgeladen, folgende Dokumente digital bereit Übersichtsschaltplan ab Netzanschluss Übersichtsschaltplan ab Netzanschluss: Max. 20 MB Datei auswählen Bitte laden Sie hier sonstige benötigte Dokumente hoch: Max. 20 MB Datei auswählen Zurück Weiter Impressum Datenschutz Cookie-Einstellungen ändern © 2026 Stadtwerke Schifferstadt",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Notwendige"
+    },
+    {
+      "art": "textarea",
+      "name": "Container.Children:2.Container.Children:1.ClientSecurityChec",
+      "label": "Das folgende Eingabefeld ist aus technischen Gründen erforderlich und darf nicht"
+    },
+    {
+      "art": "text",
+      "name": "Formular.WAERMEPUMPEZAEHLERNUMMER",
+      "label": "Zählernummer*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.WAERMEPUMPEHERSTELLER/TYP",
+      "label": "Hersteller/Typ*:"
+    },
+    {
+      "art": "number",
+      "name": "Formular.WAERMEPUMPEANZAHLBAUGLEICHER",
+      "label": "Anzahl baugleicher Wärmepumpen (Stück)*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.WAERMEPUMPEELEKTRISCHELEISTUNGOHNE",
+      "label": "Elektrische Leistung ohne Zusatzheizung (kW)*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.WAERMEPUMPEELEKTRISCHELEISTUNGDER",
+      "label": "Elektrische Leistung der Zusatzheizung (kW)*:"
+    },
+    {
+      "art": "select-one",
+      "name": "Formular.WAERMEPUMPEEINSATZBETRIEBSNOTWENDIGEZWEC",
+      "label": "Einsatz für betriebsnotwendige Zwecke oder in kritischer Infrastruktur*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.WAERMEPUMPEMAXIMALENETZBEZUGSLEISTUNG",
+      "label": "Maximale Netzbezugsleistung (kW)*:"
+    },
+    {
+      "art": "select-one",
+      "name": "Formular.WAERMEPUMPELASTMANAGEMENT",
+      "label": "Lastmanagement*:"
+    },
+    {
+      "art": "select-one",
+      "name": "Formular.WAERMEPUMPEKOMMUNIKATIONSSCHNITTSTELLE",
+      "label": "Kommunikationsschnittstelle zur Steuerung*:"
+    },
+    {
+      "art": "select-one",
+      "name": "Formular.WAERMEPUMPESTEUERBAREVERBRAUCHSEINRICHTU",
+      "label": "Steuerbare Verbrauchseinrichtung nach § 14a EnWG?*:"
+    },
+    {
+      "art": "select-one",
+      "name": "Formular.WAERMEPUMPEBESTANDSANLAGE",
+      "label": "Bestandsanlage vor dem 01.01.2024*:"
+    },
+    {
+      "art": "select-one",
+      "name": "Formular.WAERMEPUMPEMESSUNGSEPARATENZAEHLER",
+      "label": "Messung über separaten Zähler?*:"
+    },
+    {
+      "art": "select-one",
+      "name": "Formular.WAERMEPUMPEZAEHLERBEREITSVORHANDEN",
+      "label": "Zähler bereits vorhanden?*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.WAERMEPUMPESEPARATEZAEHLERNUMMER",
+      "label": "Zählernummer des bereits vorhandenen Zählers*:"
+    },
+    {
+      "art": "select-one",
+      "name": "Formular.WAERMEPUMPESTEUERUNGSART",
+      "label": "Steuerungsart*:"
+    },
+    {
+      "art": "select-one",
+      "name": "Formular.WAERMEPUMPENETZENTGELTMODUL",
+      "label": "Netzentgeltmodul*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.WAERMEPUMPEINBETRIEBSSETUNGSDATUM",
+      "label": "Inbetriebssetungsdatum:"
+    },
+    {
+      "art": "checkbox",
+      "name": "Formular.WAERMEPUMPEZUSTIMMUNGENWG14A",
+      "label": "Ja*, ich stimme der AGB nach EnWG §14a zu."
+    },
+    {
+      "art": "file",
+      "name": "dropzone_251938_hidden_file_input",
+      "label": "Übersichtsschaltplan ab Netzanschluss:"
+    },
+    {
+      "art": "file",
+      "name": "dropzone_251940_hidden_file_input",
+      "label": "Bitte laden Sie hier sonstige benötigte Dokumente hoch:"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": true,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": true,
+    "pflichtprozess": true
+  },
+  "bild": "1cb1aca3-6bd4-4a9d-9827-479ce0935b72.png"
+}

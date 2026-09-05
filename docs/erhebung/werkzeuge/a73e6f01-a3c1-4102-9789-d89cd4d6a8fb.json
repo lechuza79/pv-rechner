@@ -1,0 +1,109 @@
+{
+  "id": "a73e6f01-a3c1-4102-9789-d89cd4d6a8fb",
+  "name": "Stadtwerke Lambrecht (Pfalz) GmbH",
+  "url": "https://www.sw-lambrecht.de/Netzanschlussportal/Balkonkraftwerk/",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Stadtwerke Lambrecht - Kontaktdaten",
+  "text": "Visuelle Assistenzsoftware und Vorlesefunktion Eye-Able öffnen. Mit der Tastatur erreichbar über ALT + 1 Wir verwenden Cookies auf unserer Website. Sie haben hier die Möglichkeit zu entscheiden, welche Cookies verwendet werden dürfen. Ihre Auswahl bleibt für 30 Tage gespeichert. Sie haben jederzeit die Möglichkeit, Ihre Cookie-Einstellungen über die Datenschutzerklärung zu ändern. Notwendige Statistik ALLE COOKIES ZULASSEN COOKIE-AUSWAHL SPEICHERN NUR NOTWENDIGE COOKIES ZULASSEN Notwendige Statistik Zugang zu den wichtigen Informationen Impressum Datenschutz 06325 189-0 Mo. – Fr. 7:30 – 20:00 Uhr Zur Navigation springen (Press Enter) Zum Inhalt springen (Press Enter) Zum Login Netzanschluss Strom Photovoltaik/Solar Balkonkraftwerk Wallbox/Ladeeinrichtung Weitere Anschlüsse Angebotsupload Kontaktformular Hallo, ich helfe Ihnen Ihren Anschluss anzumelden und beantworte Ihre Fragen. ZU DEN FAQS Startseite Balkonkraftwerk Zurück zur Startseite Hallo, was möchten Sie anmelden? Netzanschluss Strom Photovoltaik / Solar Balkonkraftwerk Wallbox / Ladeeinrichtung Fragen kann ich zu folgenden Themen beantworten Zeit- und Ablaufplan für die Bearbeitung des Netzanschlussbegehrens Sehen Sie sich unseren grafischen Ablaufplan gerne unter dem folgenden Link an. Zum Ablaufplan Wie lange ist die Bearbeitungszeit für einen Hausanschluss? Die Bearbeitungszeit für einen Hausanschluss kann bis zu acht Wochen betragen. Wir bitten alle, die in nächster Zeit einen Hausanschluss benötigen, den entsprechenden Vorlauf für dessen Erstellung einzuplanen. Wie erhalte ich einen Netzanschluss für meine Einspeiseanlage/PV-Anlage? Um den Solarstrom einspeisen zu können, ist ein Netzanschluss notwendig. Dieser muss beim örtlichen Stromnetzbetreiber beantragt werden – und zwar noch vor der Einrichtung der Anlage. Hausbesitzer*innen sind keineswegs dazu verpflichtet, für die Installation der Solaranlage einen Fachbetrieb zu engagieren. Anders sieht es beim Anschluss der Anlage an das Stromnetz aus. Dieser Schritt kann ausschließlich von zertifizierten Elektroinstallateuren durchgeführt werden. Wann kann ich meine Photovoltaikanlage bei der Bundesnetzagentur (BNetzA) melden? Zum Zeitpunkt der Fertigmeldung, durch Ihren Elektroinstallateur, können Sie Ihre Anlage bei der Bundesnetzagentur (BNetzA) registrieren. Diese Registrierung ist Voraussetzung, damit wir Ihnen Ihre Einspeisevergütung auszahlen können. Sollte Ihnen die Registrierungsbestätigung der Bundesnetzagentur bei der Fertigmeldung noch nicht vorliegen, reichen Sie diese bitte schnellstmöglich nach, damit die Vergütungsauszahlung erfolgen kann. Die Anmeldung bei der BNetzA ist über das Marktstammdatenregister möglich https://www.marktstammdatenregister.de/MaStR. 1. 2. 3. 4. Kontaktdaten Anlagenbetreiber Firma: Anrede: Bitte auswählen... Frau Herr Divers Vorname*: Nachname*: Straße*: Hausnr.*: Postleitzahl*: Ort*: Telefon*: E-Mail*: Abweichende Daten Sind Anschlussnehmer und Grundstückseigentümer nicht identisch, ist spätestens zum Zeitpunkt der Beauftragung des Netzbetreibers zur Ausführung des Netzanschlusses die Zustimmung des Grundstückseigentümers erforderlich. Gibt es Abweichungen vom Anlagenbetreiber zum Anlagenstandort oder Grundstückseigentümer/Anschlussnehmer?*: Ja Nein Impressum Datenschutz Cookie-Einstellungen ändern © 2026 Stadtwerke Lambrecht",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Notwendige"
+    },
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Statistik"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ANSCHLUSSNEHMER.FIRMA",
+      "label": "Firma:"
+    },
+    {
+      "art": "select-one",
+      "name": "Formular.ANSCHLUSSNEHMER.ANREDE",
+      "label": "Anrede:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ANSCHLUSSNEHMER.VORNAME",
+      "label": "Vorname*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ANSCHLUSSNEHMER.NACHNAME",
+      "label": "Nachname*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ADRESSE.STRASSE",
+      "label": "Straße*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ADRESSE.HAUSNR",
+      "label": "Hausnr.*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ADRESSE.PLZ",
+      "label": "Postleitzahl*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ADRESSE.ORT",
+      "label": "Ort*:"
+    },
+    {
+      "art": "tel",
+      "name": "Formular.KONTAKT.TELEFON",
+      "label": "Telefon*:"
+    },
+    {
+      "art": "email",
+      "name": "Formular.KONTAKT.EMAIL",
+      "label": "E-Mail*:"
+    },
+    {
+      "art": "radio",
+      "name": "Formular.DATENENTSPRECHENANSCHLUSSNEHMER",
+      "label": "Gibt es Abweichungen vom Anlagenbetreiber zum Anlagenstandort oder Grundstücksei"
+    },
+    {
+      "art": "radio",
+      "name": "Formular.DATENENTSPRECHENANSCHLUSSNEHMER",
+      "label": "Nein"
+    },
+    {
+      "art": "textarea",
+      "name": "Formular.ABWEICHENDEDATEN",
+      "label": "Bitte tragen Sie hier die entsprechend abweichenden Daten ein.*:"
+    },
+    {
+      "art": "button",
+      "name": "SeiteZurueckWechseln",
+      "label": "csc(\"suEz65v5C2EdeHubjmYWt56_dAM_KZcvk_6BrVG6\", \"Container.Children:1.ClientSecu"
+    },
+    {
+      "art": "button",
+      "name": "AusfuellenUnterbrechen",
+      "label": "csc(\"suEz65v5C2EdeHubjmYWt56_dAM_KZcvk_6BrVG6\", \"Container.Children:1.ClientSecu"
+    },
+    {
+      "art": "submit",
+      "name": "SeiteWechseln",
+      "label": "csc(\"suEz65v5C2EdeHubjmYWt56_dAM_KZcvk_6BrVG6\", \"Container.Children:1.ClientSecu"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "a73e6f01-a3c1-4102-9789-d89cd4d6a8fb.png"
+}

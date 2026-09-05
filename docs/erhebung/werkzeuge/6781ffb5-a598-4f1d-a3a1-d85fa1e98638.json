@@ -1,0 +1,44 @@
+{
+  "id": "6781ffb5-a598-4f1d-a3a1-d85fa1e98638",
+  "name": "EVU der Gemeinde Gochsheim",
+  "url": "https://www.evu.gochsheim.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Elektrizitätsversorgungsunternehmen der Gemeinde Gochsheim: Elektrizitätsversorgungsunternehmen der Gemeinde Gochsheim",
+  "text": "Wir weisen darauf hin, dass wir technisch notwendige Cookies einsetzen, um eine optimale Funktion unserer Website zu ermöglichen. Die Einwilligung zur Nutzung weiterer Dienste wird bei Bedarf gesondert abgefragt. Weitere Informationen finden Sie in unseren Datenschutzhinweisen. ZUR KENNTNIS GENOMMEN Impressum Sprungziele Zum Hauptinhalt springen Zur Suchfunktion springen Zum Hauptmenü springen Schnellzugriff Zur Fußzeile springen 17 °C Digitaler Ortsplan UNSER SERVICE STROMVERTRIEB STROMNETZ HALLENBAD SUCHE SERVICE Kundenbüro SEPA-Formular Schadensmelder Foto: Pixabay.com Herzlich willkommen bei dem EVU Gochsheim Unsere Tarife Netznutzung Elektromobilität Energieberatung Kontakt Kundeninformationen 27.08.2026 Strom Information zu aktuellen Smart-Meter-Angeboten Werbeschreiben im Umlauf – Was Sie wissen sollten In den vergangenen Tagen haben zahlreiche Haushalte in unserem… MEHR LESEN 25.08.2026 Neues zentrales Fahrstromprodukt Gemeinsam mit dem LadeVerbundPlus entwickeln wir unser Ladeangebot für Sie weiter! Ab September 2026 wird das… MEHR LESEN 29.06.2026 Aktuelles Strom Umrüstung der Straßenbeleuchtung in… Die Gemeinde Gochsheim setzt die Umrüstung ihrer Straßenbeleuchtung auf verbrauchsarme LED-Technik auch im Jahr 2026… MEHR LESEN ALLE NACHRICHTEN Themen und Projekte Umrüstung der Straßenbeleuchtung auf LED MEHR LESEN Elektrizitätsversorgungs- unternehmen (EVU) der Gemeinde Gochsheim Am Plan 4-6 97469 Gochsheim 09721 6444-0 09721 6444-31 evu@gochsheim.de Öffnungszeiten Montag bis Freitag: 8.00 - 12.00 Uhr Dienstag und Mittwoch: 14.30 - 16.00 Uhr (nur mit vorheriger Terminvereinbarung) Donnerstag: 14.00 - 17.00 Uhr Sitemap Unser Service Stromvertrieb Stromnetz Hallenbad Quicklinks Hallenbad Gemeinde Gochsheim Kontakt Datenschutz Impressum Sitemap Cookie-Einstellungen",
+  "felder": [
+    {
+      "art": "text",
+      "name": "tx_kesearch_pi1[sword]",
+      "label": "Suche"
+    },
+    {
+      "art": "text",
+      "name": "tx_kesearch_pi1[sword]",
+      "label": "Suche"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookie-overlay--checkbox--video--youtube",
+      "label": "YouTube"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookie-overlay--checkbox--video--vimeo",
+      "label": "Vimeo"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookie-overlay--checkbox--openstreetmaps",
+      "label": "Karte"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "6781ffb5-a598-4f1d-a3a1-d85fa1e98638.png"
+}

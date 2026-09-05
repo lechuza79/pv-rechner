@@ -1,0 +1,57 @@
+{
+  "id": "7a2511e0-b08f-47f8-ade5-261953f8cf06",
+  "name": "Gemeindewerke Leck-Netz GmbH",
+  "url": "http://www.gemeindewerke-leck-netz.de/",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Stromnetze in Niebüll, Leck und Bredstedt | Gasnetze in Niebüll und Leck",
+  "text": "toggle menu 100 % Nordfriesland Wir kümmern uns um unsere Heimatnetze Ab 16.06.2026 Zählerstand abgeben Einfach klicken und los geht's! Herzlich willkommen Wir betreiben die Stromnetze in Niebüll, Leck und Bredstedt und die Gasnetze in Niebüll und Leck. Mit uns sind Sie sicher und zuverlässig mit Strom und Erdgas versorgt. Wir sind gerne für Sie da als Ansprechpartner bei Fragen rund um Ihren Hausanschluss. Mit uns bringen Sie Ihre Anlage zur Erzeugung Erneuerbarer Energien ans Netz. EnergieMonitor Energie vor Ort verstehen und die Zukunft gemeinsam gestalten Der EnergieMonitor zeigt unsere aktuelle Energieversorgungssituation in Leck/Niebüll/Bredstedt: Er visualisiert die lokale Erzeugung und den lokalen Verbrauch und zeigt, zu welchen Zeiten Strom aus dem Netz bezogen wird und wann – aufgrund von lokaler Überproduktion und Einspeisung ins Netz – Einnahmen erzielt werden können. Hiermit wollen wir die Diskussion zur gemeinsamen Entwicklung unserer Energieversorgung vor Ort fördern. Zu Ihren persönlichen EnergieMonitoren für: Leck EnergieMonitor - Leck Niebüll EnergieMonitor - Niebüll Bredstedt EnergieMonitor - Bredstedt Weitere Informationen zum EnergieMonitor erhalten Sie hier: EnergieMonitor Sie möchten erfahren, wieviel Energie aus regionaler Erzeugung stammt und wieviel kWh davon in der Region verbraucht wird? Der Monitor zeigt Ihnen wieviel kWh aus regionaler Erzeugung wie u. a. Biomasse, Photovoltaik, Wasserkraft, Windkraft stammt und wieviel kWh davon in der Industrie & im Gewerbe, durch die kommunalen Anlagen und in den privaten Haushalten verbraucht wird. Darüber hinaus erfahren Sie die kWh, die in das Netz eingespeist werden. Bitte klicken Sie dazu die rechts stehenden Verlinkungen der Energiemonitore für Niebüll, Leck oder Bredstedt an. Aktuelles Kontrollablesungen für Strom und Gas Im Versorgungsbereich der Stadtwerke Nordfriesland GmbH werden seit dem 16.05.2024 Kontrollablesungen der Strom-, Fernwärme- und Gaszählerstände durchgeführt. Daher bitten wir Sie, unserem Mitarbeiter entsprechenden Zutritt zu den Zählern zu gewähren. Er führt einen Ausweis der Stadtwerke Nordfriesland GmbH mit sich, den er unaufgefordert vorzeigt und der ihn legitimiert. Vielen Dank für Ihr Verständnis! Wir sind gerne für Sie da: Ob Fragen zu Hausanschlüssen, Abrechnung oder Tipps zum Energiesparen: Unser Team hat ein offenes Ohr für Sie. Stadtwerke Netz-Team Telefon 04661 6018-0 Telefax 04661 6018-87 E-Mail moin(at)sw-nf-netz.de Im Störungsfall: 04661 601901 Stadtwerke Nordfriesland - Netz GmbH Ostring 5 25899 Niebüll Telefon 04661 6018-0 Fax 04661 6018-87 E-Mail moin(at)sw-nf-netz.de Öffnungszeiten Kundenbüro Niebüll (Ostring 5, 25899 Niebüll) Montag bis Donnerstag 09.30 Uhr - 12.00 Uhr und 15.00 Uhr - 17.00 Uhr Freitag 09.30 Uhr - 12.00 Uhr Kundenbüro Leck (Am Stadion 3, 25917 Leck) Vorübergehend geschlossen. Wir arbeiten mit Hochdruck daran, Sie auch bald wieder persönlich in Leck begrüßen zu dürfen. Erlebnisbad Leck (Am Stadion 3, 25917 Leck) Die aktuellen Öffnungszeiten finden Sie hier. Kundenbüro Bredstedt (Markt 3, 25821 Bredstedt) Mittwoch 09.30 Uhr - 12.00 Uhr und 15.00 Uhr - 17.00 Uhr Für Änderungswünsche zum Vertrag stehen unsere Formulare zur Verfügung Formulare (sw-nf.de). Startseite Impressum Download Datenschutz Barrierefreiheitserklärung Sitemap",
+  "felder": [
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][nachname_widerruf]",
+      "label": "Name*"
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][vorname]",
+      "label": "Vorname*"
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][adresse]",
+      "label": "Adresse*"
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][kunden_undverbrauchsstellennr]",
+      "label": "Kunden- und Verbrauchsstellen Nr."
+    },
+    {
+      "art": "email",
+      "name": "tx_powermail_pi1[field][e_mail_address]",
+      "label": "E-Mail*"
+    },
+    {
+      "art": "textarea",
+      "name": "g-recaptcha-response",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "tx_powermail_pi1[field][__hp]",
+      "label": "Don't fill this field!"
+    }
+  ],
+  "rahmen": [
+    "https://www.google.com/recaptcha/api2/anchor?ar=1&k=6LeBV2orAAAAAMWcI9ASxu58I5PshgVhXF1KPiFP&co=aHR0cHM6Ly93d3cuc3ctbmYtbmV0ei5kZTo0NDM.&hl=en&v=8x-4t2pegToiW8KmThtO4AQt&size=normal&anchor-ms=20000&execute-ms=30000&cb=uywv2s56usqb",
+    "https://www.google.com/recaptcha/api2/bframe?hl=en&v=8x-4t2pegToiW8KmThtO4AQt&k=6LeBV2orAAAAAMWcI9ASxu58I5PshgVhXF1KPiFP&bft=0dAFcWeA5LPpAJLJaslLPHE1JJo7G4lGaE4wC1T2Z05ZqYSkAqzgOGDoMLu6ydcM2v-8iaLt2YHiObaa8Qv7v8F-hd_Yr-ffReLw"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "7a2511e0-b08f-47f8-ade5-261953f8cf06.png"
+}

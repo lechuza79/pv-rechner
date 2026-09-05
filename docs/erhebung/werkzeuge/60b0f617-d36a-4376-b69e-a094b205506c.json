@@ -1,0 +1,18 @@
+{
+  "id": "60b0f617-d36a-4376-b69e-a094b205506c",
+  "name": "EVU der Ortsgemeinde Rheinzabern",
+  "url": "https://www.evu-rheinzabern.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Gemeindewerke Rheinzabern - Startseite",
+  "text": "Willkommen bei den Stadtwerken Bad Bergzabern Die Notrufnummer außerhalb der Geschäftszeiten lautet 0172 / 8051543.",
+  "felder": [],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "60b0f617-d36a-4376-b69e-a094b205506c.png"
+}

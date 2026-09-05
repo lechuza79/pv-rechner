@@ -1,0 +1,147 @@
+{
+  "id": "d92c025e-8f2c-4b9a-8bbe-ba6ab7b28fb3",
+  "name": "Stadtwerke Brühl GmbH",
+  "url": "https://www.stadtwerke-bruehl.de/strom/solaranlagen-fuer-unternehmen/",
+  "vermutet": "kontaktformular",
+  "abruf": "ok",
+  "titel": "Solaranlagen für Unternehmen - Stadtwerke Brühl",
+  "text": "Zum Inhalt springen Störung melden Kontakt Unternehmen zum Kundenportal Strom Gas Wasser Wärme Stadtbus KarlsBad Service Netze Sie sind hier: Startseite › Strom › Solaranlagen für Unternehmen Solaranlagen für Unternehmen Unsere Photovoltaikanlagen-Angebote für Gewerbekunden: Effizient und kosteneffektiv Profitieren Sie von einer Photovoltaikanlage und produzieren Sie Strom aus Sonnenenergie für Ihr Unternehmen. Nutzen Sie zahlreiche wirtschaftliche Vorteile: Gewinnen Sie mehr Unabhängigkeit indem sie mit einer Photovoltaikanlage Ihren eigenen Strom produzieren. Tragen Sie mit einer PV-Anlage aktiv zur Reduzierung Ihrer CO2-Emissonen bei. Reduzieren Sie Ihre Stromkosten und senken Ihre Leistungsspitzen. Wir planen und bauen für Sie eine individuelle Lösung. Rundum-Service Wählen Sie mit uns einen starken Partner vor Ort mit langjähriger Erfahrung und erhalten Sie Angebot, Planung und Montage alles aus einer Hand. Jetzt Angebote für landwirtschaftliche Betriebe, Industrie, Unternehmen und Gewerbe anfragen. Felder mit einem * sind Pflichtfelder. Ich interessiere mich für folgendes Angebot* Pflichtfeld Angebot Privatperson Angebot Gewerbe Firma Anrede* Pflichtfeld – Bitte auswählen – Frau Herr divers Name* Pflichtfeld Bitte lasse dieses Feld leer. Straße, Hausnr. PLZ Ort Bitte lasse dieses Feld leer. Bitte lasse dieses Feld leer. Telefon* Pflichtfeld E-Mail * Um diese Uhrzeit können Sie mich erreichen. Ihre Nachricht Bitte lasse dieses Feld leer. * Ja, ich habe die Datenschutzbestimmungen zur Kenntnis genommen und bin damit einverstanden, dass die von mir angegebenen Daten elektronisch erhoben und gespeichert werden. Meine Daten werden dabei nur streng zweckgebunden zur Bearbeitung und Beantwortung meiner Anfrage benutzt. Mit dem Absenden des Formulars erkläre ich mich mit der Verarbeitung einverstanden. Ja, ich bin einverstanden, über Angebote von Lieferungen oder Dienstleistungen in den Bereichen Energie, Elektromobilität, Wasser, KarlsBad sowie zu Marktforschungsumfragen der Stadtwerke Brühl GmbH informiert zu werden. Ich bin einverstanden, dass die Stadtwerke Brühl GmbH meine Angaben gemäß der Einwilligungserklärung verarbeiten und nutzen darf. Die Kontaktaufnahme kann per E-Mail oder telefonisch erfolgen. Die Einwilligungserklärung kann ich jederzeit mit Wirkung auf Zukunft widerrufen. Sicherheitsfrage: Die Hauptstadt der Bundesrepublik Deutschland ist ...? Joachim Fesser Vertrieb Engeldorfer Straße 2 50321 Brühl Tel.: 02232 702-315 Fax: 02232 702-999 E-Mail schreiben nach oben scrollen Produkte BrühlStrom BrühlGas BrühlWasser Wärme Mobilität Elektromobilität Über uns Sponsoring Stellenangebote Ausbildung Verantwortung Presse und Medien Kontakt und Anfahrt Service Dein Stadtwerke Brühl-Blog SWB Kundencenter Fragen und Antworten Downloads Energie sparen Verbraucherservice Zählerstand melden Einspeiserportal Verträge kündigen KarlsBad Kursprogramm Wohlfühloase – Saunagarten Anfahrt Inklusion W-LAN SWB Kundenservice Janshof 19, 50321 Brühl Tel.: 02232 702-800 E-Mail schreiben Öffnungszeiten: Mo, Mi, Do, Fr: 9:00 – 13:00 Uhr Do: 14:00 – 17:00 Uhr dienstags geschlossen Folgen Sie unseren Stadtwerken Folgen Sie unserem KarlsBad © Stadtwerke Brühl Startseite Datenschutz Information zur Barrierefreiheit Impressum Privatsphäre-Einstellungen ändern Historie der Privatsphäre-Einstellungen Einwilligungen widerrufen Abschlag ändern Jetzt Fix26 abschließen",
+  "felder": [
+    {
+      "art": "search",
+      "name": "s",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "s",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": ""
+    },
+    {
+      "art": "radio",
+      "name": "Solarangebot",
+      "label": "Angebot Privatperson"
+    },
+    {
+      "art": "radio",
+      "name": "Solarangebot",
+      "label": "Angebot Gewerbe"
+    },
+    {
+      "art": "text",
+      "name": "firma",
+      "label": "Firma"
+    },
+    {
+      "art": "select-one",
+      "name": "anrede",
+      "label": "Anrede*Pflichtfeld"
+    },
+    {
+      "art": "text",
+      "name": "namen",
+      "label": "Name*Pflichtfeld"
+    },
+    {
+      "art": "text",
+      "name": "akpf7vatgxom",
+      "label": "Bitte lasse dieses Feld leer."
+    },
+    {
+      "art": "text",
+      "name": "strasse",
+      "label": "Straße, Hausnr."
+    },
+    {
+      "art": "text",
+      "name": "plz",
+      "label": "PLZ"
+    },
+    {
+      "art": "text",
+      "name": "ort",
+      "label": "Ort"
+    },
+    {
+      "art": "text",
+      "name": "wggi2ztgkerp",
+      "label": "Bitte lasse dieses Feld leer."
+    },
+    {
+      "art": "text",
+      "name": "gucnd26t8jim",
+      "label": "Bitte lasse dieses Feld leer."
+    },
+    {
+      "art": "text",
+      "name": "telefon",
+      "label": "Telefon*Pflichtfeld"
+    },
+    {
+      "art": "email",
+      "name": "email",
+      "label": "E-Mail *"
+    },
+    {
+      "art": "text",
+      "name": "TelefonischeErreichbarkeit",
+      "label": "Um diese Uhrzeit können Sie mich erreichen."
+    },
+    {
+      "art": "textarea",
+      "name": "nachricht",
+      "label": "Ihre Nachricht"
+    },
+    {
+      "art": "text",
+      "name": "dk3obzjvhxwe",
+      "label": "Bitte lasse dieses Feld leer."
+    },
+    {
+      "art": "checkbox",
+      "name": "datenschutz",
+      "label": "* Ja, ich habe die Datenschutzbestimmungen zur Kenntnis genommen und bin damit e"
+    },
+    {
+      "art": "checkbox",
+      "name": "cleverreach",
+      "label": "Ja, ich bin einverstanden, über Angebote von Lieferungen oder Dienstleistungen i"
+    },
+    {
+      "art": "text",
+      "name": "quiz",
+      "label": "Die Hauptstadt der Bundesrepublik Deutschland ist ...?"
+    },
+    {
+      "art": "textarea",
+      "name": "g-recaptcha-response",
+      "label": ""
+    },
+    {
+      "art": "textarea",
+      "name": "h-captcha-response",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": "Felder mit einem * sind Pflichtfelder. Ich interessiere mich für folgendes Angeb"
+    }
+  ],
+  "rahmen": [
+    "https://newassets.hcaptcha.com/captcha/v1/80ba88939126ef29d32e1ca12bb3054eb9b51927/static/hcaptcha.html#frame=checkbox&id=05g9cifhkibw&host=www.stadtwerke-bruehl.de&sentry=true&reportapi=https%3A%2F%2Faccounts.hcaptcha.com&recaptchacompat=true&custom=false&hl=de&tplinks=on&andint=off&pstissuer=https%3A%2F%2Fpst-issuer.hcaptcha.com&sitekey=2bcee82c-5df2-43a2-9f3c-975ad7668f24&theme=light&size=normal&origin=https%3A%2F%2Fwww.stadtwerke-bruehl.de&clientOptions=%7B%22sentry%22%3Atrue%2C%22reportapi%22%3A%22https%3A%2F%2Faccounts.hcaptcha.com%22%2C%22recaptchacompat%22%3A%22true%22%2C%22custom%22%3Afalse%2C%22hl%22%3A%22de%22%2C%22tplinks%22%3A%22on%22%2C%22andint%22%3A%22off%22%2C%22pat%22%3A%22on%22%2C%22pstissuer%22%3A%22https%3A%2F%2Fpst-issuer.hcaptcha.com%22%2C%22endpoint%22%3A%22https%3A%2F%2Fapi.hcaptcha.com%22%2C%22theme%22%3A%22light%22%2C%22size%22%3A%22normal%22%2C%22confirm-nav%22%3Afalse%7D",
+    "https://newassets.hcaptcha.com/captcha/v1/80ba88939126ef29d32e1ca12bb3054eb9b51927/static/hcaptcha.html#frame=challenge&id=05g9cifhkibw&host=www.stadtwerke-bruehl.de&sentry=true&reportapi=https%3A%2F%2Faccounts.hcaptcha.com&recaptchacompat=true&custom=false&hl=de&tplinks=on&andint=off&pstissuer=https%3A%2F%2Fpst-issuer.hcaptcha.com&sitekey=2bcee82c-5df2-43a2-9f3c-975ad7668f24&theme=light&size=normal&origin=https%3A%2F%2Fwww.stadtwerke-bruehl.de&clientOptions=%7B%22sentry%22%3Atrue%2C%22reportapi%22%3A%22https%3A%2F%2Faccounts.hcaptcha.com%22%2C%22recaptchacompat%22%3A%22true%22%2C%22custom%22%3Afalse%2C%22hl%22%3A%22de%22%2C%22tplinks%22%3A%22on%22%2C%22andint%22%3A%22off%22%2C%22pat%22%3A%22on%22%2C%22pstissuer%22%3A%22https%3A%2F%2Fpst-issuer.hcaptcha.com%22%2C%22endpoint%22%3A%22https%3A%2F%2Fapi.hcaptcha.com%22%2C%22theme%22%3A%22light%22%2C%22size%22%3A%22normal%22%2C%22confirm-nav%22%3Afalse%7D"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "d92c025e-8f2c-4b9a-8bbe-ba6ab7b28fb3.png"
+}

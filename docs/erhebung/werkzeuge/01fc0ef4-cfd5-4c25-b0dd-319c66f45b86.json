@@ -1,0 +1,49 @@
+{
+  "id": "01fc0ef4-cfd5-4c25-b0dd-319c66f45b86",
+  "name": "STADTWERKE WEISSENBURG GmbH",
+  "url": "https://www.sw-wug.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Stadtwerke Weißenburg – Energie & Service für unsere Region",
+  "text": "Einwilligung verwalten Um dir ein optimales Erlebnis zu bieten, verwenden wir Technologien wie Cookies, um Geräteinformationen zu speichern und/oder darauf zuzugreifen. Wenn du diesen Technologien zustimmst, können wir Daten wie das Surfverhalten oder eindeutige IDs auf dieser Website verarbeiten. Wenn du deine Einwillligung nicht erteilst oder zurückziehst, können bestimmte Merkmale und Funktionen beeinträchtigt werden. Akzeptieren Ablehnen Einstellungen ansehen Datenschutz Impressum Zum Inhalt wechseln Home Unternehmen Kontakt Störungshotline Kundenportal Netzanschlussportal Zählerstand melden Für die Region. Für Weißenburg. INFORMATIONEN ZUM NEUEN KUNDENPORTAL Als Kunde der Stadtwerke Weißenburg GmbH können Sie hier Ihre Kundendaten online verwalten. Serviceangebote für unsere Kunden Bequem online Ihre Kundendaten verwalten. Das neue Kundenportal In unserem Kundenportal können Sie alle Formalitäten rund um Ihren Energievertrag selbstständig, ohne Wartezeit und lästigen Papierkram von unterwegs oder von Zuhause aus erledigen. Rechnungen, Verträge und Verbrauchshistorie einsehen Abschläge anpassen Zählerstände verwalten (Versorger = Stadtwerke Weißenburg GmbH) Kontakt- und Bankdaten aktualisieren Umzug melden zum Kundenportal Bequem online Ihre Kundendaten verwalten. Die neue Kundenkarte der Stadtwerke Weißenburg GmbH Als treuer Kunde der Stadtwerke Weißenburg GmbH erwartet Sie ab sofort unsere neue Kundenkarte – Ihr Zugang zu exklusiven Preisvorteilen im Limesbad Weißenburg. Freuen Sie sich auf: 70 Meter lange Römerrutsche Strömungskanal im Erlebnisbecken für jede Menge Wasserspaß Sprunganlage mit 1 m-, 3 m- und 5 m-Türmen Planschbecken mit Spielbereich für unsere kleinsten Gäste Minigolfanlage mit 18 turnierfähigen Bahnen u.v.m. Mehr zur Kundenkarte Aktuelles Wichtige Informationen der Stadtwerke Weißenburg GmbH Wichtige Informationen zu unserem Ladeangebot ARTIKEL ANSEHEN » Wichtiger Sicherheitshinweis: Betrüger geben sich als Mitarbeiter der Stadtwerke Weißenburg aus! ARTIKEL ANSEHEN » Vorsicht bei Werbeanschreiben zum Zählerwechsel auf Smart Meter Derzeit erhalten viele Haushalte in unserem Versorgungsgebiet Werbeanschreiben privater Messstellenbetreiber, unter anderem der DMG Deutsche Messwesen GmbH und der metrify smart metering GmbH. Diese Schreiben ARTIKEL ANSEHEN » Fahrplanänderung im Stadtverkehr Ab Montag, 04. Mai 2026 ändert sich der Fahrplan der Stadtbuslinie 690 geringfügig. Diese betrifft die Abfahrtszeiten an Schultagen bei der 1. Fahrt ab Südliche ARTIKEL ANSEHEN » Neue Buswartehalle am Marktplatz Aufgrund eines Stadtratsbeschlusses (nach vorherigem Antrag der Freien Wähler) wurde entschieden, für die Haltestelle am „Marktplatz“ eine überdachte Buswartehalle zu errichten. Um den Anforderungen der ARTIKEL ANSEHEN » Neue gesetzliche Regelung bei Umzügen und Lieferantenwechseln! ARTIKEL ANSEHEN » Alle Beiträge Kontaktdaten Schlachthofstr. 19, 91781 Weißenburg/Bay. email@sw-wug.de 09141 999-0 Facebook Instagram Öffnungszeiten Mo: 8 - 12 Uhr / 14 - 16 Uhr Di: geschlossen Mi: 8 - 12 Uhr / 14 - 16 Uhr Do: 8 - 12 Uhr / 14 - 16 Uhr Fr: 8 - 12 Uhr oder nach telefonischer Vereinbarung. © PR und Werbung Weisslein. All Rights Reserved. Datenschutz Impressum AGB Barrierefreiheit BESbswyBESbswyBESbswyBESbswy",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "cmplz-functional-optin",
+      "label": "Funktional"
+    },
+    {
+      "art": "checkbox",
+      "name": "cmplz-preferences-optin",
+      "label": "Präferenzen"
+    },
+    {
+      "art": "checkbox",
+      "name": "cmplz-statistics-optin",
+      "label": "Statistiken"
+    },
+    {
+      "art": "checkbox",
+      "name": "cmplz-marketing-optin",
+      "label": "Marketing"
+    },
+    {
+      "art": "search",
+      "name": "s",
+      "label": ""
+    },
+    {
+      "art": "search",
+      "name": "s",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "01fc0ef4-cfd5-4c25-b0dd-319c66f45b86.png"
+}

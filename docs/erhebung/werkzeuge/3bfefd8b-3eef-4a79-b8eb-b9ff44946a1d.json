@@ -1,0 +1,18 @@
+{
+  "id": "3bfefd8b-3eef-4a79-b8eb-b9ff44946a1d",
+  "name": "e-werk Gerolsheim",
+  "url": "https://frontend.vlink.com/?key=ftpvst#/solar/postalcode",
+  "vermutet": "eingekauft",
+  "abruf": "ok",
+  "titel": "VLink - Bewertung des möglichen Angebots",
+  "text": "",
+  "felder": [],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "3bfefd8b-3eef-4a79-b8eb-b9ff44946a1d.png"
+}

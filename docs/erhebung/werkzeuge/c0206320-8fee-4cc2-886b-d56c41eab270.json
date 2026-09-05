@@ -1,0 +1,139 @@
+{
+  "id": "c0206320-8fee-4cc2-886b-d56c41eab270",
+  "name": "Stadt- und Überlandwerke GmbH Luckau-Lübbenau",
+  "url": "https://www.suell.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Stadt- und Überlandwerke Luckau-Lübbenau - Ihr regionaler Versorger!",
+  "text": "Wir verwenden Cookies auf unserer Website. Sie haben hier die Möglichkeit zu entscheiden, welche Cookies verwendet werden dürfen. Ihre Auswahl bleibt für 30 Tage gespeichert. Sie haben jederzeit die Möglichkeit, Ihre Cookie-Einstellungen über die Datenschutzerklärung zu ändern. Notwendige Statistik Alle akzeptieren Speichern Zugang zu den wichtigen Informationen Impressum Datenschutz Verträge kündigen Zum Kundenportal Anmelden Zur Navigation springen (Press Enter) Zum Inhalt springen (Press Enter) Home Aktuelles Kundenportal Störung melden Energie Service Unternehmen Netze Strompreis berechnen Gaspreis berechnen Kombi berechnen Tankstellen- preise gültig ab 28.12.2024 Erdgas (CNG) 1,599 €/kg Unser Imagefilm Eine kurze Darstellung zu unserem Unternehmen. Schauen Sie unseren Imagefilm an und erhalten einen Eindruck zu unserem Unternehmen. zum Film Online - Service Rund um die Uhr für Sie verfügbar! Führen Sie Ihre Umzüge und Änderungsmeldungen ganz einfach mit unseren Formularen im Bereich Online-Service durch. Online-Service Störungsdienste Wichtige Telefonnummern und Störungshinweise Weiter Sonder-Tarife Schnell und einfach den passenden Tarif finden Weiter Verbraucherservice Erklärungen zur Zählerablesung oder Rechnung Weiter Geschäftszeiten Unsere Öffnungszeiten und Kontaktdaten Weiter Aktuelle Meldungen 02.09.2026 Stromabschaltungen im September 2026 mehr 02.09.2026 Mitarbeiter Kundenservice (m/w/d) gesucht! mehr 28.08.2026 Am 09.09.2026 Kundencenter geschlossen mehr 27.08.2026 SÜLL warnt vor unseriösen Anrufen und Haustürgeschäften mehr zum Pressesarchiv Energie Home Impressum Service Aktuelles Datenschutz Netze Störung melden Sitemap Unternehmen Verträge kündigen Nach oben Druckversion",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Notwendige"
+    },
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Statistik"
+    },
+    {
+      "art": "text",
+      "name": "VolltextSuchbegriff",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "suche",
+      "label": ""
+    },
+    {
+      "art": "radio",
+      "name": "_Strom_Verwendungszweck",
+      "label": "Privat"
+    },
+    {
+      "art": "radio",
+      "name": "_Strom_Verwendungszweck",
+      "label": "Gewerbe"
+    },
+    {
+      "art": "text",
+      "name": "_Strom_PLZ",
+      "label": "Ort..."
+    },
+    {
+      "art": "select-one",
+      "name": "Ort",
+      "label": "Ort..."
+    },
+    {
+      "art": "text",
+      "name": "_Strom_EingabeStrom",
+      "label": "kWh"
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": "kWh"
+    },
+    {
+      "art": "radio",
+      "name": "_Gas_Kundenart",
+      "label": "Privat"
+    },
+    {
+      "art": "radio",
+      "name": "_Gas_Kundenart",
+      "label": "Gewerbe"
+    },
+    {
+      "art": "text",
+      "name": "_Gas_PLZ",
+      "label": "Privat Gewerbe Ort..."
+    },
+    {
+      "art": "select-one",
+      "name": "Ort",
+      "label": "Ort..."
+    },
+    {
+      "art": "text",
+      "name": "_Gas_EingabeGas",
+      "label": "Ihr Jahresverbrauch Gas:"
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": "kWh"
+    },
+    {
+      "art": "radio",
+      "name": "_Kombi_Verwendungszweck",
+      "label": "Privat"
+    },
+    {
+      "art": "radio",
+      "name": "_Kombi_Verwendungszweck",
+      "label": "Gewerbe"
+    },
+    {
+      "art": "text",
+      "name": "_Kombi_PLZ",
+      "label": "Ort..."
+    },
+    {
+      "art": "select-one",
+      "name": "Ort",
+      "label": "Ort..."
+    },
+    {
+      "art": "text",
+      "name": "_Kombi_EingabeStrom",
+      "label": "Ihr Jahresverbrauch Strom:"
+    },
+    {
+      "art": "select-one",
+      "name": "Ort",
+      "label": "Ort..."
+    },
+    {
+      "art": "text",
+      "name": "_Kombi_EingabeGas",
+      "label": "kWh"
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": "kWh"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": true,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "c0206320-8fee-4cc2-886b-d56c41eab270.png"
+}

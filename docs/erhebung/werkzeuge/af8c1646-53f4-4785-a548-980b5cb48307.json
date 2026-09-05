@@ -1,0 +1,44 @@
+{
+  "id": "af8c1646-53f4-4785-a548-980b5cb48307",
+  "name": "Elektrizitätsgenossenschaft e.G. Hasbergen",
+  "url": "https://www.eg-hasbergen.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Startseite - Elektrizitätsgenossenschaft Hasbergen eG",
+  "text": "Störungshotline (SWL) 05481 8005-99 Startseite Aktuelles Kontakt AKTUELLE INFO... Elektrizitäts­genossenschaft Hasbergen eG I.L. Sehr geehrtes Mitglied, Seit dem 31.12.2025 sind wir an der ehemaligen Geschäftsstelle an der Alten Tecklenburger Str. 5 sowie unter der Telefonnummer 05405-92090 und unter den E-Mail-Adressen bernhard.snehota@eg-hasbergen.com und info@eg-hasbergen.com nicht mehr erreichbar. Sollten sich Ihre Kontaktdaten oder die Bankverbindung zur Mitgliedschaft ändern, teilen Sie uns dies bitte zeitnah unter folgender E-Mail-Adresse mit: E-Mail: snehota@t-online.de INFORMATIONEN ZUR LIQUIDATION DER ELEKTRIZITÄTSGENOSSENSCHAFT HASBERGEN EG I.L. 06. Mai 2026 Sehr geehrte Mitglieder, die Liquidation der Elektrizitätsgenossenschaft Hasbergen eG i. L. ist zur Zeit noch nicht ... weiterlesen... EINLADUNG ZUR AUSSERORDENTLICHEN GENERALVERSAMMLUNG 18. Juli 2025 Einladung zur außerordentlichen Generalversammlung der Elektrizitätsgenossenschaft Hasbergen eG i. L.am 14. August 2025 ... weiterlesen... BERICHT DER GENERALVERSAMMLUNG 20. Mai 2025 Generalversammlung der Elektrizitätsgenossenschaft Hasbergen eG i. L. in der Freizeithalle in Hasbergen Unsere ... weiterlesen... Alle Infos ansehen © 2026 Elektrizitäts­genossenschaft Hasbergen eG – Ein Projekt von Claus Baalmann Marketing & Markus Olesch | design the future ImpressumDatenschutz Datenschutzeinstellungen Einige Funktionen unserer Website sind von sogenannten Cookies abhängig. Je nach Auswahl kann es sein, dass bestimmte Features wie Videos Ihnen nicht angezeigt wird. Sie können Ihre Entscheidung im Nachhinein bei Bedarf ändern. Erforderlich* Notwendige Cookies zulassen damit die Website korrekt funktioniert Externe Medien Externe Medien wie YouTube zulassen Impressum Datenschutz Cookie-Details Startseite Aktuelles Kontakt",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "privacy",
+      "label": "Erforderlich* Notwendige Cookies zulassen damit die Website korrekt funktioniert"
+    },
+    {
+      "art": "checkbox",
+      "name": "privacy",
+      "label": "Externe Medien Externe Medien wie YouTube zulassen"
+    },
+    {
+      "art": "submit",
+      "name": "save_all_settings",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "save_tech_settings",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "save_settings",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "af8c1646-53f4-4785-a548-980b5cb48307.png"
+}

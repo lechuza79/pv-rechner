@@ -1,0 +1,119 @@
+{
+  "id": "4359f9fa-8957-40cd-b273-27fbc9c583c0",
+  "name": "Stadtwerke Witten GmbH",
+  "url": "https://www.stadtwerke-witten.de/photovoltaik-anfragen/",
+  "vermutet": "kontaktformular",
+  "abruf": "ok",
+  "titel": "PV-Beratung der Stadtwerke Witten | Stadtwerke Witten",
+  "text": "Visuelle Assistenzsoftware und Vorlesefunktion Eye-Able öffnen. Mit der Tastatur erreichbar über ALT + 1 Kontakt Online Kundencenter PV-Beratung der Stadtwerke Witten Transparent & verbindlich Füllen Sie einfach das folgende Formular aus. Unsere PV-Experten melden sich umgehend bei Ihnen, um einen persönlichen Beratungstermin mit Ihnen zu vereinbaren. Die Beratung ist selbstverständlich kostenlos. Anrede * keine Angabe Vorname * Nachname * Wer sind Sie? * Privatkunde mit eigener Immobilie E-Mail * Telefonnummer * Straße Hausnummer PLZ Ort Wann möchten Sie ihr Projekt starten? * unter 3 Monate 3-6 Monate mehr als 6 Monate Wir / ich interessiere mich für folgendes Paket * S M L weiß nicht Wann können wir Sie am besten erreichen? * 8-12 Uhr 12-16 Uhr 16-18 Uhr Einwilligung zur Datenverarbeitung * Hiermit stimme ich der Verarbeitung meiner Daten zu. Ich kann meine Zustimmung jederzeit mit Wirkung für die Zukunft widerrufen. Weitere Informationen in der Datenschutzerklärung. Absenden * Pflichtfelder Zur Visualisierung: Die Abbildung wurde mit KI erstellt und stellt die Bauteile nicht maßstabsgetreu, sondern vereinfacht dar. Kontakt Kontaktformulare Hotline 02302 9173-600 Whatsapp 0163 6373173 Termin vereinbaren in der Westfalenstraße Jetzt buchen Ihre Meinung ist uns wichtig Feedback Unsere Freizeitangebote MS Schwalbe Schwimmbäder Events Notdienst Strom: 02302 9173-651 Gas: 02302 9173-652 Wasser: 02302 9173-653 Wärme: 02302 9173-654 Unter www.störungsauskunft.de können Sie den Bearbeitungsstatus von bereits gemeldeten Störungen einsehen oder eine Störung selbst melden. Die Störungsbeseitigung ist nach Dienstschluss unter Umständen kostenpflichtig. Weitere Informationen finden Sie hier. Impressum Datenschutz Rechtliches Downloads Services Netze Verträge hier kündigen Widerruf © 2026 Stadtwerke Witten",
+  "felder": [
+    {
+      "art": "text",
+      "name": "vorname",
+      "label": "Vorname *"
+    },
+    {
+      "art": "text",
+      "name": "nachname",
+      "label": "Nachname *"
+    },
+    {
+      "art": "email",
+      "name": "e_mail",
+      "label": "E-Mail *"
+    },
+    {
+      "art": "text",
+      "name": "telefonnummer",
+      "label": "Telefonnummer *"
+    },
+    {
+      "art": "text",
+      "name": "straxdfe_hausnummer",
+      "label": "Straße"
+    },
+    {
+      "art": "text",
+      "name": "hausnummer",
+      "label": "Hausnummer"
+    },
+    {
+      "art": "text",
+      "name": "plz",
+      "label": "PLZ"
+    },
+    {
+      "art": "text",
+      "name": "plz_ort",
+      "label": "Ort"
+    },
+    {
+      "art": "radio",
+      "name": "wann_mochten_sie_ihr_projekt_starten",
+      "label": "unter 3 Monate"
+    },
+    {
+      "art": "radio",
+      "name": "wann_mochten_sie_ihr_projekt_starten",
+      "label": "3-6 Monate"
+    },
+    {
+      "art": "radio",
+      "name": "wann_mochten_sie_ihr_projekt_starten",
+      "label": "mehr als 6 Monate"
+    },
+    {
+      "art": "radio",
+      "name": "wir_ich_interessiere_mich_fur_folgendes_paket",
+      "label": "S"
+    },
+    {
+      "art": "radio",
+      "name": "wir_ich_interessiere_mich_fur_folgendes_paket",
+      "label": "M"
+    },
+    {
+      "art": "radio",
+      "name": "wir_ich_interessiere_mich_fur_folgendes_paket",
+      "label": "L"
+    },
+    {
+      "art": "radio",
+      "name": "wir_ich_interessiere_mich_fur_folgendes_paket",
+      "label": "weiß nicht"
+    },
+    {
+      "art": "radio",
+      "name": "wann_konnen_wir_sie_am_besten_erreichen",
+      "label": "8-12 Uhr"
+    },
+    {
+      "art": "radio",
+      "name": "wann_konnen_wir_sie_am_besten_erreichen",
+      "label": "12-16 Uhr"
+    },
+    {
+      "art": "radio",
+      "name": "wann_konnen_wir_sie_am_besten_erreichen",
+      "label": "16-18 Uhr"
+    },
+    {
+      "art": "checkbox",
+      "name": "einwilligung_zur_datenverarbeitung",
+      "label": "Einwilligung zur Datenverarbeitung *Hiermit stimme ich der Verarbeitung meiner D"
+    },
+    {
+      "art": "text",
+      "name": "homepage",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "4359f9fa-8957-40cd-b273-27fbc9c583c0.png"
+}

@@ -1,0 +1,119 @@
+{
+  "id": "1935cc36-d8eb-4c33-9e53-e037c3fafa33",
+  "name": "ENRO Ludwigsfelde Netz GmbH",
+  "url": "https://www.enro-netz-ludwigsfelde.de/Netzanschlussportal/Photovoltaik-Solar/",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "ENRO Ludwigsfelde Netz - Kontaktdaten",
+  "text": "Wir verwenden Cookies auf unserer Website. Sie haben hier die Möglichkeit zu entscheiden, welche Cookies verwendet werden dürfen. Ihre Auswahl bleibt für 30 Tage gespeichert. Sie haben jederzeit die Möglichkeit, Ihre Cookie-Einstellungen über die Datenschutzerklärung zu ändern. Notwendige Statistik Alle Cookies zulassen Cookie-Auswahl speichern Nur notwendige Cookies zulassen Notwendige Statistik Zugang zu den wichtigen Informationen Impressum Datenschutz 03378 – 823-600 Mo. - Fr. 9:00 - 16:00 Uhr Zur Navigation springen (Press Enter) Zum Inhalt springen (Press Enter) Zum Login Netzanschluss Strom Netzanschluss Erdgas Baustrom Photovoltaik/Solar Speicher Wallbox Weitere Anschlüsse Angebotsupload Kontaktformular Hallo, ich helfe Ihnen Ihren Anschluss anzumelden und beantworte Ihre Fragen. Zu den FAQs Startseite Photovoltaik/Solar Zurück zur Startseite Hallo, was möchten Sie anmelden? Photovoltaik/Solar Wärmepumpe Speicher Netzanschluss Strom Fragen kann ich zu folgenden Themen beantworten 1. 2. 3. 4. Kontaktdaten Anschlussnehmer Firma: Anrede: Bitte auswählen... Frau Herr Divers Vorname*: Nachname*: Straße*: Hausnr.*: Postleitzahl*: Ort*: Gemarkung: Flurstück Zähler/Nenner: Telefon*: E-Mail*: Abweichende Daten Gibt es Abweichungen vom Anschlussnehmer zum Anschlussnutzer, Anlagenstandort, Grundstückseigentümer oder Rechnungsempfänger?*: Ja Nein Impressum Datenschutz Cookie-Einstellungen ändern © 2026 ENRO Ludwigsfelde Netz",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Notwendige"
+    },
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Statistik"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ANSCHLUSSNEHMER.FIRMA",
+      "label": "Firma:"
+    },
+    {
+      "art": "select-one",
+      "name": "Formular.ANSCHLUSSNEHMER.ANREDE",
+      "label": "Anrede:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ANSCHLUSSNEHMER.VORNAME",
+      "label": "Vorname*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ANSCHLUSSNEHMER.NACHNAME",
+      "label": "Nachname*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ADRESSE.STRASSE",
+      "label": "Straße*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ADRESSE.HAUSNR",
+      "label": "Hausnr.*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ADRESSE.PLZ",
+      "label": "Postleitzahl*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ADRESSE.ORT",
+      "label": "Ort*:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ADRESSE.GEMARKUNG",
+      "label": "Gemarkung:"
+    },
+    {
+      "art": "text",
+      "name": "Formular.ADRESSE.FLURSTUECK",
+      "label": "Flurstück Zähler/Nenner:"
+    },
+    {
+      "art": "tel",
+      "name": "Formular.KONTAKT.TELEFON",
+      "label": "Telefon*:"
+    },
+    {
+      "art": "email",
+      "name": "Formular.KONTAKT.EMAIL",
+      "label": "E-Mail*:"
+    },
+    {
+      "art": "radio",
+      "name": "Formular.DATENENTSPRECHENANSCHLUSSNEHMER",
+      "label": "Gibt es Abweichungen vom Anschlussnehmer zum Anschlussnutzer, Anlagenstandort, G"
+    },
+    {
+      "art": "radio",
+      "name": "Formular.DATENENTSPRECHENANSCHLUSSNEHMER",
+      "label": "Nein"
+    },
+    {
+      "art": "textarea",
+      "name": "Formular.ABWEICHENDEDATEN",
+      "label": "Bitte tragen Sie hier die entsprechend abweichenden Daten ein.*:"
+    },
+    {
+      "art": "button",
+      "name": "SeiteZurueckWechseln",
+      "label": "if (typeof(HRJavaScriptIncludesRegistry) != \"object\") { var head = document.getE"
+    },
+    {
+      "art": "button",
+      "name": "AusfuellenUnterbrechen",
+      "label": "if (typeof(HRJavaScriptIncludesRegistry) != \"object\") { var head = document.getE"
+    },
+    {
+      "art": "submit",
+      "name": "SeiteWechseln",
+      "label": "if (typeof(HRJavaScriptIncludesRegistry) != \"object\") { var head = document.getE"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "1935cc36-d8eb-4c33-9e53-e037c3fafa33.png"
+}

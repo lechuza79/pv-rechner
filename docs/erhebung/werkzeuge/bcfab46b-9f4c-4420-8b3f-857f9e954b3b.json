@@ -1,0 +1,119 @@
+{
+  "id": "bcfab46b-9f4c-4420-8b3f-857f9e954b3b",
+  "name": "Meißener Stadtwerke GmbH",
+  "url": "https://www.stadtwerke-meissen.de/waermepumpe-formular/",
+  "vermutet": "rechner",
+  "abruf": "ok",
+  "titel": "Formular Wärmepumpe",
+  "text": "Anfrageformular für eine elektrische Wärmepumpe Wärmepumpe gewünscht? Schritt 1 Ihre Daten FIRMA VORNAME * NACHNAME * STRASSE * HAUSNUMMER * POSTLEITZAHL * ORT * E-MAIL * TELEFON * Schritt 2 Daten Ihrer Liegenschaft STRASSE * HAUSNUMMER * POSTLEITZAHL * Angaben zum Gebäude / zur Liegenschaft ART DES GEBÄUDES * Bitte auswählen Wohnhaus Bürogebäude sonstiges BENÖTIGTE WÄRMELEISTUNG IN KW * WARMWASSERBEREITUNG? * Bitte auswählen ja nein Schritt 3 Angaben zur aktuellen Heizung MIT WELCHEM ENERGIEMEDIUM HEIZEN SIE? * Bitte auswählen Gasheizung Ölheizung sonstiges UM WELCHE HEIZUNGSART HANDELT ES SICH? * Bitte auswählen Etagenheizung Zentralheizung ZUSÄTZLICHE ANGABEN ZUR HEIZUNG AB WANN WÜNSCHEN SIE EINE ELEKTRISCHE WÄRMEPUMPE? * Ja, ich habe die Datenschutzerklärung gelesen und akzeptiere diese hiermit. * * Pflichtfelder Schließen Jetzt Formular senden",
+  "felder": [
+    {
+      "art": "text",
+      "name": "company",
+      "label": "Firma"
+    },
+    {
+      "art": "text",
+      "name": "firstname",
+      "label": "Vorname *"
+    },
+    {
+      "art": "text",
+      "name": "lastname",
+      "label": "Nachname *"
+    },
+    {
+      "art": "text",
+      "name": "street",
+      "label": "Straße *"
+    },
+    {
+      "art": "text",
+      "name": "number",
+      "label": "Hausnummer *"
+    },
+    {
+      "art": "text",
+      "name": "zip",
+      "label": "Postleitzahl *"
+    },
+    {
+      "art": "text",
+      "name": "city",
+      "label": "Ort *"
+    },
+    {
+      "art": "text",
+      "name": "email",
+      "label": "E-Mail *"
+    },
+    {
+      "art": "text",
+      "name": "phone",
+      "label": "Telefon *"
+    },
+    {
+      "art": "text",
+      "name": "property_street",
+      "label": "Straße *"
+    },
+    {
+      "art": "text",
+      "name": "property_number",
+      "label": "Hausnummer *"
+    },
+    {
+      "art": "text",
+      "name": "property_zip",
+      "label": "Postleitzahl *"
+    },
+    {
+      "art": "select-one",
+      "name": "property_kind",
+      "label": "Art des Gebäudes *"
+    },
+    {
+      "art": "number",
+      "name": "property_required_power",
+      "label": "Benötigte Wärmeleistung in kW *"
+    },
+    {
+      "art": "select-one",
+      "name": "property_warm_water",
+      "label": "Warmwasserbereitung? *"
+    },
+    {
+      "art": "select-one",
+      "name": "current_heating_fuel",
+      "label": "Mit welchem Energiemedium heizen Sie? *"
+    },
+    {
+      "art": "select-one",
+      "name": "current_heating_system",
+      "label": "Um welche Heizungsart handelt es sich? *"
+    },
+    {
+      "art": "textarea",
+      "name": "heating_remarks",
+      "label": "Zusätzliche Angaben zur Heizung"
+    },
+    {
+      "art": "date",
+      "name": "date_of_connection",
+      "label": "Ab wann wünschen Sie eine elektrische Wärmepumpe? *"
+    },
+    {
+      "art": "checkbox",
+      "name": "gdpr",
+      "label": "Ja, ich habe die Datenschutzerklärung gelesen und akzeptiere diese hiermit. *"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "bcfab46b-9f4c-4420-8b3f-857f9e954b3b.png"
+}

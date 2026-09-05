@@ -1,0 +1,71 @@
+{
+  "id": "4a65d72d-58b4-4a82-8400-0e6c7b3366ec",
+  "name": "Saalfelder Energienetze GmbH",
+  "url": "https://www.saalfelder-energienetze.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Startseite - Saalfelder Energienetze",
+  "text": "Skip to main content Enable accessibility for low vision Open the accessibility menu Diese Webseite verwendet Cookies Wir verwenden Cookies, um Inhalte und Anzeigen zu personalisieren, Funktionen für soziale Medien anbieten zu können und die Zugriffe auf unsere Website zu analysieren. Außerdem geben wir Informationen zu Ihrer Verwendung unserer Website an unsere Partner für soziale Medien, Werbung und Analysen weiter. Unsere Partner führen diese Informationen möglicherweise mit weiteren Daten zusammen, die Sie ihnen bereitgestellt haben oder die sie im Rahmen Ihrer Nutzung der Dienste gesammelt haben. Einwilligungsauswahl Notwendig Präferenzen Statistiken Marketing Details zeigen Cookies zulassen Auswahl erlauben Nur notwendige Cookies Mail Anruf NETZNUTZUNG NETZANSCHLUSS INFORMATIONEN SERVICE ÜBER UNS Netzanschluss Alle wichtigen Informationen und Dokumente zu Netzanschlüssen für Strom und Gas. Unser Service Netznutzung Hier finden Sie alles über die Nutzung der Strom- und Gasnetze. Netzanschluss Alle wichtigen Informationen und Dokumente zu Netzanschlüssen für Strom und Gas. Zählerstandsmeldung Hier können Sie einfach und bequem Ihre Zählerstände an uns melden. Netzinformationen Erfahren Sie mehr über unser Netzgebiet und unsere Strukturdaten. Leitungsauskunft Holen Sie bei uns eine Leitungsauskunft ein, bevor Sie Schachtarbeiten auf öffentlichen oder privaten Flächen vornehmen oder vornehmen lassen. Saalfelder Energienetze GmbH • Remschützer Straße 42 • 07318 Saalfeld • Copyright 2026 | Ein Unternehmen der Stadtwerke Saalfeld",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonNecessary",
+      "label": "Notwendig"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonPreferences",
+      "label": "Präferenzen"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonStatistics",
+      "label": "Statistiken"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonMarketing",
+      "label": "Marketing"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonNecessaryInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonPreferencesInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonStatisticsInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonMarketingInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyContentCheckboxPersonalInformation",
+      "label": "Meine persönlichen Daten nicht verkaufen oder weitergeben"
+    },
+    {
+      "art": "text",
+      "name": "searchterm",
+      "label": ""
+    }
+  ],
+  "rahmen": [
+    "https://consentcdn.cookiebot.com/sdk/bc-v4.min.html"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "4a65d72d-58b4-4a82-8400-0e6c7b3366ec.png"
+}

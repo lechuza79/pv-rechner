@@ -1,0 +1,44 @@
+{
+  "id": "3be3522a-7e9a-42f1-8f91-47075b7bda1b",
+  "name": "Kommunalunternehmen Gemeindewerke Stammbach Anstalt des öffentlichen Rechts des Marktes Stammbach",
+  "url": "https://www.gemeindewerke-stammbach.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Gemeindewerke Stammbach: Gemeindewerke Stammbach",
+  "text": "Wir weisen darauf hin, dass wir technisch notwendige Cookies einsetzen, um eine optimale Funktion unserer Website zu ermöglichen. Die Einwilligung zur Nutzung weiterer Dienste wird bei Bedarf gesondert abgefragt. Weitere Informationen finden Sie in unseren Datenschutzhinweisen. ZUR KENNTNIS GENOMMEN Impressum Sprungziele Zum Hauptinhalt springen Zur Suchfunktion springen Zum Hauptmenü springen Zur Fußzeile springen 15 °C STROM WASSER ABWASSER SONSTIGE AUFGABEN UNTERNEHMEN SUCHE SERVICE Zählerstände Kontakt Umzugsformular Sepa-Lastschrift Foto: Pixabay Herzlich willkommen bei den Gemeindewerken Stammbach Foto: Pixabay Herzlich willkommen bei den Gemeindewerken Stammbach Foto: Pixabay Herzlich willkommen bei den Gemeindewerken Stammbach Foto: Pixabay Herzlich willkommen bei den Gemeindewerken Stammbach Foto: Pixabay Herzlich willkommen bei den Gemeindewerken Stammbach Foto: Pixabay Herzlich willkommen bei den Gemeindewerken Stammbach 1 2 Umzugsformular Zählerstand Sepa-Lastschrift Störungsmeldungen außerhalb unserer Geschäftszeiten: 01602272316 Aktuelle Nachrichten und Bekanntmachungen Pixabay.com 19.05.2025 Gesetzliche Regelung bei Umzügen Umzug bitte rechtzeitig Melden MEHR LESEN pixabay.com 22.11.2024 Balkonkraftwerk Balkonkraftwerke und ihre Registrierungspflicht!!! MEHR LESEN pixabay.de 15.07.2024 Information zu Haustürgeschäften Unseriöse Haustürgeschäfte MEHR LESEN ALLE NACHRICHTEN Aktuelle Projekte Foto: Pixabay Ihr Wasserversorger Wasser ist die Grundlage unseres Lebens. Umso wichtiger ist es, dass wir wissen, wo es herkommt. mehr erfahren Foto: Pixabay Ihr Energieversorger Ein Leben ohne Strom ist heute nicht mehr vorstellbar. Ohne Strom würde es aus den Fugen geraten. mehr erfahren Ihr Kommunalunternehmen Regional und Nachhaltig – Künftig noch kundenfreundlicher und wirtschaftlicher arbeiten. mehr erfahren Gemeindewerke Stammbach Gemeindewerke Stammbach Färberstraße 2 95236 Stammbach 09256 96009-0 09256 96009-99 info@gemeindewerke-stammbach.de Störungsmeldung außerhalb der Geschäftszeiten: 0160 22 72 316 Öffnungszeiten Montag, Dienstag: 08.30 Uhr - 12.00 Uhr Donnerstag: 08.30 Uhr - 12.00 Uhr 14.00 Uhr - 16.30 Uhr Darüber hinaus sind Termine außerhalb der Öffnungszeiten mit dem jeweiligen Sachbearbeiter möglich Sitemap Strom Wasser Abwasser Sonstige Aufgaben Unternehmen Quicklinks Markt Stammbach Landratsamt Hof Kontakt Zählerstand Barrierefreiheit Datenschutz Impressum Sitemap Cookie-Einstellungen",
+  "felder": [
+    {
+      "art": "text",
+      "name": "tx_kesearch_pi1[sword]",
+      "label": "Suche"
+    },
+    {
+      "art": "text",
+      "name": "tx_kesearch_pi1[sword]",
+      "label": "Suche"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookie-overlay--checkbox--video--youtube",
+      "label": "YouTube"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookie-overlay--checkbox--video--vimeo",
+      "label": "Vimeo"
+    },
+    {
+      "art": "checkbox",
+      "name": "cookie-overlay--checkbox--openstreetmaps",
+      "label": "Karte"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "3be3522a-7e9a-42f1-8f91-47075b7bda1b.png"
+}

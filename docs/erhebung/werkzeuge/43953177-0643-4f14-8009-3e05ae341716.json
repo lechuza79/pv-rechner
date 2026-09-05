@@ -1,0 +1,178 @@
+{
+  "id": "43953177-0643-4f14-8009-3e05ae341716",
+  "name": "ÜZ Mainfranken eG",
+  "url": "https://www.uez.de/formular/pv-freiflaechen",
+  "vermutet": "kontaktformular",
+  "abruf": "ok",
+  "titel": "PV-Freiflächen - Formular - ÜZ Mainfranken",
+  "text": "Diese Webseite verwendet Cookies Wir verwenden Cookies, um Inhalte und Anzeigen zu personalisieren, Funktionen für soziale Medien anbieten zu können und die Zugriffe auf unsere Website zu analysieren. Außerdem geben wir Informationen zu Ihrer Verwendung unserer Website an unsere Partner für soziale Medien, Werbung und Analysen weiter. Unsere Partner führen diese Informationen möglicherweise mit weiteren Daten zusammen, die Sie ihnen bereitgestellt haben oder die sie im Rahmen Ihrer Nutzung der Dienste gesammelt haben. Details zeigen Cookies zulassen Nur notwendige Cookies ProdukteEnergiewendeDienstleistungOnlineservicesStromnetzGigabitausbauÜber unsKarriere Privatkunden Geschäftskunden Bewerber Bauherren Eigenstromerzeuger Installateure Energieversorger Kommunen WERDEN SIE MIT UNS VORREITER FÜR GRÜNE ENERGIE PV-Freiflächen Sie haben eine Fläche, auf der Sie sich vorstellen können, mit uns eine PV-Anlage zu bauen? Füllen Sie einfach den untenstehenden Fragebogen aus und wir melden uns bei Ihnen! Titel Vorname* Nachname* Adresse E-Mail* Telefonnummer Ihre mögliche Fläche Wie groß ist die Fläche?* 5 ha 5 - 10 ha mehr als 10 ha Wie wird die Fläche derzeit genutzt? Welche Neigung hat die Fläche? In welcher Gemarkung liegt die Fläche?* Um welche Flurstücke handelt es sich? Handelt es sich um benachteiligtes Gebiet? Ja Nein Alle Daten werden vertraulich und nur für den beschriebenen Zweck behandelt. Datenschutz* Ich habe die Datenschutzerklärung zur Kenntnis genommen. Ich stimme zu, dass meine Daten und Angaben zur Bearbeitung meines Anliegens elektronisch verarbeitet werden. Mir ist bewusst, dass ich meine Einwilligung jederzeit mit Wirkung für die Zukunft durch eine einfache Erklärung, zum Beispiel durch eine Erklärung mittels des Kontaktformulars oder per E-Mail an uez.datenschutz(at)uez(dot)de, widerrufen kann. Absenden Alles auf einen Blick Zentrale: 09382 / 604 - 0 Kundenservice: 09382 / 604 - 604 Service für Eigenstromerzeuger: 09382 / 604 - 605 (Mo. - Do.: 7.30 - 16.30 Uhr, Fr.: 7.30 - 13 Uhr) Email: uez@uez.de Störungsdienst: 09382 / 604 - 601 (24 Stunden erreichbar) Störungsdienst E-Mobilität: 09382 / 604 - 608 (24 Stunden erreichbar) ÜZ Mainfranken eG Schallfelder Straße 11 97511 Lülsfeld Geschäftsstelle Lülsfeld: Bitte vereinbaren Sie einen Termin. Produkte Haushaltstarife Heiztarife E-Mobilität Geschäftskunden Energiewende Bürgerbeteiligung PV-Anlagen Windenergie Überregionale Zusammenarbeit Wärmeversorgung Dienstleistungen Energieberatung Glasfaser Ladeinfrastruktur Geodaten & Vermessung Technische Dienstleistungen Rechenzentrum Onlineservices Kundenportal Änderungsservice Störung melden Kontakt Stromnetz Netzanschluss Installateure Messservice Versorgungsgebiet Veröffentlichungspflichten Gigabitausbau Ausbaugebiet Anmeldung Glasfaser Über uns Unsere Werte Soziales Engagement Aktuelles Genossenschaft Karriere Arbeitgeber ÜZ Stellenangebote Ausbildung & Studium Eigenstromerzeuger Verträge widerrufen Verträge kündigen Impressum Datenschutz",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonNecessary",
+      "label": "Notwendig"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonPreferences",
+      "label": "Präferenzen"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonStatistics",
+      "label": "Statistiken"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonMarketing",
+      "label": "Marketing"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonNecessaryInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonPreferencesInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonStatisticsInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonMarketingInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyContentCheckboxPersonalInformation",
+      "label": "Meine persönlichen Daten nicht verkaufen oder weitergeben"
+    },
+    {
+      "art": "text",
+      "name": "search",
+      "label": ""
+    },
+    {
+      "art": "select-one",
+      "name": "zielgruppen-select",
+      "label": "PrivatkundenGeschäftskundenBewerberBauherrenEigenstromerzeugerInstallateureEnerg"
+    },
+    {
+      "art": "text",
+      "name": "search",
+      "label": ""
+    },
+    {
+      "art": "select-one",
+      "name": "zielgruppen-select-mobile",
+      "label": "PrivatkundenGeschäftskundenBewerberBauherrenEigenstromerzeugerInstallateureEnerg"
+    },
+    {
+      "art": "text",
+      "name": "--form-8aa70314-5ad8-42ba-91e3-11ac81d32190[Titel]",
+      "label": "Titel"
+    },
+    {
+      "art": "text",
+      "name": "--form-8aa70314-5ad8-42ba-91e3-11ac81d32190[vorname]",
+      "label": "Vorname*"
+    },
+    {
+      "art": "text",
+      "name": "--form-8aa70314-5ad8-42ba-91e3-11ac81d32190[nachname]",
+      "label": "Nachname*"
+    },
+    {
+      "art": "text",
+      "name": "--form-8aa70314-5ad8-42ba-91e3-11ac81d32190[913db67a-61d7-45",
+      "label": "Adresse"
+    },
+    {
+      "art": "text",
+      "name": "--form-8aa70314-5ad8-42ba-91e3-11ac81d32190[email]",
+      "label": "E-Mail*"
+    },
+    {
+      "art": "text",
+      "name": "--form-8aa70314-5ad8-42ba-91e3-11ac81d32190[telefonnummer]",
+      "label": "Telefonnummer"
+    },
+    {
+      "art": "radio",
+      "name": "--form-8aa70314-5ad8-42ba-91e3-11ac81d32190[d438ecf2-958b-4a",
+      "label": "5 ha"
+    },
+    {
+      "art": "radio",
+      "name": "--form-8aa70314-5ad8-42ba-91e3-11ac81d32190[d438ecf2-958b-4a",
+      "label": "5 - 10 ha"
+    },
+    {
+      "art": "radio",
+      "name": "--form-8aa70314-5ad8-42ba-91e3-11ac81d32190[d438ecf2-958b-4a",
+      "label": "mehr als 10 ha"
+    },
+    {
+      "art": "text",
+      "name": "--form-8aa70314-5ad8-42ba-91e3-11ac81d32190[345a157f-0a94-4d",
+      "label": "Wie wird die Fläche derzeit genutzt?"
+    },
+    {
+      "art": "text",
+      "name": "--form-8aa70314-5ad8-42ba-91e3-11ac81d32190[b3d4a343-65ee-4a",
+      "label": "Welche Neigung hat die Fläche?"
+    },
+    {
+      "art": "text",
+      "name": "--form-8aa70314-5ad8-42ba-91e3-11ac81d32190[7ec3b204-fac4-45",
+      "label": "In welcher Gemarkung liegt die Fläche?*"
+    },
+    {
+      "art": "text",
+      "name": "--form-8aa70314-5ad8-42ba-91e3-11ac81d32190[64edffbc-af5d-43",
+      "label": "Um welche Flurstücke handelt es sich?"
+    },
+    {
+      "art": "radio",
+      "name": "--form-8aa70314-5ad8-42ba-91e3-11ac81d32190[7a1871f1-5b64-48",
+      "label": "Ja"
+    },
+    {
+      "art": "radio",
+      "name": "--form-8aa70314-5ad8-42ba-91e3-11ac81d32190[7a1871f1-5b64-48",
+      "label": "Nein"
+    },
+    {
+      "art": "checkbox",
+      "name": "--form-8aa70314-5ad8-42ba-91e3-11ac81d32190[Datenschutz][]",
+      "label": "Ich habe die Datenschutzerklärung zur Kenntnis genommen. Ich stimme zu, dass mei"
+    },
+    {
+      "art": "textarea",
+      "name": "g-recaptcha-response",
+      "label": ""
+    },
+    {
+      "art": "textarea",
+      "name": "h-captcha-response",
+      "label": ""
+    }
+  ],
+  "rahmen": [
+    "https://newassets.hcaptcha.com/captcha/v1/80ba88939126ef29d32e1ca12bb3054eb9b51927/static/hcaptcha.html#frame=checkbox&id=0amtn05zsiq&host=www.uez.de&sentry=true&reportapi=https%3A%2F%2Faccounts.hcaptcha.com&recaptchacompat=true&custom=false&hl=de&tplinks=on&andint=off&pstissuer=https%3A%2F%2Fpst-issuer.hcaptcha.com&sitekey=b574e2f0-a7c6-414a-a04c-7cec2c44a97a&theme=light&origin=https%3A%2F%2Fwww.uez.de&clientOptions=%7B%22sentry%22%3Atrue%2C%22reportapi%22%3A%22https%3A%2F%2Faccounts.hcaptcha.com%22%2C%22recaptchacompat%22%3A%22true%22%2C%22custom%22%3Afalse%2C%22hl%22%3A%22de-DE%22%2C%22tplinks%22%3A%22on%22%2C%22andint%22%3A%22off%22%2C%22pat%22%3A%22on%22%2C%22pstissuer%22%3A%22https%3A%2F%2Fpst-issuer.hcaptcha.com%22%2C%22endpoint%22%3A%22https%3A%2F%2Fapi.hcaptcha.com%22%2C%22theme%22%3A%22light%22%2C%22size%22%3A%22normal%22%2C%22confirm-nav%22%3Afalse%7D",
+    "https://consentcdn.cookiebot.com/sdk/bc-v4.min.html",
+    "https://newassets.hcaptcha.com/captcha/v1/80ba88939126ef29d32e1ca12bb3054eb9b51927/static/hcaptcha.html#frame=challenge&id=0amtn05zsiq&host=www.uez.de&sentry=true&reportapi=https%3A%2F%2Faccounts.hcaptcha.com&recaptchacompat=true&custom=false&hl=de&tplinks=on&andint=off&pstissuer=https%3A%2F%2Fpst-issuer.hcaptcha.com&sitekey=b574e2f0-a7c6-414a-a04c-7cec2c44a97a&theme=light&origin=https%3A%2F%2Fwww.uez.de&clientOptions=%7B%22sentry%22%3Atrue%2C%22reportapi%22%3A%22https%3A%2F%2Faccounts.hcaptcha.com%22%2C%22recaptchacompat%22%3A%22true%22%2C%22custom%22%3Afalse%2C%22hl%22%3A%22de-DE%22%2C%22tplinks%22%3A%22on%22%2C%22andint%22%3A%22off%22%2C%22pat%22%3A%22on%22%2C%22pstissuer%22%3A%22https%3A%2F%2Fpst-issuer.hcaptcha.com%22%2C%22endpoint%22%3A%22https%3A%2F%2Fapi.hcaptcha.com%22%2C%22theme%22%3A%22light%22%2C%22size%22%3A%22normal%22%2C%22confirm-nav%22%3Afalse%7D"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": true,
+    "pflichtprozess": false
+  },
+  "bild": "43953177-0643-4f14-8009-3e05ae341716.png"
+}

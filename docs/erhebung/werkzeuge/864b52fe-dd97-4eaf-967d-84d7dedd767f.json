@@ -1,0 +1,81 @@
+{
+  "id": "864b52fe-dd97-4eaf-967d-84d7dedd767f",
+  "name": "Stadtwerke Ostmünsterland GmbH & Co. KG",
+  "url": "https://www.so.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Ihr Energieversorger | Stadtwerke Ostmünsterland",
+  "text": "Zum Hauptinhalt springen Kontakt Störung melden Kundenportal Industriekunden Ansicht Produkte Netze Service Über uns Karriere MEIN.SO APP Energieverträge immer im Blick Zur App. GAS | SO GUT Garantierter Gastarif. Gutes Gefühl. Jetzt langfristig sparen. KOMM INS TEAM. Jobs entdecken. LANDWERT STROM Zum Sonderabkommen für Landwirtschaft. LANGFRISTIG GÜNSTIGER STROM. Jetzt Fixprodukte entdecken. MEIN.SO APP Energieverträge immer im Blick Zur App. GAS | SO GUT Garantierter Gastarif. Gutes Gefühl. Jetzt langfristig sparen. KOMM INS TEAM. Jobs entdecken. LANDWERT STROM Zum Sonderabkommen für Landwirtschaft. LANGFRISTIG GÜNSTIGER STROM. Jetzt Fixprodukte entdecken. MEIN.SO APP Energieverträge immer im Blick Zur App. ENERGIE VON DEN STADTWERKEN OSTMÜNSTERLAND STROM UND GAS FÜR IHR ZUHAUSE GUTE GRÜNDE DARUM STADTWERKE OSTMÜNSTERLAND ALS ENERGIEVERSORGER Zukunft im Blick Unser Strom stammt zu 100 % aus europäischer Wind- und Wasserkraft (TÜV-geprüft). Außerdem unterstützen wir den Ausbau erneuerbarer Energien und investieren in E-Mobilität. Regionale Power Als Energieversorger engagieren wir uns für das Ostmünsterland und unterstützen Vereine und Organisationen in der Region. Für Sie vor Ort Wir sind persönlich für Sie da, beraten Sie individuell und finden mit Ihnen gemeinsam die passende Lösung. Zuverlässig Wir versorgen die Region sicher mit Strom, Gas, Wasser und Wärme und kümmern uns um alle Formalitäten beim Versorgerwechsel. Mehr erfahren PRODUKTE WIR LIEFERN, WAS DAS LEBEN BRAUCHT. Wir versorgen das Ostmünsterland mit Strom, Gas, Wasser und Wärme. Wir sind Ihre Stadtwerke in der Nähe und als Energieversorger direkt vor Ort für Sie da. STROM Stromtarife entdecken GAS Gastarif finden WÄRME Wärmeprojekte WASSER Trinkwasser E-MOBILITÄT Wallboxen & Co. TOP-SERVICES Kundenportal Kundencenter vor Ort Photovoltaik Zählerstand melden Installateure Energie einspeisen Netzanschluss beantragen MEIN.SO APP Jetzt downloaden AKTUELLES 18.08.2026 STADTWERKE OSTMÜNSTERLAND SANIEREN STROMNETZ Baumaßnahme im Sendenhorster Ortskern Sendenhorst. Die Stadtwerke Ostmünsterland erneuern ab der kommenden Woche das Stromnetz in Sendenhorst. Die Arbeiten im Bereich Kühl, Südstraße und Schlabberpohl starten in der letzten Sommerferienwoche (KW 35) und werden voraussichtlich Mitte Oktober 2026 abgeschlossen. Mehr lesen 07.08.2026 ARBEITEN AM STROMNETZ IN OSTENFELDE Baustellenampeln regeln den Verkehr Ennigerloh. Für die sichere Versorgung der Haushalte in Ostenfelde führen die Stadtwerke Ostmünsterland ab Montag, 17. August 2026, notwendige Leitungsarbeiten im Bereich Margaretenplatz/Dorfstraße durch. Während der rund vierwöchigen Bauzeit wird der Verkehr über Baustellenampeln geregelt. Mehr lesen 17.07.2026 VERUNSICHERUNG DURCH SCHREIBEN ZUM SMART METER-EINBAU Stadtwerke Ostmünsterland raten zur Vorsicht Telgte. Für große Verunsicherung bei Bürgerinnen und Bürgern sorgen derzeit Schreiben von wettbewerblichen Messstellenbetreibern, unter anderem von der DMG Deutsche Messwesen GmbH. In den Briefen wird für den kurzfristigen Einbau von Smart Metern und einer damit verbundenen Entlastung von 128 Euro im Jahr geworben. Die Stadtwerke Ostmünsterland empfehlen, keine Verträge unter Zeitdruck zu unterschreiben und solche Werbeversprechen genau zu prüfen. Mehr lesen 1 2 3 4 5 6 7 8 9 10 … KUNDENSERVICE Unser Kundenservice bietet mehr als nur bloße Information: Wir sind vor Ort in unseren Kundencentern persönlich für unsere Kunden da und bieten eine umfassende und kompetente Beratung zu allen Energiethemen – für jedes Anliegen gibt es den richtigen Ansprechpartner. Kundencenter vor Ort WIR SIND FÜR SIE DA! 02504 7085-935 kundenservice@so.de Stadtwerke Ostmünsterland Münstertor 46–48 48291 Telgte 02504 7085-0 02504 7085-199 info@so.de SO NAH. SO GUT. © 2026 - Stadtwerke Ostmünsterland GmbH & Co. KG Impressum・Datenschutz・Barrierefreiheit・Kündigung・Vertrag widerrufen",
+  "felder": [
+    {
+      "art": "text",
+      "name": "text",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "text",
+      "label": "Ich suche nach ..."
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-widget--purpose-41ba25c",
+      "label": "Technisch notwendig"
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-widget--purpose-a717ff5",
+      "label": "Analyse / Statistiken"
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-widget--purpose-cdcbd7c",
+      "label": "Anzeigen / Ads"
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-widget--purpose-6cd2721",
+      "label": "Social Media"
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-widget--purpose-15c61c3",
+      "label": "Sonstiges"
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-41ba25c",
+      "label": "Technisch notwendig (2)"
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-a717ff5",
+      "label": "Analyse / Statistiken (3)"
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-cdcbd7c",
+      "label": "Anzeigen / Ads (1)"
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-6cd2721",
+      "label": "Social Media (1)"
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-15c61c3",
+      "label": "Sonstiges (2)"
+    }
+  ],
+  "rahmen": [
+    "https://sswsp.conergos.de/pr/dist/et/vs-calc.html"
+  ],
+  "merkmale": {
+    "tarifwort": true,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "864b52fe-dd97-4eaf-967d-84d7dedd767f.png"
+}

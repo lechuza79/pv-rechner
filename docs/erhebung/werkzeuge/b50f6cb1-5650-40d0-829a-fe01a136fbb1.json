@@ -1,0 +1,76 @@
+{
+  "id": "b50f6cb1-5650-40d0-829a-fe01a136fbb1",
+  "name": "GeraNetz GmbH",
+  "url": "https://www.geranetz.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Willkommen - GeraNetz GmbH",
+  "text": "Zustimmung Details Über Cookies Diese Webseite verwendet Cookies Wir verwenden Cookies, um Inhalte und Anzeigen zu personalisieren, Funktionen für soziale Medien anbieten zu können und die Zugriffe auf unsere Website zu analysieren. Außerdem geben wir Informationen zu Ihrer Verwendung unserer Website an unsere Partner für soziale Medien, Werbung und Analysen weiter. Unsere Partner führen diese Informationen möglicherweise mit weiteren Daten zusammen, die Sie ihnen bereitgestellt haben oder die sie im Rahmen Ihrer Nutzung der Dienste gesammelt haben. Einwilligungsauswahl Notwendig Präferenzen Statistiken Marketing Ablehnen Auswahl erlauben Alle zulassen GeraNetz GmbH GeraNetz GmbH Strom Netznutzungsvertrag Lieferant/Letztverbraucher Veröffentlichungen Erzeugungsanlagen Redispatch 2.0 Blindstrom Gas Lieferantenrahmenvertrag Abrechnungskontrolle Veröffentlichungen Service Messwesen Netzanschluss Downloads Kundenportal Zählerstandserfassung Kundenportal Unternehmen Gleichbehandlungsbericht Barrierefreiheitserklärung Zertifikate Aktuelles Kontakt Ansprechpartner Anfahrt Suchen STROM Wir bieten den Lieferanten ein hochqualitatives Netz zur Versorgung Ihrer Endkunden mit elektrischer Energie Mehr erfahren GAS Transportkunden steht ein hochwertiges Versorgungsnetz für die Weiterleitung von Gas an Ihre Endkunden zur Verfügung Mehr erfahren SERVICE Der Online Service der GeraNetz GmbH bietet Ihnen Downloads und bequemen Zugriff auf Ihre Zähler-Informationen Mehr erfahren Informationen zu aktuellen Smart-Meter-Angeboten per Post In den letzten Tagen erreichten uns mehrere Meldungen verunsicherter Kunden, welche Briefe wettbewerblicher Messstellenbetreiber bezüglich der (vermeintlich verpflichtenden) Installation intelligenter Messsysteme (Smart Meter) erhalten haben. Rein vorsorglich möchten wir Sie daher zu den uns im Wesentlichen erreichenden Fragen aufklären: Mehr erfahren EINBAU DIGITALER ZÄHLER GeraNetz GmbH tauscht Stromzähler schrittweise aus Mehr erfahren Zählerstandsmeldung Hier können Sie Ihren Zählerstand melden Mehr erfahren Versorgungssicherheit in Energiekrisen Aktuelle Informationen und Grundlagen zum Krisenmanagement in der Energiewirtschaft Mehr erfahren Störungsrufnummern Strom 0365 856-1616 Gas 0365 856-1717 Netzanschluss Strom / Gas Herstellung / Änderung beantragen Mehr erfahren Schachtscheine Schachtscheine, Leitungsauskunft und Bestandsauskunft - Bearbeitung im Auftrag der GeraNetz GmbH Mehr erfahren SIE HABEN FRAGEN? Unsere Ansprechpartner stehen Ihnen bei allen Fragen rund um die GeraNetz GmbH und unserem Service gern zur Verfügung 0365 856-2501 info@geranetz.de Alle Ansprechpartner in der Übersicht © 2026 GeraNetz GmbH, De-Smit-Straße 18 , D-07545 Gera Kontakt | Barrierefreiheitserklärung | Impressum | Datenschutz Vertrag hier kündigen",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonNecessary",
+      "label": "Notwendig"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonPreferences",
+      "label": "Präferenzen"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonStatistics",
+      "label": "Statistiken"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonMarketing",
+      "label": "Marketing"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonNecessaryInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonPreferencesInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonStatisticsInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonMarketingInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyContentCheckboxPersonalInformation",
+      "label": "Meine persönlichen Daten nicht verkaufen oder weitergeben"
+    },
+    {
+      "art": "text",
+      "name": "tx_solr[q]",
+      "label": "Suchen"
+    },
+    {
+      "art": "textarea",
+      "name": "",
+      "label": "ZustimmungDetails[#IABV2SETTINGS#]Über CookiesDiese Webseite verwendet CookiesWi"
+    }
+  ],
+  "rahmen": [
+    "https://consentcdn.cookiebot.com/sdk/bc-v4.min.html"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "b50f6cb1-5650-40d0-829a-fe01a136fbb1.png"
+}

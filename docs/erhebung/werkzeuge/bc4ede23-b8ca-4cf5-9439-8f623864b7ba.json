@@ -1,0 +1,36 @@
+{
+  "id": "bc4ede23-b8ca-4cf5-9439-8f623864b7ba",
+  "name": "Energieversorgung Halle Netz GmbH",
+  "url": "https://netzhalle.de/produkte-dienstleistungen/erzeugungsanlagen/anschluss/anmeldung-von-photovoltaikanlagen",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Anmeldung von PV-Anlagen | Energieversorgung Halle Netz",
+  "text": "Produkte & Dienstleistungen Menü öffnen Infos & News Menü öffnen SWH-Karriere SWH-Gruppe Anmeldung von PV-Anlagen Produkte & Dienstleistungen Erzeugungsanlagen Anschluss & Anmeldung Anmeldung von Photovoltaikanlagen NEU: Online Anmeldung Photovoltaikanlage Um die Anmeldung zu erleichtern, können Sie zusammen mit Ihrer Installationsfirma Ihre Photovoltaikanlage inklusive Stromspeicher ab sofort direkt auf unserer Internetseite beantragen. Nutzen Sie dafür unsere neue Funktion Online Anmeldung Photovoltaikanlage. Hinweis: Die Funktion befindet sich noch in Entwicklung. Helfen Sie uns gern bei der Weiterentwicklung und senden Ihre Fragen oder Verbesserungsvorschläge an kundenportalsupport@netzhalle.de. Hier erfahren Sie in einer Schritt-für-Schritt-Anleitung, was für den Anschluss Ihrer Photovoltaikanlage erforderlich und wer in welchem Schritt zuständig ist. Im ersten Schritt erfolgt immer die Anmeldung Ihrer Photovoltaikanlage bei uns als zuständigem Netzbetreiber. Die Anmeldung erledigen Sie zusammen mit Ihrer Installationsfirma bequem über unsere Online Anmeldung Photovoltaikanlage. 1. Anmeldung Ihrer Photovoltaikanlage 2. Prüfung der Unterlagen durch Netz Halle 3. Netzverträglichkeitsprüfung durch Netz Halle 4. Einspeisezusage durch Netz Halle 5. Fertigmeldung durch Ihre Installationsfirma 6. Einbau oder Wechsel des Stromzählers durch Netz Halle 7. Inbetriebsetzung Ihrer Photovoltaikanlage und Meldung im Marktstammdatenregister 8. Inbetriebnahmebestätigung durch Netz Halle 9. Rücksendung der vergütungsrelevanten Angaben 10. Vergütung Ihres eingespeisten Stroms durch Netz Halle Bei Fragen zur Anmeldung Ihrer Photovoltaikanlage oder zum Ablauf steht Ihnen unser Team Netzanschlussmanagement gern telefonisch unter (0345) 5 81 – 75 75 oder per E-Mail unter einspeisung@netzhalle.de zur Verfügung. Fußbereich der Seite Bereiche der Stadtwerke Halle ENERGIE WASSER & ENTSORGUNG MOBILITÄT & LOGISTIK SERVICE & FREIZEIT Social Media Links Service Links BARRIEREFREIHEIT DATENSCHUTZ IMPRESSUM SITEMAP DIGITALE DIENSTE",
+  "felder": [
+    {
+      "art": "text",
+      "name": "q",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "q",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "q",
+      "label": "Suchbegriff"
+    }
+  ],
+  "rahmen": [
+    "https://app.usercentrics.eu/browser-sdk/4.64.0/cross-domain-bridge.html"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "bc4ede23-b8ca-4cf5-9439-8f623864b7ba.png"
+}

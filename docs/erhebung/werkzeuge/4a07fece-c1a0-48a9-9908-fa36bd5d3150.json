@@ -1,0 +1,26 @@
+{
+  "id": "4a07fece-c1a0-48a9-9908-fa36bd5d3150",
+  "name": "WSW Netz GmbH",
+  "url": "https://www.wsw-netz.de/netzanschluss/strom/waermepumpe/",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Wärmepumpe: WSW Netz GmbH",
+  "text": "Springe zum Hauptinhalt Springe zur Navigation Kontakt Netzportal Störungen Suche NETZANSCHLUSS Untermenü von Netzanschluss EINSPEISUNG Untermenü von Einspeisung LEISTUNG & SERVICE Untermenü von Leistung & Service ZÄHLEN & MESSEN Untermenü von Zählen & Messen UNSERE INFRASTRUKTUR Untermenü von Unsere Infrastruktur Wärmepumpe Startseite Netzanschluss Strom Wärmepumpe Anmeldung Ihrer Wärmepumpe im Netzportal der WSW Netz GmbH Hier können Sie Ihre Wärmepumpe schnell und unkompliziert anmelden: Netzportal So registrieren Sie sich für das Netzportal: Anleitung. Verfahren der temperaturabhängigen Lastprognose für Wärmepumpen (WP) Kontakt Kundencenter Netze Schützenstraße 34 42281 Wuppertal Telefon: 0202-7589-7300 Fax: 0202-7589-7328 E-Mail: kundencenter(at)wsw-netz.de Web: https://www.wsw-netz.de Störungs-Hotline Strom Telefon: 0202-569-3000 Mobil: 0172-293-8760 Support Zählerstand übermitteln Baustellen Störung melden: Gas: 0202 569 3100 Strom: 0202 569 3000 Gas Mobil: 0172 293 8755 Strom Mobil: 0172 293 8760 Copyright 2026 WSW Netz GmbH Impressum Datenschutz Barrierefreiheit Cookies",
+  "felder": [
+    {
+      "art": "search",
+      "name": "mksearch[term]",
+      "label": "Suche"
+    }
+  ],
+  "rahmen": [
+    "https://web.cmp.usercentrics.eu/cdcs/v/1.0.0/index.html"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "4a07fece-c1a0-48a9-9908-fa36bd5d3150.png"
+}

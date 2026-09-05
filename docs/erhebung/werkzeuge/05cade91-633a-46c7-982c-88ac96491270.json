@@ -1,0 +1,86 @@
+{
+  "id": "05cade91-633a-46c7-982c-88ac96491270",
+  "name": "EWE NETZ GmbH",
+  "url": "https://www.ewe-netz.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Netzbetreiber in Ihrer Region | EWE NETZ GmbH",
+  "text": "Zustimmung Details Über Cookies Diese Webseite verwendet Cookies Diese Seite verwendet Cookies und andere Tracking­verfahren. Wir teilen die Daten mit unseren Partnern, u.a. den Diensten Google oder Facebook. Gegebenenfalls werden Ihre Daten an ein Drittland z.B. den USA übermittelt. Durch eindeutige Identifikatoren z.B. Gerätekennungen können unsere Partner die Nutzung analysieren und wir Ihnen interessenbezogene Inhalte sowie Werbung präsentieren. Sie können die Einstellungen anpassen oder ablehnen. Unsere Hinweise zum Datenschutz finden Sie auf der Datenschutzseite. Zusätzlich können Sie unter folgendem Link das Impressum aufrufen: zum Impressum Nur notwendige Cookies Anpassen Alle Cookies zulassen Zur Navigation springen Zum Seitenmenü Zum Hauptcontent springen Zum Footer springen Karriere Über uns Bitte geben Sie einen Suchbegriff ein LOGIN PRIVATKUNDEN GESCHÄFTSKUNDEN EINSPEISER MARKTPARTNER KOMMUNEN Hilfe und Kontakt Störung melden Zählerstand mitteilen Unsere Netze sichern Ihre Zukunft Netze sind energiereiche Lebensadern, in denen Strom, Erdgas, Trinkwasser, Töne und Daten fließen. mehr Schnell gefunden Eigentümerwechsel Ob durch Hauskauf oder ‑verkauf, Erbschaft oder Schenkung. Wir helfen Ihnen dabei, den Eigentümerwechsel schnell und einfach anzupassen. Weitere Informationen Kundenportal EWE NETZ Sie haben Ihre PV-Anlage, Wallbox, Wärmepumpe oder Ihren Trinkwasseranschluss bereits angemeldet? Im Kundenportal können Sie Ihre Verträge jederzeit einsehen. Weitere Informationen Ihre Meinung zählt Helfen Sie uns dabei, die EWE NETZ Seite weiter zu verbessern. Nehmen Sie jetzt an unserer Kundenbefragung teil. Zur Befragung Aktuelles 12.05.2026PRESSE Werbeschreiben zum Smart Meter EWE NETZ warnt vor Druck und falschen Versprechen. Zum Beitrag 30.04.2026PRESSE EWE NETZ arbeitet offene Solarstrom-Zahlungen weiter auf Der Großteil an offenen Abschlagszahlungen ist bearbeitet. Zum Beitrag 24.03.2026PRESSE Schülerinnen und Schüler pflanzen Zukunftswald Gemeinsame Baumpflanzaktion von EWE NETZ, Europaschule Storkow und dem Bundesforstbetrieb Havel-Oder-Spree. Zum Beitrag Alle Beiträge Offene Fragen? Was sind intelligente Messsysteme und moderne Messeinrichtungen? Was ist Unbundling? Was ist netzorientierte Steuerung nach §14a EnWG? Alle Erklärvideos und FAQs Die Welt von EWE NETZ - nah, regional & vernetzt >170.000 km Leitungen >200.000 PV-Anlagen 2 Mio. Hausanschlüsse 148 Umspannwerke Zertifikate Zertifizierungen Vertrag widerrufen KONTAKT Kontaktformular Erdgasumstellung Zählerstand mitteilen SERVICENUMMER 0441 4808 0 Mo. - Fr.: 7:00 - 20:00 Uhr Sa.: 8:00 - 16:00 Uhr Störung melden Gas: 0800 0500505 Strom: 0800 0600606 Wasser: 0800 0700707 STANDORTE Standortsuche Geben Sie Ihre Postleitzahl ein footer_standortsuche_Label-for-input_aria_label Postanschrift EWE NETZ GmbH Cloppenburger Str. 302 26133 Oldenburg Kontaktformular Privatkunden Geschäftskunden Einspeiser Marktpartner Kommunen Karriere Über uns Impressum Datenschutz Widerruf Barrierefreiheit Kontakt Presse Zurück nach oben",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonNecessary",
+      "label": "Notwendig"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonPreferences",
+      "label": "Präferenzen"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonStatistics",
+      "label": "Statistiken"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonMarketing",
+      "label": "Marketing"
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonNecessaryInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonPreferencesInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonStatisticsInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyLevelButtonMarketingInline",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "CybotCookiebotDialogBodyContentCheckboxPersonalInformation",
+      "label": "Meine persönlichen Daten nicht verkaufen oder weitergeben"
+    },
+    {
+      "art": "search",
+      "name": "term",
+      "label": "Bitte geben Sie einen Suchbegriff ein"
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": "Bitte geben Sie einen Suchbegriff ein"
+    },
+    {
+      "art": "text",
+      "name": "zip",
+      "label": "footer_standortsuche_Label-for-input_aria_label"
+    },
+    {
+      "art": "checkbox",
+      "name": "customDialog__input-checkbox-preference",
+      "label": ""
+    }
+  ],
+  "rahmen": [
+    "https://consentcdn.cookiebot.com/sdk/bc-v4.min.html"
+  ],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "05cade91-633a-46c7-982c-88ac96491270.png"
+}

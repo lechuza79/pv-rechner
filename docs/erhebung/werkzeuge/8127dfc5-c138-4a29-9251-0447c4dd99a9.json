@@ -1,0 +1,74 @@
+{
+  "id": "8127dfc5-c138-4a29-9251-0447c4dd99a9",
+  "name": "Stadtwerke Pritzwalk GmbH",
+  "url": "https://www.sw-pritzwalk.de/energiedienstleistung/pv-contracting/",
+  "vermutet": "kontaktformular",
+  "abruf": "ok",
+  "titel": "Photovoltaik in Pritzwalk – PV-Contracting vom Stadtwerk",
+  "text": "Zum Inhalt springen Persönlich. Nah. Immer da. Störung? E-Mail Telefon Menü Strom Erdgas Wärme Energiedienstleistung Netz Unternehmen Kundenportal Suche nach: Photovoltaik-Contracting: Ihre PV-Anlage ohne eigene Investition Sie möchten Solarstrom vom eigenen Dach nutzen, aber hohe Anschaffungskosten und technischer Aufwand schrecken Sie ab? Mit dem Photovoltaik-Contracting der Stadtwerke Pritzwalk erhalten Sie eine moderne PV-Anlage – ohne Kauf und ohne Risiko. Wir übernehmen Planung, Finanzierung, Installation sowie den gesamten Betrieb. Sie erhalten eine moderne Photovoltaik-Anlage ohne hohe Anfangsinvestition und genießen zuverlässigen Strom und Energie. Vorteile entdecken Was ist Photovoltaik-Contracting? Beim Photovoltaik-Contracting stellen wir Ihnen eine PV-Anlage auf Ihrem Dach zur Verfügung und kümmern uns um alle technischen und organisatorischen Aufgaben. Das bedeutet für Sie: kein Planungsaufwand, keine Investition und kein Betriebsrisiko. Wir übernehmen die komplette Umsetzung: von der ersten Planung bis zum laufenden Betrieb über die vereinbarte Vertragslaufzeit von 10 Jahren. Sie nutzen den erzeugten Strom direkt selbst und senken so Ihre Energiekosten. Überschüssiger Strom kann ins öffentliche Netz eingespeist oder in einem optionalen Stromspeicher zwischengespeichert werden. Zusätzlich benötigten Strom erhalten Sie bei Bedarf ebenfalls von uns im passenden Ökostromtarif. Ihre Vorteile mit PV-Contracting der Stadtwerke Pritzwalk Sie erhalten eine fertige Photovoltaik-Anlage – wir übernehmen Planung, Installation sowie Betrieb. Wartung, Instandhaltung und Service liegen vollständig bei uns. Es ist keine Eigeninvestition erforderlich. Sie nutzen den erzeugten Solarstrom direkt vom eigenen Dach. Auf Wunsch ergänzen wir Ihre Anlage um einen Stromspeicher. Ihre Energiekosten bleiben langfristig und sicher planbar. Sie machen sich unabhängiger von steigenden Energiepreisen. Sie verbessern aktiv Ihre persönliche CO₂-Bilanz. Die Umsetzung erfolgt mit zuverlässigen Partnern aus der Region. PV-Contracting anfragen Für wen sich PV-Contracting eignet Photovoltaik-Contracting eignet sich besonders für Eigentümer von Ein- und Mehrfamilienhäusern, die Solarstrom nutzen möchten, ohne selbst in eine Anlage zu investieren oder sich um Technik und Betrieb zu kümmern. Auch für alle, die Wert auf planbare Kosten und eine einfache Umsetzung legen, ist dieses Modell eine sinnvolle Lösung. Jetzt PV-Contracting anfragen Lassen Sie sich ein individuelles Angebot erstellen, abgestimmt auf Ihr Gebäude und Ihren Energiebedarf. PV-Contracting-Anfrage Name E-Mail Telefon (optional) Ihre Nachricht Senden Weitere Informationen Infopool Häufig gestellte Fragen Was bedeutet Photovoltaik (PV)? Muss ich meine eigene PV-Anlage anmelden? Welche Unterlagen werden für die Anmeldung meiner PV-Anlage benötigt? Kann ich über die Stadtwerke Pritzwalk eine PV-Anlage beziehen? Was passiert mit überschüssigem Strom bei einer PV-Anlage? Wie lange hält eine PV-Anlage? Was passiert, wenn meine gemietete PV-Anlage kaputtgeht? Kontakt Gartenstraße 8 16928 Pritzwalk info@sw-pritzwalk.de 03395 3056–801 Telefonische Erreichbarkeit: Mo–Do 8–12, 13–16 Uhr Fr 8–13 Uhr Öffnungszeiten Kundencenter Mo & Do 9–12, 13–16 Uhr Di 13–17 Uhr (mit Termin bis 18 Uhr) Mi geschlossen Fr 9–12 Uhr Infrastruktur Netze Messstellenbetrieb Trinkwasser/Abwasser Service Infopool Zählerstände Rechnungen Vertrag kündigen Vertrag widerrufen Häufig gestellte Fragen Energie von A bis Z Rechtliches Impressum Datenschutz Barrierefreiheit Störung? Bei Störungen wenden Sie sich bitte je nach Bereich an: 03395 3056–100 (Strom) 03395 3056–200 (Erdgas) 03395 3056–300 (Wärme) Suche Suche nach: Nach oben",
+  "felder": [
+    {
+      "art": "search",
+      "name": "s",
+      "label": "Suche nach:"
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": ""
+    },
+    {
+      "art": "search",
+      "name": "s",
+      "label": "Suche nach:"
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": ""
+    },
+    {
+      "art": "text",
+      "name": "item_meta[11]",
+      "label": "Name"
+    },
+    {
+      "art": "email",
+      "name": "item_meta[12]",
+      "label": "E-Mail"
+    },
+    {
+      "art": "tel",
+      "name": "item_meta[16]",
+      "label": "Telefon (optional)"
+    },
+    {
+      "art": "textarea",
+      "name": "item_meta[13]",
+      "label": "Ihre Nachricht"
+    },
+    {
+      "art": "text",
+      "name": "item_meta[64]",
+      "label": "Falls Du menschlich bist, lasse dieses Feld leer."
+    },
+    {
+      "art": "search",
+      "name": "s",
+      "label": "Suche nach:"
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "8127dfc5-c138-4a29-9251-0447c4dd99a9.png"
+}

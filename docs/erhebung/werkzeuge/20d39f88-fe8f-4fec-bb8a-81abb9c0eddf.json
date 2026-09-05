@@ -1,0 +1,29 @@
+{
+  "id": "20d39f88-fe8f-4fec-bb8a-81abb9c0eddf",
+  "name": "Gemeindewerke Heikendorf AöR",
+  "url": "https://www.gwh.sh/strom/photovoltaik-planung/",
+  "vermutet": "eingekauft",
+  "abruf": "ok",
+  "titel": "Photovoltaik - Gemeindewerke Heikendorf AöR",
+  "text": "Formulare Unternehmen Aktuelles Marktpartner Kontakt Gemeindewerke Heikendorf AöR - Aktuelles Wetter 17 Aktuelles Wetter in Heikendorf Quelle: OpenWeatherMap -Platzhalter- -Platzhalter- Strom Gas Wasser Wärme Hafen Bauen Kundenportal Parken Slider im Kopfbereich Photovoltaik Formulare: Anhang E nach VDE-AR-N 4105:2018-11: Antragstellung, Datenblatt für Erzeugungsanlagen, Datenblatt für Speicher Steckerfertige PV-Anlagen bis 600 Wp: Anmeldung / Inbetriebsetzungsanzeige Weitere Information und Dokumente finden Sie hier: Mindestanforderungen für den Netzanschluss Merkblätter, Erläuterungen und Hinweise des bdew Solarpotential des Landkreis Plön (Analyse Dachausrichtung / Sonneneinstrahlung usw.) Telefon/E-Mail – Allgemein Telefon 0431 248700 E-Mail info@gwh.sh Kommen Sie auch gern mal persönlich vorbei Kontakt – Allgemein Gemeindewerke Heikendorf AöR Wasserwaage 1 24226 Heikendorf Telefon: 0431 2 48 70 - 0 Telefax: 0431 2 48 70 - 70 E-Mail: info@gwh.sh Öffnungszeiten Unsere Öffnungszeiten: Montag bis Mittwoch: 08.00 – 12.30 Uhr 14.00 – 15.00 Uhr Donnerstag: 08.00 – 12.30 Uhr 14.00 – 18.00 Uhr Freitag: nach Vereinbarung Slogan Bild Slogan Kompetent. Persönlich. Regional. So klingt Service! Impressum Barrierefreiheit Datenschutz Cookie-Einstellungen Kontakt",
+  "felder": [
+    {
+      "art": "search",
+      "name": "s",
+      "label": ""
+    },
+    {
+      "art": "search",
+      "name": "s",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "20d39f88-fe8f-4fec-bb8a-81abb9c0eddf.png"
+}

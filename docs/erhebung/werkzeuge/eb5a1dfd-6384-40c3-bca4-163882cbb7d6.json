@@ -1,0 +1,39 @@
+{
+  "id": "eb5a1dfd-6384-40c3-bca4-163882cbb7d6",
+  "name": "EVI Energieversorgung Ihmert GmbH & Co. KG",
+  "url": "https://www.stadtwerke-hemer.de/solarstrom",
+  "vermutet": "eingekauft",
+  "abruf": "ok",
+  "titel": "Stadtwerke Hemer - Erzeugungsanlagen (PV,KWK, Wind, Biomasse, Wasser)",
+  "text": "Wir verwenden Cookies auf unserer Website. Sie haben hier die Möglichkeit zu entscheiden, welche Cookies verwendet werden dürfen. Ihre Auswahl bleibt für 30 Tage gespeichert. Sie haben jederzeit die Möglichkeit, Ihre Cookie-Einstellungen über die Datenschutzerklärung zu ändern. Notwendige Statistik Alle akzeptieren Auswahl speichern Alle ablehnen Notwendige Statistik Zugang zu den wichtigen Informationen Impressum Datenschutz (inklusive Auflistung der gespeicherten Cookies) Unternehmen Aktuelles Ansprechpartner Netze Suche ENERVIE PACHTMODELL SERVICE BÄDER INDUSTRIEKUNDEN Startseite DER WEG ZUM ANSCHLUSS EINER EEG- ODER KWK-ANLAGE IM STROMNETZ DER STADTWERKE HEMER GMBH Natürliche Energiequelle werden immer häufiger auch von Privathaushalten genutzt. Durch Sonne, Wind, Wasser oder auch Biomasse kann erneuerbare Energie erzeugt werden. Der selbsterzeugte Strom ist nicht nur umweltfreundlicher, sondern auch in vielen Fällen kostengünstiger als der eingekaufte Strom über einen Stromanbieter. Kauf Ihrer Photovoltaik-Anlage Anmeldung Ihrer Erzeugungsanlage (PV, Wind, Biomasse, Wasser, KWK) Anmeldung Ihrer Stecker-Photovoltaikanlage bis 800 VA Anmeldepflicht im Marktstammdatenregister (MaStR) gesetzliche Rahmenbedingungen Vergütungskategorien KONTAKT Stadtwerke Hemer GmbH Wasserwerkstraße 4 58675 Hemer Tel. 02372 5008-0 info@stadtwerke-hemer.de Öffnungszeiten Bäder 2026: HALLENBADSAISON: BIS 30.04.2026 FREIBADSAISON: 01.05.2026 BIS ZUM 13.09.2026 HALLENBADSAISON: AB 15.09.2026 STÖRUNGSNUMMER DER ENERVIE VERNETZT GMBH: Strom: 0800 123 99 11 Gas: 0800 123 99 22 Wasser: 0800 123 99 33 IMPRESSUM DATENSCHUTZ SITEMAP Öffnungszeiten Ansprechpartner Störungsnummer Cookie-Einstellungen ändern",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Notwendige"
+    },
+    {
+      "art": "checkbox",
+      "name": "WebPublisher.Rahmen_Consent-Manager.Container.Children:0.Acc",
+      "label": "Statistik"
+    },
+    {
+      "art": "text",
+      "name": "VolltextSuchbegriff",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "suche",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "eb5a1dfd-6384-40c3-bca4-163882cbb7d6.png"
+}

@@ -1,0 +1,8 @@
+{
+  "id": "74e416fd-4222-486f-ba0e-73f71078e66d",
+  "name": "SachsenNetze HS.HD GmbH",
+  "url": "https://www.sachsen-netz.de",
+  "vermutet": "keins",
+  "abruf": "fehler",
+  "fehler": "page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.sachsen-netz.de/\nCall log:\n  - navigating to \"https://www.sachsen-netz.de/\", waiting until \"domcontentloaded\"\n"
+}

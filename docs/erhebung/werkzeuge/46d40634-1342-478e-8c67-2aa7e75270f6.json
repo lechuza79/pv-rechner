@@ -1,0 +1,49 @@
+{
+  "id": "46d40634-1342-478e-8c67-2aa7e75270f6",
+  "name": "Netzgesellschaft Schwerin mbH (NGS)",
+  "url": "https://www.ngs-schwerin.de",
+  "vermutet": "keins",
+  "abruf": "ok",
+  "titel": "Startseite - Netzgesellschaft Schwerin",
+  "text": "MENÜ Für Verbraucher Für Einspeiser Für Bauherren Für Partner Über uns Wir sprühen vor Ideen Baustellen Störung melden Hausanschluss Kontakt Zählerstand erfassen Spannung halten - Gas geben! Netzgesellschaft Schwerin Wir über uns Baustellen Störung melden Hausanschluss Kontakt Zählerstand erfassen NGS Info: Kundenportal Für alle bei denen ein intelligentes Messsystem eingebaut worden ist zum Portal Aktueller Gasverbrauch in Schwerin Tag Woche Monat Jahr Energy Sharing „Gemeinsame Nutzung“ von Strom aus erneuerbaren Energien-Anlagen. Energy Sharing erlaubt es, selbst erzeugten Strom aus erneuerbaren Energien (z. B. Solar- oder Windkraft) über das öffentliche Netz an Nachbarn oder lokale Abnehmer zu verteilen. mehr Infos erhalten Sie hier Umstellung des Ableseverfahrens Wie viele andere Netzbetreiber auch modernisieren wir unser Verfahren zur Zählerablesung in Schwerin. mehr Infos erhalten Sie hier Hausanschlussportal Unser neues Hausanschlussportal! Zettelwirtschaft war gestern. Ob Strom, Gas oder PV, gemeinsam finden wir den richtigen Anschluss. zum Portal Veröffentlichungspflichten GAS STROM Netzgesellschaft Schwerin mbH (NGS) Eckdrift 43 - 45 19061 Schwerin ngs-kommunikation@swsn.de 0385 633-0 0385 633-3350 Störung melden Stromstörung: 0385 633-4222 Gasstörung: 0385 633-3360 Impressum Datenschutz Kontakt Barrierefreiheit Leichte Sprache Datenschutz-Einstellungen Wir nutzen Cookies um Ihnen die bestmögliche Erfahrung zu bieten. Außerdem können wir damit das Verhalten der Benutzer analysieren um die Webseite stetig für Sie zu verbessern. Weitere Informationen finden Sie auf unserer Datenschutzseite. Notwendig Google Maps Youtube Matomo (Benutzerstatistiken) Alle annehmen Auswahl übernehmen Edit Cookie Settings",
+  "felder": [
+    {
+      "art": "text",
+      "name": "q",
+      "label": ""
+    },
+    {
+      "art": "submit",
+      "name": "",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "",
+      "label": "Notwendig"
+    },
+    {
+      "art": "checkbox",
+      "name": "",
+      "label": "Google Maps"
+    },
+    {
+      "art": "checkbox",
+      "name": "",
+      "label": "Youtube"
+    },
+    {
+      "art": "checkbox",
+      "name": "",
+      "label": "Matomo (Benutzerstatistiken)"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "46d40634-1342-478e-8c67-2aa7e75270f6.png"
+}

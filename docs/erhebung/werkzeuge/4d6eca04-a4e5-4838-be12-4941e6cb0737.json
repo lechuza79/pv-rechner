@@ -1,0 +1,24 @@
+{
+  "id": "4d6eca04-a4e5-4838-be12-4941e6cb0737",
+  "name": "e-werk Sachsenwald GmbH",
+  "url": "https://solarrechner.eturnity.io/e-werk_sachsenwald/",
+  "vermutet": "eingekauft",
+  "abruf": "ok",
+  "titel": "Solarrechner",
+  "text": "Lohnt sich eine Photovoltaikanlage? Simulieren Sie mit wenigen Angaben die Produktion, Wirtschaftlichkeit und Kosten einer Photovoltaikanlage mit oder ohne Batteriespeicher. ANZEIGEN Dieser Service ist aktuell rund 50 km um Reinbek verfügbar. Datenschutzinformationen Eturnity Solarrechner Dieser Solarrechner verwendet Cookies zur Optimierung der Benutzererfahrung sowie zu Marketingzwecken. AKZEPTIEREN ABLEHNEN",
+  "felder": [
+    {
+      "art": "text",
+      "name": "mapSearch",
+      "label": "Anzeigen"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "4d6eca04-a4e5-4838-be12-4941e6cb0737.png"
+}

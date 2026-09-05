@@ -1,0 +1,54 @@
+{
+  "id": "5894005e-1444-4a4f-9c18-3fa8ef8990ce",
+  "name": "Netzgesellschaft Ahlen mbH",
+  "url": "https://www.netzgesellschaft-ahlen.de/netzgesellschaft/einspeisung/erneuerbare-energien/photovoltaikanlage-anmelden.html",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Photovoltaikanlage Anmelden - Erneuerbare Energien - Einspeisung - Netzgesellschaft - Ahlen Netze",
+  "text": "Zum Hauptinhalt wechseln Netzgesellschaft Ihre Stadtwerke Zählerstand mitteilen für Einspeiser Zählerstand mitteilen für Verbraucher Jahresablesung Unsere Netze Einspeisung Zählen und Messen Anschluss Über uns Störungshotline Bei Störungen sind wir rund um die Uhr für Sie erreichbar. Strom Tel. 02382 - 788 444 Erdgas / Wasser / Wärme Tel. 02382 788 999 Straßenbeleuchtung Tel. 02382 - 788 444 oder per E-Mail Online- portal Kontakt Störungs- hotline Photovoltaikanlage anmelden Ihre PV-Anlage in Ahlen Sie sind hier: Netze Netzgesellschaft Einspeisung Erneuerbare Energien Photovoltaikanlage Anmelden Wir bitten um Geduld bei der Bearbeitung Liebe Einspeiserinnen und Einspeiser, Photovoltaik-Anlagen liegen aktuell voll im Trend. Im Sinne der Energiewende finden wir das sehr erfreulich. Damit häufen sich allerdings die Anfragen zur Einspeisung von Strom aus Photovoltaikanlagen. Die Folge ist leider eine verzögerte Bearbeitung der Anfragen. Wir bitten dies zu entschuldigen. Sie können uns dabei helfen die Bearbeitungszeit zu verkürzen, indem Sie vollständige Antragsunterlagen über unser Online-Portal einreichen und danach auf telefonische und schriftliche Anfragen zur Bearbeitung Ihres Antrags zu verzichten. Dies verzögert lediglich die weitere Bearbeitung. Bitte beachten Sie auch unsere aktuellen Hinweise. Für Ihr Verständnis und Ihre Geduld bedanken wir uns herzlich. EEG-Erzeugungsanlagen Ihre Anlage melden Sie bitte mit den u.a. Anmeldeunterlagen nach erfolgter Registrierung in unserem Onlineportal unter dem Punkt \"Erzeugungsanlage anmelden\" an. Vor Inbetriebnahme der Anlage reichen Sie uns bitte u.a. Inbetriebsetzungsformulare ein. Achtung! Die Formulare sowie Anforderungen zur Anmeldung einer Erzeugungsanlage haben sich mit der VDE-AR-N 4105:2026-03 geändert. Nutzen Sie bitte die von uns zur Verfügung gestellten Unterlagen. Bitte beachten Sie unter der Rubrik Aktuelles unsere Hinweise. Anleitung Registrierung Portal Anleitung Anmeldung Erzeugungsanlage - enthält eine Übersicht der benötigten Anmeldeformulare sowie die Darstellung der Antragstrecke ONLINE-PORTAL Alle wichtigen Unterlagen zur Anmeldung Anmeldedokumente Inbetriebsetzung Einspeisevergütung Betreiberwechsel Wechsel der Veräußerungsform / Wechsel zw. Teil- und Volleinspeisung Bitte informieren Sie sich entsprechend über die zum Inbetriebnahmedatum der Erzeugungsanlage geltende Gesetzgebung und berücksichtigen Sie, dass auch während der Laufzeit Ihrer Erzeugungsanlage Gesetzesänderungen möglich sind. Industriestr. 40 59229 Ahlen Tel. 02382-788-0 Fax. 02382-788-258 info@netzgesellschaft-ahlen.de STÖRUNGSMELDUNG Strom Tel. 02382-788-444 Erdgas / Wasser / Wärme Tel. 02382-788-999 Straßenbeleuchtung Tel. 02382–788–444 DIREKTLINKS Zählerablesung Einspeiser Zählerablesung Verbraucher Zählerablesung Verbraucher Jahresabrechnung Stromnetz Gasnetz © 2026 Stadtwerke Ahlen Störung melden Impressum Barriere melden Datenschutz Datenschutz zur Nutzung von WhatsApp close Barrierefreiheit refresh Schrift vergrößern Schrift verkleinern Wortabstand vergrößern Wortabstand verkleinern Zeilenabstand vergrößern Zeilenabstand verkleinern Graustufen Großer Mauszeiger Lesehilfe Links unterstreichen Animationen ausschalten Hoher Kontrast",
+  "felder": [
+    {
+      "art": "text",
+      "name": "search[word]",
+      "label": ""
+    },
+    {
+      "art": "select-one",
+      "name": "ccm-widget--language-select",
+      "label": ""
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-41ba25c",
+      "label": "Technisch notwendig (3)"
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-a717ff5",
+      "label": "Analyse / Statistiken (1)"
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-cdcbd7c",
+      "label": "Anzeigen / Ads (2)"
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-7c19e32",
+      "label": "Personalisierung (1)"
+    },
+    {
+      "art": "checkbox",
+      "name": "ccm-purpose-15c61c3",
+      "label": "Sonstiges (1)"
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "5894005e-1444-4a4f-9c18-3fa8ef8990ce.png"
+}

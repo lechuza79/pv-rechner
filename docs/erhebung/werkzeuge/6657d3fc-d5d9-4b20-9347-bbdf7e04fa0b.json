@@ -1,0 +1,59 @@
+{
+  "id": "6657d3fc-d5d9-4b20-9347-bbdf7e04fa0b",
+  "name": "Stadtwerke Neumarkt i. d. OPf. Energie GmbH",
+  "url": "https://www.swneumarkt.de/pv-waerme/",
+  "vermutet": "rechner",
+  "abruf": "ok",
+  "titel": "PV + Wärme Stadtwerke Neumarkt",
+  "text": "Direkt zum Hauptinhalt springen Suche Zur Störungsmeldung Navigation öffnen Zum Footer springen Dein Suchbegriff Suchen Kundenportal Strom Erdgas Wasser PV + Wärme E-Mobilität Bus + Parken Service Kontakt Über uns Kundenkarte Eislaufanlage Netze Karriere Schlossbad Strom Ökostrom Erdgas Postleitzahl Postleitzahl Preis berechnen Mein Stadtwerk PV + Wärme PV + WÄRME WIR SORGEN FÜR NACHHALTIGE ENERGIE Die Nutzung regenerativer Energien wie Umweltwärme und Solarstrom bietet nicht nur einen wichtigen Beitrag zum Klimaschutz, sondern ermöglicht auch eine erhöhte Unabhängigkeit von steigenden Energiepreisen. Durch die Kombination von effizienten Wärmepumpen und hochwertigen PV-Anlagen schaffen wir eine zuverlässige Grundlage für eine nachhaltige Energieversorgung. Unsere Wärmepumpen nutzen thermische Energie aus der Luft, während unsere SonnenStark PV-Anlagen neben hochwertigen Modulen auch Montagesysteme und Wechselrichter umfassen. Diese Wechselrichter wandeln den von der PV-Anlage erzeugten Gleichstrom in nutzbaren Wechselstrom um, der direkt im Haushalt genutzt werden kann. Durch die Integration von zusätzlichen Komponenten wie Stromspeichern optimieren wir die Effizienz des Gesamtsystems und bieten unseren Kunden langfristige Planungssicherheit sowie finanzielle Einsparungen. INDIVIDUELLE ENERGIELÖSUNGEN SONNENSTARK PV-ANLAGE Erzeugen, speichern und nutzen Sie rund um die Uhr Ihren eigenen Sonnenstrom WÄRMEPUMPEN Kombination aus Energieeffizienz & umweltschonender Wärmegewinnung WÄRME-CONTRACTING Wir entwickeln die Wärmeversorgung, die perfekt zu Ihren Bedürfnissen passt WIR SIND FÜR SIE DA Kundenservice 09181 239 222 service@swneumarkt.de PASSEND ZUM THEMA BÜRGERBETEILIGUNG WALLBOX-LÖSUNGEN THG-QUOTE FÜR SIE TÄGLICH AM WERK ZDENKO KANN... … aus Sonne Strom machen. Zdenko und seine Kollegen steigen Ihnen für Ihre autarke Stromversorgung aufs Dach und installieren die PV-Anlage, die am besten zu Ihrem Haus passt. MEHR INTERESSANTE ARTIKEL? MEHR EXKLUSIVE EINBLICKE? UNSER NEWSLETTER! In unserem Newsletter erfahren Sie regelmäßig die wichtigsten Updates zu den Stadtwerken Neumarkt, aktuelle Nachrichten zu unserem Unternehmen und neuen Produkten, lassen Sie hinter die Kulissen blicken und versorgen Sie mit Energiethemen passend zur Jahreszeit. Bleiben Sie auf dem Laufenden! Newsletter Ja, ich will mich für den Newsletter registrieren Bitte senden Sie mir regelmäßig Informationen und Aktuelles per Newsletter an meine E-Mail-Adresse zu. Ein Widerruf ist jederzeit möglich. Die Datenschutzhinweise finden Sie hier. Anmelden Zur Navigation springen Stadtwerke Neumarkt i.d.OPf. Energie GmbH Ingolstädter Straße 18 92318 Neumarkt i.d.OPf. Interessante Themen Kontakt Kundenportal Aktuelles Über uns Karriere Netze E-Planauskunft Hausanschluss Messstellenbetrieb PV + Wärme E-Mail-Adresse service@swneumarkt.de Service-Hotline 09181-239-222 Störung-Hotline 09181-239-111 Zum Kundenportal Verträge kündigen Zertifizierungen Instagram Facebook LinkedIn Erklärung zur BarrierefreiheitImpressumDatenschutzerklärungEinwilligungsmanagement © Stadtwerke Neumarkt i.d.OPf. Energie GmbH",
+  "felder": [
+    {
+      "art": "text",
+      "name": "search",
+      "label": "Dein Suchbegriff"
+    },
+    {
+      "art": "text",
+      "name": "max-usage-postcode-v-1-2",
+      "label": "Postleitzahl"
+    },
+    {
+      "art": "number",
+      "name": "max-usage-power-v-1-3",
+      "label": "Verbrauch (<abbr title='Kilowattstunde'>kWh</abbr>)"
+    },
+    {
+      "art": "radio",
+      "name": "v-1-1--double",
+      "label": ""
+    },
+    {
+      "art": "radio",
+      "name": "v-1-1--double",
+      "label": ""
+    },
+    {
+      "art": "email",
+      "name": "item_meta[40]",
+      "label": "E-Mail-Adresse *"
+    },
+    {
+      "art": "checkbox",
+      "name": "item_meta[70][]",
+      "label": "Ja, ich will mich für den Newsletter registrieren"
+    },
+    {
+      "art": "text",
+      "name": "item_meta[413]",
+      "label": "Falls Sie menschlich sind, lassen sie dieses Feld leer."
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": false,
+    "wirtschaftlichkeitswort": true,
+    "anlagenfeld": false,
+    "pflichtprozess": false
+  },
+  "bild": "6657d3fc-d5d9-4b20-9347-bbdf7e04fa0b.png"
+}

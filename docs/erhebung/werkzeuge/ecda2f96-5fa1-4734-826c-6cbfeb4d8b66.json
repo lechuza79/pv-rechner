@@ -1,0 +1,54 @@
+{
+  "id": "ecda2f96-5fa1-4734-826c-6cbfeb4d8b66",
+  "name": "Stadtwerke Uslar GmbH",
+  "url": "https://stadtwerke-uslar.de/netzanschluss/#pv",
+  "vermutet": "netz-pflichtprozess",
+  "abruf": "ok",
+  "titel": "Netzanschluss Strom – Stadtwerke Uslar",
+  "text": "Cookie-Zustimmung verwalten Um dir ein optimales Erlebnis zu bieten, verwenden wir Technologien wie Cookies, um Geräteinformationen zu speichern und/oder darauf zuzugreifen. Wenn du diesen Technologien zustimmst, können wir Daten wie das Surfverhalten oder eindeutige IDs auf dieser Website verarbeiten. Wenn du deine Zustimmung nicht erteilst oder zurückziehst, können bestimmte Merkmale und Funktionen beeinträchtigt werden. Akzeptieren Ablehnen Einstellungen ansehen Cookie-Richtlinie Datenschutzerklärung Impressum Zum Inhalt springen STROM ERDGAS WASSER ABWASSER SERVICE UNTERNEHMEN Kontakt Netzanschluss Strom Hausanschluss Baustrom Elektromobilität Photovoltaik Hausanschluss Sie benötigen einen Neuanschluss an unser Versorgungsnetz oder möchten den vorhandenen Anschluss verändern? Damit wir Ihren Netz- bzw. Hausanschluss planen und die Kosten kalkulieren können, benötigen wir vorab einige Angaben zu Ihnen und dem Objekt. Dazu verwenden Sie bitte unser Formular. Nachdem Sie es ausgefüllt, ausgedruckt und unterschrieben haben, senden Sie es mit den erforderlichen Dokumenten (Lageplan etc.) an die Stadtwerke Uslar. Natürlich können Sie Ihre Anfrage auch in unseren Geschäftsräumen abgeben. Bei Fragen oder für weitere Informationen nehmen Sie bitte Kontakt zu uns auf – unsere Mitarbeiter beraten Sie gern persönlich. Bitte beachten Sie: Um die Maßnahme für Sie termingerecht abzuschließen, sollten Sie den Anschluss Ihres Bauvorhabens oder die geplante Veränderung am Netzanschluss rechtzeitig beim Netzbetrieb der Stadtwerke Uslar anmelden. Anmeldung Netzanschluss Strom Datenblatt Wärmepumpe Anmeldung steckerfertige PV-Anlage bis 800 Watt Allgemeine Bedingungen für den Strom-Netzanschluss Technische Richtlinien für Netzanschluss Netzanschlussformulare Allgemeines zum Bauvorhaben Hausanschlussvarianten Hinweise EEG-Einspeisemanagement Steckerfertige PV-Anlage Baustrom Für den Betrieb einer Baustelle oder für eine Veranstaltung benötigen Sie provisorische Anschlüsse für Strom? Hier finden Sie alle Informationen zu Ihrem Anschluss und können diesen direkt ausfüllen. Wenn der Hausbau beginnt, ist Strom und Wasser oft unabdingbar. Da das Grundstück noch nicht dauerhaft an das örtliche Strom- und Wassernetz angeschlossen werden kann, bietet sogenannter Baustrom oder Bauwasser die Lösung. Für Ihren Baustromanschluss können Sie ein Elektroinstallationsunternehmen beauftragen, um einen Baustellenverteiler zur Verfügung zu stellen und die Inbetriebsetzung des Anschlusses vom Elektroinstallationsunternehmen beantragen zu lassen. Optional haben Sie die Möglichkeit den Baustromverteiler von der Stadtwerke Uslar GmbH zu mieten inkl. der Inbetriebsetzung. Baustromanschluss beantragen Elektromobilität Elektromobilität ist kein Thema einer fernen Zukunft! Bereits jetzt gehört der E-Antrieb zu unserem Alltag. Und wir, die Stadtwerke Uslar GmbH, möchten Ihr Partner vor Ort sein. In unserer Tarifübersicht finden Sie den aktuellen Tarif für Ladestrom sowie unser Anmeldungsformular für eine Wallbox. Anmeldeformular Ladeeinrichtungen Informieren Sie sich direkt persönlich bei uns: Tarife: Kundenservice Tel: 05571 8088-200 Photovoltaik Einfach, umweltfreundlich und kostengünstig selbst Strom erzeugen Ausführliche, persönliche Beratung und hochwertige Solarkomponenten aus einer Hand Verlässliche und individuelle Installation und Instandhaltung Installation durch lokale Stadtwerke Partner Für Ihre individuellen Bedürfnisse bieten wir verschiedene Modelle an: Eine Solaranlage direkt regional kaufen Eine Solaranlage zur Pacht auf Ihrem Zuhause Jetzt Ihr individuelles Angebot anfragen. Ihre Anprechpartnerin: Andrea Böker Tel: 05571 – 8088 120 Öffnungszeiten Unsere Mitarbeiter/innen stehen Ihnen kompetent und beratend zur Seite! Montag: 07:00 – 12:00 Uhr Dienstag: 07:00 – 12:00 Uhr & von 13:00 – 16:00 Uhr Mittwoch: 07:00 – 12:00 Uhr Donnerstag: 07:00 – 12:00 Uhr & von 13:00 – 16:00 Uhr Freitag: 07:00 – 12.00 Uhr Kontakt Stadtwerke Uslar GmbH Alleestraße 6 37170 Uslar Telefon: + 49 5571 – 8088 200 Telefax: + 49 5571 – 4760 E-Mail: info@stadtwerke-uslar.de Homepage: www.stadtwerke-uslar.de Impressum | Datenschutz",
+  "felder": [
+    {
+      "art": "checkbox",
+      "name": "cmplz-functional-optin",
+      "label": "Funktional"
+    },
+    {
+      "art": "checkbox",
+      "name": "cmplz-preferences-optin",
+      "label": "Vorlieben"
+    },
+    {
+      "art": "checkbox",
+      "name": "cmplz-statistics-optin",
+      "label": "Statistiken"
+    },
+    {
+      "art": "checkbox",
+      "name": "cmplz-marketing-optin",
+      "label": "Marketing"
+    },
+    {
+      "art": "search",
+      "name": "s",
+      "label": "Suchen nach …"
+    },
+    {
+      "art": "search",
+      "name": "s",
+      "label": "Suchen nach …"
+    },
+    {
+      "art": "checkbox",
+      "name": "sp-dsgvo-more-information-switch-cb",
+      "label": ""
+    }
+  ],
+  "rahmen": [],
+  "merkmale": {
+    "tarifwort": true,
+    "wirtschaftlichkeitswort": false,
+    "anlagenfeld": false,
+    "pflichtprozess": true
+  },
+  "bild": "ecda2f96-5fa1-4734-826c-6cbfeb4d8b66.png"
+}
