@@ -16,7 +16,8 @@
 // Schriftgrößen kommen aus den Theme-Tokens, nie getippt.
 
 import { fsPx, tokens, type TokenName } from "./theme";
-import { resolveVars, applyExportMarkers } from "./chart-export";
+import { resolveVars } from "./chart-export";
+import { EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR } from "./export-markers";
 
 export interface VideoFrameDaten {
   titel: string;
@@ -25,6 +26,9 @@ export interface VideoFrameDaten {
   svg: SVGSVGElement | null;
   legende: { farbe: string; label: string }[];
   status: string;
+  /** Ereignis-Zeitleiste unter der Legende: Position in Prozent der Chartbreite, Farbe als Wert. */
+  zeitleiste: { posPct: number; label: string; farbe: string; reihe: number }[];
+  spur: { vonPct: number; bisPct: number };
   marke: string;
   quelle: string;
 }
@@ -71,8 +75,10 @@ async function svgAlsBild(svg: SVGSVGElement, breite: number, hoehe: number): Pr
   klon.setAttribute("width", String(breite));
   klon.setAttribute("height", String(hoehe));
   klon.querySelectorAll("style").forEach((s) => s.remove());
-  // Wie im Bild: Bedienelemente raus, die Bild-Fassung der Marken rein.
-  applyExportMarkers(klon);
+  // Anders als im Bild bleiben die Marken-Texte hier AUS dem Chart: Im Video
+  // trägt die Zeitleiste unter dem Chart die Beschriftung, wie auf der Seite.
+  klon.querySelectorAll(`[${EXPORT_ONLY_ATTR}]`).forEach((el) => el.remove());
+  klon.querySelectorAll(`[${EXPORT_IGNORE_ATTR}]`).forEach((el) => el.remove());
   // Im Dokument erbt das SVG die Seitenschrift; als eigenständiges Bild fiele
   // es auf die Serifen-Voreinstellung zurück.
   klon.setAttribute("font-family", leinwandSchrift("--font-text"));
@@ -96,6 +102,8 @@ const SKALA = 2;
 // gedämpften Seitenhintergrund — ein Video kennt keine Transparenz, also
 // braucht die Karte einen Grund, auf dem ihre Ecken sichtbar rund sind.
 const RAND = 16;
+const REIHE_H = 15;
+const ZEITLEISTE_H = 3 * REIHE_H + 24;
 const ECKE = parseFloat(tokens["--radius-lg"]);
 
 export class KostenrennenVideo {
@@ -118,7 +126,7 @@ export class KostenrennenVideo {
   /** Höhe aus dem Chart-Seitenverhältnis; die Leinwand steht fest, bevor die Aufnahme beginnt. */
   vorbereiten(chartSeitenverhaeltnis: number) {
     const chartH = Math.round((VIDEO_BREITE - 2 * PAD) * chartSeitenverhaeltnis);
-    this.hoehe = PAD + 22 + 20 + 54 + chartH + 16 + 22 + 44 + 40 + PAD;
+    this.hoehe = PAD + 22 + 20 + 54 + chartH + 16 + 22 + ZEITLEISTE_H + 40 + PAD;
     this.canvas.width = (VIDEO_BREITE + 2 * RAND) * SKALA;
     this.canvas.height = (this.hoehe + 2 * RAND) * SKALA;
   }
@@ -174,7 +182,14 @@ export class KostenrennenVideo {
       c.fillText(d.untertitel, PAD, y); y += 20;
       c.fillStyle = farbe("--color-text-primary");
       c.font = `800 ${fsPx("--font-size-display-md")}px ${mono}`;
-      c.fillText(d.jahr, PAD, y); y += 54;
+      c.fillText(d.jahr, PAD, y);
+      // Der Satz zum Stand steht neben dem Jahr, wie auf der Seite.
+      const jahrBreite = c.measureText(d.jahr).width;
+      c.font = `400 ${fsPx("--font-size-small")}px ${sans}`;
+      c.fillStyle = farbe("--color-text-secondary");
+      const satzX = PAD + jahrBreite + 20;
+      zeilenUmbruch(c, d.status, VIDEO_BREITE - PAD - satzX).slice(0, 3).forEach((z, i) => c.fillText(z, satzX, y + 4 + i * 17));
+      y += 54;
       if (bild) c.drawImage(bild, PAD, y, chartW, chartH);
       y += chartH + 16;
       // Legende
@@ -188,9 +203,24 @@ export class KostenrennenVideo {
         x += 22 + c.measureText(l.label).width + 20;
       }
       y += 22;
-      c.fillStyle = farbe("--color-text-primary");
-      c.font = `400 ${fsPx("--font-size-body")}px ${sans}`;
-      for (const z of zeilenUmbruch(c, d.status, chartW).slice(0, 2)) { c.fillText(z, PAD, y); y += 20; }
+      // Ereignis-Zeitleiste: Beschriftungen in drei Zeilen, darunter die Spur mit Punkten.
+      c.font = `700 ${fsPx("--font-size-caption")}px ${sans}`;
+      for (const e of d.zeitleiste) {
+        const x = PAD + (e.posPct / 100) * chartW;
+        c.fillStyle = e.farbe;
+        c.textAlign = e.posPct > 70 ? "right" : e.posPct < 20 ? "left" : "center";
+        c.fillText(e.label, x, y + e.reihe * REIHE_H);
+      }
+      c.textAlign = "left";
+      const spurY = y + 3 * REIHE_H + 10;
+      c.fillStyle = farbe("--color-border");
+      c.fillRect(PAD + (d.spur.vonPct / 100) * chartW, spurY, ((d.spur.bisPct - d.spur.vonPct) / 100) * chartW, 2);
+      for (const e of d.zeitleiste) {
+        const x = PAD + (e.posPct / 100) * chartW;
+        c.beginPath(); c.arc(x, spurY + 1, 5, 0, Math.PI * 2); c.fillStyle = farbe("--color-bg"); c.fill();
+        c.beginPath(); c.arc(x, spurY + 1, 3.5, 0, Math.PI * 2); c.fillStyle = e.farbe; c.fill();
+      }
+      y += ZEITLEISTE_H;
       // Fuß: Marke, darunter die Quelle (Lizenzpflicht — auch im Video).
       const fussY = this.hoehe - PAD - 30;
       c.font = `600 ${fsPx("--font-size-small")}px ${sans}`;

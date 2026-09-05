@@ -16,7 +16,7 @@ import { IconPause, IconPlay, IconRefresh } from "../Icons";
 import { useChartExport } from "../../lib/useChartExport";
 import { EXPORT_IGNORE_ATTR } from "../../lib/export-markers";
 import { WIDGETS } from "../../lib/widget-registry";
-import { v, fsPx, space, tokens } from "../../lib/theme";
+import { v, fsPx, space, tokens, type TokenName } from "../../lib/theme";
 import { fmtEuroVoll, formatDataAsOf } from "../../lib/atlas-format";
 import { PERSONEN, FEED_IN_YEARS } from "../../lib/constants";
 import type { Kostenrennen } from "../../lib/kostenrennen";
@@ -180,10 +180,12 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
     let raf = 0;
     let last = performance.now();
     const step = (now: number) => {
-      const dt = now - last;
+      // Der erste rAF-Zeitstempel kann VOR dem performance.now() des Effekts
+      // liegen — ein negatives dt machte aus Tag 0 den Tag −1 (NaN im Chart).
+      const dt = Math.max(0, now - last);
       last = now;
       setT((prev) => {
-        const n = Math.min(prev + dt / msJeTag(prev, T), T);
+        const n = Math.min(Math.max(0, prev + dt / msJeTag(prev, T)), T);
         if (n >= T) setSpielt(false);
         return n;
       });
@@ -240,8 +242,8 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
     }
     if (hoch < 30 || tief <= hoch || kPv[hoch] - kPv[tief] < 50) return [];
     return [
-      { tag: hoch, text: "Winter: wenig Sonne, die Rechnung wächst", oben: true },
-      { tag: tief, text: "Sommer: die Anlage spart mehr, als der Strom kostet", oben: false },
+      { tag: hoch, text: "Winter: wenig Sonne, die Rechnung wächst", kurz: "Winter: Rechnung wächst", oben: true },
+      { tag: tief, text: "Sommer: die Anlage spart mehr, als der Strom kostet", kurz: "Sommer: Anlage spart", oben: false },
     ];
   }, [kPv, T]);
   const markenBis = Math.min(T, verlauf.ersterTag[Math.min(22, 12 * verlauf.jahre)] ?? T);
@@ -326,11 +328,12 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
 
   const haushalt = PERSONEN[2];
   const fenster = rennen.wetterFenster;
+  // Sekundär, nur Icon — dieselbe Form wie die Aktionsknöpfe in der Fußzeile.
   const knopf: React.CSSProperties = {
-    display: "inline-flex", alignItems: "center", justifyContent: "center", gap: space.sm,
-    height: 32, minWidth: 32, padding: `0 ${space.lg}px`, borderRadius: v("--radius-md"),
-    border: "none", background: v("--color-accent"), color: v("--color-text-on-accent"),
-    fontSize: v("--font-size-small"), fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap",
+    display: "inline-flex", alignItems: "center", justifyContent: "center",
+    width: 32, height: 32, padding: 0, borderRadius: v("--radius-md"), flexShrink: 0,
+    border: `1px solid ${v("--color-border-accent")}`, background: v("--color-bg"), color: v("--color-accent"),
+    cursor: "pointer",
   };
   const legend: ExportLegendEntry[] = [
     { color: FARBE_OHNE, label: ohne.label, shape: "line" },
@@ -344,24 +347,29 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   // Wiedergabe sie erreicht; am Ende steht dort die Gesamtersparnis. Jedes
   // Ereignis hat seine eigene Textzeile — nebeneinander passen sie nicht.
   const ersparnis = kOhne[T] - kPv[T];
-  const ereignisse: { tag: number; label: string; kurz: string; farbe: string; reihe: number }[] = [
-    { tag: 0, label: `Anlage gekauft · ${fmtEuroVoll(pv.investition)}`, kurz: `Kauf · ${fmtEuroVoll(pv.investition)}`, farbe: FARBE_PV, reihe: 1 },
+  type Ereignis = { tag: number; bis?: number; label: string; kurz: string; farbe: TokenName; reihe: number };
+  const ereignisse: Ereignis[] = [
+    { tag: 0, label: `Anlage gekauft · ${fmtEuroVoll(pv.investition)}`, kurz: `Kauf · ${fmtEuroVoll(pv.investition)}`, farbe: "--color-accent", reihe: 1 },
+    // Die beiden Jahreszeiten-Hinweise des ersten Jahres; sie verschwinden im
+    // Herbst des zweiten Jahres, wenn die Achse sie ohnehin zusammenschiebt.
+    ...jahreszeiten.map((m) => ({ tag: m.tag, bis: markenBis, label: m.text, kurz: m.kurz, farbe: "--color-text-secondary" as TokenName, reihe: m.oben ? 0 : 2 })),
   ];
   if (bezahltTag !== null) {
     const d = tagDatum(verlauf, rennen.startJahr, bezahltTag);
-    ereignisse.push({ tag: bezahltTag, label: `Anlage bezahlt · ${MONATE_KURZ[d.monat]} ${d.jahr}`, kurz: `Bezahlt · ${d.jahr}`, farbe: v("--color-positive"), reihe: 0 });
+    ereignisse.push({ tag: bezahltTag, label: `Anlage bezahlt · ${MONATE_KURZ[d.monat]} ${d.jahr}`, kurz: `Bezahlt · ${d.jahr}`, farbe: "--color-positive", reihe: 0 });
   }
   if (einspeiseEndeTag != null) {
     const d = tagDatum(verlauf, rennen.startJahr, einspeiseEndeTag);
-    ereignisse.push({ tag: einspeiseEndeTag, label: `Einspeisevergütung endet · ${d.jahr}`, kurz: `EEG-Ende · ${d.jahr}`, farbe: v("--color-text-secondary"), reihe: 1 });
+    ereignisse.push({ tag: einspeiseEndeTag, label: `Einspeisevergütung endet · ${d.jahr}`, kurz: `EEG-Ende · ${d.jahr}`, farbe: "--color-text-secondary", reihe: 1 });
   }
   ereignisse.push({
     tag: T,
     label: ersparnis >= 0 ? `Ersparnis nach ${rennen.jahre} Jahren: ${fmtEuroVoll(ersparnis)}` : `Mehrkosten nach ${rennen.jahre} Jahren: ${fmtEuroVoll(-ersparnis)}`,
     kurz: ersparnis >= 0 ? `Ersparnis ${fmtEuroVoll(ersparnis)}` : `Mehrkosten ${fmtEuroVoll(-ersparnis)}`,
-    farbe: ersparnis >= 0 ? v("--color-positive") : v("--color-negative"),
+    farbe: ersparnis >= 0 ? "--color-positive" : "--color-negative",
     reihe: 2,
   });
+  const sichtbareEreignisse = ereignisse.filter((e) => t >= e.tag && (e.bis == null || t < e.bis));
   // Zeitleiste auf derselben Achse wie das Chart: Punkt und gestrichelte Linie
   // stehen jederzeit übereinander.
   const posPct = (d: number) => (xL(d) / W) * 100;
@@ -376,6 +384,8 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
     svg: svgRef.current,
     legende: [{ farbe: FARBE_OHNE_HEX, label: ohne.label }, { farbe: FARBE_PV_HEX, label: pv.label }],
     status,
+    zeitleiste: sichtbareEreignisse.map((e) => ({ posPct: posPct(e.tag), label: e.label, farbe: tokens[e.farbe], reihe: e.reihe })),
+    spur: { vonPct: (P.l / W) * 100, bisPct: ((P.l + cW) / W) * 100 },
     marke: `${brandLabel(WIDGETS.kostenrennen.kind)} solar-check.io`,
     quelle: WIDGETS.kostenrennen.sources.map((q) => sourceLabel(q, { kurz: true })).join(" · "),
   };
@@ -506,18 +516,6 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           )}
 
           {/* Kreuzung: erscheint, sobald die Linien sie erreicht haben, und bleibt, solange sie im Fenster liegt. */}
-          {t < markenBis && jahreszeiten.filter((m) => t >= m.tag).map((m) => {
-            const x = xL(m.tag), y = yL(kPv[m.tag]);
-            const rechts = x < P.l + cW * 0.55;
-            return (
-              <g key={m.tag} className="kr-neu">
-                <circle cx={x} cy={y} r={3.5} fill={v("--color-bg")} stroke={FARBE_PV} strokeWidth={2} />
-                <text x={rechts ? x + 8 : x - 8} y={m.oben ? y - 10 : y + 18} textAnchor={rechts ? "start" : "end"} fontSize={fsPx("--font-size-caption")} fontWeight={600} fill="var(--color-text-secondary)" style={{ whiteSpace: "pre" }}>
-                  {m.text}
-                </text>
-              </g>
-            );
-          })}
           {einspeiseEndeTag != null && t >= einspeiseEndeTag && (
             <g className="kr-neu">
               <line x1={xL(einspeiseEndeTag)} x2={xL(einspeiseEndeTag)} y1={P.t} y2={y0} stroke="var(--color-text-muted)" strokeWidth={1} strokeDasharray="3 3" />
@@ -568,18 +566,18 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
             auch während die Achse noch wächst. Nur auf der Seite; im Bild
             tragen die Marken ihren Text im Chart. */}
         <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ position: "relative", height: SPUR_Y + 10, marginTop: space.md }}>
-          {ereignisse.filter((e) => t >= e.tag).map((e) => {
+          {sichtbareEreignisse.map((e) => {
             const p = posPct(e.tag);
             const anker = p > 70 ? "translateX(-100%)" : p < 20 ? "none" : "translateX(-50%)";
             return (
-              <span key={e.tag} className="kr-neu" style={{ position: "absolute", left: `${p}%`, top: e.reihe * REIHE_H, transform: anker, whiteSpace: "nowrap", fontSize: v("--font-size-caption"), fontWeight: 700, color: e.farbe, lineHeight: `${REIHE_H}px` }}>
+              <span key={e.tag} className="kr-neu" style={{ position: "absolute", left: `${p}%`, top: e.reihe * REIHE_H, transform: anker, whiteSpace: "nowrap", fontSize: v("--font-size-caption"), fontWeight: 700, color: v(e.farbe), lineHeight: `${REIHE_H}px` }}>
                 {narrow ? e.kurz : e.label}
               </span>
             );
           })}
           <div style={{ position: "absolute", top: SPUR_Y, left: `${(P.l / W) * 100}%`, width: `${(cW / W) * 100}%`, height: 2, background: v("--color-border") }} />
-          {ereignisse.filter((e) => t >= e.tag).map((e) => (
-            <span key={e.tag} className="kr-neu" style={{ position: "absolute", left: `${posPct(e.tag)}%`, top: SPUR_Y - 4, width: 10, height: 10, transform: "translateX(-50%)", borderRadius: "50%", background: e.farbe, border: `2px solid ${v("--color-bg")}`, boxSizing: "border-box" }} />
+          {sichtbareEreignisse.map((e) => (
+            <span key={e.tag} className="kr-neu" style={{ position: "absolute", left: `${posPct(e.tag)}%`, top: SPUR_Y - 4, width: 10, height: 10, transform: "translateX(-50%)", borderRadius: "50%", background: v(e.farbe), border: `2px solid ${v("--color-bg")}`, boxSizing: "border-box" }} />
           ))}
         </div>
       </ExportBox>
@@ -595,10 +593,10 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
             setSpielt(true);
           }}
           aria-label={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
+          title={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
           style={knopf}
         >
           {spielt ? <IconPause size={14} /> : amEnde ? <IconRefresh size={14} /> : <IconPlay size={14} />}
-          <span>{spielt ? "Pause" : amEnde ? "Noch einmal" : t === 0 ? "Rennen starten" : "Weiter"}</span>
         </button>
         <input
           type="range"
