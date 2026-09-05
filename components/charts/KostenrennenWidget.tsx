@@ -47,7 +47,19 @@ import { tagesverlauf, tagDatum } from "../../lib/kostenrennen-tage";
 // Abspielen und Schieberegler tragen data-sc-export-ignore; das Bild zeigt den
 // eingestellten Stand als Text.
 
-const MS_JE_TAG = 3.4; // 25 Jahre in rund 31 Sekunden
+// Das Tempo zieht an: Die ersten zwei Jahre laufen ruhig (je rund 8 Sekunden —
+// man sieht Wochen, Monate, Winter gegen Sommer), danach beschleunigt die
+// Wiedergabe stetig; das letzte Jahr dauert eine Viertelsekunde, alles zusammen
+// rund 40 Sekunden. Am Anfang passiert das Interessante, gegen Ende bewegen
+// sich nur noch zwei gerade Linien.
+const RUHIGE_TAGE = 730;
+const MS_JE_TAG_START = 22;
+const MS_JE_TAG_ENDE = 0.6;
+const msJeTag = (t: number, T: number) => {
+  if (t < RUHIGE_TAGE) return MS_JE_TAG_START;
+  const u = Math.min(1, (t - RUHIGE_TAGE) / (T - RUHIGE_TAGE));
+  return MS_JE_TAG_START * Math.pow(MS_JE_TAG_ENDE / MS_JE_TAG_START, Math.sqrt(u));
+};
 const MIN_TAGE = 365; // das erste Jahr füllt das Bild
 const SCHRITT_MS = 500; // bei reduzierter Bewegung: ein Jahr je Schritt
 
@@ -155,7 +167,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
       const dt = now - last;
       last = now;
       setT((prev) => {
-        const n = Math.min(prev + dt / MS_JE_TAG, T);
+        const n = Math.min(prev + dt / msJeTag(prev, T), T);
         if (n >= T) setSpielt(false);
         return n;
       });
@@ -199,6 +211,27 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   const P = { t: 18, r: narrow ? 74 : 96, b: 28, l: narrow ? 50 : 62 };
   const cW = W - P.l - P.r, cH = H - P.t - P.b;
   const y0 = P.t + cH;
+  // Zwei Erklär-Marken im ersten Jahr: Wo die PV-Linie am Ende des Winters am
+  // höchsten steht und am Ende des Sommers am tiefsten. Sie erscheinen, wenn
+  // die Spitze den Punkt passiert, und verschwinden im Herbst des zweiten
+  // Jahres — bevor der zweite Winter die Kurve über die Beschriftung schiebt.
+  const jahreszeiten = useMemo(() => {
+    const ende = Math.min(T, 365);
+    let hoch = 1, tief = 1;
+    for (let d = 1; d <= ende; d++) {
+      if (kPv[d] > kPv[hoch]) hoch = d;
+    }
+    for (let d = hoch; d <= ende; d++) {
+      if (kPv[d] < kPv[tief] || tief < hoch) tief = d;
+    }
+    if (hoch < 30 || tief <= hoch || kPv[hoch] - kPv[tief] < 50) return [];
+    return [
+      { tag: hoch, text: "Winter: wenig Sonne, die Rechnung wächst", oben: true },
+      { tag: tief, text: "Sommer: die Anlage spart mehr, als der Strom kostet", oben: false },
+    ];
+  }, [kPv, T]);
+  const markenBis = Math.min(T, verlauf.ersterTag[Math.min(22, 12 * verlauf.jahre)] ?? T);
+
   const xEnd = Math.max(MIN_TAGE, t);
   const xStart = 0;
   const iStart = 0;
@@ -374,6 +407,18 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           )}
 
           {/* Kreuzung: erscheint, sobald die Linien sie erreicht haben, und bleibt, solange sie im Fenster liegt. */}
+          {t < markenBis && jahreszeiten.filter((m) => t >= m.tag).map((m) => {
+            const x = xL(m.tag), y = yL(kPv[m.tag]);
+            const rechts = x < P.l + cW * 0.55;
+            return (
+              <g key={m.tag} className="kr-neu">
+                <circle cx={x} cy={y} r={3.5} fill="var(--widget-bg, var(--color-bg))" stroke={FARBE_PV} strokeWidth={2} />
+                <text x={rechts ? x + 8 : x - 8} y={m.oben ? y - 10 : y + 18} textAnchor={rechts ? "start" : "end"} fontSize={fsPx("--font-size-caption")} fontWeight={600} fill="var(--color-text-secondary)" style={{ whiteSpace: "pre" }}>
+                  {m.text}
+                </text>
+              </g>
+            );
+          })}
           {bezahltTag !== null && t >= bezahltTag && (
             <g className="kr-neu">
               <line x1={xL(bezahltTag)} x2={xL(bezahltTag)} y1={P.t} y2={y0} stroke="var(--color-positive)" strokeWidth={1} strokeDasharray="3 3" />
