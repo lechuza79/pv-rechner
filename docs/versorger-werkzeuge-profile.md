@@ -123,10 +123,31 @@ können, mit Verweis auf die unabhängige Energieberatung.
 **Schwächen.** Man muss sein Dach auf einer Karte treffen — am Handy Glückssache.
 Der Assistent öffnet in einem neuen Fenster ohne Adressbezug, nur mit einer
 Gebäudenummer. Keine Förderung, kein Einspeisesatz als Zahl. Die Voreinstellungen
-(32 ct, 1.500 €/kWp) stehen ohne Quelle und ohne Datum. **Und der Assistent
-sperrt nach wenigen Aufrufen mit einem Captcha** — wer drei Häuser vergleichen
-will, kommt nicht durch. Die Befliegungsdaten sind teils fünf Jahre alt, neue
-Häuser fehlen.
+(32 ct, 1.500 €/kWp) stehen ohne Quelle und ohne Datum. Die Befliegungsdaten sind
+teils fünf Jahre alt, neue Häuser fehlen.
+
+**Die Zugriffssperre ist selbst ein Verkaufsargument.** Nach wenigen Aufrufen je
+Anschluss schaltet tetraeder ein Captcha vor den Assistenten, mit dem Hinweis
+„für gewerbliche Zwecke kontaktieren Sie uns". Gemessen: Die Sperre hielt über
+22 Minuten. Wer als Stadtwerk drei Nachbarhäuser vergleichen oder das Kataster am
+Telefon vorführen will, sitzt nach ein paar Klicks fest — und ein Kunde, der
+zwischen zwei Dachvarianten schwankt, ebenfalls. Ein eingebettetes Werkzeug ohne
+diese Grenze ist an dieser Stelle schlicht besser.
+
+**Der wichtigste Einzelbefund dieser Erhebung steht hier:** Die beiden Häuser,
+die bei tetraeder gekauft haben, haben Verschiedenes gekauft — und keines davon
+ist eine bessere Rechnung.
+
+Blomberg betreibt exakt das Landkreis-Produkt als eigene Instanz: identische
+Software, identisches Gebäude-Fenster, identischer Assistent wie die kostenlosen
+Kataster der Kreise Grafschaft Bentheim und Plön und der Stadt Iserlohn. Ohne
+Gründach-Modul und ohne die erklärende Beiseite, die Plön und Iserlohn haben —
+also eher weniger als das Gratis-Angebot.
+
+Emden hat den Vertriebstrichter gekauft. **Gekauft wird bei tetraeder nicht
+Rechenqualität, sondern die Lead-Erfassung.** Wer einem Stadtwerk ein Werkzeug
+verkaufen will, sollte wissen, dass genau das die Kaufmotivation der bisherigen
+Kunden war.
 
 **Der Konfigurator** (Stadtwerke Emden) ist etwas anderes: kein Kataster, sondern
 ein Vertriebstrichter. Er lädt das Oberflächenmodell beim Klick nach (rund 25
