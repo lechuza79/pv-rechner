@@ -304,6 +304,13 @@ async function setup(): Promise<void> {
     ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS eignung text NOT NULL DEFAULT 'offen';
     ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS eignung_grund text;
     ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS eignung_at timestamptz;
+    -- Die Seite, auf der das Urteil steht, und die Zeile, die es trägt. Ein
+    -- Urteil ohne Fundstelle ist eine Behauptung — dieselbe Regel wie für jedes
+    -- andere Merkmal dieses Katalogs. Sie hat sich beim ersten Durchgang sofort
+    -- bezahlt gemacht: Das Nachlesen der Belegseiten hat sechs von 32 Urteilen
+    -- gedreht, darunter zwei in beide Richtungen falsche.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS eignung_beleg text;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS eignung_zitat text;
     ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS stand text NOT NULL DEFAULT 'offen';
     ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS notiz text;
     ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS stand_at timestamptz;

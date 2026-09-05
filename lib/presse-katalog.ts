@@ -51,6 +51,9 @@ export interface MediumZeile {
   /** Handurteil über das Medium: lohnt eine Ansprache? Nie vom Lauf gesetzt. */
   eignung?: string | null;
   eignung_grund?: string | null;
+  /** Die Seite, auf der das Urteil steht — ohne sie ist es eine Behauptung. */
+  eignung_beleg?: string | null;
+  eignung_zitat?: string | null;
   profil_at: string | null;
   fehler: string | null;
 }
@@ -100,6 +103,7 @@ export const SPALTEN = [
   "arbeitsstand",
   "eignung",
   "eignung_grund",
+  "eignung_beleg",
   "notizen",
 ] as const;
 
@@ -275,6 +279,7 @@ export function katalogZeile(
     k?.stand && k.stand !== "offen" ? k.stand : "",
     m.eignung && m.eignung !== "offen" ? m.eignung : "",
     m.eignung_grund ?? "",
+    m.eignung_beleg ?? "",
     notizen(m, k, mailKommtVor),
   ];
 }

@@ -123,6 +123,38 @@ describe("Art des Mediums", () => {
   });
 });
 
+describe("Eignungsurteil", () => {
+  it("führt Grund und Belegseite als eigene Spalten", () => {
+    // Ein Urteil, das niemand nachlesen kann, ist eine Behauptung. Beim ersten
+    // Durchgang hat genau das Nachlesen sechs von 32 Urteilen gedreht — darunter
+    // solarbranche.de, das als Marktplatz eingestuft war und im Impressum eine
+    // eigene Redaktion ausweist.
+    expect(SPALTEN).toContain("eignung");
+    expect(SPALTEN).toContain("eignung_grund");
+    expect(SPALTEN).toContain("eignung_beleg");
+  });
+
+  it("gibt Urteil, Grund und Beleg in der Zeile aus", () => {
+    const beurteilt = {
+      ...medium,
+      eignung: "vorgemerkt",
+      eignung_grund: "Fachmagazin mit eigener Redaktion",
+      eignung_beleg: "https://beispiel.de/team",
+    };
+    const zeile = katalogZeile(beurteilt, kontakt, new Map());
+    expect(zeile).toHaveLength(SPALTEN.length);
+    expect(zeile[SPALTEN.indexOf("eignung")]).toBe("vorgemerkt");
+    expect(zeile[SPALTEN.indexOf("eignung_beleg")]).toBe("https://beispiel.de/team");
+  });
+
+  it("lässt ein unbeurteiltes Medium leer statt „offen“ zu behaupten", () => {
+    // „offen“ in einer Exportspalte liest sich wie ein Befund; leer sagt, dass
+    // niemand hingesehen hat.
+    const zeile = katalogZeile({ ...medium, eignung: "offen" }, kontakt, new Map());
+    expect(zeile[SPALTEN.indexOf("eignung")]).toBe("");
+  });
+});
+
 describe("Arbeitsstand", () => {
   it("kennt nur die vier Zustände", () => {
     expect(istStand("vorgemerkt")).toBe(true);

@@ -102,8 +102,19 @@ Adresse, welche Fundstelle, welche Themen. Das Urteil fällt **einmal von Hand**
 je Medium (`eignung`, `eignung_grund`), und der Erhebungslauf fasst es nie an;
 derselbe Wächter, der die Handeinordnung schützt, wird rot, wenn er es täte.
 
-**Erster Durchgang, 32 Fachmedien der Pakete 1–3:** 16 vorgemerkt, 13 ungeeignet,
-3 von Hand nachzusehen. Die Trennlinie verläuft nicht zwischen groß und klein,
+**Jedes Urteil trägt seine Fundstelle** — die Seite, auf der es steht, plus den
+Wortlaut. Das ist keine Formalie: Beim ersten Durchgang hatte ich aus Namen,
+gemessenen Themen und Kontakten geurteilt; **das Nachlesen der Belegseiten hat
+sechs von 32 Urteilen gedreht**, davon zwei in beide Richtungen falsch —
+solarbranche.de galt als Marktplatz und weist im Impressum eine eigene Redaktion
+des IWR aus, effizienzhaus-online.de galt als offen und leitet auf den
+Affiliate-Bereich eines Vermittlers. Dazu eine falsche Begründung bei richtigem
+Urteil (machdeinenstrom.de ist kein Händler, sondern der Bundesverband
+Steckersolar). **Ein Urteil ohne gelesene Fundstelle ist eine Behauptung**, und
+zwar eine, die genauso plausibel klingt wie ein belegtes.
+
+**Erster Durchgang, 32 Fachmedien der Pakete 1–3:** 16 vorgemerkt, 14 ungeeignet,
+2 von Hand nachzusehen. Die Trennlinie verläuft nicht zwischen groß und klein,
 sondern zwischen **Redaktion** und allem anderen — Verbände und Institute
 veröffentlichen ihre eigenen Zahlen (BEE, BSW, Fraunhofer ISE), Ratgeber- und
 Leadportale haben gar keine Redaktion (solaranlage.eu, solarbranche.de), Händler

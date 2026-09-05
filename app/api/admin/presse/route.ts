@@ -29,7 +29,8 @@ const MEDIUM_SPALTEN =
   "domain, saat_name, saat_typ, saat_schwerpunkt, saat_gebiet, gruppe, paket, notiz, " +
   "titel, medientyp, themen, geschichten, reichweite, reichweite_quelle, ist_medium, " +
   "medium_grund, medium_merkmale, seiten, formular_url, impressum_url, prioritaet, " +
-  "aufhaenger, gattung, gattung_hand, woerter, hinweis, eignung, eignung_grund, profil_at, fehler";
+  "aufhaenger, gattung, gattung_hand, woerter, hinweis, eignung, eignung_grund, " +
+  "eignung_beleg, eignung_zitat, profil_at, fehler";
 
 const KONTAKT_SPALTEN =
   "domain, schluessel, name, funktion, rang, mail, mail_art, formular_url, quelle_url, " +

@@ -471,6 +471,21 @@ export default function PresseAnsicht() {
                     style={{ ...eingabeStil, flex: "1 1 320px" }}
                   />
                 </div>
+                {/* Die Fundstelle steht am Urteil, nicht daneben. Ein Urteil,
+                    das niemand nachlesen kann, ist eine Behauptung — dieselbe
+                    Regel wie für jedes andere Merkmal dieses Katalogs. */}
+                {m.eignung_beleg && (
+                  <p style={{ margin: `${space.xs}px 0 0`, color: v("--color-text-muted") }}>
+                    {/* Der Wortlaut wird NICHT noch einmal in Anführungszeichen
+                        gesetzt: Wo er ein Zitat ist, trägt er sie schon; wo er
+                        eine Beobachtung zusammenfasst, wären sie eine falsche
+                        Zusage. */}
+                    {m.eignung_zitat ? <>{m.eignung_zitat} — </> : null}
+                    <a href={m.eignung_beleg} target="_blank" rel="noreferrer" style={linkStil}>
+                      Belegseite ansehen
+                    </a>
+                  </p>
+                )}
               </DetailAbschnitt>
 
               <DetailAbschnitt titel="Einordnung">
