@@ -375,6 +375,14 @@ export interface JahresVerlauf {
   strompreisImJahr?: (i: number) => number;
   /** Faktor auf den Ertrag im Jahr i (1-basiert), z. B. 1,08 für ein sonniges Jahr; multipliziert die Degradation. */
   ertragsfaktorImJahr?: (i: number) => number;
+  /**
+   * Monatsprofil des Jahres i (1-basiert): 12 Werte kWh/kWp, wie der Ertrag in
+   * DIESEM Jahr über die Monate fiel. Ersetzt für das Jahr sowohl die Form
+   * (`monthly`) als auch die Menge (`ertragKwp`, die Summe der zwölf Werte gilt).
+   * Damit läuft echtes Wetter durch die Rechnung: ein trüber Mai, ein
+   * Rekord-April, ein kurzer Winter — kein Jahr gleicht dem anderen.
+   */
+  monatsprofilImJahr?: (i: number) => number[];
 }
 
 export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, stromSteigerung, ertragKwp, monthly, batteryReplace = 0, einspeiseModell, verlauf }: { kwp: number; kosten: number; strompreis: number; eigenverbrauch: number; einspeisung: number; stromSteigerung: number; ertragKwp: number; monthly: number[] | null; batteryReplace?: number; einspeiseModell?: EinspeiseModell; verlauf?: JahresVerlauf }) {
@@ -384,7 +392,7 @@ export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, str
   // unterscheidet. Summiert je Jahr exakt auf `j`; der Akku-Tausch fällt in den
   // ersten Monat seines Jahres. Gebaut für das Stromkosten-Rennen
   // (lib/kostenrennen.ts), das die Kurve in Monatsschritten zeichnet.
-  const monate: number[] | null = monthly ? [] : null;
+  const monate: number[] | null = monthly || verlauf?.monatsprofilImJahr ? [] : null;
   let kum = -kosten;
   // Monatliche Berechnung wenn PVGIS-Profil vorhanden
   const fracs = monthly ? monthly.map(m => m / monthly.reduce((a, b) => a + b, 0)) : null;
@@ -393,8 +401,14 @@ export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, str
   for (let i = 0; i <= YEARS; i++) {
     let j = 0;
     if (i > 0) {
-      const deg = Math.pow(1 - DEGRAD, i) * (verlauf?.ertragsfaktorImJahr?.(i) ?? 1);
+      const profilJahr = verlauf?.monatsprofilImJahr?.(i);
+      const profilSumme = profilJahr ? profilJahr.reduce((a, b) => a + b, 0) : 0;
+      // Mit Jahresprofil ist die Menge des Jahres die Summe seiner Monate; die
+      // Alterung der Module kommt obendrauf.
+      const deg = Math.pow(1 - DEGRAD, i) * (verlauf?.ertragsfaktorImJahr?.(i) ?? 1) * (profilJahr && ertragKwp > 0 ? profilSumme / ertragKwp : 1);
       const sp = verlauf?.strompreisImJahr?.(i) ?? strompreis * Math.pow(1 + stromSteigerung, i);
+      const fracsJahr = profilJahr && profilSumme > 0 ? profilJahr.map((m) => m / profilSumme) : fracs;
+      const monthlyEvJahr = profilJahr && fracsJahr ? buildMonthlyEv(eigenverbrauch / 100, fracsJahr) : monthlyEv;
       // EEG-Einspeisevergütung nur die ersten 20 Jahre; danach fällt die Anlage
       // aus dem EEG (Marktwert konservativ nicht angesetzt). Der Eigenverbrauch
       // spart den Strompreis auch danach weiter. Liegt ein Einspeisemodell vor,
@@ -409,12 +423,12 @@ export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, str
       let einspeiseErloes = 0;
       const mErsparnis: number[] = [];
       const mEinspeise: number[] = [];
-      if (fracs && monthlyEv) {
+      if (fracsJahr && monthlyEvJahr) {
         // Monatlich: EV% variiert saisonal (Winter höher, Sommer niedriger),
         // bleibt aber jahresgewichtet auf dem eingegebenen Eigenverbrauch.
         for (let m = 0; m < 12; m++) {
-          const mProd = kwp * ertragKwp * fracs[m] * deg;
-          const mEv = monthlyEv[m];
+          const mProd = kwp * ertragKwp * fracsJahr[m] * deg;
+          const mEv = monthlyEvJahr[m];
           mErsparnis.push(mProd * mEv * sp);
           mEinspeise.push(mProd * (1 - mEv) * anteil * (feedIn / 100));
           j += mErsparnis[m];

@@ -117,24 +117,13 @@ test.describe("Amortisations-Rennen", () => {
     await expect(exportOnly.first()).toBeHidden();
     // Legende (beide Haushalte) und die Texte hinter den „?" sitzen im Bild-Fuß.
     const footer = exportOnly.filter({ hasText: "Der Beispielhaushalt" });
-    await expect(footer).toContainText("ohne Speicher");
-    await expect(footer).toContainText("mit 10 kWh Speicher");
+    await expect(footer).toContainText("Mit PV-Anlage");
     await expect(footer).toContainText("Ohne PV-Anlage");
     await expect(footer).toContainText("Was hier zählt");
 
     const kante = page.locator('[title^="Quelle:"]');
     await expect(kante).toHaveCount(1);
     await expect(kante).toContainText("PVGIS");
-    // Drei Aufstellungen; die gewählte steht im Bild als Zeile, weil der
-    // Umschalter dort fehlt. Umschalten ändert genau diese Zeile.
-    const tabs = page.getByRole("tab");
-    await expect(tabs).toHaveCount(3);
-    await expect(exportOnly.filter({ hasText: "Aufstellung:" })).toContainText("Glattes Modell");
-    await tabs.nth(1).click();
-    await expect(exportOnly.filter({ hasText: "Aufstellung:" })).toContainText("Wetter wie");
-    await expect(kante).toContainText("Deutscher Wetterdienst");
-    await tabs.nth(0).click();
-
     const downloadPromise = page.waitForEvent("download");
     await page.getByTitle("Als Bild herunterladen").click();
     const download = await downloadPromise;

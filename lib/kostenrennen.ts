@@ -1,18 +1,22 @@
-// Das Stromkosten-Rennen: mehrere Haushalte, dieselben 25 Jahre — wer hat am
-// Ende wie viel für Strom ausgegeben?
+// Das Amortisations-Rennen: ein Haushalt, einmal ohne und einmal mit Anlage,
+// 25 Jahre, Monat für Monat mit dem Wetter, wie es wirklich war.
 //
 // Reine Rechenschicht ohne UI. Sie erfindet KEIN eigenes Fundament (CLAUDE.md,
 // „Geteilte Rechen-Basis"): Der Jahresverbrauch kommt aus PERSONEN + den
 // Großverbrauchern, die Anschaffung aus estimateCost, der Eigenverbrauch aus
-// dem HTW-Power-Law, und der jährliche Nutzen einer Anlage ist exakt die
-// Amortisationsrechnung des Rechners (`calc`). Damit kann das Rennen nie etwas
-// anderes behaupten als der Rechner daneben: Die kumulierten Stromkosten eines
-// PV-Haushalts sind die Kosten desselben Haushalts ohne Anlage MINUS der
-// kumulierte Gewinn aus `calc` (der die Anschaffung als negativen Start trägt).
+// dem HTW-Power-Law, und der Nutzen der Anlage ist exakt die Amortisations-
+// rechnung des Rechners (`calc`), Monat für Monat. Damit kann das Rennen nie
+// etwas anderes behaupten als der Rechner daneben.
+//
+// Das Wetter kommt aus der DWD-Strahlungsreihe (lib/strahlungsjahre.ts): Die
+// letzten 25 Kalenderjahre laufen als Betriebsjahre 1–25 noch einmal ab, jeder
+// Monat so, wie er war. Normiert auf das Mittel dieses Fensters — die MENGE
+// über 25 Jahre bleibt die des Rechners (Referenzertrag × 25), nur ihre
+// Verteilung ist echt. Welche Strahlung dem Referenzertrag absolut entspricht,
+// ist nicht belegt; belegt ist nur, wie die Jahre und Monate um ihr Mittel
+// streuen.
 //
 // Ein „Läufer" ist eine Haushaltskonfiguration; `kwp: 0` heißt „keine Anlage".
-// Varianten (andere Haushaltsgröße, Speicher, E-Auto, Wärmepumpe) sind weitere
-// Läufer — nicht weitere Rechenwege.
 
 import { PERSONEN, YEARS, YEAR, NATIONAL_AVG_YIELD, CONSUMPTION_MONTHLY } from "./constants";
 import { calc, calcEigenverbrauch, calcWeightedFeedIn, estimateCost, batteryReplaceCost, type JahresVerlauf } from "./calc";
@@ -20,6 +24,7 @@ import { calcExtraConsumption } from "./consumption";
 import { monthlyFromAnnual } from "./balkon-sim";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
 import { DEFAULT_FEED_IN, type FeedInRates } from "./feedin-config";
+import { STRAHLUNG_JAHRE } from "./strahlungsjahre";
 
 export interface RennHaushalt {
   /** Stabiler Schlüssel (Farbe, Sortierung, Tests). */
@@ -48,20 +53,13 @@ export interface RennParameter {
   /** Strompreis-Anstieg p. a.; ohne Angabe der Wert der Preis-Config. */
   stromSteigerung?: number;
   /**
-   * 12 Monatswerte kWh/kWp (PVGIS-Profil des Standorts). Ohne Angabe das
-   * deutsche Referenzjahr — dieselbe Form, die die Stundensimulation ohne PLZ
-   * benutzt. Die MENGE kommt immer aus `ertragKwp`, das Profil gibt nur die
-   * Verteilung über das Jahr.
+   * `"dwd"` (Voreinstellung): jeder Monat mit der Strahlung des wiederholten
+   * Kalenderjahrs. `"referenz"`: jedes Jahr dasselbe Referenz-Monatsprofil —
+   * das glatte Modell des Rechners, für Tests und Vergleiche.
    */
-  monatsprofil?: number[];
-  /**
-   * Jahresweise Abweichungen vom glatten Modell (Preispfad, Wetterjahre) —
-   * dieselbe Struktur, die calc() nimmt, damit Anlage UND Referenzhaushalt
-   * denselben Strompreis eines Jahres sehen. Ohne Angabe: glattes Modell.
-   */
+  wetter?: "dwd" | "referenz";
+  /** Weitere jahresweise Abweichungen (Preispfad), an calc() durchgereicht. */
   verlauf?: JahresVerlauf;
-  /** Klartext für die Annahmen-Zeile, wenn `verlauf` gesetzt ist. */
-  verlaufText?: { preis?: string; wetter?: string };
 }
 
 export interface RennLaeufer {
@@ -77,27 +75,15 @@ export interface RennLaeufer {
   verbrauchKwh: number;
   /** Eigenverbrauchsanteil in %, null ohne Anlage. */
   eigenverbrauchPct: number | null;
-  /**
-   * Kumulierte Stromausgaben, Index = Jahr 0..YEARS. Jahr 0 ist die
-   * Anschaffung (ohne Anlage: 0). Enthält Netzstrom, minus Einspeise-Erlös,
-   * plus Akku-Tausch — alles, was auch der Rechner rechnet.
-   */
+  /** Kumulierte Stromausgaben, Index = Jahr 0..YEARS (Jahr 0 = Anschaffung). */
   kumuliert: number[];
-  /**
-   * Dieselbe Größe in Monatsschritten, Index = Monat 0..12·YEARS (0 = Start).
-   * Jeder zwölfte Wert ist der Jahreswert aus `kumuliert`. Der Winter ist hier
-   * sichtbar: Die Anlage liefert im Dezember ein Zehntel des Juli-Ertrags, die
-   * Stromrechnung ist im Winter am höchsten (BDEW-Lastprofil).
-   */
+  /** Dieselbe Größe in Monatsschritten, Index = Monat 0..12·YEARS. */
   monatlich: number[];
   /**
    * Was die Anlage bis dahin EINGEBRACHT hat, Monat 0..12·YEARS: Ersparnis
    * plus Einspeisevergütung, minus Akku-Tausch — der kumulierte Nutzen aus
    * calc() ab null, ohne die Anschaffung. Erreicht er die Investition, ist die
-   * Anlage bezahlt. Ohne Anlage konstant 0. Das ist die Größe des Rennens: Alle
-   * Läufer starten bei null, die Achse wächst mit ihnen, und jede Schwankung
-   * (Winter, Wetterjahr, Preissprung) ist sichtbar — in den kumulierten Kosten
-   * versteckt die Anschaffung sie.
+   * Anlage bezahlt. Ohne Anlage konstant 0.
    */
   nutzen: number[];
 }
@@ -109,22 +95,18 @@ export interface Kostenrennen {
   laeufer: RennLaeufer[];
   /** Schlüssel des Läufers OHNE Anlage, gegen den verglichen wird. */
   referenzKey: string;
-  /**
-   * Je Läufer mit Anlage: das erste Jahr, ab dem er dauerhaft weniger
-   * ausgegeben hat als die Referenz — null, wenn nie. Für denselben Haushalt
-   * ist das exakt die Amortisation des Rechners (per Test festgenagelt).
-   */
+  /** Je Anlage: erstes Jahr, ab dem sie dauerhaft weniger gekostet hat als die Referenz — null, wenn nie. */
   ueberholJahr: Record<string, number | null>;
-  /** Wie `ueberholJahr`, aber als Monatsindex (1..12·YEARS) — für die Marke im Chart. */
+  /** Wie `ueberholJahr`, als Monatsindex (1..12·YEARS): der Monat, in dem die Anlage bezahlt ist. */
   ueberholMonat: Record<string, number | null>;
+  /** Welche Kalenderjahre als Wetter durchlaufen (null beim Referenzprofil). */
+  wetterFenster: { von: number; bis: number } | null;
   annahmen: {
     strompreisCt: number;
     steigerungPct: number;
     ertragKwp: number;
     einspeisungCt: number;
-    /** Wie sich der Strompreis entwickelt — ein Satz, der zur Rechnung passt. */
-    preis: string;
-    /** Wie der Ertrag über die Jahre verteilt ist — ein Satz, der zur Rechnung passt. */
+    /** Ein Satz zum Wetter, der zur Rechnung passt. */
     wetter: string;
   };
 }
@@ -136,24 +118,32 @@ export interface Kostenrennen {
 const TYPISCH = { personenIdx: 2, nutzungIdx: 1 } as const;
 
 /**
- * Die Grundaufstellung: derselbe Haushalt ohne Anlage (Referenz für die
- * Stromrechnung), mit 10 kWp ohne Speicher (die Voreinstellung des Rechners)
- * und mit 10 kWp plus 10 kWh Speicher. Die beiden Anlagen laufen im Rennen
- * gegeneinander: Der Speicher bringt jedes Jahr mehr ein, kostet aber 4.000 €
- * mehr und wird nach 15 Jahren getauscht — dort knickt seine Kurve.
- *
- * Zum Speicher-Haushalt gehört eine Eigenheit des Modells: Sein
- * Eigenverbrauch läuft an die physikalische Kappung (Verbrauch ÷ Ertrag), der
- * Einspeise-Erlös übersteigt dann die restliche Stromrechnung — seine
- * kumulierten NETTO-Kosten sinken sogar (gemessen 05.09.2026: 18.000 →
- * 12.273 € nach 20 Jahren). Im Rennen um den eingebrachten Nutzen ist das kein
- * Problem mehr; in einer Kostendarstellung wäre es ein Balken, der rückwärts läuft.
+ * Die Aufstellung: derselbe Haushalt ohne und mit Anlage — 10 kWp ohne
+ * Speicher, die Voreinstellung des Rechners.
  */
 export const RENNEN_OHNE_MIT_PV: RennHaushalt[] = [
   { key: "ohne", label: "Ohne PV-Anlage", kurz: "Ohne PV", ...TYPISCH, kwp: 0, speicherKwh: 0 },
-  { key: "mit", label: "10 kWp ohne Speicher", kurz: "ohne Speicher", ...TYPISCH, kwp: 10, speicherKwh: 0 },
-  { key: "mitSp", label: "10 kWp mit 10 kWh Speicher", kurz: "mit Speicher", ...TYPISCH, kwp: 10, speicherKwh: 10 },
+  { key: "mit", label: "Mit PV-Anlage (10 kWp)", kurz: "Mit PV", ...TYPISCH, kwp: 10, speicherKwh: 0 },
 ];
+
+/** Die letzten YEARS vollständigen Kalenderjahre der DWD-Reihe. */
+export function wetterFenster(): { von: number; bis: number } {
+  const bis = STRAHLUNG_JAHRE[STRAHLUNG_JAHRE.length - 1].jahr;
+  return { von: bis - YEARS + 1, bis };
+}
+
+/**
+ * Monatsprofil (kWh/kWp) des Betriebsjahrs i aus dem echten Wetter des
+ * wiederholten Kalenderjahrs, normiert auf das Fenstermittel: Über die 25
+ * Jahre summiert sich der Ertrag zu YEARS × ertragKwp, wie im Rechner.
+ */
+export function wetterMonatsprofile(ertragKwp: number): number[][] {
+  const { von, bis } = wetterFenster();
+  const jahre = STRAHLUNG_JAHRE.filter((r) => r.jahr >= von && r.jahr <= bis);
+  if (jahre.length !== YEARS) throw new Error(`Wetterfenster ${von}–${bis} hat ${jahre.length} statt ${YEARS} Jahre`);
+  const mittel = jahre.reduce((a, r) => a + r.kwhM2, 0) / jahre.length;
+  return jahre.map((r) => r.monate.map((m) => (m / mittel) * ertragKwp));
+}
 
 function jahresverbrauch(h: RennHaushalt): number {
   return PERSONEN[h.personenIdx].verbrauch + calcExtraConsumption(h.wp ?? "nein", h.ea ?? "nein", h.eaKm ?? 0);
@@ -165,6 +155,7 @@ export function kostenrennen(haushalte: RennHaushalt[], p: RennParameter = {}): 
   const ertragKwp = p.ertragKwp ?? NATIONAL_AVG_YIELD;
   const steigerung = p.stromSteigerung ?? prices.electricityIncrease;
   const strompreis = prices.electricityPrice;
+  const wetter = p.wetter ?? "dwd";
   const preisImJahr = (i: number) => p.verlauf?.strompreisImJahr?.(i) ?? strompreis * Math.pow(1 + steigerung, i);
 
   const referenz = haushalte.find((h) => h.kwp <= 0);
@@ -173,7 +164,11 @@ export function kostenrennen(haushalte: RennHaushalt[], p: RennParameter = {}): 
   // Verbrauchsanteil je Monat (BDEW H0: Winter über, Sommer unter dem Mittel).
   const cSum = CONSUMPTION_MONTHLY.reduce((a, b) => a + b, 0);
   const cAnteil = CONSUMPTION_MONTHLY.map((f) => f / cSum);
-  const monatsprofil = p.monatsprofil ?? monthlyFromAnnual(ertragKwp);
+  const profile = wetter === "dwd" ? wetterMonatsprofile(ertragKwp) : null;
+  const verlauf: JahresVerlauf = {
+    ...p.verlauf,
+    ...(profile ? { monatsprofilImJahr: (i: number) => profile[i - 1] ?? profile[profile.length - 1] } : {}),
+  };
   const M = 12 * YEARS;
 
   const laeufer: RennLaeufer[] = haushalte.map((h) => {
@@ -205,14 +200,13 @@ export function kostenrennen(haushalte: RennHaushalt[], p: RennParameter = {}): 
     const einspeisung = calcWeightedFeedIn(h.kwp, feedIn.teilUnder10, feedIn.teilOver10, feedIn.thresholdKwp);
     const ergebnis = calc({
       kwp: h.kwp, kosten, strompreis, eigenverbrauch: ev, einspeisung,
-      stromSteigerung: steigerung, ertragKwp, monthly: monatsprofil,
+      stromSteigerung: steigerung, ertragKwp, monthly: monthlyFromAnnual(ertragKwp),
       batteryReplace: h.speicherKwh > 0 ? batteryReplaceCost(h.speicherKwh, prices) : 0,
-      verlauf: p.verlauf,
+      verlauf,
     });
     if (!ergebnis.monate) throw new Error("calc() lieferte kein Monatsprofil");
-    // Kosten mit Anlage = Kosten ohne Anlage − kumulierter Nutzen der Anlage.
-    // Monat 0 ist die Anschaffung; danach wächst jeder Monat um die
-    // Stromrechnung minus das, was die Anlage in diesem Monat einbringt.
+    // Kosten mit Anlage = Kosten ohne Anlage − Nutzen der Anlage. Monat 0 ist
+    // die Anschaffung; der Nutzen läuft ab null.
     const mitMonat: number[] = [kosten];
     const nutzen: number[] = [0];
     for (let k = 1; k <= M; k++) {
@@ -245,6 +239,7 @@ export function kostenrennen(haushalte: RennHaushalt[], p: RennParameter = {}): 
   }
 
   const pvKwp = haushalte.find((h) => h.kwp > 0)?.kwp ?? 10;
+  const fenster = profile ? wetterFenster() : null;
   return {
     startJahr: YEAR,
     jahre: YEARS,
@@ -252,13 +247,15 @@ export function kostenrennen(haushalte: RennHaushalt[], p: RennParameter = {}): 
     referenzKey: referenz.key,
     ueberholJahr,
     ueberholMonat,
+    wetterFenster: fenster,
     annahmen: {
       strompreisCt: Math.round(strompreis * 1000) / 10,
       steigerungPct: Math.round(steigerung * 1000) / 10,
       ertragKwp,
       einspeisungCt: Math.round(calcWeightedFeedIn(pvKwp, feedIn.teilUnder10, feedIn.teilOver10, feedIn.thresholdKwp) * 100) / 100,
-      preis: p.verlaufText?.preis ?? `Anstieg ${(Math.round(steigerung * 1000) / 10).toLocaleString("de-DE")} % pro Jahr`,
-      wetter: p.verlaufText?.wetter ?? "jedes Jahr der gleiche Ertrag (Referenzjahr), nur die Alterung der Module zieht ab",
+      wetter: fenster
+        ? `Sonne Monat für Monat wie in den Jahren ${fenster.von}–${fenster.bis} (Gebietsmittel Deutschland, Deutscher Wetterdienst), Gesamtmenge über 25 Jahre wie im Rechner`
+        : "jedes Jahr dasselbe Referenz-Monatsprofil, nur die Alterung der Module zieht ab",
     },
   };
 }

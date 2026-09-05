@@ -1,6 +1,7 @@
 /**
  * Erzeugt `lib/strahlungsjahre.ts`: das Gebietsmittel der Globalstrahlung über
- * Deutschland je Kalenderjahr (kWh/m²), aus den 1-km-Jahresrastern des DWD.
+ * Deutschland je MONAT (kWh/m²), aus den 1-km-Monatsrastern des DWD, dazu die
+ * Jahressumme je Kalenderjahr.
  *
  * Warum ein Skript und keine getippte Tabelle: Eine Datei mit dem Vermerk
  * „aus DWD-Daten" ohne Erzeuger bliebe beim Jahrgang stehen, in dem sie
@@ -29,7 +30,7 @@ import { existsSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 import { Open } from "unzipper";
 
-const BASIS = "https://opendata.dwd.de/climate_environment/CDC/grids_germany/annual/radiation_global";
+const BASIS = "https://opendata.dwd.de/climate_environment/CDC/grids_germany/monthly/radiation_global";
 const ERSTES_JAHR = 1991;
 const ZIEL = join(process.cwd(), "lib", "strahlungsjahre.ts");
 const SPRUNG_MAX = 0.3;
@@ -67,8 +68,8 @@ export function gebietsmittelAusRaster(text: string): { mittel: number; zellen: 
   return { mittel: summe / n, zellen: n };
 }
 
-async function jahreswert(jahr: number): Promise<{ mittel: number; zellen: number }> {
-  const url = `${BASIS}/grids_germany_annual_radiation_global_${jahr}.zip`;
+async function monatswert(jahr: number, monat: number): Promise<{ mittel: number; zellen: number }> {
+  const url = `${BASIS}/grids_germany_monthly_radiation_global_${jahr}${String(monat).padStart(2, "0")}.zip`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`${url}: HTTP ${res.status}`);
   const zip = await Open.buffer(Buffer.from(await res.arrayBuffer()));
@@ -81,7 +82,7 @@ function bisherigeWerte(): Map<number, number> {
   const out = new Map<number, number>();
   if (!existsSync(ZIEL)) return out;
   const q = readFileSync(ZIEL, "utf8");
-  for (const m of q.matchAll(/\{ jahr: (\d{4}), kwhM2: ([\d.]+) \}/g)) out.set(Number(m[1]), Number(m[2]));
+  for (const m of q.matchAll(/\{ jahr: (\d{4}), kwhM2: ([\d.]+)/g)) out.set(Number(m[1]), Number(m[2]));
   return out;
 }
 
@@ -89,58 +90,67 @@ async function main() {
   const trocken = process.argv.includes("--trocken");
   const bis = Number(arg("--bis") ?? new Date().getFullYear() - 1);
   const bisher = bisherigeWerte();
-  const reihe: { jahr: number; kwhM2: number; zellen: number }[] = [];
+  const reihe: { jahr: number; kwhM2: number; monate: number[]; zellen: number }[] = [];
   for (let jahr = ERSTES_JAHR; jahr <= bis; jahr++) {
-    let w: { mittel: number; zellen: number };
+    const monate: number[] = [];
+    let zellen = 0;
     try {
-      w = await jahreswert(jahr);
+      for (let m = 1; m <= 12; m++) {
+        const w = await monatswert(jahr, m);
+        monate.push(Math.round(w.mittel * 10) / 10);
+        zellen = w.zellen;
+      }
     } catch (e) {
-      // Das laufende bzw. gerade abgeschlossene Jahr liegt Mitte Januar noch nicht vor.
-      if (jahr === bis) { console.log(`${jahr}: noch nicht veröffentlicht (${(e as Error).message})`); break; }
+      // Das gerade abgeschlossene Jahr ist erst vollständig, wenn der Dezember
+      // Mitte Januar nachgeliefert wurde — bis dahin bleibt es draußen.
+      if (jahr === bis) { console.log(`${jahr}: noch nicht vollständig (${(e as Error).message})`); break; }
       throw e;
     }
-    const kwhM2 = Math.round(w.mittel * 10) / 10;
+    const kwhM2 = Math.round(monate.reduce((a, b) => a + b, 0) * 10) / 10;
     const alt = bisher.get(jahr);
     if (alt !== undefined && Math.abs(kwhM2 - alt) / alt > SPRUNG_MAX) {
       throw new Error(`${jahr}: ${alt} → ${kwhM2} kWh/m² ist ein Sprung über 30 % — Einlesen prüfen, nicht überschreiben`);
     }
     if (alt !== undefined && kwhM2 !== alt) console.log(`${jahr}: revidiert ${alt} → ${kwhM2}`);
-    reihe.push({ jahr, kwhM2, zellen: w.zellen });
-    console.log(`${jahr}: ${kwhM2} kWh/m² (${w.zellen} Zellen)`);
+    reihe.push({ jahr, kwhM2, monate, zellen });
+    console.log(`${jahr}: ${kwhM2} kWh/m² (${monate.join(" ")})`);
   }
   if (reihe.length === 0) throw new Error("Keine Jahre gelesen");
   const zellen = new Set(reihe.map((r) => r.zellen));
   if (zellen.size !== 1) throw new Error(`Zellenzahl schwankt (${[...zellen].join(", ")}) — die Raster sind nicht deckungsgleich`);
 
   const heute = new Date().toISOString().slice(0, 10);
-  const datei = `// AUTO-generiert aus den DWD-Jahresrastern der Globalstrahlung (CC BY 4.0) —
+  const datei = `// AUTO-generiert aus den DWD-Monatsrastern der Globalstrahlung (CC BY 4.0) —
 // erzeugt von scripts/dwd-strahlung-sync.ts, nicht von Hand pflegen.
 //
-// Gebietsmittel Deutschland je Kalenderjahr, kWh/m² auf die horizontale Ebene:
+// Gebietsmittel Deutschland je Monat, kWh/m² auf die horizontale Ebene:
 // ungewichtetes Mittel aller ${[...zellen][0].toLocaleString("de-DE")} belegten 1-km-Zellen des Rasters
-// (unsere Ableitung — der DWD liefert das Raster, nicht den Mittelwert).
-// Quelle: DWD Climate Data Center (CDC), Rasterdaten der Jahressumme für die
+// (unsere Ableitung — der DWD liefert das Raster, nicht den Mittelwert). Die
+// Jahressumme ist die Summe der zwölf Monatsmittel.
+// Quelle: DWD Climate Data Center (CDC), Rasterdaten der Monatssumme für die
 // Globalstrahlung auf die horizontale Ebene für Deutschland basierend auf
 // Boden- und Satellitenmessungen, Version V003. Unsicherheit der Rasterwerte
 // laut DWD ±6 %; Satelliten-Eingangsdaten ab 2015 aus CM SAF, ab 2018 neue
 // Version — die Reihe ist laut Datensatzbeschreibung durchgängig mit einer
 // Methode erstellt.
 //
-// Wofür: das „Wetterjahr" im Stromkosten-Rennen (lib/kostenrennen-varianten.ts)
-// — wie stark ein gutes Solarjahr über einem schlechten liegt. Nur RELATIV zu
-// verwenden (Jahr ÷ Mittel eines Zeitraums): Welche Strahlung unserem
-// Referenzertrag von 1.050 kWh/kWp entspricht, ist damit NICHT belegt.
+// Wofür: das echte Wetter im Amortisations-Rennen (lib/kostenrennen.ts) —
+// jeder Monat der letzten 25 Jahre so, wie er war: ein trüber Mai, ein
+// Rekord-April, ein kurzer Winter. Nur RELATIV zu verwenden (Monat ÷ Mittel
+// eines Zeitraums): Welche Strahlung unserem Referenzertrag von 1.050 kWh/kWp
+// entspricht, ist damit NICHT belegt.
 
 export const STRAHLUNG_META = {
-  quelle: "DWD Climate Data Center (CDC), Jahresraster Globalstrahlung V003",
+  quelle: "DWD Climate Data Center (CDC), Monatsraster Globalstrahlung V003",
   einheit: "kWh/m²",
   erzeugt: "${heute}",
   ersteJahr: ${reihe[0].jahr},
   letztesJahr: ${reihe[reihe.length - 1].jahr},
 } as const;
 
-export const STRAHLUNG_JAHRE: { jahr: number; kwhM2: number }[] = [
-${reihe.map((r) => `  { jahr: ${r.jahr}, kwhM2: ${r.kwhM2} },`).join("\n")}
+/** Je Kalenderjahr: Jahressumme und die zwölf Monatswerte (Januar … Dezember). */
+export const STRAHLUNG_JAHRE: { jahr: number; kwhM2: number; monate: number[] }[] = [
+${reihe.map((r) => `  { jahr: ${r.jahr}, kwhM2: ${r.kwhM2}, monate: [${r.monate.join(", ")}] },`).join("\n")}
 ];
 
 /** Gebietsmittel eines Jahres oder undefined, wenn es nicht in der Reihe steht. */
@@ -150,7 +160,7 @@ export function strahlungImJahr(jahr: number): number | undefined {
 `;
   if (trocken) { console.log("(trocken — nichts geschrieben)"); return; }
   writeFileSync(ZIEL, datei);
-  console.log(`geschrieben: ${ZIEL} (${reihe[0].jahr}–${reihe[reihe.length - 1].jahr})`);
+  console.log(`geschrieben: ${ZIEL} (${reihe[0].jahr}–${reihe[reihe.length - 1].jahr}, monatlich)`);
 }
 
 if (process.argv[1] && /dwd-strahlung-sync/.test(process.argv[1])) {

@@ -117,12 +117,11 @@ export const WIDGETS = {
     title: "Das Amortisations-Rennen",
     kind: "chart",
     shareUrl: `${SITE}/ratgeber/lohnt-sich-pv-mit-speicher#kostenrennen`,
-    shareText: "Wann ist die Solaranlage bezahlt? Das Rennen über 25 Jahre, mit und ohne Speicher – Solar Check",
+    shareText: "Wann ist die Solaranlage bezahlt? Das Rennen über 25 Jahre mit echtem Wetter – Solar Check",
     // Der Standort-Ertrag ist der PVGIS-Bundesschnitt; Preise und Vergütung
-    // sind unsere gepflegten Stichtagswerte (siehe /datenstand). Die
-    // Aufstellungen „Wetterjahre" und „Preissprünge" wiederholen die
-    // DWD-Strahlungsreihe bzw. die Eurostat-Preisreihe.
-    sources: [DATA_SOURCES.pvgis, DATA_SOURCES.dwd, DATA_SOURCES.eurostat],
+    // sind unsere gepflegten Stichtagswerte (siehe /datenstand). Das Wetter
+    // Monat für Monat kommt aus der DWD-Strahlungsreihe.
+    sources: [DATA_SOURCES.pvgis, DATA_SOURCES.dwd],
     cta: { label: "Für dein Haus durchrechnen", href: "/photovoltaik-rechner" },
   },
   gruengasHeizkosten: {

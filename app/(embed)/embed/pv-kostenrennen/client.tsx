@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
 import { usePrices } from "../../../../lib/prices";
 import { feedInRatesFor } from "../../../../lib/feedin-config";
-import { kostenrennenVarianten } from "../../../../lib/kostenrennen-varianten";
+import { kostenrennen, RENNEN_OHNE_MIT_PV } from "../../../../lib/kostenrennen";
 import KostenrennenWidget from "../../../../components/charts/KostenrennenWidget";
 
 // Dünne Hülle: Theme + Flags. Das Rennen selbst (components/charts/
@@ -25,7 +25,7 @@ export default function KostenrennenEmbed() {
   });
 
   const prices = usePrices();
-  const varianten = useMemo(() => kostenrennenVarianten(undefined, { prices, feedIn: feedInRatesFor() }), [prices]);
+  const rennen = useMemo(() => kostenrennen(RENNEN_OHNE_MIT_PV, { prices, feedIn: feedInRatesFor() }), [prices]);
 
   return (
     <div
@@ -37,7 +37,7 @@ export default function KostenrennenEmbed() {
         margin: "0 auto",
       }}
     >
-      <KostenrennenWidget varianten={varianten} onsite={onsite} branding={showBranding} showEmbed={showEmbed} preiseStandIso={prices.validFrom} />
+      <KostenrennenWidget rennen={rennen} onsite={onsite} branding={showBranding} showEmbed={showEmbed} preiseStandIso={prices.validFrom} />
     </div>
   );
 }

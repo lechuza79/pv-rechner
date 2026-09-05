@@ -26,7 +26,7 @@ import { PERSONEN, NUTZUNG, SCENARIOS, SPEICHER, YEARS, NATIONAL_AVG_YIELD } fro
 import { pageMetadata } from "../../../../lib/seo";
 import Chart from "../../photovoltaik-rechner/_components/Chart";
 import KostenrennenWidget from "../../../../components/charts/KostenrennenWidget";
-import { kostenrennenVarianten } from "../../../../lib/kostenrennen-varianten";
+import { kostenrennen, RENNEN_OHNE_MIT_PV } from "../../../../lib/kostenrennen";
 
 // Figures on this page come live from the same models the calculator uses
 // (prices from Supabase market_prices with config fallback). ISR keeps them
@@ -608,17 +608,15 @@ export default async function LohntSichPvMitSpeicherPage() {
             einer Seite. ── */}
         <h2 id="kostenrennen" style={S.h2}>Das Rennen: Wann ist die Anlage bezahlt?</h2>
         <p style={S.p}>
-          Derselbe Beispielhaushalt mit zwei Anlagen — {EX.kwp} kWp ohne Speicher und mit
-          10 kWh Speicher. Die Linien zeichnen Monat für Monat, was jede Anlage eingebracht hat:
-          gesparte Stromrechnung plus Einspeisevergütung, im Sommer steil, im Winter flach. Wo
-          eine Linie ihre Anschaffung erreicht, ist die Anlage bezahlt — das ist ihre
-          Amortisation. Neben dem glatten Modell lässt sich das Rennen mit den echten
-          Sonnenjahren und den echten Strompreis-Sprüngen der Vergangenheit laufen lassen, als
-          Beispiel dafür, wie ruppig die Wirklichkeit gegen die glatte Kurve ist.
+          Derselbe Beispielhaushalt, einmal ohne und einmal mit der {EX.kwp}-kWp-Anlage. Die Linie
+          zeichnet Monat für Monat, was die Anlage eingebracht hat — gesparte Stromrechnung plus
+          Einspeisevergütung — und zwar mit dem Wetter, wie es in den letzten 25 Jahren wirklich
+          war: Kein Jahr gleicht dem anderen, ein trüber Mai bremst, ein Rekordsommer treibt. Wo
+          die Linie die Anschaffung erreicht, ist die Anlage bezahlt — das ist ihre Amortisation.
         </p>
         <div style={{ marginBottom: 24 }}>
           <KostenrennenWidget
-            varianten={kostenrennenVarianten(undefined, { prices, feedIn: DEFAULT_FEED_IN })}
+            rennen={kostenrennen(RENNEN_OHNE_MIT_PV, { prices, feedIn: DEFAULT_FEED_IN })}
             onsite
             branding={false}
             preiseStandIso={prices.validFrom}

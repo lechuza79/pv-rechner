@@ -125,13 +125,13 @@ const SECTIONS: WidgetSection[] = [
     id: "pv-kostenrennen",
     label: "Das Amortisations-Rennen",
     intro:
-      "Zwei Solaranlagen auf demselben Haus, 10 kWp ohne und mit Speicher, 25 Jahre lang: Die Linien zeichnen Monat für Monat, was jede Anlage eingebracht hat – im Sommer steil, im Winter flach – bis sie ihre Anschaffung erreicht. Wahlweise mit glattem Modell, mit den echten Sonnenjahren seit 2001 (DWD) oder den echten Strompreis-Sprüngen seit 2007 (Eurostat). Gerechnet mit denselben Annahmen und Marktpreisen wie unser PV-Rechner.",
+      "Ein Haushalt, mit und ohne Solaranlage, 25 Jahre lang: Die Linie zeichnet Monat für Monat, was die Anlage eingebracht hat, bis sie ihre Anschaffung erreicht – mit dem echten Wetter der letzten 25 Jahre (Deutscher Wetterdienst, Monatswerte), sodass kein Jahr dem anderen gleicht. Gerechnet mit denselben Annahmen und Marktpreisen wie unser PV-Rechner.",
     attribution: {
       path: "/ratgeber/lohnt-sich-pv-mit-speicher",
       text: "Wann ist die Solaranlage bezahlt? Das Amortisations-Rennen – Solar Check",
     },
     showFrameWidth: false,
-    variants: [{ id: "pv-kostenrennen", label: "Amortisations-Rennen", src: "/embed/pv-kostenrennen", height: 760, fixedWidth: 560 }],
+    variants: [{ id: "pv-kostenrennen", label: "Amortisations-Rennen", src: "/embed/pv-kostenrennen", height: 560, fixedWidth: 560 }],
   },
   {
     id: "strommix-anteil",
