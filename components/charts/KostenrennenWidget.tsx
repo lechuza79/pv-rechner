@@ -227,6 +227,27 @@ function KostenrennenCard({ varianten, onsite = false, branding = true, showEmbe
     .sort((a, b) => a.y - b.y);
   const spitzeDy = (i: number) => (spitzen.length === 1 ? 4 : i === 0 ? -6 : 13);
 
+  // ── Der Monatsstreifen: die Rechnung des jeweiligen Monats ───────────────
+  // In der Summe ist die Jahreszeit ein halbes Prozent (±60 € auf 14.000 €) —
+  // keine Achse macht das sichtbar, solange beide Kurven im Bild sind. In der
+  // MONATSRECHNUNG ist sie der ganze Ausschlag: ohne Anlage 90–130 €, mit
+  // Anlage im Winter rund 70 €, im Sommer unter null (Vergütung über der
+  // Rechnung). Fenster: die letzten 36 Monate, Balken je Haushalt.
+  const FENSTER = 36;
+  const monatskosten = (l: RennLaeufer, kk: number) => l.monatlich[kk] - l.monatlich[kk - 1];
+  const kEnde = Math.max(1, k);
+  const kStart = Math.max(1, kEnde - FENSTER + 1);
+  const fensterWerte = rennen.laeufer.flatMap((l) => Array.from({ length: kEnde - kStart + 1 }, (_, i) => monatskosten(l, kStart + i)));
+  const sMax = niceMax(Math.max(100, ...fensterWerte));
+  const sMin = Math.min(0, ...fensterWerte) < 0 ? -niceMax(Math.max(20, -Math.min(...fensterWerte))) : 0;
+  const HS = narrow ? 120 : 130, PS = { t: 10, b: 18 };
+  const sH = HS - PS.t - PS.b;
+  const sY = (wert: number) => r2(PS.t + ((sMax - wert) / (sMax - sMin)) * sH);
+  const sZero = sY(0);
+  const slotW = cW / FENSTER;
+  const barW = Math.max(2, (slotW - 2) / rennen.laeufer.length);
+  const sX = (kk: number, li: number) => r2(P.l + (kk - (kEnde - FENSTER + 1)) * slotW + 1 + li * barW);
+
   const pvLaeufer = rennen.laeufer.filter((l) => l.hatPv);
   const ueberholMonat = pvLaeufer.length === 1 ? rennen.ueberholMonat[pvLaeufer[0].key] : null;
   const kreuzungSichtbar = ueberholMonat !== null && t >= ueberholMonat;
@@ -397,6 +418,45 @@ function KostenrennenCard({ varianten, onsite = false, branding = true, showEmbe
             </span>
           ))}
         </div>
+
+        {/* Monatsrechnung: derselbe Zeitläufer, andere Größe — hier sieht man den Winter. */}
+        <div style={{ display: "flex", alignItems: "center", gap: space.xs, marginTop: space.lg, marginBottom: space.xxs }}>
+          <span style={lblStyle}>Stromrechnung im Monat</span>
+          <InfoTooltip title="Die Rechnung des Monats" ariaLabel="Was die Monatsrechnung zeigt">
+            Was jeder Haushalt in diesem Monat für Strom zahlt — beim PV-Haushalt die Restrechnung minus Einspeisevergütung.
+            Ein Balken unter null heißt: Die Vergütung war höher als die Rechnung. Gezeigt werden die letzten 36 Monate; hier
+            ist der Winter sichtbar, der in der Summe oben untergeht.
+          </InfoTooltip>
+        </div>
+        <svg viewBox={`0 0 ${W} ${HS}`} style={{ width: "100%", height: "auto", display: "block" }} role="img"
+          aria-label={`Stromrechnung je Monat, letzte ${FENSTER} Monate bis ${stand}: ${k === 0 ? "noch keine" : rennen.laeufer.map((l) => `${l.kurz} ${fmtEuroVoll(monatskosten(l, kEnde))}`).join(", ")}`}>
+          <text x={P.l - 6} y={sY(sMax) + 3} textAnchor="end" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{fmtEuroVoll(sMax)}</text>
+          {sMin < 0 && (
+            <text x={P.l - 6} y={sY(sMin) + 3} textAnchor="end" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{fmtEuroVoll(sMin)}</text>
+          )}
+          <line x1={P.l} x2={P.l + cW} y1={sZero} y2={sZero} stroke="var(--color-chart-zero)" strokeWidth={1} />
+          {k > 0 && Array.from({ length: kEnde - kStart + 1 }, (_, i) => kStart + i).map((kk) => (
+            <g key={kk}>
+              {rennen.laeufer.map((l, li) => {
+                const wert = monatskosten(l, kk);
+                const y1 = sY(Math.max(0, wert)), y2 = sY(Math.min(0, wert));
+                return <rect key={l.key} x={sX(kk, li)} y={y1} width={r2(barW - 0.6)} height={r2(Math.max(0.5, y2 - y1))} fill={farbe(l.key)} opacity={kk === kEnde ? 1 : 0.75} />;
+              })}
+              {/* Januar-Marken als Jahresbeschriftung */}
+              {(kk - 1) % 12 === 0 && (
+                <text x={sX(kk, 0)} y={HS - 4} textAnchor="start" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
+                  {rennen.startJahr + Math.ceil(kk / 12)}
+                </text>
+              )}
+            </g>
+          ))}
+          {/* Aktuelle Monatswerte rechts, je Haushalt in seiner Farbe */}
+          {k > 0 && rennen.laeufer.map((l, li) => (
+            <text key={l.key} x={P.l + cW + 8} y={PS.t + 10 + li * 14} textAnchor="start" fontSize={fsPx("--font-size-caption")} fontWeight={800} fill={farbe(l.key)} fontFamily="var(--font-mono)">
+              {fmtEuroVoll(monatskosten(l, kEnde))}
+            </text>
+          ))}
+        </svg>
 
         {status && (
           <div style={{ marginTop: space.lg, fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.5, minHeight: 36 }}>
