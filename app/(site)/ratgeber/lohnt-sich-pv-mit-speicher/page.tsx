@@ -26,7 +26,7 @@ import { PERSONEN, NUTZUNG, SCENARIOS, SPEICHER, YEARS, NATIONAL_AVG_YIELD } fro
 import { pageMetadata } from "../../../../lib/seo";
 import Chart from "../../photovoltaik-rechner/_components/Chart";
 import KostenrennenWidget from "../../../../components/charts/KostenrennenWidget";
-import { kostenrennen, RENNEN_OHNE_MIT_PV } from "../../../../lib/kostenrennen";
+import { kostenrennenVarianten } from "../../../../lib/kostenrennen-varianten";
 
 // Figures on this page come live from the same models the calculator uses
 // (prices from Supabase market_prices with config fallback). ISR keeps them
@@ -612,11 +612,13 @@ export default async function LohntSichPvMitSpeicherPage() {
           sich die {EX.kwp}-kWp-Anlage ohne Speicher aufs Dach. Wer hat nach einem, nach zehn,
           nach {YEARS} Jahren mehr für Strom ausgegeben? Der PV-Haushalt startet mit der
           Anschaffung oben; wo die Linie des anderen seine kreuzt, ist die Anlage bezahlt —
-          das ist seine Amortisation.
+          das ist seine Amortisation. Neben dem glatten Modell lässt sich das Rennen mit den
+          echten Sonnenjahren und den echten Strompreis-Sprüngen der Vergangenheit laufen
+          lassen — als Beispiel dafür, wie ruppig die Wirklichkeit gegen die glatte Kurve ist.
         </p>
         <div style={{ marginBottom: 24 }}>
           <KostenrennenWidget
-            rennen={kostenrennen(RENNEN_OHNE_MIT_PV, { prices, feedIn: DEFAULT_FEED_IN })}
+            varianten={kostenrennenVarianten(undefined, { prices, feedIn: DEFAULT_FEED_IN })}
             onsite
             branding={false}
             preiseStandIso={prices.validFrom}

@@ -15,7 +15,7 @@
 // Läufer — nicht weitere Rechenwege.
 
 import { PERSONEN, YEARS, YEAR, NATIONAL_AVG_YIELD, CONSUMPTION_MONTHLY } from "./constants";
-import { calc, calcEigenverbrauch, calcWeightedFeedIn, estimateCost, batteryReplaceCost } from "./calc";
+import { calc, calcEigenverbrauch, calcWeightedFeedIn, estimateCost, batteryReplaceCost, type JahresVerlauf } from "./calc";
 import { calcExtraConsumption } from "./consumption";
 import { monthlyFromAnnual } from "./balkon-sim";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
@@ -54,6 +54,14 @@ export interface RennParameter {
    * Verteilung über das Jahr.
    */
   monatsprofil?: number[];
+  /**
+   * Jahresweise Abweichungen vom glatten Modell (Preispfad, Wetterjahre) —
+   * dieselbe Struktur, die calc() nimmt, damit Anlage UND Referenzhaushalt
+   * denselben Strompreis eines Jahres sehen. Ohne Angabe: glattes Modell.
+   */
+  verlauf?: JahresVerlauf;
+  /** Klartext für die Annahmen-Zeile, wenn `verlauf` gesetzt ist. */
+  verlaufText?: { preis?: string; wetter?: string };
 }
 
 export interface RennLaeufer {
@@ -104,6 +112,10 @@ export interface Kostenrennen {
     steigerungPct: number;
     ertragKwp: number;
     einspeisungCt: number;
+    /** Wie sich der Strompreis entwickelt — ein Satz, der zur Rechnung passt. */
+    preis: string;
+    /** Wie der Ertrag über die Jahre verteilt ist — ein Satz, der zur Rechnung passt. */
+    wetter: string;
   };
 }
 
@@ -141,6 +153,7 @@ export function kostenrennen(haushalte: RennHaushalt[], p: RennParameter = {}): 
   const ertragKwp = p.ertragKwp ?? NATIONAL_AVG_YIELD;
   const steigerung = p.stromSteigerung ?? prices.electricityIncrease;
   const strompreis = prices.electricityPrice;
+  const preisImJahr = (i: number) => p.verlauf?.strompreisImJahr?.(i) ?? strompreis * Math.pow(1 + steigerung, i);
 
   const referenz = haushalte.find((h) => h.kwp <= 0);
   if (!referenz) throw new Error("Kostenrennen braucht einen Haushalt ohne Anlage als Referenz");
@@ -159,7 +172,7 @@ export function kostenrennen(haushalte: RennHaushalt[], p: RennParameter = {}): 
     for (let k = 1; k <= M; k++) {
       const i = Math.ceil(k / 12);
       const m = (k - 1) % 12;
-      ohneMonat.push(ohneMonat[k - 1] + verbrauchKwh * cAnteil[m] * strompreis * Math.pow(1 + steigerung, i));
+      ohneMonat.push(ohneMonat[k - 1] + verbrauchKwh * cAnteil[m] * preisImJahr(i));
     }
     const jahreswerte = (monat: number[]) => Array.from({ length: YEARS + 1 }, (_, i) => Math.round(monat[12 * i]));
     if (h.kwp <= 0) {
@@ -181,6 +194,7 @@ export function kostenrennen(haushalte: RennHaushalt[], p: RennParameter = {}): 
       kwp: h.kwp, kosten, strompreis, eigenverbrauch: ev, einspeisung,
       stromSteigerung: steigerung, ertragKwp, monthly: monatsprofil,
       batteryReplace: h.speicherKwh > 0 ? batteryReplaceCost(h.speicherKwh, prices) : 0,
+      verlauf: p.verlauf,
     });
     if (!ergebnis.monate) throw new Error("calc() lieferte kein Monatsprofil");
     // Kosten mit Anlage = Kosten ohne Anlage − kumulierter Nutzen der Anlage.
@@ -227,6 +241,8 @@ export function kostenrennen(haushalte: RennHaushalt[], p: RennParameter = {}): 
       steigerungPct: Math.round(steigerung * 1000) / 10,
       ertragKwp,
       einspeisungCt: Math.round(calcWeightedFeedIn(pvKwp, feedIn.teilUnder10, feedIn.teilOver10, feedIn.thresholdKwp) * 100) / 100,
+      preis: p.verlaufText?.preis ?? `Anstieg ${(Math.round(steigerung * 1000) / 10).toLocaleString("de-DE")} % pro Jahr`,
+      wetter: p.verlaufText?.wetter ?? "jedes Jahr der gleiche Ertrag (Referenzjahr), nur die Alterung der Module zieht ab",
     },
   };
 }

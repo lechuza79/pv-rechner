@@ -128,6 +128,20 @@ export const DATA_SOURCES = {
     // Kühlgradstunden — das ist eine Ableitung, keine Weitergabe.
     note: "abgeleitet",
   },
+  /**
+   * Jahresraster der Globalstrahlung, Deutscher Wetterdienst (CDC-OpenData).
+   * CC BY 4.0 laut Nutzungsbedingungen des CDC-OpenData-Bereichs (Stand Mai
+   * 2024, https://opendata.dwd.de/climate_environment/CDC/Nutzungsbedingungen_German.pdf).
+   * Wir rechnen aus dem 1-km-Raster ein Gebietsmittel je Jahr
+   * (scripts/dwd-strahlung-sync.ts) — eine Ableitung, daher der Hinweis.
+   */
+  dwd: {
+    name: "Deutscher Wetterdienst (CDC)",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    url: "https://opendata.dwd.de/climate_environment/CDC/",
+    note: "Gebietsmittel abgeleitet",
+  },
   /** Location-based PV yield model. */
   pvgis: {
     name: "PVGIS (Europäische Kommission)",

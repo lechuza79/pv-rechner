@@ -18,7 +18,8 @@ import { WIDGETS } from "../../lib/widget-registry";
 import { v, fsPx, space } from "../../lib/theme";
 import { fmtEuroVoll, formatDataAsOf } from "../../lib/atlas-format";
 import { PERSONEN } from "../../lib/constants";
-import type { Kostenrennen, RennLaeufer } from "../../lib/kostenrennen";
+import type { RennLaeufer } from "../../lib/kostenrennen";
+import type { RennVariante } from "../../lib/kostenrennen-varianten";
 
 // Das Stromkosten-Rennen: eine Linie je Haushalt, die sich Jahr für Jahr über
 // die Zeitachse zeichnet — kumulierte Stromausgaben, am Ende jeder Linie der
@@ -31,6 +32,13 @@ import type { Kostenrennen, RennLaeufer } from "../../lib/kostenrennen";
 // steht unter /embed/pv-kostenrennen und direkt gerendert im Ratgeber (onsite).
 // Alles Interaktive (Abspielen, Schieberegler) trägt data-sc-export-ignore; das
 // Bild zeigt den gerade eingestellten Stand.
+//
+// Die Achsen LAUFEN MIT (wie bei einem Bar-Chart-Race): Die x-Achse reicht
+// immer genau bis heute, die y-Achse bis knapp über den höchsten sichtbaren
+// Wert. Am Anfang füllt so das erste Jahr das ganze Bild und der Sägezahn der
+// Monate ist groß, später zoomt das Bild heraus und die Kurven werden zu dem,
+// was sie über 25 Jahre sind. Feste Achsen zeigten dieselben Daten, aber die
+// Jahresbewegung war am Anfang ein Strich am Boden.
 //
 // Die Zeit läuft als Gleitkommazahl `t` (in MONATEN) über requestAnimationFrame:
 // Die Kurve zeichnet sich gleichmäßig, und die Monatsauflösung zeigt den
@@ -74,7 +82,8 @@ function wertBei(l: RennLaeufer, t: number): number {
 }
 
 interface Props {
-  rennen: Kostenrennen;
+  /** Die Aufstellungen (Modell, Wetterjahre, Preissprünge) — mindestens eine. */
+  varianten: RennVariante[];
   onsite?: boolean;
   branding?: boolean;
   showEmbed?: boolean;
@@ -92,7 +101,10 @@ export default function KostenrennenWidget(props: Props) {
   );
 }
 
-function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed = false, autoplay = true, preiseStandIso }: Props) {
+function KostenrennenCard({ varianten, onsite = false, branding = true, showEmbed = false, autoplay = true, preiseStandIso }: Props) {
+  const [aktiv, setAktiv] = useState(0);
+  const variante = varianten[Math.min(aktiv, varianten.length - 1)];
+  const rennen = variante.rennen;
   const [t, setT] = useState(0);
   const [spielt, setSpielt] = useState(false);
   const [narrow, setNarrow] = useState(false);
@@ -170,27 +182,43 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
 
   const { chartRef, downloadPng, sharePng, shareWhatsApp, shareTwitter, isExporting, canNativeShare } =
     useChartExport({
-      context: { title: `${WIDGETS.kostenrennen.title} — ${stand}` },
+      context: { title: `${WIDGETS.kostenrennen.title} — ${variante.label} — ${stand}` },
       filename: "stromkosten-rennen-pv",
       shareText: WIDGETS.kostenrennen.shareText,
       shareUrl: WIDGETS.kostenrennen.shareUrl,
       mode: "node",
     });
 
-  // ── Chart-Geometrie ──────────────────────────────────────────────────────
-  // Die Achsen stehen von Anfang an fest (Endwert-Maximum): Die Linien laufen
-  // in ein fertiges Bild hinein, statt dass die Skala unter ihnen mitwächst.
+  // ── Chart-Geometrie: mitlaufende Achsen ──────────────────────────────────
+  // x reicht bis heute (mindestens ein Jahr, damit der Start nicht leer ist),
+  // y bis knapp über den höchsten Wert, der bis heute vorkam. Beide werden je
+  // Bild neu bestimmt — deshalb keine CSS-Übergänge, alles folgt `t`.
   const W = narrow ? 320 : 640, H = narrow ? 230 : 300;
   const P = { t: 18, r: narrow ? 74 : 96, b: 28, l: narrow ? 46 : 58 };
   const cW = W - P.l - P.r, cH = H - P.t - P.b;
   const y0 = P.t + cH;
-  const yMax = niceMax(Math.max(...rennen.laeufer.map((l) => Math.max(...l.monatlich))));
-  const xL = (monatIdx: number) => r2(P.l + (monatIdx / M) * cW);
+  const xEnd = Math.max(12, t);
+  const bisIdx = Math.min(M, Math.ceil(t));
+  const sichtbarMax = Math.max(1, ...rennen.laeufer.map((l) => Math.max(...l.monatlich.slice(0, bisIdx + 1))));
+  const yMax = niceMax(sichtbarMax * 1.12);
+  const xL = (monatIdx: number) => r2(P.l + (Math.min(monatIdx, xEnd) / xEnd) * cW);
   const yL = (wert: number) => r2(y0 - (Math.max(0, wert) / yMax) * cH);
   const yTicks = [1, 2, 3, 4].map((q) => (yMax / 4) * q);
-  const xJahre = [0, Math.round(N / 2), N];
-  const clipId = `kr-clip-${rennen.referenzKey}-${M}`;
-  const clipBreite = r2(Math.max(0.01, xL(t) - P.l));
+  // Jahresmarken: so viele, wie ohne Gedränge in die sichtbare Spanne passen.
+  const jahreSichtbar = xEnd / 12;
+  // Schmal: weniger Marken — „2026 2028" stießen bei 320 px zusammen.
+  const xSchritt = narrow
+    ? (jahreSichtbar <= 3 ? 1 : jahreSichtbar <= 10 ? 3 : 5)
+    : (jahreSichtbar <= 6 ? 1 : jahreSichtbar <= 13 ? 2 : 5);
+  const xJahre: number[] = [];
+  for (let j = 0; j <= Math.floor(xEnd / 12); j += xSchritt) xJahre.push(j);
+  // Die Linie bis heute: alle Monatspunkte bis zum letzten ganzen Monat plus
+  // die interpolierte Spitze — nichts hinter „heute" wird gezeichnet.
+  const pfad = (l: RennLaeufer) => {
+    const pts = l.monatlich.slice(0, Math.floor(t) + 1).map((wert, i) => `${xL(i)},${yL(wert)}`);
+    if (t > Math.floor(t)) pts.push(`${xL(t)},${yL(wertBei(l, t))}`);
+    return pts.join(" ");
+  };
 
   // Spitzen (aktueller Punkt jeder Linie), von oben nach unten sortiert, damit
   // die Beschriftungen einander ausweichen: höhere Linie oben, tiefere unten.
@@ -254,10 +282,33 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
             {haushalt.label} Personen mit {haushalt.verbrauch.toLocaleString("de-DE")} kWh Jahresverbrauch, teils im Homeoffice.
             Die Anlage: {pvLaeufer.map((l) => `${l.kwp} kWp${l.speicherKwh > 0 ? ` mit ${l.speicherKwh} kWh Speicher` : " ohne Speicher"}`).join(", ")},
             Ertrag {rennen.annahmen.ertragKwp.toLocaleString("de-DE")} kWh je kWp (deutscher Schnitt bei optimaler Ausrichtung), Teileinspeisung zu{" "}
-            {rennen.annahmen.einspeisungCt.toLocaleString("de-DE")} ct/kWh über 20 Jahre. Strompreis {rennen.annahmen.strompreisCt.toLocaleString("de-DE")} ct/kWh,
-            Anstieg {rennen.annahmen.steigerungPct.toLocaleString("de-DE")} % pro Jahr — Näherungswerte ohne Gewähr.
+            {rennen.annahmen.einspeisungCt.toLocaleString("de-DE")} ct/kWh über 20 Jahre. Strompreis heute {rennen.annahmen.strompreisCt.toLocaleString("de-DE")} ct/kWh,
+            {" "}{rennen.annahmen.preis}. Ertrag über die Jahre: {rennen.annahmen.wetter} — Näherungswerte ohne Gewähr.
           </InfoTooltip>
         </span>
+      </div>
+
+      {/* Aufstellung wählen — Umschalter nur auf der Seite; im Bild steht die
+          gewählte Aufstellung als Zeile, sonst zeigte das Bild eine Wahl, die
+          niemand kennt. */}
+      {varianten.length > 1 && (
+        <div {...{ [EXPORT_IGNORE_ATTR]: "" }} role="tablist" aria-label="Aufstellung" style={{ display: "flex", borderRadius: v("--radius-md"), border: `1px solid ${v("--color-border")}`, overflow: "hidden", marginBottom: space.md }}>
+          {varianten.map((vr, i) => {
+            const on = i === aktiv;
+            return (
+              <button key={vr.key} type="button" role="tab" aria-selected={on} onClick={() => setAktiv(i)}
+                style={{ flex: 1, padding: `${space.md}px ${space.sm}px`, cursor: "pointer", textAlign: "center", background: on ? v("--color-accent-dim") : "transparent", border: "none", borderBottom: `2px solid ${on ? v("--color-accent") : "transparent"}` }}>
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: on ? v("--color-accent") : v("--color-text-muted"), whiteSpace: "nowrap" }}>{narrow ? vr.kurz : vr.label}</div>
+              </button>
+            );
+          })}
+        </div>
+      )}
+      <ExportOnly style={{ marginBottom: space.xs }}>
+        <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary") }}>Aufstellung: {variante.label}</span>
+      </ExportOnly>
+      <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-secondary"), lineHeight: 1.5, marginBottom: space.md }}>
+        {variante.erklaerung}
       </div>
 
       {/* Jahr + Zustand */}
@@ -280,12 +331,6 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
 
         <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }} role="img"
           aria-label={`Kumulierte Stromkosten ${rennen.startJahr} bis ${stand}: ${rennen.laeufer.map((l) => `${l.label} ${fmtEuroVoll(l.monatlich[k])}`).join(", ")}`}>
-          <defs>
-            <clipPath id={clipId}>
-              <rect x={P.l} y={0} width={clipBreite} height={H} />
-            </clipPath>
-          </defs>
-
           {/* Raster + Skala. Die Skala steht dauerhaft: Ohne Überfahren (Bild,
               Telefon) gäbe es sonst keine Größenordnung. */}
           {yTicks.map((val) => (
@@ -298,9 +343,10 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           ))}
           <line x1={P.l} x2={P.l + cW} y1={y0} y2={y0} stroke="var(--color-chart-zero)" strokeWidth={1} />
           {xJahre.map((ji, i) => {
-            const last = i === xJahre.length - 1;
+            const x = xL(ji * 12);
+            const amRand = x > P.l + cW - 14;
             return (
-              <text key={ji} x={xL(ji * 12)} y={y0 + 18} textAnchor={i === 0 ? "start" : last ? "end" : "middle"} fontSize={fsPx("--font-size-small")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
+              <text key={ji} x={x} y={y0 + 18} textAnchor={i === 0 ? "start" : amRand ? "end" : "middle"} fontSize={fsPx("--font-size-small")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
                 {rennen.startJahr + ji}
               </text>
             );
@@ -316,20 +362,18 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
             </g>
           )}
 
-          {/* Die Linien, freigelegt bis zur aktuellen Zeit. */}
-          <g clipPath={`url(#${clipId})`}>
-            {rennen.laeufer.map((l) => (
-              <polyline
-                key={l.key}
-                points={l.monatlich.map((wert, i) => `${xL(i)},${yL(wert)}`).join(" ")}
-                fill="none"
-                stroke={farbe(l.key)}
-                strokeWidth={l.hatPv ? 3 : 2.5}
-                strokeLinejoin="round"
-                strokeLinecap="round"
-              />
-            ))}
-          </g>
+          {/* Die Linien bis heute. */}
+          {rennen.laeufer.map((l) => (
+            <polyline
+              key={l.key}
+              points={pfad(l)}
+              fill="none"
+              stroke={farbe(l.key)}
+              strokeWidth={l.hatPv ? 3 : 2.5}
+              strokeLinejoin="round"
+              strokeLinecap="round"
+            />
+          ))}
 
           {/* Spitzen mit Betrag */}
           {spitzen.map(({ l, wert, y }, i) => (

@@ -124,6 +124,15 @@ test.describe("Stromkosten-Rennen", () => {
     const kante = page.locator('[title^="Quelle:"]');
     await expect(kante).toHaveCount(1);
     await expect(kante).toContainText("PVGIS");
+    // Drei Aufstellungen; die gewählte steht im Bild als Zeile, weil der
+    // Umschalter dort fehlt. Umschalten ändert genau diese Zeile.
+    const tabs = page.getByRole("tab");
+    await expect(tabs).toHaveCount(3);
+    await expect(exportOnly.filter({ hasText: "Aufstellung:" })).toContainText("Glattes Modell");
+    await tabs.nth(1).click();
+    await expect(exportOnly.filter({ hasText: "Aufstellung:" })).toContainText("Wetter wie");
+    await expect(kante).toContainText("Deutscher Wetterdienst");
+    await tabs.nth(0).click();
 
     const downloadPromise = page.waitForEvent("download");
     await page.getByTitle("Als Bild herunterladen").click();

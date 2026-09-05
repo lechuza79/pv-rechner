@@ -119,8 +119,10 @@ export const WIDGETS = {
     shareUrl: `${SITE}/ratgeber/lohnt-sich-pv-mit-speicher#kostenrennen`,
     shareText: "Mit oder ohne PV: Wer hat nach 25 Jahren mehr für Strom bezahlt? – Solar Check",
     // Der Standort-Ertrag ist der PVGIS-Bundesschnitt; Preise und Vergütung
-    // sind unsere gepflegten Stichtagswerte (siehe /datenstand).
-    sources: [DATA_SOURCES.pvgis],
+    // sind unsere gepflegten Stichtagswerte (siehe /datenstand). Die
+    // Aufstellungen „Wetterjahre" und „Preissprünge" wiederholen die
+    // DWD-Strahlungsreihe bzw. die Eurostat-Preisreihe.
+    sources: [DATA_SOURCES.pvgis, DATA_SOURCES.dwd, DATA_SOURCES.eurostat],
     cta: { label: "Für dein Haus durchrechnen", href: "/photovoltaik-rechner" },
   },
   gruengasHeizkosten: {

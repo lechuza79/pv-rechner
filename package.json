@@ -33,6 +33,7 @@
     "geo:umrisse": "tsx scripts/bundesland-umrisse.ts",
     "ratgeber:livedatum": "tsx scripts/ratgeber-livedatum.ts",
     "laender:sync": "tsx scripts/ember-laender-sync.ts",
+    "strahlung:sync": "tsx scripts/dwd-strahlung-sync.ts",
     "foerder:serp": "tsx scripts/funding-serp-test.ts",
     "fachbetriebe": "tsx scripts/fachbetriebe-refresh.ts",
     "foerder:verlauf-bereinigen": "tsx scripts/funding-history-bereinigen.ts",

@@ -18,6 +18,7 @@ const VERWENDUNG: Record<keyof typeof DATA_SOURCES, string> = {
   ember: "Ländervergleich: Zubau von Erneuerbaren und Atomkraft",
   mastr: "Anlagenbestand in Deutschland (Solar-Atlas, Karten, Kennzahlen)",
   openMeteo: "Wetterdaten der Live-Simulation und der Kühlgradstunden",
+  dwd: "Sonneneinstrahlung je Jahr seit 1991 — die Wetterjahre im Stromkosten-Rennen",
   pvgis: "Standortabhängiger Solarertrag je Kilowatt-Peak",
   eurostat: "Haushaltsstrompreise im europäischen Vergleich",
   eegVerguetung: "Gesetzliche Einspeisevergütung seit dem Jahr 2000",

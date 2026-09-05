@@ -1,0 +1,73 @@
+name: Strahlungsjahre (DWD)
+
+# Holt die DWD-Jahresraster der Globalstrahlung und schreibt das Gebietsmittel
+# je Jahr neu (scripts/dwd-strahlung-sync.ts, lib/strahlungsjahre.ts). Der DWD
+# ergänzt das abgeschlossene Jahr Mitte Januar; ohne diesen Lauf bliebe die
+# Reihe beim Jahr ihres Anlegens stehen — und der Test
+# lib/__tests__/kostenrennen-varianten.test.ts wird ab Februar rot.
+#
+# Ohne Rückfrage committen darf der Lauf aus denselben Gründen wie der
+# Ember-Sync: Leitquelle ist der Datensatz selbst, zurückliegende Jahre werden
+# neu gerechnet und gegen den bisherigen Stand gehalten (Abbruch ab 30 %),
+# und die Reihe hängt an Tests (Lückenlosigkeit, Plausibilitätsband, Frische).
+#
+# Zeitpunkt: am 20. Januar und, falls der DWD später liefert, am 20. Februar.
+
+on:
+  schedule:
+    - cron: "0 5 20 1,2 *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: strahlung-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Raster holen und Reihe schreiben
+        run: npm run strahlung:sync
+
+      - name: Hat sich etwas geändert?
+        id: diff
+        run: |
+          if git diff --quiet -- lib/strahlungsjahre.ts; then
+            echo "geaendert=nein" >> "$GITHUB_OUTPUT"
+            echo "Keine neuen Werte."
+          else
+            echo "geaendert=ja" >> "$GITHUB_OUTPUT"
+            git diff --stat -- lib/strahlungsjahre.ts
+          fi
+
+      - name: Typen und Tests
+        if: steps.diff.outputs.geaendert == 'ja'
+        run: |
+          npx tsc --noEmit
+          npx vitest run
+
+      - name: Committen
+        if: steps.diff.outputs.geaendert == 'ja'
+        run: |
+          git config user.name "solar-check strahlung-sync"
+          git config user.email "noreply@solar-check.io"
+          git add lib/strahlungsjahre.ts
+          git commit -m "[auto] Strahlungsjahre: neuer Stand aus den DWD-Jahresrastern
+
+          Erzeugt von scripts/dwd-strahlung-sync.ts. Zurueckliegende Jahre wurden
+          gegen den bisherigen Stand geprueft (Abbruch ab 30 % Abweichung), die
+          Tests sind gruen."
+          git push

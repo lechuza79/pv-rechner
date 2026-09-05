@@ -365,7 +365,19 @@ export interface EinspeiseModell {
   einspeiseAnteil?: number;
 }
 
-export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, stromSteigerung, ertragKwp, monthly, batteryReplace = 0, einspeiseModell }: { kwp: number; kosten: number; strompreis: number; eigenverbrauch: number; einspeisung: number; stromSteigerung: number; ertragKwp: number; monthly: number[] | null; batteryReplace?: number; einspeiseModell?: EinspeiseModell }) {
+/**
+ * Jahresweise Abweichungen vom glatten Modell — beide optional, beide nur für
+ * Szenarien, die einen VERLAUF nachzeichnen (Stromkosten-Rennen: historischer
+ * Preispfad, Wetterjahre). Ohne sie rechnet calc() wie immer.
+ */
+export interface JahresVerlauf {
+  /** Strompreis €/kWh im Jahr i (1-basiert); ersetzt strompreis × (1 + Steigerung)^i. */
+  strompreisImJahr?: (i: number) => number;
+  /** Faktor auf den Ertrag im Jahr i (1-basiert), z. B. 1,08 für ein sonniges Jahr; multipliziert die Degradation. */
+  ertragsfaktorImJahr?: (i: number) => number;
+}
+
+export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, stromSteigerung, ertragKwp, monthly, batteryReplace = 0, einspeiseModell, verlauf }: { kwp: number; kosten: number; strompreis: number; eigenverbrauch: number; einspeisung: number; stromSteigerung: number; ertragKwp: number; monthly: number[] | null; batteryReplace?: number; einspeiseModell?: EinspeiseModell; verlauf?: JahresVerlauf }) {
   const years: { year: number; i: number; kum: number; j: number }[] = [];
   // Monatlicher Nutzen (Jahr 1 Monat 1 … Jahr YEARS Monat 12), nur wenn ein
   // Monatsprofil vorliegt — sonst gäbe es nichts, was einen Monat vom anderen
@@ -381,8 +393,8 @@ export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, str
   for (let i = 0; i <= YEARS; i++) {
     let j = 0;
     if (i > 0) {
-      const deg = Math.pow(1 - DEGRAD, i);
-      const sp = strompreis * Math.pow(1 + stromSteigerung, i);
+      const deg = Math.pow(1 - DEGRAD, i) * (verlauf?.ertragsfaktorImJahr?.(i) ?? 1);
+      const sp = verlauf?.strompreisImJahr?.(i) ?? strompreis * Math.pow(1 + stromSteigerung, i);
       // EEG-Einspeisevergütung nur die ersten 20 Jahre; danach fällt die Anlage
       // aus dem EEG (Marktwert konservativ nicht angesetzt). Der Eigenverbrauch
       // spart den Strompreis auch danach weiter. Liegt ein Einspeisemodell vor,
