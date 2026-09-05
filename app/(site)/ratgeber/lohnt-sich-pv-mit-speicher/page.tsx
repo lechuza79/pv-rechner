@@ -25,6 +25,8 @@ import { simulatePvYear } from "../../../../lib/pv-sim";
 import { PERSONEN, NUTZUNG, SCENARIOS, SPEICHER, YEARS, NATIONAL_AVG_YIELD } from "../../../../lib/constants";
 import { pageMetadata } from "../../../../lib/seo";
 import Chart from "../../photovoltaik-rechner/_components/Chart";
+import KostenrennenWidget from "../../../../components/charts/KostenrennenWidget";
+import { kostenrennen, RENNEN_OHNE_MIT_PV } from "../../../../lib/kostenrennen";
 
 // Figures on this page come live from the same models the calculator uses
 // (prices from Supabase market_prices with config fallback). ISR keeps them
@@ -422,7 +424,7 @@ export default async function LohntSichPvMitSpeicherPage() {
           description="Wann sich ein Batteriespeicher zur PV-Anlage rechnet — und wann nicht."
           path="/ratgeber/lohnt-sich-pv-mit-speicher"
           published="2026-07-19"
-          modified="2026-07-26"
+          modified="2026-09-05"
         />
 
         {/* ── Kurzantwort ── */}
@@ -596,6 +598,28 @@ export default async function LohntSichPvMitSpeicherPage() {
             <Link href="/methodik" style={S.link}>Methodik-Seite</Link>, alle Preisannahmen
             auf der <Link href="/datenstand" style={S.link}>Datenstand-Seite</Link>.
           </span>
+        </div>
+
+        {/* ── Das Rennen: derselbe Haushalt (EX) ohne und mit Anlage, animiert
+            über 25 Jahre. Dasselbe Bauteil wie unter /embed/pv-kostenrennen;
+            hier direkt gerendert (onsite: keine Marke, Quelle beim Überfahren —
+            die Seite kreditiert zentral). Die Preise sind dieselben wie in der
+            Beispielrechnung darüber, sonst widersprächen sich zwei Zahlen auf
+            einer Seite. ── */}
+        <h2 id="kostenrennen" style={S.h2}>Das Rennen: mit oder ohne Anlage?</h2>
+        <p style={S.p}>
+          Derselbe Beispielhaushalt zweimal — einmal bleibt er beim Netzstrom, einmal legt er
+          sich die {EX.kwp}-kWp-Anlage ohne Speicher aufs Dach. Wer hat nach einem, nach zehn,
+          nach {YEARS} Jahren mehr für Strom ausgegeben? Der PV-Haushalt startet mit der
+          Anschaffung vorn; das Jahr, in dem er überholt wird, ist seine Amortisation.
+        </p>
+        <div style={{ marginBottom: 24 }}>
+          <KostenrennenWidget
+            rennen={kostenrennen(RENNEN_OHNE_MIT_PV, { prices, feedIn: DEFAULT_FEED_IN })}
+            onsite
+            branding={false}
+            preiseStandIso={prices.validFrom}
+          />
         </div>
 
         {/* ── Wann ja / wann nein (zwei Listen nebeneinander) ── */}

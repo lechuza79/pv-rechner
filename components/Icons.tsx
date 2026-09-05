@@ -360,3 +360,20 @@ export function IconGoogle({ size = 16, style }: { size?: number; style?: React.
     </svg>
   );
 }
+
+export function IconPlay({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M4.5 2.8v10.4c0 .6.65.97 1.16.66l8.2-5.2a.78.78 0 0 0 0-1.32l-8.2-5.2A.78.78 0 0 0 4.5 2.8Z" fill={color} />
+    </svg>
+  );
+}
+
+export function IconPause({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <rect x="3.5" y="2.5" width="3.4" height="11" rx="1" fill={color} />
+      <rect x="9.1" y="2.5" width="3.4" height="11" rx="1" fill={color} />
+    </svg>
+  );
+}

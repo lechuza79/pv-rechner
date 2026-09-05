@@ -115,6 +115,7 @@ export const EMBED_WIDGETS = [
   "gruengas-heizkosten",
   "karte",
   "kennzahl",
+  "pv-kostenrennen",
   "pv-zubau-deutschland",
   "region-anlagentyp",
   "region-solarleistung",

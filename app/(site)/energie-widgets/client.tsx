@@ -122,6 +122,18 @@ const SECTIONS: WidgetSection[] = [
     ],
   },
   {
+    id: "pv-kostenrennen",
+    label: "Das Stromkosten-Rennen",
+    intro:
+      "Zwei gleiche Haushalte, 25 Jahre: einer ohne, einer mit PV-Anlage. Die Balken laufen animiert durch die Jahre und zeigen, wer bis dahin mehr für Strom bezahlt hat – und in welchem Jahr sich die Anlage bezahlt gemacht hat. Gerechnet mit denselben Annahmen und Marktpreisen wie unser PV-Rechner.",
+    attribution: {
+      path: "/ratgeber/lohnt-sich-pv-mit-speicher",
+      text: "Mit oder ohne PV: Das Stromkosten-Rennen – Solar Check",
+    },
+    showFrameWidth: false,
+    variants: [{ id: "pv-kostenrennen", label: "Stromkosten-Rennen", src: "/embed/pv-kostenrennen", height: 470, fixedWidth: 560 }],
+  },
+  {
     id: "strommix-anteil",
     label: "Kernenergie im Strommix",
     intro:

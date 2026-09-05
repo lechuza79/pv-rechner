@@ -112,6 +112,17 @@ const BEISPIEL_GEMEINDE = "09679147";
 const BEISPIEL_BUNDESLAND = "13";
 
 export const WIDGETS = {
+  kostenrennen: {
+    id: "pv-kostenrennen",
+    title: "Das Stromkosten-Rennen",
+    kind: "chart",
+    shareUrl: `${SITE}/ratgeber/lohnt-sich-pv-mit-speicher#kostenrennen`,
+    shareText: "Mit oder ohne PV: Wer hat nach 25 Jahren mehr für Strom bezahlt? – Solar Check",
+    // Der Standort-Ertrag ist der PVGIS-Bundesschnitt; Preise und Vergütung
+    // sind unsere gepflegten Stichtagswerte (siehe /datenstand).
+    sources: [DATA_SOURCES.pvgis],
+    cta: { label: "Für dein Haus durchrechnen", href: "/photovoltaik-rechner" },
+  },
   gruengasHeizkosten: {
     id: "gruengas-heizkosten",
     title: "Die Rechnung über 20 Jahre",

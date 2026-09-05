@@ -101,3 +101,38 @@ test.describe("Anlagenbestand-Widget", () => {
     if (OUT_DIR) await download.saveAs(`${OUT_DIR}/anlagenbestand-export.png`);
   });
 });
+
+test.describe("Stromkosten-Rennen", () => {
+  test("Download liefert ein Bild mit Stand, Legende und Annahmen", async ({ page }) => {
+    await page.goto("/embed/pv-kostenrennen");
+    await expect(page.getByText("Das Stromkosten-Rennen").first()).toBeVisible();
+
+    // Der Schieberegler ist Bedienung und fliegt aus dem Bild; der eingestellte
+    // Stand (Jahr, „nach n Jahren") steht als Text im Kopf und bleibt.
+    await expect(page.locator("[data-sc-export-ignore]").filter({ has: page.getByRole("slider", { name: "Jahr wählen" }) })).toHaveCount(1);
+    await expect(page.getByRole("button", { name: /Anhalten|Abspielen|Noch einmal/ })).toBeVisible();
+
+    const exportOnly = page.locator("[data-sc-export-only]");
+    await expect(exportOnly.first()).toBeAttached();
+    await expect(exportOnly.first()).toBeHidden();
+    // Legende (beide Haushalte) und die Texte hinter den „?" sitzen im Bild-Fuß.
+    const footer = exportOnly.filter({ hasText: "Der Beispielhaushalt" });
+    await expect(footer).toContainText("Ohne PV-Anlage");
+    await expect(footer).toContainText("Mit PV-Anlage");
+    await expect(footer).toContainText("Was hier zählt");
+
+    const kante = page.locator('[title^="Quelle:"]');
+    await expect(kante).toHaveCount(1);
+    await expect(kante).toContainText("PVGIS");
+
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByTitle("Als Bild herunterladen").click();
+    const download = await downloadPromise;
+    const buf = await readFile((await download.path())!);
+    expect(buf.byteLength).toBeGreaterThan(30_000);
+    expect(buf.subarray(1, 4).toString("ascii")).toBe("PNG");
+    expect(buf.readUInt32BE(16)).toBeGreaterThan(500);
+    expect(buf.readUInt32BE(20)).toBeGreaterThan(400);
+    if (OUT_DIR) await download.saveAs(`${OUT_DIR}/kostenrennen-export.png`);
+  });
+});
