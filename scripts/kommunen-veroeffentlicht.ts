@@ -24,15 +24,22 @@
  *      Papier, oder jemand übernimmt den Text und lässt die Adresse weg. Genau
  *      darum bittet der Brief, aber es passiert.
  *
- * Der schnellere, kostenlose Gegenkanal ist die Besucherstatistik: Aufrufe mit
- * einer Gemeinde-Domain als Herkunft erscheinen sofort. Sie ist über die
- * Abfrage-Schnittstelle für dieses Konto nicht erreichbar, im Dashboard aber
- * sichtbar.
+ * DER SCHNELLERE UND VOLLSTÄNDIGERE WEG IST DIE BESUCHERSTATISTIK
+ * (`npm run kommunen:klicks`, seit 02.09.2026). Sie ist erreichbar — die
+ * frühere Notiz an dieser Stelle behauptete das Gegenteil — sie kostet nichts,
+ * sie zeigt einen Verweis am selben Tag statt Wochen später, und sie sieht
+ * etwas, das ein Verweis-Verzeichnis prinzipiell nicht sieht: einen Beitrag in
+ * einem sozialen Netz. Von den vier bekannten Veröffentlichungen fand dieser
+ * Lauf hier ZWEI; die anderen beiden liefen über Facebook und LinkedIn.
+ *
+ * Beide behalten ihren Sinn: Ein Verzeichnis findet auch den Verweis, den
+ * niemand anklickt.
  */
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync } from "node:fs";
 import { notizZeile } from "../lib/outreach-ruecklauf";
+import { releaseFreigegeben } from "../lib/release-plan";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -148,6 +155,28 @@ async function main(): Promise<void> {
   }
   log(`${treffer.size} ${treffer.size === 1 ? "Gemeinde verlinkt" : "Gemeinden verlinken"} uns:`, "ok");
   for (const t of treffer.values()) log(`  ${t.name} — ${t.url}${t.seit ? ` (seit ${t.seit})` : ""}`);
+
+  // Zeigt der Verweis auf eine Seite, die wir für Suchmaschinen gesperrt haben?
+  //
+  // WOZU: Am 29.08.2026 verlinkte Heringen (Werra) unsere Gemeindeseite in einer
+  // eigenen Meldung — der erste redaktionelle Verweis dieses Projekts. Die Seite
+  // stand auf `noindex, nofollow`, die Empfehlung lief also ins Leere. Aufgefallen
+  // ist das durch Zufall bei einer Wettbewerbsanalyse, nicht durch einen Lauf.
+  //
+  // Freigegeben wird weiterhin von Hand über den Releaseplan (ein Ort, ein
+  // Eintrag, ein Nachweis) — eine Seite, die live geht, weil ein Datenbankfeld
+  // kippt, wäre genau die Automatik, gegen die der Plan gebaut wurde. Dieser
+  // Block ersetzt die Entscheidung nicht, er sorgt nur dafür, dass sie ansteht.
+  const offen = [...treffer.values()].filter((t) => !releaseFreigegeben("atlas-gemeinde", t.region_id));
+  if (offen.length) {
+    log();
+    log(`${offen.length} davon zeigen auf eine GESPERRTE Seite — die Empfehlung verpufft:`, "warn");
+    for (const t of offen) log(`  ${t.name} (${t.region_id})`);
+    log();
+    log("Zu tun: je Ort einen Beleg-Schub in lib/release-plan.ts eintragen");
+    log("(zweck: \"beleg\", genau ein Ort, Nachweis mit ausdrücklichem „keine Nachfrage\").");
+    log("Muster: w5-atlas-outreach-beleg.");
+  }
 
   if (!hat("schreiben")) {
     log();

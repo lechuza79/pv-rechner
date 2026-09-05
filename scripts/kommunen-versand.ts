@@ -144,6 +144,28 @@ function bremsen(b: Brief, heute: string): string[] {
   // die einzige, die bis eben nur an einer Stelle stand.
   const postfach = postfachBefund(b.empfaenger, b.name, b.verwaltung_domain);
   if (!postfach.ok) gruende.push(postfach.grund);
+  // Verlinkt der Brief auf eine Seite, die für Suchmaschinen gesperrt BLEIBT?
+  //
+  // Der Versand schaltet die Ortsseite normalerweise frei
+  // (lib/atlas-outreach-freigabe.ts). Orte mit eigener Förderseite sind davon
+  // ausgenommen — dort stünden sonst zwei eigene Seiten auf denselben Anfragen.
+  // Der Brief zeigt aber trotzdem dorthin. Das ist derselbe Widerspruch, der am
+  // 29.08.2026 aufgefallen ist, nur andersherum: eine Seite anbieten und
+  // gleichzeitig sperren.
+  //
+  // HIER STAND EINE BREMSE, DEREN VORAUSSETZUNG ES NICHT MEHR GIBT.
+  //
+  // Sie meldete: „Dieser Ort hat eine eigene Förderseite, seine Atlas-Ortsseite
+  // bleibt deshalb gesperrt." Diese Ausnahme wurde am 29.08.2026 abgeschafft
+  // (Begründung in lib/atlas-outreach-freigabe.ts: Googles Site-Diversity-Regel
+  // schließt das befürchtete Risiko aus, und die Ausnahme kostete eine zweite
+  // Datenquelle im Seitenaufbau). Die Ortsseite geht seitdem mit dem Versand
+  // live, ganz gleich ob der Ort eine Förderseite hat.
+  //
+  // Die Bremse beschrieb also einen Zustand, den es seit fünf Tagen nicht mehr
+  // gibt — und hielt am 03.09.2026 Düsseldorf und Ennepetal zurück, die größte
+  // Stadt des NRW-Schubs darunter. Wer eine Regel abschafft, sucht die Stellen,
+  // die sie noch behaupten.
   return gruende;
 }
 

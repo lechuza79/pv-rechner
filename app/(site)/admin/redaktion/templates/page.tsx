@@ -150,7 +150,7 @@ export default async function RedaktionTemplates({
               border: `1px solid ${r.aktiv ? v("--color-accent") : v("--color-border")}`,
               background: r.aktiv ? v("--color-accent-dim") : v("--color-bg-muted"),
               color: r.aktiv ? v("--color-accent") : v("--color-text-secondary"),
-              fontSize: 14,
+              fontSize: v("--font-size-body"),
               textDecoration: "none",
             }}
           >
@@ -186,7 +186,7 @@ export default async function RedaktionTemplates({
             {ohneDesign.map((p) => (
               <li key={p.id} style={{ marginBottom: space.xs, color: v("--color-text-secondary") }}>
                 {p.titel}{" "}
-                <code style={{ fontFamily: v("--font-mono"), fontSize: 11, color: v("--color-text-muted") }}>
+                <code style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
                   {p.id}
                 </code>
               </li>

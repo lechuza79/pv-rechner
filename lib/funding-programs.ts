@@ -6,6 +6,26 @@
 // and budgets run dry mid-year — treat `status` as a point-in-time snapshot.
 
 export type Eligibility = "privat" | "gewerblich";
+
+/**
+ * Wohnt der Antragsteller zur Miete oder im Eigentum?
+ *
+ * Eine EIGENE Dimension neben `eligibility` (privat/gewerblich), weil sie eine
+ * andere Frage beantwortet: Wer ist der Antragsteller, gegen wo wohnt er. Ein
+ * privater Mieter und ein privater Eigentümer sind beide „privat" — und bei
+ * Balkonkraftwerken trotzdem regelmäßig verschieden berechtigt.
+ *
+ * WARUM ES SIE GIBT (02.09.2026): Die Landesprogramme für Balkonkraftwerke
+ * teilen ihre Mittel auf zwei Töpfe, und der für Eigentümer läuft zuerst leer.
+ * In Mecklenburg-Vorpommern ist er es, das Institut bittet Eigentümer
+ * ausdrücklich, gar nicht erst zu beantragen; in Sachsen war es dasselbe Bild,
+ * bevor das Programm auslief. Ohne diese Angabe hätte der Rechner jedem
+ * Eigentümer 500 € abgezogen, die er nachweislich nicht bekommt — oder wir
+ * hätten den Betrag ganz weglassen müssen und dem Mieter seine Förderung
+ * verschwiegen. Beides ist eine falsche Auskunft, nur in verschiedene
+ * Richtungen.
+ */
+export type Wohnform = "mieter" | "eigentuemer";
 export type FundingLevel = "bund" | "land" | "landkreis" | "kommune";
 
 /**
@@ -68,6 +88,23 @@ export function saetzeFuer<T extends { nur?: FundingTechnik[] }>(rates: T[], tec
 export const FUNDING_TECHNIK_LABEL: Record<FundingTechnik, string> = {
   pv: "Photovoltaik", balkon: "Balkonkraftwerk", waermepumpe: "Wärmepumpe",
 };
+
+/**
+ * Dieselben drei Techniken nach „für …" — und deshalb im Plural.
+ *
+ * Die Beschriftung oben steht für sich („Balkonkraftwerk"), in einem Satz
+ * gebeugt sie nicht: „kein Förderprogramm für Balkonkraftwerk" und „für
+ * Wärmepumpe" sind schlicht falsches Deutsch. Aufgefallen am 02.09.2026, als der
+ * Balkon-Rechner seinen Fördercheck bekam — im Wärmepumpen-Rechner stand der
+ * Fehler da schon länger und war nur niemandem aufgefallen.
+ *
+ * Der Plural passt in allen drei Fällen, ohne dass der Satz einen Artikel
+ * braucht. Grammatik ist Teil der Richtigkeit: „1 neue Anlagen" ist derselbe
+ * Fehler in Worten.
+ */
+export const FUNDING_TECHNIK_FUER: Record<FundingTechnik, string> = {
+  pv: "Photovoltaik", balkon: "Balkonkraftwerke", waermepumpe: "Wärmepumpen",
+};
 export type FundingStatus = "aktiv" | "ausgeschoepft" | "pausiert" | "eingestellt" | "unsicher";
 
 export const FUNDING_STATUS_LABEL: Record<FundingStatus, string> = {
@@ -102,11 +139,48 @@ export interface FundingProgram {
   /** Human-readable as-of, e.g. "Juni 2026". */
   stand: string;
   status: FundingStatus;
+  /**
+   * SEIT WANN läuft das Programm, und seit wann ist es vorbei?
+   *
+   * Beide ISO, beide so genau wie belegt und nicht genauer: `2024-07-15`,
+   * `2024-07` oder `2024`. Kein Wert ist besser als ein geschätzter — ein
+   * erfundenes Startjahr verschiebt in der Auswertung unten die ganze Kurve.
+   *
+   * WOFÜR (01.09.2026): Der Katalog wusste bisher nur, DASS ein Programm läuft
+   * oder vorbei ist, nie ab wann. Damit lässt sich die Frage nicht beantworten,
+   * für die dieser Katalog neben dem Rechner überhaupt taugt: Wie hat sich der
+   * Zubau einer Gemeinde entwickelt, bevor und nachdem sie gefördert hat? Die
+   * Zubauzahlen je Jahr und Gemeinde liegen im Atlas bereits vor; es fehlte
+   * ausschließlich die Zeitachse auf dieser Seite. Ohne sie bliebe nur der
+   * Vergleich „Gemeinden mit Förderung gegen Gemeinden ohne" — und der ist
+   * wertlos, weil die Wirkungsrichtung offenbliebe: Eine Gemeinde, in der viel
+   * gebaut wird, beschließt eher ein Programm, nicht nur umgekehrt.
+   *
+   * `endetIso` ist NICHT die Befristung der Richtlinie. „Gilt bis 31.12.2026"
+   * heißt, dass die Richtlinie ausläuft, nicht dass keine Anträge mehr
+   * angenommen werden; ein leerer Topf im August endet früher als sein
+   * Richtlinientext. Gesetzt wird der Tag, ab dem die Gemeinde keine Anträge
+   * mehr annimmt.
+   *
+   * `beschlossenIso` ist oft das EINZIGE harte Datum auf einer Amtsseite
+   * („Der Rat beschloss am 17.09.2025 …"). Es ist nicht der Antragsstart —
+   * zwischen Beschluss und erster Antragsmöglichkeit liegen regelmäßig Monate —
+   * und ersetzt `beginntIso` deshalb nicht, sondern steht daneben.
+   */
+  beginntIso?: string;
+  endetIso?: string;
+  beschlossenIso?: string;
   /** Budget capped / first-come-first-served. */
   capped: boolean;
   /** Confirmed against the official source (vs. only aggregator portals). */
   verified: boolean;
   eligibility: Eligibility[];
+  /**
+   * Grenzt das Programm auf eine Wohnform ein. Ohne Angabe gilt es für beide —
+   * das ist der Normalfall und bleibt es: Nur wo eine Amtsseite die Einschränkung
+   * ausdrücklich nennt, wird sie gesetzt.
+   */
+  nurWohnform?: Wohnform;
   /**
    * Bedingungen als LESBARE Sätze — eine Bedingung je Eintrag.
    *
@@ -690,21 +764,109 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "koeln-pv": {
     id: "koeln-pv", name: "Klimafreundliches Wohnen & Arbeiten",
     traeger: "Stadt Köln", level: "kommune", region: "Köln", bundesland: "Nordrhein-Westfalen", agsCode: "05315",
-    url: "https://www.stadt-koeln.de/klimafreundliches-wohnen-und-arbeiten", stand: "August 2026",
+    // ADRESSE AUF DIE PROGRAMMSEITE GEZOGEN (01.09.2026) — die Sammelseite ist
+    // eine Falle, und sie hat heute zugeschnappt. Ein Recherche-Lauf las dort
+    // „Seit 27. August 2024 werden keine neuen Anträge angenommen" und meldete
+    // Köln als beendet. Der Satz steht unter der Überschrift „Ausgelaufene
+    // Förderprogramme" („Die untenstehenden Förderprogramme sind bereits
+    // ausgelaufen") und gilt den Vorgängern von 2018 — das laufende Programm
+    // steht auf einer anderen Seite und führt seine Staffel unverändert.
+    // Nachgelesen habe ich beide Seiten im Rohtext, bevor irgendetwas geändert
+    // wurde: Hätte der Befund gestimmt und ich ihn übernommen, wäre ein
+    // Programm abgeschaltet worden, das bis zu 3.800 € abzieht; hätte ich ihn
+    // ungeprüft geglaubt, dasselbe. Genau dafür gibt es die Gegenprobe — ein
+    // Befund fühlt sich wie ein Fund an, ein „stimmt so" nicht.
+    //
+    // Der Kommentar unten warnte seit dem 27.08.2026 vor genau diesem Fehlgriff
+    // („was einen Abruf beinahe zu ‚Programm tot' gelesen hätte") und hat ihn
+    // nicht verhindert — eine Warnung im Code erreicht niemanden, der die Seite
+    // von außen abruft. Deshalb jetzt die Adresse selbst, statt eines Hinweises
+    // daneben. Der Seiten-Wächter meldet den Wechsel einmalig als „nicht
+    // vergleichbar"; das ist der Preis und in seiner Bauart vorgesehen.
+    url: "https://www.stadt-koeln.de/leben-in-koeln/klima-umwelt-tiere/klima/photovoltaik-klimafreundliches-wohnen",
+    stand: "September 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "Staffel-Pauschalen, max. 60 % der Kosten",
+    coveredCosts: "Staffel-Pauschalen für Dachanlage und Speicher, dazu eine Pauschale fürs Balkonkraftwerk",
     rates: [
-      { label: "PV-Anlage", value: "1.500–2.500 € (nach kWp)" },
-      { label: "Batteriespeicher", value: "500–1.300 € (nach kWh)" },
+      { label: "PV-Anlage", value: "1.500–2.500 € (nach kWp)", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "500–1.300 € (nach kWh)", nur: ["pv"] },
+      {
+        label: "Balkonkraftwerk",
+        value: "150 € je Wohn- oder Gewerbeeinheit, 300 € mit Köln-Pass",
+        nur: ["balkon"],
+      },
     ],
     conditions: [
-      "Solange Mittel reichen (Budget 8 Mio. € 2026)",
-      "Speicher ab 3 kWh",
-      "Die Dachanlage muss mindestens 2 kWp leisten — die unterste Förderstufe beginnt dort",
+      "Bewilligt wird im Rahmen der verfügbaren Haushaltsmittel; einen Rechtsanspruch gibt es nicht",
       "Nur Bestandsgebäude: die Baufertigstellung liegt bei Antragstellung mindestens fünf Jahre zurück",
+      { text: "Speicher ab 3 kWh", nur: ["pv"] },
+      {
+        text: "Die Dachanlage muss mindestens 2 kWp leisten — die unterste Förderstufe beginnt dort",
+        nur: ["pv"],
+      },
+      {
+        text: "Erst nach dem Zuwendungsbescheid darf bestellt oder ein Fachbetrieb beauftragt werden",
+        nur: ["pv"],
+      },
+      {
+        text: "Dachanlage und Speicher muss ein Fachbetrieb planen und in Betrieb nehmen; Eigenleistung ist ausgeschlossen",
+        nur: ["pv"],
+      },
+      {
+        text: "Gefördert wird ein Balkonkraftwerk je Wohn- oder Gewerbeeinheit",
+        nur: ["balkon"],
+      },
+      {
+        text: "Die Module leisten zusammen 600 bis 2.000 Wp, der Wechselrichter 600 bis 800 W oder ist darauf drosselbar",
+        nur: ["balkon"],
+      },
+      {
+        text: "Hier darf vor dem Antrag gekauft werden — dann aber auf eigenes Risiko und mit Antrag binnen drei Monaten nach dem Kauf",
+        nur: ["balkon"],
+      },
+      {
+        text: "Die Montage darf selbst erfolgen; Eigenbau-Geräte und ein Speicher zum Balkonkraftwerk werden nicht gefördert",
+        nur: ["balkon"],
+      },
+      {
+        text: "Die erhöhte Pauschale von 300 € setzt einen gültigen Köln-Pass voraus — wir rechnen mit den 150 €, die jede und jeder bekommt",
+        nur: ["balkon"],
+      },
     ],
     combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    // BALKONKRAFTWERK NACHGETRAGEN (03.09.2026), an der Programmseite im Rohtext
+    // und im Merkblatt Steckersolargerät (Stand 02.06.2025) sowie in der
+    // Förderrichtlinie vom 02.06.2025 gelesen, Abschnitt 1.3.3: „150 Euro pro
+    // Wohn-/Gewerbeeinheit · 300 Euro pro Wohneinheit für Inhaber*innen eines
+    // gültigen Köln-Pass".
+    //
+    // Der Eintrag war ein reiner Dach-Eintrag und trug deshalb die Voreinstellung
+    // `["pv"]`. Für eine Stadt mit über einer Million Einwohnern sagte der
+    // Balkon-Rechner damit „keine kommunale Förderung", während die Stadt 150 €
+    // auf ein Set von rund 500 € zahlt — bei einem Fünftel bis Drittel des
+    // Kaufpreises ist das der größte Hebel auf die Amortisation, und es ist
+    // dieselbe Falschauskunft wie ein zu hoher Betrag, nur andersherum.
+    //
+    // GERECHNET WIRD DIE KLEINERE der beiden Pauschalen. Der Köln-Pass hängt an
+    // einer Einkommensgrenze, die der Rechner nicht kennt; die 300 € anzusetzen
+    // verspräche der Mehrheit das Doppelte. Die höhere Zahl steht im Satz daneben,
+    // damit sie niemandem entgeht.
+    //
+    // Das Budget von 8 Mio € ist ERSATZLOS ENTFALLEN: Es steht weder auf der
+    // Programmseite noch in der Förderrichtlinie, und beide habe ich heute im
+    // Volltext gelesen. Was dort steht, ist schwächer und belegt: „Die Zuteilung
+    // erfolgt im Rahmen der haushaltsrechtlich zur Verfügung stehenden Mittel"
+    // und kein Rechtsanspruch. Eine Zahl, die sich an der Quelle nicht wiederholen
+    // lässt, gehört nicht in den Katalog.
+    //
+    // Die Antragsreihenfolge ist beim Balkonkraftwerk UMGEKEHRT und deshalb je
+    // Technik notiert: Für Dachanlage und Speicher gilt „erst Bescheid, dann
+    // bestellen"; für das Steckersolargerät erlaubt die Richtlinie ausdrücklich
+    // den Kauf vorab, verlangt dann aber den Antrag binnen drei Monaten. Beides
+    // in einen Satz zu ziehen wäre für die eine Hälfte der Leser falsch.
+    balkonPauschale: 150,
     // Untergrenze am 27.08.2026 auf der Programmseite selbst gelesen
     // (stadt-koeln.de/leben-in-koeln/klima-umwelt-tiere/klima/photovoltaik-klimafreundliches-wohnen):
     // Die Staffel beginnt bei „Von 2 kWp bis 5 kWp 1.500 Euro". Darunter nennt die
@@ -778,15 +940,51 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     coveredCosts: "Zuschuss je kWp (Budget 2026 erschöpft)",
     maxFoerderung: "max. 25.000 € je Objekt (Denkmal 27.500 €)",
     rates: [
-      { label: "Dach-PV Wohngebäude (Vollbelegung)", value: "100 €/kWp" },
-      { label: "Mehrfamilienhaus / Fassade / Denkmal", value: "bis 300 €/kWp" },
+      { label: "Dach-PV Wohngebäude bis 3 Wohneinheiten (Vollbelegung)", value: "100 €/kWp" },
+      { label: "Mehrfamilienhaus ab 4 Wohneinheiten / Fassade", value: "300 €/kWp" },
+      { label: "Denkmal / Nicht-Wohngebäude / Freifläche", value: "200 €/kWp" },
     ],
     conditions: [
       "Mittel 2026 ausgeschöpft — Wiedereröffnung üblicherweise zum Jahresbeginn",
-      "Antrag vor Beauftragung; nur Bestandsgebäude (fertiggestellt bis 31.12.2021)",
+      "Der Antrag darf vor oder nach dem Kauf gestellt werden, spätestens drei Monate nach der Schlussrechnung",
+      "Bis zum Bewilligungsbescheid geht der Kauf auf eigenes Risiko; die Stadt empfiehlt deshalb, vorher zu beantragen",
+      "Nur Bestandsgebäude (fertiggestellt bis 31.12.2021)",
       "Standardsatz nur bei voller Belegung der geeigneten Dachfläche",
+      "Der städtische Zuschuss darf 30 % der Gesamtkosten nicht überschreiten",
+      "Mit anderen Förderprogrammen kombinierbar, zusammen höchstens 90 % der Gesamtkosten",
     ],
     combinableWith: BUND,
+    // ANTRAGSZEITPUNKT KORRIGIERT (01.09.2026, an Seite und Richtlinie gelesen).
+    // Hier stand „Antrag vor Beauftragung" — das ist die Empfehlung der Stadt,
+    // nicht ihre Bedingung, und als Bedingung gelesen die teuerste Sorte
+    // Falschauskunft: Wer schon bestellt hat, hält den Zuschuss für verloren und
+    // beantragt ihn nicht mehr. Die Stadt schreibt auf der Programmseite: „Die
+    // Antragstellung erfolgt über ein Online-Formular und kann wahlweise vor oder
+    // nach der Beauftragung, dem Kauf oder der Installation der Solaranlage
+    // erfolgen – jedoch spätestens drei Monate nach Schlussrechnung", und die
+    // Förderrichtlinie (Nr. 8, Fassung ab 01.08.2026) wortgleich: „Der Antrag ist
+    // spätestens drei Monate nach (Schluss)Rechnung einzureichen. Eine vorherige
+    // Beantragung auf Grundlage eines Angebots bzw. Kostenvoranschlags ist möglich
+    // und zu empfehlen." Die Empfehlung steht jetzt als das da, was sie ist.
+    //
+    // DENKMAL AUS DER 300er-ZEILE GELÖST: Die Richtlinie führt in Nr. 4.2 „M5
+    // Denkmalgerechte Photovoltaik — 200 €/kWp", zusammen mit Nicht-Wohngebäuden
+    // (M6) und Freiflächen (M8); 300 €/kWp gelten M2 (ab 4 Wohneinheiten), M3
+    // (geförderter Wohnungsbau) und M4 (Fassade). „Denkmal … bis 300 €/kWp" hat
+    // die drei Sätze in eine Zeile geworfen und für das Denkmal den höheren
+    // genannt — das „bis" macht es nicht richtig, nur ungenau.
+    //
+    // Der Höchstbetrag für Denkmäler ist dagegen BESTÄTIGT und bleibt stehen: Er
+    // steht nicht auf der Programmseite, sondern in Nr. 4.2 der Richtlinie
+    // („beträgt die maximale Förderhöhe 27.500 Euro, soweit nachgewiesen wird,
+    // dass … Mehrkosten von mindestens 20 Prozent … entstanden sind"). Beinahe
+    // gestrichen, weil die Seite ihn nicht trägt — Wächter-Gate Regel 6: erst die
+    // Fundstelle beschaffen, dann streichen.
+    //
+    // Zwei Bedingungen ergänzt, die beide seit jeher in der Richtlinie stehen und
+    // bei uns fehlten: der 30-%-Deckel auf die Gesamtkosten (Nr. 9) und die
+    // Kumulierungsgrenze von 90 % (Nr. 6). Kein Rechenwert im Katalog, also kein
+    // Geldeffekt — aber zwei Angaben, nach denen jemand seine Rechnung aufstellt.
   },
   "goettingen-klimafonds": {
     id: "goettingen-klimafonds", name: "KlimaFonds Göttingen",
@@ -1016,13 +1214,107 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     status: "eingestellt", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Dach-PV seit Dez. 2024 nicht mehr förderfähig — nur noch Balkonkraftwerke",
-    rates: [{ label: "Balkonkraftwerk", value: "0,40 €/Wp, max. 320 € (mit München-Pass 0,50 €/Wp, max. 400 €)" }],
+    rates: [{ label: "Balkonkraftwerk", value: "0,40 €/Wp bis 800 Wp je Wohneinheit, höchstens 50 % der Kosten (mit München-Pass 95 % der förderfähigen Kosten)" }],
     conditions: [
       "Für Dach-Photovoltaik seit dem 18.12.2024 keine neuen Anträge mehr möglich",
       "nur noch Stecker-Solargeräte (Balkonkraftwerke) werden gefördert",
+      "Der Antrag ist vor Bestellung oder Kauf zu stellen; eine Rechnung vor der Antragstellung führt zur Ablehnung",
     ],
+    // Am 29.08.2026 an der Amtsseite des Balkon-Bausteins nachgelesen
+    // (stadt.muenchen.de/service/info/sachgebiet-forderprogramm-klimaneutrale-
+    // gebaude/10414151/), Wortlaut: „Der Fördersatz beträgt 0,40 Euro je Wp, bis
+    // 800 Wp je Wohneinheit, jedoch maximal 50 Prozent der Kosten. Für
+    // München-Pass Inhaber*innen beträgt der Fördersatz 95 % der förderfähigen
+    // Investitionskosten."
+    //
+    // Zwei eigene Angaben waren falsch, beide ohne Wirkung aufs Geld (der
+    // Eintrag steht auf `eingestellt`, es wird nichts abgezogen), beide trotzdem
+    // eine falsche Auskunft:
+    //  * Der 50-%-Deckel auf die Kosten fehlte ganz. Bei einem 800-W-Set für
+    //    400 € sind es 200 €, nicht 320 €.
+    //  * „mit München-Pass 0,50 €/Wp, max. 400 €" steht so nirgends — der
+    //    München-Pass-Satz ist ein PROZENTSATZ auf die Kosten (95 %), keine
+    //    Zahl je Wp. Woher die 0,50/400 stammen, ist nicht mehr feststellbar;
+    //    sie sind ersatzlos raus, statt sie umzurechnen.
     combinableWith: BUND,
     foerdert: ["balkon"],
+  },
+  /**
+   * BEENDET zum 30.06.2026 — und das ist der Grund, warum der Eintrag existiert.
+   *
+   * Am 02.09.2026 auf der Amtsseite gelesen: „[01.07.2026] Das Programm ist
+   * ausgelaufen. Eine Antragstellung ist nicht mehr möglich." Programmteil B der
+   * Förderrichtlinie EEuS/2023 trat am 30.06.2026 planmäßig außer Kraft; seit
+   * dem Start im August 2023 wurden rund 16.600 Balkonkraftwerke mit über
+   * 5 Mio. € gefördert.
+   *
+   * Aufgenommen, obwohl beendet — nach der Regel „gab es, ist beendet" ist das
+   * eine echte Auskunft. Hier ist sie sogar die WERTVOLLERE: „balkonkraftwerk
+   * förderung sachsen" hat 390 Suchen im Monat, und auf Seite 1 stand am
+   * 02.09.2026 durchweg, es gebe 300 € von der SAB. Vier Ratgeberseiten, alle
+   * falsch. Wer hier nach Geld sucht, findet überall die veraltete Zusage.
+   */
+  "sachsen-balkon-eeus": {
+    id: "sachsen-balkon-eeus", name: "Zuschuss für Balkonkraftwerke (FRL EEuS, Programmteil B)",
+    traeger: "Sächsische Aufbaubank (SAB)", level: "land", region: "Sachsen", bundesland: "Sachsen", agsCode: "14",
+    url: "https://www.sab.sachsen.de/balkonkraftwerke", stand: "September 2026",
+    status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-08", endetIso: "2026-06-30",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Anschaffung und Installation eines Balkonkraftwerks",
+    rates: [{ label: "Zuschuss", value: "ausgelaufen — seit 1. Juli 2026 keine Anträge mehr" }],
+    conditions: [
+      "Seit dem 1. Juli 2026 sind keine Anträge mehr möglich",
+      "Zuletzt waren nur noch Mieter antragsberechtigt — die Mittel für Eigentümer waren aufgebraucht",
+    ],
+    combinableWith: BUND,
+  },
+  /**
+   * AKTIV, aber nur für Mieter — der Betrag rechnet deshalb NUR mit
+   * `nurWohnform: "mieter"`, und ohne beantwortete Wohnform gar nicht.
+   *
+   * Am 02.09.2026 auf der Amtsseite gelesen, am 04.09.2026 im Rohtext
+   * bestätigt: „Die Mittel des Programms für Eigentümer einer Wohneinheit sind
+   * vollständig ausgeschöpft. Bitte sehen Sie von einer Antragstellung als
+   * Eigentümer ab, da keinerlei Aussicht auf Erfolg besteht." Für Mieter reichen
+   * die Mittel laut LFI „noch für längere Zeit".
+   *
+   * DER KOMMENTAR HIER SAGTE BIS ZUM 04.09.2026 DAS GEGENTEIL DES CODES
+   * DARUNTER: „Warum kein `balkonPauschale: 500`" stand über einem Eintrag, der
+   * genau diese Pauschale trägt. Er beschrieb einen Zustand, den dieselbe Arbeit
+   * zwei Absätze später aufgehoben hatte — das Modell trennt Mieter und
+   * Eigentümer seit dem 02.09.2026 über `nurWohnform`, also ist der Betrag
+   * zulässig geworden. Dieselbe Fehlerklasse wie eine Beschriftung, die etwas
+   * anderes sagt als die Zahl daneben; nur trifft sie hier nicht den Nutzer,
+   * sondern die nächste Sitzung, die den Betrag auf Verdacht wieder ausbaut.
+   *
+   * Die Grenze, die der Betrag WIRKLICH braucht, ist eine andere und sitzt in
+   * `fundingAmount`: Die Richtlinie zahlt „maximal in Höhe der zuwendungsfähigen
+   * Ausgaben, sofern diese unter 500 EUR liegen" — und das billigste Set unseres
+   * Rechners kostet 300 €.
+   */
+  "mv-mini-solaranlagen": {
+    id: "mv-mini-solaranlagen", name: "Zuwendungen für steckerfertige PV-Anlagen (Mini-Solaranlagen)",
+    traeger: "Landesförderinstitut Mecklenburg-Vorpommern", level: "land", region: "Mecklenburg-Vorpommern",
+    bundesland: "Mecklenburg-Vorpommern", agsCode: "13",
+    url: "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/", stand: "September 2026",
+    status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Anschaffung und Installation eines Balkonkraftwerks",
+    rates: [{ label: "Zuschuss", value: "bis 500 € je Anlage und Wohneinheit — nur für Mieter" }],
+    nurWohnform: "mieter",
+    balkonPauschale: 500,
+    conditions: [
+      "Nur Mieter können noch beantragen — für Eigentümer sind die Mittel aufgebraucht",
+      "Höchstens in Höhe der Ausgaben: Kostet das Set weniger als 500 €, gibt es den Kaufpreis",
+      "Antrag erst nach Kauf und Installation stellen",
+      "Schriftlicher Antrag auf dem vorgeschriebenen Formular — per E-Mail eingereichte Anträge sind unwirksam",
+      "Erstwohnsitz in Mecklenburg-Vorpommern",
+      "Nur Anlagen mit Kaufdatum ab dem 8. November 2022",
+    ],
+    combinableWith: BUND,
   },
   "bremen-rundumshaus": {
     id: "bremen-rundumshaus", name: "Rund ums Haus – PV nach Plan",
@@ -1038,6 +1330,172 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "kommunaler swb-Zuschuss ggf. zusätzlich (separat beim Versorger)",
     ],
     combinableWith: BUND,
+  },
+  "hamburg-balkon-einkommen": {
+    id: "hamburg-balkon-einkommen", name: "Balkonkraftwerk für Haushalte mit geringem Einkommen",
+    traeger: "Behörde für Umwelt, Klima, Energie und Agrarwirtschaft (Hamburg)",
+    level: "land", region: "Hamburg", bundesland: "Hamburg", agsCode: "02",
+    url: "https://www.hamburg.de/politik-und-verwaltung/behoerden/bukea/themen/energie/erneuerbare-energien/photovoltaik/solarstrom-fuer-mieter-innen/strom-vom-balkon-foerderung-1054204",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2025-10-01", endetIso: "2027-07-31",
+    eligibility: ["privat"],
+    coveredCosts: "Fast der ganze Kaufpreis eines Balkonkraftwerks — aber nur bei geringem Einkommen",
+    maxFoerderung: "max. 500 € je Haushalt",
+    rates: [
+      {
+        label: "Balkonkraftwerk (nur bei geringem Einkommen)",
+        value: "90 % der Anschaffungskosten, max. 500 €",
+        nur: ["balkon"],
+      },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Haushalte mit Bürgergeld, Sozialhilfe, Grundsicherung, Wohngeld, Asylbewerberleistungen, Kinderzuschlag oder BAföG — oder mit einem Einkommen unter dem Pfändungsfreibetrag",
+      "Der Antrag läuft über die Caritas, nicht über ein Online-Formular: erst ein Telefonat, dann ein Hausbesuch",
+      "Zwei Module dürfen zusammen höchstens 800 W leisten; die Module sind TÜV-geprüft",
+      "Montiert wird selbst — die Beratung hilft beim Werkzeug, bei der Zustimmung der Vermieterseite und bei der Anmeldung im Marktstammdatenregister",
+      "Ein Jahr nach dem Einbau kommt die Beratung noch einmal vorbei und sieht sich die Anlage an",
+      "Der Förderzeitraum läuft bis zum 31. Juli 2027; dafür stehen rund 580.000 € bereit",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // NEU AUFGENOMMEN 03.09.2026. Gelesen an der Programmseite der Umweltbehörde
+    // im Rohtext und an der Pressemitteilung vom 08.09.2025 ebenfalls im
+    // Rohtext: „Für ein passendes PV-Modul werden 90 Prozent der Gesamtsumme
+    // für das Balkonkraftwerk gefördert. So können Haushalte bis zu 500 Euro
+    // bei der Anschaffung … sparen." und „Im Förderzeitraum bis zum 31. Juli
+    // 2027 stehen für das Projekt rund 580.000 Euro zur Verfügung."
+    //
+    // Bis heute stand für Hamburg — 1,86 Mio Einwohner — im Balkon-Rechner
+    // „keine kommunale Förderung", während die Stadt seit Oktober 2025 fast den
+    // ganzen Kaufpreis übernimmt. Dieselbe Falschauskunft wie ein zu hoher
+    // Betrag, nur andersherum.
+    //
+    // KEIN RECHENWERT, obwohl 90 % und 500 € ausdrücklich dastehen — dieselbe
+    // Zurückhaltung wie bei Tübingen, München-Pass und der Stuttgarter
+    // FamilienCard: Die Berechtigung hängt an Sozialleistungen und am
+    // Pfändungsfreibetrag, und beides kennt der Rechner nicht. 500 € auf ein
+    // 500-€-Set anzurechnen hieße, der großen Mehrheit der Hamburger Haushalte
+    // eine Förderung zu versprechen, die sie nicht bekommt.
+    //
+    // Zweistelliger Schlüssel, und das ist hier RICHTIG: Hamburg ist Stadtstaat,
+    // ein Landesprogramm deckt genau eine Gemeinde. Bei einem Flächenland wäre
+    // dieselbe Schreibweise der Fehler, vor dem die Regel vom 02.09.2026 warnt.
+    // Schlüssel aus dem Melderegister geholt, nicht aus einer Bildschirmliste.
+    //
+    // `endetIso` ist der 31.07.2027 — das Ende des Förderzeitraums, das die
+    // Behörde selbst nennt. `beginntIso` der 01.10.2025, der Start des Programms.
+    // Ein `beschlossenIso` gibt es nicht: Die Pressemitteilung datiert die
+    // Ankündigung, nicht den Beschluss.
+  },
+  "kiel-solarstadt": {
+    id: "kiel-solarstadt", name: "Solarstadt Kiel",
+    traeger: "Landeshauptstadt Kiel", level: "kommune", region: "Kiel",
+    bundesland: "Schleswig-Holstein", agsCode: "01002",
+    url: "https://www.kiel.de/de/umwelt_verkehr/klimaschutz/kieler_innen/foerderung_photovoltaik_solarthermieanlagen.php",
+    stand: "September 2026", status: "pausiert", capped: true, verified: true,
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Zuschüsse für Dachanlage, Balkonkraftwerk und Solarthermie — im Haushaltsjahr 2026 ausgesetzt",
+    rates: [
+      { label: "Dachanlage am Einfamilienhaus", value: "300 € je kWp, aber nur für den Teil über 5 kWp", nur: ["pv"] },
+      { label: "Dachanlage am Mehrfamilienhaus", value: "100 € je kWp", nur: ["pv"] },
+      { label: "Fassade, Solardach und andere aufwendige Bauformen", value: "zusätzlich 100 € je kWp", nur: ["pv"] },
+      { label: "Mieterstrom-Anlage", value: "5.000 € pauschal", nur: ["pv"] },
+      { label: "Umbau einer Anlage nach 20 Jahren auf Eigenverbrauch", value: "500 € pauschal", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "100 € pauschal je Anlage", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Die Förderung ist ausgesetzt: Die Ratsversammlung hat am 16. Oktober 2025 beschlossen, das Programm im Haushaltsjahr 2026 ruhen zu lassen",
+      "Neue Anträge nimmt die Stadt nicht mehr an; vollständig eingereichte Anträge werden weiter bearbeitet",
+      { text: "Gefördert wird nur der Teil der Anlage über 5 kWp — die ersten 5 kWp bekommen nichts", nur: ["pv"] },
+      { text: "Gefördert wird bis zur vollen Dachbelegung", nur: ["pv"] },
+      { text: "Je Haushalt wird höchstens ein Balkonkraftwerk gefördert", nur: ["balkon"] },
+      { text: "Gefördert werden Geräte bis 600 W Einspeiseleistung des Wechselrichters", nur: ["balkon"] },
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    balkonPauschale: 100,
+    // NEU AUFGENOMMEN 03.09.2026, an der Förderseite der Stadt im Rohtext
+    // gelesen. Der Satz, der alles entscheidet, steht ZWEIMAL auf der Seite —
+    // einmal oben und einmal ganz unten hinter zwölf Fördertatbeständen:
+    // „In der Sitzung der Ratsversammlung am 16. Oktober 2025 wurde beschlossen
+    // (Drucksache 1007/2025-01), die Förderung des Projekts ‚Solarstadt Kiel'
+    // im Haushaltsjahr 2026 auszusetzen. Neue Förderanträge können nicht mehr
+    // eingereicht werden, da die Fördermittel für das Jahr 2025 bereits
+    // vollständig ausgeschöpft sind."
+    //
+    // `pausiert`, nicht `ausgeschoepft`: Beides trifft zu, aber die tragende
+    // Aussage ist der Ratsbeschluss für EIN Haushaltsjahr — das ist eine
+    // befristete Aussetzung mit Fundstelle, kein leergelaufener Topf.
+    //
+    // KEIN pvPerKwp, obwohl 300 €/kWp dasteht: Der Satz gilt nur für den Teil
+    // ÜBER 5 kWp, und diese Schwelle kann das Modell nicht ausdrücken —
+    // `pvMin` schließt kleine Anlagen aus, es zieht aber keine Schwelle vom
+    // Bezugswert ab. 300 €/kWp auf die ganze Anlage gerechnet verspräche einer
+    // 8-kWp-Anlage 2.400 € statt der 900 €, die Kiel zahlt. Dieselbe Bauform
+    // wie in Heidelberg (nur der Teil über der PV-Pflicht), und dort steht der
+    // Eintrag aus demselben Grund ohne Rechenwert.
+    //
+    // Der Balkon-Satz ist eine schlichte Pauschale und steht deshalb mit Zahl
+    // da; solange der Status nicht „aktiv" ist, lässt `fundingZaehlt()` ihn
+    // ohnehin nicht rechnen. Kommt das Programm 2027 zurück, sieht der
+    // Seiten-Wächter die Bewegung.
+  },
+  "boeblingen-balkonkraftwerke": {
+    id: "boeblingen-balkonkraftwerke", name: "Förderprogramm Balkonkraftwerke",
+    traeger: "Stadt Böblingen", level: "kommune", region: "Böblingen",
+    bundesland: "Baden-Württemberg", agsCode: "08115003",
+    url: "https://www.boeblingen.de/foerderung--beratung",
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    beschlossenIso: "2025-11-01", beginntIso: "2026-05-01", endetIso: "2026-08-17",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil des Kaufpreises für Balkonkraftwerk und passenden Speicher — die Mittel sind aufgebraucht",
+    maxFoerderung: "max. 150 € je Haushalt",
+    rates: [
+      { label: "Balkonkraftwerk, auch mit Speicher", value: "50 % der Kosten, max. 150 € je Haushalt", nur: ["balkon"] },
+      {
+        label: "Balkonkraftwerk mit Böblinger Bonuspass oder BAföG-Bescheid",
+        value: "90 % der Kosten, max. 550 €",
+        nur: ["balkon"],
+      },
+    ],
+    conditions: [
+      "Antragsstopp seit dem 17. August 2026: Das Haushaltsbudget ist vollständig aufgebraucht, das Programm wurde vorzeitig beendet",
+      "Anträge, die bis dahin eingegangen sind, werden der Reihe nach bearbeitet",
+      "Der Antrag muss vor Kauf und Installation gestellt werden — nachträglich gibt es nichts",
+      "Antragsberechtigt sind Eigentümer und Mieter in Böblingen und Dagersheim; je Haushalt ein Antrag",
+      "Wer in der ersten Förderperiode bis Ende 2025 schon einen Zuschuss bekommen hat, ist ausgeschlossen",
+      "Gefördert wird auch ein Batteriespeicher für das Balkonkraftwerk",
+      "Der höhere Satz von 550 € setzt den Böblinger Bonuspass oder einen gültigen BAföG-Bescheid voraus — wir rechnen mit den 150 €, die alle bekommen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPercentOfCost: 0.5, balkonCap: 150,
+    // NEU AUFGENOMMEN 03.09.2026. Zwei Seiten der Stadt gelesen, beide im
+    // Rohtext, und die REIHENFOLGE ist die Lehre: Die Pressemeldung 99/26 vom
+    // 27.04.2026 („Start der neuen Förderperiode für Balkonkraftwerke") liest
+    // sich wie ein offenes Programm und nennt alle Sätze. Der Satz, der es
+    // beendet, steht auf der Förderseite: „Antragsstopp für das kommunale
+    // Förderprogramm Balkonkraftwerke aufgrund ausgeschöpfter Fördermittel
+    // (Stand: 17.08.2026, 16:10 Uhr) … Aufgrund der vollständigen Ausschöpfung
+    // der zur Verfügung stehenden Haushaltsmittel wurde das Förderprogramm
+    // vorzeitig beendet." Wer nur die Pressemeldung gelesen hätte, hätte ein
+    // totes Programm als aktiv aufgenommen — der Wietzen-Fall in neuer Kleidung.
+    //
+    // Deshalb zeigt `url` auf die FÖRDERSEITE, nicht auf die Pressemeldung: Die
+    // Pressemeldung ist ein Datum und ändert sich nie mehr, die Förderseite
+    // trägt den Zustand und wird vom Seiten-Wächter beobachtet.
+    //
+    // `endetIso` ist der 17.08.2026 — der Tag des Antragsstopps, nicht der
+    // 31.12.2026, an dem die Förderperiode planmäßig geendet hätte. Genau die
+    // Unterscheidung, die das Feld verlangt. `beschlossenIso` ist auf den Monat
+    // genau belegt („Im November 2025 hat der Gemeinderat die Fortführung …
+    // beschlossen"), der Tag nicht — der Erste des Monats ist hier eine
+    // Arbeitsannahme und keine Tagesangabe der Stadt.
+    //
+    // Der höhere Satz (90 %, max. 550 €) hängt am Bonuspass beziehungsweise an
+    // einem BAföG-Bescheid, also an einer Einkommensprüfung, die der Rechner
+    // nicht kennt. Gerechnet wird die kleinere Pauschale; die höhere steht im
+    // Satz daneben. Dieselbe Aufteilung wie in Köln.
   },
 
   // ── Batch Juni 2026, Teil 2 ────────────────────────────────────────────────
@@ -1110,6 +1568,82 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+  "ulm-energiefoerderprogramm": {
+    id: "ulm-energiefoerderprogramm", name: "Ulmer Energieförderprogramm",
+    traeger: "Stadt Ulm", level: "kommune", region: "Ulm", bundesland: "Baden-Württemberg", agsCode: "08421",
+    url: "https://www.ulm.de/leben-in-ulm/umwelt-energie-entsorgung/energie-und-klimaschutz/energiefoerderprogramm",
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    endetIso: "2026-09-01",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts:
+      "Zuschüsse für Heizungstausch, Balkonkraftwerk und Mieterstrom — eine gewöhnliche Dachanlage wird nicht gefördert",
+    maxFoerderung: "max. 100 € je Wohneinheit für ein Balkonkraftwerk",
+    rates: [
+      { label: "Balkonkraftwerk", value: "50 % der Gerätekosten, max. 100 € je Wohneinheit", nur: ["balkon"] },
+      { label: "Ölheizung raus, Wärmepumpe rein", value: "2.000 €", nur: ["waermepumpe"] },
+      { label: "Gas- oder Nachtspeicherheizung raus, Wärmepumpe rein", value: "1.500 €", nur: ["waermepumpe"] },
+      { label: "Solarthermie zusätzlich zur neuen Heizung", value: "+1.000 €", nur: ["waermepumpe"] },
+      { label: "Mieterstrom-Anlage", value: "150 €/kWp", nur: ["pv"] },
+      { label: "Prüfung einer Anlage über 19 Jahre", value: "50 % der Kosten, max. 500 €", nur: ["pv"] },
+    ],
+    conditions: [
+      "Antrags- und Förderstopp seit dem 1. September 2026 — die Haushaltsmittel des Jahres sind aufgebraucht",
+      "Anträge, die bis zum 31. August 2026 eingegangen sind, werden noch ausgezahlt",
+      "Der Antrag wird nach der Umsetzung gestellt, binnen drei Monaten ab der Schlussrechnung; danach gibt es nichts mehr",
+      "Gefördert wird nur im Stadtkreis Ulm; antragsberechtigt sind auch Mieterinnen und Mieter",
+      "Bund und Land sind vorrangig in Anspruch zu nehmen",
+      { text: "Vor dem Heizungstausch ist ein kostenloses Beratungsgespräch bei der Regionalen Energieagentur Ulm Pflicht", nur: ["waermepumpe"] },
+      { text: "Gefördert wird nur eine funktionstüchtige Altanlage, die keiner Austauschpflicht unterliegt", nur: ["waermepumpe"] },
+      { text: "Die Vorlauftemperatur der Wärmepumpe darf 50 °C nicht überschreiten", nur: ["waermepumpe"] },
+      { text: "Gefördert wird bis 800 W Wechselrichterleistung; mobile Geräte sind ausgeschlossen", nur: ["balkon"] },
+      { text: "Versand- und Montagekosten zählen nicht mit", nur: ["balkon"] },
+      { text: "Eine gewöhnliche Dachanlage wird nicht gefördert — der Satz je kWp gilt nur für Mieterstrom", nur: ["pv"] },
+      { text: "Der Mieterstrom-Satz setzt mindestens sechs versorgte Wohneinheiten und fünf Jahre Laufzeit voraus", nur: ["pv"] },
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    balkonPercentOfCost: 0.5, balkonCap: 100,
+    // NEU AUFGENOMMEN 02.09.2026, an der Programmseite und an der Richtlinie 2026
+    // gelesen (Volltext-PDF von ulm.de, „Richtlinie Ulmer Energieförderprogramm
+    // 2026 — Gültig ab dem 1. Januar 2026 bis zum 31. Dezember 2026").
+    //
+    // Aufgenommen wird ein GESTOPPTES Programm, und das ist Absicht: Ohne Eintrag
+    // sagt Ulms Stadtseite „keine kommunale Förderung", und das ist für eine Stadt
+    // mit 130.000 Einwohnern, die bis vorgestern gefördert hat, dieselbe
+    // Falschauskunft wie ein zu hoher Betrag. Der Wortlaut der Stadt: „Antrags-
+    // und Förderstopp seit dem 1. September 2026 — Wie am 26. Juni angekündigt,
+    // musst[e] das Ulmer Energieförderprogramm aufgrund begrenzter Haushaltsmittel
+    // zum 1. September gestoppt werden. Alle förderfähigen Anträge, die bis zum
+    // 31. August 2026 eingereicht wurden, werden ausbezahlt."
+    //
+    // NUR DER BALKON-SATZ IST GERECHNET. Die beiden anderen kann das Modell nicht
+    // ausdrücken, und die falsche Zahl wäre hier teurer als gar keine:
+    //   * Die Wärmepumpe hat ZWEI Pauschalen, und welche gilt, hängt an der alten
+    //     Heizung (Öl 2.000 €, Gas/Nachtspeicher 1.500 €). `wpPauschale` kennt nur
+    //     eine Zahl; die höhere verspräche jedem Gas-Haushalt 500 € zu viel, die
+    //     niedrigere zöge jedem Öl-Haushalt 500 € ab, die er bekäme.
+    //   * Die 150 €/kWp sind KEIN Dach-Satz. Sie gelten allein für ein
+    //     Mieterstrommodell nach EEG mit mindestens sechs versorgten Wohnungen und
+    //     einem Vertrag, der 10 % unter dem Grundversorger liegt — `pvPerKwp`
+    //     versprächen sie jedem Einfamilienhaus.
+    //
+    // Der Balkon-Satz steht trotz Stopp mit Zahl da: `fundingZaehlt()` lässt ihn
+    // nicht rechnen, solange der Status nicht „aktiv" ist, und der Code-Seed trägt
+    // ohnehin kein Prüfdatum. Kommt das Programm 2027 unverändert zurück, stimmt
+    // die Zahl; kommt es verändert zurück, sieht der Seiten-Wächter die Bewegung.
+    //
+    // `endetIso` ist der 01.09.2026 — der Tag, ab dem die Stadt keine Anträge mehr
+    // annimmt, nicht das Laufzeitende der Richtlinie (31.12.2026). Genau die
+    // Unterscheidung, die das Feld verlangt.
+    //
+    // KEIN `beginntIso` und kein `beschlossenIso`, obwohl beide Daten greifbar
+    // wären — sie würden etwas anderes bedeuten, als sie sagen: Der 01.01.2026 ist
+    // der Beginn der RICHTLINIE 2026, nicht des Programms (das Ulmer
+    // Energieförderprogramm läuft seit Jahren und wird jährlich fortgeschrieben),
+    // und der 26.06.2026 ist der Tag, an dem die Stadt den STOPP angekündigt hat,
+    // nicht der Beschluss des Programms. Beides einzutragen hieße, dem Feld für
+    // die Zubau-Auswertung ein Startjahr zu geben, das es nicht gibt.
+  },
   "essen-solar": {
     id: "essen-solar", name: "Förderprogramm Photovoltaik- und Solaranlagen",
     traeger: "Stadt Essen", level: "kommune", region: "Essen", bundesland: "Nordrhein-Westfalen", agsCode: "05113",
@@ -1134,8 +1668,18 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "schweinfurt-pv": {
     id: "schweinfurt-pv", name: "Förderprogramm Photovoltaik & Batteriespeicher",
     traeger: "Stadt Schweinfurt", level: "kommune", region: "Schweinfurt", bundesland: "Bayern", agsCode: "09662",
-    url: "https://www.schweinfurt.de/leben-freizeit/umwelt/klimaschutzkonzept/6002.Foerderprogramme.html",
-    stand: "Juli 2026", status: "eingestellt", capped: true, verified: true,
+    // TOTE ADRESSE ERSETZT (28.08.2026). Die alte Förderseite antwortet mit 404
+    // — das war im Eintrag als Befund vermerkt, stand aber weiter als `url` und
+    // damit als Ziel des Links auf der Karte: Wer nachlesen wollte, landete im
+    // Nichts. Jetzt die Klimaschutzseite der Stadt, die heute wirklich
+    // antwortet; sie führt Solarkataster und Klimaschutzkonzept und nennt kein
+    // eigenes Förderprogramm mehr — deckungsgleich mit `eingestellt`.
+    // Auch das Online-Antragsformular, das in Suchtreffern noch als
+    // „Förderantrag Photovoltaik und Batteriespeicher" auftaucht, antwortet mit
+    // 404: ein Verzeichniseintrag, der das Programm überlebt hat, kein Beleg
+    // dafür, dass es wieder läuft.
+    url: "https://www.schweinfurt.de/umweltverkehr/umwelt--natur/klimaschutz",
+    stand: "August 2026", status: "eingestellt", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Zuschuss je kWp + je kWh Speicher (neu angeschaffte Anlage)",
     rates: [
@@ -1145,7 +1689,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Neu angeschaffte Anlage; Kauf/Auftrag nach dem 03.05.2022",
       "Speicher nur aus eigener PV gespeist; zweistufiger Antrag",
-      "Städtische Förderseite steht auf Haushaltsjahr 2024 und ist offline (404); mehrere Quellen (2025/2026) melden kein eigenes kommunales Programm mehr — gilt als eingestellt",
+      "Die eigene Förderseite der Stadt ist abgeschaltet; die Klimaschutzseite nennt kein kommunales Förderprogramm mehr — gilt als eingestellt",
     ],
     combinableWith: BUND,
     pvPerKwp: 100, pvCap: 1000,
@@ -1157,14 +1701,20 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://bauen.osnabrueck.de/de/sanieren-modernisieren/osnabrueck-saniert/",
     stand: "Juni 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Zuschuss für den Anlagenteil über 8 kWp (oder 30 % der Kosten)",
+    coveredCosts: "Zuschuss für den Anlagenteil über 8 kWp, gedeckelt bei 30 % der Netto-Kosten",
     maxFoerderung: "max. 20.000 € je Sanierungsobjekt",
     rates: [
-      { label: "PV-Anlage", value: "400 €/kWp für Leistung über 8 kWp, oder 30 % der Kosten" },
+      { label: "PV-Anlage", value: "400 €/kWp für Leistung über 8 kWp — höchstens 30 % der förderfähigen Netto-Kosten" },
     ],
     conditions: [
       "Antrag vor Auftragsvergabe; Windhundverfahren, kein Rechtsanspruch",
       "Gefördert wird nur der kWp-Anteil oberhalb von 8 kWp",
+      // Am 29.08.2026 am Richtlinien-Volltext (Stand Juni 2025) nachgelesen: Die
+      // beiden Zahlen sind KEINE Wahlmöglichkeit. Die Richtlinie schreibt über
+      // die Tabelle „Die Zuschusshöhe wird nach zwei Kriterien berechnet. Der
+      // kleinere Wert gibt den Ausschlag." Unser „oder" las sich wie ein
+      // Wahlrecht — und wer eine Wahl liest, nimmt den größeren Betrag an.
+      "Von beiden Werten gilt der kleinere",
       // Ergänzt 16.08.2026 aus der Förderrichtlinie (Stand Mai 2025, Abschnitt B):
       // In Niedersachsen gilt eine PV-Pflicht nach § 32a NBauO. Wer sie erfüllt,
       // bekommt für diesen Teil nichts — ohne den Hinweis rechnet sich jemand
@@ -1304,7 +1854,10 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // stehen; der Topf ist auf 20.000 € im Jahr begrenzt, das nächste Haushalts-
     // jahr füllt ihn wieder. Wieder einschalten darf das nur ein Träger-Beleg.
     url: "https://www.weser-aue.de/rathaus-politik/foerderprogramme/",
-    stand: "August 2026", status: "ausgeschoepft", capped: true, verified: true,
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    // Laufzeit am 05.09.2026 an der Amtsseite abgelesen: „Die Förderung ist
+    // vorbehaltlich der Haushaltslage vorerst bis zum 31.12.2026 aufgelegt."
+    endetIso: "2026-12-31",
     eligibility: ["privat"],
     coveredCosts: "Anteiliger Zuschuss je kWp und je kWh Speicher",
     maxFoerderung: "max. 1.000 € je Förderfall",
@@ -1317,6 +1870,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Vergabe nach Eingang der Anträge (Windhundprinzip)",
       "Haushaltsmittel auf 20.000 € pro Jahr begrenzt",
       "Vorerst befristet bis zum 31.12.2026, vorbehaltlich der Haushaltslage",
+      "Contracting, Leasing und Pacht sind ausdrücklich nicht förderfähig",
     ],
     combinableWith: BUND,
     pvPerKwp: 100, pvCap: 1000, speicherPerKwh: 200, speicherCap: 1000,
@@ -1395,15 +1949,46 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://ludwigshafen.de/standort-mit-zukunft/klima/foerderprogramme",
     stand: "August 2026", status: "eingestellt", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Beendet — gefördert wurden Balkonkraftwerke sowie Dach- und Fassadenbegrünung",
-    rates: [{ label: "Balkonkraftwerke", value: "Programm beendet" }],
+    coveredCosts: "Die Stadt hat die Förderprogramme für Bürgerinnen und Bürger beendet, weil die Mittel Mitte März 2026 ausgeschöpft waren — gefördert wurden Balkonkraftwerke sowie Dach- und Fassadenbegrünung",
+    rates: [{ label: "Balkonkraftwerke", value: "zuletzt 200 € je Anlage — Programm beendet" }],
     conditions: [
-      "Die Stadt hat die Förderprogramme für Bürgerinnen und Bürger beendet",
-      "Gefördert wurden aus Landesmitteln (KIPKI) unter anderem private Balkonkraftwerke",
+      "Die Stadt führt das Programm unter der Überschrift „Förderprogramme für Bürger*innen beendet“",
+      "Grund ist, dass die Fördermittel Mitte März 2026 ausgeschöpft waren; neue Anträge sind nicht möglich",
+      "Gefördert wurden aus Landesmitteln (KIPKI) 750 private Balkonkraftwerke mit je 200 €",
+      "Bereits gestellte Anträge werden noch bearbeitet und beschieden",
       "Eine Dach-Photovoltaikanlage wurde auch davor nicht bezuschusst",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
+    // SELBSTKONTROLLE 30.08.2026 — der Auto-Fix vom 30.08.2026 ist hier
+    // teilweise zurückgenommen. Er stellte den Status von `eingestellt` auf
+    // `ausgeschoepft` um, und zwar mit der Begründung, die Stadt sage nirgends,
+    // dass das Programm beendet sei. Das ist falsch: Die Seite trägt als
+    // Überschrift wörtlich „Förderprogramme für Bürger*innen beendet" (Titel und
+    // H1, am 30.08.2026 im Rohtext gelesen, nicht über ein Zusammenfassungs-
+    // werkzeug). Der frühere Lauf hatte offenbar nur den Abschnitt „Fördermittel
+    // ausgeschöpft" gelesen und daraus geschlossen, die Überschrift gebe es
+    // nicht — genau der Fehlgriff, gegen den die Selbstkontrolle im Gate steht:
+    // eine richtige Angabe wurde durch eine andere ersetzt, weil die Quelle nur
+    // halb gelesen war.
+    //
+    // Beide Wörter stehen auf der Seite, und sie widersprechen einander nicht:
+    // Die Stadt beendet die Programme, WEIL das Geld alle ist. Der Status folgt
+    // deshalb wieder der Überschrift der Stadt (`eingestellt`), der Grund steht
+    // als eigene Bedingung daneben. Das ist die einzige Fassung, der nichts auf
+    // der Seite widerspricht — und die vorsichtige Richtung für jemanden, der
+    // überlegt, ob er auf eine neue Runde warten soll: Die ganze Seite steht im
+    // Rückblick („Was wurde gefördert?"), eine Ankündigung einer Neuauflage gibt
+    // es nicht.
+    //
+    // Kein Geldeffekt in keiner Richtung: `fundingZaehlt` verlangt
+    // `status === "aktiv"`, beide Zustände ziehen also nichts ab. Was der Lauf
+    // vom 30.08. an FAKTEN ergänzt hat, bleibt: 750 Anlagen à 200 € aus
+    // Landesmitteln (KIPKI), ausgeschöpft Mitte März 2026 — alles am
+    // 30.08.2026 an der Amtsseite noch einmal wörtlich bestätigt, dazu neu
+    // „Bereits gestellte Anträge werden bearbeitet und entsprechende Bescheide
+    // verschickt". Der zuletzt gezahlte Satz bleibt bewusst ohne strukturierten
+    // Rechenwert.
   },
   "waiblingen-klimaschutz": {
     id: "waiblingen-klimaschutz", name: "Städtisches Förderprogramm Klimaschutz",
@@ -1559,32 +2144,70 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "bergstrasse-speicher", name: "PV-Stromspeicher-Förderprogramm",
     traeger: "Kreis Bergstraße", level: "landkreis", region: "Kreis Bergstraße", bundesland: "Hessen", agsCode: "06431",
     url: "https://www.kreis-bergstrasse.de/themen-projekte/nachhaltigkeit/klimaschutz/",
-    stand: "Juli 2026", status: "ausgeschoepft", capped: true, verified: true,
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Zuschuss je kWh Batteriespeicher (PV ab 2 kWp Voraussetzung)",
     maxFoerderung: "max. 3.000 € (max. 50 % der Kosten)",
     rates: [{ label: "Batteriespeicher (ab 3 kWh)", value: "180 €/kWh, max. 3.000 €" }],
     conditions: [
-      "Keine Antragsannahme: Der 2024er-Topf ist erschöpft, 2025 gab es kein Programm, und für 2026 ist keines aufgelegt (am 28.07.2026 an den Seiten des Kreises geprüft)",
+      "Keine Antragsannahme: Der 2024er-Topf ist erschöpft, 2025 gab es kein Programm, und für 2026 ist keines aufgelegt",
+      "Der Kreis hat seine Förderseiten abgeschaltet und nennt kein Nachfolgeprogramm",
       "Beträge stammen aus der 2024er-Runde und gelten nur als Anhaltspunkt für eine mögliche Neuauflage",
       "PV-Anlage ab 2 kWp Voraussetzung; max. 50 % der Kosten",
     ],
     combinableWith: BUND,
     speicherPerKwh: 180, speicherCap: 3000, speicherMin: 3,
+    // NACHGEPRÜFT 02.09.2026. Die Bedingung nannte bis heute ein Prüfdatum vom
+    // 28.07.2026 und verwies auf „die Seiten des Kreises" — die es so nicht mehr
+    // gibt: Sowohl die Förder-Übersicht als auch die Unterseite der 2024er-Runde
+    // antworten inzwischen mit 404 (beide heute abgerufen), nur die
+    // Klimaschutz-Seite lebt noch und ist deshalb die hinterlegte Adresse.
+    //
+    // Der Status bleibt, wo er war. Eine verschwundene Seite ist keine Aussage:
+    // Sie belegt weder eine Neuauflage noch das endgültige Ende, sie nimmt uns
+    // nur den Satz weg, auf den wir uns bisher gestützt haben („2025 kein
+    // Programm, verlässliche Aussagen ab Mitte Juli 2026"). Deshalb steht das
+    // Fehlen jetzt als eigene Bedingung da, statt weiter ein Prüfdatum zu
+    // nennen, hinter dem nichts Abrufbares mehr steht.
   },
   "mayen-koblenz-speicher": {
     id: "mayen-koblenz-speicher", name: "Solarspeicher-Förderprogramm",
     traeger: "Landkreis Mayen-Koblenz", level: "landkreis", region: "Landkreis Mayen-Koblenz", bundesland: "Rheinland-Pfalz", agsCode: "07137",
     url: "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
-    stand: "Juli 2026", status: "eingestellt", capped: true, verified: true,
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Zuschuss je kWh Batteriespeicher (mit PV)",
-    rates: [{ label: "Batteriespeicher", value: "200 €/kWh" }],
+    coveredCosts: "Zuschuss je kWh Batteriespeicher (mit PV) — der Kreis führt das Programm nicht mehr",
+    rates: [{ label: "Batteriespeicher", value: "zuletzt 200 €/kWh — Programm nicht mehr im Angebot" }],
     conditions: [
-      "Bisherige Runde ausgeschöpft, Antragstellung derzeit nicht möglich",
-      "Neuauflage angekündigt — vor Antrag beim Kreis prüfen",
+      "Der Landkreis führt das Solarspeicher-Programm auf seinen Förderseiten nicht mehr auf",
+      "Von einer Neuauflage steht dort nichts; wer darauf wartet, fragt am besten beim Klimaschutzmanagement des Kreises nach",
+      "Der Satz von 200 €/kWh stammt aus der letzten Runde und gilt nur als Anhaltspunkt",
     ],
     combinableWith: BUND,
+    // „NEUAUFLAGE ANGEKÜNDIGT" ENTFERNT (01.09.2026). Der Satz stand hier als
+    // Bedingung und ist an keiner Amtsseite mehr zu finden — dieselbe Fehlerklasse
+    // wie bei Ludwigshafen: eine Aussage ohne Rechenwert dahinter, die deshalb von
+    // keinem Test rot wird, aber jemanden warten lässt. Und die Richtung ist die
+    // teurere: Wer auf eine angekündigte Neuauflage wartet, schiebt seine
+    // Anschaffung auf.
+    //
+    // Am 01.09.2026 im echten Browser gelesen (die Seiten des Kreises laden ihren
+    // Inhalt per Skript nach; ein einfacher Abruf liefert nur die leere Hülle —
+    // deshalb erst über die Eskalationsleiter, nicht über eine Sekundärquelle):
+    // Die Übersicht „Klimaschutzmaßnahmen" führt nur noch das Zuschussprogramm für
+    // Balkonkraftwerke und die Dach- und Fassadenbegrünung; Solarspeicher steht
+    // dort überhaupt nicht mehr. Die Seite „Förderinformationen" des Kreises nennt
+    // gar kein eigenes Programm, sondern verweist auf die Förderdatenbank des
+    // Bundes, den Fördermittelkompass des Landes und die Angebote der Städte und
+    // Verbandsgemeinden.
+    //
+    // NEBENBEFUND, bewusst NICHT hier eingetragen: Der Kreis hatte ein eigenes
+    // Zuschussprogramm für Balkonkraftwerke (150.000 € aus dem Landesprogramm
+    // KIPKI). Es ist ebenfalls vorbei — die Seite trägt oben „+++ Das
+    // Zuschussprogramm ist beendet - eine Antragstellung ist nicht mehr möglich!
+    // +++". Ein beendetes Programm neu in den Katalog aufzunehmen ist keine
+    // Korrektur, sondern eine Aufnahme, und die bleibt Vorschlag (Wächter-Gate,
+    // Teil 3).
   },
   // ── Kommune – aus dem Abdeckungs-Screening, 18.08.2026 ──────────────────────
   //
@@ -1613,6 +2236,47 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     balkonPauschale: 100,
   },
 
+  // Aufgenommen am 05.09.2026. Anlass war eine Sekundärquelle, die Quelle waren
+  // die Richtlinie der Stadt (Stand 19.05.2026, im Volltext gelesen), die
+  // Dienstleistungsseite des Service-Portals und die Pressemitteilung vom
+  // 22.05.2026 — von dort auch die Zahl der geförderten Anlagen, die in der
+  // Richtlinie nicht steht.
+  //
+  // WARUM DIE 50-%-GRENZE NICHT ALS RECHENWERT DASTEHT: Nr. 6 der Richtlinie
+  // erlaubt die Kumulierung, deckelt aber die SUMME aller öffentlichen Mittel
+  // auf 50 % der Gesamtkosten und stellt fremde Mittel voran. Das ist keine
+  // Grenze für unseren Betrag allein, sondern für einen Stapel, dessen andere
+  // Teile der Rechner nicht kennt — als `balkonPercentOfCost: 0.5` gerechnet
+  // hieße das, eine fremde Förderung stillschweigend mit null anzusetzen. Sie
+  // steht deshalb als Bedingung da. Der Deckel auf den Kaufpreis (siehe
+  // fundingAmount) fängt den absurden Fall ohnehin ab; bei 100 € auf das
+  // billigste Set unseres Rechners (300 €) bindet die Grenze nicht.
+  "wetter-ruhr-balkonsolar": {
+    id: "wetter-ruhr-balkonsolar", name: "Förderung von Balkon-Solaranlagen",
+    traeger: "Stadt Wetter (Ruhr)", level: "kommune", region: "Wetter (Ruhr)",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05954032",
+    url: "https://serviceportal.stadt-wetter.de/buergerservice/dienstleistungen/balkonsolaranlagen-kommunale-foerderung-900000038-0.html",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-06-01", endetIso: "2026-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Wohneinheit für ein Balkonkraftwerk bis 800 W",
+    maxFoerderung: "100 € je Wohneinheit",
+    rates: [{ label: "Balkonkraftwerk", value: "100 € je Wohneinheit" }],
+    conditions: [
+      "Antragsberechtigt sind Mietende, Vermietende und Eigentümerinnen und Eigentümer — je Haus oder Wohneinheit und antragstellender Person ein Gerät",
+      "Anträge sind seit dem 1. Juni 2026, 11 Uhr über das Online-Service-Portal möglich; insgesamt werden 30 Anlagen gefördert",
+      "Gekauft werden darf erst nach dem Bewilligungsbescheid; vorher erworbene Geräte sind ausgeschlossen",
+      "Die Nachweise müssen bis zum 31. Dezember 2026 eingereicht sein",
+      "Die Module müssen nach Osten, Süden oder Westen zeigen und weitgehend unverschattet stehen — nach Norden ausgerichtete Anlagen sind ausgeschlossen",
+      "Zusammen mit anderen öffentlichen Mitteln darf die Förderung 50 % der Gesamtkosten nicht überschreiten; fremde Mittel sind vorrangig auszuschöpfen",
+      "Nach der Montage ist ein Foto einzusenden, das die Stadt anonymisiert veröffentlicht",
+      "Entschieden wird nach Eingang im Rahmen der Mittel; ein Rechtsanspruch besteht nicht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPauschale: 100,
+  },
+
   "wittlich-balkonkraftwerke": {
     id: "wittlich-balkonkraftwerke", name: "Förderprogramm Balkonkraftwerke",
     traeger: "Stadt Wittlich", level: "kommune", region: "Wittlich",
@@ -1627,7 +2291,9 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Antragsberechtigt sind Privatpersonen mit Erstwohnsitz in Wittlich",
       "Mieter können ebenfalls einen Antrag stellen",
       "Der Antrag wird nach Installation und Registrierung gestellt",
-      "Gefördert wird höchstens ein Balkonkraftwerk je Person",
+      "Gefördert wird höchstens ein Balkonkraftwerk je Haushalt",
+      "Die Anlage muss ab dem 01.01.2024 neu angeschafft worden sein; der Wechselrichter darf höchstens 800 W leisten",
+      "Die Anlage ist fünf Jahre lang zu betreiben",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
@@ -1782,16 +2448,25 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     coveredCosts: "Zurzeit keine kommunale Förderung — die früheren Programme sind ausgelaufen",
     rates: [{ label: "Alle Bausteine", value: "derzeit nicht aufgelegt" }],
     conditions: [
-      "Die Gemeinde hat für das laufende Jahr keine Förderprogramme vorgesehen",
-      "Gefördert wurden bis 2023 Stecker-Solar-Anlagen mit 50 % des Kaufpreises, höchstens 200 €",
-      "Ebenfalls bis 2023 gefördert: Erdwärmesonden mit 15 € je Bohrmeter, höchstens 1.500 €",
-      "Alle genannten Töpfe wurden vollständig ausgeschöpft",
+      "Die Gemeinde hat zuletzt für 2025 mitgeteilt, dass keine Förderprogramme vorgesehen sind; für 2026 steht nichts Neues auf der Seite",
+      "Zuletzt gefördert wurden 2024 Stecker-Solar-Anlagen bis 600 W mit 50 % des Kaufpreises, höchstens 200 € je Anlage und eine Anlage je Wohneinheit",
+      "Ebenfalls gefördert: Erdwärmesonden mit 15 € je Bohrmeter, höchstens 1.500 € je Grundstück",
+      "Der Topf 2024 war am 16.09.2024 ausgeschöpft, also nach vier Wochen",
     ],
     combinableWith: BUND,
     // Der Eintrag bleibt sichtbar, statt zu fehlen: Wer in Senden nach
     // Förderung sucht, findet eine ausführliche Programmseite und soll lesen,
     // dass davon derzeit nichts mehr zu holen ist. Dieselbe Überlegung wie bei
     // Münster. Ohne strukturierten Satz wird nichts abgezogen.
+    //
+    // Am 29.08.2026 an der Amtsseite nachgelesen und dabei ZWEI eigene Angaben
+    // korrigiert, beide ohne Wirkung aufs Geld, beide trotzdem falsch:
+    // „bis 2023" — die Gemeinde förderte Stecker-Solar zuletzt 2024 („Schon am
+    // 16.09.2024 war das Budget für die kommunalen Förderprogramme 2024
+    // ausgeschöpft"), und „für das laufende Jahr" — die Seite sagt wörtlich
+    // „Aktuell (2025) sind keine gemeindlichen Förderprogramme vorgesehen" und
+    // trägt zu 2026 gar nichts. Ein Satz, der ein Jahr behauptet, das die Quelle
+    // nicht nennt, ist derselbe Fehler wie ein erfundenes Prüfdatum.
     foerdert: ["pv", "balkon", "waermepumpe"],
   },
 
@@ -2198,18 +2873,34 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // und ob jemand zur Miete wohnt, fragt der Balkon-Rechner nicht ab. Ein
     // Abzug wäre für jeden Eigentümer falsch. Das Programm informiert deshalb,
     // es rechnet nicht.
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    //
+    // LAUFZEIT NACHGETRAGEN (02.09.2026, dieselbe Richtlinie erneut im Volltext):
+    // Präambel „hat der Stadtrat am 30.04.2026 beschlossen, das Förderprogramm …
+    // aufzulegen", § 5 „Die vorstehenden Richtlinien treten am 01.05.2026 in
+    // Kraft." Kein `endetIso` — die Richtlinie nennt kein Ende.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-05-01", beschlossenIso: "2026-04-30",
     eligibility: ["privat"],
     coveredCosts: "Zuschuss für Balkonkraftwerke — ausdrücklich für Mieter gedacht",
     rates: [{ label: "Balkonkraftwerk", value: "50 € je Anlage" }],
     conditions: [
       "Nur Mieterinnen und Mieter, die die Wohnung selbst bewohnen und dort mit Hauptwohnsitz gemeldet sind",
+      "Gefördert werden nur Geräte, die ab dem 1. Mai 2026 gekauft wurden — ein früherer Kauf bekommt nichts",
       "Gefördert werden Geräte bis 2.000 W Modulleistung und 800 W Wechselrichterleistung",
+      "Die Anlage muss mindestens fünf Jahre betrieben werden",
       "Je Wohneinheit ist nur ein Antrag möglich; Antrag in Papierform mit Kaufbeleg",
       "Dach-Photovoltaik ist nicht Teil des Programms",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
+    // Zwei Bedingungen am 30.08.2026 aus der Förderrichtlinie selbst ergänzt
+    // (Stand 30.04.2026, Volltext des städtischen PDF gelesen — die
+    // Programmseite trägt weder Beträge noch Bedingungen, sie verlinkt nur die
+    // Richtlinie). § 3 Abs. 6: „Gefördert werden Anlagen, welche ab dem
+    // 01.05.2026 erworben werden." Das ist die teure der beiden — wer sein
+    // Gerät vorher gekauft hat, bekommt nichts, und dazu stand bei uns kein
+    // Wort. § 3 Abs. 7: „Die Anlage ist antragsgemäß mindestens 5 Jahre zu
+    // betreiben." Alles Übrige zellgleich bestätigt.
   },
 
   // ── Kommune – erste Funde der URL-Suche, 18.08.2026 ─────────────────────────
@@ -2245,9 +2936,13 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Stadt Rodgau", level: "kommune", region: "Rodgau",
     bundesland: "Hessen", agsCode: "06438011",
     url: "https://www.rodgau.de/de/leben/stadtplanung-umwelt-mobiltaet/umwelt/foerderung-von-balkon-solaranlagen/",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // Laufzeit am 05.09.2026 an der Amtsseite abgelesen: „Seit dem 1. Januar 2024
+    // ist die aktualisierte Richtlinie zur Förderung von Balkon-Solaranlagen für
+    // 3 Jahre bis zum 31.12.2026 in Kraft."
+    beginntIso: "2024-01-01", endetIso: "2026-12-31",
     eligibility: ["privat"],
-    coveredCosts: "Anteil des Rechnungsbetrags einer Balkonkraftwerk",
+    coveredCosts: "Anteil des Rechnungsbetrags eines Balkonkraftwerks",
     maxFoerderung: "max. 200 € je Anlage",
     rates: [{ label: "Balkonkraftwerk", value: "25 % des Rechnungsbetrags, max. 200 €" }],
     conditions: [
@@ -2388,9 +3083,29 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Der Zuschuss stockt die Bundesförderung für effiziente Gebäude auf und steht nicht für sich",
       "Für Photovoltaik und Balkonkraftwerke bietet die Stadt keine eigene Förderung, sondern nur eine kostenlose Beratung",
+      "Die Maßnahme muss bis spätestens 31.12.2026 umgesetzt sein",
+      "Der Zuschuss steht unter dem Vorbehalt, dass der Gemeinderat die Mittel bereitstellt",
+      "Bei der Stadt registriert wird erst, nachdem der Zuwendungsbescheid des Bundes da ist",
     ],
     combinableWith: BUND,
     foerdert: ["waermepumpe"],
+    // REIHENFOLGE ergänzt (01.09.2026, an der Amtsseite gelesen). Die Stadt
+    // schreibt: „Nachdem Sie den Zuwendungsbescheid für die Bundesförderung
+    // erhalten haben, registrieren Sie sich elektronisch oder schriftlich bei der
+    // Förderstelle der Stadt Weinheim." Wir sagten bisher nur, der Zuschuss stocke
+    // die Bundesförderung auf — nicht, dass die Stadt erst nach dem Bundesbescheid
+    // an der Reihe ist. Wer sich zuerst bei der Stadt meldet, wartet auf eine
+    // Bestätigung, die es in dieser Reihenfolge nicht gibt. Die Reihenfolge ist im
+    // Förderbereich die teuerste Auskunft (siehe lib/beg-antrag.ts), deshalb steht
+    // sie hier ausdrücklich und nicht zwischen den Zeilen.
+    // Die beiden letzten Bedingungen am 30.08.2026 an der Amtsseite ergänzt.
+    // Sie standen dort die ganze Zeit und fehlten bei uns: „Um den Zuschuss zu
+    // erhalten, muss die Maßnahme bis spätestens 31.12.2026 umgesetzt werden"
+    // und „unter dem Vorbehalt der Mittelbereitstellung durch den Gemeinderat".
+    // Die Frist ist die wichtigere von beiden — eine Wärmepumpe, die im Herbst
+    // beauftragt und im Frühjahr eingebaut wird, fällt damit heraus, und das
+    // steht in keinem Satz, den wir bisher gezeigt haben.
+    //
     // Der Höchstbetrag gilt Gebäudehülle UND Anlagentechnik zusammen, also
     // Dämmung und Wärmeerzeuger in einem Topf. Wieviel davon auf die Wärmepumpe
     // entfällt, hängt am übrigen Vorhaben — das kann der Rechner nicht wissen.
@@ -2432,7 +3147,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "feucht-klimaschutz", name: "Klimaschutz-Förderprogramme",
     traeger: "Markt Feucht", level: "kommune", region: "Feucht",
     bundesland: "Bayern", agsCode: "09574123",
-    url: "https://feucht.de/bauen-wirtschaft-umwelt/klimaschutz-foerderprogramme/foerderprogramme",
+    // Adresse am 30.08.2026 auf die Zielseite der Weiterleitung nachgezogen:
+    // Ohne „www." antwortet der Server mit 301. Der Fingerabdruck-Wächter
+    // meldete diese Seite dadurch als „unerreichbar/verändert", ohne dass sich
+    // am Inhalt etwas bewegt hätte.
+    url: "https://www.feucht.de/bauen-wirtschaft-umwelt/klimaschutz-foerderprogramme/foerderprogramme",
     stand: "August 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Zuschuss je kWp und gestaffelt nach Speichergröße — Jahresmittel aufgebraucht",
@@ -2446,9 +3165,21 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     conditions: [
       "Die Mittel für das laufende Jahr sind ausgeschöpft; Anträge sind derzeit nicht möglich",
-      "Balkonkraftwerke sind nicht Teil des Programms",
+      "Balkonkraftwerke sind nicht Teil dieses Programms — die Feuchter Gemeindewerke fördern sie nach Angabe der Gemeinde gesondert",
     ],
     combinableWith: BUND,
+    // Der Hinweis auf die Gemeindewerke steht wörtlich auf derselben Seite
+    // („Fördermöglichkeiten der Feuchter Gemeindewerke — Die fgw fördert unter
+    // anderem den Kauf von energieeffizienten Geräten und von
+    // Balkon-Solaranlagen.", am 30.08.2026 gelesen). Unser Satz
+    // „Balkonkraftwerke sind nicht Teil des Programms" war für sich richtig und
+    // als Auskunft trotzdem irreführend: Wer ihn liest, schließt daraus, dass es
+    // in Feucht überhaupt kein Balkon-Geld gibt — die Gemeinde selbst sagt das
+    // Gegenteil. Ein eigener Katalog-Eintrag für das fgw-Programm entsteht
+    // daraus NICHT im Vorbeigehen: Betrag und Bedingungen stehen beim
+    // Versorger, nicht hier, und ein Programm einzuschalten ist keine
+    // Selbstbedienung des Wächters.
+    //
     // Sätze und Staffel sind vollständig belegt und ließen sich sofort rechnen —
     // sie bleiben ohne Rechenwert, solange der Topf leer ist. Sobald der
     // Haushalt wieder öffnet, sind es 150 €/kWp (max. 1.000 €) und die
@@ -2460,7 +3191,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Gemeinde Limburgerhof", level: "kommune", region: "Limburgerhof",
     bundesland: "Rheinland-Pfalz", agsCode: "07338017",
     url: "https://www.limburgerhof.de/service/aktionen-und-kampagnen/foerderung-von-balkonkraftwerken/",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // Amtsseite: „Eine Beantragung ist nur in der Zeit vom 01.03.2024 bis zum
+    // 31.12.2026 möglich." Hier ist das Ende ausnahmsweise das ANTRAGSFENSTER
+    // und nicht bloß die Befristung einer Richtlinie — deshalb steht es drin.
+    beginntIso: "2024-03-01", endetIso: "2026-12-31",
     eligibility: ["privat"],
     coveredCosts: "Einmaliger Zuschuss je Balkonkraftwerk",
     maxFoerderung: "200 € einmalig",
@@ -2627,7 +3362,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Stadt Herbrechtingen", level: "kommune", region: "Herbrechtingen",
     bundesland: "Baden-Württemberg", agsCode: "08135020",
     url: "http://www.herbrechtingen.de/Startseite/stadt+_+buerger/foerderprogramm+balkonkraftwerke.html",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // Amtsseite: „Der Gemeinderat der Stadt Herbrechtingen hat in seiner Sitzung
+    // am 14.12.2023 … das stadteigene [Zuschussprogramm beschlossen]" und „Das
+    // Förderprogramm tritt ab dem 1.1.2024 in Kraft."
+    beginntIso: "2024-01-01", beschlossenIso: "2023-12-14",
     eligibility: ["privat"],
     coveredCosts: "Pauschale je Modul, höchstens zwei Module je Wohneinheit",
     maxFoerderung: "max. 100 € je Wohneinheit",
@@ -2665,11 +3404,27 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Der Antrag ist vor Beginn zu stellen; begonnen werden darf erst nach dem Zuwendungsbescheid",
       "Die Maßnahme darf nicht anderweitig mit öffentlichen Mitteln gefördert werden",
       "Anlagen im Neubau und bei ohnehin verpflichtender Dacherneuerung sind ausgeschlossen",
+      "Im Haushaltsjahr 2026 stehen 50.000 € für alle neun Fördertatbestände zusammen bereit",
     ],
-    combinableWith: BUND,
+    // `combinableWith: []` statt BUND (30.08.2026): Die Richtlinie 2026 schreibt
+    // in Nr. 1 wörtlich „Mit Ausnahme des Zuschusses zu Energieberatungen, dürfen
+    // die Fördermittel nicht mit Fördermitteln von anderen Stellen kumuliert
+    // werden." Der Text daneben sagte das schon, das strukturierte Feld
+    // behauptete das Gegenteil — dieselbe Fehlerklasse wie eine Beschriftung,
+    // die etwas anderes sagt als die Zahl. Dasselbe Muster wie bei Gaiberg.
+    combinableWith: [],
     // Kein Rechenwert: Der Topf ist leer. Der entscheidende Halbsatz „begrenzt
     // auf 50 % der Kosten" steht zudem NUR in der Richtlinie, nicht auf der
     // Seite — wer die Seite allein liest, hält es für eine reine Pauschale.
+    //
+    // Am 30.08.2026 an der Richtlinie 2026 („Richtlinie 2026 zur Förderung von
+    // Maßnahmen des Klimaschutzes", von der Programmseite verlinkt) im Volltext
+    // nachgelesen; alle übrigen Angaben zellgleich: Nr. 2.1 „Batteriespeicher-
+    // systeme in Verbindung mit einer Photovoltaikanlage … mit einmalig 500 Euro.
+    // Die Förderung ist auf 50 Prozent der förderfähigen Kosten … begrenzt",
+    // Mindestkapazität 2,5 kWh; Nr. 2.2 „Dach-Photovoltaikanlage ab einer
+    // Leistung von 3 kWp mit einmalig 500 Euro", ebenfalls 50 % gedeckelt;
+    // Nr. 1 „Pro Haushalt ist nur ein Fördertatbestand förderfähig."
   },
 
   "moormerland-balkonkraftwerke": {
@@ -2704,11 +3459,12 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     coveredCosts: "Hoher Anteil der Gesamtkosten — aber nur für einen einkommensbeschränkten Personenkreis",
     rates: [{ label: "Balkonkraftwerk (nur bei Einkommensgrenze)", value: "60 % der Gesamtkosten" }],
     conditions: [
-      "Antragsberechtigt sind nur Haushalte unterhalb einer Einkommensgrenze: Alleinerziehende unter 50.000 €, Familien mit einem Kind unter 60.000 €, mit zwei Kindern unter 70.000 € Bruttojahreseinkommen",
-      "Ebenfalls berechtigt sind Empfänger von Bürgergeld, Sozialhilfe, Wohngeld oder Kinderzuschlag",
+      "Antragsberechtigt sind nur Haushalte mit kindergeldberechtigten Kindern unterhalb einer Einkommensgrenze: Alleinerziehende mit mindestens einem Kind unter 50.000 €, Familien mit mindestens einem Kind unter 60.000 €, mit mindestens zwei Kindern unter 70.000 € Bruttojahreseinkommen",
+      "Ebenfalls berechtigt sind Empfänger von Bürgergeld, Sozialhilfe, Grundsicherung, Wohngeld oder Kinderzuschlag",
       "Der Antrag ist vor dem Kauf zu stellen; nur der Bewilligungsbescheid begründet einen Anspruch",
       "Mietende brauchen das Einverständnis der Vermieterseite oder der Eigentümergemeinschaft",
-      "Alternativ zahlt die Stadt 60 % direkt an den Händler, der Haushalt trägt 40 %",
+      "Je Haushalt ist nur ein Antrag möglich; Eigenbauten und überwiegend gebrauchte Anlagen sind ausgeschlossen",
+      "Alternativ zahlt die Stadt 60 % direkt an einen ihrer beiden Kooperationspartner, der Haushalt trägt 40 % — bei jedem anderen Händler wird der Zuschuss nachträglich ausgezahlt",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
@@ -2718,6 +3474,21 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // große Mehrheit schlicht falsch. Dieselbe Zurückhaltung wie beim
     // München-Pass, der Tübinger KreisBonusCard und dem Holzgerlinger
     // Familien- und Sozialpass — nur wiegt sie hier am schwersten.
+    //
+    // Am 29.08.2026 am Richtlinien-Volltext nachgelesen (Richtlinie 2023, in
+    // Kraft seit 04.09.2023; Antrags- und Auszahlungsformulare tragen 2026, das
+    // Programm läuft also). Satz und Grenzen sind zellgleich, DREI eigene
+    // Formulierungen waren es nicht — jede für sich ohne Wirkung aufs Geld, weil
+    // hier ohnehin nichts gerechnet wird, und jede trotzdem eine falsche
+    // Auskunft an den, der sie liest:
+    //  * „Alleinerziehende unter 50.000 €" ließ das Kind weg. Die Richtlinie
+    //    verlangt „mit einem oder mehreren kindergeldberechtigten Kindern" —
+    //    ein Single ohne Kind las sich als berechtigt.
+    //  * „mit einem Kind" / „mit zwei Kindern" ließ das „mindestens" weg und
+    //    verengte damit in die Gegenrichtung: Eine Familie mit drei Kindern fällt
+    //    unter die 70.000er-Grenze, nach unserem Satz gar nicht.
+    //  * Die Direktzahlung gilt nur bei zwei namentlich genannten
+    //    Kooperationspartnern, nicht bei „dem Händler".
   },
 
   "reichelsheim-steckersolar": {
@@ -2725,7 +3496,13 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Gemeinde Reichelsheim (Odenwald)", level: "kommune", region: "Reichelsheim (Odenwald)",
     bundesland: "Hessen", agsCode: "06437013",
     url: "https://www.reichelsheim.de/leben-in-reichelsheim/bauen-wohnen/foerderung-von-stecker-solaranlagen/",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // Amtsseite: „Die Gemeindevertretung der Gemeinde Reichelsheim hat in ihrer
+    // Sitzung am 23.02.2023 eine Richtlinie zur Förderung von Stecker-Solaranlagen
+    // auf den Weg gebracht." Kein `beginntIso`: Wann die Richtlinie in Kraft trat,
+    // sagt die Seite nicht, und zwischen Beschluss und Antragsstart liegen
+    // regelmäßig Monate.
+    beschlossenIso: "2023-02-23",
     eligibility: ["privat"],
     coveredCosts: "Pauschale je Anlage, gestaffelt nach Leistung",
     maxFoerderung: "max. 100 € je Wohnung",
@@ -3181,7 +3958,18 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
     foerdert: ["pv"],
-    percentOfCost: 0.1, pvCap: 1000,
+    percentOfCost: 0.1, pvCap: 1000, pvMin: 2.001,
+    // Die Untergrenze ist AUSSCHLIESSEND, und deshalb steht dort nicht 2:
+    // Die Gemeinde fördert Besitzer, „die auf ihrem Dach eine PV-Anlage mit mehr
+    // als 2000 Wp Leistung errichten möchten" (lohfelden.de, am 28.08.2026
+    // wörtlich gelesen). „Mehr als 2000 Wp" heißt, dass genau 2.000 Wp gerade
+    // NICHT gefördert werden — die kleinste Anlage, die zählt, hat 2.001 Wp, und
+    // das ist keine erfundene Genauigkeit, sondern der Wortlaut. `pvMin` kennt
+    // nur einschließende Grenzen (`kwp < pvMin` fällt heraus); mit 2 bekäme die
+    // 2,0-kWp-Anlage bis zu 1.000 €, die die Richtlinie ausschließt. Wer das
+    // hier auf 2 „glättet", baut genau den Fehler wieder ein, gegen den `pvMin`
+    // eingeführt wurde — ein Test hält beide Seiten fest.
+    //
     // Anlage UND Speicher teilen sich einen Deckel von 1.000 € — deshalb
     // ausdrücklich KEIN eigener `speicherPerKwh`/`speicherCap`. Beides zu
     // setzen würde den Zuschuss verdoppeln, den die Gemeinde in Wahrheit ein
@@ -3200,7 +3988,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Gemeinde Schwebheim", level: "kommune", region: "Schwebheim",
     bundesland: "Bayern", agsCode: "09678176",
     url: "https://www.schwebheim.de/foerderung-eines-batteriespeichersystems",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // Nr. 9 der Richtlinie: „Die Richtlinie tritt mit Wirkung zum 26.01.2026 in
+    // Kraft." Kein `endetIso`: Der 31.12.2026 ist das Auslaufen der Richtlinie,
+    // nicht der Tag, an dem die Gemeinde keine Anträge mehr annimmt.
+    beginntIso: "2026-01-26",
     eligibility: ["privat"],
     coveredCosts: "Zuschuss zum Batteriespeicher, gestaffelt nach Kapazität",
     maxFoerderung: "max. 1.000 € je Speichersystem",
@@ -3556,7 +4348,7 @@ export type FundingAmount = {
  */
 export type FundingAnlage =
   | { technik: "pv"; kwp: number; speicherKwh: number; kosten: number }
-  | { technik: "balkon"; wattPeak: number; kosten: number }
+  | { technik: "balkon"; wattPeak: number; kosten: number; wohnform?: Wohnform }
   | { technik: "waermepumpe"; kosten: number };
 
 /**
@@ -3677,13 +4469,40 @@ export function fundingAmount(
   if (!f || !foerdertTechnik(f, anlage.technik)) return { total: 0, computable: false, active };
 
   if (anlage.technik === "balkon") {
+    // Grenzt das Programm auf eine Wohnform ein und passt sie nicht, zahlt es
+    // nichts — und zwar als „nicht berechenbar", nicht als Betrag null. Der
+    // Unterschied steht auf der Karte: „für Eigentümer sind die Mittel
+    // aufgebraucht" ist eine andere Auskunft als „0 €".
+    if (f.nurWohnform && anlage.wohnform && f.nurWohnform !== anlage.wohnform) {
+      return { total: 0, computable: false, active };
+    }
+    // Solange die Wohnform unbekannt ist, wird ebenfalls nicht gerechnet: Der
+    // Rechner darf nicht raten, welcher der beiden Töpfe gemeint ist.
+    if (f.nurWohnform && !anlage.wohnform) return { total: 0, computable: false, active };
     const computable = !!(f.balkonPauschale || f.balkonProWp || f.balkonPercentOfCost || f.balkonTiers);
     if (!computable) return { total: 0, computable: false, active };
-    if (f.balkonPauschale) return { total: Math.round(f.balkonPauschale), computable: true, active };
-    if (f.balkonTiers) return { total: tierAmount(f.balkonTiers, anlage.wattPeak), computable: true, active };
+    // KEIN Zuschuss über dem Kaufpreis — BLOCKER (04.09.2026).
+    //
+    // Die Pauschalen des Katalogs liegen sonst durchweg unter dem billigsten Set
+    // (300 €), weshalb das jahrelang nicht auffiel. Mecklenburg-Vorpommern zahlt
+    // 500 € — und schreibt die Grenze selbst hin: „max. 500 EUR pro
+    // steckerfertiger PV-Anlage und Wohnungseinheit … jedoch maximal in Höhe der
+    // zuwendungsfähigen Ausgaben, sofern diese unter 500 EUR liegen"
+    // (lfi-mv.de/foerderfinder/mini-solaranlagen, am 04.09.2026 im Rohtext
+    // gelesen). Ohne Deckel rechnet der Balkon-Rechner einem Mieter in M-V auf
+    // das Ein-Modul-Set 500 € an, zieht sie von 300 € Kaufpreis ab und zeigt eine
+    // Anlage, die nichts kostet und sich am ersten Tag amortisiert hat.
+    //
+    // Der Deckel gilt ALLEN Balkon-Sätzen, nicht nur der Pauschale: Ein Zuschuss
+    // über dem Kaufpreis ist in jeder Bauform derselbe Unsinn, und ihn nur dort
+    // zu setzen, wo er heute bindet, hieße auf den nächsten Fall zu warten. Für
+    // jedes andere Programm im Katalog ist er wirkungslos.
+    const deckel = (betrag: number) => Math.round(Math.min(betrag, anlage.kosten));
+    if (f.balkonPauschale) return { total: deckel(f.balkonPauschale), computable: true, active };
+    if (f.balkonTiers) return { total: deckel(tierAmount(f.balkonTiers, anlage.wattPeak)), computable: true, active };
     if (f.balkonProWp) {
       const roh = anlage.wattPeak * f.balkonProWp;
-      return { total: Math.round(f.balkonCap ? Math.min(roh, f.balkonCap) : roh), computable: true, active };
+      return { total: deckel(f.balkonCap ? Math.min(roh, f.balkonCap) : roh), computable: true, active };
     }
     return { total: anteil(anlage.kosten, f.balkonPercentOfCost!, f.balkonCap), computable: true, active };
   }

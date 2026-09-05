@@ -257,6 +257,64 @@ export const DATA_SOURCES = {
     url: "https://www.umweltbundesamt.de/daten/umweltzustand-trends/energie/erneuerbare-konventionelle-stromerzeugung",
     note: "Datenbasis: AG Energiebilanzen",
   },
+  /**
+   * Zusagen und Volumen der Bundesförderung je Landkreis und Programm, aus dem
+   * KfW-Förderreport (ein PDF von rund 1.230 Seiten je Jahrgang).
+   *
+   * KEINE offene Lizenz — die Erlaubnis ist eine AUSNAHME im Impressum der KfW,
+   * am 26.08.2026 im Volltext gelesen (Auszug in
+   * docs/quellen/kfw-foerderreport/kfw-impressum-nutzungsklausel.txt):
+   *
+   *   „Auf den KfW-Internetseiten zur Verfügung gestellte Texte, Textteile,
+   *    Grafiken, Tabellen, Software oder Bildmaterialien … dürfen ohne
+   *    vorherige Zustimmung der KfW auf keine Art … verändert, nicht
+   *    vervielfältigt und nicht an Dritte verteilt oder übermittelt werden.
+   *    Dies gilt nicht für die Beiträge in den Rubriken ‚Research‘, ‚Newsroom‘
+   *    und ‚Marketingunterstützung‘. Diese Beiträge dürfen unter Angabe der
+   *    Quelle zu Informations-Zwecken an Dritte weitergereicht und
+   *    vervielfältigt werden."
+   *
+   * DIE AUSNAHME TRÄGT NUR, WEIL DER BERICHT IM NEWSROOM LIEGT. Seine Adresse
+   * beginnt mit `/Presse-Newsroom/Pressematerial/` — genau die Rubrik, die der
+   * Satz nennt. Ein KfW-Dokument von woanders (Merkblätter, Formulare, die
+   * Programmseiten) fällt NICHT darunter; dort gilt das Verbot des Satzes davor.
+   * Wer diese Quelle um ein weiteres KfW-Dokument ergänzt, prüft zuerst dessen
+   * Adresse.
+   *
+   * ZWEI DINGE, DIE DIESE KLAUSEL GERADE NICHT ERLAUBT — und die den Umgang
+   * mit dieser Quelle bestimmen:
+   *
+   *   • VERÄNDERN. Die Ausnahme nennt „weitergereicht und vervielfältigt", das
+   *     Änderungsverbot des Satzes davor hebt sie nicht auf. Deshalb ist der
+   *     Zusatz „Eigene Berechnung" in der Quellenzeile Pflicht und keine
+   *     Höflichkeit: Er sagt, dass wir kein verändertes fremdes Werk zeigen,
+   *     sondern eine eigene Auswertung daraus.
+   *   • WEITERVERBREITEN DES BESTANDS. Erlaubt ist die Weitergabe zu
+   *     Informationszwecken unter Quellenangabe. Ein Roh-Download oder eine
+   *     offene Schnittstelle auf die übernommenen Tabellen wäre etwas anderes;
+   *     deshalb liegen sie hinter dem Dienstschlüssel (RLS ohne Policy).
+   *
+   * WAS ALS BEGRÜNDUNG NICHT TRÄGT und deshalb nirgends stehen darf: § 5 UrhG
+   * (amtliche Werke) greift nicht gegen das Datenbankherstellerrecht — der EuGH
+   * hat das in Apis-Hristovich (C-545/07, Rn. 70/71) entschieden, Volltext in
+   * docs/quellen/eugh-datenbankrecht/. Und das Datennutzungsgesetz trägt hier
+   * nicht: Der Satz, mit dem wir das Crawlen kommunaler Seiten begründen,
+   * funktioniert bei Gemeinden, weil deren Informationsarbeit in den
+   * Gemeindeordnungen verankert ist; das KfW-Gesetz kennt keine
+   * Veröffentlichungspflicht für Fördererfolge.
+   *
+   * Die vollständige Quellenzeile mit Jahrgang und Stichtag baut
+   * `kfwQuellenzeile()` in lib/kfw-foerderdaten.ts aus diesem Eintrag — Jahrgang
+   * und Stichtag können hier nicht stehen, weil jeder Jahrgang seinen eigenen
+   * hat.
+   */
+  kfwFoerderreport: {
+    name: "KfW Bankengruppe",
+    license: "Weitergabe zu Informationszwecken unter Quellenangabe gestattet (Impressum der KfW)",
+    licenseUrl: "https://www.kfw.de/%C3%9Cber-die-KfW/Impressum.html",
+    url: "https://www.kfw.de/%C3%9Cber-die-KfW/Newsroom/",
+    note: "Eigene Berechnung",
+  },
 } as const satisfies Record<string, DataSource>;
 
 /**

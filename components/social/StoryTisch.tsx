@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { v, space, pad } from "../../lib/theme";
 import { FeedVorschau } from "./FeedVorschau";
 import { VorlagenEditor } from "./VorlagenEditor";
@@ -8,6 +8,9 @@ import { Kennung } from "./Kennung";
 import { fuelle } from "../../lib/social-vorlage";
 import { KARTEN_STILE, KARTEN_STIL_NAME, KARTEN_STIL_STANDARD, type KartenStil } from "../../lib/social-karten-stil";
 import { urteil, type Pruefung } from "../../lib/social-pruefung-kern";
+import type { Befund as MechanikBefund } from "../../lib/social-mechanik";
+import { Freigabe } from "./Freigabe";
+import { SendenKnopf } from "./SendenKnopf";
 import { BILDFORM_NAME, moeglicheFormen, templateVon, type PostBild, type SocialPost } from "../../lib/social-posts";
 
 // Eine Story am Redaktionstisch: so, wie sie im Feed steht, plus die drei
@@ -27,11 +30,44 @@ import { BILDFORM_NAME, moeglicheFormen, templateVon, type PostBild, type Social
 export function StoryTisch({
   post,
   pruefungen,
+  befunde,
+  gesendetAm,
+  abdruck,
   kategorieHinweis,
   ohneTitel,
+  onPruefung,
 }: {
   post: SocialPost;
   pruefungen: Pruefung[];
+  /** Was die mechanische Pruefung an dieser Fassung festgestellt hat. */
+  befunde: MechanikBefund[];
+  /** Ging genau DIESE Fassung schon einmal raus? */
+  /**
+   * Wann diese Fassung auf welchem Kanal rausging.
+   *
+   * Eine Zuordnung, kein einzelnes Datum: Derselbe Beitrag geht auf zwei
+   * Kanäle, und ein Versand auf dem einen sagt nichts über den anderen.
+   */
+  gesendetAm?: Record<string, string>;
+  /**
+   * Der Fingerabdruck der ABGELEGTEN Fassung, vom Server gerechnet.
+   *
+   * Der Browser rechnet ihn nicht mehr selbst: Die frühere Fassung nahm dafür
+   * eine 32-Bit-Prüfsumme, weil sie hier laufen musste — und die war
+   * nachbaubar. Jetzt gibt es eine Stelle, die hasht, und sie sitzt auf dem
+   * Server. Ob der ENTWURF davon abweicht, weiß diese Komponente ohnehin: Sie
+   * hat die Änderung selbst gemacht.
+   */
+  abdruck: string;
+  /**
+   * Meldung nach oben, wenn hier eine Prüfung erteilt wurde.
+   *
+   * Nur für Ansichten, die den Prüfstand NOCH EINMAL anzeigen — das Raster tut
+   * das an jeder Kachel. Ohne diese Meldung stünde dort weiter „offen", während
+   * das Fenster darüber „freigegeben" sagt: zwei Aussagen über dieselbe Sache
+   * auf einem Bildschirm.
+   */
+  onPruefung?: (postId: string, p: Pruefung) => void;
   /**
    * Überschrift weglassen — für den Tisch im Fenster, dessen Kopfzeile den
    * Titel schon trägt. Sonst stünde er zweimal untereinander.
@@ -49,18 +85,58 @@ export function StoryTisch({
   const [offen, setOffen] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [laeuft, setLaeuft] = useState(false);
+  // Erteilte Prüfungen wandern in den Zustand, damit das Urteil im selben Moment
+  // umspringt wie beim Umfärben. Ohne das müsste man die Seite neu laden, um zu
+  // sehen, dass die eigene Freigabe angekommen ist.
+  const [gepruefte, setGepruefte] = useState<Pruefung[]>(pruefungen);
+  // Die Karte, die beim Senden aufgenommen wird — dieselbe, die auf dem
+  // Bildschirm steht. Ein zweiter Renderweg wäre ein anderes Bild.
+  const karte = useRef<HTMLDivElement | null>(null);
+  /**
+   * Was zuletzt wirklich in der Ablage landete.
+   *
+   * Braucht es, weil die Eigenschaften von oben nach dem Speichern noch den
+   * alten Stand tragen — die Serverseite rendert nicht neu. Ohne diesen Merker
+   * bliebe „Speichern" nach dem Speichern aktiv und, viel schlimmer, die
+   * Freigabe dauerhaft gesperrt: Sie hängt an genau dieser Frage.
+   */
+  const [gespeichert, setGespeichert] = useState({
+    stil: post.bild?.stil ?? KARTEN_STIL_STANDARD,
+    form: post.bild?.art ?? null,
+    vorlage: post.vorlage ?? "",
+  });
 
   const werte = Object.fromEntries((post.platzhalter ?? []).map((p) => [p.name, p.wert]));
   // Bearbeitbare Posts zeigen den Entwurf, die übrigen ihren eingebauten Text.
   const text = post.vorlage ? fuelle(entwurf, werte) : post.text;
   const bild = post.bild ? { ...post.bild, stil, ...(form ? { art: form } : {}) } : null;
   const formen = post.bild ? moeglicheFormen(post.bild) : [];
-  const stand = urteil({ text, bild }, pruefungen);
-
   const geaendert =
-    stil !== (post.bild?.stil ?? KARTEN_STIL_STANDARD) ||
-    form !== (post.bild?.art ?? null) ||
-    (!!post.vorlage && entwurf !== post.vorlage);
+    stil !== gespeichert.stil ||
+    form !== gespeichert.form ||
+    (!!post.vorlage && entwurf !== gespeichert.vorlage);
+  // Dasselbe Urteil, das die Freigabe-Karte zeigt — hier für den Sende-Knopf.
+  // Es wird nicht zweimal gerechnet, sondern einmal und zweimal gelesen.
+  const urteilOk = !geaendert && urteil(abdruck, gepruefte).ok;
+
+  // Warum gerade NICHT gesendet werden kann — einmal abgeleitet, für beide
+  // Kanäle. Zwei Ableitungen wären zwei Wahrheiten darüber, ob ein Beitrag
+  // fertig ist, und die eine ginge beim nächsten Umbau auseinander.
+  const gemeinsameSperre = geaendert
+    ? "Erst speichern."
+    : befunde.some((b) => b.schwere === "sperre")
+      ? "Die mechanische Prüfung sperrt — siehe oben."
+      : !urteilOk
+        ? "Es fehlt eine Freigabe."
+        : undefined;
+
+  /** Warum auf DIESEM Kanal gerade nicht gesendet werden kann. */
+  const sperreFuer = (kanal: string): string | undefined => {
+    if (geaendert) return "Erst speichern.";
+    const raus = gesendetAm?.[kanal];
+    if (raus) return `Diese Fassung ging dort bereits am ${new Date(raus).toLocaleDateString("de-DE")} raus.`;
+    return gemeinsameSperre;
+  };
 
   /**
    * Alles auf einmal ablegen — Text, Farbschema, Bildform.
@@ -96,6 +172,9 @@ export function StoryTisch({
             : `Nicht gespeichert: ${j.error ?? res.status}`,
         );
       } else {
+        // Erst jetzt gilt der Entwurf als abgelegt — und erst jetzt darf er
+        // freigegeben werden.
+        setGespeichert({ stil, form, vorlage: entwurf });
         setStatus(
           j.ungenutzt?.length
             ? `Gespeichert. Nicht mehr im Text: ${j.ungenutzt.map((x) => `{${x}}`).join(", ")}`
@@ -120,7 +199,7 @@ export function StoryTisch({
         flexWrap: "wrap",
       }}
     >
-      <div style={{ flex: "0 0 auto" }}>
+      <div style={{ flex: "0 0 auto" }} ref={karte}>
         <FeedVorschau bild={bild!} text={text} breite={440} />
       </div>
 
@@ -219,18 +298,69 @@ export function StoryTisch({
           </div>
         </div>
 
-        {/* Freigabe: hängt an Text UND Bild. */}
-        <div
-          style={{
-            marginTop: space.lg,
-            padding: pad("sm", "md"),
-            borderRadius: v("--radius-sm"),
-            background: v("--color-bg-muted"),
-            fontSize: v("--font-size-small"),
-            color: stand.ok ? v("--color-positive-text") : v("--color-text-secondary"),
+        {/* Freigabe: hängt an Text UND Bild, und wird hier auch erteilt.
+            Ungespeichertes lässt sich nicht freigeben — die Senderoute baut den
+            Text später aus der Ablage neu, ein Entwurf im Browser käme dort gar
+            nicht an. */}
+        <Freigabe
+          postId={post.id}
+          abdruck={abdruck}
+          befunde={befunde}
+          /* Ein ungespeicherter Entwurf gehört zu KEINER abgelegten Fassung.
+             Die Freigabe rechnet ihr Urteil deshalb gegen einen Abdruck, den es
+             nicht gibt — das ist genau richtig und ohne Hash im Browser zu
+             haben: Was auf dem Bildschirm steht, ist dann nachweislich nicht
+             das, wofür je jemand geradegestanden hat. */
+          gilt={!geaendert}
+          pruefungen={gepruefte}
+          onErteilt={(p) => {
+            setGepruefte((alte) => [
+              // Dieselbe Fassung, dieselbe Art: der neue Befund ersetzt den
+              // alten — genauso wie in der Ablage, die darauf einen Schlüssel hat.
+              ...alte.filter((a) => !(a.art === p.art && a.fassung_fingerabdruck === p.fassung_fingerabdruck)),
+              p,
+            ]);
+            onPruefung?.(post.id, p);
           }}
-        >
-          {stand.ok ? "Freigegeben — Text und Bild geprüft." : stand.grund}
+          gesperrt={
+            geaendert
+              ? "Erst speichern, dann freigeben: Eine Prüfung gilt der Fassung in der Ablage, nicht dem Entwurf auf dem Bildschirm."
+              : undefined
+          }
+        />
+
+        {/* Die Auslöser. Sie beurteilen nichts — sie lösen aus, was die Sperren
+            ohnehin freigegeben haben. Die Begründung, warum gerade nicht
+            gesendet werden kann, steht daneben, statt dass der Knopf nur grau
+            ist: Ein toter Knopf ohne Grund schickt jemanden dreimal um den
+            Block. */}
+        {/* EIN KNOPF JE KANAL. Die Sperren sind dieselben — Mechanik, Freigabe,
+            Doppelversand —, nur das Versandprotokoll unterscheidet sie: Ein
+            Beitrag, der auf LinkedIn draußen ist, ist auf Instagram noch nicht
+            gesendet. Der Instagram-Knopf erscheint nur, wo der Beitrag für
+            diesen Kanal überhaupt vorgesehen ist; die Story selbst sagt das. */}
+        <div style={{ display: "flex", gap: space.sm, flexWrap: "wrap", alignItems: "flex-start" }}>
+          <SendenKnopf
+            postId={post.id}
+            abdruck={abdruck}
+            bildAlt={bild ? `${bild.aussage}. ${bild.gemessen}.` : ""}
+            kartenRef={karte}
+            gesperrtWeil={sperreFuer("linkedin")}
+          />
+          {post.kanal.includes("instagram") && (
+            <SendenKnopf
+              kanal="instagram"
+              postId={post.id}
+              abdruck={abdruck}
+              bildAlt={bild ? `${bild.aussage}. ${bild.gemessen}.` : ""}
+              kartenRef={karte}
+              gesperrtWeil={
+                !bild
+                  ? "Instagram kennt keinen reinen Textbeitrag — ohne Bild geht dort nichts."
+                  : sperreFuer("instagram")
+              }
+            />
+          )}
         </div>
 
         <div style={{ display: "flex", gap: space.sm, marginTop: space.md, alignItems: "center", flexWrap: "wrap" }}>

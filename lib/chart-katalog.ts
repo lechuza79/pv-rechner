@@ -39,6 +39,7 @@ export const CHART_KATALOG: KatalogEintrag[] = [
   { datei: "ErzeugungWidget", art: "widget", wofuer: "Erneuerbaren-Erzeugung als Radial, wechselt auf Wunsch selbst durch die Träger (autoswitchMs)." },
   { datei: "charts/JetztDonut", art: "widget", wofuer: "Strommix-Momentaufnahme aus dem letzten Punkt einer Erzeugungsreihe." },
   { datei: "charts/ZubauWidget", art: "widget", wofuer: "PV-Zubau über die Jahre mit Förder-Meilensteinen (Zeitleiste + Chart)." },
+  { datei: "charts/AnlagenbestandWidget", art: "widget", wofuer: "Deutscher Solarbestand nach Anlagentyp: Anteil an der Stückzahl gegen Anteil an der Leistung." },
   { datei: "charts/ZubauTimelineChart", art: "baustein", wofuer: "Der Chart-Teil der Zubau-Story: Balken je Jahr plus zwei Vergütungslinien." },
   { datei: "charts/GruengasWidget", art: "widget", wofuer: "Heizkosten-Varianten über 20 Jahre, wahlweise als Balken oder Vollansicht." },
   { datei: "charts/GasPriceStackChart", art: "baustein", wofuer: "Gaspreis-Bestandteile gestapelt über die Zeit." },

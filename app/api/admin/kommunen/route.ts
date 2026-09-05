@@ -3,6 +3,8 @@ import { supabase as serviceDb } from "../../../../lib/supabase-server";
 import { briefFuerGemeinde, istBriefFehler } from "../../../../lib/kommunen-brief";
 import { isOutreachStatus, UNBEANTWORTET, UNBEANTWORTET_TAGE } from "../../../../lib/outreach-status";
 import { isAdminSession } from "../../../../lib/admin-guard";
+import { zaehleAbos, type AboSpiegel, type AboZeile } from "../../../../lib/kommunen-abo-spiegel";
+import { aboZeilenFuerAuswertung } from "../../../../lib/gemeinde-abo";
 
 // Admin-Cockpit für den Kommunen-Outreach. Liest/schreibt kommunen_kontakt
 // (interne, nicht-öffentliche Tabelle) über den Service-Client. Auth läuft über
@@ -30,6 +32,11 @@ export async function GET(req: NextRequest) {
   const sort = sp.get("sort") ?? "";
   const kampagne = sp.get("kampagne") ?? "";
   const charge = sp.get("charge") ?? "";
+  // Ein VERSANDTAG als Filter — das ist der Batch, wie er in der Übersicht
+  // steht. Schub und Charge beantworten „welche Auswahl", der Tag beantwortet
+  // „was ging an dem Tag raus", und das ist die Frage, mit der man aus der
+  // Übersicht kommt.
+  const tag = (sp.get("tag") ?? "").slice(0, 10);
   const page = Math.max(0, parseInt(sp.get("page") ?? "0", 10) || 0);
 
   // Immer inner-join auf mastr_regions (jede Zeile hat per FK eine Gemeinde) —
@@ -61,6 +68,11 @@ export async function GET(req: NextRequest) {
     query = query.eq("outreach_status", status);
   }
   if (hasLink) query = query.not("kontakt_url", "is", null);
+  // Der Tag steht als Zeitstempel in der Spalte, also von Mitternacht bis
+  // Mitternacht eingrenzen statt auf Gleichheit prüfen.
+  if (/^\d{4}-\d{2}-\d{2}$/.test(tag)) {
+    query = query.gte("contacted_at", `${tag}T00:00:00Z`).lt("contacted_at", `${tag}T23:59:59.999Z`);
+  }
   if (kampagne) query = query.eq("kampagne", kampagne);
   if (charge) query = query.eq("charge", parseInt(charge, 10));
   if (q) query = query.ilike("mastr_regions.name", `%${q}%`);
@@ -89,8 +101,31 @@ export async function GET(req: NextRequest) {
     return teile.every(Boolean) ? `/solar-atlas/${teile.join("/")}` : null;
   };
 
+  // Eintragungen ins Gemeinde-Abo — das dritte Signal neben Antwort und
+  // Veröffentlichung, und für eine angeschriebene Gemeinde das schnellste: Der
+  // Brief verlinkt genau die Seite, auf der die Eintragung sitzt.
+  //
+  // Nur für die Gemeinden DIESER Seite, nicht für alle 11.000 — und die
+  // Adressen bleiben hier, nach draußen gehen Zahlen (lib/kommunen-abo-spiegel).
+  // Fällt die Abfrage aus, bleibt die Spalte leer: eine Zusatzangabe darf die
+  // Liste nicht mitnehmen.
+  const regionIds = zeilen.map((z) => z.region_id);
+  let aboSpiegel = new Map<string, AboSpiegel>();
+  if (regionIds.length) {
+    // Die E-Mail-Adresse wird NICHT mitgelesen. Gebraucht wird sie nicht — ob
+    // jemand aus der Verwaltung kommt, steht als Selbstauskunft in der Zeile —
+    // und was nicht abgefragt wird, kann auch nicht versehentlich nach draußen
+    // geraten.
+    const aboRows = await aboZeilenFuerAuswertung(regionIds);
+    if (aboRows.length) aboSpiegel = zaehleAbos(aboRows as AboZeile[]);
+  }
+
   return NextResponse.json({
-    rows: zeilen.map((z) => ({ ...z, atlas_path: atlasPfad(z.region_id) })),
+    rows: zeilen.map((z) => ({
+      ...z,
+      atlas_path: atlasPfad(z.region_id),
+      abo: aboSpiegel.get(z.region_id) ?? null,
+    })),
     total: count ?? 0,
     page,
     pageSize: PAGE_SIZE,

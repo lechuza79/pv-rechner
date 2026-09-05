@@ -157,7 +157,7 @@ export function TemplateGalerie({ zeilen, zoom = 0.32 }: { zeilen: GalerieZeile[
                     <code
                       style={{
                         fontFamily: v("--font-mono"),
-                        fontSize: 11,
+                        fontSize: v("--font-size-caption"),
                         background: v("--color-bg-muted"),
                         padding: "1px 6px",
                         borderRadius: 4,
@@ -168,7 +168,7 @@ export function TemplateGalerie({ zeilen, zoom = 0.32 }: { zeilen: GalerieZeile[
                     </code>
                     <span
                       style={{
-                        fontSize: 10,
+                        fontSize: v("--font-size-micro"),
                         padding: "1px 6px",
                         borderRadius: 8,
                         background: abgenommen ? v("--color-accent") : v("--color-bg-muted"),

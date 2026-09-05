@@ -65,7 +65,7 @@ export function AuswahlSkipper({
           border: `1px solid ${v("--color-border")}`,
           background: v("--color-bg-muted"),
           color: v("--color-text-secondary"),
-          fontSize: 18,
+          fontSize: v("--font-size-h3"),
           lineHeight: 1,
           cursor: gesperrt ? "default" : "pointer",
           opacity: gesperrt ? 0.4 : 1,

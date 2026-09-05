@@ -2,7 +2,7 @@
 
 import { useId, useState } from "react";
 import { v, space } from "../lib/theme";
-import { FundingConditions, FundingRates } from "./FundingProgramParts";
+import { FundingConditions, FundingRates, istDachSicht } from "./FundingProgramParts";
 import { type FundingProgram, type FundingTechnik } from "../lib/funding-programs";
 
 /**
@@ -127,25 +127,10 @@ export default function FundingTechnikTabs({
           {program.maxFoerderung && istDachSicht(gezeigt) && (
             /* Wie eine Konditionszeile gesetzt, nicht als Fließtext: Es IST eine
                Kondition — Beschriftung links, Betrag rechts in der Zahlen-Schrift. */
-            <FundingRates rates={[{ label: "Höchstbetrag", value: program.maxFoerderung.replace(/^max\.\s*/, "") }]} />
+            <FundingRates rates={[{ label: "Höchstbetrag", value: program.maxFoerderung.replace(/^max\.\s*/, "") }]} technik={gezeigt} />
           )}
         </div>
       </div>
     </>
   );
-}
-
-/**
- * Der Gesamt-Höchstbetrag beschreibt in aller Regel die Dachanlage.
- *
- * Bei Nidda stand er als „1.500 € (Dachanlage + Speicher)" auch unter dem
- * Balkonkraftwerk und behauptete dort einen Deckel, der siebeneinhalbmal über
- * dem echten liegt (200 €). Ein Betrag am falschen Ort ist schlimmer als keiner:
- * Er sieht aus wie eine Auskunft.
- *
- * Ungefiltert wird er weiter gezeigt — dort steht er neben allen Sätzen und ist
- * durch seinen eigenen Zusatz („Dachanlage + Speicher") eindeutig.
- */
-function istDachSicht(technik: FundingTechnik | undefined): boolean {
-  return technik === undefined || technik === "pv" || technik === "waermepumpe";
 }

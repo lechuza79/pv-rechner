@@ -1,0 +1,13 @@
+DataForSEO — Terms of Service, Auszug
+Abgerufen am 29.08.2026 von https://dataforseo.com/terms-of-service
+Stand der Bedingungen laut Seitenfuss: UPDATED 12 JUNE, 2026
+
+Relevant fuer die Frage, ob Google-Bewertungen ueber einen Dritten bezogen
+werden duerfen. Die beiden Klauseln im Wortlaut:
+
+7. DATA USAGE RESTRICTIONS
+7.1 – You acknowledge and agree that any search engine results page (SERP) data or content obtained through the Service, including but not limited to data from Google, Bing, Yahoo, and other search engine providers, shall not be used to compete with or adversely affect the business interests of the search engine providers from which such data originates.
+7.2 – You agree to indemnify, defend, and hold harmless DataForSEO from any and all claims, damages and losses arising from or relating to Your violation of Section 7.1, including any use of SERP data that violates the terms of service or legal rights of the search engine providers.
+8. DISCLAIMER
+8.1 – DataForSEO cannot be held liable for system down time, crashes or data loss. We cannot be held liable for any predicated estimate of profits which a client would have gained if DataForSEO site was functioning. Certain services provided by DataForSEO are resold. DataForSEO holds no responsibility for the use of our clients’ accounts. Failure to comply with any terms or conditions will result in the automatic deactivation of the account in question. We reserve the right to remove any account, without advance notice for any reason without restitution, as DataForSEO sees fit.
+8.2. – DataForSEO cannot be held responsible or liable for errors made by customers in the integration or use of DataForSEO APIs and/or related services, including but not limited to the improper task setting or repeated task submissions. In particular, if You set identical API tasks, this is considered a user-side error. Our system provides options within the account dashboard to limit repetitive task setting, and we encourage You to use these options to prevent such occurrences. Please note that DataForSEO will not issue refunds for tasks affected by user-side errors, as these consume the resources of DataForSEO and affect its system performance.

@@ -9,6 +9,7 @@ import { GREEN_GAS_CONFIG } from "../greengas-config";
 import { CO2_PRICE } from "../co2-config";
 import { FEED_IN_GEPRUEFT_ISO } from "../feedin-config";
 import { EEG_REFORM_STAND } from "../eeg-reform-config";
+import { heuteInBerlin } from "../zeit";
 
 /**
  * Kohärenz-Wächter für die sichtbare „Stand:"-Zeile unter den Rechnern.
@@ -30,7 +31,15 @@ import { EEG_REFORM_STAND } from "../eeg-reform-config";
  */
 
 const ROOT = join(__dirname, "..", "..");
-const HEUTE = new Date().toISOString().slice(0, 10);
+// Der DEUTSCHE Kalendertag, nicht der von UTC. Ein Prüfdatum ist ein
+// Kalendertag: Es steht als „geprüft am 1. September" unter dem Rechner. Mit
+// `toISOString()` gemessen liegt „heute" zwischen 00:00 und 02:00 deutscher
+// Sommerzeit einen Tag zurück — ein Wächter-Lauf kurz nach Mitternacht stempelt
+// dann korrekt den laufenden Tag und wird von dieser Schranke dafür rot.
+// Genau so eingetreten am 01.09.2026 um 00:42 Uhr. `heuteInBerlin` gibt es für
+// diesen Fall bereits (lib/zeit.ts); die Schranke selbst bleibt unverändert
+// scharf — sie verbietet weiterhin jedes Datum, das in der Zukunft liegt.
+const HEUTE = heuteInBerlin();
 
 /** Quelltext ohne Kommentare — sonst schlägt ein Verbot schon an der Stelle an,
  *  an der die Regel erklärt wird. */

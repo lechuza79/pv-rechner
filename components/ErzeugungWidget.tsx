@@ -156,7 +156,7 @@ export default function ErzeugungWidget({
         border: "1px solid var(--color-border)",
         background: "transparent",
         color: "var(--widget-muted)",
-        fontSize: 11,
+        fontSize: v("--font-size-caption"),
         fontWeight: 600,
         cursor: "pointer",
         userSelect: "none",
@@ -197,7 +197,7 @@ export default function ErzeugungWidget({
           border: 0,
           background: "transparent",
           color: "var(--widget-muted)",
-          fontSize: 18,
+          fontSize: v("--font-size-h3"),
           lineHeight: 1,
           cursor: "pointer",
           padding: 0,
@@ -211,7 +211,7 @@ export default function ErzeugungWidget({
       </button>
       <div
         style={{
-          fontSize: 12,
+          fontSize: v("--font-size-small"),
           fontWeight: 600,
           color: "var(--widget-fg)",
           paddingRight: 24,
@@ -221,7 +221,7 @@ export default function ErzeugungWidget({
       </div>
       <div
         style={{
-          fontSize: 12,
+          fontSize: v("--font-size-small"),
           lineHeight: 1.5,
           color: "var(--widget-muted)",
           textAlign: "left",

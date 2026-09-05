@@ -84,9 +84,12 @@ export const CO2_PRICE: Co2PriceConfig = {
   },
   annualIncrease: 8,
   validFrom: "2026-08-14",
-  // Startwert = `validFrom`: Am 14.08.2026 hat der Wächter-Lauf den
+  // Startwert war `validFrom`: Am 14.08.2026 hat der Wächter-Lauf den
   // Kabinettsentwurf zum Korridor gelesen und die Stützstellen daraus gesetzt.
-  geprueftIso: "2026-08-14",
+  // 03.09.2026: Lauf hat die Leitquellen wieder erreicht (BMUKN-Gesetzesseite,
+  // Terminplan der Länderkammer, UBA-Veröffentlichungsreihe) — Verfahrensstand
+  // und Stützstellen unverändert, deshalb wandert nur dieses Datum.
+  geprueftIso: "2026-09-03",
   // Bewusst VOR dem erwarteten Bundestagsbeschluss (Herbst 2026): Ein Satz, der
   // "Bundestag steht aus" sagt, wird am Tag des Beschlusses von selbst falsch.
   reviewBy: "2026-11-30",

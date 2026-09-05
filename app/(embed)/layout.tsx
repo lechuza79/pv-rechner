@@ -36,6 +36,17 @@ const energyVars = Object.entries(tokens)
   .map(([k, val]) => `    ${k}:${val};`)
   .join("\n");
 
+// Dieselbe Begründung für die Schriftgrößen-Skala: Ein iframe erbt von seiner
+// Seite NICHTS, also auch die Tokens der Site nicht. Ohne diesen Block wäre
+// jedes `var(--font-size-…)` im Embed eine undefinierte Variable — die Angabe
+// fiele ersatzlos weg, und zwar lautlos: Der Text erbt dann irgendeine Größe
+// und sieht nur „irgendwie anders" aus. Erzeugt statt getippt, damit Embed und
+// Seite dieselbe Skala tragen.
+const fontSizeVars = Object.entries(tokens)
+  .filter(([k]) => k.startsWith("--font-size"))
+  .map(([k, val]) => `    ${k}:${val};`)
+  .join("\n");
+
 // Standalone root layout for embeddable widgets.
 // No site header/footer, no global CSS variables, no external font CDN.
 // All widget styling lives inside the page itself, driven by the
@@ -125,12 +136,15 @@ const baseStyles = `
        Aus lib/theme.ts generiert (siehe energyVars oben), damit sie nie von der
        Site-Palette abweicht. */
 ${energyVars}
+
+    /* Schriftgrößen-Skala (siehe fontSizeVars oben). */
+${fontSizeVars}
   }
   body{
     background:transparent;
     color:var(--widget-fg);
     font-family:var(--widget-font-family);
-    font-size:14px;
+    font-size:var(--font-size-body);
     line-height:1.4;
   }
 
@@ -243,7 +257,13 @@ ${energyVars}
     .mastr-live{width:fit-content;margin-inline:auto}
     .mastr-kpis{grid-template-columns:repeat(3,1fr);gap:8px}
     .mastr-kpis .kachel-tile{padding:10px}
-    .mastr-kpis .kachel-value{font-size:15px !important;letter-spacing:-0.4px}
+    /* Zusammengedrängte Kachel: der Wert schrumpft — und seine Einheit MUSS
+       mitschrumpfen. Stünde sie weiter auf der Sekundär-Stufe, wäre sie fast
+       so groß wie ihr Wert, und der Größenunterschied sagt hier, welche der
+       beiden Zahlen die Aussage trägt. Genau dieser Fehler ist beim
+       Zusammenführen der Einheiten-Formatierer schon einmal passiert. */
+    .mastr-kpis .kachel-value{font-size:var(--font-size-lead) !important;letter-spacing:-0.4px}
+    .mastr-kpis .kachel-unit{font-size:var(--font-size-caption)}
   }
 `;
 

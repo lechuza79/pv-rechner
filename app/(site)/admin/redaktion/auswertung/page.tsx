@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { isAdminSession } from "../../../../../lib/admin-guard";
 import { ladeKonto } from "../../../../../lib/social-konten";
 import { ablaufBefund } from "../../../../../lib/social-ablauf";
+import { ladeVersand } from "../../../../../lib/social-versand-log";
+import InfoTooltip from "../../../../../components/InfoTooltip";
 import { v, space, pad } from "../../../../../lib/theme";
 
 // Auswertung: Was ist rausgegangen, und was können wir darüber überhaupt wissen.
@@ -24,6 +26,7 @@ export default async function RedaktionAuswertung() {
   if (!(await isAdminSession())) redirect("/login?next=/admin/redaktion/auswertung");
 
   const konto = await ladeKonto("linkedin");
+  const versand = await ladeVersand();
   const befund = konto ? ablaufBefund(konto, new Date()) : null;
 
   const karte = {
@@ -34,11 +37,6 @@ export default async function RedaktionAuswertung() {
 
   return (
     <div style={{ maxWidth: 900, margin: "0 auto" }}>
-      <h1 style={{ fontSize: v("--font-size-h1"), marginBottom: space.sm }}>Auswertung</h1>
-      <p style={{ color: v("--color-text-secondary"), marginBottom: space.huge, maxWidth: 720 }}>
-        Was rausgegangen ist, und wo unsere Messung endet.
-      </p>
-
       <section style={{ ...karte, marginBottom: space.xxxl }}>
         <h2 style={{ fontSize: v("--font-size-h3"), marginTop: 0 }}>Zugang</h2>
         {konto && befund ? (
@@ -57,24 +55,71 @@ export default async function RedaktionAuswertung() {
 
       <section style={{ ...karte, marginBottom: space.xxxl }}>
         <h2 style={{ fontSize: v("--font-size-h3"), marginTop: 0 }}>Veröffentlichte Beiträge</h2>
-        <p style={{ margin: 0, fontSize: v("--font-size-body"), color: v("--color-text-secondary") }}>
-          Noch keine Ablage. Sie entsteht mit dem ersten Post, der über den Redaktionstisch rausgeht
-          — vorher wäre eine leere Tabelle nur eine Behauptung über eine Funktion, die es nicht gibt.
-        </p>
+        {versand.length === 0 ? (
+          <p style={{ margin: 0, fontSize: v("--font-size-body"), color: v("--color-text-secondary") }}>
+            Noch nichts rausgegangen. Die Ablage entsteht mit dem ersten Beitrag, der über den
+            Redaktionstisch gesendet wird.
+          </p>
+        ) : (
+          <>
+            {/* Nur ANHÄNGEN, nie ändern: Eine Zeile ist die Aussage „das ging an
+                dem Tag mit diesem Abdruck raus". Sie zu überschreiben hieße, die
+                Vergangenheit zu bearbeiten — dieselbe Regel wie beim
+                Förder-Verlauf, wo gelöscht ebenfalls nie wird.
+
+                Der ABDRUCK steht mit dabei, verkürzt. Ohne ihn wäre nicht
+                rekonstruierbar, WELCHE Fassung raus ist, und der Prüfbefund
+                dazu wäre kein Beweismittel, sondern der jeweils letzte Zustand. */}
+            <div style={{ display: "flex", flexDirection: "column", gap: space.sm }}>
+              {versand.map((x) => (
+                <div
+                  key={`${x.post_id}-${x.gesendet_am}`}
+                  style={{
+                    display: "flex",
+                    gap: space.md,
+                    alignItems: "baseline",
+                    flexWrap: "wrap",
+                    fontSize: v("--font-size-small"),
+                  }}
+                >
+                  <span style={{ color: v("--color-text-muted"), minWidth: 130 }}>
+                    {new Date(x.gesendet_am).toLocaleString("de-DE")}
+                  </span>
+                  <span style={{ flex: "1 1 auto" }}>{x.post_id}</span>
+                  <span style={{ color: v("--color-text-muted"), fontFamily: "monospace" }}>
+                    {x.fassung_fingerabdruck.slice(0, 12)}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <p
+              style={{
+                fontSize: v("--font-size-caption"),
+                color: v("--color-text-muted"),
+                marginBottom: 0,
+                marginTop: space.md,
+              }}
+            >
+              {versand.length} Sendung{versand.length === 1 ? "" : "en"}. Der Abdruck sagt, welche
+              Fassung rausging — dieselbe Fassung ein zweites Mal weist der Sendeweg ab.
+            </p>
+          </>
+        )}
       </section>
 
       <section style={karte}>
-        <h2 style={{ fontSize: v("--font-size-h3"), marginTop: 0 }}>Was wir nicht messen können</h2>
-        <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), marginTop: 0 }}>
-          Aufrufe, Reaktionen und Kommentare liegen bei LinkedIn. Die Leseberechtigung dafür ist dort
-          beschränkt und nur für geprüfte Anwendungen zu haben; unsere Verbindung darf
-          veröffentlichen, aber nicht zurücklesen. Diese Zahlen stehen also in der LinkedIn-App und
-          nirgends hier.
-        </p>
-        <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), marginBottom: 0 }}>
-          Was wir stattdessen messen können, ist die Wirkung auf unserer Seite: Zugriffe auf die
-          verlinkten Seiten und woher sie kommen. Das ist die ehrlichere Zahl — sie sagt, ob jemand
-          nach dem Lesen etwas getan hat, statt nur, dass etwas an ihm vorbeigescrollt ist.
+        <h2 style={{ fontSize: v("--font-size-h3"), marginTop: 0, display: "flex", alignItems: "center", gap: space.xs }}>
+          Nicht messbar
+          <InfoTooltip ariaLabel="Warum Reichweitenzahlen fehlen" exportNote={false}>
+            Aufrufe, Reaktionen und Kommentare liegen bei LinkedIn. Die Leseberechtigung dafür ist
+            dort beschränkt und nur für geprüfte Anwendungen zu haben; unsere Verbindung darf
+            veröffentlichen, aber nicht zurücklesen. Messbar ist stattdessen die Wirkung auf
+            unserer Seite — die ehrlichere Zahl, weil sie sagt, ob jemand nach dem Lesen etwas
+            getan hat.
+          </InfoTooltip>
+        </h2>
+        <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), margin: 0 }}>
+          Reichweite steht in der LinkedIn-App, nicht hier.
         </p>
       </section>
     </div>

@@ -1,4 +1,5 @@
 import { createBrowserClient } from "@supabase/ssr";
+import { browserCookies } from "./auth-cookies";
 
 /**
  * Browser-Client für die Anmeldung.
@@ -17,5 +18,7 @@ export function createClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !key) return null;
-  return createBrowserClient(url, key);
+  // Eigene Cookie-Behandlung, damit die Anmeldung mit dem Browser endet.
+  // Warum das nötig ist und was die Alternative wäre: lib/auth-cookies.ts.
+  return createBrowserClient(url, key, { cookies: browserCookies });
 }

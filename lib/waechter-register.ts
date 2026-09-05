@@ -52,7 +52,7 @@ export type WaechterArt =
 export type BelegArt = "meldung" | "pruefdatum" | "datenbank" | "keiner";
 
 /** Stand, der nicht im Code steht, sondern je Zeile in Supabase. */
-export type DbQuelle = "marktpreise" | "foerderkatalog";
+export type DbQuelle = "marktpreise" | "foerderkatalog" | "kostenwache";
 
 export interface WaechterJob {
   /** Ordnername des Auftrags bzw. Dateiname des Workflows — die Kennung, unter der man ihn findet. */
@@ -161,6 +161,29 @@ export const WAECHTER: WaechterJob[] = [
     stummAbTage: 1,
     tag: "health-check",
     beleg: "meldung",
+    pruefFelder: [],
+  },
+  {
+    id: "kostenwache",
+    titel: "Kostenwache: Mengen je Projekt",
+    zweck:
+      "Legt täglich Aufbauten und verschiedene Adressen je Projekt ab und meldet, wenn eine der beiden Größen deutlich über dem eigenen Vortagesniveau liegt.",
+    // Sie ist kein eigener Auftrag, sondern ein Abschnitt des Gesundheitschecks
+    // — bewusst dort und nicht als geplanter Auftrag: Die laufen nur, wenn die
+    // App auf dem Rechner des Betreibers offen ist.
+    art: "action",
+    rhythmus: "täglich (im Gesundheitscheck, der alle drei Stunden läuft)",
+    // Täglich, plus Luft für einen ausgefallenen Tag. Enger wäre falsch: Der
+    // Wert entsteht erst, wenn der Vortag vollständig ist.
+    stummAbTage: 3,
+    tag: null,
+    // Ihr Lebenszeichen ist der jüngste abgelegte Tageswert. Eine Meldung taugt
+    // nicht dafür: Sie meldet nur bei einem Sprung, und „kein Sprung“ ist der
+    // Normalfall — eine leere Ablage wäre dort kein Ausfall.
+    beleg: "datenbank",
+    belegHinweis:
+      "Der jüngste Tageswert belegt, dass die ERFASSUNG lief. Er sagt nicht, dass ein Urteil möglich war: In den ersten sieben Tagen sammelt die Wache nur und urteilt ausdrücklich nicht.",
+    dbQuelle: "kostenwache",
     pruefFelder: [],
   },
   {
@@ -291,6 +314,11 @@ export const WAECHTER: WaechterJob[] = [
     pruefFelder: [
       "DEFAULT_HEATPUMP_CONFIG.geprueftIso",
       "DEFAULT_HEATPUMP_CONFIG.geprueftFoerderungIso",
+      // Der Förderreport der KfW hängt mit dran, statt einen eigenen Lauf zu
+      // bekommen: Er erscheint einmal im Jahr, ein eigener Auftrag fände elf
+      // Monate lang nichts. Sein Ablauf steht in scripts/kfw-report-verify.md
+      // und ist Schritt des Quartalslaufs.
+      "KFW_REPORT_STAND.geprueftIso",
     ],
     runbook: "scripts/waermepumpe-verify.md",
   },

@@ -1094,3 +1094,59 @@ export const getKreisPfade = unstable_cache(getKreisPfadeUncached, ["kreis-pfade
   revalidate: STAMMDATEN_TTL,
   tags: [ATLAS_DATEN_TAG],
 });
+
+/**
+ * Der Adress-Pfad EINER Gemeinde, aus dem Gemeindeschlüssel aufgelöst.
+ *
+ * Für die Sitemap der einzeln freigegebenen Orte (lib/atlas-index →
+ * `atlasOrtEinzelfreigabe`). Bewusst je Ort und nicht als Liste aller Gemeinden:
+ * Freigegeben sind eine Handvoll, alle übrigen 11.000 gehören nicht in die
+ * Sitemap — eine Vollabfrage hier wäre die teuerste Art, das Falsche zu tun.
+ *
+ * Liefert `null`, wenn der Schlüssel unbekannt ist oder die Kette zum Bundesland
+ * fehlt. Das ist der ehrliche Ausgang: Ein geratener Pfad stünde in der Sitemap
+ * und liefe ins Leere.
+ */
+async function getGemeindePfadUncached(
+  ags: string,
+): Promise<{ bundesland: string; kreis: string; gemeinde: string } | null> {
+  const supabase = await db();
+  const { data, error } = await withDbTimeout(
+    supabase
+      .from("mastr_regions")
+      .select("region_id, level, slug, parent_region_id")
+      .eq("region_id", ags)
+      .maybeSingle(),
+    "getGemeindePfad",
+  );
+  if (error) throw new Error(`getGemeindePfad failed: ${error.message}`);
+  const gem = data as Pick<AtlasRegion, "region_id" | "level" | "slug" | "parent_region_id"> | null;
+  if (!gem?.slug || gem.level !== "gemeinde" || !gem.parent_region_id) return null;
+
+  const { data: kreisRow, error: kreisFehler } = await withDbTimeout(
+    supabase
+      .from("mastr_regions")
+      .select("region_id, slug, parent_region_id")
+      .eq("region_id", gem.parent_region_id)
+      .maybeSingle(),
+    "getGemeindePfad/kreis",
+  );
+  if (kreisFehler) throw new Error(`getGemeindePfad failed: ${kreisFehler.message}`);
+  const kreis = kreisRow as Pick<AtlasRegion, "region_id" | "slug" | "parent_region_id"> | null;
+  if (!kreis?.slug || !kreis.parent_region_id) return null;
+
+  const { data: blRow, error: blFehler } = await withDbTimeout(
+    supabase.from("mastr_regions").select("slug").eq("region_id", kreis.parent_region_id).maybeSingle(),
+    "getGemeindePfad/bundesland",
+  );
+  if (blFehler) throw new Error(`getGemeindePfad failed: ${blFehler.message}`);
+  const bl = blRow as { slug: string | null } | null;
+  if (!bl?.slug) return null;
+
+  return { bundesland: bl.slug, kreis: kreis.slug, gemeinde: gem.slug };
+}
+
+export const getGemeindePfad = unstable_cache(getGemeindePfadUncached, ["gemeinde-pfad-v1"], {
+  revalidate: STAMMDATEN_TTL,
+  tags: [ATLAS_DATEN_TAG],
+});

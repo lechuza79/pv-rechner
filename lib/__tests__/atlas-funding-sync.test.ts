@@ -1,6 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { ATLAS_CITIES, fundingFor, fundingForFrom, publishedCities, indexedCities, cityIndexFreigegeben, liveCities, archivedCities } from "../atlas-cities";
+import { ATLAS_CITIES, fundingFor, fundingForFrom, publishedCities, indexedCities, cityIndexFreigegeben, liveCities, archivedCities, foerderseiteTraegt } from "../atlas-cities";
 import { allFundingPrograms } from "../funding-programs";
+import { ALTBESTAND, ortSchluessel } from "../release-plan";
+
+/** Seit Juni live — wird von einer neuen Regel nicht rückwirkend eingezogen. */
+const ALT = new Set(ALTBESTAND["foerder-stadt"].map(ortSchluessel));
+const istAlt = (ags: string) => ALT.has(ortSchluessel(ags));
 
 // ─── Katalog und Städte-Verzeichnis dürfen nicht auseinanderlaufen ───────────
 //
@@ -152,36 +157,58 @@ const SCHON_IM_INDEX = [
 ];
 
 describe("Index-Freigabe", () => {
-  it("die neuen Gemeindeseiten stehen noch nicht im Index", () => {
-    const offen = ATLAS_CITIES.filter(
-      (c) => c.kreis && !SCHON_IM_INDEX.includes(c.slug) && cityIndexFreigegeben(c),
-    ).map((c) => c.slug);
-    expect(
-      offen,
-      `freigegeben, obwohl der Releaseplan noch keine Reihenfolge nennt: ${offen.join(", ")}. ` +
-        "Freischalten ist eine bewusste Entscheidung — dann gehört dieser Test mit angepasst, nicht gelöscht.",
-    ).toEqual([]);
+  it("gibt genau die Orte frei, deren Programm aktiv ist und Dach-PV fördert", () => {
+    // ENTSCHEIDUNG DES BETREIBERS, 01.09.2026: Eine Förderseite geht live,
+    // sobald ihr Programm die Schwelle besteht — sie braucht keinen eigenen
+    // Schub mehr (lib/atlas-cities.ts → foerderseiteTraegt). Der Test hält
+    // seitdem nicht mehr eine Liste fest, sondern die REGEL: Was aktiv ist und
+    // Dach-PV fördert, ist freigegeben; alles andere nicht.
+    //
+    // Das ist keine Aufweichung, sondern die schärfere Prüfung: Eine feste Zahl
+    // hätte den Fall nicht gefangen, dass ein Programm auf „ausgeschöpft"
+    // wechselt und seine Seite trotzdem stehen bleibt.
+    const sollte = ATLAS_CITIES.filter((c) => {
+      const p = fundingFor(c);
+      return !!p && p.status === "aktiv" && (p.foerdert ?? ["pv"]).includes("pv");
+    });
+    const ist = ATLAS_CITIES.filter((c) => cityIndexFreigegeben(c));
+
+    // Der Altbestand aus dem Releaseplan darf zusätzlich freigegeben sein — er
+    // stand vor dieser Regel live und wird nicht rückwirkend eingezogen.
+    const zuviel = ist
+      .filter((c) => !sollte.includes(c))
+      .filter((c) => !SCHON_IM_INDEX.includes(c.slug) && !istAlt(c.ags))
+      .filter((c) => {
+        const p = fundingFor(c);
+        return !p || p.status === "aktiv";
+      })
+      .map((c) => c.slug);
+    const zuwenig = sollte.filter((c) => !ist.includes(c)).map((c) => c.slug);
+
+    expect(zuwenig, `Programm aktiv und Dach-PV, aber keine Seite: ${zuwenig.join(", ")}`).toEqual([]);
+    expect(zuviel, `freigegeben ohne aktives Dach-PV-Programm: ${zuviel.join(", ")}`).toEqual([]);
   });
 
-  it("dieser Zweig stellt keine einzige Seite zusätzlich in den Index", () => {
-    // Die härteste Formulierung der Zusage — und die einzige, die auch den Fall
-    // fängt, an den man nicht denkt: Zweibrücken bekam seine Seite nicht durch
-    // einen neuen Eintrag, sondern weil ein zu eng gefasster Programmschlüssel
-    // korrigiert wurde. Es hat keinen Landkreis (kreisfrei) und wäre jeder
-    // Prüfung entgangen, die auf „kreisangehörig" abfragt — und wäre am Tag des
-    // Merges unangekündigt im Index gestanden.
-    //
-    // 37 war der Stand vom 19.08.2026, deckungsgleich mit dem eingefrorenen
-    // Altbestand des Releaseplans. Wächst die Zahl, ist eine Seite
-    // veröffentlicht worden, ohne dass jemand es entschieden hat.
-    //
-    // 38 seit dem 26.08.2026: Nidda, über den Schub „w4-nidda-rueckmeldung".
-    // Die Zahl anzuheben ist hier ausdrücklich KEIN Aufweichen der Schwelle —
-    // sie ist die Buchführung über bewusste Freischaltungen, und diese eine ist
-    // im Releaseplan begründet und mit Nachweis versehen. Wer sie erhöht, ohne
-    // dass ein Schub auf „live" steht, hat genau den Fehler gemacht, den der
-    // Test verhindern soll.
-    expect(indexedCities().length).toBe(38);
+  it("gibt keine Seite frei, deren Topf leer ist", () => {
+    // Eine Förderseite ohne abrufbares Geld beantwortet die Frage nicht, für die
+    // jemand kommt. Betrifft Göttingen, Weyhe und Feucht.
+    const leer = ATLAS_CITIES.filter((c) => {
+      const p = fundingFor(c);
+      return !!p && p.status === "ausgeschoepft" && !SCHON_IM_INDEX.includes(c.slug) && !istAlt(c.ags);
+    }).filter((c) => cityIndexFreigegeben(c));
+    expect(leer.map((c) => c.slug), "ausgeschöpftes Programm, trotzdem freigegeben").toEqual([]);
+  });
+
+  it("gibt keine Seite frei, die nur Balkonkraftwerke fördert", () => {
+    // Der Seitentitel verspricht Photovoltaik-Förderung. 35 Orte fördern nur
+    // Steckersolar — die brauchen eine eigene Seitenfamilie, keine falsche
+    // Überschrift.
+    const nurBalkon = ATLAS_CITIES.filter((c) => {
+      const p = fundingFor(c);
+      const f = p?.foerdert ?? ["pv"];
+      return !!p && !f.includes("pv") && !SCHON_IM_INDEX.includes(c.slug) && !istAlt(c.ags);
+    }).filter((c) => cityIndexFreigegeben(c));
+    expect(nurBalkon.map((c) => c.slug), "nur Balkon-Förderung, trotzdem als PV-Seite freigegeben").toEqual([]);
   });
 
   it("die Seiten, die es längst gibt, bleiben freigegeben — und zwar dieselben", () => {
@@ -212,7 +239,34 @@ describe("Index-Freigabe", () => {
       // muss sichtbar dazukommen, sonst könnte ein stiller Tausch sie ersetzen.
       "nidda",
     ];
-    expect(indexedCities().map((c) => c.slug).sort()).toEqual([...SEIT_JUNI_IM_INDEX].sort());
+    // GEPRÜFT WIRD DIE TEILMENGE, NICHT DIE GLEICHHEIT (05.09.2026).
+    //
+    // Bis hierher stand hier toEqual — der Test war damit zugleich eine
+    // WACHSTUMSSPERRE. Das war bis zum 01.09.2026 richtig: Damals entschied der
+    // Releaseplan über jede Freischaltung, eine neue Seite ohne Schub wäre eine
+    // Nebenwirkung gewesen. Seitdem hat der Betreiber entschieden, dass eine
+    // Förderseite live geht, sobald ihr Programm aktiv ist und Dach-PV fördert.
+    // Der Test wurde bei dieser Umstellung nicht nachgezogen — und blieb grün,
+    // weil isCityPublished sie ebenfalls nicht mitbekam. Zwei überholte
+    // Annahmen, die einander bestätigten, während 21 Adressen in der Sitemap
+    // standen und mit HTTP 404 antworteten.
+    //
+    // Was der Test WEITERHIN leistet und leisten soll: Keine der Seiten, die
+    // seit Juni im Index stehen, darf ihre Freigabe still verlieren — genau der
+    // Fall, den die Hannover-Schlüsselkorrektur ausgelöst hätte. Das ist eine
+    // Teilmengen-Frage, keine Gleichheits-Frage.
+    const freigegeben = new Set(indexedCities().map((c) => c.slug));
+    const verloren = SEIT_JUNI_IM_INDEX.filter((s) => !freigegeben.has(s));
+    expect(verloren, "seit Juni im Index und jetzt nicht mehr freigegeben").toEqual([]);
+
+    // Und die Gegenrichtung, damit aus der Lockerung keine offene Tür wird: Was
+    // NEU dazukommt, kommt über den zweiten, benannten Weg — nicht über einen
+    // dritten, den niemand angemeldet hat.
+    const altbestand = new Set(SEIT_JUNI_IM_INDEX);
+    const ohneGrund = indexedCities()
+      .filter((c) => !altbestand.has(c.slug) && !foerderseiteTraegt(c))
+      .map((c) => c.slug);
+    expect(ohneGrund, "neu im Index, ohne dass das Programm die Schwelle trägt").toEqual([]);
   });
 
   it("was nicht in den Index darf, steht auch nicht in der Sitemap", () => {

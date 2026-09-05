@@ -57,16 +57,46 @@ function metaZeilen(datei: string): { titel: string[]; beschreibung: string[] } 
 
   /**
    * Steht dort statt eines Textes ein Funktionsaufruf (`title: seitenTitel(region)`),
-   * wird die Funktion im selben Modul nachgeschlagen und ihr Rumpf ausgewertet.
-   * Ohne diesen Schritt prüft der Test einen Bezeichner statt eines Satzes — er
-   * wäre grün, egal was in der Funktion steht.
+   * wird die Funktion nachgeschlagen und ihr Rumpf ausgewertet. Ohne diesen
+   * Schritt prüft der Test einen Bezeichner statt eines Satzes — er wäre grün,
+   * egal was in der Funktion steht.
+   *
+   * Gesucht wird ERST im selben Modul, DANN im importierten (02.09.2026): Seit
+   * der Titel als eine Quelle in lib/atlas-titel.ts liegt, steht in beiden
+   * Seiten nur noch ein Aufruf. Ein Auflöser, der an der Dateigrenze aufgibt,
+   * hätte hier ab sofort einen Bezeichner geprüft und nie wieder etwas gefunden
+   * — die Fehlerklasse „Wächter prüft Vorhandensein statt Verwendung", nur an
+   * der anderen Seite. Aufgelöst wird höchstens eine Ebene tief; wer die Vorlage
+   * noch einmal weiterreicht, macht diesen Test rot statt ihn blind.
    */
-  const aufloesen = (ausdruck: string): string => {
+  const rumpfAus = (quelle: string, name: string): string | null => {
+    const fn = new RegExp(`function\\s+${name}\\s*\\([^)]*\\)[^{]*\\{([\\s\\S]*?)\\n\\}`, "m");
+    return quelle.match(fn)?.[1] ?? null;
+  };
+
+  const aufloesen = (ausdruck: string, tiefe = 0): string => {
     const aufruf = ausdruck.trim().match(/^([A-Za-z_]\w*)\s*\(/);
-    if (!aufruf) return ausdruck;
-    const fn = new RegExp(`function\\s+${aufruf[1]}\\s*\\([^)]*\\)[^{]*\\{([\\s\\S]*?)\\n\\}`, "m");
-    const rumpf = ohneKommentare.match(fn);
-    return rumpf ? rumpf[1] : ausdruck;
+    if (!aufruf || tiefe > 1) return ausdruck;
+    const name = aufruf[1];
+
+    const eigen = rumpfAus(ohneKommentare, name);
+    if (eigen) return aufloesen(eigen.replace(/^\s*return\s*/, ""), tiefe + 1);
+
+    // Nicht im Modul: dem Import folgen.
+    const imp = roh.match(new RegExp(`import\\s*\\{[^}]*\\b${name}\\b[^}]*\\}\\s*from\\s*"([^"]+)"`));
+    if (!imp) return ausdruck;
+    const ziel = join(ROOT, datei, "..", `${imp[1]}.ts`);
+    let fremd: string;
+    try {
+      fremd = readFileSync(ziel, "utf8");
+    } catch {
+      return ausdruck;
+    }
+    const ohne = fremd
+      .split("\n")
+      .filter((z) => !/^\s*(\/\/|\/\*|\*)/.test(z))
+      .join("\n");
+    return rumpfAus(ohne, name) ?? ausdruck;
   };
 
   const holen = (feld: "title" | "description") => {

@@ -163,7 +163,7 @@ export const TRUST_SIGNALS: readonly TrustSignal[] = [
     text: "Das Ergebnis der Rechner erscheint sofort, die Berechnung läuft in deinem Browser.",
     betont: "in deinem Browser",
     detail:
-      "Die Rechenkerne laufen als JavaScript auf deinem Gerät — dein Ergebnis entsteht dort. Gespeichert wird es nur, wenn du dich anmeldest und es ausdrücklich speicherst. An unseren Server geht die Postleitzahl, damit wir Standort-Ertrag, Wetter und Förderprogramme für deinen Ort holen können. Für die Reichweitenmessung zählen wir außerdem anonym mit, welche Anlagen- und Speichergröße gewählt wurde; das lässt sich weder dir noch einem Gerät zuordnen.",
+      "Kein Konto, keine E-Mail-Adresse, keine Telefonnummer: Du beantwortest die Fragen und siehst das Ergebnis. Es entsteht in deinem Browser und bleibt dort — gespeichert wird es nur, wenn du dich freiwillig anmeldest und es ausdrücklich speicherst. An unseren Server geht allein die Postleitzahl, damit wir Standort-Ertrag, Wetter und Förderprogramme für deinen Ort holen können.",
     href: "/datenschutz",
     icon: "lock",
     // KEIN "Mehr erfahren": Der Satz sagt bereits alles, was der Punkt zusagt.
@@ -173,12 +173,22 @@ export const TRUST_SIGNALS: readonly TrustSignal[] = [
     // Deckungsgleich mit der Datenschutzerklärung, Abschnitt "Nutzung ohne
     // Registrierung".
     //
-    // Der Detailtext stand bis zum 18.08.2026 falsch da: "Anlagengröße,
-    // Verbrauch und Ergebnis bleiben bei dir." Gemessen am laufenden Rechner
-    // geht bei jedem Ergebnis ein anonymes Ereignis an die Reichweitenmessung —
-    // {"anlage":"10 kWp","speicher":"10 kWh"} (rechner.tsx, calls
-    // trackEvent("pv_ergebnis")). Die Datenschutzerklärung, auf die dieser
-    // Punkt verlinkt, benennt das korrekt; die Leiste sagte das Gegenteil.
+    // ZWEIMAL FALSCH, IN BEIDE RICHTUNGEN — und das ist die eigentliche Lehre:
+    //
+    // Bis 18.08.2026 stand hier "Anlagengröße, Verbrauch und Ergebnis bleiben
+    // bei dir", während bei jedem Ergebnis ein Ereignis mit
+    // {"anlage":"10 kWp","speicher":"10 kWh"} hinausging. Die Leiste versprach
+    // MEHR Zurückhaltung, als stattfand.
+    //
+    // Seit 27.08.2026 nimmt `trackEvent` gar keine Begleitangaben mehr entgegen
+    // (die Einwilligungsfreiheit hängt daran, siehe lib/analytics.ts). Damit war
+    // der korrigierte Satz seinerseits falsch: Er kündigte eine Erhebung an, die
+    // es nicht mehr gibt — die Leiste behauptete MEHR Erhebung, als stattfand.
+    // Gefunden am 29.08.2026 bei einer Werkzeug-Recherche, nicht von einem Test.
+    //
+    // Beide Fassungen waren Falschaussagen nach § 5 UWG, auf jeder Seite der
+    // Site gleichzeitig. Wer diesen Text anfasst, prüft BEIDE Richtungen:
+    // Verschweigt er etwas — und behauptet er etwas, das es nicht (mehr) gibt?
     //
     // Ebenso raus: das "nur" vor der Postleitzahl. Sie geht außer an Ertrag und
     // Wetter auch an die Förderabfrage und die Sonnenanzeige.

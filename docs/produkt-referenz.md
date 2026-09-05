@@ -213,7 +213,7 @@ pv-rechner/
     ├── empfehlung/
     │   ├── page.tsx               # Metadata + <Empfehlung />
     │   └── empfehlung.tsx         # "use client" — Empfehlungs-Flow (3 Steps + Zwischenseite)
-    ├── auth/callback/route.ts     # Magic Link Callback Handler
+    ├── auth/callback/route.ts     # Rückkehr nach der Anmeldung
     ├── api/feedin/route.ts        # GET (aktuelle Vergütungssätze, cached) + POST (Admin-Update)
     ├── api/prices/route.ts        # GET (aktuelle Preise, cached) + POST (Admin-Update)
     ├── api/prices/scrape/route.ts # Vercel Cron: Scraping + Plausibilitätsprüfung

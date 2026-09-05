@@ -1,8 +1,10 @@
 /**
- * Umbenennungen aus dem Förder-Verlauf entfernen.
+ * Aus dem Förder-Verlauf entfernen, was WIR geändert haben, nicht die Gemeinde.
  *
  *   npm run foerder:verlauf-bereinigen -- --seit 2026-08-26          # zeigt nur
  *   npm run foerder:verlauf-bereinigen -- --seit 2026-08-26 --loeschen
+ *   npm run foerder:verlauf-bereinigen -- --seit 2026-08-26 --voll   # ganzer Wortlaut
+ *   npm run foerder:verlauf-bereinigen -- --seit 2026-08-26 --ids 41,42
  *
  * WARUM ES DAS GIBT (26.08.2026): Der Verlauf sagt „Was sich am Programm
  * geändert hat … festgestellt beim regelmäßigen Abruf der Programmseite". Das
@@ -27,6 +29,27 @@
  * Hand angesehen — der Wortlaut ändert sich bei einer Umbenennung oft mit
  * („steckerfertiger PV-Anlagen" wird zu „eines Balkonkraftwerks", inklusive
  * Artikel), und diese Fälle fängt kein Muster.
+ *
+ * DIE UMBENENNUNG WAR NUR DER ERSTE FALL (28.08.2026). Die Kategorie ist
+ * größer: alles, was sich an UNSERER Aufzeichnung ändert und nicht am Programm.
+ * Der zweite Fall ist die nachgetragene Bedingung — wir lesen an der Amtsseite
+ * eine Voraussetzung, die dort längst stand, und schreiben sie erstmals auf.
+ * Der Abgleich sieht einen neuen Satz und meldet ihn; auf Kölns Stadtseite
+ * stand daraufhin live „Was sich am Klimafreundliches Wohnen & Arbeiten
+ * geändert hat · Eine Änderung, die wir beim regelmäßigen Abruf der
+ * Programmseite festgestellt haben · 28. August 2026 · Bedingungen neu: Die
+ * Dachanlage muss mindestens 2 kWp leisten" — für eine Bedingung, die die Stadt
+ * nie geändert hat. Vier Einträge dieser Art an einem Tag, alle aus der
+ * Einführung der Mindestleistung und einer Antragsfrist.
+ *
+ * Ein Muster kann diesen Fall PRINZIPIELL nicht erkennen: „Bedingung
+ * hinzugekommen" sieht bei einer Nachtragung genauso aus wie bei einer echten
+ * neuen Auflage der Gemeinde. Deshalb `--ids`: Wer die Einträge gelesen hat,
+ * benennt sie einzeln. Kein Muster, keine Heuristik, keine Zeitspanne — die
+ * Entscheidung bleibt bei dem, der die Amtsseite daneben gelegt hat. `--voll`
+ * gibt dafür den ganzen Wortlaut aus statt des Ausschnitts um die erste
+ * Abweichung; an einem angehängten Satz zeigt der Ausschnitt sonst beide Seiten
+ * gleich an und man sieht gerade das nicht, worum es geht.
  */
 
 import { resolve } from "node:path";
@@ -74,6 +97,11 @@ async function main(): Promise<void> {
     process.exit(1);
   }
   const loeschen = process.argv.includes("--loeschen");
+  const voll = process.argv.includes("--voll");
+  const nurIds = (arg("ids") ?? "")
+    .split(",")
+    .map((s) => Number(s.trim()))
+    .filter((n) => Number.isInteger(n) && n > 0);
 
   const { data, error } = await sb
     .from("funding_history")
@@ -92,11 +120,37 @@ async function main(): Promise<void> {
 
   for (const z of offen) {
     const a = String(z.alt ?? ""), n = String(z.neu ?? "");
-    let i = 0;
-    while (i < a.length && i < n.length && a[i] === n[i]) i++;
-    console.log(`${z.program_id} · ${z.feld}`);
-    console.log(`   ALT …${a.slice(Math.max(0, i - 20), i + 70)}`);
-    console.log(`   NEU …${n.slice(Math.max(0, i - 20), i + 70)}`);
+    console.log(`#${z.id} ${z.program_id} · ${z.feld}`);
+    if (voll) {
+      console.log(`   ALT ${a}`);
+      console.log(`   NEU ${n}`);
+    } else {
+      let i = 0;
+      while (i < a.length && i < n.length && a[i] === n[i]) i++;
+      console.log(`   ALT …${a.slice(Math.max(0, i - 20), i + 70)}`);
+      console.log(`   NEU …${n.slice(Math.max(0, i - 20), i + 70)}`);
+    }
+  }
+
+  // Von Hand benannte Einträge: nur die, keine Umbenennungs-Erkennung daneben.
+  // Wer `--ids` setzt, hat sie gelesen — das Werkzeug prüft nur, dass sie
+  // wirklich im abgefragten Zeitraum liegen, damit eine vertippte Nummer nicht
+  // einen fremden, womöglich echten Verlaufseintrag trifft.
+  if (nurIds.length) {
+    const bekannt = new Set(zeilen.map((z) => z.id));
+    const unbekannt = nurIds.filter((id) => !bekannt.has(id));
+    if (unbekannt.length) {
+      console.error(`\nNicht im Zeitraum seit ${seit}: ${unbekannt.join(", ")} — nichts entfernt.`);
+      process.exit(1);
+    }
+    if (!loeschen) {
+      console.log(`\nNichts geändert. Zum Entfernen dieser ${nurIds.length} Einträge: --loeschen anhängen.`);
+      return;
+    }
+    const { error: e } = await sb.from("funding_history").delete().in("id", nurIds);
+    if (e) throw new Error(e.message);
+    console.log(`\n${nurIds.length} von Hand benannte Einträge entfernt.`);
+    return;
   }
 
   if (!loeschen) {

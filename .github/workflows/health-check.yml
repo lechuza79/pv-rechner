@@ -51,6 +51,11 @@ jobs:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
       CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      # Für die Kostenwache: Ohne dieses Geheimnis kann sie die Tagesmengen
+      # weder erfassen noch beurteilen — und sie sagt das dann auch so, statt
+      # „in Ordnung" zu melden. Die Protokolle werden nur einen Tag aufbewahrt,
+      # ein verpasster Tag ist für immer verpasst.
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       # Damit der Check die eigene Lauf-Historie lesen kann: Ein roter Lauf geht
       # an die Autofix-Action, nicht an den Betreiber — erst wenn mehrere Läufe
       # hintereinander an derselben Stelle rot bleiben, wird daraus eine Frage

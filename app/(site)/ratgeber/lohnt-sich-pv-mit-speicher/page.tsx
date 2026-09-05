@@ -308,14 +308,14 @@ function TeaserCard({ row, title, badge }: { row: ExampleRow; title: string; bad
     border: `1px solid ${v("--color-border")}`,
   } as const;
   const tileLabel = {
-    fontSize: 10.5,
+    fontSize: v("--font-size-micro"),
     color: v("--color-text-secondary"),
     textTransform: "uppercase" as const,
     letterSpacing: "0.04em",
     fontWeight: 600,
   } as const;
   const tileValue = {
-    fontSize: 17,
+    fontSize: v("--font-size-lead"),
     fontWeight: 800,
     fontFamily: v("--font-mono"),
     marginTop: 4,
@@ -332,8 +332,8 @@ function TeaserCard({ row, title, badge }: { row: ExampleRow; title: string; bad
       }}
     >
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8, marginBottom: 4 }}>
-        <strong style={{ fontSize: 14.5, fontWeight: 700, color: v("--color-text-primary") }}>{title}</strong>
-        <span style={{ fontSize: 11, fontWeight: 700, fontFamily: v("--font-mono"), color: v("--color-accent") }}>{badge}</span>
+        <strong style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary") }}>{title}</strong>
+        <span style={{ fontSize: v("--font-size-caption"), fontWeight: 700, fontFamily: v("--font-mono"), color: v("--color-accent") }}>{badge}</span>
       </div>
       <Chart scenarios={row.scenarios} kosten={row.kosten} highlightId="realistic" />
       <div
@@ -371,7 +371,7 @@ function TeaserCard({ row, title, badge }: { row: ExampleRow; title: string; bad
           marginTop: 12,
           padding: "9px 16px",
           borderRadius: v("--radius-md"),
-          fontSize: 13,
+          fontSize: v("--font-size-small"),
           fontWeight: 700,
           background: v("--color-accent"),
           color: v("--color-text-on-accent"),

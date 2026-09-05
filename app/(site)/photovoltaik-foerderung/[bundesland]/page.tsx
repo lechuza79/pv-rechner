@@ -119,14 +119,14 @@ export async function generateMetadata(props: { params: Promise<{ bundesland: st
 const S = {
   page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "0 16px 20px" } as React.CSSProperties,
   wrap: { maxWidth: 720, margin: "0 auto" } as React.CSSProperties,
-  breadcrumb: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: 6 } as React.CSSProperties,
-  h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" } as React.CSSProperties,
-  intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 22px" } as React.CSSProperties,
+  breadcrumb: { fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginBottom: 6 } as React.CSSProperties,
+  h1: { fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" } as React.CSSProperties,
+  intro: { fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 22px" } as React.CSSProperties,
   card: { display: "block", background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: "14px 16px", marginBottom: 10, textDecoration: "none", color: "inherit" } as React.CSSProperties,
   metricsGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 10, margin: "10px 0 14px" } as React.CSSProperties,
   metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: 14 } as React.CSSProperties,
-  metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: 4 } as React.CSSProperties,
-  metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 } as React.CSSProperties,
+  metricLabel: { fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginBottom: 4 } as React.CSSProperties,
+  metricValue: { fontFamily: v("--font-mono"), fontSize: v("--font-size-display-sm"), fontWeight: 700 } as React.CSSProperties,
 };
 
 function LandProgramBox({ p }: { p: FundingProgram }) {
@@ -134,17 +134,17 @@ function LandProgramBox({ p }: { p: FundingProgram }) {
   return (
     <div style={{ ...S.card, borderColor: p.status === "aktiv" ? v("--color-positive") : v("--color-border"), background: v("--color-bg-muted") }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
-        <span style={{ fontSize: 16, fontWeight: 700 }}>{p.name}</span>
+        <span style={{ fontSize: v("--font-size-lead"), fontWeight: 700 }}>{p.name}</span>
         <FundingStatusBadge status={p.status} />
       </div>
-      <div style={{ fontSize: 12, color: v("--color-text-secondary"), marginBottom: 8 }}>{p.traeger}</div>
-      <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginBottom: 8 }}>
+      <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginBottom: 8 }}>{p.traeger}</div>
+      <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginBottom: 8 }}>
         Förderfähig: <span style={{ color: v("--color-text-primary") }}>{p.coveredCosts}</span>
       </div>
       <div style={{ marginBottom: 10 }}>
         <FundingRates rates={p.rates} />
       </div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", fontSize: 12 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", fontSize: v("--font-size-small") }}>
         <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none" }}>Zur Quelle</a>
         {a.computable && a.active && (
           <Link href={`/photovoltaik-rechner?foe=${p.id}`} style={{ color: v("--color-accent"), textDecoration: "none" }}>
@@ -239,13 +239,13 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
 
         {landPrograms.length > 0 && (
           <div style={{ marginBottom: 22 }}>
-            <h2 style={{ fontSize: 16, fontWeight: 800, margin: "0 0 10px" }}>Landesweite Förderung</h2>
+            <h2 style={{ fontSize: v("--font-size-lead"), fontWeight: 800, margin: "0 0 10px" }}>Landesweite Förderung</h2>
             {landPrograms.map((p) => <LandProgramBox key={p.id} p={p} />)}
           </div>
         )}
 
         {landPrograms.length > 0 && cities.length > 0 && (
-          <h2 style={{ fontSize: 16, fontWeight: 800, margin: "0 0 10px" }}>Förderung nach Ort</h2>
+          <h2 style={{ fontSize: v("--font-size-lead"), fontWeight: 800, margin: "0 0 10px" }}>Förderung nach Ort</h2>
         )}
 
         {cities.map((c) => {
@@ -253,14 +253,14 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
           return (
             <Link key={c.slug} href={cityPath(c)} style={S.card}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
-                <span style={{ fontSize: 16, fontWeight: 700 }}>{c.name}</span>
+                <span style={{ fontSize: v("--font-size-lead"), fontWeight: 700 }}>{c.name}</span>
                 {f && <FundingStatusBadge status={f.status} />}
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
-                <span style={{ fontSize: 13, color: v("--color-text-secondary") }}>
+                <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>
                   {f ? f.name : "Anlagenbestand und Beispielrechnungen"}
                 </span>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13, fontWeight: 700, color: v("--color-accent"), whiteSpace: "nowrap" }}>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-accent"), whiteSpace: "nowrap" }}>
                   Ansehen <IconArrowRight size={iconSizes.sm} />
                 </span>
               </div>
@@ -275,8 +275,8 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
 
         {solar && solar.total_count > 0 && (
           <div style={{ marginTop: 26 }}>
-            <h2 style={{ fontSize: 16, fontWeight: 800, margin: "0 0 2px" }}>Photovoltaik in {name} in Zahlen</h2>
-            <p style={{ fontSize: 12, color: v("--color-text-muted"), margin: "0 0 10px" }}>Anlagenbestand aus dem Marktstammdatenregister</p>
+            <h2 style={{ fontSize: v("--font-size-lead"), fontWeight: 800, margin: "0 0 2px" }}>Photovoltaik in {name} in Zahlen</h2>
+            <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), margin: "0 0 10px" }}>Anlagenbestand aus dem Marktstammdatenregister</p>
             <div style={S.metricsGrid}>
               <div style={S.metric}>
                 <div style={S.metricLabel}>Solaranlagen</div>
@@ -289,12 +289,12 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
               {insight && insight.avgKwp > 0 && (
                 <div style={S.metric}>
                   <div style={S.metricLabel}>Ø Anlagengröße</div>
-                  <div style={S.metricValue}>{insight.avgKwp.toLocaleString("de-DE", { maximumFractionDigits: insight.avgKwp < 100 ? 1 : 0 })}<span style={{ fontSize: 14, fontWeight: 600, color: v("--color-text-secondary") }}> kWp</span></div>
+                  <div style={S.metricValue}>{insight.avgKwp.toLocaleString("de-DE", { maximumFractionDigits: insight.avgKwp < 100 ? 1 : 0 })}<span style={{ fontSize: v("--font-size-body"), fontWeight: 600, color: v("--color-text-secondary") }}> kWp</span></div>
                 </div>
               )}
             </div>
             {insight && (
-              <p style={{ fontSize: 14, lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 16px" }}>{insight.sentence}</p>
+              <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 16px" }}>{insight.sentence}</p>
             )}
 
             {/* Zwei standardisierte Widgets nebeneinander: Anlagentyp-Donut (echter
@@ -319,13 +319,13 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
 
         {blAgs && (
           <div style={{ marginTop: 30 }}>
-            <h2 style={{ fontSize: 16, fontWeight: 800, margin: "0 0 2px" }}>Solaranlagen in {name} auf der Karte</h2>
-            <p style={{ fontSize: 12, color: v("--color-text-muted"), margin: "0 0 12px" }}>Installierte Leistung je Landkreis — tippe einen Kreis an, um hineinzuzoomen.</p>
+            <h2 style={{ fontSize: v("--font-size-lead"), fontWeight: 800, margin: "0 0 2px" }}>Solaranlagen in {name} auf der Karte</h2>
+            <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), margin: "0 0 12px" }}>Installierte Leistung je Landkreis — tippe einen Kreis an, um hineinzuzoomen.</p>
             <MastrHeroSection initialRegion={blAgs} initialTraeger="solar" showSource={false} />
           </div>
         )}
 
-        <Link href="/photovoltaik-foerderung" style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 24, fontSize: 13, color: v("--color-accent"), textDecoration: "none" }}>
+        <Link href="/photovoltaik-foerderung" style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 24, fontSize: v("--font-size-small"), color: v("--color-accent"), textDecoration: "none" }}>
           Alle Förderprogramme im Überblick <IconArrowRight size={iconSizes.xs} />
         </Link>
 
@@ -340,7 +340,7 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
           ]}
         />
 
-        <p style={{ fontSize: 11, color: v("--color-text-muted"), lineHeight: 1.6, marginTop: 24 }}>
+        <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), lineHeight: 1.6, marginTop: 24 }}>
           Auswahl der wichtigsten Programme — Förderung ist dezentral und ändert sich laufend. Alle Angaben
           ohne Gewähr; verbindlich ist die jeweilige offizielle Quelle des Programms.
           {solar && solar.total_count > 0 && (

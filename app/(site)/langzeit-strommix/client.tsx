@@ -65,10 +65,10 @@ function ChartBlock({
   return (
     <div style={{ marginTop: 22 }}>
       <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 2 }}>
-        <span style={{ fontSize: 14, fontWeight: 700, color: v("--color-text-primary") }}>
+        <span style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary") }}>
           {title}
         </span>
-        <span style={{ fontSize: 12, color: v("--color-text-muted") }}>in {unit}</span>
+        <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>in {unit}</span>
       </div>
       {children}
     </div>
@@ -86,13 +86,13 @@ export default function LangzeitStrommixClient() {
           padding: "22px 20px 18px",
         }}
       >
-        <div style={{ marginBottom: 4, fontSize: 12, color: v("--color-text-muted"), fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+        <div style={{ marginBottom: 4, fontSize: v("--font-size-small"), color: v("--color-text-muted"), fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>
           Stromerzeugung Deutschland
         </div>
-        <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", margin: "0 0 6px", color: v("--color-text-primary") }}>
+        <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", margin: "0 0 6px", color: v("--color-text-primary") }}>
           Der deutsche Strommix 1990–2025 im Zusammenhang
         </h1>
-        <p style={{ fontSize: 14, lineHeight: 1.5, color: v("--color-text-secondary"), margin: "0 0 4px" }}>
+        <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.5, color: v("--color-text-secondary"), margin: "0 0 4px" }}>
           Drei Blickwinkel auf dieselbe Zeitachse: Woraus der Strom erzeugt wird,
           wie sauber jede Kilowattstunde ist, und was sie kostet.
         </p>
@@ -135,12 +135,12 @@ export default function LangzeitStrommixClient() {
             xDomain={X_DOMAIN}
             height={190}
           />
-          <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 2, paddingLeft: 48 }}>
+          <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: 2, paddingLeft: 48 }}>
             Preise erst ab 2007 — davor kein vergleichbarer, offen lizenzierter Datensatz (Markt bis 1998 reguliert).
           </div>
         </ChartBlock>
 
-        <div style={{ marginTop: 16, paddingTop: 12, borderTop: `1px solid ${v("--color-border")}`, fontSize: 11, lineHeight: 1.6, color: v("--color-text-muted") }}>
+        <div style={{ marginTop: 16, paddingTop: 12, borderTop: `1px solid ${v("--color-border")}`, fontSize: v("--font-size-caption"), lineHeight: 1.6, color: v("--color-text-muted") }}>
           <div>
             <strong>Mix &amp; CO₂:</strong>{" "}
             <a href={DATA_SOURCES.uba.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-text-secondary") }}>

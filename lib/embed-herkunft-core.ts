@@ -103,6 +103,7 @@ export function hostAusHerkunft(roh: string | null | undefined): string | null {
 // gegen den Dateibaum — ein neues Widget fällt dort auf, nicht erst an
 // fehlenden Zahlen.
 export const EMBED_WIDGETS = [
+  "anlagenbestand-deutschland",
   "ee-ampel",
   "einspeiseverguetung-verlauf",
   "erzeugung",

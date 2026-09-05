@@ -5,6 +5,11 @@ import { pruefungGueltig, fassungsAbdruck } from "../../../../lib/social-pruefun
 import { socialKennzahlen } from "../../../../lib/social-kennzahlen";
 import { baueAllePosts } from "../../../../lib/social-posts";
 import { ladeFassungen } from "../../../../lib/social-vorlagen-db";
+import { pruefeMechanisch, sperren } from "../../../../lib/social-mechanik";
+import { ersterVersand, schonGesendet, schreibeVersand } from "../../../../lib/social-versand-log";
+import { HALTBARKEIT_VORGABE, darfNachgereichtWerden } from "../../../../lib/social-haltbarkeit";
+import { FAMILIEN } from "../../../../lib/redaktionsplan";
+import { heuteInBerlin } from "../../../../lib/zeit";
 
 // Veröffentlichung eines Beitrags mit Bild.
 //
@@ -46,8 +51,10 @@ export async function POST(req: NextRequest) {
   if (!body.postId) return NextResponse.json({ error: "Keine Post-Kennung übergeben" }, { status: 400 });
 
   let post;
+  let kennzahlen;
   try {
-    post = baueAllePosts(await socialKennzahlen(), await ladeFassungen()).find((p) => p.id === body.postId);
+    kennzahlen = await socialKennzahlen();
+    post = baueAllePosts(kennzahlen, await ladeFassungen()).find((p) => p.id === body.postId);
   } catch (err) {
     return NextResponse.json({ error: `Zahlen nicht abrufbar: ${(err as Error).message}` }, { status: 503 });
   }
@@ -55,7 +62,21 @@ export async function POST(req: NextRequest) {
 
   const fassung = { text: post.text, bild: post.bild };
   const abdruck = fassungsAbdruck(fassung);
-  if (body.fassung && body.fassung !== abdruck) {
+  // PFLICHT, nicht optional. Vorher stand hier `if (body.fassung && …)` — wer
+  // das Feld wegließ, übersprang die Prüfung ersatzlos. Damit war folgender
+  // Weg offen: Ein Tab steht auf altem Datenstand und hat das Bild dazu
+  // aufgenommen; in einem zweiten wird nach einer Datenbewegung neu geprüft und
+  // freigegeben. Der erste sendet ohne Abdruck — veröffentlicht wird der neue
+  // Text mit dem alten Bild, beide Prüfungen grün. Genau die Fehlerklasse, die
+  // dieses Projekt als schwerste führt: eine Aussage, die nicht zur Zahl
+  // daneben passt. Gefunden von einem adversarialen Prüfer.
+  if (!body.fassung) {
+    return NextResponse.json(
+      { error: "Kein Fassungs-Abdruck übergeben — ohne ihn ist nicht belegbar, was aufgenommen wurde." },
+      { status: 400 },
+    );
+  }
+  if (body.fassung !== abdruck) {
     return NextResponse.json(
       {
         error:
@@ -65,9 +86,65 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // DIE MECHANIK SPERRT HIER, nicht erst in der Oberfläche.
+  //
+  // Sie läuft gegen die Fassung, die WIRKLICH rausgeht, und gegen den
+  // Datenstand von jetzt — nicht gegen eine Werkbank, die jemand starten muss.
+  // Genau das war der Unterschied, an dem die bisherige Prüfung hing: Eine
+  // Regel, die nur läuft, wenn sie jemand aufruft, ist keine Sperre.
+  //
+  // Sie steht VOR der Freigabeprüfung: Ein Beitrag mit einem mechanischen
+  // Widerspruch soll das erfahren, auch wenn er noch gar keine Freigabe hat —
+  // sonst schickt man erst jemanden zum Prüfen und erfährt danach, dass die
+  // Zahlen sich widersprechen.
+  const mechanik = sperren(pruefeMechanisch(post, kennzahlen));
+  if (mechanik.length) {
+    return NextResponse.json(
+      { error: `Mechanische Prüfung: ${mechanik.map((b) => b.text).join(" · ")}` },
+      { status: 409 },
+    );
+  }
+
   const pruefung = await pruefungGueltig(post.id, fassung);
   if (!pruefung.ok) {
     return NextResponse.json({ error: pruefung.grund }, { status: 409 });
+  }
+
+  // DOPPELVERSAND. Bricht die Verbindung nach dem Aufruf bei LinkedIn ab und
+  // jemand wiederholt, standen bisher zwei identische Beiträge im Feed — nichts
+  // verhinderte das. Die Sperre hängt an der FASSUNG, nicht am Beitrag: Nach
+  // einer echten Überarbeitung darf er wieder laufen, unverändert nie.
+
+  // NACHREICHEN AUF EINEM SPÄTEREN KANAL. Kommt ein Kanal dazu, liegt es nahe,
+  // die schon gesendeten Beiträge dort nachzureichen — und für einen Teil von
+  // ihnen wäre das falsch. „251.000 neue Anlagen in zwölf Monaten" ist im
+  // November eine andere Aussage als im September, auch wenn kein Wort sich
+  // ändert; ein Strukturbefund trägt dagegen über Jahre.
+  //
+  // Der Fingerabdruck fängt das NICHT: Er merkt, wenn sich die Zahlen bewegen,
+  // nicht, wenn dieselbe Zahl ein anderes Zeitfenster meint.
+  //
+  // Die Frist hängt an der Kategorie, nicht am einzelnen Beitrag — sie ist eine
+  // Eigenschaft der Gattung. Ohne Angabe gilt die vorsichtige Vorgabe.
+  const haltbarkeit =
+    FAMILIEN.find((f) => f.schluessel === post.kategorie)?.haltbarkeit ?? HALTBARKEIT_VORGABE;
+  const nachreichen = darfNachgereichtWerden(
+    haltbarkeit,
+    await ersterVersand(post.id, abdruck),
+    heuteInBerlin(),
+  );
+  if (!nachreichen.darf) {
+    return NextResponse.json({ error: nachreichen.grund }, { status: 409 });
+  }
+  const bereits = await schonGesendet(post.id, abdruck);
+  if (bereits) {
+    return NextResponse.json(
+      {
+        error: `Diese Fassung ging bereits am ${new Date(bereits.gesendet_am).toLocaleString("de-DE")} raus.`,
+        extern: bereits.extern_id,
+      },
+      { status: 409 },
+    );
   }
 
   try {
@@ -90,7 +167,32 @@ export async function POST(req: NextRequest) {
       bildAlt: body.bildAlt,
       ersterKommentar: body.ersterKommentar,
     });
-    return NextResponse.json({ ok: true, ...ergebnis });
+
+    // SOFORT NACH dem Aufruf protokollieren, vor der Antwort. Scheitert das
+    // Schreiben, ist der Beitrag trotzdem draußen — dann muss der Fehler laut
+    // sein, damit niemand ein zweites Mal sendet. Deshalb wird er in die
+    // Antwort gehoben statt geschluckt.
+    let protokollFehler: string | null = null;
+    try {
+      await schreibeVersand({
+        post_id: post.id,
+        fassung_fingerabdruck: abdruck,
+        extern_id: (ergebnis as { id?: string }).id ?? null,
+        kanal: "linkedin",
+      });
+    } catch (err) {
+      protokollFehler = (err as Error).message;
+    }
+
+    return NextResponse.json({
+      ok: true,
+      ...ergebnis,
+      ...(protokollFehler
+        ? {
+            warnung: `Der Beitrag ist DRAUSSEN, aber das Versandprotokoll konnte nicht geschrieben werden (${protokollFehler}). Nicht erneut senden — die Doppelversand-Sperre greift jetzt nicht.`,
+          }
+        : {}),
+    });
   } catch (err) {
     return NextResponse.json({ error: (err as Error).message }, { status: 500 });
   }

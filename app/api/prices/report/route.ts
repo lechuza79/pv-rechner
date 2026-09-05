@@ -9,6 +9,11 @@ import { tokens } from "../../../../lib/theme";
 const C_POSITIVE = tokens["--color-positive"];
 const C_NEGATIVE = tokens["--color-negative"];
 
+// Same reasoning for the type scale: a mail client resolves no CSS variable, so
+// the values are read as literals from the one source instead of typed here.
+const F_SMALL = tokens["--font-size-small"];
+const F_BODY = tokens["--font-size-body"];
+
 // ─── Weekly price report / health alert (email via Resend) ───────────────────
 // Vercel Cron: runs WEEKLY (Mondays). Two jobs in one, so the alert path never
 // depends on Claude/the scheduled-task watchers (which share a monthly spend
@@ -58,7 +63,7 @@ function row(label: string, value: string, change: string, source: string): stri
     <td style="padding:8px 12px;border-bottom:1px solid #eee">${label}</td>
     <td style="padding:8px 12px;border-bottom:1px solid #eee;font-family:monospace;text-align:right">${value}</td>
     <td style="padding:8px 12px;border-bottom:1px solid #eee;font-family:monospace;text-align:right">${change}</td>
-    <td style="padding:8px 12px;border-bottom:1px solid #eee;color:#777;font-size:12px">${source}</td>
+    <td style="padding:8px 12px;border-bottom:1px solid #eee;color:#777;font-size:${F_SMALL}">${source}</td>
   </tr>`;
 }
 
@@ -153,7 +158,7 @@ export async function GET(req: Request) {
     // A degraded run repeats weekly until fixed → tell the reader why, so a
     // recurring mail reads as "still broken", not as a duplicate glitch.
     const warningBanner = isWarning
-      ? `<p style="background:#FEF2F2;border:1px solid ${C_NEGATIVE};border-radius:8px;padding:12px 14px;margin:0 0 16px;font-size:14px;color:#3F3F3F">
+      ? `<p style="background:#FEF2F2;border:1px solid ${C_NEGATIVE};border-radius:8px;padding:12px 14px;margin:0 0 16px;font-size:${F_BODY};color:#3F3F3F">
           <b style="color:${C_NEGATIVE}">⚠️ Die Preis-Pipeline ist nicht gesund (${health}).</b><br>
           Der ausgelieferte Preis kann trotzdem stimmen (letzter guter Wert wird gehalten) — aber eine Datenquelle liefert nicht mehr sauber. Diese Warnung kommt wöchentlich, bis der Status wieder OK ist. Details siehe „Pipeline-Status" und die Quellen-Spalte unten.
         </p>`
@@ -163,8 +168,8 @@ export async function GET(req: Request) {
       <p style="color:#777;margin:0 0 16px">Stand ${curr.valid_from}${prev ? ` · Vergleich zu ${prev.valid_from}` : " · (kein Vormonat zum Vergleich)"}</p>
       ${warningBanner}
       <p style="margin:0 0 16px">Pipeline-Status: <b style="color:${healthColor}">${health}</b></p>
-      <table style="border-collapse:collapse;width:100%;font-size:14px">
-        <thead><tr style="text-align:left;color:#777;font-size:12px;text-transform:uppercase">
+      <table style="border-collapse:collapse;width:100%;font-size:${F_BODY}">
+        <thead><tr style="text-align:left;color:#777;font-size:${F_SMALL};text-transform:uppercase">
           <th style="padding:8px 12px">Attribut</th>
           <th style="padding:8px 12px;text-align:right">Aktuell</th>
           <th style="padding:8px 12px;text-align:right">Δ Vormonat</th>
@@ -172,7 +177,7 @@ export async function GET(req: Request) {
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
-      <p style="color:#949494;font-size:12px;margin-top:16px">Automatisch erzeugt von solar-check.io · Werte aus der live gepflegten Preis-Datenbank.</p>
+      <p style="color:#949494;font-size:${F_SMALL};margin-top:16px">Automatisch erzeugt von solar-check.io · Werte aus der live gepflegten Preis-Datenbank.</p>
     </div>`;
 
     if (dryRun) {

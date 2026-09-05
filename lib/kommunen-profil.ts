@@ -224,6 +224,51 @@ export function extractVerantwortlich(text: string, vok: Vokabular = KOMMUNEN_VO
 
 const MAIL_RE = /[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g;
 
+/**
+ * Verschleierte Adressen wieder lesbar machen — VOR der Mustersuche.
+ *
+ * WOZU: Kommunen schreiben ihre Adresse regelmäßig als Spamschutz um, und für
+ * die Mustersuche existiert sie dann schlicht nicht. Gemessen an einer
+ * Stichprobe von 25 Gemeinden ohne erfasstes Postfach: Verschleierung war eine
+ * von drei Ursachen, gefunden unter anderem als „rathaus⚹huerth◦de".
+ *
+ * Zwei Regeln, die das Verfahren zusammenhalten:
+ *
+ *   1. Es wird nur ERSETZT, nie geraten. Ein Trennzeichen ohne erkennbares
+ *      Muster bleibt stehen; herauskommt dann keine Adresse, und das ist das
+ *      richtige Ergebnis. Eine erfundene Adresse wäre schlimmer als keine —
+ *      sie ginge in den Versand und käme als Unzustellbarkeit zurück.
+ *   2. Ersetzt wird auf einer KOPIE des Textes. Die Verantwortlichen-Zeile
+ *      wird aus dem Originaltext gelesen; ein global umgeschriebener Text
+ *      würde dort Zeichen verändern, die niemand verschleiert hat.
+ *
+ * Die Zeichenklasse ist bewusst breit: Welches Sonderzeichen eine Gemeinde für
+ * das @ nimmt, ist Geschmackssache ihres Dienstleisters. Eng gefasst müsste die
+ * Liste bei jedem neuen Anbieter wachsen, und niemand würde merken, dass sie zu
+ * kurz ist.
+ */
+export function entschleiere(text: string): string {
+  return (
+    text
+      // Ausgeschriebene Formen: "name (at) ort (dot) de", auch mit [ ] oder { }.
+      .replace(/\s*[([{]\s*(?:at|ät|aet)\s*[)\]}]\s*/gi, "@")
+      .replace(/\s*[([{]\s*(?:dot|punkt)\s*[)\]}]\s*/gi, ".")
+      // Ohne Klammern, aber mit Leerzeichen rundum — „name at ort dot de".
+      // Nur MIT Leerzeichen auf beiden Seiten, sonst würde „Fahrrat at“ in
+      // gewöhnlichem Fließtext zerlegt.
+      .replace(/(\w)\s+(?:at|ät)\s+(\w)/gi, "$1@$2")
+      .replace(/(\w)\s+(?:dot|punkt)\s+(\w)/gi, "$1.$2")
+      // Sonderzeichen als @-Ersatz zwischen zwei Wortzeichen. Der Bindestrich
+      // ist bewusst NICHT dabei: er kommt in echten Adressen vor.
+      .replace(/(\w)[⚹✳✱∗●•◉◆■□☺☼※]+(\w)/g, "$1@$2")
+      // Sonderzeichen als Punkt-Ersatz.
+      .replace(/(\w)[◦∘○·・]+(\w)/g, "$1.$2")
+      // HTML-Entities, die als Text durchgereicht wurden.
+      .replace(/&#0*64;|&commat;/gi, "@")
+      .replace(/&#0*46;/g, ".")
+  );
+}
+
 type Adressen = { rollenEmail: string | null; personenEmail: string | null; verwaltungDomain: string | null };
 
 /**
@@ -242,7 +287,7 @@ export function extractAdressen(
   vok: Vokabular = KOMMUNEN_VOKABULAR,
 ): Adressen {
   const out: Adressen = { rollenEmail: null, personenEmail: null, verwaltungDomain: null };
-  for (const roh of Array.from(new Set(text.match(MAIL_RE) ?? []))) {
+  for (const roh of Array.from(new Set(entschleiere(text).match(MAIL_RE) ?? []))) {
     const mail = roh.trim().toLowerCase();
     if (vok.ungeeignet.test(mail)) continue;
     const dom = mail.split("@")[1];
