@@ -184,7 +184,7 @@ export default function Home() {
             🔒 Keine Anmeldung nötig
           </div>
           <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted'), marginTop: 4 }}>
-            Keine Lead-Erfassung · Keine Werbung · Kein Vertriebskontakt
+            Keine Lead-Erfassung · Keine Werbebanner · Kein Vertriebskontakt
           </div>
         </div>
 
