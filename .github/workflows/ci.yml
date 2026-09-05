@@ -27,7 +27,13 @@ jobs:
     # 26.08. einmal wirklich (15,3 min, Lauf 32946344841, „cancelled"). Das war
     # kein Defekt, sondern gewollte Arbeit: Der Ergebnis-Laeufer kam am 24.08.
     # dazu, seitdem stieg der Testschritt von 5,4 auf 11,4 Minuten im Median.
-    timeout-minutes: 35
+    #
+    # 05.09.2026 auf 45 angehoben, weil der Smoke-Schritt 22 statt 16 Minuten
+    # bekam (Begruendung dort). Das Job-Limit MUSS ueber der Summe der
+    # Schritt-Limits liegen — sonst reisst wieder der Job zuerst, der Ausgang
+    # heisst „abgebrochen", und das Schritt-Limit ist wirkungslos, waehrend es
+    # im Diff richtig aussieht.
+    timeout-minutes: 45
 
     steps:
       - uses: actions/checkout@v4
@@ -110,13 +116,23 @@ jobs:
       # also nicht mehr sagen, welcher Schritt welche Zeile geschrieben hat —
       # genau die Auskunft, die man bei der Fehlersuche braucht.
       #
-      # 16 Minuten = gemessenes Maximum (12,5 min ueber 31 gruene Laeufe,
-      # 27.08.2026) plus knapp ein Drittel. Nicht auf Kante: Der Linux-Runner
-      # streut, und ein Test mehr soll hier hineinpassen, ohne dass jemand die
-      # Zahl anfasst. Wird sie trotzdem knapp, ist das ein Befund — dann messen,
-      # was gewachsen ist, statt das Limit anzuheben.
+      # 16 Minuten waren am 27.08.2026 das gemessene Maximum plus ein Drittel
+      # (12,5 min ueber 31 gruene Laeufe). Am 05.09.2026 gerissen — und die
+      # Messung davor sagt, dass es kein Ausrutscher war: Die drei gruenen
+      # Laeufe desselben Vormittags brauchten 14:29, 15:37 und 15:57. Der
+      # letzte lag drei Sekunden unter dem Limit; gruen war er nur noch dem
+      # Namen nach.
+      #
+      # GEWACHSEN IST DIE ARBEIT, nicht die Langsamkeit: 200 Smoke-Tests ueber
+      # 64 Adressen, davon 178 Sekunden allein fuers Vorwaermen (der Dev-Server
+      # uebersetzt jede Route beim ersten Aufruf) — ein Fuenftel des Budgets,
+      # bevor der erste Test laeuft. Deshalb 22 Minuten: das gemessene Maximum
+      # plus reichlich ein Drittel, wie beim letzten Mal.
+      #
+      # Wird das wieder knapp, ist Anheben die FALSCHE Antwort — dann gehoert
+      # das Vorwaermen aus dem Zeitbudget des Testschritts heraus.
       - name: E2E smoke tests (Playwright)
-        timeout-minutes: 16
+        timeout-minutes: 22
         run: npm run test:e2e
         env:
           # Der Browser-seitige Client braucht nur irgendeine gültige Form —
