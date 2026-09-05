@@ -2,7 +2,10 @@ import { describe, expect, it } from "vitest";
 import {
   adressenAus,
   bezugsjahr,
+  FREMDE_STELLE,
   hatFormular,
+  istBrauchbar,
+  naheDienstleisterHinweis,
   KENNZEICHNUNG_MUSTER,
   KONTAKT_MUSTER,
   kennzeichnungForm,
@@ -420,5 +423,89 @@ describe("Gesamtauswertung", () => {
     );
     expect(erg.websiteEmail).toBeNull();
     expect(erg.postfaecher).toEqual([]);
+  });
+});
+
+// ─── Negativproben ────────────────────────────────────────────────────────────
+//
+// WARUM DIESER BLOCK EXISTIERT (Gegenpruefung 05.09.2026): Die Erhebung war
+// ausschliesslich an Faellen geeicht, in denen der gesuchte Gegenstand WIRKLICH
+// da war. Jeder Test fragte „findet sie den Rechner / die Adresse / das Jahr?"
+// und keiner fragte „laesst sie liegen, was keiner ist?". Genau daran ist sie
+// gescheitert: 118 unmoegliche Bezugsjahre, Behoerdenadressen als Kontaktweg,
+// Tarifrechner als eigener Photovoltaik-Rechner.
+//
+// Ein Messgeraet ist erst geeicht, wenn BEIDE Richtungen geprueft sind.
+
+describe("Negativproben: was NICHT als Fund durchgehen darf", () => {
+  describe("Postfaecher", () => {
+    it("Datenschutz, Bewerbung und Nicht-Antworten sind kein Weg zu uns", () => {
+      for (const m of [
+        "datenschutz@stadtwerke-x.de",
+        "datenschutzbeauftragter@stadtwerke-x.de",
+        "bewerbung@stadtwerke-x.de",
+        "karriere@stadtwerke-x.de",
+        "noreply@stadtwerke-x.de",
+        "spam@stadtwerke-x.de",
+      ]) {
+        expect(postfachArt(m, ALLGEMEIN)).toBe("ungeeignet");
+        expect(istBrauchbar(postfachArt(m, ALLGEMEIN))).toBe(false);
+      }
+    });
+
+    it("ein Abteilungskuerzel ist keine Person", () => {
+      for (const m of ["planauskunft@sw.de", "msb@sw.de", "hausanschluss@sw.de", "beschwerdemanagement@sw.de"]) {
+        expect(postfachArt(m, ALLGEMEIN)).toBe("funktion");
+      }
+      expect(postfachArt("maria.mustermann@sw.de", ALLGEMEIN)).toBe("person");
+    });
+
+    it("Behoerden und Schlichtungsstellen sind keine Versorger-Adresse", () => {
+      for (const dom of [
+        "wirtschaft.saarland.de",
+        "tmuen.thueringen.de",
+        "mu.niedersachsen.de",
+        "clearingstelle-eeg-kwkg.de",
+        "verbraucher-schlichter.de",
+        "bnetza.de",
+      ]) {
+        expect(FREMDE_STELLE.test(dom)).toBe(true);
+      }
+      // Kein Kahlschlag: ein Stadtwerk mit Landesnamen bleibt drin.
+      for (const dom of ["stadtwerke-saarlouis.de", "energie-sachsen-ost.de", "swb-bremen.de"]) {
+        expect(FREMDE_STELLE.test(dom)).toBe(false);
+      }
+    });
+
+    it("die Agenturadresse faellt auch dann, wenn sie verschleiert dasteht", () => {
+      const text = "Technische Umsetzung und Gestaltung: Agentur Beispiel, kontakt@agentur.de";
+      expect(naheDienstleisterHinweis([text], "kontakt@agentur.de")).toBe(true);
+    });
+  });
+
+  describe("Stromkennzeichnung", () => {
+    const stichtag = new Date(Date.UTC(2026, 7, 15)); // Pflichtjahr 2025
+
+    it("ein Jahr ueber dem Pflichtjahr ist kein Bezugsjahr", () => {
+      expect(bezugsjahr("Stromkennzeichnung. © 2026 Stadtwerke Beispiel", stichtag)).toBeNull();
+      expect(bezugsjahr("Stromkennzeichnung-2026-Energietraegermix_LJ_2025.pdf", stichtag)).toBe(2025);
+    });
+
+    it("eine veraltete Seite bleibt veraltet, auch wenn ein aktuelles Datum danebensteht", () => {
+      const j = bezugsjahr("Unsere Stromkennzeichnung für das Lieferjahr 2023. Stand 01.07.2026", stichtag);
+      expect(j).toBe(2023);
+      expect(j! >= pflichtjahr(stichtag)).toBe(false);
+    });
+
+    it("das Jahr aus dem Umfeld der Sache schlaegt das juengste im Text", () => {
+      const text = "Pressemeldung vom 12. Mai 2025 ... Unsere Stromkennzeichnung 2022 ...";
+      expect(bezugsjahr(text, stichtag)).toBe(2022);
+    });
+  });
+
+  describe("kaputte fremde Seiten", () => {
+    it("eine fehlerhaft kodierte Adresse kostet nicht den Lauf", () => {
+      expect(() => adressenAus('<a href="mailto:info%zz@x.de">Mail</a>', "")).not.toThrow();
+    });
   });
 });

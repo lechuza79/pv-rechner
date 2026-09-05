@@ -134,6 +134,15 @@ async function setup(): Promise<void> {
     -- Adresse auf FREMDER Domain: bei Versorgern ein Hinweis auf Konzernmutter
     -- oder Dienstleister. Kein Fehler, sondern ein Fund fuer den Menschen.
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS verbund_domain text;
+    -- Bundesland des Firmensitzes, zweistellig wie im Melderegister.
+    --
+    -- Es gibt eine eigene Spalte neben sitz_gemeinde_id, weil beide verschieden
+    -- sicher zu haben sind: Eine Postleitzahl trifft oft mehrere Gemeinden (dann
+    -- bleibt der Gemeindeschluessel leer, ein geratener zeigt auf einen anderen
+    -- Ort und sieht dabei voellig normal aus), ueberschreitet aber fast nie eine
+    -- Landesgrenze. Ohne diese Angabe greift die Versandbremse nicht, die
+    -- Schulferien und Feiertage des ZIELLANDES aussparen soll.
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS sitz_land text;
     -- Ergebnis der systematischen Gebiets-Pruefung (gruen/gelb/rot + Befunde).
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS pruefung_ampel text;
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS pruefung jsonb;

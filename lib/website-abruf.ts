@@ -21,6 +21,26 @@ export const PARALLEL = 4;
 export type Abgerufen = { html: string } | { fehler: string };
 
 /**
+ * Eine Adresse lesbar machen, ohne an einer kaputten zu scheitern.
+ *
+ * `decodeURIComponent` wirft bei ungültigen Prozentzeichen (`%zz`) — und eine
+ * einzige solche Adresse auf irgendeiner fremden Seite hat am 05.09.2026 den
+ * ganzen Lauf über 910 Websites abgebrochen. Derselbe Rettungsblock stand
+ * daraufhin vierzehnmal im Code; hier steht er einmal.
+ *
+ * Gebraucht wird das überall, wo ein Muster gegen eine Adresse läuft: In einer
+ * Sitemap gibt es keinen Linktext als Rückfall, und `/f%c3%b6rderung` passt auf
+ * kein deutsches Wort.
+ */
+export function lesbarMachen(roh: string): string {
+  try {
+    return decodeURIComponent(roh);
+  } catch {
+    return roh;
+  }
+}
+
+/**
  * Eine HTML-Seite holen.
  *
  * Der Fehlgrund wird zurückgegeben statt verschluckt: Ein gescheiterter Abruf
@@ -37,10 +57,33 @@ export async function holeSeite(url: string): Promise<Abgerufen> {
     if (!res.ok) return { fehler: `HTTP ${res.status}` };
     const typ = res.headers.get("content-type") ?? "";
     if (typ && !/text\/html|application\/xhtml/i.test(typ)) return { fehler: `Kein HTML (${typ.split(";")[0]})` };
-    return { html: await res.text() };
+    return { html: await alsText(res, typ) };
   } catch (e) {
     const m = e instanceof Error ? e.message : String(e);
     return { fehler: /abort/i.test(m) ? "Zeitüberschreitung" : m.slice(0, 120) };
+  }
+}
+
+/**
+ * Antwort als Text, in der Zeichenkodierung, die der Server nennt.
+ *
+ * `res.text()` nimmt immer UTF-8 an. Deutsche Kommunal- und Stadtwerke-Seiten
+ * laufen aber teils noch auf ISO-8859-1; dort wird aus „Wärmepumpe" ein
+ * „W�rmepumpe", und danach passt kein einziges Themen-Muster mehr. Der
+ * Fehler ist doppelt tückisch, weil er wie ein sauberes „nichts gefunden"
+ * aussieht.
+ */
+async function alsText(res: Response, contentType: string): Promise<string> {
+  const puffer = await res.arrayBuffer();
+  const ausKopf = /charset=["']?([\w-]+)/i.exec(contentType)?.[1];
+  // Kein Charset im Kopf: die ersten Kilobyte nach einer Meta-Angabe absuchen.
+  const anfang = new TextDecoder("latin1").decode(puffer.slice(0, 4096));
+  const ausMeta = /<meta[^>]+charset=["']?([\w-]+)/i.exec(anfang)?.[1];
+  const kodierung = (ausKopf ?? ausMeta ?? "utf-8").toLowerCase();
+  try {
+    return new TextDecoder(kodierung).decode(puffer);
+  } catch {
+    return new TextDecoder("utf-8").decode(puffer);
   }
 }
 
@@ -112,7 +155,42 @@ export async function sitemapAdressen(basis: string, maxSitemaps = 8): Promise<s
   return [...adressen];
 }
 
-/** Wenige Aufgaben gleichzeitig, Reihenfolge egal. */
+/**
+ * Wenige Aufgaben gleichzeitig, in fester Ergebnisreihenfolge.
+ *
+ * WARUM EIN POOL UND KEINE HÄPPCHEN (gemessen 05.09.2026): Die erste Fassung
+ * gab je vier Aufgaben zusammen aus und wartete, bis alle vier fertig waren.
+ * Ein einziger hängender Server — und 15 Sekunden Zeitlimit mal mehrere Abrufe
+ * je Website sind schnell Minuten — hielt damit drei erledigte Plätze leer. Der
+ * Pool zieht nach, sobald einer frei wird.
+ *
+ * Ein Fehler in einer Aufgabe reißt die anderen nicht mit: Er kommt als Wert
+ * zurück, nicht als Ausnahme. Ein Lauf über tausend fremde Websites, den eine
+ * einzige kaputte Seite beenden kann, ist kein Lauf.
+ */
+export async function imPool<T, R>(
+  items: T[],
+  gleichzeitig: number,
+  fn: (t: T, i: number) => Promise<R>,
+): Promise<(R | { fehler: string })[]> {
+  const out = new Array<R | { fehler: string }>(items.length);
+  let naechster = 0;
+  const arbeiter = Array.from({ length: Math.max(1, Math.min(gleichzeitig, items.length)) }, async () => {
+    for (;;) {
+      const i = naechster++;
+      if (i >= items.length) return;
+      try {
+        out[i] = await fn(items[i], i);
+      } catch (e) {
+        out[i] = { fehler: e instanceof Error ? e.message.slice(0, 200) : String(e).slice(0, 200) };
+      }
+    }
+  });
+  await Promise.all(arbeiter);
+  return out;
+}
+
+/** @deprecated Blockiert bei einem hängenden Host drei Plätze — `imPool` nehmen. */
 export async function inHaeppchen<T, R>(items: T[], groesse: number, fn: (t: T) => Promise<R>): Promise<R[]> {
   const out: R[] = [];
   for (let i = 0; i < items.length; i += groesse) {
