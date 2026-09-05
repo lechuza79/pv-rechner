@@ -408,3 +408,46 @@ SWWP-Invest > LWWP-Invest).
   Tarife geprüft am …, BEG-Förderung am …", `lib/stand.ts`), das jüngere von
   beiden ist das `lastmod` der Seite. Ein Lauf, der an einer Quelle gescheitert
   ist, lässt ihr Datum stehen; `validFrom` bewegt sich nur mit einem Wert.
+
+## Preispfade Strom und Gas
+
+Seit 05.09.2026 eigener Prüfpunkt. Bis dahin standen die drei Pfade ohne
+Quelle im Code — der oberste (+5 % Strom im Jahr) ist in 19 Jahren nie
+vorgekommen, gemessen an den Eurostat-Reihen für deutsche Haushalte.
+
+**Leitquelle:** Kemmler u. a., „Rahmendaten und Endverbrauchspreise für die
+Treibhausgas-Projektionen", Prognos AG im Auftrag des Umweltbundesamtes.
+Volltext der 3. Auflage (Mai 2026) in `docs/quellen/`.
+
+Sie ist die einzige gefundene amtliche Projektion deutscher
+Haushalts-Endkundenpreise und führt zwei Zeilen, die dieser Rechner braucht:
+einen eigenen Wärmepumpentarif und den Gaspreis mit getrennt ausgewiesenem
+CO₂-Aufschlag. Verworfen wurden EU-Referenzszenario, die Folgenabschätzungen
+der Kommission, der World Energy Outlook und die Langfristszenarien — keine
+davon nennt deutsche Haushalts-Endkundenpreise, und keine einen projizierten
+Gas-Endkundenpreis für irgendein Land.
+
+**Was zu prüfen ist**
+
+1. Ist eine neue Auflage erschienen? Die Rahmendaten erscheinen jeweils im
+   Frühjahr, der Projektionsbericht selbst alle zwei Jahre.
+2. Die beiden Reihen ablesen (Tabelle für Strom: Zeile „Haushalte
+   Wärmepumpen-Tarif, Endverbrauchspreis inkl. MwSt."; Tabelle für Gas: Zeile
+   „Erdgas Haushalte (20-200 GJ), Endverbrauchspreis" samt der eigenen
+   CO₂-Zeile).
+3. Die Steigerungsraten SELBST ausrechnen, über 2025 bis 2045, und mit dem
+   BIP-Deflator derselben Quelle von real auf nominal umrechnen. Der Rechner
+   zinst nominal auf; wer die realen Werte direkt einsetzt, unterschätzt um
+   gut zwei Prozentpunkte.
+4. **Den CO₂-Anteil vom Gaspreis abziehen**, bevor der Pfad gesetzt wird. Der
+   Rechner addiert ihn separat; wer den Gesamtpreis nimmt, zählt ihn zweimal.
+   Genau dieser Fehler stand am 05.09.2026 kurzzeitig als Begründung im Code.
+5. Nur der MITTLERE Pfad folgt der Quelle direkt. Die beiden Ränder spannen
+   die Netzentgelt-Prognosen auf (Consentec/Frontier für den Strom, Agora und
+   Öko-Institut für das Gasnetz) und werden gegen deren neueste Fassung
+   geprüft.
+
+**Grenze der Selbstheilung:** Der Lauf darf die Raten anpassen, wenn die neue
+Auflage der Leitquelle sie hergibt und der Sprung unter 30 % je Feld bleibt.
+Er darf NICHT die Zuordnung ändern (welcher Pfad welcher ist) und nicht den
+JAZ-Faktor anfassen — das ist eine Annahme über das Gerät, keine über Preise.

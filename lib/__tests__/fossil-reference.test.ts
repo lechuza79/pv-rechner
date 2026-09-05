@@ -92,7 +92,14 @@ describe("PV-Rechner und WP-Rechner rechnen die fossile Seite identisch", () => 
     years: HEATING_YEARS,
     pricePerKwh: FUEL.gas.price,
     co2PerKwh: FUEL.gas.co2PerKwh,
-    inflation: 0.02,
+    // AUS DER KONFIGURATION, nicht getippt. Bis 05.09.2026 stand hier 0.02 —
+    // dieselbe Zahl, die auch in der Konfiguration stand, nur ein zweites Mal.
+    // Als der mittlere Gaspfad dort auf 3 % stieg (EU-Emissionshandel für Wärme
+    // ab 2028), schlug dieser Test an und meldete einen Gleichlauf-Bruch, den es
+    // nicht gab: Beide Rechner ziehen die Rate längst aus derselben Quelle, nur
+    // der Test nicht. Ein Kohärenz-Test, der seine Vergleichsgröße selbst tippt,
+    // prüft am Ende sich gegen sich.
+    inflation: DEFAULT_HEATPUMP_CONFIG.gasInflation,
     fossilInvest: 0,
     greenGas: true,
   });

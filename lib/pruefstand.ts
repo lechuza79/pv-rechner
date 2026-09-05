@@ -113,6 +113,20 @@ export const PRUEFSTAND: PruefEintrag[] = [
     runbook: "scripts/waermepumpe-verify.md",
   },
   {
+    was: "Wärmepumpe: Strom- und Gaspreispfade",
+    feld: "DEFAULT_HEATPUMP_CONFIG.geprueftPreispfadeIso",
+    geprueftIso: DEFAULT_HEATPUMP_CONFIG.geprueftPreispfadeIso,
+    reviewBy: DEFAULT_HEATPUMP_CONFIG.reviewBy,
+    waechter: "waermepumpe-werte-verify-jaehrlich",
+    // Die Leitquelle erscheint alle zwei Jahre (Projektionsbericht nach der
+    // EU-Governance-Verordnung), die Rahmendaten dazu jeweils im Frühjahr. Ein
+    // Jahr Höchstalter deckt einen verpassten Jahrgang nicht zu, aber es meldet
+    // sich, bevor ein zweiter erscheint.
+    rhythmus: "jährlich gegen die Rahmendaten des Umweltbundesamtes",
+    maxAlterTage: 400,
+    runbook: "scripts/waermepumpe-verify.md",
+  },
+  {
     was: "Wärmepumpe: Zusagen der Bundesförderung",
     feld: "KFW_REPORT_STAND.geprueftIso",
     geprueftIso: KFW_REPORT_STAND.geprueftIso,

@@ -314,6 +314,11 @@ export const WAECHTER: WaechterJob[] = [
     pruefFelder: [
       "DEFAULT_HEATPUMP_CONFIG.geprueftIso",
       "DEFAULT_HEATPUMP_CONFIG.geprueftFoerderungIso",
+      // Die Preispfade hängen mit dran statt einen eigenen Lauf zu bekommen:
+      // Ihre Leitquelle (Rahmendaten des Umweltbundesamtes) erscheint einmal im
+      // Jahr, ein eigener Auftrag stünde elf Monate lang still — und ein Lauf,
+      // der nie etwas findet, wird irgendwas anderes.
+      "DEFAULT_HEATPUMP_CONFIG.geprueftPreispfadeIso",
       // Der Förderreport der KfW hängt mit dran, statt einen eigenen Lauf zu
       // bekommen: Er erscheint einmal im Jahr, ein eigener Auftrag fände elf
       // Monate lang nichts. Sein Ablauf steht in scripts/kfw-report-verify.md

@@ -162,6 +162,10 @@ export interface HeatPumpConfig {
    * Ein gemeinsames Datum wäre für eines von beiden gelogen.
    */
   geprueftFoerderungIso: string;
+  /** Prüftag der Preispfade (Strom/Gas) — eigene Quelle, eigener Takt. */
+  geprueftPreispfadeIso: string;
+  /** Stand der Preisprojektion, aus der die Pfade stammen. */
+  preispfadeValidFrom: string;
   reviewBy: string;    // ISO date — re-check against official sources by then (see scripts/waermepumpe-verify.md)
 }
 
@@ -275,10 +279,42 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   // Im Ergebnis editierbar (0 = die vorhandene Heizung hält die Laufzeit durch).
   fossilErsatzInvest: 15900,
   years: 20,
-  gasInflation: 0.02,
+  // Der MITTLERE Preispfad. Die beiden Ränder stehen in `heatPumpScenarioAdj`
+  // und sind dort belegt; hier steht, wovon sie abweichen.
+  //
+  // Gas 2,5 % statt 2 % seit dem 05.09.2026, belegt an der amtlichen
+  // Projektion (Prognos im Auftrag des Umweltbundesamtes, Rahmendaten zu den
+  // Treibhausgas-Projektionen 2026, Tabelle 12; Volltext in docs/quellen).
+  // Dort steigt der Gaspreis OHNE den CO₂-Anteil von 2025 bis 2045 real um
+  // 0,29 % im Jahr, nominal um 2,40 % — der frühere Gleichlauf mit dem
+  // Strompreis war keine Annahme, sondern eine ungeprüfte Symmetrie.
+  //
+  // NICHT mit dem Emissionshandel begründen: Der CO₂-Aufschlag wird in
+  // `calcFossilReference` separat addiert. Eine Zwischenfassung dieses
+  // Kommentars tat es und zählte ihn damit doppelt. Was den Gaspreis hier
+  // wirklich treibt, sind die Netzentgelte des schrumpfenden Gasnetzes
+  // (real +4,24 %/a), während die Beschaffung real fällt.
+  //
+  // Strom bleibt bei 2 %: Das liegt über dem amtlichen Pfad für den
+  // Wärmepumpentarif (nominal +0,67 %/a, real sogar fallend) und beim
+  // historischen Zehnjahresmittel für Haushaltsstrom (2,71 % laut Eurostat) —
+  // die vorsichtige Richtung. Und es hält den Gleichlauf mit dem PV-Rechner.
+  gasInflation: 0.025,
   stromInflation: 0.02, // p.a. — konsistent mit PV-Rechner (SCENARIOS realistic + electricityIncrease)
   source: "Fraunhofer ISE WPsmart, Verbraucherzentrale RLP (Auswertung 160 Wärmepumpen-Angebote, Juni 2025; bestätigt durch den zweiten Check vom 02.07.2026: Median 34.898 €, Mittelwert 36.397 €, Spanne 21.099–54.168 €), KfW Merkblatt 458 (BEG EM, Stand 07/2026), BDEW, dena-Gebäudereport + dena-Studie „Auswertung von Verbrauchskennwerten energieeffizienter Wohngebäude“ (Heizwärmebedarf nach Sanierung)",
   validFrom: "2026-07-27",
+  /**
+   * Stand der PREISPFADE — eigener Tag, weil sie an einer eigenen Quelle
+   * hängen (Prognos/Umweltbundesamt, Rahmendaten zu den
+   * Treibhausgas-Projektionen 2026) und außer der Reihe geprüft wurden.
+   *
+   * Sie mit den Marktwerten unter ein Datum zu stellen hieße, das ältere von
+   * beiden auf die Pfade zu übertragen — und damit eine Prüfung zu
+   * verschweigen, die stattgefunden hat. Dieselbe Begründung wie bei der
+   * BEG-Förderung eine Zeile darüber.
+   */
+  geprueftPreispfadeIso: "2026-09-05",
+  preispfadeValidFrom: "2026-05-01",
   // Wächter-Lauf vom 17.08.2026 (der erste überhaupt — der Auftrag war seit
   // seiner Einrichtung nie gefeuert): Die Folge-Auswertung der
   // Verbraucherzentrale RLP vom 02.07.2026 im Volltext gelesen und gegen das

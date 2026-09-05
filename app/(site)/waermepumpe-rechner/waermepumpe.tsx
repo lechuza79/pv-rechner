@@ -213,6 +213,9 @@ export default function Waermepumpe({
   const [showGasInfo, setShowGasInfo] = useState(false);
   // Secondary-Block "Marktübliche Preissteigerung" (die 3 Preis-Modelle) auf-/zugeklappt.
   const [preisExpanded, setPreisExpanded] = useState(false);
+  // Ziel des Verweises unter der großen Zahl — dort steht die Erklärung der
+  // Preismodelle samt Umschalter.
+  const preisBlockRef = useRef<HTMLDivElement>(null);
 
   // ── Geteilter Link ───────────────────────────────────────────
   //
@@ -625,7 +628,34 @@ export default function Waermepumpe({
   const scenariosPlain = useMemo(() => calcHeatPumpScenarios({ ...activeInputs, greenGas: false }, cfg), [activeInputs, cfg]);
   // Gesetzes-Fall: Grüngas-Pflicht (Bio-Treppe) mit realistischen Nebenannahmen
   // (Strompreis/Arbeitszahl wie "realistisch", Gaspreis-Mittelpfad). Reale Rechtslage.
-  const gruengasResult = useMemo(() => calcHeatPump({ ...activeInputs, greenGas: true }, cfg, heatPumpScenarioAdj("realistic", cfg)), [activeInputs, cfg]);
+  /**
+   * Die drei Preispfade MIT Grüngas-Pflicht.
+   *
+   * Bis 05.09.2026 gab es die Grüngas-Rechnung nur als EINEN Wert (mittlerer
+   * Preispfad). Die Bandbreite unter der großen Zahl griff deshalb auf die
+   * Pfade OHNE Pflicht zurück — und mischte damit zwei völlig verschiedene
+   * Fragen: „wie stark steigen die Preise?" (offen) und „kommt das Gesetz?"
+   * (beschlossen). Was dabei herauskam, hat der Betreiber beanstandet:
+   * „−18.010 € bis +39.029 €" unter einem Ergebnis von +25.165 € — die Spanne
+   * wechselte das Vorzeichen, und die Zahl darüber war damit wertlos.
+   *
+   * Das Minimum stammte aus dem Fall „Gesetz kommt nicht UND Strom wird teuer
+   * UND Gas bleibt billig". Ein beschlossenes Gesetz als Münzwurf neben zwei
+   * Preisannahmen zu stellen, ist keine Vorsicht, sondern eine falsche
+   * Gewichtung.
+   */
+  const scenariosGruengas = useMemo(
+    () => calcHeatPumpScenarios({ ...activeInputs, greenGas: true }, cfg),
+    [activeInputs, cfg],
+  );
+  // Der mittlere Pfad davon IST die bisherige Grüngas-Rechnung — dieselben
+  // Eingaben, dieselbe Anpassung. Aus dem Satz gezogen statt ein zweites Mal
+  // gerechnet: zwei Aufrufe derselben Größe laufen sonst beim nächsten Umbau
+  // auseinander.
+  const gruengasResult = useMemo(
+    () => scenariosGruengas.find(s => s.id === "realistic")!,
+    [scenariosGruengas],
+  );
 
   // Meta des Gesetzes-Falls (Label + Farbe für Auswahl, Chart und Hero). KEIN
   // `explain` — die Erklärung zum Grüngas-Fall steht vollständig im Modal
@@ -651,11 +681,10 @@ export default function Waermepumpe({
   // die Grüngas-Pflicht). Sie steht im Hero unter der großen Zahl — die Antwort auf
   // „woher kennt ihr die Gas- und Ölpreise der Zukunft?" ist: gar nicht, hier ist die
   // Spanne. Der aktive Fall liegt immer innerhalb dieser Spanne.
-  const spanne = useMemo(() => {
-    const werte = scenariosPlain.map(s => s.tcoEinsparung);
-    if (gruengasVerfuegbar) werte.push(gruengasResult.tcoEinsparung);
-    return { min: Math.min(...werte), max: Math.max(...werte) };
-  }, [scenariosPlain, gruengasResult, gruengasVerfuegbar]);
+  // Die Bandbreite über alle Preispfade stand bis 05.09.2026 unter der großen
+  // Zahl und ist mit ihr entfallen — siehe den Kommentar an der Anzeigestelle.
+  // Was sie leisten sollte (keine Prognose behaupten), leistet jetzt der
+  // Verweis auf das gerechnete Modell.
 
   // Amortisationskurve: beim Gesetzes-Fall die Grüngas-Kurve hervorgehoben (grün) +
   // die 3 Preis-Szenarien als graue Vergleichslinien; sonst die 3 in Ampelfarben.
@@ -942,6 +971,113 @@ export default function Waermepumpe({
           // (`.wp-ergebnis` in lib/theme.ts) — kein Zustand, kein matchMedia.
           <div className="fu wp-ergebnis">
           <div>
+            {/* REIHENFOLGE (Betreiber, 05.09.2026): erst die Antwort, dann
+                die Annahmen, dann die Förderung.
+
+                Vorher standen vor der Zahl fünf Blöcke: die Grüngas-Kachel,
+                der Preis-Aufklapper, eine Konklusion, der Förderbetrag mit
+                Stichtags-Umschalter und der Fördercheck. Wer den Rechner
+                durchgeklickt hatte, bekam zuerst weitere Eingaben zu sehen.
+
+                ZWEI BLOECKE WAREN AUCH INHALTLICH EINER: die Gruengas-
+                Pflicht und die marktuebliche Preissteigerung sind beide die
+                Frage, mit
+                welchen Energiepreisen gerechnet wird — der eine als
+                Rechtslage, der andere als Preispfad. Sie stehen jetzt
+                zusammen unter einer Überschrift, direkt unter der Zahl, auf
+                die sie wirken.
+
+                Die WEGE bleiben im Hero (siehe `WegReiter`) — sie sind die
+                Bedingung der Zahl selbst, nicht eine Annahme daneben. */}
+            {/* Hero: TCO-Differenz — mit den Wegen als Reiterzeile darüber.
+
+                Die Reiter stehen INNERHALB des Hero-Rahmens, direkt über der
+                Zahl: Sie sind ihre Bedingung, nicht ein eigener Abschnitt davor.
+                Warum nicht eingeklappt und die Zahl nach oben — siehe
+                `WegReiter`. */}
+            <div style={{ padding: "24px 20px", marginBottom: 16, background: v('--color-bg-accent'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border-accent')}` }}>
+              {zeigeWege && (
+                <WegReiter
+                  wege={wegeResults}
+                  aktivId={activeWeg?.id}
+                  onSelect={selectWeg}
+                  situation={situation}
+                  refLabel={fuel.refLabel}
+                />
+              )}
+              <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, width: "100%" }}>
+                Einsparung über {DEFAULT_HEATPUMP_CONFIG.years} Jahre
+                <InfoTooltip title="So wird die Einsparung berechnet" ariaLabel="Wie wird die Einsparung berechnet?">
+                  <TcoBreakdown r={sel} situation={situation} jahre={DEFAULT_HEATPUMP_CONFIG.years} sanierungHinweis={activeWeg?.sanierung ?? false} refLabel={fuel.refLabel} />
+                </InfoTooltip>
+              </div>
+              <div style={{ fontSize: v("--font-size-display-lg"), fontWeight: 800, color: sel.tcoEinsparung >= 0 ? v('--color-positive') : v('--color-negative'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
+                {sel.tcoEinsparung >= 0 ? "+" : ""}{sel.tcoEinsparung.toLocaleString("de-DE")} €
+              </div>
+              {/* WELCHE ANNAHME hinter der Zahl steht — nicht, wie weit sie
+                  streuen könnte.
+
+                  Bis 05.09.2026 stand hier die Bandbreite über alle gerechneten
+                  Annahmen („Je nach Annahme sind es −17.805 € bis +48.186 €").
+                  Sie kam Ende Juli dazu, nachdem ein Nutzer die einzelne große
+                  Zahl als Prognose gelesen hatte — richtige Absicht, falsches
+                  Mittel: Eine Spanne, die das Vorzeichen wechselt, entwertet die
+                  Zahl darüber vollständig. Der Betreiber am 05.09.2026: „damit
+                  ist unser ergebnis ja für die tonne."
+
+                  DAS PROBLEM WAR NICHT DIE SPANNE, SONDERN WAS SIE MASS. Die
+                  Pfade reichten von Strom +5 % bis +1 % pro Jahr, und +5 % ist
+                  in keinem messbaren Zehnjahresfenster der letzten 19 Jahre je
+                  vorgekommen (höchster Wert 3,97 %, und dessen Treiber — der
+                  Aufbau der EEG-Umlage — existiert seit 2022 nicht mehr).
+                  Zusätzlich trug der ungünstige Pfad eine 10 % schlechtere
+                  Jahresarbeitszahl mit sich, also eine Annahme über das GERÄT,
+                  die an keinem der drei Reiter ablesbar war.
+
+                  Statt einer Bandbreite steht hier jetzt, WELCHES Modell
+                  gerechnet wird, mit dem Weg zu den anderen. Die Erklärung und
+                  die Umschaltung liegen im Preis-Block darüber — beides
+                  existierte schon, es fehlte nur der Verweis. Wer es genauer
+                  will, ändert Strompreis, Gaspreis und Jahresarbeitszahl
+                  ohnehin direkt: alle drei sind unten editierbar.
+
+                  Betreiber-Entscheidung: „Schreiben wir rechnen mit einem
+                  realistischen Szenario, dort erklärt + editierbar in die
+                  anderen." */}
+              <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 8, textAlign: "center", lineHeight: 1.5 }}>
+                Gerechnet mit{" "}
+                <button
+                  onClick={() => { setPreisExpanded(true); preisBlockRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }); }}
+                  style={{ background: "none", border: "none", padding: 0, font: "inherit", color: v('--color-accent'), cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 2 }}
+                >
+                  {greenGas ? "der Grüngas-Pflicht und mittlerer Preisannahme" : `dem Modell „${selPrice.label}“`}
+                </button>
+                . Künftige Energiepreise kennt niemand — was andere Annahmen ergeben, siehst du dort.
+              </div>
+
+              <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6, display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: 4 }}>
+                {/* „vs. neue" + Auswahlfeld ergab „vs. neue Heizöl". Der Fall steht
+                    jetzt im Satz, das Feld nennt nur noch das Gerät. */}
+                vs. {ersatzInvest > 0 ? "neue Heizung:" : "Weiterbetrieb:"}
+                {/* Beim Wechsel des Energieträgers den Preis-Override fallen lassen —
+                    sonst bliebe ein von Hand gesetzter Gaspreis am Heizöl kleben und
+                    die Umstellung wirkte wirkungslos. */}
+                <SelectField value={fuel.id} onChange={e => { setOFuel(e.target.value); setOGasPrice(null); }} ariaLabel="Referenzheizung wählen" size="sm" ton="akzent">
+                  {fuelOptions.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
+                </SelectField>
+                {situation === "neubau" ? "(Neubau)" : null}
+                <InfoTooltip title="Wie sich der Brennstoffpreis entwickelt" ariaLabel="Wie sich der Brennstoffpreis in der Rechnung entwickelt">
+                  {greenGas
+                    ? <>Das Grüngas-Szenario ist aktiv: Der Gaspreis folgt dem GModG-Gas-Mix — mit der Bio-Treppe wird ab 2029 zunehmend teures Biomethan beigemischt, dazu steigen Netzentgelte und CO₂-Preis. Details und Verlauf siehst du im Grüngas-Block weiter unten. Die drei Szenarien im Diagramm rechnen mit niedrigem, mittlerem und hohem Preispfad.</>
+                    : <>Der heutige Brennstoffpreis steigt in der Rechnung jedes Jahr — durch allgemeine Teuerung (realistisch rund 2 % pro Jahr) und durch den steigenden CO₂-Preis auf fossile Energie. Der CO₂-Preis liegt 2026 und 2027 bei 55–65 € pro Tonne und klettert ab 2028 mit dem EU-Emissionshandel voraussichtlich um etwa 8 € pro Tonne und Jahr. Die im heutigen Preis schon enthaltene CO₂-Abgabe wird dabei nicht doppelt gezählt. Die drei Szenarien im Diagramm rechnen mit unterschiedlich starkem Anstieg.</>}
+                </InfoTooltip>
+              </div>
+
+            {/* Womit gerechnet wird — Rechtslage und Preispfad zusammen. */}
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", margin: "0 2px 8px" }}>
+                Womit wir rechnen
+              </div>
             {/* Szenario-Auswahl ganz oben: das beschlossene Heizungsgesetz (Grüngas-Pflicht,
                 beschlossen, Inkrafttreten mit der Verkündung) gesondert + hervorgehoben, darunter drei reine
                 Preis-Annahmen ohne Grüngas. Die Wahl rechnet alle Zahlen darunter um. */}
@@ -995,7 +1131,7 @@ export default function Waermepumpe({
 
               {/* Secondary: die reinen Preis-Modelle, standardmäßig eingeklappt. */}
               <div style={{ marginTop: 8, borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, overflow: "hidden", background: !greenGas ? v('--color-bg-muted') : "transparent" }}>
-                <button onClick={() => setPreisExpanded(p => !p)} aria-expanded={preisExpanded}
+                <button ref={preisBlockRef as unknown as React.RefObject<HTMLButtonElement>} onClick={() => setPreisExpanded(p => !p)} aria-expanded={preisExpanded}
                   style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, padding: "10px 14px", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}>
                   <span style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: !greenGas ? v('--color-text-primary') : v('--color-text-secondary') }}>
                     Marktübliche Preissteigerung{!greenGas ? ` · ${sel.label}` : ""}
@@ -1029,6 +1165,8 @@ export default function Waermepumpe({
                   </div>
                 )}
               </div>
+            </div>
+
             </div>
 
             {/* Modal: alle erklärenden Grüngas-Texte gebündelt (Modal-Baustein →
@@ -1255,62 +1393,6 @@ export default function Waermepumpe({
                 <KfwFoerderpraxis daten={kfw} kreis={kfwKreis} nackt />
               </ResultSection>
             )}
-
-            {/* Hero: TCO-Differenz — mit den Wegen als Reiterzeile darüber.
-
-                Die Reiter stehen INNERHALB des Hero-Rahmens, direkt über der
-                Zahl: Sie sind ihre Bedingung, nicht ein eigener Abschnitt davor.
-                Warum nicht eingeklappt und die Zahl nach oben — siehe
-                `WegReiter`. */}
-            <div style={{ padding: "24px 20px", marginBottom: 16, background: v('--color-bg-accent'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border-accent')}` }}>
-              {zeigeWege && (
-                <WegReiter
-                  wege={wegeResults}
-                  aktivId={activeWeg?.id}
-                  onSelect={selectWeg}
-                  situation={situation}
-                  refLabel={fuel.refLabel}
-                />
-              )}
-              <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, width: "100%" }}>
-                Einsparung über {DEFAULT_HEATPUMP_CONFIG.years} Jahre
-                <InfoTooltip title="So wird die Einsparung berechnet" ariaLabel="Wie wird die Einsparung berechnet?">
-                  <TcoBreakdown r={sel} situation={situation} jahre={DEFAULT_HEATPUMP_CONFIG.years} sanierungHinweis={activeWeg?.sanierung ?? false} refLabel={fuel.refLabel} />
-                </InfoTooltip>
-              </div>
-              <div style={{ fontSize: v("--font-size-display-lg"), fontWeight: 800, color: sel.tcoEinsparung >= 0 ? v('--color-positive') : v('--color-negative'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
-                {sel.tcoEinsparung >= 0 ? "+" : ""}{sel.tcoEinsparung.toLocaleString("de-DE")} €
-              </div>
-              {/* Die große Zahl gilt für EINE Preisannahme. Ohne die Bandbreite daneben
-                  liest sie sich wie eine Prognose der Energiepreise der nächsten 20 Jahre
-                  — die niemand hat (Nutzerkritik 28.07.2026). Deshalb steht die Spanne
-                  aller gerechneten Annahmen direkt unter dem Wert, nicht nur im Tooltip. */}
-              <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 8, textAlign: "center", lineHeight: 1.5 }}>
-                Künftige Energiepreise kennt niemand. Je nach Annahme sind es{" "}
-                <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, whiteSpace: "nowrap" }}>
-                  {spanne.min >= 0 ? "+" : ""}{spanne.min.toLocaleString("de-DE")} €
-                </span>{" "}bis{" "}
-                <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, whiteSpace: "nowrap" }}>
-                  {spanne.max >= 0 ? "+" : ""}{spanne.max.toLocaleString("de-DE")} €
-                </span>.
-              </div>
-              <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6, display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: 4 }}>
-                {/* „vs. neue" + Auswahlfeld ergab „vs. neue Heizöl". Der Fall steht
-                    jetzt im Satz, das Feld nennt nur noch das Gerät. */}
-                vs. {ersatzInvest > 0 ? "neue Heizung:" : "Weiterbetrieb:"}
-                {/* Beim Wechsel des Energieträgers den Preis-Override fallen lassen —
-                    sonst bliebe ein von Hand gesetzter Gaspreis am Heizöl kleben und
-                    die Umstellung wirkte wirkungslos. */}
-                <SelectField value={fuel.id} onChange={e => { setOFuel(e.target.value); setOGasPrice(null); }} ariaLabel="Referenzheizung wählen" size="sm" ton="akzent">
-                  {fuelOptions.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
-                </SelectField>
-                {situation === "neubau" ? "(Neubau)" : null}
-                <InfoTooltip title="Wie sich der Brennstoffpreis entwickelt" ariaLabel="Wie sich der Brennstoffpreis in der Rechnung entwickelt">
-                  {greenGas
-                    ? <>Das Grüngas-Szenario ist aktiv: Der Gaspreis folgt dem GModG-Gas-Mix — mit der Bio-Treppe wird ab 2029 zunehmend teures Biomethan beigemischt, dazu steigen Netzentgelte und CO₂-Preis. Details und Verlauf siehst du im Grüngas-Block weiter unten. Die drei Szenarien im Diagramm rechnen mit niedrigem, mittlerem und hohem Preispfad.</>
-                    : <>Der heutige Brennstoffpreis steigt in der Rechnung jedes Jahr — durch allgemeine Teuerung (realistisch rund 2 % pro Jahr) und durch den steigenden CO₂-Preis auf fossile Energie. Der CO₂-Preis liegt 2026 und 2027 bei 55–65 € pro Tonne und klettert ab 2028 mit dem EU-Emissionshandel voraussichtlich um etwa 8 € pro Tonne und Jahr. Die im heutigen Preis schon enthaltene CO₂-Abgabe wird dabei nicht doppelt gezählt. Die drei Szenarien im Diagramm rechnen mit unterschiedlich starkem Anstieg.</>}
-                </InfoTooltip>
-              </div>
 
               {/* Das Gebäude — dieselbe Abfrage wie im Flow, hier zum
                   Nachjustieren. Bis 08.08.2026 waren im Ergebnis nur die

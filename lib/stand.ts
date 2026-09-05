@@ -105,6 +105,12 @@ export const STAND: Record<string, StandSeite> = {
       { was: "Grüngas-Pflicht", iso: GREEN_GAS_CONFIG.geprueftRechtIso, praezision: "tag" },
       { was: "Gaspreis-Bestandteile", iso: GREEN_GAS_CONFIG.geprueftIso, praezision: "tag", wertIso: GREEN_GAS_CONFIG.validFrom },
       { was: "CO₂-Preispfad", iso: CO2_PRICE.geprueftIso, praezision: "tag", wertIso: CO2_PRICE.validFrom },
+      // Eigener Eintrag seit 05.09.2026: Die Strom- und Gaspreispfade standen
+      // bis dahin ohne Quelle im Code — die oberste (+5 % Strom im Jahr) ist in
+      // 19 Jahren nie vorgekommen. Sie folgen jetzt der einzigen amtlichen
+      // Projektion deutscher Haushalts-Endkundenpreise und tragen deshalb
+      // deren Stand, nicht den der Marktwerte.
+      { was: "Strom- und Gaspreispfade", iso: DEFAULT_HEATPUMP_CONFIG.geprueftPreispfadeIso, praezision: "tag", wertIso: DEFAULT_HEATPUMP_CONFIG.preispfadeValidFrom },
       // Eigener Wertstand, weil er ein STICHTAG ist und keine Monatsangabe: Der
       // Förderreport zählt bis zu einem Tag, und jeder Jahrgang hat seinen
       // eigenen. Ihn mit den Marktwerten unter ein Datum zu stellen hieße, den
