@@ -9,6 +9,7 @@
  *   tsx scripts/versorger-erhebung.ts --stichprobe=20        # nur messen, nichts schreiben
  *   tsx scripts/versorger-erhebung.ts --stichprobe=20 --schreiben
  *   tsx scripts/versorger-erhebung.ts --alle --schreiben     # nach abgenommener Stichprobe
+ *   tsx scripts/versorger-erhebung.ts --alle --schreiben --fortsetzen  # nach Abbruch
  *
  * Voraussetzungen: SUPABASE_URL, SUPABASE_SERVICE_KEY aus .env.local.
  * Spalten kommen aus `tsx scripts/utilities-refresh.ts --setup`.
@@ -21,14 +22,18 @@
  *     Unterschied zur echten Lücke.
  *  2. **Die Auswertung urteilt nicht.** Sie sammelt Indizien; ob die
  *     Grafikpflicht erfüllt ist, entscheidet die Handprüfung.
- *  3. **Ein Host wird höchstens einmal gleichzeitig belastet**, und es werden
- *     höchstens vier Seiten je Versorger geholt.
+ *  3. **Ein Host wird höchstens einmal gleichzeitig belastet.** Die Zahl der
+ *     Seiten je Versorger ist NICHT vier, sondern in der Spitze rund 45 —
+ *     Startseite, robots.txt und Sitemaps, die Ziele der vier Stufen, dazu eine
+ *     Ebene tiefer je beurteilbarer Seite. Die alte Angabe stand hier, seit der
+ *     Lauf nur eine Stufe hatte, und ist beim Ausbau nicht mitgewandert.
+ *  4. **Der Lauf ist wiederaufsetzbar.** Jeder Befund wird sofort geschrieben,
+ *     nicht erst am Ende; --fortsetzen überspringt, was heute schon erhoben
+ *     wurde.
  */
 
-import { dirname, resolve } from "node:path";
-import { existsSync, readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-
+import { datenbank } from "../lib/skript-umgebung";
+import { PARALLEL, holeSeite, imPool, lesbarMachen, sitemapAdressen } from "../lib/website-abruf";
 import { VERSORGER_VOKABULAR, domainOf, findImpressumUrl, findLinkUrl } from "../lib/kommunen-profil";
 import { suchAdresse, suchFormular } from "../lib/funding-url-suche";
 import {
@@ -53,53 +58,17 @@ import {
   werteAus,
 } from "../lib/versorger-erhebung";
 
-const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
-const UA = "solar-check.io versorger-erhebung/1.0 (+https://solar-check.io; hey@solar-check.io)";
-const ABRUF_TIMEOUT_MS = 15000;
-const PARALLEL = 4;
-
 function log(msg: string, level: "info" | "ok" | "err" = "info"): void {
   const prefix = level === "ok" ? "✓ " : level === "err" ? "✗ " : "  ";
   // eslint-disable-next-line no-console
   console.log(prefix + msg);
 }
 
-function loadEnvFile(): void {
-  const envPath = resolve(SCRIPT_DIR, "..", ".env.local");
-  if (!existsSync(envPath)) return;
-  for (const line of readFileSync(envPath, "utf8").split("\n")) {
-    const m = line.match(/^([A-Z0-9_]+)=(.*)$/);
-    if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SupabaseLike = any;
 
-async function makeClient(): Promise<SupabaseLike> {
-  loadEnvFile();
-  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_KEY;
-  if (!url || !key) throw new Error("SUPABASE_URL oder SUPABASE_SERVICE_KEY fehlt in .env.local");
-  const { createClient } = await import("@supabase/supabase-js");
-  return createClient(url, key, { auth: { persistSession: false } });
-}
 
-async function holeSeite(url: string): Promise<{ html: string } | { fehler: string }> {
-  try {
-    const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), ABRUF_TIMEOUT_MS);
-    const res = await fetch(url, { headers: { "User-Agent": UA }, signal: ctrl.signal, redirect: "follow" });
-    clearTimeout(t);
-    if (!res.ok) return { fehler: `HTTP ${res.status}` };
-    const typ = res.headers.get("content-type") ?? "";
-    if (typ && !/text\/html|application\/xhtml/i.test(typ)) return { fehler: `Kein HTML (${typ.split(";")[0]})` };
-    return { html: await res.text() };
-  } catch (e) {
-    const m = e instanceof Error ? e.message : String(e);
-    return { fehler: /abort/i.test(m) ? "Zeitüberschreitung" : m.slice(0, 120) };
-  }
-}
 
 type Kandidat = { id: string; name: string; website: string | null; einwohner: number };
 
@@ -123,10 +92,14 @@ type Kandidat = { id: string; name: string; website: string | null; einwohner: n
  */
 const NETZGESELLSCHAFT = /netze?\b|netzbetrieb|verteilnetz|hochspannungsnetz|netzgesellschaft/i;
 
-async function kandidaten(db: SupabaseLike, nurStichprobe: boolean): Promise<Kandidat[]> {
-  const versorger: { id: string; name: string; website: string | null }[] = [];
+async function kandidaten(db: SupabaseLike, nurStichprobe: boolean, seit: Date | null): Promise<Kandidat[]> {
+  const versorger: { id: string; name: string; website: string | null; erhebung_geprueft_am: string | null }[] = [];
   for (let from = 0; ; from += 1000) {
-    const { data, error } = await db.from("utilities").select("id,name,website").range(from, from + 999);
+    const { data, error } = await db
+      .from("utilities")
+      .select("id,name,website,erhebung_geprueft_am")
+      .order("id", { ascending: true })
+      .range(from, from + 999);
     if (error) throw new Error(error.message);
     versorger.push(...(data ?? []));
     if (!data || data.length < 1000) break;
@@ -153,7 +126,13 @@ async function kandidaten(db: SupabaseLike, nurStichprobe: boolean): Promise<Kan
     summe.set(z.utility_id, (summe.get(z.utility_id) ?? 0) + (einwohnerJeGemeinde.get(z.commune_id) ?? 0));
   }
 
-  const mitGebiet = versorger.map((v) => ({ ...v, einwohner: summe.get(v.id) ?? 0 })).filter((v) => !!v.website);
+  const mitGebiet = versorger
+    .map((v) => ({ ...v, einwohner: summe.get(v.id) ?? 0 }))
+    .filter((v) => !!v.website)
+    // WIEDERAUFSETZEN: Wer in diesem Lauf schon geprueft wurde, faellt raus.
+    // Das Pruefdatum wird nur bei erreichter Website gestempelt — ein
+    // gescheiterter Abruf kommt beim naechsten Anlauf also wieder dran.
+    .filter((v) => !seit || !v.erhebung_geprueft_am || new Date(v.erhebung_geprueft_am) < seit);
 
   // Die VOLLERHEBUNG nimmt jeden mit Website — auch die Netzgesellschaften und
   // die ganz kleinen. Das ist die Lehre aus der Adressen-Recherche vom
@@ -170,82 +149,50 @@ async function kandidaten(db: SupabaseLike, nurStichprobe: boolean): Promise<Kan
   return mitGebiet.sort((a, b) => b.einwohner - a.einwohner);
 }
 
-/** Roher Text einer Datei (Sitemaps sind XML, nicht HTML — `holeSeite` würde sie
- *  wegen des Inhaltstyps verwerfen). */
-async function holeRoh(url: string): Promise<string | null> {
-  try {
-    const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), ABRUF_TIMEOUT_MS);
-    const res = await fetch(url, { headers: { "User-Agent": UA }, signal: ctrl.signal, redirect: "follow" });
-    clearTimeout(t);
-    if (!res.ok) return null;
-    return await res.text();
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Das Seitenverzeichnis der Website aus ihrer eigenen Sitemap.
- *
- * WARUM DAS SEIN MUSS (gemessen 23.08.2026 an stadtwerke-lingen.de): Die
- * Hauptnavigation wird dort per JavaScript aufgebaut. Ein Abruf der Startseite
- * sieht 10 beschriftete Verweise — die Fußzeile — und keine einzige
- * Produktseite. Ein Crawl von der Startseite aus ist auf solchen Websites
- * strukturell blind, und er meldet das nicht, sondern liefert „nichts gefunden".
- * Dieselbe Lehre wie bei der Förder-Suche, die von der Startseite aus nur 13 %
- * der Förderseiten fand.
- *
- * Die Adresse der Sitemap kommt aus robots.txt — kein Rateweg über bekannte
- * CMS-Pfade, sondern die Stelle, an der die Website sie selbst nennt.
- */
-async function sitemapAdressen(basis: string): Promise<string[]> {
-  const robots = await holeRoh(new URL("/robots.txt", basis).toString());
-  const erste = robots
-    ? Array.from(robots.matchAll(/^\s*sitemap:\s*(\S+)/gim)).map((m) => m[1])
-    : [new URL("/sitemap.xml", basis).toString()];
-  const adressen = new Set<string>();
-  // Eine Ebene Sitemap-Index auflösen, höchstens drei Teil-Sitemaps. Mehr wäre
-  // bei großen Websites ein eigener Crawl, und den wollen wir hier nicht.
-  const offen = erste.slice(0, 2);
-  const gesehen = new Set<string>();
-  for (let runde = 0; runde < 2 && offen.length; runde++) {
-    const jetzt = offen.splice(0, 3);
-    for (const sm of jetzt) {
-      if (gesehen.has(sm)) continue;
-      gesehen.add(sm);
-      const xml = await holeRoh(sm);
-      if (!xml) continue;
-      const istIndex = /<sitemapindex/i.test(xml);
-      for (const m of Array.from(xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/gi))) {
-        const u = m[1].replace(/&amp;/g, "&");
-        if (istIndex) offen.push(u);
-        else adressen.add(u);
-      }
-    }
-  }
-  return [...adressen];
-}
-
 type ErhebungMitWerkzeug = Erhebung & { werkzeug: Werkzeugbefund };
 
 /**
- * Eine Adresse aus einer Sitemap lesbar machen, bevor ein Muster darauf trifft.
+ * Einen Befund sofort festhalten.
  *
- * IN EINER SITEMAP GIBT ES KEINEN LINKTEXT — nur die Adresse. Steht dort
- * `/photovoltaik-f%c3%b6rderung`, passt kein Muster, und anders als bei einem
- * Verweis auf einer Seite gibt es keine Beschriftung als Rueckfall. Genau daran
- * ist die Foerder-Suche gescheitert: 60 von 2.583 gespeicherten Adressen waren
- * betroffen, und der Fehler blieb verdeckt, weil er auf Seiten mit Linktext
- * nicht auffiel.
+ * Das Prüfdatum wird NUR bei erreichter Website gestempelt — es ist zugleich die
+ * Marke, an der ein Wiederaufsetzen erkennt, was schon erledigt ist. Bei einem
+ * gescheiterten Abruf bleibt es stehen, damit derselbe Versorger beim nächsten
+ * Lauf erneut versucht wird; festgehalten wird nur der Fehlgrund.
  */
-function lesbar(u: string): string {
-  try {
-    return decodeURIComponent(u);
-  } catch {
-    return u;
+async function schreibeBefund(
+  db: SupabaseLike,
+  k: Kandidat,
+  e: ErhebungMitWerkzeug,
+  jetzt: string,
+): Promise<void> {
+  if (e.abruf !== "ok") {
+    const { error } = await db.from("utilities").update({ erhebung_fehler: e.fehler }).eq("id", k.id);
+    if (error) log(`${k.name}: Fehlgrund nicht gespeichert — ${error.message}`, "err");
+    return;
   }
+  const { error } = await db
+    .from("utilities")
+    .update({
+      postfaecher: e.postfaecher,
+      website_email: e.websiteEmail,
+      kundenanfrage_email: e.kundenanfrageEmail,
+      netz_email: e.netzEmail,
+      erhebung_verantwortlich: e.verantwortlich,
+      kontaktformular: e.kontaktformular,
+      kontaktseite_url: e.kontaktseiteUrl,
+      stromkennzeichnung_url: e.kennzeichnungUrl,
+      stromkennzeichnung_form: e.kennzeichnungForm,
+      stromkennzeichnung_jahr: e.kennzeichnungJahr,
+      werkzeug: e.werkzeug,
+      erhebung_geprueft_am: jetzt,
+      erhebung_fehler: null,
+    })
+    .eq("id", k.id);
+  // Schreibfehler NIE verschlucken: Ein Rechte- oder Spaltenfehler bliebe sonst
+  // stumm, und die Abschlusszeile meldete Erfolg für nichts.
+  if (error) log(`${k.name}: NICHT gespeichert — ${error.message}`, "err");
 }
+
 
 async function erhebe(k: Kandidat, stichtag: Date): Promise<ErhebungMitWerkzeug> {
   const basis = k.website!;
@@ -288,7 +235,7 @@ async function erhebe(k: Kandidat, stichtag: Date): Promise<ErhebungMitWerkzeug>
     // DIE SOLARSEITE GEZIELT SUCHEN — von der Startseite aus und aus dem
     // Seitenverzeichnis. Die Startseite ist der WEG dorthin, nicht das Urteil.
     ziele.push(...solarseitenLinks(start.html, basis, 3));
-    ziele.push(...alleAdressen.filter((u) => SOLARSEITE_MUSTER.test(lesbar(u))).sort((a, b) => a.length - b.length).slice(0, 3));
+    ziele.push(...alleAdressen.filter((u) => SOLARSEITE_MUSTER.test(lesbarMachen(u))).sort((a, b) => a.length - b.length).slice(0, 3));
     ziele.push(...werkzeugKandidaten(alleAdressen, 2));
     const vonStartWerkzeug = werkzeugLink(start.html, basis);
     if (vonStartWerkzeug) ziele.push(vonStartWerkzeug);
@@ -303,7 +250,7 @@ async function erhebe(k: Kandidat, stichtag: Date): Promise<ErhebungMitWerkzeug>
       ziele.push(...direkt.slice(0, 2), ...nahbereichKandidaten(alleAdressen, 5));
     }
     if (kontaktOffen) {
-      const kontakt = alleAdressen.filter((u) => KONTAKT_MUSTER.test(lesbar(u))).sort((a, b) => a.length - b.length);
+      const kontakt = alleAdressen.filter((u) => KONTAKT_MUSTER.test(lesbarMachen(u))).sort((a, b) => a.length - b.length);
       ziele.push(...kontakt.slice(0, 1));
     }
     for (const u of ziele) await hole(u);
@@ -358,15 +305,6 @@ async function erhebe(k: Kandidat, stichtag: Date): Promise<ErhebungMitWerkzeug>
   return { ...erhebung, werkzeug };
 }
 
-/** Wenige Aufgaben gleichzeitig, Reihenfolge egal. */
-async function inHaeppchen<T, R>(items: T[], groesse: number, fn: (t: T) => Promise<R>): Promise<R[]> {
-  const out: R[] = [];
-  for (let i = 0; i < items.length; i += groesse) {
-    out.push(...(await Promise.all(items.slice(i, i + groesse).map(fn))));
-  }
-  return out;
-}
-
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const schreiben = argv.includes("--schreiben");
@@ -375,14 +313,23 @@ async function main(): Promise<void> {
   const n = alle ? Infinity : Number(nArg?.split("=")[1] ?? 20);
   const stichtag = new Date();
 
-  const db = await makeClient();
-  const liste = (await kandidaten(db, !alle)).slice(0, n === Infinity ? undefined : n);
+  const db = datenbank();
+  // --fortsetzen ueberspringt, was seit Mitternacht schon erhoben wurde.
+  const fortsetzen = argv.includes("--fortsetzen");
+  const seit = fortsetzen ? new Date(new Date().toISOString().slice(0, 10)) : null;
+  const liste = (await kandidaten(db, !alle, seit)).slice(0, n === Infinity ? undefined : n);
+  if (fortsetzen) log("Fortsetzen: heute bereits erhobene Versorger werden uebersprungen");
   log(`${liste.length} Versorger in der Erhebung (Pflichtjahr nach § 42: ${pflichtjahr(stichtag)})`);
   log(schreiben ? "Modus: messen UND schreiben" : "Modus: nur messen (--schreiben zum Speichern)");
   log("");
 
-  const ergebnisse = await inHaeppchen(liste, PARALLEL, async (k) => {
+  const ergebnisse = await imPool(liste, PARALLEL, async (k: Kandidat) => {
     const e = await erhebe(k, stichtag);
+    // SOFORT SCHREIBEN, nicht erst am Ende (Gegenprüfung 05.09.2026). Vorher
+    // sammelte der Lauf alle 910 Befunde im Speicher und schrieb sie erst zum
+    // Schluss — ein einziger Absturz nach Stunden, und nichts war erhalten.
+    // Zusammen mit dem Prüfdatum unten macht das den Lauf wiederaufsetzbar.
+    if (schreiben) await schreibeBefund(db, k, e, new Date().toISOString());
     const kurz =
       e.abruf === "unerreichbar"
         ? `Abruf fehlgeschlagen: ${e.fehler}`
@@ -411,15 +358,26 @@ async function main(): Promise<void> {
     return { k, e };
   });
 
+  // Aufgaben, die selbst abgestürzt sind (nicht: Website nicht erreichbar).
+  // Sie reißen den Lauf nicht mehr mit, müssen aber sichtbar sein — ein still
+  // verschluckter Absturz sähe aus wie ein Versorger ohne Befund.
+  const abgestuerzt = ergebnisse.filter((r): r is { fehler: string } => "fehler" in r);
+  if (abgestuerzt.length) {
+    log("");
+    log(`${abgestuerzt.length} Erhebungen sind abgestürzt (nicht: Website unerreichbar):`, "err");
+    for (const a of abgestuerzt.slice(0, 10)) log(`  ${a.fehler}`, "err");
+  }
+  const fertig = ergebnisse.filter((r): r is { k: Kandidat; e: ErhebungMitWerkzeug } => "e" in r);
+
   // ─── Zusammenfassung ────────────────────────────────────────────────────────
-  const erreicht = ergebnisse.filter((r) => r.e.abruf === "ok");
+  const erreicht = fertig.filter((r) => r.e.abruf === "ok");
   const z = (f: (e: Erhebung) => boolean) => erreicht.filter((r) => f(r.e)).length;
   const mitSeite = erreicht.filter((r) => !!r.e.kennzeichnungUrl);
   const mitJahr = mitSeite.filter((r) => r.e.kennzeichnungJahr !== null);
 
   log("");
   log("── Ergebnis ───────────────────────────────────────────");
-  log(`abgerufen                  : ${erreicht.length} von ${ergebnisse.length}`);
+  log(`abgerufen                  : ${erreicht.length} von ${fertig.length}`);
   // Die Reihenfolge ist die Rangfolge der Ansprache, nicht bloß eine Aufzählung.
   log(`  Website-Postfach (Kommunikation)   : ${z((e) => !!e.websiteEmail)}`);
   log(`  operative Stelle im Impressum      : ${z((e) => !!e.verantwortlich?.operativ)}`);
@@ -471,7 +429,7 @@ async function main(): Promise<void> {
   log(`      aktuell (>= ${pflichtjahr(stichtag)})            : ${mitJahr.filter((r) => r.e.kennzeichnungAktuell).length}`);
   log(`      veraltet                      : ${mitJahr.filter((r) => r.e.kennzeichnungAktuell === false).length}`);
 
-  const fehler = ergebnisse.filter((r) => r.e.abruf === "unerreichbar");
+  const fehler = fertig.filter((r) => r.e.abruf === "unerreichbar");
   if (fehler.length) {
     log("");
     log(`nicht erreicht (KEIN Befund, nur kein Abruf): ${fehler.length}`);
@@ -484,38 +442,10 @@ async function main(): Promise<void> {
     return;
   }
 
-  // Nur erreichte Versorger schreiben — ein gescheiterter Abruf darf weder ein
-  // Prüfdatum stempeln noch einen alten Befund überschreiben.
-  const jetzt = stichtag.toISOString();
-  let geschrieben = 0;
-  for (const { k, e } of erreicht) {
-    const { error } = await db
-      .from("utilities")
-      .update({
-        postfaecher: e.postfaecher,
-        website_email: e.websiteEmail,
-        kundenanfrage_email: e.kundenanfrageEmail,
-        netz_email: e.netzEmail,
-        erhebung_verantwortlich: e.verantwortlich,
-        kontaktformular: e.kontaktformular,
-        kontaktseite_url: e.kontaktseiteUrl,
-        stromkennzeichnung_url: e.kennzeichnungUrl,
-        stromkennzeichnung_form: e.kennzeichnungForm,
-        stromkennzeichnung_jahr: e.kennzeichnungJahr,
-        werkzeug: e.werkzeug,
-        erhebung_geprueft_am: jetzt,
-        erhebung_fehler: null,
-      })
-      .eq("id", k.id);
-    if (error) log(`${k.name}: ${error.message}`, "err");
-    else geschrieben++;
-  }
-  // Der Fehlgrund wird festgehalten, das Prüfdatum ausdrücklich nicht.
-  for (const { k, e } of fehler) {
-    await db.from("utilities").update({ erhebung_fehler: e.fehler }).eq("id", k.id);
-  }
+  // Geschrieben wurde bereits währenddessen, Versorger für Versorger — der Lauf
+  // ist damit jederzeit abbrechbar, ohne dass Arbeit verloren geht.
   log("");
-  log(`${geschrieben} Zeilen aktualisiert, ${fehler.length} Fehlgründe vermerkt.`, "ok");
+  log(`${erreicht.length} Zeilen aktualisiert, ${fehler.length} Fehlgründe vermerkt.`, "ok");
 }
 
 main().catch((e) => {
