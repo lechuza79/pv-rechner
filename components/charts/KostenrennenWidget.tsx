@@ -560,7 +560,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           )}
           {bezahltTag !== null && t >= bezahltTag && (
             <g className="kr-neu">
-              <line x1={xL(bezahltTag)} x2={xL(bezahltTag)} y1={P.t} y2={y0} stroke="var(--color-positive)" strokeWidth={1} strokeDasharray="3 3" />
+              <line x1={xL(bezahltTag)} x2={xL(bezahltTag)} y1={P.t} y2={y0} stroke="var(--color-text-muted)" strokeWidth={1} strokeDasharray="3 3" />
               <ExportOnlyG>
                 <text x={xL(bezahltTag)} y={P.t - 6} textAnchor={xL(bezahltTag) > P.l + cW * 0.75 ? "end" : "middle"} fontSize={fsPx("--font-size-caption")} fontWeight={700} fill="var(--color-positive)">
                   Anlage bezahlt · {MONATE_KURZ[tagDatum(verlauf, rennen.startJahr, bezahltTag).monat]} {tagDatum(verlauf, rennen.startJahr, bezahltTag).jahr}
