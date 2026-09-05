@@ -1169,6 +1169,13 @@ const CACHE_PFLICHT = [
   // zahlt jeder Besucher die 4,9 s — und der Googlebot kommt ueber 119 Verweise
   // von den indexierten Atlas-Seiten.
   { label: "Ranglisten-Uebersicht", path: "/solar-atlas/ranking/zubau-3-jahre-je-einwohner" },
+  // Die nackte Rechner-Adresse — seit 05.09.2026 statisch, und der Grund steht
+  // an der Seite selbst: Solange sie nichts aus dem Abfrageteil las, kostete
+  // sie 2.612 volle Aufbauten am Tag bei neun Besuchern. Wer dort wieder
+  // `searchParams` einbaut, macht sie in derselben Zeile wieder dynamisch —
+  // ohne dass irgendetwas kaputt aussaehe. Ein Test faengt das im Code, dieser
+  // Eintrag faengt es in der Produktion.
+  { label: "PV-Rechner (nackt)", path: "/photovoltaik-rechner" },
   { label: "Förder-Bundeslandseite", path: "/photovoltaik-foerderung/bayern" },
   { label: "Ratgeber", path: "/ratgeber/gasheizung-oder-waermepumpe" },
   { label: "Standort-Ertrag (30 Tage haltbar)", path: "/api/pvgis?lat=52.52&lon=13.405&plzPrefix=10" },

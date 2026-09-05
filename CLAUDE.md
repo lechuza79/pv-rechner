@@ -590,6 +590,53 @@ Die bestehenden Konten haben kein Passwort und kämen ohne diese Nachricht nicht
 
 **OFFEN (bis 10/2026): eine Löschfrist für nie bestätigte Registrierungen als REGEL**, nicht als einmalige Aufräumaktion (30–90 Tage nach dem Versand der Bestätigungsanfrage). Sonst steht dieselbe Frage in einem Jahr wieder an. Gelöscht wird dabei wirklich — **kein „gelöscht"-Vermerk als Sperrliste**: Die trägt nur, wo die zu verhindernde Verarbeitung auf berechtigtem Interesse beruht, und hier gibt es keine zu verhindernde Verarbeitung.
 
+## Die nackte Rechner-Adresse liest nichts aus dem Abfrageteil — BLOCKER
+
+`/photovoltaik-rechner` ist für alle Besucher gleich und wird **statisch**
+ausgeliefert. Steht ein Parameter in der Adresse — ein geteiltes Ergebnis oder
+eine Vorbefüllung von einer Förderseite, dem Klimarechner, der Simulation oder
+dem Empfehlungs-Flow —, schiebt die Middleware die Anfrage auf den dynamischen
+Zwilling `/photovoltaik-rechner/ergebnis`. **Umgeschrieben, nicht
+weitergeleitet:** Die Adresse im Browser bleibt exakt, wie sie geteilt wurde,
+jeder je geteilte Link funktioniert unverändert, und der Teilen-Knopf baut
+seinen Link weiterhin aus dem Pfad der Seite, auf der er steht.
+
+**Der Anlass ist gemessen (05.09.2026).** Weil `generateMetadata` **und** die
+Seite selbst den Abfrageteil lasen, war der Rechner vollständig dynamisch:
+`no-store`, bei **jedem** Aufruf ein voller Serverless-Aufbau. Über 24 h waren
+das **2.612 Aufbauten für EINE Adresse — 19 % aller Aufbauten der Domain** —
+bei **neun** menschlichen Besuchen am Tag (52 in sechs Tagen, Besucherstatistik).
+Der Rest waren Maschinen: Die Seite ist von fast jeder anderen verlinkt und war
+damit die einzige, die ein Crawler beliebig oft zum vollen Preis holen konnte.
+Nachweis der Trennung ist die **Routentabelle des Builds** — die nackte Adresse
+steht dort als statisch, der Zwilling als dynamisch.
+
+- **Die Fehlerklasse ist von außen unsichtbar.** Kein Typfehler, kein roter
+  Test, kein kaputtes Aussehen — die Seite war schnell, grün und richtig. Sie
+  war nur nicht zwischenspeicherbar, und das sieht man einer Seite nicht an.
+  Der Preis war in CLAUDE.md sogar als bewusst eingegangen vermerkt; **beziffert
+  hatte ihn nie jemand.**
+- **Der Zwilling bleibt dynamisch, und das ist sein Zweck.** Der Rechner braucht
+  den geteilten Zustand schon im ersten ausgelieferten Bild — sonst springt er
+  sichtbar von der Fragestrecke ins Ergebnis —, und das persönliche
+  Vorschaubild im Chat hängt am Abfrageteil. Wer ihn „auch noch" statisch
+  macht, zerlegt genau das. Kanonisch bleibt die nackte Adresse.
+- **Die Liste der Einstiegs-Parameter steht in `lib/share-keys.ts`**, damit die
+  Middleware sie lesen kann, ohne das Theme ins Edge-Bündel zu ziehen;
+  `lib/constants.ts` reicht sie nur weiter. Fremde Parameter (`utm_*`, `gclid`)
+  zählen bewusst nicht — sie ändern an der Seite nichts und dürfen den
+  Zwischenspeicher nicht umgehen.
+- **Ein neuer interner Link in den Rechner benutzt einen Parameter aus dieser
+  Liste.** Sonst erkennt die Weiche ihn nicht, der Besucher landet auf der
+  statischen Seite und seine Vorbefüllung ist **still** weg — kein Fehler, keine
+  kaputte Seite, nur eine verschwundene Angabe. `lib/__tests__/rechner-einstieg.test.ts`
+  prüft beide Richtungen (vor dem Einchecken viermal absichtlich kaputtgemacht:
+  `searchParams` zurück in die nackte Seite, Weiche entfernt, Umschreiben durch
+  Weiterleiten ersetzt, interner Link mit unbekanntem Parameter — jedes Mal rot).
+- **Zusätzlich steht die Seite in der Cache-Pflichtliste des Gesundheitschecks.**
+  Der Test fängt den Rückfall im Code, dieser Eintrag fängt ihn in der
+  Produktion.
+
 ## Modals — BLOCKER
 
 **`components/Modal.tsx` ist DER Modal-Baustein. Modals werden nicht pro Stelle neu gebaut.** Die aufrufende Stelle liefert nur `open`, `onClose`, `title` (optional `intro`, `ariaLabel`, `maxWidth`) und den Inhalt als Children — das gesamte Verhalten kommt aus dem Baustein:
@@ -630,7 +677,7 @@ Seit 01.09.2026 hat auch dieser Rechner einen teilbaren Zustand (`lib/wp-share-s
 - **Nur Abweichungen vom Ausgangszustand stehen im Link**, und der Ausgangszustand liegt in derselben Datei wie die Umwandlung: Er sagt, was der Link weglassen darf, UND worauf er ohne Angabe zurückfällt. Zwei Fassungen davon würden auseinanderlaufen — und das Ergebnis wäre ein Link, der beim Empfänger anders rechnet als beim Absender.
 - **Zwei Angaben sind eine Listennummer** (Dämmzustand, Haushaltsgröße), weil ihre Listen keine Kennungen tragen — wie im Empfehlungs-Flow. Wer diese Listen umsortiert, macht geteilte Links falsch.
 - **Parameternamen sind ab dem ersten geteilten Link öffentlich** und dürfen sich nicht mehr ändern.
-- **Kein eigenes Vorschaubild.** Dafür müsste die Seite die Adresse auf dem Server lesen und würde dynamisch — der PV-Rechner zahlt diesen Preis, dieser bewusst nicht.
+- **Kein eigenes Vorschaubild.** Dafür müsste die Seite die Adresse auf dem Server lesen und würde dynamisch. Der PV-Rechner hat dafür seit 05.09.2026 eine eigene Adresse (siehe unten); wer dieses Vorschaubild hier je nachrüstet, geht denselben Weg und macht **nicht** die Rechner-Seite selbst dynamisch.
 
 **Welche Frage in welchen Rechner gehört, steht in `lib/inflows.ts`** — samt der Rechner, die sie **begründet nicht** bekommen. Ohne diese Ausnahmeliste ist „fehlt" nicht von „gehört da nicht hin" zu unterscheiden. `lib/__tests__/inflows.test.ts` liest die Rechner-Dateien und prüft die Liste dagegen, in beide Richtungen: ein vorgesehener Einbau, der fehlt, schlägt an — und ein Baustein, der auftaucht, wo die Liste ihn ausnimmt, ebenso. Jede Ausnahme braucht einen ausgeschriebenen Grund, jedes „OFFEN" eine Frist im Format `OFFEN (bis MM/JJJJ)`; läuft sie ab, wird der Test rot.
 

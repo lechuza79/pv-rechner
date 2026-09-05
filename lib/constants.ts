@@ -160,7 +160,10 @@ export const SCENARIOS = [
 // Vereinigung beider Zweige: `az`/`ng` (Ausrichtung, Neigung) und `sk` (freie
 // Speichergröße) sind unabhängig voneinander entstanden. Fehlt einer, rechnet
 // der Empfänger eines geteilten Links etwas anderes als der Absender.
-export const SHARE_KEYS = ["a", "s", "sk", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er", "ck", "km", "plz", "flow", "ht", "da", "az", "ng", "bl", "foe", "vb", "kl", "km2", "klr", "klwh", "wf", "wi", "wh", "wht", "sc", "rg", "mk", "mw"];
+// Liegt in einem eigenen Modul, damit die Middleware die Liste lesen kann, ohne
+// das Theme mit ins Edge-Buendel zu ziehen. Hier nur weitergereicht, damit die
+// bestehenden Importe unveraendert bleiben.
+export { SHARE_KEYS } from "./share-keys";
 
 // ─── Empfehlungs-Flow ───────────────────────────────────────────────────────
 // footprint = nutzbare Dachfläche (Empfehlung); wpFaktor = Heizlast-Faktor durch
