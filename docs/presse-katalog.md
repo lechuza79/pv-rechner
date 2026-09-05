@@ -331,3 +331,60 @@ Die alten Eignungs-Felder bleiben stehen, werden aber nicht mehr fortgeschrieben
   Domains). Die brauchen den Browser.
 - **Zwei Domains sind umgewidmet:** energiespektrum.de trägt heute ein
   Krypto-Casino-Portal, solarthemen.de leitet auf solarserver.de.
+
+### Nachlese vom 05.09.2026: Browser statt einfachem Abruf
+
+**57 Adressen wiesen den einfachen Abruf ab** (Bot-Sperre, TLS-Fehler,
+Weiterleitungsschleife). Über den Browser kommen die meisten durch — von den
+ersten 32 lieferten 8 einen Themenbeleg, darunter haus.de, Chip ePower,
+Erneuerbare Energien, photovoltaik.eu und der Gebäude-Energieberater. Dauerhaft
+gesperrt bleibt praktisch nur IWR.
+
+**Was der Browser NICHT löst:** Zustimmungsabfragen (geo.de, Golem liefern ohne
+Einwilligung gar keinen Inhalt) und Bezahlschranken (Handelsblatt, Table
+Briefings). Dort ist „nicht lesbar" der Befund, nicht „kein Thema".
+
+**Geratene Rubrikadressen treffen nicht.** `handelsblatt.com/themen/photovoltaik`,
+`t3n.de/tag/vibe-coding`, `spektrum.de/thema/energie` — alle drei antworten mit
+404, obwohl es die Themen dort gibt. Auch für Menschen gilt die Regel: erst die
+Startseite, dann die Navigation lesen. Ich habe sie selbst zweimal gebrochen,
+nachdem ich sie den Läufen vorgeschrieben hatte.
+
+### Sechste Rubrik: Startup, Vibe Coding, UX (Betreiber, 05.09.2026)
+
+**Der Aufhänger ist hier NICHT Photovoltaik**, sondern die Entstehungsgeschichte:
+ein öffentliches Produkt mit Live-Daten aus amtlichen Registern, eigenen
+Rechenmodellen, über 3.000 automatischen Tests und laufender Überwachung —
+gebaut von einem UX-Architekten mit KI statt von einem Entwicklerteam.
+
+Stärkste Funde: **t3n führt eine eigene Rubrik „Vibecoding in der Praxis"** in
+der Hauptnavigation · **kopfundstift.de** schreibt über Claude Code und bietet
+CLAUDE.md-Vorlagen an, also über genau die Arbeitsweise dieses Projekts ·
+**StartingUp** fragt in mehreren Beiträgen, ob sich mit Vibe Coding eine
+launchfähige App bauen lässt · **Business Insider / Gründerszene** schreibt über
+programmierende Agenten als gefragtesten KI-Anwendungsfall · **PAGE** ist das
+UX-Standbein.
+
+Bei deutsche-startups, OMR, Basic Thinking, Business Punk, Hamburg Startups und
+Munich Startup passt das Umfeld, aber der Aufhänger wäre die Gründung, nicht die
+Bauweise — das ist eine andere Geschichte und gehört getrennt entschieden.
+
+### Die Anschreibbarkeit war besser als zuerst gemessen
+
+Die erste Zahl („nur 215 anschreibbar") maß Person UND persönliche Adresse in
+einer Zeile. Für ein Anschreiben genügt aber **ein Name für die Anrede plus
+irgendein Versandweg** — bei Lokalzeitungen ist das Redaktionspostfach der
+Normalfall, nicht die Ausnahme.
+
+| | Anzahl |
+|---|---|
+| Verteiler-Kandidaten | 1.451 |
+| **anschreibbar mit Anrede** (Name + Versandweg) | **709** |
+| davon mit persönlicher Adresse | 216 |
+| nur Postfach, keine Person | 393 |
+| gar kein Weg | 349 |
+
+Die 349 ohne Weg sind größtenteils kein Datenproblem, sondern ein Abrufproblem:
+146 wurden gelesen, ohne dass ein Vermerk entstand, 72 ohne auffindbares
+Impressum — darunter Berliner Zeitung, neue energie und Chip, die selbstredend
+erreichbar sind. Auch hier ist der Browser der nächste Schritt.
