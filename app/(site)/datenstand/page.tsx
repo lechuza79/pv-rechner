@@ -134,6 +134,10 @@ const S = {
     color: v("--color-text-faint"),
     marginTop: 8,
     lineHeight: 1.5,
+    // Quellenzeilen tragen Lizenzkürzel und Adressen ohne Leerzeichen; auf
+    // Telefonbreite lief die MaStR-Zeile 100 px über den Rand (Überlauf-Test,
+    // 05.09.2026). Ein langes Token darf innerhalb brechen.
+    overflowWrap: "anywhere" as const,
   },
   caveat: {
     fontSize: v("--font-size-caption"),

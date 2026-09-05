@@ -195,8 +195,13 @@ export function FundingRates({
             }}
           >
             <span style={{ color: v("--color-text-secondary") }}>{r.label}</span>
-            <span style={{ textAlign: "right", flexShrink: 0 }}>
-              <span style={{ whiteSpace: "nowrap" }}>
+            {/* Zahl und Einheit bleiben zusammen (nowrap) — ein SATZ als Wert
+                („Betrag nur in der Richtlinie, Jahrestopf 4.000 €") darf das
+                nicht erben: Er lief auf Telefonbreite 160 px über den Rand,
+                gefunden vom Überlauf-Test am 05.09.2026. Ohne Einheit ist der
+                Wert Fließtext und bricht um. */}
+            <span style={{ textAlign: "right", flexShrink: einheit ? 0 : 1, minWidth: 0 }}>
+              <span style={{ whiteSpace: einheit ? "nowrap" : "normal", overflowWrap: "anywhere" }}>
                 <span style={{ fontFamily: v("--font-mono"), fontWeight: 700 }}>{zahl}</span>
                 {einheit && kurzeEinheit && (
                   <span style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), fontWeight: 400, marginLeft: 4 }}>
