@@ -2,6 +2,7 @@ import { describe, it, expect, afterEach, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import sitemap from "../../app/sitemap";
+import { publishedCities, slugify } from "../atlas-cities";
 
 // Warum es diesen Test gibt:
 //
@@ -99,5 +100,41 @@ describe("Sitemap: jede Adresse genau einmal", () => {
     for (const e of eintraege) gesehen.set(e.url, (gesehen.get(e.url) ?? 0) + 1);
     const doppelt = [...gesehen.entries()].filter(([, n]) => n > 1).map(([url]) => url);
     expect(doppelt, `doppelte Sitemap-Einträge: ${doppelt.join(", ")}`).toEqual([]);
+  });
+});
+
+/**
+ * WARUM DIESER TEST (05.09.2026): Jede Adresse in der Sitemap muss eine Seite
+ * haben.
+ *
+ * Die Förder-Stadtseite wird mit `dynamicParams = false` erzeugt — was nicht aus
+ * publishedCities() kommt, ist eine HARTE 404. Die Sitemap baute ihre Liste
+ * dagegen aus liveCities()/archivedCities() gefiltert auf cityIndexFreigegeben().
+ * Als am 01.09.2026 ein zweiter Freigabeweg dazukam (foerderseiteTraegt), bekam
+ * ihn nur die Sitemap. Gemessen am 05.09.2026 an der Produktion: 21 der 59
+ * Förder-Stadtseiten standen in der Sitemap und antworteten mit 404 — vier Tage
+ * lang, auf der Seitenfamilie mit der besten Sichtbarkeit des Projekts.
+ *
+ * Der Test prüft die AUSGABE, nicht die Funktion dahinter. Das ist der
+ * Unterschied, auf den es ankommt: Ein Test, der cityIndexFreigegeben() gegen
+ * isCityPublished() hält, ist tautologisch, seit die eine die andere aufruft —
+ * er fängt nur noch den Rückbau. Dieser hier fängt auch den Fall, dass jemand in
+ * app/sitemap.ts eine eigene Bedingung tippt.
+ */
+describe("Sitemap: jede Förder-Stadtseite darin existiert auch", () => {
+  it("führt keine Adresse, die 404 antworten würde", async () => {
+    const eintraege = await sitemap();
+    const inSitemap = eintraege
+      .map((e) => e.url.replace("https://solar-check.io", ""))
+      .filter((p) => /^\/photovoltaik-foerderung\/[^/]+\/[^/]+$/.test(p));
+
+    const erzeugt = new Set(publishedCities().map((c) => `/photovoltaik-foerderung/${slugify(c.bundesland)}/${c.slug}`));
+    const tot = inSitemap.filter((p) => !erzeugt.has(p));
+    expect(tot, "stehen in der Sitemap, werden aber nicht erzeugt → HTTP 404").toEqual([]);
+
+    // Gegenprobe: Die Sitemap muss überhaupt Stadtseiten führen, sonst prüft der
+    // Vergleich oben eine leere Liste gegen eine leere Liste und ist grün, ohne
+    // etwas gesehen zu haben.
+    expect(inSitemap.length).toBeGreaterThan(20);
   });
 });
