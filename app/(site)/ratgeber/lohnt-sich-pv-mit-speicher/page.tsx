@@ -606,15 +606,15 @@ export default async function LohntSichPvMitSpeicherPage() {
             die Seite kreditiert zentral). Die Preise sind dieselben wie in der
             Beispielrechnung darüber, sonst widersprächen sich zwei Zahlen auf
             einer Seite. ── */}
-        <h2 id="kostenrennen" style={S.h2}>Das Rennen: mit oder ohne Anlage?</h2>
+        <h2 id="kostenrennen" style={S.h2}>Das Rennen: Wann ist die Anlage bezahlt?</h2>
         <p style={S.p}>
-          Derselbe Beispielhaushalt zweimal — einmal bleibt er beim Netzstrom, einmal legt er
-          sich die {EX.kwp}-kWp-Anlage ohne Speicher aufs Dach. Wer hat nach einem, nach zehn,
-          nach {YEARS} Jahren mehr für Strom ausgegeben? Der PV-Haushalt startet mit der
-          Anschaffung oben; wo die Linie des anderen seine kreuzt, ist die Anlage bezahlt —
-          das ist seine Amortisation. Neben dem glatten Modell lässt sich das Rennen mit den
-          echten Sonnenjahren und den echten Strompreis-Sprüngen der Vergangenheit laufen
-          lassen — als Beispiel dafür, wie ruppig die Wirklichkeit gegen die glatte Kurve ist.
+          Derselbe Beispielhaushalt mit zwei Anlagen — {EX.kwp} kWp ohne Speicher und mit
+          10 kWh Speicher. Die Linien zeichnen Monat für Monat, was jede Anlage eingebracht hat:
+          gesparte Stromrechnung plus Einspeisevergütung, im Sommer steil, im Winter flach. Wo
+          eine Linie ihre Anschaffung erreicht, ist die Anlage bezahlt — das ist ihre
+          Amortisation. Neben dem glatten Modell lässt sich das Rennen mit den echten
+          Sonnenjahren und den echten Strompreis-Sprüngen der Vergangenheit laufen lassen, als
+          Beispiel dafür, wie ruppig die Wirklichkeit gegen die glatte Kurve ist.
         </p>
         <div style={{ marginBottom: 24 }}>
           <KostenrennenWidget

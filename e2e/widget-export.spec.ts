@@ -102,10 +102,10 @@ test.describe("Anlagenbestand-Widget", () => {
   });
 });
 
-test.describe("Stromkosten-Rennen", () => {
+test.describe("Amortisations-Rennen", () => {
   test("Download liefert ein Bild mit Stand, Legende und Annahmen", async ({ page }) => {
     await page.goto("/embed/pv-kostenrennen");
-    await expect(page.getByText("Das Stromkosten-Rennen").first()).toBeVisible();
+    await expect(page.getByText("Das Amortisations-Rennen").first()).toBeVisible();
 
     // Der Schieberegler ist Bedienung und fliegt aus dem Bild; der eingestellte
     // Stand (Jahr, „nach n Jahren") steht als Text im Kopf und bleibt.
@@ -117,8 +117,9 @@ test.describe("Stromkosten-Rennen", () => {
     await expect(exportOnly.first()).toBeHidden();
     // Legende (beide Haushalte) und die Texte hinter den „?" sitzen im Bild-Fuß.
     const footer = exportOnly.filter({ hasText: "Der Beispielhaushalt" });
+    await expect(footer).toContainText("ohne Speicher");
+    await expect(footer).toContainText("mit 10 kWh Speicher");
     await expect(footer).toContainText("Ohne PV-Anlage");
-    await expect(footer).toContainText("Mit PV-Anlage");
     await expect(footer).toContainText("Was hier zählt");
 
     const kante = page.locator('[title^="Quelle:"]');

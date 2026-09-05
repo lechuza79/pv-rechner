@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { kostenrennen, RENNEN_OHNE_MIT_PV, type RennHaushalt } from "../kostenrennen";
-import { calc, calcEigenverbrauch, calcWeightedFeedIn, estimateCost, batteryReplaceCost } from "../calc";
+import { calc, calcEigenverbrauch, calcWeightedFeedIn, estimateCost, batteryReplaceCost, BATTERY_LIFETIME_YEARS } from "../calc";
 import { PERSONEN, YEARS, NATIONAL_AVG_YIELD } from "../constants";
 import { monthlyFromAnnual } from "../balkon-sim";
 import { DEFAULT_PRICES } from "../prices-config";
@@ -61,9 +61,13 @@ describe("Stromkosten-Rennen", () => {
     for (let i = u; i <= YEARS; i++) expect(mit.kumuliert[i]).toBeLessThan(ohne.kumuliert[i]);
   });
 
-  it("in der Grundaufstellung wachsen beide Balken — das Rennen läuft vorwärts", () => {
-    for (const l of r.laeufer) {
-      for (let i = 1; i <= YEARS; i++) expect(l.kumuliert[i]).toBeGreaterThanOrEqual(l.kumuliert[i - 1]);
+  it("der Nutzen jeder Anlage wächst Monat für Monat — einzige Ausnahme ist der Akku-Tausch", () => {
+    for (const l of r.laeufer.filter((x) => x.hatPv)) {
+      for (let k = 1; k <= 12 * YEARS; k++) {
+        const akkuTausch = l.speicherKwh > 0 && k === 12 * (BATTERY_LIFETIME_YEARS - 1) + 1;
+        if (akkuTausch) expect(l.nutzen[k]).toBeLessThan(l.nutzen[k - 1]);
+        else expect(l.nutzen[k]).toBeGreaterThanOrEqual(l.nutzen[k - 1]);
+      }
     }
   });
 
@@ -72,8 +76,8 @@ describe("Stromkosten-Rennen", () => {
     // Einspeise-Erlös übersteigt die restliche Stromrechnung. Kein Fehler,
     // sondern das Modell des Rechners — und der Grund, warum die
     // Grundaufstellung ohne Speicher läuft (siehe RENNEN_OHNE_MIT_PV).
-    const s = kostenrennen([RENNEN_OHNE_MIT_PV[0], { ...RENNEN_OHNE_MIT_PV[1], key: "sp", speicherKwh: 10 }]);
-    const sp = s.laeufer.find((l) => l.key === "sp")!;
+    const s = r;
+    const sp = s.laeufer.find((l) => l.key === "mitSp")!;
     expect(sp.kumuliert[1]).toBeLessThan(sp.kumuliert[0]);
     expect(sp.investition).toBe(estimateCost(10, 10, DEFAULT_PRICES));
     // Der Akku-Tausch schlägt im Jahr seiner Lebensdauer als Sprung durch.
@@ -83,14 +87,14 @@ describe("Stromkosten-Rennen", () => {
   it("weitere Läufer sind weitere Haushalte, kein weiterer Rechenweg", () => {
     const dritte: RennHaushalt = { key: "ea", label: "Mit PV und E-Auto", kurz: "PV + E-Auto", personenIdx: 2, nutzungIdx: 1, kwp: 10, speicherKwh: 10, ea: "ja", eaKm: 15000 };
     const drei = kostenrennen([...RENNEN_OHNE_MIT_PV, dritte]);
-    expect(drei.laeufer).toHaveLength(3);
+    expect(drei.laeufer).toHaveLength(RENNEN_OHNE_MIT_PV.length + 1);
     const ea = drei.laeufer.find((l) => l.key === "ea")!;
     expect(ea.verbrauchKwh).toBeGreaterThan(mit.verbrauchKwh);
     // Mehr Verbrauch, dieselbe Anlage: höherer Eigenverbrauch, aber auch
     // höhere Stromrechnung am Ende als der PV-Haushalt ohne E-Auto.
     expect(ea.eigenverbrauchPct!).toBeGreaterThan(mit.eigenverbrauchPct!);
     expect(ea.kumuliert[YEARS]).toBeGreaterThan(mit.kumuliert[YEARS]);
-    expect(Object.keys(drei.ueberholJahr).sort()).toEqual(["ea", "mit"]);
+    expect(Object.keys(drei.ueberholJahr).sort()).toEqual(["ea", "mit", "mitSp"]);
   });
 
   it("Monatsschritte: jeder zwölfte Wert ist der Jahreswert; ohne Anlage wächst jeder Monat", () => {
@@ -140,6 +144,22 @@ describe("Stromkosten-Rennen", () => {
     }
     // Ohne Monatsprofil gibt es keine Monatsausgabe — und nichts Erfundenes.
     expect(calc({ kwp: 10, kosten: 14000, strompreis: 0.3, eigenverbrauch: 30, einspeisung: 8, stromSteigerung: 0.02, ertragKwp: 1000, monthly: null }).monate).toBeNull();
+  });
+
+  it("der eingebrachte Nutzen ist Kosten ohne minus Kosten mit plus Anschaffung — ab null", () => {
+    expect(mit.nutzen[0]).toBe(0);
+    expect(ohne.nutzen.every((x) => x === 0)).toBe(true);
+    for (let k = 0; k <= 12 * YEARS; k++) {
+      expect(Math.abs(mit.nutzen[k] - (ohne.monatlich[k] - mit.monatlich[k] + mit.investition))).toBeLessThanOrEqual(2);
+    }
+    // Erreicht der Nutzen die Anschaffung, ist die Anlage bezahlt — derselbe Monat wie das Überholen.
+    const um = r.ueberholMonat.mit!;
+    expect(mit.nutzen[um]).toBeGreaterThanOrEqual(mit.investition);
+    expect(mit.nutzen[um - 1]).toBeLessThan(mit.investition);
+    // Der Speicher-Läufer: höherer Nutzen je Jahr, Knick beim Akku-Tausch.
+    const sp = r.laeufer.find((l) => l.key === "mitSp")!;
+    expect(sp.nutzen[12]).toBeGreaterThan(mit.nutzen[12]);
+    expect(sp.nutzen[15 * 12] - sp.nutzen[15 * 12 - 12]).toBeLessThan(0);
   });
 
   it("ohne Referenz-Haushalt gibt es kein Rennen", () => {

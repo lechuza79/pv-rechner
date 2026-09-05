@@ -90,6 +90,16 @@ export interface RennLaeufer {
    * Stromrechnung ist im Winter am höchsten (BDEW-Lastprofil).
    */
   monatlich: number[];
+  /**
+   * Was die Anlage bis dahin EINGEBRACHT hat, Monat 0..12·YEARS: Ersparnis
+   * plus Einspeisevergütung, minus Akku-Tausch — der kumulierte Nutzen aus
+   * calc() ab null, ohne die Anschaffung. Erreicht er die Investition, ist die
+   * Anlage bezahlt. Ohne Anlage konstant 0. Das ist die Größe des Rennens: Alle
+   * Läufer starten bei null, die Achse wächst mit ihnen, und jede Schwankung
+   * (Winter, Wetterjahr, Preissprung) ist sichtbar — in den kumulierten Kosten
+   * versteckt die Anschaffung sie.
+   */
+  nutzen: number[];
 }
 
 export interface Kostenrennen {
@@ -126,21 +136,23 @@ export interface Kostenrennen {
 const TYPISCH = { personenIdx: 2, nutzungIdx: 1 } as const;
 
 /**
- * Die Grundaufstellung: derselbe Haushalt ohne und mit Anlage — 10 kWp ohne
- * Speicher, die Voreinstellung des Rechners.
+ * Die Grundaufstellung: derselbe Haushalt ohne Anlage (Referenz für die
+ * Stromrechnung), mit 10 kWp ohne Speicher (die Voreinstellung des Rechners)
+ * und mit 10 kWp plus 10 kWh Speicher. Die beiden Anlagen laufen im Rennen
+ * gegeneinander: Der Speicher bringt jedes Jahr mehr ein, kostet aber 4.000 €
+ * mehr und wird nach 15 Jahren getauscht — dort knickt seine Kurve.
  *
- * Bewusst OHNE Speicher: Mit 5 oder 10 kWh läuft der Eigenverbrauch des
- * Power-Laws für diesen Haushalt an seine physikalische Kappung (Verbrauch ÷
- * Ertrag), und der Einspeise-Erlös übersteigt dann die restliche Stromrechnung —
- * die kumulierten Netto-Ausgaben SINKEN Jahr für Jahr, bis der Akku-Tausch sie
- * wieder anhebt. Das ist im Modell konsistent (gemessen 05.09.2026: 18.000 →
- * 12.273 € nach 20 Jahren), aber als Rennen unlesbar: ein Balken, der
- * rückwärts läuft. Speicher-Varianten sind weitere Läufer; das Widget muss
- * schrumpfende Balken darstellen können.
+ * Zum Speicher-Haushalt gehört eine Eigenheit des Modells: Sein
+ * Eigenverbrauch läuft an die physikalische Kappung (Verbrauch ÷ Ertrag), der
+ * Einspeise-Erlös übersteigt dann die restliche Stromrechnung — seine
+ * kumulierten NETTO-Kosten sinken sogar (gemessen 05.09.2026: 18.000 →
+ * 12.273 € nach 20 Jahren). Im Rennen um den eingebrachten Nutzen ist das kein
+ * Problem mehr; in einer Kostendarstellung wäre es ein Balken, der rückwärts läuft.
  */
 export const RENNEN_OHNE_MIT_PV: RennHaushalt[] = [
   { key: "ohne", label: "Ohne PV-Anlage", kurz: "Ohne PV", ...TYPISCH, kwp: 0, speicherKwh: 0 },
-  { key: "mit", label: "Mit PV-Anlage (10 kWp)", kurz: "Mit PV", ...TYPISCH, kwp: 10, speicherKwh: 0 },
+  { key: "mit", label: "10 kWp ohne Speicher", kurz: "ohne Speicher", ...TYPISCH, kwp: 10, speicherKwh: 0 },
+  { key: "mitSp", label: "10 kWp mit 10 kWh Speicher", kurz: "mit Speicher", ...TYPISCH, kwp: 10, speicherKwh: 10 },
 ];
 
 function jahresverbrauch(h: RennHaushalt): number {
@@ -181,6 +193,7 @@ export function kostenrennen(haushalte: RennHaushalt[], p: RennParameter = {}): 
         investition: 0, verbrauchKwh, eigenverbrauchPct: null,
         kumuliert: jahreswerte(ohneMonat),
         monatlich: ohneMonat.map((x) => Math.round(x)),
+        nutzen: ohneMonat.map(() => 0),
       };
     }
     const ev = calcEigenverbrauch({
@@ -201,14 +214,17 @@ export function kostenrennen(haushalte: RennHaushalt[], p: RennParameter = {}): 
     // Monat 0 ist die Anschaffung; danach wächst jeder Monat um die
     // Stromrechnung minus das, was die Anlage in diesem Monat einbringt.
     const mitMonat: number[] = [kosten];
+    const nutzen: number[] = [0];
     for (let k = 1; k <= M; k++) {
       mitMonat.push(mitMonat[k - 1] + (ohneMonat[k] - ohneMonat[k - 1]) - ergebnis.monate[k - 1]);
+      nutzen.push(nutzen[k - 1] + ergebnis.monate[k - 1]);
     }
     return {
       key: h.key, label: h.label, kurz: h.kurz, hatPv: true, kwp: h.kwp, speicherKwh: h.speicherKwh,
       investition: kosten, verbrauchKwh, eigenverbrauchPct: ev,
       kumuliert: jahreswerte(mitMonat),
       monatlich: mitMonat.map((x) => Math.round(x)),
+      nutzen: nutzen.map((x) => Math.round(x)),
     };
   });
 

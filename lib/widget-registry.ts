@@ -114,10 +114,10 @@ const BEISPIEL_BUNDESLAND = "13";
 export const WIDGETS = {
   kostenrennen: {
     id: "pv-kostenrennen",
-    title: "Das Stromkosten-Rennen",
+    title: "Das Amortisations-Rennen",
     kind: "chart",
     shareUrl: `${SITE}/ratgeber/lohnt-sich-pv-mit-speicher#kostenrennen`,
-    shareText: "Mit oder ohne PV: Wer hat nach 25 Jahren mehr für Strom bezahlt? – Solar Check",
+    shareText: "Wann ist die Solaranlage bezahlt? Das Rennen über 25 Jahre, mit und ohne Speicher – Solar Check",
     // Der Standort-Ertrag ist der PVGIS-Bundesschnitt; Preise und Vergütung
     // sind unsere gepflegten Stichtagswerte (siehe /datenstand). Die
     // Aufstellungen „Wetterjahre" und „Preissprünge" wiederholen die
