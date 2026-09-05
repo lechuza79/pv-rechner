@@ -20,13 +20,12 @@ import { type StandSeite } from "../../../lib/stand-format";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
 import PresetNumberInput from "../../../components/PresetNumberInput";
-import { v, iconSizes, space } from "../../../lib/theme";
+import { v, iconSizes } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { useFeedInRates } from "../../../lib/feedin";
 import { IconArrowRight, IconChevronDown, IconRefresh } from "../../../components/Icons";
 import FlowNav from "../../../components/FlowNav";
-import KlebenderKnopf, { LEISTE_BASIS, LEISTE_NEBEN, LEISTE_SENDEN } from "../../../components/KlebenderKnopf";
-import ErgebnisAnBetrieb, { RUECKKANAL_OEFFNEN, RUECKKANAL_ZUSTAND, type PartnerAngabe } from "../../../components/ErgebnisAnBetrieb";
+import KlebenderKnopf, { LEISTE_BASIS, LEISTE_NEBEN } from "../../../components/KlebenderKnopf";
 
 // ─── URL slug mappings (sprechende Werte statt Indizes) ─────────────────────
 // Reihenfolge MUSS mit den Arrays in lib/constants.ts übereinstimmen
@@ -96,7 +95,6 @@ export default function Empfehlung({
   zielPfad = "/photovoltaik-rechner",
   heimPfad = "/",
   eigenerPfad = "/pv-bedarf-berechnen",
-  partner,
   ohneZwischenansicht = false,
 }: {
   stand?: StandSeite;
@@ -105,10 +103,6 @@ export default function Empfehlung({
   /** Die Adresse, unter der dieser Flow gerade läuft. Er schreibt seinen
    *  Zustand dorthin zurück. */
   eigenerPfad?: string;
-  /** Der Fachbetrieb, über dessen Seite der Besucher kam. Ist er gesetzt,
-   *  kann die Empfehlung direkt an ihn geschickt werden — derselbe Rückkanal
-   *  wie im Ergebnis des Rechners. Ohne ihn entfällt er ersatzlos. */
-  partner?: PartnerAngabe;
   /** Den letzten Schritt direkt ins Ergebnis führen, ohne die
    *  Empfehlungs-Zwischenansicht. Auf der Seite eines Fachbetriebs gewollt: Das
    *  Ergebnis trägt dieselbe Empfehlung samt „Warum diese Anlage?", und ein
@@ -516,16 +510,6 @@ export default function Empfehlung({
     if (armedFoeId) p.set("foe", armedFoeId);
     return p;
   };
-
-  // Solange das Rückkanal-Fenster offen ist, hat die klebende Leiste nichts zu
-  // suchen: Sie läge hinter der Abdunkelung und sähe aus wie ein Knopf, der
-  // nicht reagiert. (Dieselbe Regel wie im Ergebnis des Rechners.)
-  const [rueckkanalOffen, setRueckkanalOffen] = useState(false);
-  useEffect(() => {
-    const hoere = (e: Event) => setRueckkanalOffen(!!(e as CustomEvent).detail?.offen);
-    window.addEventListener(RUECKKANAL_ZUSTAND, hoere);
-    return () => window.removeEventListener(RUECKKANAL_ZUSTAND, hoere);
-  }, []);
 
   const goToResult = (kwp: number, speicherIdx: number) =>
     router.push(`${zielPfad}?${ergebnisParams(kwp, speicherIdx).toString()}`);
@@ -959,32 +943,14 @@ export default function Empfehlung({
                 Alternativen, Annahmen und die Stand-Zeile; wer dort liest,
                 hätte den einzigen Weg nach vorn sonst über sich.
 
-                Kam der Besucher über die Seite eines Fachbetriebs, steht
-                dieselbe Reihenfolge wie im Ergebnis des Rechners: der Rückweg
-                links, die Hauptaktion in der Mitte, verschicken rechts. Ohne
-                Partner entfällt der dritte Knopf ersatzlos. */}
+                KEIN Anfrage-Knopf an einen Fachbetrieb: Auf dessen Seite wird
+                diese Zwischenansicht übersprungen, der Rückkanal steht dort im
+                Ergebnis. Bis zum 05.09.2026 stand er hier trotzdem — als Code,
+                der beim Lesen nach einer Funktion aussah und nie gerendert
+                wurde. */}
             <KlebenderKnopf
-              aktiv={!rueckkanalOffen}
               kinder={(ref) => (
                 <div ref={ref} style={{ marginBottom: 12 }}>
-                  {/* Der Rückkanal steht ÜBER dem Weg ins Ergebnis: Wer über
-                      einen Betrieb gekommen ist, für den ist „an ihn schicken"
-                      der naheliegende nächste Schritt. Verschickt wird der
-                      LINK auf das Ergebnis dieser Empfehlung — der Betrieb
-                      sieht dieselbe Rechnung, nicht eine nachgebaute. */}
-                  {partner && (
-                    <div style={{ marginBottom: space.lg }}>
-                      <ErgebnisAnBetrieb
-                        partner={partner}
-                        ergebnisUrl={
-                          typeof window !== "undefined"
-                            ? `${window.location.origin}${zielPfad}?${ergebnisParams(rec.kwp, rec.speicherIdx).toString()}`
-                            : ""
-                        }
-                        plz={plz}
-                      />
-                    </div>
-                  )}
                   <ErgebnisKnopf onClick={() => goToResult(rec.kwp, rec.speicherIdx)} />
                 </div>
               )}
@@ -1012,14 +978,6 @@ export default function Empfehlung({
                   >
                     Zum Ergebnis
                   </button>
-                  {partner && (
-                    <button
-                      onClick={() => window.dispatchEvent(new Event(RUECKKANAL_OEFFNEN))}
-                      style={LEISTE_SENDEN}
-                    >
-                      Bei {partner.name} anfragen
-                    </button>
-                  )}
                 </>
               }
             />

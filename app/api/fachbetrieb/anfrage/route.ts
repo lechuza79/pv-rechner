@@ -64,6 +64,20 @@ function clientIp(req: Request): string {
 }
 
 /**
+ * Sucht aus einem Freitext-Kontaktweg die Mailadresse heraus.
+ *
+ * Liefert nur etwas, wenn genau eine plausible Adresse darin steht — bei
+ * Zweifeln lieber keine Antwortadresse als eine, an der der ganze Versand
+ * scheitert. Der Betrieb sieht den Kontaktweg ohnehin im Brief.
+ */
+function antwortAdresse(kontakt: string): string | undefined {
+  const treffer = kontakt.match(/[^\s<>()[\],;:"']+@[^\s<>()[\],;:"']+\.[a-z]{2,}/i);
+  if (!treffer) return undefined;
+  const adresse = treffer[0].replace(/[.,;:]+$/, "");
+  return adresse.length <= 254 ? adresse : undefined;
+}
+
+/**
  * Nimmt nur Adressen der eigenen Domain an.
  *
  * Der Link kommt aus dem Browser und ist damit vom Absender bestimmbar. Ohne
@@ -104,9 +118,9 @@ export async function POST(req: Request) {
   const feld = (k: string, max: number) =>
     typeof payload[k] === "string" ? (payload[k] as string).trim().slice(0, max) : "";
   // Fotos werden DURCHGEREICHT, nicht gespeichert: Sie gehen als Anhang an den
-  // Betrieb und liegen danach nirgends bei uns. Zwei Bilder, je höchstens 5 MB
-  // — mehr verträgt eine Mail ohnehin nicht, und ein größeres Bild ist ein Scan
-  // oder ein Irrtum.
+  // Betrieb und liegen danach nirgends bei uns. Zwei Bilder, vom Browser
+  // vorher auf wenige hundert Kilobyte verkleinert — die Größengrenze unten
+  // sagt, warum.
   const rohFotos = Array.isArray(payload.fotos) ? payload.fotos : [];
   const fotos = rohFotos
     .slice(0, 2)
@@ -119,7 +133,11 @@ export async function POST(req: Request) {
       filename: (f.name as string).replace(/[^\w.\- ]+/g, "").slice(0, 80) || "foto.jpg",
       content: f.inhalt as string,
     }))
-    .filter((f) => f.content.length < 7_000_000);
+    // Die Grenze liegt UNTER dem, was die Plattform als Anfragetext annimmt
+    // (4,5 MB): Der Browser verkleinert jedes Bild vorher auf wenige hundert
+    // Kilobyte, alles darüber ist entweder ein Umweg an dieser Verkleinerung
+    // vorbei oder ein Versuch, die Route als Ablage zu benutzen.
+    .filter((f) => f.content.length < 1_500_000);
 
   const strasse = feld("strasse", 160);
   const plz = feld("plz", 10);
@@ -182,7 +200,14 @@ export async function POST(req: Request) {
         ...(fotos.length ? { attachments: fotos } : {}),
         // Antworten gehen direkt an den Interessenten, nicht an uns. Wir sind
         // der Weg, nicht die Zwischenstation.
-        reply_to: kontakt.includes("@") ? kontakt : undefined,
+        //
+        // Herausgesucht, nicht durchgereicht: Das Kontaktfeld ist absichtlich
+        // Freitext („wer nur anrufen lassen will, soll keine Mailadresse
+        // erfinden müssen"). Wer beides angibt — „max@example.com oder
+        // 0170 1234567" —, schickte damit den ganzen Satz als Antwortadresse
+        // los, der Mailversand wies ihn ab, und die Anfrage kam NIE an.
+        // Ausgerechnet die gründlichste Angabe fiel durch.
+        ...(antwortAdresse(kontakt) ? { reply_to: antwortAdresse(kontakt) } : {}),
       }),
     });
     if (!send.ok) {

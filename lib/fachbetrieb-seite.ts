@@ -1,6 +1,7 @@
 import "server-only";
 import { createHmac } from "node:crypto";
 import { supabase } from "./supabase-server";
+import { unstable_cache } from "next/cache";
 import { withDbTimeout } from "./db-timeout";
 
 /**
@@ -79,17 +80,31 @@ export function kennungFuer(domain: string): string {
  * Löst eine Kennung zum Betrieb auf.
  *
  * Der Hash ist eine Einbahnstraße, also wird über alle erfassten Betriebe
- * gerechnet und verglichen. Das klingt teuer und ist es nicht: einige tausend
- * HMACs kosten Millisekunden, und das Ergebnis wird von der Seite ohnehin
- * zwischengespeichert. Die Alternative — eine Kennungs-Spalte — wäre eine
+ * gerechnet und verglichen. Die Alternative — eine Kennungs-Spalte — wäre eine
  * zweite Wahrheit, die gepflegt werden müsste.
+ *
+ * ── Das Ergebnis wird ZWISCHENGESPEICHERT, und zwar hier ───────────────────
+ * Bis zum 05.09.2026 stand an dieser Stelle, die Seite speichere ohnehin
+ * zwischen. Sie tat es nie: Sie ist ausdrücklich auf „bei jedem Aufruf neu"
+ * gestellt und fragt die Auflösung ZWEIMAL — einmal für den Seitentitel,
+ * einmal für den Inhalt. Bei rund 3.100 Betrieben waren das acht
+ * Datenbankabfragen und bis zu 6.200 Hash-Berechnungen je Seitenaufruf; beim
+ * geplanten Schub an mehrere hundert Betriebe genau das Lastmuster, das im
+ * Juli 2026 den Atlas in die Datenbank-Notbremse getrieben hat.
+ *
+ * Eine Stunde, nicht fünf Minuten: Kürzere Fristen sind in diesem Projekt
+ * verboten, weil ein solcher Zwischenspeicher, sobald er im Seitenrahmen
+ * landet, die Haltbarkeit JEDER Seite der Domain auf seinen Wert deckelt — der
+ * teure, von außen unsichtbare Schaden vom 26.08.2026. Aktualität kommt hier
+ * über den Marker `fachbetrieb-seiten`: Wer Betriebe nacherfasst und die
+ * Seiten sofort erreichbar braucht, frischt ihn auf, statt die Frist zu
+ * verkürzen.
  *
  * Gelesen wird SEITENWEISE: Ein einfaches select() liefert stumm nur 1.000
  * Zeilen (gemessene Falle dieses Projekts) — hier wäre der Fehler besonders
  * fies, weil er nur einen Teil der Betriebe unauffindbar machte.
  */
-export async function seiteFuerKennung(kennung: string): Promise<FachbetriebSeite | null> {
-  if (!/^[0-9a-f]{16}$/.test(kennung)) return null;
+async function seiteAusDatenbank(kennung: string): Promise<FachbetriebSeite | null> {
   if (!supabase) return null;
   const db = supabase;
 
@@ -151,6 +166,23 @@ export async function seiteFuerKennung(kennung: string): Promise<FachbetriebSeit
     if (zeilen.length < SEITE) break;
   }
   return null;
+}
+
+/**
+ * Löst eine Kennung auf — mit Zwischenspeicher, siehe oben.
+ *
+ * Die Formprüfung steht VOR dem Zwischenspeicher: Sonst legte jede erfundene
+ * Adresse einen eigenen Eintrag an, und ein Aufruf mit Zufallszeichen wäre ein
+ * Weg, den Speicher vollzuschreiben.
+ */
+export async function seiteFuerKennung(kennung: string): Promise<FachbetriebSeite | null> {
+  if (!/^[0-9a-f]{16}$/.test(kennung)) return null;
+  const geladen = unstable_cache(
+    () => seiteAusDatenbank(kennung),
+    ["fachbetrieb-seite", kennung],
+    { revalidate: 3600, tags: ["fachbetrieb-seiten"] },
+  );
+  return geladen();
 }
 
 /**

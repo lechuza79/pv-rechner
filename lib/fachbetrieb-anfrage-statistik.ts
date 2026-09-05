@@ -1,5 +1,6 @@
 import "server-only";
 import { supabase } from "./supabase-server";
+import { ANLAGEN, SPEICHER } from "./constants";
 
 /**
  * Was von einer Anfrage übrig bleibt, wenn man alles Persönliche weglässt.
@@ -87,6 +88,14 @@ export async function anfrageMerken(s: AnfrageStatistik): Promise<void> {
 }
 
 /**
+ * Die Stufen, auf die `a` und `s` im Teilen-Link zeigen — abgeleitet, nicht
+ * getippt. Wer die Listen umsortiert, verschiebt sonst still jede gespeicherte
+ * Zeile; so leitet auch der Rechner selbst seine Werte ab.
+ */
+const ANLAGEN_KWP: readonly number[] = ANLAGEN.map((a) => a.kwp);
+const SPEICHER_KWH: readonly number[] = SPEICHER.map((s) => s.kwh);
+
+/**
  * Zieht die groben Angaben aus dem Ergebnis-Link.
  *
  * Der Link trägt den vollständigen Rechenstand — hier wird bewusst nur ein
@@ -103,10 +112,24 @@ export function ausErgebnisUrl(url: string | null): Pick<AnfrageStatistik, "kwp"
       const n = Number(w.replace(",", "."));
       return Number.isFinite(n) ? n : null;
     };
+    // Anlagengröße und Speicher stehen im Link als LISTENPLATZ, nicht als
+    // Kilowatt — `a=2` heißt „die dritte Stufe", also 10 kWp. Die Sonderfelder
+    // `ck`/`sk` gibt es nur, wenn jemand eine eigene Zahl eingetippt hat.
+    //
+    // Wer nur die Sonderfelder liest, bekommt für die überwiegende Mehrheit
+    // der Anfragen zwei leere Werte — genau so stand es hier bis zum
+    // 05.09.2026, und `null` ist ein zulässiger Wert, also fiel es nicht auf.
+    // Die Statistik, die es für die Frage „welche Anlagen rechnen die Leute"
+    // gibt, wäre bei jedem Standardfall leer gewesen.
+    const ausListe = (schluessel: string, liste: readonly number[]): number | null => {
+      const i = zahl(schluessel);
+      return i !== null && Number.isInteger(i) && i >= 0 && i < liste.length ? liste[i] : null;
+    };
     const plz = p.get("plz");
     return {
-      kwp: zahl("ck"),
-      speicherKwh: zahl("sk") ?? (p.get("s") === "0" ? 0 : null),
+      // Eigene Zahl schlägt die Stufe — sie ist die genauere Angabe.
+      kwp: zahl("ck") ?? ausListe("a", ANLAGEN_KWP),
+      speicherKwh: zahl("sk") ?? ausListe("s", SPEICHER_KWH),
       plzBereich: plz && /^\d{5}$/.test(plz) ? plz.slice(0, 2) : null,
     };
   } catch {

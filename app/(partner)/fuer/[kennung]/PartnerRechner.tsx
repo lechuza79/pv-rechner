@@ -111,9 +111,6 @@ export default function PartnerRechner({
         zielPfad={pfad}
         heimPfad={null}
         eigenerPfad={pfad}
-        /* Derselbe Rückkanal wie im Ergebnis: Wer schon auf der Empfehlung
-           weiß, dass er anfragen will, soll nicht erst weiterklicken müssen. */
-        partner={{ kennung, name }}
         /* Kein Zwischenhalt auf der Empfehlung: Das Ergebnis trägt dieselbe
            Anlage samt „Warum diese Anlage?", und ein Schritt mehr kostet hier
            Abbrüche, ohne etwas zu zeigen, was danach nicht auch dasteht. */

@@ -52,8 +52,71 @@ export const RUECKKANAL_ZUSTAND = "sc-rueckkanal-zustand";
 
 /** Zwei Bilder genügen, und mehr verträgt eine Mail auch nicht. */
 const MAX_FOTOS = 2;
-/** Je Bild. Ein Handyfoto liegt darunter; alles darüber ist ein Scan oder ein Irrtum. */
-const MAX_FOTO_BYTES = 5 * 1024 * 1024;
+
+/**
+ * Was der Nutzer auswählen darf. Großzügig — ein Handyfoto hat heute 3 bis 8 MB,
+ * und ihn deswegen abzuweisen wäre eine Hürde ohne Grund: Wir verkleinern
+ * ohnehin selbst.
+ */
+const MAX_FOTO_BYTES = 12 * 1024 * 1024;
+
+/**
+ * Wie groß ein Bild die Reise antritt.
+ *
+ * ── Warum überhaupt verkleinert wird — BLOCKER ─────────────────────────────
+ * Die Bilder gehen kodiert im Anfragetext mit, und Kodieren bläht um rund ein
+ * Drittel auf. Die Plattform nimmt einen Anfragetext bis 4,5 MB an und weist
+ * alles darüber ab, BEVOR unser Code läuft: Zwei gewöhnliche Handyfotos à 3 MB
+ * ergaben rund 8 MB und scheiterten also immer — der Nutzer hatte den ganzen
+ * Fragebogen ausgefüllt und las dann „bitte später noch einmal versuchen",
+ * eine Aufforderung, die nie zum Erfolg führt. So stand es bis zum 05.09.2026.
+ *
+ * ── Warum diese Maße ──────────────────────────────────────────────────────
+ * 1.600 Pixel an der langen Kante zeigen ein Dach in jedem Mailprogramm
+ * bildschirmfüllend; mehr sieht niemand, kostet aber Übertragung. Bei
+ * Qualität 0,8 liegt ein solches Bild bei 200 bis 400 kB — zwei davon kodiert
+ * unter 1 MB, also mit reichlich Abstand zur Grenze.
+ */
+const BILD_MAX_KANTE = 1600;
+const BILD_QUALITAET = 0.8;
+
+/**
+ * Verkleinert ein Bild im Browser und gibt es kodiert zurück.
+ *
+ * Schlägt irgendetwas fehl — kaputte Datei, entzogener Datenträger, ein Format,
+ * das der Browser nicht zeichnen kann —, wird `null` geliefert und der Aufrufer
+ * sagt es. Ein Versprechen, das nur im Erfolgsfall eingelöst wird, ließe den
+ * Fragebogen für immer warten: kein Fehler, kein Bild, nichts.
+ */
+async function bildVerkleinern(datei: File): Promise<string | null> {
+  const quelle = await new Promise<string | null>((fertig) => {
+    const leser = new FileReader();
+    leser.onload = () => fertig(typeof leser.result === "string" ? leser.result : null);
+    leser.onerror = () => fertig(null);
+    leser.readAsDataURL(datei);
+  });
+  if (!quelle) return null;
+
+  const bild = await new Promise<HTMLImageElement | null>((fertig) => {
+    const el = new Image();
+    el.onload = () => fertig(el);
+    el.onerror = () => fertig(null);
+    el.src = quelle;
+  });
+  if (!bild || !bild.naturalWidth) return null;
+
+  const faktor = Math.min(1, BILD_MAX_KANTE / Math.max(bild.naturalWidth, bild.naturalHeight));
+  const flaeche = document.createElement("canvas");
+  flaeche.width = Math.round(bild.naturalWidth * faktor);
+  flaeche.height = Math.round(bild.naturalHeight * faktor);
+  const stift = flaeche.getContext("2d");
+  if (!stift) return null;
+  stift.drawImage(bild, 0, 0, flaeche.width, flaeche.height);
+  // Immer JPEG: Ein Dachfoto als PNG wäre um ein Vielfaches größer, ohne dass
+  // man den Unterschied sähe.
+  const neu = flaeche.toDataURL("image/jpeg", BILD_QUALITAET);
+  return neu.split(",")[1] ?? null;
+}
 
 export type PartnerAngabe = {
   /** Wie der Betrieb heißt — steht im Knopf und in der Bestätigung. */
@@ -125,15 +188,18 @@ export default function ErgebnisAnBetrieb({
         continue;
       }
       if (datei.size > MAX_FOTO_BYTES) {
-        setFehler(`„${datei.name}" ist größer als 5 MB.`);
+        setFehler(`„${datei.name}" ist größer als 12 MB.`);
         continue;
       }
-      const inhalt = await new Promise<string>((fertig) => {
-        const leser = new FileReader();
-        leser.onload = () => fertig(String(leser.result).split(",")[1] ?? "");
-        leser.readAsDataURL(datei);
-      });
-      neu.push({ name: datei.name, inhalt });
+      const inhalt = await bildVerkleinern(datei);
+      if (!inhalt) {
+        setFehler(`„${datei.name}" ließ sich nicht lesen. Bitte ein anderes Bild versuchen.`);
+        continue;
+      }
+      // Der Name bekommt die Endung des Formats, in dem das Bild wirklich
+      // reist — ein „dach.png", das ein JPEG enthält, öffnet mancher
+      // Mailprogramm-Betrachter gar nicht erst.
+      neu.push({ name: datei.name.replace(/\.[^.]+$/, "") + ".jpg", inhalt });
     }
     setFotos((alt) => [...alt, ...neu].slice(0, MAX_FOTOS));
     if (dateiRef.current) dateiRef.current.value = "";
