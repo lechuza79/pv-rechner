@@ -6,6 +6,7 @@ import {
   ExportBox,
   ExportNotesProvider,
   ExportOnly,
+  ExportOnlyG,
   WidgetFooter,
   WidgetSourceEdge,
   WidgetExportFooter,
@@ -194,12 +195,6 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
     return () => cancelAnimationFrame(raf);
   }, [spielt, ruhig, T, verlauf]);
 
-  // Kumulierte Abspielzeit je Tag — die Zeitachse der Zeitleiste (siehe unten).
-  const abspielMs = useMemo(() => {
-    const a = new Float64Array(T + 1);
-    for (let d = 1; d <= T; d++) a[d] = a[d - 1] + msJeTag(d - 1, T);
-    return a;
-  }, [T]);
   const tag = Math.min(T, Math.floor(t));
   const datum = tagDatum(verlauf, rennen.startJahr, tag);
   const stand = tag === 0 ? `${rennen.startJahr} · Start` : `${datum.tag}. ${MONATE[datum.monat]} ${datum.jahr}`;
@@ -370,18 +365,9 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   });
   const sichtbareEreignisse = ereignisse.filter((e) => t >= e.tag);
   const aktivesEreignis = sichtbareEreignisse.length ? sichtbareEreignisse[sichtbareEreignisse.length - 1] : null;
-  // Die Zeitleiste ist zugleich der Regler und läuft in ABSPIELZEIT, nicht in
-  // Kalendertagen: Der Fortschritt bewegt sich damit gleichmäßig wie bei einem
-  // Video, und die ersten zwei Jahre — ein Drittel der Wiedergabe — bekommen
-  // ein Drittel der Spur, sodass Kauf, Winter und Sommer nicht auf einem Fleck
-  // liegen. In Kalendertagen wären sie zusammen 2,5 % der Strecke.
-  const posPct = (d: number) => (abspielMs[Math.min(T, Math.max(0, Math.round(d)))] / abspielMs[T]) * 100;
-  const tagZuAbspielMs = (ms: number) => {
-    if (ms >= abspielMs[T] - 1) return T; // die Endposition des Reglers trifft den letzten Tag exakt
-    let lo = 0, hi = T;
-    while (lo < hi) { const mid = (lo + hi) >> 1; if (abspielMs[mid] < ms) lo = mid + 1; else hi = mid; }
-    return lo;
-  };
+  // Zeitleiste auf derselben Achse wie das Chart: Punkt und gestrichelte Linie
+  // stehen jederzeit übereinander.
+  const posPct = (d: number) => (xL(d) / W) * 100;
 
   // Der Video-Frame: was die Leinwand in diesem Render zeichnen soll. Als Ref,
   // damit die Aufnahme-Schleife immer den jüngsten Stand malt.
@@ -392,7 +378,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
     legende: [{ farbe: FARBE_OHNE_HEX, label: ohne.label }, { farbe: FARBE_PV_HEX, label: pv.label }],
     zeitleiste: sichtbareEreignisse.map((e) => ({ posPct: posPct(e.tag), aktiv: e === aktivesEreignis })),
     ereignis: aktivesEreignis ? { jahr: String(aktivesEreignis.jahr), label: aktivesEreignis.label, text: aktivesEreignis.text } : null,
-    fortschrittPct: posPct(t),
+    spur: { vonPct: (P.l / W) * 100, bisPct: ((P.l + cW) / W) * 100 },
     marke: `${brandLabel(WIDGETS.kostenrennen.kind)} solar-check.io`,
     quelle: WIDGETS.kostenrennen.sources.map((q) => sourceLabel(q, { kurz: true })).join(" · "),
   };
@@ -489,6 +475,35 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
         </div>
       </div>
 
+      {/* Steuerung — nur auf der Seite, nie im Bild */}
+      <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", alignItems: "center", gap: space.lg, marginBottom: space.md }}>
+        <button
+          type="button"
+          onClick={() => {
+            if (spielt) { setSpielt(false); return; }
+            if (amEnde) setT(0);
+            gestartet.current = true;
+            setSpielt(true);
+          }}
+          aria-label={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
+          title={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
+          style={knopf}
+        >
+          {spielt ? <IconPause size={14} /> : amEnde ? <IconRefresh size={14} /> : <IconPlay size={14} />}
+        </button>
+        <input
+          type="range"
+          min={0}
+          max={T}
+          step={1}
+          value={tag}
+          onChange={(e) => { setSpielt(false); gestartet.current = true; setT(Number(e.target.value)); }}
+          aria-label="Jahr wählen"
+          aria-valuetext={stand}
+          style={{ flex: 1, accentColor: v("--color-accent"), minWidth: 0 }}
+        />
+      </div>
+
       <ExportBox>
 
         <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }} role="img"
@@ -531,6 +546,29 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
             </g>
           )}
 
+          {/* Kreuzung: erscheint, sobald die Linien sie erreicht haben, und bleibt, solange sie im Fenster liegt. */}
+          {einspeiseEndeTag != null && t >= einspeiseEndeTag && (
+            <g className="kr-neu">
+              <line x1={xL(einspeiseEndeTag)} x2={xL(einspeiseEndeTag)} y1={P.t} y2={y0} stroke="var(--color-text-muted)" strokeWidth={1} strokeDasharray="3 3" />
+              {/* Auf der Seite steht der Text an der Zeitleiste unter dem Chart; im Bild gibt es die nicht. */}
+              <ExportOnlyG>
+                <text x={xL(einspeiseEndeTag) - 6} y={y0 - 8} textAnchor="end" fontSize={fsPx("--font-size-caption")} fontWeight={700} fill="var(--color-text-secondary)">
+                  Einspeisevergütung endet · {tagDatum(verlauf, rennen.startJahr, einspeiseEndeTag).jahr}
+                </text>
+              </ExportOnlyG>
+            </g>
+          )}
+          {bezahltTag !== null && t >= bezahltTag && (
+            <g className="kr-neu">
+              <line x1={xL(bezahltTag)} x2={xL(bezahltTag)} y1={P.t} y2={y0} stroke="var(--color-positive)" strokeWidth={1} strokeDasharray="3 3" />
+              <ExportOnlyG>
+                <text x={xL(bezahltTag)} y={P.t - 6} textAnchor={xL(bezahltTag) > P.l + cW * 0.75 ? "end" : "middle"} fontSize={fsPx("--font-size-caption")} fontWeight={700} fill="var(--color-positive)">
+                  Anlage bezahlt · {MONATE_KURZ[tagDatum(verlauf, rennen.startJahr, bezahltTag).monat]} {tagDatum(verlauf, rennen.startJahr, bezahltTag).jahr}
+                </text>
+              </ExportOnlyG>
+            </g>
+          )}
+
           {/* Spitzen mit Betrag */}
           {spitzen.map((s, i) => (
             <g key={s.key}>
@@ -542,32 +580,15 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           ))}
         </svg>
 
-        {/* Zeitleiste unter dem Chart, zugleich die Steuerung (Betreiber, 05.09.2026):
-            Play links, die Spur linear über alle Jahre mit Fortschritt, darauf die
-            Ereignis-Punkte im Stil der Weichenstellungen des Zubau-Charts — der
-            zuletzt erreichte groß, darunter erklärt, das vorige blendet aus. Der
-            Schieberegler liegt unsichtbar auf der Spur und trägt Tastatur und
-            Vorlesen. Im Bild bleiben Spur und Erklärung, Knopf und Regler nicht. */}
-        <div style={{ display: "flex", alignItems: "center", gap: space.lg, marginTop: space.lg }}>
-          <span {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "inline-flex" }}>
-            <button
-              type="button"
-              onClick={() => {
-                if (spielt) { setSpielt(false); return; }
-                if (amEnde) setT(0);
-                gestartet.current = true;
-                setSpielt(true);
-              }}
-              aria-label={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
-              title={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
-              style={knopf}
-            >
-              {spielt ? <IconPause size={14} /> : amEnde ? <IconRefresh size={14} /> : <IconPlay size={14} />}
-            </button>
-          </span>
-          <div style={{ position: "relative", flex: 1, height: 26 }}>
-            <div style={{ position: "absolute", top: 12, left: 0, right: 0, height: 2, background: v("--color-border") }} />
-            <div style={{ position: "absolute", top: 12, left: 0, width: `${posPct(t)}%`, height: 2, background: v("--color-accent") }} />
+        {/* Ereignis-Zeitleiste unter dem Chart im Stil der Weichenstellungen des
+            Zubau-Charts: Punkte auf der Achse des Charts (Punkt und gestrichelte
+            Linie stehen übereinander, auch während die Achse wächst), der
+            zuletzt erreichte Punkt ist groß und wird darunter erklärt; das
+            vorige Ereignis blendet aus. Nur auf der Seite — im Bild tragen die
+            Marken ihren Text im Chart. */}
+        <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ marginTop: space.md }}>
+          <div style={{ position: "relative", height: 26 }}>
+            <div style={{ position: "absolute", top: 12, left: `${(P.l / W) * 100}%`, width: `${(cW / W) * 100}%`, height: 2, background: v("--color-border") }} />
             {sichtbareEreignisse.map((e) => {
               const aktiv = e === aktivesEreignis;
               const d = aktiv ? 22 : 13;
@@ -575,31 +596,19 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
                 <span key={e.tag} className="kr-neu" title={e.label} style={{ position: "absolute", left: `${posPct(e.tag)}%`, top: 13 - d / 2, width: d, height: d, transform: "translateX(-50%)", borderRadius: "50%", background: v("--color-accent"), border: `2px solid ${v("--color-bg")}`, boxSizing: "border-box", boxShadow: aktiv ? "0 2px 6px rgba(19,101,234,0.35)" : "none", transition: "width .2s ease, height .2s ease, top .2s ease", zIndex: aktiv ? 2 : 1 }} />
               );
             })}
-            <input
-              {...{ [EXPORT_IGNORE_ATTR]: "" }}
-              type="range"
-              min={0}
-              max={Math.ceil(abspielMs[T])}
-              step={1}
-              value={Math.round(abspielMs[tag])}
-              onChange={(e) => { setSpielt(false); gestartet.current = true; setT(tagZuAbspielMs(Number(e.target.value))); }}
-              aria-label="Jahr wählen"
-              aria-valuetext={stand}
-              style={{ position: "absolute", left: 0, top: 0, width: "100%", height: 26, margin: 0, opacity: 0, cursor: "pointer", zIndex: 3 }}
-            />
           </div>
-        </div>
-        <div style={{ minHeight: 64, marginTop: space.sm }}>
-          {aktivesEreignis && (
-            <div key={aktivesEreignis.tag} className="kr-neu">
-              <div style={{ fontSize: v("--font-size-small"), fontWeight: 800, color: v("--color-text-primary"), marginBottom: space.xxs }}>
-                <span style={{ fontFamily: v("--font-mono") }}>{aktivesEreignis.jahr}</span>
-                {"  ·  "}
-                {aktivesEreignis.label}
+          <div style={{ minHeight: 64, marginTop: space.sm, paddingLeft: narrow ? 0 : `${(P.l / W) * 100}%`, paddingRight: narrow ? 0 : `${(P.r / W) * 100}%` }}>
+            {aktivesEreignis && (
+              <div key={aktivesEreignis.tag} className="kr-neu">
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 800, color: v("--color-text-primary"), marginBottom: space.xxs }}>
+                  <span style={{ fontFamily: v("--font-mono") }}>{aktivesEreignis.jahr}</span>
+                  {"  ·  "}
+                  {aktivesEreignis.label}
+                </div>
+                <div style={{ fontSize: v("--font-size-small"), lineHeight: 1.5, color: v("--color-text-secondary") }}>{aktivesEreignis.text}</div>
               </div>
-              <div style={{ fontSize: v("--font-size-small"), lineHeight: 1.5, color: v("--color-text-secondary") }}>{aktivesEreignis.text}</div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </ExportBox>
 
