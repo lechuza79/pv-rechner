@@ -237,3 +237,97 @@ Kein Anschreiben, kein Versandweg, kein Cockpit. Diese Erhebung erhebt.
   Eine Pressemitteilung an eine Redaktion, die dafür ein Postfach ausweist, ist
   etwas anderes als ein Angebot an eine namentlich genannte Person. Die Grenze
   gehört vor dem ersten Schub durch zwei Legal-Judges.
+
+---
+
+## Konzeptwechsel am 05.09.2026: Merkmale statt Urteil, Thema statt Medienprüfung
+
+Der Betreiber hat den Eignungs-Ansatz verworfen, nachdem er dreimal in dieselbe
+Richtung gelaufen war. **Die Ursache war nicht das Kriterium, sondern die
+Denkrichtung:** Jede seiner Korrekturen wurde als Korrektur eines Datenfelds
+verstanden und daraus wieder eine Erhebung gebaut — statt vom Anschreiben aus zu
+denken, für das der Katalog existiert.
+
+### Was gilt
+
+**Es gibt kein Ausschlusskriterium.** Auch nicht den eigenen Rechner: „evtl.
+bieten wir das bessere tool" (Betreiber). Ein eigener Rechner ist ein MERKMAL mit
+Fundstelle und wird in einem zweiten Schritt gesondert ausgewertet — dieselbe
+Auswertung ist auch für die Rechner fällig, die in den anderen Erhebungen
+gefunden wurden.
+
+**Ein Händler, Hersteller oder Institut ist kein Ausschluss, sondern eine andere
+ANSPRACHE** — Vertrieb statt Redaktion. Das stand schon am 05.09. in der ersten
+Fragenrunde und wurde beim Bauen wieder eingebaut; die neun Fragen enthielten am
+Ende vier Kriterien, die der Betreiber nie verlangt hatte (Meldungsbetrieb,
+Autorennennung, Zitierverhalten, Produktverkauf), und sein einziges wirkliches
+Kriterium — der inhaltliche Themenbezug — war eines von neun.
+
+### Fünf Rubriken, und sie bestimmen den AUFHÄNGER, nicht die Eignung
+
+| Rubrik | Aufhänger |
+|---|---|
+| Fachmedien | aktueller Fachbeitrag zu unserem Thema |
+| Regionale Medien | Zahlen der Region aus dem Kommunen-/Kreis-/Landesranking — **keine Themensuche** |
+| Allgemeine Medien | aktueller Beitrag zu unserem Thema, für Endkunden |
+| Creator (Newsletter, YouTube, Podcast) | aktuelle Folge zu unserem Thema |
+| Hersteller, Händler, Portale, Institute | offen; hier wird nur Kategorie und eigener Rechner vermerkt |
+
+Die Sorte ist NICHT aus dem Bestand ableitbar. Der Versuch, sie über die
+Streuung zu bestimmen (in wie vielen Landkreisen eine Adresse gefunden wurde),
+ist gescheitert: Die 121 Adressen mit der höchsten Streuung sind fast durchweg
+Regionalzeitungen mit großem Verbreitungsgebiet, Anzeigenblatt-Netzwerke und
+Rundfunkanstalten. **Streuung misst Reichweite, nicht die Trennung regional /
+überregional.**
+
+### Die Suchrichtung dreht sich um
+
+Nicht mehr: Medienliste nehmen und je Medium fragen, ob es passt.
+Sondern: **nach unseren Themen suchen — wer darüber schreibt, kommt in den
+Verteiler, und der gefundene Artikel IST der Aufhänger.** Kein separater
+Bewertungsschritt.
+
+**Harte Regel aus einem gemessenen Fehlgriff:** Belegt ist nur, was im
+Artikeltext selbst gelesen wurde. Die Behauptung „Finanztip empfiehlt den
+HTW-Rechner" stammte aus einer Suchmaschinen-Zusammenfassung und hält am Artikel
+nicht stand — dort steht eine eigene Faustregel (1.600 €/kWp) und die Empfehlung
+dreier Vermittlungsportale mit Provision. Auf dieser Falschannahme stand das
+Kriterium „verweist auf fremde Rechner".
+
+### Erhebung vom 05.09.2026
+
+Gearbeitet wird über die **Navigation der Startseite** — sie ist die Auswahl, die
+das Haus selbst getroffen hat, steht statisch im HTML und schlägt die Sitemap
+(gemessen im Fachbetriebe-Bereich: 3 Treffer je 4,3 Abrufe gegen 1 je 6,2). Die
+Startseite allein reicht NICHT als Themenbeleg: Dort steht das Tagesgeschäft,
+unsere Themen liegen in der Rubrik. Energie & Management, ZfK und energiezukunft
+wären sonst als „kein Thema" durchgefallen, obwohl ZfK eine ganze Serie zur
+2027er Einspeisebegrenzung führt.
+
+| | Ergebnis |
+|---|---|
+| überregionale Seiten gelesen | 290 |
+| davon mit datiertem Themenbeleg | 162 |
+| regionale Adressen eingeordnet | 3.262 |
+| davon Medium | 1.274 (alle 400 Landkreise) |
+| davon kein Medium | 1.736 (825 Behörden, 192 Plattformen, 133 Vereine, 87 Bibliotheken …) |
+| bewusst unklar gelassen | 334 |
+
+**Neue Felder:** `rubrik`, `beleg_titel`, `beleg_url`, `beleg_notiz`, `beleg_am`.
+Die alten Eignungs-Felder bleiben stehen, werden aber nicht mehr fortgeschrieben.
+
+### Was beim nächsten Mal Zeit spart
+
+- **Parallele Läufe auf derselben Liste schreiben sich gegenseitig.** Fünf
+  Nachzügler-Läufe bearbeiteten dieselben Adressen wie zehn bereits laufende,
+  weil deren Zwischenstand nicht sichtbar war. Kein Datenverlust, aber doppelte
+  Arbeit und ein Widerspruch, der von Hand geklärt werden musste
+  (balkonkraftwerk.blog hat sehr wohl einen eigenen Rechner).
+- **Schreibweisen vereinheitlichen.** Ein Lauf schrieb ohne Umlaute
+  („Waermepumpe", „Foerderung"); 216 Einträge mussten nachgezogen werden. Nie
+  blind `ae`→`ä` ersetzen, nur eindeutige Wörter.
+- **Rund 30 Seiten sind maschinell nicht erreichbar** (Chip, Computerbild, DIW,
+  Wirtschaftsministerium, ifeu, haus.de — Bot-Sperren, TLS-Fehler, tote
+  Domains). Die brauchen den Browser.
+- **Zwei Domains sind umgewidmet:** energiespektrum.de trägt heute ein
+  Krypto-Casino-Portal, solarthemen.de leitet auf solarserver.de.
