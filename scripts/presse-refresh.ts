@@ -291,6 +291,19 @@ async function setup(): Promise<void> {
     -- nächste Lauf sie überschreibt — und dann korrigiert man dieselbe
     -- Fehleinschätzung jeden Monat neu, ohne dass es auffällt.
     ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS gattung_hand text;
+    -- Der Arbeitsstand des MEDIUMS — die Antwort auf „lohnt sich eine Ansprache
+    -- überhaupt". Sie lässt sich nicht messen: Ob eine Redaktion eine fremde
+    -- Datengeschichte aufnimmt, steht weder auf ihrer Startseite noch in ihrem
+    -- Impressum. Drei Runden Musterschärfen (Themenzahl, Dichte, Rechtsform)
+    -- haben jeweils das zuletzt genannte Beispiel gefangen und das nächste
+    -- verfehlt; die vierte Runde wäre dieselbe Schleife gewesen.
+    --
+    -- Deshalb urteilt hier ein Mensch, EINMAL, und der Erhebungslauf fasst es
+    -- nie an. Die Zustände sind dieselben wie beim Kontakt — zwei Vokabulare
+    -- für dieselbe Frage wären eines zu viel.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS eignung text NOT NULL DEFAULT 'offen';
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS eignung_grund text;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS eignung_at timestamptz;
     ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS stand text NOT NULL DEFAULT 'offen';
     ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS notiz text;
     ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS stand_at timestamptz;

@@ -29,13 +29,14 @@ const MEDIUM_SPALTEN =
   "domain, saat_name, saat_typ, saat_schwerpunkt, saat_gebiet, gruppe, paket, notiz, " +
   "titel, medientyp, themen, geschichten, reichweite, reichweite_quelle, ist_medium, " +
   "medium_grund, medium_merkmale, seiten, formular_url, impressum_url, prioritaet, " +
-  "aufhaenger, gattung, gattung_hand, woerter, hinweis, profil_at, fehler";
+  "aufhaenger, gattung, gattung_hand, woerter, hinweis, eignung, eignung_grund, profil_at, fehler";
 
 const KONTAKT_SPALTEN =
   "domain, schluessel, name, funktion, rang, mail, mail_art, formular_url, quelle_url, " +
   "seitenart, anker, fundstelle, geprueft_am, stand, notiz, stand_at";
 
 type Filter = {
+  eignung: string;
   gattung: string;
   paket: string;
   prio: string;
@@ -53,6 +54,7 @@ function filterAus(sp: URLSearchParams): Filter {
     // BILD brauche ich nicht anschreiben." Publikumsmedien bleiben im Bestand
     // — gelöscht wird nichts —, aber sie stehen nicht mehr zwischen den
     // Titeln, mit denen tatsächlich zu arbeiten ist.
+    eignung: sp.get("eignung") ?? "",
     gattung: sp.get("gattung") ?? "fach",
     paket: sp.get("paket") ?? "",
     prio: sp.get("prio") ?? "",
@@ -77,6 +79,7 @@ function medienAbfrage(db: any, f: Filter, zaehlen: boolean) {
   if (f.gattung) {
     q = q.or(`gattung_hand.eq.${f.gattung},and(gattung_hand.is.null,gattung.eq.${f.gattung})`);
   }
+  if (f.eignung) q = q.eq("eignung", f.eignung);
   if (f.paket) q = q.eq("paket", Number(f.paket));
   if (f.prio) q = q.eq("prioritaet", f.prio);
   if (f.medium) q = q.eq("ist_medium", f.medium);
@@ -168,6 +171,8 @@ export async function PATCH(req: NextRequest) {
     stand?: string;
     notiz?: string | null;
     gattungHand?: string | null;
+    eignung?: string;
+    eignungGrund?: string | null;
   } | null;
   if (!body?.domain) return NextResponse.json({ error: "domain fehlt" }, { status: 400 });
 
@@ -175,6 +180,26 @@ export async function PATCH(req: NextRequest) {
   // eigener Zweig. Sie schreibt ausschließlich die Handspalte; die gemessene
   // bleibt stehen, damit der Vergleich „was hat die Messung gesagt" möglich
   // bleibt.
+  // Das Handurteil über das MEDIUM — eigener Zweig, weil es nicht am Kontakt
+  // hängt. Der Erhebungslauf schreibt diese Spalten nie.
+  if (body.eignung !== undefined || body.eignungGrund !== undefined) {
+    const feld: Record<string, unknown> = { eignung_at: new Date().toISOString() };
+    if (body.eignung !== undefined) {
+      if (!istStand(body.eignung))
+        return NextResponse.json({ error: "unbekannter Stand" }, { status: 400 });
+      feld.eignung = body.eignung;
+    }
+    if (body.eignungGrund !== undefined) feld.eignung_grund = body.eignungGrund?.slice(0, 500) || null;
+    const { data, error } = await serviceDb
+      .from("presse_medien")
+      .update(feld)
+      .eq("domain", body.domain)
+      .select(MEDIUM_SPALTEN)
+      .single();
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ medium: data });
+  }
+
   if (body.gattungHand !== undefined) {
     const wert = body.gattungHand;
     if (wert !== null && wert !== "fach" && wert !== "publikum") {

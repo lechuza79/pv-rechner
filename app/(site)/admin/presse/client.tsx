@@ -54,6 +54,7 @@ export default function PresseAnsicht() {
   const [laedt, setLaedt] = useState(true);
   const [fehler, setFehler] = useState<string | null>(null);
 
+  const [eignung, setEignung] = useState("");
   const [gattung, setGattung] = useState("fach");
   const [paket, setPaket] = useState("1");
   // DIE VOREINSTELLUNG HÄNGT AM PAKET, und das ist keine Bequemlichkeit.
@@ -77,6 +78,7 @@ export default function PresseAnsicht() {
 
   const parameter = useCallback(() => {
     const p = new URLSearchParams();
+    if (eignung) p.set("eignung", eignung);
     p.set("gattung", gattung);
     if (paket) p.set("paket", paket);
     if (prio) p.set("prio", prio);
@@ -87,7 +89,7 @@ export default function PresseAnsicht() {
     if (suche) p.set("q", suche);
     if (nurPerson) p.set("person", "1");
     return p;
-  }, [gattung, paket, prio, geschichte, mediumArt, kontaktart, stand, suche, nurPerson]);
+  }, [eignung, gattung, paket, prio, geschichte, mediumArt, kontaktart, stand, suche, nurPerson]);
 
   const laden = useCallback(async () => {
     setLaedt(true);
@@ -109,6 +111,20 @@ export default function PresseAnsicht() {
   useEffect(() => {
     void laden();
   }, [laden]);
+
+  async function eignungSetzen(domain: string, feld: { eignung?: string; eignungGrund?: string | null }) {
+    const r = await fetch("/api/admin/presse", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ domain, ...feld }),
+    });
+    if (!r.ok) {
+      setFehler(`Speichern fehlgeschlagen (${r.status})`);
+      return;
+    }
+    const { medium } = (await r.json()) as { medium: MediumZeile };
+    setMedien((alt) => alt.map((m) => (m.domain === medium.domain ? medium : m)));
+  }
 
   async function gattungSetzen(domain: string, wert: string | null) {
     const r = await fetch("/api/admin/presse", {
@@ -221,6 +237,29 @@ export default function PresseAnsicht() {
       ),
     },
     {
+      key: "eignung",
+      kopf: "Eignung",
+      umbruch: true,
+      sortWert: (m) => (m.eignung === "vorgemerkt" ? 0 : m.eignung === "angesehen" ? 1 : m.eignung === "ungeeignet" ? 3 : 2),
+      zelle: (m) =>
+        !m.eignung || m.eignung === "offen" ? (
+          <span style={{ color: v("--color-text-muted") }}>—</span>
+        ) : (
+          <span
+            style={{
+              color:
+                m.eignung === "vorgemerkt"
+                  ? v("--color-positive")
+                  : m.eignung === "ungeeignet"
+                    ? v("--color-text-muted")
+                    : v("--color-text-primary"),
+            }}
+          >
+            {m.eignung}
+          </span>
+        ),
+    },
+    {
       key: "prio",
       kopf: "Prio",
       sortWert: (m) => m.prioritaet ?? "Z",
@@ -281,6 +320,14 @@ export default function PresseAnsicht() {
           aria-label="Suche"
           style={{ ...eingabeStil, flex: "1 1 220px", minWidth: 200 }}
         />
+        <Filter label="Eignung" wert={eignung} setzen={setEignung}>
+          <option value="">jede Eignung</option>
+          {STAENDE.map((s) => (
+            <option key={s.wert} value={s.wert}>
+              {s.text}
+            </option>
+          ))}
+        </Filter>
         <Filter label="Art des Mediums" wert={gattung} setzen={setGattung} breit>
           <option value="fach">Fachmedien</option>
           <option value="publikum">Publikumsmedien</option>
@@ -392,7 +439,41 @@ export default function PresseAnsicht() {
           const ks = von(m);
           return (
             <div>
-              <DetailAbschnitt titel="Einordnung" erster>
+              <DetailAbschnitt titel="Lohnt eine Ansprache?" erster>
+                {/* Das einzige Feld, das eine MESSUNG nicht liefern kann: Ob
+                    eine Redaktion eine fremde Datengeschichte aufnimmt, steht
+                    weder auf ihrer Startseite noch im Impressum. Drei Runden
+                    Musterschärfen haben jeweils das zuletzt genannte Beispiel
+                    gefangen und das nächste verfehlt. */}
+                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: space.sm }}>
+                  <span style={{ flex: "0 0 150px" }}>
+                    <SelectField
+                      value={m.eignung ?? "offen"}
+                      onChange={(e) => void eignungSetzen(m.domain, { eignung: e.target.value })}
+                      ariaLabel={`Eignung von ${mediumName(m)}`}
+                      size="sm"
+                    >
+                      {STAENDE.map((s) => (
+                        <option key={s.wert} value={s.wert}>
+                          {s.text}
+                        </option>
+                      ))}
+                    </SelectField>
+                  </span>
+                  <input
+                    defaultValue={m.eignung_grund ?? ""}
+                    placeholder="Grund"
+                    aria-label={`Grund für ${mediumName(m)}`}
+                    onBlur={(e) => {
+                      if ((m.eignung_grund ?? "") === e.target.value) return;
+                      void eignungSetzen(m.domain, { eignungGrund: e.target.value });
+                    }}
+                    style={{ ...eingabeStil, flex: "1 1 320px" }}
+                  />
+                </div>
+              </DetailAbschnitt>
+
+              <DetailAbschnitt titel="Einordnung">
                 <div style={{ display: "flex", flexWrap: "wrap", gap: space.md }}>
                   <Feld titel="Medientyp">
                     {m.medientyp?.length

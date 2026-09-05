@@ -48,6 +48,9 @@ export interface MediumZeile {
   woerter?: number | null;
   aufhaenger: string | null;
   hinweis: string | null;
+  /** Handurteil über das Medium: lohnt eine Ansprache? Nie vom Lauf gesetzt. */
+  eignung?: string | null;
+  eignung_grund?: string | null;
   profil_at: string | null;
   fehler: string | null;
 }
@@ -95,6 +98,8 @@ export const SPALTEN = [
   "mediengruppe",
   "paket",
   "arbeitsstand",
+  "eignung",
+  "eignung_grund",
   "notizen",
 ] as const;
 
@@ -268,6 +273,8 @@ export function katalogZeile(
     m.gruppe ?? "",
     String(m.paket),
     k?.stand && k.stand !== "offen" ? k.stand : "",
+    m.eignung && m.eignung !== "offen" ? m.eignung : "",
+    m.eignung_grund ?? "",
     notizen(m, k, mailKommtVor),
   ];
 }

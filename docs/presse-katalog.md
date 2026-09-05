@@ -87,6 +87,29 @@ Bestand und sind einen Filter weit entfernt; für eine wirklich gute
 Datengeschichte ist ein Datenressort irgendwann der richtige Adressat — nur
 nicht im ersten Schub.
 
+## Das Eignungsurteil: die eine Frage, die keine Messung beantwortet
+
+**Nach drei Runden Musterschärfen abgebrochen (05.09.2026, Betreiber: „glaube das
+ist ein konzeptionelles Problem").** Themenzahl → Dichte → Rechtsform im
+Impressum: Jede Runde fing das zuletzt genannte Beispiel und verfehlte das
+nächste, und die dritte machte es an einer Stelle schlechter (die ZfK, eine echte
+Fachzeitung, rutschte zu den Publikumsmedien). Der Grund ist nicht die Schwelle,
+sondern die Frage: **Ob eine Redaktion eine fremde Datengeschichte aufnimmt,
+steht weder auf ihrer Startseite noch in ihrem Impressum.**
+
+Der Katalog liefert seitdem nur noch **Tatsachen** — wer, welche Funktion, welche
+Adresse, welche Fundstelle, welche Themen. Das Urteil fällt **einmal von Hand**
+je Medium (`eignung`, `eignung_grund`), und der Erhebungslauf fasst es nie an;
+derselbe Wächter, der die Handeinordnung schützt, wird rot, wenn er es täte.
+
+**Erster Durchgang, 32 Fachmedien der Pakete 1–3:** 16 vorgemerkt, 13 ungeeignet,
+3 von Hand nachzusehen. Die Trennlinie verläuft nicht zwischen groß und klein,
+sondern zwischen **Redaktion** und allem anderen — Verbände und Institute
+veröffentlichen ihre eigenen Zahlen (BEE, BSW, Fraunhofer ISE), Ratgeber- und
+Leadportale haben gar keine Redaktion (solaranlage.eu, solarbranche.de), Händler
+haben ein Magazin und keinen Meldungsbetrieb. Jedes Urteil trägt seinen Grund im
+Katalog; wer es anders sieht, stellt es in der Ansicht um.
+
 ## Die vier Pakete
 
 | Paket | Was | Zeilen |
