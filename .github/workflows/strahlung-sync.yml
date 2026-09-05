@@ -1,8 +1,10 @@
-name: Strahlungsjahre (DWD)
+name: Strahlungs- und Temperaturreihen (DWD)
 
 # Holt die DWD-Monatsraster der Globalstrahlung und die Stationstageswerte und
 # schreibt beide Reihen neu (scripts/dwd-strahlung-sync.ts → lib/strahlungsjahre.ts,
-# scripts/dwd-strahlung-tage-sync.ts → lib/strahlung-tage.ts). Der DWD
+# scripts/dwd-strahlung-tage-sync.ts → lib/strahlung-tage.ts) sowie die
+# Tagestemperaturen fürs Heizkosten-Rennen (scripts/dwd-temperatur-tage-sync.ts
+# → lib/temperatur-tage.ts, Test lib/__tests__/heizkostenrennen.test.ts). Der DWD
 # ergänzt das abgeschlossene Jahr Mitte Januar; ohne diesen Lauf bliebe die
 # Reihe beim Jahr ihres Anlegens stehen — und der Test
 # lib/__tests__/kostenrennen-varianten.test.ts wird ab Februar rot.
@@ -44,16 +46,17 @@ jobs:
         run: |
           npm run strahlung:sync
           npm run strahlung:tage
+          npm run temperatur:tage
 
       - name: Hat sich etwas geändert?
         id: diff
         run: |
-          if git diff --quiet -- lib/strahlungsjahre.ts lib/strahlung-tage.ts; then
+          if git diff --quiet -- lib/strahlungsjahre.ts lib/strahlung-tage.ts lib/temperatur-tage.ts; then
             echo "geaendert=nein" >> "$GITHUB_OUTPUT"
             echo "Keine neuen Werte."
           else
             echo "geaendert=ja" >> "$GITHUB_OUTPUT"
-            git diff --stat -- lib/strahlungsjahre.ts lib/strahlung-tage.ts
+            git diff --stat -- lib/strahlungsjahre.ts lib/strahlung-tage.ts lib/temperatur-tage.ts
           fi
 
       - name: Typen und Tests
@@ -67,7 +70,7 @@ jobs:
         run: |
           git config user.name "solar-check strahlung-sync"
           git config user.email "noreply@solar-check.io"
-          git add lib/strahlungsjahre.ts lib/strahlung-tage.ts
+          git add lib/strahlungsjahre.ts lib/strahlung-tage.ts lib/temperatur-tage.ts
           git commit -m "[auto] Strahlungsjahre: neuer Stand aus den DWD-Jahresrastern
 
           Erzeugt von scripts/dwd-strahlung-sync.ts. Zurueckliegende Jahre wurden

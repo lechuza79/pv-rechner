@@ -113,6 +113,7 @@ export const EMBED_WIDGETS = [
   "gemeinde-solar",
   "gemeinde-solarleistung",
   "gruengas-heizkosten",
+  "heizkostenrennen",
   "karte",
   "kennzahl",
   "pv-kostenrennen",

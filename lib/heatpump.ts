@@ -163,6 +163,17 @@ export interface HeatPumpResult {
   co2WpProM2Jahr: number;         // kg CO₂/m²·a Ausstoß der WP (Energieausweis-Kennzahl)
   // Chart data: cumulative savings per year (starts negative at −mehrinvest)
   years: { i: number; kum: number; annual: number }[];
+  /**
+   * Die Jahreskosten BEIDER Seiten einzeln, ungerundet — dieselben Zahlen, aus
+   * denen `years` und die TCO-Summen entstehen, nur nicht vorab verrechnet.
+   * Wer eine Seite für sich zeichnen will (Heizkosten-Rennen), nimmt sie hier,
+   * statt die Rechnung ein zweites Mal aufzubauen. Anschaffung steht getrennt:
+   * `invest` fällt am Tag null, alles andere je Betriebsjahr (Index 0 = Jahr 1).
+   */
+  kostenJeJahr: {
+    wp: { invest: number; strom: number[]; neben: number; pvNutzen: number[] };
+    fossil: { invest: number; brennstoff: number[]; neben: number };
+  };
 }
 
 export interface HeatPumpScenarioResult extends HeatPumpResult {
@@ -516,6 +527,10 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
     gasKosten, gasFix, gasWartung, gasInvest, tcoGas,
     tcoEinsparung, einsparungProJahr, amortisationsJahre,
     co2Einsparung, co2WpProM2Jahr, years,
+    kostenJeJahr: {
+      wp: { invest: investNetto, strom: stromPerYear, neben: wpStandingCostPerYear(cfg), pvNutzen: pvBenefitPerYear },
+      fossil: { invest: gasInvest, brennstoff: gasPerYear, neben: fixPerYear + ref.wartungPerYear },
+    },
   };
 }
 

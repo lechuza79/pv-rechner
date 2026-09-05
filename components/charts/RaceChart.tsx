@@ -278,7 +278,7 @@ function RaceCard({
 
   // ── Mitlaufende Achsen: x vom Start bis heute, y als Kamera auf Läufer A ──
   const W = narrow ? 320 : 640, H = narrow ? 260 : 340;
-  const P = { t: 18, r: narrow ? 10 : 12, b: 28, l: narrow ? 58 : 52 };
+  const P = { t: 18, r: narrow ? 10 : 12, b: 28, l: narrow ? 58 : 56 };
   const cW = W - P.l - P.r, cH = H - P.t - P.b;
   const y0 = P.t + cH;
 
@@ -311,6 +311,11 @@ function RaceCard({
   const yStep = niceStep(yMax - yMin);
   const yTicks: number[] = [];
   for (let val = Math.ceil(yMin / yStep) * yStep; val <= yMax; val += yStep) yTicks.push(val);
+  // Die kurze Form (k€) löst feine Schritte nicht auf — dann stünde dreimal
+  // dieselbe Zahl an drei Linien. Sobald sich Beschriftungen doppeln, gilt die
+  // volle Form (nur beim engen Zoom der ersten Tage).
+  let yLabels = yTicks.map(fmtKurz);
+  if (new Set(yLabels).size < yLabels.length) yLabels = yTicks.map(fmt);
   const xL = (tagIdx: number) => r2(P.l + ((Math.min(tagIdx, xEnd) - xStart) / (xEnd - xStart)) * cW);
   const yL = (wert: number) => r2(y0 - ((wert - yMin) / (yMax - yMin)) * cH);
   // Jahresmarken: jeder Januar im Bild, ausgedünnt, sobald es eng wird.
@@ -321,7 +326,7 @@ function RaceCard({
   const xJahre: { x: number; jahr: number }[] = [];
   for (let m = 1, j = 1; m <= 12 * jahre; m += 12, j++) {
     const d = ersterTag[m];
-    if (d <= xEnd && (j - 1) % xSchritt === 0) xJahre.push({ x: xL(d), jahr: startJahr + Math.ceil(m / 12) });
+    if (d <= xEnd && (j - 1) % xSchritt === 0) xJahre.push({ x: xL(d), jahr: datumVon(d).jahr });
   }
   // Linien: alle Tage bis heute plus die interpolierte Spitze. Bei vielen
   // Tagen nur jeden n-ten Punkt — mehr als ein Punkt je Pixel zeichnet nichts.
@@ -445,7 +450,7 @@ function RaceCard({
           zu dem, was die Linien zählen, und die Legende daneben. */}
       <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: `${space.xs}px ${space.md}px`, marginBottom: space.xl }}>
         <span style={{ display: "inline-flex", alignItems: "center", gap: space.sm }}>
-          <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary"), lineHeight: 1.3, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap", minWidth: `${zeitraum(startJahr + jahre).length}ch`, display: "inline-block" }}>
+          <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary"), lineHeight: 1.3, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap", minWidth: `${zeitraum(datumVon(T).jahr).length}ch`, display: "inline-block" }}>
             {zeitraum(tag === 0 ? startJahr : datum.jahr)}
           </span>
           <InfoTooltip title={zeitraumHilfe.title} ariaLabel={zeitraumHilfe.ariaLabel}>{zeitraumHilfe.inhalt}</InfoTooltip>
@@ -474,11 +479,11 @@ function RaceCard({
           <style>{`.kr-neu{animation:kr-fade-in 600ms ease-out both}@keyframes kr-fade-in{from{opacity:0}to{opacity:1}}@media (prefers-reduced-motion:reduce){.kr-neu{animation:none}}`}</style>
           {/* Raster + Skala. Die Skala steht dauerhaft: Ohne Überfahren (Bild,
               Telefon) gäbe es sonst keine Größenordnung. */}
-          {yTicks.map((val) => (
+          {yTicks.map((val, i) => (
             <g key={val} className="kr-neu">
               <line x1={P.l} x2={P.l + cW} y1={yL(val)} y2={yL(val)} stroke="var(--color-chart-grid)" strokeWidth={0.5} />
               <text x={P.l - 6} y={yL(val) + 3} textAnchor="end" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
-                {fmtKurz(val)}
+                {yLabels[i]}
               </text>
             </g>
           ))}
@@ -500,7 +505,7 @@ function RaceCard({
           {!bImBild && (
             <g>
               <path d={bUnten ? `M${r2(xL(t) - 5)},${y0 - 8} L${r2(xL(t) + 5)},${y0 - 8} L${r2(xL(t))},${y0 - 1} Z` : `M${r2(xL(t) - 5)},${P.t + 8} L${r2(xL(t) + 5)},${P.t + 8} L${r2(xL(t))},${P.t + 1} Z`} fill={FARBE_B} />
-              <text x={xL(t) - 8} y={bUnten ? y0 - 3 : P.t + 12} textAnchor="end" fontSize={fsPx("--font-size-small")} fontWeight={800} fill={FARBE_B} fontFamily="var(--font-mono)" style={{ fontVariantNumeric: "tabular-nums" }}>
+              <text x={xL(t) < P.l + cW / 2 ? xL(t) + 8 : xL(t) - 8} y={bUnten ? y0 - 3 : P.t + 12} textAnchor={xL(t) < P.l + cW / 2 ? "start" : "end"} fontSize={fsPx("--font-size-small")} fontWeight={800} fill={FARBE_B} fontFamily="var(--font-mono)" style={{ fontVariantNumeric: "tabular-nums" }}>
                 {narrow ? fmtKurz(bTip) : fmt(bTip)}
               </text>
             </g>

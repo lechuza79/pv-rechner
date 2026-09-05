@@ -56,7 +56,8 @@
     "kfw:import": "tsx scripts/kfw-report-import.ts",
     "auth:mailvorlagen": "tsx scripts/auth-mailvorlagen.ts",
     "umstellung:versand": "NODE_OPTIONS=--conditions=react-server tsx scripts/umstellungs-versand.ts",
-    "presse": "tsx scripts/presse-refresh.ts"
+    "presse": "tsx scripts/presse-refresh.ts",
+    "temperatur:tage": "tsx scripts/dwd-temperatur-tage-sync.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",

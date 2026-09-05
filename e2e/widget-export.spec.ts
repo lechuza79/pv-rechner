@@ -135,3 +135,30 @@ test.describe("Stromkosten-Rennen", () => {
     if (OUT_DIR) await download.saveAs(`${OUT_DIR}/kostenrennen-export.png`);
   });
 });
+
+test.describe("Heizkosten-Rennen", () => {
+  test("Download liefert ein Bild mit Stand, Legende und Annahmen", async ({ page }) => {
+    await page.goto("/embed/heizkostenrennen");
+    await expect(page.getByText("Heizkosten mit Gasheizung und Wärmepumpe").first()).toBeVisible();
+    await expect(page.getByRole("button", { name: /Anhalten|Abspielen|Noch einmal/ })).toBeVisible();
+
+    const exportOnly = page.locator("[data-sc-export-only]");
+    await expect(exportOnly.first()).toBeAttached();
+    await expect(exportOnly.first()).toBeHidden();
+    const footer = exportOnly.filter({ hasText: "Das Beispielhaus" });
+    await expect(footer).toContainText("Wärmepumpe");
+    await expect(footer).toContainText("Neue Gasheizung");
+    await expect(footer).toContainText("Was hier zählt");
+
+    const kante = page.locator('[title^="Quelle:"]');
+    await expect(kante).toHaveCount(1);
+    await expect(kante).toContainText("Wetterdienst");
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByTitle("Als Bild herunterladen").click();
+    const download = await downloadPromise;
+    const buf = await readFile((await download.path())!);
+    expect(buf.byteLength).toBeGreaterThan(30_000);
+    expect(buf.subarray(1, 4).toString("ascii")).toBe("PNG");
+    if (OUT_DIR) await download.saveAs(`${OUT_DIR}/heizkostenrennen-export.png`);
+  });
+});

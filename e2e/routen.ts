@@ -89,6 +89,7 @@ export const EMBEDS: string[] = [
   "/embed/karte",
   "/embed/foerder-check",
   "/embed/gruengas-heizkosten",
+  "/embed/heizkostenrennen",
   "/embed/pv-kostenrennen",
   "/embed/zubau-erneuerbare-atom",
   "/embed/strommix",

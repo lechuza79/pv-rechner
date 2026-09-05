@@ -124,6 +124,17 @@ export const WIDGETS = {
     sources: [DATA_SOURCES.pvgis, DATA_SOURCES.dwd],
     cta: { label: "Für dein Haus durchrechnen", href: "/photovoltaik-rechner" },
   },
+  heizkostenrennen: {
+    id: "heizkostenrennen",
+    title: "Heizkosten mit Gasheizung und Wärmepumpe",
+    kind: "chart",
+    shareUrl: `${SITE}/ratgeber/gasheizung-oder-waermepumpe#heizkostenrennen`,
+    shareText: "Neue Gasheizung oder Wärmepumpe: Wer hat wann mehr fürs Heizen bezahlt? 20 Jahre mit echtem Wetter – Solar Check",
+    // Menge aus dem Wärmepumpen-Rechner (Gaspreispfad nach dem IW-Report),
+    // Form aus den DWD-Tagestemperaturen (Gradtage je Tag).
+    sources: [DATA_SOURCES.iw, DATA_SOURCES.dwd],
+    cta: { label: "Für dein Haus durchrechnen", href: "/waermepumpe-rechner" },
+  },
   gruengasHeizkosten: {
     id: "gruengas-heizkosten",
     title: "Die Rechnung über 20 Jahre",

@@ -1,7 +1,10 @@
 # Race-Chart: Vorlage für weitere Rennen
 
 Arbeitsmaterial für Folgesessions (auch mit kleinerem Modell). Erster Aufrufer und
-Referenz: das Stromkosten-Rennen (`components/charts/KostenrennenWidget.tsx`).
+Referenz: das Stromkosten-Rennen (`components/charts/KostenrennenWidget.tsx`);
+zweiter Aufrufer als Muster für „Rechenkern liefert Jahreskosten, Wetter verteilt":
+das Heizkosten-Rennen (`components/charts/HeizkostenrennenWidget.tsx`,
+`lib/heizkostenrennen.ts`, gebaut 05.09.2026 in rund einer Stunde).
 
 ## Was ein Rennen ist
 
@@ -47,6 +50,10 @@ Die Voreinstellungen sind für 25 Jahre und Tausende Euro. Zwei Props passen sie
 
 Die Zeitachse setzt **Tage mit Kalendermonaten** voraus (Jahresmarken je Januar,
 reduzierte Bewegung springt je Jahr). Wochen- oder Stundenreihen passen nicht.
+**Den Kalender bestimmt allein `datumVon`** — der Baustein rechnet keine Jahre
+selbst. Ob Betriebsjahr 1 das Startjahr ist (Heizkosten: der Rechner preist mit
+`YEAR + i − 1`) oder Startjahr + 1 (Stromkosten), entscheidet das Rennen, und
+zwar so, wie die Nachbar-Charts auf derselben Seite beschriften.
 
 ## Ein neues Rennen anlegen — Reihenfolge
 
@@ -75,3 +82,12 @@ reduzierte Bewegung springt je Jahr). Wochen- oder Stundenreihen passen nicht.
   NaN im Chart) — geklemmt im Baustein.
 - Im Video gibt es keine CSS-Variablen und keine Web-Fonts: Farben aus
   `tokens[...]`, Schrift auf dem SVG-Klon setzen (`lib/race-video.ts`).
+- Startet der `anderer` nicht bei null, ist seine Randmarke eine lange Zahl —
+  sie steht in der linken Bildhälfte rechts vom Dreieck (behoben im Baustein).
+- Beim engen Zoom der ersten Tage löst die kurze Form (k€) die Schritte nicht
+  auf; der Baustein fällt dann auf `fmt` zurück. Ein Rennen liefert deshalb
+  immer beide Formatierer.
+- Der Rechenkern gibt oft nur Summen heraus. Vor dem Rennen die Jahreskosten je
+  Seite als eigenes Ergebnisfeld offenlegen (Muster `kostenJeJahr` in
+  `lib/heatpump.ts`), mit Test, dass sie auf die Summen aufgehen — nie im
+  Rennen nachbauen.

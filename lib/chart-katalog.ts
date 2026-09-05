@@ -43,6 +43,7 @@ export const CHART_KATALOG: KatalogEintrag[] = [
   { datei: "charts/ZubauTimelineChart", art: "baustein", wofuer: "Der Chart-Teil der Zubau-Story: Balken je Jahr plus zwei Vergütungslinien." },
   { datei: "charts/RaceChart", art: "baustein", wofuer: "Race-Chart: zwei Läufer über einen langen Zeitraum, Tag für Tag selbstzeichnend — mitlaufende Achsen (Kamera auf dem vorn startenden Läufer), anziehendes Tempo, Ereignis-Zeitleiste mit Erklärung, Bild und Video. Ein Rennen reicht nur seine zwei Reihen, Ereignisse und Texte herein." },
   { datei: "charts/KostenrennenWidget", art: "widget", wofuer: "Stromkosten-Rennen: aufgelaufene Stromkosten mit und ohne Solaranlage, Tag für Tag mit echtem Wetter, animiert bis zur bezahlten Anschaffung." },
+  { datei: "charts/HeizkostenrennenWidget", art: "widget", wofuer: "Heizkosten-Rennen: aufgelaufene Heizkosten einer neuen Gasheizung gegen eine Wärmepumpe, Tag für Tag nach den Gradtagen echter Winter, animiert bis zum bezahlten Mehrpreis." },
   { datei: "charts/GruengasWidget", art: "widget", wofuer: "Heizkosten-Varianten über 20 Jahre, wahlweise als Balken oder Vollansicht." },
   { datei: "charts/GasPriceStackChart", art: "baustein", wofuer: "Gaspreis-Bestandteile gestapelt über die Zeit." },
   { datei: "charts/HeatCostCompareChart", art: "baustein", wofuer: "Wärmepumpe gegen fossile Referenz über die Laufzeit." },
