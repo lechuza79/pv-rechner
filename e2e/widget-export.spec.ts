@@ -102,10 +102,10 @@ test.describe("Anlagenbestand-Widget", () => {
   });
 });
 
-test.describe("Amortisations-Rennen", () => {
+test.describe("Stromkosten-Rennen", () => {
   test("Download liefert ein Bild mit Stand, Legende und Annahmen", async ({ page }) => {
     await page.goto("/embed/pv-kostenrennen");
-    await expect(page.getByText("Das Amortisations-Rennen").first()).toBeVisible();
+    await expect(page.getByText("Das Stromkosten-Rennen").first()).toBeVisible();
 
     // Der Schieberegler ist Bedienung und fliegt aus dem Bild; der eingestellte
     // Stand (Jahr, „nach n Jahren") steht als Text im Kopf und bleibt.

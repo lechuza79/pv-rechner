@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import InfoTooltip from "../InfoTooltip";
 import {
   ExportBox,
@@ -18,40 +18,37 @@ import { WIDGETS } from "../../lib/widget-registry";
 import { v, fsPx, space } from "../../lib/theme";
 import { fmtEuroVoll, formatDataAsOf } from "../../lib/atlas-format";
 import { PERSONEN } from "../../lib/constants";
-import type { Kostenrennen, RennLaeufer } from "../../lib/kostenrennen";
+import type { Kostenrennen } from "../../lib/kostenrennen";
+import { tagesverlauf, tagDatum } from "../../lib/kostenrennen-tage";
 
-// Das Amortisations-Rennen: EIN Haushalt, ohne und mit Anlage, 25 Jahre. Die
-// PV-Linie zeichnet Monat für Monat, was die Anlage eingebracht hat (Ersparnis
-// plus Vergütung) — ab null, wie ein Depot, in das jeden Monat eingezahlt
-// wird; der Haushalt ohne Anlage bleibt auf null liegen. Eine gestrichelte
-// Marke zeigt die Anschaffung; wo die Linie sie erreicht, ist die Anlage
-// bezahlt. Dieser Monat IST die Amortisation des Rechners (lib/kostenrennen.ts
-// rechnet mit denselben Funktionen).
+// Das Stromkosten-Rennen: EIN Haushalt, ohne und mit Anlage, 25 Jahre. Beide
+// Linien zeichnen Tag für Tag, was der Haushalt bis dahin für Strom ausgegeben
+// hat. Der PV-Haushalt startet mit der Anschaffung vorn; wo die Linie ohne
+// Anlage seine kreuzt, ist die Anlage bezahlt — derselbe Monat wie die
+// Amortisation des Rechners (lib/kostenrennen.ts rechnet mit denselben Funktionen).
 //
-// Die Bewegung kommt aus dem echten Wetter: Jeder Monat trägt die Strahlung
-// des wiederholten Kalenderjahrs (DWD-Monatsraster), kein Jahr gleicht dem
-// anderen — ein trüber Mai bremst, ein Rekordsommer treibt. Die Achsen laufen
-// mit (x bis heute, y bis knapp über den bisherigen Höchststand), damit das
-// erste Jahr das Bild füllt und die Treppe aus Sommer und Winter sichtbar ist.
+// Die Bewegung kommt aus dem echten Wetter: Jeder Monat trägt die Strahlung des
+// wiederholten Kalenderjahrs (DWD-Monatsraster), jeder Tag darin seinen Anteil
+// nach der Tagesstrahlung der DWD-Stationen (lib/kostenrennen-tage.ts). Eine
+// Regenwoche ist flach, eine Hochdrucklage steil, kein Jahr gleicht dem anderen.
+//
+// Die Achsen sind eine KAMERA, wie bei einem Race-Chart: Die x-Achse zeigt ein
+// Fenster der letzten drei Jahre (anfangs die ersten drei), die y-Achse ist auf
+// die Linien in diesem Fenster gepasst. In einer festen Skala 0–40.000 € wäre
+// die Bewegung eines Monats ein Strich; im Fenster füllt sie das Bild — am
+// stärksten, wenn die Linien sich nähern und die Kamera näher heranzoomt.
 //
 // Selbst-enthaltende Karte nach dem Muster von GruengasWidget: dasselbe Bauteil
 // steht unter /embed/pv-kostenrennen und direkt gerendert im Ratgeber (onsite).
 // Abspielen und Schieberegler tragen data-sc-export-ignore; das Bild zeigt den
 // eingestellten Stand als Text.
 
-const MS_JE_MONAT = 80; // 25 Jahre in rund 24 Sekunden
+const MS_JE_TAG = 3.4; // 25 Jahre in rund 31 Sekunden
+const FENSTER_TAGE = 3 * 365;
 const SCHRITT_MS = 500; // bei reduzierter Bewegung: ein Jahr je Schritt
 
 const MONATE_KURZ = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
 const MONATE = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
-
-/** Kalenderbeschriftung eines Monatsindex (1..12·N): Monat m des Betriebsjahrs
- *  i, benannt wie im Rechner-Chart (Startjahr + i). */
-function monatLabel(startJahr: number, k: number, kurz = false): string {
-  const i = Math.ceil(k / 12);
-  const m = (k - 1) % 12;
-  return `${(kurz ? MONATE_KURZ : MONATE)[m]} ${startJahr + i}`;
-}
 
 // Semantisch, nicht themebar: die Anlage im Akzent, der Haushalt ohne Anlage neutral.
 const FARBE_PV = "var(--color-accent)";
@@ -60,14 +57,16 @@ const FARBE_OHNE = "var(--color-text-primary)";
 // 2 Nachkommastellen: hält Server-/Client-Render exakt gleich.
 const r2 = (n: number) => Math.round(n * 100) / 100;
 
-function niceMax(max: number): number {
-  const step = Math.pow(10, Math.floor(Math.log10(max / 4)));
-  const s = (max / 4 / step <= 2 ? 2 : max / 4 / step <= 5 ? 5 : 10) * step;
-  return Math.ceil(max / s) * s;
+/** Schöne Schrittweite für eine Achse mit rund vier Stufen. */
+function niceStep(spanne: number): number {
+  const roh = spanne / 4;
+  const step = Math.pow(10, Math.floor(Math.log10(roh)));
+  const f = roh / step;
+  return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * step;
 }
 
-/** Wert einer Monatsreihe zur Gleitkomma-Zeit t (linear zwischen zwei Monaten). */
-function wertBei(reihe: number[], t: number): number {
+/** Wert einer Tagesreihe zur Gleitkomma-Zeit t (linear zwischen zwei Tagen). */
+function wertBei(reihe: Float64Array, t: number): number {
   const i = Math.floor(t);
   if (i >= reihe.length - 1) return reihe[reihe.length - 1];
   return reihe[i] + (reihe[i + 1] - reihe[i]) * (t - i);
@@ -93,6 +92,8 @@ export default function KostenrennenWidget(props: Props) {
 }
 
 function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed = false, autoplay = true, preiseStandIso }: Props) {
+  const verlauf = useMemo(() => tagesverlauf(rennen), [rennen]);
+  const T = verlauf.tage;
   const [t, setT] = useState(0);
   const [spielt, setSpielt] = useState(false);
   const [narrow, setNarrow] = useState(false);
@@ -100,8 +101,6 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   const [ruhig, setRuhig] = useState(false);
   const gestartet = useRef(false);
   const hostRef = useRef<HTMLDivElement>(null);
-  const N = rennen.jahre;
-  const M = 12 * N;
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width:560px)");
@@ -116,7 +115,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   }, []);
 
   // Von selbst loslaufen, wenn die Karte zum ersten Mal sichtbar wird — einmal.
-  // Bei reduzierter Bewegung bleibt sie stehen; die Jahre wählt man dann selbst.
+  // Bei reduzierter Bewegung bleibt sie stehen; die Zeit wählt man dann selbst.
   useEffect(() => {
     if (!autoplay || ruhig || gestartet.current || !hostRef.current) return;
     const io = new IntersectionObserver((entries) => {
@@ -137,8 +136,10 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
     if (ruhig) {
       const iv = setInterval(() => {
         setT((prev) => {
-          const n = Math.min(Math.floor(prev / 12) * 12 + 12, M);
-          if (n >= M) setSpielt(false);
+          const k = verlauf.monatVonTag[Math.min(T, Math.floor(prev))] || 0;
+          const naechstesJahr = Math.min(12 * (Math.floor(k / 12) + 1), 12 * verlauf.jahre);
+          const n = naechstesJahr >= 12 * verlauf.jahre ? T : verlauf.ersterTag[naechstesJahr + 1] - 1;
+          if (n >= T) setSpielt(false);
           return n;
         });
       }, SCHRITT_MS);
@@ -150,78 +151,98 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
       const dt = now - last;
       last = now;
       setT((prev) => {
-        const n = Math.min(prev + dt / MS_JE_MONAT, M);
-        if (n >= M) setSpielt(false);
+        const n = Math.min(prev + dt / MS_JE_TAG, T);
+        if (n >= T) setSpielt(false);
         return n;
       });
       raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
-  }, [spielt, ruhig, M]);
+  }, [spielt, ruhig, T, verlauf]);
 
-  // k = ganzer Monatsindex (0 = Start), jahre = volle Betriebsjahre.
-  const k = Math.min(M, Math.floor(t));
+  const tag = Math.min(T, Math.floor(t));
+  const k = verlauf.monatVonTag[tag] || 0; // Monatsindex 1..300, 0 am Start
+  const datum = tagDatum(verlauf, rennen.startJahr, tag);
   const jahre = Math.floor(k / 12);
-  const jahr = k === 0 ? rennen.startJahr : rennen.startJahr + Math.ceil(k / 12);
-  const stand = k === 0 ? `${rennen.startJahr} · Start` : monatLabel(rennen.startJahr, k);
+  const stand = tag === 0 ? `${rennen.startJahr} · Start` : `${datum.tag}. ${MONATE[datum.monat]} ${datum.jahr}`;
 
   const pv = rennen.laeufer.find((l) => l.hatPv)!;
   const ohne = rennen.laeufer.find((l) => l.key === rennen.referenzKey)!;
+  const kPv = verlauf.kosten[pv.key];
+  const kOhne = verlauf.kosten[ohne.key];
   const bezahltMonat = rennen.ueberholMonat[pv.key];
+  // Der Tag der Kreuzung: erster Tag im Bezahlt-Monat, an dem ohne ≥ mit.
+  const bezahltTag = useMemo(() => {
+    if (bezahltMonat === null) return null;
+    const von = verlauf.ersterTag[bezahltMonat];
+    const bis = bezahltMonat < 12 * verlauf.jahre ? verlauf.ersterTag[bezahltMonat + 1] - 1 : T;
+    for (let d = von; d <= bis; d++) if (kOhne[d] >= kPv[d]) return d;
+    return bis;
+  }, [bezahltMonat, verlauf, kOhne, kPv, T]);
 
   const { chartRef, downloadPng, sharePng, shareWhatsApp, shareTwitter, isExporting, canNativeShare } =
     useChartExport({
       context: { title: `${WIDGETS.kostenrennen.title} — ${stand}` },
-      filename: "amortisations-rennen-pv",
+      filename: "stromkosten-rennen-pv",
       shareText: WIDGETS.kostenrennen.shareText,
       shareUrl: WIDGETS.kostenrennen.shareUrl,
       mode: "node",
     });
 
-  // ── Chart-Geometrie: mitlaufende Achsen ──────────────────────────────────
-  // x reicht bis heute (mindestens ein Jahr, damit der Start nicht leer ist),
-  // y bis knapp über den höchsten Nutzen, der bis heute vorkam. Beide werden
-  // je Bild neu bestimmt — deshalb keine CSS-Übergänge, alles folgt `t`.
+  // ── Kamera: x-Fenster der letzten drei Jahre, y auf die Linien darin gepasst ──
   const W = narrow ? 320 : 640, H = narrow ? 260 : 340;
-  const P = { t: 18, r: narrow ? 74 : 96, b: 28, l: narrow ? 46 : 58 };
+  const P = { t: 18, r: narrow ? 74 : 96, b: 28, l: narrow ? 50 : 62 };
   const cW = W - P.l - P.r, cH = H - P.t - P.b;
   const y0 = P.t + cH;
-  const xEnd = Math.max(12, t);
-  const bisIdx = Math.min(M, Math.ceil(t));
-  const sichtbarMax = Math.max(100, ...pv.nutzen.slice(0, bisIdx + 1));
-  const yMax = niceMax(sichtbarMax * 1.12);
-  const xL = (monatIdx: number) => r2(P.l + (Math.min(monatIdx, xEnd) / xEnd) * cW);
-  const yL = (wert: number) => r2(y0 - (Math.max(0, wert) / yMax) * cH);
-  const yTicks = [1, 2, 3, 4].map((q) => (yMax / 4) * q);
-  // Jahresmarken: so viele, wie ohne Gedränge in die sichtbare Spanne passen.
-  const jahreSichtbar = xEnd / 12;
-  const xSchritt = narrow
-    ? (jahreSichtbar <= 3 ? 1 : jahreSichtbar <= 10 ? 3 : 10)
-    : (jahreSichtbar <= 6 ? 1 : jahreSichtbar <= 13 ? 2 : 5);
-  const xJahre: number[] = [];
-  for (let j = 0; j <= Math.floor(xEnd / 12); j += xSchritt) xJahre.push(j);
-  // Die Linie bis heute: alle Monatspunkte bis zum letzten ganzen Monat plus
-  // die interpolierte Spitze — nichts hinter „heute" wird gezeichnet.
-  const pfad = (l: RennLaeufer) => {
-    const pts = l.nutzen.slice(0, Math.floor(t) + 1).map((wert, i) => `${xL(i)},${yL(wert)}`);
-    if (t > Math.floor(t)) pts.push(`${xL(t)},${yL(wertBei(l.nutzen, t))}`);
+  const xEnd = Math.max(FENSTER_TAGE, t);
+  const xStart = xEnd - FENSTER_TAGE;
+  const iStart = Math.max(0, Math.floor(xStart));
+  const iEnd = Math.min(T, Math.ceil(t));
+  let lo = Infinity, hi = -Infinity;
+  for (let d = iStart; d <= iEnd; d++) {
+    lo = Math.min(lo, kPv[d], kOhne[d]);
+    hi = Math.max(hi, kPv[d], kOhne[d]);
+  }
+  if (!Number.isFinite(lo)) { lo = 0; hi = 1; }
+  const pad = Math.max(50, (hi - lo) * 0.08);
+  const yMin = Math.max(0, lo - pad), yMax = hi + pad;
+  const yStep = niceStep(yMax - yMin);
+  const yTicks: number[] = [];
+  for (let val = Math.ceil(yMin / yStep) * yStep; val <= yMax; val += yStep) yTicks.push(val);
+  const xL = (tagIdx: number) => r2(P.l + ((Math.min(tagIdx, xEnd) - xStart) / (xEnd - xStart)) * cW);
+  const yL = (wert: number) => r2(y0 - ((wert - yMin) / (yMax - yMin)) * cH);
+  // Jahresmarken: jeder Januar im Fenster.
+  const xJahre: { x: number; jahr: number }[] = [];
+  for (let m = 1; m <= 12 * verlauf.jahre; m += 12) {
+    const d = verlauf.ersterTag[m];
+    if (d >= xStart && d <= xEnd) xJahre.push({ x: xL(d), jahr: rennen.startJahr + Math.ceil(m / 12) });
+  }
+  // Linien: nur die Tage im Fenster plus die interpolierte Spitze.
+  const pfad = (reihe: Float64Array) => {
+    const pts: string[] = [];
+    for (let d = iStart; d <= Math.min(T, Math.floor(t)); d++) pts.push(`${xL(d)},${yL(reihe[d])}`);
+    if (t > Math.floor(t) && t < T) pts.push(`${xL(t)},${yL(wertBei(reihe, t))}`);
     return pts.join(" ");
   };
-  const pvSpitzeY = yL(wertBei(pv.nutzen, t));
-  const zielSichtbar = pv.investition <= yMax;
+  const spitzen = [
+    { key: pv.key, farbe: FARBE_PV, wert: wertBei(kPv, t), zahl: kPv[tag] },
+    { key: ohne.key, farbe: FARBE_OHNE, wert: wertBei(kOhne, t), zahl: kOhne[tag] },
+  ].map((s) => ({ ...s, y: yL(s.wert) })).sort((a, b) => a.y - b.y);
+  const spitzeDy = (i: number) => (Math.abs(spitzen[0].y - spitzen[1].y) < 16 ? (i === 0 ? -6 : 13) : 4);
 
-  // Der Satz unter dem Chart — mit den gerechneten Monatswerten, nicht mit Zwischenbildern.
-  const n = pv.nutzen[k];
-  const status = k === 0
-    ? `Start: Die Anlage kostet ${fmtEuroVoll(pv.investition)} und hat noch nichts eingebracht. Der Haushalt ohne Anlage bleibt bei null.`
-    : bezahltMonat !== null && k >= bezahltMonat
-      ? k === bezahltMonat
-        ? `${monatLabel(rennen.startJahr, k)}: Die Anlage ist bezahlt — ${fmtEuroVoll(n)} eingebracht, die Anschaffung von ${fmtEuroVoll(pv.investition)} ist zurück.`
-        : `Bezahlt seit ${monatLabel(rennen.startJahr, bezahltMonat, true)}; seither ${fmtEuroVoll(n - pv.investition)} Gewinn gegenüber dem Haushalt ohne Anlage.`
-      : `${fmtEuroVoll(n)} von ${fmtEuroVoll(pv.investition)} zurück (${Math.round((n / pv.investition) * 100)} %). Der Haushalt ohne Anlage hat in derselben Zeit ${fmtEuroVoll(ohne.monatlich[k])} für Strom bezahlt.`;
+  // Der Satz unter dem Chart — mit den gerechneten Tageswerten.
+  const diff = kPv[tag] - kOhne[tag];
+  const status = tag === 0
+    ? `Start: Der PV-Haushalt hat ${fmtEuroVoll(pv.investition)} für die Anlage ausgegeben, der andere noch nichts.`
+    : bezahltTag !== null && tag >= bezahltTag
+      ? tag === bezahltTag
+        ? `${stand}: Die Linien kreuzen sich — die Anlage hat sich bezahlt gemacht, ab jetzt liegt der PV-Haushalt vorn.`
+        : `Der PV-Haushalt hat bis hier ${fmtEuroVoll(-diff)} weniger für Strom ausgegeben.`
+      : `Der PV-Haushalt liegt noch ${fmtEuroVoll(diff)} hinten — die Anschaffung ist noch nicht zurück.`;
 
   const haushalt = PERSONEN[2];
+  const fenster = rennen.wetterFenster;
   const lblStyle: React.CSSProperties = { fontSize: v("--font-size-caption"), fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: v("--color-text-muted") };
   const knopf: React.CSSProperties = {
     display: "inline-flex", alignItems: "center", justifyContent: "center", gap: space.sm,
@@ -230,11 +251,10 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
     fontSize: v("--font-size-small"), fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap",
   };
   const legend: ExportLegendEntry[] = [
-    { color: FARBE_PV, label: `${pv.label} — eingebracht`, shape: "line" },
     { color: FARBE_OHNE, label: ohne.label, shape: "line" },
+    { color: FARBE_PV, label: pv.label, shape: "line" },
   ];
-  const amEnde = t >= M;
-  const fenster = rennen.wetterFenster;
+  const amEnde = t >= T;
 
   return (
     <div
@@ -255,103 +275,86 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
         {WIDGETS.kostenrennen.title}
       </div>
       <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.5, marginBottom: space.lg }}>
-        Ein Haushalt, {N} Jahre, {fenster ? `mit dem Wetter der Jahre ${fenster.von}–${fenster.bis}` : "im Referenzjahr"}: Was bringt die
-        Anlage ein, und wann ist sie bezahlt?{" "}
+        Ein Haushalt, {rennen.jahre} Jahre, {fenster ? `das Wetter der Jahre ${fenster.von}–${fenster.bis}` : "ein Referenzjahr"}: Wer hat wann mehr für Strom bezahlt?{" "}
         <span style={{ verticalAlign: "middle" }}>
           <InfoTooltip title="Der Beispielhaushalt" ariaLabel="Angaben zum Beispielhaushalt">
             {haushalt.label} Personen mit {haushalt.verbrauch.toLocaleString("de-DE")} kWh Jahresverbrauch, teils im Homeoffice.
             Die Anlage: {pv.kwp} kWp{pv.speicherKwh > 0 ? ` mit ${pv.speicherKwh} kWh Speicher` : " ohne Speicher"} für {fmtEuroVoll(pv.investition)},
             Ertrag {rennen.annahmen.ertragKwp.toLocaleString("de-DE")} kWh je kWp (deutscher Schnitt bei optimaler Ausrichtung), Teileinspeisung zu{" "}
             {rennen.annahmen.einspeisungCt.toLocaleString("de-DE")} ct/kWh über 20 Jahre. Strompreis {rennen.annahmen.strompreisCt.toLocaleString("de-DE")} ct/kWh,
-            Anstieg {rennen.annahmen.steigerungPct.toLocaleString("de-DE")} % pro Jahr. Wetter: {rennen.annahmen.wetter} — Näherungswerte ohne Gewähr.
+            Anstieg {rennen.annahmen.steigerungPct.toLocaleString("de-DE")} % pro Jahr. Wetter: {rennen.annahmen.wetter}; innerhalb des Monats nach der
+            Tagesstrahlung der DWD-Stationen verteilt — Näherungswerte ohne Gewähr.
           </InfoTooltip>
         </span>
       </div>
 
-      {/* Jahr + Zustand */}
+      {/* Datum + Zustand */}
       <div style={{ display: "flex", alignItems: "baseline", gap: space.md, marginBottom: space.md }}>
-        <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-display-md"), fontWeight: 800, color: v("--color-text-primary"), lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{jahr}</span>
-        <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), whiteSpace: "nowrap" }}>
-          {k === 0 ? "Start" : `${MONATE[(k - 1) % 12]} · ${jahre === 0 ? "erstes Jahr" : jahre === 1 ? "nach 1 Jahr" : `nach ${jahre} Jahren`}`}
+        <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-display-md"), fontWeight: 800, color: v("--color-text-primary"), lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{tag === 0 ? rennen.startJahr : datum.jahr}</span>
+        <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" }}>
+          {tag === 0 ? "Start" : `${datum.tag}. ${MONATE_KURZ[datum.monat]} · ${jahre === 0 ? "erstes Jahr" : jahre === 1 ? "nach 1 Jahr" : `nach ${jahre} Jahren`}`}
         </span>
       </div>
 
       <ExportBox>
         <div style={{ display: "flex", alignItems: "center", gap: space.xs, marginBottom: space.xs }}>
-          <span style={lblStyle}>Eingebracht seit {rennen.startJahr}</span>
-          <InfoTooltip title="Was hier zählt" ariaLabel="Was als eingebracht zählt">
-            Was die Anlage dem Haushalt bis zu diesem Monat gebracht hat: die gesparte Stromrechnung plus die Einspeisevergütung.
-            Die gestrichelte Linie ist die Anschaffung — wo die Kurve sie erreicht, ist die Anlage bezahlt. Der Haushalt ohne
-            Anlage bleibt bei null. Die Sonne kommt Monat für Monat aus den Wetterjahren {fenster ? `${fenster.von}–${fenster.bis}` : "des Referenzjahrs"}:
-            Im Sommer steigt die Kurve steil, im Winter flach, und kein Jahr gleicht dem anderen.
+          <span style={lblStyle}>Stromkosten seit {rennen.startJahr}</span>
+          <InfoTooltip title="Was hier zählt" ariaLabel="Was als Stromkosten zählt">
+            Alles, was der Haushalt bis zu diesem Tag für Strom ausgegeben hat: die Stromrechnung mit steigendem Preis, beim
+            PV-Haushalt dazu die Anschaffung der Anlage, abzüglich der Einspeisevergütung. Wo sich die Linien kreuzen, ist die
+            Anlage bezahlt. Das Bild zeigt jeweils die letzten drei Jahre; die Skala passt sich den Linien an.
           </InfoTooltip>
         </div>
 
         <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }} role="img"
-          aria-label={`Eingebracht ${rennen.startJahr} bis ${stand}: ${pv.label} ${fmtEuroVoll(pv.nutzen[k])} von ${fmtEuroVoll(pv.investition)}; ${ohne.label} 0 €`}>
+          aria-label={`Stromkosten ${rennen.startJahr} bis ${stand}: ${ohne.label} ${fmtEuroVoll(kOhne[tag])}, ${pv.label} ${fmtEuroVoll(kPv[tag])}`}>
           {/* Raster + Skala. Die Skala steht dauerhaft: Ohne Überfahren (Bild,
               Telefon) gäbe es sonst keine Größenordnung. */}
           {yTicks.map((val) => (
             <g key={val}>
               <line x1={P.l} x2={P.l + cW} y1={yL(val)} y2={yL(val)} stroke="var(--color-chart-grid)" strokeWidth={0.5} />
               <text x={P.l - 6} y={yL(val) + 3} textAnchor="end" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
-                {narrow ? `${Math.round(val / 1000)} T€` : fmtEuroVoll(val)}
+                {narrow ? `${(val / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} T€` : fmtEuroVoll(val)}
               </text>
             </g>
           ))}
-          {xJahre.map((ji, i) => {
-            const x = xL(ji * 12);
-            const amRand = x > P.l + cW - 14;
-            return (
-              <text key={ji} x={x} y={y0 + 18} textAnchor={i === 0 ? "start" : amRand ? "end" : "middle"} fontSize={fsPx("--font-size-small")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
-                {rennen.startJahr + ji}
-              </text>
-            );
-          })}
-
-          {/* Anschaffung als gestrichelte Ziellinie — erst, wenn sie in die
-              Skala rückt; vorher wäre sie außerhalb des Bildes. */}
-          {zielSichtbar && (
-            <g>
-              <line x1={P.l} x2={P.l + cW} y1={yL(pv.investition)} y2={yL(pv.investition)} stroke={FARBE_PV} strokeWidth={1} strokeDasharray="4 4" opacity={0.6} />
-              {!narrow && (
-                <text x={P.l + cW - 4} y={yL(pv.investition) - 4} textAnchor="end" fontSize={fsPx("--font-size-micro")} fontWeight={700} fill={FARBE_PV}>
-                  Anschaffung · {fmtEuroVoll(pv.investition)}
-                </text>
-              )}
+          <line x1={P.l} x2={P.l + cW} y1={y0} y2={y0} stroke="var(--color-chart-zero)" strokeWidth={1} />
+          {xJahre.map(({ x, jahr }) => (
+            <g key={jahr}>
+              <line x1={x} x2={x} y1={P.t} y2={y0} stroke="var(--color-chart-grid)" strokeWidth={0.5} />
+              <text x={x + 4} y={y0 + 18} textAnchor="start" fontSize={fsPx("--font-size-small")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{jahr}</text>
             </g>
-          )}
+          ))}
 
-          {/* Der Haushalt ohne Anlage: liegt auf null — die Linie am Boden, bis heute. */}
-          <line x1={P.l} x2={xL(t)} y1={y0} y2={y0} stroke={FARBE_OHNE} strokeWidth={2.5} strokeLinecap="round" />
-          {/* Die PV-Linie bis heute. */}
-          <polyline points={pfad(pv)} fill="none" stroke={FARBE_PV} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
+          {/* Die Linien im Fenster, bis heute. */}
+          <polyline points={pfad(kOhne)} fill="none" stroke={FARBE_OHNE} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
+          <polyline points={pfad(kPv)} fill="none" stroke={FARBE_PV} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
 
-          {/* Bezahlt-Marke: der Punkt, an dem die Linie ihre Ziellinie erreicht hat. */}
-          {bezahltMonat !== null && t >= bezahltMonat && (
+          {/* Kreuzung: erscheint, sobald die Linien sie erreicht haben, und bleibt, solange sie im Fenster liegt. */}
+          {bezahltTag !== null && t >= bezahltTag && bezahltTag >= xStart && (
             <g>
-              <circle cx={xL(bezahltMonat)} cy={yL(pv.investition)} r={5} fill="var(--color-bg)" stroke={FARBE_PV} strokeWidth={2} />
-              <text x={xL(bezahltMonat)} y={yL(pv.investition) + 19} textAnchor={xL(bezahltMonat) > P.l + cW * 0.75 ? "end" : "middle"} fontSize={fsPx(narrow ? "--font-size-micro" : "--font-size-caption")} fontWeight={700} fill="var(--color-positive)">
-                bezahlt · {monatLabel(rennen.startJahr, bezahltMonat, true)}
+              <line x1={xL(bezahltTag)} x2={xL(bezahltTag)} y1={P.t} y2={y0} stroke="var(--color-positive)" strokeWidth={1} strokeDasharray="3 3" />
+              <text x={xL(bezahltTag)} y={P.t - 6} textAnchor={xL(bezahltTag) > P.l + cW * 0.75 ? "end" : "middle"} fontSize={fsPx("--font-size-caption")} fontWeight={700} fill="var(--color-positive)">
+                Anlage bezahlt · {MONATE_KURZ[tagDatum(verlauf, rennen.startJahr, bezahltTag).monat]} {tagDatum(verlauf, rennen.startJahr, bezahltTag).jahr}
               </text>
             </g>
           )}
 
-          {/* Spitzen mit Betrag: PV oben (oder an der Linie), ohne Anlage am Boden. */}
-          <circle cx={xL(t)} cy={pvSpitzeY} r={4} fill={FARBE_PV} stroke="var(--color-bg)" strokeWidth={1.5} />
-          <text x={xL(t) + 8} y={Math.min(pvSpitzeY + 4, y0 - 14)} textAnchor="start" fontSize={fsPx("--font-size-small")} fontWeight={800} fill={FARBE_PV} fontFamily="var(--font-mono)" style={{ fontVariantNumeric: "tabular-nums" }}>
-            {narrow ? `${(wertBei(pv.nutzen, t) / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} T€` : fmtEuroVoll(pv.nutzen[k])}
-          </text>
-          <circle cx={xL(t)} cy={y0} r={4} fill={FARBE_OHNE} stroke="var(--color-bg)" strokeWidth={1.5} />
-          <text x={xL(t) + 8} y={y0 + 4} textAnchor="start" fontSize={fsPx("--font-size-small")} fontWeight={800} fill={FARBE_OHNE} fontFamily="var(--font-mono)">
-            0 €
-          </text>
+          {/* Spitzen mit Betrag */}
+          {spitzen.map((s, i) => (
+            <g key={s.key}>
+              <circle cx={xL(t)} cy={s.y} r={4} fill={s.farbe} stroke="var(--color-bg)" strokeWidth={1.5} />
+              <text x={xL(t) + 8} y={Math.min(Math.max(s.y + spitzeDy(i), P.t + 8), y0 - 2)} textAnchor="start" fontSize={fsPx("--font-size-small")} fontWeight={800} fill={s.farbe} fontFamily="var(--font-mono)" style={{ fontVariantNumeric: "tabular-nums" }}>
+                {narrow ? `${(s.wert / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} T€` : fmtEuroVoll(s.zahl)}
+              </text>
+            </g>
+          ))}
         </svg>
 
         {/* Legende auf der Seite: die Spitzen tragen nur Zahlen, die Zuordnung
             braucht einen Namen. Im Bild kommt sie aus dem Bild-Fuß. */}
         <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", flexWrap: "wrap", gap: `${space.xs}px ${space.xl}px`, marginTop: space.xs }}>
-          {[{ l: pv, f: FARBE_PV }, { l: ohne, f: FARBE_OHNE }].map(({ l, f }) => (
+          {[{ l: ohne, f: FARBE_OHNE }, { l: pv, f: FARBE_PV }].map(({ l, f }) => (
             <span key={l.key} style={{ display: "inline-flex", alignItems: "center", gap: space.sm, fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>
               <span style={{ width: 14, height: 3, borderRadius: 2, background: f }} />
               {narrow ? l.kurz : l.label}
@@ -383,9 +386,9 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
         <input
           type="range"
           min={0}
-          max={M}
+          max={T}
           step={1}
-          value={k}
+          value={tag}
           onChange={(e) => { setSpielt(false); gestartet.current = true; setT(Number(e.target.value)); }}
           aria-label="Jahr wählen"
           aria-valuetext={stand}
@@ -393,15 +396,13 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
         />
       </div>
 
-      {/* Im Bild: der eingestellte Stand steht schon im Kopf (Jahr + Monat);
-          hier nur der Hinweis, dass das Bild einen Zwischenstand zeigt. */}
-      {k < M && (
-        <ExportOnly style={{ marginTop: space.md }}>
-          <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
-            Zwischenstand {k === 0 ? "vor dem ersten Betriebsjahr" : `im ${monatLabel(rennen.startJahr, k)}`} von {N} Jahren
-          </span>
-        </ExportOnly>
-      )}
+      {/* Im Bild: der eingestellte Stand steht schon im Kopf (Datum); hier nur der
+          Hinweis, dass das Bild einen Zwischenstand und ein Zeitfenster zeigt. */}
+      <ExportOnly style={{ marginTop: space.md }}>
+        <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
+          {tag < T ? `Zwischenstand am ${stand} von ${rennen.jahre} Jahren` : `Endstand nach ${rennen.jahre} Jahren`} · Bild zeigt die letzten drei Jahre
+        </span>
+      </ExportOnly>
 
       <WidgetFooter
         widget={WIDGETS.kostenrennen}
