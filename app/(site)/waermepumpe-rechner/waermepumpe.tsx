@@ -1721,6 +1721,29 @@ function BonusToggle({ checked, onChange, label, tipTitle, children }: { checked
  * hinter dem Fragezeichen, zusammen mit der Rechnung — Betreiber-Entscheidung
  * vom 27.08.2026 („die wege können wir ergänzend über ? erklären").
  */
+/**
+ * Der Betrag im Reiter — auf Tausender gerundet, aber nicht bis zur Bedeutungslosigkeit.
+ *
+ * Vier Reiter teilen sich 480 px; die volle Zahl passt dort nicht. Die erste
+ * Fassung rundete deshalb hart auf Tausender und erzeugte damit Anzeigen, die
+ * nichts mehr sagen: 400 € Gewinn wurden zu „+0k €", 400 € Verlust zu „−0k €".
+ * Gemessen an genau diesen Werten — und der Bereich ist real, der Rechner hat
+ * für knappe Fälle einen eigenen Zweig. Vier Reiter, von denen mehrere „0k €"
+ * tragen, sind keine Auswahl.
+ *
+ * Unter 1.000 € steht deshalb der Betrag auf Hunderter gerundet ("+0,4k" wäre
+ * eine Nachkommastelle, die niemand liest). Darüber bleibt es bei ganzen
+ * Tausendern, weil der Vergleich zwischen den Wegen genau dort stattfindet.
+ */
+function reiterBetrag(euro: number): string {
+  if (Math.abs(euro) < 1000) {
+    const hundert = Math.round(euro / 100) * 100;
+    return `${hundert > 0 ? "+" : ""}${hundert.toLocaleString("de-DE")} €`;
+  }
+  const tausend = Math.round(euro / 1000);
+  return `${tausend > 0 ? "+" : ""}${tausend.toLocaleString("de-DE")}k €`;
+}
+
 function WegReiter({
   wege,
   aktivId,
@@ -1795,7 +1818,7 @@ function WegReiter({
                 color: pos ? v("--color-positive-text") : v("--color-negative-text"),
               }}
             >
-              {pos ? "+" : ""}{Math.round(w.r.tcoEinsparung / 1000).toLocaleString("de-DE")}k €
+              {reiterBetrag(w.r.tcoEinsparung)}
             </div>
           </div>
         );

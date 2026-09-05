@@ -108,6 +108,58 @@ describe("Indizes aus der Adresse", () => {
   });
 });
 
+/**
+ * Der Betrag in der Wege-Reiterzeile.
+ *
+ * Vier Reiter teilen sich 480 px, die volle Zahl passt nicht. Die erste Fassung
+ * rundete hart auf Tausender — und erzeugte damit Anzeigen ohne Aussage: 400 €
+ * Gewinn wurden zu "+0k €", 400 € Verlust zu "-0k €". Der Bereich ist real, der
+ * Rechner hat für knappe Fälle einen eigenen Zweig. Vier Reiter, von denen
+ * mehrere "0k €" tragen, sind keine Auswahl.
+ */
+describe("Betrag im Wege-Reiter", () => {
+  // Nachgebaut; der letzte Test hält den Nachbau ans Original.
+  const reiterBetrag = (euro: number): string => {
+    if (Math.abs(euro) < 1000) {
+      const hundert = Math.round(euro / 100) * 100;
+      return `${hundert > 0 ? "+" : ""}${hundert.toLocaleString("de-DE")} €`;
+    }
+    const tausend = Math.round(euro / 1000);
+    return `${tausend > 0 ? "+" : ""}${tausend.toLocaleString("de-DE")}k €`;
+  };
+
+  it("rundet große Beträge auf Tausender", () => {
+    expect(reiterBetrag(23810)).toBe("+24k €");
+    expect(reiterBetrag(-1600)).toBe("-2k €");
+    expect(reiterBetrag(1200)).toBe("+1k €");
+  });
+
+  it("zeigt unter 1.000 € den Betrag statt einer Null", () => {
+    // Genau die Werte, an denen die erste Fassung scheiterte.
+    expect(reiterBetrag(400)).toBe("+400 €");
+    expect(reiterBetrag(-400)).toBe("-400 €");
+    expect(reiterBetrag(0)).toBe("0 €");
+    expect(reiterBetrag(950)).toBe("+1.000 €");
+  });
+
+  it("erzeugt nie eine Null mit Vorzeichen", () => {
+    // Die Fehlerklasse als solche: "+0k €" und "-0k €" sagen nichts und sehen
+    // nach einem Defekt aus.
+    for (let euro = -1500; euro <= 1500; euro += 50) {
+      const t = reiterBetrag(euro);
+      expect(t, `bei ${euro} €`).not.toMatch(/^[+-]?0k/);
+    }
+  });
+
+  it("wird im Rechner wirklich benutzt", () => {
+    const t = quelle();
+    expect(t).toMatch(/function reiterBetrag\(/);
+    expect(t).toMatch(/\{reiterBetrag\(w\.r\.tcoEinsparung\)\}/);
+    // Die harte Tausender-Rundung an der Anzeigestelle ist weg.
+    expect(t).not.toMatch(/Math\.round\(w\.r\.tcoEinsparung \/ 1000\)/);
+  });
+});
+
 describe("Vollständigkeit des Teilen-Links", () => {
   /**
    * Jeder Zustand, der die angezeigte Zahl verändert, mit seinem Kürzel.

@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ladeKatalog } from "../../../lib/wp-katalog-db";
-import { empfehlungenFuer, einzelgeraeteAlternativ, type WpFall } from "../../../lib/wp-empfehlung";
+import {
+  empfehlungenFuer,
+  einzelgeraeteAlternativ,
+  paketLage,
+  type WpFall,
+} from "../../../lib/wp-empfehlung";
 
 // ─── Passende Geräte zum gerechneten Fall ─────────────────────────────────────
 //
@@ -50,6 +55,10 @@ export async function GET(req: NextRequest) {
     {
       empfehlungen: empfehlungenFuer(stand.geraete, fall),
       alternativ: einzelgeraeteAlternativ(stand.geraete, fall),
+      // Warum keine Pakete dastehen — aus dem Katalog abgeleitet, nicht aus
+      // der Trefferliste geraten. Der Unterschied zwischen "führt keine" und
+      // "hat welche, sie passen nicht" ist eine Aussage über einen Dritten.
+      paketLage: paketLage(stand.geraete, fall),
       abgerufenIso: stand.abgerufenIso,
       auswahlAus: stand.geraete.length,
     },

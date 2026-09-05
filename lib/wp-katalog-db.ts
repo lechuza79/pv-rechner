@@ -102,7 +102,28 @@ export async function ladeKatalog(bauart: "luft-wasser" | "sole-wasser"): Promis
   const zeilen = (antwort?.data ?? null) as Zeile[] | null;
   if (!zeilen || zeilen.length === 0) return LEER;
 
-  const abgerufenIso = zeilen[0].abgerufen_am;
+  /**
+   * Der Stand des Katalogs — der ÄLTESTE Zeitstempel, nicht der erste beliebige.
+   *
+   * Die erste Fassung nahm `zeilen[0].abgerufen_am`. Ohne Sortierung ist das
+   * eine zufällige Zeile, und in dem einen Fall, in dem es darauf ankommt,
+   * stehen verschiedene Stände nebeneinander: Der Auffrisch-Lauf schreibt in
+   * Blöcken zu 500 und räumt erst danach auf. Bricht er nach dem ersten Block
+   * ab, trägt die Hälfte der Zeilen den neuen Zeitstempel, die andere den
+   * alten, und gelöscht wurde nichts.
+   *
+   * Welche Zeile Postgres dann zuerst liefert, ist nicht zugesichert. Trifft es
+   * eine frische, gilt der ganze Bestand als frisch — samt der alten Preise, die
+   * neben einem Kaufknopf stehen. Genau das soll die Frist verhindern.
+   *
+   * Das Minimum ist die vorsichtige Richtung: Ein gemischter Bestand ist so alt
+   * wie sein ältester Teil. Im Normalfall (ein durchgelaufener Lauf) tragen alle
+   * Zeilen denselben Wert, und die Rechnung ändert sich nicht.
+   */
+  const abgerufenIso = zeilen.reduce(
+    (aeltester, z) => (z.abgerufen_am < aeltester ? z.abgerufen_am : aeltester),
+    zeilen[0].abgerufen_am,
+  );
   const alterTage = (Date.now() - new Date(abgerufenIso).getTime()) / 86_400_000;
 
   return {

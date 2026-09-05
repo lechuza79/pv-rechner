@@ -225,6 +225,43 @@ export function empfehlungenFuer(
 }
 
 /**
+ * Warum keine Pakete dastehen — falls keine dastehen.
+ *
+ * Die Oberfläche schrieb dafür „In dieser Anlagengröße führt der Händler keine
+ * Komplettpakete" und leitete das allein daraus ab, dass in der Trefferliste
+ * keins vorkam. Das sind zwei verschiedene Aussagen: `empfehlungenFuer` filtert
+ * ERST auf Eignung und wählt DANACH Pakete aus. Ein Altbau mit 55 °C, für den
+ * es ein passend großes Paket gibt, das aber nur 50 °C schafft, bekam damit die
+ * Auskunft, es gebe in seiner Größe keine — eine Falschaussage über das
+ * Sortiment eines Dritten, und die eigentliche Ursache blieb ungenannt.
+ *
+ * Drei Fälle, die der Nutzer auseinanderhalten können muss:
+ *   `keine`      — der Händler führt in dieser Größe wirklich keins
+ *   `unpassend`  — es gibt welche, sie scheitern an Leistung oder Vorlauf
+ *   `vorhanden`  — Pakete stehen in der Liste, der Satz entfällt
+ */
+export type PaketLage = "vorhanden" | "unpassend" | "keine";
+
+export function paketLage(katalog: WpGeraet[], fall: WpFall): PaketLage {
+  const quelle = fall.wpType === "swwp" ? "sole-wasser" : "luft-wasser";
+  const passendeQuelle = katalog.filter((g) => g.bauart === quelle);
+
+  if (passendeQuelle.some((g) => g.umfang === "paket" && beurteile(g, fall).geeignet)) {
+    return "vorhanden";
+  }
+  // Grob dieselbe Größenordnung: Ein 30-kW-Paket im Katalog beantwortet die
+  // Frage nicht, ob es für ein 8-kW-Haus eins gibt. Der Rahmen ist bewusst
+  // weiter als die Empfehlungs-Toleranz — hier geht es nicht um Eignung,
+  // sondern um „gibt es in dieser Größenklasse überhaupt welche".
+  const inGroessenklasse = (g: WpGeraet) =>
+    g.leistungKw >= fall.auslegungKw * 0.6 && g.leistungKw <= fall.auslegungKw * 1.6;
+
+  return passendeQuelle.some((g) => g.umfang === "paket" && inGroessenklasse(g))
+    ? "unpassend"
+    : "keine";
+}
+
+/**
  * Einzelgeräte als abgesetzte Alternative unter den Paketen.
  *
  * Getrennt geliefert, nicht in dieselbe Liste gemischt: In einer Reihe stünde

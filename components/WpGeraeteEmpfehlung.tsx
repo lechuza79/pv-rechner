@@ -17,7 +17,7 @@ import {
   leistungAnzeigbar,
   type WpGeraet,
 } from "../lib/wp-katalog";
-import type { Befund, Empfehlung } from "../lib/wp-empfehlung";
+import type { Befund, Empfehlung, PaketLage } from "../lib/wp-empfehlung";
 import { BEG_ANTRAG_HREF, BEG_EIGENLEISTUNG } from "../lib/beg-antrag";
 
 // ─── Passende Geräte zum Ergebnis ─────────────────────────────────────────────
@@ -44,6 +44,7 @@ interface Props {
 interface Antwort {
   empfehlungen: Empfehlung[];
   alternativ?: Empfehlung[];
+  paketLage?: PaketLage;
   abgerufenIso?: string | null;
   auswahlAus?: number;
   grund?: string;
@@ -306,7 +307,14 @@ function Karte({
           mit Versandkosten falsch da. */}
       <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: -4 }}>
         {preisZusatz(g)}
-        {preisStand ? ` · Preis vom ${preisStand}` : null}
+        {/* Datum UND Vorrang — der Zusatz war beim Umbau auf drei Stellen
+            ersatzlos entfallen (Gegenprüfung 05.09.2026). Das Datum allein sagt,
+            wann wir geholt haben; es sagt nicht, welcher Preis gilt, wenn der
+            Shop inzwischen einen anderen nennt. Genau diese zweite Aussage macht
+            aus dem Hinweis einen „klaren gegenteiligen Hinweis" im Sinne der
+            Espressomaschinen-Entscheidung — ohne sie bleibt die Erwartung
+            höchstmöglicher Aktualität unwidersprochen. */}
+        {preisStand ? ` · Preis vom ${preisStand}, es gilt der Preis im Shop` : null}
       </div>
 
       {werte.length > 0 && (
@@ -501,17 +509,24 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
    * Vorhandensein — Leitsatz 2 derselben Entscheidung verwarf ein "Alle Angaben
    * ohne Gewähr" in der FUSSZEILE als untauglich, ausdrücklich auch dann, wenn
    * es auf eine Erläuterungsseite verlinkt: Kaufinteressenten rufen solche
-   * Seiten nicht auf. Deshalb steht unser Hinweis oben im Anzeigen-Block statt
-   * unter den Kacheln, und er ist konkret (Datum plus "es gilt der Preis im
-   * Shop") statt eine allgemeine Haftungsformel. Wer ihn je nach unten
-   * verschiebt oder zu "ohne Gewähr" verkürzt, baut genau den Fall nach, den
-   * der BGH entschieden hat.
+   * Seiten nicht auf.
    *
-   * Adressat dort war der werbende Händler, nicht das Portal — unser Hinweis
-   * ist insoweit vorsorglich, nicht geschuldet.
+   * Der Hinweis steht deshalb AN JEDEM PREIS statt einmal irgendwo, und er ist
+   * konkret: Datum plus die Angabe, welcher Preis im Zweifel gilt. Beides
+   * zusammen — eine allgemeine Haftungsformel wäre genau der verworfene Fall.
+   *
+   * ACHTUNG, hier stand der Kommentar schon einmal falsch (Gegenprüfung
+   * 05.09.2026): Nach dem Umbau auf drei Stellen behauptete er weiterhin, der
+   * Hinweis stehe "oben im Anzeigen-Block" und trage den Vorrang-Zusatz — der
+   * war zu dem Zeitpunkt ersatzlos entfallen. Ein Kommentar, der einen
+   * Schutzmechanismus beschreibt, den es nicht gibt, ist schlimmer als keiner:
+   * Wer ihn liest, prüft nicht nach.
+   *
+   * Adressat der Entscheidung war der werbende Händler, nicht das Portal —
+   * unser Hinweis ist insoweit vorsorglich, nicht geschuldet.
    */
   const preisStand = preisStandText(antwort?.abgerufenIso);
-  const nurEinzelgeraete = treffer.every((e) => e.geraet.umfang === "geraet");
+  const paketLage = antwort?.paketLage;
 
   return (
     <div style={{ display: "grid", gap: space.md }}>
@@ -616,15 +631,30 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
 
       {/* Warum hier nur Einzelgeräte stehen, gehört gesagt.
 
-          Über rund 12,5 kW führt der Händler keine Komplettpakete mehr — bei
-          12 kW sind es drei, bei 15 kW keins. Ohne diesen Satz sieht es aus, als
-          hätten wir grundsätzlich keine Pakete im Programm, und der Nutzer
-          vergleicht einen Gerätepreis mit dem Anlagenpreis oben, ohne zu wissen,
-          dass es an seiner Anlagengröße liegt. */}
-      {nurEinzelgeraete && (
+          Ohne diesen Satz sieht es aus, als hätten wir grundsätzlich keine
+          Pakete im Programm, und der Nutzer vergleicht einen Gerätepreis mit dem
+          Anlagenpreis oben, ohne zu wissen, woran es liegt.
+
+          DER GRUND KOMMT AUS DEM KATALOG, NICHT AUS DER TREFFERLISTE. Die erste
+          Fassung leitete ihn allein daraus ab, dass unter den Treffern kein
+          Paket war, und schrieb dann „führt keine Komplettpakete". Das ist eine
+          andere Aussage: Die Auswahl filtert erst auf Eignung und wählt danach
+          Pakete. Ein Altbau mit 55 °C, für den es ein passend großes Paket gibt,
+          das aber nur 50 °C schafft, bekam so die Auskunft, es gebe in seiner
+          Größe keins — falsch über ein fremdes Sortiment, und die eigentliche
+          Ursache blieb ungenannt. Gefunden von einer Gegenprüfung am
+          05.09.2026. */}
+      {paketLage === "keine" && (
         <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: v("--color-text-muted") }}>
           In dieser Anlagengröße führt {WP_HAENDLER.kurz} keine Komplettpakete. Die Geräte unten sind
           die Wärmepumpe allein — Speicher, Regelung und Montage kommen dazu.
+        </p>
+      )}
+      {paketLage === "unpassend" && (
+        <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: v("--color-text-muted") }}>
+          Komplettpakete dieser Größe gibt es bei {WP_HAENDLER.kurz}, aber keins davon schafft deine
+          Vorlauftemperatur oder deine Heizlast. Die Geräte unten sind die Wärmepumpe allein —
+          Speicher, Regelung und Montage kommen dazu.
         </p>
       )}
 

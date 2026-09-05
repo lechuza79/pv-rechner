@@ -132,10 +132,27 @@ describe("Pflichtangaben zum Preis", () => {
     // die Fehlvorstellung "das ist der aktuelle Preis", und Leitsatz 2 derselben
     // Entscheidung verwarf einen Vorbehalt an anderer Stelle ausdrücklich als
     // untauglich, die Irreführung auszuräumen.
-    const t = fs.readFileSync(KACHEL_DATEI, "utf-8");
-    expect(t).toMatch(/Preis vom \$\{preisStand\}/);
+    // Am kommentarfreien Text gemessen: Ein erklärender Kommentar zwischen
+    // beiden Zeilen ließ die frühere Fassung dieses Tests fehlschlagen, obwohl
+    // im Browser nichts dazwischenstand. Ein Test, der Kommentarlänge misst,
+    // misst die falsche Sache.
+    const ausgeliefert = ausgelieferterText(KACHEL_DATEI);
+    expect(ausgeliefert).toMatch(/Preis vom \$\{preisStand\}/);
     // Direkt hinter den Pflichtangaben zum Preis, nicht irgendwo sonst.
-    expect(t).toMatch(/preisZusatz\(g\)[\s\S]{0,120}Preis vom/);
+    expect(ausgeliefert).toMatch(/preisZusatz\(g\)[\s\S]{0,120}Preis vom/);
+  });
+
+  it("nennt neben dem Datum, welcher Preis gilt", () => {
+    // Das Datum allein sagt, wann wir geholt haben — nicht, welcher Preis gilt,
+    // wenn der Shop inzwischen einen anderen nennt. Erst beides zusammen ist ein
+    // "klarer gegenteiliger Hinweis" gegen die Erwartung hoechstmoeglicher
+    // Aktualitaet (BGH I ZR 123/08, Leitsatz 1).
+    //
+    // Der Zusatz war beim Umbau auf drei Stellen ersatzlos entfallen, waehrend
+    // der Kommentar daneben weiter behauptete, er stehe da. Dieser Test liest
+    // deshalb den ausgelieferten Text, nicht den Kommentar.
+    const ausgeliefert = ausgelieferterText(KACHEL_DATEI);
+    expect(ausgeliefert).toMatch(/es gilt der Preis im Shop/);
   });
 
   it("nennt den Preisstand konkret, nicht als Haftungsformel", () => {
