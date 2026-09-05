@@ -460,7 +460,21 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // („Premium-Bioheizöl mit mindestens 10 % aus nachhaltig angebauten
   // Rohstoffen"). Keine davon ist eine fortgeschriebene Preisreihe eines
   // Trägers. Der Lücken-Hinweis im Öl-Ergebnis bleibt, samt Fehlerrichtung.
-  geprueftRechtIso: "2026-09-05",
+  //
+  // 06.09.2026: unverändert, am Gesetzestext. § 43 Abs. 1 und § 42a im
+  // Volltext gelesen und wortgleich mit dem Stand von gestern — die Stufen
+  // 10 / 15 / 30 / 60 Prozent zu 2029, 2030, 2035 und 2040, für Gas, Heizöl und
+  // Flüssiggas gleichermaßen, geknüpft an den Neueinbau nach dem 29. Juli 2026
+  // in ein bestehendes Gebäude; § 42a weiterhin nur die Vorlagepflicht bis zum
+  // 1. Dezember 2026 mit vollständiger Umstellung ab 2045 und ohne eigenen
+  // Prozentsatz.
+  //
+  // SECHZEHNTE Bioheizöl-Gegensuche, Preis-Strang weiter leer. Gesucht wurde
+  // diesmal ausdrücklich nach einer amtlichen oder verbandsseitigen Preisreihe;
+  // zurück kamen der Verbraucherpreisindex für Heizöl insgesamt und
+  // Händler-Charts — beides misst das fossile Produkt, nicht die Beimischung.
+  // Der Lücken-Hinweis im Öl-Ergebnis bleibt, samt Fehlerrichtung.
+  geprueftRechtIso: "2026-09-06",
   reviewBy: "2027-07-25",
 };
 

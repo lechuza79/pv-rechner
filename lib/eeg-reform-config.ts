@@ -329,7 +329,13 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // Ausschussberatung durchläuft; daraus zu schließen, es gehe um DIESEN
   // Entwurf, wäre trotzdem geraten. Notiert als Anlass, in der kommenden Woche
   // die Drucksache im Bundestag selbst nachzusehen — nicht als Zustand.
-  geprueftIso: "2026-09-05",
+  //
+  // 06.09.2026 (Samstag): unverändert. Vorgangsseite 470/26 erneut gelesen —
+  // Titel, Eingang 14.08.2026, Eilbedürftigkeitsvermerk, Ausschusszuweisung,
+  // sonst nichts: kein Plenarabschnitt, keine Stellungnahme, kein Beschluss.
+  // Die Sondersitzung des Wirtschaftsausschusses fällt auf Dienstag, den
+  // 08.09.2026; bis dahin kann sich hier nichts bewegt haben.
+  geprueftIso: "2026-09-06",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.
