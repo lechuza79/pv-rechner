@@ -560,11 +560,15 @@ Bis 09/2026 lief die Anmeldung ausschließlich über einen Link in der Mail. **D
 
 **Absender und Google-Anbieter sind seit 02.09.2026 eingerichtet** (Betreiber im Dashboard, von hier aus gegengeprüft): Anmeldemails gehen über das Domain-Postfach, Google ist als Anmeldeweg aktiv und im Browser durchgespielt. **Der tatsächlich gelieferte Datensatz von Google ist damit erstmals messbar** — der Text der Datenschutzerklärung ist weiterhin aus dem Quelltext des Dienstes abgeleitet und sollte einmal gegen eine echte Anmeldung gehalten werden.
 
+**Die Umstellungs-Nachricht ist am 05.09.2026 raus** (siehe nächster Abschnitt) — die 18 Bestandskonten wissen also Bescheid. **Was daraus wurde, ist die eigentliche Prüfung der Umstellung:** Von 18 Konten hatten sich vor der Umstellung nur 6 je angemeldet, davon eines das des Betreibers; die anderen fünf genau einmal, am Tag der Anmeldung, keiner je wieder. Wer das für einen reinen Zustellungs-Fehler hält, sollte die Zahl kennen — sie sagt genauso gut, dass niemand einen Grund hatte wiederzukommen.
+
 **Offen und dem Betreiber vorgelegt:** die eigene Adresse für den Anmeldedienst (10 $/Monat je Projekt, Zusatzmodul). Ohne sie steht auf Googles Zustimmungsbildschirm und in den Links der Anmeldemails eine Zufallszeichenfolge statt der Marke — bei einer Sicherheitsmail der Unterschied zwischen „echt" und „Phishing". **Bei keinem der drei Projekte des Kontos gebucht**, bei Life is a Binge seit Monaten als offener Punkt geführt.
 
 ## Die einmalige Nachricht zur Umstellung — BLOCKER
 
 Die bestehenden Konten haben kein Passwort und kämen ohne diese Nachricht nicht mehr hinein. **Sie zu unterlassen wäre nicht die vorsichtigere, sondern die schlechtere Option.** Text in `lib/umstellungs-mail.ts`, Versand über `npm run umstellung:versand` — **ohne die ausdrückliche Ansage geht nichts raus**, der Lauf zeigt dann nur, wer sie bekäme.
+
+**VERSCHICKT am 05.09.2026 an alle 18 Konten** (8 bestätigt, 10 nie eingelöst), kein Fehlschlag; der Merker steht, ein zweiter Lauf schickt nichts mehr. **Rücklauf nach vier Stunden: null Anmeldungen** — die Konten tragen ihre letzte Anmeldung, die Zahl ist also messbar und nicht geschätzt. Das ist noch kein Urteil über die Mail: Der Versand lag am Samstagvormittag, außerhalb des eigenen Fensters (der Betreiber hat es bewusst übergangen), und die Frist der Löschankündigung läuft bis zum 03.10.2026.
 
 **ZWEI GRUPPEN, ZWEI FASSUNGEN** (Betreiber-Entscheidung 02.09.2026). Von 17 fremden Konten haben 7 den Anmeldelink damals eingelöst, 10 nie — und beide werden angeschrieben, mit verschiedenem Aufhänger:
 - **Bestätigt → „die Anmeldung läuft jetzt anders".** Fortführung eines bestehenden Nutzungsverhältnisses (Art. 6 Abs. 1 Buchst. b); ohne die Nachricht kämen sie nicht mehr in ihr Konto.
@@ -592,6 +596,8 @@ Die bestehenden Konten haben kein Passwort und kämen ohne diese Nachricht nicht
 **Der Merker wird VOR dem Versand geschrieben.** Bricht der Lauf zwischen zwei Adressen ab, darf der Neustart niemanden ein zweites Mal anschreiben; der Preis ist eine verlorene Nachricht im Fehlerfall, und das ist die günstigere Richtung. Dieselbe Bauform wie im Abo-Versandlauf.
 
 **Das Versandfenster der Abo-Meldungen gilt mit — hier aber UNABHÄNGIG von der Menge.** Dort greift es erst ab 20 Meldungen, weil das Warten sonst mehr kostet, als es bringt; diese Nachricht wird ohnehin von Hand ausgelöst, also kostet der Abend nichts. Ein Schalter hebt es auf, wenn es einen Grund gibt.
+
+**OFFEN (bis 10/2026): die angekündigte Löschung am 03.10.2026 wirklich ausführen.** Sie steht in zehn verschickten Mails; eine Löschankündigung, die verstreicht, ist eine gebrochene Zusage — und zwar eine, die der Empfänger nachprüfen kann. Es gibt dafür bisher **keinen Automatismus**, der Termin hängt an einem Menschen.
 
 **OFFEN (bis 10/2026): eine Löschfrist für nie bestätigte Registrierungen als REGEL**, nicht als einmalige Aufräumaktion (30–90 Tage nach dem Versand der Bestätigungsanfrage). Sonst steht dieselbe Frage in einem Jahr wieder an. Gelöscht wird dabei wirklich — **kein „gelöscht"-Vermerk als Sperrliste**: Die trägt nur, wo die zu verhindernde Verarbeitung auf berechtigtem Interesse beruht, und hier gibt es keine zu verhindernde Verarbeitung.
 
