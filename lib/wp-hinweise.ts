@@ -18,6 +18,25 @@
 // wäre an dieser Stelle eine geschäftliche Handlung mit ganz anderen
 // Anforderungen. Umgekehrt gilt: Was wir nicht wissen, wird als offen benannt,
 // nicht plausibel formuliert.
+//
+// KEINE EINBAUHINWEISE — BLOCKER, Vorgabe des Betreibers am 05.09.2026.
+//
+// Jeder Hinweis beantwortet genau eine Frage: WAS MUSS ICH KLÄREN ODER WISSEN,
+// BEVOR ICH DIESES GERÄT KAUFE? Nicht: wie wird es richtig eingebaut.
+//
+// Die erste Fassung dieses Moduls hat beides vermischt, und der Betreiber hat
+// es an einem Satz festgemacht: „Propan ist schwerer als Luft" — fachlich
+// richtig, für die Kaufentscheidung ohne Wert, und niemand liest es. Vier
+// weitere Sätze hatten dieselbe Form: der Frostschutz am Monoblock, der
+// Kondensatablauf, was der hydraulische Abgleich bewirkt, wie ein Gerät
+// aufgestellt gehört. Alles davon geht den Handwerker an, keines den Käufer.
+//
+// Die Prüffrage bei jeder neuen Regel: Kann der Leser damit VOR dem Kauf etwas
+// entscheiden, prüfen oder erfragen? Wenn die Antwort „nein, aber es ist
+// wichtig, dass es richtig gemacht wird" lautet, gehört sie nicht hierher.
+//
+// Ein Kostenposten, der in keinem Gerätepreis steckt, IST ein Kaufhinweis —
+// dann steht er als Kostenposten da, nicht als Erklärung seiner Funktion.
 
 import type { WpGeraet } from "./wp-katalog";
 import { leistungAmAuslegungspunkt, type WpFall } from "./wp-empfehlung";
@@ -50,11 +69,35 @@ export interface WpHinweisFall extends WpFall {
  */
 export type HinweisGewicht = "warnung" | "hinweis" | "einordnung";
 
+/**
+ * Wozu der Hinweis gehört — Vorgabe des Betreibers am 05.09.2026:
+ * „in erster linie sollten hinweise zur auswahl dort stehen. dann evtl. noch
+ * sowas wie: apropos…"
+ *
+ *   `auswahl`  — betrifft, WELCHES Gerät zu diesem Haus passt: Leistung,
+ *                Vorlauftemperatur, Eignung, Lieferumfang, was im Preis steckt.
+ *                Ohne diese Zeile trifft der Leser eine schlechtere Wahl.
+ *   `apropos`  — gehört zum Vorhaben, aber nicht zur Wahl zwischen den
+ *                gezeigten Geräten: Genehmigungen, Nachbarschaft, Elektrik,
+ *                Kostenposten, die bei jedem Gerät gleich anfallen.
+ *
+ * Der Unterschied ist keine Wichtigkeit, sondern eine Zuständigkeit. Ein
+ * Apropos-Hinweis kann eine Warnung sein (die Erdwärmebohrung braucht drei
+ * Monate Vorlauf) und trotzdem für die Auswahl zwischen drei Geräten
+ * bedeutungslos — er gilt für alle drei gleich.
+ *
+ * Warum die Trennung überhaupt: Beim Altbau mit alten Heizkörpern standen
+ * NEUN Zeilen unter der Liste. Jede berechtigt, zusammen liest sie niemand.
+ * Getrennt sind es drei zur Auswahl und ein abgesetzter Apropos-Block.
+ */
+export type HinweisArt = "auswahl" | "apropos";
+
 export interface Hinweis {
   /** Stabile Kennung, damit Tests und Oberfläche denselben Hinweis meinen. */
   id: string;
   text: string;
   gewicht: HinweisGewicht;
+  art: HinweisArt;
 }
 
 /**
@@ -74,8 +117,20 @@ export const HINWEISE_JE_KACHEL = 2;
 
 const RANG: Record<HinweisGewicht, number> = { warnung: 0, hinweis: 1, einordnung: 2 };
 
+const ART_RANG: Record<HinweisArt, number> = { auswahl: 0, apropos: 1 };
+
+/**
+ * Erst die Auswahl, dann das Übrige — darin nach Dringlichkeit.
+ *
+ * Die Reihenfolge der beiden Schlüssel ist die Vorgabe: Ein Apropos-Hinweis
+ * steht nie über einem Auswahl-Hinweis, auch wenn er eine Warnung ist und
+ * jener nur eine Einordnung. Wer die Geräte vergleicht, soll zuerst lesen,
+ * was sie unterscheidet.
+ */
 function sortiere(hinweise: Hinweis[]): Hinweis[] {
-  return [...hinweise].sort((a, b) => RANG[a.gewicht] - RANG[b.gewicht]);
+  return [...hinweise].sort(
+    (a, b) => ART_RANG[a.art] - ART_RANG[b.art] || RANG[a.gewicht] - RANG[b.gewicht],
+  );
 }
 
 /**
@@ -83,12 +138,21 @@ function sortiere(hinweise: Hinweis[]): Hinweis[] {
  *
  * `slice` allein hätte an einem Split-Gerät mit Propan den Lieferumfang-Hinweis
  * verschluckt, obwohl er dieselbe Dringlichkeit trägt. Was auffüllt, sind
- * Hinweise und Einordnungen.
+ * Hinweise und Einordnungen, in der Reihenfolge aus `sortiere` — also Auswahl
+ * vor Apropos.
  */
 function kuerze(sortiert: Hinweis[], grenze: number): Hinweis[] {
   const warnungen = sortiert.filter((h) => h.gewicht === "warnung");
   const rest = sortiert.filter((h) => h.gewicht !== "warnung");
   return [...warnungen, ...rest.slice(0, Math.max(0, grenze - warnungen.length))];
+}
+
+/** Die beiden Blöcke unter der Liste, getrennt. */
+export function hinweiseNachArt(hinweise: Hinweis[]): Record<HinweisArt, Hinweis[]> {
+  return {
+    auswahl: hinweise.filter((h) => h.art === "auswahl"),
+    apropos: hinweise.filter((h) => h.art === "apropos"),
+  };
 }
 
 /** Eine Kilowattzahl für den Fließtext — eine Nachkommastelle, deutsches Komma. */
@@ -138,6 +202,7 @@ export function geraeteHinweise(
         `schaltet sich häufiger ein und aus — das kostet Jahresarbeitszahl und Lebensdauer ` +
         `des Verdichters.`,
       gewicht: "warnung",
+      art: "auswahl",
     });
   }
 
@@ -152,6 +217,7 @@ export function geraeteHinweise(
         "Typenbezeichnung abgeleitet. Sie ist auf ganze Kilowatt gerundet und kann rund ein " +
         "halbes Kilowatt danebenliegen — für die Vorauswahl reicht das, für die Bestellung nicht.",
       gewicht: "hinweis",
+      art: "auswahl",
     });
   }
 
@@ -171,6 +237,7 @@ export function geraeteHinweise(
               `${fall.vorlaufC} °C ist genau das die Angabe, an der die Eignung hängt — lass sie ` +
               "dir vor der Bestellung schriftlich geben.",
             gewicht: "warnung",
+            art: "auswahl",
           }
         : {
             id: "vorlauf-unbekannt-unkritisch",
@@ -179,6 +246,7 @@ export function geraeteHinweise(
               `${fall.vorlaufC} °C spielt das keine Rolle; fürs Warmwasser braucht das Gerät ` +
               "rund 50 °C, und das schafft heute jede aktuelle Baureihe.",
             gewicht: "einordnung",
+            art: "auswahl",
           },
     );
   }
@@ -195,6 +263,7 @@ export function geraeteHinweise(
         `Nachheizung. Bei deinen ${fall.vorlaufC} °C ist das der praktische Vorteil, nicht nur ` +
         "die Förderfähigkeit ab 2028.",
       gewicht: "einordnung",
+      art: "auswahl",
     });
   }
 
@@ -250,10 +319,10 @@ export function geraeteHinweise(
     alle.push({
       id: "split-sachkunde",
       text:
-        "Bei einem Split-Gerät wird der Kältekreis erst bei dir vor Ort verbunden — das darf " +
-        "nur ein zertifizierter Kältefachbetrieb, auch bei Propan-Geräten. Frag danach, bevor " +
-        "du bestellst.",
+        "Ein Split-Gerät darf nur ein zertifizierter Kältefachbetrieb anschließen, auch bei " +
+        "Propan — nicht jeder Heizungsbauer hat die Zulassung. Kläre das, bevor du bestellst.",
       gewicht: "warnung",
+      art: "auswahl",
     });
   }
 
@@ -289,11 +358,11 @@ export function geraeteHinweise(
     alle.push({
       id: "propan-aufstellort",
       text:
-        "Propan ist schwerer als Luft. Halte deshalb rund um das Gerät den Bereich frei, den " +
-        "die Aufstellanleitung deines Modells vorgibt: dort darf weder eine Öffnung nach unten " +
-        "liegen — Lichtschacht, Kellerfenster, Kellerabgang, Bodeneinlauf — noch eine " +
-        "Zündquelle wie eine Außensteckdose.",
+        "Für Propan-Geräte gibt der Hersteller einen Freibereich vor, in dem kein Lichtschacht, " +
+        "kein Kellerfenster und keine Außensteckdose liegen darf. Prüf vor dem Kauf, ob dein " +
+        "geplanter Standort das hergibt.",
       gewicht: "warnung",
+      art: "auswahl",
     });
   }
 
@@ -308,23 +377,18 @@ export function geraeteHinweise(
         "Ob das ein Monoblock oder ein Split-Gerät ist, sagt das Angebot nicht. Davon hängt " +
         "ab, welcher Betrieb es anschließen darf und wo es stehen kann — vor der Bestellung klären.",
       gewicht: "hinweis",
+      art: "auswahl",
     });
   }
 
-  // ── C3: Monoblock — Frost und Kondensat ────────────────────────────────────
-  // Zwei klassische Rückruf-Gründe: Ein Stromausfall bei Frost lässt einen
-  // ungeschützten Monoblock einfrieren, und gefrorenes Kondensat hebt das Gerät
-  // aus dem Lot und blockiert die Abtauung.
-  if (g.aufbau === "monoblock") {
-    alle.push({
-      id: "monoblock-frost",
-      text:
-        "Beim Monoblock läuft Heizungswasser nach draußen. Der Fachbetrieb muss das gegen " +
-        "Frost sichern, und das Kondensat unter dem Gerät braucht einen frostfreien Ablauf — " +
-        "an kalten Tagen sind das etliche Liter.",
-      gewicht: "hinweis",
-    });
-  }
+  // ── Weggefallen am 05.09.2026: der Monoblock-Hinweis zu Frostschutz und
+  // Kondensatablauf.
+  //
+  // Fachlich richtig — zwei der häufigsten Rückruf-Gründe —, aber ein reiner
+  // Einbauhinweis: Er sagt dem Käufer, was sein Handwerker tun muss, und
+  // ändert an seiner Kaufentscheidung nichts. Der Betreiber hat diese ganze
+  // Klasse ausgeschlossen. Wer ihn wieder aufnehmen will, muss sagen, was der
+  // Leser damit VOR dem Kauf entscheidet.
 
   // ── C5: Kältemittel unbekannt ──────────────────────────────────────────────
   // 392 von 755 ohne Angabe — die Lücke ist siebenmal so groß wie der Fall, den
@@ -337,6 +401,7 @@ export function geraeteHinweise(
         "noch natürliche Kältemittel — wenn du später baust, ist das die Angabe, nach der du " +
         "fragen musst.",
       gewicht: "hinweis",
+      art: "auswahl",
     });
   }
 
@@ -354,6 +419,7 @@ export function geraeteHinweise(
         "Elektroanschluss, Fundament und Inbetriebnahme fehlen — nach der Auswertung von 160 " +
         "echten Angeboten ist das Gerät nur rund ein Viertel bis ein Drittel der Gesamtkosten.",
       gewicht: "warnung",
+      art: "auswahl",
     });
   } else {
     // „Paketpreis" liest sich sonst wie „schlüsselfertig". Gemessen tragen nur
@@ -362,9 +428,10 @@ export function geraeteHinweise(
       id: "umfang-paket",
       text:
         "Im Paket stecken Außen- und Innenteil. Montage, Elektroanschluss, Fundament, " +
-        "hydraulischer Abgleich und Inbetriebnahme sind nicht dabei — das ist der größere Teil " +
-        "der Rechnung.",
+        "hydraulischer Abgleich und Inbetriebnahme kommen zum Preis dazu — sie sind der " +
+        "größere Teil der Kosten.",
       gewicht: "hinweis",
+      art: "auswahl",
     });
   }
 
@@ -394,6 +461,7 @@ export function fallHinweise(fall: WpHinweisFall): Hinweis[] {
         "Heizlast senken lässt — ein Heizkörpertausch oder einzelne Dämmmaßnahmen machen ein " +
         "kleineres Gerät möglich, und das ist in Anschaffung und Betrieb günstiger.",
       gewicht: "einordnung",
+      art: "auswahl",
     });
   }
 
@@ -405,10 +473,11 @@ export function fallHinweise(fall: WpHinweisFall): Hinweis[] {
     alle.push({
       id: "heizkoerper-einzelne-raeume",
       text:
-        `Deine Rechnung geht von ${fall.vorlaufC} °C Vorlauf aus. Meist sind es nur zwei oder ` +
-        "drei Räume, die diese Temperatur erzwingen — werden dort die Heizkörper getauscht, " +
-        "kommt die ganze Anlage mit 45 °C aus und braucht weniger Strom.",
+        `An den ${fall.vorlaufC} °C Vorlauf hängt, welche Geräte überhaupt in Frage kommen. ` +
+        "Meist erzwingen nur zwei oder drei Räume diese Temperatur — mit getauschten " +
+        "Heizkörpern dort reicht ein kleineres und günstigeres Gerät.",
       gewicht: "hinweis",
+      art: "auswahl",
     });
   }
 
@@ -426,11 +495,11 @@ export function fallHinweise(fall: WpHinweisFall): Hinweis[] {
     alle.push({
       id: "vorlauf-geschaetzt",
       text:
-        "Die Vorlauftemperatur in dieser Rechnung ist aus dem Gebäudetyp geschätzt, nicht " +
-        "gemessen. Der ehrliche Test kostet nichts: an einem kalten Tag den Vorlauf der " +
-        "jetzigen Heizung auf den Zielwert stellen und schauen, welcher Raum nicht warm wird — " +
-        "genau der bestimmt die Auslegung.",
+        "Die Vorlauftemperatur ist hier aus dem Gebäudetyp geschätzt, und sie entscheidet, " +
+        "welches Gerät passt. Nachprüfen kostet nichts: an einem kalten Tag den Vorlauf der " +
+        "jetzigen Heizung auf den Zielwert stellen und schauen, ob alle Räume warm werden.",
       gewicht: "hinweis",
+      art: "auswahl",
     });
   }
 
@@ -446,11 +515,11 @@ export function fallHinweise(fall: WpHinweisFall): Hinweis[] {
     alle.push({
       id: "schall-nachbarschaft",
       text:
-        "Das Gerät steht draußen und läuft auch nachts — maßgeblich ist, was am nächsten " +
-        "fremden Wohnraum ankommt, und nachts gelten in Wohngebieten die strengsten Werte. " +
-        "Aufstellort und Abstand entscheiden darüber mehr als das Gerät: frei stehend ist es " +
-        "deutlich leiser als in einer Ecke zwischen zwei Wänden.",
+        "Das Gerät steht draußen und läuft auch nachts; maßgeblich ist, was am nächsten " +
+        "fremden Wohnraum ankommt. Ob dein geplanter Standort die Nachtwerte einhält, gehört " +
+        "vor den Kauf geklärt — der Abstand entscheidet darüber mehr als das Gerät.",
       gewicht: "warnung",
+      art: "apropos",
     });
     // Abstandsflächen sind Landesrecht und von Land zu Land verschieden;
     // mehrere Länder haben Wärmepumpen bis zu bestimmten Größen freigestellt.
@@ -464,6 +533,7 @@ export function fallHinweise(fall: WpHinweisFall): Hinweis[] {
         "Bundeslandes und ist von Land zu Land verschieden. Das gehört geklärt, bevor der " +
         "Aufstellort feststeht.",
       gewicht: "hinweis",
+      art: "apropos",
     });
   }
 
@@ -523,6 +593,7 @@ export function fallHinweise(fall: WpHinweisFall): Hinweis[] {
         "nehmen. In Wasserschutzgebieten sind Erdwärmesonden fast überall verboten: kläre " +
         "beides, bevor du ein Gerät aussuchst.",
       gewicht: "warnung",
+      art: "apropos",
     });
     // BEWUSST OHNE EURO-ZAHL. Im Projekt gibt es keine belegte Preisreihe je
     // Bohrmeter; eine geratene Zahl neben lauter belegten wäre der teuerste
@@ -534,6 +605,7 @@ export function fallHinweise(fall: WpHinweisFall): Hinweis[] {
         "Anbindung, Sole und Verteiler sind bei einer Erdwärmeanlage der größere Kostenblock, " +
         "nicht die Wärmepumpe.",
       gewicht: "warnung",
+      art: "apropos",
     });
     if (fall.situation === "bestand") {
       alle.push({
@@ -543,6 +615,7 @@ export function fallHinweise(fall: WpHinweisFall): Hinweis[] {
           "breit genug ist, und ob der Garten die Baustelle verkraftet — im Bestand scheitert " +
           "Erdwärme öfter daran als an der Technik.",
         gewicht: "hinweis",
+        art: "apropos",
       });
     }
   }
@@ -556,10 +629,11 @@ export function fallHinweise(fall: WpHinweisFall): Hinweis[] {
     alle.push({
       id: "speicher-haushaltsgroesse",
       text:
-        "Bei eurer Haushaltsgröße gehört ein Warmwasserspeicher ab etwa 300 Litern dazu. Eine " +
-        "Wärmepumpe lädt den Speicher kühler als ein Gaskessel — derselbe Speicher liefert " +
-        "deshalb weniger warmes Wasser als vorher, ein Eins-zu-eins-Tausch enttäuscht.",
+        "Bei eurer Haushaltsgröße gehört ein Warmwasserspeicher ab etwa 300 Litern dazu — " +
+        "mehr als bei der alten Heizung, weil eine Wärmepumpe den Speicher kühler lädt. Prüf " +
+        "im Angebot, welche Größe drinsteht.",
       gewicht: "hinweis",
+      art: "auswahl",
     });
   }
 
@@ -571,22 +645,26 @@ export function fallHinweise(fall: WpHinweisFall): Hinweis[] {
     alle.push({
       id: "zaehlerschrank",
       text:
-        "In älteren Häusern reicht der Zählerschrank für eine Wärmepumpe oft nicht — für " +
-        "Steuereinrichtung und Zähler fehlt der Platz, manchmal auch die Anschlussleistung. " +
-        "Der Elektriker sollte das ansehen, bevor die Anlage bestellt wird; ein neuer " +
-        "Zählerschrank steht in keinem Gerätepreis.",
+        "In älteren Häusern reicht der Zählerschrank für eine Wärmepumpe oft nicht. Lass ihn " +
+        "vom Elektriker ansehen, bevor du bestellst — ein neuer steht in keinem Gerätepreis.",
       gewicht: "warnung",
+      art: "apropos",
     });
     // Die Maßnahme, die zwischen gerechneter und tatsächlicher
     // Vorlauftemperatur steht — und damit zwischen unserer Jahresarbeitszahl
     // und der echten. Mittelwert 1.159 € nach derselben Angebotsauswertung.
+    // Als KOSTENPOSTEN, nicht als Erklärung seiner Funktion. Die erste Fassung
+    // beschrieb, was ohne Abgleich passiert — richtig, aber Sache des
+    // Handwerkers. Für die Kaufentscheidung zählt, dass er dazugehört und im
+    // Gerätepreis nicht enthalten ist. Mittelwert 1.159 € aus der Auswertung
+    // von 160 echten Angeboten (Verbraucherzentrale RLP).
     alle.push({
       id: "hydraulischer-abgleich",
       text:
-        "Ohne hydraulischen Abgleich erreicht die Anlage die gerechnete Vorlauftemperatur " +
-        "nicht: Ein Teil der Räume bekommt zu viel Wasser, ein Teil zu wenig, und die Regelung " +
-        "fährt die Temperatur so weit hoch, bis auch der letzte Raum warm wird.",
-      gewicht: "warnung",
+        "Zur Wärmepumpe gehört ein hydraulischer Abgleich der Heizung — nach der Auswertung " +
+        "von 160 echten Angeboten rund 1.150 Euro, die in keinem Gerätepreis stecken.",
+      gewicht: "hinweis",
+      art: "apropos",
     });
   }
 
@@ -633,10 +711,11 @@ export function fallHinweise(fall: WpHinweisFall): Hinweis[] {
     id: "netzbetreiber-steuerbar",
     text:
       "Eine neue Wärmepumpe über 4,2 Kilowatt Anschlussleistung meldet der Fachbetrieb beim " +
-      "Netzbetreiber an, und sie muss steuerbar sein — dafür ist dein Netzentgelt niedriger. " +
-      "Bei drohender Überlastung darf der Netzbetreiber die Leistung drosseln, aber nicht " +
+      "Netzbetreiber an, und sie muss steuerbar sein — dafür kostet dich ihr Strom dauerhaft " +
+      "weniger. Bei drohender Überlastung darf der Netzbetreiber drosseln, aber nicht " +
       "abschalten: mindestens 4,2 Kilowatt bleiben deinem Hausanschluss.",
     gewicht: "hinweis",
+    art: "apropos",
   });
 
   // ── F7: Pufferspeicher bei Heizkörpern ─────────────────────────────────────
@@ -647,10 +726,10 @@ export function fallHinweise(fall: WpHinweisFall): Hinweis[] {
     alle.push({
       id: "pufferspeicher",
       text:
-        "Eine Heizkörperanlage hat wenig Wasserinhalt, und Thermostatventile drosseln " +
-        "zusätzlich. Damit die Wärmepumpe nicht ständig ein- und ausschaltet, gehört meist ein " +
-        "Pufferspeicher in den Kreis — er steckt in keinem der Gerätepreise.",
+        "Zu einer Heizkörperanlage gehört meist ein Pufferspeicher, damit die Wärmepumpe nicht " +
+        "ständig ein- und ausschaltet. Er steckt in keinem der Gerätepreise.",
       gewicht: "hinweis",
+      art: "apropos",
     });
   }
 

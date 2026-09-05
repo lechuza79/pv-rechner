@@ -189,16 +189,18 @@ describe("Form der Hinweise", () => {
   });
 
   it("stellt die Warnung vor den Hinweis und den vor die Einordnung", () => {
-    // An der Kachel überleben nur die ersten beiden — steht eine Einordnung
-    // vor einer Warnung, fällt die Warnung heraus.
+    // INNERHALB einer Art — die Trennung Auswahl/Apropos ist der stärkere
+    // Schlüssel und wird eine Zeile weiter unten geprüft.
     const rang = { warnung: 0, hinweis: 1, einordnung: 2 } as const;
     for (const f of alleFaelle()) {
       for (const liste of [
         fallHinweise(f),
         ...alleGeraete().map((g) => geraeteHinweise(g, f, Infinity)),
       ]) {
-        const raenge = liste.map((h) => rang[h.gewicht]);
-        expect([...raenge].sort((a, b) => a - b)).toEqual(raenge);
+        for (const art of ["auswahl", "apropos"] as const) {
+          const raenge = liste.filter((h) => h.art === art).map((h) => rang[h.gewicht]);
+          expect([...raenge].sort((a, b) => a - b)).toEqual(raenge);
+        }
       }
     }
   });
@@ -221,6 +223,45 @@ describe("Form der Hinweise", () => {
     }
   });
 
+  it("gibt keine Einbauhinweise — Vorgabe des Betreibers", () => {
+    // BLOCKER (05.09.2026). Jeder Hinweis beantwortet: Was muss ich klären
+    // oder wissen, BEVOR ich das kaufe? Nicht: wie wird es richtig eingebaut.
+    //
+    // Der Betreiber hat die Klasse an einem Satz festgemacht — „Propan ist
+    // schwerer als Luft": fachlich richtig, für die Kaufentscheidung ohne
+    // Wert, und niemand liest es. Vier weitere hatten dieselbe Form
+    // (Frostschutz, Kondensatablauf, Wirkung des hydraulischen Abgleichs,
+    // Aufstellhinweise). Alles davon geht den Handwerker an, keines den
+    // Käufer.
+    //
+    // Der Test greift die Sprachform an, in der solche Sätze zurückkommen:
+    // eine Anweisung an den Fachbetrieb oder eine Erklärung der Physik.
+    for (const h of alle()) {
+      expect(h.text, `${h.id}: Anweisung an den Handwerker`).not.toMatch(
+        /(Der |Ein )?Fachbetrieb (muss|sollte|darf nicht)|Der Monteur|Der Installateur|muss (das |die |der )?\w+ (sichern|abdichten|dämmen|isolieren|verlegen)/i,
+      );
+      expect(h.text, `${h.id}: Physik statt Kaufhinweis`).not.toMatch(
+        /schwerer als Luft|leichter als Luft|Wasserinhalt|Kondensat|gefriert|Wirkungsgrad steigt/i,
+      );
+    }
+  });
+
+  it("beantwortet bei jedem Hinweis eine Frage vor dem Kauf", () => {
+    // Die Gegenprobe zur Regel: Jeder Hinweis muss mindestens eines von drei
+    // Dingen tun — zum Klären auffordern, einen Kostenposten benennen, oder
+    // die Geräteauswahl selbst betreffen. Ein Satz, der nur beschreibt, wie
+    // etwas funktioniert, erfüllt keines davon.
+    //
+    // Bewusst als Wortmuster und nicht als Liste erlaubter Kennungen: Eine
+    // Liste wäre beim nächsten neuen Hinweis stumm, weil niemand daran denkt,
+    // sie zu ergänzen.
+    const KAUFBEZUG =
+      /klär|prüf|frag|lass .{0,20}ansehen|vor (dem|der) (Kauf|Bestellung)|bevor du|bestell|Preis|Euro|Gerätepreis|kostet|Angebot|Kosten|welche[sr]? Gerät|in Frage kommen|Auswahl|Eignung|förder|nennt kein|nicht angegeben|sagt (das|dein) Angebot nicht|abgeleitet|geschätzt|spielt das keine Rolle/i;
+    for (const h of alle()) {
+      expect(h.text, `${h.id}: kein erkennbarer Bezug zur Kaufentscheidung`).toMatch(KAUFBEZUG);
+    }
+  });
+
   it("fordert nirgends zum Kauf auf", () => {
     // Die Kachel daneben trägt einen Affiliate-Link. Ein Satz, der zum Kauf
     // drängt, wäre an dieser Stelle eine geschäftliche Handlung mit ganz
@@ -229,6 +270,52 @@ describe("Form der Hinweise", () => {
       expect(h.text, h.id).not.toMatch(
         /\b(kauf jetzt|jetzt kaufen|greif zu|empfehlenswert|unschlagbar|Schnäppchen|lohnt sich)\b/i,
       );
+    }
+  });
+
+  it("ordnet jeden Hinweis der Auswahl oder dem Apropos zu", () => {
+    // Vorgabe des Betreibers: „in erster linie sollten hinweise zur auswahl
+    // dort stehen. dann evtl. noch sowas wie: apropos…"
+    //
+    // Der Test prüft die Zuordnung nicht inhaltlich — das kann er nicht. Er
+    // prüft, dass sie getroffen wurde, und dass die Auswahl-Seite nicht leer
+    // läuft: Eine Kachel, an der nur Apropos-Zeilen stehen, sagt über die
+    // Wahl zwischen den Geräten nichts.
+    for (const h of alle()) {
+      expect(["auswahl", "apropos"], h.id).toContain(h.art);
+    }
+    const auswahl = alle().filter((h) => h.art === "auswahl");
+    expect(auswahl.length, "keine Auswahl-Hinweise").toBeGreaterThan(0);
+  });
+
+  it("stellt die Auswahl immer vor das Apropos", () => {
+    // Auch dann, wenn das Apropos eine Warnung ist und die Auswahl nur eine
+    // Einordnung. Wer drei Geräte vergleicht, soll zuerst lesen, was sie
+    // unterscheidet — was für alle drei gleich gilt, kommt danach.
+    const rang = { auswahl: 0, apropos: 1 } as const;
+    for (const f of alleFaelle()) {
+      for (const liste of [
+        fallHinweise(f),
+        ...alleGeraete().map((g) => geraeteHinweise(g, f, Infinity)),
+      ]) {
+        const raenge = liste.map((h) => rang[h.art]);
+        expect([...raenge].sort((a, b) => a - b)).toEqual(raenge);
+      }
+    }
+  });
+
+  it("zeigt an jeder Kachel mindestens einen Hinweis zur Auswahl", () => {
+    // Die schärfste Form der Vorgabe. An der Kachel entscheidet sich, welches
+    // der drei Geräte es wird; eine Kachel, die dazu nichts sagt, verfehlt
+    // ihren Zweck — auch wenn drei Apropos-Zeilen daran stehen.
+    for (const f of alleFaelle()) {
+      for (const g of alleGeraete()) {
+        const liste = geraeteHinweise(g, f);
+        expect(
+          liste.some((h) => h.art === "auswahl"),
+          `${g.aufbau}/${g.kaeltemittel}/${g.umfang} bei ${f.vorlaufC} °C ohne Auswahl-Hinweis`,
+        ).toBe(true);
+      }
     }
   });
 
@@ -395,9 +482,13 @@ describe("Rechtsaussagen: was verworfen wurde, bleibt verworfen", () => {
     // wird. Wer sie nachtragen will, beschafft zuerst die Norm.
     const t = text("propan-aufstellort");
     expect(t).not.toMatch(/\d+\s*(m|Meter|cm)\b/);
-    expect(t).toMatch(/Aufstellanleitung/);
-    // Und die Zündquelle, die in der ersten Fassung fehlte.
-    expect(t).toMatch(/Zündquelle/);
+    // Der Verweis auf die Herstellervorgabe muss stehen bleiben — er ist der
+    // Grund, aus dem hier keine Zahl steht.
+    expect(t).toMatch(/Hersteller|Aufstellanleitung/);
+    // Und die Zündquelle, die in der ersten Fassung fehlte. Sie steht jetzt
+    // als konkretes Beispiel („Außensteckdose") statt als Fachwort — der
+    // Käufer soll an seinem Standort nachsehen können.
+    expect(t).toMatch(/Außensteckdose|Zündquelle/);
   });
 
   it("behauptet beim Aufstellort keine Pflicht des Bewohners", () => {

@@ -21,6 +21,7 @@ import type { Befund, Empfehlung, PaketLage } from "../lib/wp-empfehlung";
 import {
   geraeteHinweise,
   fallHinweise,
+  hinweiseNachArt,
   WP_HINWEIS_SCHLUSS,
   type Hinweis,
   type WpHinweisFall,
@@ -186,6 +187,52 @@ function HinweisZeile({ hinweis }: { hinweis: Hinweis }) {
         <Icon size={13} />
       </span>
       <span>{hinweis.text}</span>
+    </div>
+  );
+}
+
+/**
+ * Die beiden Blöcke unter der Geräteliste.
+ *
+ * Oben die Auswahl, darunter das Apropos — abgesetzt durch eine eigene
+ * Überschrift, nicht durch eine zweite Trennlinie: Zwei Linien so dicht
+ * untereinander lesen sich wie zwei Abschnitte der Seite, nicht wie zwei Teile
+ * einer Sache.
+ */
+function HinweisBloecke({ hinweise }: { hinweise: Hinweis[] }) {
+  const { auswahl, apropos } = hinweiseNachArt(hinweise);
+  if (auswahl.length === 0 && apropos.length === 0) return null;
+
+  return (
+    <div
+      style={{
+        borderTop: `1px solid ${v("--color-border")}`,
+        paddingTop: space.md,
+        display: "grid",
+        gap: space.md,
+      }}
+    >
+      {auswahl.length > 0 && (
+        <div style={{ display: "grid", gap: space.sm }}>
+          <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: v("--color-text-primary") }}>
+            Was die Auswahl beeinflusst
+          </p>
+          {auswahl.map((h) => (
+            <HinweisZeile key={h.id} hinweis={h} />
+          ))}
+        </div>
+      )}
+
+      {apropos.length > 0 && (
+        <div style={{ display: "grid", gap: space.sm }}>
+          <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: v("--color-text-primary") }}>
+            Apropos — was sonst noch dazugehört
+          </p>
+          {apropos.map((h) => (
+            <HinweisZeile key={h.id} hinweis={h} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -751,39 +798,24 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
           Liste statt an jeder Kachel.
 
           Die Trennung ist der Grund, aus dem die Hinweise überhaupt lesbar
-          bleiben: Ein Bestandsgebäude mit alten Heizkörpern erfüllt sechs
+          bleiben: Ein Bestandsgebäude mit alten Heizkörpern erfüllt neun
           Regeln gleichzeitig. Stünden alle an der Kachel, stünden sie dort
           dreimal untereinander — einmal je Gerät — und niemand läse eine davon.
 
-          Aufgeklappt, nicht hinter einem Knopf: Der Schlusssatz darunter
+          ZWEI BLÖCKE, Vorgabe des Betreibers am 05.09.2026: „in erster linie
+          sollten hinweise zur auswahl dort stehen. dann evtl. noch sowas wie:
+          apropos…". Oben, was die Wahl zwischen den gezeigten Geräten
+          beeinflusst; darunter abgesetzt, was zum Vorhaben gehört, aber für
+          alle drei gleich gilt.
+
+          Der Unterschied ist eine Zuständigkeit, keine Wichtigkeit: Die
+          Erdwärmebohrung braucht drei Monate Vorlauf — eine Warnung, und für
+          die Auswahl zwischen drei Geräten trotzdem ohne Bedeutung.
+
+          Beide aufgeklappt, nicht hinter einem Knopf: Der Schlusssatz darunter
           ordnet die ganze Liste ein, und eine Einordnung, die man erst öffnen
           muss, ist bei einer Kaufentscheidung keine. */}
-      {fallHinweise(fall).length > 0 && (
-        <div
-          style={{
-            borderTop: `1px solid ${v("--color-border")}`,
-            paddingTop: space.md,
-            display: "grid",
-            gap: space.sm,
-          }}
-        >
-          <p
-            style={{
-              margin: 0,
-              fontSize: 12,
-              fontWeight: 700,
-              color: v("--color-text-primary"),
-            }}
-          >
-            Was bei dir vor Ort noch zu klären ist
-          </p>
-          <div style={{ display: "grid", gap: space.sm }}>
-            {fallHinweise(fall).map((h) => (
-              <HinweisZeile key={h.id} hinweis={h} />
-            ))}
-          </div>
-        </div>
-      )}
+      <HinweisBloecke hinweise={fallHinweise(fall)} />
 
       {/* Die Gesamteinordnung — was diese Liste ist und was sie nicht ist.
 
