@@ -343,11 +343,18 @@ async function setup(): Promise<void> {
     ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS anknuepfung_titel text;
     ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS anknuepfung_tage integer;
 
+    -- Der Schlüssel ist (Kreis × Frage), nicht der Kreis: Drei Fragen je Kreis
+    -- finden je zur Hälfte andere Titel. Die erste Fassung hatte den Kreis
+    -- allein als Schlüssel; CREATE TABLE IF NOT EXISTS fasst eine bestehende
+    -- Tabelle nicht an, deshalb wird sie hier ausdrücklich verworfen — sie
+    -- trägt nur Laufprotokoll, keine Funde.
+    DROP TABLE IF EXISTS presse_kreissuche;
     CREATE TABLE IF NOT EXISTS presse_kreissuche (
-      kreis_id text PRIMARY KEY,
+      kreis_id text NOT NULL,
       frage text NOT NULL,
       fehler text,
-      gelaufen_am date NOT NULL
+      gelaufen_am date NOT NULL,
+      PRIMARY KEY (kreis_id, frage)
     );
     ALTER TABLE presse_kreissuche ENABLE ROW LEVEL SECURITY;
     ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS eignung_zitat text;
@@ -1202,10 +1209,28 @@ function ladeKreise(): KreisZeile[] {
 
 /** Wie der Kreis in der Suchanfrage heißt — dieselbe Regel wie bei den
  *  Fachbetrieben: „Landkreis Flensburg" gibt es nicht. */
-function kreisFrage(k: KreisZeile): string {
-  const ort = k.kind === "Kreisfreie Stadt" ? k.name : `Landkreis ${k.name}`;
-  return `Tageszeitung ${ort} Lokalnachrichten`;
+function ortsname(k: KreisZeile): string {
+  return k.kind === "Kreisfreie Stadt" ? k.name : `Landkreis ${k.name}`;
 }
+
+/**
+ * DREI Fragen je Kreis, und der Unterschied ist nicht kosmetisch.
+ *
+ * Betreiber, 05.09.2026: „das war jetzt nur ein beispiel. vermutlich gibt's zig
+ * mehr als nur je landkreis." Er hat recht — neben der Tageszeitung gibt es das
+ * Wochen- und Anzeigenblatt (oft die einzige Zeitung, die in JEDEN Briefkasten
+ * geht) und das reine Online-Lokalportal, das in keiner Zeitungsliste steht.
+ * Eine Frage allein fände nur die erste Gattung.
+ *
+ * Dieselbe Systematik wie bei den Fachbetrieben, wo „Photovoltaik" und
+ * „Solarteur" je zur Hälfte andere Betriebe finden — und wie dort gilt: Wer
+ * eine vierte Frage vorschlägt, misst vorher, ob sie neue Adressen bringt.
+ */
+export const KREIS_FRAGEN = [
+  { name: "tageszeitung", vorlage: (k: KreisZeile) => `Tageszeitung ${ortsname(k)} Lokalnachrichten` },
+  { name: "wochenblatt", vorlage: (k: KreisZeile) => `Wochenblatt Anzeigenblatt ${ortsname(k)}` },
+  { name: "lokalportal", vorlage: (k: KreisZeile) => `Lokalnachrichten online ${ortsname(k)} aktuell` },
+] as const;
 
 /** Was nie eine Regionalzeitung ist. Bewusst kurz — die eigentliche Trennung
  *  macht der Profil- und Eignungslauf am Inhalt, nicht diese Liste. */
@@ -1214,7 +1239,35 @@ const NIE_REGIONALPRESSE = [
   "wikipedia.org", "wikiwand.com", "google.com", "amazon.de", "ebay.de", "kleinanzeigen.de",
   "meinestadt.de", "wer-zu-wem.de", "kalaydo.de", "stellenanzeigen.de", "indeed.com",
   "yumpu.com", "issuu.com", "pressreader.com", "zeitungen.de", "abo-direkt.de",
+  // Branchenverzeichnisse — sie tragen jeden Ortsnamen und nie eine Redaktion.
+  // Gemessen an drei Kreisen (05.09.2026): Von 95 gefundenen Adressen war die
+  // Mehrheit Telefonbuch, Werbeplattform oder E-Paper-Spiegel.
+  "11880.com", "dasoertliche.de", "dastelefonbuch.de", "gelbeseiten.de", "goyellow.de",
+  "creditreform.de", "firmeneintrag.creditreform.de", "northdata.de", "companyhouse.de",
+  "crossvertise.com", "wlw.de", "cylex.de", "branchenbuch.de",
+  // E-Paper- und Kiosk-Dienste: dieselbe Zeitung ein zweites Mal, ohne Impressum
+  // und ohne Redaktion.
+  "e-pages.dk", "e-pages.pub", "united-kiosk.de", "readly.com", "sharemagazines.de",
+  // Bundesweite Häuser mit Regionalauftritt — sie kommen über die benannte Saat,
+  // nicht über die Kreissuche, sonst stehen sie 400 Mal darin.
+  "bild.de", "t-online.de", "focus.de", "merkur.de", "web.de", "gmx.net",
 ];
+
+/**
+ * Ein E-Paper- oder Kiosk-Vorsatz gehört zur HAUPTDOMAIN.
+ *
+ * Gemessen: `epaper.kn-online.de` und `kn-online.de` sind dieselbe Zeitung, und
+ * getrennt geführt hätte die eine ein Impressum und die andere keins. Dieselbe
+ * Systematik wie bei den Fachbetrieben, wo die Domain die Identität ist.
+ */
+function hauptdomain(host: string): string {
+  // Auch Marketing- und Service-Vorsätze gehören zur Zeitung:
+  // `mediadaten.augsburger-allgemeine.de` ist keine zweite Redaktion.
+  return host.replace(
+    /^(?:epaper|e-paper|paper|mediadaten|abo|shop|jobs|anzeigen|trauer|immo|m|www\d?|amp)\./,
+    "",
+  );
+}
 
 async function regionalpresse(limit: number, trocken: boolean): Promise<void> {
   const sb = await makeClient();
@@ -1227,35 +1280,47 @@ async function regionalpresse(limit: number, trocken: boolean): Promise<void> {
   );
   const bekannt = new Map(bestand.map((b) => [b.domain, new Set(b.kreise ?? [])]));
 
-  const gelaufen = await alleZeilen<{ kreis_id: string }>(sb, "presse_kreissuche", "kreis_id");
-  const erledigt = new Set(gelaufen.map((g) => g.kreis_id));
-  const offen = kreise.filter((k) => !erledigt.has(k.id)).slice(0, limit);
+  const gelaufen = await alleZeilen<{ kreis_id: string; frage: string }>(
+    sb,
+    "presse_kreissuche",
+    "kreis_id, frage",
+  );
+  const erledigt = new Set(gelaufen.map((g) => `${g.kreis_id}|${g.frage}`));
+  const paare: { k: KreisZeile; frage: string; art: string }[] = [];
+  for (const k of kreise) {
+    for (const f of KREIS_FRAGEN) {
+      if (!erledigt.has(`${k.id}|${f.name}`)) paare.push({ k, frage: f.vorlage(k), art: f.name });
+    }
+  }
+  const offen = paare.slice(0, limit);
 
   if (trocken) {
-    log(`${offen.length} Kreise offen, ${(offen.length * 0.002).toFixed(2)} $ — nichts abgerufen`);
-    for (const k of offen.slice(0, 5)) log(`  ${kreisFrage(k)}`);
+    log(`${offen.length} Abfragen offen, ${(offen.length * 0.002).toFixed(2)} $ — nichts abgerufen`);
+    for (const p of offen.slice(0, 6)) log(`  ${p.frage}`);
     return;
   }
   if (!offen.length) {
     log("alle Kreise abgefragt", "ok");
     return;
   }
-  log(`${offen.length} Kreise (${(offen.length * 0.002).toFixed(2)} $)`);
+  log(`${offen.length} Abfragen (${(offen.length * 0.002).toFixed(2)} $)`);
 
   const gefunden = new Map<string, Set<string>>();
   const laufZeilen: Record<string, unknown>[] = [];
   let treffer = 0;
 
-  await pool(offen, 4, async (k) => {
-    const { treffer: hits, fehler } = await serp(kreisFrage(k));
-    laufZeilen.push({ kreis_id: k.id, frage: kreisFrage(k), fehler, gelaufen_am: heute() });
+  await pool(offen, 4, async (p) => {
+    const k = p.k;
+    const { treffer: hits, fehler } = await serp(p.frage);
+    laufZeilen.push({ kreis_id: k.id, frage: p.art, fehler, gelaufen_am: heute() });
     if (fehler) {
-      log(`${k.name}: ${fehler}`, "err");
+      log(`${k.name} (${p.art}): ${fehler}`, "err");
       return;
     }
     for (const h of hits) {
-      const host = hostVon(h.url);
-      if (!host) continue;
+      const roh = hostVon(h.url);
+      if (!roh) continue;
+      const host = hauptdomain(roh);
       if (NIE_REGIONALPRESSE.some((p) => host === p || host.endsWith("." + p))) continue;
       const menge = gefunden.get(host) ?? new Set<string>();
       menge.add(k.id);
@@ -1288,9 +1353,63 @@ async function regionalpresse(limit: number, trocken: boolean): Promise<void> {
     });
   }
   await upsert(sb, "presse_medien", zeilen, "domain");
-  await upsert(sb, "presse_kreissuche", laufZeilen, "kreis_id");
+  await upsert(sb, "presse_kreissuche", laufZeilen, "kreis_id,frage");
   const neu = zeilen.filter((z) => z.paket !== undefined).length;
   log(`${treffer} Kreise abgefragt, ${zeilen.length} Adressen berührt, ${neu} neu`, "ok");
+}
+
+/**
+ * Regional oder überregional? — die STREUUNG entscheidet, keine Sperrliste.
+ *
+ * Eine Regionalzeitung deckt ihren Kreis und ein paar Nachbarkreise ab; die
+ * WELT, das RND und presseportal.de stehen in jedem. Dieselbe Messung, die bei
+ * den Fachbetrieben Betrieb von Portal trennt — und aus demselben Grund: Eine
+ * gepflegte Sperrliste veraltet, sobald ein neues Portal aufmacht, die Streuung
+ * nie.
+ *
+ * WICHTIG: Die Schwelle wächst mit der Zahl der abgefragten Kreise. In einem
+ * Teillauf über acht Kreise wäre sonst jede überregionale Adresse eine
+ * „Regionalzeitung mit drei Kreisen" — und nach dem Vollauf sieht das niemand
+ * mehr nach.
+ */
+export const UEBERREGIONAL_ANTEIL = 0.08;
+export const UEBERREGIONAL_MIN = 12;
+
+export function ueberregionalSchwelle(kreiseAbgefragt: number): number {
+  return Math.max(UEBERREGIONAL_MIN, Math.round(kreiseAbgefragt * UEBERREGIONAL_ANTEIL));
+}
+
+async function streuung(dry: boolean): Promise<void> {
+  const sb = await makeClient();
+  const laeufe = await alleZeilen<{ kreis_id: string }>(sb, "presse_kreissuche", "kreis_id");
+  const kreiseAbgefragt = new Set(laeufe.map((l) => l.kreis_id)).size;
+  const schwelle = ueberregionalSchwelle(kreiseAbgefragt);
+  const medien = await alleZeilen<{ domain: string; kreise: string[] | null; saat_gebiet: string | null }>(
+    sb,
+    "presse_medien",
+    "domain, kreise, saat_gebiet",
+  );
+  const mitKreisen = medien.filter((m) => (m.kreise ?? []).length > 0);
+  const ueber = mitKreisen.filter((m) => (m.kreise ?? []).length >= schwelle);
+
+  log(`${kreiseAbgefragt} Kreise abgefragt, Schwelle ${schwelle} Kreise`);
+  log(`${mitKreisen.length} Adressen mit Kreisbezug, davon ${ueber.length} in ${schwelle}+ Kreisen`);
+  for (const m of ueber.slice(0, 15)) log(`  ${(m.kreise ?? []).length}× ${m.domain}`);
+  if (dry) return;
+
+  // Die Gebietsangabe wird GESCHRIEBEN, nicht behauptet: Für ein Regionalmedium
+  // ist sie die Liste seiner Kreise, für ein überregionales der Vermerk.
+  const zeilen = mitKreisen.map((m) => ({
+    domain: m.domain,
+    // NEUTRAL BESCHRIFTET: Die Zahl ist die Aussage, nicht ein Urteil.
+    // „überregional" stand hier zuerst und war bei einer Mediengruppe mit 168
+    // Lokalausgaben schlicht falsch — sie IST in 168 Kreisen präsent, nur eben
+    // mit vielen Redaktionen statt einer. Wie viele davon eigene Ansprechpartner
+    // haben, sagt erst der Profil-Lauf.
+    saat_gebiet: `in ${(m.kreise ?? []).length} von ${kreiseAbgefragt} Kreisen gefunden`,
+  }));
+  await upsert(sb, "presse_medien", zeilen, "domain");
+  log(`Gebiet für ${zeilen.length} Adressen fortgeschrieben`, "ok");
 }
 
 // ─── Phase: Eignung ──────────────────────────────────────────────────────────
@@ -1614,6 +1733,7 @@ async function main(): Promise<void> {
   if (args.includes("--regionalpresse")) {
     return regionalpresse(zahlArg("--limit", 500), args.includes("--trocken"));
   }
+  if (args.includes("--streuung")) return streuung(args.includes("--trocken"));
   if (args.includes("--eichen-eignung")) {
     const d = textArg("--eichen-eignung");
     if (!d) throw new Error("--eichen-eignung braucht eine Domain");
@@ -1648,6 +1768,7 @@ async function main(): Promise<void> {
       "npm run presse -- --csv --paket 1 --top 50   erstes 50er-Paket zur Kontrolle",
       "npm run presse -- --regionalpresse --trocken  was die Kreissuche kosten würde",
       "npm run presse -- --regionalpresse        Regionalzeitungen je Landkreis finden",
+      "npm run presse -- --streuung --trocken    regional oder überregional (gemessen)",
       "npm run presse -- --eichen-eignung <domain>  Eignungsfragen an EINEM Medium",
       "npm run presse -- --eignung --paket 1     Eignung prüfen (Suche + Inhaltsseiten)",
       "npm run presse -- --stats                 Bestand",
