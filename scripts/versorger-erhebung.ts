@@ -405,7 +405,17 @@ async function main(): Promise<void> {
   log("");
   log("");
   log("── Werkzeug auf der eigenen Website ───────────────────");
-  for (const z of ["rechner-mit-leadfunnel", "eingekauft", "rechner", "gratis-kataster", "kontaktformular", "unklar", "keins"]) {
+  for (const z of [
+    "rechner-mit-leadfunnel",
+    "eingekauft",
+    "rechner",
+    "gratis-kataster",
+    "tarifrechner",
+    "kontaktformular",
+    "netz-pflichtprozess",
+    "unklar",
+    "keins",
+  ]) {
     log(`  ${z.padEnd(16)} : ${erreicht.filter((r) => r.e.werkzeug.zustand === z).length}`);
   }
   log("  nach Thema:");

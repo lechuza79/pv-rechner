@@ -208,10 +208,16 @@ describe("Thema — Tarifrechner ist kein Solarwerkzeug", () => {
   // Gemessen 24.08.2026: Alle sechs erkannten "Rechner" waren Tarifrechner fuer
   // Strom- und Gaspreise. Ohne diese Trennung misst die Erhebung die
   // Verbreitung von Tarifrechnern statt die von Solarwerkzeugen.
-  it("erkennt den Tarifrechner als solchen", () => {
-    const html = '<h1>Stromtarifrechner</h1><input type="range" min="500" max="5000">';
+  it("erkennt den Tarifrechner als eigenen Zustand, nicht als eigenen Rechner", () => {
+    // KORREKTUR 05.09.2026: Dieser Test verlangte frueher den Zustand
+    // "rechner" — er hat die Verwechslung, gegen die er geschrieben war,
+    // an anderer Stelle festgeschrieben. Das Thema stand richtig auf "tarif",
+    // der Zustand log. Und weil die Auswertung nach Zustand zaehlt, wanderten
+    // Tarifrechner in die Zahl "eigener Photovoltaik-Rechner": Bei der
+    // Handpruefung war KEINER der sechs so gezaehlten Funde einer.
+    const html = '<h1>Stromtarifrechner</h1><p>Grundpreis und Arbeitspreis</p><input type="range" min="500" max="5000">';
     const b = werkzeugAusSeite(html, "https://sw.de/preisrechner/");
-    expect(b.zustand).toBe("rechner");
+    expect(b.zustand).toBe("tarifrechner");
     expect(b.thema).toBe("tarif");
   });
 
@@ -298,5 +304,84 @@ describe("Kandidaten aus dem Seitenverzeichnis", () => {
     // in einer Sitemap gibt es keinen.
     const erg = werkzeugKandidaten(["https://sw.de/solar-wirtschaftlichkeits%C3%BCbersicht"], 1);
     expect(erg).toHaveLength(1);
+  });
+});
+
+// ─── Negativproben ────────────────────────────────────────────────────────────
+//
+// JEDER FALL HIER IST EIN ECHTER FEHLGRIFF DES LAUFS vom 25.08.2026, von Hand
+// nachgeprueft am 05.09.2026. Sie stehen hier, weil die Erhebung ausschliesslich
+// daran geeicht war, ob sie ein vorhandenes Werkzeug FINDET — nie daran, ob sie
+// liegen laesst, was keines ist. Von den vier Zahlen, die die
+// Wettbewerbsaussage trugen, hielt deshalb keine der Handpruefung stand.
+
+describe("Negativproben: was KEIN eigener Rechner ist", () => {
+  it("der Tarifrechner im Seitenkopf einer Photovoltaik-Seite", () => {
+    // Stadtwerke Einbeck: drei Schieberegler `menge-verbrauch-strom/gas/wasser`
+    // — der Tarif-Konfigurator, der auf JEDER Unterseite steht. Er galt als
+    // eigener Photovoltaik-Rechner, weil die Adresse Photovoltaik heisst.
+    const html = `<h1>Photovoltaik</h1><p>Unsere Tarife: Grundpreis und Arbeitspreis je kWh.</p>
+      <input type="range" name="menge-verbrauch-strom" min="500" max="9000">`;
+    const b = werkzeugAusSeite(html, "https://sw-einbeck.de/strom/photovoltaik");
+    expect(b.zustand).toBe("tarifrechner");
+    expect(b.zustand).not.toBe("rechner");
+  });
+
+  it("das Personenfeld eines Tarifrechners macht daraus keinen Leadfunnel", () => {
+    // Stadtwerke Schwarzenberg: `trstrom-personen` ist die Zahl der Personen im
+    // Haushalt fuer die Verbrauchsschaetzung — kein Kontaktdatenfeld.
+    const html = `<h1>Strom fuer Ihre Waermepumpe</h1><p>Arbeitspreis ab 24 ct/kWh</p>
+      <input type="number" name="trstrom-personen" min="1" max="6">`;
+    expect(werkzeugAusSeite(html, "https://sw.de/waermepumpe").zustand).toBe("tarifrechner");
+  });
+
+  it("die Anlagenanmeldung des Netzbetriebs", () => {
+    // Stadtwerke Spremberg: Eigenerklaerung zur Umlagenprivilegierung, mit
+    // Kunden- und Zaehlernummer. Galt als "Rechner mit Leadfunnel" — dabei MUSS
+    // der Netzbetreiber dieses Formular anbieten.
+    const html = `<h1>Privilegierung Waermepumpenstrom</h1>
+      <input name="vorname"><input name="nachname"><input type="number" name="zaehlernummer">`;
+    const b = werkzeugAusSeite(html, "https://sw.de/strom/privilegierung-waermepumpenstrom");
+    expect(b.zustand).toBe("netz-pflichtprozess");
+    expect(b.merkmale.pflichtprozess).toBe(true);
+  });
+
+  it("das Anmeldeformular fuer eine Photovoltaikanlage", () => {
+    const html = '<h1>Anlage anmelden</h1><input name="vorname"><input type="number" name="kwp">';
+    expect(werkzeugAusSeite(html, "https://sw.de/netz/anmeldung-pv-anlage").zustand).toBe("netz-pflichtprozess");
+  });
+
+  it("ein Verweis auf ein kostenloses Hochschul- oder Verbraucherangebot ist kein Kauf", () => {
+    // 13 der 26 "eingekauft" waren solche Verweise: HTW-Simulator, Stiftung
+    // Warentest, eine Forschungsstudie, sogar ein Facebook-Teilen-Link, dessen
+    // Adresse zufaellig das Wort "potential" enthielt.
+    for (const ziel of [
+      "https://solar.htw-berlin.de/rechner/stecker-solar-simulator/",
+      "https://www.test.de/Photovoltaik-Rechner-123",
+      "https://www.ffe.de/projekte/waermepumpen-potenzial/",
+    ]) {
+      const html = `<h1>Photovoltaik</h1><a href="${ziel}">Zum Rechner</a>`;
+      const b = werkzeugAusSeite(html, "https://sw.de/photovoltaik");
+      expect(b.zustand, ziel).not.toBe("eingekauft");
+    }
+  });
+
+  it("eine echte Wirtschaftlichkeitsrechnung bleibt ein Rechner", () => {
+    // Die Gegenrichtung, damit die Reparatur nicht alles wegfiltert: Wer nach
+    // Dachflaeche fragt und Amortisation ausgibt, rechnet eine Investition.
+    const html = `<h1>Lohnt sich Photovoltaik?</h1><p>Ihre Amortisation und Rendite ueber 20 Jahre.</p>
+      <input type="number" name="dachflaeche"><input type="number" name="kwp">`;
+    const b = werkzeugAusSeite(html, "https://sw.de/photovoltaik-rechner");
+    expect(b.zustand).toBe("rechner");
+    expect(b.merkmale.wirtschaftlichkeitswort).toBe(true);
+    expect(b.merkmale.anlagenfeld).toBe(true);
+  });
+
+  it("jeder maschinelle Befund ist ausdruecklich nur ein Verdacht", () => {
+    // Die wichtigste Zusage des Moduls: Aus dem Quelltext allein ist nicht zu
+    // sehen, ob eine Seite eine Investition durchrechnet. Wer das behauptet,
+    // baut kein Messgeraet.
+    const html = '<h1>Photovoltaik-Rechner</h1><input type="number" name="kwp">';
+    expect(werkzeugAusSeite(html, "https://sw.de/pv-rechner").sicherheit).toBe("vermutet");
   });
 });

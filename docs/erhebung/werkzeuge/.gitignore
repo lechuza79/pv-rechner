@@ -1,0 +1,5 @@
+# Die Bildausschnitte bleiben lokal: Sie sind der Beleg fuer die Einordnung,
+# aber ein paar hundert PNG gehoeren nicht in die Versionsverwaltung. Die
+# JSON-Belege daneben tragen alles, was fuer eine spaetere Nachpruefung
+# gebraucht wird — Text, Feldnamen mit Beschriftung, fremde Rahmen.
+*.png

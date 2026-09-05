@@ -16,6 +16,7 @@
 
 import { sichtbarerText } from "./funding-screen-erkennung";
 import { findLinkUrl } from "./kommunen-profil";
+import { lesbarMachen } from "./website-abruf";
 
 /** Seiten, auf denen ein Werkzeug dieser Art hängt. */
 export const WERKZEUG_MUSTER =
@@ -36,6 +37,53 @@ export const BESTANDSDATEN_MUSTER =
  * „Rechner", fragt aber nur Name, Adresse und Telefonnummer ab.
  */
 const ZAHLENEINGABE = /<input[^>]+type=["'](?:number|range)["']|<input[^>]+(?:min|step)=["'][\d.]/i;
+
+// ─── Wovon rechnet die Seite? ────────────────────────────────────────────────
+//
+// DER TEURESTE FEHLER DIESER ERHEBUNG (Gegenprüfung 05.09.2026): Ein einzelnes
+// Zahlenfeld auf einer Photovoltaik-Seite galt als „eigener Rechner". Bei der
+// Handprüfung war KEINER der so gezählten Funde einer. Es waren durchweg
+// Strom-Tarifrechner, die im Seitenkopf jeder Unterseite stehen — Belege wie
+// `persons-power`, `trstrom-personen`, `menge-verbrauch-strom`. Bei Wärmepumpe
+// war es dieselbe Klasse, dort aber erkannt und im Papier korrigiert; bei
+// Photovoltaik nicht.
+//
+// Die Unterscheidung, um die es geht, ist NICHT das Thema — beide Seiten reden
+// von Photovoltaik oder Wärmepumpe. Es ist die FRAGE, die das Werkzeug
+// beantwortet:
+//
+//   Tarifrechner:            „Was kostet mich der Strom bei euch?"
+//   Wirtschaftlichkeit:      „Lohnt sich die Anlage für mich?"
+//   Netz-Pflichtprozess:     „Ich melde meine Anlage an."
+//
+// Nur das mittlere ist ein Wettbewerber. Das dritte sagt über Vertrieb und
+// Budget gar nichts, weil der Netzbetreiber es anbieten MUSS.
+
+/** Ausgabewörter eines Tarifrechners. Sie stehen im Ergebnis, nicht im Formular
+ *  — deshalb sind sie die verlässlichere Marke als die Eingabefelder. */
+export const TARIF_MERKMAL =
+  /grundpreis|arbeitspreis|verbrauchspreis|monatlicher\s+abschlag|jahrespreis|tarif(?:rechner|übersicht|uebersicht|vergleich)|cent\s*(?:je|pro|\/)\s*kWh|ct\s*\/\s*kWh|zum\s+tarif|tarif\s+(?:berechnen|finden|wählen|waehlen)/i;
+
+/** Ausgabewörter einer Wirtschaftlichkeitsrechnung — die Frage „lohnt es sich".
+ *  Ohne mindestens eines davon rechnet die Seite keine Investition durch. */
+export const WIRTSCHAFTLICHKEIT_MERKMAL =
+  /amortisation|amortisiert|rendite|wirtschaftlichkeit|einsparung|ersparnis|eigenverbrauchsquote|autarkie|einspeiseverg[üu]tung|payback|kapitalwert|jahres(?:arbeitszahl|nutzungsgrad)|heizlast|gesamtkosten\s+ueber|über\s+\d+\s+jahre/i;
+
+/** Eingabefelder, die nur eine Anlagenauslegung braucht — nicht ein Tarif. */
+export const ANLAGE_EINGABE =
+  /(?:name|id)=["'][^"']*(?:kwp|kilowatt|dachfl|dachneigung|ausrichtung|modul|azimut|neigung|wohnfl|baujahr|heizlast|daemmung|dämmung|heizsystem)/i;
+
+/**
+ * Netz-Pflichtprozesse. Sie sehen aus wie ein Werkzeug (Zahlenfelder,
+ * Personenfelder, Thema stimmt) und sind das genaue Gegenteil eines Kaufs: Der
+ * Netzbetreiber muss die Anlagenanmeldung anbieten, ob er will oder nicht.
+ *
+ * Gemessen: 20 der 44 als „nennt ein Formular Rechner" gezählten Seiten waren
+ * solche Prozesse — Anmeldung einer Photovoltaikanlage, Netzanschluss,
+ * Umlagenbefreiung für Wärmepumpenstrom, Eigenerklärung zur Privilegierung.
+ */
+export const NETZ_PFLICHTPROZESS =
+  /anmeldung|anmelden|anzeigeformular|inbetriebsetzung|inbetriebnahme|netzanschluss|anschlussbegehren|einspeisezusage|umlagenbefreiung|umlagen-?privilegierung|privilegierung|eigenerkl[äa]rung|zaehler(?:anmeldung|wechsel)|z[äa]hleranmeldung|datenblatt|e\.?8|nav-?anmeldung/i;
 
 /** Ein eingebettetes fremdes Werkzeug. Der Rahmen verrät den Anbieter. */
 const FREMD_EINGEBETTET = /<iframe[^>]+src=["']([^"']+)["']/gi;
@@ -106,9 +154,6 @@ export function verlinkterFremdrechner(html: string, basis: string): { url: stri
 const PERSONENFELD =
   /<input[^>]+(?:name|id)=["'][^"']*(?:vorname|nachname|nachnahme|anrede|telefon|hausnummer)[^"']*["']|<input[^>]+type=["']tel["']/i;
 
-/** Nur eine Mailadresse abzufragen macht noch keinen Leadfunnel — das kann ein
- *  Newsletter sein. Erst zusammen mit einem weiteren Personenfeld wird es einer. */
-const MAILFELD = /<input[^>]+type=["']email["']/i;
 
 /**
  * Angebote der öffentlichen Hand, die ein Versorger nur einbindet.
@@ -123,8 +168,25 @@ const MAILFELD = /<input[^>]+type=["']email["']/i;
  * fehlt, landet als „fremd eingebettet ohne Anbieter" und damit auf „unklar",
  * nicht fälschlich auf „gekauft".
  */
-export const OEFFENTLICHES_ANGEBOT =
-  /solare-stadt\.de|energieatlas\.[a-z-]+\.de|solarkataster|solardachkataster|geoportal|\.bayern\.de|lanuv|energieatlas/i;
+export const OEFFENTLICHES_ANGEBOT = new RegExp(
+  [
+    // Kataster und Geoportale der Länder und Kreise.
+    /solare-stadt\.de|energieatlas\.[a-z-]+\.de|solar-?kataster|solardachkataster|geoportal|lanuv|energieatlas/.source,
+    // Landes- und Bundesdomains. `\.bayern\.de` stand hier als einziges Land —
+    // `solar-kataster-hessen.de` (mit Bindestrichen!) lief deshalb als
+    // gekaufter Rechner durch.
+    /\.(bund|bayern|nrw|hessen|bwl|rlp|saarland|sachsen|thueringen|niedersachsen|schleswig-holstein|brandenburg)\.de/.source,
+    // Hochschulen und Forschung: Der HTW-Simulator ist das meistverlinkte
+    // kostenlose Werkzeug der Branche und wurde dreimal als Kauf gezählt.
+    /htw-berlin\.de|hs-[a-z]+\.de|\.uni-[a-z]+\.de|fraunhofer\.de|\bffe\.de|ise\.fraunhofer/.source,
+    // Verbraucherorganisationen und öffentlich getragene Beratungsangebote.
+    /test\.de|stiftung-?warentest|verbraucherzentrale|co2online\.de\/?$|bdew\.de|dena\.de|energiewechsel\.de|bafa\.de|kfw\.de/.source,
+    // Ein Teilen-Knopf ist kein Werkzeug. Gemessen: Ein Facebook-Link, dessen
+    // Adresse zufällig das Wort „potential" enthielt, galt als eingekauft.
+    /facebook\.com|twitter\.com|x\.com\/intent|linkedin\.com|wa\.me|whatsapp\.com|mailto:/.source,
+  ].join("|"),
+  "i",
+);
 
 export type WerkzeugZustand =
   /** Nichts dergleichen auf der Website gefunden. */
@@ -149,8 +211,36 @@ export type WerkzeugZustand =
    *  zu werfen zerstoert die Aussagekraft — der eine Fall belegt Budget und
    *  Zustaendigkeit, der andere belegt nichts. */
   | "kontaktformular"
+  /** Ein Strom- oder Gastarifrechner. Er sagt über Solarwerkzeuge nichts —
+   *  außer, dass das Haus überhaupt etwas rechnen lässt. Eigener Zustand, weil
+   *  er die häufigste Verwechslung ist: Er steht im Seitenkopf JEDER Unterseite
+   *  und wurde deshalb als „eigener Photovoltaik-Rechner" gezählt. */
+  | "tarifrechner"
+  /** Ein Pflichtprozess des Netzbetriebs — Anlagenanmeldung, Netzanschluss,
+   *  Umlagenbefreiung. Sieht aus wie ein Werkzeug und beweist das Gegenteil:
+   *  Der Netzbetreiber muss ihn anbieten, ob er will oder nicht. */
+  | "netz-pflichtprozess"
   /** Etwas ist da, aber die Bauart ließ sich nicht bestimmen. */
   | "unklar";
+
+/**
+ * Wie sicher ist dieser Befund?
+ *
+ * DER GRUND FÜR DIESES FELD (Gegenprüfung 05.09.2026): Von den vier Zahlen, die
+ * die Wettbewerbsaussage trugen, hielt keine der Handprüfung stand. Nicht weil
+ * die Muster schlecht waren, sondern weil aus dem Quelltext allein nicht zu
+ * sehen ist, ob eine Seite eine Investition durchrechnet oder einen Tarif. Ein
+ * Mustervergleich, der das behauptet, ist kein Messgerät.
+ *
+ * Also behauptet er es nicht mehr. Er sammelt Kandidaten; ob es wirklich ein
+ * Werkzeug ist, entscheidet der Blick auf die gerenderte Seite. Nur was
+ * `angesehen` ist, darf in eine veröffentlichte Zahl.
+ */
+export type Sicherheit =
+  /** Aus dem Quelltext geschlossen. Ein Verdacht, keine Messung. */
+  | "vermutet"
+  /** Die gerenderte Seite wurde angesehen und eingeordnet. */
+  | "angesehen";
 
 /**
  * Worum geht es bei dem gefundenen Werkzeug?
@@ -206,6 +296,9 @@ export function werkzeugThema(html: string, url: string): WerkzeugThema {
 
 export type Werkzeugbefund = {
   zustand: WerkzeugZustand;
+  /** Wie sicher der Zustand ist. Ohne `angesehen` gehört er in keine Zahl, die
+   *  nach außen geht. */
+  sicherheit: Sicherheit;
   /** Worum geht es — Solar, Wärmepumpe oder nur ein Tarifrechner? */
   thema: WerkzeugThema;
   /** Die Seite, auf der der Fund steht. */
@@ -219,16 +312,41 @@ export type Werkzeugbefund = {
   /** Wörtliche Belegstelle für die Handprüfung — ohne sie ist der Befund eine
    *  Behauptung. */
   beleg: string | null;
+  /**
+   * Die gemessenen Einzelmerkmale, aus denen der Zustand geschlossen wurde.
+   *
+   * Sie werden mitgespeichert, damit eine spätere Neubewertung eine Abfrage
+   * kostet statt eines Laufs über 910 Websites — dieselbe Lehre wie bei den
+   * Postfächern, wo das Speichern des Urteils statt der Funde eine
+   * Neubewertung unmöglich gemacht hätte.
+   */
+  merkmale: {
+    zahlenfeld: boolean;
+    personenfeld: boolean;
+    anlagenfeld: boolean;
+    tarifwort: boolean;
+    wirtschaftlichkeitswort: boolean;
+    pflichtprozess: boolean;
+  };
 };
 
 export const KEIN_WERKZEUG: Werkzeugbefund = {
   zustand: "keins",
+  sicherheit: "vermutet",
   thema: "unbekannt",
   url: null,
   anbieter: null,
   eingebettet: false,
   bestandsdaten: false,
   beleg: null,
+  merkmale: {
+    zahlenfeld: false,
+    personenfeld: false,
+    anlagenfeld: false,
+    tarifwort: false,
+    wirtschaftlichkeitswort: false,
+    pflichtprozess: false,
+  },
 };
 
 /**
@@ -302,21 +420,49 @@ export function werkzeugAusSeite(html: string, url: string): Werkzeugbefund {
     }
   }
 
+  const text = sichtbarerText(html);
+  const pfad = lesbarMachen(url);
   const hatZahlen = ZAHLENEINGABE.test(html);
-  const hatPerson = PERSONENFELD.test(html) || (MAILFELD.test(html) && PERSONENFELD.test(html));
-  const bestandsdaten = BESTANDSDATEN_MUSTER.test(sichtbarerText(html));
+  // `MAILFELD.test(html) && PERSONENFELD.test(html)` war toter Code: Die
+  // Bedingung ist `A || (B && A)` und damit schlicht `A`. Der Test, der ein
+  // reines Newsletter-Feld ausschließen sollte, prüfte nichts.
+  const hatPerson = PERSONENFELD.test(html);
+  const hatAnlagenfeld = ANLAGE_EINGABE.test(html);
+  const hatTarifwort = TARIF_MERKMAL.test(text);
+  const hatWirtschaftlichkeit = WIRTSCHAFTLICHKEIT_MERKMAL.test(text);
+  // Der Pflichtprozess steht in der ADRESSE, nicht im Fließtext: „/anmeldung-
+  // pv-anlage". Im Text käme das Wort auch auf einer Beratungsseite vor.
+  const istPflichtprozess = NETZ_PFLICHTPROZESS.test(pfad);
+  const bestandsdaten = BESTANDSDATEN_MUSTER.test(text);
+  const merkmale = {
+    zahlenfeld: hatZahlen,
+    personenfeld: hatPerson,
+    anlagenfeld: hatAnlagenfeld,
+    tarifwort: hatTarifwort,
+    wirtschaftlichkeitswort: hatWirtschaftlichkeit,
+    pflichtprozess: istPflichtprozess,
+  };
 
-  // Reihenfolge = Aussage. Das öffentliche Angebot steht VOR allem anderen:
-  // Ein eingebundenes Landeskataster bringt oft eigene Zahlenfelder mit und
-  // sähe sonst wie ein eigener Rechner aus — es ist aber gerade der Fall, in
-  // dem niemand gezahlt hat.
+  // Reihenfolge = Aussage, und jede Zeile stammt aus einem gemessenen Fehlgriff.
   const verlinkt = verlinkterFremdrechner(html, url);
   let zustand: WerkzeugZustand;
-  if (oeffentlich) zustand = "gratis-kataster";
+  // Der Pflichtprozess ZUERST: Er trägt Zahlen- UND Personenfelder und wurde
+  // deshalb als „Rechner, der sein Ergebnis nur gegen Kontaktdaten herausgibt"
+  // gezählt. Eine Anlagenanmeldung beweist das Gegenteil eines Kaufs.
+  if (istPflichtprozess) zustand = "netz-pflichtprozess";
+  // Ein eingebundenes Landeskataster bringt eigene Zahlenfelder mit und sähe
+  // sonst wie ein eigener Rechner aus — dabei hat gerade niemand gezahlt.
+  else if (oeffentlich) zustand = "gratis-kataster";
   else if (verlinkt) zustand = "eingekauft";
+  else if (eingebettet && anbieterTreffer) zustand = "eingekauft";
+  // Ein Tarifrechner steht im Seitenkopf jeder Unterseite. Er wird VOR den
+  // eigenen Rechnern geprüft, weil er sonst jeden davon vortäuscht: Von sechs
+  // gezählten „eigenen Photovoltaik-Rechnern" war das bei allen sechs die
+  // Ursache. Erkannt an seinen Ausgabewörtern (Grundpreis, Arbeitspreis,
+  // ct/kWh) UND daran, dass keine Anlagengröße gefragt wird.
+  else if (hatZahlen && hatTarifwort && !hatAnlagenfeld && !hatWirtschaftlichkeit) zustand = "tarifrechner";
   else if (hatPerson && hatZahlen) zustand = "rechner-mit-leadfunnel";
   else if (hatPerson) zustand = "kontaktformular";
-  else if (eingebettet && anbieterTreffer) zustand = "eingekauft";
   else if (hatZahlen) zustand = "rechner";
   // NUR ein Rahmen, der selbst nach einem Werkzeug aussieht, oder ein bekannter
   // Anbieter bleibt "unklar". Ein anonymer Rahmen ist nichts.
@@ -325,6 +471,10 @@ export function werkzeugAusSeite(html: string, url: string): Werkzeugbefund {
 
   return {
     zustand,
+    // Aus dem Quelltext geschlossen — ein Verdacht. Erst der Blick auf die
+    // gerenderte Seite macht daraus eine Messung.
+    sicherheit: "vermutet",
+    merkmale,
     thema: werkzeugThema(html, url),
     url: zustand === "keins" ? null : url,
     // Bei einem Gratis-Kataster wird KEIN Anbieter ausgewiesen: Der Name waere
@@ -361,11 +511,17 @@ function beleg(html: string, muster: RegExp): string | null {
 export function besterBefund(befunde: Werkzeugbefund[]): Werkzeugbefund {
   // Rangfolge = Staerke des Belegs fuer ein vorhandenes Werkzeug.
   const rang: Record<WerkzeugZustand, number> = {
-    "rechner-mit-leadfunnel": 6,
-    eingekauft: 5,
-    rechner: 4,
-    "gratis-kataster": 3,
-    kontaktformular: 2,
+    "rechner-mit-leadfunnel": 8,
+    eingekauft: 7,
+    rechner: 6,
+    "gratis-kataster": 5,
+    // Ein Tarifrechner schlägt das Kontaktformular: Er beweist immerhin, dass
+    // das Haus überhaupt etwas rechnen lässt, und ist der mögliche Andockpunkt.
+    tarifrechner: 4,
+    kontaktformular: 3,
+    // Der Pflichtprozess steht ÜBER „unklar", aber unter allem, was auf eine
+    // Entscheidung des Hauses hindeutet — er ist keine.
+    "netz-pflichtprozess": 2,
     unklar: 1,
     keins: 0,
   };
