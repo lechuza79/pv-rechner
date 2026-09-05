@@ -37,7 +37,7 @@ import { DEFAULT_PRICES } from "./prices-config";
 
 export type BalkonSetId = "single" | "duo" | "max";
 export type BalkonOrientationId = "sued_flach" | "sued_gelaender" | "ost_west" | "nord_schatten";
-export type BalkonPresenceId = "weg" | "teils" | "home";
+export type BalkonPresenceId = "weg" | "teils" | "home" | "immer";
 export type BalkonStorageId = "none" | "small" | "large";
 
 export interface BalkonSet {
@@ -198,6 +198,9 @@ export const DEFAULT_BALKON_CONFIG: BalkonConfig = {
     { id: "weg", label: "Tagsüber selten", sub: "Meist berufstätig außer Haus", tagQuote: NUTZUNG[0].tagQuote },
     { id: "teils", label: "Teils zuhause", sub: "Homeoffice-Tage, Familie", tagQuote: NUTZUNG[1].tagQuote },
     { id: "home", label: "Oft zuhause", sub: "Homeoffice, Kinder", tagQuote: NUTZUNG[2].tagQuote },
+    // Vierte Stufe seit 05.09.2026 (Betreiber): Der PV-Rechner kennt sie längst;
+    // ein Rentner-Haushalt landete hier vorher auf 38 statt 45 % Tagesanteil.
+    { id: "immer", label: "Immer zuhause", sub: "Rente, Elternzeit …", tagQuote: NUTZUNG[3].tagQuote },
   ],
   // Größen und Preise an echten, getesteten Geräten (Stand 2026-07). Das Segment
   // unter ~1,5 kWh ist als Einstieg vom Markt verschwunden (Zendure AB1000 läuft
