@@ -47,7 +47,7 @@ import HeatCostCompareChart from "../../../components/charts/HeatCostCompareChar
 import Modal from "../../../components/Modal";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import InfoTooltip from "../../../components/InfoTooltip";
-import { IconArrowRight, IconRefresh, IconChevronDown, IconSun, IconSparkle, IconCheck, IconLink, IconShare, IconWhatsApp } from "../../../components/Icons";
+import { IconArrowRight, IconRefresh, IconChevronDown, IconSun, IconCheck, IconLink, IconShare, IconWhatsApp } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
 import { trackEvent } from "../../../lib/analytics";
 import { trackFunnelStep, type Funnel } from "../../../lib/analytics";
@@ -501,28 +501,39 @@ export default function Waermepumpe({
   // Gebäude ein (Komfort, Werterhalt, Heizkosten unabhängig vom System). Der
   // Heizkörpertausch bleibt drin, den macht man nur für die Wärmepumpe.
   type Weg = {
-    id: string; titel: string; kurz: string; sanierung: boolean;
+    id: string; titel: string;
+    /**
+     * Der Titel für die Reiterzeile über der Zahl.
+     *
+     * Vier Reiter teilen sich 480 px, also rund 105 px je Reiter.
+     * „Schrittweise Sanierung" braucht dort drei Zeilen und schiebt die Reihe
+     * auseinander; gekürzt trägt es eine. Der volle Titel bleibt die Identität
+     * des Wegs und steht in seinem Erklär-Fenster — der Reiter ist eine
+     * Beschriftung, kein Ersatz dafür.
+     */
+    reiter: string;
+    kurz: string; sanierung: boolean;
     patch: Partial<Pick<HeatPumpInputs, "insulationIdx" | "heizsystem" | "heizkoerperTausch">>;
   };
   const wege: Weg[] = useMemo(() => {
     if (situation !== "bestand") return [];
     const list: Weg[] = [
-      { id: "ist", titel: "So wie jetzt", kurz: "Ohne weitere Maßnahmen", sanierung: false, patch: {} },
+      { id: "ist", titel: "So wie jetzt", reiter: "Jetzt", kurz: "Ohne weitere Maßnahmen", sanierung: false, patch: {} },
     ];
     if (heizsystem === "hk_alt") {
-      list.push({ id: "heizung", titel: "Heizkörper fit machen", kurz: "Niedertemperatur-Heizkörper statt der alten", sanierung: false, patch: { heizkoerperTausch: true } });
+      list.push({ id: "heizung", titel: "Heizkörper fit machen", reiter: "Heizkörper", kurz: "Niedertemperatur-Heizkörper statt der alten", sanierung: false, patch: { heizkoerperTausch: true } });
     }
     // Ein Schritt die Dämm-Leiter hinauf — von unsaniert auf teilsaniert bzw. von
     // teilsaniert auf gut saniert.
     if (insulationIdx <= 1) {
-      list.push({ id: "teil", titel: "Schrittweise Sanierung", kurz: "Dach/Fassade dämmen + passende Heizflächen", sanierung: true, patch: { insulationIdx: insulationIdx + 1, ...(heizsystem === "hk_alt" ? { heizkoerperTausch: true } : {}) } });
+      list.push({ id: "teil", titel: "Schrittweise Sanierung", reiter: "Teil-Sanierung", kurz: "Dach/Fassade dämmen + passende Heizflächen", sanierung: true, patch: { insulationIdx: insulationIdx + 1, ...(heizsystem === "hk_alt" ? { heizkoerperTausch: true } : {}) } });
     }
     if (insulationIdx < INSULATION_BESTAND.length - 1) {
       // Zielstufe ist die oberste (vollsaniert), nicht mehr die dritte — sonst hieße
       // der Weg „Vollsanierung" und landete doch nur bei „gut saniert".
       // Niedertemperatur-Heizkörper statt Gratis-Fußbodenheizung: deren Kosten
       // zählen (ehrlich), sonst stünde die Vollsanierung künstlich zu gut da.
-      list.push({ id: "voll", titel: "Vollsanierung", kurz: "Rundum-Dämmung + Niedertemperatur-Heizflächen", sanierung: true, patch: { insulationIdx: INSULATION_BESTAND.length - 1, ...(heizsystem === "hk_alt" ? { heizkoerperTausch: true } : {}) } });
+      list.push({ id: "voll", titel: "Vollsanierung", reiter: "Vollsanierung", kurz: "Rundum-Dämmung + Niedertemperatur-Heizflächen", sanierung: true, patch: { insulationIdx: INSULATION_BESTAND.length - 1, ...(heizsystem === "hk_alt" ? { heizkoerperTausch: true } : {}) } });
     }
     return list;
   }, [situation, heizsystem, insulationIdx]);
@@ -1245,32 +1256,22 @@ export default function Waermepumpe({
               </ResultSection>
             )}
 
-            {/* 3. Realistische Wege */}
-            {zeigeWege && (
-              <div style={{ marginBottom: 16 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-                  <IconSparkle size={iconSizes.md} color={v('--color-accent')} />
-                  <span style={{ fontSize: v("--font-size-body"), fontWeight: 700 }}>Deine Wege zur Wärmepumpe</span>
-                </div>
-                <div style={{ display: "grid", gap: 8 }}>
-                  {wegeResults.map(w => (
-                    <WegCard key={w.id} titel={w.titel} kurz={w.kurz} r={w.r} active={activeWeg?.id === w.id} onClick={() => selectWeg(w.id)} situation={situation} sanierung={w.sanierung} refLabel={fuel.refLabel} />
-                  ))}
-                </div>
-                <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.5 }}>
-                  Sanierungskosten (Dämmung) sind hier nicht enthalten — die zahlst du fürs Gebäude (Komfort, Werterhalt, dauerhaft weniger Heizenergie), nicht für die Wärmepumpe. Der Heizkörpertausch steckt in der Investition, den macht man nur für die Wärmepumpe.
-                </div>
-              </div>
-            )}
+            {/* Hero: TCO-Differenz — mit den Wegen als Reiterzeile darüber.
 
-            {zeigeWege && (
-              <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", margin: "4px 2px 8px" }}>
-                Gewählter Weg: {activeWeg?.titel}
-              </div>
-            )}
-
-            {/* Hero: TCO-Differenz */}
+                Die Reiter stehen INNERHALB des Hero-Rahmens, direkt über der
+                Zahl: Sie sind ihre Bedingung, nicht ein eigener Abschnitt davor.
+                Warum nicht eingeklappt und die Zahl nach oben — siehe
+                `WegReiter`. */}
             <div style={{ padding: "24px 20px", marginBottom: 16, background: v('--color-bg-accent'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border-accent')}` }}>
+              {zeigeWege && (
+                <WegReiter
+                  wege={wegeResults}
+                  aktivId={activeWeg?.id}
+                  onSelect={selectWeg}
+                  situation={situation}
+                  refLabel={fuel.refLabel}
+                />
+              )}
               <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, width: "100%" }}>
                 Einsparung über {DEFAULT_HEATPUMP_CONFIG.years} Jahre
                 <InfoTooltip title="So wird die Einsparung berechnet" ariaLabel="Wie wird die Einsparung berechnet?">
@@ -1667,7 +1668,20 @@ function TcoBreakdown({ r, situation, jahre, sanierungHinweis, refLabel }: { r: 
       </div>
       {sanierungHinweis && (
         <div style={{ marginTop: 8, paddingTop: 8, borderTop: `1px solid ${v('--color-border')}`, color: v('--color-text-muted'), lineHeight: 1.5 }}>
-          Warum oft weniger als „nur Heizkörper tauschen"? Die Dämmung senkt den Heizbedarf — die Wärmepumpe ersetzt dadurch <strong>weniger teures Gas</strong>, also fällt die reine WP-Ersparnis kleiner aus. Der eigentliche Nutzen der Dämmung (dauerhaft weniger Energie und CO₂, egal mit welchem Heizsystem) steckt bewusst nicht in dieser Zahl — sie zeigt nur, wie sich die Wärmepumpe gegenüber Gas rechnet.
+          {/* DIESER SATZ STAND FRÜHER UNTER DER WEGE-LISTE. Als sie am
+              27.08.2026 zur Reiterzeile über der Zahl wurde, hatte er dort
+              keinen Platz mehr und wäre beinahe ersatzlos verschwunden — beim
+              Zusammenführen mit dem Hauptstand am 05.09.2026 ist genau das
+              passiert und hier wieder behoben.
+
+              Er muss ZUERST kommen: Ohne ihn liest sich ein Sanierungsweg wie
+              geschenktes Geld — die Zahl daneben ist um Zehntausende größer,
+              und die Kosten, die sie erzeugt haben, stehen nirgends. */}
+          <strong style={{ color: v('--color-text-primary') }}>Die Sanierungskosten sind hier nicht enthalten.</strong>{" "}
+          Die Dämmung zahlst du fürs Gebäude — Komfort, Werterhalt, dauerhaft weniger Heizenergie —, nicht für die Wärmepumpe. Der Heizkörpertausch steckt dagegen in der Investition: den macht man nur für sie.
+          <div style={{ marginTop: 8 }}>
+            Warum oft weniger als „nur Heizkörper tauschen"? Die Dämmung senkt den Heizbedarf — die Wärmepumpe ersetzt dadurch <strong>weniger teures Gas</strong>, also fällt die reine WP-Ersparnis kleiner aus. Der eigentliche Nutzen der Dämmung (dauerhaft weniger Energie und CO₂, egal mit welchem Heizsystem) steckt bewusst nicht in dieser Zahl — sie zeigt nur, wie sich die Wärmepumpe gegenüber Gas rechnet.
+          </div>
         </div>
       )}
     </div>
@@ -1731,44 +1745,132 @@ function BonusToggle({ checked, onChange, label, tipTitle, children }: { checked
   );
 }
 
-function WegCard({ titel, kurz, r, active, onClick, situation, sanierung, refLabel }: { titel: string; kurz: string; r: HeatPumpResult; active: boolean; onClick: () => void; situation: "bestand" | "neubau"; sanierung: boolean; refLabel: string }) {
-  const pos = r.tcoEinsparung >= 0;
-  // Klickbares div statt <button>, damit das Info-Icon (selbst ein Button) kein
-  // ungültiges verschachteltes Button ergibt. Tastatur-Bedienung nachgebildet.
+// Die frühere `WegCard` stand hier — vier volle Karten VOR dem Ergebnis, je
+// mit Titel, Beschreibung und Betrag. Sie ist am 05.09.2026 entfallen: Die
+// Wege stehen jetzt als Reiterzeile über der Zahl (siehe `WegReiter`), und
+// zwei Darstellungen derselben Sache nebeneinander wären genau die Drift,
+// gegen die dieses Projekt seine Bausteine führt.
+
+/**
+ * Ein Betrag, der in einen 105 px breiten Reiter passt.
+ *
+ * Tausender wären die naheliegende Rundung und erzeugen unter 1.000 € Anzeigen
+ * ohne Aussage: 400 € Gewinn wurden zu „+0k €", 400 € Verlust zu „-0k €". Der
+ * Bereich ist real — der Rechner hat für knappe Fälle einen eigenen Zweig —,
+ * und vier Reiter, von denen mehrere „0k €" tragen, sind keine Auswahl.
+ */
+function reiterBetrag(euro: number): string {
+  if (Math.abs(euro) < 1000) {
+    const hundert = Math.round(euro / 100) * 100;
+    return `${hundert > 0 ? "+" : ""}${hundert.toLocaleString("de-DE")} €`;
+  }
+  const tausend = Math.round(euro / 1000);
+  return `${tausend > 0 ? "+" : ""}${tausend.toLocaleString("de-DE")}k €`;
+}
+
+/**
+ * Die Wege als Reiterzeile über der Einsparung.
+ *
+ * Bis 27.08.2026 stand hier eine Liste aus vier großen Karten VOR dem Ergebnis:
+ * 360 px Eingabe, bevor die Antwort kam, die selbst erst bei 658 px begann. Auf
+ * dem Handy war die Seite dadurch 14.820 px lang.
+ *
+ * Die naheliegende Reparatur — Wege einklappen, Zahl nach oben — wurde
+ * verworfen: Die Zahl HÄNGT am gewählten Weg. Steht sie darüber und der Weg
+ * eingeklappt darunter, behauptet die Seite ein Ergebnis ohne die Bedingung, zu
+ * der es gehört, und der stärkste Inhalt der Seite verschwindet hinter einem
+ * Dreieck. Also beides zusammen: Die Zahl steht in ihrer Karte, und die vier
+ * Wege stehen als Reiter darüber — man sieht auf einen Blick, dass es vier gibt,
+ * was sie einbringen und welcher gerade gilt.
+ *
+ * WAS DER REITER NICHT KANN, gibt er ab: Die Beschreibung („Dach/Fassade dämmen
+ * + passende Heizflächen") passt nicht in 105 px. Sie steht im Erklär-Fenster
+ * hinter dem Fragezeichen, zusammen mit der Rechnung — Betreiber-Entscheidung
+ * vom 27.08.2026 („die wege können wir ergänzend über ? erklären").
+ *
+ * Am 05.09.2026 aus einem überholten Zweig zurückgeholt: Beim Zusammenführen
+ * mit dem Hauptstand war sie als Beiwerk zum Teilen-Link mit ausgebaut worden,
+ * und die vier Karten standen wieder vor dem Ergebnis.
+ */
+function WegReiter({
+  wege,
+  aktivId,
+  onSelect,
+  situation,
+  refLabel,
+}: {
+  wege: { id: string; titel: string; reiter: string; kurz: string; sanierung: boolean; r: HeatPumpResult }[];
+  aktivId: string | undefined;
+  onSelect: (id: string) => void;
+  situation: "bestand" | "neubau";
+  refLabel: string;
+}) {
   return (
-    <div
-      role="button" tabIndex={0} onClick={onClick}
-      onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } }}
-      style={{
-        display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", cursor: "pointer",
-        padding: "12px 14px", borderRadius: v('--radius-md'),
-        background: active ? v('--color-accent-dim') : v('--color-bg'),
-        border: active ? `2px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
-      }}>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          {active && <IconCheck size={iconSizes.md} color={v('--color-accent')} />}
-          <span style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v('--color-text-primary') }}>{titel}</span>
-        </div>
-        <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted'), marginTop: 2, lineHeight: 1.4 }}>{kurz}</div>
-      </div>
-      <div style={{ textAlign: "right", flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4 }}>
-          <span style={{ fontSize: v("--font-size-lead"), fontWeight: 800, fontFamily: v('--font-mono'), color: pos ? v('--color-positive') : v('--color-negative') }}>
-            {pos ? "+" : ""}{r.tcoEinsparung.toLocaleString("de-DE")} €
-          </span>
-          <span onClick={e => e.stopPropagation()} onKeyDown={e => e.stopPropagation()} style={{ display: "inline-flex" }}>
-            <InfoTooltip title={`So rechnet sich „${titel}"`} ariaLabel={`Berechnung für ${titel}`}>
-              <TcoBreakdown r={r} situation={situation} jahre={DEFAULT_HEATPUMP_CONFIG.years} sanierungHinweis={sanierung} refLabel={refLabel} />
-            </InfoTooltip>
-          </span>
-        </div>
-        <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted') }}>
-          {r.investNetto - r.gasInvest <= 0
-            ? "keine Mehrkosten"
-            : r.amortisationsJahre !== null ? `Mehrkosten drin nach ${r.amortisationsJahre} J` : `Mehrkosten > ${DEFAULT_HEATPUMP_CONFIG.years} J nicht drin`}
-        </div>
-      </div>
+    <div style={{ display: "flex", gap: 4, marginBottom: 16 }}>
+      {wege.map(w => {
+        const aktiv = w.id === aktivId;
+        const pos = w.r.tcoEinsparung >= 0;
+        return (
+          <div
+            key={w.id}
+            role="button"
+            tabIndex={0}
+            aria-pressed={aktiv}
+            onClick={() => onSelect(w.id)}
+            onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSelect(w.id); } }}
+            style={{
+              flex: 1,
+              minWidth: 0,
+              cursor: "pointer",
+              textAlign: "center",
+              padding: "12px 4px",
+              borderRadius: v("--radius-md"),
+              background: v("--color-bg"),
+              border: aktiv ? `2px solid ${v("--color-accent")}` : `1px solid ${v("--color-border")}`,
+            }}
+          >
+            <div
+              style={{
+                fontSize: v("--font-size-caption"),
+                fontWeight: 700,
+                lineHeight: 1.25,
+                color: aktiv ? v("--color-accent") : v("--color-text-secondary"),
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 2,
+              }}
+            >
+              <span style={{ minWidth: 0, overflowWrap: "anywhere" }}>{w.reiter}</span>
+              {/* Das Fragezeichen trägt, was der Reiter nicht fassen kann.
+                  `stopPropagation`, sonst wählt ein Klick darauf den Weg mit. */}
+              <span
+                onClick={e => e.stopPropagation()}
+                onKeyDown={e => e.stopPropagation()}
+                style={{ display: "inline-flex", flexShrink: 0 }}
+              >
+                <InfoTooltip title={w.titel} ariaLabel={`Was bedeutet „${w.titel}"?`}>
+                  <p style={{ margin: "0 0 16px", fontSize: v("--font-size-small"), lineHeight: 1.55, color: v("--color-text-secondary") }}>
+                    {w.kurz}
+                  </p>
+                  <TcoBreakdown r={w.r} situation={situation} jahre={DEFAULT_HEATPUMP_CONFIG.years} sanierungHinweis={w.sanierung} refLabel={refLabel} />
+                </InfoTooltip>
+              </span>
+            </div>
+            <div
+              style={{
+                fontFamily: v("--font-mono"),
+                fontSize: v("--font-size-small"),
+                fontWeight: 700,
+                marginTop: 4,
+                color: pos ? v("--color-positive-text") : v("--color-negative-text"),
+              }}
+            >
+              {reiterBetrag(w.r.tcoEinsparung)}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
