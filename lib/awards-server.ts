@@ -13,6 +13,7 @@ import {
   type HookKind,
   type HookSettings,
   type Placement,
+  DEFAULT_HOOK_SETTINGS,
 } from "./award-hook";
 
 // Geteilter Server-Loader für die Award-Ansichten. Die breite Grundtabelle
@@ -139,6 +140,36 @@ const hookIndexMemo = new Map<string, { at: number; val: HookIndex }>();
 /** Für ALLE Gemeinden den fertigen Aufhänger (Betreff/Einstieg) vorberechnen.
  *  Danach ist die Suche in der Ansicht nur ein Filter über dieses Array, nicht
  *  33 Sortierläufe pro Request. */
+/**
+ * Hat DIESE Gemeinde überhaupt eine Auszeichnung?
+ *
+ * Die Gemeindeseite lädt ihre Platzierung weiterhin im Browser nach — der
+ * Rechenkern zieht rund 11.000 Zeilen, und das gehört nicht in den
+ * Seitenaufbau (die Fehlerklasse, die am 27.07.2026 eine Index-Welle gekippt
+ * hat). Was die Seite VORHER wissen muss, ist nur eine Ja/Nein-Frage: Soll der
+ * Platz für die Kachel reserviert werden?
+ *
+ * Ohne diese Frage gibt es nur zwei schlechte Antworten — kein Platzhalter
+ * (dann springt der Inhalt, sobald die Rangdaten eintreffen) oder immer einer
+ * (dann springt er bei den rund zwei Dritteln der Orte OHNE Auszeichnung, nur
+ * andersherum).
+ *
+ * Der Index dahinter ist prozess-lokal gemerkt, und die Gemeindeseite liegt
+ * sieben Tage im Zwischenspeicher und wird nach jedem Datenlauf vorgewärmt —
+ * die Kosten fallen also im Aufwärmlauf an, nicht bei Besuchern. Fällt die
+ * Datenbank aus, lautet die Antwort „nein": kein Platzhalter ist der
+ * harmlosere Fehler.
+ */
+export async function hatAuszeichnung(regionId: string): Promise<boolean> {
+  try {
+    const index = await buildHookIndex(DEFAULT_HOOK_SETTINGS);
+    const row = index.rows.find((r) => r.regionId === regionId);
+    return !!row && row.kind !== "neutral";
+  } catch {
+    return false;
+  }
+}
+
 export async function buildHookIndex(settings: HookSettings): Promise<HookIndex> {
   const key = JSON.stringify(settings);
   const hit = hookIndexMemo.get(key);

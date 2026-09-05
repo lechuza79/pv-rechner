@@ -11,13 +11,20 @@
 // 05.09.2026 an Heringen — von fünf Meldungen waren drei wörtlich das, was
 // darunter schon stand, und eine war die Auszeichnungs-Karte darüber.
 //
-// EINE GESCHICHTE IST EIN BEFUND, KEINE BESCHREIBUNG. Der Katalog führt dafür
-// feste Familien; hier stehen die, die sich für EINEN Ort rechnen lassen und
-// die auf der Seite nicht ohnehin schon sichtbar sind:
+// HIER STEHT NUR, WAS DER STORY-SUCHLAUF NICHT HAT. Seit dessen Merge
+// (05.09.2026) führt lib/social-funde.ts die Muster des Katalogs zentral —
+// Ausreißer, Kontrast, Umkehrung, Toplisten, Flächenmix, Kohorte, Anomalie —
+// und lib/social-fundvorrat.ts liest sie JE ORT aus dem Vorrat. Diese Datei
+// baut davon nichts nach; sie ergänzt zwei Familien, die der Suchlauf nicht
+// kennt, weil sie keinen Vergleich zwischen Orten brauchen, sondern die
+// Vergütungsreihe des eigenen Bestands:
 //
 //   G4.1  Was der Ort eingespielt hat — Einspeisevergütung seit 2000
 //   G4.2  Der Auslauf-Jahrgang — wem die Vergütung dieses Jahr endet
-//   G4.4  Die Wirkungsbilanz — Erzeugung und vermiedenes CO₂
+//
+// Alles Übrige kommt aus dem Vorrat und wird hier nur in dieselbe Form
+// gebracht (siehe `ausFund`). Wer eine dritte Familie ergänzt, prüft zuerst,
+// ob der Suchlauf sie schon hat.
 //
 // DIE REGEL, DIE HIER GILT: Was auf der Seite schon steht, gehört nicht in den
 // Feed. Zubau des Vorjahres, Anlagenzahl, Leistung je Einwohner und die
@@ -32,13 +39,9 @@
 // REIN und ohne Datenbank-, Next- oder server-only-Importe: Der Aufrufer reicht
 // die Zahlen herein, die die Gemeindeseite ohnehin lädt.
 
-import { FEED_IN_YEARS, PERSONEN } from "./constants";
-import {
-  co2Tonnen,
-  eigenverbrauchAnteilRegion,
-  einspeiseCt,
-  erzeugungKwh,
-} from "./atlas-impact";
+import { FEED_IN_YEARS } from "./constants";
+import { eigenverbrauchAnteilRegion, einspeiseCt, erzeugungKwh } from "./atlas-impact";
+import type { VorratsFund } from "./social-fundvorrat";
 
 // ─── Was hereingereicht wird ─────────────────────────────────────────────────
 
@@ -63,13 +66,15 @@ export type StoryDaten = {
 // ─── Was herauskommt ─────────────────────────────────────────────────────────
 
 /** Die Familie aus dem Katalog, aus der die Geschichte kommt. */
-export type StoryKategorie = "G4.1" | "G4.2" | "G4.4";
+export type StoryKategorie = "G4.1" | "G4.2" | "fund";
 
 /** Was die Kategorie dem Leser sagt — nie das Kürzel. */
 export const KATEGORIE_LABEL: Record<StoryKategorie, string> = {
   "G4.1": "Was der Ort eingespielt hat",
   "G4.2": "Stichtag",
-  "G4.4": "Wirkungsbilanz",
+  // Ein Fund bringt seine eigene Kategorie mit (der Suchlauf setzt sie je
+  // Muster) — dieses Label greift nur, wo sie fehlt.
+  fund: "Aus den Daten",
 };
 
 export type StoryWert = {
@@ -321,59 +326,41 @@ function storyAuslauf(d: StoryDaten, heuteJahr: number): OrtsStory | null {
   };
 }
 
-// ─── G4.4 — Die Wirkungsbilanz ───────────────────────────────────────────────
-
-/**
- * Was der Bestand im Jahr erzeugt und an CO₂ vermeidet.
- *
- * ERZEUGUNG IST GESCHÄTZT, NIE GEMESSEN (Katalog G4.4) — das steht an der Zahl.
- * Der CO₂-Faktor ist bewusst konservativ gewählt; der amtliche
- * Vermeidungsfaktor für Photovoltaik liegt deutlich höher.
- */
-function storyWirkung(d: StoryDaten): OrtsStory | null {
-  if (d.solar.total_count < MIN_ANLAGEN_FUER_GELD) return null;
-  const kwh = erzeugungKwh(d.solar.total_kwp, d.regionId);
-  if (kwh <= 0) return null;
-  // Auch hier: EINE Rundung je Größe, aus der Text und Kachel lesen.
-  const tonnen = Math.round(co2Tonnen(kwh));
-  const gwh = runde(kwh / 1_000_000, 1);
-
-  // Haushalte als Größenvergleich: 3.000 kWh ist der Verbrauch eines
-  // Zwei-Personen-Haushalts nach der Tabelle des Rechners — genannt wird er,
-  // damit die Zahl nicht als Versorgungsgrad des Orts gelesen wird.
-  const haushalte = Math.round(kwh / HAUSHALT_KWH);
-
-  return {
-    kennung: "wirkung",
-    kategorie: "G4.4",
-    kategorieLabel: KATEGORIE_LABEL["G4.4"],
-    titel: `Die Solaranlagen in ${d.name} erzeugen rechnerisch ${gwh.toLocaleString("de-DE", { maximumFractionDigits: 1 })} GWh im Jahr`,
-    text:
-      `Das entspricht dem Jahresverbrauch von rund ${nf(haushalte)} Zwei-Personen-Haushalten und ` +
-      `vermeidet rechnerisch ${nf(tonnen)} Tonnen CO₂. Erzeugt und verbraucht wird nicht ` +
-      `gleichzeitig — die Zahl ist eine Jahressumme, kein Versorgungsgrad.`,
-    werte: [
-      { name: "Erzeugung im Jahr", wert: gwh, einheit: "GWh", haupt: true },
-      { name: "vermiedenes CO₂", wert: tonnen, einheit: "t/Jahr" },
-      { name: "entspricht Haushalten", wert: haushalte, einheit: "" },
-    ],
-    grundlage:
-      `Geschätzt, nicht gemessen: installierte Leistung × Standort-Ertrag × Praxis-Faktor des ` +
-      `Anlagenbestands. Der CO₂-Faktor ist bewusst konservativ — der amtliche Vermeidungsfaktor ` +
-      `für Photovoltaik liegt höher.`,
-    gewicht: 60,
-  };
-}
-
-/** Jahresverbrauch, gegen den die Erzeugung veranschaulicht wird.
- *
- *  AUS DER HAUSHALTS-TABELLE DES RECHNERS, nicht hier getippt: Dieselbe Zahl
- *  steht im PV-Rechner und im Bedarfs-Flow, und drei Fassungen davon liefen in
- *  diesem Projekt schon einmal auseinander. Der Zwei-Personen-Haushalt ist auch
- *  sonst der Bezugsfall der Atlas-Rechnungen. */
-const HAUSHALT_KWH = PERSONEN.find((p) => p.count === 2)!.verbrauch;
+// G4.4 „Die Wirkungsbilanz" (Erzeugung und vermiedenes CO₂) stand hier und ist
+// am 05.09.2026 auf Ansage des Betreibers wieder verschwunden: rechenbar, aber
+// als Satz auf einer Ortsseite unverständlich. Die Zahlen dafür gibt es
+// weiterhin (lib/atlas-impact.ts) — es fehlt eine Form, in der sie jemandem
+// etwas sagen, nicht die Rechnung.
 
 // ─── Der Aufruf ──────────────────────────────────────────────────────────────
+
+/**
+ * Ein Fund des Story-Suchlaufs in der Form dieser Datei.
+ *
+ * ES WIRD NICHTS UMFORMULIERT. Satz, Werte und Grundlage kommen unverändert aus
+ * dem Fund — er hat seine eigenen Schranken (Mindestgruppe, Mindestmenge, nur
+ * nach oben) schon durchlaufen, und ein zweiter Wortlaut daneben wäre genau die
+ * doppelte Fassung, gegen die der gemeinsame Vorrat gebaut ist.
+ *
+ * Die Schlagzeile ist der Satz selbst: Ein Fund trägt keine getrennte
+ * Überschrift, und eine hier erfundene wäre nicht gerechnet.
+ */
+function ausFund(f: VorratsFund): OrtsStory {
+  return {
+    kennung: f.kennung,
+    kategorie: "fund",
+    kategorieLabel: f.kategorie,
+    titel: f.satz,
+    text: f.grundlage,
+    werte: f.werte.map((w, i) => ({ ...w, haupt: i === 0 })),
+    grundlage: f.grundlage,
+    // Die Stärke des Fundes ist eine Rangzahl des Suchlaufs, kein Gewicht in
+    // unserer Skala. Unter die beiden Geld-Geschichten gesetzt, weil die einen
+    // Termin bzw. eine Summe über den ganzen Ort tragen; innerhalb der Funde
+    // bleibt die Reihenfolge des Suchlaufs erhalten.
+    gewicht: 50 - Math.min(f.staerke, 40),
+  };
+}
 
 /**
  * Die Geschichten über EINEN Ort, stärkste zuerst.
@@ -384,13 +371,23 @@ const HAUSHALT_KWH = PERSONEN.find((p) => p.count === 2)!.verbrauch;
  */
 export function ortsStories(opts: {
   daten: StoryDaten;
+  /**
+   * Was der Story-Suchlauf über DIESEN Ort im Vorrat hat — redaktionell
+   * vorgemerkt, nicht roh.
+   *
+   * Ein Fund im Zustand „offen" ist ein Kandidat, den noch niemand angesehen
+   * hat; er gehört nicht auf eine öffentliche Seite. Welche Zustände der
+   * Aufrufer durchlässt, entscheidet er beim Lesen — hier kommt an, was
+   * gezeigt werden darf.
+   */
+  funde?: VorratsFund[];
   /** Das laufende Jahr. Hereingereicht, nicht aus der Uhr gelesen — sonst
    *  liefert dieselbe Funktion im Test je nach Kalendertag ein anderes
    *  Ergebnis. */
   heuteJahr: number;
 }): OrtsStory[] {
-  const { daten, heuteJahr } = opts;
-  return [storyAuslauf(daten, heuteJahr), storyEingespielt(daten, heuteJahr), storyWirkung(daten)]
+  const { daten, heuteJahr, funde = [] } = opts;
+  return [storyAuslauf(daten, heuteJahr), storyEingespielt(daten, heuteJahr), ...funde.map(ausFund)]
     .filter((s): s is OrtsStory => s !== null)
     .sort((a, b) => b.gewicht - a.gewicht);
 }

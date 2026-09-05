@@ -176,14 +176,6 @@ describe("Der Nenner und der Vorbehalt stehen dabei", () => {
     expect(geld!.grundlage).toMatch(/zu hoch/);
   });
 
-  it("nennt die Erzeugung geschätzt, nicht gemessen", () => {
-    const wirkung = stories().find((s) => s.kategorie === "G4.4");
-    expect(wirkung).toBeTruthy();
-    expect(`${wirkung!.text} ${wirkung!.grundlage}`).toMatch(/rechnerisch|geschätzt/i);
-    // „nicht gemessen" ist die Aussage, „gemessen" allein wäre ihr Gegenteil.
-    // Die Verneinung steht DAVOR, also muss der Ausschluss zurückschauen.
-    expect(wirkung!.grundlage).not.toMatch(/(?<!nicht )gemessen/);
-  });
 
   it("das Wort „Subvention“ kommt nicht vor", () => {
     // Katalog G4.1: Es kapert den Kommentarstrang, und die Aussage ist ohnehin

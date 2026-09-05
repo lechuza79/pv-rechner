@@ -24,6 +24,8 @@ import GemeindePeerTiles from "../../../../../../components/atlas/GemeindePeerTi
 import GemeindePlatzierungen from "../../../../../../components/atlas/GemeindePlatzierungen";
 import GemeindeMeldungen from "../../../../../../components/atlas/GemeindeMeldungen";
 import { ortsStories } from "../../../../../../lib/orts-stories";
+import { leseFunde } from "../../../../../../lib/social-fundvorrat";
+import { hatAuszeichnung } from "../../../../../../lib/awards-server";
 import CollapsibleIntro from "../../../../../../components/atlas/CollapsibleIntro";
 import GemeindeEmbedBox from "../../../../../../components/atlas/GemeindeEmbedBox";
 import GemeindeAboBox, { ABO_OEFFNEN } from "../../../../../../components/atlas/GemeindeAboBox";
@@ -529,7 +531,12 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
           )}
             </CollapsibleIntro>
           </div>
-          <GemeindePlatzierungen regionId={region.region_id} />
+          {/* Das Kennzeichen entscheidet nur, ob der Platz reserviert wird —
+              die Rangdaten selbst lädt die Kachel weiterhin im Browser nach. */}
+          <GemeindePlatzierungen
+            regionId={region.region_id}
+            erwartet={await hatAuszeichnung(region.region_id)}
+          />
         </div>
 
         {/*
@@ -560,6 +567,11 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
               standIso: atlas.data_as_of,
             },
             heuteJahr: new Date().getUTCFullYear(),
+            // Nur redaktionell VORGEMERKTE Funde. „offen" heißt, dass den
+            // Fund noch niemand angesehen hat — ein Kandidat, keine
+            // veröffentlichte Aussage; der Suchlauf legt ausdrücklich nur ab
+            // und entscheidet nicht.
+            funde: await leseFunde({ ort: region.name, stand: "vorgemerkt", grenze: 6 }),
           })}
           name={region.name}
           liveUrl={`${BASE_URL}${atlasPath}`}

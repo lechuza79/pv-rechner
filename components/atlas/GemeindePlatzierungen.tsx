@@ -152,7 +152,22 @@ function PlatzierungsSkelett() {
   );
 }
 
-export default function GemeindePlatzierungen({ regionId }: { regionId: string }) {
+export default function GemeindePlatzierungen({
+  regionId,
+  erwartet = false,
+}: {
+  regionId: string;
+  /**
+   * Weiß die Seite schon, dass hier eine Auszeichnung kommt?
+   *
+   * Sie fragt das beim Aufbau (`hatAuszeichnung`) — eine Ja/Nein-Frage, nicht
+   * die Rangdaten selbst. Nur dann wird der Platz reserviert. Ohne das
+   * Kennzeichen gäbe es nur zwei schlechte Antworten: nie ein Platzhalter (der
+   * Inhalt springt, sobald die Daten eintreffen) oder immer einer (er springt
+   * bei den rund zwei Dritteln der Orte ohne Auszeichnung, nur andersherum).
+   */
+  erwartet?: boolean;
+}) {
   const [daten, setDaten] = useState<Daten | null>(null);
   const [fehler, setFehler] = useState(false);
   /** Welche Rangliste im Dialog steht — Index in `alle`, null = zu. */
@@ -176,17 +191,15 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
   // wieder verschwindet, die Seite springen lässt. Das galt für ALLE 11.000
   // Gemeinden — die Auszeichnung trägt nur bei rund einem Drittel der Orte.
   //
-  // Öffentlich erreichbar sind aber nur die angeschriebenen Orte, und die
-  // Auswahl für den Versand nimmt ausschließlich Gemeinden MIT Aufhänger
-  // („nur echte Sieger"). Auf einer Seite, die überhaupt jemand aufrufen kann,
-  // kommt die Auszeichnung also so gut wie immer — abgeleitet aus der
-  // Auswahlregel, nicht gemessen. Ohne Platzhalter springt der ganze Inhalt
-  // darunter, sobald die Rangdaten eintreffen (rund 1,7 s).
-  //
-  // Die Gegenrichtung bleibt abgesichert: Kommt nichts, klappt der Platz
-  // zusammen. Das ist der seltene Fall, nicht der Normalfall.
+  // Das galt und gilt — DESHALB entscheidet nicht diese Komponente, sondern die
+  // Seite: Sie fragt beim Aufbau, ob dieser Ort überhaupt eine Auszeichnung hat
+  // (`erwartet`), und nur dann wird Platz reserviert. Eine kurz erwogene
+  // Abkürzung — „öffentlich erreichbar sind ohnehin nur angeschriebene Orte,
+  // und die haben alle einen Aufhänger" — war falsch: Die Freigabe steuert die
+  // INDEXIERUNG, nicht die Erreichbarkeit; über den Atlas kommt man auf jede
+  // der 11.000 Ortsseiten.
   if (fehler) return null;
-  if (!daten) return <PlatzierungsSkelett />;
+  if (!daten) return erwartet ? <PlatzierungsSkelett /> : null;
   if (!daten.beste) return null;
   const b = daten.beste;
 
