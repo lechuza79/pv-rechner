@@ -16,7 +16,7 @@ import { IconPause, IconPlay, IconRefresh } from "../Icons";
 import { useChartExport } from "../../lib/useChartExport";
 import { EXPORT_IGNORE_ATTR } from "../../lib/export-markers";
 import { WIDGETS } from "../../lib/widget-registry";
-import { v, fsPx, space, tokens, type TokenName } from "../../lib/theme";
+import { v, fsPx, space, tokens } from "../../lib/theme";
 import { fmtEuroVoll, formatDataAsOf } from "../../lib/atlas-format";
 import { PERSONEN, FEED_IN_YEARS } from "../../lib/constants";
 import type { Kostenrennen } from "../../lib/kostenrennen";
@@ -339,29 +339,28 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   const ersparnis = kOhne[T] - kPv[T];
   // Immer EIN Ereignis ist aktiv — das zuletzt erreichte; es wird unter der
   // Spur erklärt, das vorige blendet aus (Muster: Weichenstellungen im Zubau-Chart).
-  type Ereignis = { tag: number; jahr: number; label: string; text: string; farbe: TokenName };
+  type Ereignis = { tag: number; jahr: number; label: string; text: string };
   const jahrVon = (d: number) => tagDatum(verlauf, rennen.startJahr, d).jahr;
   const ereignisse: Ereignis[] = [
-    { tag: 0, jahr: rennen.startJahr, label: `Anlage gekauft · ${fmtEuroVoll(pv.investition)}`, farbe: "--color-accent",
+    { tag: 0, jahr: rennen.startJahr, label: `Anlage gekauft · ${fmtEuroVoll(pv.investition)}`,
       text: `Der PV-Haushalt startet mit der Anschaffung, der andere bei null. Ab jetzt zählt jeder Tag Strom.` },
     // Die beiden Jahreszeiten-Hinweise des ersten Jahres. Ihre Punkte bleiben —
     // die Achse schiebt sie später zusammen, aber ein Punkt, der plötzlich
     // verschwindet, sieht aus wie ein Fehler.
-    ...jahreszeiten.map((m) => ({ tag: m.tag, jahr: jahrVon(m.tag), label: m.text, text: m.erklaerung, farbe: "--color-text-secondary" as TokenName })),
+    ...jahreszeiten.map((m) => ({ tag: m.tag, jahr: jahrVon(m.tag), label: m.text, text: m.erklaerung })),
   ];
   if (bezahltTag !== null) {
     const d = tagDatum(verlauf, rennen.startJahr, bezahltTag);
-    ereignisse.push({ tag: bezahltTag, jahr: d.jahr, label: `Anlage bezahlt · ${MONATE_KURZ[d.monat]} ${d.jahr}`, farbe: "--color-positive",
+    ereignisse.push({ tag: bezahltTag, jahr: d.jahr, label: `Anlage bezahlt · ${MONATE_KURZ[d.monat]} ${d.jahr}`,
       text: `Die Linien kreuzen sich: Was die Anlage gekostet hat, ist über die gesparte Stromrechnung zurück. Ab hier liegt der PV-Haushalt vorn.` });
   }
   if (einspeiseEndeTag != null) {
-    ereignisse.push({ tag: einspeiseEndeTag, jahr: jahrVon(einspeiseEndeTag), label: `Einspeisevergütung endet`, farbe: "--color-text-secondary",
+    ereignisse.push({ tag: einspeiseEndeTag, jahr: jahrVon(einspeiseEndeTag), label: `Einspeisevergütung endet`,
       text: `Nach ${FEED_IN_YEARS} Jahren gibt es für eingespeisten Strom nichts mehr. Die Anlage spart weiter den eigenen Verbrauch, die Linie steigt steiler.` });
   }
   ereignisse.push({
     tag: T, jahr: jahrVon(T),
     label: ersparnis >= 0 ? `Ersparnis nach ${rennen.jahre} Jahren: ${fmtEuroVoll(ersparnis)}` : `Mehrkosten nach ${rennen.jahre} Jahren: ${fmtEuroVoll(-ersparnis)}`,
-    farbe: ersparnis >= 0 ? "--color-positive" : "--color-negative",
     text: `Endstand: ${fmtEuroVoll(kOhne[T])} ohne Anlage gegen ${fmtEuroVoll(kPv[T])} mit Anlage, Anschaffung eingerechnet.`,
   });
   const sichtbareEreignisse = ereignisse.filter((e) => t >= e.tag);
@@ -432,7 +431,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
       }}
     >
       {/* Titel groß; das „?" hängt am letzten Wort, auch wenn der Titel umbricht. */}
-      <div style={{ fontSize: v("--font-size-display-md"), fontWeight: 800, lineHeight: 1.15, color: v("--color-text-primary"), marginBottom: space.md }}>
+      <div style={{ fontSize: v("--font-size-h2"), fontWeight: 800, lineHeight: 1.2, color: v("--color-text-primary"), marginBottom: space.md }}>
         {WIDGETS.kostenrennen.title}{" "}
         <span style={{ display: "inline-block", verticalAlign: "middle", fontSize: v("--font-size-body"), fontWeight: 400 }}>
         <InfoTooltip title="Der Beispielhaushalt" ariaLabel="Angaben zum Beispielhaushalt">
@@ -602,7 +601,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
             {aktivesEreignis && (
               <div key={aktivesEreignis.tag} className="kr-neu">
                 <div style={{ fontSize: v("--font-size-small"), fontWeight: 800, color: v("--color-text-primary"), marginBottom: space.xxs }}>
-                  <span style={{ fontFamily: v("--font-mono"), color: v(aktivesEreignis.farbe) }}>{aktivesEreignis.jahr}</span>
+                  <span style={{ fontFamily: v("--font-mono") }}>{aktivesEreignis.jahr}</span>
                   {"  ·  "}
                   {aktivesEreignis.label}
                 </div>

@@ -125,7 +125,7 @@ export class KostenrennenVideo {
   /** Höhe aus dem Chart-Seitenverhältnis; die Leinwand steht fest, bevor die Aufnahme beginnt. */
   vorbereiten(chartSeitenverhaeltnis: number) {
     const chartH = Math.round((VIDEO_BREITE - 2 * PAD) * chartSeitenverhaeltnis);
-    this.hoehe = PAD + 40 + 34 + chartH + 16 + ZEITLEISTE_H + 40 + PAD;
+    this.hoehe = PAD + 32 + 34 + chartH + 16 + ZEITLEISTE_H + 40 + PAD;
     this.canvas.width = (VIDEO_BREITE + 2 * RAND) * SKALA;
     this.canvas.height = (this.hoehe + 2 * RAND) * SKALA;
   }
@@ -174,8 +174,8 @@ export class KostenrennenVideo {
       let y = PAD;
       c.textBaseline = "top";
       c.fillStyle = farbe("--color-text-primary");
-      c.font = `800 ${fsPx("--font-size-display-md")}px ${sans}`;
-      c.fillText(d.titel, PAD, y); y += 40;
+      c.font = `800 ${fsPx("--font-size-h2")}px ${sans}`;
+      c.fillText(d.titel, PAD, y); y += 32;
       c.fillStyle = farbe("--color-text-primary");
       c.font = `700 ${fsPx("--font-size-body")}px ${mono}`;
       c.fillText(d.jahr, PAD, y);
