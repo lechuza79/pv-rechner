@@ -200,7 +200,13 @@ export function FundingRates({
                 nicht erben: Er lief auf Telefonbreite 160 px über den Rand,
                 gefunden vom Überlauf-Test am 05.09.2026. Ohne Einheit ist der
                 Wert Fließtext und bricht um. */}
-            <span style={{ textAlign: "right", flexShrink: einheit ? 0 : 1, minWidth: 0 }}>
+            {/* Der Wert-Kasten darf IMMER schrumpfen: Als starres Flex-Kind nahm
+                er die Breite seiner längsten Zeile — und ein Zusatz wie „für
+                Leistung über 8 kWp — höchstens …" ist als Fließtext gedacht,
+                wurde aber nie umgebrochen (zweiter Fund des Überlauf-Tests,
+                481 px). Zusammen bleiben nur Zahl und kurze Einheit, und die
+                schützt das nowrap darunter. */}
+            <span style={{ textAlign: "right", flexShrink: 1, minWidth: 0 }}>
               <span style={{ whiteSpace: einheit ? "nowrap" : "normal", overflowWrap: "anywhere" }}>
                 <span style={{ fontFamily: v("--font-mono"), fontWeight: 700 }}>{zahl}</span>
                 {einheit && kurzeEinheit && (
