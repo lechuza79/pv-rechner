@@ -1,210 +1,220 @@
-# Wettbewerb: Wer bietet Versorgungskunden einen Rechner an?
+# Wettbewerbslage: Wer bietet Versorgungskunden einen Rechner an?
 
-> Erhebung vom 25.08.2026, maschinell über **alle** Strom- und Gasversorger unserer
-> Datenbank. Grundgesamtheit 910, abgerufen 859. Nachrechenbar: Der Lauf steht als
-> `npm exec tsx scripts/versorger-erhebung.ts -- --alle` bereit, die Befunde je Versorger
-> liegen in der Spalte `werkzeug` der Versorgertabelle.
->
-> **Alle Zahlen sind Untergrenzen.** Warum, steht am Ende — das ist der wichtigste
-> Abschnitt dieses Papiers, nicht sein Kleingedrucktes.
+**Stand 05.09.2026.** Interne Arbeitsgrundlage. Für die Feature-Tabelle auf der
+Website siehe den letzten Abschnitt — die ist ausdrücklich noch nicht gebaut,
+und sie ist vergleichende Werbung nach § 6 UWG.
 
-## Wofür das Papier da ist
-
-Zwei Zwecke, und sie stellen verschiedene Anforderungen:
-
-1. **Intern:** die Marktlage kennen, bevor über Angebot, Preis und Reihenfolge der
-   Ansprache entschieden wird. Dafür ist dieses Dokument gebaut.
-2. **Später auf der Website:** eine Funktionstabelle im üblichen Format
-   („wir gegen die anderen"). Das machen alle Anbieter dieser Gattung so, und es ist
-   gut für die Auffindbarkeit in KI-Antworten. **Noch nicht gebaut** — die Rohdaten
-   dafür stehen unten, damit niemand sie erneut erheben muss.
-
-**Vor der Veröffentlichung einer namentlichen Gegenüberstellung:** Das ist
-vergleichende Werbung (§ 6 UWG). Zulässig, aber nur mit objektiven, nachprüfbaren
-Aussagen und ohne Herabsetzung — und jede Aussage über einen Wettbewerber muss auf
-dessen eigener, datierter Angabe beruhen. Im Pitch an einen einzelnen Versorger ist
-das unproblematisch, öffentlich nicht. Eine Fassung für die Website gehört durch die
-Rechtsprüfung des Projekts, bevor sie live geht.
+**Diese Fassung ersetzt die vom 25.08.2026 vollständig.** Deren vier tragende
+Zahlen haben eine Handprüfung nicht überstanden; was daran falsch war und warum,
+steht unter „Was die erste Fassung falsch gemacht hat". Wer die alten Zahlen
+irgendwo zitiert findet, ersetzt sie durch die hier.
 
 ---
 
-## Der Kernbefund
+## Wie diese Zahlen entstanden sind
 
-**756 von 859 abgerufenen Versorgern haben auf ihrer Photovoltaik- oder
-Wärmepumpen-Seite kein Rechenwerkzeug.**
+Zwei Stufen, und die Trennung ist der Grund, warum man ihnen trauen kann.
 
-| Befund | Versorger |
-|---|---|
-| kein Werkzeug | 756 |
-| Rechner vorhanden | 53 |
-| nur Anfrageformular, als Rechner bezeichnet | 44 |
-| Werkzeug erkennbar, Bauart nicht bestimmbar | 5 |
+**Stufe 1 — sammeln.** Ein Lauf über alle 910 Versorger mit Website ruft je Haus
+die Startseite ab, liest das Seitenverzeichnis aus der eigenen Sitemap, holt die
+Photovoltaik- und Wärmepumpen-Seiten und geht von dort eine Ebene tiefer.
+Erreicht wurden **864**; 46 blieben unerreichbar (Bot-Sperre oder Server-Fehler)
+— für die liegt **kein Befund** vor, nicht der Befund „nichts vorhanden".
 
-Die Trennung zwischen **Rechner** und **Anfrageformular** ist keine Feinheit, sondern
-der Kern der Auswertung: Der eine Fall belegt, dass jemand im Haus ein Werkzeug
-gewollt, durchgesetzt und bezahlt hat — es gibt also einen Zuständigen und eine Zeile
-im Budget. Der andere belegt nichts davon. Eine erste Fassung der Erhebung warf beides
-zusammen und meldete deshalb 26 „Rechner" statt 12.
+**Stufe 2 — ansehen.** Jeder Kandidat aus Stufe 1 wurde in einem echten Browser
+geöffnet, mit ausgeführtem JavaScript, und einzeln eingeordnet: **244 Seiten**,
+davon 169 Kandidaten und 80 aus einer Stichprobe der vermeintlich leeren.
 
-## Photovoltaik gegen Wärmepumpe
+Die zweite Stufe gibt es, weil die erste die Frage nicht beantworten kann. Ob
+eine Seite eine Investition durchrechnet oder einen Stromtarif, steht nicht im
+Quelltext. **74 der 244 Einordnungen mussten korrigiert werden — fast jede
+dritte.**
 
-| Art des Werkzeugs | Photovoltaik | Wärmepumpe |
+Jeder Befund in der Datenbank trägt deshalb, ob er *angesehen* oder nur
+*vermutet* ist. Nur Angesehenes steht in diesem Papier.
+
+---
+
+## Der Befund
+
+**Von 864 abgerufenen Versorgern haben 26 ein bestätigtes Rechenwerkzeug.**
+
+| | Anzahl | |
 |---|---|---|
-| eingekauftes Werkzeug eines Anbieters | 23 | 1 |
-| eigener Rechner, Ergebnis ohne Datenabgabe | 6 | 8 |
-| Rechner, Ergebnis nur gegen Kontaktdaten | 8 | 4 |
-| Anfrageformular, als Rechner bezeichnet | 35 | 8 |
-| kostenloses Kataster eingebunden | 1 | 0 |
-| Bauart nicht bestimmbar | 5 | 0 |
+| **eingekauft** | 15 | ein Werkzeug eines gewerblichen Anbieters |
+| **kostenlos eingebunden** | 9 | Landeskataster, Hochschule, EU-Rechner, Verband — hier hat niemand gezahlt |
+| **selbst gebaut** | 2 | |
 
-**Die acht Wärmepumpen-„Rechner" sind bei Einzelprüfung fast durchweg TARIFSEITEN**
-für Wärmepumpenstrom mit einem Verbrauchsregler — die Adressen heißen
-`waermepumpentarif`, `privilegierung-waermepumpenstrom`, `24h-tarif-fuer-waermepumpen`.
-Sie beantworten nicht, ob sich der Umstieg rechnet. Das Thema ist richtig zugeordnet,
-die Bauart nicht: Ein Verbrauchsregler ist eine Zahleneingabe, und mehr prüft die
-Maschine nicht.
+Aufgeschlüsselt nach Thema wird die Sache deutlich:
 
-**Einen echten Wärmepumpen-Wirtschaftlichkeitsrechner betreibt genau einer:**
-Stadtwerke Bernau (`/waermepumpenrechner/`) — und der gibt sein Ergebnis erst gegen
-Kontaktdaten heraus.
-
-**Warum das die wichtigste Zahl des Papiers ist:** Der Wärmepumpen-Heizstromkunde ist
-laut Monitoringbericht 2025 von Bundesnetzagentur und Bundeskartellamt der Privatkunde
-mit dem höchsten Anteil „Vertrieb und Marge" (4,69 ct/kWh bei getrennter Messung gegen
-4,45 ct beim gewöhnlichen Haushaltskunden), sein Bestand wächst um 7 % im Jahr, und
-seine Wechselquote ist von 9,3 auf 19 % gesprungen. Bei Photovoltaik haben 23 Versorger
-ein Werkzeug eingekauft — bei der wertvolleren Kundengruppe einer.
-
-## Wer die Werkzeuge liefert
-
-Bei 33 Versorgern ließ sich der Anbieter benennen. Kein Anbieter erreicht mehr als ein
-Prozent der Grundgesamtheit — der Markt ist unkonzentriert.
-
-| Anbieter | Angebot | Versorger |
+| | Photovoltaik | Wärmepumpe |
 |---|---|---|
-| tetraeder.solar | Solarkataster, weiß etikettierter Rechner | 7 |
-| co2online | Beratungsrechner, gemeinnützig | 2 |
-| Enpal | Anlagenverkauf, Rechner als Einstieg | 2 |
-| solarmaker | Rechner unter eigener Adresse | 1 |
-| **Solantiq** | weiß etikettierter PV-Rechner, ausgepreist | **0** |
+| eingekauft | 15 | **0** |
+| kostenlos eingebunden | 8 | 1 |
+| selbst gebaut | 1 | 1 |
 
-### Solantiq — der Preisanker, aber kein Wettbewerber im Markt
+**Bei Wärmepumpe gibt es in ganz Deutschland zwei Werkzeuge.** Stadtwerke Bernau
+betreibt einen eigenen Preisrechner (13 Gebäudefragen bis hin zum Einkommen für
+die Förderstufe), Stadtwerke Bad Kissingen bindet den Förderrechner des
+Bundesverbands Wärmepumpe ein. Gekauft hat **kein einziger**.
 
-*Alle Angaben von deren eigener Website, abgerufen 25.08.2026; den Rechner selbst
-durchgerechnet.*
+Bei Photovoltaik kaufen 15 Häuser ein. Selbst gebaut hat dort genau einer —
+Havelstrom Zehdenick —, und der gibt sein Ergebnis erst nach Anrede, Name,
+Adresse, E-Mail und Telefonnummer heraus.
 
-- **Betreiber:** contexagon GmbH, Bahnhofstrasse 31, 8280 Kreuzlingen, Schweiz.
-  Handelsregister CHE-249.142.582. Also kein deutscher Anbieter.
-- **Preis:** 49 €/Monat (mit Fremdmarke, 500 Berechnungen), 149 €/Monat (ohne
-  Fremdmarke, 5.000 Berechnungen), Enterprise auf Anfrage. **1.788 €/Jahr** ist damit
-  der einzige veröffentlichte Preis für genau diese Produktgattung.
-- **Zielgruppe laut eigener Darstellung: Solarinstallateure**, nicht Versorger. Der
-  Preis belegt einen Marktpreis der Gattung, **nicht** die Zahlungsbereitschaft eines
-  Stadtwerks. Nachweislich zahlt ihn kein Versorger unserer Liste.
-- **Datenbasis:** PVGIS der EU-Kommission, dazu Open-Meteo für die Solarprognose.
-- **Gebiet:** Deutschland, Österreich, Schweiz.
-- **Ergebnis kommt sofort, ohne Datenabgabe** (München, 9,24 kWp → Amortisation
-  11 Jahre; selbst durchgerechnet). Die Lead-Weiterleitung ist eine Funktion für ihre
-  Kunden, keine Sperre auf ihrer eigenen Seite.
+### Was das für die Ansprache heißt
 
-**Was sie besser können als wir:**
-- Mehrere Dachflächen mit **eigener Ausrichtung und Größe je Fläche** (Satteldach mit
-  getrennter Süd- und Nordseite). Wir fragen eine Dachform ab.
-- **Verschattung als Regler** (0–50 %). Haben wir nicht.
-- Österreich und Schweiz.
-- Zweites Produkt: 7-Tage-Solarprognose.
+Bei Photovoltaik gibt es einen Markt: 15 Häuser haben für ein Werkzeug bezahlt,
+verteilt auf mindestens acht verschiedene Anbieter. Bei Wärmepumpe hat noch
+niemand etwas gekauft — und das ist zweideutig. Es kann heißen, dass der Bedarf
+unbesetzt ist, oder dass es ihn nicht gibt. **Diese Erhebung kann die Frage
+nicht beantworten**, und wer sie als „unbesetzter Markt" verkauft, behauptet
+mehr als hier gemessen wurde.
 
-**Was wir besser können — und das ist der inhaltlich wichtigere Punkt:**
-- **Bei ihnen ist der Eigenverbrauchsanteil eine Nutzereingabe** (Vorgabe 30 %, Presets
-  „ohne Speicher 20–30 %", „mit Speicher + E-Auto 60–80 %"). Das ist die Größe mit dem
-  stärksten Einfluss auf die Wirtschaftlichkeit; wer sie raten lässt, macht das
-  Ergebnis beliebig. Wir berechnen sie aus dem an 25.000 Konfigurationen kalibrierten
-  HTW-Kennfeld.
-- Drei Strompreis-Szenarien statt eines festen Preises.
-- Kommunale Förderung wird abgezogen.
-- Einspeisevergütung nach Inbetriebnahme-Monat samt Umschalter auf die Konditionen
-  ab 2027.
-- Marktpreise laufend erhoben statt fester Annahme.
+Was sie beantworten kann: Wer bei Wärmepumpe etwas anbietet, steht nicht neben
+einem eingeführten Wettbewerber.
 
-### tetraeder.solar — der verbreitetste
+---
 
-Sieben Versorger, der höchste Wert der Erhebung. Kommt aus dem kommunalen Solarkataster
-und verkauft daneben weiß etikettierte Rechner an Stadtwerke; belegter Einsatz unter
-Stadtwerke-Marke: **Emden** (`hub.tetraeder.solar/calculator/…` im Rahmen auf
-`/strom/photovoltaik`). Preise nicht veröffentlicht. Zusätzlich Dachanalyse aus
-Luftbild — die härteste Grenze unseres Angebots, wir messen Dächer nicht.
+## Die Anbieter
 
-**Vorsicht bei der Zählung:** Ein Teil der tetraeder-Funde sind **Kataster des
-Landkreises oder Landes**, eingebunden auf der Versorgerseite. Dort hat der Versorger
-nichts bezahlt, es gibt keinen Budgetposten und keinen Zuständigen. Die Erhebung führt
-diesen Fall deshalb als eigenen Zustand und weist dort **keinen Anbieternamen** aus —
-der wäre technisch richtig und läse sich wie ein Kaufbeleg.
+Von den 15 gekauften Werkzeugen verteilen sich die Anbieter so:
 
-### ASEW im Verband kommunaler Unternehmen — der Preisanker im Kopf
-
-Kein Wettbewerber im engeren Sinn und in der Website-Erhebung nicht messbar, aber die
-Stelle, gegen die wir preislich verglichen werden.
-
-- Knapp **400 Mitgliedsversorger**, Mindestbeitrag **2.500 €/Jahr** für das
-  Gesamtpaket.
-- Gibt Werkzeuge dieser Bauart **ohne Aufpreis** an ihre Mitglieder weiter, darunter ein
-  Photovoltaik-Kalkulationswerkzeug und eine weiß etikettierte Web-Anwendung.
-- **Ein Wärmepumpen-Wirtschaftlichkeitsrechner ist dort nicht bekannt** — ungeprüft,
-  und die Frage gehört in das erste Gespräch mit der ASEW.
-
-## Die Pflichtangabe zum Strommix
-
-§ 42 EnWG verlangt von jedem Stromlieferanten den Energieträgermix jährlich zum 1. Juli
-als Grafik auf der Website, ergänzt um die deutschen Durchschnittswerte.
-
-| Befund | Versorger |
+| Anbieter | Häuser |
 |---|---|
-| Seite mit Stromkennzeichnung gefunden | 299 |
-| davon mit erkennbarer Grafik | 163 |
-| davon nur als PDF | 89 |
-| Bezugsjahr maschinell lesbar | 214 |
-| **davon mit veraltetem Bezugsjahr** | **29** |
+| Eturnity | 3 (Sachsenwald, Staßfurt, Torgau) |
+| VLink | 3 (Frankenthal, Dirmstein, Gerolsheim — dieselbe Instanz) |
+| Reonic | 2 (Schwäbisch Gmünd, Garbsen) |
+| geoplex / PlexMap | 2 (Elmshorn, Ditzingen) |
+| tetraeder.solar | 2 (Emden, Blomberg) |
+| Solarmaker, IBC Solar, greenventory | je 1 |
 
-**Als Produkt erledigt** (siehe `docs/versorger-preisstrategie.md`, Abschnitt C): Der
-Branchenverband liefert Vergleichszahlen, Leitfaden und Berechnungswerkzeug allen
-Stromlieferanten kostenlos, und § 95 EnWG kennt für § 42 keinen Bußgeldtatbestand.
-**Als Aufhänger brauchbar:** feste Frist, maschinell prüfbar, 29 belegte Fälle.
+**Die drei VLink-Häuser teilen sich eine Instanz** — Dirmstein und Gerolsheim
+zeigen auf Frankenthals Werkzeug. Für „Versorger mit Werkzeug" zählt das dreimal,
+für „Versorger, die gekauft haben" höchstens einmal. Dieselbe Vorsicht gilt
+überall dort, wo mehrere Häuser eines Verbunds dasselbe Werkzeug nutzen.
+
+**Solantiq kommt bei keinem einzigen deutschen Versorger vor.** Der Anbieter
+zielt auf Installateure, nicht auf Stadtwerke; er ist unser preislicher
+Anhaltspunkt, aber kein Wettbewerber um dieselben Kunden.
+
+Zu den kostenlosen Angeboten: Neun Häuser binden ein Landes-, Kreis- oder
+Stadtkataster ein, den Unabhängigkeitsrechner der HTW Berlin, den EU-Rechner
+PVGIS oder den Förderrechner eines Verbands. **Sie sind kein Beleg für
+Zahlungsbereitschaft — eher das Gegenteil.** Sie zeigen aber, dass in diesen
+Häusern jemand das Thema für wichtig genug hält, um etwas einzubinden.
+
+---
+
+## Womit man uns verwechseln wird
+
+Drei Sorten Werkzeug sehen einem Rechner ähnlich und sind keiner. Sie sind der
+Grund, warum die erste Fassung dieses Papiers falsch lag, und sie werden auch im
+Gespräch mit einem Versorger auftauchen.
+
+**Der Tarifrechner** (28 Häuser, angesehen). Er steht im Seitenkopf jeder
+Unterseite, fragt Postleitzahl und Jahresverbrauch und gibt einen Preis aus.
+Auch dann, wenn er „Wärmepumpentarif" heißt, rechnet er einen Stromtarif und
+keine Anlage. **Er ist trotzdem der interessanteste Nebenbefund:** Der
+Jahresverbrauch ist dort bereits eingegeben — genau die Angabe, an der unser
+Rechner hängt.
+
+**Der Netz-Pflichtprozess** (79 Häuser). Anlagenanmeldung, Netzanschluss,
+Umlagenbefreiung, Eigenerklärung zur Privilegierung. Er trägt Zahlen- und
+Personenfelder und sieht deshalb aus wie ein Rechner hinter einer
+Datenabfrage — tatsächlich muss der Netzbetreiber ihn anbieten. Über Vertrieb,
+Budget oder Zuständigkeit sagt er **nichts**.
+
+**Das Anfrageformular** (34 Häuser). Heißt oft „Check" oder „Rechner" und
+rechnet nichts; am Ende steht „ein Mitarbeiter meldet sich".
+
+---
+
+## Stromkennzeichnung nach § 42 EnWG
+
+Jeder Stromlieferant muss jährlich seinen Energieträgermix veröffentlichen,
+grafisch aufbereitet, seit dem 1. Juli mit den Werten des Vorjahres.
+
+Gefunden: **317 Kennzeichnungsseiten**, bei 202 war das Bezugsjahr maschinell
+lesbar, davon **33 veraltet**.
+
+**Was diese Zahl nicht ist:** ein Compliance-Befund. Ein nicht gefundener
+Nachweis heißt nicht, dass es keinen gibt — die Kennzeichnung hängt oft in einem
+PDF hinter einer Übersichtsseite oder als Bild ohne Textverweis. Und rund ein
+Fünftel der erfassten Häuser sind reine Netzgesellschaften, die niemanden
+beliefern und deshalb gar keine schulden.
+
+Als Aufhänger für ein Anschreiben taugen die 33 veralteten trotzdem — sie sind
+konkret, nachprüfbar und unangenehm. **Vor dem Absenden gehört jeder Einzelfall
+von Hand geprüft**, sonst ist die peinliche Zahl unsere.
 
 ---
 
 ## Was diese Erhebung nicht sieht
 
-**Alle Zahlen oben sind Untergrenzen.** Die Erhebung liest ausgelieferten
-Seitenquelltext; sie bedient keine Websites.
+Die Vorbehalte gehen in **beide** Richtungen. Die erste Fassung nannte nur die
+eine, und genau deshalb war sie zu optimistisch.
 
-1. **Werkzeuge, die erst per JavaScript entstehen, sind unsichtbar.** Bei einem
-   eingebetteten Fremdwerkzeug ist der Inhalt des Rahmens grundsätzlich nicht
-   einsehbar — erkannt wird der Anbieter, nicht die Funktion. Genau deshalb gibt es den
-   Zustand „eingekauft": Der Anbietername im Rahmen ist der Beleg.
-2. **51 von 910 Versorgern waren nicht abrufbar** — Verbindungsfehler oder Bot-Sperre.
-   Für sie liegt **kein Befund** vor, nicht der Befund „nichts vorhanden". Vorher waren
-   es 97; 63 davon waren eine falsch gespeicherte Adresse, meist `http` statt `https`.
-3. **Die Themenzuordnung** stammt aus Adresse und sichtbarem Seitentext ohne
-   Navigation. Die Adresse schlägt den Fließtext — sonst gilt eine
-   Erdgas-Tarifrechnerseite als „solar", weil Photovoltaik im Menü steht.
-4. **Bei 5 Versorgern** war ein Werkzeug erkennbar, seine Bauart nicht bestimmbar.
-5. **Keine Aussage über Qualität.** Erhoben ist Vorhandensein und Bauart, nicht ob
-   richtig gerechnet wird. Die einzige inhaltliche Aussage über einen Wettbewerber in
-   diesem Papier — der Eigenverbrauchsanteil als Nutzereingabe bei Solantiq — beruht
-   auf einem eigenen Durchlauf, nicht auf einer Messung.
+**Nach unten — wir könnten etwas übersehen haben:**
 
-## Was für die Funktionstabelle noch fehlt
+- 46 Versorger waren nicht abrufbar. Für sie liegt kein Befund vor.
+- Die Stichprobe der 80 vermeintlich leeren fand **kein** übersehenes Werkzeug.
+  Sie hat aber nur die **Startseite** gesehen, nicht die ganze Website. Die Null
+  ist eine Untergrenze fürs Übersehen und **keine Hochrechnung auf alle 864**.
+- Ein Werkzeug hinter einem Cookie-Banner ist auch im Browser unsichtbar. Zwei
+  Fälle stehen deshalb bis heute auf „unklar".
 
-Damit die Website-Fassung nicht bei null anfängt — offen und **ungeprüft**:
+**Nach oben — wir könnten zu viel gezählt haben:**
 
-- **tetraeder und co2online selbst durchgerechnet.** Bisher nur Solantiq. Ohne das
-  lässt sich keine Zeile über deren Funktionsumfang schreiben, die einer Nachfrage
-  standhält.
-- **Preise von tetraeder, co2online und Leadgenerator Solar.** Alle drei veröffentlichen
-  nichts. Der einzige belastbare Weg wäre eine Auskunft von einem Versorger, der
-  gekauft hat.
-- **Hat die ASEW ein Wärmepumpen-Werkzeug?** Entscheidet, ob der stärkste Aufhänger
-  dieses Papiers trägt.
-- **Verschattung und mehrere Dachflächen** sind zwei Funktionen, die Solantiq hat und
-  wir nicht. In einer eigenen Tabelle stehen sie als Lücke — das ist ein Argument für
-  den Bau, nicht gegen die Tabelle.
+- „Versorger mit Werkzeug" ist nicht „Versorger, die gekauft haben". Drei
+  VLink-Häuser teilen eine Instanz.
+- Ob ein Rechner sein Ergebnis wirklich erst gegen Kontaktdaten herausgibt, sieht
+  man nur durch Bedienen. Wir haben es bei Zehdenick am Aufbau der Schritte
+  festgemacht, nicht durch Ausprobieren.
+- Der Rechenumfang der gekauften Werkzeuge ist **nicht** geprüft. Dass ein
+  Eturnity-Rechner eingebettet ist, sagt nichts darüber, was er rechnet.
+
+---
+
+## Was der Feature-Tabelle noch fehlt
+
+Die Tabelle für die Website ist nicht Teil dieses Papiers, und sie kann es noch
+nicht sein. Was dafür fehlt:
+
+1. **Die verbreiteten Werkzeuge selbst durchrechnen.** Eturnity, Reonic, VLink,
+   geoplex und tetraeder sind als eingebettet erkannt — benutzt hat sie niemand
+   von uns. Ohne das ist jede Aussage über ihre Rechenqualität eine Behauptung.
+2. **Preise.** Für keinen dieser Anbieter kennen wir einen. Solantiq nennt seinen
+   öffentlich (49 bzw. 149 € im Monat), ist aber der einzige — und der einzige
+   ohne einen einzigen deutschen Versorger als Kunden.
+3. **Rechtsprüfung.** Eine namentliche Gegenüberstellung ist vergleichende
+   Werbung. Zulässig, aber nur mit objektiven, nachprüfbaren Aussagen und ohne
+   Herabsetzung. Was hier steht, ist dafür teils zu weich formuliert und teils
+   zu ungeprüft.
+
+---
+
+## Was die erste Fassung falsch gemacht hat
+
+Steht hier, damit die Fehlerklasse beim nächsten Mal auffällt — und weil zwei
+der vier Zahlen bereits in Gesprächen zitiert worden sein könnten.
+
+| Behauptet am 25.08. | Tatsächlich |
+|---|---|
+| 6 Versorger mit eigenem Photovoltaik-Rechner | **0.** Alle sechs waren der Tarifrechner im Seitenkopf |
+| 23 haben ein Werkzeug eingekauft | **15**, und darunter drei, die sich eine Instanz teilen |
+| Bei Wärmepumpe hat einer eingekauft | **Keiner.** Der Fund war ein Knopf „Zur Studie" auf eine Forschungsseite |
+| Der eine WP-Rechner gibt sein Ergebnis nur gegen Kontaktdaten | **Falsch.** Bernau zeigt das Ergebnis sofort; das Kontaktformular daneben ist ein getrennter Weg |
+| Bei 33 Versorgern ließ sich der Anbieter benennen | **12** in jener Fassung — die 33 war eine Doppelzählung |
+
+**Die gemeinsame Ursache:** Die Erkennung war ausschließlich daran geeicht, ob
+sie ein vorhandenes Werkzeug *findet*. Kein einziger Test fragte, ob sie liegen
+lässt, was keines ist. Ein Test schrieb den Fehler sogar fest — er verlangte für
+einen Stromtarifrechner ausdrücklich die Einstufung „Rechner". Er hieß
+„Tarifrechner ist kein Solarwerkzeug".
+
+Dazu kam ein zweiter, unabhängiger Fehler: Drei Korrekturen an der
+Sitemap-Auswertung waren nur in der geteilten Bibliothek gelandet, nicht im
+Skript, das den Lauf gemacht hat. Der Lauf vom 25.08. sah deshalb systematisch
+zu wenige Themenseiten — nach der Reparatur stiegen die Solar-Funde von 78 auf
+124.
