@@ -53,6 +53,8 @@ import { tagesverlauf, tagDatum } from "../../lib/kostenrennen-tage";
 // rund 40 Sekunden. Am Anfang passiert das Interessante, gegen Ende bewegen
 // sich nur noch zwei gerade Linien.
 const RUHIGE_TAGE = 730;
+// Anteil der Strecke, ab dem die Geldskala linear auf das Gesamtbild aufzieht.
+const ZOOM_AB = 0.5;
 const MS_JE_TAG_START = 22;
 const MS_JE_TAG_ENDE = 0.6;
 const msJeTag = (t: number, T: number) => {
@@ -251,8 +253,14 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   const ohneTip = kOhne[tag];
   const lo = Math.min(pvLo, Math.max(ohneTip, pvLo - LUFT * spanne));
   const hi = Math.max(pvHi, Math.min(ohneTip, pvHi + LUFT * spanne));
+  // Ab der Hälfte der Strecke öffnet sich die Kamera linear auf das ganze
+  // Bild (0 € bis zum Endstand des teureren Haushalts), sodass am letzten Tag
+  // beide Linien vollständig im Bild stehen — unabhängig davon, wie weit sie
+  // auseinanderliegen.
   const pad = Math.max(20, (hi - lo) * 0.06);
-  const yMin = Math.max(0, lo - pad), yMax = hi + pad;
+  const vollHi = Math.max(kPv[T], kOhne[T]) * 1.04;
+  const w = Math.min(1, Math.max(0, (t - T * ZOOM_AB) / (T * (1 - ZOOM_AB))));
+  const yMin = Math.max(0, (lo - pad) * (1 - w)), yMax = (hi + pad) * (1 - w) + vollHi * w;
   const ohneImBild = ohneTip >= yMin && ohneTip <= yMax;
   const yStep = niceStep(yMax - yMin);
   const yTicks: number[] = [];
