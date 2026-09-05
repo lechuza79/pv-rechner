@@ -148,13 +148,32 @@ Das Skript verweigert von sich aus:
 - über einen Anbieter, der nicht im SPF-Eintrag steht, oder mit einem Absender,
   der nicht das angemeldete Konto ist,
 - ohne Pflichtangaben im Text (Klarname, Impressum, Art. 14),
-- über 25 Mails **am Tag** (nicht je Lauf — es zählt, was heute schon in der
-  Datenbank steht),
+- über 50 Mails **am Tag** (nicht je Lauf — es zählt, was heute schon in der
+  Datenbank steht). **Die Zahl ist eine Stufe, kein Endzustand:** Sie stand bis
+  zum 26.08.2026 auf 25, dann kurz auf 40, weil das Briefing es so vorgab; dessen Quelle waren
+  Ratgeber von Anbietern, die Aufwärm-Dienste verkaufen. Gemessen sprach nichts
+  dafür — 79 Mails, kein Bounce, alle Echtheitsprüfungen bestanden. Vor der
+  nächsten Anhebung müssen drei Läufe mit sauberer Zustellungsprobe vorliegen.
 - **solange kein DKIM-Schlüssel veröffentlicht ist.** Das ist die Bremse aus
   Schritt 1: Ohne DKIM scheitert DMARC bei jeder weitergeleiteten Mail, und
   genau diese Empfängerliste besteht überwiegend aus Ortsgemeinden, deren
   `info@`-Adresse weitergeleitet wird. Mit `--ohne-dkim` lässt sich das für
   einen Probelauf an eigene Adressen übergehen.
+
+### Zustellungsprobe
+
+Setz `OUTREACH_PROBE_ADRESSEN` in `.env.local` auf ein bis zwei eigene Postfächer
+bei großen Anbietern (Gmail, Outlook), durch Komma getrennt. Der Versand schickt
+dann am Ende jedes Laufs denselben Brief zusätzlich dorthin.
+
+**Danach nachsehen: Posteingang oder Spam?** Das ist die Messung, die fehlt,
+wenn man nur auf Bounces schaut. Ein Bounce sagt „die Adresse gibt es nicht" und
+kommt sofort; die teurere Entwicklung ist leise — die Mail wird angenommen,
+landet im Spam-Ordner, und ein Rathaus schreibt uns nicht, dass es unsere
+Nachricht nicht gesehen hat.
+
+Ohne gesetzte Adressen läuft der Versand weiter, meldet die Lücke aber. Die
+Probe zählt nicht gegen das Tagespensum — sie geht an uns selbst.
 
 Bricht das Schreiben des Status fehl, hält der Lauf an: Die Mail ist draußen,
 die Gemeinde steht aber noch auf „offen" — ein zweiter Lauf schickte ihr
@@ -208,3 +227,46 @@ Texte, nicht zwei Zielgruppen.** Ein Unterschied in der Veröffentlichungsquote
 ist zwischen Schub 1 und 2 nicht als Wirkung der Auswahl lesbar. Innerhalb
 eines Schubs bleibt der Vergleich der beiden Ask-Varianten gültig — sie
 unterscheiden sich weiterhin um genau einen Absatz.
+
+---
+
+## Neue Sitzung: wo stehen wir?
+
+**Erster Befehl, immer:**
+
+```
+npm run kommunen:stand
+```
+
+Er sagt in einem Bildschirm, was verschickt ist, welche Charge offen wäre, was
+zurückkam und ob heute überhaupt gesendet werden darf. **Der Zustand liegt
+vollständig in der Datenbank, nicht in einer Sitzung** — eine neue Sitzung
+braucht deshalb keinen Kontext aus der vorigen, nur diesen Befehl.
+
+**Der Versand bleibt manuell.** Kein Zeitplan, kein Automatismus: Der
+Absende-Klick gehört einem Menschen (Projektregel). Eine automatisch verschickte
+Kaltakquise ist genau der Fall, in dem ein Fehler in der Auswahl niemandem
+auffällt, bis er bei zweihundert Rathäusern liegt. Was automatisch läuft, sind
+die SPERREN — Ferien, Wochentag, Tagesgrenze, DKIM —, und die greifen unabhängig
+davon, wer den Lauf startet.
+
+## Der Schub mail-he-rp-sl ist abgeschlossen
+
+79 Gemeinden in Hessen, Rheinland-Pfalz und dem Saarland, verschickt zwischen
+dem 20. und dem 26.08.2026 in sechs Chargen. Ein weiterer Schub bedeutet neue
+Bundesländer und eine neue Auswahl — das ist kein Routineversand, sondern
+Auswahl, Gegenlesen und Abnahme (Schritt 3 oben).
+
+## Was gemessen wird — und womit
+
+| Frage | Befehl |
+|---|---|
+| Wo stehen wir? | `npm run kommunen:stand` |
+| Was kam per Mail zurück? | `npm run kommunen:ruecklauf` (mit `--schreiben` nachtragen) |
+| Wer hat veröffentlicht? | `npm run kommunen:veroeffentlicht` (mit `--schreiben` nachtragen) |
+
+Die Veröffentlichung ist die eigentliche Messgröße, nicht die Antwortquote: Wer
+die Meldung übernimmt, schreibt uns dafür nicht. Gefragt wird über die
+Verweise auf unsere Domain, eine Anfrage für alle Gemeinden, rund drei Cent.
+Zwei Grenzen stehen im Kopf des Skripts — Verweis-Verzeichnisse hinken Tage bis
+Wochen nach, und eine Veröffentlichung ohne Link taucht gar nicht auf.

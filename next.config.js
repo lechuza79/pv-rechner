@@ -99,7 +99,14 @@ const nextConfig = {
       // Ratgeber unter /ratgeber/ gebündelt (Slug-Umstellung Juli 2026) — alte flache Pfade dauerhaft umleiten
       { source: "/lohnt-sich-pv-mit-speicher", destination: "/ratgeber/lohnt-sich-pv-mit-speicher", permanent: true },
       { source: "/lohnt-sich-pv-ohne-einspeiseverguetung", destination: "/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung", permanent: true },
-      { source: "/waermepumpe-foerderung-2026", destination: "/ratgeber/waermepumpe-foerderung-2026", permanent: true },
+      // Jahreszahl aus der Adresse (26.08.2026). Beide alten Pfade zeigen direkt
+      // auf das ENDZIEL, nicht aufeinander: Der erste Eintrag zeigte bis dahin auf
+      // `/ratgeber/waermepumpe-foerderung-2026` und wurde umgebogen. Wer ihn stehen
+      // lässt und die zweite Weiterleitung danebenhängt, baut eine Kette aus zwei
+      // Sprüngen — Google folgt ihr zwar, überträgt die Signale aber über den
+      // Umweg, und jeder weitere Umzug verlängert sie.
+      { source: "/waermepumpe-foerderung-2026", destination: "/ratgeber/waermepumpe-foerderung", permanent: true },
+      { source: "/ratgeber/waermepumpe-foerderung-2026", destination: "/ratgeber/waermepumpe-foerderung", permanent: true },
       // Förder-Stadtseiten: flache Slugs → Hierarchie Bundesland/Kommune.
       // Feste historische Zuordnung (alte URLs wachsen nicht mehr) — bei neuer
       // Stadt hier ergänzen (Quelle: lib/atlas-cities.ts).
@@ -230,6 +237,7 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/nottuln", destination: "/photovoltaik-foerderung/nordrhein-westfalen/nottuln", permanent: true },
       { source: "/photovoltaik-foerderung/senden", destination: "/photovoltaik-foerderung/nordrhein-westfalen/senden", permanent: true },
       { source: "/photovoltaik-foerderung/ennepetal", destination: "/photovoltaik-foerderung/nordrhein-westfalen/ennepetal", permanent: true },
+      { source: "/photovoltaik-foerderung/wetter-ruhr", destination: "/photovoltaik-foerderung/nordrhein-westfalen/wetter-ruhr", permanent: true },
       { source: "/photovoltaik-foerderung/wenden", destination: "/photovoltaik-foerderung/nordrhein-westfalen/wenden", permanent: true },
       { source: "/photovoltaik-foerderung/gernsheim", destination: "/photovoltaik-foerderung/hessen/gernsheim", permanent: true },
       { source: "/photovoltaik-foerderung/bad-homburg", destination: "/photovoltaik-foerderung/hessen/bad-homburg", permanent: true },
@@ -245,6 +253,7 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/hoehr-grenzhausen", destination: "/photovoltaik-foerderung/rheinland-pfalz/hoehr-grenzhausen", permanent: true },
       { source: "/photovoltaik-foerderung/wittlich", destination: "/photovoltaik-foerderung/rheinland-pfalz/wittlich", permanent: true },
       { source: "/photovoltaik-foerderung/limburgerhof", destination: "/photovoltaik-foerderung/rheinland-pfalz/limburgerhof", permanent: true },
+      { source: "/photovoltaik-foerderung/boeblingen", destination: "/photovoltaik-foerderung/baden-wuerttemberg/boeblingen", permanent: true },
       { source: "/photovoltaik-foerderung/holzgerlingen", destination: "/photovoltaik-foerderung/baden-wuerttemberg/holzgerlingen", permanent: true },
       { source: "/photovoltaik-foerderung/wernau", destination: "/photovoltaik-foerderung/baden-wuerttemberg/wernau", permanent: true },
       { source: "/photovoltaik-foerderung/hattenhofen", destination: "/photovoltaik-foerderung/baden-wuerttemberg/hattenhofen", permanent: true },

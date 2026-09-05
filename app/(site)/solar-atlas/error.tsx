@@ -27,11 +27,13 @@ export default function AtlasError({ error, reset }: { error: Error; reset: () =
       }}
     >
       <div style={{ maxWidth: 420, textAlign: "center" }}>
-        <div style={{ fontSize: 40, marginBottom: 12 }}>🛰️</div>
-        <h1 style={{ fontSize: 20, fontWeight: 700, color: v("--color-text-primary"), margin: "0 0 10px" }}>
+        {/* Ein Emoji als Bild, keine Schrift — die Größe ist hier eine Bildgröße
+            und folgt trotzdem der Skala, damit sie nicht als 40 vs. 42 driftet. */}
+        <div style={{ fontSize: v("--font-size-display-lg"), marginBottom: 12 }}>🛰️</div>
+        <h1 style={{ fontSize: v("--font-size-h2"), fontWeight: 700, color: v("--color-text-primary"), margin: "0 0 10px" }}>
           Die Atlas-Daten sind gerade nicht erreichbar
         </h1>
-        <p style={{ fontSize: 14, lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 22px" }}>
+        <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 22px" }}>
           Das ist meist nur ein kurzer Moment. Bitte versuche es gleich noch einmal — die
           übrigen Rechner auf der Seite funktionieren normal weiter.
         </p>
@@ -45,7 +47,7 @@ export default function AtlasError({ error, reset }: { error: Error; reset: () =
               border: "none",
               borderRadius: v("--radius-md"),
               padding: "11px 20px",
-              fontSize: 14,
+              fontSize: v("--font-size-body"),
               fontWeight: 600,
               fontFamily: "inherit",
               cursor: "pointer",
@@ -61,7 +63,7 @@ export default function AtlasError({ error, reset }: { error: Error; reset: () =
               border: `1px solid ${v("--color-border")}`,
               borderRadius: v("--radius-md"),
               padding: "11px 20px",
-              fontSize: 14,
+              fontSize: v("--font-size-body"),
               fontWeight: 600,
               textDecoration: "none",
             }}

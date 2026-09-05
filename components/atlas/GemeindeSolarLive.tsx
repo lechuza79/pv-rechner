@@ -138,5 +138,5 @@ export default function GemeindeSolarLive({
 }
 
 const S: Record<string, React.CSSProperties> = {
-  msg: { fontSize: 13, color: v("--color-text-muted"), textAlign: "center", padding: "40px 0" },
+  msg: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), textAlign: "center", padding: "40px 0" },
 };

@@ -25,14 +25,14 @@ export default function TiltCheck() {
     border: `1px solid ${active ? v("--color-accent") : v("--color-border")}`,
     background: active ? v("--color-bg-accent") : v("--color-bg"),
     color: active ? v("--color-accent") : v("--color-text-secondary"),
-    fontSize: 13,
+    fontSize: v("--font-size-small"),
     fontWeight: 700,
     cursor: "pointer",
   });
 
   return (
     <div style={{ border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: `${space.xl}px`, background: v("--color-bg") }}>
-      <div style={{ fontSize: 13, fontWeight: 700, color: v("--color-text-secondary"), marginBottom: space.md }}>
+      <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-secondary"), marginBottom: space.md }}>
         Ausrichtung deines Dachs
       </div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, marginBottom: space.lg }}>
@@ -42,7 +42,7 @@ export default function TiltCheck() {
           </button>
         ))}
       </div>
-      <div style={{ fontSize: 13, fontWeight: 700, color: v("--color-text-secondary"), marginBottom: space.md }}>
+      <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-secondary"), marginBottom: space.md }}>
         Dachneigung
       </div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, marginBottom: space.lg }}>
@@ -53,13 +53,13 @@ export default function TiltCheck() {
         ))}
       </div>
       <div style={{ background: v("--color-bg-muted"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md"), padding: `${space.lg}px ${space.xl}px`, marginBottom: space.lg }}>
-        <span style={{ fontFamily: v("--font-mono"), fontSize: 28, fontWeight: 700, color: v("--color-text-primary") }}>
+        <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-display-md"), fontWeight: 700, color: v("--color-text-primary") }}>
           {pct}
         </span>
-        <span style={{ fontSize: 14, color: v("--color-text-secondary"), marginLeft: 4 }}>
+        <span style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), marginLeft: 4 }}>
           % des optimalen Ertrags
         </span>
-        <div style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-secondary"), marginTop: 4 }}>
+        <div style={{ fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-secondary"), marginTop: 4 }}>
           {pct >= 95
             ? "Dein Dach liegt praktisch im Optimum — die Ausrichtung ist kein Thema mehr."
             : pct >= 80
@@ -71,7 +71,7 @@ export default function TiltCheck() {
       </div>
       <Link
         href="/pv-simulation"
-        style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "10px 18px", borderRadius: v("--radius-md"), fontSize: 14, fontWeight: 700, background: v("--color-accent"), color: v("--color-text-on-accent"), textDecoration: "none" }}
+        style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "10px 18px", borderRadius: v("--radius-md"), fontSize: v("--font-size-body"), fontWeight: 700, background: v("--color-accent"), color: v("--color-text-on-accent"), textDecoration: "none" }}
       >
         Live-Ertrag an deinem Standort ansehen <IconArrowRight size={iconSizes.sm} />
       </Link>

@@ -37,7 +37,7 @@ export interface AirconDetailInputsProps {
 }
 
 const labelStyle: React.CSSProperties = {
-  fontSize: 12, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8,
+  fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8,
   textTransform: "uppercase", letterSpacing: "0.04em",
 };
 
@@ -54,15 +54,15 @@ export default function AirconDetailInputs({
         background: v('--color-bg-muted'), borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`,
       }}>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 10, fontWeight: 700, color: v('--color-text-faint'), textTransform: "uppercase", letterSpacing: "0.04em" }}>Räume</div>
-          <div style={{ fontSize: 14, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-text-secondary') }}>{rooms}</div>
+          <div style={{ fontSize: v("--font-size-micro"), fontWeight: 700, color: v('--color-text-faint'), textTransform: "uppercase", letterSpacing: "0.04em" }}>Räume</div>
+          <div style={{ fontSize: v("--font-size-body"), fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-text-secondary') }}>{rooms}</div>
         </div>
         <div style={{ flex: 1, borderLeft: `1px solid ${v('--color-border')}`, paddingLeft: 12 }}>
-          <div style={{ fontSize: 10, fontWeight: 700, color: v('--color-text-faint'), textTransform: "uppercase", letterSpacing: "0.04em" }}>Standort</div>
-          <div style={{ fontSize: 14, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-text-secondary') }}>{plz && /^\d{5}$/.test(plz) ? `PLZ ${plz}` : "Ø Deutschland"}</div>
+          <div style={{ fontSize: v("--font-size-micro"), fontWeight: 700, color: v('--color-text-faint'), textTransform: "uppercase", letterSpacing: "0.04em" }}>Standort</div>
+          <div style={{ fontSize: v("--font-size-body"), fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-text-secondary') }}>{plz && /^\d{5}$/.test(plz) ? `PLZ ${plz}` : "Ø Deutschland"}</div>
         </div>
       </div>
-      <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: -12, marginBottom: 18, lineHeight: 1.5 }}>
+      <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), marginTop: -12, marginBottom: 18, lineHeight: 1.5 }}>
         Räume und Standort kommen aus dem PV-Rechner. Hier verfeinerst du die Kühl-Details.
       </div>
 
@@ -76,8 +76,8 @@ export default function AirconDetailInputs({
             border: deviceId === d.id ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: deviceId === d.id ? v('--color-accent') : v('--color-text-primary') }}>{d.label}</span>
-              <span style={{ fontSize: 11, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-text-muted'), whiteSpace: "nowrap" }}>Effizienz {d.seer.toString().replace(".", ",")}</span>
+              <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: deviceId === d.id ? v('--color-accent') : v('--color-text-primary') }}>{d.label}</span>
+              <span style={{ fontSize: v("--font-size-caption"), fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-text-muted'), whiteSpace: "nowrap" }}>Effizienz {d.seer.toString().replace(".", ",")}</span>
             </div>
           </button>
         ))}
@@ -89,10 +89,10 @@ export default function AirconDetailInputs({
         padding: "12px 14px", borderRadius: v('--radius-md'), background: v('--color-bg-muted'), marginBottom: 20,
         border: `2px solid ${v('--color-border')}`, display: "flex", justifyContent: "space-between", alignItems: "center",
       }}>
-        <span style={{ fontSize: 13, fontWeight: 600 }}>Durchschnittliche Raumgröße</span>
+        <span style={{ fontSize: v("--font-size-small"), fontWeight: 600 }}>Durchschnittliche Raumgröße</span>
         <InlineEdit value={roomM2} onCommit={val => onRoomM2(Math.round(val))} unit=" m²" min={8} max={80} step={5} width={56} />
       </div>
-      <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: -14, marginBottom: 20, lineHeight: 1.5 }}>
+      <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), marginTop: -14, marginBottom: 20, lineHeight: 1.5 }}>
         Gekühlt wird gesamt <strong style={{ color: v('--color-text-primary') }}>{rooms * roomM2} m²</strong> — nur die Räume, die du wirklich kühlst.
       </div>
 
@@ -124,8 +124,8 @@ export default function AirconDetailInputs({
             border: targetTemp === t ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
             color: targetTemp === t ? v('--color-accent') : v('--color-text-secondary'),
           }}>
-            <div style={{ fontSize: 16, fontWeight: 700, fontFamily: v('--font-mono') }}>{t} °C</div>
-            <div style={{ fontSize: 10, color: v('--color-text-muted'), marginTop: 2 }}>{TARGET_LABELS[t]}</div>
+            <div style={{ fontSize: v("--font-size-lead"), fontWeight: 700, fontFamily: v('--font-mono') }}>{t} °C</div>
+            <div style={{ fontSize: v("--font-size-micro"), color: v('--color-text-muted'), marginTop: 2 }}>{TARGET_LABELS[t]}</div>
           </button>
         ))}
       </div>

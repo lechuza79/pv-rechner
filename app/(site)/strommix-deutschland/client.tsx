@@ -81,7 +81,7 @@ function rangeButtonStyle(active: boolean) {
     border: `1px solid ${active ? v("--color-accent") : v("--color-border")}`,
     background: active ? v("--color-accent") : v("--color-bg"),
     color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     fontWeight: 600 as const,
     cursor: "pointer" as const,
     fontFamily: v("--font-text"),
@@ -103,7 +103,7 @@ function MilestoneTimeline() {
   const endYear = new Date().getFullYear();
   return (
     <div style={{ marginBottom: 20 }}>
-      <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-primary"), marginBottom: space.sm, paddingLeft: 8 }}>
+      <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: space.sm, paddingLeft: 8 }}>
         Was die Jahre geprägt hat
       </div>
       <EventTimeline
@@ -133,7 +133,7 @@ function MilestoneBlock({ selected, isMax }: { selected: string; isMax: boolean 
         marginBottom: 20,
       }}
     >
-      <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-primary"), marginBottom: space.sm }}>
+      <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: space.sm }}>
         {isMax ? "Was die Jahre geprägt hat" : `Was ${selected} geprägt hat`}
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: space.md }}>
@@ -145,14 +145,14 @@ function MilestoneBlock({ selected, isMax }: { selected: string; isMax: boolean 
                   flexShrink: 0,
                   fontFamily: v("--font-mono"),
                   fontWeight: 700,
-                  fontSize: 12,
+                  fontSize: v("--font-size-small"),
                   color: v("--color-accent"),
                 }}
               >
                 {m.year}
               </span>
             )}
-            <div style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-secondary") }}>
+            <div style={{ fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-secondary") }}>
               <strong style={{ color: v("--color-text-primary") }}>{m.title}.</strong> {m.text}
             </div>
           </div>
@@ -174,7 +174,7 @@ function LoadingSpinner() {
       justifyContent: "center",
       gap: 12,
       color: v("--color-text-muted"),
-      fontSize: 13,
+      fontSize: v("--font-size-small"),
     }}>
       <div style={{
         width: 28, height: 28,
@@ -367,10 +367,10 @@ export default function EnergieClient() {
     <div style={{ maxWidth: 640, margin: "0 auto" }}>
       {/* Hero */}
       <div style={{ textAlign: "center", marginBottom: 28 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
+        <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
           Strommix Deutschland – live
         </h1>
-        <p style={{ fontSize: 13, color: v("--color-text-secondary"), marginTop: 6, lineHeight: 1.5 }}>
+        <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), marginTop: 6, lineHeight: 1.5 }}>
           Welche Energieträger gerade Strom liefern — aktuell, im Monats- und im Jahresvergleich.
         </p>
       </div>
@@ -384,10 +384,10 @@ export default function EnergieClient() {
       {/* Bereichs-Überschrift für das Strommix-Widget: Umschalter, Kacheln und
           Verlaufs-Chart gehören zusammen und beginnen hier. Vorher fing der
           Abschnitt mit einer nackten Knopfreihe an. */}
-      <h2 style={{ fontSize: 17, fontWeight: 800, letterSpacing: "-0.01em", margin: `0 0 ${space.xs}px`, padding: "0 8px" }}>
+      <h2 style={{ fontSize: v("--font-size-lead"), fontWeight: 800, letterSpacing: "-0.01em", margin: `0 0 ${space.xs}px`, padding: "0 8px" }}>
         Stromerzeugung im Zeitverlauf
       </h2>
-      <p style={{ fontSize: 13, lineHeight: 1.65, color: v("--color-text-secondary"), margin: `0 0 ${space.lg}px`, padding: "0 8px" }}>
+      <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.65, color: v("--color-text-secondary"), margin: `0 0 ${space.lg}px`, padding: "0 8px" }}>
         Wähle den Zeitraum — von den letzten 24 Stunden bis zurück ins Jahr 2015.
       </p>
 
@@ -395,7 +395,7 @@ export default function EnergieClient() {
       <div style={{ display: "flex", gap: 20, marginBottom: 20, flexWrap: "wrap" }}>
         {/* Letzte */}
         <div>
-          <div style={{ fontSize: 10, color: v("--color-text-muted"), marginBottom: 4, fontWeight: 600 }}>Letzte</div>
+          <div style={{ fontSize: v("--font-size-micro"), color: v("--color-text-muted"), marginBottom: 4, fontWeight: 600 }}>Letzte</div>
           <div style={{ display: "flex", gap: 6 }}>
             {LETZTE_RANGES.map((range) => (
               <button key={range.value} onClick={() => selectRange(range.value)} style={rangeButtonStyle(selected === range.value)}>
@@ -406,7 +406,7 @@ export default function EnergieClient() {
         </div>
         {/* Andere Zeiträume */}
         <div>
-          <div style={{ fontSize: 10, color: v("--color-text-muted"), marginBottom: 4, fontWeight: 600 }}>Andere Zeiträume</div>
+          <div style={{ fontSize: v("--font-size-micro"), color: v("--color-text-muted"), marginBottom: 4, fontWeight: 600 }}>Andere Zeiträume</div>
           <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
             {/* Current year button */}
             <button onClick={() => selectRange("YTD")} style={rangeButtonStyle(selected === "YTD")}>
@@ -478,7 +478,7 @@ export default function EnergieClient() {
                           border: "none",
                           background: selected === String(year) ? v("--color-bg-accent") : "transparent",
                           color: selected === String(year) ? v("--color-accent") : v("--color-text-secondary"),
-                          fontSize: 12,
+                          fontSize: v("--font-size-small"),
                           fontWeight: selected === String(year) ? 700 : 400,
                           fontFamily: v("--font-text"),
                           cursor: "pointer",
@@ -550,14 +550,14 @@ export default function EnergieClient() {
             borderRadius: v("--radius-md"),
             padding: "12px 8px", textAlign: "center",
           }}>
-            <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>{label}</div>
+            <div style={{ fontSize: v("--font-size-micro"), color: v("--color-text-muted"), marginBottom: 2 }}>{label}</div>
             <div style={{ fontFamily: v("--font-mono"), fontWeight: 800, height: 28, display: "flex", alignItems: "center", justifyContent: "center" }}>
               {value === null ? (
                 <BouncingDots />
               ) : (
                 <>
-                  <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{value}</span>
-                  <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 3 }}>{unit}</span>
+                  <span style={{ fontSize: v("--font-size-display-sm"), color: v("--color-text-primary") }}>{value}</span>
+                  <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginLeft: 3 }}>{unit}</span>
                 </>
               )}
             </div>
@@ -587,24 +587,24 @@ export default function EnergieClient() {
                 opacity: nuclearLoading ? 0.6 : showNuclear ? 1 : 0.5,
               }}
             >
-              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>Kernenergie</div>
+              <div style={{ fontSize: v("--font-size-micro"), color: v("--color-text-muted"), marginBottom: 2 }}>Kernenergie</div>
               <div style={{ fontFamily: v("--font-mono"), fontWeight: 800, height: 28, display: "flex", alignItems: "center", justifyContent: "center" }}>
                 {nuclearLoading && !hasAny ? (
                   <BouncingDots />
                 ) : nuclearError && !hasAny ? (
-                  <span style={{ fontSize: 11, color: v("--color-text-muted"), fontWeight: 400, fontFamily: v("--font-text") }}>Nicht verfügbar</span>
+                  <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), fontWeight: 400, fontFamily: v("--font-text") }}>Nicht verfügbar</span>
                 ) : hasAny && nucFormatted ? (
                   <>
-                    <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{nucFormatted[0]}</span>
-                    <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 3 }}>{nucFormatted[1]}</span>
+                    <span style={{ fontSize: v("--font-size-display-sm"), color: v("--color-text-primary") }}>{nucFormatted[0]}</span>
+                    <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginLeft: 3 }}>{nucFormatted[1]}</span>
                   </>
                 ) : (
-                  <span style={{ fontSize: 11, color: v("--color-text-muted"), fontWeight: 400, fontFamily: v("--font-text") }}>—</span>
+                  <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), fontWeight: 400, fontFamily: v("--font-text") }}>—</span>
                 )}
               </div>
               {hasDomestic && hasImport && importFormatted && (
-                <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 2, lineHeight: 1.4, fontFamily: v("--font-mono") }}>
-                  Zukauf {importFormatted[0]} <span style={{ fontSize: 10, color: v("--color-text-faint") }}>{importFormatted[1]}</span>
+                <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: 2, lineHeight: 1.4, fontFamily: v("--font-mono") }}>
+                  Zukauf {importFormatted[0]} <span style={{ fontSize: v("--font-size-micro"), color: v("--color-text-faint") }}>{importFormatted[1]}</span>
                 </div>
               )}
             </button>
@@ -626,15 +626,15 @@ export default function EnergieClient() {
             Titel stand als gestyltes div da und fehlte in der Gliederung; und
             ohne den Zeitraum daneben weiß niemand, was die Kurve zeigt, wenn
             der Umschalter außerhalb des Blickfelds liegt. */}
-        <h3 style={{ fontSize: 14, fontWeight: 700, margin: 0, paddingLeft: 8 }}>
+        <h3 style={{ fontSize: v("--font-size-body"), fontWeight: 700, margin: 0, paddingLeft: 8 }}>
           Stromerzeugung nach Energieträger
         </h3>
-        <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 2, marginBottom: isStale ? 6 : 12, paddingLeft: 8 }}>
+        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: 2, marginBottom: isStale ? 6 : 12, paddingLeft: 8 }}>
           {rangeLabel}
         </div>
         {isStale && (
           <div style={{
-            fontSize: 11, color: v("--color-text-muted"), marginBottom: 8, paddingLeft: 8,
+            fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginBottom: 8, paddingLeft: 8,
             display: "flex", alignItems: "center", gap: 6,
           }}>
             <span>Aktualisierung fehlgeschlagen — zeige zwischengespeicherte Daten</span>
@@ -642,7 +642,7 @@ export default function EnergieClient() {
               onClick={refetch}
               style={{
                 background: "none", border: "none", cursor: "pointer",
-                color: v("--color-accent"), fontSize: 11, fontWeight: 600,
+                color: v("--color-accent"), fontSize: v("--font-size-caption"), fontWeight: 600,
                 fontFamily: v("--font-text"), padding: 0, textDecoration: "underline",
               }}
             >
@@ -663,7 +663,7 @@ export default function EnergieClient() {
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 12,
-                fontSize: 13,
+                fontSize: v("--font-size-small"),
               }}
             >
               <div style={{ color: v("--color-text-muted") }}>Daten konnten nicht geladen werden</div>
@@ -675,7 +675,7 @@ export default function EnergieClient() {
                   border: `1px solid ${v("--color-accent")}`,
                   background: v("--color-accent"),
                   color: v("--color-text-on-accent"),
-                  fontSize: 13,
+                  fontSize: v("--font-size-small"),
                   fontWeight: 600,
                   cursor: "pointer",
                   fontFamily: v("--font-text"),
@@ -707,32 +707,32 @@ export default function EnergieClient() {
               borderTop: `1px solid ${v("--color-border")}`,
             }}>
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: v("--font-size-caption") }}>
                   <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.renewable, flexShrink: 0 }} />
                   <span style={{ color: v("--color-text-muted") }}>Erneuerbare</span>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: v("--font-size-caption") }}>
                   <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.fossil, flexShrink: 0 }} />
                   <span style={{ color: v("--color-text-muted") }}>Fossil</span>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: v("--font-size-caption") }}>
                   <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.other, flexShrink: 0 }} />
                   <span style={{ color: v("--color-text-muted") }}>Sonstige</span>
                 </div>
                 {(hasDomesticNuclear || showNuclear) && (
-                  <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: v("--font-size-caption") }}>
                     <span style={{ color: v("--color-text-muted") }}>Kernenergie</span>
                     {hasDomesticNuclear && (
                       <>
                         <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.nuclear, flexShrink: 0 }} />
-                        <span style={{ color: v("--color-text-faint"), fontSize: 10 }}>erzeugt</span>
+                        <span style={{ color: v("--color-text-faint"), fontSize: v("--font-size-micro") }}>erzeugt</span>
                       </>
                     )}
                     {showNuclear && (
                       nuclearLoading ? <BouncingDots /> : (
                         <>
                           <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.nuclearImport, flexShrink: 0 }} />
-                          <span style={{ color: v("--color-text-faint"), fontSize: 10 }}>importiert</span>
+                          <span style={{ color: v("--color-text-faint"), fontSize: v("--font-size-micro") }}>importiert</span>
                         </>
                       )
                     )}
@@ -759,7 +759,7 @@ export default function EnergieClient() {
       {/* Methodology note */}
       {showNuclear && !nuclearLoading && nuclearImportGWh > 0 && (
         <div style={{
-          fontSize: 10, color: v("--color-text-faint"), lineHeight: 1.6,
+          fontSize: v("--font-size-micro"), color: v("--color-text-faint"), lineHeight: 1.6,
           marginBottom: 20, padding: "0 8px",
         }}>
           <strong style={{ color: v("--color-text-muted") }}>Importierte Kernenergie:</strong>{" "}
@@ -775,7 +775,7 @@ export default function EnergieClient() {
       <div
         style={{
           textAlign: "center",
-          fontSize: 10,
+          fontSize: v("--font-size-micro"),
           color: v("--color-text-faint"),
           marginBottom: 32,
           lineHeight: 1.6,

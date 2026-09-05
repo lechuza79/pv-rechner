@@ -50,6 +50,10 @@ export function buildFundingScenarios(yieldKwhKwp: number, monthly: number[] | n
   const wp = calcHeatPump({
     situation: "bestand", wohnflaeche: 140, insulationIdx: 1, personen: 2,
     heizsystem: "hk_neu", wpType: "lwwp",
+    // Die Karte sagt „gegenüber einer neuen Gasheizung" — und wer neu einbaut,
+    // trägt die Beimischungspflicht (§ 43 GModG). Ohne sie stand hier 20.950 €,
+    // der verlinkte Rechner öffnete mit 28.207 €.
+    greenGas: true,
   });
 
   // Balcony system: the recommended set for a typical tenant household.

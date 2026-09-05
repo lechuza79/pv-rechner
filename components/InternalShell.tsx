@@ -28,14 +28,26 @@ export default function InternalShell({
 }) {
   const narrow = useIsNarrow();
 
-  const sections: NavSection[] = [
-    { title: "Mein Konto", links: [{ href: "/dashboard", label: "Meine Berechnungen" }] },
-  ];
+  const sections: NavSection[] = [];
   if (isAdmin) {
+    // Analytics steht oben: Es ist die Gruppe, die man beim Reinkommen ansieht,
+    // bevor man irgendwo weiterarbeitet. „Mein Konto" wandert dafür ans Ende —
+    // die eigenen Berechnungen sind ein Nachschlagewerk, kein Einstieg
+    // (Betreiber, 01.09.2026).
+    sections.push({
+      title: "Analytics",
+      links: [{ href: "/admin/einbettungen", label: "Einbettungen" }],
+    });
     sections.push({
       title: "Kommunen",
       links: [
-        { href: "/admin/kommunen", label: "Outreach" },
+        {
+          label: "Outreach",
+          children: [
+            { href: "/admin/kommunen/versand", label: "Übersicht" },
+            { href: "/admin/kommunen", label: "Gemeinden", exact: true },
+          ],
+        },
         {
           label: "Award",
           children: [
@@ -49,17 +61,50 @@ export default function InternalShell({
       title: "Versorger",
       links: [{ href: "/admin/versorger", label: "Stadtwerke" }],
     });
+    // Eigener Bereich, nicht ein Punkt unter „Versorger": Handwerksbetriebe sind
+    // eine andere Zielgruppe mit anderem Rechtsrahmen, und der Bereich wächst um
+    // weitere Gewerke (Heizungsbau, Dachdecker).
+    sections.push({
+      title: "Fachbetriebe",
+      links: [{ href: "/admin/fachbetriebe", label: "Verzeichnis" }],
+    });
+    // Zwei Beitragsarten unter einem Dach. Sie teilen sich die Redaktion, aber
+    // sonst wenig: Ein Post hat einen Wochentag und eine Bildform, ein Artikel
+    // eine Suchfrage und eine Indexierung. Deshalb getrennte Gruppen statt einer
+    // gemeinsamen Liste, in der man erst am Seitentitel merkt, wo man ist.
+    sections.push({
+      title: "Redaktion",
+      links: [
+        {
+          label: "Social Media",
+          children: [
+            { href: "/admin/redaktion", label: "Entwicklung", exact: true },
+            { href: "/admin/redaktion/planung", label: "Planung" },
+            { href: "/admin/redaktion/auswertung", label: "Auswertung" },
+          ],
+        },
+        {
+          label: "Blog",
+          children: [
+            { href: "/admin/redaktion/artikel", label: "Artikel" },
+            { href: "/admin/redaktion/veroeffentlicht", label: "Veröffentlicht" },
+          ],
+        },
+      ],
+    });
     sections.push({
       title: "System",
       links: [
         { href: "/admin", label: "Übersicht", exact: true },
-        { href: "/admin/theme", label: "Signalfarben-Theming" },
+        { href: "/admin/theme", label: "Designsystem" },
+        { href: "/admin/komponenten", label: "Komponenten" },
         { href: "/admin/prices", label: "Marktpreise" },
         { href: "/admin/charts", label: "Chart-Baukasten" },
         { href: "/admin/waechter", label: "Wächter-Berichte" },
       ],
     });
   }
+  sections.push({ title: "Mein Konto", links: [{ href: "/dashboard", label: "Meine Berechnungen" }] });
 
   return (
     <div
@@ -170,7 +215,7 @@ function Sidebar({ sections, horizontal }: { sections: NavSection[]; horizontal:
 }
 
 const sectionTitleStyle: React.CSSProperties = {
-  fontSize: 11,
+  fontSize: v("--font-size-caption"),
   fontWeight: 700,
   textTransform: "uppercase",
   letterSpacing: "0.06em",
@@ -180,7 +225,7 @@ const sectionTitleStyle: React.CSSProperties = {
 };
 
 const groupLabelStyle: React.CSSProperties = {
-  fontSize: 12,
+  fontSize: v("--font-size-small"),
   fontWeight: 700,
   color: v("--color-text-secondary"),
   padding: `0 ${space.sm}px`,
@@ -191,7 +236,7 @@ function itemStyle(active: boolean): React.CSSProperties {
   return {
     display: "block",
     textDecoration: "none",
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     fontWeight: active ? 700 : 600,
     color: active ? v("--color-accent") : v("--color-text-secondary"),
     background: active ? v("--color-accent-dim") : "transparent",
@@ -205,7 +250,7 @@ function pillStyle(active: boolean): React.CSSProperties {
   return {
     flex: "0 0 auto",
     textDecoration: "none",
-    fontSize: 13,
+    fontSize: v("--font-size-small"),
     fontWeight: active ? 700 : 600,
     color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
     background: active ? v("--color-accent") : v("--color-bg-muted"),

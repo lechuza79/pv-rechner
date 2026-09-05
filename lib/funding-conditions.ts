@@ -115,6 +115,10 @@ export interface FundingChecks {
  * Entscheidung, kein Versehen.
  */
 export const NOCH_NICHT_ERFASST: string[] = [
+  // Die beiden Landesprogramme für Balkonkraftwerke, aufgenommen am 02.09.2026.
+  // Ihre Bedingungen hängen an Mieter/Eigentümer — eine Unterscheidung, die das
+  // Modell (privat/gewerblich) nicht kennt. Erfassbar erst, wenn es sie kennt.
+  "sachsen-balkon-eeus", "mv-mini-solaranlagen",
   "berlin-solarplus", "stuttgart-solaroffensive", "karlsruhe-klimabonus",
   "regensburg-effizient", "wuerzburg-klimastadt", "darmstadt-pv",
   "badhomburg-energiespar", "koeln-pv", "duesseldorf-klimafreundlich",
@@ -125,7 +129,7 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "essen-solar", "schweinfurt-pv", "osnabrueck-saniert", "memmingen-ee",
   "baden-baden-pvplus", "schwerin-pv", "wolfsburg-pv", "bottrop-solaroffensive",
   "krefeld-klimafreundlich", "rhein-erft-energieoffensive", "viersen-klimaschutz",
-  "bergstrasse-speicher", "mayen-koblenz-speicher",
+  "bergstrasse-speicher", "mayen-koblenz-speicher", "ulm-energiefoerderprogramm",
   // Nach dem Merge von main dazugekommen — der Test hat sie gefunden, statt sie
   // still ungeprüft durchzulassen. Genau dafür ist die Liste da.
   "ludwigshafen-kipki", "waiblingen-klimaschutz", "herne-klimafoerderung",
@@ -168,6 +172,16 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "asbach-balkonkraftwerke", "parkstein-nachhaltigkeitszuschuss",
   "marburg-balkonkraftwerke", "schoenbrunn-balkon-pv",
   "hillscheid-energie", "schlierbach-energiespeicher",
+  // Aufgenommen am 03.09.2026, jede Zahl an der Amtsseite im Rohtext gelesen.
+  // Die Prüfformen fehlen noch — bei Hamburg und Böblingen hängt die volle
+  // Förderhöhe zusätzlich an einer Einkommensprüfung, die das Modell nicht
+  // kennt; das ist eine eigene Arbeit und halb erfasst gibt es hier nicht.
+  "hamburg-balkon-einkommen", "kiel-solarstadt", "boeblingen-balkonkraftwerke",
+  // Aufgenommen am 05.09.2026, Richtlinie und Service-Portal im Volltext
+  // gelesen. Die Prüfformen fehlen noch, und eine davon kennt das Modell gar
+  // nicht: Die Kumulierungsgrenze deckelt die SUMME aller öffentlichen Mittel
+  // auf 50 % der Gesamtkosten, nicht unseren Betrag allein.
+  "wetter-ruhr-balkonsolar",
 ];
 
 /**
@@ -303,7 +317,7 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
           "einmal gefördert wurde — eine Auskunft, die nur die Stadt hat.",
       },
       {
-        ausBedingung: "Mini-PV: höchstens zwei Module je Haushalt, höchstens 800 W Einspeisung",
+        ausBedingung: "Höchstens zwei Module je Haushalt, höchstens 800 W Einspeisung",
         warum:
           "Die 800 W sind seit 2024 ohnehin die gesetzliche Obergrenze für " +
           "Steckersolar und damit im Balkon-Rechner der Normalfall. Die Modulzahl " +
@@ -317,13 +331,20 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
           "prüfbar. Dass der Topf leerlaufen kann, trägt bereits `capped: true`.",
       },
       {
-        ausBedingung: "Für die Dachanlage braucht es Wohneigentum in Nidda; beim Balkonkraftwerk genügt der Hauptwohnsitz, Mieter sind dort ausdrücklich dabei",
+        ausBedingung: "Wohneigentum in Nidda ist Voraussetzung",
         warum:
-          "Die Antragsberechtigung ist hier JE TECHNIK verschieden, und die Prüfform " +
-          "`antragsteller` gilt dem ganzen Programm. Sie hier zu setzen hieße, eine " +
-          "der beiden Hälften falsch darzustellen — entweder verlöre der Mieter sein " +
-          "Balkonkraftwerk oder der Rechner böte ihm die Dachförderung an. Bis das " +
-          "Modell eine Technik-Dimension bei den Bedingungen kennt, bleibt es ein Satz.",
+          "Die Prüfform `antragsteller` gilt dem ganzen Programm; hier hängt die " +
+          "Berechtigung an der TECHNIK. Seit die Bedingungen je Technik getrennt " +
+          "sind, steht der Satz wenigstens nur noch dort, wo er zutrifft — als " +
+          "Prüfung ließe er sich erst erfassen, wenn auch die Prüfformen eine " +
+          "Technik-Dimension bekommen.",
+      },
+      {
+        ausBedingung: "Hauptwohnsitz in Nidda genügt — Mieterinnen und Mieter sind ausdrücklich antragsberechtigt",
+        warum:
+          "Dieselbe Grenze wie beim Wohneigentum, nur andersherum: eine Erleichterung " +
+          "statt einer Hürde, und genau der Punkt, auf den die Stadt zielt. Sie steht " +
+          "im Balkon-Reiter und nirgends sonst.",
       },
     ],
   },

@@ -20,9 +20,9 @@ export default function OptionCard({ selected, onClick, icon = null, label, sub,
       border: selected ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
       color: v('--color-text-primary'), textAlign: "center", minHeight: 78, width: "100%",
     }}>
-      {icon && <div style={{ fontSize: 18, marginBottom: 3 }}>{icon}</div>}
-      <div style={{ fontSize: 14, fontWeight: 700, color: v('--color-text-primary') }}>{label}</div>
-      {sub && <div style={{ fontSize: 11, color: v('--color-text-secondary'), marginTop: 2, lineHeight: 1.3 }}>{sub}</div>}
+      {icon && <div style={{ fontSize: v("--font-size-h3"), marginBottom: 3 }}>{icon}</div>}
+      <div style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v('--color-text-primary') }}>{label}</div>
+      {sub && <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-secondary'), marginTop: 2, lineHeight: 1.3 }}>{sub}</div>}
     </button>
   );
 }

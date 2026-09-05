@@ -20,10 +20,10 @@ export default function LiveSimulation() {
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
         <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>
+          <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>
             PV-Simulation
           </h1>
-          <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6, lineHeight: 1.5 }}>
+          <p style={{ fontSize: v("--font-size-body"), color: v('--color-text-muted'), marginTop: 6, lineHeight: 1.5 }}>
             Was produziert eine PV-Anlage an deinem Standort gerade?
           </p>
         </div>

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { allFundingPrograms } from "../funding-programs";
+import { allFundingPrograms, bedingungText } from "../funding-programs";
 import {
   FUNDING_CHECKS,
   NOCH_NICHT_ERFASST,
@@ -25,7 +25,9 @@ describe("Förderbedingungen — keine darf stillschweigend untergehen", () => {
         ...checks.hinweise.map((h) => h.ausBedingung),
       ]);
 
-      for (const c of p.conditions) {
+      // Eine Bedingung kann seit 26.08.2026 auf eine Technik eingegrenzt sein;
+      // geprüft wird ihr Wortlaut, die Eingrenzung ändert daran nichts.
+      for (const c of p.conditions.map(bedingungText)) {
         expect(
           zugeordnet.has(c),
           `${p.id}: die Bedingung "${c}" ist weder als Prüfung erfasst noch als ` +
@@ -42,7 +44,7 @@ describe("Förderbedingungen — keine darf stillschweigend untergehen", () => {
     for (const p of allFundingPrograms()) {
       const checks = FUNDING_CHECKS[p.id];
       if (!checks) continue;
-      const vorhanden = new Set(p.conditions);
+      const vorhanden = new Set(p.conditions.map(bedingungText));
       const belege = [
         ...checks.pruefungen.map((b) => b.ausBedingung),
         ...checks.durchRegion,

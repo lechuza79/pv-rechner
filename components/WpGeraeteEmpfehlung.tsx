@@ -5,6 +5,7 @@ import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
 import { v, space, pad } from "../lib/theme";
 import { IconExternal, IconCheck, IconAlert, IconInfo } from "./Icons";
+import ResultSection from "./ResultSection";
 import ContactPerson from "./ContactPerson";
 import {
   geraetLeistungTeile,
@@ -21,6 +22,7 @@ import type { Befund, Empfehlung, PaketLage } from "../lib/wp-empfehlung";
 import {
   geraeteHinweise,
   fallHinweise,
+  gemeinsameHinweise,
   hinweiseNachArt,
   WP_HINWEIS_SCHLUSS,
   type Hinweis,
@@ -178,7 +180,7 @@ function HinweisZeile({ hinweis }: { hinweis: Hinweis }) {
       style={{
         display: "flex",
         gap: space.xs,
-        fontSize: 12,
+        fontSize: v("--font-size-small"),
         lineHeight: 1.4,
         color: v("--color-text-secondary"),
       }}
@@ -214,7 +216,7 @@ function HinweisBloecke({ hinweise }: { hinweise: Hinweis[] }) {
     >
       {auswahl.length > 0 && (
         <div style={{ display: "grid", gap: space.sm }}>
-          <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: v("--color-text-primary") }}>
+          <p style={{ margin: 0, fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary") }}>
             Was die Auswahl beeinflusst
           </p>
           {auswahl.map((h) => (
@@ -223,15 +225,30 @@ function HinweisBloecke({ hinweise }: { hinweise: Hinweis[] }) {
         </div>
       )}
 
+      {/* EINGEKLAPPT, anders als der Auswahl-Block darüber.
+          
+          Gemessen am 05.09.2026: Die Geräte-Spalte trug 777 Wörter gegen 548 im
+          eigentlichen Ergebnis — das Angebot redete mehr als die Rechnung. Der
+          Betreiber hat das beanstandet, und der Apropos-Teil ist der richtige
+          Ort zum Einklappen: Man liest ihn einmal vor dem Kauf, nicht beim
+          Vergleichen der drei Geräte. Der Auswahl-Block bleibt offen, weil er
+          genau beim Vergleichen hilft.
+
+          Über den geteilten Abschnitts-Baustein, nicht als eigener Aufklapper:
+          Die Kopfzeile trägt damit dieselbe Bedienung wie im Ergebnis daneben,
+          und die Anzahl steht darin — eingeklappt soll man sehen, wie viel
+          dahinter liegt, sonst öffnet es niemand. */}
       {apropos.length > 0 && (
-        <div style={{ display: "grid", gap: space.sm }}>
-          <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: v("--color-text-primary") }}>
-            Apropos — was sonst noch dazugehört
-          </p>
-          {apropos.map((h) => (
-            <HinweisZeile key={h.id} hinweis={h} />
-          ))}
-        </div>
+        <ResultSection
+          title="Apropos — was sonst noch dazugehört"
+          summary={`${apropos.length} Punkte`}
+        >
+          <div style={{ display: "grid", gap: space.sm }}>
+            {apropos.map((h) => (
+              <HinweisZeile key={h.id} hinweis={h} />
+            ))}
+          </div>
+        </ResultSection>
       )}
     </div>
   );
@@ -259,17 +276,20 @@ function Karte({
   rang,
   fall,
   preisStand,
+  ohneHinweise = [],
 }: {
   e: Empfehlung;
   rang: number;
   fall: Props;
   /** Erhebungstag der Preise — gehört an den Preis, nicht in den Block darüber. */
   preisStand: string | null;
+  /** Kennungen, die schon über der Liste stehen — dreimal derselbe Satz ist Füllung. */
+  ohneHinweise?: readonly string[];
 }) {
   const g = e.geraet;
   const werte = kennwerte(g);
   const satz = passungsSatz(e.befunde, fall);
-  const hinweise = geraeteHinweise(g, fall);
+  const hinweise = geraeteHinweise(g, fall, undefined, ohneHinweise);
   const preis = geraetPreisTeile(g.preisEur);
   const empfohlen = rang === 0;
 
@@ -312,12 +332,12 @@ function Karte({
           marginBottom: space.sm,
         }}
       >
-        <span style={{ fontSize: 11, fontWeight: 700, color: v("--color-accent") }}>
+        <span style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v("--color-accent") }}>
           {empfohlen ? `Günstigstes passendes bei ${WP_HAENDLER.kurz}` : "\u00a0"}
         </span>
         <span
           style={{
-            fontSize: 10,
+            fontSize: v("--font-size-micro"),
             fontWeight: 700,
             letterSpacing: "0.04em",
             color: v("--color-text-muted"),
@@ -356,10 +376,10 @@ function Karte({
           )}
         </div>
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 11, color: v("--color-text-muted"), marginBottom: 2 }}>
+          <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginBottom: 2 }}>
             {g.marke}
           </div>
-          <div style={{ fontSize: 13, lineHeight: 1.35, color: v("--color-text-primary") }}>
+          <div style={{ fontSize: v("--font-size-body"), lineHeight: 1.35, color: v("--color-text-primary") }}>
             {g.name}
           </div>
         </div>
@@ -378,20 +398,20 @@ function Karte({
           <span
             style={{
               fontFamily: v("--font-mono"),
-              fontSize: 22,
+              fontSize: v("--font-size-display-sm"),
               fontWeight: 700,
               color: v("--color-text-primary"),
             }}
           >
             {preis.value}
           </span>
-          <span style={{ fontSize: 13, color: v("--color-text-secondary") }}> {preis.unit}</span>
+          <span style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary") }}> {preis.unit}</span>
         </span>
         {/* Was im Preis steckt, gehört NEBEN den Preis. Ein Monoblock allein
             kostet für dieselbe Anlagengröße rund 4.000 € weniger als ein Paket
             mit Speicher — ohne diese Zeile sieht das eine schlicht günstiger
             aus, und der Nutzer kauft die Hälfte. */}
-        <span style={{ fontSize: 11, color: v("--color-text-muted"), marginLeft: "auto" }}>
+        <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginLeft: "auto" }}>
           {umfangText(g)}
         </span>
       </div>
@@ -401,7 +421,7 @@ function Karte({
           so zusammenstehen, dass jemand kaufen kann. Der Wortlaut kommt aus
           `preisZusatz` — an der Kachel getippt stünde er beim nächsten Gerät
           mit Versandkosten falsch da. */}
-      <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: -4 }}>
+      <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: -4 }}>
         {preisZusatz(g)}
         {/* Datum UND Vorrang — der Zusatz war beim Umbau auf drei Stellen
             ersatzlos entfallen (Gegenprüfung 05.09.2026). Das Datum allein sagt,
@@ -428,11 +448,11 @@ function Karte({
         >
           {werte.map((w) => (
             <div key={w.label}>
-              <dt style={{ fontSize: 11, color: v("--color-text-muted") }}>{w.label}</dt>
+              <dt style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>{w.label}</dt>
               <dd
                 style={{
                   margin: 0,
-                  fontSize: 14,
+                  fontSize: v("--font-size-body"),
                   color: v("--color-text-primary"),
                   fontFamily: w.mono ? v("--font-mono") : undefined,
                   // `nowrap` NUR für Zahlen mit Einheit — dort gehört beides in
@@ -457,7 +477,7 @@ function Karte({
           style={{
             display: "flex",
             gap: space.xs,
-            fontSize: 12,
+            fontSize: v("--font-size-small"),
             lineHeight: 1.4,
             color: v("--color-text-secondary"),
             marginBottom: space.sm,
@@ -475,7 +495,7 @@ function Karte({
           style={{
             display: "flex",
             gap: space.xs,
-            fontSize: 12,
+            fontSize: v("--font-size-small"),
             lineHeight: 1.4,
             color: v("--color-text-muted"),
             marginBottom: space.sm,
@@ -512,7 +532,7 @@ function Karte({
           justifyContent: "center",
           gap: space.xs,
           padding: pad("sm", "md"),
-          fontSize: 13,
+          fontSize: v("--font-size-small"),
           fontWeight: 700,
           color: v("--color-accent"),
           background: v("--color-accent-dim"),
@@ -563,7 +583,7 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
 
   if (laedt) {
     return (
-      <div style={{ fontSize: 12, color: v("--color-text-muted") }}>
+      <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
         Passende Geräte werden gesucht …
       </div>
     );
@@ -573,7 +593,7 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
   if (treffer.length === 0) {
     // Kein Grund zur Beschönigung: Wenn nichts passt, ist das die Auskunft.
     return (
-      <div style={{ fontSize: 13, color: v("--color-text-secondary"), lineHeight: 1.5 }}>
+      <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.5 }}>
         Für diese Anlagengröße und Vorlauftemperatur ist gerade kein passendes Gerät im
         Sortiment von {WP_HAENDLER.kurz}. Das heißt nicht, dass es keins gibt — nur, dass wir
         keins belegen können.
@@ -582,6 +602,10 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
   }
 
   const alternativ = antwort?.alternativ ?? [];
+  // Hinweise, die an jeder Kachel gleich stünden — sie stehen einmal über der
+  // Liste und werden an den Kacheln ausgelassen.
+  const gemeinsam = gemeinsameHinweise(treffer.map((e) => e.geraet), fall);
+  const gemeinsameIds = gemeinsam.map((h) => h.id);
   /**
    * Wann wir die Preise geholt haben.
    *
@@ -684,7 +708,7 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
           gap: space.sm,
         }}
       >
-        <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: v("--color-text-secondary") }}>
+        <p style={{ margin: 0, fontSize: v("--font-size-small"), lineHeight: 1.5, color: v("--color-text-secondary") }}>
           <strong style={{ color: v("--color-text-primary") }}>Anzeige</strong> — Diese Geräte
           stammen aus dem Sortiment eines einzelnen Händlers, sind also kein Marktüberblick. Wir
           erhalten eine Provision, wenn du dort kaufst; für dich ändert sich am Preis nichts.
@@ -737,17 +761,36 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
           Ursache blieb ungenannt. Gefunden von einer Gegenprüfung am
           05.09.2026. */}
       {paketLage === "keine" && (
-        <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: v("--color-text-muted") }}>
+        <p style={{ margin: 0, fontSize: v("--font-size-small"), lineHeight: 1.5, color: v("--color-text-muted") }}>
           In dieser Anlagengröße führt {WP_HAENDLER.kurz} keine Komplettpakete. Die Geräte unten sind
           die Wärmepumpe allein — Speicher, Regelung und Montage kommen dazu.
         </p>
       )}
       {paketLage === "unpassend" && (
-        <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: v("--color-text-muted") }}>
+        <p style={{ margin: 0, fontSize: v("--font-size-small"), lineHeight: 1.5, color: v("--color-text-muted") }}>
           Komplettpakete dieser Größe gibt es bei {WP_HAENDLER.kurz}, aber keins davon schafft deine
           Vorlauftemperatur oder deine Heizlast. Die Geräte unten sind die Wärmepumpe allein —
           Speicher, Regelung und Montage kommen dazu.
         </p>
+      )}
+
+      {/* Was an JEDER Kachel gleich stünde, steht hier einmal.
+
+          Gemessen am 05.09.2026: Bei einem Altbau mit 55 °C trugen alle drei
+          Geräte wörtlich denselben Propan-Satz und denselben Satz über den
+          Lieferumfang — dreimal untereinander. Das ist keine Information mehr,
+          sondern Füllung, und es war ein Grund dafür, dass die Geräte-Spalte
+          mehr Text trug (777 Wörter) als das Ergebnis daneben (548).
+
+          Über der Liste und nicht darunter: Der Satz gilt allen Kacheln, und
+          wer die Preise vergleicht, soll vorher wissen, was in keinem davon
+          steckt. */}
+      {gemeinsam.length > 0 && (
+        <div style={{ display: "grid", gap: space.xs }}>
+          {gemeinsam.map((h) => (
+            <HinweisZeile key={h.id} hinweis={h} />
+          ))}
+        </div>
       )}
 
       {/* Ein Baum für beide Anordnungen: Der Rahmen ist auf schmalen Schirmen
@@ -762,7 +805,7 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
         >
           {treffer.map((e, i) => (
             <li key={e.geraet.id} className="wp-geraete-kachel" style={{ minWidth: 0 }}>
-              <Karte e={e} rang={i} fall={fall} preisStand={preisStand} />
+              <Karte e={e} rang={i} fall={fall} preisStand={preisStand} ohneHinweise={gemeinsameIds} />
             </li>
           ))}
         </ul>
@@ -777,7 +820,7 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
             gap: space.sm,
           }}
         >
-          <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: v("--color-text-secondary") }}>
+          <p style={{ margin: 0, fontSize: v("--font-size-small"), lineHeight: 1.5, color: v("--color-text-secondary") }}>
             <strong style={{ color: v("--color-text-primary") }}>Nur die Wärmepumpe</strong> — wenn
             Speicher und Regelung schon da sind oder getrennt gekauft werden.
           </p>
@@ -827,7 +870,7 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
       <p
         style={{
           margin: 0,
-          fontSize: 12,
+          fontSize: v("--font-size-small"),
           lineHeight: 1.5,
           color: v("--color-text-muted"),
           fontStyle: "italic",
@@ -858,7 +901,7 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
         style={{
           borderLeft: `3px solid ${v("--color-negative")}`,
           padding: pad("sm", "md"),
-          fontSize: 12,
+          fontSize: v("--font-size-small"),
           lineHeight: 1.5,
           color: v("--color-text-secondary"),
           background: v("--color-negative-dim"),
@@ -891,11 +934,11 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
           uneingeschränkt für Verbraucher, kein Ausschluss für Sonderanfertigung
           oder Montageleistung — und der Shop belehrt im eigenen Namen, ist also
           selbst Vertragspartner und kein Marktplatz für Dritte. */}
-      <p style={{ margin: 0, fontSize: 11, lineHeight: 1.5, color: v("--color-text-muted") }}>
+      <p style={{ margin: 0, fontSize: v("--font-size-caption"), lineHeight: 1.5, color: v("--color-text-muted") }}>
         Verkäufer: {haendlerAnschrift()}. Beim Kauf dort besteht ein Widerrufsrecht.
       </p>
 
-      <p style={{ margin: 0, fontSize: 11, lineHeight: 1.5, color: v("--color-text-muted") }}>
+      <p style={{ margin: 0, fontSize: v("--font-size-caption"), lineHeight: 1.5, color: v("--color-text-muted") }}>
         Angegeben ist der Gerätepreis des Händlers, nicht der Preis der fertigen Anlage —
         Speicher, Regelung, Montage und Inbetriebnahme kommen dazu. Hersteller messen die
         Heizleistung außerdem bei unterschiedlichen Außentemperaturen; die Zahl taugt zum

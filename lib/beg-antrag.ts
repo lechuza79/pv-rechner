@@ -62,7 +62,7 @@ export const BEG_ANTRAG_STAND = {
  * abgetippter Anker bricht stumm, wenn die Überschrift umbenannt wird.
  */
 export const BEG_ANTRAG_ANKER = "antrag-reihenfolge";
-export const BEG_ANTRAG_HREF = `/ratgeber/waermepumpe-foerderung-2026#${BEG_ANTRAG_ANKER}`;
+export const BEG_ANTRAG_HREF = `/ratgeber/waermepumpe-foerderung#${BEG_ANTRAG_ANKER}`;
 
 export interface BegAntragSchritt {
   /** Kurzform für die Überschrift der Stufe. */

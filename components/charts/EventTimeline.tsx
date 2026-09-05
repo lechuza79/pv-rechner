@@ -81,7 +81,7 @@ export default function EventTimeline({ events, active, onChange, startYear, end
     border: `1px solid ${v("--color-border")}`,
     background: v("--color-bg"),
     color: disabled ? v("--color-text-muted") : v("--color-accent"),
-    fontSize: 18,
+    fontSize: v("--font-size-h3"),
     lineHeight: 1,
     cursor: disabled ? "default" : "pointer",
     opacity: disabled ? 0.4 : 1,
@@ -178,7 +178,7 @@ export default function EventTimeline({ events, active, onChange, startYear, end
                   cursor: "pointer",
                   background: isPlanned ? PALE : v("--color-accent"),
                   color: v("--color-bg"),
-                  fontSize: 12,
+                  fontSize: v("--font-size-small"),
                   fontWeight: 700,
                   fontFamily: v("--font-text"),
                   display: "inline-flex",
@@ -232,14 +232,14 @@ export default function EventTimeline({ events, active, onChange, startYear, end
           <div style={{ flex: narrow ? undefined : 1, minWidth: 0, minHeight: 92 }}>
             {events.map((e, i) => (
               <div key={e.year} id={`ev-panel-${i}`} role="tabpanel" aria-labelledby={`ev-tab-${i}`} hidden={i !== active}>
-                <div style={{ fontSize: 15, fontWeight: 800, color: v("--color-text-primary"), marginBottom: 3 }}>
+                <div style={{ fontSize: v("--font-size-body"), fontWeight: 800, color: v("--color-text-primary"), marginBottom: 3 }}>
                   <span style={{ fontFamily: v("--font-mono"), color: v("--color-accent") }}>{e.year}</span>
                   {"  ·  "}
                   {e.label}
                 </div>
-                <div style={{ fontSize: 14, lineHeight: 1.55, color: v("--color-text-secondary") }}>{e.text}</div>
+                <div style={{ fontSize: v("--font-size-body"), lineHeight: 1.55, color: v("--color-text-secondary") }}>{e.text}</div>
                 {e.government && (
-                  <div style={{ fontSize: 12.5, lineHeight: 1.5, color: v("--color-text-muted"), marginTop: 6 }}>
+                  <div style={{ fontSize: v("--font-size-small"), lineHeight: 1.5, color: v("--color-text-muted"), marginTop: 6 }}>
                     <strong style={{ fontWeight: 700 }}>Regierung:</strong> {e.government}
                   </div>
                 )}

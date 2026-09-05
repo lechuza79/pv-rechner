@@ -12,6 +12,32 @@ Kein Redaktionsplan, sondern die Materialsammlung, aus der später ein Generator
 
 ---
 
+## Stand der Umsetzung (26.08.2026)
+
+Sechs Geschichten sind gebaut und stehen im Redaktionstisch; die LinkedIn-Anbindung
+veröffentlicht Text und Bild, prüft vorher und warnt vor dem Ablauf des Zugangs. Der Ausbau der
+Ansicht zum Design-Werkzeug läuft in einer eigenen Sitzung — Übergabe samt Fallen:
+`docs/redaktionssystem-uebergabe.md`.
+
+**Zwei Messungen aus dieser Runde, die nicht wiederholt werden müssen:**
+
+- **Die Story-Themen haben kein messbares Suchvolumen** („Balkonkraftwerk Stadt Land", „wo stehen
+  die meisten", „Solaranlagen pro Einwohner Bundesland": null). Nachfrage haben die
+  BESTANDSfragen: „wie viele Balkonkraftwerke gibt es in Deutschland" 90 Suchen im Monat bei
+  geringer Konkurrenz, „wie viele Wärmepumpen" ebenfalls 90, dazu ein halbes Dutzend kleinerer.
+  Zusammen rund 240 im Monat auf Fragen, die wir tagesaktuell beantworten können. Daraus entsteht
+  eine eigene Zahlen-Seite (eigene Sitzung), nicht eine Seite je Geschichte.
+- **Verborgener Text im HTML wird indexiert.** Googles Spam-Richtlinie nennt Akkordeons und Tabs
+  ausdrücklich als zulässig; was verloren geht, ist Inhalt, der erst per Klick NACHGELADEN wird.
+  Zur Gewichtung gibt es keine Primärquelle, in keine Richtung. Adress-Anker gelten nicht als
+  eigene Adressen — ein Sprungziel erzeugt keine eigene Sichtbarkeit.
+
+**Was daraus folgt:** Die Geschichten sind Material für Beiträge und für Seiteninhalte, nicht
+Seitenziele. Der Betreiber will den Website-Teil verschoben, bis das Posten steht — verschoben,
+nicht verworfen.
+
+---
+
 ## Wie ein Eintrag zu lesen ist
 
 Jeder Eintrag beantwortet sechs Fragen:
@@ -129,9 +155,18 @@ Schranken: **Top ja, Flop nie** · Vergleichsgruppe und Gruppengröße immer nen
 Mindestgröße gegen Zufallssieger.
 
 **G3.3 — Die Landkarte, die man nicht erwartet**
-Beispiel: „Beim Solarstrom je Kopf liegt der Osten vorn. Bei Balkonkraftwerken ist es umgekehrt."
+Beispiel (**gemessen am 26.08.2026, nicht erfunden**): „Das Balkonkraftwerk gilt als Lösung für
+Mieter in der Stadt. In den 80 Städten über 100.000 Einwohnern kommen 9,9 Anlagen auf 1.000
+Einwohner. In den Gemeinden unter 20.000 sind es 22,8."
 Quelle: Bestand nach Segment ✓ · Takt: quartalsweise · Für: FACH, PRIV
 Kanal: alle · Schranken: keine — aggregiert, ohne Ortsnennung.
+
+> **Wie dieser Eintrag zu seinem Beispiel kam, ist die Lehre daran.** Hier stand zuerst „beim
+> Solarstrom je Kopf liegt der Osten vorn, bei Balkonkraftwerken umgekehrt" — ausgedacht, nicht
+> gemessen. Die Abfrage sagt das Gegenteil: Bayern führt bei privater Dachleistung je Kopf mit
+> 656 Wp, Sachsen liegt mit 236 Wp am Ende der Flächenländer, und bei Balkonkraftwerken liegen Ost
+> und West praktisch gleichauf. Der echte Kontrast ist Stadt gegen Land, und er ist stärker als der
+> erfundene. **Kein Beispielsatz in diesem Katalog gilt, bevor er einmal gegen die Daten lief.**
 
 **G3.4 — David gegen Goliath**
 Beispiel: „[Kleine Gemeinde] hat mehr Solarleistung je Einwohner als München, Hamburg
@@ -546,6 +581,43 @@ unter der Marke. Und es passt zu dem, wofür sein Profil ohnehin steht.
 
 **Die Schranke:** Nichts posten, was einen Fehler auf einer Seite beschreibt, die noch live falsch
 ist. Erst beheben, dann erzählen. Sonst ist der Post eine öffentliche Fehlermeldung mit Adresse.
+
+---
+
+## Ausbaustufe 2: Förderdaten im Storykonzept
+
+**Die Förderdaten werden zuerst ins PRODUKT gebracht** (Wärmepumpen-Rechner und Förderseiten) —
+Übergabe dafür: `docs/foerderdaten-produkt-uebergabe.md`. Die Geschichten fallen danach ab, nicht
+umgekehrt. Der Grund ist derselbe wie überall hier: Ein Post wird gerechnet, nicht getippt. Solange
+die Zahlen nicht im Produkt stehen, gäbe es für einen Post keine geteilte Quelle, und die erste
+Abweichung zwischen Post und Seite wäre programmiert.
+
+**Was sich dadurch am Storykonzept ändert — vier Stellen:**
+
+**1. Eine vierte Zielgruppe wird bedienbar: Menschen, die gerade eine Heizung ersetzen.** Bisher
+richtet sich alles an Solar-Interessierte. Die Heizungsförderung ist das erste Thema mit eigenem
+Anlass und eigener Dringlichkeit — und es ist der Bereich, in dem unser Wärmepumpen-Rechner steht,
+ohne dass ihn bisher eine Datengeschichte speist.
+
+**2. Der Bonus-Fund wird zum Anker eines Ratgebers, nicht nur zu einem Post.** Welche Boni real
+gezogen werden, beantwortet die Frage „bekomme ich das auch?" — die Frage, mit der jemand auf dem
+Rechner landet. Der Post zieht auf den Ratgeber, der Ratgeber auf den Rechner. Diese Kette gibt es
+bei den Bestandsgeschichten nicht, dort endet der Weg beim Atlas.
+
+**3. Zwei Familien bekommen einen zweiten Gegenstand.** Die Aufsteiger-Geschichte (G2) und der
+Nachbarschaftskontrast (G3.1) laufen heute nur über Solaranlagen; mit der Heizungsförderung
+laufen dieselben Formate über eine zweite Technik. Das verdoppelt den Vorrat, ohne ein neues
+Format zu erfinden — und es beantwortet die Frage, ob eine Gemeinde bei Wärme genauso dasteht wie
+bei Strom. Meist tut sie das nicht, und genau das ist die Geschichte.
+
+**4. Eine Kennzahl wird erst durch die Kombination möglich:** Anlagenbestand aus dem Register
+gegen Förderzusagen aus dem Report, dieselbe Gebietsebene, dasselbe Jahr. „Wo viel Solar auf den
+Dächern liegt, wird auch die Heizung schneller getauscht" ist eine Behauptung, die wir prüfen
+können — und deren Widerlegung genauso interessant wäre.
+
+**Die Reihenfolge ist nicht verhandelbar:** erst Produkt, dann Geschichte. Ein Post über Zahlen,
+die auf keiner Seite nachlesbar sind, hat kein Ziel — und die Reichweite verpufft an dem Tag, an
+dem sie entsteht.
 
 ---
 

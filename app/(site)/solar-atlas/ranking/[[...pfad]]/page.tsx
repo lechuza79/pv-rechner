@@ -191,10 +191,30 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
   // Leere Klassen fliegen raus: In einem Landkreis ohne Ort unter 1.000
   // Einwohnern ist eine Kachel "Doerfer — keine wertbaren Zahlen" plus "Ganze
   // Liste (0)" reines Rauschen. Bundesweit sind ohnehin alle fuenf besetzt.
+  // WELCHE VERGLEICHSFELDER ES HIER UEBERHAUPT GIBT — einmal gerechnet, zweimal
+  // benutzt: fuer die Spitzenreiter-Kacheln und fuer den Umschalter darueber.
+  //
+  // In einem Landkreis gibt es per Definition keine kreisfreie Stadt und fast nie
+  // eine Landeshauptstadt oder Grossstadt. Der Umschalter bot sie trotzdem an
+  // und fuehrte damit auf eine leere Liste — gemessen am 05.09.2026 waren 36 von
+  // 70 Kombinationen aus Groessenklasse und Landkreis leer. Die Kacheln filterten
+  // das laengst heraus, der Umschalter daneben nicht; genau so entsteht die
+  // Sorte Widerspruch, die man auf der eigenen Seite in einem Klick sieht.
+  const zeilenJeFeld = new Map(
+    [...felderNachArt("groesse"), ...felderNachArt("rolle")].map((k) => [
+      k.slug,
+      // Ohne Rangveraenderung: Die Kacheln zeigen nur den Sieger, kein Delta.
+      rankingRows(stats, kategorie, scopeId, k, false),
+    ]),
+  );
+  // Das GEWAEHLTE Feld bleibt immer stehen, auch wenn es leer ist: Sonst kaeme
+  // jemand ueber einen Link von aussen auf eine Seite, deren Umschalter nicht
+  // zeigt, wo er gerade steht.
+  const feldSichtbar = (slug: string) => (zeilenJeFeld.get(slug)?.length ?? 0) > 0 || slug === klasse?.slug;
+
   const spitzenreiter = zeigtSpitzenreiter
     ? felderNachArt("groesse")
-        // Ohne Rangveraenderung: Die Kacheln zeigen nur den Sieger, kein Delta.
-        .map((k) => ({ klasse: k, zeilen: rankingRows(stats, kategorie, scopeId, k, false) }))
+        .map((k) => ({ klasse: k, zeilen: zeilenJeFeld.get(k.slug) ?? [] }))
         .filter((x) => x.zeilen.length > 0)
     : [];
 
@@ -386,7 +406,7 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
             <Link href={listenLink(kategorie.slug, null)} style={katStil(!klasse, true)}>
               Spitze je Größe
             </Link>
-            {felderNachArt("groesse").map((k) => (
+            {felderNachArt("groesse").filter((k) => feldSichtbar(k.slug)).map((k) => (
               <Link
                 key={k.slug}
                 href={listenLink(kategorie.slug, k.slug)}
@@ -399,8 +419,12 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
             {/* Rollen stehen NEBEN den Groessen, nicht darunter: Wer sich mit den
                 Landeshauptstaedten vergleicht, vergleicht sich nicht zusaetzlich
                 nach Groesse — es ist ein anderes Feld, keine Verfeinerung. */}
-            <span style={S.zeitraumTrenner} aria-hidden />
-            {felderNachArt("rolle").map((k) => (
+            {/* Der Trenner nur, wenn rechts davon wirklich etwas steht — sonst
+                haengt in jedem Landkreis ein Strich ohne Inhalt dahinter. */}
+            {felderNachArt("rolle").some((k) => feldSichtbar(k.slug)) && (
+              <span style={S.zeitraumTrenner} aria-hidden />
+            )}
+            {felderNachArt("rolle").filter((k) => feldSichtbar(k.slug)).map((k) => (
               <Link
                 key={k.slug}
                 href={listenLink(kategorie.slug, k.slug)}
@@ -705,13 +729,13 @@ const S: Record<string, React.CSSProperties> = {
     padding: "0 16px 20px",
   },
   wrap: { maxWidth: 720, margin: "0 auto" },
-  h1: { marginTop: space.lg, fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
-  intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.xl}px` },
+  h1: { marginTop: space.lg, fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
+  intro: { fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.xl}px` },
   strong: { color: v("--color-text-primary"), fontWeight: 600 },
   navReihe: { display: "flex", flexWrap: "wrap", gap: space.xl, marginBottom: space.md },
   navGruppe: { flex: "1 1 240px", minWidth: 0 },
   navTitel: {
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     textTransform: "uppercase",
     letterSpacing: "0.05em",
     color: v("--color-text-muted"),
@@ -722,9 +746,9 @@ const S: Record<string, React.CSSProperties> = {
   // Kopfzeile beansprucht — ohne ihn beginnt die Tabelle unter ihr.
   anker: { scrollMarginTop: space.huge },
   kats: { display: "flex", flexWrap: "wrap", gap: 6 },
-  katKlein: { fontSize: 11, padding: "2px 10px" },
+  katKlein: { fontSize: v("--font-size-caption"), padding: "2px 10px" },
   zeitraeume: { display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6, marginBottom: space.lg },
-  zeitraumLabel: { fontSize: 11, color: v("--color-text-muted"), marginRight: 2 },
+  zeitraumLabel: { fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginRight: 2 },
   kat: {
     padding: pad("xs", "md"),
     border: "1px solid",
@@ -744,10 +768,10 @@ const S: Record<string, React.CSSProperties> = {
     alignItems: "baseline",
     padding: pad("sm", "sm"),
     borderBottom: `1px solid ${v("--color-border")}`,
-    fontSize: 15,
+    fontSize: v("--font-size-body"),
     position: "relative",
   },
-  platz: { fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-accent-dark"), fontSize: 13 },
+  platz: { fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-accent-dark"), fontSize: v("--font-size-small") },
   zeitraumTrenner: { width: 1, alignSelf: "stretch", background: v("--color-border"), margin: `0 ${space.xs}px` },
   h1Zusatz: { fontWeight: 500, color: v("--color-text-secondary") },
   klassenKarte: {
@@ -757,13 +781,13 @@ const S: Record<string, React.CSSProperties> = {
     marginBottom: space.lg,
   },
   klassenKopf: { display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: space.sm },
-  klassenLabel: { fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: v("--color-text-muted") },
-  klassenLink: { fontSize: 13, color: v("--color-accent"), textDecoration: "none", whiteSpace: "nowrap" },
+  klassenLabel: { fontSize: v("--font-size-small"), fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: v("--color-text-muted") },
+  klassenLink: { fontSize: v("--font-size-small"), color: v("--color-accent"), textDecoration: "none", whiteSpace: "nowrap" },
   klassenSieger: { display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: space.sm, marginTop: space.sm },
-  klassenName: { fontSize: 16, fontWeight: 700 },
+  klassenName: { fontSize: v("--font-size-lead"), fontWeight: 700 },
   klassenNameLink: { color: v("--color-text-primary"), textDecoration: "none" },
-  klassenBasis: { display: "block", fontSize: 13, fontWeight: 400, color: v("--color-text-secondary"), marginTop: 2 },
-  klassenLeer: { fontSize: 13, color: v("--color-text-muted"), marginTop: space.xs },
+  klassenBasis: { display: "block", fontSize: v("--font-size-small"), fontWeight: 400, color: v("--color-text-secondary"), marginTop: 2 },
+  klassenLeer: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginTop: space.xs },
   krone: { marginRight: 5 },
   nameSpalte: { display: "flex", flexDirection: "column", minWidth: 0, gap: 1 },
   name: {
@@ -775,7 +799,7 @@ const S: Record<string, React.CSSProperties> = {
     textDecoration: "none",
   },
   herkunft: {
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     color: v("--color-text-muted"),
     overflow: "hidden",
     textOverflow: "ellipsis",
@@ -784,7 +808,7 @@ const S: Record<string, React.CSSProperties> = {
   // Blau, weil es ein Link ist — vorher sah es aus wie Beschriftung.
   herkunftLink: { color: v("--color-accent-light"), textDecoration: "none" },
   kopfzeile: {
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     textTransform: "uppercase",
     letterSpacing: "0.04em",
     color: v("--color-text-muted"),
@@ -793,9 +817,9 @@ const S: Record<string, React.CSSProperties> = {
   },
   kopfRechts: { textAlign: "right" },
   delta: { display: "flex", justifyContent: "flex-start" },
-  wert: { fontFamily: v("--font-mono"), fontSize: 13, color: v("--color-text-secondary") },
+  wert: { fontFamily: v("--font-mono"), fontSize: v("--font-size-small"), color: v("--color-text-secondary") },
   go: { display: "flex", justifyContent: "flex-end", color: v("--color-accent") },
-  deltaHinweis: { fontSize: 12, color: v("--color-text-muted"), margin: `${space.md}px 0 0`, lineHeight: 1.5 },
+  deltaHinweis: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), margin: `${space.md}px 0 0`, lineHeight: 1.5 },
   blaettern: {
     display: "flex",
     flexWrap: "wrap",
@@ -804,9 +828,9 @@ const S: Record<string, React.CSSProperties> = {
     gap: space.md,
     marginTop: space.lg,
   },
-  blaetternText: { fontSize: 13, color: v("--color-text-muted") },
+  blaetternText: { fontSize: v("--font-size-small"), color: v("--color-text-muted") },
   blaetternKnoepfe: { display: "flex", alignItems: "center", gap: space.md },
-  blaetternZahl: { fontSize: 12, color: v("--color-text-muted"), fontFamily: v("--font-mono") },
+  blaetternZahl: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), fontFamily: v("--font-mono") },
   blaetternKnopf: {
     display: "inline-flex",
     alignItems: "center",
@@ -814,13 +838,13 @@ const S: Record<string, React.CSSProperties> = {
     padding: pad("xs", "md"),
     border: `1px solid ${v("--color-border")}`,
     borderRadius: v("--radius-sm"),
-    fontSize: 13,
+    fontSize: v("--font-size-small"),
     fontWeight: 600,
     color: v("--color-accent"),
     textDecoration: "none",
   },
   section: { marginTop: space.xxxl },
-  h2: { fontSize: 16, fontWeight: 700, margin: `0 0 ${space.md}px` },
+  h2: { fontSize: v("--font-size-lead"), fontWeight: 700, margin: `0 0 ${space.md}px` },
   gebiete: { display: "flex", flexWrap: "wrap", gap: 6 },
   gebiet: {
     padding: pad("xs", "md"),
@@ -836,9 +860,9 @@ const S: Record<string, React.CSSProperties> = {
     padding: pad("md", "lg"),
     marginBottom: space.md,
   },
-  befundTitel: { fontSize: 15, fontWeight: 700, marginBottom: 4 },
-  befundText: { fontSize: 14, color: v("--color-text-secondary"), lineHeight: 1.55, margin: 0 },
-  stufenLabel: { fontSize: 11, color: v("--color-text-muted"), marginTop: space.md },
+  befundTitel: { fontSize: v("--font-size-body"), fontWeight: 700, marginBottom: 4 },
+  befundText: { fontSize: v("--font-size-body"), color: v("--color-text-secondary"), lineHeight: 1.55, margin: 0 },
+  stufenLabel: { fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: space.md },
   stufen: { display: "flex", flexWrap: "wrap", gap: 6, marginTop: 4 },
   stufe: {
     display: "flex",
@@ -848,9 +872,9 @@ const S: Record<string, React.CSSProperties> = {
     borderRadius: v("--radius-sm"),
     padding: pad("xs", "sm"),
   },
-  stufeLabel: { fontSize: 11, color: v("--color-text-muted") },
-  stufeWert: { fontFamily: v("--font-mono"), fontSize: 14, fontWeight: 700, color: v("--color-accent-dark") },
-  gruppeText: { fontSize: 14, color: v("--color-text-secondary"), margin: `0 0 ${space.md}px`, lineHeight: 1.5 },
+  stufeLabel: { fontSize: v("--font-size-caption"), color: v("--color-text-muted") },
+  stufeWert: { fontFamily: v("--font-mono"), fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-accent-dark") },
+  gruppeText: { fontSize: v("--font-size-body"), color: v("--color-text-secondary"), margin: `0 0 ${space.md}px`, lineHeight: 1.5 },
   karten: { display: "flex", flexDirection: "column", gap: space.md },
   karte: {
     display: "flex",
@@ -862,19 +886,19 @@ const S: Record<string, React.CSSProperties> = {
     textDecoration: "none",
     color: "inherit",
   },
-  karteTitel: { fontSize: 16, fontWeight: 700 },
-  karteText: { fontSize: 14, color: v("--color-text-secondary"), lineHeight: 1.5 },
+  karteTitel: { fontSize: v("--font-size-lead"), fontWeight: 700 },
+  karteText: { fontSize: v("--font-size-body"), color: v("--color-text-secondary"), lineHeight: 1.5 },
   karteCta: {
     display: "inline-flex",
     alignItems: "center",
     gap: 6,
     marginTop: 4,
-    fontSize: 13,
+    fontSize: v("--font-size-small"),
     fontWeight: 600,
     color: v("--color-accent"),
   },
   disclaimer: {
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     color: v("--color-text-muted"),
     lineHeight: 1.6,
     borderTop: `1px solid ${v("--color-border")}`,

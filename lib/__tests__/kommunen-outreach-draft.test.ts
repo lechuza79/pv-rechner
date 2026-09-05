@@ -34,18 +34,30 @@ describe("Meldung", () => {
     expect(m).toContain("Platz 1 von 52");
   });
 
-  // UMGEDREHT AM 19.08.2026 (Entscheidung des Betreibers): Vorher prüfte dieser
-  // Test, DASS die Leistungsangaben in der Meldung stehen. Jetzt prüft er, dass
-  // sie es NICHT tun. Der Empfänger ist eine Pressestelle, keine Netzabteilung;
-  // „13,2 MWp" und „404 Wh je Einwohner" rechnet außerhalb der Branche niemand
-  // im Kopf um. Die Meldung zählt Dinge — die Leistungswerte stehen weiterhin
-  // auf der verlinkten Gemeindeseite.
-  it("trägt keine Leistungs- und keine Pro-Kopf-Einheiten", () => {
-    for (const ctx of [BASIS, { ...BASIS, rang: { platz: 3, von: 52 } }]) {
-      const m = renderMeldung(ctx);
-      expect(m, m).not.toMatch(/\d\s*(MWp|kWp|Wp|MWh|kWh|Wh)\b/);
-      expect(m).not.toContain("pro Person");
-      expect(m).not.toContain("je Einwohner\u00ad");
+  // UMGEDREHT AM 19.08.2026, PRÄZISIERT AM 26.08.2026, nachdem die Regel an einem echten Brief anschlug.
+  //
+  // Verboten sind UMRECHNUNGEN, nicht Zahlen: „404 Wh je Einwohner" rechnet in
+  // einer Pressestelle niemand im Kopf um. Eine einzelne Leistungsangabe als
+  // Grundmenge hinter einer Platzierung ist etwas anderes — „Platz 1 beim Zubau
+  // (2,6 MWp dazugebaut)" sagt, worauf der Rang beruht, und ohne sie stünde die
+  // Platzierung ohne Beleg da. Entscheidung des Betreibers: so lassen.
+  //
+  // „nicht nur Zahlen-Bingo spielen, sondern es verständlicher schreiben."
+  //
+  // GEPRÜFT WIRD ÜBER ALLE KATEGORIEN, nicht nur den Referenzfall. Die vorige
+  // Fassung sah zwei Zusammenstellungen mit derselben Grundmenge („36
+  // Hausspeicher") und war deshalb blind für die Zubau-Kategorien, deren
+  // Grundmenge naturgemäß eine Leistung ist — aufgefallen erst an einem
+  // fertigen Brief nach Niedersachsen.
+  it("rechnet in der Meldung nichts je Einwohner um", () => {
+    const grundmengen = ["36 Hausspeicher", "2,6 MWp dazugebaut", "1.061 Balkonkraftwerke", null];
+    for (const rangBasis of grundmengen) {
+      for (const rang of [{ platz: 1, von: 52 }, { platz: 3, von: 52 }]) {
+        const m = renderMeldung({ ...BASIS, rangBasis, rang });
+        expect(m, m).not.toMatch(/(MWp|kWp|Wp|MWh|kWh|Wh)\s*(je|pro|\/)\s*(Einwohner|Kopf|Person)/i);
+        expect(m, m).not.toContain("pro Person");
+        expect(m, m).not.toContain("je Einwohner\u00ad");
+      }
     }
   });
 

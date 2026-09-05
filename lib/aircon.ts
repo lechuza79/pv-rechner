@@ -74,6 +74,25 @@ export const AC_SIMPLE = {
 
 /** Kühlstrom/Jahr aus der Wohnfläche — das Wettermodell auf typische Annahmen
  *  kollabiert. cdh default = deutscher Durchschnitt (standortunabhängige Schätzung). */
+/**
+ * Die Schnellschätzung des Kühlstroms, die der PV-Rechner ohne Detailangaben
+ * benutzt (Standardgerät, Räume × Standardfläche, Tagesbetrieb). EINE Quelle für
+ * PV-Rechner und Empfehlungs-Flow: Bis 05.09.2026 schätzte die Empfehlung über
+ * die Wohnfläche (361 kWh bei 120 m²), der Rechner nach dem Klick über Räume und
+ * Kühlgradstunden (228 kWh) — dieselbe Klimaanlage sprang bei der Übergabe.
+ * Ohne Standort gilt der Bundeswert der Kühlgradstunden.
+ */
+export function klimaSchnellschaetzungKwh(
+  a: { rooms: number; cdh?: number; stromPrice: number },
+  cfg: AcConfig = DEFAULT_AIRCON_CONFIG,
+): number {
+  return calcAircon({
+    deviceId: cfg.defaultDeviceId, rooms: a.rooms, roomM2: cfg.defaultRoomM2,
+    exposure: cfg.defaultExposure, targetTemp: cfg.defaultTargetTemp, window: "day",
+    cdh: a.cdh ?? cfg.cdhNational, stromPrice: a.stromPrice, pvActive: false,
+  }, cfg).electricityKwh;
+}
+
 export function estimateAcKwhFromLivingArea(livingAreaM2: number, cdh: number = DEFAULT_AIRCON_CONFIG.cdhNational, cfg: AcConfig = DEFAULT_AIRCON_CONFIG): number {
   const cooledArea = livingAreaM2 * AC_SIMPLE.cooledFraction;
   const cdhEff = effectiveCdh(cdh, AC_SIMPLE.targetTemp, AC_SIMPLE.window, cfg);

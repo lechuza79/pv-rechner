@@ -82,8 +82,8 @@ export default function ScenarioCards({
 
 const S: Record<string, React.CSSProperties> = {
   section: { marginBottom: 28 },
-  h2: { fontSize: 16, fontWeight: 800, margin: "0 0 2px" },
-  sub: { fontSize: 12, color: v("--color-text-muted"), margin: "0 0 14px" },
+  h2: { fontSize: v("--font-size-lead"), fontWeight: 800, margin: "0 0 2px" },
+  sub: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), margin: "0 0 14px" },
   // Nebeneinander auf Desktop, gestapelt auf Mobil — über flex-wrap statt Media Query.
   cards: { display: "flex", flexWrap: "wrap", gap: 10 },
   exCard: {
@@ -93,8 +93,8 @@ const S: Record<string, React.CSSProperties> = {
   },
   exValRow: { display: "flex", alignItems: "center", gap: 6, marginBottom: 6 },
   badge: { display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: 6, padding: "4px 6px" },
-  exVal: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700, color: v("--color-text-primary"), lineHeight: 1.1 },
-  exLabel: { fontSize: 14, lineHeight: 1.5, color: v("--color-text-primary"), marginBottom: 6 },
-  exSub: { fontSize: 11, color: v("--color-text-muted"), marginBottom: 12 },
-  exCta: { display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600, color: v("--color-accent") },
+  exVal: { fontFamily: v("--font-mono"), fontSize: v("--font-size-display-sm"), fontWeight: 700, color: v("--color-text-primary"), lineHeight: 1.1 },
+  exLabel: { fontSize: v("--font-size-body"), lineHeight: 1.5, color: v("--color-text-primary"), marginBottom: 6 },
+  exSub: { fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginBottom: 12 },
+  exCta: { display: "inline-flex", alignItems: "center", gap: 6, fontSize: v("--font-size-small"), fontWeight: 600, color: v("--color-accent") },
 };

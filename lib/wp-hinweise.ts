@@ -182,6 +182,8 @@ export function geraeteHinweise(
   g: WpGeraet,
   fall: WpHinweisFall,
   grenze: number = HINWEISE_JE_KACHEL,
+  /** Kennungen, die bereits über der Liste stehen (siehe `gemeinsameHinweise`). */
+  ohne: readonly string[] = [],
 ): Hinweis[] {
   const alle: Hinweis[] = [];
   const real = leistungAmAuslegungspunkt(g, fall);
@@ -435,7 +437,29 @@ export function geraeteHinweise(
     });
   }
 
-  return kuerze(sortiere(alle), grenze);
+  return kuerze(sortiere(alle.filter((h) => !ohne.includes(h.id))), grenze);
+}
+
+/**
+ * Was an JEDER Kachel gleich stünde — gehört einmal über die Liste.
+ *
+ * Gemessen am 05.09.2026: Bei einem Altbau mit 55 °C trugen alle drei Geräte
+ * denselben Propan-Satz und denselben Satz über den Lieferumfang, jeweils
+ * wörtlich identisch, dreimal untereinander. Das ist keine Information mehr,
+ * sondern Füllung — und es war der Grund, warum die Geräte-Spalte mit 777
+ * Wörtern mehr Text trug als das Ergebnis daneben (548).
+ *
+ * Die Regel ist bewusst allgemein und nicht auf den Lieferumfang beschränkt:
+ * Welche Hinweise sich wiederholen, hängt am Katalog und wechselt mit ihm. Eine
+ * Liste bestimmter Kennungen wäre beim nächsten neuen Hinweis still veraltet.
+ *
+ * Nur bei MEHREREN Geräten — bei einem einzigen wäre „gemeinsam" dasselbe wie
+ * „an dieser einen Kachel", und der Hinweis stünde weiter oben als nötig.
+ */
+export function gemeinsameHinweise(geraete: WpGeraet[], fall: WpHinweisFall): Hinweis[] {
+  if (geraete.length < 2) return [];
+  const [erstes, ...rest] = geraete.map((g) => geraeteHinweise(g, fall, Infinity));
+  return erstes.filter((h) => rest.every((liste) => liste.some((x) => x.id === h.id)));
 }
 
 // ─── Fallbezogene Hinweise ───────────────────────────────────────────────────

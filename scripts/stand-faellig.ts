@@ -17,11 +17,15 @@
  * gerade an einer Quelle scheitert.
  */
 import { faelligkeiten, tageZwischen, PRUEFSTAND } from "../lib/pruefstand";
+import { heuteInBerlin } from "../lib/zeit";
 
 const alle = process.argv.includes("--alle");
 // Kein Datum aus der Umgebung raten: Der heutige Tag ist die einzige Eingabe,
-// und die kommt sichtbar aus der Uhr des Laufs.
-const heute = new Date().toISOString().slice(0, 10);
+// und die kommt sichtbar aus der Uhr des Laufs — als DEUTSCHER Kalendertag, denn
+// die Prüfdaten sind Kalendertage. Über `toISOString()` gemessen lag „heute"
+// zwischen 00:00 und 02:00 deutscher Sommerzeit einen Tag zurück; ein Lauf um
+// halb eins nachts hätte eine gerade verstrichene Frist noch als offen gemeldet.
+const heute = heuteInBerlin();
 
 const offen = faelligkeiten(heute);
 

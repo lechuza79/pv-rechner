@@ -92,6 +92,25 @@ export function wattProKopfTeile(w: number): Messwert {
 }
 export const fmtWattProKopf = (w: number): string => zusammen(wattProKopfTeile(w));
 
+/**
+ * Eine STÜCKZAHL von Anlagen.
+ *
+ * Keine physikalische Einheit, aber dieselbe Falle: Ab einer Million wird die
+ * Ziffernfolge unlesbar, und wer sie an der Stelle kürzt, an der er sie
+ * hinschreibt, kürzt sie beim nächsten Mal anders. Zwei Nachkommastellen, weil
+ * 1,45 Millionen Steckersolargeräte auf eine Stelle gerundet („1,5 Mio.") ihren
+ * Abstand zum Vorjahr verlieren.
+ *
+ * Der Singular ist mitgebaut, obwohl er im Bundesbestand nie vorkommt: Dieselbe
+ * Funktion beschriftet Segmente, und ein „1 Anlagen" ist derselbe Fehler wie
+ * eine falsche Einheit, nur in Worten.
+ */
+export function anlagenZahlTeile(n: number): Messwert {
+  if (n >= 1_000_000) return { value: dez(n / 1_000_000, 2), unit: "Mio. Anlagen" };
+  return { value: nf(n), unit: Math.round(n) === 1 ? "Anlage" : "Anlagen" };
+}
+export const fmtAnlagenZahl = (n: number): string => zusammen(anlagenZahlTeile(n));
+
 /** Speicherkapazität — kWh, ab vier Stellen MWh/GWh. */
 export function speicherKwhTeile(kwh: number): Messwert {
   if (kwh >= 1_000_000) return { value: dez(kwh / 1_000_000, 1), unit: "GWh" };

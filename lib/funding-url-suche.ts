@@ -15,6 +15,8 @@
  * enger als die vorige — eine Adresse aus diesem Modul ist eine Vermutung.
  */
 
+import { entschluesseltOderRoh } from "./uri-sicher";
+
 /**
  * Version der Bewertung. Wie beim Screening: Wer die Listen ändert, zählt hoch.
  *
@@ -227,14 +229,7 @@ export type LinkWertung = { foerder: number; thema: number; punkte: number; frem
  * einwandfreie Förderseiten mit Umlaut im Pfad.
  */
 function adresseLesbar(url: string): string {
-  const klein = url.toLowerCase();
-  try {
-    return decodeURIComponent(klein);
-  } catch {
-    // Kaputte Kodierung („%zz") lässt decodeURIComponent werfen — dann lieber
-    // die Rohfassung bewerten als den Link ganz zu verlieren.
-    return klein;
-  }
+  return entschluesseltOderRoh(url.toLowerCase());
 }
 
 /**

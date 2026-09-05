@@ -11,10 +11,16 @@
  * Supabase-Reads; ein ungedrosselter Burst über 11k Seiten legt die DB um
  * (ist 2026-07 passiert). Default bewusst konservativ.
  *
- * Freshness: der Crawl wärmt nur den Cache (Tempo). Die Daten-Aktualität regelt
- * die ISR-`revalidate` (3600 s) der Seiten selbst — spätestens 1 h nach dem
- * Datenlauf zeigen alle Seiten die neuen Zahlen; der Crawl beschleunigt das für
- * die Long-Tail-Seiten, die sonst niemand aufruft.
+ * Freshness: der Crawl wärmt nur den Cache (Tempo). Die Aktualität der Zahlen
+ * regelt seit dem 26.08.2026 das aktive Ungültig-Erklären, das der Datenlauf
+ * VOR diesem Crawl auslöst (POST /api/atlas/revalidate) — nicht mehr die
+ * Haltbarkeit der Seiten.
+ *
+ * Hier stand vorher: „Die Daten-Aktualität regelt die ISR-`revalidate` (3600 s)
+ * der Seiten selbst — spätestens 1 h nach dem Datenlauf zeigen alle Seiten die
+ * neuen Zahlen." Beides ist überholt: Die Atlas-Seiten halten sieben Tage, und
+ * genau deshalb reicht Abwarten nicht mehr. Ohne den Schritt davor träfe dieser
+ * Crawl lauter noch gültige Seiten und bestätigte die alten Zahlen.
  *
  * Env:
  *   SUPABASE_URL, SUPABASE_SERVICE_KEY  (Slug-Liste lesen)
@@ -101,6 +107,13 @@ function buildPaths(byId: Map<string, RegionRow>): string[] {
   // Aufbau der Klassen-Uebersicht lag auf Produktion bei 4,9 s (danach 0,3 s aus
   // dem Zwischenspeicher). Ohne Vorwaermen zahlt das ein Besucher — oder der
   // Googlebot, der von den 119 Verweisen der indexierten Atlas-Seiten kommt.
+  //
+  // ÜBERHOLT seit dem 26.08.2026: Die Ranglisten sind in app/robots.ts für
+  // Crawler gesperrt (Kostengrund — sie waren 57 % aller Funktionsaufrufe und
+  // stehen ohnehin auf noindex). Ein Googlebot kommt dort also nicht mehr an.
+  // Das Wärmen dieser Ebenen nützt jetzt nur noch den wenigen Menschen, die
+  // über den Atlas dorthin klicken. Es kostet wenig und bleibt deshalb erst
+  // einmal stehen — aber die Begründung oben trägt nicht mehr.
   //
   // Gewaermt wird genau das, was von aussen verlinkt ist: je Kategorie die
   // Klassen-Uebersicht, auf Bundes- und Landesebene. Die einzelnen Klassenlisten

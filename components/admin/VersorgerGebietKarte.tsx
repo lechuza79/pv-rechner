@@ -79,7 +79,7 @@ export default function VersorgerGebietKarte({
   }, [gemeindeIds]);
 
   if (!karte) {
-    return <p style={{ color: v("--color-text-muted"), fontSize: 12 }}>Keine Gemeinden zugeordnet.</p>;
+    return <p style={{ color: v("--color-text-muted"), fontSize: v("--font-size-small") }}>Keine Gemeinden zugeordnet.</p>;
   }
 
   return (
@@ -94,7 +94,7 @@ export default function VersorgerGebietKarte({
       >
         <MastrMap level={karte.level} parentAgs={karte.parentAgs} values={karte.values} valueLabel={karte.label} />
       </div>
-      <p style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: space.xs, lineHeight: 1.5 }}>
+      <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: space.xs, lineHeight: 1.5 }}>
         {karte.erklaerung} Ein zusammenhängender Bereich rund um den Sitz spricht für die Zuordnung;
         verstreute Einzelgemeinden sind ein Grund, bei {name} genauer hinzusehen.
       </p>

@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   geraeteHinweise,
   fallHinweise,
+  gemeinsameHinweise,
   HINWEISE_JE_KACHEL,
   WP_HINWEIS_SCHLUSS,
   type WpHinweisFall,
@@ -560,5 +561,54 @@ describe("Rechtsaussagen: was verworfen wurde, bleibt verworfen", () => {
     for (const id of ["split-sachkunde", "netzbetreiber-steuerbar", "erdwaerme-genehmigung"]) {
       expect(text(id), id).not.toMatch(/2026|2027|2028|2029/);
     }
+  });
+});
+
+/**
+ * Was an jeder Kachel gleich stünde, steht einmal über der Liste.
+ *
+ * Anlass (05.09.2026, Betreiber): Die Geräte-Spalte trug 777 Wörter gegen 548
+ * im eigentlichen Ergebnis — „mehr Text als Goethes Faust". Ein Grund davon war
+ * mechanisch: Bei einem Altbau mit 55 °C trugen alle drei Geräte wörtlich
+ * denselben Propan-Satz und denselben Satz über den Lieferumfang.
+ */
+describe("Wiederholung über die Kacheln", () => {
+  const dreiGleiche = [
+    geraet({ id: "a", marke: "A", aufbau: "monoblock", kaeltemittel: "r290", umfang: "geraet" }),
+    geraet({ id: "b", marke: "B", aufbau: "monoblock", kaeltemittel: "r290", umfang: "geraet" }),
+    geraet({ id: "c", marke: "C", aufbau: "monoblock", kaeltemittel: "r290", umfang: "geraet" }),
+  ];
+
+  it("zieht hoch, was alle drei Geräte gleich tragen", () => {
+    const ids = gemeinsameHinweise(dreiGleiche, fall()).map((h) => h.id);
+    expect(ids).toContain("propan-aufstellort");
+    expect(ids).toContain("umfang-nacktes-geraet");
+  });
+
+  it("lässt den hochgezogenen Satz an der Kachel weg — sonst steht er zweimal", () => {
+    const hoch = gemeinsameHinweise(dreiGleiche, fall()).map((h) => h.id);
+    for (const g of dreiGleiche) {
+      const anDerKachel = geraeteHinweise(g, fall(), Infinity, hoch).map((h) => h.id);
+      expect(anDerKachel.filter((id) => hoch.includes(id))).toEqual([]);
+    }
+  });
+
+  it("zieht nichts hoch, was nur EIN Gerät betrifft", () => {
+    // Sonst verschwände der Unterschied zwischen den Geräten — und genau den
+    // sucht jemand, der drei Kacheln nebeneinander vergleicht.
+    const gemischt = [
+      geraet({ id: "a", marke: "A", aufbau: "split", kaeltemittel: "r290", umfang: "geraet" }),
+      geraet({ id: "b", marke: "B", aufbau: "monoblock", kaeltemittel: null, umfang: "paket" }),
+    ];
+    const ids = gemeinsameHinweise(gemischt, fall()).map((h) => h.id);
+    expect(ids).not.toContain("split-sachkunde");
+    expect(ids).not.toContain("propan-aufstellort");
+    expect(ids).not.toContain("umfang-nacktes-geraet");
+  });
+
+  it("zieht bei einem einzigen Gerät gar nichts hoch", () => {
+    // „Gemeinsam" wäre dann dasselbe wie „an dieser einen Kachel", und der
+    // Hinweis stünde weiter oben als nötig.
+    expect(gemeinsameHinweise([dreiGleiche[0]], fall())).toEqual([]);
   });
 });

@@ -253,7 +253,7 @@ export default function GlossaryTerm({ id, children }: Props) {
               boxShadow: v("--shadow-md"),
               padding: "10px 12px",
               fontFamily: v("--font-text"),
-              fontSize: 12.5,
+              fontSize: v("--font-size-small"),
               lineHeight: 1.5,
               fontWeight: 400,
               textAlign: "left",

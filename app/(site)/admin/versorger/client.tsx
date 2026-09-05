@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { v, space, pad } from "../../../../lib/theme";
+import AdminSeitenkopf from "../../../../components/admin/AdminSeitenkopf";
 import { BUNDESLAENDER } from "../../../../lib/mastr-regions";
 import { OUTREACH_STATUS, OUTREACH_STATUS_LABEL } from "../../../../lib/outreach-status";
 import {
@@ -16,6 +17,7 @@ import {
 import Modal from "../../../../components/Modal";
 import TendTag from "../../../../components/atlas/TendTag";
 import VersorgerGebietKarte from "../../../../components/admin/VersorgerGebietKarte";
+import SelectField from "../../../../components/SelectField";
 
 // Cockpit für Stadtwerke / Energieversorger.
 //
@@ -188,16 +190,17 @@ export default function VersorgerCockpit() {
 
   return (
     <div style={{ fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
-      <div style={{ marginBottom: space.lg }}>
-        <div style={labelKicker}>Admin</div>
-        <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 4 }}>Stadtwerke &amp; Energieversorger</h1>
-        <p style={{ fontSize: 13, color: v("--color-text-muted"), lineHeight: 1.6, maxWidth: 760 }}>
-          Die Netzgebiete sind aus den amtlichen Anlagendaten abgeleitet: Jede Anlage hängt an einem
-          Netzanschlusspunkt, und der nennt seinen Netzbetreiber. Das ist eine Auszählung mit Beleg —
-          aber es ist das <strong>Netz</strong>gebiet, nicht der Vertrieb. Strom verkaufen viele auch
-          außerhalb davon, und das steht in keinem Register.
-        </p>
-      </div>
+      <AdminSeitenkopf
+        titel="Stadtwerke &amp; Energieversorger"
+        hilfe={
+          <>
+            Die Netzgebiete sind aus den amtlichen Anlagendaten abgeleitet: Jede Anlage hängt an einem
+            Netzanschlusspunkt, und der nennt seinen Netzbetreiber. Das ist eine Auszählung mit Beleg —
+            aber es ist das <strong>Netz</strong>gebiet, nicht der Vertrieb. Strom verkaufen viele auch
+            außerhalb davon, und das steht in keinem Register.
+          </>
+        }
+      />
 
       <div style={{ display: "flex", gap: space.xs, marginBottom: space.md, alignItems: "center" }}>
         <Tab active={tab === "liste"} label={`Versorger (${erfasstGesamt})`} onClick={() => setTab("liste")} />
@@ -207,42 +210,42 @@ export default function VersorgerCockpit() {
       {tab === "liste" ? (
         <>
           <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, alignItems: "center", marginBottom: space.md }}>
-            <select value={bl} onChange={(e) => setBl(e.target.value)} style={selectStyle} aria-label="Bundesland">
+            <SelectField value={bl} onChange={(e) => setBl(e.target.value)} ariaLabel="Bundesland" size="sm">
               <option value="">Alle Bundesländer</option>
               {BUNDESLAENDER.map((b) => (
                 <option key={b.ags} value={b.ags}>
                   {b.name}
                 </option>
               ))}
-            </select>
-            <select value={typ} onChange={(e) => setTyp(e.target.value)} style={selectStyle} aria-label="Typ">
+            </SelectField>
+            <SelectField value={typ} onChange={(e) => setTyp(e.target.value)} ariaLabel="Typ" size="sm">
               <option value="">Alle Typen</option>
               {(Object.keys(UTILITY_TYP_LABEL) as UtilityTyp[]).map((t) => (
                 <option key={t} value={t}>
                   {UTILITY_TYP_LABEL[t]}
                 </option>
               ))}
-            </select>
-            <select value={status} onChange={(e) => setStatus(e.target.value)} style={selectStyle} aria-label="Status">
+            </SelectField>
+            <SelectField value={status} onChange={(e) => setStatus(e.target.value)} ariaLabel="Status" size="sm">
               <option value="">Alle Status</option>
               {OUTREACH_STATUS.map((s) => (
                 <option key={s.key} value={s.key}>
                   {s.label}
                 </option>
               ))}
-            </select>
-            <select value={ampel} onChange={(e) => setAmpel(e.target.value)} style={selectStyle} aria-label="Gebiets-Prüfung">
+            </SelectField>
+            <SelectField value={ampel} onChange={(e) => setAmpel(e.target.value)} ariaLabel="Gebiets-Prüfung" size="sm">
               <option value="">Prüfung: alle</option>
               <option value="gruen">bestätigt</option>
               <option value="gelb">teilweise prüfbar</option>
               <option value="rot">widersprüchlich</option>
-            </select>
-            <select value={sort} onChange={(e) => setSort(e.target.value)} style={selectStyle} aria-label="Sortierung">
+            </SelectField>
+            <SelectField value={sort} onChange={(e) => setSort(e.target.value)} ariaLabel="Sortierung" size="sm">
               <option value="gemeinden">Größtes Gebiet zuerst</option>
               <option value="einwohner">Meiste Einwohner zuerst</option>
               <option value="erzeugung">Meiste Erzeugung zuerst</option>
               <option value="name">Name</option>
-            </select>
+            </SelectField>
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
@@ -250,19 +253,19 @@ export default function VersorgerCockpit() {
               style={inputStyle}
               aria-label="Versorger suchen"
             />
-            <label style={{ display: "flex", alignItems: "center", gap: space.xs, fontSize: 13, cursor: "pointer" }}>
+            <label style={{ display: "flex", alignItems: "center", gap: space.xs, fontSize: v("--font-size-small"), cursor: "pointer" }}>
               <input type="checkbox" checked={nurGebiet} onChange={(e) => setNurGebiet(e.target.checked)} />
               nur mit Gebiet
             </label>
           </div>
 
-          <div style={{ fontSize: 12, color: v("--color-text-muted"), marginBottom: space.sm }}>
+          <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginBottom: space.sm }}>
             {loading ? "Lädt…" : `${total.toLocaleString("de-DE")} Versorger`}
             {error && <span style={{ color: v("--color-negative"), marginLeft: space.sm }}>Fehler: {error}</span>}
           </div>
 
           <div style={{ overflowX: "auto", border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md") }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 900 }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: v("--font-size-small"), minWidth: 900 }}>
               <thead>
                 <tr>
                   <th style={{ ...thStyle, width: 26 }} aria-label="Aufklappen" />
@@ -295,7 +298,7 @@ export default function VersorgerCockpit() {
           </div>
 
           {total > pageSize && (
-            <div style={{ display: "flex", alignItems: "center", gap: space.md, marginTop: space.md, fontSize: 13 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: space.md, marginTop: space.md, fontSize: v("--font-size-small") }}>
               <button style={secondaryBtn} disabled={page <= 0} onClick={() => setPage((p) => Math.max(0, p - 1))}>
                 ← Zurück
               </button>
@@ -372,7 +375,7 @@ function VersorgerZeile({ u, onChanged }: { u: Versorger; onChanged: () => void 
         </td>
         <td style={tdStyle}>
           <div style={{ fontWeight: 700 }}>{u.name}</div>
-          <div style={{ fontSize: 11, color: v("--color-text-muted") }}>
+          <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
             {u.typLabel}
             {land && ` · ${land}`}
             {u.mehrereBundeslaender && " · länderübergreifend"}
@@ -391,7 +394,7 @@ function VersorgerZeile({ u, onChanged }: { u: Versorger; onChanged: () => void 
         <KennzahlZelle k={u.highlights.zubauAnteil} />
         <td style={tdStyle}>
           {u.themen.length === 0 ? (
-            <span style={{ color: v("--color-text-muted"), fontSize: 11 }}>{u.profilGeprueft ? "—" : "ungeprüft"}</span>
+            <span style={{ color: v("--color-text-muted"), fontSize: v("--font-size-caption") }}>{u.profilGeprueft ? "—" : "ungeprüft"}</span>
           ) : (
             <span style={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
               {u.themen.slice(0, 3).map((t) => (
@@ -415,24 +418,25 @@ function VersorgerZeile({ u, onChanged }: { u: Versorger; onChanged: () => void 
               {u.kontakt.adresse}
             </a>
           ) : (
-            <span style={{ color: v("--color-text-muted"), fontSize: 11 }} title={u.kontakt.art}>
+            <span style={{ color: v("--color-text-muted"), fontSize: v("--font-size-caption") }} title={u.kontakt.art}>
               {u.kontakt.adresse ? "nur Fachpostfach" : "keine"}
             </span>
           )}
         </td>
         <td style={tdStyle}>
-          <select
+          <SelectField
             value={u.status}
             onChange={(e) => patch({ status: e.target.value })}
-            style={{ ...selectStyle, fontWeight: 700, color: v(statusMeta.color), background: v(statusMeta.bg) }}
-            aria-label={`Status ${u.name}`}
+            ariaLabel={`Status ${u.name}`}
+            size="sm"
+            ampel={{ text: v(statusMeta.color), hintergrund: v(statusMeta.bg) }}
           >
             {OUTREACH_STATUS.map((s) => (
               <option key={s.key} value={s.key}>
                 {OUTREACH_STATUS_LABEL[s.key]}
               </option>
             ))}
-          </select>
+          </SelectField>
         </td>
       </tr>
       {offen && (
@@ -503,10 +507,10 @@ function Detail({
   };
 
   return (
-    <div style={{ display: "grid", gap: space.md, fontSize: 13 }}>
+    <div style={{ display: "grid", gap: space.md, fontSize: v("--font-size-small") }}>
       <div style={{ padding: pad("sm", "md"), background: v("--color-bg"), borderRadius: v("--radius-sm"), border: `1px solid ${v("--color-border")}` }}>
         <div style={{ fontWeight: 700 }}>{u.aufhaenger}</div>
-        <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 4 }}>{u.aufhaengerHinweis}</div>
+        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: 4 }}>{u.aufhaengerHinweis}</div>
       </div>
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: space.md, alignItems: "center" }}>
@@ -520,7 +524,7 @@ function Detail({
             {u.website.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")} ↗
           </a>
         ) : (
-          <span style={{ fontSize: 12, color: v("--color-text-muted") }}>keine Website hinterlegt</span>
+          <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>keine Website hinterlegt</span>
         )}
         {u.kontaktEmail && (
           <a href={`mailto:${u.kontaktEmail}`} style={linkStyle}>
@@ -538,7 +542,7 @@ function Detail({
       </div>
 
       <Abschnitt titel="Kontakt und Themen">
-        <div style={{ display: "grid", gap: 3, fontSize: 12 }}>
+        <div style={{ display: "grid", gap: 3, fontSize: v("--font-size-small") }}>
           {u.kontakt.adresse && u.kontakt.brauchbar ? (
             <div>
               <a href={`mailto:${u.kontakt.adresse}`} style={linkStyle}>
@@ -564,7 +568,7 @@ function Detail({
               <span style={{ color: v("--color-text-muted") }}>
                 {u.verantwortlich.operativ ? "(operative Stelle)" : "(gesetzliche Vertretung — sagt nicht, wer die Website pflegt)"}
               </span>
-              <div style={{ color: v("--color-text-muted"), fontSize: 11 }}>{u.verantwortlich.zeile}</div>
+              <div style={{ color: v("--color-text-muted"), fontSize: v("--font-size-caption") }}>{u.verantwortlich.zeile}</div>
             </div>
           )}
           {u.verbundDomain && (
@@ -590,7 +594,7 @@ function Detail({
             </div>
           )}
           {u.themen.some((t) => t.thema === "foerderung") && (
-            <div style={{ fontSize: 11, color: v("--color-text-muted"), lineHeight: 1.5 }}>
+            <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), lineHeight: 1.5 }}>
               Der Förder-Chip heißt nur: Auf dieser Website steht irgendwo etwas von Förderung. Ob es ein
               Programm gibt, wie hoch es ist und ob es noch läuft, entscheidet die Prüfung an der Quelle.
             </div>
@@ -612,7 +616,7 @@ function Detail({
                 />
               ))}
             </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: space.md, marginTop: space.xs, fontSize: 12 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: space.md, marginTop: space.xs, fontSize: v("--font-size-small") }}>
               {u.mix.map((t) => (
                 <span key={t.art} style={{ display: "flex", alignItems: "center", gap: 5 }}>
                   <span style={{ width: 9, height: 9, borderRadius: 2, background: ERZEUGER_FARBE[t.art] ?? v("--color-text-muted") }} />
@@ -621,7 +625,7 @@ function Detail({
                 </span>
               ))}
             </div>
-            <p style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 4, lineHeight: 1.5 }}>
+            <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: 4, lineHeight: 1.5 }}>
               Anteil an der installierten Leistung im Gebiet — nicht am Strommix. Gezählt wird, was
               erneuerbar erzeugt; konventionelle Anlagen wertet unsere Auswertung nicht aus.
             </p>
@@ -642,7 +646,7 @@ function Detail({
           <Kachel label="Speicher" wert={u.werte.speicher} />
           <Kachel label="Zubau letztes Jahr" wert={u.werte.zubau} />
         </div>
-        <div style={{ display: "grid", gap: 2, marginTop: space.sm, fontSize: 11, color: v("--color-text-muted") }}>
+        <div style={{ display: "grid", gap: 2, marginTop: space.sm, fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
           <div>Dach je Einwohner: {u.highlights.dachProKopf.anzeige} — {u.highlights.dachProKopf.referenz}</div>
           <div>Bürger-Anteil: {u.highlights.buergerAnteil.anzeige} — {u.highlights.buergerAnteil.referenz}</div>
           <div>Zubau: {u.highlights.zubauAnteil.anzeige} — {u.highlights.zubauAnteil.referenz}</div>
@@ -707,7 +711,7 @@ function Detail({
           {gemeinden.map((g) => (
             <div
               key={g.regionId}
-              style={{ display: "flex", alignItems: "center", gap: space.sm, fontSize: 12, padding: "3px 0", borderBottom: `1px solid ${v("--color-border")}` }}
+              style={{ display: "flex", alignItems: "center", gap: space.sm, fontSize: v("--font-size-small"), padding: "3px 0", borderBottom: `1px solid ${v("--color-border")}` }}
             >
               <span style={{ flex: 1, minWidth: 0 }}>
                 <strong>{g.name}</strong>
@@ -755,10 +759,10 @@ function Detail({
 function Kachel({ label, wert }: { label: string; wert: string }) {
   return (
     <div>
-      <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: v("--color-text-muted") }}>
+      <div style={{ fontSize: v("--font-size-micro"), textTransform: "uppercase", letterSpacing: "0.06em", color: v("--color-text-muted") }}>
         {label}
       </div>
-      <div style={{ fontFamily: v("--font-mono"), fontWeight: 700, fontSize: 14 }}>{wert}</div>
+      <div style={{ fontFamily: v("--font-mono"), fontWeight: 700, fontSize: v("--font-size-body") }}>{wert}</div>
     </div>
   );
 }
@@ -806,25 +810,23 @@ function GemeindeHinzufuegen({ utilityId, onAdded }: { utilityId: string; onAdde
   return (
     <div style={{ marginTop: space.sm }}>
       <div style={{ display: "flex", flexWrap: "wrap", gap: space.xs }}>
-        <select value={rolle} onChange={(e) => setRolle(e.target.value as ZuordnungRolle)} style={selectStyle} aria-label="Rolle">
+        <SelectField value={rolle} onChange={(e) => setRolle(e.target.value as ZuordnungRolle)} ariaLabel="Rolle" size="sm">
           {(Object.keys(ZUORDNUNG_ROLLE_LABEL) as ZuordnungRolle[]).map((r) => (
             <option key={r} value={r}>
               {ZUORDNUNG_ROLLE_LABEL[r]}
             </option>
           ))}
-        </select>
-        <select
+        </SelectField>
+        <SelectField
           value={quelle}
           onChange={(e) => setQuelle(e.target.value as ZuordnungQuelle)}
-          style={selectStyle}
-          aria-label="Herkunft der Zuordnung"
-        >
+          ariaLabel="Herkunft der Zuordnung" size="sm">
           {(["verlinkt", "recherchiert", "vermutet"] as ZuordnungQuelle[]).map((qk) => (
             <option key={qk} value={qk}>
               Herkunft: {ZUORDNUNG_QUELLE_LABEL[qk]}
             </option>
           ))}
-        </select>
+        </SelectField>
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
@@ -841,7 +843,7 @@ function GemeindeHinzufuegen({ utilityId, onAdded }: { utilityId: string; onAdde
               onClick={() => zuordnen(t.regionId)}
               style={{
                 display: "block", width: "100%", textAlign: "left", border: "none", background: "transparent",
-                padding: pad("xs", "sm"), fontSize: 12, cursor: "pointer", color: v("--color-text-primary"),
+                padding: pad("xs", "sm"), fontSize: v("--font-size-small"), cursor: "pointer", color: v("--color-text-primary"),
                 fontFamily: v("--font-text"),
               }}
             >
@@ -853,7 +855,7 @@ function GemeindeHinzufuegen({ utilityId, onAdded }: { utilityId: string; onAdde
           ))}
         </div>
       )}
-      <p style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 4, lineHeight: 1.5 }}>
+      <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: 4, lineHeight: 1.5 }}>
         Von Hand ergänzte Zuordnungen überleben den nächsten Registerlauf — überschrieben wird nur, was
         als <em>gemessen</em> markiert ist.
       </p>
@@ -885,27 +887,27 @@ function Erfassung({ onAnlegen }: { onAnlegen: (regionId: string, name: string) 
 
   return (
     <div>
-      <p style={{ fontSize: 13, color: v("--color-text-muted"), marginBottom: space.sm, lineHeight: 1.6, maxWidth: 760 }}>
+      <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginBottom: space.sm, lineHeight: 1.6, maxWidth: 760 }}>
         Die größten Gemeinden zuerst — zum Nacharbeiten dort, wo die Messung nichts gefunden hat oder
         ein zweiter Versorger fehlt.
       </p>
       <div style={{ display: "flex", gap: space.sm, alignItems: "center", marginBottom: space.md }}>
-        <select value={limit} onChange={(e) => setLimit(Number(e.target.value))} style={selectStyle} aria-label="Anzahl">
+        <SelectField value={limit} onChange={(e) => setLimit(Number(e.target.value))} ariaLabel="Anzahl" size="sm">
           {[50, 100, 200].map((n) => (
             <option key={n} value={n}>
               Top {n}
             </option>
           ))}
-        </select>
-        <label style={{ display: "flex", alignItems: "center", gap: space.xs, fontSize: 13, cursor: "pointer" }}>
+        </SelectField>
+        <label style={{ display: "flex", alignItems: "center", gap: space.xs, fontSize: v("--font-size-small"), cursor: "pointer" }}>
           <input type="checkbox" checked={nurOffene} onChange={(e) => setNurOffene(e.target.checked)} />
           nur ohne Versorger
         </label>
-        {laden && <span style={{ fontSize: 12, color: v("--color-text-muted") }}>Lädt…</span>}
+        {laden && <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Lädt…</span>}
       </div>
 
       <div style={{ overflowX: "auto", border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md") }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 640 }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: v("--font-size-small"), minWidth: 640 }}>
           <thead>
             <tr>
               {["Gemeinde", "Einwohner", "Website", "Versorger"].map((h) => (
@@ -920,7 +922,7 @@ function Erfassung({ onAnlegen }: { onAnlegen: (regionId: string, name: string) 
               <tr key={r.regionId} style={{ borderTop: `1px solid ${v("--color-border")}` }}>
                 <td style={tdStyle}>
                   <strong>{r.name}</strong>{" "}
-                  <span style={{ color: v("--color-text-muted"), fontSize: 11 }}>{r.bundesland}</span>
+                  <span style={{ color: v("--color-text-muted"), fontSize: v("--font-size-caption") }}>{r.bundesland}</span>
                 </td>
                 <td style={{ ...tdStyle, fontFamily: v("--font-mono") }}>
                   {r.einwohner > 0 ? r.einwohner.toLocaleString("de-DE") : "—"}
@@ -1027,13 +1029,13 @@ function NeuModal({
           <input value={name} onChange={(e) => setName(e.target.value)} style={{ ...inputStyle, width: "100%" }} />
         </Feld>
         <Feld label="Typ">
-          <select value={typ} onChange={(e) => setTyp(e.target.value as UtilityTyp)} style={{ ...selectStyle, width: "100%" }}>
+          <SelectField value={typ} onChange={(e) => setTyp(e.target.value as UtilityTyp)} ariaLabel="Auswahl" size="sm">
             {(Object.keys(UTILITY_TYP_LABEL) as UtilityTyp[]).map((t) => (
               <option key={t} value={t}>
                 {UTILITY_TYP_LABEL[t]}
               </option>
             ))}
-          </select>
+          </SelectField>
         </Feld>
         <Feld label="Website">
           <input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://…" style={{ ...inputStyle, width: "100%" }} />
@@ -1044,7 +1046,7 @@ function NeuModal({
         <Feld label="Kontaktseite">
           <input value={kontaktseite} onChange={(e) => setKontaktseite(e.target.value)} placeholder="https://…/kontakt" style={{ ...inputStyle, width: "100%" }} />
         </Feld>
-        {fehler && <div style={{ color: v("--color-negative"), fontSize: 12 }}>{fehler}</div>}
+        {fehler && <div style={{ color: v("--color-negative"), fontSize: v("--font-size-small") }}>{fehler}</div>}
         <button style={primaryBtn} disabled={busy || !name.trim()} onClick={speichern}>
           {busy ? "Speichert…" : "Anlegen"}
         </button>
@@ -1082,7 +1084,7 @@ function Tab({ active, label, onClick }: { active: boolean; label: string; onCli
 // ─── Styles ───────────────────────────────────────────────────────────────────
 
 const labelKicker: React.CSSProperties = {
-  fontSize: 11,
+  fontSize: v("--font-size-caption"),
   fontWeight: 700,
   color: v("--color-accent"),
   letterSpacing: "0.1em",
@@ -1091,15 +1093,13 @@ const labelKicker: React.CSSProperties = {
 
 const inputStyle: React.CSSProperties = {
   padding: pad("xs", "sm"),
-  fontSize: 13,
+  fontSize: v("--font-size-small"),
   fontFamily: v("--font-text"),
   color: v("--color-text-primary"),
   background: v("--color-bg-muted"),
   border: `1px solid ${v("--color-border")}`,
   borderRadius: v("--radius-sm"),
 };
-
-const selectStyle: React.CSSProperties = { ...inputStyle, cursor: "pointer" };
 
 const secondaryBtn: React.CSSProperties = { ...inputStyle, cursor: "pointer" };
 
@@ -1112,11 +1112,11 @@ const primaryBtn: React.CSSProperties = {
   borderColor: v("--color-accent"),
 };
 
-const miniBtn: React.CSSProperties = { ...secondaryBtn, padding: "2px 6px", fontSize: 11, lineHeight: 1 };
-const miniPrimary: React.CSSProperties = { ...primaryBtn, padding: "4px 8px", fontSize: 12 };
+const miniBtn: React.CSSProperties = { ...secondaryBtn, padding: "2px 6px", fontSize: v("--font-size-caption"), lineHeight: 1 };
+const miniPrimary: React.CSSProperties = { ...primaryBtn, padding: "4px 8px", fontSize: v("--font-size-small") };
 
 const badge: React.CSSProperties = {
-  fontSize: 11,
+  fontSize: v("--font-size-caption"),
   fontWeight: 700,
   padding: "1px 7px",
   borderRadius: 999,
@@ -1147,7 +1147,7 @@ function quelleBadge(q: ZuordnungQuelle): React.CSSProperties {
 function themaChip(thema: string): React.CSSProperties {
   const foerder = thema === "foerderung";
   return {
-    fontSize: 10,
+    fontSize: v("--font-size-micro"),
     fontWeight: 700,
     padding: "1px 6px",
     borderRadius: 999,
@@ -1172,7 +1172,7 @@ function ampelBadge(ampel: string | null): React.CSSProperties {
   const farbe =
     ampel === "gruen" ? v("--color-positive") : ampel === "rot" ? v("--color-negative") : v("--color-text-muted");
   return {
-    fontSize: 10,
+    fontSize: v("--font-size-micro"),
     fontWeight: 700,
     padding: "1px 6px",
     borderRadius: 999,
@@ -1186,7 +1186,7 @@ function ampelBadge(ampel: string | null): React.CSSProperties {
 const linkStyle: React.CSSProperties = {
   color: v("--color-accent"),
   textDecoration: "none",
-  fontSize: 12,
+  fontSize: v("--font-size-small"),
   fontWeight: 600,
   whiteSpace: "nowrap",
 };
@@ -1194,7 +1194,7 @@ const linkStyle: React.CSSProperties = {
 const thStyle: React.CSSProperties = {
   textAlign: "left",
   padding: pad("xs", "sm"),
-  fontSize: 11,
+  fontSize: v("--font-size-caption"),
   fontWeight: 700,
   textTransform: "uppercase",
   letterSpacing: "0.06em",

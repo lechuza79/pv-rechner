@@ -50,17 +50,41 @@ function dateien(dir: string, treffer: string[] = []): string[] {
   return treffer;
 }
 
+/**
+ * Dateien, deren Zeichenketten kein ausgelieferter Text sind.
+ *
+ * Der Artikelplan beschreibt Arbeitsvorrat — dort steht die Zusage als
+ * ZITAT dessen, was zu ändern ist. Eine Fundstelle darin wäre der Wächter, der
+ * seine eigene Aufgabenbeschreibung anmahnt.
+ */
+const NICHT_NUTZERTEXT = ["lib/artikelplan.ts"];
+
 describe("Werbe-Zusagen", () => {
   it("verspricht nirgends pauschal 'keine Werbung' — wir haben Affiliate-Links", () => {
     const funde: string[] = [];
     for (const ordner of ORDNER) {
       for (const datei of dateien(path.join(WURZEL, ordner))) {
+        const relativ = path.relative(WURZEL, datei);
+        if (NICHT_NUTZERTEXT.some((d) => relativ === d)) continue;
         const text = fs.readFileSync(datei, "utf-8");
+        // Kommentare dürfen den Begriff erklären; nur ausgelieferter Text zählt.
+        //
+        // ZUSTANDSBEHAFTET, nicht Zeile für Zeile: Die erste Fassung prüfte nur
+        // auf ein führendes Kommentarzeichen und übersah damit jede Zeile
+        // MITTEN in einem Blockkommentar — genau dort stand am 05.09.2026 ein
+        // Fehlalarm („eine Pflichtangabe, keine Werbung für das Abo"), der eine
+        // echte Prüfung wie ein Versäumnis aussehen ließ. Ein Wächter, der
+        // Fehlalarme erzeugt, wird weggeklickt, und dann findet er auch den
+        // echten Fund nicht mehr.
+        let imBlock = false;
         text.split("\n").forEach((zeile, i) => {
-          // Kommentare dürfen den Begriff erklären; nur ausgelieferter Text zählt.
+          const vorher = imBlock;
+          if (!imBlock && /\/\*/.test(zeile) && !/\*\//.test(zeile)) imBlock = true;
+          else if (imBlock && /\*\//.test(zeile)) imBlock = false;
+          if (vorher || imBlock) return;
           if (/^\s*(\/\/|\*|\/\*)/.test(zeile)) return;
           if (PAUSCHAL.test(zeile)) {
-            funde.push(`${path.relative(WURZEL, datei)}:${i + 1} — ${zeile.trim()}`);
+            funde.push(`${relativ}:${i + 1} — ${zeile.trim()}`);
           }
         });
       }

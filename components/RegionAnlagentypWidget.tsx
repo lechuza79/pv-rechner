@@ -97,15 +97,15 @@ export default function RegionAnlagentypWidget({
 }
 
 const S: Record<string, React.CSSProperties> = {
-  empty: { fontSize: 13, color: v("--color-text-muted"), textAlign: "center" },
+  empty: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), textAlign: "center" },
   split: { display: "flex", flexWrap: "wrap", gap: 20, alignItems: "center", justifyContent: "center" },
   center: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" },
-  centerValue: { fontFamily: v("--font-mono"), fontSize: 30, fontWeight: 700, color: v("--color-text-primary"), lineHeight: 1 },
-  centerUnit: { fontSize: 13, color: v("--color-text-secondary"), marginTop: 4, letterSpacing: 0.5 },
+  centerValue: { fontFamily: v("--font-mono"), fontSize: v("--font-size-display-md"), fontWeight: 700, color: v("--color-text-primary"), lineHeight: 1 },
+  centerUnit: { fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginTop: 4, letterSpacing: 0.5 },
   legend: { display: "flex", flexDirection: "column", gap: 8 },
-  legItem: { display: "flex", alignItems: "center", gap: 8, fontSize: 13 },
+  legItem: { display: "flex", alignItems: "center", gap: 8, fontSize: v("--font-size-small") },
   dot: { width: 10, height: 10, borderRadius: 3, flex: "0 0 auto" },
   legLabel: { color: v("--color-text-primary") },
-  legVal: { fontFamily: v("--font-mono"), fontSize: 12, color: v("--color-text-secondary") },
-  note: { fontSize: 11.5, color: v("--color-text-muted"), lineHeight: 1.5, margin: "14px 0 0", textAlign: "center" },
+  legVal: { fontFamily: v("--font-mono"), fontSize: v("--font-size-small"), color: v("--color-text-secondary") },
+  note: { fontSize: v("--font-size-caption"), color: v("--color-text-muted"), lineHeight: 1.5, margin: "14px 0 0", textAlign: "center" },
 };

@@ -24,7 +24,7 @@ export default function DashboardClient({
   const [editDesc, setEditDesc] = useState("");
   const [pendingSaved, setPendingSaved] = useState(false);
 
-  // Auto-save pending calculation from localStorage (after Magic Link redirect)
+  // Auto-save pending calculation from localStorage (after the sign-in redirect)
   useEffect(() => {
     const pending = localStorage.getItem("pendingSave");
     if (!pending) return;
@@ -94,13 +94,13 @@ export default function DashboardClient({
 
       <div style={{ maxWidth: v('--page-max-width') }}>
 
-        <h1 style={{ fontSize: 20, fontWeight: 800, marginBottom: 4 }}>Meine Berechnungen</h1>
-        <p style={{ fontSize: 13, color: v('--color-text-muted'), marginBottom: 20 }}>{userEmail}</p>
+        <h1 style={{ fontSize: v("--font-size-h2"), fontWeight: 800, marginBottom: 4 }}>Meine Berechnungen</h1>
+        <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginBottom: 20 }}>{userEmail}</p>
 
         {/* Neue Berechnung Button */}
         <Link href="/" style={{
           display: "block", width: "100%", padding: "14px", borderRadius: v('--radius-md'),
-          fontSize: 14, fontWeight: 700, textAlign: "center",
+          fontSize: v("--font-size-body"), fontWeight: 700, textAlign: "center",
           background: v('--color-accent'), color: v('--color-text-on-accent'), textDecoration: "none",
           marginBottom: 20,
         }}>
@@ -112,7 +112,7 @@ export default function DashboardClient({
           <div style={{
             background: v('--color-accent-dim'), borderRadius: v('--radius-md'), padding: "12px 16px",
             border: `1px solid ${v('--color-border-accent')}`, marginBottom: 16,
-            fontSize: 13, fontWeight: 600, color: v('--color-accent'), textAlign: "center",
+            fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-accent'), textAlign: "center",
           }}>
 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconCheck size={iconSizes.md} /> Berechnung gespeichert!</span>
           </div>
@@ -123,10 +123,10 @@ export default function DashboardClient({
             background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "32px 20px",
             border: `1px solid ${v('--color-border')}`, textAlign: "center",
           }}>
-            <div style={{ fontSize: 14, color: v('--color-text-secondary'), marginBottom: 4 }}>
+            <div style={{ fontSize: v("--font-size-body"), color: v('--color-text-secondary'), marginBottom: 4 }}>
               Noch keine Berechnungen gespeichert.
             </div>
-            <div style={{ fontSize: 12, color: v('--color-text-faint') }}>
+            <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-faint') }}>
               Berechne deine PV-Anlage und speichere das Ergebnis.
             </div>
           </div>
@@ -147,7 +147,7 @@ export default function DashboardClient({
                       placeholder="Name der Berechnung"
                       autoFocus
                       style={{
-                        width: "100%", padding: "8px 10px", borderRadius: v('--radius-sm'), fontSize: 14, fontWeight: 600,
+                        width: "100%", padding: "8px 10px", borderRadius: v('--radius-sm'), fontSize: v("--font-size-body"), fontWeight: 600,
                         background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, color: v('--color-text-primary'),
                         fontFamily: v('--font-text'), outline: "none", marginBottom: 8,
                       }}
@@ -158,7 +158,7 @@ export default function DashboardClient({
                       onChange={e => setEditDesc(e.target.value)}
                       placeholder="Beschreibung (optional)"
                       style={{
-                        width: "100%", padding: "8px 10px", borderRadius: v('--radius-sm'), fontSize: 13,
+                        width: "100%", padding: "8px 10px", borderRadius: v('--radius-sm'), fontSize: v("--font-size-small"),
                         background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, color: v('--color-text-secondary'),
                         fontFamily: v('--font-text'), outline: "none", marginBottom: 10,
                       }}
@@ -166,14 +166,14 @@ export default function DashboardClient({
                     />
                     <div style={{ display: "flex", gap: 8 }}>
                       <button onClick={saveEdit} style={{
-                        flex: 1, padding: "8px 12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
+                        flex: 1, padding: "8px 12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600,
                         background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
                         fontFamily: v('--font-text'),
                       }}>
                         Speichern
                       </button>
                       <button onClick={() => setEditingId(null)} style={{
-                        padding: "8px 12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
+                        padding: "8px 12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600,
                         background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, color: v('--color-text-secondary'), cursor: "pointer",
                         fontFamily: v('--font-text'),
                       }}>
@@ -186,23 +186,23 @@ export default function DashboardClient({
                   <>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 15, fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        <div style={{ fontSize: v("--font-size-body"), fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                           {calc.name}
                         </div>
                         {calc.description && (
-                          <div style={{ fontSize: 12, color: v('--color-text-secondary'), marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             {calc.description}
                           </div>
                         )}
-                        <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 3, display: "flex", alignItems: "center", gap: 6 }}>
+                        <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), marginTop: 3, display: "flex", alignItems: "center", gap: 6 }}>
                           {formatDate(calc.created_at)}
                           {calc.flow_type === "empfehlung" && (
-                            <span style={{ fontSize: 9, fontWeight: 700, color: v('--color-accent'), background: v('--color-accent-dim'), padding: "1px 5px", borderRadius: 4, textTransform: "uppercase", letterSpacing: "0.04em" }}>Empfohlen</span>
+                            <span style={{ fontSize: v("--font-size-micro"), fontWeight: 700, color: v('--color-accent'), background: v('--color-accent-dim'), padding: "1px 5px", borderRadius: 4, textTransform: "uppercase", letterSpacing: "0.04em" }}>Empfohlen</span>
                           )}
                         </div>
                       </div>
                       <div style={{
-                        fontSize: 18, fontWeight: 800, fontFamily: v('--font-mono'),
+                        fontSize: v("--font-size-h3"), fontWeight: 800, fontFamily: v('--font-mono'),
                         color: calc.amortisation_jahre ? v('--color-accent') : v('--color-negative'),
                         flexShrink: 0, marginLeft: 12,
                       }}>
@@ -212,12 +212,12 @@ export default function DashboardClient({
 
                     <div style={{ display: "flex", gap: 12, marginBottom: 12 }}>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: 10, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em" }}>Anlage</div>
-                        <div style={{ fontSize: 14, fontWeight: 600, fontFamily: v('--font-mono') }}>{calc.kwp} kWp</div>
+                        <div style={{ fontSize: v("--font-size-micro"), color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em" }}>Anlage</div>
+                        <div style={{ fontSize: v("--font-size-body"), fontWeight: 600, fontFamily: v('--font-mono') }}>{calc.kwp} kWp</div>
                       </div>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: 10, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em" }}>Gewinn 25 J.</div>
-                        <div style={{ fontSize: 14, fontWeight: 600, fontFamily: v('--font-mono'), color: (calc.rendite_25j ?? 0) > 0 ? v('--color-positive') : v('--color-negative') }}>
+                        <div style={{ fontSize: v("--font-size-micro"), color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em" }}>Gewinn 25 J.</div>
+                        <div style={{ fontSize: v("--font-size-body"), fontWeight: 600, fontFamily: v('--font-mono'), color: (calc.rendite_25j ?? 0) > 0 ? v('--color-positive') : v('--color-negative') }}>
                           {calc.rendite_25j != null ? `${calc.rendite_25j > 0 ? "+" : ""}${calc.rendite_25j.toLocaleString("de-DE")} €` : "—"}
                         </div>
                       </div>
@@ -225,21 +225,21 @@ export default function DashboardClient({
 
                     <div style={{ display: "flex", gap: 8 }}>
                       <button onClick={() => handleLoad(calc)} style={{
-                        flex: 1, padding: "8px 12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
+                        flex: 1, padding: "8px 12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600,
                         background: v('--color-accent-dim'), border: `1px solid ${v('--color-border-accent')}`,
                         color: v('--color-accent'), cursor: "pointer", fontFamily: v('--font-text'),
                       }}>
                         Laden
                       </button>
                       <button onClick={() => startEditing(calc)} style={{
-                        padding: "8px 12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
+                        padding: "8px 12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600,
                         background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`,
                         color: v('--color-text-secondary'), cursor: "pointer", fontFamily: v('--font-text'),
                       }}>
                         <IconEdit size={iconSizes.md} />
                       </button>
                       <button onClick={() => handleDelete(calc.id)} disabled={deleting === calc.id} style={{
-                        padding: "8px 12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
+                        padding: "8px 12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600,
                         background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`,
                         color: deleting === calc.id ? v('--color-text-faint') : v('--color-text-secondary'), cursor: "pointer",
                         fontFamily: v('--font-text'),

@@ -251,7 +251,10 @@ async function main(): Promise<void> {
     const status = STATUS_ZU_ART[b.art];
     if (!status || !b.region_id) continue;
     const patch: Record<string, unknown> = { outreach_status: status, updated_at: new Date().toISOString() };
-    if (status === "geantwortet") patch.responded_at = new Date().toISOString();
+    // Der Tag der ANTWORT, nicht der des Abrufs — sonst misst jede Auswertung
+    // der Antwortzeit in Wahrheit, wann zuletzt jemand ins Postfach gesehen hat.
+    // Bei Nidda ergab das 98 Stunden statt der tatsaechlichen vier.
+    if (status === "geantwortet") patch.responded_at = new Date(`${b.datum}T12:00:00Z`).toISOString();
     // Die Notiz sagt, WORAUS der Status entstanden ist. Ein „gesperrt" ohne
     // Beleg ist später nicht mehr von einem Versehen zu unterscheiden.
     //

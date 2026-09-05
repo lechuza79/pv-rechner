@@ -25,7 +25,7 @@ import {
 } from "../../../components/WidgetExport";
 import { sourceLabel } from "../../../lib/data-sources";
 import { fmtCt } from "../../../lib/feedin-config";
-import { tokens, v } from "../../../lib/theme";
+import { tokens, v, fsPx } from "../../../lib/theme";
 import { useChartExport } from "../../../lib/useChartExport";
 import { WIDGETS } from "../../../lib/widget-registry";
 import { MONAT_KURZ, type VerlaufJahr } from "./VerlaufsChart";
@@ -181,12 +181,12 @@ export default function VerlaufMitMeilensteinen({
                       strokeWidth={1}
                       strokeDasharray={g === 0 ? undefined : "2 3"}
                     />
-                    <text x={margin.left - 5} y={y(g) + 3} textAnchor="end" fontSize={9} fill={v("--color-text-muted")}>
+                    <text x={margin.left - 5} y={y(g) + 3} textAnchor="end" fontSize={fsPx("--font-size-micro")} fill={v("--color-text-muted")}>
                       {g}
                     </text>
                   </g>
                 ))}
-                <text x={2} y={margin.top - 6} fontSize={9} fill={v("--color-text-muted")}>
+                <text x={2} y={margin.top - 6} fontSize={fsPx("--font-size-micro")} fill={v("--color-text-muted")}>
                   ct/kWh
                 </text>
                 {/* Gepunktete Vertikalen an den einschneidenden Wendepunkten —
@@ -284,7 +284,7 @@ export default function VerlaufMitMeilensteinen({
                           x={x(j.year)}
                           y={margin.top + PLOT_H + 14}
                           textAnchor="middle"
-                          fontSize={8}
+                          fontSize={fsPx("--font-size-micro")}
                           fill={v("--color-text-secondary")}
                         >
                           {j.year}
@@ -353,6 +353,6 @@ const S: Record<string, React.CSSProperties> = {
     overflow: "hidden",
   },
   header: { marginBottom: 10 },
-  title: { fontSize: 17, fontWeight: 800, letterSpacing: "-0.01em", margin: "0 0 3px", lineHeight: 1.25, color: v("--color-text-primary") },
-  sub: { fontSize: 12.5, color: v("--color-text-muted"), margin: 0, lineHeight: 1.4 },
+  title: { fontSize: v("--font-size-lead"), fontWeight: 800, letterSpacing: "-0.01em", margin: "0 0 3px", lineHeight: 1.25, color: v("--color-text-primary") },
+  sub: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), margin: 0, lineHeight: 1.4 },
 };

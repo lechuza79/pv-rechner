@@ -53,16 +53,37 @@ Commit als `[auto]` (nur der Schnappschuss, spezifisch gestaged, kein `git add -
 
 ### Schritt 2b — SERP prüfen, BEVOR aus einem Volumen eine Chance wird — BLOCKER
 
-Ein hohes Suchvolumen in `ranked_keywords` ist **kein** Chancensignal. Vor jeder
-Empfehlung für einen Begriff aus der Quick-Win-Zone:
+Ein hohes Suchvolumen in `ranked_keywords` ist **kein** Chancensignal. Das gilt für
+**jede Empfehlung dieses Berichts**, gleich woher der Begriff kommt: Quick-Win-Zone,
+Ideen-Abruf, Wettbewerbsvergleich oder ein Schlusssatz, der einen „Hebel" benennt.
+Der Geltungsbereich stand hier bis zum 02.09.2026 enger („für einen Begriff aus der
+Quick-Win-Zone") — und genau durch diese Lücke ist die Regel gebrochen worden, ohne
+dass jemand sie übergehen musste. Vor jeder Empfehlung also:
 
 `POST https://api.dataforseo.com/v3/serp/google/organic/live/advanced`
 Body `[{"keyword":…,"location_code":2276,"language_code":"de","depth":10}]` (0,002 $;
 **nur ein Task je Aufruf**, sonst „You can set only one task at a time"). Auswerten:
 
-1. **Steht `ai_overview` oder `featured_snippet` im `items`-Aufbau?** Dann fängt Google
-   die Klicks ab — eine erklärende Seite dort zu verbessern, bringt Einblendungen und
-   keine Besucher. Nicht als Chance melden.
+1. **Steht `ai_overview` oder `featured_snippet` im `items`-Aufbau?** Das wird
+   MITGEMELDET, ist aber **kein Ausschlusskriterium** (Betreiber-Entscheidung
+   02.09.2026: „ich gehe davon aus, dass es bald für alles eine KI-Antwort gibt. Es ist
+   gut zu wissen, aber kein Ausschlusskriterium").
+
+   **Warum die Regel gelockert wurde, und zwar begründet:** Sie stand vorher als
+   Ausschluss („nicht als Chance melden") und stützte sich auf **vier** Suchbegriffe vom
+   13.08.2026 — drei mit KI-Antwort und null Klicks, einer ohne und mit einem Klick. Für
+   einen Ausschluss, der ganze Themenfelder streicht, ist das zu dünn, und die Entwicklung
+   läuft ohnehin dagegen: Im Lauf 09/2026 trugen bereits 7 von 12 geprüften Begriffen eine
+   KI-Antwort. Ein Ausschluss auf dieser Grundlage streicht demnächst alles.
+
+   **Was von dem Befund trägt, ist der MECHANISMUS, nicht die Zahl:** Abgefangen wird,
+   was sich vorab beantworten lässt. Veränderliches, Ortsbezogenes und Interaktives nicht
+   — eine Antwortmaschine kann weder den aktuellen Strommix noch „zahlt MEINE Gemeinde
+   einen Zuschuss, und wie viel" vorformulieren. Also einordnen statt streichen:
+   - erklärende Seite + KI-Antwort → Klickerwartung stark dämpfen, Aufwand meiden;
+   - Live-Wert, Ortsbezug oder Rechner + KI-Antwort → Chance bleibt, mit Vermerk.
+   Die Einordnung gehört als Satz in den Bericht, damit die Erwartung von Anfang an
+   stimmt und ein späteres „bringt ja doch nichts" nicht als Überraschung ankommt.
 2. **Wer steht auf Platz 1–8, und welche Frage beantworten die?** Deckt sich die
    Intention nicht mit unserem Angebot, ist der Begriff kein Ziel, egal wie groß das
    Volumen ist.
@@ -76,30 +97,49 @@ unsere Bestandsstatistik —, wir standen auf Position 73,6 und hatten in 28 Tag
 Einblendungen. Bei unserem eigenen Wort („solaratlas rlp") standen wir auf 10,6.
 Vollständig in `docs/seo/befund-2026-08-13.md`.
 
-### Schritt 2b-1 — OFFEN (bis 10/2026): Schreibt Google unsere Atlas-Titel um?
+**Derselbe Fehlschlag ein zweites Mal (02.09.2026), und das ist der wichtigere Teil:**
+Der Monatsbericht empfahl als Hebel „Positionsarbeit an den Atlas-Landesseiten" und
+begründete das mit genau diesen Begriffen („solarkataster nrw" 2.400, „solarkataster
+rlp" 720, „energieatlas nrw" 590). Die Ergebnisseiten waren dabei sogar abgerufen
+worden — aber nur auf die Frage, ob eine KI-Antwort davorsteht. **Punkt 1 dieser Liste
+war geprüft, Punkt 2 nicht.** Die Nachprüfung am selben Tag: Auf Seite 1 aller drei
+Begriffe steht ausnahmslos ein amtliches Dachflächen-Kataster; auf den Atlas-Seiten
+beantwortet kein Treffer auf Seite 1 unsere Frage. Wer nur Punkt 1 abarbeitet, hat die
+Ergebnisseite gesehen und die Frage nicht gestellt.
+Festgehalten als Grundregel `absicht-vor-volumen` in `lib/seo-grundregeln.ts`.
 
-Am 18.08.2026 haben die Atlas-Regionsseiten neue Titel bekommen („Photovoltaik in Bayern:
-…"), während die sichtbare Überschrift die alte blieb („Solaranlagen in Bayern"). Ob diese
-Abweichung etwas kostet, ist **nicht entschieden** — die Daten geben es nicht her, weil
-Titel und Überschrift vorher wortgleich waren. Es gibt nur einen Nullbefund: Im
-gleichlautenden Zustand stand keine der sieben Atlas-Platzierungen in den Top 10.
+### Schritt 2b-1 — BEANTWORTET (02.09.2026): Es war die Länge, nicht die Überschrift
 
-**Die Messung, die es entscheidet** (frühestens zwei Wochen nach dem Livegang der neuen
-Titel, also ab etwa 09/2026): In `ranked_keywords` je Atlas-URL das von Google **angezeigte**
-`title`-Feld gegen unser title-Tag halten.
-- Steht dort „Photovoltaik in …" → Google übernimmt unseren Titel, die Überschrift ist für
-  den Treffer irrelevant, die heutige Aufteilung bleibt.
-- Steht dort „Solaranlagen in …" → Google zieht die Überschrift heran. Dann ist die
-  Angleichung Pflicht, und die belegte Form wäre eine, die **beide** Wörter trägt: 71 % der
-  echten Ortsanfragen unserer einzigen Atlas-Seite mit Ortsverkehr enthalten „solaranlage",
-  keine einzige „photovoltaik".
+Die offene Frage („Schreibt Google unsere Atlas-Titel um?") ist entschieden und dieser
+Abschnitt bleibt nur noch als Messregel stehen.
 
-Nebenbefund, der dabei mitgeprüft gehört: Bei 6 von 7 Atlas-Platzierungen kürzt Google
-bereits den Marken-Suffix weg. Das ist normal, aber es zeigt, dass die Titel an der
-Längengrenze liegen.
+**Gemessen an neun Landesseiten, live abgerufene Ergebnisseiten, sortiert nach Länge des
+Titels OHNE Markenzusatz:**
 
-Ergebnis in den Monats-Schnappschuss, dann diesen Abschnitt entweder streichen oder die
-Angleichung als Befund melden.
+| Länge | Seiten | Google zeigt |
+|---|---|---|
+| 52–60 | Bayern, Berlin, Hamburg, Hessen, Brandenburg, Niedersachsen | **unseren Titel** |
+| 62–66 | Rheinland-Pfalz, Baden-Württemberg, Nordrhein-Westfalen | „Solaranlagen in <Land> - Solar Check" |
+
+Neun von neun, ohne Ausnahme, Schnitt zwischen 60 und 62 Zeichen.
+
+**Was daraus NICHT folgt** — und im ersten Anlauf des Berichts 09/2026 so dastand:
+„Google zieht den Wortlaut der sichtbaren Überschrift heran, also ist die Angleichung
+fällig." Google greift auf die Überschrift **nur** zurück, wenn unser Titel nicht passt;
+bei sechs der neun Seiten hat er ihn unverändert genommen. Der erste Anlauf hatte drei
+Seiten geprüft — zufällig die drei längsten — und eine Längenwirkung mit
+`/strommix-deutschland` ausschließen wollen. Diese Gegenprobe lag mit 55 Zeichen selbst
+unterhalb der Grenze und konnte deshalb nichts ausschließen. **Eine Gegenprobe muss auf
+der anderen Seite der vermuteten Grenze liegen, sonst ist sie keine.**
+
+Umgesetzt: Der Titel steht seit dem 02.09.2026 als eine Quelle in `lib/atlas-titel.ts`
+(vorher zweimal getippt, beide Fassungen zu lang) und liegt bei höchstens 55 Zeichen.
+`lib/__tests__/atlas-titel-laenge.test.ts` hält das Budget für alle 16 Länder und für
+die Ortsseiten.
+
+**Was je Monatslauf davon bleibt:** In `ranked_keywords` bzw. den SERP-Abrufen je
+Atlas-URL das angezeigte `title`-Feld gegen unser title-Tag halten. Weicht es ab, ist es
+ein Befund — dann zuerst die Länge nachmessen, nicht die Wortwahl ändern.
 
 ### Schritt 2b-2 — Zwei eigene Seiten auf einer Anfrage — BLOCKER
 
@@ -159,6 +199,24 @@ ein Ranking-Thema, kein Snippet-Thema.
 **Konsequenz für jeden Lauf:** Diese Spalte gehört in den Monats-Schnappschuss. Eine
 Seite ohne sichtbare Anfragen wird nicht als Chance gemeldet, egal wie gut ihre Position
 aussieht.
+
+### Schritt 2c-2 — Eine Summe über die Anfragen-Ebene ist KEINE Seitensumme — BLOCKER
+
+Die Gegenrichtung zur Regel darunter, und sie ist am 02.09.2026 eingetreten: Aus
+`?dim=query` summierte Einblendungen und Klicks ergeben **nicht** die Reichweite einer
+Fläche. Die Anfragen-Ebene enthält nur, was Google einzeln ausweist; alles unterhalb der
+Anonymisierungsschwelle fehlt. Gemessen über 90 Tage (01.06.–30.08.2026) an derselben
+Property:
+
+| | Anfragen-Ebene | Seitenebene | fehlt |
+|---|---|---|---|
+| Einblendungen | 4.034 | 10.463 | 61 % |
+| Klicks | 8 | 79 | 90 % |
+
+Bei den Klicks fehlen also neun von zehn. Aus der Anfragen-Summe wurde daraufhin
+„0 Klicks auf den Atlas-Seiten" — tatsächlich waren es 13 bei einer Klickrate im
+Bereich der Seite insgesamt. **Wer Reichweite oder Klicks einer Fläche beziffert, nimmt
+`?prefix=`. `?dim=query` beantwortet, WONACH gesucht wurde, nicht WIE VIEL ankam.**
 
 ### Schritt 2c — Durchschnittsposition nie ohne Query-Ebene — BLOCKER
 

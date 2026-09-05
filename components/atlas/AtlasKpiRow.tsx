@@ -404,7 +404,7 @@ const S: Record<string, React.CSSProperties> = {
     marginBottom: space.sm,
   },
   groupTitle: {
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     fontWeight: 700,
     letterSpacing: "0.04em",
     textTransform: "uppercase",
@@ -424,14 +424,14 @@ const S: Record<string, React.CSSProperties> = {
   },
   // Rückseite: je eine Zeile Erklärung, Kennzahl-Name fett davor.
   explainRow: {
-    fontSize: 12,
+    fontSize: v("--font-size-small"),
     color: v("--color-text-secondary"),
     lineHeight: 1.5,
     marginBottom: space.xs,
   },
   explainLabel: { fontWeight: 700, color: v("--color-text-primary"), marginRight: space.xs },
   explainNote: {
-    fontSize: 12,
+    fontSize: v("--font-size-small"),
     color: v("--color-text-muted"),
     lineHeight: 1.5,
     marginTop: space.xs,
@@ -446,10 +446,10 @@ const S: Record<string, React.CSSProperties> = {
     minWidth: 0,
   },
 
-  tileLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: space.xs },
-  tileSub: { fontSize: 10, color: v("--color-text-muted"), marginTop: space.xxs, lineHeight: 1.4 },
+  tileLabel: { fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginBottom: space.xs },
+  tileSub: { fontSize: v("--font-size-micro"), color: v("--color-text-muted"), marginTop: space.xxs, lineHeight: 1.4 },
   groupNote: {
-    fontSize: 12,
+    fontSize: v("--font-size-small"),
     color: v("--color-text-secondary"),
     margin: `${space.sm}px ${space.xxs}px 0`,
     lineHeight: 1.5,
@@ -495,7 +495,7 @@ const S: Record<string, React.CSSProperties> = {
     border: "none",
     textAlign: "left",
     padding: pad("sm", "lg"),
-    fontSize: 12,
+    fontSize: v("--font-size-small"),
     fontFamily: "inherit",
     color: v("--color-text-primary"),
     cursor: "pointer",

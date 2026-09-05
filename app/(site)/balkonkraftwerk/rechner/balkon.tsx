@@ -8,15 +8,18 @@ import InlineEdit from "../../../../components/InlineEdit";
 import InfoTooltip from "../../../../components/InfoTooltip";
 import StandortField from "../../../../components/StandortField";
 import { IconArrowRight, IconRefresh, IconCheck } from "../../../../components/Icons";
-import { v, iconSizes } from "../../../../lib/theme";
+import { v, iconSizes, fsPx } from "../../../../lib/theme";
 import { usePrices } from "../../../../lib/prices";
 import { PERSONEN, SCENARIOS } from "../../../../lib/constants";
 import ScenarioTabs from "../../../../components/ScenarioTabs";
 import { DEFAULT_BALKON_CONFIG as CFG, BALKON_RECHT, BALKON_DACH_HINWEIS_KWH, type BalkonSetId, type BalkonStorageId } from "../../../../lib/balkon-config";
 import { calcBalkon, recommendBalkon, type BalkonInputs, type BalkonOption } from "../../../../lib/balkon";
 import { referenceYearKwh } from "../../../../lib/solar-year";
-import { trackEvent } from "../../../../lib/analytics";
+import { trackFunnelStep, type Funnel } from "../../../../lib/analytics";
 import { useSharedPlz, readLocation } from "../../../../lib/location";
+import ResultFunding from "../../../../components/ResultFunding";
+import { useFoerderung } from "../../../../lib/use-foerderung";
+import { stackFunding, type Wohnform } from "../../../../lib/funding-programs";
 import { DataSourceNote } from "../../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
 
@@ -118,10 +121,18 @@ export default function Balkon() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [isResult]);
 
+  // Ereignis je erreichtem Schritt, Reihenfolge wie STEPS, danach das Ergebnis.
+  // Bis 29.08.2026 meldete dieser Rechner NUR das Ergebnis — wo jemand abbricht,
+  // war unsichtbar. Länge und Reihenfolge sind festgenagelt (siehe `lib/analytics.ts`).
+  const FUNNEL: Funnel = [
+    null,
+    "balkon_schritt_ausrichtung",
+    "balkon_ergebnis",
+  ];
   const next = () => {
     if (step >= STEPS.length) return;
     const target = step + 1;
-    if (target === STEPS.length) trackEvent("balkon_ergebnis");
+    trackFunnelStep(FUNNEL, target);
     setStep(target);
   };
   const back = () => step > 0 && setStep(step - 1);
@@ -211,10 +222,44 @@ export default function Balkon() {
     [orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, scenarioStrom],
   );
 
+  // ── Förderung ───────────────────────────────────────────────────────────────
+  // Der Rechner hatte bis zum 02.09.2026 gar keinen Fördercheck, obwohl 43
+  // Programme im Katalog einen Balkon-Betrag ausrechnen können. Bei einem Set um
+  // 500 € sind 100 bis 200 € Zuschuss ein Fünftel bis ein Drittel des Preises —
+  // der Posten mit der größten Hebelwirkung auf die Amortisation, und der
+  // einzige, den wir nicht gezeigt haben.
+  const foerderQuelle = useFoerderung("balkon");
+  const fundingPrograms = foerderQuelle.programme;
+  const [fundingEnabled, setFundingEnabled] = useState(true);
+  // Wohnform: nur gefragt, wo ein aufgelöstes Programm sie unterscheidet.
+  // Sonst beantwortet sie niemand umsonst — dieselbe Regel wie bei den
+  // Technik-Filtern auf der Förder-Stadtseite.
+  const [wohnform, setWohnform] = useState<Wohnform | null>(null);
+  const wohnformGefragt = fundingPrograms.some((p) => p.nurWohnform);
+
+  // Dieselbe Postleitzahl wie für den Standort-Ertrag löst auch die Förderung
+  // auf — der Rechner fragt sie also kein zweites Mal.
+  const ausPlz = foerderQuelle.ausPlz;
+  useEffect(() => { if (/^\d{5}$/.test(plz)) void ausPlz(plz); }, [plz, ausPlz]);
+
+  const bruttoInvest = oInvest ?? calcBalkon({
+    setId: active.setId, orientationId, presenceId, storageId: active.storageId,
+    haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease: scenarioStrom,
+  }).invest;
+  const fundingStack = useMemo(
+    () => stackFunding(fundingPrograms, {
+      technik: "balkon", wattPeak: CFG.sets.find(x => x.id === active.setId)?.moduleWp ?? 0,
+      kosten: bruttoInvest, wohnform: wohnform ?? undefined,
+    }),
+    [fundingPrograms, active.setId, bruttoInvest, wohnform],
+  );
+  const foerderung = fundingEnabled ? fundingStack.total : 0;
+
   const inputs: BalkonInputs = useMemo(() => ({
     setId: active.setId, orientationId, presenceId, storageId: active.storageId,
-    haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease: scenarioStrom, invest: oInvest ?? undefined,
-  }), [active.setId, active.storageId, orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, scenarioStrom, oInvest]);
+    haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease: scenarioStrom,
+    invest: Math.max(0, bruttoInvest - foerderung),
+  }), [active.setId, active.storageId, orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, scenarioStrom, bruttoInvest, foerderung]);
 
   const r = useMemo(() => calcBalkon(inputs), [inputs]);
   const amortLabel = isFinite(r.amortYears) ? `${r.amortYears.toFixed(1).replace(".", ",")} J.` : "—";
@@ -276,11 +321,11 @@ export default function Balkon() {
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 24 }}>
-          <h1 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
+          <h1 style={{ fontSize: v("--font-size-h2"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
             {isResult ? "Deine Empfehlung" : "Lohnt sich ein Balkonkraftwerk?"}
           </h1>
           {!isResult && (
-            <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>
+            <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>
               Für Miete und Eigentum ohne eigenes Dach. Wir empfehlen dir die passende Größe — mit oder ohne Speicher.
             </p>
           )}
@@ -298,19 +343,19 @@ export default function Balkon() {
         {/* ── STEPS ── */}
         {!isResult && (
           <div className="fu" key={step}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 18 }}>{STEPS[step]}</h2>
+            <h2 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, marginBottom: 18 }}>{STEPS[step]}</h2>
 
             {/* 0: Haushalt & Standort */}
             {step === 0 && (
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Wie viele Personen im Haushalt?</div>
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Wie viele Personen im Haushalt?</div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 6, marginBottom: 20 }}>
                   {PERSONEN.map((p, i) => {
                     const aktiv = beantwortet.has("personen") && personen === i;
                     return (
                     <button key={p.label} data-flow-option={p.label === "1" ? "1 Person" : `${p.label} Personen`} data-flow-group="personen" aria-pressed={aktiv}
                       onClick={() => { setPersonen(i); setOVerbrauch(null); markBeantwortet("personen"); }} style={{
-                      padding: "14px 4px", borderRadius: v('--radius-md'), fontSize: 16, fontWeight: 700, cursor: "pointer", textAlign: "center",
+                      padding: "14px 4px", borderRadius: v('--radius-md'), fontSize: v("--font-size-lead"), fontWeight: 700, cursor: "pointer", textAlign: "center",
                       background: aktiv ? v('--color-accent-dim') : v('--color-bg-muted'),
                       border: aktiv ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
                       color: aktiv ? v('--color-accent') : v('--color-text-secondary'),
@@ -319,7 +364,7 @@ export default function Balkon() {
                   })}
                 </div>
 
-                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em", display: "inline-flex", alignItems: "center", gap: 4 }}>
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em", display: "inline-flex", alignItems: "center", gap: 4 }}>
                   Tagsüber jemand zuhause?
                   <InfoTooltip title="Warum das zählt" ariaLabel="Warum fragen wir, ob tagsüber jemand zuhause ist?" size={iconSizes.sm}>
                     Ein Balkonkraftwerk lohnt sich über den Strom, den du direkt verbrauchst, während die Sonne scheint.
@@ -333,7 +378,7 @@ export default function Balkon() {
                   ))}
                 </div>
 
-                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Standort (für den echten Ertrag)</div>
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Standort (für den echten Ertrag)</div>
                 <form onSubmit={e => { e.preventDefault(); if (!plzConfirmed) fetchPvgis(plz); }} style={{ display: "flex", gap: 8 }}>
                   <input
                     type="text" inputMode="numeric" aria-label="Postleitzahl"
@@ -341,13 +386,13 @@ export default function Balkon() {
                     value={plz}
                     onChange={e => onPlzChange(e.target.value)}
                     style={{
-                      flex: 1, padding: "12px 14px", fontSize: 15, fontFamily: v('--font-mono'),
+                      flex: 1, padding: "12px 14px", fontSize: v("--font-size-body"), fontFamily: v('--font-mono'),
                       borderRadius: v('--radius-md'), border: `2px solid ${plzConfirmed ? v('--color-positive') : v('--color-border')}`,
                       background: v('--color-bg-muted'), color: v('--color-text-primary'), outline: "none", textAlign: "center", letterSpacing: "0.08em",
                     }}
                   />
                   <button type="submit" disabled={plz.length !== 5 || plzLoading || plzConfirmed} style={{
-                    padding: "0 18px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, whiteSpace: "nowrap",
+                    padding: "0 18px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 700, whiteSpace: "nowrap",
                     border: "none", cursor: plz.length === 5 && !plzConfirmed ? "pointer" : "default",
                     background: plzConfirmed ? v('--color-positive') : plz.length === 5 ? v('--color-accent') : v('--color-bg-muted'),
                     color: plzConfirmed || plz.length === 5 ? v('--color-text-on-accent') : v('--color-text-muted'),
@@ -357,7 +402,7 @@ export default function Balkon() {
                       : "Übernehmen"}
                   </button>
                 </form>
-                <div style={{ fontSize: 12, color: plzConfirmed ? v('--color-positive') : v('--color-text-muted'), marginTop: 8, lineHeight: 1.5, fontWeight: plzConfirmed ? 600 : 400 }}>
+                <div style={{ fontSize: v("--font-size-small"), color: plzConfirmed ? v('--color-positive') : v('--color-text-muted'), marginTop: 8, lineHeight: 1.5, fontWeight: plzConfirmed ? 600 : 400 }}>
                   {plzConfirmed
                     ? `Standort übernommen: ${specificYield} kWh je kWp und Jahr.`
                     : "Optional. Ohne PLZ rechnen wir mit einem deutschen Durchschnitt."}
@@ -368,13 +413,13 @@ export default function Balkon() {
             {/* 1: Ausrichtung */}
             {step === 1 && (
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Wie hängen die Module?</div>
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Wie hängen die Module?</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
                   {CFG.orientations.map(o => (
                     <OptionCard key={o.id} selected={beantwortet.has("ausrichtung") && orientationId === o.id} onClick={() => { setOrientationId(o.id); markBeantwortet("ausrichtung"); }} label={o.label} sub={o.sub} />
                   ))}
                 </div>
-                <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 10, lineHeight: 1.5 }}>
+                <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 10, lineHeight: 1.5 }}>
                   Senkrecht am Geländer bringt gut ein Viertel weniger als flach aufgeständert in Südrichtung — der Winkel ist
                   bei Balkon-PV der größte Hebel.
                 </div>
@@ -411,11 +456,11 @@ export default function Balkon() {
               background: v('--color-accent'), color: v('--color-text-on-accent'),
               borderRadius: v('--radius-md'), padding: "12px 16px",
               boxShadow: "0 6px 24px rgba(0,0,0,0.25)", display: "flex", alignItems: "center", gap: 10,
-              fontSize: 13, fontWeight: 600, lineHeight: 1.4,
+              fontSize: v("--font-size-small"), fontWeight: 600, lineHeight: 1.4,
             }}
           >
             <span style={{ flex: 1 }}>PLZ eingeben für einen standortgenauen Ertrag</span>
-            <button onClick={e => { e.stopPropagation(); setPlzToast(false); }} aria-label="Schließen" style={{ border: "none", background: "transparent", color: v('--color-text-on-accent'), fontSize: 18, lineHeight: 0.8, cursor: "pointer", padding: 0, opacity: 0.85 }}>×</button>
+            <button onClick={e => { e.stopPropagation(); setPlzToast(false); }} aria-label="Schließen" style={{ border: "none", background: "transparent", color: v('--color-text-on-accent'), fontSize: v("--font-size-h3"), lineHeight: 0.8, cursor: "pointer", padding: 0, opacity: 0.85 }}>×</button>
           </div>
         )}
 
@@ -450,9 +495,9 @@ export default function Balkon() {
                     border: `2px solid ${selected ? v('--color-accent') : v('--color-border')}`,
                     boxShadow: isRec ? "0 4px 14px -4px rgba(19,101,234,0.30)" : "none",
                   }}>
-                    <span style={{ fontSize: 13, fontWeight: 700, whiteSpace: "nowrap", color: selected ? v('--color-accent') : v('--color-text-primary') }}>{setShort(o.setId)}</span>
-                    <span style={{ fontSize: 12, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-positive') }}>~{o.result.savingPerYear.toLocaleString("de-DE")} €/J</span>
-                    {isRec && <span style={{ display: "inline-flex", alignItems: "center", gap: 2, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: v('--color-accent') }}><IconCheck size={iconSizes.xs} /> Empf.</span>}
+                    <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, whiteSpace: "nowrap", color: selected ? v('--color-accent') : v('--color-text-primary') }}>{setShort(o.setId)}</span>
+                    <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-positive') }}>~{o.result.savingPerYear.toLocaleString("de-DE")} €/J</span>
+                    {isRec && <span style={{ display: "inline-flex", alignItems: "center", gap: 2, fontSize: v("--font-size-micro"), fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: v('--color-accent') }}><IconCheck size={iconSizes.xs} /> Empf.</span>}
                   </button>
                 );
               })}
@@ -475,14 +520,14 @@ export default function Balkon() {
                     background: v('--color-bg'), transition: "left 0.2s",
                   }} />
                 </span>
-                <span style={{ fontSize: 13, fontWeight: 700, whiteSpace: "nowrap", color: storageOn ? v('--color-accent') : v('--color-text-primary') }}>Speicher</span>
+                <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, whiteSpace: "nowrap", color: storageOn ? v('--color-accent') : v('--color-text-primary') }}>Speicher</span>
               </button>
               <InfoTooltip title="Was ein Speicher bringt" ariaLabel="Was bringt ein Speicher am Balkonkraftwerk?" size={iconSizes.sm}>
                 Ein kleiner Akku puffert den Tagesüberschuss für Abend und Nacht und hebt den Eigenverbrauch — er kostet aber
                 extra und rechnet sich oft erst spät. Wir empfehlen ihn nur, wenn er sich klar amortisiert.
               </InfoTooltip>
               {!storageOn && recommendation.best.storageId !== "none" && (
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 2, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: v('--color-accent'), whiteSpace: "nowrap" }}><IconCheck size={iconSizes.xs} /> Empf.</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 2, fontSize: v("--font-size-micro"), fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: v('--color-accent'), whiteSpace: "nowrap" }}><IconCheck size={iconSizes.xs} /> Empf.</span>
               )}
 
               {/* Größen: gleiche Höhe wie der Schalter (22 px, border-box), damit die
@@ -505,12 +550,12 @@ export default function Balkon() {
                         background: "none", border: "none", borderBottom: `2px solid ${selected ? v('--color-accent') : "transparent"}`,
                         boxSizing: "border-box", height: 22, padding: 0, cursor: "pointer",
                         display: "inline-flex", alignItems: "center", whiteSpace: "nowrap",
-                        fontFamily: "inherit", fontSize: 12, fontWeight: 700,
+                        fontFamily: "inherit", fontSize: v("--font-size-small"), fontWeight: 700,
                         color: selected ? v('--color-accent') : v('--color-text-secondary'),
                         transition: "color 0.15s, border-color 0.15s",
                       }}>
                         ~{st.kwh.toLocaleString("de-DE")} kWh
-                        <span style={{ fontWeight: 400, fontSize: 11, color: v('--color-text-muted'), marginLeft: 4 }}>+{st.price.toLocaleString("de-DE")} €</span>
+                        <span style={{ fontWeight: 400, fontSize: v("--font-size-caption"), color: v('--color-text-muted'), marginLeft: 4 }}>+{st.price.toLocaleString("de-DE")} €</span>
                       </button>
                     </Fragment>
                   );
@@ -520,10 +565,10 @@ export default function Balkon() {
             </div>
 
             {/* Beschreibung der aktiven Konfiguration */}
-            <div style={{ marginBottom: 16, padding: "12px 14px", borderRadius: v('--radius-md'), background: v('--color-accent-dim'), border: `1px solid ${v('--color-border-accent')}`, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.6 }}>
+            <div style={{ marginBottom: 16, padding: "12px 14px", borderRadius: v('--radius-md'), background: v('--color-accent-dim'), border: `1px solid ${v('--color-border-accent')}`, fontSize: v("--font-size-body"), color: v('--color-text-secondary'), lineHeight: 1.6 }}>
               {activeIsBest ? (
                 <>
-                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: v('--color-text-muted'), marginBottom: 6 }}>
+                  <div style={{ fontSize: v("--font-size-caption"), fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: v('--color-text-muted'), marginBottom: 6 }}>
                     Warum diese Konfiguration?
                   </div>
                   <div>{recommendation.setReason} {recommendation.storageReason}</div>
@@ -531,31 +576,71 @@ export default function Balkon() {
               ) : (
                 <div>
                   {activeDescription()} Empfohlen wäre <strong style={{ color: v('--color-accent') }}>{configLabel(recommendation.best.setId, recommendation.best.storageId)}</strong>.{" "}
-                  <button onClick={resetToRecommendation} style={{ background: "none", border: "none", padding: 0, color: v('--color-accent'), fontWeight: 700, cursor: "pointer", textDecoration: "underline", fontSize: 13, fontFamily: "inherit" }}>Zur Empfehlung</button>
+                  <button onClick={resetToRecommendation} style={{ background: "none", border: "none", padding: 0, color: v('--color-accent'), fontWeight: 700, cursor: "pointer", textDecoration: "underline", fontSize: v("--font-size-small"), fontFamily: "inherit" }}>Zur Empfehlung</button>
                 </div>
               )}
             </div>
 
             {/* Hero: Gesamt-Ersparnis über die Laufzeit (pro Jahr steht in den Karten) */}
             <div style={{ padding: "24px 20px", marginBottom: 16, background: v('--color-bg-accent'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border-accent')}` }}>
-              <div style={{ fontSize: 12, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center" }}>
+              <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center" }}>
                 Ersparnis in {CFG.lifetimeYears} Jahren
               </div>
-              <div style={{ fontSize: 42, fontWeight: 800, color: v('--color-positive'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
+              <div style={{ fontSize: v("--font-size-display-lg"), fontWeight: 800, color: v('--color-positive'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
                 {(r.lifetimeSaving + r.invest).toLocaleString("de-DE")} €
               </div>
-              <div style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6, textAlign: "center" }}>
+              <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6, textAlign: "center" }}>
                 ~{r.savingPerYear.toLocaleString("de-DE")} €/Jahr · {r.annualYield.toLocaleString("de-DE")} kWh Ertrag/Jahr · davon {r.selfUsedKwh.toLocaleString("de-DE")} kWh selbst genutzt
               </div>
 
               {/* Editierbare Annahmen inkl. nachträglicher Standort-Eingabe */}
-              <div style={{ marginTop: 18, borderTop: `1px solid ${v('--color-border-accent')}`, paddingTop: 14, fontSize: 13, lineHeight: 2 }}>
-                <div>{r.storageKwh > 0 ? "Anschaffung (Set + Speicher)" : "Set-Preis"}: <InlineEdit value={r.invest} onCommit={val => setOInvest(Math.round(val))} unit=" €" min={100} max={4000} step={50} width={64} /></div>
+              <div style={{ marginTop: 18, borderTop: `1px solid ${v('--color-border-accent')}`, paddingTop: 14, fontSize: v("--font-size-small"), lineHeight: 2 }}>
+                <div>{r.storageKwh > 0 ? "Anschaffung (Set + Speicher)" : "Set-Preis"}: <InlineEdit value={bruttoInvest} onCommit={val => setOInvest(Math.round(val))} unit=" €" min={100} max={4000} step={50} width={64} /></div>
                 <div>Strompreis: <InlineEdit value={Math.round(strompreis * 100 * 100) / 100} onCommit={val => setOStrom(val / 100)} unit=" ct/kWh" min={10} max={70} step={1} width={70} /></div>
                 <div>Haushaltsverbrauch: <InlineEdit value={haushaltKwh} onCommit={val => setOVerbrauch(Math.round(val))} unit=" kWh" min={800} max={12000} step={100} width={76} /></div>
                 <StandortField plz={plz} onPlzChange={onPlzChange} loading={plzLoading} confirmed={plzConfirmed} onSubmit={() => fetchPvgis(plz)} />
               </div>
             </div>
+
+            <ResultFunding
+              loading={foerderQuelle.laedt}
+              candidates={foerderQuelle.kandidaten}
+              chosenAgs={foerderQuelle.ags}
+              onChooseAgs={foerderQuelle.waehleOrt}
+              programs={fundingPrograms}
+              applied={fundingStack.applied}
+              total={fundingStack.total}
+              enabled={fundingEnabled}
+              onToggle={setFundingEnabled}
+              brutto={bruttoInvest}
+              technik="balkon"
+              kopf={wohnformGefragt ? (
+                <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginTop: 10 }}>
+                  {/* Nur sichtbar, wo ein Programm Mieter und Eigentümer trennt.
+                      Ohne Antwort wird nicht gerechnet — der leere Topf für
+                      Eigentümer ist real, eine Voreinstellung wäre geraten. */}
+                  <div style={{ marginBottom: 6 }}>Ein Programm hier unterscheidet, ob du zur Miete oder im Eigentum wohnst:</div>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    {([["mieter", "Zur Miete"], ["eigentuemer", "Im Eigentum"]] as const).map(([id, label]) => (
+                      <button
+                        key={id}
+                        data-flow-option
+                        aria-pressed={wohnform === id}
+                        onClick={() => setWohnform(wohnform === id ? null : id)}
+                        style={{
+                          padding: "6px 12px", borderRadius: v("--radius-md"), cursor: "pointer", fontSize: v("--font-size-small"),
+                          border: `1px solid ${wohnform === id ? v("--color-accent") : v("--color-border")}`,
+                          background: wohnform === id ? v("--color-bg-accent") : v("--color-bg"),
+                          color: v("--color-text-primary"),
+                        }}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : undefined}
+            />
 
             {/* Stats 2×2 */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
@@ -567,7 +652,7 @@ export default function Balkon() {
 
             {/* Tagesleistungskurve der empfohlenen/aktiven Set-Größe */}
             <SetPowerCurves sets={CFG.sets} selectedId={active.setId} orientationFactor={referenceYearKwh(orientationId) / referenceYearKwh("sued_flach")} />
-            <div style={{ fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.5, margin: "10px 0 16px" }}>
+            <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), lineHeight: 1.5, margin: "10px 0 16px" }}>
               Seit 2024 darfst du nur bis <strong style={{ color: v('--color-text-primary') }}>800 Watt</strong> einspeisen.
               Nutzt du mehr Module
               <InfoTooltip title="Wie viele Module sind erlaubt?" ariaLabel="Wie viele Module sind erlaubt?" size={iconSizes.sm}>
@@ -582,7 +667,7 @@ export default function Balkon() {
               const extraSaving = r.savingPerYear - r.baseSavingPerYear;
               const paysOff = isFinite(r.storagePayback) && r.storagePayback <= CFG.storageLifeYears;
               return (
-                <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.6 }}>
+                <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: v("--font-size-body"), color: v('--color-text-secondary'), lineHeight: 1.6 }}>
                   <div style={{ fontWeight: 700, color: v('--color-text-primary'), marginBottom: 6 }}>
                     Mit {r.storageKwh.toLocaleString("de-DE")}-kWh-Speicher
                   </div>
@@ -591,7 +676,7 @@ export default function Balkon() {
                     zusätzlich selbst — das bringt <strong style={{ color: v('--color-positive'), fontFamily: v('--font-mono') }}>~{extraSaving.toLocaleString("de-DE")} €/Jahr</strong> mehr,
                     kostet aber <strong style={{ color: v('--color-negative'), fontFamily: v('--font-mono') }}>+{r.storagePrice.toLocaleString("de-DE")} €</strong> Aufpreis.
                   </div>
-                  <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 8 }}>
+                  <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 8 }}>
                     {paysOff ? (
                       <>Der Speicher allein rechnet sich nach rund <strong style={{ color: v('--color-text-secondary') }}>{r.storagePayback.toFixed(1).replace(".", ",")} Jahren</strong> — innerhalb seiner Lebensdauer. Deshalb ist er bei deinem Verbrauch drin.</>
                     ) : (
@@ -603,18 +688,18 @@ export default function Balkon() {
             })()}
 
             {/* Einspeise-/Anmeldehinweis */}
-            <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.6 }}>
+            <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: v("--font-size-body"), color: v('--color-text-secondary'), lineHeight: 1.6 }}>
               {r.feedInKwh > 0 ? (
                 <>Rund <strong style={{ color: v('--color-text-primary'), fontFamily: v('--font-mono') }}>{r.feedInKwh.toLocaleString("de-DE")} kWh</strong> deines Ertrags brauchst du nicht selbst. {BALKON_RECHT.keineVerguetung}</>
               ) : (
                 <>Du nutzt praktisch den gesamten Ertrag selbst — kein Überschuss geht verloren.</>
               )}
               {r.clipped && (
-                <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 6 }}>
+                <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>
                   Der 800-W-Wechselrichter begrenzt die Mittagsspitze. Ein größeres Set bringt hier nur noch wenig zusätzlichen Ertrag.
                 </div>
               )}
-              <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 6 }}>
+              <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>
                 {BALKON_RECHT.anmeldung}
                 {r.storageKwh > 0 && " Mit Speicher ist das Gerät allerdings von der VDE-Produktnorm nicht abgedeckt — dafür entsteht gerade eine eigene Norm; je nach Ausführung kann eine Rückfrage beim Netzbetreiber sinnvoll sein."}
               </div>
@@ -624,7 +709,7 @@ export default function Balkon() {
                 Bewusst KEIN "Pflicht"/"verboten": Gesetzlich sind 2.000 Wp erlaubt,
                 die Vornorm ist freiwillig und richtet sich an Hersteller. */}
             {CFG.sets.find(s => s.id === active.setId)!.moduleWp > CFG.schukoMaxWp && (
-              <div style={{ background: v('--color-bg-muted'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.6 }}>
+              <div style={{ background: v('--color-bg-muted'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: v("--font-size-small"), color: v('--color-text-muted'), lineHeight: 1.6 }}>
                 <strong style={{ color: v('--color-text-secondary') }}>Zur Steckdose:</strong> Gesetzlich sind {(2000).toLocaleString("de-DE")} Wp Module an 800 W erlaubt — dein Set ist also zulässig.
                 Die VDE-Vornorm (seit Dezember 2025) sieht für den normalen Schuko-Stecker aber nur bis {CFG.schukoMaxWp.toLocaleString("de-DE")} Wp vor; darüber eine spezielle
                 Einspeisesteckdose, die eine Elektrofachkraft setzt (~{CFG.energySocketCostMin}–{CFG.energySocketCostMax} €). Die Norm ist{" "}
@@ -634,13 +719,13 @@ export default function Balkon() {
             )}
 
             {/* Miete/Eigentum-Hinweis */}
-            <div style={{ background: v('--color-bg-muted'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.6 }}>
+            <div style={{ background: v('--color-bg-muted'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: v("--font-size-small"), color: v('--color-text-muted'), lineHeight: 1.6 }}>
               <strong style={{ color: v('--color-text-secondary') }}>Miete oder Eigentum:</strong> Beides ist möglich. {BALKON_RECHT.mieteEigentum}
             </div>
 
             {/* Cross-Flow: großes Dach lohnt mehr */}
             {roofWorthIt && (
-              <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16, border: `1px solid ${v('--color-accent')}`, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.6 }}>
+              <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16, border: `1px solid ${v('--color-accent')}`, fontSize: v("--font-size-body"), color: v('--color-text-secondary'), lineHeight: 1.6 }}>
                 Bei deinem Verbrauch von <strong style={{ color: v('--color-text-primary') }}>{haushaltKwh.toLocaleString("de-DE")} kWh</strong> deckt ein Balkonkraftwerk nur die Grundlast.
                 Wenn du ein eigenes Dach oder eine Fläche hast, holt eine richtige Anlage ein Vielfaches heraus.{" "}
                 <Link href="/photovoltaik-rechner" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Große Anlage rechnen</Link>
@@ -649,15 +734,15 @@ export default function Balkon() {
 
             {/* Aktionen */}
             <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-              <Link href="/photovoltaik-rechner" style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), textDecoration: "none", textAlign: "center" }}>
+              <Link href="/photovoltaik-rechner" style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), textDecoration: "none", textAlign: "center" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>Eigenes Dach? Große Anlage rechnen <IconArrowRight size={iconSizes.sm} /></span>
               </Link>
-              <button onClick={resetAll} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
+              <button onClick={resetAll} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={iconSizes.sm} /> Neu berechnen</span>
               </button>
             </div>
 
-            <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.6 }}>
+            <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: v("--font-size-small"), color: v('--color-text-muted'), lineHeight: 1.6 }}>
               <Link href="/methodik" style={{ fontWeight: 700, color: v('--color-text-secondary'), textDecoration: "none", borderBottom: `1px dashed ${v('--color-text-faint')}` }}>Methodik</Link>
               <span> · Ertrag standortgenau, Eigenverbrauch aus der Anlagengröße · Werte auf der </span>
               <Link href="/datenstand" style={{ color: v('--color-accent'), textDecoration: "none" }}>Datenstand-Seite</Link>.
@@ -666,7 +751,7 @@ export default function Balkon() {
               </div>
             </div>
 
-            <div style={{ textAlign: "center", fontSize: 11, color: v('--color-text-faint'), padding: "8px 0" }}>
+            <div style={{ textAlign: "center", fontSize: v("--font-size-caption"), color: v('--color-text-faint'), padding: "8px 0" }}>
               Näherungswerte. Realer Ertrag hängt von Verschattung, Modul und Montage ab. Keine Anlageberatung.
             </div>
           </div>
@@ -703,11 +788,11 @@ function SetPowerCurves({ sets, selectedId, orientationFactor }: {
 
   return (
     <div style={{ marginTop: 4, background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, borderRadius: v('--radius-md'), padding: "12px 10px 6px" }}>
-      <div style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4, paddingLeft: 4 }}>Leistung an einem Sonnentag</div>
+      <div style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4, paddingLeft: 4 }}>Leistung an einem Sonnentag</div>
       <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }} role="img" aria-label="Tagesleistung der Set-Größen mit Wechselrichter-Deckelung">
         {/* Wechselrichter-Deckel (800 W) */}
         <line x1={PADX} y1={capY} x2={W - PADX} y2={capY} stroke={v('--color-text-faint')} strokeWidth={1} strokeDasharray="3 3" />
-        <text x={W - PADX} y={capY - 3} textAnchor="end" fontSize={9} fill={v('--color-text-muted')}>800-W-Deckel</text>
+        <text x={W - PADX} y={capY - 3} textAnchor="end" fontSize={fsPx("--font-size-micro")} fill={v('--color-text-muted')}>800-W-Deckel</text>
         {/* Modul-Potenzial des gewählten Sets (gestrichelt) — die gekappte Fläche */}
         <polyline points={potential(sel.moduleWp)} fill="none" stroke={COLORS[sel.id]} strokeWidth={1} strokeDasharray="2 2" opacity={0.45} />
         {/* Ist-Kurven (gedeckelt) je Set, gewähltes hervorgehoben */}
@@ -716,12 +801,12 @@ function SetPowerCurves({ sets, selectedId, orientationFactor }: {
           return <polyline key={s.id} points={clipped(s.moduleWp, s.inverterW)} fill="none" stroke={COLORS[s.id]} strokeWidth={isSel ? 2.5 : 1.2} opacity={isSel ? 1 : 0.45} strokeLinejoin="round" />;
         })}
       </svg>
-      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: v('--color-text-faint'), padding: "0 6px", marginTop: -2 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: v("--font-size-micro"), color: v('--color-text-faint'), padding: "0 6px", marginTop: -2 }}>
         <span>morgens</span><span>Mittag</span><span>abends</span>
       </div>
       <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 6, flexWrap: "wrap" }}>
         {sets.map(s => (
-          <span key={s.id} style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10, color: s.id === selectedId ? v('--color-text-primary') : v('--color-text-muted'), fontWeight: s.id === selectedId ? 700 : 400 }}>
+          <span key={s.id} style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: v("--font-size-micro"), color: s.id === selectedId ? v('--color-text-primary') : v('--color-text-muted'), fontWeight: s.id === selectedId ? 700 : 400 }}>
             <span style={{ width: 12, height: 2.5, background: COLORS[s.id], borderRadius: 1, display: "inline-block" }} />
             {s.label}
           </span>
@@ -734,12 +819,12 @@ function SetPowerCurves({ sets, selectedId, orientationFactor }: {
 function StatCard({ label, value, sub, help, helpTitle, valueColor }: { label: string; value: string; sub?: string; help?: React.ReactNode; helpTitle?: string; valueColor?: string }) {
   return (
     <div style={{ padding: "14px 12px", borderRadius: v('--radius-md'), background: v('--color-bg'), border: `1px solid ${v('--color-border')}`, textAlign: "center" }}>
-      <div style={{ fontSize: 10, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 3 }}>
+      <div style={{ fontSize: v("--font-size-micro"), fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 3 }}>
         {label}
         {help && <InfoTooltip title={helpTitle ?? label} ariaLabel="Mehr Infos" size={iconSizes.sm}>{help}</InfoTooltip>}
       </div>
-      <div style={{ fontSize: 18, fontWeight: 800, fontFamily: v('--font-mono'), color: valueColor ?? v('--color-text-primary') }}>{value}</div>
-      {sub && <div style={{ fontSize: 10, color: v('--color-text-faint'), fontFamily: v('--font-mono'), marginTop: 2 }}>{sub}</div>}
+      <div style={{ fontSize: v("--font-size-h3"), fontWeight: 800, fontFamily: v('--font-mono'), color: valueColor ?? v('--color-text-primary') }}>{value}</div>
+      {sub && <div style={{ fontSize: v("--font-size-micro"), color: v('--color-text-faint'), fontFamily: v('--font-mono'), marginTop: 2 }}>{sub}</div>}
     </div>
   );
 }

@@ -162,7 +162,7 @@ export default function DachField({
           }}
           render={o => o.label}
         />
-        <div style={{ fontSize: 11, color: v("--color-text-faint"), marginTop: space.sm, lineHeight: 1.5 }}>
+        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-faint"), marginTop: space.sm, lineHeight: 1.5 }}>
           {ausrichtung ? AUSRICHTUNG_SUB[ausrichtung] : "Wohin zeigt die Fläche mit den Modulen?"}
         </div>
       </AccordionField>
@@ -190,7 +190,7 @@ export default function DachField({
                   {...flowWahl(neigungFrage, si, aktiv)}
                   title={s.sub}
                   style={{
-                    padding: "7px 12px", borderRadius: v("--radius-sm"), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                    padding: "7px 12px", borderRadius: v("--radius-sm"), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
                     background: aktiv ? v("--color-accent-dim") : v("--color-bg-muted"),
                     border: aktiv ? `1.5px solid ${v("--color-accent")}` : `1.5px solid ${v("--color-border")}`,
                     color: aktiv ? v("--color-accent") : v("--color-text-muted"),
@@ -216,7 +216,7 @@ export default function DachField({
               onBlur={() => setBearbeitet(null)}
             />
           </div>
-          <div style={{ fontSize: 11, color: v("--color-text-faint"), marginTop: space.sm, lineHeight: 1.5 }}>
+          <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-faint"), marginTop: space.sm, lineHeight: 1.5 }}>
             {hat(F_NEIGUNG)
               /* Sobald etwas angegeben ist, wäre „ohne Angabe rechnen wir mit …"
                  schlicht falsch — der Satz beschriebe einen Zustand, der nicht
@@ -234,7 +234,7 @@ export default function DachField({
       )}
 
       {hinweis && offen === null && (
-        <div className="sc-acc" style={{ fontSize: 11, color: v("--color-text-faint"), marginTop: space.xs, lineHeight: 1.5 }}>
+        <div className="sc-acc" style={{ fontSize: v("--font-size-caption"), color: v("--color-text-faint"), marginTop: space.xs, lineHeight: 1.5 }}>
           {hinweis}
         </div>
       )}
@@ -244,7 +244,7 @@ export default function DachField({
           onClick={onWeissNicht}
           style={{
             marginTop: space.md, padding: 0, border: "none", background: "transparent",
-            color: v("--color-text-muted"), fontSize: 12, fontWeight: 600, cursor: "pointer",
+            color: v("--color-text-muted"), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
             textDecoration: "underline", textUnderlineOffset: 3,
           }}
         >

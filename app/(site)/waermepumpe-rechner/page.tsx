@@ -1,7 +1,7 @@
-import { Suspense } from "react";
 import { Metadata } from "next";
 import { pageMetadata } from "../../../lib/seo";
 import { standSeite } from "../../../lib/stand";
+import { heizungsfoerderungBund } from "../../../lib/kfw-foerderdaten";
 import Waermepumpe from "./waermepumpe";
 
 export const metadata: Metadata = pageMetadata({
@@ -25,20 +25,31 @@ export const metadata: Metadata = pageMetadata({
 // stünde hinter einer leeren Fläche. Nachgeschlagen wird sie trotzdem HIER, auf
 // dem Server — `lib/stand.ts` hängt an sieben Config-Modulen, die im Browser
 // nichts zu suchen haben.
-export default function WaermepumpePage() {
-  // Der Rechner liest seinen Zustand aus der Adresse (Teilen-Link, `e=1` springt
-  // ins Ergebnis). Next verlangt dafür eine Suspense-Grenze, sonst bricht das
-  // VORRENDERN dieser Seite — nicht auffällig im Entwicklungsserver, aber der
-  // Produktionsbau steigt aus ("useSearchParams() should be wrapped in a
-  // suspense boundary"). Gemessen am 27.08.2026 an einem erzwungenen
-  // Vorschau-Bau; `tsc` und die Tests waren dabei grün, der Bau war es nicht.
-  //
-  // Der Ersatzinhalt bleibt leer: Die Seite ist ein Rechner, der ohnehin erst im
-  // Browser rechnet — ein Gerüst würde für einen Sekundenbruchteil ein Ergebnis
-  // andeuten, das es noch nicht gibt.
-  return (
-    <Suspense fallback={null}>
-      <Waermepumpe stand={standSeite("/waermepumpe-rechner")} />
-    </Suspense>
-  );
+// Die Seite bleibt vorgerendert und wird täglich aufgefrischt. Der eine
+// Datenbank-Read unten darf sie NICHT dynamisch machen: Ein Rechner, der bei
+// jedem Aufruf frisch gebaut wird, kostet jeden Besucher den vollen Aufbau —
+// und das ist die Bauweise, die im Juli 2026 den Atlas umgeworfen hat. Der
+// Bericht erscheint einmal im Jahr; ein Tag Verzögerung ist folgenlos.
+export const revalidate = 86400;
+
+// Die Zahlen des KfW-Förderreports werden HIER nachgeschlagen, nicht im
+// Rechner: Der Rechner läuft im Browser, und die Tabellen liegen hinter dem
+// Dienstschlüssel — eine offene Schnittstelle darauf wäre nach der Erlaubnis
+// der KfW gerade nicht gedeckt. Fällt der Abruf aus, kommt `null` heraus und
+// der Abschnitt entfällt lautlos; die Seite bleibt vollständig.
+// KEINE Suspense-Grenze nötig: Der Rechner liest die Angaben eines geteilten
+// Links im Browser direkt aus der Adresse, nicht über den Adress-Hook von Next.
+// Damit bleibt die Seite vollständig vorgerendert — und das ist der Punkt: Über
+// den Hook hätte Next verlangt, sie bei jedem Aufruf frisch zu bauen, und dann
+// zahlte jeder Besucher den vollen Aufbau, damit die wenigen über einen
+// geteilten Link ihre Zahlen vorfinden.
+//
+// WAS DAS KOSTET, und zwar bewusst: Ein geteilter Link bekommt KEIN eigenes
+// Vorschaubild mit seinen Zahlen — dafür müsste die Seite die Adresse auf dem
+// Server lesen, also dynamisch werden. Der PV-Rechner tut das und ist deshalb
+// dynamisch. Hier ist die Vorschau die allgemeine Karte; der Link selbst trägt
+// die Rechnung vollständig.
+export default async function WaermepumpePage() {
+  const kfw = await heizungsfoerderungBund();
+  return <Waermepumpe stand={standSeite("/waermepumpe-rechner")} kfw={kfw} />;
 }

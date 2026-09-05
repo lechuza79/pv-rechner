@@ -1,5 +1,6 @@
 import { einbettungenSeit, type EinbettungsZeile } from "../../../../lib/embed-herkunft";
 import { v, space } from "../../../../lib/theme";
+import AdminSeitenkopf from "../../../../components/admin/AdminSeitenkopf";
 
 export const metadata = {
   title: "Einbettungen – Solar Check Admin",
@@ -58,24 +59,25 @@ export default async function EinbettungenPage() {
   const zellStil: React.CSSProperties = {
     padding: `${space.sm}px ${space.md}px`,
     borderBottom: `1px solid ${v("--color-border")}`,
-    fontSize: 13,
+    fontSize: v("--font-size-small"),
     verticalAlign: "top",
   };
 
   return (
     <div style={{ fontFamily: v("--font-text"), color: v("--color-text-primary"), maxWidth: 760 }}>
-      <div style={{ marginBottom: space.xl }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-accent"), letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: space.xs }}>Admin</div>
-        <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: space.xs }}>Einbettungen</h1>
-        <p style={{ fontSize: 13, color: v("--color-text-muted"), lineHeight: 1.5 }}>
-          Fremde Seiten, auf denen unsere Widgets laufen — die letzten {TAGE} Tage.
-          Gezählt werden Aufrufe, nicht Besucher: Gespeichert ist nur die Domain,
-          das Widget und der Kalendertag. Eigene Seiten und die Galerie zählen nicht mit.
-        </p>
-      </div>
+      <AdminSeitenkopf
+        titel="Einbettungen"
+        hilfe={
+          <>
+            Fremde Seiten, auf denen unsere Widgets laufen — die letzten {TAGE} Tage.
+            Gezählt werden Aufrufe, nicht Besucher: Gespeichert ist nur die Domain,
+            das Widget und der Kalendertag. Eigene Seiten und die Galerie zählen nicht mit.
+          </>
+        }
+      />
 
       {hosts.length === 0 ? (
-        <p style={{ fontSize: 13, color: v("--color-text-muted"), lineHeight: 1.6 }}>
+        <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6 }}>
           Noch keine fremde Einbettung gezählt. Das ist vor den ersten angenommenen
           Outreach-Angeboten der erwartete Stand — und, solange die Zählung neu ist,
           auch von „die Zählung läuft nicht" nicht zu unterscheiden. Zum Prüfen ein
@@ -84,7 +86,7 @@ export default async function EinbettungenPage() {
       ) : (
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
-            <tr style={{ textAlign: "left", fontSize: 12, color: v("--color-text-muted") }}>
+            <tr style={{ textAlign: "left", fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
               <th style={{ ...zellStil, fontWeight: 600 }}>Domain</th>
               <th style={{ ...zellStil, fontWeight: 600 }}>Widget</th>
               <th style={{ ...zellStil, fontWeight: 600, whiteSpace: "nowrap" }}>Aufrufe</th>
@@ -103,7 +105,7 @@ export default async function EinbettungenPage() {
                   >
                     {h.host}
                   </a>
-                  <div style={{ fontSize: 11, fontWeight: 400, color: v("--color-text-muted"), marginTop: 2 }}>
+                  <div style={{ fontSize: v("--font-size-caption"), fontWeight: 400, color: v("--color-text-muted"), marginTop: 2 }}>
                     seit {fmtTag(h.zuerst)}
                   </div>
                 </td>

@@ -58,6 +58,7 @@ export {
   type StandSeite,
 } from "./stand-format";
 import type { StandSeite } from "./stand-format";
+import { KFW_REPORT_STAND } from "./kfw-format";
 
 export const STAND: Record<string, StandSeite> = {
   // Marktpreise kommen hier live aus der Preis-Pipeline (monatlicher Scrape in
@@ -104,6 +105,11 @@ export const STAND: Record<string, StandSeite> = {
       { was: "Grüngas-Pflicht", iso: GREEN_GAS_CONFIG.geprueftRechtIso, praezision: "tag" },
       { was: "Gaspreis-Bestandteile", iso: GREEN_GAS_CONFIG.geprueftIso, praezision: "tag", wertIso: GREEN_GAS_CONFIG.validFrom },
       { was: "CO₂-Preispfad", iso: CO2_PRICE.geprueftIso, praezision: "tag", wertIso: CO2_PRICE.validFrom },
+      // Eigener Wertstand, weil er ein STICHTAG ist und keine Monatsangabe: Der
+      // Förderreport zählt bis zu einem Tag, und jeder Jahrgang hat seinen
+      // eigenen. Ihn mit den Marktwerten unter ein Datum zu stellen hieße, den
+      // Zeitraum falsch zu behaupten.
+      { was: "Zusagen der Bundesförderung", iso: KFW_REPORT_STAND.geprueftIso, praezision: "tag", wertIso: KFW_REPORT_STAND.wertIso },
     ],
     live: ["Kommunale Förderprogramme (mit Postleitzahl, je Programm eigenes Prüfdatum)"],
   },
@@ -167,6 +173,18 @@ export const STAND: Record<string, StandSeite> = {
   "/pv-simulation": {
     eintraege: [],
     live: ["Wetterdaten", "Standort-Ertrag"],
+  },
+
+  // Die Bestandsseite hat keinen einzigen Stichtagswert: Jede Zahl darauf kommt
+  // aus dem Registerauszug, den die Seite bei jedem Aufruf liest — samt seinem
+  // eigenen Datenstand, der sichtbar an den Zahlen steht. Ein Prüfdatum in
+  // dieser Liste wäre genau das erfundene, das die Regel oben verbietet: Wir
+  // prüfen die Werte nicht, wir holen sie. Folglich auch kein `lastmod`.
+  "/photovoltaik-bestand-deutschland": {
+    eintraege: [],
+    live: [
+      "Anlagenbestand aus dem Marktstammdatenregister (der Datenstand des Auszugs steht an den Zahlen)",
+    ],
   },
 };
 

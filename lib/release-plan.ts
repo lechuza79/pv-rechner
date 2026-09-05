@@ -61,7 +61,17 @@ export const GATTUNG_LABEL: Record<Seitengattung, string> = {
   "atlas-bundesland": "Atlas-Landesseite",
 };
 
-export type SchubStatus = "geplant" | "live" | "zurueckgenommen";
+/**
+ * `ueberholt` (01.09.2026): zurückgenommen, aber die Rücknahme trägt nicht mehr.
+ *
+ * Beide Rücknahmen standen auf „bringt nichts" — kein Suchvolumen, KI-Antwort
+ * über den Treffern, Amtsseiten vorn. Nach der Grundregel
+ * „kein-ertrag-ist-kein-schaden" ist das kein Grund zurückzuhalten, und die
+ * Freigabe hängt seit dem 01.09.2026 ohnehin am Programmstatus statt an einem
+ * Schub. Der Eintrag bleibt stehen, weil die Messung darin richtig ist und
+ * erklärt, was diese Seiten NICHT leisten werden — er sperrt nur nichts mehr.
+ */
+export type SchubStatus = "geplant" | "live" | "zurueckgenommen" | "ueberholt";
 
 /**
  * Die beiden Fragen aus CLAUDE.md, je Schub beantwortet — mit Zahlen, nicht mit
@@ -97,6 +107,35 @@ export type Schub = {
   /** Warum genau diese Orte, in einem Satz. */
   begruendung: string;
   nachweis: SchubNachweis | null;
+  /**
+   * Wozu der Schub da ist. Voreinstellung ist `sichtbarkeit` — der Normalfall.
+   *
+   * `beleg` heißt: Die Seite entsteht NICHT, um gefunden zu werden, sondern weil
+   * jemand von außen auf sie verweist und ins Leere liefe. Bisher zweimal
+   * vorgekommen, beide Male aus dem Kommunen-Outreach: Nidda hat uns sein
+   * Förderprogramm geschickt, Heringen hat eine eigene Meldung mit Verweis auf
+   * unsere Seite veröffentlicht.
+   *
+   * WAS DAS ÄNDERT: Der Mindestabstand zwischen Schüben gilt hier nicht. Er
+   * existiert, damit sich eine Bewegung in der Search Console dem auslösenden
+   * Schub zuordnen lässt — ein Schub, dessen eigener Nachweis „keine Nachfrage"
+   * feststellt, erzeugt keine Bewegung, die man zuordnen müsste. Der
+   * Gattungs-Abstand von 28 Tagen für DENSELBEN Ort bleibt dagegen bestehen: Der
+   * schützt vor zwei eigenen Seiten auf einer Anfrage, und das kann auch einer
+   * Beleg-Seite passieren.
+   *
+   * WARUM DAS KEIN SCHLUPFLOCH IST: `planBefunde` verlangt für einen Beleg-Schub
+   * genau einen Ort und einen Nachweis, der die fehlende Nachfrage ausdrücklich
+   * benennt. Ein „Beleg"-Schub mit dreißig Orten wäre ein Massen-Rollout mit
+   * anderem Etikett — und fällt durch den Test.
+   *
+   * WARUM ÜBERHAUPT: Rückläufer kommen unvorhersehbar. Veröffentlichen drei
+   * Gemeinden in einer Woche, müssten sie sonst über sechs Wochen gestreckt
+   * werden — während ihre Meldungen längst online sind und auf gesperrte Seiten
+   * zeigen. Die Frist würde dann nicht mehr eine Messung schützen, sondern nur
+   * den Ertrag des Outreach verzögern.
+   */
+  zweck?: "sichtbarkeit" | "beleg";
 };
 
 /**
@@ -198,17 +237,30 @@ export const RELEASE_PLAN: Schub[] = [
     gattung: "foerder-stadt",
     datum: "2026-09-02",
     // ZURÜCKGENOMMEN am 19.08.2026, bevor eine Zeile Seite gebaut wurde — genau
-    // dafür gibt es die Vorlauf-Messung. Nach diesen Orten sucht praktisch
-    // niemand: 1 von 14 hat überhaupt ein messbares Suchvolumen (Roth, 10/Monat),
-    // zusammen 10/Monat für vierzehn Seiten. Das Messinstrument ist an bekannten
-    // Fällen gegengeprüft und liefert dort plausible Werte (Köln 70, München 40,
-    // Frankfurt 20, Würzburg 10) — die Null ist also echt und kein Fehlgriff.
+    // dafür gibt es die Vorlauf-Messung. Die Rücknahme bleibt richtig; ihre
+    // ursprüngliche Begründung war es NICHT und wurde am 29.08.2026 ersetzt.
+    //
+    // ÜBERHOLT: „1 von 14 Orten mit messbarem Suchvolumen, zusammen 10/Monat."
+    // Das liest eine Meldeschwelle als Nachfrage — der Dienst meldet unterhalb
+    // von 10 Suchen im Monat GAR NICHTS („null" heißt dort „keine Daten").
+    // Vierzehn Orte mit je bis zu neun Suchen wären zusammen bis zu 126 im
+    // Monat. Auch die Gegenprobe („Köln 70, München 40, also ist die Null echt")
+    // trägt nicht: Sie zeigt nur, dass das Muster bei großen Städten trifft.
+    //
+    // GEMESSEN AM 29.08.2026, und das trägt: Auf ALLEN sechs Stichproben
+    // („photovoltaik förderung <ort>" für Poing, Unterhaching, Gaimersheim,
+    // Lohfelden, Heddesheim, Roth) steht eine KI-Antwort ganz oben, und darunter
+    // belegt die GEMEINDE SELBST die vorderen Plätze — teils drei- bis viermal
+    // mit ihrer eigenen Amtsseite. Gegen die amtliche Seite einer Gemeinde auf
+    // deren eigenem Förderprogramm anzutreten ist aussichtslos, und die
+    // KI-Antwort nimmt den organischen Treffern ohnehin den Klick. Dieselbe
+    // Konstellation wie auf der Kreisebene.
     //
     // Der Wert dieser Programme liegt im RECHNER, wo die Postleitzahl zählt,
     // nicht in eigenen Seiten. Sie wirken dort unverändert weiter; hier entsteht
-    // nur keine Seite. Wer den Schub wieder aufmachen will, braucht eine neue
-    // Messung, die diese widerlegt — nicht ein gutes Gefühl.
-    status: "zurueckgenommen",
+    // nur keine Seite. Wer den Schub wieder aufmachen will, muss den Aufbau der
+    // Ergebnisseite widerlegen — nicht ein Suchvolumen nachreichen.
+    status: "ueberholt",
     orte: [
       "03256036", // Wietzen (Niedersachsen)
       "06433004", // Gernsheim (Hessen)
@@ -235,9 +287,12 @@ export const RELEASE_PLAN: Schub[] = [
     nachweis: {
       gemessenAm: "2026-08-19",
       nachfrage:
-        "Nein. 1 von 14 Orten mit messbarem Suchvolumen (Roth, 10/Monat), zusammen 10/Monat. " +
-        "Gegenprobe an bekannten Fällen im selben Abruf: Köln 70, München 40, Frankfurt 20, " +
-        "Würzburg 10 — das Messmuster trifft also, die Null ist echt.",
+        "Nachfrage nicht messbar — und das ist NICHT der Grund (Korrektur 29.08.2026: der Dienst " +
+        "meldet unterhalb von 10 Suchen im Monat nichts, „null\" heißt dort „keine Daten\"). Der " +
+        "tragende Befund ist der Aufbau der Ergebnisseite, an sechs der vierzehn Orte geprüft: " +
+        "überall eine KI-Antwort an erster Stelle, darunter die Gemeinde selbst mit ihrer " +
+        "Amtsseite, teils drei- bis viermal. Gegen die amtliche Seite einer Gemeinde auf deren " +
+        "eigenem Förderprogramm ist kein Platz zu holen.",
       kannibalisierung:
         "Keine Anfrage, auf der beide Seitenfamilien gleichzeitig erscheinen — bei dieser " +
         "Nachfrage aber auch ohne Aussagekraft.",
@@ -248,10 +303,17 @@ export const RELEASE_PLAN: Schub[] = [
     id: "w2-foerder-dach-archiv",
     gattung: "foerder-stadt",
     datum: "2026-09-16",
-    // Ebenfalls zurückgenommen: 0 von 1 Ort mit messbarem Suchvolumen. Eine
-    // Archivseite ohne Geldversprechen für einen Ort, nach dem niemand sucht,
-    // hat keinen Adressaten.
-    status: "zurueckgenommen",
+    // Zurückgenommen — die Begründung am 29.08.2026 ersetzt, weil die alte auf
+    // einem widerlegten Schluss stand („0 von 1 Ort mit messbarem Suchvolumen",
+    // siehe lib/seo-grundregeln.ts, Regel „leeres-suchvolumen").
+    //
+    // Was trägt, ist der Inhalt selbst: Der Fördertopf ist ausgeschöpft, die
+    // Seite verspricht also kein Geld mehr. Eine Förderseite, deren Betrag nicht
+    // mehr abrufbar ist, beantwortet die Frage nicht, für die jemand käme — das
+    // gilt unabhängig davon, wie viele nach dem Ort suchen. Bleibt der Topf
+    // dauerhaft leer, gehört das Programm ohnehin in den Verlauf statt auf eine
+    // eigene Seite.
+    status: "ueberholt",
     orte: [
       "07143032", // Höhr-Grenzhausen (Rheinland-Pfalz), Topf ausgeschöpft
     ],
@@ -261,7 +323,11 @@ export const RELEASE_PLAN: Schub[] = [
       "werden nicht veröffentlicht.",
     nachweis: {
       gemessenAm: "2026-08-19",
-      nachfrage: "Nein. 0 von 1 Ort mit messbarem Suchvolumen.",
+      nachfrage:
+        "Nicht messbar, und das ist NICHT der Grund (Korrektur 29.08.2026 — ein leeres " +
+        "Suchvolumen heißt „unter der Meldeschwelle von 10 Suchen“, nicht „keine Nachfrage“). " +
+        "Tragend ist der Inhalt: Der Fördertopf des einzigen Orts ist ausgeschöpft, die Seite " +
+        "verspricht also kein Geld mehr und beantwortet die Frage nicht, für die jemand käme.",
       kannibalisierung: "Keine Anfrage, auf der beide Seitenfamilien gleichzeitig erscheinen.",
       beleg: "docs/seo/schub-w2-foerder-dach-archiv-2026-08-19.md",
     },
@@ -271,6 +337,7 @@ export const RELEASE_PLAN: Schub[] = [
     gattung: "foerder-stadt",
     datum: "2026-08-26",
     status: "live",
+    zweck: "beleg",
     orte: ["06440016"], // Nidda (Hessen, Wetteraukreis)
     begruendung:
       "Ein Schub aus EINEM Ort, und der Grund ist nicht die Nachfrage, sondern die Herkunft: " +
@@ -298,6 +365,48 @@ export const RELEASE_PLAN: Schub[] = [
         "Keine. Die Atlas-Gemeindeebene ist nicht freigeschaltet (RELEASED.gemeinde = false in " +
         "lib/atlas-index.ts), es gibt also keine zweite eigene Seite mit dem Ortsnamen Nidda.",
       beleg: "docs/seo/schub-w1-foerder-dach-2026-08-19.md",
+    },
+  },
+  {
+    id: "w5-atlas-outreach-beleg",
+    gattung: "atlas-gemeinde",
+    datum: "2026-08-29",
+    status: "live",
+    zweck: "beleg",
+    orte: ["06632009"], // Heringen (Werra), Hessen, Landkreis Hersfeld-Rotenburg
+    begruendung:
+      "Ein Schub aus EINEM Ort, aus demselben Grund wie w4 bei den Förderseiten: nicht die " +
+      "Nachfrage, sondern die Herkunft. Die Stadt Heringen (Werra) hat am 28.08.2026 eine " +
+      "eigene Meldung veröffentlicht („Heringen: Platz 1 bei Balkonkraftwerken\", 778 Anlagen, " +
+      "73 % mehr Solarleistung je Einwohner als der hessische Schnitt) und verweist darin auf " +
+      "unsere Gemeindeseite als „laufend aktualisierte Übersicht\". Das ist der erste " +
+      "redaktionelle Verweis, den dieses Projekt überhaupt hat — die übrigen acht sind " +
+      "siebenmal dieselbe Anzeige eines Linkverkäufers plus zwei Zufälle.\n\n" +
+      "DAS PROBLEM WAR NICHT DAS `noindex`, SONDERN DAS `nofollow`. Die Seite nicht in den " +
+      "Index zu stellen, war nach der Messung vom 29.08.2026 vertretbar; die Empfehlung einer " +
+      "Gemeinde aber ins Leere laufen zu lassen, macht genau den Ertrag zunichte, den der " +
+      "Outreach erzeugt — 100 Briefe verschickt, weitere geplant. Eine Seite zu sperren, auf " +
+      "die eine Verwaltung öffentlich verweist, ist der einzige Zustand, der sich nicht " +
+      "begründen lässt.\n\n" +
+      "KEIN PRÄZEDENZFALL FÜR DIE EBENE. `RELEASED.gemeinde` bleibt `false`, und die Messung " +
+      "dort gilt unverändert: Beim Wettbewerber ema-energiewelt.de holen 5.230 indexierte " +
+      "Ortsseiten neun Platzierungen, keine davon auf Seite 1. Freigegeben wird hier ein Ort, " +
+      "der uns verlinkt hat, nicht eine Gattung.",
+    nachweis: {
+      gemessenAm: "2026-08-29",
+      nachfrage:
+        "Nein, und das ist hier kein Ausschlussgrund — dieselbe Begründung wie bei w4. Die " +
+        "Messung vom 29.08.2026 über zwölf Orte aller Größenklassen ergab unterhalb der " +
+        "Mittelstadt kein messbares Suchvolumen; für Heringen (6.669 Einwohner) ist keins zu " +
+        "erwarten. Der Schub geht trotzdem live, weil sein Zweck der Outreach-Beleg ist. Eine " +
+        "Nachfrage zu behaupten, die es nicht gibt, wäre die Fehlerklasse, gegen die dieser " +
+        "Nachweis gebaut wurde.",
+      kannibalisierung:
+        "Keine. Für Heringen (Werra) gibt es keine Förder-Stadtseite — der Ort steht nicht in " +
+        "ATLAS_CITIES, es ist also keine zweite eigene Seite mit diesem Ortsnamen im Index. " +
+        "Käme später ein Förderprogramm dazu, greift der Mindestabstand von 28 Tagen zwischen " +
+        "den Gattungen automatisch.",
+      beleg: "docs/seo/befund-2026-08-29-ema-energiewelt-ortsseiten.md",
     },
   },
   {
@@ -348,6 +457,26 @@ export function releaseFreigegeben(gattung: Seitengattung, ags: string, heute: D
   const s = schubFuer(gattung, ags);
   if (!s || s.status !== "live") return false;
   return new Date(s.datum).getTime() <= heute.getTime();
+}
+
+/**
+ * Alle Orte, die in dieser Gattung öffentlich sein dürfen — Altbestand plus die
+ * Orte aus Schüben, die wirklich live sind. Dieselbe Entscheidung wie
+ * `releaseFreigegeben`, nur in die andere Richtung gefragt: nicht „darf dieser
+ * Ort?", sondern „welche dürfen?".
+ *
+ * Wozu: Die Sitemap muss die freigegebenen Adressen aufzählen können. Sie dafür
+ * über alle 11.000 Gemeinden laufen zu lassen und je Ort zu fragen, wäre teuer
+ * und würde bei jeder Erweiterung teurer.
+ */
+export function freigegebeneOrte(gattung: Seitengattung, heute: Date = new Date()): string[] {
+  const raus = new Set(ALTBESTAND[gattung].map(ortSchluessel));
+  for (const s of RELEASE_PLAN) {
+    if (s.gattung !== gattung || s.status !== "live") continue;
+    if (new Date(s.datum).getTime() > heute.getTime()) continue;
+    for (const o of s.orte) raus.add(ortSchluessel(o));
+  }
+  return [...raus];
 }
 
 export type PlanBefund = { schub: string; regel: string; text: string };
@@ -446,9 +575,14 @@ export function planBefunde(plan: Schub[] = RELEASE_PLAN): PlanBefund[] {
     }
   }
 
-  // Abstand zwischen Schüben überhaupt.
-  const aktiv = plan.filter((s) => s.status !== "zurueckgenommen" && s.orte.length > 0)
-    .slice().sort((x, y) => x.datum.localeCompare(y.datum));
+  // Abstand zwischen Schüben überhaupt. Beleg-Schübe zählen hier NICHT mit — auf
+  // keiner der beiden Seiten: Sie erzeugen keine Sichtbarkeits-Bewegung, die
+  // einem Schub zuzuordnen wäre (Begründung am Feld `zweck`). Sie müssen dafür
+  // die Auflagen unten erfüllen.
+  const aktiv = plan
+    .filter((s) => s.status !== "zurueckgenommen" && s.orte.length > 0 && s.zweck !== "beleg")
+    .slice()
+    .sort((x, y) => x.datum.localeCompare(y.datum));
   for (let i = 1; i < aktiv.length; i++) {
     const d = tage(aktiv[i - 1].datum, aktiv[i].datum);
     if (d < MIN_ABSTAND_SCHUB_TAGE) {
@@ -458,6 +592,38 @@ export function planBefunde(plan: Schub[] = RELEASE_PLAN): PlanBefund[] {
         text:
           `Folgt ${aktiv[i - 1].id} nach ${Math.round(d)} Tagen; nötig sind ${MIN_ABSTAND_SCHUB_TAGE}. ` +
           "Sonst lässt sich eine Bewegung keinem der beiden Schübe mehr zuordnen.",
+      });
+    }
+  }
+
+  // Auflagen für Beleg-Schübe. Ohne sie wäre `zweck: "beleg"` ein Etikett, mit
+  // dem sich jeder Massen-Rollout an der Abstandsregel vorbeischreiben ließe.
+  for (const s of plan) {
+    if (s.zweck !== "beleg" || s.status === "zurueckgenommen") continue;
+    if (s.orte.length !== 1) {
+      b.push({
+        schub: s.id,
+        regel: "beleg-schub-zu-gross",
+        text:
+          `Ein Beleg-Schub trägt genau einen Ort, dieser hat ${s.orte.length}. Ein Beleg ist ` +
+          "immer der eines einzelnen Absenders; mehrere Orte auf einmal sind ein Rollout und " +
+          "gehören durch die normale Staffelung.",
+      });
+    }
+    if (!s.nachweis) {
+      b.push({
+        schub: s.id,
+        regel: "beleg-schub-ohne-nachweis",
+        text: "Auch ein Beleg-Schub braucht den Nachweis — er ersetzt die Messung nicht, er wertet sie anders.",
+      });
+    } else if (!/\bnein\b/i.test(s.nachweis.nachfrage)) {
+      b.push({
+        schub: s.id,
+        regel: "beleg-schub-ohne-nachfrage-befund",
+        text:
+          "Der Nachweis eines Beleg-Schubs muss ausdrücklich feststellen, dass KEINE Nachfrage " +
+          "besteht — das ist die Bedingung, unter der die Abstandsregel entfällt. Besteht " +
+          "Nachfrage, ist es ein Sichtbarkeits-Schub und wird gestaffelt.",
       });
     }
   }

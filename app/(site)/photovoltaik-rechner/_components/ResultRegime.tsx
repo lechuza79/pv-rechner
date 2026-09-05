@@ -22,6 +22,7 @@ import {
 } from "../../../../lib/eeg-reform-config";
 import { MARKTWERT_SOLAR_HISTORIE, DIREKTVERMARKTUNG } from "../../../../lib/marktwert-config";
 import type { EinspeiseRegime, RegimeJahr } from "../../../../lib/einspeise-regime";
+import { EINSPEISESATZ_MAX_CT } from "../../../../lib/constants";
 
 const letzterMarktwert = MARKTWERT_SOLAR_HISTORIE[MARKTWERT_SOLAR_HISTORIE.length - 1];
 
@@ -75,7 +76,7 @@ function Schalter({ aktiv, onClick, children }: { aktiv: boolean; onClick: () =>
         background: aktiv ? v("--color-bg-accent") : "transparent",
         color: aktiv ? v("--color-accent-dark") : v("--color-text-secondary"),
         fontWeight: aktiv ? 700 : 500,
-        fontSize: 13,
+        fontSize: v("--font-size-small"),
         cursor: "pointer",
         lineHeight: 1.3,
       }}
@@ -97,10 +98,10 @@ export default function ResultRegime({
 
   return (
     <div>
-      <div style={{ fontSize: 13, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 4 }}>
+      <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 4 }}>
         Nach welchen Konditionen soll gerechnet werden?
       </div>
-      <div style={{ fontSize: 12, color: v("--color-text-muted"), lineHeight: 1.6, marginBottom: 10 }}>
+      <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6, marginBottom: 10 }}>
         Anlagen, die bis Ende 2026 ans Netz gehen, behalten ihre Vergütung 20 Jahre lang. Für
         Neuanlagen ab 2027 soll sie entfallen.
       </div>
@@ -108,13 +109,13 @@ export default function ResultRegime({
       <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
         <Schalter aktiv={!reform && !eigenerSatz} onClick={() => { setRegime("heute"); setEigenerSatz(false); }}>
           Heute
-          <div style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>
+          <div style={{ fontSize: v("--font-size-caption"), fontWeight: 400, opacity: 0.8 }}>
             {heuteSatzCt.toLocaleString("de-DE", { minimumFractionDigits: 2 })} ct, 20 J.
           </div>
         </Schalter>
         <Schalter aktiv={reform} onClick={() => setRegime("reform2027")}>
           Ab 2027
-          <div style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>Entwurf</div>
+          <div style={{ fontSize: v("--font-size-caption"), fontWeight: 400, opacity: 0.8 }}>Entwurf</div>
         </Schalter>
         {/* Rückfallebene für alles, was der Rechner nicht kennt: eine
             Bestandsanlage mit ihrem alten Satz, ein Bescheid mit einer
@@ -122,7 +123,7 @@ export default function ResultRegime({
             fester Satz über 20 Jahre. */}
         <Schalter aktiv={!reform && eigenerSatz} onClick={() => { setRegime("heute"); setEigenerSatz(true); }}>
           Eigener Satz
-          <div style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>z. B. Bestandsanlage</div>
+          <div style={{ fontSize: v("--font-size-caption"), fontWeight: 400, opacity: 0.8 }}>z. B. Bestandsanlage</div>
         </Schalter>
       </div>
 
@@ -132,11 +133,11 @@ export default function ResultRegime({
       {!reform && (
         <div style={{
           display: "flex", justifyContent: "space-between", alignItems: "center",
-          marginBottom: 12, fontSize: 13, color: v("--color-text-secondary"),
+          marginBottom: 12, fontSize: v("--font-size-small"), color: v("--color-text-secondary"),
         }}>
           <span>Vergütungssatz</span>
           {eigenerSatz ? (
-            <InlineEdit value={heuteSatzCt} onCommit={setHeuteSatzCt} unit=" ct" step={0.01} min={0} max={60} width={56} />
+            <InlineEdit value={heuteSatzCt} onCommit={setHeuteSatzCt} unit=" ct" step={0.01} min={0} max={EINSPEISESATZ_MAX_CT} width={56} />
           ) : (
             <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-text-primary") }}>
               {heuteSatzCt.toLocaleString("de-DE", { minimumFractionDigits: 2 })} ct/kWh
@@ -148,7 +149,7 @@ export default function ResultRegime({
       {reform && (
         <>
           <div style={{
-            fontSize: 12, color: v("--color-text-secondary"), lineHeight: 1.7,
+            fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.7,
             borderTop: `1px dashed ${v("--color-border")}`, paddingTop: 10,
           }}>
             {uebergang ? (
@@ -185,7 +186,7 @@ export default function ResultRegime({
 
           <label style={{
             display: "flex", alignItems: "flex-start", gap: 8, marginTop: 12, cursor: "pointer",
-            fontSize: 13, color: v("--color-text-primary"), lineHeight: 1.5,
+            fontSize: v("--font-size-body"), color: v("--color-text-primary"), lineHeight: 1.5,
           }}>
             <input
               type="checkbox"
@@ -195,7 +196,7 @@ export default function ResultRegime({
             />
             <span>
               <strong style={{ fontWeight: 700 }}>Börsenerlös mitrechnen</strong>
-              <span style={{ display: "block", fontSize: 12, color: v("--color-text-muted"), marginTop: 2 }}>
+              <span style={{ display: "block", fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginTop: 2 }}>
                 Aus: Nach der Übergangszahlung bringt die Einspeisung null. An: Der Überschuss
                 wird zum Marktwert bewertet.
               </span>
@@ -203,7 +204,7 @@ export default function ResultRegime({
                   Zahlen weit oberhalb, und die Amortisation in ganzen Jahren
                   springt dadurch meist nicht — der Haken wirkte wirkungslos. */}
               {marktWirkungEuro !== undefined && Math.round(marktWirkungEuro) > 0 && (
-                <span style={{ display: "block", fontSize: 12, color: v("--color-text-secondary"), marginTop: 4 }}>
+                <span style={{ display: "block", fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginTop: 4 }}>
                   Der Unterschied zwischen an und aus beträgt über 25 Jahre{" "}
                   <strong style={{ fontFamily: v("--font-mono"), color: v("--color-text-primary") }}>
                     {Math.round(marktWirkungEuro).toLocaleString("de-DE")} €
@@ -216,7 +217,7 @@ export default function ResultRegime({
                   verlangt — dann vermarktet niemand. Ohne diesen Satz sieht der
                   Haken aus, als sei er kaputt. */}
               {marktWirkungEuro !== undefined && Math.round(marktWirkungEuro) <= 0 && (
-                <span style={{ display: "block", fontSize: 12, color: v("--color-text-secondary"), marginTop: 4 }}>
+                <span style={{ display: "block", fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginTop: 4 }}>
                   Bei dieser Anlagengröße bringt der Börsenverkauf über die Laufzeit nicht mehr
                   ein, als die Grundgebühr des Dienstleisters kostet — deshalb ändert der Haken
                   hier nichts.
@@ -228,7 +229,7 @@ export default function ResultRegime({
           {marktErloes && (
             <div style={{
               marginTop: 10, paddingTop: 10, borderTop: `1px dashed ${v("--color-border")}`,
-              fontSize: 12, color: v("--color-text-muted"), lineHeight: 1.8,
+              fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.8,
             }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
                 <span>
@@ -282,7 +283,7 @@ export default function ResultRegime({
                   </span>
                 </div>
               )}
-              <div style={{ marginTop: 8, fontSize: 11, lineHeight: 1.6 }}>
+              <div style={{ marginTop: 8, fontSize: v("--font-size-caption"), lineHeight: 1.6 }}>
                 Solarstrom bringt am wenigsten, wenn viel davon anfällt — deshalb zählt der
                 Marktwert Solar (
                 {/* Zwei Nachkommastellen wie überall sonst bei Sätzen in ct/kWh. Der
@@ -306,7 +307,7 @@ export default function ResultRegime({
 
       <div style={{
         marginTop: 12, paddingTop: 10, borderTop: `1px solid ${v("--color-border")}`,
-        fontSize: 11, color: v("--color-text-muted"), lineHeight: 1.6,
+        fontSize: v("--font-size-caption"), color: v("--color-text-muted"), lineHeight: 1.6,
       }}>
         {reform ? (
           <>

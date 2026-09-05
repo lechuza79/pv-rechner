@@ -117,7 +117,8 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 - [x] Startseite: 4. Widget-Card "Wärmepumpe rechnen"
 - [x] Sitemap + SEO-Metadata für `/waermepumpe`
 - [ ] PV-Synergie als Toggle im Ergebnis (aktuell nur Link "PV dazu rechnen" zum PV-Rechner)
-- [ ] Share-URL + Dashboard-Save für WP-Berechnungen
+- [x] Share-URL für WP-Berechnungen (01.09.2026) — Zustand in der Adresse, Link auf Klick gebaut, Förderstand inbegriffen
+- [ ] Dashboard-Save für WP-Berechnungen (die zweite Hälfte des Punkts steht noch aus)
 
 **WP 8: Automatische Marktpreise ✅ (done)**
 - [x] Supabase-Tabelle `market_prices` (Preishistorie, RLS)

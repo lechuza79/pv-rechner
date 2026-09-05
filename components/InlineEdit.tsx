@@ -69,7 +69,7 @@ export default function InlineEdit({ value, onCommit, unit, step: _step = 1, min
         style={{
           // fontSize must stay >= 16px: iOS Safari auto-zooms into any focused
           // input below 16px and never zooms back out (display value can be smaller).
-          width, textAlign: "right", fontSize: 16, fontWeight: 700,
+          width, textAlign: "right", fontSize: v("--font-size-lead"), fontWeight: 700,
           fontFamily: v('--font-mono'), color: v('--color-accent'),
           background: v('--color-accent-dim'), border: `1px solid ${v('--color-accent')}`,
           borderRadius: v('--radius-sm'), padding: "3px 6px", outline: "none",

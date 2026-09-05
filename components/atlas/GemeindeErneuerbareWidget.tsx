@@ -119,18 +119,18 @@ export default function GemeindeErneuerbareWidget({
 
 const S: Record<string, React.CSSProperties> = {
   strong: { color: v("--color-text-primary"), fontWeight: 600 },
-  empty: { fontSize: 13, color: v("--color-text-muted"), textAlign: "center" },
+  empty: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), textAlign: "center" },
   split: { display: "flex", flexWrap: "wrap", gap: 20, alignItems: "center", justifyContent: "center" },
   center: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" },
-  centerValue: { fontFamily: v("--font-mono"), fontSize: 30, fontWeight: 700, color: v("--color-text-primary"), lineHeight: 1 },
-  centerUnit: { fontSize: 13, color: v("--color-text-secondary"), marginTop: 4, letterSpacing: 0.5 },
+  centerValue: { fontFamily: v("--font-mono"), fontSize: v("--font-size-display-md"), fontWeight: 700, color: v("--color-text-primary"), lineHeight: 1 },
+  centerUnit: { fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginTop: 4, letterSpacing: 0.5 },
   // Zwei Spalten: Bei vier Technologien wird aus einer hohen Liste ein 2×2-Block
   // — im heruntergeladenen Bild sparte die einspaltige Fassung nichts und machte
   // die Karte um vier Zeilen länger als der Ring daneben hoch ist.
   legend: { display: "grid", gridTemplateColumns: "repeat(2, auto)", columnGap: 20, rowGap: 8 },
-  legItem: { display: "flex", alignItems: "center", gap: 8, fontSize: 13 },
+  legItem: { display: "flex", alignItems: "center", gap: 8, fontSize: v("--font-size-small") },
   dot: { width: 10, height: 10, borderRadius: 3, flex: "0 0 auto" },
   legLabel: { color: v("--color-text-primary") },
-  legVal: { fontFamily: v("--font-mono"), fontSize: 12, color: v("--color-text-secondary") },
-  note: { fontSize: 12, color: v("--color-text-secondary"), lineHeight: 1.5, margin: "16px 0 0" },
+  legVal: { fontFamily: v("--font-mono"), fontSize: v("--font-size-small"), color: v("--color-text-secondary") },
+  note: { fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.5, margin: "16px 0 0" },
 };

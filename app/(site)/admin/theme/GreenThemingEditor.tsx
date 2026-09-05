@@ -122,10 +122,10 @@ export default function GreenThemingEditor({ initial }: { initial: ThemeOverride
 
   return (
     <div style={{ marginBottom: 28 }}>
-      <h2 style={{ fontSize: 11, fontWeight: 700, color: v("--color-text-secondary"), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+      <h2 style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v("--color-text-secondary"), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
         Signalfarben-Theming — pro Helligkeitsstufe
       </h2>
-      <p style={{ fontSize: 13, color: v("--color-text-muted"), marginBottom: 14, lineHeight: 1.5 }}>
+      <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginBottom: 14, lineHeight: 1.5 }}>
         Stufe wählen, dann jede Signalfarbe (Positiv-Grün, Negativ-Rot, Energie-Grün) für diese Stufe
         einzeln anpassen. Die Vorschau zeigt die Töne im echten Kontext dieser Stufe. Speichern wirkt
         sofort auf der ganzen Seite (Vorschaubild, Mail und Embeds ziehen beim nächsten Aufbau nach).
@@ -148,7 +148,7 @@ export default function GreenThemingEditor({ initial }: { initial: ThemeOverride
               style={{
                 display: "flex", alignItems: "center", gap: 7,
                 padding: "7px 11px", borderRadius: v("--radius-sm"), cursor: "pointer",
-                fontSize: 12, fontWeight: active ? 700 : 500, fontFamily: v("--font-text"),
+                fontSize: v("--font-size-small"), fontWeight: active ? 700 : 500, fontFamily: v("--font-text"),
                 background: active ? v("--color-accent") : v("--color-bg-muted"),
                 color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
                 border: `1px solid ${active ? v("--color-accent") : v("--color-border")}`,
@@ -157,7 +157,7 @@ export default function GreenThemingEditor({ initial }: { initial: ThemeOverride
               <span style={{ width: 12, height: 12, borderRadius: 3, background: stageDefaults(stageIndex(s.id))["--color-bg"], border: `1px solid ${v("--color-border-muted")}`, display: "inline-block" }} />
               {s.label}
               {count > 0 && (
-                <span style={{ fontFamily: v("--font-mono"), fontSize: 10, background: active ? "rgba(255,255,255,0.25)" : v("--color-accent-dim"), color: active ? v("--color-text-on-accent") : v("--color-accent"), borderRadius: 999, padding: "1px 6px" }}>
+                <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-micro"), background: active ? "rgba(255,255,255,0.25)" : v("--color-accent-dim"), color: active ? v("--color-text-on-accent") : v("--color-accent"), borderRadius: 999, padding: "1px 6px" }}>
                   {count}
                 </span>
               )}
@@ -178,19 +178,19 @@ export default function GreenThemingEditor({ initial }: { initial: ThemeOverride
           transition: "background 0.2s ease",
         }}
       >
-        <div style={{ fontSize: 10, fontFamily: "var(--font-mono)", color: "var(--color-text-faint)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+        <div style={{ fontSize: v("--font-size-micro"), fontFamily: "var(--font-mono)", color: "var(--color-text-faint)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
           Vorschau — {stageMeta.label} ({stage})
         </div>
 
         {/* Positiv-Grün in context */}
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "stretch" }}>
           <div style={{ flex: "1 1 130px", background: "var(--color-bg-muted)", borderRadius: 12, padding: "12px 14px", border: `1px solid var(--color-border)` }}>
-            <div style={{ fontSize: 10, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>Gewinn 25 J.</div>
-            <div style={{ fontSize: 24, fontWeight: 800, fontFamily: "var(--font-mono)", color: "var(--color-positive)", marginTop: 4 }}>+18.450<span style={{ fontSize: 13 }}> €</span></div>
+            <div style={{ fontSize: v("--font-size-micro"), color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>Gewinn 25 J.</div>
+            <div style={{ fontSize: v("--font-size-display-sm"), fontWeight: 800, fontFamily: "var(--font-mono)", color: "var(--color-positive)", marginTop: 4 }}>+18.450<span style={{ fontSize: v("--font-size-display-sm") }}> €</span></div>
           </div>
           <div style={{ flex: "1 1 130px", background: "var(--color-bg-muted)", borderRadius: 12, padding: "12px 14px", border: `1px solid var(--color-border)` }}>
-            <div style={{ fontSize: 10, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>⌀ Ersparnis</div>
-            <div style={{ fontSize: 24, fontWeight: 800, fontFamily: "var(--font-mono)", color: "var(--color-positive)", marginTop: 4 }}>1.240<span style={{ fontSize: 13 }}> €/J</span></div>
+            <div style={{ fontSize: v("--font-size-micro"), color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>⌀ Ersparnis</div>
+            <div style={{ fontSize: v("--font-size-display-sm"), fontWeight: 800, fontFamily: "var(--font-mono)", color: "var(--color-positive)", marginTop: 4 }}>1.240<span style={{ fontSize: v("--font-size-display-sm") }}> €/J</span></div>
           </div>
           {/* Mini amortisation curve: positive line + chart-positive-bg fill */}
           <div style={{ flex: "2 1 200px", background: "var(--color-bg)", borderRadius: 12, border: `1px solid var(--color-border)`, padding: 8 }}>
@@ -204,7 +204,7 @@ export default function GreenThemingEditor({ initial }: { initial: ThemeOverride
           {/* Highlight / live dot */}
           <div style={{ flex: "0 0 auto", display: "flex", alignItems: "center", gap: 8, padding: "0 6px" }}>
             <span style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--color-highlight)", display: "inline-block" }} />
-            <span style={{ fontSize: 11, color: "var(--color-text-muted)" }}>Live</span>
+            <span style={{ fontSize: v("--font-size-caption"), color: "var(--color-text-muted)" }}>Live</span>
           </div>
         </div>
 
@@ -224,7 +224,7 @@ export default function GreenThemingEditor({ initial }: { initial: ThemeOverride
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 12px", marginTop: 8 }}>
             {energyTokens.filter((t) => t.token !== "--color-energy-cat-renewable").map((t) => (
-              <span key={t.token} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 10, color: "var(--color-text-muted)" }}>
+              <span key={t.token} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: v("--font-size-micro"), color: "var(--color-text-muted)" }}>
                 <span style={{ width: 9, height: 9, borderRadius: 2, background: `var(${t.token})`, display: "inline-block" }} />
                 {t.label}
               </span>
@@ -238,7 +238,7 @@ export default function GreenThemingEditor({ initial }: { initial: ThemeOverride
             Kontrast auf jedem Hintergrund prüfen kann. Rot ist hier nicht
             editierbar (kein Grün-Token), aber der Ton folgt der Stufe. */}
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-          <span style={{ fontSize: 10, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>
+          <span style={{ fontSize: v("--font-size-micro"), color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>
             Tendenz-Badges
           </span>
           <TendTag dev={0.18} />
@@ -259,7 +259,7 @@ export default function GreenThemingEditor({ initial }: { initial: ThemeOverride
           onClick={save}
           disabled={!dirty || status === "saving"}
           style={{
-            padding: "12px 28px", borderRadius: v("--radius-md"), fontSize: 15, fontWeight: 700,
+            padding: "12px 28px", borderRadius: v("--radius-md"), fontSize: v("--font-size-body"), fontWeight: 700,
             background: dirty ? v("--color-accent") : v("--color-bg-muted"),
             color: dirty ? v("--color-text-on-accent") : v("--color-text-faint"),
             border: "none", cursor: dirty && status !== "saving" ? "pointer" : "default",
@@ -269,20 +269,20 @@ export default function GreenThemingEditor({ initial }: { initial: ThemeOverride
           {status === "saving" ? "Speichern…" : dirty ? "Speichern" : "Gespeichert ✓"}
         </button>
         {dirty && (
-          <button onClick={discard} style={{ padding: "10px 16px", borderRadius: v("--radius-md"), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v("--color-border")}`, color: v("--color-text-secondary"), cursor: "pointer" }}>
+          <button onClick={discard} style={{ padding: "10px 16px", borderRadius: v("--radius-md"), fontSize: v("--font-size-small"), fontWeight: 600, background: "transparent", border: `1px solid ${v("--color-border")}`, color: v("--color-text-secondary"), cursor: "pointer" }}>
             Verwerfen
           </button>
         )}
         {Object.keys(draft[stage] ?? {}).length > 0 && (
-          <button onClick={resetStage} style={{ padding: "10px 16px", borderRadius: v("--radius-md"), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v("--color-border")}`, color: v("--color-text-muted"), cursor: "pointer" }}>
+          <button onClick={resetStage} style={{ padding: "10px 16px", borderRadius: v("--radius-md"), fontSize: v("--font-size-small"), fontWeight: 600, background: "transparent", border: `1px solid ${v("--color-border")}`, color: v("--color-text-muted"), cursor: "pointer" }}>
             Diese Stufe zurücksetzen
           </button>
         )}
-        <span style={{ fontSize: 12, color: v("--color-text-faint"), fontFamily: v("--font-mono") }}>
+        <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-faint"), fontFamily: v("--font-mono") }}>
           {overrideCount === 0 ? "keine Overrides" : `${overrideCount} Override${overrideCount === 1 ? "" : "s"} gesamt`}
         </span>
-        {status === "ok" && <span style={{ fontSize: 13, color: v("--color-positive"), fontWeight: 600 }}>Gespeichert ✓</span>}
-        {status === "error" && <span style={{ fontSize: 13, color: v("--color-negative"), fontWeight: 600 }}>{errorMsg}</span>}
+        {status === "ok" && <span style={{ fontSize: v("--font-size-small"), color: v("--color-positive"), fontWeight: 600 }}>Gespeichert ✓</span>}
+        {status === "error" && <span style={{ fontSize: v("--font-size-small"), color: v("--color-negative"), fontWeight: 600 }}>{errorMsg}</span>}
       </div>
     </div>
   );
@@ -301,7 +301,7 @@ function TokenGroup({
 }) {
   return (
     <div style={{ marginBottom: 16 }}>
-      <div style={{ fontSize: 10, fontWeight: 700, color: v("--color-text-faint"), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>{title}</div>
+      <div style={{ fontSize: v("--font-size-micro"), fontWeight: 700, color: v("--color-text-faint"), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>{title}</div>
       <div style={{ display: "grid", gap: 6 }}>
         {tokens.map((t) => {
           const value = valueFor(draft, stage, t.token);
@@ -311,8 +311,8 @@ function TokenGroup({
             <div key={t.token} style={{ display: "flex", alignItems: "center", gap: 10, background: v("--color-bg-muted"), borderRadius: v("--radius-sm"), padding: "8px 10px", border: `1px solid ${overridden ? v("--color-accent") : v("--color-border")}` }}>
               <span style={{ width: 26, height: 26, borderRadius: 6, background: value, border: `1px solid ${v("--color-border")}`, flexShrink: 0 }} />
               <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: v("--color-text-primary") }}>{t.label}{t.alpha && <span style={{ fontSize: 10, color: v("--color-text-faint"), marginLeft: 6 }}>rgba</span>}</div>
-                <div style={{ fontSize: 10, fontFamily: v("--font-mono"), color: v("--color-text-faint"), overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.token}</div>
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v("--color-text-primary") }}>{t.label}{t.alpha && <span style={{ fontSize: v("--font-size-micro"), color: v("--color-text-faint"), marginLeft: 6 }}>rgba</span>}</div>
+                <div style={{ fontSize: v("--font-size-micro"), fontFamily: v("--font-mono"), color: v("--color-text-faint"), overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.token}</div>
               </div>
               {solid && (
                 <input
@@ -328,14 +328,14 @@ function TokenGroup({
                 value={value}
                 onChange={(e) => onSet(t.token, e.target.value)}
                 spellCheck={false}
-                style={{ width: t.alpha ? 150 : 96, fontSize: 12, fontFamily: v("--font-mono"), padding: "6px 8px", border: `1px solid ${v("--color-border")}`, borderRadius: 6, background: v("--color-bg"), color: v("--color-text-primary"), flexShrink: 0 }}
+                style={{ width: t.alpha ? 150 : 96, fontSize: v("--font-size-small"), fontFamily: v("--font-mono"), padding: "6px 8px", border: `1px solid ${v("--color-border")}`, borderRadius: 6, background: v("--color-bg"), color: v("--color-text-primary"), flexShrink: 0 }}
                 aria-label={`${t.label} Wert`}
               />
               <button
                 onClick={() => onReset(t.token)}
                 disabled={!overridden}
                 title="Auf Design-System-Standard zurücksetzen"
-                style={{ width: 30, height: 30, borderRadius: 6, border: `1px solid ${v("--color-border")}`, background: "transparent", color: overridden ? v("--color-text-secondary") : v("--color-text-faint"), cursor: overridden ? "pointer" : "default", fontSize: 14, flexShrink: 0, opacity: overridden ? 1 : 0.4 }}
+                style={{ width: 30, height: 30, borderRadius: 6, border: `1px solid ${v("--color-border")}`, background: "transparent", color: overridden ? v("--color-text-secondary") : v("--color-text-faint"), cursor: overridden ? "pointer" : "default", fontSize: v("--font-size-body"), flexShrink: 0, opacity: overridden ? 1 : 0.4 }}
               >
                 ↺
               </button>

@@ -41,6 +41,7 @@ import {
   adresseAus,
   PAUSE_MS,
   MAX_JE_LAUF,
+  zustellprobeAdressen,
 } from "../lib/outreach-mail";
 import { versandfenster } from "../lib/schulferien";
 import { SCHUEBE, AKTUELLER_SCHUB } from "../lib/kommunen-testballon";
@@ -143,6 +144,28 @@ function bremsen(b: Brief, heute: string): string[] {
   // die einzige, die bis eben nur an einer Stelle stand.
   const postfach = postfachBefund(b.empfaenger, b.name, b.verwaltung_domain);
   if (!postfach.ok) gruende.push(postfach.grund);
+  // Verlinkt der Brief auf eine Seite, die für Suchmaschinen gesperrt BLEIBT?
+  //
+  // Der Versand schaltet die Ortsseite normalerweise frei
+  // (lib/atlas-outreach-freigabe.ts). Orte mit eigener Förderseite sind davon
+  // ausgenommen — dort stünden sonst zwei eigene Seiten auf denselben Anfragen.
+  // Der Brief zeigt aber trotzdem dorthin. Das ist derselbe Widerspruch, der am
+  // 29.08.2026 aufgefallen ist, nur andersherum: eine Seite anbieten und
+  // gleichzeitig sperren.
+  //
+  // HIER STAND EINE BREMSE, DEREN VORAUSSETZUNG ES NICHT MEHR GIBT.
+  //
+  // Sie meldete: „Dieser Ort hat eine eigene Förderseite, seine Atlas-Ortsseite
+  // bleibt deshalb gesperrt." Diese Ausnahme wurde am 29.08.2026 abgeschafft
+  // (Begründung in lib/atlas-outreach-freigabe.ts: Googles Site-Diversity-Regel
+  // schließt das befürchtete Risiko aus, und die Ausnahme kostete eine zweite
+  // Datenquelle im Seitenaufbau). Die Ortsseite geht seitdem mit dem Versand
+  // live, ganz gleich ob der Ort eine Förderseite hat.
+  //
+  // Die Bremse beschrieb also einen Zustand, den es seit fünf Tagen nicht mehr
+  // gibt — und hielt am 03.09.2026 Düsseldorf und Ennepetal zurück, die größte
+  // Stadt des NRW-Schubs darunter. Wer eine Regel abschafft, sucht die Stellen,
+  // die sie noch behaupten.
   return gruende;
 }
 
@@ -345,6 +368,8 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
   }
   if (heuteSchon) log(`Heute schon ${heuteSchon} versendet — es bleiben ${rest}.`);
   const zuSenden = p.paket.slice(0, Math.min(limit, rest));
+  // Der zuletzt verschickte Brief — Vorlage für die Zustellungsprobe am Ende.
+  let letzterBrief: (typeof p.paket)[number] | null = null;
   log(`${zuSenden.length} Mails, Pause ${Math.round(pauseMs / 1000)} s — geschätzte Dauer ${Math.round((zuSenden.length * pauseMs) / 60000)} min`);
   log();
 
@@ -385,6 +410,9 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
       continue;
     }
     try {
+      // Für die Zustellungsprobe am Ende: der zuletzt tatsächlich verschickte
+      // Brief. Ein eigens gebauter Testtext würde etwas anderes messen.
+      letzterBrief = b;
       const info = await transport.sendMail({
         from: konfig.from,
         to: b.empfaenger,
@@ -456,6 +484,44 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
       protokoll.push({ region_id: b.region_id, name: b.name, gesendet: false, grund: [(e as Error).message] });
     }
     if (i < zuSenden.length - 1) await new Promise((r) => setTimeout(r, pauseMs));
+  }
+
+  // ZUSTELLUNGSPROBE — eine Mail an eigene Postfächer bei großen Anbietern.
+  //
+  // Sie geht MIT dem Schub raus, nicht davor oder danach: Was zählt, ist die
+  // Einsortierung genau dieser Menge aus genau diesem Postfach zu genau dieser
+  // Zeit. Eine Probe am Vortag misst einen anderen Zustand.
+  //
+  // Der Brief ist derselbe wie der letzte verschickte, mit einer Vorbemerkung —
+  // ein eigens gebauter Testtext würde etwas anderes messen als das, was die
+  // Gemeinden bekommen.
+  //
+  // Sie zählt NICHT gegen das Tagespensum: Sie geht an uns selbst, nicht an eine
+  // Gemeinde, und eine Bremse, die sich selbst mitzählt, verschiebt die Messung.
+  const probeAdressen = zustellprobeAdressen();
+  if (probeAdressen.length && letzterBrief) {
+    for (const an of probeAdressen) {
+      try {
+        await transport.sendMail({
+          from: konfig.from,
+          to: an,
+          replyTo: konfig.replyTo,
+          subject: `[ZUSTELLPROBE ${new Date().toISOString().slice(0, 10)}] ${letzterBrief.subject}`,
+          text:
+            `Zustellungsprobe zum Schub ${p.kampagne}, Charge ${p.charge}, ${raus} Mails an diesem Tag.\n` +
+            `Bitte nachsehen: Posteingang oder Spam? Der Text darunter ist der echte Brief.\n\n` +
+            `${"-".repeat(60)}\n\n${letzterBrief.body}`,
+          html: letzterBrief.body_html,
+        });
+        log(`Zustellungsprobe an ${an} — bitte nachsehen, ob sie im Posteingang liegt`, "ok");
+      } catch (e) {
+        log(`Zustellungsprobe an ${an} fehlgeschlagen: ${(e as Error).message}`, "warn");
+      }
+    }
+  } else if (!probeAdressen.length) {
+    // Eine fehlende Messung wird GEMELDET, nicht verschwiegen. Sonst liest sich
+    // ein stiller Lauf wie ein geprüfter.
+    log("Keine Zustellungsprobe gesetzt — ohne sie merken wir eine Einsortierung in den Spam-Ordner nicht.", "warn");
   }
 
   transport.close();

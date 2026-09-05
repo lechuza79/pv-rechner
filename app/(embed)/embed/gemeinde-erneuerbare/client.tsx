@@ -25,7 +25,7 @@ export default function GemeindeErneuerbareEmbed(props: ErneuerbareEmbedProps) {
 
   if (props.error || !props.name || !props.generators || !props.liveUrl) {
     return (
-      <div style={{ padding: 16, fontFamily: "var(--widget-font-family)", color: "var(--widget-muted)", fontSize: 13 }}>
+      <div style={{ padding: 16, fontFamily: "var(--widget-font-family)", color: "var(--widget-muted)", fontSize: "var(--font-size-small)" }}>
         {props.error ?? "Keine Daten."}
       </div>
     );

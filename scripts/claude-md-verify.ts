@@ -131,6 +131,29 @@ type Zahlenpruefung = {
 
 const ZAHLEN: Zahlenpruefung[] = [
   {
+    // Genau die Sorte Angabe, die hier schon einmal falsch stand: Die Anleitung
+    // nannte im August eine Skala, die im Code eine andere war — bei sieben
+    // Stufen stimmte eine. Deshalb steht die Aufzaehlung im Register.
+    was: "Textstufen der Schriftgroessen-Skala",
+    wahrheit: () => {
+      const t = lies("lib/theme.ts");
+      const stufen = ["micro", "caption", "small", "body", "lead", "h3", "h2", "h1"];
+      const werte = stufen.map((n) => greif(t, new RegExp(`'--font-size-${n}':\\s*'(\\d+)px'`)));
+      return werte.some((w) => w === null) ? null : werte.join(" · ");
+    },
+    behauptung: () => greif(claudeMd, /Acht Textstufen \(([\d\u00b7 ]+),/),
+  },
+  {
+    was: "Display-Stufen der Schriftgroessen-Skala",
+    wahrheit: () => {
+      const t = lies("lib/theme.ts");
+      const stufen = ["sm", "md", "lg", "xl"];
+      const werte = stufen.map((n) => greif(t, new RegExp(`'--font-size-display-${n}':\\s*'(\\d+)px'`)));
+      return werte.some((w) => w === null) ? null : werte.join(" · ");
+    },
+    behauptung: () => greif(claudeMd, /vier Display-Stufen \(([\d\u00b7 ]+)\)/),
+  },
+  {
     was: "Maximale Breite der Kopfzeile",
     wahrheit: () => greif(lies("lib/theme.ts"), /'--header-max-width':\s*'(\d+)px'/),
     behauptung: () => greif(claudeMd, /`--header-max-width`\s*\((\d+)\s*px\)/),
@@ -147,11 +170,18 @@ const ZAHLEN: Zahlenpruefung[] = [
   },
   {
     was: "Davon Foerderseiten",
+    // Gezaehlt wird der PFAD der Foerderseiten, nicht das Wort „foerderung".
+    // Vorher genuegte das Wort irgendwo in der Zeile — damit zaehlte die
+    // Weiterleitung des Waermepumpen-Foerderratgebers als Foerderseite mit, und
+    // die Anleitung sagte 181, wo 180 richtig war. Aufgefallen erst, als am
+    // 26.08.2026 eine zweite Ratgeber-Weiterleitung dazukam und die Zahl auf 182
+    // sprang, obwohl keine Foerderseite entstanden war. Eine Zaehlung, die auf
+    // ein Wort statt auf die Sache prueft, wird still ungenau.
     wahrheit: () =>
       String(
-        (lies("next.config.js")
+        lies("next.config.js")
           .split("\n")
-          .filter((z) => z.includes("source:") && z.includes("foerderung")) ?? []).length,
+          .filter((z) => z.includes("source:") && z.includes('"/photovoltaik-foerderung')).length,
       ),
     behauptung: () => greif(claudeMd, /(\d+) der \d+ Weiterleitungen in `next\.config\.js`/),
   },

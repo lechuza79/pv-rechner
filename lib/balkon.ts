@@ -19,7 +19,7 @@ export interface BalkonInputs {
   /** 12 Monatswerte kWh/kWp aus PVGIS. Ohne PLZ null → Fallback aus specificYield. */
   monthlyYield?: number[] | null;
   stromPrice: number;      // €/kWh
-  priceIncrease?: number;  // jährlicher Strompreisanstieg (Default: PV-Systemwert, 3 %)
+  priceIncrease?: number;  // jährlicher Strompreisanstieg (Default: PV-Systemwert, 2 %)
   invest?: number;         // optional überschriebene Anschaffung (Set + Speicher)
 }
 
@@ -226,7 +226,7 @@ export function calcBalkon(inputs: BalkonInputs, cfg: BalkonConfig = DEFAULT_BAL
 
   const invest = inputs.invest ?? (set.price + storage.price);
   // Strompreisanstieg systemweit konsistent mit dem PV-Rechner (gleicher Wert aus
-  // der Preis-Config, „realistisch" 3 %/Jahr), compoundend p·(1+g)^i.
+  // der Preis-Config, „realistisch" 2 %/Jahr), compoundend p·(1+g)^i.
   const priceIncrease = inputs.priceIncrease ?? DEFAULT_PRICES.electricityIncrease;
 
   // Jahr-1-Ersparnis (für die Anzeige „pro Jahr").

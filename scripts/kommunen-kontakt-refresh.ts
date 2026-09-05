@@ -36,6 +36,10 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import * as unzipper from "unzipper";
+import type { PresseQuelle } from "../lib/kommunen-presse";
+
+/** Auf einen Versand-Schub eingrenzen (`--schub=mail-nrw`), sonst alle. */
+const schubArg = process.argv.slice(2).find((a) => a.startsWith("--schub="))?.slice(8);
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const CACHE_DIR = resolve(SCRIPT_DIR, ".cache", "kommunen");
@@ -219,6 +223,43 @@ async function setup(): Promise<void> {
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS thema_blatt_url text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS thema_presse_url text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS profil_at timestamptz;
+    -- WOHER das Postfach stammt. Nachtraeglich ergaenzt, deshalb nullable: die
+    -- vorhandenen Zeilen kommen ausnahmslos aus dem Impressum, und ein
+    -- Vorgabewert haette ueber jede Altzeile eine Herkunft behauptet, die
+    -- niemand erhoben hat (dieselbe Fehlerklasse wie ein erfundenes Pruefdatum).
+    --   impressum    im Impressum der eigenen Website gefunden
+    --   kontaktseite auf der Kontaktseite gefunden
+    --   verwaltung   Postfach der Gemeinde, die diese Gemeinde mitverwaltet
+    -- Die dritte Herkunft ist die einzige, bei der wir NICHT an die Gemeinde
+    -- selbst schreiben — das muss ablesbar bleiben, ohne die Adresse zu deuten.
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS rollen_email_quelle text;
+    -- Wann zuletzt nach einem Postfach gesucht wurde, auch erfolglos. Ohne
+    -- dieses Datum ist "nichts gefunden" nicht von "noch nie gesucht" zu
+    -- unterscheiden, und der naechste Lauf beginnt wieder bei denselben.
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS luecke_at timestamptz;
+    -- PRESSEPOSTFACH, getrennt vom allgemeinen. Der Brief bietet eine fertige
+    -- Meldung an; er gehoert an die Stelle, die Meldungen veroeffentlicht.
+    -- Gemessen am 03.09.2026: Von den 20 groessten Staedten des offenen
+    -- NRW-Schubs fuehren mindestens 7 ein Pressepostfach, und wir schrieben bei
+    -- 6 davon an info@ oder stadt@.
+    --
+    -- EIGENE SPALTE, kein Ueberschreiben: Eine falsch erhobene Presseadresse
+    -- duerfte sonst die einzige bekannte Adresse zerstoeren, und die Herkunft
+    -- der beiden Angaben ist verschieden.
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS presse_email text;
+    --   presseseite   auf einer Presse-/Medienseite gefunden
+    --   kontaktseite  auf der Kontaktseite gefunden
+    --   impressum     im Impressum gefunden
+    --   suche         ueber die Volltextsuche der eigenen Website gefunden
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS presse_email_quelle text;
+    -- Wann zuletzt gesucht wurde, auch erfolglos — dieselbe Begruendung wie
+    -- bei luecke_at: sonst ist "nichts gefunden" nicht von "nie gesucht" zu
+    -- unterscheiden.
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS presse_at timestamptz;
+    -- Der Textausschnitt, der eine MEHRDEUTIGE Adresse traegt (medien@,
+    -- kommunikation@). Eindeutige Adressen brauchen ihn nicht und lassen ihn
+    -- leer — ein Beleg, den niemand geprueft hat, waere schlechter als keiner.
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS presse_beleg text;
     -- Versandliste: die Auswahl wird FESTGESCHRIEBEN, nicht nur gefiltert. Der
     -- Aufhaenger aendert sich mit jedem Monatslauf der Anlagendaten — ein reiner
     -- Filter haette in Charge 2 andere Gemeinden als in Charge 1.
@@ -968,6 +1009,503 @@ async function scrapeProfil(opts: FormsOpts): Promise<void> {
   log(`${rows.length} Profile gespeichert`, "ok");
 }
 
+// ─── Die Kontaktlücke schließen ──────────────────────────────────────────────
+//
+// GEMESSEN am 01.09.2026: 10.980 Gemeinden haben eine Website, 7.448 davon
+// tragen bei uns kein Rollen-Postfach. Für den nächsten Versandschub bedeutete
+// das konkret: von 399 in Frage kommenden Gemeinden fielen 300 aus, weil wir
+// keine Adresse haben. Nicht der Kalender bremst den Ausbau, sondern das hier.
+//
+// Der Profil-Lauf liest ausschließlich das IMPRESSUM. Das war die richtige
+// erste Quelle (gesetzlich vorgeschrieben, nie per JavaScript versteckt), aber
+// es ist nicht die einzige. Drei Ursachen, alle an einer Stichprobe von 25
+// Gemeinden ohne erfasstes Postfach belegt:
+//
+//   1. Die Adresse steht auf der KONTAKTSEITE statt im Impressum. Das ist der
+//      große Posten: 5.051 der Lücken-Gemeinden haben eine bekannte
+//      Kontaktseite, die noch nie auf Adressen hin gelesen wurde. Dazu 1.555,
+//      bei denen gar kein Impressum auffindbar war — dort ist die Kontaktseite
+//      der einzige verbleibende Weg.
+//   2. Die Adresse ist VERSCHLEIERT („rathaus⚹huerth◦de"). Behoben in
+//      lib/kommunen-profil.ts, wirkt für beide Quellen.
+//   3. Die Gemeinde wird MITVERWALTET, und das Postfach gehört der
+//      verwaltenden Gemeinde. Der kleinste der drei Posten (289 Fälle), aber
+//      der billigste: die Verwaltung ist bereits belegt, bei 167 davon haben
+//      wir deren Postfach schon.
+//
+// WAS DIESER LAUF NICHT TUT: raten. Eine Adresse auf einer fremden Domain, die
+// nicht zur Grundgesamtheit der Kommunen gehört, ist der Dienstleister der
+// Website und wird verworfen — dieselbe Regel wie im Profil-Lauf, und sie hat
+// dort schon zwei Agenturadressen abgefangen. Lieber keine Adresse als eine
+// falsche: eine falsche geht in den Versand und kommt zurück.
+
+type LueckeRow = {
+  region_id: string;
+  rollen_email: string;
+  rollen_email_quelle: string;
+  luecke_at: string;
+};
+
+type LueckeKandidat = {
+  region_id: string;
+  website: string;
+  kontakt_url: string | null;
+  verwaltung_domain: string | null;
+};
+
+async function schliesseLuecke(opts: FormsOpts): Promise<void> {
+  const { toText, domainOf, extractAdressen } = await import("../lib/kommunen-profil.js");
+  const supabase = await makeClient();
+
+  // Alle Gemeinden EINMAL lesen: die Lücken-Liste und der Domain-Vergleich
+  // kommen aus demselben Bestand. Der Vergleich muss bundesweit sein, auch bei
+  // einem Lauf mit --bl — eine Verwaltungsgemeinschaft reicht über Landesgrenzen,
+  // und der Partner wäre sonst nicht im Vergleich.
+  type Alle = {
+    region_id: string;
+    website: string | null;
+    rollen_email: string | null;
+    kontakt_url: string | null;
+    verwaltung_domain: string | null;
+    luecke_at: string | null;
+  };
+  const alle: Alle[] = [];
+  for (let von = 0; ; von += 1000) {
+    const { data, error } = await supabase
+      .from("kommunen_kontakt")
+      .select("region_id, website, rollen_email, kontakt_url, verwaltung_domain, luecke_at")
+      .order("region_id")
+      .range(von, von + 999);
+    if (error) throw new Error(`Lücken lesen: ${error.message}`);
+    if (!data?.length) break;
+    alle.push(...(data as Alle[]));
+    if (data.length < 1000) break;
+  }
+
+  const domains = new Set<string>();
+  const postfachJeDomain = new Map<string, string>();
+  for (const r of alle) {
+    if (!r.website) continue;
+    const d = domainOf(r.website);
+    if (!d) continue;
+    domains.add(d);
+    if (r.rollen_email) postfachJeDomain.set(d, r.rollen_email);
+  }
+
+  let luecken = alle.filter((r): r is Alle & { website: string } => !!r.website && !r.rollen_email);
+  if (opts.bl) luecken = luecken.filter((r) => r.region_id.startsWith(opts.bl!));
+  // Die am längsten nicht gesehenen zuerst; nie gesuchte vor schon gesuchten.
+  // Ohne diese Reihenfolge beginnt jeder Lauf wieder bei denselben Gemeinden.
+  if (!opts.refetch) {
+    luecken.sort((a, b) => (a.luecke_at ?? "").localeCompare(b.luecke_at ?? ""));
+  }
+  const liste: LueckeKandidat[] = (opts.limit ? luecken.slice(0, opts.limit) : luecken).map((r) => ({
+    region_id: r.region_id,
+    website: r.website,
+    kontakt_url: r.kontakt_url,
+    verwaltung_domain: r.verwaltung_domain,
+  }));
+
+  log(
+    `${luecken.length.toLocaleString()} Gemeinden ohne Postfach` +
+      (opts.limit ? `, davon ${liste.length.toLocaleString()} in diesem Lauf` : "") +
+      ` · ${domains.size.toLocaleString()} bekannte Domains als Vergleich`,
+  );
+
+  const now = new Date().toISOString();
+  const rows: LueckeRow[] = [];
+  const gesehen: string[] = [];
+  let done = 0;
+  let ausKontaktseite = 0;
+  let ausVerwaltung = 0;
+  let ohneSeite = 0;
+
+  await pool(liste, CONCURRENCY, async (c) => {
+    done++;
+    gesehen.push(c.region_id);
+    const eigene = domainOf(c.website);
+    const verwandt = (d: string) => d !== eigene && domains.has(d);
+
+    // 1. Die Kontaktseite. Ist keine bekannt, aus der Startseite eine suchen —
+    //    derselbe Weg wie --forms, nur hier gleich mitgelesen statt in einem
+    //    zweiten Lauf.
+    let ziel = c.kontakt_url;
+    if (!ziel) {
+      const start = await fetchText(c.website);
+      if (!start) {
+        ohneSeite++;
+      } else {
+        ziel = findKontaktUrl(start, c.website);
+        // Steht die Adresse schon auf der Startseite, ist das ein gültiger Fund.
+        const a = extractAdressen(toText(start), eigene, verwandt);
+        if (a.rollenEmail) {
+          rows.push({ region_id: c.region_id, rollen_email: a.rollenEmail, rollen_email_quelle: "kontaktseite", luecke_at: now });
+          ausKontaktseite++;
+          if (done % 50 === 0) log(`  ${done}/${liste.length} geprüft, ${rows.length} gefunden`);
+          return;
+        }
+      }
+    }
+    if (ziel) {
+      const html = await fetchText(ziel);
+      if (html) {
+        const a = extractAdressen(toText(html), eigene, verwandt);
+        if (a.rollenEmail) {
+          rows.push({ region_id: c.region_id, rollen_email: a.rollenEmail, rollen_email_quelle: "kontaktseite", luecke_at: now });
+          ausKontaktseite++;
+          if (done % 50 === 0) log(`  ${done}/${liste.length} geprüft, ${rows.length} gefunden`);
+          return;
+        }
+      }
+    }
+
+    // 2. Die verwaltende Gemeinde. Nur wenn ihr Postfach schon erfasst ist —
+    //    ein zweiter Abruf lohnt hier nicht, der nächste Lauf holt sie ein.
+    const vw = c.verwaltung_domain ? postfachJeDomain.get(c.verwaltung_domain) : undefined;
+    if (vw) {
+      rows.push({ region_id: c.region_id, rollen_email: vw, rollen_email_quelle: "verwaltung", luecke_at: now });
+      ausVerwaltung++;
+    }
+    if (done % 50 === 0) log(`  ${done}/${liste.length} geprüft, ${rows.length} gefunden`);
+  });
+
+  const quote = liste.length ? ((100 * rows.length) / liste.length).toFixed(1) : "0";
+  log(
+    `${rows.length}/${liste.length} Postfächer gefunden (${quote} %)\n` +
+      `  von der Kontaktseite: ${ausKontaktseite} · von der verwaltenden Gemeinde: ${ausVerwaltung}\n` +
+      `  Website nicht erreichbar: ${ohneSeite}`,
+    "ok",
+  );
+
+  if (opts.dry) {
+    for (const r of rows.slice(0, 20)) log(`  ${r.region_id} → ${r.rollen_email} (${r.rollen_email_quelle})`);
+    log("--dry: nichts geschrieben", "ok");
+    return;
+  }
+
+  for (let i = 0; i < rows.length; i += 500) {
+    const { error } = await supabase.from("kommunen_kontakt").upsert(rows.slice(i, i + 500), { onConflict: "region_id" });
+    if (error) throw new Error(`Postfächer speichern: ${error.message}`);
+  }
+  // Auch die ERFOLGLOSEN bekommen ihr Datum. Sonst ist „geprüft, nichts
+  // gefunden" nicht von „noch nie geprüft" zu unterscheiden, und der nächste
+  // Lauf beginnt wieder bei denselben Gemeinden.
+  //
+  // Getrennt geschrieben und NICHT über denselben Upsert: Ein Upsert mit
+  // ungleicher Feldmenge vereinheitlicht die Spaltenliste und schriebe den
+  // Zeilen ohne Fund ein NULL ins Postfach — dieselbe Klasse Unfall, die im
+  // Fachbetriebe-Bestand 2.700 Merkmale gelöscht hat.
+  const gefunden = new Set(rows.map((r) => r.region_id));
+  const leer = gesehen.filter((id) => !gefunden.has(id));
+  for (let i = 0; i < leer.length; i += 500) {
+    const { error } = await supabase
+      .from("kommunen_kontakt")
+      .update({ luecke_at: now })
+      .in("region_id", leer.slice(i, i + 500));
+    if (error) throw new Error(`Prüfdatum speichern: ${error.message}`);
+  }
+  log(`${rows.length} Postfächer gespeichert, ${leer.length} als geprüft vermerkt`, "ok");
+}
+
+// ─── Pressepostfächer ────────────────────────────────────────────────────────
+
+type PresseRow = {
+  region_id: string;
+  presse_email: string;
+  presse_email_quelle: PresseQuelle;
+  /** Der Textausschnitt, der die Einordnung traegt — nur bei mehrdeutigen
+   *  Adressen. Ohne ihn waere spaeter nicht nachvollziehbar, worauf sie beruht. */
+  presse_beleg: string | null;
+  presse_at: string;
+};
+
+/**
+ * Sucht das Presse- oder Redaktionspostfach einer Gemeinde.
+ *
+ * DREI WEGE, in dieser Reihenfolge, und die Reihenfolge ist die Belastbarkeit:
+ *   1. Presse-/Medienseite — der stärkste Fund, dort steht die Stelle selbst.
+ *   2. Kontaktseite und Impressum — schwächer, aber oft ergiebig.
+ *   3. Volltextsuche der eigenen Website — nur wenn die ersten beiden leer
+ *      ausgehen. Dieselbe Mechanik wie beim Förder-Crawl, und aus demselben
+ *      Grund: Die Startseite verlinkt die Pressestelle oft NICHT. Bei
+ *      Düsseldorf ist auf der Startseite kein einziger Presse-Link, das
+ *      Postfach existiert trotzdem.
+ *
+ * GERATEN WIRD NICHTS: Eine Adresse zählt nur, wenn sie auf der Domain der
+ * Gemeinde liegt und ihr Lokalteil ein Pressewort IST (nicht enthält).
+ */
+async function scrapePresse(opts: FormsOpts): Promise<void> {
+  const { toText, domainOf } = await import("../lib/kommunen-profil.js");
+  const { entschleiere } = await import("../lib/kommunen-profil.js");
+  const { istPressePostfach, presseLinkRang, brauchtKontext, presseKontextBelegt } =
+    await import("../lib/kommunen-presse.js");
+  const { suchFormular, suchAdresse, suchseitenLink } = await import("../lib/funding-url-suche.js");
+  const supabase = await makeClient();
+
+  type Zeile = {
+    region_id: string;
+    website: string | null;
+    kontakt_url: string | null;
+    impressum_url: string | null;
+    thema_presse_url: string | null;
+    presse_email: string | null;
+    presse_at: string | null;
+    kampagne: string | null;
+  };
+  const alle: Zeile[] = [];
+  for (let von = 0; ; von += 1000) {
+    const { data, error } = await supabase
+      .from("kommunen_kontakt")
+      .select("region_id, website, kontakt_url, impressum_url, thema_presse_url, presse_email, presse_at, kampagne")
+      .order("region_id")
+      .range(von, von + 999);
+    if (error) throw new Error(`Presse lesen: ${error.message}`);
+    if (!data?.length) break;
+    alle.push(...(data as Zeile[]));
+    if (data.length < 1000) break;
+  }
+
+  let offen = alle.filter((r): r is Zeile & { website: string } => !!r.website && !r.presse_email);
+  if (opts.bl) offen = offen.filter((r) => r.region_id.startsWith(opts.bl!));
+  if (schubArg) offen = offen.filter((r) => r.kampagne === schubArg);
+  // Die am längsten nicht gesehenen zuerst — sonst beginnt jeder Lauf bei denselben.
+  if (!opts.refetch) offen.sort((a, b) => (a.presse_at ?? "").localeCompare(b.presse_at ?? ""));
+  const liste = opts.limit ? offen.slice(0, opts.limit) : offen;
+
+  log(
+    `${offen.length.toLocaleString()} Gemeinden ohne Pressepostfach` +
+      (opts.limit ? `, davon ${liste.length.toLocaleString()} in diesem Lauf` : ""),
+  );
+
+  const now = new Date().toISOString();
+  const rows: PresseRow[] = [];
+  const gesehen: string[] = [];
+  const jeQuelle = new Map<PresseQuelle, number>();
+  let done = 0;
+
+  /**
+   * Presseadressen auf der Domain der Gemeinde aus einem HTML herausziehen.
+   *
+   * ZWEI DURCHGAENGE, und der zweite ist der wichtige: erst der sichtbare
+   * Text, dann das rohe HTML. Duesseldorf schreibt seine Presseadresse als
+   * Spamschutz ausschliesslich in ein Titel-Attribut („Email an:
+   * presse@duesseldorf.de"); im sichtbaren Text steht sie nirgends, und der
+   * Crawl lief deshalb an der groessten Stadt des Schubs vorbei.
+   *
+   * Im rohen HTML zu suchen ist hier ungefaehrlich, weil beide Schranken
+   * bestehen bleiben: die Adresse muss auf der Domain der Gemeinde liegen und
+   * ihr Lokalteil ein Pressewort SEIN. Eine fremde Agentur-Adresse im
+   * Seitenquelltext faellt an der ersten Schranke.
+   */
+  const MAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
+
+  /**
+   * NICHT NUR DIE SCHREIBWEISE, SONDERN DER ZUSAMMENHANG (Einwand des
+   * Betreibers, 03.09.2026: „wir müssen das immer im Kontext prüfen und nicht
+   * nur anhand der Syntax").
+   *
+   * Für die eindeutigen Woerter — presse@, pressestelle@, redaktion@ — reicht
+   * die Adresse: Sie bedeuten in einer Verwaltung nichts anderes. Fuer die
+   * mehrdeutigen (medien@, kommunikation@) wird der Text UM den Fund herum
+   * gelesen und muss eine Pressestelle benennen. Steht dort ein Gegenwort
+   * („Medienzentrum", „Kommunikationstechnik"), faellt der Fund.
+   *
+   * Der Ausschnitt wird mitgegeben und gespeichert — ohne ihn ist spaeter
+   * nicht mehr nachvollziehbar, worauf die Einordnung beruhte.
+   */
+  const finde = (html: string, domain: string): { email: string; beleg: string | null } | null => {
+    const text = entschleiere(toText(html));
+    const roh = entschleiere(html);
+    for (const quelle of [text, roh]) {
+      for (const treffer of quelle.match(MAIL_RE) ?? []) {
+        const m = treffer.toLowerCase();
+        const host = m.split("@")[1] ?? "";
+        if (host !== domain && !host.endsWith(`.${domain}`)) continue;
+        if (!istPressePostfach(m)) continue;
+        if (!brauchtKontext(m)) return { email: m, beleg: null };
+        // Der Ausschnitt kommt aus dem SICHTBAREN Text, auch wenn die Adresse
+        // im Quelltext gefunden wurde: Was ein Leser dort sieht, ist die
+        // Auskunft — Attribut-Salat ringsum waere keine.
+        const i = text.toLowerCase().indexOf(m);
+        const ausschnitt = i >= 0 ? text.slice(Math.max(0, i - 400), i + 400) : text.slice(0, 800);
+        if (presseKontextBelegt(ausschnitt)) {
+          return { email: m, beleg: ausschnitt.replace(/\s+/g, " ").trim().slice(0, 300) };
+        }
+      }
+    }
+    return null;
+  };
+
+  await pool(liste, CONCURRENCY, async (c) => {
+    done++;
+    gesehen.push(c.region_id);
+    const domain = domainOf(c.website);
+    if (!domain) return;
+
+    const nimm = (email: string, quelle: PresseQuelle, beleg: string | null = null) => {
+      rows.push({
+        region_id: c.region_id,
+        presse_email: email,
+        presse_email_quelle: quelle,
+        presse_beleg: beleg,
+        presse_at: now,
+      });
+      jeQuelle.set(quelle, (jeQuelle.get(quelle) ?? 0) + 1);
+    };
+
+    // 1. Bekannte Presseseite, danach Kontaktseite und Impressum.
+    for (const [url, quelle] of [
+      [c.thema_presse_url, "presseseite"],
+      [c.kontakt_url, "kontaktseite"],
+      [c.impressum_url, "impressum"],
+    ] as [string | null, PresseQuelle][]) {
+      if (!url) continue;
+      const html = await fetchText(url);
+      const treffer = html ? finde(html, domain) : null;
+      if (treffer) {
+        nimm(treffer.email, quelle, treffer.beleg);
+        return;
+      }
+    }
+
+    // 2. Von der Startseite aus den Presse-Links folgen, zwei Ebenen tief.
+    const start = await fetchText(c.website);
+    if (!start) return;
+    const direkt = finde(start, domain);
+    if (direkt) {
+      nimm(direkt.email, "presseseite", direkt.beleg);
+      return;
+    }
+    // NACH RANG, nicht in der Reihenfolge des HTML. Auf der Startseite einer
+    // Großstadt stehen Dutzende schwache Treffer („rathaus", „kontakt"); ohne
+    // Rangfolge ist die Obergrenze erreicht, bevor der Presse-Link an der Reihe
+    // ist. Genau daran ist Düsseldorf gescheitert, dessen Startseite das
+    // Medienportal sehr wohl verlinkt.
+    const besucht = new Set<string>();
+    const nachRang = (liste: { href: string; text: string }[], basis: string): string[] =>
+      liste
+        .map((a) => ({ rang: presseLinkRang(a.href, a.text), a }))
+        .filter((x) => x.rang > 0)
+        .sort((x, y) => y.rang - x.rang)
+        .map((x) => {
+          try {
+            return new URL(x.a.href, basis).toString().split("#")[0];
+          } catch {
+            return "";
+          }
+        })
+        .filter((u) => u && safeHost(u) === safeHost(basis));
+    // EIN GEMEINSAMER VORRAT, NICHT EBENE FÜR EBENE. Eine Obergrenze je Ebene
+    // ist keine: Sie war global, und die Startseite einer Großstadt füllt sie
+    // allein — die zweite Ebene kam dann nie an die Reihe. Düsseldorf verlinkt
+    // sein Medienportal auf der Startseite, die Adresse steht eine Seite
+    // weiter, und der Crawl hat sie trotzdem nie gesehen.
+    //
+    // Stattdessen: alle Kandidaten in einen Topf, immer den bestbewerteten
+    // zuerst, bis das Abruf-Budget aufgebraucht ist.
+    const vorrat = new Map<string, number>();
+    const sammle = (html: string, basis: string, tiefe: number) => {
+      if (tiefe > 2) return;
+      for (const a of extractAnchors(html)) {
+        const rang = presseLinkRang(a.href, a.text);
+        if (rang <= 0) continue;
+        let u: string;
+        try {
+          u = new URL(a.href, basis).toString().split("#")[0];
+        } catch {
+          continue;
+        }
+        if (safeHost(u) !== safeHost(c.website) || besucht.has(u)) continue;
+        // Je tiefer, desto schwächer — sonst zieht ein „Kontakt" der dritten
+        // Ebene an einem „Presseportal" der ersten vorbei.
+        const wert = rang - tiefe * 5;
+        if ((vorrat.get(u) ?? -1) < wert) vorrat.set(u, wert);
+      }
+    };
+    sammle(start, c.website, 0);
+
+    const BUDGET = 14;
+    for (let i = 0; i < BUDGET && vorrat.size; i++) {
+      const [url] = [...vorrat].sort((a, b) => b[1] - a[1])[0];
+      vorrat.delete(url);
+      besucht.add(url);
+      const html = await fetchText(url);
+      if (!html) continue;
+      const treffer = finde(html, domain);
+      if (treffer) {
+        nimm(treffer.email, "presseseite", treffer.beleg);
+        return;
+      }
+      sammle(html, url, 1);
+    }
+
+    // 3. Die Volltextsuche der Website — nur wenn der Crawl leer ausging.
+    //    Genau der Fall Düsseldorf: kein Presse-Link auf der Startseite.
+    const formular = suchFormular(start, c.website) ?? (() => null)();
+    let sucheUrl: string | null = null;
+    if (formular) sucheUrl = suchAdresse(formular, "pressestelle");
+    else {
+      const seite = suchseitenLink(start, c.website);
+      if (seite) {
+        const html = await fetchText(seite);
+        const f = html ? suchFormular(html, seite) : null;
+        if (f) sucheUrl = suchAdresse(f, "pressestelle");
+      }
+    }
+    if (!sucheUrl) return;
+    const treffer = await fetchText(sucheUrl);
+    if (!treffer) return;
+    const direktInSuche = finde(treffer, domain);
+    if (direktInSuche) {
+      nimm(direktInSuche.email, "suche", direktInSuche.beleg);
+      return;
+    }
+    // Die Trefferliste selbst trägt selten eine Adresse — dem ersten Treffer folgen.
+    for (const u of nachRang(extractAnchors(treffer), sucheUrl).slice(0, 12)) {
+      if (safeHost(u) !== safeHost(c.website) || besucht.has(u)) continue;
+      besucht.add(u);
+      const html = await fetchText(u);
+      const t = html ? finde(html, domain) : null;
+      if (t) {
+        nimm(t.email, "suche", t.beleg);
+        return;
+      }
+      if (besucht.size >= 18) break;
+    }
+    if (done % 25 === 0) log(`  ${done}/${liste.length} geprüft, ${rows.length} gefunden`);
+  });
+
+  const quote = liste.length ? ((100 * rows.length) / liste.length).toFixed(1) : "0";
+  log(
+    `${rows.length}/${liste.length} Pressepostfächer gefunden (${quote} %)\n  ` +
+      [...jeQuelle].map(([q, n]) => `${q}: ${n}`).join(" · "),
+    "ok",
+  );
+
+  if (opts.dry) {
+    for (const r of rows.slice(0, 40)) log(`  ${r.region_id} → ${r.presse_email} (${r.presse_email_quelle})`);
+    log("--dry: nichts geschrieben", "ok");
+    return;
+  }
+
+  for (let i = 0; i < rows.length; i += 500) {
+    const { error } = await supabase.from("kommunen_kontakt").upsert(rows.slice(i, i + 500), { onConflict: "region_id" });
+    if (error) throw new Error(`Pressepostfächer speichern: ${error.message}`);
+  }
+  // Auch die ERFOLGLOSEN bekommen ihr Datum — und getrennt geschrieben, damit
+  // ein Upsert mit ungleicher Feldmenge nicht die Adress-Spalte auf NULL setzt.
+  const gefunden = new Set(rows.map((r) => r.region_id));
+  const leer = gesehen.filter((id) => !gefunden.has(id));
+  for (let i = 0; i < leer.length; i += 500) {
+    const { error } = await supabase
+      .from("kommunen_kontakt")
+      .update({ presse_at: now })
+      .in("region_id", leer.slice(i, i + 500));
+    if (error) throw new Error(`Prüfdatum speichern: ${error.message}`);
+  }
+  log(`${rows.length} Pressepostfächer gespeichert, ${leer.length} als geprüft vermerkt`, "ok");
+}
+
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const dry = argv.includes("--dry");
@@ -980,6 +1518,8 @@ async function main(): Promise<void> {
   const doRang = argv.includes("--rang");
   const doStats = argv.includes("--stats");
   const doProfil = argv.includes("--profil");
+  const doLuecke = argv.includes("--luecke");
+  const doPresse = argv.includes("--presse");
 
   const blArg = argv.find((a) => a.startsWith("--bl="));
   const limitArg = argv.find((a) => a.startsWith("--limit="));
@@ -990,14 +1530,16 @@ async function main(): Promise<void> {
     dry,
   };
 
-  if (!doSetup && !doWikidata && !doUpload && !doForms && !doProbe && !doWahl && !doRang && !doStats && !doProfil) {
+  if (!doSetup && !doWikidata && !doUpload && !doForms && !doProbe && !doWahl && !doRang && !doStats && !doProfil && !doLuecke && !doPresse) {
     log(
-      "Nichts zu tun. Flags: --setup --wikidata --upload --forms --probe --wahl --rang --profil --stats [--dry]\n" +
+      "Nichts zu tun. Flags: --setup --wikidata --upload --forms --probe --wahl --rang --profil --luecke --presse --stats [--dry]\n" +
         "  --forms [--bl=10] [--limit=N] [--refetch]  Kontaktlink aus der Startseite\n" +
         "  --probe [--bl=10] [--limit=N]              Kontakt-Pfade direkt anklopfen (Lücken)\n" +
         "  --wahl [--dry]                             Grünen/Linke/SPD-Anteil je Gemeinde (BTW 2025)\n" +
         "  --rang [--dry]                             Dach-pro-Kopf Perzentil + Landkreis-Rang\n" +
-        "  --profil [--bl=09] [--limit=N] [--dry]     Impressum + Themen: Verantwortliche, Rollen-Postfach, Aufhänger",
+        "  --profil [--bl=09] [--limit=N] [--dry]     Impressum + Themen: Verantwortliche, Rollen-Postfach, Aufhänger\n" +
+        "  --luecke [--bl=09] [--limit=N] [--dry]     Gemeinden ohne Postfach: Kontaktseite lesen, Verwaltung erben\n" +
+        "  --presse [--schub=X] [--limit=N] [--dry]   Presse-/Redaktionspostfach suchen (Presseseite, Kontakt, Volltextsuche)",
       "err",
     );
     process.exit(1);
@@ -1011,6 +1553,8 @@ async function main(): Promise<void> {
   if (doWahl) await uploadWahl(dry);
   if (doRang) await uploadRang(dry);
   if (doProfil) await scrapeProfil(formsOpts);
+  if (doLuecke) await schliesseLuecke(formsOpts);
+  if (doPresse) await scrapePresse(formsOpts);
   if (doStats) await stats();
   log("Fertig", "ok");
 }

@@ -1,44 +1,45 @@
 import { describe, expect, it } from "vitest";
+import fs from "node:fs";
+import path from "node:path";
 import robots from "../../app/robots";
 import sitemap from "../../app/sitemap";
-import { atlasRobots } from "../atlas-index";
 
 /**
  * DIE RANGLISTEN SIND FÜR CRAWLER GESPERRT — UND DAS MUSS WIDERSPRUCHSFREI BLEIBEN.
  *
  * Die Sperre ist eine Kostenentscheidung (26.08.2026). Gemessen über 24 h gingen
- * 8.909 von 15.757 Funktionsaufrufen der ganzen Domain auf diese eine Route, und
- * eine Stichprobe über drei Stunden fand ausnahmslos Cache-Fehlschläge — jeder
- * Aufruf also ein voller Render samt Datenbank-Abfragen, ISR-Write und Übertragung
- * ans Auslieferungsnetz. Das war der größte Einzelposten der Vercel-Rechnung.
+ * 8.909 von 15.757 Funktionsaufrufen der ganzen Domain auf diese eine Route.
  *
- * Sie ist NUR deshalb gefahrlos, weil diese Seiten ohnehin nicht in einer
- * Suchmaschine stehen sollen. Genau diese Voraussetzung prüft der Test — in beide
- * Richtungen, denn sie kann von zwei Seiten kaputtgehen:
+ * SIE IST NUR DESHALB GEFAHRLOS, WEIL GOOGLE DIESE SEITEN GAR NICHT KENNT.
+ * Am 26.08.2026 über die Search Console geprüft: drei Stichproben der Ranglisten
+ * antworten „URL ist Google nicht bekannt", während die Bundesland-Seite
+ * „Gesendet und indexiert" trägt. Wir nehmen also nichts aus dem Index — wir
+ * hören auf, etwas zum Abholen anzubieten, das nie jemand abholen sollte.
  *
- *   1. Jemand nimmt die Ranglisten in die Sitemap auf. Dann melden wir eine
- *      Adresse zur Indexierung an, die wir im selben Atemzug vom Abruf
- *      ausschließen — Google meldet das als Fehler, und es ist derselbe
- *      Widerspruch, den die Projektanweisung für die Kategorie-Übersicht des
- *      Balkon-Clusters ausdrücklich verbietet.
- *   2. Jemand schaltet die Ranglisten auf indexierbar. Dann soll die Seite
- *      gefunden werden, kann es aber nicht, weil der Crawler sie nicht laden
- *      darf — die Sperre würde von einer Kostenmaßnahme zu einem SEO-Schaden,
- *      ohne dass es im Browser auffiele.
+ * DIE FRÜHERE BEGRÜNDUNG WAR FALSCH HERUM und ist hier nur festgehalten, damit
+ * sie niemand wieder aufschreibt: „gefahrlos, weil die Seiten auf noindex
+ * stehen" ist kein Argument, sondern ein Widerspruch. Eine per robots.txt
+ * gesperrte Seite darf Google nicht laden, ALSO LIEST GOOGLE DAS NOINDEX NIE.
+ * Für eine Seite, die bereits im Index steht, wäre die Sperre deshalb der
+ * falsche Weg (sie bliebe als nackter Eintrag drin). Für eine Seite, die Google
+ * nicht kennt, ist sie der richtige — und diese Voraussetzung prüft der Test
+ * unten, so gut es ohne Search-Console-Zugang geht: über das noindex in der
+ * Route UND darüber, dass sie in keiner Sitemap steht.
  *
  * Wer die Ranglisten indexieren will, muss BEIDES ändern: die Sperre hier
- * herausnehmen UND sie in die Sitemap aufnehmen. Der Test zwingt zu dieser
- * bewussten Entscheidung, statt sie halb passieren zu lassen.
+ * herausnehmen UND sie in die Sitemap aufnehmen.
  */
 
 const RANKING_PFAD = "/solar-atlas/ranking";
+const RANKING_ROUTE = path.join(
+  __dirname, "..", "..", "app", "(site)", "solar-atlas", "ranking", "[[...pfad]]", "page.tsx"
+);
 
 function alleRegeln() {
   const r = robots().rules;
   return Array.isArray(r) ? r : [r];
 }
 
-/** Die Regel, die für ALLE Crawler gilt (userAgent "*"). */
 function allgemeineRegel() {
   return alleRegeln().find((regel) => {
     const ua = regel.userAgent;
@@ -59,34 +60,41 @@ describe("Ranglisten: Crawl-Sperre und Indexierbarkeit dürfen sich nicht widers
   });
 
   it("hält die Startseite offen — gesperrt wird die Gattung, nicht die Domain", () => {
-    const regel = allgemeineRegel();
-    expect(alsListe(regel!.allow)).toContain("/");
+    expect(alsListe(allgemeineRegel()!.allow)).toContain("/");
   });
 
   it("sperrt NICHT die Seiten, die gefunden werden sollen", () => {
-    // Gemeinde-, Kreis- und Förderseiten sind der SEO-Hebel des Projekts.
-    // Dieselbe Zeile wäre dort ein Schaden, den im Browser niemand sieht.
     const gesperrt = alsListe(allgemeineRegel()!.disallow);
     for (const pfad of ["/solar-atlas", "/photovoltaik-foerderung", "/ratgeber", "/balkonkraftwerk"]) {
       expect(gesperrt, `${pfad} darf nicht gesperrt sein`).not.toContain(pfad);
     }
-    // Und die Sperre darf kein Präfix sein, das den Atlas mitnimmt: "/solar-atlas/ranking"
-    // trifft nur die Ranglisten, "/solar-atlas" träfe alle 11.000 Gemeindeseiten.
-    expect(RANKING_PFAD.startsWith("/solar-atlas/")).toBe(true);
     expect(gesperrt.some((p) => p === "/solar-atlas" || p === "/solar-atlas/")).toBe(false);
   });
 
-  it("die Ranglisten stehen auf noindex — sonst wäre die Sperre ein SEO-Schaden", () => {
-    // Die Route setzt atlasRobots(false). Fiele das je auf true, wollte jemand
-    // die Seiten indexiert haben — und die Sperre darüber verhinderte es still.
-    const r = atlasRobots(false);
-    // Der Rückgabetyp erlaubt auch eine Zeichenkette ("noindex, nofollow").
-    // Beide Formen sind zulässig, nur indexierbar darf es nicht sein.
-    if (typeof r === "string") {
-      expect(r).toContain("noindex");
-    } else {
-      expect(r?.index).toBe(false);
-    }
+  /**
+   * DIESER TEST LIEST DIE ROUTE — die erste Fassung tat das NICHT.
+   *
+   * Sie rief `atlasRobots(false)` auf und prüfte, dass dabei `index: false`
+   * herauskommt. `atlasRobots` ist aber eine Einzeiler-Funktion
+   * (`indexable ? {index:true} : {index:false}`) — der Test verglich also eine
+   * Konstante mit sich selbst und konnte per Konstruktion nie rot werden. Wer
+   * in der Route auf `atlasRobots(true)` umstellte, bekam eine indexierbare
+   * Seite hinter einer Crawl-Sperre, und alle Tests blieben grün. Dieselbe
+   * Fehlerklasse wie der Gemeindeschlüssel-Test, der den Fehler mit sich selbst
+   * verglich. Gefunden von einem adversarialen Prüfer am 26.08.2026.
+   */
+  it("die Ranglisten-ROUTE selbst steht auf noindex", () => {
+    const quelle = fs.readFileSync(RANKING_ROUTE, "utf8");
+    expect(
+      /atlasRobots\(\s*false\s*\)/.test(quelle),
+      "Die Ranglisten-Route muss atlasRobots(false) verwenden. Steht dort true, " +
+        "will jemand die Seiten indexiert haben — dann muss zuerst die Sperre in " +
+        "app/robots.ts weg, sonst darf Google die Seite nicht einmal laden."
+    ).toBe(true);
+    expect(
+      /atlasRobots\(\s*true\s*\)/.test(quelle),
+      "Die Ranglisten-Route darf nirgends atlasRobots(true) setzen."
+    ).toBe(false);
   });
 
   it("keine gesperrte Adresse steht in der Sitemap", async () => {

@@ -347,7 +347,7 @@ export function MastrMap({
             border: `1px solid ${v("--color-border")}`,
             borderRadius: 8,
             padding: "6px 10px",
-            fontSize: 13,
+            fontSize: v("--font-size-small"),
             pointerEvents: "none",
             boxShadow: v("--shadow-sm"),
           }}
