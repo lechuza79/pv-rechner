@@ -180,6 +180,46 @@ damit keine Freigabe für das, was heute rausginge. Sie verfallen, und das ist d
 Story und rechnet ihn bei jeder Änderung neu, damit sichtbar ist, dass die Sperre wirkt. Das
 Erteilen gehört zur Kette „planen → senden", die der Betreiber als nächsten Schritt genannt hat.
 
+## OFFEN: das quadratische Story-Visual für die Ortsseiten (05.09.2026)
+
+**Die Aufgabe:** Eine quadratische Bildkachel, die dieselben Formen zeigt wie die
+Beitrags-Karte, aber (a) eine **beliebige Breite** annimmt statt einer festen und
+(b) ihre Farben aus den **Seiten-Tokens** nimmt, statt sie mit einer eigenen
+Palette zu überschreiben. Sie trägt dann Teaser und Fenster auf den
+Gemeindeseiten — und bleibt für den Beitrag, was sie ist.
+
+**Warum das hierher gehört und nicht auf die Ortsseite:** Dort sind am
+05.09.2026 drei Anläufe gescheitert, jeder am selben Punkt.
+
+1. Die Beitrags-Karte ist fest **1080 Pixel** breit. In einen 300 Pixel breiten
+   Teaser skaliert lief sie über und schnitt die Überschrift ab. Die kleine
+   Stufe wiederum lässt Ring und Säule bewusst weg und fällt auf Balken zurück
+   („zwei Ringe auf 240 Pixeln wären zwei graue Kringel") — damit ist die
+   Formenwahl der Geschichte wirkungslos.
+2. Sie **überschreibt die Farb-Tokens** mit ihrer eigenen Palette. Für ein Bild
+   in einem fremden Feed ist das genau richtig; auf einer Seite mit
+   Tageslicht-Theme stand sie als weißer Block auf dunklem Grund.
+3. Eine dritte, auf der Ortsseite selbst gezeichnete Fassung wäre die **zweite
+   Wahrheit** neben den vier abgenommenen Templates — sie war kurz da und ist
+   wieder heraus.
+
+**Was schon steht und benutzt werden kann:** Die Gemeindeseiten rechnen sieben
+Geschichten je Ort und geben sie in derselben Form heraus wie ein Fund des
+Suchlaufs — Schlagzeile, benannte Werte mit Einheit, Grundlage, dazu die
+gewählte Bildform und, bei Anteilen, das Ganze. Die Zuordnung Geschichte →
+Form folgt den Regeln des Registers, nicht dem Geschmack: Balken nur bei
+deutlich verschiedenen Längen, Ring nur mit einem Ganzen, Säule für zwei Werte
+ohne eines, sonst die Einzelkennzahl.
+
+**Bis dahin:** Der Story-Block auf den Gemeindeseiten ist ausgeblendet. Eine
+schmucklose Kartenreihe auf einer Seite, die im Kommunen-Outreach verlinkt wird,
+ist schlechter als keine.
+
+**Eine Regel des Betreibers, die dabei gilt:** Zahlen sind farblich **neutral**.
+Farbe bekommt nur eine Tendenz — ein Zuwachs, ein Rückgang, ein Abstand. Eine
+Größe wie „12,6 Mio €" ist weder positiv noch negativ, und ein Akzent darauf
+entwertet die Stellen, an denen Farbe wirklich etwas sagt.
+
 ## Das Template-System (27.08.2026)
 
 **Ein Template ist Bildform × Farbschema**, und beliebig viele Beiträge hängen daran — „Säule

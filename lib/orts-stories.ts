@@ -40,6 +40,7 @@
 // die Zahlen herein, die die Gemeindeseite ohnehin lädt.
 
 import { FEED_IN_YEARS } from "./constants";
+import { fmtPvLeistung } from "./atlas-format";
 import { eigenverbrauchAnteilRegion, einspeiseCt, erzeugungKwh } from "./atlas-impact";
 import type { VorratsFund } from "./social-fundvorrat";
 
@@ -61,17 +62,46 @@ export type StoryDaten = {
   speicher: { by_segment?: { segment: string; count: number }[]; kwh_batterie: number };
   /** Datenstand des Anlagenregisters (ISO). */
   standIso: string;
+  /**
+   * Zubau je Monat, die letzten gut zwei Jahre — aus der eigenen Monatstabelle.
+   *
+   * Der Jahresbestand ist dafür zu grob: Ein Ort, in dem binnen dreier Monate
+   * auffällig viel ans Netz geht, sieht in der Jahreszahl aus wie jeder andere.
+   * Fehlt die Angabe, entfallen die beiden Monatsfamilien — kein Rückfall auf
+   * das Jahr, das wäre eine andere Aussage.
+   */
+  monate?: { monat: string; segment: string; count: number }[];
+  /**
+   * Wohnungen nach Gebäudegröße aus dem Zensus — der Nenner, den das
+   * Anlagenregister nicht kennt.
+   */
+  wohnungen?: { gesamt: number; einZwei: number } | null;
 };
 
 // ─── Was herauskommt ─────────────────────────────────────────────────────────
 
 /** Die Familie aus dem Katalog, aus der die Geschichte kommt. */
-export type StoryKategorie = "G4.1" | "G4.2" | "fund";
+export type StoryKategorie =
+  | "G2.zubau"
+  | "G3.vergleich"
+  | "G4.1"
+  | "G4.2"
+  | "G10"
+  | "G14"
+  | "G15"
+  | "G16"
+  | "fund";
 
 /** Was die Kategorie dem Leser sagt — nie das Kürzel. */
 export const KATEGORIE_LABEL: Record<StoryKategorie, string> = {
   "G4.1": "Was der Ort eingespielt hat",
   "G4.2": "Stichtag",
+  "G2.zubau": "Was sich bewegt",
+  G10: "Auffällig",
+  G15: "Wo noch nichts steht",
+  "G3.vergleich": "Im Vergleich",
+  G14: "Wo der Strom herkommt",
+  G16: "Wie sich die Anlagen verändert haben",
   // Ein Fund bringt seine eigene Kategorie mit (der Suchlauf setzt sie je
   // Muster) — dieses Label greift nur, wo sie fehlt.
   fund: "Aus den Daten",
@@ -85,6 +115,25 @@ export type StoryWert = {
    *  im Bild groß, die übrigen klein daneben. */
   haupt?: boolean;
 };
+
+/**
+ * Die Bildform, in der diese Geschichte gezeigt wird.
+ *
+ * Nicht frei gewählt, sondern aus den fünf abgenommenen Formen des
+ * Beitrags-Registers (lib/social-bildformen.ts) — und nach DEREN Regeln:
+ *
+ *  · „Balken" trägt nur, wenn die Längen wirklich auseinandergehen.
+ *  · „Ringpaar" braucht ein Ganzes; ohne eines behauptet der leere Rest etwas,
+ *    das es nicht gibt.
+ *  · „Säule" ist der Fall ZWEI Werte OHNE Ganzes — der Unterschied ist die
+ *    überragende Fläche.
+ *  · „Einzelkennzahl" für alles, wo ein Vergleich nichts zeigt.
+ *
+ * Die Form steht an der Geschichte und nicht in der Oberfläche: Wer eine
+ * Familie ergänzt, entscheidet damit auch, wie sie aussieht — sonst rät die
+ * Karte, und Raten heißt hier, eine Aussage über die Daten zu treffen.
+ */
+export type StoryBildform = "vergleich" | "kennzahl" | "donut" | "saeule";
 
 export type OrtsStory = {
   /**
@@ -118,6 +167,16 @@ export type OrtsStory = {
   grundlage: string;
   /** Höher ist stärker. Wer eine Geschichte ergänzt, entscheidet, wo sie steht. */
   gewicht: number;
+  /** Wie sie gezeigt wird — siehe {@link StoryBildform}. */
+  bildform: StoryBildform;
+  /**
+   * Das Ganze, auf das sich die Werte beziehen — nur bei Anteilen.
+   *
+   * Es entscheidet über die Form: Mit Ganzem darf der Ring stehen, ohne eines
+   * nicht. Fehlt es fälschlich, sagt das Bild etwas über einen Rest, den es
+   * nicht gibt.
+   */
+  ganzes?: number;
 };
 
 // ─── Schranken ───────────────────────────────────────────────────────────────
@@ -255,6 +314,7 @@ function storyEingespielt(d: StoryDaten, heuteJahr: number): OrtsStory | null {
 
   return {
     kennung: "eingespielt",
+    bildform: "kennzahl",
     kategorie: "G4.1",
     kategorieLabel: KATEGORIE_LABEL["G4.1"],
     titel:
@@ -301,6 +361,7 @@ function storyAuslauf(d: StoryDaten, heuteJahr: number): OrtsStory | null {
 
   return {
     kennung: "auslauf",
+    bildform: "kennzahl",
     kategorie: "G4.2",
     kategorieLabel: KATEGORIE_LABEL["G4.2"],
     titel: `${anlagenWort(betroffen)} in ${d.name} verlieren Ende ${heuteJahr} die Einspeisevergütung`,
@@ -332,7 +393,405 @@ function storyAuslauf(d: StoryDaten, heuteJahr: number): OrtsStory | null {
 // weiterhin (lib/atlas-impact.ts) — es fehlt eine Form, in der sie jemandem
 // etwas sagen, nicht die Rechnung.
 
+// ─── G16 — Die Kohorte ───────────────────────────────────────────────────────
+
+/**
+ * Wie sich die typische Anlage dieses Orts über die Jahrgänge verändert hat.
+ *
+ * DIE FAMILIE AUS DEM KATALOG, MIT ORTSGROSSER SCHWELLE. Der bundesweite
+ * Suchlauf verlangt 1.000 Anlagen je Baujahr — keine einzige Gemeinde kommt
+ * dorthin, die Familie fiele auf Ortsebene also ersatzlos aus. Gefragt wird
+ * dieselbe Frage („was ist heute anders als früher"), gemessen wird sie an der
+ * Grundmenge, die ein Ort hat.
+ *
+ * NUR PRIVATE DÄCHER: Ein einzelner Gewerbebau oder eine Freifläche verschiebt
+ * den Mittelwert eines Jahrgangs um ein Vielfaches — die Aussage wäre dann
+ * nicht „die typische Anlage", sondern „es gab ein Projekt".
+ */
+function storyKohorte(d: StoryDaten): OrtsStory | null {
+  const letztes = letztesVollesJahr(d.standIso);
+  const jeJahr = new Map<number, { count: number; kwp: number }>();
+  for (const z of d.solar.by_year_segment) {
+    if (z.segment !== "privat_dach" || z.year < 2000 || z.year > letztes) continue;
+    const e = jeJahr.get(z.year) ?? { count: 0, kwp: 0 };
+    e.count += z.count;
+    e.kwp += z.kwp;
+    jeJahr.set(z.year, e);
+  }
+  // Zwei Jahrgänge, die je für sich tragen — der früheste und der letzte volle.
+  const brauchbar = [...jeJahr.entries()]
+    .filter(([, e]) => e.count >= MIN_ANLAGEN_FUER_KOHORTE && e.kwp > 0)
+    .sort((a, b) => a[0] - b[0]);
+  if (brauchbar.length < 2) return null;
+  const [frueh, frE] = brauchbar[0];
+  const [spaet, spE] = brauchbar[brauchbar.length - 1];
+  if (spaet - frueh < MIN_ABSTAND_JAHRE) return null;
+
+  const alt = runde(frE.kwp / frE.count, 1);
+  const neu = runde(spE.kwp / spE.count, 1);
+  if (alt <= 0 || neu <= 0) return null;
+  const faktor = runde(neu / alt, 1);
+  if (faktor < MIN_WACHSTUM_KOHORTE) return null;
+
+  return {
+    kennung: "kohorte",
+    bildform: "saeule",
+    kategorie: "G16",
+    kategorieLabel: KATEGORIE_LABEL.G16,
+    titel: `Die typische Dachanlage in ${d.name} ist ${faktor.toLocaleString("de-DE")}-mal so groß wie ${frueh}`,
+    text:
+      `${frueh} hatte eine neue private Dachanlage in ${d.name} im Schnitt ${alt.toLocaleString("de-DE")} kWp, ` +
+      `${spaet} waren es ${neu.toLocaleString("de-DE")} kWp. Größere Module, mehr Fläche — und ein Dach, ` +
+      `das heute für Wärmepumpe und Auto mitgedacht wird.`,
+    werte: [
+      { name: `${spaet} im Schnitt`, wert: neu, einheit: "kWp", haupt: true },
+      { name: `${frueh} im Schnitt`, wert: alt, einheit: "kWp" },
+    ],
+    grundlage:
+      `Mittelwert über die privaten Dachanlagen des jeweiligen Baujahrs — nur Jahrgänge mit ` +
+      `mindestens ${MIN_ANLAGEN_FUER_KOHORTE} Anlagen, sonst beschreibt der Mittelwert einen Einzelfall. ` +
+      `Gewerbe und Freifläche bleiben draußen: Ein einzelnes Projekt verschöbe den Schnitt um ein Vielfaches.`,
+    gewicht: 70,
+  };
+}
+
+/** Ab so vielen Anlagen trägt der Mittelwert eines Jahrgangs. */
+export const MIN_ANLAGEN_FUER_KOHORTE = 5;
+/** So weit müssen die verglichenen Jahrgänge auseinanderliegen. */
+const MIN_ABSTAND_JAHRE = 5;
+/** Unter diesem Faktor ist es keine Veränderung, sondern Rauschen. */
+const MIN_WACHSTUM_KOHORTE = 1.3;
+
+// ─── G14 — Die Flächenfrage ──────────────────────────────────────────────────
+
+/**
+ * Worauf der Solarstrom dieses Orts steht — Dach, Gewerbe oder Freifläche.
+ *
+ * Der Katalog nennt die Familie „kommunalpolitisch heiß"; der Betreiber hat sie
+ * am 05.09.2026 als unkritisch eingestuft. Sie bleibt trotzdem streng
+ * beschreibend: Anteile, keine Bewertung, keine Empfehlung.
+ *
+ * ERZÄHLT WIRD NUR EIN DEUTLICHES BILD. Eine Verteilung nahe am Üblichen ist
+ * keine Nachricht — und der Ring auf der Seite zeigt die Anteile ohnehin. Ein
+ * Satz entsteht erst, wenn eine Form klar dominiert.
+ */
+function storyFlaeche(d: StoryDaten): OrtsStory | null {
+  const kwp = (seg: string) => d.solar.by_segment.find((x) => x.segment === seg)?.kwp ?? 0;
+  const frei = kwp("freiflaeche");
+  const gewerbe = kwp("gewerbe_dach");
+  const privat = kwp("privat_dach");
+  const summe = frei + gewerbe + privat;
+  if (summe <= 0 || d.solar.total_count < MIN_ANLAGEN_FUER_GELD) return null;
+
+  const anteile = [
+    { name: "Freifläche", wert: frei },
+    { name: "Gewerbedächer", wert: gewerbe },
+    { name: "private Dächer", wert: privat },
+  ].sort((a, b) => b.wert - a.wert);
+  const top = anteile[0];
+  const anteil = Math.round((top.wert / summe) * 100);
+  if (anteil < MIN_ANTEIL_FUER_FLAECHE) return null;
+
+  return {
+    kennung: "flaeche",
+    bildform: "vergleich",
+    kategorie: "G14",
+    kategorieLabel: KATEGORIE_LABEL.G14,
+    titel: `${anteil} % der Solarleistung in ${d.name} stehen auf ${top.name === "private Dächer" ? "privaten Dächern" : top.name}`,
+    text:
+      `Von ${fmtPvLeistung(summe)} installierter Leistung entfallen ${anteil} % auf ${top.name}. ` +
+      `Die drei Formen sagen Verschiedenes: Ein privates Dach gehört jemandem im Ort, eine Freifläche ` +
+      `meist einem Investor von außerhalb.`,
+    werte: [
+      { name: top.name, wert: anteil, einheit: "%", haupt: true },
+      ...anteile.slice(1).map((a) => ({
+        name: a.name,
+        wert: Math.round((a.wert / summe) * 100),
+        einheit: "%",
+      })),
+    ],
+    grundlage:
+      `Anteile an der installierten Leistung, nicht an der Zahl der Anlagen — nach Stückzahl ` +
+      `dominieren immer die kleinen. Balkonkraftwerke bleiben draußen; sie zählen zur Leistung ` +
+      `kaum und verschöben nur die Prozentzahlen.`,
+    gewicht: 65,
+  };
+}
+
+/** Ab diesem Anteil dominiert eine Form deutlich genug für einen Satz. */
+const MIN_ANTEIL_FUER_FLAECHE = 45;
+
+// ─── G15 — Was nicht gebaut wurde ────────────────────────────────────────────
+
+/**
+ * Wie viele Dächer es hier überhaupt gibt — und auf wie vielen etwas steht.
+ *
+ * DER NENNER IST DIE GANZE AUSSAGE. Das Anlagenregister kennt Anlagen, keine
+ * Gebäude; ohne die Zahl der Dächer lässt sich „hier wurde wenig gebaut" nicht
+ * von „hier gibt es kaum eigene Dächer" unterscheiden. Der Zensus liefert je
+ * Gemeinde die Wohnungen nach Gebäudegröße.
+ *
+ * GERECHNET WIRD MIT WOHNUNGEN, NICHT MIT GEBÄUDEN, und das steht auch so da:
+ * Der Zensus führt in dieser Tabelle Wohnungen. Ein Zweifamilienhaus zählt
+ * darin zweimal, hat aber ein Dach — die Quote ist deshalb eine Untergrenze,
+ * und die Richtung des Fehlers gehört an die Zahl.
+ */
+function storyWohnform(d: StoryDaten): OrtsStory | null {
+  const w = d.wohnungen;
+  if (!w || w.gesamt < MIN_WOHNUNGEN) return null;
+  const anteil = Math.round((w.einZwei / w.gesamt) * 100);
+  const anlagen = segSumme(d, "privat_dach").count;
+  if (anlagen < MIN_ANLAGEN_FUER_GELD) return null;
+
+  return {
+    kennung: "wohnform",
+    bildform: "donut",
+    kategorie: "G15",
+    kategorieLabel: KATEGORIE_LABEL.G15,
+    titel: `${anteil} % der Wohnungen in ${d.name} liegen in Häusern mit ein oder zwei Wohnungen`,
+    text:
+      `Das sind ${nf(w.einZwei)} von ${nf(w.gesamt)} Wohnungen — dort ist ein eigenes Dach die Regel. ` +
+      `Auf privaten Dächern stehen bisher ${anlagenWort(anlagen)}. In einer Großstadt ist dieses ` +
+      `Verhältnis umgekehrt: Dort liegt die Mehrheit der Wohnungen in Gebäuden, auf denen praktisch ` +
+      `nichts steht.`,
+    werte: [
+      { name: "in Ein- und Zweifamilienhäusern", wert: w.einZwei, einheit: "", haupt: true },
+      { name: "in größeren Gebäuden", wert: w.gesamt - w.einZwei, einheit: "" },
+    ],
+    ganzes: w.gesamt,
+    grundlage:
+      `Wohnungen nach Gebäudegröße aus dem Zensus 2022, Anlagen aus dem Marktstammdatenregister. ` +
+      `Gezählt werden WOHNUNGEN, nicht Gebäude: Ein Zweifamilienhaus zählt zweimal, hat aber ein ` +
+      `Dach — der Anteil ist deshalb eine Untergrenze für den Anteil der Häuser mit eigenem Dach.`,
+    gewicht: 75,
+  };
+}
+
+/** Unter so vielen Wohnungen ist der Anteil ein Zufallswert. */
+const MIN_WOHNUNGEN = 200;
+
+// ─── G2 — Der Zubau des letzten Monats ───────────────────────────────────────
+
+/**
+ * Was im letzten abgeschlossenen Monat ans Netz ging.
+ *
+ * ABSOLUTZAHL UND PRO-KOPF-WERT ZUSAMMEN — das ist die Schranke des Katalogs
+ * (G2.1: „Absolutwert statt Prozent, Prozent auf kleiner Grundmenge erzeugt
+ * Scheinsieger"). Zwei Anlagen in einem 300-Einwohner-Dorf sind pro Kopf ein
+ * Spitzenwert und als Nachricht nichts; nebeneinander sagen beide Zahlen die
+ * Wahrheit.
+ *
+ * DER LETZTE MONAT IST NICHT DER JÜNGSTE IN DER TABELLE: Anlagen werden nach
+ * der Inbetriebnahme gemeldet, die jüngsten Monate sind also untererfasst. Es
+ * zählt der jüngste Monat, der weit genug zurückliegt.
+ */
+function storyMonat(d: StoryDaten): OrtsStory | null {
+  const reif = reifeMonate(d);
+  if (reif.length === 0) return null;
+  const letzter = reif[reif.length - 1];
+  if (letzter.count < MIN_ANLAGEN_MONAT) return null;
+
+  const proTausend =
+    d.population && d.population > 0 ? runde((letzter.count / d.population) * 1000, 1) : null;
+
+  return {
+    kennung: `monat-${letzter.monat}`,
+    bildform: "kennzahl",
+    kategorie: "G2.zubau",
+    kategorieLabel: KATEGORIE_LABEL["G2.zubau"],
+    titel: `${anlagenWort(letzter.count)} gingen in ${d.name} im ${monatsName(letzter.monat)} ans Netz`,
+    text:
+      `Das ist der jüngste Monat, für den die Meldungen weitgehend vollständig sind — Anlagen ` +
+      `werden nach der Inbetriebnahme registriert, die letzten Wochen sind deshalb immer ` +
+      `untererfasst.` +
+      (proTausend !== null
+        ? ` Auf die Einwohnerzahl umgelegt sind das ${proTausend.toLocaleString("de-DE")} je 1.000.`
+        : ""),
+    werte: [
+      { name: `neu im ${monatsName(letzter.monat)}`, wert: letzter.count, einheit: "", haupt: true },
+      ...(proTausend !== null
+        ? [{ name: "je 1.000 Einwohner", wert: proTausend, einheit: "" }]
+        : []),
+    ],
+    grundlage:
+      `Zubau nach Anschlussmonat aus dem Marktstammdatenregister. Die absolute Zahl steht ` +
+      `bewusst zuerst: Auf kleiner Grundmenge macht eine Pro-Kopf-Zahl aus zwei Anlagen einen ` +
+      `Spitzenwert. Die jüngsten Monate sind untererfasst und bleiben deshalb außen vor.`,
+    gewicht: 85,
+  };
+}
+
+// ─── G10 — Die Anomalie ──────────────────────────────────────────────────────
+
+/**
+ * Ein Monat, der aus der eigenen Reihe dieses Orts herausfällt.
+ *
+ * VERGLICHEN WIRD MIT DER EIGENEN GESCHICHTE, nicht mit anderen Orten —
+ * dieselbe Rechnung wie im bundesweiten Suchlauf: der Median aller übrigen
+ * Fenster desselben Orts. Ein Ort, der sonst nichts baut, bekommt dabei eine
+ * Untergrenze von eins als Vergleichswert; „unendlich mal so viel" ist keine
+ * Zahl.
+ *
+ * NUR NACH OBEN. Ein negativer Ausschlag wäre eine Bloßstellung, und der
+ * Katalog verbietet ihn ausdrücklich.
+ */
+function storyAnomalie(d: StoryDaten): OrtsStory | null {
+  const reif = reifeMonate(d);
+  if (reif.length < 8) return null;
+  const werte = reif.map((m) => m.count);
+
+  let besteI = -1;
+  let besterFaktor = 0;
+  for (let i = 0; i < werte.length; i++) {
+    const andere = werte.filter((_, j) => Math.abs(j - i) > 1);
+    if (andere.length < 4) continue;
+    const median = medianVon(andere);
+    const basis = Math.max(1, median);
+    const faktor = werte[i] / basis;
+    if (faktor > besterFaktor) {
+      besterFaktor = faktor;
+      besteI = i;
+    }
+  }
+  if (besteI < 0) return null;
+  const m = reif[besteI];
+  if (m.count < MIN_ANLAGEN_ANOMALIE || besterFaktor < MIN_FAKTOR_ANOMALIE) return null;
+
+  const faktor = runde(besterFaktor, 1);
+  return {
+    kennung: `anomalie-${m.monat}`,
+    bildform: "saeule",
+    kategorie: "G10",
+    kategorieLabel: KATEGORIE_LABEL.G10,
+    titel: `Im ${monatsName(m.monat)} gingen in ${d.name} ${faktor.toLocaleString("de-DE")}-mal so viele Anlagen ans Netz wie sonst`,
+    text:
+      `${anlagenWort(m.count)} in einem Monat, während es in den übrigen Monaten dieses Zeitraums ` +
+      `im Mittel deutlich weniger waren. Woran das lag, sagen die Daten nicht — ein Förderprogramm, ` +
+      `eine Sammelbestellung, ein Bericht in der Zeitung.`,
+    werte: [
+      { name: `im ${monatsName(m.monat)}`, wert: m.count, einheit: "", haupt: true },
+      { name: "so viel wie sonst", wert: faktor, einheit: "-mal" },
+    ],
+    grundlage:
+      `Verglichen wird der Monat mit den übrigen Monaten DESSELBEN Orts (Median), nicht mit ` +
+      `anderen Gemeinden. Nur Ausschläge nach oben; ein schwacher Monat ist keine Nachricht, ` +
+      `sondern eine Bloßstellung. Die jüngsten Monate bleiben außen vor, weil sie untererfasst sind.`,
+    gewicht: 88,
+  };
+}
+
+/** Ab so vielen Anlagen ist ein Monatswert eine Aussage. */
+const MIN_ANLAGEN_MONAT = 3;
+/** Ab so vielen Anlagen trägt ein Ausschlag. */
+const MIN_ANLAGEN_ANOMALIE = 5;
+/** Ab diesem Vielfachen ist es ein Ausschlag und kein Rauschen. */
+const MIN_FAKTOR_ANOMALIE = 2.5;
+/**
+ * So viele Monate am aktuellen Rand bleiben außen vor.
+ *
+ * Anlagen dürfen bis zu einen Monat nach Inbetriebnahme gemeldet werden, und in
+ * der Praxis dauert es länger. Zwei Monate sind die Vorsicht, mit der auch die
+ * Zubau-Story ihr laufendes Jahr kennzeichnet.
+ */
+const UNREIFE_MONATE = 2;
+
+/** Die Monate, deren Meldungen weitgehend vollständig sind — aufsteigend. */
+function reifeMonate(d: StoryDaten): { monat: string; count: number }[] {
+  if (!d.monate?.length) return [];
+  const summe = new Map<string, number>();
+  for (const z of d.monate) summe.set(z.monat, (summe.get(z.monat) ?? 0) + z.count);
+  const sortiert = [...summe.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+  return sortiert.slice(0, Math.max(0, sortiert.length - UNREIFE_MONATE)).map(([monat, count]) => ({ monat, count }));
+}
+
+const MONATSNAMEN = [
+  "Januar", "Februar", "März", "April", "Mai", "Juni",
+  "Juli", "August", "September", "Oktober", "November", "Dezember",
+];
+
+/** "2026-07" oder "2026-07-01" → "Juli 2026". */
+function monatsName(monat: string): string {
+  const [j, m] = monat.split("-");
+  const i = Number(m) - 1;
+  return `${MONATSNAMEN[i] ?? m} ${j}`;
+}
+
+function medianVon(xs: number[]): number {
+  const s = [...xs].sort((a, b) => a - b);
+  const m = Math.floor(s.length / 2);
+  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+}
+
 // ─── Der Aufruf ──────────────────────────────────────────────────────────────
+
+/**
+ * Wo der Ort unter seinesgleichen steht — je Messgröße, innerhalb seiner
+ * Größenklasse, im Landkreis und im Bundesland.
+ *
+ * DAS IST DIE FAMILIE, DIE JEDER ORT HAT. Die gespeicherten Funde des
+ * Suchlaufs treffen naturgemäß nur das Auffällige — gemessen am 05.09.2026:
+ * 313 Funde auf 197 von 11.000 Gemeinden. Eine Platzierung dagegen hat jeder,
+ * auch im Mittelfeld, und genau das ist auf der eigenen Ortsseite eine
+ * Aussage: „Unter den kleinen Gemeinden im Landkreis stehen wir auf Platz 11
+ * von 20."
+ *
+ * DREI SCHRANKEN, alle aus dem Award-Kern übernommen statt neu gesetzt:
+ *  · Verdachtsfälle (`spike`) und zu dünner Bestand (`thin`) fallen raus —
+ *    dieselben Merker, an denen der Kommunen-Aufhänger sie schon aussortiert.
+ *  · Die Vergleichsgruppe muss tragen (MIN_GRUPPE_FUER_RANG); „Platz 2 von 3"
+ *    ist keine Einordnung.
+ *  · Die Kategorie, die der Auszeichnungs-Kasten oben schon zeigt, kommt hier
+ *    NICHT noch einmal — sonst steht dieselbe Aussage zweimal auf der Seite.
+ *
+ * KEIN LOB UND KEINE SCHELTE: Der Satz nennt Rang, Gruppengröße und Wert und
+ * bewertet nicht. Über die EIGENE Gemeinde ist ein hinterer Platz keine
+ * Bloßstellung — sie steht auf ihrer eigenen Seite; über fremde Orte fällt
+ * hier ohnehin kein Wort.
+ */
+function storyVergleich(d: StoryDaten, p: VergleichsPlatz): OrtsStory {
+  const spitze = p.rang === 1;
+  return {
+    kennung: `vergleich-${p.kategorie}-${p.ebene}-${p.klasseSlug}`,
+    bildform: "kennzahl",
+    kategorie: "G3.vergleich",
+    kategorieLabel: KATEGORIE_LABEL["G3.vergleich"],
+    titel: spitze
+      ? `${d.name} steht bei ${p.messgroesse} an der Spitze — ${p.gruppe}`
+      : `${d.name} steht bei ${p.messgroesse} auf Platz ${nf(p.rang)} von ${nf(p.ausN)} — ${p.gruppe}`,
+    text:
+      `Verglichen wird innerhalb der eigenen Größenklasse: ${p.gruppe}. ` +
+      `Der Wert liegt bei ${p.wert}.`,
+    werte: [
+      { name: `von ${nf(p.ausN)}`, wert: p.rang, einheit: "Platz", haupt: true },
+      { name: p.messgroesse, wert: p.rohwert, einheit: p.einheit },
+    ],
+    grundlage:
+      `Rang innerhalb der Größenklasse „${p.klasseLabel}" ${p.gebiet}, aus dem ` +
+      `Anlagenregister gerechnet. Die Größenklasse steht dabei, weil ein Rang ohne ` +
+      `sie eine andere Gruppe behauptet — verglichen wird nie mit allen Orten des ` +
+      `Gebiets, sondern mit den gleich großen.`,
+    gewicht: spitze ? 95 : 80,
+  };
+}
+
+/** Was der Aufrufer aus dem Award-Kern hereinreicht — schon gefiltert. */
+export type VergleichsPlatz = {
+  kategorie: string;
+  ebene: string;
+  klasseSlug: string;
+  klasseLabel: string;
+  /** „Kleine Gemeinden im Landkreis Hersfeld-Rotenburg" */
+  gruppe: string;
+  /** „im Landkreis Hersfeld-Rotenburg" */
+  gebiet: string;
+  messgroesse: string;
+  rang: number;
+  ausN: number;
+  /** Fertig formatiert, mit Einheit — aus derselben Quelle wie die Rangliste. */
+  wert: string;
+  rohwert: number;
+  einheit: string;
+};
 
 /**
  * Ein Fund des Story-Suchlaufs in der Form dieser Datei.
@@ -349,6 +808,9 @@ function ausFund(f: VorratsFund): OrtsStory {
   return {
     kennung: f.kennung,
     kategorie: "fund",
+    // Ein Fund bringt zwei Werte ohne Ganzes mit — das ist der Säulen-Fall.
+    // Trägt er nur einen, fällt die Karte auf die Einzelkennzahl zurück.
+    bildform: (f.werte?.length ?? 0) >= 2 ? "saeule" : "kennzahl",
     kategorieLabel: f.kategorie,
     titel: f.satz,
     text: f.grundlage,
@@ -381,13 +843,25 @@ export function ortsStories(opts: {
    * gezeigt werden darf.
    */
   funde?: VorratsFund[];
+  /** Platzierungen dieses Orts, schon gefiltert (siehe `storyVergleich`). */
+  plaetze?: VergleichsPlatz[];
   /** Das laufende Jahr. Hereingereicht, nicht aus der Uhr gelesen — sonst
    *  liefert dieselbe Funktion im Test je nach Kalendertag ein anderes
    *  Ergebnis. */
   heuteJahr: number;
 }): OrtsStory[] {
-  const { daten, heuteJahr, funde = [] } = opts;
-  return [storyAuslauf(daten, heuteJahr), storyEingespielt(daten, heuteJahr), ...funde.map(ausFund)]
+  const { daten, heuteJahr, funde = [], plaetze = [] } = opts;
+  return [
+    storyAuslauf(daten, heuteJahr),
+    storyEingespielt(daten, heuteJahr),
+    ...plaetze.map((p) => storyVergleich(daten, p)),
+    storyAnomalie(daten),
+    storyMonat(daten),
+    storyWohnform(daten),
+    storyKohorte(daten),
+    storyFlaeche(daten),
+    ...funde.map(ausFund),
+  ]
     .filter((s): s is OrtsStory => s !== null)
     .sort((a, b) => b.gewicht - a.gewicht);
 }

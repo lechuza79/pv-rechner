@@ -52,6 +52,7 @@ export default function GemeindeWidgetShell({
   share = true,
   showCta,
   showEmbed = true,
+  nackt = false,
   einbetten,
   sourceBottomInset = 0,
   children,
@@ -79,6 +80,15 @@ export default function GemeindeWidgetShell({
    */
   showCta?: boolean;
   showEmbed?: boolean;
+  /**
+   * Der Inhalt bringt Überschrift und Rahmen selbst mit.
+   *
+   * Ohne das stehen drei Rahmen ineinander: das Fenster, die Karte mit ihrer
+   * Überschrift, und darin noch einmal die Bildkarte mit ihrer eigenen. Die
+   * Hülle liefert dann nur noch, was der Inhalt NICHT hat — die Aktionen, die
+   * Quellenkante und den Bild-Fuß.
+   */
+  nackt?: boolean;
   /**
    * Der fertige Einbett-Code für DIESEN Ort, hinter dem Knopf der Karte.
    *
@@ -123,15 +133,17 @@ export default function GemeindeWidgetShell({
         onMouseLeave={() => setShowCredit(false)}
         onFocusCapture={() => setShowCredit(true)}
       >
-        <div>
-          <div style={S.title}>{widget.title}</div>
-          <div style={S.sub}>{subline}</div>
-        </div>
+        {!nackt && (
+          <div>
+            <div style={S.title}>{widget.title}</div>
+            <div style={S.sub}>{subline}</div>
+          </div>
+        )}
 
         {/* Body grows, so two cards side by side end at the same height. */}
         <div style={S.body}>
           <div style={S.bodyInner}>
-            <ExportBox style={S.box}>{children}</ExportBox>
+            {nackt ? children : <ExportBox style={S.box}>{children}</ExportBox>}
           </div>
         </div>
 

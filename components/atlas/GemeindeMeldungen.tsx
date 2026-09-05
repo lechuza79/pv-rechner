@@ -13,7 +13,7 @@ import { WIDGETS, widgetFuerMeldung } from "../../lib/widget-registry";
 // Stundensimulation und ein halbes Dutzend Konfigurationen in das Browser-
 // Bündel jeder Ortsseite; genau daran ist diese Komponente beim ersten Versuch
 // abgestürzt. Die Beschriftung der Kategorie kommt fertig an der Geschichte an.
-import type { OrtsStory, StoryWert } from "../../lib/orts-stories";
+import type { OrtsStory } from "../../lib/orts-stories";
 
 /**
  * Die Geschichten über diesen Ort — als Teaser-Reihe, aus der sich jede im
@@ -85,21 +85,18 @@ export default function GemeindeMeldungen({
  * zweiten Klickziel darin ist weder bedienbar noch gültiges Markup.
  */
 function Teaser({ story, onOeffnen }: { story: OrtsStory; onOeffnen: () => void }) {
-  const haupt = hauptwert(story);
   return (
     <button type="button" onClick={onOeffnen} style={S.teaser}>
       <span style={S.art}>{story.kategorieLabel}</span>
-      {haupt && (
-        <span style={S.teaserZahl}>
-          <span style={S.teaserZahlWert}>{fmtWert(haupt)}</span>
-          {haupt.einheit && <span style={S.teaserZahlEinheit}>{haupt.einheit}</span>}
-        </span>
-      )}
-      {/* NICHT die Schlagzeile: Die beginnt mit derselben Zahl, die eine Zeile
-          höher schon groß steht — im Teaser stünde sie damit zweimal. Was der
-          Wert BEDEUTET, sagt sein Name; die Schlagzeile trägt die Karte im
-          Fenster und das Bild, wo sie allein stehen muss. */}
-      {haupt && <span style={S.teaserTitel}>{haupt.name}</span>}
+      {/* AUCH DER TEASER TRÄGT EIN BILD, nicht nur die Zahl. Eine Reihe aus
+          Zahlen und Zeilen liest sich wie ein Inhaltsverzeichnis; was einen
+          Blick anhält, ist die Form. Die kleine Stufe der Bildkarte ist genau
+          dafür da — sie lässt weg, statt zu schrumpfen. */}
+      <span style={S.teaserTitel}>{story.titel}</span>
+      {/* KEINE Zeile unter dem Bild: Die Bildkarte trägt Zahl UND Beschriftung
+          schon; ein zweites „seit 2000 geflossen" darunter ist dieselbe Angabe
+          zweimal. Was der Teaser darüber hinaus braucht, ist nur der Weg
+          hinein. */}
       <span style={S.teaserMehr}>Ansehen</span>
     </button>
   );
@@ -218,14 +215,19 @@ function StoryKarte({
   standIso: string;
 }) {
   // Die Schlagzeile IST der Titel der Karte — auf der Seite wie im Bild.
+  // Der Titel der Karte IST die Schlagzeile — er trägt sie ins Bild, das
+  // weitergegeben wird. Im Fenster steht sie damit zweimal: einmal als
+  // Kartentitel, einmal im Bild. Deshalb rendert das Bild seine Aussage nicht
+  // noch einmal (siehe `alsBild`).
   const widget = widgetFuerMeldung(WIDGETS.gemeindeMeldung, name, story.titel, liveUrl);
-  const haupt = hauptwert(story);
-  const neben = story.werte.filter((w) => !w.haupt);
 
   return (
     <GemeindeWidgetShell
       widget={widget}
       subline={`${name} · ${story.kategorieLabel}`}
+      // Die Bildkarte trägt Überschrift und Rahmen selbst — sonst stehen drei
+      // ineinander (Fenster, Hüllenkarte, Bildkarte).
+      nackt
       filename={`solar-check-${story.kennung}`}
       // Die Quellenkante erwartet ein FERTIG FORMATIERTES Datum, nicht das
       // ISO-Feld: Ihr Rückfall ist das heutige Datum in deutscher Schreibweise,
@@ -246,65 +248,47 @@ function StoryKarte({
       showEmbed={false}
     >
       <div style={S.inhalt}>
-        {haupt && (
-          <div style={S.hauptZeile}>
-            {/* Zahl und Einheit getrennt und in EINER Zeile gehalten: In einer
-                schmalen Karte bricht „14,2 Mio €" sonst zwischen beiden um, und
-                die Einheit steht allein in der zweiten Zeile so groß wie der
-                Wert. */}
-            <span style={S.hauptWert}>{fmtWert(haupt)}</span>
-            {haupt.einheit && <span style={S.hauptEinheit}>{haupt.einheit}</span>}
-          </div>
-        )}
-        {haupt && <div style={S.hauptName}>{haupt.name}</div>}
+        {/* TEASER-STUFE, nicht die volle: Die volle Karte ist für ein 1080er
+            Bild gebaut; in ein 560 Pixel breites Fenster skaliert lief sie über
+            und schnitt die Überschrift ab. Die kleine Stufe LÄSST WEG statt zu
+            schrumpfen — sie behält die Aussage und die eine Zahl, auf die es
+            ankommt, und das ist hier genau richtig. */}
+        {/* VOLLE STUFE, herunterskaliert — nicht die kleine.
+            Die kleine Stufe lässt Ring und Säule bewusst weg und fällt auf
+            Balken zurück („zwei Ringe auf 240 Pixeln wären zwei graue
+            Kringel"). Damit wäre die Formenwahl an der Geschichte wirkungslos.
+            Die volle Karte ist 1080 breit; auf 0,48 skaliert passt sie in das
+            560 Pixel breite Fenster. Bei 0,62 lief sie über und schnitt die
+            Überschrift ab — gemessen, nicht geschätzt. */}
+        <p style={S.text}>{story.text}</p>
 
         <p style={S.text}>
           {story.text}{" "}
           <InfoTooltip title="Woran diese Zahl hängt">{story.grundlage}</InfoTooltip>
         </p>
-
-        {neben.length > 0 && (
-          <div style={S.nebenReihe}>
-            {neben.map((w) => (
-              <div key={w.name} style={S.neben}>
-                <div style={S.nebenWert}>
-                  <span>{fmtWert(w)}</span>
-                  {w.einheit && <span style={S.nebenEinheit}>{w.einheit}</span>}
-                </div>
-                {/* Platz für zwei Zeilen: Bricht eine Beschriftung um und die
-                    daneben nicht, stünde deren Zahl eine Zeile tiefer als die
-                    Nachbarwerte, und die Reihe liest sich nicht mehr als
-                    Raster. */}
-                <div style={S.nebenName}>{w.name}</div>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
     </GemeindeWidgetShell>
   );
 }
 
-/** Die tragende Zahl, falls es eine gibt. */
-function hauptwert(s: OrtsStory): StoryWert | undefined {
-  return s.werte.find((w) => w.haupt) ?? s.werte[0];
-}
-
 /**
- * Eine Zahl in deutscher Schreibweise, mit so vielen Nachkommastellen wie sie
- * wirklich trägt.
+ * KEINE EIGENE ZEICHNUNG MEHR (05.09.2026).
  *
- * Nicht über eine feste Stellenzahl: „14,2 Mio €" braucht eine, „1.240 Anlagen"
- * keine — und eine erzwungene Null hinter dem Komma behauptet eine Genauigkeit,
- * die eine gerundete Anlagenzahl nicht hat.
+ * Hier stand kurz eine dritte Fassung der Bildformen, mit den Tokens der Seite
+ * gezeichnet — nachdem die Beitrags-Karte an ihrer festen Breite und ihrer
+ * eigenen Palette gescheitert war. Sie war damit die zweite Wahrheit neben den
+ * vier abgenommenen Templates, und der Einheiten-Wächter hat sie prompt beim
+ * ersten Lauf erwischt: eine Einheit an eine Zahl geklebt, statt aus der einen
+ * Quelle zu formatieren.
+ *
+ * Das quadratische Story-Visual entsteht dort, wo die Formenlehre wohnt
+ * (lib/social-bildformen.ts, Übergabe in docs/redaktionssystem-uebergabe.md).
+ * Bis dahin trägt die Karte ihren Text — und der Block ist auf der Seite
+ * ausgeblendet.
  */
-function fmtWert(w: StoryWert): string {
-  const stellen = Number.isInteger(w.wert) ? 0 : 1;
-  return w.wert.toLocaleString("de-DE", {
-    minimumFractionDigits: stellen,
-    maximumFractionDigits: stellen,
-  });
-}
+
+
+
 
 /** "2026-08-05" → "05.08.2026" — dieselbe Schreibweise, die die Quellenkante
  *  ohne Angabe selbst erzeugt. */
@@ -350,12 +334,40 @@ const S: Record<string, React.CSSProperties> = {
     letterSpacing: "0.04em",
     color: v("--color-text-muted"),
   },
+  teaserBild: { display: "block", width: "100%" },
+  zahlZeile: { display: "flex", alignItems: "baseline", gap: 5, whiteSpace: "nowrap" },
+  // Neutral: Eine Größe ist weder positiv noch negativ. Farbe bleibt Tendenzen.
+  zahl: { fontWeight: 700, lineHeight: 1.05, color: v("--color-text-primary") },
+  zahlEinheit: {
+    fontSize: v("--font-size-small"),
+    fontWeight: 600,
+    color: v("--color-text-secondary"),
+  },
+  bildLabel: {
+    marginTop: 6,
+    fontSize: v("--font-size-micro"),
+    color: v("--color-text-muted"),
+    lineHeight: 1.3,
+  },
+  leiste: {
+    marginTop: 8,
+    width: "100%",
+    borderRadius: 4,
+    background: v("--color-border-muted"),
+    overflow: "hidden",
+  },
+  leisteVoll: { height: "100%", background: v("--color-accent"), borderRadius: 4 },
+  saeulen: { marginTop: 8, display: "flex", alignItems: "flex-end", gap: 8 },
+  saeulePaar: { flex: 1, height: "100%", display: "flex", alignItems: "flex-end" },
+  saeule: { width: "100%", borderRadius: "4px 4px 0 0" },
   teaserZahl: { display: "flex", alignItems: "baseline", gap: 4, whiteSpace: "nowrap" },
+  // Farbe trägt hier nichts: Eine Größe ist weder positiv noch negativ. Der
+  // Akzent bleibt den Tendenzen vorbehalten (Betreiber, 05.09.2026).
   teaserZahlWert: {
     fontSize: v("--font-size-display-sm"),
     fontWeight: 700,
     lineHeight: 1.1,
-    color: v("--color-accent"),
+    color: v("--color-text-primary"),
   },
   teaserZahlEinheit: {
     fontSize: v("--font-size-small"),
@@ -376,13 +388,16 @@ const S: Record<string, React.CSSProperties> = {
   },
 
   // ── Karte im Fenster ──────────────────────────────────────────────────────
+  // Die skalierte Karte bringt ihre eigene Breite mit; der Rahmen fängt sie
+  // ab, damit sie in der Spalte nicht überläuft.
+  bildRahmen: { overflow: "hidden", display: "flex", justifyContent: "center" },
   inhalt: { alignSelf: "stretch", width: "100%", display: "flex", flexDirection: "column", gap: space.sm },
   hauptZeile: { display: "flex", alignItems: "baseline", gap: 6, whiteSpace: "nowrap" },
   hauptWert: {
     fontSize: v("--font-size-display-md"),
     fontWeight: 700,
     lineHeight: 1,
-    color: v("--color-accent"),
+    color: v("--color-text-primary"),
   },
   hauptEinheit: {
     fontSize: v("--font-size-body"),

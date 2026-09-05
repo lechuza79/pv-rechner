@@ -93,6 +93,37 @@ export function moeglicheFormen(bild: PostBild): PostBild["art"][] {
  */
 export type Template = { art: PostBild["art"]; stil: KartenStil; name: string };
 
+/**
+ * OFFEN: das quadratische Story-Visual für die Ortsseiten (05.09.2026).
+ *
+ * Die Gemeindeseiten rechnen seit dem 05.09.2026 sieben Geschichten je Ort
+ * (lib/orts-stories.ts) und geben sie in derselben Form heraus wie ein Fund:
+ * Schlagzeile, benannte Werte mit Einheit, Grundlage. Was fehlt, ist das Bild —
+ * und es gehört HIERHER, nicht auf die Ortsseite.
+ *
+ * DREI ANLÄUFE AUF DER SEITE SIND AM SELBEN PUNKT GESCHEITERT, und der Grund
+ * ist kein Maßfehler, sondern eine Eigenschaft der Beitrags-Karte:
+ *
+ *  1. Sie ist FEST 1080 PIXEL breit (`BREITE` in components/social/SocialKarte).
+ *     In einen 300 Pixel breiten Teaser skaliert lief sie über und schnitt die
+ *     Überschrift ab; die kleine Stufe wiederum lässt Ring und Säule bewusst
+ *     weg und fällt auf Balken zurück — womit die Formenwahl wirkungslos wird.
+ *  2. Sie ÜBERSCHREIBT die Farb-Tokens mit ihrer eigenen Palette
+ *     (`kartenTokens`). Das ist für ein Bild in einem fremden Feed genau
+ *     richtig und auf einer Seite mit Tageslicht-Theme falsch: Auf dunklem
+ *     Grund stand ein weißer Block.
+ *
+ * WAS GEBRAUCHT WIRD: eine quadratische Kachel, die (a) eine beliebige Breite
+ * annimmt statt einer festen, und (b) ihre Farben aus den Seiten-Tokens nimmt,
+ * statt sie zu ersetzen — mit denselben Formen und denselben Regeln. Dieselbe
+ * Kachel trägt dann Teaser (klein) und Fenster (groß) auf der Ortsseite und
+ * bleibt für den Beitrag das, was sie ist.
+ *
+ * WAS NICHT GEBRAUCHT WIRD: eine dritte Zeichnung. Auf der Ortsseite stand
+ * kurzzeitig eine eigene, mit Seiten-Tokens gezeichnete Fassung — sie war die
+ * zweite Wahrheit neben den Templates hier und ist deshalb wieder heraus. Die
+ * Ortsseite ist bis dahin ausgeblendet.
+ */
 export const TEMPLATES: Template[] = [
   { art: "saeule", stil: "hell", name: "Säule hell" },
   { art: "donut", stil: "highlight", name: "Ringpaar Highlight" },

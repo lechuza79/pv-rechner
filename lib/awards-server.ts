@@ -3,6 +3,9 @@ import { supabase } from "./supabase-server";
 import { withDbTimeout } from "./db-timeout";
 import { AWARD_CATEGORY_BY_KEY, dedupFreiflaeche, formatAwardValue, type GemeindeStats } from "./awards";
 import { bundeslandByAgs } from "./mastr-regions";
+import { getRegionById } from "./atlas";
+import { ortPhrase } from "./atlas-orte";
+import type { VergleichsPlatz } from "./orts-stories";
 import {
   LEVEL_LABEL,
   scopeIn,
@@ -11,6 +14,7 @@ import {
   selectHook,
   type HookExample,
   type HookKind,
+  type HookLevel,
   type HookSettings,
   type Placement,
   DEFAULT_HOOK_SETTINGS,
@@ -168,6 +172,113 @@ export async function hatAuszeichnung(regionId: string): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+/**
+ * Die Platzierungen EINES Orts — alle, nicht nur die beste.
+ *
+ * WOFÜR: Der Auszeichnungs-Kasten zeigt genau eine, und nur wo der Ort vorn
+ * liegt. Für den Vergleich innerhalb der eigenen Größenklasse („wo stehen wir
+ * unter den kleinen Gemeinden im Landkreis") ist auch ein Platz im Mittelfeld
+ * eine Aussage — und die gibt es für JEDEN Ort, während die gespeicherten
+ * Funde des Suchlaufs naturgemäß nur das Auffällige treffen (gemessen: 313
+ * Funde auf 197 von 11.000 Gemeinden).
+ *
+ * Gerechnet wird nichts Neues: dieselbe Rechnung, aus der Aufhänger, Kasten
+ * und Rangliste kommen. Prozess-lokal gemerkt wie der Index selbst.
+ */
+export async function platzierungenFuer(regionId: string): Promise<Placement[]> {
+  try {
+    const stats = await loadAwardStats();
+    return computePlacements(stats).get(regionId) ?? [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Die Platzierungen eines Orts, fertig für den Story-Feed.
+ *
+ * Die Auswahl steht HIER und nicht in der Oberfläche: Sie hängt an den
+ * Merkern des Award-Kerns (Verdachtsfall, dünner Bestand) und an der
+ * Kategorie-Tabelle — beides Server-Wissen. Eine Client-Komponente, die auch
+ * nur einen Wert von hier importiert, zieht die halbe Rechenkette in das
+ * Browser-Bündel jeder der 11.000 Ortsseiten.
+ *
+ * `ohneKategorie` ist die, die der Auszeichnungs-Kasten oben schon zeigt —
+ * zweimal dieselbe Aussage auf einer Seite ist der Fehler, gegen den jener
+ * Kasten selbst gebaut wurde.
+ */
+export async function vergleichsPlaetze(
+  regionId: string,
+  opts: { ohneKategorie?: string | null; hoechstens?: number } = {},
+): Promise<VergleichsPlatz[]> {
+  const alle = await platzierungenFuer(regionId);
+  // Die Gebietsnamen NACHSCHLAGEN, nicht aus dem Schlüssel bauen: Für den
+  // Landkreis stand sonst der rohe Gemeindeschlüssel im Satz („im 06632").
+  const gebietsNamen = new Map<string, string>();
+  for (const sid of new Set(alle.filter((p) => p.level === "kreis").map((p) => p.scopeId))) {
+    const r = await getRegionById(sid);
+    if (r) gebietsNamen.set(sid, ortPhrase({ name: r.name, level: "kreis" }));
+  }
+  return alle
+    .filter((p) => !p.spike && !p.duenn)
+    // Eine Gruppe unter zehn trägt keinen Rang: „Platz 2 von 3" ist keine
+    // Einordnung, sondern eine Aufzählung.
+    .filter((p) => p.total >= MIN_GRUPPE_FUER_RANG)
+    .filter((p) => p.categoryKey !== opts.ohneKategorie)
+    // Nur was WEIT genug vorn steht, um eine Aussage zu sein: das obere
+    // Drittel. Weiter hinten sagt der Rang über den Ort wenig und liest sich
+    // als Mängelliste — auf der eigenen Seite genauso.
+    .filter((p) => p.rank / p.total <= 0.34)
+    .sort((a, b) => a.rank / a.total - b.rank / b.total)
+    // HÖCHSTENS EINE PLATZIERUNG JE MESSGRÖSSE. Ohne das stand dieselbe Größe
+    // dreimal auf der Seite — im Auszeichnungs-Kasten für den Landkreis, im
+    // Feed für das Land und noch einmal bundesweit. Drei Karten über
+    // Balkonkraftwerke sind kein Feed, sondern eine Wiederholung; die stärkste
+    // Ebene genügt.
+    .filter((p, _i, arr) => arr.find((q) => q.categoryKey === p.categoryKey) === p)
+    .slice(0, opts.hoechstens ?? 2)
+    .map((p) => {
+      const cat = AWARD_CATEGORY_BY_KEY[p.categoryKey];
+      const gebiet = gebietsNamen.get(p.scopeId) ?? gebietsName(p.level, p.scopeId);
+      return {
+        kategorie: p.categoryKey,
+        ebene: p.level,
+        klasseSlug: p.klasseSlug,
+        klasseLabel: p.klasseLabel,
+        gruppe: `${p.klasseLabel} ${gebiet}`.trim(),
+        gebiet,
+        messgroesse: cat?.themaDativ ?? p.categoryKey,
+        rang: p.rank,
+        ausN: p.total,
+        wert: cat ? formatAwardValue(p.value, cat.format) : String(p.value),
+        rohwert: Math.round(p.value * 10) / 10,
+        einheit: cat ? einheitVon(cat.format) : "",
+      };
+    });
+}
+
+/** Ab so vielen Orten trägt ein Rang eine Aussage. */
+const MIN_GRUPPE_FUER_RANG = 10;
+
+/** „im Landkreis Fulda", „in Hessen", „bundesweit". */
+function gebietsName(level: HookLevel, scopeId: string): string {
+  if (level === "bund") return "bundesweit";
+  const bl = bundeslandByAgs(scopeId.slice(0, 2));
+  if (level === "land") return bl ? ortPhrase({ name: bl.name, level: "bundesland" }) : "im Bundesland";
+  // Kreis ohne aufgelösten Namen: lieber die Ebene benennen als eine Kennzahl
+  // in den Satz schreiben.
+  return "im Landkreis";
+}
+
+/** Die Einheit, die neben der Zahl steht — nie an sie geklebt. */
+function einheitVon(format: string): string {
+  if (format === "wattProKopf") return "Wp je Einwohner";
+  if (format === "je1000") return "je 1.000 Einwohner";
+  if (format === "je100Dach") return "je 100 Dächer";
+  if (format === "kwhProKopf") return "kWh je Einwohner";
+  return "";
 }
 
 export async function buildHookIndex(settings: HookSettings): Promise<HookIndex> {

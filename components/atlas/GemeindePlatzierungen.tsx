@@ -140,14 +140,26 @@ function PlatzierungsSkelett() {
       }}
     />
   );
+  // DIE FLÄCHE MUSS DIE DER FERTIGEN KACHEL SEIN, sonst springt die Seite
+  // trotzdem — nur ein bisschen weniger. Deshalb dieselben Stile wie die Kachel
+  // (Rahmen, Innenabstand, Abstände) und darunter die drei Zeilen der
+  // Nebenplatzierungen, die die echte Kachel ebenfalls trägt.
   return (
     <section style={S.wrap} aria-hidden>
-      <div style={{ ...S.badge, cursor: "default", gap: 6 }}>
-        {zeile("42%", 22)}
-        {zeile("78%", 14)}
-        {zeile("64%", 12)}
-        {zeile("52%", 12)}
+      <div style={{ ...S.badge, cursor: "default", gap: 4 }}>
+        {zeile("46%", 26)}
+        {zeile("82%", 15)}
+        {zeile("70%", 13)}
+        {zeile("58%", 13)}
+        {zeile("40%", 13)}
       </div>
+      <ul style={S.weitere}>
+        {[0, 1, 2].map((i) => (
+          <li key={i} style={{ ...S.weitereZeile, cursor: "default" }}>
+            {zeile("72%", 13)}
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }

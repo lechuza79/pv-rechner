@@ -24,8 +24,9 @@ import GemeindePeerTiles from "../../../../../../components/atlas/GemeindePeerTi
 import GemeindePlatzierungen from "../../../../../../components/atlas/GemeindePlatzierungen";
 import GemeindeMeldungen from "../../../../../../components/atlas/GemeindeMeldungen";
 import { ortsStories } from "../../../../../../lib/orts-stories";
-import { leseFunde } from "../../../../../../lib/social-fundvorrat";
-import { hatAuszeichnung } from "../../../../../../lib/awards-server";
+import { fundeFuerOrt } from "../../../../../../lib/social-fundvorrat";
+import { hatAuszeichnung, vergleichsPlaetze } from "../../../../../../lib/awards-server";
+import { monatsZubau, wohnungsBestand } from "../../../../../../lib/orts-daten";
 import CollapsibleIntro from "../../../../../../components/atlas/CollapsibleIntro";
 import GemeindeEmbedBox from "../../../../../../components/atlas/GemeindeEmbedBox";
 import GemeindeAboBox, { ABO_OEFFNEN } from "../../../../../../components/atlas/GemeindeAboBox";
@@ -556,6 +557,24 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
 
           OHNE PLATZIERUNG: steht als eigene Karte direkt darüber (siehe dort).
         */}
+        {/*
+          AUSGEBLENDET bis das Story-Visual steht (Betreiber, 05.09.2026).
+
+          Die Geschichten selbst sind fertig und laufen für jeden Ort; was fehlt,
+          ist das Bild. Drei Anläufe auf dieser Seite sind am selben Punkt
+          gescheitert: Die Beitrags-Karte der Redaktion ist fest 1080 Pixel breit
+          und überschreibt die Farb-Tokens mit ihrer eigenen Palette — richtig
+          für ein Bild in einem fremden Feed, falsch auf einer Seite mit
+          Tageslicht-Theme (weißer Block im Dunkeln, Überlauf im schmalen
+          Teaser). Eine dritte, hier gezeichnete Fassung wäre die zweite Wahrheit
+          neben den vier abgenommenen Templates.
+
+          Das quadratische Story-Visual entsteht deshalb dort, wo die Formenlehre
+          und die Templates wohnen; diese Seite konsumiert es danach. Bis dahin
+          steht hier nichts — eine schmucklose Kartenreihe auf einer Seite, die
+          im Outreach verlinkt wird, ist schlechter als keine.
+        */}
+        {false && (
         <GemeindeMeldungen
           stories={ortsStories({
             daten: {
@@ -565,18 +584,38 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
               solar: atlas.solar,
               speicher: atlas.speicher,
               standIso: atlas.data_as_of,
+              // Zwei schmale Zusatzquellen: der Zubau nach Monat (die
+              // Jahreszahl ist für „was ist gerade passiert" zu grob) und der
+              // Wohnungsbestand (der Nenner, den das Anlagenregister nicht
+              // kennt). Fehlt eine, entfallen genau ihre Geschichten.
+              monate: await monatsZubau(region.region_id),
+              wohnungen: await wohnungsBestand(region.region_id),
             },
             heuteJahr: new Date().getUTCFullYear(),
             // Nur redaktionell VORGEMERKTE Funde. „offen" heißt, dass den
             // Fund noch niemand angesehen hat — ein Kandidat, keine
             // veröffentlichte Aussage; der Suchlauf legt ausdrücklich nur ab
             // und entscheidet nicht.
-            funde: await leseFunde({ ort: region.name, stand: "vorgemerkt", grenze: 6 }),
+            // Ort, Landkreis, Land — in dieser Reihenfolge der Nähe. Nur der
+            // eigene Ortsname wäre zu eng: Die Muster suchen Auffälliges, und
+            // 313 Funde verteilen sich auf 197 Gemeinden; auf 98 % der
+            // Ortsseiten stünde damit nie einer.
+            // Wo der Ort unter GLEICH GROSSEN Orten seines Kreises bzw. Landes
+            // steht — die einzige Familie, die jeder Ort hat. Die gespeicherten
+            // Funde treffen nur das Auffällige (313 auf 197 von 11.000).
+            plaetze: await vergleichsPlaetze(region.region_id),
+            funde: await fundeFuerOrt({
+              ort: region.name,
+              kreisOrte: siblingData.regions.map((r) => r.name),
+              land: bl?.name ?? null,
+              stand: "vorgemerkt",
+            }),
           })}
           name={region.name}
           liveUrl={`${BASE_URL}${atlasPath}`}
           standIso={atlas.data_as_of}
         />
+        )}
 
         {SHOW_PEER_TILES && !!region.population && (
           <GemeindePeerTiles rows={peerRows} blName={bl?.name ?? "diesem Land"} band={band} />

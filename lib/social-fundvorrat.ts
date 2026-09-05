@@ -256,3 +256,48 @@ export async function orteImVorrat(): Promise<{
   };
   return { kommunen: zaehle("orte"), laender: zaehle("laender") };
 }
+
+
+/**
+ * Die Funde, die für EINE Ortsseite in Frage kommen — Ort, Landkreis, Land.
+ *
+ * WARUM NICHT NUR DER ORT SELBST: Die Muster suchen Auffälliges, und ein
+ * durchschnittlicher Ort ist per Definition keins. Gemessen am 05.09.2026:
+ * 313 Funde nennen einen Ort, verteilt auf 197 Gemeinden — bei 11.000
+ * Ortsseiten stünde damit auf 98 % von ihnen nie einer. Ein Fund über den
+ * eigenen Landkreis oder über den Nachbarort im selben Kreis ist auf dieser
+ * Seite aber genauso eine Nachricht; nur die NÄHE unterscheidet sie.
+ *
+ * Die Reihenfolge ist die Nähe: der eigene Ort zuerst, dann der Landkreis,
+ * dann das Land. Innerhalb einer Stufe bleibt die Stärke des Suchlaufs.
+ *
+ * `stand` bleibt Sache des Aufrufers: Ein Fund im Zustand „offen" hat noch
+ * niemand angesehen und gehört nicht auf eine öffentliche Seite.
+ */
+export async function fundeFuerOrt(opts: {
+  ort: string;
+  /** Die übrigen Gemeinden des Landkreises — die Seite lädt sie ohnehin. */
+  kreisOrte?: string[];
+  land?: string | null;
+  stand?: FundStand;
+  grenze?: number;
+}): Promise<VorratsFund[]> {
+  const alle = await leseFunde({ stand: opts.stand, grenze: 1000 });
+  const kreis = new Set((opts.kreisOrte ?? []).filter((n) => n !== opts.ort));
+  const naehe = (f: VorratsFund): number => {
+    // Beide Listen sind am Typ optional: Ein bundesweiter Fund nennt bewusst
+    // niemanden. Leer und fehlend sind hier dasselbe.
+    const orte = f.orte ?? [];
+    const laender = f.laender ?? [];
+    if (orte.includes(opts.ort)) return 0;
+    if (orte.some((o) => kreis.has(o))) return 1;
+    if (opts.land && laender.includes(opts.land) && orte.length === 0) return 2;
+    return 99;
+  };
+  return alle
+    .map((f) => ({ f, n: naehe(f) }))
+    .filter((x) => x.n < 99)
+    .sort((a, b) => a.n - b.n || b.f.staerke - a.f.staerke)
+    .slice(0, opts.grenze ?? 6)
+    .map((x) => x.f);
+}
