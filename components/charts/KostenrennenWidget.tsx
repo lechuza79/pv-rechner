@@ -32,11 +32,11 @@ import { tagesverlauf, tagDatum } from "../../lib/kostenrennen-tage";
 // nach der Tagesstrahlung der DWD-Stationen (lib/kostenrennen-tage.ts). Eine
 // Regenwoche ist flach, eine Hochdrucklage steil, kein Jahr gleicht dem anderen.
 //
-// Die Achsen sind eine KAMERA, wie bei einem Race-Chart: Die x-Achse zeigt ein
-// Fenster der letzten drei Jahre (anfangs die ersten drei), die y-Achse ist auf
-// die Linien in diesem Fenster gepasst. In einer festen Skala 0–40.000 € wäre
-// die Bewegung eines Monats ein Strich; im Fenster füllt sie das Bild — am
-// stärksten, wenn die Linien sich nähern und die Kamera näher heranzoomt.
+// Die Achsen laufen mit, wie bei einem Race-Chart: Die x-Achse reicht vom
+// Start bis heute (mindestens ein Jahr) und wächst, bis am Ende alle 25 Jahre
+// auf einer Breite stehen; die y-Achse ist auf die Linien im Bild gepasst. In
+// einer festen Skala 0–40.000 € wäre die Bewegung eines Monats von Anfang an
+// ein Strich; so füllt das erste Jahr das Bild, und das Bild zoomt heraus.
 //
 // Selbst-enthaltende Karte nach dem Muster von GruengasWidget: dasselbe Bauteil
 // steht unter /embed/pv-kostenrennen und direkt gerendert im Ratgeber (onsite).
@@ -44,7 +44,7 @@ import { tagesverlauf, tagDatum } from "../../lib/kostenrennen-tage";
 // eingestellten Stand als Text.
 
 const MS_JE_TAG = 3.4; // 25 Jahre in rund 31 Sekunden
-const FENSTER_TAGE = 3 * 365;
+const MIN_TAGE = 365; // das erste Jahr füllt das Bild
 const SCHRITT_MS = 500; // bei reduzierter Bewegung: ein Jahr je Schritt
 
 const MONATE_KURZ = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
@@ -190,14 +190,14 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
       mode: "node",
     });
 
-  // ── Kamera: x-Fenster der letzten drei Jahre, y auf die Linien darin gepasst ──
+  // ── Mitlaufende Achsen: x vom Start bis heute, y auf die Linien gepasst ──
   const W = narrow ? 320 : 640, H = narrow ? 260 : 340;
   const P = { t: 18, r: narrow ? 74 : 96, b: 28, l: narrow ? 50 : 62 };
   const cW = W - P.l - P.r, cH = H - P.t - P.b;
   const y0 = P.t + cH;
-  const xEnd = Math.max(FENSTER_TAGE, t);
-  const xStart = xEnd - FENSTER_TAGE;
-  const iStart = Math.max(0, Math.floor(xStart));
+  const xEnd = Math.max(MIN_TAGE, t);
+  const xStart = 0;
+  const iStart = 0;
   const iEnd = Math.min(T, Math.ceil(t));
   let lo = Infinity, hi = -Infinity;
   for (let d = iStart; d <= iEnd; d++) {
@@ -212,16 +212,24 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   for (let val = Math.ceil(yMin / yStep) * yStep; val <= yMax; val += yStep) yTicks.push(val);
   const xL = (tagIdx: number) => r2(P.l + ((Math.min(tagIdx, xEnd) - xStart) / (xEnd - xStart)) * cW);
   const yL = (wert: number) => r2(y0 - ((wert - yMin) / (yMax - yMin)) * cH);
-  // Jahresmarken: jeder Januar im Fenster.
+  // Jahresmarken: jeder Januar im Bild, ausgedünnt, sobald es eng wird.
+  const jahreImBild = xEnd / 365;
+  const xSchritt = narrow
+    ? (jahreImBild <= 3 ? 1 : jahreImBild <= 10 ? 3 : 10)
+    : (jahreImBild <= 6 ? 1 : jahreImBild <= 13 ? 2 : 5);
   const xJahre: { x: number; jahr: number }[] = [];
-  for (let m = 1; m <= 12 * verlauf.jahre; m += 12) {
+  for (let m = 1, j = 1; m <= 12 * verlauf.jahre; m += 12, j++) {
     const d = verlauf.ersterTag[m];
-    if (d >= xStart && d <= xEnd) xJahre.push({ x: xL(d), jahr: rennen.startJahr + Math.ceil(m / 12) });
+    if (d <= xEnd && (j - 1) % xSchritt === 0) xJahre.push({ x: xL(d), jahr: rennen.startJahr + Math.ceil(m / 12) });
   }
-  // Linien: nur die Tage im Fenster plus die interpolierte Spitze.
+  // Linien: alle Tage bis heute plus die interpolierte Spitze. Bei vielen
+  // Tagen nur jeden n-ten Punkt — mehr als ein Punkt je Pixel zeichnet nichts.
   const pfad = (reihe: Float64Array) => {
+    const bis = Math.min(T, Math.floor(t));
+    const schritt = Math.max(1, Math.floor((bis - iStart) / (cW * 2)));
     const pts: string[] = [];
-    for (let d = iStart; d <= Math.min(T, Math.floor(t)); d++) pts.push(`${xL(d)},${yL(reihe[d])}`);
+    for (let d = iStart; d <= bis; d += schritt) pts.push(`${xL(d)},${yL(reihe[d])}`);
+    if (bis % schritt !== 0) pts.push(`${xL(bis)},${yL(reihe[bis])}`);
     if (t > Math.floor(t) && t < T) pts.push(`${xL(t)},${yL(wertBei(reihe, t))}`);
     return pts.join(" ");
   };
@@ -302,7 +310,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           <InfoTooltip title="Was hier zählt" ariaLabel="Was als Stromkosten zählt">
             Alles, was der Haushalt bis zu diesem Tag für Strom ausgegeben hat: die Stromrechnung mit steigendem Preis, beim
             PV-Haushalt dazu die Anschaffung der Anlage, abzüglich der Einspeisevergütung. Wo sich die Linien kreuzen, ist die
-            Anlage bezahlt. Das Bild zeigt jeweils die letzten drei Jahre; die Skala passt sich den Linien an.
+            Anlage bezahlt. Die Zeitachse wächst vom ersten Jahr bis zum ganzen Zeitraum, die Geldskala passt sich den Linien an.
           </InfoTooltip>
         </div>
 
@@ -322,7 +330,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           {xJahre.map(({ x, jahr }) => (
             <g key={jahr}>
               <line x1={x} x2={x} y1={P.t} y2={y0} stroke="var(--color-chart-grid)" strokeWidth={0.5} />
-              <text x={x + 4} y={y0 + 18} textAnchor="start" fontSize={fsPx("--font-size-small")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{jahr}</text>
+              <text x={x + 4} y={y0 + 18} textAnchor="start" fontSize={fsPx("--font-size-small")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{x > P.l + cW - 40 ? "" : jahr}</text>
             </g>
           ))}
 
@@ -331,7 +339,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           <polyline points={pfad(kPv)} fill="none" stroke={FARBE_PV} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
 
           {/* Kreuzung: erscheint, sobald die Linien sie erreicht haben, und bleibt, solange sie im Fenster liegt. */}
-          {bezahltTag !== null && t >= bezahltTag && bezahltTag >= xStart && (
+          {bezahltTag !== null && t >= bezahltTag && (
             <g>
               <line x1={xL(bezahltTag)} x2={xL(bezahltTag)} y1={P.t} y2={y0} stroke="var(--color-positive)" strokeWidth={1} strokeDasharray="3 3" />
               <text x={xL(bezahltTag)} y={P.t - 6} textAnchor={xL(bezahltTag) > P.l + cW * 0.75 ? "end" : "middle"} fontSize={fsPx("--font-size-caption")} fontWeight={700} fill="var(--color-positive)">
@@ -400,7 +408,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           Hinweis, dass das Bild einen Zwischenstand und ein Zeitfenster zeigt. */}
       <ExportOnly style={{ marginTop: space.md }}>
         <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
-          {tag < T ? `Zwischenstand am ${stand} von ${rennen.jahre} Jahren` : `Endstand nach ${rennen.jahre} Jahren`} · Bild zeigt die letzten drei Jahre
+          {tag < T ? `Zwischenstand am ${stand} von ${rennen.jahre} Jahren` : `Endstand nach ${rennen.jahre} Jahren`}
         </span>
       </ExportOnly>
 
