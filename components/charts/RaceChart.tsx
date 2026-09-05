@@ -191,6 +191,33 @@ function RaceCard({
   const [showCredit, setShowCredit] = useState(false);
   const [ruhig, setRuhig] = useState(false);
   const gestartet = useRef(false);
+  // Sprung zu einem Ereignis: Das Chart gleitet in gut einer halben Sekunde
+  // vom aktuellen Tag dorthin, statt umzuschalten — ein Sprung ohne Weg
+  // sieht aus wie ein neues Bild. Bei reduzierter Bewegung wird gesetzt.
+  const tRef = useRef(0);
+  const gleitRaf = useRef(0);
+  // Ziel-Ereignis eines laufenden Gleitflugs: Wer zweimal schnell „weiter"
+  // drückt, meint zwei Ereignisse weiter — nicht zweimal dasselbe Ziel.
+  const gleitZiel = useRef<number | null>(null);
+  const gleiteZu = (ziel: number, zielIdx: number) => {
+    cancelAnimationFrame(gleitRaf.current);
+    setSpielt(false);
+    gestartet.current = true;
+    gleitZiel.current = zielIdx;
+    if (ruhig) { setT(ziel); gleitZiel.current = null; return; }
+    const von = tRef.current;
+    const dauer = Math.min(900, 350 + Math.abs(ziel - von) / 20);
+    const begin = performance.now();
+    const step = (now: number) => {
+      const p = Math.min(1, (now - begin) / dauer);
+      const e = 1 - Math.pow(1 - p, 3);
+      setT(von + (ziel - von) * e);
+      if (p < 1) gleitRaf.current = requestAnimationFrame(step);
+      else gleitZiel.current = null;
+    };
+    gleitRaf.current = requestAnimationFrame(step);
+  };
+  useEffect(() => () => cancelAnimationFrame(gleitRaf.current), []);
   const hostRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   // Video-Aufnahme: läuft in Echtzeit mit der Animation (siehe lib/race-video.ts).
@@ -230,6 +257,7 @@ function RaceCard({
   // Bewegung in ganzen Jahresschritten (keine Zwischenbilder).
   useEffect(() => {
     if (!spielt) return;
+    cancelAnimationFrame(gleitRaf.current);
     if (ruhig) {
       const iv = setInterval(() => {
         setT((prev) => {
@@ -262,6 +290,7 @@ function RaceCard({
     return () => cancelAnimationFrame(raf);
   }, [spielt, ruhig, T, jahre, ersterTag, tempo.ruhigeTage, tempo.msJeTagStart, tempo.msJeTagEnde]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  tRef.current = t;
   const tag = Math.min(T, Math.floor(t));
   const datum = datumVon(tag);
   const stand = tag === 0 ? `${startJahr} · Start` : `${datum.tag}. ${MONATE[datum.monat]} ${datum.jahr}`;
@@ -361,6 +390,10 @@ function RaceCard({
     border: `1px solid ${v("--color-border-accent")}`, background: v("--color-bg"), color: v("--color-accent"),
     cursor: "pointer",
   };
+  // Die Kante steht nur am Chart-Bereich (Chart, Spur, Ereignis-Box), nicht am
+  // Player oder der Fußzeile. Zwei Quellen passen dort nur in zwei Spalten,
+  // wenn die Schrift beim kleinsten Token bleiben soll.
+  const kantenSpalten: 1 | 2 = widget.sources.length > 1 ? 2 : 1;
   const legend: ExportLegendEntry[] = [
     { color: FARBE_B, label: anderer.label, shape: "line" },
     { color: FARBE_A, label: kamera.label, shape: "line" },
@@ -378,12 +411,10 @@ function RaceCard({
   const springe = (i: number) => {
     const e = ereignisse[i];
     if (!e) return;
-    setSpielt(false);
-    gestartet.current = true;
-    setT(e.tag);
+    gleiteZu(e.tag, i);
   };
   const pfeil = (richtung: -1 | 1) => {
-    const ziel = idxAktiv + richtung;
+    const ziel = (gleitZiel.current ?? idxAktiv) + richtung;
     const aus = ziel < 0 || ziel >= ereignisse.length;
     return (
       <button
@@ -501,7 +532,7 @@ function RaceCard({
 
       {/* Die Quellen-Kante steht am Chart-Bereich, nicht über die Fußzeile
           hinaus: dieser Rahmen trägt sie und lässt ihr rechts Platz. */}
-      <div style={{ position: "relative", paddingRight: SOURCE_EDGE_WIDTH + space.sm }}>
+      <div style={{ position: "relative", paddingRight: SOURCE_EDGE_WIDTH * kantenSpalten + space.sm }}>
       <ExportBox>
         <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }} role="img"
           aria-label={ariaLabel(stand, kA[tag], kB[tag])}>
@@ -595,7 +626,7 @@ function RaceCard({
               );
             })}
           </div>
-          <div style={{ marginTop: space.sm, background: v("--color-bg-muted"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md"), padding: abstand("md", "lg"), display: "flex", flexDirection: narrow ? "column" : "row", alignItems: narrow ? "stretch" : "center", gap: space.lg }}>
+          <div style={{ marginTop: space.sm, background: `color-mix(in srgb, ${v("--color-bg-muted")} 55%, ${v("--color-bg")})`, borderRadius: v("--radius-md"), padding: abstand("md", "lg"), display: "flex", flexDirection: narrow ? "column" : "row", alignItems: narrow ? "stretch" : "center", gap: space.lg }}>
             {!narrow && pfeil(-1)}
             <div style={{ flex: narrow ? undefined : 1, minWidth: 0, minHeight: 64 }}>
               {aktivesEreignis && (
@@ -617,27 +648,45 @@ function RaceCard({
               </div>
             )}
           </div>
-          {/* Player unter der Ereignis-Box: Abspielen, Anhalten, noch einmal. */}
-          <div style={{ marginTop: space.md, display: "flex", alignItems: "center", gap: space.md }}>
-            <button
-              type="button"
-              onClick={() => {
-                if (spielt) { setSpielt(false); return; }
-                if (amEnde) setT(0);
-                gestartet.current = true;
-                setSpielt(true);
-              }}
-              aria-label={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
-              title={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
-              style={knopf}
-            >
-              {spielt ? <IconPause size={14} /> : amEnde ? <IconRefresh size={14} /> : <IconPlay size={14} />}
-            </button>
-          </div>
         </div>
       </ExportBox>
-      <WidgetSourceEdge widget={widget} visible={!onsite || showCredit} stand={quellenStand} />
+      <WidgetSourceEdge widget={widget} visible={!onsite || showCredit} stand={quellenStand} spalten={kantenSpalten} />
       </div>
+
+      {/* Player unter dem Chart-Bereich (außerhalb der Quellen-Kante, nur auf der
+          Seite): Abspielen/Anhalten/noch einmal und ein Regler über die ganze
+          Strecke — auf seiner eigenen, festen Skala, nicht auf der wachsenden
+          Chart-Achse (dort scheiterte er zweimal). Darunter eine Linie, die den
+          Chart-Block von der Fußzeile trennt. */}
+      <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", alignItems: "center", gap: space.lg, marginTop: space.md }}>
+        <button
+          type="button"
+          onClick={() => {
+            cancelAnimationFrame(gleitRaf.current); gleitZiel.current = null;
+            if (spielt) { setSpielt(false); return; }
+            if (amEnde) setT(0);
+            gestartet.current = true;
+            setSpielt(true);
+          }}
+          aria-label={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
+          title={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
+          style={knopf}
+        >
+          {spielt ? <IconPause size={14} /> : amEnde ? <IconRefresh size={14} /> : <IconPlay size={14} />}
+        </button>
+        <input
+          type="range"
+          min={0}
+          max={T}
+          step={1}
+          value={tag}
+          onChange={(e) => { cancelAnimationFrame(gleitRaf.current); gleitZiel.current = null; setSpielt(false); gestartet.current = true; setT(Number(e.target.value)); }}
+          aria-label="Tag wählen"
+          aria-valuetext={stand}
+          style={{ flex: 1, accentColor: v("--color-accent"), minWidth: 0 }}
+        />
+      </div>
+      <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ borderTop: `1px solid ${v("--color-border")}`, marginTop: space.lg }} />
 
       {/* Im Bild: der eingestellte Stand steht schon im Kopf; hier nur der
           Hinweis, dass das Bild einen Zwischenstand und ein Zeitfenster zeigt. */}

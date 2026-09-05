@@ -208,8 +208,7 @@ export class RaceVideo {
       // mittleren Eckradius des Themes (ohne die Pfeile — im Video wären es tote Knöpfe).
       const boxEcke = parseFloat(tokens["--radius-md"]);
       c.beginPath(); c.roundRect(PAD, y, chartW, BOX_H, boxEcke);
-      c.fillStyle = farbe("--color-bg-muted"); c.fill();
-      c.strokeStyle = farbe("--color-border"); c.lineWidth = 1; c.stroke();
+      c.globalAlpha = 0.55; c.fillStyle = farbe("--color-bg-muted"); c.fill(); c.globalAlpha = 1;
       if (d.ereignis) {
         const ex = PAD + 16;
         const eBreite = chartW - 32;

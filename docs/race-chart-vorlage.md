@@ -32,10 +32,14 @@ startet** (beim Stromkosten-Rennen die Anlage mit ihrer Anschaffung). Der
 
 Kamera und Zoom-Öffnung, Tempo, Zeitleiste im Zubau-Stil (immer ein Ereignis
 aktiv, das vorige blendet aus; die Erklärung in einer gedämpften Box mit
-Pfeilen zum vorigen/nächsten Ereignis — ein Pfeil springt die Wiedergabe auf
-den Tag des Ereignisses und hält an), Abspielknopf unter der Box, Punkte in
-Akzentfarbe, Beträge über der Spitze mit Halo, Quellen-Kante am Chart-Bereich,
-Video in Echtzeit (die Box auch im Video, ohne Pfeile). Wer davon etwas
+Pfeilen zum vorigen/nächsten Ereignis — ein Pfeil lässt das Chart in gut einer
+halben Sekunde zum Tag des Ereignisses gleiten und hält an), darunter der
+Player (Abspielknopf und ein Regler über die ganze Strecke auf EIGENER, fester
+Skala — nicht auf der Chart-Achse) und eine Trennlinie zur Fußzeile, Punkte in
+Akzentfarbe, Beträge über der Spitze mit Halo, Quellen-Kante nur am
+Chart-Bereich (Chart, Spur, Box; bei zwei Quellen zweispaltig, damit die
+Schrift beim kleinsten Token bleibt), Video in Echtzeit (die Box auch im
+Video, ohne Pfeile). Wer davon etwas
 ändert, ändert alle Rennen — das ist gewollt.
 
 ## Anderer Zeitraum oder Werteraum

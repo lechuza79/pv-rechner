@@ -34,7 +34,7 @@ test.describe("Widget-Bildexport", () => {
     // darf nicht aus dem Bild geworfen werden.
     const kante = page.locator('[title^="Quelle:"]');
     await expect(kante).toHaveCount(1);
-    await expect(kante).toContainText("Institut der deutschen Wirtschaft");
+    await expect(kante).toContainText("IW Köln");
     // Der Zusatz hinter dem Namen (hier die Einordnung, bei Behördendaten der
     // Änderungshinweis) muss die Kürzung überleben — er ist bei dl-de/by-2-0
     // Pflichtbestandteil, und die alte Kurzform warf genau ihn weg.

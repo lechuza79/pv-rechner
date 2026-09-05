@@ -191,8 +191,11 @@ export const DATA_SOURCES = {
   /** GModG gas-price scenarios (Bio-Treppe, Biomethan/Netzentgelt/CO₂ paths). */
   iw: {
     name: "Institut der deutschen Wirtschaft (IW-Report 36/2026)",
+    // Kurzform für die senkrechte Kante: An einem Chart mit zwei Quellen wäre
+    // der volle Name sonst nur noch in 6 px unterzubringen.
+    shortName: "IW Köln (Report 36/2026)",
     url: "https://www.iwkoeln.de/studien/ralph-henger-malte-kueper-laurens-wuensch-wie-hoch-sind-die-mehrkostenrisiken-durch-das-gebaeudemodernisierungsgesetz.html",
-    note: "Preisszenarien Gebäudemodernisierungsgesetz",
+    note: "Preisszenarien zum GModG",
   },
   /**
    * Administrative boundaries for the Solar-Atlas map (Bundesländer, Kreise, Gemeinden).
