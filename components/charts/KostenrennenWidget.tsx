@@ -316,10 +316,14 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
 
         <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }} role="img"
           aria-label={`Stromkosten ${rennen.startJahr} bis ${stand}: ${ohne.label} ${fmtEuroVoll(kOhne[tag])}, ${pv.label} ${fmtEuroVoll(kPv[tag])}`}>
+          {/* Achsenzahlen blenden ein, wenn sie erscheinen: Jede Marke ist per key ein
+              eigenes Element und wird beim Auftauchen neu gemountet — die Animation
+              läuft genau dann. Bei reduzierter Bewegung steht sie sofort. */}
+          <style>{`.kr-neu{animation:kr-fade-in 600ms ease-out both}@keyframes kr-fade-in{from{opacity:0}to{opacity:1}}@media (prefers-reduced-motion:reduce){.kr-neu{animation:none}}`}</style>
           {/* Raster + Skala. Die Skala steht dauerhaft: Ohne Überfahren (Bild,
               Telefon) gäbe es sonst keine Größenordnung. */}
           {yTicks.map((val) => (
-            <g key={val}>
+            <g key={val} className="kr-neu">
               <line x1={P.l} x2={P.l + cW} y1={yL(val)} y2={yL(val)} stroke="var(--color-chart-grid)" strokeWidth={0.5} />
               <text x={P.l - 6} y={yL(val) + 3} textAnchor="end" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
                 {narrow ? `${(val / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} T€` : fmtEuroVoll(val)}
@@ -328,7 +332,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           ))}
           <line x1={P.l} x2={P.l + cW} y1={y0} y2={y0} stroke="var(--color-chart-zero)" strokeWidth={1} />
           {xJahre.map(({ x, jahr }) => (
-            <g key={jahr}>
+            <g key={jahr} className="kr-neu">
               <line x1={x} x2={x} y1={P.t} y2={y0} stroke="var(--color-chart-grid)" strokeWidth={0.5} />
               <text x={x + 4} y={y0 + 18} textAnchor="start" fontSize={fsPx("--font-size-small")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{x > P.l + cW - 40 ? "" : jahr}</text>
             </g>
@@ -340,7 +344,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
 
           {/* Kreuzung: erscheint, sobald die Linien sie erreicht haben, und bleibt, solange sie im Fenster liegt. */}
           {bezahltTag !== null && t >= bezahltTag && (
-            <g>
+            <g className="kr-neu">
               <line x1={xL(bezahltTag)} x2={xL(bezahltTag)} y1={P.t} y2={y0} stroke="var(--color-positive)" strokeWidth={1} strokeDasharray="3 3" />
               <text x={xL(bezahltTag)} y={P.t - 6} textAnchor={xL(bezahltTag) > P.l + cW * 0.75 ? "end" : "middle"} fontSize={fsPx("--font-size-caption")} fontWeight={700} fill="var(--color-positive)">
                 Anlage bezahlt · {MONATE_KURZ[tagDatum(verlauf, rennen.startJahr, bezahltTag).monat]} {tagDatum(verlauf, rennen.startJahr, bezahltTag).jahr}
