@@ -59,6 +59,19 @@ import {
   type Seitenart,
 } from "../lib/presse-extrakt";
 import { personenAus } from "../lib/personen-fund";
+import {
+  autorAmBeitrag,
+  eigenerRechner,
+  erzeugtEigeneDaten,
+  kernfrageBehandelt,
+  meldungsbetrieb,
+  urteile,
+  verkauftDasProdukt,
+  verweistAufFremdenRechner,
+  zitiertFremdeQuelle,
+  inhaltstext,
+  type Befund,
+} from "../lib/presse-eignung";
 import { SAAT, doppelteInDerSaat, type Paket } from "../lib/presse-saat";
 import {
   alsCsv,
@@ -310,6 +323,12 @@ async function setup(): Promise<void> {
     -- bezahlt gemacht: Das Nachlesen der Belegseiten hat sechs von 32 Urteilen
     -- gedreht, darunter zwei in beide Richtungen falsche.
     ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS eignung_beleg text;
+    -- Seit der Lauf das Urteil selbst ermittelt, braucht die HANDENTSCHEIDUNG
+    -- eine eigene Spalte — sonst überschreibt sie der nächste Lauf, und man
+    -- korrigiert dieselbe Fehleinschätzung jeden Monat neu. Dieselbe Bauform
+    -- wie bei der Einordnung Fach/Publikum; ein Wächter liest den Lauf und wird
+    -- rot, wenn er sie je anfasst.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS eignung_hand text;
     ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS eignung_zitat text;
     ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS stand text NOT NULL DEFAULT 'offen';
     ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS notiz text;
@@ -1133,6 +1152,193 @@ async function suche(trocken: boolean, paketFilter: Paket | null): Promise<void>
   log(`${zeilen.length} neue Adressen aufgenommen`, "ok");
 }
 
+// ─── Phase: Eignung ──────────────────────────────────────────────────────────
+//
+// Beantwortet je Medium die neun mit dem Betreiber abgestimmten Fragen (05.09.2026)
+// auf INHALTSSEITEN — nie im Impressum. Die Regel für das Urteil steht in
+// lib/presse-eignung.ts, damit sie nicht bei jeder Durchsicht anders angewandt wird.
+
+/** Welche Inhaltsseiten angesehen werden. Die Suchmaschine findet sie, weil eine
+ *  Redaktionsseite keine Themenliste führt und der Crawl nur zwei Klicks tief
+ *  ginge — dieselbe Lehre wie im Förderbereich. */
+async function inhaltsseiten(domain: string): Promise<string[]> {
+  const { treffer } = await serp(`site:${domain} photovoltaik`);
+  return treffer
+    .map((t) => t.url)
+    .filter((u) => (hostVon(u) ?? "").endsWith(domain))
+    // Rechtstexte tragen zur Frage nichts bei und würden den alten Fehler
+    // wiederholen — geprüft wird der INHALT.
+    .filter((u) => !/impressum|datenschutz|agb|kontakt|newsletter|mediadaten/i.test(u))
+    .slice(0, 4);
+}
+
+async function eignung(paket: Paket | null, limit: number, neu: boolean): Promise<void> {
+  const sb = await makeClient();
+  loadEnvFile();
+  const alle = await alleZeilen<{
+    domain: string;
+    paket: number;
+    ist_medium: string | null;
+    eignung: string | null;
+    eignung_at: string | null;
+  }>(sb, "presse_medien", "domain, paket, ist_medium, eignung, eignung_at");
+  const offen = alle
+    .filter((m) => (paket === null || m.paket === paket))
+    .filter((m) => m.ist_medium !== "kein-medium")
+    .filter((m) => neu || !m.eignung_at)
+    .slice(0, limit);
+  if (!offen.length) {
+    log("nichts offen — mit --neu noch einmal", "ok");
+    return;
+  }
+  log(`${offen.length} Medien werden auf Eignung geprüft (${(offen.length * 0.002).toFixed(2)} $ Suche)`);
+
+  const jetzt = new Date();
+  const medienZeilen: Record<string, unknown>[] = [];
+  const belegZeilen: Record<string, unknown>[] = [];
+  const zaehl: Record<string, number> = {};
+
+  await pool(offen, 4, async (m) => {
+    let seiten: string[] = [];
+    try {
+      seiten = await inhaltsseiten(m.domain);
+    } catch {
+      /* Suche fehlgeschlagen — dann bleibt die Startseite */
+    }
+    const start = await holeStart(m.domain);
+    const geprueft: { url: string; html: string }[] = [];
+    if (start) geprueft.push({ url: start.url, html: start.html });
+    for (const u of seiten) {
+      const r = await holeText(u);
+      if (r) geprueft.push({ url: r.url, html: r.html });
+    }
+    if (!geprueft.length) {
+      medienZeilen.push({
+        domain: m.domain,
+        eignung: "angesehen",
+        eignung_grund: "keine Inhaltsseite abrufbar — von Hand nachsehen",
+        eignung_beleg: null,
+        eignung_zitat: null,
+        eignung_at: jetzt.toISOString(),
+      });
+      zaehl["nicht abrufbar"] = (zaehl["nicht abrufbar"] ?? 0) + 1;
+      return;
+    }
+
+    // Je Frage die STÄRKSTE Fundstelle über alle gelesenen Seiten. Ein Treffer
+    // auf einer von vier Seiten genügt — gefragt ist, OB das Medium das Thema
+    // behandelt, nicht ob jede Seite es tut.
+    const beste = new Map<string, { b: Befund; url: string }>();
+    const merke = (b: Befund, url: string) => {
+      if (b.antwort === "unklar") return;
+      const da = beste.get(b.frage.split(" ")[0]);
+      if (da && da.b.antwort === "ja") return;
+      beste.set(b.frage.split(" ")[0], { b, url });
+    };
+    for (const s of geprueft) {
+      // OHNE NAVIGATION — sonst belegt das Menü jede Frage auf jeder Seite.
+      const text = inhaltstext(s.html);
+      merke(kernfrageBehandelt(text), s.url);
+      merke(verweistAufFremdenRechner(s), s.url);
+      merke(zitiertFremdeQuelle(text), s.url);
+      merke(meldungsbetrieb(text, jetzt, s.html), s.url);
+      merke(autorAmBeitrag(text), s.url);
+      merke(eigenerRechner(s), s.url);
+      merke(erzeugtEigeneDaten(text), s.url);
+      merke(verkauftDasProdukt(s), s.url);
+    }
+
+    const kontakte = await alleZeilen<{ domain: string; mail_art: string | null }>(
+      sb,
+      "presse_kontakte",
+      "domain, mail_art",
+      (q) => q.eq("domain", m.domain),
+    );
+    const hatKontakt = kontakte.some((k) => k.mail_art === "redaktion" || k.mail_art === "person");
+
+    const befunde = [...beste.values()].map((x) => x.b);
+    const u = urteile(befunde, hatKontakt);
+    const belegUrl = u.beleg ? [...beste.values()].find((x) => x.b === u.beleg)?.url ?? null : null;
+
+    medienZeilen.push({
+      domain: m.domain,
+      eignung: u.eignung,
+      eignung_grund: u.grund,
+      eignung_beleg: belegUrl,
+      eignung_zitat: u.beleg?.fundstelle ?? null,
+      eignung_at: jetzt.toISOString(),
+    });
+    for (const [, x] of beste) {
+      belegZeilen.push({
+        domain: m.domain,
+        merkmal: `eignung:${x.b.frage}`,
+        wert: x.b.antwort,
+        quelle_url: x.url,
+        fundstelle: x.b.fundstelle.slice(0, 300),
+        gefunden_am: heute(),
+      });
+    }
+    zaehl[u.eignung] = (zaehl[u.eignung] ?? 0) + 1;
+    log(`${m.domain}: ${u.eignung} — ${u.grund.slice(0, 70)}`, "ok");
+  });
+
+  await upsert(sb, "presse_medien", medienZeilen, "domain");
+  await upsert(sb, "presse_belege", belegZeilen, "domain,merkmal,quelle_url");
+  log(`fertig: ${JSON.stringify(zaehl)}`, "ok");
+}
+
+/** EIN Medium prüfen, ohne zu schreiben — für die Eichung. */
+async function eichenEignung(domain: string): Promise<void> {
+  loadEnvFile();
+  const jetzt = new Date();
+  let seiten: string[] = [];
+  try {
+    seiten = await inhaltsseiten(domain);
+  } catch {
+    /* ohne Suche nur die Startseite */
+  }
+  const start = await holeStart(domain);
+  const geprueft: { url: string; html: string }[] = [];
+  if (start) geprueft.push({ url: start.url, html: start.html });
+  for (const u of seiten) {
+    const r = await holeText(u);
+    if (r) geprueft.push({ url: r.url, html: r.html });
+  }
+  // eslint-disable-next-line no-console
+  console.log(`\n${domain} — gelesene Inhaltsseiten:`);
+  for (const s of geprueft) console.log("  ·", s.url);
+
+  const beste = new Map<string, { b: Befund; url: string }>();
+  for (const s of geprueft) {
+    const text = inhaltstext(s.html);
+    for (const b of [
+      kernfrageBehandelt(text),
+      verweistAufFremdenRechner(s),
+      zitiertFremdeQuelle(text),
+      meldungsbetrieb(text, jetzt, s.html),
+      autorAmBeitrag(text),
+      eigenerRechner(s),
+      erzeugtEigeneDaten(text),
+      verkauftDasProdukt(s),
+    ]) {
+      if (b.antwort === "unklar") continue;
+      const k = b.frage.split(" ")[0];
+      if (beste.get(k)?.b.antwort === "ja") continue;
+      beste.set(k, { b, url: s.url });
+    }
+  }
+  // eslint-disable-next-line no-console
+  console.log("\nAntworten:");
+  for (const [, x] of beste) {
+    console.log(`  ${x.b.antwort.toUpperCase().padEnd(5)} ${x.b.frage}`);
+    console.log(`        „${x.b.fundstelle.slice(0, 130)}“`);
+    console.log(`        ${x.url}`);
+  }
+  const u = urteile([...beste.values()].map((x) => x.b), true);
+  // eslint-disable-next-line no-console
+  console.log(`\nURTEIL: ${u.eignung} — ${u.grund}`);
+}
+
 // ─── Eichung: EIN Medium, nichts geschrieben ─────────────────────────────────
 
 async function eichen(domain: string): Promise<void> {
@@ -1244,6 +1450,14 @@ async function main(): Promise<void> {
   if (args.includes("--setup")) return setup();
   if (args.includes("--saat")) return saat();
   if (args.includes("--suche")) return suche(args.includes("--trocken"), paket);
+  if (args.includes("--eichen-eignung")) {
+    const d = textArg("--eichen-eignung");
+    if (!d) throw new Error("--eichen-eignung braucht eine Domain");
+    return eichenEignung(d.replace(/^https?:\/\//, "").replace(/\/.*$/, ""));
+  }
+  if (args.includes("--eignung")) {
+    return eignung(paket, zahlArg("--limit", 500), args.includes("--neu"));
+  }
   if (args.includes("--eichen")) {
     const d = textArg("--eichen");
     if (!d) throw new Error("--eichen braucht eine Domain");
@@ -1268,6 +1482,8 @@ async function main(): Promise<void> {
       "npm run presse -- --profil --paket 1      Websites lesen",
       "npm run presse -- --csv --paket 1         Katalog ausgeben",
       "npm run presse -- --csv --paket 1 --top 50   erstes 50er-Paket zur Kontrolle",
+      "npm run presse -- --eichen-eignung <domain>  Eignungsfragen an EINEM Medium",
+      "npm run presse -- --eignung --paket 1     Eignung prüfen (Suche + Inhaltsseiten)",
       "npm run presse -- --stats                 Bestand",
     ].join("\n"),
   );

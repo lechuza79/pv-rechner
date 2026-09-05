@@ -8,6 +8,7 @@ import {
   mediumName,
   zeilenPrioritaet,
   adressenNachDomain,
+  eignungEffektiv,
   gattungEffektiv,
   gattungText,
   type MediumZeile,
@@ -145,6 +146,18 @@ describe("Eignungsurteil", () => {
     expect(zeile).toHaveLength(SPALTEN.length);
     expect(zeile[SPALTEN.indexOf("eignung")]).toBe("vorgemerkt");
     expect(zeile[SPALTEN.indexOf("eignung_beleg")]).toBe("https://beispiel.de/team");
+  });
+
+  it("lässt die Handentscheidung die Messung schlagen und schreibt es dran", () => {
+    // Seit der Lauf das Urteil selbst ermittelt, muss sichtbar bleiben, wer es
+    // gefällt hat — sonst ist eine Korrektur von einer Messung nicht zu
+    // unterscheiden, und niemand weiß, was ein neuer Lauf überschreiben darf.
+    const gemessen = { ...medium, eignung: "ungeeignet", eignung_hand: null };
+    expect(eignungEffektiv(gemessen)).toBe("ungeeignet");
+    const korrigiert = { ...gemessen, eignung_hand: "vorgemerkt" };
+    expect(eignungEffektiv(korrigiert)).toBe("vorgemerkt");
+    const zeile = katalogZeile(korrigiert, kontakt, new Map());
+    expect(zeile[SPALTEN.indexOf("eignung")]).toBe("vorgemerkt (von Hand)");
   });
 
   it("lässt ein unbeurteiltes Medium leer statt „offen“ zu behaupten", () => {

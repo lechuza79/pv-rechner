@@ -50,6 +50,8 @@ export interface MediumZeile {
   hinweis: string | null;
   /** Handurteil über das Medium: lohnt eine Ansprache? Nie vom Lauf gesetzt. */
   eignung?: string | null;
+  /** Von Hand gesetzt — schlägt die Messung und überlebt jeden Lauf. */
+  eignung_hand?: string | null;
   eignung_grund?: string | null;
   /** Die Seite, auf der das Urteil steht — ohne sie ist es eine Behauptung. */
   eignung_beleg?: string | null;
@@ -157,6 +159,11 @@ export function gattungText(m: MediumZeile): string {
   const g = gattungEffektiv(m);
   const wort = g === "fach" ? "Fachmedium" : g === "publikum" ? "Publikumsmedium" : "nicht gemessen";
   return m.gattung_hand ? `${wort} (von Hand gesetzt)` : wort;
+}
+
+/** Das Urteil, das gilt: die Handentscheidung, sonst die Messung. */
+export function eignungEffektiv(m: MediumZeile): string | null {
+  return m.eignung_hand ?? m.eignung ?? null;
 }
 
 export function themenText(t: Themenfund[] | null): string | null {
@@ -277,7 +284,10 @@ export function katalogZeile(
     m.gruppe ?? "",
     String(m.paket),
     k?.stand && k.stand !== "offen" ? k.stand : "",
-    m.eignung && m.eignung !== "offen" ? m.eignung : "",
+    (() => {
+      const e = eignungEffektiv(m);
+      return e && e !== "offen" ? (m.eignung_hand ? `${e} (von Hand)` : e) : "";
+    })(),
     m.eignung_grund ?? "",
     m.eignung_beleg ?? "",
     notizen(m, k, mailKommtVor),

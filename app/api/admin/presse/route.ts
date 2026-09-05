@@ -30,7 +30,7 @@ const MEDIUM_SPALTEN =
   "titel, medientyp, themen, geschichten, reichweite, reichweite_quelle, ist_medium, " +
   "medium_grund, medium_merkmale, seiten, formular_url, impressum_url, prioritaet, " +
   "aufhaenger, gattung, gattung_hand, woerter, hinweis, eignung, eignung_grund, " +
-  "eignung_beleg, eignung_zitat, profil_at, fehler";
+  "eignung_beleg, eignung_zitat, eignung_hand, profil_at, fehler";
 
 const KONTAKT_SPALTEN =
   "domain, schluessel, name, funktion, rang, mail, mail_art, formular_url, quelle_url, " +
@@ -80,7 +80,12 @@ function medienAbfrage(db: any, f: Filter, zaehlen: boolean) {
   if (f.gattung) {
     q = q.or(`gattung_hand.eq.${f.gattung},and(gattung_hand.is.null,gattung.eq.${f.gattung})`);
   }
-  if (f.eignung) q = q.eq("eignung", f.eignung);
+  // Gefiltert wird auf das GELTENDE Urteil: Wo eine Handentscheidung steht,
+  // gilt sie. Nur auf die Messung zu filtern hieße, dass eine Korrektur in der
+  // Ansicht folgenlos bleibt.
+  if (f.eignung) {
+    q = q.or(`eignung_hand.eq.${f.eignung},and(eignung_hand.is.null,eignung.eq.${f.eignung})`);
+  }
   if (f.paket) q = q.eq("paket", Number(f.paket));
   if (f.prio) q = q.eq("prioritaet", f.prio);
   if (f.medium) q = q.eq("ist_medium", f.medium);
@@ -186,9 +191,14 @@ export async function PATCH(req: NextRequest) {
   if (body.eignung !== undefined || body.eignungGrund !== undefined) {
     const feld: Record<string, unknown> = { eignung_at: new Date().toISOString() };
     if (body.eignung !== undefined) {
-      if (!istStand(body.eignung))
+      // Der Mensch schreibt IMMER in die Handspalte, nie in die gemessene —
+      // sonst wäre nicht mehr zu sehen, was die Messung ergeben hatte, und der
+      // nächste Lauf überschriebe die Korrektur.
+      const wert = body.eignung;
+      if (wert !== "" && !["vorgemerkt", "ungeeignet", "angesehen", "anderer-kanal", "offen"].includes(wert)) {
         return NextResponse.json({ error: "unbekannter Stand" }, { status: 400 });
-      feld.eignung = body.eignung;
+      }
+      feld.eignung_hand = wert === "" ? null : wert;
     }
     if (body.eignungGrund !== undefined) feld.eignung_grund = body.eignungGrund?.slice(0, 500) || null;
     const { data, error } = await serviceDb

@@ -13,6 +13,7 @@ import {
   kontaktArt,
   mediumName,
   gattungText,
+  eignungEffektiv,
   notizen,
   themenText,
   zeilenPrioritaet,
@@ -240,24 +241,29 @@ export default function PresseAnsicht() {
       key: "eignung",
       kopf: "Eignung",
       umbruch: true,
-      sortWert: (m) => (m.eignung === "vorgemerkt" ? 0 : m.eignung === "angesehen" ? 1 : m.eignung === "ungeeignet" ? 3 : 2),
-      zelle: (m) =>
-        !m.eignung || m.eignung === "offen" ? (
-          <span style={{ color: v("--color-text-muted") }}>—</span>
-        ) : (
+      sortWert: (m) => {
+        const e = eignungEffektiv(m);
+        return e === "vorgemerkt" ? 0 : e === "angesehen" ? 1 : e === "anderer-kanal" ? 2 : e === "ungeeignet" ? 4 : 3;
+      },
+      zelle: (m) => {
+        const e = eignungEffektiv(m);
+        if (!e || e === "offen") return <span style={{ color: v("--color-text-muted") }}>—</span>;
+        return (
           <span
             style={{
               color:
-                m.eignung === "vorgemerkt"
+                e === "vorgemerkt"
                   ? v("--color-positive")
-                  : m.eignung === "ungeeignet"
+                  : e === "ungeeignet"
                     ? v("--color-text-muted")
                     : v("--color-text-primary"),
             }}
           >
-            {m.eignung}
+            {e}
+            {m.eignung_hand ? <span style={{ color: v("--color-text-muted") }}> · Hand</span> : null}
           </span>
-        ),
+        );
+      },
     },
     {
       key: "prio",
@@ -320,13 +326,12 @@ export default function PresseAnsicht() {
           aria-label="Suche"
           style={{ ...eingabeStil, flex: "1 1 220px", minWidth: 200 }}
         />
-        <Filter label="Eignung" wert={eignung} setzen={setEignung}>
+        <Filter label="Eignung" wert={eignung} setzen={setEignung} breit>
           <option value="">jede Eignung</option>
-          {STAENDE.map((s) => (
-            <option key={s.wert} value={s.wert}>
-              {s.text}
-            </option>
-          ))}
+          <option value="vorgemerkt">vorgemerkt</option>
+          <option value="angesehen">angesehen</option>
+          <option value="anderer-kanal">anderer Kanal (Einbettung)</option>
+          <option value="ungeeignet">ungeeignet</option>
         </Filter>
         <Filter label="Art des Mediums" wert={gattung} setzen={setGattung} breit>
           <option value="fach">Fachmedien</option>
@@ -448,16 +453,19 @@ export default function PresseAnsicht() {
                 <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: space.sm }}>
                   <span style={{ flex: "0 0 150px" }}>
                     <SelectField
-                      value={m.eignung ?? "offen"}
+                      value={m.eignung_hand ?? ""}
                       onChange={(e) => void eignungSetzen(m.domain, { eignung: e.target.value })}
                       ariaLabel={`Eignung von ${mediumName(m)}`}
                       size="sm"
                     >
-                      {STAENDE.map((s) => (
-                        <option key={s.wert} value={s.wert}>
-                          {s.text}
-                        </option>
-                      ))}
+                      {/* Die Messung als erster Eintrag, damit eine Korrektur
+                          zurückgenommen werden kann — ohne den Weg zurück wäre
+                          jede Handentscheidung endgültig. */}
+                      <option value="">{m.eignung ?? "offen"} (gemessen)</option>
+                      <option value="vorgemerkt">vorgemerkt</option>
+                      <option value="angesehen">angesehen</option>
+                      <option value="anderer-kanal">anderer Kanal</option>
+                      <option value="ungeeignet">ungeeignet</option>
                     </SelectField>
                   </span>
                   <input

@@ -264,14 +264,14 @@ describe("Fachmedium oder Publikumsmedium", () => {
 });
 
 describe("Der Erhebungslauf fasst die Handentscheidung nicht an", () => {
-  it("schreibt weder die Handeinordnung noch das Eignungsurteil", () => {
+  it("schreibt keine der beiden Handentscheidungen", () => {
     // DER GANZE PUNKT DER GETRENNTEN SPALTEN.
     //
-    // Das Eignungsurteil („lohnt eine Ansprache?") ist die eine Frage, die
-    // keine Messung beantwortet — drei Runden Musterschärfen haben jeweils das
-    // zuletzt genannte Beispiel gefangen und das nächste verfehlt. Es gehört
-    // deshalb einem Menschen, und ein Erhebungslauf, der es überschreibt,
-    // vernichtet die einzige Arbeit, die sich nicht wiederholen lässt.
+    // Das Eignungsurteil ermittelt der Lauf inzwischen selbst — aus neun
+    // abgestimmten Fragen mit Fundstelle. Was er NIE anfassen darf, ist die
+    // Handentscheidung darüber: Sie ist die einzige Arbeit an diesem Katalog,
+    // die sich nicht wiederholen lässt, und ein Lauf, der sie überschreibt,
+    // lässt dieselbe Fehleinschätzung jeden Monat neu korrigieren.
     // Stünde die Handentscheidung in
     // derselben Spalte wie die Messung, überschriebe sie der nächste Lauf — und
     // man korrigierte dieselbe Fehleinschätzung jeden Monat neu, ohne dass es
@@ -289,7 +289,7 @@ describe("Der Erhebungslauf fasst die Handentscheidung nicht an", () => {
     const ohneSql = lauf.replace(/const sql = `[\s\S]*?`;/, "");
     const schreibend = ohneSql
       .split("\n")
-      .filter((z) => /gattung_hand|\beignung/.test(z));
+      .filter((z) => /gattung_hand|eignung_hand/.test(z));
     expect(schreibend).toEqual([]);
   });
 });
