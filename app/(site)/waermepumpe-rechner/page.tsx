@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Metadata } from "next";
 import { pageMetadata } from "../../../lib/seo";
 import { standSeite } from "../../../lib/stand";
@@ -25,5 +26,19 @@ export const metadata: Metadata = pageMetadata({
 // dem Server — `lib/stand.ts` hängt an sieben Config-Modulen, die im Browser
 // nichts zu suchen haben.
 export default function WaermepumpePage() {
-  return <Waermepumpe stand={standSeite("/waermepumpe-rechner")} />;
+  // Der Rechner liest seinen Zustand aus der Adresse (Teilen-Link, `e=1` springt
+  // ins Ergebnis). Next verlangt dafür eine Suspense-Grenze, sonst bricht das
+  // VORRENDERN dieser Seite — nicht auffällig im Entwicklungsserver, aber der
+  // Produktionsbau steigt aus ("useSearchParams() should be wrapped in a
+  // suspense boundary"). Gemessen am 27.08.2026 an einem erzwungenen
+  // Vorschau-Bau; `tsc` und die Tests waren dabei grün, der Bau war es nicht.
+  //
+  // Der Ersatzinhalt bleibt leer: Die Seite ist ein Rechner, der ohnehin erst im
+  // Browser rechnet — ein Gerüst würde für einen Sekundenbruchteil ein Ergebnis
+  // andeuten, das es noch nicht gibt.
+  return (
+    <Suspense fallback={null}>
+      <Waermepumpe stand={standSeite("/waermepumpe-rechner")} />
+    </Suspense>
+  );
 }

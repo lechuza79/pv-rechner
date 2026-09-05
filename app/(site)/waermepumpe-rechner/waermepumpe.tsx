@@ -73,16 +73,36 @@ export default function Waermepumpe({
   // löscht sich gegenseitig — dieselbe Falle, die im Empfehlungs-Flow schon
   // einmal steckte (dort wird auf den zuletzt GESCHRIEBENEN Stand aufgesetzt).
   const p0 = (k: string) => suchParams.get(k);
-  const z0 = (k: string, fallback: number) => {
+  /**
+   * Ein Index in eine Auswahlliste — auf deren Länge begrenzt.
+   *
+   * Die Begrenzung ist der ganze Zweck dieser Funktion. Diese vier Werte
+   * (Fläche, Haustyp, Dämmstufe, Personen) sind Positionen in Arrays, und ein
+   * ungeprüfter Wert aus der Adresse greift ins Leere: `WOHNFLAECHEN[99].m2`
+   * wirft, die Ergebnisseite fällt in die Fehlergrenze. Das trifft nicht nur
+   * Angriffe — ein Link, bei dem beim Kopieren eine Ziffer verlorengeht,
+   * genügt, und ein Crawler probiert Parameter ohnehin durch.
+   *
+   * Auch die Ganzzahligkeit ist Pflicht: `?pe=1,5` käme sonst als 1.5 durch und
+   * `PERSONEN[1.5]` ist ebenso `undefined` wie `PERSONEN[99]`.
+   *
+   * Bei einem ungültigen Wert gilt der Startwert. Ein Fehlerhinweis wäre hier
+   * falsch: Der Empfänger eines Links hat den Fehler nicht gemacht und kann ihn
+   * nicht beheben — er bekommt die Voreinstellung und kann weiterrechnen.
+   */
+  const i0 = (k: string, fallback: number, laenge: number) => {
     const v = p0(k);
     if (v === null) return fallback;
-    const n = Number.parseFloat(v);
-    return Number.isFinite(n) ? n : fallback;
+    const n = Number.parseInt(v, 10);
+    return Number.isInteger(n) && n >= 0 && n < laenge ? n : fallback;
   };
   const b0 = (k: string, fallback: boolean) => {
     const v = p0(k);
     return v === null ? fallback : v === "1";
   };
+  /** Ein Wert aus einer festen Auswahl — alles andere fällt auf den Startwert. */
+  const w0 = <T extends string>(k: string, erlaubt: readonly T[], fallback: T): T =>
+    erlaubt.find((x) => x === p0(k)) ?? fallback;
   /** Optionaler, von Hand gesetzter Wert — `null` heißt „nicht gesetzt". */
   const o0 = (k: string) => {
     const v = p0(k);
@@ -100,31 +120,36 @@ export default function Waermepumpe({
   const markBeantwortet = (key: string) =>
     setBeantwortet(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
   const [situation, setSituation] = useState<"bestand" | "neubau">(p0("si") === "neubau" ? "neubau" : "bestand");
-  const [flaecheIdx, setFlaecheIdx] = useState(z0("fl", 1));         // 140 m² default
+  // Bestand und Neubau haben VERSCHIEDEN VIELE Dämmstufen (4 gegen 3). Die
+  // Grenze muss deshalb der gewählten Situation folgen, sonst lässt
+  // `?si=neubau&da=3` einen Index durch, den es dort nicht gibt.
+  const daemmstufenAnzahl =
+    (p0("si") === "neubau" ? INSULATION_NEUBAU : INSULATION_BESTAND).length;
+  const [flaecheIdx, setFlaecheIdx] = useState(i0("fl", 1, WOHNFLAECHEN.length));   // 140 m² default
   const [customFlaeche, setCustomFlaeche] = useState<number | null>(o0("cf"));
   const [customFlaecheDraft, setCustomFlaecheDraft] = useState<string>("");
-  const [haustypIdx, setHaustypIdx] = useState(z0("ht", 0));         // freistehend default
-  const [insulationIdx, setInsulationIdx] = useState(z0("da", 1));   // teilsaniert / KfW 55
-  const [personen, setPersonen] = useState(z0("pe", 2));             // 3–4
+  const [haustypIdx, setHaustypIdx] = useState(i0("ht", 0, HAUSTYP_WP.length));     // freistehend default
+  const [insulationIdx, setInsulationIdx] = useState(i0("da", 1, daemmstufenAnzahl));     // teilsaniert / KfW 55
+  const [personen, setPersonen] = useState(i0("pe", 2, PERSONEN.length));       // 3–4
   const [heizsystem, setHeizsystem] = useState<"fbh" | "hk_neu" | "hk_alt">(
-    (["fbh", "hk_neu", "hk_alt"] as const).find((x) => x === p0("hz")) ?? "fbh",
+    w0("hz", ["fbh", "hk_neu", "hk_alt"] as const, "fbh"),
   );
   // Welche Gebäudefrage im Ergebnis gerade aufgeklappt ist.
   const [gebaeudeEditing, setGebaeudeEditing] = useState<string | null>(null);
-  const [wpType, setWpType] = useState<"lwwp" | "swwp">(p0("wt") === "swwp" ? "swwp" : "lwwp");
+  const [wpType, setWpType] = useState<"lwwp" | "swwp">(w0("wt", ["lwwp", "swwp"] as const, "lwwp"));
 
   // PV-Integration (Ergebnis-Overlay)
   const [pvStatus, setPvStatus] = useState<"nein" | "geplant" | "vorhanden">(
-    (["nein", "geplant", "vorhanden"] as const).find((x) => x === p0("pv")) ?? "nein",
+    w0("pv", ["nein", "geplant", "vorhanden"] as const, "nein"),
   );
-  const [pvKwp, setPvKwp] = useState<number>(10);
-  const [pvSpeicher, setPvSpeicher] = useState<number>(10);
+  const [pvKwp, setPvKwp] = useState<number>(o0("pk") ?? 10);
+  const [pvSpeicher, setPvSpeicher] = useState<number>(o0("ps") ?? 10);
 
   // ── Result overrides (editable) ──────────────────────────────
-  const [oGasPrice, setOGasPrice] = useState<number | null>(null);
-  const [oStromPrice, setOStromPrice] = useState<number | null>(null);
+  const [oGasPrice, setOGasPrice] = useState<number | null>(o0("gp"));
+  const [oStromPrice, setOStromPrice] = useState<number | null>(o0("sp"));
   const [oFuel, setOFuel] = useState<string>(p0("br") ?? "gas_neu");
-  const [oJaz, setOJaz] = useState<number | null>(null);
+  const [oJaz, setOJaz] = useState<number | null>(o0("jz"));
   const [oInvest, setOInvest] = useState<number | null>(o0("iv"));
   const [oQges, setOQges] = useState<number | null>(o0("qg"));
   // Gemessener Jahresverbrauch statt Schätzung aus Fläche × Kennwert. Er schreibt
@@ -135,13 +160,17 @@ export default function Waermepumpe({
   const [verbrauchKwh, setVerbrauchKwh] = useState<number | null>(null);
   const [oHeizlast, setOHeizlast] = useState<number | null>(o0("hl"));
   // Anschaffung der fossilen Alternative (0 = die vorhandene Heizung hält die 20 Jahre durch).
-  const [oFossilInvest, setOFossilInvest] = useState<number | null>(null);
+  const [oFossilInvest, setOFossilInvest] = useState<number | null>(o0("fi"));
   // BEG Klima-Geschwindigkeits-Bonus: braucht BEIDES — Selbstnutzung und eine
   // passende alte Heizung. Früher war das ein einziger Schalter, was Vermietern
   // fälschlich den Bonus geben konnte und das Alterskriterium verdeckte.
   const [selbstnutzer, setSelbstnutzer] = useState(b0("sn", true));        // Eigennutzer? (Bedingung für Klima- UND Einkommens-Bonus)
-  const [altheizung, setAltheizung] = useState<AltheizungKey>("gas_alt"); // welche Heizung wird ersetzt
-  const [einkommen, setEinkommen] = useState<EinkommenKey>("none");   // BEG Einkommens-Bonus (gestaffelt nach Haushaltseinkommen)
+  const [altheizung, setAltheizung] = useState<AltheizungKey>(
+    w0("ah", ["oel_kohle", "gas_alt", "gas_neu", "andere"] as const, "gas_alt"),
+  ); // welche Heizung wird ersetzt
+  const [einkommen, setEinkommen] = useState<EinkommenKey>(
+    w0("ek", ["none", "bis50", "bis40", "bis30"] as const, "none"),
+  );   // BEG Einkommens-Bonus (gestaffelt nach Haushaltseinkommen)
   const [kindImHaushalt, setKindImHaushalt] = useState(b0("ki", false));        // Familienzuschlag hebt die Einkommensgrenze
   const [heizkoerperTausch, setHeizkoerperTausch] = useState(b0("hk", false));  // Maßnahme: alte HK auf Niedertemperatur tauschen
   // ── Förderstand: heute oder ab dem nächsten Stichtag ─────────
@@ -155,7 +184,7 @@ export default function Waermepumpe({
   const heute = useMemo(() => new Date(), []);
   const stufeJetzt = useMemo(() => begStufeAm(heute), [heute]);
   const stufeNaechste = useMemo(() => begNaechsteStufe(heute), [heute]);
-  const [begStand, setBegStand] = useState<BegStand>("jetzt");
+  const [begStand, setBegStand] = useState<BegStand>(w0("bs", ["jetzt", "naechste"] as const, "jetzt"));
   // Ursprung des Geräts — Voreinstellung „nein", weil das die Richtung ist, in
   // der niemand enttäuscht wird. Gefragt wird trotzdem sichtbar: Der Bonus ist
   // betragsgleich mit der Halbierung, ihn stillschweigend wegzulassen behauptete
@@ -231,11 +260,22 @@ export default function Waermepumpe({
   /**
    * Die aktuelle Rechnung als Adresse.
    *
-   * Aufgenommen wird nur, was das Ergebnis WIRKLICH verändert — jeder weitere
-   * Parameter ist eine Stelle, an der Absender und Empfänger auseinanderlaufen
-   * können. Von Hand gesetzte Werte (Investition, Heizwärme, Heizlast) müssen
-   * mit: Ohne sie rechnet der Empfänger mit unseren Schätzungen weiter und
-   * sieht eine andere Zahl unter derselben Überschrift.
+   * Aufgenommen wird alles, was die angezeigte Zahl verändert. Die erste
+   * Fassung nahm nur einen Teil und ließ neun Werte weg — darunter vier von
+   * Hand gesetzte (Gaspreis, Strompreis, Jahresarbeitszahl, Kosten der neuen
+   * fossilen Heizung), die beiden Förder-Angaben und den Förderstand. Wer
+   * seinen echten Gaspreis eintrug, die Einsparung steigen sah und den Link
+   * weitergab, verschickte damit eine ANDERE Zahl, als vor ihm auf dem
+   * Bildschirm stand: genau der Fehler, den dieser Absatz ausschließen wollte.
+   * Gefunden von einer Gegenprüfung am 05.09.2026.
+   *
+   * Der Förderstand steht zusätzlich als Vorgabe in der Projektanleitung: „Wer
+   * den Teilen-Link nachrüstet, nimmt den Förderstand mit auf." Ohne ihn
+   * bekäme der Empfänger unsere Förderannahme auf seine eigenen Gebäudewerte
+   * gerechnet.
+   *
+   * Nur Startwerte bleiben weg — sie zu schreiben machte die Adresse länger,
+   * ohne etwas zu übertragen.
    *
    * `e=1` schaltet direkt ins Ergebnis. Das ist kein Entwicklungs-Kürzel,
    * sondern der Sinn der Sache: Ein geteilter Link, der den Empfänger erst
@@ -264,6 +304,18 @@ export default function Waermepumpe({
     if (oInvest !== null) p.set("iv", String(oInvest));
     if (oQges !== null) p.set("qg", String(oQges));
     if (oHeizlast !== null) p.set("hl", String(oHeizlast));
+    if (oGasPrice !== null) p.set("gp", String(oGasPrice));
+    if (oStromPrice !== null) p.set("sp", String(oStromPrice));
+    if (oJaz !== null) p.set("jz", String(oJaz));
+    if (oFossilInvest !== null) p.set("fi", String(oFossilInvest));
+    if (altheizung !== "gas_alt") p.set("ah", altheizung);
+    if (einkommen !== "none") p.set("ek", einkommen);
+    if (begStand !== "jetzt") p.set("bs", begStand);
+    // Anlagengröße und Speicher nur, wenn die Solaranlage überhaupt mitrechnet.
+    if (pvStatus !== "nein") {
+      p.set("pk", String(pvKwp));
+      p.set("ps", String(pvSpeicher));
+    }
     const basis = typeof window !== "undefined" ? window.location.origin : "https://solar-check.io";
     return `${basis}/waermepumpe-rechner?${p.toString()}`;
   };
