@@ -74,6 +74,51 @@ export interface Befund {
   fundstelle: string;
 }
 
+/**
+ * Der Beitrag, auf den sich ein Anschreiben beziehen kann.
+ *
+ * Betreiber, 05.09.2026: „denk dran, immer einen möglichst aktuellen beitrag
+ * als beleg auf den wir uns dann auch beziehen können." Ein Beleg, der nur
+ * sagt „behandelt das Thema", trägt keinen ersten Satz. „Ihr Beitrag vom
+ * 2. September über den Speicherzubau" trägt einen.
+ */
+export interface Beitrag {
+  titel: string;
+  /** Tage vor dem Lauf — kleiner ist besser. */
+  alter: number;
+  url: string;
+}
+
+/**
+ * Sammelformeln, die keine Beitragsüberschrift sind.
+ *
+ * GEMESSEN (05.09.2026): Als Anknüpfung standen „Alle Artikel zum Thema
+ * Montage", „Alles zum Thema Energie" und „Inhaltlichen Fehler melden" da. Ein
+ * Anschreiben, das sich darauf beruft, beruft sich auf eine Rubrik — und der
+ * Empfänger merkt es im ersten Satz.
+ */
+const KEINE_UEBERSCHRIFT =
+  /^(?:alle\s+(?:artikel|beiträge|themen)|alles\s+zum\s+thema|übersicht|startseite|home|archiv|newsletter|suche|inhaltlichen?\s+fehler|kontakt|impressum|datenschutz|podcast|thema\b|themen\b|kategorie)/i;
+
+/** Trägt die Seite einen BEITRAG — Überschrift plus Datum oder Autor? Eine
+ *  Rubrikseite trägt beides nicht, sieht aber genauso aus. */
+export function istBeitrag(html: string, jetzt: Date): boolean {
+  const t = ueberschrift(html);
+  if (!t || KEINE_UEBERSCHRIFT.test(t)) return false;
+  // Zu kurz ist ein Ortsname oder ein Rubrikwort, kein Beitragstitel.
+  if (t.split(/\s+/).length < 4) return false;
+  return juengsterBeitragTage(inhaltstext(html), jetzt, html) !== null;
+}
+
+/** Die Überschrift der Seite, so wie sie ein Mensch lesen würde. */
+export function ueberschrift(html: string): string | null {
+  const h1 = html.match(/<h1[^>]*>([\s\S]{1,200}?)<\/h1>/i);
+  const roh = h1?.[1] ?? html.match(/<title[^>]*>([\s\S]{1,200}?)<\/title>/i)?.[1];
+  if (!roh) return null;
+  const t = entities(roh.replace(/<[^>]+>/g, " ")).replace(/\s+/g, " ").trim();
+  return t.length >= 8 ? t.slice(0, 140) : null;
+}
+
 /** Eine Seite, wie sie geprüft wird. */
 export interface Pruefseite {
   url: string;
@@ -102,16 +147,21 @@ function treffer(frage: string, text: string, muster: RegExp, umfeld = 90): Befu
  * jemand unsere Frage stellt. Der frühere Wortzähler hielt heise für ein
  * Fachmedium, weil dort dreißig Mal „Test" und „Kosten" vorkamen.
  */
-export const KERNFRAGEN: { name: string; muster: RegExp }[] = [
+export const KERNFRAGEN: { name: string; muster: RegExp; wirtschaftlich?: boolean }[] = [
   {
     name: "Lohnt sich Photovoltaik",
+    wirtschaftlich: true,
     muster:
-      /(?:lohnt sich|rentiert sich|rechnet sich|wirtschaftlich(?:keit)?|amortisation|amortisiert)[^.]{0,60}\b(?:photovoltaik|solaranlage|solarstrom|pv-anlage|solar)\b|\b(?:photovoltaik|solaranlage|pv-anlage)\b[^.]{0,60}(?:lohnt sich|rentiert sich|rechnet sich|amortisiert)/i,
+      // Die Nebensatzstellung gehört dazu: „ob sich eine Wärmepumpe rechnet"
+      // trägt dieselbe Frage wie „rechnet sich eine Wärmepumpe" — und fiel im
+      // ersten Anlauf durch, weil das Muster nur die Hauptsatzstellung kannte.
+      /(?:lohnt sich|rentiert sich|rechnet sich|wirtschaftlich(?:keit)?|amortisation|amortisiert)[^.]{0,60}\b(?:photovoltaik|solaranlage|solarstrom|pv-anlage|solar)\b|\bsich\b[^.]{0,40}\b(?:photovoltaik|solaranlage|pv-anlage|solar\w*)\b[^.]{0,40}(?:lohnt|rentiert|rechnet|amortisiert)|\b(?:photovoltaik|solaranlage|pv-anlage)\b[^.]{0,60}(?:lohnt sich|rentiert sich|rechnet sich|amortisiert)/i,
   },
   {
     name: "Lohnt sich eine Wärmepumpe",
+    wirtschaftlich: true,
     muster:
-      /(?:lohnt sich|rentiert sich|rechnet sich|wirtschaftlich(?:keit)?|amortisation|kosten)[^.]{0,60}\bwärmepumpe\b|\bwärmepumpe\b[^.]{0,60}(?:lohnt sich|rentiert sich|rechnet sich|amortisiert|kostet)/i,
+      /(?:lohnt sich|rentiert sich|rechnet sich|wirtschaftlich(?:keit)?|amortisation|kosten)[^.]{0,60}\bwärmepumpe\b|\bsich\b[^.]{0,40}\bwärmepumpe\b[^.]{0,40}(?:lohnt|rentiert|rechnet|amortisiert)|\bwärmepumpe\b[^.]{0,60}(?:lohnt sich|rentiert sich|rechnet sich|amortisiert|kostet)/i,
   },
   {
     name: "Balkonkraftwerk",
@@ -119,7 +169,15 @@ export const KERNFRAGEN: { name: string; muster: RegExp }[] = [
   },
   {
     name: "Speicher",
+    // Der Speicher zählt nur mit, wo er GERECHNET wird — „Batteriespeicher"
+    // allein ist ein Produktwort und kein Ansatz zur Wirtschaftlichkeit.
     muster: /\b(?:stromspeicher|batteriespeicher|heimspeicher|hausspeicher)\b/i,
+  },
+  {
+    name: "Wirtschaftlichkeit eines Speichers",
+    wirtschaftlich: true,
+    muster:
+      /(?:lohnt sich|rentiert sich|rechnet sich|wirtschaftlich(?:keit)?|amortisation|amortisiert)[^.]{0,60}\b(?:speicher|batterie)\b|\bsich\b[^.]{0,40}\b(?:speicher|batterie)\w*\b[^.]{0,40}(?:lohnt|rentiert|rechnet|amortisiert)|\b(?:stromspeicher|batteriespeicher|heimspeicher)\b[^.]{0,60}(?:lohnt sich|rentiert sich|rechnet sich|amortisiert)/i,
   },
   {
     name: "Strommix und Erzeugung",
@@ -140,8 +198,18 @@ export const KERNFRAGEN: { name: string; muster: RegExp }[] = [
   },
 ];
 
+/** Die Fragen, bei denen es um die WIRTSCHAFTLICHKEIT geht — sie entscheiden
+ *  mehr als jede andere. Betreiber, 05.09.2026: „wenn wir irgendwo einen Ansatz
+ *  zur Wirtschaftlichkeit finden, dann die auch. Der Ansatz ist das
+ *  Ausschlaggebende." */
+export function istWirtschaftlichkeitsfrage(frage: string): boolean {
+  return KERNFRAGEN.some((f) => f.wirtschaftlich && frage.includes(f.name));
+}
+
 export function kernfrageBehandelt(text: string): Befund {
-  for (const f of KERNFRAGEN) {
+  // Die Wirtschaftlichkeitsfragen zuerst: Trifft eine davon, ist sie die
+  // Antwort — auch wenn weiter unten im Text noch ein Produktwort steht.
+  for (const f of [...KERNFRAGEN].sort((a, b) => Number(!!b.wirtschaftlich) - Number(!!a.wirtschaftlich))) {
     const b = treffer(`Behandelt „${f.name}“`, text, f.muster);
     if (b.antwort === "ja") return b;
   }
@@ -247,7 +315,23 @@ export const AKTUELL_TAGE = 42;
 /** Und ab wann gilt er als eingestellt (K.-o.)? Vier Monate. */
 export const VERALTET_TAGE = 120;
 
-export function meldungsbetrieb(text: string, jetzt: Date, html?: string): Befund {
+/**
+ * Ein „nein" darf nur die STARTSEITE aussprechen.
+ *
+ * DER GEMESSENE FEHLGRIFF (05.09.2026): faz.net, iwr.de, haustec.de und haus.de
+ * wurden für eingestellt erklärt — mit Werten bis 3.978 Tage. In Wahrheit war
+ * ihre Startseite hinter einer Zustimmungsabfrage nicht lesbar, und das Urteil
+ * fiel auf einer beliebigen Artikelseite, die per Definition alt ist. Eine alte
+ * Artikelseite sagt über den Betrieb nichts; nur eine Startseite ohne frisches
+ * Datum tut das. Auf allen anderen Seiten gilt: ein frisches Datum ist ein
+ * Beleg, ein altes ist keiner.
+ */
+export function meldungsbetrieb(
+  text: string,
+  jetzt: Date,
+  html?: string,
+  istStartseite = true,
+): Befund {
   const tage = juengsterBeitragTage(text, jetzt, html);
   if (tage === null) {
     return { frage: "Laufender Meldungsbetrieb", antwort: "unklar", fundstelle: "" };
@@ -262,8 +346,10 @@ export function meldungsbetrieb(text: string, jetzt: Date, html?: string): Befun
   if (tage >= VERALTET_TAGE) {
     return {
       frage: "Laufender Meldungsbetrieb",
-      antwort: "nein",
-      fundstelle: `jüngster datierter Beitrag vor ${tage} Tagen`,
+      antwort: istStartseite ? "nein" : "unklar",
+      fundstelle: istStartseite
+        ? `jüngster datierter Beitrag auf der Startseite vor ${tage} Tagen`
+        : "",
     };
   }
   return {
@@ -362,7 +448,16 @@ export function verkauftDasProdukt(seite: Pruefseite): Befund {
   return treffer(
     "Verkauft das Produkt",
     text,
-    /\b(?:in den warenkorb|zum warenkorb|jetzt kaufen|artikelnummer|lieferzeit|zzgl\. versand|unser shop|jetzt bestellen)\b|\bangebot (?:anfordern|einholen)\b/i,
+    // „Angebot anfordern" stand hier und war der Fehlgriff: Es trifft die
+    // Abo-Werbung eines Verlags und die Spendenseite eines Recherchebüros
+    // genauso wie einen Händler — CORRECTIV, electrive und Haufe landeten damit
+    // im Vertriebs-Topf. Ein VERKAUF zeigt sich am Warenkorb und an der
+    // Artikelnummer, nicht an einer Anfrage.
+    // UND es muss UNSER Produkt sein. CORRECTIV betreibt einen Buchshop und
+    // wäre sonst ein Vertriebskanal für Solartechnik — ein Nebenshop macht aus
+    // einem Recherchebüro keinen Händler. Gefragt ist, wer Module, Speicher
+    // oder Balkonkraftwerke verkauft.
+    /\b(?:in den warenkorb|zum warenkorb|warenkorb ansehen|jetzt kaufen|artikelnummer|art\.-nr\.|lieferzeit|zzgl\. versand|sofort lieferbar|jetzt bestellen)\b[^.]{0,160}\b(?:solar|photovoltaik|pv-|modul|wechselrichter|speicher|balkonkraftwerk|wärmepumpe)|\b(?:solar|photovoltaik|pv-|modul|wechselrichter|speicher|balkonkraftwerk|wärmepumpe)\w*\b[^.]{0,160}\b(?:in den warenkorb|zum warenkorb|jetzt kaufen|artikelnummer|art\.-nr\.|sofort lieferbar|jetzt bestellen)\b/i,
   );
 }
 
@@ -396,9 +491,21 @@ export function urteile(befunde: Befund[], hatRedaktionellenKontakt: boolean): U
   if (rechner?.antwort === "ja") {
     return { eignung: "ungeeignet", grund: "hat einen eigenen Rechner für dieselbe Frage", beleg: rechner };
   }
+  // ── Der Ansatz schlägt die Herkunft ──────────────────────────────────────
+  //
+  // Betreiber, 05.09.2026: „bei den instituten und verbänden: wenn wir irgendwo
+  // einen ansatz zur wirtschaftlichkeit finden, dann die auch. der ansatz ist
+  // das ausschlaggebende."
+  //
+  // Ein Institut, das über die Wirtschaftlichkeit einer Wärmepumpe schreibt,
+  // stellt dieselbe Frage wie wir — dass es daneben eigene Studien
+  // veröffentlicht, macht es nicht zum falschen Gegenüber. Der Ausschluss gilt
+  // deshalb nur dort, wo NUR eigene Zahlen stehen und kein Rechenansatz.
+  const kern = finde("Behandelt");
+  const ansatz = kern?.antwort === "ja" && istWirtschaftlichkeitsfrage(kern.frage);
   const daten = finde("Erzeugt eigene Daten");
-  if (daten?.antwort === "ja") {
-    return { eignung: "ungeeignet", grund: "erzeugt eigene Daten zum Thema", beleg: daten };
+  if (daten?.antwort === "ja" && !ansatz) {
+    return { eignung: "ungeeignet", grund: "erzeugt eigene Daten zum Thema, ohne eigenen Rechenansatz", beleg: daten };
   }
   const meldung = finde("Laufender Meldungsbetrieb");
   if (meldung?.antwort === "nein") {
@@ -422,7 +529,19 @@ export function urteile(befunde: Befund[], hatRedaktionellenKontakt: boolean): U
         b.frage.startsWith("Laufender") ||
         b.frage.startsWith("Namentlicher")),
   );
-  if (dafuer.length >= DAFUER_SCHWELLE) {
+  // MINDESTENS EIN INHALTLICHER TREFFER. „Laufender Meldungsbetrieb" und
+  // „namentlicher Autor" sagen etwas über den Betrieb, nichts über das Thema —
+  // zusammen ergäben sie zwei Treffer und damit ein Vorgemerkt für jedes
+  // beliebige Nachrichtenangebot der Welt. Gemessen an agora-energiewende.de,
+  // das genau so durchkam. Der Betreiber am 05.09.2026: „der ansatz ist das
+  // ausschlaggebende."
+  const inhaltlich = dafuer.some(
+    (b) => b.frage.startsWith("Behandelt") || b.frage.startsWith("Verweist") || b.frage.startsWith("Zitiert"),
+  );
+  if (dafuer.length >= DAFUER_SCHWELLE && inhaltlich) {
+    const zusatz = ansatz && daten?.antwort === "ja"
+      ? " — Verband/Institut, aber mit eigenem Rechenansatz"
+      : "";
     // Der stärkste Beleg zuerst: ein Verweis auf einen fremden Rechner schlägt
     // alles andere — dort hat jemand genau unsere Sorte Werkzeug weitergereicht.
     const rang = (b: Befund) =>
@@ -431,7 +550,7 @@ export function urteile(befunde: Befund[], hatRedaktionellenKontakt: boolean): U
     const minus = hatRedaktionellenKontakt ? "" : " (kein redaktioneller Kontakt gefunden)";
     return {
       eignung: "vorgemerkt",
-      grund: dafuer.map((b) => b.frage).join(" · ") + minus,
+      grund: dafuer.map((b) => b.frage).join(" · ") + minus + zusatz,
       beleg: beste,
     };
   }
@@ -439,9 +558,11 @@ export function urteile(befunde: Befund[], hatRedaktionellenKontakt: boolean): U
   return {
     eignung: "angesehen",
     grund:
-      dafuer.length === 1
-        ? `nur ein Treffer (${dafuer[0].frage}) — zu wenig für ein Urteil`
-        : "auf den gelesenen Inhaltsseiten nichts gefunden, was für oder gegen spricht",
+      dafuer.length >= DAFUER_SCHWELLE && !inhaltlich
+        ? "läuft und nennt Autoren, behandelt aber keine unserer Fragen — zu wenig für ein Urteil"
+        : dafuer.length === 1
+          ? `nur ein Treffer (${dafuer[0].frage}) — zu wenig für ein Urteil`
+          : "auf den gelesenen Inhaltsseiten nichts gefunden, was für oder gegen spricht",
     beleg: dafuer[0] ?? null,
   };
 }

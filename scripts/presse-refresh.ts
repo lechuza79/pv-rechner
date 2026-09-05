@@ -65,6 +65,9 @@ import {
   erzeugtEigeneDaten,
   kernfrageBehandelt,
   meldungsbetrieb,
+  ueberschrift,
+  istBeitrag,
+  juengsterBeitragTage,
   urteile,
   verkauftDasProdukt,
   verweistAufFremdenRechner,
@@ -329,6 +332,24 @@ async function setup(): Promise<void> {
     -- wie bei der Einordnung Fach/Publikum; ein Wächter liest den Lauf und wird
     -- rot, wenn er sie je anfasst.
     ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS eignung_hand text;
+    -- Die Kreise, in denen eine Zeitung in den Suchergebnissen steht — ihr
+    -- GEMESSENES Verbreitungsgebiet. Die Titel selbst nennen es nur als
+    -- Fließtext („Nordhessen"), und daran scheiterte die Zuordnung
+    -- Gemeinde → Zeitung.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS kreise text[];
+    -- Der jüngste Beitrag zum Thema: Überschrift und Alter in Tagen. Ein Beleg,
+    -- der nur „behandelt das Thema" sagt, trägt keinen ersten Satz im
+    -- Anschreiben — „Ihr Beitrag vom 2. September über den Speicherzubau" tut es.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS anknuepfung_titel text;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS anknuepfung_tage integer;
+
+    CREATE TABLE IF NOT EXISTS presse_kreissuche (
+      kreis_id text PRIMARY KEY,
+      frage text NOT NULL,
+      fehler text,
+      gelaufen_am date NOT NULL
+    );
+    ALTER TABLE presse_kreissuche ENABLE ROW LEVEL SECURITY;
     ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS eignung_zitat text;
     ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS stand text NOT NULL DEFAULT 'offen';
     ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS notiz text;
@@ -1152,6 +1173,126 @@ async function suche(trocken: boolean, paketFilter: Paket | null): Promise<void>
   log(`${zeilen.length} neue Adressen aufgenommen`, "ok");
 }
 
+// ─── Phase: Regionalpresse je Landkreis ──────────────────────────────────────
+//
+// Betreiber, 05.09.2026: „es muss doch viel mehr als 65 regionalzeitungen geben.
+// mindestens zu jedem landkreis eine." Er hat recht — die benannte Saat trug 55
+// Titel, Deutschland hat rund 400 Kreise. Der Grund ist derselbe wie bei den
+// Fachbetrieben: Eine benannte Liste kennt, wer bekannt ist.
+//
+// UND DER NEBENERTRAG IST DER EIGENTLICHE: Die Kreise, in denen eine Zeitung in
+// den Ergebnissen steht, SIND ihr Verbreitungsgebiet — gemessen, nicht aus einer
+// Selbstbeschreibung abgeschrieben. Genau daran scheiterte bisher die Zuordnung
+// Gemeinde → Zeitung, denn die Titel nennen ihr Gebiet nur als Fließtext
+// („Nordhessen"). Dieselbe Mechanik wie die Streuungsmessung, die bei den
+// Fachbetrieben Betrieb von Portal trennt.
+
+interface KreisZeile {
+  id: string;
+  name: string;
+  kind: string;
+  bl: string;
+}
+
+function ladeKreise(): KreisZeile[] {
+  const pfad = resolve(process.cwd(), "public", "geo", "de-landkreise.geo.json");
+  const geo = JSON.parse(readFileSync(pfad, "utf8")) as { features: { properties: KreisZeile }[] };
+  return geo.features.map((f) => f.properties);
+}
+
+/** Wie der Kreis in der Suchanfrage heißt — dieselbe Regel wie bei den
+ *  Fachbetrieben: „Landkreis Flensburg" gibt es nicht. */
+function kreisFrage(k: KreisZeile): string {
+  const ort = k.kind === "Kreisfreie Stadt" ? k.name : `Landkreis ${k.name}`;
+  return `Tageszeitung ${ort} Lokalnachrichten`;
+}
+
+/** Was nie eine Regionalzeitung ist. Bewusst kurz — die eigentliche Trennung
+ *  macht der Profil- und Eignungslauf am Inhalt, nicht diese Liste. */
+const NIE_REGIONALPRESSE = [
+  "facebook.com", "instagram.com", "youtube.com", "linkedin.com", "x.com", "twitter.com",
+  "wikipedia.org", "wikiwand.com", "google.com", "amazon.de", "ebay.de", "kleinanzeigen.de",
+  "meinestadt.de", "wer-zu-wem.de", "kalaydo.de", "stellenanzeigen.de", "indeed.com",
+  "yumpu.com", "issuu.com", "pressreader.com", "zeitungen.de", "abo-direkt.de",
+];
+
+async function regionalpresse(limit: number, trocken: boolean): Promise<void> {
+  const sb = await makeClient();
+  loadEnvFile();
+  const kreise = ladeKreise();
+  const bestand = await alleZeilen<{ domain: string; kreise: string[] | null }>(
+    sb,
+    "presse_medien",
+    "domain, kreise",
+  );
+  const bekannt = new Map(bestand.map((b) => [b.domain, new Set(b.kreise ?? [])]));
+
+  const gelaufen = await alleZeilen<{ kreis_id: string }>(sb, "presse_kreissuche", "kreis_id");
+  const erledigt = new Set(gelaufen.map((g) => g.kreis_id));
+  const offen = kreise.filter((k) => !erledigt.has(k.id)).slice(0, limit);
+
+  if (trocken) {
+    log(`${offen.length} Kreise offen, ${(offen.length * 0.002).toFixed(2)} $ — nichts abgerufen`);
+    for (const k of offen.slice(0, 5)) log(`  ${kreisFrage(k)}`);
+    return;
+  }
+  if (!offen.length) {
+    log("alle Kreise abgefragt", "ok");
+    return;
+  }
+  log(`${offen.length} Kreise (${(offen.length * 0.002).toFixed(2)} $)`);
+
+  const gefunden = new Map<string, Set<string>>();
+  const laufZeilen: Record<string, unknown>[] = [];
+  let treffer = 0;
+
+  await pool(offen, 4, async (k) => {
+    const { treffer: hits, fehler } = await serp(kreisFrage(k));
+    laufZeilen.push({ kreis_id: k.id, frage: kreisFrage(k), fehler, gelaufen_am: heute() });
+    if (fehler) {
+      log(`${k.name}: ${fehler}`, "err");
+      return;
+    }
+    for (const h of hits) {
+      const host = hostVon(h.url);
+      if (!host) continue;
+      if (NIE_REGIONALPRESSE.some((p) => host === p || host.endsWith("." + p))) continue;
+      const menge = gefunden.get(host) ?? new Set<string>();
+      menge.add(k.id);
+      gefunden.set(host, menge);
+    }
+    treffer++;
+  });
+
+  // Je Domain die Kreise, in denen sie aufgetaucht ist — bestehende bleiben
+  // erhalten, damit ein Teillauf das Gebiet nicht beschneidet.
+  const zeilen: Record<string, unknown>[] = [];
+  for (const [domain, kreiseNeu] of gefunden) {
+    const alt = bekannt.get(domain);
+    const zusammen = [...new Set([...(alt ?? []), ...kreiseNeu])].sort();
+    if (alt) {
+      // Schon im Bestand: nur das Gebiet fortschreiben, nichts überschreiben.
+      zeilen.push({ domain, kreise: zusammen });
+      continue;
+    }
+    zeilen.push({
+      domain,
+      saat_name: domain,
+      saat_typ: null,
+      saat_schwerpunkt: null,
+      saat_gebiet: null,
+      gruppe: null,
+      paket: 2,
+      notiz: `über die Kreissuche gefunden (${kreiseNeu.size} Kreis(e))`,
+      kreise: zusammen,
+    });
+  }
+  await upsert(sb, "presse_medien", zeilen, "domain");
+  await upsert(sb, "presse_kreissuche", laufZeilen, "kreis_id");
+  const neu = zeilen.filter((z) => z.paket !== undefined).length;
+  log(`${treffer} Kreise abgefragt, ${zeilen.length} Adressen berührt, ${neu} neu`, "ok");
+}
+
 // ─── Phase: Eignung ──────────────────────────────────────────────────────────
 //
 // Beantwortet je Medium die neun mit dem Betreiber abgestimmten Fragen (05.09.2026)
@@ -1235,17 +1376,33 @@ async function eignung(paket: Paket | null, limit: number, neu: boolean): Promis
       if (da && da.b.antwort === "ja") return;
       beste.set(b.frage.split(" ")[0], { b, url });
     };
-    for (const s of geprueft) {
+    // Der JÜNGSTE Beitrag, der eine unserer Fragen behandelt — das ist der
+    // Satz, mit dem ein Anschreiben anfangen kann.
+    let anknuepfung: { titel: string; alter: number; url: string } | null = null;
+    for (const [i, s] of geprueft.entries()) {
       // OHNE NAVIGATION — sonst belegt das Menü jede Frage auf jeder Seite.
       const text = inhaltstext(s.html);
+      // Die erste gelesene Seite ist die Startseite; nur sie darf den
+      // Meldungsbetrieb VERNEINEN (eine Artikelseite ist immer alt).
+      const istStart = i === 0 && !!start;
       merke(kernfrageBehandelt(text), s.url);
       merke(verweistAufFremdenRechner(s), s.url);
       merke(zitiertFremdeQuelle(text), s.url);
-      merke(meldungsbetrieb(text, jetzt, s.html), s.url);
+      merke(meldungsbetrieb(text, jetzt, s.html, istStart), s.url);
       merke(autorAmBeitrag(text), s.url);
       merke(eigenerRechner(s), s.url);
       merke(erzeugtEigeneDaten(text), s.url);
       merke(verkauftDasProdukt(s), s.url);
+
+      // Nur ein echter BEITRAG taugt als Anknüpfung — eine Rubrikseite trägt
+      // dieselbe Überschriftform und keinen Inhalt, auf den man sich beruft.
+      if (!istStart && istBeitrag(s.html, jetzt) && kernfrageBehandelt(text).antwort === "ja") {
+        const alter = juengsterBeitragTage(text, jetzt, s.html);
+        const titel = ueberschrift(s.html);
+        if (titel && alter !== null && alter >= 0 && (!anknuepfung || alter < anknuepfung.alter)) {
+          anknuepfung = { titel, alter, url: s.url };
+        }
+      }
     }
 
     const kontakte = await alleZeilen<{ domain: string; mail_art: string | null }>(
@@ -1264,8 +1421,12 @@ async function eignung(paket: Paket | null, limit: number, neu: boolean): Promis
       domain: m.domain,
       eignung: u.eignung,
       eignung_grund: u.grund,
-      eignung_beleg: belegUrl,
+      eignung_beleg: anknuepfung?.url ?? belegUrl,
       eignung_zitat: u.beleg?.fundstelle ?? null,
+      // Woran ein Anschreiben anknüpfen kann — Überschrift und Alter des
+      // jüngsten Beitrags zum Thema.
+      anknuepfung_titel: anknuepfung?.titel ?? null,
+      anknuepfung_tage: anknuepfung?.alter ?? null,
       eignung_at: jetzt.toISOString(),
     });
     for (const [, x] of beste) {
@@ -1309,13 +1470,13 @@ async function eichenEignung(domain: string): Promise<void> {
   for (const s of geprueft) console.log("  ·", s.url);
 
   const beste = new Map<string, { b: Befund; url: string }>();
-  for (const s of geprueft) {
+  for (const [i, s] of geprueft.entries()) {
     const text = inhaltstext(s.html);
     for (const b of [
       kernfrageBehandelt(text),
       verweistAufFremdenRechner(s),
       zitiertFremdeQuelle(text),
-      meldungsbetrieb(text, jetzt, s.html),
+      meldungsbetrieb(text, jetzt, s.html, i === 0 && !!start),
       autorAmBeitrag(text),
       eigenerRechner(s),
       erzeugtEigeneDaten(text),
@@ -1450,6 +1611,9 @@ async function main(): Promise<void> {
   if (args.includes("--setup")) return setup();
   if (args.includes("--saat")) return saat();
   if (args.includes("--suche")) return suche(args.includes("--trocken"), paket);
+  if (args.includes("--regionalpresse")) {
+    return regionalpresse(zahlArg("--limit", 500), args.includes("--trocken"));
+  }
   if (args.includes("--eichen-eignung")) {
     const d = textArg("--eichen-eignung");
     if (!d) throw new Error("--eichen-eignung braucht eine Domain");
@@ -1482,6 +1646,8 @@ async function main(): Promise<void> {
       "npm run presse -- --profil --paket 1      Websites lesen",
       "npm run presse -- --csv --paket 1         Katalog ausgeben",
       "npm run presse -- --csv --paket 1 --top 50   erstes 50er-Paket zur Kontrolle",
+      "npm run presse -- --regionalpresse --trocken  was die Kreissuche kosten würde",
+      "npm run presse -- --regionalpresse        Regionalzeitungen je Landkreis finden",
       "npm run presse -- --eichen-eignung <domain>  Eignungsfragen an EINEM Medium",
       "npm run presse -- --eignung --paket 1     Eignung prüfen (Suche + Inhaltsseiten)",
       "npm run presse -- --stats                 Bestand",

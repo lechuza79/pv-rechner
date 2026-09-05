@@ -87,6 +87,33 @@ Bestand und sind einen Filter weit entfernt; für eine wirklich gute
 Datengeschichte ist ein Datenressort irgendwann der richtige Adressat — nur
 nicht im ersten Schub.
 
+## Woher die Fehlzuordnungen kamen — und was sie abstellt
+
+**Betreiber, 05.09.2026: „woher kommen ständig diese fehlzuordnungen, wie können
+wir die vermeiden?"** Jeder Fehlgriff dieser Erhebung hatte dieselbe Form:
+Geprüft wurde ein Wort, das mit der Sache **korreliert**, statt der Sache selbst.
+
+| Muster | korreliert mit | traf in Wahrheit |
+|---|---|---|
+| „Angebot anfordern" | Händler | die Abo-Werbung eines Verlags |
+| „Warenkorb" | Shop | den Buchshop eines Recherchebüros |
+| altes Datum | eingestellt | jede Artikelseite |
+| „Wärmepumpe" im Menü | behandelt das Thema | die Navigationsleiste |
+| „läuft" + „nennt Autoren" | passendes Medium | jedes Nachrichtenangebot der Welt |
+
+**Und keiner fiel von allein auf**, weil die einzelne Zeile immer plausibel
+aussieht — erst ein Mensch, der das Ergebnis las, hat sie gefunden. Deshalb ist
+die Gegenmaßnahme kein besseres Muster, sondern `lib/__tests__/presse-eignung.test.ts`:
+eine feste Liste bekannter Fälle mit erwartetem Urteil, die **vor** jedem Lauf
+läuft. Jeder Fall darin ist einmal wirklich falsch gelaufen. Beim ersten Lauf
+fand sie sofort einen weiteren: „ob sich eine Wärmepumpe rechnet" fiel durch,
+weil das Muster nur die Hauptsatzstellung kannte.
+
+**Der Beleg ist der jüngste Beitrag zum Thema, mit Überschrift und Alter**
+(Betreiber: „immer einen möglichst aktuellen beitrag als beleg auf den wir uns
+dann auch beziehen können"). Ein Beleg, der nur „behandelt das Thema" sagt,
+trägt keinen ersten Satz im Anschreiben.
+
 ## Das Eignungsurteil: die eine Frage, die keine Messung beantwortet
 
 **Nach drei Runden Musterschärfen abgebrochen (05.09.2026, Betreiber: „glaube das
