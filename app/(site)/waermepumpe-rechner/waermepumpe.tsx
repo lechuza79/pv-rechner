@@ -1565,10 +1565,21 @@ export default function Waermepumpe({
               <div style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-primary'), marginBottom: 10 }}>
                 Passende Geräte
               </div>
+              {/* Die vier Gebäudeangaben speisen die fachlichen Hinweise an den
+                  Kacheln. Sie kommen aus `activeInputs`, nicht aus den
+                  Zustandsvariablen: Das ist der Stand NACH dem gewählten
+                  Sanierungsweg. Wer „Heizkörper fit machen" gewählt hat,
+                  bekämme sonst einen Hinweis, der ihm genau das noch einmal
+                  vorschlägt — und die Vorlauftemperatur daneben käme aus dem
+                  Weg, der Hinweis aus der Rohantwort. */}
               <WpGeraeteEmpfehlung
                 auslegungKw={result.auslegungKw}
                 vorlaufC={result.flowTemp}
                 wpType={wpType}
+                situation={activeInputs.situation}
+                heizsystem={activeInputs.heizsystem}
+                personen={activeInputs.personen}
+                heizkoerperTausch={activeInputs.heizkoerperTausch ?? false}
               />
             </aside>
           </div>

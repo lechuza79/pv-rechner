@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
 import { v, space, pad } from "../lib/theme";
-import { IconExternal, IconCheck } from "./Icons";
+import { IconExternal, IconCheck, IconAlert, IconInfo } from "./Icons";
 import ContactPerson from "./ContactPerson";
 import {
   geraetLeistungTeile,
@@ -18,6 +18,13 @@ import {
   type WpGeraet,
 } from "../lib/wp-katalog";
 import type { Befund, Empfehlung, PaketLage } from "../lib/wp-empfehlung";
+import {
+  geraeteHinweise,
+  fallHinweise,
+  WP_HINWEIS_SCHLUSS,
+  type Hinweis,
+  type WpHinweisFall,
+} from "../lib/wp-hinweise";
 import { BEG_ANTRAG_HREF, BEG_EIGENLEISTUNG } from "../lib/beg-antrag";
 
 // ─── Passende Geräte zum Ergebnis ─────────────────────────────────────────────
@@ -35,11 +42,17 @@ import { BEG_ANTRAG_HREF, BEG_EIGENLEISTUNG } from "../lib/beg-antrag";
 // einen Startwert gebraucht und damit für jedes Gerät die falsche Variante
 // ausgeliefert — derselbe Fehler, der in der Kopfzeile schon einmal steckte.
 
-interface Props {
-  auslegungKw: number;
-  vorlaufC: number;
-  wpType: "lwwp" | "swwp";
-}
+/**
+ * Der Fall, wie ihn der Rechner übergibt.
+ *
+ * Die vier Gebäudeangaben unten kamen am 05.09.2026 dazu — sie speisen die
+ * fachlichen Hinweise (`lib/wp-hinweise.ts`) und kosten KEINE zusätzliche
+ * Nutzerfrage: Alle vier stehen im Rechner bereits. Übergeben wird der Zustand
+ * NACH dem gewählten Sanierungsweg, nicht die Rohantwort — wer „Heizkörper fit
+ * machen" gewählt hat, bekommt sonst einen Hinweis, der ihm genau das noch
+ * einmal vorschlägt.
+ */
+interface Props extends WpHinweisFall {}
 
 interface Antwort {
   empfehlungen: Empfehlung[];
@@ -89,10 +102,12 @@ function passungsSatz(befunde: Befund[], fall: Props): string | null {
   if (leistungOk && vorlaufOk) {
     return `Passt zu ${fall.auslegungKw.toLocaleString("de-DE")} kW und ${fall.vorlaufC} °C Vorlauf`;
   }
-  const gross = befunde.find((b) => b.art === "leistung-reichlich");
-  if (gross && gross.art === "leistung-reichlich") {
-    return `${gross.ueberKw.toLocaleString("de-DE")} kW mehr als berechnet — läuft öfter im Takt`;
-  }
+  // Der frühere Zweig „X kW mehr als berechnet — läuft öfter im Takt" ist am
+  // 05.09.2026 weggefallen. Die fachliche Prüfung hat ihn als Verharmlosung
+  // beanstandet: Er nennt die Folge nicht. Ersetzt durch den Hinweis
+  // `leistung-takten`, der Jahresarbeitszahl und Verdichterlebensdauer benennt
+  // und als Warnung eingestuft ist. Hier stehenzulassen hieße, dieselbe Sache
+  // zweimal zu sagen, einmal davon zu weich.
   const knapp = befunde.find((b) => b.art === "vorlauf-knapp");
   if (knapp && knapp.art === "vorlauf-knapp") {
     return `Schafft ${knapp.geraetC} °C — wenig Reserve über den nötigen ${knapp.noetigC} °C`;
@@ -131,14 +146,48 @@ function passungsSatz(befunde: Befund[], fall: Props): string | null {
  */
 const KAELTEMITTEL_STICHTAG_JAHR = 2028;
 
-function unsicherheit(befunde: Befund[]): string | null {
-  if (befunde.some((b) => b.art === "vorlauf-unbekannt")) {
-    return "Vorlauftemperatur nicht angegeben — beim Fachbetrieb prüfen lassen";
-  }
-  if (befunde.some((b) => b.art === "leistung-unsicher")) {
-    return "Leistung aus der Typenbezeichnung abgeleitet";
-  }
-  return null;
+/**
+ * Die frühere Funktion `unsicherheit()` stand hier und ist am 05.09.2026
+ * weggefallen.
+ *
+ * Sie fasste zwei Lücken in je einen Halbsatz („Vorlauftemperatur nicht
+ * angegeben", „Leistung aus der Typenbezeichnung abgeleitet") und behandelte
+ * beide gleich. Beide sind jetzt Hinweise mit eigener Abstufung: Die fehlende
+ * Vorlauf-Angabe ist bei 55 °C eine Warnung und bei 35 °C eine Einordnung —
+ * derselbe Satz für beides erzeugte im Neubau Sorge ohne Anlass.
+ */
+
+/** Farbe und Zeichen je Dringlichkeit — an EINER Stelle, für Kachel und Fuß. */
+function hinweisTon(gewicht: Hinweis["gewicht"]): { farbe: string; Icon: typeof IconAlert } {
+  if (gewicht === "warnung") return { farbe: v("--color-negative"), Icon: IconAlert };
+  return { farbe: v("--color-text-muted"), Icon: IconInfo };
+}
+
+/**
+ * Eine Zeile fachlicher Einordnung.
+ *
+ * Das Zeichen trägt die Dringlichkeit MIT, nicht die Farbe allein: Dreieck und
+ * Kreis unterscheiden sich auch im Druck, im Bild-Export und bei
+ * Farbsehschwäche.
+ */
+function HinweisZeile({ hinweis }: { hinweis: Hinweis }) {
+  const { farbe, Icon } = hinweisTon(hinweis.gewicht);
+  return (
+    <div
+      style={{
+        display: "flex",
+        gap: space.xs,
+        fontSize: 12,
+        lineHeight: 1.4,
+        color: v("--color-text-secondary"),
+      }}
+    >
+      <span aria-hidden style={{ flex: "0 0 auto", marginTop: 1, color: farbe }}>
+        <Icon size={13} />
+      </span>
+      <span>{hinweis.text}</span>
+    </div>
+  );
 }
 
 /**
@@ -173,7 +222,7 @@ function Karte({
   const g = e.geraet;
   const werte = kennwerte(g);
   const satz = passungsSatz(e.befunde, fall);
-  const offen = unsicherheit(e.befunde);
+  const hinweise = geraeteHinweise(g, fall);
   const preis = geraetPreisTeile(g.preisEur);
   const empfohlen = rang === 0;
 
@@ -393,19 +442,15 @@ function Karte({
         </div>
       )}
 
-      {offen && (
-        <div
-          style={{
-            display: "flex",
-            gap: space.xs,
-            fontSize: 12,
-            lineHeight: 1.4,
-            color: v("--color-text-muted"),
-            marginBottom: space.sm,
-          }}
-        >
-          <span aria-hidden style={{ flex: "0 0 auto", marginTop: 1 }}>·</span>
-          <span>{offen}</span>
+      {/* Die fachliche Einordnung zu DIESEM Gerät — höchstens zwei Zeilen, die
+          dringendste zuerst. Sie steht bewusst vor dem Kaufknopf und nicht
+          darunter: Was ein Gerät zum Fehlkauf machen kann, gehört gelesen,
+          bevor jemand klickt. */}
+      {hinweise.length > 0 && (
+        <div style={{ display: "grid", gap: space.xs, marginBottom: space.sm }}>
+          {hinweise.map((h) => (
+            <HinweisZeile key={h.id} hinweis={h} />
+          ))}
         </div>
       )}
 
@@ -436,7 +481,8 @@ function Karte({
   );
 }
 
-export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: Props) {
+export default function WpGeraeteEmpfehlung(fall: Props) {
+  const { auslegungKw, vorlaufC, wpType } = fall;
   const [antwort, setAntwort] = useState<Antwort | null>(null);
   const [laedt, setLaedt] = useState(true);
 
@@ -488,7 +534,6 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
     );
   }
 
-  const fall = { auslegungKw, vorlaufC, wpType };
   const alternativ = antwort?.alternativ ?? [];
   /**
    * Wann wir die Preise geholt haben.
@@ -701,6 +746,63 @@ export default function WpGeraeteEmpfehlung({ auslegungKw, vorlaufC, wpType }: P
           </ul>
         </div>
       )}
+
+      {/* Was am HAUS hängt, nicht am einzelnen Gerät — einmal unter der ganzen
+          Liste statt an jeder Kachel.
+
+          Die Trennung ist der Grund, aus dem die Hinweise überhaupt lesbar
+          bleiben: Ein Bestandsgebäude mit alten Heizkörpern erfüllt sechs
+          Regeln gleichzeitig. Stünden alle an der Kachel, stünden sie dort
+          dreimal untereinander — einmal je Gerät — und niemand läse eine davon.
+
+          Aufgeklappt, nicht hinter einem Knopf: Der Schlusssatz darunter
+          ordnet die ganze Liste ein, und eine Einordnung, die man erst öffnen
+          muss, ist bei einer Kaufentscheidung keine. */}
+      {fallHinweise(fall).length > 0 && (
+        <div
+          style={{
+            borderTop: `1px solid ${v("--color-border")}`,
+            paddingTop: space.md,
+            display: "grid",
+            gap: space.sm,
+          }}
+        >
+          <p
+            style={{
+              margin: 0,
+              fontSize: 12,
+              fontWeight: 700,
+              color: v("--color-text-primary"),
+            }}
+          >
+            Was bei dir vor Ort noch zu klären ist
+          </p>
+          <div style={{ display: "grid", gap: space.sm }}>
+            {fallHinweise(fall).map((h) => (
+              <HinweisZeile key={h.id} hinweis={h} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Die Gesamteinordnung — was diese Liste ist und was sie nicht ist.
+
+          Ohne sie liest sich eine Reihe von Geräten mit Preisen und Kaufknöpfen
+          wie eine Kaufempfehlung. Sie ist eine Vorauswahl: Wir kennen Heizlast
+          und Vorlauftemperatur aus einer Schätzung, nicht aus einer Berechnung,
+          und den Aufstellort gar nicht. Der Wortlaut steht in
+          `lib/wp-hinweise.ts`, damit er nicht zweimal getippt dasteht. */}
+      <p
+        style={{
+          margin: 0,
+          fontSize: 12,
+          lineHeight: 1.5,
+          color: v("--color-text-muted"),
+          fontStyle: "italic",
+        }}
+      >
+        {WP_HINWEIS_SCHLUSS}
+      </p>
 
       {/* Der teuerste Satz der Seite — und er wird hier NICHT formuliert.
 
