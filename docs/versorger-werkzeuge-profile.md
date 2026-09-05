@@ -26,11 +26,15 @@ geprüften Werkzeugen geben es heraus, ohne nach Namen zu fragen:
 | HTW-Unabhängigkeitsrechner | ja |
 | Bundesverband-Wärmepumpe-Förderrechner | ja |
 | Stadtwerke Bernau (eigen) | ja, gemessen an null Netzwerkaufrufen |
+| geoplex / Landeskataster BW | ja |
+| greenventory | ja (nur der Bericht liegt hinter dem Formular) |
+| IBC Solar (Bayreuth) | ja |
 | **tetraeder-Konfigurator (Emden)** | **nein** — rechnet Kosten und Amortisation, zeigt sie aber nicht |
 | **Havelstrom Zehdenick (eigen)** | **nein** — alles hinter Anrede, Name, Adresse, Mail, Telefon |
+| **VLink** | **kein Rechner** — eine Postleitzahl, dann Kontaktdaten |
 
-Zwei von neun halten zurück. Wer den Satz weiter als Vorsprung führt, wird beim
-ersten Vergleich widerlegt.
+Zwei von zwölf halten zurück, eines rechnet gar nicht. Wer den Satz weiter als
+Vorsprung führt, wird beim ersten Vergleich widerlegt.
 
 **Auch der gerechnete Eigenverbrauch trägt nicht mehr allein.** Eturnity, Reonic
 und das tetraeder-Kataster rechnen ihn aus einem Stundenlastgang, mit
@@ -43,14 +47,24 @@ dort, wo ohnehin wenig gerechnet wird — bei Zehdenick steht er als feste
 Drei Dinge, und nur drei, hat außer uns fast niemand:
 
 1. **Annahmen sichtbar UND editierbar.** Nur das tetraeder-Kataster (Strompreis,
-   Modulpreis, Kredit, Lastprofil bis zur handgezogenen Tageskurve) und
-   Solarmaker (Strompreis, Einspeisevergütung, Förderung ausdrücklich als
-   Annahmen benannt) kommen da mit. Eturnity zeigt außer dem Strompreis nichts;
-   Reonic immerhin Preissteigerung.
+   Modulpreis, Kredit, Lastprofil bis zur handgezogenen Tageskurve), der
+   geoplex-Rechner (Tagesprofil) und Solarmaker (Strompreis,
+   Einspeisevergütung, Förderung ausdrücklich als Annahmen benannt) kommen da
+   mit. Eturnity zeigt außer dem Strompreis nichts; Reonic immerhin
+   Preissteigerung.
+
+   **Eine Warnung dazu aus der Messung:** Editierbar allein genügt nicht. Der
+   geoplex-Rechner nimmt einen Strompreis von 4.000 ct kommentarlos an und
+   rechnet daraus 1,49 Millionen Euro Gewinn. Wer Eingaben zulässt, muss sie
+   auch prüfen.
 2. **Die Ertragsquelle wird genannt.** Nur Solarmaker (PVGIS) und PVGIS selbst.
    Eturnity, Reonic und die Kataster nennen keine.
 3. **Kommunale Förderung.** Rechnet **keines** der geprüften Werkzeuge. Bernau
    rechnet die Bundesförderung für Wärmepumpen, sonst niemand irgendetwas.
+4. **Die entscheidende Frage überhaupt beantworten.** Zwei der zwölf sagen dem
+   Nutzer, was er spart, aber nicht, was es kostet (IBC bei Bayreuth: keine
+   Investition, keine Amortisation; der tetraeder-Konfigurator hält beides
+   hinter dem Formular zurück).
 
 Dazu die Themenbreite: Balkonkraftwerk kommt bei genau einem Werkzeug vor
 (Solarmaker, als Montageort), Wärmepumpe bei zweien (Bernau, Solarmaker).
@@ -159,6 +173,68 @@ Baukosten (12.900 €), Amortisation (11 Jahre) und Eigenverbrauch (66 %); die
 Oberfläche zeigt davon nur „du gewinnst 566 € im Jahr" und „71 % Unabhängigkeit".
 Kosten und Amortisation gibt es erst gegen Name, Adresse, Mail und Telefon.
 
+### VLink (Frankenthal, Dirmstein, Gerolsheim) — gar kein Rechner
+
+Die Versorger-Seite verspricht „einen digitalen PV-Check, vier Fragen, eine
+erste Größenordnung der Kosten". Was dahinter steht: **„Frage 1 von 1:
+Postleitzahl"**, danach sofort Name, Mail und Telefon. Keine Rechnung, keine
+Zahl, kein Ergebnis. Wer eine fremde Postleitzahl eingibt, wird abgewiesen.
+
+Damit fallen drei Häuser aus der Zählung der Werkzeuge heraus — sie haben ein
+Anfrageformular mit einer vorgeschalteten Gebietsprüfung.
+
+**Das ist zugleich das stärkste Beispiel dafür, warum das Bedienen nötig war:**
+Aus dem Quelltext und aus dem Werbetext der Versorger-Seite sah es wie ein
+gekaufter Rechner aus.
+
+### geoplex (Elmshorn) und das Landeskataster Baden-Württemberg (Ditzingen)
+
+Derselbe Rechner, zweimal: Elmshorn betreibt eine eigene Instanz, Ditzingen
+bindet hinter einer Cookie-Wand das landesweite Kataster des Landes
+Baden-Württemberg ein — **kein eigener Einkauf.**
+
+Ein vollständiges Kataster-Werkzeug: Dachdaten aus Laserscan mit Verschattung,
+editierbares Tagesprofil, Speicher, Jahrestabelle, Ausdruck statt Lead-Formular.
+Gemessen in Elmshorn: 5,2 kWp mit 4 kWh Speicher, 10.533 € netto, Rendite 7,4 %,
+Amortisation 11 Jahre. Die Datenherkunft ist bei der Landesfassung vorbildlich
+benannt — Befliegung 2016 bis 2023, 14,8 Punkte je Quadratmeter.
+
+**Drei gemessene Mängel, und der erste ist gravierend:** Ein Strompreis von
+„4000 ct" wird kommentarlos angenommen und führt zu 1,49 Millionen Euro Gewinn.
+Der Speicher verschwindet bei voller Dachbelegung stillschweigend aus der
+Rechnung. Die Preiskurve ist unplausibel (12,8 kWp für 13.250 €). Einspeisesatz
+und Laufzeit werden nirgends genannt.
+
+### greenventory (Kirchzarten)
+
+Modernes Luftbild-Planungswerkzeug: Teildachflächen mit erkannter Neigung und
+Ausrichtung, ein Modul-Editor, Schieberegler. Gemessen: 8,7 kWp mit 5 kWh und
+4.000 kWh Verbrauch → 15.895 €, Amortisation 18 Jahre.
+
+**Bemerkenswert ehrlich:** Es stellt Miete und Kauf gegenüber und weist die Miete
+mit minus 1.618 € über zwanzig Jahre aus — also als das schlechtere Geschäft.
+Solche Offenheit ist in dieser Gruppe die Ausnahme.
+
+**Schwächen.** Kein Jahresertrag in Kilowattstunden, keine Rendite, kein
+Einspeisesatz. Der zusammenfassende Bericht kommt nur gegen Name, Mail und
+Telefon. Der Ergebnisdialog schneidet auch auf breiten Bildschirmen die rechte
+Spalte ab. Der voreingestellte Bedarf von 8.645 kWh wird aus dem Gebäude geraten.
+
+### IBC Solar (Bayreuth)
+
+Bayreuth bindet eine weißgelabelte Fassung als „Solarstromrechner der Stadtwerke
+Bayreuth" ein. Gemessen: Dachmaße 10 × 6 m → 7,0 kWp, bei 4.000 kWh und 35 ct →
+7.634 kWh Jahresertrag, 26.658 € Ersparnis über 20 Jahre ohne Speicher, 36.616 €
+mit einem Speicher unbekannter Größe.
+
+**Es beantwortet die entscheidende Frage nicht.** Keine Investitionssumme, keine
+Amortisation, keine Rendite — man erfährt, was man spart, aber nicht, was es
+kostet. Der Eigenverbrauch wird gerechnet, aber nie als Quote gezeigt, nur als
+„Unabhängigkeit". Die Anfrage geht sauber an die Stadtwerke.
+
+Die frei zugängliche IBC-Fassung erzwingt zusätzlich einen Speicher und hat im
+Anfrageformular **vorangekreuzte Einwilligungen**.
+
 ### Solarmaker (Fürstenfeldbruck) — nicht bedient
 
 Vor der ersten Eingabe steht ein Pflichthaken „Ich akzeptiere die AGB und die
@@ -250,10 +326,9 @@ trotz abgelehnter Einwilligung.
 
 ## Was noch offen ist
 
-- **VLink, geoplex, PlexMap, greenventory und IBC Solar** sind noch nicht
-  durchgerechnet. Das sind sechs der fünfzehn gekauften Werkzeuge; ohne sie ist
-  dieses Papier unvollständig.
-- **Solarmaker** braucht eine Freigabe zur AGB-Annahme.
+- **Solarmaker** braucht eine Freigabe zur AGB-Annahme. Nach Aktenlage ist es das
+  Werkzeug, das unserem Anspruch am nächsten kommt — und das einzige der zwölf,
+  über das wir nichts Gemessenes wissen.
 - **Preise** kennen wir für keines dieser Werkzeuge. Solantiq nennt seinen
   öffentlich, hat aber keinen einzigen deutschen Versorger als Kunden.
 - Die tetraeder-Nachträge (Blomberg, Plön, „mehr Optionen") hängen an einer

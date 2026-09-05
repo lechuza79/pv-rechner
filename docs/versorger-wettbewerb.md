@@ -37,20 +37,27 @@ Jeder Befund in der Datenbank trägt deshalb, ob er *angesehen* oder nur
 
 ## Der Befund
 
-**Von 864 abgerufenen Versorgern haben 26 ein bestätigtes Rechenwerkzeug.**
+**Von 864 abgerufenen Versorgern haben 23 ein bestätigtes Rechenwerkzeug.**
 
 | | Anzahl | |
 |---|---|---|
-| **eingekauft** | 15 | ein Werkzeug eines gewerblichen Anbieters |
-| **kostenlos eingebunden** | 9 | Landeskataster, Hochschule, EU-Rechner, Verband — hier hat niemand gezahlt |
+| **eingekauft** | 11 | ein Werkzeug eines gewerblichen Anbieters |
+| **kostenlos eingebunden** | 10 | Landeskataster, Hochschule, EU-Rechner, Verband — hier hat niemand gezahlt |
 | **selbst gebaut** | 2 | |
+
+Die Zahl war bis zum Bedien-Durchgang um vier höher. Drei Häuser (Frankenthal,
+Dirmstein, Gerolsheim) teilen sich ein Werkzeug, das **gar keines ist**: eine
+Postleitzahl-Abfrage, danach sofort Name, Mail und Telefon — die Versorger-Seite
+verspricht „vier Fragen und eine erste Kostengrößenordnung", geliefert wird eine
+Frage und keine Zahl. Und Ditzingen hat nichts gekauft, sondern bindet das
+landesweite Kataster Baden-Württembergs ein.
 
 Aufgeschlüsselt nach Thema wird die Sache deutlich:
 
 | | Photovoltaik | Wärmepumpe |
 |---|---|---|
-| eingekauft | 15 | **0** |
-| kostenlos eingebunden | 8 | 1 |
+| eingekauft | 11 | **0** |
+| kostenlos eingebunden | 9 | 1 |
 | selbst gebaut | 1 | 1 |
 
 **Bei Wärmepumpe gibt es in ganz Deutschland zwei Werkzeuge.** Stadtwerke Bernau
@@ -58,14 +65,14 @@ betreibt einen eigenen Preisrechner (13 Gebäudefragen bis hin zum Einkommen fü
 die Förderstufe), Stadtwerke Bad Kissingen bindet den Förderrechner des
 Bundesverbands Wärmepumpe ein. Gekauft hat **kein einziger**.
 
-Bei Photovoltaik kaufen 15 Häuser ein. Selbst gebaut hat dort genau einer —
+Bei Photovoltaik kaufen 11 Häuser ein. Selbst gebaut hat dort genau einer —
 Havelstrom Zehdenick —, und der gibt sein Ergebnis erst nach Anrede, Name,
 Adresse, E-Mail und Telefonnummer heraus.
 
 ### Was das für die Ansprache heißt
 
-Bei Photovoltaik gibt es einen Markt: 15 Häuser haben für ein Werkzeug bezahlt,
-verteilt auf mindestens acht verschiedene Anbieter. Bei Wärmepumpe hat noch
+Bei Photovoltaik gibt es einen Markt: 11 Häuser haben für ein Werkzeug bezahlt,
+verteilt auf sieben verschiedene Anbieter. Bei Wärmepumpe hat noch
 niemand etwas gekauft — und das ist zweideutig. Es kann heißen, dass der Bedarf
 unbesetzt ist, oder dass es ihn nicht gibt. **Diese Erhebung kann die Frage
 nicht beantworten**, und wer sie als „unbesetzter Markt" verkauft, behauptet
@@ -78,21 +85,19 @@ einem eingeführten Wettbewerber.
 
 ## Die Anbieter
 
-Von den 15 gekauften Werkzeugen verteilen sich die Anbieter so:
+Von den 11 gekauften Werkzeugen verteilen sich die Anbieter so:
 
 | Anbieter | Häuser |
 |---|---|
 | Eturnity | 3 (Sachsenwald, Staßfurt, Torgau) |
-| VLink | 3 (Frankenthal, Dirmstein, Gerolsheim — dieselbe Instanz) |
 | Reonic | 2 (Schwäbisch Gmünd, Garbsen) |
-| geoplex / PlexMap | 2 (Elmshorn, Ditzingen) |
 | tetraeder.solar | 2 (Emden, Blomberg) |
+| geoplex | 1 (Elmshorn) |
 | Solarmaker, IBC Solar, greenventory | je 1 |
 
-**Die drei VLink-Häuser teilen sich eine Instanz** — Dirmstein und Gerolsheim
-zeigen auf Frankenthals Werkzeug. Für „Versorger mit Werkzeug" zählt das dreimal,
-für „Versorger, die gekauft haben" höchstens einmal. Dieselbe Vorsicht gilt
-überall dort, wo mehrere Häuser eines Verbunds dasselbe Werkzeug nutzen.
+**Blomberg zählt hier formal als Kauf und ist doch keiner:** Das Haus lizenziert
+dasselbe Kataster-Produkt, das die Nachbarkreise kostenlos anbieten — sogar ohne
+deren Gründach-Modul. Wer daraus „zwei tetraeder-Käufe" liest, liest zu viel.
 
 **Solantiq kommt bei keinem einzigen deutschen Versorger vor.** Der Anbieter
 zielt auf Installateure, nicht auf Stadtwerke; er ist unser preislicher
@@ -166,13 +171,15 @@ eine, und genau deshalb war sie zu optimistisch.
 
 **Nach oben — wir könnten zu viel gezählt haben:**
 
-- „Versorger mit Werkzeug" ist nicht „Versorger, die gekauft haben". Drei
-  VLink-Häuser teilen eine Instanz.
-- Ob ein Rechner sein Ergebnis wirklich erst gegen Kontaktdaten herausgibt, sieht
-  man nur durch Bedienen. Wir haben es bei Zehdenick am Aufbau der Schritte
-  festgemacht, nicht durch Ausprobieren.
-- Der Rechenumfang der gekauften Werkzeuge ist **nicht** geprüft. Dass ein
-  Eturnity-Rechner eingebettet ist, sagt nichts darüber, was er rechnet.
+- „Versorger mit Werkzeug" ist nicht „Versorger, die gekauft haben". Blomberg
+  lizenziert dasselbe Kataster, das die Nachbarkreise gratis anbieten.
+- **Auch die 23 sind noch zu hoch.** Diese Zahl entstand, nachdem vier Fälle beim
+  Bedienen weggefallen sind (drei Häuser mit einem „Werkzeug", das nur eine
+  Postleitzahl abfragt, plus ein eingebettetes Landeskataster). Wo ein Werkzeug
+  bisher nur gesehen und nicht bedient wurde, kann dasselbe noch einmal
+  passieren.
+- Der Rechenumfang ist für neun Werkzeuge geprüft (siehe
+  `versorger-werkzeuge-profile.md`), für die übrigen nicht.
 
 ---
 
