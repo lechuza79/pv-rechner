@@ -562,12 +562,24 @@ export function postfaecherAus(html: string, domain: string): Postfach[] {
   for (const m of Array.from(text.matchAll(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g))) {
     const mail = m[0].toLowerCase().replace(/\.$/, "");
     if (MAIL_UNBRAUCHBAR.test(mail)) continue;
-    // Eine Adresse auf fremder Domain ist der Dienstleister, nicht die
-    // Redaktion — dieselbe Regel wie bei Gemeinden und Fachbetrieben, wo sie
-    // zwei Agenturadressen abgefangen hat. Verlags-Dachdomains sind erlaubt,
-    // wenn der Kern übereinstimmt (`redaktion@verlag.de` bei `magazin.de` nicht).
+    // DIE VERLAGSADRESSE IST DIE RICHTIGE — auch auf fremder Domain.
+    //
+    // Diese Regel hieß bis zum 05.09.2026 „fremde Domain heißt Dienstleister",
+    // übernommen von Gemeinden und Fachbetrieben. Bei der Presse ist sie der
+    // größte Einzelfehler der ganzen Erhebung: Gemessen an 119 Medien ohne
+    // Kontaktweg lagen **255 von 288** gefundenen Adressen auf einer anderen
+    // Domain als der Titel — deutsche Zeitungen werden von Verlagen
+    // herausgegeben, deren Mail-Domain nicht der Titel-Domain entspricht
+    // (`redaktion.kaufbeuren@azv.de` für all-in.de, `mborlinghaus@ulmer.de` für
+    // bw-wochenblatt.de). Der Lauf hat sie gelesen und wieder weggeworfen.
+    //
+    // Was bleibt, ist der Ausschluss des DIENSTLEISTERS — und der entscheidet
+    // sich am Satz daneben, nicht an der Domain. Die Gegenprobe des Nachlaufs
+    // hat damit zwei Durchrutscher gefunden (die Design-Agentur hinter zwei
+    // Fachmagazinen), die die Domainregel ebenfalls nicht gefangen hätte.
     const mailHost = mail.split("@")[1];
-    if (!mailHost.endsWith(domain) && !domain.endsWith(mailHost)) continue;
+    const eigene = mailHost.endsWith(domain) || domain.endsWith(mailHost);
+    if (!eigene && dienstleisterUmfeld(text, m.index ?? 0)) continue;
     const treffer = POSTFACH_RANG.find((r) => r.muster.test(mail));
     const rang = treffer?.rang ?? 50;
     const werblich = (treffer?.rang ?? 50) <= 10;
@@ -577,6 +589,21 @@ export function postfaecherAus(html: string, domain: string): Postfach[] {
     }
   }
   return [...out.values()].sort((a, b) => b.rang - a.rang);
+}
+
+/**
+ * Steht diese Adresse im Umfeld eines DIENSTLEISTERS?
+ *
+ * Geprüft wird ein Fenster um die Fundstelle, nicht die ganze Seite: Ein
+ * Impressum nennt fast immer irgendwo eine Agentur, und wer die ganze Seite
+ * prüft, wirft damit auch die Redaktionsadresse weg.
+ */
+export function dienstleisterUmfeld(text: string, pos: number, fenster = 120): boolean {
+  const von = Math.max(0, pos - fenster);
+  const um = text.slice(von, pos + fenster);
+  return /technische umsetzung|webdesign|web-design|realisierung|programmierung|gestaltung der (?:website|seite)|umsetzung der (?:website|seite)|hosting|servertechnik|internetagentur|werbeagentur|full-?service-?agentur|konzeption und umsetzung/i.test(
+    um,
+  );
 }
 
 function mailtoLinks(html: string): string[] {

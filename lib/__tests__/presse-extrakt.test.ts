@@ -135,11 +135,16 @@ describe("Postfächer", () => {
     expect(p.find((x) => x.mail === "anzeigen@zfk.de")?.werblich).toBe(true);
   });
 
-  it("nimmt keine Adresse einer fremden Domain", () => {
-    // Dieselbe Regel wie bei Gemeinden und Fachbetrieben, wo sie zwei
-    // Agenturadressen abgefangen hat.
-    const p = postfaecherAus("<p>redaktion@irgendeine-agentur.de</p>", "zfk.de");
-    expect(p).toHaveLength(0);
+  it("nimmt eine Adresse auf fremder Domain — bei der Presse ist das der Verlag", () => {
+    // UMGEKEHRT AM 05.09.2026, und die alte Erwartung steht hier bewusst als
+    // widerlegt statt gelöscht: Sie war von Gemeinden und Fachbetrieben
+    // übernommen, wo eine fremde Domain wirklich die Agentur ist. Bei der
+    // Presse ist sie der Normalfall — gemessen an 119 Medien ohne Kontaktweg
+    // lagen 255 von 288 Adressen auf einer anderen Domain als der Titel.
+    // Ausgeschlossen wird jetzt am Satz daneben, nicht an der Domain; die
+    // Gegenprobe dafür steht weiter unten.
+    const p = postfaecherAus("<p>redaktion@irgendein-verlag.de</p>", "zfk.de");
+    expect(p.map((x) => x.mail)).toContain("redaktion@irgendein-verlag.de");
   });
 
   it("erkennt eine persönlich aussehende Adresse als solche", () => {
@@ -334,5 +339,45 @@ describe("Seiten und Titel", () => {
     expect(titelBrauchbar("Startseite")).toBe(false);
     expect(titelBrauchbar("Home")).toBe(false);
     expect(titelBrauchbar("ZfK")).toBe(true);
+  });
+});
+
+describe("Die Verlagsadresse ist die richtige — Fehlerklasse vom 05.09.2026", () => {
+  /**
+   * Gemessen an 119 Medien ohne Kontaktweg: 255 von 288 gefundenen Adressen
+   * lagen auf einer ANDEREN Domain als der Titel. Deutsche Zeitungen werden von
+   * Verlagen herausgegeben, deren Mail-Domain nicht die Titel-Domain ist. Die
+   * von Gemeinden und Fachbetrieben übernommene Regel „fremde Domain heißt
+   * Dienstleister" hat sie alle weggeworfen.
+   */
+  it("nimmt die Verlagsadresse auf fremder Domain", () => {
+    const html = `<p>Verantwortlich für den Inhalt: Allgäuer Zeitungsverlag GmbH.
+      Redaktion: redaktion.kaufbeuren@azv.de</p>`;
+    const p = postfaecherAus(html, "all-in.de");
+    expect(p.map((x) => x.mail)).toContain("redaktion.kaufbeuren@azv.de");
+  });
+
+  it("wirft die Agentur weg, die daneben als Umsetzer benannt ist", () => {
+    const html = `<p>Redaktion: info@magazin.de</p>
+      <p>Technische Umsetzung und Webdesign: info@bosbach.de</p>`;
+    const p = postfaecherAus(html, "magazin.de").map((x) => x.mail);
+    expect(p).toContain("info@magazin.de");
+    expect(p).not.toContain("info@bosbach.de");
+  });
+
+  it("prüft nur das Umfeld der Fundstelle, nicht die ganze Seite", () => {
+    // Eine Agenturzeile am Seitenende darf die Redaktionsadresse oben nicht
+    // mitreißen — sonst ist die Regel schlimmer als die alte.
+    const html = `<p>Chefredaktion: chef@verlag.de</p>
+      ${"<p>Beliebiger Fließtext über Photovoltaik.</p>".repeat(20)}
+      <p>Realisierung: web@agentur.de</p>`;
+    const p = postfaecherAus(html, "zeitung.de").map((x) => x.mail);
+    expect(p).toContain("chef@verlag.de");
+    expect(p).not.toContain("web@agentur.de");
+  });
+
+  it("lässt die eigene Domain auch neben einer Agenturzeile durch", () => {
+    const html = `<p>Webdesign: kontakt@zeitung.de</p>`;
+    expect(postfaecherAus(html, "zeitung.de").map((x) => x.mail)).toContain("kontakt@zeitung.de");
   });
 });
