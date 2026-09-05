@@ -117,9 +117,17 @@ describe("Pflichtangaben zum Preis", () => {
 
   it("steht als eine Quelle im Code, nicht an der Kachel getippt", () => {
     expect(fs.readFileSync(KACHEL_DATEI, "utf-8")).toMatch(/preisZusatz\(g\)/);
-    // Kein handgetippter Steuer- oder Versandhinweis daneben.
+    // Kein handgetippter Steuer- oder Versandhinweis AN DER KACHEL.
+    //
+    // Die Fußzeile darunter darf ihn tragen und tut es seit dem 05.09.2026
+    // („Preise inkl. MwSt., Versand geprüft") — das ist eine Aussage über die
+    // ganze Liste, nicht über ein Gerät, und sie steht dort genau einmal. Der
+    // Fehler, gegen den diese Regel gebaut ist, wäre eine zweite Fassung
+    // NEBEN dem Preis: Dort entscheidet die Angabe je Gerät, ob Versand
+    // anfällt, und eine handgetippte Zeile daneben wäre für die Hälfte falsch.
     const ausgeliefert = ausgelieferterText(KACHEL_DATEI);
-    expect(ausgeliefert).not.toMatch(/"[^"]*inkl\. MwSt/);
+    const anDerKachel = ausgeliefert.slice(0, ausgeliefert.indexOf("Preise inkl. MwSt."));
+    expect(anDerKachel).not.toMatch(/"[^"]*inkl\. MwSt/);
     expect(ausgeliefert).not.toMatch(/>\s*versandkostenfrei/i);
   });
 
@@ -183,12 +191,21 @@ describe("Pflichtangaben zum Preis", () => {
     // Oben: Kennzeichnung, ein Händler, Provision — mehr nicht.
     expect(ausgeliefert).toMatch(/Sortiment eines einzelnen Händlers/);
     expect(ausgeliefert).toMatch(/kein Marktüberblick/);
-    // Die Anschrift steht NICHT mehr im Kennzeichnungs-Absatz …
-    expect(ausgeliefert).not.toMatch(/Anzeige<\/strong>[\s\S]{0,400}haendlerAnschrift/);
-    // … sondern unter den Kacheln, zusammen mit dem Widerrufsrecht.
-    expect(ausgeliefert).toMatch(
-      /Verkäufer: \{haendlerAnschrift\(\)\}\.\s*Beim Kauf dort besteht ein Widerrufsrecht/,
-    );
+    // Unter den Kacheln: EINE Zeile, die sagt, wo der Vertrag zustande kommt.
+    //
+    // Bis 05.09.2026 standen hier zwei Absätze mit voller Händleranschrift und
+    // einem eigenen Widerrufssatz. Der Betreiber hat sie nach zwei Prüfungen
+    // ersetzt (siehe den Kommentar an der Stelle selbst): Die Rechtsprüfung
+    // deckte die Anschrift, die Praxis-Erhebung fand sie bei KEINEM von zwölf
+    // geprüften Anbietern. Die Abwägung gehört ihm.
+    //
+    // Was der Test weiter erzwingt, ist die Substanz: dass der Nutzer die
+    // Seite verlässt, wer sein Vertragspartner wird, dass dort ein
+    // Widerrufsrecht besteht, und dass der Preis nicht die fertige Anlage ist.
+    expect(ausgeliefert).toMatch(/verlässt du\s*\n?\s*solar-check\.io/);
+    expect(ausgeliefert).toMatch(/Kaufvertrag schließt du mit/);
+    expect(ausgeliefert).toMatch(/Widerrufsrecht/);
+    expect(ausgeliefert).toMatch(/nicht der Preis der fertigen Anlage/);
   });
 
   it("führt die Versandkosten von der Datenbank bis in die Kachel durch", () => {
@@ -230,24 +247,37 @@ describe("Kacheln als Aufforderung zum Kauf", () => {
       "utf-8",
     );
 
-  it("nennt Firmierung UND Anschrift des Händlers, nicht nur die Wortmarke", () => {
-    // § 5b Abs. 1 Nr. 2 UWG verlangt "Identität und Anschrift" — ausdrücklich
-    // auch die dessen, "für den er handelt". Der Verweis auf das Impressum des
-    // Shops genügt nicht: Es kommt erst nach der Entscheidung, dort überhaupt
-    // hinzugehen.
+  it("hält die Anschrift des Händlers vor, auch wenn die Seite sie nicht zeigt", () => {
+    // DIE ANGABE BLEIBT IM CODE, die Anzeige ist eine Betreiber-Entscheidung.
+    //
+    // Bis 05.09.2026 stand die volle Anschrift unter den Kacheln. Die
+    // Rechtsprüfung deckt das — § 5b Abs. 1 Nr. 2 UWG verlangt „Identität und
+    // Anschrift", und BGH I ZR 231/14 hat den Verweis aufs Shop-Impressum als
+    // „zu spät" verworfen. Die Praxis-Erhebung desselben Tages fand die
+    // Anschrift bei KEINEM von zwölf geprüften Anbietern; der Betreiber hat
+    // sich für deren Bauform entschieden.
+    //
+    // Der Test hält deshalb den DATENSTAND fest, nicht die Anzeige: Wer die
+    // Entscheidung zurückdreht, findet eine gepflegte Angabe vor und keine,
+    // die inzwischen veraltet ist. Die Firmierung ist dabei der Punkt — gemeint
+    // ist die Identität, nicht das Logo.
     expect(haendlerAnschrift()).toBe("Heizungsdiscount 24 GmbH, Stolzenmorgen 15, 35394 Gießen");
-    // Die Rechtsform gehört dazu: gemeint ist die Identität, nicht das Logo.
     expect(WP_HAENDLER.firma).toMatch(/GmbH|AG|KG|e\.K\./);
-    expect(block()).toMatch(/haendlerAnschrift\(\)/);
   });
 
-  it("nennt das Bestehen des Widerrufsrechts — und keine Frist dazu", () => {
-    // Nr. 5 verlangt nur das BESTEHEN, keine Belehrung. Eine Frist wäre eine
-    // Aussage über die Vertragsbedingungen eines Dritten, die wir nicht
-    // beherrschen — er kann auch mehr gewähren. Dieselbe Regel wie überall im
-    // Projekt: keine Zahl, für die wir nicht die Quelle sind.
+  it("sagt, mit wem der Vertrag zustande kommt — und dass dort Widerruf besteht", () => {
+    // Was von den beiden Absätzen übrig ist und bleiben muss: Der Leser soll
+    // wissen, dass er unsere Seite verlässt und wer sein Vertragspartner wird.
+    // Das ist der Zweck, den BGH I ZR 231/14 in Rn. 29 der Anschrift zuschreibt
+    // — hier ohne die Postadresse, dafür ausdrücklich.
+    //
+    // Keine FRIST zum Widerruf: Verlangt ist nur das Bestehen, und eine Frist
+    // wäre eine Aussage über die Vertragsbedingungen eines Dritten, die wir
+    // nicht beherrschen — er kann auch mehr gewähren.
     const t = block();
-    expect(t).toMatch(/besteht ein Widerrufsrecht/);
+    expect(t).toMatch(/verlässt du/);
+    expect(t).toMatch(/Kaufvertrag schließt du mit/);
+    expect(t).toMatch(/Widerrufsrecht/);
     expect(t).not.toMatch(/\d+\s*Tage\s*Widerruf/i);
   });
 

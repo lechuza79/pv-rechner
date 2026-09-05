@@ -10,7 +10,6 @@ import ContactPerson from "./ContactPerson";
 import {
   geraetLeistungTeile,
   geraetPreisTeile,
-  haendlerAnschrift,
   lieferumfangText,
   preisZusatz,
   umfangText,
@@ -28,7 +27,7 @@ import {
   type Hinweis,
   type WpHinweisFall,
 } from "../lib/wp-hinweise";
-import { BEG_ANTRAG_HREF, BEG_EIGENLEISTUNG } from "../lib/beg-antrag";
+import { BEG_ANTRAG_HREF } from "../lib/beg-antrag";
 
 // ─── Passende Geräte zum Ergebnis ─────────────────────────────────────────────
 //
@@ -913,37 +912,59 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
         </Link>
       </div>
 
-      {/* Verkäufer und Widerrufsrecht — einmal für alle Kacheln, weil es EIN
-          Händler ist.
+      {/* EINE Zeile statt zweier Absätze — Betreiber-Entscheidung 05.09.2026,
+          nach zwei Prüfungen mit gegenläufigem Ergebnis.
 
-          Beides sind Pflichtangaben bei einer Aufforderung zum Kauf
-          (§ 5b Abs. 1 Nr. 2 und Nr. 5 UWG) und beide stehen bewusst SICHTBAR,
-          obwohl die Auslagerung hinter einen Aufklapper vertretbar wäre: Sie
-          kosten zusammen zwei Zeilen, und der Streitpunkt, den man sich damit
-          einhandelt, ist ungeklärt. Dazu ein praktischer Grund, der keine Norm
-          ist und trotzdem entscheidet — wer Portale prüft, sucht mit einem
-          Crawler nach einer Anschrift und dem Wort "Widerruf" im ausgelieferten
-          HTML. Ein Aufklapper, dessen Inhalt zwar im Dokument steht, aber nicht
-          sichtbar ist, sieht für den Prüfer aus wie eine Lücke.
+          WAS HIER STAND: Verkäufer mit voller Anschrift und ein Satz zum
+          Widerrufsrecht, dazu ein Absatz über Messbedingungen, Eigenleistung
+          und Auswahlgröße. Zusammen rund die Hälfte des sichtbaren Textes der
+          Spalte, die insgesamt mehr Wörter trug (777) als das Ergebnis daneben
+          (548).
 
-          "Beim Kauf dort besteht ein Widerrufsrecht" ist bewusst OHNE Frist:
-          Verlangt ist nur die Information über das BESTEHEN, nicht über
-          Bedingungen und Verfahren. Eine Frist wäre zudem eine Aussage über die
-          Vertragsbedingungen eines Dritten, die wir nicht beherrschen.
-          Am 27.08.2026 an der Widerrufsbelehrung des Shops geprüft: Sie gilt
-          uneingeschränkt für Verbraucher, kein Ausschluss für Sonderanfertigung
-          oder Montageleistung — und der Shop belehrt im eigenen Namen, ist also
-          selbst Vertragspartner und kein Marktplatz für Dritte. */}
+          DIE RECHTSPRÜFUNG HAT DAS GEDECKT — und ist überstimmt worden. Sie
+          stützt sich auf BGH I ZR 231/14 (MeinPaket.de II, 14.09.2017): Dort
+          verlor ein Vermittler, weil der Verweis aufs Shop-Impressum "zu spät"
+          komme, und der Senat hielt fest, die Angaben beanspruchten "keinen
+          nennenswerten Raum". Die Aufforderung zum Kauf setzt nach Leitsatz 2
+          ausdrücklich NICHT voraus, dass man bei uns kaufen kann.
+
+          DIE PRAXIS SIEHT ANDERS AUS, und zwar ausnahmslos. Am 05.09.2026 an
+          echten Seiten erhoben: CHIP, SPIEGEL, Computer Bild, FOCUS, heise,
+          Stiftung Warentest, Öko-Test, dazu Geizhals, billiger.de, CHECK24,
+          Verivox, Finanztip. KEINER nennt eine Händleranschrift, KEINER ein
+          Widerrufsrecht. Der gemeinsame Nenner ist ein Provisionshinweis, bei
+          den Gründlichsten zusätzlich "Anzeige" an jedem Produkt.
+
+          DIE ENTSCHEIDUNG GEHÖRT DEM BETREIBER, weil sie Risiko gegen
+          Außenwirkung abwägt — nicht Recht gegen Recht. Er hat sie getroffen
+          ("mach wie der wettbewerb") und dabei auf happycoffee.org verwiesen,
+          das Angebot eines Bekannten, der in solchen Dingen sorgfältig ist.
+
+          DER SATZ UNTEN IST DESSEN BAUFORM. Er lautet dort: "Preise inkl.
+          MwSt. Versandkosten geprüft. Bei einem Klick auf 'Zum Angebot'
+          verlässt du happycoffee.org. Wir erhalten beim Kauf ggf. eine
+          Provision – für dich ändert sich am Preis nichts."
+
+          Der tragende Teil ist der mittlere Halbsatz: "du verlässt unsere
+          Seite" sagt in fünf Wörtern, was die Anschrift umständlich sagt —
+          dass der Vertrag anderswo zustande kommt und wir nicht Verkäufer
+          sind. Das ist der Punkt, um den es in Rn. 29 des Urteils geht (der
+          Verbraucher soll wissen, mit wem er es zu tun bekommt), nur ohne die
+          Postanschrift.
+
+          WAS BLEIBT UND WARUM: der Händlername an jeder Kachel (er steht dort
+          ohnehin), das Wort "Anzeige" (die einzige Angabe, die auch der
+          Wettbewerb durchweg führt, und Gegenstand der Abmahnpraxis), und der
+          Hinweis auf den Gerätepreis (er verhindert eine Fehlvorstellung über
+          die Zahl daneben, nicht über den Verkäufer).
+
+          WER DAS ZURÜCKDREHEN WILL, braucht keinen neuen Rechtsrat — der liegt
+          vor und sagt "Anschrift". Er braucht die Entscheidung des Betreibers,
+          und die lautet heute anders. */}
       <p style={{ margin: 0, fontSize: v("--font-size-caption"), lineHeight: 1.5, color: v("--color-text-muted") }}>
-        Verkäufer: {haendlerAnschrift()}. Beim Kauf dort besteht ein Widerrufsrecht.
-      </p>
-
-      <p style={{ margin: 0, fontSize: v("--font-size-caption"), lineHeight: 1.5, color: v("--color-text-muted") }}>
-        Angegeben ist der Gerätepreis des Händlers, nicht der Preis der fertigen Anlage —
-        Speicher, Regelung, Montage und Inbetriebnahme kommen dazu. Hersteller messen die
-        Heizleistung außerdem bei unterschiedlichen Außentemperaturen; die Zahl taugt zum
-        Vorauswählen, die verbindliche Auslegung macht der Fachbetrieb. {BEG_EIGENLEISTUNG}
-        {antwort?.auswahlAus ? ` Ausgewählt aus ${antwort.auswahlAus} Geräten des Sortiments.` : ""}
+        Preise inkl. MwSt., Versand geprüft. Mit einem Klick auf „Beim Händler ansehen" verlässt du
+        solar-check.io — den Kaufvertrag schließt du mit {WP_HAENDLER.kurz}, dort besteht auch ein
+        Widerrufsrecht. Angegeben ist der Gerätepreis, nicht der Preis der fertigen Anlage.
       </p>
     </div>
   );
