@@ -24,9 +24,9 @@ export interface VideoFrameDaten {
   jahr: string;
   svg: SVGSVGElement | null;
   legende: { farbe: string; label: string }[];
-  /** Ereignis-Zeitleiste unter dem Chart: Position in Prozent der Chartbreite, Farbe als Wert. */
+  /** Zeitleiste unter dem Chart: Position in Prozent der Spur, linear über alle Jahre. */
   zeitleiste: { posPct: number; aktiv: boolean }[];
-  spur: { vonPct: number; bisPct: number };
+  fortschrittPct: number;
   /** Das aktive Ereignis, erklärt unter der Spur. */
   ereignis: { jahr: string; label: string; text: string } | null;
   marke: string;
@@ -192,10 +192,12 @@ export class KostenrennenVideo {
       y += 34;
       if (bild) c.drawImage(bild, PAD, y, chartW, chartH);
       y += chartH + 16;
-      // Ereignis-Zeitleiste: Spur mit Punkten (der aktive groß), darunter die Erklärung.
+      // Zeitleiste: Spur mit Fortschritt und Punkten (der aktive groß), darunter die Erklärung.
       const spurY = y + 12;
       c.fillStyle = farbe("--color-border");
-      c.fillRect(PAD + (d.spur.vonPct / 100) * chartW, spurY, ((d.spur.bisPct - d.spur.vonPct) / 100) * chartW, 2);
+      c.fillRect(PAD, spurY, chartW, 2);
+      c.fillStyle = farbe("--color-accent");
+      c.fillRect(PAD, spurY, (d.fortschrittPct / 100) * chartW, 2);
       for (const e of d.zeitleiste) {
         const x = PAD + (e.posPct / 100) * chartW;
         const r = e.aktiv ? 11 : 6.5;
@@ -204,8 +206,8 @@ export class KostenrennenVideo {
       }
       y += 26 + 8;
       if (d.ereignis) {
-        const ex = PAD + (d.spur.vonPct / 100) * chartW;
-        const eBreite = ((d.spur.bisPct - d.spur.vonPct) / 100) * chartW;
+        const ex = PAD;
+        const eBreite = chartW;
         c.font = `800 ${fsPx("--font-size-small")}px ${sans}`;
         c.fillStyle = farbe("--color-text-primary");
         c.fillText(`${d.ereignis.jahr}  ·  ${d.ereignis.label}`, ex, y);
