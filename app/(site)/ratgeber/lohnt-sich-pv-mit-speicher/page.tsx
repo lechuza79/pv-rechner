@@ -611,7 +611,8 @@ export default async function LohntSichPvMitSpeicherPage() {
           Derselbe Beispielhaushalt zweimal — einmal bleibt er beim Netzstrom, einmal legt er
           sich die {EX.kwp}-kWp-Anlage ohne Speicher aufs Dach. Wer hat nach einem, nach zehn,
           nach {YEARS} Jahren mehr für Strom ausgegeben? Der PV-Haushalt startet mit der
-          Anschaffung vorn; das Jahr, in dem er überholt wird, ist seine Amortisation.
+          Anschaffung oben; wo die Linie des anderen seine kreuzt, ist die Anlage bezahlt —
+          das ist seine Amortisation.
         </p>
         <div style={{ marginBottom: 24 }}>
           <KostenrennenWidget

@@ -125,7 +125,7 @@ const SECTIONS: WidgetSection[] = [
     id: "pv-kostenrennen",
     label: "Das Stromkosten-Rennen",
     intro:
-      "Zwei gleiche Haushalte, 25 Jahre: einer ohne, einer mit PV-Anlage. Die Balken laufen animiert durch die Jahre und zeigen, wer bis dahin mehr für Strom bezahlt hat – und in welchem Jahr sich die Anlage bezahlt gemacht hat. Gerechnet mit denselben Annahmen und Marktpreisen wie unser PV-Rechner.",
+      "Zwei gleiche Haushalte, 25 Jahre: einer ohne, einer mit PV-Anlage. Zwei Linien zeichnen sich animiert durch die Jahre und zeigen, wer bis dahin mehr für Strom bezahlt hat – wo sie sich kreuzen, hat sich die Anlage bezahlt gemacht. Gerechnet mit denselben Annahmen und Marktpreisen wie unser PV-Rechner.",
     attribution: {
       path: "/ratgeber/lohnt-sich-pv-mit-speicher",
       text: "Mit oder ohne PV: Das Stromkosten-Rennen – Solar Check",

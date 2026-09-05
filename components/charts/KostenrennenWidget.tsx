@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import InfoTooltip from "../InfoTooltip";
 import {
   ExportBox,
@@ -15,29 +15,50 @@ import { IconPause, IconPlay, IconRefresh } from "../Icons";
 import { useChartExport } from "../../lib/useChartExport";
 import { EXPORT_IGNORE_ATTR } from "../../lib/export-markers";
 import { WIDGETS } from "../../lib/widget-registry";
-import { v, space } from "../../lib/theme";
+import { v, fsPx, space } from "../../lib/theme";
 import { fmtEuroVoll, formatDataAsOf } from "../../lib/atlas-format";
 import { PERSONEN } from "../../lib/constants";
-import type { Kostenrennen } from "../../lib/kostenrennen";
+import type { Kostenrennen, RennLaeufer } from "../../lib/kostenrennen";
 
-// Das Stromkosten-Rennen: ein Balken je Haushalt, die Jahre laufen durch, die
-// Balken wachsen und sortieren sich um. Wer oben steht, hat bis dahin am
-// meisten für Strom ausgegeben. Der PV-Haushalt startet mit der Anschaffung
-// vorn und wird irgendwann überholt — dieses Überholjahr IST die Amortisation
-// des Rechners (lib/kostenrennen.ts rechnet mit denselben Funktionen).
+// Das Stromkosten-Rennen: eine Linie je Haushalt, die sich Jahr für Jahr über
+// die Zeitachse zeichnet — kumulierte Stromausgaben, am Ende jeder Linie der
+// Betrag. Der PV-Haushalt startet mit der Anschaffung oben; wo die Linie des
+// Haushalts ohne Anlage sie kreuzt, ist die Anlage bezahlt. Dieses Kreuzungs-
+// jahr IST die Amortisation des Rechners (lib/kostenrennen.ts rechnet mit
+// denselben Funktionen).
 //
 // Selbst-enthaltende Karte nach dem Muster von GruengasWidget: dasselbe Bauteil
 // steht unter /embed/pv-kostenrennen und direkt gerendert im Ratgeber (onsite).
 // Alles Interaktive (Abspielen, Schieberegler) trägt data-sc-export-ignore; das
-// Bild zeigt den gerade eingestellten Stand als Text.
+// Bild zeigt den gerade eingestellten Stand.
+//
+// Die Zeit läuft als Gleitkommazahl `t` (in Jahren) über requestAnimationFrame,
+// nicht in Jahresschritten: Die Linie wächst dadurch gleichmäßig statt zu
+// springen. Die Werte zwischen zwei Jahren sind linear interpoliert — nur für
+// die Bewegung; angezeigt werden immer die gerechneten Jahreswerte.
 
+const MS_JE_JAHR = 400;
 const SCHRITT_MS = 380;
-const REIHE_H = 62;
-const BALKEN_H = 22;
 
 // Farbfolge der Läufer: Referenz (ohne Anlage) neutral, Anlagen im Akzent.
 // Semantisch, nicht themebar: dieselbe Zuordnung in jedem Farbschema.
 const FARBEN = ["var(--color-text-primary)", "var(--color-accent)", "var(--color-accent-light)", "var(--color-positive)"];
+
+// 2 Nachkommastellen: hält Server-/Client-Render exakt gleich.
+const r2 = (n: number) => Math.round(n * 100) / 100;
+
+function niceMax(max: number): number {
+  const step = Math.pow(10, Math.floor(Math.log10(max / 4)));
+  const s = (max / 4 / step <= 2 ? 2 : max / 4 / step <= 5 ? 5 : 10) * step;
+  return Math.ceil(max / s) * s;
+}
+
+/** Kumulierter Wert zur Gleitkomma-Zeit t (linear zwischen zwei Jahren). */
+function wertBei(l: RennLaeufer, t: number): number {
+  const i = Math.floor(t);
+  if (i >= l.kumuliert.length - 1) return l.kumuliert[l.kumuliert.length - 1];
+  return l.kumuliert[i] + (l.kumuliert[i + 1] - l.kumuliert[i]) * (t - i);
+}
 
 interface Props {
   rennen: Kostenrennen;
@@ -59,13 +80,14 @@ export default function KostenrennenWidget(props: Props) {
 }
 
 function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed = false, autoplay = true, preiseStandIso }: Props) {
-  const [idx, setIdx] = useState(0);
+  const [t, setT] = useState(0);
   const [spielt, setSpielt] = useState(false);
   const [narrow, setNarrow] = useState(false);
   const [showCredit, setShowCredit] = useState(false);
   const [ruhig, setRuhig] = useState(false);
   const gestartet = useRef(false);
   const hostRef = useRef<HTMLDivElement>(null);
+  const N = rennen.jahre;
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width:560px)");
@@ -83,7 +105,6 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   // Bei reduzierter Bewegung bleibt sie stehen; die Jahre wählt man dann selbst.
   useEffect(() => {
     if (!autoplay || ruhig || gestartet.current || !hostRef.current) return;
-    const el = hostRef.current;
     const io = new IntersectionObserver((entries) => {
       if (entries.some((e) => e.isIntersecting) && !gestartet.current) {
         gestartet.current = true;
@@ -91,34 +112,44 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
         io.disconnect();
       }
     }, { threshold: 0.6 });
-    io.observe(el);
+    io.observe(hostRef.current);
     return () => io.disconnect();
   }, [autoplay, ruhig]);
 
+  // Abspielen: gleichmäßig über requestAnimationFrame; bei reduzierter
+  // Bewegung in ganzen Jahresschritten (keine Zwischenbilder).
   useEffect(() => {
     if (!spielt) return;
-    const t = setInterval(() => {
-      setIdx((i) => {
-        if (i >= rennen.jahre) { setSpielt(false); return i; }
-        return i + 1;
+    if (ruhig) {
+      const iv = setInterval(() => {
+        setT((prev) => {
+          const n = Math.min(Math.floor(prev) + 1, N);
+          if (n >= N) setSpielt(false);
+          return n;
+        });
+      }, SCHRITT_MS);
+      return () => clearInterval(iv);
+    }
+    let raf = 0;
+    let last = performance.now();
+    const step = (now: number) => {
+      const dt = now - last;
+      last = now;
+      setT((prev) => {
+        const n = Math.min(prev + dt / MS_JE_JAHR, N);
+        if (n >= N) setSpielt(false);
+        return n;
       });
-    }, SCHRITT_MS);
-    return () => clearInterval(t);
-  }, [spielt, rennen.jahre]);
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [spielt, ruhig, N]);
 
+  const idx = Math.min(N, Math.floor(t));
   const jahr = rennen.startJahr + idx;
   const referenz = rennen.laeufer.find((l) => l.key === rennen.referenzKey)!;
   const farbe = (key: string) => FARBEN[rennen.laeufer.findIndex((l) => l.key === key) % FARBEN.length];
-
-  // Rang je Läufer zum aktuellen Jahr: größter Betrag oben.
-  const sortiert = useMemo(
-    () => [...rennen.laeufer].sort((a, b) => b.kumuliert[idx] - a.kumuliert[idx]),
-    [rennen.laeufer, idx],
-  );
-  const rang = new Map(sortiert.map((l, i) => [l.key, i]));
-  // Skala folgt dem Spitzenreiter — so bleibt der längste Balken immer voll,
-  // die anderen zeigen ihr Verhältnis dazu.
-  const maxWert = Math.max(1, ...rennen.laeufer.map((l) => l.kumuliert[idx]));
 
   const { chartRef, downloadPng, sharePng, shareWhatsApp, shareTwitter, isExporting, canNativeShare } =
     useChartExport({
@@ -129,19 +160,42 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
       mode: "node",
     });
 
-  const uebergang = ruhig ? "none" : `width ${SCHRITT_MS}ms linear, transform ${SCHRITT_MS}ms ease`;
+  // ── Chart-Geometrie ──────────────────────────────────────────────────────
+  // Die Achsen stehen von Anfang an fest (Endwert-Maximum): Die Linien laufen
+  // in ein fertiges Bild hinein, statt dass die Skala unter ihnen mitwächst.
+  const W = narrow ? 320 : 640, H = narrow ? 230 : 300;
+  const P = { t: 18, r: narrow ? 74 : 96, b: 28, l: narrow ? 46 : 58 };
+  const cW = W - P.l - P.r, cH = H - P.t - P.b;
+  const y0 = P.t + cH;
+  const yMax = niceMax(Math.max(...rennen.laeufer.map((l) => Math.max(...l.kumuliert))));
+  const xL = (jahrIdx: number) => r2(P.l + (jahrIdx / N) * cW);
+  const yL = (wert: number) => r2(y0 - (Math.max(0, wert) / yMax) * cH);
+  const yTicks = [1, 2, 3, 4].map((k) => (yMax / 4) * k);
+  const xJahre = [0, Math.round(N / 2), N];
+  const clipId = `kr-clip-${rennen.referenzKey}-${N}`;
+  const clipBreite = r2(Math.max(0.01, xL(t) - P.l));
 
-  // Der Satz unter dem Rennen: Stand des PV-Haushalts gegen die Referenz.
+  // Spitzen (aktueller Punkt jeder Linie), von oben nach unten sortiert, damit
+  // die Beschriftungen einander ausweichen: höhere Linie oben, tiefere unten.
+  const spitzen = rennen.laeufer
+    .map((l) => ({ l, wert: wertBei(l, t), y: yL(wertBei(l, t)) }))
+    .sort((a, b) => a.y - b.y);
+  const spitzeDy = (i: number) => (spitzen.length === 1 ? 4 : i === 0 ? -6 : 13);
+
   const pvLaeufer = rennen.laeufer.filter((l) => l.hatPv);
+  const ueberholJahr = pvLaeufer.length === 1 ? rennen.ueberholJahr[pvLaeufer[0].key] : null;
+  const kreuzungSichtbar = ueberholJahr !== null && t >= ueberholJahr;
+
+  // Der Satz unter dem Chart: Stand des PV-Haushalts gegen die Referenz —
+  // mit den gerechneten Jahreswerten, nicht mit Zwischenbildern.
   const status = (() => {
     if (pvLaeufer.length !== 1) return null;
     const pv = pvLaeufer[0];
     const diff = pv.kumuliert[idx] - referenz.kumuliert[idx];
-    const ueberholt = rennen.ueberholJahr[pv.key];
     if (idx === 0) return `Start: Der PV-Haushalt hat ${fmtEuroVoll(pv.investition)} für die Anlage ausgegeben, der andere noch nichts.`;
-    if (ueberholt !== null && idx >= ueberholt) {
-      return idx === ueberholt
-        ? `Jahr ${idx}: Die Anlage hat sich bezahlt gemacht — ab jetzt liegt der PV-Haushalt vorn.`
+    if (ueberholJahr !== null && idx >= ueberholJahr) {
+      return idx === ueberholJahr
+        ? `Jahr ${idx}: Die Linien kreuzen sich — die Anlage hat sich bezahlt gemacht, ab jetzt liegt der PV-Haushalt vorn.`
         : `Der PV-Haushalt hat bis hier ${fmtEuroVoll(-diff)} weniger für Strom ausgegeben.`;
     }
     return `Der PV-Haushalt liegt noch ${fmtEuroVoll(diff)} hinten — die Anschaffung ist noch nicht zurück.`;
@@ -152,15 +206,15 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   const knopf: React.CSSProperties = {
     display: "inline-flex", alignItems: "center", justifyContent: "center", gap: space.sm,
     height: 32, minWidth: 32, padding: `0 ${space.lg}px`, borderRadius: v("--radius-md"),
-    border: `1px solid ${v("--color-border")}`, background: v("--color-bg"), color: v("--color-text-primary"),
-    fontSize: v("--font-size-small"), fontWeight: 700, cursor: "pointer",
+    border: "none", background: v("--color-accent"), color: v("--color-text-on-accent"),
+    fontSize: v("--font-size-small"), fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap",
   };
-
-  const legend: ExportLegendEntry[] = rennen.laeufer.map((l) => ({ color: farbe(l.key), label: l.label, shape: "box" }));
+  const legend: ExportLegendEntry[] = rennen.laeufer.map((l) => ({ color: farbe(l.key), label: l.label, shape: "line" }));
+  const amEnde = t >= N;
 
   return (
     <div
-      ref={(el) => { (chartRef as React.RefObject<HTMLDivElement | null> as { current: HTMLDivElement | null }).current = el; hostRef.current = el; }}
+      ref={(el) => { (chartRef as { current: HTMLDivElement | null }).current = el; hostRef.current = el; }}
       onMouseEnter={() => setShowCredit(true)}
       onMouseLeave={() => setShowCredit(false)}
       onFocusCapture={() => setShowCredit(true)}
@@ -177,7 +231,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
         {WIDGETS.kostenrennen.title}
       </div>
       <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.5, marginBottom: space.lg }}>
-        Zwei gleiche Haushalte, {rennen.jahre} Jahre: Wer hat am Ende mehr für Strom bezahlt?{" "}
+        Zwei gleiche Haushalte, {N} Jahre: Wer hat am Ende mehr für Strom bezahlt?{" "}
         <span style={{ verticalAlign: "middle" }}>
           <InfoTooltip title="Der Beispielhaushalt" ariaLabel="Angaben zum Beispielhaushalt">
             {haushalt.label} Personen mit {haushalt.verbrauch.toLocaleString("de-DE")} kWh Jahresverbrauch, teils im Homeoffice.
@@ -191,53 +245,95 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
 
       {/* Jahr + Zustand */}
       <div style={{ display: "flex", alignItems: "baseline", gap: space.md, marginBottom: space.md }}>
-        <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-display-md"), fontWeight: 800, color: v("--color-text-primary"), lineHeight: 1 }}>{jahr}</span>
+        <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-display-md"), fontWeight: 800, color: v("--color-text-primary"), lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{jahr}</span>
         <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
           {idx === 0 ? "Start" : idx === 1 ? "nach 1 Jahr" : `nach ${idx} Jahren`}
         </span>
       </div>
 
       <ExportBox>
-        <div style={{ display: "flex", alignItems: "center", gap: space.xs, marginBottom: space.sm }}>
+        <div style={{ display: "flex", alignItems: "center", gap: space.xs, marginBottom: space.xs }}>
           <span style={lblStyle}>Stromkosten seit {rennen.startJahr}</span>
           <InfoTooltip title="Was hier zählt" ariaLabel="Was als Stromkosten zählt">
-            Alles, was der Haushalt für Strom ausgegeben hat: die Stromrechnung mit steigendem Preis, beim PV-Haushalt dazu die
-            Anschaffung der Anlage, abzüglich der Einspeisevergütung. Wer oben steht, hat bis zu diesem Jahr am meisten bezahlt.
+            Alles, was der Haushalt bis zu diesem Jahr für Strom ausgegeben hat: die Stromrechnung mit steigendem Preis, beim
+            PV-Haushalt dazu die Anschaffung der Anlage, abzüglich der Einspeisevergütung. Wo sich die Linien kreuzen, ist die
+            Anlage bezahlt.
           </InfoTooltip>
         </div>
 
-        <div style={{ position: "relative", height: rennen.laeufer.length * REIHE_H }} role="list" aria-label={`Stromkosten je Haushalt, ${jahr}`}>
-          {rennen.laeufer.map((l) => {
-            const wert = l.kumuliert[idx];
-            const r = rang.get(l.key) ?? 0;
-            const ueberholt = rennen.ueberholJahr[l.key];
-            const bezahlt = l.hatPv && ueberholt !== null && idx >= ueberholt;
+        <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }} role="img"
+          aria-label={`Kumulierte Stromkosten ${rennen.startJahr} bis ${jahr}: ${rennen.laeufer.map((l) => `${l.label} ${fmtEuroVoll(l.kumuliert[idx])}`).join(", ")}`}>
+          <defs>
+            <clipPath id={clipId}>
+              <rect x={P.l} y={0} width={clipBreite} height={H} />
+            </clipPath>
+          </defs>
+
+          {/* Raster + Skala. Die Skala steht dauerhaft: Ohne Überfahren (Bild,
+              Telefon) gäbe es sonst keine Größenordnung. */}
+          {yTicks.map((val) => (
+            <g key={val}>
+              <line x1={P.l} x2={P.l + cW} y1={yL(val)} y2={yL(val)} stroke="var(--color-chart-grid)" strokeWidth={0.5} />
+              <text x={P.l - 6} y={yL(val) + 3} textAnchor="end" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
+                {narrow ? `${Math.round(val / 1000)} T€` : fmtEuroVoll(val)}
+              </text>
+            </g>
+          ))}
+          <line x1={P.l} x2={P.l + cW} y1={y0} y2={y0} stroke="var(--color-chart-zero)" strokeWidth={1} />
+          {xJahre.map((ji, i) => {
+            const last = i === xJahre.length - 1;
             return (
-              <div
-                key={l.key}
-                role="listitem"
-                style={{ position: "absolute", left: 0, right: 0, top: 0, transform: `translateY(${r * REIHE_H}px)`, transition: uebergang }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: space.md, marginBottom: space.xs }}>
-                  <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary"), display: "inline-flex", alignItems: "center", gap: space.sm, whiteSpace: "nowrap" }}>
-                    <span style={{ width: 10, height: 10, borderRadius: 3, background: farbe(l.key), flexShrink: 0 }} />
-                    {narrow ? l.kurz : l.label}
-                    {bezahlt && (
-                      <span style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v("--color-positive-text"), border: `1px solid ${v("--color-positive")}`, borderRadius: 6, padding: `0 ${space.sm}px`, background: `color-mix(in srgb, ${v("--color-positive")} 12%, transparent)` }}>
-                        Anlage bezahlt
-                      </span>
-                    )}
-                  </span>
-                  <span style={{ fontFamily: v("--font-mono"), fontWeight: 800, fontSize: v("--font-size-body"), color: v("--color-text-primary"), whiteSpace: "nowrap" }}>
-                    {fmtEuroVoll(wert)}
-                  </span>
-                </div>
-                <div style={{ height: BALKEN_H, background: `color-mix(in srgb, ${v("--color-text-muted")} 12%, transparent)`, borderRadius: 6, overflow: "hidden" }}>
-                  <div style={{ width: `${Math.max(0.5, (wert / maxWert) * 100)}%`, height: "100%", background: farbe(l.key), borderRadius: 6, transition: uebergang }} />
-                </div>
-              </div>
+              <text key={ji} x={xL(ji)} y={y0 + 18} textAnchor={i === 0 ? "start" : last ? "end" : "middle"} fontSize={fsPx("--font-size-small")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
+                {rennen.startJahr + ji}
+              </text>
             );
           })}
+
+          {/* Kreuzung: erscheint, sobald die Linien sie erreicht haben. */}
+          {kreuzungSichtbar && ueberholJahr !== null && (
+            <g>
+              <line x1={xL(ueberholJahr)} x2={xL(ueberholJahr)} y1={P.t} y2={y0} stroke="var(--color-positive)" strokeWidth={1} strokeDasharray="3 3" />
+              <text x={xL(ueberholJahr)} y={P.t - 6} textAnchor={ueberholJahr > N * 0.7 ? "end" : "middle"} fontSize={fsPx("--font-size-caption")} fontWeight={700} fill="var(--color-positive)">
+                Anlage bezahlt · {rennen.startJahr + ueberholJahr}
+              </text>
+            </g>
+          )}
+
+          {/* Die Linien, freigelegt bis zur aktuellen Zeit. */}
+          <g clipPath={`url(#${clipId})`}>
+            {rennen.laeufer.map((l) => (
+              <polyline
+                key={l.key}
+                points={l.kumuliert.map((k, i) => `${xL(i)},${yL(k)}`).join(" ")}
+                fill="none"
+                stroke={farbe(l.key)}
+                strokeWidth={l.hatPv ? 3 : 2.5}
+                strokeLinejoin="round"
+                strokeLinecap="round"
+              />
+            ))}
+          </g>
+
+          {/* Spitzen mit Betrag */}
+          {spitzen.map(({ l, wert, y }, i) => (
+            <g key={l.key}>
+              <circle cx={xL(t)} cy={y} r={4} fill={farbe(l.key)} stroke="var(--color-bg)" strokeWidth={1.5} />
+              <text x={xL(t) + 8} y={y + spitzeDy(i)} textAnchor="start" fontSize={fsPx("--font-size-small")} fontWeight={800} fill={farbe(l.key)} fontFamily="var(--font-mono)" style={{ fontVariantNumeric: "tabular-nums" }}>
+                {narrow ? `${Math.round(wert / 1000)} T€` : fmtEuroVoll(l.kumuliert[idx])}
+              </text>
+            </g>
+          ))}
+        </svg>
+
+        {/* Legende auf der Seite: die Spitzen tragen nur Zahlen, die Zuordnung
+            braucht einen Namen. Im Bild kommt sie aus dem Bild-Fuß. */}
+        <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", flexWrap: "wrap", gap: `${space.xs}px ${space.xl}px`, marginTop: space.xs }}>
+          {rennen.laeufer.map((l) => (
+            <span key={l.key} style={{ display: "inline-flex", alignItems: "center", gap: space.sm, fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>
+              <span style={{ width: 14, height: 3, borderRadius: 2, background: farbe(l.key) }} />
+              {narrow ? l.kurz : l.label}
+            </span>
+          ))}
         </div>
 
         {status && (
@@ -253,23 +349,23 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           type="button"
           onClick={() => {
             if (spielt) { setSpielt(false); return; }
-            if (idx >= rennen.jahre) setIdx(0);
+            if (amEnde) setT(0);
             gestartet.current = true;
             setSpielt(true);
           }}
-          aria-label={spielt ? "Anhalten" : idx >= rennen.jahre ? "Noch einmal abspielen" : "Abspielen"}
-          style={{ ...knopf, background: v("--color-accent"), color: v("--color-text-on-accent"), border: "none" }}
+          aria-label={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
+          style={knopf}
         >
-          {spielt ? <IconPause size={14} /> : idx >= rennen.jahre ? <IconRefresh size={14} /> : <IconPlay size={14} />}
-          <span>{spielt ? "Pause" : idx >= rennen.jahre ? "Noch einmal" : idx === 0 ? "Rennen starten" : "Weiter"}</span>
+          {spielt ? <IconPause size={14} /> : amEnde ? <IconRefresh size={14} /> : <IconPlay size={14} />}
+          <span>{spielt ? "Pause" : amEnde ? "Noch einmal" : t === 0 ? "Rennen starten" : "Weiter"}</span>
         </button>
         <input
           type="range"
           min={0}
-          max={rennen.jahre}
+          max={N}
           step={1}
           value={idx}
-          onChange={(e) => { setSpielt(false); gestartet.current = true; setIdx(Number(e.target.value)); }}
+          onChange={(e) => { setSpielt(false); gestartet.current = true; setT(Number(e.target.value)); }}
           aria-label="Jahr wählen"
           aria-valuetext={`${jahr}, nach ${idx} Jahren`}
           style={{ flex: 1, accentColor: v("--color-accent"), minWidth: 0 }}
@@ -278,10 +374,10 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
 
       {/* Im Bild: der eingestellte Stand steht schon im Kopf (Jahr + „nach n
           Jahren"); hier nur der Hinweis, dass das Bild einen Zwischenstand zeigt. */}
-      {idx < rennen.jahre && (
+      {idx < N && (
         <ExportOnly style={{ marginTop: space.md }}>
           <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
-            Zwischenstand nach {idx} von {rennen.jahre} Jahren
+            Zwischenstand nach {idx} von {N} Jahren
           </span>
         </ExportOnly>
       )}
