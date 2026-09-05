@@ -21,7 +21,7 @@ const g = (ueber: Partial<WpGeraet>): WpGeraet => ({
   id: Math.random().toString(36).slice(2),
   name: "Testgerät",
   marke: "TEST",
-  leistungKw: 10,
+  leistungKw: 18,
   herkunft: "ausgeschrieben",
   bauart: "luft-wasser",
   preisEur: 9000,
@@ -36,14 +36,21 @@ const g = (ueber: Partial<WpGeraet>): WpGeraet => ({
   ...ueber,
 });
 
-/** Altbau: 10 kW Auslegung, alte Heizkörper mit 55 °C. */
+/**
+ * Altbau: 10 kW Auslegung, alte Heizkörper mit 55 °C.
+ *
+ * Die Katalogleistungen liegen deutlich darüber, weil verglichen wird, was ein
+ * Gerät AM AUSLEGUNGSPUNKT liefert: 30 % Abschlag für den unbekannten
+ * Betriebspunkt, bei 55 °C weitere 20 % für die Kennlinie. 18 kW im Katalog
+ * sind hier 10,1 kW.
+ */
 const ALTBAU: WpFall = { auslegungKw: 10, vorlaufC: 55, wpType: "lwwp" };
 
 describe("Lage der Komplettpakete", () => {
   it("meldet 'vorhanden', wenn ein passendes Paket im Katalog steht", () => {
     const katalog = [
-      g({ umfang: "paket", leistungKw: 11, vorlaufMaxC: 65 }),
-      g({ umfang: "geraet", leistungKw: 10 }),
+      g({ umfang: "paket", leistungKw: 19, vorlaufMaxC: 65 }),
+      g({ umfang: "geraet", leistungKw: 18 }),
     ];
     expect(paketLage(katalog, ALTBAU)).toBe("vorhanden");
   });
@@ -52,41 +59,53 @@ describe("Lage der Komplettpakete", () => {
     // Ein Paket der richtigen Größe, das die Vorlauftemperatur nicht schafft.
     // Die frühere Fassung hätte hier „führt keine Komplettpakete" geschrieben.
     const passtNicht = [
-      g({ umfang: "paket", leistungKw: 11, vorlaufMaxC: 45 }),
-      g({ umfang: "geraet", leistungKw: 10, vorlaufMaxC: 65 }),
+      g({ umfang: "paket", leistungKw: 19, vorlaufMaxC: 45 }),
+      g({ umfang: "geraet", leistungKw: 18, vorlaufMaxC: 65 }),
     ];
     expect(paketLage(passtNicht, ALTBAU)).toBe("unpassend");
 
     // Und der echte Fall: gar kein Paket in dieser Größenklasse.
-    const keins = [g({ umfang: "geraet", leistungKw: 10, vorlaufMaxC: 65 })];
+    const keins = [g({ umfang: "geraet", leistungKw: 18, vorlaufMaxC: 65 })];
     expect(paketLage(keins, ALTBAU)).toBe("keine");
   });
 
-  it("folgt der Eignungsregel des Rechners, auch wo die großzügig ist", () => {
-    // Ein 30-kW-Paket für ein 10-kW-Haus gilt als „vorhanden" — und das ist
-    // KEIN Fehler dieser Funktion, sondern die geltende Eignungsregel: Zu wenig
-    // Leistung schließt aus, zu viel nicht (siehe `beurteile`). Das Paket landet
-    // deshalb wirklich in der Trefferliste, und ein Satz „führt keine Pakete"
-    // stünde dann direkt über einem.
+  it("folgt der Eignungsregel des Rechners — auch als die sich verschärft hat", () => {
+    // Diese Funktion MUSS derselben Regel folgen wie die Auswahl, sonst
+    // widersprechen sich Liste und Erklärung.
     //
-    // Diese Funktion MUSS derselben Regel folgen wie die Auswahl — sonst
-    // widersprechen sich Liste und Erklärung. Wer die Obergrenze zum
-    // Ausschlussgrund machen will, ändert sie in `beurteile`, nicht hier.
+    // Die frühere Fassung dieses Tests belegte das an einem Paket mit dem
+    // Dreifachen der Auslegung und erwartete „vorhanden": Damals schloss zu
+    // viel Leistung nicht aus. Sie schrieb dazu, wer die Obergrenze zum
+    // Ausschlussgrund machen wolle, ändere sie in `beurteile` — genau das ist
+    // am 05.09.2026 geschehen. Der Test prüft dieselbe Aussage weiter, jetzt
+    // an der geltenden Regel.
+    //
+    // 34 kW im Katalog sind bei 55 °C 19,0 kW am Auslegungspunkt, also das
+    // 1,9-fache der Auslegung. Das Paket fällt in der Auswahl heraus, und
+    // damit darf die Erklärung es auch nicht als vorhanden ausweisen.
     const zuGross = [
-      g({ umfang: "paket", leistungKw: 30, vorlaufMaxC: 65 }),
-      g({ umfang: "geraet", leistungKw: 10, vorlaufMaxC: 65 }),
+      g({ umfang: "paket", leistungKw: 34, vorlaufMaxC: 65 }),
+      g({ umfang: "geraet", leistungKw: 18, vorlaufMaxC: 65 }),
     ];
-    expect(paketLage(zuGross, ALTBAU)).toBe("vorhanden");
+    expect(paketLage(zuGross, ALTBAU)).toBe("unpassend");
+
+    // Die Gegenprobe: knapp über der Auslegung bleibt es „vorhanden".
+    const reichlich = [
+      g({ umfang: "paket", leistungKw: 22, vorlaufMaxC: 65 }),
+      g({ umfang: "geraet", leistungKw: 18, vorlaufMaxC: 65 }),
+    ];
+    expect(paketLage(reichlich, ALTBAU)).toBe("vorhanden");
   });
 
   it("zählt bei 'unpassend' nur Pakete der Größenklasse", () => {
-    // Hier greift die Größenklasse: Ein 30-kW-Paket, das zusätzlich am Vorlauf
-    // scheitert, beantwortet die Frage nicht, ob es für ein 10-kW-Haus eins
-    // gibt. Sonst stünde „gibt es, passt nur nicht" über einem Sortiment, in
-    // dem für diese Größe wirklich nichts ist.
+    // Hier greift die Größenklasse: Ein Paket mit dem Zweieinhalbfachen der
+    // Auslegung, das zusätzlich am Vorlauf scheitert, beantwortet die Frage
+    // nicht, ob es für ein 10-kW-Haus eins gibt. Sonst stünde „gibt es, passt
+    // nur nicht" über einem Sortiment, in dem für diese Größe wirklich nichts
+    // ist. 45 kW im Katalog sind bei 55 °C 25,2 kW am Auslegungspunkt.
     const zuGrossUndZuKalt = [
-      g({ umfang: "paket", leistungKw: 30, vorlaufMaxC: 45 }),
-      g({ umfang: "geraet", leistungKw: 10, vorlaufMaxC: 65 }),
+      g({ umfang: "paket", leistungKw: 45, vorlaufMaxC: 45 }),
+      g({ umfang: "geraet", leistungKw: 18, vorlaufMaxC: 65 }),
     ];
     expect(paketLage(zuGrossUndZuKalt, ALTBAU)).toBe("keine");
   });
@@ -95,7 +114,7 @@ describe("Lage der Komplettpakete", () => {
     // Ein Erdwärme-Paket ist für einen Luft/Wasser-Fall keine Antwort.
     const andereQuelle = [
       g({ umfang: "paket", bauart: "sole-wasser", leistungKw: 11, vorlaufMaxC: 65 }),
-      g({ umfang: "geraet", leistungKw: 10, vorlaufMaxC: 65 }),
+      g({ umfang: "geraet", leistungKw: 18, vorlaufMaxC: 65 }),
     ];
     expect(paketLage(andereQuelle, ALTBAU)).toBe("keine");
   });

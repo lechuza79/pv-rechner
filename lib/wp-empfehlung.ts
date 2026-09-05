@@ -25,6 +25,7 @@ export type Befund =
   | { art: "leistung-passt"; abweichungProzent: number }
   | { art: "leistung-knapp"; fehltKw: number }
   | { art: "leistung-reichlich"; ueberKw: number }
+  | { art: "leistung-zu-gross"; ueberKw: number }
   | { art: "leistung-unsicher" }
   | { art: "vorlauf-reicht"; geraetC: number; noetigC: number }
   | { art: "vorlauf-knapp"; geraetC: number; noetigC: number }
@@ -44,45 +45,139 @@ export interface Empfehlung {
 }
 
 /**
- * Wie weit die Geräteleistung von der Auslegung abweichen darf.
+ * Wie weit die Leistung AM AUSLEGUNGSPUNKT von der Auslegung abweichen darf.
  *
- * **Die Untergrenze ist 0 — kein Gerät darf unter der Auslegungsleistung
- * liegen.** Das ist strenger als fachlich nötig, und der Grund ist die
- * Datenlage, nicht die Physik: Die Kilowattzahl im Händlerkatalog trägt keinen
- * Betriebspunkt. Hersteller bewerben mal die Leistung bei +7 °C, mal bei −7 °C
- * Außentemperatur — am selben Gerät liegen dazwischen bis zu Faktor zwei, und
- * die Richtung ist nicht einmal einheitlich (bei Vaillant liegt der −7-°C-Wert
- * über dem +7-°C-Wert, bei Dimplex darunter). Belegt am eigenen Bestand: Der
- * Artikel „VWL 105/8.1 A … 10 kW" nennt im Datenblatt DESSELBEN Händlers
- * 5,69 kW bei A7/W35.
+ * Bezugsgröße ist seit dem 05.09.2026 nicht mehr die Katalogzahl, sondern der
+ * daraus abgeleitete reale Wert (siehe `leistungAmAuslegungspunkt`). Das ändert
+ * die Bedeutung dieser beiden Grenzen grundlegend, und der frühere Kommentar an
+ * dieser Stelle beschreibt einen Stand, den es nicht mehr gibt:
  *
- * Ein Toleranzband nach unten würde diesen Fehler verstärken: Ein mit der
- * +7-°C-Zahl beworbenes Gerät ist am Auslegungspunkt ohnehin schon 20–25 %
- * schwächer, als der Katalog es führt. Es zusätzlich 10 % unter die Auslegung
- * zu lassen hieße, genau die unterdimensionierte Anlage zu empfehlen, deren
- * Heizstab-Betrieb der Rechner nicht abbildet.
+ *   Er begründete die enge Untergrenze damit, dass der Betriebspunkt unbekannt
+ *   ist und deshalb NICHT gerechnet wird — „ein Toleranzband nach unten würde
+ *   diesen Fehler verstärken". Genau dieser Fehler wird jetzt korrigiert, bevor
+ *   verglichen wird. Die Toleranz muss ihn also nicht mehr mit auffangen.
  *
- * **Das ist eine Zwischenlösung, keine Antwort.** Die Antwort ist die amtliche
- * Liste förderfähiger Wärmepumpen, die die Nennleistung getrennt für 35 und
- * 55 °C führt und sich über die Artikelnummer mit dem Katalog verbinden lässt.
- * Solange sie nicht angebunden ist, gilt: lieber ein etwas zu großes Gerät
- * empfehlen als ein zu kleines.
+ * Die fachliche Prüfung vom 05.09.2026 hat den alten Aufbau als „am falschen
+ * Ende angesetzt" bezeichnet, und das trifft es: Ein symmetrisches Band von
+ * ±10 % kann einen systematischen Versatz von Faktor 1,3 bis 2,0 nicht
+ * auffangen. Es behandelte eine Zahl mit unbekanntem Bezugspunkt wie einen
+ * Messwert mit Streuung.
  *
- * NACHTRAG 26.08.2026 — von null auf 10 %: Die Null war Scheingenauigkeit. Der
- * Betreiber sah in einem unsanierten Fall (12,3 kW) nur Einzelgeräte; gemessen
- * fiel das passende Vaillant-Paket für 10.329 € mit 12 kW durch — Abweichung
- * 2 %. Über 12,3 kW hat der Katalog überhaupt kein Paket.
+ * Was die 10 % nach unten jetzt sind — und nur noch sind: eine Rundungstoleranz
+ * auf eine geschätzte Größe. Die Auslegungsleistung kommt aus Wohnfläche mal
+ * Dämmkennwert mal Haustyp und trägt bereits den Auslegungsfaktor 0,85; auf
+ * eine Zahl dieser Herkunft eine harte Grenze zu setzen, verwechselt Vorsicht
+ * mit Genauigkeit.
  *
- * Zwei Prozent sind an dieser Stelle keine Aussage: Die Auslegungsleistung ist
- * selbst geschätzt (Wohnfläche × Dämmkennwert × Haustyp) und trägt bereits den
- * Auslegungsfaktor 0,85. Auf eine Zahl dieser Herkunft eine harte Grenze zu
- * setzen, verwechselt Vorsicht mit Genauigkeit — und kostet hier die gesamte
- * Paket-Auswahl. Fachlich wäre sogar mehr Spielraum nach unten vertretbar (der
- * Fachverband empfiehlt 50–80 % der Norm-Heizlast); 10 % bleibt bewusst darunter,
- * weil der Betriebspunkt der Katalogzahl weiter unbekannt ist.
+ * **Weiterhin eine Zwischenlösung.** Die Antwort bleibt die amtliche Liste
+ * förderfähiger Wärmepumpen, die die Nennleistung getrennt für 35 und 55 °C
+ * führt und sich über die Artikelnummer mit dem Katalog verbinden lässt. Dann
+ * entfällt der pauschale Abschlag und mit ihm die Unsicherheit.
  */
 const LEISTUNG_UNTER = 0.1;
 const LEISTUNG_UEBER = 0.25;
+
+/**
+ * Ab hier ist ein Gerät nicht mehr großzügig, sondern falsch — harte Obergrenze.
+ *
+ * Bis 05.09.2026 schloss zu viel Leistung gar nicht aus; ein Gerät mit dem
+ * Dreifachen der Auslegung stand mit dem Hinweis „läuft öfter im Takt" in der
+ * Liste. Die fachliche Prüfung hat beides beanstandet: die fehlende Grenze und
+ * den verharmlosenden Satz.
+ *
+ * Warum 1,6 und nicht enger: Entscheidend ist nicht die Nennleistung, sondern
+ * wie weit ein Gerät herunterregeln kann. Gute Inverter schaffen 25–30 % ihrer
+ * Maximalleistung, viele nur 40 %. Solange es bei mildem Wetter noch moduliert,
+ * ist Überdimensionierung harmlos — bis rund 130 % unkritisch, ab 150 % beginnt
+ * es, ab 200 % ist es ein Schaden.
+ *
+ * Die durchgerechnete Folge (gut saniertes Haus, 7,1 kW Auslegung, 16-kW-Gerät,
+ * +10 °C außen): Der Wärmebedarf liegt bei 2,6 kW, das Gerät kommt nicht unter
+ * 4,8 kW — Zyklus 29 Minuten, rund 50 Verdichterstarts am Tag. Hersteller geben
+ * höchstens drei pro Stunde frei. Das richtig ausgelegte Gerät läuft bei diesem
+ * Wetter durch, null Starts. Was der Nutzer davon merkt: Anfahrgeräusche (der
+ * häufigste Anlass für Nachbarschaftsbeschwerden), 0,3–0,5 Punkte weniger
+ * Jahresarbeitszahl (300–500 € im Jahr) und ein Verdichter, der nach acht statt
+ * zwanzig Jahren aufgibt.
+ *
+ * Gemessen kostet die Grenze wenig Auswahl: Bei Altbauten greift sie praktisch
+ * nie, weil der Katalog nach oben ohnehin ausläuft.
+ */
+const LEISTUNG_MAX_FAKTOR = 1.6;
+
+/**
+ * Was die Katalog-Kilowattzahl am Auslegungspunkt wirklich liefert.
+ *
+ * DAS IST DIE WICHTIGSTE KORREKTUR AN DIESER AUSWAHL, und sie behebt einen
+ * Vergleich zwischen zwei verschiedenen Größen. Die Auslegungsleistung gilt bei
+ * Normaußentemperatur (−10 bis −14 °C). Die Zahl im Händlerkatalog ist im
+ * Regelfall etwas anderes, und der Katalog sagt nicht, was:
+ *
+ *   1. Maximalleistung bei +7 °C Außentemperatur und 35 °C Vorlauf
+ *   2. Maximalleistung bei −7 °C und 35 °C — die, auf die es ankommt
+ *   3. Nennleistung nach EN 14825, ein Teillastpunkt aus der Ökodesign-Messung
+ *
+ * Der eigene Bestand belegt Fall 3: „VWL 105/8.1 A … 10 kW" nennt im Datenblatt
+ * desselben Händlers 5,69 kW. Beide Zahlen stimmen, sie messen Verschiedenes.
+ * Deshalb ist die Streuung auch nicht „uneinheitlich" — es sind drei Messgrößen.
+ *
+ * Dazu kommt ein Effekt, den das Modell bis 05.09.2026 gar nicht kannte: Die
+ * VORLAUFTEMPERATUR senkt die Leistung. Bei 55 °C liefert ein Luft/Wasser-Gerät
+ * 15–25 % weniger als bei 35 °C. Die Vorlauftemperatur war bisher nur ein
+ * Ja/Nein-Kriterium; gegen die Leistung gerechnet wurde sie nie.
+ *
+ * BEWUSST OHNE MARKEN-ZUORDNUNG. Die fachliche Prüfung schlug vor, den
+ * Betriebspunkt je Hersteller aus der Typenbezeichnung abzuleiten. Das wäre
+ * genauer — aber die Zuordnung ist bislang von niemandem an Datenblättern
+ * nachgeprüft, und eine falsche Marken-Regel ist schlimmer als ein pauschaler
+ * Abschlag: Sie sähe genau aus und wäre still falsch. Bis jemand die
+ * Datenblätter durchgeht, gilt für alle derselbe vorsichtige Wert.
+ *
+ * Die Richtung ist Absicht: Lieber ein etwas zu großes Gerät empfehlen als
+ * eines, das im Winter zum Direktheizer wird.
+ */
+const BETRIEBSPUNKT_ABSCHLAG = 0.3;
+
+/** Ab dieser Vorlauftemperatur kostet die Kennlinie zusätzlich Leistung. */
+const VORLAUF_ABSCHLAG_AB_C = 50;
+const VORLAUF_ABSCHLAG = 0.2;
+
+/**
+ * Die Leistung, mit der wir rechnen — nicht die, die im Katalog steht.
+ *
+ * Getrennt von der angezeigten Zahl: Auf der Kachel steht weiterhin die
+ * Herstellerangabe (alles andere wäre eine erfundene Zahl), die AUSWAHL läuft
+ * über diesen Wert.
+ *
+ * MASSGEBLICH IST DER HEIZUNGS-VORLAUF, NICHT DAS WARMWASSER — und das ist der
+ * eigentliche Punkt dieser Funktion. Die erste Fassung nahm hier das Maximum
+ * aus beidem, also mindestens 55 °C. Damit rechnete JEDES Gerät überall mit
+ * 56 % seiner Katalogleistung, auch im Neubau mit Fußbodenheizung.
+ *
+ * Die Folge war nicht „etwas vorsichtiger", sondern eine UMKEHRUNG des Urteils
+ * in beide Richtungen. Gemessen am 05.09.2026, Neubau 140 m², 4,8 kW
+ * Auslegung, 35 °C: Das passende 7-kW-Paket (8.679 €) fiel als zu schwach
+ * heraus, das 12-kW-Paket (10.329 €, 2,5-fache Heizlast) stand auf Platz 1.
+ * Die Regel richtete damit genau den Schaden an, gegen den LEISTUNG_MAX_FAKTOR
+ * gebaut ist — sie verschob das Auswahlfenster um 25 % nach oben.
+ *
+ * Fachlich: Der Vorlauf-Abschlag beschreibt den Leistungsverlust, wenn der
+ * Verflüssiger heiß fährt. Am Auslegungspunkt — kältester Tag — fährt die
+ * Maschine Raumheizung, nicht Warmwasser. Die Warmwasserbereitung läuft mit
+ * Vorrangschaltung als Kurzbetrieb; die Raumheizung steht solange still, und
+ * die Gebäudeträgheit fängt das ab. Zwei Sicherheiten übereinander (30 %
+ * Betriebspunkt × 20 % Vorlauf) sind keine Vorsicht mehr, sondern ein
+ * systematischer Auslegungsfehler mit Vorzeichen.
+ *
+ * Für die TEMPERATUR-Prüfung gilt weiterhin das Maximum (siehe
+ * `vorlaufBefund`) — ein Gerät, das bei 45 °C endet, macht kein Duschwasser.
+ * Dieselbe Konstante, zwei Verwendungen: bei der Temperatur gehört sie hin,
+ * bei der Leistung nicht.
+ */
+export function leistungAmAuslegungspunkt(g: WpGeraet, fall: WpFall): number {
+  const vorlaufFaktor = fall.vorlaufC >= VORLAUF_ABSCHLAG_AB_C ? 1 - VORLAUF_ABSCHLAG : 1;
+  return g.leistungKw * (1 - BETRIEBSPUNKT_ABSCHLAG) * vorlaufFaktor;
+}
 
 /** Wie viel Spielraum die Vorlauftemperatur haben soll, bevor sie „knapp“ heißt. */
 const VORLAUF_PUFFER_C = 5;
@@ -100,15 +195,21 @@ const VORLAUF_PUFFER_C = 5;
  * Speichern über 400 l oder mehr als 3 l Rohrinhalt je Strang. 50 °C ist der
  * übliche Auslegungswert, keine Rechtspflicht.
  */
-const WARMWASSER_C = 50;
+const WARMWASSER_C = 55;
 
 function leistungsBefund(g: WpGeraet, fall: WpFall): Befund {
-  const abw = (g.leistungKw - fall.auslegungKw) / fall.auslegungKw;
+  // Gerechnet wird mit der Leistung AM AUSLEGUNGSPUNKT, nicht mit der
+  // Katalogzahl — sonst vergleicht die Auswahl zwei verschiedene Größen.
+  const real = leistungAmAuslegungspunkt(g, fall);
+  const abw = (real - fall.auslegungKw) / fall.auslegungKw;
   if (abw < -LEISTUNG_UNTER) {
-    return { art: "leistung-knapp", fehltKw: Math.round((fall.auslegungKw - g.leistungKw) * 10) / 10 };
+    return { art: "leistung-knapp", fehltKw: Math.round((fall.auslegungKw - real) * 10) / 10 };
+  }
+  if (real > fall.auslegungKw * LEISTUNG_MAX_FAKTOR) {
+    return { art: "leistung-zu-gross", ueberKw: Math.round((real - fall.auslegungKw) * 10) / 10 };
   }
   if (abw > LEISTUNG_UEBER) {
-    return { art: "leistung-reichlich", ueberKw: Math.round((g.leistungKw - fall.auslegungKw) * 10) / 10 };
+    return { art: "leistung-reichlich", ueberKw: Math.round((real - fall.auslegungKw) * 10) / 10 };
   }
   // Eine aus der Typenbezeichnung abgeleitete Leistung ist auf ganze kW
   // gerundet. Sie taugt zum Filtern, aber „passt auf 3 % genau" wäre eine
@@ -166,7 +267,10 @@ export function beurteile(g: WpGeraet, fall: WpFall): Empfehlung {
   // braucht, sieht dort „Vorlauftemperatur nicht angegeben" statt einer
   // Behauptung — und die Auswahl bleibt eine Auswahl.
   const geeignet = !befunde.some(
-    (b) => b.art === "leistung-knapp" || b.art === "vorlauf-zu-niedrig",
+    (b) =>
+      b.art === "leistung-knapp" ||
+      b.art === "leistung-zu-gross" ||
+      b.art === "vorlauf-zu-niedrig",
   );
 
   return { geraet: g, befunde, geeignet };
@@ -253,8 +357,25 @@ export function paketLage(katalog: WpGeraet[], fall: WpFall): PaketLage {
   // Frage nicht, ob es für ein 8-kW-Haus eins gibt. Der Rahmen ist bewusst
   // weiter als die Empfehlungs-Toleranz — hier geht es nicht um Eignung,
   // sondern um „gibt es in dieser Größenklasse überhaupt welche".
-  const inGroessenklasse = (g: WpGeraet) =>
-    g.leistungKw >= fall.auslegungKw * 0.6 && g.leistungKw <= fall.auslegungKw * 1.6;
+  //
+  // GERECHNET WIRD AM AUSLEGUNGSPUNKT, nicht mit der Katalogzahl. Die erste
+  // Fassung verglich `leistungKw` direkt mit der Auslegung und wiederholte
+  // damit genau den Fehler, den die Auswahl selbst nicht mehr macht: zwei
+  // verschiedene Größen nebeneinander. Nach der Korrektur vom 05.09.2026 fiel
+  // dadurch ein passgenaues 19-kW-Paket aus der Größenklasse heraus, und der
+  // Nutzer las „führt in dieser Größe keine Pakete" über einem Sortiment, in
+  // dem genau das richtige stand.
+  //
+  // Die Obergrenze liegt ÜBER LEISTUNG_MAX_FAKTOR, und das ist der Punkt:
+  // Läge sie gleichauf, wäre jedes zu große Paket automatisch auch außerhalb
+  // der Größenklasse — den Fall „es gibt eins, es ist nur zu groß" gäbe es
+  // dann gar nicht mehr, und wir schrieben „führt keine", obwohl eins dasteht.
+  const KLASSE_UNTER = 0.6;
+  const KLASSE_UEBER = 2.2;
+  const inGroessenklasse = (g: WpGeraet) => {
+    const real = leistungAmAuslegungspunkt(g, fall);
+    return real >= fall.auslegungKw * KLASSE_UNTER && real <= fall.auslegungKw * KLASSE_UEBER;
+  };
 
   return passendeQuelle.some((g) => g.umfang === "paket" && inGroessenklasse(g))
     ? "unpassend"
