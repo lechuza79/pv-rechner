@@ -9,6 +9,7 @@ import {
   ExportOnlyG,
   WidgetFooter,
   WidgetSourceEdge,
+  SOURCE_EDGE_WIDTH,
   WidgetExportFooter,
   type ExportLegendEntry,
 } from "../WidgetExport";
@@ -17,7 +18,7 @@ import { useChartExport } from "../../lib/useChartExport";
 import { EXPORT_IGNORE_ATTR } from "../../lib/export-markers";
 import { WIDGETS } from "../../lib/widget-registry";
 import { v, fsPx, space, tokens } from "../../lib/theme";
-import { fmtEuroVoll, formatDataAsOf } from "../../lib/atlas-format";
+import { fmtEuroVoll, fmtEuroK, formatDataAsOf } from "../../lib/atlas-format";
 import { PERSONEN, FEED_IN_YEARS } from "../../lib/constants";
 import type { Kostenrennen } from "../../lib/kostenrennen";
 import { tagesverlauf, tagDatum } from "../../lib/kostenrennen-tage";
@@ -225,7 +226,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
 
   // ── Mitlaufende Achsen: x vom Start bis heute, y auf die Linien gepasst ──
   const W = narrow ? 320 : 640, H = narrow ? 260 : 340;
-  const P = { t: 18, r: narrow ? 74 : 96, b: 28, l: narrow ? 50 : 62 };
+  const P = { t: 18, r: narrow ? 10 : 12, b: 28, l: narrow ? 58 : 52 };
   const cW = W - P.l - P.r, cH = H - P.t - P.b;
   const y0 = P.t + cH;
   // Zwei Erklär-Marken im ersten Jahr: Wo die PV-Linie am Ende des Winters am
@@ -306,11 +307,21 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
     if (t > Math.floor(t) && t < T) pts.push(`${xL(t)},${yL(wertBei(reihe, t))}`);
     return pts.join(" ");
   };
+  // Steigt die Linie zur Spitze hin, steht der Betrag darüber (die Linie kommt
+  // von unten links); fällt sie, darunter — sonst läge die Zahl auf der Linie.
+  const vorher = Math.max(0, tag - 30);
   const spitzen = [
-    { key: pv.key, farbe: FARBE_PV, wert: wertBei(kPv, t), zahl: kPv[tag] },
-    ...(ohneImBild ? [{ key: ohne.key, farbe: FARBE_OHNE, wert: wertBei(kOhne, t), zahl: kOhne[tag] }] : []),
+    { key: pv.key, farbe: FARBE_PV, wert: wertBei(kPv, t), zahl: kPv[tag], steigt: kPv[tag] >= kPv[vorher] },
+    ...(ohneImBild ? [{ key: ohne.key, farbe: FARBE_OHNE, wert: wertBei(kOhne, t), zahl: kOhne[tag], steigt: true }] : []),
   ].map((s) => ({ ...s, y: yL(s.wert) })).sort((a, b) => a.y - b.y);
-  const spitzeDy = (i: number) => (spitzen.length > 1 && Math.abs(spitzen[0].y - spitzen[1].y) < 16 ? (i === 0 ? -6 : 13) : 4);
+  // Beträge stehen rechtsbündig ÜBER ihrem Punkt (so kann der Plot bis an den
+  // Rand reichen); liegen beide Spitzen nah beieinander, rutscht die untere
+  // unter ihren Punkt.
+  const spitzeDy = (i: number) => {
+    const nah = spitzen.length > 1 && Math.abs(spitzen[0].y - spitzen[1].y) < 28;
+    if (nah) return i === 0 ? -8 : 16; // obere über, untere unter ihren Punkt
+    return spitzen[i].steigt ? -8 : 16;
+  };
   // Liegt der Haushalt ohne Anlage außerhalb des Bildes, zeigt eine Marke am
   // Rand, wo er steht — unten, solange er hinten liegt, oben, wenn er führt.
   const ohneUnten = !ohneImBild && ohneTip < yMin;
@@ -426,7 +437,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
         background: v("--color-bg"),
         border: `1px solid ${v("--color-border")}`,
         borderRadius: v("--radius-lg"),
-        padding: `${space.xl}px ${space.xxl}px ${space.lg}px ${space.xl}px`,
+        padding: `${space.xl}px ${space.xl}px ${space.lg}px ${space.xl}px`,
         boxSizing: "border-box",
       }}
     >
@@ -449,7 +460,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
       {/* Das Jahr, groß — und daneben das „?", das erklärt, was die Linien
           zählen. Datum und „nach n Jahren" stehen nicht mehr daneben: Das Jahr
           trägt die Geschichte, der Rest stand im Weg (Betreiber, 05.09.2026). */}
-      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: `${space.xs}px ${space.md}px`, marginBottom: space.md }}>
+      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: `${space.xs}px ${space.md}px`, marginBottom: space.xl }}>
         <span style={{ display: "inline-flex", alignItems: "center", gap: space.sm }}>
           {/* Zeitraum „Start – jetzt", in fester Breite (Tabellenziffern + Platz für
               das letzte Jahr), damit die Zeile beim Hochzählen nicht springt. */}
@@ -475,6 +486,10 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
         </div>
       </div>
 
+      {/* Die Quellen-Kante steht am Chart-Bereich, nicht über die Fußzeile
+          hinaus (Betreiber, 05.09.2026): dieser Rahmen trägt sie und lässt ihr
+          rechts Platz. */}
+      <div style={{ position: "relative", paddingRight: SOURCE_EDGE_WIDTH + space.sm }}>
       <ExportBox>
 
         <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }} role="img"
@@ -489,7 +504,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
             <g key={val} className="kr-neu">
               <line x1={P.l} x2={P.l + cW} y1={yL(val)} y2={yL(val)} stroke="var(--color-chart-grid)" strokeWidth={0.5} />
               <text x={P.l - 6} y={yL(val) + 3} textAnchor="end" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
-                {narrow ? `${(val / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} T€` : fmtEuroVoll(val)}
+                {fmtEuroK(val)}
               </text>
             </g>
           ))}
@@ -511,8 +526,8 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           {!ohneImBild && (
             <g>
               <path d={ohneUnten ? `M${r2(xL(t) - 5)},${y0 - 8} L${r2(xL(t) + 5)},${y0 - 8} L${r2(xL(t))},${y0 - 1} Z` : `M${r2(xL(t) - 5)},${P.t + 8} L${r2(xL(t) + 5)},${P.t + 8} L${r2(xL(t))},${P.t + 1} Z`} fill={FARBE_OHNE} />
-              <text x={xL(t) + 8} y={ohneUnten ? y0 - 3 : P.t + 12} textAnchor="start" fontSize={fsPx("--font-size-small")} fontWeight={800} fill={FARBE_OHNE} fontFamily="var(--font-mono)" style={{ fontVariantNumeric: "tabular-nums" }}>
-                {narrow ? `${(ohneTip / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} T€` : fmtEuroVoll(ohneTip)}
+              <text x={xL(t) - 8} y={ohneUnten ? y0 - 3 : P.t + 12} textAnchor="end" fontSize={fsPx("--font-size-small")} fontWeight={800} fill={FARBE_OHNE} fontFamily="var(--font-mono)" style={{ fontVariantNumeric: "tabular-nums" }}>
+                {narrow ? fmtEuroK(ohneTip) : fmtEuroVoll(ohneTip)}
               </text>
             </g>
           )}
@@ -544,8 +559,8 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           {spitzen.map((s, i) => (
             <g key={s.key}>
               <circle cx={xL(t)} cy={s.y} r={4} fill={s.farbe} stroke="var(--color-bg)" strokeWidth={1.5} />
-              <text x={xL(t) + 8} y={Math.min(Math.max(s.y + spitzeDy(i), P.t + 8), y0 - 2)} textAnchor="start" fontSize={fsPx("--font-size-small")} fontWeight={800} fill={s.farbe} fontFamily="var(--font-mono)" style={{ fontVariantNumeric: "tabular-nums" }}>
-                {narrow ? `${(s.wert / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} T€` : fmtEuroVoll(s.zahl)}
+              <text x={xL(t) + 4} y={Math.min(Math.max(s.y + spitzeDy(i), P.t + 8), y0 - 2)} textAnchor="end" fontSize={fsPx("--font-size-small")} fontWeight={800} fill={s.farbe} fontFamily="var(--font-mono)" style={{ fontVariantNumeric: "tabular-nums" }}>
+                {narrow ? fmtEuroK(s.zahl) : fmtEuroVoll(s.zahl)}
               </text>
             </g>
           ))}
@@ -601,6 +616,12 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           </div>
         </div>
       </ExportBox>
+      <WidgetSourceEdge
+        widget={WIDGETS.kostenrennen}
+        visible={!onsite || showCredit}
+        stand={preiseStandIso ? formatDataAsOf(preiseStandIso) : undefined}
+      />
+      </div>
 
       {/* Im Bild: der eingestellte Stand steht schon im Kopf (Datum); hier nur der
           Hinweis, dass das Bild einen Zwischenstand und ein Zeitfenster zeigt. */}
@@ -619,11 +640,6 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
         narrow={narrow}
       />
 
-      <WidgetSourceEdge
-        widget={WIDGETS.kostenrennen}
-        visible={!onsite || showCredit}
-        stand={preiseStandIso ? formatDataAsOf(preiseStandIso) : undefined}
-      />
 
       <WidgetExportFooter
         widget={WIDGETS.kostenrennen}

@@ -236,6 +236,16 @@ export const fmtEuro = (euro: number): string => zusammen(euroTeile(euro));
 export const fmtEuroVoll = (euro: number): string => `${nf(euro)} €`;
 
 /**
+ * Euro in Tausend, eine Nachkommastelle — für dichte Achsen und Marken, wo
+ * „14.200 €" zu breit ist: 14.200 → „14,2 k€", 14.000 → „14 k€".
+ */
+export const euroKTeile = (euro: number): { value: string; unit: string } => ({
+  value: (euro / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 }),
+  unit: "k€",
+});
+export const fmtEuroK = (euro: number): string => zusammen(euroKTeile(euro));
+
+/**
  * Der gerundete Prozentwert als ZAHL — für Entscheidungen, die an der
  * angezeigten Stufe hängen (z. B. „±0 %" statt „+0 %"). Damit trifft die
  * Entscheidung dieselbe Rundung wie die Anzeige und kann nicht gegen sie
