@@ -198,6 +198,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   const tag = Math.min(T, Math.floor(t));
   const datum = tagDatum(verlauf, rennen.startJahr, tag);
   const stand = tag === 0 ? `${rennen.startJahr} · Start` : `${datum.tag}. ${MONATE[datum.monat]} ${datum.jahr}`;
+  const zeitraum = (bis: number) => `${rennen.startJahr} – ${bis}`;
 
   const pv = rennen.laeufer.find((l) => l.hatPv)!;
   const ohne = rennen.laeufer.find((l) => l.key === rennen.referenzKey)!;
@@ -242,8 +243,8 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
     }
     if (hoch < 30 || tief <= hoch || kPv[hoch] - kPv[tief] < 50) return [];
     return [
-      { tag: hoch, text: "Winter: wenig Sonne, die Rechnung wächst", kurz: "Winter: Rechnung wächst", oben: true },
-      { tag: tief, text: "Sommer: die Anlage spart mehr, als der Strom kostet", kurz: "Sommer: Anlage spart", oben: false },
+      { tag: hoch, text: "Winter: wenig Sonne", erklaerung: "Die Anlage liefert wenig, der Haushalt kauft fast alles zu — die Rechnung wächst beinahe so schnell wie ohne Anlage.", oben: true },
+      { tag: tief, text: "Sommer: die Anlage spart", erklaerung: "Eigenverbrauch und Einspeisung bringen mehr, als der Reststrom kostet — die Linie fällt sogar.", oben: false },
     ];
   }, [kPv, T]);
   const markenBis = Math.min(T, verlauf.ersterTag[Math.min(22, 12 * verlauf.jahre)] ?? T);
@@ -316,16 +317,6 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   const ohneUnten = !ohneImBild && ohneTip < yMin;
   const clipId = `kr-clip-${rennen.startJahr}`;
 
-  // Der Satz unter dem Chart — mit den gerechneten Tageswerten.
-  const diff = kPv[tag] - kOhne[tag];
-  const status = tag === 0
-    ? `Start: Der PV-Haushalt hat ${fmtEuroVoll(pv.investition)} für die Anlage ausgegeben, der andere noch nichts.`
-    : bezahltTag !== null && tag >= bezahltTag
-      ? tag === bezahltTag
-        ? `${stand}: Die Linien kreuzen sich — die Anlage hat sich bezahlt gemacht, ab jetzt liegt der PV-Haushalt vorn.`
-        : `Der PV-Haushalt hat bis hier ${fmtEuroVoll(-diff)} weniger für Strom ausgegeben.`
-      : `Der PV-Haushalt liegt noch ${fmtEuroVoll(diff)} hinten — die Anschaffung ist noch nicht zurück.`;
-
   const haushalt = PERSONEN[2];
   const fenster = rennen.wetterFenster;
   // Sekundär, nur Icon — dieselbe Form wie die Aktionsknöpfe in der Fußzeile.
@@ -347,44 +338,49 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   // Wiedergabe sie erreicht; am Ende steht dort die Gesamtersparnis. Jedes
   // Ereignis hat seine eigene Textzeile — nebeneinander passen sie nicht.
   const ersparnis = kOhne[T] - kPv[T];
-  type Ereignis = { tag: number; bis?: number; label: string; kurz: string; farbe: TokenName; reihe: number };
+  // Immer EIN Ereignis ist aktiv — das zuletzt erreichte; es wird unter der
+  // Spur erklärt, das vorige blendet aus (Muster: Weichenstellungen im Zubau-Chart).
+  type Ereignis = { tag: number; bis?: number; jahr: number; label: string; text: string; farbe: TokenName };
+  const jahrVon = (d: number) => tagDatum(verlauf, rennen.startJahr, d).jahr;
   const ereignisse: Ereignis[] = [
-    { tag: 0, label: `Anlage gekauft · ${fmtEuroVoll(pv.investition)}`, kurz: `Kauf · ${fmtEuroVoll(pv.investition)}`, farbe: "--color-accent", reihe: 1 },
-    // Die beiden Jahreszeiten-Hinweise des ersten Jahres; sie verschwinden im
-    // Herbst des zweiten Jahres, wenn die Achse sie ohnehin zusammenschiebt.
-    ...jahreszeiten.map((m) => ({ tag: m.tag, bis: markenBis, label: m.text, kurz: m.kurz, farbe: "--color-text-secondary" as TokenName, reihe: m.oben ? 0 : 2 })),
+    { tag: 0, jahr: rennen.startJahr, label: `Anlage gekauft · ${fmtEuroVoll(pv.investition)}`, farbe: "--color-accent",
+      text: `Der PV-Haushalt startet mit der Anschaffung, der andere bei null. Ab jetzt zählt jeder Tag Strom.` },
+    // Die beiden Jahreszeiten-Hinweise des ersten Jahres; ihre Punkte
+    // verschwinden im Herbst des zweiten Jahres, wenn die Achse sie ohnehin
+    // zusammenschiebt.
+    ...jahreszeiten.map((m) => ({ tag: m.tag, bis: markenBis, jahr: jahrVon(m.tag), label: m.text, text: m.erklaerung, farbe: "--color-text-secondary" as TokenName })),
   ];
   if (bezahltTag !== null) {
     const d = tagDatum(verlauf, rennen.startJahr, bezahltTag);
-    ereignisse.push({ tag: bezahltTag, label: `Anlage bezahlt · ${MONATE_KURZ[d.monat]} ${d.jahr}`, kurz: `Bezahlt · ${d.jahr}`, farbe: "--color-positive", reihe: 0 });
+    ereignisse.push({ tag: bezahltTag, jahr: d.jahr, label: `Anlage bezahlt · ${MONATE_KURZ[d.monat]} ${d.jahr}`, farbe: "--color-positive",
+      text: `Die Linien kreuzen sich: Was die Anlage gekostet hat, ist über die gesparte Stromrechnung zurück. Ab hier liegt der PV-Haushalt vorn.` });
   }
   if (einspeiseEndeTag != null) {
-    const d = tagDatum(verlauf, rennen.startJahr, einspeiseEndeTag);
-    ereignisse.push({ tag: einspeiseEndeTag, label: `Einspeisevergütung endet · ${d.jahr}`, kurz: `EEG-Ende · ${d.jahr}`, farbe: "--color-text-secondary", reihe: 1 });
+    ereignisse.push({ tag: einspeiseEndeTag, jahr: jahrVon(einspeiseEndeTag), label: `Einspeisevergütung endet`, farbe: "--color-text-secondary",
+      text: `Nach ${FEED_IN_YEARS} Jahren gibt es für eingespeisten Strom nichts mehr. Die Anlage spart weiter den eigenen Verbrauch, die Linie steigt steiler.` });
   }
   ereignisse.push({
-    tag: T,
+    tag: T, jahr: jahrVon(T),
     label: ersparnis >= 0 ? `Ersparnis nach ${rennen.jahre} Jahren: ${fmtEuroVoll(ersparnis)}` : `Mehrkosten nach ${rennen.jahre} Jahren: ${fmtEuroVoll(-ersparnis)}`,
-    kurz: ersparnis >= 0 ? `Ersparnis ${fmtEuroVoll(ersparnis)}` : `Mehrkosten ${fmtEuroVoll(-ersparnis)}`,
     farbe: ersparnis >= 0 ? "--color-positive" : "--color-negative",
-    reihe: 2,
+    text: `Endstand: ${fmtEuroVoll(kOhne[T])} ohne Anlage gegen ${fmtEuroVoll(kPv[T])} mit Anlage, Anschaffung eingerechnet.`,
   });
   const sichtbareEreignisse = ereignisse.filter((e) => t >= e.tag && (e.bis == null || t < e.bis));
+  const erreichte = ereignisse.filter((e) => t >= e.tag);
+  const aktivesEreignis = erreichte.length ? erreichte[erreichte.length - 1] : null;
   // Zeitleiste auf derselben Achse wie das Chart: Punkt und gestrichelte Linie
   // stehen jederzeit übereinander.
   const posPct = (d: number) => (xL(d) / W) * 100;
-  const REIHE_H = 15, SPUR_Y = 3 * REIHE_H + 10;
 
   // Der Video-Frame: was die Leinwand in diesem Render zeichnen soll. Als Ref,
   // damit die Aufnahme-Schleife immer den jüngsten Stand malt.
   const frameDaten: VideoFrameDaten = {
     titel: WIDGETS.kostenrennen.title,
-    untertitel: `Ein Haushalt, ${rennen.jahre} Jahre, ${fenster ? `das Wetter der Jahre ${fenster.von}–${fenster.bis}` : "ein Referenzjahr"}`,
-    jahr: String(tag === 0 ? rennen.startJahr : datum.jahr),
+    jahr: zeitraum(tag === 0 ? rennen.startJahr : datum.jahr),
     svg: svgRef.current,
     legende: [{ farbe: FARBE_OHNE_HEX, label: ohne.label }, { farbe: FARBE_PV_HEX, label: pv.label }],
-    status,
-    zeitleiste: sichtbareEreignisse.map((e) => ({ posPct: posPct(e.tag), label: e.label, farbe: tokens[e.farbe], reihe: e.reihe })),
+    zeitleiste: sichtbareEreignisse.map((e) => ({ posPct: posPct(e.tag), farbe: tokens[e.farbe], aktiv: e === aktivesEreignis })),
+    ereignis: aktivesEreignis ? { jahr: String(aktivesEreignis.jahr), label: aktivesEreignis.label, text: aktivesEreignis.text } : null,
     spur: { vonPct: (P.l / W) * 100, bisPct: ((P.l + cW) / W) * 100 },
     marke: `${brandLabel(WIDGETS.kostenrennen.kind)} solar-check.io`,
     quelle: WIDGETS.kostenrennen.sources.map((q) => sourceLabel(q, { kurz: true })).join(" · "),
@@ -437,21 +433,19 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
         boxSizing: "border-box",
       }}
     >
-      <div style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: space.xxs }}>
-        {WIDGETS.kostenrennen.title}
-      </div>
-      <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.5, marginBottom: space.lg }}>
-        Ein Haushalt, {rennen.jahre} Jahre, {fenster ? `das Wetter der Jahre ${fenster.von}–${fenster.bis}` : "ein Referenzjahr"}: Wer hat wann mehr für Strom bezahlt?{" "}
-        <span style={{ verticalAlign: "middle" }}>
-          <InfoTooltip title="Der Beispielhaushalt" ariaLabel="Angaben zum Beispielhaushalt">
-            {haushalt.label} Personen mit {haushalt.verbrauch.toLocaleString("de-DE")} kWh Jahresverbrauch, teils im Homeoffice.
-            Die Anlage: {pv.kwp} kWp{pv.speicherKwh > 0 ? ` mit ${pv.speicherKwh} kWh Speicher` : " ohne Speicher"} für {fmtEuroVoll(pv.investition)},
-            Ertrag {rennen.annahmen.ertragKwp.toLocaleString("de-DE")} kWh je kWp (deutscher Schnitt bei optimaler Ausrichtung), Teileinspeisung zu{" "}
-            {rennen.annahmen.einspeisungCt.toLocaleString("de-DE")} ct/kWh über {FEED_IN_YEARS} Jahre, danach nichts mehr für eingespeisten Strom. Strompreis {rennen.annahmen.strompreisCt.toLocaleString("de-DE")} ct/kWh,
-            Anstieg {rennen.annahmen.steigerungPct.toLocaleString("de-DE")} % pro Jahr. Wetter: {rennen.annahmen.wetter}; innerhalb des Monats nach der
-            Tagesstrahlung der DWD-Stationen verteilt — Näherungswerte ohne Gewähr.
-          </InfoTooltip>
+      <div style={{ display: "flex", alignItems: "center", gap: space.sm, marginBottom: space.md }}>
+        <span style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary") }}>
+          {WIDGETS.kostenrennen.title}
         </span>
+        <InfoTooltip title="Der Beispielhaushalt" ariaLabel="Angaben zum Beispielhaushalt">
+          Ein Haushalt, {rennen.jahre} Jahre, {fenster ? `das Wetter der Jahre ${fenster.von}–${fenster.bis}` : "ein Referenzjahr"}: Wer hat wann mehr für Strom bezahlt?{" "}
+          {haushalt.label} Personen mit {haushalt.verbrauch.toLocaleString("de-DE")} kWh Jahresverbrauch, teils im Homeoffice.
+          Die Anlage: {pv.kwp} kWp{pv.speicherKwh > 0 ? ` mit ${pv.speicherKwh} kWh Speicher` : " ohne Speicher"} für {fmtEuroVoll(pv.investition)},
+          Ertrag {rennen.annahmen.ertragKwp.toLocaleString("de-DE")} kWh je kWp (deutscher Schnitt bei optimaler Ausrichtung), Teileinspeisung zu{" "}
+          {rennen.annahmen.einspeisungCt.toLocaleString("de-DE")} ct/kWh über {FEED_IN_YEARS} Jahre, danach nichts mehr für eingespeisten Strom. Strompreis {rennen.annahmen.strompreisCt.toLocaleString("de-DE")} ct/kWh,
+          Anstieg {rennen.annahmen.steigerungPct.toLocaleString("de-DE")} % pro Jahr. Wetter: {rennen.annahmen.wetter}; innerhalb des Monats nach der
+          Tagesstrahlung der DWD-Stationen verteilt — Näherungswerte ohne Gewähr.
+        </InfoTooltip>
       </div>
 
       {/* Das Jahr, groß — und daneben das „?", das erklärt, was die Linien
@@ -459,7 +453,11 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           trägt die Geschichte, der Rest stand im Weg (Betreiber, 05.09.2026). */}
       <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: `${space.xs}px ${space.md}px`, marginBottom: space.md }}>
         <span style={{ display: "inline-flex", alignItems: "center", gap: space.sm }}>
-          <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-display-md"), fontWeight: 800, color: v("--color-text-primary"), lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{tag === 0 ? rennen.startJahr : datum.jahr}</span>
+          {/* Zeitraum „Start – jetzt", in fester Breite (Tabellenziffern + Platz für
+              das letzte Jahr), damit die Zeile beim Hochzählen nicht springt. */}
+          <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-display-md"), fontWeight: 800, color: v("--color-text-primary"), lineHeight: 1, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap", minWidth: `${zeitraum(rennen.startJahr + rennen.jahre).length}ch`, display: "inline-block" }}>
+            {zeitraum(tag === 0 ? rennen.startJahr : datum.jahr)}
+          </span>
           <InfoTooltip title="Was hier zählt" ariaLabel="Was als Stromkosten zählt">
           Alles, was der Haushalt bis zu diesem Tag für Strom ausgegeben hat: die Stromrechnung mit steigendem Preis, beim
           PV-Haushalt dazu die Anschaffung der Anlage, abzüglich der Einspeisevergütung. Wo sich die Linien kreuzen, ist die
@@ -467,10 +465,45 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           der Haushalt ohne Anlage liegt anfangs unter dem Bild und wird am Rand mit seiner Zahl geführt, bis er hereinwächst.
           </InfoTooltip>
         </span>
-        {/* Der Satz zum Stand — neben dem Jahr, mit den gerechneten Tageswerten. */}
-        <span style={{ flex: "1 1 220px", minWidth: 0, fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.4 }}>
-          {status}
-        </span>
+        {/* Legende neben dem Zeitraum: die Spitzen tragen nur Zahlen, die Zuordnung
+            braucht einen Namen. Im Bild kommt sie aus dem Bild-Fuß. */}
+        <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", flexDirection: "column", gap: space.xxs, marginLeft: space.sm }}>
+          {[{ l: ohne, f: FARBE_OHNE }, { l: pv, f: FARBE_PV }].map(({ l, f }) => (
+            <span key={l.key} style={{ display: "inline-flex", alignItems: "center", gap: space.sm, fontSize: v("--font-size-small"), color: v("--color-text-secondary"), whiteSpace: "nowrap", lineHeight: 1.3 }}>
+              <span style={{ width: 14, height: 3, borderRadius: 2, background: f }} />
+              {narrow ? l.kurz : l.label}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Steuerung — nur auf der Seite, nie im Bild */}
+      <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", alignItems: "center", gap: space.lg, marginBottom: space.md }}>
+        <button
+          type="button"
+          onClick={() => {
+            if (spielt) { setSpielt(false); return; }
+            if (amEnde) setT(0);
+            gestartet.current = true;
+            setSpielt(true);
+          }}
+          aria-label={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
+          title={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
+          style={knopf}
+        >
+          {spielt ? <IconPause size={14} /> : amEnde ? <IconRefresh size={14} /> : <IconPlay size={14} />}
+        </button>
+        <input
+          type="range"
+          min={0}
+          max={T}
+          step={1}
+          value={tag}
+          onChange={(e) => { setSpielt(false); gestartet.current = true; setT(Number(e.target.value)); }}
+          aria-label="Jahr wählen"
+          aria-valuetext={stand}
+          style={{ flex: 1, accentColor: v("--color-accent"), minWidth: 0 }}
+        />
       </div>
 
       <ExportBox>
@@ -549,67 +582,37 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           ))}
         </svg>
 
-        {/* Legende auf der Seite: die Spitzen tragen nur Zahlen, die Zuordnung
-            braucht einen Namen. Im Bild kommt sie aus dem Bild-Fuß. */}
-        <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", flexWrap: "wrap", gap: `${space.xs}px ${space.xl}px`, marginTop: space.xs }}>
-          {[{ l: ohne, f: FARBE_OHNE }, { l: pv, f: FARBE_PV }].map(({ l, f }) => (
-            <span key={l.key} style={{ display: "inline-flex", alignItems: "center", gap: space.sm, fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>
-              <span style={{ width: 14, height: 3, borderRadius: 2, background: f }} />
-              {narrow ? l.kurz : l.label}
-            </span>
-          ))}
-        </div>
-
-        {/* Ereignis-Zeitleiste unter dem Chart (Muster: die Weichenstellungen im
-            Zubau-Chart): Punkte auf derselben Zeitachse wie das Chart — die
-            gestrichelte Linie oben und der Punkt hier stehen übereinander,
-            auch während die Achse noch wächst. Nur auf der Seite; im Bild
-            tragen die Marken ihren Text im Chart. */}
-        <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ position: "relative", height: SPUR_Y + 10, marginTop: space.md }}>
-          {sichtbareEreignisse.map((e) => {
-            const p = posPct(e.tag);
-            const anker = p > 70 ? "translateX(-100%)" : p < 20 ? "none" : "translateX(-50%)";
-            return (
-              <span key={e.tag} className="kr-neu" style={{ position: "absolute", left: `${p}%`, top: e.reihe * REIHE_H, transform: anker, whiteSpace: "nowrap", fontSize: v("--font-size-caption"), fontWeight: 700, color: v(e.farbe), lineHeight: `${REIHE_H}px` }}>
-                {narrow ? e.kurz : e.label}
-              </span>
-            );
-          })}
-          <div style={{ position: "absolute", top: SPUR_Y, left: `${(P.l / W) * 100}%`, width: `${(cW / W) * 100}%`, height: 2, background: v("--color-border") }} />
-          {sichtbareEreignisse.map((e) => (
-            <span key={e.tag} className="kr-neu" style={{ position: "absolute", left: `${posPct(e.tag)}%`, top: SPUR_Y - 4, width: 10, height: 10, transform: "translateX(-50%)", borderRadius: "50%", background: v(e.farbe), border: `2px solid ${v("--color-bg")}`, boxSizing: "border-box" }} />
-          ))}
+        {/* Ereignis-Zeitleiste unter dem Chart im Stil der Weichenstellungen des
+            Zubau-Charts: Punkte auf der Achse des Charts (Punkt und gestrichelte
+            Linie stehen übereinander, auch während die Achse wächst), der
+            zuletzt erreichte Punkt ist groß und wird darunter erklärt; das
+            vorige Ereignis blendet aus. Nur auf der Seite — im Bild tragen die
+            Marken ihren Text im Chart. */}
+        <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ marginTop: space.md }}>
+          <div style={{ position: "relative", height: 26 }}>
+            <div style={{ position: "absolute", top: 12, left: `${(P.l / W) * 100}%`, width: `${(cW / W) * 100}%`, height: 2, background: v("--color-border") }} />
+            {sichtbareEreignisse.map((e) => {
+              const aktiv = e === aktivesEreignis;
+              const d = aktiv ? 22 : 13;
+              return (
+                <span key={e.tag} className="kr-neu" title={e.label} style={{ position: "absolute", left: `${posPct(e.tag)}%`, top: 13 - d / 2, width: d, height: d, transform: "translateX(-50%)", borderRadius: "50%", background: v(e.farbe), border: `2px solid ${v("--color-bg")}`, boxSizing: "border-box", boxShadow: aktiv ? "0 2px 6px rgba(0,0,0,0.25)" : "none", transition: "width .2s ease, height .2s ease, top .2s ease", zIndex: aktiv ? 2 : 1 }} />
+              );
+            })}
+          </div>
+          <div style={{ minHeight: 64, marginTop: space.sm, paddingLeft: narrow ? 0 : `${(P.l / W) * 100}%`, paddingRight: narrow ? 0 : `${(P.r / W) * 100}%` }}>
+            {aktivesEreignis && (
+              <div key={aktivesEreignis.tag} className="kr-neu">
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 800, color: v("--color-text-primary"), marginBottom: space.xxs }}>
+                  <span style={{ fontFamily: v("--font-mono"), color: v(aktivesEreignis.farbe) }}>{aktivesEreignis.jahr}</span>
+                  {"  ·  "}
+                  {aktivesEreignis.label}
+                </div>
+                <div style={{ fontSize: v("--font-size-small"), lineHeight: 1.5, color: v("--color-text-secondary") }}>{aktivesEreignis.text}</div>
+              </div>
+            )}
+          </div>
         </div>
       </ExportBox>
-
-      {/* Steuerung — nur auf der Seite, nie im Bild */}
-      <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", alignItems: "center", gap: space.lg, marginTop: space.lg }}>
-        <button
-          type="button"
-          onClick={() => {
-            if (spielt) { setSpielt(false); return; }
-            if (amEnde) setT(0);
-            gestartet.current = true;
-            setSpielt(true);
-          }}
-          aria-label={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
-          title={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
-          style={knopf}
-        >
-          {spielt ? <IconPause size={14} /> : amEnde ? <IconRefresh size={14} /> : <IconPlay size={14} />}
-        </button>
-        <input
-          type="range"
-          min={0}
-          max={T}
-          step={1}
-          value={tag}
-          onChange={(e) => { setSpielt(false); gestartet.current = true; setT(Number(e.target.value)); }}
-          aria-label="Jahr wählen"
-          aria-valuetext={stand}
-          style={{ flex: 1, accentColor: v("--color-accent"), minWidth: 0 }}
-        />
-      </div>
 
       {/* Im Bild: der eingestellte Stand steht schon im Kopf (Datum); hier nur der
           Hinweis, dass das Bild einen Zwischenstand und ein Zeitfenster zeigt. */}

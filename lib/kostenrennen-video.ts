@@ -21,14 +21,14 @@ import { EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR } from "./export-markers";
 
 export interface VideoFrameDaten {
   titel: string;
-  untertitel: string;
   jahr: string;
   svg: SVGSVGElement | null;
   legende: { farbe: string; label: string }[];
-  status: string;
-  /** Ereignis-Zeitleiste unter der Legende: Position in Prozent der Chartbreite, Farbe als Wert. */
-  zeitleiste: { posPct: number; label: string; farbe: string; reihe: number }[];
+  /** Ereignis-Zeitleiste unter dem Chart: Position in Prozent der Chartbreite, Farbe als Wert. */
+  zeitleiste: { posPct: number; farbe: string; aktiv: boolean }[];
   spur: { vonPct: number; bisPct: number };
+  /** Das aktive Ereignis, erklärt unter der Spur. */
+  ereignis: { jahr: string; label: string; text: string } | null;
   marke: string;
   quelle: string;
 }
@@ -102,8 +102,7 @@ const SKALA = 2;
 // gedämpften Seitenhintergrund — ein Video kennt keine Transparenz, also
 // braucht die Karte einen Grund, auf dem ihre Ecken sichtbar rund sind.
 const RAND = 16;
-const REIHE_H = 15;
-const ZEITLEISTE_H = 3 * REIHE_H + 24;
+const ZEITLEISTE_H = 26 + 8 + 64;
 const ECKE = parseFloat(tokens["--radius-lg"]);
 
 export class KostenrennenVideo {
@@ -126,7 +125,7 @@ export class KostenrennenVideo {
   /** Höhe aus dem Chart-Seitenverhältnis; die Leinwand steht fest, bevor die Aufnahme beginnt. */
   vorbereiten(chartSeitenverhaeltnis: number) {
     const chartH = Math.round((VIDEO_BREITE - 2 * PAD) * chartSeitenverhaeltnis);
-    this.hoehe = PAD + 22 + 20 + 54 + chartH + 16 + 22 + ZEITLEISTE_H + 40 + PAD;
+    this.hoehe = PAD + 30 + 54 + chartH + 16 + ZEITLEISTE_H + 40 + PAD;
     this.canvas.width = (VIDEO_BREITE + 2 * RAND) * SKALA;
     this.canvas.height = (this.hoehe + 2 * RAND) * SKALA;
   }
@@ -176,51 +175,45 @@ export class KostenrennenVideo {
       c.textBaseline = "top";
       c.fillStyle = farbe("--color-text-primary");
       c.font = `700 ${fsPx("--font-size-lead")}px ${sans}`;
-      c.fillText(d.titel, PAD, y); y += 22;
-      c.fillStyle = farbe("--color-text-muted");
-      c.font = `400 ${fsPx("--font-size-small")}px ${sans}`;
-      c.fillText(d.untertitel, PAD, y); y += 20;
+      c.fillText(d.titel, PAD, y); y += 30;
       c.fillStyle = farbe("--color-text-primary");
       c.font = `800 ${fsPx("--font-size-display-md")}px ${mono}`;
       c.fillText(d.jahr, PAD, y);
-      // Der Satz zum Stand steht neben dem Jahr, wie auf der Seite.
+      // Legende neben dem Zeitraum, als Spalte
       const jahrBreite = c.measureText(d.jahr).width;
-      c.font = `400 ${fsPx("--font-size-small")}px ${sans}`;
-      c.fillStyle = farbe("--color-text-secondary");
-      const satzX = PAD + jahrBreite + 20;
-      zeilenUmbruch(c, d.status, VIDEO_BREITE - PAD - satzX).slice(0, 3).forEach((z, i) => c.fillText(z, satzX, y + 4 + i * 17));
+      c.font = `500 ${fsPx("--font-size-small")}px ${sans}`;
+      d.legende.forEach((l, i) => {
+        const lx = PAD + jahrBreite + 20, ly = y + 6 + i * 18;
+        c.strokeStyle = l.farbe; c.lineWidth = 3; c.lineCap = "round";
+        c.beginPath(); c.moveTo(lx, ly + 7); c.lineTo(lx + 14, ly + 7); c.stroke();
+        c.fillStyle = farbe("--color-text-secondary");
+        c.fillText(l.label, lx + 22, ly);
+      });
       y += 54;
       if (bild) c.drawImage(bild, PAD, y, chartW, chartH);
       y += chartH + 16;
-      // Legende
-      let x = PAD;
-      c.font = `500 ${fsPx("--font-size-small")}px ${sans}`;
-      for (const l of d.legende) {
-        c.strokeStyle = l.farbe; c.lineWidth = 3; c.lineCap = "round";
-        c.beginPath(); c.moveTo(x, y + 8); c.lineTo(x + 16, y + 8); c.stroke();
-        c.fillStyle = farbe("--color-text-secondary");
-        c.fillText(l.label, x + 22, y);
-        x += 22 + c.measureText(l.label).width + 20;
-      }
-      y += 22;
-      // Ereignis-Zeitleiste: Beschriftungen in drei Zeilen, darunter die Spur mit Punkten.
-      c.font = `700 ${fsPx("--font-size-caption")}px ${sans}`;
-      for (const e of d.zeitleiste) {
-        const x = PAD + (e.posPct / 100) * chartW;
-        c.fillStyle = e.farbe;
-        c.textAlign = e.posPct > 70 ? "right" : e.posPct < 20 ? "left" : "center";
-        c.fillText(e.label, x, y + e.reihe * REIHE_H);
-      }
-      c.textAlign = "left";
-      const spurY = y + 3 * REIHE_H + 10;
+      // Ereignis-Zeitleiste: Spur mit Punkten (der aktive groß), darunter die Erklärung.
+      const spurY = y + 12;
       c.fillStyle = farbe("--color-border");
       c.fillRect(PAD + (d.spur.vonPct / 100) * chartW, spurY, ((d.spur.bisPct - d.spur.vonPct) / 100) * chartW, 2);
       for (const e of d.zeitleiste) {
         const x = PAD + (e.posPct / 100) * chartW;
-        c.beginPath(); c.arc(x, spurY + 1, 5, 0, Math.PI * 2); c.fillStyle = farbe("--color-bg"); c.fill();
-        c.beginPath(); c.arc(x, spurY + 1, 3.5, 0, Math.PI * 2); c.fillStyle = e.farbe; c.fill();
+        const r = e.aktiv ? 11 : 6.5;
+        c.beginPath(); c.arc(x, spurY + 1, r, 0, Math.PI * 2); c.fillStyle = farbe("--color-bg"); c.fill();
+        c.beginPath(); c.arc(x, spurY + 1, r - 2, 0, Math.PI * 2); c.fillStyle = e.farbe; c.fill();
       }
-      y += ZEITLEISTE_H;
+      y += 26 + 8;
+      if (d.ereignis) {
+        const ex = PAD + (d.spur.vonPct / 100) * chartW;
+        const eBreite = ((d.spur.bisPct - d.spur.vonPct) / 100) * chartW;
+        c.font = `800 ${fsPx("--font-size-small")}px ${sans}`;
+        c.fillStyle = farbe("--color-text-primary");
+        c.fillText(`${d.ereignis.jahr}  ·  ${d.ereignis.label}`, ex, y);
+        c.font = `400 ${fsPx("--font-size-small")}px ${sans}`;
+        c.fillStyle = farbe("--color-text-secondary");
+        zeilenUmbruch(c, d.ereignis.text, eBreite).slice(0, 3).forEach((z, i) => c.fillText(z, ex, y + 18 + i * 16));
+      }
+      y += 64;
       // Fuß: Marke, darunter die Quelle (Lizenzpflicht — auch im Video).
       const fussY = this.hoehe - PAD - 30;
       c.font = `600 ${fsPx("--font-size-small")}px ${sans}`;
