@@ -388,3 +388,71 @@ Die 349 ohne Weg sind größtenteils kein Datenproblem, sondern ein Abrufproblem
 146 wurden gelesen, ohne dass ein Vermerk entstand, 72 ohne auffindbares
 Impressum — darunter Berliner Zeitung, neue energie und Chip, die selbstredend
 erreichbar sind. Auch hier ist der Browser der nächste Schritt.
+
+## Endstand vom 05.09.2026
+
+| | |
+|---|---|
+| Adressen im Bestand | 3.817 |
+| **Verteiler-Kandidaten** | **1.718** (1.397 regional, 321 überregional mit Aufhänger) |
+| anschreibbar mit Anrede | 1.019 |
+| nur über ein Postfach | 586 |
+| ohne Weg | 113 |
+| regional weiter unklar | 58 |
+| Kontakte gesamt | 13.591, davon 7.820 mit Namen |
+
+**Mit Aufhänger nach Rubrik:** Fachmedien 95 · allgemeine Medien 77 · Startup,
+Vibe Coding, UX 44 · Verbände 29 · Händler 27 · Portale 17 · Creator 13 ·
+Institute 13 · Behörden 6 · Hersteller 4.
+
+### Die Startliste war keine Erhebung — und das war messbar
+
+Der Betreiber am 05.09.2026: „tendenziell verstehe ich nicht wieso jetzt nur 47
+fachmedien und 24 allgemeine, das kann nicht stimmen." Er hatte recht: Beide
+Zahlen maßen, was aus dem Kopf auf einer Startliste gelandet war, nicht was es
+gibt. Die systematische Suche hat die Fachmedien auf **95** und die allgemeinen
+Medien auf **77** gebracht — jeweils rund eine Verdopplung, ohne dass eine Regel
+gelockert wurde.
+
+Bei den allgemeinen Medien ist das Feld damit **weitgehend erschöpft**: Neun
+weitere Häuser wurden geprüft und lieferten nichts (Abrufsperren, gelöschte
+Beiträge, eine Adresse, die es nicht mehr gibt). Das ist ein Befund, keine
+Lücke — wer dort weitersucht, sucht an derselben Stelle noch einmal.
+
+### Was die Kontaktnachlese über deutsche Presse gelernt hat
+
+Drei Läufe über zusammen 582 Medien ohne Kontaktweg. Die Ausbeute lag nicht an
+besseren Mustern, sondern an einer widerlegten Annahme und an sechs
+Fehlerklassen, die erst das Eichen von Hand zeigte:
+
+- **Die Verlagsadresse auf fremder Domain ist die richtige** (255 von 288). Von
+  13 nachgelesenen Fällen waren 11 der Herausgeber selbst, meist im
+  § 5-TMG-Block. Steht jetzt in der Bibliothek, samt Gegenproben.
+- **Namen um eine Position verschoben:** Auf einer Autorenseite trug jeder
+  Redakteur die Funktion des nächsten. Von außen unsichtbar — fünf plausible
+  Zeilen, alle falsch.
+- **Der Name hinter dem Doppelpunkt** gehört zur Funktion davor. „Chefredakteurin:
+  Bettina Steinke" hatte den Mann eine Zeile darüber zugeordnet; die Korrektur
+  hat nebenbei einen veralteten Chefredakteur beim Tagesspiegel ersetzt.
+- **24 Medientitel und Überschriften standen als Personen** im Ergebnis („Hallo
+  Peine", „Registergericht Walsrode", „UNSERE SERVICESTELLEN").
+- **Zusammengeklebte Adressen** durch fehlende Zeilenumbrüche
+  (`redaktion@kelheim-today.deRedaktion`) — repariert statt verworfen, sonst
+  hätten vier Medien ihren einzigen Weg verloren.
+- **Die Gegenprobe hat zweimal eigene Korrekturen gefangen:** Ein Ausschluss von
+  Freemail-Adressen hätte drei echte Betreiberadressen gekostet (bei kleinen
+  Blättern ist Freemail der Normalfall), und eine als Dienstleister eingestufte
+  Werbeagentur war beim Landkreismagazin die Herausgeberin.
+
+### Was bleibt
+
+- **113 ohne Kontaktweg**: 67 nennen wirklich keinen (nur Anschrift und
+  Telefon), 31 bauen ihr Impressum erst im Browser auf, der Rest sperrt.
+- **58 regionale Adressen weiter unklar** — ausschließlich, weil die Seite nicht
+  zu lesen war: 21 liefern gar keinen Text aus, 13 antworten mit Fehlerseiten,
+  10 sind tot, 9 sperren, 5 verweigern Zugriffe aus Deutschland.
+- **Zwei Einordnungen zur Nachprüfung:** `enkreis.de` steht als Medium und ist
+  die Kreisverwaltung Ennepe-Ruhr; `ostalb-aktuell.de` führt regional klingende
+  Artikel mit demselben Änderungsdatum und Orten aus dem falschen Landkreis.
+- **Vor jedem Versand:** Die Datenschutzerklärung nennt diese Erhebung nicht,
+  und einen Versandweg gibt es nicht.
