@@ -41,6 +41,7 @@ export const CHART_KATALOG: KatalogEintrag[] = [
   { datei: "charts/ZubauWidget", art: "widget", wofuer: "PV-Zubau über die Jahre mit Förder-Meilensteinen (Zeitleiste + Chart)." },
   { datei: "charts/AnlagenbestandWidget", art: "widget", wofuer: "Deutscher Solarbestand nach Anlagentyp: Anteil an der Stückzahl gegen Anteil an der Leistung." },
   { datei: "charts/ZubauTimelineChart", art: "baustein", wofuer: "Der Chart-Teil der Zubau-Story: Balken je Jahr plus zwei Vergütungslinien." },
+  { datei: "charts/RaceChart", art: "baustein", wofuer: "Race-Chart: zwei Läufer über einen langen Zeitraum, Tag für Tag selbstzeichnend — mitlaufende Achsen (Kamera auf dem vorn startenden Läufer), anziehendes Tempo, Ereignis-Zeitleiste mit Erklärung, Bild und Video. Ein Rennen reicht nur seine zwei Reihen, Ereignisse und Texte herein." },
   { datei: "charts/KostenrennenWidget", art: "widget", wofuer: "Stromkosten-Rennen: aufgelaufene Stromkosten mit und ohne Solaranlage, Tag für Tag mit echtem Wetter, animiert bis zur bezahlten Anschaffung." },
   { datei: "charts/GruengasWidget", art: "widget", wofuer: "Heizkosten-Varianten über 20 Jahre, wahlweise als Balken oder Vollansicht." },
   { datei: "charts/GasPriceStackChart", art: "baustein", wofuer: "Gaspreis-Bestandteile gestapelt über die Zeit." },

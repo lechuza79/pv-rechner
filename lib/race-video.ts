@@ -1,4 +1,4 @@
-// Das Stromkosten-Rennen als Video: Während die Animation läuft, malt dieses
+// Ein Race-Chart als Video (erster Aufrufer: das Stromkosten-Rennen): Während die Animation läuft, malt dieses
 // Modul jeden Bildschirm-Frame auf eine Leinwand und zeichnet die Leinwand mit
 // dem Aufnahme-Baustein des Browsers auf. Heraus kommt eine Datei in dem Format,
 // das der Browser hergibt (WebM in Chrome/Firefox, MP4 in Safari).
@@ -105,7 +105,7 @@ const RAND = 16;
 const ZEITLEISTE_H = 26 + 8 + 64;
 const ECKE = parseFloat(tokens["--radius-lg"]);
 
-export class KostenrennenVideo {
+export class RaceVideo {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
   private recorder: MediaRecorder | null = null;
