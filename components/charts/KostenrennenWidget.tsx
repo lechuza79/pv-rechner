@@ -307,21 +307,19 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
     if (t > Math.floor(t) && t < T) pts.push(`${xL(t)},${yL(wertBei(reihe, t))}`);
     return pts.join(" ");
   };
-  // Steigt die Linie zur Spitze hin, steht der Betrag darüber (die Linie kommt
-  // von unten links); fällt sie, darunter — sonst läge die Zahl auf der Linie.
-  const vorher = Math.max(0, tag - 30);
+  // Der Betrag steht immer ÜBER seinem Punkt — eine feste Position, die nicht
+  // mit der Linienrichtung hin- und herspringt; gegen die Linie darunter trägt
+  // die Zahl einen Halo in Hintergrundfarbe.
   const spitzen = [
-    { key: pv.key, farbe: FARBE_PV, wert: wertBei(kPv, t), zahl: kPv[tag], steigt: kPv[tag] >= kPv[vorher] },
-    ...(ohneImBild ? [{ key: ohne.key, farbe: FARBE_OHNE, wert: wertBei(kOhne, t), zahl: kOhne[tag], steigt: true }] : []),
+    { key: pv.key, farbe: FARBE_PV, wert: wertBei(kPv, t), zahl: kPv[tag] },
+    ...(ohneImBild ? [{ key: ohne.key, farbe: FARBE_OHNE, wert: wertBei(kOhne, t), zahl: kOhne[tag] }] : []),
   ].map((s) => ({ ...s, y: yL(s.wert) })).sort((a, b) => a.y - b.y);
   // Beträge stehen rechtsbündig ÜBER ihrem Punkt (so kann der Plot bis an den
   // Rand reichen); liegen beide Spitzen nah beieinander, rutscht die untere
   // unter ihren Punkt.
-  const spitzeDy = (i: number) => {
-    const nah = spitzen.length > 1 && Math.abs(spitzen[0].y - spitzen[1].y) < 28;
-    if (nah) return i === 0 ? -8 : 16; // obere über, untere unter ihren Punkt
-    return spitzen[i].steigt ? -8 : 16;
-  };
+  // Liegen beide Spitzen nah beieinander (um die Kreuzung), rutscht die untere
+  // unter ihren Punkt, damit sich die Zahlen nicht überlagern.
+  const spitzeDy = (i: number) => (spitzen.length > 1 && Math.abs(spitzen[0].y - spitzen[1].y) < 28 && i === 1 ? 16 : -8);
   // Liegt der Haushalt ohne Anlage außerhalb des Bildes, zeigt eine Marke am
   // Rand, wo er steht — unten, solange er hinten liegt, oben, wenn er führt.
   const ohneUnten = !ohneImBild && ohneTip < yMin;
@@ -479,7 +477,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
         <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", flexWrap: "wrap", gap: `${space.xxs}px ${space.lg}px`, marginLeft: space.sm }}>
           {[{ l: ohne, f: FARBE_OHNE }, { l: pv, f: FARBE_PV }].map(({ l, f }) => (
             <span key={l.key} style={{ display: "inline-flex", alignItems: "center", gap: space.sm, fontSize: v("--font-size-small"), color: v("--color-text-secondary"), whiteSpace: "nowrap", lineHeight: 1.3 }}>
-              <span style={{ width: 14, height: 3, borderRadius: 2, background: f }} />
+              <span style={{ width: 14, height: 3, borderRadius: v("--radius-sm"), background: f }} />
               {narrow ? l.kurz : l.label}
             </span>
           ))}
@@ -559,7 +557,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           {spitzen.map((s, i) => (
             <g key={s.key}>
               <circle cx={xL(t)} cy={s.y} r={4} fill={s.farbe} stroke="var(--color-bg)" strokeWidth={1.5} />
-              <text x={xL(t) + 4} y={Math.min(Math.max(s.y + spitzeDy(i), P.t + 8), y0 - 2)} textAnchor="end" fontSize={fsPx("--font-size-small")} fontWeight={800} fill={s.farbe} fontFamily="var(--font-mono)" style={{ fontVariantNumeric: "tabular-nums" }}>
+              <text x={xL(t) + 4} y={Math.min(Math.max(s.y + spitzeDy(i), P.t + 8), y0 - 2)} textAnchor="end" fontSize={fsPx("--font-size-small")} fontWeight={800} fill={s.farbe} fontFamily="var(--font-mono)" stroke={v("--color-bg")} strokeWidth={3} strokeLinejoin="round" style={{ fontVariantNumeric: "tabular-nums", paintOrder: "stroke" }}>
                 {narrow ? fmtEuroK(s.zahl) : fmtEuroVoll(s.zahl)}
               </text>
             </g>
@@ -598,7 +596,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
               const aktiv = e === aktivesEreignis;
               const d = aktiv ? 22 : 13;
               return (
-                <span key={e.tag} className="kr-neu" title={e.label} style={{ position: "absolute", left: `${posPct(e.tag)}%`, top: 16 - d / 2, width: d, height: d, transform: "translateX(-50%)", borderRadius: "50%", background: v("--color-accent"), border: `2px solid ${v("--color-bg")}`, boxSizing: "border-box", boxShadow: aktiv ? "0 2px 6px rgba(19,101,234,0.35)" : "none", transition: "width .2s ease, height .2s ease, top .2s ease", zIndex: aktiv ? 2 : 1 }} />
+                <span key={e.tag} className="kr-neu" title={e.label} style={{ position: "absolute", left: `${posPct(e.tag)}%`, top: 16 - d / 2, width: d, height: d, transform: "translateX(-50%)", borderRadius: "50%", background: v("--color-accent"), border: `2px solid ${v("--color-bg")}`, boxSizing: "border-box", boxShadow: aktiv ? `0 2px 6px color-mix(in srgb, ${v("--color-accent")} 35%, transparent)` : "none", transition: "width .2s ease, height .2s ease, top .2s ease", zIndex: aktiv ? 2 : 1 }} />
               );
             })}
           </div>
