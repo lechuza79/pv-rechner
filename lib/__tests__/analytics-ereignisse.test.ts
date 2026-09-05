@@ -1,4 +1,4 @@
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -21,13 +21,37 @@ import { EVENTS } from "../analytics";
 const wurzel = process.cwd();
 const lies = (p: string) => readFileSync(join(wurzel, p), "utf8");
 const suche = (muster: string) =>
-  execSync(`git grep -n --untracked "${muster}" -- "*.ts" "*.tsx" || true`, {
-    cwd: wurzel,
-    encoding: "utf8",
-  })
-    .split("\n")
-    .filter(Boolean)
-    .filter((z) => !z.includes("__tests__"));
+  // OHNE Shell (execFile statt exec): Das Muster enthält Anführungszeichen, und
+  // in einer zusammengebauten Kommandozeile heben die sich gegen die äußeren
+  // auf — der Suchlauf fand dann die nackten Namen statt der Zeichenketten,
+  // ohne dass irgendetwas rot wurde. Beim Umbau auf EINEN Lauf (05.09.2026)
+  // genau so passiert und nur aufgefallen, weil die Laufzeit sich nicht
+  // besserte.
+  //
+  // NUR „kein Treffer" wird aufgefangen, nichts sonst.
+  //
+  // git grep meldet ein leeres Ergebnis mit dem Rückgabewert 1 — das ist hier
+  // ein gültiges Ergebnis. Alles andere (128: Muster kaputt) ist ein Defekt und
+  // MUSS durchschlagen. Ein pauschales Auffangen hätte den Nachbartest still
+  // wertlos gemacht: Sein Muster enthält eine Klammer, die als erweiterter
+  // Ausdruck einen Fehler wirft — der Test wäre grün geblieben und hätte
+  // nichts mehr geprüft. Genau am 05.09.2026 gebaut und beim Nachmessen
+  // gefunden.
+  ((): string[] => {
+    try {
+      return execFileSync("git", ["grep", "-nE", "--untracked", muster, "--", "*.ts", "*.tsx"], {
+        cwd: wurzel,
+        encoding: "utf8",
+      })
+        .split("\n")
+        .filter(Boolean)
+        .filter((z) => !z.includes("__tests__"));
+    } catch (e) {
+      const status = (e as { status?: number }).status;
+      if (status === 1) return [];
+      throw e;
+    }
+  })();
 
 describe("Analytics-Ereignisse", () => {
   it("trackEvent nimmt genau ein Argument", () => {
@@ -42,7 +66,7 @@ describe("Analytics-Ereignisse", () => {
   it("niemand misst am Wrapper vorbei", () => {
     // `track(...)` direkt aus dem Paket würde jede Grenze umgehen. Erlaubt ist
     // die eine Stelle, die den Wrapper baut.
-    const direkt = suche("[^a-zA-Z]track(").filter(
+    const direkt = suche("[^a-zA-Z]track\\(").filter(
       (z) => !z.startsWith("lib/analytics.ts:"),
     );
     expect(direkt, `Direkter track()-Aufruf außerhalb des Wrappers:\n${direkt.join("\n")}`)
@@ -68,7 +92,27 @@ describe("Analytics-Ereignisse", () => {
     // Brief-Namen in einer Fallunterscheidung. Ein Test, der nur
     // `trackEvent("…")` erkennt, hielte beides für unbenutzt und würde zur
     // Aufforderung, richtigen Code umzuschreiben.
-    const ohneAufrufer = EVENTS.filter((e) => suche(`"${e}"`).length === 0);
+    // EIN Suchlauf für alle Namen, nicht einer je Name.
+    //
+    // Vorher startete diese Zeile für jedes Ereignis einen eigenen
+    // Suchprozess. Bei 33 Ereignissen lief der Test 4,9 Sekunden gegen ein
+    // Zeitlimit von 5 — auf einer ruhigen Maschine grün, auf einer belasteten
+    // rot, und zwar ohne dass sich am geprüften Code etwas geändert hätte.
+    // Genau die Sorte Rot, von der man sich abgewöhnt, Rot ernst zu nehmen.
+    // Gemessen am 05.09.2026 unter Last: Ausfall im Vorab-Lauf, allein mit
+    // höherem Limit grün.
+    //
+    // DIE LISTE SELBST ZÄHLT NICHT ALS AUFRUFER. Ohne diese Zeile fand die
+    // Suche jeden Namen in seiner eigenen Definition und meldete nie eine
+    // Karteileiche — der Test war grün und prüfte nichts. Gemessen am
+    // 05.09.2026: ein frei erfundenes Ereignis in die Liste gelegt, dieser Test
+    // blieb grün (rot wurde nur der Katalog-Test daneben, aus einem anderen
+    // Grund). Die Nachbarprüfung nimmt dieselbe Datei aus, dort war es von
+    // Anfang an gesehen worden.
+    const treffer = suche(`"(${EVENTS.join("|")})"`).filter(
+      (z) => !z.startsWith("lib/analytics.ts:"),
+    );
+    const ohneAufrufer = EVENTS.filter((e) => !treffer.some((z) => z.includes(`"${e}"`)));
     expect(ohneAufrufer, `Ereignisse ohne Aufrufer: ${ohneAufrufer.join(", ")}`).toEqual([]);
   });
 
