@@ -32,6 +32,7 @@ export default function GemeindeErneuerbareWidget({
   onsite = false,
   share = true,
   showEmbed = true,
+  einbetten,
   branding = true,
 }: {
   name: string;
@@ -45,6 +46,8 @@ export default function GemeindeErneuerbareWidget({
   /** Aktionsleiste zeigen (Einbettende können sie über share=0 abwählen). */
   share?: boolean;
   showEmbed?: boolean;
+  /** Fertiger Einbett-Code für diesen Ort — siehe GemeindeWidgetShell. */
+  einbetten?: { params: Record<string, string>; height: number; width?: number };
   branding?: boolean;
 }) {
   const kwpOf = (key: string): number =>
@@ -78,6 +81,7 @@ export default function GemeindeErneuerbareWidget({
       onsite={onsite}
       share={share}
       showEmbed={showEmbed}
+      einbetten={einbetten}
       branding={branding}
     >
       {rows.length === 0 ? (

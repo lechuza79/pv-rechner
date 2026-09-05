@@ -33,6 +33,7 @@ export default function GemeindeSolarLive({
   onsite = false,
   share = true,
   showEmbed = true,
+  einbetten,
   branding = true,
 }: {
   lat: number;
@@ -46,6 +47,8 @@ export default function GemeindeSolarLive({
   /** Aktionsleiste zeigen (Einbettende können sie über share=0 abwählen). */
   share?: boolean;
   showEmbed?: boolean;
+  /** Fertiger Einbett-Code für diesen Ort — siehe GemeindeWidgetShell. */
+  einbetten?: { params: Record<string, string>; height: number; width?: number };
   branding?: boolean;
 }) {
   const [weather, setWeather] = useState<Weather | null>(null);
@@ -115,6 +118,7 @@ export default function GemeindeSolarLive({
       onsite={onsite}
       share={share}
       showEmbed={showEmbed}
+      einbetten={einbetten}
       branding={branding}
     >
       {failed ? (

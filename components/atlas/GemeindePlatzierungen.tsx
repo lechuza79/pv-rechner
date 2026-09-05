@@ -116,6 +116,42 @@ type Daten = {
   alle: Platzierung[];
 };
 
+/**
+ * Der reservierte Platz, solange die Rangdaten unterwegs sind.
+ *
+ * Er ahmt die Kachel NACH statt sie zu ersetzen: dieselbe Fläche, dieselbe
+ * Kontur, dieselben drei Zeilenhöhen. Ein Platzhalter, der kleiner ist als sein
+ * Inhalt, verschiebt beim Eintreffen genauso viel wie gar keiner — dann kann man
+ * ihn auch weglassen.
+ *
+ * Die Zeilen pulsieren im selben Takt wie die Karte (dieselbe Bewegungsregel des
+ * Projekts); bei „reduzierte Bewegung" fällt die Animation weg, die reservierte
+ * Fläche bleibt.
+ */
+function PlatzierungsSkelett() {
+  const zeile = (breite: string, hoehe: number) => (
+    <div
+      style={{
+        width: breite,
+        height: hoehe,
+        borderRadius: 6,
+        background: v("--color-border-accent"),
+        animation: "sc-map-pulse 1.4s ease-in-out infinite",
+      }}
+    />
+  );
+  return (
+    <section style={S.wrap} aria-hidden>
+      <div style={{ ...S.badge, cursor: "default", gap: 6 }}>
+        {zeile("42%", 22)}
+        {zeile("78%", 14)}
+        {zeile("64%", 12)}
+        {zeile("52%", 12)}
+      </div>
+    </section>
+  );
+}
+
 export default function GemeindePlatzierungen({ regionId }: { regionId: string }) {
   const [daten, setDaten] = useState<Daten | null>(null);
   const [fehler, setFehler] = useState(false);
@@ -133,11 +169,25 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
     };
   }, [regionId]);
 
-  // Ohne Platzierung erscheint hier gar nichts — ein leerer Kasten ist
-  // schlechter als kein Kasten. Auch während des Ladens: Ob es überhaupt eine
-  // Auszeichnung gibt, weiß man erst mit den Daten, und ein Platzhalter, der in
-  // der Mehrzahl der Fälle wieder verschwindet, lässt die Seite springen.
-  if (fehler || !daten?.beste) return null;
+  // WÄHREND DES LADENS STEHT EIN PLATZHALTER — seit 05.09.2026, und das ist die
+  // Umkehr der bisherigen Entscheidung.
+  //
+  // Hier stand: kein Platzhalter, weil ein Kasten, der in der Mehrzahl der Fälle
+  // wieder verschwindet, die Seite springen lässt. Das galt für ALLE 11.000
+  // Gemeinden — die Auszeichnung trägt nur bei rund einem Drittel der Orte.
+  //
+  // Öffentlich erreichbar sind aber nur die angeschriebenen Orte, und die
+  // Auswahl für den Versand nimmt ausschließlich Gemeinden MIT Aufhänger
+  // („nur echte Sieger"). Auf einer Seite, die überhaupt jemand aufrufen kann,
+  // kommt die Auszeichnung also so gut wie immer — abgeleitet aus der
+  // Auswahlregel, nicht gemessen. Ohne Platzhalter springt der ganze Inhalt
+  // darunter, sobald die Rangdaten eintreffen (rund 1,7 s).
+  //
+  // Die Gegenrichtung bleibt abgesichert: Kommt nichts, klappt der Platz
+  // zusammen. Das ist der seltene Fall, nicht der Normalfall.
+  if (fehler) return null;
+  if (!daten) return <PlatzierungsSkelett />;
+  if (!daten.beste) return null;
   const b = daten.beste;
 
   return (

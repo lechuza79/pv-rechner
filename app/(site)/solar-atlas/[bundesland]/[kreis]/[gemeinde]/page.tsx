@@ -23,7 +23,7 @@ import GemeindeHero, { type KpiOwnerData } from "../../../../../../components/at
 import GemeindePeerTiles from "../../../../../../components/atlas/GemeindePeerTiles";
 import GemeindePlatzierungen from "../../../../../../components/atlas/GemeindePlatzierungen";
 import GemeindeMeldungen from "../../../../../../components/atlas/GemeindeMeldungen";
-import { gemeindeMeldungen } from "../../../../../../lib/gemeinde-meldungen";
+import { ortsStories } from "../../../../../../lib/orts-stories";
 import CollapsibleIntro from "../../../../../../components/atlas/CollapsibleIntro";
 import GemeindeEmbedBox from "../../../../../../components/atlas/GemeindeEmbedBox";
 import GemeindeAboBox, { ABO_OEFFNEN } from "../../../../../../components/atlas/GemeindeAboBox";
@@ -533,21 +533,24 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
         </div>
 
         {/*
-          Was es über diesen Ort gerade zu berichten gibt — dieselbe Rechnung,
-          die die Abo-Mail verschickt (lib/gemeinde-meldungen.ts), hier als
-          Karten mit Bild-Download.
+          Die Geschichten über diesen Ort, nach den festen Familien des
+          Story-Katalogs (lib/orts-stories.ts) — als Karten mit Bild-Download.
 
-          OHNE FÖRDERUNG: Eine der fünf Meldungen kann ein Förderprogramm
-          nennen, aber nur mit der Angabe, ob es gerade ZÄHLT — und die kommt
-          allein aus fundingZaehlt(), also aus einem Datenbank-Lesevorgang, den
-          diese Seite heute nicht macht. Sie aus der Liste der veröffentlichten
-          Förderstädte abzuleiten wäre eine zweite Quelle für dieselbe Frage;
-          die Seite verlinkt die Förderung weiter unten ohnehin.
+          NICHT aus der Ortsmeldungs-Rechnung, die die Abo-Mail speist: Deren
+          Meldungen BESCHREIBEN den Bestand, und der steht hier zwei Zentimeter
+          tiefer schon als Kachel und Ring. Gemessen am 05.09.2026 an Heringen —
+          drei von fünf Meldungen waren wörtlich das, was darunter stand.
+
+          OHNE FÖRDERUNG: Eine Förder-Geschichte braucht die Angabe, ob das
+          Programm gerade ZÄHLT, und die kommt allein aus fundingZaehlt(), also
+          aus einem Datenbank-Lesevorgang, den diese Seite heute nicht macht.
+          Sie aus der Liste der veröffentlichten Förderstädte abzuleiten wäre
+          eine zweite Quelle für dieselbe Frage.
 
           OHNE PLATZIERUNG: steht als eigene Karte direkt darüber (siehe dort).
         */}
         <GemeindeMeldungen
-          meldungen={gemeindeMeldungen({
+          stories={ortsStories({
             daten: {
               name: region.name,
               regionId: region.region_id,
@@ -648,6 +651,9 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
                 liveUrl={`https://solar-check.io${gemeindePath}`}
                 onsite
                 showEmbed={false}
+                // Der Einbett-Knopf gibt hier den FERTIGEN Code für diesen Ort
+                // aus, statt in die Galerie zu springen (siehe Hülle).
+                einbetten={{ params: { ags: region.region_id }, height: 420 }}
               />
             </div>
 
@@ -661,6 +667,7 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
                   liveUrl={`https://solar-check.io${gemeindePath}`}
                   onsite
                   showEmbed={false}
+                  einbetten={{ params: { ags: region.region_id }, height: 420 }}
                 />
               </div>
             )}

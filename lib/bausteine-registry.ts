@@ -307,6 +307,16 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: ["Icons", "Switch"],
   },
   {
+    datei: "components/EinbettenDialog.tsx",
+    name: "EinbettenDialog",
+    zweck:
+      "Der fertige Einbettungs-Code für genau das, was gerade auf dem Schirm steht — statt eines Sprungs in die Widget-Galerie.",
+    gruppe: "widget",
+    ebene: "zusammensetzung",
+    stand: "im-aufbau",
+    bestehtAus: ["Modal"],
+  },
+  {
     datei: "components/StorySlider.tsx",
     name: "StorySlider",
     zweck:

@@ -687,12 +687,12 @@ const BEISPIELE: Record<string, Beispiel> = {
   Icons: IconsBeispiel,
   ChartActionBar: AktionsleisteBeispiel,
   CiteModal: ZitierBeispiel,
-  // Drei Teaser, damit die Pfeile in der schmalen Karte der Galerie wirklich
-  // etwas zu tun haben — mit einem einzigen sähe man die Reihe, aber nicht ihr
-  // Verhalten.
+  // SECHS Teaser, nicht drei: Unterhalb von vier dreht sich die Reihe bewusst
+  // nicht (siehe MIN_FUER_SCHLEIFE), und ein Beispiel, das die Schleife nicht
+  // zeigt, zeigt genau das nicht, wofür es den Baustein gibt.
   StorySlider: () => (
     <StorySlider ariaLabel="Beispiel-Reihe">
-      {["Erste Meldung", "Zweite Meldung", "Dritte Meldung"].map((t) => (
+      {["Erste", "Zweite", "Dritte", "Vierte", "Fünfte", "Sechste"].map((t) => (
         <div
           key={t}
           style={{
@@ -705,7 +705,7 @@ const BEISPIELE: Record<string, Beispiel> = {
             fontWeight: 700,
           }}
         >
-          {t}
+          {t} Meldung
         </div>
       ))}
     </StorySlider>

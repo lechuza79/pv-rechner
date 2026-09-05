@@ -20,13 +20,21 @@ describe("Widget-Galerie: Werte aus der Adresszeile", () => {
     expect(QUELLE).toMatch(/\/\^\\\/solar-atlas\\\//);
   });
 
-  it("maskiert zusätzlich beim Bau des Kopier-Codes", () => {
-    // Zweite Verteidigungslinie: In ein HTML-Attribut gehört nichts Unmaskiertes,
-    // auch wenn oben schon gesäubert wurde.
-    expect(QUELLE).toMatch(/const attr = \(t: string\)/);
-    expect(QUELLE).toContain("attr(variant.label)");
-    expect(QUELLE).toContain("attr(attribution.text)");
-    expect(QUELLE).toContain("attr(attribution.path)");
+  it("baut den Kopier-Code nicht selbst, sondern nimmt den geteilten Baustein", () => {
+    // Die Maskierung stand bis zum 05.09.2026 hier in der Galerie. Seit die
+    // Karte auf der Ortsseite denselben Code anbietet, wäre eine zweite Fassung
+    // genau der Fehler, gegen den diese Prüfung ursprünglich gebaut wurde: Der
+    // Code landet auf einer FREMDEN Website mit unserem Namen darunter, und
+    // zwei Fassungen laufen auseinander — die eine bekommt das Ziel-Attribut,
+    // die andere nicht.
+    //
+    // Geprüft wird deshalb jetzt die ABWESENHEIT eines eigenen Codebauers und
+    // die Benutzung des geteilten. Dass der maskiert, hält
+    // lib/__tests__/embed-code.test.ts fest.
+    expect(QUELLE).toContain('from "../../../lib/embed-code"');
+    expect(QUELLE).toMatch(/const code = embedCode\(/);
+    expect(QUELLE, "eigener Codebauer zurück").not.toMatch(/const attr = \(t: string\)/);
+    expect(QUELLE, "eigener iframe-Zusammenbau zurück").not.toMatch(/`<iframe`/);
   });
 
   it("verlinkt im Einbett-Code die eigene Gemeinde, nicht das Beispiel", () => {

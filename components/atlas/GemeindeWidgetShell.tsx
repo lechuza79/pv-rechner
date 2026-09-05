@@ -14,6 +14,11 @@ import {
 import { sourceLabel } from "../../lib/data-sources";
 import { useChartExport } from "../../lib/useChartExport";
 import { WIDGET_MAX_WIDTH_COMPACT, type WidgetDef } from "../../lib/widget-registry";
+import EinbettenDialog from "../EinbettenDialog";
+
+/** Basis-Adresse für den Einbett-Code. Der Code landet auf einer FREMDEN
+ *  Website; eine relative Adresse zeigte dort ins Leere. */
+const SITE_URL = "https://solar-check.io";
 
 // Shared shell for the place-based widgets (municipality and state): renewable
 // mix, installed capacity by plant type, simulated solar output, the plain
@@ -47,6 +52,7 @@ export default function GemeindeWidgetShell({
   share = true,
   showCta,
   showEmbed = true,
+  einbetten,
   sourceBottomInset = 0,
   children,
 }: {
@@ -73,6 +79,19 @@ export default function GemeindeWidgetShell({
    */
   showCta?: boolean;
   showEmbed?: boolean;
+  /**
+   * Der fertige Einbett-Code für DIESEN Ort, hinter dem Knopf der Karte.
+   *
+   * Ohne diese Angabe springt der Knopf in die Widget-Galerie — dort steht der
+   * Ort dann in einem Abfrageteil, die Seite ist in Du-Form geschrieben, und
+   * die kommunalen Widgets stehen hinter acht Deutschland-Widgets. Gemessen am
+   * 05.09.2026: 289 Briefe an Kommunen, vier Veröffentlichungen, null
+   * Einbettungen. Wer auf der Ortsseite einbetten will, bekommt den Code dort.
+   *
+   * `params` trägt den Ort (und was das Widget sonst braucht), `height` die
+   * Höhe des Rahmens; alles Übrige kommt aus dem Register.
+   */
+  einbetten?: { params: Record<string, string>; height: number; width?: number };
   /** Shorten the vertical source label at the bottom, so it ends above a footer
    *  row inside the widget body instead of running to the floor. */
   sourceBottomInset?: number;
@@ -80,6 +99,7 @@ export default function GemeindeWidgetShell({
 }) {
   // On our own pages the credit is quiet until someone looks at the card.
   const [showCredit, setShowCredit] = useState(false);
+  const [einbettenOffen, setEinbettenOffen] = useState(false);
 
   const chartExport = useChartExport({
     context: {
@@ -123,7 +143,8 @@ export default function GemeindeWidgetShell({
             branding={branding}
             share={share}
             showCta={showCta ?? !onsite}
-            showEmbed={showEmbed}
+            showEmbed={showEmbed || !!einbetten}
+            onEmbed={einbetten ? () => setEinbettenOffen(true) : undefined}
             narrow
           />
         </div>
@@ -143,6 +164,31 @@ export default function GemeindeWidgetShell({
 
         {/* Image only: legend, the texts behind the "?", brand. */}
         <WidgetExportFooter widget={widget} legend={legend} note={note} branding={branding} />
+
+        {/* Bleibt gemountet, damit das Fenster sanft aus- statt wegblendet —
+            und ausdrücklich MIT `data-sc-export-ignore`: Ein geschlossener
+            Dialog steht sonst als leerer Kasten im heruntergeladenen Bild. */}
+        {einbetten && (
+          <div data-sc-export-ignore>
+            <EinbettenDialog
+              open={einbettenOffen}
+              onClose={() => setEinbettenOffen(false)}
+              titel={widget.title}
+              src={`/embed/${widget.id}`}
+              params={einbetten.params}
+              width={einbetten.width ?? WIDGET_MAX_WIDTH_COMPACT}
+              height={einbetten.height}
+              attribution={{
+                // Der Textlink zeigt auf die Ortsseite selbst — sie ist die
+                // Quelle der Zahlen und zugleich der Rückverweis, um den es
+                // geht. `shareUrl` trägt sie bereits (widgetForPlace setzt sie).
+                path: widget.shareUrl.replace(SITE_URL, ""),
+                text: `Datenquelle: ${widget.title} — Solar Check`,
+              }}
+              siteUrl={SITE_URL}
+            />
+          </div>
+        )}
       </div>
     </ExportNotesProvider>
   );
