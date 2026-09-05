@@ -344,7 +344,9 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   // Wiedergabe sie erreicht; am Ende steht dort die Gesamtersparnis. Jedes
   // Ereignis hat seine eigene Textzeile — nebeneinander passen sie nicht.
   const ersparnis = kOhne[T] - kPv[T];
-  const ereignisse: { tag: number; label: string; kurz: string; farbe: string; reihe: number }[] = [];
+  const ereignisse: { tag: number; label: string; kurz: string; farbe: string; reihe: number }[] = [
+    { tag: 0, label: `Anlage gekauft · ${fmtEuroVoll(pv.investition)}`, kurz: `Kauf · ${fmtEuroVoll(pv.investition)}`, farbe: FARBE_PV, reihe: 1 },
+  ];
   if (bezahltTag !== null) {
     const d = tagDatum(verlauf, rennen.startJahr, bezahltTag);
     ereignisse.push({ tag: bezahltTag, label: `Anlage bezahlt · ${MONATE_KURZ[d.monat]} ${d.jahr}`, kurz: `Bezahlt · ${d.jahr}`, farbe: v("--color-positive"), reihe: 0 });
@@ -360,9 +362,9 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
     farbe: ersparnis >= 0 ? v("--color-positive") : v("--color-negative"),
     reihe: 2,
   });
-  // Zeitleiste: linear über die ganze Strecke, seitlich fluchtend zum Plot des
-  // Charts — am letzten Tag stehen Punkt und gestrichelte Linie exakt übereinander.
-  const posPct = (d: number) => ((P.l + (d / T) * cW) / W) * 100;
+  // Zeitleiste auf derselben Achse wie das Chart: Punkt und gestrichelte Linie
+  // stehen jederzeit übereinander.
+  const posPct = (d: number) => (xL(d) / W) * 100;
   const REIHE_H = 15, SPUR_Y = 3 * REIHE_H + 10;
 
   // Der Video-Frame: was die Leinwand in diesem Render zeichnen soll. Als Ref,
@@ -445,14 +447,20 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
       {/* Das Jahr, groß — und daneben das „?", das erklärt, was die Linien
           zählen. Datum und „nach n Jahren" stehen nicht mehr daneben: Das Jahr
           trägt die Geschichte, der Rest stand im Weg (Betreiber, 05.09.2026). */}
-      <div style={{ display: "flex", alignItems: "center", gap: space.sm, marginBottom: space.md }}>
-        <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-display-md"), fontWeight: 800, color: v("--color-text-primary"), lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{tag === 0 ? rennen.startJahr : datum.jahr}</span>
-        <InfoTooltip title="Was hier zählt" ariaLabel="Was als Stromkosten zählt">
+      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: `${space.xs}px ${space.md}px`, marginBottom: space.md }}>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: space.sm }}>
+          <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-display-md"), fontWeight: 800, color: v("--color-text-primary"), lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{tag === 0 ? rennen.startJahr : datum.jahr}</span>
+          <InfoTooltip title="Was hier zählt" ariaLabel="Was als Stromkosten zählt">
           Alles, was der Haushalt bis zu diesem Tag für Strom ausgegeben hat: die Stromrechnung mit steigendem Preis, beim
           PV-Haushalt dazu die Anschaffung der Anlage, abzüglich der Einspeisevergütung. Wo sich die Linien kreuzen, ist die
           Anlage bezahlt. Die Zeitachse wächst vom ersten Jahr bis zum ganzen Zeitraum; die Geldskala folgt der PV-Linie —
           der Haushalt ohne Anlage liegt anfangs unter dem Bild und wird am Rand mit seiner Zahl geführt, bis er hereinwächst.
-        </InfoTooltip>
+          </InfoTooltip>
+        </span>
+        {/* Der Satz zum Stand — neben dem Jahr, mit den gerechneten Tageswerten. */}
+        <span style={{ flex: "1 1 220px", minWidth: 0, fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.4 }}>
+          {status}
+        </span>
       </div>
 
       <ExportBox>
@@ -554,16 +562,12 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           ))}
         </div>
 
-        <div style={{ marginTop: space.lg, fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.5, minHeight: 36 }}>
-          {status}
-        </div>
-      </ExportBox>
-
-      {/* Steuerung — nur auf der Seite, nie im Bild: Zeitleiste mit Ereignissen,
-          darunter der Abspielknopf. Der unsichtbare Schieberegler liegt auf der
-          Spur und trägt Tastatur und Vorlesen; gezeichnet wird daneben. */}
-      <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ marginTop: space.lg }}>
-        <div style={{ position: "relative", height: SPUR_Y + 14 }}>
+        {/* Ereignis-Zeitleiste unter dem Chart (Muster: die Weichenstellungen im
+            Zubau-Chart): Punkte auf derselben Zeitachse wie das Chart — die
+            gestrichelte Linie oben und der Punkt hier stehen übereinander,
+            auch während die Achse noch wächst. Nur auf der Seite; im Bild
+            tragen die Marken ihren Text im Chart. */}
+        <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ position: "relative", height: SPUR_Y + 10, marginTop: space.md }}>
           {ereignisse.filter((e) => t >= e.tag).map((e) => {
             const p = posPct(e.tag);
             const anker = p > 70 ? "translateX(-100%)" : p < 20 ? "none" : "translateX(-50%)";
@@ -573,40 +577,40 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
               </span>
             );
           })}
-          <div style={{ position: "absolute", top: SPUR_Y, left: `${posPct(0)}%`, width: `${posPct(T) - posPct(0)}%`, height: 2, background: v("--color-border") }} />
-          <div style={{ position: "absolute", top: SPUR_Y, left: `${posPct(0)}%`, width: `${posPct(Math.min(t, T)) - posPct(0)}%`, height: 2, background: v("--color-accent") }} />
+          <div style={{ position: "absolute", top: SPUR_Y, left: `${(P.l / W) * 100}%`, width: `${(cW / W) * 100}%`, height: 2, background: v("--color-border") }} />
           {ereignisse.filter((e) => t >= e.tag).map((e) => (
             <span key={e.tag} className="kr-neu" style={{ position: "absolute", left: `${posPct(e.tag)}%`, top: SPUR_Y - 4, width: 10, height: 10, transform: "translateX(-50%)", borderRadius: "50%", background: e.farbe, border: `2px solid ${v("--color-bg")}`, boxSizing: "border-box" }} />
           ))}
-          <span aria-hidden style={{ position: "absolute", left: `${posPct(Math.min(t, T))}%`, top: SPUR_Y - 7, width: 16, height: 16, transform: "translateX(-50%)", borderRadius: "50%", background: v("--color-accent"), border: `2px solid ${v("--color-bg")}`, boxShadow: "0 1px 4px rgba(0,0,0,0.25)", boxSizing: "border-box" }} />
-          <input
-            type="range"
-            min={0}
-            max={T}
-            step={1}
-            value={tag}
-            onChange={(e) => { setSpielt(false); gestartet.current = true; setT(Number(e.target.value)); }}
-            aria-label="Jahr wählen"
-            aria-valuetext={stand}
-            style={{ position: "absolute", left: `${posPct(0)}%`, width: `${posPct(T) - posPct(0)}%`, top: SPUR_Y - 12, height: 26, margin: 0, opacity: 0, cursor: "pointer" }}
-          />
         </div>
-        <div style={{ display: "flex", alignItems: "center", marginTop: space.md }}>
-          <button
-            type="button"
-            onClick={() => {
-              if (spielt) { setSpielt(false); return; }
-              if (amEnde) setT(0);
-              gestartet.current = true;
-              setSpielt(true);
-            }}
-            aria-label={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
-            style={knopf}
-          >
-            {spielt ? <IconPause size={14} /> : amEnde ? <IconRefresh size={14} /> : <IconPlay size={14} />}
-            <span>{spielt ? "Pause" : amEnde ? "Noch einmal" : t === 0 ? "Rennen starten" : "Weiter"}</span>
-          </button>
-        </div>
+      </ExportBox>
+
+      {/* Steuerung — nur auf der Seite, nie im Bild */}
+      <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", alignItems: "center", gap: space.lg, marginTop: space.lg }}>
+        <button
+          type="button"
+          onClick={() => {
+            if (spielt) { setSpielt(false); return; }
+            if (amEnde) setT(0);
+            gestartet.current = true;
+            setSpielt(true);
+          }}
+          aria-label={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
+          style={knopf}
+        >
+          {spielt ? <IconPause size={14} /> : amEnde ? <IconRefresh size={14} /> : <IconPlay size={14} />}
+          <span>{spielt ? "Pause" : amEnde ? "Noch einmal" : t === 0 ? "Rennen starten" : "Weiter"}</span>
+        </button>
+        <input
+          type="range"
+          min={0}
+          max={T}
+          step={1}
+          value={tag}
+          onChange={(e) => { setSpielt(false); gestartet.current = true; setT(Number(e.target.value)); }}
+          aria-label="Jahr wählen"
+          aria-valuetext={stand}
+          style={{ flex: 1, accentColor: v("--color-accent"), minWidth: 0 }}
+        />
       </div>
 
       {/* Im Bild: der eingestellte Stand steht schon im Kopf (Datum); hier nur der
