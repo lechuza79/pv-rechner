@@ -187,7 +187,7 @@ export default async function StoryBucket({
       {/* WAS DIE LISTE ZEIGT, NICHT WAS ES GIBT. Vorher stand ohne Filter die
           Gesamtzahl da, während die Liste darunter gekappt war — wer nach unten
           scrollte und aufhörte, hielt den Vorrat für abgearbeitet. */}
-      <p style={{ fontSize: 13, color: v("--color-text-muted"), margin: `0 0 ${space.sm}px` }}>
+      <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), margin: `0 0 ${space.sm}px` }}>
         {mitStand.length === gesamt
           ? `${gesamt} Funde`
           : `${mitStand.length} von ${gesamt} Funden${gefiltert ? "" : " — je Muster die stärksten"}`}

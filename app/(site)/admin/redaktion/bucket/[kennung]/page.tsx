@@ -63,7 +63,7 @@ export default async function EntwurfSeite({
         }
       />
 
-      <p style={{ fontSize: 13, marginBottom: space.md }}>
+      <p style={{ fontSize: v("--font-size-small"), marginBottom: space.md }}>
         <Link href="/admin/redaktion/bucket" style={{ color: v("--color-accent") }}>
           ← Story-Bucket
         </Link>
@@ -83,9 +83,9 @@ export default async function EntwurfSeite({
           maxWidth: 760,
         }}
       >
-        <li style={{ fontWeight: 600, fontSize: 13, marginBottom: space.xs }}>Was noch fehlt</li>
+        <li style={{ fontWeight: 600, fontSize: v("--font-size-small"), marginBottom: space.xs }}>Was noch fehlt</li>
         {entwurf.offen.map((o, i) => (
-          <li key={i} style={{ fontSize: 13, color: v("--color-text-secondary") }}>
+          <li key={i} style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>
             · {o}
           </li>
         ))}

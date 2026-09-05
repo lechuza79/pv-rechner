@@ -188,6 +188,20 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: ["SelectField"],
   },
   {
+    datei: "components/Auswahl.tsx",
+    name: "Auswahl",
+    zweck:
+      "Das Multitool: Pfeile zum Durchsteppen, Menü zum Springen — für Listen, die man sowohl durchgehen als auch anspringen will.",
+    gruppe: "eingabe",
+    ebene: "baustein",
+    // Im Aufbau, nicht verbindlich: Drei ältere Fassungen desselben Elements
+    // stehen noch in den öffentlichen Widgets (Länderwähler im Zubau, Zeitraum
+    // im Strommix als Embed und als Seite). Solange die nicht nachgezogen sind,
+    // wäre „verbindlich" eine Zusage, die das Repo nicht einhält.
+    stand: "im-aufbau",
+    bestehtAus: ["Icons"],
+  },
+  {
     datei: "components/Switch.tsx",
     name: "Switch",
     zweck: "Ein/Aus für eine Annahme — „rechnet mit“ oder „rechnet nicht mit“.",

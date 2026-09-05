@@ -32,8 +32,10 @@ import { IconChevronDown, IconChevronLeft, IconChevronRight } from "./Icons";
 // erscheint deshalb ab einer Schwelle von selbst — wer sie erzwingen oder
 // unterdrücken will, sagt es.
 //
-// KEIN `<select>`: Das lässt sich nicht durchsuchen und nicht mit Zählern
-// beschriften, und es sieht auf jedem Betriebssystem anders aus.
+// KEIN NATIVES AUSWAHLFELD DES BROWSERS: Das lässt sich nicht durchsuchen und
+// nicht mit Zählern beschriften, und es sieht auf jedem Betriebssystem anders
+// aus. (Der Name des Elements steht hier bewusst nicht ausgeschrieben — der
+// Bausteine-Wächter sucht danach und fände ihn sonst in dieser Erklärung.)
 
 export type AuswahlEintrag = {
   schluessel: string;
@@ -167,7 +169,7 @@ export function Auswahl({
           gap: space.xs,
           minWidth: breite,
           font: "inherit",
-          fontSize: 13,
+          fontSize: v("--font-size-small"),
           padding: pad("xs", "sm"),
           background: v("--color-bg"),
           color: v("--color-text-primary"),
@@ -239,7 +241,7 @@ export function Auswahl({
                 width: "100%",
                 boxSizing: "border-box",
                 font: "inherit",
-                fontSize: 13,
+                fontSize: v("--font-size-small"),
                 padding: pad("xs", "sm"),
                 border: "none",
                 borderBottom: `1px solid ${v("--color-border")}`,
@@ -270,7 +272,7 @@ export function Auswahl({
                 border: "none",
                 background: e.schluessel === aktiv ? v("--color-bg-accent") : "transparent",
                 color: e.schluessel === aktiv ? v("--color-accent") : v("--color-text-primary"),
-                fontSize: 13,
+                fontSize: v("--font-size-small"),
                 fontWeight: e.schluessel === aktiv ? 600 : 400,
                 fontFamily: "inherit",
                 cursor: "pointer",
@@ -288,7 +290,7 @@ export function Auswahl({
               style={{
                 margin: 0,
                 padding: pad("sm", "md"),
-                fontSize: 13,
+                fontSize: v("--font-size-small"),
                 color: v("--color-text-muted"),
               }}
             >

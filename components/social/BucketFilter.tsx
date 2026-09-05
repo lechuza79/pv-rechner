@@ -103,7 +103,7 @@ export function BucketFilter({
           style={{
             width: "100%",
             font: "inherit",
-            fontSize: 13,
+            fontSize: v("--font-size-small"),
             padding: pad("xs", "sm"),
             borderRadius: v("--radius-sm"),
             border: `1px solid ${v("--color-border")}`,
@@ -180,7 +180,7 @@ export function BucketFilter({
           }}
           style={{
             font: "inherit",
-            fontSize: 13,
+            fontSize: v("--font-size-small"),
             background: "transparent",
             color: v("--color-text-muted"),
             border: "none",

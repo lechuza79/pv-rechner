@@ -120,7 +120,7 @@ export function FundListe({
 
   if (funde.length === 0) {
     return (
-      <p style={{ color: v("--color-text-muted"), fontSize: 14 }}>
+      <p style={{ color: v("--color-text-muted"), fontSize: v("--font-size-body") }}>
         Kein Fund in dieser Auswahl. Der Suchlauf füllt den Vorrat.
       </p>
     );
@@ -162,7 +162,7 @@ export function FundListe({
                 <p
                   style={{
                     margin: `0 0 ${space.xs}px`,
-                    fontSize: 11,
+                    fontSize: v("--font-size-caption"),
                     letterSpacing: "0.06em",
                     textTransform: "uppercase",
                     color: v("--color-text-muted"),
@@ -183,7 +183,7 @@ export function FundListe({
                   width: "100%",
                   textAlign: "left",
                   font: "inherit",
-                  fontSize: 15,
+                  fontSize: v("--font-size-body"),
                   lineHeight: 1.45,
                   background: "transparent",
                   border: "none",
@@ -202,7 +202,7 @@ export function FundListe({
                   alignItems: "center",
                   gap: space.sm,
                   marginTop: space.sm,
-                  fontSize: 12,
+                  fontSize: v("--font-size-small"),
                   color: v("--color-text-muted"),
                 }}
               >
@@ -302,7 +302,7 @@ export function FundListe({
                     marginTop: space.sm,
                     paddingTop: space.sm,
                     borderTop: `1px solid ${v("--color-border")}`,
-                    fontSize: 13,
+                    fontSize: v("--font-size-small"),
                     lineHeight: 1.5,
                     color: v("--color-text-muted"),
                   }}
@@ -343,7 +343,7 @@ export function FundListe({
                 alignItems: "center",
                 gap: space.sm,
                 marginBottom: space.md,
-                fontSize: 13,
+                fontSize: v("--font-size-small"),
                 color: v("--color-text-muted"),
               }}
             >
@@ -401,7 +401,7 @@ export function FundListe({
                 border: `1px solid ${v("--color-border-accent")}`,
                 borderRadius: v("--radius-md"),
                 background: v("--color-bg-accent"),
-                fontSize: 13,
+                fontSize: v("--font-size-small"),
               }}
             >
               <li style={{ fontWeight: 600, marginBottom: space.xxs }}>Was noch fehlt</li>
@@ -435,7 +435,7 @@ export function FundListe({
 function knopf(betont: boolean): React.CSSProperties {
   return {
     font: "inherit",
-    fontSize: 12,
+    fontSize: v("--font-size-small"),
     background: betont ? v("--color-accent") : "transparent",
     color: betont ? v("--color-text-on-accent") : v("--color-text-muted"),
     border: `1px solid ${betont ? "transparent" : v("--color-border")}`,
