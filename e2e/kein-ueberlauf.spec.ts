@@ -20,7 +20,14 @@ import { SEITEN } from "./routen";
 //
 // Toleranz 1 px: Rundung beim Rendern, kein Überlauf.
 
-test.describe.configure({ timeout: 90_000 });
+// Kurz gehalten: 33 Seiten laufen im selben Job wie der Rundgang, und der
+// steht ohnehin an seinem 16-Minuten-Limit. Auf „Netz ruhig" zu warten wäre
+// hier falsch — auf dem Runner hängen externe Abrufe (Energiedaten) minutenlang
+// im Zeitlimit, und genau das riss den ersten Lauf dieses Tests. Gemessen wird
+// die Breite nach dem ersten Bild plus einer kurzen Frist für nachgeladene
+// Blöcke; ein Chart, das nach zwei Sekunden noch nicht steht, ändert die
+// Dokumentbreite nicht mehr, weil sein Rahmen längst gesetzt ist.
+test.describe.configure({ timeout: 30_000 });
 
 const TELEFON = { width: 375, height: 812 };
 
@@ -29,10 +36,7 @@ for (const { pfad } of SEITEN) {
     await page.setViewportSize(TELEFON);
     const antwort = await page.goto(pfad, { waitUntil: "domcontentloaded" });
     expect(antwort?.status(), `${pfad} antwortet nicht mit 200`).toBe(200);
-    // Nachgeladene Blöcke (Charts, Karten) kommen nach dem ersten Bild —
-    // sie sind die üblichen Verdächtigen, deshalb warten.
-    await page.waitForLoadState("networkidle").catch(() => {});
-    await page.waitForTimeout(800);
+    await page.waitForTimeout(1500);
     const mass = await page.evaluate(() => ({
       dokument: document.documentElement.scrollWidth,
       fenster: window.innerWidth,

@@ -281,3 +281,96 @@ jobs:
           name: playwright-report-flows
           path: test-results/
           retention-days: 7
+
+  # Eigener Job aus demselben Grund wie der Flow-Läufer: Zeit. Der Test lädt
+  # jede Seite der Rundgangsliste auf Telefonbreite und misst, ob das Dokument
+  # breiter ist als das Fenster (e2e/kein-ueberlauf.spec.ts) — der Mechanismus,
+  # der die Abnahme von Layout-Details durch den Betreiber ersetzt.
+  telefon:
+    name: Telefonbreite (keine Seite läuft seitlich über)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+
+      # Browser-Binaries: reiner Download von Playwrights CDN, kein apt.
+      - name: Install Playwright browser
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        timeout-minutes: 10
+        run: npx playwright install chromium
+
+      # Systembibliotheken — der einzige Schritt, der `apt-get` benutzt, und
+      # damit der einzige, der an fremder Infrastruktur hängt. Dreimal in 18
+      # Stunden (18./19.08.2026) blieb er am Ubuntu-Spiegel der Runner stehen:
+      # einmal 35 Minuten bis zum Job-Abbruch, danach zweimal bis in die
+      # 10-Minuten-Grenze — jedes Mal rot, ohne dass an unserem Code etwas war.
+      #
+      # Deshalb ist er ABSICHTLICH NICHT MEHR FATAL: Das Runner-Image bringt die
+      # Chromium-Bibliotheken bereits mit, der Schritt ist eine Absicherung, kein
+      # Fundament. Fällt er aus, läuft der Lauf weiter — und falls doch eine
+      # Bibliothek fehlt, scheitert der Testschritt danach mit einer klaren
+      # Browser-Meldung statt mit einem apt-Protokoll. Rot bedeutet damit wieder
+      # „unser Code ist kaputt", und genau das ist der Sinn der Ampel.
+      - name: Install Playwright system deps (best effort)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: npx playwright install-deps chromium
+
+      # 12 Minuten: Bau ~4 min plus 33 Seitenaufrufe mit 30-s-Grenze je Test.
+      # Eigener Job, weil der Smoke-Schritt am 05.09.2026 bei 14,5–15,5 seiner
+      # 16 Minuten stand — mit diesen Aufrufen darin riss er das Limit und
+      # fällte kein Urteil. Summe der Schritt-Limits (12 + 10 + 5) unter dem
+      # Job-Limit von 30.
+      - name: Telefonbreite (production build)
+        timeout-minutes: 12
+        run: npm run test:telefon
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: anon-placeholder-not-used-in-flow-run
+          # Der Produktionsbau rendert die Seiten vor und liest dafür dieselben
+          # Daten wie der Gesundheitscheck — ohne echte Leserechte bricht schon
+          # der Build ab (Atlas, Förderseiten, Ratgeber).
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+
+      # GEMESSEN 27.08.2026: Dieser Schritt hat noch NIE etwas hochgeladen. Im
+      # roten Lauf 32966743790 stand woertlich „No files were found with the
+      # provided path: playwright-report/" — und zwei Zeilen darueber im selben
+      # Log eine Ablaufverfolgung unter `test-results/.../trace.zip`, die damit
+      # niemand bekommen hat.
+      #
+      # Der Grund ist die Berichtsform: Im CI steht der Reporter auf „github"
+      # (playwright.config.ts), und der schreibt seine Ausgabe in die Annotationen
+      # des Laufs, nicht in einen Ordner `playwright-report/`. Den gibt es nur mit
+      # dem HTML-Reporter. Was bei einem Fehlschlag WIRKLICH entsteht, ist die
+      # Ablaufverfolgung des Wiederholungslaufs (`trace: "on-first-retry"`), und
+      # die liegt in Playwrights Standard-Ausgabeordner `test-results/`.
+      #
+      # Bewusst NICHT `if: always()`: Bei gruenem Lauf entsteht dort nichts, und
+      # ein Abbruch mitten im Testschritt hinterlaesst ebenfalls nichts —
+      # Playwright schreibt die Verfolgung erst beim Abschluss eines Versuchs.
+      # Gegen einen Abbruch hilft das Schritt-Zeitlimit oben, nicht der Upload.
+      - name: Upload Playwright-Ablaufverfolgung
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-telefon
+          path: test-results/
+          retention-days: 7
