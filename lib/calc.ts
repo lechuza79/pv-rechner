@@ -248,8 +248,19 @@ export function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, e
     const wpAnteil = wpAnnual / gesamt;
     evBoost *= (1 - wpAnteil * 0.30);
   }
-  // Physikalische Grenze: max. Eigenverbrauch = Gesamtverbrauch / Jahresertrag
-  const evMax = gesamt / jahresertrag;
+  // Obergrenze aus zwei Schranken. Die Jahresbilanz (Verbrauch / Ertrag) ist
+  // die harte physikalische Grenze — sie unterstellt aber, dass JEDE erzeugte
+  // Kilowattstunde bis zur Verbrauchsmenge selbst genutzt wird, also 100 %
+  // Autarkie. Real deckt ein Haushalt dieser Größe nach dem HTW-Kennfeld nur
+  // 71–91 % seines Verbrauchs aus der Anlage (calcAutarkie, dieselbe Quelle wie
+  // das Power-Law). Bis 05.09.2026 galt nur die Bilanz: Mit Speicher lief das
+  // Power-Law in die Kappe und rechnete 99–101 % Autarkie ins Geld — 10 kWp /
+  // 10 kWh / 3–4 Personen: EV 36 % statt 31 %, 5.648 € über 25 Jahre
+  // (Rechenmodell-Council, Betreiber-Entscheidung 05.09.2026: HTW gegen HTW).
+  // Identität: selbst genutzte kWh = Autarkie × Verbrauch = EV × Ertrag.
+  const evMaxBilanz = gesamt / jahresertrag;
+  const autarkieHtw = calcAutarkie({ kwp, speicherKwh, gesamtVerbrauch: gesamt, ertragKwp }) / 100;
+  const evMax = autarkieHtw > 0 ? Math.min(evMaxBilanz, autarkieHtw * evMaxBilanz) : evMaxBilanz;
   const ev = Math.round(Math.min(evBase + evBoost, evMax, 0.90) * 100);
   // 10 %-Untergrenze als Sanity-Floor — aber NIE über das physikalische Maximum:
   // bei kleinem Haushalt auf großem Dach (evMax < 10 %) kann man nicht 10 %
@@ -375,8 +386,13 @@ export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, str
   for (let i = 0; i <= YEARS; i++) {
     let j = 0;
     if (i > 0) {
-      const deg = Math.pow(1 - DEGRAD, i);
-      const sp = strompreis * Math.pow(1 + stromSteigerung, i);
+      // Jahr 1 ist das erste Betriebsjahr: Module neu, Strompreis von heute.
+      // Bis 05.09.2026 zählte dieser Rechner ab Jahr 1 hoch (×1,02 und ×0,995
+      // schon im ersten Jahr), Balkon- und Wärmepumpen-Rechner ab Jahr 0 —
+      // rund 1 % Gewinnunterschied für dieselbe kWh auf derselben Ergebnisseite.
+      // Angeglichen auf die Mehrheitskonvention (Betreiber-Entscheidung 05.09.2026).
+      const deg = Math.pow(1 - DEGRAD, i - 1);
+      const sp = strompreis * Math.pow(1 + stromSteigerung, i - 1);
       // EEG-Einspeisevergütung nur die ersten 20 Jahre; danach fällt die Anlage
       // aus dem EEG (Marktwert konservativ nicht angesetzt). Der Eigenverbrauch
       // spart den Strompreis auch danach weiter. Liegt ein Einspeisemodell vor,
