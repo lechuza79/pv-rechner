@@ -65,3 +65,24 @@ export const PAKETE = [
   { wert: 3, text: "3 · Newsletter, Podcasts, Creator" },
   { wert: 4, text: "4 · Prüfliste aus der Suche" },
 ] as const;
+
+/**
+ * DIE RUBRIK BESTIMMT DEN AUFHÄNGER, NICHT DIE EIGNUNG (Betreiber, 05.09.2026).
+ *
+ * Es gibt kein Ausschlusskriterium mehr — auch nicht den eigenen Rechner
+ * („evtl. bieten wir das bessere tool"). Ein Händler oder Hersteller ist eine
+ * andere ANSPRACHE, Vertrieb statt Redaktion, keine Absage.
+ */
+export const RUBRIK_TEXT: Record<string, string> = {
+  fachmedium: "Fachmedium",
+  allgemein: "Allgemeines Medium",
+  regional: "Regionalmedium",
+  startup: "Startup, Vibe Coding, UX",
+  creator: "Creator",
+  portal: "Portal",
+  haendler: "Händler",
+  hersteller: "Hersteller",
+  verband: "Verband",
+  institut: "Institut",
+  behoerde: "Behörde",
+};

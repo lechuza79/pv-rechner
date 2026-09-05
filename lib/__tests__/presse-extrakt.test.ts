@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, it, expect } from "vitest";
+import { entwirreAdressen } from "../personen-fund";
 import {
   cfAdresseKlartext,
   ohneAdressVerschleierung,
@@ -379,5 +380,45 @@ describe("Die Verlagsadresse ist die richtige — Fehlerklasse vom 05.09.2026", 
   it("lässt die eigene Domain auch neben einer Agenturzeile durch", () => {
     const html = `<p>Webdesign: kontakt@zeitung.de</p>`;
     expect(postfaecherAus(html, "zeitung.de").map((x) => x.mail)).toContain("kontakt@zeitung.de");
+  });
+});
+
+describe("Verschleierungen, die der Bestand am 05.09.2026 noch nicht kannte", () => {
+  /**
+   * Alle drei stammen aus einem Nachlauf über Medien „ohne Kontaktweg" — und
+   * alle drei lagen dort nur im Wegwerf-Skript. Sie gehören in die Bibliothek,
+   * sonst führt der reguläre Lauf dieselben Seiten weiter als stumm. Dieselbe
+   * Fehlerklasse wie „Fix nur in der Bibliothek".
+   */
+  it("setzt Joomlas stückweise Adresse zusammen", () => {
+    const html = `<script>var addy12345 = 'redaktion' + '@';
+      addy12345 = addy12345 + 'rundschau24' + '.' + 'de';</script>`;
+    expect(postfaecherAus(html, "rundschau24.de").map((x) => x.mail)).toContain(
+      "redaktion@rundschau24.de",
+    );
+  });
+
+  it("liest die Adresse aus einer Einseiten-Anwendung", () => {
+    // radioton.de liefert 395 kB und neun Zeichen sichtbaren Text; elf Sender
+    // waren allein deshalb ohne Kontakt.
+    const html = `<body><div id="app"></div>
+      <script>window.__DATA__={"impressum":{"mail":"info@radioton.de"}}</script></body>`;
+    expect(postfaecherAus(html, "radioton.de").map((x) => x.mail)).toContain("info@radioton.de");
+  });
+
+  it("entfernt ein Füllzeichen zwischen zwei @", () => {
+    expect(entwirreAdressen("kontakt@~@informatik-aktuell.de")).toContain(
+      "kontakt@informatik-aktuell.de",
+    );
+  });
+
+  it("schließt Leerzeichen um den Punkt der Domain", () => {
+    expect(entwirreAdressen("info (at) bodensee-news . de")).toContain("info@bodensee-news.de");
+  });
+
+  it("fasst einen gewöhnlichen Punkt im Fließtext NICHT an", () => {
+    // Die Gegenprobe: Ohne sie zieht die Regel Satzenden zusammen.
+    const t = entwirreAdressen("Das steht so da . Und hier geht es weiter.");
+    expect(t).toContain("da . Und");
   });
 });

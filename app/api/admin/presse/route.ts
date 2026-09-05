@@ -30,7 +30,8 @@ const MEDIUM_SPALTEN =
   "titel, medientyp, themen, geschichten, reichweite, reichweite_quelle, ist_medium, " +
   "medium_grund, medium_merkmale, seiten, formular_url, impressum_url, prioritaet, " +
   "aufhaenger, gattung, gattung_hand, woerter, hinweis, eignung, eignung_grund, " +
-  "eignung_beleg, eignung_zitat, eignung_hand, profil_at, fehler";
+  "eignung_beleg, eignung_zitat, eignung_hand, profil_at, fehler, " +
+  "rubrik, beleg_titel, beleg_url, beleg_notiz, beleg_am";
 
 const KONTAKT_SPALTEN =
   "domain, schluessel, name, funktion, rang, mail, mail_art, formular_url, quelle_url, " +
@@ -38,6 +39,8 @@ const KONTAKT_SPALTEN =
 
 type Filter = {
   eignung: string;
+  rubrik: string;
+  aufhaenger: string;
   gattung: string;
   paket: string;
   prio: string;
@@ -56,6 +59,8 @@ function filterAus(sp: URLSearchParams): Filter {
     // — gelöscht wird nichts —, aber sie stehen nicht mehr zwischen den
     // Titeln, mit denen tatsächlich zu arbeiten ist.
     eignung: sp.get("eignung") ?? "",
+    rubrik: sp.get("rubrik") ?? "",
+    aufhaenger: sp.get("aufhaenger") ?? "",
     gattung: sp.get("gattung") ?? "fach",
     paket: sp.get("paket") ?? "",
     prio: sp.get("prio") ?? "",
@@ -83,6 +88,11 @@ function medienAbfrage(db: any, f: Filter, zaehlen: boolean) {
   // Gefiltert wird auf das GELTENDE Urteil: Wo eine Handentscheidung steht,
   // gilt sie. Nur auf die Messung zu filtern hieße, dass eine Korrektur in der
   // Ansicht folgenlos bleibt.
+  if (f.rubrik) q = q.eq("rubrik", f.rubrik);
+  // „gelesen, kein Thema" und „nicht angesehen" bleiben unterscheidbar: Der
+  // Filter fragt den TITEL, nicht das Prüfdatum.
+  if (f.aufhaenger === "ja") q = q.not("beleg_titel", "is", null);
+  if (f.aufhaenger === "nein") q = q.is("beleg_titel", null);
   if (f.eignung) {
     q = q.or(`eignung_hand.eq.${f.eignung},and(eignung_hand.is.null,eignung.eq.${f.eignung})`);
   }

@@ -237,6 +237,39 @@ export function ohneAdressVerschleierung(html: string): string {
       return klar ? ` <a href="mailto:${klar}">${klar}</a> ` : ganz;
     },
   );
+  // JOOMLAS SPAMBOT-SCHUTZ: Die Adresse steht stückweise in Skript-Variablen
+  // und wird erst im Browser zusammengesetzt. Gemessen am 05.09.2026: mehrere
+  // Lokalzeitungen galten allein deshalb als „ohne Kontakt".
+  //
+  // Zusammengefügt werden ALLE Zeichenketten eines Skripts, das eine
+  // `addy`-Variable trägt — die Bauform variiert je Joomla-Fassung, und ein
+  // Muster für die eine bricht an der nächsten. Das Kennzeichen `addy` hält
+  // den Eingriff eng: Es kommt außerhalb dieses Spamschutzes nicht vor.
+  s = s.replace(/<script\b[^>]*>([\s\S]{0,4000}?)<\/script>/gi, (ganz, code: string) => {
+    if (!/\baddy\w*\s*=/.test(code)) return ganz;
+    const zusammen = Array.from(code.matchAll(/'([^']*)'/g))
+      .map((m) => m[1])
+      .join("")
+      .replace(/&#(\d+);/g, (_a, d: string) => String.fromCharCode(Number(d)));
+    const mail = zusammen.match(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/)?.[0];
+    return mail ? `${ganz} <a href="mailto:${mail}">${mail}</a> ` : ganz;
+  });
+
+  // DER INHALT EINER EINSEITEN-ANWENDUNG steckt als JSON im Skript-Element.
+  // Gemessen: radioton.de liefert 395 kB und hat neun Zeichen sichtbaren Text;
+  // elf Radio- und Fernsehsender waren allein deshalb stumm. Herausgeholt
+  // werden nur ADRESSEN, nicht der ganze Rohtext — sonst zieht die Auswertung
+  // Bezeichner und Konfigurationswerte als Inhalt heran.
+  const ausSkript = Array.from(
+    s.matchAll(/<script\b[^>]*>([\s\S]{0,200000}?)<\/script>/gi),
+  ).flatMap((m) =>
+    Array.from(m[1].matchAll(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g)).map((a) => a[0]),
+  );
+  if (ausSkript.length) {
+    const einmalig = [...new Set(ausSkript)].slice(0, 20);
+    s += einmalig.map((a) => ` <a href="mailto:${a}">${a}</a> `).join("");
+  }
+
   // Übrig gebliebene Platzhalter entfernen — sie würden im Text als „E-Mail"
   // durchgehen, ohne eine zu sein.
   s = s.replace(/\[email(?:&#160;|&nbsp;|\s)*protected\]/gi, " ");

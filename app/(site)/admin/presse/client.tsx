@@ -7,13 +7,12 @@ import { DatenTabelle, type Spalte } from "../../../../components/admin/DatenTab
 import { DetailAbschnitt } from "../../../../components/admin/DetailAbschnitt";
 import InfoTooltip from "../../../../components/InfoTooltip";
 import SelectField from "../../../../components/SelectField";
-import { STAENDE, KONTAKTARTEN, GESCHICHTEN, PAKETE } from "../../../../lib/presse-stand";
+import { STAENDE, KONTAKTARTEN, GESCHICHTEN, PAKETE, RUBRIK_TEXT } from "../../../../lib/presse-stand";
 import {
   adressenNachDomain,
   kontaktArt,
   mediumName,
   gattungText,
-  eignungEffektiv,
   notizen,
   themenText,
   zeilenPrioritaet,
@@ -55,7 +54,8 @@ export default function PresseAnsicht() {
   const [laedt, setLaedt] = useState(true);
   const [fehler, setFehler] = useState<string | null>(null);
 
-  const [eignung, setEignung] = useState("");
+  const [rubrik, setRubrik] = useState("");
+  const [aufhaenger, setAufhaenger] = useState("");
   const [gattung, setGattung] = useState("fach");
   const [paket, setPaket] = useState("1");
   // DIE VOREINSTELLUNG HÄNGT AM PAKET, und das ist keine Bequemlichkeit.
@@ -79,7 +79,8 @@ export default function PresseAnsicht() {
 
   const parameter = useCallback(() => {
     const p = new URLSearchParams();
-    if (eignung) p.set("eignung", eignung);
+    if (rubrik) p.set("rubrik", rubrik);
+    if (aufhaenger) p.set("aufhaenger", aufhaenger);
     p.set("gattung", gattung);
     if (paket) p.set("paket", paket);
     if (prio) p.set("prio", prio);
@@ -90,7 +91,7 @@ export default function PresseAnsicht() {
     if (suche) p.set("q", suche);
     if (nurPerson) p.set("person", "1");
     return p;
-  }, [eignung, gattung, paket, prio, geschichte, mediumArt, kontaktart, stand, suche, nurPerson]);
+  }, [rubrik, aufhaenger, gattung, paket, prio, geschichte, mediumArt, kontaktart, stand, suche, nurPerson]);
 
   const laden = useCallback(async () => {
     setLaedt(true);
@@ -112,20 +113,6 @@ export default function PresseAnsicht() {
   useEffect(() => {
     void laden();
   }, [laden]);
-
-  async function eignungSetzen(domain: string, feld: { eignung?: string; eignungGrund?: string | null }) {
-    const r = await fetch("/api/admin/presse", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ domain, ...feld }),
-    });
-    if (!r.ok) {
-      setFehler(`Speichern fehlgeschlagen (${r.status})`);
-      return;
-    }
-    const { medium } = (await r.json()) as { medium: MediumZeile };
-    setMedien((alt) => alt.map((m) => (m.domain === medium.domain ? medium : m)));
-  }
 
   async function gattungSetzen(domain: string, wert: string | null) {
     const r = await fetch("/api/admin/presse", {
@@ -238,29 +225,36 @@ export default function PresseAnsicht() {
       ),
     },
     {
-      key: "eignung",
-      kopf: "Eignung",
+      key: "rubrik",
+      kopf: "Rubrik",
+      sortWert: (m) => m.rubrik ?? "zz",
+      zelle: (m) =>
+        m.rubrik ? (
+          <span>{RUBRIK_TEXT[m.rubrik] ?? m.rubrik}</span>
+        ) : (
+          <span style={{ color: v("--color-text-muted") }}>—</span>
+        ),
+    },
+    {
+      key: "aufhaenger",
+      kopf: "Aufhänger",
       umbruch: true,
-      sortWert: (m) => {
-        const e = eignungEffektiv(m);
-        return e === "vorgemerkt" ? 0 : e === "angesehen" ? 1 : e === "anderer-kanal" ? 2 : e === "ungeeignet" ? 4 : 3;
-      },
+      // Sortiert die mit Beleg nach oben: Das ist die Zeile, mit der ein
+      // Anschreiben anfangen kann.
+      sortWert: (m) => (m.beleg_titel ? 0 : m.beleg_am ? 1 : 2),
       zelle: (m) => {
-        const e = eignungEffektiv(m);
-        if (!e || e === "offen") return <span style={{ color: v("--color-text-muted") }}>—</span>;
+        if (m.beleg_titel) {
+          return m.beleg_url ? (
+            <a href={m.beleg_url} target="_blank" rel="noreferrer" style={linkStil}>
+              {m.beleg_titel}
+            </a>
+          ) : (
+            <span>{m.beleg_titel}</span>
+          );
+        }
         return (
-          <span
-            style={{
-              color:
-                e === "vorgemerkt"
-                  ? v("--color-positive")
-                  : e === "ungeeignet"
-                    ? v("--color-text-muted")
-                    : v("--color-text-primary"),
-            }}
-          >
-            {e}
-            {m.eignung_hand ? <span style={{ color: v("--color-text-muted") }}> · Hand</span> : null}
+          <span style={{ color: v("--color-text-muted") }}>
+            {m.beleg_am ? "gelesen, kein Thema" : "nicht angesehen"}
           </span>
         );
       },
@@ -326,12 +320,18 @@ export default function PresseAnsicht() {
           aria-label="Suche"
           style={{ ...eingabeStil, flex: "1 1 220px", minWidth: 200 }}
         />
-        <Filter label="Eignung" wert={eignung} setzen={setEignung} breit>
-          <option value="">jede Eignung</option>
-          <option value="vorgemerkt">vorgemerkt</option>
-          <option value="angesehen">angesehen</option>
-          <option value="anderer-kanal">anderer Kanal (Einbettung)</option>
-          <option value="ungeeignet">ungeeignet</option>
+        <Filter label="Rubrik" wert={rubrik} setzen={setRubrik} breit>
+          <option value="">jede Rubrik</option>
+          {Object.entries(RUBRIK_TEXT).map(([k, t]) => (
+            <option key={k} value={k}>
+              {t}
+            </option>
+          ))}
+        </Filter>
+        <Filter label="Aufhänger" wert={aufhaenger} setzen={setAufhaenger} breit>
+          <option value="">alle</option>
+          <option value="ja">mit Beitrag</option>
+          <option value="nein">ohne Beitrag</option>
         </Filter>
         <Filter label="Art des Mediums" wert={gattung} setzen={setGattung} breit>
           <option value="fach">Fachmedien</option>
@@ -444,54 +444,37 @@ export default function PresseAnsicht() {
           const ks = von(m);
           return (
             <div>
-              <DetailAbschnitt titel="Lohnt eine Ansprache?" erster>
-                {/* Das einzige Feld, das eine MESSUNG nicht liefern kann: Ob
-                    eine Redaktion eine fremde Datengeschichte aufnimmt, steht
-                    weder auf ihrer Startseite noch im Impressum. Drei Runden
-                    Musterschärfen haben jeweils das zuletzt genannte Beispiel
-                    gefangen und das nächste verfehlt. */}
-                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: space.sm }}>
-                  <span style={{ flex: "0 0 150px" }}>
-                    <SelectField
-                      value={m.eignung_hand ?? ""}
-                      onChange={(e) => void eignungSetzen(m.domain, { eignung: e.target.value })}
-                      ariaLabel={`Eignung von ${mediumName(m)}`}
-                      size="sm"
-                    >
-                      {/* Die Messung als erster Eintrag, damit eine Korrektur
-                          zurückgenommen werden kann — ohne den Weg zurück wäre
-                          jede Handentscheidung endgültig. */}
-                      <option value="">{m.eignung ?? "offen"} (gemessen)</option>
-                      <option value="vorgemerkt">vorgemerkt</option>
-                      <option value="angesehen">angesehen</option>
-                      <option value="anderer-kanal">anderer Kanal</option>
-                      <option value="ungeeignet">ungeeignet</option>
-                    </SelectField>
-                  </span>
-                  <input
-                    defaultValue={m.eignung_grund ?? ""}
-                    placeholder="Grund"
-                    aria-label={`Grund für ${mediumName(m)}`}
-                    onBlur={(e) => {
-                      if ((m.eignung_grund ?? "") === e.target.value) return;
-                      void eignungSetzen(m.domain, { eignungGrund: e.target.value });
-                    }}
-                    style={{ ...eingabeStil, flex: "1 1 320px" }}
-                  />
-                </div>
-                {/* Die Fundstelle steht am Urteil, nicht daneben. Ein Urteil,
-                    das niemand nachlesen kann, ist eine Behauptung — dieselbe
-                    Regel wie für jedes andere Merkmal dieses Katalogs. */}
-                {m.eignung_beleg && (
+              <DetailAbschnitt titel="Womit wir anfangen könnten" erster>
+                {/* DER AUFHÄNGER IST DAS PRODUKT DIESES KATALOGS.
+                    Bis zum 05.09.2026 stand hier ein Eignungsurteil aus neun
+                    gemessenen Fragen. Der Betreiber hat es verworfen — es gibt
+                    kein Ausschlusskriterium, auch nicht den eigenen Rechner
+                    („evtl. bieten wir das bessere tool"). Was zählt, ist der
+                    Beitrag, mit dem ein Anschreiben anfangen kann: Überschrift
+                    wörtlich, Adresse zum Nachlesen, ein Satz Einordnung. */}
+                {m.beleg_titel ? (
+                  <p style={{ margin: 0 }}>
+                    {m.beleg_url ? (
+                      <a href={m.beleg_url} target="_blank" rel="noreferrer" style={linkStil}>
+                        {m.beleg_titel}
+                      </a>
+                    ) : (
+                      m.beleg_titel
+                    )}
+                  </p>
+                ) : (
+                  <p style={{ margin: 0, color: v("--color-text-muted") }}>
+                    {/* „Nichts gefunden" und „nicht angesehen" müssen
+                        unterscheidbar bleiben — sonst läuft die nächste Sitzung
+                        dieselben Adressen noch einmal an. */}
+                    {m.beleg_am
+                      ? `Am ${m.beleg_am} gelesen, kein Beitrag zu unseren Themen gefunden.`
+                      : "Noch nicht angesehen."}
+                  </p>
+                )}
+                {m.beleg_notiz && (
                   <p style={{ margin: `${space.xs}px 0 0`, color: v("--color-text-muted") }}>
-                    {/* Der Wortlaut wird NICHT noch einmal in Anführungszeichen
-                        gesetzt: Wo er ein Zitat ist, trägt er sie schon; wo er
-                        eine Beobachtung zusammenfasst, wären sie eine falsche
-                        Zusage. */}
-                    {m.eignung_zitat ? <>{m.eignung_zitat} — </> : null}
-                    <a href={m.eignung_beleg} target="_blank" rel="noreferrer" style={linkStil}>
-                      Belegseite ansehen
-                    </a>
+                    {m.beleg_notiz}
                   </p>
                 )}
               </DetailAbschnitt>

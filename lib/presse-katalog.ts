@@ -21,6 +21,17 @@ import type { Themenfund } from "./presse-extrakt";
 // ─── Was aus der Datenbank kommt ─────────────────────────────────────────────
 
 export interface MediumZeile {
+  /** In welche Ansprache das Medium fällt — bestimmt den AUFHÄNGER, nicht die
+   *  Eignung. Werte und Beschriftungen in `RUBRIK_TEXT` (lib/presse-stand.ts). */
+  rubrik?: string | null;
+  /** Der Beitrag, mit dem ein Anschreiben anfangen kann: Überschrift wörtlich,
+   *  Adresse, an der er gelesen wurde, ein Satz Einordnung und der Prüftag.
+   *  Fehlt der Titel bei gesetztem Datum, heißt das „gelesen, kein Thema" —
+   *  nicht „nicht angesehen". */
+  beleg_titel?: string | null;
+  beleg_url?: string | null;
+  beleg_notiz?: string | null;
+  beleg_am?: string | null;
   domain: string;
   saat_name: string | null;
   saat_typ: string | null;
