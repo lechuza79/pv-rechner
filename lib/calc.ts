@@ -444,6 +444,35 @@ export function paramFloat(params: Record<string, string | string[] | undefined>
   return fallback;
 }
 
+/**
+ * Wie paramFloat, aber mit zwei Unterschieden, die für „von Hand gesetzt"
+ * zählen: Fehlt der Parameter, bleibt es null (es gilt die Vorgabe) — und eine
+ * eingetragene 0 bleibt 0. Bis 05.09.2026 stand im Rechner
+ * `paramFloat(..., "sk", 0, 0, 30) || null`: Wer den Speicher im Ergebnis auf
+ * 0 kWh setzte und teilte, dessen Empfänger bekam die Flow-Vorgabe (10 kWh),
+ * 4.000 € mehr Investition und 11.000 € mehr Gewinn — auf demselben Link.
+ */
+export function paramFloatOrNull(params: Record<string, string | string[] | undefined> | undefined, key: string, min = 0, max = 99999): number | null {
+  const v = params?.[key];
+  if (typeof v !== "string") return null;
+  const n = parseFloat(v);
+  return !isNaN(n) && isFinite(n) && n >= min && n <= max ? n : null;
+}
+
+/**
+ * Volleinspeisung ist nur wählbar, wenn nichts an der Anlage hängt, das den
+ * Strom selbst verbraucht — kein Großverbraucher UND kein Speicher. Ein
+ * Speicher bei Volleinspeisung ist ein halber Fall: Der Rechner setzte den
+ * Eigenverbrauch auf 0, rechnete aber Kaufpreis und Akkutausch mit und zeigte
+ * die Autarkie eines Teileinspeisers (81 % bei 10 kWh). Gemessen 05.09.2026:
+ * 6.363 € weniger Gewinn für ein Gerät, das bei 0 % Eigenverbrauch nichts tut.
+ * Die Prop-Doku des Umschalters sagte diese Regel seit jeher, der Code kannte
+ * nur die Großverbraucher.
+ */
+export function vollEinspeisungGesperrt(a: { wp: string; ea: string; speicherKwh: number }): boolean {
+  return a.wp !== "nein" || a.ea !== "nein" || a.speicherKwh > 0;
+}
+
 export function paramStr(params: Record<string, string | string[] | undefined> | undefined, key: string, fallback: string, allowed: string[]): string {
   const v = params?.[key];
   if (typeof v === "string" && allowed.includes(v)) return v;

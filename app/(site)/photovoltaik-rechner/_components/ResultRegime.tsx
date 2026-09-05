@@ -22,6 +22,7 @@ import {
 } from "../../../../lib/eeg-reform-config";
 import { MARKTWERT_SOLAR_HISTORIE, DIREKTVERMARKTUNG } from "../../../../lib/marktwert-config";
 import type { EinspeiseRegime, RegimeJahr } from "../../../../lib/einspeise-regime";
+import { EINSPEISESATZ_MAX_CT } from "../../../../lib/constants";
 
 const letzterMarktwert = MARKTWERT_SOLAR_HISTORIE[MARKTWERT_SOLAR_HISTORIE.length - 1];
 
@@ -136,7 +137,7 @@ export default function ResultRegime({
         }}>
           <span>Vergütungssatz</span>
           {eigenerSatz ? (
-            <InlineEdit value={heuteSatzCt} onCommit={setHeuteSatzCt} unit=" ct" step={0.01} min={0} max={60} width={56} />
+            <InlineEdit value={heuteSatzCt} onCommit={setHeuteSatzCt} unit=" ct" step={0.01} min={0} max={EINSPEISESATZ_MAX_CT} width={56} />
           ) : (
             <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-text-primary") }}>
               {heuteSatzCt.toLocaleString("de-DE", { minimumFractionDigits: 2 })} ct/kWh

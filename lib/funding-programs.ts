@@ -289,6 +289,18 @@ export interface FundingProgram {
    * kommen (Mühlhausen), greift die Grenze ohnehin für beides.
    */
   pvMin?: number;
+  /**
+   * Die Dachanlage wird NUR zusammen mit einem Speicher gefördert — der
+   * PV-Betrag entfällt ohne Speicher (Mühlhausen an der Sulz: „Die Dachanlage
+   * wird nur zusammen mit einem Stromspeicher gefördert").
+   *
+   * Vorher stand dafür `speicherMin: 1` am Programm, mit dem Kommentar, ohne
+   * Speicher greife keine Stufe. Das stimmte nicht: `speicherMin` wird nur im
+   * SPEICHER-Zweig geprüft, und dieses Programm hat keinen — die Dach-Staffel
+   * zahlte 1.000–1.500 € auch bei 0 kWh. Gefunden vom Rechenmodell-Council am
+   * 05.09.2026; der Mindestleistungs-Test kannte nur `pvMin`.
+   */
+  pvNurMitSpeicher?: boolean;
 
   // ── Technik ──────────────────────────────────────────────────────────────────
   /**
@@ -2426,15 +2438,15 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
     foerdert: ["pv", "balkon"],
-    // Die Dach-Staffel gilt NUR mit Speicher — das ist im Modell nicht als
-    // Bedingung ausdrückbar. `speicherMin: 1` erzwingt sie über die einzige
-    // Größe, die der Rechner kennt: Ohne Speicher greift keine Stufe.
+    // Die Dach-Staffel gilt NUR mit Speicher. Bis 05.09.2026 sollte das
+    // `speicherMin: 1` erzwingen — das Feld wirkt aber nur im Speicher-Zweig,
+    // und dieses Programm hat keinen; die Staffel zahlte bei 0 kWh trotzdem.
     // Die Staffel beginnt „ab 5 kWp bis einschl. 10 kWp" — am 27.08.2026 auf der
     // Gemeindeseite gelesen. Ohne `pvMin` zahlte die unterste Stufe auch bei
     // 3 kWp, wo die Gemeinde nichts zahlt.
     pvTiers: [{ upTo: 10, amount: 1000 }, { upTo: 20, amount: 1250 }, { upTo: 30, amount: 1500 }],
     pvMin: 5,
-    speicherMin: 1,
+    pvNurMitSpeicher: true,
     balkonTiers: [{ upTo: 680, amount: 100 }, { upTo: 1020, amount: 150 }, { upTo: 999999, amount: 200 }],
   },
 
@@ -4521,7 +4533,11 @@ export function fundingAmount(
   // Programm bleibt `computable` — der Betrag ist bekannt, er ist null. „Lässt
   // sich nicht berechnen" wäre eine andere Aussage und stünde als solche auf der
   // Karte (dieselbe Unterscheidung wie bei der Kumulierungsgrenze im WP-Rechner).
-  const unterMindestleistung = f.pvMin !== undefined && anlage.kwp < f.pvMin;
+  // Beides ist dieselbe Aussage: Für DIESE Anlage zahlt das Programm nichts,
+  // der Betrag ist bekannt und null.
+  const unterMindestleistung =
+    (f.pvMin !== undefined && anlage.kwp < f.pvMin) ||
+    (f.pvNurMitSpeicher === true && !(anlage.speicherKwh > 0));
 
   if (f.percentOfCost) {
     if (unterMindestleistung) return { total: 0, computable: true, active };

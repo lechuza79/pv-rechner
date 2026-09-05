@@ -14,6 +14,12 @@ export const DEGRAD = 0.005;
 // Marktwert, den wir konservativ nicht ansetzen. Über den 25-Jahre-Horizont
 // wird die Einspeisevergütung also nur bis Jahr 20 gezahlt.
 export const FEED_IN_YEARS = 20;
+/** Obergrenze für einen von Hand gesetzten Vergütungssatz (ct/kWh) — EINE Quelle
+ *  für das Eingabefeld und das Lesen aus dem Teilen-Link. Bis 05.09.2026 ließ das
+ *  Feld 60 zu, der Link nur 20: Wer den Satz seines Bescheids von 2010 (≈39 ct)
+ *  eintrug und teilte, dessen Empfänger rechnete stumm mit 7,7 ct. Historische
+ *  Bescheide reichen bis über 50 ct (2004–2008). */
+export const EINSPEISESATZ_MAX_CT = 60;
 
 // ─── PV-Standortertrag (kWh/kWp·a) ───────────────────────────────────────────
 // Kanonische Quelle für den Ertrag ist PVGIS (ortsgenau via PLZ, lib/pvgis.ts).

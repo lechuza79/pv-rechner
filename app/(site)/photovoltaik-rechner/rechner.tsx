@@ -15,8 +15,8 @@ import ResultSection from "../../../components/ResultSection";
 // HEIZSYSTEM/HEIZSYSTEM_SHORT/WP_M2_PRESETS brauchte der entfallene
 // Verbrauchs-Abschnitt; die Gebäudefragen holen sie sich jetzt selbst aus
 // components/GebaeudeField.
-import { YEAR, YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, NATIONAL_AVG_YIELD, type Heizsystem } from "../../../lib/constants";
-import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
+import { YEAR, YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, NATIONAL_AVG_YIELD, EINSPEISESATZ_MAX_CT, type Heizsystem } from "../../../lib/constants";
+import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramFloatOrNull, paramStr, vollEinspeisungGesperrt } from "../../../lib/calc";
 import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../lib/pv-sim";
 import { calcWpAnnualElectricity, calcJAZ, flowTempForSystem, DEFAULT_WP_BUILDING, wpGebaeudeUebersprungenFolge } from "../../../lib/heatpump";
 import OptionCard from "../../../components/OptionCard";
@@ -119,7 +119,7 @@ export default function PVRechner({
   const [speicher, setSpeicher] = useState(hasShare ? paramInt(initialParams, "s", 0, 0, SPEICHER.length - 1) : 0);
   // Freie Speichergröße aus dem Ergebnis heraus (Vorgaben sind Indizes, hier
   // steht die kWh-Zahl selbst). Null = es gilt die im Flow gewählte Vorgabe.
-  const [oSpKwh, setOSpKwh] = useState<number | null>(hasShare ? paramFloat(initialParams, "sk", 0, 0, 30) || null : null);
+  const [oSpKwh, setOSpKwh] = useState<number | null>(hasShare ? paramFloatOrNull(initialParams, "sk", 0, 30) : null);
   const [personen, setPersonen] = useState(hasShare ? paramInt(initialParams, "p", 1, 0, 3) : 1);
   const [nutzung, setNutzung] = useState(hasShare ? paramInt(initialParams, "n", 1, 0, 3) : 1);
   const [wp, setWp] = useState(hasShare ? paramStr(initialParams, "wp", "nein", ["nein", "geplant", "ja"]) : "nein");
@@ -209,7 +209,7 @@ export default function PVRechner({
   // Default unten per usePrices() auf den Live-Wert aus market_prices nachgezogen.
   const [oStrom, setOStrom] = useState(hasShare ? paramFloat(initialParams, "st", DEFAULT_PRICES.electricityPrice, 0.05, 1.0) : DEFAULT_PRICES.electricityPrice);
   const [oStromSynced, setOStromSynced] = useState(hasShare); // synced when share-URL — no auto-update
-  const [oEinsp, setOEinsp] = useState<number | null>(hasShare && initialParams?.ei ? (() => { const n = Number(initialParams.ei); return isFinite(n) && n >= 0 && n <= 20 ? n : null; })() : null);
+  const [oEinsp, setOEinsp] = useState<number | null>(hasShare && initialParams?.ei ? (() => { const n = Number(initialParams.ei); return isFinite(n) && n >= 0 && n <= EINSPEISESATZ_MAX_CT ? n : null; })() : null);
   const [einspeisungModus, setEinspeisungModus] = useState<"aus" | "teil" | "voll">(
     hasShare ? (initialParams?.eia === "2" ? "voll" : initialParams?.eia === "0" ? "aus" : "teil") : "teil"
   );
@@ -437,7 +437,7 @@ export default function PVRechner({
   const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, klima, klimaM2: KLIMA_DEFAULT_M2, klimaKwh: effKlimaKwh, wpKwh, kwp, ertragKwp: effErtrag, baseKwh: oVerbrauch });
   const effEv = oEv !== null ? oEv : autoEv;
   // Volleinspeisung is incompatible with WP/E-Auto (they require self-consumption)
-  const vollDisabled = wp !== "nein" || ea !== "nein";
+  const vollDisabled = vollEinspeisungGesperrt({ wp, ea, speicherKwh: spKwh });
   const effEinspeisungModus = vollDisabled && einspeisungModus === "voll" ? "teil" : einspeisungModus;
   const jahresertrag = kwp * effErtrag;
   // Lastprofil für die Stundensimulation — dieselben Verbrauchswerte wie oben,
@@ -463,7 +463,10 @@ export default function PVRechner({
     () => simulatePvYear({ kwp, speicherKwh: spKwh, monthlyYieldPerKwp: monthlyProfile, ertragKwp: effErtrag, household }),
     [kwp, spKwh, monthlyProfile, effErtrag, household],
   );
-  const autarkie = pvSim.autarky;
+  // Bei Volleinspeisung geht alles ins Netz und der Haushalt bezieht alles aus
+  // dem Netz — die Simulation kennt diesen Modus nicht und lieferte die
+  // Autarkie eines Teileinspeisers (30 % ohne Speicher).
+  const autarkie = effEinspeisungModus === "voll" ? 0 : pvSim.autarky;
   // Beispieltage (24-h-Detail) für das Modal — sonniger/trüber Wintertag + Sommertag.
   const exampleDays = useMemo(
     () => EXAMPLE_DAYS.map(d => ({
