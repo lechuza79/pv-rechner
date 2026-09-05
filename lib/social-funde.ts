@@ -370,28 +370,8 @@ export function findeUmkehrung(
   opts: { mindestAbstand?: number } = {},
 ): Fund[] {
   const mindestAbstand = opts.mindestAbstand ?? 0.4;
-
-  const plaetze = (kategorie: AwardCategory) => {
-    const gruppen = new Map<string, number[]>();
-    for (const { g, wert } of messbare(gemeinden, kategorie)) {
-      const name = gruppiere(g);
-      if (!name) continue;
-      const bisher = gruppen.get(name);
-      if (bisher) bisher.push(wert);
-      else gruppen.set(name, [wert]);
-    }
-    const sortiert = [...gruppen.entries()]
-      .filter(([, werte]) => werte.length >= MIN_GRUPPE)
-      .map(([name, werte]) => ({ name, median: medianVon(werte) }))
-      .sort((x, y) => y.median - x.median);
-    // Als ANTEIL, nicht als Platznummer: Nur so lassen sich zwei Ranglisten
-    // verschiedener Länge vergleichen — und die eine Größe hat regelmäßig
-    // weniger Gruppen mit belastbarer Menge als die andere.
-    return new Map(sortiert.map((x, i) => [x.name, i / Math.max(1, sortiert.length - 1)]));
-  };
-
-  const rangA = plaetze(a);
-  const rangB = plaetze(b);
+  const rangA = rangAnteile(gemeinden, a, gruppiere);
+  const rangB = rangAnteile(gemeinden, b, gruppiere);
 
   const funde: Fund[] = [];
   for (const [name, pa] of rangA) {
@@ -416,15 +396,50 @@ export function findeUmkehrung(
 }
 
 /**
+ * Wo eine Gruppe bei dieser Messgröße steht — als Anteil zwischen 0 (vorn) und
+ * 1 (hinten).
+ *
+ * Als ANTEIL, nicht als Platznummer: Nur so lassen sich zwei Ranglisten
+ * verschiedener Länge vergleichen — und die eine Größe hat regelmäßig weniger
+ * Gruppen mit belastbarer Menge als die andere.
+ */
+function rangAnteile(
+  gemeinden: GemeindeStats[],
+  kategorie: AwardCategory,
+  gruppiere: (g: GemeindeStats) => string | null,
+): Map<string, number> {
+  const gruppen = new Map<string, number[]>();
+  for (const { g, wert } of messbare(gemeinden, kategorie)) {
+    const name = gruppiere(g);
+    if (!name) continue;
+    const bisher = gruppen.get(name);
+    if (bisher) bisher.push(wert);
+    else gruppen.set(name, [wert]);
+  }
+  const sortiert = [...gruppen.entries()]
+    .filter(([, werte]) => werte.length >= MIN_GRUPPE)
+    .map(([name, werte]) => ({ name, median: medianVon(werte) }))
+    .sort((x, y) => y.median - x.median);
+  return new Map(sortiert.map((x, i) => [x.name, i / Math.max(1, sortiert.length - 1)]));
+}
+
+/**
  * Aufholer: hinten im Bestand, vorn beim Tempo.
  *
  * Auch das zeigt keine Rangliste — sie kennt entweder den Bestand oder das
  * Tempo. Die Geschichte ist die Bewegung gegen den eigenen Stand: Wer weit
  * hinten liegt und trotzdem am schnellsten baut, verändert gerade seine Lage.
  *
- * NICHT DIE UMGEKEHRTE RICHTUNG. „Vorn im Bestand, hinten beim Tempo" wäre die
+ * NUR DIESE EINE RICHTUNG. „Vorn im Bestand, hinten beim Tempo" wäre die
  * Aussage, dass jemand nachlässt — dieselbe Bloßstellung, die beim
  * Ausreißer-Sucher schon ausgeschlossen ist, nur über eine ganze Region.
+ *
+ * DIE RICHTUNG WIRD GERECHNET, NICHT AM SATZ ABGELESEN. Die erste Fassung ging
+ * über die Umkehrung und filterte danach auf ein Wort im Satz — das war
+ * wirkungslos, weil der Umkehrungs-Satz IMMER beide Messgrößen nennt. Gemessen
+ * an einem Testbestand kam „A steht bei Bestand weit vorn und bei Tempo weit
+ * hinten" als Aufholer heraus: die verbotene Richtung, im unveränderten
+ * Wortlaut der Umkehrung, weil auch das Ersetzen nicht griff.
  */
 export function findeAufholer(
   gemeinden: GemeindeStats[],
@@ -434,19 +449,30 @@ export function findeAufholer(
   gruppiere: (g: GemeindeStats) => string | null,
   opts: { mindestAbstand?: number } = {},
 ): Fund[] {
-  return findeUmkehrung(gemeinden, tempo, bestand, redaktionsKategorie, gruppiere, opts)
-    .filter((f) => f.satz.includes(tempo.themaDativ ?? tempo.thema))
-    .map((f) => ({
-      ...f,
-      kennung: f.kennung.replace("-umkehrung-", "-aufholer-"),
+  const mindestAbstand = opts.mindestAbstand ?? 0.4;
+  const rangBestand = rangAnteile(gemeinden, bestand, gruppiere);
+  const rangTempo = rangAnteile(gemeinden, tempo, gruppiere);
+
+  const funde: Fund[] = [];
+  for (const [name, pTempo] of rangTempo) {
+    const pBestand = rangBestand.get(name);
+    if (pBestand === undefined) continue;
+    // Vorn beim Tempo heißt kleiner Anteil, hinten im Bestand heißt großer.
+    // Nur dieser Fall, nie der umgekehrte.
+    const abstand = pBestand - pTempo;
+    if (abstand < mindestAbstand) continue;
+    funde.push({
+      kennung: kennungAus(redaktionsKategorie, "aufholer", bestand.key, tempo.key, name),
       evergreen: false,
-      muster: "aufholer" as const,
-      satz: f.satz
-        .replace(
-          `steht bei ${tempo.themaDativ ?? tempo.thema} weit vorn und bei ${bestand.themaDativ ?? bestand.thema} weit hinten.`,
-          `baut derzeit mit am schnellsten zu — und liegt bei ${bestand.themaDativ ?? bestand.thema} trotzdem weit hinten.`,
-        ),
-    }));
+      muster: "aufholer",
+      kategorie: redaktionsKategorie,
+      satz: `${name} baut derzeit mit am schnellsten zu — und liegt bei ${bestand.themaDativ ?? bestand.thema} trotzdem weit hinten.`,
+      staerke: abstand,
+      werte: [],
+      grundlage: `Verglichen werden Rangplätze, nicht Werte — zwei Größen mit verschiedenen Einheiten lassen sich nicht subtrahieren. ${rangTempo.size} bzw. ${rangBestand.size} Gruppen mit belastbarer Menge. Nur diese eine Richtung: „vorn im Bestand, hinten beim Tempo" wäre die Aussage, dass eine Region nachlässt.`,
+    });
+  }
+  return funde;
 }
 
 /**
@@ -1068,6 +1094,13 @@ export function findeWohnform(
  */
 export type MonatsZeile = { regionId: string; monat: string; count: number };
 
+/** „2026-09" minus n Monate — als Vergleichsschwelle, nicht als Datum. */
+function monatVor(monat: string, n: number): string {
+  const [j, m] = monat.split("-").map(Number);
+  const gesamt = j * 12 + (m - 1) - n;
+  return `${Math.floor(gesamt / 12)}-${String((gesamt % 12) + 1).padStart(2, "0")}`;
+}
+
 export function findeAnomalie(
   zeilen: MonatsZeile[],
   name: (regionId: string) => string | null,
@@ -1079,6 +1112,17 @@ export function findeAnomalie(
     mindestFaktor?: number;
     anzahl?: number;
     reifeMonate?: number;
+    /**
+     * Der laufende Monat — alles ab hier gilt als unfertig.
+     *
+     * AUS DEM KALENDER, NICHT AUS DEN DATEN. Die erste Fassung schnitt die
+     * letzten drei EINTRÄGE der Monatsliste ab; steht der laufende Monat noch
+     * mit keiner Anlage in der Tabelle, fehlt er dort, und der Schnitt entfernt
+     * drei abgeschlossene Monate und lässt den unfertigen stehen. Dieselbe
+     * Falle, an der der Saisonvergleich zweimal gescheitert ist, bevor der
+     * Stichtag von außen kam.
+     */
+    heuteMonat?: string;
     /**
      * Gab es in diesem Ort zu dieser Zeit ein Förderprogramm?
      *
@@ -1129,7 +1173,13 @@ export function findeAnomalie(
   }
   const monate = [...alleMonate].sort();
   if (monate.length < fenster + reifeMonate + 6) return [];
-  const reif = monate.slice(0, monate.length - reifeMonate);
+  // Der jüngste Monat, der als fertig gilt: `reifeMonate` vor dem laufenden.
+  // Ohne Stichtag bleibt es beim Abschneiden der letzten Einträge — schlechter,
+  // aber besser als gar keine Karenz.
+  const reif = opts.heuteMonat
+    ? monate.filter((m) => m < monatVor(opts.heuteMonat!, reifeMonate))
+    : monate.slice(0, monate.length - reifeMonate);
+  if (reif.length < fenster + 6) return [];
 
   type Treffer = {
     ort: string;
@@ -1169,7 +1219,11 @@ export function findeAnomalie(
       const basis = Math.max(1, ueblich);
       const faktor = menge / basis;
       if (faktor < mindestFaktor) continue;
-      if (gefoerdert?.(regionId, reif[i], reif[i + fenster - 1])) break;
+      // NUR DIESES FENSTER, nicht den ganzen Ort: Ein Programm, das 2024
+      // lief, erklärt keinen Ausschlag von 2026. Die erste Fassung brach
+      // hier die Schleife ab und verwarf damit auch spätere, förderfreie
+      // Ausschläge desselben Orts.
+      if (gefoerdert?.(regionId, reif[i], reif[i + fenster - 1])) continue;
       treffer.push({
         ort,
         von: reif[i],

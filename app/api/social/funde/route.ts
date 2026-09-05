@@ -225,10 +225,32 @@ export async function GET(req: NextRequest) {
       ewJeKreis.set(kreis, (ewJeKreis.get(kreis) ?? 0) + g.population);
     }
     if (supabase) {
-      const { data: kfw } = await supabase
-        .from("kfw_report_kreis")
-        .select("region_id, jahr, programm, anzahl, volumen_mio");
-      if (kfw?.length) {
+      // PAGINIERT UND SORTIERT. Ohne beides liefert die Datenbank stumm nur die
+      // ersten 1.000 Zeilen — gemessen fehlten damit 597 von 1.597, und für
+      // 2025 kamen 201 von 400 Kreiszeilen an. Der Satz nennt absolute
+      // Jahreszahlen; aus einer halben Menge wären das Teilsummen, und der
+      // Vergleichsmedian entstünde aus der Hälfte der Kreise. Dieselbe Falle
+      // wie bei der Monatstabelle weiter unten.
+      const kfw: {
+        region_id: string;
+        jahr: number;
+        programm: string;
+        anzahl: number;
+        volumen_mio: number;
+      }[] = [];
+      for (let von = 0; ; von += 1000) {
+        const { data } = await supabase
+          .from("kfw_report_kreis")
+          .select("region_id, jahr, programm, anzahl, volumen_mio")
+          .order("region_id")
+          .order("jahr")
+          .order("programm")
+          .range(von, von + 999);
+        if (!data?.length) break;
+        kfw.push(...data);
+        if (data.length < 1000) break;
+      }
+      if (kfw.length) {
         funde.push(
           ...findeHeizungsfoerderung(
             kfw,
@@ -295,7 +317,7 @@ export async function GET(req: NextRequest) {
             ortsname,
             "g10",
             "Balkonkraftwerke",
-            { foerderungBekannt },
+            { foerderungBekannt, heuteMonat: new Date().toISOString().slice(0, 7) },
           ),
         );
       }
@@ -333,12 +355,19 @@ export async function GET(req: NextRequest) {
     // Diese Woche gegen dieselbe Woche der Vorjahre. Der Strommix liegt
     // wochenweise seit 2015 vor — elf Vergleichsjahre je Kalenderwoche.
     if (supabase) {
+      // ABSTEIGEND und mit ausdrücklicher Grenze: Die Reihe wächst wöchentlich
+      // und reißt in einigen Jahren die stille 1.000er-Schranke. Aufsteigend
+      // sortiert fielen dann ausgerechnet die JÜNGSTEN Wochen weg — also die,
+      // aus denen das Muster seine Kandidaten nimmt; der Fund behauptete
+      // „höchster Wert seit 2015" für eine Woche, die Jahre zurückliegt.
+      // Zwölf Jahre Wochen sind reichlich für einen Jahresvergleich.
       const { data: wochen } = await supabase
         .from("energy_weekly")
         .select("year, week, solar, wind_onshore, wind_offshore, load")
         .eq("country", "de")
-        .order("year")
-        .order("week");
+        .order("year", { ascending: false })
+        .order("week", { ascending: false })
+        .limit(700);
       if (wochen?.length) {
         funde.push(
           ...findeSaison(

@@ -137,7 +137,10 @@ export async function leseFunde(opts: {
   /** „nur Evergreens" oder „nur Zeitgebundenes" — ohne Angabe beides. */
   evergreen?: boolean;
   suche?: string;
+  /** Wie viele Zeilen die Datenbank höchstens liefert. */
   grenze?: number;
+  /** Wie viele Funde je Muster in der Liste stehen. */
+  jeMuster?: number;
 }): Promise<VorratsFund[]> {
   if (!supabase) return [];
   let q = supabase
@@ -146,7 +149,7 @@ export async function leseFunde(opts: {
       "kennung, muster, kategorie, satz, staerke, werte, grundlage, orte, laender, evergreen, stand, notiz, zuletzt_gesehen, erstmals_gesehen",
     )
     .order("staerke", { ascending: false })
-    .limit(opts.grenze ?? 200);
+    .limit(opts.grenze ?? 1000);
   if (opts.stand) q = q.eq("stand", opts.stand);
   if (opts.muster) q = q.eq("muster", opts.muster);
   if (opts.ort) q = q.contains("orte", [opts.ort]);
@@ -161,9 +164,26 @@ export async function leseFunde(opts: {
   const { data, error } = await q;
   if (error) throw new Error(`Vorrat lesen fehlgeschlagen: ${error.message}`);
   const funde = (data ?? []).map((z) => ausZeile(z as Zeile));
-  // Nach Muster gruppiert, innerhalb nach Stärke — die Abfrage hat schon nach
-  // Stärke sortiert, ein stabiles Sortieren nach Muster erhält das.
-  return funde.sort((a, b) => a.muster.localeCompare(b.muster));
+
+  // JE MUSTER GEKAPPT, NICHT ÜBER ALLE. Die Grenze schnitt vorher global nach
+  // Stärke — und weil die Zahl je Muster etwas anderes bedeutet, fielen ganze
+  // Muster heraus: Gemessen an 590 Funden fehlten in den ersten 300 die
+  // Umkehrungen (14), die Heizungsförderung (5) und die Förderlücke komplett,
+  // vom Kontrast kamen 27 von 256 an. Die Filterleiste bot sie mit Zahlen an,
+  // in der Liste standen sie nie.
+  //
+  // Je Muster dieselbe Zahl zu nehmen ist die einzige Kappung, die zur Ansicht
+  // passt: Sie gruppiert nach Muster, also muss auch die Grenze dort greifen.
+  const proMuster = new Map<string, VorratsFund[]>();
+  for (const f of funde) {
+    const bisher = proMuster.get(f.muster);
+    if (bisher) bisher.push(f);
+    else proMuster.set(f.muster, [f]);
+  }
+  const jeMuster = opts.jeMuster ?? 40;
+  return [...proMuster.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .flatMap(([, liste]) => liste.slice(0, jeMuster));
 }
 
 /** Einen einzelnen Fund holen — der Weg für einen Zuruf mit Kennung. */

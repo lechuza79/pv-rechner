@@ -104,6 +104,14 @@ export default async function StoryBucket({
   const kennzahlen = await socialKennzahlen().catch(() => null);
   const quelle = kennzahlen ? quellenzeile(kennzahlen.standIso, false) : "";
 
+  // Der jüngste Lauf über den ganzen Vorrat — nicht über die gefilterte
+  // Auswahl: Sonst gälte in einer Liste, die nur alte Funde zeigt, der älteste
+  // als aktuell, und die Kennzeichnung verschwände genau dort, wo sie zählt.
+  const juengsterLauf = funde.reduce(
+    (spaet, f) => (f.zuletztGesehen > spaet ? f.zuletztGesehen : spaet),
+    "",
+  );
+
   const mitStand = funde.map((f) => {
     const entwurf = entwurfAus(f, quelle);
     return {
@@ -116,6 +124,8 @@ export default async function StoryBucket({
       // Ohne Angabe zeitgebunden — dieselbe vorsichtige Richtung wie in der
       // Ablage: Ein Fund, den niemand eingeordnet hat, gilt nicht als Evergreen.
       evergreen: f.evergreen ?? false,
+      zuletztGesehen: f.zuletztGesehen,
+      juengsterLauf,
       stand: standMitAbleitung(f, beitragsKennungen, geplanteKennungen),
       entwurf,
       abdruck: fassungsAbdruck({ text: entwurf.text, bild: entwurf.bild }),
@@ -174,10 +184,13 @@ export default async function StoryBucket({
         }}
       />
 
-      {/* Die Trefferzahl nur bei gesetztem Filter: Eine Liste, die kürzer ist
-          als erwartet, sieht sonst nach einem leeren Bucket aus. */}
+      {/* WAS DIE LISTE ZEIGT, NICHT WAS ES GIBT. Vorher stand ohne Filter die
+          Gesamtzahl da, während die Liste darunter gekappt war — wer nach unten
+          scrollte und aufhörte, hielt den Vorrat für abgearbeitet. */}
       <p style={{ fontSize: 13, color: v("--color-text-muted"), margin: `0 0 ${space.sm}px` }}>
-        {gefiltert ? `${mitStand.length} von ${gesamt} Funden` : `${gesamt} Funde`}
+        {mitStand.length === gesamt
+          ? `${gesamt} Funde`
+          : `${mitStand.length} von ${gesamt} Funden${gefiltert ? "" : " — je Muster die stärksten"}`}
       </p>
 
       <FundListe funde={mitStand} onStandAction={standSetzen} />

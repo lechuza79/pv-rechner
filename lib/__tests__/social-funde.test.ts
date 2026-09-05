@@ -10,6 +10,7 @@ import {
   findeAnomalie,
   ortsnamen,
   findeSaison,
+  findeAufholer,
   MUSTER_TAKT,
 } from "../social-funde";
 import type { AwardCategory } from "../awards";
@@ -440,5 +441,121 @@ describe("Takt", () => {
     for (const m of gebraucht) {
       expect(MUSTER_TAKT[m]).toBeDefined();
     }
+  });
+});
+
+describe("Aufholer: nur eine Richtung", () => {
+  const kat = (key: string, thema: string, feld: string): AwardCategory =>
+    ({
+      key,
+      thema,
+      themaDativ: thema,
+      format: "wattProKopf",
+      menge: () => 50,
+      metric: (g: Record<string, number>) => Number(g[feld] ?? 0),
+      plausibel: () => true,
+    }) as unknown as AwardCategory;
+
+  const BESTAND = kat("bestand", "Bestand", "privatDachKwp");
+  const TEMPO = kat("tempo", "Tempo", "solarKwpLy");
+
+  it("meldet nie, dass eine Region nachlässt", () => {
+    // Gruppe A: viel Bestand, wenig Tempo — sie LÄSST NACH.
+    // Gruppe B: wenig Bestand, viel Tempo — sie holt auf.
+    //
+    // Die erste Fassung ging über die Umkehrung und filterte danach auf ein
+    // Wort im Satz. Das war wirkungslos, weil der Umkehrungs-Satz IMMER beide
+    // Messgrößen nennt: „A steht bei Bestand weit vorn und bei Tempo weit
+    // hinten" kam als Aufholer heraus — die Bloßstellung, die der Kommentar
+    // ausdrücklich ausschließt, im unveränderten Wortlaut der Umkehrung.
+    const orte: never[] = [];
+    for (let i = 0; i < 30; i++) {
+      orte.push({
+        regionId: `A${i}`,
+        name: `A${i}`,
+        population: 5_000,
+        privatDachKwp: 900 + i,
+        solarKwpLy: 10 + i,
+      } as never);
+      orte.push({
+        regionId: `B${i}`,
+        name: `B${i}`,
+        population: 5_000,
+        privatDachKwp: 10 + i,
+        solarKwpLy: 900 + i,
+      } as never);
+    }
+
+    const funde = findeAufholer(orte, BESTAND, TEMPO, "g2", (g: { name: string }) =>
+      g.name.slice(0, 1),
+    );
+    expect(funde.length).toBeGreaterThan(0);
+    for (const f of funde) {
+      expect(f.satz).toContain("baut derzeit mit am schnellsten zu");
+      // Kein Satz darf die verbotene Richtung tragen.
+      expect(f.satz).not.toMatch(/steht bei .* weit vorn/);
+      expect(f.muster).toBe("aufholer");
+    }
+    // Nur die aufholende Gruppe, nie die nachlassende.
+    expect(funde.map((f) => f.satz).join(" ")).toContain("B ");
+    expect(funde.map((f) => f.satz).join(" ")).not.toMatch(/^A |\bA baut/);
+  });
+});
+
+describe("Anomalie: der Stichtag kommt vom Kalender", () => {
+  it("lässt einen unfertigen Monat auch dann draußen, wenn er in den Daten fehlt", () => {
+    // Die Karenz schnitt vorher die letzten drei EINTRÄGE ab. Fehlt der
+    // laufende Monat in der Tabelle — früh im Monat, oder ein Segment ohne
+    // Zubau —, entfernte sie drei abgeschlossene Monate und ließ den jüngsten,
+    // erst zu 82 Prozent gemeldeten stehen.
+    const monate: string[] = [];
+    for (let i = 0; i < 20; i++) {
+      const jahr = 2025 + Math.floor(i / 12);
+      monate.push(`${jahr}-${String((i % 12) + 1).padStart(2, "0")}`);
+    }
+    // Der letzte Monat der Reihe trägt einen Schub. Er liegt genau ein Jahr vor
+    // „heute" — also weit außerhalb der Karenz — und muss gefunden werden.
+    const zeilen = monate.map((m, i) => ({
+      regionId: "r1",
+      monat: m,
+      count: i >= 6 && i < 9 ? 60 : 2,
+    }));
+
+    const heuteWeitSpaeter = findeAnomalie(zeilen, () => "Musterdorf", "g10", "Balkonkraftwerke", {
+      heuteMonat: "2027-06",
+    });
+    expect(heuteWeitSpaeter.length).toBe(1);
+
+    // Steht „heute" dagegen mitten im Schub, ist er unfertig und fällt weg —
+    // obwohl die Datenreihe unverändert ist.
+    const heuteImSchub = findeAnomalie(zeilen, () => "Musterdorf", "g10", "Balkonkraftwerke", {
+      heuteMonat: "2025-08",
+    });
+    expect(heuteImSchub).toHaveLength(0);
+  });
+
+  it("verwirft nur das geförderte Fenster, nicht den ganzen Ort", () => {
+    // Ein Programm, das 2025 lief, erklärt keinen Ausschlag von 2026.
+    const monate: string[] = [];
+    for (let i = 0; i < 24; i++) {
+      const jahr = 2025 + Math.floor(i / 12);
+      monate.push(`${jahr}-${String((i % 12) + 1).padStart(2, "0")}`);
+    }
+    const zeilen = monate.map((m, i) => ({
+      regionId: "r1",
+      monat: m,
+      // Zwei Schübe: einer früh (gefördert), einer spät (nicht gefördert).
+      count: (i >= 3 && i < 6) || (i >= 15 && i < 18) ? 60 : 2,
+    }));
+
+    const funde = findeAnomalie(zeilen, () => "Musterdorf", "g10", "Balkonkraftwerke", {
+      heuteMonat: "2027-06",
+      // Nur der frühe Schub liegt in der Förderzeit.
+      foerderungBekannt: (_id, von) => von < "2025-10",
+    });
+    // Der spätere Ausschlag bleibt — die erste Fassung brach hier ab und
+    // verwarf den Ort komplett.
+    expect(funde.length).toBe(1);
+    expect(funde[0].satz).toContain("2026");
   });
 });

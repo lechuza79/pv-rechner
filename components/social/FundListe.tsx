@@ -38,11 +38,28 @@ export type FundEintrag = {
   werte: { name: string; wert: number; einheit: string }[];
   evergreen: boolean;
   stand: FundStand;
+  /** Wann der Suchlauf ihn zuletzt gefunden hat. */
+  zuletztGesehen: string;
+  /** Der jüngste Lauf überhaupt — daran misst sich, ob ein Fund veraltet ist. */
+  juengsterLauf: string;
   /** Der Entwurf, serverseitig aus dem Fund gerechnet. */
   entwurf: SocialPost & { offen: string[] };
   abdruck: string;
   befunde: MechanikBefund[];
 };
+
+/**
+ * Hat der jüngste Lauf diesen Fund noch gefunden?
+ *
+ * Eine Stunde Spielraum, weil ein Lauf selbst Minuten braucht und die Zeilen
+ * nicht alle im selben Augenblick geschrieben werden.
+ */
+function veraltet(f: FundEintrag): boolean {
+  const gesehen = Date.parse(f.zuletztGesehen);
+  const lauf = Date.parse(f.juengsterLauf);
+  if (!Number.isFinite(gesehen) || !Number.isFinite(lauf)) return false;
+  return lauf - gesehen > 3_600_000;
+}
 
 function standFarbe(stand: FundStand): string {
   if (stand === "vorgemerkt") return v("--color-accent");
@@ -235,6 +252,22 @@ export function FundListe({
                 </span>
                 <span aria-hidden>·</span>
                 <span style={{ color: standFarbe(stand) }}>{FUND_STAND_LABEL[stand]}</span>
+                {/* EIN FUND, DEN DER LETZTE LAUF NICHT MEHR FAND, IST NICHT MEHR
+                    WAHR. Er wird nicht gelöscht — die Vormerkung soll nicht
+                    verschwinden —, aber er darf auch nicht wie ein frischer
+                    aussehen: Die Daten haben sich bewegt, und der Satz steht auf
+                    Zahlen von damals. */}
+                {veraltet(f) && (
+                  <>
+                    <span aria-hidden>·</span>
+                    <span
+                      title={`Zuletzt gefunden am ${new Date(f.zuletztGesehen).toLocaleDateString("de-DE")} — der jüngste Lauf kennt ihn nicht mehr.`}
+                      style={{ color: v("--color-negative") }}
+                    >
+                      veraltet
+                    </span>
+                  </>
+                )}
 
                 <span style={{ flex: 1 }} />
 

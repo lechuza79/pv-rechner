@@ -209,6 +209,25 @@ async function main() {
     process.stderr.write(`\r  ${n.toLocaleString("de-DE")} geschrieben`);
   }
   process.stderr.write("\n");
+
+  // WAS AUS DEM FENSTER FÄLLT, WIRD GELÖSCHT. Der Lauf schreibt nur die Monate
+  // seines Fensters; ohne dieses Aufräumen bliebe alles Ältere mit dem Stand
+  // liegen, den es beim letzten Schreiben hatte. Nach einem Jahr enthielte die
+  // Tabelle ein Dutzend Monate, die niemand mehr aktualisiert — und die
+  // Anomalie-Suche bildet ihren Vergleichsmedian über ALLE Fenster. Eingefrorene
+  // Monate sind dabei systematisch zu niedrig (sie wurden abgelegt, als sie noch
+  // unvollständig gemeldet waren): Der Median sinkt, der Faktor steigt, und es
+  // erscheinen Ausschläge, die keine sind.
+  //
+  // Ebenso verschwindet damit eine Zeile, deren Anlagen alle abgemeldet wurden —
+  // sie stünde sonst für immer mit ihrer alten Zahl da.
+  const { error: aufraeumFehler, count } = await db
+    .from(TABELLE)
+    .delete({ count: "exact" })
+    .lt("monat", `${ab}-01`);
+  if (aufraeumFehler) throw new Error(`Aufräumen fehlgeschlagen: ${aufraeumFehler.message}`);
+  if (count) console.log(`${count.toLocaleString("de-DE")} Monatswerte außerhalb des Fensters gelöscht.`);
+
   console.log("Fertig.");
 }
 

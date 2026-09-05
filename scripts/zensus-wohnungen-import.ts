@@ -18,9 +18,10 @@
  *
  *   npx tsx scripts/zensus-wohnungen-import.ts            # laden und schreiben
  *   npx tsx scripts/zensus-wohnungen-import.ts --trocken  # nur rechnen
+ *   npx tsx scripts/zensus-wohnungen-import.ts --neu      # Quelle neu holen
  */
 import { createClient } from "@supabase/supabase-js";
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, statSync, writeFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
@@ -94,17 +95,44 @@ json.dump(out, sys.stdout)
   return JSON.parse(roh) as string[][];
 }
 
-async function laden(): Promise<string> {
+async function laden(neuLaden: boolean): Promise<string> {
   mkdirSync(CACHE_DIR, { recursive: true });
   const ziel = resolve(CACHE_DIR, "Regionaltabelle_Gebaeude_Wohnungen.xlsx");
-  if (existsSync(ziel)) {
-    console.log(`Aus dem Zwischenspeicher: ${ziel}`);
-    return ziel;
+
+  // DIE GRÖSSE WIRD GEGEN DEN SERVER GEHALTEN, wie beim Anlagenregister auch.
+  // Eine abgebrochene Übertragung hinterlässt sonst eine Teildatei, die bei
+  // jedem weiteren Lauf kommentarlos genommen wird — der Lauf scheitert dann
+  // dauerhaft an einer Meldung, die nach einem Formatproblem aussieht statt
+  // nach einem halben Download.
+  //
+  // Und `--neu` erzwingt den Abruf: Der Zensus ist ein Stichtag, seine Zahlen
+  // ändern sich nicht — eine vom Bundesamt korrigierte Fassung holt der Lauf
+  // ohne diesen Schalter aber nie.
+  let erwartet = 0;
+  try {
+    const kopf = await fetch(QUELLE, { method: "HEAD" });
+    erwartet = Number(kopf.headers.get("content-length") ?? 0);
+  } catch {
+    // Kein Kopf-Abruf möglich: Dann entscheidet allein, ob die Datei da ist.
   }
+
+  if (!neuLaden && existsSync(ziel)) {
+    const da = statSync(ziel).size;
+    if (!erwartet || da === erwartet) {
+      console.log(`Aus dem Zwischenspeicher: ${ziel}`);
+      return ziel;
+    }
+    console.log(`Zwischenspeicher unvollständig (${da} statt ${erwartet} Byte) — lade neu.`);
+  }
+
   console.log(`Lade ${QUELLE} …`);
   const res = await fetch(QUELLE);
   if (!res.ok) throw new Error(`Abruf fehlgeschlagen: ${res.status}`);
-  writeFileSync(ziel, Buffer.from(await res.arrayBuffer()));
+  const daten = Buffer.from(await res.arrayBuffer());
+  if (erwartet && daten.length !== erwartet) {
+    throw new Error(`Abruf unvollständig: ${daten.length} statt ${erwartet} Byte`);
+  }
+  writeFileSync(ziel, daten);
   console.log(`Abgelegt: ${ziel}`);
   return ziel;
 }
@@ -146,7 +174,7 @@ function zeilenAus(tabelle: string[][]): Zeile[] {
 
 async function main() {
   const trocken = process.argv.includes("--trocken");
-  const pfad = await laden();
+  const pfad = await laden(process.argv.includes("--neu"));
   const zeilen = zeilenAus(leseBlatt(pfad, "CSV-Wohnungen"));
 
   // GEGENPROBE GEGEN DIE QUELLE SELBST: Die Summe über alle Gemeinden muss die
