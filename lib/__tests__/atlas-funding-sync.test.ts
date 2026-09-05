@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { ATLAS_CITIES, fundingFor, fundingForFrom, publishedCities, indexedCities, cityIndexFreigegeben, liveCities, archivedCities } from "../atlas-cities";
+import { ATLAS_CITIES, fundingFor, fundingForFrom, publishedCities, indexedCities, cityIndexFreigegeben, liveCities, archivedCities, foerderseiteTraegt } from "../atlas-cities";
 import { allFundingPrograms } from "../funding-programs";
 import { ALTBESTAND, ortSchluessel } from "../release-plan";
 
@@ -239,7 +239,34 @@ describe("Index-Freigabe", () => {
       // muss sichtbar dazukommen, sonst könnte ein stiller Tausch sie ersetzen.
       "nidda",
     ];
-    expect(indexedCities().map((c) => c.slug).sort()).toEqual([...SEIT_JUNI_IM_INDEX].sort());
+    // GEPRÜFT WIRD DIE TEILMENGE, NICHT DIE GLEICHHEIT (05.09.2026).
+    //
+    // Bis hierher stand hier toEqual — der Test war damit zugleich eine
+    // WACHSTUMSSPERRE. Das war bis zum 01.09.2026 richtig: Damals entschied der
+    // Releaseplan über jede Freischaltung, eine neue Seite ohne Schub wäre eine
+    // Nebenwirkung gewesen. Seitdem hat der Betreiber entschieden, dass eine
+    // Förderseite live geht, sobald ihr Programm aktiv ist und Dach-PV fördert.
+    // Der Test wurde bei dieser Umstellung nicht nachgezogen — und blieb grün,
+    // weil isCityPublished sie ebenfalls nicht mitbekam. Zwei überholte
+    // Annahmen, die einander bestätigten, während 21 Adressen in der Sitemap
+    // standen und mit HTTP 404 antworteten.
+    //
+    // Was der Test WEITERHIN leistet und leisten soll: Keine der Seiten, die
+    // seit Juni im Index stehen, darf ihre Freigabe still verlieren — genau der
+    // Fall, den die Hannover-Schlüsselkorrektur ausgelöst hätte. Das ist eine
+    // Teilmengen-Frage, keine Gleichheits-Frage.
+    const freigegeben = new Set(indexedCities().map((c) => c.slug));
+    const verloren = SEIT_JUNI_IM_INDEX.filter((s) => !freigegeben.has(s));
+    expect(verloren, "seit Juni im Index und jetzt nicht mehr freigegeben").toEqual([]);
+
+    // Und die Gegenrichtung, damit aus der Lockerung keine offene Tür wird: Was
+    // NEU dazukommt, kommt über den zweiten, benannten Weg — nicht über einen
+    // dritten, den niemand angemeldet hat.
+    const altbestand = new Set(SEIT_JUNI_IM_INDEX);
+    const ohneGrund = indexedCities()
+      .filter((c) => !altbestand.has(c.slug) && !foerderseiteTraegt(c))
+      .map((c) => c.slug);
+    expect(ohneGrund, "neu im Index, ohne dass das Programm die Schwelle trägt").toEqual([]);
   });
 
   it("was nicht in den Index darf, steht auch nicht in der Sitemap", () => {
