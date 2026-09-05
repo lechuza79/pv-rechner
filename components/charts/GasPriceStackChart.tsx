@@ -3,6 +3,7 @@
 // Block wächst mit der Bio-Treppe, Netzentgelt und CO₂ steigen zusätzlich. Daten:
 // gasMixSeries (lib/greengas.ts). Reines SVG, geteilt: Rechner + Embed.
 import type { GasMixYear } from "../../lib/greengas";
+import { fsPx } from "../../lib/theme";
 
 // Feste Kategorie-Farben (theme-invariant) — Energieträger-Tokens + semantisches Rot
 // für den CO₂-Block. Reihenfolge = Stapelreihenfolge von unten nach oben.
@@ -56,10 +57,10 @@ export default function GasPriceStackChart({ data }: { data: GasMixYear[] }) {
       {yTicks.map(val => (
         <g key={val}>
           <line x1={P.l} x2={P.l + cW} y1={y(val)} y2={y(val)} stroke="var(--color-chart-grid)" strokeWidth={0.5} />
-          <text x={P.l - 8} y={y(val)} textAnchor="end" dominantBaseline="middle" fontSize={10} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{val}</text>
+          <text x={P.l - 8} y={y(val)} textAnchor="end" dominantBaseline="middle" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{val}</text>
         </g>
       ))}
-      <text x={P.l - 8} y={P.t - 8} textAnchor="end" fontSize={9.5} fill="var(--color-text-faint)">ct/kWh</text>
+      <text x={P.l - 8} y={P.t - 8} textAnchor="end" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-faint)">ct/kWh</text>
       {/* Stapel-Flächen */}
       {LAYERS.map((l, idx) => (
         <path key={l.key} d={areaPath(idx)} fill={l.color} opacity={0.9} />
@@ -67,12 +68,12 @@ export default function GasPriceStackChart({ data }: { data: GasMixYear[] }) {
       {/* Gesamtpreis-Linie */}
       <polyline points={totalLine} fill="none" stroke="var(--color-text-primary)" strokeWidth={2} strokeLinejoin="round" />
       <circle cx={x(n - 1)} cy={y(lastTotal)} r={3.5} fill="var(--color-text-primary)" stroke="var(--color-bg)" strokeWidth={1.5} />
-      <text x={x(n - 1) + 6} y={y(lastTotal) - 4} fontSize={11.5} fontWeight={700} fill="var(--color-text-primary)" fontFamily="var(--font-mono)">
+      <text x={x(n - 1) + 6} y={y(lastTotal) - 4} fontSize={fsPx("--font-size-caption")} fontWeight={700} fill="var(--color-text-primary)" fontFamily="var(--font-mono)">
         {(Math.round(lastTotal * 10) / 10).toLocaleString("de-DE")}
       </text>
       {/* X-Labels */}
       {xYears.map(yr => (
-        <text key={yr} x={x(yr - startYear)} y={H - legendH - 4} textAnchor="middle" fontSize={10} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{yr}</text>
+        <text key={yr} x={x(yr - startYear)} y={H - legendH - 4} textAnchor="middle" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{yr}</text>
       ))}
       {/* Legende (2 Reihen, im SVG damit sie im Export überlebt) */}
       {LAYERS.map((l, idx) => {
@@ -83,7 +84,7 @@ export default function GasPriceStackChart({ data }: { data: GasMixYear[] }) {
         return (
           <g key={l.key}>
             <rect x={lx} y={ly - 8} width={11} height={11} rx={2} fill={l.color} />
-            <text x={lx + 16} y={ly} fontSize={10.5} fill="var(--color-text-secondary)">{l.label}</text>
+            <text x={lx + 16} y={ly} fontSize={fsPx("--font-size-micro")} fill="var(--color-text-secondary)">{l.label}</text>
           </g>
         );
       })}

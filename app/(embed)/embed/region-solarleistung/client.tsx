@@ -30,7 +30,7 @@ export default function RegionSolarleistungEmbed(props: RegionSolarleistungEmbed
     !props.totalKwp
   ) {
     return (
-      <div style={{ padding: 16, fontFamily: "var(--widget-font-family)", color: "var(--widget-muted)", fontSize: 13 }}>
+      <div style={{ padding: 16, fontFamily: "var(--widget-font-family)", color: "var(--widget-muted)", fontSize: "var(--font-size-small)" }}>
         {props.error ?? "Für dieses Bundesland liegen keine Daten für die Simulation vor."}
       </div>
     );

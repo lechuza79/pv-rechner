@@ -64,8 +64,8 @@ function Feld({ titel, hinweis, text }: { titel: string; hinweis: string; text: 
     <div style={{ marginBottom: 16 }}>
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: 6 }}>
         <div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: v("--color-text-primary") }}>{titel}</div>
-          <div style={{ fontSize: 12, color: v("--color-text-muted") }}>{hinweis}</div>
+          <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary") }}>{titel}</div>
+          <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>{hinweis}</div>
         </div>
         <button
           type="button"
@@ -79,7 +79,7 @@ function Feld({ titel, hinweis, text }: { titel: string; hinweis: string; text: 
             border: "none",
             background: kopiert ? v("--color-positive") : v("--color-accent"),
             color: v("--color-text-on-accent"),
-            fontSize: 12.5,
+            fontSize: v("--font-size-small"),
             fontWeight: 700,
             cursor: "pointer",
             fontFamily: "inherit",
@@ -94,7 +94,7 @@ function Feld({ titel, hinweis, text }: { titel: string; hinweis: string; text: 
           borderRadius: v("--radius-md"),
           padding: "10px 12px",
           fontFamily: v("--font-mono"),
-          fontSize: 11.5,
+          fontSize: v("--font-size-caption"),
           lineHeight: 1.6,
           color: v("--color-text-secondary"),
           wordBreak: "break-word",
@@ -142,7 +142,7 @@ export default function CiteModal({
         hinweis="Klartext"
         text={citePlain(widget, datum || heute())}
       />
-      <p style={{ fontSize: 12.5, lineHeight: 1.6, color: v("--color-text-muted"), margin: 0 }}>
+      <p style={{ fontSize: v("--font-size-small"), lineHeight: 1.6, color: v("--color-text-muted"), margin: 0 }}>
         Was erlaubt ist und wie eine Nutzung ohne Namensnennung geht, steht auf{" "}
         <a href="/lizenz" style={{ color: v("--color-accent"), fontWeight: 600 }}>
           solar-check.io/lizenz

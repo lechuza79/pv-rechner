@@ -40,7 +40,7 @@ export function DetailAbschnitt({
     >
       <h4
         style={{
-          fontSize: 11,
+          fontSize: v("--font-size-caption"),
           fontWeight: 700,
           textTransform: "uppercase",
           letterSpacing: "0.05em",

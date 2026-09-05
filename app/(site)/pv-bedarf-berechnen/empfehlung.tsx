@@ -497,8 +497,8 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
         <div style={{ textAlign: "center", marginBottom: 24 }}>
-          <h1 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Was passt zu dir?</h1>
-          <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>Wir empfehlen dir die optimale Anlage.</p>
+          <h1 style={{ fontSize: v("--font-size-h2"), fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Was passt zu dir?</h1>
+          <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>Wir empfehlen dir die optimale Anlage.</p>
         </div>
 
         {/* Progress */}
@@ -513,12 +513,12 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
         {/* ── STEPS ── */}
         {!isRecommendation && (
           <div className="fu" key={step}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 18, color: v('--color-text-primary') }}>{STEPS[step]}</h2>
+            <h2 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, marginBottom: 18, color: v('--color-text-primary') }}>{STEPS[step]}</h2>
 
             {/* Step 0: Haus + Dach */}
             {step === 0 && (
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Haustyp</div>
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Haustyp</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 18 }}>
                   {HAUSTYPEN.map((h, i) => (
                     <OptionCard key={i} group="haustyp" selected={beantwortet.has("haustyp") && haustyp === i} onClick={() => { setHaustyp(i); markBeantwortet("haustyp"); }} label={h.label} sub={h.sub} />
@@ -548,10 +548,10 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                   display: "flex", flexDirection: "column", gap: 6,
                 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                    <span style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em" }}>
                       Nutzbare Dachfläche
                     </span>
-                    <span style={{ fontSize: 13, color: v('--color-text-muted') }}>
+                    <span style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted') }}>
                       max. <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-primary') }}>{previewMaxKwp} kWp</span>
                     </span>
                   </div>
@@ -565,9 +565,9 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                       step={1}
                       width={56}
                     />
-                    <span style={{ fontSize: 12, color: v('--color-text-muted') }}>
+                    <span style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted') }}>
                       {customRoofM2 !== null
-                        ? <button onClick={() => setCustomRoofM2(null)} style={{ background: "none", border: "none", color: v('--color-accent'), cursor: "pointer", padding: 0, fontSize: 12, fontFamily: v('--font-text') }}>auf Auswahl zurücksetzen</button>
+                        ? <button onClick={() => setCustomRoofM2(null)} style={{ background: "none", border: "none", color: v('--color-accent'), cursor: "pointer", padding: 0, fontSize: v("--font-size-small"), fontFamily: v('--font-text') }}>auf Auswahl zurücksetzen</button>
                         : "Klick zum Bearbeiten, wenn du deine Dachfläche genauer kennst"}
                     </span>
                   </div>
@@ -578,7 +578,7 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
             {/* Step 1: Haushalt */}
             {step === 1 && (
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Personen im Haushalt</div>
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Personen im Haushalt</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6, marginBottom: 20 }}>
                   {PERSONEN.map((p, i) => {
                     const aktiv = beantwortet.has("personen") && personen === i;
@@ -588,7 +588,7 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                     // Gruppe trennt sie vom Nutzungsprofil im selben Schritt.
                     <button key={i} data-flow-option={p.label === "1" ? "1 Person" : `${p.label} Personen`} data-flow-group="personen" aria-pressed={aktiv}
                       onClick={() => { setPersonen(i); markBeantwortet("personen"); }} style={{
-                      padding: "10px 4px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, cursor: "pointer", textAlign: "center",
+                      padding: "10px 4px", borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), fontWeight: 700, cursor: "pointer", textAlign: "center",
                       background: aktiv ? v('--color-accent-dim') : v('--color-bg-muted'),
                       border: aktiv ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
                       color: aktiv ? v('--color-accent') : v('--color-text-secondary'),
@@ -596,7 +596,7 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                     );
                   })}
                 </div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Nutzungsprofil</div>
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Nutzungsprofil</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                   {NUTZUNG.map((n, i) => (
                     <OptionCard key={i} group="nutzung" selected={beantwortet.has("nutzung") && nutzung === i} onClick={() => { setNutzung(i); markBeantwortet("nutzung"); }} label={n.label} sub={n.sub} />
@@ -611,7 +611,7 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                 <TriToggle label="⚡ Wärmepumpe" options={TRI} value={wp} onChange={setWp} />
                 {wp !== "nein" ? (
                   <div style={{ marginBottom: 28, marginTop: -4 }}>
-                    <div style={{ fontSize: 11, color: v('--color-text-muted'), marginBottom: 12, lineHeight: 1.5 }}>
+                    <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted'), marginBottom: 12, lineHeight: 1.5 }}>
                       Wie viel Heizstrom deine Wärmepumpe braucht, berechnen wir aus den Angaben zu deinem Gebäude.
                     </div>
                     <GebaeudeField
@@ -631,7 +631,7 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                     />
                   </div>
                 ) : (
-                  <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: -10, marginBottom: 16, lineHeight: 1.5, paddingLeft: 2 }}>
+                  <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: -10, marginBottom: 16, lineHeight: 1.5, paddingLeft: 2 }}>
                     Eine Wärmepumpe erhöht deinen Stromverbrauch deutlich — eine größere PV-Anlage lohnt sich dann besonders.
                   </div>
                 )}
@@ -646,7 +646,7 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                             const active = gvAnswered.has("ea-km") && eaKm === km;
                             return (
                               <button key={km} onClick={() => { setEaKm(km); markGvAnswered("ea-km"); }} style={{
-                                padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                                padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
                                 background: active ? v('--color-accent-dim') : v('--color-bg-muted'),
                                 border: active ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
                                 color: active ? v('--color-accent') : v('--color-text-muted'),
@@ -662,12 +662,12 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                   );
                 })()}
                 {ea === "nein" && (
-                  <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: -10, marginBottom: 8, lineHeight: 1.5, paddingLeft: 2 }}>
+                  <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: -10, marginBottom: 8, lineHeight: 1.5, paddingLeft: 2 }}>
                     Ein E-Auto erhöht deinen Verbrauch um ~2.700 kWh/Jahr (bei 15.000 km) — gut für die PV-Rentabilität.
                   </div>
                 )}
                 <TriToggle label="❄️ Klimaanlage" options={TRI} value={klima} onChange={setKlima} />
-                <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: -10, marginBottom: 8, lineHeight: 1.5, paddingLeft: 2 }}>
+                <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: -10, marginBottom: 8, lineHeight: 1.5, paddingLeft: 2 }}>
                   Eine Klimaanlage kühlt im Sommer — genau dann, wenn die Sonne scheint. Sie hebt den Eigenverbrauch
                   besonders stark. Eigener <Link href="/klimaanlage-stromkosten" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Klimaanlagen-Rechner</Link> für die Stromkosten.
                 </div>
@@ -705,26 +705,26 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
               textAlign: "center", padding: "24px 20px 20px", marginBottom: 16,
               background: v('--color-bg-accent'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border-accent')}`,
             }}>
-              <div style={{ fontSize: 12, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8 }}>
+              <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8 }}>
                 Unsere Empfehlung
               </div>
-              <div style={{ fontSize: 42, fontWeight: 800, color: v('--color-accent'), fontFamily: v('--font-mono'), lineHeight: 1.1 }}>
+              <div style={{ fontSize: v("--font-size-display-lg"), fontWeight: 800, color: v('--color-accent'), fontFamily: v('--font-mono'), lineHeight: 1.1 }}>
                 {rec.kwp} kWp
               </div>
               {rec.speicherKwh > 0 && (
-                <div style={{ fontSize: 22, fontWeight: 700, color: v('--color-text-primary'), fontFamily: v('--font-mono'), marginTop: 4 }}>
+                <div style={{ fontSize: v("--font-size-display-sm"), fontWeight: 700, color: v('--color-text-primary'), fontFamily: v('--font-mono'), marginTop: 4 }}>
                   + {rec.speicherKwh.toLocaleString("de-DE")} kWh Speicher
                 </div>
               )}
-              <div style={{ fontSize: 14, color: v('--color-text-secondary'), marginTop: 12 }}>
+              <div style={{ fontSize: v("--font-size-body"), color: v('--color-text-secondary'), marginTop: 12 }}>
                 Geschätzte Investition: <span style={{ fontWeight: 700, color: v('--color-text-primary'), fontFamily: v('--font-mono') }}>{rec.reasoning.investition.toLocaleString("de-DE")} €</span>
               </div>
               {selRec?.eco.paybackYears && (
-                <div style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 4 }}>
+                <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 4 }}>
                   Amortisation in ca. {selRec.eco.paybackYears} Jahren
                 </div>
               )}
-              <div style={{ fontSize: 13, color: v('--color-text-secondary'), marginTop: 8, paddingTop: 8, borderTop: `1px solid ${v('--color-border-accent')}` }}>
+              <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), marginTop: 8, paddingTop: 8, borderTop: `1px solid ${v('--color-border-accent')}` }}>
                 Gewinn nach 25 Jahren: <span style={{ fontWeight: 700, color: (selRec?.eco.npv25 ?? 0) >= 0 ? v('--color-positive') : v('--color-negative'), fontFamily: v('--font-mono') }}>
                   {(selRec?.eco.npv25 ?? 0) >= 0 ? "+" : ""}{Math.round(selRec?.eco.npv25 ?? 0).toLocaleString("de-DE")} €
                 </span>
@@ -736,11 +736,11 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                   weil sie verschweigt, dass die genannte Zahl das eigene Budget
                   ueberschreitet. */}
               {rec.reasoning.budgetZuKnapp ? (
-                <div style={{ fontSize: 12, color: v('--color-negative'), marginTop: 8, fontWeight: 600 }}>
+                <div style={{ fontSize: v("--font-size-small"), color: v('--color-negative'), marginTop: 8, fontWeight: 600 }}>
                   Für dein Budget reicht es nicht — das ist die kleinste sinnvolle Anlage.
                 </div>
               ) : rec.reasoning.budgetConstrained && (
-                <div style={{ fontSize: 12, color: v('--color-negative'), marginTop: 8, fontWeight: 600 }}>
+                <div style={{ fontSize: v("--font-size-small"), color: v('--color-negative'), marginTop: 8, fontWeight: 600 }}>
                   Budget-begrenzt — ohne Limit wäre mehr möglich
                 </div>
               )}
@@ -753,10 +753,10 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
             }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
                 <div style={{ flex: "1 1 200px" }}>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4 }}>
+                  <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4 }}>
                     Standort {ertragKwp ? "" : "(optional)"}
                   </div>
-                  <div style={{ fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.5 }}>
+                  <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), lineHeight: 1.5 }}>
                     {ertragKwp
                       ? `PLZ ${plz}: ${ertragKwp} kWh/kWp/Jahr${plzSource ? ` · ${plzSource}` : ""}`
                       : `PLZ angeben — wir holen den echten Sonnenertrag deines Standorts. Sonst rechnen wir mit dem Bundesmittel (${NATIONAL_AVG_YIELD.toLocaleString("de-DE")} kWh/kWp).`}
@@ -775,12 +775,12 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                       else setPlz("");
                     }}
                     style={{
-                      width: 80, padding: "8px 10px", borderRadius: v('--radius-sm'), fontSize: 14, fontFamily: v('--font-mono'),
+                      width: 80, padding: "8px 10px", borderRadius: v('--radius-sm'), fontSize: v("--font-size-body"), fontFamily: v('--font-mono'),
                       border: `1px solid ${v('--color-border')}`, background: v('--color-bg-muted'),
                       color: v('--color-text-primary'), outline: "none", textAlign: "center",
                     }}
                   />
-                  {plzLoading && <span style={{ fontSize: 11, color: v('--color-text-muted') }}>lädt…</span>}
+                  {plzLoading && <span style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted') }}>lädt…</span>}
                 </div>
               </div>
             </div>
@@ -790,64 +790,64 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
               background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16,
               border: `1px solid ${v('--color-border')}`,
             }}>
-              <summary style={{ fontSize: 14, fontWeight: 700, color: v('--color-text-primary'), cursor: "pointer", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <summary style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v('--color-text-primary'), cursor: "pointer", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span>Warum diese Konfiguration?</span>
-                <span style={{ fontSize: 11, color: v('--color-text-muted'), fontWeight: 400, display: "inline-flex", alignItems: "center", gap: 4 }}>Details <IconChevronDown size={iconSizes.xs} /></span>
+                <span style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted'), fontWeight: 400, display: "inline-flex", alignItems: "center", gap: 4 }}>Details <IconChevronDown size={iconSizes.xs} /></span>
               </summary>
-              <div style={{ marginTop: 14, fontSize: 13, color: v('--color-text-muted'), lineHeight: 1.7 }}>
+              <div style={{ marginTop: 14, fontSize: v("--font-size-body"), color: v('--color-text-muted'), lineHeight: 1.7 }}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 16px", marginBottom: 12 }}>
                   <div>
-                    <div style={{ color: v('--color-text-secondary'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Grundverbrauch</div>
+                    <div style={{ color: v('--color-text-secondary'), fontSize: v("--font-size-caption"), textTransform: "uppercase", letterSpacing: "0.04em" }}>Grundverbrauch</div>
                     <div style={{ fontFamily: v('--font-mono'), fontWeight: 600, color: v('--color-text-primary') }}>{rec.reasoning.baseConsumption.toLocaleString("de-DE")} kWh</div>
                   </div>
                   {rec.reasoning.wpConsumption > 0 && (
                     <div>
-                      <div style={{ color: v('--color-text-secondary'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>+ Wärmepumpe</div>
+                      <div style={{ color: v('--color-text-secondary'), fontSize: v("--font-size-caption"), textTransform: "uppercase", letterSpacing: "0.04em" }}>+ Wärmepumpe</div>
                       <div style={{ fontFamily: v('--font-mono'), fontWeight: 600, color: v('--color-text-primary') }}>{rec.reasoning.wpConsumption.toLocaleString("de-DE")} kWh</div>
                     </div>
                   )}
                   {rec.reasoning.eaConsumption > 0 && (
                     <div>
-                      <div style={{ color: v('--color-text-secondary'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>+ E-Auto</div>
+                      <div style={{ color: v('--color-text-secondary'), fontSize: v("--font-size-caption"), textTransform: "uppercase", letterSpacing: "0.04em" }}>+ E-Auto</div>
                       <div style={{ fontFamily: v('--font-mono'), fontWeight: 600, color: v('--color-text-primary') }}>{rec.reasoning.eaConsumption.toLocaleString("de-DE")} kWh</div>
                     </div>
                   )}
                   {rec.reasoning.klimaConsumption > 0 && (
                     <div>
-                      <div style={{ color: v('--color-text-secondary'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>+ Klimaanlage</div>
+                      <div style={{ color: v('--color-text-secondary'), fontSize: v("--font-size-caption"), textTransform: "uppercase", letterSpacing: "0.04em" }}>+ Klimaanlage</div>
                       <div style={{ fontFamily: v('--font-mono'), fontWeight: 600, color: v('--color-text-primary') }}>{rec.reasoning.klimaConsumption.toLocaleString("de-DE")} kWh</div>
                     </div>
                   )}
                   <div>
-                    <div style={{ color: v('--color-text-secondary'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Gesamt</div>
+                    <div style={{ color: v('--color-text-secondary'), fontSize: v("--font-size-caption"), textTransform: "uppercase", letterSpacing: "0.04em" }}>Gesamt</div>
                     <div style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-primary') }}>{rec.reasoning.totalConsumption.toLocaleString("de-DE")} kWh</div>
                   </div>
                   <div>
-                    <div style={{ color: v('--color-text-secondary'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Dachfläche nutzbar</div>
+                    <div style={{ color: v('--color-text-secondary'), fontSize: v("--font-size-caption"), textTransform: "uppercase", letterSpacing: "0.04em" }}>Dachfläche nutzbar</div>
                     <div style={{ fontFamily: v('--font-mono'), fontWeight: 600, color: v('--color-text-primary') }}>~{rec.reasoning.nutzbarM2} m²</div>
                   </div>
                   <div>
-                    <div style={{ color: v('--color-text-secondary'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Max. Anlagengröße</div>
+                    <div style={{ color: v('--color-text-secondary'), fontSize: v("--font-size-caption"), textTransform: "uppercase", letterSpacing: "0.04em" }}>Max. Anlagengröße</div>
                     <div style={{ fontFamily: v('--font-mono'), fontWeight: 600, color: v('--color-text-primary') }}>{rec.reasoning.maxRoofKwp} kWp</div>
                   </div>
                   <div>
-                    <div style={{ color: v('--color-text-secondary'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Autarkie</div>
+                    <div style={{ color: v('--color-text-secondary'), fontSize: v("--font-size-caption"), textTransform: "uppercase", letterSpacing: "0.04em" }}>Autarkie</div>
                     <div style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-positive') }}>{rec.reasoning.autarkie}%</div>
                   </div>
                   <div>
-                    <div style={{ color: v('--color-text-secondary'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Eigenverbrauch</div>
+                    <div style={{ color: v('--color-text-secondary'), fontSize: v("--font-size-caption"), textTransform: "uppercase", letterSpacing: "0.04em" }}>Eigenverbrauch</div>
                     <div style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-primary') }}>{rec.reasoning.eigenverbrauch}%</div>
                   </div>
                 </div>
-                <div style={{ fontSize: 12, color: v('--color-text-muted'), borderTop: `1px solid ${v('--color-border')}`, paddingTop: 10, lineHeight: 1.6 }}>
+                <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), borderTop: `1px solid ${v('--color-border')}`, paddingTop: 10, lineHeight: 1.6 }}>
                   {rec.kwp < rec.reasoning.maxRoofKwp
-                    ? `Diese Konfiguration bringt über 25 Jahre die höchste Rendite — größere Anlagen senken den Eigenverbrauchsanteil zu stark.`
+                    ? `Diese Konfiguration bringt über 25 Jahre die höchsten Gewinn — größere Anlagen senken den Eigenverbrauchsanteil zu stark.`
                     : `Die Empfehlung nutzt deine Dachfläche maximal aus (${rec.reasoning.maxRoofKwp} kWp).`
                   }
                   {rec.speicherKwh > 0 && ` Der ${rec.speicherKwh.toLocaleString("de-DE")} kWh Speicher hebt deine Autarkie von ${rec.reasoning.autarkieOhneSpeicher}% auf ${rec.reasoning.autarkie}% (Eigenverbrauch ${rec.reasoning.eigenverbrauchOhneSpeicher}% → ${rec.reasoning.eigenverbrauch}%).`}
                 </div>
                 {wp !== "nein" && (
-                  <div style={{ fontSize: 12, color: v('--color-text-muted'), borderTop: `1px solid ${v('--color-border')}`, paddingTop: 10, marginTop: 10, lineHeight: 1.6 }}>
+                  <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), borderTop: `1px solid ${v('--color-border')}`, paddingTop: 10, marginTop: 10, lineHeight: 1.6 }}>
                     <strong style={{ color: v('--color-text-secondary'), fontWeight: 700 }}>Hinweis bei Wärmepumpe:</strong> Wir rechnen den Winter-Speicher-Effekt mit ein. Ein Teil deines Stroms wird genau dann gebraucht, wenn die Sonne kaum scheint — der Speicher kann das nur teilweise abfangen. Größere Speicher bringen hier weniger zusätzlichen Nutzen als die reine Verbrauchsmenge vermuten lässt.{" "}
                     <Link href="/methodik" style={{ color: v('--color-accent'), textDecoration: "none" }}>Mehr dazu in der Methodik →</Link>
                   </div>
@@ -862,24 +862,24 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                 borderRadius: v('--radius-md'), padding: "12px 14px", marginBottom: 12,
               }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-primary') }}>
+                  <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v('--color-text-primary') }}>
                     Förderung{fundingOrt ? ` in ${fundingOrt}` : ""}
                   </span>
-                  <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, fontSize: 15, color: v('--color-positive') }}>
+                  <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, fontSize: v("--font-size-body"), color: v('--color-positive') }}>
                     + {Math.round(fundingStack.total).toLocaleString("de-DE")} €
                   </span>
                 </div>
-                <div style={{ fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.5 }}>
+                <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), lineHeight: 1.5 }}>
                   {fundingStack.applied.map((a) => a.program.name).join(", ")} senkt deine Investition für diese
-                  Anlage um rund {Math.round(fundingStack.total).toLocaleString("de-DE")} €. Im Ergebnis ist die
-                  Förderung bereits eingerechnet.
+                  Anlage um rund {Math.round(fundingStack.total).toLocaleString("de-DE")} €. Die Zahlen hier oben rechnen
+                  noch ohne sie — auf der Ergebnisseite des Rechners ist die Förderung dann eingerechnet.
                 </div>
               </div>
             )}
 
             {/* CTA */}
             <button onClick={() => goToResult(rec.kwp, rec.speicherIdx)} style={{
-              width: "100%", padding: "14px", borderRadius: v('--radius-md'), fontSize: 15, fontWeight: 700,
+              width: "100%", padding: "14px", borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), fontWeight: 700,
               background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
               fontFamily: v('--font-text'), marginBottom: 12,
             }}>
@@ -889,14 +889,14 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
             {/* Share + Eingaben ändern */}
             <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
               <button onClick={shareUrl} style={{
-                flex: 1, padding: "10px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
+                flex: 1, padding: "10px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600,
                 background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer",
                 fontFamily: v('--font-text'),
               }}>
                 {shareCopied ? "Link kopiert ✓" : "Empfehlung teilen"}
               </button>
               <button onClick={hideRecommendation} style={{
-                flex: 1, padding: "10px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
+                flex: 1, padding: "10px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600,
                 background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer",
                 fontFamily: v('--font-text'),
               }}><span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={iconSizes.md} /> Eingaben ändern</span></button>
@@ -905,7 +905,7 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
             {/* Alternativen */}
             {rec.alternatives.length > 0 && (
               <div style={{ marginBottom: 16 }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Alternativen</div>
+                <div style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Alternativen</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {rec.alternatives.map((alt, i) => (
                     <button key={i} onClick={() => goToResult(alt.kwp, findSpeicherIdx(alt.speicherKwh))} style={{
@@ -913,20 +913,20 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                       cursor: "pointer", textAlign: "left", width: "100%",
                     }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                        <span style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-primary') }}>{alt.label}</span>
-                        <span style={{ fontSize: 13, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-text-secondary') }}>
+                        <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v('--color-text-primary') }}>{alt.label}</span>
+                        <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-text-secondary') }}>
                           {alt.kwp} kWp{alt.speicherKwh > 0 ? ` + ${alt.speicherKwh.toLocaleString("de-DE")} kWh` : ""}
                         </span>
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <span style={{ fontSize: 12, color: v('--color-text-muted') }}>{alt.reason}</span>
-                        <span style={{ fontSize: 12, fontFamily: v('--font-mono'), color: v('--color-text-secondary') }}>
+                        <span style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted') }}>{alt.reason}</span>
+                        <span style={{ fontSize: v("--font-size-small"), fontFamily: v('--font-mono'), color: v('--color-text-secondary') }}>
                           {alt.investition.toLocaleString("de-DE")} €
                         </span>
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 6, paddingTop: 6, borderTop: `1px dashed ${v('--color-border')}` }}>
-                        <span style={{ fontSize: 11, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Gewinn nach 25 Jahren</span>
-                        <span style={{ fontSize: 12, fontFamily: v('--font-mono'), fontWeight: 700, color: (altEco[i]?.npv25 ?? alt.npv25) >= 0 ? v('--color-positive') : v('--color-negative') }}>
+                        <span style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Gewinn nach 25 Jahren</span>
+                        <span style={{ fontSize: v("--font-size-small"), fontFamily: v('--font-mono'), fontWeight: 700, color: (altEco[i]?.npv25 ?? alt.npv25) >= 0 ? v('--color-positive') : v('--color-negative') }}>
                           {(altEco[i]?.npv25 ?? alt.npv25) >= 0 ? "+" : ""}{Math.round(altEco[i]?.npv25 ?? alt.npv25).toLocaleString("de-DE")} €
                         </span>
                       </div>
@@ -936,7 +936,7 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
               </div>
             )}
 
-            <div style={{ textAlign: "center", fontSize: 11, color: v('--color-text-faint'), padding: "20px 0 8px", lineHeight: 1.6 }}>
+            <div style={{ textAlign: "center", fontSize: v("--font-size-caption"), color: v('--color-text-faint'), padding: "20px 0 8px", lineHeight: 1.6 }}>
               Die Empfehlung basiert auf Durchschnittswerten. Auf der Ergebnisseite kannst du alle Annahmen anpassen.
             </div>
           </div>

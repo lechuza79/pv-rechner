@@ -12,6 +12,7 @@
 // lib/social-kennzahlen.ts (server-only) und werden hereingereicht.
 
 import { fmtPvLeistung } from "./atlas-format";
+import { zeitraumSeitStichtag } from "./anlagenbestand";
 import { feedInRatesFor, naechsteDegressionIso } from "./feedin-config";
 import { eegVerfahrenSatz } from "./eeg-reform-config";
 import { PERCAPITA_SERIES, YEARS_PERCAPITA } from "./country-comparison-percapita";
@@ -28,6 +29,15 @@ export { BILDFORMEN, BILDFORM_NAME, TEMPLATES, bildform, moeglicheFormen, templa
 export type SocialKennzahlen = {
   /** Datenstand des Anlagenregisters (ISO-Datum). */
   standIso: string;
+  /**
+   * Das Jahr, dessen 31.12. die Vergleichsbasis von `wachstum` ist.
+   *
+   * Ohne dieses Feld ist der Zeitraum nicht benennbar, und die Posts nannten
+   * ihn „zwölf Monate" — bei einem Datenstand im August waren es sieben. Das
+   * Register führt je Anlage nur das JAHR der Inbetriebnahme; ein Bestand vor
+   * genau zwölf Monaten ist daraus nicht ableitbar, ein Jahresendbestand schon.
+   */
+  stichtagJahr: number;
   stadtLand: {
     /** Städte ab dieser Einwohnerzahl. */
     stadtAb: number;
@@ -40,6 +50,7 @@ export type SocialKennzahlen = {
   };
   wachstum: {
     balkonJetzt: number;
+    /** Bestand am 31.12. von `stichtagJahr` — nicht „vor einem Jahr". */
     balkonVorJahr: number;
     solarKwpJetzt: number;
     solarKwpVorJahr: number;
@@ -458,7 +469,7 @@ export function postStadtLand(k: SocialKennzahlen, eigeneVorlage?: string): Soci
       absaetze: [
         `Steckersolargeräte gelten als Lösung für Mieter in der Stadt. Die Anmeldungen im Marktstammdatenregister zeigen das Gegenteil: In den ${de(s.stadtAnzahl)} deutschen Städten über ${de(s.stadtAb / 1000)}.000 Einwohnern kommen ${de(s.stadtJeTausend, 1)} Geräte auf 1.000 Einwohner, in den Gemeinden unter ${de(s.landUnter / 1000)}.000 sind es ${de(s.landJeTausend, 1)}.`,
         `Am deutlichsten ist der Abstand in den Stadtstaaten: ${stadtstaaten.map((l) => `${l.name} ${de(l.balkonJeTausend, 1)}`).join(", ")}. Unter den Flächenländern führt ${spitze.name} mit ${de(spitze.balkonJeTausend, 1)}.`,
-        `Der Grund liegt vermutlich nicht am Gerät, sondern an der Aufstellung: Ein Balkonkraftwerk braucht keine Genehmigung und keinen Handwerker, aber jemanden, der es anbringt und anmeldet. Auf einer Terrasse oder im Garten ist das einfacher als an einem Mietbalkon, der nach Norden zeigt.`,
+        `Der Grund liegt vermutlich nicht am Gerät, sondern an der Aufstellung: Ein Balkonkraftwerk braucht keine Baugenehmigung und keinen Handwerker, aber jemanden, der es anbringt und anmeldet — in der Mietwohnung zusätzlich das Einverständnis des Vermieters. Auf einer Terrasse oder im Garten ist das einfacher als an einem Mietbalkon, der nach Norden zeigt.`,
       ],
     },
     belege: [
@@ -483,10 +494,16 @@ export function postWachstum(k: SocialKennzahlen): SocialPost {
   const solarProzent = (w.solarKwpJetzt / w.solarKwpVorJahr - 1) * 100;
   const zuwachs = w.balkonJetzt - w.balkonVorJahr;
   const gwp = (n: number) => de(n / 1_000_000, 0);
+  // Der Zeitraum kommt aus den Daten, nicht aus einer Annahme: Vergleichsbasis
+  // ist der Jahresendbestand, der Abstand zum Datenstand also so lang, wie das
+  // laufende Jahr alt ist. Bis zum 26.08.2026 stand hier „zwölf Monate" — bei
+  // einem Datenstand vom 5. August waren es sieben.
+  const zeitraum = zeitraumSeitStichtag(k.standIso, k.stichtagJahr);
+  const zeitraumKurz = zeitraum.replace(/^in den ersten /, "in ").replace(/^seit /, "seit ");
 
   // Aussage in die ersten zwei Zeilen, siehe postStadtLand.
   const text = [
-    `Balkonkraftwerke wachsen ${de(balkonProzent / solarProzent, 1)}-mal so schnell wie Deutschlands Solarleistung insgesamt. ${de(Math.round(zuwachs / 1000))}.000 neue in zwölf Monaten.`,
+    `Balkonkraftwerke wachsen ${de(balkonProzent / solarProzent, 1)}-mal so schnell wie Deutschlands Solarleistung insgesamt. ${de(Math.round(zuwachs / 1000))}.000 neue ${zeitraumKurz}.`,
     ``,
     `Die Solarleistung ist im selben Zeitraum um ${de(solarProzent, 0)} Prozent gewachsen, auf ${gwp(w.solarKwpJetzt)} Gigawatt. Die Zahl der Balkonkraftwerke um ${de(balkonProzent, 0)} Prozent, von ${de(w.balkonVorJahr / 1_000_000, 2)} auf ${de(w.balkonJetzt / 1_000_000, 2)} Millionen.`,
     ``,
@@ -507,13 +524,13 @@ export function postWachstum(k: SocialKennzahlen): SocialPost {
       stil: KARTEN_STIL_STANDARD,
       art: "kennzahl",
       aussage: `Balkonkraftwerke wachsen ${de(balkonProzent / solarProzent, 1)}-mal so schnell wie die Solarleistung`,
-      gemessen: `Veränderung in zwölf Monaten`,
+      gemessen: `Veränderung ${zeitraum}`,
       // Zwei Prozentbalken nebeneinander sagen im Bild nichts: Die Länge
       // vergleicht dann zwei Veränderungen, nicht zwei Größen. Gezeigt wird
       // deshalb der Bestand vorher und nachher; die Rate steht in der Aussage.
       serien: [
         {
-          label: `neue Balkonkraftwerke in zwölf Monaten — von ${de(w.balkonVorJahr / 1_000_000, 2)} auf ${de(w.balkonJetzt / 1_000_000, 2)} Millionen`,
+          label: `neue Balkonkraftwerke ${zeitraumKurz} — von ${de(w.balkonVorJahr / 1_000_000, 2)} auf ${de(w.balkonJetzt / 1_000_000, 2)} Millionen`,
           wert: Math.round(zuwachs / 1000),
           einheit: "Tausend",
           hervorgehoben: true,
@@ -525,7 +542,7 @@ export function postWachstum(k: SocialKennzahlen): SocialPost {
       anker: "balkon-wachstum",
       ueberschrift: "Balkonkraftwerke wachsen schneller als die Solarleistung insgesamt",
       absaetze: [
-        `Deutschlands installierte Solarleistung ist in zwölf Monaten um ${de(solarProzent, 0)} Prozent gewachsen, auf ${gwp(w.solarKwpJetzt)} Gigawatt. Die Zahl der angemeldeten Steckersolargeräte im selben Zeitraum um ${de(balkonProzent, 0)} Prozent, von ${de(w.balkonVorJahr / 1_000_000, 2)} auf ${de(w.balkonJetzt / 1_000_000, 2)} Millionen.`,
+        `Deutschlands installierte Solarleistung ist ${zeitraum} um ${de(solarProzent, 0)} Prozent gewachsen, auf ${gwp(w.solarKwpJetzt)} Gigawatt. Die Zahl der angemeldeten Steckersolargeräte im selben Zeitraum um ${de(balkonProzent, 0)} Prozent, von ${de(w.balkonVorJahr / 1_000_000, 2)} auf ${de(w.balkonJetzt / 1_000_000, 2)} Millionen.`,
         `An der Leistung gemessen ist das eine Randnotiz: Ein Balkonkraftwerk bringt einen Bruchteil dessen, was eine Dachanlage liefert. Als Zahl der Haushalte, die zum ersten Mal eigenen Strom erzeugen, ist es die größere Bewegung — ${de(Math.round(zuwachs / 1000))}.000 in einem Jahr, ohne Handwerker, ohne Kredit und ohne Genehmigung.`,
       ],
     },

@@ -49,7 +49,7 @@ export function FilterLeiste({
             disabled={e.anzahl === 0}
             style={{
               font: "inherit",
-              fontSize: 13,
+              fontSize: v("--font-size-small"),
               fontWeight: an ? 600 : 400,
               color: an
                 ? v("--color-bg")

@@ -10,7 +10,7 @@ import { WidgetFooter } from "./WidgetExport";
 import { DataSourceNote } from "./PoweredBy";
 import { WIDGETS } from "../lib/widget-registry";
 import { DATA_SOURCES, sourceLabel } from "../lib/data-sources";
-import { v, tokens, iconSizes } from "../lib/theme";
+import { v, tokens, iconSizes, fsPx } from "../lib/theme";
 import { PERSONEN, NUTZUNG } from "../lib/constants";
 import {
   WeatherData,
@@ -205,7 +205,7 @@ export default function SimulationPanel({
   const ctaStyle: React.CSSProperties = {
     display: "block", textAlign: "center", padding: "14px 20px",
     borderRadius: v('--radius-md'), background: v('--color-accent'),
-    color: v('--color-text-on-accent'), fontSize: 14, fontWeight: 700,
+    color: v('--color-text-on-accent'), fontSize: v("--font-size-body"), fontWeight: 700,
     textDecoration: "none",
   };
   const ctaInner = (
@@ -227,14 +227,14 @@ export default function SimulationPanel({
             value={plz}
             onChange={e => setPlz(e.target.value.replace(/\D/g, "").slice(0, 5))}
             style={{
-              width: "100%", padding: "14px 16px", paddingRight: 56, fontSize: 16, fontFamily: v('--font-mono'),
+              width: "100%", padding: "14px 16px", paddingRight: 56, fontSize: v("--font-size-lead"), fontFamily: v('--font-mono'),
               borderRadius: v('--radius-md'), border: `2px solid ${v('--color-border')}`,
               background: v('--color-bg-muted'), color: v('--color-text-primary'),
               outline: "none", textAlign: "center", letterSpacing: "0.1em",
             }}
           />
           {loading ? (
-            <div style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", fontSize: 12, color: v('--color-text-muted') }}>
+            <div style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", fontSize: v("--font-size-small"), color: v('--color-text-muted') }}>
               Laden...
             </div>
           ) : plz.length === 5 && (
@@ -242,7 +242,7 @@ export default function SimulationPanel({
               position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)",
               width: 38, height: 38, borderRadius: v('--radius-sm'),
               background: v('--color-accent'), color: v('--color-text-on-accent'),
-              border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700,
+              border: "none", cursor: "pointer", fontSize: v("--font-size-lead"), fontWeight: 700,
               display: "flex", alignItems: "center", justifyContent: "center",
             }}>
               <IconArrowRight size={iconSizes.lg} />
@@ -250,7 +250,7 @@ export default function SimulationPanel({
           )}
         </form>
         {lastUpdate && (
-          <div style={{ fontSize: 11, color: v('--color-text-faint'), textAlign: "center", marginTop: 6 }}>
+          <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), textAlign: "center", marginTop: 6 }}>
             Aktualisiert {lastUpdate.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} Uhr
           </div>
         )}
@@ -258,7 +258,7 @@ export default function SimulationPanel({
 
       {/* Error */}
       {error && (
-        <div style={{ padding: "12px 16px", borderRadius: v('--radius-md'), background: v('--color-negative-dim'), border: `1px solid ${v('--color-negative-border')}`, fontSize: 13, color: v('--color-negative'), marginBottom: 16, textAlign: "center" }}>
+        <div style={{ padding: "12px 16px", borderRadius: v('--radius-md'), background: v('--color-negative-dim'), border: `1px solid ${v('--color-negative-border')}`, fontSize: v("--font-size-small"), color: v('--color-negative'), marginBottom: 16, textAlign: "center" }}>
           {error}
         </div>
       )}
@@ -273,9 +273,9 @@ export default function SimulationPanel({
               <WeatherStat label="Bewölkung" value={`${Math.round(weather.cloudCover)}`} unit="%" />
             </div>
           ) : (
-            <div style={{ textAlign: "center", fontSize: 14, color: v('--color-text-secondary'), lineHeight: 1.6 }}>
+            <div style={{ textAlign: "center", fontSize: v("--font-size-body"), color: v('--color-text-secondary'), lineHeight: 1.6 }}>
               Aktuell keine Sonneneinstrahlung.<br />
-              <span style={{ fontSize: 12, color: v('--color-text-muted') }}>Der Tagesverlauf zeigt die heutigen Werte.</span>
+              <span style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted') }}>Der Tagesverlauf zeigt die heutigen Werte.</span>
             </div>
           )}
         </div>
@@ -284,14 +284,14 @@ export default function SimulationPanel({
       {/* Household Profile */}
       {weather && !error && (
         <div className="fu" style={{ marginBottom: 16, padding: "14px 16px", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, background: v('--color-bg') }}>
-          <div style={{ fontSize: 11, fontWeight: 600, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10 }}>
+          <div style={{ fontSize: v("--font-size-caption"), fontWeight: 600, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10 }}>
             Dein Haushalt
           </div>
           {/* Personen */}
           <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
             {PERSONEN.map((p, i) => (
               <button key={i} onClick={() => setPersonenIdx(i)} style={{
-                flex: 1, padding: "6px 0", fontSize: 12, fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
+                flex: 1, padding: "6px 0", fontSize: v("--font-size-small"), fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
                 background: personenIdx === i ? v('--color-accent') : v('--color-bg-muted'),
                 color: personenIdx === i ? v('--color-text-on-accent') : v('--color-text-secondary'),
                 border: personenIdx === i ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
@@ -304,7 +304,7 @@ export default function SimulationPanel({
           <div style={{ display: "flex", gap: 6, marginBottom: 10 }}>
             {NUTZUNG.map((n, i) => (
               <button key={i} onClick={() => setNutzungIdx(i)} style={{
-                flex: 1, padding: "6px 2px", fontSize: 10, fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
+                flex: 1, padding: "6px 2px", fontSize: v("--font-size-micro"), fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
                 background: nutzungIdx === i ? v('--color-accent') : v('--color-bg-muted'),
                 color: nutzungIdx === i ? v('--color-text-on-accent') : v('--color-text-secondary'),
                 border: nutzungIdx === i ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
@@ -317,7 +317,7 @@ export default function SimulationPanel({
           {/* WP + E-Auto */}
           <div style={{ display: "flex", gap: 8 }}>
             <button onClick={() => setWpActive(!wpActive)} style={{
-              flex: 1, padding: "7px 0", fontSize: 12, fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
+              flex: 1, padding: "7px 0", fontSize: v("--font-size-small"), fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
               background: wpActive ? v('--color-accent') : v('--color-bg-muted'),
               color: wpActive ? v('--color-text-on-accent') : v('--color-text-secondary'),
               border: wpActive ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
@@ -325,7 +325,7 @@ export default function SimulationPanel({
               <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Wärmepumpe {wpActive ? <IconCheck size={iconSizes.sm} /> : ""}</span>
             </button>
             <button onClick={() => setEaActive(!eaActive)} style={{
-              flex: 1, padding: "7px 0", fontSize: 12, fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
+              flex: 1, padding: "7px 0", fontSize: v("--font-size-small"), fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
               background: eaActive ? v('--color-accent') : v('--color-bg-muted'),
               color: eaActive ? v('--color-text-on-accent') : v('--color-text-secondary'),
               border: eaActive ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
@@ -333,7 +333,7 @@ export default function SimulationPanel({
               <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>E-Auto {eaActive ? <IconCheck size={iconSizes.sm} /> : ""}</span>
             </button>
             <button onClick={() => setKlimaActive(!klimaActive)} style={{
-              flex: 1, padding: "7px 0", fontSize: 12, fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
+              flex: 1, padding: "7px 0", fontSize: v("--font-size-small"), fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
               background: klimaActive ? v('--color-accent') : v('--color-bg-muted'),
               color: klimaActive ? v('--color-text-on-accent') : v('--color-text-secondary'),
               border: klimaActive ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
@@ -341,7 +341,7 @@ export default function SimulationPanel({
               <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Klimaanlage {klimaActive ? <IconCheck size={iconSizes.sm} /> : ""}</span>
             </button>
           </div>
-          <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, textAlign: "center" }}>
+          <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), marginTop: 8, textAlign: "center" }}>
             Jahresverbrauch: ~{Math.round(household.baseKwh + (wpActive ? wpAnnualKwh : 0) + (eaActive ? calcEaAnnual(EA_DEFAULT_KM) : 0) + (klimaActive ? calcKlimaAnnual(KLIMA_DEFAULT_M2) : 0)).toLocaleString("de-DE")} kWh
           </div>
         </div>
@@ -364,12 +364,12 @@ export default function SimulationPanel({
                 textAlign: "center",
               }}
             >
-              <div style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-secondary'), marginBottom: 6 }}>
+              <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-secondary'), marginBottom: 6 }}>
                 {r.label}
               </div>
-              <div style={{ fontSize: 22, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-accent'), letterSpacing: "-0.02em" }}>
+              <div style={{ fontSize: v("--font-size-display-sm"), fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-accent'), letterSpacing: "-0.02em" }}>
                 {r.currentKw.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
-                <span style={{ fontSize: 13, fontWeight: 500, color: v('--color-text-muted'), marginLeft: 3 }}>kW</span>
+                <span style={{ fontSize: v("--font-size-small"), fontWeight: 500, color: v('--color-text-muted'), marginLeft: 3 }}>kW</span>
               </div>
               {/* Self-use bar: green = self-consumed, gray = surplus */}
               <div style={{ height: 4, borderRadius: 2, background: v('--color-border'), marginTop: 8, overflow: "hidden", display: "flex" }}>
@@ -389,7 +389,7 @@ export default function SimulationPanel({
                   </>
                 )}
               </div>
-              <div style={{ fontSize: 11, color: v('--color-text-muted'), marginTop: 4 }}>
+              <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted'), marginTop: 4 }}>
                 <span style={{ color: v('--color-positive'), fontWeight: 600 }}>{r.selfUsePercent}%</span> Eigenverbrauch
               </div>
             </button>
@@ -402,10 +402,10 @@ export default function SimulationPanel({
         <div className="fu" style={{ marginBottom: 20 }}>
           <div ref={simChartExport.chartRef}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: v('--color-text-primary') }}>
+              <div style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v('--color-text-primary') }}>
                 Tagesverlauf · {selectedKwp} kWp
               </div>
-              <div style={{ fontSize: 12, fontFamily: v('--font-mono'), color: v('--color-accent'), fontWeight: 600 }}>
+              <div style={{ fontSize: v("--font-size-small"), fontFamily: v('--font-mono'), color: v('--color-accent'), fontWeight: 600 }}>
                 ~{dailyEstimate.toLocaleString("de-DE", { minimumFractionDigits: 1 })} kWh
               </div>
             </div>
@@ -442,7 +442,7 @@ export default function SimulationPanel({
       {/* Disclaimer. Im Embed trägt die Quellen-Kante der Hülle den Credit —
           hier stünde er sonst ein zweites Mal, und zwar als Block. */}
       {weather && !error && (
-        <div style={{ fontSize: 11, color: v('--color-text-faint'), textAlign: "center", lineHeight: 1.5, marginBottom: embed ? 14 : 24 }}>
+        <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), textAlign: "center", lineHeight: 1.5, marginBottom: embed ? 14 : 24 }}>
           Geschätzte Leistung für ein südausgerichtetes Dach ohne Verschattung.<br />
           {!embed && (
             <>
@@ -481,12 +481,12 @@ export default function SimulationPanel({
 function WeatherStat({ label, value, unit }: { label: string; value: string; unit: string }) {
   return (
     <div style={{ textAlign: "center" }}>
-      <div style={{ fontSize: 10, fontWeight: 600, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>
+      <div style={{ fontSize: v("--font-size-micro"), fontWeight: 600, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 4 }}>
         {label}
       </div>
-      <div style={{ fontFamily: v('--font-mono'), fontWeight: 700, fontSize: 18, color: v('--color-text-primary') }}>
+      <div style={{ fontFamily: v('--font-mono'), fontWeight: 700, fontSize: v("--font-size-h3"), color: v('--color-text-primary') }}>
         {value}
-        <span style={{ fontSize: 11, fontWeight: 500, color: v('--color-text-secondary'), marginLeft: 2 }}>{unit}</span>
+        <span style={{ fontSize: v("--font-size-caption"), fontWeight: 500, color: v('--color-text-secondary'), marginLeft: 2 }}>{unit}</span>
       </div>
     </div>
   );
@@ -543,7 +543,7 @@ function DailyChart({ points, kwp }: { points: HourlyPoint[]; kwp: number }) {
       {yTicks.map(val => (
         <g key={val}>
           <line x1={P.l} x2={W - P.r} y1={y(val)} y2={y(val)} stroke="var(--color-chart-grid)" strokeWidth={0.5} />
-          <text x={P.l - 8} y={y(val)} textAnchor="end" dominantBaseline="middle" fontSize={10} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
+          <text x={P.l - 8} y={y(val)} textAnchor="end" dominantBaseline="middle" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
             {val}
           </text>
         </g>
@@ -551,7 +551,7 @@ function DailyChart({ points, kwp }: { points: HourlyPoint[]; kwp: number }) {
 
       {/* X-axis labels */}
       {[6, 9, 12, 15, 18, 21].map(h => (
-        <text key={h} x={x(h)} y={H - 20} textAnchor="middle" fontSize={10} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
+        <text key={h} x={x(h)} y={H - 20} textAnchor="middle" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
           {h}h
         </text>
       ))}
@@ -572,14 +572,14 @@ function DailyChart({ points, kwp }: { points: HourlyPoint[]; kwp: number }) {
       {currentHour >= 5 && currentHour <= 21 && (
         <>
           <line x1={x(currentHour)} x2={x(currentHour)} y1={P.t} y2={P.t + cH} stroke="var(--color-text-muted)" strokeWidth={1} strokeDasharray="4,3" />
-          <text x={x(currentHour)} y={P.t - 4} textAnchor="middle" fontSize={9} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
+          <text x={x(currentHour)} y={P.t - 4} textAnchor="middle" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
             Jetzt
           </text>
         </>
       )}
 
       {/* kW label */}
-      <text x={P.l - 8} y={8} textAnchor="end" fontSize={9} fill="var(--color-text-faint)" fontFamily="var(--font-mono)">
+      <text x={P.l - 8} y={8} textAnchor="end" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-faint)" fontFamily="var(--font-mono)">
         kW
       </text>
 
@@ -588,11 +588,11 @@ function DailyChart({ points, kwp }: { points: HourlyPoint[]; kwp: number }) {
       {hasConsumption && (
         <g {...{ [EXPORT_IGNORE_ATTR]: "" }} transform={`translate(${P.l}, ${H - 6})`}>
           <line x1={0} x2={16} y1={0} y2={0} stroke="var(--color-accent)" strokeWidth={2} />
-          <text x={20} y={0} dominantBaseline="middle" fontSize={9} fill="var(--color-text-muted)">Erzeugung</text>
+          <text x={20} y={0} dominantBaseline="middle" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)">Erzeugung</text>
           <line x1={90} x2={106} y1={0} y2={0} stroke="var(--color-negative)" strokeWidth={1.5} strokeDasharray="4,3" opacity={0.7} />
-          <text x={110} y={0} dominantBaseline="middle" fontSize={9} fill="var(--color-text-muted)">Verbrauch</text>
+          <text x={110} y={0} dominantBaseline="middle" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)">Verbrauch</text>
           <rect x={195} y={-4} width={10} height={8} rx={1} fill="var(--color-positive)" opacity={0.3} />
-          <text x={209} y={0} dominantBaseline="middle" fontSize={9} fill="var(--color-text-muted)">Eigenverbrauch</text>
+          <text x={209} y={0} dominantBaseline="middle" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)">Eigenverbrauch</text>
         </g>
       )}
     </svg>

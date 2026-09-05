@@ -222,6 +222,16 @@ export const WIDGETS = {
     cta: { label: "Solar-Atlas öffnen", href: "/" },
     exportable: false,
   },
+  anlagenbestand: {
+    id: "anlagenbestand-deutschland",
+    title: "Solaranlagen in Deutschland",
+    kind: "chart",
+    shareUrl: `${SITE}/photovoltaik-bestand-deutschland`,
+    shareText:
+      "Wie viele Solaranlagen stehen in Deutschland? Anzahl und Leistung nach Anlagentyp, aus dem Anlagenregister – Solar Check",
+    sources: [DATA_SOURCES.mastr],
+    cta: { label: "Eigenes Dach durchrechnen", href: "/photovoltaik-rechner" },
+  },
   kennzahl: {
     id: "kennzahl",
     title: "Kennzahl",

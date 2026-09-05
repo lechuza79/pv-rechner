@@ -5,6 +5,7 @@
 
 import { unstable_cache } from "next/cache";
 import { BUNDESLAENDER, bundeslandByAgs } from "./mastr-regions";
+import { verdichteBestand, type BestandSummen } from "./anlagenbestand";
 import { withDbTimeout } from "./db-timeout";
 import { ENCLOSED_CITIES } from "./enclosed-cities";
 import { ATLAS_DATEN_TAG } from "./atlas-revalidate-routen";
@@ -724,4 +725,42 @@ export function allBundeslaenderSummary(
   segment: SegmentFilter = "alle",
 ): Promise<RegionSummary[]> {
   return Promise.all(BUNDESLAENDER.map((bl) => getRegionSummary(bl.ags, energietraeger, segment)));
+}
+
+// ─── Bundesweiter Solarbestand, heute und zum letzten Jahresstichtag ─────────
+
+export type NationalerSolarBestand = BestandSummen & {
+  /** Das Jahr, dessen 31.12. die Vergleichsbasis ist. */
+  stichtagJahr: number;
+  data_as_of: string;
+};
+
+/**
+ * Wie viele Solaranlagen stehen in Deutschland, mit welcher Leistung, je
+ * Segment — und wie viele waren es am letzten Jahresstichtag.
+ *
+ * EINE Quelle für die Bestandsseite und ihr Widget. Sie läuft über denselben
+ * Rollup wie der Atlas (`mastr_region_series` mit leerem Präfix = Bundessumme),
+ * nicht über die Gemeindesummen der Award-Tabelle: Die filtert auf bewohnte
+ * Gemeinden mit Slug und verfehlt den Bundesbestand dadurch um rund 1.500
+ * Anlagen (gemessen 26.08.2026). Klein genug, um in gerundeten Zahlen nicht
+ * aufzufallen — und genau deshalb gefährlich, wenn zwei Stellen derselben Seite
+ * verschiedene Quellen nutzen.
+ *
+ * DER STICHTAG IST KEIN JAHRESTAG. Das Register führt je Anlage nur das JAHR
+ * der Inbetriebnahme; ein Bestand „vor zwölf Monaten" ist daraus nicht
+ * ableitbar. Ableitbar ist der Bestand zum 31.12. eines Jahres, und der Abstand
+ * zum Datenstand ist dann so lang, wie das laufende Jahr alt ist. Wer das
+ * „zwölf Monate" nennt, beschriftet die Zahl falsch — passiert und behoben.
+ */
+export async function getNationalSolarStock(): Promise<NationalerSolarBestand> {
+  const [rows, asOf] = await Promise.all([loadSeries("de", "solar"), fetchMetaDataAsOf()]);
+  // Das Jahr des Datenstands, nicht die Wanduhr: Der Stichtag muss zu den Daten
+  // passen, nicht zum Tag des Aufrufs (dieselbe Ableitung wie in der Zeitreihe).
+  const datenJahr = Number(asOf.substring(0, 4)) || new Date().getFullYear();
+  const stichtagJahr = datenJahr - 1;
+  // Das Verdichten steht bewusst als reine Funktion in lib/anlagenbestand.ts:
+  // Der Stichtagsfilter ist die Stelle, an der so etwas kippt, und ein Fehler
+  // darin wäre hier nur an einer Zahl auf der fertigen Seite aufgefallen.
+  return { ...verdichteBestand(rows, stichtagJahr), stichtagJahr, data_as_of: asOf };
 }

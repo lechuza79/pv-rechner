@@ -45,7 +45,7 @@ export default function GemeindeSolarWidget(props: GemeindeWidgetProps) {
           padding: 16,
           fontFamily: "var(--widget-font-family)",
           color: "var(--widget-muted)",
-          fontSize: 13,
+          fontSize: "var(--font-size-small)",
         }}
       >
         {props.error ?? "Keine Daten."}

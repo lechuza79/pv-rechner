@@ -260,40 +260,6 @@ export default function DatenschutzPage() {
           </a>
         </p>
 
-        {/* Ergänzt am 29.08.2026 mit der serverseitigen Herkunftszählung.
-            Sie ist bewusst KEIN zweites Messwerkzeug, sondern der Ersatz für
-            das, was die browserseitige Messung bauartbedingt nicht kann: Die
-            erfährt die Herkunft nur beim ersten Aufruf eines Besuchs. Der
-            Absatz steht hier und nicht in Abschnitt 3, weil die Server-Logfiles
-            dort dem Hosting-Anbieter gehören — diese Zählung ist unsere eigene
-            Verarbeitung mit eigenem Zweck. */}
-        <p style={S.p}>
-          <strong>Zusätzlich zählen wir auf unserem Server mit, von welcher
-          Website aus eine unserer Seiten aufgerufen wurde.</strong> Dafür wird
-          kein Skript ausgeliefert und nichts auf deinem Gerät gespeichert oder
-          von dort gelesen: Ausgewertet wird allein die Angabe, die dein Browser
-          beim Aufruf von sich aus mitschickt. Gespeichert werden davon nur drei
-          Dinge — der <strong>Kalendertag</strong>, die <strong>aufgerufene
-          Seite ohne den Teil hinter dem Fragezeichen</strong> und die
-          <strong> Domain der verweisenden Website</strong> (nie deren Adresse
-          im Einzelnen). Kam der Aufruf von einer anderen Seite unserer eigenen
-          Website oder ganz ohne Verweis, wird genau das vermerkt.
-        </p>
-        <p style={S.p}>
-          Was dabei entsteht, ist ein <strong>Zähler, keine Liste von
-          Besuchen</strong>: Jeder Aufruf erhöht eine Zahl, die für einen ganzen
-          Tag gilt. Es gibt keine Zeile je Aufruf und keine je Person. Deine
-          IP-Adresse, die Kennung deines Browsers und die Uhrzeit werden
-          <strong> nicht gespeichert</strong> — auch nicht verkürzt und auch
-          nicht in verschlüsselter Form. Damit lässt sich keine dieser Zahlen
-          einem Menschen zuordnen, auch nicht nachträglich. Die Kennung deines
-          Browsers wird einmal gelesen, um automatisierte Aufrufe von der
-          Zählung auszunehmen, und danach verworfen. Rechtsgrundlage ist
-          Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse daran, zu
-          verstehen, über welche Wege unser Angebot gefunden wird). Der
-          Erhebung kannst du jederzeit widersprechen (Abschnitt 12).
-        </p>
-
         <h2 style={S.h2}>6. Schriftarten</h2>
         <p style={S.p}>
           Diese Website verwendet die Schriftarten DM Sans und JetBrains Mono.
@@ -303,14 +269,48 @@ export default function DatenschutzPage() {
           wird keine IP-Adresse an Google übermittelt.
         </p>
 
-        <h2 style={S.h2}>7. Cookies</h2>
+        <h2 id="cookies" style={{ ...S.h2, scrollMarginTop: 96 }}>7. Cookies</h2>
         <p style={S.p}>
-          Diese Website setzt keine Tracking- oder Werbe-Cookies. Solange du dich
-          nicht anmeldest, werden überhaupt keine Cookies gesetzt. Meldest du
-          dich an, um Berechnungen zu speichern (siehe Abschnitt 9), wird ein
-          technisch notwendiges Sitzungs-Cookie gesetzt, damit du eingeloggt
-          bleibst. Dieses Cookie ist für den Anmeldevorgang erforderlich (§ 25
-          Abs. 2 Nr. 2 TDDDG); ein Cookie-Banner ist dafür nicht nötig.
+          Diese Website setzt keine Tracking- oder Werbe-Cookies. Solange du den
+          Anmeldevorgang nicht startest, setzen wir überhaupt keine Cookies —
+          was wir unabhängig davon auf deinem Gerät ablegen, sind Einstellungen,
+          die du selbst getroffen hast; sie stehen weiter unten in diesem
+          Abschnitt. Startest du den Anmeldevorgang, um Berechnungen zu
+          speichern (siehe Abschnitt 9), kommen Cookies dazu. Eines sichert den
+          Anmeldevorgang selbst gegen Manipulation ab; es gilt höchstens 24
+          Stunden, weil ein Link aus einer Mail auch dann noch funktionieren
+          soll, wenn du den Browser zwischendurch geschlossen hast. Nach
+          erfolgreicher Anmeldung halten dich ein oder mehrere weitere
+          angemeldet —{" "}
+          <strong>
+            und diese enden, wenn du den Browser schließt, sofern du beim
+            Anmelden nicht „Angemeldet bleiben" angehakt hast
+          </strong>{" "}
+          (dazu der nächste Absatz). Beim nächsten Besuch meldest du dich dann
+          also neu an. Alle diese Cookies sind für den Anmeldevorgang
+          erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG); ein Cookie-Banner ist dafür
+          nicht nötig.
+        </p>
+        <p style={S.p}>
+          Beim Anmelden kannst du zusätzlich <strong>„Angemeldet bleiben"</strong>{" "}
+          anhaken. Dann — und nur dann — bleibt die Anmeldung auf diesem Gerät
+          bis zu 90 Tage nach deinem letzten Besuch bestehen, statt mit dem
+          Browserfenster zu enden: Die Anmelde-Cookies bekommen diese Laufzeit,
+          und dazu kommt ein weiteres Cookie, das deine Entscheidung festhält.
+          Diese Verlängerung ist <em>nicht</em> unbedingt erforderlich; sie
+          beruht ausschließlich auf deiner Einwilligung — § 25 Abs. 1 TDDDG für
+          das Speichern und Auslesen auf deinem Gerät, Art. 6 Abs. 1 lit. a
+          DSGVO dafür, dass wir dich damit bei einem späteren Besuch
+          wiedererkennen und angemeldet halten. Auf keines dieser Cookies haben
+          Dritte Zugriff. Das Häkchen ist nicht vorausgewählt, und du nimmst die
+          Einwilligung jederzeit mit Wirkung für die Zukunft zurück, indem du
+          dich abmeldest — dann löschen wir auf diesem Gerät die Anmelde-Cookies
+          und das zusätzliche Cookie. Die Rechtmäßigkeit der bis dahin erfolgten
+          Verarbeitung bleibt davon unberührt. Damit wir nachweisen können, wozu
+          du zugestimmt hast, hält <strong>das zusätzliche Cookie</strong> fest,
+          welche Fassung des Hinweises am Häkchen dir dabei vorlag; mehr als
+          diese Fassungskennung steht nicht darin — insbesondere keine Kennung
+          deiner Person.
         </p>
 
         <p style={S.p}>
@@ -348,14 +348,145 @@ export default function DatenschutzPage() {
           deiner Person zugeordnet.
         </p>
 
-        <h2 style={S.h2}>9. Nutzerkonto und gespeicherte Berechnungen</h2>
+        {/* Die Anmeldung lief bis zum 09/2026 ausschließlich über einen Link
+            in der Mail. Zwei Dinge sind daran neu und BEIDE gehören in diesen
+            Abschnitt, nicht nur eines: das Passwort (eine andere Kategorie
+            gespeicherter Daten) und Google (ein weiterer Empfänger in einem
+            Drittland, Art. 13 Abs. 1 Buchst. e und Abs. 1 Buchst. f DSGVO).
+
+            DPF-Status von Google LLC am 02.09.2026 im amtlichen Register
+            geprüft (dataprivacyframework.gov, Teilnehmersuche „Google LLC“,
+            OrganizationId 5780): EU-US Certification „Active“, Non-HR-Daten
+            eingeschlossen. NICHT auf privacyshield.gov prüfen — das ist der
+            alte Datensatz und meldet Fehlalarme.
+
+            Verantwortlicher auf Googles Seite ist für Nutzer im EWR die Google
+            Ireland Limited; Wortlaut und Anschrift am 02.09.2026 in Googles
+            Datenschutzerklärung gelesen (policies.google.com/privacy).
+
+            RECHTSGRUNDLAGE IST lit. b, NICHT lit. a — und das ist eine
+            geprüfte Entscheidung, keine Bequemlichkeit. Zwei Legal-Judges am
+            02.09.2026, der zweite mit dem Auftrag, den ersten zu widerlegen.
+            Der erste hielt eine Einwilligung für richtig, weil es mit
+            E-Mail+Passwort eine mildere Alternative gebe (EDSA-Leitlinien
+            2/2019). Der zweite hat das gekippt: Die Erforderlichkeit fragt, ob
+            DERSELBE Zweck milder erreichbar ist — der Zweck ist hier ein Konto
+            über die vom Nutzer SELBST gewählte Google-Identität, und den
+            erreicht die Passwortanmeldung nicht. Nach der Gegenlogik wäre jede
+            wählbare Option nie erforderlich, solange irgendeine Alternative
+            existiert; damit wäre lit. b für jeden Dienst mit mehr als einem Weg
+            unbrauchbar. Tragend ist die ZWEITE Alternative des lit. b
+            (vorvertragliche Maßnahme auf Anfrage der betroffenen Person, EDSA
+            2/2019 Rn. 45/46 und Beispiel 5).
+
+            FOLGE FÜR DEN TEXT: kein Widerrufshinweis nach Art. 7 Abs. 3 und
+            kein Hinweis nach Art. 13 Abs. 2 lit. c — beide gelten nur bei einer
+            Einwilligung. Wer hier später auf lit. a umstellt, muss sie
+            wieder aufnehmen. Und die Angabe muss ÜBERALL dieselbe sein.
+
+            AUCH GEPRÜFT UND VERWORFEN: „Sicherheitshalber Einwilligung
+            einholen" wäre nicht die vorsichtigere Wahl, sondern eine
+            Falschangabe — sie verspräche einen Widerruf, der die Anmeldung
+            nicht rückgängig machen kann. */}
+        <h2 id="konto" style={{ ...S.h2, scrollMarginTop: 96 }}>9. Nutzerkonto und gespeicherte Berechnungen</h2>
         <p style={S.p}>
           Du kannst die Website vollständig ohne Anmeldung nutzen. Möchtest du
           deine Berechnungen speichern und später wieder aufrufen, kannst du dir
-          freiwillig ein Konto anlegen. Die Anmeldung erfolgt per Magic Link: Du
-          gibst deine E-Mail-Adresse ein und erhältst einen Anmeldelink — ein
-          Passwort ist nicht nötig. Gespeichert werden dann deine E-Mail-Adresse
-          und die von dir bewusst gespeicherten Berechnungen.
+          freiwillig ein Konto anlegen. Dafür gibt es zwei Wege, und du wählst
+          frei: mit deiner E-Mail-Adresse und einem selbst gewählten Passwort —
+          oder über dein Google-Konto. Ohne Google bekommst du dieselben
+          Funktionen; was sich unterscheidet, steht weiter unten. Zu deinem
+          Konto gehören deine E-Mail-Adresse, die von dir bewusst gespeicherten
+          Berechnungen und die Zeitpunkte, zu denen das Konto angelegt wurde und
+          du dich zuletzt angemeldet hast; beim Weg über Google kommt dazu, was
+          Google uns mitteilt (siehe unten). Dein Passwort liegt nicht im
+          Klartext, sondern nur als Prüfwert, aus dem sich das Passwort nicht
+          zurückrechnen lässt.
+        </p>
+        <p style={S.p}>
+          Der Anmeldedienst führt außerdem ein Protokoll der Anmeldevorgänge —
+          also Ereignisse wie Anmeldung, Abmeldung, Kontoanlage und
+          Passwortänderung, jeweils mit Zeitpunkt, deiner E-Mail-Adresse und
+          einer IP-Adresse. Meldest du dich mit Passwort an, ist das die
+          IP-Adresse unseres Servers, nicht deine eigene; bei der Anmeldung über
+          Google und bei Aufrufen aus deinem Browser heraus ist es deine. Dieses
+          Protokoll dient allein der Sicherheit deines Kontos — es zeigt, ob
+          jemand anderes versucht hat, hineinzukommen. Rechtsgrundlage ist
+          Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einem sicheren
+          Zugang). Diese Einträge legt der Anmeldedienst selbst an; sie werden
+          dort nicht von allein wieder gelöscht und verschwinden auch nicht
+          zusammen mit deinem Konto. Auf Anfrage löschen wir sie. Du kannst
+          dieser Verarbeitung außerdem nach Art. 21 DSGVO widersprechen; schreib
+          uns dazu an{" "}
+          <a href="mailto:hey@solar-check.io" style={S.a}>hey [at] solar-check.io</a>.
+        </p>
+        <p style={S.p}>
+          Beim Anlegen eines Kontos und beim Setzen eines neuen Passworts
+          schicken wir dir eine E-Mail mit einem Bestätigungslink. Diese Mails
+          gehen über das E-Mail-Postfach unserer Domain bei der{" "}
+          <strong>ALL-INKL.COM – Neue Medien Münnich</strong> (Friedrichroda,
+          Deutschland); ein Auftragsverarbeitungsvertrag besteht. Auf diesem Weg
+          bleiben die Daten bei uns und unseren Dienstleistern in der
+          Europäischen Union — wohin dein eigener E-Mail-Anbieter sie danach
+          weiterleitet und wie lange er sie aufbewahrt, entscheidet er, nicht
+          wir.
+        </p>
+        <p style={S.p}>
+          <strong>Wenn du dich über Google anmeldest:</strong> Dein Browser
+          wird zunächst an den Anmeldedienst unseres Dienstleisters Supabase und
+          von dort an eine Anmeldeseite von Google weitergeleitet. Google
+          erfährt dabei, dass du dich bei Solar Check anmelden möchtest, und
+          verarbeitet die dabei anfallenden Verbindungsdaten, insbesondere deine
+          IP-Adresse.
+        </p>
+        <p style={S.p}>
+          Stimmst du dort zu, übermittelt Google uns deine E-Mail-Adresse, die
+          Bestätigung, dass sie dir gehört, eine Kennnummer deines Google-Kontos
+          und die Angaben aus deinem öffentlichen Google-Profil — üblicherweise
+          deinen angezeigten Namen, Vor- und Nachnamen, die Adresse deines
+          Profilbilds und deine Spracheinstellung. Welche dieser Angaben
+          tatsächlich mitkommen, entscheidet Google. Wir brauchen davon nur die
+          E-Mail-Adresse; die übrigen Angaben werten wir nicht aus und löschen
+          sie mit deinem Konto. Ein Passwort bekommen wir nicht, und auf deine
+          E-Mails, Dateien, Kontakte oder andere Inhalte deines Google-Kontos
+          haben wir keinen Zugriff.
+        </p>
+        <p style={S.p}>
+          Empfänger auf Googles Seite ist die <strong>Google Ireland Limited</strong>{" "}
+          (Gordon House, Barrow Street, Dublin 4, Irland) — sie ist nach Googles
+          eigener Datenschutzerklärung für Nutzer im Europäischen
+          Wirtschaftsraum der Verantwortliche. Google gibt die Daten
+          anschließend konzernintern auch in die USA weiter und stützt das auf
+          das EU-US Data Privacy Framework, für das die Europäische Kommission
+          am 10. Juli 2023 ein angemessenes Schutzniveau festgestellt hat; die
+          Zertifizierung der Google LLC haben wir am 2. September 2026 im
+          amtlichen Register geprüft. Google verarbeitet die Anmeldung als
+          eigener Verantwortlicher nach seinen eigenen Bedingungen — wir legen
+          dafür weder Zwecke noch Mittel fest und binden keine Inhalte von
+          Google in unsere Seiten ein. Näheres in{" "}
+          <a
+            href="https://policies.google.com/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={S.a}
+          >
+            Googles Datenschutzerklärung
+          </a>
+          .
+        </p>
+        <p style={S.p}>
+          Rechtsgrundlage für diesen Weg ist — wie für das Konto selbst —
+          Art. 6 Abs. 1 lit. b DSGVO: Du forderst die Anmeldung über Google
+          selbst an, und ohne die Weiterleitung lässt sich genau dieses Konto
+          nicht anlegen. Wir holen dafür keine Einwilligung ein, weil wir dir
+          keine Wahl vorspielen wollen, die es nicht gibt: Wer sich über Google
+          anmelden möchte, kommt an Google nicht vorbei. Die echte Wahl liegt
+          davor — mit E-Mail-Adresse und Passwort steht ein vollwertiger Weg
+          ohne Google offen, und du erfährst das direkt am Anmeldeknopf, nicht
+          erst hier. Möchtest du die Verbindung zu Google später wieder lösen,
+          schreib uns; dann stellen wir dein Konto auf E-Mail und Passwort um.
+          Zusätzlich kannst du die Verbindung jederzeit in den Einstellungen
+          deines Google-Kontos löschen.
         </p>
         <p style={S.p}>
           Für Anmeldung und Speicherung nutzen wir den Dienst Supabase als

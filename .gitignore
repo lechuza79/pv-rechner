@@ -26,3 +26,10 @@ scripts/mastr-bnetza-schema.json
 # Signed legal documents (contracts, DPAs) — never commit
 docs/legal/
 scratch/
+
+# Presse-Katalog: enthält Namen und Adressen von Journalistinnen und
+# Journalisten. Das Repo ist öffentlich — dieselbe Trennung wie bei den
+# Fachbetrieben und Versorgern, deren Sätze ausschließlich in der Datenbank
+# liegen (RLS an, keine Policy). Erzeugt wird der Katalog mit
+# `npm run presse -- --csv`.
+docs/presse/

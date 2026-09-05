@@ -67,6 +67,7 @@ export function computeGemeindePotential({
     personen: 2,
     heizsystem: "hk_neu",
     wpType: "lwwp",
+    greenGas: true, // Neueinbau ⇒ Beimischungspflicht, wie im Rechner-Default
   });
 
   // Balkon-Beispiel: das empfohlene Set für einen typischen Mieterhaushalt.

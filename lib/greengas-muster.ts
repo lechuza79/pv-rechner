@@ -43,7 +43,7 @@ function musterVariant(
   });
   return {
     key, label,
-    sub: `Freistehendes Einfamilienhaus, 140 m² · Arbeitszahl ${r.jaz.toLocaleString("de-DE")} · rund ${Math.round(fuelKwh / 100) / 10} MWh Gas im Jahr`,
+    sub: `Freistehendes Einfamilienhaus, 140 m² · Arbeitszahl ${r.jaz.toLocaleString("de-DE")} · rund ${(Math.round(fuelKwh / 100) / 10).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} MWh Gas im Jahr`,
     explain, series, totals,
   };
 }

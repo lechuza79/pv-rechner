@@ -70,7 +70,7 @@ export function AccordionField({
   if (open) {
     return (
       <div className="sc-acc" data-flow-akkordeon-offen={label} style={{ marginBottom: 22 }}>
-        <div style={{ fontSize: 12, fontWeight: 600, color: v("--color-text-secondary"), marginBottom: 6 }}>{label}</div>
+        <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v("--color-text-secondary"), marginBottom: 6 }}>{label}</div>
         <FlowFrage.Provider value={label}>{children}</FlowFrage.Provider>
       </div>
     );
@@ -95,8 +95,8 @@ export function AccordionField({
           textAlign: "left",
         }}
       >
-        <span style={{ fontSize: 12, fontWeight: 600, color: v("--color-text-secondary") }}>{label}</span>
-        <span style={{ marginLeft: "auto", fontSize: 13, fontWeight: 700, color: v("--color-text-primary") }}>{summary}</span>
+        <span style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v("--color-text-secondary") }}>{label}</span>
+        <span style={{ marginLeft: "auto", fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary") }}>{summary}</span>
         <IconEdit size={iconSizes.sm} color={v("--color-text-muted")} />
       </button>
     );
@@ -140,7 +140,7 @@ export function ChoiceButtons<T>({
             style={{
               padding: columns ? "8px 4px" : "7px 12px",
               borderRadius: v("--radius-sm"),
-              fontSize: 12,
+              fontSize: v("--font-size-small"),
               fontWeight: 600,
               cursor: "pointer",
               textAlign: "center",

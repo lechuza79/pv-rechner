@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { v, space, pad } from "../../../../../lib/theme";
 import type { HookExample, HookKind } from "../../../../../lib/award-hook";
+import SelectField from "../../../../../components/SelectField";
 
 export type HooksPayload = {
   total: number;
@@ -38,13 +39,13 @@ export default function HooksClient({ payload }: { payload: HooksPayload }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: space.lg }}>
       <header>
-        <div style={{ fontSize: 13 }}>
+        <div style={{ fontSize: v("--font-size-small") }}>
           <Link href="/admin/awards" style={{ color: v("--color-accent"), textDecoration: "none" }}>← Award-Rangliste</Link>
         </div>
-        <h1 style={{ fontSize: 24, fontWeight: 800, color: v("--color-text-primary"), margin: "8px 0 0" }}>
+        <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, color: v("--color-text-primary"), margin: "8px 0 0" }}>
           Anschreiben-Aufhänger je Gemeinde
         </h1>
-        <p style={{ fontSize: 14, color: v("--color-text-secondary"), marginTop: space.xs, maxWidth: 660, lineHeight: 1.5 }}>
+        <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), marginTop: space.xs, maxWidth: 660, lineHeight: 1.5 }}>
           Für jede der {nf(total)} Gemeinden wird aus allen Platzierungen der beste, glaubwürdige Aufhänger
           gewählt — Betreff und Einstieg fürs Outreach. Eine Stadt bekommt so automatisch ihre Standort-Zahl,
           ein Dorf seine Pro-Kopf-Auszeichnung.
@@ -59,10 +60,10 @@ export default function HooksClient({ payload }: { payload: HooksPayload }) {
             <div key={k} style={{ flex: "1 1 150px", background: v("--color-bg-muted"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md"), padding: pad("sm", "md") }}>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                 <span style={{ width: 9, height: 9, borderRadius: 2, background: kindColor(k) }} />
-                <span style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-secondary") }}>{KIND_LABEL[k]}</span>
+                <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-secondary") }}>{KIND_LABEL[k]}</span>
               </div>
-              <div style={{ fontFamily: v("--font-mono"), fontSize: 20, fontWeight: 700, color: v("--color-text-primary"), marginTop: 2 }}>
-                {nf(n)} <span style={{ fontSize: 12, color: v("--color-text-muted") }}>· {pct}%</span>
+              <div style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-display-sm"), fontWeight: 700, color: v("--color-text-primary"), marginTop: 2 }}>
+                {nf(n)} <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>· {pct}%</span>
               </div>
             </div>
           );
@@ -81,23 +82,23 @@ export default function HooksClient({ payload }: { payload: HooksPayload }) {
           <input type="number" name="cut" defaultValue={settings.cut} min={1} max={50} step={1} style={inputStyle} />
         </Field>
         <Field label="Bei Gleichstand">
-          <select name="buerger" defaultValue={settings.buerger ? "1" : "0"} style={inputStyle}>
+          <SelectField name="buerger" defaultValue={settings.buerger ? "1" : "0"} ariaLabel="Auswahl" size="sm">
             <option value="1">Bürger bevorzugen</option>
             <option value="0">neutral</option>
-          </select>
+          </SelectField>
         </Field>
         <Field label="Ebene">
-          <select name="hoch" defaultValue={settings.hoch ? "1" : "0"} style={inputStyle}>
+          <SelectField name="hoch" defaultValue={settings.hoch ? "1" : "0"} ariaLabel="Auswahl" size="sm">
             <option value="1">höhere Ebene zuerst</option>
             <option value="0">lokal (Kreis) zuerst</option>
-          </select>
+          </SelectField>
         </Field>
-        <button type="submit" style={{ fontSize: 14, fontWeight: 700, color: v("--color-text-on-accent"), background: v("--color-accent"), border: "none", borderRadius: v("--radius-sm"), padding: pad("sm", "lg"), cursor: "pointer" }}>
+        <button type="submit" style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-on-accent"), background: v("--color-accent"), border: "none", borderRadius: v("--radius-sm"), padding: pad("sm", "lg"), cursor: "pointer" }}>
           Anwenden
         </button>
       </form>
 
-      <div style={{ fontSize: 12, color: v("--color-text-muted"), display: "flex", gap: space.sm, alignItems: "baseline", flexWrap: "wrap" }}>
+      <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), display: "flex", gap: space.sm, alignItems: "baseline", flexWrap: "wrap" }}>
         {mode === "suche" ? (
           <>
             <span>{rows.length} Treffer für „{q}"</span>
@@ -114,7 +115,7 @@ export default function HooksClient({ payload }: { payload: HooksPayload }) {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: space.md }}>
-        {rows.length === 0 && <div style={{ fontSize: 14, color: v("--color-text-muted") }}>Keine Gemeinde gefunden.</div>}
+        {rows.length === 0 && <div style={{ fontSize: v("--font-size-body"), color: v("--color-text-muted") }}>Keine Gemeinde gefunden.</div>}
         {rows.map((r) => {
           const href = detailHref(r);
           return (
@@ -122,26 +123,26 @@ export default function HooksClient({ payload }: { payload: HooksPayload }) {
               <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: space.md, flexWrap: "wrap" }}>
                 <div style={{ fontWeight: 700, color: v("--color-text-primary") }}>
                   {r.name}{" "}
-                  <span style={{ fontSize: 12, fontWeight: 400, color: v("--color-text-muted") }}>
+                  <span style={{ fontSize: v("--font-size-small"), fontWeight: 400, color: v("--color-text-muted") }}>
                     ({r.bl}, {nf(r.population)} Ew{r.valueStr ? ` · Beleg: ${r.valueStr}` : ""})
                   </span>
                 </div>
-                <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: kindColor(r.kind) }}>{KIND_LABEL[r.kind]}</span>
+                <span style={{ fontSize: v("--font-size-caption"), fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: kindColor(r.kind) }}>{KIND_LABEL[r.kind]}</span>
               </div>
               <div style={{ marginTop: space.sm }}>
-                <span style={{ fontSize: 11, color: v("--color-text-muted") }}>BETREFF</span>
-                <div style={{ fontSize: 15, fontWeight: 600, color: v("--color-text-primary") }}>{r.betreff}</div>
+                <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>BETREFF</span>
+                <div style={{ fontSize: v("--font-size-body"), fontWeight: 600, color: v("--color-text-primary") }}>{r.betreff}</div>
               </div>
               <div style={{ marginTop: space.xs }}>
-                <span style={{ fontSize: 11, color: v("--color-text-muted") }}>EINSTIEG</span>
-                <div style={{ fontSize: 14, color: v("--color-text-secondary"), lineHeight: 1.5 }}>{r.einstieg}</div>
+                <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>EINSTIEG</span>
+                <div style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), lineHeight: 1.5 }}>{r.einstieg}</div>
               </div>
               <div style={{ marginTop: space.sm, display: "flex", justifyContent: "space-between", gap: space.md, flexWrap: "wrap", alignItems: "baseline" }}>
                 {r.others.length > 0 ? (
-                  <div style={{ fontSize: 12, color: v("--color-text-muted") }}>weitere Spitzenplätze: {r.others.join("  ·  ")}</div>
+                  <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>weitere Spitzenplätze: {r.others.join("  ·  ")}</div>
                 ) : <span />}
                 {href && (
-                  <Link href={href} style={{ fontSize: 13, fontWeight: 600, color: v("--color-accent"), textDecoration: "none", whiteSpace: "nowrap" }}>
+                  <Link href={href} style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v("--color-accent"), textDecoration: "none", whiteSpace: "nowrap" }}>
                     Rangliste ansehen →
                   </Link>
                 )}
@@ -155,14 +156,14 @@ export default function HooksClient({ payload }: { payload: HooksPayload }) {
 }
 
 const inputStyle: React.CSSProperties = {
-  width: "100%", fontSize: 14, padding: pad("sm", "md"), background: v("--color-bg"),
+  width: "100%", fontSize: v("--font-size-body"), padding: pad("sm", "md"), background: v("--color-bg"),
   border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-sm"), color: v("--color-text-primary"),
 };
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label style={{ display: "flex", flexDirection: "column", gap: space.xs }}>
-      <span style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: v("--color-text-muted") }}>{label}</span>
+      <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: v("--color-text-muted") }}>{label}</span>
       {children}
     </label>
   );

@@ -269,7 +269,67 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // Lesung stattgefunden haben, und der Sitzungskalender beantwortet die Frage
   // nicht mehr — ab dann ist der Verfahrensstand an der Drucksache selbst
   // (dip.bundestag.de) nachzusehen, nicht am Terminplan.
-  geprueftIso: "2026-09-01",
+  //
+  // 02.09.2026: unverändert, und diesmal nicht nur über den Terminplan. Die
+  // Vorgangsseite des Bundesrates zur Drucksache 470/26 führt weiterhin allein
+  // Eingang (14.08.2026), die Kennzeichnung als besonders eilbedürftige Vorlage
+  // nach Art. 76 Abs. 2 Satz 4 GG und die Ausschusszuweisung — keine
+  // Plenarsitzung, keine Stellungnahme, keinen Beschluss. Der 07.09.2026 steht
+  // weiter als Stichtag, ab dem der Terminplan als Beleg ausfällt.
+  //
+  // 03.09.2026: unverändert. Die Vorgangsseite zur Drucksache 470/26 im Rohtext
+  // gelesen, nicht über ein zusammenfassendes Abrufwerkzeug — sie führt Titel,
+  // Eingang (14.08.2026), den Vermerk „bes. eilbedürftige Vorlage gem. Art. 76
+  // Abs. 2 Satz 4 GG" und die Ausschusszuweisung (Wi federführend), und danach
+  // nur noch die Grunddrucksache selbst. Kein Plenarabschnitt, keine
+  // Stellungnahme, kein Beschluss. Noch VIER TAGE bis zum 07.09.2026 — ab dann
+  // ist der Sitzungskalender kein Beleg mehr und der Verfahrensstand gehört an
+  // der Drucksache selbst nachgesehen. Dieser Lauf hat das schon getan; der
+  // Stichtag ändert daran nichts, er nimmt nur die bequemere Abkürzung weg.
+  //
+  // 04.09.2026: unverändert — der letzte Tag, an dem sich das ohne Blick in die
+  // Drucksache sagen ließe. Zwei amtliche Quellen im Rohtext gelesen: Die
+  // Vorgangsseite zur Drucksache 470/26 führt weiterhin ausschließlich die
+  // Grunddrucksache — kein Plenarabschnitt, keine Stellungnahme, kein Beschluss.
+  // Und der Sitzungskalender des Bundestages (Stand: 04.09.2026, also heute
+  // fortgeschrieben) nennt als nächste Sitzungswochen 07.–11.09. und
+  // 21.–25.09.2026. Bis heute Abend KANN der Bundestag also nichts beschlossen
+  // haben; ab Montag kann er es jeden Tag.
+  //
+  // WAS DAS FÜR DEN NÄCHSTEN LAUF HEISST: In der Woche ab dem 07.09. reicht es
+  // NICHT mehr, die Vorgangsseite des Bundesrates anzusehen. Der Entwurf ist als
+  // besonders eilbedürftig nach Art. 76 Abs. 2 Satz 4 GG eingebracht, also läuft
+  // er im Bundestag parallel zur Stellungnahme des Bundesrates — ein
+  // Bundestagsbeschluss würde auf der Bundesrats-Vorgangsseite zunächst gar
+  // nicht auftauchen. Nachzusehen ist die Drucksache im Bundestag selbst.
+  //
+  // Eine kursierende Terminangabe („Bundestag beschließt am 08.09.2026") ist
+  // ausdrücklich NICHT übernommen: Sie stammt aus einem meinungsstarken
+  // Online-Medium, und die Tagesordnung der Sitzungswoche war am 04.09.2026
+  // amtlich noch nicht abrufbar. Ein Datum aus einer solchen Quelle in diese
+  // Datei zu schreiben hieße, einen Verfahrensstand zu behaupten — genau das,
+  // was Regel 1 des Wächter-Gates verbietet.
+  //
+  // 05.09.2026 (Samstag): unverändert. Die Vorgangsseite zur Drucksache 470/26
+  // im Rohtext gelesen — weiterhin nur Titel, Eingang (14.08.2026), der Vermerk
+  // „bes. eilbedürftige Vorlage gem. Art. 76 Abs. 2 Satz 4 GG", die
+  // Ausschusszuweisung und die Grunddrucksache. Kein Plenarabschnitt, keine
+  // Stellungnahme, kein Beschluss. Heute ist Samstag, die Sitzungswoche beginnt
+  // am Montag — ein Beschluss ist bis hierher ausgeschlossen.
+  //
+  // EIN NEUES, AMTLICHES SIGNAL FÜR DIE KOMMENDE WOCHE, und es ist ausdrücklich
+  // KEIN Verfahrensstand: Der Tagesordnungs-Feed des Bundestages führt für
+  // Dienstag, den 08.09.2026, eine „45. (Sonder-)Sitzung" des Ausschusses für
+  // Wirtschaft und Energie, angesetzt zehn Minuten nach Ende der Plenarsitzung,
+  // dazu zwei Änderungsmitteilungen vom 02. und 03.09.2026. Die Sitzung ist
+  // nicht öffentlich, ihre Tagesordnung wird nicht veröffentlicht — WELCHE
+  // Vorlage dort behandelt wird, steht nirgends. Eine Sondersitzung des
+  // federführenden Ausschusses unmittelbar nach dem Plenum ist das übliche
+  // Muster für eine Vorlage, die in derselben Woche erste Lesung und
+  // Ausschussberatung durchläuft; daraus zu schließen, es gehe um DIESEN
+  // Entwurf, wäre trotzdem geraten. Notiert als Anlass, in der kommenden Woche
+  // die Drucksache im Bundestag selbst nachzusehen — nicht als Zustand.
+  geprueftIso: "2026-09-05",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

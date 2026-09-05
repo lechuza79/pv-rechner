@@ -654,7 +654,7 @@ async function messeSpaltenAbgleich(): Promise<SpaltenBefund | null> {
  * Konfiguration, statt dass jemand von hier aus vermutet. Zurück kommt nur,
  * WAS fehlt, nie ein Wert.
  */
-async function messeAboBereit(): Promise<{ bereit: boolean; fehlt: string[] } | null> {
+async function messeAboBereit(): Promise<AboBereit | null> {
   const geheim = process.env.CRON_SECRET;
   if (!geheim) return null; // Ohne Betriebsgeheimnis keine Auskunft — kein Befund.
   try {
@@ -666,12 +666,131 @@ async function messeAboBereit(): Promise<{ bereit: boolean; fehlt: string[] } | 
     // dieselbe Trennung wie überall sonst zwischen „ist kaputt" und „konnte
     // nicht nachsehen".
     if (!r.ok) return null;
-    const d = (await r.json()) as { bereit?: boolean; fehlt?: string[] };
+    const d = (await r.json()) as {
+      bereit?: boolean;
+      fehlt?: string[];
+      versandOhneBeleg?: unknown;
+      postfach?: unknown;
+    };
     if (typeof d?.bereit !== "boolean") return null;
-    return { bereit: d.bereit, fehlt: Array.isArray(d.fehlt) ? d.fehlt : [] };
+    // Eine ältere Auslieferung kennt das Feld nicht. Das ist „nicht gemessen",
+    // nicht „null hängende Anmeldungen" — eine Null behauptete hier einen
+    // Befund („alles ging raus"), den es nicht gab.
+    const ohneBeleg = typeof d.versandOhneBeleg === "number" ? d.versandOhneBeleg : null;
+    // Ältere Auslieferung ohne Anmeldeprobe: „nicht gemessen", nicht „in Ordnung".
+    const postfach = typeof d.postfach === "string" ? (d.postfach as AboBereit["postfach"]) : null;
+    return { bereit: d.bereit, fehlt: Array.isArray(d.fehlt) ? d.fehlt : [], ohneBeleg, postfach };
   } catch {
     return null;
   }
+}
+
+/**
+ * Ist die Datenbank-Sicherheitsgrenze noch dicht?
+ *
+ * DER ANLASS (05.09.2026): Die Selbstauskunft (`sc_security_posture`) und ihr
+ * Urteil (`auditPosture`) gibt es seit dem 29.07.2026 — aufgerufen hat sie
+ * seitdem niemand. Kein Waechter, keine Action, kein Auftrag nennt die Route.
+ * In den fuenf Wochen dazwischen kamen rund 40 Tabellen und 40 Routen dazu;
+ * ob eine davon ohne Zeilenschutz angelegt wurde, haette sich in keiner
+ * Anzeige gezeigt: Die Seite laeuft, die Tests sind gruen, und mit dem
+ * Anon-Key aus dem Browser-Bundle waere die Tabelle trotzdem lesbar.
+ *
+ * Dieselbe Klasse wie das Rechtstexte-Runbook, das drei Tage im Repo lag,
+ * ohne dass ein Auftrag es ausfuehrte: Eine Pruefung, die existiert und nie
+ * laeuft, ist von keiner Pruefung nicht zu unterscheiden. Deshalb haengt sie
+ * hier — der Gesundheitscheck ist die einzige Pruefung, die auch dann laeuft,
+ * wenn der Rechner des Betreibers aus ist.
+ *
+ * Gefragt wird die Produktion selbst (`?verify=1` misst nur, spielt nichts
+ * ein). Zurueck kommt das Urteil samt Problemliste; die Rohdaten bleiben dort.
+ */
+async function messeSicherheitsPosture(): Promise<SicherheitsPosture | null> {
+  const geheim = process.env.CRON_SECRET;
+  if (!geheim) return null; // Ohne Betriebsgeheimnis keine Auskunft — kein Befund.
+  try {
+    const r = await fetch(`${BASE_URL}/api/security/setup?verify=1`, {
+      headers: { Authorization: `Bearer ${geheim}` },
+      signal: AbortSignal.timeout(20000),
+    });
+    // Die Route antwortet bei Befund absichtlich mit 500 — das ist die
+    // Auskunft, nicht ein gescheiterter Abruf. Nur was gar nicht als Urteil
+    // lesbar ist, gilt als „konnte nicht nachsehen".
+    const d = (await r.json().catch(() => null)) as { ok?: unknown; problems?: unknown } | null;
+    if (typeof d?.ok !== "boolean") return null;
+    return { ok: d.ok, problems: Array.isArray(d.problems) ? d.problems.map(String) : [] };
+  } catch {
+    return null;
+  }
+}
+
+export type SicherheitsPosture = { ok: boolean; problems: string[] };
+
+/**
+ * Was aus der Selbstauskunft ein Befund fuer Claude wird.
+ *
+ * Jedes Problem ist eine offene Tuer, keine Warnung: Eine Tabelle ohne
+ * Zeilenschutz ist JETZT lesbar, nicht irgendwann. Deshalb gibt es hier kein
+ * Gelb. „Nicht gemessen" (null) bleibt stumm — dieselbe Trennung wie ueberall
+ * sonst zwischen „ist kaputt" und „Abruf kam nicht durch".
+ */
+export function sicherheitsBefund(p: SicherheitsPosture | null): string[] {
+  if (!p || p.ok) return [];
+  const liste = p.problems.length ? p.problems.join(" · ") : "Urteil rot, aber ohne Problemliste.";
+  return [
+    `Die Datenbank-Sicherheitsgrenze ist nicht dicht: ${liste} Der Anon-Key steht im ` +
+      `Browser-Bundle, was hier offen ist, ist oeffentlich. Zu tun: Ursache in lib/security-sql.ts ` +
+      `beheben (neue Tabelle ohne RLS → Setup-Route der Tabelle), danach /api/security/setup ohne ` +
+      `verify aufrufen und den Lauf gruen sehen.`,
+  ];
+}
+
+interface AboBereit {
+  bereit: boolean;
+  fehlt: string[];
+  /** Anmeldungen ohne Versandbeleg; `null` = nicht gemessen. */
+  ohneBeleg: number | null;
+  /** Ausgang der Anmeldeprobe am Postfach; `null` = nicht gemessen. */
+  postfach: "ok" | "abgelehnt" | "unerreichbar" | "nicht-konfiguriert" | null;
+}
+
+/**
+ * Wirkt der Abo-Versand, oder ist er bloß eingerichtet?
+ *
+ * DER ANLASS (02.09.2026, in der Fehler-Triage gemessen): Der Bereitschafts-
+ * Melder daneben sagte „Versandweg und Signatur sind in der Produktion
+ * gesetzt" — und in der Ablage standen zwei Anmeldungen und NULL je versendete
+ * Bestätigungsmails. Er prüft, ob etwas GESETZT ist; ein falsch getipptes
+ * Passwort ist gesetzt. Dieselbe Klasse wie die drei Fälle, für die es ihn
+ * überhaupt gibt, nur eine Ebene weiter: Geprüft war diesmal die Umgebung,
+ * nie ihre Wirkung.
+ *
+ * `null` (nicht gemessen) ist kein Befund. Fehlt die Konfiguration bereits,
+ * ebenfalls nicht: Der Grund steht dann schon im Befund nebenan, und zwei
+ * Meldungen über dieselbe Ursache sind der Lärm, von dem man sich abgewöhnt,
+ * Meldungen zu lesen.
+ */
+/**
+ * Wie meldet sich der Ausgang der Anmeldeprobe im Protokoll?
+ *
+ * Drei Zustände, drei Sätze — und der Unterschied zwischen den letzten beiden
+ * ist der ganze Grund für diese Funktion: „Ich habe nachgesehen und nichts
+ * gefunden" und „ich konnte nicht nachsehen" sind zwei Auskünfte. Eine
+ * unerreichbare Verbindung als „in Ordnung" zu protokollieren behauptet eine
+ * Beobachtung, die es nicht gab. Der abgelehnte Fall steht hier nicht: Er ist
+ * ein Befund und wird als solcher gemeldet, nicht als Protokollzeile.
+ */
+export function aboPostfachSatz(p: AboBereit["postfach"]): string {
+  if (p === "ok") return "Gemeinde-Abo: Einstellungen gesetzt, das Postfach nimmt die Zugangsdaten an.";
+  if (p === "unerreichbar")
+    return "Gemeinde-Abo: Einstellungen gesetzt; das Postfach war für die Probe nicht erreichbar (kein Urteil).";
+  return "Gemeinde-Abo: Versandweg und Signatur sind in der Produktion gesetzt.";
+}
+
+export function aboVersandStockt(b: { bereit: boolean; ohneBeleg: number | null }): boolean {
+  if (b.ohneBeleg === null) return false;
+  if (!b.bereit) return false;
+  return b.ohneBeleg > 0;
 }
 
 /**
@@ -1110,6 +1229,13 @@ const CACHE_PFLICHT = [
   // zahlt jeder Besucher die 4,9 s — und der Googlebot kommt ueber 119 Verweise
   // von den indexierten Atlas-Seiten.
   { label: "Ranglisten-Uebersicht", path: "/solar-atlas/ranking/zubau-3-jahre-je-einwohner" },
+  // Die nackte Rechner-Adresse — seit 05.09.2026 statisch, und der Grund steht
+  // an der Seite selbst: Solange sie nichts aus dem Abfrageteil las, kostete
+  // sie 2.612 volle Aufbauten am Tag bei neun Besuchern. Wer dort wieder
+  // `searchParams` einbaut, macht sie in derselben Zeile wieder dynamisch —
+  // ohne dass irgendetwas kaputt aussaehe. Ein Test faengt das im Code, dieser
+  // Eintrag faengt es in der Produktion.
+  { label: "PV-Rechner (nackt)", path: "/photovoltaik-rechner" },
   { label: "Förder-Bundeslandseite", path: "/photovoltaik-foerderung/bayern" },
   { label: "Ratgeber", path: "/ratgeber/gasheizung-oder-waermepumpe" },
   { label: "Standort-Ertrag (30 Tage haltbar)", path: "/api/pvgis?lat=52.52&lon=13.405&plzPrefix=10" },
@@ -1140,6 +1266,72 @@ export function cacheBefundAusZustaenden(label: string, erster: string, zweiter:
 
 /** Wie oft nachgefasst wird, bevor „nicht gecacht" feststeht. */
 const CACHE_VERSUCHE = 3;
+
+/**
+ * ZWEI GETEILTE RECHNUNGEN, ZWEI VERSCHIEDENE ANTWORTEN — live gegen das CDN.
+ *
+ * Seit dem 05.09.2026 kommt die nackte Rechner-Adresse aus dem Zwischenspeicher
+ * und ein geteilter Link vom Server. Die Browser-Tests belegen, dass der Code
+ * das richtig trennt; sie koennen aber nicht sehen, ob sich das CDN in der
+ * Produktion auch so verhaelt — dort steht eine Schicht dazwischen, die es
+ * lokal gar nicht gibt.
+ *
+ * DER SCHADEN, gegen den das hier steht: Wuerde eine geteilte Rechnung
+ * zwischengespeichert, bekaeme der naechste Besucher mit einem ANDEREN Link die
+ * Zahlen des Vorgaengers — unter seiner eigenen Adresse, mit dem falschen Bild
+ * im Chat. Die Seite saehe dabei vollkommen normal aus.
+ */
+const GETEILT_A = "/photovoltaik-rechner?a=0&s=0&p=1&n=1&wp=nein&ea=nein";
+const GETEILT_B = "/photovoltaik-rechner?a=3&s=3&p=3&n=3&wp=ja&ea=ja";
+
+export type TeilenBefund = { ok: boolean; meldung: string };
+
+/** Das Vorschaubild aus dem ausgelieferten HTML — der Teil, den der Chat zeigt. */
+export function vorschaubildAus(html: string): string {
+  const m = /property="og:image"\s+content="([^"]*)"/.exec(html);
+  return m ? m[1].replace(/&amp;/g, "&") : "";
+}
+
+export function teilenBefund(
+  a: { status: number; cache: string; bild: string },
+  b: { status: number; cache: string; bild: string },
+): TeilenBefund {
+  if (a.status !== 200 || b.status !== 200)
+    return { ok: false, meldung: `geteilte Rechnung antwortete ${a.status}/${b.status} statt 200` };
+  if (!a.bild || !b.bild) return { ok: false, meldung: "geteilte Rechnung liefert kein Vorschaubild" };
+  if (a.bild === b.bild)
+    return { ok: false, meldung: "zwei VERSCHIEDENE geteilte Rechnungen liefern DASSELBE Vorschaubild" };
+  if (!a.bild.includes("a=0") || !b.bild.includes("a=3"))
+    return { ok: false, meldung: "das Vorschaubild traegt nicht die Parameter seines eigenen Links" };
+  // Ein Cache-Treffer auf einer geteilten Rechnung heisst: Diese Antwort wird
+  // weitergereicht. Genau das darf nie passieren.
+  const getroffen = [a.cache, b.cache].filter((c) => CACHE_TREFFER.has(c));
+  if (getroffen.length)
+    return { ok: false, meldung: `eine geteilte Rechnung kam aus dem Zwischenspeicher (${getroffen.join(", ")})` };
+  return { ok: true, meldung: "zwei geteilte Rechnungen bleiben getrennt und kommen nicht aus dem Zwischenspeicher" };
+}
+
+async function holeMitKoerper(pfad: string): Promise<{ status: number; cache: string; bild: string }> {
+  try {
+    const res = await fetch(`${BASE_URL}${pfad}`, {
+      redirect: "manual",
+      headers: { "user-agent": "solar-check-health-check" },
+      signal: AbortSignal.timeout(30000),
+    });
+    return {
+      status: res.status,
+      cache: res.headers.get("x-vercel-cache") ?? "",
+      bild: vorschaubildAus(await res.text()),
+    };
+  } catch {
+    return { status: 0, cache: "fetch failed", bild: "" };
+  }
+}
+
+async function pruefeGeteilteRechnungen(): Promise<TeilenBefund> {
+  const [a, b] = await Promise.all([holeMitKoerper(GETEILT_A), holeMitKoerper(GETEILT_B)]);
+  return teilenBefund(a, b);
+}
 
 async function pruefeCacheWirksamkeit(): Promise<CacheBefund[]> {
   const befunde: CacheBefund[] = [];
@@ -1610,21 +1802,52 @@ async function main() {
     warnings.push("MaStR-Datenstand nicht abrufbar — keine Aussage über die Frische der Atlas-Zahlen.");
   }
 
+  // ── Ist die Datenbank-Sicherheitsgrenze noch dicht? ───────────────────────
+  const posture = await messeSicherheitsPosture();
+  lines.push(
+    posture === null
+      ? "Sicherheitsgrenze: nicht messbar (Selbstauskunft nicht erreichbar)."
+      : posture.ok
+        ? "Sicherheitsgrenze: dicht (Zeilenschutz auf jeder Tabelle, SQL-Funktion nur fuer den Dienst)."
+        : `Sicherheitsgrenze: ${posture.problems.length} Problem(e).`,
+  );
+  forClaude.push(...sicherheitsBefund(posture));
+
   // ── Kann die Produktion Abo-Mails verschicken? ────────────────────────────
   const aboBereit = await messeAboBereit();
   if (aboBereit) {
     lines.push(
       aboBereit.bereit
-        ? "Gemeinde-Abo: Versandweg und Signatur sind in der Produktion gesetzt."
-        : `Gemeinde-Abo: ${aboBereit.fehlt.length} Einstellung(en) fehlen in der Produktion.`,
+        ? aboPostfachSatz(aboBereit.postfach)
+        : `Gemeinde-Abo: ${aboBereit.fehlt.length} Punkt(e) hindern den Versand in der Produktion.`,
     );
     if (!aboBereit.bereit) {
       forClaude.push(
-        `Das Gemeinde-Abo kann in der PRODUKTION nicht arbeiten — es fehlt: ${aboBereit.fehlt.join(", ")}. ` +
+        `Das Gemeinde-Abo kann in der PRODUKTION nicht arbeiten: ${aboBereit.fehlt.join(", ")}. ` +
           `Jede Anmeldung endet damit für den Nutzer bei „Die Bestätigungsmail konnte gerade nicht verschickt ` +
           `werden", und niemand kommt ins Abo. Von außen ist das unsichtbar: Die Seite lädt, der Knopf ` +
-          `funktioniert, kein Test wird rot — lokal ist ja alles gesetzt. Zu tun: die genannten Einstellungen ` +
-          `in der Produktionsumgebung nachtragen und danach EINMAL neu ausliefern, sonst greifen sie nicht.`,
+          `funktioniert, kein Test wird rot — lokal ist ja alles gesetzt. Zu tun: die genannten Punkte in der ` +
+          `Produktionsumgebung richtigstellen und danach EINMAL neu ausliefern, sonst greifen sie nicht.`,
+      );
+    }
+    // Und die zweite Hälfte: hat es auch gewirkt?
+    if (aboBereit.ohneBeleg !== null && aboBereit.bereit) {
+      lines.push(
+        aboBereit.ohneBeleg === 0
+          ? "Gemeinde-Abo: keine frische Anmeldung wartet auf eine Bestätigungsmail."
+          : `Gemeinde-Abo: ${aboBereit.ohneBeleg} frische Anmeldung(en) ohne Versandbeleg.`,
+      );
+    }
+    if (aboVersandStockt(aboBereit)) {
+      forClaude.push(
+        `${aboBereit.ohneBeleg} frische Anmeldung(en) im Gemeinde-Abo tragen keinen Versandbeleg, während die ` +
+          `Zugangsdaten des Postfachs vollständig gesetzt sind. Beides ist gemessen; der Schluss daraus nicht — ` +
+          `deshalb steht hier keine Diagnose, sondern der nächste Schritt. Zwei Lesarten: entweder die Mail hat ` +
+          `den Server nicht verlassen (dann kommt niemand ins Abo, und der Anmelder sieht nur „Bitte später ` +
+          `erneut" — gesetzt heißt eben nicht richtig, ein falsch getipptes Passwort ist gesetzt), oder sie ging ` +
+          `hinaus und das Nachtragen des Belegs schlug fehl (dann fehlt der Einwilligungsnachweis, den die ` +
+          `Datenschutzerklärung zusagt). Zu tun: das Protokoll der Produktion nach „[Abo]" durchsehen — dort ` +
+          `steht, welcher der beiden Fälle vorliegt.`,
       );
     }
   }
@@ -1708,6 +1931,20 @@ async function main() {
         `fehlendes generateStaticParams oder ein Aufruf, der sie dynamisch macht (Cookies, Header, searchParams); ` +
         `bei einer API-Route ein fehlender oder überschriebener Cache-Control-Header. ` +
         `Ist die Ausnahme gewollt, gehört der Eintrag aus CACHE_PFLICHT heraus — mit Begründung.`,
+    );
+  }
+
+  // ── Geteilte Rechnungen ───────────────────────────────────────────────────
+  const teilen = await pruefeGeteilteRechnungen();
+  lines.push(`Geteilte Rechnungen: ${teilen.meldung}`);
+  if (!teilen.ok) {
+    forClaude.push(
+      `Der Rechner trennt geteilte Ergebnisse nicht mehr sauber: ${teilen.meldung}. ` +
+        `Das heisst im schlimmsten Fall, dass jemand mit seinem eigenen Link die Rechnung eines Fremden sieht — ` +
+        `unter seiner Adresse, mit dem falschen Bild im Chat, und die Seite sieht dabei vollkommen normal aus. ` +
+        `Zuerst pruefen, ob die Rechner-Weiche in der Middleware noch greift (nackte Adresse statisch, Link mit ` +
+        `Parametern auf den dynamischen Zwilling umgeschrieben) und ob die nackte Seite wieder etwas aus dem ` +
+        `Abfrageteil liest. Bis das geklaert ist, ist die Trennung nicht belegt.`,
     );
   }
 

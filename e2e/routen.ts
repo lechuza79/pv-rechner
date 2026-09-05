@@ -49,6 +49,7 @@ export const SEITEN: Seite[] = [
   { pfad: "/ratgeber/waermepumpe-foerderung", erwartet: /wärmepumpe/i },
   // Datenseiten
   { pfad: "/photovoltaik-zubau-deutschland", erwartet: /zubau/i },
+  { pfad: "/photovoltaik-bestand-deutschland", erwartet: /solaranlagen/i },
   { pfad: "/atomstrom-import", erwartet: /atomstrom|kernstrom/i },
   { pfad: "/langzeit-strommix", erwartet: /strommix/i },
   { pfad: "/datenstand", erwartet: /stand|daten/i },
@@ -59,6 +60,11 @@ export const SEITEN: Seite[] = [
   // Datenschutzerklärung die Pflichtangaben dazu. Beide waren bis 15.08.2026
   // im Rundgang nicht enthalten.
   { pfad: "/kontakt", erwartet: /kontakt/i },
+  // Die Anmeldung steht im Rundgang, weil sie die einzige Seite ist, auf der
+  // ein kaputtes Bauteil niemanden erreicht, der es meldet: Wer sich nicht
+  // anmelden kann, schreibt keine Mail, er geht.
+  { pfad: "/login", erwartet: /anmelden/i },
+  { pfad: "/passwort-setzen", erwartet: /passwort setzen/i },
   { pfad: "/datenschutz", erwartet: /datenschutzerklärung/i },
   { pfad: "/datenschutz-linkedin", erwartet: /gemeinsam mit der/i },
 ];
@@ -77,6 +83,7 @@ export const EMBEDS: string[] = [
   "/embed/region-solarleistung?bl=13",
   "/embed/simulation?plz=10115",
   "/embed/pv-zubau-deutschland",
+  "/embed/anlagenbestand-deutschland",
   "/embed/einspeiseverguetung-verlauf",
   "/embed/ee-ampel",
   "/embed/karte",

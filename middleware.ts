@@ -1,26 +1,11 @@
 import { createServerClient } from "@supabase/ssr";
+import { nurFuerDieSitzung, BLEIBEN_COOKIE, bleibenGilt } from "./lib/auth-cookies";
 import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
 import { hostAusHerkunft, widgetAusPfad, zaehleEinbettung } from "./lib/embed-herkunft-core";
-import {
-  herkunftAusVerweis,
-  istMaschine,
-  pfadFuerZaehlung,
-  zaehleSeitenaufruf,
-} from "./lib/seiten-herkunft-core";
-
-// Pfade, für die der Anmelde-Zweig laufen MUSS — und nur für die.
-//
-// DAS IST DIE TEUERSTE ZEILE DIESER DATEI. Seit der Matcher auch die
-// gewöhnlichen Seiten erfasst (29.08.2026, für die Herkunftszählung), liefe
-// `getUser()` ohne diese Liste bei JEDEM Seitenaufruf — ein Supabase-Aufruf je
-// Besuch, auf einer Seite, die ihre Besucher gar nicht kennt. Vorher war die
-// Trennung im Matcher; jetzt muss sie hier stehen, weil der Matcher weiter
-// gefasst ist als das Bedürfnis.
-const AUTH_PFADE = ["/dashboard", "/admin", "/api/calculations", "/auth/callback"];
+import { traegtRechnung } from "./lib/share-keys";
+import { istKreisRangliste } from "./lib/ranking-tiefe";
 
 export async function middleware(request: NextRequest, event: NextFetchEvent) {
-  const pfad = request.nextUrl.pathname;
-
   // ─── Embed-Zweig: zählen, sonst nichts ─────────────────────────────────────
   //
   // Läuft VOR dem Auth-Zweig und kehrt sofort zurück. Ein Widget hat keine
@@ -31,8 +16,44 @@ export async function middleware(request: NextRequest, event: NextFetchEvent) {
   // die Auslieferung nicht. Gezählt wird ohne `await` über `waitUntil`, damit
   // die Antwort nicht auf die Datenbank wartet — ein Widget darf nie langsamer
   // werden, weil wir mitschreiben.
-  if (pfad.startsWith("/embed/")) {
-    const widget = widgetAusPfad(pfad);
+  // ─── Ranglisten-Weiche: die tiefen Listen nicht ablegen ────────────────────
+  //
+  // Eine Rangliste innerhalb eines Landkreises wird praktisch nie ein zweites
+  // Mal aufgerufen (gemessen: 3.806 Aufrufe auf 3.679 verschiedene Adressen).
+  // Sie trotzdem abzulegen kostet eine Schreibung je Aufruf fuer einen Treffer,
+  // der nicht kommt. Die Zwillingsroute baut dieselbe Seite ohne Ablage.
+  //
+  // Umgeschrieben, nicht weitergeleitet — die Adresse bleibt, jeder Link haelt.
+  if (istKreisRangliste(request.nextUrl.pathname)) {
+    const ziel = request.nextUrl.clone();
+    ziel.pathname = request.nextUrl.pathname.replace("/solar-atlas/ranking/", "/solar-atlas/ranking-tief/");
+    return NextResponse.rewrite(ziel);
+  }
+
+  // ─── Rechner-Weiche: nur mit Rechnung im Gepaeck an den Server ─────────────
+  //
+  // Die nackte Rechner-Adresse ist fuer alle gleich und wird statisch
+  // ausgeliefert. Steht ein Parameter dabei — ein geteiltes Ergebnis oder eine
+  // Vorbefuellung von einer Foerderseite, dem Klimarechner, der Simulation oder
+  // dem Empfehlungs-Flow —, muss die Seite am Server gebaut werden; die
+  // Umschreibung schickt sie auf die dynamische Zwillingsroute.
+  //
+  // UMSCHREIBEN, NICHT WEITERLEITEN: Die Adresse im Browser bleibt exakt, wie
+  // sie geteilt wurde. Jeder Link, der heute existiert, funktioniert
+  // unveraendert weiter — und der Teilen-Knopf im Rechner baut seinen Link
+  // weiterhin aus dem Pfad der Seite, auf der er steht.
+  //
+  // Dass eine Middleware davor die statische Auslieferung NICHT ersetzt, ist in
+  // diesem Repo schon belegt: Der Embed-Zweig unten sitzt seit Monaten vor
+  // Seiten, die aus dem Zwischenspeicher kommen.
+  if (request.nextUrl.pathname === "/photovoltaik-rechner" && traegtRechnung(request.nextUrl.searchParams)) {
+    const ziel = request.nextUrl.clone();
+    ziel.pathname = "/photovoltaik-rechner/ergebnis";
+    return NextResponse.rewrite(ziel);
+  }
+
+  if (request.nextUrl.pathname.startsWith("/embed/")) {
+    const widget = widgetAusPfad(request.nextUrl.pathname);
     // `referer` (die Schreibweise mit einem r ist der Fehler von 1996 und steht
     // so im Standard) trägt beim Laden eines eingebetteten Dokuments die
     // einbettende Seite. Fehlt er, war es ein direkter Aufruf oder eine
@@ -42,29 +63,7 @@ export async function middleware(request: NextRequest, event: NextFetchEvent) {
     return NextResponse.next({ request });
   }
 
-  // ─── Seiten-Zweig: zählen, sonst nichts ────────────────────────────────────
-  //
-  // Alles, was nicht Anmeldung ist. Auch hier: kein `await`, keine Sitzung,
-  // keine Verzögerung der Antwort — und die Auslieferung bleibt statisch.
-  // Gemessen am 29.08.2026 auf der Produktion: Drei Abrufe derselben Adresse,
-  // davon zwei aus dem CDN-Zwischenspeicher (`x-vercel-cache: HIT`), erhöhten
-  // den Zähler dreimal. Die Middleware läuft also VOR dem Cache und die Zählung
-  // ist vollständig — hätte sie nur Erstaufrufe erfasst, wäre sie verzerrt
-  // gewesen statt lückenhaft, und das ist der schlimmere Fall.
-  if (!AUTH_PFADE.some((p) => pfad === p || pfad.startsWith(`${p}/`))) {
-    // Maschinen werden verworfen, nicht gezählt. Der Kennungs-Kopf wird dafür
-    // nur gelesen und sofort vergessen; er landet nirgends. Begründung und die
-    // Grenze, an der diese Zählung einwilligungspflichtig würde, stehen in
-    // `lib/seiten-herkunft-core.ts`.
-    if (!istMaschine(request.headers.get("user-agent"))) {
-      const p = pfadFuerZaehlung(pfad);
-      if (p) {
-        event.waitUntil(zaehleSeitenaufruf(p, herkunftAusVerweis(request.headers.get("referer"))));
-      }
-    }
-    return NextResponse.next({ request });
-  }
-
+  const bleiben = bleibenGilt(request.cookies.get(BLEIBEN_COOKIE)?.value);
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -81,7 +80,7 @@ export async function middleware(request: NextRequest, event: NextFetchEvent) {
           );
           supabaseResponse = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            supabaseResponse.cookies.set(name, value, nurFuerDieSitzung(name, options, bleiben))
           );
         },
       },
@@ -95,17 +94,25 @@ export async function middleware(request: NextRequest, event: NextFetchEvent) {
 }
 
 export const config = {
-  // Runs on every page, but does very different things per branch (see above):
-  // auth session refresh ONLY for the paths in AUTH_PFADE, plain counting
-  // everywhere else. Excluded here are the things that can never be a page
-  // view: Next's own asset routes, the API surface, and anything with a file
-  // extension. Keeping those out is what keeps middleware invocations — and
-  // their cost — proportional to actual visits.
+  // Only run middleware on routes that actually need auth session refresh —
+  // plus /embed, where it counts embeddings from the request header (see the
+  // embed branch above; that branch does NOT touch Supabase auth).
+  // Keeps Vercel middleware-invocations (and Supabase getUser() calls) low.
   //
-  // /api/calculations is the one API path that DOES need the auth branch, so it
-  // is added back explicitly.
+  // Am 01.09.2026 lief der Matcher kurzzeitig über ALLE Seiten, für eine
+  // serverseitige Herkunftszählung. Die ist wieder ausgebaut — warum, steht in
+  // CLAUDE.md unter „Was hier NICHT noch einmal gebaut wird".
   matcher: [
-    "/((?!_next/static|_next/image|api/|.*\\.).*)",
+    "/dashboard/:path*",
+    "/admin/:path*",
     "/api/calculations/:path*",
+    "/auth/callback",
+    "/embed/:path*",
+    // Nur die nackte Adresse, nicht der Zwilling darunter: Sonst schriebe die
+    // Weiche die umgeschriebene Anfrage ein zweites Mal um.
+    "/photovoltaik-rechner",
+    // Nur unterhalb der Ranglisten-Wurzel; welche Tiefe wirklich umgeschrieben
+    // wird, entscheidet die Weiche oben.
+    "/solar-atlas/ranking/:pfad*",
   ],
 };

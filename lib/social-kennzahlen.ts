@@ -14,6 +14,7 @@ import "server-only";
 import { unstable_cache } from "next/cache";
 import { supabase } from "./supabase-server";
 import { getFundingPrograms } from "./funding-data";
+import { getNationalSolarStock } from "./mastr-data";
 import { bedingungText, fundingZaehlt } from "./funding-programs";
 import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
 import type { SocialKennzahlen } from "./social-posts";
@@ -134,12 +135,16 @@ async function rechneFoerderung(): Promise<SocialKennzahlen["foerderung"]> {
 }
 
 async function rechne(): Promise<SocialKennzahlen> {
-  const [zeilen, namen, standIso, foerderung] = await Promise.all([
+  const [zeilen, namen, standIso, foerderung, bund] = await Promise.all([
     ladeGemeinden(),
     ladeNamen(),
     ladeStand(),
     rechneFoerderung(),
+    getNationalSolarStock(),
   ]);
+  // Bundessummen aus EINER Auswertung — siehe Kommentar am Modulkopf.
+  const bundSeg = (name: string) => bund.segmente.find((x) => x.segment === name);
+  const balkonBund = bundSeg("steckersolar");
 
   // Nur bewohnte Gemeinden mit achtstelligem Schlüssel. Kreis- und
   // Landeszeilen stünden sonst zusätzlich im Nenner und verdoppelten Einwohner.
@@ -184,7 +189,6 @@ async function rechne(): Promise<SocialKennzahlen> {
   }
 
   const summe = (f: (r: AwardZeile) => number) => gem.reduce((s, r) => s + f(r), 0);
-  const solarGesamt = summe((r) => zahl(r.solar_kwp));
   // „Mehr Kilowatt als Einwohner" nur ab einer Grundmenge: In einem Weiler mit
   // 80 Einwohnern und einem Solarpark ist die Aussage eine Eigenschaft des
   // Nenners, nicht des Orts.
@@ -215,6 +219,7 @@ async function rechne(): Promise<SocialKennzahlen> {
 
   return {
     standIso,
+    stichtagJahr: bund.stichtagJahr,
     stadtLand: {
       stadtAb: STADT_AB,
       landUnter: LAND_UNTER,
@@ -224,16 +229,16 @@ async function rechne(): Promise<SocialKennzahlen> {
       landJeTausend: je1000(land),
     },
     wachstum: {
-      balkonJetzt: gem.reduce((s, r) => s + (r.balkon_count ?? 0), 0),
-      balkonVorJahr: gem.reduce((s, r) => s + (r.balkon_count_ly ?? 0), 0),
-      solarKwpJetzt: gem.reduce((s, r) => s + zahl(r.solar_kwp), 0),
-      solarKwpVorJahr: gem.reduce((s, r) => s + zahl(r.solar_kwp_ly), 0),
+      balkonJetzt: balkonBund?.anzahl ?? 0,
+      balkonVorJahr: balkonBund?.stichtag.anzahl ?? 0,
+      solarKwpJetzt: bund.gesamt.kwp,
+      solarKwpVorJahr: bund.stichtagGesamt.kwp,
     },
     segmente: {
-      privatDachKwp: summe((r) => zahl(r.privat_dach_kwp)),
-      gewerbeDachKwp: summe((r) => zahl(r.gewerbe_dach_kwp)),
-      freiflaecheKwp: summe((r) => zahl(r.freiflaeche_kwp)),
-      solarGesamtKwp: solarGesamt,
+      privatDachKwp: bundSeg("privat_dach")?.kwp ?? 0,
+      gewerbeDachKwp: bundSeg("gewerbe_dach")?.kwp ?? 0,
+      freiflaecheKwp: bundSeg("freiflaeche")?.kwp ?? 0,
+      solarGesamtKwp: bund.gesamt.kwp,
     },
     ueberEinwohner: {
       mindestEinwohner: MIN_EW,

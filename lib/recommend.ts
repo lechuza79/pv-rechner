@@ -1,9 +1,17 @@
 import { PERSONEN, NUTZUNG, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, SPEICHER, NATIONAL_AVG_YIELD } from "./constants";
 import { calcEigenverbrauch, estimateCost, calc, selectByMarginalReturn, batteryReplaceCost } from "./calc";
 import { simulatePvYear } from "./pv-sim";
-import { calcEaAnnual, calcKlimaAnnual, KLIMA_DEFAULT_M2, type HouseholdProfile } from "./consumption";
+import { calcEaAnnual, KLIMA_DEFAULT_M2, type HouseholdProfile } from "./consumption";
+import { klimaSchnellschaetzungKwh } from "./aircon";
+
 import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING } from "./heatpump";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
+
+/** Dieselbe Schnellschätzung wie im PV-Rechner (2 Räume, Bundes-Kühlgradstunden),
+ *  damit die Klimaanlage bei der Übergabe nicht springt. Die Wohnfläche geht
+ *  bewusst NICHT ein — der Rechner kennt sie nicht, er zählt gekühlte Räume. */
+const KLIMA_SCHNELL_RAEUME = 2;
+const klimaKwhSchnell = () => klimaSchnellschaetzungKwh({ rooms: KLIMA_SCHNELL_RAEUME, stromPrice: DEFAULT_PRICES.electricityPrice });
 import { DEFAULT_FEED_IN, effectiveFeedInCtPerKwh, type FeedInRates } from "./feedin-config";
 
 // ─── Tunables ───────────────────────────────────────────────────────────────
@@ -87,7 +95,7 @@ export interface RecommendReasoning {
    */
   budgetZuKnapp: boolean;
   investition: number;
-  npv25: number;           // Rendite nach 25 J (Gesamtgewinn nach Investitionsabzug)
+  npv25: number;           // Gewinn nach 25 J (nach Investitionsabzug)
 }
 
 export interface Alternative {
@@ -126,7 +134,7 @@ interface Candidate {
   speicherKwh: number;
   ev: number;             // EV-Quote in %
   investition: number;
-  npv25: number;          // Rendite nach 25 J
+  npv25: number;          // Gewinn nach 25 J
   paybackYears: number | null;
 }
 
@@ -180,7 +188,7 @@ function buildCtx(input: RecommendInput, prices?: PriceConfig, feedIn?: FeedInRa
   const totalConsumption = baseConsumption
     + (input.wp !== "nein" ? wpKwh : 0)
     + (input.ea !== "nein" ? calcEaAnnual(input.eaKm) : 0)
-    + (klima !== "nein" ? calcKlimaAnnual(klimaM2) : 0);
+    + (klima !== "nein" ? klimaKwhSchnell() : 0);
   const monthlyYieldPerKwp = input.monthlyYieldPerKwp ?? null;
   return { input, p, f, ertragKwp, strompreis, stromSteigerung, wpKwh, klima, klimaM2, totalConsumption, monthlyYieldPerKwp };
 }
@@ -201,7 +209,7 @@ function autarkyFor(ctx: EvalCtx, kwp: number, speicherKwh: number): number {
     klimaM2: ctx.klimaM2,
     wpAnnualKwh: ctx.input.wp !== "nein" ? ctx.wpKwh : undefined,
     eaAnnualKwh: ctx.input.ea !== "nein" ? calcEaAnnual(ctx.input.eaKm) : undefined,
-    klimaAnnualKwh: ctx.klima !== "nein" ? calcKlimaAnnual(ctx.klimaM2) : undefined,
+    klimaAnnualKwh: ctx.klima !== "nein" ? klimaKwhSchnell() : undefined,
   };
   return simulatePvYear({ kwp, speicherKwh, monthlyYieldPerKwp: ctx.monthlyYieldPerKwp, ertragKwp: ctx.ertragKwp, household }).autarky;
 }
@@ -257,11 +265,11 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
 
   // 1. Verbrauchsgrößen (WP-Strom, Klima etc. kommen aus dem geteilten Kontext,
   // damit Empfehlung und Szenario-Rendite dasselbe Modell nutzen).
-  const { klima, klimaM2, totalConsumption } = ctx;
+  const { klima, totalConsumption } = ctx;
   const baseConsumption = PERSONEN[input.personen].verbrauch;
   const wpConsumption = input.wp !== "nein" ? wpKwh : 0;
   const eaConsumption = input.ea !== "nein" ? calcEaAnnual(input.eaKm) : 0;
-  const klimaConsumption = klima !== "nein" ? calcKlimaAnnual(klimaM2) : 0;
+  const klimaConsumption = klima !== "nein" ? klimaKwhSchnell() : 0;
   const dailyConsumption = totalConsumption / DAYS_PER_YEAR;
 
   // 2. Dachfläche → max. kWp (customRoofM2 hat Vorrang vor haustyp × dachart)
@@ -380,8 +388,8 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
     if (alt && alt.kwp !== best.kwp) {
       const diff = best.npv25 - alt.npv25;
       const reason = diff > 0
-        ? `Volles Dach: mehr Stromertrag, ${Math.round(diff).toLocaleString("de-DE")} € weniger Rendite über 25 J`
-        : `Volles Dach mit ähnlich guter Rendite (${Math.round(alt.npv25).toLocaleString("de-DE")} €)`;
+        ? `Volles Dach: mehr Stromertrag, ${Math.round(diff).toLocaleString("de-DE")} € weniger Gewinn über 25 J`
+        : `Volles Dach mit ähnlich hohem Gewinn (${Math.round(alt.npv25).toLocaleString("de-DE")} €)`;
       alternatives.push({
         label: "Maximale Dachnutzung",
         kwp: alt.kwp,
@@ -420,7 +428,7 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
       paybackYears: alt.paybackYears,
       investition: alt.investition,
       npv25: alt.npv25,
-      reason: `${(best.investition - alt.investition).toLocaleString("de-DE")} € weniger Investition, fast gleiche Rendite`,
+      reason: `${(best.investition - alt.investition).toLocaleString("de-DE")} € weniger Investition, fast gleicher Gewinn`,
     });
   }
 

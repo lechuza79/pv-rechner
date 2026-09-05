@@ -3,6 +3,7 @@
  *
  *   npm run foerder:suche                  # nächste 60 Gemeinden
  *   npm run foerder:suche -- --limit 300
+ *   npm run foerder:suche -- --schub mail-nrw   # nur die noch offenen Briefe
  *   npm run foerder:suche -- --stand       # nur Fortschritt zeigen
  *   npm run foerder:suche -- --funde       # gefundene Adressen auflisten
  *
@@ -368,12 +369,33 @@ async function sucheFoerderseite(gemeldeteAdresse: string): Promise<{ beste: Lin
 
 type SuchZeile = { region_id: string; verdikt: string; such_version: number | null };
 
-async function offeneKandidaten(limit: number) {
+/**
+ * Nur die Gemeinden EINES Schubs, die noch keinen Brief bekommen haben.
+ *
+ * WOZU: Vor einem Versand ist die Frage nicht „welche Gemeinde ist die
+ * größte", sondern „wissen wir bei DIESEN Briefen alles, was wir wissen
+ * könnten". Ohne die Einschränkung arbeitet der Lauf seine eigene Reihenfolge
+ * ab (größte zuerst) und käme an die anstehenden Briefe vielleicht nie.
+ *
+ * Die Reihenfolge INNERHALB bleibt unverändert — hier wird nur der Topf
+ * kleiner, nicht die Regel eine andere.
+ */
+async function nurSchub(schub: string): Promise<Set<string>> {
+  const zeilen = await alleZeilen<{ region_id: string }>(
+    "kommunen_kontakt",
+    "region_id",
+    (q) => q.eq("kampagne", schub).is("contacted_at", null),
+  );
+  return new Set(zeilen.map((z) => z.region_id));
+}
+
+async function offeneKandidaten(limit: number, schub?: string) {
   const kontakte = await alleZeilen<{ region_id: string; website: string | null; thema_foerderung_url: string | null }>(
     "kommunen_kontakt",
     "region_id, website, thema_foerderung_url",
     (q) => q.not("website", "is", null),
   );
+  const nur = schub ? await nurSchub(schub) : null;
   // Bis 19.08.2026 stand hier: „Wer schon eine Förderseite hat, braucht keine
   // Suche." Das galt, solange wir ohnehin nur eine Adresse je Gemeinde halten
   // konnten — jetzt ist es genau falsch herum. Bei den Gemeinden MIT Fund liegen
@@ -381,7 +403,7 @@ async function offeneKandidaten(limit: number) {
   // überspringen hieße, den Umbau bei denen nicht wirken zu lassen, über die wir
   // am meisten wissen. Wer wirklich fertig ist, fällt unten über `erledigt`
   // heraus — über den Versionsstempel, nicht über das Vorhandensein einer Adresse.
-  const ohneSeite = kontakte;
+  const ohneSeite = nur ? kontakte.filter((k) => nur.has(k.region_id)) : kontakte;
 
   const abgelegt = await alleZeilen<SuchZeile>("funding_url_suche", "region_id, verdikt, such_version");
   const zeileVon = new Map(abgelegt.map((r) => [r.region_id, r]));
@@ -445,8 +467,13 @@ async function main(): Promise<void> {
   if (process.argv.includes("--funde")) return funde();
 
   const limit = zahl("limit", 60);
-  const { gesamt, erledigt, naechste, schonUnerreichbar } = await offeneKandidaten(limit);
-  console.log(`Durchsucht vorher: ${erledigt} von ${gesamt}. Nehme mir jetzt ${naechste.length} vor.\n`);
+  const iS = process.argv.indexOf("--schub");
+  const schub = iS >= 0 ? process.argv[iS + 1] : undefined;
+  const { gesamt, erledigt, naechste, schonUnerreichbar } = await offeneKandidaten(limit, schub);
+  console.log(
+    (schub ? `Schub „${schub}", noch nicht angeschrieben. ` : "") +
+      `Durchsucht vorher: ${erledigt} von ${gesamt}. Nehme mir jetzt ${naechste.length} vor.\n`,
+  );
 
   const zaehler = new Map<SuchVerdikt, number>();
   let unerreichbarInFolge = 0;

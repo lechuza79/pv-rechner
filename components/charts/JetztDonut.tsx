@@ -127,24 +127,24 @@ export default function JetztDonut({ data, size = 168 }: { data: GenerationDataP
         <div style={{ textAlign: "center", lineHeight: 1.15, padding: "0 12px" }}>
           {gezeigt ? (
             <>
-              <div style={{ fontFamily: v("--font-mono"), fontWeight: 800, fontSize: 22, color: v("--color-text-primary") }}>
+              <div style={{ fontFamily: v("--font-mono"), fontWeight: 800, fontSize: v("--font-size-display-sm"), color: v("--color-text-primary") }}>
                 {anteilZahl((gezeigt.value / werte.totalMw) * 100)}
-                <span style={{ fontSize: 12, color: v("--color-text-muted"), marginLeft: 2 }}>%</span>
+                <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginLeft: 2 }}>%</span>
               </div>
-              <div style={{ fontSize: 10, color: v("--color-text-secondary"), marginTop: 2, fontWeight: 600 }}>
+              <div style={{ fontSize: v("--font-size-micro"), color: v("--color-text-secondary"), marginTop: 2, fontWeight: 600 }}>
                 {gezeigt.label}
               </div>
-              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginTop: 1, fontFamily: v("--font-mono") }}>
+              <div style={{ fontSize: v("--font-size-micro"), color: v("--color-text-muted"), marginTop: 1, fontFamily: v("--font-mono") }}>
                 {formatMWIn(gezeigt.value, powerUnit(werte.totalMw))}
               </div>
             </>
           ) : (
             <>
-              <div style={{ fontFamily: v("--font-mono"), fontWeight: 800, fontSize: 24, color: v("--color-text-primary") }}>
+              <div style={{ fontFamily: v("--font-mono"), fontWeight: 800, fontSize: v("--font-size-display-sm"), color: v("--color-text-primary") }}>
                 {Math.round(werte.eeSharePct)}
-                <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 2 }}>%</span>
+                <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginLeft: 2 }}>%</span>
               </div>
-              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginTop: 2 }}>erneuerbar<br />gerade</div>
+              <div style={{ fontSize: v("--font-size-micro"), color: v("--color-text-muted"), marginTop: 2 }}>erneuerbar<br />gerade</div>
             </>
           )}
         </div>

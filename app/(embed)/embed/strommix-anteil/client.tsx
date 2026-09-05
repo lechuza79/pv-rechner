@@ -79,7 +79,7 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
 
   if (!ytd) {
     return (
-      <div style={{ ...root, alignItems: "center", justifyContent: "center", minHeight: 200, color: "var(--widget-muted)", fontSize: 13 }}>
+      <div style={{ ...root, alignItems: "center", justifyContent: "center", minHeight: 200, color: "var(--widget-muted)", fontSize: "var(--font-size-small)" }}>
         Daten gerade nicht verfügbar.
       </div>
     );
@@ -100,10 +100,10 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
     <ExportNotesProvider>
       <div style={root} ref={chartExport.chartRef}>
         <div style={{ marginBottom: 16 }}>
-          <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2 }}>
+          <div style={{ fontSize: "var(--font-size-small)", fontWeight: 600, letterSpacing: 0.2 }}>
             Deutscher Strommix {ytd.year}
           </div>
-          <div style={{ fontSize: 12, color: "var(--widget-muted)", marginTop: 2 }}>
+          <div style={{ fontSize: "var(--font-size-small)", color: "var(--widget-muted)", marginTop: 2 }}>
             inkl. importiertem Atomstrom
           </div>
         </div>
@@ -129,7 +129,7 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
               <div
                 style={{
                   fontFamily: "var(--font-mono)",
-                  fontSize: 32,
+                  fontSize: "var(--font-size-display-md)",
                   fontWeight: 800,
                   lineHeight: 1,
                   letterSpacing: "-0.02em",
@@ -138,7 +138,7 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
               >
                 {fmtPct(ytd.nuclearShare).replace(" %", "")}
               </div>
-              <div style={{ fontSize: 12, color: "var(--widget-muted)", marginTop: 4 }}>
+              <div style={{ fontSize: "var(--font-size-small)", color: "var(--widget-muted)", marginTop: 4 }}>
                 % Kernenergie
               </div>
             </DonutChart>
@@ -152,7 +152,7 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
                     alignItems: "center",
                     gap: 8,
                     padding: "3px 0",
-                    fontSize: 13,
+                    fontSize: "var(--font-size-small)",
                   }}
                 >
                   <span style={{ width: 10, height: 10, borderRadius: 2, background: s.color, flexShrink: 0 }} />
@@ -165,7 +165,7 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
             </div>
           </ExportBox>
 
-          <div style={{ fontSize: 12, lineHeight: 1.6, color: "var(--widget-muted)", textAlign: "center", marginTop: 16 }}>
+          <div style={{ fontSize: "var(--font-size-small)", lineHeight: 1.6, color: "var(--widget-muted)", textAlign: "center", marginTop: 16 }}>
             Jahr bis dato ({ytd.weeks} Wochen): {twh(ytd.nuclearGwh)} TWh importierter
             Atomstrom von {twh(ytd.totalGwh)} TWh gesamt. Rechnerischer Wert
             (Grenzflüsse × Kernanteil der Nachbarn); heimische Kernkraft läuft seit

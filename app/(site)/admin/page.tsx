@@ -16,7 +16,8 @@ const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "")
 
 // The admin tools. Add a row here when a new admin page ships.
 const TOOLS: { href: string; title: string; desc: string }[] = [
-  { href: "/admin/theme", title: "Signalfarben-Theming", desc: "Grün, Rot und Energie-Farben pro Helligkeitsstufe anpassen — live vorschaubar." },
+  { href: "/admin/theme", title: "Designsystem", desc: "Farben, Schriften, Abstände, Ecken — die eine Quelle, aus der die Oberfläche gebaut wird. Signalfarben je Helligkeitsstufe live anpassbar." },
+  { href: "/admin/komponenten", title: "Komponenten", desc: "Die Bausteine als Galerie: jeder echt und bedienbar, mit seinen Zuständen und dem, woraus er besteht." },
   { href: "/admin/prices", title: "Marktpreise", desc: "PV-/Speicher-Preise scrapen, manuell überschreiben, Historie ansehen." },
   { href: "/admin/charts", title: "Chart-Baukasten", desc: "Alle Charts und Werkzeuge mit Art, Quelle und nächstem Schritt — plus die Reihenfolge für ein neues Chart." },
   { href: "/admin/kommunen", title: "Kommunen-Outreach", desc: "Kontaktdaten der ~11.000 Gemeinden: filtern, Status pflegen, Kontaktseite öffnen." },
@@ -24,7 +25,6 @@ const TOOLS: { href: string; title: string; desc: string }[] = [
   { href: "/admin/fachbetriebe", title: "PV-Fachbetriebe", desc: "Erhobene Solarteure und Elektrobetriebe mit PV-Geschäft — filtern, ansehen, vormerken." },
   { href: "/admin/waechter", title: "Wächter-Berichte", desc: "Ablage aller Wächter-Läufe — auch der stummen, die keine Mail ausgelöst haben." },
   { href: "/admin/einbettungen", title: "Einbettungen", desc: "Fremde Seiten, auf denen unsere Widgets laufen — der Erfolg des Outreach, ohne auf eine Antwort zu warten." },
-  { href: "/admin/herkunft", title: "Herkunft", desc: "Woher die Aufrufe unserer eigenen Seiten kommen — am Server gezählt, weil die Messung im Browser die Herkunft nach dem ersten Klick verliert." },
 ];
 
 export default async function AdminHub() {
@@ -55,10 +55,10 @@ export default async function AdminHub() {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-                <div style={{ fontSize: 16, fontWeight: 700, color: v("--color-text-primary") }}>{t.title}</div>
-                <span style={{ fontSize: 18, color: v("--color-accent") }} aria-hidden>→</span>
+                <div style={{ fontSize: v("--font-size-lead"), fontWeight: 700, color: v("--color-text-primary") }}>{t.title}</div>
+                <span style={{ fontSize: v("--font-size-h3"), color: v("--color-accent") }} aria-hidden>→</span>
               </div>
-              <div style={{ fontSize: 13, color: v("--color-text-muted"), marginTop: 4, lineHeight: 1.5 }}>{t.desc}</div>
+              <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginTop: 4, lineHeight: 1.5 }}>{t.desc}</div>
             </Link>
           ))}
         </div>

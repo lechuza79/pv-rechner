@@ -56,15 +56,15 @@ export default function ScenarioTabs({
                 transition: "background .15s, border-color .15s",
               }}
             >
-              <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: on ? v("--color-accent") : v("--color-text-muted") }}>{t.label}</div>
-              <div style={{ fontSize: 10, color: v("--color-text-muted"), fontFamily: v("--font-mono"), marginTop: 2 }}>{t.sub}</div>
+              <div style={{ fontSize: v("--font-size-caption"), fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: on ? v("--color-accent") : v("--color-text-muted") }}>{t.label}</div>
+              <div style={{ fontSize: v("--font-size-micro"), color: v("--color-text-muted"), fontFamily: v("--font-mono"), marginTop: 2 }}>{t.sub}</div>
             </button>
           );
         })}
       </div>
       <div style={{ padding: "12px 16px" }}>
         {children}
-        <div style={{ fontSize: 11.5, color: v("--color-text-secondary"), lineHeight: 1.5 }}>
+        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-secondary"), lineHeight: 1.5 }}>
           {active.explain}
         </div>
       </div>

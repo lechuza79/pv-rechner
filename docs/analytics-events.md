@@ -40,6 +40,7 @@ Rechner-Dateien liest.
 | `empfehlung_ergebnis` | `waermepumpe_schritt_haushalt` | `klima_ergebnis` | |
 | | `waermepumpe_schritt_heizsystem` | | |
 | | `waermepumpe_ergebnis` | | |
+| | `waermepumpe_geteilt` | | |
 
 Abbruch-Treppe im Dashboard: Seitenaufrufe der Rechner-Adresse (Pages) → die
 Schritt-Ereignisse der Reihe nach → das Ergebnis.

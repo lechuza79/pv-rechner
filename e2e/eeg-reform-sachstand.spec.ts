@@ -108,6 +108,10 @@ test.describe("EEG-Reform: Sachstand auf den Seiten, an denen ein Nutzer ihn lie
     expect(await block.innerText()).toMatch(/Bestandsschutz/);
 
     await page.getByRole("button", { name: /Ab 2027/ }).first().click();
+    // Erst warten, bis der Regime-Text da ist, DANN den Block lesen. Ein
+    // sofortiger Schnappschuss nach dem Klick traf auf dem GitHub-Runner in
+    // drei von vier Läufen am 05.09.2026 den alten Zustand — rot ohne Befund.
+    await expect(block).toContainText("29. Juli 2026", { timeout: 15_000 });
     const text = await block.innerText();
 
     expect(text).toContain("29. Juli 2026");

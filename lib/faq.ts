@@ -10,11 +10,11 @@
 // Cost/feed-in figures are derived from the same models the calculators use and
 // the year is evaluated at render time — nothing here goes stale on rollover.
 // Never hardcode a year or a euro figure below.
-import { estimateCost, BATTERY_LIFETIME_YEARS } from "./calc";
+import { estimateCost, BATTERY_LIFETIME_YEARS, calc, calcEigenverbrauch, calcWeightedFeedIn } from "./calc";
 import { calcBalkon, type BalkonInputs } from "./balkon";
 import { BALKON_RECHT, DEFAULT_BALKON_CONFIG, type BalkonSetId } from "./balkon-config";
 import { MASTR_KATEGORIE, SOLARPAKET_ENTFALLEN } from "./balkon-anmeldung";
-import { FEED_IN_YEARS, PERSONEN } from "./constants";
+import { FEED_IN_YEARS, PERSONEN, NATIONAL_AVG_YIELD, SPEICHER } from "./constants";
 import { DEFAULT_FEED_IN, fmtCt, type FeedInRates } from "./feedin-config";
 import { DEFAULT_PRICES } from "./prices-config";
 import { TILT_OPTIMUM, tiltPct } from "./tilt-config";
@@ -24,6 +24,11 @@ import {
 } from "./eeg-reform-config";
 import type { PriceConfig } from "./prices-config";
 import { DEFAULT_HEATPUMP_CONFIG, begStufeAm } from "./heatpump-config";
+import { fmtPvLeistung, fmtWattProKopf, formatDataAsOf } from "./atlas-format";
+import {
+  laenderNachLeistung, laenderNachProKopf, segmentZeile, zeitraumSeitStichtag, zuwachs,
+  type Anlagenbestand,
+} from "./anlagenbestand";
 
 export interface FaqLink {
   /** Exact phrase inside `a`; its first occurrence becomes a link. */
@@ -46,20 +51,48 @@ export interface FaqEntry {
 
 const round1k = (n: number) => Math.round(n / 1000) * 1000;
 
+/**
+ * Amortisation einer Anlage nach demselben Modell wie der Rechner (Bundes-
+ * schnitt, Teileinspeisung, Standardpreise). Die FAQ nannte bis 05.09.2026
+ * getippte Spannen („9–12 Jahre", „8 und 14 Jahren"), und beide verfehlten
+ * den eigenen Standardfall des Rechners drei Absätze tiefer (13 Jahre).
+ */
+export function faqAmortisationJahre(kwp: number, speicherKwh: number, personenIdx: number, nutzungIdx: number): number | null {
+  const ev = calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp: "nein", ea: "nein", eaKm: 15000, kwp, ertragKwp: NATIONAL_AVG_YIELD });
+  const r = calc({
+    kwp, kosten: estimateCost(kwp, speicherKwh), strompreis: DEFAULT_PRICES.electricityPrice, eigenverbrauch: ev,
+    einspeisung: calcWeightedFeedIn(kwp, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10),
+    stromSteigerung: DEFAULT_PRICES.electricityIncrease, ertragKwp: NATIONAL_AVG_YIELD, monthly: null,
+  });
+  return r.be ? r.be.i : null;
+}
+
+/** Spanne der Amortisation über alle Haushaltsgrößen und Speicherstufen einer
+ *  10-kWp-Anlage — das ist die Streuung, die „je nach Haushalt" wirklich meint. */
+export function faqAmortisationSpanne(kwp = 10): { min: number; max: number; standard: number } {
+  const jahre: number[] = [];
+  for (let p = 0; p < PERSONEN.length; p++) for (const s of SPEICHER) {
+    const j = faqAmortisationJahre(kwp, s.kwh, p, 1);
+    if (j !== null) jahre.push(j);
+  }
+  return { min: Math.min(...jahre), max: Math.max(...jahre), standard: faqAmortisationJahre(kwp, 0, 1, 1) ?? Math.max(...jahre) };
+}
+
 /** FAQ for the homepage — the four PV basics that match the site title/intent. */
 export function homeFaq(): FaqEntry[] {
   const year = new Date().getFullYear();
+  const spanne = faqAmortisationSpanne(10);
   const pvOnlyCost = round1k(estimateCost(10, 0));
   const storageAddon = round1k(estimateCost(10, 10) - estimateCost(10, 0));
   return [
     {
       q: `Lohnt sich Photovoltaik ${year}?`,
-      a: "In den meisten Fällen ja. Eine typische 10-kWp-Anlage amortisiert sich bei aktuellen Strompreisen in etwa 9–12 Jahren und erwirtschaftet über 25 Jahre deutliche Rendite. Der genaue Zeitraum hängt von Eigenverbrauch, Strompreis und Anlagenkosten ab.",
+      a: `In den meisten Fällen ja. Eine typische 10-kWp-Anlage ohne Speicher amortisiert sich bei aktuellen Strompreisen in etwa ${spanne.standard} Jahren und bringt danach über die restliche Laufzeit von 25 Jahren einen deutlichen Gewinn. Der genaue Zeitraum hängt von Eigenverbrauch, Strompreis und Anlagenkosten ab.`,
       cta: { label: "Meine Anlage durchrechnen", href: "/photovoltaik-rechner" },
     },
     {
       q: "Wie lange dauert die Amortisation einer PV-Anlage?",
-      a: "Je nach Anlagengröße, Speicher und Eigenverbrauchsquote liegt die Amortisation zwischen 8 und 14 Jahren. Höherer Eigenverbrauch verkürzt den Zeitraum deutlich — etwa durch einen Speicher, ein E-Auto oder eine Wärmepumpe, die den selbst erzeugten Strom im Haus hält.",
+      a: `Je nach Anlagengröße, Speicher und Eigenverbrauchsquote liegt die Amortisation einer 10-kWp-Anlage zwischen ${spanne.min} und ${spanne.max} Jahren. Höherer Eigenverbrauch verkürzt den Zeitraum deutlich — etwa durch einen Speicher, ein E-Auto oder eine Wärmepumpe, die den selbst erzeugten Strom im Haus hält.`,
       links: [{ phrase: "Wärmepumpe", href: "/waermepumpe-rechner" }],
       cta: { label: "Amortisation berechnen", href: "/photovoltaik-rechner" },
     },
@@ -748,6 +781,64 @@ export function balkonSpeicherFaq(): FaqEntry[] {
     {
       q: "Fällt auf einen Balkonspeicher Mehrwertsteuer an?",
       a: BALKON_RECHT.nullsteuer,
+    },
+  ];
+}
+
+/**
+ * FAQ der Bestandsseite (/photovoltaik-bestand-deutschland).
+ *
+ * Die Fragen sind ABSICHTLICH so formuliert, wie sie gesucht werden („wie viele
+ * … gibt es in Deutschland"), und jede Antwort steht auf einer Zahl aus dem
+ * Anlagenregister — keine ist getippt. Das ist der Punkt dieser Seite: Eine
+ * Jahresstatistik kann dieselbe Frage beantworten, aber nicht mit dem Stand von
+ * diesem Monat.
+ *
+ * Der Zeitraum wird benannt statt behauptet (`zeitraumSeitStichtag`): Das
+ * Register führt je Anlage nur das Jahr der Inbetriebnahme, der Vergleich läuft
+ * also gegen einen Jahresendbestand und nicht gegen „vor zwölf Monaten".
+ */
+export function anlagenbestandFaq(b: Anlagenbestand): FaqEntry[] {
+  const zahl = (n: number, stellen = 0) =>
+    n.toLocaleString("de-DE", { minimumFractionDigits: stellen, maximumFractionDigits: stellen });
+  const balkon = segmentZeile(b, "steckersolar");
+  const privat = segmentZeile(b, "privat_dach");
+  const frei = segmentZeile(b, "freiflaeche");
+  const stand = formatDataAsOf(b.standIso.slice(0, 10));
+  const zeitraum = zeitraumSeitStichtag(b.standIso, b.stichtagJahr);
+  const balkonPlus = balkon ? zuwachs(balkon.anzahl, balkon.anzahlStichtag) : null;
+  const spitzeLeistung = laenderNachLeistung(b)[0];
+  const spitzeProKopf = laenderNachProKopf(b)[0];
+
+  return [
+    {
+      q: "Wie viele Photovoltaikanlagen gibt es in Deutschland?",
+      a: `Im Marktstammdatenregister der Bundesnetzagentur sind ${zahl(b.gesamt.anzahl)} Solaranlagen gemeldet (Stand ${stand}). Darin stecken alle Größen: ${balkon ? `${zahl(balkon.anzahl)} Balkonkraftwerke` : "Balkonkraftwerke"}, ${privat ? `${zahl(privat.anzahl)} private Dachanlagen` : "private Dachanlagen"}, gewerbliche Dächer und ${frei ? `${zahl(frei.anzahl)} Freiflächenanlagen` : "Freiflächenanlagen"}. Gezählt wird, was dort als „in Betrieb" geführt ist; stillgelegte Anlagen bleiben im Register stehen, wir rechnen sie aber nicht mit.`,
+    },
+    {
+      q: "Wie viele Balkonkraftwerke gibt es in Deutschland?",
+      a: balkon
+        ? `${zahl(balkon.anzahl)} Steckersolargeräte sind angemeldet (Stand ${stand})${
+            balkonPlus
+              ? ` — ${zeitraum} sind ${zahl(balkonPlus.absolut)} dazugekommen, ein Plus von ${zahl(balkonPlus.anteil * 100, 0)} Prozent`
+              : ""
+          }. Zusammen bringen sie ${fmtPvLeistung(balkon.kwp)} auf die Waage, also einen kleinen Teil der gesamten Solarleistung. Die Zahl ist eine Untergrenze: Wer sein Gerät nicht anmeldet, taucht im Register nicht auf, obwohl die Anmeldung Pflicht ist.`
+        : `Die Zahl der angemeldeten Steckersolargeräte lässt sich gerade nicht abrufen.`,
+      links: [{ phrase: "Anmeldung Pflicht", href: "/balkonkraftwerk/ratgeber/anmelden" }],
+      cta: { label: "Balkonkraftwerk durchrechnen", href: "/balkonkraftwerk/rechner" },
+    },
+    {
+      q: "Wie viel Photovoltaik-Leistung ist in Deutschland installiert?",
+      a: `${fmtPvLeistung(b.gesamt.kwp)} (Stand ${stand}). Gemeint ist die Nennleistung der Module unter Standard-Testbedingungen, deshalb die Einheit Gigawatt-Peak — nicht die Leistung, die gerade wirklich fließt. ${zeitraum} sind ${fmtPvLeistung(b.gesamt.kwp - b.gesamt.kwpStichtag)} dazugekommen.`,
+    },
+    {
+      q: "In welchem Bundesland stehen die meisten Solaranlagen?",
+      a: `Nach installierter Leistung ${spitzeLeistung.name} mit ${fmtPvLeistung(spitzeLeistung.kwp)}. Je Einwohner sieht die Reihenfolge anders aus: dort führt ${spitzeProKopf.name} mit ${fmtWattProKopf((spitzeProKopf.kwp * 1000) / spitzeProKopf.einwohner)} je Kopf. Beide Größen beantworten verschiedene Fragen — die erste, wo am meisten Strom erzeugt wird, die zweite, wo am meisten Menschen mitmachen.`,
+      cta: { label: "Zahlen für deinen Ort", href: "/solar-atlas" },
+    },
+    {
+      q: "Woher kommen diese Zahlen?",
+      a: `Aus dem Marktstammdatenregister der Bundesnetzagentur, dem amtlichen Verzeichnis aller Strom­erzeugungsanlagen in Deutschland. Wer eine Solaranlage in Betrieb nimmt, muss sie dort binnen eines Monats eintragen — vom Solarpark bis zum Balkonkraftwerk. Wir werten den Gesamtdatenexport monatlich aus; der hier gezeigte Stand ist ${stand}. Zwei Einschränkungen gehören dazu: Nicht angemeldete Geräte fehlen, und das Register führt je Anlage nur das Jahr der Inbetriebnahme, keinen Tag.`,
     },
   ];
 }

@@ -24,6 +24,7 @@ import { YEAR, YEARS, DEGRAD, PERSONEN, NUTZUNG, CONSUMPTION_MONTHLY, SCENARIOS,
 import { WP_ANNUAL_KWH, EA_KWH_PER_KM, EA_DEFAULT_KM, KLIMA_KWH_PER_M2, KLIMA_DEFAULT_M2 } from "../../../lib/consumption";
 import { pageMetadata } from "../../../lib/seo";
 import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
+import { kfwQuellenzeile, KFW_REPORT_STAND } from "../../../lib/kfw-format";
 
 // ISR: re-render hourly so live market prices / feed-in rates stay current
 // without a deploy. The page reads from the same Supabase tables + config
@@ -133,6 +134,10 @@ const S = {
     color: v("--color-text-faint"),
     marginTop: 8,
     lineHeight: 1.5,
+    // Quellenzeilen tragen Lizenzkürzel und Adressen ohne Leerzeichen; auf
+    // Telefonbreite lief die MaStR-Zeile 100 px über den Rand (Überlauf-Test,
+    // 05.09.2026). Ein langes Token darf innerhalb brechen.
+    overflowWrap: "anywhere" as const,
   },
   caveat: {
     fontSize: v("--font-size-caption"),
@@ -458,7 +463,7 @@ export default async function DatenstandPage() {
             { label: "Wartung je Jahr (fossil / Wärmepumpe)", value: `${nf(HP.gasMaintenance)} / ${nf(HP.wpMaintenance)} €` },
             { label: "Betrachtungszeitraum · Teuerung Strom/Brennstoff", value: `${HP.years} Jahre · ${nf(HP.stromInflation * 100)} / ${nf(HP.gasInflation * 100)} % pro Jahr` },
           ]}
-          source={`${HP.source}. Umrechnung des Norm-Bedarfs auf den erwarteten realen Verbrauch (Prebound-Effekt) nach Sunikka-Blank/Galvin (2012), Building Research & Information 40(3), Auswertung von 3.400 deutschen Wohnungen — im unsanierten Bestand rund ${Math.round(preboundAnteil(HP.specDemandBestand[0]) * 100)} % Abschlag; Heizlast und Warmwasser bleiben unkorrigiert. Investition der Wärmepumpe kalibriert an der Auswertung von 160 realen Luft-Wasser-Angeboten (Verbraucherzentrale Rheinland-Pfalz): Median 34.979 €, Mittelwert 36.279 € bei einer Median-Leistung von 10 kW. Anschaffung der fossilen Alternative: Mittelwert der Fraunhofer-ISE-Kurzstudie „Vergleich Wärmeversorgung“ vom 23.06.2026 (Gaskessel Einfamilienhaus 11.400–20.400 € brutto), bestätigt durch die Beispielrechnung der Verbraucherzentrale Rheinland-Pfalz vom 02.06.2025 (16.000 €). Grundpreise und Wartung ebenfalls aus dieser Beispielrechnung.`}
+          source={`${HP.source}. Umrechnung des Norm-Bedarfs auf den erwarteten realen Verbrauch (Prebound-Effekt) nach Sunikka-Blank/Galvin (2012), Building Research & Information 40(3), Auswertung von 3.400 deutschen Wohnungen — im unsanierten Bestand rund ${Math.round(preboundAnteil(HP.specDemandBestand[0]) * 100)} % Abschlag; Heizlast und Warmwasser bleiben unkorrigiert. Investition der Wärmepumpe kalibriert an der Auswertung von 160 realen Luft-Wasser-Angeboten (Verbraucherzentrale Rheinland-Pfalz): Median 34.979 €, Mittelwert 36.279 € bei einer Median-Leistung von 10 kW. Anschaffung der fossilen Alternative: Mittelwert der Fraunhofer-ISE-Kurzstudie „Vergleich Wärmeversorgung“ vom 23.06.2026 (Gaskessel Einfamilienhaus 11.400–20.400 € brutto), bestätigt durch die Beispielrechnung der Verbraucherzentrale Rheinland-Pfalz vom 02.06.2025 (16.000 €). Grundpreise und Wartung ebenfalls aus dieser Beispielrechnung. ${kfwQuellenzeile(Number(KFW_REPORT_STAND.wertIso.slice(0, 4)), KFW_REPORT_STAND.wertIso)} Diese Zahlen rechnen nicht mit — sie ordnen ein, wie viele Haushalte die Bundesförderung tatsächlich bekommen haben.`}
           aufAnfrage="Heizbedarf und Heizlast je Dämmstufe, Investitions- und Förderstaffeln, Brennstoff- und Betriebskosten"
         />
 
@@ -542,7 +547,7 @@ export default async function DatenstandPage() {
           stand="Modell (HTW Berlin · BDEW)"
           intro="Diese Werte beruhen auf wissenschaftlichen Lastprofilen, nicht auf tagesaktuellen Marktdaten — daher ein Modellstand statt eines Datums."
           rows={[
-            { label: "Eigenverbrauchs-Modell", value: "Power-Law, HTW Berlin" },
+            { label: "Eigenverbrauchs-Modell", value: "Power-Law, HTW Berlin — nach oben begrenzt durch das HTW-Autarkie-Kennfeld (dieselbe Quelle)" },
             { label: "Grundverbrauch 1 / 2 / 3–4 / 5+ Personen", value: PERSONEN.map((p) => nf(p.verbrauch)).join(" / ") + " kWh/a" },
             { label: "Tag-Anteil je Nutzungsprofil", value: NUTZUNG.map((n) => `${nf(n.tagQuote * 100)}`).join(" / ") + " %" },
             { label: "Saisonaler Verbrauchsfaktor", value: `${nf(Math.min(...CONSUMPTION_MONTHLY))}–${nf(Math.max(...CONSUMPTION_MONTHLY))} (BDEW H0)` },

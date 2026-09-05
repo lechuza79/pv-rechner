@@ -36,11 +36,10 @@
 //      deshalb niemanden direkt an, statt sich für eine Anrede zu entscheiden,
 //      die für die halbe Liste falsch ist.
 
-import { tokens } from "./theme";
 import { escapeHtml } from "./html-escape";
 import type { Meldung } from "./gemeinde-meldungen";
 
-const SITE = "https://solar-check.io";
+import { huelle, knopf, C, T, SITE } from "./mail-huelle";
 
 /**
  * Was eine Abo-Mail tragen MUSS.
@@ -64,20 +63,38 @@ export const ABO_PFLICHTANGABEN: {
   was: string;
   /** Nur für Meldungsmails — die Bestätigung trägt diese Angabe nicht. */
   nurMeldung?: boolean;
+  /**
+   * Nicht für die einmalige Umstellungs-Nachricht.
+   *
+   * Sie ist als Mail eines Menschen geschrieben, und ein Satz wie „Diese
+   * E-Mail bekommst du, weil …" ist genau der Systemton, gegen den sie gebaut
+   * ist (Betreiber, 03.09.2026). Rechtlich verlangt ihn hier nichts: Der
+   * Empfänger hat sich selbst eingetragen, es gibt keinen Verteiler und keine
+   * Werbeeinwilligung, auf die zu verweisen wäre. Impressum und Datenschutz
+   * bleiben Pflicht und bleiben drin.
+   */
+  nichtBeiUmstellung?: boolean;
   pruefe: (text: string) => boolean;
 }[] = [
   { was: "Abmeldelink", nurMeldung: true, pruefe: (t) => t.includes("/abo/abmelden") },
   { was: "Impressum-Link", pruefe: (t) => t.includes("solar-check.io/impressum") },
   { was: "Datenschutz-Link", pruefe: (t) => t.includes("solar-check.io/datenschutz") },
-  { was: "Grund der Zusendung", pruefe: (t) => /Diese E-Mail bekommst du, weil/.test(t) },
+  {
+    was: "Grund der Zusendung",
+    nichtBeiUmstellung: true,
+    pruefe: (t) => /Diese E-Mail bekommst du, weil/.test(t),
+  },
 ];
 
-export type AboMailArt = "bestaetigung" | "meldung";
+export type AboMailArt = "bestaetigung" | "meldung" | "umstellung";
 
 export function fehlendeAboPflichtangaben(html: string, art: AboMailArt = "meldung"): string[] {
-  return ABO_PFLICHTANGABEN.filter((p) => (art === "meldung" || !p.nurMeldung) && !p.pruefe(html)).map(
-    (p) => p.was,
-  );
+  return ABO_PFLICHTANGABEN.filter(
+    (p) =>
+      (art === "meldung" || !p.nurMeldung) &&
+      !(art === "umstellung" && p.nichtBeiUmstellung) &&
+      !p.pruefe(html),
+  ).map((p) => p.was);
 }
 
 // ─── Farben und Maße ────────────────────────────────────────────────────────
@@ -93,105 +110,6 @@ export function fehlendeAboPflichtangaben(html: string, art: AboMailArt = "meldu
 // liegt für immer im Postfach. Dieselbe Entscheidung wie beim Bild-Export, wo
 // die Aufnahme immer auf der hellsten Stufe entsteht. Genommen wird deshalb der
 // Grundsatz aus `tokens`, nie eine Tagesstufe.
-const C = {
-  text: tokens["--color-text-primary"],
-  fliess: tokens["--color-text-secondary"],
-  leise: tokens["--color-text-muted"],
-  linie: tokens["--color-border"],
-  karte: tokens["--color-bg"],
-  grund: tokens["--color-bg-muted"],
-  akzent: tokens["--color-accent"],
-  aufAkzent: tokens["--color-text-on-accent"],
-  eckeKarte: tokens["--radius-lg"],
-  eckeKnopf: tokens["--radius-md"],
-};
-
-/**
- * Schriftgrößen — wie die Farben aus dem Theme, nicht getippt.
- *
- * Der Fließtext einer Mail liest sich auf denselben Geräten wie der Fließtext
- * der Seite; ihm eine eigene Größe zu geben hieße, dieselbe Entscheidung ein
- * zweites Mal zu treffen und beim nächsten Mal anders. Eine erste Fassung
- * hatte hier acht verschiedene Werte von Hand stehen, darunter zwei, die es in
- * der Skala gar nicht gibt (14 und 20 px).
- */
-const T = {
-  klein: tokens["--font-size-caption"],
-  fuss: tokens["--font-size-small"],
-  text: tokens["--font-size-body"],
-  marke: tokens["--font-size-lead"],
-  titel: tokens["--font-size-h2"],
-};
-
-/**
- * Die Schriftfamilie.
- *
- * Unsere Hausschrift wird NICHT geladen: Ein Postfach lädt keine Webfonts, und
- * ein Verweis darauf kostet nur einen Abruf, der nichts bewirkt. Was bleibt,
- * ist die Systemschrift-Kette — dieselbe, die das Theme als Rückfall führt.
- */
-const SCHRIFT = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
-
-// ─── Hülle ───────────────────────────────────────────────────────────────────
-
-/**
- * Kopf, Inhaltskarte, Fuß — der Aufbau aus dem Schwesterprojekt, mit unseren
- * Farben.
- *
- * DAS LOGO IST EIN BILD MIT TEXT DAHINTER. Viele Postfächer laden Bilder erst
- * auf Klick; steht dort nur ein Bild, ist der Kopf des Briefes bis dahin leer.
- * Der Alternativtext trägt deshalb den Markennamen, und die Größe steht als
- * Attribut UND im Stil — ohne Attribut reißt Outlook das Bild auf seine
- * Originalgröße auf, bevor es geladen ist.
- */
-function huelle(o: {
-  vorschau: string;
-  inhalt: string;
-  /** Fehlt er, ist es eine transaktionale Mail (Bestätigung) — dann kein
-   *  Abmeldelink: Es gibt noch nichts, wovon man sich abmelden könnte. */
-  abmeldeUrl?: string;
-  /** Warum kam diese Mail? Steht im Fuß, nie im Kleingedruckten. */
-  grundzeile: string;
-}): string {
-  const fuss = o.abmeldeUrl
-    ? `<p style="margin:0 0 6px;font-size:${T.klein};color:${C.leise}">${escapeHtml(o.grundzeile)}</p>
-       <p style="margin:0 0 12px;font-size:${T.klein}">
-         <a href="${o.abmeldeUrl}" style="color:${C.leise}">Diese Meldungen abbestellen</a>
-       </p>`
-    : `<p style="margin:0 0 12px;font-size:${T.klein};color:${C.leise}">${escapeHtml(o.grundzeile)}</p>`;
-
-  return `<div style="background:${C.grund};margin:0;padding:32px 16px;font-family:${SCHRIFT};color:${C.fliess}">
-  <span style="display:none!important;visibility:hidden;opacity:0;height:0;width:0;overflow:hidden">${escapeHtml(o.vorschau)}</span>
-  <div style="max-width:560px;margin:0 auto">
-
-    <div style="text-align:center;padding-bottom:22px">
-      <a href="${SITE}" style="text-decoration:none;color:${C.text};font-size:${T.marke};font-weight:700">
-        <img src="${SITE}/logo.png" alt="Solar Check" width="150" height="26" style="display:block;margin:0 auto;border:0;outline:none;max-width:150px;height:auto">
-      </a>
-    </div>
-
-    <div style="background:${C.karte};border:1px solid ${C.linie};border-radius:${C.eckeKarte};padding:28px 24px;color:${C.fliess};font-size:${T.text};line-height:1.65">
-      ${o.inhalt}
-    </div>
-
-    <div style="text-align:center;padding:20px 8px 0">
-      ${fuss}
-      <p style="margin:0;font-size:${T.klein};color:${C.leise}">
-        <a href="${SITE}/impressum" style="color:${C.leise}">Impressum</a>
-        &nbsp;·&nbsp;
-        <a href="${SITE}/datenschutz" style="color:${C.leise}">Datenschutz</a>
-      </p>
-    </div>
-
-  </div>
-</div>`;
-}
-
-function knopf(url: string, text: string): string {
-  return `<p style="margin:24px 0">
-    <a href="${url}" style="display:inline-block;background:${C.akzent};color:${C.aufAkzent};text-decoration:none;padding:13px 24px;border-radius:${C.eckeKnopf};font-weight:700;font-size:${T.text}">${escapeHtml(text)}</a>
-  </p>`;
-}
 
 // ─── Die Bestätigungsmail ────────────────────────────────────────────────────
 
@@ -208,6 +126,7 @@ function knopf(url: string, text: string): string {
 export function aboBestaetigungsMail(o: {
   ortName: string;
   bestaetigenUrl: string;
+  einstellungenUrl?: string;
 }): { subject: string; html: string; text: string } {
   const ort = escapeHtml(o.ortName);
   const subject = `Bitte bestätigen: Meldungen zu ${o.ortName}`;
@@ -229,6 +148,7 @@ export function aboBestaetigungsMail(o: {
   const html = huelle({
     vorschau: `Ein Klick, dann bekommst du Meldungen zu ${o.ortName}.`,
     inhalt,
+    einstellungenUrl: o.einstellungenUrl,
     grundzeile:
       "Diese E-Mail bekommst du, weil diese Adresse auf solar-check.io für Meldungen zu " +
       `${o.ortName} eingetragen wurde. Sie wurde bei uns eingegeben und nicht aus einer anderen Quelle übernommen (Art. 13 DSGVO).`,
@@ -243,6 +163,7 @@ export function aboBestaetigungsMail(o: {
     ``,
     `Der Link gilt 48 Stunden. Wenn du das nicht warst, ist nichts passiert.`,
     ``,
+    ...(o.einstellungenUrl ? [`Deine Meldungen einstellen: ${o.einstellungenUrl}`, ``] : []),
     `Impressum: ${SITE}/impressum · Datenschutz: ${SITE}/datenschutz`,
   ].join("\n");
 
@@ -265,6 +186,7 @@ export function aboMeldungsMail(o: {
   ortUrl: string;
   meldungen: Meldung[];
   abmeldeUrl: string;
+  einstellungenUrl?: string;
   /** Datenstand des Anlagenregisters, ausgeschrieben. */
   standLabel: string;
 }): { subject: string; html: string; text: string } {
@@ -307,6 +229,7 @@ export function aboMeldungsMail(o: {
     vorschau: erste.titel,
     inhalt,
     abmeldeUrl: o.abmeldeUrl,
+    einstellungenUrl: o.einstellungenUrl,
     grundzeile: `Diese E-Mail bekommst du, weil du Meldungen zu ${o.ortName} abonniert hast.`,
   });
 
@@ -319,6 +242,7 @@ export function aboMeldungsMail(o: {
     `Alle Zahlen zu ${o.ortName}: ${o.ortUrl}`,
     "",
     `Grundlage: Marktstammdatenregister der Bundesnetzagentur, Stand ${o.standLabel}.`,
+    ...(o.einstellungenUrl ? [`Deine Meldungen einstellen: ${o.einstellungenUrl}`] : []),
     `Abbestellen: ${o.abmeldeUrl}`,
     `Impressum: ${SITE}/impressum · Datenschutz: ${SITE}/datenschutz`,
   ].join("\n");

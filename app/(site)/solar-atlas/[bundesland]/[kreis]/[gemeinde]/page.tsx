@@ -8,6 +8,7 @@ import RegionSearch from "../../../../../../components/atlas/RegionSearch";
 import { IconArrowRight, IconGlocke } from "../../../../../../components/Icons";
 import { v, space, pad } from "../../../../../../lib/theme";
 import { pageMetadata } from "../../../../../../lib/seo";
+import { atlasSeitenTitel } from "../../../../../../lib/atlas-titel";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../../../lib/json-ld";
 import {
   atlasIsIndexable,
@@ -162,7 +163,12 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
       //
       // Wirkung heute: null. Gemeindeseiten sind noindex, bis Welle 1 läuft.
       // Beleg: docs/seo/befund-2026-08-18-atlas-wellen.md
-      title: `Photovoltaik in ${region.name}: Solaranlagen, Bestand & Zubau`,
+      //
+      // Die VORLAGE selbst (Wortwahl plus Zeichen-Budget) steht seit dem
+      // 02.09.2026 in lib/atlas-titel.ts: Sie stand hier und in der
+      // Regionsseite doppelt getippt, und beide Fassungen waren so lang, dass
+      // Google sie auf drei von neun gemessenen Landesseiten verworfen hat.
+      title: atlasSeitenTitel({ name: region.name, level: "gemeinde" }),
       description: `Photovoltaik in ${region.name}: Anlagenzahl, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister — je Einwohner und im Vergleich zum ${bezugsebene}.`,
       path: `/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`,
     }),
@@ -778,9 +784,9 @@ const S: Record<string, React.CSSProperties> = {
     marginBottom: space.sm,
   },
   standDate: { fontWeight: 600, color: "inherit" },
-  h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
-  h2: { fontSize: 16, fontWeight: 700, margin: `0 0 ${space.xs}px` },
-  sub: { fontSize: 12, color: v("--color-text-muted"), margin: `0 0 ${space.lg}px` },
+  h1: { fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
+  h2: { fontSize: v("--font-size-lead"), fontWeight: 700, margin: `0 0 ${space.xs}px` },
+  sub: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), margin: `0 0 ${space.lg}px` },
   section: { marginBottom: space.huge },
   // Erneuerbare-Mix + 24h-Sim nebeneinander; auf Mobil untereinander (flex-wrap).
   // stretch → beide Karten gleich hoch; sbsItem als flex, damit die Karte (height
@@ -795,7 +801,7 @@ const S: Record<string, React.CSSProperties> = {
     color: v("--color-text-on-accent"),
     padding: pad("lg", "xl"),
     borderRadius: v("--radius-md"),
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     fontWeight: 600,
     textDecoration: "none",
   },
@@ -806,12 +812,12 @@ const S: Record<string, React.CSSProperties> = {
     padding: pad("lg"),
     border: `1px solid ${v("--color-border")}`,
     borderRadius: v("--radius-md"),
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     color: v("--color-text-primary"),
     textDecoration: "none",
   },
   disclaimer: {
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     color: v("--color-text-muted"),
     lineHeight: 1.6,
     borderTop: `1px solid ${v("--color-border")}`,

@@ -113,7 +113,7 @@ export default function KennzahlWidget({
           horizontaler Block. Auf einer eigenen Seite kreditiert die Seite. */}
       <WidgetSourceEdge widget={widget} visible={!settings.onsite} />
       <Kachel label={label} value={value} hint={hint} />
-      <div style={{ fontSize: 11, color: "var(--color-text-muted)", paddingTop: 8 }}>
+      <div style={{ fontSize: "var(--font-size-caption)", color: "var(--color-text-muted)", paddingTop: 8 }}>
         {summary ? "Stand " + formatDataAsOf(summary.data_as_of) : ""}
       </div>
 

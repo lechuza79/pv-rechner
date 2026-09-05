@@ -3,6 +3,7 @@ import { readFileSync } from "fs";
 import { join } from "path";
 import { calcBalkon, recommendBalkon } from "../balkon";
 import { simulateSolarYear, monthlyFromAnnual } from "../balkon-sim";
+import { FUNDING_PROGRAMS, fundingAmount } from "../funding-programs";
 import { DEFAULT_BALKON_CONFIG as CFG, BALKON_RECHT } from "../balkon-config";
 import { balkonFaq, balkonAnmeldenFaq } from "../faq";
 import { SOLAR_YEAR_DE, referenceYearKwh } from "../solar-year";
@@ -363,7 +364,7 @@ describe("recommendBalkon", () => {
   it("a recommended storage always amortises within the recommend threshold", () => {
     // Invariante: wenn ein Speicher empfohlen wird, rechnet er sich unter der
     // Schwelle — der ehrliche Gate.
-    for (const presenceId of ["weg", "teils", "home"] as const) {
+    for (const presenceId of ["weg", "teils", "home", "immer"] as const) {
       for (const kwh of [1500, 2800, 4500]) {
         const rec = recommendBalkon({ ...base, presenceId, haushaltKwh: kwh });
         if (rec.best.storageId !== "none") {
@@ -556,5 +557,37 @@ describe("Geprüfte Rechtsaussagen: die Vorbehalte", () => {
       seite.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, ""),
       "Der Anmelde-Ratgeber nennt den Bußgeld-Höchstrahmen als Zahl.",
     ).not.toMatch(/50\.?000/);
+  });
+});
+
+describe("Wohnform: wer zur Miete wohnt, bekommt eine andere Förderung", () => {
+  const mv = FUNDING_PROGRAMS["mv-mini-solaranlagen"];
+
+  it("zahlt dem Mieter, aber nicht dem Eigentümer", () => {
+    const anlage = (wohnform: "mieter" | "eigentuemer") =>
+      ({ technik: "balkon", wattPeak: 960, kosten: 500, wohnform }) as const;
+    expect(fundingAmount(mv, anlage("mieter")).total).toBe(500);
+    expect(fundingAmount(mv, anlage("eigentuemer")).computable).toBe(false);
+  });
+
+  it("rechnet gar nicht, solange die Wohnform unbekannt ist", () => {
+    // Raten wäre hier die schlechteste Möglichkeit: Der eine Topf ist leer, der
+    // andere nicht — eine Voreinstellung würde die Hälfte der Nutzer belügen.
+    const a = { technik: "balkon", wattPeak: 960, kosten: 500 } as const;
+    expect(fundingAmount(mv, a).computable).toBe(false);
+  });
+
+  it("lässt Programme ohne Einschränkung unberührt", () => {
+    // Die Einschränkung ist die Ausnahme. Ein Programm ohne Angabe darf durch
+    // die neue Dimension nichts verlieren — sonst hätte sie 40 Programme still
+    // abgeschaltet.
+    const ohne = Object.values(FUNDING_PROGRAMS).filter(
+      (p) => !p.nurWohnform && (p.foerdert ?? ["pv"]).includes("balkon") && p.balkonPauschale,
+    );
+    expect(ohne.length).toBeGreaterThan(5);
+    for (const p of ohne) {
+      const a = { technik: "balkon", wattPeak: 960, kosten: 800 } as const;
+      expect(fundingAmount(p, a).computable, p.id).toBe(true);
+    }
   });
 });
