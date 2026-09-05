@@ -25,7 +25,7 @@ export interface VideoFrameDaten {
   svg: SVGSVGElement | null;
   legende: { farbe: string; label: string }[];
   /** Ereignis-Zeitleiste unter dem Chart: Position in Prozent der Chartbreite, Farbe als Wert. */
-  zeitleiste: { posPct: number; farbe: string; aktiv: boolean }[];
+  zeitleiste: { posPct: number; aktiv: boolean }[];
   spur: { vonPct: number; bisPct: number };
   /** Das aktive Ereignis, erklärt unter der Spur. */
   ereignis: { jahr: string; label: string; text: string } | null;
@@ -125,7 +125,7 @@ export class KostenrennenVideo {
   /** Höhe aus dem Chart-Seitenverhältnis; die Leinwand steht fest, bevor die Aufnahme beginnt. */
   vorbereiten(chartSeitenverhaeltnis: number) {
     const chartH = Math.round((VIDEO_BREITE - 2 * PAD) * chartSeitenverhaeltnis);
-    this.hoehe = PAD + 30 + 54 + chartH + 16 + ZEITLEISTE_H + 40 + PAD;
+    this.hoehe = PAD + 40 + 34 + chartH + 16 + ZEITLEISTE_H + 40 + PAD;
     this.canvas.width = (VIDEO_BREITE + 2 * RAND) * SKALA;
     this.canvas.height = (this.hoehe + 2 * RAND) * SKALA;
   }
@@ -174,22 +174,22 @@ export class KostenrennenVideo {
       let y = PAD;
       c.textBaseline = "top";
       c.fillStyle = farbe("--color-text-primary");
-      c.font = `700 ${fsPx("--font-size-lead")}px ${sans}`;
-      c.fillText(d.titel, PAD, y); y += 30;
+      c.font = `800 ${fsPx("--font-size-display-md")}px ${sans}`;
+      c.fillText(d.titel, PAD, y); y += 40;
       c.fillStyle = farbe("--color-text-primary");
-      c.font = `800 ${fsPx("--font-size-display-md")}px ${mono}`;
+      c.font = `700 ${fsPx("--font-size-body")}px ${mono}`;
       c.fillText(d.jahr, PAD, y);
-      // Legende neben dem Zeitraum, als Spalte
-      const jahrBreite = c.measureText(d.jahr).width;
+      // Legende neben dem Zeitraum, in einer Zeile
+      let lx = PAD + c.measureText(d.jahr).width + 24;
       c.font = `500 ${fsPx("--font-size-small")}px ${sans}`;
-      d.legende.forEach((l, i) => {
-        const lx = PAD + jahrBreite + 20, ly = y + 6 + i * 18;
+      for (const l of d.legende) {
         c.strokeStyle = l.farbe; c.lineWidth = 3; c.lineCap = "round";
-        c.beginPath(); c.moveTo(lx, ly + 7); c.lineTo(lx + 14, ly + 7); c.stroke();
+        c.beginPath(); c.moveTo(lx, y + 8); c.lineTo(lx + 14, y + 8); c.stroke();
         c.fillStyle = farbe("--color-text-secondary");
-        c.fillText(l.label, lx + 22, ly);
-      });
-      y += 54;
+        c.fillText(l.label, lx + 20, y + 1);
+        lx += 20 + c.measureText(l.label).width + 18;
+      }
+      y += 34;
       if (bild) c.drawImage(bild, PAD, y, chartW, chartH);
       y += chartH + 16;
       // Ereignis-Zeitleiste: Spur mit Punkten (der aktive groß), darunter die Erklärung.
@@ -200,7 +200,7 @@ export class KostenrennenVideo {
         const x = PAD + (e.posPct / 100) * chartW;
         const r = e.aktiv ? 11 : 6.5;
         c.beginPath(); c.arc(x, spurY + 1, r, 0, Math.PI * 2); c.fillStyle = farbe("--color-bg"); c.fill();
-        c.beginPath(); c.arc(x, spurY + 1, r - 2, 0, Math.PI * 2); c.fillStyle = e.farbe; c.fill();
+        c.beginPath(); c.arc(x, spurY + 1, r - 2, 0, Math.PI * 2); c.fillStyle = farbe("--color-accent"); c.fill();
       }
       y += 26 + 8;
       if (d.ereignis) {
