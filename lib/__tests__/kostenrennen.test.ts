@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { kostenrennen, RENNEN_OHNE_MIT_PV, type RennHaushalt } from "../kostenrennen";
 import { calc, calcEigenverbrauch, calcWeightedFeedIn, estimateCost, batteryReplaceCost } from "../calc";
 import { PERSONEN, YEARS, NATIONAL_AVG_YIELD } from "../constants";
+import { monthlyFromAnnual } from "../balkon-sim";
 import { DEFAULT_PRICES } from "../prices-config";
 import { DEFAULT_FEED_IN } from "../feedin-config";
 
@@ -90,6 +91,55 @@ describe("Stromkosten-Rennen", () => {
     expect(ea.eigenverbrauchPct!).toBeGreaterThan(mit.eigenverbrauchPct!);
     expect(ea.kumuliert[YEARS]).toBeGreaterThan(mit.kumuliert[YEARS]);
     expect(Object.keys(drei.ueberholJahr).sort()).toEqual(["ea", "mit"]);
+  });
+
+  it("Monatsschritte: jeder zwölfte Wert ist der Jahreswert; ohne Anlage wächst jeder Monat", () => {
+    for (const l of r.laeufer) {
+      expect(l.monatlich).toHaveLength(12 * YEARS + 1);
+      for (let i = 0; i <= YEARS; i++) expect(l.monatlich[12 * i]).toBe(l.kumuliert[i]);
+    }
+    for (let k = 1; k <= 12 * YEARS; k++) expect(ohne.monatlich[k]).toBeGreaterThan(ohne.monatlich[k - 1]);
+  });
+
+  it("der Sägezahn: im Winter zahlt der PV-Haushalt, im Sommer nimmt er ein", () => {
+    // Monatlicher Zuwachs des PV-Haushalts, Jahr 2 (Index 13..24). 10 kWp auf
+    // 3.800 kWh speist von April bis September mehr ein, als die Restrechnung
+    // kostet — die Kurve fällt dort leicht; im Winter deckt die Anlage nur einen
+    // Teil, die Kurve steigt. Gemessen 05.09.2026: Dez +68 €, Jun −59 €.
+    const zuwachs = (l: typeof mit, k: number) => l.monatlich[k] - l.monatlich[k - 1];
+    const dez = zuwachs(mit, 24), jun = zuwachs(mit, 18), jan = zuwachs(mit, 13);
+    expect(dez).toBeGreaterThan(0);
+    expect(jan).toBeGreaterThan(0);
+    expect(jun).toBeLessThan(0);
+    // Selbst im Dezember spart die Anlage noch etwas: Zuwachs unter der Rechnung ohne Anlage.
+    expect(dez).toBeLessThan(zuwachs(ohne, 24));
+    expect(dez / zuwachs(ohne, 24)).toBeGreaterThan(0.4);
+    // Ohne Anlage ist die Winterrechnung höher als die Sommerrechnung (BDEW-Profil).
+    expect(zuwachs(ohne, 24)).toBeGreaterThan(zuwachs(ohne, 18));
+  });
+
+  it("der Überholmonat liegt im Überholjahr", () => {
+    const u = r.ueberholJahr.mit!;
+    const um = r.ueberholMonat.mit!;
+    expect(um).toBeGreaterThan(12 * (u - 1));
+    expect(um).toBeLessThanOrEqual(12 * u);
+  });
+
+  it("die Monatsausgabe der Amortisationsrechnung summiert je Jahr exakt auf den Jahresnutzen", () => {
+    const ev = calcEigenverbrauch({ personenIdx: 2, nutzungIdx: 1, speicherKwh: 10, wp: "nein", ea: "nein", eaKm: 0, kwp: 10, ertragKwp: NATIONAL_AVG_YIELD });
+    const e = calc({
+      kwp: 10, kosten: estimateCost(10, 10, DEFAULT_PRICES), strompreis: DEFAULT_PRICES.electricityPrice, eigenverbrauch: ev,
+      einspeisung: calcWeightedFeedIn(10, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10, DEFAULT_FEED_IN.thresholdKwp),
+      stromSteigerung: DEFAULT_PRICES.electricityIncrease, ertragKwp: NATIONAL_AVG_YIELD, monthly: monthlyFromAnnual(NATIONAL_AVG_YIELD),
+      batteryReplace: batteryReplaceCost(10, DEFAULT_PRICES),
+    });
+    expect(e.monate).toHaveLength(12 * YEARS);
+    for (let i = 1; i <= YEARS; i++) {
+      const summe = e.monate!.slice(12 * (i - 1), 12 * i).reduce((a, b) => a + b, 0);
+      expect(Math.abs(summe - e.years[i].j)).toBeLessThan(1);
+    }
+    // Ohne Monatsprofil gibt es keine Monatsausgabe — und nichts Erfundenes.
+    expect(calc({ kwp: 10, kosten: 14000, strompreis: 0.3, eigenverbrauch: 30, einspeisung: 8, stromSteigerung: 0.02, ertragKwp: 1000, monthly: null }).monate).toBeNull();
   });
 
   it("ohne Referenz-Haushalt gibt es kein Rennen", () => {

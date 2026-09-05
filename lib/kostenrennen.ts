@@ -14,9 +14,10 @@
 // Varianten (andere Haushaltsgröße, Speicher, E-Auto, Wärmepumpe) sind weitere
 // Läufer — nicht weitere Rechenwege.
 
-import { PERSONEN, YEARS, YEAR, NATIONAL_AVG_YIELD } from "./constants";
+import { PERSONEN, YEARS, YEAR, NATIONAL_AVG_YIELD, CONSUMPTION_MONTHLY } from "./constants";
 import { calc, calcEigenverbrauch, calcWeightedFeedIn, estimateCost, batteryReplaceCost } from "./calc";
 import { calcExtraConsumption } from "./consumption";
+import { monthlyFromAnnual } from "./balkon-sim";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
 import { DEFAULT_FEED_IN, type FeedInRates } from "./feedin-config";
 
@@ -46,6 +47,13 @@ export interface RennParameter {
   ertragKwp?: number;
   /** Strompreis-Anstieg p. a.; ohne Angabe der Wert der Preis-Config. */
   stromSteigerung?: number;
+  /**
+   * 12 Monatswerte kWh/kWp (PVGIS-Profil des Standorts). Ohne Angabe das
+   * deutsche Referenzjahr — dieselbe Form, die die Stundensimulation ohne PLZ
+   * benutzt. Die MENGE kommt immer aus `ertragKwp`, das Profil gibt nur die
+   * Verteilung über das Jahr.
+   */
+  monatsprofil?: number[];
 }
 
 export interface RennLaeufer {
@@ -67,6 +75,13 @@ export interface RennLaeufer {
    * plus Akku-Tausch — alles, was auch der Rechner rechnet.
    */
   kumuliert: number[];
+  /**
+   * Dieselbe Größe in Monatsschritten, Index = Monat 0..12·YEARS (0 = Start).
+   * Jeder zwölfte Wert ist der Jahreswert aus `kumuliert`. Der Winter ist hier
+   * sichtbar: Die Anlage liefert im Dezember ein Zehntel des Juli-Ertrags, die
+   * Stromrechnung ist im Winter am höchsten (BDEW-Lastprofil).
+   */
+  monatlich: number[];
 }
 
 export interface Kostenrennen {
@@ -82,6 +97,8 @@ export interface Kostenrennen {
    * ist das exakt die Amortisation des Rechners (per Test festgenagelt).
    */
   ueberholJahr: Record<string, number | null>;
+  /** Wie `ueberholJahr`, aber als Monatsindex (1..12·YEARS) — für die Marke im Chart. */
+  ueberholMonat: Record<string, number | null>;
   annahmen: {
     strompreisCt: number;
     steigerungPct: number;
@@ -128,19 +145,29 @@ export function kostenrennen(haushalte: RennHaushalt[], p: RennParameter = {}): 
   const referenz = haushalte.find((h) => h.kwp <= 0);
   if (!referenz) throw new Error("Kostenrennen braucht einen Haushalt ohne Anlage als Referenz");
 
+  // Verbrauchsanteil je Monat (BDEW H0: Winter über, Sommer unter dem Mittel).
+  const cSum = CONSUMPTION_MONTHLY.reduce((a, b) => a + b, 0);
+  const cAnteil = CONSUMPTION_MONTHLY.map((f) => f / cSum);
+  const monatsprofil = p.monatsprofil ?? monthlyFromAnnual(ertragKwp);
+  const M = 12 * YEARS;
+
   const laeufer: RennLaeufer[] = haushalte.map((h) => {
     const verbrauchKwh = jahresverbrauch(h);
-    // Stromrechnung ohne Anlage — derselbe Preispfad wie in calc():
-    // Jahr i zahlt strompreis × (1 + steigerung)^i.
-    const ohne: number[] = [0];
-    for (let i = 1; i <= YEARS; i++) {
-      ohne.push(ohne[i - 1] + verbrauchKwh * strompreis * Math.pow(1 + steigerung, i));
+    // Stromrechnung ohne Anlage, Monat für Monat — derselbe Preispfad wie in
+    // calc(): Jahr i zahlt strompreis × (1 + steigerung)^i.
+    const ohneMonat: number[] = [0];
+    for (let k = 1; k <= M; k++) {
+      const i = Math.ceil(k / 12);
+      const m = (k - 1) % 12;
+      ohneMonat.push(ohneMonat[k - 1] + verbrauchKwh * cAnteil[m] * strompreis * Math.pow(1 + steigerung, i));
     }
+    const jahreswerte = (monat: number[]) => Array.from({ length: YEARS + 1 }, (_, i) => Math.round(monat[12 * i]));
     if (h.kwp <= 0) {
       return {
         key: h.key, label: h.label, kurz: h.kurz, hatPv: false, kwp: 0, speicherKwh: 0,
         investition: 0, verbrauchKwh, eigenverbrauchPct: null,
-        kumuliert: ohne.map((x) => Math.round(x)),
+        kumuliert: jahreswerte(ohneMonat),
+        monatlich: ohneMonat.map((x) => Math.round(x)),
       };
     }
     const ev = calcEigenverbrauch({
@@ -152,26 +179,39 @@ export function kostenrennen(haushalte: RennHaushalt[], p: RennParameter = {}): 
     const einspeisung = calcWeightedFeedIn(h.kwp, feedIn.teilUnder10, feedIn.teilOver10, feedIn.thresholdKwp);
     const ergebnis = calc({
       kwp: h.kwp, kosten, strompreis, eigenverbrauch: ev, einspeisung,
-      stromSteigerung: steigerung, ertragKwp, monthly: null,
+      stromSteigerung: steigerung, ertragKwp, monthly: monatsprofil,
       batteryReplace: h.speicherKwh > 0 ? batteryReplaceCost(h.speicherKwh, prices) : 0,
     });
-    // Kosten mit Anlage = Kosten ohne Anlage − kumulierter Gewinn. `kum` startet
-    // bei −kosten, also steht im Jahr 0 genau die Anschaffung.
-    const kumuliert = ohne.map((x, i) => Math.round(x - ergebnis.years[i].kum));
+    if (!ergebnis.monate) throw new Error("calc() lieferte kein Monatsprofil");
+    // Kosten mit Anlage = Kosten ohne Anlage − kumulierter Nutzen der Anlage.
+    // Monat 0 ist die Anschaffung; danach wächst jeder Monat um die
+    // Stromrechnung minus das, was die Anlage in diesem Monat einbringt.
+    const mitMonat: number[] = [kosten];
+    for (let k = 1; k <= M; k++) {
+      mitMonat.push(mitMonat[k - 1] + (ohneMonat[k] - ohneMonat[k - 1]) - ergebnis.monate[k - 1]);
+    }
     return {
       key: h.key, label: h.label, kurz: h.kurz, hatPv: true, kwp: h.kwp, speicherKwh: h.speicherKwh,
-      investition: kosten, verbrauchKwh, eigenverbrauchPct: ev, kumuliert,
+      investition: kosten, verbrauchKwh, eigenverbrauchPct: ev,
+      kumuliert: jahreswerte(mitMonat),
+      monatlich: mitMonat.map((x) => Math.round(x)),
     };
   });
 
   const ref = laeufer.find((l) => l.key === referenz.key)!;
+  // Erster Zeitpunkt, ab dem der Läufer DAUERHAFT unter der Referenz liegt —
+  // nicht das erste Unterschreiten: Der Akku-Tausch kann eine Kurve noch einmal
+  // über die andere heben (dieselbe Regel wie die Amortisation in calc()).
+  const erstesDauerhaftDarunter = (a: number[], b: number[]) => {
+    const idx = a.findIndex((_, i) => i > 0 && a.slice(i).every((k, j) => k < b[i + j]));
+    return idx > 0 ? idx : null;
+  };
   const ueberholJahr: Record<string, number | null> = {};
+  const ueberholMonat: Record<string, number | null> = {};
   for (const l of laeufer) {
     if (!l.hatPv) continue;
-    const idx = l.kumuliert.findIndex(
-      (_, i) => i > 0 && l.kumuliert.slice(i).every((k, j) => k < ref.kumuliert[i + j]),
-    );
-    ueberholJahr[l.key] = idx > 0 ? idx : null;
+    ueberholJahr[l.key] = erstesDauerhaftDarunter(l.kumuliert, ref.kumuliert);
+    ueberholMonat[l.key] = erstesDauerhaftDarunter(l.monatlich, ref.monatlich);
   }
 
   const pvKwp = haushalte.find((h) => h.kwp > 0)?.kwp ?? 10;
@@ -181,6 +221,7 @@ export function kostenrennen(haushalte: RennHaushalt[], p: RennParameter = {}): 
     laeufer,
     referenzKey: referenz.key,
     ueberholJahr,
+    ueberholMonat,
     annahmen: {
       strompreisCt: Math.round(strompreis * 1000) / 10,
       steigerungPct: Math.round(steigerung * 1000) / 10,

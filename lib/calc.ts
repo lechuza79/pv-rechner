@@ -367,6 +367,12 @@ export interface EinspeiseModell {
 
 export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, stromSteigerung, ertragKwp, monthly, batteryReplace = 0, einspeiseModell }: { kwp: number; kosten: number; strompreis: number; eigenverbrauch: number; einspeisung: number; stromSteigerung: number; ertragKwp: number; monthly: number[] | null; batteryReplace?: number; einspeiseModell?: EinspeiseModell }) {
   const years: { year: number; i: number; kum: number; j: number }[] = [];
+  // Monatlicher Nutzen (Jahr 1 Monat 1 … Jahr YEARS Monat 12), nur wenn ein
+  // Monatsprofil vorliegt — sonst gäbe es nichts, was einen Monat vom anderen
+  // unterscheidet. Summiert je Jahr exakt auf `j`; der Akku-Tausch fällt in den
+  // ersten Monat seines Jahres. Gebaut für das Stromkosten-Rennen
+  // (lib/kostenrennen.ts), das die Kurve in Monatsschritten zeichnet.
+  const monate: number[] | null = monthly ? [] : null;
   let kum = -kosten;
   // Monatliche Berechnung wenn PVGIS-Profil vorhanden
   const fracs = monthly ? monthly.map(m => m / monthly.reduce((a, b) => a + b, 0)) : null;
@@ -389,14 +395,18 @@ export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, str
       // Vermarkters gegen ihn abgewogen wird (siehe unten) — nicht gegen den
       // gesamten Jahresnutzen, in dem die Eigenverbrauchs-Ersparnis steckt.
       let einspeiseErloes = 0;
+      const mErsparnis: number[] = [];
+      const mEinspeise: number[] = [];
       if (fracs && monthlyEv) {
         // Monatlich: EV% variiert saisonal (Winter höher, Sommer niedriger),
         // bleibt aber jahresgewichtet auf dem eingegebenen Eigenverbrauch.
         for (let m = 0; m < 12; m++) {
           const mProd = kwp * ertragKwp * fracs[m] * deg;
           const mEv = monthlyEv[m];
-          j += mProd * mEv * sp;
-          einspeiseErloes += mProd * (1 - mEv) * anteil * (feedIn / 100);
+          mErsparnis.push(mProd * mEv * sp);
+          mEinspeise.push(mProd * (1 - mEv) * anteil * (feedIn / 100));
+          j += mErsparnis[m];
+          einspeiseErloes += mEinspeise[m];
         }
       } else {
         // Jährlich (Fallback ohne Monatsprofil)
@@ -413,8 +423,16 @@ export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, str
       // Eine 3-kWp-Anlage verlor dadurch über die Laufzeit 222 €, sobald man den
       // Börsenerlös EINSCHALTETE (Council 18.08.2026) — ein Schalter, der das
       // Ergebnis verschlechtert, obwohl er einen Erlös hinzufügt.
-      if (vermarktungLohnt(einspeiseErloes, fixkosten)) {
+      const lohnt = vermarktungLohnt(einspeiseErloes, fixkosten);
+      if (lohnt) {
         j += einspeiseErloes - fixkosten;
+      }
+      if (monate && mErsparnis.length === 12) {
+        for (let m = 0; m < 12; m++) {
+          let mj = mErsparnis[m] + (lohnt ? mEinspeise[m] - fixkosten / 12 : 0);
+          if (i === BATTERY_LIFETIME_YEARS && m === 0) mj -= batteryReplace;
+          monate.push(mj);
+        }
       }
     }
     // Akku-Tausch nach Ablauf der Speicher-Lebensdauer (einmalig im Horizont)
@@ -428,7 +446,7 @@ export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, str
   const be = years.find(
     (y, idx) => idx > 0 && y.kum >= 0 && years.slice(idx).every((z) => z.kum >= 0),
   );
-  return { years, be, total: years[YEARS].kum };
+  return { years, be, total: years[YEARS].kum, monate };
 }
 
 // ─── URL-Parameter-Helpers ───────────────────────────────────────────────────

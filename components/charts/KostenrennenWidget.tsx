@@ -32,13 +32,26 @@ import type { Kostenrennen, RennLaeufer } from "../../lib/kostenrennen";
 // Alles Interaktive (Abspielen, Schieberegler) trägt data-sc-export-ignore; das
 // Bild zeigt den gerade eingestellten Stand.
 //
-// Die Zeit läuft als Gleitkommazahl `t` (in Jahren) über requestAnimationFrame,
-// nicht in Jahresschritten: Die Linie wächst dadurch gleichmäßig statt zu
-// springen. Die Werte zwischen zwei Jahren sind linear interpoliert — nur für
-// die Bewegung; angezeigt werden immer die gerechneten Jahreswerte.
+// Die Zeit läuft als Gleitkommazahl `t` (in MONATEN) über requestAnimationFrame:
+// Die Kurve zeichnet sich gleichmäßig, und die Monatsauflösung zeigt den
+// Sägezahn — im Winter steigt die PV-Kurve fast wie die andere, im Sommer
+// fällt sie sogar (Einspeise-Erlös über der Restrechnung). Zwischen zwei
+// Monaten wird nur für die Bewegung interpoliert; angezeigt werden immer die
+// gerechneten Monatswerte.
 
-const MS_JE_JAHR = 400;
-const SCHRITT_MS = 380;
+const MS_JE_MONAT = 34; // 25 Jahre in rund zehn Sekunden
+const SCHRITT_MS = 380; // bei reduzierter Bewegung: ein Jahr je Schritt
+
+const MONATE_KURZ = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
+const MONATE = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+
+/** Kalenderbeschriftung eines Monatsindex (1..12·N): Monat m des Betriebsjahrs
+ *  i, benannt wie im Rechner-Chart (Startjahr + i). */
+function monatLabel(startJahr: number, k: number, kurz = false): string {
+  const i = Math.ceil(k / 12);
+  const m = (k - 1) % 12;
+  return `${(kurz ? MONATE_KURZ : MONATE)[m]} ${startJahr + i}`;
+}
 
 // Farbfolge der Läufer: Referenz (ohne Anlage) neutral, Anlagen im Akzent.
 // Semantisch, nicht themebar: dieselbe Zuordnung in jedem Farbschema.
@@ -53,11 +66,11 @@ function niceMax(max: number): number {
   return Math.ceil(max / s) * s;
 }
 
-/** Kumulierter Wert zur Gleitkomma-Zeit t (linear zwischen zwei Jahren). */
+/** Kumulierter Wert zur Gleitkomma-Zeit t in Monaten (linear zwischen zwei Monaten). */
 function wertBei(l: RennLaeufer, t: number): number {
   const i = Math.floor(t);
-  if (i >= l.kumuliert.length - 1) return l.kumuliert[l.kumuliert.length - 1];
-  return l.kumuliert[i] + (l.kumuliert[i + 1] - l.kumuliert[i]) * (t - i);
+  if (i >= l.monatlich.length - 1) return l.monatlich[l.monatlich.length - 1];
+  return l.monatlich[i] + (l.monatlich[i + 1] - l.monatlich[i]) * (t - i);
 }
 
 interface Props {
@@ -88,6 +101,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   const gestartet = useRef(false);
   const hostRef = useRef<HTMLDivElement>(null);
   const N = rennen.jahre;
+  const M = 12 * N;
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width:560px)");
@@ -123,8 +137,8 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
     if (ruhig) {
       const iv = setInterval(() => {
         setT((prev) => {
-          const n = Math.min(Math.floor(prev) + 1, N);
-          if (n >= N) setSpielt(false);
+          const n = Math.min(Math.floor(prev / 12) * 12 + 12, M);
+          if (n >= M) setSpielt(false);
           return n;
         });
       }, SCHRITT_MS);
@@ -136,24 +150,27 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
       const dt = now - last;
       last = now;
       setT((prev) => {
-        const n = Math.min(prev + dt / MS_JE_JAHR, N);
-        if (n >= N) setSpielt(false);
+        const n = Math.min(prev + dt / MS_JE_MONAT, M);
+        if (n >= M) setSpielt(false);
         return n;
       });
       raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
-  }, [spielt, ruhig, N]);
+  }, [spielt, ruhig, M]);
 
-  const idx = Math.min(N, Math.floor(t));
-  const jahr = rennen.startJahr + idx;
+  // k = ganzer Monatsindex (0 = Start), jahre = volle Betriebsjahre.
+  const k = Math.min(M, Math.floor(t));
+  const jahre = Math.floor(k / 12);
+  const jahr = k === 0 ? rennen.startJahr : rennen.startJahr + Math.ceil(k / 12);
+  const stand = k === 0 ? `${rennen.startJahr} · Start` : monatLabel(rennen.startJahr, k);
   const referenz = rennen.laeufer.find((l) => l.key === rennen.referenzKey)!;
   const farbe = (key: string) => FARBEN[rennen.laeufer.findIndex((l) => l.key === key) % FARBEN.length];
 
   const { chartRef, downloadPng, sharePng, shareWhatsApp, shareTwitter, isExporting, canNativeShare } =
     useChartExport({
-      context: { title: `${WIDGETS.kostenrennen.title} — nach ${idx} Jahren` },
+      context: { title: `${WIDGETS.kostenrennen.title} — ${stand}` },
       filename: "stromkosten-rennen-pv",
       shareText: WIDGETS.kostenrennen.shareText,
       shareUrl: WIDGETS.kostenrennen.shareUrl,
@@ -167,12 +184,12 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   const P = { t: 18, r: narrow ? 74 : 96, b: 28, l: narrow ? 46 : 58 };
   const cW = W - P.l - P.r, cH = H - P.t - P.b;
   const y0 = P.t + cH;
-  const yMax = niceMax(Math.max(...rennen.laeufer.map((l) => Math.max(...l.kumuliert))));
-  const xL = (jahrIdx: number) => r2(P.l + (jahrIdx / N) * cW);
+  const yMax = niceMax(Math.max(...rennen.laeufer.map((l) => Math.max(...l.monatlich))));
+  const xL = (monatIdx: number) => r2(P.l + (monatIdx / M) * cW);
   const yL = (wert: number) => r2(y0 - (Math.max(0, wert) / yMax) * cH);
-  const yTicks = [1, 2, 3, 4].map((k) => (yMax / 4) * k);
+  const yTicks = [1, 2, 3, 4].map((q) => (yMax / 4) * q);
   const xJahre = [0, Math.round(N / 2), N];
-  const clipId = `kr-clip-${rennen.referenzKey}-${N}`;
+  const clipId = `kr-clip-${rennen.referenzKey}-${M}`;
   const clipBreite = r2(Math.max(0.01, xL(t) - P.l));
 
   // Spitzen (aktueller Punkt jeder Linie), von oben nach unten sortiert, damit
@@ -183,19 +200,19 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   const spitzeDy = (i: number) => (spitzen.length === 1 ? 4 : i === 0 ? -6 : 13);
 
   const pvLaeufer = rennen.laeufer.filter((l) => l.hatPv);
-  const ueberholJahr = pvLaeufer.length === 1 ? rennen.ueberholJahr[pvLaeufer[0].key] : null;
-  const kreuzungSichtbar = ueberholJahr !== null && t >= ueberholJahr;
+  const ueberholMonat = pvLaeufer.length === 1 ? rennen.ueberholMonat[pvLaeufer[0].key] : null;
+  const kreuzungSichtbar = ueberholMonat !== null && t >= ueberholMonat;
 
   // Der Satz unter dem Chart: Stand des PV-Haushalts gegen die Referenz —
-  // mit den gerechneten Jahreswerten, nicht mit Zwischenbildern.
+  // mit den gerechneten Monatswerten, nicht mit Zwischenbildern.
   const status = (() => {
     if (pvLaeufer.length !== 1) return null;
     const pv = pvLaeufer[0];
-    const diff = pv.kumuliert[idx] - referenz.kumuliert[idx];
-    if (idx === 0) return `Start: Der PV-Haushalt hat ${fmtEuroVoll(pv.investition)} für die Anlage ausgegeben, der andere noch nichts.`;
-    if (ueberholJahr !== null && idx >= ueberholJahr) {
-      return idx === ueberholJahr
-        ? `Jahr ${idx}: Die Linien kreuzen sich — die Anlage hat sich bezahlt gemacht, ab jetzt liegt der PV-Haushalt vorn.`
+    const diff = pv.monatlich[k] - referenz.monatlich[k];
+    if (k === 0) return `Start: Der PV-Haushalt hat ${fmtEuroVoll(pv.investition)} für die Anlage ausgegeben, der andere noch nichts.`;
+    if (ueberholMonat !== null && k >= ueberholMonat) {
+      return k === ueberholMonat
+        ? `${monatLabel(rennen.startJahr, k)}: Die Linien kreuzen sich — die Anlage hat sich bezahlt gemacht, ab jetzt liegt der PV-Haushalt vorn.`
         : `Der PV-Haushalt hat bis hier ${fmtEuroVoll(-diff)} weniger für Strom ausgegeben.`;
     }
     return `Der PV-Haushalt liegt noch ${fmtEuroVoll(diff)} hinten — die Anschaffung ist noch nicht zurück.`;
@@ -210,7 +227,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
     fontSize: v("--font-size-small"), fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap",
   };
   const legend: ExportLegendEntry[] = rennen.laeufer.map((l) => ({ color: farbe(l.key), label: l.label, shape: "line" }));
-  const amEnde = t >= N;
+  const amEnde = t >= M;
 
   return (
     <div
@@ -246,8 +263,8 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
       {/* Jahr + Zustand */}
       <div style={{ display: "flex", alignItems: "baseline", gap: space.md, marginBottom: space.md }}>
         <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-display-md"), fontWeight: 800, color: v("--color-text-primary"), lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{jahr}</span>
-        <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
-          {idx === 0 ? "Start" : idx === 1 ? "nach 1 Jahr" : `nach ${idx} Jahren`}
+        <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), whiteSpace: "nowrap" }}>
+          {k === 0 ? "Start" : `${MONATE[(k - 1) % 12]} · ${jahre === 0 ? "erstes Jahr" : jahre === 1 ? "nach 1 Jahr" : `nach ${jahre} Jahren`}`}
         </span>
       </div>
 
@@ -262,7 +279,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
         </div>
 
         <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }} role="img"
-          aria-label={`Kumulierte Stromkosten ${rennen.startJahr} bis ${jahr}: ${rennen.laeufer.map((l) => `${l.label} ${fmtEuroVoll(l.kumuliert[idx])}`).join(", ")}`}>
+          aria-label={`Kumulierte Stromkosten ${rennen.startJahr} bis ${stand}: ${rennen.laeufer.map((l) => `${l.label} ${fmtEuroVoll(l.monatlich[k])}`).join(", ")}`}>
           <defs>
             <clipPath id={clipId}>
               <rect x={P.l} y={0} width={clipBreite} height={H} />
@@ -283,18 +300,18 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           {xJahre.map((ji, i) => {
             const last = i === xJahre.length - 1;
             return (
-              <text key={ji} x={xL(ji)} y={y0 + 18} textAnchor={i === 0 ? "start" : last ? "end" : "middle"} fontSize={fsPx("--font-size-small")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
+              <text key={ji} x={xL(ji * 12)} y={y0 + 18} textAnchor={i === 0 ? "start" : last ? "end" : "middle"} fontSize={fsPx("--font-size-small")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
                 {rennen.startJahr + ji}
               </text>
             );
           })}
 
           {/* Kreuzung: erscheint, sobald die Linien sie erreicht haben. */}
-          {kreuzungSichtbar && ueberholJahr !== null && (
+          {kreuzungSichtbar && ueberholMonat !== null && (
             <g>
-              <line x1={xL(ueberholJahr)} x2={xL(ueberholJahr)} y1={P.t} y2={y0} stroke="var(--color-positive)" strokeWidth={1} strokeDasharray="3 3" />
-              <text x={xL(ueberholJahr)} y={P.t - 6} textAnchor={ueberholJahr > N * 0.7 ? "end" : "middle"} fontSize={fsPx("--font-size-caption")} fontWeight={700} fill="var(--color-positive)">
-                Anlage bezahlt · {rennen.startJahr + ueberholJahr}
+              <line x1={xL(ueberholMonat)} x2={xL(ueberholMonat)} y1={P.t} y2={y0} stroke="var(--color-positive)" strokeWidth={1} strokeDasharray="3 3" />
+              <text x={xL(ueberholMonat)} y={P.t - 6} textAnchor={ueberholMonat > M * 0.7 ? "end" : "middle"} fontSize={fsPx("--font-size-caption")} fontWeight={700} fill="var(--color-positive)">
+                Anlage bezahlt · {monatLabel(rennen.startJahr, ueberholMonat, true)}
               </text>
             </g>
           )}
@@ -304,7 +321,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
             {rennen.laeufer.map((l) => (
               <polyline
                 key={l.key}
-                points={l.kumuliert.map((k, i) => `${xL(i)},${yL(k)}`).join(" ")}
+                points={l.monatlich.map((wert, i) => `${xL(i)},${yL(wert)}`).join(" ")}
                 fill="none"
                 stroke={farbe(l.key)}
                 strokeWidth={l.hatPv ? 3 : 2.5}
@@ -320,7 +337,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
               <circle cx={xL(t)} cy={y} r={4} fill={farbe(l.key)} stroke="var(--color-bg)" strokeWidth={1.5} />
               {/* Nie unter die Nulllinie: Bei 0 € säße der Betrag sonst auf dem Jahr der x-Achse. */}
               <text x={xL(t) + 8} y={Math.min(y + spitzeDy(i), y0 - 3)} textAnchor="start" fontSize={fsPx("--font-size-small")} fontWeight={800} fill={farbe(l.key)} fontFamily="var(--font-mono)" style={{ fontVariantNumeric: "tabular-nums" }}>
-                {narrow ? `${Math.round(wert / 1000)} T€` : fmtEuroVoll(l.kumuliert[idx])}
+                {narrow ? `${Math.round(wert / 1000)} T€` : fmtEuroVoll(l.monatlich[k])}
               </text>
             </g>
           ))}
@@ -363,22 +380,22 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
         <input
           type="range"
           min={0}
-          max={N}
+          max={M}
           step={1}
-          value={idx}
+          value={k}
           onChange={(e) => { setSpielt(false); gestartet.current = true; setT(Number(e.target.value)); }}
           aria-label="Jahr wählen"
-          aria-valuetext={`${jahr}, nach ${idx} Jahren`}
+          aria-valuetext={stand}
           style={{ flex: 1, accentColor: v("--color-accent"), minWidth: 0 }}
         />
       </div>
 
       {/* Im Bild: der eingestellte Stand steht schon im Kopf (Jahr + „nach n
           Jahren"); hier nur der Hinweis, dass das Bild einen Zwischenstand zeigt. */}
-      {idx < N && (
+      {k < M && (
         <ExportOnly style={{ marginTop: space.md }}>
           <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
-            Zwischenstand nach {idx} von {N} Jahren
+            Zwischenstand {k === 0 ? "vor dem ersten Betriebsjahr" : `im ${monatLabel(rennen.startJahr, k)}`} von {N} Jahren
           </span>
         </ExportOnly>
       )}
