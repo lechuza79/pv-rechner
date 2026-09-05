@@ -34,9 +34,13 @@ import { tagesverlauf, tagDatum } from "../../lib/kostenrennen-tage";
 //
 // Die Achsen laufen mit, wie bei einem Race-Chart: Die x-Achse reicht vom
 // Start bis heute (mindestens ein Jahr) und wächst, bis am Ende alle 25 Jahre
-// auf einer Breite stehen; die y-Achse ist auf die Linien im Bild gepasst. In
-// einer festen Skala 0–40.000 € wäre die Bewegung eines Monats von Anfang an
-// ein Strich; so füllt das erste Jahr das Bild, und das Bild zoomt heraus.
+// auf einer Breite stehen. Die y-Achse ist eine KAMERA auf die PV-Linie: Sie
+// zeigt deren Spanne plus anderthalb Spannen Luft nach unten (und oben) — der
+// Haushalt ohne Anlage liegt anfangs unter dem Bild und wird am Rand als Marke
+// mit Zahl geführt, steigt ins Bild, kreuzt, führt. Zum Ende hin ist die Spanne
+// der PV-Linie so groß, dass beide Linien vollständig im Bild stehen. Nur so
+// sind die Tage sichtbar: Ein Sonnen- gegen einen Regentag sind 3 €, und in
+// einer Skala mit den 14.000 € Anschaffung dazwischen ist das kein Bildpunkt.
 //
 // Selbst-enthaltende Karte nach dem Muster von GruengasWidget: dasselbe Bauteil
 // steht unter /embed/pv-kostenrennen und direkt gerendert im Ratgeber (onsite).
@@ -199,14 +203,24 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   const xStart = 0;
   const iStart = 0;
   const iEnd = Math.min(T, Math.ceil(t));
-  let lo = Infinity, hi = -Infinity;
+  // Kamera auf die PV-Linie: ihre Spanne im Bild, dazu LUFT Luft-Spannen nach
+  // unten und oben — genug, dass der Haushalt ohne Anlage hereinwachsen kann,
+  // ohne dass die Skala springt. Sein aktueller Wert wird eingeschlossen, sobald
+  // er innerhalb dieser Luft liegt; davor steht er als Marke am Rand.
+  let pvLo = Infinity, pvHi = -Infinity;
   for (let d = iStart; d <= iEnd; d++) {
-    lo = Math.min(lo, kPv[d], kOhne[d]);
-    hi = Math.max(hi, kPv[d], kOhne[d]);
+    pvLo = Math.min(pvLo, kPv[d]);
+    pvHi = Math.max(pvHi, kPv[d]);
   }
-  if (!Number.isFinite(lo)) { lo = 0; hi = 1; }
-  const pad = Math.max(50, (hi - lo) * 0.08);
+  if (!Number.isFinite(pvLo)) { pvLo = 0; pvHi = 1; }
+  const LUFT = 0.9;
+  const spanne = Math.max(120, pvHi - pvLo);
+  const ohneTip = kOhne[tag];
+  const lo = Math.min(pvLo, Math.max(ohneTip, pvLo - LUFT * spanne));
+  const hi = Math.max(pvHi, Math.min(ohneTip, pvHi + LUFT * spanne));
+  const pad = Math.max(20, (hi - lo) * 0.06);
   const yMin = Math.max(0, lo - pad), yMax = hi + pad;
+  const ohneImBild = ohneTip >= yMin && ohneTip <= yMax;
   const yStep = niceStep(yMax - yMin);
   const yTicks: number[] = [];
   for (let val = Math.ceil(yMin / yStep) * yStep; val <= yMax; val += yStep) yTicks.push(val);
@@ -235,9 +249,13 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   };
   const spitzen = [
     { key: pv.key, farbe: FARBE_PV, wert: wertBei(kPv, t), zahl: kPv[tag] },
-    { key: ohne.key, farbe: FARBE_OHNE, wert: wertBei(kOhne, t), zahl: kOhne[tag] },
+    ...(ohneImBild ? [{ key: ohne.key, farbe: FARBE_OHNE, wert: wertBei(kOhne, t), zahl: kOhne[tag] }] : []),
   ].map((s) => ({ ...s, y: yL(s.wert) })).sort((a, b) => a.y - b.y);
-  const spitzeDy = (i: number) => (Math.abs(spitzen[0].y - spitzen[1].y) < 16 ? (i === 0 ? -6 : 13) : 4);
+  const spitzeDy = (i: number) => (spitzen.length > 1 && Math.abs(spitzen[0].y - spitzen[1].y) < 16 ? (i === 0 ? -6 : 13) : 4);
+  // Liegt der Haushalt ohne Anlage außerhalb des Bildes, zeigt eine Marke am
+  // Rand, wo er steht — unten, solange er hinten liegt, oben, wenn er führt.
+  const ohneUnten = !ohneImBild && ohneTip < yMin;
+  const clipId = `kr-clip-${rennen.startJahr}`;
 
   // Der Satz unter dem Chart — mit den gerechneten Tageswerten.
   const diff = kPv[tag] - kOhne[tag];
@@ -310,7 +328,8 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           <InfoTooltip title="Was hier zählt" ariaLabel="Was als Stromkosten zählt">
             Alles, was der Haushalt bis zu diesem Tag für Strom ausgegeben hat: die Stromrechnung mit steigendem Preis, beim
             PV-Haushalt dazu die Anschaffung der Anlage, abzüglich der Einspeisevergütung. Wo sich die Linien kreuzen, ist die
-            Anlage bezahlt. Die Zeitachse wächst vom ersten Jahr bis zum ganzen Zeitraum, die Geldskala passt sich den Linien an.
+            Anlage bezahlt. Die Zeitachse wächst vom ersten Jahr bis zum ganzen Zeitraum; die Geldskala folgt der PV-Linie —
+            der Haushalt ohne Anlage liegt anfangs unter dem Bild und wird am Rand mit seiner Zahl geführt, bis er hereinwächst.
           </InfoTooltip>
         </div>
 
@@ -338,9 +357,21 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
             </g>
           ))}
 
-          {/* Die Linien im Fenster, bis heute. */}
-          <polyline points={pfad(kOhne)} fill="none" stroke={FARBE_OHNE} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
-          <polyline points={pfad(kPv)} fill="none" stroke={FARBE_PV} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
+          {/* Die Linien bis heute — auf die Zeichenfläche beschnitten, weil der
+              Haushalt ohne Anlage anfangs unter dem Bild verläuft. */}
+          <defs><clipPath id={clipId}><rect x={P.l} y={P.t} width={cW} height={cH} /></clipPath></defs>
+          <g clipPath={`url(#${clipId})`}>
+            <polyline points={pfad(kOhne)} fill="none" stroke={FARBE_OHNE} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
+            <polyline points={pfad(kPv)} fill="none" stroke={FARBE_PV} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
+          </g>
+          {!ohneImBild && (
+            <g>
+              <path d={ohneUnten ? `M${r2(xL(t) - 5)},${y0 - 8} L${r2(xL(t) + 5)},${y0 - 8} L${r2(xL(t))},${y0 - 1} Z` : `M${r2(xL(t) - 5)},${P.t + 8} L${r2(xL(t) + 5)},${P.t + 8} L${r2(xL(t))},${P.t + 1} Z`} fill={FARBE_OHNE} />
+              <text x={xL(t) + 8} y={ohneUnten ? y0 - 3 : P.t + 12} textAnchor="start" fontSize={fsPx("--font-size-small")} fontWeight={800} fill={FARBE_OHNE} fontFamily="var(--font-mono)" style={{ fontVariantNumeric: "tabular-nums" }}>
+                {narrow ? `${(ohneTip / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} T€` : fmtEuroVoll(ohneTip)}
+              </text>
+            </g>
+          )}
 
           {/* Kreuzung: erscheint, sobald die Linien sie erreicht haben, und bleibt, solange sie im Fenster liegt. */}
           {bezahltTag !== null && t >= bezahltTag && (
