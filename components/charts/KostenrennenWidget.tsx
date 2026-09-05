@@ -15,11 +15,15 @@ import { IconPause, IconPlay, IconRefresh } from "../Icons";
 import { useChartExport } from "../../lib/useChartExport";
 import { EXPORT_IGNORE_ATTR } from "../../lib/export-markers";
 import { WIDGETS } from "../../lib/widget-registry";
-import { v, fsPx, space } from "../../lib/theme";
+import { v, fsPx, space, tokens } from "../../lib/theme";
 import { fmtEuroVoll, formatDataAsOf } from "../../lib/atlas-format";
-import { PERSONEN } from "../../lib/constants";
+import { PERSONEN, FEED_IN_YEARS } from "../../lib/constants";
 import type { Kostenrennen } from "../../lib/kostenrennen";
 import { tagesverlauf, tagDatum } from "../../lib/kostenrennen-tage";
+import { KostenrennenVideo, videoFormat, type VideoFrameDaten } from "../../lib/kostenrennen-video";
+import { downloadBlob } from "../../lib/chart-export";
+import { sourceLabel } from "../../lib/data-sources";
+import { brandLabel } from "../../lib/widget-registry";
 
 // Das Stromkosten-Rennen: EIN Haushalt, ohne und mit Anlage, 25 Jahre. Beide
 // Linien zeichnen Tag für Tag, was der Haushalt bis dahin für Strom ausgegeben
@@ -71,6 +75,9 @@ const MONATE = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "A
 // Semantisch, nicht themebar: die Anlage im Akzent, der Haushalt ohne Anlage neutral.
 const FARBE_PV = "var(--color-accent)";
 const FARBE_OHNE = "var(--color-text-primary)";
+// Auf der Video-Leinwand gibt es keine CSS-Variablen — dieselben Tokens als Wert.
+const FARBE_PV_HEX = tokens["--color-accent"];
+const FARBE_OHNE_HEX = tokens["--color-text-primary"];
 
 // 2 Nachkommastellen: hält Server-/Client-Render exakt gleich.
 const r2 = (n: number) => Math.round(n * 100) / 100;
@@ -119,6 +126,12 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   const [ruhig, setRuhig] = useState(false);
   const gestartet = useRef(false);
   const hostRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
+  // Video-Aufnahme: läuft in Echtzeit mit der Animation (siehe lib/kostenrennen-video.ts).
+  const [aufnahme, setAufnahme] = useState<KostenrennenVideo | null>(null);
+  const frameRef = useRef<() => Promise<void>>(async () => {});
+  const [videoKann, setVideoKann] = useState(false);
+  useEffect(() => { setVideoKann(videoFormat() !== null); }, []);
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width:560px)");
@@ -180,9 +193,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   }, [spielt, ruhig, T, verlauf]);
 
   const tag = Math.min(T, Math.floor(t));
-  const k = verlauf.monatVonTag[tag] || 0; // Monatsindex 1..300, 0 am Start
   const datum = tagDatum(verlauf, rennen.startJahr, tag);
-  const jahre = Math.floor(k / 12);
   const stand = tag === 0 ? `${rennen.startJahr} · Start` : `${datum.tag}. ${MONATE[datum.monat]} ${datum.jahr}`;
 
   const pv = rennen.laeufer.find((l) => l.hatPv)!;
@@ -233,6 +244,10 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
     ];
   }, [kPv, T]);
   const markenBis = Math.min(T, verlauf.ersterTag[Math.min(22, 12 * verlauf.jahre)] ?? T);
+  // Das zweite Ereignis nach der Kreuzung: Nach FEED_IN_YEARS endet die
+  // EEG-Vergütung (derselbe Schnitt wie im Rechner), ab da steigt die PV-Linie
+  // sichtbar steiler — ohne Marke liest sich der Knick als Fehler.
+  const einspeiseEndeTag = FEED_IN_YEARS < verlauf.jahre ? verlauf.ersterTag[12 * FEED_IN_YEARS + 1] : null;
 
   const xEnd = Math.max(MIN_TAGE, t);
   const xStart = 0;
@@ -310,7 +325,6 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
 
   const haushalt = PERSONEN[2];
   const fenster = rennen.wetterFenster;
-  const lblStyle: React.CSSProperties = { fontSize: v("--font-size-caption"), fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: v("--color-text-muted") };
   const knopf: React.CSSProperties = {
     display: "inline-flex", alignItems: "center", justifyContent: "center", gap: space.sm,
     height: 32, minWidth: 32, padding: `0 ${space.lg}px`, borderRadius: v("--radius-md"),
@@ -322,6 +336,51 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
     { color: FARBE_PV, label: pv.label, shape: "line" },
   ];
   const amEnde = t >= T;
+
+  // Der Video-Frame: was die Leinwand in diesem Render zeichnen soll. Als Ref,
+  // damit die Aufnahme-Schleife immer den jüngsten Stand malt.
+  const frameDaten: VideoFrameDaten = {
+    titel: WIDGETS.kostenrennen.title,
+    untertitel: `Ein Haushalt, ${rennen.jahre} Jahre, ${fenster ? `das Wetter der Jahre ${fenster.von}–${fenster.bis}` : "ein Referenzjahr"}`,
+    jahr: String(tag === 0 ? rennen.startJahr : datum.jahr),
+    svg: svgRef.current,
+    legende: [{ farbe: FARBE_OHNE_HEX, label: ohne.label }, { farbe: FARBE_PV_HEX, label: pv.label }],
+    status,
+    marke: `${brandLabel(WIDGETS.kostenrennen.kind)} solar-check.io`,
+    quelle: WIDGETS.kostenrennen.sources.map((q) => sourceLabel(q, { kurz: true })).join(" · "),
+  };
+  frameRef.current = () => (aufnahme ? aufnahme.frame(frameDaten) : Promise.resolve());
+
+  // Aufnahme starten: von vorn, in Echtzeit; die Schleife malt, solange sie läuft.
+  const downloadVideo = () => {
+    const format = videoFormat();
+    if (!format || aufnahme) return;
+    const video = new KostenrennenVideo(format);
+    video.vorbereiten(H / W);
+    gestartet.current = true;
+    setT(0);
+    setAufnahme(video);
+    setSpielt(true);
+    video.start();
+  };
+  useEffect(() => {
+    if (!aufnahme) return;
+    let raf = 0, lebt = true;
+    const tick = () => { if (!lebt) return; void frameRef.current().finally(() => { if (lebt) raf = requestAnimationFrame(tick); }); };
+    raf = requestAnimationFrame(tick);
+    return () => { lebt = false; cancelAnimationFrame(raf); };
+  }, [aufnahme]);
+  // Am Ende der Animation: den Endstand noch anderthalb Sekunden stehen lassen, dann speichern.
+  useEffect(() => {
+    if (!aufnahme || spielt || t < T) return;
+    const timer = setTimeout(async () => {
+      await frameRef.current();
+      const blob = await aufnahme.stop();
+      setAufnahme(null);
+      if (blob.size > 0) downloadBlob(blob, `stromkosten-mit-und-ohne-solaranlage.${aufnahme.format.ext}`);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [aufnahme, spielt, t, T]);
 
   return (
     <div
@@ -348,33 +407,29 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
             {haushalt.label} Personen mit {haushalt.verbrauch.toLocaleString("de-DE")} kWh Jahresverbrauch, teils im Homeoffice.
             Die Anlage: {pv.kwp} kWp{pv.speicherKwh > 0 ? ` mit ${pv.speicherKwh} kWh Speicher` : " ohne Speicher"} für {fmtEuroVoll(pv.investition)},
             Ertrag {rennen.annahmen.ertragKwp.toLocaleString("de-DE")} kWh je kWp (deutscher Schnitt bei optimaler Ausrichtung), Teileinspeisung zu{" "}
-            {rennen.annahmen.einspeisungCt.toLocaleString("de-DE")} ct/kWh über 20 Jahre. Strompreis {rennen.annahmen.strompreisCt.toLocaleString("de-DE")} ct/kWh,
+            {rennen.annahmen.einspeisungCt.toLocaleString("de-DE")} ct/kWh über {FEED_IN_YEARS} Jahre, danach nichts mehr für eingespeisten Strom. Strompreis {rennen.annahmen.strompreisCt.toLocaleString("de-DE")} ct/kWh,
             Anstieg {rennen.annahmen.steigerungPct.toLocaleString("de-DE")} % pro Jahr. Wetter: {rennen.annahmen.wetter}; innerhalb des Monats nach der
             Tagesstrahlung der DWD-Stationen verteilt — Näherungswerte ohne Gewähr.
           </InfoTooltip>
         </span>
       </div>
 
-      {/* Datum + Zustand */}
-      <div style={{ display: "flex", alignItems: "baseline", gap: space.md, marginBottom: space.md }}>
+      {/* Das Jahr, groß — und daneben das „?", das erklärt, was die Linien
+          zählen. Datum und „nach n Jahren" stehen nicht mehr daneben: Das Jahr
+          trägt die Geschichte, der Rest stand im Weg (Betreiber, 05.09.2026). */}
+      <div style={{ display: "flex", alignItems: "center", gap: space.sm, marginBottom: space.md }}>
         <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-display-md"), fontWeight: 800, color: v("--color-text-primary"), lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{tag === 0 ? rennen.startJahr : datum.jahr}</span>
-        <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" }}>
-          {tag === 0 ? "Start" : `${datum.tag}. ${MONATE_KURZ[datum.monat]} · ${jahre === 0 ? "erstes Jahr" : jahre === 1 ? "nach 1 Jahr" : `nach ${jahre} Jahren`}`}
-        </span>
+        <InfoTooltip title="Was hier zählt" ariaLabel="Was als Stromkosten zählt">
+          Alles, was der Haushalt bis zu diesem Tag für Strom ausgegeben hat: die Stromrechnung mit steigendem Preis, beim
+          PV-Haushalt dazu die Anschaffung der Anlage, abzüglich der Einspeisevergütung. Wo sich die Linien kreuzen, ist die
+          Anlage bezahlt. Die Zeitachse wächst vom ersten Jahr bis zum ganzen Zeitraum; die Geldskala folgt der PV-Linie —
+          der Haushalt ohne Anlage liegt anfangs unter dem Bild und wird am Rand mit seiner Zahl geführt, bis er hereinwächst.
+        </InfoTooltip>
       </div>
 
       <ExportBox>
-        <div style={{ display: "flex", alignItems: "center", gap: space.xs, marginBottom: space.xs }}>
-          <span style={lblStyle}>Stromkosten seit {rennen.startJahr}</span>
-          <InfoTooltip title="Was hier zählt" ariaLabel="Was als Stromkosten zählt">
-            Alles, was der Haushalt bis zu diesem Tag für Strom ausgegeben hat: die Stromrechnung mit steigendem Preis, beim
-            PV-Haushalt dazu die Anschaffung der Anlage, abzüglich der Einspeisevergütung. Wo sich die Linien kreuzen, ist die
-            Anlage bezahlt. Die Zeitachse wächst vom ersten Jahr bis zum ganzen Zeitraum; die Geldskala folgt der PV-Linie —
-            der Haushalt ohne Anlage liegt anfangs unter dem Bild und wird am Rand mit seiner Zahl geführt, bis er hereinwächst.
-          </InfoTooltip>
-        </div>
 
-        <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }} role="img"
+        <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }} role="img"
           aria-label={`Stromkosten ${rennen.startJahr} bis ${stand}: ${ohne.label} ${fmtEuroVoll(kOhne[tag])}, ${pv.label} ${fmtEuroVoll(kPv[tag])}`}>
           {/* Achsenzahlen blenden ein, wenn sie erscheinen: Jede Marke ist per key ein
               eigenes Element und wird beim Auftauchen neu gemountet — die Animation
@@ -420,13 +475,21 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
             const rechts = x < P.l + cW * 0.55;
             return (
               <g key={m.tag} className="kr-neu">
-                <circle cx={x} cy={y} r={3.5} fill="var(--widget-bg, var(--color-bg))" stroke={FARBE_PV} strokeWidth={2} />
+                <circle cx={x} cy={y} r={3.5} fill={v("--color-bg")} stroke={FARBE_PV} strokeWidth={2} />
                 <text x={rechts ? x + 8 : x - 8} y={m.oben ? y - 10 : y + 18} textAnchor={rechts ? "start" : "end"} fontSize={fsPx("--font-size-caption")} fontWeight={600} fill="var(--color-text-secondary)" style={{ whiteSpace: "pre" }}>
                   {m.text}
                 </text>
               </g>
             );
           })}
+          {einspeiseEndeTag != null && t >= einspeiseEndeTag && (
+            <g className="kr-neu">
+              <line x1={xL(einspeiseEndeTag)} x2={xL(einspeiseEndeTag)} y1={P.t} y2={y0} stroke="var(--color-text-muted)" strokeWidth={1} strokeDasharray="3 3" />
+              <text x={xL(einspeiseEndeTag) - 6} y={y0 - 8} textAnchor="end" fontSize={fsPx("--font-size-caption")} fontWeight={700} fill="var(--color-text-secondary)">
+                Einspeisevergütung endet · {tagDatum(verlauf, rennen.startJahr, einspeiseEndeTag).jahr}
+              </text>
+            </g>
+          )}
           {bezahltTag !== null && t >= bezahltTag && (
             <g className="kr-neu">
               <line x1={xL(bezahltTag)} x2={xL(bezahltTag)} y1={P.t} y2={y0} stroke="var(--color-positive)" strokeWidth={1} strokeDasharray="3 3" />
@@ -502,7 +565,7 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
 
       <WidgetFooter
         widget={WIDGETS.kostenrennen}
-        chartExport={{ downloadPng, sharePng, shareWhatsApp, shareTwitter, isExporting, canNativeShare }}
+        chartExport={{ downloadPng, sharePng, shareWhatsApp, shareTwitter, isExporting, canNativeShare, downloadVideo: videoKann ? downloadVideo : undefined, isRecording: aufnahme !== null }}
         onsite={onsite}
         branding={branding}
         showEmbed={showEmbed}

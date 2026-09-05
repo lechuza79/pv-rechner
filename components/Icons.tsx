@@ -258,6 +258,15 @@ export function IconMore({ size = 16, color = "currentColor", style }: IconProps
   );
 }
 
+export function IconVideo({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <rect x="1.5" y="3.5" width="9" height="9" rx="1.5" stroke={color} strokeWidth="1.33" />
+      <path d="M10.5 6.5 14.5 4.5v7l-4-2" stroke={color} strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function IconDownload({ size = 16, color = "currentColor", style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>

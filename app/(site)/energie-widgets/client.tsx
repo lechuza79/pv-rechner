@@ -123,12 +123,12 @@ const SECTIONS: WidgetSection[] = [
   },
   {
     id: "pv-kostenrennen",
-    label: "Das Stromkosten-Rennen",
+    label: "Stromkosten mit und ohne Solaranlage",
     intro:
       "Ein Haushalt, mit und ohne Solaranlage, 25 Jahre lang: Die Linien zeichnen Tag für Tag, was jeder Haushalt bis dahin für Strom ausgegeben hat – die Anlage startet mit ihrer Anschaffung vorn und wird überholt, sobald sie bezahlt ist. Das Wetter ist das echte der letzten 25 Jahre (Deutscher Wetterdienst, Monatsraster und Stationstage), sodass kein Jahr und keine Woche der anderen gleicht. Gerechnet mit denselben Annahmen und Marktpreisen wie unser PV-Rechner.",
     attribution: {
       path: "/ratgeber/lohnt-sich-pv-mit-speicher",
-      text: "Mit oder ohne Solaranlage: Das Stromkosten-Rennen – Solar Check",
+      text: "Stromkosten mit und ohne Solaranlage: 25 Jahre mit echtem Wetter – Solar Check",
     },
     showFrameWidth: false,
     variants: [{ id: "pv-kostenrennen", label: "Amortisations-Rennen", src: "/embed/pv-kostenrennen", height: 600, fixedWidth: 560 }],

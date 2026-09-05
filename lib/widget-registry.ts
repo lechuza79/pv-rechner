@@ -114,7 +114,7 @@ const BEISPIEL_BUNDESLAND = "13";
 export const WIDGETS = {
   kostenrennen: {
     id: "pv-kostenrennen",
-    title: "Das Stromkosten-Rennen",
+    title: "Stromkosten mit und ohne Solaranlage",
     kind: "chart",
     shareUrl: `${SITE}/ratgeber/lohnt-sich-pv-mit-speicher#kostenrennen`,
     shareText: "Mit oder ohne Solaranlage: Wer hat wann mehr für Strom bezahlt? 25 Jahre mit echtem Wetter – Solar Check",

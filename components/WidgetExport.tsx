@@ -161,7 +161,12 @@ export function WidgetFooter({
   chartExport: Pick<
     ReturnType<typeof useChartExport>,
     "downloadPng" | "sharePng" | "shareWhatsApp" | "shareTwitter" | "isExporting" | "canNativeShare"
-  >;
+  > & {
+    /** Animierte Widgets: die Animation als Video aufnehmen. Nur wo der Browser
+     *  aufnehmen kann — sonst weglassen, dann gibt es den Knopf nicht. */
+    downloadVideo?: () => void;
+    isRecording?: boolean;
+  };
   onCopyLink?: () => void;
   /** First-party embed on our own pages: no brand line (the page carries it). */
   onsite?: boolean;
@@ -263,6 +268,8 @@ export function WidgetFooter({
               size={compact ? 26 : 28}
               showDownload={widget.exportable !== false}
               onDownload={chartExport.downloadPng}
+              onDownloadVideo={chartExport.downloadVideo}
+              isRecording={chartExport.isRecording}
               // Kein Bild, kein Bild-Teilen: Wo nichts aufzunehmen ist, wäre
               // „Als Bild teilen" ein Knopf, der nichts tut.
               onShareImage={
