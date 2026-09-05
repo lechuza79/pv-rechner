@@ -1,8 +1,10 @@
 # Die Werkzeuge im Einzelnen — bedient, nicht angesehen
 
 **Stand 05.09.2026.** Interne Arbeitsgrundlage. Grundlage der Auswahl ist
-`versorger-wettbewerb.md`: 26 von 864 deutschen Versorgern haben ein
-bestätigtes Rechenwerkzeug, verteilt auf zwölf verschiedene Produkte. Dieses
+`versorger-wettbewerb.md`: 23 von 864 deutschen Versorgern haben ein
+bestätigtes Rechenwerkzeug, verteilt auf zwölf verschiedene Produkte. Die Zahl
+ist ein Ergebnis dieses Papiers, kein Ausgangspunkt: Beim Bedienen fielen vier
+weitere Fälle weg. Dieses
 Papier prüft die Produkte selbst — jedes wurde mit demselben Beispielhaushalt
 durchgerechnet, nicht bloß angesehen.
 
@@ -44,7 +46,7 @@ dort, wo ohnehin wenig gerechnet wird — bei Zehdenick steht er als feste
 
 ### Was tatsächlich unterscheidet
 
-Drei Dinge, und nur drei, hat außer uns fast niemand:
+Vier Dinge hat außer uns fast niemand:
 
 1. **Annahmen sichtbar UND editierbar.** Nur das tetraeder-Kataster (Strompreis,
    Modulpreis, Kredit, Lastprofil bis zur handgezogenen Tageskurve), der
