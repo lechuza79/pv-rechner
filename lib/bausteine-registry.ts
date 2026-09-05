@@ -307,6 +307,31 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: ["Icons", "Switch"],
   },
   {
+    datei: "components/StorySlider.tsx",
+    name: "StorySlider",
+    zweck:
+      "Eine Reihe Teaser, die man wischt — mit Pfeilen, die nur erscheinen, wenn es etwas zu blättern gibt.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: ["Icons"],
+    gegenprobe: {
+      // Der Browser rastet selbst ein; wer das zweite Mal von Hand baut,
+      // entscheidet Wischverhalten, Schrittweite und Pfeil-Zustand neu — und
+      // dann sieht dieselbe Reihe auf zwei Seiten verschieden aus.
+      muster: "scrollSnapType",
+      bedeutet:
+        "Hier entsteht eine zweite Teaser-Reihe von Hand. Wischen, Einrasten, Schrittweite und der Zustand der Pfeile gehören an eine Stelle — sonst blättert dieselbe Reihe auf der Ortsseite anders als auf der Startseite.",
+      ausser: [
+        {
+          datei: "components/atlas/RankingTable.tsx",
+          grund:
+            "Dort rasten SPALTEN einer breiten Tabelle ein, keine Teaser — hinter einer festgehaltenen ersten Spalte, weshalb die Einrastkante um deren Breite verschoben ist. Eine Teaser-Reihe kennt weder feste Spalte noch verschobene Kante; die beiden zusammenzulegen hieße, einer von beiden ihr Verhalten zu nehmen.",
+        },
+      ],
+    },
+  },
+  {
     datei: "components/StickyCta.tsx",
     name: "StickyCta",
     zweck: "Die klebende Aktionsleiste am unteren Rand — erscheint beim Scrollen, verschwindet am Seitenende.",

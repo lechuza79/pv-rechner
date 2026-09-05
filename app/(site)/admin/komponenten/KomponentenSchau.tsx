@@ -14,6 +14,7 @@ import RelatedLinks from "../../../../components/RelatedLinks";
 import ResultSection from "../../../../components/ResultSection";
 import SelectField from "../../../../components/SelectField";
 import { SortPfeil } from "../../../../components/SortPfeil";
+import StorySlider from "../../../../components/StorySlider";
 import Switch from "../../../../components/Switch";
 import Toast from "../../../../components/Toast";
 import TriToggle from "../../../../components/TriToggle";
@@ -686,6 +687,29 @@ const BEISPIELE: Record<string, Beispiel> = {
   Icons: IconsBeispiel,
   ChartActionBar: AktionsleisteBeispiel,
   CiteModal: ZitierBeispiel,
+  // Drei Teaser, damit die Pfeile in der schmalen Karte der Galerie wirklich
+  // etwas zu tun haben — mit einem einzigen sähe man die Reihe, aber nicht ihr
+  // Verhalten.
+  StorySlider: () => (
+    <StorySlider ariaLabel="Beispiel-Reihe">
+      {["Erste Meldung", "Zweite Meldung", "Dritte Meldung"].map((t) => (
+        <div
+          key={t}
+          style={{
+            flex: 1,
+            padding: 16,
+            border: `1px solid ${v("--color-border")}`,
+            borderRadius: v("--radius-md"),
+            background: v("--color-bg"),
+            fontSize: v("--font-size-body"),
+            fontWeight: 700,
+          }}
+        >
+          {t}
+        </div>
+      ))}
+    </StorySlider>
+  ),
   ChartExportBar: () => (
     <ChartExportBar
       onDownload={() => undefined}
