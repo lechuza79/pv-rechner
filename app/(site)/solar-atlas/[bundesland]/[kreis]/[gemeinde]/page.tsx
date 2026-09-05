@@ -22,6 +22,8 @@ import ZubauChart from "../../../../../../components/atlas/ZubauChart";
 import GemeindeHero, { type KpiOwnerData } from "../../../../../../components/atlas/GemeindeHero";
 import GemeindePeerTiles from "../../../../../../components/atlas/GemeindePeerTiles";
 import GemeindePlatzierungen from "../../../../../../components/atlas/GemeindePlatzierungen";
+import GemeindeMeldungen from "../../../../../../components/atlas/GemeindeMeldungen";
+import { gemeindeMeldungen } from "../../../../../../lib/gemeinde-meldungen";
 import CollapsibleIntro from "../../../../../../components/atlas/CollapsibleIntro";
 import GemeindeEmbedBox from "../../../../../../components/atlas/GemeindeEmbedBox";
 import GemeindeAboBox, { ABO_OEFFNEN } from "../../../../../../components/atlas/GemeindeAboBox";
@@ -529,6 +531,37 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
           </div>
           <GemeindePlatzierungen regionId={region.region_id} />
         </div>
+
+        {/*
+          Was es über diesen Ort gerade zu berichten gibt — dieselbe Rechnung,
+          die die Abo-Mail verschickt (lib/gemeinde-meldungen.ts), hier als
+          Karten mit Bild-Download.
+
+          OHNE FÖRDERUNG: Eine der fünf Meldungen kann ein Förderprogramm
+          nennen, aber nur mit der Angabe, ob es gerade ZÄHLT — und die kommt
+          allein aus fundingZaehlt(), also aus einem Datenbank-Lesevorgang, den
+          diese Seite heute nicht macht. Sie aus der Liste der veröffentlichten
+          Förderstädte abzuleiten wäre eine zweite Quelle für dieselbe Frage;
+          die Seite verlinkt die Förderung weiter unten ohnehin.
+
+          OHNE PLATZIERUNG: steht als eigene Karte direkt darüber (siehe dort).
+        */}
+        <GemeindeMeldungen
+          meldungen={gemeindeMeldungen({
+            daten: {
+              name: region.name,
+              regionId: region.region_id,
+              population: region.population ?? null,
+              solar: atlas.solar,
+              speicher: atlas.speicher,
+              standIso: atlas.data_as_of,
+            },
+            heuteJahr: new Date().getUTCFullYear(),
+          })}
+          name={region.name}
+          liveUrl={`${BASE_URL}${atlasPath}`}
+          standIso={atlas.data_as_of}
+        />
 
         {SHOW_PEER_TILES && !!region.population && (
           <GemeindePeerTiles rows={peerRows} blName={bl?.name ?? "diesem Land"} band={band} />
