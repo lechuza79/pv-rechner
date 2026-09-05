@@ -256,10 +256,28 @@ export type Sicherheit =
  * die Angabe, an der unser Rechner hängt). Ob daraus ein Angebot wird, ist offen
  * — aber ein weggeworfener Befund wäre nur mit einem neuen Abruf wiederzubeschaffen.
  */
-export type WerkzeugThema = "solar" | "waermepumpe" | "tarif" | "unbekannt";
+export type WerkzeugThema =
+  | "solar"
+  | "balkon"
+  | "waermepumpe"
+  | "wallbox"
+  | "speicher"
+  | "tarif"
+  | "unbekannt";
 
-const THEMA_SOLAR = /photovoltaik|solarrechner|solar-rechner|solaranlage|solarpotenzial|solarstrom|balkonkraftwerk|steckersolar|\bpv-/i;
+// DAS BALKONKRAFTWERK IST EIN EIGENES THEMA, kein Unterfall von Photovoltaik
+// (Einwand des Betreibers, 05.09.2026). Es lief bis dahin im Solar-Muster mit
+// und war in den Zahlen nicht davon zu trennen — bei einem eigenen
+// Balkonkraftwerk-Rechner im Haus ist das die Lücke, die man am wenigsten
+// gebrauchen kann. Es steht VOR dem Solar-Muster, weil eine
+// Balkonkraftwerk-Seite fast immer auch von Photovoltaik spricht.
+const THEMA_BALKON = /balkonkraftwerk|balkon-?solar|steckersolar|stecker-?solar|mini-?solar|minipv|mini-pv|balkon-?pv/i;
+const THEMA_SOLAR = /photovoltaik|solarrechner|solar-rechner|solaranlage|solarpotenzial|solarstrom|\bpv-/i;
 const THEMA_WP = /wärmepumpe|waermepumpe|heizungstausch|heizkosten/i;
+// Wallbox und Speicher wurden bisher gar nicht erkannt; sie sind eigene
+// Beratungsthemen und eigene mögliche Andockpunkte.
+const THEMA_WALLBOX = /wallbox|ladestation|e-?auto|elektroauto|ladepunkt/i;
+const THEMA_SPEICHER = /stromspeicher|batteriespeicher|heimspeicher|hausspeicher/i;
 const THEMA_TARIF = /tarifrechner|preisrechner|tarifvergleich|stromtarif|gastarif|strompreisrechner|verbrauchsrechner|tarif berechnen/i;
 
 /** Das Thema aus Adresse und sichtbarem Text. Solar schlägt Wärmepumpe schlägt
@@ -280,17 +298,36 @@ export function werkzeugThema(html: string, url: string): WerkzeugThema {
   // ist ein Tarifrechner, auch wenn im Fliesstext Photovoltaik vorkommt —
   // gemessen an Stadtwerke Barmstedt, das genau so als "solar" galt. Die
   // Adresse ist die Absicht des Betreibers, der Text ist Umgebung.
-  for (const [re, thema] of [
+  // ZWEI VERSCHIEDENE REIHENFOLGEN, und das ist Absicht.
+  //
+  // In der ADRESSE steht Tarif VOR Solar: „/erdgas/tarifrechner/" ist ein
+  // Tarifrechner, auch wenn im Fließtext Photovoltaik vorkommt. Im TEXT ist es
+  // umgekehrt — wenn eine Seite von Photovoltaik spricht, ist das ihr Thema,
+  // und der Tarifrechner darüber ist die Kopfzeile.
+  //
+  // Ein erster Versuch hat beide Reihenfolgen zu einer verschmolzen; der Test
+  // „Solar schlägt Tarif, wenn beides auf der Seite steht" hat das gefangen.
+  // Das Balkonkraftwerk steht in BEIDEN zuerst, weil seine Seite fast immer
+  // auch von Photovoltaik spricht.
+  const AUS_ADRESSE = [
+    [THEMA_BALKON, "balkon"],
     [THEMA_TARIF, "tarif"],
     [THEMA_SOLAR, "solar"],
     [THEMA_WP, "waermepumpe"],
-  ] as const) {
-    if (re.test(pfad)) return thema;
-  }
+    [THEMA_WALLBOX, "wallbox"],
+    [THEMA_SPEICHER, "speicher"],
+  ] as const;
+  const AUS_TEXT = [
+    [THEMA_BALKON, "balkon"],
+    [THEMA_SOLAR, "solar"],
+    [THEMA_WP, "waermepumpe"],
+    [THEMA_WALLBOX, "wallbox"],
+    [THEMA_SPEICHER, "speicher"],
+    [THEMA_TARIF, "tarif"],
+  ] as const;
+  for (const [re, thema] of AUS_ADRESSE) if (re.test(pfad)) return thema;
   const text = sichtbarerText(html);
-  if (THEMA_SOLAR.test(text)) return "solar";
-  if (THEMA_WP.test(text)) return "waermepumpe";
-  if (THEMA_TARIF.test(text)) return "tarif";
+  for (const [re, thema] of AUS_TEXT) if (re.test(text)) return thema;
   return "unbekannt";
 }
 
@@ -385,8 +422,16 @@ export function istWerkzeugSeite(html: string, url: string): boolean {
   }
   // Auch die reine Themenseite zählt: Bei Stadtwerke Emden hängt das gekaufte
   // Werkzeug unter „Strom / Photovoltaik", nicht unter „Rechner".
+  // Balkonkraftwerk gehoert dazu, Wallbox und Speicher NICHT: Die beiden sind
+  // eigene Themen, aber keine, zu denen wir etwas anzubieten haetten. Sie
+  // bekommen eine Einordnung, wenn sie nebenbei auftauchen, sind aber kein
+  // Grund, eine Seite ueberhaupt zu holen.
   const relevant = (s: string) =>
-    WERKZEUG_MUSTER.test(s) || BESTANDSDATEN_MUSTER.test(s) || THEMA_SOLAR.test(s) || THEMA_WP.test(s);
+    WERKZEUG_MUSTER.test(s) ||
+    BESTANDSDATEN_MUSTER.test(s) ||
+    THEMA_SOLAR.test(s) ||
+    THEMA_BALKON.test(s) ||
+    THEMA_WP.test(s);
   if (relevant(pfad)) return true;
   if (relevant(sichtbarerText(html))) return true;
   return /<iframe[^>]+src=["']https?:\/\//i.test(html);
@@ -527,7 +572,17 @@ export function besterBefund(befunde: Werkzeugbefund[]): Werkzeugbefund {
   };
   // Bei gleichem Zustand entscheidet das Thema: Ein Solarwerkzeug ist der
   // Befund, um den es geht — ein Tarifrechner daneben darf ihn nicht verdecken.
-  const themaRang: Record<WerkzeugThema, number> = { solar: 3, waermepumpe: 2, tarif: 1, unbekannt: 0 };
+  // Wärmepumpe steht über Solar: Dort gibt es bundesweit zwei Werkzeuge, und ein
+  // Fund ist damit die seltenere und wertvollere Beobachtung.
+  const themaRang: Record<WerkzeugThema, number> = {
+    waermepumpe: 6,
+    solar: 5,
+    balkon: 4,
+    speicher: 3,
+    wallbox: 2,
+    tarif: 1,
+    unbekannt: 0,
+  };
   const bester = befunde.reduce(
     (a, b) =>
       rang[b.zustand] > rang[a.zustand] || (rang[b.zustand] === rang[a.zustand] && themaRang[b.thema] > themaRang[a.thema])

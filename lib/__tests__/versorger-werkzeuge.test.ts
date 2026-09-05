@@ -377,6 +377,27 @@ describe("Negativproben: was KEIN eigener Rechner ist", () => {
     expect(b.merkmale.anlagenfeld).toBe(true);
   });
 
+  it("das Balkonkraftwerk ist ein eigenes Thema, kein Unterfall von Photovoltaik", () => {
+    // Einwand des Betreibers, 05.09.2026: Balkonkraftwerk lief im Solar-Muster
+    // mit und war in den Zahlen nicht davon zu trennen — bei einem eigenen
+    // Balkonkraftwerk-Rechner im Haus die Luecke, die man am wenigsten
+    // gebrauchen kann. Die Seite spricht fast immer AUCH von Photovoltaik,
+    // deshalb muss das Balkon-Muster vorn stehen.
+    const html = '<h1>Balkonkraftwerk</h1><p>Steckersolar ist die kleine Schwester der Photovoltaik.</p>';
+    expect(werkzeugAusSeite(html, "https://sw.de/balkonkraftwerk").thema).toBe("balkon");
+    expect(werkzeugAusSeite(html, "https://sw.de/produkte").thema).toBe("balkon");
+    // Und die Gegenprobe: eine gewoehnliche Dachanlage bleibt solar.
+    expect(werkzeugAusSeite("<h1>Photovoltaik fuers Dach</h1>", "https://sw.de/photovoltaik").thema).toBe("solar");
+  });
+
+  it("Wallbox und Speicher werden eingeordnet, wenn sie auf einer Werkzeugseite auftauchen", () => {
+    // Sie sind KEIN Grund, eine Seite zu holen — wir haben zu beiden nichts
+    // anzubieten. Wenn ein Rechner sie aber nebenbei behandelt, soll der Befund
+    // nicht als "unbekannt" verlorengehen.
+    expect(werkzeugAusSeite("<h1>Wallbox-Rechner</h1>", "https://sw.de/wallbox-rechner").thema).toBe("wallbox");
+    expect(werkzeugAusSeite("<h1>Speicher-Rechner</h1>", "https://sw.de/stromspeicher-rechner").thema).toBe("speicher");
+  });
+
   it("jeder maschinelle Befund ist ausdruecklich nur ein Verdacht", () => {
     // Die wichtigste Zusage des Moduls: Aus dem Quelltext allein ist nicht zu
     // sehen, ob eine Seite eine Investition durchrechnet. Wer das behauptet,
