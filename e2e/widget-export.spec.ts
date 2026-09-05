@@ -107,9 +107,9 @@ test.describe("Stromkosten-Rennen", () => {
     await page.goto("/embed/pv-kostenrennen");
     await expect(page.getByText("Stromkosten mit und ohne Solaranlage").first()).toBeVisible();
 
-    // Der Schieberegler ist Bedienung und fliegt aus dem Bild; der eingestellte
-    // Stand (Jahr, „nach n Jahren") steht als Text im Kopf und bleibt.
-    await expect(page.locator("[data-sc-export-ignore]").filter({ has: page.getByRole("slider", { name: "Jahr wählen" }) })).toHaveCount(1);
+    // Der Abspielknopf ist Bedienung und fliegt aus dem Bild; der eingestellte
+    // Zeitraum steht als Text im Kopf und bleibt.
+    await expect(page.locator("[data-sc-export-ignore]").filter({ has: page.getByRole("button", { name: /Anhalten|Abspielen|Noch einmal/ }) })).toHaveCount(1);
     await expect(page.getByRole("button", { name: /Anhalten|Abspielen|Noch einmal/ })).toBeVisible();
 
     const exportOnly = page.locator("[data-sc-export-only]");

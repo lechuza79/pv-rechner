@@ -475,35 +475,6 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
         </div>
       </div>
 
-      {/* Steuerung — nur auf der Seite, nie im Bild */}
-      <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", alignItems: "center", gap: space.lg, marginBottom: space.md }}>
-        <button
-          type="button"
-          onClick={() => {
-            if (spielt) { setSpielt(false); return; }
-            if (amEnde) setT(0);
-            gestartet.current = true;
-            setSpielt(true);
-          }}
-          aria-label={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
-          title={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
-          style={knopf}
-        >
-          {spielt ? <IconPause size={14} /> : amEnde ? <IconRefresh size={14} /> : <IconPlay size={14} />}
-        </button>
-        <input
-          type="range"
-          min={0}
-          max={T}
-          step={1}
-          value={tag}
-          onChange={(e) => { setSpielt(false); gestartet.current = true; setT(Number(e.target.value)); }}
-          aria-label="Jahr wählen"
-          aria-valuetext={stand}
-          style={{ flex: 1, accentColor: v("--color-accent"), minWidth: 0 }}
-        />
-      </div>
-
       <ExportBox>
 
         <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }} role="img"
@@ -587,13 +558,32 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
             vorige Ereignis blendet aus. Nur auf der Seite — im Bild tragen die
             Marken ihren Text im Chart. */}
         <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ marginTop: space.md }}>
-          <div style={{ position: "relative", height: 26 }}>
-            <div style={{ position: "absolute", top: 12, left: `${(P.l / W) * 100}%`, width: `${(cW / W) * 100}%`, height: 2, background: v("--color-border") }} />
+          <div style={{ position: "relative", height: 32 }}>
+            {/* Play/Pause/Neustart links vor der Spur, im Rand unter den Achsenzahlen.
+                Kein Regler mehr: Die Spur liegt auf der wachsenden Chart-Achse, ein
+                Regler darauf wechselte beim Ziehen die Skala (Betreiber, 05.09.2026). */}
+            <span {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ position: "absolute", left: 0, top: 0, display: "inline-flex" }}>
+              <button
+                type="button"
+                onClick={() => {
+                  if (spielt) { setSpielt(false); return; }
+                  if (amEnde) setT(0);
+                  gestartet.current = true;
+                  setSpielt(true);
+                }}
+                aria-label={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
+                title={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
+                style={knopf}
+              >
+                {spielt ? <IconPause size={14} /> : amEnde ? <IconRefresh size={14} /> : <IconPlay size={14} />}
+              </button>
+            </span>
+            <div style={{ position: "absolute", top: 15, left: `${(P.l / W) * 100}%`, width: `${(cW / W) * 100}%`, height: 2, background: v("--color-border") }} />
             {sichtbareEreignisse.map((e) => {
               const aktiv = e === aktivesEreignis;
               const d = aktiv ? 22 : 13;
               return (
-                <span key={e.tag} className="kr-neu" title={e.label} style={{ position: "absolute", left: `${posPct(e.tag)}%`, top: 13 - d / 2, width: d, height: d, transform: "translateX(-50%)", borderRadius: "50%", background: v("--color-accent"), border: `2px solid ${v("--color-bg")}`, boxSizing: "border-box", boxShadow: aktiv ? "0 2px 6px rgba(19,101,234,0.35)" : "none", transition: "width .2s ease, height .2s ease, top .2s ease", zIndex: aktiv ? 2 : 1 }} />
+                <span key={e.tag} className="kr-neu" title={e.label} style={{ position: "absolute", left: `${posPct(e.tag)}%`, top: 16 - d / 2, width: d, height: d, transform: "translateX(-50%)", borderRadius: "50%", background: v("--color-accent"), border: `2px solid ${v("--color-bg")}`, boxSizing: "border-box", boxShadow: aktiv ? "0 2px 6px rgba(19,101,234,0.35)" : "none", transition: "width .2s ease, height .2s ease, top .2s ease", zIndex: aktiv ? 2 : 1 }} />
               );
             })}
           </div>
