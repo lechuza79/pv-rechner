@@ -16,7 +16,7 @@
 // Schriftgrößen kommen aus den Theme-Tokens, nie getippt.
 
 import { fsPx, tokens, type TokenName } from "./theme";
-import { resolveVars } from "./chart-export";
+import { resolveVars, applyExportMarkers } from "./chart-export";
 
 export interface VideoFrameDaten {
   titel: string;
@@ -71,6 +71,8 @@ async function svgAlsBild(svg: SVGSVGElement, breite: number, hoehe: number): Pr
   klon.setAttribute("width", String(breite));
   klon.setAttribute("height", String(hoehe));
   klon.querySelectorAll("style").forEach((s) => s.remove());
+  // Wie im Bild: Bedienelemente raus, die Bild-Fassung der Marken rein.
+  applyExportMarkers(klon);
   // Im Dokument erbt das SVG die Seitenschrift; als eigenständiges Bild fiele
   // es auf die Serifen-Voreinstellung zurück.
   klon.setAttribute("font-family", leinwandSchrift("--font-text"));
@@ -90,6 +92,11 @@ async function svgAlsBild(svg: SVGSVGElement, breite: number, hoehe: number): Pr
 export const VIDEO_BREITE = 560;
 const PAD = 24;
 const SKALA = 2;
+// Die Karte liegt mit Rand und dem großen Eckradius des Themes auf dem
+// gedämpften Seitenhintergrund — ein Video kennt keine Transparenz, also
+// braucht die Karte einen Grund, auf dem ihre Ecken sichtbar rund sind.
+const RAND = 16;
+const ECKE = parseFloat(tokens["--radius-lg"]);
 
 export class KostenrennenVideo {
   private canvas: HTMLCanvasElement;
@@ -112,8 +119,8 @@ export class KostenrennenVideo {
   vorbereiten(chartSeitenverhaeltnis: number) {
     const chartH = Math.round((VIDEO_BREITE - 2 * PAD) * chartSeitenverhaeltnis);
     this.hoehe = PAD + 22 + 20 + 54 + chartH + 16 + 22 + 44 + 40 + PAD;
-    this.canvas.width = VIDEO_BREITE * SKALA;
-    this.canvas.height = this.hoehe * SKALA;
+    this.canvas.width = (VIDEO_BREITE + 2 * RAND) * SKALA;
+    this.canvas.height = (this.hoehe + 2 * RAND) * SKALA;
   }
 
   start() {
@@ -146,8 +153,16 @@ export class KostenrennenVideo {
       const bild = d.svg ? await svgAlsBild(d.svg, chartW, chartH) : null;
       const c = this.ctx;
       c.setTransform(SKALA, 0, 0, SKALA, 0, 0);
+      c.fillStyle = farbe("--color-bg-muted");
+      c.fillRect(0, 0, VIDEO_BREITE + 2 * RAND, this.hoehe + 2 * RAND);
+      c.beginPath();
+      c.roundRect(RAND + 0.5, RAND + 0.5, VIDEO_BREITE - 1, this.hoehe - 1, ECKE);
       c.fillStyle = farbe("--color-bg");
-      c.fillRect(0, 0, VIDEO_BREITE, this.hoehe);
+      c.fill();
+      c.strokeStyle = farbe("--color-border");
+      c.lineWidth = 1;
+      c.stroke();
+      c.translate(RAND, RAND);
       const sans = leinwandSchrift("--font-text"), mono = leinwandSchrift("--font-mono");
       let y = PAD;
       c.textBaseline = "top";

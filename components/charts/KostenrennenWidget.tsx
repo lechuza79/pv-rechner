@@ -6,6 +6,7 @@ import {
   ExportBox,
   ExportNotesProvider,
   ExportOnly,
+  ExportOnlyG,
   WidgetFooter,
   WidgetSourceEdge,
   WidgetExportFooter,
@@ -337,6 +338,33 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
   ];
   const amEnde = t >= T;
 
+  // Die Ereignisse an der Zeitleiste unter dem Chart (Muster: die
+  // Weichenstellungen im Zubau-Chart): ein Punkt auf der Spur, die Beschreibung
+  // darüber, die gestrichelte Linie bleibt im Chart. Sie erscheinen, wenn die
+  // Wiedergabe sie erreicht; am Ende steht dort die Gesamtersparnis. Jedes
+  // Ereignis hat seine eigene Textzeile — nebeneinander passen sie nicht.
+  const ersparnis = kOhne[T] - kPv[T];
+  const ereignisse: { tag: number; label: string; kurz: string; farbe: string; reihe: number }[] = [];
+  if (bezahltTag !== null) {
+    const d = tagDatum(verlauf, rennen.startJahr, bezahltTag);
+    ereignisse.push({ tag: bezahltTag, label: `Anlage bezahlt · ${MONATE_KURZ[d.monat]} ${d.jahr}`, kurz: `Bezahlt · ${d.jahr}`, farbe: v("--color-positive"), reihe: 0 });
+  }
+  if (einspeiseEndeTag != null) {
+    const d = tagDatum(verlauf, rennen.startJahr, einspeiseEndeTag);
+    ereignisse.push({ tag: einspeiseEndeTag, label: `Einspeisevergütung endet · ${d.jahr}`, kurz: `EEG-Ende · ${d.jahr}`, farbe: v("--color-text-secondary"), reihe: 1 });
+  }
+  ereignisse.push({
+    tag: T,
+    label: ersparnis >= 0 ? `Ersparnis nach ${rennen.jahre} Jahren: ${fmtEuroVoll(ersparnis)}` : `Mehrkosten nach ${rennen.jahre} Jahren: ${fmtEuroVoll(-ersparnis)}`,
+    kurz: ersparnis >= 0 ? `Ersparnis ${fmtEuroVoll(ersparnis)}` : `Mehrkosten ${fmtEuroVoll(-ersparnis)}`,
+    farbe: ersparnis >= 0 ? v("--color-positive") : v("--color-negative"),
+    reihe: 2,
+  });
+  // Zeitleiste: linear über die ganze Strecke, seitlich fluchtend zum Plot des
+  // Charts — am letzten Tag stehen Punkt und gestrichelte Linie exakt übereinander.
+  const posPct = (d: number) => ((P.l + (d / T) * cW) / W) * 100;
+  const REIHE_H = 15, SPUR_Y = 3 * REIHE_H + 10;
+
   // Der Video-Frame: was die Leinwand in diesem Render zeichnen soll. Als Ref,
   // damit die Aufnahme-Schleife immer den jüngsten Stand malt.
   const frameDaten: VideoFrameDaten = {
@@ -485,17 +513,22 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
           {einspeiseEndeTag != null && t >= einspeiseEndeTag && (
             <g className="kr-neu">
               <line x1={xL(einspeiseEndeTag)} x2={xL(einspeiseEndeTag)} y1={P.t} y2={y0} stroke="var(--color-text-muted)" strokeWidth={1} strokeDasharray="3 3" />
-              <text x={xL(einspeiseEndeTag) - 6} y={y0 - 8} textAnchor="end" fontSize={fsPx("--font-size-caption")} fontWeight={700} fill="var(--color-text-secondary)">
-                Einspeisevergütung endet · {tagDatum(verlauf, rennen.startJahr, einspeiseEndeTag).jahr}
-              </text>
+              {/* Auf der Seite steht der Text an der Zeitleiste unter dem Chart; im Bild gibt es die nicht. */}
+              <ExportOnlyG>
+                <text x={xL(einspeiseEndeTag) - 6} y={y0 - 8} textAnchor="end" fontSize={fsPx("--font-size-caption")} fontWeight={700} fill="var(--color-text-secondary)">
+                  Einspeisevergütung endet · {tagDatum(verlauf, rennen.startJahr, einspeiseEndeTag).jahr}
+                </text>
+              </ExportOnlyG>
             </g>
           )}
           {bezahltTag !== null && t >= bezahltTag && (
             <g className="kr-neu">
               <line x1={xL(bezahltTag)} x2={xL(bezahltTag)} y1={P.t} y2={y0} stroke="var(--color-positive)" strokeWidth={1} strokeDasharray="3 3" />
-              <text x={xL(bezahltTag)} y={P.t - 6} textAnchor={xL(bezahltTag) > P.l + cW * 0.75 ? "end" : "middle"} fontSize={fsPx("--font-size-caption")} fontWeight={700} fill="var(--color-positive)">
-                Anlage bezahlt · {MONATE_KURZ[tagDatum(verlauf, rennen.startJahr, bezahltTag).monat]} {tagDatum(verlauf, rennen.startJahr, bezahltTag).jahr}
-              </text>
+              <ExportOnlyG>
+                <text x={xL(bezahltTag)} y={P.t - 6} textAnchor={xL(bezahltTag) > P.l + cW * 0.75 ? "end" : "middle"} fontSize={fsPx("--font-size-caption")} fontWeight={700} fill="var(--color-positive)">
+                  Anlage bezahlt · {MONATE_KURZ[tagDatum(verlauf, rennen.startJahr, bezahltTag).monat]} {tagDatum(verlauf, rennen.startJahr, bezahltTag).jahr}
+                </text>
+              </ExportOnlyG>
             </g>
           )}
 
@@ -526,33 +559,54 @@ function KostenrennenCard({ rennen, onsite = false, branding = true, showEmbed =
         </div>
       </ExportBox>
 
-      {/* Steuerung — nur auf der Seite, nie im Bild */}
-      <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", alignItems: "center", gap: space.lg, marginTop: space.lg }}>
-        <button
-          type="button"
-          onClick={() => {
-            if (spielt) { setSpielt(false); return; }
-            if (amEnde) setT(0);
-            gestartet.current = true;
-            setSpielt(true);
-          }}
-          aria-label={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
-          style={knopf}
-        >
-          {spielt ? <IconPause size={14} /> : amEnde ? <IconRefresh size={14} /> : <IconPlay size={14} />}
-          <span>{spielt ? "Pause" : amEnde ? "Noch einmal" : t === 0 ? "Rennen starten" : "Weiter"}</span>
-        </button>
-        <input
-          type="range"
-          min={0}
-          max={T}
-          step={1}
-          value={tag}
-          onChange={(e) => { setSpielt(false); gestartet.current = true; setT(Number(e.target.value)); }}
-          aria-label="Jahr wählen"
-          aria-valuetext={stand}
-          style={{ flex: 1, accentColor: v("--color-accent"), minWidth: 0 }}
-        />
+      {/* Steuerung — nur auf der Seite, nie im Bild: Zeitleiste mit Ereignissen,
+          darunter der Abspielknopf. Der unsichtbare Schieberegler liegt auf der
+          Spur und trägt Tastatur und Vorlesen; gezeichnet wird daneben. */}
+      <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ marginTop: space.lg }}>
+        <div style={{ position: "relative", height: SPUR_Y + 14 }}>
+          {ereignisse.filter((e) => t >= e.tag).map((e) => {
+            const p = posPct(e.tag);
+            const anker = p > 70 ? "translateX(-100%)" : p < 20 ? "none" : "translateX(-50%)";
+            return (
+              <span key={e.tag} className="kr-neu" style={{ position: "absolute", left: `${p}%`, top: e.reihe * REIHE_H, transform: anker, whiteSpace: "nowrap", fontSize: v("--font-size-caption"), fontWeight: 700, color: e.farbe, lineHeight: `${REIHE_H}px` }}>
+                {narrow ? e.kurz : e.label}
+              </span>
+            );
+          })}
+          <div style={{ position: "absolute", top: SPUR_Y, left: `${posPct(0)}%`, width: `${posPct(T) - posPct(0)}%`, height: 2, background: v("--color-border") }} />
+          <div style={{ position: "absolute", top: SPUR_Y, left: `${posPct(0)}%`, width: `${posPct(Math.min(t, T)) - posPct(0)}%`, height: 2, background: v("--color-accent") }} />
+          {ereignisse.filter((e) => t >= e.tag).map((e) => (
+            <span key={e.tag} className="kr-neu" style={{ position: "absolute", left: `${posPct(e.tag)}%`, top: SPUR_Y - 4, width: 10, height: 10, transform: "translateX(-50%)", borderRadius: "50%", background: e.farbe, border: `2px solid ${v("--color-bg")}`, boxSizing: "border-box" }} />
+          ))}
+          <span aria-hidden style={{ position: "absolute", left: `${posPct(Math.min(t, T))}%`, top: SPUR_Y - 7, width: 16, height: 16, transform: "translateX(-50%)", borderRadius: "50%", background: v("--color-accent"), border: `2px solid ${v("--color-bg")}`, boxShadow: "0 1px 4px rgba(0,0,0,0.25)", boxSizing: "border-box" }} />
+          <input
+            type="range"
+            min={0}
+            max={T}
+            step={1}
+            value={tag}
+            onChange={(e) => { setSpielt(false); gestartet.current = true; setT(Number(e.target.value)); }}
+            aria-label="Jahr wählen"
+            aria-valuetext={stand}
+            style={{ position: "absolute", left: `${posPct(0)}%`, width: `${posPct(T) - posPct(0)}%`, top: SPUR_Y - 12, height: 26, margin: 0, opacity: 0, cursor: "pointer" }}
+          />
+        </div>
+        <div style={{ display: "flex", alignItems: "center", marginTop: space.md }}>
+          <button
+            type="button"
+            onClick={() => {
+              if (spielt) { setSpielt(false); return; }
+              if (amEnde) setT(0);
+              gestartet.current = true;
+              setSpielt(true);
+            }}
+            aria-label={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
+            style={knopf}
+          >
+            {spielt ? <IconPause size={14} /> : amEnde ? <IconRefresh size={14} /> : <IconPlay size={14} />}
+            <span>{spielt ? "Pause" : amEnde ? "Noch einmal" : t === 0 ? "Rennen starten" : "Weiter"}</span>
+          </button>
+        </div>
       </div>
 
       {/* Im Bild: der eingestellte Stand steht schon im Kopf (Datum); hier nur der
