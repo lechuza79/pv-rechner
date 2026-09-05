@@ -32,7 +32,7 @@
 // PVGIS-Monatsprofil, die Haushaltslast aus calcHourlyConsumption, der Tag/Nacht-
 // Split über die geteilte tagQuote — hier steht nur, was Balkon-spezifisch ist.
 
-import { NUTZUNG, NATIONAL_AVG_YIELD } from "./constants";
+import { NUTZUNG, NATIONAL_AVG_YIELD, DEGRAD } from "./constants";
 import { DEFAULT_PRICES } from "./prices-config";
 
 export type BalkonSetId = "single" | "duo" | "max";
@@ -197,7 +197,7 @@ export const DEFAULT_BALKON_CONFIG: BalkonConfig = {
   presence: [
     { id: "weg", label: "Tagsüber selten", sub: "Meist berufstätig außer Haus", tagQuote: NUTZUNG[0].tagQuote },
     { id: "teils", label: "Teils zuhause", sub: "Homeoffice-Tage, Familie", tagQuote: NUTZUNG[1].tagQuote },
-    { id: "home", label: "Oft zuhause", sub: "Homeoffice, Rente, Kinder", tagQuote: NUTZUNG[2].tagQuote },
+    { id: "home", label: "Oft zuhause", sub: "Homeoffice, Kinder", tagQuote: NUTZUNG[2].tagQuote },
   ],
   // Größen und Preise an echten, getesteten Geräten (Stand 2026-07). Das Segment
   // unter ~1,5 kWh ist als Einstieg vom Markt verschwunden (Zendure AB1000 läuft
@@ -229,7 +229,12 @@ export const DEFAULT_BALKON_CONFIG: BalkonConfig = {
   storageRecommendMaxPayback: 8,
 
   lifetimeYears: 20,
-  degradation: 0.005,
+  // Dieselbe Degradation wie Dach-PV — importiert, nicht abgetippt.
+  degradation: DEGRAD,
+  // Bewusst 20 statt der 25 Jahre des PV-Rechners: Ein Fixpreis-Set mit
+  // 800-W-Wechselrichter und Steckerelektronik ist eine andere Geräteklasse als
+  // eine Dachanlage; die Oberfläche trägt „Gewinn nach 20 J." durchgehend.
+  // (Council 05.09.2026: dokumentiert, keine Kopie.)
   gridCo2PerKwh: 0.38,
   stromPrice: DEFAULT_PRICES.electricityPrice, // kanonischer Haushaltspreis (kein eigener Wert → kein Drift)
 

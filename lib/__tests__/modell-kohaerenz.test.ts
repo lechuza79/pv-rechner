@@ -522,6 +522,11 @@ describe("Modell-Kohärenz: eine Aussage gilt über die ganze Laufzeit", () => {
       "app/(site)/dashboard/client.tsx",
       "app/(site)/ratgeber/lohnt-sich-pv-mit-speicher/page.tsx",
       "components/FundingProgramParts.tsx",
+      // Council 05.09.2026: „Rendite" für Euro-Beträge stand auch in der
+      // Empfehlungs-Logik, im Ratgeber-Chart und im Teilen-Vorschaubild.
+      "lib/recommend.ts",
+      "app/(site)/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung/_components/RenditeVergleich.tsx",
+      "app/api/og/route.tsx",
     ];
     for (const datei of KACHELN) {
       const quelle = readFileSync(join(ROOT, datei), "utf8");

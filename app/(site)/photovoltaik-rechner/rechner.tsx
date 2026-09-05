@@ -17,8 +17,8 @@ import ResultSection from "../../../components/ResultSection";
 // components/GebaeudeField.
 import { YEAR, YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, NATIONAL_AVG_YIELD, EINSPEISESATZ_MAX_CT, type Heizsystem } from "../../../lib/constants";
 import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramFloatOrNull, paramStr, vollEinspeisungGesperrt } from "../../../lib/calc";
-import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../lib/pv-sim";
-import { calcWpAnnualElectricity, calcJAZ, flowTempForSystem, DEFAULT_WP_BUILDING, wpGebaeudeUebersprungenFolge } from "../../../lib/heatpump";
+import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS, BATTERY_ROUNDTRIP } from "../../../lib/pv-sim";
+import { calcWpAnnualElectricity, calcJAZ, flowTempForSystem, DEFAULT_WP_BUILDING, wpGebaeudeUebersprungenFolge, heatPumpScenarioAdj } from "../../../lib/heatpump";
 import OptionCard from "../../../components/OptionCard";
 import DachField, { DACH_FIELDS } from "../../../components/DachField";
 import GebaeudeField, { GEBAEUDE_FIELDS, type GebaeudeWerte } from "../../../components/GebaeudeField";
@@ -31,7 +31,7 @@ import PresetNumberInput from "../../../components/PresetNumberInput";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import { calcExtraConsumption, calcEaAnnual, KLIMA_DEFAULT_M2, EA_KWH_PER_KM, type HouseholdProfile } from "../../../lib/consumption";
 import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
-import { calcAircon } from "../../../lib/aircon";
+import { klimaSchnellschaetzungKwh } from "../../../lib/aircon";
 import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
 import { useCoolingDegree } from "../../../lib/useCoolingDegree";
 import KlimaDetailModal from "../../../components/KlimaDetailModal";
@@ -381,11 +381,7 @@ export default function PVRechner({
   // Rechner (calcAircon), mit Config-Defaults + gewählten Räumen + Standort-
   // Kühlgradstunden. So driften Schnellschätzung und Detail-Rechnung nie.
   const quickKlimaKwh = useMemo(
-    () => calcAircon({
-      deviceId: CFG.defaultDeviceId, rooms: klimaRooms, roomM2: CFG.defaultRoomM2,
-      exposure: CFG.defaultExposure, targetTemp: CFG.defaultTargetTemp, window: "day",
-      cdh: cooling.cdhSet.avg5, stromPrice: oStrom, pvActive: false,
-    }).electricityKwh,
+    () => klimaSchnellschaetzungKwh({ rooms: klimaRooms, cdh: cooling.cdhSet.avg5, stromPrice: oStrom }),
     [klimaRooms, cooling.cdhSet.avg5, oStrom],
   );
   // Effektiver Kühlstrom: übernommener Wert (Detail-Modal / Klimaanlagen-Rechner)
@@ -467,6 +463,12 @@ export default function PVRechner({
   // dem Netz — die Simulation kennt diesen Modus nicht und lieferte die
   // Autarkie eines Teileinspeisers (30 % ohne Speicher).
   const autarkie = effEinspeisungModus === "voll" ? 0 : pvSim.autarky;
+  // Die Monatsbalken kommen aus dem PVGIS-Optimum (Süd, ideale Neigung); jede
+  // andere Zahl der Seite rechnet mit dem Ertrag DIESES Dachs. Bis 05.09.2026
+  // zeigten die Balken bei Ost/West 10.500 kWh neben einem Jahresertrag von
+  // 8.400. Die Dach-Matrix skaliert nur die Menge, nicht die Form — ein Faktor
+  // genügt (lib/dach-ertrag.ts).
+  const balkenFaktor = oErtrag > 0 ? effErtrag / oErtrag : 1;
   // Beispieltage (24-h-Detail) für das Modal — sonniger/trüber Wintertag + Sommertag.
   const exampleDays = useMemo(
     () => EXAMPLE_DAYS.map(d => ({
@@ -495,7 +497,13 @@ export default function PVRechner({
     const skaliert = summe > 0 ? monthly.map((m) => (m * effErtrag) / summe) : monthly;
     const gemeinsam = {
       moduleKwp: kwp, inverterKw: kwp, monthlyYieldPerKwp: skaliert,
-      orientation: "sued_flach", household, batteryKwh: spKwh, roundtrip: 0.9,
+      // Bei Volleinspeisung hängt weder Haushalt noch Speicher an der Anlage —
+      // sonst trüge der Marktwert das Profil eines Teileinspeisers (Council
+      // 05.09.2026: Profilfaktor 0,82 statt 1,03 bei 10 kWh Speicher).
+      orientation: "sued_flach",
+      household: effEinspeisungModus === "voll" ? { ...household, baseKwh: 0, wpActive: false, eaActive: false, klimaActive: false } : household,
+      batteryKwh: effEinspeisungModus === "voll" ? 0 : spKwh,
+      roundtrip: BATTERY_ROUNDTRIP,
       priceShape: PREISFORM_MONAT_STUNDE,
     };
     const ohneDeckel = simulateSolarYear(gemeinsam);
@@ -504,7 +512,7 @@ export default function PVRechner({
       profilFaktor: profilFaktorAus(mitDeckel),
       einspeiseAnteil: ohneDeckel.feedInKwh > 0 ? mitDeckel.feedInKwh / ohneDeckel.feedInKwh : 1,
     };
-  }, [kwp, spKwh, monthlyProfile, effErtrag, household]);
+  }, [kwp, spKwh, monthlyProfile, effErtrag, household, effEinspeisungModus]);
 
   const einspeiseVerlaufJahre = useMemo(() => einspeiseVerlauf({
     regime,
@@ -794,7 +802,7 @@ export default function PVRechner({
     try {
       const row = paramsToRow(
         { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag: effErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
-        { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(sel.data.years[YEARS - 1]?.kum ?? 0) }
+        { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(sel.data.total) }
       );
       const spLabel = spKwh > 0 ? ` + ${spKwh} kWh` : "";
       const res = await fetch("/api/calculations", {
@@ -825,7 +833,7 @@ export default function PVRechner({
     if (isResult) {
       const row = paramsToRow(
         { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag: effErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
-        { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(sel.data.years[YEARS - 1]?.kum ?? 0) }
+        { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(sel.data.total) }
       );
       const spLabel = spKwh > 0 ? ` + ${spKwh} kWh` : "";
       try {
@@ -1474,7 +1482,7 @@ export default function PVRechner({
               total={sel.data.total} kosten={kosten}
               wp={wp} wpKwh={wpKwh ?? 0} jaz={wpJaz} effEv={effEv} autarkie={autarkie} wpAutarky={pvSim.wpAutarky}
               jahresertrag={jahresertrag} gesamtVerbrauch={gesamtVerbrauch} speicherKwh={spKwh} monthly={pvSim.monthly} exampleDays={exampleDays}
-              stromSteigerung={sel.strom} fuelType={fuelType} setFuelType={setFuelType}
+              stromSteigerung={sel.strom} gasSteigerung={heatPumpScenarioAdj(sel.id).gasInflation} fuelType={fuelType} setFuelType={setFuelType}
             />
 
             {spKwh > 0 && effEinspeisungModus !== "voll" && (
@@ -1550,7 +1558,7 @@ export default function PVRechner({
                     const barH = Math.max(Math.round((m / max) * 70), 3);
                     return (
                       <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <span style={{ fontSize: v("--font-size-micro"), fontFamily: v('--font-mono'), color: v('--color-text-secondary'), marginBottom: 3 }}>{Math.round(m * kwp).toLocaleString("de-DE")}</span>
+                        <span style={{ fontSize: v("--font-size-micro"), fontFamily: v('--font-mono'), color: v('--color-text-secondary'), marginBottom: 3 }}>{Math.round(m * kwp * balkenFaktor).toLocaleString("de-DE")}</span>
                         <div style={{ width: "100%", height: barH, borderRadius: "3px 3px 0 0", background: i === new Date().getMonth() ? v('--color-accent') : v('--color-border-accent') }} />
                         <span style={{ fontSize: v("--font-size-micro"), color: v('--color-text-faint'), marginTop: 3 }}>{["J","F","M","A","M","J","J","A","S","O","N","D"][i]}</span>
                       </div>

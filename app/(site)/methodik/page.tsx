@@ -529,8 +529,8 @@ export default async function MethodikPage() {
           <span style={S.accent}>Verschattung</span> — Bäume, Nachbargebäude oder
           Gauben kann nur ein Fachbetrieb vor Ort bewerten
           <br />
-          <span style={S.accent}>Förderung</span> — regionale Zuschüsse fließen nicht
-          in die Amortisation ein; passende Programme zeigen wir im Ergebnis an
+          <span style={S.accent}>Förderung</span> — regionale Zuschüsse fließen erst
+          in die Amortisation ein, wenn du sie im Ergebnis anrechnest oder von einer Förderseite kommst; passende Programme zeigen wir im Ergebnis an
           <br />
           <br />
           <span style={S.muted}>

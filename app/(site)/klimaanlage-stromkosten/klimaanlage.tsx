@@ -638,7 +638,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                   <span style={{ fontSize: v("--font-size-body"), fontWeight: 700 }}>Auch heizen?</span>
                   <InfoTooltip title="Split-Klima als Heizung" ariaLabel="Wie gut heizt eine Split-Klimaanlage?" size={iconSizes.sm}>
                     Split-Geräte sind reversibel — sie funktionieren wie eine Luft-Luft-Wärmepumpe und heizen mit einer
-                    Jahresarbeitszahl von rund 3,4 im Realbetrieb — auf dem Typenschild steht 4,0, damit rechnen wir bewusst nicht. In der Übergangszeit ist das günstiger als Gas. Für tiefe Winterkälte
+                    Jahresarbeitszahl von rund {heat.scop.toLocaleString("de-DE")} im Realbetrieb — auf dem Typenschild steht {(result.device.labelScop ?? heat.scop).toLocaleString("de-DE")}, damit rechnen wir bewusst nicht. In der Übergangszeit ist das günstiger als Gas. Für tiefe Winterkälte
                     und das ganze Haus sinkt die Effizienz — dann ist eine wassergeführte Wärmepumpe die bessere Wahl.
                   </InfoTooltip>
                 </span>
