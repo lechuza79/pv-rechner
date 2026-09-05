@@ -17,7 +17,7 @@ import { IconPause, IconPlay, IconRefresh } from "../Icons";
 import { useChartExport } from "../../lib/useChartExport";
 import { EXPORT_IGNORE_ATTR } from "../../lib/export-markers";
 import { brandLabel, type WidgetDef } from "../../lib/widget-registry";
-import { v, fsPx, space, tokens, type TokenName } from "../../lib/theme";
+import { v, fsPx, space, pad as abstand, tokens, type TokenName } from "../../lib/theme";
 import { RaceVideo, videoFormat, type VideoFrameDaten } from "../../lib/race-video";
 import { downloadBlob } from "../../lib/chart-export";
 import { sourceLabel } from "../../lib/data-sources";
@@ -371,6 +371,38 @@ function RaceCard({
   // Spur erklärt, das vorige blendet aus (Muster: Weichenstellungen im Zubau-Chart).
   const sichtbareEreignisse = ereignisse.filter((e) => t >= e.tag);
   const aktivesEreignis = sichtbareEreignisse.length ? sichtbareEreignisse[sichtbareEreignisse.length - 1] : null;
+  // Pfeile wie beim Zubau-Chart: zum vorigen/nächsten Ereignis springen — die
+  // Wiedergabe hält dort an, damit man lesen kann; das Chart steht auf dem Tag
+  // des Ereignisses.
+  const idxAktiv = aktivesEreignis ? ereignisse.indexOf(aktivesEreignis) : -1;
+  const springe = (i: number) => {
+    const e = ereignisse[i];
+    if (!e) return;
+    setSpielt(false);
+    gestartet.current = true;
+    setT(e.tag);
+  };
+  const pfeil = (richtung: -1 | 1) => {
+    const ziel = idxAktiv + richtung;
+    const aus = ziel < 0 || ziel >= ereignisse.length;
+    return (
+      <button
+        type="button"
+        onClick={() => springe(ziel)}
+        disabled={aus}
+        aria-label={richtung < 0 ? "Vorheriges Ereignis" : "Nächstes Ereignis"}
+        title={richtung < 0 ? "Vorheriges Ereignis" : "Nächstes Ereignis"}
+        style={{
+          flexShrink: 0, width: 32, height: 32, padding: 0, boxSizing: "border-box", borderRadius: "50%",
+          border: `1px solid ${v("--color-border")}`, background: v("--color-bg"),
+          color: aus ? v("--color-text-muted") : v("--color-accent"), fontSize: v("--font-size-h3"), lineHeight: 1,
+          cursor: aus ? "default" : "pointer", opacity: aus ? 0.4 : 1, display: "inline-flex", alignItems: "center", justifyContent: "center",
+        }}
+      >
+        {richtung < 0 ? "‹" : "›"}
+      </button>
+    );
+  };
   // Zeitleiste auf derselben Achse wie das Chart: Punkt und gestrichelte Linie
   // stehen jederzeit übereinander.
   const posPct = (d: number) => (xL(d) / W) * 100;
@@ -546,30 +578,14 @@ function RaceCard({
         {/* Ereignis-Zeitleiste unter dem Chart im Stil der Weichenstellungen des
             Zubau-Charts: Punkte auf der Achse des Charts (Punkt und gestrichelte
             Linie stehen übereinander, auch während die Achse wächst), der
-            zuletzt erreichte Punkt ist groß und wird darunter erklärt; das
-            vorige Ereignis blendet aus. Nur auf der Seite — im Bild tragen die
-            Marken ihren Text im Chart. */}
+            zuletzt erreichte Punkt ist groß und wird darunter in einer Box
+            erklärt, mit Pfeilen zum vorigen und nächsten Ereignis — ein Pfeil
+            springt die Wiedergabe dorthin und hält an. Darunter der Abspielknopf.
+            Nur auf der Seite — im Bild tragen die Marken ihren Text im Chart.
+            Kein Regler: Die Spur liegt auf der wachsenden Chart-Achse, ein
+            Regler darauf wechselte beim Ziehen die Skala (Betreiber, 05.09.2026). */}
         <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ marginTop: space.md }}>
           <div style={{ position: "relative", height: 32 }}>
-            {/* Play/Pause/Neustart links vor der Spur, im Rand unter den Achsenzahlen.
-                Kein Regler: Die Spur liegt auf der wachsenden Chart-Achse, ein
-                Regler darauf wechselte beim Ziehen die Skala (Betreiber, 05.09.2026). */}
-            <span style={{ position: "absolute", left: 0, top: 0, display: "inline-flex" }}>
-              <button
-                type="button"
-                onClick={() => {
-                  if (spielt) { setSpielt(false); return; }
-                  if (amEnde) setT(0);
-                  gestartet.current = true;
-                  setSpielt(true);
-                }}
-                aria-label={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
-                title={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
-                style={knopf}
-              >
-                {spielt ? <IconPause size={14} /> : amEnde ? <IconRefresh size={14} /> : <IconPlay size={14} />}
-              </button>
-            </span>
             <div style={{ position: "absolute", top: 15, left: `${(P.l / W) * 100}%`, width: `${(cW / W) * 100}%`, height: 2, background: v("--color-border") }} />
             {sichtbareEreignisse.map((e) => {
               const aktiv = e === aktivesEreignis;
@@ -579,17 +595,44 @@ function RaceCard({
               );
             })}
           </div>
-          <div style={{ minHeight: 64, marginTop: space.sm, paddingLeft: narrow ? 0 : `${(P.l / W) * 100}%`, paddingRight: narrow ? 0 : `${(P.r / W) * 100}%` }}>
-            {aktivesEreignis && (
-              <div key={aktivesEreignis.tag} className="kr-neu">
-                <div style={{ fontSize: v("--font-size-small"), fontWeight: 800, color: v("--color-text-primary"), marginBottom: space.xxs }}>
-                  <span style={{ fontFamily: v("--font-mono") }}>{aktivesEreignis.jahr}</span>
-                  {"  ·  "}
-                  {aktivesEreignis.label}
+          <div style={{ marginTop: space.sm, background: v("--color-bg-muted"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md"), padding: abstand("md", "lg"), display: "flex", flexDirection: narrow ? "column" : "row", alignItems: narrow ? "stretch" : "center", gap: space.lg }}>
+            {!narrow && pfeil(-1)}
+            <div style={{ flex: narrow ? undefined : 1, minWidth: 0, minHeight: 64 }}>
+              {aktivesEreignis && (
+                <div key={aktivesEreignis.tag} className="kr-neu">
+                  <div style={{ fontSize: v("--font-size-small"), fontWeight: 800, color: v("--color-text-primary"), marginBottom: space.xxs }}>
+                    <span style={{ fontFamily: v("--font-mono"), color: v("--color-accent") }}>{aktivesEreignis.jahr}</span>
+                    {"  ·  "}
+                    {aktivesEreignis.label}
+                  </div>
+                  <div style={{ fontSize: v("--font-size-small"), lineHeight: 1.5, color: v("--color-text-secondary") }}>{aktivesEreignis.text}</div>
                 </div>
-                <div style={{ fontSize: v("--font-size-small"), lineHeight: 1.5, color: v("--color-text-secondary") }}>{aktivesEreignis.text}</div>
+              )}
+            </div>
+            {!narrow && pfeil(1)}
+            {narrow && (
+              <div style={{ display: "flex", gap: space.md }}>
+                {pfeil(-1)}
+                {pfeil(1)}
               </div>
             )}
+          </div>
+          {/* Player unter der Ereignis-Box: Abspielen, Anhalten, noch einmal. */}
+          <div style={{ marginTop: space.md, display: "flex", alignItems: "center", gap: space.md }}>
+            <button
+              type="button"
+              onClick={() => {
+                if (spielt) { setSpielt(false); return; }
+                if (amEnde) setT(0);
+                gestartet.current = true;
+                setSpielt(true);
+              }}
+              aria-label={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
+              title={spielt ? "Anhalten" : amEnde ? "Noch einmal abspielen" : "Abspielen"}
+              style={knopf}
+            >
+              {spielt ? <IconPause size={14} /> : amEnde ? <IconRefresh size={14} /> : <IconPlay size={14} />}
+            </button>
           </div>
         </div>
       </ExportBox>

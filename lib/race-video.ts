@@ -102,7 +102,8 @@ const SKALA = 2;
 // gedämpften Seitenhintergrund — ein Video kennt keine Transparenz, also
 // braucht die Karte einen Grund, auf dem ihre Ecken sichtbar rund sind.
 const RAND = 16;
-const ZEITLEISTE_H = 26 + 8 + 64;
+const BOX_H = 84;
+const ZEITLEISTE_H = 26 + 8 + BOX_H;
 const ECKE = parseFloat(tokens["--radius-lg"]);
 
 export class RaceVideo {
@@ -203,17 +204,26 @@ export class RaceVideo {
         c.beginPath(); c.arc(x, spurY + 1, r - 2, 0, Math.PI * 2); c.fillStyle = farbe("--color-accent"); c.fill();
       }
       y += 26 + 8;
+      // Die Erklärung steht wie auf der Seite in einer gedämpften Box mit dem
+      // mittleren Eckradius des Themes (ohne die Pfeile — im Video wären es tote Knöpfe).
+      const boxEcke = parseFloat(tokens["--radius-md"]);
+      c.beginPath(); c.roundRect(PAD, y, chartW, BOX_H, boxEcke);
+      c.fillStyle = farbe("--color-bg-muted"); c.fill();
+      c.strokeStyle = farbe("--color-border"); c.lineWidth = 1; c.stroke();
       if (d.ereignis) {
-        const ex = PAD + (d.spur.vonPct / 100) * chartW;
-        const eBreite = ((d.spur.bisPct - d.spur.vonPct) / 100) * chartW;
+        const ex = PAD + 16;
+        const eBreite = chartW - 32;
+        const ty = y + 24;
         c.font = `800 ${fsPx("--font-size-small")}px ${sans}`;
+        c.fillStyle = farbe("--color-accent");
+        c.fillText(d.ereignis.jahr, ex, ty);
         c.fillStyle = farbe("--color-text-primary");
-        c.fillText(`${d.ereignis.jahr}  ·  ${d.ereignis.label}`, ex, y);
+        c.fillText(`  ·  ${d.ereignis.label}`, ex + c.measureText(d.ereignis.jahr).width, ty);
         c.font = `400 ${fsPx("--font-size-small")}px ${sans}`;
         c.fillStyle = farbe("--color-text-secondary");
-        zeilenUmbruch(c, d.ereignis.text, eBreite).slice(0, 3).forEach((z, i) => c.fillText(z, ex, y + 18 + i * 16));
+        zeilenUmbruch(c, d.ereignis.text, eBreite).slice(0, 3).forEach((z, i) => c.fillText(z, ex, ty + 18 + i * 16));
       }
-      y += 64;
+      y += BOX_H;
       // Fuß: Marke, darunter die Quelle (Lizenzpflicht — auch im Video).
       const fussY = this.hoehe - PAD - 30;
       c.font = `600 ${fsPx("--font-size-small")}px ${sans}`;

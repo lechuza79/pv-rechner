@@ -31,8 +31,11 @@ startet** (beim Stromkosten-Rennen die Anlage mit ihrer Anschaffung). Der
 ## Was der Baustein entscheidet (nicht je Rennen neu)
 
 Kamera und Zoom-Öffnung, Tempo, Zeitleiste im Zubau-Stil (immer ein Ereignis
-aktiv, das vorige blendet aus), Punkte in Akzentfarbe, Beträge über der Spitze
-mit Halo, Quellen-Kante am Chart-Bereich, Video in Echtzeit. Wer davon etwas
+aktiv, das vorige blendet aus; die Erklärung in einer gedämpften Box mit
+Pfeilen zum vorigen/nächsten Ereignis — ein Pfeil springt die Wiedergabe auf
+den Tag des Ereignisses und hält an), Abspielknopf unter der Box, Punkte in
+Akzentfarbe, Beträge über der Spitze mit Halo, Quellen-Kante am Chart-Bereich,
+Video in Echtzeit (die Box auch im Video, ohne Pfeile). Wer davon etwas
 ändert, ändert alle Rennen — das ist gewollt.
 
 ## Anderer Zeitraum oder Werteraum
