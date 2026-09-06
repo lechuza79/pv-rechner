@@ -48,8 +48,11 @@ const BASIS: StoryDaten = {
 const ORT = { regionId: BASIS.regionId, name: BASIS.name };
 
 const geschichten = (): OrtsStory[] => ortsStories({ daten: BASIS, heuteJahr: JAHR });
+/** Nur die Beiträge — das Drumherum der Ortsseite prüft der eigene Test. */
 const beitraege = (fassungen = {}) =>
-  ortsPosts({ stories: geschichten(), ort: ORT, standIso: BASIS.standIso, fassungen });
+  ortsPosts({ stories: geschichten(), ort: ORT, standIso: BASIS.standIso, fassungen }).map(
+    (b) => b.post,
+  );
 
 describe("Eine Ortsgeschichte ist ein Beitrag des Redaktionssystems", () => {
   it("es gibt überhaupt welche — sonst prüft alles Folgende nichts", () => {
@@ -132,7 +135,7 @@ describe("Eine Ortsgeschichte ist ein Beitrag des Redaktionssystems", () => {
       ort: ORT,
       standIso: BASIS.standIso,
       fassungen: { [erste.id]: { stil: "dunkel", form: "verlauf" } },
-    })[0];
+    })[0].post;
     expect(mit.bild!.stil).toBe("dunkel");
     // „verlauf" braucht eine Zeitachse — die hat keine Ortsgeschichte, also
     // bleibt die eingebaute Form stehen.

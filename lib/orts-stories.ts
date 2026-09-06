@@ -573,10 +573,15 @@ function storyFlaeche(d: StoryDaten): OrtsStory | null {
   const summe = frei + gewerbe + privat;
   if (summe <= 0 || d.solar.total_count < MIN_ANLAGEN_FUER_GELD) return null;
 
+  // JEDE FORM TRÄGT IHRE DATIVFORM. Der Satz lautet „stehen auf …", und ein
+  // Sonderfall nur für die privaten Dächer ließ „stehen auf Gewerbedächer"
+  // stehen — im Browser-Test aufgefallen, nicht im Diff. Grammatik ist Teil der
+  // Richtigkeit, und ein falscher Kasus ist im Fließtext dieselbe Sorte Fehler
+  // wie „1 neue Anlagen".
   const anteile = [
-    { name: "Freifläche", wert: frei },
-    { name: "Gewerbedächer", wert: gewerbe },
-    { name: "private Dächer", wert: privat },
+    { name: "Freifläche", auf: "Freiflächen", wert: frei },
+    { name: "Gewerbedächer", auf: "Gewerbedächern", wert: gewerbe },
+    { name: "private Dächer", auf: "privaten Dächern", wert: privat },
   ].sort((a, b) => b.wert - a.wert);
   const top = anteile[0];
   const anteil = Math.round((top.wert / summe) * 100);
@@ -588,7 +593,7 @@ function storyFlaeche(d: StoryDaten): OrtsStory | null {
     ...familie("flaeche"),
     quellen: ["mastr"],
     gemessen: `Anteile an ${fmtPvLeistung(summe)} installierter Leistung`,
-    titel: `${anteil} % der Solarleistung in ${d.name} stehen auf ${top.name === "private Dächer" ? "privaten Dächern" : top.name}`,
+    titel: `${anteil} % der Solarleistung in ${d.name} stehen auf ${top.auf}`,
     text:
       `Von ${fmtPvLeistung(summe)} installierter Leistung entfallen ${anteil} % auf ${top.name}. ` +
       `Die drei Formen sagen Verschiedenes: Ein privates Dach gehört jemandem im Ort, eine Freifläche ` +

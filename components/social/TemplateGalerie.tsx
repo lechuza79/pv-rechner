@@ -1,7 +1,7 @@
-import { SocialKarte } from "./SocialKarte";
+import { SocialKarte, type KartenStufe } from "./SocialKarte";
 import { v, space, pad } from "../../lib/theme";
 import { TEMPLATES, variantenKennung, type Bildform } from "../../lib/social-bildformen";
-import { KARTEN_STILE, KARTEN_STIL_NAME } from "../../lib/social-karten-stil";
+import { KARTEN_STILE, KARTEN_STIL_NAME, type KartenPalette } from "../../lib/social-karten-stil";
 import type { PostBild, SocialPost } from "../../lib/social-posts";
 
 // Die Ansicht auf die DESIGNS: je Bildform eine Zeile, darin ihre drei
@@ -28,12 +28,26 @@ import type { PostBild, SocialPost } from "../../lib/social-posts";
  * eine verkleinert gerechnete Karte beurteilt, beurteilt eine, die es nicht
  * gibt.
  */
-function Buehne({ bild, zoom }: { bild: PostBild; zoom: number }) {
+function Buehne({
+  bild,
+  zoom,
+  stufe = "voll",
+  palette = "eigene",
+}: {
+  bild: PostBild;
+  zoom: number;
+  stufe?: KartenStufe;
+  palette?: KartenPalette;
+}) {
+  // Die quadratische Stufe ist 1:1 — die Bühne muss das mitmachen, sonst steht
+  // die Karte in einem Rahmen mit 270 Pixeln Leerraum darunter und sieht nach
+  // einem Fehler aus, der keiner ist.
+  const hoehe = stufe === "quadrat" ? 1080 : 1350;
   return (
     <div
       style={{
         width: 1080 * zoom,
-        height: 1350 * zoom,
+        height: hoehe * zoom,
         overflow: "hidden",
         borderRadius: 4,
         boxShadow: "0 1px 6px rgba(0,0,0,0.16)",
@@ -41,7 +55,7 @@ function Buehne({ bild, zoom }: { bild: PostBild; zoom: number }) {
       }}
     >
       <div style={{ transform: `scale(${zoom})`, transformOrigin: "top left" }}>
-        <SocialKarte bild={bild} skala={1} />
+        <SocialKarte bild={bild} skala={1} stufe={stufe} palette={palette} />
       </div>
     </div>
   );
@@ -71,7 +85,18 @@ export type GalerieZeile = {
   gesamt: number;
 };
 
-export function TemplateGalerie({ zeilen, zoom = 0.32 }: { zeilen: GalerieZeile[]; zoom?: number }) {
+export function TemplateGalerie({
+  zeilen,
+  zoom = 0.32,
+  stufe = "voll",
+  palette = "eigene",
+}: {
+  zeilen: GalerieZeile[];
+  zoom?: number;
+  /** Welche Stufe gezeigt wird — 4:5 fürs Feed-Bild, 1:1 für die Ortsseite. */
+  stufe?: KartenStufe;
+  palette?: KartenPalette;
+}) {
   if (zeilen.length === 0) {
     return (
       <p style={{ color: v("--color-text-muted"), padding: space.xxl, background: v("--color-bg-muted"), borderRadius: v("--radius-md") }}>
@@ -178,7 +203,7 @@ export function TemplateGalerie({ zeilen, zoom = 0.32 }: { zeilen: GalerieZeile[
                       {abgenommen ? "abgenommen" : "noch nicht abgenommen"}
                     </span>
                   </figcaption>
-                  <Buehne bild={{ ...post.bild!, art: form.art, stil }} zoom={zoom} />
+                  <Buehne bild={{ ...post.bild!, art: form.art, stil }} zoom={zoom} stufe={stufe} palette={palette} />
                 </figure>
               );
             })}

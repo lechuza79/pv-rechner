@@ -1,6 +1,6 @@
 import Logo from "../Logo";
 import { v, space } from "../../lib/theme";
-import { kartenTokens, serienFarben } from "../../lib/social-karten-stil";
+import { kartenTokens, serienFarben, type KartenPalette } from "../../lib/social-karten-stil";
 import { aufteilungsStellen, ranglistenStellen, restVon } from "../../lib/social-bildformen";
 import { BUNDESLAND_UMRISS, BUNDESLAND_UMRISS_SEITE } from "../../lib/bundesland-umrisse";
 import { umrissBox } from "../../lib/bundesland-umriss-box";
@@ -39,6 +39,30 @@ const HOEHE = 1350; // 4:5
 const SPUR_DECKKRAFT = 0.14;
 
 /**
+ * Wie viel Zeichenfläche der quadratischen Stufe bleibt — als Anteil der vollen.
+ *
+ * GEMESSEN, NICHT GESCHÄTZT: Kopf (Schlagzeile bis zu drei Zeilen, Messzeile),
+ * Fuß (Quellenzeile, Logo) und Polster brauchen in beiden Stufen dasselbe, rund
+ * 540 der 1080 bzw. 1350 Pixel. Für die Zeichnung bleiben oben 810, im Quadrat
+ * 540 — also zwei Drittel.
+ *
+ * WARUM ÜBERHAUPT: Die Zeichnungen tragen feste Design-Höhen (Säule 620, Ring
+ * 560, Aufteilung 300). Am Bild gesehen und nicht am Code: Die Säule lief im
+ * Quadrat unten heraus, Quellenzeile und Logo waren abgeschnitten. Ein
+ * beschnittener Lizenzvermerk ist schlimmer als ein zu kleines Bild.
+ *
+ * EIN Faktor für alle statt sechs eigener Maße: Sechs Zahlen laufen
+ * auseinander, sobald jemand eine davon nachzieht — dieselbe Systematik wie bei
+ * der Referenzfläche (SPUR_DECKKRAFT), die aus demselben Grund einmal steht.
+ */
+const QUADRAT_ZEICHENHOEHE = 2 / 3;
+
+/** Der Höhenfaktor dieser Stufe — 1 überall außer im Quadrat. */
+function hoehenFaktor(stufe: KartenStufe): number {
+  return stufe === "quadrat" ? QUADRAT_ZEICHENHOEHE : 1;
+}
+
+/**
  * Schriftgrößen je Stufe — ABSOLUT, nicht skaliert.
  *
  * Das ist der eigentliche Mechanismus. Die volle Karte ist 1080 breit und
@@ -52,6 +76,11 @@ const SPUR_DECKKRAFT = 0.14;
  */
 const GROESSEN = {
   voll: { aussage: 58, untertitel: 30, wert: 96, einheit: 30, label: 30, balken: 30, polster: 72 },
+  // Quadrat trägt DIESELBEN Größen wie die volle Stufe: Sie skalieren beide mit
+  // `skala`, die Karte ist nur weniger hoch. Eine eigene Skala wäre hier eine
+  // zweite Typografie für dieselbe Zeichnung — die kleine Stufe hat eine, weil
+  // sie eine ANDERE Anordnung ist.
+  quadrat: { aussage: 58, untertitel: 30, wert: 96, einheit: 30, label: 30, balken: 30, polster: 72 },
   teaser: { aussage: 17, untertitel: 0, wert: 40, einheit: 14, label: 13, balken: 10, polster: 16 },
 } as const;
 
@@ -68,7 +97,26 @@ const GROESSEN = {
  * daraus ein Bild wird, das die Seite verlässt, gilt wieder die volle Stufe —
  * dort ist die Nennung Lizenzpflicht.
  */
-export type KartenStufe = "voll" | "teaser";
+/**
+ * „quadrat" ist die dritte Stufe und die jüngste (06.09.2026): dieselbe Karte,
+ * dieselben Formen, aber 1:1 statt 4:5 — und mit der Möglichkeit, die Farben
+ * der SEITE zu erben statt eine eigene Palette mitzubringen.
+ *
+ * Gebaut für die Gemeindeseiten, wo drei Anläufe an genau diesen beiden Punkten
+ * gescheitert sind: Die volle Karte ist auf ein 4:5-Bild für einen fremden Feed
+ * gerechnet und überschreibt die Farb-Tokens, was auf einer Seite mit
+ * Tageslicht-Theme abends einen weißen Block ergibt.
+ *
+ * KEINE eigene Schriftskala und KEINE eigene Zeichnung: Die Größen skalieren
+ * wie in der vollen Stufe mit `skala`, und die Formen sind dieselben. Eine
+ * dritte Zeichnung wäre die zweite Wahrheit neben den abgenommenen Templates —
+ * daran ist der letzte Anlauf gescheitert.
+ *
+ * Der Teaser bleibt, was er ist: Er LÄSST WEG, statt zu schrumpfen. Auf 240
+ * Pixeln wären zwei Ringe zwei graue Kringel, und die Formenwahl ist dort
+ * bewusst wirkungslos — sie wirkt im Fenster, wo die Karte quadratisch steht.
+ */
+export type KartenStufe = "voll" | "quadrat" | "teaser";
 
 /**
  * Wie lang ein Wert als Balken wird — die Normierungsregel an EINER Stelle.
@@ -93,14 +141,25 @@ export function SocialKarte({
   bild,
   skala = 1,
   stufe = "voll",
+  palette = "eigene",
 }: {
   bild: PostBild;
   skala?: number;
   stufe?: KartenStufe;
+  /** Eigenes Farbschema oder das der Seite — siehe {@link KartenPalette}. */
+  palette?: KartenPalette;
 }) {
   const max = Math.max(...bild.serien.map((s) => Math.abs(s.wert)), 1);
   const kennzahl = bild.art === "kennzahl";
   const klein = stufe === "teaser";
+  // Quadratisch heißt: 270 Pixel weniger Höhe als 4:5. Die Reihe der Werte
+  // nimmt den Unterschied über `flex: 1` auf; was von Hand nachgezogen wird,
+  // sind die beiden großen Abstände oben und unten.
+  const quadrat = stufe === "quadrat";
+  // Derselbe Faktor wie in den Zeichnungen: Auch die Balkenreihe muss in zwei
+  // Drittel der Höhe. Bei drei Serien überlappte die letzte Beschriftung sonst
+  // die Trennlinie über der Quellenzeile — am Bild gesehen.
+  const hf = hoehenFaktor(stufe);
   // Die Ringfassung braucht Fläche und genau zwei Werte. Im Teaser fällt sie
   // auf die Balken zurück — zwei Ringe auf 240 Pixeln wären zwei graue Kringel.
   const donut = bild.art === "donut" && !klein && bild.serien.length === 2;
@@ -131,11 +190,11 @@ export function SocialKarte({
         // erben. Vorher hing das an der Vorschau — wer die Karte woanders
         // rendert (oder als Bild aufnimmt), bekam die Tagesstufe der Seite und
         // damit eine Karte, die es so nie geben sollte.
-        ...(kartenTokens(bild.stil) as React.CSSProperties),
+        ...(palette === "eigene" ? (kartenTokens(bild.stil) as React.CSSProperties) : {}),
         width: BREITE * skala,
         // Der Teaser hört auf, wo sein Inhalt endet — eine erzwungene
         // 4:5-Fläche wäre hier zur Hälfte leer.
-        height: klein ? undefined : HOEHE * skala,
+        height: klein ? undefined : (quadrat ? BREITE : HOEHE) * skala,
         background: v("--color-bg"),
         color: v("--color-text-primary"),
         display: "flex",
@@ -165,25 +224,25 @@ export function SocialKarte({
       </div>
       )}
       {!klein && bild.gemessen && (
-        <div style={{ fontSize: px(g.untertitel), color: v("--color-text-muted"), marginBottom: px(64) }}>
+        <div style={{ fontSize: px(g.untertitel), color: v("--color-text-muted"), marginBottom: px(quadrat ? 28 : 64) }}>
           {bild.gemessen}
         </div>
       )}
 
       {donut ? (
-        <DonutTeil bild={bild} max={max} skala={skala} />
+        <DonutTeil bild={bild} max={max} skala={skala} palette={palette} stufe={stufe} />
       ) : saeule ? (
-        <SaeulenTeil bild={bild} skala={skala} />
+        <SaeulenTeil bild={bild} skala={skala} palette={palette} stufe={stufe} />
       ) : umriss ? (
-        <UmrissTeil bild={bild} skala={skala} />
+        <UmrissTeil bild={bild} skala={skala} palette={palette} stufe={stufe} />
       ) : rangliste ? (
-        <RanglistenTeil bild={bild} skala={skala} />
+        <RanglistenTeil bild={bild} skala={skala} palette={palette} stufe={stufe} />
       ) : aufteilung ? (
-        <AufteilungsTeil bild={bild} skala={skala} />
+        <AufteilungsTeil bild={bild} skala={skala} palette={palette} stufe={stufe} />
       ) : verlauf ? (
-        <VerlaufsTeil bild={bild} skala={skala} />
+        <VerlaufsTeil bild={bild} skala={skala} palette={palette} stufe={stufe} />
       ) : (
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-evenly" }}>
+      <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", justifyContent: "space-evenly" }}>
         {serien.map((s) => {
           const anteil = laenge(s.wert, bild, max);
           return (
@@ -193,7 +252,7 @@ export function SocialKarte({
                   display: "flex",
                   alignItems: "baseline",
                   gap: klein ? 4 : space.md * skala,
-                  marginBottom: px(klein ? 6 : 14),
+                  marginBottom: px(klein ? 6 : 14 * hf),
                   // Zahl und Einheit gehören in eine Zeile: bricht die Einheit
                   // um, liest sie sich so groß wie der Wert.
                   whiteSpace: "nowrap",
@@ -201,7 +260,11 @@ export function SocialKarte({
               >
                 <span
                   style={{
-                    fontSize: klein ? g.wert : (kennzahl ? 190 : 96) * skala,
+                    // Die Einzelkennzahl setzt EINE Zahl sehr groß. Trägt sie
+                    // Kontextzahlen darunter, braucht sie im Quadrat dieselbe
+                    // Zurücknahme wie die Zeichnungen — bei drei Werten lief die
+                    // dritte sonst über die Quellenzeile (am Bild gesehen).
+                    fontSize: klein ? g.wert : (kennzahl ? 190 * hf : 96) * skala,
                     fontWeight: 700,
                     lineHeight: 1,
                     color: s.hervorgehoben ? v("--color-accent") : v("--color-text-primary"),
@@ -210,7 +273,7 @@ export function SocialKarte({
                   {s.wert.toLocaleString("de-DE", { minimumFractionDigits: s.stellen ?? 0, maximumFractionDigits: s.stellen ?? 0 })}
                 </span>
                 {zeigeEinheit && (
-                  <span style={{ fontSize: klein ? g.einheit : (kennzahl ? 44 : 30) * skala, color: v("--color-text-muted") }}>
+                  <span style={{ fontSize: klein ? g.einheit : (kennzahl ? 44 * hf : 30) * skala, color: v("--color-text-muted") }}>
                     {s.einheit}
                   </span>
                 )}
@@ -221,8 +284,8 @@ export function SocialKarte({
                 <div
                   style={{
                     position: "relative",
-                    height: px(g.balken),
-                    marginBottom: px(klein ? 6 : 14),
+                    height: px(g.balken * hf),
+                    marginBottom: px(klein ? 6 : 14 * hf),
                   }}
                 >
                   {/* Die Spur über die volle Breite — aber NUR, wo es ein Ganzes
@@ -260,7 +323,7 @@ export function SocialKarte({
               )}
               <div
                 style={{
-                  fontSize: klein ? g.label : (kennzahl ? 36 : 30) * skala,
+                  fontSize: klein ? g.label : (kennzahl ? 36 * hf : 30) * skala,
                   color: v("--color-text-secondary"),
                   lineHeight: 1.35,
                   maxWidth: kennzahl ? "90%" : undefined,
@@ -277,8 +340,14 @@ export function SocialKarte({
       {!klein && (
       <div
         style={{
-          marginTop: 48 * skala,
-          paddingTop: 28 * skala,
+          // DER FUSS GIBT NIE NACH. Er trägt Quellenvermerk und Marke, und beides
+          // ist im Bild Lizenzpflicht — ein beschnittener Lizenzvermerk ist
+          // schlimmer als eine zu kleine Zeichnung. Am Bild aufgefallen: Im
+          // Quadrat brach die zweizeilige Quellenzeile (Zensus und
+          // Anlagenregister) unten aus der Karte heraus, das Logo halb mit.
+          flexShrink: 0,
+          marginTop: (quadrat ? 24 : 48) * skala,
+          paddingTop: (quadrat ? 20 : 28) * skala,
           borderTop: `${Math.max(1, 2 * skala)}px solid ${v("--color-border")}`,
           display: "flex",
           justifyContent: "space-between",
@@ -395,29 +464,40 @@ function bogenEnde(r: number, anteil: number, breite: number, mitte: number) {
   };
 }
 
-function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: number }) {
+function DonutTeil({ bild, max, skala, palette, stufe }: { bild: PostBild; max: number; skala: number; palette: KartenPalette; stufe: KartenStufe }) {
   const sortiert = [...bild.serien].sort((a, b) => Math.abs(b.wert) - Math.abs(a.wert));
   const zeigeEinheit = bild.einheitAmWert !== false;
   // Gibt es ein Ganzes, wird daran normiert — dann ist kein Ring voll, außer der
   // Wert füllt es wirklich aus. Sonst am größeren der beiden Werte.
   const grund = bild.ganzes ?? max;
 
+  // Die Ringfläche folgt der Zeichenhöhe der Stufe — im Quadrat bleiben zwei
+  // Drittel, siehe QUADRAT_ZEICHENHOEHE.
+  //
+  // DER FAKTOR GEHÖRT AN DIE AUSGABEGRÖSSE, NIE AN DIE VIEWBOX — am Bild
+  // gelernt: In die viewBox gerechnet standen die Ringradien (232, 152)
+  // plötzlich außerhalb des Koordinatensystems, und der Ring wurde an seiner
+  // eigenen Zeichenfläche abgeschnitten. Im Bild sah das aus wie ein blaues
+  // Quadrat hinter dem Ring; von außen ist das ein Grafikfehler, den niemand
+  // einer Zahl zuordnet.
   const SEITE = 560;
   const RINGE = [
     { r: 232, breite: 60 },
     { r: 152, breite: 60 },
   ];
 
-  const toene = serienFarben(bild.stil);
+  const toene = serienFarben(bild.stil, palette);
   const farbe = (s: BildSerie) => (s.hervorgehoben ? toene.hervorgehoben : toene.gedaempft);
 
   return (
-    <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", gap: 56 * skala }}>
+    <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", justifyContent: "center", gap: 56 * skala }}>
       <svg
         viewBox={`0 0 ${SEITE} ${SEITE}`}
-        width={SEITE * skala}
-        height={SEITE * skala}
-        style={{ alignSelf: "center", display: "block" }}
+        width={SEITE * hoehenFaktor(stufe) * skala}
+        height={SEITE * hoehenFaktor(stufe) * skala}
+        // Passt sich ein, statt den Fuß hinauszudrücken: Wird es eng, gibt
+        // die Zeichnung nach — nicht der Lizenzvermerk.
+        style={{ alignSelf: "center", display: "block", maxHeight: "100%" }}
         role="presentation"
       >
         <g transform={`rotate(-90 ${SEITE / 2} ${SEITE / 2})`}>
@@ -556,10 +636,10 @@ function DonutTeil({ bild, max, skala }: { bild: PostBild; max: number; skala: n
  * der größere Wert, an der Sockelkante der kleinere. Eine Legende bräuchte es
  * dann nicht mehr — die Zuordnung ist die Position.
  */
-function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
+function SaeulenTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: number; palette: KartenPalette; stufe: KartenStufe }) {
   const [gross, klein] = [...bild.serien].sort((a, b) => Math.abs(b.wert) - Math.abs(a.wert));
   const zeigeEinheit = bild.einheitAmWert !== false;
-  const toene = serienFarben(bild.stil);
+  const toene = serienFarben(bild.stil, palette);
 
   // Die Maße folgen den VERHÄLTNISSEN der Vorlage, nicht ihren Pixeln: Sie ist
   // bei knapp halber Kartenbreite gezeichnet, und ihre Zahlen eins zu eins
@@ -569,7 +649,7 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
   // sagt nicht mehr als ein schmaler, er nimmt nur Platz, den die Zahlen
   // brauchen.
   const BREITE = 170;
-  const HOEHE = 620;
+  const HOEHE = Math.round(620 * hoehenFaktor(stufe));
   // Der Ausleger neben dem Sockel trägt dessen Höhe nach rechts, damit die
   // Kante auch dort ablesbar ist, wo die Beschriftung steht.
   const AUSLEGER = Math.round(BREITE * 0.31);
@@ -637,7 +717,7 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
   );
 
   return (
-    <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ flex: 1, minHeight: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
       {/* Feste Gesamtbreite, damit die Gruppe mittig steht: Die Blöcke liegen
           absolut auf der Säulenhöhe, eine Breite „nach Inhalt" gibt es hier
           nicht. */}
@@ -753,11 +833,12 @@ function SaeulenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
  * Von UNTEN nach oben: Die Leserichtung eines Füllstands ist die eines
  * Behälters. Von oben herab gefüllt liest sich dieselbe Fläche als Rest.
  */
-function UmrissTeil({ bild, skala }: { bild: PostBild; skala: number }) {
+function UmrissTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: number; palette: KartenPalette; stufe: KartenStufe }) {
+  const hf = hoehenFaktor(stufe);
   const grund = bild.ganzes ?? 100;
   const zeigeEinheit = bild.einheitAmWert !== false;
-  const toene = serienFarben(bild.stil);
-  const GROESSE = bild.serien.length > 2 ? 260 : 340;
+  const toene = serienFarben(bild.stil, palette);
+  const GROESSE = Math.round((bild.serien.length > 2 ? 260 : 340) * hf);
 
   return (
     <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -875,15 +956,17 @@ function UmrissTeil({ bild, skala }: { bild: PostBild; skala: number }) {
  * Zahlen zwingen den Blick auf einen Zickzackweg, und bei kurzen Balken säße die
  * Zahl über dem Balken des Nachbarn.
  */
-function RanglistenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
+function RanglistenTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: number; palette: KartenPalette; stufe: KartenStufe }) {
   const roh = bild.reihe ?? [];
-  const toene = serienFarben(bild.stil);
+  const toene = serienFarben(bild.stil, palette);
   const zeigeEinheit = bild.einheitAmWert !== false;
   // Die Zeilenhöhe folgt der Zahl der Einträge, nicht umgekehrt: Sechzehn Länder
   // müssen genauso auf die Karte wie sechs, ohne dass jemand nachrechnet.
   const eng = roh.length > 12;
   const schrift = eng ? 30 : 36;
-  const balken = eng ? 22 : 30;
+  // Im Quadrat bleibt zwei Dritteln der Zeichenhöhe — bei sechzehn Zeilen ist
+  // die Balkenhöhe der einzige Hebel, der die Reihe hineinbringt.
+  const balken = Math.round((eng ? 22 : 30) * hoehenFaktor(stufe));
 
   /**
    * Der Balken zeigt die ANGEZEIGTE Zahl, nicht den Rohwert.
@@ -1020,9 +1103,9 @@ function RanglistenTeil({ bild, skala }: { bild: PostBild; skala: number }) {
  * wäre der Balken zu kurz und niemand wüsste warum — als namenloses Segment wäre
  * es schlimmer.
  */
-function AufteilungsTeil({ bild, skala }: { bild: PostBild; skala: number }) {
+function AufteilungsTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: number; palette: KartenPalette; stufe: KartenStufe }) {
   const ganzes = bild.ganzes ?? 100;
-  const toene = serienFarben(bild.stil);
+  const toene = serienFarben(bild.stil, palette);
   const zeigeEinheit = bild.einheitAmWert !== false;
   const rest = restVon(bild);
   // Der Rest zählt als Teil mit, sobald er nennenswert ist. Die Schwelle liegt
@@ -1084,13 +1167,13 @@ function AufteilungsTeil({ bild, skala }: { bild: PostBild; skala: number }) {
   const PASST_AB = 0.14;
 
   return (
-    <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", gap: 64 * skala }}>
+    <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", justifyContent: "center", gap: 64 * skala }}>
       {/* Ein hoher Balken, damit die Beschriftung darin Platz hat. */}
       <div
         style={{
           display: "flex",
           width: "100%",
-          height: 300 * skala,
+          height: 300 * hoehenFaktor(stufe) * skala,
           borderRadius: v("--radius-md"),
           overflow: "hidden",
         }}
@@ -1188,9 +1271,9 @@ function AufteilungsTeil({ bild, skala }: { bild: PostBild; skala: number }) {
  * nicht. Zwei y-Stufen stehen im Bild, weil die Größenordnung sonst fehlt —
  * dieselbe Regel wie bei den Export-Charts.
  */
-function VerlaufsTeil({ bild, skala }: { bild: PostBild; skala: number }) {
+function VerlaufsTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: number; palette: KartenPalette; stufe: KartenStufe }) {
   const achse = bild.achse ?? [];
-  const toene = serienFarben(bild.stil);
+  const toene = serienFarben(bild.stil, palette);
   const alle = bild.serien.flatMap((s) => s.verlauf ?? []);
   // Von NULL aus, nicht vom kleinsten Wert: Eine Kurve, deren Grundlinie
   // irgendwo in der Luft hängt, übertreibt jede Bewegung — bei einer Erzeugung
@@ -1198,11 +1281,16 @@ function VerlaufsTeil({ bild, skala }: { bild: PostBild; skala: number }) {
   const max = Math.max(...alle, 1);
   // Auf eine glatte Stufe aufrunden, damit die Achsenbeschriftung eine runde
   // Zahl trägt statt des zufälligen Maximums eines Jahrgangs.
-  const stufe = Math.pow(10, Math.floor(Math.log10(max)));
-  const obenWert = Math.ceil(max / (stufe / 2)) * (stufe / 2);
+  // ZEHNERSTUFE, nicht die Kartenstufe: gleicher Wortsinn, andere Sache.
+  const zehner = Math.pow(10, Math.floor(Math.log10(max)));
+  const obenWert = Math.ceil(max / (zehner / 2)) * (zehner / 2);
 
   const B = 950;
   const H = 700;
+  // Wie beim Ring: proportional an der AUSGABEGRÖSSE, nicht an der viewBox —
+  // sonst rechnet die y-Achse gegen ein anderes Koordinatensystem als die
+  // Beschriftung, und die Kurve steht neben ihren Marken.
+  const zeichenSkala = hoehenFaktor(stufe) * skala;
   const LINKS = 150;
   /**
    * Platz rechts für die Beschriftung am Linienende — mit Zuschlag, nicht auf
@@ -1223,7 +1311,7 @@ function VerlaufsTeil({ bild, skala }: { bild: PostBild; skala: number }) {
 
   return (
     <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <svg viewBox={`0 0 ${B} ${H}`} width={B * skala} height={H * skala} role="presentation" style={{ display: "block" }}>
+      <svg viewBox={`0 0 ${B} ${H}`} width={B * zeichenSkala} height={H * zeichenSkala} role="presentation" style={{ display: "block" }}>
         {marken.map((m) => (
           <g key={m}>
             <line

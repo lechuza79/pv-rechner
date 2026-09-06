@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { v, space, pad } from "../../lib/theme";
 import GemeindeWidgetShell from "./GemeindeWidgetShell";
 import StorySlider from "../StorySlider";
@@ -12,8 +12,13 @@ import { WIDGETS, widgetFuerMeldung } from "../../lib/widget-registry";
 // Laufzeit-Import aus der Story-Rechnung zöge die Vergütungsreihe, die
 // Stundensimulation und ein halbes Dutzend Konfigurationen in das Browser-
 // Bündel jeder Ortsseite; genau daran ist diese Komponente beim ersten Versuch
-// abgestürzt. Die Beschriftung der Kategorie kommt fertig an der Geschichte an.
-import type { OrtsStory } from "../../lib/orts-stories";
+// abgestürzt. Die Beschriftung der Kategorie kommt fertig am Beitrag an.
+import type { OrtsBeitrag } from "../../lib/orts-posts";
+// Die Karte ist DIESELBE wie im Redaktionstisch und im Feed-Bild — nur in der
+// quadratischen Stufe und mit den Farben der Seite. Eine hier gezeichnete
+// dritte Fassung war die zweite Wahrheit neben den abgenommenen Templates und
+// ist deshalb wieder heraus (05.09.2026).
+import { SocialKarte } from "../social/SocialKarte";
 
 /**
  * Die Geschichten über diesen Ort — als Teaser-Reihe, aus der sich jede im
@@ -27,18 +32,20 @@ import type { OrtsStory } from "../../lib/orts-stories";
  * Story-Katalogs (lib/orts-stories.ts): Geld, das geflossen ist, ein Stichtag,
  * eine Wirkungsbilanz — Befunde, die die Seite sonst nirgends zeigt.
  *
- * JEDE GESCHICHTE TRÄGT IHRE ZAHLEN ALS DATEN. Deshalb zeichnet die Karte ihre
- * Hauptzahl groß und die übrigen klein daneben, statt einen Absatz zu setzen —
- * und genau das überlebt als Bild, wenn jemand es weitergibt.
+ * JEDE GESCHICHTE IST EIN BEITRAG DES REDAKTIONSSYSTEMS (06.09.2026). Was hier
+ * steht, ist dieselbe Karte, die im Redaktionstisch bearbeitet und als Bild
+ * veröffentlicht wird — in der quadratischen Stufe und mit den Farben der
+ * Seite. Damit gelten hier die abgenommenen Templates, die Formenlehre und die
+ * Quellenpflicht ohne eine einzige eigene Zeile Zeichnung.
  */
 export default function GemeindeMeldungen({
-  stories,
+  beitraege,
   name,
   liveUrl,
   standIso,
 }: {
   /** Fertig gerechnet, stärkste zuerst. Leer ist ein zulässiges Ergebnis. */
-  stories: OrtsStory[];
+  beitraege: OrtsBeitrag[];
   name: string;
   /** Kanonische Adresse dieser Ortsseite. Wandert ins Teilen-Ziel jeder Karte. */
   liveUrl: string;
@@ -49,7 +56,7 @@ export default function GemeindeMeldungen({
   // Reihe erneut öffnet, öffnet die Geschichte, die er angetippt hat.
   const [offen, setOffen] = useState<number | null>(null);
 
-  if (stories.length === 0) return null;
+  if (beitraege.length === 0) return null;
 
   return (
     <div style={S.wrap}>
@@ -57,13 +64,13 @@ export default function GemeindeMeldungen({
       <p style={S.sub}>Aus den Anlagendaten gerechnet — zum Ansehen und Weitergeben.</p>
 
       <StorySlider ariaLabel={`Geschichten über ${name}`}>
-        {stories.map((s, i) => (
-          <Teaser key={s.kennung} story={s} onOeffnen={() => setOffen(i)} />
+        {beitraege.map((b, i) => (
+          <Teaser key={b.post.id} beitrag={b} onOeffnen={() => setOffen(i)} />
         ))}
       </StorySlider>
 
       <StoryFenster
-        stories={stories}
+        beitraege={beitraege}
         index={offen}
         onIndex={setOffen}
         name={name}
@@ -84,10 +91,11 @@ export default function GemeindeMeldungen({
  * EIN KNOPF, KEINE KARTE MIT KNOPF DARIN: Eine anklickbare Fläche mit einem
  * zweiten Klickziel darin ist weder bedienbar noch gültiges Markup.
  */
-function Teaser({ story, onOeffnen }: { story: OrtsStory; onOeffnen: () => void }) {
+function Teaser({ beitrag, onOeffnen }: { beitrag: OrtsBeitrag; onOeffnen: () => void }) {
+  const story = { titel: beitrag.post.bild?.aussage ?? beitrag.post.titel, label: beitrag.label };
   return (
     <button type="button" onClick={onOeffnen} style={S.teaser}>
-      <span style={S.art}>{story.kategorieLabel}</span>
+      <span style={S.art}>{story.label}</span>
       {/* AUCH DER TEASER TRÄGT EIN BILD, nicht nur die Zahl. Eine Reihe aus
           Zahlen und Zeilen liest sich wie ein Inhaltsverzeichnis; was einen
           Blick anhält, ist die Form. Die kleine Stufe der Bildkarte ist genau
@@ -104,14 +112,14 @@ function Teaser({ story, onOeffnen }: { story: OrtsStory; onOeffnen: () => void 
 
 /** Das Fenster mit der vollständigen Geschichte — die Nachbarn eine Wischbewegung entfernt. */
 function StoryFenster({
-  stories,
+  beitraege,
   index,
   onIndex,
   name,
   liveUrl,
   standIso,
 }: {
-  stories: OrtsStory[];
+  beitraege: OrtsBeitrag[];
   index: number | null;
   onIndex: (i: number | null) => void;
   name: string;
@@ -122,10 +130,10 @@ function StoryFenster({
     (richtung: 1 | -1) => {
       if (index === null) return;
       const ziel = index + richtung;
-      if (ziel < 0 || ziel >= stories.length) return;
+      if (ziel < 0 || ziel >= beitraege.length) return;
       onIndex(ziel);
     },
-    [index, stories.length, onIndex],
+    [index, beitraege.length, onIndex],
   );
 
   // Pfeiltasten blättern, solange das Fenster offen ist. Escape schließt es —
@@ -145,7 +153,7 @@ function StoryFenster({
   // jede Karte gleichzeitig aufbauen — samt Bildaufnahme-Hülle.
   const [start, setStart] = useState<number | null>(null);
 
-  const s = index === null ? null : stories[index];
+  const b = index === null ? null : beitraege[index];
 
   return (
     <Modal
@@ -156,10 +164,10 @@ function StoryFenster({
       // Zeile untereinander, und beim Blättern springt die obere mit, während
       // der Rahmen stehen bleibt.
       title={`Aktuelles aus ${name}`}
-      ariaLabel={s ? s.titel : `Aktuelles aus ${name}`}
+      ariaLabel={b ? b.post.bild?.aussage ?? b.post.titel : `Aktuelles aus ${name}`}
       maxWidth={560}
     >
-      {s && (
+      {b && (
         <div
           onTouchStart={(e) => setStart(e.touches[0]?.clientX ?? null)}
           onTouchEnd={(e) => {
@@ -170,9 +178,9 @@ function StoryFenster({
             setStart(null);
           }}
         >
-          <StoryKarte story={s} name={name} liveUrl={liveUrl} standIso={standIso} />
+          <StoryKarte beitrag={b} name={name} liveUrl={liveUrl} standIso={standIso} />
 
-          {stories.length > 1 && (
+          {beitraege.length > 1 && (
             <div style={S.navZeile}>
               <button
                 type="button"
@@ -184,14 +192,14 @@ function StoryFenster({
                 <IconChevronLeft size={16} />
               </button>
               <span style={S.navZaehler}>
-                {index! + 1} von {stories.length}
+                {index! + 1} von {beitraege.length}
               </span>
               <button
                 type="button"
                 onClick={() => blaettern(1)}
-                disabled={index === stories.length - 1}
+                disabled={index === beitraege.length - 1}
                 aria-label="Nächste Geschichte"
-                style={{ ...S.navKnopf, opacity: index === stories.length - 1 ? 0.35 : 1 }}
+                style={{ ...S.navKnopf, opacity: index === beitraege.length - 1 ? 0.35 : 1 }}
               >
                 <IconChevronRight size={16} />
               </button>
@@ -203,32 +211,85 @@ function StoryFenster({
   );
 }
 
+/** Die Ausgabebreite der Karte. Der Zoom rechnet gegen sie. */
+const KARTEN_AUSGABE = 1080;
+
+/**
+ * Die Karte in AUSGABEGRÖSSE, per Transformation auf die Rahmenbreite gebracht.
+ *
+ * NICHT KLEINER GERECHNET: Mit kleinerem Maßstab gerendert bricht der Text an
+ * anderen Stellen um als im ausgelieferten Bild — wer eine so gerechnete Karte
+ * beurteilt, beurteilt eine, die es nicht gibt. Dieselbe Entscheidung wie in
+ * der Template-Galerie.
+ *
+ * DIE BREITE WIRD GEMESSEN, nicht angenommen. Ein fester Faktor müsste auf die
+ * schmalste Breite ausgelegt sein und ließe die Karte auf dem Schreibtisch
+ * kleiner als nötig; auf die breiteste ausgelegt läuft sie auf dem Telefon aus
+ * dem Fenster. Genau das war beim ersten Anlauf im Browser zu sehen: Die Karte
+ * stand in voller Größe im Dialog, links und rechts abgeschnitten.
+ */
+function KarteImRahmen({ children }: { children: React.ReactNode }) {
+  const rahmen = useRef<HTMLDivElement | null>(null);
+  // Startwert ist die Breite, die der Dialog auf dem Schreibtisch hergibt.
+  // Vor dem ersten Zeichnen misst der Effekt nach; ohne Startwert stünde die
+  // Karte für einen Bildaufbau in voller Größe da.
+  const [zoom, setZoom] = useState(496 / KARTEN_AUSGABE);
+
+  useLayoutEffect(() => {
+    const el = rahmen.current;
+    if (!el) return;
+    const messen = () => {
+      const breite = el.getBoundingClientRect().width;
+      if (breite > 0) setZoom(breite / KARTEN_AUSGABE);
+    };
+    messen();
+    // Der Dialog fährt ein und ändert dabei seine Breite; ohne Beobachter
+    // bliebe der Zoom auf dem Wert des ersten Bildaufbaus stehen.
+    const beobachter = new ResizeObserver(messen);
+    beobachter.observe(el);
+    return () => beobachter.disconnect();
+  }, []);
+
+  return (
+    <div ref={rahmen} style={{ width: "100%", aspectRatio: "1", overflow: "hidden" }}>
+      <div
+        style={{
+          width: KARTEN_AUSGABE,
+          height: KARTEN_AUSGABE,
+          transform: `scale(${zoom})`,
+          transformOrigin: "top left",
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
 function StoryKarte({
-  story,
+  beitrag,
   name,
   liveUrl,
   standIso,
 }: {
-  story: OrtsStory;
+  beitrag: OrtsBeitrag;
   name: string;
   liveUrl: string;
   standIso: string;
 }) {
+  const bild = beitrag.post.bild;
   // Die Schlagzeile IST der Titel der Karte — auf der Seite wie im Bild.
-  // Der Titel der Karte IST die Schlagzeile — er trägt sie ins Bild, das
-  // weitergegeben wird. Im Fenster steht sie damit zweimal: einmal als
-  // Kartentitel, einmal im Bild. Deshalb rendert das Bild seine Aussage nicht
-  // noch einmal (siehe `alsBild`).
-  const widget = widgetFuerMeldung(WIDGETS.gemeindeMeldung, name, story.titel, liveUrl);
+  const schlagzeile = bild?.aussage ?? beitrag.post.titel;
+  const widget = widgetFuerMeldung(WIDGETS.gemeindeMeldung, name, schlagzeile, liveUrl);
 
   return (
     <GemeindeWidgetShell
       widget={widget}
-      subline={`${name} · ${story.kategorieLabel}`}
+      subline={`${name} · ${beitrag.label}`}
       // Die Bildkarte trägt Überschrift und Rahmen selbst — sonst stehen drei
       // ineinander (Fenster, Hüllenkarte, Bildkarte).
       nackt
-      filename={`solar-check-${story.kennung}`}
+      filename={`solar-check-${beitrag.storyKennung}`}
       // Die Quellenkante erwartet ein FERTIG FORMATIERTES Datum, nicht das
       // ISO-Feld: Ihr Rückfall ist das heutige Datum in deutscher Schreibweise,
       // und roh durchgereicht stünde neben allen anderen Karten der Seite ein
@@ -236,7 +297,7 @@ function StoryKarte({
       dataAsOf={standDeutsch(standIso)}
       // Woran die Geschichte hängt, gehört ins Bild — dort gibt es keinen
       // Knopf mehr, der es erklären könnte. Der Bild-Fuß nimmt es auf.
-      note={story.grundlage}
+      note={beitrag.grundlage}
       // Eigene Seite: Quelle beim Überfahren, keine Markenzeile — die Seite
       // trägt beides. Im heruntergeladenen Bild stehen beide trotzdem.
       onsite
@@ -248,23 +309,25 @@ function StoryKarte({
       showEmbed={false}
     >
       <div style={S.inhalt}>
-        {/* TEASER-STUFE, nicht die volle: Die volle Karte ist für ein 1080er
-            Bild gebaut; in ein 560 Pixel breites Fenster skaliert lief sie über
-            und schnitt die Überschrift ab. Die kleine Stufe LÄSST WEG statt zu
-            schrumpfen — sie behält die Aussage und die eine Zahl, auf die es
-            ankommt, und das ist hier genau richtig. */}
-        {/* VOLLE STUFE, herunterskaliert — nicht die kleine.
-            Die kleine Stufe lässt Ring und Säule bewusst weg und fällt auf
-            Balken zurück („zwei Ringe auf 240 Pixeln wären zwei graue
-            Kringel"). Damit wäre die Formenwahl an der Geschichte wirkungslos.
-            Die volle Karte ist 1080 breit; auf 0,48 skaliert passt sie in das
-            560 Pixel breite Fenster. Bei 0,62 lief sie über und schnitt die
-            Überschrift ab — gemessen, nicht geschätzt. */}
-        <p style={S.text}>{story.text}</p>
+        {/* DIE QUADRATISCHE STUFE MIT DEN FARBEN DER SEITE.
+            Beides zusammen ist der Grund, warum diese Karte hier überhaupt
+            stehen kann: Die volle Stufe ist auf ein 4:5-Bild für einen fremden
+            Feed gerechnet und bringt ihre eigene Palette mit — auf einer Seite
+            mit Tageslicht-Theme ein weißer Block auf dunklem Grund. Die kleine
+            Stufe wiederum lässt Ring und Säule weg und machte die Formenwahl
+            der Geschichte wirkungslos. */}
+        {bild && (
+          <KarteImRahmen>
+            <SocialKarte bild={bild} skala={1} stufe="quadrat" palette="seite" />
+          </KarteImRahmen>
+        )}
 
+        {/* Der Beitragstext OHNE Schlagzeile und OHNE Quellenzeile: Die
+            Schlagzeile steht im Bild darüber, die Quelle an der Kante der
+            Karte. Beides ein zweites Mal wäre dieselbe Angabe zweimal. */}
         <p style={S.text}>
-          {story.text}{" "}
-          <InfoTooltip title="Woran diese Zahl hängt">{story.grundlage}</InfoTooltip>
+          {beitrag.text}{" "}
+          <InfoTooltip title="Woran diese Zahl hängt">{beitrag.grundlage}</InfoTooltip>
         </p>
       </div>
     </GemeindeWidgetShell>

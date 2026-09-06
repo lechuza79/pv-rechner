@@ -129,6 +129,49 @@ function bildAus(story: OrtsStory, standIso: string, fassung?: GespeicherteFassu
 }
 
 /**
+ * Ein Ortsbeitrag: der Beitrag selbst plus das, was die ORTSSEITE zusätzlich
+ * zeigt.
+ *
+ * Warum getrennt und nicht alles am Beitrag: `SocialPost` ist die Einheit des
+ * Redaktionssystems und gilt für bundesweite Beiträge genauso. Ein Feld
+ * „Beschriftung der Ortsgeschichte" dort wäre für dreizehn von vierzehn
+ * Beiträgen leer — und ein leeres Feld ist eine Einladung, es irgendwann
+ * anders zu füllen.
+ *
+ * Der Redaktionstisch nimmt `post`, die Ortsseite das Ganze.
+ */
+export type OrtsBeitrag = {
+  post: SocialPost;
+  /**
+   * Die Beschriftung der Kategorie, fertig aufgelöst („Stichtag").
+   *
+   * Nicht aus dem Katalog ableitbar: Zwei Geschichten derselben Familie heißen
+   * verschieden — „Was der Ort eingespielt hat" und „Stichtag" sind beide G4.
+   */
+  label: string;
+  /**
+   * Die zwei bis drei Sätze der Geschichte — OHNE Schlagzeile und OHNE
+   * Quellenzeile.
+   *
+   * Nicht `post.text`: Der ist für den Feed gebaut und trägt beides mit, weil
+   * dort nichts danebensteht. Auf der Ortsseite steht die Schlagzeile im Bild
+   * und die Quelle an der Kante der Karte — beides ein zweites Mal darunter
+   * wäre dieselbe Angabe zweimal.
+   *
+   * Und ausdrücklich NICHT über `SocialPost.onsite`: Das Feld verspricht
+   * „dieselbe Erkenntnis in anderer Stimme" (der Feed spricht in der ersten
+   * Person, eine Ratgeberseite nicht). Eine Ortsgeschichte hat nur eine Stimme;
+   * das Feld zu füllen hieße, eine Unterscheidung zu behaupten, die es hier
+   * nicht gibt.
+   */
+  text: string;
+  /** Woran die Geschichte hängt, im Klartext — für den Hinweis hinter dem „?". */
+  grundlage: string;
+  /** Die Kennung OHNE Ortspräfix — sie benennt die Datei beim Herunterladen. */
+  storyKennung: string;
+};
+
+/**
  * Die Geschichten eines Orts als Beiträge des Redaktionssystems.
  *
  * Reihenfolge unverändert: Die Geschichten kommen schon nach Gewicht sortiert,
@@ -141,12 +184,12 @@ export function ortsPosts(opts: {
   standIso: string;
   /** Was der Redaktionstisch je Beitrag gespeichert hat. */
   fassungen?: Record<string, GespeicherteFassung>;
-}): SocialPost[] {
+}): OrtsBeitrag[] {
   const { stories, ort, standIso, fassungen = {} } = opts;
   return stories.map((story) => {
     const id = ortsPostId(ort.regionId, story.kennung);
     const fassung = fassungen[id];
-    return {
+    const post: SocialPost = {
       id,
       // Die interne Bezeichnung der Vorschau, nicht Teil des Beitrags. Der
       // Ortsname steht davor, weil in einem Schub Dutzende Beiträge derselben
@@ -166,6 +209,13 @@ export function ortsPosts(opts: {
           (w) => `${w.name}: ${w.wert.toLocaleString("de-DE")}${w.einheit ? ` ${w.einheit}` : ""}`,
         ),
       ],
+    };
+    return {
+      post,
+      label: story.kategorieLabel,
+      text: story.text,
+      grundlage: story.grundlage,
+      storyKennung: story.kennung,
     };
   });
 }
