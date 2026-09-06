@@ -31,7 +31,8 @@ const MEDIUM_SPALTEN =
   "medium_grund, medium_merkmale, seiten, formular_url, impressum_url, prioritaet, " +
   "aufhaenger, gattung, gattung_hand, woerter, hinweis, eignung, eignung_grund, " +
   "eignung_beleg, eignung_zitat, eignung_hand, profil_at, fehler, " +
-  "rubrik, beleg_titel, beleg_url, beleg_notiz, beleg_am";
+  "rubrik, beleg_titel, beleg_url, beleg_notiz, beleg_am, " +
+  "beleg_traegt, beleg_traegt_grund, anknuepfung_tage";
 
 const KONTAKT_SPALTEN =
   "domain, schluessel, name, funktion, rang, mail, mail_art, formular_url, quelle_url, " +
@@ -93,6 +94,10 @@ function medienAbfrage(db: any, f: Filter, zaehlen: boolean) {
   // Filter fragt den TITEL, nicht das Prüfdatum.
   if (f.aufhaenger === "ja") q = q.not("beleg_titel", "is", null);
   if (f.aufhaenger === "nein") q = q.is("beleg_titel", null);
+  // „trägt" ist das am VOLLTEXT gefällte Urteil, nicht das bloße Vorhandensein
+  // eines Titels — die beiden auseinanderzuhalten ist der ganze Punkt.
+  if (f.aufhaenger === "traegt") q = q.eq("beleg_traegt", "ja");
+  if (f.aufhaenger === "frisch") q = q.eq("beleg_traegt", "ja").lte("anknuepfung_tage", 180);
   if (f.eignung) {
     q = q.or(`eignung_hand.eq.${f.eignung},and(eignung_hand.is.null,eignung.eq.${f.eignung})`);
   }

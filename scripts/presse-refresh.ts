@@ -343,6 +343,25 @@ async function setup(): Promise<void> {
     ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS anknuepfung_titel text;
     ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS anknuepfung_tage integer;
 
+    -- Die Rubrik bestimmt den AUFHÄNGER, nicht die Eignung: ein Fachmedium wird
+    -- auf seinen Fachbeitrag angesprochen, ein regionales Blatt auf die Zahlen
+    -- seiner Region, ein Hersteller gar nicht redaktionell, sondern über den
+    -- Vertrieb. Es gibt kein Ausschlusskriterium — auch ein eigener Rechner ist
+    -- keins, wir bieten unter Umständen das bessere Werkzeug.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS rubrik text;
+    -- Der EINE gelesene Beitrag, an dem eine Ansprache anknüpft. Die Notiz hält
+    -- fest, was drinsteht; der Grund hält fest, welche Lücke er offenlässt und
+    -- welches unserer Werkzeuge sie füllt. Das Urteil ist deshalb dreiwertig
+    -- (ja/nein/unklar): „unklar" heißt, dass kein Wort gelesen werden konnte —
+    -- eine Sperre oder eine tote Adresse sagt nichts darüber, ob dort ein
+    -- Aufhänger stünde, und ein geratenes Urteil wäre schlimmer als keins.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS beleg_titel text;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS beleg_url text;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS beleg_notiz text;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS beleg_am date;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS beleg_traegt text;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS beleg_traegt_grund text;
+
     -- Der Schlüssel ist (Kreis × Frage), nicht der Kreis: Drei Fragen je Kreis
     -- finden je zur Hälfte andere Titel. Die erste Fassung hatte den Kreis
     -- allein als Schlüssel; CREATE TABLE IF NOT EXISTS fasst eine bestehende

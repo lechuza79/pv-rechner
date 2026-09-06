@@ -254,18 +254,34 @@ export default function PresseAnsicht() {
       // Anschreiben anfangen kann.
       sortWert: (m) => (m.beleg_titel ? 0 : m.beleg_am ? 1 : 2),
       zelle: (m) => {
-        if (m.beleg_titel) {
-          return m.beleg_url ? (
-            <a href={m.beleg_url} target="_blank" rel="noreferrer" style={linkStil}>
-              {m.beleg_titel}
-            </a>
-          ) : (
-            <span>{m.beleg_titel}</span>
+        if (!m.beleg_titel)
+          return (
+            <span style={{ color: v("--color-text-muted") }}>
+              {m.beleg_am ? "gelesen, kein Thema" : "nicht angesehen"}
+            </span>
           );
-        }
+        // Das Alter steht an der Überschrift, nicht als eigene Spalte: Ein
+        // Beitrag von 2020 trägt inhaltlich und taugt trotzdem nicht für einen
+        // Erstkontakt — beides muss man in einem Blick sehen.
+        const tage = m.anknuepfung_tage;
+        const alt = tage === null || tage === undefined ? null : tage > 180;
         return (
-          <span style={{ color: v("--color-text-muted") }}>
-            {m.beleg_am ? "gelesen, kein Thema" : "nicht angesehen"}
+          <span style={{ opacity: m.beleg_traegt === "ja" ? 1 : 0.55 }}>
+            {m.beleg_url ? (
+              <a href={m.beleg_url} target="_blank" rel="noreferrer" style={linkStil}>
+                {m.beleg_titel}
+              </a>
+            ) : (
+              m.beleg_titel
+            )}
+            {tage !== null && tage !== undefined ? (
+              <span style={{ color: alt ? v("--color-negative") : v("--color-text-muted") }}>
+                {" "}
+                · {tage} T.
+              </span>
+            ) : (
+              <span style={{ color: v("--color-text-muted") }}> · ohne Datum</span>
+            )}
           </span>
         );
       },
@@ -341,8 +357,10 @@ export default function PresseAnsicht() {
         </Filter>
         <Filter label="Aufhänger" wert={aufhaenger} setzen={setAufhaenger} breit>
           <option value="">alle</option>
-          <option value="ja">mit Beitrag</option>
-          <option value="nein">ohne Beitrag</option>
+          <option value="traegt">trägt (am Volltext geprüft)</option>
+          <option value="frisch">trägt und aktuell (≤ 180 Tage)</option>
+          <option value="ja">Beitrag gefunden</option>
+          <option value="nein">kein Beitrag</option>
         </Filter>
         <Filter label="Art des Mediums" wert={gattung} setzen={setGattung} breit>
           <option value="fach">Fachmedien</option>
@@ -482,6 +500,12 @@ export default function PresseAnsicht() {
                       ? `Am ${m.beleg_am} gelesen, kein Beitrag zu unseren Themen gefunden.`
                       : "Noch nicht angesehen."}
                   </p>
+                )}
+                {/* DER SATZ, AUS DEM DAS ANSCHREIBEN ENTSTEHT: was der Beitrag
+                    offenlässt und welches Werkzeug es füllt. Am gelesenen
+                    Volltext entschieden, nicht an der Überschrift. */}
+                {m.beleg_traegt_grund && (
+                  <p style={{ margin: `${space.sm}px 0 0` }}>{m.beleg_traegt_grund}</p>
                 )}
                 {m.beleg_notiz && (
                   <p style={{ margin: `${space.xs}px 0 0`, color: v("--color-text-muted") }}>
