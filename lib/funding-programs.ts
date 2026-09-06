@@ -2556,13 +2556,21 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     coveredCosts: "Pauschale beim Wechsel auf Wärmepumpe oder Pelletheizung — Förderplätze vergeben",
     rates: [{ label: "Heizungstausch", value: "1.000 € je Wohngebäude" }],
     conditions: [
-      "Die Förderplätze des laufenden Programms sind bereits vergeben",
+      "Die Förderplätze des laufenden Programms sind bereits vergeben; eine Bewerbung ist nur noch für einen Wartelistenplatz möglich",
       "Antragsberechtigt sind Eigentümerinnen und Eigentümer von Wohngebäuden in der Gemeinde Wenden",
       "Der Antrag wird online gestellt",
     ],
     combinableWith: BUND,
     foerdert: ["waermepumpe"],
     // 1.000 € Pauschale — ohne Rechenwert, solange die Plätze vergeben sind.
+    //
+    // WARTELISTE ERGÄNZT (07.09.2026, an der Amtsseite gelesen). Die Gemeinde
+    // schreibt: „Die verfügbaren Förderplätze für das aktuelle Förderprogramm
+    // sind bereits vergeben. Eine Bewerbung ist derzeit nur noch für
+    // Wartelistenplätze möglich." Unser Satz sagte nur die erste Hälfte — für
+    // sich richtig, als Auskunft aber zu eng: Wer ihn liest, gibt auf, obwohl
+    // die Gemeinde ausdrücklich noch etwas anbietet. Am Rechenwert ändert das
+    // nichts: Ein Wartelistenplatz ist keine Zusage.
   },
 
   // ── Kommune – übergeben von der Prüfmechanik-Session, gelesen 18.08.2026 ────
@@ -4246,6 +4254,62 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     //
     // Es entsteht KEINE Förder-Stadtseite: `foerderseiteTraegt` verlangt Status
     // „aktiv" und Dach-Photovoltaik, und beides trifft nicht zu.
+  },
+
+  "gelsenkirchen-steckersolar": {
+    id: "gelsenkirchen-steckersolar", name: "Förderung von Stecker-Solargeräten",
+    traeger: "Stadt Gelsenkirchen", level: "kommune", region: "Gelsenkirchen",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05513",
+    url: "https://www.gelsenkirchen.de/de/infrastruktur/umwelt/klima/foerderprogramme.aspx",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Zuschuss je Balkonkraftwerk — keine Dach-Photovoltaik, kein Speicher",
+    maxFoerderung: "100 € je Anlage",
+    rates: [{ label: "Balkonkraftwerk", value: "100 € je Anlage" }],
+    conditions: [
+      "Gefördert werden Geräte bis 800 W Wechselrichterleistung",
+      "Je Wohneinheit wird höchstens ein Gerät gefördert",
+      "Der Zuschuss beträgt höchstens 100 % des Kaufpreises",
+      "Anlagen, die vor dem 1. Januar 2024 im Marktstammdatenregister angemeldet wurden, sind ausgeschlossen",
+      "Der Antrag wird erst nach Installation und Inbetriebnahme gestellt",
+      "Die Förderrichtlinie ist bis zum 13. Dezember 2026 befristet",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPauschale: 100,
+    // AUFGENOMMEN 07.09.2026. Eine Stadt mit 267.930 Einwohnern, deren
+    // Balkon-Zuschuss uns bislang komplett gefehlt hat — auf der Stadtseite
+    // stand damit „keine kommunale Förderung", während es eine gibt. Wortlaut
+    // der Stadt, heute im Rohtext ihrer Förderübersicht gelesen: „Die Stadt
+    // Gelsenkirchen fördert die Anschaffung und Installation von
+    // Stecker-Solargeräten (sogenannten Balkonkraftwerken) bis 800 Watt
+    // Wechselrichterleistung mit einem Zuschuss von 100 Euro pro Anlage. […] Es
+    // wird maximal ein Gerät je Wohneinheit gefördert. Der Förderhöchstsatz
+    // beträgt maximal 100 Prozent des Kaufpreises." und „Die Förderrichtlinie
+    // ist befristet bis zum 13.12.2026."
+    //
+    // ANLASS WAR EIN WIDERSPRUCH ZWEIER SEKUNDÄRQUELLEN — 100 € gegen 200 € —,
+    // und genau deshalb ist keine davon die Quelle geworden. Beide Zahlen
+    // standen in Portalen; die Stadt selbst sagt 100 €.
+    //
+    // KEIN `endetIso`: Die Stadt befristet ihre RICHTLINIE, nicht das
+    // Antragsfenster — dieselbe Unterscheidung wie bei Limburgerhof, wo das
+    // Datum drinsteht, weil es dort wirklich das Antragsfenster ist. Die
+    // Befristung steht als Bedingung, wo sie hingehört.
+    //
+    // ZUR DACHANLAGE SAGEN WIR NICHTS. Die Förderübersicht der Stadt führt
+    // heute nur Stecker-Solargeräte und die Gebäudehülle; die frühere Seite zum
+    // PV-Förderprogramm antwortet mit 404, und ein Ansprechpartner „Förderung
+    // von Photovoltaik-Anlagen" steht weiter dort. Sekundärquellen sagen, das
+    // Dachprogramm sei Ende Januar 2026 mangels Mitteln ausgelaufen — belegt
+    // ist das nicht, und ein gescheiterter Abruf ist kein Beleg dafür, dass es
+    // etwas nicht gibt. `foerdert` nennt deshalb nur den Balkon; ein Status für
+    // die Dachanlage wird nicht behauptet.
+    //
+    // Es entsteht KEINE Förder-Stadtseite: `foerderseiteTraegt` verlangt
+    // Dach-Photovoltaik, und die fördert die Stadt nach eigener Übersicht
+    // nicht. Gemeindeschlüssel aus dem Melderegister: 05513, kreisfrei,
+    // 267.930 Einwohner — fünfstellig ist hier richtig.
   },
 
 };

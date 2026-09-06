@@ -474,7 +474,30 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // zurück kamen der Verbraucherpreisindex für Heizöl insgesamt und
   // Händler-Charts — beides misst das fossile Produkt, nicht die Beimischung.
   // Der Lücken-Hinweis im Öl-Ergebnis bleibt, samt Fehlerrichtung.
-  geprueftRechtIso: "2026-09-06",
+  //
+  // 07.09.2026: unverändert, wieder am Gesetzestext. § 43 Abs. 1 Wort für Wort
+  // gelesen — „ab dem 1. Januar 2029 mindestens 10 Prozent, ab dem 1. Januar
+  // 2030 mindestens 15 Prozent, ab dem 1. Januar 2035 mindestens 30 Prozent und
+  // ab dem 1. Januar 2040 mindestens 60 Prozent", geknüpft an eine Heizung „die
+  // mit Gas, Heizöl oder Flüssiggas beschickt wird" und nach dem 29. Juli 2026
+  // in ein bestehendes Gebäude neu eingebaut wird; zellgleich mit
+  // `quoteStops` und `BIO_TREPPE_STUFEN`. § 42a ebenso unverändert: nur die
+  // Vorlagepflicht bis zum 1. Dezember 2026 und die vollständige Umstellung ab
+  // 2045, kein eigener Prozentsatz. Das Quotengesetz gibt es nicht.
+  //
+  // SIEBZEHNTE Bioheizöl-Gegensuche, beide Stränge weiter leer — und diesmal
+  // mit einem Fund, der KEINER ist: Das Eckpunktepapier des Ministeriums vom
+  // 24.02.2026 kündigt die Quote „ab 2028 mit 1 Prozent" an. Ein
+  // Eckpunktepapier steht UNTERHALB eines Referentenentwurfs; daraus einen
+  // Prozentsatz zu übernehmen wäre genau der Zustandssprung, den das
+  // Wächter-Gate verbietet. Beim Preis wurde gezielt bei Statistischem
+  // Bundesamt und beim Branchenverband gesucht: Was es gibt, ist HVO100 als
+  // KRAFTSTOFF (Argus-Monatsdurchschnitte, Dieselpreis-Reihen der
+  // Speditionsverbände) — ein anderes Produkt für einen anderen Markt, und
+  // kostenpflichtig dazu. Für Heizöl liefert die amtliche Statistik nur den
+  // Gesamtpreis, nicht die Beimischung. Der Lücken-Hinweis im Öl-Ergebnis
+  // bleibt, samt Fehlerrichtung.
+  geprueftRechtIso: "2026-09-07",
   reviewBy: "2027-07-25",
 };
 

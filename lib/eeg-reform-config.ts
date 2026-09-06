@@ -330,12 +330,33 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // Entwurf, wäre trotzdem geraten. Notiert als Anlass, in der kommenden Woche
   // die Drucksache im Bundestag selbst nachzusehen — nicht als Zustand.
   //
-  // 06.09.2026 (Samstag): unverändert. Vorgangsseite 470/26 erneut gelesen —
+  // 06.09.2026 (Sonntag): unverändert. Vorgangsseite 470/26 erneut gelesen —
   // Titel, Eingang 14.08.2026, Eilbedürftigkeitsvermerk, Ausschusszuweisung,
   // sonst nichts: kein Plenarabschnitt, keine Stellungnahme, kein Beschluss.
   // Die Sondersitzung des Wirtschaftsausschusses fällt auf Dienstag, den
   // 08.09.2026; bis dahin kann sich hier nichts bewegt haben.
-  geprueftIso: "2026-09-06",
+  //
+  // 07.09.2026 (Montag, erster Tag der Sitzungswoche): unverändert — und jetzt
+  // erstmals mit der TAGESORDNUNG statt mit dem Sitzungskalender, so wie es der
+  // Stichtag oben verlangt. Zwei amtliche Dokumente des Bundestages im Volltext
+  // gelesen: die „Tagesordnung komplett" für die 91.–94. Sitzung (Dienstag
+  // 08.09. bis Freitag 11.09.2026, Stand 26.08.2026) und der „Geplante Ablauf
+  // der Plenarsitzungen" (Stand 03.09.2026, 10:59 Uhr). In KEINEM von beiden
+  // kommt „Erneuerbare", „EEG", „Stromsektor", „Photovoltaik" oder
+  // „Brennstoffemission" vor; die einzige Fundstelle zum Thema ist der
+  // Haushaltsplan 09 „Wirtschaft und Energie" am Mittwoch — es ist die
+  // Haushaltswoche. Eine erste Lesung DIESES Entwurfs ist für diese Woche also
+  // nicht angesetzt. Die Bundesrats-Vorgangsseite zu 470/26 führt unter
+  // „Drucksachen" weiterhin allein die „BReg 470/26 Grunddrucksache", keine
+  // Beschluss- oder Stellungnahmedrucksache.
+  //
+  // DIE SONDERSITZUNG DES WIRTSCHAFTSAUSSCHUSSES BLEIBT OFFEN, und sie wird
+  // durch diesen Befund nicht weniger wahrscheinlich: Ihre Tagesordnung wird
+  // nicht veröffentlicht, und ein Ausschuss kann eine Vorlage beraten, die im
+  // Plenum dieser Woche gar nicht aufgerufen ist. Der Plenar-Terminplan sagt
+  // nichts über sie aus — er sagt nur, dass eine erste Lesung im Plenum diese
+  // Woche nicht geplant war. Nächster Lauf: Drucksache im Bundestag selbst.
+  geprueftIso: "2026-09-07",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.
