@@ -56,17 +56,56 @@ export const dynamic = "force-dynamic";
  */
 const ORTE_STANDARD = 6;
 
+/** Eine Gemeinde eines Schubs, mit dem, was über ihren Versand bekannt ist. */
+type SchubOrt = { regionId: string; charge: number | null; offen: boolean };
+
 /** Die Gemeinden einer Kampagne, in der Reihenfolge ihrer Chargen. */
-async function orteDesSchubs(kampagne: string): Promise<{ regionId: string }[]> {
+async function orteDesSchubs(kampagne: string): Promise<SchubOrt[]> {
   if (!supabase) return [];
   const { data, error } = await supabase
     .from("kommunen_kontakt")
-    .select("region_id, charge")
+    .select("region_id, charge, outreach_status")
     .eq("kampagne", kampagne)
     .order("charge")
     .order("region_id");
   if (error) throw new Error(error.message);
-  return (data ?? []).map((r) => ({ regionId: (r as { region_id: string }).region_id }));
+  return (data ?? []).map((r) => {
+    const z = r as { region_id: string; charge: number | null; outreach_status: string | null };
+    return {
+      regionId: z.region_id,
+      charge: z.charge,
+      offen: !z.outreach_status || z.outreach_status === "offen",
+    };
+  });
+}
+
+/**
+ * Welcher Schub ist WIRKLICH als Nächstes dran?
+ *
+ * GEMESSEN, NICHT ANGEMELDET. Die Markierung „aktueller Schub" im Code ist eine
+ * Angabe, die jemand pflegen muss — und am 06.09.2026 zeigte sie auf einen
+ * Schub, dessen 79 Gemeinden alle angeschrieben waren. Vier der fünf Schübe
+ * waren durch; offen war allein der geparkte, und genau dessen Geschichten
+ * braucht die Templates-Arbeit.
+ *
+ * Dieselbe Systematik wie beim Sitzungs-Befehl des Projekts: Der Zustand wird
+ * nachgesehen, statt einer zweiten Wahrheit zu glauben.
+ *
+ * Zurück kommt der Schub mit den meisten offenen Gemeinden. Gibt es keinen
+ * offenen mehr, bleibt die Markierung — dann ist nichts dran, und die Ansicht
+ * zeigt eben den zuletzt gelaufenen.
+ */
+async function naechsterSchub(): Promise<{ schluessel: string; orte: SchubOrt[] }> {
+  const stände = await Promise.all(
+    Object.entries(SCHUEBE).map(async ([schluessel, s]) => {
+      const orte = await orteDesSchubs(s.kampagne).catch(() => [] as SchubOrt[]);
+      return { schluessel, orte, offen: orte.filter((o) => o.offen).length };
+    }),
+  );
+  const beste = [...stände].sort((a, b) => b.offen - a.offen)[0];
+  if (beste && beste.offen > 0) return { schluessel: beste.schluessel, orte: beste.orte };
+  const rueckfall = stände.find((x) => x.schluessel === AKTUELLER_SCHUB) ?? stände[0];
+  return { schluessel: rueckfall?.schluessel ?? AKTUELLER_SCHUB, orte: rueckfall?.orte ?? [] };
 }
 
 /**
@@ -123,19 +162,33 @@ export default async function RedaktionTemplates({
   // Woraus die Formen gefüllt werden. „bund" ist der Ausgangszustand: Er lädt
   // eine Abfrage, der Schub ein halbes Dutzend je Ort.
   const quelle = params.quelle === "kommunen" ? "kommunen" : "bund";
-  const schubSchluessel =
-    typeof params.schub === "string" && SCHUEBE[params.schub] ? params.schub : AKTUELLER_SCHUB;
+  const gewuenschterSchub =
+    typeof params.schub === "string" && SCHUEBE[params.schub] ? params.schub : null;
   const orteDeckel = Math.max(1, Math.min(Number(params.orte) || ORTE_STANDARD, 24));
 
   let posts: SocialPost[] = [];
   let fehler: string | null = null;
-  let ausschnitt: { angesehen: number; vorhanden: number } | null = null;
+  let ausschnitt: { angesehen: number; vorhanden: number; offen: number } | null = null;
+  let schubSchluessel = gewuenschterSchub ?? AKTUELLER_SCHUB;
   try {
     if (quelle === "kommunen") {
-      const orte = await orteDesSchubs(SCHUEBE[schubSchluessel].kampagne);
-      const gesammelt = await ortsBeitraegeMehrere(orte, { hoechstens: orteDeckel });
+      // Ohne ausdrückliche Wahl der Schub, der wirklich dran ist — nicht der,
+      // den die Markierung im Code nennt.
+      const { schluessel, orte } = gewuenschterSchub
+        ? { schluessel: gewuenschterSchub, orte: await orteDesSchubs(SCHUEBE[gewuenschterSchub].kampagne) }
+        : await naechsterSchub();
+      schubSchluessel = schluessel;
+      // OFFENE ZUERST. Ein Schub ist nach Chargen sortiert, und die vorderen
+      // sind längst raus — die ersten sechs Orte wären dann die, an denen sich
+      // nichts mehr ändern lässt.
+      const sortiert = [...orte].sort((a, b) => Number(b.offen) - Number(a.offen));
+      const gesammelt = await ortsBeitraegeMehrere(sortiert, { hoechstens: orteDeckel });
       posts = gesammelt.beitraege.map((b) => b.post);
-      ausschnitt = { angesehen: gesammelt.angesehen, vorhanden: gesammelt.vorhanden };
+      ausschnitt = {
+        angesehen: gesammelt.angesehen,
+        vorhanden: gesammelt.vorhanden,
+        offen: orte.filter((o) => o.offen).length,
+      };
     } else {
       const [kennzahlen, fassungen] = await Promise.all([socialKennzahlen(), ladeFassungen()]);
       posts = baueAllePosts(kennzahlen, fassungen);
@@ -281,10 +334,11 @@ export default async function RedaktionTemplates({
           sie nicht hat — dieselbe Regel wie „Weggelassenes sichtbar erklären". */}
       {ausschnitt && (
         <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginTop: 0, marginBottom: space.lg }}>
-          Gefüllt aus {ausschnitt.angesehen} von {ausschnitt.vorhanden} Gemeinden dieses Schubs
-          ({posts.length} {posts.length === 1 ? "Geschichte" : "Geschichten"}). Welche Form eine
-          Geschichte bekommt, entscheiden ihre Zahlen — mehr Orte können also weitere Formen
-          hinzubringen.{" "}
+          Gefüllt aus {ausschnitt.angesehen} von {ausschnitt.vorhanden} Gemeinden des Schubs
+          „{schubSchluessel}" ({posts.length}{" "}
+          {posts.length === 1 ? "Geschichte" : "Geschichten"}) — noch nicht angeschrieben zuerst,
+          davon gibt es {ausschnitt.offen}. Welche Form eine Geschichte bekommt, entscheiden ihre
+          Zahlen; mehr Orte können also weitere Formen hinzubringen.{" "}
           {ausschnitt.angesehen < ausschnitt.vorhanden && (
             <Link href={adresse({ quelle: "kommunen", orte: String(Math.min(ausschnitt.angesehen * 2, 24)) })}>
               Mehr Orte ansehen

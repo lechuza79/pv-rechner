@@ -59,6 +59,20 @@ describe("Templates aus dem Kommunen-Schub", () => {
     }
   });
 
+  it("der nächste Schub wird gemessen, nicht der Markierung geglaubt", () => {
+    // Am 06.09.2026 zeigte die Markierung „aktueller Schub" im Code auf einen
+    // Schub, dessen 79 Gemeinden alle angeschrieben waren — vier der fünf
+    // Schübe waren durch. Wer ihr folgt, füllt die Templates-Arbeit mit
+    // Geschichten von Orten, an denen sich nichts mehr ändern lässt.
+    expect(SEITE).toContain("async function naechsterSchub");
+    expect(SEITE).toContain("o.offen");
+  });
+
+  it("innerhalb des Schubs kommen die noch nicht angeschriebenen zuerst", () => {
+    // Ein Schub ist nach Chargen sortiert, und die vorderen sind längst raus.
+    expect(SEITE).toMatch(/sort\(\(a, b\) => Number\(b\.offen\) - Number\(a\.offen\)\)/);
+  });
+
   it("die Platzierungen werden einmal gerechnet, nicht je Ort", () => {
     // Die Rechnung läuft über alle 11.000 Gemeinden. Sechs Orte hintereinander
     // hießen sie sechsmal.
