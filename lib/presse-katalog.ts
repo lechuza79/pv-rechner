@@ -39,6 +39,10 @@ export interface MediumZeile {
   /** Was der Beitrag offenlässt und welches Werkzeug es füllt. Das ist der
    *  Satz, aus dem das Anschreiben entsteht. */
   beleg_traegt_grund?: string | null;
+  /** Der eine Satz, was der Beitrag offenlässt — kurz genug fürs Anschreiben. */
+  beleg_luecke?: string | null;
+  /** Schlüssel aus der Werkzeugliste; als Liste, damit die Zuordnung prüfbar ist. */
+  werkzeug?: string[] | null;
   /** Alter des Beitrags in Tagen am Prüftag. Ein Aufhänger, der Jahre alt ist,
    *  trägt inhaltlich und taugt trotzdem nicht für einen Erstkontakt. */
   anknuepfung_tage?: number | null;

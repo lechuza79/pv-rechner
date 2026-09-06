@@ -31,7 +31,7 @@ const MEDIUM_SPALTEN =
   "medium_grund, medium_merkmale, seiten, formular_url, impressum_url, prioritaet, " +
   "aufhaenger, gattung, gattung_hand, woerter, hinweis, eignung, eignung_grund, " +
   "eignung_beleg, eignung_zitat, eignung_hand, profil_at, fehler, " +
-  "rubrik, beleg_titel, beleg_url, beleg_notiz, beleg_am, " +
+  "rubrik, beleg_titel, beleg_url, beleg_notiz, beleg_am, beleg_luecke, werkzeug, " +
   "beleg_traegt, beleg_traegt_grund, anknuepfung_tage";
 
 const KONTAKT_SPALTEN =

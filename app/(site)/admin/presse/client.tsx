@@ -7,6 +7,8 @@ import { DatenTabelle, type Spalte } from "../../../../components/admin/DatenTab
 import { DetailAbschnitt } from "../../../../components/admin/DetailAbschnitt";
 import InfoTooltip from "../../../../components/InfoTooltip";
 import { IconExternal } from "../../../../components/Icons";
+import { werkzeugVon, werkzeugPasst } from "../../../../lib/presse-werkzeuge";
+import { anschreibenEntwurf } from "../../../../lib/presse-anschreiben";
 import SelectField from "../../../../components/SelectField";
 import { STAENDE, KONTAKTARTEN, GESCHICHTEN, PAKETE, RUBRIK_TEXT } from "../../../../lib/presse-stand";
 import {
@@ -47,6 +49,15 @@ type Antwort = {
   /** Der GANZE Bestand, ohne jeden Filter — die Bezugsgröße für die Zeile über
    *  der Tabelle. */
   bestand: number;
+};
+
+/** Die Überschrift einer der beiden Spalten — klein, damit sie sortiert statt zu schreien. */
+const spaltenkopf: React.CSSProperties = {
+  margin: `0 0 ${space.xs}px`,
+  fontSize: v("--font-size-caption"),
+  textTransform: "uppercase",
+  letterSpacing: "0.04em",
+  color: v("--color-text-muted"),
 };
 
 export default function PresseAnsicht() {
@@ -517,17 +528,105 @@ export default function PresseAnsicht() {
                       : "Noch nicht angesehen."}
                   </p>
                 )}
-                {/* DER SATZ, AUS DEM DAS ANSCHREIBEN ENTSTEHT: was der Beitrag
-                    offenlässt und welches Werkzeug es füllt. Am gelesenen
-                    Volltext entschieden, nicht an der Überschrift. */}
-                {m.beleg_traegt_grund && (
-                  <p style={{ margin: `${space.sm}px 0 0` }}>{m.beleg_traegt_grund}</p>
-                )}
-                {m.beleg_notiz && (
-                  <p style={{ margin: `${space.xs}px 0 0`, color: v("--color-text-muted") }}>
-                    {m.beleg_notiz}
-                  </p>
-                )}
+                {/* ZWEI SPALTEN, WEIL ES ZWEI DINGE SIND: links, was auf der
+                    gefundenen Seite steht; rechts, was wir daraus machen. Als
+                    ein Absatz nebeneinander war beides nicht auseinanderzuhalten
+                    — und eine Zuordnung, die nicht zum Beitrag passt, fiel
+                    deshalb niemandem auf. Der Anschreiben-Entwurf darunter ist
+                    die Probe aufs Exempel: Was sich als Brief nicht lesen lässt,
+                    trägt auch als Aufhänger nicht. */}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+                    gap: space.md,
+                    marginTop: space.sm,
+                  }}
+                >
+                  <div>
+                    <h5 style={spaltenkopf}>Was auf der Seite steht</h5>
+                    <p style={{ margin: 0 }}>
+                      {m.beleg_notiz ?? (
+                        <span style={{ color: v("--color-text-muted") }}>keine Analyse hinterlegt</span>
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <h5 style={spaltenkopf}>Was wir daraus machen</h5>
+                    {m.beleg_luecke && (
+                      <p style={{ margin: 0 }}>
+                        <strong>Offen bleibt:</strong> {m.beleg_luecke}
+                      </p>
+                    )}
+                    {m.werkzeug?.length ? (
+                      <ul style={{ margin: `${space.xs}px 0 0`, paddingLeft: space.lg }}>
+                        {m.werkzeug.map((k) => {
+                          const w = werkzeugVon(k);
+                          if (!w) return <li key={k}>{k} (unbekanntes Werkzeug)</li>;
+                          /* Passt das Werkzeug überhaupt zum Thema des Beitrags?
+                             Geprüft an Überschrift und Analyse, also an dem, was
+                             jemand beim Lesen festgehalten hat. Ein Treffer ist
+                             kein Beweis, ein Fehltreffer aber ein Befund. */
+                          const passt = werkzeugPasst(
+                            k,
+                            `${m.beleg_titel ?? ""} ${m.beleg_notiz ?? ""} ${m.beleg_luecke ?? ""}`,
+                          );
+                          return (
+                            <li key={k}>
+                              <a href={w.pfad} target="_blank" rel="noreferrer" style={linkStil}>
+                                {w.name}
+                              </a>{" "}
+                              — {w.leistet}
+                              {!passt && (
+                                <span style={{ color: v("--color-negative") }}>
+                                  {" "}
+                                  · passt nicht zum Thema des Beitrags
+                                </span>
+                              )}
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    ) : (
+                      <p style={{ margin: `${space.xs}px 0 0`, color: v("--color-text-muted") }}>
+                        Noch kein Werkzeug zugeordnet.
+                      </p>
+                    )}
+                    {m.beleg_traegt_grund && (
+                      <p style={{ margin: `${space.sm}px 0 0`, color: v("--color-text-muted") }}>
+                        {m.beleg_traegt_grund}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                {m.beleg_titel && m.werkzeug?.length ? (
+                  <details style={{ marginTop: space.md }}>
+                    <summary style={{ cursor: "pointer", color: v("--color-accent") }}>
+                      Anschreiben-Entwurf
+                    </summary>
+                    <pre
+                      style={{
+                        whiteSpace: "pre-wrap",
+                        margin: `${space.xs}px 0 0`,
+                        padding: pad("sm", "md"),
+                        background: v("--color-bg-muted"),
+                        borderRadius: v("--radius-sm"),
+                        border: `1px solid ${v("--color-border-muted")}`,
+                        font: "inherit",
+                      }}
+                    >
+                      {anschreibenEntwurf({
+                        medium: mediumName(m),
+                        person: adressatVon(ks).ausEinerHand ? adressatVon(ks).name : null,
+                        beitrag: m.beleg_titel,
+                        beitragUrl: m.beleg_url ?? null,
+                        tage: m.anknuepfung_tage ?? null,
+                        luecke: m.beleg_luecke ?? null,
+                        werkzeuge: m.werkzeug ?? [],
+                      })}
+                    </pre>
+                  </details>
+                ) : null}
               </DetailAbschnitt>
 
               <DetailAbschnitt titel="Einordnung">

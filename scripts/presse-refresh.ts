@@ -361,6 +361,15 @@ async function setup(): Promise<void> {
     ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS beleg_am date;
     ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS beleg_traegt text;
     ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS beleg_traegt_grund text;
+    -- Der eine Satz, was der gelesene Beitrag OFFENLAESST -- getrennt vom
+    -- ausfuehrlichen Grund, weil nur dieser Satz ins Anschreiben passt.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS beleg_luecke text;
+    -- Welches unserer Werkzeuge die Luecke fuellt, als Schluessel aus
+    -- lib/presse-werkzeuge.ts. Als LISTE statt als Fliesstext, damit die
+    -- Zuordnung gegenpruefbar ist: Ein Beitrag ueber die Einspeiseverguetung
+    -- bekam als Fliesstext-Vorschlag "Zubau je Gemeinde" angeboten, und in
+    -- einem Absatz faellt so etwas niemandem auf.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS werkzeug text[];
 
     -- Der Schlüssel ist (Kreis × Frage), nicht der Kreis: Drei Fragen je Kreis
     -- finden je zur Hälfte andere Titel. Die erste Fassung hatte den Kreis
