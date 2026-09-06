@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import RaceChart, { MONATE_KURZ, type RaceEreignis } from "./RaceChart";
 import { WIDGETS } from "../../lib/widget-registry";
 import { fmtEuroVoll, fmtEuroK, formatDataAsOf } from "../../lib/atlas-format";
+import { space } from "../../lib/theme";
 import { PERSONEN, FEED_IN_YEARS } from "../../lib/constants";
 import type { Kostenrennen } from "../../lib/kostenrennen";
 import { tagesverlauf, tagDatum, type Tagesverlauf } from "../../lib/kostenrennen-tage";
@@ -117,13 +118,27 @@ export default function KostenrennenWidget({ rennen, onsite, branding, showEmbed
         ariaLabel: "Angaben zum Beispielhaushalt",
         inhalt: (
           <>
-            Ein Haushalt, {rennen.jahre} Jahre, {fenster ? `das Wetter der Jahre ${fenster.von}–${fenster.bis}` : "ein Referenzjahr"}: Wer hat wann mehr für Strom bezahlt?{" "}
-            {haushalt.label} Personen mit {haushalt.verbrauch.toLocaleString("de-DE")} kWh Jahresverbrauch, teils im Homeoffice.
-            Die Anlage: {pv.kwp} kWp{pv.speicherKwh > 0 ? ` mit ${pv.speicherKwh} kWh Speicher` : " ohne Speicher"} für {fmtEuroVoll(pv.investition)},
-            Ertrag {rennen.annahmen.ertragKwp.toLocaleString("de-DE")} kWh je kWp (deutscher Schnitt bei optimaler Ausrichtung), Teileinspeisung zu{" "}
-            {rennen.annahmen.einspeisungCt.toLocaleString("de-DE")} ct/kWh über {FEED_IN_YEARS} Jahre, danach nichts mehr für eingespeisten Strom. Strompreis {rennen.annahmen.strompreisCt.toLocaleString("de-DE")} ct/kWh,
-            Anstieg {rennen.annahmen.steigerungPct.toLocaleString("de-DE")} % pro Jahr. Wetter: {rennen.annahmen.wetter}; innerhalb des Monats nach der
-            Tagesstrahlung der DWD-Stationen verteilt — Näherungswerte ohne Gewähr.
+            {/* Drei Blöcke, weil sie drei verschiedene Arten von Angaben sind: das
+                Haus (gewählt), das Wetter (gemessen, aus der Vergangenheit auf die
+                Zukunft übertragen) und die Preise (projiziert). Im Bild-Fuß steht
+                derselbe Text ohne Absätze — deshalb endet jeder Block mit einem Leerzeichen. */}
+            <div style={{ marginBottom: space.xs }}>
+              <strong>Haushalt und Anlage:</strong> {haushalt.label} Personen mit {haushalt.verbrauch.toLocaleString("de-DE")} kWh Jahresverbrauch, teils im Homeoffice.
+              Die Anlage: {pv.kwp} kWp{pv.speicherKwh > 0 ? ` mit ${pv.speicherKwh} kWh Speicher` : " ohne Speicher"} für {fmtEuroVoll(pv.investition)},
+              Ertrag {rennen.annahmen.ertragKwp.toLocaleString("de-DE")} kWh je kWp (deutscher Schnitt bei optimaler Ausrichtung), Teileinspeisung zu{" "}
+              {rennen.annahmen.einspeisungCt.toLocaleString("de-DE")} ct/kWh über {FEED_IN_YEARS} Jahre, danach nichts mehr für eingespeisten Strom.{" "}
+            </div>
+            <div style={{ marginBottom: space.xs }}>
+              <strong>Wetter — gemessen, aus der Vergangenheit übertragen:</strong>{" "}
+              {fenster
+                ? `Die Sonne der Jahre ${fenster.von}–${fenster.bis} (Deutscher Wetterdienst, Monatsraster und Tageswerte der Stationen) läuft noch einmal ab, übertragen auf ${rennen.startJahr + 1}–${rennen.startJahr + rennen.jahre}: Jahr 1 mit dem Wetter von ${fenster.von}, Jahr ${rennen.jahre} mit dem von ${fenster.bis}. Wie das Wetter in zehn Jahren wird, weiß niemand — gemessene Jahre sind ehrlicher als ein erfundenes Mittel. Die Strommenge über ${rennen.jahre} Jahre bleibt die des Rechners.`
+                : "Jedes Jahr dasselbe Referenz-Monatsprofil, nur die Alterung der Module zieht ab."}{" "}
+            </div>
+            <div style={{ marginBottom: space.xs }}>
+              <strong>Preise — eine Projektion, keine Messung:</strong> Strompreis heute {rennen.annahmen.strompreisCt.toLocaleString("de-DE")} ct/kWh (Marktpreis),
+              Anstieg {rennen.annahmen.steigerungPct.toLocaleString("de-DE")} % pro Jahr — die Annahme des PV-Rechners für die Zukunft, nominal, nicht inflationsbereinigt.{" "}
+            </div>
+            Näherungswerte ohne Gewähr.
           </>
         ),
       }}

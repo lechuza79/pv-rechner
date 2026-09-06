@@ -9,6 +9,7 @@ import { BIO_TREPPE_STUFEN } from "../../lib/greengas-config";
 import { greenGasApplies } from "../../lib/fossil-reference";
 import { DEFAULT_HEATPUMP_CONFIG } from "../../lib/heatpump-config";
 import { PERSONEN } from "../../lib/constants";
+import { space } from "../../lib/theme";
 
 // Das Heizkosten-Rennen: EIN unsaniertes Einfamilienhaus, neue Gasheizung gegen
 // Wärmepumpe, 20 Jahre. Beide Linien zeichnen Tag für Tag, was das Haus bis
@@ -117,15 +118,28 @@ export default function HeizkostenrennenWidget({ onsite, branding, showEmbed, au
         ariaLabel: "Angaben zum Beispielhaus",
         inhalt: (
           <>
-            Ein freistehendes Einfamilienhaus im Bestand, {rennen.haus.wohnflaeche} m², {rennen.haus.daemmung}, alte Heizkörper,{" "}
-            {haushalt ? `${haushalt.label} Personen` : `${rennen.haus.personen} Personen`}, {rennen.jahre} Jahre,{" "}
-            {fenster ? `die Winter der Jahre ${fenster.von}–${fenster.bis}` : "ein Referenzjahr"}: Wer hat wann mehr fürs Heizen bezahlt?
-            Die Wärmepumpe: Luft/Wasser, Arbeitszahl {r.jaz.toLocaleString("de-DE")}, {fmtEuroVoll(r.investBrutto)} vor und{" "}
-            {fmtEuroVoll(r.investNetto)} nach Bundesförderung ({fmtEuroVoll(r.beg.amount)}), Strom {Math.round(cfg.wpTarif * 100)} ct/kWh mit{" "}
-            {Math.round(cfg.stromInflation * 100)} % Anstieg pro Jahr. Die neue Gasheizung: {fmtEuroVoll(r.gasInvest)}, Gaspreis mit der
-            gesetzlichen Beimischungspflicht nach dem realistischen Preispfad des IW-Reports. Beide Seiten tragen Grundpreis und Wartung.
-            Die Menge je Jahr ist die des Wärmepumpen-Rechners; das Wetter verteilt sie nur auf die Tage — nach den Gradtagen
-            des Deutschen Wetterdiensts, kalte Winter wiegen mehr als milde. Näherungswerte ohne Gewähr.
+            {/* Drei Blöcke wie beim Stromkosten-Rennen: Haus (gewählt), Wetter
+                (gemessen, übertragen), Preise (projiziert). Jeder Block endet mit
+                einem Leerzeichen, weil der Bild-Fuß den Text ohne Absätze trägt. */}
+            <div style={{ marginBottom: space.xs }}>
+              <strong>Haus und Heizungen:</strong> Freistehendes Einfamilienhaus im Bestand, {rennen.haus.wohnflaeche} m², {rennen.haus.daemmung}, alte Heizkörper,{" "}
+              {haushalt ? `${haushalt.label} Personen` : `${rennen.haus.personen} Personen`}.
+              Die Wärmepumpe: Luft/Wasser, Arbeitszahl {r.jaz.toLocaleString("de-DE")}, {fmtEuroVoll(r.investBrutto)} vor und{" "}
+              {fmtEuroVoll(r.investNetto)} nach Bundesförderung ({fmtEuroVoll(r.beg.amount)}). Die neue Gasheizung: {fmtEuroVoll(r.gasInvest)}.
+              Beide Seiten tragen Grundpreis und Wartung.{" "}
+            </div>
+            <div style={{ marginBottom: space.xs }}>
+              <strong>Wetter — gemessen, aus der Vergangenheit übertragen:</strong>{" "}
+              {fenster
+                ? `Die Tagesmitteltemperaturen der Jahre ${fenster.von}–${fenster.bis} (Deutscher Wetterdienst, Mittel über die Stationen) bestimmen als Gradtage, an welchen Tagen wie viel geheizt wird — übertragen auf ${rennen.startJahr}–${rennen.startJahr + rennen.jahre - 1}: Jahr 1 mit dem Winter von ${fenster.von}, Jahr ${rennen.jahre} mit dem von ${fenster.bis}. Kalte Winter wiegen mehr als milde; die Heizmenge über ${rennen.jahre} Jahre bleibt die des Wärmepumpen-Rechners.`
+                : "Jedes Jahr dieselbe gleichmäßige Verteilung."}{" "}
+            </div>
+            <div style={{ marginBottom: space.xs }}>
+              <strong>Preise — eine Projektion, keine Messung:</strong> Wärmepumpenstrom heute {Math.round(cfg.wpTarif * 100)} ct/kWh mit{" "}
+              {(cfg.stromInflation * 100).toLocaleString("de-DE")} % Anstieg pro Jahr; Gas nach dem realistischen Preispfad des IW-Reports mit der gesetzlichen
+              Beimischungspflicht ab {BIO_TREPPE_STUFEN[0].year}, dazu der CO₂-Preis nach dem beschlossenen Pfad — die mittleren Annahmen des Wärmepumpen-Rechners, nominal.{" "}
+            </div>
+            Näherungswerte ohne Gewähr.
           </>
         ),
       }}
