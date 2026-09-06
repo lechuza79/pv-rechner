@@ -250,6 +250,11 @@ export function notizen(
   mailKommtVor: Map<string, string[]>,
 ): string {
   const teile: string[] = [];
+  // Die von Hand eingetragene Notiz steht VORN, nicht am Ende der abgeleiteten
+  // Beobachtungen: Sie ist das einzige Stück in dieser Zeile, das ein Mensch
+  // geschrieben hat („Kontakt besteht über LinkedIn"), und hinter sieben
+  // Maschinenbefunden liest sie niemand mehr.
+  if (m.notiz) teile.push(m.notiz);
   if (m.fehler) teile.push(`Abruf: ${m.fehler}`);
   if (m.hinweis) teile.push(m.hinweis);
   if (m.ist_medium === "unklar") teile.push("redaktionelles Angebot nicht eindeutig belegt");
@@ -267,7 +272,6 @@ export function notizen(
   else if (mediumName(m) !== m.titel) teile.push(`Seitentitel lautet abweichend: „${m.titel}"`);
   if (k?.notiz) teile.push(`Notiz: ${k.notiz}`);
   if (m.gruppe) teile.push(`Mediengruppe: ${m.gruppe}`);
-  if (m.notiz) teile.push(m.notiz);
   return teile.join("; ");
 }
 

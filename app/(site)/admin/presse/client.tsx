@@ -6,6 +6,7 @@ import AdminSeitenkopf from "../../../../components/admin/AdminSeitenkopf";
 import { DatenTabelle, type Spalte } from "../../../../components/admin/DatenTabelle";
 import { DetailAbschnitt } from "../../../../components/admin/DetailAbschnitt";
 import InfoTooltip from "../../../../components/InfoTooltip";
+import { IconExternal } from "../../../../components/Icons";
 import SelectField from "../../../../components/SelectField";
 import { STAENDE, KONTAKTARTEN, GESCHICHTEN, PAKETE, RUBRIK_TEXT } from "../../../../lib/presse-stand";
 import {
@@ -165,7 +166,22 @@ export default function PresseAnsicht() {
       umbruch: true,
       zelle: (m) => (
         <span style={{ lineHeight: 1.3 }}>
-          <span style={{ display: "block", fontWeight: 600 }}>{mediumName(m)}</span>
+          <span style={{ display: "block", fontWeight: 600 }}>
+            {mediumName(m)}{" "}
+            {/* Ein Klick auf die Seite selbst — ohne ihn ist jede Stichprobe
+                ein Umweg über Kopieren und Einfügen. Der Klick darf die Zeile
+                nicht aufklappen, deshalb hält er sein Ereignis zurück. */}
+            <a
+              href={`https://${m.domain}`}
+              target="_blank"
+              rel="noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              title={`${mediumName(m)} in neuem Tab öffnen`}
+              style={{ color: v("--color-accent"), verticalAlign: "-2px" }}
+            >
+              <IconExternal size={13} />
+            </a>
+          </span>
           <span
             style={{ display: "block", fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}
           >
@@ -562,15 +578,6 @@ export default function PresseAnsicht() {
                     {m.fehler ? `Abruf: ${m.fehler}` : m.hinweis}
                   </p>
                 )}
-              </DetailAbschnitt>
-
-              <DetailAbschnitt titel="Was wir anbieten könnten">
-                <div style={{ display: "flex", flexWrap: "wrap", gap: space.md }}>
-                  <Feld titel="Passende Geschichten">
-                    {m.geschichten?.length ? m.geschichten.join(" · ") : "—"}
-                  </Feld>
-                  <Feld titel="Vorschlag für den Aufhänger">{m.aufhaenger ?? "—"}</Feld>
-                </div>
               </DetailAbschnitt>
 
               <DetailAbschnitt titel={`Kontakte (${ks.length})`}>
