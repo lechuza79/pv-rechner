@@ -127,3 +127,45 @@ export async function ortsBeitraegeFuerId(
     fassungen,
   );
 }
+
+
+/**
+ * Die Beiträge MEHRERER Orte — für die Templates-Ansicht.
+ *
+ * WOFÜR: Ein Design wird an den Beiträgen abgenommen, die im nächsten
+ * Versandschub wirklich rausgehen, nicht an den vierzehn bundesweiten. Welche
+ * Bildform eine Ortsgeschichte bekommt, entscheiden ihre Zahlen — man muss also
+ * echte Orte ansehen, um zu wissen, welche Formen der Schub überhaupt braucht.
+ *
+ * MIT DECKEL, und der ist keine Bequemlichkeit: Die Kette je Ort kostet ein
+ * halbes Dutzend Abfragen. Ein ganzer Schub sind hundert Gemeinden, also
+ * sechshundert Abfragen für eine Ansicht — genau die Kopplung „teurer mit den
+ * Daten", an der im September der Produktionsbau zerbrochen ist.
+ *
+ * Der Aufrufer bekommt zurück, WIE VIELE Orte angesehen wurden. Eine Ansicht,
+ * die einen Ausschnitt zeigt und wie das Ganze aussieht, behauptet eine
+ * Vollständigkeit, die sie nicht hat.
+ */
+export async function ortsBeitraegeMehrere(
+  orte: OrtsSchluessel[],
+  opts: { hoechstens?: number } = {},
+): Promise<{ beitraege: OrtsBeitrag[]; angesehen: number; vorhanden: number }> {
+  const deckel = Math.max(1, Math.min(opts.hoechstens ?? 6, 24));
+  const auswahl = orte.slice(0, deckel);
+  // Die Fassungen EINMAL — sonst holt jeder Ort dieselbe kleine Tabelle neu.
+  const fassungen = await ladeFassungen();
+  // Nebenläufig, aber nicht unbegrenzt: Der Deckel IST die Begrenzung.
+  const listen = await Promise.all(
+    auswahl.map((o) =>
+      ortsBeitraegeFuerId(o.regionId, fassungen).catch(() => null),
+    ),
+  );
+  return {
+    beitraege: listen.flatMap((l) => l ?? []),
+    angesehen: auswahl.length,
+    vorhanden: orte.length,
+  };
+}
+
+/** Nur der Schlüssel — mehr braucht der Sammellauf nicht. */
+export type OrtsSchluessel = { regionId: string };

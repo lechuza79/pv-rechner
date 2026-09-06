@@ -6,6 +6,9 @@ import { baueAllePosts, moeglicheFormen, templateVon, type PostBild, type Social
 import { BILDFORMEN, TEMPLATES } from "../../../../../lib/social-bildformen";
 import { TemplateGalerie, type GalerieZeile } from "../../../../../components/social/TemplateGalerie";
 import { ladeFassungen } from "../../../../../lib/social-vorlagen-db";
+import { ortsBeitraegeMehrere } from "../../../../../lib/orts-beitraege-server";
+import { supabase } from "../../../../../lib/supabase-server";
+import { AKTUELLER_SCHUB, SCHUEBE } from "../../../../../lib/kommunen-testballon";
 import { v, space, pad } from "../../../../../lib/theme";
 
 // Die Templates als eigener Bereich der Redaktion — vorher lag diese Ansicht als
@@ -23,6 +26,18 @@ import { v, space, pad } from "../../../../../lib/theme";
 // „Abgenommen" ist dabei kein Häkchen, sondern folgt aus der Template-Liste im
 // Code: Ein Beitrag ist gestaltet, wenn seine Kombination aus Bildform und
 // Farbschema dort steht.
+//
+// ZWEI QUELLEN FÜR DIE FÜLLUNG (Betreiber, 06.09.2026): die vierzehn
+// bundesweiten Beiträge — oder die Geschichten des nächsten KOMMUNEN-SCHUBS.
+// Das ist der Arbeitsrhythmus, den er gesetzt hat: pro Woche ein Batch planen
+// und dabei die Templates fertigmachen, die dieser Batch braucht. Welche Form
+// eine Ortsgeschichte bekommt, entscheiden ihre Zahlen; man muss also die
+// echten Orte ansehen, statt am bundesweiten Bestand zu üben.
+//
+// MIT DECKEL, und er steht sichtbar an der Ansicht: Ein Schub sind hundert
+// Gemeinden, und die Kette je Ort kostet ein halbes Dutzend Abfragen. Eine
+// Ansicht, die einen Ausschnitt zeigt und wie das Ganze aussieht, behauptet
+// eine Vollständigkeit, die sie nicht hat.
 
 export const metadata = {
   title: "Redaktion – Templates",
@@ -30,6 +45,29 @@ export const metadata = {
 };
 
 export const dynamic = "force-dynamic";
+
+/**
+ * Wie viele Orte eines Schubs die Ansicht ohne Zutun ansieht.
+ *
+ * Sechs, weil die Formenwahl den Zahlen folgt und die über Orte hinweg ähnlich
+ * sind: Sechs Gemeinden decken die Formen, die ein Schub braucht, mit hoher
+ * Wahrscheinlichkeit ab. Wer mehr sehen will, hebt es in der Adresse an — die
+ * Ansicht sagt, wie viele es waren.
+ */
+const ORTE_STANDARD = 6;
+
+/** Die Gemeinden einer Kampagne, in der Reihenfolge ihrer Chargen. */
+async function orteDesSchubs(kampagne: string): Promise<{ regionId: string }[]> {
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from("kommunen_kontakt")
+    .select("region_id, charge")
+    .eq("kampagne", kampagne)
+    .order("charge")
+    .order("region_id");
+  if (error) throw new Error(error.message);
+  return (data ?? []).map((r) => ({ regionId: (r as { region_id: string }).region_id }));
+}
 
 /**
  * Welcher Beitrag füllt eine Form?
@@ -66,6 +104,13 @@ export default async function RedaktionTemplates({
   const adresseMit = (art: string, postId: string): string => {
     const q = new URLSearchParams();
     if (neu) q.set("ansicht", "neu");
+    // Quelle, Schub und Ortszahl bleiben stehen: Sonst springt die Ansicht beim
+    // Durchschalten einer Zeile zurück auf die bundesweiten Beiträge, und man
+    // beurteilt plötzlich ein anderes Design als das, das man ansehen wollte.
+    for (const k of ["quelle", "schub", "orte"]) {
+      const w = params[k];
+      if (typeof w === "string") q.set(k, w);
+    }
     // Die Wahl der ANDEREN Formen bleibt stehen — sonst springt die halbe Seite
     // zurück, sobald man eine Zeile umschaltet.
     for (const [k, w] of Object.entries(params)) {
@@ -75,11 +120,26 @@ export default async function RedaktionTemplates({
     return `/admin/redaktion/templates?${q.toString()}#${art}`;
   };
 
+  // Woraus die Formen gefüllt werden. „bund" ist der Ausgangszustand: Er lädt
+  // eine Abfrage, der Schub ein halbes Dutzend je Ort.
+  const quelle = params.quelle === "kommunen" ? "kommunen" : "bund";
+  const schubSchluessel =
+    typeof params.schub === "string" && SCHUEBE[params.schub] ? params.schub : AKTUELLER_SCHUB;
+  const orteDeckel = Math.max(1, Math.min(Number(params.orte) || ORTE_STANDARD, 24));
+
   let posts: SocialPost[] = [];
   let fehler: string | null = null;
+  let ausschnitt: { angesehen: number; vorhanden: number } | null = null;
   try {
-    const [kennzahlen, fassungen] = await Promise.all([socialKennzahlen(), ladeFassungen()]);
-    posts = baueAllePosts(kennzahlen, fassungen);
+    if (quelle === "kommunen") {
+      const orte = await orteDesSchubs(SCHUEBE[schubSchluessel].kampagne);
+      const gesammelt = await ortsBeitraegeMehrere(orte, { hoechstens: orteDeckel });
+      posts = gesammelt.beitraege.map((b) => b.post);
+      ausschnitt = { angesehen: gesammelt.angesehen, vorhanden: gesammelt.vorhanden };
+    } else {
+      const [kennzahlen, fassungen] = await Promise.all([socialKennzahlen(), ladeFassungen()]);
+      posts = baueAllePosts(kennzahlen, fassungen);
+    }
   } catch (e) {
     fehler = (e as Error).message;
   }
@@ -122,9 +182,24 @@ export default async function RedaktionTemplates({
   // und das entsteht an der Form, nicht am einzelnen Beitrag.
   const ohneDesign = posts.filter((p) => p.bild && !templateVon(p.bild));
 
+  /** Eine Adresse dieser Seite mit geänderten Angaben — der Rest bleibt stehen. */
+  const adresse = (aenderung: Record<string, string | undefined>): string => {
+    const q = new URLSearchParams();
+    for (const k of ["ansicht", "quelle", "schub", "orte"]) {
+      const w = k in aenderung ? aenderung[k] : params[k];
+      if (typeof w === "string" && w) q.set(k, w);
+    }
+    return `/admin/redaktion/templates${q.toString() ? `?${q}` : ""}`;
+  };
+
   const reiter = [
-    { text: "Bibliothek", href: "/admin/redaktion/templates", aktiv: !neu, zahl: bibliothek.length },
-    { text: "Neu entwickeln", href: "/admin/redaktion/templates?ansicht=neu", aktiv: neu, zahl: inArbeit.length },
+    { text: "Bibliothek", href: adresse({ ansicht: undefined }), aktiv: !neu, zahl: bibliothek.length },
+    { text: "Neu entwickeln", href: adresse({ ansicht: "neu" }), aktiv: neu, zahl: inArbeit.length },
+  ];
+
+  const quellen = [
+    { text: "Bundesweit", href: adresse({ quelle: undefined }), aktiv: quelle === "bund" },
+    { text: "Nächster Kommunen-Schub", href: adresse({ quelle: "kommunen" }), aktiv: quelle === "kommunen" },
   ];
 
   return (
@@ -158,6 +233,65 @@ export default async function RedaktionTemplates({
           </Link>
         ))}
       </nav>
+
+      {/* WORAUS gefüllt wird — die Entscheidung steht über der Ansicht, nicht
+          in ihr: Sie bestimmt, an welchen Zahlen ein Design abgenommen wird. */}
+      <nav aria-label="Füllung" style={{ display: "flex", gap: space.sm, flexWrap: "wrap", marginBottom: space.lg }}>
+        {quellen.map((q) => (
+          <Link
+            key={q.href}
+            href={q.href}
+            aria-current={q.aktiv ? "true" : undefined}
+            style={{
+              padding: pad("xs", "md"),
+              borderRadius: v("--radius-sm"),
+              border: `1px solid ${q.aktiv ? v("--color-accent") : v("--color-border")}`,
+              background: q.aktiv ? v("--color-accent") : v("--color-bg"),
+              color: q.aktiv ? v("--color-bg") : v("--color-text-secondary"),
+              fontSize: v("--font-size-small"),
+              fontWeight: q.aktiv ? 600 : 400,
+              textDecoration: "none",
+            }}
+          >
+            {q.text}
+          </Link>
+        ))}
+        {quelle === "kommunen" &&
+          Object.entries(SCHUEBE).map(([k, sch]) => (
+            <Link
+              key={k}
+              href={adresse({ quelle: "kommunen", schub: k })}
+              style={{
+                padding: pad("xs", "md"),
+                borderRadius: v("--radius-sm"),
+                border: `1px solid ${k === schubSchluessel ? v("--color-accent") : v("--color-border-muted")}`,
+                background: v("--color-bg"),
+                color: k === schubSchluessel ? v("--color-accent") : v("--color-text-muted"),
+                fontSize: v("--font-size-small"),
+                textDecoration: "none",
+              }}
+            >
+              {sch.kampagne}
+            </Link>
+          ))}
+      </nav>
+
+      {/* DER AUSSCHNITT STEHT DA. Eine Ansicht, die sechs von hundert Orten
+          zeigt und aussieht wie das Ganze, behauptet eine Vollständigkeit, die
+          sie nicht hat — dieselbe Regel wie „Weggelassenes sichtbar erklären". */}
+      {ausschnitt && (
+        <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginTop: 0, marginBottom: space.lg }}>
+          Gefüllt aus {ausschnitt.angesehen} von {ausschnitt.vorhanden} Gemeinden dieses Schubs
+          ({posts.length} {posts.length === 1 ? "Geschichte" : "Geschichten"}). Welche Form eine
+          Geschichte bekommt, entscheiden ihre Zahlen — mehr Orte können also weitere Formen
+          hinzubringen.{" "}
+          {ausschnitt.angesehen < ausschnitt.vorhanden && (
+            <Link href={adresse({ quelle: "kommunen", orte: String(Math.min(ausschnitt.angesehen * 2, 24)) })}>
+              Mehr Orte ansehen
+            </Link>
+          )}
+        </p>
+      )}
 
       <p style={{ color: v("--color-text-secondary"), maxWidth: 760, marginTop: 0, marginBottom: space.xxl }}>
         {neu
