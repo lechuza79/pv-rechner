@@ -111,3 +111,44 @@ describe("Mindestleistung der Dachanlage", () => {
     expect(fehlend).toEqual([]);
   });
 });
+
+// ─── Dachanlage nur mit Speicher (Council 05.09.2026) ────────────────────────
+//
+// Mühlhausen an der Sulz zahlt die Dach-Staffel nur zusammen mit einem Speicher.
+// Im Code stand dafür `speicherMin: 1` mit dem Kommentar, ohne Speicher greife
+// keine Stufe — das Feld wirkt aber nur im Speicher-Zweig, und dieses Programm
+// hat keinen: 8 kWp ohne Speicher zogen 1.000 € ab, 25 kWp 1.500 €. Ein Test
+// prüfte nur `pvMin`. Dieselbe Klasse wie die Mindestleistung darüber: Die
+// Bedingung stand im Text und fehlte in der Rechnung.
+describe("Dachanlage nur zusammen mit Speicher", () => {
+  const pv = (kwp: number, speicherKwh = 0, kosten = 20000) =>
+    ({ technik: "pv", kwp, speicherKwh, kosten }) as const;
+  const muehlhausen = FUNDING_PROGRAMS["muehlhausen-sulz-pv"];
+
+  it("zahlt ohne Speicher nichts für die Dachanlage — der Betrag ist bekannt, er ist null", () => {
+    expect(muehlhausen.pvNurMitSpeicher).toBe(true);
+    for (const kwp of [8, 15, 25]) {
+      const r = fundingAmount(muehlhausen, pv(kwp, 0));
+      expect(r.total).toBe(0);
+      expect(r.computable).toBe(true);
+    }
+  });
+
+  it("zahlt mit Speicher die Staffel", () => {
+    expect(fundingAmount(muehlhausen, pv(8, 5)).total).toBe(1000);
+    expect(fundingAmount(muehlhausen, pv(15, 5)).total).toBe(1250);
+    expect(fundingAmount(muehlhausen, pv(25, 10)).total).toBe(1500);
+  });
+
+  it("wer die Speicherpflicht in den Bedingungstext schreibt, setzt sie auch in der Rechnung", () => {
+    // Die Gegenrichtung — ein neues Programm mit demselben Satz im Text und ohne
+    // das Feld baut den Fehler neu.
+    for (const p of Object.values(FUNDING_PROGRAMS)) {
+      if (!p.pvTiers && !p.pvPerKwp) continue;
+      const text = (p.conditions ?? []).map(bedingungText).join(" ");
+      if (/Dachanlage[^.]*nur (zusammen|gemeinsam) mit[^.]*Speicher/i.test(text)) {
+        expect(p.pvNurMitSpeicher, p.id).toBe(true);
+      }
+    }
+  });
+});

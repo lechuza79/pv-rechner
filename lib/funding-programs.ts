@@ -289,6 +289,18 @@ export interface FundingProgram {
    * kommen (Mühlhausen), greift die Grenze ohnehin für beides.
    */
   pvMin?: number;
+  /**
+   * Die Dachanlage wird NUR zusammen mit einem Speicher gefördert — der
+   * PV-Betrag entfällt ohne Speicher (Mühlhausen an der Sulz: „Die Dachanlage
+   * wird nur zusammen mit einem Stromspeicher gefördert").
+   *
+   * Vorher stand dafür `speicherMin: 1` am Programm, mit dem Kommentar, ohne
+   * Speicher greife keine Stufe. Das stimmte nicht: `speicherMin` wird nur im
+   * SPEICHER-Zweig geprüft, und dieses Programm hat keinen — die Dach-Staffel
+   * zahlte 1.000–1.500 € auch bei 0 kWh. Gefunden vom Rechenmodell-Council am
+   * 05.09.2026; der Mindestleistungs-Test kannte nur `pvMin`.
+   */
+  pvNurMitSpeicher?: boolean;
 
   // ── Technik ──────────────────────────────────────────────────────────────────
   /**
@@ -2426,15 +2438,15 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
     foerdert: ["pv", "balkon"],
-    // Die Dach-Staffel gilt NUR mit Speicher — das ist im Modell nicht als
-    // Bedingung ausdrückbar. `speicherMin: 1` erzwingt sie über die einzige
-    // Größe, die der Rechner kennt: Ohne Speicher greift keine Stufe.
+    // Die Dach-Staffel gilt NUR mit Speicher. Bis 05.09.2026 sollte das
+    // `speicherMin: 1` erzwingen — das Feld wirkt aber nur im Speicher-Zweig,
+    // und dieses Programm hat keinen; die Staffel zahlte bei 0 kWh trotzdem.
     // Die Staffel beginnt „ab 5 kWp bis einschl. 10 kWp" — am 27.08.2026 auf der
     // Gemeindeseite gelesen. Ohne `pvMin` zahlte die unterste Stufe auch bei
     // 3 kWp, wo die Gemeinde nichts zahlt.
     pvTiers: [{ upTo: 10, amount: 1000 }, { upTo: 20, amount: 1250 }, { upTo: 30, amount: 1500 }],
     pvMin: 5,
-    speicherMin: 1,
+    pvNurMitSpeicher: true,
     balkonTiers: [{ upTo: 680, amount: 100 }, { upTo: 1020, amount: 150 }, { upTo: 999999, amount: 200 }],
   },
 
@@ -4169,6 +4181,73 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // einem falschen Abzug geführt.
   },
 
+  "braunschweig-regenerative-energien": {
+    id: "braunschweig-regenerative-energien",
+    name: "Förderprogramm für regenerative Energien und Energieeffizienzmaßnahmen",
+    traeger: "Stadt Braunschweig", level: "kommune", region: "Braunschweig",
+    bundesland: "Niedersachsen", agsCode: "03101",
+    url: "https://www.braunschweig.de/vv/produkte/VI/68/68_3/foerderprogramm-fuer-regenerative-energien-und-effizienzmassnahmen.php",
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    endetIso: "2026-09-06",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschalen für Balkonkraftwerk, Speicher und Wärmepumpe — Topf für 2026 leer",
+    maxFoerderung: "insgesamt max. 4.900 € je Liegenschaft",
+    rates: [
+      { label: "Balkonkraftwerk", value: "200 € pauschal" },
+      { label: "Balkonkraftwerk (Wohngeld, Bürgergeld, Grundsicherung oder BAföG)", value: "zusätzlich 150 €" },
+      { label: "Speicher fürs Balkonkraftwerk", value: "150 € pauschal" },
+      { label: "Luft/Wasser-Wärmepumpe", value: "1.000 € pauschal" },
+      { label: "Sole/Wasser-Wärmepumpe", value: "4.000 € pauschal" },
+      { label: "Wärmepumpe mit klimafreundlichem Kältemittel (GWP ≤ 150)", value: "zusätzlich 500 €" },
+    ],
+    conditions: [
+      "Keine Antragsannahme: Der Topf für 2026 ist ausgeschöpft; über eine Förderung 2027 will die Stadt zum Jahresende informieren",
+      "Anträge waren seit dem 15. April 2026, 8 Uhr über das Service-Portal möglich",
+      "Das Balkonkraftwerk hat einen Wechselrichter von 0,35 bis 0,8 kVA und höchstens 960 Wp Modulleistung",
+      "Je Liegenschaft werden insgesamt höchstens 4.900 € ausgezahlt",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon", "waermepumpe"],
+    balkonPauschale: 200,
+    // AUFGENOMMEN 06.09.2026, ausgeschöpft — und das ist der Grund, es überhaupt
+    // aufzunehmen: „gab es, ist beendet" ist auf der Stadtseite eine echte
+    // Auskunft, während „keine kommunale Förderung" dort schlicht falsch wäre.
+    // Wortlaut der Stadt, heute im Rohtext gelesen: „Das Förderprogramm der Stadt
+    // Braunschweig für regenerative Energien und Energieeffizienzmaßnahmen ist
+    // bereits ausgeschöpft. Eine Antragstellung ist leider nicht mehr möglich."
+    // Die Seite kündigt an, über eine Förderung 2027 zum Jahresende zu
+    // informieren; die Beträge stammen aus der FÖRDERKULISSE 2026 (PDF der Stadt,
+    // heute im Volltext gelesen).
+    //
+    // NUR DER BALKON-SATZ IST GERECHNET — dieselbe Abwägung wie bei Ulm:
+    //   * Die Wärmepumpe hat ZWEI Pauschalen, und welche gilt, hängt an der
+    //     Wärmequelle (Luft/Wasser 1.000 €, Sole/Wasser 4.000 €), dazu ein
+    //     Kältemittel-Bonus, den unser Modell nicht kennt. `wpPauschale` kennt
+    //     nur eine Zahl; jede Wahl wäre für die andere Hälfte der Antragsteller
+    //     falsch — beim Sole/Wasser-Fall um 3.000 €.
+    //   * Die 100 €/kWp sind KEIN Dach-Satz. Die Förderkulisse führt sie unter
+    //     „Stromerzeugende Fassade/Zäune (vertikale PV-Anlage, 3 - 20 kWp)";
+    //     als `pvPerKwp` versprächen sie jedem Schrägdach einen Zuschuss, den es
+    //     dafür nicht gibt. Ein erster Entwurf schrieb das als Bedingung mit
+    //     `nur: ["pv"]` hin — der Technik-Test hat es zu Recht abgewiesen: Eine
+    //     Bedingung, die auf eine Technik zeigt, die das Programm gar nicht
+    //     fördert, wird nirgends angezeigt und ist toter Text. Dass das Dach
+    //     leer ausgeht, sagt bereits `foerdert`.
+    //   * Der 150-€-Bonus für Wohngeld-, Bürgergeld-, Grundsicherungs- oder
+    //     BAföG-Bezug hängt an einer Angabe, die der Rechner nicht erhebt, und
+    //     der Speicherzuschuss an einem Balkonspeicher, den der Katalog nicht
+    //     getrennt führt. Beide informieren, beide rechnen nicht.
+    //
+    // `endetIso` ist der Tag, an dem wir den Antragsstopp gelesen haben, nicht
+    // der Tag, an dem die Stadt ihn ausgesprochen hat — den nennt sie nicht.
+    // Gemeindeschlüssel aus dem Melderegister: 03101, kreisfreie Stadt,
+    // 252.962 Einwohner. Fünfstellig ist hier richtig, weil Braunschweig
+    // kreisfrei ist.
+    //
+    // Es entsteht KEINE Förder-Stadtseite: `foerderseiteTraegt` verlangt Status
+    // „aktiv" und Dach-Photovoltaik, und beides trifft nicht zu.
+  },
+
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {
@@ -4521,7 +4600,11 @@ export function fundingAmount(
   // Programm bleibt `computable` — der Betrag ist bekannt, er ist null. „Lässt
   // sich nicht berechnen" wäre eine andere Aussage und stünde als solche auf der
   // Karte (dieselbe Unterscheidung wie bei der Kumulierungsgrenze im WP-Rechner).
-  const unterMindestleistung = f.pvMin !== undefined && anlage.kwp < f.pvMin;
+  // Beides ist dieselbe Aussage: Für DIESE Anlage zahlt das Programm nichts,
+  // der Betrag ist bekannt und null.
+  const unterMindestleistung =
+    (f.pvMin !== undefined && anlage.kwp < f.pvMin) ||
+    (f.pvNurMitSpeicher === true && !(anlage.speicherKwh > 0));
 
   if (f.percentOfCost) {
     if (unterMindestleistung) return { total: 0, computable: true, active };

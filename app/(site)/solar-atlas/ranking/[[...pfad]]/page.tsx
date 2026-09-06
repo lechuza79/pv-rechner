@@ -191,10 +191,30 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
   // Leere Klassen fliegen raus: In einem Landkreis ohne Ort unter 1.000
   // Einwohnern ist eine Kachel "Doerfer — keine wertbaren Zahlen" plus "Ganze
   // Liste (0)" reines Rauschen. Bundesweit sind ohnehin alle fuenf besetzt.
+  // WELCHE VERGLEICHSFELDER ES HIER UEBERHAUPT GIBT — einmal gerechnet, zweimal
+  // benutzt: fuer die Spitzenreiter-Kacheln und fuer den Umschalter darueber.
+  //
+  // In einem Landkreis gibt es per Definition keine kreisfreie Stadt und fast nie
+  // eine Landeshauptstadt oder Grossstadt. Der Umschalter bot sie trotzdem an
+  // und fuehrte damit auf eine leere Liste — gemessen am 05.09.2026 waren 36 von
+  // 70 Kombinationen aus Groessenklasse und Landkreis leer. Die Kacheln filterten
+  // das laengst heraus, der Umschalter daneben nicht; genau so entsteht die
+  // Sorte Widerspruch, die man auf der eigenen Seite in einem Klick sieht.
+  const zeilenJeFeld = new Map(
+    [...felderNachArt("groesse"), ...felderNachArt("rolle")].map((k) => [
+      k.slug,
+      // Ohne Rangveraenderung: Die Kacheln zeigen nur den Sieger, kein Delta.
+      rankingRows(stats, kategorie, scopeId, k, false),
+    ]),
+  );
+  // Das GEWAEHLTE Feld bleibt immer stehen, auch wenn es leer ist: Sonst kaeme
+  // jemand ueber einen Link von aussen auf eine Seite, deren Umschalter nicht
+  // zeigt, wo er gerade steht.
+  const feldSichtbar = (slug: string) => (zeilenJeFeld.get(slug)?.length ?? 0) > 0 || slug === klasse?.slug;
+
   const spitzenreiter = zeigtSpitzenreiter
     ? felderNachArt("groesse")
-        // Ohne Rangveraenderung: Die Kacheln zeigen nur den Sieger, kein Delta.
-        .map((k) => ({ klasse: k, zeilen: rankingRows(stats, kategorie, scopeId, k, false) }))
+        .map((k) => ({ klasse: k, zeilen: zeilenJeFeld.get(k.slug) ?? [] }))
         .filter((x) => x.zeilen.length > 0)
     : [];
 
@@ -386,7 +406,7 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
             <Link href={listenLink(kategorie.slug, null)} style={katStil(!klasse, true)}>
               Spitze je Größe
             </Link>
-            {felderNachArt("groesse").map((k) => (
+            {felderNachArt("groesse").filter((k) => feldSichtbar(k.slug)).map((k) => (
               <Link
                 key={k.slug}
                 href={listenLink(kategorie.slug, k.slug)}
@@ -399,8 +419,12 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
             {/* Rollen stehen NEBEN den Groessen, nicht darunter: Wer sich mit den
                 Landeshauptstaedten vergleicht, vergleicht sich nicht zusaetzlich
                 nach Groesse — es ist ein anderes Feld, keine Verfeinerung. */}
-            <span style={S.zeitraumTrenner} aria-hidden />
-            {felderNachArt("rolle").map((k) => (
+            {/* Der Trenner nur, wenn rechts davon wirklich etwas steht — sonst
+                haengt in jedem Landkreis ein Strich ohne Inhalt dahinter. */}
+            {felderNachArt("rolle").some((k) => feldSichtbar(k.slug)) && (
+              <span style={S.zeitraumTrenner} aria-hidden />
+            )}
+            {felderNachArt("rolle").filter((k) => feldSichtbar(k.slug)).map((k) => (
               <Link
                 key={k.slug}
                 href={listenLink(kategorie.slug, k.slug)}

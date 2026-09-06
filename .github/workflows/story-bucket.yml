@@ -1,0 +1,68 @@
+name: Story-Bucket
+
+# Sucht wöchentlich in den Daten nach Geschichten und legt sie in den Vorrat.
+#
+# WARUM ÜBERHAUPT GEPLANT: Ein Vorrat, der sich nur füllt, wenn jemand ihn von
+# Hand anstößt, sieht nach vier Wochen genauso aus wie am ersten Tag — und man
+# sieht ihm nicht an, dass er alt ist. Genau diese Fehlerklasse hat dieses
+# Projekt schon zweimal gehabt (stillstehende Wächter, eingefrorene
+# Länderreihen): Was niemand wiederkehrend misst, merkt niemand.
+#
+# WARUM WÖCHENTLICH: Der schnellste Takt unter den Mustern ist der
+# Saisonvergleich — jede Woche eine neue Kalenderwoche mit elf Vergleichsjahren.
+# Alles andere liefert langsamer nach (der Anlagenbestand monatlich, Kohorte und
+# Wohnungsbestand jährlich). Öfter zu suchen fände dieselben Funde noch einmal.
+#
+# WARUM GITHUB UND NICHT EIN GEPLANTER LAUF IN DER APP: Die laufen nur, wenn der
+# Rechner des Betreibers an ist — im August fiel dadurch eine Woche Überwachung
+# aus, ohne dass es jemand bemerkte.
+#
+# WAS ER NICHT TUT: entscheiden. Er legt Funde ab; was davon ein Beitrag wird,
+# wählt ein Mensch im Story-Bucket aus. Die Spalten, die dem Menschen gehören
+# (Stand und Notiz), fasst der Lauf nie an.
+
+on:
+  schedule:
+    # Montags früh: Die Vorwoche ist abgeschlossen, der Saisonvergleich hat sie
+    # damit als Kandidaten — und die Woche beginnt mit einem gefüllten Vorrat.
+    - cron: "23 5 * * 1"
+  workflow_dispatch:
+
+jobs:
+  suchen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Suchlauf anstoßen
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -euo pipefail
+          if [ -z "${CRON_SECRET:-}" ]; then
+            echo "::error::CRON_SECRET fehlt in den Repo-Secrets"
+            exit 1
+          fi
+          # Der Lauf geht über alle Gemeinden und mehrere Datenquellen. Ein
+          # Zeitlimit gehört dran: Ohne eines hinge der Job bis zum Job-Limit
+          # und meldete am Ende „abgebrochen" — und das liest man als „egal",
+          # nicht als Fehler.
+          # -f macht den Lauf bei 4xx/5xx rot, statt eine Fehlermeldung still
+          # als Erfolg zu protokollieren.
+          curl -sS -f -m 300 \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            "https://solar-check.io/api/social/funde" > antwort.json
+
+      # Der Bericht liegt als DATEI im Repo, nicht als Text im Workflow.
+      # Als Skript über die Standardeingabe gefüttert scheiterte er an der
+      # ersten Zeile mit einem Umlaut: Python liest von dort nach der
+      # Locale-Einstellung, nicht als UTF-8. Beim Probelauf gefunden — im
+      # Wochenlauf wäre er jeden Montag rot geworden, mit einer Meldung, die
+      # nach einem Datenfehler aussieht.
+      - name: Ergebnis prüfen und berichten
+        run: python3 scripts/story-bucket-bericht.py antwort.json
+
+      - name: Hinweis bei Fehlschlag
+        if: failure()
+        run: echo "::warning::Der Story-Bucket wurde nicht gefüllt — siehe Protokoll oben."

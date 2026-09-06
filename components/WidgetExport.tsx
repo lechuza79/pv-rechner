@@ -154,6 +154,7 @@ export function WidgetFooter({
   share = true,
   showCta = true,
   showEmbed = false,
+  onEmbed,
   narrow = false,
   compact = false,
 }: {
@@ -173,6 +174,17 @@ export function WidgetFooter({
    * button pointing at the page you are already reading is noise, not a step. */
   showCta?: boolean;
   showEmbed?: boolean;
+  /**
+   * Eigene Einbett-Aktion des Aufrufers.
+   *
+   * Ohne sie springt der Knopf in die Widget-Galerie — richtig für ein Widget,
+   * das irgendwo eingebettet ist, falsch auf einer Seite, die einen KONKRETEN
+   * Ort zeigt: Dort gehört der fertige Code für diesen Ort hin, nicht ein Sprung
+   * in eine Liste, in der er an neunter Stelle steht. Wird sie übergeben, gilt
+   * sie AUCH auf eigenen Seiten (`onsite`) — sonst bliebe der Knopf genau dort
+   * aus, wo er gebraucht wird.
+   */
+  onEmbed?: () => void;
   narrow?: boolean;
   /**
    * Ganz kleine Karten (Einzel-Kennzahl, Ampel, Mini-Ring): dort sprengt eine
@@ -277,9 +289,10 @@ export function WidgetFooter({
               onTwitter={chartExport.shareTwitter}
               onCite={() => setCiteOpen(true)}
               onEmbed={
-                showEmbed && !onsite
+                onEmbed ??
+                (showEmbed && !onsite
                   ? () => window.open(`/energie-widgets#${widget.id}`, "_blank", "noopener")
-                  : undefined
+                  : undefined)
               }
             />
           </div>

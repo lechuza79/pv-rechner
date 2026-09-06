@@ -685,6 +685,66 @@ async function messeAboBereit(): Promise<AboBereit | null> {
   }
 }
 
+/**
+ * Ist die Datenbank-Sicherheitsgrenze noch dicht?
+ *
+ * DER ANLASS (05.09.2026): Die Selbstauskunft (`sc_security_posture`) und ihr
+ * Urteil (`auditPosture`) gibt es seit dem 29.07.2026 — aufgerufen hat sie
+ * seitdem niemand. Kein Waechter, keine Action, kein Auftrag nennt die Route.
+ * In den fuenf Wochen dazwischen kamen rund 40 Tabellen und 40 Routen dazu;
+ * ob eine davon ohne Zeilenschutz angelegt wurde, haette sich in keiner
+ * Anzeige gezeigt: Die Seite laeuft, die Tests sind gruen, und mit dem
+ * Anon-Key aus dem Browser-Bundle waere die Tabelle trotzdem lesbar.
+ *
+ * Dieselbe Klasse wie das Rechtstexte-Runbook, das drei Tage im Repo lag,
+ * ohne dass ein Auftrag es ausfuehrte: Eine Pruefung, die existiert und nie
+ * laeuft, ist von keiner Pruefung nicht zu unterscheiden. Deshalb haengt sie
+ * hier — der Gesundheitscheck ist die einzige Pruefung, die auch dann laeuft,
+ * wenn der Rechner des Betreibers aus ist.
+ *
+ * Gefragt wird die Produktion selbst (`?verify=1` misst nur, spielt nichts
+ * ein). Zurueck kommt das Urteil samt Problemliste; die Rohdaten bleiben dort.
+ */
+async function messeSicherheitsPosture(): Promise<SicherheitsPosture | null> {
+  const geheim = process.env.CRON_SECRET;
+  if (!geheim) return null; // Ohne Betriebsgeheimnis keine Auskunft — kein Befund.
+  try {
+    const r = await fetch(`${BASE_URL}/api/security/setup?verify=1`, {
+      headers: { Authorization: `Bearer ${geheim}` },
+      signal: AbortSignal.timeout(20000),
+    });
+    // Die Route antwortet bei Befund absichtlich mit 500 — das ist die
+    // Auskunft, nicht ein gescheiterter Abruf. Nur was gar nicht als Urteil
+    // lesbar ist, gilt als „konnte nicht nachsehen".
+    const d = (await r.json().catch(() => null)) as { ok?: unknown; problems?: unknown } | null;
+    if (typeof d?.ok !== "boolean") return null;
+    return { ok: d.ok, problems: Array.isArray(d.problems) ? d.problems.map(String) : [] };
+  } catch {
+    return null;
+  }
+}
+
+export type SicherheitsPosture = { ok: boolean; problems: string[] };
+
+/**
+ * Was aus der Selbstauskunft ein Befund fuer Claude wird.
+ *
+ * Jedes Problem ist eine offene Tuer, keine Warnung: Eine Tabelle ohne
+ * Zeilenschutz ist JETZT lesbar, nicht irgendwann. Deshalb gibt es hier kein
+ * Gelb. „Nicht gemessen" (null) bleibt stumm — dieselbe Trennung wie ueberall
+ * sonst zwischen „ist kaputt" und „Abruf kam nicht durch".
+ */
+export function sicherheitsBefund(p: SicherheitsPosture | null): string[] {
+  if (!p || p.ok) return [];
+  const liste = p.problems.length ? p.problems.join(" · ") : "Urteil rot, aber ohne Problemliste.";
+  return [
+    `Die Datenbank-Sicherheitsgrenze ist nicht dicht: ${liste} Der Anon-Key steht im ` +
+      `Browser-Bundle, was hier offen ist, ist oeffentlich. Zu tun: Ursache in lib/security-sql.ts ` +
+      `beheben (neue Tabelle ohne RLS → Setup-Route der Tabelle), danach /api/security/setup ohne ` +
+      `verify aufrufen und den Lauf gruen sehen.`,
+  ];
+}
+
 interface AboBereit {
   bereit: boolean;
   fehlt: string[];
@@ -1741,6 +1801,17 @@ async function main() {
     // hieße, eine Beobachtung zu behaupten, die es nicht gab.
     warnings.push("MaStR-Datenstand nicht abrufbar — keine Aussage über die Frische der Atlas-Zahlen.");
   }
+
+  // ── Ist die Datenbank-Sicherheitsgrenze noch dicht? ───────────────────────
+  const posture = await messeSicherheitsPosture();
+  lines.push(
+    posture === null
+      ? "Sicherheitsgrenze: nicht messbar (Selbstauskunft nicht erreichbar)."
+      : posture.ok
+        ? "Sicherheitsgrenze: dicht (Zeilenschutz auf jeder Tabelle, SQL-Funktion nur fuer den Dienst)."
+        : `Sicherheitsgrenze: ${posture.problems.length} Problem(e).`,
+  );
+  forClaude.push(...sicherheitsBefund(posture));
 
   // ── Kann die Produktion Abo-Mails verschicken? ────────────────────────────
   const aboBereit = await messeAboBereit();

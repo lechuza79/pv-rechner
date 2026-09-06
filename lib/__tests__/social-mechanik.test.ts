@@ -196,6 +196,20 @@ describe("Die echten Beiträge", () => {
    * Schrumpfen rot wird, wird gepflegt — und eine leere Liste ist die schärfste
    * Fassung davon: Ab jetzt ist JEDER Befund neu.
    */
+  // DIE ZWÖLF LIZENZ-BEFUNDE SIND WEG, und zwar nicht durch eine gelockerte
+  // Regel: Die Quellenzeile wird nicht mehr getippt, sondern aus dem
+  // Quellenregister gebaut — Name und Lizenz kommen von dort, und ohne Lizenz
+  // kann sie gar nicht erst entstehen. Der Anlass war der Einwand des
+  // Betreibers: Eine Angabe, die ohnehin gerechnet wird, gehört nicht als Sperre
+  // gemeldet, sondern richtig erzeugt. Sonst steht dieselbe Korrektur bei jedem
+  // neuen Beitrag wieder an, und irgendwann schaltet jemand die Sperre ab, statt
+  // die Zeile zu reparieren. Die Sperre BLEIBT trotzdem — sie fängt weiterhin,
+  // wer eine Quellenzeile von Hand tippt.
+  //
+  // Die beiden übrigen sind mit den neuen Bildformen gefallen: Die Aufteilung
+  // trägt jetzt ihr Ganzes (vorher normierte sie am größten der drei Werte,
+  // während die Überschrift „nur gut ein Viertel" sagte), und das Jahr wird als
+  // blanke Ziffernfolge gesetzt statt über die Zahlenformatierung („2.024").
   const BEKANNTE_DEFEKTE: Record<string, string[]> = {};
 
   it("meldet genau die bekannten Defekte, nicht mehr und nicht weniger", () => {

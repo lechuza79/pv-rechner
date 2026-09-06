@@ -1,4 +1,4 @@
-import { calc, calcEigenverbrauch, estimateCost, calcWeightedFeedIn } from "./calc";
+import { calc, calcEigenverbrauch, estimateCost, calcWeightedFeedIn, batteryReplaceCost } from "./calc";
 import { DEFAULT_FEED_IN } from "./feedin-config";
 import { DEFAULT_PRICES } from "./prices-config";
 import { fundingAmount, type FundingProgram } from "./funding-programs";
@@ -53,6 +53,10 @@ export function buildFundingExamples(yieldKwhKwp: number, f?: FundingProgram): F
     const result = calc({
       kwp, kosten: netto, strompreis: DEFAULT_PRICES.electricityPrice, eigenverbrauch: ev,
       einspeisung, stromSteigerung: DEFAULT_PRICES.electricityIncrease, ertragKwp: yieldKwhKwp, monthly: null,
+      // Wie der Rechner: Ein Speicher wird im Jahr 15 ersetzt. Ohne diese Zeile
+      // versprach die Förderseite 25.381 € Gewinn, der Rechner nach dem Klick
+      // 23.727 € — gleiche Konfiguration, gleiche Beschriftung.
+      batteryReplace: batteryReplaceCost(spKwh),
     });
     return { kwp, spKwh, brutto, foerderung, foerderComputable, netto, amort: result.be ? result.be.i : null, total: result.total };
   });

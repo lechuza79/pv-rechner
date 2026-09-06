@@ -157,9 +157,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const einzelOrte = [...new Set([...ausPlan, ...ausOutreach])].filter((ags) => ags.length === 8);
   if (einzelOrte.length && !atlasLevelReleased("gemeinde")) {
     try {
-      const { getGemeindePfad } = await import("../lib/atlas");
+      // ALLE Orte in DREI Abfragen, nicht drei je Ort — siehe getGemeindePfade.
+      // Einzeln aufgelöst waren es am 05.09.2026 bereits 867 Abfragen in Reihe,
+      // und der Produktionsbau brach daran zweimal ab.
+      const { getGemeindePfade } = await import("../lib/atlas");
+      const pfade = await getGemeindePfade(einzelOrte);
       for (const ags of einzelOrte) {
-        const p = await getGemeindePfad(ags);
+        const p = pfade[ags];
         if (!p) continue;
         atlasPages.push({
           url: `${BASE_URL}/solar-atlas/${p.bundesland}/${p.kreis}/${p.gemeinde}`,

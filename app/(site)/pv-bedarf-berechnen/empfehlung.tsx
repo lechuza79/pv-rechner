@@ -841,7 +841,7 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                 </div>
                 <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), borderTop: `1px solid ${v('--color-border')}`, paddingTop: 10, lineHeight: 1.6 }}>
                   {rec.kwp < rec.reasoning.maxRoofKwp
-                    ? `Diese Konfiguration bringt über 25 Jahre die höchste Rendite — größere Anlagen senken den Eigenverbrauchsanteil zu stark.`
+                    ? `Diese Konfiguration bringt über 25 Jahre die höchsten Gewinn — größere Anlagen senken den Eigenverbrauchsanteil zu stark.`
                     : `Die Empfehlung nutzt deine Dachfläche maximal aus (${rec.reasoning.maxRoofKwp} kWp).`
                   }
                   {rec.speicherKwh > 0 && ` Der ${rec.speicherKwh.toLocaleString("de-DE")} kWh Speicher hebt deine Autarkie von ${rec.reasoning.autarkieOhneSpeicher}% auf ${rec.reasoning.autarkie}% (Eigenverbrauch ${rec.reasoning.eigenverbrauchOhneSpeicher}% → ${rec.reasoning.eigenverbrauch}%).`}
@@ -871,8 +871,8 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
                 </div>
                 <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), lineHeight: 1.5 }}>
                   {fundingStack.applied.map((a) => a.program.name).join(", ")} senkt deine Investition für diese
-                  Anlage um rund {Math.round(fundingStack.total).toLocaleString("de-DE")} €. Im Ergebnis ist die
-                  Förderung bereits eingerechnet.
+                  Anlage um rund {Math.round(fundingStack.total).toLocaleString("de-DE")} €. Die Zahlen hier oben rechnen
+                  noch ohne sie — auf der Ergebnisseite des Rechners ist die Förderung dann eingerechnet.
                 </div>
               </div>
             )}

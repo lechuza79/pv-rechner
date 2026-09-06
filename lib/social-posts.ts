@@ -12,12 +12,13 @@
 // lib/social-kennzahlen.ts (server-only) und werden hereingereicht.
 
 import { fmtPvLeistung } from "./atlas-format";
-import { DATA_SOURCES, sourceLabel } from "./data-sources";
 import { zeitraumSeitStichtag } from "./anlagenbestand";
+import { sourceLabel } from "./data-sources";
 import { feedInRatesFor, naechsteDegressionIso } from "./feedin-config";
 import { eegVerfahrenSatz } from "./eeg-reform-config";
 import { PERCAPITA_SERIES, YEARS_PERCAPITA } from "./country-comparison-percapita";
 import type { KategorieSchluessel } from "./redaktions-kategorien";
+import { DATA_SOURCES } from "./data-sources";
 import { KARTEN_STIL_STANDARD, istKartenStil, type KartenStil } from "./social-karten-stil";
 import { moeglicheFormen as formenFuer } from "./social-bildformen";
 import { fuelle, type PlatzhalterInfo } from "./social-vorlage";
@@ -412,25 +413,48 @@ const MARKE = "Solar Check";
  * Im TEXT muss er stehen, damit die Erwähnung der Unternehmensseite ihn findet.
  * Im BILD steht daneben das Logo — dort wäre der Name ein zweites Mal dasselbe.
  */
-function quellenzeile(standIso: string, mitMarke: boolean): string {
+/**
+ * Name und Lizenz kommen aus dem Quellenregister, nicht aus diesem Modul.
+ *
+ * DIE LIZENZ IST PFLICHT, und sie war getippt — also fehlte sie. Die mechanische
+ * Prüfung hat das gemeldet und den Versand gesperrt, was richtig ist; die
+ * Meldung war trotzdem der falsche Ort. Eine Angabe, die ohnehin gerechnet wird,
+ * darf gar nicht erst ohne Lizenz entstehen können — sonst steht dieselbe
+ * Korrektur bei jedem neuen Beitrag wieder an, und irgendwann schaltet jemand
+ * die Sperre ab, statt die Zeile zu reparieren.
+ *
+ * Die Sperre bleibt: Sie fängt weiterhin, wer eine Quellenzeile von Hand tippt.
+ */
+function quelleAus(schluessel: "mastr" | "ember", stand: string, mitMarke: boolean): string {
+  // Name, Lizenz UND Änderungshinweis kommen aus der zentralen Beschriftung —
+  // nicht aus einer eigenen Zusammensetzung der Registerfelder.
+  //
+  // Das war hier bereits die dritte Fassung derselben Angabe: Sie hängte für
+  // CC BY ein selbst formuliertes „Daten verändert" an und ließ den Hinweis, den
+  // das Register führt, weg — beim Anlagenregister damit ersatzlos, obwohl
+  // dl-de/by-2-0 genau ihn verlangt. Aus der Ferne sieht das aus wie eine
+  // Verbesserung (die Lizenz stand ja da); geschuldet sind aber DREI Teile, und
+  // der dritte fehlte. Dieselbe Falle hatte die Quellenkante schon einmal, als
+  // sie sich ihre Kurzform selbst baute und den Hinweis dabei verlor.
+  const basis = `${sourceLabel(DATA_SOURCES[schluessel])}. Stand ${stand}. Eigene Berechnung`;
+  return mitMarke ? `${basis}, ${MARKE}.` : `${basis}.`;
+}
+
+export function quellenzeile(standIso: string, mitMarke: boolean): string {
   const d = new Date(standIso);
   const datum = d.toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" });
   // AUS DEM REGISTER, nicht getippt: Der Name stand hier zusammen mit dem
   // Datenstand als eine Zeichenkette, und dabei fiel die Lizenz weg —
   // „Marktstammdatenregister (Bundesnetzagentur), Stand …, Eigene Berechnung"
-  // ohne „dl-de/by-2-0". Das Register führt sie, `sourceLabel` setzt sie samt
-  // Änderungshinweis, und beide sind Pflichtbestandteile: Der Vermerk steht im
-  // BILD, also in dem Teil, der beim Weiterteilen mitreist und für den die
-  // Lizenzpflicht überhaupt der Grund war.
+  // ohne „dl-de/by-2-0". Der Vermerk steht im BILD, also in dem Teil, der beim
+  // Weiterteilen mitreist und für den die Lizenzpflicht überhaupt der Grund war.
   //
   // Dieselbe Fehlerklasse hat das Projekt bei den drei CC-BY-Quellen schon
-  // bezahlt (fehlender Lizenzverweis) und ein zweites Mal in der Quellenkante,
-  // die sich ihre Kurzform selbst zusammenbaute. Gefunden hat es hier eine
-  // parallele Sitzung, kein Test — der prüfte auf „dl-de/by-2-0 ODER CC BY 4.0
-  // ODER Bundesnetzagentur" und ließ den Behördennamen als Ersatz für eine
-  // Lizenz durchgehen.
-  const basis = `${sourceLabel(DATA_SOURCES.mastr)}, Stand ${datum}. Eigene Berechnung`;
-  return mitMarke ? `${basis}, ${MARKE}.` : `${basis}.`;
+  // bezahlt und ein zweites Mal in der Quellenkante, die sich ihre Kurzform
+  // selbst zusammenbaute. Ein Test darauf ist nur so scharf wie seine
+  // Bedingung — der hiesige ließ „Bundesnetzagentur" als Ersatz für eine Lizenz
+  // durchgehen.
+  return quelleAus("mastr", datum, mitMarke);
 }
 
 /**
@@ -1306,12 +1330,11 @@ export function postNurBalkon(k: SocialKennzahlen): SocialPost {
  */
 function quellenzeileEmber(mitMarke: boolean): string {
   const bis = YEARS_PERCAPITA[YEARS_PERCAPITA.length - 1];
-  // Auch dieser Zweig war getippt, und auch er wich ab: „Daten verändert" gegen
-  // den Änderungshinweis, den das Register für Ember führt. Er war nur
-  // vollständiger als der andere, nicht richtiger — welche Fassung stimmte,
-  // hing daran, wer die Zeile gerade schrieb.
-  const basis = `${sourceLabel(DATA_SOURCES.ember)}. Stand ${jahrText(bis)}. Eigene Berechnung`;
-  return mitMarke ? `${basis}, ${MARKE}.` : `${basis}.`;
+  // Auch dieser Zweig war getippt, und auch er wich ab — nur vollständiger als
+  // der andere, nicht richtiger: Welche Fassung stimmte, hing daran, wer die
+  // Zeile gerade schrieb. Das Jahr wird als blanke Ziffernfolge gesetzt, nie über
+  // die Zahlenformatierung: Aus 2024 wurde dort „2.024".
+  return quelleAus("ember", String(bis), mitMarke);
 }
 
 /**

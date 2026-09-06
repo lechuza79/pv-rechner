@@ -78,6 +78,10 @@ export default function InternalShell({
         {
           label: "Social Media",
           children: [
+            // Der Vorrat steht VOR der Entwicklung, weil er ihr vorausgeht:
+            // Erst wird gestöbert und ausgewählt, dann entsteht daraus ein
+            // Beitrag. Die Reihenfolge im Menü ist der Arbeitsweg.
+            { href: "/admin/redaktion/bucket", label: "Story-Bucket" },
             { href: "/admin/redaktion", label: "Entwicklung", exact: true },
             // Die Templates stehen bei Social Media, weil ein Template dort
             // seinen Zweck hat: Es ist die Bildform eines Posts, nicht die eines

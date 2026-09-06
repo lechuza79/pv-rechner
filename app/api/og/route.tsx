@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
-import { ANLAGEN, SPEICHER, PERSONEN, INSULATION_BESTAND, HAUSTYP_WP, DACHARTEN, NATIONAL_AVG_YIELD } from "../../../lib/constants";
+import { ANLAGEN, SPEICHER, PERSONEN, INSULATION_BESTAND, HAUSTYP_WP, DACHARTEN, NATIONAL_AVG_YIELD, SCENARIOS, YEARS } from "../../../lib/constants";
 import { dachErtragKwp } from "../../../lib/dach-ertrag";
 import { type TiltOrientation } from "../../../lib/tilt-config";
 import { calcEigenverbrauch, estimateCost, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
@@ -290,13 +290,20 @@ export async function GET(req: NextRequest) {
 
   const result = calc({
     kwp, kosten, strompreis, eigenverbrauch: effEv, einspeisung: einsp,
-    stromSteigerung: 0.03, ertragKwp, monthly: null,
+    // Dasselbe Szenario wie die Seite ohne Reiterwahl (realistisch). Hier stand
+    // 0,03 — das Bild im Chat zeigte 13.241 € Gewinn, die Seite 11.485 €.
+    // Was strukturell bleibt: Das Bild läuft ohne Datenbank, also ohne Live-
+    // Preise und ohne Monatsprofil; die Formeln sind dieselben, die Eingaben
+    // nicht vollständig.
+    stromSteigerung: SCENARIOS.find((s) => s.id === "realistic")!.strom, ertragKwp, monthly: null,
     batteryReplace: batteryReplaceCost(spKwh),
   });
 
   const amortYears = result.be ? result.be.i : null;
   const rendite25j = result.total;
-  const avgSavings = Math.round(rendite25j / 25);
+  // Dieselbe Formel wie „⌀ Ersparnis / Jahr" auf der Seite: mittlerer
+  // Jahresnutzen, nicht Gewinn durch 25 (das war um die Investition zu klein).
+  const avgSavings = Math.round((rendite25j + kosten) / YEARS);
 
   const amortColor = amortYears !== null ? C_ACCENT : C_NEGATIVE;
   const amortText = amortYears !== null ? `${amortYears}` : ">25";
@@ -360,7 +367,7 @@ export async function GET(req: NextRequest) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
           <div style={{ display: "flex", gap: 40 }}>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: 14, color: "#777777", letterSpacing: 1 }}>RENDITE 25 J.</span>
+              <span style={{ fontSize: 14, color: "#777777", letterSpacing: 1 }}>GEWINN 25 J.</span>
               <span style={{ fontSize: 28, fontWeight: 700, fontFamily: "JetBrains Mono", color: rendite25j > 0 ? C_POSITIVE : C_NEGATIVE }}>
                 {`${renditeStr} \u20AC`}
               </span>

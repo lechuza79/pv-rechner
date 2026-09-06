@@ -217,3 +217,52 @@ describe("Wann eine Mail überhaupt rausgeht", () => {
     expect(hatNachricht(gemeindeMeldungen({ daten: daten(), heuteJahr: JAHR }))).toBe(true);
   });
 });
+
+describe("Grammatik: die Ortsangabe", () => {
+  // GEMESSEN AM 05.09.2026, live in der Abo-Mail seit dem 01.09.: Alle fünf
+  // Meldungen setzten die Ortsangabe mit ihrer Präposition ein UND schrieben
+  // davor noch einmal eine — „2025 gingen in in Heringen (Werra) 124 Anlagen
+  // ans Netz". Kein Typfehler, kein roter Test, keine kaputte Seite; sichtbar
+  // erst, als dieselbe Rechnung zum ersten Mal auf einer Seite stand.
+  //
+  // Zwei Formen des Fehlers, und nur die erste sieht man beim Überfliegen:
+  // die doppelte Präposition — und der Ort als SUBJEKT mit Präposition davor
+  // („in Heringen fördert Solaranlagen"), der grammatisch gar kein Subjekt mehr
+  // hat.
+  //
+  // Geprüft wird über mehrere Ortsnamen, weil die Präposition wechselt: „in"
+  // bei einer Gemeinde, „im" bei einem Neutrum, „in der" bei einem Femininum.
+  // Ein Test auf ein einziges „in in" fände die anderen beiden nicht.
+  const ORTE = ["Musterdorf", "Saarland", "Pfalz"];
+
+  it("keine doppelte Ortspräposition", () => {
+    for (const name of ORTE) {
+      for (const m of gemeindeMeldungen({ daten: daten({ name }), heuteJahr: JAHR })) {
+        const text = `${m.titel} ${m.text}`;
+        expect(text, `${name}: ${text}`).not.toMatch(/\b(in|im)\s+(in|im)\s+der\s/i);
+        expect(text, `${name}: ${text}`).not.toMatch(/\b(in|im)\s+(in|im)\b/i);
+      }
+    }
+  });
+
+  it("der Ort steht als Subjekt ohne Präposition", () => {
+    // „fördert" und „steht" haben den Ort als Subjekt. Eine Präposition davor
+    // macht den Satz kopflos — und beides stand so im Code.
+    for (const name of ORTE) {
+      for (const m of gemeindeMeldungen({
+        daten: daten({ name }),
+        heuteJahr: JAHR,
+        foerderung: [{ name: "Solarbonus", zaehlt: true }],
+        platzierung: {
+          messgroesse: "Solarleistung je Einwohner",
+          rang: 1,
+          ausN: 12,
+          gruppe: "im Landkreis Fulda",
+        },
+      })) {
+        const text = `${m.titel} ${m.text}`;
+        expect(text, `${name}: ${text}`).not.toMatch(/\b(in|im|in der)\s+\S+\s+(fördert|steht)\b/i);
+      }
+    }
+  });
+});

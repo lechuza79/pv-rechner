@@ -599,7 +599,7 @@ export default function EinspeiseRechner() {
 
           <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.7, color: v("--color-text-muted"), marginBottom: space.lg }}>
             Annahmen: Standort-Ertrag {nf(ertragKwp)} kWh je kWp
-            {standortYield !== null ? " (dein Standort)" : " (konservativer Deutschland-Durchschnitt)"}
+            {standortYield !== null ? " (dein Standort)" : " (Deutschland-Durchschnitt bei optimaler Ausrichtung)"}
             {neigungsFaktor < 1 ? ", inklusive Dachneigung und Ausrichtung" : ""}, Nutzungsprofil „teils zuhause",{" "}
             {(DEGRAD * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} % Moduldegradation
             pro Jahr, gerechnet in ganzen Anlagenjahren. Die Vergütung ist nur die halbe Wahrheit:
