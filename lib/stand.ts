@@ -107,9 +107,11 @@ export const STAND: Record<string, StandSeite> = {
       { was: "CO₂-Preispfad", iso: CO2_PRICE.geprueftIso, praezision: "tag", wertIso: CO2_PRICE.validFrom },
       // Eigener Eintrag seit 05.09.2026: Die Strom- und Gaspreispfade standen
       // bis dahin ohne Quelle im Code — die oberste (+5 % Strom im Jahr) ist in
-      // 19 Jahren nie vorgekommen. Sie folgen jetzt der einzigen amtlichen
-      // Projektion deutscher Haushalts-Endkundenpreise und tragen deshalb
-      // deren Stand, nicht den der Marktwerte.
+      // 19 Jahren nie vorgekommen. Seit dem 06.09.2026 ist jede der sechs
+      // Zahlen ein Studienwert aus zwei Quellen: der amtlichen Projektion
+      // (Prognos/UBA) und der Fraunhofer-ISE-Kurzstudie zur Bio-Treppe.
+      // Der Wertstand nennt die ÄLTERE von beiden — die jüngere zu nennen
+      // behauptete Aktualität für Zahlen, die sie nicht haben.
       { was: "Strom- und Gaspreispfade", iso: DEFAULT_HEATPUMP_CONFIG.geprueftPreispfadeIso, praezision: "tag", wertIso: DEFAULT_HEATPUMP_CONFIG.preispfadeValidFrom },
       // Eigener Wertstand, weil er ein STICHTAG ist und keine Monatsangabe: Der
       // Förderreport zählt bis zu einem Tag, und jeder Jahrgang hat seinen

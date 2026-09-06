@@ -415,39 +415,75 @@ Seit 05.09.2026 eigener Prüfpunkt. Bis dahin standen die drei Pfade ohne
 Quelle im Code — der oberste (+5 % Strom im Jahr) ist in 19 Jahren nie
 vorgekommen, gemessen an den Eurostat-Reihen für deutsche Haushalte.
 
-**Leitquelle:** Kemmler u. a., „Rahmendaten und Endverbrauchspreise für die
-Treibhausgas-Projektionen", Prognos AG im Auftrag des Umweltbundesamtes.
-Volltext der 3. Auflage (Mai 2026) in `docs/quellen/`.
+**Zwei Leitquellen, seit 06.09.2026.** Vorgabe des Betreibers: „nehm die werte
+aus den studien und referenziere darauf. wir müssen nicht aufrunden." Jede der
+sechs Zahlen ist seitdem ein Studienwert, keine gegriffene Zahl mehr.
 
-Sie ist die einzige gefundene amtliche Projektion deutscher
-Haushalts-Endkundenpreise und führt zwei Zeilen, die dieser Rechner braucht:
-einen eigenen Wärmepumpentarif und den Gaspreis mit getrennt ausgewiesenem
-CO₂-Aufschlag. Verworfen wurden EU-Referenzszenario, die Folgenabschätzungen
-der Kommission, der World Energy Outlook und die Langfristszenarien — keine
-davon nennt deutsche Haushalts-Endkundenpreise, und keine einen projizierten
-Gas-Endkundenpreis für irgendein Land.
+1. **Kemmler u. a., „Rahmendaten und Endverbrauchspreise für die
+   Treibhausgas-Projektionen 2026"**, 3. Auflage (Mai 2026), Prognos AG im
+   Auftrag des Umweltbundesamtes. Volltext in `docs/quellen/`. Tabelle 3
+   (Preisindex BIP), 12 (Erdgas Haushalte), 13 (Strom Wärmepumpentarif). Sie
+   ist die einzige gefundene AMTLICHE Projektion deutscher
+   Haushalts-Endkundenpreise. Verworfen wurden EU-Referenzszenario, die
+   Folgenabschätzungen der Kommission, der World Energy Outlook und die
+   Langfristszenarien — keine davon nennt deutsche Haushalts-Endkundenpreise.
+2. **Fraunhofer ISE, Kurzstudie „Vergleich Wärmeversorgung / Auswirkungen der
+   Bio-Treppe in § 43"** (23.06.2026, im Auftrag der MVV Energie AG). Volltext
+   in `docs/quellen/`. Folie 17 (Endkundenpreise), 19 (Gas-Zusammensetzung),
+   21 (Netzentgelt-Annahmen), 22 (Strom-Zusammensetzung). Sie liefert das, was
+   die amtliche Projektion NICHT hat: zwei Szenarien statt eines.
+
+**Die Zuordnung — sie steht hier, weil sie nicht offensichtlich ist**
+
+| | Strom | Gas (ohne CO₂, ohne Beimischung) |
+|---|---|---|
+| optimistisch (WP günstig) | amtliche Projektion, WP-Tarif | UBA-Zerlegung, Netzentgelt ×3,64 |
+| realistisch | ISE, unteres Szenario | UBA-Zerlegung unverändert |
+| pessimistisch (WP ungünstig) | ISE, oberes Szenario | UBA-Zerlegung, Netzentgelt konstant |
+
+Beim STROM ist die amtliche Projektion der GÜNSTIGSTE Pfad, nicht die Mitte:
+Sie ist die einzige Quelle, nach der der Wärmepumpentarif real fällt, und
+liegt unter beiden ISE-Szenarien.
 
 **Was zu prüfen ist**
 
-1. Ist eine neue Auflage erschienen? Die Rahmendaten erscheinen jeweils im
-   Frühjahr, der Projektionsbericht selbst alle zwei Jahre.
-2. Die beiden Reihen ablesen (Tabelle für Strom: Zeile „Haushalte
-   Wärmepumpen-Tarif, Endverbrauchspreis inkl. MwSt."; Tabelle für Gas: Zeile
-   „Erdgas Haushalte (20-200 GJ), Endverbrauchspreis" samt der eigenen
-   CO₂-Zeile).
-3. Die Steigerungsraten SELBST ausrechnen, über 2025 bis 2045, und mit dem
-   BIP-Deflator derselben Quelle von real auf nominal umrechnen. Der Rechner
-   zinst nominal auf; wer die realen Werte direkt einsetzt, unterschätzt um
-   gut zwei Prozentpunkte.
-4. **Den CO₂-Anteil vom Gaspreis abziehen**, bevor der Pfad gesetzt wird. Der
-   Rechner addiert ihn separat; wer den Gesamtpreis nimmt, zählt ihn zweimal.
-   Genau dieser Fehler stand am 05.09.2026 kurzzeitig als Begründung im Code.
-5. Nur der MITTLERE Pfad folgt der Quelle direkt. Die beiden Ränder spannen
-   die Netzentgelt-Prognosen auf (Consentec/Frontier für den Strom, Agora und
-   Öko-Institut für das Gasnetz) und werden gegen deren neueste Fassung
-   geprüft.
+1. Ist eine neue Auflage einer der beiden Quellen erschienen? Die Rahmendaten
+   erscheinen im Frühjahr, der Projektionsbericht alle zwei Jahre.
+2. Die Reihen ablesen: UBA Tabelle 13 Zeile „Haushalte Wärmepumpen-Tarif,
+   Endverbrauchspreis inkl. MwSt." (2025 → 2045), UBA Tabelle 12 die
+   Nettokomponenten von „Erdgas Haushalte (20-200 GJ)".
+3. Die Raten SELBST ausrechnen und mit dem BIP-Deflator derselben Quelle
+   (Tabelle 3) von real auf nominal umrechnen — für UBA über 2025–2045, für
+   ISE über 2026–2045, jeweils mit dem passend interpolierten Index. Der
+   Rechner zinst nominal auf; wer die realen Werte direkt einsetzt,
+   unterschätzt um gut zwei Prozentpunkte.
+4. **Den CO₂-Anteil vom Gaspreis abziehen — NETTO**, bevor der Pfad gesetzt
+   wird. Der Rechner addiert ihn separat; wer den Gesamtpreis nimmt, zählt ihn
+   zweimal. Die MwSt. steht in Tabelle 12 als eigene Zeile: Ohne CO₂ sind es
+   2025 wie 2045 exakt 98 EUR/MWh, der reale Gaspreis ist also konstant. Wer
+   stattdessen vom Bruttopreis den Nettobetrag des CO₂ abzieht, bekommt
+   +0,29 %/a — so stand es einen Tag lang im Code.
+5. **Die ISE-GASKURVEN sind nicht übernehmbar.** Sie enthalten laut Folie 19
+   den CO₂-Preis UND die Grüngas-Beschaffung als eigene Komponenten; beides
+   rechnet dieser Rechner getrennt. Ihre Raten (real +2,45 / +5,74 %/a) zu
+   übernehmen zählt beides ein zweites Mal. Aus ISE kommt beim Gas nur die
+   Netzentgelt-Bandbreite (Folie 21), und zwar als VERHÄLTNIS: 2,2 ct konstant
+   bzw. 8,0 ct in 2045, also Faktor 1,00 bzw. 3,64 auf den UBA-Startwert. Den
+   ISE-Absolutwert einzusetzen mischte zwei Abgrenzungen.
+6. **Die ISE-Strompfade stehen nur als Grafik.** Sie werden aus der
+   800-dpi-Fassung von Folie 17 pixelgenau gemessen (Raster 376,3 px je 5 ct,
+   Nulllinie Zeile 4847,5), nie mit dem Auge abgelesen — der Ablesefehler geht
+   voll in die Rate ein. Am linken Rand verdeckt die helle Kurve die dunkle:
+   Dort gilt der Wert der OBEN liegenden für beide (Gegenprobe Folie 22, die
+   2026er Säulen beider Szenarien sind gleich hoch).
 
 **Grenze der Selbstheilung:** Der Lauf darf die Raten anpassen, wenn die neue
 Auflage der Leitquelle sie hergibt und der Sprung unter 30 % je Feld bleibt.
-Er darf NICHT die Zuordnung ändern (welcher Pfad welcher ist) und nicht den
-JAZ-Faktor anfassen — das ist eine Annahme über das Gerät, keine über Preise.
+Er darf NICHT die Zuordnung ändern (welcher Pfad welcher ist, und welche
+Quelle welchen Rand trägt) und nicht den JAZ-Faktor anfassen — das ist eine
+Annahme über das Gerät, keine über Preise. Insbesondere darf er den MITTLEREN
+Strompfad nicht auf die amtliche Projektion zurückziehen: Dass sie dort NICHT
+steht, ist die Entscheidung vom 06.09.2026, nicht ein Versehen.
+
+Die Herleitung ist in `lib/__tests__/wp-preispfade.test.ts` nachgerechnet —
+wer eine Rate ändert, ändert sie dort mit, sonst wird der Lauf rot.

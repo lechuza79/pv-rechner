@@ -22,6 +22,8 @@ import {
   DEFAULT_HEATPUMP_CONFIG,
   begStufeAm,
   BEG_WERTSCHOEPFUNGS_BONUS,
+  STROM_PFAD,
+  GAS_PFAD,
   type HeatPumpConfig,
   type BegStufe,
 } from "./heatpump-config";
@@ -526,45 +528,151 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
 // Ergebnisseite mit demselben Szenario rechnet (sonst widerspräche der Wege-Block
 // dem oben gewählten Szenario).
 /**
- * Die Preispfade — am 05.09.2026 an Zahlen geeicht, vorher ohne Quelle.
+ * Die Preispfade — jede der sechs Zahlen ist eine Studienzahl.
  *
- * WAS HIER STAND: Strom +5 % / +2 % / +1 % pro Jahr, Gas +1 % / +2 % / +4 %.
- * Keine dieser Zahlen hatte einen Beleg im Code, und die oberste ist falsch.
+ * WAS HIER STAND, in drei Fassungen binnen zweier Tage: erst Strom +5/+2/+1 %
+ * und Gas +1/+2/+4 % ganz ohne Beleg, dann +4/+2/+1 gegen +2/+2,5/+5 mit einer
+ * Leitquelle für die Mitte und gegriffenen Rändern. Der Betreiber hat am
+ * 06.09.2026 das Naheliegende verlangt: die Werte aus den Studien nehmen,
+ * darauf verweisen, und nicht runden — „das macht wohl auch einen unterschied
+ * über so einen langen zeitraum". Nachgemessen am Referenzfall (unsanierter
+ * Altbau, 140 m², alte Heizkörper): Zwischen 4,0 und 4,38 % Strompfad liegen
+ * über zwanzig Jahre rund 2.800 €. Die Rundung war teurer als die Recherche.
  *
- * +5 % PRO JAHR FÜR STROM IST IN 19 JAHREN NIE VORGEKOMMEN. Aus den
- * Eurostat-Reihen für deutsche Haushalte (Band 2.500–5.000 kWh, alle Steuern)
- * gerechnet, alle rollierenden Zehnjahresfenster seit 2007: 3,97 · 3,26 · 2,69
- * · 2,31 · 2,42 · 2,33 · 3,38 · 2,86 · 2,71 % pro Jahr. Das Maximum stammt aus
- * 2007–2017 und wurde vom Aufbau der EEG-Umlage getragen (1 → 6,88 ct), die es
- * seit 2022 nicht mehr gibt. Real, um die Verbraucherpreise bereinigt, ist
- * Haushaltsstrom seit 2015 um 5 % GEFALLEN (BDEW-Strompreisanalyse 08/2026).
+ * WIRKUNG DER GANZEN UMSTELLUNG, am selben Fall: Die mittlere Zahl fällt von
+ * 18.323 auf 14.008 € — die Wärmepumpe spart nach den Studienwerten also
+ * WENIGER, als die gegriffenen Pfade behauptet hatten. Beide Bewegungen gehen
+ * zu ihren Lasten: Strom von 2,0 auf 2,30 %, Gas von 2,5 auf 2,11 %.
  *
- * Was den Preis künftig treibt, ist der Netzausbau. Die stärkste vorliegende
- * Prognose dazu (Consentec/Frontier Economics im Auftrag des BDEW) sieht das
- * Niederspannungs-Netzentgelt bis 2045 auf rund 20 ct/kWh steigen, im
- * Extremfall auf 27 ct. Auf den heutigen Endpreis gerechnet ergibt selbst der
- * Extremfall 2,4 % pro Jahr. Deshalb 3 % als Obergrenze: deckt ihn mit Reserve
- * und bleibt unter dem historischen Maximum, dessen Treiber weggefallen ist.
+ * ── DIE BEIDEN QUELLEN ──────────────────────────────────────────────────────
  *
- * BEIM GAS WAR DER FEHLER GRÖSSER, nur in die andere Richtung: „steigt kaum"
- * widerspricht geltendem Recht. Der EU-Emissionshandel für Wärme startet 2028;
- * das EWI Köln erwartet im Gleichgewicht 160 €/t bis 2035 und danach über
- * 200 €/t — das allein sind rund 2,9 % pro Jahr im Gaspreis. Dazu die
- * Netzentgelte: Agora Energiewende rechnet mit Faktor 9 bis 16 bis 2044, weil
- * dieselben Kunden abwandern, deren Wechsel dieser Rechner durchrechnet. Wer
- * für den Strom eine Netzentgelt-Steigerung aus der Elektrifizierung annimmt,
- * kann für das Gasnetz nicht gleichzeitig Stillstand annehmen.
+ * UBA = Kemmler u. a. (2026): „Rahmendaten und Endverbrauchspreise für die
+ *   Treibhausgas-Projektionen 2026", 3. Auflage, Prognos AG im Auftrag des
+ *   Umweltbundesamtes, FKZ 37K2 44 201 0, DOI 10.60810/openumwelt-8481.
+ *   Tabelle 3 (Preisindex BIP, S. 21), Tabelle 12 (Erdgas Haushalte, S. 58),
+ *   Tabelle 13 (Strom Wärmepumpentarif, S. 59).
+ *   Volltext: `docs/quellen/UBA-Rahmendaten-THG-Projektionen-2026.pdf`.
  *
- * DER ANGEZEIGTE PROZENTWERT IST NICHT DER GERECHNETE. Der CO₂-Aufschlag wird
- * in `calcFossilReference` additiv und szenariounabhängig aufgeschlagen; aus
- * „Gas +2 %" werden effektiv rund 2,7 %. Die Beschriftung nennt deshalb den
- * Preispfad, nicht die Endrate — wer die Endrate hinschreibt, muss sie aus der
- * Rechnung nehmen, nicht aus dieser Konstante.
+ * ISE = Fraunhofer ISE (23.06.2026): Kurzstudie „Vergleich Wärmeversorgung /
+ *   Auswirkungen der Bio-Treppe in § 43", im Auftrag der MVV Energie AG.
+ *   Folie 17 (Endkundenpreise in Preisen 2026), Folie 21/22 (Zusammensetzung
+ *   und Netzentgelt-Annahmen). Volltext:
+ *   `docs/quellen/Fraunhofer-ISE-Biotreppe-GModG-2026-06.pdf`.
  *
- * Gemessene Wirkung (vier Gebäudetypen, je mit und ohne Grüngas): Mit den
- * alten Pfaden wechselte die Bandbreite in sechs von acht Fällen das
- * Vorzeichen, mit diesen in einem. Die mittlere Zahl ändert sich nicht — sie
- * hängt am mittleren Pfad, und der bleibt bei Strom +2 %.
+ * Beide am 06.09.2026 im Original gelesen. Die ISE-Kurven stehen dort nur als
+ * Grafik; sie wurden aus der 800-dpi-Fassung der Folie pixelgenau ausgelesen
+ * (Raster 376,3 Pixel je 5 ct, Nulllinie bei Zeile 4847,5).
+ *
+ * EINE PIXELMESSUNG KANN TROTZDEM DANEBENLIEGEN, und genau das ist passiert:
+ * Am linken Rand liegen die beiden Stromkurven fast übereinander, und die
+ * hellere ist ÜBER der dunklen gezeichnet — von der dunklen sind vier von
+ * vierundzwanzig Pixelzeilen sichtbar. Die erste Messung nahm deren Unterkante
+ * für den Wert und startete den oberen Pfad bei 27,31 statt 27,48 ct; die Rate
+ * kam dadurch 0,04 Punkte zu hoch heraus (rund 180 € im Referenzfall, zulasten
+ * der Wärmepumpe). Gefunden von einem adversarialen Prüfer, der zusätzlich die
+ * Gegenprobe geliefert hat: Auf Folie 22 sind die 2026er Säulen beider
+ * Stromszenarien gleich hoch — die beiden Pfade starten also auf demselben
+ * Wert, und das ist der einzige unverdeckt messbare, 27,48 ct.
+ *
+ * REGEL DARAUS: Wo zwei Kurven einander berühren, misst man die Kurve, die
+ * OBEN liegt, und nimmt den Wert für beide — die untere ist an dieser Stelle
+ * gar nicht messbar, nur ihre Kante.
+ *
+ * WARUM DIESE ZWEI UND NICHT DIE GROSSEN HÄUSER: Weder Projektionsbericht noch
+ * Ariadne, Langfristszenarien, dena oder Agora variieren die Endkundenpreise
+ * über ihre Szenarien — der Projektionsbericht sagt ausdrücklich, dabei
+ * „würden sich die Wirkungen überlagern und wären nicht mehr klar zuordenbar".
+ * Eine Bandbreite gibt es nur dort, wo jemand genau diese Frage gerechnet hat:
+ * in der Wärmepumpe-gegen-Gas-Debatte 2026. Die ISE-Kurzstudie ist davon die
+ * mit der vollständigsten Komponenten-Dokumentation — und wir benutzen sie
+ * ohnehin schon für die Anschaffungskosten der fossilen Referenz.
+ *
+ * ── STROM: WÄRMEPUMPENTARIF, ENDKUNDENPREIS ─────────────────────────────────
+ *
+ *   optimistisch  UBA T13   27,4  → 20,5  ct(2024)/kWh  real −1,44 %/a
+ *   realistisch   ISE nied. 27,48 → 28,69 ct(2026)/kWh  real +0,23 %/a
+ *   pessimistisch ISE hoch  27,48 → 42,07 ct(2026)/kWh  real +2,27 %/a
+ *
+ * Die amtliche Projektion ist damit unser GÜNSTIGSTER Pfad, nicht die Mitte:
+ * Sie ist der einzige Beleg dafür, dass der Wärmepumpentarif real fällt, und
+ * sie liegt unter beiden ISE-Szenarien. Die Mitte ist das untere ISE-Szenario;
+ * die Bandbreite spannt sich also über beide Quellen, statt eine davon zu
+ * spiegeln.
+ *
+ * DER GLEICHLAUF MIT DEM PV-RECHNER IST DAMIT AUFGEGEBEN, und zwar bewusst:
+ * Dort steht der Haushaltstarif, hier der Wärmepumpentarif — nach UBA T13 zwei
+ * verschiedene Reihen mit verschiedenen Pfaden (Haushalt 38,3 → 33,4, WP-Tarif
+ * 27,4 → 20,5). Denselben Anstieg für beide anzusetzen wäre Konsistenz-Optik
+ * gegen die Quelle.
+ *
+ * ── GAS: ERDGAS HAUSHALTE, OHNE CO₂ UND OHNE BEIMISCHUNG ────────────────────
+ *
+ * DIE ISE-GASKURVEN SIND HIER NICHT EINSETZBAR, und das ist der wichtigste
+ * Befund dieser Runde. Sie enthalten laut Folie 19 als eigene Komponenten den
+ * CO₂-Preis UND die Grüngas-Beschaffung — beides rechnet dieser Rechner
+ * getrennt (`co2SurchargeOverToday` bzw. die Bio-Treppe). Wer die ISE-Rate von
+ * +5,74 %/a übernimmt, zählt beides ein zweites Mal. Ein Vorschlag, genau das
+ * zu tun, lag am 06.09.2026 auf dem Tisch und ist daran gescheitert.
+ *
+ * Bleibt die UBA-Zerlegung. Netto (die MwSt. steht dort in einer eigenen
+ * Zeile), EUR(2024)/MWh, Beschaffung + Steuern/Abgaben + Netzentgelte:
+ *
+ *   2025   61 + 10 + 27 = 98        2045   31 + 5 + 62 = 98
+ *
+ * Ohne CO₂ ist der reale Gaspreis über zwanzig Jahre also EXAKT konstant: Was
+ * die Beschaffung verliert (−3,3 %/a), holen die Netzentgelte des
+ * schrumpfenden Gasnetzes zurück (+4,2 %/a). Der frühere Kommentar nannte hier
+ * +0,29 %/a — das war der Bruttopreis minus dem NETTO-CO₂-Betrag, also ein
+ * Abzug ohne die darauf entfallende Mehrwertsteuer.
+ *
+ * Die Bandbreite trägt damit allein das Netzentgelt, und dafür nennt ISE zwei
+ * Ränder (Folie 21): unten „konstantes Niveau von 2026 bis 2045" (2,2 ct/kWh),
+ * oben ein Hochlauf auf 8,0 ct/kWh nach der Studie des Öko-Instituts zum
+ * Netzentgeltanstieg bei sinkender Gasnachfrage.
+ *
+ * ÜBERNOMMEN WIRD DAS VERHÄLTNIS, NICHT DER ABSOLUTWERT — und zwar an BEIDEN
+ * Rändern. ISEs 2,2 ct gehören zu einer anderen Abgrenzung als die 2,7 ct der
+ * UBA-Tabelle; einen davon einzusetzen hieße, zwei Zerlegungen zu mischen. Die
+ * erste Fassung tat unten das eine („konstant") und oben das andere (die 8,0
+ * ct direkt eingesetzt) und schrieb die Regel dagegen zwei Zeilen darüber
+ * selbst hin — aufgefallen dem adversarialen Prüfer, nicht dem Autor.
+ *
+ *   pessimistisch  Netz konstant (×1,00)  →  63,0 EUR/MWh  real −2,18 %/a
+ *   realistisch    Netz 27 → 62 (UBA)     →  98,0 EUR/MWh  real  0,00 %/a
+ *   optimistisch   Netz ×3,64 (8,0/2,2)   → 134,2 EUR/MWh  real +1,58 %/a
+ *
+ * ── REAL IST NICHT NOMINAL ──────────────────────────────────────────────────
+ *
+ * Beide Quellen rechnen real, dieser Rechner zinst nominal auf. Umgerechnet
+ * mit dem BIP-Deflator aus UBA T3 (Index 2024 = 100 → 2045 = 156,0), auf den
+ * jeweiligen Zeitraum geometrisch interpoliert: 2,106 %/a für 2025–2045,
+ * 2,069 %/a für 2026–2045. Daraus die Werte unten. Wer die realen Raten direkt
+ * einsetzt, unterschätzt jeden Pfad um gut zwei Punkte.
+ *
+ * DER ANGEZEIGTE PROZENTWERT IST NICHT DER GERECHNETE. Der CO₂-Aufschlag kommt
+ * in `calcFossilReference` additiv und szenariounabhängig obendrauf. Gemessen
+ * am Referenzfall (20.000 kWh Gas, 11 ct/kWh): aus den Pfaden −0,13 / +2,11 /
+ * +3,72 % werden effektiv rund +1,2 / +3,0 / +4,4 % im Jahr. Die Beschriftung
+ * nennt deshalb den Preispfad, nicht die Endrate.
+ *
+ * ── ZWEI VORBEHALTE, DIE MITGEHÖREN ─────────────────────────────────────────
+ *
+ * 1. ZWEI ALTE UNGENAUIGKEITEN IM CO₂-ZWEIG HEBEN SICH ZUFÄLLIG AUF. Der
+ *    heutige Brennstoffpreis enthält die heutige CO₂-Abgabe (bei 55 €/t rund
+ *    1,3 ct/kWh brutto) und wächst mit `gasInflation` mit — obwohl die Rate ex
+ *    CO₂ hergeleitet ist; das sind 2045 gut 0,6 ct zu viel. Gegenläufig wird
+ *    der CO₂-Aufschlag NETTO auf einen Bruttopreis addiert, rund 0,6 ct zu
+ *    wenig. Beides ist älter als diese Änderung und keines steht für sich; wer
+ *    einen der beiden repariert, muss den anderen mitreparieren, sonst
+ *    verschiebt sich das Ergebnis. Gefunden bei der Gegenprüfung 06.09.2026.
+ *
+ * 2. DER PESSIMISTISCHE GASPFAD LIEGT UNTER JEDEM STUDIENSZENARIO. Nicht wegen
+ *    des Preispfads — der ist die amtliche Zerlegung mit eingefrorenem
+ *    Netzentgelt —, sondern weil unser CO₂-Pfad flacher verläuft als der der
+ *    Quelle (209 €/t in 2045 gegen 225 €/t bei UBA, in Preisen von 2024).
+ *    Der Reiter sagt „der CO₂-Preis kommt auch hier zusätzlich obendrauf"; das
+ *    stimmt, schließt diese Lücke aber nicht. Wer den CO₂-Pfad anfasst, prüft
+ *    diesen Rand mit.
  *
  * `gasScenario` mappt auf den IW-Preiskorridor (nur im Grüngas-Modus wirksam):
  * „ungünstig für die WP" = Gas bleibt billig → low; „günstig" = Gas wird teuer
@@ -575,59 +683,14 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
  * („die Arbeitszahl fällt etwas schlechter aus"), und wer es genauer will,
  * ändert die Jahresarbeitszahl im Ergebnis direkt — sie ist dort editierbar.
  *
- * ── DIE LEITQUELLE (nachgetragen 05.09.2026) ────────────────────────────────
- *
- * Kemmler u. a. (2026): „Rahmendaten und Endverbrauchspreise für die
- * Treibhausgas-Projektionen 2026", 3. Auflage, Prognos AG im Auftrag des
- * Umweltbundesamtes, FKZ 37K2 44 201 0, DOI 10.60810/openumwelt-8481.
- * Volltext: `docs/quellen/UBA-Rahmendaten-THG-Projektionen-2026.pdf`,
- * am 05.09.2026 gelesen und die Reihen selbst nachgerechnet.
- *
- * Warum ausgerechnet diese: Sie ist die EINZIGE amtliche Projektion deutscher
- * HAUSHALTS-Endkundenpreise, die gefunden wurde — und sie führt zwei Zeilen,
- * die genau dieser Rechner braucht: einen eigenen Wärmepumpentarif (Tabelle 13)
- * und den Gaspreis mit getrennt ausgewiesenem CO₂-Aufschlag (Tabelle 12).
- * Geprüft und verworfen wurden das EU-Referenzszenario (nur ein Mischpreis über
- * alle Endverbrauchssektoren, kein Gaspreis), die Folgenabschätzungen der
- * EU-Kommission (Haushaltspreis nur für die EU insgesamt), der World Energy
- * Outlook (Deutschland ist dort keine Berichtseinheit) und die
- * Langfristszenarien des Wirtschaftsministeriums (nur Großhandelspreise).
- * Keine einzige EU- oder IEA-Quelle veröffentlicht einen projizierten
- * Gas-Endkundenpreis, für kein Land.
- *
- * DIE ZAHLEN, 2025 → 2045, real in Preisen von 2024:
- *   Wärmepumpentarif   27,4 → 20,5 ct/kWh   = −1,44 %/a  (Tabelle 13)
- *   Erdgas gesamt       129 → 170 EUR/MWh   = +1,39 %/a  (Tabelle 12)
- *   davon Netzentgelte   27 →  62 EUR/MWh   = +4,24 %/a
- *   Gas ohne CO₂-Anteil 118 → 125 EUR/MWh   = +0,29 %/a
- *
- * REAL IST NICHT NOMINAL — und dieser Rechner zinst nominal auf. Mit dem
- * BIP-Deflator derselben Quelle (Tabelle 3: Index 100 → 156,0 bis 2045, also
- * 2,11 %/a) wird daraus: Wärmepumpentarif +0,67 %/a nominal, Gas ohne CO₂
- * +2,40 %/a. Wer die realen Werte direkt einsetzt, unterschätzt systematisch
- * um gut zwei Punkte.
- *
- * ZUORDNUNG ZU DEN DREI PFADEN:
- *   Strom  1 % / 2 % / 4 %  — die Mitte liegt über dem amtlichen Pfad
- *     (0,67 %) und beim historischen Zehnjahresmittel (2,71 % laut Eurostat);
- *     die 4 % oben decken die Netzentgelt-Bandbreite, die das Fraunhofer ISE
- *     im Juni 2026 als oberes Szenario verwendet.
- *   Gas  2 % / 2,5 % / 5 %  — die Mitte liegt knapp über dem amtlichen Pfad
- *     ohne CO₂ (2,40 %), weil der CO₂-Aufschlag hier separat addiert wird
- *     (siehe unten); die 5 % oben decken die Gasnetzentgelt-Prognose.
- *
- * DER CO₂-PREIS DARF NICHT ZWEIMAL GEZÄHLT WERDEN. `calcFossilReference`
- * addiert ihn eigenständig auf den Gaspreis. Eine frühere Fassung dieses
- * Kommentars begründete den mittleren Gaspfad mit dem EU-Emissionshandel — das
- * war doppelt gezählt. Die richtige Begründung sind die Netzentgelte des
- * schrumpfenden Gasnetzes: Sie steigen real um 4,24 %/a, während die
- * Gasbeschaffung real um 3,33 %/a FÄLLT. Ohne CO₂ bleibt der reale Gaspreis
- * bis 2045 praktisch konstant; der ganze nominale Anstieg ist Teuerung plus
- * Netzumlage.
+ * Herleitung nachrechenbar in `lib/__tests__/wp-preispfade.test.ts`: Der Test
+ * rechnet aus den Tabellenwerten beider Quellen die sechs Raten neu und hält
+ * sie gegen die Konstanten hier. Wer eine Zahl ändert, ändert sie dort mit —
+ * oder der Lauf wird rot.
  */
 export function heatPumpScenarioAdj(id: string, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): { jazFactor: number; stromInflation: number; gasInflation: number; gasScenario: GasScenario } {
-  if (id === "pessimistic") return { jazFactor: 0.90, stromInflation: 0.04, gasInflation: 0.02, gasScenario: "low" };
-  if (id === "optimistic") return { jazFactor: 1.05, stromInflation: 0.01, gasInflation: 0.05, gasScenario: "high" };
+  if (id === "pessimistic") return { jazFactor: 0.90, stromInflation: STROM_PFAD.hoch, gasInflation: GAS_PFAD.niedrig, gasScenario: "low" };
+  if (id === "optimistic") return { jazFactor: 1.05, stromInflation: STROM_PFAD.niedrig, gasInflation: GAS_PFAD.hoch, gasScenario: "high" };
   return { jazFactor: 1.00, stromInflation: cfg.stromInflation, gasInflation: cfg.gasInflation, gasScenario: "base" };
 }
 
@@ -635,14 +698,19 @@ export function calcHeatPumpScenarios(inputs: HeatPumpInputs, cfg: HeatPumpConfi
   // WP-Sicht: teurer Strom + billiges Gas ist ungünstig (Strom treibt die
   // WP-Kosten, Gas die Referenz). Daher ist „Pessimistisch" = Strom steigt
   // schnell / Gas kaum — spiegelbildlich zum PV-Rechner.
-  const gasPct = (r: number) => `${(r * 100).toLocaleString("de-DE")} %`;
+  // Eine Nachkommastelle, und nur wenn sie etwas trägt: Die Pfade sind auf
+  // Hundertstel gesetzt (4,42 %), aber „Strom +4,42 %/a" auf einem Reiter
+  // behauptet eine Genauigkeit, die aus einem abgelesenen Diagramm stammt.
+  // Gerechnet wird mit dem vollen Wert, angezeigt der gerundete.
+  const pct = (r: number) =>
+    `${r < 0 ? "−" : "+"}${Math.abs(r * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} %`;
   const meta: Array<Pick<HeatPumpScenarioResult, "id" | "label" | "color" | "sub" | "explain">> = [
-    { id: "pessimistic", label: "Pessimistisch", color: v("--color-negative"), sub: "Strom +4 %/a",
-      explain: "Ungünstig für die Wärmepumpe: Der Strompreis steigt kräftig (+4 %/Jahr), Gas nur mäßig — und die Arbeitszahl fällt etwas schlechter aus. Die 4 % decken die höchste vorliegende Netzentgelt-Prognose ab; höher war der Strompreis in keinem Zehnjahreszeitraum seit 2007." },
-    { id: "realistic",   label: "Realistisch",   color: v("--color-positive"), sub: `Strom +${gasPct(cfg.stromInflation)}/a`,
-      explain: `Mittlere Annahme: Strompreis +${gasPct(cfg.stromInflation)}/Jahr, Gas +${gasPct(cfg.gasInflation)}/Jahr. Beide Werte folgen der Preisprojektion, die Prognos für das Umweltbundesamt rechnet — dort sinkt der Wärmepumpentarif bis 2045 sogar, während Gas durch die Netzentgelte des schrumpfenden Gasnetzes steigt. Der CO₂-Preis kommt in allen Pfaden zusätzlich obendrauf.` },
-    { id: "optimistic",  label: "Optimistisch",  color: v("--color-accent"), sub: "Strom +1 %/a",
-      explain: "Günstig für die Wärmepumpe: Der Strompreis bleibt fast stabil (+1 %/Jahr), Gas verteuert sich kräftig (+5 %/Jahr) — die WP spart mehr. Beim Gas kommen der CO₂-Preis und die steigenden Netzentgelte des schrumpfenden Gasnetzes zusammen." },
+    { id: "pessimistic", label: "Pessimistisch", color: v("--color-negative"), sub: `Strom ${pct(STROM_PFAD.hoch)}/a`,
+      explain: `Ungünstig für die Wärmepumpe: Der Strompreis steigt kräftig (${pct(STROM_PFAD.hoch)}/Jahr), Gas bleibt fast stehen (${pct(GAS_PFAD.niedrig)}/Jahr) — und die Arbeitszahl fällt etwas schlechter aus. Beide Zahlen sind Studienwerte: der Strompfad das obere Szenario der Fraunhofer-ISE-Kurzstudie vom Juni 2026, der Gaspfad die amtliche Projektion mit Netzentgelten auf heutigem Niveau. Der CO₂-Preis kommt auch hier zusätzlich obendrauf.` },
+    { id: "realistic",   label: "Realistisch",   color: v("--color-positive"), sub: `Strom ${pct(cfg.stromInflation)}/a`,
+      explain: `Mittlere Annahme: Strompreis ${pct(cfg.stromInflation)}/Jahr, Gas ${pct(cfg.gasInflation)}/Jahr. Der Strompfad ist das untere Szenario der Fraunhofer-ISE-Kurzstudie, der Gaspfad die Preisprojektion, die Prognos für das Umweltbundesamt rechnet — dort bleibt der Gaspreis ohne CO₂ real konstant, weil die günstigere Beschaffung von den Netzentgelten des schrumpfenden Gasnetzes aufgezehrt wird. Der CO₂-Preis kommt in allen Pfaden zusätzlich obendrauf.` },
+    { id: "optimistic",  label: "Optimistisch",  color: v("--color-accent"), sub: `Strom ${pct(STROM_PFAD.niedrig)}/a`,
+      explain: `Günstig für die Wärmepumpe: Der Strompreis bleibt fast stabil (${pct(STROM_PFAD.niedrig)}/Jahr), Gas verteuert sich stärker (${pct(GAS_PFAD.hoch)}/Jahr) — die Wärmepumpe spart mehr. Der Strompfad ist die amtliche Projektion, nach der der Wärmepumpentarif bis 2045 real sogar fällt; beim Gas steigen die Netzentgelte nach der Studie des Öko-Instituts auf 8 Cent je Kilowattstunde. Dazu kommt der CO₂-Preis.` },
   ];
   return meta.map(s => ({ ...s, ...calcHeatPump(inputs, cfg, heatPumpScenarioAdj(s.id, cfg)) }));
 }

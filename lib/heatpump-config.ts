@@ -169,6 +169,30 @@ export interface HeatPumpConfig {
   reviewBy: string;    // ISO date — re-check against official sources by then (see scripts/waermepumpe-verify.md)
 }
 
+/**
+ * Die beiden RÄNDER der Preispfade, nominal, p. a.
+ *
+ * Sie stehen hier statt in `DEFAULT_HEATPUMP_CONFIG`, weil sie keine
+ * Modellannahme sind, die jemand überschreibt, sondern abgelesene Studienwerte
+ * — die Mitte kann der Nutzer im Ergebnis verstellen, die Ränder beschreiben
+ * die Bandbreite der Literatur. Vollständige Herleitung mit Fundstellen am
+ * Kopf von `heatPumpScenarioAdj` (lib/heatpump.ts), nachgerechnet in
+ * lib/__tests__/wp-preispfade.test.ts.
+ */
+export const STROM_PFAD = {
+  /** Prognos/UBA T13, Wärmepumpentarif 27,4 → 20,5 ct(2024) — real −1,44 %/a. */
+  niedrig: 0.00636,
+  /** Fraunhofer ISE, oberes Szenario 27,48 → 42,07 ct(2026) — real +2,27 %/a. */
+  hoch: 0.04382,
+} as const;
+
+export const GAS_PFAD = {
+  /** UBA-Zerlegung mit konstantem Netzentgelt (ISE, unteres Szenario) — real −2,19 %/a. */
+  niedrig: -0.00125,
+  /** UBA-Zerlegung, Netzentgelt mal 3,64 wie bei ISE (Öko-Institut) — real +1,58 %/a. */
+  hoch: 0.03722,
+} as const;
+
 export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   // Aus der Dämmzustands-Tabelle abgeleitet (lib/constants.ts) — eine Quelle für
   // UI-Auswahl und Rechnung, damit Beschriftung und Rechenwert nicht driften können.
@@ -279,28 +303,21 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   // Im Ergebnis editierbar (0 = die vorhandene Heizung hält die Laufzeit durch).
   fossilErsatzInvest: 15900,
   years: 20,
-  // Der MITTLERE Preispfad. Die beiden Ränder stehen in `heatPumpScenarioAdj`
-  // und sind dort belegt; hier steht, wovon sie abweichen.
+  // Der MITTLERE Preispfad. Herleitung, Quellen und die beiden Ränder stehen
+  // am Kopf von `heatPumpScenarioAdj` (lib/heatpump.ts) — dort steht auch,
+  // warum die ISE-Gaskurven hier NICHT einsetzbar sind.
   //
-  // Gas 2,5 % statt 2 % seit dem 05.09.2026, belegt an der amtlichen
-  // Projektion (Prognos im Auftrag des Umweltbundesamtes, Rahmendaten zu den
-  // Treibhausgas-Projektionen 2026, Tabelle 12; Volltext in docs/quellen).
-  // Dort steigt der Gaspreis OHNE den CO₂-Anteil von 2025 bis 2045 real um
-  // 0,29 % im Jahr, nominal um 2,40 % — der frühere Gleichlauf mit dem
-  // Strompreis war keine Annahme, sondern eine ungeprüfte Symmetrie.
+  // Gas: Erdgas Haushalte ohne CO₂ und ohne Beimischung. Nach der amtlichen
+  // Projektion (Prognos/UBA, Tabelle 12) netto exakt konstant, 98 EUR/MWh in
+  // 2025 wie in 2045 — die fallende Beschaffung und die steigenden
+  // Netzentgelte heben sich auf. Nominal bleibt damit genau der BIP-Deflator
+  // derselben Quelle: 2,11 %/a.
   //
-  // NICHT mit dem Emissionshandel begründen: Der CO₂-Aufschlag wird in
-  // `calcFossilReference` separat addiert. Eine Zwischenfassung dieses
-  // Kommentars tat es und zählte ihn damit doppelt. Was den Gaspreis hier
-  // wirklich treibt, sind die Netzentgelte des schrumpfenden Gasnetzes
-  // (real +4,24 %/a), während die Beschaffung real fällt.
-  //
-  // Strom bleibt bei 2 %: Das liegt über dem amtlichen Pfad für den
-  // Wärmepumpentarif (nominal +0,67 %/a, real sogar fallend) und beim
-  // historischen Zehnjahresmittel für Haushaltsstrom (2,71 % laut Eurostat) —
-  // die vorsichtige Richtung. Und es hält den Gleichlauf mit dem PV-Rechner.
-  gasInflation: 0.025,
-  stromInflation: 0.02, // p.a. — konsistent mit PV-Rechner (SCENARIOS realistic + electricityIncrease)
+  // Strom: Wärmepumpentarif, unteres Szenario der Fraunhofer-ISE-Kurzstudie
+  // (real +0,23 %/a, nominal 2,30 %). Die amtliche Projektion liegt mit
+  // 0,64 %/a darunter und ist deshalb der optimistische Pfad, nicht die Mitte.
+  gasInflation: 0.02106,
+  stromInflation: 0.023,
   source: "Fraunhofer ISE WPsmart, Verbraucherzentrale RLP (Auswertung 160 Wärmepumpen-Angebote, Juni 2025; bestätigt durch den zweiten Check vom 02.07.2026: Median 34.898 €, Mittelwert 36.397 €, Spanne 21.099–54.168 €), KfW Merkblatt 458 (BEG EM, Stand 07/2026), BDEW, dena-Gebäudereport + dena-Studie „Auswertung von Verbrauchskennwerten energieeffizienter Wohngebäude“ (Heizwärmebedarf nach Sanierung)",
   validFrom: "2026-07-27",
   /**
@@ -313,7 +330,7 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
    * verschweigen, die stattgefunden hat. Dieselbe Begründung wie bei der
    * BEG-Förderung eine Zeile darüber.
    */
-  geprueftPreispfadeIso: "2026-09-05",
+  geprueftPreispfadeIso: "2026-09-06",
   preispfadeValidFrom: "2026-05-01",
   // Wächter-Lauf vom 17.08.2026 (der erste überhaupt — der Auftrag war seit
   // seiner Einrichtung nie gefeuert): Die Folge-Auswertung der
