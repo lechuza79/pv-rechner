@@ -4,12 +4,15 @@ import { isAdminSession } from "../../../../../lib/admin-guard";
 import { supabase } from "../../../../../lib/supabase-server";
 import { AKTUELLER_SCHUB, SCHUEBE } from "../../../../../lib/kommunen-testballon";
 import { ortsBeitraegeFuerId } from "../../../../../lib/orts-beitraege-server";
+import { ortsPostTeile } from "../../../../../lib/orts-posts";
+import type { GespeicherteFassung } from "../../../../../lib/social-posts";
 import { ladeFassungen } from "../../../../../lib/social-vorlagen-db";
 import { fassungsAbdruck, ladeAllePruefungen } from "../../../../../lib/social-pruefung";
 import { pruefeMechanisch } from "../../../../../lib/social-mechanik";
 import { ladeVersand } from "../../../../../lib/social-versand-log";
 import { templateVon } from "../../../../../lib/social-bildformen";
 import { StoryListe } from "../../../../../components/social/StoryListe";
+import { OrtWaehler, type OrtEintrag } from "../../../../../components/social/OrtWaehler";
 import AdminSeitenkopf from "../../../../../components/admin/AdminSeitenkopf";
 import { v, space, pad } from "../../../../../lib/theme";
 
@@ -26,10 +29,21 @@ import { v, space, pad } from "../../../../../lib/theme";
 // Reiter zusammengeworfen.
 //
 // EIN ORT AUF EINMAL. Die Kette je Ort kostet ein halbes Dutzend Abfragen
-// (Bestand, Zubau nach Monat, Wohnungen, Platzierungen, Funde); fünfundzwanzig
-// davon auf einer Seite wären genau die Kopplung „teurer mit den Daten", an der
-// im September der Produktionsbau zerbrochen ist. Die Übersicht listet
-// deshalb nur Namen und lädt nichts.
+// (Bestand, Zubau nach Monat, Wohnungen, Platzierungen, Funde); hundert davon
+// auf einer Seite wären genau die Kopplung „teurer mit den Daten", an der im
+// September der Produktionsbau zerbrochen ist.
+//
+// DIE ORTSWAHL IST EIN SUCHFELD, KEINE KACHELWAND (Betreiber, 06.09.2026, an
+// einem Bildschirmfoto: „das ist hoffentlich nicht dein ernst"). Die erste
+// Fassung rasterte alle hundert Gemeinden einer Kampagne als gleich aussehende
+// Kacheln, jede mit ihrem VERSANDstatus, und die Geschichten lagen dahinter.
+// Damit war der Tisch eine Adressliste — und der Versandstatus gehört ohnehin
+// ins Kommunen-Cockpit, das ihn setzt. Hier zählt eine andere Frage: Hat an
+// diesem Ort schon jemand etwas eingestellt?
+//
+// OHNE AUSWAHL ÖFFNET SICH DER ERSTE OFFENE ORT. Eine leere Seite mit der
+// Aufforderung, erst einmal etwas auszuwählen, ist ein Klick, der nichts
+// entscheidet: Es gibt immer einen Ort, der als Nächstes dran ist.
 
 export const metadata = {
   title: "Redaktion – Kommunen",
@@ -39,6 +53,22 @@ export const metadata = {
 export const dynamic = "force-dynamic";
 
 type Zeile = { region_id: string; name: string; charge: number | null; status: string | null };
+
+/**
+ * Wurde an diesem Ort schon etwas eingestellt?
+ *
+ * Aus den gespeicherten Fassungen — EINE Abfrage für alle Orte. Die Alternative
+ * wäre, je Ort die Geschichten zu bauen und nachzusehen, und das sind hundert
+ * Ketten für eine Ja/Nein-Frage.
+ */
+function angefassteOrte(fassungen: Record<string, unknown>): Set<string> {
+  const orte = new Set<string>();
+  for (const id of Object.keys(fassungen)) {
+    const teile = ortsPostTeile(id);
+    if (teile) orte.add(teile.regionId);
+  }
+  return orte;
+}
 
 async function orteDesSchubs(kampagne: string): Promise<Zeile[]> {
   if (!supabase) return [];
@@ -74,14 +104,38 @@ export default async function RedaktionKommunen({
   const ags = sp.ags;
 
   let orte: Zeile[] = [];
+  let fassungen: Record<string, GespeicherteFassung> = {};
   let fehler: string | null = null;
   try {
-    orte = await orteDesSchubs(schub.kampagne);
+    [orte, fassungen] = await Promise.all([orteDesSchubs(schub.kampagne), ladeFassungen()]);
   } catch (e) {
     fehler = (e as Error).message;
   }
 
-  const gewaehlt = ags ? orte.find((o) => o.region_id === ags) : undefined;
+  const angefasst = angefassteOrte(fassungen);
+  const eintraege: OrtEintrag[] = orte.map((o) => ({
+    regionId: o.region_id,
+    name: o.name,
+    angefasst: angefasst.has(o.region_id),
+    // „kontaktiert" heißt: Der Brief ist raus, die Ortsseite ist verlinkt. Das
+    // ändert an der Arbeit nichts, sortiert sie aber: Was noch nicht draußen
+    // ist, lässt sich noch ändern, bevor es jemand liest.
+    raus: !!o.status && o.status !== "offen",
+  }));
+  // Noch nicht angefasst zuerst, davon die noch nicht verschickten — das ist
+  // die Reihenfolge, in der jemand hier arbeitet. Innerhalb dessen die
+  // Charge-Ordnung der Abfrage.
+  const sortiert = [...eintraege].sort((a, b) => {
+    if (a.angefasst !== b.angefasst) return a.angefasst ? 1 : -1;
+    if (a.raus !== b.raus) return a.raus ? 1 : -1;
+    return 0;
+  });
+
+  // Ohne Auswahl der erste, der dran ist. Eine leere Seite mit „bitte wählen"
+  // wäre ein Klick, der nichts entscheidet.
+  const gewaehltId = ags ?? sortiert[0]?.regionId;
+  const gewaehlt = gewaehltId ? orte.find((o) => o.region_id === gewaehltId) : undefined;
+  const basisPfad = `/admin/redaktion/kommunen?schub=${schluessel}`;
 
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto" }}>
@@ -92,18 +146,19 @@ export default async function RedaktionKommunen({
           `verlinkten Ortsseite stehen. Text, Farbschema und Bildform lassen sich hier je ORT ` +
           `einstellen; die Beitrags-Kennung trägt den Gemeindeschlüssel, deshalb bleibt eine ` +
           `Einstellung an diesem Ort und wandert nicht zu allen anderen. Gerechnet wird trotzdem ` +
-          `überall dasselbe: Wer eine Zahl ändern wollte, könnte es hier so wenig wie sonst.`
+          `überall dasselbe: Wer eine Zahl ändern wollte, könnte es hier so wenig wie sonst. ` +
+          `Der Punkt neben einem Ort heißt: Dort hat noch niemand etwas eingestellt.`
         }
       />
 
       <nav style={S.schuebe}>
-        {Object.entries(SCHUEBE).map(([k, s]) => (
+        {Object.entries(SCHUEBE).map(([k, sch]) => (
           <Link
             key={k}
             href={`/admin/redaktion/kommunen?schub=${k}`}
             style={{ ...S.schub, ...(k === schluessel ? S.schubAktiv : null) }}
           >
-            {s.kampagne}
+            {sch.kampagne}
           </Link>
         ))}
       </nav>
@@ -117,39 +172,31 @@ export default async function RedaktionKommunen({
         </p>
       )}
 
-      {orte.length > 0 && (
-        <div style={S.orte}>
-          {orte.map((o) => (
-            <Link
-              key={o.region_id}
-              href={`/admin/redaktion/kommunen?schub=${schluessel}&ags=${o.region_id}`}
-              style={{ ...S.ort, ...(o.region_id === ags ? S.ortAktiv : null) }}
-            >
-              <span>{o.name}</span>
-              {/* Die Charge sagt, wann der Ort dran ist — ohne sie ist eine
-                  Liste von hundert Namen keine Reihenfolge. */}
-              <span style={S.ortZusatz}>
-                {o.charge != null ? `Charge ${o.charge}` : "ohne Charge"}
-                {o.status ? ` · ${o.status}` : ""}
-              </span>
-            </Link>
-          ))}
-        </div>
+      {sortiert.length > 0 && (
+        <OrtWaehler orte={sortiert} aktiv={gewaehltId} basisPfad={basisPfad} />
       )}
 
-      {gewaehlt && <Beitraege regionId={gewaehlt.region_id} name={gewaehlt.name} />}
-
-      {!gewaehlt && orte.length > 0 && (
-        <p style={S.leer}>Eine Gemeinde wählen, um ihre Geschichten zu sehen.</p>
+      {gewaehlt && (
+        <Beitraege regionId={gewaehlt.region_id} name={gewaehlt.name} fassungen={fassungen} />
       )}
     </div>
   );
 }
 
 /** Die Geschichten EINER Gemeinde, im selben Tisch wie die bundesweiten Beiträge. */
-async function Beitraege({ regionId, name }: { regionId: string; name: string }) {
+async function Beitraege({
+  regionId,
+  name,
+  fassungen,
+}: {
+  regionId: string;
+  name: string;
+  // Hereingereicht, nicht ein zweites Mal geladen: Die Übersicht braucht sie
+  // ohnehin für die Frage, an welchen Orten schon etwas eingestellt wurde.
+  fassungen: Record<string, GespeicherteFassung>;
+}) {
   const [beitraege, pruefungen, versand] = await Promise.all([
-    ortsBeitraegeFuerId(regionId, await ladeFassungen()),
+    ortsBeitraegeFuerId(regionId, fassungen),
     ladeAllePruefungen(),
     ladeVersand(),
   ]);
@@ -221,25 +268,6 @@ const S: Record<string, React.CSSProperties> = {
     color: v("--color-bg"),
     fontWeight: 600,
   },
-  orte: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-    gap: space.sm,
-    marginBottom: space.lg,
-  },
-  ort: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 2,
-    padding: pad("sm", "md"),
-    border: `1px solid ${v("--color-border")}`,
-    borderRadius: v("--radius-md"),
-    textDecoration: "none",
-    color: v("--color-text-primary"),
-    fontSize: v("--font-size-small"),
-  },
-  ortAktiv: { borderColor: v("--color-accent"), background: v("--color-bg-accent") },
-  ortZusatz: { fontSize: v("--font-size-micro"), color: v("--color-text-muted") },
   zusammenfassung: {
     fontSize: v("--font-size-small"),
     color: v("--color-text-secondary"),
