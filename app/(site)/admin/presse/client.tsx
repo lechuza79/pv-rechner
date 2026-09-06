@@ -592,11 +592,6 @@ export default function PresseAnsicht() {
                         Noch kein Werkzeug zugeordnet.
                       </p>
                     )}
-                    {m.beleg_traegt_grund && (
-                      <p style={{ margin: `${space.sm}px 0 0`, color: v("--color-text-muted") }}>
-                        {m.beleg_traegt_grund}
-                      </p>
-                    )}
                   </div>
                 </div>
                 {m.beleg_titel && m.werkzeug?.length ? (
