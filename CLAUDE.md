@@ -1291,6 +1291,83 @@ Das Projekt veröffentlicht seit 26.08.2026 selbst auf LinkedIn. Der Redaktionsb
 läuft in einer eigenen Sitzung — Übergabe mit den Fallen: `docs/redaktionssystem-uebergabe.md`.
 Der Vorrat an Geschichten steht in `docs/datenstories-katalog.md`.
 
+### Der Story-Bucket: was die Daten hergeben, bevor jemand einen Post schreibt
+
+`/admin/redaktion/bucket` zeigt, was ein Suchlauf in den eigenen Daten gefunden
+hat — 13 Muster aus dem Katalog, je Fund ein gerechneter Satz mit seinen Zahlen
+und seiner Grundlage. Ein Mensch stöbert, merkt vor, verwirft; aus dem
+Vorgemerkten wird ein Beitrag. Der Fluss ist **Bucket → Entwurf → Beitrag →
+geplant**, und die späten Stände werden ABGELEITET (ein Beitrag trägt die
+Kennung seines Fundes, der Kalenderplatz hängt am Beitrag) — sie zusätzlich
+mitzuschreiben wäre eine zweite Wahrheit.
+
+**Der Entwurf wird bei jedem Aufruf NEU gerechnet, nie abgelegt.** Ein
+abgelegter Entwurf trüge die Zahlen von damals; nach dem nächsten Suchlauf
+stünde dort eine Zahl, die die Daten widerlegen. Was die Maschine nicht kann,
+bleibt sichtbar offen: der letzte Absatz mit dem eigenen Gedanken. Eine gefüllte
+Lücke merkt niemand, eine offene sieht jeder.
+
+**Der Lauf schreibt NIE den Stand oder die Notiz — BLOCKER.** Was nicht in der
+Nutzlast steht, bleibt beim Aktualisieren stehen; sie mitzugeben, und sei es mit
+dem Vorgabewert, setzte bei jedem Lauf jede Vormerkung zurück.
+
+**Die Kennung setzt der FINDER, nie eine Ableitung aus dem Satz.** Aus dem Satz
+geraten kollidierten 116 von 399 Funden — zwei verschiedene Funde unter einem
+Griff, und der zweite überschrieb den ersten stumm. Sie ist lesbar und nicht
+bloß eindeutig, weil sie in einem Zuruf funktionieren muss.
+
+**Seitenweise lesen ohne Sortierung liest nicht denselben Bestand — BLOCKER.**
+Postgres darf die Zeilenfolge zwischen zwei Abfragen ändern; über Seitengrenzen
+hinweg kommen dann Zeilen doppelt und andere gar nicht. Gemessen: derselbe Ort
+in drei Läufen mit 35, 64 und 39 Anlagen, bei unveränderten Daten. Und der
+zweite Teil derselben Falle: **ein Abruf ohne Paginierung liefert stumm nur die
+ersten 1.000 Zeilen.** Bei den KfW-Kreisdaten fehlten so 597 von 1.597 — die
+Sätze nennen absolute Jahreszahlen, die damit Teilsummen waren, und der
+Vergleichsmedian entstand aus der halben Menge. Jeder Abruf auf einer Tabelle,
+die wachsen kann, wird paginiert UND sortiert.
+
+**Die Lesegrenze kappt JE MUSTER, nicht global nach Stärke.** Die Stärke bedeutet
+je Muster etwas anderes (Prozentpunkte beim Flächenmix, Faktoren sonst); global
+gekappt fielen ganze Muster heraus — gemessen an 590 Funden fehlten Umkehrung,
+Heizungsförderung und Förderlücke vollständig, vom Kontrast kamen 27 von 256 an.
+Die Filterleiste bot sie mit Zahlen an, in der Liste standen sie nie. **Und die
+Trefferzahl nennt, was die Liste zeigt, nicht was es gibt** — sonst hält man den
+Vorrat für abgearbeitet.
+
+**Eine Richtung wird GERECHNET, nicht am Satz abgelesen.** Der Aufholer-Sucher
+(hinten im Bestand, vorn beim Tempo) filterte auf ein Wort im Satz — wirkungslos,
+weil der Satz IMMER beide Messgrößen nennt. Herausgekommen wären Regionen, die
+nachlassen, etikettiert als Aufholer: genau die Bloßstellung, die das Muster
+ausschließt.
+
+**Welcher Zeitraum noch läuft, sagt der KALENDER, nicht die Datenreihe.** Zwei
+Anläufe sind daran gescheitert, es aus den Daten zu erraten; beide Ergebnisse
+sahen plausibel aus, gefangen hat es erst ein Test. Eine halb erhobene Woche ist
+von einer schwachen nicht zu unterscheiden — beide zeigen wenig. Gilt für den
+Wochenvergleich wie für die Karenz der Monats-Anomalie: Der Stichtag kommt von
+außen, und die Karenz zählt Kalendermonate, nicht Einträge der Liste.
+
+**Was aus einem gleitenden Fenster fällt, wird gelöscht.** Der Monatslauf
+schreibt nur die Monate seines Fensters; ohne Aufräumen bliebe alles Ältere mit
+dem Stand liegen, den es beim letzten Schreiben hatte — und die Anomalie-Suche
+bildet ihren Vergleichsmedian über ALLE Fenster. Eingefrorene Monate sind
+systematisch zu niedrig, der Median sinkt, und es erscheinen Ausschläge, die
+keine sind.
+
+**Ein Fund, den der jüngste Lauf nicht mehr findet, wird als veraltet
+gekennzeichnet, nicht gelöscht** — die Vormerkung soll nicht verschwinden, aber
+er darf auch nicht wie ein frischer aussehen.
+
+**Die Ablage trägt `server-only`, ihre Beschriftungen nicht.** Zustandsnamen und
+die Ableitung der späten Stände liegen in einem eigenen Modul ohne Server-Bindung
+(`lib/social-fundstand.ts`); sonst zieht eine Client-Komponente, die nur ein
+Label braucht, die halbe Serverschicht ins Browser-Bündel — der Bau bricht ab.
+`lib/__tests__/server-only-grenze.test.ts` hält das fest.
+
+**Der Suchlauf läuft wöchentlich** (`.github/workflows/story-bucket.yml`) und
+schlägt bei einem leeren Lauf fehl: Ein Automatismus, der nichts findet, ist von
+einem, der nicht lief, sonst nicht zu unterscheiden.
+
 **OFFEN (bis 12/2026): Datenstories und Abo-Meldungen aus einer Quelle**
 (Betreiber, 01.09.2026). Beide rechnen aus denselben Zahlen und wissen
 nichts voneinander: Der Story-Katalog rechnet bundesweit für die
