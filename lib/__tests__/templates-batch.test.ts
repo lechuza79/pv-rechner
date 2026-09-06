@@ -90,12 +90,18 @@ describe("Templates aus dem Kommunen-Schub", () => {
     expect(lies("lib", "orts-posts.ts")).toContain("storyArt: story.art");
   });
 
-  it("durchschalten geht über die Gemeinden, nicht nur über die Beispiele", () => {
-    // Ein Design fällt am langen Ortsnamen oder an eng beieinanderliegenden
-    // Werten. Wer nur das eine Beispiel sehen kann, nimmt es für den
-    // Referenzfall ab und hofft für den Rest.
-    expect(SEITE).toContain("const alleTraeger");
-    expect(SEITE).toMatch(/titel: p\.ort \? `\$\{p\.ort\.name\}`/);
+  it("im Wähler steht jeder Typ genau einmal", () => {
+    // Eine Gemeinde mit vier Einzelkennzahl-Geschichten stand dort viermal
+    // untereinander, jedes Mal mit demselben Namen — die Zusammenfassung galt
+    // für die Zeilen und nicht für den Wähler. Halb umgestellt ist schlimmer
+    // als gar nicht: Es sieht aus, als wäre etwas doppelt gerechnet.
+    expect(SEITE).toContain("const traeger = posts.filter(");
+    expect(SEITE, "der Wähler zieht wieder aus allen Ausprägungen").not.toContain(
+      "[...weitereJeTyp.values()]",
+    );
+    // Und die Beschriftung ist der TYP, nicht nur der Ort — sonst sagt sie
+    // beim Durchschalten nicht, was sich ändert.
+    expect(SEITE).toContain("beschriftung(p)");
   });
 
   it("die Platzierungen werden einmal gerechnet, nicht je Ort", () => {

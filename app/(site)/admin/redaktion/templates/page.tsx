@@ -125,6 +125,18 @@ function nachTyp(posts: SocialPost[]): Map<string, SocialPost[]> {
   return gruppen;
 }
 
+/**
+ * Wie ein Ortsbeitrag im Wähler heißt — die Typbezeichnung ohne den Ort.
+ *
+ * Der Beitragstitel lautet „Musterdorf — Stichtag"; im Wähler steht der Ort
+ * ohnehin dahinter, und zweimal derselbe Name in einer Zeile liest sich wie
+ * ein Fehler.
+ */
+function beschriftung(p: SocialPost): string {
+  const teil = p.titel.split(" — ");
+  return teil.length > 1 ? teil.slice(1).join(" — ") : p.titel;
+}
+
 /** Ein Beispiel je Story-Typ. */
 function jeTypEinBeispiel(posts: SocialPost[]): SocialPost[] {
   return [...nachTyp(posts).values()].map((g) => g[0]);
@@ -192,8 +204,6 @@ export default async function RedaktionTemplates({
   let fehler: string | null = null;
   let ausschnitt: { angesehen: number; vorhanden: number; offen: number } | null = null;
   let schubSchluessel = gewuenschterSchub ?? AKTUELLER_SCHUB;
-  // Alle Ausprägungen je Typ — die Auswahl zum Durchschalten.
-  let weitereJeTyp = new Map<string, SocialPost[]>();
   try {
     if (quelle === "kommunen") {
       // Ohne ausdrückliche Wahl der Schub, der wirklich dran ist — nicht der,
@@ -217,7 +227,6 @@ export default async function RedaktionTemplates({
       // bleiben als Auswahl zum Durchschalten erhalten — daran sieht man, ob
       // ein Design auch bei einem langen Ortsnamen oder engen Werten trägt.
       posts = jeTypEinBeispiel(gesammelt.beitraege.map((b) => b.post));
-      weitereJeTyp = nachTyp(gesammelt.beitraege.map((b) => b.post));
       ausschnitt = {
         angesehen: gesammelt.angesehen,
         vorhanden: gesammelt.vorhanden,
@@ -242,26 +251,25 @@ export default async function RedaktionTemplates({
         // im Umschalter des Redaktionstischs. Hier etwas anbieten, das dort
         // verboten wäre, hieße ein Design an einem Fall abzunehmen, den es nie
         // geben wird.
+        // JE TYP EIN EINTRAG, auch im Wähler. `posts` ist bereits auf ein
+        // Beispiel je Typ zusammengefasst — dieselbe Liste hier zu benutzen ist
+        // der ganze Punkt: Eine Gemeinde mit vier Einzelkennzahl-Geschichten
+        // stand sonst viermal untereinander, jedes Mal mit demselben Namen,
+        // weil die Beschriftung nur den Ort trug. Die Zusammenfassung galt für
+        // die Zeilen und nicht für den Wähler — halb umgestellt ist schlimmer
+        // als gar nicht, weil es aussieht, als wäre etwas doppelt gerechnet.
         const traeger = posts.filter((p) => p.bild && moeglicheFormen(p.bild).includes(art));
-        // Beim Durchschalten sind ALLE Ausprägungen wählbar, nicht nur die
-        // Beispiele: Ein Design fällt am langen Ortsnamen oder an eng
-        // beieinanderliegenden Werten, und die sieht man nur, wenn man die
-        // Gemeinden durchgehen kann.
-        const alleTraeger = [...weitereJeTyp.values()]
-          .flat()
-          .filter((p) => p.bild && moeglicheFormen(p.bild).includes(art));
-        const wahl = alleTraeger.length > 0 ? alleTraeger : traeger;
-        const wunsch = wahl.find((p) => p.id === gewaehlt(art));
+        const wunsch = traeger.find((p) => p.id === gewaehlt(art));
         const post = wunsch ?? fuellung(posts, art);
         if (!post?.bild) return null;
         return {
           form,
           post,
-          auswahl: wahl.map((p) => ({
+          auswahl: traeger.map((p) => ({
             id: p.id,
-            // Bei Ortsgeschichten der TYP plus die Gemeinde — „Musterdorf —
-            // Stichtag" allein sagt beim Durchschalten nicht, was sich ändert.
-            titel: p.ort ? `${p.ort.name}` : p.titel,
+            // Der TYP ist die Beschriftung, der Beispielort steht dahinter:
+            // Gewählt wird zwischen Aussagen, nicht zwischen Gemeinden.
+            titel: p.ort ? `${beschriftung(p)} · ${p.ort.name}` : p.titel,
             href: adresseMit(art, p.id),
             aktiv: p.id === post.id,
           })),
@@ -344,7 +352,9 @@ export default async function RedaktionTemplates({
               borderRadius: v("--radius-sm"),
               border: `1px solid ${q.aktiv ? v("--color-accent") : v("--color-border")}`,
               background: q.aktiv ? v("--color-accent") : v("--color-bg"),
-              color: q.aktiv ? v("--color-bg") : v("--color-text-secondary"),
+              // Eigenes Token für Text auf Akzentfläche — der
+              // Seitenhintergrund ist auf dunklen Stufen dunkel.
+              color: q.aktiv ? v("--color-text-on-accent") : v("--color-text-secondary"),
               fontSize: v("--font-size-small"),
               fontWeight: q.aktiv ? 600 : 400,
               textDecoration: "none",

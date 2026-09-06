@@ -123,7 +123,10 @@ const S: Record<string, React.CSSProperties> = {
   knopfAktiv: {
     background: v("--color-accent"),
     borderColor: v("--color-accent"),
-    color: v("--color-bg"),
+    // NICHT der Seitenhintergrund: Auf den dunklen Tagesstufen ist der dunkel,
+    // und dunkler Text auf blauer Fläche ist nicht mehr lesbar. Dafür gibt es
+    // ein eigenes Token, das auf jeder Stufe gegen die Akzentfläche steht.
+    color: v("--color-text-on-accent"),
     fontWeight: 600,
   },
   punkt: {
