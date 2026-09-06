@@ -335,23 +335,18 @@ function StoryKarte({
 }
 
 /**
- * KEINE EIGENE ZEICHNUNG MEHR (05.09.2026).
+ * KEINE EIGENE ZEICHNUNG — und seit dem 06.09.2026 auch keine Lücke mehr.
  *
  * Hier stand kurz eine dritte Fassung der Bildformen, mit den Tokens der Seite
- * gezeichnet — nachdem die Beitrags-Karte an ihrer festen Breite und ihrer
- * eigenen Palette gescheitert war. Sie war damit die zweite Wahrheit neben den
- * vier abgenommenen Templates, und der Einheiten-Wächter hat sie prompt beim
- * ersten Lauf erwischt: eine Einheit an eine Zahl geklebt, statt aus der einen
- * Quelle zu formatieren.
+ * gezeichnet, nachdem die Beitrags-Karte an ihrer festen Breite und ihrer
+ * eigenen Palette gescheitert war. Sie war die zweite Wahrheit neben den
+ * abgenommenen Templates, und der Einheiten-Wächter hat sie prompt beim ersten
+ * Lauf erwischt.
  *
- * Das quadratische Story-Visual entsteht dort, wo die Formenlehre wohnt
- * (lib/social-bildformen.ts, Übergabe in docs/redaktionssystem-uebergabe.md).
- * Bis dahin trägt die Karte ihren Text — und der Block ist auf der Seite
- * ausgeblendet.
+ * Gelöst ist es dort, wo die Formenlehre wohnt: Die Karte hat eine
+ * quadratische Stufe, die die Farben der Seite erbt. Diese Datei benutzt sie
+ * nur (siehe `StoryKarte`).
  */
-
-
-
 
 /** "2026-08-05" → "05.08.2026" — dieselbe Schreibweise, die die Quellenkante
  *  ohne Angabe selbst erzeugt. */
