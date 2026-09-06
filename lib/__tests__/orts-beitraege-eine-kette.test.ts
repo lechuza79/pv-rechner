@@ -72,7 +72,8 @@ function serverModulUnter(start: string): { weg: string[] } | null {
 }
 
 const ORTSSEITE = ["app", "(site)", "solar-atlas", "[bundesland]", "[kreis]", "[gemeinde]", "page.tsx"];
-const REDAKTION = ["app", "(site)", "admin", "redaktion", "kommunen", "page.tsx"];
+// Die geteilte Quelle, aus der BEIDE Redaktionsansichten füllen.
+const REDAKTION = ["lib", "redaktions-quelle.ts"];
 
 // Ortsseite und Redaktionstisch bauen dieselben Beiträge — aus EINER Kette.
 //
@@ -92,6 +93,13 @@ describe("Ortsseite und Redaktionstisch teilen eine Kette", () => {
   it("beide bauen die Beiträge über das geteilte Modul", () => {
     expect(lies(...ORTSSEITE)).toContain("lib/orts-posts");
     expect(lies(...REDAKTION)).toContain("orts-beitraege-server");
+    // Und beide Ansichten holen sie von dort, statt selbst zu sammeln.
+    for (const seite of [
+      ["app", "(site)", "admin", "redaktion", "page.tsx"],
+      ["app", "(site)", "admin", "redaktion", "templates", "page.tsx"],
+    ]) {
+      expect(lies(...seite)).toContain("redaktions-quelle");
+    }
   });
 
   it("der Redaktionstisch stellt die Geschichten NICHT selbst zusammen", () => {

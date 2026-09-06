@@ -87,11 +87,6 @@ export default function InternalShell({
             // seinen Zweck hat: Es ist die Bildform eines Posts, nicht die eines
             // Artikels. Ein Blog-Beitrag trägt kein Kartenbild.
             { href: "/admin/redaktion/templates", label: "Templates" },
-            // Die Ortsgeschichten stehen HIER und nicht beim Kommunen-Cockpit:
-            // Sie sind Beiträge des Redaktionssystems, keine Adressverwaltung.
-            // Das Cockpit entscheidet, WER angeschrieben wird; hier wird
-            // durchgesehen, was auf der verlinkten Ortsseite steht.
-            { href: "/admin/redaktion/kommunen", label: "Kommunen" },
             { href: "/admin/redaktion/planung", label: "Planung" },
             { href: "/admin/redaktion/auswertung", label: "Auswertung" },
           ],

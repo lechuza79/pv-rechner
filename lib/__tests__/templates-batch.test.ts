@@ -6,6 +6,10 @@ const WURZEL = join(__dirname, "..", "..");
 const lies = (...t: string[]) => readFileSync(join(WURZEL, ...t), "utf8");
 const SEITE = lies("app", "(site)", "admin", "redaktion", "templates", "page.tsx");
 const SAMMLER = lies("lib", "orts-beitraege-server.ts");
+// Die geteilte Quellenwahl beider Redaktionsansichten.
+const QUELLE = lies("lib", "redaktions-quelle.ts");
+const ENTWICKLUNG = lies("app", "(site)", "admin", "redaktion", "page.tsx");
+const LEISTE = lies("components", "social", "QuellenLeiste.tsx");
 
 // Die Templates-Ansicht lässt sich aus dem nächsten Kommunen-Schub füllen.
 //
@@ -19,8 +23,15 @@ const SAMMLER = lies("lib", "orts-beitraege-server.ts");
 
 describe("Templates aus dem Kommunen-Schub", () => {
   it("die Ansicht kennt beide Quellen", () => {
-    expect(SEITE).toContain('params.quelle === "kommunen"');
-    expect(SEITE).toContain("ortsBeitraegeMehrere");
+    // BEIDE Ansichten, und beide über dieselbe Quelle: Die Ortsgeschichten
+    // tragen dieselben Katalog-Familien wie die bundesweiten Beiträge und
+    // gehören deshalb unter dieselben Reiter, nicht in eine eigene Ansicht
+    // daneben (Betreiber, 06.09.2026).
+    for (const seite of [SEITE, ENTWICKLUNG]) {
+      expect(seite).toContain('params.quelle === "kommunen"');
+      expect(seite).toContain("quellenstand(");
+    }
+    expect(QUELLE).toContain("ortsBeitraegeMehrere");
   });
 
   it("der Sammellauf hat einen Deckel, und er ist klein", () => {
@@ -30,7 +41,7 @@ describe("Templates aus dem Kommunen-Schub", () => {
     const oben = /Math.min\(opts.hoechstens \?\? 6, (\d+)\)/.exec(SAMMLER)?.[1];
     expect(oben, "Der Sammellauf hat keine Obergrenze").toBeTruthy();
     expect(Number(oben)).toBeLessThanOrEqual(24);
-    const standard = /const ORTE_STANDARD = (\d+);/.exec(SEITE)?.[1];
+    const standard = /const ORTE_STANDARD = (\d+);/.exec(QUELLE)?.[1];
     expect(Number(standard)).toBeLessThanOrEqual(8);
   });
 
@@ -39,7 +50,7 @@ describe("Templates aus dem Kommunen-Schub", () => {
     // Ganze, behauptet eine Vollständigkeit, die sie nicht hat.
     expect(SAMMLER).toContain("angesehen");
     expect(SAMMLER).toContain("vorhanden");
-    expect(SEITE).toContain("von {ausschnitt.vorhanden} Gemeinden");
+    expect(LEISTE).toContain("von {stand.schub.vorhanden} Gemeinden");
   });
 
   it("die Quelle überlebt das Durchschalten einer Zeile", () => {
@@ -64,13 +75,13 @@ describe("Templates aus dem Kommunen-Schub", () => {
     // Schub, dessen 79 Gemeinden alle angeschrieben waren — vier der fünf
     // Schübe waren durch. Wer ihr folgt, füllt die Templates-Arbeit mit
     // Geschichten von Orten, an denen sich nichts mehr ändern lässt.
-    expect(SEITE).toContain("async function naechsterSchub");
-    expect(SEITE).toContain("o.offen");
+    expect(QUELLE).toContain("async function naechsterSchub");
+    expect(QUELLE).toContain("o.offen");
   });
 
   it("innerhalb des Schubs kommen die noch nicht angeschriebenen zuerst", () => {
     // Ein Schub ist nach Chargen sortiert, und die vorderen sind längst raus.
-    expect(SEITE).toMatch(/sort\(\(a, b\) => Number\(b\.offen\) - Number\(a\.offen\)\)/);
+    expect(QUELLE).toMatch(/sort\(\(a, b\) => Number\(b\.offen\) - Number\(a\.offen\)\)/);
   });
 
   it("die Ortsgeschichten stehen als TYP da, nicht je Gemeinde", () => {
@@ -83,8 +94,8 @@ describe("Templates aus dem Kommunen-Schub", () => {
     // suchte nur den Namen der Funktion und blieb bei der Gegenprobe grün, als
     // die Zuweisung wieder auf die ungefilterte Liste zeigte — die Funktion
     // stand ja noch da. Dieselbe Falle wie beim Datenbank-Wächter.
-    expect(SEITE).toContain("posts = jeTypEinBeispiel(");
-    expect(SEITE).toContain("p.storyArt ?? p.id");
+    expect(QUELLE).toContain("[...nachTyp(alle).values()].map((g) => g[0])");
+    expect(QUELLE).toContain("p.storyArt ?? p.id");
     // Der Typ muss am Beitrag hängen: Die Kennung trägt bei einigen Typen einen
     // Zusatz (den Monat, die Vergleichskategorie) und taugt nicht als Gruppe.
     expect(lies("lib", "orts-posts.ts")).toContain("storyArt: story.art");
@@ -99,6 +110,9 @@ describe("Templates aus dem Kommunen-Schub", () => {
     expect(SEITE, "der Wähler zieht wieder aus allen Ausprägungen").not.toContain(
       "[...weitereJeTyp.values()]",
     );
+    // Und die Quellenwahl steht EINMAL — zwei Leisten für dieselbe Wahl sehen
+    // nach zwei Wochen verschieden aus.
+    for (const seite of [SEITE, ENTWICKLUNG]) expect(seite).toContain("<QuellenLeiste");
     // Und die Beschriftung ist der TYP, nicht nur der Ort — sonst sagt sie
     // beim Durchschalten nicht, was sich ändert.
     expect(SEITE).toContain("beschriftung(p)");

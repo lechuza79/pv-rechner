@@ -28,11 +28,21 @@ export function KategorieNav({
   bereiche,
   aktiv,
   uebersicht,
+  adresse = (k) => (k ? `/admin/redaktion?k=${k}` : "/admin/redaktion"),
 }: {
   bereiche: NavBereich[];
   aktiv: string;
   /** Steht gerade das Raster über alles? Dann ist der Weg zurück der aktive. */
   uebersicht?: boolean;
+  /**
+   * Wie die Adresse einer Kategorie aussieht.
+   *
+   * Hereingereicht, seit die Ansicht auch aus dem Kommunen-Schub gefüllt werden
+   * kann: Ohne das fiel die Quellenwahl beim Klick auf eine Kategorie weg, und
+   * man landete stillschweigend wieder bei den bundesweiten Beiträgen — der
+   * Fehler, den man erst bemerkt, wenn man sich über andere Zahlen wundert.
+   */
+  adresse?: (kategorie: string | undefined) => string;
 }) {
   const router = useRouter();
 
@@ -65,7 +75,7 @@ export function KategorieNav({
           Übersicht
         </span>
         <Link
-          href="/admin/redaktion"
+          href={adresse(undefined)}
           aria-current={uebersicht ? "page" : undefined}
           style={{
             display: "inline-flex",
@@ -105,7 +115,7 @@ export function KategorieNav({
             <AuswahlSkipper
               eintraege={b.eintraege}
               wert={eigener ? aktiv : b.eintraege[0].wert}
-              onWaehle={(w) => router.push(`/admin/redaktion?k=${w}`)}
+              onWaehle={(w) => router.push(adresse(w))}
               ariaLabel={`Kategorie im Bereich ${b.name}`}
               maxWidth={b.eintraege.length > 3 ? 260 : 200}
             />

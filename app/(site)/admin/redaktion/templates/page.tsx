@@ -1,14 +1,11 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isAdminSession } from "../../../../../lib/admin-guard";
-import { socialKennzahlen } from "../../../../../lib/social-kennzahlen";
-import { baueAllePosts, moeglicheFormen, templateVon, type PostBild, type SocialPost } from "../../../../../lib/social-posts";
+import { moeglicheFormen, templateVon, type PostBild, type SocialPost } from "../../../../../lib/social-posts";
 import { BILDFORMEN, TEMPLATES } from "../../../../../lib/social-bildformen";
 import { TemplateGalerie, type GalerieZeile } from "../../../../../components/social/TemplateGalerie";
-import { ladeFassungen } from "../../../../../lib/social-vorlagen-db";
-import { ortsBeitraegeMehrere } from "../../../../../lib/orts-beitraege-server";
-import { supabase } from "../../../../../lib/supabase-server";
-import { AKTUELLER_SCHUB, SCHUEBE } from "../../../../../lib/kommunen-testballon";
+import { quellenstand, ORTE_STANDARD } from "../../../../../lib/redaktions-quelle";
+import { QuellenLeiste } from "../../../../../components/social/QuellenLeiste";
 import { v, space, pad } from "../../../../../lib/theme";
 
 // Die Templates als eigener Bereich der Redaktion — vorher lag diese Ansicht als
@@ -47,85 +44,6 @@ export const metadata = {
 export const dynamic = "force-dynamic";
 
 /**
- * Wie viele Orte eines Schubs die Ansicht ohne Zutun ansieht.
- *
- * Sechs, weil die Formenwahl den Zahlen folgt und die über Orte hinweg ähnlich
- * sind: Sechs Gemeinden decken die Formen, die ein Schub braucht, mit hoher
- * Wahrscheinlichkeit ab. Wer mehr sehen will, hebt es in der Adresse an — die
- * Ansicht sagt, wie viele es waren.
- */
-const ORTE_STANDARD = 6;
-
-/** Eine Gemeinde eines Schubs, mit dem, was über ihren Versand bekannt ist. */
-type SchubOrt = { regionId: string; charge: number | null; offen: boolean };
-
-/** Die Gemeinden einer Kampagne, in der Reihenfolge ihrer Chargen. */
-async function orteDesSchubs(kampagne: string): Promise<SchubOrt[]> {
-  if (!supabase) return [];
-  const { data, error } = await supabase
-    .from("kommunen_kontakt")
-    .select("region_id, charge, outreach_status")
-    .eq("kampagne", kampagne)
-    .order("charge")
-    .order("region_id");
-  if (error) throw new Error(error.message);
-  return (data ?? []).map((r) => {
-    const z = r as { region_id: string; charge: number | null; outreach_status: string | null };
-    return {
-      regionId: z.region_id,
-      charge: z.charge,
-      offen: !z.outreach_status || z.outreach_status === "offen",
-    };
-  });
-}
-
-/**
- * Welcher Schub ist WIRKLICH als Nächstes dran?
- *
- * GEMESSEN, NICHT ANGEMELDET. Die Markierung „aktueller Schub" im Code ist eine
- * Angabe, die jemand pflegen muss — und am 06.09.2026 zeigte sie auf einen
- * Schub, dessen 79 Gemeinden alle angeschrieben waren. Vier der fünf Schübe
- * waren durch; offen war allein der geparkte, und genau dessen Geschichten
- * braucht die Templates-Arbeit.
- *
- * Dieselbe Systematik wie beim Sitzungs-Befehl des Projekts: Der Zustand wird
- * nachgesehen, statt einer zweiten Wahrheit zu glauben.
- *
- * Zurück kommt der Schub mit den meisten offenen Gemeinden. Gibt es keinen
- * offenen mehr, bleibt die Markierung — dann ist nichts dran, und die Ansicht
- * zeigt eben den zuletzt gelaufenen.
- */
-async function naechsterSchub(): Promise<{ schluessel: string; orte: SchubOrt[] }> {
-  const stände = await Promise.all(
-    Object.entries(SCHUEBE).map(async ([schluessel, s]) => {
-      const orte = await orteDesSchubs(s.kampagne).catch(() => [] as SchubOrt[]);
-      return { schluessel, orte, offen: orte.filter((o) => o.offen).length };
-    }),
-  );
-  const beste = [...stände].sort((a, b) => b.offen - a.offen)[0];
-  if (beste && beste.offen > 0) return { schluessel: beste.schluessel, orte: beste.orte };
-  const rueckfall = stände.find((x) => x.schluessel === AKTUELLER_SCHUB) ?? stände[0];
-  return { schluessel: rueckfall?.schluessel ?? AKTUELLER_SCHUB, orte: rueckfall?.orte ?? [] };
-}
-
-/**
- * Die Ortsbeiträge nach ihrem Story-TYP, in der Reihenfolge ihres Auftretens.
- *
- * Ein Beitrag ohne Typ (die bundesweiten) steht für sich — dort ist jeder ein
- * Einzelstück.
- */
-function nachTyp(posts: SocialPost[]): Map<string, SocialPost[]> {
-  const gruppen = new Map<string, SocialPost[]>();
-  for (const p of posts) {
-    const schluessel = p.storyArt ?? p.id;
-    const vorhanden = gruppen.get(schluessel);
-    if (vorhanden) vorhanden.push(p);
-    else gruppen.set(schluessel, [p]);
-  }
-  return gruppen;
-}
-
-/**
  * Wie ein Ortsbeitrag im Wähler heißt — die Typbezeichnung ohne den Ort.
  *
  * Der Beitragstitel lautet „Musterdorf — Stichtag"; im Wähler steht der Ort
@@ -135,11 +53,6 @@ function nachTyp(posts: SocialPost[]): Map<string, SocialPost[]> {
 function beschriftung(p: SocialPost): string {
   const teil = p.titel.split(" — ");
   return teil.length > 1 ? teil.slice(1).join(" — ") : p.titel;
-}
-
-/** Ein Beispiel je Story-Typ. */
-function jeTypEinBeispiel(posts: SocialPost[]): SocialPost[] {
-  return [...nachTyp(posts).values()].map((g) => g[0]);
 }
 
 /**
@@ -193,52 +106,15 @@ export default async function RedaktionTemplates({
     return `/admin/redaktion/templates?${q.toString()}#${art}`;
   };
 
-  // Woraus die Formen gefüllt werden. „bund" ist der Ausgangszustand: Er lädt
-  // eine Abfrage, der Schub ein halbes Dutzend je Ort.
-  const quelle = params.quelle === "kommunen" ? "kommunen" : "bund";
-  const gewuenschterSchub =
-    typeof params.schub === "string" && SCHUEBE[params.schub] ? params.schub : null;
-  const orteDeckel = Math.max(1, Math.min(Number(params.orte) || ORTE_STANDARD, 24));
-
-  let posts: SocialPost[] = [];
-  let fehler: string | null = null;
-  let ausschnitt: { angesehen: number; vorhanden: number; offen: number } | null = null;
-  let schubSchluessel = gewuenschterSchub ?? AKTUELLER_SCHUB;
-  try {
-    if (quelle === "kommunen") {
-      // Ohne ausdrückliche Wahl der Schub, der wirklich dran ist — nicht der,
-      // den die Markierung im Code nennt.
-      const { schluessel, orte } = gewuenschterSchub
-        ? { schluessel: gewuenschterSchub, orte: await orteDesSchubs(SCHUEBE[gewuenschterSchub].kampagne) }
-        : await naechsterSchub();
-      schubSchluessel = schluessel;
-      // OFFENE ZUERST. Ein Schub ist nach Chargen sortiert, und die vorderen
-      // sind längst raus — die ersten sechs Orte wären dann die, an denen sich
-      // nichts mehr ändern lässt.
-      const sortiert = [...orte].sort((a, b) => Number(b.offen) - Number(a.offen));
-      const gesammelt = await ortsBeitraegeMehrere(sortiert, { hoechstens: orteDeckel });
-      // NACH STORY-TYP ZUSAMMENGEFASST, ein Beispiel je Typ (Betreiber,
-      // 06.09.2026). Sechs Orte × sieben Geschichten sind zweiundvierzig
-      // Einträge für sieben Typen — und gestaltet wird der Typ: „Stichtag" sieht
-      // in jeder Gemeinde gleich aus, nur mit anderen Zahlen darin.
-      //
-      // Bei den bundesweiten Beiträgen fällt das nicht an, weil dort jeder
-      // Beitrag ein Einzelstück ist. Die übrigen Gemeinden desselben Typs
-      // bleiben als Auswahl zum Durchschalten erhalten — daran sieht man, ob
-      // ein Design auch bei einem langen Ortsnamen oder engen Werten trägt.
-      posts = jeTypEinBeispiel(gesammelt.beitraege.map((b) => b.post));
-      ausschnitt = {
-        angesehen: gesammelt.angesehen,
-        vorhanden: gesammelt.vorhanden,
-        offen: orte.filter((o) => o.offen).length,
-      };
-    } else {
-      const [kennzahlen, fassungen] = await Promise.all([socialKennzahlen(), ladeFassungen()]);
-      posts = baueAllePosts(kennzahlen, fassungen);
-    }
-  } catch (e) {
-    fehler = (e as Error).message;
-  }
+  // Woraus die Formen gefüllt werden — dieselbe Wahl und dieselbe Quelle wie in
+  // der Entwicklungs-Ansicht.
+  const stand = await quellenstand({
+    art: params.quelle === "kommunen" ? "kommunen" : "bund",
+    schub: typeof params.schub === "string" ? params.schub : undefined,
+    hoechstensOrte: Math.max(1, Math.min(Number(params.orte) || ORTE_STANDARD, 24)),
+  });
+  const posts: SocialPost[] = stand.posts;
+  const fehler: string | null = stand.fehler ?? null;
 
   // Die Bibliothek zeigt die Formen, von denen mindestens eine Variante
   // abgenommen ist. Die übrigen sind Entwicklungsstand.
@@ -302,11 +178,6 @@ export default async function RedaktionTemplates({
     { text: "Neu entwickeln", href: adresse({ ansicht: "neu" }), aktiv: neu, zahl: inArbeit.length },
   ];
 
-  const quellen = [
-    { text: "Bundesweit", href: adresse({ quelle: undefined }), aktiv: quelle === "bund" },
-    { text: "Nächster Kommunen-Schub", href: adresse({ quelle: "kommunen" }), aktiv: quelle === "kommunen" },
-  ];
-
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto" }}>
       <nav
@@ -339,74 +210,7 @@ export default async function RedaktionTemplates({
         ))}
       </nav>
 
-      {/* WORAUS gefüllt wird — die Entscheidung steht über der Ansicht, nicht
-          in ihr: Sie bestimmt, an welchen Zahlen ein Design abgenommen wird. */}
-      <nav aria-label="Füllung" style={{ display: "flex", gap: space.sm, flexWrap: "wrap", marginBottom: space.lg }}>
-        {quellen.map((q) => (
-          <Link
-            key={q.href}
-            href={q.href}
-            aria-current={q.aktiv ? "true" : undefined}
-            style={{
-              padding: pad("xs", "md"),
-              borderRadius: v("--radius-sm"),
-              border: `1px solid ${q.aktiv ? v("--color-accent") : v("--color-border")}`,
-              background: q.aktiv ? v("--color-accent") : v("--color-bg-muted"),
-              // Eigenes Token für Text auf Akzentfläche — der
-              // Seitenhintergrund ist auf dunklen Stufen dunkel.
-              color: q.aktiv ? v("--color-text-on-accent") : v("--color-text-secondary"),
-              fontSize: v("--font-size-small"),
-              fontWeight: q.aktiv ? 600 : 400,
-              textDecoration: "none",
-            }}
-          >
-            {q.text}
-          </Link>
-        ))}
-        {quelle === "kommunen" &&
-          Object.entries(SCHUEBE).map(([k, sch]) => (
-            <Link
-              key={k}
-              href={adresse({ quelle: "kommunen", schub: k })}
-              style={{
-                padding: pad("xs", "md"),
-                borderRadius: v("--radius-sm"),
-                border: `1px solid ${k === schubSchluessel ? v("--color-accent") : v("--color-border")}`,
-                // EINE FLÄCHE, KEIN RAND ALLEIN: Der Rand trägt gegen den
-                // Seitengrund nur 1,3:1 — auf den dunklen Tagesstufen sieht die
-                // Pille aus wie loser Text. Und Sekundär- statt gedämpfter
-                // Schrift: 7,2:1 gegen 5,3:1, und bei dieser Schriftgröße ist
-                // das der Unterschied zwischen lesbar und erahnbar.
-                background: k === schubSchluessel ? v("--color-accent-dim") : v("--color-bg-muted"),
-                color: k === schubSchluessel ? v("--color-accent") : v("--color-text-secondary"),
-                fontSize: v("--font-size-small"),
-                textDecoration: "none",
-              }}
-            >
-              {sch.kampagne}
-            </Link>
-          ))}
-      </nav>
-
-      {/* DER AUSSCHNITT STEHT DA. Eine Ansicht, die sechs von hundert Orten
-          zeigt und aussieht wie das Ganze, behauptet eine Vollständigkeit, die
-          sie nicht hat — dieselbe Regel wie „Weggelassenes sichtbar erklären". */}
-      {ausschnitt && (
-        <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginTop: 0, marginBottom: space.lg }}>
-          {posts.length} {posts.length === 1 ? "Story-Typ" : "Story-Typen"} aus dem Schub
-          „{schubSchluessel}", je einer beispielhaft an einer Gemeinde. Angesehen:{" "}
-          {ausschnitt.angesehen} von {ausschnitt.vorhanden} Gemeinden ({ausschnitt.offen} davon
-          noch nicht angeschrieben, die zuerst). Ein Typ sieht in jeder Gemeinde gleich aus, nur
-          mit anderen Zahlen — über den Wähler an der Zeile lässt sich die Gemeinde durchschalten.
-          Mehr Orte können weitere Formen hinzubringen, weil die Zahlen über die Form
-          entscheiden.{" "}
-          {ausschnitt.angesehen < ausschnitt.vorhanden && (
-            <Link href={adresse({ quelle: "kommunen", orte: String(Math.min(ausschnitt.angesehen * 2, 24)) })}>
-              Mehr Orte ansehen
-            </Link>
-          )}
-        </p>
-      )}
+      <QuellenLeiste stand={stand} adresse={adresse} />
 
       <p style={{ color: v("--color-text-secondary"), maxWidth: 760, marginTop: 0, marginBottom: space.xxl }}>
         {neu
