@@ -338,6 +338,18 @@ export type SocialPost = {
    * vermisst.
    */
   kategorie: KategorieSchluessel;
+  /**
+   * Über welchen ORT dieser Beitrag spricht — nur bei Ortsgeschichten.
+   *
+   * Eine zweite Dimension neben der Kategorie, KEINE eigene Kategorie: Die
+   * Ortsgeschichten verteilen sich über sieben Familien des Katalogs, und sie
+   * unter einem Reiter „Kommune" zusammenzufassen hieße, dieselbe Sache zweimal
+   * zu ordnen. Die Ansicht filtert deshalb nach Ort UND Kategorie.
+   *
+   * Fehlt bei den bundesweiten Beiträgen — die sprechen über Deutschland, und
+   * ein Ort daran wäre eine Aussage, die sie nicht treffen.
+   */
+  ort?: { regionId: string; name: string };
   kanal: ("linkedin" | "instagram")[];
   text: string;
   bild: PostBild | null;
@@ -425,7 +437,9 @@ const MARKE = "Solar Check";
  *
  * Die Sperre bleibt: Sie fängt weiterhin, wer eine Quellenzeile von Hand tippt.
  */
-function quelleAus(schluessel: "mastr" | "ember", stand: string, mitMarke: boolean): string {
+export type QuellenSchluessel = "mastr" | "ember" | "zensus";
+
+function quelleAus(schluessel: QuellenSchluessel, stand: string, mitMarke: boolean): string {
   // Name, Lizenz UND Änderungshinweis kommen aus der zentralen Beschriftung —
   // nicht aus einer eigenen Zusammensetzung der Registerfelder.
   //
@@ -440,9 +454,44 @@ function quelleAus(schluessel: "mastr" | "ember", stand: string, mitMarke: boole
   return mitMarke ? `${basis}, ${MARKE}.` : `${basis}.`;
 }
 
+/** Der Datenstand als deutsches Datum. */
+function standDatum(standIso: string): string {
+  return new Date(standIso).toLocaleDateString("de-DE", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+/**
+ * Die Quellenzeile für einen Beitrag, der aus MEHREREN Registern rechnet.
+ *
+ * Gebraucht seit den Ortsgeschichten: Die Wohnform-Geschichte rechnet auf dem
+ * Zensus, alle übrigen auf dem Anlagenregister. Eine gemeinsame Zeile über
+ * allen wäre für eine von ihnen falsch — und sie reist im Bild mit, also genau
+ * dort, wo die Lizenz sie verlangt.
+ *
+ * Jede Quelle bringt ihren VOLLEN Vermerk mit (Name, Lizenz, Änderungshinweis),
+ * verbunden mit Semikolon. Nicht gekürzt und nicht zusammengefasst: Was hier
+ * wegfällt, fällt ohne Fehlermeldung weg — dieselbe Falle, in die die
+ * Quellenkante und die einfache Quellenzeile schon je einmal getreten sind.
+ */
+export function quellenzeileMehrfach(
+  schluessel: QuellenSchluessel[],
+  standIso: string,
+  mitMarke: boolean,
+): string {
+  // Reihenfolge und Dubletten kommen vom Aufrufer; einmal genannt genügt.
+  const eindeutig = [...new Set(schluessel)];
+  if (eindeutig.length === 0) throw new Error("Quellenzeile ohne Quelle");
+  if (eindeutig.length === 1) return quelleAus(eindeutig[0], standDatum(standIso), mitMarke);
+  const namen = eindeutig.map((k) => sourceLabel(DATA_SOURCES[k])).join("; ");
+  const basis = `${namen}. Stand ${standDatum(standIso)}. Eigene Berechnung`;
+  return mitMarke ? `${basis}, ${MARKE}.` : `${basis}.`;
+}
+
 export function quellenzeile(standIso: string, mitMarke: boolean): string {
-  const d = new Date(standIso);
-  const datum = d.toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" });
+  const datum = standDatum(standIso);
   // AUS DEM REGISTER, nicht getippt: Der Name stand hier zusammen mit dem
   // Datenstand als eine Zeichenkette, und dabei fiel die Lizenz weg —
   // „Marktstammdatenregister (Bundesnetzagentur), Stand …, Eigene Berechnung"

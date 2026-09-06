@@ -39,6 +39,28 @@ export type Bildform = {
 };
 
 const zwei = (b: PostBild) => b.serien.length === 2;
+
+/**
+ * Tragen alle gezeigten Werte DIESELBE Einheit?
+ *
+ * Die Bedingung jeder Form, die Werte als LÄNGE nebeneinanderstellt. Zwei
+ * Längen zu vergleichen heißt zu behaupten, die Werte seien vergleichbar — und
+ * „Platz 11" neben „45 kWp" ist es nicht. Als Säule gezeichnet steckte der Rang
+ * als Sockel in der Leistung, und das Bild behauptete ein Verhältnis, das es
+ * nicht gibt.
+ *
+ * AUFGEFALLEN AN DEN ORTSGESCHICHTEN (06.09.2026): Die Platzierungs-Geschichte
+ * trägt Rang und Messgröße nebeneinander, und beim Öffnen der Formenwahl für
+ * Ortsgeschichten hätte das Register ihr Säule und Balken angeboten. Über die
+ * vierzehn bundesweiten Beiträge gemessen: keiner mischt Einheiten, die Regel
+ * kostet dort also nichts.
+ *
+ * Die Einzelkennzahl ist ausgenommen, und zwar nicht aus Nachsicht: Sie setzt
+ * EINE Zahl groß und die übrigen klein daneben — sie vergleicht keine Längen,
+ * sondern nennt Kontext. Genau dort ist eine zweite Einheit die Auskunft.
+ */
+const eineEinheit = (b: PostBild) =>
+  new Set([...b.serien, ...(b.reihe ?? [])].map((s) => s.einheit)).size <= 1;
 const hatGanzes = (b: PostBild) => b.ganzes != null;
 const alleMitUmriss = (b: PostBild) => b.serien.length > 0 && b.serien.every((s) => !!s.umriss);
 
@@ -208,7 +230,7 @@ export const BILDFORMEN: Bildform[] = [
     kennung: "balken",
     wofuer:
       "Zwei bis drei Werte als Längen nebeneinander. Trägt nur, wenn die Längen wirklich auseinandergehen — zwei fast gleich lange Balken zeigen nichts — und wenn die Werte ab null zählen.",
-    passt: (b) => abNull(b),
+    passt: (b) => abNull(b) && eineEinheit(b),
   },
   {
     art: "kennzahl",
@@ -224,7 +246,7 @@ export const BILDFORMEN: Bildform[] = [
     kennung: "ringpaar",
     wofuer:
       "Zwei ANTEILE als konzentrische Ringe. Nur mit einem Ganzen: Ohne eines behauptet der leere Rest etwas, das es nicht gibt.",
-    passt: (b) => zwei(b) && hatGanzes(b),
+    passt: (b) => zwei(b) && hatGanzes(b) && eineEinheit(b),
   },
   {
     art: "umriss",
@@ -232,7 +254,7 @@ export const BILDFORMEN: Bildform[] = [
     kennung: "umrisse",
     wofuer:
       "Landesumrisse, anteilig von unten gefüllt. Braucht ein Ganzes und einen Umriss je Wert — die Form behauptet ein Gefäß, das sich füllt.",
-    passt: (b) => hatGanzes(b) && alleMitUmriss(b),
+    passt: (b) => hatGanzes(b) && alleMitUmriss(b) && eineEinheit(b),
   },
   {
     art: "saeule",
@@ -240,7 +262,7 @@ export const BILDFORMEN: Bildform[] = [
     kennung: "saeule",
     wofuer:
       "Zwei Werte als EINE Säule, der kleinere als Sockel darin. Für Verhältnisse OHNE Ganzes — der Unterschied ist die überragende Fläche selbst.",
-    passt: (b) => zwei(b) && !hatGanzes(b),
+    passt: (b) => zwei(b) && !hatGanzes(b) && eineEinheit(b),
   },
   {
     art: "rangliste",
@@ -248,7 +270,8 @@ export const BILDFORMEN: Bildform[] = [
     kennung: "rangliste",
     wofuer:
       "Die ganze Ordnung als Balkenreihe, statt nur der ersten und letzten. Braucht die vollständige Reihe, Werte ab null und genug Abstand zwischen ihnen — sechzehn fast gleich lange Balken lesen sich als Aussage und sind keine.",
-    passt: (b) => (b.reihe?.length ?? 0) >= 3 && abNull(b) && reihenEnge(b) < RANGLISTE_MAX_ENGE,
+    passt: (b) =>
+      (b.reihe?.length ?? 0) >= 3 && abNull(b) && eineEinheit(b) && reihenEnge(b) < RANGLISTE_MAX_ENGE,
   },
   {
     art: "aufteilung",
@@ -256,7 +279,7 @@ export const BILDFORMEN: Bildform[] = [
     kennung: "aufteilung",
     wofuer:
       "Drei und mehr Teile eines Ganzen als ein durchgehender Balken. Nur wenn die Teile das Ganze wirklich ausschöpfen — zwei Anteile derselben Menge, die einander überlappen, ergänzen sich nicht und dürfen nicht gestapelt werden.",
-    passt: (b) => b.serien.length >= 3 && schoepftAus(b),
+    passt: (b) => b.serien.length >= 3 && schoepftAus(b) && eineEinheit(b),
   },
   {
     art: "verlauf",
@@ -267,6 +290,7 @@ export const BILDFORMEN: Bildform[] = [
     passt: (b) =>
       (b.achse?.length ?? 0) >= 3 &&
       b.serien.length > 0 &&
+      eineEinheit(b) &&
       b.serien.every((s) => s.verlauf?.length === b.achse!.length),
   },
 ];

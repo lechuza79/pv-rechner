@@ -25,6 +25,7 @@ const VERWENDUNG: Record<keyof typeof DATA_SOURCES, string> = {
   beg: "Fördersätze der Bundesförderung für effiziente Gebäude",
   iw: "Preisszenarien zum Gebäudemodernisierungsgesetz",
   bkg: "Verwaltungsgrenzen der Karten",
+  zensus: "Wohnungen je Gemeinde nach Gebäudegröße — der Nenner für die Frage, wie viele Dächer es überhaupt gibt",
   destatis: "Einwohnerzahlen der Gemeinden",
   uba: "Stromerzeugung und CO₂-Intensität im langen Rückblick seit 1990",
   kfwFoerderreport: "Wie viele Haushalte die Heizungsförderung wirklich bekommen haben",
