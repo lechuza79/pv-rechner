@@ -389,7 +389,20 @@ export const MECHANIK_REGELN: Regel[] = [
  * den Releaseplan brauchen, sitzen in der Server-Schicht darüber — hier bleibt,
  * was sich allein aus dem Beitrag und seinen Kennzahlen entscheiden lässt.
  */
-export function pruefeMechanisch(post: SocialPost, k: SocialKennzahlen): Befund[] {
+/**
+ * Die mechanische Prüfung eines Beitrags.
+ *
+ * DIE BUNDESKENNZAHLEN SIND OPTIONAL, seit Ortsbeiträge dieselbe Prüfung
+ * durchlaufen (06.09.2026). Zwei der neun Regeln brauchen sie — die
+ * Mindestgröße des genannten Orts und die Sprachregel über die Ländernamen —
+ * und beide sind auf den bundesweiten Bestand gemünzt. Ein Ortsbeitrag hat
+ * dafür seine eigenen Schranken, die schon in der Geschichte greifen.
+ *
+ * OHNE SIE ZU SCHWEIGEN WÄRE DER FEHLER: Ein Tisch, der neun Regeln verspricht
+ * und sieben fährt, sieht grün aus wie einer, der alle neun bestanden hat.
+ * Deshalb steht der Unterschied als Hinweis in der Liste.
+ */
+export function pruefeMechanisch(post: SocialPost, k?: SocialKennzahlen): Befund[] {
   return [
     ...regelKeinLink(post),
     ...regelQuelleLizenz(post),
@@ -397,9 +410,19 @@ export function pruefeMechanisch(post: SocialPost, k: SocialKennzahlen): Befund[
     ...regelJahrOhneTrennzeichen(post),
     ...regelKaputteZahl(post),
     ...regelProzentBrauchtGanzes(post),
-    ...regelGrundmenge(post, k),
     ...regelRichtungswort(post),
-    ...hinweisSprachregel(post, k),
+    ...(k
+      ? [...regelGrundmenge(post, k), ...hinweisSprachregel(post, k)]
+      : [
+          {
+            regel: "ohne-bundeszahlen",
+            schwere: "hinweis" as const,
+            text:
+              "Zwei Regeln liefen nicht: die Mindestgröße des genannten Orts und die " +
+              "Sprachregel über die Ländernamen. Beide messen gegen den bundesweiten " +
+              "Bestand, der hier nicht geladen ist.",
+          },
+        ]),
   ];
 }
 

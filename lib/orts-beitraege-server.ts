@@ -13,6 +13,8 @@ import "server-only";
 //
 // SERVER-ONLY: Vier der sechs Quellen lesen die Datenbank.
 
+import { getAncestors, getRankingData, getRegionById } from "./atlas";
+import { getRegionAtlasData } from "./mastr-data";
 import { fundeFuerOrt } from "./social-fundvorrat";
 import { vergleichsPlaetze } from "./awards-server";
 import { monatsZubau, wohnungsBestand } from "./orts-daten";
@@ -79,4 +81,49 @@ export async function ortsBeitraege(
     standIso: ort.standIso,
     fassungen: gespeichert,
   });
+}
+
+
+/**
+ * Dieselben Beiträge, aber nur aus dem Gemeindeschlüssel.
+ *
+ * Für Aufrufer, die den Bestand nicht ohnehin geladen haben — der
+ * Redaktionstisch stellt die Beiträge eines Versandschubs ein und hat keine
+ * Atlas-Seite darum herum. Die Ortsseite benutzt weiterhin `ortsBeitraege`
+ * direkt: Sie hat alles schon und würde es sonst ein zweites Mal holen.
+ *
+ * `null`, wenn es die Gemeinde nicht gibt — kein Wurf: Der Schlüssel kommt aus
+ * einer Adresse, und ein Vertipper ist kein Fehler des Codes.
+ */
+export async function ortsBeitraegeFuerId(
+  regionId: string,
+  fassungen?: Record<string, GespeicherteFassung>,
+): Promise<OrtsBeitrag[] | null> {
+  const region = await getRegionById(regionId);
+  if (!region) return null;
+  const [atlas, vorfahren] = await Promise.all([
+    getRegionAtlasData(regionId),
+    getAncestors(region),
+  ]);
+  // Die Nachbargemeinden erweitern die Fundsuche. Über DIESELBE Funktion wie
+  // die Ortsseite — eine schlankere Abfrage nur für den Tisch hieße, dass er
+  // andere Funde zeigt als die Seite, und genau das soll diese Datei
+  // verhindern.
+  const kreis = vorfahren.find((r) => r.level === "landkreis") ?? null;
+  const geschwister = kreis ? await getRankingData(kreis) : { regions: [] };
+  const land = vorfahren.find((r) => r.level === "bundesland")?.name ?? null;
+
+  return ortsBeitraege(
+    {
+      regionId,
+      name: region.name,
+      population: region.population ?? null,
+      solar: atlas.solar,
+      speicher: atlas.speicher,
+      standIso: atlas.data_as_of,
+      kreisOrte: geschwister.regions.map((r) => r.name),
+      land,
+    },
+    fassungen,
+  );
 }
