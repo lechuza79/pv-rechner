@@ -13,6 +13,7 @@ import {
   gattungText,
   type MediumZeile,
   type KontaktZeile,
+  adressatVon,
 } from "../presse-katalog";
 
 const medium: MediumZeile = {
@@ -195,5 +196,51 @@ describe("Filterliste der Geschichten", () => {
     const moeglich = new Set(THEMEN.map((t) => t.geschichte));
     for (const g of GESCHICHTEN) expect(moeglich.has(g)).toBe(true);
     for (const g of moeglich) expect(GESCHICHTEN as readonly string[]).toContain(g);
+  });
+});
+
+describe("Wer angeschrieben wird — die Falle vom 05.09.2026", () => {
+  /**
+   * Der Betreiber sah in einer Übersicht „Robert Reisch (Geschäftsführer) ·
+   * weinhold@erneuerbareenergien.de" — Name aus der einen, Adresse aus der
+   * anderen Zeile. Eine falsche Anrede ist schlimmer als gar keine: Sie ist
+   * das erste, was der Empfänger liest.
+   */
+  const k = (p: Partial<KontaktZeile>): KontaktZeile =>
+    ({ domain: "x.de", schluessel: "s", name: null, funktion: null, rang: 50,
+       mail: null, mail_art: null, formular_url: null, quelle_url: null,
+       seitenart: null, anker: null, fundstelle: null, geprueft_am: null,
+       stand: "offen", notiz: null, stand_at: null, ...p }) as KontaktZeile;
+
+  it("nimmt Name und Weg nur aus DERSELBEN Zeile", () => {
+    const a = adressatVon([
+      k({ schluessel: "name:reisch", name: "Robert Reisch", funktion: "Geschäftsführer", rang: 90 }),
+      k({ schluessel: "mail:weinhold", mail: "weinhold@example.de", rang: 80 }),
+    ]);
+    expect(a.name).toBeNull();
+    expect(a.weg).toBe("weinhold@example.de");
+    expect(a.ausEinerHand).toBe(false);
+  });
+
+  it("nimmt die Zeile, die beides trägt", () => {
+    const a = adressatVon([
+      k({ schluessel: "mail:info", mail: "info@example.de", rang: 40 }),
+      k({ schluessel: "name:dietz", name: "Manja Dietz", funktion: "Chefredakteurin",
+          mail: "manja.dietz@example.de", rang: 90 }),
+    ]);
+    expect(a.name).toBe("Manja Dietz");
+    expect(a.weg).toBe("manja.dietz@example.de");
+    expect(a.ausEinerHand).toBe(true);
+  });
+
+  it("nimmt ein Formular als Weg, wenn keine Adresse dasteht", () => {
+    const a = adressatVon([k({ schluessel: "form", formular_url: "https://example.de/kontakt" })]);
+    expect(a.wegArt).toBe("formular");
+  });
+
+  it("liefert einen leeren Adressaten statt einer Erfindung", () => {
+    const a = adressatVon([k({ schluessel: "name:x", name: "Nur ein Name" })]);
+    expect(a.weg).toBeNull();
+    expect(a.name).toBeNull();
   });
 });

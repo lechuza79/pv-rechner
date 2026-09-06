@@ -347,3 +347,54 @@ export function alsCsv(
   }
   return zeilen.join("\n");
 }
+
+/** Ein Adressat für ein Anschreiben: an wen es geht und wie es dorthin kommt. */
+export interface Adressat {
+  /** Name für die Anrede — nur gesetzt, wenn er BELEGT ist. */
+  name: string | null;
+  funktion: string | null;
+  /** Der Versandweg: Adresse oder Formular. */
+  weg: string | null;
+  wegArt: "mail" | "formular" | null;
+  /** Stehen Name und Weg in DERSELBEN Fundstelle? Nur dann gehören sie
+   *  nachweislich zusammen. */
+  ausEinerHand: boolean;
+}
+
+/**
+ * WER WIRD ANGESCHRIEBEN — und mit welcher Anrede.
+ *
+ * Die Falle, gegen die das gebaut ist: Eine Zeile trägt einen Namen, eine
+ * andere eine Adresse, und wer beides nebeneinander setzt, erzeugt einen
+ * Adressaten, den es nicht gibt. Im Bestand stand so „Robert Reisch
+ * (Geschäftsführer) · weinhold@erneuerbareenergien.de" — zwei Menschen, eine
+ * Zeile. Eine falsche Anrede ist schlimmer als gar keine: Sie ist das erste,
+ * was der Empfänger liest.
+ *
+ * Deshalb die Rangfolge:
+ *   1. Eine Zeile, die Name UND Weg trägt — die einzige, bei der beides
+ *      nachweislich zusammengehört.
+ *   2. Sonst ein Postfach OHNE Anrede, und der bekannte Name steht daneben als
+ *      das, was er ist: ein Hinweis, kein Adressat.
+ */
+export function adressatVon(kontakte: KontaktZeile[]): Adressat {
+  const nachRang = [...kontakte].sort((a, b) => (b.rang ?? 0) - (a.rang ?? 0));
+  const ausEiner = nachRang.find((k) => k.name && (k.mail || k.formular_url));
+  if (ausEiner) {
+    return {
+      name: ausEiner.name ?? null,
+      funktion: ausEiner.funktion ?? null,
+      weg: ausEiner.mail ?? ausEiner.formular_url ?? null,
+      wegArt: ausEiner.mail ? "mail" : "formular",
+      ausEinerHand: true,
+    };
+  }
+  const weg = nachRang.find((k) => k.mail) ?? nachRang.find((k) => k.formular_url);
+  return {
+    name: null,
+    funktion: null,
+    weg: weg?.mail ?? weg?.formular_url ?? null,
+    wegArt: weg?.mail ? "mail" : weg?.formular_url ? "formular" : null,
+    ausEinerHand: false,
+  };
+}

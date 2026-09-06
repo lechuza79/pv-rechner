@@ -18,6 +18,7 @@ import {
   zeilenPrioritaet,
   type KontaktZeile,
   type MediumZeile,
+  adressatVon,
 } from "../../../../lib/presse-katalog";
 
 // Ansicht des Presse- und Creator-Katalogs.
@@ -194,23 +195,33 @@ export default function PresseAnsicht() {
       zelle: (m) => <span style={{ color: v("--color-text-muted") }}>{m.saat_gebiet ?? "—"}</span>,
     },
     {
-      key: "kontakte",
-      kopf: "Kontakte",
+      key: "adressat",
+      kopf: "Anschreiben an",
       umbruch: true,
-      sortWert: (m) => -von(m).filter((k) => k.name).length,
+      // Sortiert nach der Belastbarkeit: erst wo Anrede und Weg nachweislich
+      // zusammengehören, dann Postfächer, zuletzt was gar keinen Weg hat.
+      sortWert: (m) => {
+        const a = adressatVon(von(m));
+        return a.ausEinerHand ? 0 : a.weg ? 1 : 2;
+      },
       zelle: (m) => {
-        const ks = von(m);
-        const personen = ks.filter((k) => k.name).length;
-        const mitAdresse = ks.filter((k) => k.name && k.mail).length;
-        if (!ks.length) return <span style={{ color: v("--color-text-muted") }}>kein Kontakt</span>;
-        if (!personen)
-          return <span style={{ color: v("--color-text-muted") }}>{ks.length} Postfach</span>;
+        const a = adressatVon(von(m));
+        if (!a.weg) return <span style={{ color: v("--color-text-muted") }}>kein Weg</span>;
+        if (a.name)
+          return (
+            <span>
+              {a.name}
+              {a.funktion ? (
+                <span style={{ color: v("--color-text-muted") }}> ({a.funktion})</span>
+              ) : null}
+            </span>
+          );
+        // OHNE ANREDE, und das steht auch so da. Einen bekannten Namen hier
+        // danebenzusetzen erzeugte den Adressaten, den es nicht gibt — genau
+        // der Fehler, den der Betreiber am 05.09.2026 gesehen hat.
         return (
-          <span>
-            {personen} Person{personen === 1 ? "" : "en"}
-            {mitAdresse ? (
-              <span style={{ color: v("--color-text-muted") }}>, {mitAdresse} mit Adresse</span>
-            ) : null}
+          <span style={{ color: v("--color-text-muted") }}>
+            {a.wegArt === "formular" ? "Formular" : "Postfach"}, ohne Anrede
           </span>
         );
       },
