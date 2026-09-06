@@ -31,7 +31,7 @@ const MEDIUM_SPALTEN =
   "medium_grund, medium_merkmale, seiten, formular_url, impressum_url, prioritaet, " +
   "aufhaenger, gattung, gattung_hand, woerter, hinweis, eignung, eignung_grund, " +
   "eignung_beleg, eignung_zitat, eignung_hand, profil_at, fehler, " +
-  "rubrik, beleg_titel, beleg_url, beleg_notiz, beleg_am, beleg_luecke, werkzeug, " +
+  "rubrik, beleg_titel, beleg_url, beleg_notiz, beleg_am, beleg_luecke, werkzeug, beleg_datum, beleg_alter_tage, " +
   "beleg_traegt, beleg_traegt_grund, anknuepfung_tage";
 
 const KONTAKT_SPALTEN =
@@ -97,7 +97,11 @@ function medienAbfrage(db: any, f: Filter, zaehlen: boolean) {
   // „trägt" ist das am VOLLTEXT gefällte Urteil, nicht das bloße Vorhandensein
   // eines Titels — die beiden auseinanderzuhalten ist der ganze Punkt.
   if (f.aufhaenger === "traegt") q = q.eq("beleg_traegt", "ja");
-  if (f.aufhaenger === "frisch") q = q.eq("beleg_traegt", "ja").lte("anknuepfung_tage", 180);
+  // GEMESSEN AM GELESENEN BEITRAG, nicht am jüngsten Beitrag des Mediums:
+  // Die frühere Alterszahl stammte aus der ersten Erhebung und gehörte in 36
+  // von 37 prüfbaren Fällen zu einem anderen Artikel. Undatierte fallen hier
+  // heraus — ein Text ohne Datum kann seine Aktualität nicht belegen.
+  if (f.aufhaenger === "frisch") q = q.eq("beleg_traegt", "ja").lte("beleg_alter_tage", 180);
   if (f.eignung) {
     q = q.or(`eignung_hand.eq.${f.eignung},and(eignung_hand.is.null,eignung.eq.${f.eignung})`);
   }

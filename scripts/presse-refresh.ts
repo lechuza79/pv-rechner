@@ -370,6 +370,15 @@ async function setup(): Promise<void> {
     -- bekam als Fliesstext-Vorschlag "Zubau je Gemeinde" angeboten, und in
     -- einem Absatz faellt so etwas niemandem auf.
     ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS werkzeug text[];
+    -- Erscheinungsdatum und Alter DES GELESENEN Beitrags. Getrennt von
+    -- anknuepfung_tage, das aus der ersten Erhebung stammt und den juengsten
+    -- Beitrag des Mediums zu unseren Themen meinte, nicht den gelesenen: Wo
+    -- sich beide vergleichen liessen, gehoerte das Alter in 36 von 37 Faellen
+    -- zu einem anderen Artikel, und der Filter "traegt und aktuell" rechnete
+    -- darauf. Gewonnen wird es aus der Analyse (lib/presse-beleg-datum.ts),
+    -- wo das Datum fast immer woertlich steht.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS beleg_datum date;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS beleg_alter_tage integer;
 
     -- Der Schlüssel ist (Kreis × Frage), nicht der Kreis: Drei Fragen je Kreis
     -- finden je zur Hälfte andere Titel. Die erste Fassung hatte den Kreis

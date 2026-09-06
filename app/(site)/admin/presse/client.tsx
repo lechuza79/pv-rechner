@@ -290,7 +290,7 @@ export default function PresseAnsicht() {
         // Das Alter steht an der Überschrift, nicht als eigene Spalte: Ein
         // Beitrag von 2020 trägt inhaltlich und taugt trotzdem nicht für einen
         // Erstkontakt — beides muss man in einem Blick sehen.
-        const tage = m.anknuepfung_tage;
+        const tage = m.beleg_alter_tage;
         const alt = tage === null || tage === undefined ? null : tage > 180;
         return (
           <span style={{ opacity: m.beleg_traegt === "ja" ? 1 : 0.55 }}>
@@ -620,7 +620,7 @@ export default function PresseAnsicht() {
                         person: adressatVon(ks).ausEinerHand ? adressatVon(ks).name : null,
                         beitrag: m.beleg_titel,
                         beitragUrl: m.beleg_url ?? null,
-                        tage: m.anknuepfung_tage ?? null,
+                        tage: m.beleg_alter_tage ?? null,
                         luecke: m.beleg_luecke ?? null,
                         werkzeuge: m.werkzeug ?? [],
                       })}

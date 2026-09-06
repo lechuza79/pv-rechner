@@ -43,6 +43,10 @@ export interface MediumZeile {
   beleg_luecke?: string | null;
   /** Schlüssel aus der Werkzeugliste; als Liste, damit die Zuordnung prüfbar ist. */
   werkzeug?: string[] | null;
+  /** Erscheinungsdatum DES GELESENEN Beitrags, aus seiner Analyse gewonnen. */
+  beleg_datum?: string | null;
+  /** Sein Alter in Tagen; null heißt undatiert, nie „alt". */
+  beleg_alter_tage?: number | null;
   /** Alter des Beitrags in Tagen am Prüftag. Ein Aufhänger, der Jahre alt ist,
    *  trägt inhaltlich und taugt trotzdem nicht für einen Erstkontakt. */
   anknuepfung_tage?: number | null;
