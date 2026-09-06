@@ -1402,6 +1402,14 @@ Templates — der Einheiten-Wächter hat sie binnen einer Minute erwischt. Das
 quadratische Story-Visual entsteht dort, wo die Formenlehre wohnt; die Aufgabe
 steht in `docs/redaktionssystem-uebergabe.md` und an den Bildformen selbst.
 
+**Was diese Arbeit gekostet hat, steht in `docs/lehren/ortsgeschichten-2026-09.md`**
+— darunter zwei Fehler, die bereits ausgeliefert waren (eine doppelte Präposition
+in allen fünf Abo-Meldungen, zwei Rundungen für dieselbe Größe) und zwei Wächter,
+die grün meldeten, ohne etwas zu sehen. Der teuerste Posten war keiner davon,
+sondern dass dieselbe Ansage viermal wiederholt werden musste: **Steht „recyceln",
+„zentral" oder „aus X ziehen" im Auftrag, ist der erste Arbeitsschritt, X zu
+öffnen — nicht, die Aufgabe zu lösen und danach nach Ähnlichem zu suchen.**
+
 **Zahlen sind farblich neutral. Farbe bekommt nur eine Tendenz** (Betreiber,
 05.09.2026). „12,6 Mio €" ist weder positiv noch negativ; ein Akzent darauf
 entwertet die Stellen, an denen Farbe wirklich etwas sagt.
@@ -2047,4 +2055,5 @@ darf, wenn nichts daraus wird.
 | `docs/lehren/monitoring-meldelogik.md` | Warum Action statt scheduled-task, warum Autofix statt Mail, Schleuse und Ablage |
 | `docs/lehren/gmodg-rechtsstand-2026-07.md` | Vier Rechtsstand-Korrekturen in vier Tagen, vollständige Chronologie |
 | `docs/lehren/vercel-build-und-kosten.md` | Ignored Build Step, Kostenzahlen, Preview-Abschaltung |
+| `docs/lehren/ortsgeschichten-2026-09.md` | Ortsgeschichten: drei gescheiterte Anläufe am Visual, doppelte Präposition in der Abo-Mail, zwei zirkuläre Wächter — und die viermal wiederholte Ansage |
 | `docs/claude-md-kuerzung.md` | Was bei der CLAUDE.md-Kürzung gekürzt, ausgelagert und bewusst behalten wurde |
