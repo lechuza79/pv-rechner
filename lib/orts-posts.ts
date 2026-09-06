@@ -197,6 +197,7 @@ export function ortsPosts(opts: {
       titel: `${ort.name} — ${story.kategorieLabel}`,
       kategorie: story.kategorie,
       ort,
+      storyArt: story.art,
       kanal: ["linkedin", "instagram"],
       text: textAus(story, standIso),
       bild: bildAus(story, standIso, fassung),

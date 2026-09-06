@@ -350,6 +350,21 @@ export type SocialPost = {
    * ein Ort daran wäre eine Aussage, die sie nicht treffen.
    */
   ort?: { regionId: string; name: string };
+  /**
+   * Die SORTE Geschichte — nur bei Ortsgeschichten.
+   *
+   * Der Unterschied zu den bundesweiten Beiträgen: Dort ist jeder Beitrag ein
+   * Einzelstück, hier ist er die Ausprägung eines Typs an einem Ort. „Stichtag"
+   * gibt es einmal je Gemeinde, also hundertfach — und gestaltet wird der TYP,
+   * nicht die Gemeinde (Betreiber, 06.09.2026: „nicht für jede Kommune einen
+   * Eintrag, sondern zusammengefasst den Storytyp beispielhaft anhand einer
+   * Kommune").
+   *
+   * Ohne dieses Feld ließe sich das nicht zusammenfassen: Die Kennung trägt bei
+   * einigen Typen einen Zusatz (den Monat, die Vergleichskategorie), taugt also
+   * nicht als Gruppierung.
+   */
+  storyArt?: string;
   kanal: ("linkedin" | "instagram")[];
   text: string;
   bild: PostBild | null;

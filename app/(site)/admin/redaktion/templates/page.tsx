@@ -109,6 +109,28 @@ async function naechsterSchub(): Promise<{ schluessel: string; orte: SchubOrt[] 
 }
 
 /**
+ * Die Ortsbeiträge nach ihrem Story-TYP, in der Reihenfolge ihres Auftretens.
+ *
+ * Ein Beitrag ohne Typ (die bundesweiten) steht für sich — dort ist jeder ein
+ * Einzelstück.
+ */
+function nachTyp(posts: SocialPost[]): Map<string, SocialPost[]> {
+  const gruppen = new Map<string, SocialPost[]>();
+  for (const p of posts) {
+    const schluessel = p.storyArt ?? p.id;
+    const vorhanden = gruppen.get(schluessel);
+    if (vorhanden) vorhanden.push(p);
+    else gruppen.set(schluessel, [p]);
+  }
+  return gruppen;
+}
+
+/** Ein Beispiel je Story-Typ. */
+function jeTypEinBeispiel(posts: SocialPost[]): SocialPost[] {
+  return [...nachTyp(posts).values()].map((g) => g[0]);
+}
+
+/**
  * Welcher Beitrag füllt eine Form?
  *
  * Erste Wahl: einer, dessen EINGEBAUTE Form es ist — dort ist die Form für diese
@@ -170,6 +192,8 @@ export default async function RedaktionTemplates({
   let fehler: string | null = null;
   let ausschnitt: { angesehen: number; vorhanden: number; offen: number } | null = null;
   let schubSchluessel = gewuenschterSchub ?? AKTUELLER_SCHUB;
+  // Alle Ausprägungen je Typ — die Auswahl zum Durchschalten.
+  let weitereJeTyp = new Map<string, SocialPost[]>();
   try {
     if (quelle === "kommunen") {
       // Ohne ausdrückliche Wahl der Schub, der wirklich dran ist — nicht der,
@@ -183,7 +207,17 @@ export default async function RedaktionTemplates({
       // nichts mehr ändern lässt.
       const sortiert = [...orte].sort((a, b) => Number(b.offen) - Number(a.offen));
       const gesammelt = await ortsBeitraegeMehrere(sortiert, { hoechstens: orteDeckel });
-      posts = gesammelt.beitraege.map((b) => b.post);
+      // NACH STORY-TYP ZUSAMMENGEFASST, ein Beispiel je Typ (Betreiber,
+      // 06.09.2026). Sechs Orte × sieben Geschichten sind zweiundvierzig
+      // Einträge für sieben Typen — und gestaltet wird der Typ: „Stichtag" sieht
+      // in jeder Gemeinde gleich aus, nur mit anderen Zahlen darin.
+      //
+      // Bei den bundesweiten Beiträgen fällt das nicht an, weil dort jeder
+      // Beitrag ein Einzelstück ist. Die übrigen Gemeinden desselben Typs
+      // bleiben als Auswahl zum Durchschalten erhalten — daran sieht man, ob
+      // ein Design auch bei einem langen Ortsnamen oder engen Werten trägt.
+      posts = jeTypEinBeispiel(gesammelt.beitraege.map((b) => b.post));
+      weitereJeTyp = nachTyp(gesammelt.beitraege.map((b) => b.post));
       ausschnitt = {
         angesehen: gesammelt.angesehen,
         vorhanden: gesammelt.vorhanden,
@@ -209,15 +243,25 @@ export default async function RedaktionTemplates({
         // verboten wäre, hieße ein Design an einem Fall abzunehmen, den es nie
         // geben wird.
         const traeger = posts.filter((p) => p.bild && moeglicheFormen(p.bild).includes(art));
-        const wunsch = traeger.find((p) => p.id === gewaehlt(art));
+        // Beim Durchschalten sind ALLE Ausprägungen wählbar, nicht nur die
+        // Beispiele: Ein Design fällt am langen Ortsnamen oder an eng
+        // beieinanderliegenden Werten, und die sieht man nur, wenn man die
+        // Gemeinden durchgehen kann.
+        const alleTraeger = [...weitereJeTyp.values()]
+          .flat()
+          .filter((p) => p.bild && moeglicheFormen(p.bild).includes(art));
+        const wahl = alleTraeger.length > 0 ? alleTraeger : traeger;
+        const wunsch = wahl.find((p) => p.id === gewaehlt(art));
         const post = wunsch ?? fuellung(posts, art);
         if (!post?.bild) return null;
         return {
           form,
           post,
-          auswahl: traeger.map((p) => ({
+          auswahl: wahl.map((p) => ({
             id: p.id,
-            titel: p.titel,
+            // Bei Ortsgeschichten der TYP plus die Gemeinde — „Musterdorf —
+            // Stichtag" allein sagt beim Durchschalten nicht, was sich ändert.
+            titel: p.ort ? `${p.ort.name}` : p.titel,
             href: adresseMit(art, p.id),
             aktiv: p.id === post.id,
           })),
@@ -334,11 +378,13 @@ export default async function RedaktionTemplates({
           sie nicht hat — dieselbe Regel wie „Weggelassenes sichtbar erklären". */}
       {ausschnitt && (
         <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginTop: 0, marginBottom: space.lg }}>
-          Gefüllt aus {ausschnitt.angesehen} von {ausschnitt.vorhanden} Gemeinden des Schubs
-          „{schubSchluessel}" ({posts.length}{" "}
-          {posts.length === 1 ? "Geschichte" : "Geschichten"}) — noch nicht angeschrieben zuerst,
-          davon gibt es {ausschnitt.offen}. Welche Form eine Geschichte bekommt, entscheiden ihre
-          Zahlen; mehr Orte können also weitere Formen hinzubringen.{" "}
+          {posts.length} {posts.length === 1 ? "Story-Typ" : "Story-Typen"} aus dem Schub
+          „{schubSchluessel}", je einer beispielhaft an einer Gemeinde. Angesehen:{" "}
+          {ausschnitt.angesehen} von {ausschnitt.vorhanden} Gemeinden ({ausschnitt.offen} davon
+          noch nicht angeschrieben, die zuerst). Ein Typ sieht in jeder Gemeinde gleich aus, nur
+          mit anderen Zahlen — über den Wähler an der Zeile lässt sich die Gemeinde durchschalten.
+          Mehr Orte können weitere Formen hinzubringen, weil die Zahlen über die Form
+          entscheiden.{" "}
           {ausschnitt.angesehen < ausschnitt.vorhanden && (
             <Link href={adresse({ quelle: "kommunen", orte: String(Math.min(ausschnitt.angesehen * 2, 24)) })}>
               Mehr Orte ansehen

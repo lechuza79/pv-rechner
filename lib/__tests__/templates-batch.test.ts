@@ -73,6 +73,31 @@ describe("Templates aus dem Kommunen-Schub", () => {
     expect(SEITE).toMatch(/sort\(\(a, b\) => Number\(b\.offen\) - Number\(a\.offen\)\)/);
   });
 
+  it("die Ortsgeschichten stehen als TYP da, nicht je Gemeinde", () => {
+    // Sechs Orte × sieben Geschichten wären zweiundvierzig Einträge für sieben
+    // Typen (Betreiber, 06.09.2026). Gestaltet wird der Typ: „Stichtag" sieht
+    // in jeder Gemeinde gleich aus, nur mit anderen Zahlen darin. Bei den
+    // bundesweiten Beiträgen fällt das nicht an — dort ist jeder ein
+    // Einzelstück.
+    // GEPRÜFT WIRD DIE VERWENDUNG, nicht das Vorhandensein: Die erste Fassung
+    // suchte nur den Namen der Funktion und blieb bei der Gegenprobe grün, als
+    // die Zuweisung wieder auf die ungefilterte Liste zeigte — die Funktion
+    // stand ja noch da. Dieselbe Falle wie beim Datenbank-Wächter.
+    expect(SEITE).toContain("posts = jeTypEinBeispiel(");
+    expect(SEITE).toContain("p.storyArt ?? p.id");
+    // Der Typ muss am Beitrag hängen: Die Kennung trägt bei einigen Typen einen
+    // Zusatz (den Monat, die Vergleichskategorie) und taugt nicht als Gruppe.
+    expect(lies("lib", "orts-posts.ts")).toContain("storyArt: story.art");
+  });
+
+  it("durchschalten geht über die Gemeinden, nicht nur über die Beispiele", () => {
+    // Ein Design fällt am langen Ortsnamen oder an eng beieinanderliegenden
+    // Werten. Wer nur das eine Beispiel sehen kann, nimmt es für den
+    // Referenzfall ab und hofft für den Rest.
+    expect(SEITE).toContain("const alleTraeger");
+    expect(SEITE).toMatch(/titel: p\.ort \? `\$\{p\.ort\.name\}`/);
+  });
+
   it("die Platzierungen werden einmal gerechnet, nicht je Ort", () => {
     // Die Rechnung läuft über alle 11.000 Gemeinden. Sechs Orte hintereinander
     // hießen sie sechsmal.
