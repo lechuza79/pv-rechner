@@ -351,7 +351,7 @@ export default async function RedaktionTemplates({
               padding: pad("xs", "md"),
               borderRadius: v("--radius-sm"),
               border: `1px solid ${q.aktiv ? v("--color-accent") : v("--color-border")}`,
-              background: q.aktiv ? v("--color-accent") : v("--color-bg"),
+              background: q.aktiv ? v("--color-accent") : v("--color-bg-muted"),
               // Eigenes Token für Text auf Akzentfläche — der
               // Seitenhintergrund ist auf dunklen Stufen dunkel.
               color: q.aktiv ? v("--color-text-on-accent") : v("--color-text-secondary"),
@@ -371,9 +371,14 @@ export default async function RedaktionTemplates({
               style={{
                 padding: pad("xs", "md"),
                 borderRadius: v("--radius-sm"),
-                border: `1px solid ${k === schubSchluessel ? v("--color-accent") : v("--color-border-muted")}`,
-                background: v("--color-bg"),
-                color: k === schubSchluessel ? v("--color-accent") : v("--color-text-muted"),
+                border: `1px solid ${k === schubSchluessel ? v("--color-accent") : v("--color-border")}`,
+                // EINE FLÄCHE, KEIN RAND ALLEIN: Der Rand trägt gegen den
+                // Seitengrund nur 1,3:1 — auf den dunklen Tagesstufen sieht die
+                // Pille aus wie loser Text. Und Sekundär- statt gedämpfter
+                // Schrift: 7,2:1 gegen 5,3:1, und bei dieser Schriftgröße ist
+                // das der Unterschied zwischen lesbar und erahnbar.
+                background: k === schubSchluessel ? v("--color-accent-dim") : v("--color-bg-muted"),
+                color: k === schubSchluessel ? v("--color-accent") : v("--color-text-secondary"),
                 fontSize: v("--font-size-small"),
                 textDecoration: "none",
               }}

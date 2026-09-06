@@ -105,7 +105,7 @@ const S: Record<string, React.CSSProperties> = {
     color: v("--color-text-primary"),
     fontSize: v("--font-size-body"),
   },
-  zaehler: { fontSize: v("--font-size-small"), color: v("--color-text-muted") },
+  zaehler: { fontSize: v("--font-size-small"), color: v("--color-text-secondary") },
   treffer: { display: "flex", flexWrap: "wrap", gap: space.xs, marginTop: space.sm },
   knopf: {
     display: "inline-flex",
@@ -114,7 +114,9 @@ const S: Record<string, React.CSSProperties> = {
     padding: pad("xs", "md"),
     border: `1px solid ${v("--color-border")}`,
     borderRadius: v("--radius-sm"),
-    background: v("--color-bg"),
+    // Eine Fläche, kein Rand allein: Der Rand trägt gegen den Seitengrund nur
+    // 1,3:1 und zeigt die Pille auf dunklen Stufen nicht als Element.
+    background: v("--color-bg-muted"),
     color: v("--color-text-secondary"),
     fontSize: v("--font-size-small"),
     cursor: "pointer",

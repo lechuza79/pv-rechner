@@ -197,7 +197,11 @@ export function TemplateGalerie({
                         padding: "1px 6px",
                         borderRadius: 8,
                         background: abgenommen ? v("--color-accent") : v("--color-bg-muted"),
-                        color: abgenommen ? v("--color-text-on-accent") : v("--color-text-muted"),
+                        // Sekundär statt gedämpft: Bei dieser Schriftgröße
+                        // (Mikro) trägt gedämpft auf gedämpftem Grund nur
+                        // 4,5:1 — gerade die Untergrenze, und die gilt für
+                        // normalen Text, nicht für zehn Pixel.
+                        color: abgenommen ? v("--color-text-on-accent") : v("--color-text-secondary"),
                       }}
                     >
                       {abgenommen ? "abgenommen" : "noch nicht abgenommen"}

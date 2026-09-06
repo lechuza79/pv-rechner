@@ -67,3 +67,33 @@ describe("Sichtbar auf jeder Tagesstufe", () => {
     ).toEqual([]);
   });
 });
+
+// ─── WAS HIER BEWUSST NICHT STEHT: eine allgemeine Kontrastprüfung ──────────
+//
+// Zweimal versucht, zweimal verworfen — und beide Male aus demselben Grund:
+// Ein Textmuster kann nicht sagen, welche Schriftfarbe zu welcher Fläche
+// gehört.
+//
+//  · Über ein Zeilenfenster gepaart: 25 Befunde, die meisten Unsinn, weil es
+//    Farben aus benachbarten Stilen zusammenwarf.
+//  · Über saubere Stil-Blöcke, aber nur die erste Farbe je Eigenschaft: Es
+//    übersah jeden aktiv/inaktiv-Fall („aktiv ? Akzent : gedämpft") — also
+//    gerade den häufigsten. Bei der Gegenprobe blieb es grün.
+//  · Über alle Farben je Eigenschaft: Es kombinierte den aktiven Text mit der
+//    inaktiven Fläche, also Paare, die nie gleichzeitig auftreten.
+//
+// Die dritte Fassung hätte die Ternary-POSITIONEN einander zuordnen müssen,
+// und das ist keine Mustererkennung mehr, sondern eine Auswertung des Codes.
+// Ein Wächter, der zu zwei Dritteln danebenliegt, wird weggelesen — und dann
+// auch dort, wo er recht hat.
+//
+// GEMESSEN, damit die Frage beantwortet ist und nicht offenbleibt: Die
+// Token-Werte selbst tragen über alle sieben Stufen. Schrift auf Fläche liegt
+// zwischen 4,5:1 und 7,3:1, auch mit dem gesetzten Overlay. Was im September
+// 2026 unlesbar wirkte, war nicht die Farbe, sondern die Bauweise: gedämpfte
+// Schrift bei Kleinstschrift, und Pillen, die ihre Form nur über einen Rand mit
+// 1,3:1 zeigten. Beides ist behoben, indem die Elemente eine FLÄCHE bekommen
+// haben statt eines Randes allein.
+//
+// Was ein Test hier trotzdem leistet, steht oben: die eine Fehlerklasse, die
+// sich eindeutig erkennen lässt.
