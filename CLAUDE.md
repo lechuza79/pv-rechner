@@ -1387,6 +1387,18 @@ ausbaut, hält diese Eigenschaft über Platzhalter (`lib/social-vorlage.ts`): Im
 stehen Namen, die Werte setzt die Berechnung ein. Dieselbe Fehlerklasse wie bei den Gemeindebriefen,
 wo ein Brief einen Rang behauptete, den die verlinkte Seite widerlegte.
 
+**Die Quellenzeile kommt aus dem Quellen-Register, nie getippt** — sonst fehlt die Lizenz, und zwar
+still: Sie fehlte an zwölf Beiträgen, während der Ember-Zweig sie trug, weil beide Fassungen von Hand
+geschrieben waren und VERSCHIEDEN abwichen. Im geteilten Bild ist die Nennung Lizenzpflicht
+(dl-de/by-2-0 · CC BY 4.0). Ein Test, der nur auf das Vorhandensein eines Namens prüft, fängt das
+nicht — er ließ „Bundesnetzagentur" als Lizenz durchgehen.
+
+**Was ein Beitrag über die Daten sagt, wird im Datenlauf nachgerechnet.** Die vier Solar-Segmente
+müssen die Gesamtleistung ergeben (Toleranz 1 ‰); eine Aufteilung, deren Teile nicht aufgehen, ist
+ein Bild über etwas, das es nicht gibt. Das vierte Segment (Steckersolar) ist **gemessen, nicht als
+Differenz gerechnet**, und kommt aus DEMSELBEN Bundes-Rollup wie die drei anderen — aus der Summe
+der Gemeindezeilen verfehlt es den Bund, und dann geht die Bilanz nicht mehr auf.
+
 **Jede Aussage rechnet ihre RICHTUNG mit, statt sie zu behaupten.** Kippt ein Verhältnis, kippt der
 Satz. Der Anlass: Im Katalog stand als Beispiel „beim Solarstrom liegt der Osten vorn, bei
 Balkonkraftwerken umgekehrt" — ausgedacht, und beide Hälften falsch. Gemessen ist der Kontrast
@@ -1400,12 +1412,53 @@ absolut. Wer eine dritte Größe braucht, ergänzt eine Stufe — er skaliert ni
 fällt nur dort weg, wo sie nicht geschuldet ist: Als Seiteninhalt nennt die Seite ihre Quellen
 ohnehin, als Bild ist die Nennung Lizenzpflicht.
 
+**Die Bildform folgt aus den Zahlen, nicht aus dem Geschmack — BLOCKER** (`lib/social-bildformen.ts`).
+Acht Formen, und jede trägt ihre eigene Bedingung: **Ring und gefüllter Umriss bilden einen Anteil ab
+und brauchen ein Ganzes; die Säule zeigt ein Verhältnis und braucht das Fehlen eines. Normiert wird
+bei Anteilen am Ganzen, nie am größeren Wert.** Wer am größeren Wert normiert, malt aus 35 % einen
+vollen Balken. Drei Formen kamen am 05.09.2026 dazu, jede erst nach der Frage, welche Beiträge sie im
+Bestand wirklich tragen — **eine Form ohne Beitrag ist Zierde**: die **Rangliste** (ab drei Werten,
+und nur wenn sie weit genug auseinanderliegen — bei sechzehn fast gleich langen Balken sieht man
+nichts), die **Aufteilung** (ab drei Teilen eines Ganzen, überlappende Anteile sind keine Aufteilung)
+und der **Verlauf** (eine echte Zeitreihe, keine Momentaufnahme mit Jahreszahl).
+- **Was die Zahl SAGT, entscheidet über die Stellen, die sie zeigt.** Zwei verschiedene Werte dürfen
+  nicht als dieselbe Zahl dastehen, und kein Wert darf zu null werden — sonst behauptet das Bild
+  einen Gleichstand oder ein Nichtvorhandensein, das die Daten nicht hergeben (0,4 % als „0 %" ist
+  dieselbe Fehlerklasse wie eine falsche Einheit). Die Stellenzahl wächst deshalb, bis beides
+  aufhört; der Balken folgt der ANGEZEIGTEN Zahl, nicht der ungerundeten.
+- **Das Fehlen eines Nullpunkts ist ein Ausschlusskriterium, kein Rechenparameter.** Eine Rangliste
+  über Wachstumsfaktoren wurde am Bild verworfen: Thüringen stand bei 40 % Länge, obwohl sein Zuwachs
+  ein Fünftel von Hamburgs ist. Wer den Nullpunkt stattdessen in die Länge einrechnet, erzeugt
+  Verhältnisse, die niemand nachrechnen kann.
+- **Jede Variante hat eine KENNUNG** (`rangliste-hell`, `ringpaar-dunkel` …), damit man über ein
+  Design reden kann, bevor es einen Template-Namen hat.
+
+**Der Templates-Bereich zeigt TEMPLATES, nicht Beiträge** (`/admin/redaktion/templates`). Eine Story
+ist der Inhalt, sie verwendet ein Template, und ein Template gibt es in drei Farbvarianten — die
+Variante ist die Einheit, die abgenommen wird. Zwei Ansichten: **Bibliothek** (abgenommen, die
+Referenz) und **neu entwickeln** (der Arbeitsvorrat). Zwei Eigenschaften, ohne die er nichts taugt:
+- **Angeboten wird nur, was die Form wirklich trägt** — dieselbe Bedingung wie im Redaktionstisch.
+  Ein Design an einem Fall abzunehmen, den es nie geben wird, ist wertlos.
+- **Jede Zeile lässt sich mit verschiedenen Beiträgen füllen**, und die Wahl steht in der Adresse.
+  Ein Design an einem einzigen Beitrag zu beurteilen heißt, es für den Referenzfall abzunehmen und
+  für die übrigen zu hoffen — die Formen scheitern verschieden: ein langer Ländername sprengt die
+  Namensspur, eine enge Verteilung macht gleich lange Balken, ein winziger Anteil verschwindet.
+- **Die Karte wird in Ausgabegröße gerendert und per Transformation verkleinert.** Kleiner
+  *gerechnet* bricht der Text an anderen Stellen um als im ausgelieferten Bild — wer eine so
+  verkleinerte Karte beurteilt, beurteilt eine, die es nicht gibt. **Jedes Bild wird am gerenderten
+  Bild beurteilt, nie am Code:** Vier Fehler dieser Runde waren nur dort sichtbar.
+- **Die Werkbank auf der Kommandozeile rendert dieselbe Galerie** (`npm run social:formen`) und
+  weist ein Ziel im öffentlichen Ordner aktiv ab: Was dort landet, ist ohne Login abrufbar, und ein
+  interner Arbeitsstand gehört nicht ins Netz. Ein Filterlauf schreibt in eine eigene Datei, sonst
+  überschreibt er die Übersicht.
+
 **Die Freigabe vor dem Versand hängt am INHALT, nicht am Post** (`lib/social-pruefung-kern.ts`).
-Zwei Prüfungen je Beitrag, und ein Fingerabdruck über den normalisierten Text macht sichtbar, wenn
-nach der Prüfung umformuliert wurde. Reine Formatierung geht durch — eine Sperre, die an einem
-Zeilenumbruch anschlägt, wird zur Schikane und irgendwann umgangen. **Offene Lücke:** Der Abdruck
-deckt bisher nur den Text; ändert jemand Kartentyp oder Serie, bleibt die Freigabe gültig, obwohl
-das Bild ein anderes ist.
+Zwei Prüfungen je Beitrag, und ein Fingerabdruck über die normalisierte Fassung macht sichtbar, wenn
+nach der Prüfung etwas anderes daraus wurde. Reine Formatierung geht durch — eine Sperre, die an
+einem Zeilenumbruch anschlägt, wird zur Schikane und irgendwann umgangen. **Der Abdruck deckt Text
+UND Bild** (Bildform, Farbschema, Serien, Beschriftungen): Vorher hätte ein Wechsel des Kartentyps
+die Freigabe unberührt gelassen, obwohl das Bild ein anderes ist — und geprüft wird das Bild, nicht
+der Text darüber.
 
 **Der Zugangsschlüssel läuft alle zwei Monate ab** und lässt sich nur durch einen Browser-Login des
 Betreibers erneuern. Der Gesundheitscheck warnt gestaffelt (14/7/3/1/0 Tage) und macht den Lauf
@@ -1427,6 +1480,86 @@ Adress-Anker gelten nicht als eigene Adressen.
 Tabellen: `social_konten`, `social_pruefungen`, `social_vorlagen`, angelegt über
 `/api/social/setup`. Alle drei mit RLS und ohne Policy — sie halten Zugangsschlüssel und sind
 ausschließlich über den Service-Key erreichbar.
+
+## Ortsgeschichten auf den Gemeindeseiten
+
+Jede Gemeindeseite rechnet aus ihren eigenen Zahlen die Familien des
+Story-Katalogs (`lib/orts-stories.ts`) — sieben Stück: was der Ort an
+Einspeisevergütung eingespielt hat, wem sie dieses Jahr ausläuft, wo er unter
+gleich großen Orten seines Kreises bzw. Landes steht, was im letzten
+abgeschlossenen Monat ans Netz ging, ein Monat, der aus seiner eigenen Reihe
+fällt, wie viele Dächer es überhaupt gibt, wie die typische Anlage gewachsen
+ist, und worauf der Strom steht.
+
+**Die SCHWELLEN wandern, nicht die Frage — BLOCKER.** Der bundesweite Suchlauf
+(`lib/social-funde.ts`) sucht Ausreißer über alle 11.000 Gemeinden und setzt
+seine Schranken entsprechend: 1.000 Anlagen je Baujahr für die Kohorte, 20.000
+kWp für den Flächenmix. **Keine einzige Gemeinde erreicht das**, die Familien
+fielen auf Ortsebene also ersatzlos aus. Gefragt wird deshalb dieselbe Frage mit
+einer ortsgroßen Vergleichsgruppe — nicht dieselbe Rechnung mit gesenkten
+Schwellen, denn dann kommen die Superlative auf zehn Anlagen zurück, gegen die
+die Schranken gebaut sind. Gemessen (05.09.2026): 313 Funde des Suchlaufs nennen
+einen Ort, verteilt auf 197 von 11.000 Gemeinden — auf 98 % der Ortsseiten stünde
+sonst nie einer.
+
+**Was schon auf der Seite steht, gehört nicht in den Feed** — aber die Grenze
+ist der ZEITRAUM, nicht die Zahl. Eine Kachel zeigt den Zustand („Neu 2025:
+124"), eine Geschichte einen Zeitraum mit seiner Reihe. Wer denselben Wert ohne
+Zeitbezug wiederholt, schreibt die Kachel ab; ein Test hält die Muster fest
+(`lib/__tests__/orts-stories.test.ts`).
+
+**Eine Rundung je Größe.** Der erste Lauf zeigte in der Kachel „17.100 € je
+Anlage" und im Satz daneben „17.139 €" — dieselbe Größe, zwei Rundungen, beide
+für sich plausibel. Ein Wächter schlägt an, sobald im Text eine Zahl steht, die
+einem Kachelwert um weniger als zwei Prozent danebenliegt.
+
+**Zwei Quellen neben dem Anlagenregister**, beide schmale Einzelort-Lesevorgänge
+mit weichem Zeitbudget (`lib/orts-daten.ts`): der Zubau nach Monat — die
+Jahreszahl kann nicht sagen, was gerade passiert ist — und der Wohnungsbestand
+aus dem Zensus, ohne den sich „hier wurde wenig gebaut" nicht von „hier gibt es
+kaum eigene Dächer" unterscheiden lässt. Fällt eine aus, entfallen genau ihre
+Geschichten.
+
+**AUSGEBLENDET, bis das Bild steht (Betreiber, 05.09.2026).** Die Geschichten
+sind fertig, das Visual fehlt. Drei Anläufe auf der Ortsseite sind am selben
+Punkt gescheitert: Die Beitrags-Karte der Redaktion ist fest 1080 Pixel breit
+und überschreibt die Farb-Tokens mit ihrer eigenen Palette — richtig für ein
+Bild in einem fremden Feed, falsch auf einer Seite mit Tageslicht-Theme (weißer
+Block im Dunkeln, Überlauf im schmalen Teaser); und ihre kleine Stufe lässt Ring
+und Säule bewusst weg, womit die Formenwahl wirkungslos wird. Eine dritte, hier
+gezeichnete Fassung wäre die zweite Wahrheit neben den vier abgenommenen
+Templates — der Einheiten-Wächter hat sie binnen einer Minute erwischt. Das
+quadratische Story-Visual entsteht dort, wo die Formenlehre wohnt; die Aufgabe
+steht in `docs/redaktionssystem-uebergabe.md` und an den Bildformen selbst.
+
+**Was diese Arbeit gekostet hat, steht in `docs/lehren/ortsgeschichten-2026-09.md`**
+— darunter zwei Fehler, die bereits ausgeliefert waren (eine doppelte Präposition
+in allen fünf Abo-Meldungen, zwei Rundungen für dieselbe Größe) und zwei Wächter,
+die grün meldeten, ohne etwas zu sehen. Der teuerste Posten war keiner davon,
+sondern dass dieselbe Ansage viermal wiederholt werden musste: **Steht „recyceln",
+„zentral" oder „aus X ziehen" im Auftrag, ist der erste Arbeitsschritt, X zu
+öffnen — nicht, die Aufgabe zu lösen und danach nach Ähnlichem zu suchen.**
+
+**Zahlen sind farblich neutral. Farbe bekommt nur eine Tendenz** (Betreiber,
+05.09.2026). „12,6 Mio €" ist weder positiv noch negativ; ein Akzent darauf
+entwertet die Stellen, an denen Farbe wirklich etwas sagt.
+
+**Der Einbett-Knopf gibt den Code für DIESEN Ort aus**, nicht einen Sprung in die
+Galerie (`components/EinbettenDialog.tsx`). Der Code selbst kommt aus einer
+Quelle (`lib/embed-code.ts`), die Galerie liest dieselbe — ein Test verbietet
+dort einen eigenen Codebauer. Der Grund ist gemessen: 289 Briefe an Kommunen
+haben vier Veröffentlichungen erzeugt und **null Einbettungen**; in der Galerie
+steht der Ort in einem Abfrageteil, die Seite ist in Du-Form geschrieben, und die
+kommunalen Widgets stehen hinter acht Deutschland-Widgets.
+
+**Der Platzhalter der Auszeichnung steht nur, wo eine kommt.** Die Seite fragt
+beim Aufbau eine Ja/Nein-Frage (`hatAuszeichnung`); die Rangdaten selbst lädt die
+Kachel weiter im Browser nach. Ohne das Kennzeichen gäbe es nur zwei schlechte
+Antworten — nie ein Platzhalter (der Inhalt springt beim Eintreffen) oder immer
+einer (er springt bei den rund zwei Dritteln der Orte ohne Auszeichnung, nur
+andersherum). **Die naheliegende Abkürzung ist falsch:** „öffentlich erreichbar
+sind ohnehin nur angeschriebene Orte" — die Freigabe steuert die INDEXIERUNG,
+nicht die Erreichbarkeit; über den Atlas kommt man auf jede der 11.000 Seiten.
 
 ## Kommunen-Outreach (interner Bereich)
 
@@ -2052,4 +2185,5 @@ darf, wenn nichts daraus wird.
 | `docs/lehren/monitoring-meldelogik.md` | Warum Action statt scheduled-task, warum Autofix statt Mail, Schleuse und Ablage |
 | `docs/lehren/gmodg-rechtsstand-2026-07.md` | Vier Rechtsstand-Korrekturen in vier Tagen, vollständige Chronologie |
 | `docs/lehren/vercel-build-und-kosten.md` | Ignored Build Step, Kostenzahlen, Preview-Abschaltung |
+| `docs/lehren/ortsgeschichten-2026-09.md` | Ortsgeschichten: drei gescheiterte Anläufe am Visual, doppelte Präposition in der Abo-Mail, zwei zirkuläre Wächter — und die viermal wiederholte Ansage |
 | `docs/claude-md-kuerzung.md` | Was bei der CLAUDE.md-Kürzung gekürzt, ausgelagert und bewusst behalten wurde |

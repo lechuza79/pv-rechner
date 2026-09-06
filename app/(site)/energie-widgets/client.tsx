@@ -4,6 +4,7 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { IconBolt, IconRefresh, IconLink, IconChevronDown } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
+import { embedCode } from "../../../lib/embed-code";
 import {
   WIDGET_FONTS,
   WIDGET_THEME_DEFAULTS,
@@ -826,29 +827,21 @@ function EmbedSnippet({
   if (settings) {
     buildWidgetSettingsQuery(settings).forEach((val, key) => qs.set(key, val));
   }
-  const query = qs.toString();
-  const url = `${SITE_URL}${variant.src}${query ? `?${query}` : ""}`;
   const width = variant.fixedWidth ?? 480;
 
-  // The <a> below the iframe lives in the HOST page's HTML — that anchor, not
-  // the iframe src, is what search engines count as a backlink to solar-check.io.
-  // Zweite Verteidigungslinie: Auch wenn oben schon gesaeubert wird, gehoert in
-  // ein HTML-Attribut nichts Unmaskiertes. Der Code wird kopiert und auf einer
-  // FREMDEN Website eingefuegt — dort haften wir mit unserem Namen darunter.
-  const attr = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-  const code = [
-    `<iframe`,
-    `  src="${url}"`,
-    `  width="${width}"`,
-    `  height="${variant.height}"`,
-    `  style="border:0;display:block;width:100%;max-width:${width}px"`,
-    `  title="${attr(variant.label)} — Solar Check"`,
-    `  loading="lazy"`,
-    `></iframe>`,
-    `<p style="margin:6px 0 0;font:13px/1.4 system-ui,sans-serif">`,
-    `  <a href="${SITE_URL}${attr(attribution.path)}" target="_blank" rel="noopener">${attr(attribution.text)}</a>`,
-    `</p>`,
-  ].join("\n");
+  // Der Code kommt aus dem geteilten Baustein (lib/embed-code.ts) — dieselbe
+  // Zeile, die die Karte auf der Ortsseite ausgibt. Zwei Fassungen davon liefen
+  // sonst auseinander, und er steht am Ende auf einer FREMDEN Website mit
+  // unserem Namen darunter.
+  const code = embedCode({
+    src: variant.src,
+    params: Object.fromEntries(qs),
+    width,
+    height: variant.height,
+    titel: variant.label,
+    attribution,
+    siteUrl: SITE_URL,
+  });
 
   const copy = async () => {
     try {

@@ -14,6 +14,7 @@ import RelatedLinks from "../../../../components/RelatedLinks";
 import ResultSection from "../../../../components/ResultSection";
 import SelectField from "../../../../components/SelectField";
 import { SortPfeil } from "../../../../components/SortPfeil";
+import StorySlider from "../../../../components/StorySlider";
 import Switch from "../../../../components/Switch";
 import { Auswahl } from "../../../../components/Auswahl";
 import Toast from "../../../../components/Toast";
@@ -729,6 +730,29 @@ const BEISPIELE: Record<string, Beispiel> = {
   Icons: IconsBeispiel,
   ChartActionBar: AktionsleisteBeispiel,
   CiteModal: ZitierBeispiel,
+  // SECHS Teaser, nicht drei: Unterhalb von vier dreht sich die Reihe bewusst
+  // nicht (siehe MIN_FUER_SCHLEIFE), und ein Beispiel, das die Schleife nicht
+  // zeigt, zeigt genau das nicht, wofür es den Baustein gibt.
+  StorySlider: () => (
+    <StorySlider ariaLabel="Beispiel-Reihe">
+      {["Erste", "Zweite", "Dritte", "Vierte", "Fünfte", "Sechste"].map((t) => (
+        <div
+          key={t}
+          style={{
+            flex: 1,
+            padding: 16,
+            border: `1px solid ${v("--color-border")}`,
+            borderRadius: v("--radius-md"),
+            background: v("--color-bg"),
+            fontSize: v("--font-size-body"),
+            fontWeight: 700,
+          }}
+        >
+          {t} Meldung
+        </div>
+      ))}
+    </StorySlider>
+  ),
   ChartExportBar: () => (
     <ChartExportBar
       onDownload={() => undefined}

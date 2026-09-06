@@ -83,6 +83,10 @@ export default function InternalShell({
             // Beitrag. Die Reihenfolge im Menü ist der Arbeitsweg.
             { href: "/admin/redaktion/bucket", label: "Story-Bucket" },
             { href: "/admin/redaktion", label: "Entwicklung", exact: true },
+            // Die Templates stehen bei Social Media, weil ein Template dort
+            // seinen Zweck hat: Es ist die Bildform eines Posts, nicht die eines
+            // Artikels. Ein Blog-Beitrag trägt kein Kartenbild.
+            { href: "/admin/redaktion/templates", label: "Templates" },
             { href: "/admin/redaktion/planung", label: "Planung" },
             { href: "/admin/redaktion/auswertung", label: "Auswertung" },
           ],
