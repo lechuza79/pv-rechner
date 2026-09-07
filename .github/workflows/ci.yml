@@ -131,10 +131,37 @@ jobs:
       #
       # Wird das wieder knapp, ist Anheben die FALSCHE Antwort — dann gehoert
       # das Vorwaermen aus dem Zeitbudget des Testschritts heraus.
+      #
+      # GEGEN EINEN FERTIGEN BUILD, NICHT GEGEN DEN DEV-SERVER (07.09.2026).
+      # Der Smoke-Lauf war der LETZTE der drei Playwright-Projekte, der noch
+      # gegen `next dev` lief; Flow-Laeufer und Telefonbreite tragen `E2E_BUILD`
+      # seit laengerem. Genau daran ist er am 07.09. zweimal hintereinander
+      # gescheitert, und das Urteil steht im selben Lauf: Die zwei Jobs GEGEN
+      # EINEN BUILD waren gruen, der eine gegen den Dev-Server rot — gleiche
+      # Maschine, gleicher Code, gleiche Minute.
+      #
+      # Die Fehlerbilder sind die des zusammengebrochenen Dev-Servers, nicht die
+      # kaputter Seiten: „__webpack_modules__[moduleId] is not a function", leere
+      # Antworten, Zeitueberschreitungen, eine Hydrations-Meldung. Gegengeprueft
+      # wurde jede beanstandete Aussage an der PRODUKTION — alle vier Adressen
+      # antworten 200, die vermisste Jahreszahl steht auf der Seite, und die
+      # Nachbarschafts-Liste wechselt im Browser auf die Landesgruppe. Kaputt war
+      # nichts ausser dem Testserver.
+      #
+      # Es ist auch nicht langsamer, sondern schneller: Der Dev-Lauf brauchte
+      # 16,5 min, der Flow-Laeufer INKLUSIVE vollem Build 12,4 min (Lauf
+      # 34095188354). Das Vorwaermen, das dort ein Fuenftel des Budgets frass,
+      # entfaellt gegen vorgerenderte Seiten — genau der Ausweg, den der Absatz
+      # darueber schon benannt hat.
+      #
+      # LOKAL bleibt es beim Dev-Server (`npm run test:e2e` unveraendert): Dort
+      # laeuft ohnehin nur der eine Test, an dem gerade gearbeitet wird, und ein
+      # voller Build je Durchlauf waere die falsche Rechnung.
       - name: E2E smoke tests (Playwright)
         timeout-minutes: 22
         run: npm run test:e2e
         env:
+          E2E_BUILD: "1"
           # Der Browser-seitige Client braucht nur irgendeine gültige Form —
           # er wird in den Tests nicht benutzt (kein Login, keine Schreibpfade).
           NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
