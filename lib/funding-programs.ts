@@ -4,6 +4,12 @@
 // set. Curated by hand (no machine-readable source exists), each entry carries
 // a `stand` (as-of), `source`, `status` and a `verified` flag. Programs change
 // and budgets run dry mid-year — treat `status` as a point-in-time snapshot.
+//
+// GEFUNDEN, ABER NOCH NICHT HIER: docs/foerder-gefunden-nicht-aufgenommen.md.
+// Dort stehen Programme, die ein Lauf an der Amtsseite selbst gelesen hat und
+// die trotzdem fehlen — jeweils mit dem Grund und dem, was zur Aufnahme fehlt.
+// Wer den Katalog erweitert, sieht zuerst dort nach: Der Wortlaut liegt schon
+// vor, und ein Lauf, der bei null anfängt, sucht dieselben Seiten wieder.
 
 export type Eligibility = "privat" | "gewerblich";
 
