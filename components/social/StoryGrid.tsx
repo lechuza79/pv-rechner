@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import Modal from "../Modal";
 import { FeedVorschau } from "./FeedVorschau";
+import { SeitenVorschau } from "./SeitenVorschau";
+import { Umschalter } from "./Umschalter";
 import { StoryTisch } from "./StoryTisch";
 import { Kennung } from "./Kennung";
 import { v, space, pad } from "../../lib/theme";
@@ -60,6 +62,11 @@ const SICHTEN: { wert: Sicht; text: string }[] = [
 export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
   const [offen, setOffen] = useState<string | null>(null);
   const [sicht, setSicht] = useState<Sicht>("alle");
+  // WELCHE AUSGABEFORM das Raster zeigt. Über allen Kacheln zugleich, nicht je
+  // Kachel: Die Frage im Raster ist, ob die Reihe als EINE Handschrift wirkt —
+  // und die beantwortet man nicht, wenn die eine Kachel den Feed zeigt und die
+  // nächste eine Seite.
+  const [ansicht, setAnsicht] = useState<"feed" | "seite">("feed");
   /**
    * Prüfungen, die in DIESER Sitzung im Fenster erteilt wurden.
    *
@@ -101,32 +108,45 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
     <>
       {/* Der Filter steht ÜBER dem Raster, nicht in der Kategorie-Leiste: Er
           sortiert nicht nach Thema, sondern nach Arbeitsstand. */}
-      <div style={{ display: "flex", gap: space.xs, marginBottom: space.xl, flexWrap: "wrap" }}>
-        {SICHTEN.map((s) => {
-          const an = s.wert === sicht;
-          const zahl = eintraege.filter(
-            (e) => s.wert === "alle" || (s.wert === "bearbeitet" ? e.bearbeitet : !e.bearbeitet),
-          ).length;
-          return (
-            <button
-              key={s.wert}
-              type="button"
-              aria-pressed={an}
-              onClick={() => setSicht(s.wert)}
-              style={{
-                padding: pad("xs", "md"),
-                borderRadius: v("--radius-sm"),
-                border: `1px solid ${an ? v("--color-accent") : v("--color-border")}`,
-                background: an ? v("--color-accent-dim") : "transparent",
-                color: an ? v("--color-accent") : v("--color-text-secondary"),
-                cursor: "pointer",
-                fontSize: v("--font-size-small"),
-              }}
-            >
-              {s.text} <span style={{ color: v("--color-text-muted") }}>{zahl}</span>
-            </button>
-          );
-        })}
+      <div
+        style={{
+          display: "flex",
+          gap: space.xxl,
+          marginBottom: space.xl,
+          flexWrap: "wrap",
+          alignItems: "flex-start",
+        }}
+      >
+        <Umschalter
+          eintraege={SICHTEN.map((x) => ({
+            wert: x.wert,
+            text: x.text,
+            zusatz: String(
+              eintraege.filter(
+                (e) => x.wert === "alle" || (x.wert === "bearbeitet" ? e.bearbeitet : !e.bearbeitet),
+              ).length,
+            ),
+          }))}
+          wert={sicht}
+          onWaehle={setSicht}
+          ariaLabel="Arbeitsstand"
+        />
+        {/* AUSGABEFORM. Der Zähler ist hier der eigentliche Ertrag: Er sagt,
+            wie viele Beiträge überhaupt eine Fassung für eine Seite haben —
+            eine Lücke, die vorher niemand sehen konnte. */}
+        <Umschalter
+          eintraege={[
+            { wert: "feed", text: "Feed", zusatz: String(eintraege.length) },
+            {
+              wert: "seite",
+              text: "Auf der Seite",
+              zusatz: String(eintraege.filter((e) => e.orts || e.post.onsite).length),
+            },
+          ]}
+          wert={ansicht}
+          onWaehle={setAnsicht}
+          ariaLabel="Ausgabeform"
+        />
       </div>
 
       <div
@@ -139,7 +159,7 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
           gap: space.xxl,
         }}
       >
-        {gezeigt.map(({ post, pruefungen, kategorie, abdruck }) => {
+        {gezeigt.map(({ post, pruefungen, kategorie, abdruck, orts }) => {
           const stand = urteil(abdruck, pruefungen);
           // KEINE KOPFZEILE ÜBER DER KARTE. Kategorie, interner Titel und
           // Bildform standen über jeder Kachel — drei Zeilen, die alle dasselbe
@@ -155,7 +175,9 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
                   eigenes Kachelbild wäre eine zweite Darstellung derselben
                   Story — und die eine, die im Feed steht, wäre nicht mehr die,
                   die man hier beurteilt. */}
-              {post.bild && <FeedVorschau bild={post.bild} text={post.text} breite={340} />}
+              {ansicht === "feed"
+                ? post.bild && <FeedVorschau bild={post.bild} text={post.text} breite={340} />
+                : <SeitenVorschau post={post} orts={orts} breite={340} />}
 
               <div
                 style={{

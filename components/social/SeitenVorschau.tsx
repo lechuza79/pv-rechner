@@ -30,12 +30,22 @@ import type { OrtsBeitrag } from "../../lib/orts-posts";
  * Beiträge haben bis heute keine Seitenfassung — eine Lücke, die vorher
  * niemand zählen konnte, weil das Werkzeug nur den Feed zeigte.
  */
-export function SeitenVorschau({ post, orts }: { post: SocialPost; orts?: OrtsVorschau }) {
+export function SeitenVorschau({
+  post,
+  orts,
+  breite = 440,
+}: {
+  post: SocialPost;
+  orts?: OrtsVorschau;
+  /** Dieselbe Breite wie die Feed-Vorschau daneben — sonst springt das Raster
+   *  beim Umschalten der Ausgabeform. */
+  breite?: number;
+}) {
   const [offen, setOffen] = useState(false);
 
   if (orts) {
     return (
-      <div style={{ width: 440, maxWidth: "100%" }}>
+      <div style={{ width: breite, maxWidth: "100%" }}>
         <div style={S.hinweis}>Teaser in der Reihe auf {orts.ortName}s Seite</div>
         {/* Die Reihe ist eine Spur mit mehreren Teasern; hier steht einer davon
             in seiner echten Breite. Die Spur selbst nachzubauen zeigte nichts
@@ -64,7 +74,7 @@ export function SeitenVorschau({ post, orts }: { post: SocialPost; orts?: OrtsVo
 
   if (post.onsite) {
     return (
-      <div style={{ width: 440, maxWidth: "100%" }}>
+      <div style={{ width: breite, maxWidth: "100%" }}>
         <div style={S.hinweis}>Abschnitt auf der Leseseite</div>
         <div style={S.blatt}>
           <h2 style={S.h2}>{post.onsite.ueberschrift}</h2>
@@ -79,7 +89,7 @@ export function SeitenVorschau({ post, orts }: { post: SocialPost; orts?: OrtsVo
   }
 
   return (
-    <div style={{ width: 440, maxWidth: "100%" }}>
+    <div style={{ width: breite, maxWidth: "100%" }}>
       <div style={S.hinweis}>Auf der Seite</div>
       <div style={{ ...S.blatt, color: v("--color-text-secondary") }}>
         <p style={{ ...S.absatz, marginTop: 0 }}>
