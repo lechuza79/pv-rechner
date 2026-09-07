@@ -2311,6 +2311,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Der Antrag wird nach Installation und Registrierung gestellt",
       "Gefördert wird höchstens ein Balkonkraftwerk je Haushalt",
       "Die Anlage muss ab dem 01.01.2024 neu angeschafft worden sein; der Wechselrichter darf höchstens 800 W leisten",
+      // Am 08.09.2026 an der Amtsseite nachgetragen: „Nicht gefördert werden
+      // PV-Anlagen mit einer Modulleistung von mehr als 2.000 Wattpeak."
+      // Die Grenze stand nur beim Wechselrichter, nicht bei den Modulen — wer
+      // drei Module rechnet, überschreitet sie, ohne dass es hier stand.
+      "Die Module leisten zusammen höchstens 2.000 Wp",
       "Die Anlage ist fünf Jahre lang zu betreiben",
     ],
     combinableWith: BUND,
