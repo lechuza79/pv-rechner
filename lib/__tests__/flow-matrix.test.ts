@@ -110,6 +110,19 @@ describe("Aufteilung des nächtlichen Flow-Laufs", () => {
     expect(workflow).toContain("--pruefen");
   });
 
+  it("lässt höchstens drei Bauläufe gleichzeitig auf die Datenbank", () => {
+    // Jeder Job baut die Seite vollständig und liest dafür die echte Datenbank.
+    // Ohne Grenze ginge die nächtliche Bau-Last von einem auf acht gleichzeitige
+    // Bauläufe. An Wanduhr gewinnt das nichts — der längste Flow bestimmt
+    // ohnehin das Ende —, also gibt es keinen Grund, die Last zu verachtfachen.
+    // VORSICHTSMASSNAHME, KEINE MESSUNG: Der Messversuch am 07.09.2026 lief aus
+    // einem Arbeitsstand ohne Zugangsdaten und ist wertlos; die Begründung steht
+    // ausführlich in der Workflow-Datei.
+    const treffer = workflow.match(/max-parallel:\s*(\d+)/);
+    expect(treffer, "keine Grenze für gleichzeitige Jobs").not.toBeNull();
+    expect(Number(treffer![1])).toBeLessThanOrEqual(3);
+  });
+
   it("lässt einen gerissenen Flow die anderen nicht abwürgen", () => {
     // Sonst enden die übrigen „cancelled", und das liest sich als „egal"
     // statt als „nicht geprüft" — dieselbe Lehre wie beim Job-Zeitlimit.

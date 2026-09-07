@@ -93,6 +93,31 @@ jobs:
       # Ein gerissener Flow darf die anderen nicht abwürgen: Sie endeten sonst
       # „cancelled", und das liest sich als „egal" statt als „nicht geprüft".
       fail-fast: false
+
+      # HÖCHSTENS DREI GLEICHZEITIG (07.09.2026).
+      #
+      # Jeder dieser Jobs baut die Seite VOLLSTÄNDIG (`E2E_BUILD`), und ein
+      # Produktionsbau rendert 151 Seiten vor, die dafür die echte Datenbank
+      # lesen. Ohne Grenze nimmt die Aufteilung die nächtliche Bau-Last damit von
+      # EINEM auf ACHT gleichzeitige Bauläufe — eine Verachtfachung an genau der
+      # Stelle, an der dieses Projekt schon zweimal an der Notbremse stand.
+      #
+      # DAS IST EINE VORSICHTSMASSNAHME, KEINE MESSUNG, und das steht hier so,
+      # weil der Versuch es zu messen misslungen ist: Die Messung lief aus einem
+      # Arbeitsstand ohne Zugangsdaten, konnte die Datenbank also gar nicht
+      # erreichen und wählte ihre Stichproben anders als der Vergleichslauf. Ihre
+      # Zahlen sagen deshalb NICHTS über die Wirkung paralleler Bauläufe — wer
+      # sie irgendwo zitiert findet, zitiert einen Messfehler.
+      #
+      # Tragend ist stattdessen, dass die Grenze NICHTS KOSTET. Der PV-Rechner
+      # allein braucht rund 150 Minuten, alle übrigen sieben zusammen gut 110.
+      # Auf drei Spuren bleibt der PV-Lauf der längste, der ganze Lauf endet also
+      # weiterhin nach gut 150 statt der früheren 258 Minuten. Die Ersparnis
+      # stammt daher, dass die Flows NEBENEINANDER laufen — nicht daraus, dass
+      # alle acht zugleich starten. Eine Last zu verachtfachen, ohne dafür etwas
+      # zu bekommen, ist auch ohne Messung die falsche Richtung.
+      max-parallel: 3
+
       matrix:
         job: ${{ fromJson(needs.aufteilung.outputs.jobs) }}
 
