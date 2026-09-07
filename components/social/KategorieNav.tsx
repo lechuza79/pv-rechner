@@ -28,23 +28,39 @@ export function KategorieNav({
   bereiche,
   aktiv,
   uebersicht,
-  adresse = (k) => (k ? `/admin/redaktion?k=${k}` : "/admin/redaktion"),
+  pfad = "/admin/redaktion",
+  behalte,
 }: {
   bereiche: NavBereich[];
   aktiv: string;
   /** Steht gerade das Raster über alles? Dann ist der Weg zurück der aktive. */
   uebersicht?: boolean;
+  /** Wohin die Kategorien führen. */
+  pfad?: string;
   /**
-   * Wie die Adresse einer Kategorie aussieht.
+   * Angaben, die beim Wechsel der Kategorie stehen bleiben.
    *
    * Hereingereicht, seit die Ansicht auch aus dem Kommunen-Schub gefüllt werden
    * kann: Ohne das fiel die Quellenwahl beim Klick auf eine Kategorie weg, und
    * man landete stillschweigend wieder bei den bundesweiten Beiträgen — der
    * Fehler, den man erst bemerkt, wenn man sich über andere Zahlen wundert.
+   *
+   * Bewusst ein einfaches Wertepaar-Verzeichnis und KEINE Funktion: Dieses
+   * Bauteil läuft im Browser, und eine Funktion lässt sich dorthin nicht
+   * übergeben — die Seite antwortet dann mit einem Serverfehler.
    */
-  adresse?: (kategorie: string | undefined) => string;
+  behalte?: Record<string, string | undefined>;
 }) {
   const router = useRouter();
+
+  const adresse = (kategorie: string | undefined): string => {
+    const q = new URLSearchParams();
+    if (kategorie) q.set("k", kategorie);
+    for (const [name, wert] of Object.entries(behalte ?? {})) {
+      if (name !== "k" && typeof wert === "string" && wert) q.set(name, wert);
+    }
+    return `${pfad}${q.toString() ? `?${q}` : ""}`;
+  };
 
   return (
     <nav

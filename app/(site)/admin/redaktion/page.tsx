@@ -120,7 +120,7 @@ export default async function RedaktionEntwicklung({
       <KategorieNav
         aktiv={kat.schluessel}
         uebersicht={uebersicht}
-        adresse={(k) => adresse({ k })}
+        behalte={{ quelle: params.quelle, schub: params.schub, orte: params.orte }}
         bereiche={BEREICHE.map((b) => ({
           schluessel: b.schluessel,
           name: b.name,
