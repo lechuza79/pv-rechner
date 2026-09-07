@@ -11,6 +11,7 @@ import type { Pruefung } from "../../lib/social-pruefung-kern";
 import type { Befund as MechanikBefund } from "../../lib/social-mechanik";
 import { urteil } from "../../lib/social-pruefung-kern";
 import { templateVon, type SocialPost } from "../../lib/social-posts";
+import type { OrtsVorschau } from "./SeitenVorschau";
 
 // Alle Beiträge als Raster — der Einstieg in die Entwicklung.
 //
@@ -33,6 +34,8 @@ export type GridEintrag = {
   befunde: MechanikBefund[];
   /** Ging genau DIESE Fassung schon raus? */
   gesendetAm: Record<string, string>;
+  /** Nur bei Ortsgeschichten: was sie auf ihrer Seite zeigt. */
+  orts?: OrtsVorschau;
   kategorie: { name: string; schluessel: string };
   /**
    * Ist das Design dieser Story durchgesehen — im Code abgenommen ODER im
@@ -196,6 +199,7 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
             abdruck={aktiv.abdruck}
             befunde={aktiv.befunde}
             gesendetAm={aktiv.gesendetAm}
+            orts={aktiv.orts}
             ohneTitel
             onPruefung={(postId, p) =>
               setDazu((alt) => ({

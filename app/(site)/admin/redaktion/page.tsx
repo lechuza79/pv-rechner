@@ -179,6 +179,7 @@ export default async function RedaktionEntwicklung({
               abdruck: fassungsAbdruck({ text: p.text, bild: p.bild }),
               befunde: befundeJePost.get(p.id) ?? [],
               gesendetAm: gesendetAm(p.id, fassungsAbdruck({ text: p.text, bild: p.bild })),
+              orts: stand.seitenform?.[p.id],
               kategorie: { name: k.name, schluessel: k.schluessel },
               // Gestaltet heißt: Der Beitrag verwendet ein abgenommenes Template.
               bearbeitet: !!p.bild && !!templateVon(p.bild),
@@ -193,6 +194,7 @@ export default async function RedaktionEntwicklung({
             abdruck: fassungsAbdruck({ text: p.text, bild: p.bild }),
             befunde: befundeJePost.get(p.id) ?? [],
             gesendetAm: gesendetAm(p.id, fassungsAbdruck({ text: p.text, bild: p.bild })),
+            orts: stand.seitenform?.[p.id],
           }))}
         />
       )}

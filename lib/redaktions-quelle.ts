@@ -17,6 +17,7 @@ import "server-only";
 
 import { AKTUELLER_SCHUB, SCHUEBE } from "./kommunen-testballon";
 import { ortsBeitraegeMehrere } from "./orts-beitraege-server";
+import type { OrtsBeitrag } from "./orts-posts";
 import { baueAllePosts, type SocialPost } from "./social-posts";
 import { socialKennzahlen } from "./social-kennzahlen";
 import { ladeFassungen } from "./social-vorlagen-db";
@@ -96,9 +97,29 @@ export function nachTyp(posts: SocialPost[]): Map<string, SocialPost[]> {
   return gruppen;
 }
 
+/**
+ * Was ein Beitrag braucht, um in seiner SEITEN-Fassung zu erscheinen.
+ *
+ * Nur bei Ortsgeschichten: Sie stehen auf der Gemeindeseite als Teaser, hinter
+ * dem die Bildkarte im Fenster liegt. Ortsname, Adresse und Datenstand sind
+ * dafür keine Zierde — sie stehen in der Karte und in ihrem Teilen-Ziel.
+ */
+export type Seitenform = {
+  beitrag: OrtsBeitrag;
+  ortName: string;
+  /** Leer, wo sich die Adresse der Ortsseite nicht bilden lässt. */
+  liveUrl: string;
+  standIso: string;
+};
+
+/** Womit die Karten ihr Teilen-Ziel bilden. */
+const BASIS_ADRESSE = "https://solar-check.io";
+
 export type Quellenstand = {
   art: QuellenArt;
   posts: SocialPost[];
+  /** Je Beitrag seine Seiten-Fassung, wo es eine gibt. */
+  seitenform?: Record<string, Seitenform>;
   /** Nur bei „kommunen": welcher Schub, und wie viel davon angesehen wurde. */
   schub?: { schluessel: string; angesehen: number; vorhanden: number; offen: number };
   fehler?: string;
@@ -130,10 +151,30 @@ export async function quellenstand(opts: {
       const gesammelt = await ortsBeitraegeMehrere(sortiert, {
         hoechstens: opts.hoechstensOrte ?? ORTE_STANDARD,
       });
-      const alle = gesammelt.beitraege.map((b) => b.post);
+      // Je Typ EIN Beitrag — samt dem, was seine Ortsseite braucht. Die
+      // Seitenfassung ohne Ortsnamen, Adresse und Datenstand zu zeigen hieße,
+      // sie mit erfundenen Angaben zu zeigen; sie wandern deshalb mit.
+      const alle: { post: SocialPost; seite: Seitenform }[] = gesammelt.seiten.flatMap((s) =>
+        s.beitraege.map((b) => ({
+          post: b.post,
+          seite: {
+            beitrag: b,
+            ortName: s.name,
+            liveUrl: s.pfad ? `${BASIS_ADRESSE}${s.pfad}` : "",
+            standIso: s.standIso,
+          },
+        })),
+      );
+      const jeTyp = [...nachTyp(alle.map((x) => x.post)).values()].map((g) => g[0]);
+      const seitenform: Record<string, Seitenform> = {};
+      for (const p of jeTyp) {
+        const treffer = alle.find((x) => x.post.id === p.id);
+        if (treffer) seitenform[p.id] = treffer.seite;
+      }
       return {
         art: "kommunen",
-        posts: [...nachTyp(alle).values()].map((g) => g[0]),
+        posts: jeTyp,
+        seitenform,
         schub: {
           schluessel,
           angesehen: gesammelt.angesehen,

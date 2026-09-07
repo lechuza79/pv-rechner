@@ -98,7 +98,7 @@ export async function ortsBeitraege(
 export async function ortsBeitraegeFuerId(
   regionId: string,
   fassungen?: Record<string, GespeicherteFassung>,
-): Promise<OrtsBeitrag[] | null> {
+): Promise<OrtsSeite | null> {
   const region = await getRegionById(regionId);
   if (!region) return null;
   const [atlas, vorfahren] = await Promise.all([
@@ -113,7 +113,7 @@ export async function ortsBeitraegeFuerId(
   const geschwister = kreis ? await getRankingData(kreis) : { regions: [] };
   const land = vorfahren.find((r) => r.level === "bundesland")?.name ?? null;
 
-  return ortsBeitraege(
+  const beitraege = await ortsBeitraege(
     {
       regionId,
       name: region.name,
@@ -126,7 +126,32 @@ export async function ortsBeitraegeFuerId(
     },
     fassungen,
   );
+
+  // Die Adresse der Ortsseite aus den Namensstücken, die hier ohnehin schon
+  // liegen — nicht über eine eigene Auflösung: Die liefe ein zweites Mal durch
+  // dieselben Abfragen, und eine Ansicht darf nicht mit den Daten teurer
+  // werden. Fehlt einem Vorfahren sein Namensstück, gibt es keine Adresse; die
+  // Ansicht zeigt die Geschichte dann ohne Teilen-Ziel statt mit einem falschen.
+  const stuecke = [...vorfahren, region].map((r) => r.slug).filter((x): x is string => !!x);
+  const pfad = stuecke.length === vorfahren.length + 1 ? `/solar-atlas/${stuecke.join("/")}` : null;
+
+  return {
+    beitraege,
+    name: region.name,
+    standIso: atlas.data_as_of,
+    pfad,
+  };
 }
+
+/** Die Geschichten EINES Orts samt dem, was sie auf seiner Seite brauchen. */
+export type OrtsSeite = {
+  beitraege: OrtsBeitrag[];
+  name: string;
+  /** Datenstand des Anlagenregisters (ISO) — er steht an jeder Karte. */
+  standIso: string;
+  /** Kanonische Adresse der Ortsseite, oder null wo sie sich nicht bilden lässt. */
+  pfad: string | null;
+};
 
 
 /**
@@ -149,7 +174,7 @@ export async function ortsBeitraegeFuerId(
 export async function ortsBeitraegeMehrere(
   orte: OrtsSchluessel[],
   opts: { hoechstens?: number } = {},
-): Promise<{ beitraege: OrtsBeitrag[]; angesehen: number; vorhanden: number }> {
+): Promise<{ seiten: OrtsSeite[]; angesehen: number; vorhanden: number }> {
   const deckel = Math.max(1, Math.min(opts.hoechstens ?? 6, 24));
   const auswahl = orte.slice(0, deckel);
   // Die Fassungen EINMAL — sonst holt jeder Ort dieselbe kleine Tabelle neu.
@@ -161,7 +186,7 @@ export async function ortsBeitraegeMehrere(
     ),
   );
   return {
-    beitraege: listen.flatMap((l) => l ?? []),
+    seiten: listen.filter((l): l is OrtsSeite => l !== null),
     angesehen: auswahl.length,
     vorhanden: orte.length,
   };

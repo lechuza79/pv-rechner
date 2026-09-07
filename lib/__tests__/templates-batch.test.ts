@@ -94,7 +94,10 @@ describe("Templates aus dem Kommunen-Schub", () => {
     // suchte nur den Namen der Funktion und blieb bei der Gegenprobe grün, als
     // die Zuweisung wieder auf die ungefilterte Liste zeigte — die Funktion
     // stand ja noch da. Dieselbe Falle wie beim Datenbank-Wächter.
-    expect(QUELLE).toContain("[...nachTyp(alle).values()].map((g) => g[0])");
+    expect(QUELLE).toContain("[...nachTyp(alle.map((x) => x.post)).values()].map((g) => g[0])");
+    // Und die Auswahl muss auch WIRKEN: Sie stand kurz als eigene Größe da,
+    // während die Ansicht weiter die ungefilterte Liste bekam.
+    expect(QUELLE).toContain("posts: jeTyp,");
     expect(QUELLE).toContain("p.storyArt ?? p.id");
     // Der Typ muss am Beitrag hängen: Die Kennung trägt bei einigen Typen einen
     // Zusatz (den Monat, die Vergleichskategorie) und taugt nicht als Gruppe.
