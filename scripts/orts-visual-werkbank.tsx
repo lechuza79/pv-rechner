@@ -20,6 +20,7 @@ import { writeFileSync } from "node:fs";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { SocialKarte } from "../components/social/SocialKarte";
+import { OrtsTeaser } from "../components/social/OrtsStoryAnsicht";
 import { ortsPosts } from "../lib/orts-posts";
 import { ortsStories, type StoryDaten } from "../lib/orts-stories";
 import { bildform, templateVon } from "../lib/social-bildformen";
@@ -74,11 +75,12 @@ const ORT: StoryDaten = {
 };
 
 const stories = ortsStories({ daten: ORT, heuteJahr: 2026 });
-const posts = ortsPosts({
+const beitraege = ortsPosts({
   stories,
   ort: { regionId: ORT.regionId, name: ORT.name },
   standIso: ORT.standIso,
-}).map((b) => b.post);
+});
+const posts = beitraege.map((b) => b.post);
 
 const ZOOM = 0.42;
 
@@ -126,8 +128,32 @@ const zeilen = gezeigt.map((p) => {
     </div>
     <div class="reihe seite-hell"><div class="hinweis">Seiten-Palette, hell</div>${renderToStaticMarkup(<Buehne post={p} stil="hell" palette="seite" />)}</div>
     <div class="reihe seite-dunkel"><div class="hinweis">Seiten-Palette, dunkel</div>${renderToStaticMarkup(<Buehne post={p} stil="hell" palette="seite" />)}</div>
+    <div class="reihe seite-hell">
+      <div class="hinweis">Teaser in der Spur — schmal (240) und breit (320)</div>
+      ${TEASER(p, 240)}
+      ${TEASER(p, 320)}
+    </div>
+    <div class="reihe seite-dunkel">
+      <div class="hinweis">Teaser, dunkle Stufe</div>
+      ${TEASER(p, 240)}
+      ${TEASER(p, 320)}
+    </div>
   </section>`;
 });
+
+/**
+ * Der Teaser in beiden Breiten, die die Spur wirklich hergibt.
+ *
+ * Beide, weil das Bildchen links den Text schmaler macht: Am schmalen Ende
+ * entscheidet sich, ob die Schlagzeile noch trägt — und genau das sieht man
+ * nur am gerenderten Teaser, nicht an der Zahl im Code.
+ */
+function TEASER(p: (typeof posts)[number], breite: number): string {
+  const beitrag = beitraege.find((b) => b.post.id === p.id)!;
+  return `<div style="display:flex;width:${breite}px">${renderToStaticMarkup(
+    <OrtsTeaser beitrag={beitrag} onOeffnen={() => {}} />,
+  )}</div>`;
+}
 
 function KARTE_MIT_LABEL(p: (typeof posts)[number], palette: "eigene" | "seite"): string {
   return KARTEN_STILE.map(

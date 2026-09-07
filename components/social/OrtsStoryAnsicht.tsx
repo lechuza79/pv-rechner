@@ -10,6 +10,7 @@ import { SocialKarte } from "./SocialKarte";
 // die Stundensimulation und ein halbes Dutzend Konfigurationen in das Bündel
 // jeder Ortsseite.
 import type { OrtsBeitrag } from "../../lib/orts-posts";
+import { templateVon } from "../../lib/social-posts";
 
 /**
  * WIE EINE ORTSGESCHICHTE AUF EINER SEITE AUSSIEHT — an EINER Stelle.
@@ -86,17 +87,81 @@ export function KarteImRahmen({ children }: { children: React.ReactNode }) {
  * zweiten Klickziel darin ist weder bedienbar noch gültiges Markup.
  */
 export function OrtsTeaser({ beitrag, onOeffnen }: { beitrag: OrtsBeitrag; onOeffnen: () => void }) {
-  const schlagzeile = beitrag.post.bild?.aussage ?? beitrag.post.titel;
+  const bild = beitrag.post.bild;
+  const schlagzeile = bild?.aussage ?? beitrag.post.titel;
+  // NUR WO DAS BILD FERTIG IST. Ein Vorschaubild einer Kombination, die
+  // niemand durchgesehen hat, wirbt für ein Design, das noch keins ist —
+  // dieselbe Grenze, nach der die Übersicht „gestaltet" von „roh" trennt.
+  const fertig = bild ? !!templateVon(bild) : false;
   return (
     <button type="button" onClick={onOeffnen} style={S.teaser}>
-      <span style={S.art}>{beitrag.label}</span>
-      <span style={S.teaserTitel}>{schlagzeile}</span>
-      {/* KEINE Zeile unter dem Bild: Die Bildkarte trägt Zahl UND Beschriftung
-          schon; ein zweites „seit 2000 geflossen" darunter ist dieselbe Angabe
-          zweimal. Was der Teaser darüber hinaus braucht, ist nur der Weg
-          hinein. */}
-      <span style={S.teaserMehr}>Ansehen</span>
+      {fertig && bild && (
+        <span style={S.thumbRahmen} aria-hidden>
+          <ThumbKarte bild={bild} />
+        </span>
+      )}
+      <span style={S.teaserText}>
+        <span style={S.art}>{beitrag.label}</span>
+        <span style={S.teaserTitel}>{schlagzeile}</span>
+        {/* KEINE Zeile unter dem Bild: Die Bildkarte trägt Zahl UND Beschriftung
+            schon; ein zweites „seit 2000 geflossen" darunter ist dieselbe Angabe
+            zweimal. Was der Teaser darüber hinaus braucht, ist nur der Weg
+            hinein. */}
+        <span style={S.teaserMehr}>Ansehen</span>
+      </span>
     </button>
+  );
+}
+
+/**
+ * Kantenlänge des Vorschaubildchens im Teaser.
+ *
+ * Gegen die echte Teaser-Breite gerechnet, nicht gegriffen: Die Spur gibt
+ * einem Teaser 240 bis 320 Pixel. Bei 88 bleiben nach Bildchen, Abstand und
+ * Innenmaß 120 bis 200 Pixel für die Schlagzeile — auf der schmalen Seite
+ * zwei bis drei Zeilen, und das ist die Grenze, unter der der Text kippt.
+ */
+const THUMB = 88;
+/**
+ * Breite, in der die kleine Kartenstufe gezeichnet und dann auf das Quadrat
+ * gebracht wird.
+ *
+ * GEMESSEN, nicht gegriffen: Bei 240 füllt die Karte nur 46 Prozent der
+ * Quadrathöhe — ein Strich in einem leeren Kasten. Bei 120 läuft sie mit 108
+ * Prozent über. 140 füllt 80 bis 92 Prozent, je nach Form, und läuft in keiner
+ * über (an beiden Teaser-Breiten und beiden Formen nachgemessen).
+ */
+const THUMB_ENTWURF = 140;
+
+/**
+ * Das Vorschaubildchen: die KLEINE Kartenstufe, quadratisch beschnitten.
+ *
+ * NICHT die quadratische Stufe verkleinert — die trägt die Schriftgrößen der
+ * vollen Karte, und von 1080 auf 104 Pixel gebracht wäre jede Zeile darin ein
+ * grauer Strich. Die kleine Stufe lässt stattdessen weg: keine Schlagzeile
+ * (die steht daneben), keine Quellenzeile (die Seite nennt sie), eine Zahl
+ * statt zweier.
+ *
+ * Das Quadrat entsteht durch BESCHNITT, nicht durch Stauchen: Die kleine Stufe
+ * hört auf, wo ihr Inhalt endet, und eine erzwungene Höhe verzöge die
+ * Balkenlängen — also genau die Aussage.
+ */
+function ThumbKarte({ bild }: { bild: NonNullable<OrtsBeitrag["post"]["bild"]> }) {
+  return (
+    <span
+      style={{
+        display: "block",
+        width: THUMB_ENTWURF,
+        // Die Breite ist der Maßstab; die Höhe ergibt sich. Damit das Quadrat
+        // die zusammengeschobene Karte umschließt statt sie zu verschieben,
+        // wird die Fläche nach der Transformation zurückgerechnet.
+        transform: `scale(${THUMB / THUMB_ENTWURF})`,
+        transformOrigin: "center",
+        flex: "0 0 auto",
+      }}
+    >
+      <SocialKarte bild={bild} stufe="teaser" skala={THUMB_ENTWURF / 1080} palette="seite" />
+    </span>
   );
 }
 
@@ -185,9 +250,12 @@ const S: Record<string, React.CSSProperties> = {
   teaser: {
     flex: 1,
     display: "flex",
-    flexDirection: "column",
+    // Bildchen links, Text rechts. Untereinander wäre das Bildchen eine zweite
+    // Überschrift über der Überschrift; nebeneinander ist es, was es ist —
+    // eine Marke, an der man die Geschichte wiedererkennt.
+    flexDirection: "row",
     alignItems: "flex-start",
-    gap: space.xs,
+    gap: space.md,
     textAlign: "left",
     padding: pad("lg", "lg"),
     background: v("--color-bg"),
@@ -196,6 +264,31 @@ const S: Record<string, React.CSSProperties> = {
     cursor: "pointer",
     font: "inherit",
     color: "inherit",
+  },
+  teaserText: {
+    flex: 1,
+    minWidth: 0,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    gap: space.xs,
+    alignSelf: "stretch",
+  },
+  thumbRahmen: {
+    flex: "0 0 auto",
+    // ZENTRIERT, nicht oben angesetzt: Die kleine Kartenstufe hört auf, wo ihr
+    // Inhalt endet — im Quadrat gemessen 88 auf 41 Pixel. Oben angeschlagen
+    // stünde darunter die halbe Fläche leer, und das sieht nach einem Fehler
+    // aus, nicht nach einer Marke.
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: THUMB,
+    height: THUMB,
+    overflow: "hidden",
+    borderRadius: v("--radius-sm"),
+    border: `1px solid ${v("--color-border-muted")}`,
+    background: v("--color-bg"),
   },
   art: {
     fontSize: v("--font-size-micro"),

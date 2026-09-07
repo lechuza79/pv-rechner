@@ -50,7 +50,10 @@ export function SeitenVorschau({
         {/* Die Reihe ist eine Spur mit mehreren Teasern; hier steht einer davon
             in seiner echten Breite. Die Spur selbst nachzubauen zeigte nichts
             über DIESE Geschichte, nur über das Blättern. */}
-        <div style={{ display: "flex", width: 240 }}>
+        {/* 280 Pixel: die Mitte dessen, was die Spur auf der Seite hergibt
+            (240 bis 320). Am schmalen Ende beurteilt man einen Ausnahmefall,
+            am breiten den bequemsten. */}
+        <div style={{ display: "flex", width: 280 }}>
           <OrtsTeaser beitrag={orts.beitrag} onOeffnen={() => setOffen(true)} />
         </div>
 
