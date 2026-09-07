@@ -14,26 +14,40 @@ test.describe("Widget auf eigener Seite", () => {
   test("trägt die Farben der Seite, nicht seine eigenen", async ({ page }) => {
     await page.goto("/atomstrom-import");
 
-    const seitenGrund = await page.evaluate(() =>
-      getComputedStyle(document.documentElement).getPropertyValue("--color-bg").trim(),
-    );
-    expect(seitenGrund).not.toBe("");
+    const seitenGrund = () =>
+      page.evaluate(() =>
+        getComputedStyle(document.documentElement).getPropertyValue("--color-bg").trim(),
+      );
+    expect(await seitenGrund()).not.toBe("");
 
     const rahmen = page.frameLocator('iframe[src*="zubau-erneuerbare-atom"]');
     // Warten, bis das Widget steht — vorher gibt es nichts zu messen.
     await expect(rahmen.getByText("Erneuerbare vs. Atomkraft", { exact: true })).toBeVisible();
 
+    // BEIDE Seiten bei JEDEM Versuch neu lesen (07.09.2026). Vorher wurde der
+    // Grundton der Seite EINMAL gemerkt, bevor das Widget ueberhaupt geladen
+    // war — und die Tagesstufe steht zu diesem Zeitpunkt noch nicht fest: Sie
+    // haengt an der tatsaechlichen Einstrahlung, die erst nachgeladen wird.
+    // Wechselt die Seite danach ihre Stufe, vergleicht der Test gegen einen
+    // veralteten Wert und meldet einen Unterschied, den es nicht gibt.
+    //
+    // Genau so gesehen: Erwartet wurde #eaebee (die Stufe beim Seitenaufbau),
+    // gemessen #d4d8dd — der Wert, auf dem die Seite dann WIRKLICH stand und
+    // den das Widget korrekt uebernommen hatte. In der Produktion im Browser
+    // gegengeprueft: Seite und alle drei Widgets tragen denselben Ton.
     await expect
       .poll(
-        async () =>
-          await rahmen.locator("body").evaluate((b) =>
+        async () => {
+          const imWidget = await rahmen.locator("body").evaluate((b) =>
             getComputedStyle(b.ownerDocument.documentElement)
               .getPropertyValue("--widget-bg")
               .trim(),
-          ),
+          );
+          return imWidget === (await seitenGrund());
+        },
         { message: "Das eingebettete Widget übernimmt den Grundton der Seite" },
       )
-      .toBe(seitenGrund);
+      .toBe(true);
   });
 
   test("zeigt keinen Knopf auf die Seite, die man gerade liest", async ({ page }) => {
