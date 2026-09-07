@@ -51,17 +51,33 @@ const IGNORIEREN = [
 // Zugangsdaten (ci.yml), also ist ein Datenbankfehler hier ein echter Befund —
 // ihn wegzufiltern hätte genau die Klasse verdeckt, für die es den Rundgang gibt.
 
+/** Text UND Herkunft der Meldung.
+ *
+ *  Der Browser meldet eine fehlgeschlagene Ressource als nackten Satz — „Failed
+ *  to load resource: the server responded with a status of 404" — OHNE die
+ *  Adresse. Wer nur den Text filtert, kann ein bekanntes 404 gar nicht von
+ *  einem unbekannten unterscheiden und muesste die ganze Zeile ausnehmen; damit
+ *  waere jedes echte 404 mit weggefiltert. Die Adresse steht in der Herkunft,
+ *  also wird sie mitgeprueft.
+ *
+ *  Gemessen am 07.09.2026: Ausgenommen wurde nur die MIME-Meldung, die die
+ *  Adresse im Text traegt; die 404-Zeile derselben Datei blieb stehen und
+ *  erzeugte 296 Fehlschlaege aus einer einzigen Ursache. */
+function meldungstext(msg: ConsoleMessage): string {
+  const herkunft = msg.location()?.url ?? "";
+  return herkunft ? `${msg.text()} [${herkunft}]` : msg.text();
+}
+
 function istEchterFehler(msg: ConsoleMessage): boolean {
   if (msg.type() !== "error") return false;
-  const text = msg.text();
-  return !IGNORIEREN.some((re) => re.test(text));
+  return !IGNORIEREN.some((re) => re.test(meldungstext(msg)));
 }
 
 /** Ruft eine Seite auf und gibt zurück, was dabei schiefging. */
 async function rundgang(page: Page, pfad: string) {
   const fehler: string[] = [];
   page.on("console", (msg) => {
-    if (istEchterFehler(msg)) fehler.push(`Konsole: ${msg.text()}`);
+    if (istEchterFehler(msg)) fehler.push(`Konsole: ${meldungstext(msg)}`);
   });
   // Nicht abgefangene Ausnahmen erscheinen NICHT zwingend als Konsolenfehler —
   // ohne diesen Zweig würde ein harter Absturz im Browser durchrutschen.
