@@ -38,6 +38,14 @@ const IGNORIEREN = [
   /Failed to load resource: the server responded with a status of (429|5\d\d)/i,
   // Vercel Analytics meldet im Entwicklungsmodus, dass es nichts sendet.
   /Vercel Web Analytics/i,
+  // Das Messskript liegt NUR auf Vercels Plattform. Gegen einen lokal
+  // gestarteten Produktionsbau — so laeuft dieser Lauf seit 07.09.2026 — gibt
+  // es die Adresse nicht, also 404 und ein abgelehntes Skript. Gegen den
+  // Entwicklungsserver trat es nie auf, weil der das Skript gar nicht erst
+  // einbindet; entsprechend meldeten alle 30 Adressen es auf einmal.
+  // Eng gefasst auf genau diese Adresse: Ein 404 auf irgendetwas anderem
+  // bleibt ein Befund.
+  /_vercel\/insights/i,
 ];
 // Bewusst NICHT ignoriert: Supabase-Fehler. Die Werkbank hat echte
 // Zugangsdaten (ci.yml), also ist ein Datenbankfehler hier ein echter Befund —
