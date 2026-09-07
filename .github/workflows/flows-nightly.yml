@@ -8,16 +8,33 @@
 #     Option jedes Schritts, jeder Zweig — fängt kaputte Knöpfe und
 #     gebrochene Wege in Minuten, bevor der Push durch ist.
 #   - Hier, einmal pro Nacht, läuft derselbe Läufer OHNE die Abkürzung
-#     (FLOW_ALLE_KOMBINATIONEN=1): in der Nacht zum 25.08.2026 gemessene
-#     3.440 Wege über sieben Flows in 4 h 20. Bis zum 22.08. waren es rund
-#     zwei Stunden; seit der Läufer auch Akkordeon-Fragen und Ein/Aus-Schalter
-#     sieht, sind es gut vier. Das Job-Zeitlimit unten steht bei 5 Stunden —
-#     der Gesundheitscheck warnt, sobald davon weniger als ein Viertel frei
-#     bleibt, damit ein weiterer Ausbau nicht in einem „abgebrochen" endet,
-#     das erst nach drei Nächten auffällt. Auf jedem Push wäre das unhaltbar — und unter
-#     Parallellast produzierte genau diese Menge am 18.08.2026 Fehlalarme
-#     („Option ließ sich nicht wählen" auf einem Doku-Commit). Nachts, mit
-#     einem Arbeiter und ohne Zeitdruck, ist sie tragbar.
+#     (FLOW_ALLE_KOMBINATIONEN=1): 3.462 Wege über sieben Flows.
+#     Auf jedem Push wäre das unhaltbar — und unter Parallellast produzierte
+#     genau diese Menge am 18.08.2026 Fehlalarme („Option ließ sich nicht
+#     wählen" auf einem Doku-Commit). Nachts, mit einem Arbeiter je Flow und
+#     ohne Zeitdruck, ist sie tragbar.
+#
+# JE FLOW EIN EIGENER JOB (07.09.2026) — die Verteilung hat es verlangt.
+# Vorher liefen alle Flows nacheinander in einem Job und standen bei 258 von
+# 280 erlaubten Minuten; am 05.09. riss der Lauf das Limit. WELCHER Flow die
+# Zeit frisst, stand nirgends, und genau das war der Blocker. Gemessen in der
+# Nacht zum 06.09.2026, aus den Startzeitpunkten der einzelnen Tests:
+#
+#   PV-Rechner              1.728 Wege   149 min   58 %
+#   Wärmepumpen-Rechner     1.120 Wege    71 min   28 %
+#   PV-Bedarf / Empfehlung    288 Wege    24 min    9 %
+#   Klimaanlagen-Rechner      144 Wege     5 min
+#   Förder-Check Frankfurt     90 Wege     3 min
+#   Einspeisevergütung         60 Wege     3 min
+#   Balkonkraftwerk-Rechner    32 Wege     1 min
+#
+# Zwei Flows tragen 86 % der Zeit. Getrennte Jobs machen daraus einen längsten
+# von rund 150 Minuten, OHNE einen einzigen Weg weniger zu prüfen.
+#
+# UND ES IST NICHT DASSELBE WIE MEHR ARBEITER: Parallele Arbeiter teilen sich
+# einen Server, und genau daraus entstanden die Fehlalarme vom 18.08.2026.
+# Getrennte Jobs teilen nichts — jeder baut und startet seinen eigenen Server
+# und bleibt bei `--workers=1`.
 #
 # Ein roter Lauf hier ist ein echter Befund in einer Kombination, die der
 # schnelle Läufer nicht geht — die tägliche Triage liest ihn wie jeden
@@ -32,10 +49,52 @@ on:
   workflow_dispatch:
 
 jobs:
-  flows-alle:
-    name: Flow-Läufer (jede Kombination)
+  # Die Aufteilung wird ABGELEITET, nicht getippt. Eine Liste der Flow-Namen in
+  # dieser Datei wäre eine zweite Wahrheit neben `FLOWS` in e2e/flows.ts: Sie
+  # driftet beim ersten umbenannten Flow, und ein Job mit einem veralteten Namen
+  # liefe auf NULL Tests — grün, ohne etwas geprüft zu haben.
+  #
+  # Deshalb prüft derselbe Schritt zusätzlich gegen Playwright, dass jeder Job
+  # mindestens einen Test bekommt und alle Jobs zusammen den ganzen Bestand
+  # genau einmal abdecken. Er wird rot, bevor die Nacht stumm weniger prüft.
+  aufteilung:
+    name: Aufteilung bestimmen
     runs-on: ubuntu-latest
-    timeout-minutes: 300
+    timeout-minutes: 10
+    outputs:
+      jobs: ${{ steps.matrix.outputs.jobs }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Aufteilung ableiten und gegenprüfen
+        id: matrix
+        run: |
+          npx tsx scripts/flow-matrix.ts --pruefen
+          echo "jobs=$(npx tsx scripts/flow-matrix.ts)" >> "$GITHUB_OUTPUT"
+
+  flows-alle:
+    name: ${{ matrix.job.name }}
+    needs: aufteilung
+    runs-on: ubuntu-latest
+    # 220 statt der früheren 300: Der längste Job ist heute der PV-Rechner mit
+    # 149 Minuten. Das Job-Limit muss über der SUMME seiner Schritt-Limits
+    # liegen (10 + 5 + 200 = 215), sonst reißt wieder der Job zuerst und der
+    # Ausgang heißt „cancelled" statt „failure" — festgenagelt von
+    # lib/__tests__/workflow-schritt-zeitlimits.test.ts.
+    timeout-minutes: 220
+
+    strategy:
+      # Ein gerissener Flow darf die anderen nicht abwürgen: Sie endeten sonst
+      # „cancelled", und das liest sich als „egal" statt als „nicht geprüft".
+      fail-fast: false
+      matrix:
+        job: ${{ fromJson(needs.aufteilung.outputs.jobs) }}
 
     steps:
       - uses: actions/checkout@v4
@@ -79,40 +138,32 @@ jobs:
         timeout-minutes: 5
         run: npx playwright install-deps chromium
 
-      # Schritt-Zeitlimit UNTER dem Job-Limit von 300 — der Unterschied ist die
-      # Ampel: Ein gerissenes JOB-Limit endet „cancelled" und faellt erst nach
-      # drei erfolglosen Naechten auf (`laufStumm`), ein gerissenes SCHRITT-Limit
+      # Schritt-Zeitlimit UNTER dem Job-Limit — der Unterschied ist die Ampel:
+      # Ein gerissenes JOB-Limit endet „cancelled" und faellt erst nach drei
+      # erfolglosen Naechten auf (`laufStumm`), ein gerissenes SCHRITT-Limit
       # endet „failure" und ist am naechsten Morgen rot zu sehen.
       #
-      # 280 statt 300, damit der Vorlauf hineinpasst: Bei kaltem Cache kommen
-      # Browser-Download (bis 10) und Systempakete (bis 5) plus Grundlast dazu,
-      # zusammen 298. GEMESSEN 27.08.2026 (8 Laeufe): der Schritt brauchte
-      # zuletzt 263,6 Minuten — die Reserve ist duenn, und genau das meldet der
-      # Gesundheitscheck bereits als Warnung (`zeitreserveKnapp`, ab drei
-      # Vierteln). Waechst der Lauf weiter, soll er hier rot reissen und nicht
-      # drei Naechte lang stumm abbrechen.
-      # DIE BERICHTSFORM IST HIER DER UNTERSCHIED ZWISCHEN DIAGNOSE UND RATEN
-      # (05.09.2026): Der Lauf riss sein Zeitlimit — 232, 253, 259, 260, 252,
-      # 259, 258 Minuten und dann 280 —, und der Grund liess sich am Protokoll
-      # NICHT feststellen. Der Reporter „github" schreibt seine Ausgabe in die
-      # Annotationen und meldet je Lauf nur eine Summe („9 passed (4.3h)"). Neun
-      # Tests, ein Arbeiter, vier Stunden: welcher davon gewachsen ist, steht
-      # nirgends. Die Regel aus CLAUDE.md verlangt aber genau das — „wer ein
-      # Job-Zeitlimit reisst, hebt nicht zuerst das Limit an, sondern misst, was
-      # gewachsen ist".
+      # 200 Minuten fuer den laengsten Flow (PV-Rechner, 149 min gemessen) —
+      # ein Drittel Luft. Vorher waren es 8 %, und der Lauf ist genau daran
+      # gerissen. DAS IST KEIN ANGEHOBENES LIMIT: Die Gesamtzeit des Laufs
+      # sinkt von 258 auf rund 150 Minuten, weil sechs Flows daneben laufen
+      # statt danach. Ein blosses Hochsetzen waere der Zug, den das
+      # Waechter-Gate verbietet.
       #
-      # „line" schreibt jeden Test mit seiner Dauer laufend nach stdout. Das
-      # traegt gerade im Abbruchfall: Die Zeilen der fertigen Tests stehen dann
-      # schon da, und der zuletzt begonnene ist der, der haengt. „github" bleibt
-      # daneben stehen, damit die Annotationen erhalten bleiben; es entsteht kein
-      # Ordner `playwright-report/`, der Upload-Schritt unten aendert sich nicht.
-      #
-      # Nur hier, nicht in playwright.config.ts: Der Smoke- und der Push-Lauf
-      # brauchen die Zeilen nicht, und ihre Protokolle sollen nicht wachsen.
+      # Die BERICHTSFORM „github,line" bleibt (05.09.2026): „github" schreibt in
+      # die Annotationen, „line" nennt jeden Test beim Namen, sobald er startet.
+      # Aus diesen Startzeitpunkten stammt die Verteilung oben — ohne sie waere
+      # die Aufteilung geraten gewesen.
       - name: Flow walker, alle Kombinationen (production build)
-        timeout-minutes: 280
-        run: npm run test:flows -- --reporter=github,line
+        timeout-minutes: 200
+        # Auswahl über zwei Umgebungsvariablen, NICHT als interpolierte Zeile:
+        # Der Ausdruck enthält selbst Anführungszeichen, und die dann noch der
+        # Shell zu überlassen wäre eine Quotierungs-Aufgabe, die niemand im Kopf
+        # nachrechnen kann. Zwei Variablen haben das Problem gar nicht.
+        run: npm run test:flows -- --reporter=github,line "$FLOW_FLAG" "$FLOW_MUSTER"
         env:
+          FLOW_FLAG: ${{ matrix.job.flag }}
+          FLOW_MUSTER: ${{ matrix.job.muster }}
           FLOW_ALLE_KOMBINATIONEN: "1"
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: anon-placeholder-not-used-in-flow-run
@@ -139,10 +190,13 @@ jobs:
       # ein Abbruch mitten im Testschritt hinterlaesst ebenfalls nichts —
       # Playwright schreibt die Verfolgung erst beim Abschluss eines Versuchs.
       # Gegen einen Abbruch hilft das Schritt-Zeitlimit oben, nicht der Upload.
+      #
+      # Der Name traegt die Job-Nummer: Bei einer Matrix kollidieren sonst alle
+      # Jobs auf demselben Artefaktnamen, und der zweite Upload schlaegt fehl.
       - name: Upload Playwright-Ablaufverfolgung
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-flows-nightly
+          name: playwright-report-flows-nightly-${{ strategy.job-index }}
           path: test-results/
           retention-days: 7
