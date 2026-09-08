@@ -481,7 +481,18 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // Neues gegenüber dem 07.09.: HVO100 gibt es als Kraftstoffreihe, für Heizöl
   // nur den Gesamtpreis. Der Lücken-Hinweis im Öl-Ergebnis bleibt, samt
   // Fehlerrichtung (Öl wird zu günstig gerechnet).
-  geprueftRechtIso: "2026-09-08",
+  // 09.09.2026: Beide Leitquellen erreicht und unverändert. Die amtliche
+  // Chronologie des Bundes endet weiterhin am 28.07.2026 (Verkündung im
+  // Bundesgesetzblatt), kein Eintrag danach. Zum Quotengesetz steht dort nach
+  // wie vor nur die Ankündigung — wörtlich: „Neu aufgenommen wurde insbesondere
+  // § 42a zur Grüngas-/Grünheizölquote, der bis zum 01.12.2026 ein Gesetz
+  // ankündigt, das Inverkehrbringer von Gas, Öl und Flüssiggas für die
+  // Gebäudeheizung dazu verpflichtet, ab dem Jahr 2045 vollständig auf
+  // klimaneutrale Brennstoffe umzustellen." Der Gesetzestext selbst sagt
+  // dasselbe; ein Entwurf existiert weiterhin NICHT, nur die Frist. Damit
+  // bleibt auch für Bioheizöl alles beim Alten: keine Preisreihe, keine
+  // Regelung — der Lücken-Hinweis im Öl-Ergebnis bleibt samt Fehlerrichtung.
+  geprueftRechtIso: "2026-09-09",
   reviewBy: "2027-07-25",
 };
 

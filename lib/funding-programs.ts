@@ -462,7 +462,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "berlin-solarplus": {
     id: "berlin-solarplus", name: "SolarPLUS", traeger: "IBB / Land Berlin",
     level: "land", region: "Berlin", bundesland: "Berlin", agsCode: "11",
-    url: "https://www.berlin.de/solarcity/", stand: "Juni 2026",
+    url: "https://www.berlin.de/solarcity/", stand: "September 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Pauschalen für Speicher, Zählerschrank, Denkmal-PV",
@@ -471,10 +471,36 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { label: "Zählerschrank", value: "750 € pauschal" },
       { label: "Denkmalgerechte PV", value: "600 – 5.700 €" },
     ],
+    // Am 09.09.2026 an der Förderrichtlinie selbst gelesen (Stand ab 02.01.2026,
+    // Tabelle auf S. 8/9 sowie Nr. 2.2 und 3.2) — Auszug in
+    // `docs/quellen/berlin-solarplus-richtlinie-2026.txt`. Die drei Pauschalen
+    // sind zellgleich mit dem, was hier steht.
+    //
+    // DIE ERSTE BEDINGUNG WAR FALSCH und ist ersetzt. Sie lautete „Projektstart
+    // erst nach Förderzusage" und behauptete damit einen Förderausschluss, den
+    // die Richtlinie nicht kennt — dieselbe Fehlerklasse wie die verbreitete
+    // Verschärfung bei der Bundesförderung („nichts kaufen, bevor die KfW
+    // bewilligt hat"). Die Richtlinie trennt zwei Fälle, und keiner davon ist
+    // die Förderzusage:
+    //   * SolarPLUS S (Ein-/Zweifamilien- und Reihenhaus, unser Normalfall),
+    //     Nr. 2.2: „Das Projekt darf nicht vor dem Inkrafttreten dieser
+    //     Förderrichtlinie begonnen worden sein." Und weiter: „Aus einem
+    //     Projektbeginn vor der Antragstellung können Antragstellende keinen
+    //     Anspruch herleiten, dass eine Zuwendung gewährt wird. Mit dem Vorhaben
+    //     wird in diesen Fällen auf eigenes finanzielles Risiko begonnen." Ein
+    //     früher Start ist dort also ausdrücklich ZULÄSSIG, nur ohne Anspruch.
+    //   * SolarPLUS L (Mehrfamilienhaus, Gewerbe), Nr. 3.2: hier ist der Start
+    //     vor der EINGANGSBESTÄTIGUNG förderschädlich („ist eine Förderung
+    //     ausgeschlossen") — die Eingangsbestätigung ist aber die Bestätigung
+    //     des Antragseingangs, nicht die Zusage; nach ihr darf man beginnen,
+    //     „auf eigenes Risiko" und weiterhin ohne Anspruch.
+    // Wer den alten Satz las, verschob seinen Kauf auf einen Bescheid, auf den
+    // er gar nicht warten musste. Der Abzug ändert sich dadurch nicht.
     conditions: [
-      "Projektstart erst nach Förderzusage",
+      "Beim Ein- und Zweifamilienhaus darf vor dem Antrag begonnen werden — allerdings auf eigenes Risiko und ohne Anspruch auf die Förderung",
+      "Beim Mehrfamilienhaus und im Gewerbe muss die Eingangsbestätigung des Antrags vorliegen, bevor bestellt, beauftragt oder angezahlt wird",
       "Recycling-Zusage beim Speicher",
-      "Balkonkraftwerke 2026 nicht mehr gefördert",
+      "Balkonkraftwerke 2026 nicht mehr gefördert — für Steckersolargeräte nimmt das Land keine neuen Anträge mehr an",
     ],
     combinableWith: BUND,
   },

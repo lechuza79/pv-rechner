@@ -417,10 +417,16 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // Fassung ändert erfahrungsgemäß nichts Inhaltliches, aber wer hier künftig
   // eine Absatznummer abschreibt, prüft sie an der endgültigen nach.
   //
+  // 09.09.2026: Keine erste Lesung in dieser Sitzungswoche — nachgesehen in der
+  // Tagesordnung selbst (Stand 8. September 2026, 14.15 Uhr, Sitzungen 91–94 vom
+  // 8. bis 11. September). Es ist eine Haushaltswoche: Die Tagesordnung enthält
+  // KEINEN einzigen Punkt zum EEG, zur Photovoltaik oder zur Einspeisung. Der
+  // Zustand bleibt damit „regierungsentwurf"; eingebracht ist nicht beschlossen.
+  //
   // Nächster Lauf: die Sondersitzung des Wirtschaftsausschusses vom 08.09.2026
   // — hat sie diesen Entwurf behandelt? Ihre Tagesordnung wird nicht
   // veröffentlicht, aber ein Ausschussbericht wäre eine Drucksache.
-  geprueftIso: "2026-09-08",
+  geprueftIso: "2026-09-09",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.
