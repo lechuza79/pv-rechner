@@ -1,5 +1,6 @@
 // ─── Feed-In Tariff Configuration (shared between server + client) ───────────
 import { feedInArchivRates } from "./feedin-archiv";
+import { tagInBerlin } from "./zeit";
 
 export interface FeedInRates {
   teilUnder10: number;   // ct/kWh, Teileinspeisung ≤10 kWp
@@ -87,9 +88,16 @@ export const FEED_IN_GEPRUEFT_ISO = "2026-08-01";
  * reached. Server surfaces that must flip at the cutoff without waiting for a
  * deploy (the /api/feedin route the calculator reads) call this per request;
  * everything else uses DEFAULT_FEED_IN below.
+ *
+ * Das Argument ist entweder ein ZEITPUNKT (`new Date()` — „jetzt", wird in den
+ * deutschen Kalendertag umgerechnet) oder ein gemeinter TAG als ISO-String
+ * (`"2026-08-01"` — gilt unverändert). Die Stichtage in `validFrom` sind
+ * deutsche Kalendertage; sie gegen die Weltzeit zu halten lieferte zwischen
+ * 00:00 und 02:00 deutscher Zeit am Stichtag noch den alten Satz. Siehe
+ * `tagInBerlin` in lib/zeit.ts.
  */
-export function feedInRatesFor(now: Date = new Date()): FeedInRates {
-  const today = now.toISOString().slice(0, 10);
+export function feedInRatesFor(now: Date | string = new Date()): FeedInRates {
+  const today = tagInBerlin(now);
   let current = FEED_IN_SCHEDULE[0];
   for (const period of FEED_IN_SCHEDULE) {
     if (period.validFrom <= today) current = period;
@@ -225,9 +233,11 @@ export interface FeedInPeriod {
  * Sätzen werden zusammengefasst — bis zum 31.01.2024 setzte die Degression aus
  * (siehe feedInDegressionSteps), die Basiswerte galten durchgehend.
  * Zukünftige Stichtage erscheinen bewusst NICHT (kein Blick über heute hinaus).
+ * „Heute" ist dabei der deutsche Kalendertag — sonst erschiene die Periode, die
+ * am Stichtag beginnt, erst zwei Stunden später (siehe `tagInBerlin`).
  */
-export function feedInPeriodsSince2022(now: Date = new Date()): FeedInPeriod[] {
-  const today = now.toISOString().slice(0, 10);
+export function feedInPeriodsSince2022(now: Date | string = new Date()): FeedInPeriod[] {
+  const today = tagInBerlin(now);
   const starts: string[] = [FEED_IN_BASIS.validFromIso];
   outer: for (let y = 2023; ; y++) {
     for (const md of ["02-01", "08-01"]) {

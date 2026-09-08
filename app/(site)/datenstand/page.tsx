@@ -20,6 +20,7 @@ import { verbrauchSpecKwh } from "../../../lib/heatpump-core";
 import { preboundAnteil } from "../../../lib/heat-consumption";
 import { DEFAULT_BALKON_CONFIG as BK } from "../../../lib/balkon-config";
 import { referenceYearKwh } from "../../../lib/solar-year";
+import { heuteInBerlin } from "../../../lib/zeit";
 import { YEAR, YEARS, DEGRAD, PERSONEN, NUTZUNG, CONSUMPTION_MONTHLY, SCENARIOS, FUEL } from "../../../lib/constants";
 import { WP_ANNUAL_KWH, EA_KWH_PER_KM, EA_DEFAULT_KM, KLIMA_KWH_PER_M2, KLIMA_DEFAULT_M2 } from "../../../lib/consumption";
 import { pageMetadata } from "../../../lib/seo";
@@ -200,7 +201,7 @@ async function fetchPrices(): Promise<PriceConfig> {
       .select("*")
       .neq("source", "SCRAPE_ERROR")
       .gt("pv_price_small", 0)
-      .lte("valid_from", new Date().toISOString().split("T")[0])
+      .lte("valid_from", heuteInBerlin())
       .order("valid_from", { ascending: false })
       // Tiebreaker on created_at must match /api/prices exactly — otherwise this
       // transparency page can read a different (older) duplicate row than the
@@ -231,7 +232,7 @@ async function fetchFeedIn(): Promise<FeedInRates> {
     const { data } = await supabase
       .from("feed_in_rates")
       .select("*")
-      .lte("valid_from", new Date().toISOString().split("T")[0])
+      .lte("valid_from", heuteInBerlin())
       .order("valid_from", { ascending: false })
       .limit(1)
       .single();

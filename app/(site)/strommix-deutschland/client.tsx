@@ -17,6 +17,9 @@ import { useChartExport } from "../../../lib/useChartExport";
 import ChartExportBar from "../../../components/ChartExportBar";
 import { IconChevronLeft, IconChevronRight, IconChevronDown } from "../../../components/Icons";
 import { LoadingDots as BouncingDots } from "../../../components/LoadingDots";
+// Das Ende eines Datenbereichs ist ein deutscher Kalendertag — mit der Weltzeit
+// fehlten zwischen 00:00 und 02:00 die letzten Stunden (lib/zeit.ts).
+import { heuteInBerlin } from "../../../lib/zeit";
 
 // ─── Time Range Selector ─────────────────────────────────────────────────────
 
@@ -61,7 +64,7 @@ function getYtdHours(): number {
 function getYearRange(year: number): { start: string; end: string } {
   const currentYear = new Date().getFullYear();
   const end = year === currentYear
-    ? new Date().toISOString().slice(0, 10)
+    ? heuteInBerlin()
     : `${year}-12-31`;
   return { start: `${year}-01-01`, end };
 }
@@ -244,7 +247,7 @@ export default function EnergieClient() {
   }, [selected, isYear, isMax]);
 
   const dateRange = useMemo(() => {
-    if (isMax) return { start: "2015-01-01", end: new Date().toISOString().slice(0, 10) };
+    if (isMax) return { start: "2015-01-01", end: heuteInBerlin() };
     if (isYear) return getYearRange(Number(selected));
     return undefined;
   }, [selected, isYear, isMax]);

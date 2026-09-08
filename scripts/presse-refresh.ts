@@ -33,6 +33,7 @@
  */
 
 import { resolve } from "node:path";
+import { heuteInBerlin } from "../lib/zeit";
 import { readFileSync, existsSync } from "node:fs";
 import { sichtbarerText, entities, hostVon } from "../lib/fachbetrieb-extrakt";
 import {
@@ -177,7 +178,7 @@ async function upsert(
 }
 
 function heute(): string {
-  return new Date().toISOString().slice(0, 10);
+  return heuteInBerlin();
 }
 
 // ─── Setup ───────────────────────────────────────────────────────────────────

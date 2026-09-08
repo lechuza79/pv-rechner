@@ -45,6 +45,7 @@ import { getRegionAtlasData } from "./mastr-data";
 import { getRegionById, atlasPathForRegionId } from "./atlas";
 import { tagMonatJahr } from "./stand-format";
 import { versandzeitOk } from "./versandzeit";
+import { heuteInBerlin } from "./zeit";
 
 export type LaufErgebnis = {
   /** Orte, für die es überhaupt Abonnenten gibt. */
@@ -233,5 +234,8 @@ export async function aboLauf(o: {
  */
 function schonHeuteGeschrieben(abo: GemeindeAbo, jetzt: Date): boolean {
   if (!abo.letzteMailAm) return false;
-  return abo.letzteMailAm.slice(0, 10) === jetzt.toISOString().slice(0, 10);
+  // Der Kalendertag ist der deutsche, nicht der der Weltzeit: Ein Lauf zwischen
+  // 00:00 und 02:00 hielte sonst die Mail von gestern Abend für die von heute
+  // und schwiege — dieselbe Klasse wie beim Einspeise-Stichtag (lib/zeit.ts).
+  return abo.letzteMailAm.slice(0, 10) === heuteInBerlin(jetzt);
 }

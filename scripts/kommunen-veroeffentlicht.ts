@@ -36,6 +36,7 @@
  * niemand anklickt.
  */
 import { resolve, dirname } from "node:path";
+import { heuteInBerlin } from "../lib/zeit";
 import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync } from "node:fs";
 import { notizZeile } from "../lib/outreach-ruecklauf";
@@ -188,7 +189,7 @@ async function main(): Promise<void> {
   for (const t of treffer.values()) {
     if (t.status === "veroeffentlicht") continue;
     const notiz = notizZeile({
-      datum: t.seit || new Date().toISOString().slice(0, 10),
+      datum: t.seit || heuteInBerlin(),
       art: "antwort",
       betreff: `veröffentlicht: ${t.url}`,
       von: domain(t.url),

@@ -26,6 +26,7 @@ import type { AltFeedInRow } from "./feedin-archiv-alt";
 import { FEED_IN_ALT_START, FEED_IN_ARCHIV_ALT, altFeedInRatesFor, blendRoofRate } from "./feedin-archiv-alt";
 import { FREIFLAECHE_AW_CT, freiflaecheHistorieCt, freiflaecheZuschlagHerkunft } from "./freiflaeche-config";
 import { ertragForRegionId } from "./bundesland-ertrag";
+import { heuteInBerlin } from "./zeit";
 import { fmtCtProKwh } from "./atlas-format";
 import { simulateSolarYear } from "./balkon-sim";
 import { referenceMonthKwh } from "./solar-year";
@@ -298,7 +299,10 @@ function jahrgangBasis(jahrgang: number): JahrgangBasis {
   // 20-Jahres-Frist: Die EEG-Zahlung endet am 31.12. des zwanzigsten Jahres
   // (§ 25 EEG, feedInEndIso — dieselbe Quelle wie im Rechner). Danach läuft die
   // Anlage weiter, verkauft ihren Strom aber am Markt.
-  const heute = new Date().toISOString().slice(0, 10);
+  // Deutscher Kalendertag: Das Laufzeit-Ende nach § 25 EEG ist ein deutsches
+  // Datum, und ob eine Anlage noch Vergütung bekommt, entscheidet hier über
+  // Geld (siehe tagInBerlin in lib/zeit.ts).
+  const heute = heuteInBerlin();
   const abgelaufen = feedInEndIso(stichtag) < heute;
 
   // Ein Jahrgang, der die Frist BESTEHT, aber älter ist als unsere älteste

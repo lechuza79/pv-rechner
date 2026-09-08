@@ -4,6 +4,14 @@
 // set. Curated by hand (no machine-readable source exists), each entry carries
 // a `stand` (as-of), `source`, `status` and a `verified` flag. Programs change
 // and budgets run dry mid-year — treat `status` as a point-in-time snapshot.
+//
+// GEFUNDEN, ABER NOCH NICHT HIER: docs/foerder-gefunden-nicht-aufgenommen.md.
+// Dort stehen Programme, die ein Lauf an der Amtsseite selbst gelesen hat und
+// die trotzdem fehlen — jeweils mit dem Grund und dem, was zur Aufnahme fehlt.
+// Wer den Katalog erweitert, sieht zuerst dort nach: Der Wortlaut liegt schon
+// vor, und ein Lauf, der bei null anfängt, sucht dieselben Seiten wieder.
+
+import { heuteInBerlin } from "./zeit";
 
 export type Eligibility = "privat" | "gewerblich";
 
@@ -2305,6 +2313,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Der Antrag wird nach Installation und Registrierung gestellt",
       "Gefördert wird höchstens ein Balkonkraftwerk je Haushalt",
       "Die Anlage muss ab dem 01.01.2024 neu angeschafft worden sein; der Wechselrichter darf höchstens 800 W leisten",
+      // Am 08.09.2026 an der Amtsseite nachgetragen: „Nicht gefördert werden
+      // PV-Anlagen mit einer Modulleistung von mehr als 2.000 Wattpeak."
+      // Die Grenze stand nur beim Wechselrichter, nicht bei den Modulen — wer
+      // drei Module rechnet, überschreitet sie, ohne dass es hier stand.
+      "Die Module leisten zusammen höchstens 2.000 Wp",
       "Die Anlage ist fünf Jahre lang zu betreiben",
     ],
     combinableWith: BUND,
@@ -4405,8 +4418,11 @@ export const FOERDER_BESTAETIGUNG_MAX_TAGE = 14;
 /** So lange darf ein Programm nach einer Seitenänderung ungeprüft mitrechnen. */
 export const FOERDER_NACHPRUEF_FRIST_TAGE = 14;
 
+// Deutscher Kalendertag, nicht Weltzeit: Von hier hängen die 14-Tage-Fristen ab,
+// nach denen ein Programm aufhört mitzurechnen — also Geld. Mit der Weltzeit
+// verfiele ein Beleg zwischen 00:00 und 02:00 deutscher Zeit einen Tag zu spät.
 function heuteIso(): string {
-  return new Date().toISOString().slice(0, 10);
+  return heuteInBerlin();
 }
 
 function tageSeit(iso: string | undefined | null, heute: string): number {

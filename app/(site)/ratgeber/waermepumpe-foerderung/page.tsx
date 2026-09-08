@@ -320,7 +320,9 @@ export default async function WaermepumpeFoerderungPage() {
   // Ausblick unten mitwandert, statt beim ersten Wechsel von einer künftigen
   // Änderung im Präsens zu erzählen, die längst eingetreten ist.
   const NAECHSTE = begNaechsteStufe(new Date());
-  const NACH_NAECHSTE = NAECHSTE ? begNaechsteStufe(new Date(NAECHSTE.abIso)) : undefined;
+  // Der Stichtag der nächsten Stufe ist ein gemeinter TAG und wird als solcher
+  // übergeben — als Zeitpunkt gelesen verschöbe ihn die Umrechnung ein zweites Mal.
+  const NACH_NAECHSTE = NAECHSTE ? begNaechsteStufe(NAECHSTE.abIso) : undefined;
   const gueltigAb = formatFullDate(BEG_ANTRAG_STAND.validFrom);
   const verfahrenGeprueft = formatFullDate(BEG_ANTRAG_STAND.geprueftIso);
 
