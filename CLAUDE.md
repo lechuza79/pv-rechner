@@ -912,6 +912,17 @@ Der Juli-Ausfall ist nicht an einem fehlenden Perf-Fix gescheitert, sondern am *
 
 Vollständige Vorfallsberichte: `docs/lehren/atlas-performance-2026-07.md`.
 
+### Der Bot-Schutz steht scharf — und was ihn trägt (08.09.2026) — BLOCKER
+
+Vercels Bot-Schutz war seit Monaten auf **Beobachten**; seit dem 08.09.2026 stellt er jedem, der sich nicht wie ein Browser verhält, eine Prüfaufgabe. **Verifizierte Suchmaschinen sind davon ausdrücklich ausgenommen** — Google, Bing, OpenAI, Perplexity, Anthropic und Apple prüft Vercel über IP-Bereiche, Rückwärts-DNS und Signaturen; das lässt sich nicht vortäuschen. Nutzer, Google und die zitierenden KI-Crawler merken davon nichts, und das war die Bedingung des Betreibers.
+
+**Der Anlass ist gemessen:** Ein Crawler lief seit dem 01.09. den Adressraum ab und **ignorierte die Crawler-Anweisung** — 14.000 maschinelle Seitenaufbauten am Tag gegen rund 94 menschliche, 1,1 Aufrufe je Adresse. Gegen so einen hilft weder eine Sperre in robots.txt noch längere Haltbarkeit noch Aufwärmen: Er fragt keine Adresse zweimal.
+- **Die Vorarbeit hatte das mit einer falschen Aussage blockiert.** Dort stand, bei den Gemeindeseiten „wäre jede Sperre ein SEO-Schaden, sie sind indexiert und gewollt". Nachgemessen: Von rund 11.000 Gemeindeseiten stehen **306** in der Sitemap, eine beliebige andere trägt „nicht indexieren, nicht folgen". Für 97 % gibt es keinen Schaden zu verhindern.
+- **Drei Ausnahmen mussten VOR dem Scharfstellen stehen**, sonst schaltet man die eigene Überwachung ab: unsere Automatik an ihrer Kennung (Gesundheitscheck, Atlas-Aufwärmer, Vorflug), alle Schnittstellen-Pfade (Cron-Läufe, durch das Cron-Geheimnis ohnehin geschützt), und **robots.txt plus Sitemap für jeden** — wer die nicht lesen kann, crawlt gar nicht mehr richtig.
+- **Die Einstellung liegt bei Vercel, nicht im Repo.** Sie ist in keinem Vergleich der Änderungen sichtbar und in einer Minute still zurückzustellen — dieselbe Klasse wie die Build-Maschine und die Function-Region. Deshalb prüft der Gesundheitscheck bei **jedem** Lauf die WIRKUNG mit drei echten Abrufen (`messeFirewall`/`firewallUrteil`/`firewallBefund`): eigene Kennung muss 200 bekommen, eine fremde eine Prüfaufgabe, die Crawler-Anweisungen müssen jedem antworten. Eine Konfiguration zu lesen sagt nur, was dort steht; diese drei sagen, was ankommt.
+- **Der Wächter musste zweimal gebaut werden, und das ist die eigentliche Lehre.** Die erste Fassung überlebte zwei von drei Sabotagen: Die Prüfung mit fremder Kennung suchte die Zeichenkette *irgendwo* in der Datei (sie stand auch in der robots.txt-Prüfung), und die Ableitung „gilt als abgewiesen" war gar nicht unter Test, weil die Prüfungen den fertigen Befund hereinreichten. Erst nach dem Herausziehen der Ableitung in eine eigene Funktion wurden alle drei rot. **Wer einen Wächter baut, macht ihn absichtlich kaputt — und prüft die ABLEITUNG, nicht nur das fertige Urteil.** Festgenagelt in `lib/__tests__/health-check-firewall.test.ts`.
+- **Der Rückweg ist ein Aufruf:** die verwaltete Regel `bot_protection` über die Firewall-Schnittstelle wieder auf `log`. Die eigenen Ausnahmeregeln können dabei stehen bleiben, sie schaden nicht.
+
 ### Vercel-Kosten
 
 1. **Build-Cache reaktiviert** — `prebuild` räumt `.next/` nur lokal auf (spart 40–60 % Build-Zeit).

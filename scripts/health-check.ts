@@ -146,6 +146,120 @@ async function probe(label: string, path: string): Promise<Probe> {
   return { label, url, status, seconds: (Date.now() - started) / 1000, cache, region };
 }
 
+export type FirewallBefund = {
+  /** Kommt unsere eigene Automatik durch? */
+  eigeneDurch: boolean;
+  /** Wird eine fremde Kennung abgewiesen? */
+  fremdeAbgewiesen: boolean;
+  /** Antworten Crawler-Anweisungen weiterhin jedem? */
+  anweisungenOffen: boolean;
+  statusEigen: number;
+  statusFremd: number;
+  statusRobots: number;
+};
+
+/**
+ * Steht der Bot-Schutz noch scharf — und kommen wir selbst noch durch?
+ *
+ * WARUM DAS HIER GEPRÜFT WIRD UND NICHT IN EINEM TEST: Die Firewall-Regeln
+ * liegen in der Vercel-Projektkonfiguration, nicht im Repo. Sie sind in keinem
+ * Vergleich der Änderungen sichtbar, und jeder mit Projektrechten kann sie
+ * still zurückstellen — dieselbe Klasse wie die Build-Maschine und die
+ * Function-Region. Ein Test im Code kann darüber gar nichts aussagen.
+ *
+ * GEMESSEN WIRD DIE WIRKUNG, NICHT DIE EINSTELLUNG: drei echte Abrufe gegen
+ * die Produktion. Eine Konfiguration zu lesen sagt nur, was dort steht; diese
+ * drei sagen, was ein Besucher, unsere Automatik und ein fremder Crawler
+ * tatsächlich bekommen.
+ *
+ * Scharf gestellt am 08.09.2026, nachdem ein Crawler seit dem 01.09. den
+ * Adressraum ablief und die Crawler-Anweisung ignorierte: 14.000 maschinelle
+ * Seitenaufbauten am Tag gegen rund 94 menschliche.
+ *
+ * DIE DRITTE PRÜFUNG IST DIE UNSCHEINBARSTE UND DIE WICHTIGSTE: Wer robots.txt
+ * und Sitemap nicht mehr lesen kann, crawlt gar nicht mehr richtig — eine
+ * Ausnahme, die dort wegfällt, kostet Sichtbarkeit statt Geld und fällt sonst
+ * erst Wochen später auf.
+ */
+async function messeFirewall(): Promise<FirewallBefund | null> {
+  const ziel = `${BASE_URL}/solar-atlas/hessen/landkreis-schwalm-eder-kreis/melsungen`;
+  const hole = async (url: string, ua: string): Promise<number> => {
+    try {
+      const res = await fetch(url, {
+        redirect: "manual",
+        headers: { "user-agent": ua },
+        signal: AbortSignal.timeout(30000),
+      });
+      await res.arrayBuffer();
+      return res.status;
+    } catch {
+      return 0;
+    }
+  };
+
+  const [statusEigen, statusFremd, statusRobots] = await Promise.all([
+    hole(ziel, "solar-check-health-check"),
+    // Eine Kennung, die weder verifiziert noch bei uns ausgenommen ist.
+    hole(ziel, "fremder-crawler-pruefung/1.0"),
+    hole(`${BASE_URL}/robots.txt`, "fremder-crawler-pruefung/1.0"),
+  ]);
+
+  return firewallUrteil(statusEigen, statusFremd, statusRobots);
+}
+
+/**
+ * Aus drei Antwortcodes wird der Befund. Bewusst als eigene Funktion, damit die
+ * ABLEITUNG prüfbar ist und nicht nur das fertige Ergebnis: Beim Bauen dieses
+ * Wächters (08.09.2026) hat eine Sabotage genau hier — „gilt immer als
+ * abgewiesen" — den Test unberührt gelassen, weil die Prüfungen den Befund
+ * fertig hereinreichten. Ein Wächter, der nichts sieht und trotzdem grün
+ * meldet, ist schlimmer als keiner.
+ */
+export function firewallUrteil(
+  statusEigen: number,
+  statusFremd: number,
+  statusRobots: number,
+): FirewallBefund | null {
+  // Kam gar nichts durch, ist die Produktion das Problem, nicht die Firewall —
+  // das meldet der übrige Gesundheitscheck, und ein Befund hier wäre erfunden.
+  if (statusEigen === 0 && statusFremd === 0 && statusRobots === 0) return null;
+
+  return {
+    statusEigen,
+    statusFremd,
+    statusRobots,
+    eigeneDurch: statusEigen === 200,
+    // 429 ist die Prüfaufgabe. 403 wäre eine harte Abweisung — beides zählt.
+    fremdeAbgewiesen: statusFremd === 429 || statusFremd === 403,
+    anweisungenOffen: statusRobots === 200,
+  };
+}
+
+/** Urteil über den Firewall-Befund. Leer heißt: alles wie gewollt. */
+export function firewallBefund(b: FirewallBefund | null): string[] {
+  if (!b) return [];
+  const raus: string[] = [];
+  if (!b.eigeneDurch) {
+    raus.push(
+      `Unsere eigene Automatik kommt nicht mehr durch die Firewall (Antwort ${b.statusEigen} statt 200). ` +
+        `Damit laufen Gesundheitscheck, Atlas-Aufwärmer und Wächter ins Leere. Ausnahmeregeln prüfen.`,
+    );
+  }
+  if (!b.anweisungenOffen) {
+    raus.push(
+      `Die Crawler-Anweisungen antworten nicht mehr jedem (Antwort ${b.statusRobots} statt 200). ` +
+        `Wer sie nicht lesen kann, crawlt gar nicht mehr richtig — das kostet Sichtbarkeit.`,
+    );
+  }
+  if (!b.fremdeAbgewiesen) {
+    raus.push(
+      `Der Bot-Schutz greift nicht mehr: eine fremde Kennung bekommt ${b.statusFremd} statt einer Prüfaufgabe. ` +
+        `Vermutlich steht er wieder auf Beobachten — die Einstellung liegt bei Vercel, nicht im Code.`,
+    );
+  }
+  return raus;
+}
+
 /** Zufällige Atlas-Pfade aus der DB — ein leichter Read, kein Aggregat.
  *  Zufällig, weil eine feste Seite nach dem ersten Lauf im Cache läge und der
  *  Check dann 0,1 s misst statt des Kaltrenders, den ein echter Erstbesucher zahlt.
@@ -1812,6 +1926,15 @@ async function main() {
         : `Sicherheitsgrenze: ${posture.problems.length} Problem(e).`,
   );
   forClaude.push(...sicherheitsBefund(posture));
+
+  // ── Steht der Bot-Schutz noch scharf, und kommen wir selbst durch? ────────
+  const firewall = await messeFirewall();
+  lines.push(
+    firewall === null
+      ? "Firewall: nicht messbar (Produktion antwortete gar nicht)."
+      : `Firewall: eigene Abrufe ${firewall.statusEigen}, fremde Kennung ${firewall.statusFremd}, Crawler-Anweisungen ${firewall.statusRobots}.`,
+  );
+  forClaude.push(...firewallBefund(firewall));
 
   // ── Kann die Produktion Abo-Mails verschicken? ────────────────────────────
   const aboBereit = await messeAboBereit();
