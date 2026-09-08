@@ -11,6 +11,8 @@
 // Wer den Katalog erweitert, sieht zuerst dort nach: Der Wortlaut liegt schon
 // vor, und ein Lauf, der bei null anfängt, sucht dieselben Seiten wieder.
 
+import { heuteInBerlin } from "./zeit";
+
 export type Eligibility = "privat" | "gewerblich";
 
 /**
@@ -4416,8 +4418,11 @@ export const FOERDER_BESTAETIGUNG_MAX_TAGE = 14;
 /** So lange darf ein Programm nach einer Seitenänderung ungeprüft mitrechnen. */
 export const FOERDER_NACHPRUEF_FRIST_TAGE = 14;
 
+// Deutscher Kalendertag, nicht Weltzeit: Von hier hängen die 14-Tage-Fristen ab,
+// nach denen ein Programm aufhört mitzurechnen — also Geld. Mit der Weltzeit
+// verfiele ein Beleg zwischen 00:00 und 02:00 deutscher Zeit einen Tag zu spät.
 function heuteIso(): string {
-  return new Date().toISOString().slice(0, 10);
+  return heuteInBerlin();
 }
 
 function tageSeit(iso: string | undefined | null, heute: string): number {

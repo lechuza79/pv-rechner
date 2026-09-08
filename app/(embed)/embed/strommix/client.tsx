@@ -22,6 +22,9 @@ import { useChartExport } from "../../../../lib/useChartExport";
 import { useGenerationMix, useNuclearImport } from "../../../../lib/energy";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
 import { iconSizes, v } from "../../../../lib/theme";
+// Das Ende eines Datenbereichs ist ein deutscher Kalendertag — mit der Weltzeit
+// fehlten zwischen 00:00 und 02:00 die letzten Stunden (lib/zeit.ts).
+import { heuteInBerlin } from "../../../../lib/zeit";
 import {
   WIDGET_SETTINGS_DEFAULTS,
   WidgetSettings,
@@ -70,7 +73,7 @@ function getYearRange(year: number): { start: string; end: string } {
   const currentYear = new Date().getFullYear();
   const end =
     year === currentYear
-      ? new Date().toISOString().slice(0, 10)
+      ? heuteInBerlin()
       : `${year}-12-31`;
   return { start: `${year}-01-01`, end };
 }

@@ -41,6 +41,7 @@
  */
 
 import { RATGEBER } from "./ratgeber";
+import { heuteInBerlin } from "./zeit";
 
 /** Wie weit ein Vorhaben ist. */
 export type ArtikelZustand = "geplant" | "in-arbeit" | "live" | "verworfen";
@@ -508,7 +509,9 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
  */
 export function ueberfaellig(v: ArtikelVorhaben, heute = new Date()): boolean {
   if (!v.ziel || v.zustand === "live" || v.zustand === "verworfen") return false;
-  return v.ziel < heute.toISOString().slice(0, 10);
+  // Deutscher Kalendertag: Ein Termin ist bis zum Ende SEINES Tages eingehalten,
+  // und dieser Tag endet um Mitternacht deutscher Zeit (siehe lib/zeit.ts).
+  return v.ziel < heuteInBerlin(heute);
 }
 
 /** Vorhaben, an denen gearbeitet werden kann — in der Reihenfolge des Plans. */

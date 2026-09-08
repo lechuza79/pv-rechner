@@ -506,7 +506,7 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
           from: konfig.from,
           to: an,
           replyTo: konfig.replyTo,
-          subject: `[ZUSTELLPROBE ${new Date().toISOString().slice(0, 10)}] ${letzterBrief.subject}`,
+          subject: `[ZUSTELLPROBE ${heuteInBerlin()}] ${letzterBrief.subject}`,
           text:
             `Zustellungsprobe zum Schub ${p.kampagne}, Charge ${p.charge}, ${raus} Mails an diesem Tag.\n` +
             `Bitte nachsehen: Posteingang oder Spam? Der Text darunter ist der echte Brief.\n\n` +

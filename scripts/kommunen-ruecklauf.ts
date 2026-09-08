@@ -31,6 +31,7 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync } from "node:fs";
 import { ordneEin, notizZeile, notizMitText, STATUS_ZU_ART, type Ruecklaufart, type RohMail } from "../lib/outreach-ruecklauf";
+import { heuteInBerlin } from "../lib/zeit";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -206,7 +207,9 @@ async function main(): Promise<void> {
         art,
         von,
         betreff,
-        datum: (msg.envelope?.date ?? new Date()).toISOString().slice(0, 10),
+        // Deutscher Kalendertag — der Tag, an dem die Antwort hier ankam, wird
+        // von Menschen in Deutschland gelesen (siehe lib/zeit.ts).
+        datum: heuteInBerlin(msg.envelope?.date ?? new Date()),
         region_id: treffer.length === 1 ? treffer[0].region_id : null,
         name: treffer.length === 1 ? treffer[0].name : null,
         text,

@@ -13,6 +13,7 @@ import { DEFAULT_AIRCON_CONFIG } from "../../../lib/aircon-config";
 import { FUEL } from "../../../lib/constants";
 import { eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
 import { pageMetadata } from "../../../lib/seo";
+import { heuteInBerlin } from "../../../lib/zeit";
 
 export const metadata: Metadata = pageMetadata({
   path: "/methodik",
@@ -103,7 +104,7 @@ async function fetchPrices(): Promise<PriceConfig> {
       .select("*")
       .neq("source", "SCRAPE_ERROR")
       .gt("pv_price_small", 0)
-      .lte("valid_from", new Date().toISOString().split("T")[0])
+      .lte("valid_from", heuteInBerlin())
       .order("valid_from", { ascending: false })
       .limit(1)
       .single();

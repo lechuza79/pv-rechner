@@ -18,6 +18,7 @@ import { versandfenster } from "../lib/schulferien";
 import { SCHUEBE, AKTUELLER_SCHUB } from "../lib/kommunen-testballon";
 import { OUTREACH_STATUS_LABEL, istUnbeantwortet, UNBEANTWORTET_TAGE } from "../lib/outreach-status";
 import { liesNotiz } from "../lib/outreach-ruecklauf";
+import { heuteInBerlin } from "../lib/zeit";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -136,7 +137,9 @@ async function main(): Promise<void> {
   log(`Offen: ${offeneSchuebe.join(", ")}`);
   // Beispielhaft für Hessen geprüft; die Ferien gelten je Bundesland, der
   // Versand prüft sie je Gemeinde selbst.
-  const heuteIso = jetzt.toISOString().slice(0, 10);
+  // Deutscher Kalendertag: Schulferien und Feiertage sind deutsche Daten (siehe
+  // lib/zeit.ts) — mit der Weltzeit fiele die Auskunft nachts auf den Vortag.
+  const heuteIso = heuteInBerlin(jetzt);
   const fenster = versandfenster("06", heuteIso);
   log(
     fenster.frei ? "Heute darf gesendet werden (Beispiel Hessen)." : `Heute nicht: ${fenster.grund}`,

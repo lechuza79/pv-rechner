@@ -4,6 +4,9 @@ import { v } from "../../../../lib/theme";
 import { DEFAULT_PRICES } from "../../../../lib/prices-config";
 import { DEFAULT_FEED_IN } from "../../../../lib/feedin-config";
 import { estimateCost } from "../../../../lib/calc";
+// Der Gültigkeitsbeginn ist ein deutsches Datum — die Voreinstellung „heute"
+// kommt deshalb aus der deutschen Uhr, nicht aus der Weltzeit (lib/zeit.ts).
+import { heuteInBerlin } from "../../../../lib/zeit";
 
 interface PriceRow {
   id: string;
@@ -66,7 +69,7 @@ export default function PricesClient({ history, feedInHistory = [] }: { history:
   const [battKwh, setBattKwh] = useState(current?.battery_per_kwh ?? DEFAULT_PRICES.batteryPerKwh);
   const [elecPrice, setElecPrice] = useState(current?.electricity_price ?? DEFAULT_PRICES.electricityPrice);
   const [elecIncrease, setElecIncrease] = useState(current?.electricity_increase ?? DEFAULT_PRICES.electricityIncrease);
-  const [validFrom, setValidFrom] = useState(new Date().toISOString().split("T")[0]);
+  const [validFrom, setValidFrom] = useState(heuteInBerlin());
   const [source, setSource] = useState("");
   const [notes, setNotes] = useState("");
   const [status, setStatus] = useState<"idle" | "saving" | "success" | "error">("idle");
@@ -133,7 +136,7 @@ export default function PricesClient({ history, feedInHistory = [] }: { history:
   const [fiTeilO, setFiTeilO] = useState(currentFeedIn?.teil_over_10 ?? DEFAULT_FEED_IN.teilOver10);
   const [fiVollU, setFiVollU] = useState(currentFeedIn?.voll_under_10 ?? DEFAULT_FEED_IN.vollUnder10);
   const [fiVollO, setFiVollO] = useState(currentFeedIn?.voll_over_10 ?? DEFAULT_FEED_IN.vollOver10);
-  const [fiValidFrom, setFiValidFrom] = useState(new Date().toISOString().split("T")[0]);
+  const [fiValidFrom, setFiValidFrom] = useState(heuteInBerlin());
   const [fiSource, setFiSource] = useState("");
   const [fiNotes, setFiNotes] = useState("");
   const [fiStatus, setFiStatus] = useState<"idle" | "saving" | "success" | "error">("idle");

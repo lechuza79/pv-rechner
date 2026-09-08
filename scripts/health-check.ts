@@ -27,6 +27,7 @@
  */
 
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { heuteInBerlin } from "../lib/zeit";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { DB_READ_TIMEOUT_MS } from "../lib/db-timeout";
@@ -1965,7 +1966,7 @@ async function main() {
   //
   // Der Aufruf braucht weder Netz noch Datenbank — er liest nur Konstanten aus
   // dem Code. Er kann diesen Lauf also nicht zum Kippen bringen.
-  const heuteIso = new Date().toISOString().slice(0, 10);
+  const heuteIso = heuteInBerlin();
   const offen = faelligkeiten(heuteIso);
   lines.push(
     `Prüfstand: ${PRUEFSTAND.length} Werte, ${offen.length} überfällig` +
