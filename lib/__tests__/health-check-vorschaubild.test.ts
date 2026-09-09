@@ -74,6 +74,21 @@ describe("Vorschaubild", () => {
     expect(vorschaubildBefund({ status: 500, bytes: 0, png: false, breite: null })[0]).toMatch(/500 statt 200/);
   });
 
+  it("die Crawler-Anweisungen sperren den Bildpfad nicht", () => {
+    // Der Pfad war bis zum 09.09.2026 gesperrt, begründet mit „Social scrapers
+    // ignore robots.txt". Metas eigene Crawler-Dokumentation sagt das
+    // Gegenteil, und Vercels Anleitung zum Vorschaubild empfiehlt
+    // ausdrücklich, ihn offen zu lassen. Eine Sperre hier nimmt genau den
+    // Diensten das Bild, für die es gebaut ist — und man sieht es nie im Code,
+    // sondern nur an einer Vorschau, die keiner meldet.
+    const robots = readFileSync(join(process.cwd(), "app/robots.ts"), "utf8");
+    const code = robots
+      .split("\n")
+      .filter((z) => !z.trim().startsWith("//"))
+      .join("\n");
+    expect(code).not.toMatch(/disallow[^\n]*\/api\/og/i);
+  });
+
   it("der Gesundheitscheck ruft die Messung wirklich auf", () => {
     // Geprüft wird die VERWENDUNG, nicht das Vorhandensein: Eine Messung, die
     // niemand aufruft, ist von keiner nicht zu unterscheiden.
