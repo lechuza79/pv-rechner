@@ -6,6 +6,7 @@ import { FundingStatusBadge, FUNDING_STATUS_NOTE } from "../../../../components/
 import { IconArrowRight, IconExternal } from "../../../../components/Icons";
 import { getFundingPrograms } from "../../../../lib/funding-data";
 import {
+  foerdergebiete,
   fundingAmount,
   fundingStandLabel,
   fundingZaehlt,
@@ -136,11 +137,15 @@ export default async function BalkonFoerderungPage() {
   // eine Postleitzahl zu setzen hieße, einen Standort zu erfinden.
   const plzFuer = new Map<string, string>();
   for (const p of programme) {
-    if (p.level !== "kommune" || !p.agsCode) continue;
-    const schluessel = p.agsCode.length === 5 ? `${p.agsCode}000` : p.agsCode;
-    if (schluessel.length !== 8) continue;
-    const geo = await gemeindeGeo(schluessel);
-    if (geo?.plz) plzFuer.set(p.id, geo.plz);
+    if (p.level !== "kommune") continue;
+    // Ein Verbandsgemeinde-Programm trägt mehrere Fördergebiete; für den
+    // Rechner-Link genügt der erste Ort, an dem es gilt.
+    for (const gebiet of foerdergebiete(p)) {
+      const schluessel = gebiet.length === 5 ? `${gebiet}000` : gebiet;
+      if (schluessel.length !== 8) continue;
+      const geo = await gemeindeGeo(schluessel);
+      if (geo?.plz) { plzFuer.set(p.id, geo.plz); break; }
+    }
   }
 
   return (
