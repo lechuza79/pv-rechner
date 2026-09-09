@@ -74,13 +74,191 @@ const OHNE_BUDGET_MIT_GRUND: { muster: RegExp; grund: string }[] = [
 ];
 
 /**
+ * Zeichenketten, Vorlagen-Literale und Kommentare neutralisieren.
+ *
+ * Die Prüfung unten zählt Klammern, und eine Klammer in einem Text ist keine.
+ * Konkret im Bestand: `` `awards: ${table} ab ${from}` `` trägt zwei geschweifte
+ * Klammerpaare, die mit dem Aufbau des Codes nichts zu tun haben. Ersetzt wird
+ * zeichengleich (Zeilenumbrüche bleiben), damit jede Fundstelle weiterhin ihre
+ * echte Zeilennummer trägt.
+ */
+function maskiere(quelle: string): string {
+  const out = quelle.split("");
+  const n = quelle.length;
+  const leeren = (von: number, bis: number) => {
+    for (let k = von; k < Math.min(bis, n); k++) if (out[k] !== "\n") out[k] = " ";
+  };
+  let i = 0;
+  while (i < n) {
+    const c = quelle[i];
+    const zwei = quelle.slice(i, i + 2);
+    if (zwei === "//") {
+      const j = quelle.indexOf("\n", i);
+      leeren(i, j < 0 ? n : j);
+      i = j < 0 ? n : j;
+      continue;
+    }
+    if (zwei === "/*") {
+      const j = quelle.indexOf("*/", i + 2);
+      const ende = j < 0 ? n : j + 2;
+      leeren(i, ende);
+      i = ende;
+      continue;
+    }
+    if (c === '"' || c === "'") {
+      let j = i + 1;
+      while (j < n && quelle[j] !== c && quelle[j] !== "\n") {
+        if (quelle[j] === "\\") j++;
+        j++;
+      }
+      leeren(i, j + 1);
+      i = j + 1;
+      continue;
+    }
+    if (c === "`") {
+      // Samt Einsetzungen `${…}` — sonst verschieben deren Klammern die Bilanz.
+      let j = i + 1;
+      let tiefe = 0;
+      while (j < n) {
+        if (quelle[j] === "\\") {
+          j += 2;
+          continue;
+        }
+        if (quelle.slice(j, j + 2) === "${") {
+          tiefe++;
+          j += 2;
+          continue;
+        }
+        if (quelle[j] === "}" && tiefe > 0) {
+          tiefe--;
+          j++;
+          continue;
+        }
+        if (quelle[j] === "`" && tiefe === 0) break;
+        j++;
+      }
+      leeren(i, j + 1);
+      i = j + 1;
+      continue;
+    }
+    i++;
+  }
+  return out.join("");
+}
+
+const KLAMMER_AUF = "([{";
+const KLAMMER_ZU = ")]}";
+
+/** Der Bezeichner unmittelbar vor Position `i` — der Name des Aufrufs davor. */
+function bezeichnerVor(code: string, i: number): string {
+  let j = i - 1;
+  while (j >= 0 && /\s/.test(code[j])) j--;
+  const ende = j + 1;
+  while (j >= 0 && /[A-Za-z0-9_$]/.test(code[j])) j--;
+  return code.slice(j + 1, ende);
+}
+
+/**
+ * Steht dieser Zugriff SYNTAKTISCH innerhalb eines `withDbTimeout(…)`?
+ *
+ * Von der Fundstelle aus nach außen: jede Klammer, die sich nicht schließt, ist
+ * eine, die den Fund umschließt. Trägt eine davon `withDbTimeout` als Aufruf vor
+ * sich, läuft der Zugriff durch das Zeitbudget — auch verschachtelt, etwa in
+ * einem `Promise.all([…])`. Ein Semikolon oder der Anfang des Blocks beendet die
+ * Suche: weiter draußen steht eine ANDERE Anweisung.
+ *
+ * Genau das ist der Unterschied zum früheren Zeilenfenster (−4 bis +8): Standen
+ * zwei Zugriffe dicht hintereinander und hatte nur der zweite ein Budget, sah
+ * das Fenster dessen `withDbTimeout` und sprach den ersten frei. Am 09.09.2026
+ * in `auszeichnungsStand()` nachgestellt — die Notbremse war weg, der Wächter
+ * blieb grün.
+ */
+function imBudget(code: string, fund: number): boolean {
+  let tiefe = 0;
+  for (let i = fund - 1; i >= 0; i--) {
+    const c = code[i];
+    if (KLAMMER_ZU.includes(c)) {
+      tiefe++;
+      continue;
+    }
+    if (KLAMMER_AUF.includes(c)) {
+      if (tiefe > 0) {
+        tiefe--;
+        continue;
+      }
+      // Eine Klammer, die sich nicht schließt: Sie umschließt den Fund.
+      if (c === "{") return false; // Blockanfang — hier endet die Anweisung.
+      if (bezeichnerVor(code, i) === "withDbTimeout") return true;
+      continue; // weiter nach außen
+    }
+    if (c === ";" && tiefe === 0) return false;
+  }
+  return false;
+}
+
+/** Anfang des umschließenden Blocks (`{`), oder −1. */
+function blockAnfang(code: string, fund: number): number {
+  let tiefe = 0;
+  for (let i = fund - 1; i >= 0; i--) {
+    const c = code[i];
+    if (KLAMMER_ZU.includes(c)) tiefe++;
+    else if (KLAMMER_AUF.includes(c)) {
+      if (tiefe > 0) tiefe--;
+      else if (c === "{") return i;
+    }
+  }
+  return -1;
+}
+
+/** Ende des Blocks, der bei `anfang` beginnt. */
+function blockEnde(code: string, anfang: number): number {
+  let tiefe = 0;
+  for (let i = anfang; i < code.length; i++) {
+    const c = code[i];
+    if (KLAMMER_AUF.includes(c)) tiefe++;
+    else if (KLAMMER_ZU.includes(c)) {
+      tiefe--;
+      if (tiefe === 0) return i;
+    }
+  }
+  return code.length;
+}
+
+/**
+ * Die Bauform „Abfrage erst in einer Variablen bauen, dann übergeben".
+ *
+ * So arbeitet die Seitenschleife der Award-Daten: `let q = supabase.from(…)`,
+ * danach ein `refine(q)`, und erst dann `withDbTimeout(q, …)`. Das Budget steht
+ * zwangsläufig NACH dem Zugriff, und zwar durch eine beliebige Zahl von Zeilen
+ * getrennt — ein Fenster fester Größe kann diese Form nicht sauber von einer
+ * echten Lücke trennen, ein Blick auf die Variable schon: Verlangt wird, dass
+ * genau die Variable, in der die Abfrage steht, im selben Block als erstes
+ * Argument an `withDbTimeout` geht.
+ */
+function ueberVariableImBudget(code: string, fund: number): boolean {
+  // Kopf der Anweisung: bis zur nächsten Grenze zurück.
+  let start = 0;
+  for (let i = fund - 1; i >= 0; i--) {
+    if (";{}".includes(code[i])) {
+      start = i + 1;
+      break;
+    }
+  }
+  const kopf = code.slice(start, fund);
+  const zuweisung = /(?:^|[(,\s])(?:const|let|var)?\s*([A-Za-z_$][\w$]*)\s*=\s*(?:await\s+)?$/.exec(kopf);
+  if (!zuweisung) return false;
+  const name = zuweisung[1];
+  const anfang = blockAnfang(code, fund);
+  const ende = anfang < 0 ? code.length : blockEnde(code, anfang);
+  const bereich = code.slice(fund, ende);
+  return new RegExp(`withDbTimeout\\s*\\(\\s*${name}\\s*[,)]`).test(bereich);
+}
+
+/**
  * Ein Aufruf auf dem Client (`supabase.auth.…`) oder eine Zeile, die nur den
  * Client durchreicht, ist kein Read. Erkannt wird der Read an `.from(`.
  */
 function readsOhneBudget(quelle: string): string[] {
-  const zeilen = quelle.split("\n");
-  const treffer: string[] = [];
-
   // Über den GANZEN Quelltext suchen, nicht Zeile für Zeile: Ein umbrochener
   // Aufruf trägt `supabase` und `.from(` auf verschiedenen Zeilen, und genau
   // diese Bauform ist im Projekt die häufigste. Die erste Fassung dieses Tests
@@ -88,18 +266,16 @@ function readsOhneBudget(quelle: string): string[] {
   // nicht und blieb grün, als zur Probe eine Notbremse entfernt wurde. Ein
   // Wächter, der die eigene Gegenprobe besteht, ohne etwas zu sehen, ist
   // schlimmer als keiner.
-  const muster = /\bsupabase\s*\.from\s*\(/g;
-  for (const fund of quelle.matchAll(muster)) {
-    const zeilenNr = quelle.slice(0, fund.index).split("\n").length;
-    const i = zeilenNr - 1;
-    // Das Zeitbudget steht je nach Bauform an drei Stellen: in derselben Zeile,
-    // darüber (umbrochener Aufruf) oder darunter (die Abfrage wird erst in
-    // einer Variablen gebaut und dann übergeben — so in den beiden
-    // Seitenschleifen). Das Fenster ist bewusst großzügig: Der Test soll die
-    // fehlende Notbremse finden, nicht die Formatierung vorschreiben.
-    const fenster = zeilen.slice(Math.max(0, i - 4), i + 8).join("\n");
-    if (fenster.includes("withDbTimeout")) continue;
-    const zeile = zeilen[i] ?? "";
+  const code = maskiere(quelle);
+  const zeilen = quelle.split("\n");
+  const treffer: string[] = [];
+
+  for (const fund of code.matchAll(/\bsupabase\s*\.\s*from\s*\(/g)) {
+    const at = fund.index;
+    if (imBudget(code, at)) continue;
+    if (ueberVariableImBudget(code, at)) continue;
+    const zeilenNr = code.slice(0, at).split("\n").length;
+    const zeile = zeilen[zeilenNr - 1] ?? "";
     if (OHNE_BUDGET_MIT_GRUND.some((a) => a.muster.test(zeile))) continue;
     treffer.push(`Zeile ${zeilenNr}: ${zeile.trim()}`);
   }
@@ -153,5 +329,104 @@ describe("Notbremse für Datenbank-Reads", () => {
     // Und die Pause muss aufhebbar sein, sonst zeigt das Cockpit nach einem
     // Resync bis zu einer halben Minute den alten Stand.
     expect(quelle).toMatch(/invalidateFundingCache[\s\S]{0,200}fehlerBis\s*=\s*0/);
+  });
+});
+
+/**
+ * Die Prüfung selbst unter Test.
+ *
+ * Der Wächter oben liest echte Dateien, und die sind alle in Ordnung — ein Lauf
+ * über sie sagt deshalb nur „nichts gefunden", nie „ich kann etwas finden".
+ * Diese Fälle prüfen die ABLEITUNG: was die Prüfung als geschützt durchlässt und
+ * was sie meldet. Ohne sie wäre der Wächter genau die Sorte, gegen die es ihn
+ * gibt — einer, der grün meldet, ohne hinzusehen.
+ */
+describe("die Prüfung selbst", () => {
+  it("lässt den umschlossenen Aufruf durch", () => {
+    const q = `async function f() {
+  const { data } = await withDbTimeout(
+    supabase.from("a").select("*").maybeSingle(),
+    "a",
+  );
+}`;
+    expect(readsOhneBudget(q)).toEqual([]);
+  });
+
+  it("meldet den ungeschützten Zugriff, auch wenn der NÄCHSTE ein Budget hat", () => {
+    // Die gemessene Lücke (09.09.2026): Das frühere Zeilenfenster sah das
+    // `withDbTimeout` des zweiten Zugriffs und sprach den ersten frei.
+    const q = `async function f() {
+  const { count } = await supabase
+    .from("a")
+    .select("id", { count: "exact", head: true });
+  const { data } = await withDbTimeout(
+    supabase.from("a").select("erneuert_am").limit(1).maybeSingle(),
+    "a",
+  );
+}`;
+    const offen = readsOhneBudget(q);
+    expect(offen).toHaveLength(1);
+    expect(offen[0]).toMatch(/const \{ count \}/);
+  });
+
+  it("lässt die Bauform Abfrage-in-Variable-bauen-dann-übergeben durch", () => {
+    const q = `async function f() {
+  for (let from = 0; ; from += size) {
+    let q = supabase.from(table).select(select).range(from, from + size - 1);
+    if (refine) q = refine(q);
+    const { data, error } = await withDbTimeout(q, "x");
+  }
+}`;
+    expect(readsOhneBudget(q)).toEqual([]);
+  });
+
+  it("meldet eine Variable, die NICHT an das Zeitbudget geht", () => {
+    // Auch hier stünde ein `withDbTimeout` in Sichtweite — es gehört nur zu
+    // einer anderen Abfrage. Der Unterschied ist die Variable, nicht die Nähe.
+    const q = `async function f() {
+  let q = supabase.from("a").select("*");
+  const r = await q;
+  const { data } = await withDbTimeout(supabase.from("b").select("*"), "b");
+}`;
+    const offen = readsOhneBudget(q);
+    expect(offen).toHaveLength(1);
+    expect(offen[0]).toMatch(/let q = supabase/);
+  });
+
+  it("erkennt das Budget auch verschachtelt, etwa in einem Promise.all", () => {
+    const q = `async function f() {
+  const [a, b] = await Promise.all([
+    withDbTimeout(supabase.from("a").select("*"), "a"),
+    withDbTimeout(supabase.from("b").select("*"), "b"),
+  ]);
+}`;
+    expect(readsOhneBudget(q)).toEqual([]);
+  });
+
+  it("lässt sich von Klammern in Texten nicht täuschen", () => {
+    // Die Klammer in der Vorlage gehört zu keinem Aufruf. Zählte sie mit, wäre
+    // die Bilanz ab hier verschoben und das Urteil über alles Folgende Zufall.
+    const q = `async function f() {
+  const { d1 } = await withDbTimeout(supabase.from(t).select(s), \`a \${x}) b\`);
+  const { d2 } = await supabase.from("b").select("*");
+}`;
+    const offen = readsOhneBudget(q);
+    expect(offen).toHaveLength(1);
+    expect(offen[0]).toMatch(/const \{ d2 \}/);
+  });
+
+  it.each(LESEPFADE)("%s bleibt nach dem Neutralisieren klammer-ausgeglichen", (pfad) => {
+    // Der Wächter urteilt über Klammern. Geht die Bilanz nicht auf — etwa weil
+    // ein künftiger regulärer Ausdruck eine einzelne Klammer trägt —, ist jedes
+    // Urteil danach Zufall. Dann soll er rot werden statt still danebenzuliegen.
+    const code = maskiere(readFileSync(join(ROOT, pfad), "utf8"));
+    let tiefe = 0;
+    let tiefstand = 0;
+    for (const c of code) {
+      if (KLAMMER_AUF.includes(c)) tiefe++;
+      else if (KLAMMER_ZU.includes(c)) tiefe--;
+      tiefstand = Math.min(tiefstand, tiefe);
+    }
+    expect({ pfad, tiefe, tiefstand }).toEqual({ pfad, tiefe: 0, tiefstand: 0 });
   });
 });
