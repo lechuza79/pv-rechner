@@ -124,7 +124,15 @@ async function main(): Promise<void> {
       return;
     }
 
-    const fp = markiert("live", fingerprintOf(html));
+    const abdruck = fingerprintOf(html);
+    if (!abdruck) {
+      // Antwort ohne Substanz — Hülle, Fehlerseite, Bot-Prüfung. Zählt wie ein
+      // gescheiterter Abruf: Ein Abdruck über nichts wäre stabil und meldete
+      // für immer „unverändert", während wir die Seite nie gelesen haben.
+      unerreichbar++;
+      return;
+    }
+    const fp = markiert("live", abdruck);
     if (!z.fingerprint) {
       neu++;
       await sb.from("funding_coverage").update({ fingerprint: fp, seite_gesehen_am: jetzt }).eq("region_id", z.region_id);
