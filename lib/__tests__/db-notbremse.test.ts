@@ -50,6 +50,30 @@ const LESEPFADE = [
 ];
 
 /**
+ * Benannte Ausnahmen: Zugriffe, die BEWUSST ohne Zeitbudget laufen.
+ *
+ * Der Grund ist immer derselbe und muss immer geprüft werden: Der Zugriff liegt
+ * NICHT im Anfrageweg eines Besuchers, sondern in einem Lauf, der absichtlich
+ * lange dauern darf. Ein Budget wäre dort keine Notbremse, sondern ein
+ * Abbruch mitten in der Arbeit.
+ *
+ * Wer hier etwas einträgt, schreibt den Grund dazu — und prüft ihn, statt ihn
+ * abzuschreiben. Eine Ausnahmeliste ohne geprüfte Gründe ist die bequemste Art,
+ * einen Wächter abzuschalten.
+ */
+const OHNE_BUDGET_MIT_GRUND: { muster: RegExp; grund: string }[] = [
+  {
+    // Der Aufbau der Auszeichnungs-Liste läuft im Atlas-Datenlauf (monatlich,
+    // über die Revalidate-Route), nicht im Seitenaufbau. Er schreibt 4.596
+    // Zeilen in Blöcken; ein Zeitbudget würde ihn mitten im Schreiben abbrechen
+    // und die Liste halb leer zurücklassen — genau der Zustand, den die
+    // Reihenfolge „erst schreiben, dann aufräumen" verhindern soll.
+    muster: /from\("atlas_auszeichnungen"\)\.(upsert|delete)\(/,
+    grund: "Aufbau im Datenlauf, nicht im Seitenaufbau",
+  },
+];
+
+/**
  * Ein Aufruf auf dem Client (`supabase.auth.…`) oder eine Zeile, die nur den
  * Client durchreicht, ist kein Read. Erkannt wird der Read an `.from(`.
  */
@@ -75,7 +99,9 @@ function readsOhneBudget(quelle: string): string[] {
     // fehlende Notbremse finden, nicht die Formatierung vorschreiben.
     const fenster = zeilen.slice(Math.max(0, i - 4), i + 8).join("\n");
     if (fenster.includes("withDbTimeout")) continue;
-    treffer.push(`Zeile ${zeilenNr}: ${zeilen[i]?.trim()}`);
+    const zeile = zeilen[i] ?? "";
+    if (OHNE_BUDGET_MIT_GRUND.some((a) => a.muster.test(zeile))) continue;
+    treffer.push(`Zeile ${zeilenNr}: ${zeile.trim()}`);
   }
 
   return treffer;

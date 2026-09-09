@@ -718,6 +718,51 @@ export type MastrFrische = { importedAt: string; alterTage: number; urteil: "gru
 //                   sichtbar geworden, also beim nächsten Lauf noch einmal.
 //
 // Reine Funktion mit hereingereichten Listen — sie soll ohne Netz prüfbar sein.
+
+/** Wie alt darf die vorberechnete Auszeichnungs-Liste sein? Der Datenlauf ist
+ *  monatlich; 45 Tage lassen einen verspäteten Lauf durch und schlagen an,
+ *  wenn zwei ausgefallen sind. */
+export const AUSZEICHNUNGEN_MAX_ALTER_TAGE = 45;
+
+/**
+ * Urteil über die vorberechnete Auszeichnungs-Liste.
+ *
+ * Sie ersetzt seit 09.09.2026 eine Berechnung, die 3,7 s im Seitenaufbau
+ * gekostet hat. Fällt sie aus, ist NICHTS kaputt — die Seiten funktionieren
+ * weiter, nur ohne Platzhalter für die Auszeichnungs-Kachel, und der Inhalt
+ * springt dann beim Nachladen. Genau deshalb muss jemand hinsehen: Ein Ausfall
+ * ist von außen unsichtbar.
+ */
+export function auszeichnungsUrteil(
+  stand: { orte: number; erneuertAm: string | null } | null,
+  jetzt: Date = new Date(),
+): { text: string; befund: string | null } {
+  if (!stand) return { text: "Auszeichnungen: nicht abrufbar.", befund: null };
+  if (stand.orte === 0) {
+    return {
+      text: "Auszeichnungen: Liste LEER.",
+      befund:
+        "Die vorberechnete Liste der ausgezeichneten Orte ist leer. Damit zeigt keine Gemeindeseite mehr einen " +
+        "Platzhalter für die Auszeichnungs-Kachel, und der Inhalt springt beim Nachladen. Von außen ist das " +
+        "unsichtbar — die Seiten antworten normal. Neu aufbauen lässt sie der Atlas-Datenlauf.",
+    };
+  }
+  const alterTage = stand.erneuertAm
+    ? Math.floor((jetzt.getTime() - Date.parse(stand.erneuertAm)) / 86400000)
+    : null;
+  const text = `Auszeichnungen: ${stand.orte} Orte vorberechnet${alterTage === null ? "" : `, ${alterTage} Tage alt`}.`;
+  if (alterTage !== null && alterTage > AUSZEICHNUNGEN_MAX_ALTER_TAGE) {
+    return {
+      text,
+      befund:
+        `Die vorberechnete Liste der ausgezeichneten Orte ist ${alterTage} Tage alt (erlaubt: ` +
+        `${AUSZEICHNUNGEN_MAX_ALTER_TAGE}). Der Atlas-Datenlauf baut sie monatlich neu — sind zwei ausgefallen, ` +
+        "stehen dort Auszeichnungen von vorletztem Monat. Nachsehen, ob der Datenlauf noch läuft.",
+    };
+  }
+  return { text, befund: null };
+}
+
 export function spaltenAbgleich(
   geschrieben: Record<string, unknown>,
   vorhandeneSpalten: readonly string[],
@@ -2055,6 +2100,20 @@ async function main() {
           `steht, welcher der beiden Fälle vorliegt.`,
       );
     }
+  }
+
+  // ── Steht die vorberechnete Auszeichnungs-Liste? ─────────────────────────
+  {
+    let stand: { orte: number; erneuertAm: string | null } | null = null;
+    try {
+      const { auszeichnungsStand } = await import("../lib/awards-server");
+      stand = await auszeichnungsStand();
+    } catch {
+      stand = null;
+    }
+    const urteil = auszeichnungsUrteil(stand);
+    lines.push(urteil.text);
+    if (urteil.befund) forClaude.push(urteil.befund);
   }
 
   // ── Schreibt der Code in Spalten, die es gibt? ────────────────────────────
