@@ -120,6 +120,63 @@ async function main(): Promise<void> {
     }
   }
 
+  // ─── Was daraus geworden ist ────────────────────────────────────────────────
+  //
+  // WARUM DIESER ABSCHNITT (09.09.2026): Die Wirkung des Outreach lag in drei
+  // getrennten Quellen — Status hier, Besucherstatistik dort, Abos in einer
+  // dritten Tabelle —, und niemand führte sie zusammen. Wer nur die
+  // Besucherstatistik las, meldete „drei Veröffentlichungen, sonst nichts",
+  // während 22 Rückmeldungen im Postfach lagen und Abos bestanden. Eine
+  // Auswertung aus einer Quelle ist keine Auswertung, sondern ein Ausschnitt.
+  //
+  // Der Abschnitt zählt, was WIR wissen — und sagt am Ende, was er nicht sehen
+  // kann. „Keine Veröffentlichung verzeichnet" heißt nicht „keine Reaktion".
+  log();
+  log("Was daraus geworden ist:");
+  const geantwortet = raus.filter((z) => z.outreach_status === "geantwortet");
+  const veroeffentlicht = raus.filter((z) => z.outreach_status === "veroeffentlicht");
+  log(`    ${raus.length} ${raus.length === 1 ? "Brief" : "Briefe"} verschickt`);
+  log(
+    `    ${geantwortet.length} ${geantwortet.length === 1 ? "Gemeinde hat" : "Gemeinden haben"} geantwortet` +
+      (geantwortet.length ? `: ${geantwortet.map((z) => z.mastr_regions.name).join(", ")}` : ""),
+  );
+  log(
+    `    ${veroeffentlicht.length} ${veroeffentlicht.length === 1 ? "Veröffentlichung" : "Veröffentlichungen"} verzeichnet` +
+      (veroeffentlicht.length ? `: ${veroeffentlicht.map((z) => z.mastr_regions.name).join(", ")}` : ""),
+  );
+
+  // Die Abos sind der eigentliche Ertrag: Wer sich einträgt, hat eingewilligt —
+  // aus einem Einmalkontakt wird ein Kanal. Sie standen bisher in keiner
+  // Outreach-Auswertung, obwohl der Brief sie anbietet.
+  //
+  // Ein Ausfall dieser Abfrage darf die Übersicht nicht umwerfen: Sie ist der
+  // erste Befehl jeder Sitzung, und die Versandlage darunter ist wichtiger als
+  // eine Zahl. Gemeldet wird er trotzdem — stumm zu scheitern hieße, „keine
+  // Abos" und „nicht nachgesehen" gleich aussehen zu lassen.
+  const { data: abos, error: aboFehler } = await db
+    .from("gemeinde_abos")
+    .select("region_id, status, ueber_brief, bestaetigt_am, abgemeldet_am");
+  if (aboFehler) {
+    log(`    Abos nicht lesbar: ${aboFehler.message}`, "warn");
+  } else {
+    const aktiv = (abos ?? []).filter((a) => a.bestaetigt_am && !a.abgemeldet_am);
+    const ausBrief = aktiv.filter((a) => a.ueber_brief === true);
+    const inAngeschriebenen = new Set(raus.map((z) => z.region_id));
+    const inOrten = aktiv.filter((a) => inAngeschriebenen.has(a.region_id as string));
+    log(
+      `    ${aktiv.length} bestätigte ${aktiv.length === 1 ? "Anmeldung" : "Anmeldungen"} zum Gemeinde-Abo` +
+        (aktiv.length
+          ? ` — ${ausBrief.length} über ein Anschreiben, ${inOrten.length} in einer angeschriebenen Gemeinde`
+          : ""),
+    );
+    const offen = (abos ?? []).filter((a) => !a.bestaetigt_am && !a.abgemeldet_am).length;
+    // Unbestätigt ist im doppelten Bestätigungsverfahren ein Nein, kein
+    // Zwischenstand — es steht hier, weil eine wachsende Zahl bedeutet, dass
+    // die Bestätigungsmail nicht ankommt.
+    if (offen) log(`    ${offen} unbestätigt (Bestätigungsmail nicht eingelöst)`);
+  }
+  log("    Nicht sichtbar: Veröffentlichungen ohne Verweis auf uns (App-Plattformen, Print).");
+
   // ─── Darf heute gesendet werden? ────────────────────────────────────────────
   //
   // Die Antwort kommt aus derselben Funktion, die auch der Versand fragt — eine

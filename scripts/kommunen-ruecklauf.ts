@@ -9,7 +9,11 @@
  * Nutzung:
  *   npm run kommunen:ruecklauf                 nur ansehen (schreibt nichts)
  *   npm run kommunen:ruecklauf -- --schreiben  Status nachtragen
+ *   npm run kommunen:ruecklauf -- --melden     Befund an die Ablage/Mail geben
  *   npm run kommunen:ruecklauf -- --tage=14    Zeitraum (Standard 7)
+ *
+ * Der tägliche Lauf in GitHub Actions setzt alle drei; von Hand gestartet
+ * meldet er nichts, damit ein Probelauf keine Mail auslöst.
  *
  * Env: OUTREACH_IMAP_HOST, OUTREACH_IMAP_PORT (Standard 993),
  *      OUTREACH_IMAP_USER, OUTREACH_IMAP_PASS — dasselbe Postfach wie der
@@ -31,6 +35,8 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync } from "node:fs";
 import { ordneEin, notizZeile, notizMitText, STATUS_ZU_ART, type Ruecklaufart, type RohMail } from "../lib/outreach-ruecklauf";
+import { berichtAblegen } from "../lib/alert-senden";
+import { ruecklaufBericht } from "../lib/outreach-ruecklauf-bericht";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -43,7 +49,15 @@ const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 //
 // ENG HALTEN: nur Absender-Domains, von denen sicher keine Gemeinde schreibt.
 // Eine großzügige Liste macht die Prüfung wertlos, ohne dass es auffällt.
-const FREMD_ABSENDER = ["awin.com", "mail.awin.com"];
+// Aufgenommen wird nur, was am echten Postfach als wiederkehrender Fehltreffer
+// GEMESSEN wurde (09.09.2026, 30-Tage-Abruf): die drei Affiliate-Plattformen,
+// bei denen das Projekt angemeldet ist. Sie schrieben zusammen neun Mails, jede
+// davon als „Antwort" eingestuft und keiner Gemeinde zuzuordnen.
+//
+// NICHT aufgenommen: Hersteller und Behörden (Solakon, IT.NRW). Von dort kann
+// etwas Inhaltliches kommen, und eine Ausblendung, die einmal zu weit ging,
+// merkt niemand mehr.
+const FREMD_ABSENDER = ["awin.com", "mail.awin.com", "adcell.de", "goaffpro.com"];
 
 function istFremdverkehr(von: string): boolean {
   const domain = von.split("@")[1]?.toLowerCase() ?? "";
@@ -247,6 +261,9 @@ async function main(): Promise<void> {
 
   let geschrieben = 0;
   const geschriebeneOrte: string[] = [];
+  // Die BEFUNDE, nicht nur ihre Kennungen: Der Tagesbericht muss sagen, WER
+  // was geschrieben hat — eine Liste von Ortsschlüsseln liest niemand.
+  const neueBefunde: Befund[] = [];
   for (const b of befunde) {
     const status = STATUS_ZU_ART[b.art];
     if (!status || !b.region_id) continue;
@@ -308,6 +325,7 @@ async function main(): Promise<void> {
     else {
       geschrieben++;
       geschriebeneOrte.push(b.region_id);
+      neueBefunde.push(b);
     }
   }
   // Singular mitbauen: „1 Gemeinden nachgetragen" ist derselbe Fehler wie
@@ -319,6 +337,42 @@ async function main(): Promise<void> {
     `${geschrieben} ${geschrieben === 1 ? "Rückmeldung" : "Rückmeldungen"} nachgetragen ` +
       `(${orte} ${orte === 1 ? "Gemeinde" : "Gemeinden"})`,
     "ok",
+  );
+
+  // ─── Melden ────────────────────────────────────────────────────────────────
+  //
+  // OHNE DIESEN TEIL IST DER LAUF EIN SELBSTGESPRÄCH. Er trug den Status
+  // zuverlässig nach und endete im Protokoll eines Terminals; die eine Antwort
+  // aus Trier lag darin genauso unsichtbar wie vierzehn Urlaubsnotizen.
+  //
+  // Die Bremse ist ausdrücklich: Ohne `--melden` geht nichts an die Ablage. Ein
+  // Probelauf von Hand soll keine Mail auslösen — und eine Option, die man
+  // setzen MUSS, ist ehrlicher als eine Automatik, die am Vorhandensein eines
+  // Geheimnisses hängt und sich beim Fehlen stillschweigend abschaltet.
+  if (!hat("melden")) return;
+  const bericht = ruecklaufBericht({
+    neu: neueBefunde.map((b) => ({
+      art: b.art,
+      name: b.name,
+      betreff: b.betreff,
+      von: b.von,
+      datum: b.datum,
+    })),
+    unklar: unklar.length,
+    tage,
+  });
+  log();
+  await berichtAblegen(
+    {
+      tag: "kommunen-ruecklauf",
+      subject: "Kommunen-Outreach: Rücklauf",
+      audience: bericht.audience,
+      decisions: bericht.decisions,
+      done: bericht.done,
+      details: bericht.details,
+    },
+    process.env.CRON_SECRET ?? "",
+    { basis: process.env.ALERT_BASE_URL, log: (z) => log(z) },
   );
 }
 
