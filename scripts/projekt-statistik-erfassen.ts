@@ -29,6 +29,7 @@ import {
   verteileZeit,
   tagVon,
   type Block,
+  type Arbeitstag,
 } from "../lib/projekt-statistik";
 import { heuteInBerlin } from "../lib/zeit";
 
@@ -38,6 +39,12 @@ const RUECKRECHNEN = process.argv.includes("--rueckrechnen");
 
 const PROTOKOLLE = join(homedir(), ".claude", "projects");
 const PRAEFIX = "-Users-eule-projects-pv-rechner";
+
+// Codex legt seine Sitzungen nach Datum ab und nennt das Arbeitsverzeichnis im
+// Kopf der Datei. Danach wird gefiltert, NICHT nach dem Vorkommen des
+// Projektnamens im Text — sonst zählt jede Sitzung mit, in der das Projekt bloß
+// erwähnt wurde.
+const CODEX = join(homedir(), ".codex");
 
 // Eine Lücke von mehr als einer Viertelstunde trennt zwei Arbeitsblöcke. Der
 // Wert ist gegriffen, aber die Richtung stimmt: Eine kürzere Pause ist beim
@@ -91,9 +98,10 @@ function leseProtokolle(): Roh {
   const bloecke: Block[] = [];
 
   const leer = (tag: string): Statistiktag => ({
-    tag, herkunft: "gemessen", tokensGelesen: 0, tokensNeu: 0, tokensEingabe: 0,
-    tokensAusgabe: 0, sitzungen: 0, nachrichtenGetippt: 0, nachrichtenLang: 0,
-    antworten: 0, werkzeugschritte: 0, arbeitsminuten: 0, commits: 0,
+    tag, werkzeug: "claude", herkunft: "gemessen", tokensGelesen: 0,
+    tokensNeu: 0, tokensEingabe: 0, tokensAusgabe: 0, sitzungen: 0,
+    nachrichtenGetippt: 0, nachrichtenLang: 0, antworten: 0,
+    werkzeugschritte: 0, commits: 0,
   });
   const hol = (tag: string) => {
     let t = tage.get(tag);
@@ -148,6 +156,112 @@ function leseProtokolle(): Roh {
     // über ALLE Sitzungen: An diesem Repo laufen regelmäßig bis zu elf
     // Arbeitsstände gleichzeitig, und wer ihre Dauern addiert, zählt dieselbe
     // Stunde mehrfach — gemessen 662 statt 261 Stunden.
+    zeitpunkte.sort((a, b) => a - b);
+    let start: number | null = null;
+    let vorher: number | null = null;
+    for (const z of zeitpunkte) {
+      if (start === null) start = z;
+      else if (vorher !== null && z - vorher > PAUSE_MS) { bloecke.push({ von: start, bis: vorher }); start = z; }
+      vorher = z;
+    }
+    if (start !== null && vorher !== null) bloecke.push({ von: start, bis: vorher });
+  }
+
+  return { tage, bloecke };
+}
+
+/** Alle Codex-Sitzungsdateien, laufende wie archivierte. */
+function codexDateien(): string[] {
+  const out: string[] = [];
+  const lauf = (verzeichnis: string) => {
+    let eintraege: string[];
+    try { eintraege = readdirSync(verzeichnis); } catch { return; }
+    for (const e of eintraege) {
+      const voll = join(verzeichnis, e);
+      if (e.endsWith(".jsonl")) out.push(voll);
+      else if (!e.includes(".")) lauf(voll);
+    }
+  };
+  for (const wurzel of ["sessions", "archived_sessions"]) {
+    if (existsSync(join(CODEX, wurzel))) lauf(join(CODEX, wurzel));
+  }
+  return out;
+}
+
+/**
+ * Codex-Sitzungen dieses Projekts lesen.
+ *
+ * ZWEI UNTERSCHIEDE ZU CLAUDE, DIE MAN NICHT ÜBERSEHEN DARF:
+ *
+ *  1. Die Tokenzahl ist KUMULATIV. Codex meldet nach jedem Zug den Stand der
+ *     ganzen Sitzung, nicht den Zuwachs. Wer alle Meldungen addiert, zählt eine
+ *     Sitzung mit hundert Zügen hundertfach. Genommen wird deshalb die LETZTE
+ *     Meldung je Datei.
+ *  2. Der zwischengespeicherte Anteil steckt INNERHALB der Eingabe, bei Claude
+ *     steht er als eigene Größe daneben. Die beiden Werkzeuge sind deshalb in
+ *     ihren Einzelposten nicht vergleichbar und stehen getrennt; addierbar ist
+ *     nur die jeweilige Gesamtsumme.
+ */
+function leseCodex(): Roh {
+  const tage = new Map<string, Statistiktag>();
+  const bloecke: Block[] = [];
+
+  for (const datei of codexDateien()) {
+    let inhalt: string;
+    try { inhalt = readFileSync(datei, "utf8"); } catch { continue; }
+
+    let cwd: string | null = null;
+    let letzte: Record<string, number> | null = null;
+    let nachrichten = 0;
+    let antworten = 0;
+    const zeitpunkte: number[] = [];
+    let ersterTag: string | null = null;
+
+    for (const zeile of inhalt.split("\n")) {
+      if (!zeile.startsWith("{")) continue;
+      let o: any;
+      try { o = JSON.parse(zeile); } catch { continue; }
+      const p = o.payload ?? {};
+      if (o.type === "session_meta") cwd = p.cwd ?? null;
+      if (p.type === "token_count") {
+        const u = p.info?.total_token_usage;
+        if (u) letzte = u;
+      }
+      if (p.type === "user_message") nachrichten++;
+      if (p.type === "agent_message") antworten++;
+      const ts: string | undefined = o.timestamp;
+      if (ts) {
+        zeitpunkte.push(Date.parse(ts));
+        if (!ersterTag) ersterTag = tagVon(Date.parse(ts));
+      }
+    }
+
+    if (!cwd || !cwd.includes("pv-rechner")) continue;
+
+    const tag = ersterTag;
+    if (!tag) continue;
+    let t = tage.get(tag);
+    if (!t) {
+      t = {
+        tag, werkzeug: "codex", herkunft: "gemessen", tokensGelesen: 0,
+        tokensNeu: 0, tokensEingabe: 0, tokensAusgabe: 0, sitzungen: 0,
+        nachrichtenGetippt: 0, nachrichtenLang: 0, antworten: 0,
+        werkzeugschritte: 0, commits: 0,
+      };
+      tage.set(tag, t);
+    }
+    t.sitzungen++;
+    t.nachrichtenGetippt += nachrichten;
+    t.antworten += antworten;
+    if (letzte) {
+      // Der zwischengespeicherte Anteil wird herausgerechnet, damit die
+      // Eingabe-Spalte dasselbe meint wie bei Claude: frisch verarbeitet.
+      t.tokensGelesen += letzte.cached_input_tokens ?? 0;
+      t.tokensEingabe += Math.max(0, (letzte.input_tokens ?? 0) - (letzte.cached_input_tokens ?? 0));
+      t.tokensNeu += letzte.cache_write_input_tokens ?? 0;
+      t.tokensAusgabe += (letzte.output_tokens ?? 0) + (letzte.reasoning_output_tokens ?? 0);
+    }
+
     zeitpunkte.sort((a, b) => a - b);
     let start: number | null = null;
     let vorher: number | null = null;
@@ -235,6 +349,7 @@ async function schreibe(pfad: string, zeilen: unknown[]): Promise<void> {
 function zeile(t: Statistiktag) {
   return {
     tag: t.tag,
+    werkzeug: t.werkzeug,
     herkunft: t.herkunft,
     tokens_gelesen: t.tokensGelesen,
     tokens_neu: t.tokensNeu,
@@ -245,24 +360,32 @@ function zeile(t: Statistiktag) {
     nachrichten_lang: t.nachrichtenLang,
     antworten: t.antworten,
     werkzeugschritte: t.werkzeugschritte,
-    arbeitsminuten: t.arbeitsminuten,
     commits: t.commits,
   };
 }
 
 async function main() {
   const heute = heuteInBerlin();
-  const { tage, bloecke } = leseProtokolle();
-  verteileZeit(bloecke, tage);
+  const claude = leseProtokolle();
+  const codex = leseCodex();
+
+  // Die Arbeitszeit wird über BEIDE Werkzeuge zusammengelegt und nur einmal je
+  // Tag abgelegt: Wer neben einer Claude- eine Codex-Sitzung offen hat,
+  // arbeitet trotzdem nur eine Stunde.
+  const arbeitszeit = new Map<string, Arbeitstag>();
+  verteileZeit([...claude.bloecke, ...codex.bloecke], arbeitszeit);
 
   const commits = commitsJeTag();
-  for (const [tag, t] of tage) t.commits = commits.get(tag) ?? 0;
+  for (const t of claude.tage.values()) t.commits = commits.get(t.tag) ?? 0;
 
   // Der laufende Tag ist unvollständig und wird NICHT abgelegt — sonst steht in
   // der Reihe ein schwacher Tag, der bloß noch nicht zu Ende ist.
-  tage.delete(heute);
+  claude.tage.delete(heute);
+  codex.tage.delete(heute);
+  arbeitszeit.delete(heute);
 
-  const gemessen = [...tage.values()].sort((a, b) => a.tag.localeCompare(b.tag));
+  const gemessen = [...claude.tage.values()].sort((a, b) => a.tag.localeCompare(b.tag));
+  const gemessenCodex = [...codex.tage.values()].sort((a, b) => a.tag.localeCompare(b.tag));
   const geschaetzt: Statistiktag[] = [];
 
   if (RUECKRECHNEN) {
@@ -271,29 +394,42 @@ async function main() {
     if (!k || !erster) {
       console.error("Ohne gemessene Tage lässt sich nichts hochrechnen.");
     } else {
+      // Nur für Claude: Die Codex-Protokolle beginnen am 31.08.2026. Für März
+      // bis Juli einen Codex-Anteil hochzurechnen hieße, Arbeit zu erfinden.
       for (const [tag, n] of [...commits].sort()) {
-        if (tag >= erster || tage.has(tag)) continue;
+        if (tag >= erster || claude.tage.has(tag)) continue;
         geschaetzt.push(schaetzeTag(tag, n, k));
       }
     }
   }
 
   const s = summiere(gemessen);
+  const c = summiere(gemessenCodex);
   const g = summiere(geschaetzt);
+  const stunden = Math.round([...arbeitszeit.values()].reduce((x, a) => x + a.minuten, 0) / 60);
   const bestand = bestandHeute();
 
-  console.log(`Gemessen:   ${s.tage} Tage (${gemessen[0]?.tag} bis ${gemessen[gemessen.length - 1]?.tag})`);
-  console.log(`  Tokens gesamt      ${s.tokensGesamt.toLocaleString("de-DE")}`);
-  console.log(`  davon wiedergelesen ${s.tokensGelesen.toLocaleString("de-DE")}`);
-  console.log(`  selbst geschrieben  ${s.tokensAusgabe.toLocaleString("de-DE")}`);
-  console.log(`  Arbeitszeit        ${s.arbeitsstunden} h`);
-  console.log(`  getippte Sätze     ${s.nachrichtenGetippt.toLocaleString("de-DE")}`);
-  console.log(`  Antworten          ${s.antworten.toLocaleString("de-DE")}`);
-  console.log(`  Werkzeugschritte   ${s.werkzeugschritte.toLocaleString("de-DE")}`);
-  if (geschaetzt.length) {
-    console.log(`Geschätzt:  ${g.tage} Tage, ${g.tokensGesamt.toLocaleString("de-DE")} Tokens, ${g.arbeitsstunden} h`);
+  const z = (n: number) => n.toLocaleString("de-DE");
+  console.log(`Claude, gemessen:  ${s.tage} Tage (${gemessen[0]?.tag} bis ${gemessen[gemessen.length - 1]?.tag})`);
+  console.log(`  Tokens gesamt       ${z(s.tokensGesamt)}`);
+  console.log(`  davon wiedergelesen ${z(s.tokensGelesen)}`);
+  console.log(`  selbst geschrieben  ${z(s.tokensAusgabe)}`);
+  console.log(`  getippte Sätze      ${z(s.nachrichtenGetippt)}`);
+  console.log(`  Antworten           ${z(s.antworten)}`);
+  console.log(`  Werkzeugschritte    ${z(s.werkzeugschritte)}`);
+  if (gemessenCodex.length) {
+    console.log(`Codex, gemessen:   ${c.tage} Tage (${gemessenCodex[0]?.tag} bis ${gemessenCodex[gemessenCodex.length - 1]?.tag})`);
+    console.log(`  Tokens gesamt       ${z(c.tokensGesamt)}`);
+    console.log(`  davon wiedergelesen ${z(c.tokensGelesen)}`);
+    console.log(`  selbst geschrieben  ${z(c.tokensAusgabe)}`);
+    console.log(`  Nachrichten         ${z(c.nachrichtenGetippt)}`);
+    console.log(`  Sitzungen           ${z(c.sitzungen)}`);
   }
-  console.log(`Bestand:    ${bestand.codezeilen.toLocaleString("de-DE")} Zeilen Code, ${bestand.testfaelle.toLocaleString("de-DE")} Prüfungen, ${bestand.commitsGesamt.toLocaleString("de-DE")} Änderungen`);
+  console.log(`Arbeitszeit:       ${stunden} h an ${arbeitszeit.size} Tagen (beide Werkzeuge zusammengelegt)`);
+  if (geschaetzt.length) {
+    console.log(`Geschätzt:         ${g.tage} Tage, ${z(g.tokensGesamt)} Tokens (nur Claude)`);
+  }
+  console.log(`Bestand:           ${z(bestand.codezeilen)} Zeilen Code, ${z(bestand.testfaelle)} Prüfungen, ${z(bestand.commitsGesamt)} Änderungen`);
 
   if (!SCHREIBEN) {
     console.log("\nProbelauf — nichts geschrieben. Mit --schreiben ablegen.");
@@ -304,6 +440,8 @@ async function main() {
   // überschreiben, nie umgekehrt.
   if (geschaetzt.length) await schreibe("projekt_statistik", geschaetzt.map(zeile));
   await schreibe("projekt_statistik", gemessen.map(zeile));
+  if (gemessenCodex.length) await schreibe("projekt_statistik", gemessenCodex.map(zeile));
+  await schreibe("projekt_arbeitszeit", [...arbeitszeit.values()].map((a) => ({ tag: a.tag, minuten: a.minuten })));
   await schreibe("projekt_bestand", [{
     tag: bestand.tag,
     dateien: bestand.dateien,

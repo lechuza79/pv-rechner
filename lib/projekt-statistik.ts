@@ -41,10 +41,21 @@ export interface Block {
 /** Woher eine Tageszeile stammt. */
 export type Herkunft = "gemessen" | "geschaetzt";
 
+/**
+ * Welches Werkzeug die Zeile erzeugt hat.
+ *
+ * An diesem Projekt arbeiten zwei: Claude Code und Codex. Ihre Zahlen sind
+ * NICHT ineinander umrechenbar — Codex führt seinen zwischengespeicherten
+ * Anteil innerhalb der Eingabe, Claude als eigene Größe daneben. Sie stehen
+ * deshalb getrennt; addiert werden darf nur die jeweilige Gesamtsumme.
+ */
+export type Werkzeug = "claude" | "codex";
+
 /** Ein Tag Arbeit am Projekt. */
 export interface Statistiktag {
   /** Kalendertag in deutscher Zeit (JJJJ-MM-TT). */
   tag: string;
+  werkzeug: Werkzeug;
   herkunft: Herkunft;
   /** Wiedergelesener Kontext — der billige, aber mit Abstand größte Anteil. */
   tokensGelesen: number;
@@ -60,9 +71,22 @@ export interface Statistiktag {
   nachrichtenLang: number;
   antworten: number;
   werkzeugschritte: number;
-  /** Zusammengelegte Arbeitszeit in Minuten (Lücken über 15 Min trennen). */
-  arbeitsminuten: number;
   commits: number;
+}
+
+/**
+ * Die Arbeitszeit eines Tages — bewusst NICHT je Werkzeug.
+ *
+ * BLOCKER: Sie gehört dem Menschen, nicht dem Werkzeug. Wer nebeneinander eine
+ * Claude- und eine Codex-Sitzung offen hat, arbeitet trotzdem nur eine Stunde;
+ * je Werkzeug abgelegt und dann summiert, käme dieselbe Stunde zweimal heraus —
+ * genau der Fehler, gegen den die Vereinigung über die parallelen Arbeitsstände
+ * gebaut ist, nur eine Ebene höher. Es gibt deshalb nur EINEN Wert je Tag, über
+ * alle Werkzeuge zusammengelegt.
+ */
+export interface Arbeitstag {
+  tag: string;
+  minuten: number;
 }
 
 /** Der Bestand an einem Stichtag — wächst, statt sich je Tag zu ereignen. */
@@ -78,7 +102,7 @@ export interface Bestandstag {
 
 export const STATISTIK_DDL = `
   create table if not exists projekt_statistik (
-    tag date primary key,
+    tag date not null,
     herkunft text not null,
     tokens_gelesen bigint not null,
     tokens_neu bigint not null,
@@ -89,8 +113,19 @@ export const STATISTIK_DDL = `
     nachrichten_lang integer not null,
     antworten integer not null,
     werkzeugschritte integer not null,
-    arbeitsminuten integer not null,
     commits integer not null,
+    erfasst_am timestamptz not null default now()
+  );
+  -- Nachträglich: die Tabelle entstand am 09.09.2026 ohne Werkzeug-Spalte, als
+  -- nur Claude Code erfasst wurde. Die Schritte sind einzeln idempotent, damit
+  -- ein zweiter Aufruf nichts kaputt macht.
+  alter table projekt_statistik add column if not exists werkzeug text not null default 'claude';
+  alter table projekt_statistik drop column if exists arbeitsminuten;
+  alter table projekt_statistik drop constraint if exists projekt_statistik_pkey;
+  alter table projekt_statistik add primary key (werkzeug, tag);
+  create table if not exists projekt_arbeitszeit (
+    tag date primary key,
+    minuten integer not null,
     erfasst_am timestamptz not null default now()
   );
   create table if not exists projekt_bestand (
@@ -104,6 +139,7 @@ export const STATISTIK_DDL = `
     erfasst_am timestamptz not null default now()
   );
   alter table projekt_statistik enable row level security;
+  alter table projekt_arbeitszeit enable row level security;
   alter table projekt_bestand enable row level security;
 `;
 
@@ -120,7 +156,6 @@ export interface Summe {
   nachrichtenLang: number;
   antworten: number;
   werkzeugschritte: number;
-  arbeitsstunden: number;
   commits: number;
 }
 
@@ -128,10 +163,8 @@ export function summiere(tage: Statistiktag[]): Summe {
   const s: Summe = {
     tage: tage.length, tokensGelesen: 0, tokensNeu: 0, tokensEingabe: 0,
     tokensAusgabe: 0, tokensGesamt: 0, sitzungen: 0, nachrichtenGetippt: 0,
-    nachrichtenLang: 0, antworten: 0, werkzeugschritte: 0, arbeitsstunden: 0,
-    commits: 0,
+    nachrichtenLang: 0, antworten: 0, werkzeugschritte: 0, commits: 0,
   };
-  let minuten = 0;
   for (const t of tage) {
     s.tokensGelesen += t.tokensGelesen;
     s.tokensNeu += t.tokensNeu;
@@ -142,11 +175,9 @@ export function summiere(tage: Statistiktag[]): Summe {
     s.nachrichtenLang += t.nachrichtenLang;
     s.antworten += t.antworten;
     s.werkzeugschritte += t.werkzeugschritte;
-    minuten += t.arbeitsminuten;
     s.commits += t.commits;
   }
   s.tokensGesamt = s.tokensGelesen + s.tokensNeu + s.tokensEingabe + s.tokensAusgabe;
-  s.arbeitsstunden = Math.round(minuten / 60);
   return s;
 }
 
@@ -169,7 +200,6 @@ export interface Kennwert {
   tokensNeuJeCommit: number;
   tokensEingabeJeCommit: number;
   tokensAusgabeJeCommit: number;
-  minutenJeCommit: number;
   nachrichtenJeCommit: number;
   antwortenJeCommit: number;
   werkzeugschritteJeCommit: number;
@@ -184,7 +214,6 @@ export function kennwertAus(gemessen: Statistiktag[]): Kennwert | null {
     tokensNeuJeCommit: je(s.tokensNeu),
     tokensEingabeJeCommit: je(s.tokensEingabe),
     tokensAusgabeJeCommit: je(s.tokensAusgabe),
-    minutenJeCommit: je(s.arbeitsstunden * 60),
     nachrichtenJeCommit: je(s.nachrichtenGetippt),
     antwortenJeCommit: je(s.antworten),
     werkzeugschritteJeCommit: je(s.werkzeugschritte),
@@ -196,6 +225,7 @@ export function schaetzeTag(tag: string, commits: number, k: Kennwert): Statisti
   const r = (x: number) => Math.round(x * commits);
   return {
     tag,
+    werkzeug: "claude",
     herkunft: "geschaetzt",
     tokensGelesen: r(k.tokensGelesenJeCommit),
     tokensNeu: r(k.tokensNeuJeCommit),
@@ -208,7 +238,6 @@ export function schaetzeTag(tag: string, commits: number, k: Kennwert): Statisti
     nachrichtenLang: 0,
     antworten: r(k.antwortenJeCommit),
     werkzeugschritte: r(k.werkzeugschritteJeCommit),
-    arbeitsminuten: r(k.minutenJeCommit),
     commits,
   };
 }
@@ -233,8 +262,7 @@ export function vereinigeBloecke(bloecke: Block[]): Block[] {
 }
 
 /** Blöcke zusammenlegen und die Minuten auf die deutschen Kalendertage verteilen. */
-export
-function verteileZeit(bloecke: Block[], tage: Map<string, Statistiktag>): void {
+export function verteileZeit(bloecke: Block[], tage: Map<string, Arbeitstag>): void {
   const vereint = vereinigeBloecke(bloecke);
   for (const b of vereint) {
     // Über Mitternacht laufende Blöcke tageweise aufteilen, sonst landet eine
@@ -246,8 +274,9 @@ function verteileZeit(bloecke: Block[], tage: Map<string, Statistiktag>): void {
     while (von < b.bis) {
       const tag = tagVon(von);
       const bis = tagVon(b.bis) === tag ? b.bis : grenzeNach(von, b.bis);
-      const t = tage.get(tag);
-      if (t) t.arbeitsminuten += Math.round((bis - von) / 60000);
+      const t = tage.get(tag) ?? { tag, minuten: 0 };
+      t.minuten += Math.round((bis - von) / 60000);
+      tage.set(tag, t);
       if (bis <= von) break;
       von = bis;
     }

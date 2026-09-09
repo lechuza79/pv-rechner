@@ -33,7 +33,11 @@ describe("Erfassungslauf", () => {
     // Muster weiterhin in der Datei, und ein Test, der das durchlässt, meldet
     // Grün für einen ausgebauten Schutz. Genau so ist er beim Bauen einmal
     // durchgefallen.
-    expect(QUELLE).toMatch(/^\s*tage\.delete\(heute\);/m);
+    // Alle drei Bestände, nicht nur einer: Bliebe die Arbeitszeit stehen,
+    // stünde für heute eine halbe Stunde da, wo abends acht werden.
+    for (const bestand of ["claude.tage", "codex.tage", "arbeitszeit"]) {
+      expect(QUELLE).toMatch(new RegExp(`^\\s*${bestand.replace(".", "\\.")}\\.delete\\(heute\\);`, "m"));
+    }
   });
 
   it("schreibt Schätzungen VOR Messungen, damit eine Messung nie überschrieben wird", () => {
@@ -62,7 +66,32 @@ describe("Erfassungslauf", () => {
     expect(QUELLE).not.toMatch(/toISOString\(\)\.slice\(0, 10\)/);
   });
 
-  it("legt die Zeit zusammen, statt Sitzungsdauern zu addieren", () => {
-    expect(QUELLE).toMatch(/verteileZeit\(bloecke, tage\)/);
+  it("legt die Zeit über BEIDE Werkzeuge zusammen", () => {
+    // Wer neben einer Claude- eine Codex-Sitzung offen hat, arbeitet trotzdem
+    // nur eine Stunde. Getrennt gezählt käme sie zweimal heraus.
+    expect(QUELLE).toMatch(/verteileZeit\(\[\.\.\.claude\.bloecke, \.\.\.codex\.bloecke\], arbeitszeit\)/);
+  });
+});
+
+describe("Codex", () => {
+  it("nimmt die LETZTE Tokenmeldung je Sitzung, weil sie kumulativ ist", () => {
+    // Codex meldet nach jedem Zug den Stand der ganzen Sitzung, nicht den
+    // Zuwachs. Wer alle Meldungen addiert, zählt eine Sitzung mit hundert Zügen
+    // hundertfach — und die Zahl sieht dabei völlig normal aus.
+    expect(QUELLE).toMatch(/^\s*if \(u\) letzte = u;/m);
+    expect(QUELLE).toMatch(/KUMULATIV/);
+  });
+
+  it("filtert über das Arbeitsverzeichnis, nicht über den Text", () => {
+    // Eine Sitzung, in der das Projekt bloß erwähnt wurde, gehört nicht dazu.
+    expect(QUELLE).toMatch(/^\s*if \(o\.type === "session_meta"\) cwd = p\.cwd \?\? null;/m);
+    expect(QUELLE).toMatch(/^\s*if \(!cwd \|\| !cwd\.includes\("pv-rechner"\)\) continue;/m);
+  });
+
+  it("rechnet nur für Claude zurück", () => {
+    // Die Codex-Protokolle beginnen am 31.08.2026. Für März bis Juli einen
+    // Codex-Anteil hochzurechnen hieße, Arbeit zu erfinden, die es nicht gab.
+    expect(QUELLE).toMatch(/Nur für Claude/);
+    expect(QUELLE).toMatch(/schaetzeTag\(tag, n, k\)/);
   });
 });

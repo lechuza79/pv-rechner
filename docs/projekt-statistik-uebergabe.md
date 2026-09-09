@@ -28,7 +28,14 @@ nicht geben.
 Der laufende Tag wird bewusst nie abgelegt — sonst steht in der Reihe ein
 schwacher Tag, der bloß noch nicht zu Ende ist.
 
-### Gemessen, 15.07. bis 08.09.2026 (47 Tage)
+**Zwei Werkzeuge, getrennt geführt.** Am Projekt arbeiten Claude Code und
+Codex. Ihre Einzelposten sind nicht vergleichbar — Codex führt den
+zwischengespeicherten Anteil innerhalb der Eingabe, Claude als eigene Größe
+daneben —, addierbar ist nur die jeweilige Gesamtsumme. Die **Arbeitszeit**
+steht in einer eigenen Tabelle und ist über beide zusammengelegt: Wer
+nebeneinander zwei Sitzungen offen hat, arbeitet trotzdem nur eine Stunde.
+
+### Gemessen, 15.07. bis 08.09.2026 (47 Tage), Claude Code
 
 | | |
 |---|---|
@@ -36,19 +43,30 @@ schwacher Tag, der bloß noch nicht zu Ende ist.
 | davon wiedergelesener Kontext | 44.220.976.469 |
 | frisch in den Zwischenspeicher | ~1,26 Mrd. |
 | selbst geschrieben | 92.077.914 |
-| Arbeitszeit (zusammengelegt) | 255 h |
 | getippte Sätze | 4.135 (Mittellänge 132 Zeichen) |
 | längere Eingaben (Wächter-Aufträge, Eingefügtes) | ~900 |
 | Antworten | 104.383 |
 | Werkzeugschritte | 60.806 |
 | Sitzungen | 288, davon 177 mit Mensch |
 
+### Gemessen, 31.08. bis 08.09.2026 (7 Tage), Codex
+
+181.296.249 Tokens (davon 164.656.896 wiedergelesen, 182.674 selbst
+geschrieben), 125 Sitzungen, 119 Nachrichten. Weiter zurück reichen die
+Protokolle nicht.
+
+### Arbeitszeit, beide Werkzeuge zusammengelegt
+
+263 Stunden an 47 Tagen.
+
 Arbeitszeit nach Uhrzeit: 7 bis 20 Uhr, Knick um 11, zweiter Gipfel 17–19 Uhr.
 Nachts läuft nur die Automatik.
 
-### Geschätzt, 22.03. bis 14.07.2026 (44 Tage)
+### Geschätzt, 22.03. bis 14.07.2026 (44 Tage), nur Claude
 
-11.004.642.904 Tokens, 62 Stunden. **Einmalig gelaufen — nicht wiederholen:**
+11.004.642.904 Tokens. Für Codex wird **nicht** zurückgerechnet — seine
+Protokolle beginnen am 31.08.2026, und einen Anteil für März bis Juli
+hochzurechnen hieße, Arbeit zu erfinden, die es nicht gab. **Einmalig gelaufen — nicht wiederholen:**
 Ein zweiter Rückrechnungslauf nähme einen neuen Kennwert und schriebe für
 dieselben Tage andere Zahlen, ohne dass sich an den Daten etwas geändert hätte.
 

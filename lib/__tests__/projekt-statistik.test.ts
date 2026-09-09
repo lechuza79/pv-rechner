@@ -29,12 +29,14 @@ import {
   schaetzeTag,
   summiere,
   type Statistiktag,
+  type Arbeitstag,
 } from "../projekt-statistik";
 
 const tag = (t: string, teil: Partial<Statistiktag> = {}): Statistiktag => ({
-  tag: t, herkunft: "gemessen", tokensGelesen: 0, tokensNeu: 0, tokensEingabe: 0,
-  tokensAusgabe: 0, sitzungen: 0, nachrichtenGetippt: 0, nachrichtenLang: 0,
-  antworten: 0, werkzeugschritte: 0, arbeitsminuten: 0, commits: 0, ...teil,
+  tag: t, werkzeug: "claude", herkunft: "gemessen", tokensGelesen: 0,
+  tokensNeu: 0, tokensEingabe: 0, tokensAusgabe: 0, sitzungen: 0,
+  nachrichtenGetippt: 0, nachrichtenLang: 0, antworten: 0, werkzeugschritte: 0,
+  commits: 0, ...teil,
 });
 
 describe("Kalendertag eines Zeitpunkts", () => {
@@ -77,13 +79,13 @@ describe("Arbeitszeit: vereinigen statt addieren", () => {
 
   it("verteilt einen Block über Mitternacht auf beide deutschen Tage", () => {
     // 21:00 bis 23:00 Weltzeit im Sommer = 23:00 bis 01:00 deutscher Zeit.
-    const tage = new Map([["2026-08-01", tag("2026-08-01")], ["2026-08-02", tag("2026-08-02")]]);
+    const tage = new Map<string, Arbeitstag>();
     verteileZeit([{
       von: Date.parse("2026-08-01T21:00:00Z"),
       bis: Date.parse("2026-08-01T23:00:00Z"),
     }], tage);
-    expect(tage.get("2026-08-01")!.arbeitsminuten).toBe(60);
-    expect(tage.get("2026-08-02")!.arbeitsminuten).toBe(60);
+    expect(tage.get("2026-08-01")!.minuten).toBe(60);
+    expect(tage.get("2026-08-02")!.minuten).toBe(60);
   });
 
   it("findet die Tagesgrenze im Winter eine Stunde später als im Sommer", () => {
@@ -96,8 +98,8 @@ describe("Arbeitszeit: vereinigen statt addieren", () => {
 
 describe("Rückrechnung der Zeit ohne Protokolle", () => {
   const gemessen = [
-    tag("2026-07-15", { commits: 10, tokensGelesen: 1000, tokensAusgabe: 100, antworten: 50, arbeitsminuten: 120 }),
-    tag("2026-07-16", { commits: 10, tokensGelesen: 3000, tokensAusgabe: 300, antworten: 150, arbeitsminuten: 120 }),
+    tag("2026-07-15", { commits: 10, tokensGelesen: 1000, tokensAusgabe: 100, antworten: 50 }),
+    tag("2026-07-16", { commits: 10, tokensGelesen: 3000, tokensAusgabe: 300, antworten: 150 }),
   ];
 
   it("rechnet aus Commits hoch, nicht aus Kalendertagen", () => {
@@ -111,6 +113,13 @@ describe("Rückrechnung der Zeit ohne Protokolle", () => {
   it("kennzeichnet jede hochgerechnete Zeile als Schätzung", () => {
     const k = kennwertAus(gemessen)!;
     expect(schaetzeTag("2026-05-01", 5, k).herkunft).toBe("geschaetzt");
+  });
+
+  it("rechnet nur für Claude zurück — Codex gab es damals am Projekt nicht", () => {
+    // Die Codex-Protokolle beginnen am 31.08.2026. Für März bis Juli einen
+    // Codex-Anteil hochzurechnen hieße, Arbeit zu erfinden, die es nicht gab.
+    const k = kennwertAus(gemessen)!;
+    expect(schaetzeTag("2026-05-01", 5, k).werkzeug).toBe("claude");
   });
 
   it("erfindet keine Sitzungen — die sind aus Commits nicht ableitbar", () => {
@@ -134,8 +143,11 @@ describe("Summe", () => {
     expect(s.tokensGesamt).toBe(15);
   });
 
-  it("rechnet die Minuten in volle Stunden um", () => {
-    const s = summiere([tag("a", { arbeitsminuten: 90 }), tag("b", { arbeitsminuten: 90 })]);
-    expect(s.arbeitsstunden).toBe(3);
+  it("führt keine Arbeitszeit — die gehört dem Tag, nicht dem Werkzeug", () => {
+    // Wer neben einer Claude- eine Codex-Sitzung offen hat, arbeitet trotzdem
+    // nur eine Stunde. Stünde die Zeit je Werkzeug in der Zeile, käme sie beim
+    // Summieren doppelt heraus.
+    const s = summiere([tag("a"), tag("b")]);
+    expect(s).not.toHaveProperty("arbeitsstunden");
   });
 });
