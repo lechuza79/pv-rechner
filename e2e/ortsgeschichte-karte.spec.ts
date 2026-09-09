@@ -40,11 +40,17 @@ for (const groesse of BREITEN) {
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
 
-    const karte = page.locator("[data-social-karte]");
+    // IM FENSTER gesucht, nicht auf der Seite: Seit die Teaser ein
+    // Vorschaubildchen tragen, steht dieselbe Karte mehrfach im Dokument, und
+    // eine Suche über die ganze Seite trifft das erste Bildchen statt der
+    // Karte, um die es hier geht.
+    const karte = dialog.locator("[data-social-karte]");
     await expect(karte).toBeVisible();
 
     const mass = await page.evaluate(() => {
-      const k = document.querySelector<HTMLElement>("[data-social-karte]")!;
+      const k = document
+        .querySelector<HTMLElement>('[role="dialog"]')!
+        .querySelector<HTMLElement>("[data-social-karte]")!;
       // Der Rahmen ist der Großelternteil: Karte → transformierte Hülle → Rahmen.
       const rahmen = k.parentElement!.parentElement!;
       const kr = k.getBoundingClientRect();
@@ -87,7 +93,9 @@ test("Die Karte erbt die Farben der Seite, statt eine eigene Palette mitzubringe
   await expect(page.getByRole("dialog")).toBeVisible();
 
   const eigenePalette = await page.evaluate(() => {
-    const k = document.querySelector<HTMLElement>("[data-social-karte]")!;
+    const k = document
+      .querySelector<HTMLElement>('[role="dialog"]')!
+      .querySelector<HTMLElement>("[data-social-karte]")!;
     // Ein eigenes Farbschema stünde als Token AM Element, nicht geerbt.
     return k.style.getPropertyValue("--color-bg").trim();
   });
