@@ -31,6 +31,12 @@ import { heuteInBerlin } from "../lib/zeit";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { DB_READ_TIMEOUT_MS } from "../lib/db-timeout";
+import {
+  importPlanBefund,
+  importTageAusZeitplan,
+  importlaufMeldung,
+  type ImportPlanBefund,
+} from "../lib/mastr-import-plan";
 import { PRUEFSTAND, faelligkeiten } from "../lib/pruefstand";
 import { RELEASE_PLAN, planMeldungen } from "../lib/release-plan";
 import { sollWarnen, warnstufe } from "../lib/social-ablauf";
@@ -665,33 +671,50 @@ export function healRegionConfig(
 // kostet einen Punkt-Zugriff, läuft alle drei Stunden in GitHub Actions mit,
 // braucht kein Modell und damit kein Geld.
 //
-// Die Schwellen kommen aus dem Rhythmus, nicht aus dem Bauch: Der Import läuft
-// monatlich. 45 Tage sind ein Zyklus plus Luft — darunter ist alles normal.
-// 70 Tage heißen, dass zwei Läufe ausgefallen sind; dann ist es kein Zufall
-// mehr, sondern eine stehengebliebene Pipeline.
-export const MASTR_FRISCHE_WARN_TAGE = 45;
-export const MASTR_FRISCHE_FAIL_TAGE = 70;
+/** Die Action, deren Zeitplan den Import-Rhythmus festlegt. */
+export const MASTR_WORKFLOW = "mastr-refresh.yml";
 
 /**
- * Wie alt darf der Anlagenbestand sein?
- *
- * Bewusst gegen einen HEREINGEREICHTEN Stichtag gerechnet, nicht gegen
- * `new Date()` — eine Bewertungsfunktion mit eigener Uhr lässt sich nicht
- * prüfen, und genau daran ist im Projekt schon ein Prüfdatum falsch geworden.
+ * Liest eine Workflow-Datei aus dem Arbeitsverzeichnis. Leerer String, wenn sie
+ * fehlt — die Aufrufer machen daraus „konnte nicht nachsehen", nie „in Ordnung".
  */
-export function mastrFrischeVerdict(alterTage: number): "gruen" | "gelb" | "rot" {
-  if (alterTage >= MASTR_FRISCHE_FAIL_TAGE) return "rot";
-  if (alterTage >= MASTR_FRISCHE_WARN_TAGE) return "gelb";
-  return "gruen";
+function leseWorkflow(datei: string): string {
+  const wurzel = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+  const pfad = resolve(wurzel, ".github", "workflows", datei);
+  return existsSync(pfad) ? readFileSync(pfad, "utf8") : "";
 }
 
-/** Ganze Tage zwischen dem Importzeitpunkt und dem Stichtag. */
+// GEURTEILT WIRD GEGEN DEN TERMIN, NICHT GEGEN EIN ALTER (09.09.2026).
+//
+// Hier standen bis dahin zwei Tagesschwellen: ab 45 Tagen gelb, ab 70 rot. Sie
+// haben den einzigen Ausfall, den es je gab, vollständig verschlafen. Der
+// Import vom 05.09.2026 schlug fehl (der Server der Behörde war vom Läufer aus
+// nicht erreichbar); der Bestand war an diesem Tag 31 Tage alt, also grün. Gelb
+// wäre er am 19.09. geworden — und Gelb erzeugt keine Nachricht —, rot am
+// 14.10., als der Oktober-Lauf die Lücke längst stillschweigend geschlossen
+// hätte. Bemerkt hat es am 09.09. ein Mensch, zufällig.
+//
+// Eine Tagesschwelle KANN das nicht: Sie misst den Abstand zum letzten Erfolg,
+// nicht den zum letzten Termin. „Ein Lauf ist ausgefallen" ist aber genau eine
+// Aussage über den Termin. Das Urteil kommt deshalb aus dem Zeitplan der Action
+// selbst (lib/mastr-import-plan.ts) — dieselbe Quelle, aus der auch der
+// Importlauf entscheidet, ob er noch etwas zu tun hat.
+//
+// Das ALTER in Tagen bleibt, aber nur noch als Auskunft in der Protokollzeile:
+// Es ist gut zu lesen und beurteilt nichts mehr.
+
+/** Ganze Tage zwischen dem Importzeitpunkt und dem Stichtag — reine Auskunft. */
 export function mastrAlterTage(importedAt: string, heute: Date): number {
   const ms = heute.getTime() - Date.parse(importedAt);
   return Math.floor(ms / (24 * 60 * 60 * 1000));
 }
 
-export type MastrFrische = { importedAt: string; alterTage: number; urteil: "gruen" | "gelb" | "rot" };
+export type MastrFrische = {
+  importedAt: string;
+  alterTage: number;
+  /** `null` = Zeitplan der Action nicht lesbar, also kein Urteil möglich. */
+  befund: ImportPlanBefund | null;
+};
 
 // ─── Schreibt der Code Felder, die die Tabelle gar nicht hat? ────────────────
 //
@@ -1041,8 +1064,16 @@ async function messeMastrFrische(): Promise<MastrFrische | null> {
     const rows = (await r.json()) as { imported_at?: string }[];
     const importedAt = rows?.[0]?.imported_at;
     if (!importedAt || Number.isNaN(Date.parse(importedAt))) return null;
-    const alterTage = mastrAlterTage(importedAt, new Date());
-    return { importedAt, alterTage, urteil: mastrFrischeVerdict(alterTage) };
+    const jetzt = new Date();
+    const plan = importTageAusZeitplan(leseWorkflow(MASTR_WORKFLOW));
+    return {
+      importedAt,
+      alterTage: mastrAlterTage(importedAt, jetzt),
+      // Der Datenstand ist ein Kalendertag in Weltzeit (er kommt aus dem
+      // Tagesstempel im Dateinamen der Behörde), deshalb genügt hier das
+      // Abschneiden des hereingereichten Zeitstempels.
+      befund: plan ? importPlanBefund(importedAt.slice(0, 10), plan, jetzt) : null,
+    };
   } catch {
     return null;
   }
@@ -2009,22 +2040,34 @@ async function main() {
   // bemerkt.
   const mastr = await messeMastrFrische();
   if (mastr) {
-    lines.push(`MaStR-Datenstand: ${mastr.importedAt.slice(0, 10)} (${mastr.alterTage} Tage alt).`);
-    if (mastr.urteil === "rot") {
-      forClaude.push(
-        `Der Anlagenbestand im Atlas ist ${mastr.alterTage} Tage alt (Stand ${mastr.importedAt.slice(0, 10)}), ` +
-          `damit sind mindestens zwei monatliche Importe ausgefallen. Über 11.000 Gemeindeseiten zeigen ` +
-          `Zahlen von vorletztem Monat — sichtbar am Datenstand, aber sonst völlig unauffällig. ` +
-          `Zu tun: den MaStR-Lauf lokal nachholen (scripts/mastr-refresh.ts, danach den Rollup auffrischen — ` +
-          `ohne das bleibt der Atlas auf den alten Aggregaten). Der Autofix in GitHub Actions kann das NICHT: ` +
-          `Er darf die Datenbank nicht anfassen, und der Gesamtdatenexport wird dort auch nicht geladen. ` +
-          `Er soll deshalb berichten statt es zu versuchen.`,
-      );
-    } else if (mastr.urteil === "gelb") {
+    const stand = mastr.importedAt.slice(0, 10);
+    lines.push(`MaStR-Datenstand: ${stand} (${mastr.alterTage} Tage alt).`);
+    if (!mastr.befund) {
+      // Kein Zeitplan, kein Termin, kein Urteil. Das MUSS auffallen: Eine
+      // Aufsicht, die sich bei einem unlesbaren Zeitplan lautlos abschaltet,
+      // ist von keiner Aufsicht nicht zu unterscheiden.
       warnings.push(
-        `MaStR-Daten sind ${mastr.alterTage} Tage alt (Stand ${mastr.importedAt.slice(0, 10)}) — ` +
-          `ein monatlicher Import fehlt.`,
+        `MaStR-Import: Der Zeitplan der Action (${MASTR_WORKFLOW}) ist nicht lesbar — ohne Termin gibt es ` +
+          `kein Urteil darüber, ob ein Import ausgefallen ist. Nachsehen, ob die Datei noch existiert und ` +
+          `ihr Zeitplan noch als fester Tag des Monats geschrieben ist.`,
       );
+    } else {
+      // Zwei Signale, eine Meldung: der Termin (spät, aber beweiskräftig) und
+      // der Ausgang des letzten Laufs (sofort, aber allein kein Beweis).
+      const akten = await letzteLaeufe(MASTR_WORKFLOW);
+      const meldung = importlaufMeldung(mastr.befund, akten[0]?.conclusion ?? null);
+      if (meldung?.stufe === "claude") {
+        forClaude.push(
+          `Der monatliche Import des Anlagenbestands ist ausgefallen (${meldung.text}); in der Datenbank ` +
+            `steht weiterhin ${stand}. Über 11.000 Gemeindeseiten zeigen damit die Zahlen des Vormonats — ` +
+            `sie antworten normal, sind schnell und sehen richtig aus. ` +
+            `Zu tun: den Lauf „MaStR Refresh" ansehen (gh run list --workflow=${MASTR_WORKFLOW}) und neu ` +
+            `anstoßen. Der Autofix in GitHub Actions soll das NICHT selbst versuchen: Er darf die Datenbank ` +
+            `nicht anfassen, und der Gesamtdatenexport wird dort auch nicht geladen — berichten genügt.`,
+        );
+      } else if (meldung) {
+        warnings.push(`MaStR-Import: ${meldung.text}`);
+      }
     }
   } else {
     // Kein Urteil über die Frische, sondern über den Abruf. Beides zu vermengen
