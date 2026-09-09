@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { v, iconSizes } from "../lib/theme";
 import {
   IconDownload,
+  IconVideo,
   IconShare,
   IconLink,
   IconWhatsApp,
@@ -44,6 +45,9 @@ function clippendeGrenze(el: HTMLElement): { left: number; right: number } {
 
 export interface ChartActionBarProps {
   onDownload: () => void;
+  /** Animierte Charts: die Animation als Video aufnehmen (läuft in Echtzeit). */
+  onDownloadVideo?: () => void;
+  isRecording?: boolean;
   onCopyLink: () => void;
   onWhatsApp: () => void;
   onTwitter: () => void;
@@ -84,6 +88,8 @@ export interface ChartActionBarProps {
  */
 export default function ChartActionBar({
   onDownload,
+  onDownloadVideo,
+  isRecording = false,
   onCopyLink,
   onWhatsApp,
   onTwitter,
@@ -195,6 +201,17 @@ export default function ChartActionBar({
                 <div style={S.divider} />
               </>
             )}
+            {onDownloadVideo && (
+              <>
+                <MenuItem
+                  icon={IconVideo}
+                  label={isRecording ? "Wird aufgenommen…" : "Als Video speichern"}
+                  onClick={run(onDownloadVideo)}
+                  disabled={isRecording}
+                />
+                <div style={S.divider} />
+              </>
+            )}
             <MenuItem icon={IconLink} label="Link kopieren" onClick={copyLink} />
             {canNativeShare && onShareImage && (
               <MenuItem icon={IconShare} label="Als Bild teilen" onClick={run(onShareImage)} />
@@ -237,6 +254,16 @@ export default function ChartActionBar({
           style={{ ...btn, opacity: isExporting ? 0.5 : 1, cursor: isExporting ? "wait" : "pointer" }}
         >
           <IconDownload size={icon} />
+        </button>
+      )}
+      {onDownloadVideo && (
+        <button
+          onClick={onDownloadVideo}
+          disabled={isRecording}
+          title={isRecording ? "Video wird aufgenommen – die Animation läuft dafür einmal durch" : "Als Video herunterladen"}
+          style={{ ...btn, opacity: isRecording ? 0.5 : 1, cursor: isRecording ? "wait" : "pointer" }}
+        >
+          <IconVideo size={icon} />
         </button>
       )}
 

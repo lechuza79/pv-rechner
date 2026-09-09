@@ -188,6 +188,20 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: ["SelectField"],
   },
   {
+    datei: "components/Auswahl.tsx",
+    name: "Auswahl",
+    zweck:
+      "Das Multitool: Pfeile zum Durchsteppen, Menü zum Springen — für Listen, die man sowohl durchgehen als auch anspringen will.",
+    gruppe: "eingabe",
+    ebene: "baustein",
+    // Im Aufbau, nicht verbindlich: Drei ältere Fassungen desselben Elements
+    // stehen noch in den öffentlichen Widgets (Länderwähler im Zubau, Zeitraum
+    // im Strommix als Embed und als Seite). Solange die nicht nachgezogen sind,
+    // wäre „verbindlich" eine Zusage, die das Repo nicht einhält.
+    stand: "im-aufbau",
+    bestehtAus: ["Icons"],
+  },
+  {
     datei: "components/Switch.tsx",
     name: "Switch",
     zweck: "Ein/Aus für eine Annahme — „rechnet mit“ oder „rechnet nicht mit“.",
@@ -267,6 +281,30 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: [],
   },
   {
+    datei: "components/KlebenderKnopf.tsx",
+    name: "KlebenderKnopf",
+    zweck:
+      "Wiederholt den nächsten Schritt als klebende Leiste am unteren Rand — aber nur, solange der echte Knopf nicht im Bild ist.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: [],
+    keinBeispielWeil:
+      "Der Baustein zeigt sich erst, wenn der beobachtete Knopf aus dem Bild gescrollt ist. In einer Galerie mit vielen kleinen Beispielen nebeneinander ist er entweder immer sichtbar (dann ist es nicht dieser Baustein) oder nie — und eine klebende Leiste am Fenster­rand würde die übrigen Beispiele überdecken. Zu sehen ist er im Ergebnis jedes Rechners.",
+  },
+  {
+    datei: "components/ErgebnisAnBetrieb.tsx",
+    name: "ErgebnisAnBetrieb",
+    zweck:
+      "Der Rückkanal auf der betriebseigenen Rechner-Seite: Der Nutzer schickt sein fertiges Ergebnis an genau den Betrieb, von dessen Website er kam — nach dem Ergebnis, nie davor.",
+    gruppe: "eingabe",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: ["Icons", "Modal", "FlowNav"],
+    keinBeispielWeil:
+      "Der Baustein schickt beim Absenden eine echte Mail an einen echten Handwerksbetrieb. Ein Beispiel in der Galerie wäre entweder eine Attrappe mit totem Knopf — genau die zweite Fassung, gegen die es dieses Register gibt — oder es verschickt bei jedem Klick eines Neugierigen Post an einen Fremden. Zu sehen ist er auf jeder betriebseigenen Rechner-Seite unter dem Ergebnis.",
+  },
+  {
     datei: "components/InfoTooltip.tsx",
     name: "InfoTooltip",
     zweck:
@@ -305,6 +343,41 @@ export const BAUSTEINE: Baustein[] = [
     ebene: "baustein",
     stand: "verbindlich",
     bestehtAus: ["Icons", "Switch"],
+  },
+  {
+    datei: "components/EinbettenDialog.tsx",
+    name: "EinbettenDialog",
+    zweck:
+      "Der fertige Einbettungs-Code für genau das, was gerade auf dem Schirm steht — statt eines Sprungs in die Widget-Galerie.",
+    gruppe: "widget",
+    ebene: "zusammensetzung",
+    stand: "im-aufbau",
+    bestehtAus: ["Modal"],
+  },
+  {
+    datei: "components/StorySlider.tsx",
+    name: "StorySlider",
+    zweck:
+      "Eine Reihe Teaser, die man wischt — mit Pfeilen, die nur erscheinen, wenn es etwas zu blättern gibt.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: ["Icons"],
+    gegenprobe: {
+      // Der Browser rastet selbst ein; wer das zweite Mal von Hand baut,
+      // entscheidet Wischverhalten, Schrittweite und Pfeil-Zustand neu — und
+      // dann sieht dieselbe Reihe auf zwei Seiten verschieden aus.
+      muster: "scrollSnapType",
+      bedeutet:
+        "Hier entsteht eine zweite Teaser-Reihe von Hand. Wischen, Einrasten, Schrittweite und der Zustand der Pfeile gehören an eine Stelle — sonst blättert dieselbe Reihe auf der Ortsseite anders als auf der Startseite.",
+      ausser: [
+        {
+          datei: "components/atlas/RankingTable.tsx",
+          grund:
+            "Dort rasten SPALTEN einer breiten Tabelle ein, keine Teaser — hinter einer festgehaltenen ersten Spalte, weshalb die Einrastkante um deren Breite verschoben ist. Eine Teaser-Reihe kennt weder feste Spalte noch verschobene Kante; die beiden zusammenzulegen hieße, einer von beiden ihr Verhalten zu nehmen.",
+        },
+      ],
+    },
   },
   {
     datei: "components/StickyCta.tsx",

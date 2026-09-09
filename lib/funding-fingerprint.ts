@@ -14,7 +14,32 @@ import { createHash } from "node:crypto";
  * zählen. Bewusst grob: Ein zu feiner Abdruck schlägt bei jedem Deploy der Stadt
  * an, wird dann ignoriert — und so stirbt ein Wächter.
  */
-export function fingerprintOf(html: string): string {
+/**
+ * Wie viele Token eine Seite mindestens tragen muss, damit ihr Abdruck etwas
+ * bedeutet.
+ *
+ * WARUM ES DIE SCHRANKE GIBT (09.09.2026): Ein leerer Abruf ergab bis dahin
+ * einen völlig gültigen Abdruck — den Hash über nichts. Der ist stabil, also
+ * meldete der Wächter für eine Seite, die er gar nicht lesen konnte, jede Nacht
+ * „unverändert"; eine echte Änderung hätte er nie gesehen. Dieselbe Fehlerklasse
+ * wie ein Abruf, der scheitert und trotzdem grün meldet — nur langlebiger, weil
+ * niemand hinsieht, solange nichts anschlägt.
+ *
+ * Die Zahl ist gemessen, nicht gegriffen: Fünf echte Förderseiten am 09.09.2026
+ * abgerufen, die dünnste trug 365 Token, die dickste 1.164. Eine Fehlerseite
+ * („403 Zugriff verweigert") trägt drei. Fünfzig liegt weit unter jeder echten
+ * Seite und weit über jeder Hülle.
+ */
+export const FINGERPRINT_MIN_TOKEN = 50;
+
+/**
+ * Fingerabdruck oder `null`, wenn die Seite zu wenig hergibt.
+ *
+ * `null` heißt „nicht gelesen", nicht „leer" — die Aufrufer behandeln es wie
+ * einen gescheiterten Abruf, nicht wie eine unveränderte Seite. Der Rückgabetyp
+ * erzwingt das: Ein Aufrufer, der den Fall vergisst, kompiliert nicht.
+ */
+export function fingerprintOf(html: string): string | null {
   const roh = html
     .replace(/<(script|style|noscript|svg)[^>]*>[\s\S]*?<\/\1>/gi, " ")
     .replace(/<!--[\s\S]*?-->/g, " ")
@@ -59,6 +84,9 @@ export function fingerprintOf(html: string): string {
   const tokens = roh
     .split(/[^0-9a-zäöüß€%]+/)
     .filter((t) => t.length >= zeichen || /[0-9€%]/.test(t));
+
+  // Zu dünn, um etwas zu bedeuten: leere Antwort, Fehlerseite, Bot-Prüfung.
+  if (tokens.length < FINGERPRINT_MIN_TOKEN) return null;
 
   // SORTIERT, nicht in Dokumentreihenfolge — der Abdruck fragt nach dem INHALT,
   // nicht nach seiner Anordnung.

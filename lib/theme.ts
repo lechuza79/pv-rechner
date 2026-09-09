@@ -287,6 +287,20 @@ export const headerContentGap = space.huge; // 48
  */
 export const faqContentGap = space.huge * 2; // 96
 
+/**
+ * Wie viel Platz die klebende Aktionsleiste am unteren Rand gerade belegt.
+ *
+ * Kein Design-Token, sondern ein Layout-Zustand: `KlebenderKnopf` misst seine
+ * tatsächliche Höhe und schreibt sie ans Wurzelelement, eingefahren null. Wer
+ * sonst etwas unten festpinnt, rechnet sie auf seinen Abstand — der Toast tut
+ * das, weil die PLZ-Aufforderung sonst genau unter der Leiste lag und nicht
+ * mehr lesbar war.
+ *
+ * Der Name steht hier und nicht in einem der beiden Bausteine, damit keiner
+ * vom anderen abhängt: Sie kennen nur diese Variable, nicht einander.
+ */
+export const KLEBELEISTE_VAR = "--sc-klebeleiste";
+
 /** CSS variable reference for inline styles: v('--color-accent') → 'var(--color-accent)' */
 export const v = (name: TokenName): string => `var(${name})`;
 

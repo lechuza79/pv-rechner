@@ -3,6 +3,8 @@
 import { useRef, useState } from "react";
 import { v, space, pad } from "../../lib/theme";
 import { FeedVorschau } from "./FeedVorschau";
+import { SeitenVorschau, type OrtsVorschau } from "./SeitenVorschau";
+import { Umschalter } from "./Umschalter";
 import { VorlagenEditor } from "./VorlagenEditor";
 import { Kennung } from "./Kennung";
 import { fuelle } from "../../lib/social-vorlage";
@@ -36,8 +38,16 @@ export function StoryTisch({
   kategorieHinweis,
   ohneTitel,
   onPruefung,
+  orts,
 }: {
   post: SocialPost;
+  /**
+   * Was diese Geschichte auf ihrer ORTSSEITE zeigt.
+   *
+   * Nur bei Ortsgeschichten gesetzt; ohne die Angabe kennt der Tisch die
+   * Seitenfassung nicht und bietet sie auch nicht an.
+   */
+  orts?: OrtsVorschau;
   pruefungen: Pruefung[];
   /** Was die mechanische Pruefung an dieser Fassung festgestellt hat. */
   befunde: MechanikBefund[];
@@ -79,6 +89,9 @@ export function StoryTisch({
    */
   kategorieHinweis?: { name: string; href: string };
 }) {
+  // Welche Ausgabeform gerade beurteilt wird. Der Feed ist der Ausgangspunkt:
+  // Er ist die Form, die es zu JEDEM Beitrag gibt.
+  const [ansicht, setAnsicht] = useState<"feed" | "seite">("feed");
   const [stil, setStil] = useState<KartenStil>(post.bild?.stil ?? KARTEN_STIL_STANDARD);
   const [form, setForm] = useState<PostBild["art"] | null>(post.bild?.art ?? null);
   const [entwurf, setEntwurf] = useState(post.vorlage ?? "");
@@ -199,8 +212,27 @@ export function StoryTisch({
         flexWrap: "wrap",
       }}
     >
-      <div style={{ flex: "0 0 auto" }} ref={karte}>
-        <FeedVorschau bild={bild!} text={text} breite={440} />
+      <div style={{ flex: "0 0 auto" }}>
+        {/* AUSGABEFORM: Feed oder Seite. Ein Beitrag kann beides sein, und die
+            beiden sehen verschieden aus — deshalb wird auch beides beurteilt
+            und nicht das eine aus dem anderen geschlossen. */}
+        <div style={{ marginBottom: space.md }}>
+          <Umschalter
+            eintraege={[
+              { wert: "feed", text: "Feed" },
+              { wert: "seite", text: "Auf der Seite" },
+            ]}
+            wert={ansicht}
+            onWaehle={setAnsicht}
+            ariaLabel="Ausgabeform"
+          />
+        </div>
+        {/* Die Bildaufnahme greift auf den Feed-Bereich: Das veröffentlichte
+            Bild ist das 4:5-Bild, nicht die Seitenfassung. */}
+        <div ref={karte} hidden={ansicht !== "feed"}>
+          <FeedVorschau bild={bild!} text={text} breite={440} />
+        </div>
+        {ansicht === "seite" && <SeitenVorschau post={post} orts={orts} />}
       </div>
 
       <div style={{ flex: "1 1 440px", minWidth: 340 }}>
@@ -236,66 +268,24 @@ export function StoryTisch({
             kann, wählt irgendwann jemand. */}
         {formen.length > 1 && (
           <div style={{ marginTop: space.lg }}>
-            <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginBottom: space.xs }}>
-              Bildform
-            </div>
-            <div style={{ display: "flex", gap: space.xs, flexWrap: "wrap" }}>
-              {formen.map((f) => {
-                const aktiv = f === (form ?? post.bild?.art);
-                return (
-                  <button
-                    key={f}
-                    type="button"
-                    aria-pressed={aktiv}
-                    onClick={() => setForm(f)}
-                    style={{
-                      padding: pad("xs", "md"),
-                      borderRadius: v("--radius-sm"),
-                      border: `1px solid ${aktiv ? v("--color-accent") : v("--color-border")}`,
-                      background: aktiv ? v("--color-accent-dim") : "transparent",
-                      color: aktiv ? v("--color-accent") : v("--color-text-secondary"),
-                      cursor: "pointer",
-                      fontSize: v("--font-size-small"),
-                    }}
-                  >
-                    {BILDFORM_NAME[f]}
-                  </button>
-                );
-              })}
-            </div>
+            <Umschalter
+              label="Bildform"
+              eintraege={formen.map((f) => ({ wert: f, text: BILDFORM_NAME[f] }))}
+              wert={(form ?? post.bild?.art) as PostBild["art"]}
+              onWaehle={setForm}
+            />
           </div>
         )}
 
         {/* Farbschema: Eigenschaft der Karte, nicht der Ansicht. Wird sofort
             gespeichert und wandert damit ins veröffentlichte Bild mit. */}
         <div style={{ marginTop: space.lg }}>
-          <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginBottom: space.xs }}>
-            Farbschema der Karte
-          </div>
-          <div style={{ display: "flex", gap: space.xs, flexWrap: "wrap", alignItems: "center" }}>
-            {KARTEN_STILE.map((s) => {
-              const aktiv = s === stil;
-              return (
-                <button
-                  key={s}
-                  type="button"
-                  aria-pressed={aktiv}
-                  onClick={() => setStil(s)}
-                  style={{
-                    padding: pad("xs", "md"),
-                    borderRadius: v("--radius-sm"),
-                    border: `1px solid ${aktiv ? v("--color-accent") : v("--color-border")}`,
-                    background: aktiv ? v("--color-accent-dim") : "transparent",
-                    color: aktiv ? v("--color-accent") : v("--color-text-secondary"),
-                    cursor: "pointer",
-                    fontSize: v("--font-size-small"),
-                  }}
-                >
-                  {KARTEN_STIL_NAME[s]}
-                </button>
-              );
-            })}
-          </div>
+          <Umschalter
+            label="Farbschema der Karte"
+            eintraege={KARTEN_STILE.map((x) => ({ wert: x, text: KARTEN_STIL_NAME[x] }))}
+            wert={stil}
+            onWaehle={setStil}
+          />
         </div>
 
         {/* Freigabe: hängt an Text UND Bild, und wird hier auch erteilt.

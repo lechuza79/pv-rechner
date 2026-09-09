@@ -122,7 +122,7 @@ export default function RenditeVergleich(p: RenditeVergleichProps) {
   return (
     <div style={box}>
       <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 2 }}>
-        Wie sich die Rendite verschiebt
+        Wie sich der Gewinn verschiebt
       </div>
       <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6, marginBottom: 12 }}>
         Dieselbe Anlage ({p.kwp} kWp), derselbe Haushalt — nur andere Konditionen für den Strom, der
@@ -155,7 +155,7 @@ export default function RenditeVergleich(p: RenditeVergleichProps) {
 
       {/* Alle Kurven gleich stark: Hier ist der Vergleich der Inhalt, nicht eine
           hervorgehobene Auswahl. */}
-      <Chart scenarios={scenarios} kosten={p.kosten} dimOthers={false} />
+      <Chart scenarios={scenarios} kosten={p.kosten} dimOthers={false} startJahr={jahr} />
 
       <div style={{
         display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "center",

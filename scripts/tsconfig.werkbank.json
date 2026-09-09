@@ -1,0 +1,7 @@
+{
+  "//": "Nur für die Bildform-Werkbank. Die Haupt-tsconfig steht auf \"preserve\", weil der Next-Bundler das JSX übersetzt; außerhalb davon muss es jemand tun, und die automatische Laufzeit spart den React-Import in jeder Produktdatei.",
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx"
+  }
+}

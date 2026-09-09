@@ -164,28 +164,6 @@ const ZAHLEN: Zahlenpruefung[] = [
     behauptung: () => greif(claudeMd, /NICHT gegen den Umschaltpunkt \((\d+)\s*px\)/),
   },
   {
-    was: "Weiterleitungen gesamt in der Routen-Konfiguration",
-    wahrheit: () => String((lies("next.config.js").match(/source:/g) ?? []).length),
-    behauptung: () => greif(claudeMd, /der (\d+) Weiterleitungen in `next\.config\.js`/),
-  },
-  {
-    was: "Davon Foerderseiten",
-    // Gezaehlt wird der PFAD der Foerderseiten, nicht das Wort „foerderung".
-    // Vorher genuegte das Wort irgendwo in der Zeile — damit zaehlte die
-    // Weiterleitung des Waermepumpen-Foerderratgebers als Foerderseite mit, und
-    // die Anleitung sagte 181, wo 180 richtig war. Aufgefallen erst, als am
-    // 26.08.2026 eine zweite Ratgeber-Weiterleitung dazukam und die Zahl auf 182
-    // sprang, obwohl keine Foerderseite entstanden war. Eine Zaehlung, die auf
-    // ein Wort statt auf die Sache prueft, wird still ungenau.
-    wahrheit: () =>
-      String(
-        lies("next.config.js")
-          .split("\n")
-          .filter((z) => z.includes("source:") && z.includes('"/photovoltaik-foerderung')).length,
-      ),
-    behauptung: () => greif(claudeMd, /(\d+) der \d+ Weiterleitungen in `next\.config\.js`/),
-  },
-  {
     was: "Zeitlimit der Datenbank-Notbremse",
     wahrheit: () => {
       const ms = greif(lies("lib/db-timeout.ts"), /DB_READ_TIMEOUT_MS\s*=\s*(\d+)/);
@@ -194,6 +172,50 @@ const ZAHLEN: Zahlenpruefung[] = [
     behauptung: () => greif(claudeMd, /am (\d+)-s-Fast-Fail/),
   },
 ];
+
+/**
+ * Aussagen, die keine ZAHL sind — geprueft wird, ob sie noch zutrifft.
+ *
+ * WARUM DAS EIGENE LISTE IST: Manche Angaben in der Anleitung tragen ein
+ * Argument, keinen Messwert. Die Zahl der Weiterleitungen stand hier zwei Tage
+ * lang als Register-Eintrag und ging in dieser Zeit ZWEIMAL rot — nicht, weil
+ * jemand etwas falsch gemacht haette, sondern weil jede neue Foerderseite eine
+ * Weiterleitung mitbringt. Ein Foerder-Lauf machte damit den Lauf einer
+ * fremden Sitzung rot, die damit nichts zu tun hatte.
+ *
+ * DIE ZAHL WAR NIE DAS ARGUMENT. Der Satz sagt: Der Foerderbereich hat die
+ * Rechnung fuer flache Adressen schon einmal bezahlt — und was ihn traegt, ist
+ * das VERHAELTNIS. Wer den Anteil festschreibt, macht aus einem Argument einen
+ * Messwert, der bei normaler Arbeit driftet.
+ *
+ * Die Schwelle aufzuweichen waere hier NICHT der bequeme Ausweg, den das
+ * Waechter-Gate verbietet: Geprueft wird weiterhin, ob die Aussage stimmt —
+ * nur eben die Aussage und nicht eine Zahl, die sie gar nicht macht.
+ */
+const AUSSAGEN: { was: string; steht: () => boolean; gilt: () => boolean; sonst: string }[] = [
+  {
+    was: "Foerderseiten stellen die Masse der Weiterleitungen",
+    // Der Umlaut ist der Punkt: Die erste Fassung suchte „Foerderseiten" und
+    // fand den Satz nie — die Pruefung meldete grün, ohne je gelaufen zu sein.
+    // Genau die Form, vor der die Gegenprobe schuetzt.
+    steht: () => /Weiterleitungen in `next\.config\.js` sind Förderseiten/.test(claudeMd),
+    gilt: () => {
+      const zeilen = lies("next.config.js").split("\n").filter((z) => z.includes("source:"));
+      // Gezaehlt wird der PFAD der Foerderseiten, nicht das Wort „foerderung".
+      // Vorher genuegte das Wort irgendwo in der Zeile — damit zaehlte die
+      // Weiterleitung des Waermepumpen-Foerderratgebers als Foerderseite mit.
+      const foerder = zeilen.filter((z) => z.includes('"/photovoltaik-foerderung')).length;
+      return zeilen.length > 0 && foerder / zeilen.length >= 0.75;
+    },
+    sonst: "Weniger als drei Viertel der Weiterleitungen sind Foerderseiten — der Satz traegt nicht mehr.",
+  },
+];
+
+for (const a of AUSSAGEN) {
+  if (!a.steht()) continue;
+  geprueft++;
+  if (!a.gilt()) befunde.push({ was: a.was, sagt: "trifft zu", stimmt: a.sonst, wo: "CLAUDE.md" });
+}
 
 for (const p of ZAHLEN) {
   geprueft++;

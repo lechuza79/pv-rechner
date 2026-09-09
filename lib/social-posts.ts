@@ -12,11 +12,14 @@
 // lib/social-kennzahlen.ts (server-only) und werden hereingereicht.
 
 import { fmtPvLeistung } from "./atlas-format";
+import { heuteInBerlin } from "./zeit";
 import { zeitraumSeitStichtag } from "./anlagenbestand";
+import { sourceLabel } from "./data-sources";
 import { feedInRatesFor, naechsteDegressionIso } from "./feedin-config";
 import { eegVerfahrenSatz } from "./eeg-reform-config";
 import { PERCAPITA_SERIES, YEARS_PERCAPITA } from "./country-comparison-percapita";
 import type { KategorieSchluessel } from "./redaktions-kategorien";
+import { DATA_SOURCES } from "./data-sources";
 import { KARTEN_STIL_STANDARD, istKartenStil, type KartenStil } from "./social-karten-stil";
 import { moeglicheFormen as formenFuer } from "./social-bildformen";
 import { fuelle, type PlatzhalterInfo } from "./social-vorlage";
@@ -58,6 +61,23 @@ export type SocialKennzahlen = {
     privatDachKwp: number;
     gewerbeDachKwp: number;
     freiflaecheKwp: number;
+    /**
+     * Steckersolar — der VIERTE Teil der Solarleistung, gemessen und nicht als
+     * Differenz gerechnet.
+     *
+     * Das Register führt jede Solaranlage in genau einem Segment, und
+     * Steckersolar ist eines davon; die drei Dach- und Flächensegmente ergeben
+     * deshalb nicht das Ganze. Nachgemessen am 27.08.2026: Privatdach 36,203 +
+     * Gewerbe 44,544 + Freifläche 44,808 + Steckersolar 1,560 = 127,115 GWp,
+     * unerklärter Rest exakt null.
+     *
+     * Warum als eigenes Feld und nicht als „was übrig bleibt": Eine Restgröße
+     * sagt nur, dass etwas fehlt — nicht was. Der Beitrag behauptete auf einer
+     * Überschlagsrechnung, es sei „vor allem Steckersolar"; das war richtig, aber
+     * ungeprüft, und eine ungeprüfte Sachaussage in einem Bild ist genau die
+     * Sorte Fehler, gegen die dieses Modul gebaut ist.
+     */
+    steckersolarKwp: number;
     solarGesamtKwp: number;
   };
   ueberEinwohner: {
@@ -158,6 +178,15 @@ export type BildSerie = {
    *  genau der Fläche, die weitergeteilt wird. Im Bild aufgefallen, nicht im Test. */
   stellen?: number;
   hervorgehoben?: boolean;
+  /**
+   * Derselbe Wert über die Zeit, ein Eintrag je Stelle der Zeitachse
+   * (`PostBild.achse`). Nur für die Verlaufsform.
+   *
+   * Der letzte Eintrag MUSS `wert` sein — sonst zeigt die Kurve etwas anderes
+   * als die Zahl daneben, und das ist die Fehlerklasse, gegen die dieses Modul
+   * gebaut ist. Ein Test hält beide aneinander.
+   */
+  verlauf?: number[];
 };
 
 /**
@@ -187,7 +216,7 @@ export type PostBild = {
    * Längen nebeneinander abschätzen und nichts über eine Grundmenge annehmen,
    * die es nicht gibt.
    */
-  art: "vergleich" | "kennzahl" | "donut" | "saeule" | "umriss";
+  art: "vergleich" | "kennzahl" | "donut" | "saeule" | "umriss" | "rangliste" | "aufteilung" | "verlauf";
   /** Die Kernaussage, im Bild als Titel gesetzt — nicht die neutrale Achsenbeschriftung. */
   aussage: string;
   /** Was gemessen wurde. Steht klein unter der Aussage. */
@@ -208,6 +237,52 @@ export type PostBild = {
    * nichts bedeutet.
    */
   ganzes?: number;
+  /**
+   * Der Wert, an dem eine Länge NULL wäre — falls das nicht die Null ist.
+   *
+   * Ein Wachstumsfaktor beginnt bei 1: „1,0-fach" heißt unverändert. Solche
+   * Größen lassen sich NICHT als Balken zeigen, und das Feld ist deshalb kein
+   * Rechenparameter, sondern ein Ausschluss.
+   *
+   * Warum kein Rechenparameter — am Bild entschieden, beide Fassungen gesehen:
+   * Zeichnet man die Länge ab 1, füllt Thüringen (1,75) 22 Prozent der Länge von
+   * Hamburg (4,38). Das ist als Aussage über den ZUWACHS richtig (75 gegen 338
+   * Prozent), steht aber neben der Zahl 1,75 — und wer die beiden Zahlen ins
+   * Verhältnis setzt, kommt auf 40 Prozent und liest im Balken einen Fehler.
+   * Zeichnet man ab 0, stimmt die Länge mit den Zahlen überein und verzerrt die
+   * Aussage: Ein Land ganz ohne Zuwachs bekäme fast ein Viertel der Länge.
+   *
+   * Beides ist falsch, und die Beschriftung entscheidet: Eine Zahl, die ab null
+   * zählt, gehört nicht an einen Balken, der es nicht tut. Formen, die Werte als
+   * Länge NEBEN ihrer Zahl zeigen, weisen solche Reihen deshalb ab.
+   */
+  nullpunkt?: number;
+  /**
+   * Die vollständige geordnete Grundgesamtheit, aus der die Serien stammen.
+   *
+   * KEINE zweite Wahrheit neben `serien`: Die Serien sind die zwei bis drei
+   * Werte, die der Beitragstext nennt, die Reihe ist die Liste, aus der sie
+   * herausgegriffen wurden. Ein Test verlangt, dass jede Serie in der Reihe
+   * vorkommt — mit demselben Wert. Ohne diese Bindung wären es zwei Listen, die
+   * beim nächsten Datenstand auseinanderlaufen.
+   *
+   * Ausschließlich für die Rangliste. Die übrigen Formen zeigen weiter die
+   * Serien, damit ein Umschalten die Aussage nicht wechselt.
+   */
+  reihe?: BildSerie[];
+  /**
+   * Die Zeitachse für die Verlaufsform — ein Eintrag je Wert in `BildSerie.verlauf`.
+   */
+  achse?: number[];
+  /**
+   * Wie der Teil heißt, der bei einer Aufteilung zum Ganzen fehlt.
+   *
+   * Pflicht, sobald die Serien das Ganze nicht ausschöpfen. Ein namenloser Rest
+   * im Bild ist die Fehlerklasse „Weggelassenes sichtbar erklären": Bei den drei
+   * Solarsegmenten fehlen 1,2 Prozent zu hundert, und das ist im Wesentlichen
+   * Steckersolar — eine Angabe, keine Lücke.
+   */
+  restLabel?: string;
   /**
    * Steht die Einheit an der Zahl?
    *
@@ -264,6 +339,33 @@ export type SocialPost = {
    * vermisst.
    */
   kategorie: KategorieSchluessel;
+  /**
+   * Über welchen ORT dieser Beitrag spricht — nur bei Ortsgeschichten.
+   *
+   * Eine zweite Dimension neben der Kategorie, KEINE eigene Kategorie: Die
+   * Ortsgeschichten verteilen sich über sieben Familien des Katalogs, und sie
+   * unter einem Reiter „Kommune" zusammenzufassen hieße, dieselbe Sache zweimal
+   * zu ordnen. Die Ansicht filtert deshalb nach Ort UND Kategorie.
+   *
+   * Fehlt bei den bundesweiten Beiträgen — die sprechen über Deutschland, und
+   * ein Ort daran wäre eine Aussage, die sie nicht treffen.
+   */
+  ort?: { regionId: string; name: string };
+  /**
+   * Die SORTE Geschichte — nur bei Ortsgeschichten.
+   *
+   * Der Unterschied zu den bundesweiten Beiträgen: Dort ist jeder Beitrag ein
+   * Einzelstück, hier ist er die Ausprägung eines Typs an einem Ort. „Stichtag"
+   * gibt es einmal je Gemeinde, also hundertfach — und gestaltet wird der TYP,
+   * nicht die Gemeinde (Betreiber, 06.09.2026: „nicht für jede Kommune einen
+   * Eintrag, sondern zusammengefasst den Storytyp beispielhaft anhand einer
+   * Kommune").
+   *
+   * Ohne dieses Feld ließe sich das nicht zusammenfassen: Die Kennung trägt bei
+   * einigen Typen einen Zusatz (den Monat, die Vergleichskategorie), taugt also
+   * nicht als Gruppierung.
+   */
+  storyArt?: string;
   kanal: ("linkedin" | "instagram")[];
   text: string;
   bild: PostBild | null;
@@ -301,6 +403,17 @@ const de = (n: number, stellen = 0) =>
   n.toLocaleString("de-DE", { minimumFractionDigits: stellen, maximumFractionDigits: stellen });
 
 /**
+ * Eine Jahreszahl. Ohne Tausenderpunkt — und deshalb eine eigene Funktion.
+ *
+ * Durch `de()` geschickt wird aus 2024 die Zeichenfolge „2.024". Das stand so im
+ * Untertitel des Bildes („Wind- und Solarstrom je Einwohner, 2.024") und im
+ * Beitragstext („Stand 2.024"), und aufgefallen ist es erst beim Ansehen des
+ * gerenderten Bildes. Eine Jahreszahl ist keine Menge; sie zählt nicht, sie
+ * benennt.
+ */
+const jahrText = (j: number) => String(j);
+
+/**
  * Einwohnerzahl gekürzt: 100.000 → „100k".
  *
  * Nur für die kleine Zeile unter einer Gruppe im Bild, wo „über 100.000
@@ -328,11 +441,85 @@ const MARKE = "Solar Check";
  * Im TEXT muss er stehen, damit die Erwähnung der Unternehmensseite ihn findet.
  * Im BILD steht daneben das Logo — dort wäre der Name ein zweites Mal dasselbe.
  */
-function quellenzeile(standIso: string, mitMarke: boolean): string {
-  const d = new Date(standIso);
-  const datum = d.toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" });
-  const basis = `Marktstammdatenregister (Bundesnetzagentur), Stand ${datum}. Eigene Berechnung`;
+/**
+ * Name und Lizenz kommen aus dem Quellenregister, nicht aus diesem Modul.
+ *
+ * DIE LIZENZ IST PFLICHT, und sie war getippt — also fehlte sie. Die mechanische
+ * Prüfung hat das gemeldet und den Versand gesperrt, was richtig ist; die
+ * Meldung war trotzdem der falsche Ort. Eine Angabe, die ohnehin gerechnet wird,
+ * darf gar nicht erst ohne Lizenz entstehen können — sonst steht dieselbe
+ * Korrektur bei jedem neuen Beitrag wieder an, und irgendwann schaltet jemand
+ * die Sperre ab, statt die Zeile zu reparieren.
+ *
+ * Die Sperre bleibt: Sie fängt weiterhin, wer eine Quellenzeile von Hand tippt.
+ */
+export type QuellenSchluessel = "mastr" | "ember" | "zensus";
+
+function quelleAus(schluessel: QuellenSchluessel, stand: string, mitMarke: boolean): string {
+  // Name, Lizenz UND Änderungshinweis kommen aus der zentralen Beschriftung —
+  // nicht aus einer eigenen Zusammensetzung der Registerfelder.
+  //
+  // Das war hier bereits die dritte Fassung derselben Angabe: Sie hängte für
+  // CC BY ein selbst formuliertes „Daten verändert" an und ließ den Hinweis, den
+  // das Register führt, weg — beim Anlagenregister damit ersatzlos, obwohl
+  // dl-de/by-2-0 genau ihn verlangt. Aus der Ferne sieht das aus wie eine
+  // Verbesserung (die Lizenz stand ja da); geschuldet sind aber DREI Teile, und
+  // der dritte fehlte. Dieselbe Falle hatte die Quellenkante schon einmal, als
+  // sie sich ihre Kurzform selbst baute und den Hinweis dabei verlor.
+  const basis = `${sourceLabel(DATA_SOURCES[schluessel])}. Stand ${stand}. Eigene Berechnung`;
   return mitMarke ? `${basis}, ${MARKE}.` : `${basis}.`;
+}
+
+/** Der Datenstand als deutsches Datum. */
+function standDatum(standIso: string): string {
+  return new Date(standIso).toLocaleDateString("de-DE", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+/**
+ * Die Quellenzeile für einen Beitrag, der aus MEHREREN Registern rechnet.
+ *
+ * Gebraucht seit den Ortsgeschichten: Die Wohnform-Geschichte rechnet auf dem
+ * Zensus, alle übrigen auf dem Anlagenregister. Eine gemeinsame Zeile über
+ * allen wäre für eine von ihnen falsch — und sie reist im Bild mit, also genau
+ * dort, wo die Lizenz sie verlangt.
+ *
+ * Jede Quelle bringt ihren VOLLEN Vermerk mit (Name, Lizenz, Änderungshinweis),
+ * verbunden mit Semikolon. Nicht gekürzt und nicht zusammengefasst: Was hier
+ * wegfällt, fällt ohne Fehlermeldung weg — dieselbe Falle, in die die
+ * Quellenkante und die einfache Quellenzeile schon je einmal getreten sind.
+ */
+export function quellenzeileMehrfach(
+  schluessel: QuellenSchluessel[],
+  standIso: string,
+  mitMarke: boolean,
+): string {
+  // Reihenfolge und Dubletten kommen vom Aufrufer; einmal genannt genügt.
+  const eindeutig = [...new Set(schluessel)];
+  if (eindeutig.length === 0) throw new Error("Quellenzeile ohne Quelle");
+  if (eindeutig.length === 1) return quelleAus(eindeutig[0], standDatum(standIso), mitMarke);
+  const namen = eindeutig.map((k) => sourceLabel(DATA_SOURCES[k])).join("; ");
+  const basis = `${namen}. Stand ${standDatum(standIso)}. Eigene Berechnung`;
+  return mitMarke ? `${basis}, ${MARKE}.` : `${basis}.`;
+}
+
+export function quellenzeile(standIso: string, mitMarke: boolean): string {
+  const datum = standDatum(standIso);
+  // AUS DEM REGISTER, nicht getippt: Der Name stand hier zusammen mit dem
+  // Datenstand als eine Zeichenkette, und dabei fiel die Lizenz weg —
+  // „Marktstammdatenregister (Bundesnetzagentur), Stand …, Eigene Berechnung"
+  // ohne „dl-de/by-2-0". Der Vermerk steht im BILD, also in dem Teil, der beim
+  // Weiterteilen mitreist und für den die Lizenzpflicht überhaupt der Grund war.
+  //
+  // Dieselbe Fehlerklasse hat das Projekt bei den drei CC-BY-Quellen schon
+  // bezahlt und ein zweites Mal in der Quellenkante, die sich ihre Kurzform
+  // selbst zusammenbaute. Ein Test darauf ist nur so scharf wie seine
+  // Bedingung — der hiesige ließ „Bundesnetzagentur" als Ersatz für eine Lizenz
+  // durchgehen.
+  return quelleAus("mastr", datum, mitMarke);
 }
 
 /**
@@ -591,6 +778,19 @@ export function postFreiflaeche(k: SocialKennzahlen): SocialPost {
         { label: oben.name, umriss: oben.name, wert: oben.freiflaecheAnteil, einheit: "%", stellen: 0, hervorgehoben: true },
         { label: unten.name, umriss: unten.name, wert: unten.freiflaecheAnteil, einheit: "%", stellen: 0 },
       ],
+      // Die vollständige Ordnung, aus der die beiden Serien stammen. Sie steht
+      // hier und nicht nur in den Belegen, damit die Rangliste sie zeigen kann —
+      // und weil der Beitrag ausdrücklich von der SPANNE spricht („von 9 bis 70
+      // Prozent"), die man an zwei Werten nicht sieht. Die Stadtstaaten sind
+      // dabei: In der vollen Reihe sind ihre 0,4 Prozent eine Aussage, während
+      // sie als einzelner Gegenpol unfair wären.
+      reihe: sortiert.map((l) => ({
+        label: l.name,
+        wert: l.freiflaecheAnteil,
+        einheit: "%",
+        stellen: 0,
+        hervorgehoben: l.name === oben.name,
+      })),
       quelle: quellenzeile(k.standIso, false),
     },
     belege: [
@@ -613,11 +813,15 @@ export function postSegmente(k: SocialKennzahlen): SocialPost {
   const privat = anteil(s.privatDachKwp);
   const gewerbe = anteil(s.gewerbeDachKwp);
   const frei = anteil(s.freiflaecheKwp);
+  // Steckersolar ist der VIERTE Teil, nicht der Rest: Das Register führt es als
+  // eigenes Segment, und der Wert kommt aus dieser Spalte statt aus einer
+  // Differenz. Nachgemessen ergeben die vier Segmente die Solarleistung exakt.
+  const stecker = anteil(s.steckersolarKwp);
 
   const text = [
     `Auf privaten Dächern liegen ${de(privat, 0)} Prozent der deutschen Solarleistung. Gewerbedächer und Freiflächen tragen zusammen den Rest.`,
     ``,
-    `Die genaue Aufteilung: privates Dach ${de(privat, 1)} Prozent, Gewerbe ${de(gewerbe, 1)}, Freifläche ${de(frei, 1)}. Zusammen ${fmtPvLeistung(s.solarGesamtKwp)}.`,
+    `Die genaue Aufteilung: privates Dach ${de(privat, 1)} Prozent, Gewerbe ${de(gewerbe, 1)}, Freifläche ${de(frei, 1)}, Steckersolar ${de(stecker, 1)}. Insgesamt ${fmtPvLeistung(s.solarGesamtKwp)}.`,
     ``,
     `Das Bild von der Energiewende auf dem Einfamilienhausdach stimmt also nur für gut ein Viertel. Der größere Teil entsteht dort, wo jemand gewerblich rechnet — auf Hallendächern und auf Feldern.`,
     ``,
@@ -637,16 +841,33 @@ export function postSegmente(k: SocialKennzahlen): SocialPost {
       art: "vergleich",
       aussage: `Nur gut ein Viertel der Solarleistung liegt auf privaten Dächern`,
       gemessen: `Anteil an der installierten Solarleistung`,
+      // Drei Anteile am selben Ganzen, die sich ergänzen — deshalb gehört das
+      // Ganze ans Bild. Ohne es normierte der Balken am größten der drei Werte:
+      // Das private Dach mit 28 Prozent bekäme 81 Prozent der Länge, weil die
+      // Freifläche mit 35 die volle bekäme. Das Bild sagte dann „vier Fünftel",
+      // wo die Überschrift „ein Viertel" sagt.
+      ganzes: 100,
+      // Eine Nachkommastelle, nicht null: Als ganze Prozente stehen dort 35, 35,
+      // 28 und 1 — zusammen 99, während der Balken daneben voll ist. Eine
+      // Aufteilung, deren Teile nicht aufgehen, widerlegt sich selbst. Der
+      // Beitragstext nennt dieselben Werte („privates Dach 28,5 Prozent"), Bild
+      // und Text runden also gleich.
+      //
+      // Vier Serien statt drei plus Restgröße: Steckersolar ist ein eigenes
+      // Segment des Registers, kein Überbleibsel. Als Rest gezeigt behauptete das
+      // Bild, dort stehe etwas Ungeklärtes.
       serien: [
-        { label: "Freifläche", wert: frei, einheit: "%", stellen: 0 },
-        { label: "Gewerbedach", wert: gewerbe, einheit: "%", stellen: 0 },
-        { label: "Privates Dach", wert: privat, einheit: "%", stellen: 0, hervorgehoben: true },
+        { label: "Freifläche", wert: frei, einheit: "%", stellen: 1 },
+        { label: "Gewerbedach", wert: gewerbe, einheit: "%", stellen: 1 },
+        { label: "Privates Dach", wert: privat, einheit: "%", stellen: 1, hervorgehoben: true },
+        { label: "Steckersolar", wert: stecker, einheit: "%", stellen: 1 },
       ],
       quelle: quellenzeile(k.standIso, false),
     },
     belege: [
       `Gesamt ${fmtPvLeistung(s.solarGesamtKwp)}`,
-      `privat ${fmtPvLeistung(s.privatDachKwp)} · Gewerbe ${fmtPvLeistung(s.gewerbeDachKwp)} · Freifläche ${fmtPvLeistung(s.freiflaecheKwp)}`,
+      `privat ${fmtPvLeistung(s.privatDachKwp)} · Gewerbe ${fmtPvLeistung(s.gewerbeDachKwp)} · Freifläche ${fmtPvLeistung(s.freiflaecheKwp)} · Steckersolar ${fmtPvLeistung(s.steckersolarKwp)}`,
+      `Die vier Segmente ergeben die Gesamtleistung — das Register führt jede Anlage in genau einem`,
     ],
   };
 }
@@ -685,12 +906,24 @@ export function postAufholjagd(k: SocialKennzahlen): SocialPost {
       aussage: `Wer wenig hatte, wächst am schnellsten`,
       gemessen: `Solarleistung heute im Verhältnis zu vor fünf Jahren`,
       einheitAmWert: false,
+      // Ein Faktor beginnt bei 1, nicht bei 0: „1,0-fach" heißt unverändert, also
+      // Länge null. Gegen null gezeichnet füllte Thüringen mit 1,75 vierzig
+      // Prozent der Länge, obwohl es um 75 Prozent gewachsen ist und Hamburg um
+      // 338 — das Bild zeigte ein Drittel, wo ein Fünftel steht.
+      nullpunkt: 1,
       // Kein Abstandswert: Die Werte SIND schon Faktoren. „2,6-mal so viel
       // Wachstum" ist ein Faktor eines Faktors und sagt niemandem etwas.
       serien: [
         { label: oben.name, umriss: oben.name, wert: oben.wachstumFuenfJahre, einheit: "fach", stellen: 1, hervorgehoben: true },
         { label: unten.name, umriss: unten.name, wert: unten.wachstumFuenfJahre, einheit: "fach", stellen: 1 },
       ],
+      reihe: sortiert.map((l) => ({
+        label: l.name,
+        wert: l.wachstumFuenfJahre,
+        einheit: "fach",
+        stellen: 1,
+        hervorgehoben: l.name === oben.name,
+      })),
       quelle: quellenzeile(k.standIso, false),
     },
     belege: sortiert.map((l) => `${l.name} ${de(l.wachstumFuenfJahre, 2)}x`),
@@ -865,20 +1098,53 @@ export function postAnomalie(k: SocialKennzahlen): SocialPost {
 /**
  * Post 14 — Wo der Speicher Standard ist.
  *
- * Dieselbe Form wie die Flächenfrage, andere Zahl: Der Speicher ist die
- * Entscheidung, die je Land am weitesten auseinandergeht — und sie sagt mehr
- * über Beratung und Handwerk vor Ort als über Sonne.
+ * Dieselbe Form wie die Flächenfrage, andere Zahl: Der Speicher ist eine
+ * Entscheidung, die je Land verschieden ausfällt — und sie sagt mehr über
+ * Beratung und Handwerk vor Ort als über Sonne.
+ *
+ * Der Beitrag behauptete zwei Ausgaben lang, das sei „der größte Unterschied
+ * zwischen den Ländern, den wir im Bestand finden. Größer als beim Zubau,
+ * größer als bei der Anlagengröße". Nachgemessen ist es der KLEINSTE: 1,7-fach,
+ * gegen 188-fach beim Freiflächenanteil, 9-fach bei der Leistung je Kopf,
+ * 3,8-fach bei der Balkonquote und 2,5-fach beim Fünf-Jahres-Wachstum. Ein
+ * Superlativ, den niemand gerechnet hat — dieselbe Klasse wie das erfundene
+ * Ost-West-Gefälle im Katalog, nur eine Ebene tiefer versteckt.
+ *
+ * Der Satz vergleicht die Spannen deshalb jetzt selbst. Kippt das Verhältnis,
+ * kippt er mit.
  */
 export function postSpeicherJeLand(k: SocialKennzahlen): SocialPost {
   const sortiert = [...k.laender].filter((l) => l.speicherJe100 > 0).sort((a, b) => b.speicherJe100 - a.speicherJe100);
   const oben = sortiert[0];
   const unten = sortiert[sortiert.length - 1];
   const faktor = unten.speicherJe100 ? oben.speicherJe100 / unten.speicherJe100 : 0;
+  // Die Spanne jeder anderen Länderreihe, die wir führen — als Vergleichsmaßstab
+  // für den Satz unten. Gerechnet, nicht erinnert.
+  const spanne = (werte: number[]) => {
+    const gute = werte.filter((w) => w > 0);
+    return gute.length > 1 ? Math.max(...gute) / Math.min(...gute) : 0;
+  };
+  // Die Namen tragen ihre Präposition selbst („beim", „bei der") — zusammen-
+  // gesetzt aus einem festen „bei" plus Name käme „bei dem Anteil" heraus.
+  const andere = (
+    [
+      ["beim Anteil an Freiflächen", spanne(k.laender.map((l) => l.freiflaecheAnteil))],
+      ["bei der Leistung je Einwohner", spanne(k.laender.map((l) => l.wpProKopf))],
+      ["bei der Zahl der Balkonkraftwerke", spanne(k.laender.map((l) => l.balkonJeTausend))],
+      ["beim Wachstum der letzten fünf Jahre", spanne(k.laender.map((l) => l.wachstumFuenfJahre))],
+    ] as [string, number][]
+  ).filter(([, s]) => s > 0);
+  const groesser = andere.filter(([, s]) => s > faktor).sort((a, b) => b[1] - a[1]);
+  // Der Satz folgt der Messung: Ist die Speicher-Spanne die weiteste, sagt er
+  // das; ist sie es nicht, nennt er die Reihe, die weiter auseinandergeht.
+  const einordnung = groesser.length
+    ? `Das ${de(faktor, 1)}-fache — und das ist, gemessen an allem anderen, wenig: ${groesser[0][0][0].toUpperCase()}${groesser[0][0].slice(1)} liegen die Länder um das ${de(groesser[0][1], 0)}-fache auseinander. Beim Speicher entscheiden sich überall ähnlich viele dafür, nur eben nicht gleich viele.`
+    : `Das ${de(faktor, 1)}-fache — die weiteste Spanne zwischen den Ländern, die wir im Bestand finden.`;
 
   const text = [
     `In ${oben.name} kommen auf 100 private Dachanlagen ${de(oben.speicherJe100, 0)} angemeldete Heimspeicher. In ${unten.name} sind es ${de(unten.speicherJe100, 0)}.`,
     ``,
-    `Das ${de(faktor, 1)}-fache — der größte Unterschied zwischen den Ländern, den wir im Bestand finden. Größer als beim Zubau, größer als bei der Anlagengröße.`,
+    einordnung,
     ``,
     `Wichtig für die Einordnung: Das ist keine Quote „so viele Anlagen haben einen Speicher". Das Register führt Speicher als eigene Einheiten — ein Haushalt kann mehrere anmelden, und ein Balkonspeicher hat gar keine Dachanlage. Gerade in den Stadtstaaten hebt das die Zahl.`,
     ``,
@@ -915,6 +1181,19 @@ export function postSpeicherJeLand(k: SocialKennzahlen): SocialPost {
         },
         { label: unten.name, umriss: unten.name, wert: unten.speicherJe100, einheit: "je 100", stellen: 0 },
       ],
+      // Die Reihe steht hier, obwohl die Rangliste sie NICHT anbieten wird — und
+      // genau das ist ihr Zweck: Die Länder liegen mit 57 bis 98 zu eng
+      // beieinander (kleinster Wert 58 Prozent des größten), sechzehn Balken
+      // sähen fast gleich lang aus. Die Bedingung im Formen-Register weist das
+      // ab; ohne die Daten hier wäre nur nicht zu unterscheiden, ob sie greift
+      // oder ob jemand die Reihe vergessen hat.
+      reihe: sortiert.map((l) => ({
+        label: l.name,
+        wert: l.speicherJe100,
+        einheit: "je 100",
+        stellen: 0,
+        hervorgehoben: l.name === oben.name,
+      })),
       quelle: quellenzeile(k.standIso, false),
     },
     belege: [
@@ -979,6 +1258,17 @@ export function postPrivatdachAnteil(k: SocialKennzahlen): SocialPost {
         },
         { label: unten.name, umriss: unten.name, wert: unten.privatAnteil, einheit: "%", stellen: 0 },
       ],
+      // Nur die Flächenländer, wie schon bei den Serien: Die Stadtstaaten stünden
+      // hier zwangsläufig oben, ohne dass das etwas über ihre Dächer sagt. Eine
+      // Rangliste mit ihnen darin behauptete eine Ordnung, die der Beitragstext
+      // zwei Absätze weiter ausdrücklich verwirft.
+      reihe: flaechen.map((l) => ({
+        label: l.name,
+        wert: l.privatAnteil,
+        einheit: "%",
+        stellen: 0,
+        hervorgehoben: l.name === oben.name,
+      })),
       quelle: quellenzeile(k.standIso, false),
     },
     belege: flaechen.map((l) => `${l.name} ${de(l.privatAnteil, 1)} % privat (${fmtPvLeistung(l.solarKwp)} gesamt)`),
@@ -1105,8 +1395,11 @@ export function postNurBalkon(k: SocialKennzahlen): SocialPost {
  */
 function quellenzeileEmber(mitMarke: boolean): string {
   const bis = YEARS_PERCAPITA[YEARS_PERCAPITA.length - 1];
-  const basis = `Ember, CC BY 4.0, Daten verändert. Stand ${bis}. Eigene Berechnung`;
-  return mitMarke ? `${basis}, ${MARKE}.` : `${basis}.`;
+  // Auch dieser Zweig war getippt, und auch er wich ab — nur vollständiger als
+  // der andere, nicht richtiger: Welche Fassung stimmte, hing daran, wer die
+  // Zeile gerade schrieb. Das Jahr wird als blanke Ziffernfolge gesetzt, nie über
+  // die Zahlenformatierung: Aus 2024 wurde dort „2.024".
+  return quelleAus("ember", String(bis), mitMarke);
 }
 
 /**
@@ -1134,7 +1427,7 @@ export function postAusland(_k: SocialKennzahlen): SocialPost {
   const text = [
     `Deutschland erzeugte ${de(letzter(de_))} Kilowattstunden Wind- und Solarstrom je Einwohner. ${spitze.label} kam auf ${de(letzter(spitze))} — das ${de(vorsprung, 1)}-fache.`,
     ``,
-    `Platz ${de(platz)} von ${de(rang.length)} verglichenen Ländern, Stand ${de(jahr)}. Absolut liegt Deutschland weit vorn, aber das sagt vor allem etwas über die Größe des Landes. Je Einwohner ist die Zahl vergleichbar — und da ist noch Luft.`,
+    `Platz ${de(platz)} von ${de(rang.length)} verglichenen Ländern, Stand ${jahrText(jahr)}. Absolut liegt Deutschland weit vorn, aber das sagt vor allem etwas über die Größe des Landes. Je Einwohner ist die Zahl vergleichbar — und da ist noch Luft.`,
     ``,
     `Der Abstand nach oben ist kein Naturgesetz: ${spitze.label} hat weder mehr Sonne noch mehr Fläche je Kopf. Was dort anders läuft, ist eine eigene Diskussion — die Zahl selbst ist erst einmal nur ein Maßstab.`,
     ``,
@@ -1151,8 +1444,18 @@ export function postAusland(_k: SocialKennzahlen): SocialPost {
       stil: KARTEN_STIL_STANDARD,
       art: "saeule",
       aussage: `${spitze.label} erzeugt je Einwohner das ${de(vorsprung, 1)}-fache`,
-      gemessen: `Wind- und Solarstrom je Einwohner, ${de(jahr)}`,
+      // Die Einheit gehört in den Untertitel, weil sie nicht an der Zahl steht:
+      // „je Einwohner" ist der Nenner, nicht die Einheit — ohne „Kilowattstunden"
+      // steht an der Achse eine Zahl, von der niemand weiß, ob sie kWh oder MWh
+      // meint.
+      gemessen: `Kilowattstunden Wind- und Solarstrom je Einwohner, ${jahrText(jahr)}`,
       einheitAmWert: false,
+      // Die einzige Story mit einer echten Zeitreihe hinter der Zahl: 25
+      // Jahrgänge je Land. Als zwei Stichtage sagt sie, WIE GROSS der Abstand
+      // ist; als Verlauf zusätzlich, ob er wächst — und das ist die Aussage des
+      // Beitrags („kein Naturgesetz"). Die Achse gehört ans Bild, weil sie für
+      // alle Serien dieselbe ist.
+      achse: YEARS_PERCAPITA,
       serien: [
         {
           label: spitze.label,
@@ -1160,12 +1463,14 @@ export function postAusland(_k: SocialKennzahlen): SocialPost {
           einheit: "kWh je Ew.",
           hervorgehoben: true,
           delta: `+${de((vorsprung - 1) * 100, 0)} %`,
+          verlauf: spitze.values,
         },
         {
           label: de_.label,
           zusatz: `Platz ${de(platz)} von ${de(rang.length)}`,
           wert: letzter(de_),
           einheit: "kWh je Ew.",
+          verlauf: de_.values,
         },
       ],
       quelle: quellenzeileEmber(false),
@@ -1193,7 +1498,9 @@ export function postAusland(_k: SocialKennzahlen): SocialPost {
  */
 export function postDegression(k: SocialKennzahlen, _vorlage?: string, heuteIso?: string): SocialPost {
   const heute = heuteIso ?? k.standIso.slice(0, 10);
-  const satz = feedInRatesFor(new Date(heute));
+  // `heute` ist bereits ein gemeinter Kalendertag (Datenstand oder Vorgabe) und
+  // wird als solcher übergeben — nicht als Zeitpunkt, der noch umgerechnet wird.
+  const satz = feedInRatesFor(heute);
   const termin = naechsteDegressionIso(heute);
   const terminText = new Date(termin).toLocaleDateString("de-DE", {
     day: "numeric",
@@ -1281,7 +1588,7 @@ export function baueAllePosts(
   // Der Tag wird HEREINGEREICHT, nie aus der Uhr einer Rechenfunktion gezogen —
   // sonst lässt sich ein Stichtags-Beitrag nicht gegen einen Stichtag prüfen.
   // Nur dieser Rand darf die Uhr lesen.
-  heuteIso: string = new Date().toISOString().slice(0, 10),
+  heuteIso: string = heuteInBerlin(),
 ): SocialPost[] {
   return ALLE_POSTS.map((f) => {
     const roh = f(k, undefined, heuteIso);

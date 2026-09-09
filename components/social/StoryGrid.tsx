@@ -4,14 +4,16 @@ import { useState } from "react";
 import Link from "next/link";
 import Modal from "../Modal";
 import { FeedVorschau } from "./FeedVorschau";
+import { SeitenVorschau } from "./SeitenVorschau";
+import { Umschalter } from "./Umschalter";
 import { StoryTisch } from "./StoryTisch";
 import { Kennung } from "./Kennung";
 import { v, space, pad } from "../../lib/theme";
 import type { Pruefung } from "../../lib/social-pruefung-kern";
 import type { Befund as MechanikBefund } from "../../lib/social-mechanik";
 import { urteil } from "../../lib/social-pruefung-kern";
-import { BILDFORM_NAME, templateVon, type SocialPost } from "../../lib/social-posts";
-import { KARTEN_STIL_NAME } from "../../lib/social-karten-stil";
+import { templateVon, type SocialPost } from "../../lib/social-posts";
+import type { OrtsVorschau } from "./SeitenVorschau";
 
 // Alle Beiträge als Raster — der Einstieg in die Entwicklung.
 //
@@ -34,6 +36,8 @@ export type GridEintrag = {
   befunde: MechanikBefund[];
   /** Ging genau DIESE Fassung schon raus? */
   gesendetAm: Record<string, string>;
+  /** Nur bei Ortsgeschichten: was sie auf ihrer Seite zeigt. */
+  orts?: OrtsVorschau;
   kategorie: { name: string; schluessel: string };
   /**
    * Ist das Design dieser Story durchgesehen — im Code abgenommen ODER im
@@ -58,6 +62,11 @@ const SICHTEN: { wert: Sicht; text: string }[] = [
 export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
   const [offen, setOffen] = useState<string | null>(null);
   const [sicht, setSicht] = useState<Sicht>("alle");
+  // WELCHE AUSGABEFORM das Raster zeigt. Über allen Kacheln zugleich, nicht je
+  // Kachel: Die Frage im Raster ist, ob die Reihe als EINE Handschrift wirkt —
+  // und die beantwortet man nicht, wenn die eine Kachel den Feed zeigt und die
+  // nächste eine Seite.
+  const [ansicht, setAnsicht] = useState<"feed" | "seite">("feed");
   /**
    * Prüfungen, die in DIESER Sitzung im Fenster erteilt wurden.
    *
@@ -99,32 +108,45 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
     <>
       {/* Der Filter steht ÜBER dem Raster, nicht in der Kategorie-Leiste: Er
           sortiert nicht nach Thema, sondern nach Arbeitsstand. */}
-      <div style={{ display: "flex", gap: space.xs, marginBottom: space.xl, flexWrap: "wrap" }}>
-        {SICHTEN.map((s) => {
-          const an = s.wert === sicht;
-          const zahl = eintraege.filter(
-            (e) => s.wert === "alle" || (s.wert === "bearbeitet" ? e.bearbeitet : !e.bearbeitet),
-          ).length;
-          return (
-            <button
-              key={s.wert}
-              type="button"
-              aria-pressed={an}
-              onClick={() => setSicht(s.wert)}
-              style={{
-                padding: pad("xs", "md"),
-                borderRadius: v("--radius-sm"),
-                border: `1px solid ${an ? v("--color-accent") : v("--color-border")}`,
-                background: an ? v("--color-accent-dim") : "transparent",
-                color: an ? v("--color-accent") : v("--color-text-secondary"),
-                cursor: "pointer",
-                fontSize: v("--font-size-small"),
-              }}
-            >
-              {s.text} <span style={{ color: v("--color-text-muted") }}>{zahl}</span>
-            </button>
-          );
-        })}
+      <div
+        style={{
+          display: "flex",
+          gap: space.xxl,
+          marginBottom: space.xl,
+          flexWrap: "wrap",
+          alignItems: "flex-start",
+        }}
+      >
+        <Umschalter
+          eintraege={SICHTEN.map((x) => ({
+            wert: x.wert,
+            text: x.text,
+            zusatz: String(
+              eintraege.filter(
+                (e) => x.wert === "alle" || (x.wert === "bearbeitet" ? e.bearbeitet : !e.bearbeitet),
+              ).length,
+            ),
+          }))}
+          wert={sicht}
+          onWaehle={setSicht}
+          ariaLabel="Arbeitsstand"
+        />
+        {/* AUSGABEFORM. Der Zähler ist hier der eigentliche Ertrag: Er sagt,
+            wie viele Beiträge überhaupt eine Fassung für eine Seite haben —
+            eine Lücke, die vorher niemand sehen konnte. */}
+        <Umschalter
+          eintraege={[
+            { wert: "feed", text: "Feed", zusatz: String(eintraege.length) },
+            {
+              wert: "seite",
+              text: "Auf der Seite",
+              zusatz: String(eintraege.filter((e) => e.orts || e.post.onsite).length),
+            },
+          ]}
+          wert={ansicht}
+          onWaehle={setAnsicht}
+          ariaLabel="Ausgabeform"
+        />
       </div>
 
       <div
@@ -137,38 +159,25 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
           gap: space.xxl,
         }}
       >
-        {gezeigt.map(({ post, pruefungen, kategorie, abdruck }) => {
+        {gezeigt.map(({ post, pruefungen, kategorie, abdruck, orts }) => {
           const stand = urteil(abdruck, pruefungen);
+          // KEINE KOPFZEILE ÜBER DER KARTE. Kategorie, interner Titel und
+          // Bildform standen über jeder Kachel — drei Zeilen, die alle dasselbe
+          // beschreiben wie das Bild darunter, nur schlechter. Die Karte trägt
+          // ihre Aussage als Überschrift; wer wissen will, wovon sie handelt,
+          // liest sie. Wer die Bildform ändern will, ist ohnehin im Tisch, und
+          // dort steht sie. Der Titel bleibt als Beschriftung des
+          // Tisch-Fensters erhalten.
           return (
             <div key={post.id} style={{ display: "flex", flexDirection: "column", gap: space.sm }}>
-              <Link
-                href={`/admin/redaktion?k=${kategorie.schluessel}`}
-                style={{
-                  fontSize: v("--font-size-caption"),
-                  textTransform: "uppercase",
-                  letterSpacing: "0.06em",
-                  color: v("--color-accent"),
-                  textDecoration: "none",
-                }}
-              >
-                {kategorie.name}
-              </Link>
-              <div style={{ fontSize: v("--font-size-body"), fontWeight: 600, lineHeight: 1.3 }}>{post.titel}</div>
-              {/* Die Design-Identität: welches Template, welche Variante. Der
-                  Titel sagt, WOVON eine Story handelt; hier steht, WIE sie
-                  aussieht — und das ist die Frage, die beim Gestalten zählt. */}
-              {post.bild && (
-                <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
-                  {templateVon(post.bild)?.name ??
-                    `${BILDFORM_NAME[post.bild.art]} · ${KARTEN_STIL_NAME[post.bild.stil]} — kein abgenommenes Template`}
-                </div>
-              )}
 
               {/* Die Karte im Raster ist dieselbe Vorschau, nur schmaler. Ein
                   eigenes Kachelbild wäre eine zweite Darstellung derselben
                   Story — und die eine, die im Feed steht, wäre nicht mehr die,
                   die man hier beurteilt. */}
-              {post.bild && <FeedVorschau bild={post.bild} text={post.text} breite={340} />}
+              {ansicht === "feed"
+                ? post.bild && <FeedVorschau bild={post.bild} text={post.text} breite={340} />
+                : <SeitenVorschau post={post} orts={orts} breite={340} />}
 
               <div
                 style={{
@@ -212,6 +221,7 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
             abdruck={aktiv.abdruck}
             befunde={aktiv.befunde}
             gesendetAm={aktiv.gesendetAm}
+            orts={aktiv.orts}
             ohneTitel
             onPruefung={(postId, p) =>
               setDazu((alt) => ({

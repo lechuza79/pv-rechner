@@ -10,6 +10,7 @@
 // an honest, descriptive User-Agent.
 
 import { NextResponse } from "next/server";
+import { heuteInBerlin } from "../../../../lib/zeit";
 import * as cheerio from "cheerio";
 import { supabase } from "../../../../lib/supabase-server";
 import { DEFAULT_PRICES } from "../../../../lib/prices-config";
@@ -379,7 +380,7 @@ async function notifyAdmin(subject: string, body: string) {
       pv_threshold_kwp: 10,
       battery_base: 0,
       battery_per_kwh: 0,
-      valid_from: new Date().toISOString().split("T")[0],
+      valid_from: heuteInBerlin(),
       source: "SCRAPE_ERROR",
       notes: `${subject}: ${body}`,
       updated_by: "cron",
@@ -543,7 +544,7 @@ export async function GET(req: Request) {
       battery_per_kwh: derived.batteryPerKwh,
       electricity_price: electricityPrice,
       electricity_increase: lastPrices?.electricityIncrease ?? null,
-      valid_from: new Date().toISOString().split("T")[0],
+      valid_from: heuteInBerlin(),
       source: `taptaphome.com (vormals solaranlagen-portal.com) + energie-experten.org + strom-report.de (auto)`,
       // Health string is read by the self-healing watcher agent. "HEALTH=ok/DEGRADED/FAILED"
       // is a stable, machine-greppable prefix — keep it first. An electricity

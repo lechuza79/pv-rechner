@@ -22,6 +22,16 @@ import ZubauChart from "../../../../../../components/atlas/ZubauChart";
 import GemeindeHero, { type KpiOwnerData } from "../../../../../../components/atlas/GemeindeHero";
 import GemeindePeerTiles from "../../../../../../components/atlas/GemeindePeerTiles";
 import GemeindePlatzierungen from "../../../../../../components/atlas/GemeindePlatzierungen";
+import GemeindeMeldungen from "../../../../../../components/atlas/GemeindeMeldungen";
+import { ortsStories } from "../../../../../../lib/orts-stories";
+// Aus den Geschichten werden Beiträge des Redaktionssystems: Farbschema,
+// Bildform und Quellenzeile kommen von dort, die redaktionelle Fassung je Ort
+// aus der Ablage.
+import { ortsPosts } from "../../../../../../lib/orts-posts";
+import { ladeFassungen } from "../../../../../../lib/social-vorlagen-db";
+import { fundeFuerOrt } from "../../../../../../lib/social-fundvorrat";
+import { hatAuszeichnung, vergleichsPlaetze } from "../../../../../../lib/awards-server";
+import { monatsZubau, wohnungsBestand } from "../../../../../../lib/orts-daten";
 import CollapsibleIntro from "../../../../../../components/atlas/CollapsibleIntro";
 import GemeindeEmbedBox from "../../../../../../components/atlas/GemeindeEmbedBox";
 import GemeindeAboBox, { ABO_OEFFNEN } from "../../../../../../components/atlas/GemeindeAboBox";
@@ -527,8 +537,84 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
           )}
             </CollapsibleIntro>
           </div>
-          <GemeindePlatzierungen regionId={region.region_id} />
+          {/* Das Kennzeichen entscheidet nur, ob der Platz reserviert wird —
+              die Rangdaten selbst lädt die Kachel weiterhin im Browser nach. */}
+          <GemeindePlatzierungen
+            regionId={region.region_id}
+            erwartet={await hatAuszeichnung(region.region_id)}
+          />
         </div>
+
+        {/*
+          Die Geschichten über diesen Ort, nach den festen Familien des
+          Story-Katalogs (lib/orts-stories.ts) — als Karten mit Bild-Download.
+
+          NICHT aus der Ortsmeldungs-Rechnung, die die Abo-Mail speist: Deren
+          Meldungen BESCHREIBEN den Bestand, und der steht hier zwei Zentimeter
+          tiefer schon als Kachel und Ring. Gemessen am 05.09.2026 an Heringen —
+          drei von fünf Meldungen waren wörtlich das, was darunter stand.
+
+          OHNE FÖRDERUNG: Eine Förder-Geschichte braucht die Angabe, ob das
+          Programm gerade ZÄHLT, und die kommt allein aus fundingZaehlt(), also
+          aus einem Datenbank-Lesevorgang, den diese Seite heute nicht macht.
+          Sie aus der Liste der veröffentlichten Förderstädte abzuleiten wäre
+          eine zweite Quelle für dieselbe Frage.
+
+          OHNE PLATZIERUNG: steht als eigene Karte direkt darüber (siehe dort).
+        */}
+        {/*
+          Das Story-Visual steht seit dem 06.09.2026: dieselbe Karte wie im
+          Redaktionstisch, in der quadratischen Stufe und mit den Farben dieser
+          Seite. Die Geschichten sind damit Beiträge des Redaktionssystems —
+          sie greifen auf dieselben Templates zu, und ihre Fassung (Text,
+          Farbschema, Bildform) lässt sich vor einem Kommunen-Schub je ORT
+          einstellen; die Beitrags-Kennung trägt dafür den Gemeindeschlüssel.
+        */}
+        <GemeindeMeldungen
+          beitraege={ortsPosts({
+            ort: { regionId: region.region_id, name: region.name },
+            standIso: atlas.data_as_of,
+            fassungen: await ladeFassungen(),
+            stories: ortsStories({
+            daten: {
+              name: region.name,
+              regionId: region.region_id,
+              population: region.population ?? null,
+              solar: atlas.solar,
+              speicher: atlas.speicher,
+              standIso: atlas.data_as_of,
+              // Zwei schmale Zusatzquellen: der Zubau nach Monat (die
+              // Jahreszahl ist für „was ist gerade passiert" zu grob) und der
+              // Wohnungsbestand (der Nenner, den das Anlagenregister nicht
+              // kennt). Fehlt eine, entfallen genau ihre Geschichten.
+              monate: await monatsZubau(region.region_id),
+              wohnungen: await wohnungsBestand(region.region_id),
+            },
+            heuteJahr: new Date().getUTCFullYear(),
+            // Nur redaktionell VORGEMERKTE Funde. „offen" heißt, dass den
+            // Fund noch niemand angesehen hat — ein Kandidat, keine
+            // veröffentlichte Aussage; der Suchlauf legt ausdrücklich nur ab
+            // und entscheidet nicht.
+            // Ort, Landkreis, Land — in dieser Reihenfolge der Nähe. Nur der
+            // eigene Ortsname wäre zu eng: Die Muster suchen Auffälliges, und
+            // 313 Funde verteilen sich auf 197 Gemeinden; auf 98 % der
+            // Ortsseiten stünde damit nie einer.
+            // Wo der Ort unter GLEICH GROSSEN Orten seines Kreises bzw. Landes
+            // steht — die einzige Familie, die jeder Ort hat. Die gespeicherten
+            // Funde treffen nur das Auffällige (313 auf 197 von 11.000).
+            plaetze: await vergleichsPlaetze(region.region_id),
+            funde: await fundeFuerOrt({
+              ort: region.name,
+              kreisOrte: siblingData.regions.map((r) => r.name),
+              land: bl?.name ?? null,
+              stand: "vorgemerkt",
+            }),
+            }),
+          })}
+          name={region.name}
+          liveUrl={`${BASE_URL}${atlasPath}`}
+          standIso={atlas.data_as_of}
+        />
 
         {SHOW_PEER_TILES && !!region.population && (
           <GemeindePeerTiles rows={peerRows} blName={bl?.name ?? "diesem Land"} band={band} />
@@ -615,6 +701,9 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
                 liveUrl={`https://solar-check.io${gemeindePath}`}
                 onsite
                 showEmbed={false}
+                // Der Einbett-Knopf gibt hier den FERTIGEN Code für diesen Ort
+                // aus, statt in die Galerie zu springen (siehe Hülle).
+                einbetten={{ params: { ags: region.region_id }, height: 420 }}
               />
             </div>
 
@@ -628,6 +717,7 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
                   liveUrl={`https://solar-check.io${gemeindePath}`}
                   onsite
                   showEmbed={false}
+                  einbetten={{ params: { ags: region.region_id }, height: 420 }}
                 />
               </div>
             )}

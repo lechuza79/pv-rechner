@@ -14,6 +14,12 @@ export const DEGRAD = 0.005;
 // Marktwert, den wir konservativ nicht ansetzen. Über den 25-Jahre-Horizont
 // wird die Einspeisevergütung also nur bis Jahr 20 gezahlt.
 export const FEED_IN_YEARS = 20;
+/** Obergrenze für einen von Hand gesetzten Vergütungssatz (ct/kWh) — EINE Quelle
+ *  für das Eingabefeld und das Lesen aus dem Teilen-Link. Bis 05.09.2026 ließ das
+ *  Feld 60 zu, der Link nur 20: Wer den Satz seines Bescheids von 2010 (≈39 ct)
+ *  eintrug und teilte, dessen Empfänger rechnete stumm mit 7,7 ct. Historische
+ *  Bescheide reichen bis über 50 ct (2004–2008). */
+export const EINSPEISESATZ_MAX_CT = 60;
 
 // ─── PV-Standortertrag (kWh/kWp·a) ───────────────────────────────────────────
 // Kanonische Quelle für den Ertrag ist PVGIS (ortsgenau via PLZ, lib/pvgis.ts).
@@ -146,21 +152,28 @@ export const EA_KM_PRESETS = [10000, 15000, 20000];
 
 // Strompreis-Szenarien für die PV-Prognose. `explain` beschreibt die Annahme
 // aus PV-Sicht (hoher Strompreis-Anstieg = mehr Ersparnis). Die Bandbreite
-// bildet die 25-Jahres-Unsicherheit ab: 3 % als Mitte deckt sich mit dem
-// langjährigen Schnitt, die Ränder spannen von „kaum Anstieg" bis „kräftig".
+// bildet die 25-Jahres-Unsicherheit ab: 2 % als Mitte (DEFAULT_PRICES), die
+// Ränder spannen von „kaum Anstieg" bis „kräftig". `evDelta` verschiebt den
+// Eigenverbrauch um Prozentpunkte mit — und das MUSS im Text stehen: Bis
+// 05.09.2026 nannte er nur den Strompreis, dabei stammte die größere Hälfte
+// des Szenario-Unterschieds aus dem Eigenverbrauch (optimistisch: 6.833 €
+// aus dem EV-Sprung, 6.262 € aus dem Preis).
 export const SCENARIOS = [
   { id: "pessimistic", label: "Pessimistisch", color: v("--color-negative"), strom: 0.01, evDelta: -5,
-    explain: "Vorsichtig gerechnet: Der Strompreis steigt nur langsam (+1 %/Jahr) — dein selbst genutzter Solarstrom spart dann entsprechend weniger." },
+    explain: "Vorsichtig gerechnet: Der Strompreis steigt nur langsam (+1 %/Jahr) und du nutzt 5 Prozentpunkte weniger Strom selbst als geschätzt — beides drückt die Ersparnis." },
   { id: "realistic", label: "Realistisch", color: v("--color-positive"), strom: 0.02, evDelta: 0,
     explain: "Mittlere Annahme: Der Strompreis steigt moderat (+2 %/Jahr), wie die aktuellen Prognosen erwarten." },
   { id: "optimistic", label: "Optimistisch", color: v("--color-accent"), strom: 0.05, evDelta: 5,
-    explain: "Günstige Entwicklung: Steigt der Strompreis kräftig (+5 %/Jahr), lohnt sich jede selbst genutzte Kilowattstunde stärker." },
+    explain: "Günstige Entwicklung: Steigt der Strompreis kräftig (+5 %/Jahr), lohnt sich jede selbst genutzte Kilowattstunde stärker — und du nutzt 5 Prozentpunkte mehr Strom selbst als geschätzt." },
 ];
 
 // Vereinigung beider Zweige: `az`/`ng` (Ausrichtung, Neigung) und `sk` (freie
 // Speichergröße) sind unabhängig voneinander entstanden. Fehlt einer, rechnet
 // der Empfänger eines geteilten Links etwas anderes als der Absender.
-export const SHARE_KEYS = ["a", "s", "sk", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er", "ck", "km", "plz", "flow", "ht", "da", "az", "ng", "bl", "foe", "vb", "kl", "km2", "klr", "klwh", "wf", "wi", "wh", "wht", "sc", "rg", "mk", "mw"];
+// Liegt in einem eigenen Modul, damit die Middleware die Liste lesen kann, ohne
+// das Theme mit ins Edge-Buendel zu ziehen. Hier nur weitergereicht, damit die
+// bestehenden Importe unveraendert bleiben.
+export { SHARE_KEYS } from "./share-keys";
 
 // ─── Empfehlungs-Flow ───────────────────────────────────────────────────────
 // footprint = nutzbare Dachfläche (Empfehlung); wpFaktor = Heizlast-Faktor durch

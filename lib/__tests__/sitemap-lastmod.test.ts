@@ -2,6 +2,7 @@ import { describe, it, expect, afterEach, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import sitemap from "../../app/sitemap";
+import { publishedCities, slugify } from "../atlas-cities";
 
 // Warum es diesen Test gibt:
 //
@@ -30,6 +31,22 @@ function stempel(eintraege: Awaited<ReturnType<typeof sitemap>>): Map<string, st
     ]),
   );
 }
+
+/**
+ * 30 Sekunden statt der voreingestellten fünf.
+ *
+ * Diese Prüfungen lesen den halben Bestand ein — den Förderkatalog, das
+ * Ortsverzeichnis, jede Datei des Repos. Auf einer ruhigen Maschine kosten sie
+ * Sekundenbruchteile; auf einer belegten reißen sie das Vorgabelimit, und zwar
+ * ohne dass irgendetwas am Code falsch wäre. Genau dafür gibt es im Projekt
+ * schon das Vorbild in `energy-api.test.ts` („generous headroom so CPU load
+ * can't trip the 5s default").
+ *
+ * Das Limit misst NICHTS Fachliches — es schützt vor einem hängenden Test.
+ * Es anzuheben schwächt die Prüfung also nicht; ein Fehlschlag daran kostet
+ * dagegen eine Stunde Suche nach einer Ursache, die es nicht gibt.
+ */
+const REPO_WEIT_MS = 30_000;
 
 describe("Sitemap: lastmod trägt echte Daten, nie die Build-Zeit", () => {
   it("liefert für jeden Eintrag denselben Stempel, egal wann sie gebaut wird", async () => {
@@ -81,7 +98,7 @@ describe("Sitemap: lastmod trägt echte Daten, nie die Build-Zeit", () => {
     // Ebene nicht sehen, die gerade nicht freigeschaltet ist (lib/atlas-index).
     expect(QUELLE).not.toMatch(/lastModified:\s*(now|new Date\(\))/);
   });
-});
+}, REPO_WEIT_MS);
 
 // Zweite Frage an dieselbe Datei: Steht jede Adresse genau EINMAL darin?
 //
@@ -100,4 +117,40 @@ describe("Sitemap: jede Adresse genau einmal", () => {
     const doppelt = [...gesehen.entries()].filter(([, n]) => n > 1).map(([url]) => url);
     expect(doppelt, `doppelte Sitemap-Einträge: ${doppelt.join(", ")}`).toEqual([]);
   });
-});
+}, REPO_WEIT_MS);
+
+/**
+ * WARUM DIESER TEST (05.09.2026): Jede Adresse in der Sitemap muss eine Seite
+ * haben.
+ *
+ * Die Förder-Stadtseite wird mit `dynamicParams = false` erzeugt — was nicht aus
+ * publishedCities() kommt, ist eine HARTE 404. Die Sitemap baute ihre Liste
+ * dagegen aus liveCities()/archivedCities() gefiltert auf cityIndexFreigegeben().
+ * Als am 01.09.2026 ein zweiter Freigabeweg dazukam (foerderseiteTraegt), bekam
+ * ihn nur die Sitemap. Gemessen am 05.09.2026 an der Produktion: 21 der 59
+ * Förder-Stadtseiten standen in der Sitemap und antworteten mit 404 — vier Tage
+ * lang, auf der Seitenfamilie mit der besten Sichtbarkeit des Projekts.
+ *
+ * Der Test prüft die AUSGABE, nicht die Funktion dahinter. Das ist der
+ * Unterschied, auf den es ankommt: Ein Test, der cityIndexFreigegeben() gegen
+ * isCityPublished() hält, ist tautologisch, seit die eine die andere aufruft —
+ * er fängt nur noch den Rückbau. Dieser hier fängt auch den Fall, dass jemand in
+ * app/sitemap.ts eine eigene Bedingung tippt.
+ */
+describe("Sitemap: jede Förder-Stadtseite darin existiert auch", () => {
+  it("führt keine Adresse, die 404 antworten würde", async () => {
+    const eintraege = await sitemap();
+    const inSitemap = eintraege
+      .map((e) => e.url.replace("https://solar-check.io", ""))
+      .filter((p) => /^\/photovoltaik-foerderung\/[^/]+\/[^/]+$/.test(p));
+
+    const erzeugt = new Set(publishedCities().map((c) => `/photovoltaik-foerderung/${slugify(c.bundesland)}/${c.slug}`));
+    const tot = inSitemap.filter((p) => !erzeugt.has(p));
+    expect(tot, "stehen in der Sitemap, werden aber nicht erzeugt → HTTP 404").toEqual([]);
+
+    // Gegenprobe: Die Sitemap muss überhaupt Stadtseiten führen, sonst prüft der
+    // Vergleich oben eine leere Liste gegen eine leere Liste und ist grün, ohne
+    // etwas gesehen zu haben.
+    expect(inSitemap.length).toBeGreaterThan(20);
+  });
+}, REPO_WEIT_MS);
