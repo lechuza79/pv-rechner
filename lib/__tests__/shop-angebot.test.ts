@@ -12,7 +12,7 @@ import {
 import { besteAngebote, bewerteAngebot, empfiehlAngebot, guenstigsteJeKombination } from "../shop-angebot";
 import { calcBalkon } from "../balkon";
 import { DEFAULT_BALKON_CONFIG as CFG } from "../balkon-config";
-import { preisTeile, jahreDativ } from "../atlas-format";
+import { preisTeile, jahreDativ, produktSpeicherTeile } from "../atlas-format";
 
 /**
  * Die Fehlerklasse, gegen die diese Tests gebaut sind, ist von außen unsichtbar:
@@ -298,5 +298,22 @@ describe("Preisdarstellung", () => {
     // Live stand „bezahlt nach 4.0 Jahre" — englischer Punkt, falscher Fall.
     expect(jahreDativ(4)).toBe("4,0 Jahren");
     expect(jahreDativ(3.14)).toBe("3,1 Jahren");
+  });
+});
+
+describe("Speichergröße als Produktangabe", () => {
+  /**
+   * Der Shop führt Stufen von 2,11 kWh. Auf ganze kWh gerundet stand bei uns
+   * „2 kWh" und „4 kWh" — und aus 10,55 wurde „11", eine Größe, die es dort
+   * gar nicht gibt. Dieselbe Klasse wie ein gerundeter Kaufpreis.
+   */
+  it("zeigt die Stufen des Shops, statt sie zu runden", () => {
+    expect(produktSpeicherTeile(2.11).value).toBe("2,11");
+    expect(produktSpeicherTeile(10.55).value).toBe("10,55");
+    expect(produktSpeicherTeile(12.66).value).toBe("12,66");
+  });
+
+  it("lässt bei glatten Größen die Nullen weg", () => {
+    expect(produktSpeicherTeile(5).value).toBe("5");
   });
 });

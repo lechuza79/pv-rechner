@@ -5,7 +5,7 @@ import { v } from "../lib/theme";
 import { IconArrowRight } from "./Icons";
 import { angebotUrl, type ShopAngebot, type ShopAngebote } from "../lib/shop-solakon";
 import { empfiehlAngebot, type AngebotBasis, type BewertetesAngebot } from "../lib/shop-angebot";
-import { preisTeile, jahreDativ, speicherKwhTeile, pvLeistungTeile } from "../lib/atlas-format";
+import { preisTeile, jahreDativ, produktSpeicherTeile, pvLeistungTeile } from "../lib/atlas-format";
 
 /**
  * Konkrete Sets am Ende des Balkonrechners — das, was der Rechner bis hierhin
@@ -33,12 +33,17 @@ import { preisTeile, jahreDativ, speicherKwhTeile, pvLeistungTeile } from "../li
  * serverseitig und liefert es von unserer Domain aus; der Shop erfährt erst vom
  * Klick auf den Kauflink. Der erlaubte Fremd-Host steht in der Next-Konfiguration.
  *
- * Rechtlicher Stand (Betreiber-Entscheidung 09.09.2026): Die Bilder werden
- * eingebaut, die Freigabe des Händlers wird erwartet. Ohne sie ist das Spiegeln
- * fremder Produktfotos Vervielfältigung und öffentliche Zugänglichmachung
- * (EuGH C-161/17, Renckhoff — Rn. 21 zur Kopie auf den eigenen Server, Rn. 36
- * dazu, dass freie Abrufbarkeit daran nichts ändert). Kommt sie nicht, ist
- * dieser Schalter der eine Ort, an dem sich das zurücknehmen lässt.
+ * FREIGABE DES HÄNDLERS LIEGT VOR (09.09.2026, per Mail an den Betreiber:
+ * „verwende gerne die Bilder"), dazu ein Ordner mit weiteren Aufnahmen zum
+ * Herunterladen. Ohne diese Erlaubnis wäre das Spiegeln fremder Produktfotos
+ * Vervielfältigung und öffentliche Zugänglichmachung (EuGH C-161/17,
+ * Renckhoff — Rn. 21 zur Kopie auf den eigenen Server, Rn. 36 dazu, dass freie
+ * Abrufbarkeit daran nichts ändert); die Mail ist deshalb der Beleg und gehört
+ * aufgehoben. Sie deckt die Bilder DIESES Händlers — ein zweiter Shop braucht
+ * seine eigene.
+ *
+ * Der Schalter bleibt, weil eine Erlaubnis widerruflich ist: Er ist der eine
+ * Ort, an dem sich das zurücknehmen lässt.
  */
 export const BILDER_FREIGEGEBEN = true;
 
@@ -54,7 +59,7 @@ function ausstattung(a: ShopAngebot): string {
   const module = pvLeistungTeile(a.moduleWp / 1000);
   const modulText = `${module.value} ${module.unit} Module`;
   if (a.speicherKwh <= 0) return `${modulText} · ohne Speicher`;
-  const sp = speicherKwhTeile(a.speicherKwh);
+  const sp = produktSpeicherTeile(a.speicherKwh);
   return `${modulText} · ${sp.value} ${sp.unit} Speicher`;
 }
 
