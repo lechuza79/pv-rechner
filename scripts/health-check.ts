@@ -261,6 +261,72 @@ export function firewallBefund(b: FirewallBefund | null): string[] {
   return raus;
 }
 
+type VorschaubildBefund = { status: number; bytes: number; png: boolean; breite: number | null };
+
+/** Die ersten Bytes einer PNG-Datei — Signatur, dann Breite aus dem IHDR-Kopf. */
+export function pngMasse(bytes: Uint8Array): { png: boolean; breite: number | null } {
+  const sig = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+  const png = bytes.length >= 24 && sig.every((b, i) => bytes[i] === b);
+  if (!png) return { png: false, breite: null };
+  const breite = (bytes[16] << 24) | (bytes[17] << 16) | (bytes[18] << 8) | bytes[19];
+  return { png: true, breite };
+}
+
+/**
+ * Kommt aus dem Vorschaubild wirklich ein BILD heraus?
+ *
+ * Der Statuscode beantwortet das nicht, und genau daran ist es am 08.09.2026
+ * durchgerutscht: Nach dem Scharfstellen des Bot-Schutzes holte sich die
+ * Bild-Funktion ihre Schrift nicht mehr (sie lag im öffentlichen Ordner und
+ * wurde über die eigene Adresse abgerufen, wo nun die Prüfaufgabe stand). Die
+ * Antwort blieb HTTP 200 mit Bildtyp — und war NULL Byte lang, ein Jahr lang
+ * zwischengespeichert. Vierzehn Stunden lang zeigte jede geteilte Adresse in
+ * Chat, Netzwerk und Vorschau eine leere Fläche, ohne dass irgendetwas rot war.
+ *
+ * Deshalb wird die WIRKUNG gemessen, nicht der Code: Signatur und Breite aus dem
+ * Dateikopf, wie es der Browser-Test für die herunterladbaren Widget-Bilder
+ * schon tut. Ein zusammengefallenes Bild ist wenige Byte groß und fällt sonst
+ * niemandem auf.
+ */
+async function messeVorschaubild(): Promise<VorschaubildBefund | null> {
+  try {
+    // Mit Zufallszahl, damit die Antwort nicht aus dem CDN kommt: Ein einmal
+    // zwischengespeichertes leeres Bild bliebe sonst ein Jahr lang „in Ordnung".
+    const res = await fetch(`${BASE_URL}/api/og?hc=${Date.now()}`, {
+      headers: { "user-agent": "solar-check-health-check" },
+      signal: AbortSignal.timeout(30000),
+    });
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    const { png, breite } = pngMasse(bytes);
+    return { status: res.status, bytes: bytes.length, png, breite };
+  } catch {
+    return null;
+  }
+}
+
+/** Urteil über das Vorschaubild. Leer heißt: es kommt ein Bild heraus. */
+export function vorschaubildBefund(b: VorschaubildBefund | null): string[] {
+  if (!b) return [];
+  if (b.status !== 200) {
+    return [
+      `Das Vorschaubild antwortet mit ${b.status} statt 200. Geteilte Adressen zeigen dann in Chat und ` +
+        `Netzwerken keine Vorschau.`,
+    ];
+  }
+  if (!b.png) {
+    return [
+      `Das Vorschaubild ist kein Bild: ${b.bytes} Byte, aber keine PNG-Signatur — bei HTTP 200 und Bildtyp. ` +
+        `Von außen sieht nichts kaputt aus, geteilte Adressen zeigen aber eine leere Fläche, und die Antwort ` +
+        `wird ein Jahr zwischengespeichert. Zuerst prüfen, ob die Bild-Funktion an eine eigene Datei kommt ` +
+        `(Schrift, Logo) — der bekannte Fall war der Bot-Schutz vor der eigenen Schrift.`,
+    ];
+  }
+  if (b.breite !== 1200) {
+    return [`Das Vorschaubild ist ${b.breite} statt 1200 Punkte breit — die Netzwerke schneiden es dann zu.`];
+  }
+  return [];
+}
+
 /** Zufällige Atlas-Pfade aus der DB — ein leichter Read, kein Aggregat.
  *  Zufällig, weil eine feste Seite nach dem ersten Lauf im Cache läge und der
  *  Check dann 0,1 s misst statt des Kaltrenders, den ein echter Erstbesucher zahlt.
@@ -1936,6 +2002,17 @@ async function main() {
       : `Firewall: eigene Abrufe ${firewall.statusEigen}, fremde Kennung ${firewall.statusFremd}, Crawler-Anweisungen ${firewall.statusRobots}.`,
   );
   forClaude.push(...firewallBefund(firewall));
+
+  // ── Kommt aus dem Vorschaubild wirklich ein Bild heraus? ──────────────────
+  const vorschau = await messeVorschaubild();
+  lines.push(
+    vorschau === null
+      ? "Vorschaubild: nicht messbar (Produktion antwortete gar nicht)."
+      : vorschau.png
+        ? `Vorschaubild: echtes PNG, ${vorschau.breite} Punkte breit, ${Math.round(vorschau.bytes / 1024)} kB.`
+        : `Vorschaubild: kein Bild (HTTP ${vorschau.status}, ${vorschau.bytes} Byte).`,
+  );
+  forClaude.push(...vorschaubildBefund(vorschau));
 
   // ── Kann die Produktion Abo-Mails verschicken? ────────────────────────────
   const aboBereit = await messeAboBereit();
