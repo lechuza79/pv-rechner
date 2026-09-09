@@ -52,7 +52,13 @@ describe("Skripte, die ein Test importiert", () => {
     expect(skripte.length).toBeGreaterThan(0);
   });
 
-  it.each(skripte)("%s lädt ohne Zugangsdaten", async (pfad) => {
+  // EIGENES ZEITBUDGET, und das ist keine aufgeweichte Schwelle: Gemessen wird,
+  // ob das Modul beim Laden etwas TUT — nicht, wie schnell es lädt. Ein Skript
+  // durch die Übersetzung zu ziehen kostet auf einer ruhigen Maschine 2 bis 3
+  // Sekunden, und der Standard liegt bei fünf. Unter Last (gemessen: 186 auf
+  // acht Kernen) reißt das, und dann meldet der Lauf einen Fehler, den es nicht
+  // gibt — genau die Sorte Rot, an die man sich gewöhnt.
+  it.each(skripte)("%s lädt ohne Zugangsdaten", { timeout: 30_000 }, async (pfad) => {
     const gesichert: Record<string, string | undefined> = {};
     for (const name of ZUGANG) {
       gesichert[name] = process.env[name];
