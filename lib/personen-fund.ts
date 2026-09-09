@@ -47,6 +47,13 @@ export function entwirreAdressen(text: string): string {
       .replace(/\s+at\s+(?=[\w-]+\.[a-z]{2,})/gi, "@")
       // (punkt) [dot]
       .replace(/\s*[([{]\s*(?:punkt|dot)\s*[)\]}]\s*/gi, ".")
+      // Ein Füllzeichen ZWISCHEN zwei @ — gemessen am 05.09.2026 bei
+      // informatik-aktuell.de: `name@~@domain.de` lieferte damit auf einmal
+      // zwei Adressen statt keiner.
+      .replace(/@[~*#|]+@/g, "@")
+      // Leerzeichen um den Punkt der Domain: `info (at) bodensee-news . de`.
+      // Ohne das bricht jedes Adressmuster, obwohl die Adresse dasteht.
+      .replace(/(?<=@[\w-]+)\s+\.\s+(?=[\w-]{2,})/g, ".")
       // Leerzeichen unmittelbar um das @ — der häufigste Fall, inkl. geschütztem
       .replace(/[ \t ]*@[ \t ]*/g, "@")
   );

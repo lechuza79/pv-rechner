@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { istAdminOderCron } from "../../../../lib/admin-guard";
 import { loadAwardStats, loadKreisNames } from "../../../../lib/awards-server";
 import { getFundingPrograms } from "../../../../lib/funding-data";
+import { deckt, foerdergebiete } from "../../../../lib/funding-programs";
 import { schreibeFunde } from "../../../../lib/social-fundvorrat";
 import { nationalSeries } from "../../../../lib/mastr-data";
 import { supabase } from "../../../../lib/supabase-server";
@@ -298,11 +299,11 @@ export async function GET(req: NextRequest) {
         // das FÖRDERGEBIET, nicht über gleiche Schlüssel — ein Programm trägt
         // je nach Ebene zwei, fünf oder acht Stellen.
         const balkonProgramme = programme.filter(
-          (p) => (p.foerdert ?? ["pv"]).includes("balkon") && p.agsCode,
+          (p) => (p.foerdert ?? ["pv"]).includes("balkon") && foerdergebiete(p).length > 0,
         );
         const foerderungBekannt = (regionId: string, von: string, bis: string) =>
           balkonProgramme.some((p) => {
-            if (!regionId.startsWith(p.agsCode!)) return false;
+            if (!deckt(p, regionId)) return false;
             // Ohne Laufzeit im Katalog gilt das Programm als möglicherweise
             // laufend — die vorsichtige Richtung: lieber eine Frage weniger
             // stellen als eine, deren Antwort wir hätten kennen können.

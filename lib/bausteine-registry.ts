@@ -281,6 +281,30 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: [],
   },
   {
+    datei: "components/KlebenderKnopf.tsx",
+    name: "KlebenderKnopf",
+    zweck:
+      "Wiederholt den nächsten Schritt als klebende Leiste am unteren Rand — aber nur, solange der echte Knopf nicht im Bild ist.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: [],
+    keinBeispielWeil:
+      "Der Baustein zeigt sich erst, wenn der beobachtete Knopf aus dem Bild gescrollt ist. In einer Galerie mit vielen kleinen Beispielen nebeneinander ist er entweder immer sichtbar (dann ist es nicht dieser Baustein) oder nie — und eine klebende Leiste am Fenster­rand würde die übrigen Beispiele überdecken. Zu sehen ist er im Ergebnis jedes Rechners.",
+  },
+  {
+    datei: "components/ErgebnisAnBetrieb.tsx",
+    name: "ErgebnisAnBetrieb",
+    zweck:
+      "Der Rückkanal auf der betriebseigenen Rechner-Seite: Der Nutzer schickt sein fertiges Ergebnis an genau den Betrieb, von dessen Website er kam — nach dem Ergebnis, nie davor.",
+    gruppe: "eingabe",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: ["Icons", "Modal", "FlowNav"],
+    keinBeispielWeil:
+      "Der Baustein schickt beim Absenden eine echte Mail an einen echten Handwerksbetrieb. Ein Beispiel in der Galerie wäre entweder eine Attrappe mit totem Knopf — genau die zweite Fassung, gegen die es dieses Register gibt — oder es verschickt bei jedem Klick eines Neugierigen Post an einen Fremden. Zu sehen ist er auf jeder betriebseigenen Rechner-Seite unter dem Ergebnis.",
+  },
+  {
     datei: "components/InfoTooltip.tsx",
     name: "InfoTooltip",
     zweck:

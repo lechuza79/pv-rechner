@@ -1,4 +1,6 @@
+import { readFileSync } from "node:fs";
 import { describe, it, expect } from "vitest";
+import { entwirreAdressen } from "../personen-fund";
 import {
   cfAdresseKlartext,
   ohneAdressVerschleierung,
@@ -14,6 +16,7 @@ import {
   siehtNachImpressumAus,
   titelBrauchbar,
   istMarkeStattName,
+  gattungAus,
 } from "../presse-extrakt";
 
 /**
@@ -133,11 +136,16 @@ describe("Postfächer", () => {
     expect(p.find((x) => x.mail === "anzeigen@zfk.de")?.werblich).toBe(true);
   });
 
-  it("nimmt keine Adresse einer fremden Domain", () => {
-    // Dieselbe Regel wie bei Gemeinden und Fachbetrieben, wo sie zwei
-    // Agenturadressen abgefangen hat.
-    const p = postfaecherAus("<p>redaktion@irgendeine-agentur.de</p>", "zfk.de");
-    expect(p).toHaveLength(0);
+  it("nimmt eine Adresse auf fremder Domain — bei der Presse ist das der Verlag", () => {
+    // UMGEKEHRT AM 05.09.2026, und die alte Erwartung steht hier bewusst als
+    // widerlegt statt gelöscht: Sie war von Gemeinden und Fachbetrieben
+    // übernommen, wo eine fremde Domain wirklich die Agentur ist. Bei der
+    // Presse ist sie der Normalfall — gemessen an 119 Medien ohne Kontaktweg
+    // lagen 255 von 288 Adressen auf einer anderen Domain als der Titel.
+    // Ausgeschlossen wird jetzt am Satz daneben, nicht an der Domain; die
+    // Gegenprobe dafür steht weiter unten.
+    const p = postfaecherAus("<p>redaktion@irgendein-verlag.de</p>", "zfk.de");
+    expect(p.map((x) => x.mail)).toContain("redaktion@irgendein-verlag.de");
   });
 
   it("erkennt eine persönlich aussehende Adresse als solche", () => {
@@ -202,6 +210,7 @@ describe("Priorität", () => {
       hatPerson: true,
       hatRedaktionsPostfach: false,
       hatIrgendeinenWeg: true,
+      gattung: "fach",
     });
     expect(stark).toBe("A");
   });
@@ -212,8 +221,82 @@ describe("Priorität", () => {
       hatPerson: false,
       hatRedaktionsPostfach: false,
       hatIrgendeinenWeg: false,
+      gattung: "fach",
     });
     expect(p).toBe("C");
+  });
+});
+
+describe("Fachmedium oder Publikumsmedium", () => {
+  // Alle Zahlen hier sind am 04.09.2026 an den echten Startseiten gemessen.
+  it("erkennt einen Fachtitel an der Dichte, nicht an der Zahl", () => {
+    expect(gattungAus([{ name: "photovoltaik", treffer: 45 }, { name: "speicher", treffer: 15 }], 900)).toBe("fach");
+  });
+
+  it("hält eine große Publikumsseite nicht für ein Fachmedium", () => {
+    // DER ANLASS: „ZEIT und COMPUTER BILD brauche ich nicht anschreiben."
+    // heise stand mit drei Kerntreffern auf einer sehr langen Startseite auf
+    // Priorität A, weil weiche Wörter wie „Test" die Einstufung trugen.
+    expect(gattungAus([{ name: "photovoltaik", treffer: 2 }, { name: "verbraucher", treffer: 30 }], 4000)).toBe("publikum");
+  });
+
+  it("nennt es unklar, wenn die Startseite nicht gelesen werden konnte", () => {
+    // Kein schwaches Ergebnis, sondern gar keins — das muss unterscheidbar
+    // bleiben, sonst sieht „nicht gemessen" wie „passt nicht" aus.
+    expect(gattungAus([], null)).toBe("unklar");
+  });
+
+  it("gibt einem Publikumsmedium nie ein A", () => {
+    const p = prioritaet({
+      themen: [{ name: "photovoltaik", treffer: 40 }],
+      hatPerson: true,
+      hatRedaktionsPostfach: true,
+      hatIrgendeinenWeg: true,
+      gattung: "publikum",
+    });
+    expect(p).not.toBe("A");
+  });
+
+  it("lässt die weichen Themen ein A nie allein tragen", () => {
+    const p = prioritaet({
+      themen: [{ name: "verbraucher", treffer: 82 }, { name: "daten", treffer: 6 }],
+      hatPerson: true,
+      hatRedaktionsPostfach: true,
+      hatIrgendeinenWeg: true,
+      gattung: "fach",
+    });
+    expect(p).not.toBe("A");
+  });
+});
+
+describe("Der Erhebungslauf fasst die Handentscheidung nicht an", () => {
+  it("schreibt keine der beiden Handentscheidungen", () => {
+    // DER GANZE PUNKT DER GETRENNTEN SPALTEN.
+    //
+    // Das Eignungsurteil ermittelt der Lauf inzwischen selbst — aus neun
+    // abgestimmten Fragen mit Fundstelle. Was er NIE anfassen darf, ist die
+    // Handentscheidung darüber: Sie ist die einzige Arbeit an diesem Katalog,
+    // die sich nicht wiederholen lässt, und ein Lauf, der sie überschreibt,
+    // lässt dieselbe Fehleinschätzung jeden Monat neu korrigieren.
+    // Stünde die Handentscheidung in
+    // derselben Spalte wie die Messung, überschriebe sie der nächste Lauf — und
+    // man korrigierte dieselbe Fehleinschätzung jeden Monat neu, ohne dass es
+    // auffällt. Der Wächter liest den Lauf, statt sich auf eine Regel zu
+    // verlassen, an die sich jede spätere Änderung erinnern müsste.
+    const lauf = readFileSync(
+      new URL("../../scripts/presse-refresh.ts", import.meta.url),
+      "utf8",
+    );
+    // Die Spalte ANZULEGEN ist erlaubt und steht im Setup-SQL; verboten ist,
+    // sie zu beschreiben. Geprüft wird deshalb der Code OHNE das SQL — sonst
+    // müsste der Wächter die eine erlaubte Zeile namentlich ausnehmen, und eine
+    // Ausnahme nach Wortlaut ist genau die Sorte Prüfung, die beim nächsten
+    // Umformatieren nichts mehr sieht.
+    const ohneSql = lauf.replace(/const sql = `[\s\S]*?`;/, "");
+    const schreibend = ohneSql
+      .split("\n")
+      .filter((z) => /gattung_hand|eignung_hand/.test(z));
+    expect(schreibend).toEqual([]);
   });
 });
 
@@ -257,5 +340,85 @@ describe("Seiten und Titel", () => {
     expect(titelBrauchbar("Startseite")).toBe(false);
     expect(titelBrauchbar("Home")).toBe(false);
     expect(titelBrauchbar("ZfK")).toBe(true);
+  });
+});
+
+describe("Die Verlagsadresse ist die richtige — Fehlerklasse vom 05.09.2026", () => {
+  /**
+   * Gemessen an 119 Medien ohne Kontaktweg: 255 von 288 gefundenen Adressen
+   * lagen auf einer ANDEREN Domain als der Titel. Deutsche Zeitungen werden von
+   * Verlagen herausgegeben, deren Mail-Domain nicht die Titel-Domain ist. Die
+   * von Gemeinden und Fachbetrieben übernommene Regel „fremde Domain heißt
+   * Dienstleister" hat sie alle weggeworfen.
+   */
+  it("nimmt die Verlagsadresse auf fremder Domain", () => {
+    const html = `<p>Verantwortlich für den Inhalt: Allgäuer Zeitungsverlag GmbH.
+      Redaktion: redaktion.kaufbeuren@azv.de</p>`;
+    const p = postfaecherAus(html, "all-in.de");
+    expect(p.map((x) => x.mail)).toContain("redaktion.kaufbeuren@azv.de");
+  });
+
+  it("wirft die Agentur weg, die daneben als Umsetzer benannt ist", () => {
+    const html = `<p>Redaktion: info@magazin.de</p>
+      <p>Technische Umsetzung und Webdesign: info@bosbach.de</p>`;
+    const p = postfaecherAus(html, "magazin.de").map((x) => x.mail);
+    expect(p).toContain("info@magazin.de");
+    expect(p).not.toContain("info@bosbach.de");
+  });
+
+  it("prüft nur das Umfeld der Fundstelle, nicht die ganze Seite", () => {
+    // Eine Agenturzeile am Seitenende darf die Redaktionsadresse oben nicht
+    // mitreißen — sonst ist die Regel schlimmer als die alte.
+    const html = `<p>Chefredaktion: chef@verlag.de</p>
+      ${"<p>Beliebiger Fließtext über Photovoltaik.</p>".repeat(20)}
+      <p>Realisierung: web@agentur.de</p>`;
+    const p = postfaecherAus(html, "zeitung.de").map((x) => x.mail);
+    expect(p).toContain("chef@verlag.de");
+    expect(p).not.toContain("web@agentur.de");
+  });
+
+  it("lässt die eigene Domain auch neben einer Agenturzeile durch", () => {
+    const html = `<p>Webdesign: kontakt@zeitung.de</p>`;
+    expect(postfaecherAus(html, "zeitung.de").map((x) => x.mail)).toContain("kontakt@zeitung.de");
+  });
+});
+
+describe("Verschleierungen, die der Bestand am 05.09.2026 noch nicht kannte", () => {
+  /**
+   * Alle drei stammen aus einem Nachlauf über Medien „ohne Kontaktweg" — und
+   * alle drei lagen dort nur im Wegwerf-Skript. Sie gehören in die Bibliothek,
+   * sonst führt der reguläre Lauf dieselben Seiten weiter als stumm. Dieselbe
+   * Fehlerklasse wie „Fix nur in der Bibliothek".
+   */
+  it("setzt Joomlas stückweise Adresse zusammen", () => {
+    const html = `<script>var addy12345 = 'redaktion' + '@';
+      addy12345 = addy12345 + 'rundschau24' + '.' + 'de';</script>`;
+    expect(postfaecherAus(html, "rundschau24.de").map((x) => x.mail)).toContain(
+      "redaktion@rundschau24.de",
+    );
+  });
+
+  it("liest die Adresse aus einer Einseiten-Anwendung", () => {
+    // radioton.de liefert 395 kB und neun Zeichen sichtbaren Text; elf Sender
+    // waren allein deshalb ohne Kontakt.
+    const html = `<body><div id="app"></div>
+      <script>window.__DATA__={"impressum":{"mail":"info@radioton.de"}}</script></body>`;
+    expect(postfaecherAus(html, "radioton.de").map((x) => x.mail)).toContain("info@radioton.de");
+  });
+
+  it("entfernt ein Füllzeichen zwischen zwei @", () => {
+    expect(entwirreAdressen("kontakt@~@informatik-aktuell.de")).toContain(
+      "kontakt@informatik-aktuell.de",
+    );
+  });
+
+  it("schließt Leerzeichen um den Punkt der Domain", () => {
+    expect(entwirreAdressen("info (at) bodensee-news . de")).toContain("info@bodensee-news.de");
+  });
+
+  it("fasst einen gewöhnlichen Punkt im Fließtext NICHT an", () => {
+    // Die Gegenprobe: Ohne sie zieht die Regel Satzenden zusammen.
+    const t = entwirreAdressen("Das steht so da . Und hier geht es weiter.");
+    expect(t).toContain("da . Und");
   });
 });

@@ -50,6 +50,7 @@ import {
   medientypAus,
   themenAus,
   geschichtenZu,
+  gattungAus,
   reichweiteAus,
   medienurteil,
   prioritaet,
@@ -59,7 +60,28 @@ import {
   type Seitenart,
 } from "../lib/presse-extrakt";
 import { personenAus } from "../lib/personen-fund";
+import {
+  autorAmBeitrag,
+  eigenerRechner,
+  erzeugtEigeneDaten,
+  kernfrageBehandelt,
+  meldungsbetrieb,
+  ueberschrift,
+  istBeitrag,
+  juengsterBeitragTage,
+  urteile,
+  verkauftDasProdukt,
+  verweistAufFremdenRechner,
+  zitiertFremdeQuelle,
+  inhaltstext,
+  type Befund,
+} from "../lib/presse-eignung";
 import { SAAT, doppelteInDerSaat, type Paket } from "../lib/presse-saat";
+import {
+  alsCsv,
+  type KontaktZeile,
+  type MediumZeile,
+} from "../lib/presse-katalog";
 
 // ─── Grundlagen ──────────────────────────────────────────────────────────────
 
@@ -269,6 +291,114 @@ async function setup(): Promise<void> {
     -- Laufzeit. Genau die Fehlerklasse, gegen die der Spalten-Abgleich im
     -- Gesundheitscheck gebaut wurde.
     ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS hinweis text;
+    -- Der Arbeitsstand hängt am KONTAKT, nicht am Medium: Angeschrieben wird
+    -- ein Mensch, und „Medium angesehen" ist bei einem Fachtitel mit acht
+    -- Redakteurinnen keine Auskunft, mit der sich arbeiten lässt. Diese drei
+    -- Spalten gehören dem Menschen an der Ansicht — der Erhebungslauf fasst sie
+    -- nie an, sonst hätte die Tabelle zwei Schreiber mit widersprüchlichen
+    -- Annahmen.
+    -- Fachmedium oder Publikumsmedium, und die Wortzahl, aus der es gemessen
+    -- wurde. Die Wortzahl wird MITGESCHRIEBEN, damit die Einstufung nachprüfbar
+    -- bleibt: Ohne sie steht dort ein Urteil, dessen Grundlage niemand mehr
+    -- nachrechnen kann.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS gattung text;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS woerter integer;
+    -- Die HANDENTSCHEIDUNG steht in einer eigenen Spalte und wird vom
+    -- Erhebungslauf nie angefasst. Sie in dieselbe zu schreiben hieße, dass der
+    -- nächste Lauf sie überschreibt — und dann korrigiert man dieselbe
+    -- Fehleinschätzung jeden Monat neu, ohne dass es auffällt.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS gattung_hand text;
+    -- Der Arbeitsstand des MEDIUMS — die Antwort auf „lohnt sich eine Ansprache
+    -- überhaupt". Sie lässt sich nicht messen: Ob eine Redaktion eine fremde
+    -- Datengeschichte aufnimmt, steht weder auf ihrer Startseite noch in ihrem
+    -- Impressum. Drei Runden Musterschärfen (Themenzahl, Dichte, Rechtsform)
+    -- haben jeweils das zuletzt genannte Beispiel gefangen und das nächste
+    -- verfehlt; die vierte Runde wäre dieselbe Schleife gewesen.
+    --
+    -- Deshalb urteilt hier ein Mensch, EINMAL, und der Erhebungslauf fasst es
+    -- nie an. Die Zustände sind dieselben wie beim Kontakt — zwei Vokabulare
+    -- für dieselbe Frage wären eines zu viel.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS eignung text NOT NULL DEFAULT 'offen';
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS eignung_grund text;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS eignung_at timestamptz;
+    -- Die Seite, auf der das Urteil steht, und die Zeile, die es trägt. Ein
+    -- Urteil ohne Fundstelle ist eine Behauptung — dieselbe Regel wie für jedes
+    -- andere Merkmal dieses Katalogs. Sie hat sich beim ersten Durchgang sofort
+    -- bezahlt gemacht: Das Nachlesen der Belegseiten hat sechs von 32 Urteilen
+    -- gedreht, darunter zwei in beide Richtungen falsche.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS eignung_beleg text;
+    -- Seit der Lauf das Urteil selbst ermittelt, braucht die HANDENTSCHEIDUNG
+    -- eine eigene Spalte — sonst überschreibt sie der nächste Lauf, und man
+    -- korrigiert dieselbe Fehleinschätzung jeden Monat neu. Dieselbe Bauform
+    -- wie bei der Einordnung Fach/Publikum; ein Wächter liest den Lauf und wird
+    -- rot, wenn er sie je anfasst.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS eignung_hand text;
+    -- Die Kreise, in denen eine Zeitung in den Suchergebnissen steht — ihr
+    -- GEMESSENES Verbreitungsgebiet. Die Titel selbst nennen es nur als
+    -- Fließtext („Nordhessen"), und daran scheiterte die Zuordnung
+    -- Gemeinde → Zeitung.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS kreise text[];
+    -- Der jüngste Beitrag zum Thema: Überschrift und Alter in Tagen. Ein Beleg,
+    -- der nur „behandelt das Thema" sagt, trägt keinen ersten Satz im
+    -- Anschreiben — „Ihr Beitrag vom 2. September über den Speicherzubau" tut es.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS anknuepfung_titel text;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS anknuepfung_tage integer;
+
+    -- Die Rubrik bestimmt den AUFHÄNGER, nicht die Eignung: ein Fachmedium wird
+    -- auf seinen Fachbeitrag angesprochen, ein regionales Blatt auf die Zahlen
+    -- seiner Region, ein Hersteller gar nicht redaktionell, sondern über den
+    -- Vertrieb. Es gibt kein Ausschlusskriterium — auch ein eigener Rechner ist
+    -- keins, wir bieten unter Umständen das bessere Werkzeug.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS rubrik text;
+    -- Der EINE gelesene Beitrag, an dem eine Ansprache anknüpft. Die Notiz hält
+    -- fest, was drinsteht; der Grund hält fest, welche Lücke er offenlässt und
+    -- welches unserer Werkzeuge sie füllt. Das Urteil ist deshalb dreiwertig
+    -- (ja/nein/unklar): „unklar" heißt, dass kein Wort gelesen werden konnte —
+    -- eine Sperre oder eine tote Adresse sagt nichts darüber, ob dort ein
+    -- Aufhänger stünde, und ein geratenes Urteil wäre schlimmer als keins.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS beleg_titel text;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS beleg_url text;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS beleg_notiz text;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS beleg_am date;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS beleg_traegt text;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS beleg_traegt_grund text;
+    -- Der eine Satz, was der gelesene Beitrag OFFENLAESST -- getrennt vom
+    -- ausfuehrlichen Grund, weil nur dieser Satz ins Anschreiben passt.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS beleg_luecke text;
+    -- Welches unserer Werkzeuge die Luecke fuellt, als Schluessel aus
+    -- lib/presse-werkzeuge.ts. Als LISTE statt als Fliesstext, damit die
+    -- Zuordnung gegenpruefbar ist: Ein Beitrag ueber die Einspeiseverguetung
+    -- bekam als Fliesstext-Vorschlag "Zubau je Gemeinde" angeboten, und in
+    -- einem Absatz faellt so etwas niemandem auf.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS werkzeug text[];
+    -- Erscheinungsdatum und Alter DES GELESENEN Beitrags. Getrennt von
+    -- anknuepfung_tage, das aus der ersten Erhebung stammt und den juengsten
+    -- Beitrag des Mediums zu unseren Themen meinte, nicht den gelesenen: Wo
+    -- sich beide vergleichen liessen, gehoerte das Alter in 36 von 37 Faellen
+    -- zu einem anderen Artikel, und der Filter "traegt und aktuell" rechnete
+    -- darauf. Gewonnen wird es aus der Analyse (lib/presse-beleg-datum.ts),
+    -- wo das Datum fast immer woertlich steht.
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS beleg_datum date;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS beleg_alter_tage integer;
+
+    -- Der Schlüssel ist (Kreis × Frage), nicht der Kreis: Drei Fragen je Kreis
+    -- finden je zur Hälfte andere Titel. Die erste Fassung hatte den Kreis
+    -- allein als Schlüssel; CREATE TABLE IF NOT EXISTS fasst eine bestehende
+    -- Tabelle nicht an, deshalb wird sie hier ausdrücklich verworfen — sie
+    -- trägt nur Laufprotokoll, keine Funde.
+    DROP TABLE IF EXISTS presse_kreissuche;
+    CREATE TABLE IF NOT EXISTS presse_kreissuche (
+      kreis_id text NOT NULL,
+      frage text NOT NULL,
+      fehler text,
+      gelaufen_am date NOT NULL,
+      PRIMARY KEY (kreis_id, frage)
+    );
+    ALTER TABLE presse_kreissuche ENABLE ROW LEVEL SECURITY;
+    ALTER TABLE presse_medien ADD COLUMN IF NOT EXISTS eignung_zitat text;
+    ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS stand text NOT NULL DEFAULT 'offen';
+    ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS notiz text;
+    ALTER TABLE presse_kontakte ADD COLUMN IF NOT EXISTS stand_at timestamptz;
 
     CREATE INDEX IF NOT EXISTS presse_kontakte_domain_idx ON presse_kontakte(domain);
     CREATE INDEX IF NOT EXISTS presse_medien_paket_idx ON presse_medien(paket);
@@ -408,6 +538,8 @@ interface Auswertung {
   formular_url: string | null;
   impressum_url: string | null;
   prioritaet: string;
+  gattung: string;
+  woerter: number | null;
   aufhaenger: string;
   hinweis: string | null;
   kontakte: Record<string, unknown>[];
@@ -423,7 +555,13 @@ function werteAus(domain: string, seiten: Seite[]): Auswertung {
   const tag = heute();
 
   // Themen kommen von der STARTSEITE — sie sagt, worüber gerade berichtet wird.
-  const themen = start ? themenAus(sichtbarerText(start.html)) : [];
+  const startText = start ? sichtbarerText(start.html) : null;
+  const themen = startText ? themenAus(startText) : [];
+  // Die Wortzahl wird MITGEMESSEN, weil ohne sie die Zahl der Fundstellen nichts
+  // aussagt: Eine Tageszeitung nennt unser Thema zweimal auf einer Startseite
+  // mit viertausend Wörtern, ein Fachtitel fünfundvierzigmal auf einer kürzeren.
+  const woerter = startText ? startText.split(/\s+/).filter(Boolean).length : null;
+  const gattung = gattungAus(themen, woerter);
   const geschichten = geschichtenZu(themen);
 
   // Medientyp aus allen Seiten: Der Newsletter-Hinweis steht oft nur im Fuß der
@@ -646,6 +784,7 @@ function werteAus(domain: string, seiten: Seite[]): Auswertung {
     hatPerson: alle.some((k) => k.name),
     hatRedaktionsPostfach: genommen.some((p) => !p.werblich),
     hatIrgendeinenWeg: alle.length > 0,
+    gattung,
   });
 
   const seitenKarte: Record<string, string> = {};
@@ -669,6 +808,8 @@ function werteAus(domain: string, seiten: Seite[]): Auswertung {
     formular_url: formularUrl,
     impressum_url: seitenKarte["impressum"] ?? null,
     prioritaet: prio,
+    gattung,
+    woerter,
     aufhaenger: aufhaenger(themen, rolleFuerAufhaenger),
     hinweis: hinweisZu(seiten, alle.length),
     kontakte: alle,
@@ -791,11 +932,66 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
   }
   log(`${offen.length} Medien werden gelesen`);
 
-  const medienZeilen: Record<string, unknown>[] = [];
-  const kontaktZeilen: Record<string, unknown>[] = [];
-  const belegZeilen: Record<string, unknown>[] = [];
+  let medienZeilen: Record<string, unknown>[] = [];
+  let kontaktZeilen: Record<string, unknown>[] = [];
+  let belegZeilen: Record<string, unknown>[] = [];
   let ok = 0;
   let leer = 0;
+  let kontakteGesamt = 0;
+
+  /**
+   * ZWISCHENSTAND SCHREIBEN — sonst kostet ein Abbruch den ganzen Lauf.
+   *
+   * Gemessen am 05.09.2026: Zwei Läufe über je 500 Regionalmedien liefen zehn
+   * Minuten, starben und hinterließen NICHTS — der Bestand stand danach exakt
+   * dort, wo er vorher stand, während das Protokoll hunderte gelesener Seiten
+   * zeigte. Dieselbe Lehre wie bei den teuren Erhebungsläufen: Was nur am Ende
+   * geschrieben wird, existiert bis dahin nicht.
+   */
+  const STAPEL = 50;
+  async function ablegen(): Promise<void> {
+    if (!medienZeilen.length) return;
+    await upsert(sb, "presse_medien", medienZeilen, "domain");
+    const angefasst = medienZeilen.map((z) => String(z.domain));
+    const gemerkt = new Map<string, { stand: string; notiz: string | null; stand_at: string | null }>();
+    for (let i = 0; i < angefasst.length; i += 200) {
+      const teil = angefasst.slice(i, i + 200);
+      const { data, error: leseFehler } = await sb
+        .from("presse_kontakte")
+        .select("domain, schluessel, stand, notiz, stand_at")
+        .in("domain", teil);
+      if (leseFehler) throw new Error(`Arbeitsstand sichern: ${leseFehler.message}`);
+      for (const r of (data ?? []) as {
+        domain: string;
+        schluessel: string;
+        stand: string | null;
+        notiz: string | null;
+        stand_at: string | null;
+      }[]) {
+        if ((!r.stand || r.stand === "offen") && !r.notiz) continue;
+        gemerkt.set(`${r.domain}|${r.schluessel}`, {
+          stand: r.stand ?? "offen",
+          notiz: r.notiz,
+          stand_at: r.stand_at,
+        });
+      }
+      const { error } = await sb.from("presse_kontakte").delete().in("domain", teil);
+      if (error) throw new Error(`alte Kontakte entfernen: ${error.message}`);
+    }
+    for (const z of kontaktZeilen) {
+      const alt = gemerkt.get(`${z.domain}|${z.schluessel}`);
+      if (!alt) continue;
+      z.stand = alt.stand;
+      z.notiz = alt.notiz;
+      z.stand_at = alt.stand_at;
+    }
+    await upsert(sb, "presse_kontakte", kontaktZeilen, "domain,schluessel");
+    await upsert(sb, "presse_belege", belegZeilen, "domain,merkmal,quelle_url");
+    kontakteGesamt += kontaktZeilen.length;
+    medienZeilen = [];
+    kontaktZeilen = [];
+    belegZeilen = [];
+  }
 
   await pool(offen, 6, async (m) => {
     // EIN kaputtes Medium darf den Lauf nicht abreißen. Real passiert: eine
@@ -833,6 +1029,8 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
         formular_url: null,
         impressum_url: null,
         prioritaet: null,
+        gattung: null,
+        woerter: null,
         aufhaenger: null,
         hinweis: null,
         updated_at: new Date().toISOString(),
@@ -858,6 +1056,8 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
       formular_url: a.formular_url,
       impressum_url: a.impressum_url,
       prioritaet: a.prioritaet,
+      gattung: a.gattung,
+      woerter: a.woerter,
       aufhaenger: a.aufhaenger,
       hinweis: a.hinweis,
       profil_at: new Date().toISOString(),
@@ -872,26 +1072,11 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
       `${a.domain}: ${a.ist_medium}, ${personen} Person(en), ${a.kontakte.length} Kontakt(e), Prio ${a.prioritaet}`,
       "ok",
     );
+    if (medienZeilen.length >= STAPEL) await ablegen();
   });
+  await ablegen();
 
-  await upsert(sb, "presse_medien", medienZeilen, "domain");
-  // ALTE KONTAKTE EINES NEU GELESENEN MEDIUMS WEG, BEVOR DIE NEUEN KOMMEN.
-  // Ein Upsert schreibt nur, was jetzt gefunden wurde — was ein früherer Lauf
-  // fälschlich gefunden hat, bleibt sonst für immer stehen. Real gemessen am
-  // 03.09.2026: „Rolle Vorstandsmitglied" und „National Geographic Magazin"
-  // standen nach dem Fix weiter im Katalog, weil ihre Zeilen aus dem Lauf davor
-  // stammten. Der Fix sah im Diff richtig aus und änderte nichts.
-  const angefasst = medienZeilen.map((z) => String(z.domain));
-  for (let i = 0; i < angefasst.length; i += 200) {
-    const { error } = await sb
-      .from("presse_kontakte")
-      .delete()
-      .in("domain", angefasst.slice(i, i + 200));
-    if (error) throw new Error(`alte Kontakte entfernen: ${error.message}`);
-  }
-  await upsert(sb, "presse_kontakte", kontaktZeilen, "domain,schluessel");
-  await upsert(sb, "presse_belege", belegZeilen, "domain,merkmal,quelle_url");
-  log(`${ok} gelesen, ${leer} nicht erreichbar, ${kontaktZeilen.length} Kontakte`, "ok");
+  log(`${ok} gelesen, ${leer} nicht erreichbar, ${kontakteGesamt} Kontakte`, "ok");
 }
 
 // ─── Phase: Suche ────────────────────────────────────────────────────────────
@@ -1044,6 +1229,466 @@ async function suche(trocken: boolean, paketFilter: Paket | null): Promise<void>
   log(`${zeilen.length} neue Adressen aufgenommen`, "ok");
 }
 
+// ─── Phase: Regionalpresse je Landkreis ──────────────────────────────────────
+//
+// Betreiber, 05.09.2026: „es muss doch viel mehr als 65 regionalzeitungen geben.
+// mindestens zu jedem landkreis eine." Er hat recht — die benannte Saat trug 55
+// Titel, Deutschland hat rund 400 Kreise. Der Grund ist derselbe wie bei den
+// Fachbetrieben: Eine benannte Liste kennt, wer bekannt ist.
+//
+// UND DER NEBENERTRAG IST DER EIGENTLICHE: Die Kreise, in denen eine Zeitung in
+// den Ergebnissen steht, SIND ihr Verbreitungsgebiet — gemessen, nicht aus einer
+// Selbstbeschreibung abgeschrieben. Genau daran scheiterte bisher die Zuordnung
+// Gemeinde → Zeitung, denn die Titel nennen ihr Gebiet nur als Fließtext
+// („Nordhessen"). Dieselbe Mechanik wie die Streuungsmessung, die bei den
+// Fachbetrieben Betrieb von Portal trennt.
+
+interface KreisZeile {
+  id: string;
+  name: string;
+  kind: string;
+  bl: string;
+}
+
+function ladeKreise(): KreisZeile[] {
+  const pfad = resolve(process.cwd(), "public", "geo", "de-landkreise.geo.json");
+  const geo = JSON.parse(readFileSync(pfad, "utf8")) as { features: { properties: KreisZeile }[] };
+  return geo.features.map((f) => f.properties);
+}
+
+/** Wie der Kreis in der Suchanfrage heißt — dieselbe Regel wie bei den
+ *  Fachbetrieben: „Landkreis Flensburg" gibt es nicht. */
+function ortsname(k: KreisZeile): string {
+  return k.kind === "Kreisfreie Stadt" ? k.name : `Landkreis ${k.name}`;
+}
+
+/**
+ * DREI Fragen je Kreis, und der Unterschied ist nicht kosmetisch.
+ *
+ * Betreiber, 05.09.2026: „das war jetzt nur ein beispiel. vermutlich gibt's zig
+ * mehr als nur je landkreis." Er hat recht — neben der Tageszeitung gibt es das
+ * Wochen- und Anzeigenblatt (oft die einzige Zeitung, die in JEDEN Briefkasten
+ * geht) und das reine Online-Lokalportal, das in keiner Zeitungsliste steht.
+ * Eine Frage allein fände nur die erste Gattung.
+ *
+ * Dieselbe Systematik wie bei den Fachbetrieben, wo „Photovoltaik" und
+ * „Solarteur" je zur Hälfte andere Betriebe finden — und wie dort gilt: Wer
+ * eine vierte Frage vorschlägt, misst vorher, ob sie neue Adressen bringt.
+ */
+export const KREIS_FRAGEN = [
+  { name: "tageszeitung", vorlage: (k: KreisZeile) => `Tageszeitung ${ortsname(k)} Lokalnachrichten` },
+  { name: "wochenblatt", vorlage: (k: KreisZeile) => `Wochenblatt Anzeigenblatt ${ortsname(k)}` },
+  { name: "lokalportal", vorlage: (k: KreisZeile) => `Lokalnachrichten online ${ortsname(k)} aktuell` },
+] as const;
+
+/** Was nie eine Regionalzeitung ist. Bewusst kurz — die eigentliche Trennung
+ *  macht der Profil- und Eignungslauf am Inhalt, nicht diese Liste. */
+const NIE_REGIONALPRESSE = [
+  "facebook.com", "instagram.com", "youtube.com", "linkedin.com", "x.com", "twitter.com",
+  "wikipedia.org", "wikiwand.com", "google.com", "amazon.de", "ebay.de", "kleinanzeigen.de",
+  "meinestadt.de", "wer-zu-wem.de", "kalaydo.de", "stellenanzeigen.de", "indeed.com",
+  "yumpu.com", "issuu.com", "pressreader.com", "zeitungen.de", "abo-direkt.de",
+  // Branchenverzeichnisse — sie tragen jeden Ortsnamen und nie eine Redaktion.
+  // Gemessen an drei Kreisen (05.09.2026): Von 95 gefundenen Adressen war die
+  // Mehrheit Telefonbuch, Werbeplattform oder E-Paper-Spiegel.
+  "11880.com", "dasoertliche.de", "dastelefonbuch.de", "gelbeseiten.de", "goyellow.de",
+  "creditreform.de", "firmeneintrag.creditreform.de", "northdata.de", "companyhouse.de",
+  "crossvertise.com", "wlw.de", "cylex.de", "branchenbuch.de",
+  // E-Paper- und Kiosk-Dienste: dieselbe Zeitung ein zweites Mal, ohne Impressum
+  // und ohne Redaktion.
+  "e-pages.dk", "e-pages.pub", "united-kiosk.de", "readly.com", "sharemagazines.de",
+  // Bundesweite Häuser mit Regionalauftritt — sie kommen über die benannte Saat,
+  // nicht über die Kreissuche, sonst stehen sie 400 Mal darin.
+  "bild.de", "t-online.de", "focus.de", "merkur.de", "web.de", "gmx.net",
+];
+
+/**
+ * Ein E-Paper- oder Kiosk-Vorsatz gehört zur HAUPTDOMAIN.
+ *
+ * Gemessen: `epaper.kn-online.de` und `kn-online.de` sind dieselbe Zeitung, und
+ * getrennt geführt hätte die eine ein Impressum und die andere keins. Dieselbe
+ * Systematik wie bei den Fachbetrieben, wo die Domain die Identität ist.
+ */
+function hauptdomain(host: string): string {
+  // Auch Marketing- und Service-Vorsätze gehören zur Zeitung:
+  // `mediadaten.augsburger-allgemeine.de` ist keine zweite Redaktion.
+  return host.replace(
+    /^(?:epaper|e-paper|paper|mediadaten|abo|shop|jobs|anzeigen|trauer|immo|m|www\d?|amp)\./,
+    "",
+  );
+}
+
+async function regionalpresse(limit: number, trocken: boolean): Promise<void> {
+  const sb = await makeClient();
+  loadEnvFile();
+  const kreise = ladeKreise();
+  const bestand = await alleZeilen<{ domain: string; kreise: string[] | null }>(
+    sb,
+    "presse_medien",
+    "domain, kreise",
+  );
+  const bekannt = new Map(bestand.map((b) => [b.domain, new Set(b.kreise ?? [])]));
+
+  const gelaufen = await alleZeilen<{ kreis_id: string; frage: string }>(
+    sb,
+    "presse_kreissuche",
+    "kreis_id, frage",
+  );
+  const erledigt = new Set(gelaufen.map((g) => `${g.kreis_id}|${g.frage}`));
+  const paare: { k: KreisZeile; frage: string; art: string }[] = [];
+  for (const k of kreise) {
+    for (const f of KREIS_FRAGEN) {
+      if (!erledigt.has(`${k.id}|${f.name}`)) paare.push({ k, frage: f.vorlage(k), art: f.name });
+    }
+  }
+  const offen = paare.slice(0, limit);
+
+  if (trocken) {
+    log(`${offen.length} Abfragen offen, ${(offen.length * 0.002).toFixed(2)} $ — nichts abgerufen`);
+    for (const p of offen.slice(0, 6)) log(`  ${p.frage}`);
+    return;
+  }
+  if (!offen.length) {
+    log("alle Kreise abgefragt", "ok");
+    return;
+  }
+  log(`${offen.length} Abfragen (${(offen.length * 0.002).toFixed(2)} $)`);
+
+  const gefunden = new Map<string, Set<string>>();
+  const laufZeilen: Record<string, unknown>[] = [];
+  let treffer = 0;
+
+  await pool(offen, 4, async (p) => {
+    const k = p.k;
+    const { treffer: hits, fehler } = await serp(p.frage);
+    laufZeilen.push({ kreis_id: k.id, frage: p.art, fehler, gelaufen_am: heute() });
+    if (fehler) {
+      log(`${k.name} (${p.art}): ${fehler}`, "err");
+      return;
+    }
+    for (const h of hits) {
+      const roh = hostVon(h.url);
+      if (!roh) continue;
+      const host = hauptdomain(roh);
+      if (NIE_REGIONALPRESSE.some((p) => host === p || host.endsWith("." + p))) continue;
+      const menge = gefunden.get(host) ?? new Set<string>();
+      menge.add(k.id);
+      gefunden.set(host, menge);
+    }
+    treffer++;
+  });
+
+  // Je Domain die Kreise, in denen sie aufgetaucht ist — bestehende bleiben
+  // erhalten, damit ein Teillauf das Gebiet nicht beschneidet.
+  const zeilen: Record<string, unknown>[] = [];
+  for (const [domain, kreiseNeu] of gefunden) {
+    const alt = bekannt.get(domain);
+    const zusammen = [...new Set([...(alt ?? []), ...kreiseNeu])].sort();
+    if (alt) {
+      // Schon im Bestand: nur das Gebiet fortschreiben, nichts überschreiben.
+      zeilen.push({ domain, kreise: zusammen });
+      continue;
+    }
+    zeilen.push({
+      domain,
+      saat_name: domain,
+      saat_typ: null,
+      saat_schwerpunkt: null,
+      saat_gebiet: null,
+      gruppe: null,
+      paket: 2,
+      notiz: `über die Kreissuche gefunden (${kreiseNeu.size} Kreis(e))`,
+      kreise: zusammen,
+    });
+  }
+  await upsert(sb, "presse_medien", zeilen, "domain");
+  await upsert(sb, "presse_kreissuche", laufZeilen, "kreis_id,frage");
+  const neu = zeilen.filter((z) => z.paket !== undefined).length;
+  log(`${treffer} Kreise abgefragt, ${zeilen.length} Adressen berührt, ${neu} neu`, "ok");
+}
+
+/**
+ * Regional oder überregional? — die STREUUNG entscheidet, keine Sperrliste.
+ *
+ * Eine Regionalzeitung deckt ihren Kreis und ein paar Nachbarkreise ab; die
+ * WELT, das RND und presseportal.de stehen in jedem. Dieselbe Messung, die bei
+ * den Fachbetrieben Betrieb von Portal trennt — und aus demselben Grund: Eine
+ * gepflegte Sperrliste veraltet, sobald ein neues Portal aufmacht, die Streuung
+ * nie.
+ *
+ * WICHTIG: Die Schwelle wächst mit der Zahl der abgefragten Kreise. In einem
+ * Teillauf über acht Kreise wäre sonst jede überregionale Adresse eine
+ * „Regionalzeitung mit drei Kreisen" — und nach dem Vollauf sieht das niemand
+ * mehr nach.
+ */
+export const UEBERREGIONAL_ANTEIL = 0.08;
+export const UEBERREGIONAL_MIN = 12;
+
+export function ueberregionalSchwelle(kreiseAbgefragt: number): number {
+  return Math.max(UEBERREGIONAL_MIN, Math.round(kreiseAbgefragt * UEBERREGIONAL_ANTEIL));
+}
+
+async function streuung(dry: boolean): Promise<void> {
+  const sb = await makeClient();
+  const laeufe = await alleZeilen<{ kreis_id: string }>(sb, "presse_kreissuche", "kreis_id");
+  const kreiseAbgefragt = new Set(laeufe.map((l) => l.kreis_id)).size;
+  const schwelle = ueberregionalSchwelle(kreiseAbgefragt);
+  const medien = await alleZeilen<{ domain: string; kreise: string[] | null; saat_gebiet: string | null }>(
+    sb,
+    "presse_medien",
+    "domain, kreise, saat_gebiet",
+  );
+  const mitKreisen = medien.filter((m) => (m.kreise ?? []).length > 0);
+  const ueber = mitKreisen.filter((m) => (m.kreise ?? []).length >= schwelle);
+
+  log(`${kreiseAbgefragt} Kreise abgefragt, Schwelle ${schwelle} Kreise`);
+  log(`${mitKreisen.length} Adressen mit Kreisbezug, davon ${ueber.length} in ${schwelle}+ Kreisen`);
+  for (const m of ueber.slice(0, 15)) log(`  ${(m.kreise ?? []).length}× ${m.domain}`);
+  if (dry) return;
+
+  // Die Gebietsangabe wird GESCHRIEBEN, nicht behauptet: Für ein Regionalmedium
+  // ist sie die Liste seiner Kreise, für ein überregionales der Vermerk.
+  const zeilen = mitKreisen.map((m) => ({
+    domain: m.domain,
+    // NEUTRAL BESCHRIFTET: Die Zahl ist die Aussage, nicht ein Urteil.
+    // „überregional" stand hier zuerst und war bei einer Mediengruppe mit 168
+    // Lokalausgaben schlicht falsch — sie IST in 168 Kreisen präsent, nur eben
+    // mit vielen Redaktionen statt einer. Wie viele davon eigene Ansprechpartner
+    // haben, sagt erst der Profil-Lauf.
+    saat_gebiet: `in ${(m.kreise ?? []).length} von ${kreiseAbgefragt} Kreisen gefunden`,
+  }));
+  await upsert(sb, "presse_medien", zeilen, "domain");
+  log(`Gebiet für ${zeilen.length} Adressen fortgeschrieben`, "ok");
+}
+
+// ─── Phase: Eignung ──────────────────────────────────────────────────────────
+//
+// Beantwortet je Medium die neun mit dem Betreiber abgestimmten Fragen (05.09.2026)
+// auf INHALTSSEITEN — nie im Impressum. Die Regel für das Urteil steht in
+// lib/presse-eignung.ts, damit sie nicht bei jeder Durchsicht anders angewandt wird.
+
+/** Welche Inhaltsseiten angesehen werden. Die Suchmaschine findet sie, weil eine
+ *  Redaktionsseite keine Themenliste führt und der Crawl nur zwei Klicks tief
+ *  ginge — dieselbe Lehre wie im Förderbereich. */
+async function inhaltsseiten(domain: string): Promise<string[]> {
+  const { treffer } = await serp(`site:${domain} photovoltaik`);
+  return treffer
+    .map((t) => t.url)
+    .filter((u) => (hostVon(u) ?? "").endsWith(domain))
+    // Rechtstexte tragen zur Frage nichts bei und würden den alten Fehler
+    // wiederholen — geprüft wird der INHALT.
+    .filter((u) => !/impressum|datenschutz|agb|kontakt|newsletter|mediadaten/i.test(u))
+    .slice(0, 4);
+}
+
+/**
+ * „UNKLAR" IST KEIN URTEIL — GEPRÜFT WIRD ES MIT.
+ *
+ * Eine erste Fassung sparte hier Geld, indem sie nur Medien mit BELEGTER
+ * Redaktion prüfte. Die Stichprobe hat das widerlegt: Unter den 787 unklaren
+ * Adressen stehen die Allgemeine Zeitung, 24rhein, detektor.fm, Clean Energy
+ * Wire und das Akkudoktor-Forum neben Abfallkalendern und Bibliothekskatalogen.
+ * „unklar" heißt in aller Regel nur, dass kein NAME gefunden wurde — nicht,
+ * dass es keine Redaktion gibt. Wer hier spart, verliert Zeitungen stumm, und
+ * das ist der teurere Fehler: Eine Fehlanzeige auf einem Abfallkalender kostet
+ * 0,002 $ und macht die Liste sauber, eine verlorene Tageszeitung fällt
+ * niemandem auf.
+ *
+ * Ausgeschlossen bleibt allein, was der Profil-Lauf als NICHT-Medium belegt hat.
+ * `--nur-belegte` fährt den sparsamen Lauf, wenn das Guthaben knapp ist.
+ */
+async function eignung(
+  paket: Paket | null,
+  limit: number,
+  neu: boolean,
+  nurBelegte: boolean,
+): Promise<void> {
+  const sb = await makeClient();
+  loadEnvFile();
+  const alle = await alleZeilen<{
+    domain: string;
+    paket: number;
+    ist_medium: string | null;
+    eignung: string | null;
+    eignung_at: string | null;
+  }>(sb, "presse_medien", "domain, paket, ist_medium, eignung, eignung_at");
+  const offen = alle
+    .filter((m) => (paket === null || m.paket === paket))
+    .filter((m) => (nurBelegte ? m.ist_medium === "medium" : m.ist_medium !== "kein-medium"))
+    .filter((m) => neu || !m.eignung_at)
+    .slice(0, limit);
+  if (!offen.length) {
+    log("nichts offen — mit --neu noch einmal", "ok");
+    return;
+  }
+  log(`${offen.length} Medien werden auf Eignung geprüft (${(offen.length * 0.002).toFixed(2)} $ Suche)`);
+
+  const jetzt = new Date();
+  const medienZeilen: Record<string, unknown>[] = [];
+  const belegZeilen: Record<string, unknown>[] = [];
+  const zaehl: Record<string, number> = {};
+
+  await pool(offen, 4, async (m) => {
+    let seiten: string[] = [];
+    try {
+      seiten = await inhaltsseiten(m.domain);
+    } catch {
+      /* Suche fehlgeschlagen — dann bleibt die Startseite */
+    }
+    const start = await holeStart(m.domain);
+    const geprueft: { url: string; html: string }[] = [];
+    if (start) geprueft.push({ url: start.url, html: start.html });
+    for (const u of seiten) {
+      const r = await holeText(u);
+      if (r) geprueft.push({ url: r.url, html: r.html });
+    }
+    if (!geprueft.length) {
+      medienZeilen.push({
+        domain: m.domain,
+        eignung: "angesehen",
+        eignung_grund: "keine Inhaltsseite abrufbar — von Hand nachsehen",
+        eignung_beleg: null,
+        eignung_zitat: null,
+        eignung_at: jetzt.toISOString(),
+      });
+      zaehl["nicht abrufbar"] = (zaehl["nicht abrufbar"] ?? 0) + 1;
+      return;
+    }
+
+    // Je Frage die STÄRKSTE Fundstelle über alle gelesenen Seiten. Ein Treffer
+    // auf einer von vier Seiten genügt — gefragt ist, OB das Medium das Thema
+    // behandelt, nicht ob jede Seite es tut.
+    const beste = new Map<string, { b: Befund; url: string }>();
+    const merke = (b: Befund, url: string) => {
+      if (b.antwort === "unklar") return;
+      const da = beste.get(b.frage.split(" ")[0]);
+      if (da && da.b.antwort === "ja") return;
+      beste.set(b.frage.split(" ")[0], { b, url });
+    };
+    // Der JÜNGSTE Beitrag, der eine unserer Fragen behandelt — das ist der
+    // Satz, mit dem ein Anschreiben anfangen kann.
+    let anknuepfung: { titel: string; alter: number; url: string } | null = null;
+    for (const [i, s] of geprueft.entries()) {
+      // OHNE NAVIGATION — sonst belegt das Menü jede Frage auf jeder Seite.
+      const text = inhaltstext(s.html);
+      // Die erste gelesene Seite ist die Startseite; nur sie darf den
+      // Meldungsbetrieb VERNEINEN (eine Artikelseite ist immer alt).
+      const istStart = i === 0 && !!start;
+      merke(kernfrageBehandelt(text), s.url);
+      merke(verweistAufFremdenRechner(s), s.url);
+      merke(zitiertFremdeQuelle(text), s.url);
+      merke(meldungsbetrieb(text, jetzt, s.html, istStart), s.url);
+      merke(autorAmBeitrag(text), s.url);
+      merke(eigenerRechner(s), s.url);
+      merke(erzeugtEigeneDaten(text), s.url);
+      merke(verkauftDasProdukt(s), s.url);
+
+      // Nur ein echter BEITRAG taugt als Anknüpfung — eine Rubrikseite trägt
+      // dieselbe Überschriftform und keinen Inhalt, auf den man sich beruft.
+      if (!istStart && istBeitrag(s.html, jetzt) && kernfrageBehandelt(text).antwort === "ja") {
+        const alter = juengsterBeitragTage(text, jetzt, s.html);
+        const titel = ueberschrift(s.html);
+        if (titel && alter !== null && alter >= 0 && (!anknuepfung || alter < anknuepfung.alter)) {
+          anknuepfung = { titel, alter, url: s.url };
+        }
+      }
+    }
+
+    const kontakte = await alleZeilen<{ domain: string; mail_art: string | null }>(
+      sb,
+      "presse_kontakte",
+      "domain, mail_art",
+      (q) => q.eq("domain", m.domain),
+    );
+    const hatKontakt = kontakte.some((k) => k.mail_art === "redaktion" || k.mail_art === "person");
+
+    const befunde = [...beste.values()].map((x) => x.b);
+    const u = urteile(befunde, hatKontakt);
+    const belegUrl = u.beleg ? [...beste.values()].find((x) => x.b === u.beleg)?.url ?? null : null;
+
+    medienZeilen.push({
+      domain: m.domain,
+      eignung: u.eignung,
+      eignung_grund: u.grund,
+      eignung_beleg: anknuepfung?.url ?? belegUrl,
+      eignung_zitat: u.beleg?.fundstelle ?? null,
+      // Woran ein Anschreiben anknüpfen kann — Überschrift und Alter des
+      // jüngsten Beitrags zum Thema.
+      anknuepfung_titel: anknuepfung?.titel ?? null,
+      anknuepfung_tage: anknuepfung?.alter ?? null,
+      eignung_at: jetzt.toISOString(),
+    });
+    for (const [, x] of beste) {
+      belegZeilen.push({
+        domain: m.domain,
+        merkmal: `eignung:${x.b.frage}`,
+        wert: x.b.antwort,
+        quelle_url: x.url,
+        fundstelle: x.b.fundstelle.slice(0, 300),
+        gefunden_am: heute(),
+      });
+    }
+    zaehl[u.eignung] = (zaehl[u.eignung] ?? 0) + 1;
+    log(`${m.domain}: ${u.eignung} — ${u.grund.slice(0, 70)}`, "ok");
+  });
+
+  await upsert(sb, "presse_medien", medienZeilen, "domain");
+  await upsert(sb, "presse_belege", belegZeilen, "domain,merkmal,quelle_url");
+  log(`fertig: ${JSON.stringify(zaehl)}`, "ok");
+}
+
+/** EIN Medium prüfen, ohne zu schreiben — für die Eichung. */
+async function eichenEignung(domain: string): Promise<void> {
+  loadEnvFile();
+  const jetzt = new Date();
+  let seiten: string[] = [];
+  try {
+    seiten = await inhaltsseiten(domain);
+  } catch {
+    /* ohne Suche nur die Startseite */
+  }
+  const start = await holeStart(domain);
+  const geprueft: { url: string; html: string }[] = [];
+  if (start) geprueft.push({ url: start.url, html: start.html });
+  for (const u of seiten) {
+    const r = await holeText(u);
+    if (r) geprueft.push({ url: r.url, html: r.html });
+  }
+  // eslint-disable-next-line no-console
+  console.log(`\n${domain} — gelesene Inhaltsseiten:`);
+  for (const s of geprueft) console.log("  ·", s.url);
+
+  const beste = new Map<string, { b: Befund; url: string }>();
+  for (const [i, s] of geprueft.entries()) {
+    const text = inhaltstext(s.html);
+    for (const b of [
+      kernfrageBehandelt(text),
+      verweistAufFremdenRechner(s),
+      zitiertFremdeQuelle(text),
+      meldungsbetrieb(text, jetzt, s.html, i === 0 && !!start),
+      autorAmBeitrag(text),
+      eigenerRechner(s),
+      erzeugtEigeneDaten(text),
+      verkauftDasProdukt(s),
+    ]) {
+      if (b.antwort === "unklar") continue;
+      const k = b.frage.split(" ")[0];
+      if (beste.get(k)?.b.antwort === "ja") continue;
+      beste.set(k, { b, url: s.url });
+    }
+  }
+  // eslint-disable-next-line no-console
+  console.log("\nAntworten:");
+  for (const [, x] of beste) {
+    console.log(`  ${x.b.antwort.toUpperCase().padEnd(5)} ${x.b.frage}`);
+    console.log(`        „${x.b.fundstelle.slice(0, 130)}“`);
+    console.log(`        ${x.url}`);
+  }
+  const u = urteile([...beste.values()].map((x) => x.b), true);
+  // eslint-disable-next-line no-console
+  console.log(`\nURTEIL: ${u.eignung} — ${u.grund}`);
+}
+
 // ─── Eichung: EIN Medium, nichts geschrieben ─────────────────────────────────
 
 async function eichen(domain: string): Promise<void> {
@@ -1066,6 +1711,8 @@ async function eichen(domain: string): Promise<void> {
         geschichten: a.geschichten,
         reichweite: a.reichweite,
         prioritaet: a.prioritaet,
+        gattung: a.gattung,
+        woerter: a.woerter,
         aufhaenger: a.aufhaenger,
         kontakte: a.kontakte.map((k) => ({
           name: k.name,
@@ -1085,263 +1732,24 @@ async function eichen(domain: string): Promise<void> {
 }
 
 // ─── CSV ─────────────────────────────────────────────────────────────────────
-
-/** Stabile Spaltennamen — sie sind ab dem ersten gelieferten Katalog eine
- *  Schnittstelle und dürfen sich nicht mehr ändern. */
-const SPALTEN = [
-  "medium",
-  "website",
-  "medientyp",
-  "schwerpunkt",
-  "gebiet",
-  "reichweite",
-  "redaktion_oder_person",
-  "funktion",
-  "kontakt",
-  "kontakt_art",
-  "quelle_url",
-  "geprueft_am",
-  "passende_geschichten",
-  "aufhaenger",
-  "prioritaet",
-  "mediengruppe",
-  "paket",
-  "notizen",
-] as const;
-
-function csvFeld(v: unknown): string {
-  const s = v === null || v === undefined ? "" : String(v);
-  return /[",\n;]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-}
-
-interface MediumZeile {
-  domain: string;
-  saat_name: string | null;
-  saat_typ: string | null;
-  saat_schwerpunkt: string | null;
-  saat_gebiet: string | null;
-  gruppe: string | null;
-  paket: number;
-  notiz: string | null;
-  titel: string | null;
-  medientyp: string[] | null;
-  themen: Themenfund[] | null;
-  geschichten: string[] | null;
-  reichweite: string | null;
-  ist_medium: string | null;
-  medium_grund: string | null;
-  formular_url: string | null;
-  prioritaet: string | null;
-  aufhaenger: string | null;
-  hinweis: string | null;
-  profil_at: string | null;
-  fehler: string | null;
-}
-
-interface KontaktZeile {
-  domain: string;
-  name: string | null;
-  funktion: string | null;
-  rang: number;
-  mail: string | null;
-  mail_art: string | null;
-  formular_url: string | null;
-  quelle_url: string;
-  geprueft_am: string;
-}
+//
+// Der Aufbau der Zeile steht in lib/presse-katalog.ts, nicht hier: Die Ansicht
+// im Adminbereich exportiert dieselbe Tabelle, und zwei Fassungen derselben
+// Spalten würden auseinanderlaufen, ohne dass es jemandem auffiele.
 
 async function csv(paket: Paket | null, nurMedien: boolean, top: number): Promise<void> {
   const sb = await makeClient();
-  const medien = await alleZeilen<MediumZeile>(sb, "presse_medien", "*");
+  const alleMedien = await alleZeilen<MediumZeile>(sb, "presse_medien", "*");
   const kontakte = await alleZeilen<KontaktZeile>(sb, "presse_kontakte", "*");
-  const jeDomain = new Map<string, KontaktZeile[]>();
-  for (const k of kontakte) jeDomain.set(k.domain, [...(jeDomain.get(k.domain) ?? []), k]);
-
-  // Dieselbe Adresse unter zwei Domains ist eine DUBLETTE für den Versand —
-  // gemessen bei pv magazine, dessen Redaktion auf der deutschen und der
-  // internationalen Seite steht. Nicht löschen (beide Titel sind echt), aber
-  // benennen: Wer beide anschreibt, schreibt demselben Menschen zweimal.
-  const mailKommtVor = new Map<string, string[]>();
-  for (const k of kontakte) {
-    if (!k.mail) continue;
-    mailKommtVor.set(k.mail, [...(mailKommtVor.get(k.mail) ?? []), k.domain]);
-  }
-
-  const zeilen: string[] = [SPALTEN.join(",")];
-  const sortiert = medien
+  const medien = alleMedien
     .filter((m) => paket === null || m.paket === paket)
-    .filter((m) => !nurMedien || m.ist_medium === "medium")
-    .sort((a, b) => {
-      const p = (x: string | null) => (x === "A" ? 0 : x === "B" ? 1 : 2);
-      return p(a.prioritaet) - p(b.prioritaet) || a.domain.localeCompare(b.domain);
-    });
+    .filter((m) => !nurMedien || m.ist_medium === "medium");
 
-  for (const m of sortiert) {
-    const ks = (jeDomain.get(m.domain) ?? []).sort((a, b) => b.rang - a.rang);
-    // Eine Zeile je KONTAKT, nicht je Medium — der Katalog wird zum Anschreiben
-    // benutzt, und angeschrieben wird ein Mensch oder ein Postfach.
-    // Mit --top wird je Medium nur der BESTE Kontakt ausgegeben. Das ist die
-    // Fassung für die Qualitätskontrolle in Paketen von 50: Fünfzig Zeilen von
-    // fünfzig verschiedenen Medien lassen sich lesen, fünfzig Zeilen von acht
-    // Medien nicht.
-    const auszugeben = ks.length ? (top > 0 ? ks.slice(0, 1) : ks) : [null];
-    for (const k of auszugeben) {
-      zeilen.push(
-        [
-          mediumName(m),
-          `https://${m.domain}`,
-          feldMitVermerk(m.medientyp?.join(" · ") ?? null, m.saat_typ),
-          feldMitVermerk(themenText(m.themen), m.saat_schwerpunkt),
-          `${m.saat_gebiet ?? ""} (ungeprüft)`,
-          m.reichweite ?? "ungeprüft",
-          k?.name ??
-            (k?.mail_art === "person-ohne-namen"
-              ? "Person (Name auf der Seite nicht zuzuordnen)"
-              : k?.mail
-                ? "Redaktion (Postfach)"
-                : m.fehler
-                  ? ""
-                  : "ungeprüft"),
-          k?.funktion ?? "",
-          k?.mail ?? k?.formular_url ?? m.formular_url ?? "",
-          kontaktArt(k, !!m.formular_url),
-          k?.quelle_url ?? "",
-          k?.geprueft_am ?? (m.profil_at ? m.profil_at.slice(0, 10) : ""),
-          (m.geschichten ?? []).join(" · "),
-          m.aufhaenger ?? "",
-          zeilenPrioritaet(m.prioritaet, k),
-          m.gruppe ?? "",
-          String(m.paket),
-          notizen(m, k, mailKommtVor),
-        ].map(csvFeld).join(","),
-      );
-    }
-  }
-  const kopf = zeilen[0];
+  const text = alsCsv(medien, kontakte, { nurBesterKontakt: top > 0 });
+  const zeilen = text.split("\n");
   const rest = top > 0 ? zeilen.slice(1, top + 1) : zeilen.slice(1);
   // eslint-disable-next-line no-console
-  console.log([kopf, ...rest].join("\n"));
-}
-
-/**
- * Wie das Medium im Katalog heißt.
- *
- * Gemessen schlägt angenommen — mit EINER Ausnahme, und die ist ebenfalls
- * gemessen: energiezukunft.eu trägt als Seitentitel „EWS Schönau" (den Namen
- * seines Herausgebers), springerprofessional.de „Springer Professional". Beides
- * ist wahr und im Verteiler unbrauchbar: Wer die Zeile liest, sucht das Medium,
- * nicht den Verlag. Teilt der gemessene Titel kein tragendes Wort mit dem Namen
- * aus der Saat oder mit der Adresse, gilt der Name aus der Saat — und der
- * gemessene Titel steht in den Notizen, damit die Abweichung nicht verschwindet.
- */
-function mediumName(m: MediumZeile): string {
-  if (!m.titel) return m.saat_name ?? m.domain;
-  if (!m.saat_name) return m.titel;
-  if (teiltWort(m.titel, `${m.saat_name} ${m.domain}`)) return m.titel;
-  return m.saat_name;
-}
-
-function teiltWort(a: string, b: string): boolean {
-  const zerlege = (s: string) =>
-    new Set(
-      s
-        .toLowerCase()
-        .split(/[^a-zäöüß0-9]+/)
-        .filter((w) => w.length >= 4),
-    );
-  const eins = zerlege(a);
-  for (const w of zerlege(b)) if (eins.has(w)) return true;
-  return false;
-}
-
-function titelBrauchbarImKatalog(m: MediumZeile): boolean {
-  return !!m.titel;
-}
-
-function themenText(t: Themenfund[] | null): string | null {
-  if (!t || !t.length) return null;
-  return t
-    .filter((x) => x.treffer >= 2)
-    .slice(0, 5)
-    .map((x) => `${x.name} (${x.treffer})`)
-    .join(" · ");
-}
-
-/** Gemessenes schlägt Vorannahme — und was nur aus der Saat kommt, trägt den
- *  Vermerk. Ohne ihn wäre eine Behauptung von einer Messung nicht zu
- *  unterscheiden, und genau das verbietet die Vorgabe. */
-function feldMitVermerk(gemessen: string | null, saat: string | null): string {
-  if (gemessen) return gemessen;
-  return saat ? `${saat} (ungeprüft)` : "ungeprüft";
-}
-
-function kontaktArt(k: KontaktZeile | null, mediumHatFormular: boolean): string {
-  if (!k) return "kein Kontakt gefunden";
-  if (k.mail_art === "person") return "persönliche Adresse";
-  if (k.mail_art === "redaktion") return "Redaktionspostfach";
-  if (k.mail_art === "allgemein") return "allgemeines Postfach";
-  if (k.mail_art === "werblich") return "nur Werbekontakt gefunden";
-  if (k.mail_art === "formular") return "Kontaktformular";
-  if (k.mail_art === "person-ohne-namen") return "persönliche Adresse, Name nicht zugeordnet";
-  // Die Person ist benannt, die Adresse fehlt — dann steht in der Kontaktspalte
-  // das Formular DES MEDIUMS. Das muss dranstehen: „Person ohne Adresse" neben
-  // einer Adresse in derselben Zeile ist genau die Sorte Beschriftung, die etwas
-  // anderes sagt als der Wert daneben.
-  if (k.name) {
-    return mediumHatFormular
-      ? "Person benannt — erreichbar über das Kontaktformular des Mediums"
-      : "Person benannt, keine Adresse veröffentlicht";
-  }
-  return "ungeprüft";
-}
-
-/**
- * Die Priorität der ZEILE, nicht des Mediums.
- *
- * Ein A-Medium kann einen C-Kontakt tragen: Bei pv magazine steht die
- * Australien-Redaktion auf derselben Seite wie die deutsche. Wer die Zeile nach
- * der Medien-Priorität abarbeitet, schreibt einer Kollegin in Sydney über den
- * Zubau in Nordrhein-Westfalen.
- */
-function zeilenPrioritaet(medium: string | null, k: KontaktZeile | null): string {
-  const p = medium ?? "C";
-  if (!k) return p;
-  if (AUSLAND.test(k.funktion ?? "")) return "C";
-  // Eine Verlagsgeschäftsführung ist nie der Adressat einer Datengeschichte.
-  if (k.rang <= 20) return p === "A" ? "B" : "C";
-  return p;
-}
-
-const AUSLAND =
-  /\b(?:France|Australia|Brasil|Brazil|Italia|Italy|España|Spain|India|China|Japan|Mexico|Chile|Argentina|USA|U\.S\.|America|UK|Ireland|Poland|Polska|Nederland|Netherlands|Türkiye|Turkey|Frankreich|Australien|Brasilien|Italien|Spanien|Indien|Polen|Niederlande|Türkei)\b/i;
-
-function notizen(
-  m: MediumZeile,
-  k: KontaktZeile | null,
-  mailKommtVor: Map<string, string[]>,
-): string {
-  const teile: string[] = [];
-  if (m.fehler) teile.push(`Abruf: ${m.fehler}`);
-  if (m.hinweis) teile.push(m.hinweis);
-  if (m.ist_medium === "unklar") teile.push("redaktionelles Angebot nicht eindeutig belegt");
-  if (m.ist_medium === "kein-medium") teile.push(`kein redaktionelles Angebot (${m.medium_grund})`);
-  if (k && k.name && !k.mail) teile.push("Person benannt, Adresse nur über Postfach/Formular");
-  if (k && k.mail_art === "werblich") teile.push("kein redaktioneller Weg gefunden");
-  if (k?.funktion && AUSLAND.test(k.funktion)) {
-    teile.push("Auslandsredaktion — berichtet nicht über Deutschland");
-  }
-  if (k?.mail) {
-    const auch = (mailKommtVor.get(k.mail) ?? []).filter((d) => d !== m.domain);
-    if (auch.length) teile.push(`dieselbe Adresse auch unter ${auch.join(", ")}`);
-  }
-  if (!titelBrauchbarImKatalog(m)) {
-    teile.push("Name des Mediums aus der Saat (ungeprüft)");
-  } else if (mediumName(m) !== m.titel) {
-    teile.push(`Seitentitel lautet abweichend: „${m.titel}"`);
-  }
-  if (m.gruppe) teile.push(`Mediengruppe: ${m.gruppe}`);
-  if (m.notiz) teile.push(m.notiz);
-  return teile.join("; ");
+  console.log([zeilen[0], ...rest].join("\n"));
 }
 
 // ─── Stats ───────────────────────────────────────────────────────────────────
@@ -1392,6 +1800,23 @@ async function main(): Promise<void> {
   if (args.includes("--setup")) return setup();
   if (args.includes("--saat")) return saat();
   if (args.includes("--suche")) return suche(args.includes("--trocken"), paket);
+  if (args.includes("--regionalpresse")) {
+    return regionalpresse(zahlArg("--limit", 500), args.includes("--trocken"));
+  }
+  if (args.includes("--streuung")) return streuung(args.includes("--trocken"));
+  if (args.includes("--eichen-eignung")) {
+    const d = textArg("--eichen-eignung");
+    if (!d) throw new Error("--eichen-eignung braucht eine Domain");
+    return eichenEignung(d.replace(/^https?:\/\//, "").replace(/\/.*$/, ""));
+  }
+  if (args.includes("--eignung")) {
+    return eignung(
+      paket,
+      zahlArg("--limit", 500),
+      args.includes("--neu"),
+      args.includes("--nur-belegte"),
+    );
+  }
   if (args.includes("--eichen")) {
     const d = textArg("--eichen");
     if (!d) throw new Error("--eichen braucht eine Domain");
@@ -1416,6 +1841,11 @@ async function main(): Promise<void> {
       "npm run presse -- --profil --paket 1      Websites lesen",
       "npm run presse -- --csv --paket 1         Katalog ausgeben",
       "npm run presse -- --csv --paket 1 --top 50   erstes 50er-Paket zur Kontrolle",
+      "npm run presse -- --regionalpresse --trocken  was die Kreissuche kosten würde",
+      "npm run presse -- --regionalpresse        Regionalzeitungen je Landkreis finden",
+      "npm run presse -- --streuung --trocken    regional oder überregional (gemessen)",
+      "npm run presse -- --eichen-eignung <domain>  Eignungsfragen an EINEM Medium",
+      "npm run presse -- --eignung --paket 1     Eignung prüfen (Suche + Inhaltsseiten)",
       "npm run presse -- --stats                 Bestand",
     ].join("\n"),
   );

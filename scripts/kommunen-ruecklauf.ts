@@ -9,7 +9,11 @@
  * Nutzung:
  *   npm run kommunen:ruecklauf                 nur ansehen (schreibt nichts)
  *   npm run kommunen:ruecklauf -- --schreiben  Status nachtragen
+ *   npm run kommunen:ruecklauf -- --melden     Befund an die Ablage/Mail geben
  *   npm run kommunen:ruecklauf -- --tage=14    Zeitraum (Standard 7)
+ *
+ * Der tägliche Lauf in GitHub Actions setzt alle drei; von Hand gestartet
+ * meldet er nichts, damit ein Probelauf keine Mail auslöst.
  *
  * Env: OUTREACH_IMAP_HOST, OUTREACH_IMAP_PORT (Standard 993),
  *      OUTREACH_IMAP_USER, OUTREACH_IMAP_PASS — dasselbe Postfach wie der
@@ -31,6 +35,8 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync } from "node:fs";
 import { ordneEin, notizZeile, notizMitText, STATUS_ZU_ART, type Ruecklaufart, type RohMail } from "../lib/outreach-ruecklauf";
+import { berichtAblegen } from "../lib/alert-senden";
+import { ruecklaufBericht } from "../lib/outreach-ruecklauf-bericht";
 import { heuteInBerlin } from "../lib/zeit";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
@@ -44,7 +50,15 @@ const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 //
 // ENG HALTEN: nur Absender-Domains, von denen sicher keine Gemeinde schreibt.
 // Eine großzügige Liste macht die Prüfung wertlos, ohne dass es auffällt.
-const FREMD_ABSENDER = ["awin.com", "mail.awin.com"];
+// Aufgenommen wird nur, was am echten Postfach als wiederkehrender Fehltreffer
+// GEMESSEN wurde (09.09.2026, 30-Tage-Abruf): die drei Affiliate-Plattformen,
+// bei denen das Projekt angemeldet ist. Sie schrieben zusammen neun Mails, jede
+// davon als „Antwort" eingestuft und keiner Gemeinde zuzuordnen.
+//
+// NICHT aufgenommen: Hersteller und Behörden (Solakon, IT.NRW). Von dort kann
+// etwas Inhaltliches kommen, und eine Ausblendung, die einmal zu weit ging,
+// merkt niemand mehr.
+const FREMD_ABSENDER = ["awin.com", "mail.awin.com", "adcell.de", "goaffpro.com"];
 
 function istFremdverkehr(von: string): boolean {
   const domain = von.split("@")[1]?.toLowerCase() ?? "";
@@ -129,6 +143,75 @@ type Befund = {
   text: string;
 };
 
+/**
+ * Antworten auf die Sachfragen an Förderstellen nachtragen.
+ *
+ * WARUM HIER UND NICHT IN EINEM EIGENEN LAUF: Es gibt genau ein Postfach und
+ * genau einen Weg, es zu lesen. Ein zweiter Abruf wäre eine zweite Fassung
+ * derselben Mechanik — und die läuft irgendwann auseinander, während beide
+ * behaupten, vollständig zu sein.
+ *
+ * Ohne diesen Schritt bliebe im Protokoll JEDE Anfrage für immer „ohne
+ * Antwort". Das ist schlimmer als keine Auswertung: Es sähe aus wie eine
+ * Messung und wäre eine Konstante.
+ */
+async function foerderAnfragenZuordnen(
+  db: Awaited<ReturnType<typeof makeClient>>,
+  mails: { von: string; betreff: string; roh: string; datum: string; text: string }[],
+  schreiben: boolean,
+): Promise<void> {
+  const { ordneAnfrageZu } = await import("../lib/funding-anfragen");
+  const { data, error } = await db
+    .from("funding_anfragen")
+    .select("program_id, empfaenger, betreff, gesendet_am, antwort_am, antwort_art")
+    .is("antwort_am", null);
+  if (error) {
+    // Kein Abbruch: Der Kommunen-Rücklauf ist der Hauptzweck dieses Laufs und
+    // darf nicht an einer Tabelle scheitern, die es womöglich noch nicht gibt.
+    log(`Förder-Anfragen nicht lesbar (${error.message}) — übersprungen.`, "warn");
+    return;
+  }
+  const offene = (data ?? []).map((z) => ({
+    programId: z.program_id as string,
+    empfaenger: z.empfaenger as string,
+    gesendetAm: z.gesendet_am as string,
+    antwortAm: null,
+    antwortArt: null,
+  }));
+  if (!offene.length) return;
+  const betreffe = new Map((data ?? []).map((z) => [z.program_id as string, z.betreff as string]));
+
+  const treffer: { programId: string; datum: string; von: string; text: string }[] = [];
+  for (const m of mails) {
+    const id = ordneAnfrageZu(m, offene, betreffe);
+    if (id) treffer.push({ programId: id, datum: m.datum, von: m.von, text: m.text });
+  }
+
+  log();
+  log(`Offene Sachfragen an Förderstellen: ${offene.length}, davon beantwortet in diesem Zeitraum: ${treffer.length}`);
+  for (const t of treffer) log(`${t.programId} — Antwort von ${t.von} am ${t.datum}`);
+  if (!schreiben || !treffer.length) return;
+
+  for (const t of treffer) {
+    const { error: e } = await db
+      .from("funding_anfragen")
+      .update({
+        // Der Tag der ANTWORT, nicht der des Abrufs — dieselbe Trennung wie
+        // beim Kommunen-Rücklauf.
+        antwort_am: new Date(`${t.datum}T12:00:00Z`).toISOString(),
+        antwort_art: "antwort",
+        // Der eigene Teil ohne Zitat: Was die Stelle wirklich geschrieben hat,
+        // ist die Auskunft, wegen der gefragt wurde. Sie später nur als „hat
+        // geantwortet" vorzufinden wäre derselbe Verlust wie bei Nidda.
+        antwort_notiz: t.text.slice(0, 2000),
+      })
+      .eq("program_id", t.programId)
+      .is("antwort_am", null);
+    if (e) log(`${t.programId}: ${e.message}`, "err");
+  }
+  log(`${treffer.length} ${treffer.length === 1 ? "Antwort" : "Antworten"} an Förder-Anfragen nachgetragen`, "ok");
+}
+
 async function main(): Promise<void> {
   loadEnvFile();
   const host = process.env.OUTREACH_IMAP_HOST;
@@ -170,6 +253,8 @@ async function main(): Promise<void> {
   const befunde: Befund[] = [];
   const unklar: Befund[] = [];
   const fremd: Befund[] = [];
+  /** Jede gelesene Mail — Grundlage für die Zuordnung zu Förder-Sachfragen. */
+  const alleMails: { von: string; betreff: string; roh: string; datum: string; text: string }[] = [];
   for (const name of ordner) {
     let lock;
     try {
@@ -203,6 +288,14 @@ async function main(): Promise<void> {
         const gefunden = ziele.filter((z) => roh.toLowerCase().includes(z.email));
         treffer = gefunden.map((z) => ({ region_id: z.region_id, name: z.name }));
       }
+      // DASSELBE POSTFACH TRÄGT ZWEI GESPRÄCHE: die Antworten auf den
+      // Kommunen-Brief und die auf die Sachfragen an Förderstellen
+      // (scripts/funding-anfrage.ts). Letztere kommen oft von Orten, die nie
+      // einen Brief bekommen haben — sie landen hier also in „nicht
+      // zuzuordnen", wenn niemand sie mitliest. Deshalb wird JEDE Mail
+      // aufgehoben, nicht nur die zuordenbaren.
+      alleMails.push({ von, betreff, roh, datum: heuteInBerlin(msg.envelope?.date ?? new Date()), text });
+
       const b: Befund = {
         art,
         von,
@@ -242,6 +335,8 @@ async function main(): Promise<void> {
     log(`${fremd.length} Mails gehören nicht zum Outreach (${FREMD_ABSENDER.join(", ")}) — ausgeblendet.`);
   }
 
+  await foerderAnfragenZuordnen(db, alleMails, hat("schreiben"));
+
   if (!hat("schreiben")) {
     log();
     log("Nichts geschrieben. Zum Nachtragen: --schreiben", "warn");
@@ -250,6 +345,9 @@ async function main(): Promise<void> {
 
   let geschrieben = 0;
   const geschriebeneOrte: string[] = [];
+  // Die BEFUNDE, nicht nur ihre Kennungen: Der Tagesbericht muss sagen, WER
+  // was geschrieben hat — eine Liste von Ortsschlüsseln liest niemand.
+  const neueBefunde: Befund[] = [];
   for (const b of befunde) {
     const status = STATUS_ZU_ART[b.art];
     if (!status || !b.region_id) continue;
@@ -311,6 +409,7 @@ async function main(): Promise<void> {
     else {
       geschrieben++;
       geschriebeneOrte.push(b.region_id);
+      neueBefunde.push(b);
     }
   }
   // Singular mitbauen: „1 Gemeinden nachgetragen" ist derselbe Fehler wie
@@ -322,6 +421,42 @@ async function main(): Promise<void> {
     `${geschrieben} ${geschrieben === 1 ? "Rückmeldung" : "Rückmeldungen"} nachgetragen ` +
       `(${orte} ${orte === 1 ? "Gemeinde" : "Gemeinden"})`,
     "ok",
+  );
+
+  // ─── Melden ────────────────────────────────────────────────────────────────
+  //
+  // OHNE DIESEN TEIL IST DER LAUF EIN SELBSTGESPRÄCH. Er trug den Status
+  // zuverlässig nach und endete im Protokoll eines Terminals; die eine Antwort
+  // aus Trier lag darin genauso unsichtbar wie vierzehn Urlaubsnotizen.
+  //
+  // Die Bremse ist ausdrücklich: Ohne `--melden` geht nichts an die Ablage. Ein
+  // Probelauf von Hand soll keine Mail auslösen — und eine Option, die man
+  // setzen MUSS, ist ehrlicher als eine Automatik, die am Vorhandensein eines
+  // Geheimnisses hängt und sich beim Fehlen stillschweigend abschaltet.
+  if (!hat("melden")) return;
+  const bericht = ruecklaufBericht({
+    neu: neueBefunde.map((b) => ({
+      art: b.art,
+      name: b.name,
+      betreff: b.betreff,
+      von: b.von,
+      datum: b.datum,
+    })),
+    unklar: unklar.length,
+    tage,
+  });
+  log();
+  await berichtAblegen(
+    {
+      tag: "kommunen-ruecklauf",
+      subject: "Kommunen-Outreach: Rücklauf",
+      audience: bericht.audience,
+      decisions: bericht.decisions,
+      done: bericht.done,
+      details: bericht.details,
+    },
+    process.env.CRON_SECRET ?? "",
+    { basis: process.env.ALERT_BASE_URL, log: (z) => log(z) },
   );
 }
 

@@ -1709,6 +1709,10 @@ export function zeitreserveKnapp(
 export const GEPLANTE_LAEUFE: ReadonlyArray<{ datei: string; was: string }> = [
   { datei: "foerder-watch.yml", was: "Förder-Seiten-Wächter" },
   { datei: "flows-nightly.yml", was: "Nächtlicher Flow-Läufer" },
+  // Fällt dieser Lauf aus, kommt keine Rückmeldung mehr an — und das sieht von
+  // außen aus wie ein Postfach, in dem nichts passiert. Genau dieser Zustand
+  // hat den Lauf überhaupt erst nötig gemacht.
+  { datei: "kommunen-ruecklauf.yml", was: "Kommunen-Rücklauf" },
 ];
 
 /** Ab so vielen Läufen ohne Erfolg in Folge ist ein geplanter Lauf auffällig. */

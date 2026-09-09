@@ -260,8 +260,15 @@ export default function Balkon() {
     () => stackFunding(fundingPrograms, {
       technik: "balkon", wattPeak: CFG.sets.find(x => x.id === active.setId)?.moduleWp ?? 0,
       kosten: bruttoInvest, wohnform: wohnform ?? undefined,
+      // Die gewählte Speichergröße gehört in die Förderrechnung: Der Landkreis
+      // Oldenburg zahlt seinen Zuschuss ausschließlich für Balkonkraftwerk UND
+      // Speicher zusammen. Ohne diese Angabe zöge das Programm auch dem Set
+      // ohne Speicher Geld ab, das dafür niemand bekommt. Immer gesetzt, auch
+      // als 0 — das heißt „ohne Speicher"; fehlt der Wert, rechnet das Modell
+      // eine solche Bedingung bewusst gar nicht.
+      speicherKwh: CFG.storage.find(x => x.id === active.storageId)?.kwh ?? 0,
     }),
-    [fundingPrograms, active.setId, bruttoInvest, wohnform],
+    [fundingPrograms, active.setId, active.storageId, bruttoInvest, wohnform],
   );
   const foerderung = fundingEnabled ? fundingStack.total : 0;
 

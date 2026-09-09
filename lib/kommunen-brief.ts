@@ -1,4 +1,5 @@
 import "server-only";
+import { darfOutreachEmpfangen } from "./kommunen-ebene";
 import { supabase as serviceDb } from "./supabase-server";
 import { renderOutreachDraft, type OutreachDraft, type Adressherkunft } from "./kommunen-outreach-draft";
 import { mitHerkunft } from "./brief-herkunft";
@@ -38,7 +39,7 @@ export type BriefErgebnis = {
   draft: OutreachDraft;
 };
 
-export type BriefFehler = { grund: "keine-db" | "unbekannt" | "gesperrt" };
+export type BriefFehler = { grund: "keine-db" | "unbekannt" | "gesperrt" | "keine-gemeinde" };
 
 /**
  * Anschreiben für EINE Gemeinde bauen.
@@ -72,6 +73,13 @@ export async function briefFuerGemeinde(
     loadElternSlugs(),
   ]);
   if (!reg) return { grund: "unbekannt" };
+  // Kein Brief an einen Landkreis. Die Kontakttabelle führt sie seit dem
+  // 09.09.2026 als Suchraum der Förder-Erhebung; der Aufhänger dieses Briefes
+  // ist aber ein Rang unter GLEICH GROSSEN GEMEINDEN, den es für einen Kreis
+  // nicht gibt. Die Prüfung steht auch im Versandpaket — hier ein zweites Mal,
+  // weil eine Sicherheitsgrenze keine Kopie ist, sondern die Stelle, an der
+  // sie eines Tages fehlt.
+  if (!darfOutreachEmpfangen(regionId)) return { grund: "keine-gemeinde" };
   if (leadRow?.outreach_status === "gesperrt") return { grund: "gesperrt" };
 
   //

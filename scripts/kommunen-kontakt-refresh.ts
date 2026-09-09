@@ -1506,6 +1506,102 @@ async function scrapePresse(opts: FormsOpts): Promise<void> {
   log(`${rows.length} Pressepostfächer gespeichert, ${leer.length} als geprüft vermerkt`, "ok");
 }
 
+/**
+ * Landkreise mit eigener Website aufnehmen — die Ebene, die der Förder-Suche
+ * bisher komplett gefehlt hat.
+ *
+ * WARUM (09.09.2026): Die Kontakttabelle war eine reine Gemeinde-Tabelle, und
+ * damit war ein Landkreis, der selbst fördert, für die Suche unsichtbar. Der
+ * Landkreis Oldenburg zahlt seit dem 20.03.2026 einen Zuschuss für
+ * Balkonkraftwerke mit Speicher; gefunden haben wir ihn über eine fremde Liste,
+ * nicht über unseren eigenen Lauf. Das ist keine Trefferquote, das ist eine
+ * Lücke im Suchraum.
+ *
+ * DIE QUELLE IST EINE ANDERE EIGENSCHAFT. Der Gemeindeschlüssel (P439) steht in
+ * Wikidata ausschließlich achtstellig da — eine Abfrage danach findet nie einen
+ * Kreis. Kreise tragen ihren Schlüssel unter P440. Am 09.09.2026 gemessen: 730
+ * Kreisschlüssel, 422 davon mit offizieller Website.
+ *
+ * KREISFREIE STÄDTE BLEIBEN DRAUSSEN. Sie stehen längst als Gemeinde in der
+ * Tabelle, mit derselben Website; eine zweite Zeile führte jeden Crawl doppelt
+ * aus und jeden Fund doppelt auf. Unterschieden wird an der Zahl der Gemeinden
+ * unter dem Präfix — genau eine heißt kreisfrei. Von 404 Einheiten der
+ * Kreisebene bleiben so 295 echte Landkreise.
+ *
+ * GESCHRIEBEN WIRD NUR DIE WEBSITE. Postfach, Aufhänger und Kampagne bleiben
+ * leer: Ein Landkreis ist kein Ziel des Kommunen-Anschreibens (siehe
+ * `lib/kommunen-ebene.ts`), er ist ein Ziel der Förder-Suche.
+ */
+async function uploadKreise(dry: boolean): Promise<void> {
+  const supabase = await makeClient();
+
+  log("Fetching Wikidata (P440/P856) — Kreisschlüssel und Website...");
+  const sparql = `
+SELECT ?ags ?website WHERE {
+  ?item wdt:P440 ?ags .
+  ?item wdt:P856 ?website .
+}
+`;
+  const params = new URLSearchParams({ query: sparql, format: "json" });
+  const res = await fetch(`${WDQS_ENDPOINT}?${params.toString()}`, {
+    headers: { "User-Agent": USER_AGENT, Accept: "application/sparql-results+json" },
+  });
+  if (!res.ok) throw new Error(`Wikidata HTTP ${res.status}`);
+  const json = (await res.json()) as { results: { bindings: { ags: { value: string }; website: { value: string } }[] } };
+
+  // Mehrere Websites je Kreis kommen vor (alte und neue Domain). Die erste
+  // gewinnt — welche das ist, entscheidet Wikidata; eine Auswahlregel zu
+  // erfinden hieße, eine Aussage über Aktualität zu treffen, die wir nicht
+  // belegen können. Der Suchlauf danach prüft die Adresse ohnehin selbst.
+  const websiteVon = new Map<string, string>();
+  for (const b of json.results.bindings) {
+    if (!websiteVon.has(b.ags.value)) websiteVon.set(b.ags.value, b.website.value);
+  }
+  log(`${websiteVon.size} Kreisschlüssel mit Website`);
+
+  // Echte Landkreise: mehr als eine Gemeinde unter dem Präfix.
+  const seiten = async (level: string) => {
+    const out: { region_id: string }[] = [];
+    for (let von = 0; ; von += 1000) {
+      const { data, error } = await supabase
+        .from("mastr_regions").select("region_id").eq("level", level).order("region_id").range(von, von + 999);
+      if (error) throw new Error(error.message);
+      if (!data?.length) break;
+      out.push(...(data as { region_id: string }[]));
+      if (data.length < 1000) break;
+    }
+    return out;
+  };
+  const gemeinden = await seiten("gemeinde");
+  const kreise = await seiten("landkreis");
+  const gemeindenJePraefix = new Map<string, number>();
+  for (const g of gemeinden) {
+    const p = g.region_id.slice(0, 5);
+    gemeindenJePraefix.set(p, (gemeindenJePraefix.get(p) ?? 0) + 1);
+  }
+  const echte = kreise.filter((k) => (gemeindenJePraefix.get(k.region_id) ?? 0) > 1);
+  log(`${kreise.length} Einheiten auf Kreisebene, davon ${echte.length} echte Landkreise (Rest kreisfrei)`);
+
+  const now = new Date().toISOString();
+  const payload = echte
+    .filter((k) => websiteVon.has(k.region_id))
+    .map((k) => ({
+      region_id: k.region_id,
+      website: websiteVon.get(k.region_id)!,
+      source: "wikidata-kreis",
+      updated_at: now,
+    }));
+  log(`${payload.length} Landkreise mit Website zum Upsert (${echte.length - payload.length} ohne)`);
+
+  if (dry) { log("--dry: nichts geschrieben", "ok"); return; }
+  for (let i = 0; i < payload.length; i += 500) {
+    const teil = payload.slice(i, i + 500);
+    const { error } = await supabase.from("kommunen_kontakt").upsert(teil, { onConflict: "region_id" });
+    if (error) throw new Error(error.message);
+  }
+  log(`${payload.length} Landkreise gespeichert`, "ok");
+}
+
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const dry = argv.includes("--dry");
@@ -1520,6 +1616,7 @@ async function main(): Promise<void> {
   const doProfil = argv.includes("--profil");
   const doLuecke = argv.includes("--luecke");
   const doPresse = argv.includes("--presse");
+  const doKreise = argv.includes("--kreise");
 
   const blArg = argv.find((a) => a.startsWith("--bl="));
   const limitArg = argv.find((a) => a.startsWith("--limit="));
@@ -1530,9 +1627,10 @@ async function main(): Promise<void> {
     dry,
   };
 
-  if (!doSetup && !doWikidata && !doUpload && !doForms && !doProbe && !doWahl && !doRang && !doStats && !doProfil && !doLuecke && !doPresse) {
+  if (!doSetup && !doWikidata && !doUpload && !doForms && !doProbe && !doWahl && !doRang && !doStats && !doProfil && !doLuecke && !doPresse && !doKreise) {
     log(
-      "Nichts zu tun. Flags: --setup --wikidata --upload --forms --probe --wahl --rang --profil --luecke --presse --stats [--dry]\n" +
+      "Nichts zu tun. Flags: --setup --wikidata --upload --kreise --forms --probe --wahl --rang --profil --luecke --presse --stats [--dry]\n" +
+        "  --kreise [--dry]                           Landkreise mit eigener Website aufnehmen (Wikidata P440)\n" +
         "  --forms [--bl=10] [--limit=N] [--refetch]  Kontaktlink aus der Startseite\n" +
         "  --probe [--bl=10] [--limit=N]              Kontakt-Pfade direkt anklopfen (Lücken)\n" +
         "  --wahl [--dry]                             Grünen/Linke/SPD-Anteil je Gemeinde (BTW 2025)\n" +
@@ -1548,6 +1646,7 @@ async function main(): Promise<void> {
   if (doSetup) await setup();
   if (doWikidata) writeCache(await fetchWikidata());
   if (doUpload) await upload(dry);
+  if (doKreise) await uploadKreise(dry);
   if (doForms) await scrapeForms(formsOpts);
   if (doProbe) await probeForms(formsOpts);
   if (doWahl) await uploadWahl(dry);

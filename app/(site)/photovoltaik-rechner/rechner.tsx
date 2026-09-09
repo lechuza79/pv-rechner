@@ -12,6 +12,8 @@ import { simulateSolarYear, monthlyFromAnnual } from "../../../lib/balkon-sim";
 // ResultVerguetung umschließt ResultRegime — deshalb hier nur der äußere Import.
 import ResultVerguetung from "./_components/ResultVerguetung";
 import ResultSection from "../../../components/ResultSection";
+import ErgebnisAnBetrieb, { RUECKKANAL_OEFFNEN, RUECKKANAL_ZUSTAND, type PartnerAngabe } from "../../../components/ErgebnisAnBetrieb";
+import KlebenderKnopf, { LEISTE_BASIS, LEISTE_NEBEN, LEISTE_SENDEN } from "../../../components/KlebenderKnopf";
 // HEIZSYSTEM/HEIZSYSTEM_SHORT/WP_M2_PRESETS brauchte der entfallene
 // Verbrauchs-Abschnitt; die Gebäudefragen holen sie sich jetzt selbst aus
 // components/GebaeudeField.
@@ -36,7 +38,7 @@ import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
 import { useCoolingDegree } from "../../../lib/useCoolingDegree";
 import KlimaDetailModal from "../../../components/KlimaDetailModal";
 import Chart from "./_components/Chart";
-import { v, iconSizes } from "../../../lib/theme";
+import { v, iconSizes, space } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { DEFAULT_PRICES } from "../../../lib/prices-config";
 import { useFeedInRates } from "../../../lib/feedin";
@@ -76,6 +78,7 @@ const KLIMA_DEVICE_LABEL = (CFG.devices.find(d => d.id === CFG.defaultDeviceId)?
 export default function PVRechner({
   initialParams,
   sharePfad,
+  partner,
 }: {
   initialParams?: Record<string, string | string[] | undefined>;
   /**
@@ -89,6 +92,13 @@ export default function PVRechner({
    * der ins Leere führt, ist schlimmer als kein Teilen-Knopf.
    */
   sharePfad?: string;
+  /**
+   * Gesetzt auf der betriebseigenen Seite: Dann erscheint unter dem Ergebnis
+   * der Rückkanal — der Nutzer kann seine fertige Rechnung an genau den
+   * Betrieb schicken, von dessen Website er gekommen ist. Ohne diese Angabe
+   * verhält sich der Rechner unverändert.
+   */
+  partner?: PartnerAngabe;
 }) {
   // 'er' (Ertrag) und 'plz' sind reine Vorbefüll-Hinweise (z.B. von einer
   // regionalen Landingpage): sie seeden State, dürfen aber NICHT direkt ins
@@ -777,6 +787,50 @@ export default function PVRechner({
     shareUrl: typeof window !== "undefined" ? buildShareUrl() : undefined,
   });
 
+  // ─── Die klebende Leiste am Ende des Ergebnisses ─────────────────────────
+  // Maße, Verlauf und die drei Knopfformen kommen aus dem geteilten Baustein;
+  // hier steht nur, was in der Leiste steht. Der primäre Knopf trägt denselben
+  // Zustand wie der im Fließtext.
+  const leisteBasis = LEISTE_BASIS;
+  const leisteNeben = LEISTE_NEBEN;
+  const leisteSenden = LEISTE_SENDEN;
+  const primaerLeiste = () => {
+    const gemeinsam = { ...leisteBasis, flex: 1, width: "100%" };
+    if (authState.status === "authed") {
+      return (
+        <button onClick={handleSave} disabled={saving} style={{
+          ...gemeinsam,
+          background: partner ? v("--color-bg") : v("--color-accent"),
+          color: partner ? v("--color-accent") : v("--color-text-on-accent"),
+          border: partner ? `1px solid ${v("--color-border-accent")}` : "none",
+          cursor: saving ? "wait" : "pointer",
+        }}>
+          {saving ? "Speichert…" : "Speichern"}
+        </button>
+      );
+    }
+    return (
+      <button onClick={oeffneAnmeldung} style={{
+        ...gemeinsam,
+        background: partner ? v("--color-bg") : v("--color-accent"),
+        color: partner ? v("--color-accent") : v("--color-text-on-accent"),
+        border: partner ? `1px solid ${v("--color-border-accent")}` : "none",
+      }}>
+        Speichern
+      </button>
+    );
+  };
+
+  // Solange das Rückkanal-Fenster offen ist, hat die klebende Leiste nichts zu
+  // suchen: Sie läge hinter der Abdunkelung und sähe aus wie ein Knopf, der
+  // nicht reagiert.
+  const [rueckkanalOffen, setRueckkanalOffen] = useState(false);
+  useEffect(() => {
+    const hoere = (e: Event) => setRueckkanalOffen(!!(e as CustomEvent).detail?.offen);
+    window.addEventListener(RUECKKANAL_ZUSTAND, hoere);
+    return () => window.removeEventListener(RUECKKANAL_ZUSTAND, hoere);
+  }, []);
+
   const handleCopy = async () => {
     trackEvent("pv_geteilt");
     try {
@@ -901,8 +955,16 @@ export default function PVRechner({
           </div>
         ) : (
           <div style={{ textAlign: "center", marginBottom: 24 }}>
-            <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Lohnt sich Photovoltaik?</h1>
-            <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.</p>
+            {/* Auf einer betriebseigenen Seite trägt der Kopf schon den Namen des
+                Betriebs — „Lohnt sich Photovoltaik? · Ohne Verkaufsanrufe" wäre
+                darunter eine zweite Ansage und liest sich als unsere Werbung auf
+                seiner Seite. Im Ergebnis genügt dort die Überschrift. */}
+            <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>
+              {partner ? (isResult ? "Dein Ergebnis" : "Deine Anlage berechnen") : "Lohnt sich Photovoltaik?"}
+            </h1>
+            {!partner && (
+              <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.</p>
+            )}
           </div>
         )}
 
@@ -1587,20 +1649,76 @@ export default function PVRechner({
               }</span>
             </div>
 
-            <ResultActions
-              copied={copied} canShare={canShare} authState={authState} saving={saving} saved={saved} savedCalcId={savedCalcId}
-              onCopy={handleCopy} onNativeShare={handleNativeShare} onWhatsApp={handleWhatsApp}
-              onSave={handleSave} onLoginClick={oeffneAnmeldung}
+            {/* Die drei nächsten Schritte am Ende des Ergebnisses — und
+                dieselben drei noch einmal in der klebenden Leiste, solange sie
+                nicht im Bild sind. Das Ergebnis ist lang; wer oben bei der
+                Amortisation liest, sähe sie sonst nie.
+
+                Reihenfolge: neu rechnen links (der Rückweg), speichern in der
+                Mitte, verschicken rechts (Betreiber, 01.09.2026). Ohne Partner
+                entfällt der dritte Knopf ersatzlos. */}
+            <KlebenderKnopf
+              aktiv={!saved && authState.status !== "loading" && !rueckkanalOffen}
+              leiste={
+                <>
+                  <button onClick={restart} style={leisteNeben}>
+                    <IconRefresh size={iconSizes.md} />
+                  </button>
+                  <div style={{ flex: 1, display: "flex" }}>{primaerLeiste()}</div>
+                  {partner && (
+                    <button
+                      onClick={() => window.dispatchEvent(new Event(RUECKKANAL_OEFFNEN))}
+                      style={leisteSenden}
+                    >
+                      {/* Der Name gehört auch hier drauf — „Anfragen" allein
+                          lässt offen, bei wem. Kürzer als in der Karte, weil
+                          neben ihm zwei weitere Knöpfe stehen; „unverbindlich"
+                          und der Hinweis auf die Übersicht stehen dort, wo
+                          Platz dafür ist. */}
+                      Bei {partner.name} anfragen
+                    </button>
+                  )}
+                </>
+              }
+              kinder={(ref) => (
+                <div ref={ref}>
+                  {/* Der Rückkanal steht ÜBER den allgemeinen Aktionen: Wer über die
+                      Seite eines Betriebs gekommen ist, für den ist „an diesen Betrieb
+                      schicken" der naheliegende nächste Schritt, nicht „Link kopieren". */}
+                  {partner && (
+                    <div style={{ marginTop: space.xl }}>
+                      <ErgebnisAnBetrieb
+                        partner={partner}
+                        ergebnisUrl={typeof window !== "undefined" ? buildShareUrl() : ""}
+                        plz={plz}
+                      />
+                    </div>
+                  )}
+
+                  <ResultActions
+                    copied={copied} canShare={canShare} authState={authState} saving={saving} saved={saved} savedCalcId={savedCalcId}
+                    onCopy={handleCopy} onNativeShare={handleNativeShare} onWhatsApp={handleWhatsApp}
+                    onSave={handleSave} onLoginClick={oeffneAnmeldung}
+                  />
+
+                  {/* Restart */}
+                  <button onClick={restart} style={{
+                    width: "100%", padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600,
+                    background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer",
+                  }}><span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><IconRefresh size={iconSizes.md} /> Neu berechnen</span></button>
+                </div>
+              )}
             />
 
-            {/* Restart */}
-            <button onClick={restart} style={{
-              width: "100%", padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600,
-              background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer",
-            }}><span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><IconRefresh size={iconSizes.md} /> Neu berechnen</span></button>
-
             <div style={{ textAlign: "center", fontSize: v("--font-size-caption"), color: v('--color-text-faint'), padding: "20px 0 8px", lineHeight: 1.6 }}>
-              Keine Lead-Erfassung · Keine Werbung<br />
+              {/* „Keine Lead-Erfassung" wäre auf einer Partnerseite unwahr:
+                  Dort gibt es genau darüber einen Knopf. Der Satz sagt deshalb
+                  dort, was wirklich gilt — der Nutzer entscheidet, und ohne ihn
+                  passiert nichts. Auf allen anderen Seiten bleibt die Zusage
+                  unverändert, weil sie dort weiterhin stimmt. */}
+              {partner
+                ? "Wir geben nichts weiter, außer du bittest uns darum · Keine Werbung"
+                : "Keine Lead-Erfassung · Keine Werbung"}<br />
               Alle Angaben ohne Gewähr · Keine Steuer- oder Anlageberatung
             </div>
           </div>

@@ -59,7 +59,7 @@ An diesem Repo arbeiten regelmäßig mehrere Sessions gleichzeitig, dazu die Wä
 
 **Ab der dritten Seite zu einem Thema wird verschachtelt — und zwar BEVOR die zweite live geht (Entscheidung 18.08.2026).** Ein Cluster bekommt einen Hub und hängt seine Seiten darunter (`/balkonkraftwerk` + `/rechner` + `/anmelden`); Einzelthemen ohne Cluster bleiben flach (`/photovoltaik-neigungswinkel`, `/einspeiseverguetung-tabelle` — ein Ordner mit einer Datei ist Zeremonie). Der Bestand mit gewachsenem Ranking zieht **nicht** um.
 - **Der Grund ist nicht SEO, sondern Betrieb.** Verzeichnistiefe kommt in Googles URL-Empfehlung **überhaupt nicht vor**: Sie verlangt Adressen, die logisch und für Menschen möglichst verständlich aufgebaut sind, und lesbare Wörter statt Kennnummern — mehr nicht (Search Central, URL structure, am 19.08.2026 im Original gelesen). `/balkonkraftwerk/rechner` trägt dieselben zwei Wörter wie `/balkonkraftwerk-rechner`. **Was hier NICHT als Beleg gilt** (Faktenprüfungs-Regel 6): die kursierenden Zuspitzungen „Tiefe ist kein Rankingfaktor“ und „Hierarchie wegen Crawl-Segmentierung“ — nur über Sekundärberichte bekannt, nie am Original geprüft, standen hier trotzdem zweieinhalb Wochen als Google-Aussage. Wer sie braucht, beschafft zuerst die Fundstelle. „Verzeichnisse erzeugen thematische Autorität" ist SEO-Blog-Literatur ohne Google-Aussage.
-- **Die Asymmetrie ist der Punkt:** Verschachtelt kostet ein späterer Umzug **eine** Weiterleitung für den Bereich, flach **eine pro Seite** — und man zahlt sie später, mit mehr Seiten und mehr eingehenden Links. Das Repo hat diese Rechnung schon einmal bezahlt: 182 der 203 Weiterleitungen in `next.config.js` sind Förderseiten, die ohne Bundesland-Ebene starteten.
+- **Die Asymmetrie ist der Punkt:** Verschachtelt kostet ein späterer Umzug **eine** Weiterleitung für den Bereich, flach **eine pro Seite** — und man zahlt sie später, mit mehr Seiten und mehr eingehenden Links. Das Repo hat diese Rechnung schon einmal bezahlt: Die Masse der Weiterleitungen in `next.config.js` sind Förderseiten, die ohne Bundesland-Ebene starteten — und es werden mit jedem neuen Programm mehr. **Bewusst ohne Stückzahl:** Die stand hier zwei Tage lang und ging in dieser Zeit zweimal rot, weil jede aufgenommene Förderseite eine Weiterleitung mitbringt; das Argument trägt das Verhältnis, nicht die Zahl.
 - **Ein Präfix ist die einzige Steuerungseinheit, die die Plattform kennt** — Header, Middleware-Matcher, robots, gestaffelte Index-Freischaltung arbeiten alle darauf. Die Namenskonvention „Themenwort zuerst" trägt das nicht: `photovoltaik-rechner`, `-foerderung`, `-neigungswinkel` und `-zubau-deutschland` gehören zu **vier** Themen, und derselbe PV-Bereich benutzt zusätzlich `pv-simulation` und `pv-bedarf-berechnen`.
 - **`/ratgeber` ist eine ANSICHT, kein Ordner.** Die Registry (`lib/ratgeber.ts`) akzeptiert jeden Pfad und speist Übersicht, Krümelspur und Sitemap — ein Ratgeber im Themen-Cluster bleibt Registry-Eintrag. Seine Krümelspur nennt aber das **Thema** als Elternteil, nicht die Ratgeber-Liste: Eine BreadcrumbList, die eine Hierarchie behauptet, die die Adresse nicht hat, ist die schwächste Form davon.
 
@@ -162,6 +162,14 @@ An diesem Repo arbeiten regelmäßig mehrere Sessions gleichzeitig, dazu die Wä
   **Wer ein Programm zeigt, sagt für WELCHE Technik — BLOCKER.** Die Trennung kam am 26.08. auf die Stadtseite, und **das Detail-Fenster im Rechner wurde dabei übersehen**: Im PV-Rechner stand bei Nidda „Höchstens zwei Module je Haushalt, höchstens 800 W Einspeisung" — eine Bedingung des Balkonkraftwerks, die jede Dachanlage ausschließt, und daneben ein Höchstbetrag, der das Siebeneinhalbfache des echten behauptete. Die Seite funktioniert dabei tadellos; falsch ist nur die Auskunft. `lib/__tests__/foerderung-je-technik.test.ts` verlangt deshalb an **jeder** Verwendung von `FundingConditions`/`FundingRates` eine Technik-Angabe; die beiden Übersichtsseiten stehen mit Grund in der Ausnahmeliste, weil sie ein Programm bewusst als Ganzes zeigen. Die Regel für den Höchstbetrag steht als `istDachSicht` an einer Stelle — zwei Fassungen davon liefen binnen einer Woche auseinander.
 
   **Die Erfassung schreibt NIE die Programm-Spalte `data` — BLOCKER.** Die Stadtseite liest die Programme aus der Datenbank, der Kohärenz-Test `atlas-funding-sync` aus dem Code. Das trägt nur, solange die Datenbank ausschließlich aus dem Code-Seed befüllt wird. Ein direkt eingetragenes Programm ist für den Test unsichtbar — und fallen dabei zwei Programme auf denselben Gemeindeschlüssel, liefert `fundingFor()` bewusst `undefined`, die Adresse fällt aus `generateStaticParams` und die Stadtseite antwortet **404 ohne Fehlermeldung, ohne roten Test, ohne kaputtes Aussehen**. Die Trennlinie ist die SPALTE, nicht die Tabelle: Die Beleg-Spalten (`last_verified`, `page_fingerprint`, `page_seen_at`, `page_changed_at`) werden absichtlich von mehreren Stellen fortgeschrieben. Festgenagelt von `lib/__tests__/funding-erfassung-grenze.test.ts`.
+
+  **Ein Programm kann MEHRERE Fördergebiete haben — BLOCKER (09.09.2026).** In Rheinland-Pfalz und Schleswig-Holstein zahlt regelmäßig die Verbandsgemeinde oder das Amt, nicht die einzelne Ortsgemeinde. Deren Ortsgemeinden teilen sich aber keinen eigenen Schlüssel: **Ihr gemeinsames Präfix ist der Landkreis.** Die Verbandsgemeinden Brohltal und Bad Breisig liegen beide im Kreis Ahrweiler und zahlen verschieden viel — wer eine davon unter dem Kreisschlüssel einträgt, gibt ihr Programm dem ganzen Kreis und legt es über das andere. `foerdergebiete()` führt `agsCode` und `agsCodes` an EINER Stelle zusammen; wer die beiden Felder am Verwendungsort selbst verodert, vergisst es am nächsten, und das Programm erscheint dann auf der Stadtseite und nicht im Rechner. Dort stehen nur die Ortsgemeinden, für die wir das Programm **belegt** haben — wir behaupten nicht, die Mitgliederliste einer Verbandsgemeinde zu kennen. Ein Landkreis-Programm gehört NICHT hierher: Dort ist der fünfstellige Kreisschlüssel das richtige und vollständige Gebiet. Festgenagelt von `lib/__tests__/funding-mehrere-gebiete.test.ts`.
+
+  **Ein Vorrat, aus dem nichts herausgenommen werden kann, wächst nur — BLOCKER (09.09.2026).** Die Seiten-Tabelle führt seit ihrer Einführung ein „gelesen am"; geschrieben hat es **kein einziges Werkzeug**. Gemessen: 275 als Treffer eingestufte Seiten, keine je abgehakt, 144 davon als Balkonkraftwerk eingeordnet. Konstanz lag drei Wochen darin — eingeordnet als Wärmepumpe, weil der Balkon-Zuschuss eine Ebene tiefer auf derselben Seite steht —, während wir sein Programm über eine **fremde Liste** gefunden haben. **Der Engpass des Katalogs war nie die Suche, sondern das Lesen der Treffer.** `npm run foerder:screen -- --gelesen <schlüssel[,schlüssel…]>` schreibt seitdem beide Tabellen und nimmt mehrere Schlüssel auf einmal: Wer ein Dutzend Ortsgemeinden einzeln abhaken muss, hakt sie nicht ab.
+
+  **Fremde Förderlisten sind ein HINWEISGEBER, keine Quelle** (`npm run foerder:ortsabgleich`). Sie führen fast nur große Städte — also genau dort, wo wir schwach sind. Eine solche Liste hat zwei Programme gezeigt, die uns fehlten, und dabei **drei von fünf Angaben falsch** dargestellt und eine vierte dem falschen Träger zugeschrieben. Der Lauf nimmt deshalb ausschließlich ORTSNAMEN und beantwortet eine einzige Frage: Wo müssen wir genauer hinsehen? **Den Abruf der fremden Seite macht er bewusst nicht** — bei einer privaten Förderliste ist die Auswahl die schützenswerte Leistung, und wiederkehrende automatische Abgleichläufe lösen zusätzlich Satz 2 aus (siehe `docs/foerderquellen-recherche.md`). Einmal von Hand ansehen bleibt vertretbar, ein nächtlicher Wächter nicht. Sein wertvollster Befund ist ohnehin nicht „kennen wir nicht", sondern „Seite längst gefunden, nie gelesen".
+
+  **Die Kreisebene ist seit 09.09.2026 im Suchraum.** Vorher trugen alle Zeilen der Kontakttabelle einen achtstelligen Gemeindeschlüssel — ein Landkreis, der selbst fördert, war damit strukturell unsichtbar, und genau so ist uns der Landkreis Oldenburg entgangen. Kreise tragen ihren Schlüssel in Wikidata unter einer **anderen Eigenschaft** (P440 statt P439); eine Abfrage nach Gemeinden liefert nie einen. 294 aufgenommen, kreisfreie Städte bewusst nicht (sie stehen schon als Gemeinde mit derselben Website da). **Der Kommunen-Brief ist dagegen abgeriegelt** (`darfOutreachEmpfangen`): Sein Aufhänger ist ein Rang unter gleich großen Gemeinden, für einen Kreis frei erfunden. „Ein Kreis bekommt ohnehin keine Kampagne" wäre eine Beobachtung über heute, keine Grenze.
 
   **Programm und Seite werden über das FÖRDERGEBIET zusammengeführt, nie über gleiche Schlüssel** (`programmDecktSeite`). Die Seiten tragen durchweg acht Stellen, der Katalog gemischt (zwei, fünf oder acht) — ein Vergleich auf Gleichheit verfehlt jedes dritte Programm. **Die Richtung ist der ganze Punkt:** Das Fördergebiet enthält die Gemeinde, nie umgekehrt — ein Dorfzuschuss darf niemals für den ganzen Landkreis zählen. Wer den Programm-Schlüssel kürzt statt den Seiten-Schlüssel zu prüfen, baut genau diesen Fehler.
 
@@ -1580,17 +1588,55 @@ aus dem Zensus, ohne den sich „hier wurde wenig gebaut" nicht von „hier gibt
 kaum eigene Dächer" unterscheiden lässt. Fällt eine aus, entfallen genau ihre
 Geschichten.
 
-**AUSGEBLENDET, bis das Bild steht (Betreiber, 05.09.2026).** Die Geschichten
-sind fertig, das Visual fehlt. Drei Anläufe auf der Ortsseite sind am selben
-Punkt gescheitert: Die Beitrags-Karte der Redaktion ist fest 1080 Pixel breit
-und überschreibt die Farb-Tokens mit ihrer eigenen Palette — richtig für ein
-Bild in einem fremden Feed, falsch auf einer Seite mit Tageslicht-Theme (weißer
-Block im Dunkeln, Überlauf im schmalen Teaser); und ihre kleine Stufe lässt Ring
-und Säule bewusst weg, womit die Formenwahl wirkungslos wird. Eine dritte, hier
-gezeichnete Fassung wäre die zweite Wahrheit neben den vier abgenommenen
-Templates — der Einheiten-Wächter hat sie binnen einer Minute erwischt. Das
-quadratische Story-Visual entsteht dort, wo die Formenlehre wohnt; die Aufgabe
-steht in `docs/redaktionssystem-uebergabe.md` und an den Bildformen selbst.
+**LIVE seit 06.09.2026 — und eine Ortsgeschichte IST seitdem ein Beitrag des
+Redaktionssystems.** Sie war es an den Daten immer: dieselben Familien des
+Katalogs (G2, G3, G4, G10, G14, G15, G16), eine Schlagzeile, benannte Werte mit
+Einheit, eine Grundlage. Was fehlte, waren vier Angaben — Farbschema,
+Quellenzeile, Messzeile und die Frage, welche Formen ihre Zahlen hergeben.
+`lib/orts-posts.ts` ergänzt sie; damit gelten Templates, Formenlehre,
+Rundungsregeln und Freigabe ohne eine eigene Zeile Zeichnung.
+- **Die Kategorie ist die des Katalogs, keine zweite Aufzählung.** Die Datei
+  führte „G4.1", „G3.vergleich", „G10" als eigene Union, während derselbe
+  Katalog daneben lag — und die erfundene Ordnung stand in der Ortsansicht. Ein
+  Fund reichte sogar den Schlüssel als Beschriftung durch: Auf der Ortsseite
+  stand wörtlich „g10", unsichtbar geblieben, weil der Block ausgeblendet war.
+- **Der ORT ist eine zweite Dimension, nie eine Kategorie.** Eine 21. Familie
+  „Kommune" hätte sieben Familien unter einen Reiter geworfen. Er steht am
+  Beitrag; die Kennung trägt den Gemeindeschlüssel, und daran hängt die
+  redaktionelle Fassung — deshalb lässt sich vor einem Versandschub JE ORT
+  einstellen, ohne dass die Einstellung zu allen anderen wandert.
+- **Das Visual ist die dritte Stufe derselben Karte** (`quadrat` in
+  `components/social/SocialKarte.tsx`): 1:1 statt 4:5, und mit der Möglichkeit,
+  die Farben der SEITE zu erben statt eine eigene Palette mitzubringen. Genau
+  daran waren die drei Anläufe vom 05.09.2026 gescheitert. Keine eigene
+  Schriftskala und keine eigene Zeichnung — eine dritte wäre die zweite Wahrheit
+  neben den abgenommenen Templates.
+- **Der Höhenfaktor gehört an die AUSGABEGRÖSSE, nie an das Koordinatensystem.**
+  In die viewBox gerechnet standen die Ringradien außerhalb, und der Ring wurde
+  an seiner eigenen Zeichenfläche abgeschnitten — im Bild ein blaues Quadrat
+  dahinter. Dieselbe Falle beim Verlauf, wo die y-Achse dann gegen ein anderes
+  System zeichnet als ihre Beschriftung.
+- **Der Fuß gibt nie nach** (`flexShrink: 0`), der Inhaltsbereich schon
+  (`minHeight: 0`). Die zweizeilige Quellenzeile (Zensus plus Register) brach
+  sonst unten aus der Karte und nahm das Logo halb mit. Ein beschnittener
+  Lizenzvermerk ist schlimmer als eine zu kleine Zeichnung.
+- **Beurteilt wird am gerenderten Bild** (`npm run orts:visual`), nicht am Code:
+  Alle vier Befunde waren nur dort sichtbar. Im Browser hält
+  `e2e/ortsgeschichte-karte.spec.ts` die Skalierung fest — der Maßstab kommt aus
+  einer Messung, nicht aus einer Zahl, weil ein fester Faktor entweder auf dem
+  Telefon überläuft oder auf dem Schreibtisch zu klein bleibt.
+- **Der Redaktionstisch der Schübe:** `/admin/redaktion/kommunen`, ein Ort auf
+  einmal. Die Kette je Ort kostet ein halbes Dutzend Abfragen; fünfundzwanzig
+  auf einer Seite wären die Kopplung „teurer mit den Daten". Beide Seiten holen
+  ihre Beiträge aus `lib/orts-beitraege-server.ts`; ein Test verbietet dem Tisch
+  die eigene Zusammenstellung, denn seine Auswahl an Funden und Platzierungen
+  entscheidet, welche Geschichten es überhaupt gibt.
+- **Der Zensus steht NICHT unter dl-de/by-2-0** — die Angabe stand seit dem
+  Importlauf so da und ist am Original widerlegt: Auf zensus2022.de trägt allein
+  das Shapefile der Verwaltungsgrenzen die Datenlizenz (Quellenvermerk „© GeoBasis-DE
+  / BKG 2023", also die BKG-Karte), bei Destatis gilt sie ausdrücklich nur für
+  GENESIS-Online. Es gilt der allgemeine Quellennachweis-Vorbehalt, im Register
+  im Wortlaut.
 
 **Was diese Arbeit gekostet hat, steht in `docs/lehren/ortsgeschichten-2026-09.md`**
 — darunter zwei Fehler, die bereits ausgeliefert waren (eine doppelte Präposition
@@ -1647,6 +1693,13 @@ Widget-Distribution an ~11.000 Gemeinden. Tabelle `kommunen_kontakt` (Supabase, 
 **Ein Brief bleibt prüfbar, NACHDEM er draußen ist (01.09.2026).** Die Vorabprüfung hält jeden Brief gegen die Seite, die er verlinkt — sie zog ihre Briefe aber aus dem Versandpaket, und das überspringt jede schon angeschriebene Gemeinde. Ein Brief war damit exakt bis zu dem Moment prüfbar, in dem er hinausging. Das ist keine Formalie: Unsere Seitenzahlen werden mit jedem Datenlauf neu gerechnet, der Brief steht fest — eine Aussage, die beim Versand stimmte, kann später von unserer EIGENEN verlinkten Seite widerlegt werden, und der Empfänger klickt womöglich Wochen später darauf. Ändern lässt sich das dann nicht mehr; man kann nur davon wissen, sich melden und die Regel nachziehen. `--verschickt` prüft deshalb den **gespeicherten** Text (nicht einen heute neu gebauten, der gegen die heutige Seite natürlich passt) gegen die heutigen Adressen. **Die Route liefert bewusst keine Empfängeradresse** — ohne sie kann aus ihr kein zweiter Versandweg werden, auch nicht versehentlich. Erster Lauf: 107 von 127 geprüft, kein Mangel; die restlichen 20 sind der erste Schub vom 20.08., für den der Text noch nicht gespeichert wurde (seit 24.08. schon). **„Nicht mehr nachprüfbar" wird je Gemeinde genannt, nie stillschweigend übersprungen** — sonst wäre die Lücke ein zweites Mal gebaut.
 
 **Empfänger werden beim Versand noch einmal geprüft** (`postfachBefund`). Die Erkennung beim Einsammeln erlaubte hinter dem Rollenwort einen beliebigen Zusatz — `buergermeister-klein@` galt als Funktionspostfach und ist der Nachname einer Person. Und eine Domain, die schlicht einen anderen Ortsnamen trägt (`stadtbuergermeister@bad-sobernheim.de` für Daubach), ist ein gültiges Amtspostfach der falschen Kommune. Beides wird abgewiesen und **gemeldet**, statt den Datenbestand rückwirkend umzuschreiben.
+
+**Der Rücklauf wird TÄGLICH abgeholt und gemeldet — BLOCKER (09.09.2026).** Den Abruf gab es seit Wochen, aber nur als Befehl, den jemand von Hand startet; also startete ihn niemand. Trier antwortete am 09.09. auf ein Anschreiben, die Antwort lag Tage später unentdeckt im Postfach, und vierzehn automatische Antworten von Gemeinden waren nirgends verzeichnet — während die Auswertung „keine Reaktion" meldete. **Ein Rücklauf, dessen Abholung an einer Erinnerung hängt, ist keine Auswertung.** Jetzt: `kommunen-ruecklauf.yml`, täglich, mit `--tage=14 --schreiben --melden`; der Lauf steht in `GEPLANTE_LAEUFE`, damit sein Ausfall nicht wieder wie ein ruhiges Postfach aussieht.
+- **Er darf ohne Menschen schreiben, obwohl der Versand es ausdrücklich nicht darf.** Er liest ein Postfach und trägt nach, was dort steht; nach außen geht nichts. Die zwei gefährlichen Fälle waren vorher abgesichert — „gesperrt" ist eine Einbahnstraße, und jede Notiz wird nur einmal eingetragen.
+- **Was eine Entscheidung ist, steht als reine Funktion in `lib/outreach-ruecklauf-bericht.ts`.** Antwort und Widerspruch gehen als Entscheidung an den Betreiber, Unzustellbarkeiten und maschinelle Meldungen stumm in die Ablage. **Die zweite Richtung ist die wichtigere:** Vierzehn Urlaubsnotizen an einem Tag sind der Normalfall — als Mail wären sie der Lärm, nach dem niemand mehr hinsieht. Gemeldet wird nur, was der Lauf WIRKLICH neu nachgetragen hat; sonst stünde dieselbe Antwort jeden Morgen erneut da.
+- **`--melden` ist eine ausdrückliche Option**, kein Automatismus am Vorhandensein eines Geheimnisses: Ein Probelauf von Hand soll keine Mail auslösen, und eine Bremse, die sich beim Fehlen einer Variablen stillschweigend abschaltet, merkt niemand.
+- **Die Ausblendliste wurde am echten Postfach GEMESSEN erweitert** (Awin, ADCELL, GoAffPro — neun Fehltreffer in 30 Tagen). Hersteller und Behörden bleiben draußen: Von dort kann etwas Inhaltliches kommen, und eine Ausblendung, die einmal zu weit ging, merkt niemand mehr.
+- **Die Übersicht führt seitdem zusammen, was vorher in drei Quellen lag** (`kommunen:stand`): Briefe, Antworten, Veröffentlichungen und bestätigte Abos auf einem Bildschirm, dazu der Satz, was sie NICHT sehen kann. Wer nur die Besucherstatistik las, meldete „drei Veröffentlichungen, sonst nichts", während 22 Rückmeldungen im Postfach lagen — **eine Auswertung aus einer Quelle ist keine Auswertung, sondern ein Ausschnitt.** Sie fragt die Abo-Tabelle direkt und steht dafür in der Ausnahmeliste des Zweckbindungs-Wächters; die Ausnahme trägt seit demselben Tag eine **Gegenprobe**, die anschlägt, sobald eine dieser Stellen eine Adresse mitliest — ein Begründungstext altert lautlos, eine Prüfung nicht.
 
 **Die Rückläufer-Erkennung liest nur den selbst geschriebenen Teil** (`ohneZitat`). Unser eigener Brief endet mit „Ihr Widerspruchsrecht"; Outlook zitiert ihn in jede Antwort. Eine Wortsuche über den ganzen Text hätte **jede freundliche Antwort** als Widerspruch eingestuft und die Gemeinde dauerhaft gesperrt — bei allen 100 Briefen. Wer den Zweig für maschinelle Zustellmeldungen betreten hat, kommt nie als „Widerspruch" heraus, sondern im Zweifel als `unklar-maschinell` in die Liste „bitte selbst ansehen".
 
@@ -1944,14 +1997,89 @@ Beratung stützt und selbst keinen bauen will. `scripts/fachbetriebe-refresh.ts`
 enthalten bei Einzelunternehmern personenbezogene Daten). Quellenbewertung:
 `docs/fachbetriebe-quellen.md`.
 
-**Es gibt keinen Vermittlungsweg und es wird nichts verschickt — BLOCKER.** Die Zusage
-„ohne Verkaufsanrufe · keine Lead-Erfassung · kein Vertriebskontakt" steht an vierzehn
-Stellen im Code und in der Datenschutzerklärung. Wer die Adressen nutzen will, klärt
-vorher zwei Fragen, die dem Betreiber gehören: ob ein Fachbetrieb ein Widget einbettet,
-das ihm keine Leads liefert (der Wettbewerbsbefund nennt das ausdrücklich als offen und
-sagt, es sei „eine Frage an drei Betriebe, nicht an eine Datenbank"), und die
-Informationspflicht nach Art. 14 DSGVO — die Datenschutzerklärung nennt diese
-Verarbeitung heute **nicht**.
+**Der Rückkanal ist GEBAUT, aber es ist nichts verschickt — Stand 09.09.2026.** Bis zum
+03.09. stand hier „es gibt keinen Vermittlungsweg"; das ist überholt, und ein überholter
+BLOCKER ist schlimmer als keiner. Was es gibt, steht im nächsten Abschnitt („Die
+betriebseigene Rechner-Seite"). Was es NICHT gibt: einen Versandlauf an Fachbetriebe.
+Kein Betrieb ist angeschrieben, keine Seite ist verlinkt, und die zwei Entscheidungen
+davor gehören weiterhin dem Betreiber — ob überhaupt angeschrieben wird, und ob die
+Zusage „ohne Verkaufsanrufe · keine Lead-Erfassung · kein Vertriebskontakt" angefasst
+wird. **Sie stimmt mit dem Rückkanal nicht mehr**, denn dort gibt es genau darüber einen
+Knopf; der PV-Rechner sagt auf einer Partnerseite deshalb schon heute etwas anderes als
+sonst („Wir geben nichts weiter, außer du bittest uns darum"). Offen bleibt außerdem die
+Informationspflicht nach Art. 14 DSGVO für die ERHEBUNG der Betriebsadressen — die
+Datenschutzerklärung nennt sie bis heute nicht.
+
+### Die betriebseigene Rechner-Seite und der Rückkanal (fertig, nicht ausgerollt)
+
+Ein Fachbetrieb bekommt eine eigene Adresse, unter der unser Rechner mit SEINEM Kopf
+öffnet; sein Websitebesucher rechnet dort und kann ihm das Ergebnis schicken. Gebaut
+zwischen dem 01. und 09.09.2026, im Browser geprüft, **noch von niemandem abgenommen und
+an niemanden verschickt.**
+
+- **Die Kennung ist aus der Domain abgeleitet, nicht geraten und nicht gespeichert.** Eine
+  Datenbankspalte wäre eine zweite Wahrheit; eine ratbare Adresse verriete, welche
+  Betriebe wir erfasst haben. Ohne hinterlegte Mailadresse entsteht **keine** Seite — ein
+  Anfrage-Knopf ohne Empfänger liefe ins Leere.
+- **Die Seite ist für Suchmaschinen gesperrt.** Eine indexierte Seite mit fremdem
+  Firmennamen auf UNSERER Domain träte gegen seine eigene Website an — das ist ein Grund,
+  nicht mitzumachen, und im Anschreiben umgekehrt ein Verkaufsargument.
+- **Der EMPFEHLUNGSWEG ist dort der Standard**, nicht der direkte Rechner (Betreiber,
+  03.09.2026: „in der regel weiß man ja nicht was man braucht"). Welcher Weg erscheint,
+  ergibt sich aus dem Zustand in der Adresse, nicht aus einem gespeicherten Schalter —
+  ein geteilter Link zeigt beim Empfänger dasselbe wie beim Absender. Der letzte Schritt
+  springt dort **direkt ins Ergebnis**; die Zwischenansicht der Empfehlung wird
+  übersprungen, weil das Ergebnis dieselbe Anlage samt Begründung trägt.
+- **Drei Stellen des Empfehlungswegs mussten dafür Parameter werden**, jede einzeln
+  gemessen: wohin er seinen Zwischenstand schreibt, wohin er am Ende übergibt, und wohin
+  „Zurück" im ersten Schritt führt. Ohne sie setzte er den Besucher mitten im Vorgang auf
+  solar-check.io ab — mit dem Ergebnis, aber ohne den Betrieb, der ihn geschickt hat.
+- **Der Knopf sagt „Unverbindlich bei X anfragen", nicht „schicken"** (Hinweis von außen,
+  03.09.2026): „schicken" liest sich, als ginge beim Klick schon etwas hinaus —
+  tatsächlich öffnet er nur den Fragebogen. Die Zeile darunter sagt NICHT „im nächsten
+  Schritt", weil die Übersicht der Angaben im dritten steht.
+- **Was der Betrieb bekommt:** einen Brief mit Anrede und Unterschrift, nicht einen
+  Datenauszug — ein Handwerksbetrieb bekommt täglich Post von Lead-Portalen, und die
+  sieht genau so aus. Darin die Angaben getrennt (Name, Kontakt, Anschrift), bis zu zwei
+  Fotos als Anhang und ein Link auf die Rechnung. **Antworten gehen direkt an den
+  Interessenten**, nicht über uns.
+- **Der Empfänger kommt aus der Datenbank, nie aus der Anfrage.** Nähme die Route eine
+  Adresse entgegen, wäre sie ein offener Versandweg mit unserem Absender darunter —
+  dieselbe Bauregel wie beim Förder-Abruf.
+- **Bilder werden im Browser verkleinert** (1.600 px, Qualität 0,8). Zwei gewöhnliche
+  Handyfotos ergaben kodiert rund 8 MB und scheiterten damit **immer** an der 4,5-MB-Grenze
+  der Plattform — nach vollständig ausgefülltem Fragebogen, mit der Meldung „bitte später
+  noch einmal versuchen", die nie zum Erfolg führen konnte.
+- **Die Antwortadresse wird aus dem Freitext HERAUSGESUCHT.** Das Kontaktfeld ist
+  absichtlich frei („wer nur anrufen lassen will, soll keine Mailadresse erfinden
+  müssen"); „mail@x.de oder 0170…" ging vorher als Ganzes als Antwortadresse hinaus und
+  ließ den kompletten Versand scheitern. Ist sie unklar, bleibt sie weg.
+- **Die Anfrage-Statistik ist anonym und wird GERECHNET, nicht abgeschrieben.** Betrieb,
+  Kalendertag statt Uhrzeit, zwei PLZ-Stellen statt fünf, Anlagengröße in Stufen, ob eine
+  Nachricht dabei war. Kein Name, kein Kontakt, keine Anschrift — Adresse plus
+  Anlagengröße wäre die Beschreibung genau eines Haushalts. **Anlagengröße und Speicher
+  werden aus den Listenplätzen des Teilen-Links aufgelöst**: Vorher las sie nur die
+  Sonderfelder für selbst eingetippte Zahlen, und jeder Standardfall schrieb eine Zeile
+  mit zwei leeren Werten — die Auswertung, für die es das Modul gibt, wäre bei der
+  Mehrheit leer gewesen, ohne dass etwas angeschlagen hätte.
+- **Die Auflösung der Kennung ist eine Stunde zwischengespeichert.** Sie rechnet über alle
+  rund 3.100 Betriebe und lief vorher zweimal je Seitenaufruf ohne Cache — acht
+  Datenbankabfragen pro Aufruf, bei einem Schub an hunderte Betriebe genau das Lastmuster
+  des Juli-Ausfalls. **Fünf Minuten wären der falsche Fix gewesen** (Cache-Deckel im
+  Seitenrahmen); Aktualität kommt über den Marker.
+
+**OFFEN, bevor irgendetwas verschickt wird:**
+1. **Abnahme im Browser** durch den Betreiber — die Seite und der Rückkanal sind sichtbare
+   neue Funktionalität und wurden ihm nie gezeigt.
+2. **Der Testbetrieb liegt in der Produktionsdatenbank** („Solar Check Testbetrieb GmbH",
+   angelegt für den Versandtest). Das Skript dazu liegt in `scripts/_testbetrieb.ts` und
+   entfernt ihn mit `--weg`; es hat bewusst keinen Eintrag in der Skriptliste, damit es
+   niemand versehentlich aufruft.
+3. **Der Anschreiben-Entwurf ist nicht abgenommen** und argumentiert mit dem falschen
+   Painpoint — siehe nächster Abschnitt.
+4. **Die Datenschutzerklärung** nennt die Erhebung der Betriebsadressen nicht (Art. 14).
+5. **Zwei Entscheidungen des Betreibers:** ob angeschrieben wird, und ob die Zusage
+   angefasst wird.
 
 **Bewertungen öffentlich zeigen scheitert am BEWERTUNGSRECHT, nicht an Google (geprüft
 29.08.2026, zwei Legal-Judges).** Wer Verbraucherbewertungen zugänglich macht, muss sagen,
@@ -2225,14 +2353,59 @@ Datenschutzerklärung nennt diese Erhebung mit keinem Wort, und die Ausnahme
 „unverhältnismäßiger Aufwand" trägt hier nicht — wer Kontaktdaten erhebt, UM Kontakt
 aufzunehmen, kann Kontakt nicht als zu aufwendig ausgeben.
 
-**Das Angebots-Feature am Ende des Rechners ist NICHT beauftragt** und hat eine eigene
-Merkliste: `docs/solarteur-widget-offene-fragen.md`. Kern daraus: Der Nutzer sieht erst
-sein Ergebnis und stellt DANACH selbst eine Anfrage — diese Reihenfolge ist die Trennlinie
-zum gesamten Wettbewerb und darf nie umgedreht werden. Vor dem ersten Kontakt muss die
-Zusage „keine Lead-Erfassung · kein Vertriebskontakt" umformuliert werden (Betreiber,
-28.08.2026: zusammen mit den ersten Kontakten, nicht vorher auf Verdacht). Zwei Fragen
-bleiben beim Betreiber: ob Geld je Anfrage fließt, und ob der Betrieb den Kontakt behalten
-darf, wenn nichts daraus wird.
+**Das Angebots-Feature ist seit 03.09.2026 gebaut — aber nur auf der Partnerseite, nie im
+allgemeinen Rechner.** Die Merkliste `docs/solarteur-widget-offene-fragen.md` gilt
+weiter für das, was daraus einmal werden soll. **Die Reihenfolge ist die Trennlinie zum
+gesamten Wettbewerb und wird nie umgedreht:** Der Nutzer sieht erst sein Ergebnis und
+stellt DANACH selbst eine Anfrage. Auf solar-check.io selbst gibt es diesen Knopf nicht —
+er erscheint ausschließlich, wo jemand über die Seite eines Betriebs gekommen ist. Zwei
+Fragen bleiben beim Betreiber: ob Geld je Anfrage fließt, und ob der Betrieb den Kontakt
+behalten darf, wenn nichts daraus wird.
+
+**Der Pitch argumentiert mit VERTRAUEN, nicht mit besseren Anfragen — der Entwurf tut das
+noch nicht** (gemessen 01.09.2026, Bedarfsrecherche mit neun Painpoints und Beleglage).
+Von neun adressiert unser Produkt **zwei, und beide sind derselbe**: die Verunsicherung
+der Endkunden (von Installateuren an erster Stelle genannt, rund 72 % — Magazin-
+Leserumfrage 03/2024 mit Selbstselektion, **nie als „gemessen" führen**) und den
+Vertrauensschaden aus der Insolvenzwelle. Die anderen sieben sind Abläufe, dort sitzen
+Anbieter mit belegtem Zahlungswillen. **Der Anschluss ist ihr Geschäftsmodell:** Ihr
+wichtigster Auftragskanal ist die Empfehlung, sie verkaufen über Glaubwürdigkeit — ein
+unabhängiger Rechner ohne Leadverkauf ist für sie kein Werkzeug, sondern ein Beleg ihrer
+Redlichkeit. Der Entwurf in `docs/fachbetriebe-anschreiben.md` argumentiert stattdessen
+mit „Sie bekommen bessere Anfragen": Painpoint 5, der am schwächsten belegte der Liste,
+und genau der, an dem ein Dutzend Software-Anbieter sitzt. **Vor dem Versand umbauen.**
+Die vollständige Argumentation samt Belegstärke je Zahl und den drei Sätzen, die ein
+Gegenleser zuerst angreift, steht in `docs/fachbetriebe-angebot-argumente.md`.
+
+**Der einzige direkte Wettbewerber ist Solantiq** (`docs/wettbewerb-solantiq.md`, eigene
+Bedienung des Rechners am 03.09.2026, nicht sein Marketing gelesen): einbettbarer
+PV-Rechner unter fremder Marke für 588 bis 1.788 € im Jahr, Zielgruppe Solarinstallateure,
+Zweck wörtlich „Lead-Generierung". **Er kann mehrere Dachflächen einzeln** (Größe in m²,
+Neigung, gradgenaue Ausrichtung), hat einen Verschattungs-Schieber und deckt Österreich
+und die Schweiz mit ab. **Der Unterschied ist nicht die Oberfläche, sondern gerechnet
+gegen geraten:** Dort stellt der Nutzer die Eigenverbrauchsquote selbst ein — die Zahl, an
+der die ganze Wirtschaftlichkeit hängt. **Die eine echte Lücke ist die Dachfläche in
+Quadratmetern** (36 % der Betriebs-Anfrageformulare fragen danach). Sie automatisch zu
+füllen ist gescheitert (siehe Google-Dachanalyse unten); die naheliegende Antwort ist
+dieselbe wie bei Solantiq — fragen, mit der Modulzahl daneben.
+
+**Was der Rechner-Flow von dem abdeckt, was Betriebe ohnehin fragen** (eigene Messung an
+76 Anfrageformularen, 01.09.2026): Von den elf häufigsten Feldern liefert er sieben. Es
+fehlen Dachfläche (36 %), Dacheindeckung (9 %) und Eigentümer/Mieter (7 %); Zählerschrank
+und Dachzustand deckt der Foto-Upload des Rückkanals ab.
+
+**Die automatische Dachanalyse über Googles Solar-Schnittstelle ist geprüft und
+VERWORFEN** (03.09.2026, `docs/quellen/fachbetriebe/google-solar-api-lizenz.md`).
+Rechtlich ist alles geklärt — zwei Legal-Judges, der zweite hat den ersten in drei Punkten
+gekippt; der Zugang steht und kostet bei unserem Volumen nichts. Gescheitert ist es an der
+Datenqualität: **Google kennt keine Grundstücksgrenzen.** Die Antwort beschreibt ein
+Gebäude im Sinne des Höhenmodells, bei Reihen- und Doppelhäusern also die ganze Zeile — am
+Referenzfall 141 m² für ein Haus mit rund 60, Modulbelegung quer über zwei Häuser. Keine
+Angabe in der Antwort sagt, welcher Teil einem gehört. **Nicht erneut prüfen**, solange
+Google keine Zuordnung von Adresse zu einzelner Dachfläche liefert. Zwei Lehren daraus
+gelten allgemein: Eine schematische Zeichnung taugt nicht zur Bestätigung einer
+automatischen Erkennung (es braucht das Original, nicht die Ableitung) — und das Bild
+allein reicht nicht, wenn niemand die Gegend kennt: Bestätigen kann nur der Nutzer.
 
 ## Archiv & Lehren
 
@@ -2247,3 +2420,7 @@ darf, wenn nichts daraus wird.
 | `docs/lehren/vercel-build-und-kosten.md` | Ignored Build Step, Kostenzahlen, Preview-Abschaltung |
 | `docs/lehren/ortsgeschichten-2026-09.md` | Ortsgeschichten: drei gescheiterte Anläufe am Visual, doppelte Präposition in der Abo-Mail, zwei zirkuläre Wächter — und die viermal wiederholte Ansage |
 | `docs/claude-md-kuerzung.md` | Was bei der CLAUDE.md-Kürzung gekürzt, ausgelagert und bewusst behalten wurde |
+| `docs/fachbetriebe-angebot-argumente.md` | Was wir einem Fachbetrieb anbieten: 17 Vorzüge nach Belegstärke, sechs Schwächen, Beleglage je Zahl, die drei angreifbarsten Sätze |
+| `docs/wettbewerb-solantiq.md` | Der einzige direkte Wettbewerber, an seinem eigenen Rechner gemessen — was er kann, was wir können, wo die eine echte Lücke ist |
+| `docs/fachbetriebe-ausbau-ideen.md` | Sechs Ideen des Betreibers für später, je mit dem, was vorher zu klären wäre — nichts davon beschlossen |
+| `docs/quellen/fachbetriebe/google-solar-api-lizenz.md` | Googles Dachanalyse: Lizenz geklärt, Datenqualität gemessen, Ergebnis verworfen — samt der vier Irrtümer, die nicht zurückkommen dürfen |

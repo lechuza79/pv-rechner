@@ -117,6 +117,22 @@ function ohneKommentare(quelle: string): string {
     .join("\n");
 }
 
+/**
+ * 30 Sekunden statt der voreingestellten fünf.
+ *
+ * Diese Prüfungen lesen den halben Bestand ein — den Förderkatalog, das
+ * Ortsverzeichnis, jede Datei des Repos. Auf einer ruhigen Maschine kosten sie
+ * Sekundenbruchteile; auf einer belegten reißen sie das Vorgabelimit, und zwar
+ * ohne dass irgendetwas am Code falsch wäre. Genau dafür gibt es im Projekt
+ * schon das Vorbild in `energy-api.test.ts` („generous headroom so CPU load
+ * can't trip the 5s default").
+ *
+ * Das Limit misst NICHTS Fachliches — es schützt vor einem hängenden Test.
+ * Es anzuheben schwächt die Prüfung also nicht; ein Fehlschlag daran kostet
+ * dagegen eine Stunde Suche nach einer Ursache, die es nicht gibt.
+ */
+const REPO_WEIT_MS = 30_000;
+
 describe("Wächter: ein deutscher Stichtag wird gegen eine deutsche Uhr gehalten", () => {
   it("bildet keinen Kalendertag aus der Weltzeit, außer mit Begründung", () => {
     const ausgenommen = new Set([
@@ -175,4 +191,4 @@ describe("Wächter: ein deutscher Stichtag wird gegen eine deutsche Uhr gehalten
       ).toBe(true);
     }
   });
-});
+}, REPO_WEIT_MS);

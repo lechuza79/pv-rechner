@@ -194,6 +194,37 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // nicht erhebt, und die Deckelung auf 100 % des Kaufpreises ist eine Form,
   // die das Modell nicht ausdrückt.
   "gelsenkirchen-steckersolar",
+  // Aufgenommen am 09.09.2026, Amtsseite bzw. Richtlinie im Volltext gelesen.
+  // Die Prüfformen fehlen noch, und je eine Bedingung kennt das Modell gar
+  // nicht: In Konstanz der MONTAGEORT (gefördert wird nur, was am Balkon, an
+  // der Fassade oder auf einem Nebengebäude hängt — Dachmontage ist seit 2025
+  // ausgeschlossen), im Landkreis Oldenburg der Kaufstichtag „nicht vor dem
+  // 1. Januar 2026" und die Nachrangigkeit gegenüber EU-, Bundes- und
+  // Landesmitteln. Dass der Zuschuss den Speicher voraussetzt, steht dagegen
+  // seit heute IM Modell (`balkonNurMitSpeicher`) und nicht nur im Text.
+  "konstanz-breitenfoerderung", "landkreis-oldenburg-steckersolar",
+  // Die 47 Programme des 09.09.2026 — der abgearbeitete Arbeitsvorrat des
+  // Screenings. Jede Zahl an der Amtsseite gelesen, die Prüfformen fehlen noch.
+  // Sie sind hier die größere Arbeit als sonst: Ein Drittel dieser Programme
+  // verlangt den Antrag VOR dem Kauf, mehrere kennen zweistufige Verfahren, und
+  // vier hängen an Angaben, die das Modell gar nicht führt (Einkommensgrenze,
+  // Wohnberechtigungsschein, Zwei-Familien-Haus, Montageort).
+  "delbrueck-steckersolar", "denzlingen-klimaschutz", "kenzingen-aktiv-klimaschutz",
+  "kirchdorf-amper-mini-pv", "vg-bad-breisig-balkonkraftwerke", "waltrop-steckersolar",
+  "straelen-steckerfertige-pv", "kranenburg-steckerfertige-pv", "vg-brohltal-balkonkraftwerke",
+  "vg-alzey-land-balkon-speicher", "edewecht-klimabonus", "gerbrunn-stecker-solar",
+  "holzmaden-balkonkraftwerke", "vg-nahe-glan-balkonkraftwerke", "taunusstein-balkonsolar",
+  "schmelz-solar-balkonkraftwerk", "waldalgesheim-balkon-pv", "recklinghausen-stecker-solar",
+  "werne-steckersolar", "gerlingen-balkonmodule", "bissendorf-klimaschutz",
+  "kerken-stecker-solar", "gruenwald-umweltschutz", "aulendorf-plugin-solar",
+  "amstetten-steckerfertige-pv", "vg-rennerod-klimaschutz", "windhagen-balkonkraftwerke",
+  "koenigswinter-steckersolar", "delmenhorst-balkon-solar", "kronberg-klimaschutz",
+  "bad-duerkheim-stecker-solar", "sinsheim-balkonkraftwerke", "worms-balkon-pv",
+  "reichshof-pv", "bernkastel-wittlich-balkonkraftwerke", "trier-saarburg-balkonkraftwerke",
+  "witten-balkon-solarmodule", "neuenrade-stecker-solar", "wassenberg-stecker-solar",
+  "roggenburg-pv-kleinstanlagen", "altdorf-landshut-balkonkraftwerk", "feldkirchen-westerham-klimaschutz",
+  "roedinghausen-sonnenenergie", "leipzig-stecker-solar", "emsdetten-proklima",
+  "westerkappeln-balkonkraftwerke", "sprendlingen-gensingen-balkonsolar",
 ];
 
 /**

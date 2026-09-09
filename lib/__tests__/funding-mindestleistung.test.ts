@@ -152,3 +152,63 @@ describe("Dachanlage nur zusammen mit Speicher", () => {
     }
   });
 });
+
+// ─── Balkonkraftwerk nur zusammen mit Speicher ────────────────────────────────
+//
+// Dieselbe Fehlerklasse eine Etage tiefer, gefunden beim Aufnehmen des
+// Landkreises Oldenburg am 09.09.2026: Seine Richtlinie schließt in Ziffer 3.3
+// „Steckersolargeräte ohne einschließlich oder zusätzlich erworbenen Speicher"
+// ausdrücklich aus. Als bloßer Bedingungstext hätte das auf die Rechnung nicht
+// gewirkt — der Rechner hätte einem Set ohne Speicher 25 % des Kaufpreises
+// geschenkt, bei einem 500-€-Set die halbe Anschaffung.
+//
+// Der dritte Fall ist der eigentliche Grund für diesen Block: Ist die
+// Speichergröße gar nicht übergeben, wird NICHT gerechnet. Eine Übersichtsseite
+// weiß nicht, ob der Leser einen Speicher kauft; „0 €" wäre dort eine Auskunft,
+// die niemand belegen kann.
+describe("Balkonkraftwerk nur zusammen mit Speicher", () => {
+  const balkon = (speicherKwh: number | undefined, kosten = 1000) =>
+    ({ technik: "balkon", wattPeak: 1720, kosten, ...(speicherKwh === undefined ? {} : { speicherKwh }) }) as const;
+  const lkOldenburg = FUNDING_PROGRAMS["landkreis-oldenburg-steckersolar"];
+
+  it("zahlt ohne Speicher nichts — der Betrag ist bekannt, er ist null", () => {
+    expect(lkOldenburg.balkonNurMitSpeicher).toBe(true);
+    const r = fundingAmount(lkOldenburg, balkon(0));
+    expect(r.total).toBe(0);
+    expect(r.computable).toBe(true);
+  });
+
+  it("zahlt mit Speicher den gedeckelten Anteil", () => {
+    // 25 % von 1.000 € = 250 €, genau am Höchstbetrag.
+    expect(fundingAmount(lkOldenburg, balkon(1.6)).total).toBe(250);
+    // 25 % von 800 € = 200 €, unter dem Deckel.
+    expect(fundingAmount(lkOldenburg, balkon(1.6, 800)).total).toBe(200);
+    // Deckel bindet: 25 % von 2.000 € wären 500 €.
+    expect(fundingAmount(lkOldenburg, balkon(2.7, 2000)).total).toBe(250);
+  });
+
+  it("rechnet gar nicht, solange die Speichergröße unbekannt ist", () => {
+    const r = fundingAmount(lkOldenburg, balkon(undefined));
+    expect(r.total).toBe(0);
+    expect(r.computable).toBe(false);
+  });
+
+  it("ein Programm ohne diese Bedingung bleibt von der Speichergröße unberührt", () => {
+    const konstanz = FUNDING_PROGRAMS["konstanz-breitenfoerderung"];
+    expect(konstanz.balkonNurMitSpeicher).toBeUndefined();
+    expect(fundingAmount(konstanz, balkon(0)).total).toBe(150);
+    expect(fundingAmount(konstanz, balkon(undefined)).total).toBe(150);
+  });
+
+  it("wer die Speicherpflicht in den Bedingungstext schreibt, setzt sie auch in der Rechnung", () => {
+    // Die Gegenrichtung, wie oben bei der Dachanlage: Ein neues Programm mit
+    // demselben Satz im Text und ohne das Feld baut den Fehler neu.
+    for (const p of Object.values(FUNDING_PROGRAMS)) {
+      if (!p.balkonPauschale && !p.balkonProWp && !p.balkonPercentOfCost && !p.balkonTiers) continue;
+      const text = (p.conditions ?? []).map(bedingungText).join(" ");
+      if (/(Balkonkraftwerk|Steckersolar\w*)[^.]*(nur|ausschließlich)[^.]*(zusammen|gemeinsam) mit[^.]*Speicher/i.test(text)) {
+        expect(p.balkonNurMitSpeicher, p.id).toBe(true);
+      }
+    }
+  });
+});

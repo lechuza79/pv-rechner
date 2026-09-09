@@ -68,6 +68,14 @@ export default function InternalShell({
       title: "Fachbetriebe",
       links: [{ href: "/admin/fachbetriebe", label: "Verzeichnis" }],
     });
+    // Presse steht als EIGENE Gruppe und nicht unter Outreach: Die Zielgruppe
+    // ist eine andere (Redaktionen statt Verwaltungen), der Rechtsrahmen auch —
+    // und der Bereich wächst um Regionalmedien und Creator. Dieselbe Begründung
+    // wie bei den Fachbetrieben eine Gruppe darüber.
+    sections.push({
+      title: "Presse",
+      links: [{ href: "/admin/presse", label: "Katalog" }],
+    });
     // Zwei Beitragsarten unter einem Dach. Sie teilen sich die Redaktion, aber
     // sonst wenig: Ein Post hat einen Wochentag und eine Bildform, ein Artikel
     // eine Suchfrage und eine Indexierung. Deshalb getrennte Gruppen statt einer
