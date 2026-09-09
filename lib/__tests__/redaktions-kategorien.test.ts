@@ -2,8 +2,20 @@ import { describe, expect, it } from "vitest";
 import { KATEGORIEN, kategorie, kategorieAusAdresse } from "../redaktions-kategorien";
 import { FAMILIEN } from "../redaktionsplan";
 import { KARTEN_STILE, KARTEN_STIL_STANDARD, kartenTokens, istKartenStil } from "../social-karten-stil";
-import { BILDFORMEN, BILDFORM_NAME, TEMPLATES, baueAllePosts, kurzEinwohner, moeglicheFormen, templateVon, type SocialKennzahlen } from "../social-posts";
+import { BILDFORMEN, BILDFORM_NAME, TEMPLATES, baueAllePosts, kurzEinwohner, moeglicheFormen, templateVon, type PostBild, type SocialKennzahlen } from "../social-posts";
+import {
+  RANGLISTE_MAX_ENGE,
+  aufteilungsStellen,
+  kollidiert,
+  ranglistenStellen,
+  reihenEnge,
+  restVon,
+  variante,
+  variantenKennung,
+  verschwindet,
+} from "../social-bildformen";
 import { BUNDESLAND_UMRISS } from "../bundesland-umrisse";
+import { umrissBox } from "../bundesland-umriss-box";
 
 // Die beiden Ausfälle, die diese Ansicht haben kann, sind von außen unsichtbar:
 // ein Reiter ohne Stories (ein Versprechen ohne Inhalt) und eine Story ohne
@@ -26,10 +38,14 @@ const basis: SocialKennzahlen = {
     solarKwpJetzt: 127_100_000,
     solarKwpVorJahr: 117_600_000,
   },
+  // Die vier Segmente ergeben die Gesamtleistung — so wie im echten Bestand
+  // gemessen (36,203 + 44,544 + 44,808 + 1,560 = 127,115 GWp, kein Rest). Wer
+  // hier eine Lücke lässt, prüft eine Aufteilung, die es nicht gibt.
   segmente: {
     privatDachKwp: 36_200_000,
     gewerbeDachKwp: 44_500_000,
     freiflaecheKwp: 44_900_000,
+    steckersolarKwp: 1_500_000,
     solarGesamtKwp: 127_100_000,
   },
   ueberEinwohner: { mindestEinwohner: 500, betrachtet: 10_000, darueber: 6_848 },
@@ -42,13 +58,19 @@ const basis: SocialKennzahlen = {
     bundesJeTausend: 17.3,
     mindestEinwohner: 5_000,
   },
+  // Die Speicherwerte sind die ECHTEN Größenordnungen aus dem Bestand (57 bis
+  // 98 je 100 Anlagen), nicht eine glatte Zahl für alle. Der Grund ist eine
+  // gemessene Lücke: Solange hier überall 30 stand, lag die Enge der Reihe bei
+  // exakt 1,0 — die Gegenprobe „Heimspeicher liegen zu eng" wäre bei JEDER
+  // Schwelle grün gewesen, auch bei 0,99. Ein Test, der eine Verteilung prüft,
+  // braucht eine Verteilung.
   laender: [
-    { name: "Niedersachsen", balkonJeTausend: 23.1, wpProKopf: 505, privatDachKwp: 4_000_000, speicherJe100: 30, freiflaecheAnteil: 17.4, solarKwp: 11_300_000, wachstumFuenfJahre: 2.23 },
-    { name: "Brandenburg", balkonJeTausend: 20.5, wpProKopf: 377, privatDachKwp: 950_000, speicherJe100: 30, freiflaecheAnteil: 70.3, solarKwp: 9_800_000, wachstumFuenfJahre: 2.05 },
-    { name: "Nordrhein-Westfalen", balkonJeTausend: 16.1, wpProKopf: 378, privatDachKwp: 6_800_000, speicherJe100: 30, freiflaecheAnteil: 9.1, solarKwp: 15_500_000, wachstumFuenfJahre: 2.33 },
-    { name: "Berlin", balkonJeTausend: 7.1, wpProKopf: 72, privatDachKwp: 260_000, speicherJe100: 30, freiflaecheAnteil: 0.4, solarKwp: 500_000, wachstumFuenfJahre: 3.48 },
-    { name: "Hamburg", balkonJeTausend: 6.1, wpProKopf: 84, privatDachKwp: 150_000, speicherJe100: 30, freiflaecheAnteil: 0.4, solarKwp: 300_000, wachstumFuenfJahre: 4.38 },
-    { name: "Bremen", balkonJeTausend: 5.4, wpProKopf: 61, privatDachKwp: 110_000, speicherJe100: 30, freiflaecheAnteil: 0.2, solarKwp: 200_000, wachstumFuenfJahre: 3.9 },
+    { name: "Niedersachsen", balkonJeTausend: 23.1, wpProKopf: 505, privatDachKwp: 4_000_000, speicherJe100: 75.2, freiflaecheAnteil: 17.4, solarKwp: 11_300_000, wachstumFuenfJahre: 2.23 },
+    { name: "Brandenburg", balkonJeTausend: 20.5, wpProKopf: 377, privatDachKwp: 950_000, speicherJe100: 77.1, freiflaecheAnteil: 70.3, solarKwp: 9_800_000, wachstumFuenfJahre: 2.05 },
+    { name: "Nordrhein-Westfalen", balkonJeTausend: 16.1, wpProKopf: 378, privatDachKwp: 6_800_000, speicherJe100: 69.6, freiflaecheAnteil: 9.1, solarKwp: 15_500_000, wachstumFuenfJahre: 2.33 },
+    { name: "Berlin", balkonJeTausend: 7.1, wpProKopf: 72, privatDachKwp: 260_000, speicherJe100: 89.3, freiflaecheAnteil: 0.4, solarKwp: 500_000, wachstumFuenfJahre: 3.48 },
+    { name: "Hamburg", balkonJeTausend: 6.1, wpProKopf: 84, privatDachKwp: 150_000, speicherJe100: 91.0, freiflaecheAnteil: 0.4, solarKwp: 300_000, wachstumFuenfJahre: 4.38 },
+    { name: "Bremen", balkonJeTausend: 5.4, wpProKopf: 61, privatDachKwp: 110_000, speicherJe100: 98.0, freiflaecheAnteil: 0.2, solarKwp: 200_000, wachstumFuenfJahre: 3.9 },
   ],
 };
 
@@ -221,6 +243,240 @@ describe("Bildform und Einheit", () => {
     }
   });
 
+  it("die Rangliste braucht eine Reihe, Werte ab null und Abstand darin", () => {
+    // Drei Bedingungen, jede aus einem Fall, den man erst am Bild sieht.
+    for (const p of posts) {
+      if (!p.bild) continue;
+      const formen = moeglicheFormen(p.bild);
+      const reihe = p.bild.reihe ?? [];
+      const abNull = (p.bild.nullpunkt ?? 0) === 0;
+      const soll = reihe.length >= 3 && abNull && reihenEnge(p.bild) < RANGLISTE_MAX_ENGE;
+      expect(formen.includes("rangliste"), `${p.id}: Rangliste`).toBe(soll);
+    }
+
+    // Die Gegenprobe an echten Fällen des Bestands — ohne sie wäre der Test
+    // oben nur eine Wiederholung der Bedingung.
+    const frei = posts.find((p) => p.id === "g14-freiflaeche-ost-west")!.bild!;
+    expect(moeglicheFormen(frei), "Freiflächenanteil geht weit auseinander").toContain("rangliste");
+
+    // Heimspeicher: 57 bis 98 je 100 Anlagen. Sechzehn Balken zwischen 58 und
+    // 100 Prozent Länge lesen sich als Liste, nicht als Unterschied — der
+    // Beitrag behauptet aber genau einen.
+    const speicher = posts.find((p) => p.id === "g16-speicher-je-land")!.bild!;
+    expect(speicher.reihe!.length, "Reihe liegt vor").toBeGreaterThan(3);
+    expect(moeglicheFormen(speicher), "Heimspeicher liegen zu eng").not.toContain("rangliste");
+
+    // Wachstumsfaktoren zählen ab 1, nicht ab 0: Ein Balken ab 1 neben einer
+    // Zahl ab 0 sind zwei Skalen in einem Bild.
+    const wachstum = posts.find((p) => p.id === "g3-aufholjagd-fuenf-jahre")!.bild!;
+    expect(wachstum.nullpunkt, "Faktoren tragen ihren Nullpunkt").toBe(1);
+    expect(moeglicheFormen(wachstum), "Faktoren sind keine Längen").not.toContain("rangliste");
+    expect(moeglicheFormen(wachstum), "auch kein Balken").not.toContain("vergleich");
+  });
+
+  it("die Enge-Schwelle steht dort, wo sie gemessen wurde", () => {
+    // Dieser Test hängt NICHT an der Konstante, sondern nennt die gemessenen
+    // Werte des Bestands mit ihrem Urteil. Die erste Fassung prüfte gegen
+    // `reihenEnge(...) < RANGLISTE_MAX_ENGE` — also die Bedingung gegen sich
+    // selbst: Auf 0,99 hochgesetzt blieb alles grün, obwohl damit jede noch so
+    // enge Reihe als Rangliste durchgegangen wäre.
+    //
+    // Die Zahlen sind gemessen (`npm run social:zahlen`), nicht gegriffen. Wer
+    // die Schwelle verschiebt, verschiebt sie gegen diese Fälle.
+    const gemessen: [string, number, boolean][] = [
+      ["Freiflächenanteil", 0.01, true],
+      ["Privatdach-Anteil", 0.18, true],
+      ["Balkonquote je Land", 0.26, true],
+      ["Heimspeicher je 100", 0.58, false],
+    ];
+    for (const [name, enge, traegt] of gemessen) {
+      expect(enge < RANGLISTE_MAX_ENGE, `${name} bei Enge ${enge}`).toBe(traegt);
+    }
+
+    // Und die Rechnung selbst, an einem Fall, den man im Kopf nachprüfen kann.
+    const reihe = (werte: number[]): PostBild => ({
+      art: "rangliste",
+      aussage: "",
+      gemessen: "",
+      quelle: "",
+      stil: "hell",
+      serien: [],
+      reihe: werte.map((w, i) => ({ label: `L${i}`, wert: w, einheit: "" })),
+    });
+    expect(reihenEnge(reihe([100, 50, 10]))).toBeCloseTo(0.1, 6);
+    expect(reihenEnge(reihe([100, 100]))).toBeCloseTo(1, 6);
+    // Eine Reihe mit einem einzigen Wert hat keine Spreizung — sie gilt als
+    // maximal eng, damit sie nicht versehentlich durchfällt.
+    expect(reihenEnge(reihe([42]))).toBe(1);
+  });
+
+  it("die Reihe ist keine zweite Liste neben den Serien", () => {
+    // Der ganze Zweck der Bindung: Die Serien sind die Werte, die der Text
+    // nennt, die Reihe ist die Menge, aus der sie stammen. Laufen die beiden
+    // auseinander, behauptet das Bild einen anderen Wert als der Beitrag —
+    // dieselbe Fehlerklasse, gegen die dieses Modul überhaupt gebaut ist.
+    for (const p of posts) {
+      const reihe = p.bild?.reihe;
+      if (!reihe) continue;
+      for (const s of p.bild!.serien) {
+        const treffer = reihe.find((r) => r.label === s.label);
+        expect(treffer, `${p.id}: „${s.label}" steht nicht in der Reihe`).toBeTruthy();
+        expect(treffer!.wert, `${p.id}: „${s.label}" mit zwei Werten`).toBeCloseTo(s.wert, 6);
+      }
+      // Die Reihe ist geordnet — sonst ist sie keine Rangliste.
+      const werte = reihe.map((r) => Math.abs(r.wert));
+      const sortiert = [...werte].sort((a, b) => b - a);
+      expect(werte, `${p.id}: Reihe nicht sortiert`).toEqual(sortiert);
+    }
+  });
+
+  it("in KEINEM Bild tragen zwei verschiedene Werte dieselbe Zahl", () => {
+    // Die allgemeine Fassung der Regel, und sie fehlte: Ich hatte sie zweimal
+    // gebaut — einmal für die Rangliste, einmal (unvollständig) für die
+    // Aufteilung — und für die übrigen Formen gar nicht. Eine parallele Sitzung
+    // hat den Fall im Balken des Aufteilungs-Beitrags gemessen: Gewerbedach
+    // 35,04 und Freifläche 35,25 standen als zweimal „35".
+    //
+    // Zwei Balken verschiedener Länge mit derselben Zahl daneben lesen sich als
+    // Fehler in der Grafik, und im Zweifel glaubt man dem Balken. Ausdrücklich
+    // nur bei VERSCHIEDENEN Werten: Zwei Länder, die wirklich gleich stehen,
+    // dürfen dieselbe Zahl tragen — das ist dann die Auskunft, kein Verlust.
+    for (const p of posts) {
+      const bild = p.bild;
+      if (!bild || bild.serien.length < 2) continue;
+      const stellen = bild.serien[0].stellen ?? 0;
+      const werte = bild.serien.map((s) => s.wert);
+      expect(
+        kollidiert(werte, stellen),
+        `${p.id}: zwei Serien zeigen dieselbe Zahl für verschiedene Werte ` +
+          `(${werte.map((w) => w.toFixed(stellen)).join(", ")})`,
+      ).toBe(false);
+      expect(
+        verschwindet(werte, stellen),
+        `${p.id}: ein Wert steht als Null da, obwohl er keine ist`,
+      ).toBe(false);
+    }
+  });
+
+  it("eine Rangliste zeigt keine Null, die keine ist, und keine zwei gleichen Zahlen", () => {
+    // Beide Fälle standen im gerenderten Bild: Berlin und Hamburg als „0 %"
+    // (tatsächlich 0,4) neben einem sichtbaren Balken, und Schleswig-Holstein
+    // (50,2) neben Sachsen (50,0) mit derselben Zahl bei verschieden langen
+    // Balken. In einer Rangliste ist die Reihenfolge die Aussage.
+    for (const p of posts) {
+      const bild = p.bild;
+      if (!bild?.reihe || !moeglicheFormen(bild).includes("rangliste")) continue;
+      const stellen = ranglistenStellen(bild);
+      const gezeigt = bild.reihe.map((s) => Math.abs(s.wert).toFixed(stellen));
+      bild.reihe.forEach((s, i) => {
+        if (Math.abs(s.wert) > 0) {
+          expect(Number(gezeigt[i]), `${p.id}: ${s.label} steht als Null da`).toBeGreaterThan(0);
+        }
+        if (i > 0 && Math.abs(s.wert) !== Math.abs(bild.reihe![i - 1].wert)) {
+          expect(gezeigt[i], `${p.id}: ${s.label} nicht von seinem Nachbarn zu unterscheiden`).not.toBe(
+            gezeigt[i - 1],
+          );
+        }
+      });
+    }
+  });
+
+  it("eine Aufteilung schöpft ihr Ganzes aus — und ihre Teile gehen auf", () => {
+    for (const p of posts) {
+      const bild = p.bild;
+      if (!bild) continue;
+      const soll = bild.serien.length >= 3 && bild.ganzes != null;
+      const angeboten = moeglicheFormen(bild).includes("aufteilung");
+      if (!soll) {
+        expect(angeboten, `${p.id}: Aufteilung ohne Ganzes oder unter drei Teilen`).toBe(false);
+        continue;
+      }
+      // Bleibt ein Rest, braucht er einen Namen — eine namenlose Lücke im Bild
+      // ist eine Behauptung über etwas, das niemand benennen kann.
+      const summe = bild.serien.reduce((s, x) => s + Math.abs(x.wert), 0);
+      if (summe < bild.ganzes! * 0.999) {
+        expect(bild.restLabel, `${p.id}: Rest ohne Namen`).toBeTruthy();
+      }
+      if (!angeboten) continue;
+      // Die GEZEIGTEN Zahlen müssen sich zum Ganzen addieren. Als ganze Prozente
+      // standen dort 35 + 35 + 28 + 1 = 99 neben einem vollen Balken.
+      const stellen = aufteilungsStellen(bild);
+      const teile = [...bild.serien.map((s) => Math.abs(s.wert)), restVon(bild)].filter((w) => w > 0);
+      const gezeigt = teile.reduce((s, w) => s + Number(w.toFixed(stellen)), 0);
+      expect(gezeigt, `${p.id}: gezeigte Teile ergeben nicht das Ganze`).toBeCloseTo(bild.ganzes!, 1);
+    }
+  });
+
+  it("eine Lücke im Ganzen braucht einen Namen", () => {
+    // Kein Beitrag hat heute eine Lücke — die vier Solarsegmente ergeben die
+    // Gesamtleistung exakt. Die Bedingung wird trotzdem geprüft, und zwar an
+    // konstruierten Daten: Ein Sicherheitsnetz, das nie ausgelöst wird, ist von
+    // einem kaputten nicht zu unterscheiden.
+    const mitLuecke = (restLabel?: string): PostBild => ({
+      art: "aufteilung",
+      aussage: "",
+      gemessen: "",
+      quelle: "",
+      stil: "hell",
+      ganzes: 100,
+      restLabel,
+      serien: [
+        { label: "A", wert: 50, einheit: "%", stellen: 0 },
+        { label: "B", wert: 25, einheit: "%", stellen: 0 },
+        { label: "C", wert: 15, einheit: "%", stellen: 0 },
+      ],
+    });
+    expect(moeglicheFormen(mitLuecke(undefined)), "namenlose Lücke").not.toContain("aufteilung");
+    expect(moeglicheFormen(mitLuecke("Sonstiges")), "benannte Lücke").toContain("aufteilung");
+    // Und der Rest wird richtig gerechnet, nicht nur als vorhanden erkannt.
+    expect(restVon(mitLuecke("Sonstiges"))).toBeCloseTo(10, 6);
+  });
+
+  it("zwei überlappende Anteile sind keine Aufteilung", () => {
+    // Der Fall, für den die Bedingung da ist: Bei den Förderlücken sind es zwei
+    // Anteile derselben Programmmenge — ein Programm kann beides haben. Gestapelt
+    // behauptete das Bild, sie ergänzten sich zu einem Ganzen.
+    const luecken = posts.find((p) => p.id === "g12-foerder-luecken")!.bild!;
+    expect(luecken.ganzes, "hat ein Ganzes").toBe(100);
+    expect(moeglicheFormen(luecken), "aber schöpft es nicht aus").not.toContain("aufteilung");
+  });
+
+  it("ein Verlauf braucht eine Achse und je Serie einen Wert dazu", () => {
+    for (const p of posts) {
+      const bild = p.bild;
+      if (!bild) continue;
+      const hatAchse = (bild.achse?.length ?? 0) >= 3;
+      const vollstaendig =
+        hatAchse && bild.serien.every((s) => s.verlauf?.length === bild.achse!.length);
+      expect(moeglicheFormen(bild).includes("verlauf"), `${p.id}: Verlauf`).toBe(vollstaendig);
+      if (!hatAchse) continue;
+      // Der letzte Punkt der Kurve MUSS der Wert daneben sein — sonst zeigt das
+      // Bild an seinem Ende eine andere Zahl, als die Beschriftung nennt.
+      for (const s of bild.serien) {
+        expect(s.verlauf!.at(-1), `${p.id}: ${s.label} endet woanders als sein Wert`).toBe(s.wert);
+      }
+      // Eine Zeitachse läuft vorwärts. Rückwärts gezeichnet sähe jede
+      // Entwicklung wie ihr Gegenteil aus.
+      const achse = bild.achse!;
+      expect(achse, `${p.id}: Achse nicht aufsteigend`).toEqual([...achse].sort((a, b) => a - b));
+    }
+  });
+
+  it("eine Jahreszahl trägt keinen Tausenderpunkt", () => {
+    // Stand im Untertitel des Bildes als „2.024" und im Beitragstext als „Stand
+    // 2.024" — durch die Zahlenformatierung geschickt, die für Mengen gedacht
+    // ist. Gefunden beim Ansehen des gerenderten Bildes, von keinem Test.
+    //
+    // Das Muster trifft nur den Jahresbereich (1.9xx / 2.0xx) und ausdrücklich
+    // NICHT die echten Tausender in denselben Texten: „100.000 Einwohnern",
+    // „1.000 Einwohner", „20.000 Gemeinden". Die erste Fassung tat das und war
+    // in beide Richtungen wertlos — sie schlug bei richtigen Angaben an.
+    for (const p of posts) {
+      const text = `${p.text} ${p.bild?.aussage ?? ""} ${p.bild?.gemessen ?? ""}`;
+      expect(text, `${p.id}: Jahreszahl mit Tausenderpunkt`).not.toMatch(/\b(1\.9\d{2}|2\.0\d{2})\b/);
+    }
+  });
+
   it("eine gespeicherte Form gilt nur, solange sie trägt", () => {
     // Ändern sich die Daten — eine dritte Serie, ein weggefallenes Ganzes —,
     // fällt die Story auf ihre eingebaute Form zurück, statt eine Aussage zu
@@ -254,6 +510,61 @@ describe("Bildform und Einheit", () => {
       for (const s of p.bild!.serien) {
         expect(Math.abs(s.wert), `${p.id}: ${s.label} liegt über dem Ganzen`).toBeLessThanOrEqual(ganzes);
       }
+    }
+  });
+
+  it("ein Superlativ über die Länder wird gerechnet, nicht behauptet", () => {
+    // Der Speicher-Beitrag sagte „der größte Unterschied zwischen den Ländern,
+    // den wir im Bestand finden" — nachgemessen ist es der KLEINSTE: 1,7-fach,
+    // gegen 188-fach beim Freiflächenanteil. Niemand hatte es gerechnet, und
+    // niemandem wäre es aufgefallen.
+    const spanne = (w: number[]) => {
+      const g = w.filter((x) => x > 0);
+      return g.length > 1 ? Math.max(...g) / Math.min(...g) : 0;
+    };
+    const speicher = spanne(basis.laender.map((l) => l.speicherJe100));
+    const frei = spanne(basis.laender.map((l) => l.freiflaecheAnteil));
+    const post = posts.find((p) => p.id === "g16-speicher-je-land")!;
+    // In den Testdaten liegt der Freiflächenanteil weiter auseinander — der
+    // Beitrag muss das sagen und darf sich nicht zum Spitzenreiter erklären.
+    expect(frei).toBeGreaterThan(speicher);
+    expect(post.text, "behauptet den größten Unterschied").not.toMatch(/größte[rn]? Unterschied/i);
+    expect(post.text, "nennt die weiter gespreizte Reihe").toMatch(/Freiflächen/);
+
+    // Und die Gegenrichtung: Wäre der Speicher wirklich die weiteste Spanne,
+    // müsste der Satz das sagen dürfen. Sonst hätte ich nur ein Wort verboten
+    // statt die Aussage an die Zahlen zu binden.
+    const zugespitzt: SocialKennzahlen = {
+      ...basis,
+      laender: basis.laender.map((l, i) => ({
+        ...l,
+        speicherJe100: i === 0 ? 1 : 500,
+        freiflaecheAnteil: 10,
+        wpProKopf: 10,
+        balkonJeTausend: 10,
+        wachstumFuenfJahre: 2,
+      })),
+    };
+    const gedreht = baueAllePosts(zugespitzt).find((p) => p.id === "g16-speicher-je-land")!;
+    expect(gedreht.text, "weiteste Spanne wird auch so benannt").toMatch(/weiteste Spanne/);
+  });
+
+  it("ein Anteil trägt sein Ganzes am Bild", () => {
+    // Der Fund, aus dem der Normierungs-Fix am Balken kam: Die drei
+    // Solarsegmente sind Anteile, hatten aber kein `ganzes` — also normierte der
+    // Balken am größten der drei Werte. Das private Dach mit 28,5 Prozent bekam
+    // dadurch vier Fünftel der Länge, weil die Freifläche mit 35,3 die volle
+    // bekam, und die Überschrift daneben sagte „nur gut ein Viertel".
+    //
+    // Von außen unsichtbar: Die Karte sah normal aus, nur die Länge log. Eine
+    // Prozentangabe ohne Bezugsgröße ist deshalb ein Befund, kein Sonderfall —
+    // wer je einen braucht, trägt ihn hier mit Grund ein.
+    const OHNE_GANZES_MIT_GRUND: Record<string, string> = {};
+    for (const p of posts) {
+      const bild = p.bild;
+      if (!bild?.serien.some((s) => s.einheit === "%")) continue;
+      if (OHNE_GANZES_MIT_GRUND[p.id]) continue;
+      expect(bild.ganzes, `${p.id}: Prozentwerte ohne Bezugsgröße`).toBeGreaterThan(0);
     }
   });
 
@@ -323,6 +634,76 @@ describe("Das Formen-Register", () => {
     // bliebe auf ihrer eingebauten Form stehen, ohne dass etwas fehlschlägt.
     const arten = new Set(posts.map((p) => p.bild?.art).filter(Boolean));
     for (const a of arten) expect(BILDFORMEN.some((f) => f.art === a), String(a)).toBe(true);
+  });
+});
+
+describe("Gefüllte Umrisse", () => {
+  it("kennen die Grenzen jeder Landform", () => {
+    // Ohne sie füllte die Form von der Unterkante ihres QUADRATS aus. Die
+    // Umrisse sind aber seitenverhältnistreu eingepasst: Mecklenburg-Vorpommern
+    // sitzt zwischen 15 und 85, Sachsen zwischen 12 und 88. Eine Füllung von 8
+    // Prozent lag damit vollständig unterhalb der Landform — im Bild war nichts
+    // zu sehen, während die Zahl daneben einen Wert behauptete.
+    for (const [name, pfad] of Object.entries(BUNDESLAND_UMRISS)) {
+      const b = umrissBox(pfad);
+      expect(b.breite, `${name}: keine Breite`).toBeGreaterThan(0);
+      expect(b.hoehe, `${name}: keine Höhe`).toBeGreaterThan(0);
+      // Die Form liegt im Quadrat, sonst stimmt der Ausschnitt nicht.
+      expect(b.x0).toBeGreaterThanOrEqual(0);
+      expect(b.y0).toBeGreaterThanOrEqual(0);
+      expect(b.x0 + b.breite).toBeLessThanOrEqual(100);
+      expect(b.y0 + b.hoehe).toBeLessThanOrEqual(100);
+      // Eine der beiden Achsen füllt das Quadrat aus — so passt der Erzeuger
+      // jedes Land ein. Wäre es keine, säße die Form irgendwo darin und die
+      // Vereinfachung hätte sie verkleinert.
+      expect(
+        Math.max(b.breite, b.hoehe),
+        `${name}: füllt keine Achse aus (${b.breite}×${b.hoehe})`,
+      ).toBeCloseTo(100, 0);
+    }
+  });
+
+  it("misst den flachen Fall so, dass ein kleiner Anteil sichtbar bleibt", () => {
+    // Der konkrete Fall, an dem es aufgefallen ist. Gerechnet gegen das Quadrat
+    // läge die Füllung bei 8 Prozent zwischen 92 und 100 — die Form endet bei
+    // 85, es wäre nichts zu sehen. Gegen die Form gerechnet liegt sie innerhalb.
+    const b = umrissBox(BUNDESLAND_UMRISS["Mecklenburg-Vorpommern"]);
+    expect(b.y0 + b.hoehe, "Form endet über dem Quadratboden").toBeLessThan(100);
+    const anteil = 0.081;
+    const oberkanteDerFuellung = b.y0 + b.hoehe * (1 - anteil);
+    expect(oberkanteDerFuellung, "Füllung beginnt innerhalb der Form").toBeLessThan(b.y0 + b.hoehe);
+    expect(oberkanteDerFuellung, "und nicht darunter").toBeGreaterThan(b.y0);
+  });
+});
+
+describe("Die Kennung einer Variante", () => {
+  // Sie ist der Name, unter dem über eine Variante geredet wird — „arbeite an
+  // ringpaar-dunkel". Für jede Kombination, nicht nur für die abgenommenen:
+  // Sonst hat gerade das, woran gearbeitet wird, keinen Namen.
+  it("gibt es für jede Kombination und jede nur einmal", () => {
+    const alle = BILDFORMEN.flatMap((f) => KARTEN_STILE.map((s) => variantenKennung(f.art, s)));
+    expect(alle.length).toBe(BILDFORMEN.length * KARTEN_STILE.length);
+    expect(new Set(alle).size, `doppelte Kennung: ${alle.join(", ")}`).toBe(alle.length);
+    for (const k of alle) expect(k, k).toMatch(/^[a-z]+(-[a-z]+)*$/);
+  });
+
+  it("führt zurück auf ihre Variante — und Unbekanntes auf nichts", () => {
+    for (const f of BILDFORMEN) {
+      for (const s of KARTEN_STILE) {
+        expect(variante(variantenKennung(f.art, s))).toEqual({ art: f.art, stil: s });
+      }
+    }
+    expect(variante("gibtsnicht-hell")).toBeUndefined();
+    expect(variante("rangliste-neonpink")).toBeUndefined();
+  });
+
+  it("hängt NICHT am Anzeigenamen", () => {
+    // Würde die Kennung aus dem Namen abgeleitet, wanderte sie bei jeder
+    // Umbenennung mit — und ein Verweis von gestern zeigte ins Leere oder,
+    // schlimmer, auf etwas anderes. Zwei Formen, deren technische Bezeichnung
+    // nicht ihr Anzeigename ist, halten das fest.
+    expect(variantenKennung("vergleich", "hell")).toBe("balken-hell");
+    expect(variantenKennung("donut", "highlight")).toBe("ringpaar-highlight");
   });
 });
 

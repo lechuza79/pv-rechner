@@ -116,7 +116,70 @@ type Daten = {
   alle: Platzierung[];
 };
 
-export default function GemeindePlatzierungen({ regionId }: { regionId: string }) {
+/**
+ * Der reservierte Platz, solange die Rangdaten unterwegs sind.
+ *
+ * Er ahmt die Kachel NACH statt sie zu ersetzen: dieselbe Fläche, dieselbe
+ * Kontur, dieselben drei Zeilenhöhen. Ein Platzhalter, der kleiner ist als sein
+ * Inhalt, verschiebt beim Eintreffen genauso viel wie gar keiner — dann kann man
+ * ihn auch weglassen.
+ *
+ * Die Zeilen pulsieren im selben Takt wie die Karte (dieselbe Bewegungsregel des
+ * Projekts); bei „reduzierte Bewegung" fällt die Animation weg, die reservierte
+ * Fläche bleibt.
+ */
+function PlatzierungsSkelett() {
+  const zeile = (breite: string, hoehe: number) => (
+    <div
+      style={{
+        width: breite,
+        height: hoehe,
+        borderRadius: 6,
+        background: v("--color-border-accent"),
+        animation: "sc-map-pulse 1.4s ease-in-out infinite",
+      }}
+    />
+  );
+  // DIE FLÄCHE MUSS DIE DER FERTIGEN KACHEL SEIN, sonst springt die Seite
+  // trotzdem — nur ein bisschen weniger. Deshalb dieselben Stile wie die Kachel
+  // (Rahmen, Innenabstand, Abstände) und darunter die drei Zeilen der
+  // Nebenplatzierungen, die die echte Kachel ebenfalls trägt.
+  return (
+    <section style={S.wrap} aria-hidden>
+      <div style={{ ...S.badge, cursor: "default", gap: 4 }}>
+        {zeile("46%", 26)}
+        {zeile("82%", 15)}
+        {zeile("70%", 13)}
+        {zeile("58%", 13)}
+        {zeile("40%", 13)}
+      </div>
+      <ul style={S.weitere}>
+        {[0, 1, 2].map((i) => (
+          <li key={i} style={{ ...S.weitereZeile, cursor: "default" }}>
+            {zeile("72%", 13)}
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+export default function GemeindePlatzierungen({
+  regionId,
+  erwartet = false,
+}: {
+  regionId: string;
+  /**
+   * Weiß die Seite schon, dass hier eine Auszeichnung kommt?
+   *
+   * Sie fragt das beim Aufbau (`hatAuszeichnung`) — eine Ja/Nein-Frage, nicht
+   * die Rangdaten selbst. Nur dann wird der Platz reserviert. Ohne das
+   * Kennzeichen gäbe es nur zwei schlechte Antworten: nie ein Platzhalter (der
+   * Inhalt springt, sobald die Daten eintreffen) oder immer einer (er springt
+   * bei den rund zwei Dritteln der Orte ohne Auszeichnung, nur andersherum).
+   */
+  erwartet?: boolean;
+}) {
   const [daten, setDaten] = useState<Daten | null>(null);
   const [fehler, setFehler] = useState(false);
   /** Welche Rangliste im Dialog steht — Index in `alle`, null = zu. */
@@ -133,11 +196,23 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
     };
   }, [regionId]);
 
-  // Ohne Platzierung erscheint hier gar nichts — ein leerer Kasten ist
-  // schlechter als kein Kasten. Auch während des Ladens: Ob es überhaupt eine
-  // Auszeichnung gibt, weiß man erst mit den Daten, und ein Platzhalter, der in
-  // der Mehrzahl der Fälle wieder verschwindet, lässt die Seite springen.
-  if (fehler || !daten?.beste) return null;
+  // WÄHREND DES LADENS STEHT EIN PLATZHALTER — seit 05.09.2026, und das ist die
+  // Umkehr der bisherigen Entscheidung.
+  //
+  // Hier stand: kein Platzhalter, weil ein Kasten, der in der Mehrzahl der Fälle
+  // wieder verschwindet, die Seite springen lässt. Das galt für ALLE 11.000
+  // Gemeinden — die Auszeichnung trägt nur bei rund einem Drittel der Orte.
+  //
+  // Das galt und gilt — DESHALB entscheidet nicht diese Komponente, sondern die
+  // Seite: Sie fragt beim Aufbau, ob dieser Ort überhaupt eine Auszeichnung hat
+  // (`erwartet`), und nur dann wird Platz reserviert. Eine kurz erwogene
+  // Abkürzung — „öffentlich erreichbar sind ohnehin nur angeschriebene Orte,
+  // und die haben alle einen Aufhänger" — war falsch: Die Freigabe steuert die
+  // INDEXIERUNG, nicht die Erreichbarkeit; über den Atlas kommt man auf jede
+  // der 11.000 Ortsseiten.
+  if (fehler) return null;
+  if (!daten) return erwartet ? <PlatzierungsSkelett /> : null;
+  if (!daten.beste) return null;
   const b = daten.beste;
 
   return (

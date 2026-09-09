@@ -21,7 +21,10 @@ const basis = JSON.parse(JSON.stringify({
   stichtagJahr: 2025,
   stadtLand: { stadtAb: 100000, landUnter: 20000, stadtAnzahl: 80, landAnzahl: 10037, stadtJeTausend: 9.9, landJeTausend: 22.8 },
   wachstum: { balkonJetzt: 1453026, balkonVorJahr: 1202467, solarKwpJetzt: 127100000, solarKwpVorJahr: 117600000 },
-  segmente: { privatDachKwp: 36200000, gewerbeDachKwp: 44500000, freiflaecheKwp: 44900000, solarGesamtKwp: 127100000 },
+  // Vier Segmente, und sie ergeben zusammen die Gesamtleistung. Fehlt eines,
+  // rechnet der Aufteilungs-Beitrag mit einer fehlenden Zahl und schlägt als
+  // „kaputte Zahl" durch — genau das prüft dieser Wächter eine Zeile weiter.
+  segmente: { privatDachKwp: 36200000, gewerbeDachKwp: 44500000, freiflaecheKwp: 44900000, steckersolarKwp: 1500000, solarGesamtKwp: 127100000 },
   ueberEinwohner: { mindestEinwohner: 500, betrachtet: 10000, darueber: 6848 },
   foerderung: { programme: 108, gemeinden: 97, nurBalkon: 12, ohneHoechstbetrag: 61, mitAntragVorher: 74 },
   kohorte: { privatAnlagen: 3120000, mittlereKwp: 9.4, speicherEinheiten: 1180000, speicherJe100: 37.8 },
@@ -172,39 +175,42 @@ describe("Keine Sperre schlägt an gesunder Arbeit an", () => {
 
 describe("Die echten Beiträge", () => {
   /**
-   * Was heute auf der Hauptlinie wirklich meldet.
+   * Was heute wirklich meldet — und das ist NICHTS.
    *
-   * Diese Liste ist KEIN Freibrief, sondern ein Protokoll: Jeder Eintrag ist ein
-   * echter Defekt, der zum Zeitpunkt dieses Tests im Bestand steht. Zwei davon
-   * sind in einem noch nicht eingemergten Zweig bereits behoben; die
-   * Lizenzangabe ebenso. Wird der Zweig eingemergt, wird dieser Test ROT — und
-   * das ist die Absicht: Wer mergt, streicht die behobenen Zeilen hier und sieht
-   * dabei, was er behoben hat.
+   * Diese Liste ist kein Freibrief, sondern ein Protokoll: Jeder Eintrag ist ein
+   * echter Defekt im Bestand. Sie war beim Anlegen dieses Tests dreizehn Zeilen
+   * lang und ist beim Einmergen des Bildformen-Zweigs auf null geschrumpft —
+   * genau der Vorgang, für den sie gebaut wurde. Behoben wurden:
+   *
+   * — **Die fehlende Lizenz an jedem Beitrag aus dem Anlagenregister** (zwölf
+   *   Stück). Die Quellenzeile war getippt statt aus dem Quellenregister gebaut,
+   *   und die zweite getippte Fassung (Ember) wich ANDERS ab. Sie kommen jetzt
+   *   beide aus derselben Quelle.
+   * — **Prozentwerte ohne Bezugsgröße** beim Aufteilungs-Beitrag: Der Balken
+   *   normierte am größten der drei Werte, während die Überschrift „nur gut ein
+   *   Viertel" sagte.
+   * — **Die Jahreszahl mit Tausenderpunkt** beim Auslands-Beitrag („Stand
+   *   2.024"), im Text UND im Bild.
    *
    * Eine Liste, die stillschweigend schrumpfen darf, verrottet. Eine, die beim
-   * Schrumpfen rot wird, wird gepflegt.
+   * Schrumpfen rot wird, wird gepflegt — und eine leere Liste ist die schärfste
+   * Fassung davon: Ab jetzt ist JEDER Befund neu.
    */
-  const BEKANNTE_DEFEKTE: Record<string, string[]> = {
-    // Kein Lizenz-Befund: Dieser Beitrag zieht seine Quellenzeile aus dem
-    // Ember-Zweig, und der nannte die Lizenz — anders als der Zweig für das
-    // Anlagenregister. Genau diese Ungleichheit war der Befund: Zwei
-    // handgetippte Fassungen derselben Angabe wichen VERSCHIEDEN ab, und
-    // welche stimmte, hing daran, wer die Zeile gerade schrieb.
-    "g8-ausland-pro-kopf": ["jahr-trennzeichen"],
-    "g7-segmente-anteile": ["prozent-ohne-ganzes", "quelle-lizenz"],
-    "g13-stadt-land-balkon": ["quelle-lizenz"],
-    "g13-wachstum-balkon-solar": ["quelle-lizenz"],
-    "g14-freiflaeche-ost-west": ["quelle-lizenz"],
-    "g3-aufholjagd-fuenf-jahre": ["quelle-lizenz"],
-    "g3-mehr-kwp-als-einwohner": ["quelle-lizenz"],
-    "g16-kohorte-typische-anlage": ["quelle-lizenz"],
-    "g10-anomalie-balkon-ort": ["quelle-lizenz"],
-    "g6-degression-stichtag": ["quelle-lizenz"],
-    "g12-foerder-luecken": ["quelle-lizenz"],
-    "g5-nur-balkon-foerderung": ["quelle-lizenz"],
-    "g14-privatdach-anteil": ["quelle-lizenz"],
-    "g16-speicher-je-land": ["quelle-lizenz"],
-  };
+  // DIE ZWÖLF LIZENZ-BEFUNDE SIND WEG, und zwar nicht durch eine gelockerte
+  // Regel: Die Quellenzeile wird nicht mehr getippt, sondern aus dem
+  // Quellenregister gebaut — Name und Lizenz kommen von dort, und ohne Lizenz
+  // kann sie gar nicht erst entstehen. Der Anlass war der Einwand des
+  // Betreibers: Eine Angabe, die ohnehin gerechnet wird, gehört nicht als Sperre
+  // gemeldet, sondern richtig erzeugt. Sonst steht dieselbe Korrektur bei jedem
+  // neuen Beitrag wieder an, und irgendwann schaltet jemand die Sperre ab, statt
+  // die Zeile zu reparieren. Die Sperre BLEIBT trotzdem — sie fängt weiterhin,
+  // wer eine Quellenzeile von Hand tippt.
+  //
+  // Die beiden übrigen sind mit den neuen Bildformen gefallen: Die Aufteilung
+  // trägt jetzt ihr Ganzes (vorher normierte sie am größten der drei Werte,
+  // während die Überschrift „nur gut ein Viertel" sagte), und das Jahr wird als
+  // blanke Ziffernfolge gesetzt statt über die Zahlenformatierung („2.024").
+  const BEKANNTE_DEFEKTE: Record<string, string[]> = {};
 
   it("meldet genau die bekannten Defekte, nicht mehr und nicht weniger", () => {
     const posts = baueAllePosts(basis, {}, "2026-08-28");

@@ -251,7 +251,7 @@ export function ferienJeLand(iso: string): { land: string; name: string; von: st
 }
 
 /** Amtlicher Länderschlüssel → Name. Steht hier, weil ihn sonst niemand braucht. */
-const LAND_NAME: Record<string, string> = {
+export const LAND_NAME: Record<string, string> = {
   "01": "Schleswig-Holstein",
   "02": "Hamburg",
   "03": "Niedersachsen",

@@ -20,6 +20,7 @@
  * Fehlschlag — dann bleibt Arbeit ungetan, die niemandem genützt hätte.
  */
 import fs from "node:fs";
+import { heuteInBerlin } from "../lib/zeit";
 import path from "node:path";
 import { RELEASE_PLAN, naechsterSchub, type Schub } from "../lib/release-plan";
 import { ATLAS_CITIES } from "../lib/atlas-cities";
@@ -155,7 +156,7 @@ async function main(schub: Schub) {
     );
   }
 
-  const heute = new Date().toISOString().slice(0, 10);
+  const heute = heuteInBerlin();
   const belegPfad = `docs/seo/schub-${schub.id}-${heute}.md`;
   const bericht = [
     `# Vorlauf-Messung „${schub.id}"`,

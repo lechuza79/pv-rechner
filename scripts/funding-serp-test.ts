@@ -26,6 +26,7 @@
  */
 
 import { resolve } from "node:path";
+import { heuteInBerlin } from "../lib/zeit";
 import { readFileSync, existsSync, writeFileSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
 import { bewerteLink, istEndergebnis } from "../lib/funding-url-suche";
@@ -443,7 +444,7 @@ async function main(): Promise<void> {
   console.log(`\nWas der zweite Begriff zusätzlich brachte: ${nurBkw} Gemeinden für ${(zeilen.length * PREIS_JE_ABRUF).toFixed(2)} $.`);
 
   const bericht = {
-    gelaufenAm: new Date().toISOString().slice(0, 10),
+    gelaufenAm: heuteInBerlin(),
     stichprobe: zeilen.length,
     gesamtOhneFund,
     kostenUsd: Number(ausgegeben.toFixed(3)),

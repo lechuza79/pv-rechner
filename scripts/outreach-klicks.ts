@@ -29,6 +29,7 @@
  */
 
 import { resolve, dirname } from "node:path";
+import { heuteInBerlin } from "../lib/zeit";
 import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync } from "node:fs";
 import { aggregat, herkunftJeSeite, ereignisseJeName, ANALYTICS_SEIT } from "../lib/web-analytics";
@@ -94,7 +95,10 @@ async function main() {
   // schneidet den heutigen Tag also vollständig ab. Gemessen am 02.09.2026 —
   // mit „bis heute" fehlte ein Ereignis, das es an diesem Tag gab, und das sah
   // aus wie „gab es nicht" statt wie „nicht gefragt".
-  const morgen = new Date(Date.now() + 86_400_000).toISOString().slice(0, 10);
+  // Deutscher Kalendertag: Zwischen 00:00 und 02:00 deutscher Zeit läge „morgen"
+  // in der Weltzeit auf HEUTE — also genau auf der Grenze, die der Absatz
+  // darüber vermeiden soll (siehe lib/zeit.ts).
+  const morgen = heuteInBerlin(new Date(Date.now() + 86_400_000));
   const bis = args.find((a) => a.startsWith("--bis="))?.split("=")[1] ?? morgen;
   const schreiben = args.includes("--schreiben");
 
@@ -270,7 +274,7 @@ async function main() {
       let n = 0;
       for (const b of belege) {
         const notiz = veroeffentlichungsNotiz({
-          datum: b.erstTag || new Date().toISOString().slice(0, 10),
+          datum: b.erstTag || heuteInBerlin(),
           kanal: b.kanaele,
         });
         const zeilenBisher = (b.notes ?? "").split("\n");

@@ -14,7 +14,9 @@ import RelatedLinks from "../../../../components/RelatedLinks";
 import ResultSection from "../../../../components/ResultSection";
 import SelectField from "../../../../components/SelectField";
 import { SortPfeil } from "../../../../components/SortPfeil";
+import StorySlider from "../../../../components/StorySlider";
 import Switch from "../../../../components/Switch";
+import { Auswahl } from "../../../../components/Auswahl";
 import Toast from "../../../../components/Toast";
 import TriToggle from "../../../../components/TriToggle";
 import Logo from "../../../../components/Logo";
@@ -615,7 +617,49 @@ function SzenarienBeispiel() {
   );
 }
 
+/**
+ * Das Multitool in seinen beiden Bauformen.
+ *
+ * Nebeneinander, weil erst der Vergleich zeigt, wovon die Pfeile abhängen: Vier
+ * Einträge steppt man durch, zweihundert nicht — dort wäre der Pfeil ein
+ * Versprechen, das niemand einlöst, und stattdessen sucht man.
+ */
+function MultitoolBeispiel() {
+  const [stand, setStand] = useState("vorgemerkt");
+  const [ort, setOrt] = useState("Fürfeld");
+  const orte = [
+    "Bad Freienwalde (Oder)",
+    "Feilbingert",
+    "Frittlingen",
+    "Fürfeld",
+    "Kettig",
+    "Lichtenau (Kreis Paderborn)",
+    "Trendelburg",
+  ];
+  return (
+    <div style={{ display: "flex", gap: space.md, flexWrap: "wrap", alignItems: "center" }}>
+      <Auswahl
+        titel={stand}
+        eintraege={["offen", "vorgemerkt", "verworfen"].map((n) => ({ schluessel: n, name: n }))}
+        aktiv={stand}
+        onWahl={setStand}
+        breite={140}
+      />
+      <Auswahl
+        titel={ort}
+        eintraege={orte.map((n) => ({ schluessel: n, name: n, zahl: n.length }))}
+        aktiv={ort}
+        onWahl={setOrt}
+        breite={200}
+        pfeile={false}
+        suchPlatzhalter="Ort suchen"
+      />
+    </div>
+  );
+}
+
 const BEISPIELE: Record<string, Beispiel> = {
+  Auswahl: MultitoolBeispiel,
   OptionCard: OptionCardBeispiel,
   Switch: SchalterBeispiel,
   TriToggle: DreifachBeispiel,
@@ -686,6 +730,29 @@ const BEISPIELE: Record<string, Beispiel> = {
   Icons: IconsBeispiel,
   ChartActionBar: AktionsleisteBeispiel,
   CiteModal: ZitierBeispiel,
+  // SECHS Teaser, nicht drei: Unterhalb von vier dreht sich die Reihe bewusst
+  // nicht (siehe MIN_FUER_SCHLEIFE), und ein Beispiel, das die Schleife nicht
+  // zeigt, zeigt genau das nicht, wofür es den Baustein gibt.
+  StorySlider: () => (
+    <StorySlider ariaLabel="Beispiel-Reihe">
+      {["Erste", "Zweite", "Dritte", "Vierte", "Fünfte", "Sechste"].map((t) => (
+        <div
+          key={t}
+          style={{
+            flex: 1,
+            padding: 16,
+            border: `1px solid ${v("--color-border")}`,
+            borderRadius: v("--radius-md"),
+            background: v("--color-bg"),
+            fontSize: v("--font-size-body"),
+            fontWeight: 700,
+          }}
+        >
+          {t} Meldung
+        </div>
+      ))}
+    </StorySlider>
+  ),
   ChartExportBar: () => (
     <ChartExportBar
       onDownload={() => undefined}

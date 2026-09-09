@@ -66,7 +66,7 @@ export default function KfwFoerderpraxis({ daten, kreis, nackt }: KfwFoerderprax
   const inhalt = (
     <>
       <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.7, margin: `0 0 ${space.lg}px` }}>
-        Der Bund hat {d.jahr} für {d.zusagen.toLocaleString("de-DE")} Heizungen einen Zuschuss zugesagt und dafür{" "}
+        Der Bund hat {d.jahr} {d.zusagen.toLocaleString("de-DE")} Zuschüsse für Heizungen zugesagt und dafür{" "}
         {fmtEuro(d.volumenMio * 1_000_000)} bewilligt. Auf eine Zusage entfielen damit im Schnitt{" "}
         <strong>{fmtEuroVoll(d.schnittJeZusage)}</strong>.
       </p>

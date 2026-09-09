@@ -1,5 +1,8 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import {
+  FINGERPRINT_MIN_TOKEN,
   FINGERPRINT_VERSION,
   fingerprintOf,
   markiert,
@@ -18,8 +21,14 @@ import {
 // Aufruf. Ein zeichengenauer Abdruck meldete dort täglich eine Änderung — und
 // unter der 14-Tage-Regel wäre das Programm dauerhaft aus der Rechnung gefallen.
 
+// Umfang einer echten Amtsseite. Der Abdruck verweigert sich seit 09.09.2026
+// unterhalb von 50 Token, weil ein Abdruck über nichts stabil ist und für immer
+// „unverändert" meldete; die Testfälle müssen deshalb tragen wie eine echte
+// Seite. Gemessen an fünf Förderseiten: 365 bis 1.164 Token.
+const RAHMEN = Array.from({ length: 60 }, (_, i) => `Abschnitt${i} Verwaltung Klimaschutz Foerderung`).join(" ");
+
 const seite = (inhalt: string) =>
-  `<html><head><title>Förderung</title></head><body><main>${inhalt}</main></body></html>`;
+  `<html><head><title>Förderung</title></head><body><nav>${RAHMEN}</nav><main>${inhalt}</main></body></html>`;
 
 describe("Der Fingerabdruck erkennt, was zählt", () => {
   const basis = seite("<p>Photovoltaik: 250 Euro je kWp, maximal 5.000 €. Antrag bis 30. September.</p>");
@@ -179,5 +188,54 @@ describe("Vergleichbarkeit: unsere Änderung ist nicht ihre", () => {
 
   it("ohne vorherigen Abdruck gibt es nichts zu vergleichen", () => {
     expect(vergleichbar(null, markiert("live", "abc"))).toBe(false);
+  });
+});
+
+// ─── Eine Antwort ohne Inhalt ist kein Abdruck ──────────────────────────────
+//
+// GEMESSEN AM 09.09.2026: Ein leerer Abruf ergab einen völlig gültigen Abdruck
+// — den Hash über nichts. Der ist stabil, also meldete der Wächter für eine
+// Seite, die er gar nicht lesen konnte, jede Nacht „unverändert". Eine echte
+// Änderung hätte er nie gesehen, und aufgefallen wäre es niemandem: Es gab
+// keinen Fehler, keinen roten Lauf, nur eine Seite, die für immer bestätigt
+// dastand.
+//
+// Dieselbe Fehlerklasse wie ein gescheiterter Abruf, der grün meldet — nur
+// langlebiger, weil bei „unverändert" niemand hinsieht.
+describe("Zu wenig Inhalt ergibt keinen Abdruck", () => {
+  it("leere Antwort, nackte Hülle und Fehlerseite liefern null", () => {
+    expect(fingerprintOf("")).toBeNull();
+    expect(fingerprintOf("<html><head><title>x</title></head><body></body></html>")).toBeNull();
+    expect(fingerprintOf("<html><body><h1>403</h1><p>Zugriff verweigert</p></body></html>")).toBeNull();
+  });
+
+  it("eine echte Seite liefert einen Abdruck", () => {
+    expect(fingerprintOf(seite("<p>Balkonkraftwerk: 150 Euro pauschal je Haushalt.</p>"))).toBeTruthy();
+  });
+
+  it("die Schwelle liegt weit unter jeder echten Seite", () => {
+    // Am 09.09.2026 an fünf Förderseiten gemessen: die dünnste trug 365 Token.
+    // Eine Schwelle in dieser Größenordnung würde echte Seiten verwerfen — sie
+    // muss deutlich darunter bleiben und trotzdem über einer Fehlerseite (drei
+    // Token) liegen.
+    expect(FINGERPRINT_MIN_TOKEN).toBeGreaterThan(10);
+    expect(FINGERPRINT_MIN_TOKEN).toBeLessThan(200);
+  });
+
+  it("kein Aufrufer setzt den Abdruck ungeprüft ein", () => {
+    // Die Gegenrichtung, und die wichtigere: Der Rückgabetyp zwingt zwar zur
+    // Fallunterscheidung, aber ein `!` oder ein `?? ""` hebelt ihn aus. Beides
+    // wäre genau der alte Zustand mit neuem Anstrich.
+    const wege = [
+      "app/api/funding/fetch/route.ts",
+      "scripts/funding-watch.ts",
+      "scripts/funding-seiten-watch.ts",
+      "scripts/funding-coverage-watch.ts",
+    ];
+    for (const w of wege) {
+      const quelle = readFileSync(resolve(process.cwd(), w), "utf8");
+      expect(quelle, `${w}: fingerprintOf(...)! umgeht die Prüfung`).not.toMatch(/fingerprintOf\([^)]*\)\s*!/);
+      expect(quelle, `${w}: fingerprintOf(...) ?? "" umgeht die Prüfung`).not.toMatch(/fingerprintOf\([^)]*\)\s*\?\?/);
+    }
   });
 });

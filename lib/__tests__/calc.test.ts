@@ -168,17 +168,26 @@ describe("calcEigenverbrauch", () => {
     ertragKwp: 1000,
   };
 
-  it("matches the HTW Berlin standard configuration (capped by physical max)", () => {
-    // 3800 kWh consumption / 10000 kWh production = 38% physical maximum
-    // The formula would give ~40%, gets clamped to evMax = 38
-    expect(calcEigenverbrauch(standard)).toBe(38);
+  it("die Obergrenze ist das HTW-Autarkie-Kennfeld, nicht die Jahresbilanz", () => {
+    // Bis 05.09.2026 stand hier `toBe(38)`: 3.800 / 10.000 — die Jahresbilanz
+    // als Kappe, also 100 % Autarkie ins Geld gerechnet. Das HTW-Kennfeld sagt
+    // für diesen Haushalt rund 82 % Autarkie; über die Identität
+    // (selbst genutzt = Autarkie × Verbrauch = EV × Ertrag) sind das 31 % EV.
+    // Der Council fand 5.648 € Unterschied über 25 Jahre (Betreiber: HTW nehmen).
+    const autarkie = calcAutarkie({ kwp: 10, speicherKwh: 10, gesamtVerbrauch: 3800, ertragKwp: 1000 });
+    const erwartet = Math.round((autarkie / 100) * 3800 / 10000 * 100);
+    expect(calcEigenverbrauch(standard)).toBe(erwartet);
+    expect(calcEigenverbrauch(standard)).toBeLessThan(38);
+    expect(autarkie).toBeGreaterThan(70);
+    expect(autarkie).toBeLessThan(95);
   });
 
   it("reaches higher EV when system is small relative to consumption", () => {
     const smallSystem = { ...standard, kwp: 5 };
-    // 5 kWp, 10 kWh storage, 3800 kWh consumption → EV around 65%
+    // 5 kWp, 10 kWh, 3.800 kWh: Das Power-Law allein gäbe ~65 %; die HTW-Kappe
+    // (Autarkie ~72 %) lässt 55 % zu — deutlich über den 31 % der 10-kWp-Anlage.
     const ev = calcEigenverbrauch(smallSystem);
-    expect(ev).toBeGreaterThan(55);
+    expect(ev).toBeGreaterThan(calcEigenverbrauch(standard) + 15);
     expect(ev).toBeLessThan(75);
   });
 
@@ -251,8 +260,15 @@ describe("calcEigenverbrauch", () => {
     const sameLoadNoWp = { ...standard, wp: "nein", baseKwh: 7800, kwp: 10 };
 
     it("dämpft den Speicher-Boost bei WP-Haushalten (gleicher Gesamtverbrauch)", () => {
-      const withWp = calcEigenverbrauch({ ...wpCase, speicherKwh: 10 });
-      const noWp = calcEigenverbrauch({ ...sameLoadNoWp, speicherKwh: 10 });
+      // Seit der HTW-Kappe (05.09.2026) liegen beide Fälle mit großem Speicher auf
+      // derselben Obergrenze — die Dämpfung wirkt nur noch dort, wo das Power-Law
+      // selbst die Grenze ist (kleiner Speicher). Der Vergleich nimmt deshalb
+      // 2 kWh; die Invariante „mit WP nie höher" gilt über das ganze Raster.
+      const withWp = calcEigenverbrauch({ ...wpCase, speicherKwh: 2 });
+      const noWp = calcEigenverbrauch({ ...sameLoadNoWp, speicherKwh: 2 });
+      for (const kwp of [10, 15, 20]) for (const speicherKwh of [2, 5, 10]) {
+        expect(calcEigenverbrauch({ ...wpCase, kwp, speicherKwh })).toBeLessThanOrEqual(calcEigenverbrauch({ ...sameLoadNoWp, kwp, speicherKwh }));
+      }
       // wpAnteil = 4000/7800 ≈ 0,51 → Boost × 0,846 → EV klar niedriger.
       expect(withWp).toBeLessThan(noWp);
     });

@@ -70,7 +70,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     short:
       "Der Anteil deines Solarstroms, den du selbst nutzt, statt ihn ins Netz einzuspeisen — der wichtigste Hebel für die Rendite.",
     long:
-      "Der Eigenverbrauch ist der Anteil des selbst erzeugten Solarstroms, den du direkt im Haushalt nutzt, statt ihn ins öffentliche Netz einzuspeisen. Er ist der wichtigste Faktor für die Wirtschaftlichkeit: Jede selbst verbrauchte Kilowattstunde spart dir den vollen Strompreis (ca. 31 ct), während eingespeister Strom nur die deutlich niedrigere Einspeisevergütung (ca. 8 ct) bringt. Speicher, Wärmepumpe und E-Auto erhöhen den Eigenverbrauch, eine sehr große Anlage relativ zum Verbrauch senkt ihn.",
+      "Der Eigenverbrauch ist der Anteil des selbst erzeugten Solarstroms, den du direkt im Haushalt nutzt, statt ihn ins öffentliche Netz einzuspeisen. Er ist der wichtigste Faktor für die Wirtschaftlichkeit: Jede selbst verbrauchte Kilowattstunde spart dir den vollen Strompreis (ca. 31 ct), während eingespeister Strom nur die deutlich niedrigere Einspeisevergütung (ca. 8 ct) bringt. Speicher, Wärmepumpe und E-Auto erhöhen den Eigenverbrauch, eine sehr große Anlage relativ zum Verbrauch senkt ihn. Nach oben begrenzt ihn, was ein Haushalt deiner Größe laut dem Autarkie-Kennfeld der HTW Berlin mit dieser Anlage überhaupt selbst decken kann.",
   },
   autarkie: {
     term: "Autarkie",

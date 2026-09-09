@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { releaseFreigegeben } from "../release-plan";
-import { ATLAS_CITIES, slugify, cityPath, bundeslaenderWithCities, citiesInBundesland, liveCities, isCityLive, isCityArchived, archivedCities, isCityPublished, publishedCities, publishedCitiesInBundesland, publishedBundeslaender, fundingFor } from "../atlas-cities";
+import { ATLAS_CITIES, slugify, cityPath, bundeslaenderWithCities, citiesInBundesland, liveCities, isCityLive, isCityArchived, archivedCities, isCityPublished, publishedCities, publishedCitiesInBundesland, publishedBundeslaender, fundingFor, cityIndexFreigegeben } from "../atlas-cities";
 import { landProgramBundeslaender, getFundingProgram } from "../funding-programs";
 import nextConfig from "../../next.config.js";
 
@@ -75,13 +74,45 @@ describe("archived cities (inactive but published programs)", () => {
     expect(published.size).toBeLessThanOrEqual(nachStatus.size);
 
     for (const c of publishedCities()) expect(isCityPublished(c)).toBe(true);
-    // Und die Differenz ist nicht Zufall, sondern der Plan: Was der Status
-    // hergäbe, aber der Plan nicht freigibt, bleibt draußen.
+    // Und die Differenz ist nicht Zufall, sondern die Freigabe: Was der Status
+    // hergäbe, aber die Freigabe nicht hergibt, bleibt draußen.
+    //
+    // GEPRÜFT WIRD DIE FREIGABE, NICHT DER PLAN (05.09.2026). Bis hierher stand
+    // an dieser Stelle releaseFreigegeben() — also der Plan allein. Seit dem
+    // 01.09.2026 gibt es einen zweiten Weg (foerderseiteTraegt), und der Test
+    // hat den Widerspruch nicht gesehen: Er blieb grün, weil er dieselbe
+    // überholte Annahme trug wie der Code, den er absichern sollte. Er hat den
+    // Fehler mit sich selbst verglichen.
     const gesperrt = [...nachStatus].filter((s) => !published.has(s));
     for (const s of gesperrt) {
       const c = ATLAS_CITIES.find((x) => x.slug === s)!;
-      expect(releaseFreigegeben("foerder-stadt", c.ags)).toBe(false);
+      expect(cityIndexFreigegeben(c), `${s} gesperrt, obwohl die Freigabe steht`).toBe(false);
     }
+  });
+
+  // WARUM DIESER TEST (05.09.2026): Die Seite wird mit `dynamicParams = false`
+  // erzeugt — eine Adresse, die nicht aus publishedCities() kommt, ist eine
+  // HARTE 404. Die Sitemap filtert dagegen auf cityIndexFreigegeben(). Liefen
+  // die beiden auseinander, lädt die Sitemap Google zu Seiten ein, die es nicht
+  // gibt: gemessen 21 von 59 Förder-Stadtseiten, vier Tage lang live, auf der
+  // Seitenfamilie mit der besten Sichtbarkeit des Projekts. Kein Typfehler,
+  // kein roter Test, kein kaputtes Aussehen — nur tote Adressen.
+  it("Sitemap und Seitenerzeugung geben genau dieselben Städte frei", () => {
+    // Richtung 1: in der Sitemap, aber ohne Seite → 404 für Google.
+    const inSitemapOhneSeite = ATLAS_CITIES.filter((c) => cityIndexFreigegeben(c) && !isCityPublished(c));
+    expect(
+      inSitemapOhneSeite.map((c) => `${slugify(c.bundesland)}/${c.slug}`),
+      "stehen in der Sitemap und antworten mit 404",
+    ).toEqual([]);
+
+    // Richtung 2: Seite ohne Sitemap-Eintrag. Kein 404, aber die Seite ist dann
+    // indexierbar und wird nicht angemeldet — die stille Hälfte desselben
+    // Auseinanderlaufens, und ohne diese Prüfung fiele sie niemandem auf.
+    const seiteOhneSitemap = ATLAS_CITIES.filter((c) => isCityPublished(c) && !cityIndexFreigegeben(c));
+    expect(
+      seiteOhneSitemap.map((c) => `${slugify(c.bundesland)}/${c.slug}`),
+      "haben eine Seite, stehen aber nicht in der Sitemap",
+    ).toEqual([]);
   });
   // Die Regel ohne Namen: Solange wir einem Programm nicht trauen, bekommt seine
   // Stadt keine Seite — weder live noch als Archiv. Vorher hing dieser Test an

@@ -21,6 +21,7 @@ import {
   begNaechsteStufe,
 } from "../heatpump-config";
 import { calcBegSubsidy } from "../heatpump";
+import { berlinUhr, mitternachtsRand, vortag } from "./stichtag-rand";
 
 const CFG = DEFAULT_HEATPUMP_CONFIG;
 const stufe = (iso: string) => {
@@ -132,6 +133,63 @@ describe("BEG-Fahrplan: Auflösung nach Datum", () => {
     // Der Umschalter blendet sich dann aus — zwei Reiter mit demselben Inhalt
     // sähen kaputt aus.
     expect(begNaechsteStufe(new Date("2030-09-01"))).toBeUndefined();
+  });
+});
+
+describe("Ein deutscher Stichtag wird gegen eine deutsche Uhr gehalten", () => {
+  // BEFUND (gemeldet 02.09.2026, behoben 08.09.2026): begStufeAm() und
+  // begNaechsteStufe() bildeten ihren Vergleichstag mit
+  // `toISOString().slice(0, 10)` — das ist Weltzeit. `abIso` ist ein deutscher
+  // Kalendertag. Zwischen 00:00 und 02:00 deutscher Zeit AM Stichtag stand in
+  // der Weltzeit noch der Vortag: Der Rechner zeigte den alten Fördersatz und
+  // den alten Höchstbetrag, also Geld, und von außen war nichts zu sehen.
+  //
+  // Der Fahrplan deckt beide Zeitregime ab — 01.01. und 01.02. liegen in der
+  // Winterzeit (+1 h), 01.08. in der Sommerzeit (+2 h). Ein Test, der nur eines
+  // kennt, lässt die halbe Fehlerklasse durch. Der ERSTE Eintrag bleibt außen
+  // vor: Vor ihm fällt begStufeAm() bewusst auf ihn selbst zurück (siehe oben),
+  // ein „davor"-Test darauf prüfte diesen Rückfall statt der Zeitzone.
+  const spaetere = BEG_FAHRPLAN.slice(1);
+
+  it("deckt beide Zeitregime ab — sonst prüft er nur die halbe Fehlerklasse", () => {
+    expect(spaetere.some((s) => s.abIso.slice(5, 7) === "01" || s.abIso.slice(5, 7) === "02")).toBe(true);
+    expect(spaetere.some((s) => s.abIso.slice(5, 7) === "08")).toBe(true);
+  });
+
+  it("um 00:30 deutscher Zeit AM Stichtag gilt bereits die neue Stufe", () => {
+    for (const [i, stufe] of spaetere.entries()) {
+      const { danach } = mitternachtsRand(stufe.abIso);
+      // Gegenprobe, dass der Helfer den gemeinten Moment liefert — ohne sie
+      // belegte der Test sich selbst.
+      expect(berlinUhr(danach)).toBe(`${stufe.abIso} 00:30`);
+      expect(danach.toISOString().slice(0, 10)).toBe(vortag(stufe.abIso)); // Weltzeit: noch gestern
+      expect(begStufeAm(danach)).toBe(stufe);
+      // Und die Gegenrichtung derselben Auflösung: Die „nächste" Stufe ist ab
+      // diesem Moment die übernächste, nicht mehr diese.
+      expect(begNaechsteStufe(danach)?.abIso).toBe(spaetere[i + 1]?.abIso);
+    }
+  });
+
+  it("um 23:30 deutscher Zeit am Vortag gilt noch die alte Stufe", () => {
+    // Die Gegenrichtung: Eine Umrechnung, die zu weit greift, wäre derselbe
+    // Fehler mit umgekehrtem Vorzeichen.
+    for (const [i, stufe] of spaetere.entries()) {
+      const { davor } = mitternachtsRand(stufe.abIso);
+      expect(berlinUhr(davor)).toBe(`${vortag(stufe.abIso)} 23:30`);
+      expect(begStufeAm(davor)).toBe(BEG_FAHRPLAN[i]);
+      expect(begNaechsteStufe(davor)?.abIso).toBe(stufe.abIso);
+    }
+  });
+
+  it("ein als TAG übergebener Stichtag wird nicht noch einmal verschoben", () => {
+    // Der zweite Fall, an dem eine unvorsichtige Fassung scheitert: Der Ratgeber
+    // reicht `NAECHSTE.abIso` herein, also einen gemeinten Kalendertag. Ihn wie
+    // einen Zeitpunkt zu behandeln wäre der Fehler in der Gegenrichtung.
+    for (const [i, stufe] of spaetere.entries()) {
+      expect(begStufeAm(stufe.abIso)).toBe(stufe);
+      expect(begStufeAm(vortag(stufe.abIso))).toBe(BEG_FAHRPLAN[i]);
+      expect(begNaechsteStufe(stufe.abIso)?.abIso).toBe(spaetere[i + 1]?.abIso);
+    }
   });
 });
 
