@@ -44,6 +44,22 @@ function importierteSkripte(): string[] {
   return [...treffer].sort();
 }
 
+/**
+ * 30 Sekunden statt der voreingestellten fünf.
+ *
+ * Diese Prüfungen lesen den halben Bestand ein — den Förderkatalog, das
+ * Ortsverzeichnis, jede Datei des Repos. Auf einer ruhigen Maschine kosten sie
+ * Sekundenbruchteile; auf einer belegten reißen sie das Vorgabelimit, und zwar
+ * ohne dass irgendetwas am Code falsch wäre. Genau dafür gibt es im Projekt
+ * schon das Vorbild in `energy-api.test.ts` („generous headroom so CPU load
+ * can't trip the 5s default").
+ *
+ * Das Limit misst NICHTS Fachliches — es schützt vor einem hängenden Test.
+ * Es anzuheben schwächt die Prüfung also nicht; ein Fehlschlag daran kostet
+ * dagegen eine Stunde Suche nach einer Ursache, die es nicht gibt.
+ */
+const REPO_WEIT_MS = 30_000;
+
 describe("Skripte, die ein Test importiert", () => {
   const skripte = importierteSkripte();
 
@@ -72,4 +88,4 @@ describe("Skripte, die ein Test importiert", () => {
       }
     }
   });
-});
+}, REPO_WEIT_MS);

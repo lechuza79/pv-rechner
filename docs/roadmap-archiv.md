@@ -228,10 +228,27 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 - [ ] "Meine Anlage" Profil (kWp, Speicher, Inbetriebnahme)
 - [ ] Ist vs. Soll Vergleich (echte Erträge vs. PVGIS-Prognose)
 
-**WP 4: Solateur-Widget**
-- [ ] Embeddable Rechner (iframe/Web Component, White-Label)
-- [ ] Lead-Funktion → geht an Solateur
+**WP 4: Solateur-Widget** — teilweise gebaut, nicht ausgerollt (Stand 09.09.2026)
+- [x] **Betriebseigene Rechner-Seite** statt Einbettung: eigene Adresse je Betrieb, sein
+      Logo und Name im Kopf, keine Site-Navigation, für Suchmaschinen gesperrt. Kein
+      Einbau bei ihm nötig — er verlinkt. Die Einbettung selbst ist damit NICHT erledigt;
+      der Betreiber hat sie am 01.09.2026 als „bettet niemand" eingeordnet.
+- [x] **Rückkanal:** Der Nutzer schickt sein Ergebnis in drei Schritten an den Betrieb
+      (Anschrift, Fotos, Kontakt), Mail als persönlicher Brief mit Anhängen, Antworten
+      gehen direkt an den Interessenten. Anonyme Statistik über die Anfragen.
+- [x] **Empfehlungsweg als Standard** auf der Betriebsseite, direkter Rechner als
+      Alternative — beides auf derselben Adresse, ohne gespeicherten Schalter.
+- [ ] **Abnahme im Browser durch den Betreiber** — nie gezeigt, blockiert alles Weitere.
+- [ ] **Testbetrieb aus der Produktionsdatenbank entfernen** (`scripts/_testbetrieb.ts --weg`).
+- [ ] **Anschreiben auf den Vertrauens-Pitch umbauen** — der Entwurf argumentiert mit dem
+      am schwächsten belegten Painpoint.
+- [ ] **Datenschutzerklärung um die Erhebung der Betriebsadressen ergänzen** (Art. 14).
+- [ ] **Dachfläche in Quadratmetern erfragen** — die eine echte Lücke gegenüber dem
+      Wettbewerber; die automatische Erkennung über Google ist geprüft und verworfen.
 - [ ] Solateur-Dashboard
+- [ ] Entscheidungen des Betreibers: ob angeschrieben wird · ob die Zusage „keine
+      Lead-Erfassung, kein Vertriebskontakt" angefasst wird · Geld je Anfrage · ob der
+      Betrieb den Kontakt behalten darf
 
 **WP 6: Weitere Features**
 - [ ] PDF-Export

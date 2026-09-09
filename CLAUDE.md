@@ -1980,14 +1980,89 @@ Beratung stützt und selbst keinen bauen will. `scripts/fachbetriebe-refresh.ts`
 enthalten bei Einzelunternehmern personenbezogene Daten). Quellenbewertung:
 `docs/fachbetriebe-quellen.md`.
 
-**Es gibt keinen Vermittlungsweg und es wird nichts verschickt — BLOCKER.** Die Zusage
-„ohne Verkaufsanrufe · keine Lead-Erfassung · kein Vertriebskontakt" steht an vierzehn
-Stellen im Code und in der Datenschutzerklärung. Wer die Adressen nutzen will, klärt
-vorher zwei Fragen, die dem Betreiber gehören: ob ein Fachbetrieb ein Widget einbettet,
-das ihm keine Leads liefert (der Wettbewerbsbefund nennt das ausdrücklich als offen und
-sagt, es sei „eine Frage an drei Betriebe, nicht an eine Datenbank"), und die
-Informationspflicht nach Art. 14 DSGVO — die Datenschutzerklärung nennt diese
-Verarbeitung heute **nicht**.
+**Der Rückkanal ist GEBAUT, aber es ist nichts verschickt — Stand 09.09.2026.** Bis zum
+03.09. stand hier „es gibt keinen Vermittlungsweg"; das ist überholt, und ein überholter
+BLOCKER ist schlimmer als keiner. Was es gibt, steht im nächsten Abschnitt („Die
+betriebseigene Rechner-Seite"). Was es NICHT gibt: einen Versandlauf an Fachbetriebe.
+Kein Betrieb ist angeschrieben, keine Seite ist verlinkt, und die zwei Entscheidungen
+davor gehören weiterhin dem Betreiber — ob überhaupt angeschrieben wird, und ob die
+Zusage „ohne Verkaufsanrufe · keine Lead-Erfassung · kein Vertriebskontakt" angefasst
+wird. **Sie stimmt mit dem Rückkanal nicht mehr**, denn dort gibt es genau darüber einen
+Knopf; der PV-Rechner sagt auf einer Partnerseite deshalb schon heute etwas anderes als
+sonst („Wir geben nichts weiter, außer du bittest uns darum"). Offen bleibt außerdem die
+Informationspflicht nach Art. 14 DSGVO für die ERHEBUNG der Betriebsadressen — die
+Datenschutzerklärung nennt sie bis heute nicht.
+
+### Die betriebseigene Rechner-Seite und der Rückkanal (fertig, nicht ausgerollt)
+
+Ein Fachbetrieb bekommt eine eigene Adresse, unter der unser Rechner mit SEINEM Kopf
+öffnet; sein Websitebesucher rechnet dort und kann ihm das Ergebnis schicken. Gebaut
+zwischen dem 01. und 09.09.2026, im Browser geprüft, **noch von niemandem abgenommen und
+an niemanden verschickt.**
+
+- **Die Kennung ist aus der Domain abgeleitet, nicht geraten und nicht gespeichert.** Eine
+  Datenbankspalte wäre eine zweite Wahrheit; eine ratbare Adresse verriete, welche
+  Betriebe wir erfasst haben. Ohne hinterlegte Mailadresse entsteht **keine** Seite — ein
+  Anfrage-Knopf ohne Empfänger liefe ins Leere.
+- **Die Seite ist für Suchmaschinen gesperrt.** Eine indexierte Seite mit fremdem
+  Firmennamen auf UNSERER Domain träte gegen seine eigene Website an — das ist ein Grund,
+  nicht mitzumachen, und im Anschreiben umgekehrt ein Verkaufsargument.
+- **Der EMPFEHLUNGSWEG ist dort der Standard**, nicht der direkte Rechner (Betreiber,
+  03.09.2026: „in der regel weiß man ja nicht was man braucht"). Welcher Weg erscheint,
+  ergibt sich aus dem Zustand in der Adresse, nicht aus einem gespeicherten Schalter —
+  ein geteilter Link zeigt beim Empfänger dasselbe wie beim Absender. Der letzte Schritt
+  springt dort **direkt ins Ergebnis**; die Zwischenansicht der Empfehlung wird
+  übersprungen, weil das Ergebnis dieselbe Anlage samt Begründung trägt.
+- **Drei Stellen des Empfehlungswegs mussten dafür Parameter werden**, jede einzeln
+  gemessen: wohin er seinen Zwischenstand schreibt, wohin er am Ende übergibt, und wohin
+  „Zurück" im ersten Schritt führt. Ohne sie setzte er den Besucher mitten im Vorgang auf
+  solar-check.io ab — mit dem Ergebnis, aber ohne den Betrieb, der ihn geschickt hat.
+- **Der Knopf sagt „Unverbindlich bei X anfragen", nicht „schicken"** (Hinweis von außen,
+  03.09.2026): „schicken" liest sich, als ginge beim Klick schon etwas hinaus —
+  tatsächlich öffnet er nur den Fragebogen. Die Zeile darunter sagt NICHT „im nächsten
+  Schritt", weil die Übersicht der Angaben im dritten steht.
+- **Was der Betrieb bekommt:** einen Brief mit Anrede und Unterschrift, nicht einen
+  Datenauszug — ein Handwerksbetrieb bekommt täglich Post von Lead-Portalen, und die
+  sieht genau so aus. Darin die Angaben getrennt (Name, Kontakt, Anschrift), bis zu zwei
+  Fotos als Anhang und ein Link auf die Rechnung. **Antworten gehen direkt an den
+  Interessenten**, nicht über uns.
+- **Der Empfänger kommt aus der Datenbank, nie aus der Anfrage.** Nähme die Route eine
+  Adresse entgegen, wäre sie ein offener Versandweg mit unserem Absender darunter —
+  dieselbe Bauregel wie beim Förder-Abruf.
+- **Bilder werden im Browser verkleinert** (1.600 px, Qualität 0,8). Zwei gewöhnliche
+  Handyfotos ergaben kodiert rund 8 MB und scheiterten damit **immer** an der 4,5-MB-Grenze
+  der Plattform — nach vollständig ausgefülltem Fragebogen, mit der Meldung „bitte später
+  noch einmal versuchen", die nie zum Erfolg führen konnte.
+- **Die Antwortadresse wird aus dem Freitext HERAUSGESUCHT.** Das Kontaktfeld ist
+  absichtlich frei („wer nur anrufen lassen will, soll keine Mailadresse erfinden
+  müssen"); „mail@x.de oder 0170…" ging vorher als Ganzes als Antwortadresse hinaus und
+  ließ den kompletten Versand scheitern. Ist sie unklar, bleibt sie weg.
+- **Die Anfrage-Statistik ist anonym und wird GERECHNET, nicht abgeschrieben.** Betrieb,
+  Kalendertag statt Uhrzeit, zwei PLZ-Stellen statt fünf, Anlagengröße in Stufen, ob eine
+  Nachricht dabei war. Kein Name, kein Kontakt, keine Anschrift — Adresse plus
+  Anlagengröße wäre die Beschreibung genau eines Haushalts. **Anlagengröße und Speicher
+  werden aus den Listenplätzen des Teilen-Links aufgelöst**: Vorher las sie nur die
+  Sonderfelder für selbst eingetippte Zahlen, und jeder Standardfall schrieb eine Zeile
+  mit zwei leeren Werten — die Auswertung, für die es das Modul gibt, wäre bei der
+  Mehrheit leer gewesen, ohne dass etwas angeschlagen hätte.
+- **Die Auflösung der Kennung ist eine Stunde zwischengespeichert.** Sie rechnet über alle
+  rund 3.100 Betriebe und lief vorher zweimal je Seitenaufruf ohne Cache — acht
+  Datenbankabfragen pro Aufruf, bei einem Schub an hunderte Betriebe genau das Lastmuster
+  des Juli-Ausfalls. **Fünf Minuten wären der falsche Fix gewesen** (Cache-Deckel im
+  Seitenrahmen); Aktualität kommt über den Marker.
+
+**OFFEN, bevor irgendetwas verschickt wird:**
+1. **Abnahme im Browser** durch den Betreiber — die Seite und der Rückkanal sind sichtbare
+   neue Funktionalität und wurden ihm nie gezeigt.
+2. **Der Testbetrieb liegt in der Produktionsdatenbank** („Solar Check Testbetrieb GmbH",
+   angelegt für den Versandtest). Das Skript dazu liegt in `scripts/_testbetrieb.ts` und
+   entfernt ihn mit `--weg`; es hat bewusst keinen Eintrag in der Skriptliste, damit es
+   niemand versehentlich aufruft.
+3. **Der Anschreiben-Entwurf ist nicht abgenommen** und argumentiert mit dem falschen
+   Painpoint — siehe nächster Abschnitt.
+4. **Die Datenschutzerklärung** nennt die Erhebung der Betriebsadressen nicht (Art. 14).
+5. **Zwei Entscheidungen des Betreibers:** ob angeschrieben wird, und ob die Zusage
+   angefasst wird.
 
 **Bewertungen öffentlich zeigen scheitert am BEWERTUNGSRECHT, nicht an Google (geprüft
 29.08.2026, zwei Legal-Judges).** Wer Verbraucherbewertungen zugänglich macht, muss sagen,
@@ -2261,14 +2336,59 @@ Datenschutzerklärung nennt diese Erhebung mit keinem Wort, und die Ausnahme
 „unverhältnismäßiger Aufwand" trägt hier nicht — wer Kontaktdaten erhebt, UM Kontakt
 aufzunehmen, kann Kontakt nicht als zu aufwendig ausgeben.
 
-**Das Angebots-Feature am Ende des Rechners ist NICHT beauftragt** und hat eine eigene
-Merkliste: `docs/solarteur-widget-offene-fragen.md`. Kern daraus: Der Nutzer sieht erst
-sein Ergebnis und stellt DANACH selbst eine Anfrage — diese Reihenfolge ist die Trennlinie
-zum gesamten Wettbewerb und darf nie umgedreht werden. Vor dem ersten Kontakt muss die
-Zusage „keine Lead-Erfassung · kein Vertriebskontakt" umformuliert werden (Betreiber,
-28.08.2026: zusammen mit den ersten Kontakten, nicht vorher auf Verdacht). Zwei Fragen
-bleiben beim Betreiber: ob Geld je Anfrage fließt, und ob der Betrieb den Kontakt behalten
-darf, wenn nichts daraus wird.
+**Das Angebots-Feature ist seit 03.09.2026 gebaut — aber nur auf der Partnerseite, nie im
+allgemeinen Rechner.** Die Merkliste `docs/solarteur-widget-offene-fragen.md` gilt
+weiter für das, was daraus einmal werden soll. **Die Reihenfolge ist die Trennlinie zum
+gesamten Wettbewerb und wird nie umgedreht:** Der Nutzer sieht erst sein Ergebnis und
+stellt DANACH selbst eine Anfrage. Auf solar-check.io selbst gibt es diesen Knopf nicht —
+er erscheint ausschließlich, wo jemand über die Seite eines Betriebs gekommen ist. Zwei
+Fragen bleiben beim Betreiber: ob Geld je Anfrage fließt, und ob der Betrieb den Kontakt
+behalten darf, wenn nichts daraus wird.
+
+**Der Pitch argumentiert mit VERTRAUEN, nicht mit besseren Anfragen — der Entwurf tut das
+noch nicht** (gemessen 01.09.2026, Bedarfsrecherche mit neun Painpoints und Beleglage).
+Von neun adressiert unser Produkt **zwei, und beide sind derselbe**: die Verunsicherung
+der Endkunden (von Installateuren an erster Stelle genannt, rund 72 % — Magazin-
+Leserumfrage 03/2024 mit Selbstselektion, **nie als „gemessen" führen**) und den
+Vertrauensschaden aus der Insolvenzwelle. Die anderen sieben sind Abläufe, dort sitzen
+Anbieter mit belegtem Zahlungswillen. **Der Anschluss ist ihr Geschäftsmodell:** Ihr
+wichtigster Auftragskanal ist die Empfehlung, sie verkaufen über Glaubwürdigkeit — ein
+unabhängiger Rechner ohne Leadverkauf ist für sie kein Werkzeug, sondern ein Beleg ihrer
+Redlichkeit. Der Entwurf in `docs/fachbetriebe-anschreiben.md` argumentiert stattdessen
+mit „Sie bekommen bessere Anfragen": Painpoint 5, der am schwächsten belegte der Liste,
+und genau der, an dem ein Dutzend Software-Anbieter sitzt. **Vor dem Versand umbauen.**
+Die vollständige Argumentation samt Belegstärke je Zahl und den drei Sätzen, die ein
+Gegenleser zuerst angreift, steht in `docs/fachbetriebe-angebot-argumente.md`.
+
+**Der einzige direkte Wettbewerber ist Solantiq** (`docs/wettbewerb-solantiq.md`, eigene
+Bedienung des Rechners am 03.09.2026, nicht sein Marketing gelesen): einbettbarer
+PV-Rechner unter fremder Marke für 588 bis 1.788 € im Jahr, Zielgruppe Solarinstallateure,
+Zweck wörtlich „Lead-Generierung". **Er kann mehrere Dachflächen einzeln** (Größe in m²,
+Neigung, gradgenaue Ausrichtung), hat einen Verschattungs-Schieber und deckt Österreich
+und die Schweiz mit ab. **Der Unterschied ist nicht die Oberfläche, sondern gerechnet
+gegen geraten:** Dort stellt der Nutzer die Eigenverbrauchsquote selbst ein — die Zahl, an
+der die ganze Wirtschaftlichkeit hängt. **Die eine echte Lücke ist die Dachfläche in
+Quadratmetern** (36 % der Betriebs-Anfrageformulare fragen danach). Sie automatisch zu
+füllen ist gescheitert (siehe Google-Dachanalyse unten); die naheliegende Antwort ist
+dieselbe wie bei Solantiq — fragen, mit der Modulzahl daneben.
+
+**Was der Rechner-Flow von dem abdeckt, was Betriebe ohnehin fragen** (eigene Messung an
+76 Anfrageformularen, 01.09.2026): Von den elf häufigsten Feldern liefert er sieben. Es
+fehlen Dachfläche (36 %), Dacheindeckung (9 %) und Eigentümer/Mieter (7 %); Zählerschrank
+und Dachzustand deckt der Foto-Upload des Rückkanals ab.
+
+**Die automatische Dachanalyse über Googles Solar-Schnittstelle ist geprüft und
+VERWORFEN** (03.09.2026, `docs/quellen/fachbetriebe/google-solar-api-lizenz.md`).
+Rechtlich ist alles geklärt — zwei Legal-Judges, der zweite hat den ersten in drei Punkten
+gekippt; der Zugang steht und kostet bei unserem Volumen nichts. Gescheitert ist es an der
+Datenqualität: **Google kennt keine Grundstücksgrenzen.** Die Antwort beschreibt ein
+Gebäude im Sinne des Höhenmodells, bei Reihen- und Doppelhäusern also die ganze Zeile — am
+Referenzfall 141 m² für ein Haus mit rund 60, Modulbelegung quer über zwei Häuser. Keine
+Angabe in der Antwort sagt, welcher Teil einem gehört. **Nicht erneut prüfen**, solange
+Google keine Zuordnung von Adresse zu einzelner Dachfläche liefert. Zwei Lehren daraus
+gelten allgemein: Eine schematische Zeichnung taugt nicht zur Bestätigung einer
+automatischen Erkennung (es braucht das Original, nicht die Ableitung) — und das Bild
+allein reicht nicht, wenn niemand die Gegend kennt: Bestätigen kann nur der Nutzer.
 
 ## Archiv & Lehren
 
@@ -2283,3 +2403,7 @@ darf, wenn nichts daraus wird.
 | `docs/lehren/vercel-build-und-kosten.md` | Ignored Build Step, Kostenzahlen, Preview-Abschaltung |
 | `docs/lehren/ortsgeschichten-2026-09.md` | Ortsgeschichten: drei gescheiterte Anläufe am Visual, doppelte Präposition in der Abo-Mail, zwei zirkuläre Wächter — und die viermal wiederholte Ansage |
 | `docs/claude-md-kuerzung.md` | Was bei der CLAUDE.md-Kürzung gekürzt, ausgelagert und bewusst behalten wurde |
+| `docs/fachbetriebe-angebot-argumente.md` | Was wir einem Fachbetrieb anbieten: 17 Vorzüge nach Belegstärke, sechs Schwächen, Beleglage je Zahl, die drei angreifbarsten Sätze |
+| `docs/wettbewerb-solantiq.md` | Der einzige direkte Wettbewerber, an seinem eigenen Rechner gemessen — was er kann, was wir können, wo die eine echte Lücke ist |
+| `docs/fachbetriebe-ausbau-ideen.md` | Sechs Ideen des Betreibers für später, je mit dem, was vorher zu klären wäre — nichts davon beschlossen |
+| `docs/quellen/fachbetriebe/google-solar-api-lizenz.md` | Googles Dachanalyse: Lizenz geklärt, Datenqualität gemessen, Ergebnis verworfen — samt der vier Irrtümer, die nicht zurückkommen dürfen |
