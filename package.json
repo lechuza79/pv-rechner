@@ -45,6 +45,7 @@
     "foerder:technik": "tsx scripts/funding-seiten-technik.ts",
     "foerder:bericht": "tsx scripts/funding-report.ts",
     "foerder:ags": "tsx scripts/funding-ags-verify.ts",
+    "foerder:ortsabgleich": "tsx scripts/funding-ortsabgleich.ts",
     "release:plan": "tsx scripts/release-plan.ts",
     "release:messen": "tsx scripts/release-messen.ts",
     "kommunen:veroeffentlicht": "tsx scripts/kommunen-veroeffentlicht.ts",
