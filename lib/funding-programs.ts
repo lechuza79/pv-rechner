@@ -334,6 +334,24 @@ export interface FundingProgram {
   /** Feste Beträge nach Modulleistung, z. B. Mühlhausen 100 / 150 / 200 € nach Wp.
    *  Erste Stufe gewinnt, deren `upTo` die Leistung nicht überschreitet. */
   balkonTiers?: { upTo: number; amount: number }[];
+  /**
+   * Das Balkonkraftwerk wird NUR zusammen mit einem Speicher gefördert — ohne
+   * Speicher zahlt das Programm nichts (Landkreis Oldenburg: „Gefördert wird
+   * ausschließlich die Anschaffung von sogenannten Steckersolargeräten …
+   * zusammen mit einem Speicher").
+   *
+   * Das Gegenstück zu {@link pvNurMitSpeicher} auf der Balkon-Seite, und aus
+   * demselben Anlass angelegt: Eine Bedingung, die nur im Bedingungstext steht,
+   * wirkt auf die Rechnung nicht — der Zuschuss würde sonst auch dem Set ohne
+   * Speicher abgezogen. Bei einem Set um 500 € sind 250 € die Hälfte des
+   * Preises; das ist keine Feinheit, sondern eine falsche Amortisation.
+   *
+   * Ist die Speichergröße dem Aufrufer unbekannt (kein `speicherKwh` an der
+   * Anlage), wird NICHT gerechnet — dieselbe Zurückhaltung wie bei einer
+   * unbeantworteten Wohnform: Der Rechner darf nicht raten, ob ein Speicher
+   * dabei ist.
+   */
+  balkonNurMitSpeicher?: boolean;
 
   // ── Wärmepumpe ───────────────────────────────────────────────────────────────
   // Kommunale WP-Zuschüsse sitzen NEBEN der BEG des Bundes und sind fast immer
@@ -4351,6 +4369,97 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // 267.930 Einwohner — fünfstellig ist hier richtig.
   },
 
+  "konstanz-breitenfoerderung": {
+    id: "konstanz-breitenfoerderung", name: "Breitenförderung (Energetische Bestandssanierung), Maßnahme B.8",
+    traeger: "Stadt Konstanz", level: "kommune", region: "Konstanz",
+    bundesland: "Baden-Württemberg", agsCode: "08335043",
+    url: "https://www.konstanz.de/stadtwandel/foerderprogramme/breitenfoerderung",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss zu den Anschlusskosten eines Balkonkraftwerks",
+    maxFoerderung: "150 € je Anlage und Wohneinheit",
+    rates: [{ label: "Balkonkraftwerk", value: "150 € pauschal je Anlage und Wohneinheit", nur: ["balkon"] }],
+    conditions: [
+      "Gefördert wird nur, was am Balkon, an der Fassade oder auf einem kleineren Nebengebäude hängt — Module auf dem Hausdach sind seit 2025 ausgeschlossen",
+      "Mieterinnen und Mieter im Stadtgebiet sind ausdrücklich antragsberechtigt; Eigentümer ebenso",
+      "Der Antrag wird NACH der Maßnahme gestellt, spätestens sechs Monate nach deren Abschluss",
+      "Über alle Maßnahmen des Programms zusammen höchstens 50.000 € je Gebäude",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPauschale: 150,
+    // NEU AUFGENOMMEN 09.09.2026. Amtsseite im Rohtext gelesen: „8.3 Zuschusshöhe:
+    // Pauschaler Zuschuss zu Anschlusskosten: 150 Euro / Anlage und Wohneinheit."
+    //
+    // GEFUNDEN HABEN WIR DIESE SEITE LÄNGST — und genau das ist die Lehre. Der
+    // Screening-Lauf hat sie am 20.08.2026 als Treffer abgelegt und dabei als
+    // „Wärmepumpe" eingeordnet; der Balkon-Zuschuss steckt eine Ebene tiefer in
+    // derselben Seite. Sie lag seitdem ungelesen im Arbeitsvorrat. Der Engpass
+    // des Katalogs ist nicht die Suche, sondern das Lesen der Treffer.
+    //
+    // ANTRAG NACH DER MASSNAHME, nicht davor: Die Vorab-Antragspflicht gilt in
+    // diesem Programm ausdrücklich nur für die Wärmedämmung (B.1). Sie hier
+    // mitzuschreiben wäre eine Verschärfung ohne Fundstelle — und eine, die
+    // jemanden vom Kauf abhalten könnte, der längst antragsberechtigt ist.
+    //
+    // KEINE Dach-Photovoltaik: Das Programm kennt nur die Kombination von
+    // Wärmepumpe und PV (B.3, 1.000–2.000 €), und die setzt zwingend den
+    // Heizungstausch nach B.2 voraus — eine PV-Förderung ist das nicht. Es
+    // entsteht deshalb keine Förder-Stadtseite. Ob die Heizungs-Maßnahmen einen
+    // Wärmepumpen-Satz für unseren Katalog hergeben, ist NICHT geprüft.
+  },
+
+  "landkreis-oldenburg-steckersolar": {
+    id: "landkreis-oldenburg-steckersolar", name: "Förderrichtlinie zur Anschaffung eines Steckersolargerätes mit Speicher",
+    traeger: "Landkreis Oldenburg", level: "landkreis", region: "Landkreis Oldenburg",
+    bundesland: "Niedersachsen", agsCode: "03458",
+    url: "https://www.wir-für-gutes-klima.de/klimaschutz/foerderprogramme/steckersolargeraete-mit-speicher/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-03-20", endetIso: "2028-12-15",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Anschaffungskosten von Balkonkraftwerk und Speicher — nur zusammen",
+    maxFoerderung: "max. 250 € je Haushalt",
+    rates: [{ label: "Balkonkraftwerk mit Speicher", value: "25 % der Anschaffungskosten (brutto), max. 250 €", nur: ["balkon"] }],
+    conditions: [
+      "Gefördert wird ausschließlich das Balkonkraftwerk ZUSAMMEN mit einem Speicher — ohne Speicher gibt es nichts",
+      "Der Wechselrichter muss rund 800 Watt Ausgangsleistung haben",
+      "Hauptwohnsitz im Landkreis Oldenburg; Mieterinnen und Mieter wie Eigentümer sind antragsberechtigt",
+      "Der Antrag wird nach dem Kauf gestellt, innerhalb von sechs Monaten nach dem Rechnungsdatum",
+      "Geräte, die vor dem 1. Januar 2026 gekauft wurden, sind ausgeschlossen",
+      "Je Haushalt wird ein Gerät gefördert; Anmeldung im Marktstammdatenregister und beim Netzbetreiber ist Pflicht",
+      "36 Monate Haltefrist — bei früherem Verkauf ist der Zuschuss anteilig zurückzuzahlen",
+      "Die Förderung ist gegenüber Programmen von EU, Bund und Land nachrangig; eine Doppelförderung ist ausgeschlossen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPercentOfCost: 0.25, balkonCap: 250, balkonNurMitSpeicher: true,
+    // NEU AUFGENOMMEN 09.09.2026. Richtlinie im Volltext gelesen (drei Seiten,
+    // Klimaportal des Landkreises): „4.1. Die Förderhöhe beträgt 25% der
+    // Anschaffungskosten (brutto) bis zu einem Höchstbetrag von 250,00 €."
+    //
+    // DER SPEICHER IST DIE BEDINGUNG, NICHT DAS BEIWERK. Ziffer 3.3 schließt
+    // „Steckersolargeräte ohne einschließlich oder zusätzlich erworbenen
+    // Speicher" ausdrücklich aus. Diese Bedingung war im Modell bisher nicht
+    // ausdrückbar — als bloßer Bedingungstext hätte sie auf die Rechnung nicht
+    // gewirkt und der Rechner hätte einem Set ohne Speicher die Hälfte des
+    // Kaufpreises geschenkt. Deshalb `balkonNurMitSpeicher`, das Gegenstück zu
+    // `pvNurMitSpeicher` auf der Dachseite, und aus demselben Anlass.
+    //
+    // DER TRÄGER IST DER LANDKREIS, NICHT DIE STADT. Die Shop-Liste, über die
+    // wir auf das Programm gestoßen sind, schrieb die 250 € der kreisfreien
+    // Stadt Oldenburg zu — die fördert nachweislich nichts (ihre frühere
+    // PV-Seite antwortet mit 404, das Klimaportal führt nur Beratungsangebote).
+    // Der Kreisschlüssel 03458 gilt über die Präfix-Zuordnung für alle
+    // Gemeinden des Kreises; das ist bei einem Kreisprogramm der Sinn der
+    // Sache und nicht zu verwechseln mit einem Landesprogramm auf Stadtebene.
+    //
+    // ENDET AM 15.12.2028: „Die Förderrichtlinie tritt mit Wirkung vom
+    // 20.03.2026 in Kraft. Sie tritt mit Ablauf des 15.12.2028 außer Kraft."
+    // Das ist ausnahmsweise wirklich das Antragsfenster — die Richtlinie sagt
+    // selbst, dass eine Antragstellung nur gilt, solange sie in Kraft ist
+    // (Ziffer 5.3). Der Haushaltsvorbehalt in 4.3 kann es früher beenden.
+  },
+
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {
@@ -4533,7 +4642,12 @@ export type FundingAmount = {
  */
 export type FundingAnlage =
   | { technik: "pv"; kwp: number; speicherKwh: number; kosten: number }
-  | { technik: "balkon"; wattPeak: number; kosten: number; wohnform?: Wohnform }
+  // `speicherKwh` ist bewusst optional und bedeutet UNBEKANNT, nicht null: Der
+  // Balkon-Rechner kennt die gewählte Speichergröße immer (0 = ohne Speicher),
+  // eine Übersichtsseite kennt sie nicht. Nur so lässt sich „das Programm zahlt
+  // für dieses Set nichts" von „wir wissen nicht, ob ein Speicher dabei ist"
+  // unterscheiden.
+  | { technik: "balkon"; wattPeak: number; kosten: number; wohnform?: Wohnform; speicherKwh?: number }
   | { technik: "waermepumpe"; kosten: number };
 
 /**
@@ -4666,6 +4780,13 @@ export function fundingAmount(
     if (f.nurWohnform && !anlage.wohnform) return { total: 0, computable: false, active };
     const computable = !!(f.balkonPauschale || f.balkonProWp || f.balkonPercentOfCost || f.balkonTiers);
     if (!computable) return { total: 0, computable: false, active };
+    // „Nur mit Speicher": Ohne Speicher ist der Betrag bekannt und null; ist die
+    // Speichergröße gar nicht übergeben, wird nicht gerechnet (siehe
+    // {@link FundingProgram.balkonNurMitSpeicher}).
+    if (f.balkonNurMitSpeicher) {
+      if (anlage.speicherKwh === undefined) return { total: 0, computable: false, active };
+      if (anlage.speicherKwh <= 0) return { total: 0, computable: true, active };
+    }
     // KEIN Zuschuss über dem Kaufpreis — BLOCKER (04.09.2026).
     //
     // Die Pauschalen des Katalogs liegen sonst durchweg unter dem billigsten Set

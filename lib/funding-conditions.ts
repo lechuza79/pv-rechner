@@ -194,6 +194,15 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // nicht erhebt, und die Deckelung auf 100 % des Kaufpreises ist eine Form,
   // die das Modell nicht ausdrückt.
   "gelsenkirchen-steckersolar",
+  // Aufgenommen am 09.09.2026, Amtsseite bzw. Richtlinie im Volltext gelesen.
+  // Die Prüfformen fehlen noch, und je eine Bedingung kennt das Modell gar
+  // nicht: In Konstanz der MONTAGEORT (gefördert wird nur, was am Balkon, an
+  // der Fassade oder auf einem Nebengebäude hängt — Dachmontage ist seit 2025
+  // ausgeschlossen), im Landkreis Oldenburg der Kaufstichtag „nicht vor dem
+  // 1. Januar 2026" und die Nachrangigkeit gegenüber EU-, Bundes- und
+  // Landesmitteln. Dass der Zuschuss den Speicher voraussetzt, steht dagegen
+  // seit heute IM Modell (`balkonNurMitSpeicher`) und nicht nur im Text.
+  "konstanz-breitenfoerderung", "landkreis-oldenburg-steckersolar",
 ];
 
 /**

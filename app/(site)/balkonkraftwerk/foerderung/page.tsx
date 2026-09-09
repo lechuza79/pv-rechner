@@ -68,6 +68,15 @@ const S = {
  * Rechtssätze auseinandergelaufen sind.
  */
 function betragText(p: FundingProgram): { zahl: string | null; text: string } {
+  // Programme, die den Speicher voraussetzen, zahlen für das Referenz-Set (ohne
+  // Speicher) nichts — und „0 €" wäre hier die falsche Auskunft, denn der Betrag
+  // ist ja bekannt, er hängt nur an einer anderen Anlage. Die Übersicht nennt
+  // deshalb die Bedingung statt einer Zahl. Dieselbe Unterscheidung wie bei der
+  // Kumulierungsgrenze im Wärmepumpen-Rechner: „lässt sich hier nicht berechnen"
+  // ist etwas anderes als „es gibt nichts".
+  if (p.balkonNurMitSpeicher) {
+    return { zahl: null, text: "nur zusammen mit einem Speicher — Satz siehe unten" };
+  }
   const a = fundingAmount(p, { technik: "balkon", wattPeak: REFERENZ.moduleWp, kosten: REFERENZ.price });
   if (!a.computable) {
     // Kein strukturierter Satz: Das Programm fördert Steckersolar, aber die Höhe

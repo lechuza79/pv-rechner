@@ -299,12 +299,26 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "kreis-viersen", name: "Kreis Viersen", ags: "05166", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970, fundingId: "viersen-klimaschutz" },
   { slug: "kreis-bergstrasse", name: "Kreis Bergstraße", ags: "06431", bundesland: "Hessen", yieldKwhKwp: 1030, fundingId: "bergstrasse-speicher" },
   { slug: "mayen-koblenz", name: "Landkreis Mayen-Koblenz", ags: "07137", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1010, fundingId: "mayen-koblenz-speicher" },
+  // Der Landkreis Oldenburg fördert seit dem 20.03.2026 Balkonkraftwerke mit
+  // Speicher — der Kreis, NICHT die kreisfreie Stadt Oldenburg (03403), die
+  // eine Zeile weiter oben steht und nachweislich nichts fördert. Genau diese
+  // beiden hat die Quelle verwechselt, über die wir auf das Programm gestoßen
+  // sind. Ertrag als Handwert am Kreissitz Wildeshausen gemessen (52,89 / 8,43,
+  // 09.09.2026): ein Landkreis hat keinen Punkt, an dem man messen könnte, und
+  // 1.000 fügt sich zwischen Delmenhorst (1.003) und der Stadt Oldenburg (989).
+  { slug: "landkreis-oldenburg", name: "Landkreis Oldenburg", ags: "03458", bundesland: "Niedersachsen", yieldKwhKwp: 1000, fundingId: "landkreis-oldenburg-steckersolar" },
   // Nidda kam am 26.08.2026 über den Rücklauf einer Outreach-Mail herein: Die
   // Klimaschutz-Beauftragte der Stadt hat uns ihre Förderseite selbst geschickt.
   // Achtstelliger Schlüssel mit Kreis, weil kreisangehörig — 06440016 ist Nidda,
   // 06440017 wäre Niddatal, und genau dafür gibt es die Schlüsselprüfung.
   // Ertrag am 26.08.2026 an der repräsentativen Lage gemessen (50,43 / 9,01).
   { slug: "nidda", name: "Nidda", ags: "06440016", kreis: "Wetteraukreis", bundesland: "Hessen", yieldKwhKwp: 1056 },
+  // Konstanz zahlt 150 € für Balkonkraftwerke (Maßnahme B.8 der
+  // Breitenförderung). Achtstelliger Schlüssel mit Kreis, weil kreisangehörig:
+  // 08335 wäre der Landkreis Konstanz und setzte dessen Bestand unter den
+  // Stadtnamen. Ertrag am 09.09.2026 an der repräsentativen Lage gemessen
+  // (47,66 / 9,17).
+  { slug: "konstanz", name: "Konstanz", ags: "08335043", kreis: "Landkreis Konstanz", bundesland: "Baden-Württemberg", yieldKwhKwp: 1140 },
 
   // ── Kreisangehörige Gemeinden mit eigenem Förderprogramm (19.08.2026) ──────
   //
